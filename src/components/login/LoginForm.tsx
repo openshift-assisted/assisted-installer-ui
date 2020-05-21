@@ -49,7 +49,7 @@ const LoginForm: React.FC = () => {
     return {};
   };
 
-  const handleSubmit = (values: LoginValues, formikActions: FormikHelpers<LoginValues>) => {
+  const handleSubmit = (_values: LoginValues, formikActions: FormikHelpers<LoginValues>) => {
     // postInstallConfig(values)
     //   .then((response) => {
     //     // TODO(jtomasek): dispatch a success action

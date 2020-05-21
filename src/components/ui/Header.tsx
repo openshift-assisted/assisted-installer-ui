@@ -3,7 +3,7 @@ import { Brand, PageHeader } from '@patternfly/react-core';
 
 // TODO(mlibra) Uncomment! Temporary workaround
 // import logo from '../../images/metal3_facet-whitetext.svg';
-const logo = () => <div />;
+const logo = 'logo';
 
 const Header: React.FC = () => (
   <PageHeader

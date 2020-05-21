@@ -32,7 +32,7 @@ const InputField: React.FC<InputFieldProps> = ({
         isValid={isValid}
         isRequired={isRequired}
         aria-describedby={`${fieldId}-helper`}
-        onChange={(value, event) => {
+        onChange={(_value, event) => {
           field.onChange(event);
           onChange && onChange(event);
         }}

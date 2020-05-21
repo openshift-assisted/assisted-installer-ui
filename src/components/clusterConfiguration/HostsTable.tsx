@@ -55,7 +55,7 @@ const columns = [
   { title: 'Disk', transforms: [sortable] },
 ];
 
-const hostToHostTableRow = (openRows: OpenRows) => (host: Host, idx: number): IRow => {
+const hostToHostTableRow = (openRows: OpenRows) => (host: Host): IRow => {
   const { id, status, statusInfo, role, createdAt, hardwareInfo = '' } = host;
   const hwInfo = getHardwareInfo(hardwareInfo) || {};
   const { cores, memory, disk } = getHostRowHardwareInfo(hwInfo);
@@ -165,7 +165,7 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
   );
 
   const onHostEnable = React.useCallback(
-    (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
+    (_event: React.MouseEvent, _rowIndex: number, rowData: IRowData) => {
       const hostId = rowData.extraData.id;
       enableClusterHost(cluster.id, hostId)
         .then(() => {
@@ -185,7 +185,7 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
   );
 
   const onHostDisable = React.useCallback(
-    (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
+    (_event: React.MouseEvent, _rowIndex: number, rowData: IRowData) => {
       const hostId = rowData.extraData.id;
       disableClusterHost(cluster.id, hostId)
         .then(() => {
