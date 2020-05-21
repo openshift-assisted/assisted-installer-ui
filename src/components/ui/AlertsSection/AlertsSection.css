@@ -1,0 +1,6 @@
+.pf-c-alert-group.alerts-section {
+  position: absolute;
+  padding: var(--pf-c-page__main-section--PaddingTop);
+  bottom: 0;
+  width: 100%;
+}

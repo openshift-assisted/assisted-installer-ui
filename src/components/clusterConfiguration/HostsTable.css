@@ -1,0 +1,8 @@
+.host-table-alerts {
+  padding-top: var(--pf-global--spacer--lg) !important;
+}
+
+.hosts-table .pf-c-dropdown__toggle-text {
+    color: var(--pf-global--Color--100) !important;
+}
+
