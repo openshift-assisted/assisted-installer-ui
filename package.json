@@ -51,7 +51,11 @@
 		"axios": "^0.19.2",
 		"axios-case-converter": "^0.6.0",
 		"file-saver": "^2.0.2",
-		"formik": "^2.1.4"
+		"formik": "^2.1.4",
+		"humanize-plus": "^1.8.2",
+		"react-redux": "^7.2.0",
+		"react-router-dom": "^5.1.2",
+		"yup": "^0.28.3"
 	},
 	"license": "Apache-2.0",
 	"engines": {
