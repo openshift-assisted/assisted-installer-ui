@@ -25,6 +25,7 @@
 		"commit": "git-cz",
 		"release": "standard-version",
 		"release:tags": "git push --follow-tags origin master",
+                "prebuild": "yarn installPeer",
 		"build": "node build-tool/build.js",
 		"prepublish": "yarn run lint && yarn run build",
 		"doc:dev": "docz dev ",
