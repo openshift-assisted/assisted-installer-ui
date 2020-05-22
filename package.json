@@ -62,12 +62,6 @@
 	"engines": {
 		"node": ">=8.0.0"
 	},
-	"husky": {
-		"hooks": {
-			"commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-			"pre-commit": "lint-staged && git add ."
-		}
-	},
 	"config": {
 		"commitizen": {
 			"path": "cz-conventional-changelog"
