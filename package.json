@@ -1,7 +1,7 @@
 {
 	"name": "facet-lib",
 	"homepage": "http://mareklibra.github.io/facet-lib",
-	"version": "0.0.1",
+	"version": "0.0.4",
 	"description": "",
 	"repository": {
 		"type": "git",
@@ -27,7 +27,6 @@
 		"release:tags": "git push --follow-tags origin master",
 		"build": "node build-tool/build.js",
 		"prepublish": "yarn run lint && yarn run build",
-		"publish": "yarn publish",
 		"doc:dev": "docz dev ",
 		"doc:build": "docz build ",
 		"doc:deploy": "yarn run doc:build && gh-pages -d docs"
