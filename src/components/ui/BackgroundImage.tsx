@@ -1,6 +1,5 @@
 import React from 'react';
-/*
-TODO(mlibra) Uncomment! Just temporary workaround while moving code to the library
+
 import { BackgroundImage as PfBackgroundImage, BackgroundImageSrc } from '@patternfly/react-core';
 
 import pfbg1200 from '@patternfly/patternfly/assets/images/pfbg_1200.jpg';
@@ -20,6 +19,5 @@ const bgImages = {
 };
 
 const BackgroundImage: React.FC = () => <PfBackgroundImage src={bgImages} />;
-*/
-const BackgroundImage: React.FC = () => <div />;
+
 export default BackgroundImage;
