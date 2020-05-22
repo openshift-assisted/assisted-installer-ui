@@ -25,7 +25,7 @@
 		"commit": "git-cz",
 		"release": "standard-version",
 		"release:tags": "git push --follow-tags origin master",
-                "prebuild": "yarn installPeer",
+		"prebuild": "yarn installPeer",
 		"build": "node build-tool/build.js",
 		"prepublish": "yarn run lint && yarn run build",
 		"doc:dev": "docz dev ",
@@ -51,12 +51,7 @@
 		"axios": "^0.19.2",
 		"axios-case-converter": "^0.6.0",
 		"file-saver": "^2.0.2",
-		"formik": "^2.1.4",
-		"prop-types": "^15.7.2",
-		"react": "^16.12.0",
-		"react-dom": "^16.12.0",
-		"react-redux": "^7.2.0",
-		"react-router-dom": "^5.1.2"
+		"formik": "^2.1.4"
 	},
 	"license": "Apache-2.0",
 	"engines": {
@@ -88,8 +83,6 @@
 		"@babel/preset-react": "^7.7.0",
 		"@babel/preset-typescript": "^7.7.4",
 		"@babel/types": "^7.7.4",
-		"@commitlint/cli": "^8.2.0",
-		"@commitlint/config-conventional": "^8.2.0",
 		"@rollup/plugin-replace": "^2.2.1",
 		"@testing-library/jest-dom": "^4.2.4",
 		"@testing-library/react": "^9.3.2",
