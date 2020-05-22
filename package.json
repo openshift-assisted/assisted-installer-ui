@@ -20,14 +20,14 @@
 		"installPeer": "node build-tool/peerDep.js",
 		"test": "jest",
 		"test:dev": "jest --watch",
-		"lint": "eslint src/**/*.{js,tsx,ts,jsx} --fix",
+		"lint": "eslint src/**/*.{js,tsx,ts} --fix",
 		"stylelint": "stylelint src/**/*.{ts,tsx,jsx,js,css,scss,less} --fix",
 		"commit": "git-cz",
 		"release": "standard-version",
 		"release:tags": "git push --follow-tags origin master",
 		"build": "node build-tool/build.js",
-		"pre-publish": "yarn run lint && yarn run build",
-		"publish": "yarn run pre-publish && yarn publish",
+		"prepublish": "yarn run lint && yarn run build",
+		"publish": "yarn publish",
 		"doc:dev": "docz dev ",
 		"doc:build": "docz build ",
 		"doc:deploy": "yarn run doc:build && gh-pages -d docs"
@@ -70,7 +70,7 @@
 	"lint-staged": {
 		"{src,docs}/**/*.{js,json,css,jsx,ts,tsx} *.js": [
 			"pretty-quick --staged",
-			"npm run stylelint",
+			"yarn run stylelint",
 			"eslint --fix --quiet --ignore-path .gitignore",
 			"git add"
 		]
