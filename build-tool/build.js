@@ -84,7 +84,8 @@ function getConcurrentlyArgs(scripts, { killOthers = true } = {}) {
 	].filter(Boolean);
 }
 
-const rollupFormats = ['umd', 'umd.min'];
+// const rollupFormats = ['umd', 'umd.min'];
+const rollupFormats = [];
 const config = `--config ${hereRelative('./rollup.config.js')}`;
 const sizeSnapshot = parsedArgs['size-snapshot'];
 const buildInput = parsedArgs['build-input'];
