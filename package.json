@@ -26,11 +26,11 @@
 		"release": "standard-version",
 		"release:tags": "git push --follow-tags origin master",
 		"build": "node build-tool/build.js",
-		"pre-publish": "npm run lint && npm run build",
-		"publish": "npm run pre-publish && npm publish",
+		"pre-publish": "yarn run lint && yarn run build",
+		"publish": "yarn run pre-publish && yarn publish",
 		"doc:dev": "docz dev ",
 		"doc:build": "docz build ",
-		"doc:deploy": "npm run doc:build && gh-pages -d docs"
+		"doc:deploy": "yarn run doc:build && gh-pages -d docs"
 	},
 	"files": [
 		"dist"
