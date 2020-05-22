@@ -1,4 +1,5 @@
 # facet-lib
+React component library for https://github.com/openshift-metal3/facet.
 
 > 
 
@@ -16,16 +17,16 @@ yarn add facet-lib
 
 ## Usage
 
-```jsx
-import React from 'react'
+TBD
 
-import { Demo } from 'facet-lib'
+## Develop
 
-const Example = ({message}) => <Demo type={'warning'}>{message}</Demo>;
-
-export default Example;
+```bash
+yarn install
+yarn installPeer
+yarn build
 ```
 
 ## License
 
-ApacheLicense © [mareklibra](https://github.com/mareklibra)
+Apache-2.0
