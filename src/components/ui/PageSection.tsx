@@ -21,7 +21,7 @@ const PageSection: React.FC<PageSectionProps> = ({ isMain = false, style, childr
   <PfPageSection
     style={{ ...style, position: 'relative' }}
     isFilled={isMain}
-    noPadding={isMain}
+    padding={{ default: isMain ? 'noPadding' : 'padding' }}
     {...rest}
   >
     {isMain ? <div style={scrollableStyle}>{children}</div> : <>{children}</>}

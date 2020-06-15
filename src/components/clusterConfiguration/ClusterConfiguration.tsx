@@ -1,7 +1,8 @@
 import React from 'react';
-import { Formik, FormikHelpers, FormikProps } from 'formik';
+import { Formik, FormikProps, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { Link } from 'react-router-dom';
+import _ from 'lodash';
 import {
   Form,
   PageSectionVariants,
@@ -10,50 +11,63 @@ import {
   ButtonVariant,
   Grid,
   GridItem,
-  Alert,
-  AlertVariant,
-  AlertActionCloseButton,
-  TextInputTypes,
   TextVariants,
   Spinner,
-  Breadcrumb,
-  BreadcrumbItem,
+  Button,
 } from '@patternfly/react-core';
-import { ExternalLinkAltIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
-import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens';
-import { useDispatch, useSelector } from 'react-redux';
+import { ExternalLinkAltIcon, WarningTriangleIcon, CheckCircleIcon } from '@patternfly/react-icons';
+import { global_success_color_100 as successColor } from '@patternfly/react-tokens';
+import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens';
+import { useDispatch } from 'react-redux';
 
 import ClusterToolbar from '../clusters/ClusterToolbar';
 import PageSection from '../ui/PageSection';
-import { ToolbarButton, ToolbarText } from '../ui/Toolbar';
-import { InputField, TextAreaField } from '../ui/formik';
+import { InputField, TextAreaField, TextAreaSecretField } from '../ui/formik';
+import { ToolbarButton, ToolbarText, ToolbarSecondaryGroup } from '../ui/Toolbar';
 import GridGap from '../ui/GridGap';
+import { EventsModalButton } from '../ui/eventsModal';
 import { Cluster, ClusterUpdateParams } from '../../api/types';
-import { patchCluster, postInstallCluster } from '../../api/clusters';
-import { handleApiError } from '../../api/utils';
+import { patchCluster, postInstallCluster, getClusters } from '../../api/clusters';
+import { handleApiError, getErrorMessage } from '../../api/utils';
 import { CLUSTER_MANAGER_SITE_LINK } from '../../config/constants';
 import AlertsSection from '../ui/AlertsSection';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
+import alertsReducer, {
+  addAlert,
+  AlertProps,
+  removeAlert,
+} from '../../features/alerts/alertsSlice';
 import BaremetalInventory from './BaremetalInventory';
 import {
   nameValidationSchema,
   sshPublicKeyValidationSchema,
-  getUniqueNameValidationSchema,
   validJSONSchema,
-  ipValidationSchema,
   ipBlockValidationSchema,
   dnsNameValidationSchema,
   hostPrefixValidationSchema,
+  vipValidationSchema,
 } from '../ui/formik/validationSchemas';
-import { selectClusterNamesButCurrent } from '../../selectors/clusters';
+import ClusterBreadcrumbs from '../clusters/ClusterBreadcrumbs';
+import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
+import NetworkConfiguration from './NetworkConfiguration';
+import ClusterValidationSection from './ClusterValidationSection';
+import { validateCluster } from './clusterValidations';
+import { getInitialValues, getHostSubnets, findMatchingSubnet } from './utils';
 
-type ClusterConfigurationValues = ClusterUpdateParams & {
-  submitType: 'save' | 'install';
-};
-
-interface ClusterConfigurationProps {
-  cluster: Cluster;
-}
+const validationSchema = (hostSubnets: HostSubnets) =>
+  Yup.lazy<ClusterConfigurationValues>((values) =>
+    Yup.object<ClusterConfigurationValues>().shape({
+      name: nameValidationSchema,
+      baseDnsDomain: dnsNameValidationSchema,
+      clusterNetworkHostPrefix: hostPrefixValidationSchema,
+      clusterNetworkCidr: ipBlockValidationSchema,
+      serviceNetworkCidr: ipBlockValidationSchema,
+      apiVip: vipValidationSchema(hostSubnets, values),
+      ingressVip: vipValidationSchema(hostSubnets, values),
+      pullSecret: validJSONSchema,
+      sshPublicKey: sshPublicKeyValidationSchema,
+    }),
+  );
 
 const sshPublicKeyHelperText = (
   <>
@@ -62,100 +76,111 @@ const sshPublicKeyHelperText = (
   </>
 );
 
+type ClusterConfigurationProps = {
+  cluster: Cluster;
+};
+
 const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) => {
+  const [isValidationSectionOpen, setIsValidationSectionOpen] = React.useState(false);
+  const [isStartingInstallation, setIsStartingInstallation] = React.useState(false);
   const dispatch = useDispatch();
-  const clusterNames = useSelector(selectClusterNamesButCurrent);
-
-  const initialValues: ClusterConfigurationValues = {
-    name: cluster.name || '',
-    baseDnsDomain: cluster.baseDnsDomain || '',
-    clusterNetworkCidr: cluster.clusterNetworkCidr || '',
-    clusterNetworkHostPrefix: cluster.clusterNetworkHostPrefix || 0,
-    serviceNetworkCidr: cluster.serviceNetworkCidr || '',
-    apiVip: cluster.apiVip || '',
-    ingressVip: cluster.ingressVip || '',
-    pullSecret: cluster.pullSecret || '',
-    sshPublicKey: cluster.sshPublicKey || '',
-    submitType: 'save',
-  };
-
-  const validationSchema = React.useCallback(
-    () =>
-      Yup.object().shape({
-        name: getUniqueNameValidationSchema(clusterNames).concat(nameValidationSchema),
-        baseDnsDomain: dnsNameValidationSchema,
-        clusterNetworkHostPrefix: hostPrefixValidationSchema,
-        clusterNetworkCIDR: ipBlockValidationSchema,
-        serviceNetworkCIDR: ipBlockValidationSchema,
-        apiVip: ipValidationSchema,
-        ingressVip: ipValidationSchema,
-        pullSecret: validJSONSchema,
-        sshPublicKey: sshPublicKeyValidationSchema,
-      }),
-    [clusterNames],
-  );
+  const [alerts, dispatchAlertsAction] = React.useReducer(alertsReducer, []);
+  const hostSubnets = getHostSubnets(cluster);
 
   const handleSubmit = async (
     values: ClusterConfigurationValues,
     formikActions: FormikHelpers<ClusterConfigurationValues>,
   ) => {
-    const { submitType, ...params } = values;
-
+    // async validation for cluster name - run only on submit
     try {
+      const { data: clusters } = await getClusters();
+      const names = clusters.map((c) => c.name).filter((n) => n !== cluster.name);
+      if (names.includes(values.name)) {
+        return formikActions.setFieldError('name', `Name "${values.name}" is already taken.`);
+      }
+    } catch (e) {
+      console.error('Failed to perform unique cluster name validation.', e);
+    }
+
+    // update the cluster configuration
+    try {
+      let params = _.omit(values, ['hostSubnet', 'isPullSecretEdit']);
+      if (!values.isPullSecretEdit) {
+        params = _.omit(params, ['pullSecret']);
+      }
       const { data } = await patchCluster(cluster.id, params);
+      formikActions.resetForm({ values: getInitialValues(data) });
       dispatch(updateCluster(data));
     } catch (e) {
       handleApiError<ClusterUpdateParams>(e, () =>
-        formikActions.setStatus({ error: 'Failed to update the cluster.' }),
+        dispatchAlertsAction(
+          addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),
+        ),
       );
     }
-
-    if (submitType === 'install') {
-      try {
-        const { data } = await postInstallCluster(cluster.id);
-        dispatch(updateCluster(data));
-      } catch (e) {
-        handleApiError(e, () =>
-          formikActions.setStatus({ error: 'Failed to install the cluster.' }),
-        );
-      }
-    }
   };
+
+  const handleClusterInstall = async () => {
+    setIsStartingInstallation(true);
+    try {
+      const { data } = await postInstallCluster(cluster.id);
+      dispatch(updateCluster(data));
+    } catch (e) {
+      handleApiError(e, () =>
+        dispatchAlertsAction(
+          addAlert({
+            title: 'Failed to start cluster installation',
+            message: getErrorMessage(e),
+          }),
+        ),
+      );
+    }
+    setIsStartingInstallation(false);
+  };
+
+  const clusterErrors = React.useMemo(() => validateCluster(cluster), [cluster]);
+  const initialValues = getInitialValues(cluster);
 
   return (
     <Formik
       initialValues={initialValues}
-      initialStatus={{ error: null }}
-      validationSchema={validationSchema}
+      validationSchema={validationSchema(hostSubnets)}
       onSubmit={handleSubmit}
+      initialTouched={_.mapValues(initialValues, () => true)}
+      validateOnMount
     >
       {({
-        setStatus,
         isSubmitting,
         isValid,
+        dirty,
         submitForm,
-        status,
+        resetForm,
         setFieldValue,
         values,
+        errors,
       }: FormikProps<ClusterConfigurationValues>) => {
-        const handleSubmit = (e: React.MouseEvent) => {
-          setFieldValue('submitType', (e.target as HTMLButtonElement).name);
-          submitForm();
+        if (hostSubnets.length && !hostSubnets.find((hn) => hn.humanized === values.hostSubnet)) {
+          setFieldValue(
+            'hostSubnet',
+            findMatchingSubnet(cluster.ingressVip, cluster.apiVip, hostSubnets),
+          );
+        }
+
+        const onPullSecretToggle = (isHidden: boolean) => {
+          if (isHidden) {
+            setFieldValue('isPullSecretEdit', false, false);
+          } else {
+            setFieldValue('isPullSecretEdit', true, false);
+            setFieldValue('pullSecret', '', false);
+          }
         };
 
         return (
           <>
-            <PageSection variant={PageSectionVariants.light}>
-              <Breadcrumb>
-                <BreadcrumbItem>
-                  <Link to="/clusters">Clusters</Link>
-                </BreadcrumbItem>
-                <BreadcrumbItem isActive>{cluster.name}</BreadcrumbItem>
-              </Breadcrumb>
-            </PageSection>
+            <ClusterBreadcrumbs clusterName={cluster.name} />
             <PageSection variant={PageSectionVariants.light} isMain>
               <Form>
-                <Grid gutter="md">
+                <Grid hasGutter>
                   <GridItem span={12} lg={10} xl={6}>
                     {/* TODO(jtomasek): remove this if we're not putting full width content here (e.g. hosts table)*/}
                     <GridGap>
@@ -164,7 +189,7 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
                       </TextContent>
                       <InputField label="Cluster Name" name="name" isRequired />
                       <InputField
-                        label="Base DNS domain"
+                        label="Base DNS Domain"
                         name="baseDnsDomain"
                         helperText="The base domain of the cluster. All DNS records must be sub-domains of this base and include the cluster name."
                         isRequired
@@ -176,46 +201,17 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
                   </GridItem>
                   <GridItem span={12} lg={10} xl={6}>
                     <GridGap>
-                      <TextContent>
-                        <Text component="h2">Networking</Text>
-                      </TextContent>
-                      <InputField
-                        name="clusterNetworkCIDR"
-                        label="Cluster Network CIDR"
-                        helperText="IP address block from which Pod IPs are allocated This block must not overlap with existing physical networks. These IP addresses are used for the Pod network, and if you need to access the Pods from an external network, configure load balancers and routers to manage the traffic."
-                        isRequired
-                      />
-                      <InputField
-                        name="clusterNetworkHostPrefix"
-                        label="Cluster Network Host Prefix"
-                        type={TextInputTypes.number}
-                        helperText="The subnet prefix length to assign to each individual node. For example, if Cluster Network Host Prefix is set to 23, then each node is assigned a /23 subnet out of the given cidr (clusterNetworkCIDR), which allows for 510 (2^(32 - 23) - 2) pod IPs addresses. If you are required to provide access to nodes from an external network, configure load balancers and routers to manage the traffic."
-                        isRequired
-                      />
-                      <InputField
-                        name="serviceNetworkCIDR"
-                        label="Service Network CIDR"
-                        helperText="The IP address pool to use for service IP addresses. You can enter only one IP address pool. If you need to access the services from an external network, configure load balancers and routers to manage the traffic."
-                        isRequired
-                      />
-                      <InputField
-                        label="API Virtual IP"
-                        name="apiVip"
-                        helperText="Virtual IP used to reach the OpenShift cluster API."
-                        isRequired
-                      />
-                      <InputField
-                        name="ingressVip"
-                        label="Ingress Virtual IP"
-                        helperText="Virtual IP used for cluster ingress traffic."
-                        isRequired
-                      />
+                      <NetworkConfiguration hostSubnets={hostSubnets} />
                       <TextContent>
                         <Text component="h2">Security</Text>
                       </TextContent>
-                      <TextAreaField
+                      <TextAreaSecretField
                         name="pullSecret"
                         label="Pull Secret"
+                        isSet={cluster.pullSecretSet}
+                        isEdit={values.isPullSecretEdit}
+                        onToggle={onPullSecretToggle}
+                        helperTextHidden="The pull secret is already set and its value will not be shown for security reasons."
                         helperText={
                           <>
                             The pull secret obtained from the Pull Secret page on the{' '}
@@ -237,39 +233,51 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
                         name="sshPublicKey"
                         label="SSH Public Key"
                         helperText={sshPublicKeyHelperText}
-                        isRequired
                       />
                     </GridGap>
                   </GridItem>
                 </Grid>
               </Form>
             </PageSection>
-            <AlertsSection>
-              {status.error && (
-                <Alert
-                  variant={AlertVariant.danger}
-                  title={status.error}
-                  action={<AlertActionCloseButton onClose={() => setStatus({ error: null })} />}
-                />
-              )}
-            </AlertsSection>
-            <ClusterToolbar>
+            <AlertsSection
+              alerts={alerts}
+              onClose={(alert: AlertProps) => dispatchAlertsAction(removeAlert(alert.key))}
+            />
+            <ClusterToolbar
+              validationSection={
+                isValidationSectionOpen ? (
+                  <ClusterValidationSection
+                    cluster={cluster}
+                    dirty={dirty}
+                    formErrors={errors}
+                    onClose={() => setIsValidationSectionOpen(false)}
+                  />
+                ) : null
+              }
+            >
               <ToolbarButton
                 variant={ButtonVariant.primary}
                 name="install"
-                onClick={handleSubmit}
-                isDisabled={isSubmitting || !isValid}
+                onClick={handleClusterInstall}
+                isDisabled={isStartingInstallation || !isValid || dirty || !!clusterErrors.length}
               >
-                Install cluster
+                Install Cluster
               </ToolbarButton>
               <ToolbarButton
                 type="submit"
                 name="save"
                 variant={ButtonVariant.secondary}
-                isDisabled={isSubmitting || !isValid}
-                onClick={handleSubmit}
+                isDisabled={isSubmitting || !isValid || !dirty}
+                onClick={submitForm}
               >
-                Save Draft
+                Validate & Save Changes
+              </ToolbarButton>
+              <ToolbarButton
+                variant={ButtonVariant.secondary}
+                isDisabled={isSubmitting || !dirty}
+                onClick={() => resetForm()}
+              >
+                Discard Changes
               </ToolbarButton>
               <ToolbarButton
                 variant={ButtonVariant.link}
@@ -279,15 +287,47 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
               </ToolbarButton>
               {isSubmitting && (
                 <ToolbarText component={TextVariants.small}>
-                  <Spinner size="sm" />{' '}
-                  {values.submitType === 'save' ? 'Saving...' : 'Starting installation...'}
+                  <Spinner size="sm" /> Saving changes...
                 </ToolbarText>
               )}
-              {!isValid && (
+              {isStartingInstallation && (
                 <ToolbarText component={TextVariants.small}>
-                  <ExclamationCircleIcon color={dangerColor.value} /> There are validation errors.
+                  <Spinner size="sm" /> Starting installation...
                 </ToolbarText>
               )}
+              <ToolbarText component={TextVariants.small}>
+                {!clusterErrors.length &&
+                !Object.keys(errors).length &&
+                !dirty &&
+                cluster.status === 'ready' ? (
+                  <>
+                    <CheckCircleIcon color={successColor.value} /> The cluster is ready to be
+                    installed.
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      variant={ButtonVariant.link}
+                      onClick={() => setIsValidationSectionOpen(!isValidationSectionOpen)}
+                      isInline
+                    >
+                      <WarningTriangleIcon color={warningColor.value} />{' '}
+                      <small>The cluster is not ready to be installed yet</small>
+                    </Button>
+                  </>
+                )}
+              </ToolbarText>
+              <ToolbarSecondaryGroup>
+                <EventsModalButton
+                  entityKind="cluster"
+                  entityId={cluster.id}
+                  title="Cluster Events"
+                  variant={ButtonVariant.link}
+                  style={{ textAlign: 'right' }}
+                >
+                  View Cluster Events History
+                </EventsModalButton>
+              </ToolbarSecondaryGroup>
             </ClusterToolbar>
           </>
         );

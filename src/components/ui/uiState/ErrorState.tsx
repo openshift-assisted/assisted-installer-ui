@@ -5,11 +5,11 @@ import {
   EmptyStateBody,
   Bullseye,
   EmptyStateIcon,
-  IconProps,
   EmptyStateVariant,
   Button,
   ButtonVariant,
   EmptyStateSecondaryActions,
+  EmptyStateIconProps,
 } from '@patternfly/react-core';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import { global_danger_color_200 as globalDangerColor200 } from '@patternfly/react-tokens';
@@ -18,7 +18,7 @@ type Props = {
   title?: string;
   content?: React.ReactNode;
   fetchData?: () => void;
-  icon?: string | React.FC<IconProps>;
+  icon?: EmptyStateIconProps['icon'];
   iconColor?: string;
   actions?: React.ReactNode[];
 };
@@ -49,7 +49,7 @@ const ErrorState: React.FC<Props> = ({
     <Bullseye>
       <EmptyState variant={EmptyStateVariant.small}>
         <EmptyStateIcon icon={icon} color={iconColor} />
-        <Title size="lg">{title}</Title>
+        <Title headingLevel="h2">{title}</Title>
         <EmptyStateBody>{content || defaultContent}</EmptyStateBody>
         {actions && <EmptyStateSecondaryActions>{actions}</EmptyStateSecondaryActions>}
       </EmptyState>

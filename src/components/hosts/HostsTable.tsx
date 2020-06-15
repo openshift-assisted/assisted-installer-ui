@@ -18,19 +18,22 @@ import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Tabl
 import { AlertVariant } from '@patternfly/react-core';
 import { EmptyState } from '../ui/uiState';
 import { getColSpanRow, rowSorter } from '../ui/table/utils';
-import { Host, Cluster } from '../../api/types';
-import { enableClusterHost, disableClusterHost } from '../../api/clusters';
+import { Host, Cluster, Inventory } from '../../api/types';
+import { enableClusterHost, disableClusterHost, deleteClusterHost } from '../../api/clusters';
 import { Alerts, Alert } from '../ui/Alerts';
-import { getHostRowHardwareInfo, getHardwareInfo, getHumanizedTime } from './hardwareInfo';
-import { DiscoveryImageModalButton } from './discoveryImageModal';
+import { EventsModal } from '../ui/eventsModal';
+import { getHostRowHardwareInfo, getDateTimeCell } from './hardwareInfo';
+import { DiscoveryImageModalButton } from '../clusterConfiguration/discoveryImageModal';
 import HostStatus from './HostStatus';
 import { HostDetail } from './HostRowDetail';
-import { RoleDropdown } from './RoleDropdown';
 import { forceReload } from '../../features/clusters/currentClusterSlice';
-import { handleApiError } from '../../api/utils';
+import { handleApiError, stringToJSON } from '../../api/utils';
 import sortable from '../ui/table/sortable';
+import RoleCell, { getHostRole } from './RoleCell';
+import { DASH } from '../constants';
 
 import './HostsTable.css';
+import DeleteHostModal from './DeleteHostModal';
 
 type HostsTableProps = {
   cluster: Cluster;
@@ -40,14 +43,14 @@ type OpenRows = {
   [id: string]: boolean;
 };
 
+type HostToDelete = {
+  id: string;
+  hostname: string;
+};
+
 const columns = [
-  {
-    title: 'ID',
-    cellFormatters: [expandable],
-    transforms: [sortable],
-  },
+  { title: 'Hostname', transforms: [sortable], cellFormatters: [expandable] },
   { title: 'Role', transforms: [sortable] },
-  { title: 'Serial Number', transforms: [sortable] },
   { title: 'Status', transforms: [sortable] },
   { title: 'Created At', transforms: [sortable] },
   { title: 'CPU Cores', transforms: [sortable] }, // cores per machine (sockets x cores)
@@ -56,62 +59,61 @@ const columns = [
 ];
 
 const hostToHostTableRow = (openRows: OpenRows) => (host: Host): IRow => {
-  const { id, status, statusInfo, role, createdAt, hardwareInfo = '' } = host;
-  const hwInfo = getHardwareInfo(hardwareInfo) || {};
-  const { cores, memory, disk } = getHostRowHardwareInfo(hwInfo);
-  const roleCellTitle = ['installing', 'installed', 'error'].includes(status) ? (
-    role
-  ) : (
-    <RoleDropdown role={role} host={host} />
-  );
+  const { id, status, createdAt, inventory: inventoryString = '' } = host;
+  const inventory = stringToJSON<Inventory>(inventoryString) || {};
+  const { cores, memory, disk } = getHostRowHardwareInfo(inventory);
 
   return [
     {
       // visible row
       isOpen: !!openRows[id],
       cells: [
-        id,
+        inventory.hostname || { title: DASH, sortableValue: '' },
         {
-          title: roleCellTitle,
-          sortableValue: role,
+          title: <RoleCell host={host} />,
+          sortableValue: getHostRole(host),
         },
-        id, // TODO(mlibra): should be serial number
         {
-          title: <HostStatus status={status} statusInfo={statusInfo} />,
+          title: <HostStatus host={host} />,
           sortableValue: status,
         },
-        getHumanizedTime(createdAt),
+        getDateTimeCell(createdAt),
         cores,
         memory,
         disk,
       ],
       extraData: host,
+      inventory,
+      key: `${host.id}-master`,
     },
     {
       // expandable detail
       // parent will be set after sorting
       fullWidth: true,
-      cells: [{ title: <HostDetail key={id} hwInfo={hwInfo} /> }],
+      cells: [{ title: <HostDetail key={id} inventory={inventory} /> }],
+      key: `${host.id}-detail`,
     },
   ];
 };
 
-const HostsTableEmptyState: React.FC = () => (
+const HostsTableEmptyState: React.FC<{ cluster: Cluster }> = ({ cluster }) => (
   <EmptyState
     icon={ConnectedIcon}
     title="Waiting for hosts..."
-    content="Boot the discovery ISO on a hardware that should become part of this bare metal cluster. After booting the ISO the hosts get inspected and register to the cluster. At least 3 bare metal hosts are required to form the cluster."
-    primaryAction={<DiscoveryImageModalButton />}
+    content="Boot the discovery ISO on hardware that should become part of this bare metal cluster. Hosts may take a few minutes after to appear here after booting."
+    primaryAction={<DiscoveryImageModalButton imageInfo={cluster.imageInfo} />}
   />
 );
 
-const rowKey = ({ rowData }: ExtraParamsType) => rowData?.id?.title;
+const rowKey = ({ rowData }: ExtraParamsType) => rowData?.key;
 
 const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
+  const [showEventsModal, setShowEventsModal] = React.useState<Host['id']>('');
   const [openRows, setOpenRows] = React.useState({} as OpenRows);
+  const [hostToDelete, setHostToDelete] = React.useState<HostToDelete>();
   const [alerts, setAlerts] = React.useState([] as Alert[]);
   const [sortBy, setSortBy] = React.useState({
-    index: 2, // Role-column
+    index: 1, // Hostname-column
     direction: SortByDirection.asc,
   } as ISortBy);
   const dispatch = useDispatch();
@@ -134,13 +136,13 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
     if (hostRows.length) {
       return hostRows;
     }
-    return getColSpanRow(HostsTableEmptyState, columns.length);
-  }, [hostRows]);
+    return getColSpanRow(<HostsTableEmptyState cluster={cluster} />, columns.length);
+  }, [hostRows, cluster]);
 
   const onCollapse = React.useCallback(
     (_event, rowKey) => {
-      const cells = hostRows[rowKey].cells;
-      const id = (cells && cells[0]) as string;
+      const host = hostRows[rowKey].extraData;
+      const id = (host && host.id) as string;
       if (id) {
         setOpenRows(Object.assign({}, openRows, { [id]: !openRows[id] }));
       }
@@ -164,8 +166,26 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
     [alerts, setAlerts],
   );
 
+  const onDeleteHost = React.useCallback(
+    async (hostId) => {
+      try {
+        await deleteClusterHost(cluster.id, hostId);
+        dispatch(forceReload());
+      } catch (e) {
+        return handleApiError(e, () =>
+          addAlert({
+            key: `delete-${hostId}`,
+            variant: AlertVariant.danger,
+            text: `Failed to delete host ${hostId}`,
+          }),
+        );
+      }
+    },
+    [cluster.id, dispatch, addAlert],
+  );
+
   const onHostEnable = React.useCallback(
-    (_event: React.MouseEvent, _rowIndex: number, rowData: IRowData) => {
+    (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
       const hostId = rowData.extraData.id;
       enableClusterHost(cluster.id, hostId)
         .then(() => {
@@ -185,7 +205,7 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
   );
 
   const onHostDisable = React.useCallback(
-    (_event: React.MouseEvent, _rowIndex: number, rowData: IRowData) => {
+    (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
       const hostId = rowData.extraData.id;
       disableClusterHost(cluster.id, hostId)
         .then(() => {
@@ -202,6 +222,14 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
         });
     },
     [cluster.id, dispatch, addAlert],
+  );
+
+  const onViewHostEvents = React.useCallback(
+    (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
+      const hostId = rowData.extraData.id;
+      setShowEventsModal(hostId);
+    },
+    [],
   );
 
   const actionResolver = React.useCallback(
@@ -225,10 +253,24 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
           onClick: onHostDisable,
         });
       }
+      actions.push({
+        title: 'View Host Events History',
+        onClick: onViewHostEvents,
+      });
+      if (!['installing', 'installing-in-progress', 'error', 'installed'].includes(host.status)) {
+        actions.push({
+          title: 'Delete',
+          onClick: (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
+            const hostId = rowData.extraData.id;
+            const hostname = rowData.inventory.hostname;
+            setHostToDelete({ id: hostId, hostname });
+          },
+        });
+      }
 
       return actions;
     },
-    [onHostEnable, onHostDisable],
+    [onHostEnable, onHostDisable, onViewHostEvents],
   );
 
   const onSort: OnSort = React.useCallback(
@@ -258,6 +300,23 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
         <TableHeader />
         <TableBody rowKey={rowKey} />
       </Table>
+      <EventsModal
+        title="Host Events"
+        entityKind="host"
+        entityId={showEventsModal}
+        onClose={() => setShowEventsModal('')}
+        isOpen={!!showEventsModal}
+      />
+      <DeleteHostModal
+        hostname={hostToDelete?.hostname}
+        onClose={() => setHostToDelete(undefined)}
+        isOpen={!!hostToDelete}
+        onDelete={() => {
+          onDeleteHost(hostToDelete?.id);
+          setHostToDelete(undefined);
+        }}
+      />
+      {/*TODO(jtomasek): Remove this and replace alerts below hosts table with global alerts*/}
       <Alerts alerts={alerts} className="host-table-alerts" />
     </>
   );

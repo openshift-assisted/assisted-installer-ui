@@ -12,6 +12,7 @@ import {
   AlertVariant,
   Alert,
   AlertActionCloseButton,
+  ModalVariant,
 } from '@patternfly/react-core';
 import { saveAs } from 'file-saver';
 import { ToolbarButton } from '../ui/Toolbar';
@@ -20,16 +21,18 @@ import { Formik, FormikHelpers } from 'formik';
 import { createClusterDownloadsImage, getClusterDownloadsImageUrl } from '../../api/clusters';
 import { useParams } from 'react-router-dom';
 import { LoadingState } from '../ui/uiState';
-import { handleApiError } from '../../api/utils';
-import { ImageCreateParams } from '../../api/types';
+import { handleApiError, getErrorMessage } from '../../api/utils';
+import { ImageCreateParams, ImageInfo } from '../../api/types';
 import { sshPublicKeyValidationSchema } from '../ui/formik/validationSchemas';
 
 type DiscoveryImageModalButtonProps = {
   ButtonComponent?: typeof Button | typeof ToolbarButton;
+  imageInfo: ImageInfo;
 };
 
 export const DiscoveryImageModalButton: React.FC<DiscoveryImageModalButtonProps> = ({
   ButtonComponent = Button,
+  imageInfo,
 }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
@@ -40,23 +43,30 @@ export const DiscoveryImageModalButton: React.FC<DiscoveryImageModalButtonProps>
       <ButtonComponent variant={ButtonVariant.primary} onClick={() => setIsModalOpen(true)}>
         Download discovery ISO
       </ButtonComponent>
-      {isModalOpen && <DiscoveryImageModal closeModal={closeModal} />}
+      {isModalOpen && <DiscoveryImageModal closeModal={closeModal} imageInfo={imageInfo} />}
     </>
   );
 };
 
 const validationSchema = Yup.object().shape({
-  proxyURL: Yup.string().url('Provide a valid URL.'),
-  sshPublicKey: sshPublicKeyValidationSchema,
+  proxyUrl: Yup.string().url('Provide a valid URL.'),
+  sshPublicKey: sshPublicKeyValidationSchema.required(
+    'SSH key is required for debugging the host registration.',
+  ),
 });
 
 type DiscoveryImageModalProps = {
   closeModal: () => void;
+  imageInfo: ImageInfo;
 };
 
-export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({ closeModal }) => {
+export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({
+  closeModal,
+  imageInfo,
+}) => {
   const cancelSourceRef = React.useRef<CancelTokenSource>();
   const { clusterId } = useParams();
+  const { proxyUrl, sshPublicKey } = imageInfo;
 
   React.useEffect(() => {
     cancelSourceRef.current = Axios.CancelToken.source();
@@ -69,16 +79,19 @@ export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({ closeM
   ) => {
     if (clusterId) {
       try {
-        const {
-          data: { imageId },
-        } = await createClusterDownloadsImage(clusterId, values, {
+        await createClusterDownloadsImage(clusterId, values, {
           cancelToken: cancelSourceRef.current?.token,
         });
-        saveAs(getClusterDownloadsImageUrl(clusterId, imageId), `discovery-image-${clusterId}.iso`);
+        saveAs(getClusterDownloadsImageUrl(clusterId), `discovery-image-${clusterId}.iso`);
         closeModal();
       } catch (error) {
         handleApiError<ImageCreateParams>(error, () => {
-          formikActions.setStatus({ error: 'Failed to download the discovery Image' });
+          formikActions.setStatus({
+            error: {
+              title: 'Failed to download the discovery Image',
+              message: getErrorMessage(error),
+            },
+          });
         });
       }
     }
@@ -89,11 +102,10 @@ export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({ closeM
       title="Download discovery ISO"
       isOpen={true}
       onClose={closeModal}
-      isFooterLeftAligned
-      isSmall
+      variant={ModalVariant.small}
     >
       <Formik
-        initialValues={{ proxyURL: '', sshPublicKey: '' } as ImageCreateParams}
+        initialValues={{ proxyUrl, sshPublicKey } as ImageCreateParams}
         initialStatus={{ error: null }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
@@ -114,34 +126,39 @@ export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({ closeM
                 {status.error && (
                   <Alert
                     variant={AlertVariant.danger}
-                    title={status.error}
-                    action={<AlertActionCloseButton onClose={() => setStatus({ error: null })} />}
+                    title={status.error.title}
+                    actionClose={
+                      <AlertActionCloseButton onClose={() => setStatus({ error: null })} />
+                    }
                     isInline
-                  />
+                  >
+                    {status.error.message}
+                  </Alert>
                 )}
                 <TextContent>
-                  <Text component="small">
+                  <Text component="p">
                     Hosts must be connected to the internet to form a cluster using this installer.
-                    If hosts are behind a firewall that requires use of a proxy, provide proxy URL
-                    below.
+                    If hosts are behind a firewall that requires the use of a proxy, provide the
+                    proxy URL below.
                   </Text>
-                  <Text component="small">
+                  <Text component="p">
                     Each host will need a valid IP address assigned by a DHCP server with DNS
                     records that fully resolve.
                   </Text>
                 </TextContent>
                 <InputField
                   label="HTTP Proxy URL"
-                  name="proxyURL"
+                  name="proxyUrl"
                   placeholder="http://<user>:<password>@<ipaddr>:<port>"
                   helperText="HTTP proxy URL that agents should use to access the discovery service"
                 />
                 <TextAreaField
                   label="SSH public key"
                   name="sshPublicKey"
-                  helperText="SSH public key for debugging the installation"
+                  helperText="SSH public key for debugging the host registration/installation"
+                  isRequired
                 />
-                <ModalBoxFooter isLeftAligned>
+                <ModalBoxFooter>
                   <Button key="submit" type="submit">
                     Download Discovery ISO
                   </Button>

@@ -1,13 +1,15 @@
 import React from 'react';
 import { createSelector } from 'reselect';
 
-import { Link } from 'react-router-dom';
-import { IRow } from '@patternfly/react-table';
 import { ClusterTableRows } from '../types/clusters';
 import { Cluster } from '../api/types';
 import { ResourceUIState } from '../types';
+import { Link } from 'react-router-dom';
+import { IRow, IRowData } from '@patternfly/react-table';
 import { RootState } from '../store/rootReducer';
 import { HumanizedSortable } from '../components/ui/table/utils';
+import ClusterStatus, { getClusterStatusText } from '../components/clusters/ClusterStatus';
+import { DASH } from '../components/constants';
 
 const selectClusters = (state: RootState) => state.clusters.data;
 const clustersUIState = (state: RootState) => state.clusters.uiState;
@@ -22,7 +24,7 @@ export const selectClustersUIState = createSelector(
 );
 
 const clusterToClusterTableRow = (cluster: Cluster): IRow => {
-  const { id, name, status, hosts, openshiftVersion } = cluster;
+  const { id, name, hosts, openshiftVersion, baseDnsDomain } = cluster;
   const hostsCount = hosts ? hosts.length : 0;
 
   return {
@@ -35,16 +37,26 @@ const clusterToClusterTableRow = (cluster: Cluster): IRow => {
         ),
         sortableValue: name,
       } as HumanizedSortable,
-      id,
+      baseDnsDomain || DASH,
       openshiftVersion,
-      status,
+      {
+        title: <ClusterStatus cluster={cluster} />,
+        sortableValue: getClusterStatusText(cluster),
+      } as HumanizedSortable,
       {
         title: hostsCount.toString(),
         sortableValue: hostsCount,
       } as HumanizedSortable,
     ],
+    props: {
+      name,
+      id,
+    },
   };
 };
+
+export const getClusterTableStatusCell = (rowData: IRowData) =>
+  rowData?.cells?.[3] as HumanizedSortable;
 
 export const selectClusterTableRows = createSelector(
   selectClusters,

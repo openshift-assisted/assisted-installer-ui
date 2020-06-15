@@ -25,3 +25,29 @@ export const handleApiError = <T>(error: AxiosError<T>, onError?: OnError) => {
     if (onError) return onError(error);
   }
 };
+
+export const getErrorMessage = (error: AxiosError) =>
+  error.response?.data?.reason || error.response?.data?.message;
+
+const toCamelCase = (str: string): string =>
+  str.replace(/([-_][a-z])/g, (group) => group.toUpperCase().replace('_', ''));
+
+export const stringToJSON = <T>(string: string | undefined): T | undefined => {
+  if (string) {
+    try {
+      const camelCased = string.replace(
+        /"([\w]+)":/g,
+        (_match, offset) => `"${toCamelCase(offset)}":`,
+      );
+      const json = JSON.parse(camelCased);
+      return json;
+    } catch (e) {
+      console.error('Failed to parse api string', e, string);
+    }
+  } else {
+    console.info('Empty api string received.');
+  }
+  return undefined;
+};
+
+export const removeProtocolFromURL = (url = '') => url.replace(/^(http|https):\/\//, '');

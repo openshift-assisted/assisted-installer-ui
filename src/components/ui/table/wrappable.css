@@ -1,0 +1,3 @@
+.table-no-padding {
+  --pf-c-table-cell--PaddingLeft: 0 !important;
+};
