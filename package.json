@@ -20,7 +20,7 @@
     "installPeer": "node build-tool/peerDep.js",
     "test": "jest",
     "test:dev": "jest --watch",
-    "lint": "eslint src/**/*.{tsx,ts,js,jsx} --color --fix",
+    "lint": "eslint src/**/*.{tsx,ts} --color --fix",
     "prettier": "prettier --write '**/*.{js,jsx,ts,tsx,json,md,scss,yaml,yml}'",
     "stylelint": "stylelint src/**/*.{ts,tsx,jsx,js,css,scss,less} --fix",
     "commit": "git-cz",
