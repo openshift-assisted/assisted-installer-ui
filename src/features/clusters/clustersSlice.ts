@@ -1,5 +1,5 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getClusters, deleteCluster } from '../../api/clusters';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { getClusters } from '../../api/clusters';
 import { Cluster } from '../../api/types';
 import { handleApiError } from '../../api/utils';
 import { ResourceUIState } from '../../types';
@@ -13,18 +13,6 @@ export const fetchClustersAsync = createAsyncThunk('clusters/fetchClustersAsync'
   }
 });
 
-export const deleteClusterAsync = createAsyncThunk(
-  'clusters/deleteClusterAsync',
-  async (id: string) => {
-    try {
-      await deleteCluster(id);
-      return id;
-    } catch (e) {
-      return handleApiError(e, () => Promise.reject('Failed to delete cluster'));
-    }
-  },
-);
-
 type ClustersStateSlice = {
   data: Cluster[];
   uiState: ResourceUIState;
@@ -35,7 +23,12 @@ const initialState: ClustersStateSlice = { data: [], uiState: ResourceUIState.LO
 export const clustersSlice = createSlice({
   initialState,
   name: 'clusters',
-  reducers: {},
+  reducers: {
+    deleteCluster: (state, action: PayloadAction<Cluster['id']>) => ({
+      ...state,
+      data: state.data.filter((item: Cluster) => item.id !== action.payload),
+    }),
+  },
   extraReducers: (builder) => {
     const { LOADED, LOADING, RELOADING, ERROR } = ResourceUIState;
     builder
@@ -51,12 +44,9 @@ export const clustersSlice = createSlice({
       .addCase(fetchClustersAsync.rejected, (state) => ({
         ...state,
         uiState: ERROR,
-      }))
-      .addCase(deleteClusterAsync.fulfilled, (state, action) => ({
-        ...state,
-        data: state.data.filter((item: Cluster) => item.id !== action.payload),
       }));
   },
 });
 
+export const { deleteCluster } = clustersSlice.actions;
 export default clustersSlice.reducer;

@@ -31,9 +31,9 @@ const reducer = <T>(state: State<T>, { type, payload }: Action<T>) => {
     case 'SUCCESS':
       if (payload instanceof Array && !payload.length) {
         return { ...state, uiState: ResourceUIState.EMPTY, data: payload };
+      } else {
+        return { ...state, uiState: ResourceUIState.LOADED, data: payload };
       }
-      return { ...state, uiState: ResourceUIState.LOADED, data: payload };
-
     case 'ERROR':
       return { ...state, uiState: ResourceUIState.ERROR };
     default:
@@ -67,11 +67,7 @@ const useApi = <Data, P>(
   params?: P,
   config?: Config,
 ): [State<Data>, (params?: P) => void] => {
-  const cfg = {
-    manual: false,
-    initialUIState: ResourceUIState.LOADING,
-    ...config,
-  };
+  const cfg = { manual: false, initialUIState: ResourceUIState.LOADING, ...config };
 
   const [state, dispatch] = React.useReducer(reducer, createInitialState<Data>(cfg));
 

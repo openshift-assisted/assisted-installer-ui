@@ -5,6 +5,7 @@ import {
   Host,
   ClusterUpdateParams,
   ImageCreateParams,
+  Credentials,
 } from './types';
 import client from './axiosClient';
 import { API_ROOT } from '.';
@@ -32,22 +33,27 @@ export const enableClusterHost = (clusterId: string, hostId: string): AxiosPromi
 export const disableClusterHost = (clusterId: string, hostId: string): AxiosPromise<void> =>
   client.delete(`${API_ROOT}/clusters/${clusterId}/hosts/${hostId}/actions/enable`);
 
+export const deleteClusterHost = (clusterId: string, hostId: string): AxiosPromise<void> =>
+  client.delete(`${API_ROOT}/clusters/${clusterId}/hosts/${hostId}`);
+
 export const postInstallCluster = (clusterId: string): AxiosPromise<Cluster> =>
   client.post(`${API_ROOT}/clusters/${clusterId}/actions/install`);
 
-type ImageCreateResponse = {
-  imageId: string;
-};
 export const createClusterDownloadsImage = (
   id: string,
   params: ImageCreateParams,
   axiosOptions: AxiosRequestConfig,
-): AxiosPromise<ImageCreateResponse> =>
-  client.post<ImageCreateResponse>(
-    `${API_ROOT}/clusters/${id}/downloads/image`,
-    params,
-    axiosOptions,
-  );
+): AxiosPromise<void> =>
+  client.post(`${API_ROOT}/clusters/${id}/downloads/image`, params, axiosOptions);
 
-export const getClusterDownloadsImageUrl = (clusterId: string, imageId: string) =>
-  `${API_ROOT}/clusters/${clusterId}/downloads/image?image_id=${imageId}`;
+export const getClusterDownloadsImageUrl = (clusterId: string) =>
+  `${API_ROOT}/clusters/${clusterId}/downloads/image`;
+
+export const getClusterFileURL = (clusterID: string, fileName: string) =>
+  `${API_ROOT}/clusters/${clusterID}/downloads/files?file_name=${fileName}`;
+
+export const getClusterKubeconfigURL = (clusterID: string) =>
+  `${API_ROOT}/clusters/${clusterID}/downloads/kubeconfig`;
+
+export const getClusterCredentials = (clusterID: string): AxiosPromise<Credentials> =>
+  client.get(`${API_ROOT}/clusters/${clusterID}/credentials`);

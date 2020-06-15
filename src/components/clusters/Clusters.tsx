@@ -15,12 +15,21 @@ import { LoadingState, ErrorState, EmptyState } from '../ui/uiState';
 import { AddCircleOIcon } from '@patternfly/react-icons';
 import { ResourceUIState } from '../../types';
 import ClustersTable from './ClustersTable';
-import { deleteClusterAsync, fetchClustersAsync } from '../../features/clusters/clustersSlice';
+import { fetchClustersAsync, deleteCluster } from '../../features/clusters/clustersSlice';
+import { deleteCluster as ApiDeleteCluster } from '../../api/clusters';
 import { NewClusterModalButton, NewClusterModal } from './newClusterModal';
+import AlertsSection from '../ui/AlertsSection';
+import { handleApiError, getErrorMessage } from '../../api/utils';
+import alertsReducer, {
+  addAlert,
+  AlertProps,
+  removeAlert,
+} from '../../features/alerts/alertsSlice';
 
 const Clusters: React.FC = () => {
   const { LOADING, EMPTY, ERROR, RELOADING } = ResourceUIState;
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [alerts, dispatchAlertsAction] = React.useReducer(alertsReducer, []);
   const clusterRows = useSelector(selectClusterTableRows);
   const clustersUIState = useSelector(selectClustersUIState);
   const uiState = React.useRef(clustersUIState);
@@ -29,9 +38,24 @@ const Clusters: React.FC = () => {
   }
   const dispatch = useDispatch();
   const fetchClusters = React.useCallback(() => dispatch(fetchClustersAsync()), [dispatch]);
-  const deleteCluster = React.useCallback((clusterId) => dispatch(deleteClusterAsync(clusterId)), [
-    dispatch,
-  ]);
+  const deleteClusterAsync = React.useCallback(
+    async (clusterId) => {
+      try {
+        await ApiDeleteCluster(clusterId);
+        dispatch(deleteCluster(clusterId));
+      } catch (e) {
+        return handleApiError(e, () =>
+          dispatchAlertsAction(
+            addAlert({
+              title: 'Cluster could not be deleted',
+              message: getErrorMessage(e),
+            }),
+          ),
+        );
+      }
+    },
+    [dispatch],
+  );
 
   React.useEffect(() => {
     fetchClusters();
@@ -52,7 +76,7 @@ const Clusters: React.FC = () => {
     case ERROR:
       body = (
         <PageSection variant={PageSectionVariants.light} isMain>
-          <ErrorState title="Failed to fetch clusters." fetchData={fetchClusters} />;
+          <ErrorState title="Failed to fetch clusters." fetchData={fetchClusters} />
         </PageSection>
       );
       break;
@@ -78,8 +102,12 @@ const Clusters: React.FC = () => {
             </TextContent>
           </PageSection>
           <PageSection variant={PageSectionVariants.light} isMain>
-            <ClustersTable rows={clusterRows} deleteCluster={deleteCluster} />
+            <ClustersTable rows={clusterRows} deleteCluster={deleteClusterAsync} />
           </PageSection>
+          <AlertsSection
+            alerts={alerts}
+            onClose={(alert: AlertProps) => dispatchAlertsAction(removeAlert(alert.key))}
+          />
           <ClusterToolbar>
             <NewClusterModalButton onClick={openModal} ButtonComponent={ToolbarButton} />
             <ToolbarText component={TextVariants.small}>

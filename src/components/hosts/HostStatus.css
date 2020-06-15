@@ -1,0 +1,4 @@
+.host-status__button {
+  /* condensed table does not take button sizes into account */
+  font-size: var(--pf-c-table-cell--FontSize) !important;
+}

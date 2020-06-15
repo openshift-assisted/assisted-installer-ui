@@ -5,15 +5,15 @@ import {
   EmptyStateBody,
   Bullseye,
   EmptyStateIcon,
-  IconProps,
   EmptyStateSecondaryActions,
+  EmptyStateIconProps,
 } from '@patternfly/react-core';
 import { SearchIcon } from '@patternfly/react-icons';
 
 type Props = {
   title?: string;
   content?: React.ReactNode;
-  icon?: string | React.FC<IconProps>;
+  icon?: EmptyStateIconProps['icon'];
   primaryAction?: React.ReactNode;
   secondaryActions?: React.ReactNode[];
 };
@@ -28,7 +28,7 @@ const EmptyState: React.FC<Props> = ({
   <Bullseye>
     <PFEmptyState>
       <EmptyStateIcon icon={icon} />
-      <Title size="lg">{title}</Title>
+      <Title headingLevel="h2">{title}</Title>
       {content && <EmptyStateBody>{content}</EmptyStateBody>}
       {primaryAction}
       {secondaryActions && (

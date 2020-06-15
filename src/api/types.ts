@@ -37,7 +37,8 @@ export interface Cluster {
   /**
    * Version of the OpenShift cluster.
    */
-  openshiftVersion?: '4.4';
+  openshiftVersion?: '4.5';
+  imageInfo: ImageInfo;
   /**
    * Base domain of the cluster. All DNS records must be sub-domains of this base and include the cluster name.
    */
@@ -57,15 +58,15 @@ export interface Cluster {
   /**
    * Virtual IP used to reach the OpenShift cluster API.
    */
-  apiVip?: string; // hostname
+  apiVip?: string; // ipv4
   /**
-   * Virtual IP used internally by the cluster for automating internal DNS requirements.
+   * A CIDR that all hosts belonging to the cluster should have an interfaces with IP address that belongs to this CIDR. The apiVip belongs to this CIDR.
    */
-  dnsVip?: string; // hostname
+  machineNetworkCidr?: string; // ^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$
   /**
    * Virtual IP used for cluster ingress traffic.
    */
-  ingressVip?: string; // hostname
+  ingressVip?: string; // ipv4
   /**
    * The pull secret that obtained from the Pull Secret page on the Red Hat OpenShift Cluster Manager site.
    */
@@ -82,6 +83,10 @@ export interface Cluster {
    * Additional information pertaining to the status of the OpenShift cluster.
    */
   statusInfo: string;
+  /**
+   * The last time that the cluster status has been updated
+   */
+  statusUpdatedAt?: string; // date-time
   /**
    * Hosts that are associated with this cluster.
    */
@@ -102,6 +107,14 @@ export interface Cluster {
    * The time that this cluster completed installation.
    */
   installCompletedAt?: string; // date-time
+  /**
+   * List of host networks to be filled during query.
+   */
+  hostNetworks?: HostNetwork[];
+  /**
+   * True if the pull-secret has been added to the cluster
+   */
+  pullSecretSet?: boolean;
 }
 export interface ClusterCreateParams {
   /**
@@ -111,7 +124,7 @@ export interface ClusterCreateParams {
   /**
    * Version of the OpenShift cluster.
    */
-  openshiftVersion: '4.4';
+  openshiftVersion: '4.5';
   /**
    * Base domain of the cluster. All DNS records must be sub-domains of this base and include the cluster name.
    */
@@ -129,17 +142,9 @@ export interface ClusterCreateParams {
    */
   serviceNetworkCidr?: string; // ^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$
   /**
-   * Virtual IP used to reach the OpenShift cluster API.
-   */
-  apiVip?: string; // hostname
-  /**
-   * Virtual IP used internally by the cluster for automating internal DNS requirements.
-   */
-  dnsVip?: string; // hostname
-  /**
    * Virtual IP used for cluster ingress traffic.
    */
-  ingressVip?: string; // hostname
+  ingressVip?: string; // ipv4
   /**
    * The pull secret that obtained from the Pull Secret page on the Red Hat OpenShift Cluster Manager site.
    */
@@ -174,15 +179,11 @@ export interface ClusterUpdateParams {
   /**
    * Virtual IP used to reach the OpenShift cluster API.
    */
-  apiVip?: string; // hostname
-  /**
-   * Virtual IP used internally by the cluster for automating internal DNS requirements.
-   */
-  dnsVip?: string; // hostname
+  apiVip?: string; // ipv4
   /**
    * Virtual IP used for cluster ingress traffic.
    */
-  ingressVip?: string; // hostname
+  ingressVip?: string; // ipv4
   /**
    * The pull secret that obtained from the Pull Secret page on the Red Hat OpenShift Cluster Manager site.
    */
@@ -211,8 +212,8 @@ export interface ConnectivityCheckNic {
 export type ConnectivityCheckParams = ConnectivityCheckHost[];
 export interface ConnectivityRemoteHost {
   hostId?: string; // uuid
-  l2_connectivity?: L2Connectivity[];
-  l3_connectivity?: L3Connectivity[];
+  l2Connectivity?: L2Connectivity[];
+  l3Connectivity?: L3Connectivity[];
 }
 export interface ConnectivityReport {
   remoteHosts?: ConnectivityRemoteHost[];
@@ -231,6 +232,11 @@ export interface CpuDetails {
   threadsPerCore?: number;
   sockets?: number;
   cpuMhz?: number;
+}
+export interface Credentials {
+  username?: string;
+  password?: string;
+  consoleUrl?: string;
 }
 export interface DebugStep {
   command: string;
@@ -269,6 +275,19 @@ export interface Error {
    */
   reason: string;
 }
+export interface Event {
+  /**
+   * Unique identifier of the object this event relates to.
+   */
+  entityId: string; // uuid
+  message: string;
+  eventTime: string; // date-time
+  /**
+   * Unique identifier for the request that caused this event to occure
+   */
+  requestId?: string; // uuid
+}
+export type EventList = Event[];
 export interface Host {
   /**
    * Indicates the type of this object. Will be 'Host' if this is a complete object or 'HostLink' if it is just a link.
@@ -293,21 +312,35 @@ export interface Host {
     | 'insufficient'
     | 'disabled'
     | 'installing'
+    | 'installing-in-progress'
     | 'installed'
     | 'error';
   statusInfo: string;
-  connectivity?: ConnectivityReport;
+  /**
+   * The last time that the host status has been updated
+   */
+  statusUpdatedAt?: string; // date-time
+  connectivity?: string;
   hardwareInfo?: string;
+  inventory?: string;
   role?: 'undefined' | 'master' | 'worker';
   bootstrap?: boolean;
   updatedAt?: string; // date-time
   createdAt?: string; // date-time
+  /**
+   * The last time the host's agent communicated with the service.
+   */
+  checkedInAt?: string; // date-time
 }
 export interface HostCreateParams {
   hostId: string; // uuid
 }
 export type HostInstallProgressParams = string;
 export type HostList = Host[];
+export interface HostNetwork {
+  cidr?: string;
+  hostIds?: string /* uuid */[];
+}
 export interface ImageCreateParams {
   /**
    * The URL of the HTTP/S proxy that agents should use to access the discovery service
@@ -320,14 +353,28 @@ export interface ImageCreateParams {
    */
   sshPublicKey?: string;
 }
+export interface ImageInfo {
+  /**
+   * The URL of the HTTP/S proxy that agents should use to access the discovery service
+   * http://\<user\>:\<password\>@\<server\>:\<port\>/
+   *
+   */
+  proxyUrl?: string;
+  /**
+   * SSH public key for debugging the installation
+   */
+  sshPublicKey?: string;
+  createdAt?: string; // date-time
+}
+export type IngressCertParams = string;
 export interface Interface {
-  ipv6_addresses?: string[];
+  ipv6Addresses?: string[];
   vendor?: string;
   name?: string;
   hasCarrier?: boolean;
   product?: string;
   mtu?: number;
-  ipv4_addresses?: string[];
+  ipv4Addresses?: string[];
   biosdevname?: string;
   clientId?: string;
   macAddress?: string;

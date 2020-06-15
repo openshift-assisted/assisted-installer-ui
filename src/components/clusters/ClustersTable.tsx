@@ -8,13 +8,17 @@ import {
   ISortBy,
   OnSort,
   IRow,
+  IActionsResolver,
 } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base/types';
 import { ClusterTableRows } from '../../types/clusters';
 import { rowSorter, HumanizedSortable } from '../ui/table/utils';
 import sortable from '../ui/table/sortable';
+import DeleteClusterModal from './DeleteClusterModal';
+import { getClusterTableStatusCell } from '../../selectors/clusters';
+import { CLUSTER_STATUS_LABELS } from '../../config/constants';
 
-const rowKey = ({ rowData }: ExtraParamsType) => rowData?.id?.title;
+const rowKey = ({ rowData }: ExtraParamsType) => rowData?.props.id;
 
 interface ClustersTableProps {
   rows: ClusterTableRows;
@@ -31,27 +35,31 @@ const columnConfig = {
 
 const columns = [
   { title: 'Name', ...columnConfig },
-  { title: 'ID', ...columnConfig },
+  { title: 'Base domain', ...columnConfig },
   { title: 'Version', ...columnConfig },
   { title: 'Status', ...columnConfig },
   { title: 'Hosts', ...columnConfig },
 ];
 
 const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) => {
-  const [sortBy, setSortBy] = React.useState({
+  const [deleteClusterID, setDeleteClusterID] = React.useState<DeleteClusterID>();
+  const [sortBy, setSortBy] = React.useState<ISortBy>({
     index: 0, // Name-column
     direction: SortByDirection.asc,
-  } as ISortBy);
+  });
 
-  const actions = React.useMemo(
-    () => [
+  const actionResolver: IActionsResolver = React.useCallback(
+    (rowData) => [
       {
         title: 'Delete',
-        onClick: (_event: React.MouseEvent, _rowIndex: number, rowData: IRowData) =>
-          deleteCluster(rowData.id.title),
+        isDisabled:
+          getClusterTableStatusCell(rowData).sortableValue === CLUSTER_STATUS_LABELS.installing,
+        onClick: (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
+          setDeleteClusterID({ id: rowData.props.id, name: rowData.props.name });
+        },
       },
     ],
-    [deleteCluster],
+    [setDeleteClusterID],
   );
 
   const onSort: OnSort = React.useCallback(
@@ -76,18 +84,35 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
   );
 
   return (
-    <Table
-      rows={sortedRows}
-      cells={columns}
-      actions={actions}
-      aria-label="Clusters table"
-      sortBy={sortBy}
-      onSort={onSort}
-    >
-      <TableHeader />
-      <TableBody rowKey={rowKey} />
-    </Table>
+    <>
+      <Table
+        rows={sortedRows}
+        cells={columns}
+        actionResolver={actionResolver}
+        aria-label="Clusters table"
+        sortBy={sortBy}
+        onSort={onSort}
+      >
+        <TableHeader />
+        <TableBody rowKey={rowKey} />
+      </Table>
+      {deleteClusterID && (
+        <DeleteClusterModal
+          name={deleteClusterID.name}
+          onClose={() => setDeleteClusterID(undefined)}
+          onDelete={() => {
+            deleteCluster(deleteClusterID.id);
+            setDeleteClusterID(undefined);
+          }}
+        />
+      )}
+    </>
   );
+};
+
+type DeleteClusterID = {
+  id: string;
+  name: string;
 };
 
 export default ClustersTable;
