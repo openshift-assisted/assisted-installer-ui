@@ -12,7 +12,7 @@ import {
 } from '@patternfly/react-core';
 import { uniqueNamesGenerator, Config, adjectives, colors, animals } from 'unique-names-generator';
 import * as Yup from 'yup';
-import history from '../../history';
+// import history from '../../history';
 import { LoadingState } from '../ui/uiState';
 import { postCluster, getClusters } from '../../api/clusters';
 import { Formik, FormikHelpers } from 'formik';
@@ -84,7 +84,9 @@ export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal }) 
 
     try {
       const { data } = await postCluster(values);
-      history.push(`/clusters/${data.id}`);
+      console.info(`Fix navigation to /clusters/${data.id}`);
+      // TODO(mlibra): Fix navigation, history is not available in the library
+      // history.push(`/clusters/${data.id}`);
     } catch (e) {
       handleApiError<ClusterCreateParams>(e, () =>
         formikActions.setStatus({
