@@ -1,3 +1,6 @@
 export * from './components';
 
-// TODO(mlibra): re-export the rest
+export * from './config';
+export * from './selectors';
+export * from './store';
+export * from './types';
