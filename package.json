@@ -149,5 +149,8 @@
     "react",
     "facet-lib",
     "library"
-  ]
+  ],
+  "dependencies": {
+    "unique-names-generator": "^4.2.0"
+  }
 }
