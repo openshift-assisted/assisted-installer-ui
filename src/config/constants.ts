@@ -1,5 +1,7 @@
 import { ClusterCreateParams, Cluster, Host } from '../api/types';
 
+export const API_ROOT = process.env.REACT_APP_API_ROOT;
+
 type OpenshiftVersionOptionType = {
   label: string;
   value: ClusterCreateParams['openshiftVersion'];
