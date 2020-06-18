@@ -24,9 +24,12 @@ TBD
 ## Develop
 
 ```bash
+dnf install inotify-tools
 yarn install
-yarn installPeer
-yarn build
+yarn build # or
+yarn start
+
+FACET_ROOT=../facet ./scripts/sync-dist.sh # to sync the "./dist" into facet's node_modules
 ```
 
 ## License

@@ -8,7 +8,7 @@ import {
   Credentials,
 } from './types';
 import client from './axiosClient';
-import { API_ROOT } from '.';
+import { API_ROOT } from '../config';
 
 export const getClusters = (): AxiosPromise<Cluster[]> => client.get(`${API_ROOT}/clusters`);
 
