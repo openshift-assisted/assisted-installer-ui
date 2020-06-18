@@ -17,19 +17,36 @@ or
 yarn add facet-lib
 ```
 
-## Usage
-
-TBD
-
 ## Develop
+One time action:
+```bash
+sudo dnf install -y inotify-tools
+yarn install
+```
+
+Start webpack dev server to watch sources and keep compiling into `/dist`:
+```bash
+yarn start
+```
+
+Optionaly, sync `/dist` to the [Facet](https://github.com/openshift-metal3/facet) application's `node_modules`.
 
 ```bash
-dnf install inotify-tools
-yarn install
-yarn build # or
-yarn start
+yarn sync-to-facet
 
+# eventually:
 FACET_ROOT=../facet ./scripts/sync-dist.sh # to sync the "./dist" into facet's node_modules
+```
+
+## Publish
+To build and publish:
+```bash
+yarn publish # and update version
+
+# Do not forget to push a PR with version change, i.e.:
+git add package.json
+git commit
+git push
 ```
 
 ## License
