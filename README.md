@@ -29,7 +29,7 @@ yarn install
 yarn build # or
 yarn start
 
-FACET_ROOT=../facet ./scripts/stnc-dist.sh # to sync the "./dist" into facet's node_modules
+FACET_ROOT=../facet ./scripts/sync-dist.sh # to sync the "./dist" into facet's node_modules
 ```
 
 ## License

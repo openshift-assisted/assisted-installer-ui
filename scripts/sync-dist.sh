@@ -12,6 +12,7 @@ function sync {
 sync
 cp ./package.json ${FACET_ROOT}/node_modules/facet-lib/package.json
 while inotifywait -r -e modify,create,delete,move ./dist ; do
+  sleep 2 # give JS bundler time to write everything
   sync
 done
 
