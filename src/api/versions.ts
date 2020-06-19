@@ -1,5 +1,4 @@
 import { AxiosPromise } from 'axios';
-import client from './axiosClient';
-import { API_ROOT } from '../config';
+import { client } from './axiosClient';
 
-export const getVersions = (): AxiosPromise => client.get(`${API_ROOT}/versions`);
+export const getVersions = (): AxiosPromise => client.get('/versions');

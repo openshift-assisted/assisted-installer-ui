@@ -7,53 +7,48 @@ import {
   ImageCreateParams,
   Credentials,
 } from './types';
-import client from './axiosClient';
-import { API_ROOT } from '../config';
+import { client } from './axiosClient';
+export const getClusters = (): AxiosPromise<Cluster[]> => client.get('clusters');
 
-export const getClusters = (): AxiosPromise<Cluster[]> => client.get(`${API_ROOT}/clusters`);
-
-export const getCluster = (id: string): AxiosPromise<Cluster> =>
-  client.get(`${API_ROOT}/clusters/${id}`);
+export const getCluster = (id: string): AxiosPromise<Cluster> => client.get(`/clusters/${id}`);
 
 export const postCluster = (params: ClusterCreateParams): AxiosPromise<Cluster> =>
-  client.post(`${API_ROOT}/clusters`, params);
+  client.post('/clusters', params);
 
 export const patchCluster = (id: string, params: ClusterUpdateParams): AxiosPromise<Cluster> =>
-  client.patch(`${API_ROOT}/clusters/${id}`, params);
+  client.patch(`/clusters/${id}`, params);
 
-export const deleteCluster = (id: string): AxiosPromise<void> =>
-  client.delete(`${API_ROOT}/clusters/${id}`);
+export const deleteCluster = (id: string): AxiosPromise<void> => client.delete(`/clusters/${id}`);
 
 export const getClusterHosts = (id: string): AxiosPromise<Host[]> =>
-  client.get(`${API_ROOT}/clusters/${id}/hosts`);
+  client.get(`/clusters/${id}/hosts`);
 
 export const enableClusterHost = (clusterId: string, hostId: string): AxiosPromise<void> =>
-  client.post(`${API_ROOT}/clusters/${clusterId}/hosts/${hostId}/actions/enable`);
+  client.post(`/clusters/${clusterId}/hosts/${hostId}/actions/enable`);
 
 export const disableClusterHost = (clusterId: string, hostId: string): AxiosPromise<void> =>
-  client.delete(`${API_ROOT}/clusters/${clusterId}/hosts/${hostId}/actions/enable`);
+  client.delete(`/clusters/${clusterId}/hosts/${hostId}/actions/enable`);
 
 export const deleteClusterHost = (clusterId: string, hostId: string): AxiosPromise<void> =>
-  client.delete(`${API_ROOT}/clusters/${clusterId}/hosts/${hostId}`);
+  client.delete(`/clusters/${clusterId}/hosts/${hostId}`);
 
 export const postInstallCluster = (clusterId: string): AxiosPromise<Cluster> =>
-  client.post(`${API_ROOT}/clusters/${clusterId}/actions/install`);
+  client.post(`/clusters/${clusterId}/actions/install`);
 
 export const createClusterDownloadsImage = (
   id: string,
   params: ImageCreateParams,
   axiosOptions: AxiosRequestConfig,
-): AxiosPromise<void> =>
-  client.post(`${API_ROOT}/clusters/${id}/downloads/image`, params, axiosOptions);
+): AxiosPromise<void> => client.post(`/clusters/${id}/downloads/image`, params, axiosOptions);
 
 export const getClusterDownloadsImageUrl = (clusterId: string) =>
-  `${API_ROOT}/clusters/${clusterId}/downloads/image`;
+  `/clusters/${clusterId}/downloads/image`;
 
 export const getClusterFileURL = (clusterID: string, fileName: string) =>
-  `${API_ROOT}/clusters/${clusterID}/downloads/files?file_name=${fileName}`;
+  `/clusters/${clusterID}/downloads/files?file_name=${fileName}`;
 
 export const getClusterKubeconfigURL = (clusterID: string) =>
-  `${API_ROOT}/clusters/${clusterID}/downloads/kubeconfig`;
+  `/clusters/${clusterID}/downloads/kubeconfig`;
 
 export const getClusterCredentials = (clusterID: string): AxiosPromise<Credentials> =>
-  client.get(`${API_ROOT}/clusters/${clusterID}/credentials`);
+  client.get(`/clusters/${clusterID}/credentials`);
