@@ -12,7 +12,6 @@ import {
   AlertVariant,
   Alert,
   AlertActionCloseButton,
-  ModalVariant,
 } from '@patternfly/react-core';
 import { saveAs } from 'file-saver';
 import { ToolbarButton } from '../ui/Toolbar';
@@ -102,7 +101,8 @@ export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({
       title="Download discovery ISO"
       isOpen={true}
       onClose={closeModal}
-      variant={ModalVariant.small}
+      isFooterLeftAligned
+      isSmall
     >
       <Formik
         initialValues={{ proxyUrl, sshPublicKey } as ImageCreateParams}
@@ -127,9 +127,7 @@ export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({
                   <Alert
                     variant={AlertVariant.danger}
                     title={status.error.title}
-                    actionClose={
-                      <AlertActionCloseButton onClose={() => setStatus({ error: null })} />
-                    }
+                    action={<AlertActionCloseButton onClose={() => setStatus({ error: null })} />}
                     isInline
                   >
                     {status.error.message}

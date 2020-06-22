@@ -8,7 +8,7 @@ import {
   Credentials,
 } from './types';
 import { client } from './axiosClient';
-export const getClusters = (): AxiosPromise<Cluster[]> => client.get('clusters');
+export const getClusters = (): AxiosPromise<Cluster[]> => client.get('/clusters');
 
 export const getCluster = (id: string): AxiosPromise<Cluster> => client.get(`/clusters/${id}`);
 

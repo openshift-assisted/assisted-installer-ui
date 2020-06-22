@@ -12,7 +12,7 @@ import {
   forceReload,
   cancelForceReload,
 } from '../../features/clusters/currentClusterSlice';
-import { POLLING_INTERVAL } from '../../config/constants';
+import { POLLING_INTERVAL, routeBasePath } from '../../config/constants';
 import ClusterConfiguration from '../clusterConfiguration/ClusterConfiguration';
 import ClusterDetail from '../clusterDetail/ClusterDetail';
 
@@ -60,7 +60,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
     <Button
       key="cancel"
       variant={ButtonVariant.secondary}
-      component={(props) => <Link to="/clusters" {...props} />}
+      component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
     >
       Back
     </Button>

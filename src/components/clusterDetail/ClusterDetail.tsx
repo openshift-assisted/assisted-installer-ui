@@ -25,6 +25,7 @@ import { getHumanizedDateTime } from '../ui/utils';
 import { DASH } from '../constants';
 import { DetailList, DetailItem } from '../ui/DetailList';
 import FeedbackAlert from './FeedbackAlert';
+import { routeBasePath } from '../../config';
 
 type ClusterDetailProps = {
   cluster: Cluster;
@@ -96,7 +97,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
     <>
       <ClusterBreadcrumbs clusterName={cluster.name} />
       <PageSection variant={PageSectionVariants.light} isMain>
-        <Grid hasGutter>
+        <Grid gutter="md">
           <GridItem>
             <TextContent>
               <Text component="h1">{cluster.name}</Text>
@@ -147,7 +148,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
         )}
         <ToolbarButton
           variant={ButtonVariant.link}
-          component={(props) => <Link to="/clusters" {...props} />}
+          component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
         >
           Close
         </ToolbarButton>

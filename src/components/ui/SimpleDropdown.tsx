@@ -34,7 +34,7 @@ export const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
     () => (
       <DropdownToggle
         onToggle={(val) => setOpen(!isDisabled && val)}
-        toggleIndicator={CaretDownIcon}
+        iconComponent={CaretDownIcon}
         isDisabled={isDisabled}
       >
         {current || 'Please select'}

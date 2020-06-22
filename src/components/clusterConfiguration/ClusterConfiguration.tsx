@@ -29,7 +29,7 @@ import { EventsModalButton } from '../ui/eventsModal';
 import { Cluster, ClusterUpdateParams } from '../../api/types';
 import { patchCluster, postInstallCluster, getClusters } from '../../api/clusters';
 import { handleApiError, getErrorMessage } from '../../api/utils';
-import { CLUSTER_MANAGER_SITE_LINK } from '../../config/constants';
+import { CLUSTER_MANAGER_SITE_LINK, routeBasePath } from '../../config/constants';
 import AlertsSection from '../ui/AlertsSection';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import alertsReducer, {
@@ -180,7 +180,7 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
             <ClusterBreadcrumbs clusterName={cluster.name} />
             <PageSection variant={PageSectionVariants.light} isMain>
               <Form>
-                <Grid hasGutter>
+                <Grid gutter="md">
                   <GridItem span={12} lg={10} xl={6}>
                     {/* TODO(jtomasek): remove this if we're not putting full width content here (e.g. hosts table)*/}
                     <GridGap>
@@ -281,7 +281,7 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
               </ToolbarButton>
               <ToolbarButton
                 variant={ButtonVariant.link}
-                component={(props) => <Link to="/clusters" {...props} />}
+                component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
               >
                 Close
               </ToolbarButton>

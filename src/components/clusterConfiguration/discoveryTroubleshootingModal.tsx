@@ -3,7 +3,6 @@ import {
   Button,
   Modal,
   ButtonVariant,
-  ModalVariant,
   TextContent,
   Text,
   TextVariants,
@@ -54,7 +53,6 @@ export const DiscoveryTroubleshootingModal: React.FC<DiscoveryTroubleshootingMod
         </Button>,
       ]}
       onClose={onClose}
-      variant={ModalVariant.large}
     >
       <TextContent>
         <Text component={TextVariants.p}>

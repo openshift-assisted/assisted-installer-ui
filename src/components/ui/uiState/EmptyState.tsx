@@ -28,7 +28,7 @@ const EmptyState: React.FC<Props> = ({
   <Bullseye>
     <PFEmptyState>
       <EmptyStateIcon icon={icon} />
-      <Title headingLevel="h2">{title}</Title>
+      <Title size="lg">{title}</Title>
       {content && <EmptyStateBody>{content}</EmptyStateBody>}
       {primaryAction}
       {secondaryActions && (

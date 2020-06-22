@@ -7,7 +7,6 @@ import {
   Text,
   TextList,
   TextListItem,
-  ModalVariant,
 } from '@patternfly/react-core';
 import { Cluster } from '../../api/types';
 import { removeProtocolFromURL } from '../../api/utils';
@@ -145,7 +144,7 @@ export const ConsoleModal: React.FC<ConsoleModalProps> = ({
       isOpen={isOpen}
       onClose={closeModal}
       actions={actions}
-      variant={ModalVariant.large}
+      isLarge
     >
       <WebConsoleHint cluster={cluster} consoleUrl={consoleUrl} />
     </Modal>

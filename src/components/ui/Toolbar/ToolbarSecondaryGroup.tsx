@@ -1,8 +1,10 @@
 import React from 'react';
-import { ToolbarGroup } from '@patternfly/react-core';
+import { DataToolbarGroup } from '@patternfly/react-core';
 
 const ToolbarSecondaryGroup: React.FC = ({ children }) => (
-  <ToolbarGroup alignment={{ md: 'alignRight' }}>{children}</ToolbarGroup>
+  <DataToolbarGroup breakpointMods={[{ modifier: 'align-right', breakpoint: 'md' }]}>
+    {children}
+  </DataToolbarGroup>
 );
 
 export default ToolbarSecondaryGroup;

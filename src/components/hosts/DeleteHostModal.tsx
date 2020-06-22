@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, ModalVariant, Button, ButtonVariant } from '@patternfly/react-core';
+import { Modal, Button, ButtonVariant } from '@patternfly/react-core';
 
 type DeleteHostModalProps = {
   hostname?: string;
@@ -18,7 +18,8 @@ const DeleteHostModal: React.FC<DeleteHostModalProps> = ({
     title="Delete Host"
     isOpen={isOpen}
     onClose={onClose}
-    variant={ModalVariant.small}
+    isFooterLeftAligned
+    isSmall
     actions={[
       <Button
         data-test-id="delete-host-submit"

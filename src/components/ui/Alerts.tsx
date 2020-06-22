@@ -24,9 +24,7 @@ export const Alerts: React.FC<AlertsProps> = ({ alerts, className }) => {
           key={alert.key || alert.text}
           variant={alert.variant}
           title={alert.text}
-          actionClose={
-            alert.onClose ? <AlertActionCloseButton onClose={alert.onClose} /> : undefined
-          }
+          action={alert.onClose ? <AlertActionCloseButton onClose={alert.onClose} /> : undefined}
         />
       ))}
     </AlertGroup>

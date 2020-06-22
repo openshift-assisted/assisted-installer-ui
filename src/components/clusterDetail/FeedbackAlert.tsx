@@ -7,7 +7,7 @@ const FeedbackAlert: React.FC = () => (
     <Alert
       variant={AlertVariant.info}
       title="Please let us know what you think"
-      actionLinks={
+      action={
         <>
           <AlertActionLink
             onClick={() => window.open(FEEDBACK_FORM_LINK, '_blank', 'noopener noreferrer')}

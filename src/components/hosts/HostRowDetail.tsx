@@ -134,7 +134,7 @@ export const HostDetail: React.FC<HostDetailProps> = ({ inventory }) => {
   bmcAddress = bmcAddress || DASH;
 
   return (
-    <Grid hasGutter>
+    <Grid gutter="md">
       <SectionTitle title="Host Details" />
       <SectionColumn>
         <DetailItem title="Manufacturer" value={inventory.systemVendor?.manufacturer || DASH} />

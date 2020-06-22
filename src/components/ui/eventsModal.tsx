@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Modal, ButtonVariant, ModalVariant } from '@patternfly/react-core';
+import { Button, Modal, ButtonVariant } from '@patternfly/react-core';
 import { ToolbarButton } from './Toolbar';
 import EventListFetch from '../fetching/EventListFetch';
 
@@ -64,7 +64,8 @@ export const EventsModal: React.FC<EventsModalProps> = ({
         </Button>,
       ]}
       onClose={onClose}
-      variant={ModalVariant.large}
+      isFooterLeftAligned
+      isLarge
     >
       <EventListFetch entityId={entityId} entityKind={entityKind} />
     </Modal>

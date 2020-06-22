@@ -49,7 +49,7 @@ const ErrorState: React.FC<Props> = ({
     <Bullseye>
       <EmptyState variant={EmptyStateVariant.small}>
         <EmptyStateIcon icon={icon} color={iconColor} />
-        <Title headingLevel="h2">{title}</Title>
+        <Title size="lg">{title}</Title>
         <EmptyStateBody>{content || defaultContent}</EmptyStateBody>
         {actions && <EmptyStateSecondaryActions>{actions}</EmptyStateSecondaryActions>}
       </EmptyState>

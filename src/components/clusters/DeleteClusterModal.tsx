@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Modal, Button, ModalVariant } from '@patternfly/react-core';
+import { Modal, Button } from '@patternfly/react-core';
 
 type DeleteClusterModalProps = {
   name: string;
@@ -12,7 +12,8 @@ const DeleteClusterModal: React.FC<DeleteClusterModalProps> = ({ name, onClose, 
     title="Delete cluster"
     isOpen={true}
     onClose={onClose}
-    variant={ModalVariant.small}
+    isFooterLeftAligned
+    isSmall
     actions={[
       <Button
         data-test-id="delete-cluster-submit"

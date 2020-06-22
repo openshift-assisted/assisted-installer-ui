@@ -8,7 +8,6 @@ import {
   AlertActionCloseButton,
   Modal,
   ModalBoxFooter,
-  ModalVariant,
 } from '@patternfly/react-core';
 import { uniqueNamesGenerator, Config, adjectives, colors, animals } from 'unique-names-generator';
 import * as Yup from 'yup';
@@ -101,7 +100,8 @@ export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal }) 
       title="New Bare Metal OpenShift Cluster"
       isOpen={true}
       onClose={closeModal}
-      variant={ModalVariant.small}
+      isFooterLeftAligned
+      isSmall
     >
       <Formik
         initialValues={{
@@ -118,7 +118,7 @@ export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal }) 
               <Alert
                 variant={AlertVariant.danger}
                 title={status.error.title}
-                actionClose={<AlertActionCloseButton onClose={() => setStatus({ error: null })} />}
+                action={<AlertActionCloseButton onClose={() => setStatus({ error: null })} />}
                 isInline
               >
                 {status.error.message}
@@ -137,7 +137,7 @@ export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal }) 
                 />
               </>
             )}
-            <ModalBoxFooter>
+            <ModalBoxFooter isLeftAligned>
               <Button
                 type="submit"
                 variant={ButtonVariant.primary}
