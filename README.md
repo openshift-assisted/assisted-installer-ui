@@ -39,15 +39,13 @@ FACET_ROOT=../facet ./scripts/sync-dist.sh # to sync the "./dist" into facet's n
 ```
 
 ## Publish
-To build and publish:
-```bash
-yarn publish # and update version
+To publish the Node.js package, simply create a new tag in format `v[VERSION]`.
 
-# Do not forget to push a PR with version change, i.e.:
-git add package.json
-git commit
-git push
-```
+To do so, preferably [draft a new release](https://github.com/mareklibra/facet-lib/releases/new) with:
+- tag: `v[VERSION]`, example: `v1.2.3`
+- title: `v[VERSION]`, example: `v1.2.3`
+
+New version of the package will be published to [npmjs.com](https://www.npmjs.com/package/facet-lib) and a new PR with version change will be created automatically by a GitHub action.
 
 ## License
 
