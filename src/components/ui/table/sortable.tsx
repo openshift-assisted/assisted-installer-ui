@@ -2,7 +2,6 @@
 import * as React from 'react';
 import { SortColumn, SortByDirection, IExtra, ITransform } from '@patternfly/react-table';
 import { css } from '@patternfly/react-styles';
-import styles from '@patternfly/react-styles/css/components/Table/table';
 
 /**
  * Custom implementation of @patternfly/react-table 's sortable transform decorator
@@ -39,7 +38,7 @@ const sortable: ITransform = (label, extra: IExtra | undefined) => {
   }
 
   return {
-    className: css(styles.tableSort, isSortedBy && styles.modifiers.selected),
+    className: css('pf-c-table__sort', isSortedBy && 'pf-m-selected'),
     'aria-sort': isSortedBy ? `${sortBy?.direction}ending` : 'none',
     children: (
       <SortColumn
