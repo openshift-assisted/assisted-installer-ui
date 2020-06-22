@@ -10,17 +10,18 @@ type AlertsSectionProps = {
   onClose: (alert: AlertProps) => void;
 };
 
-const AlertsSection: React.FC<AlertsSectionProps> = ({ alerts, onClose }) => (
-  <PageSection padding={{ default: 'noPadding' }}>
-    <AlertGroup className="alerts-section">
-      {alerts.map((alert) => (
-        // eslint-disable-next-line react/jsx-key
-        <Alert actionClose={<AlertActionCloseButton onClose={() => onClose(alert)} />} {...alert}>
-          {alert.message}
-        </Alert>
-      ))}
-    </AlertGroup>
-  </PageSection>
-);
+const AlertsSection: React.FC<AlertsSectionProps> = ({ alerts, onClose }) =>
+  alerts.length ? (
+    <PageSection padding={{ default: 'noPadding' }}>
+      <AlertGroup className="alerts-section">
+        {alerts.map((alert) => (
+          // eslint-disable-next-line react/jsx-key
+          <Alert actionClose={<AlertActionCloseButton onClose={() => onClose(alert)} />} {...alert}>
+            {alert.message}
+          </Alert>
+        ))}
+      </AlertGroup>
+    </PageSection>
+  ) : null;
 
 export default AlertsSection;

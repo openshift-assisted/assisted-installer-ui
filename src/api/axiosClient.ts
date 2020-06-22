@@ -10,8 +10,10 @@ const getDefaultClient = () => {
   return applyCaseMiddleware(client);
 };
 
-export let client: AxiosInstance = getDefaultClient();
+let client: AxiosInstance = getDefaultClient();
 
 export const setClient = (axiosInstance: AxiosInstance) => {
   client = applyCaseMiddleware(axiosInstance);
 };
+
+export { client };
