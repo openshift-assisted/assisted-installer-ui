@@ -1,0 +1,29 @@
+name: Build and push on release (new tag)
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    # Setup .npmrc file to publish to npm
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
+        registry-url: 'https://registry.npmjs.org'
+    - run: yarn install
+    # expected format of the new git tag: 1.2.3
+    # TODO: remove optional 'v' from beginning of the tag name
+    - run: yarn publish --new-version ${GITHUB_REF#refs/tags/}
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPMJS_PUBLISH_TOKEN }}
+    - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v2
+        with:
+          committer: GitHub <noreply@github.com>
+          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com> 
+
