@@ -1,11 +1,5 @@
 module.exports = {
-  testPathIgnorePatterns: [
-    '<rootDir>/dist/',
-    '<rootDir>/docs/',
-    '<rootDir>/example/',
-    '<rootDir>/.docz/',
-    '<rootDir>/node_modules/',
-  ],
+  testPathIgnorePatterns: ['<rootDir>/dist/', '<rootDir>/docs/', '<rootDir>/node_modules/'],
   testMatch: ['**/__tests__/**/*.+(ts|tsx|js)', '**/?(*.)+(spec|test).+(ts|tsx|js)'],
   transform: {
     '^.+\\.(ts|tsx)$': 'ts-jest',
