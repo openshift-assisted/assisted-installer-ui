@@ -38,7 +38,7 @@ jobs:
       uses: peter-evans/create-pull-request@v2
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        title: Generated: New ${{ env.VERSION }} version
+        title: Generated - New ${{ env.VERSION }} version
         base: master
         commit-message: Version ${{ env.VERSION }}
         committer: GitHub action executed on release <noreply@github.com>
