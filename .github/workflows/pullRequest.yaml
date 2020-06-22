@@ -1,0 +1,24 @@
+name: Build on pull request to master
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        uses: borales/actions-yarn@v2.0.0
+        with:
+          cmd: install
+      - name: Build code (includes tests)
+        uses: borales/actions-yarn@v2.0.0
+        env:
+          NODE_OPTIONS: '--max-old-space-size=8192'
+        with:
+          cmd: build
+
