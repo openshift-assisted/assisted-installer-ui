@@ -31,6 +31,7 @@ jobs:
         git config user.name 'GitHub action executed on release'
         git config user.email 'github@users.noreply.github.com'
     - run: yarn install
+    - run: yarn build
     - run: yarn publish --new-version ${{ env.VERSION }} --no-git-tag-version 
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPMJS_PUBLISH_TOKEN }}
