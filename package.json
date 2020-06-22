@@ -12,8 +12,8 @@
     "node": ">=10"
   },
   "scripts": {
-    "build": "microbundle-crl --no-compress --format modern,cjs",
-    "start": "echo Consider running: yarn sync-to-facet ; echo ; microbundle-crl watch --no-compress --format modern,cjs",
+    "build": "microbundle-crl --no-compress --format modern,cjs --css-modules false",
+    "start": "echo Consider running: yarn sync-to-facet ; echo ; microbundle-crl watch --no-compress --format modern,cjs --css-modules false",
     "sync-to-facet": "FACET_ROOT=../facet ./scripts/sync-dist.sh",
     "Xprepare": "run-s build",
     "prepare": "install-peers",
