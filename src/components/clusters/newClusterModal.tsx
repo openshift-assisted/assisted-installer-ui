@@ -10,9 +10,9 @@ import {
   ModalBoxFooter,
   ModalVariant,
 } from '@patternfly/react-core';
+import { History } from 'history';
 import { uniqueNamesGenerator, Config, adjectives, colors, animals } from 'unique-names-generator';
 import * as Yup from 'yup';
-// import history from '../../history';
 import { LoadingState } from '../ui/uiState';
 import { postCluster, getClusters } from '../../api/clusters';
 import { Formik, FormikHelpers } from 'formik';
@@ -47,9 +47,10 @@ export const NewClusterModalButton: React.FC<NewClusterModalButtonProps> = ({
 
 type NewClusterModalProps = {
   closeModal: () => void;
+  history: History;
 };
 
-export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal }) => {
+export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal, history }) => {
   const nameInputRef = React.useCallback((node) => {
     if (node !== null) {
       node.focus();
@@ -84,9 +85,7 @@ export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal }) 
 
     try {
       const { data } = await postCluster(values);
-      console.info(`Fix navigation to /clusters/${data.id}`);
-      // TODO(mlibra): Fix navigation, history is not available in the library
-      // history.push(`/clusters/${data.id}`);
+      history.push(`/clusters/${data.id}`);
     } catch (e) {
       handleApiError<ClusterCreateParams>(e, () =>
         formikActions.setStatus({

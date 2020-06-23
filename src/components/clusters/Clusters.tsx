@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { RouteComponentProps } from 'react-router-dom';
 import {
   PageSectionVariants,
   TextContent,
@@ -26,7 +27,9 @@ import alertsReducer, {
   removeAlert,
 } from '../../features/alerts/alertsSlice';
 
-const Clusters: React.FC = () => {
+type ClustersProps = RouteComponentProps;
+
+const Clusters: React.FC<ClustersProps> = ({ history }) => {
   const { LOADING, EMPTY, ERROR, RELOADING } = ResourceUIState;
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [alerts, dispatchAlertsAction] = React.useReducer(alertsReducer, []);
@@ -124,7 +127,7 @@ const Clusters: React.FC = () => {
   return (
     <>
       {body}
-      {isModalOpen && <NewClusterModal closeModal={closeModal} />}
+      {isModalOpen && <NewClusterModal closeModal={closeModal} history={history} />}
     </>
   );
 };
