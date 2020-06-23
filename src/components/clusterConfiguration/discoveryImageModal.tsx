@@ -145,6 +145,12 @@ export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({
                     Each host will need a valid IP address assigned by a DHCP server with DNS
                     records that fully resolve.
                   </Text>
+                  <Text component="p">
+                    The Discovery ISO should only be booted once per host. Either adjust the boot
+                    order in each host's BIOS to make it secondary after the first alpabetical disk,
+                    or select the ISO once manually. All other disks in the host will be wiped
+                    during the installation.
+                  </Text>
                 </TextContent>
                 <InputField
                   label="HTTP Proxy URL"
