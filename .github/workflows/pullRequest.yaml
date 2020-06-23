@@ -21,4 +21,3 @@ jobs:
           NODE_OPTIONS: '--max-old-space-size=8192'
         with:
           cmd: build
-

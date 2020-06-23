@@ -58,7 +58,7 @@ export interface Cluster {
   /**
    * Virtual IP used to reach the OpenShift cluster API.
    */
-  apiVip?: string; // ipv4
+  apiVip?: string; // ^(([0-9]{1,3}\.){3}[0-9]{1,3})?$
   /**
    * A CIDR that all hosts belonging to the cluster should have an interfaces with IP address that belongs to this CIDR. The apiVip belongs to this CIDR.
    */
@@ -66,11 +66,7 @@ export interface Cluster {
   /**
    * Virtual IP used for cluster ingress traffic.
    */
-  ingressVip?: string; // ipv4
-  /**
-   * The pull secret that obtained from the Pull Secret page on the Red Hat OpenShift Cluster Manager site.
-   */
-  pullSecret?: string;
+  ingressVip?: string; // ^(([0-9]{1,3}\.){3}[0-9]{1,3})?$
   /**
    * SSH public key for debugging OpenShift nodes.
    */
@@ -115,6 +111,7 @@ export interface Cluster {
    * True if the pull-secret has been added to the cluster
    */
   pullSecretSet?: boolean;
+  ignitionGeneratorVersion?: string;
 }
 export interface ClusterCreateParams {
   /**
@@ -144,7 +141,7 @@ export interface ClusterCreateParams {
   /**
    * Virtual IP used for cluster ingress traffic.
    */
-  ingressVip?: string; // ipv4
+  ingressVip?: string; // ^(([0-9]{1,3}\.){3}[0-9]{1,3})?$
   /**
    * The pull secret that obtained from the Pull Secret page on the Red Hat OpenShift Cluster Manager site.
    */
@@ -179,11 +176,11 @@ export interface ClusterUpdateParams {
   /**
    * Virtual IP used to reach the OpenShift cluster API.
    */
-  apiVip?: string; // ipv4
+  apiVip?: string; // ^(([0-9]{1,3}\.){3}[0-9]{1,3})?$
   /**
    * Virtual IP used for cluster ingress traffic.
    */
-  ingressVip?: string; // ipv4
+  ingressVip?: string; // ^(([0-9]{1,3}\.){3}[0-9]{1,3})?$
   /**
    * The pull secret that obtained from the Pull Secret page on the Red Hat OpenShift Cluster Manager site.
    */
@@ -325,15 +322,21 @@ export interface Host {
   inventory?: string;
   role?: 'undefined' | 'master' | 'worker';
   bootstrap?: boolean;
+  /**
+   * Installer version
+   */
+  installerVersion?: string;
   updatedAt?: string; // date-time
   createdAt?: string; // date-time
   /**
    * The last time the host's agent communicated with the service.
    */
   checkedInAt?: string; // date-time
+  discoveryAgentVersion?: string;
 }
 export interface HostCreateParams {
   hostId: string; // uuid
+  discoveryAgentVersion?: string;
 }
 export type HostInstallProgressParams = string;
 export type HostList = Host[];
@@ -364,6 +367,10 @@ export interface ImageInfo {
    * SSH public key for debugging the installation
    */
   sshPublicKey?: string;
+  /**
+   * Image generator version
+   */
+  generatorVersion?: string;
   createdAt?: string; // date-time
 }
 export type IngressCertParams = string;
@@ -410,6 +417,9 @@ export interface L3Connectivity {
   remoteIpAddress?: string;
   successful?: boolean;
 }
+export interface ListVersions {
+  [name: string]: string;
+}
 export interface Memory {
   physicalBytes?: number;
   usableBytes?: number;
@@ -437,12 +447,13 @@ export interface Step {
   args?: string[];
 }
 export interface StepReply {
+  stepType?: StepType;
   stepId?: string;
   exitCode?: number;
   output?: string;
   error?: string;
 }
-export type StepType = 'hardware-info' | 'connectivity-check' | 'execute' | 'inventory';
+export type StepType = 'hardware-info' | 'connectivity-check' | 'execute' | 'inventory' | 'install';
 export type Steps = Step[];
 export type StepsReply = StepReply[];
 export interface SystemVendor {

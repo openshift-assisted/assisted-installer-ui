@@ -10,41 +10,40 @@ on:
 #  pull_request:
 #    branches:
 #      - master
- 
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    # expected format of the new git tag: v1.2.3
-    - name: Get tag
-      id: get_tag
-      run: echo ::set-env name=VERSION::$(echo ${GITHUB_REF#refs/tags/} | sed -e 's/^v//g')
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-        ref: master
-    - uses: actions/setup-node@v1
-      with:
-        node-version: '12.x'
-        registry-url: 'https://registry.npmjs.org'
-    - run: |
-        git config user.name 'GitHub action executed on release'
-        git config user.email 'github@users.noreply.github.com'
-    - run: yarn install
-    - run: yarn build
-    - run: yarn publish --new-version ${{ env.VERSION }} --no-git-tag-version 
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPMJS_PUBLISH_TOKEN }}
-    - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v2
-      env:
-        GITHUB_TOKEN: ${{ secrets.REPO_SCOPED_TOKEN }}
-      with:
-        base: master
-        commit-message: Version ${{ env.VERSION }}
-        committer: GitHub action executed on release <noreply@github.com>
-        author: GitHub action executed on release <noreply@github.com>
-        title: Generated - New ${{ env.VERSION }} version
-        body: |
-          Triggered by new tag - https://github.com/mareklibra/facet-lib/releases/tag/${GITHUB_REF#refs/tags/}
-
+      # expected format of the new git tag: v1.2.3
+      - name: Get tag
+        id: get_tag
+        run: echo ::set-env name=VERSION::$(echo ${GITHUB_REF#refs/tags/} | sed -e 's/^v//g')
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          ref: master
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+          registry-url: 'https://registry.npmjs.org'
+      - run: |
+          git config user.name 'GitHub action executed on release'
+          git config user.email 'github@users.noreply.github.com'
+      - run: yarn install
+      - run: yarn build
+      - run: yarn publish --new-version ${{ env.VERSION }} --no-git-tag-version
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPMJS_PUBLISH_TOKEN }}
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.REPO_SCOPED_TOKEN }}
+        with:
+          base: master
+          commit-message: Version ${{ env.VERSION }}
+          committer: GitHub action executed on release <noreply@github.com>
+          author: GitHub action executed on release <noreply@github.com>
+          title: Generated - New ${{ env.VERSION }} version
+          body: |
+            Triggered by new tag - https://github.com/mareklibra/facet-lib/releases/tag/${GITHUB_REF#refs/tags/}
