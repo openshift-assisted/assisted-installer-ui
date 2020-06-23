@@ -50,3 +50,4 @@ New version of the package will be published to [npmjs.com](https://www.npmjs.co
 ## License
 
 Apache-2.0
+
