@@ -37,13 +37,10 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPMJS_PUBLISH_TOKEN }}
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.REPO_SCOPED_TOKEN }}
         with:
           base: master
           commit-message: Version ${{ env.VERSION }}
           committer: GitHub action executed on release <noreply@github.com>
           author: GitHub action executed on release <noreply@github.com>
           title: Generated - New ${{ env.VERSION }} version
-          body: |
-            Triggered by new tag - https://github.com/mareklibra/facet-lib/releases/tag/${GITHUB_REF#refs/tags/}
+          body: Triggered by new tag - https://github.com/mareklibra/facet-lib/releases/tag/v${{ env.VERSION }}
