@@ -45,7 +45,6 @@ const sortable: ITransform = (label, extra: IExtra | undefined) => {
         isSortedBy={isSortedBy}
         sortDirection={isSortedBy ? sortBy?.direction : ''}
         onSort={sortClicked}
-        className="pf-c-button pf-m-plain"
         // eslint-disable-next-line
         // @ts-ignore
         type="button"
