@@ -37,7 +37,7 @@ export const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
         toggleIndicator={CaretDownIcon}
         isDisabled={isDisabled}
       >
-        {current || 'Please select'}
+        {current || 'Select a role'}
       </DropdownToggle>
     ),
     [setOpen, current, isDisabled],
