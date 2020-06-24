@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import { ISortBy, SortByDirection, IRow } from '@patternfly/react-table';
 
 export type HumanizedSortable = {
@@ -42,3 +43,6 @@ export const rowSorter = (sortBy: ISortBy, getCell: getCellType) => (a: IRow, b:
   valB = valB || 0;
   return (valA - valB) * coefficient;
 };
+
+/** Converts string into a sentence by capitalizing first letter and appending with . */
+export const toSentence = (s: string) => `${_.capitalize(s)}${_.endsWith(s, '.') ? '' : '.'}`;

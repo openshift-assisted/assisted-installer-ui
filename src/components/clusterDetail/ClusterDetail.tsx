@@ -21,55 +21,21 @@ import ClusterCredentials from './ClusterCredentials';
 import ClusterInstallationError from './ClusterInstallationError';
 import { LaunchOpenshiftConsoleButton } from './ConsoleModal';
 import KubeconfigDownload from './KubeconfigDownload';
-import { getHumanizedDateTime } from '../ui/utils';
-import { DASH } from '../constants';
 import { DetailList, DetailItem } from '../ui/DetailList';
 import FeedbackAlert from './FeedbackAlert';
+import ClusterProperties from './ClusterProperties';
 
 type ClusterDetailProps = {
   cluster: Cluster;
+  setCancelInstallationModalOpen: (isOpen: boolean) => void;
+  setResetClusterModalOpen: (isOpen: boolean) => void;
 };
 
-const ClusterProperties: React.FC<ClusterDetailProps> = ({ cluster }) => (
-  <>
-    <GridItem>
-      <TextContent>
-        <Text component="h2">Cluster Details</Text>
-      </TextContent>
-    </GridItem>
-    <GridItem md={6} lg={4} xl={3}>
-      <DetailList>
-        <DetailItem title="OpenShift version" value={cluster.openshiftVersion} />
-        <DetailItem
-          title="Installation started At"
-          value={getHumanizedDateTime(cluster.installStartedAt)}
-        />
-        <DetailItem
-          title="Installation finished At"
-          value={
-            cluster.status === 'installed' ? getHumanizedDateTime(cluster.installCompletedAt) : DASH
-          }
-        />
-      </DetailList>
-    </GridItem>
-    <GridItem md={6} lg={4} xl={3}>
-      <DetailList>
-        <DetailItem title="Base DNS domain" value={cluster.baseDnsDomain} />
-        <DetailItem title="API virtual IP" value={cluster.apiVip} />
-        <DetailItem title="Ingress virtual IP" value={cluster.ingressVip} />
-      </DetailList>
-    </GridItem>
-    <GridItem md={6} lg={4} xl={3}>
-      <DetailList>
-        <DetailItem title="Cluster network CIDR" value={cluster.clusterNetworkCidr} />
-        <DetailItem title="Cluster network host prefix" value={cluster.clusterNetworkHostPrefix} />
-        <DetailItem title="Service network CIDR" value={cluster.serviceNetworkCidr} />
-      </DetailList>
-    </GridItem>
-  </>
-);
-
-const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
+const ClusterDetail: React.FC<ClusterDetailProps> = ({
+  cluster,
+  setCancelInstallationModalOpen,
+  setResetClusterModalOpen,
+}) => {
   const [credentials, setCredentials] = React.useState<Credentials>();
   const [credentialsError, setCredentialsError] = React.useState();
 
@@ -108,7 +74,10 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
             </DetailList>
           </GridItem>
           {cluster.status === 'error' && (
-            <ClusterInstallationError statusInfo={cluster.statusInfo} />
+            <ClusterInstallationError
+              cluster={cluster}
+              setResetClusterModalOpen={setResetClusterModalOpen}
+            />
           )}
           {cluster.status === 'installed' && (
             <ClusterCredentials
@@ -130,14 +99,19 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
         </Grid>
       </PageSection>
       <ClusterToolbar>
-        {
-          // TODO(jtomasek): enable this when available
-          /* {cluster.status === 'installing' && (
-          <ToolbarButton type="button" variant={ButtonVariant.danger} isDisabled>
+        {['installing', 'installing-in-progress'].includes(cluster.status) && (
+          <ToolbarButton
+            variant={ButtonVariant.danger}
+            onClick={() => setCancelInstallationModalOpen(true)}
+          >
             Abort Installation
           </ToolbarButton>
-        )} */
-        }
+        )}
+        {cluster.status === 'error' && (
+          <ToolbarButton onClick={() => setResetClusterModalOpen(true)}>
+            Reset Cluster
+          </ToolbarButton>
+        )}
         {cluster.status === 'installed' && (
           <LaunchOpenshiftConsoleButton
             isDisabled={!credentials || !!credentialsError}
