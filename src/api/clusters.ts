@@ -42,14 +42,17 @@ export const createClusterDownloadsImage = (
   axiosOptions: AxiosRequestConfig,
 ): AxiosPromise<void> => client.post(`/clusters/${id}/downloads/image`, params, axiosOptions);
 
+// TODO(jtomasek): make the API_ROOT configurable so this can be used in cloud.redhat.com
+const API_ROOT = process.env.REACT_APP_API_ROOT;
+
 export const getClusterDownloadsImageUrl = (clusterId: string) =>
-  `/clusters/${clusterId}/downloads/image`;
+  `${API_ROOT}/clusters/${clusterId}/downloads/image`;
 
 export const getClusterFileURL = (clusterID: string, fileName: string) =>
-  `/clusters/${clusterID}/downloads/files?file_name=${fileName}`;
+  `${API_ROOT}/clusters/${clusterID}/downloads/files?file_name=${fileName}`;
 
 export const getClusterKubeconfigURL = (clusterID: string) =>
-  `/clusters/${clusterID}/downloads/kubeconfig`;
+  `${API_ROOT}/clusters/${clusterID}/downloads/kubeconfig`;
 
 export const getClusterCredentials = (clusterID: string): AxiosPromise<Credentials> =>
   client.get(`/clusters/${clusterID}/credentials`);
