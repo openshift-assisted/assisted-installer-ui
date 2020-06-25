@@ -290,6 +290,9 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
     [setSortBy, setOpenRows],
   );
 
+  const getHostInventory = (hostId: Host['id']): Inventory =>
+    hostRows.find((hostRow) => hostRow.extraData?.id === hostId)?.inventory;
+
   return (
     <>
       <Table
@@ -307,7 +310,9 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
         <TableBody rowKey={rowKey} />
       </Table>
       <EventsModal
-        title="Host Events"
+        title={`Events for the ${
+          getHostInventory(showEventsModal)?.hostname || showEventsModal
+        } host`}
         entityKind="host"
         entityId={showEventsModal}
         onClose={() => setShowEventsModal('')}
