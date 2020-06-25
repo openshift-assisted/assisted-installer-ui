@@ -92,6 +92,8 @@ const hostToHostTableRow = (openRows: OpenRows) => (host: Host): IRow => {
       fullWidth: true,
       cells: [{ title: <HostDetail key={id} inventory={inventory} /> }],
       key: `${host.id}-detail`,
+      extraData: host,
+      inventory,
     },
   ];
 };
@@ -234,7 +236,9 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
 
   const actionResolver = React.useCallback(
     (rowData: IRowData) => {
-      const host = rowData.extraData;
+      const host: Host = rowData.extraData;
+      const hostname = rowData.inventory?.hostname;
+
       if (!host) {
         // I.e. row with detail
         return [];
@@ -244,26 +248,28 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
       if (host.status === 'disabled') {
         actions.push({
           title: 'Enable in cluster',
+          id: `button-enable-in-cluster-${hostname}`,
           onClick: onHostEnable,
         });
       }
       if (['discovering', 'disconnected', 'known', 'insufficient'].includes(host.status)) {
         actions.push({
           title: 'Disable in cluster',
+          id: `button-disable-in-cluster-${hostname}`,
           onClick: onHostDisable,
         });
       }
       actions.push({
         title: 'View Host Events History',
+        id: `button-view-host-events-${hostname}`,
         onClick: onViewHostEvents,
       });
       if (!['installing', 'installing-in-progress', 'error', 'installed'].includes(host.status)) {
         actions.push({
           title: 'Delete',
-          onClick: (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
-            const hostId = rowData.extraData.id;
-            const hostname = rowData.inventory.hostname;
-            setHostToDelete({ id: hostId, hostname });
+          id: `button-delete-host-${hostname}`,
+          onClick: () => {
+            setHostToDelete({ id: host.id, hostname });
           },
         });
       }

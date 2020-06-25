@@ -40,7 +40,11 @@ export const DiscoveryImageModalButton: React.FC<DiscoveryImageModalButtonProps>
 
   return (
     <>
-      <ButtonComponent variant={ButtonVariant.primary} onClick={() => setIsModalOpen(true)}>
+      <ButtonComponent
+        variant={ButtonVariant.primary}
+        onClick={() => setIsModalOpen(true)}
+        id="button-download-discovery-iso"
+      >
         Download discovery ISO
       </ButtonComponent>
       {isModalOpen && <DiscoveryImageModal closeModal={closeModal} imageInfo={imageInfo} />}

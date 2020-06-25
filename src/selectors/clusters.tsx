@@ -31,7 +31,7 @@ const clusterToClusterTableRow = (cluster: Cluster): IRow => {
     cells: [
       {
         title: (
-          <Link key={name} to={`/clusters/${id}`}>
+          <Link key={name} to={`/clusters/${id}`} id={`cluster-link-${name}`}>
             {name}
           </Link>
         ),
