@@ -4,8 +4,6 @@ import {
   ToolbarItem,
   ToolbarContent,
   ToolbarFilter,
-  ToolbarToggleGroup,
-  ToolbarGroup,
   Button,
   ButtonVariant,
   InputGroup,
@@ -82,6 +80,12 @@ const ClustersFilterToolbar: React.FC<ClustersFilterToolbarProps> = ({
     });
   };
 
+  const statusPlaceholder = (
+    <>
+      <FilterIcon /> Status
+    </>
+  );
+
   return (
     <Toolbar
       id="clusters-filter-toolbar"
@@ -90,45 +94,43 @@ const ClustersFilterToolbar: React.FC<ClustersFilterToolbarProps> = ({
       clearAllFilters={onClearAllFilters}
     >
       <ToolbarContent>
-        <ToolbarToggleGroup toggleIcon={<FilterIcon />} breakpoint="xl">
-          <ToolbarItem>
-            <InputGroup>
-              <TextInput
-                name="search-name"
-                id="search-name"
-                type="search"
-                aria-label="cluster name to be searched"
-                onChange={onSearchNameChanged}
-                value={searchName}
-              />
-              <Button variant={ButtonVariant.control} aria-label="search cluster name button">
-                <SearchIcon />
-              </Button>
-            </InputGroup>
-          </ToolbarItem>
-          <ToolbarGroup variant="filter-group">
-            <ToolbarFilter
-              chips={filters.status}
-              deleteChip={onDeleteChip}
-              deleteChipGroup={onDeleteChipGroup}
-              categoryName="status"
-            >
-              <Select
-                variant="checkbox"
-                aria-label="status"
-                onToggle={onStatusToggle}
-                onSelect={onStatusSelect}
-                selections={filters.status}
-                isOpen={isStatusExpanded}
-                placeholderText="Status"
-              >
-                {Object.getOwnPropertyNames(CLUSTER_STATUS_LABELS).map((status) => (
-                  <SelectOption key={status} value={CLUSTER_STATUS_LABELS[status]} />
-                ))}
-              </Select>
-            </ToolbarFilter>
-          </ToolbarGroup>
-        </ToolbarToggleGroup>
+        <ToolbarFilter
+          chips={filters.status}
+          deleteChip={onDeleteChip}
+          deleteChipGroup={onDeleteChipGroup}
+          categoryName="status"
+        >
+          <Select
+            variant="checkbox"
+            aria-label="status"
+            onToggle={onStatusToggle}
+            onSelect={onStatusSelect}
+            selections={filters.status}
+            isOpen={isStatusExpanded}
+            placeholderText={statusPlaceholder}
+          >
+            {Object.keys(CLUSTER_STATUS_LABELS).map((status) => (
+              <SelectOption key={status} value={CLUSTER_STATUS_LABELS[status]} />
+            ))}
+          </Select>
+        </ToolbarFilter>
+
+        <ToolbarItem>
+          <InputGroup>
+            <TextInput
+              name="search-name"
+              id="search-name"
+              type="search"
+              aria-label="cluster name to be searched"
+              onChange={onSearchNameChanged}
+              value={searchName}
+              placeholder="Filter by name ..."
+            />
+            <Button variant={ButtonVariant.control} aria-label="search cluster name button">
+              <SearchIcon />
+            </Button>
+          </InputGroup>
+        </ToolbarItem>
       </ToolbarContent>
     </Toolbar>
   );
