@@ -45,7 +45,7 @@ const ClusterStatus: React.FC<ClusterStatusProps> = ({ cluster }) => {
         minWidth="30rem"
         maxWidth="50rem"
       >
-        <Button variant={ButtonVariant.link} isInline>
+        <Button variant={ButtonVariant.link} isInline id={`button-cluster-status-${cluster.name}`}>
           {icon} {title}
         </Button>
       </Popover>

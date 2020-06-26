@@ -40,7 +40,7 @@ export const NewClusterModalButton: React.FC<NewClusterModalButtonProps> = ({
   ButtonComponent = Button,
   onClick,
 }) => (
-  <ButtonComponent variant={ButtonVariant.primary} onClick={onClick}>
+  <ButtonComponent variant={ButtonVariant.primary} onClick={onClick} id="button-create-new-cluster">
     Create New Cluster
   </ButtonComponent>
 );
