@@ -188,12 +188,6 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
                         <Text component="h1">Configure a bare metal OpenShift cluster</Text>
                       </TextContent>
                       <InputField label="Cluster Name" name="name" isRequired />
-                      <InputField
-                        label="Base DNS Domain"
-                        name="baseDnsDomain"
-                        helperText="The base domain of the cluster. All DNS records must be sub-domains of this base and include the cluster name."
-                        isRequired
-                      />
                     </GridGap>
                   </GridItem>
                   <GridItem span={12}>

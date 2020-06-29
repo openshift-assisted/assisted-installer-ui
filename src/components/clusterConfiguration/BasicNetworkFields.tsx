@@ -11,6 +11,12 @@ const BasicNetworkFields: React.FC<BasicNetworkFieldsProps> = ({ hostSubnets }) 
   const { validateField } = useFormikContext<ClusterConfigurationValues>();
   return (
     <>
+      <InputField
+        label="Base DNS Domain"
+        name="baseDnsDomain"
+        helperText="The base domain of the cluster. All DNS records must be sub-domains of this base and include the cluster name."
+        isRequired
+      />
       <SelectField
         name="hostSubnet"
         label="Available subnets"
