@@ -40,7 +40,7 @@ export const createClusterDownloadsImage = (
   id: string,
   params: ImageCreateParams,
   axiosOptions: AxiosRequestConfig,
-): AxiosPromise<void> => client.post(`/clusters/${id}/downloads/image`, params, axiosOptions);
+): AxiosPromise<Cluster> => client.post(`/clusters/${id}/downloads/image`, params, axiosOptions);
 
 // TODO(jtomasek): make the API_ROOT configurable so this can be used in cloud.redhat.com
 const API_ROOT = process.env.REACT_APP_API_ROOT;

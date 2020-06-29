@@ -21,18 +21,21 @@ import { DetailList, DetailItem } from '../ui/DetailList';
 
 type DiscoveryImageSummaryProps = {
   clusterId: Cluster['id'];
+  imageInfo: Cluster['imageInfo'];
   onClose: () => void;
   onReset: () => void;
 };
 
 const DiscoveryImageSummary: React.FC<DiscoveryImageSummaryProps> = ({
   clusterId,
+  imageInfo,
   onClose,
   onReset,
 }) => {
   const isoPath = getClusterDownloadsImageUrl(clusterId);
   const isoUrl = `${window.location.origin}${isoPath}`;
   const downloadIso = () => saveAs(isoPath);
+  const { proxyUrl } = imageInfo;
   return (
     <>
       <ModalBoxBody>
@@ -52,6 +55,7 @@ const DiscoveryImageSummary: React.FC<DiscoveryImageSummaryProps> = ({
                 </ClipboardCopy>
               }
             />
+            {proxyUrl && <DetailItem title="HTTP Proxy URL" value={proxyUrl} />}
           </DetailList>
         </TextContent>
       </ModalBoxBody>

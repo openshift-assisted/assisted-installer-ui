@@ -33,7 +33,7 @@ type DiscoveryImageFormProps = {
   clusterId: Cluster['id'];
   imageInfo: ImageInfo;
   onCancel: () => void;
-  onSuccess: () => void;
+  onSuccess: (imageInfo: Cluster['imageInfo']) => void;
 };
 
 const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
@@ -56,10 +56,10 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
   ) => {
     if (clusterId) {
       try {
-        await createClusterDownloadsImage(clusterId, values, {
+        const { data: cluster } = await createClusterDownloadsImage(clusterId, values, {
           cancelToken: cancelSourceRef.current?.token,
         });
-        onSuccess();
+        onSuccess(cluster.imageInfo);
       } catch (error) {
         handleApiError<ImageCreateParams>(error, () => {
           formikActions.setStatus({
@@ -72,9 +72,15 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
       }
     }
   };
+
+  const initialValues = {
+    proxyUrl: proxyUrl || '',
+    sshPublicKey: sshPublicKey || '',
+  };
+
   return (
     <Formik
-      initialValues={{ proxyUrl, sshPublicKey } as ImageCreateParams}
+      initialValues={initialValues as ImageCreateParams}
       initialStatus={{ error: null }}
       validationSchema={validationSchema}
       onSubmit={handleSubmit}

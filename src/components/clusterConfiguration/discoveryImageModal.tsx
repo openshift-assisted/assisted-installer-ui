@@ -2,7 +2,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { Modal, Button, ButtonVariant, ModalVariant } from '@patternfly/react-core';
 import { ToolbarButton } from '../ui/Toolbar';
-import { ImageInfo } from '../../api/types';
+import { ImageInfo, Cluster } from '../../api/types';
 import DiscoveryImageForm from './DiscoveryImageForm';
 import DiscoveryImageSummary from './DiscoveryImageSummary';
 
@@ -28,21 +28,21 @@ export const DiscoveryImageModalButton: React.FC<DiscoveryImageModalButtonProps>
       >
         Download discovery ISO
       </ButtonComponent>
-      {isModalOpen && <DiscoveryImageModal closeModal={closeModal} imageInfo={imageInfo} />}
+      {isModalOpen && <DiscoveryImageModal closeModal={closeModal} initialImageInfo={imageInfo} />}
     </>
   );
 };
 
 type DiscoveryImageModalProps = {
   closeModal: () => void;
-  imageInfo: ImageInfo;
+  initialImageInfo: ImageInfo;
 };
 
 export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({
   closeModal,
-  imageInfo,
+  initialImageInfo,
 }) => {
-  const [imageReady, setImageReady] = React.useState(false);
+  const [imageInfo, setImageInfo] = React.useState<Cluster['imageInfo'] | undefined>();
   const { clusterId } = useParams();
 
   return (
@@ -54,18 +54,19 @@ export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({
       variant={ModalVariant.small}
       hasNoBodyWrapper
     >
-      {imageReady ? (
+      {imageInfo ? (
         <DiscoveryImageSummary
           clusterId={clusterId}
+          imageInfo={imageInfo}
           onClose={closeModal}
-          onReset={() => setImageReady(false)}
+          onReset={() => setImageInfo(undefined)}
         />
       ) : (
         <DiscoveryImageForm
-          imageInfo={imageInfo}
+          imageInfo={initialImageInfo}
           clusterId={clusterId}
           onCancel={closeModal}
-          onSuccess={() => setImageReady(true)}
+          onSuccess={(imageInfo: Cluster['imageInfo']) => setImageInfo(imageInfo)}
         />
       )}
     </Modal>
