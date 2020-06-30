@@ -90,7 +90,7 @@ export const ipBlockValidationSchema = Yup.string().matches(IP_ADDRESS_BLOCK_REG
 });
 
 export const dnsNameValidationSchema = Yup.string().matches(DNS_NAME_REGEX, {
-  message: 'Value "${value}" is not valid DNS name.', // eslint-disable-line no-template-curly-in-string
+  message: 'Value "${value}" is not valid DNS name. Example: basedomain.example.com', // eslint-disable-line no-template-curly-in-string
   excludeEmptyString: true,
 });
 

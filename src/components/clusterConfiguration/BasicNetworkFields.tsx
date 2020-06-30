@@ -8,13 +8,28 @@ type BasicNetworkFieldsProps = {
 };
 
 const BasicNetworkFields: React.FC<BasicNetworkFieldsProps> = ({ hostSubnets }) => {
-  const { validateField } = useFormikContext<ClusterConfigurationValues>();
+  const { validateField, values } = useFormikContext<ClusterConfigurationValues>();
+  const { name: clusterName, baseDnsDomain, hostSubnet } = values;
+
+  const baseDnsHelperText = (
+    <>
+      The base domain of the cluster. All DNS records must be sub-domains of this base and include
+      the cluster name. This cannot be changed later. The full cluster address will be:{' '}
+      <strong>
+        {clusterName || '[Cluster Name]'}.{baseDnsDomain || '[example.com]'}
+      </strong>
+    </>
+  );
+
+  const subnet = hostSubnet ? ` (${hostSubnet})` : '';
+
   return (
     <>
       <InputField
         label="Base DNS Domain"
         name="baseDnsDomain"
-        helperText="The base domain of the cluster. All DNS records must be sub-domains of this base and include the cluster name."
+        helperText={baseDnsHelperText}
+        placeholder="example.com"
         isRequired
       />
       <SelectField
@@ -43,7 +58,7 @@ const BasicNetworkFields: React.FC<BasicNetworkFieldsProps> = ({ hostSubnets }) 
       <InputField
         label="API Virtual IP"
         name="apiVip"
-        helperText="Virtual IP used to reach the OpenShift cluster API. Make sure that the VIP's are unique and not used by any other device on your network."
+        helperText={`Virtual IP used to reach the OpenShift cluster API. Make sure that the VIP's are unique and not used by any other device on your network${subnet}.`}
         isRequired
         isDisabled={!hostSubnets.length}
       />
