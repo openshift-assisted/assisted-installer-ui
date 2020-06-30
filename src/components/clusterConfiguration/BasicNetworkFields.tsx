@@ -1,7 +1,7 @@
 import React from 'react';
 import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
 import { InputField, SelectField } from '../ui/formik';
-import { useFormikContext } from 'formik';
+import { useFormikContext, useField } from 'formik';
 
 type BasicNetworkFieldsProps = {
   hostSubnets: HostSubnets;
@@ -9,12 +9,26 @@ type BasicNetworkFieldsProps = {
 
 const BasicNetworkFields: React.FC<BasicNetworkFieldsProps> = ({ hostSubnets }) => {
   const { validateField } = useFormikContext<ClusterConfigurationValues>();
+  const [clusterName] = useField({ name: 'name' });
+  const [baseDnsField] = useField({ name: 'baseDnsDomain' });
+
+  const baseDnsHelperText = (
+    <>
+      The base domain of the cluster. All DNS records must be sub-domains of this base and include
+      the cluster name. This cannot be changed later. The full cluster address will be:{' '}
+      <strong>
+        {clusterName.value || '[Cluster Name]'}.{baseDnsField.value || '[example.com]'}
+      </strong>
+    </>
+  );
+
   return (
     <>
       <InputField
         label="Base DNS Domain"
         name="baseDnsDomain"
-        helperText="The base domain of the cluster. All DNS records must be sub-domains of this base and include the cluster name."
+        helperText={baseDnsHelperText}
+        placeholder="example.com"
         isRequired
       />
       <SelectField
