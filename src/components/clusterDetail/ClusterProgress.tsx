@@ -3,6 +3,7 @@ import { Cluster, Host } from '../../api/types';
 import { Progress, ProgressVariant, ProgressMeasureLocation } from '@patternfly/react-core';
 import { CLUSTER_STATUS_LABELS } from '../../config/constants';
 import { getHostInstallationSteps } from '../hosts/HostStatus';
+import { getHostInstallationStepNumber } from '../hosts/HostProgress';
 
 const getProgressVariant = (status: Cluster['status']) => {
   switch (status) {
@@ -37,7 +38,7 @@ const getProgressPercent = (hosts: Host[] = []) => {
     if (['installed', 'error'].includes(host.status)) {
       return steps + hostInstallationSteps.length;
     } else {
-      return steps + (hostInstallationSteps.indexOf(host.statusInfo) + 1);
+      return steps + getHostInstallationStepNumber(hostInstallationSteps, host.statusInfo);
     }
   }, 0);
   return (completedSteps / totalSteps) * 100;
