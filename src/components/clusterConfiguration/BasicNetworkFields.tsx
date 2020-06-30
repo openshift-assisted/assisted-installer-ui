@@ -1,26 +1,27 @@
 import React from 'react';
 import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
 import { InputField, SelectField } from '../ui/formik';
-import { useFormikContext, useField } from 'formik';
+import { useFormikContext } from 'formik';
 
 type BasicNetworkFieldsProps = {
   hostSubnets: HostSubnets;
 };
 
 const BasicNetworkFields: React.FC<BasicNetworkFieldsProps> = ({ hostSubnets }) => {
-  const { validateField } = useFormikContext<ClusterConfigurationValues>();
-  const [clusterName] = useField({ name: 'name' });
-  const [baseDnsField] = useField({ name: 'baseDnsDomain' });
+  const { validateField, values } = useFormikContext<ClusterConfigurationValues>();
+  const { name: clusterName, baseDnsDomain, hostSubnet } = values;
 
   const baseDnsHelperText = (
     <>
       The base domain of the cluster. All DNS records must be sub-domains of this base and include
       the cluster name. This cannot be changed later. The full cluster address will be:{' '}
       <strong>
-        {clusterName.value || '[Cluster Name]'}.{baseDnsField.value || '[example.com]'}
+        {clusterName || '[Cluster Name]'}.{baseDnsDomain || '[example.com]'}
       </strong>
     </>
   );
+
+  const subnet = hostSubnet ? ` (${hostSubnet})` : '';
 
   return (
     <>
@@ -57,7 +58,7 @@ const BasicNetworkFields: React.FC<BasicNetworkFieldsProps> = ({ hostSubnets }) 
       <InputField
         label="API Virtual IP"
         name="apiVip"
-        helperText="Virtual IP used to reach the OpenShift cluster API. Make sure that the VIP's are unique and not used by any other device on your network."
+        helperText={`Virtual IP used to reach the OpenShift cluster API. Make sure that the VIP's are unique and not used by any other device on your network${subnet}.`}
         isRequired
         isDisabled={!hostSubnets.length}
       />
