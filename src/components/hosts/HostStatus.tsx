@@ -16,7 +16,7 @@ import {
   UnknownIcon,
 } from '@patternfly/react-icons';
 import { Host } from '../../api/types';
-import HostProgress from './HostProgress';
+import HostProgress, { getHostInstallationStepNumber } from './HostProgress';
 import { HOST_STATUS_LABELS, HOST_STATUS_DETAILS } from '../../config/constants';
 
 import './HostStatus.css';
@@ -80,7 +80,10 @@ const HostStatus: React.FC<HostStatusProps> = ({ host }) => {
     currentStep: statusInfo || 'Starting Installation',
   };
 
-  const currentStepNumber = progressInfo.steps.indexOf(progressInfo.currentStep) + 1;
+  const currentStepNumber = getHostInstallationStepNumber(
+    progressInfo.steps,
+    progressInfo.currentStep,
+  );
   const bodyContent = React.useMemo(
     () => (
       <div>

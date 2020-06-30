@@ -285,6 +285,12 @@ export interface Event {
   requestId?: string; // uuid
 }
 export type EventList = Event[];
+export type FreeAddressesRequest = string /* ^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$ */[];
+export interface FreeNetworkAddresses {
+  network?: string; // ^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$
+  freeAddresses?: string /* ipv4 */[];
+}
+export type FreeNetworksAddresses = FreeNetworkAddresses[];
 export interface Host {
   /**
    * Indicates the type of this object. Will be 'Host' if this is a complete object or 'HostLink' if it is just a link.
@@ -320,6 +326,7 @@ export interface Host {
   connectivity?: string;
   hardwareInfo?: string;
   inventory?: string;
+  freeAddresses?: string;
   role?: 'undefined' | 'master' | 'worker';
   bootstrap?: boolean;
   /**
@@ -453,8 +460,17 @@ export interface StepReply {
   output?: string;
   error?: string;
 }
-export type StepType = 'hardware-info' | 'connectivity-check' | 'execute' | 'inventory' | 'install';
-export type Steps = Step[];
+export type StepType =
+  | 'hardware-info'
+  | 'connectivity-check'
+  | 'execute'
+  | 'inventory'
+  | 'install'
+  | 'free-network-addresses';
+export interface Steps {
+  nextInstructionSeconds?: number;
+  instructions?: Step[];
+}
 export type StepsReply = StepReply[];
 export interface SystemVendor {
   serialNumber?: string;
