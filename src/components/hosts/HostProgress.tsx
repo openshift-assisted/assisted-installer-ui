@@ -7,6 +7,9 @@ import {
   ProgressSize,
 } from '@patternfly/react-core';
 
+export const getHostInstallationStepNumber = (steps: string[], currentStep: string) =>
+  steps.findIndex((s) => currentStep.match(s)) + 1;
+
 const getProgressVariant = (status: Host['status']) => {
   switch (status) {
     case 'error':
@@ -32,7 +35,7 @@ type HostProgressProps = {
 
 const HostProgress: React.FC<HostProgressProps> = ({ status, progressInfo }) => {
   const { steps, currentStep } = progressInfo;
-  const currentStepNumber = steps.indexOf(currentStep) + 1;
+  const currentStepNumber = getHostInstallationStepNumber(steps, currentStep);
 
   return (
     <Progress
