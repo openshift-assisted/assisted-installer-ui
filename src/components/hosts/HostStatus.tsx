@@ -44,6 +44,7 @@ export const getHostInstallationSteps = (role: Host['role'], bootstrap: Host['bo
       'Writing image to disk',
       'Waiting for control plane',
       'Rebooting',
+      'Configuring',
       'Done',
     ];
   } else if (role === 'master') {
@@ -52,6 +53,7 @@ export const getHostInstallationSteps = (role: Host['role'], bootstrap: Host['bo
       `Installing as ${role}`,
       'Writing image to disk',
       'Rebooting',
+      'Configuring',
       'Joined',
       'Done',
     ];
@@ -61,6 +63,7 @@ export const getHostInstallationSteps = (role: Host['role'], bootstrap: Host['bo
       `Installing as ${role}`,
       'Writing image to disk',
       'Rebooting',
+      'Configuring',
       'Done',
     ];
   }
