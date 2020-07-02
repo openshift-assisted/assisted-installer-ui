@@ -71,8 +71,8 @@ const validationSchema = (hostSubnets: HostSubnets) =>
 
 const sshPublicKeyHelperText = (
   <>
-    SSH public key for debugging OpenShift nodes, value of <em>~/.ssh/id_rsa.pub</em> can be
-    copy&amp;pasted here. To generate new pair, use <em>ssh-keygen -o</em>.
+    SSH public key for debugging OpenShift nodes, value of <em>~/.ssh/id_rsa.pub</em> can be copy
+    &amp; pasted here. To generate new pair, use <em>ssh-keygen -o</em>.
   </>
 );
 
@@ -104,12 +104,14 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
 
     // update the cluster configuration
     try {
-      let params = _.omit(values, ['hostSubnet', 'isPullSecretEdit']);
+      let params = _.omit(values, ['hostSubnet', 'isPullSecretEdit', 'useRedHatDnsService']);
       if (!values.isPullSecretEdit) {
         params = _.omit(params, ['pullSecret']);
       }
       const { data } = await patchCluster(cluster.id, params);
-      formikActions.resetForm({ values: getInitialValues(data) });
+      formikActions.resetForm({
+        values: getInitialValues(data),
+      });
       dispatch(updateCluster(data));
     } catch (e) {
       handleApiError<ClusterUpdateParams>(e, () =>
@@ -191,7 +193,9 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
                     </GridGap>
                   </GridItem>
                   <GridItem span={12}>
-                    <BaremetalInventory cluster={cluster} />
+                    <GridGap>
+                      <BaremetalInventory cluster={cluster} />
+                    </GridGap>
                   </GridItem>
                   <GridItem span={12} lg={10} xl={6}>
                     <GridGap>
