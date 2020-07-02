@@ -1,5 +1,6 @@
 import React from 'react';
 import * as Yup from 'yup';
+import _ from 'lodash';
 import {
   Button,
   ButtonVariant,
@@ -13,7 +14,7 @@ import {
   AlertActionCloseButton,
 } from '@patternfly/react-core';
 import Axios, { CancelTokenSource } from 'axios';
-import { InputField, TextAreaField } from '../ui/formik';
+import { TextAreaField } from '../ui/formik';
 import { Formik, FormikHelpers } from 'formik';
 import { createClusterDownloadsImage } from '../../api/clusters';
 import { LoadingState } from '../ui/uiState';
@@ -21,6 +22,8 @@ import { handleApiError, getErrorMessage } from '../../api/utils';
 import { ImageCreateParams, ImageInfo, Cluster } from '../../api/types';
 import { sshPublicKeyValidationSchema } from '../ui/formik/validationSchemas';
 import GridGap from '../ui/GridGap';
+import DiscoveryProxyFields from './DiscoveryProxyFields';
+import { DiscoveryImageFormValues } from './types';
 
 const validationSchema = Yup.object().shape({
   proxyUrl: Yup.string().url('Provide a valid URL.'),
@@ -51,12 +54,13 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
   }, []);
 
   const handleSubmit = async (
-    values: ImageCreateParams,
-    formikActions: FormikHelpers<ImageCreateParams>,
+    values: DiscoveryImageFormValues,
+    formikActions: FormikHelpers<DiscoveryImageFormValues>,
   ) => {
     if (clusterId) {
       try {
-        const { data: cluster } = await createClusterDownloadsImage(clusterId, values, {
+        const params = _.omit(values, ['enableProxy']);
+        const { data: cluster } = await createClusterDownloadsImage(clusterId, params, {
           cancelToken: cancelSourceRef.current?.token,
         });
         onSuccess(cluster.imageInfo);
@@ -74,13 +78,14 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
   };
 
   const initialValues = {
+    enableProxy: !!proxyUrl,
     proxyUrl: proxyUrl || '',
     sshPublicKey: sshPublicKey || '',
   };
 
   return (
     <Formik
-      initialValues={initialValues as ImageCreateParams}
+      initialValues={initialValues as DiscoveryImageFormValues}
       initialStatus={{ error: null }}
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
@@ -114,10 +119,6 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
                 <TextContent>
                   <Text component="p">
                     Hosts must be connected to the internet to form a cluster using this installer.
-                    If hosts are behind a firewall that requires the use of a proxy, provide the
-                    proxy URL below.
-                  </Text>
-                  <Text component="p">
                     Each host will need a valid IP address assigned by a DHCP server with DNS
                     records that fully resolve.
                   </Text>
@@ -128,12 +129,7 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
                     during the installation.
                   </Text>
                 </TextContent>
-                <InputField
-                  label="HTTP Proxy URL"
-                  name="proxyUrl"
-                  placeholder="http://<user>:<password>@<ipaddr>:<port>"
-                  helperText="HTTP proxy URL that agents should use to access the discovery service"
-                />
+                <DiscoveryProxyFields />
                 <TextAreaField
                   label="SSH public key"
                   name="sshPublicKey"

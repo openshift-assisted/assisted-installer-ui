@@ -3,6 +3,7 @@ import { useField } from 'formik';
 import { FormGroup, TextArea } from '@patternfly/react-core';
 import { TextAreaProps } from './types';
 import { getFieldId } from './utils';
+import HelperText from './HelperText';
 
 const TextAreaField: React.FC<TextAreaProps> = ({
   label,
@@ -20,7 +21,13 @@ const TextAreaField: React.FC<TextAreaProps> = ({
     <FormGroup
       fieldId={fieldId}
       label={label}
-      helperText={helperText}
+      helperText={
+        typeof helperText === 'string' ? (
+          helperText
+        ) : (
+          <HelperText fieldId={fieldId}>{helperText}</HelperText>
+        )
+      }
       helperTextInvalid={errorMessage}
       validated={isValid ? 'default' : 'error'}
       isRequired={isRequired}

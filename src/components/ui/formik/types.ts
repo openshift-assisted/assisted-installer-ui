@@ -48,8 +48,7 @@ export interface TextAreaSecretProps extends TextAreaProps {
 }
 
 export interface CheckboxFieldProps extends FieldProps {
-  formLabel?: string;
-  value?: string;
+  onChange?: (value: boolean, event: React.FormEvent<HTMLInputElement>) => void;
 }
 
 export interface SearchInputFieldProps extends InputFieldProps {
