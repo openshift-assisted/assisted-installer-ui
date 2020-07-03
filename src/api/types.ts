@@ -285,6 +285,7 @@ export interface Event {
   requestId?: string; // uuid
 }
 export type EventList = Event[];
+export type FreeAddressesList = string /* ipv4 */[];
 export type FreeAddressesRequest = string /* ^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$ */[];
 export interface FreeNetworkAddresses {
   network?: string; // ^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$
@@ -317,7 +318,8 @@ export interface Host {
     | 'installing'
     | 'installing-in-progress'
     | 'installed'
-    | 'error';
+    | 'error'
+    | 'resetting';
   statusInfo: string;
   /**
    * The last time that the host status has been updated
@@ -424,8 +426,13 @@ export interface L3Connectivity {
   remoteIpAddress?: string;
   successful?: boolean;
 }
+export type ListManagedDomains = ManagedDomain[];
 export interface ListVersions {
   [name: string]: string;
+}
+export interface ManagedDomain {
+  domain?: string;
+  provider?: 'route53';
 }
 export interface Memory {
   physicalBytes?: number;
@@ -466,7 +473,8 @@ export type StepType =
   | 'execute'
   | 'inventory'
   | 'install'
-  | 'free-network-addresses';
+  | 'free-network-addresses'
+  | 'reset-agent';
 export interface Steps {
   nextInstructionSeconds?: number;
   instructions?: Step[];

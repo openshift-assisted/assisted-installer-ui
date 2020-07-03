@@ -45,6 +45,7 @@ export const HOST_STATUS_LABELS: { [key in Host['status']]: string } = {
   'installing-in-progress': 'Installing',
   installed: 'Installed',
   error: 'Error',
+  resetting: 'Resetting',
 };
 
 export const CLUSTER_FIELD_LABELS: { [key in string]: string } = {
@@ -74,6 +75,7 @@ export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
   'installing-in-progress': '', // not rendered
   installed: 'This host completed its installation successfully',
   error: 'This host failed its installation.',
+  resetting: 'This host is resetting the installation',
 };
 
 export const RED_HAT_DNS_SERVICE_DOMAINS = ['assistedinstaller.sysdesenq.com'];

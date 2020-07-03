@@ -394,6 +394,66 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
+  /clusters/{cluster_id}/actions/cancel:
+    post:
+      tags:
+        - installer
+      summary: Cancels an ongoing installation.
+      operationId: CancelInstallation
+      parameters:
+        - in: path
+          name: cluster_id
+          type: string
+          format: uuid
+          required: true
+      responses:
+        202:
+          description: Success.
+          schema:
+            $ref: '#/definitions/cluster'
+        404:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        409:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        500:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
+  /clusters/{cluster_id}/actions/reset:
+    post:
+      tags:
+        - installer
+      summary: Resets a failed installation.
+      operationId: ResetCluster
+      parameters:
+        - in: path
+          name: cluster_id
+          type: string
+          format: uuid
+          required: true
+      responses:
+        202:
+          description: Success.
+          schema:
+            $ref: '#/definitions/cluster'
+        404:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        409:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        500:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
   /clusters/{cluster_id}/hosts:
     post:
       tags:
@@ -710,6 +770,61 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
+  # The following API call should be admin only
+  /clusters/{cluster_id}/free_addresses:
+    get:
+      tags:
+        - installer
+      summary: Retrieves the free address list for a network.
+      operationId: GetFreeAddresses
+      parameters:
+        - in: path
+          name: cluster_id
+          type: string
+          format: uuid
+          required: true
+        - in: query
+          name: network
+          type: string
+          pattern: '^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$'
+          required: true
+        - in: query
+          name: limit
+          type: integer
+          minimum: 1
+          maximum: 8000
+          default: 8000
+          required: false
+        - in: query
+          name: prefix
+          type: string
+          required: false
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/free-addresses-list'
+        404:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
+  /domains:
+    get:
+      tags:
+        - managed_domains
+      summary: List of managed DNS domains
+      operationId: ListManagedDomains
+      responses:
+        200:
+          description: Success.
+          schema:
+            $ref: '#/definitions/list-managed-domains'
+        500:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
   /component_versions:
     get:
       tags:
@@ -745,6 +860,20 @@ paths:
             $ref: '#/definitions/error'
 
 definitions:
+  list-managed-domains:
+    type: array
+    items:
+      $ref: '#/definitions/managed-domain'
+
+  managed-domain:
+    type: object
+    properties:
+      domain:
+        type: string
+      provider:
+        type: string
+        enum: ['route53']
+
   list-versions:
     type: object
     additionalProperties:
@@ -842,6 +971,7 @@ definitions:
           - installing-in-progress
           - installed
           - error
+          - resetting
       status_info:
         type: string
         x-go-custom-tag: gorm:"type:varchar(2048)"
@@ -905,6 +1035,7 @@ definitions:
       - inventory
       - install
       - free-network-addresses
+      - reset-agent
 
   step:
     type: object
@@ -1265,6 +1396,12 @@ definitions:
         type: string
         format: date-time
         x-go-custom-tag: gorm:"type:datetime"
+
+  free-addresses-list:
+    type: array
+    items:
+      type: string
+      format: ipv4
 
   cluster-list:
     type: array
