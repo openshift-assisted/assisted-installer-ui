@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import * as Yup from 'yup';
 import { validateYupSchema, yupToFormErrors } from 'formik';
-import { Cluster } from '../../api/types';
+import { Cluster, ManagedDomain } from '../../api/types';
 import { ClusterConfigurationValues } from '../../types/clusters';
 import {
   pullSecretKnownOrRequired,
@@ -10,7 +10,7 @@ import {
 import { getInitialValues } from './utils';
 import { CLUSTER_FIELD_LABELS } from '../../config/constants';
 
-export const validateHosts = (cluster: Cluster) => {
+const validateHosts = (cluster: Cluster) => {
   const hosts = cluster.hosts || [];
   const masters = hosts.filter((r) => r.role === 'master').length;
   if (hosts.length < 3) {
@@ -32,8 +32,8 @@ export const validateHosts = (cluster: Cluster) => {
 // TODO(jtomasek): Add validation to identify hosts which are connected to network defined by VIPs
 // const validateConnectedHosts = (cluster: Cluster) => ...;
 
-export const validateRequiredFields = (cluster: Cluster) => {
-  const values = getInitialValues(cluster);
+const validateRequiredFields = (cluster: Cluster, managedDomains: ManagedDomain[]) => {
+  const values = getInitialValues(cluster, managedDomains);
   const requiredSchema = Yup.mixed().required();
 
   const installValidationSchema = Yup.object<ClusterConfigurationValues>().shape({
@@ -64,6 +64,6 @@ export const validateRequiredFields = (cluster: Cluster) => {
   }
 };
 
-export const validateCluster = (cluster: Cluster) => {
-  return _.filter([validateHosts(cluster), validateRequiredFields(cluster)]);
+export const validateCluster = (cluster: Cluster, managedDomains: ManagedDomain[] = []) => {
+  return _.filter([validateHosts(cluster), validateRequiredFields(cluster, managedDomains)]);
 };

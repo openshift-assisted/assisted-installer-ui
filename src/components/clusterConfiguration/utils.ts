@@ -1,8 +1,7 @@
 import { Netmask } from 'netmask';
 import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
-import { Cluster, Inventory } from '../../api/types';
+import { Cluster, Inventory, ManagedDomain } from '../../api/types';
 import { stringToJSON } from '../../api/utils';
-import { RED_HAT_DNS_SERVICE_DOMAINS } from '../../config/constants';
 
 export const findMatchingSubnet = (
   ingressVip: string | undefined,
@@ -52,7 +51,10 @@ export const getHostSubnets = (cluster: Cluster): HostSubnets => {
   );
 };
 
-export const getInitialValues = (cluster: Cluster): ClusterConfigurationValues => ({
+export const getInitialValues = (
+  cluster: Cluster,
+  managedDomains: ManagedDomain[],
+): ClusterConfigurationValues => ({
   name: cluster.name || '',
   baseDnsDomain: cluster.baseDnsDomain || '',
   clusterNetworkCidr: cluster.clusterNetworkCidr || '',
@@ -65,5 +67,5 @@ export const getInitialValues = (cluster: Cluster): ClusterConfigurationValues =
   isPullSecretEdit: !cluster.pullSecretSet, // toggles edit mode and drives validation
   hostSubnet: findMatchingSubnet(cluster.ingressVip, cluster.apiVip, getHostSubnets(cluster)),
   useRedHatDnsService:
-    !!cluster.baseDnsDomain && RED_HAT_DNS_SERVICE_DOMAINS.includes(cluster.baseDnsDomain),
+    !!cluster.baseDnsDomain && managedDomains.map((d) => d.domain).includes(cluster.baseDnsDomain),
 });

@@ -12,7 +12,7 @@ import {
   TextListItem,
 } from '@patternfly/react-core';
 import { TimesIcon } from '@patternfly/react-icons';
-import { Cluster } from '../../api/types';
+import { Cluster, ManagedDomain } from '../../api/types';
 import { validateCluster } from './clusterValidations';
 import { ClusterConfigurationValues } from '../../types/clusters';
 import { CLUSTER_FIELD_LABELS } from '../../config/constants';
@@ -20,6 +20,7 @@ import './ClusterValidationSection.css';
 
 type ClusterValidationSectionProps = {
   cluster: Cluster;
+  managedDomains: ManagedDomain[];
   dirty: boolean;
   formErrors: FormikErrors<ClusterConfigurationValues>;
   onClose: () => void;
@@ -27,12 +28,16 @@ type ClusterValidationSectionProps = {
 
 const ClusterValidationSection: React.FC<ClusterValidationSectionProps> = ({
   cluster,
+  managedDomains,
   dirty,
   formErrors,
   onClose,
 }) => {
   const prevReadyRef = React.useRef<boolean>();
-  const errors = React.useMemo(() => validateCluster(cluster), [cluster]);
+  const errors = React.useMemo(() => validateCluster(cluster, managedDomains), [
+    cluster,
+    managedDomains,
+  ]);
   const errorFields = Object.keys(formErrors);
   const ready = cluster.status === 'ready' && !errors.length && !errorFields.length && !dirty;
 

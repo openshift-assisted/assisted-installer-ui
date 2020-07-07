@@ -77,5 +77,3 @@ export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
   error: 'This host failed its installation.',
   resetting: 'This host is resetting the installation',
 };
-
-export const RED_HAT_DNS_SERVICE_DOMAINS = ['assistedinstaller.sysdesenq.com'];
