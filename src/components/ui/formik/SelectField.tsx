@@ -3,6 +3,7 @@ import { useField } from 'formik';
 import { FormGroup, FormSelect, FormSelectOption } from '@patternfly/react-core';
 import { getFieldId } from './utils';
 import { SelectFieldProps } from './types';
+import HelperText from './HelperText';
 
 const SelectField: React.FC<SelectFieldProps> = ({
   label,
@@ -17,11 +18,14 @@ const SelectField: React.FC<SelectFieldProps> = ({
   const fieldId = getFieldId(props.name, 'input');
   const isValid = !(touched && error);
   const errorMessage = !isValid ? error : '';
+  const hText = getHelperText ? getHelperText(field.value) : helperText;
   return (
     <FormGroup
       fieldId={fieldId}
       label={label}
-      helperText={getHelperText ? getHelperText(field.value) : helperText}
+      helperText={
+        typeof hText === 'string' ? hText : <HelperText fieldId={fieldId}>{hText}</HelperText>
+      }
       helperTextInvalid={errorMessage}
       validated={isValid ? 'default' : 'error'}
       isRequired={isRequired}

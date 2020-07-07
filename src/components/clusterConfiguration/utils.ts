@@ -1,6 +1,6 @@
 import { Netmask } from 'netmask';
 import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
-import { Cluster, Inventory } from '../../api/types';
+import { Cluster, Inventory, ManagedDomain } from '../../api/types';
 import { stringToJSON } from '../../api/utils';
 
 export const findMatchingSubnet = (
@@ -51,7 +51,10 @@ export const getHostSubnets = (cluster: Cluster): HostSubnets => {
   );
 };
 
-export const getInitialValues = (cluster: Cluster): ClusterConfigurationValues => ({
+export const getInitialValues = (
+  cluster: Cluster,
+  managedDomains: ManagedDomain[],
+): ClusterConfigurationValues => ({
   name: cluster.name || '',
   baseDnsDomain: cluster.baseDnsDomain || '',
   clusterNetworkCidr: cluster.clusterNetworkCidr || '',
@@ -63,4 +66,6 @@ export const getInitialValues = (cluster: Cluster): ClusterConfigurationValues =
   sshPublicKey: cluster.sshPublicKey || '',
   isPullSecretEdit: !cluster.pullSecretSet, // toggles edit mode and drives validation
   hostSubnet: findMatchingSubnet(cluster.ingressVip, cluster.apiVip, getHostSubnets(cluster)),
+  useRedHatDnsService:
+    !!cluster.baseDnsDomain && managedDomains.map((d) => d.domain).includes(cluster.baseDnsDomain),
 });
