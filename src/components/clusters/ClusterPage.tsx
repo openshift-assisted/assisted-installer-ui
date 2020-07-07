@@ -84,7 +84,9 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
   if (uiState === ResourceUIState.LOADING) return loadingState;
   if (uiState === ResourceUIState.ERROR) return errorState; // TODO(jtomasek): redirect to cluster list instead?
   if (cluster) {
-    if (['installing', 'installed', 'error'].includes(cluster.status)) {
+    if (
+      ['preparing-for-installation', 'installing', 'installed', 'error'].includes(cluster.status)
+    ) {
       return <ClusterDetail cluster={cluster} />;
     } else {
       return <ClusterConfiguration cluster={cluster} />;

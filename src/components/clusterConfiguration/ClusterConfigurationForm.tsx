@@ -299,33 +299,34 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
                   <Spinner size="sm" /> Saving changes...
                 </ToolbarText>
               )}
-              {isStartingInstallation && (
+              {isStartingInstallation ? (
                 <ToolbarText component={TextVariants.small}>
                   <Spinner size="sm" /> Starting installation...
                 </ToolbarText>
+              ) : (
+                <ToolbarText component={TextVariants.small}>
+                  {!clusterErrors.length &&
+                  !Object.keys(errors).length &&
+                  !dirty &&
+                  cluster.status === 'ready' ? (
+                    <>
+                      <CheckCircleIcon color={successColor.value} /> The cluster is ready to be
+                      installed.
+                    </>
+                  ) : (
+                    <>
+                      <Button
+                        variant={ButtonVariant.link}
+                        onClick={() => setIsValidationSectionOpen(!isValidationSectionOpen)}
+                        isInline
+                      >
+                        <WarningTriangleIcon color={warningColor.value} />{' '}
+                        <small>The cluster is not ready to be installed yet</small>
+                      </Button>
+                    </>
+                  )}
+                </ToolbarText>
               )}
-              <ToolbarText component={TextVariants.small}>
-                {!clusterErrors.length &&
-                !Object.keys(errors).length &&
-                !dirty &&
-                cluster.status === 'ready' ? (
-                  <>
-                    <CheckCircleIcon color={successColor.value} /> The cluster is ready to be
-                    installed.
-                  </>
-                ) : (
-                  <>
-                    <Button
-                      variant={ButtonVariant.link}
-                      onClick={() => setIsValidationSectionOpen(!isValidationSectionOpen)}
-                      isInline
-                    >
-                      <WarningTriangleIcon color={warningColor.value} />{' '}
-                      <small>The cluster is not ready to be installed yet</small>
-                    </Button>
-                  </>
-                )}
-              </ToolbarText>
               <ToolbarSecondaryGroup>
                 <EventsModalButton
                   entityKind="cluster"
