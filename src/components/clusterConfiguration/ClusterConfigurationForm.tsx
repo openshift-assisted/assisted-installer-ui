@@ -1,5 +1,6 @@
 import React from 'react';
 import { Formik, FormikProps, FormikHelpers } from 'formik';
+import { AnyAction } from 'redux';
 import * as Yup from 'yup';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
@@ -32,11 +33,7 @@ import { handleApiError, getErrorMessage } from '../../api/utils';
 import { CLUSTER_MANAGER_SITE_LINK } from '../../config/constants';
 import AlertsSection from '../ui/AlertsSection';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
-import alertsReducer, {
-  addAlert,
-  AlertProps,
-  removeAlert,
-} from '../../features/alerts/alertsSlice';
+import { addAlert, AlertProps, removeAlert } from '../../features/alerts/alertsSlice';
 import BaremetalInventory from './BaremetalInventory';
 import {
   nameValidationSchema,
@@ -79,16 +76,19 @@ const sshPublicKeyHelperText = (
 type ClusterConfigurationFormProps = {
   cluster: Cluster;
   managedDomains: ManagedDomain[];
+  alerts: AlertProps[];
+  dispatchAlertsAction: React.Dispatch<AnyAction>;
 };
 
 const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
   cluster,
   managedDomains,
+  alerts,
+  dispatchAlertsAction,
 }) => {
   const [isValidationSectionOpen, setIsValidationSectionOpen] = React.useState(false);
   const [isStartingInstallation, setIsStartingInstallation] = React.useState(false);
   const dispatch = useDispatch();
-  const [alerts, dispatchAlertsAction] = React.useReducer(alertsReducer, []);
   const hostSubnets = getHostSubnets(cluster);
 
   const handleSubmit = async (
