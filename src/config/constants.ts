@@ -74,5 +74,5 @@ export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
   'installing-in-progress': '', // not rendered
   installed: 'This host completed its installation successfully',
   error: 'This host failed its installation.',
-  resetting: 'This host is resetting the installation',
+  resetting: 'This host is resetting the installation.',
 };

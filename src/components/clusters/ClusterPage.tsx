@@ -12,9 +12,12 @@ import {
   forceReload,
   cancelForceReload,
 } from '../../features/clusters/currentClusterSlice';
+import { Cluster } from '../../api/types';
 import { POLLING_INTERVAL } from '../../config/constants';
 import ClusterConfiguration from '../clusterConfiguration/ClusterConfiguration';
 import ClusterDetail from '../clusterDetail/ClusterDetail';
+import CancelInstallationModal from '../clusterDetail/CancelInstallationModal';
+import ResetClusterModal from '../clusterDetail/ResetClusterModal';
 
 type MatchParams = {
   clusterId: string;
@@ -53,6 +56,8 @@ const useClusterPolling = (clusterId: string) => {
 const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
   const { clusterId } = match.params;
   const { data: cluster, uiState } = useSelector(selectCurrentClusterState);
+  const [cancelInstallationModalOpen, setCancelInstallationModalOpen] = React.useState(false);
+  const [resetClusterModalOpen, setResetClusterModalOpen] = React.useState(false);
   const fetchCluster = useFetchCluster(clusterId);
   useClusterPolling(clusterId);
 
@@ -81,16 +86,40 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
     </PageSection>
   );
 
-  if (uiState === ResourceUIState.LOADING) return loadingState;
-  if (uiState === ResourceUIState.ERROR) return errorState; // TODO(jtomasek): redirect to cluster list instead?
-  if (cluster) {
+  const getContent = (cluster: Cluster) => {
     if (
       ['preparing-for-installation', 'installing', 'installed', 'error'].includes(cluster.status)
     ) {
-      return <ClusterDetail cluster={cluster} />;
+      return (
+        <ClusterDetail
+          cluster={cluster}
+          setCancelInstallationModalOpen={setCancelInstallationModalOpen}
+          setResetClusterModalOpen={setResetClusterModalOpen}
+        />
+      );
     } else {
       return <ClusterConfiguration cluster={cluster} />;
     }
+  };
+
+  if (uiState === ResourceUIState.LOADING) return loadingState;
+  if (uiState === ResourceUIState.ERROR) return errorState; // TODO(jtomasek): redirect to cluster list instead?
+  if (cluster) {
+    return (
+      <>
+        {getContent(cluster)}
+        <CancelInstallationModal
+          isOpen={cancelInstallationModalOpen}
+          onClose={() => setCancelInstallationModalOpen(false)}
+          clusterId={cluster.id}
+        />
+        <ResetClusterModal
+          isOpen={resetClusterModalOpen}
+          onClose={() => setResetClusterModalOpen(false)}
+          clusterId={cluster.id}
+        />
+      </>
+    );
   }
   return <Redirect to="/clusters" />;
 };

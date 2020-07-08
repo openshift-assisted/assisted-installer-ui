@@ -36,6 +36,12 @@ export const deleteClusterHost = (clusterId: string, hostId: string): AxiosPromi
 export const postInstallCluster = (clusterId: string): AxiosPromise<Cluster> =>
   client.post(`/clusters/${clusterId}/actions/install`);
 
+export const postResetCluster = (clusterId: string): AxiosPromise<Cluster> =>
+  client.post(`/clusters/${clusterId}/actions/reset`);
+
+export const postCancelInstallation = (clusterId: string): AxiosPromise<Cluster> =>
+  client.post(`/clusters/${clusterId}/actions/cancel`);
+
 export const createClusterDownloadsImage = (
   id: string,
   params: ImageCreateParams,

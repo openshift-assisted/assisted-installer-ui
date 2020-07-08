@@ -21,6 +21,7 @@ import { HOST_STATUS_LABELS, HOST_STATUS_DETAILS } from '../../config/constants'
 
 import './HostStatus.css';
 import { getHumanizedDateTime } from '../ui/utils';
+import { toSentence } from '../ui/table/utils';
 
 const getStatusIcon = (status: Host['status']) => {
   if (status === 'discovering') return <ConnectedIcon />;
@@ -32,6 +33,7 @@ const getStatusIcon = (status: Host['status']) => {
   if (status === 'installing-in-progress') return <InProgressIcon />;
   if (status === 'error') return <ExclamationCircleIcon color={dangerColor.value} />;
   if (status === 'installed') return <CheckCircleIcon color={okColor.value} />;
+  if (status === 'resetting') return <InProgressIcon />;
   return <UnknownIcon />;
 };
 
@@ -98,7 +100,7 @@ const HostStatus: React.FC<HostStatusProps> = ({ host }) => {
         ) : (
           <>
             <p>{HOST_STATUS_DETAILS[status] || ''}</p>
-            <p>{statusInfo}</p>
+            <p>{toSentence(statusInfo)}</p>
           </>
         )}
       </div>
