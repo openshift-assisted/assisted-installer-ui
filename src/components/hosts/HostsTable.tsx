@@ -58,7 +58,9 @@ const columns = [
   { title: 'Disk', transforms: [sortable] },
 ];
 
-const hostToHostTableRow = (openRows: OpenRows) => (host: Host): IRow => {
+const hostToHostTableRow = (openRows: OpenRows, clusterStatus: Cluster['status']) => (
+  host: Host,
+): IRow => {
   const { id, status, createdAt, inventory: inventoryString = '' } = host;
   const inventory = stringToJSON<Inventory>(inventoryString) || {};
   const { cores, memory, disk } = getHostRowHardwareInfo(inventory);
@@ -70,7 +72,7 @@ const hostToHostTableRow = (openRows: OpenRows) => (host: Host): IRow => {
       cells: [
         inventory.hostname || { title: DASH, sortableValue: '' },
         {
-          title: <RoleCell host={host} />,
+          title: <RoleCell host={host} clusterStatus={clusterStatus} />,
           sortableValue: getHostRole(host),
         },
         {
@@ -124,14 +126,14 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
     () =>
       _.flatten(
         (cluster.hosts || [])
-          .map(hostToHostTableRow(openRows))
+          .map(hostToHostTableRow(openRows, cluster.status))
           .sort(rowSorter(sortBy, (row: IRow, index = 1) => row[0].cells[index - 1]))
           .map((row: IRow, index: number) => {
             row[1].parent = index * 2;
             return row;
           }),
       ),
-    [cluster.hosts, openRows, sortBy],
+    [cluster.hosts, cluster.status, openRows, sortBy],
   );
 
   const rows = React.useMemo(() => {

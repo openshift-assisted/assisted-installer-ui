@@ -74,7 +74,13 @@ export interface Cluster {
   /**
    * Status of the OpenShift cluster.
    */
-  status: 'insufficient' | 'ready' | 'error' | 'installing' | 'installed';
+  status:
+    | 'insufficient'
+    | 'ready'
+    | 'error'
+    | 'installing'
+    | 'installed'
+    | 'preparing-for-installation';
   /**
    * Additional information pertaining to the status of the OpenShift cluster.
    */
@@ -194,7 +200,14 @@ export interface ClusterUpdateParams {
    */
   hostsRoles?: {
     id?: string; // uuid
-    role?: 'master' | 'worker';
+    role?: HostRoleUpdateParams;
+  }[];
+  /**
+   * The desired hostname for hosts associated with the cluster.
+   */
+  hostsNames?: {
+    id?: string; // uuid
+    hostname?: string;
   }[];
 }
 export interface ConnectivityCheckHost {
@@ -329,7 +342,7 @@ export interface Host {
   hardwareInfo?: string;
   inventory?: string;
   freeAddresses?: string;
-  role?: 'undefined' | 'master' | 'worker';
+  role?: HostRole;
   bootstrap?: boolean;
   /**
    * Installer version
@@ -342,6 +355,7 @@ export interface Host {
    */
   checkedInAt?: string; // date-time
   discoveryAgentVersion?: string;
+  requestedHostname?: string;
 }
 export interface HostCreateParams {
   hostId: string; // uuid
@@ -353,6 +367,8 @@ export interface HostNetwork {
   cidr?: string;
   hostIds?: string /* uuid */[];
 }
+export type HostRole = 'master' | 'worker' | 'bootstrap';
+export type HostRoleUpdateParams = 'master' | 'worker';
 export interface ImageCreateParams {
   /**
    * The URL of the HTTP/S proxy that agents should use to access the discovery service
@@ -428,7 +444,8 @@ export interface L3Connectivity {
 }
 export type ListManagedDomains = ManagedDomain[];
 export interface ListVersions {
-  [name: string]: string;
+  versions?: Versions;
+  releaseTag?: string;
 }
 export interface ManagedDomain {
   domain?: string;
@@ -484,4 +501,7 @@ export interface SystemVendor {
   serialNumber?: string;
   productName?: string;
   manufacturer?: string;
+}
+export interface Versions {
+  [name: string]: string;
 }
