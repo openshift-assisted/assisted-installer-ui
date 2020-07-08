@@ -18,6 +18,7 @@ import ClusterConfiguration from '../clusterConfiguration/ClusterConfiguration';
 import ClusterDetail from '../clusterDetail/ClusterDetail';
 import CancelInstallationModal from '../clusterDetail/CancelInstallationModal';
 import ResetClusterModal from '../clusterDetail/ResetClusterModal';
+import { AlertsContextProvider } from '../AlertsContextProvider';
 
 type MatchParams = {
   clusterId: string;
@@ -106,7 +107,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
   if (uiState === ResourceUIState.ERROR) return errorState; // TODO(jtomasek): redirect to cluster list instead?
   if (cluster) {
     return (
-      <>
+      <AlertsContextProvider>
         {getContent(cluster)}
         <CancelInstallationModal
           isOpen={cancelInstallationModalOpen}
@@ -118,7 +119,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
           onClose={() => setResetClusterModalOpen(false)}
           clusterId={cluster.id}
         />
-      </>
+      </AlertsContextProvider>
     );
   }
   return <Redirect to="/clusters" />;

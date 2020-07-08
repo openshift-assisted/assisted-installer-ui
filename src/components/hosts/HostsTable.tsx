@@ -15,25 +15,24 @@ import {
 } from '@patternfly/react-table';
 import { ConnectedIcon } from '@patternfly/react-icons';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
-import { AlertVariant } from '@patternfly/react-core';
 import { EmptyState } from '../ui/uiState';
 import { getColSpanRow, rowSorter } from '../ui/table/utils';
 import { Host, Cluster, Inventory } from '../../api/types';
 import { enableClusterHost, disableClusterHost, deleteClusterHost } from '../../api/clusters';
-import { Alerts, Alert } from '../ui/Alerts';
 import { EventsModal } from '../ui/eventsModal';
 import { getHostRowHardwareInfo, getDateTimeCell } from './hardwareInfo';
 import { DiscoveryImageModalButton } from '../clusterConfiguration/discoveryImageModal';
 import HostStatus from './HostStatus';
 import { HostDetail } from './HostRowDetail';
-import { forceReload } from '../../features/clusters/currentClusterSlice';
-import { handleApiError, stringToJSON } from '../../api/utils';
+import { forceReload, updateHost } from '../../features/clusters/currentClusterSlice';
+import { handleApiError, stringToJSON, getErrorMessage } from '../../api/utils';
 import sortable from '../ui/table/sortable';
 import RoleCell, { getHostRole } from './RoleCell';
 import { DASH } from '../constants';
+import DeleteHostModal from './DeleteHostModal';
+import { AlertsContext } from '../AlertsContextProvider';
 
 import './HostsTable.css';
-import DeleteHostModal from './DeleteHostModal';
 
 type HostsTableProps = {
   cluster: Cluster;
@@ -112,10 +111,10 @@ const HostsTableEmptyState: React.FC<{ cluster: Cluster }> = ({ cluster }) => (
 const rowKey = ({ rowData }: ExtraParamsType) => rowData?.key;
 
 const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
+  const { addAlert } = React.useContext(AlertsContext);
   const [showEventsModal, setShowEventsModal] = React.useState<Host['id']>('');
   const [openRows, setOpenRows] = React.useState({} as OpenRows);
   const [hostToDelete, setHostToDelete] = React.useState<HostToDelete>();
-  const [alerts, setAlerts] = React.useState([] as Alert[]);
   const [sortBy, setSortBy] = React.useState({
     index: 1, // Hostname-column
     direction: SortByDirection.asc,
@@ -154,22 +153,6 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
     [hostRows, openRows],
   );
 
-  const addAlert = React.useCallback(
-    (alert: Alert) => {
-      if (alert.key) {
-        alert.onClose = () => {
-          setAlerts(alerts.filter((a) => a.key !== alert.key));
-        };
-
-        // remove existing and place new on the top
-        setAlerts([alert, ...alerts.filter((a) => a.key !== alert.key)]);
-      } else {
-        setAlerts([alert, ...alerts]);
-      }
-    },
-    [alerts, setAlerts],
-  );
-
   const onDeleteHost = React.useCallback(
     async (hostId) => {
       try {
@@ -177,11 +160,7 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
         dispatch(forceReload());
       } catch (e) {
         return handleApiError(e, () =>
-          addAlert({
-            key: `delete-${hostId}`,
-            variant: AlertVariant.danger,
-            text: `Failed to delete host ${hostId}`,
-          }),
+          addAlert({ title: `Failed to delete host ${hostId}`, message: getErrorMessage(e) }),
         );
       }
     },
@@ -189,41 +168,31 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
   );
 
   const onHostEnable = React.useCallback(
-    (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
+    async (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
       const hostId = rowData.extraData.id;
-      enableClusterHost(cluster.id, hostId)
-        .then(() => {
-          dispatch(forceReload());
-        })
-        .catch((err) => {
-          handleApiError(err, () => {
-            addAlert({
-              key: `enable-${hostId}`,
-              variant: AlertVariant.warning,
-              text: `Failed to enable host ${hostId}`,
-            });
-          });
-        });
+      try {
+        const { data } = await enableClusterHost(cluster.id, hostId);
+        dispatch(updateHost(data));
+      } catch (e) {
+        handleApiError(e, () =>
+          addAlert({ title: `Failed to enable host ${hostId}`, message: getErrorMessage(e) }),
+        );
+      }
     },
     [cluster.id, dispatch, addAlert],
   );
 
   const onHostDisable = React.useCallback(
-    (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
+    async (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
       const hostId = rowData.extraData.id;
-      disableClusterHost(cluster.id, hostId)
-        .then(() => {
-          dispatch(forceReload());
-        })
-        .catch((err) => {
-          handleApiError(err, () => {
-            addAlert({
-              key: `disable-${hostId}`,
-              variant: AlertVariant.warning,
-              text: `Failed to disable host ${hostId}`,
-            });
-          });
-        });
+      try {
+        const { data } = await disableClusterHost(cluster.id, hostId);
+        dispatch(updateHost(data));
+      } catch (e) {
+        handleApiError(e, () =>
+          addAlert({ title: `Failed to disable host ${hostId}`, message: getErrorMessage(e) }),
+        );
+      }
     },
     [cluster.id, dispatch, addAlert],
   );
@@ -329,8 +298,6 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
           setHostToDelete(undefined);
         }}
       />
-      {/*TODO(jtomasek): Remove this and replace alerts below hosts table with global alerts*/}
-      <Alerts alerts={alerts} className="host-table-alerts" />
     </>
   );
 };
