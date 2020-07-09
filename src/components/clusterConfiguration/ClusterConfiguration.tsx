@@ -6,14 +6,14 @@ import { handleApiError, getErrorMessage } from '../../api/utils';
 import LoadingState from '../ui/uiState/LoadingState';
 import ClusterConfigurationForm from './ClusterConfigurationForm';
 import PageSection from '../ui/PageSection';
-import alertsReducer, { addAlert } from '../../features/alerts/alertsSlice';
+import { AlertsContext } from '../AlertsContextProvider';
 
 type ClusterConfigurationProps = {
   cluster: Cluster;
 };
 const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) => {
-  const [alerts, dispatchAlertsAction] = React.useReducer(alertsReducer, []);
   const [domains, setDomains] = React.useState<ManagedDomain[] | undefined>();
+  const { addAlert } = React.useContext(AlertsContext);
 
   React.useEffect(() => {
     const fetchManagedDomains = async () => {
@@ -23,24 +23,15 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
       } catch (e) {
         setDomains([]);
         handleApiError(e, () =>
-          dispatchAlertsAction(
-            addAlert({ title: 'Failed to retrieve managed domains', message: getErrorMessage(e) }),
-          ),
+          addAlert({ title: 'Failed to retrieve managed domains', message: getErrorMessage(e) }),
         );
       }
     };
     fetchManagedDomains();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (domains) {
-    return (
-      <ClusterConfigurationForm
-        cluster={cluster}
-        managedDomains={domains}
-        alerts={alerts}
-        dispatchAlertsAction={dispatchAlertsAction}
-      />
-    );
+    return <ClusterConfigurationForm cluster={cluster} managedDomains={domains} />;
   }
   return (
     <PageSection variant={PageSectionVariants.light} isMain>

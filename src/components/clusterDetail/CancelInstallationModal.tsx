@@ -13,7 +13,7 @@ import { Cluster } from '../../api/types';
 import { getErrorMessage, handleApiError } from '../../api/utils';
 import ErrorState from '../ui/uiState/ErrorState';
 import LoadingState from '../ui/uiState/LoadingState';
-import { forceReload } from '../../features/clusters/currentClusterSlice';
+import { updateCluster } from '../../features/clusters/currentClusterSlice';
 
 type CancelInstallationModalProps = {
   onClose: () => void;
@@ -34,8 +34,8 @@ const CancelInstallationModal: React.FC<CancelInstallationModalProps> = ({
     setIsSubmitting(true);
     try {
       setError(null);
-      await postCancelInstallation(clusterId);
-      dispatch(forceReload());
+      const { data } = await postCancelInstallation(clusterId);
+      dispatch(updateCluster(data));
     } catch (e) {
       handleApiError(e, () => {
         setError({ title: 'Failed to abort cluster installation', message: getErrorMessage(e) });

@@ -15,7 +15,7 @@ import { Cluster } from '../../api/types';
 import { getErrorMessage, handleApiError } from '../../api/utils';
 import LoadingState from '../ui/uiState/LoadingState';
 import ErrorState from '../ui/uiState/ErrorState';
-import { forceReload } from '../../features/clusters/currentClusterSlice';
+import { updateCluster } from '../../features/clusters/currentClusterSlice';
 
 type ResetClusterModalButtonProps = React.ComponentProps<typeof Button> & {
   ButtonComponent?: typeof Button | typeof ToolbarButton | typeof AlertActionLink;
@@ -43,8 +43,8 @@ const ResetClusterModal: React.FC<ResetClusterModalProps> = ({ onClose, isOpen, 
     setIsSubmitting(true);
     try {
       setError(null);
-      await postResetCluster(clusterId);
-      dispatch(forceReload());
+      const { data } = await postResetCluster(clusterId);
+      dispatch(updateCluster(data));
     } catch (e) {
       handleApiError(e, () => {
         setError({ title: 'Failed to reset cluster installation', message: getErrorMessage(e) });

@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AlertVariant } from '@patternfly/react-core';
 
-type AlertPayload = {
+export type AlertPayload = {
   title: string;
   message?: string;
   variant?: AlertVariant;

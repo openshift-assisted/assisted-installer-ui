@@ -1,6 +1,5 @@
 import React from 'react';
 import { Formik, FormikProps, FormikHelpers } from 'formik';
-import { AnyAction } from 'redux';
 import * as Yup from 'yup';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
@@ -33,7 +32,6 @@ import { handleApiError, getErrorMessage } from '../../api/utils';
 import { CLUSTER_MANAGER_SITE_LINK } from '../../config/constants';
 import AlertsSection from '../ui/AlertsSection';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
-import { addAlert, AlertProps, removeAlert } from '../../features/alerts/alertsSlice';
 import BaremetalInventory from './BaremetalInventory';
 import {
   nameValidationSchema,
@@ -50,6 +48,7 @@ import NetworkConfiguration from './NetworkConfiguration';
 import ClusterValidationSection from './ClusterValidationSection';
 import { validateCluster } from './clusterValidations';
 import { getInitialValues, getHostSubnets, findMatchingSubnet } from './utils';
+import { AlertsContext } from '../AlertsContextProvider';
 
 const validationSchema = (hostSubnets: HostSubnets) =>
   Yup.lazy<ClusterConfigurationValues>((values) =>
@@ -76,18 +75,15 @@ const sshPublicKeyHelperText = (
 type ClusterConfigurationFormProps = {
   cluster: Cluster;
   managedDomains: ManagedDomain[];
-  alerts: AlertProps[];
-  dispatchAlertsAction: React.Dispatch<AnyAction>;
 };
 
 const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
   cluster,
   managedDomains,
-  alerts,
-  dispatchAlertsAction,
 }) => {
   const [isValidationSectionOpen, setIsValidationSectionOpen] = React.useState(false);
   const [isStartingInstallation, setIsStartingInstallation] = React.useState(false);
+  const { addAlert } = React.useContext(AlertsContext);
   const dispatch = useDispatch();
   const hostSubnets = getHostSubnets(cluster);
 
@@ -119,9 +115,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
       dispatch(updateCluster(data));
     } catch (e) {
       handleApiError<ClusterUpdateParams>(e, () =>
-        dispatchAlertsAction(
-          addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),
-        ),
+        addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),
       );
     }
   };
@@ -133,12 +127,10 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
       dispatch(updateCluster(data));
     } catch (e) {
       handleApiError(e, () =>
-        dispatchAlertsAction(
-          addAlert({
-            title: 'Failed to start cluster installation',
-            message: getErrorMessage(e),
-          }),
-        ),
+        addAlert({
+          title: 'Failed to start cluster installation',
+          message: getErrorMessage(e),
+        }),
       );
     }
     setIsStartingInstallation(false);
@@ -247,10 +239,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
                 </Grid>
               </Form>
             </PageSection>
-            <AlertsSection
-              alerts={alerts}
-              onClose={(alert: AlertProps) => dispatchAlertsAction(removeAlert(alert.key))}
-            />
+            <AlertsSection />
             <ClusterToolbar
               validationSection={
                 isValidationSectionOpen ? (

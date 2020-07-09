@@ -21,18 +21,14 @@ import { deleteCluster as ApiDeleteCluster } from '../../api/clusters';
 import { NewClusterModalButton, NewClusterModal } from './newClusterModal';
 import AlertsSection from '../ui/AlertsSection';
 import { handleApiError, getErrorMessage } from '../../api/utils';
-import alertsReducer, {
-  addAlert,
-  AlertProps,
-  removeAlert,
-} from '../../features/alerts/alertsSlice';
+import { AlertsContext, AlertsContextProvider } from '../AlertsContextProvider';
 
 type ClustersProps = RouteComponentProps;
 
 const Clusters: React.FC<ClustersProps> = ({ history }) => {
   const { LOADING, EMPTY, ERROR, RELOADING } = ResourceUIState;
   const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [alerts, dispatchAlertsAction] = React.useReducer(alertsReducer, []);
+  const { addAlert } = React.useContext(AlertsContext);
   const clusterRows = useSelector(selectClusterTableRows);
   const clustersUIState = useSelector(selectClustersUIState);
   const uiState = React.useRef(clustersUIState);
@@ -48,16 +44,14 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
         dispatch(deleteCluster(clusterId));
       } catch (e) {
         return handleApiError(e, () =>
-          dispatchAlertsAction(
-            addAlert({
-              title: 'Cluster could not be deleted',
-              message: getErrorMessage(e),
-            }),
-          ),
+          addAlert({
+            title: 'Cluster could not be deleted',
+            message: getErrorMessage(e),
+          }),
         );
       }
     },
-    [dispatch],
+    [dispatch, addAlert],
   );
 
   React.useEffect(() => {
@@ -107,10 +101,7 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
           <PageSection variant={PageSectionVariants.light} isMain>
             <ClustersTable rows={clusterRows} deleteCluster={deleteClusterAsync} />
           </PageSection>
-          <AlertsSection
-            alerts={alerts}
-            onClose={(alert: AlertProps) => dispatchAlertsAction(removeAlert(alert.key))}
-          />
+          <AlertsSection />
           <ClusterToolbar>
             <NewClusterModalButton onClick={openModal} ButtonComponent={ToolbarButton} />
             <ToolbarText component={TextVariants.small}>
@@ -132,4 +123,10 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
   );
 };
 
-export default Clusters;
+const ClustersPage: React.FC<RouteComponentProps> = (props) => (
+  <AlertsContextProvider>
+    <Clusters {...props} />
+  </AlertsContextProvider>
+);
+
+export default ClustersPage;
