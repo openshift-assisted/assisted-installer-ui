@@ -573,7 +573,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{clusterId}/hosts/{hostId}/progress:
+  /clusters/{cluster_id}/hosts/{host_id}/progress:
     put:
       tags:
         - installer
@@ -581,23 +581,23 @@ paths:
       operationId: UpdateHostInstallProgress
       parameters:
         - in: path
-          name: clusterId
+          name: cluster_id
           description: The ID of the cluster to retrieve
           type: string
           format: uuid
           required: true
         - in: path
-          name: hostId
+          name: host_id
           description: The ID of the host to retrieve
           type: string
           format: uuid
           required: true
         - in: body
-          name: host-install-progress-params
+          name: host-progress
           description: New progress value
           required: true
           schema:
-            $ref: '#/definitions/host-install-progress-params'
+            $ref: '#/definitions/host-progress'
       responses:
         200:
           description: Update install progress
@@ -996,6 +996,9 @@ definitions:
         format: date-time
         x-go-custom-tag: gorm:"type:datetime"
         description: The last time that the host status has been updated
+      progress: # #/definitions/host-progress-report
+        x-go-custom-tag: gorm:"type:text"
+        type: string
       connectivity:
         x-go-custom-tag: gorm:"type:text"
         type: string
@@ -1032,6 +1035,17 @@ definitions:
         type: string
       requested_hostname:
         type: string
+
+  host-progress-report:
+    type: object
+    properties:
+      stages:
+        type: array
+        items:
+          $ref: '#/definitions/host-stage'
+        x-go-custom-tag: gorm:"-"
+      current_progress:
+        $ref: '#/definitions/host-progress'
 
   steps:
     type: object
@@ -1607,8 +1621,31 @@ definitions:
   ingress-cert-params:
     type: string
 
-  host-install-progress-params:
+  host-progress:
+    type: object
+    required:
+      - current_stage
+    properties:
+      current_stage:
+        type: string
+        $ref: '#/definitions/host-stage'
+      progress_info:
+        type: string
+        x-go-custom-tag: gorm:"type:varchar(2048)"
+
+  host-stage:
     type: string
+    enum:
+      - Starting installation
+      - Start Waiting for control plane
+      - Installing
+      - Writing image to disk
+      - Finish Waiting for control plane
+      - Rebooting
+      - Configuring
+      - Joined
+      - Done
+      - Failed
 
   error:
     type: object

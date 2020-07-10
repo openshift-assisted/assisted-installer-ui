@@ -72,7 +72,7 @@ export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
     'This host was manually disabled and will not be included in the cluster. Enable this host to include it again.',
   installing: '', // not rendered
   'installing-in-progress': '', // not rendered
-  installed: 'This host completed its installation successfully',
+  installed: 'This host completed its installation successfully.',
   error: 'This host failed its installation.',
   resetting: 'This host is resetting the installation.',
 };

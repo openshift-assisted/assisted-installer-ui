@@ -16,12 +16,13 @@ import {
   UnknownIcon,
 } from '@patternfly/react-icons';
 import { Host } from '../../api/types';
-import HostProgress, { getHostInstallationStepNumber } from './HostProgress';
+import HostProgress from './HostProgress';
 import { HOST_STATUS_LABELS, HOST_STATUS_DETAILS } from '../../config/constants';
-
-import './HostStatus.css';
 import { getHumanizedDateTime } from '../ui/utils';
 import { toSentence } from '../ui/table/utils';
+import { getHostProgressStageNumber, getHostProgressStages } from './utils';
+
+import './HostStatus.css';
 
 const getStatusIcon = (status: Host['status']) => {
   if (status === 'discovering') return <ConnectedIcon />;
@@ -37,64 +38,22 @@ const getStatusIcon = (status: Host['status']) => {
   return <UnknownIcon />;
 };
 
-export const getHostInstallationSteps = (role: Host['role'], bootstrap: Host['bootstrap']) => {
-  if (bootstrap) {
-    return [
-      'Starting installation',
-      `Installing as ${role}`,
-      'Bootstrapping installation',
-      'Writing image to disk',
-      'Waiting for control plane',
-      'Rebooting',
-      'Configuring',
-      'Done',
-    ];
-  } else if (role === 'master') {
-    return [
-      'Starting installation',
-      `Installing as ${role}`,
-      'Writing image to disk',
-      'Rebooting',
-      'Configuring',
-      'Joined',
-      'Done',
-    ];
-  } else {
-    return [
-      'Starting installation',
-      `Installing as ${role}`,
-      'Writing image to disk',
-      'Rebooting',
-      'Configuring',
-      'Done',
-    ];
-  }
-};
-
 type HostStatusProps = {
   host: Host;
 };
 
 const HostStatus: React.FC<HostStatusProps> = ({ host }) => {
-  const { status, statusInfo, statusUpdatedAt, role, bootstrap } = host;
+  const { status, statusInfo, statusUpdatedAt } = host;
   const title = HOST_STATUS_LABELS[status] || status;
   const icon = getStatusIcon(status);
+  const hostProgressStages = getHostProgressStages(host);
 
-  const progressInfo = {
-    steps: getHostInstallationSteps(role, bootstrap),
-    currentStep: statusInfo || 'Starting Installation',
-  };
-
-  const currentStepNumber = getHostInstallationStepNumber(
-    progressInfo.steps,
-    progressInfo.currentStep,
-  );
   const bodyContent = React.useMemo(
     () => (
       <div>
         {['installing', 'installing-in-progress'].includes(status) ? (
           <>
-            <HostProgress status={status} progressInfo={progressInfo} />
+            <HostProgress host={host} />
             <br />
           </>
         ) : (
@@ -105,7 +64,7 @@ const HostStatus: React.FC<HostStatusProps> = ({ host }) => {
         )}
       </div>
     ),
-    [status, progressInfo, statusInfo],
+    [status, statusInfo, host],
   );
   return (
     <>
@@ -120,7 +79,7 @@ const HostStatus: React.FC<HostStatusProps> = ({ host }) => {
           {icon} {title}{' '}
           {['installing', 'installing-in-progress'].includes(status) && (
             <>
-              {currentStepNumber}/{progressInfo.steps.length}
+              {getHostProgressStageNumber(host)}/{hostProgressStages.length}
             </>
           )}
         </Button>
