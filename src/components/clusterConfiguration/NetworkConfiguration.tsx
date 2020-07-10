@@ -40,10 +40,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   );
 
   const toggleRedHatDnsService = (checked: boolean) =>
-    setFieldValue(
-      'baseDnsDomain',
-      checked ? managedDomains.map((d) => d.domain)[0] : initialValues.baseDnsDomain,
-    );
+    setFieldValue('baseDnsDomain', checked ? managedDomains.map((d) => d.domain)[0] : '');
 
   return (
     <>
