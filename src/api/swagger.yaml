@@ -985,6 +985,7 @@ definitions:
           - disabled
           - installing
           - installing-in-progress
+          - installing-pending-user-action
           - installed
           - error
           - resetting
@@ -996,9 +997,14 @@ definitions:
         format: date-time
         x-go-custom-tag: gorm:"type:datetime"
         description: The last time that the host status has been updated
-      progress: # #/definitions/host-progress-report
-        x-go-custom-tag: gorm:"type:text"
-        type: string
+      progress:
+        $ref: '#/definitions/host-progress'
+        x-go-custom-tag: gorm:"embedded;embedded_prefix:progress_"
+      progress_stages:
+        type: array
+        items:
+          $ref: '#/definitions/host-stage'
+        x-go-custom-tag: gorm:"-"
       connectivity:
         x-go-custom-tag: gorm:"type:text"
         type: string
@@ -1036,17 +1042,6 @@ definitions:
       requested_hostname:
         type: string
 
-  host-progress-report:
-    type: object
-    properties:
-      stages:
-        type: array
-        items:
-          $ref: '#/definitions/host-stage'
-        x-go-custom-tag: gorm:"-"
-      current_progress:
-        $ref: '#/definitions/host-progress'
-
   steps:
     type: object
     properties:
@@ -1066,7 +1061,7 @@ definitions:
       - inventory
       - install
       - free-network-addresses
-      - reset-agent
+      - reset-installation
 
   step:
     type: object
@@ -1642,6 +1637,7 @@ definitions:
       - Writing image to disk
       - Finish Waiting for control plane
       - Rebooting
+      - Waiting for ignition
       - Configuring
       - Joined
       - Done

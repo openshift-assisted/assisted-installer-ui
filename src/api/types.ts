@@ -330,6 +330,7 @@ export interface Host {
     | 'disabled'
     | 'installing'
     | 'installing-in-progress'
+    | 'installing-pending-user-action'
     | 'installed'
     | 'error'
     | 'resetting';
@@ -338,7 +339,8 @@ export interface Host {
    * The last time that the host status has been updated
    */
   statusUpdatedAt?: string; // date-time
-  progress?: string;
+  progress?: HostProgress;
+  progressStages?: HostStage[];
   connectivity?: string;
   hardwareInfo?: string;
   inventory?: string;
@@ -371,10 +373,6 @@ export interface HostProgress {
   currentStage: HostStage;
   progressInfo?: string;
 }
-export interface HostProgressReport {
-  stages?: HostStage[];
-  currentProgress?: HostProgress;
-}
 export type HostRole = 'master' | 'worker' | 'bootstrap';
 export type HostRoleUpdateParams = 'master' | 'worker';
 export type HostStage =
@@ -384,6 +382,7 @@ export type HostStage =
   | 'Writing image to disk'
   | 'Finish Waiting for control plane'
   | 'Rebooting'
+  | 'Waiting for ignition'
   | 'Configuring'
   | 'Joined'
   | 'Done'
@@ -510,7 +509,7 @@ export type StepType =
   | 'inventory'
   | 'install'
   | 'free-network-addresses'
-  | 'reset-agent';
+  | 'reset-installation';
 export interface Steps {
   nextInstructionSeconds?: number;
   instructions?: Step[];
