@@ -37,6 +37,8 @@ const getStatusIcon = (status: Host['status']) => {
   if (status === 'error') return <ExclamationCircleIcon color={dangerColor.value} />;
   if (status === 'installed') return <CheckCircleIcon color={okColor.value} />;
   if (status === 'resetting') return <InProgressIcon />;
+  if (status === 'resetting-pending-user-action')
+    return <WarningTriangleIcon color={warningColor.value} />;
   return <UnknownIcon />;
 };
 

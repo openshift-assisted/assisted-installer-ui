@@ -40,12 +40,13 @@ export const HOST_STATUS_LABELS: { [key in Host['status']]: string } = {
   disconnected: 'Disconnected',
   insufficient: 'Insufficient',
   disabled: 'Disabled',
-  installing: 'Starting Installation',
+  installing: 'Starting installation',
   'installing-in-progress': 'Installing',
-  'installing-pending-user-action': 'Incorrect Boot Order',
+  'installing-pending-user-action': 'Incorrect boot order',
   installed: 'Installed',
   error: 'Error',
   resetting: 'Resetting',
+  'resetting-pending-user-action': 'Reboot required',
 };
 
 export const CLUSTER_FIELD_LABELS: { [key in string]: string } = {
@@ -78,4 +79,6 @@ export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
   installed: 'This host completed its installation successfully.',
   error: 'This host failed its installation.',
   resetting: 'This host is resetting the installation.',
+  'resetting-pending-user-action':
+    'Host already booted from disk during previous installation. To finish resetting the installation please boot the host into Discovery ISO.',
 };
