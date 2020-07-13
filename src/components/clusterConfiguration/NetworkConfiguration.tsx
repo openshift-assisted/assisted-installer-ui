@@ -32,7 +32,8 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   const baseDnsHelperText = (
     <>
       The base domain of the cluster. All DNS records must be sub-domains of this base and include
-      the cluster name. This cannot be changed after cluster installation. The full cluster address will be:{' '}
+      the cluster name. This cannot be changed after cluster installation. The full cluster address
+      will be:{' '}
       <strong>
         {clusterName || '[Cluster Name]'}.{baseDnsDomain || '[example.com]'}
       </strong>
