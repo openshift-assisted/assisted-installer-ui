@@ -1,5 +1,5 @@
 import React from 'react';
-import { Popover, Button, ButtonVariant } from '@patternfly/react-core';
+import { Popover, Button, ButtonVariant, Text, TextContent } from '@patternfly/react-core';
 import {
   global_danger_color_100 as dangerColor,
   global_warning_color_100 as warningColor,
@@ -16,12 +16,13 @@ import {
   UnknownIcon,
 } from '@patternfly/react-icons';
 import { Host } from '../../api/types';
-import HostProgress, { getHostInstallationStepNumber } from './HostProgress';
+import HostProgress from './HostProgress';
 import { HOST_STATUS_LABELS, HOST_STATUS_DETAILS } from '../../config/constants';
-
-import './HostStatus.css';
 import { getHumanizedDateTime } from '../ui/utils';
 import { toSentence } from '../ui/table/utils';
+import { getHostProgressStageNumber, getHostProgressStages } from './utils';
+
+import './HostStatus.css';
 
 const getStatusIcon = (status: Host['status']) => {
   if (status === 'discovering') return <ConnectedIcon />;
@@ -31,44 +32,44 @@ const getStatusIcon = (status: Host['status']) => {
   if (status === 'insufficient') return <WarningTriangleIcon color={warningColor.value} />;
   if (status === 'installing') return <InProgressIcon />;
   if (status === 'installing-in-progress') return <InProgressIcon />;
+  if (status === 'installing-pending-user-action')
+    return <WarningTriangleIcon color={warningColor.value} />;
   if (status === 'error') return <ExclamationCircleIcon color={dangerColor.value} />;
   if (status === 'installed') return <CheckCircleIcon color={okColor.value} />;
   if (status === 'resetting') return <InProgressIcon />;
   return <UnknownIcon />;
 };
 
-export const getHostInstallationSteps = (role: Host['role'], bootstrap: Host['bootstrap']) => {
-  if (bootstrap) {
-    return [
-      'Starting installation',
-      `Installing as ${role}`,
-      'Bootstrapping installation',
-      'Writing image to disk',
-      'Waiting for control plane',
-      'Rebooting',
-      'Configuring',
-      'Done',
-    ];
-  } else if (role === 'master') {
-    return [
-      'Starting installation',
-      `Installing as ${role}`,
-      'Writing image to disk',
-      'Rebooting',
-      'Configuring',
-      'Joined',
-      'Done',
-    ];
-  } else {
-    return [
-      'Starting installation',
-      `Installing as ${role}`,
-      'Writing image to disk',
-      'Rebooting',
-      'Configuring',
-      'Done',
-    ];
+const getPopoverContent = (host: Host) => {
+  const { status, statusInfo } = host;
+  if (['installing', 'installing-in-progress'].includes(status)) {
+    return (
+      <TextContent>
+        <HostProgress host={host} />
+      </TextContent>
+    );
   }
+  if (['error', 'installing-pending-user-action'].includes(status)) {
+    return (
+      <TextContent>
+        <Text>
+          {HOST_STATUS_DETAILS[status] || ''}
+          <br />
+          {toSentence(statusInfo)}
+        </Text>
+        <HostProgress host={host} />
+      </TextContent>
+    );
+  }
+  return (
+    <TextContent>
+      <Text>
+        {HOST_STATUS_DETAILS[status] || ''}
+        <br />
+        {toSentence(statusInfo)}
+      </Text>
+    </TextContent>
+  );
 };
 
 type HostStatusProps = {
@@ -76,51 +77,25 @@ type HostStatusProps = {
 };
 
 const HostStatus: React.FC<HostStatusProps> = ({ host }) => {
-  const { status, statusInfo, statusUpdatedAt, role, bootstrap } = host;
+  const { status, statusUpdatedAt } = host;
   const title = HOST_STATUS_LABELS[status] || status;
   const icon = getStatusIcon(status);
+  const hostProgressStages = getHostProgressStages(host);
 
-  const progressInfo = {
-    steps: getHostInstallationSteps(role, bootstrap),
-    currentStep: statusInfo || 'Starting Installation',
-  };
-
-  const currentStepNumber = getHostInstallationStepNumber(
-    progressInfo.steps,
-    progressInfo.currentStep,
-  );
-  const bodyContent = React.useMemo(
-    () => (
-      <div>
-        {['installing', 'installing-in-progress'].includes(status) ? (
-          <>
-            <HostProgress status={status} progressInfo={progressInfo} />
-            <br />
-          </>
-        ) : (
-          <>
-            <p>{HOST_STATUS_DETAILS[status] || ''}</p>
-            <p>{toSentence(statusInfo)}</p>
-          </>
-        )}
-      </div>
-    ),
-    [status, progressInfo, statusInfo],
-  );
   return (
     <>
       <Popover
         headerContent={<div>{title}</div>}
-        bodyContent={bodyContent}
+        bodyContent={getPopoverContent(host)}
         footerContent={<small>Status updated at {getHumanizedDateTime(statusUpdatedAt)}</small>}
         minWidth="30rem"
         maxWidth="50rem"
       >
         <Button variant={ButtonVariant.link} className="host-status__button" isInline>
           {icon} {title}{' '}
-          {['installing', 'installing-in-progress'].includes(status) && (
+          {['installing', 'installing-in-progress', 'error'].includes(status) && (
             <>
-              {currentStepNumber}/{progressInfo.steps.length}
+              {getHostProgressStageNumber(host)}/{hostProgressStages.length}
             </>
           )}
         </Button>

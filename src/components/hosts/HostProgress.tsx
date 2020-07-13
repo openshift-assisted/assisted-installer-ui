@@ -6,9 +6,7 @@ import {
   ProgressMeasureLocation,
   ProgressSize,
 } from '@patternfly/react-core';
-
-export const getHostInstallationStepNumber = (steps: string[], currentStep: string) =>
-  steps.findIndex((s) => currentStep.match(s)) + 1;
+import { getHostProgress, getHostProgressStages, getHostProgressStageNumber } from './utils';
 
 const getProgressVariant = (status: Host['status']) => {
   switch (status) {
@@ -25,26 +23,24 @@ const getMeasureLocation = (status: Host['status']) =>
   status === 'installed' ? ProgressMeasureLocation.none : ProgressMeasureLocation.top;
 
 type HostProgressProps = {
-  status: Host['status'];
-  // progressInfo: Host['progressInfo']; // TODO(jtomasek) replace this once progressInfo is available
-  progressInfo: {
-    steps: string[];
-    currentStep: string;
-  };
+  host: Host;
 };
 
-const HostProgress: React.FC<HostProgressProps> = ({ status, progressInfo }) => {
-  const { steps, currentStep } = progressInfo;
-  const currentStepNumber = getHostInstallationStepNumber(steps, currentStep);
+const HostProgress: React.FC<HostProgressProps> = ({ host }) => {
+  const { status } = host;
+  const stages = getHostProgressStages(host);
+  const { currentStage, progressInfo } = getHostProgress(host);
+  const currentStageNumber = getHostProgressStageNumber(host);
+  const progressLabel = currentStage + (progressInfo ? `: ${progressInfo}` : ' ');
 
   return (
     <Progress
-      title={status === 'installed' ? 'Finished' : currentStep}
-      value={currentStepNumber}
+      title={progressLabel}
+      value={currentStageNumber}
       min={1}
-      max={steps.length}
-      label={`Step ${currentStepNumber} of ${steps.length}`}
-      valueText={`Step ${currentStepNumber} of ${steps.length}: ${currentStep}`}
+      max={stages.length}
+      label={`Step ${currentStageNumber} of ${stages.length}`}
+      valueText={`Step ${currentStageNumber} of ${stages.length}: ${progressLabel}`}
       variant={getProgressVariant(status)}
       measureLocation={getMeasureLocation(status)}
       size={ProgressSize.sm}
