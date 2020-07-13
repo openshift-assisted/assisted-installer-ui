@@ -1,21 +1,13 @@
-import { Host, Cluster, HostProgressReport } from '../../api/types';
-import { stringToJSON } from '../../api/utils';
+import { Host, Cluster } from '../../api/types';
 
 export const canEditRole = (clusterStatus: Cluster['status'], status: Host['status']) =>
   ['insufficient', 'ready'].includes(clusterStatus) &&
   ['discovering', 'known', 'disconnected', 'disabled', 'insufficient'].includes(status);
 
-export const getHostProgressStages = (host: Host) => {
-  const progress = stringToJSON<HostProgressReport>(host.progress) || {};
-  return progress?.stages || [];
-};
+export const getHostProgressStages = (host: Host) => host.progressStages || [];
 
-export const getHostProgress = (host: Host) => {
-  const progress = stringToJSON<HostProgressReport>(host.progress) || {};
-  return (
-    progress?.currentProgress || { currentStage: 'Preparing installation', progressInfo: undefined }
-  );
-};
+export const getHostProgress = (host: Host) =>
+  host.progress || { currentStage: 'Preparing installation', progressInfo: undefined };
 
 export const getHostProgressStageNumber = (host: Host) => {
   const stages = getHostProgressStages(host);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Popover, Button, ButtonVariant } from '@patternfly/react-core';
+import { Popover, Button, ButtonVariant, Text, TextContent } from '@patternfly/react-core';
 import {
   global_danger_color_100 as dangerColor,
   global_warning_color_100 as warningColor,
@@ -32,6 +32,8 @@ const getStatusIcon = (status: Host['status']) => {
   if (status === 'insufficient') return <WarningTriangleIcon color={warningColor.value} />;
   if (status === 'installing') return <InProgressIcon />;
   if (status === 'installing-in-progress') return <InProgressIcon />;
+  if (status === 'installing-pending-user-action')
+    return <WarningTriangleIcon color={warningColor.value} />;
   if (status === 'error') return <ExclamationCircleIcon color={dangerColor.value} />;
   if (status === 'installed') return <CheckCircleIcon color={okColor.value} />;
   if (status === 'resetting') return <InProgressIcon />;
@@ -48,24 +50,37 @@ const HostStatus: React.FC<HostStatusProps> = ({ host }) => {
   const icon = getStatusIcon(status);
   const hostProgressStages = getHostProgressStages(host);
 
-  const bodyContent = React.useMemo(
-    () => (
-      <div>
-        {['installing', 'installing-in-progress'].includes(status) ? (
-          <>
-            <HostProgress host={host} />
+  const bodyContent = React.useMemo(() => {
+    if (['installing', 'installing-in-progress'].includes(status)) {
+      return (
+        <TextContent>
+          <HostProgress host={host} />
+        </TextContent>
+      );
+    }
+    if (['error', 'installing-pending-user-action'].includes(status)) {
+      return (
+        <TextContent>
+          <Text>
+            {HOST_STATUS_DETAILS[status] || ''}
             <br />
-          </>
-        ) : (
-          <>
-            <p>{HOST_STATUS_DETAILS[status] || ''}</p>
-            <p>{toSentence(statusInfo)}</p>
-          </>
-        )}
-      </div>
-    ),
-    [status, statusInfo, host],
-  );
+            {toSentence(statusInfo)}
+          </Text>
+          <HostProgress host={host} />
+        </TextContent>
+      );
+    }
+    return (
+      <TextContent>
+        <Text>
+          {HOST_STATUS_DETAILS[status] || ''}
+          <br />
+          {toSentence(statusInfo)}
+        </Text>
+      </TextContent>
+    );
+  }, [status, statusInfo, host]);
+
   return (
     <>
       <Popover
@@ -77,7 +92,7 @@ const HostStatus: React.FC<HostStatusProps> = ({ host }) => {
       >
         <Button variant={ButtonVariant.link} className="host-status__button" isInline>
           {icon} {title}{' '}
-          {['installing', 'installing-in-progress'].includes(status) && (
+          {['installing', 'installing-in-progress', 'error'].includes(status) && (
             <>
               {getHostProgressStageNumber(host)}/{hostProgressStages.length}
             </>
