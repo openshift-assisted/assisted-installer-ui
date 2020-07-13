@@ -330,6 +330,7 @@ export interface Host {
     | 'disabled'
     | 'installing'
     | 'installing-in-progress'
+    | 'installing-pending-user-action'
     | 'installed'
     | 'error'
     | 'resetting';
@@ -338,6 +339,8 @@ export interface Host {
    * The last time that the host status has been updated
    */
   statusUpdatedAt?: string; // date-time
+  progress?: HostProgress;
+  progressStages?: HostStage[];
   connectivity?: string;
   hardwareInfo?: string;
   inventory?: string;
@@ -361,14 +364,29 @@ export interface HostCreateParams {
   hostId: string; // uuid
   discoveryAgentVersion?: string;
 }
-export type HostInstallProgressParams = string;
 export type HostList = Host[];
 export interface HostNetwork {
   cidr?: string;
   hostIds?: string /* uuid */[];
 }
+export interface HostProgress {
+  currentStage: HostStage;
+  progressInfo?: string;
+}
 export type HostRole = 'master' | 'worker' | 'bootstrap';
 export type HostRoleUpdateParams = 'master' | 'worker';
+export type HostStage =
+  | 'Starting installation'
+  | 'Start Waiting for control plane'
+  | 'Installing'
+  | 'Writing image to disk'
+  | 'Finish Waiting for control plane'
+  | 'Rebooting'
+  | 'Waiting for ignition'
+  | 'Configuring'
+  | 'Joined'
+  | 'Done'
+  | 'Failed';
 export interface ImageCreateParams {
   /**
    * The URL of the HTTP/S proxy that agents should use to access the discovery service
@@ -491,7 +509,7 @@ export type StepType =
   | 'inventory'
   | 'install'
   | 'free-network-addresses'
-  | 'reset-agent';
+  | 'reset-installation';
 export interface Steps {
   nextInstructionSeconds?: number;
   instructions?: Step[];

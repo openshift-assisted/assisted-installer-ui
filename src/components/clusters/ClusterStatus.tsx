@@ -23,6 +23,7 @@ type ClusterStatusProps = {
 const getStatusIcon = (status: Cluster['status']) => {
   if (status === 'insufficient') return <WarningTriangleIcon color={warningColor.value} />;
   if (status === 'ready') return <CheckCircleIcon color={okColor.value} />;
+  if (status === 'preparing-for-installation') return <InProgressIcon />;
   if (status === 'installing') return <InProgressIcon />;
   if (status === 'error') return <ExclamationCircleIcon color={dangerColor.value} />;
   if (status === 'installed') return <CheckCircleIcon color={okColor.value} />;

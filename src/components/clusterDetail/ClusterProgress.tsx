@@ -2,8 +2,7 @@ import React from 'react';
 import { Cluster, Host } from '../../api/types';
 import { Progress, ProgressVariant, ProgressMeasureLocation } from '@patternfly/react-core';
 import { CLUSTER_STATUS_LABELS } from '../../config/constants';
-import { getHostInstallationSteps } from '../hosts/HostStatus';
-import { getHostInstallationStepNumber } from '../hosts/HostProgress';
+import { getHostProgressStages, getHostProgressStageNumber } from '../hosts/utils';
 
 const getProgressVariant = (status: Cluster['status']) => {
   switch (status) {
@@ -19,28 +18,27 @@ const getProgressVariant = (status: Cluster['status']) => {
 const getMeasureLocation = (status: Cluster['status']) =>
   status === 'installed' ? ProgressMeasureLocation.none : ProgressMeasureLocation.top;
 
-const getProgressLabel = (cluster: Cluster, progress: number): string => {
+const getProgressLabel = (cluster: Cluster, progressPercent: number): string => {
   const { status, statusInfo } = cluster;
-  if (['error'].includes(status)) {
-    return `${progress}%`;
+  if (['preparing-for-installation'].includes(status)) {
+    return statusInfo;
   }
-  return `${statusInfo}: ${progress}%`;
+  if (['error'].includes(status)) {
+    return `${progressPercent}%`;
+  }
+  return `${statusInfo}: ${progressPercent}%`;
 };
 
 const getProgressPercent = (hosts: Host[] = []) => {
   const accountedHosts = hosts.filter((host) => !['disabled'].includes(host.status));
   const totalSteps = accountedHosts.reduce(
-    (steps, host) => steps + getHostInstallationSteps(host.role, host.bootstrap).length,
+    (steps, host) => steps + getHostProgressStages(host).length,
     0,
   );
-  const completedSteps = accountedHosts.reduce((steps, host) => {
-    const hostInstallationSteps = getHostInstallationSteps(host.role, host.bootstrap);
-    if (['installed', 'error'].includes(host.status)) {
-      return steps + hostInstallationSteps.length;
-    } else {
-      return steps + getHostInstallationStepNumber(hostInstallationSteps, host.statusInfo);
-    }
-  }, 0);
+  const completedSteps = accountedHosts.reduce(
+    (steps, host) => steps + getHostProgressStageNumber(host),
+    0,
+  );
   return (completedSteps / totalSteps) * 100;
 };
 
@@ -50,16 +48,13 @@ type ClusterProgressProps = {
 
 const ClusterProgress: React.FC<ClusterProgressProps> = ({ cluster }) => {
   const { status, hosts } = cluster;
-  const progress = React.useMemo(
-    () => (status === 'installed' ? 100 : Math.round(getProgressPercent(hosts))),
-    [status, hosts],
-  );
-  const label = getProgressLabel(cluster, progress);
+  const progressPercent = React.useMemo(() => Math.round(getProgressPercent(hosts)), [hosts]);
+  const label = getProgressLabel(cluster, progressPercent);
 
   return (
     <Progress
-      value={progress}
-      title={CLUSTER_STATUS_LABELS[status]}
+      value={progressPercent}
+      title={CLUSTER_STATUS_LABELS[status] || status}
       label={label}
       measureLocation={getMeasureLocation(status)}
       variant={getProgressVariant(status)}
