@@ -40,36 +40,16 @@ const getStatusIcon = (status: Host['status']) => {
   return <UnknownIcon />;
 };
 
-type HostStatusProps = {
-  host: Host;
-};
-
-const HostStatus: React.FC<HostStatusProps> = ({ host }) => {
-  const { status, statusInfo, statusUpdatedAt } = host;
-  const title = HOST_STATUS_LABELS[status] || status;
-  const icon = getStatusIcon(status);
-  const hostProgressStages = getHostProgressStages(host);
-
-  const bodyContent = React.useMemo(() => {
-    if (['installing', 'installing-in-progress'].includes(status)) {
-      return (
-        <TextContent>
-          <HostProgress host={host} />
-        </TextContent>
-      );
-    }
-    if (['error', 'installing-pending-user-action'].includes(status)) {
-      return (
-        <TextContent>
-          <Text>
-            {HOST_STATUS_DETAILS[status] || ''}
-            <br />
-            {toSentence(statusInfo)}
-          </Text>
-          <HostProgress host={host} />
-        </TextContent>
-      );
-    }
+const getPopoverContent = (host: Host) => {
+  const { status, statusInfo } = host;
+  if (['installing', 'installing-in-progress'].includes(status)) {
+    return (
+      <TextContent>
+        <HostProgress host={host} />
+      </TextContent>
+    );
+  }
+  if (['error', 'installing-pending-user-action'].includes(status)) {
     return (
       <TextContent>
         <Text>
@@ -77,15 +57,36 @@ const HostStatus: React.FC<HostStatusProps> = ({ host }) => {
           <br />
           {toSentence(statusInfo)}
         </Text>
+        <HostProgress host={host} />
       </TextContent>
     );
-  }, [status, statusInfo, host]);
+  }
+  return (
+    <TextContent>
+      <Text>
+        {HOST_STATUS_DETAILS[status] || ''}
+        <br />
+        {toSentence(statusInfo)}
+      </Text>
+    </TextContent>
+  );
+};
+
+type HostStatusProps = {
+  host: Host;
+};
+
+const HostStatus: React.FC<HostStatusProps> = ({ host }) => {
+  const { status, statusUpdatedAt } = host;
+  const title = HOST_STATUS_LABELS[status] || status;
+  const icon = getStatusIcon(status);
+  const hostProgressStages = getHostProgressStages(host);
 
   return (
     <>
       <Popover
         headerContent={<div>{title}</div>}
-        bodyContent={bodyContent}
+        bodyContent={getPopoverContent(host)}
         footerContent={<small>Status updated at {getHumanizedDateTime(statusUpdatedAt)}</small>}
         minWidth="30rem"
         maxWidth="50rem"
