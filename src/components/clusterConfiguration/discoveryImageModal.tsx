@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { Modal, Button, ButtonVariant, ModalVariant } from '@patternfly/react-core';
 import { ToolbarButton } from '../ui/Toolbar';
 import { ImageInfo, Cluster } from '../../api/types';
@@ -33,17 +33,18 @@ export const DiscoveryImageModalButton: React.FC<DiscoveryImageModalButtonProps>
   );
 };
 
-type DiscoveryImageModalProps = {
+type DiscoveryImageModalProps = RouteComponentProps<{ clusterId: string}> & {
   closeModal: () => void;
   initialImageInfo: ImageInfo;
 };
 
-export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({
+export const DiscoveryImageModal = withRouter<DiscoveryImageModalProps>(({
   closeModal,
   initialImageInfo,
+  match
 }) => {
   const [imageInfo, setImageInfo] = React.useState<Cluster['imageInfo'] | undefined>();
-  const { clusterId } = useParams();
+  const { clusterId } = match.params;
 
   return (
     <Modal
@@ -71,4 +72,4 @@ export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({
       )}
     </Modal>
   );
-};
+});
