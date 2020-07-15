@@ -1,5 +1,24 @@
 import { Host, Cluster } from '../../api/types';
 
+export const canEnable = (clusterStatus: Cluster['status'], status: Host['status']) =>
+  ['insufficient', 'ready'].includes(clusterStatus) && ['disabled'].includes(status);
+
+export const canDisable = (clusterStatus: Cluster['status'], status: Host['status']) =>
+  ['insufficient', 'ready'].includes(clusterStatus) &&
+  ['discovering', 'disconnected', 'known', 'insufficient'].includes(status);
+
+export const canDelete = (clusterStatus: Cluster['status'], status: Host['status']) =>
+  ['insufficient', 'ready'].includes(clusterStatus) &&
+  [
+    'discovering',
+    'known',
+    'disconnected',
+    'disabled',
+    'insufficient',
+    'resetting',
+    'resetting-pending-user-input',
+  ].includes(status);
+
 export const canEditRole = (clusterStatus: Cluster['status'], status: Host['status']) =>
   ['insufficient', 'ready'].includes(clusterStatus) &&
   ['discovering', 'known', 'disconnected', 'disabled', 'insufficient'].includes(status);
