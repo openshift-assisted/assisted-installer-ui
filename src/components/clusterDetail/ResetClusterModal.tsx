@@ -45,13 +45,13 @@ const ResetClusterModal: React.FC<ResetClusterModalProps> = ({ onClose, isOpen, 
       setError(null);
       const { data } = await postResetCluster(clusterId);
       dispatch(updateCluster(data));
+      onClose();
     } catch (e) {
       handleApiError(e, () => {
         setError({ title: 'Failed to reset cluster installation', message: getErrorMessage(e) });
       });
     }
     setIsSubmitting(false);
-    onClose();
   };
 
   const getModalContent = () => {

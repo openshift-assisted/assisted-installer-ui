@@ -36,13 +36,13 @@ const CancelInstallationModal: React.FC<CancelInstallationModalProps> = ({
       setError(null);
       const { data } = await postCancelInstallation(clusterId);
       dispatch(updateCluster(data));
+      onClose();
     } catch (e) {
       handleApiError(e, () => {
         setError({ title: 'Failed to abort cluster installation', message: getErrorMessage(e) });
       });
     }
     setIsSubmitting(false);
-    onClose();
   };
 
   const getModalContent = () => {

@@ -25,6 +25,11 @@ import { DetailList, DetailItem } from '../ui/DetailList';
 import FeedbackAlert from './FeedbackAlert';
 import ClusterProperties from './ClusterProperties';
 
+const canAbortInstallation = (cluster: Cluster) =>
+  ['installing', 'installing-in-progress'].includes(cluster.status) &&
+  // TODO(jtomasek): remove this in case when backend allows cancelling installation when one of the hosts is already in 'installed' state
+  !(cluster.hosts || []).find((host) => ['installed', 'error'].includes(host.status));
+
 type ClusterDetailProps = {
   cluster: Cluster;
   setCancelInstallationModalOpen: (isOpen: boolean) => void;
@@ -99,7 +104,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
         </Grid>
       </PageSection>
       <ClusterToolbar>
-        {['installing', 'installing-in-progress'].includes(cluster.status) && (
+        {canAbortInstallation(cluster) && (
           <ToolbarButton
             variant={ButtonVariant.danger}
             onClick={() => setCancelInstallationModalOpen(true)}
