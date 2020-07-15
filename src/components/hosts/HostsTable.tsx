@@ -31,6 +31,7 @@ import RoleCell, { getHostRole } from './RoleCell';
 import { DASH } from '../constants';
 import DeleteHostModal from './DeleteHostModal';
 import { AlertsContext } from '../AlertsContextProvider';
+import { canEnable, canDisable, canDelete } from './utils';
 
 import './HostsTable.css';
 
@@ -83,7 +84,8 @@ const hostToHostTableRow = (openRows: OpenRows, clusterStatus: Cluster['status']
         memory,
         disk,
       ],
-      extraData: host,
+      host,
+      clusterStatus,
       inventory,
       key: `${host.id}-master`,
     },
@@ -93,7 +95,6 @@ const hostToHostTableRow = (openRows: OpenRows, clusterStatus: Cluster['status']
       fullWidth: true,
       cells: [{ title: <HostDetail key={id} inventory={inventory} /> }],
       key: `${host.id}-detail`,
-      extraData: host,
       inventory,
     },
   ];
@@ -144,7 +145,7 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
 
   const onCollapse = React.useCallback(
     (_event, rowKey) => {
-      const host = hostRows[rowKey].extraData;
+      const host: Host = hostRows[rowKey].host;
       const id = (host && host.id) as string;
       if (id) {
         setOpenRows(Object.assign({}, openRows, { [id]: !openRows[id] }));
@@ -169,7 +170,7 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
 
   const onHostEnable = React.useCallback(
     async (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
-      const hostId = rowData.extraData.id;
+      const hostId = rowData.host.id;
       try {
         const { data } = await enableClusterHost(cluster.id, hostId);
         dispatch(updateHost(data));
@@ -184,7 +185,7 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
 
   const onHostDisable = React.useCallback(
     async (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
-      const hostId = rowData.extraData.id;
+      const hostId = rowData.host.id;
       try {
         const { data } = await disableClusterHost(cluster.id, hostId);
         dispatch(updateHost(data));
@@ -199,7 +200,7 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
 
   const onViewHostEvents = React.useCallback(
     (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
-      const hostId = rowData.extraData.id;
+      const hostId = rowData.host.id;
       setShowEventsModal(hostId);
     },
     [],
@@ -207,7 +208,8 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
 
   const actionResolver = React.useCallback(
     (rowData: IRowData) => {
-      const host: Host = rowData.extraData;
+      const host: Host | undefined = rowData.host;
+      const clusterStatus: Cluster['status'] = rowData.clusterStatus;
       const hostname = rowData.inventory?.hostname;
 
       if (!host) {
@@ -216,14 +218,14 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
       }
 
       const actions = [];
-      if (host.status === 'disabled') {
+      if (canEnable(clusterStatus, host.status)) {
         actions.push({
           title: 'Enable in cluster',
           id: `button-enable-in-cluster-${hostname}`,
           onClick: onHostEnable,
         });
       }
-      if (['discovering', 'disconnected', 'known', 'insufficient'].includes(host.status)) {
+      if (canDisable(clusterStatus, host.status)) {
         actions.push({
           title: 'Disable in cluster',
           id: `button-disable-in-cluster-${hostname}`,
@@ -235,7 +237,7 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
         id: `button-view-host-events-${hostname}`,
         onClick: onViewHostEvents,
       });
-      if (!['installing', 'installing-in-progress', 'error', 'installed'].includes(host.status)) {
+      if (canDelete(clusterStatus, host.status)) {
         actions.push({
           title: 'Delete',
           id: `button-delete-host-${hostname}`,
@@ -262,7 +264,7 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
   );
 
   const getHostInventory = (hostId: Host['id']): Inventory =>
-    hostRows.find((hostRow) => hostRow.extraData?.id === hostId)?.inventory;
+    hostRows.find((rowData) => rowData.host?.id === hostId)?.inventory;
 
   return (
     <>
