@@ -128,7 +128,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
           variant={ButtonVariant.link}
           component={(props) => <Link to="/clusters" {...props} />}
         >
-          Close
+          Back to all clusters
         </ToolbarButton>
         <ToolbarSecondaryGroup>
           <EventsModalButton
