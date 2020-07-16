@@ -78,9 +78,10 @@ export interface Cluster {
     | 'insufficient'
     | 'ready'
     | 'error'
+    | 'preparing-for-installation'
     | 'installing'
-    | 'installed'
-    | 'preparing-for-installation';
+    | 'finalizing'
+    | 'installed';
   /**
    * Additional information pertaining to the status of the OpenShift cluster.
    */
@@ -209,6 +210,10 @@ export interface ClusterUpdateParams {
     id?: string; // uuid
     hostname?: string;
   }[];
+}
+export interface CompletionParams {
+  isSuccess: boolean;
+  errorInfo?: string;
 }
 export interface ConnectivityCheckHost {
   hostId?: string; // uuid
@@ -381,7 +386,6 @@ export type HostStage =
   | 'Start Waiting for control plane'
   | 'Installing'
   | 'Writing image to disk'
-  | 'Finish Waiting for control plane'
   | 'Rebooting'
   | 'Waiting for ignition'
   | 'Configuring'

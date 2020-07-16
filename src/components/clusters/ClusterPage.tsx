@@ -89,7 +89,9 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
 
   const getContent = (cluster: Cluster) => {
     if (
-      ['preparing-for-installation', 'installing', 'installed', 'error'].includes(cluster.status)
+      ['preparing-for-installation', 'installing', 'finalizing', 'installed', 'error'].includes(
+        cluster.status,
+      )
     ) {
       return (
         <ClusterDetail
