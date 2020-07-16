@@ -281,7 +281,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
                 variant={ButtonVariant.link}
                 component={(props) => <Link to="/clusters" {...props} />}
               >
-                Close
+                Back to all clusters
               </ToolbarButton>
               {isSubmitting && (
                 <ToolbarText component={TextVariants.small}>
