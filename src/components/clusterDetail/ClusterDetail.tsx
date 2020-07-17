@@ -70,13 +70,11 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
         <Grid hasGutter>
           <GridItem>
             <TextContent>
-              <Text component="h1">{cluster.name}</Text>
+              <Text component="h1">Installation progress: {cluster.name}</Text>
             </TextContent>
           </GridItem>
           <GridItem>
-            <DetailList title="Creation Progress">
-              <DetailItem title="Creation status" value={<ClusterProgress cluster={cluster} />} />
-            </DetailList>
+            <DetailItem title="Installation status" value={<ClusterProgress cluster={cluster} />} />
           </GridItem>
           {cluster.status === 'error' && (
             <ClusterInstallationError
