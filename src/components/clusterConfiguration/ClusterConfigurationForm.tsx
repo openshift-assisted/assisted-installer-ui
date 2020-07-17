@@ -324,7 +324,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
                   variant={ButtonVariant.link}
                   style={{ textAlign: 'right' }}
                 >
-                  View Cluster Events History
+                  View Cluster Events
                 </EventsModalButton>
               </ToolbarSecondaryGroup>
             </ClusterToolbar>

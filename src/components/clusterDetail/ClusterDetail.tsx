@@ -138,7 +138,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
             variant={ButtonVariant.link}
             style={{ textAlign: 'right' }}
           >
-            View Cluster Events History
+            View Cluster Events
           </EventsModalButton>
         </ToolbarSecondaryGroup>
       </ClusterToolbar>
