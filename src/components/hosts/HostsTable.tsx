@@ -233,7 +233,7 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
         });
       }
       actions.push({
-        title: 'View Host Events History',
+        title: 'View Host Events',
         id: `button-view-host-events-${hostname}`,
         onClick: onViewHostEvents,
       });
@@ -283,9 +283,9 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
         <TableBody rowKey={rowKey} />
       </Table>
       <EventsModal
-        title={`Events for the ${
+        title={`Host Events: ${
           getHostInventory(showEventsModal)?.hostname || showEventsModal
-        } host`}
+        }`}
         entityKind="host"
         entityId={showEventsModal}
         onClose={() => setShowEventsModal('')}
