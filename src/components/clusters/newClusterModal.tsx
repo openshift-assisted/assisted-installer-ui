@@ -7,6 +7,7 @@ import {
   AlertVariant,
   AlertActionCloseButton,
   Modal,
+  ModalBoxBody,
   ModalBoxFooter,
   ModalVariant,
 } from '@patternfly/react-core';
@@ -19,6 +20,7 @@ import { Formik, FormikHelpers } from 'formik';
 import { OPENSHIFT_VERSION_OPTIONS } from '../../config/constants';
 import { ClusterCreateParams } from '../../api/types';
 import { InputField, SelectField } from '../ui/formik';
+import GridGap from '../ui/GridGap';
 import { handleApiError, getErrorMessage } from '../../api/utils';
 import { ToolbarButton } from '../ui/Toolbar';
 import { nameValidationSchema } from '../ui/formik/validationSchemas';
@@ -97,10 +99,12 @@ export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal, hi
 
   return (
     <Modal
+      aria-label="New Bare Metal OpenShift Cluster"
       title="New Bare Metal OpenShift Cluster"
       isOpen={true}
       onClose={closeModal}
       variant={ModalVariant.small}
+      hasNoBodyWrapper
     >
       <Formik
         initialValues={{
@@ -113,29 +117,40 @@ export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal, hi
       >
         {({ handleSubmit, isSubmitting, isValid, status, setStatus }) => (
           <Form onSubmit={handleSubmit}>
-            {status.error && (
-              <Alert
-                variant={AlertVariant.danger}
-                title={status.error.title}
-                actionClose={<AlertActionCloseButton onClose={() => setStatus({ error: null })} />}
-                isInline
-              >
-                {status.error.message}
-              </Alert>
-            )}
-            {isSubmitting ? (
-              <LoadingState />
-            ) : (
-              <>
-                <InputField innerRef={nameInputRef} label="Cluster Name" name="name" isRequired />
-                <SelectField
-                  label="OpenShift Version"
-                  name="openshiftVersion"
-                  options={OPENSHIFT_VERSION_OPTIONS}
-                  isRequired
-                />
-              </>
-            )}
+            <ModalBoxBody>
+              <GridGap>
+                {status.error && (
+                  <Alert
+                    variant={AlertVariant.danger}
+                    title={status.error.title}
+                    actionClose={
+                      <AlertActionCloseButton onClose={() => setStatus({ error: null })} />
+                    }
+                    isInline
+                  >
+                    {status.error.message}
+                  </Alert>
+                )}
+                {isSubmitting ? (
+                  <LoadingState />
+                ) : (
+                  <>
+                    <InputField
+                      innerRef={nameInputRef}
+                      label="Cluster Name"
+                      name="name"
+                      isRequired
+                    />
+                    <SelectField
+                      label="OpenShift Version"
+                      name="openshiftVersion"
+                      options={OPENSHIFT_VERSION_OPTIONS}
+                      isRequired
+                    />
+                  </>
+                )}
+              </GridGap>
+            </ModalBoxBody>
             <ModalBoxFooter>
               <Button
                 type="submit"
