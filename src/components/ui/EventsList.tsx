@@ -1,12 +1,43 @@
 import React from 'react';
-import { EventList } from '../../api/types';
+import { EventList, Event } from '../../api/types';
+import { Label } from '@patternfly/react-core';
 import { TableVariant, Table, TableBody } from '@patternfly/react-table';
+import {
+  InfoCircleIcon,
+  WarningTriangleIcon,
+  ExclamationCircleIcon,
+} from '@patternfly/react-icons';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
 import { fitContent, noPadding } from '../ui/table/wrappable';
 import { getHumanizedDateTime } from './utils';
 
 const getEventRowKey = ({ rowData }: ExtraParamsType) =>
   rowData?.props?.sortableTime + rowData?.message?.title;
+
+const getLabelColor = (severity: Event['severity']) => {
+  switch (severity) {
+    case 'info':
+      return 'blue';
+    case 'warning':
+      return 'orange';
+    case 'error':
+      return 'red';
+    case 'critical':
+      return 'purple';
+  }
+};
+
+const getLabelIcon = (severity: Event['severity']) => {
+  switch (severity) {
+    case 'info':
+      return <InfoCircleIcon />;
+    case 'warning':
+      return <WarningTriangleIcon />;
+    case 'error':
+    case 'critical':
+      return <ExclamationCircleIcon />;
+  }
+};
 
 type EventsListProps = {
   events: EventList;
@@ -32,6 +63,13 @@ const EventsList: React.FC<EventsListProps> = ({ events }) => {
       {
         title: <strong>{getHumanizedDateTime(event.eventTime)}</strong>,
       },
+      {
+        title: (
+          <Label color={getLabelColor(event.severity)} icon={getLabelIcon(event.severity)}>
+            {event.severity}
+          </Label>
+        ),
+      },
       event.message,
     ],
     props: { sortableTime: event.sortableTime },
@@ -40,9 +78,13 @@ const EventsList: React.FC<EventsListProps> = ({ events }) => {
   return (
     <Table
       rows={rows}
-      cells={[{ title: 'Time', cellTransforms: [fitContent, noPadding] }, { title: 'Message' }]}
+      cells={[
+        { title: 'Time', cellTransforms: [fitContent, noPadding] },
+        { title: 'Severity', cellTransforms: [fitContent, noPadding] },
+        { title: 'Message' },
+      ]}
       variant={TableVariant.compact}
-      aria-label="Host's disks table"
+      aria-label="Events table"
       borders={false}
     >
       <TableBody rowKey={getEventRowKey} />
