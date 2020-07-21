@@ -48,6 +48,7 @@ import ClusterValidationSection from './ClusterValidationSection';
 import { validateCluster } from './clusterValidations';
 import { getInitialValues, getHostSubnets, findMatchingSubnet } from './utils';
 import { AlertsContext } from '../AlertsContextProvider';
+import ClusterSshKey from './ClusterSshKey';
 
 const validationSchema = (hostSubnets: HostSubnets) =>
   Yup.lazy<ClusterConfigurationValues>((values) =>
@@ -62,13 +63,6 @@ const validationSchema = (hostSubnets: HostSubnets) =>
       sshPublicKey: sshPublicKeyValidationSchema,
     }),
   );
-
-const sshPublicKeyHelperText = (
-  <>
-    SSH public key for debugging OpenShift nodes, value of <em>~/.ssh/id_rsa.pub</em> can be copy
-    &amp; pasted here. To generate new pair, use <em>ssh-keygen -o</em>.
-  </>
-);
 
 type ClusterConfigurationFormProps = {
   cluster: Cluster;
