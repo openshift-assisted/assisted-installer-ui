@@ -12,7 +12,7 @@ import { fitContent, noPadding } from '../ui/table/wrappable';
 import { getHumanizedDateTime } from './utils';
 
 const getEventRowKey = ({ rowData }: ExtraParamsType) =>
-  rowData?.props?.sortableTime + rowData?.message?.title;
+  rowData?.props?.event.sortableTime + rowData?.props?.event.message;
 
 const getLabelColor = (severity: Event['severity']) => {
   switch (severity) {
@@ -65,24 +65,26 @@ const EventsList: React.FC<EventsListProps> = ({ events }) => {
       },
       {
         title: (
-          <Label color={getLabelColor(event.severity)} icon={getLabelIcon(event.severity)}>
-            {event.severity}
-          </Label>
+          <>
+            {event.severity !== 'info' && (
+              <>
+                <Label color={getLabelColor(event.severity)} icon={getLabelIcon(event.severity)}>
+                  {event.severity}
+                </Label>{' '}
+              </>
+            )}
+            {event.message}
+          </>
         ),
       },
-      event.message,
     ],
-    props: { sortableTime: event.sortableTime },
+    props: { event },
   }));
 
   return (
     <Table
       rows={rows}
-      cells={[
-        { title: 'Time', cellTransforms: [fitContent, noPadding] },
-        { title: 'Severity', cellTransforms: [fitContent, noPadding] },
-        { title: 'Message' },
-      ]}
+      cells={[{ title: 'Time', cellTransforms: [fitContent, noPadding] }, { title: 'Message' }]}
       variant={TableVariant.compact}
       aria-label="Events table"
       borders={false}
