@@ -24,6 +24,7 @@ import KubeconfigDownload from './KubeconfigDownload';
 import { DetailList, DetailItem } from '../ui/DetailList';
 import FeedbackAlert from './FeedbackAlert';
 import ClusterProperties from './ClusterProperties';
+import { routeBasePath } from '../../config';
 
 const canAbortInstallation = (cluster: Cluster) =>
   ['installing', 'installing-in-progress'].includes(cluster.status) &&
@@ -126,7 +127,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
         )}
         <ToolbarButton
           variant={ButtonVariant.link}
-          component={(props) => <Link to="/clusters" {...props} />}
+          component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
         >
           Back to all clusters
         </ToolbarButton>
