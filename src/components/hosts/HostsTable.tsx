@@ -35,6 +35,7 @@ import { canEnable, canDisable, canDelete } from './utils';
 
 import './HostsTable.css';
 import EditHostModal from './EditHostModal';
+import Hostname, { computeHostname } from './Hostname';
 
 type HostsTableProps = {
   cluster: Cluster;
@@ -65,13 +66,16 @@ const hostToHostTableRow = (openRows: OpenRows, clusterStatus: Cluster['status']
   const { id, status, createdAt, inventory: inventoryString = '' } = host;
   const inventory = stringToJSON<Inventory>(inventoryString) || {};
   const { cores, memory, disk } = getHostRowHardwareInfo(inventory);
-
+  const computedHostname = computeHostname(host, inventory);
   return [
     {
       // visible row
       isOpen: !!openRows[id],
       cells: [
-        inventory.hostname || { title: DASH, sortableValue: '' },
+        {
+          title: computedHostname ? <Hostname host={host} inventory={inventory} /> : DASH,
+          sortableValue: computedHostname || '',
+        },
         {
           title: <RoleCell host={host} clusterStatus={clusterStatus} />,
           sortableValue: getHostRole(host),
