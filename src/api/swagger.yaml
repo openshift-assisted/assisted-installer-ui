@@ -941,6 +941,7 @@ definitions:
     type: object
     required:
       - entity_id
+      - severity
       - message
       - event_time
     properties:
@@ -949,6 +950,9 @@ definitions:
         format: uuid
         description: Unique identifier of the object this event relates to.
         x-go-custom-tag: gorm:"index"
+      severity:
+        type: string
+        enum: [info, warning, error, critical]
       message:
         type: string
         x-go-custom-tag: gorm:"type:varchar(4096)"
@@ -1020,6 +1024,7 @@ definitions:
           - disconnected
           - insufficient
           - disabled
+          - preparing-for-installation
           - installing
           - installing-in-progress
           - installing-pending-user-action
@@ -1038,6 +1043,16 @@ definitions:
       progress:
         $ref: '#/definitions/host-progress'
         x-go-custom-tag: gorm:"embedded;embedded_prefix:progress_"
+      stage_started_at:
+        type: string
+        format: date-time
+        x-go-custom-tag: gorm:"type:datetime"
+        description: Time at which the current progress stage started
+      stage_updated_at:
+        type: string
+        format: date-time
+        x-go-custom-tag: gorm:"type:datetime"
+        description: Time at which the current progress stage was last updated
       progress_stages:
         type: array
         items:

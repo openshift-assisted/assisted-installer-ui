@@ -318,6 +318,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
               )}
               <ToolbarSecondaryGroup>
                 <EventsModalButton
+                  id="cluster-events-button"
                   entityKind="cluster"
                   entityId={cluster.id}
                   title="Cluster Events"

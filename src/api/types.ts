@@ -295,6 +295,7 @@ export interface Event {
    * Unique identifier of the object this event relates to.
    */
   entityId: string; // uuid
+  severity: 'info' | 'warning' | 'error' | 'critical';
   message: string;
   eventTime: string; // date-time
   /**
@@ -333,6 +334,7 @@ export interface Host {
     | 'disconnected'
     | 'insufficient'
     | 'disabled'
+    | 'preparing-for-installation'
     | 'installing'
     | 'installing-in-progress'
     | 'installing-pending-user-action'
@@ -346,6 +348,14 @@ export interface Host {
    */
   statusUpdatedAt?: string; // date-time
   progress?: HostProgress;
+  /**
+   * Time at which the current progress stage started
+   */
+  stageStartedAt?: string; // date-time
+  /**
+   * Time at which the current progress stage was last updated
+   */
+  stageUpdatedAt?: string; // date-time
   progressStages?: HostStage[];
   connectivity?: string;
   hardwareInfo?: string;

@@ -30,6 +30,7 @@ const getStatusIcon = (status: Host['status']) => {
   if (status === 'disconnected') return <DisconnectedIcon />;
   if (status === 'disabled') return <OffIcon />;
   if (status === 'insufficient') return <WarningTriangleIcon color={warningColor.value} />;
+  if (status === 'preparing-for-installation') return <InProgressIcon />;
   if (status === 'installing') return <InProgressIcon />;
   if (status === 'installing-in-progress') return <InProgressIcon />;
   if (status === 'installing-pending-user-action')

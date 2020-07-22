@@ -135,6 +135,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
         </ToolbarButton>
         <ToolbarSecondaryGroup>
           <EventsModalButton
+            id="cluster-events-button"
             entityKind="cluster"
             entityId={cluster.id}
             title="Cluster Events"

@@ -40,5 +40,5 @@
       "version": "detect"
     }
   },
-  "ignorePatterns": [ "dist/*" ]
+  "ignorePatterns": ["dist/*"]
 }

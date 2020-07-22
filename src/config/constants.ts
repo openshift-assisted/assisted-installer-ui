@@ -41,6 +41,7 @@ export const HOST_STATUS_LABELS: { [key in Host['status']]: string } = {
   disconnected: 'Disconnected',
   insufficient: 'Insufficient',
   disabled: 'Disabled',
+  'preparing-for-installation': 'Preparing for installation',
   installing: 'Starting installation',
   'installing-in-progress': 'Installing',
   'installing-pending-user-action': 'Incorrect boot order',
@@ -73,6 +74,7 @@ export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
     'This host does not meet the minimum hardware or networking requirements and will not be included in the cluster.',
   disabled:
     'This host was manually disabled and will not be included in the cluster. Enable this host to include it again.',
+  'preparing-for-installation': '',
   installing: '', // not rendered
   'installing-in-progress': '', // not rendered
   'installing-pending-user-action':

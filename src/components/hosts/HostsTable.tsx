@@ -283,9 +283,7 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
         <TableBody rowKey={rowKey} />
       </Table>
       <EventsModal
-        title={`Host Events: ${
-          getHostInventory(showEventsModal)?.hostname || showEventsModal
-        }`}
+        title={`Host Events: ${getHostInventory(showEventsModal)?.hostname || showEventsModal}`}
         entityKind="host"
         entityId={showEventsModal}
         onClose={() => setShowEventsModal('')}
