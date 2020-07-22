@@ -34,6 +34,7 @@ import { AlertsContext } from '../AlertsContextProvider';
 import { canEnable, canDisable, canDelete } from './utils';
 
 import './HostsTable.css';
+import EditHostModal from './EditHostModal';
 
 type HostsTableProps = {
   cluster: Cluster;
@@ -114,6 +115,9 @@ const rowKey = ({ rowData }: ExtraParamsType) => rowData?.key;
 const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
   const { addAlert } = React.useContext(AlertsContext);
   const [showEventsModal, setShowEventsModal] = React.useState<Host['id']>('');
+  const [showEditHostModal, setShowEditHostModal] = React.useState<
+    { host: Host; inventory: Inventory } | undefined
+  >(undefined);
   const [openRows, setOpenRows] = React.useState({} as OpenRows);
   const [hostToDelete, setHostToDelete] = React.useState<HostToDelete>();
   const [sortBy, setSortBy] = React.useState({
@@ -206,6 +210,13 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
     [],
   );
 
+  const onEditHost = React.useCallback(
+    (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
+      setShowEditHostModal({ host: rowData.host, inventory: rowData.inventory });
+    },
+    [],
+  );
+
   const actionResolver = React.useCallback(
     (rowData: IRowData) => {
       const host: Host | undefined = rowData.host;
@@ -218,6 +229,12 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
       }
 
       const actions = [];
+
+      actions.push({
+        title: 'Edit Host',
+        id: `button-edit-host-${hostname}`, // id is everchanging, not ideal for tests
+        onClick: onEditHost,
+      });
       if (canEnable(clusterStatus, host.status)) {
         actions.push({
           title: 'Enable in cluster',
@@ -249,7 +266,7 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
 
       return actions;
     },
-    [onHostEnable, onHostDisable, onViewHostEvents],
+    [onHostEnable, onHostDisable, onViewHostEvents, onEditHost],
   );
 
   const onSort: OnSort = React.useCallback(
@@ -290,13 +307,20 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
         isOpen={!!showEventsModal}
       />
       <DeleteHostModal
-        hostname={hostToDelete?.hostname}
+        hostname={hostToDelete?.hostname /* TODO(mlibra): verify after hostname change */}
         onClose={() => setHostToDelete(undefined)}
         isOpen={!!hostToDelete}
         onDelete={() => {
           onDeleteHost(hostToDelete?.id);
           setHostToDelete(undefined);
         }}
+      />
+      <EditHostModal
+        host={showEditHostModal?.host}
+        inventory={showEditHostModal?.inventory}
+        onClose={() => setShowEditHostModal(undefined)}
+        isOpen={!!showEditHostModal}
+        onSave={() => setShowEditHostModal(undefined)}
       />
     </>
   );
