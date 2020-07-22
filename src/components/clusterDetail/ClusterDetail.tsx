@@ -21,6 +21,7 @@ import ClusterCredentials from './ClusterCredentials';
 import ClusterInstallationError from './ClusterInstallationError';
 import { LaunchOpenshiftConsoleButton } from './ConsoleModal';
 import KubeconfigDownload from './KubeconfigDownload';
+import { DetailList, DetailItem } from '../ui/DetailList';
 import FeedbackAlert from './FeedbackAlert';
 import ClusterProperties from './ClusterProperties';
 
@@ -73,7 +74,12 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
             </TextContent>
           </GridItem>
           <GridItem>
-            <DetailItem title="Installation status" value={<ClusterProgress cluster={cluster} />} />
+            <DetailList>
+              <DetailItem
+                title="Installation Progress"
+                value={<ClusterProgress cluster={cluster} />}
+              />
+            </DetailList>
           </GridItem>
           {cluster.status === 'error' && (
             <ClusterInstallationError
