@@ -227,7 +227,7 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
     (rowData: IRowData) => {
       const host: Host | undefined = rowData.host;
       const clusterStatus: Cluster['status'] = rowData.clusterStatus;
-      const hostname = rowData.inventory?.hostname;
+      const hostname = rowData.host?.requestedHostname || rowData.inventory?.hostname;
 
       if (!host) {
         // I.e. row with detail
@@ -313,7 +313,7 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
         isOpen={!!showEventsModal}
       />
       <DeleteHostModal
-        hostname={hostToDelete?.hostname /* TODO(mlibra): verify after hostname change */}
+        hostname={hostToDelete?.hostname}
         onClose={() => setHostToDelete(undefined)}
         isOpen={!!hostToDelete}
         onDelete={() => {
