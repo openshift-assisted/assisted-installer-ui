@@ -143,7 +143,7 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
             return row;
           }),
       ),
-    [cluster.hosts, cluster, openRows, sortBy],
+    [cluster, openRows, sortBy],
   );
 
   const rows = React.useMemo(() => {
