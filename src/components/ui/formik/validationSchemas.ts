@@ -110,6 +110,5 @@ export const uniqueHostnameValidationSchema = (origHostname: string, hosts: Host
     if (!value || value === origHostname) {
       return true;
     }
-    // TODO(mlibra): use hostname from Inventory too
     return !hosts.find((h) => h.requestedHostname === value);
   });

@@ -13,7 +13,7 @@ import {
   Alert,
   AlertActionCloseButton,
 } from '@patternfly/react-core';
-import { Formik, FormikHelpers } from 'formik';
+import { Formik } from 'formik';
 import { InputField } from '../ui/formik';
 import { handleApiError, getErrorMessage } from '../../api/utils';
 import { Host, Inventory, Cluster, ClusterUpdateParams } from '../../api/types';
@@ -26,18 +26,12 @@ import GridGap from '../ui/GridGap';
 import StaticTextField from '../ui/StaticTextField';
 import { AlertsContext } from '../AlertsContextProvider';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
+import { canHostnameBeChanged } from './utils';
 
 export type HostUpdateParams = {
   hostId: string; // identifier, uuid
   hostname: string; // requested change
 };
-
-const validationSchema = (initialValues: HostUpdateParams, hosts: Host[] = []) =>
-  Yup.object().shape({
-    hostname: hostnameValidationSchema.concat(
-      uniqueHostnameValidationSchema(initialValues.hostname, hosts),
-    ),
-  });
 
 type EditHostFormProps = {
   host: Host;
@@ -46,6 +40,13 @@ type EditHostFormProps = {
   onCancel: () => void;
   onSuccess: () => void;
 };
+
+const validationSchema = (initialValues: HostUpdateParams, hosts: Host[] = []) =>
+  Yup.object().shape({
+    hostname: hostnameValidationSchema.concat(
+      uniqueHostnameValidationSchema(initialValues.hostname, hosts),
+    ),
+  });
 
 const EditHostForm: React.FC<EditHostFormProps> = ({
   host,
@@ -66,7 +67,7 @@ const EditHostForm: React.FC<EditHostFormProps> = ({
   };
 
   const handleSubmit = async (values: HostUpdateParams) => {
-    if (values.hostname != initialValues.hostname) {
+    if (values.hostname === initialValues.hostname) {
       // no change to save
       onSuccess();
       return;
@@ -90,10 +91,6 @@ const EditHostForm: React.FC<EditHostFormProps> = ({
     }
 
     onSuccess();
-  };
-
-  const canHostnameBeChanged = () => {
-    return true; // TODO
   };
 
   return (
@@ -129,7 +126,7 @@ const EditHostForm: React.FC<EditHostFormProps> = ({
                 name="hostname"
                 helperText="This name will replace the original discovered hostname after installation."
                 isRequired
-                isDisabled={canHostnameBeChanged()}
+                isDisabled={!canHostnameBeChanged(host.status)}
               />
             </GridGap>
           </ModalBoxBody>
