@@ -32,10 +32,10 @@ import { DASH } from '../constants';
 import DeleteHostModal from './DeleteHostModal';
 import { AlertsContext } from '../AlertsContextProvider';
 import { canEnable, canDisable, canDelete } from './utils';
-
-import './HostsTable.css';
 import EditHostModal from './EditHostModal';
 import Hostname, { computeHostname } from './Hostname';
+
+import './HostsTable.css';
 
 type HostsTableProps = {
   cluster: Cluster;
@@ -60,9 +60,7 @@ const columns = [
   { title: 'Disk', transforms: [sortable] },
 ];
 
-const hostToHostTableRow = (openRows: OpenRows, clusterStatus: Cluster['status']) => (
-  host: Host,
-): IRow => {
+const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host): IRow => {
   const { id, status, createdAt, inventory: inventoryString = '' } = host;
   const inventory = stringToJSON<Inventory>(inventoryString) || {};
   const { cores, memory, disk } = getHostRowHardwareInfo(inventory);
@@ -73,11 +71,15 @@ const hostToHostTableRow = (openRows: OpenRows, clusterStatus: Cluster['status']
       isOpen: !!openRows[id],
       cells: [
         {
-          title: computedHostname ? <Hostname host={host} inventory={inventory} /> : DASH,
+          title: computedHostname ? (
+            <Hostname host={host} inventory={inventory} cluster={cluster} />
+          ) : (
+            DASH
+          ),
           sortableValue: computedHostname || '',
         },
         {
-          title: <RoleCell host={host} clusterStatus={clusterStatus} />,
+          title: <RoleCell host={host} clusterStatus={cluster.status} />,
           sortableValue: getHostRole(host),
         },
         {
@@ -90,7 +92,7 @@ const hostToHostTableRow = (openRows: OpenRows, clusterStatus: Cluster['status']
         disk,
       ],
       host,
-      clusterStatus,
+      clusterStatus: cluster.status,
       inventory,
       key: `${host.id}-master`,
     },
@@ -134,14 +136,14 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
     () =>
       _.flatten(
         (cluster.hosts || [])
-          .map(hostToHostTableRow(openRows, cluster.status))
+          .map(hostToHostTableRow(openRows, cluster))
           .sort(rowSorter(sortBy, (row: IRow, index = 1) => row[0].cells[index - 1]))
           .map((row: IRow, index: number) => {
             row[1].parent = index * 2;
             return row;
           }),
       ),
-    [cluster.hosts, cluster.status, openRows, sortBy],
+    [cluster.hosts, cluster, openRows, sortBy],
   );
 
   const rows = React.useMemo(() => {
@@ -322,6 +324,7 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
       <EditHostModal
         host={showEditHostModal?.host}
         inventory={showEditHostModal?.inventory}
+        cluster={cluster}
         onClose={() => setShowEditHostModal(undefined)}
         isOpen={!!showEditHostModal}
         onSave={() => setShowEditHostModal(undefined)}

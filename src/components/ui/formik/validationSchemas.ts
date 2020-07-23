@@ -1,5 +1,6 @@
 import * as Yup from 'yup';
 import { ClusterConfigurationValues, HostSubnets } from '../../../types/clusters';
+import { Host } from '../../../api/types';
 
 const CLUSTER_NAME_REGEX = /^([a-z]([-a-z0-9]*[a-z0-9])?)*$/;
 const SSH_PUBLIC_KEY_REGEX = /^(ssh-rsa|ssh-ed25519|ecdsa-[-a-z0-9]*) AAAA[0-9A-Za-z+/]+[=]{0,3}( [^@]+@[^@| |\t|\n]+)?$/;
@@ -103,3 +104,12 @@ export const hostnameValidationSchema = Yup.string().matches(HOSTNAME_REGEX, {
   message: 'Value "${value}" is not valid hostname.',
   excludeEmptyString: true,
 });
+
+export const uniqueHostnameValidationSchema = (origHostname: string, hosts: Host[]) =>
+  Yup.string().test('unique-hostname-validation', 'Hostname must be unique', (value) => {
+    if (!value || value === origHostname) {
+      return true;
+    }
+    // TODO(mlibra): use hostname from Inventory too
+    return !hosts.find((h) => h.requestedHostname === value);
+  });

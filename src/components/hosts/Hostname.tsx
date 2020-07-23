@@ -1,17 +1,18 @@
 import React from 'react';
 import { Button, ButtonVariant } from '@patternfly/react-core';
 import EditHostModal from './EditHostModal';
-import { Host, Inventory } from '../../api/types';
+import { Host, Inventory, Cluster } from '../../api/types';
 
 type HostnameProps = {
   host: Host;
   inventory: Inventory;
+  cluster: Cluster;
 };
 
 export const computeHostname = (host: Host, inventory: Inventory) =>
   host.requestedHostname || inventory.hostname;
 
-const Hostname: React.FC<HostnameProps> = ({ host, inventory }) => {
+const Hostname: React.FC<HostnameProps> = ({ host, inventory, cluster }) => {
   const [isOpen, setOpen] = React.useState(false);
 
   const hostname = computeHostname(host, inventory);
@@ -26,6 +27,7 @@ const Hostname: React.FC<HostnameProps> = ({ host, inventory }) => {
       <EditHostModal
         host={host}
         inventory={inventory}
+        cluster={cluster}
         onClose={() => setOpen(false)}
         isOpen={isOpen}
         onSave={() => setOpen(false)}

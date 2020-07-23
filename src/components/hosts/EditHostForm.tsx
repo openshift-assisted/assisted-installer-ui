@@ -1,9 +1,11 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import * as Yup from 'yup';
 import _ from 'lodash';
 import {
   Button,
   ButtonVariant,
+  ButtonType,
   Form,
   ModalBoxBody,
   ModalBoxFooter,
@@ -11,32 +13,50 @@ import {
   Alert,
   AlertActionCloseButton,
 } from '@patternfly/react-core';
-import { InputField } from '../ui/formik';
 import { Formik, FormikHelpers } from 'formik';
-import { createClusterDownloadsImage } from '../../api/clusters';
+import { InputField } from '../ui/formik';
 import { handleApiError, getErrorMessage } from '../../api/utils';
-import { ImageCreateParams, Host, Inventory } from '../../api/types';
-import { hostnameValidationSchema } from '../ui/formik/validationSchemas';
+import { Host, Inventory, Cluster, ClusterUpdateParams } from '../../api/types';
+import { patchCluster } from '../../api/clusters';
+import {
+  hostnameValidationSchema,
+  uniqueHostnameValidationSchema,
+} from '../ui/formik/validationSchemas';
 import GridGap from '../ui/GridGap';
 import StaticTextField from '../ui/StaticTextField';
-
-const validationSchema = Yup.object().shape({
-  hostname: hostnameValidationSchema,
-});
+import { AlertsContext } from '../AlertsContextProvider';
+import { updateCluster } from '../../features/clusters/currentClusterSlice';
 
 export type HostUpdateParams = {
   hostId: string; // identifier, uuid
   hostname: string; // requested change
 };
 
+const validationSchema = (initialValues: HostUpdateParams, hosts: Host[] = []) =>
+  Yup.object().shape({
+    hostname: hostnameValidationSchema.concat(
+      uniqueHostnameValidationSchema(initialValues.hostname, hosts),
+    ),
+  });
+
 type EditHostFormProps = {
   host: Host;
   inventory: Inventory;
+  cluster: Cluster;
   onCancel: () => void;
   onSuccess: () => void;
 };
 
-const EditHostForm: React.FC<EditHostFormProps> = ({ host, inventory, onCancel, onSuccess }) => {
+const EditHostForm: React.FC<EditHostFormProps> = ({
+  host,
+  inventory,
+  cluster,
+  onCancel,
+  onSuccess,
+}) => {
+  const dispatch = useDispatch();
+  const { addAlert } = React.useContext(AlertsContext);
+
   const { requestedHostname } = host;
   const { hostname } = inventory;
 
@@ -45,54 +65,42 @@ const EditHostForm: React.FC<EditHostFormProps> = ({ host, inventory, onCancel, 
     hostname: requestedHostname || '',
   };
 
-  /*
-  React.useEffect(() => {
-    cancelSourceRef.current = Axios.CancelToken.source();
-    return () => cancelSourceRef.current?.cancel('Image generation cancelled by user.');
-  }, []);
-  */
-  // TODO
-  /*
-  const handleSubmit = async (
-    values: DiscoveryImageFormValues,
-    formikActions: FormikHelpers<DiscoveryImageFormValues>,
-  ) => {
-    if (clusterId) {
-      try {
-        const params = _.omit(values, ['enableProxy']);
-        const { data: cluster } = await createClusterDownloadsImage(clusterId, params, {
-          cancelToken: cancelSourceRef.current?.token,
-        });
-        onSuccess(cluster.imageInfo);
-      } catch (error) {
-        handleApiError<ImageCreateParams>(error, () => {
-          formikActions.setStatus({
-            error: {
-              title: 'Failed to download the discovery Image',
-              message: getErrorMessage(error),
-            },
-          });
-        });
-      }
+  const handleSubmit = async (values: HostUpdateParams) => {
+    if (values.hostname != initialValues.hostname) {
+      // no change to save
+      onSuccess();
+      return;
     }
-  };
-  */
 
-  const handleSubmit = (
-    values: HostUpdateParams,
-    formikActions: FormikHelpers<HostUpdateParams>,
-  ) => {
-    console.log('---- onSubmit - Formik: ', values, formikActions);
-    // TODO: compose ClusterUpdate
-    // TODO: dispatch cluster change
+    const params: ClusterUpdateParams = {};
+    params.hostsNames = [
+      {
+        id: values.hostId,
+        hostname: values.hostname,
+      },
+    ];
+
+    try {
+      const { data } = await patchCluster(cluster.id, params);
+      dispatch(updateCluster(data));
+    } catch (e) {
+      handleApiError(e, () =>
+        addAlert({ title: 'Failed to update host', message: getErrorMessage(e) }),
+      );
+    }
+
     onSuccess();
+  };
+
+  const canHostnameBeChanged = () => {
+    return true; // TODO
   };
 
   return (
     <Formik
       initialValues={initialValues}
       initialStatus={{ error: null }}
-      validationSchema={validationSchema}
+      validationSchema={validationSchema(initialValues, cluster.hosts)}
       onSubmit={handleSubmit}
     >
       {({ handleSubmit, status, setStatus }) => (
@@ -121,14 +129,19 @@ const EditHostForm: React.FC<EditHostFormProps> = ({ host, inventory, onCancel, 
                 name="hostname"
                 helperText="This name will replace the original discovered hostname after installation."
                 isRequired
+                isDisabled={canHostnameBeChanged()}
               />
             </GridGap>
           </ModalBoxBody>
           <ModalBoxFooter>
-            <Button key="submit" type="submit" isDisabled={!!status.error /* TODO: use gray */}>
+            <Button
+              key="submit"
+              type={ButtonType.submit}
+              isDisabled={!!status.error /* TODO: use gray */}
+            >
               Save
             </Button>
-            <Button key="cancel" variant="link" onClick={onCancel}>
+            <Button key="cancel" variant={ButtonVariant.link} onClick={onCancel}>
               Cancel
             </Button>
           </ModalBoxFooter>

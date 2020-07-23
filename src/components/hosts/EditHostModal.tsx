@@ -1,12 +1,13 @@
 import React from 'react';
 import { Modal, ModalVariant } from '@patternfly/react-core';
-import { Host, Inventory } from '../../api/types';
+import { Host, Inventory, Cluster } from '../../api/types';
 import EditHostForm from './EditHostForm';
 
 type EditHostModalProps = {
   host?: Host;
   inventory?: Inventory;
   isOpen: boolean;
+  cluster: Cluster;
   onClose: () => void;
   onSave: () => void;
 };
@@ -15,6 +16,7 @@ const EditHostModal: React.FC<EditHostModalProps> = ({
   isOpen,
   host,
   inventory,
+  cluster,
   onClose,
   onSave,
 }) =>
@@ -27,7 +29,13 @@ const EditHostModal: React.FC<EditHostModalProps> = ({
       variant={ModalVariant.small}
       hasNoBodyWrapper
     >
-      <EditHostForm host={host} inventory={inventory} onCancel={onClose} onSuccess={onSave} />
+      <EditHostForm
+        host={host}
+        inventory={inventory}
+        cluster={cluster}
+        onCancel={onClose}
+        onSuccess={onSave}
+      />
     </Modal>
   ) : null;
 
