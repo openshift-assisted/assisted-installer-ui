@@ -335,6 +335,7 @@ export interface Host {
     | 'insufficient'
     | 'disabled'
     | 'preparing-for-installation'
+    | 'pending-for-input'
     | 'installing'
     | 'installing-in-progress'
     | 'installing-pending-user-action'
@@ -343,6 +344,10 @@ export interface Host {
     | 'error'
     | 'resetting';
   statusInfo: string;
+  /**
+   * Json formatted string containing the validations results for each validation id grouped by category (network, hardware, etc.)
+   */
+  validationsInfo?: string;
   /**
    * The last time that the host status has been updated
    */
@@ -402,6 +407,19 @@ export type HostStage =
   | 'Joined'
   | 'Done'
   | 'Failed';
+export type HostValidationId =
+  | 'connected'
+  | 'has-inventory'
+  | 'has-min-cpu-cores'
+  | 'has-min-valid-disks'
+  | 'has-min-memory'
+  | 'machine-cidr-defined'
+  | 'role-defined'
+  | 'has-cpu-cores-for-role'
+  | 'has-memory-for-role'
+  | 'hostname-unique'
+  | 'hostname-valid'
+  | 'belongs-to-machine-cidr';
 export interface ImageCreateParams {
   /**
    * The URL of the HTTP/S proxy that agents should use to access the discovery service
