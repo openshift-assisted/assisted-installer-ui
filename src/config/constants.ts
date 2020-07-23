@@ -1,6 +1,11 @@
 import { ClusterCreateParams, Cluster, Host } from '../api/types';
 import { ValidationsInfo, Validation } from '../types/hosts';
 
+export let routeBasePath = '';
+export const setRouteBasePath = (basePath: string) => {
+  routeBasePath = basePath;
+};
+
 type OpenshiftVersionOptionType = {
   label: string;
   value: ClusterCreateParams['openshiftVersion'];
