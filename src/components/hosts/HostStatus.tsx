@@ -14,18 +14,23 @@ import {
   ConnectedIcon,
   OffIcon,
   UnknownIcon,
+  PendingIcon,
 } from '@patternfly/react-icons';
 import { Host } from '../../api/types';
+import { ValidationsInfo } from '../../types/hosts';
 import HostProgress from './HostProgress';
 import { HOST_STATUS_LABELS, HOST_STATUS_DETAILS } from '../../config/constants';
 import { getHumanizedDateTime } from '../ui/utils';
 import { toSentence } from '../ui/table/utils';
 import { getHostProgressStageNumber, getHostProgressStages } from './utils';
+import { stringToJSON } from '../../api/utils';
 
 import './HostStatus.css';
+import HostValidationGroups from './HostValidationGroups';
 
 const getStatusIcon = (status: Host['status']) => {
   if (status === 'discovering') return <ConnectedIcon />;
+  if (status === 'pending-for-input') return <PendingIcon />;
   if (status === 'known') return <CheckCircleIcon color={okColor.value} />;
   if (status === 'disconnected') return <DisconnectedIcon />;
   if (status === 'disabled') return <OffIcon />;
@@ -45,6 +50,9 @@ const getStatusIcon = (status: Host['status']) => {
 
 const getPopoverContent = (host: Host) => {
   const { status, statusInfo } = host;
+  const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
+  const statusDetails = HOST_STATUS_DETAILS[status];
+
   if (['installing', 'installing-in-progress'].includes(status)) {
     return (
       <TextContent>
@@ -56,8 +64,11 @@ const getPopoverContent = (host: Host) => {
     return (
       <TextContent>
         <Text>
-          {HOST_STATUS_DETAILS[status] || ''}
-          <br />
+          {statusDetails && (
+            <>
+              {statusDetails} <br />
+            </>
+          )}
           {toSentence(statusInfo)}
         </Text>
         <HostProgress host={host} />
@@ -65,13 +76,20 @@ const getPopoverContent = (host: Host) => {
     );
   }
   return (
-    <TextContent>
-      <Text>
-        {HOST_STATUS_DETAILS[status] || ''}
-        <br />
-        {toSentence(statusInfo)}
-      </Text>
-    </TextContent>
+    <>
+      <TextContent>
+        <Text>
+          {statusDetails && (
+            <>
+              {statusDetails}
+              <br />
+            </>
+          )}
+          {toSentence(statusInfo)}
+        </Text>
+      </TextContent>
+      <HostValidationGroups validationsInfo={validationsInfo} />
+    </>
   );
 };
 
