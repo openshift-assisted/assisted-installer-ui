@@ -3,10 +3,7 @@ import * as Yup from 'yup';
 import { validateYupSchema, yupToFormErrors } from 'formik';
 import { Cluster, ManagedDomain } from '../../api/types';
 import { ClusterConfigurationValues } from '../../types/clusters';
-import {
-  pullSecretKnownOrRequired,
-  sshPublicKeyValidationSchema,
-} from '../ui/formik/validationSchemas';
+import { sshPublicKeyValidationSchema } from '../ui/formik/validationSchemas';
 import { getInitialValues } from './utils';
 import { CLUSTER_FIELD_LABELS } from '../../config/constants';
 
@@ -46,7 +43,6 @@ const validateRequiredFields = (cluster: Cluster, managedDomains: ManagedDomain[
     serviceNetworkCidr: requiredSchema,
     apiVip: requiredSchema,
     ingressVip: requiredSchema,
-    pullSecret: pullSecretKnownOrRequired(values),
     sshPublicKey: sshPublicKeyValidationSchema,
   });
   try {
