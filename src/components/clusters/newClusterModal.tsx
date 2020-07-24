@@ -17,7 +17,7 @@ import * as Yup from 'yup';
 import { LoadingState } from '../ui/uiState';
 import { postCluster, getClusters } from '../../api/clusters';
 import { Formik, FormikHelpers } from 'formik';
-import { OPENSHIFT_VERSION_OPTIONS } from '../../config/constants';
+import { OPENSHIFT_VERSION_OPTIONS, routeBasePath } from '../../config/constants';
 import { ClusterCreateParams } from '../../api/types';
 import { InputField, SelectField } from '../ui/formik';
 import GridGap from '../ui/GridGap';
@@ -87,7 +87,7 @@ export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal, hi
 
     try {
       const { data } = await postCluster(values);
-      history.push(`/clusters/${data.id}`);
+      history.push(`${routeBasePath}/clusters/${data.id}`);
     } catch (e) {
       handleApiError<ClusterCreateParams>(e, () =>
         formikActions.setStatus({

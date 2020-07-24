@@ -10,6 +10,7 @@ import { RootState } from '../store/rootReducer';
 import { HumanizedSortable } from '../components/ui/table/utils';
 import ClusterStatus, { getClusterStatusText } from '../components/clusters/ClusterStatus';
 import { DASH } from '../components/constants';
+import { routeBasePath } from '../config';
 
 const selectClusters = (state: RootState) => state.clusters.data;
 const clustersUIState = (state: RootState) => state.clusters.uiState;
@@ -31,7 +32,7 @@ const clusterToClusterTableRow = (cluster: Cluster): IRow => {
     cells: [
       {
         title: (
-          <Link key={name} to={`/clusters/${id}`} id={`cluster-link-${name}`}>
+          <Link key={name} to={`${routeBasePath}/clusters/${id}`} id={`cluster-link-${name}`}>
             {name}
           </Link>
         ),
