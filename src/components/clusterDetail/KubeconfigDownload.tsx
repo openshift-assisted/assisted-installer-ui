@@ -15,9 +15,13 @@ const getUrl = (clusterId: Cluster['id'], status: Cluster['status']) =>
     : getClusterFileURL(clusterId, 'kubeconfig-noingress');
 
 const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({ clusterId, status }) => {
+  const [url, setURL] = React.useState<string>();
+  React.useEffect(() => {
+    getUrl(clusterId, status).then(setURL);
+  }, [clusterId, status]);
   return (
     <GridItem>
-      <Button variant={ButtonVariant.secondary} onClick={() => saveAs(getUrl(clusterId, status))}>
+      <Button disabled={!url} variant={ButtonVariant.secondary} onClick={() => url && saveAs(url)}>
         Download kubeconfig
       </Button>
     </GridItem>

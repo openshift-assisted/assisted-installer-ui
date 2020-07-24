@@ -12,6 +12,7 @@ import {
   ModalBoxBody,
   ModalBoxFooter,
   TextContent,
+  Spinner,
 } from '@patternfly/react-core';
 import { global_success_color_100 as successColor } from '@patternfly/react-tokens';
 import { CheckCircleIcon } from '@patternfly/react-icons';
@@ -32,11 +33,12 @@ const DiscoveryImageSummary: React.FC<DiscoveryImageSummaryProps> = ({
   onClose,
   onReset,
 }) => {
-  const isoPath = getClusterDownloadsImageUrl(clusterId);
-  const isoUrl = `${window.location.origin}${isoPath}`;
-  const downloadIso = () => saveAs(isoPath);
+  const [url, setURL] = React.useState<string>();
+  React.useEffect(() => {
+    getClusterDownloadsImageUrl(clusterId).then(setURL);
+  }, [clusterId]);
   const { proxyUrl } = imageInfo;
-  return (
+  return url ? (
     <>
       <ModalBoxBody>
         <EmptyState variant={EmptyStateVariant.small}>
@@ -50,8 +52,8 @@ const DiscoveryImageSummary: React.FC<DiscoveryImageSummaryProps> = ({
             <DetailItem
               title="Discovery ISO URL"
               value={
-                <ClipboardCopy isReadOnly onCopy={(event) => clipboardCopyFunc(event, isoUrl)}>
-                  {isoUrl}
+                <ClipboardCopy isReadOnly onCopy={(event) => clipboardCopyFunc(event, url)}>
+                  {url}
                 </ClipboardCopy>
               }
             />
@@ -60,7 +62,7 @@ const DiscoveryImageSummary: React.FC<DiscoveryImageSummaryProps> = ({
         </TextContent>
       </ModalBoxBody>
       <ModalBoxFooter>
-        <Button variant={ButtonVariant.primary} onClick={downloadIso}>
+        <Button variant={ButtonVariant.primary} onClick={() => saveAs(url)}>
           Download Discovery ISO
         </Button>
         <Button variant={ButtonVariant.secondary} onClick={onClose}>
@@ -71,6 +73,13 @@ const DiscoveryImageSummary: React.FC<DiscoveryImageSummaryProps> = ({
         </Button>
       </ModalBoxFooter>
     </>
+  ) : (
+    <ModalBoxBody>
+      <EmptyState variant={EmptyStateVariant.small}>
+        <EmptyStateIcon icon={CheckCircleIcon} color={successColor.value} />
+        <Spinner size="xl" />
+      </EmptyState>
+    </ModalBoxBody>
   );
 };
 

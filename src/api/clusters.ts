@@ -48,17 +48,36 @@ export const createClusterDownloadsImage = (
   axiosOptions: AxiosRequestConfig,
 ): AxiosPromise<Cluster> => client.post(`/clusters/${id}/downloads/image`, params, axiosOptions);
 
-// TODO(jtomasek): make the API_ROOT configurable so this can be used in cloud.redhat.com
-const API_ROOT = process.env.REACT_APP_API_ROOT;
+type Config = {
+  url: string;
+  headers: {
+    [key: string]: string;
+  };
+};
+
+const applyInterceptors = async (url: string) => {
+  let cfg: Config = { url, headers: {} };
+  const interceptors: ((cfg: Config) => Promise<Config>)[] = [];
+  // eslint-disable-next-line
+  // @ts-ignore
+  client.interceptors.request.forEach((i) => interceptors.push(i.fulfilled));
+
+  interceptors.reverse();
+
+  for (const i of interceptors) {
+    cfg = await i(cfg);
+  }
+  return cfg.url;
+};
 
 export const getClusterDownloadsImageUrl = (clusterId: string) =>
-  `${API_ROOT}/clusters/${clusterId}/downloads/image`;
+  applyInterceptors(`/clusters/${clusterId}/downloads/image`);
 
 export const getClusterFileURL = (clusterID: string, fileName: string) =>
-  `${API_ROOT}/clusters/${clusterID}/downloads/files?file_name=${fileName}`;
+  applyInterceptors(`/clusters/${clusterID}/downloads/files?file_name=${fileName}`);
 
 export const getClusterKubeconfigURL = (clusterID: string) =>
-  `${API_ROOT}/clusters/${clusterID}/downloads/kubeconfig`;
+  applyInterceptors(`/clusters/${clusterID}/downloads/kubeconfig`);
 
 export const getClusterCredentials = (clusterID: string): AxiosPromise<Credentials> =>
   client.get(`/clusters/${clusterID}/credentials`);

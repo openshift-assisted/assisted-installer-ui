@@ -5,7 +5,7 @@ const getDefaultClient = () => {
   const client = axios.create();
   client.interceptors.request.use((cfg) => ({
     ...cfg,
-    url: `${process.env.REACT_APP_API_ROOT}${cfg.url}`,
+    url: `${window.location.origin}${process.env.REACT_APP_API_ROOT}${cfg.url}`,
   }));
   return applyCaseMiddleware(client);
 };
