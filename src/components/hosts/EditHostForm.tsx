@@ -12,7 +12,7 @@ import {
   Alert,
   AlertActionCloseButton,
 } from '@patternfly/react-core';
-import { Formik } from 'formik';
+import { Formik, FormikHelpers } from 'formik';
 import { InputField } from '../ui/formik';
 import { handleApiError, getErrorMessage } from '../../api/utils';
 import { Host, Inventory, Cluster, ClusterUpdateParams } from '../../api/types';
@@ -55,7 +55,6 @@ const EditHostForm: React.FC<EditHostFormProps> = ({
   onSuccess,
 }) => {
   const dispatch = useDispatch();
-  const { addAlert } = React.useContext(AlertsContext);
 
   const { requestedHostname } = host;
   const { hostname } = inventory;
@@ -65,7 +64,10 @@ const EditHostForm: React.FC<EditHostFormProps> = ({
     hostname: requestedHostname || '',
   };
 
-  const handleSubmit = async (values: HostUpdateParams) => {
+  const handleSubmit = async (
+    values: HostUpdateParams,
+    formikActions: FormikHelpers<HostUpdateParams>,
+  ) => {
     if (values.hostname === initialValues.hostname) {
       // no change to save
       onSuccess();
@@ -83,13 +85,17 @@ const EditHostForm: React.FC<EditHostFormProps> = ({
     try {
       const { data } = await patchCluster(cluster.id, params);
       dispatch(updateCluster(data));
+      onSuccess();
     } catch (e) {
       handleApiError(e, () =>
-        addAlert({ title: 'Failed to update host', message: getErrorMessage(e) }),
+        formikActions.setStatus({
+          error: {
+            title: 'Failed to update host',
+            message: getErrorMessage(e),
+          },
+        }),
       );
     }
-
-    onSuccess();
   };
 
   return (
@@ -99,7 +105,7 @@ const EditHostForm: React.FC<EditHostFormProps> = ({
       validationSchema={validationSchema(initialValues, cluster.hosts)}
       onSubmit={handleSubmit}
     >
-      {({ handleSubmit, status, setStatus }) => (
+      {({ handleSubmit, status, setStatus, isSubmitting, isValid, dirty }) => (
         <Form onSubmit={handleSubmit}>
           <ModalBoxBody>
             <GridGap>
@@ -133,7 +139,7 @@ const EditHostForm: React.FC<EditHostFormProps> = ({
             <Button
               key="submit"
               type={ButtonType.submit}
-              isDisabled={!!status.error /* TODO: use gray */}
+              isDisabled={isSubmitting || !isValid || !dirty}
             >
               Save
             </Button>
