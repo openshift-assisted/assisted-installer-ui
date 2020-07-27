@@ -13,4 +13,5 @@ export type HostSubnets = {
 export type ClusterConfigurationValues = ClusterUpdateParams & {
   hostSubnet: string;
   useRedHatDnsService: boolean;
+  shareDiscoverySshKey: boolean;
 };

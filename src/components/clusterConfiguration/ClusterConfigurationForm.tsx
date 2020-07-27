@@ -48,7 +48,7 @@ import ClusterValidationSection from './ClusterValidationSection';
 import { validateCluster } from './clusterValidations';
 import { getInitialValues, getHostSubnets, findMatchingSubnet } from './utils';
 import { AlertsContext } from '../AlertsContextProvider';
-import ClusterSshKey from './ClusterSshKey';
+import ClusterSshKeyField from './ClusterSshKeyField';
 
 const validationSchema = (hostSubnets: HostSubnets) =>
   Yup.lazy<ClusterConfigurationValues>((values) =>
@@ -96,7 +96,12 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
 
     // update the cluster configuration
     try {
-      const params = _.omit(values, ['hostSubnet', 'useRedHatDnsService']);
+      const params = _.omit(values, ['hostSubnet', 'useRedHatDnsService', 'shareDiscoverySshKey']);
+
+      if (values.shareDiscoverySshKey) {
+        params.sshPublicKey = cluster.imageInfo.sshPublicKey;
+      }
+
       const { data } = await patchCluster(cluster.id, params);
       formikActions.resetForm({
         values: getInitialValues(data, managedDomains),
@@ -156,6 +161,15 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
           );
         }
 
+        const onClusterSshKeyToggle = (isChecked: boolean) =>
+          setFieldValue('shareDiscoverySshKey', isChecked);
+        const onClusterSshKeyVisibilityChanged = () => {
+          onClusterSshKeyToggle(
+            !!cluster.imageInfo.sshPublicKey &&
+              (cluster.sshPublicKey === cluster.imageInfo.sshPublicKey || !cluster.sshPublicKey),
+          );
+        };
+
         return (
           <>
             <ClusterBreadcrumbs clusterName={cluster.name} />
@@ -185,10 +199,11 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
                       <TextContent>
                         <Text component="h2">Security</Text>
                       </TextContent>
-                      <TextAreaField
-                        name="sshPublicKey"
-                        label="SSH Public Key"
-                        helperText={sshPublicKeyHelperText}
+                      <ClusterSshKeyField
+                        isSwitchHidden={!cluster.imageInfo.sshPublicKey}
+                        name="shareDiscoverySshKey"
+                        onToggle={onClusterSshKeyToggle}
+                        onClusterSshKeyVisibilityChanged={onClusterSshKeyVisibilityChanged}
                       />
                     </GridGap>
                   </GridItem>
