@@ -39,13 +39,6 @@ export const validJSONSchema = Yup.string().test(
   },
 );
 
-export const pullSecretKnownOrRequired = (values: ClusterConfigurationValues) =>
-  Yup.string().test(
-    'pull-secret-known-or-required',
-    'Pull secret must be provided.',
-    (value) => value || !values.isPullSecretEdit,
-  );
-
 export const ipValidationSchema = Yup.string().matches(IP_ADDRESS_REGEX, {
   message: 'Value "${value}" is not valid IP address.', // eslint-disable-line no-template-curly-in-string
   excludeEmptyString: true,

@@ -62,9 +62,7 @@ export const getInitialValues = (
   serviceNetworkCidr: cluster.serviceNetworkCidr || '',
   apiVip: cluster.apiVip || '',
   ingressVip: cluster.ingressVip || '',
-  pullSecret: '',
   sshPublicKey: cluster.sshPublicKey || '',
-  isPullSecretEdit: !cluster.pullSecretSet, // toggles edit mode and drives validation
   hostSubnet: findMatchingSubnet(cluster.ingressVip, cluster.apiVip, getHostSubnets(cluster)),
   useRedHatDnsService:
     !!cluster.baseDnsDomain && managedDomains.map((d) => d.domain).includes(cluster.baseDnsDomain),
