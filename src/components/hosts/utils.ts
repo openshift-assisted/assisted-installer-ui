@@ -46,4 +46,6 @@ export const getHostProgressStageNumber = (host: Host) => {
 };
 
 export const canHostnameBeChanged = (hostStatus: Host['status']) =>
-  ['discovering', 'known', 'disconnected', 'insufficient'].includes(hostStatus);
+  ['discovering', 'known', 'disconnected', 'insufficient', 'pending-for-input'].includes(
+    hostStatus,
+  );
