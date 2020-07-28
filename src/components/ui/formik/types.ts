@@ -17,6 +17,7 @@ export interface FieldProps {
   validate?: FieldValidator;
   min?: number;
   max?: number;
+  idPostfix?: string;
 }
 
 export interface SelectFieldProps extends FieldProps {

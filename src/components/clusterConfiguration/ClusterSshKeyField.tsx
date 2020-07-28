@@ -28,10 +28,11 @@ const ClusterSshKeyField: React.FC<ClusterSshKeyFieldProps> = ({
   isSwitchHidden,
   onToggle,
   onClusterSshKeyVisibilityChanged,
+  idPostfix,
   ...props
 }) => {
   const [field] = useField({ name: props.name, validate });
-  const fieldId = getFieldId(props.name, 'input');
+  const fieldId = getFieldId(props.name, 'input', idPostfix);
 
   React.useEffect(onClusterSshKeyVisibilityChanged, [isSwitchHidden]);
 

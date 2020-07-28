@@ -9,10 +9,11 @@ const TextAreaSecretField: React.FC<TextAreaSecretProps> = ({
   isEdit,
   helperTextHidden,
   onToggle,
+  idPostfix,
   ...props
 }) => {
   const { label, name } = props;
-  const fieldId = getFieldId(name, 'input');
+  const fieldId = getFieldId(name, 'input', idPostfix);
 
   if (isEdit) {
     return (
