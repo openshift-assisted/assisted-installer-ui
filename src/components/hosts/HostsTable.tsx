@@ -39,6 +39,7 @@ import './HostsTable.css';
 
 type HostsTableProps = {
   cluster: Cluster;
+  skipDisabled?: boolean;
 };
 
 type OpenRows = {
@@ -117,8 +118,10 @@ const HostsTableEmptyState: React.FC<{ cluster: Cluster }> = ({ cluster }) => (
 );
 
 const rowKey = ({ rowData }: ExtraParamsType) => rowData?.key;
+const isHostShown = (skipDisabled: boolean) => (host: Host) =>
+  !skipDisabled || host.status != 'disabled';
 
-const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
+const HostsTable: React.FC<HostsTableProps> = ({ cluster, skipDisabled = false }) => {
   const { addAlert } = React.useContext(AlertsContext);
   const [showEventsModal, setShowEventsModal] = React.useState<Host['id']>('');
   const [showEditHostModal, setShowEditHostModal] = React.useState<
@@ -136,6 +139,7 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
     () =>
       _.flatten(
         (cluster.hosts || [])
+          .filter(isHostShown(skipDisabled))
           .map(hostToHostTableRow(openRows, cluster))
           .sort(rowSorter(sortBy, (row: IRow, index = 1) => row[0].cells[index - 1]))
           .map((row: IRow, index: number) => {
@@ -143,7 +147,7 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
             return row;
           }),
       ),
-    [cluster, openRows, sortBy],
+    [cluster, skipDisabled, openRows, sortBy],
   );
 
   const rows = React.useMemo(() => {
