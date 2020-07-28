@@ -3,6 +3,7 @@ import { saveAs } from 'file-saver';
 import { GridItem, Button, ButtonVariant } from '@patternfly/react-core';
 import { getClusterFileURL, getClusterKubeconfigURL } from '../../api/clusters';
 import { Cluster } from '../../api/types';
+import { canDownloadKubeconfig } from '../hosts/utils';
 
 type KubeconfigDownloadProps = {
   clusterId: Cluster['id'];
@@ -17,7 +18,11 @@ const getUrl = (clusterId: Cluster['id'], status: Cluster['status']) =>
 const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({ clusterId, status }) => {
   return (
     <GridItem>
-      <Button variant={ButtonVariant.secondary} onClick={() => saveAs(getUrl(clusterId, status))}>
+      <Button
+        variant={ButtonVariant.secondary}
+        onClick={() => saveAs(getUrl(clusterId, status))}
+        isDisabled={!canDownloadKubeconfig(status)}
+      >
         Download kubeconfig
       </Button>
     </GridItem>
