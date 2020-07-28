@@ -25,6 +25,7 @@ import { DetailList, DetailItem } from '../ui/DetailList';
 import FeedbackAlert from './FeedbackAlert';
 import ClusterProperties from './ClusterProperties';
 import { routeBasePath } from '../../config';
+import FailedHostsWarning from './FailedHostsWarning';
 
 const canAbortInstallation = (cluster: Cluster) =>
   ['installing', 'installing-in-progress'].includes(cluster.status) &&
@@ -96,6 +97,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
               retry={fetchCredentials}
             />
           )}
+          {cluster.status === 'installed' && <FailedHostsWarning cluster={cluster} />}
           <KubeconfigDownload status={cluster.status} clusterId={cluster.id} />
           <FeedbackAlert />
           <GridItem>
