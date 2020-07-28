@@ -9,7 +9,7 @@ const DiscoveryProxyFields: React.FC = () => {
   return (
     <>
       <CheckboxField
-        label="Configure HTTP Proxy"
+        label="Use HTTP Proxy"
         name="enableProxy"
         helperText="If hosts are behind a firewall that requires the use of a proxy, provide additional information about the proxy."
         onChange={(value: boolean) => !value && resetProxy()}
