@@ -24,6 +24,7 @@ const TextAreaField: React.FC<TextAreaProps> = ({
     return '';
   };
   const errorMessage = getErrorMessage();
+  const { isDisabled, ...restProps } = props;
 
   return (
     <FormGroup
@@ -51,13 +52,14 @@ const TextAreaField: React.FC<TextAreaProps> = ({
       {children}
       <TextArea
         {...field}
-        {...props}
+        {...restProps}
         id={fieldId}
         style={{ resize: 'vertical' }}
         validated={isValid ? 'default' : 'error'}
         isRequired={isRequired}
         aria-describedby={`${fieldId}-helper`}
         onChange={(value, event) => field.onChange(event)}
+        disabled={isDisabled}
       />
     </FormGroup>
   );
