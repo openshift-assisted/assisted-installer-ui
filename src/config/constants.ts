@@ -1,4 +1,10 @@
 import { ClusterCreateParams, Cluster, Host } from '../api/types';
+import { ValidationsInfo, Validation } from '../types/hosts';
+
+export let routeBasePath = '';
+export const setRouteBasePath = (basePath: string) => {
+  routeBasePath = basePath;
+};
 
 type OpenshiftVersionOptionType = {
   label: string;
@@ -30,16 +36,19 @@ export const CLUSTER_STATUS_LABELS: { [key in Cluster['status']]: string } = {
   ready: 'Ready',
   'preparing-for-installation': 'Preparing for installation',
   installing: 'Installing',
+  finalizing: 'Finalizing',
   error: 'Error',
   installed: 'Installed',
 };
 
 export const HOST_STATUS_LABELS: { [key in Host['status']]: string } = {
   discovering: 'Discovering',
+  'pending-for-input': 'Pending input',
   known: 'Known',
   disconnected: 'Disconnected',
   insufficient: 'Insufficient',
   disabled: 'Disabled',
+  'preparing-for-installation': 'Preparing for installation',
   installing: 'Starting installation',
   'installing-in-progress': 'Installing',
   'installing-pending-user-action': 'Incorrect boot order',
@@ -64,6 +73,7 @@ export const CLUSTER_FIELD_LABELS: { [key in string]: string } = {
 export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
   discovering:
     'This host is transmitting its hardware and networking information to the installer. Please wait while this information is received.',
+  'pending-for-input': '',
   known:
     'This host meets the minimum hardware and networking requirements and will be included in the cluster.',
   disconnected:
@@ -72,6 +82,7 @@ export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
     'This host does not meet the minimum hardware or networking requirements and will not be included in the cluster.',
   disabled:
     'This host was manually disabled and will not be included in the cluster. Enable this host to include it again.',
+  'preparing-for-installation': '',
   installing: '', // not rendered
   'installing-in-progress': '', // not rendered
   'installing-pending-user-action':
@@ -81,4 +92,25 @@ export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
   resetting: 'This host is resetting the installation.',
   'resetting-pending-user-action':
     'Host already booted from disk during previous installation. To finish resetting the installation please boot the host into Discovery ISO.',
+};
+
+export const HOST_VALIDATION_GROUP_LABELS: { [key in keyof ValidationsInfo]: string } = {
+  hardware: 'Hardware',
+  network: 'Network',
+  role: 'Roles',
+};
+
+export const HOST_VALIDATION_LABELS: { [key in Validation['id']]: string } = {
+  'has-inventory': 'Hardware information',
+  'has-min-cpu-cores': 'Minimum CPU cores',
+  'has-min-memory': 'Minimum Memory',
+  'has-min-valid-disks': 'Minimum disks of required size',
+  'has-cpu-cores-for-role': 'Min. CPU cores required for selected role',
+  'has-memory-for-role': 'Min. memory required for selected role',
+  'hostname-unique': 'Unique hostname',
+  'hostname-valid': 'Valid hostname',
+  connected: 'Connected',
+  'machine-cidr-defined': 'Machine CIDR',
+  'belongs-to-machine-cidr': 'Belongs to machine CIDR',
+  'role-defined': 'Role',
 };

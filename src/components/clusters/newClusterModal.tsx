@@ -7,21 +7,28 @@ import {
   AlertVariant,
   AlertActionCloseButton,
   Modal,
+  ModalBoxBody,
   ModalBoxFooter,
   ModalVariant,
 } from '@patternfly/react-core';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { History } from 'history';
 import { uniqueNamesGenerator, Config, adjectives, colors, animals } from 'unique-names-generator';
 import * as Yup from 'yup';
 import { LoadingState } from '../ui/uiState';
 import { postCluster, getClusters } from '../../api/clusters';
 import { Formik, FormikHelpers } from 'formik';
-import { OPENSHIFT_VERSION_OPTIONS } from '../../config/constants';
+import {
+  CLUSTER_MANAGER_SITE_LINK,
+  OPENSHIFT_VERSION_OPTIONS,
+  routeBasePath,
+} from '../../config/constants';
 import { ClusterCreateParams } from '../../api/types';
-import { InputField, SelectField } from '../ui/formik';
+import { InputField, SelectField, TextAreaField } from '../ui/formik';
+import GridGap from '../ui/GridGap';
 import { handleApiError, getErrorMessage } from '../../api/utils';
 import { ToolbarButton } from '../ui/Toolbar';
-import { nameValidationSchema } from '../ui/formik/validationSchemas';
+import { nameValidationSchema, validJSONSchema } from '../ui/formik/validationSchemas';
 
 const namesConfig: Config = {
   dictionaries: [adjectives, colors, animals],
@@ -30,6 +37,18 @@ const namesConfig: Config = {
   length: 3,
   style: 'lowerCase',
 };
+
+const pullSecretHelperText = (
+  <>
+    The pull secret can be obtained from the Pull Secret page on the{' '}
+    {
+      <a href={CLUSTER_MANAGER_SITE_LINK} target="_blank" rel="noopener noreferrer">
+        Red Hat OpenShift Cluster Manager site <ExternalLinkAltIcon />
+      </a>
+    }
+    .
+  </>
+);
 
 type NewClusterModalButtonProps = {
   ButtonComponent?: typeof Button | typeof ToolbarButton;
@@ -62,6 +81,7 @@ export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal, hi
       Yup.object({
         name: nameValidationSchema,
         openshiftVersion: Yup.string().required('Required'),
+        pullSecret: validJSONSchema.required('Pull secret must be provided.'),
       }),
     [],
   );
@@ -85,7 +105,7 @@ export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal, hi
 
     try {
       const { data } = await postCluster(values);
-      history.push(`/clusters/${data.id}`);
+      history.push(`${routeBasePath}/clusters/${data.id}`);
     } catch (e) {
       handleApiError<ClusterCreateParams>(e, () =>
         formikActions.setStatus({
@@ -97,15 +117,18 @@ export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal, hi
 
   return (
     <Modal
+      aria-label="New Bare Metal OpenShift Cluster"
       title="New Bare Metal OpenShift Cluster"
       isOpen={true}
       onClose={closeModal}
       variant={ModalVariant.small}
+      hasNoBodyWrapper
     >
       <Formik
         initialValues={{
           name: uniqueNamesGenerator(namesConfig),
           openshiftVersion: OPENSHIFT_VERSION_OPTIONS[0].value,
+          pullSecret: '',
         }}
         initialStatus={{ error: null }}
         validationSchema={validationSchema}
@@ -113,29 +136,51 @@ export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal, hi
       >
         {({ handleSubmit, isSubmitting, isValid, status, setStatus }) => (
           <Form onSubmit={handleSubmit}>
-            {status.error && (
-              <Alert
-                variant={AlertVariant.danger}
-                title={status.error.title}
-                actionClose={<AlertActionCloseButton onClose={() => setStatus({ error: null })} />}
-                isInline
-              >
-                {status.error.message}
-              </Alert>
-            )}
-            {isSubmitting ? (
-              <LoadingState />
-            ) : (
-              <>
-                <InputField innerRef={nameInputRef} label="Cluster Name" name="name" isRequired />
-                <SelectField
-                  label="OpenShift Version"
-                  name="openshiftVersion"
-                  options={OPENSHIFT_VERSION_OPTIONS}
-                  isRequired
-                />
-              </>
-            )}
+            <ModalBoxBody>
+              <GridGap>
+                {status.error && (
+                  <Alert
+                    variant={AlertVariant.danger}
+                    title={status.error.title}
+                    actionClose={
+                      <AlertActionCloseButton onClose={() => setStatus({ error: null })} />
+                    }
+                    isInline
+                  >
+                    {status.error.message}
+                  </Alert>
+                )}
+                {isSubmitting ? (
+                  <LoadingState />
+                ) : (
+                  <>
+                    <InputField
+                      innerRef={nameInputRef}
+                      label="Cluster Name"
+                      name="name"
+                      isRequired
+                    />
+                    <SelectField
+                      label="OpenShift Version"
+                      name="openshiftVersion"
+                      options={OPENSHIFT_VERSION_OPTIONS}
+                      isRequired
+                    />
+                    <TextAreaField
+                      name="pullSecret"
+                      label="Pull Secret"
+                      getErrorText={(error) => (
+                        <>
+                          {error} {pullSecretHelperText}
+                        </>
+                      )}
+                      helperText={pullSecretHelperText}
+                      isRequired
+                    />
+                  </>
+                )}
+              </GridGap>
+            </ModalBoxBody>
             <ModalBoxFooter>
               <Button
                 type="submit"
@@ -143,7 +188,7 @@ export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal, hi
                 isDisabled={isSubmitting || !isValid}
               >
                 Continue
-              </Button>{' '}
+              </Button>
               <Button variant={ButtonVariant.secondary} onClick={closeModal}>
                 Cancel
               </Button>

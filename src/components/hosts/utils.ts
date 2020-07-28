@@ -5,10 +5,10 @@ export const canEnable = (clusterStatus: Cluster['status'], status: Host['status
 
 export const canDisable = (clusterStatus: Cluster['status'], status: Host['status']) =>
   ['insufficient', 'ready'].includes(clusterStatus) &&
-  ['discovering', 'disconnected', 'known', 'insufficient'].includes(status);
+  ['discovering', 'disconnected', 'known', 'insufficient', 'pending-for-input'].includes(status);
 
 export const canDelete = (clusterStatus: Cluster['status'], status: Host['status']) =>
-  ['insufficient', 'ready'].includes(clusterStatus) &&
+  ['insufficient', 'ready', 'pending-for-input'].includes(clusterStatus) &&
   [
     'discovering',
     'known',
@@ -21,7 +21,14 @@ export const canDelete = (clusterStatus: Cluster['status'], status: Host['status
 
 export const canEditRole = (clusterStatus: Cluster['status'], status: Host['status']) =>
   ['insufficient', 'ready'].includes(clusterStatus) &&
-  ['discovering', 'known', 'disconnected', 'disabled', 'insufficient'].includes(status);
+  [
+    'discovering',
+    'known',
+    'disconnected',
+    'disabled',
+    'insufficient',
+    'pending-for-input',
+  ].includes(status);
 
 export const getHostProgressStages = (host: Host) => host.progressStages || [];
 
@@ -37,3 +44,8 @@ export const getHostProgressStageNumber = (host: Host) => {
   }
   return 0;
 };
+
+export const canHostnameBeChanged = (hostStatus: Host['status']) =>
+  ['discovering', 'known', 'disconnected', 'insufficient', 'pending-for-input'].includes(
+    hostStatus,
+  );

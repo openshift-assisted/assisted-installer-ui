@@ -24,6 +24,7 @@ import KubeconfigDownload from './KubeconfigDownload';
 import { DetailList, DetailItem } from '../ui/DetailList';
 import FeedbackAlert from './FeedbackAlert';
 import ClusterProperties from './ClusterProperties';
+import { routeBasePath } from '../../config';
 
 const canAbortInstallation = (cluster: Cluster) =>
   ['installing', 'installing-in-progress'].includes(cluster.status) &&
@@ -70,12 +71,15 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
         <Grid hasGutter>
           <GridItem>
             <TextContent>
-              <Text component="h1">{cluster.name}</Text>
+              <Text component="h1">Installation progress: {cluster.name}</Text>
             </TextContent>
           </GridItem>
           <GridItem>
-            <DetailList title="Creation Progress">
-              <DetailItem title="Creation status" value={<ClusterProgress cluster={cluster} />} />
+            <DetailList>
+              <DetailItem
+                title="Installation Progress"
+                value={<ClusterProgress cluster={cluster} />}
+              />
             </DetailList>
           </GridItem>
           {cluster.status === 'error' && (
@@ -126,19 +130,20 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
         )}
         <ToolbarButton
           variant={ButtonVariant.link}
-          component={(props) => <Link to="/clusters" {...props} />}
+          component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
         >
           Back to all clusters
         </ToolbarButton>
         <ToolbarSecondaryGroup>
           <EventsModalButton
+            id="cluster-events-button"
             entityKind="cluster"
             entityId={cluster.id}
             title="Cluster Events"
             variant={ButtonVariant.link}
             style={{ textAlign: 'right' }}
           >
-            View Cluster Events History
+            View Cluster Events
           </EventsModalButton>
         </ToolbarSecondaryGroup>
       </ClusterToolbar>

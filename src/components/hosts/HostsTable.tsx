@@ -32,6 +32,8 @@ import { DASH } from '../constants';
 import DeleteHostModal from './DeleteHostModal';
 import { AlertsContext } from '../AlertsContextProvider';
 import { canEnable, canDisable, canDelete } from './utils';
+import EditHostModal from './EditHostModal';
+import Hostname, { computeHostname } from './Hostname';
 
 import './HostsTable.css';
 
@@ -58,21 +60,26 @@ const columns = [
   { title: 'Disk', transforms: [sortable] },
 ];
 
-const hostToHostTableRow = (openRows: OpenRows, clusterStatus: Cluster['status']) => (
-  host: Host,
-): IRow => {
+const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host): IRow => {
   const { id, status, createdAt, inventory: inventoryString = '' } = host;
   const inventory = stringToJSON<Inventory>(inventoryString) || {};
   const { cores, memory, disk } = getHostRowHardwareInfo(inventory);
-
+  const computedHostname = computeHostname(host, inventory);
   return [
     {
       // visible row
       isOpen: !!openRows[id],
       cells: [
-        inventory.hostname || { title: DASH, sortableValue: '' },
         {
-          title: <RoleCell host={host} clusterStatus={clusterStatus} />,
+          title: computedHostname ? (
+            <Hostname host={host} inventory={inventory} cluster={cluster} />
+          ) : (
+            DASH
+          ),
+          sortableValue: computedHostname || '',
+        },
+        {
+          title: <RoleCell host={host} clusterStatus={cluster.status} />,
           sortableValue: getHostRole(host),
         },
         {
@@ -85,7 +92,7 @@ const hostToHostTableRow = (openRows: OpenRows, clusterStatus: Cluster['status']
         disk,
       ],
       host,
-      clusterStatus,
+      clusterStatus: cluster.status,
       inventory,
       key: `${host.id}-master`,
     },
@@ -114,6 +121,9 @@ const rowKey = ({ rowData }: ExtraParamsType) => rowData?.key;
 const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
   const { addAlert } = React.useContext(AlertsContext);
   const [showEventsModal, setShowEventsModal] = React.useState<Host['id']>('');
+  const [showEditHostModal, setShowEditHostModal] = React.useState<
+    { host: Host; inventory: Inventory } | undefined
+  >(undefined);
   const [openRows, setOpenRows] = React.useState({} as OpenRows);
   const [hostToDelete, setHostToDelete] = React.useState<HostToDelete>();
   const [sortBy, setSortBy] = React.useState({
@@ -126,14 +136,14 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
     () =>
       _.flatten(
         (cluster.hosts || [])
-          .map(hostToHostTableRow(openRows, cluster.status))
+          .map(hostToHostTableRow(openRows, cluster))
           .sort(rowSorter(sortBy, (row: IRow, index = 1) => row[0].cells[index - 1]))
           .map((row: IRow, index: number) => {
             row[1].parent = index * 2;
             return row;
           }),
       ),
-    [cluster.hosts, cluster.status, openRows, sortBy],
+    [cluster, openRows, sortBy],
   );
 
   const rows = React.useMemo(() => {
@@ -206,11 +216,18 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
     [],
   );
 
+  const onEditHost = React.useCallback(
+    (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
+      setShowEditHostModal({ host: rowData.host, inventory: rowData.inventory });
+    },
+    [],
+  );
+
   const actionResolver = React.useCallback(
     (rowData: IRowData) => {
       const host: Host | undefined = rowData.host;
       const clusterStatus: Cluster['status'] = rowData.clusterStatus;
-      const hostname = rowData.inventory?.hostname;
+      const hostname = rowData.host?.requestedHostname || rowData.inventory?.hostname;
 
       if (!host) {
         // I.e. row with detail
@@ -218,6 +235,12 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
       }
 
       const actions = [];
+
+      actions.push({
+        title: 'Edit Host',
+        id: `button-edit-host-${hostname}`, // id is everchanging, not ideal for tests
+        onClick: onEditHost,
+      });
       if (canEnable(clusterStatus, host.status)) {
         actions.push({
           title: 'Enable in cluster',
@@ -233,7 +256,7 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
         });
       }
       actions.push({
-        title: 'View Host Events History',
+        title: 'View Host Events',
         id: `button-view-host-events-${hostname}`,
         onClick: onViewHostEvents,
       });
@@ -249,7 +272,7 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
 
       return actions;
     },
-    [onHostEnable, onHostDisable, onViewHostEvents],
+    [onHostEnable, onHostDisable, onViewHostEvents, onEditHost],
   );
 
   const onSort: OnSort = React.useCallback(
@@ -283,9 +306,7 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
         <TableBody rowKey={rowKey} />
       </Table>
       <EventsModal
-        title={`Events for the ${
-          getHostInventory(showEventsModal)?.hostname || showEventsModal
-        } host`}
+        title={`Host Events: ${getHostInventory(showEventsModal)?.hostname || showEventsModal}`}
         entityKind="host"
         entityId={showEventsModal}
         onClose={() => setShowEventsModal('')}
@@ -299,6 +320,14 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster }) => {
           onDeleteHost(hostToDelete?.id);
           setHostToDelete(undefined);
         }}
+      />
+      <EditHostModal
+        host={showEditHostModal?.host}
+        inventory={showEditHostModal?.inventory}
+        cluster={cluster}
+        onClose={() => setShowEditHostModal(undefined)}
+        isOpen={!!showEditHostModal}
+        onSave={() => setShowEditHostModal(undefined)}
       />
     </>
   );

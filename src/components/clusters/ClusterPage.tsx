@@ -13,7 +13,7 @@ import {
   cancelForceReload,
 } from '../../features/clusters/currentClusterSlice';
 import { Cluster } from '../../api/types';
-import { POLLING_INTERVAL } from '../../config/constants';
+import { POLLING_INTERVAL, routeBasePath } from '../../config/constants';
 import ClusterConfiguration from '../clusterConfiguration/ClusterConfiguration';
 import ClusterDetail from '../clusterDetail/ClusterDetail';
 import CancelInstallationModal from '../clusterDetail/CancelInstallationModal';
@@ -66,7 +66,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
     <Button
       key="cancel"
       variant={ButtonVariant.secondary}
-      component={(props) => <Link to="/clusters" {...props} />}
+      component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
     >
       Back
     </Button>
@@ -89,7 +89,9 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
 
   const getContent = (cluster: Cluster) => {
     if (
-      ['preparing-for-installation', 'installing', 'installed', 'error'].includes(cluster.status)
+      ['preparing-for-installation', 'installing', 'finalizing', 'installed', 'error'].includes(
+        cluster.status,
+      )
     ) {
       return (
         <ClusterDetail

@@ -51,7 +51,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
       {!!managedDomains.length && (
         <CheckboxField
           name="useRedHatDnsService"
-          label="Use Red Hat's DNS service"
+          label="Use a temporary DNS domain from Red Hat"
           helperText="A base DNS domain will be provided by Red Hat's DNS service. Because the cluster's DNS can't be changed after cluster installation, this should only be used for temporary, non-production clusters."
           onChange={toggleRedHatDnsService}
         />

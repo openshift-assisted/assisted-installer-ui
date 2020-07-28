@@ -181,6 +181,8 @@ paths:
             $ref: '#/definitions/error'
         409:
           description: Error.
+          schema:
+            $ref: '#/definitions/error'
         500:
           description: Error.
           schema:
@@ -436,6 +438,41 @@ paths:
           type: string
           format: uuid
           required: true
+      responses:
+        202:
+          description: Success.
+          schema:
+            $ref: '#/definitions/cluster'
+        404:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        409:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        500:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
+  /clusters/{cluster_id}/actions/complete_installation:
+    post:
+      tags:
+        - installer
+      summary: Agent API to mark a finalizing installation as complete.
+      operationId: CompleteInstallation
+      parameters:
+        - in: path
+          name: cluster_id
+          type: string
+          format: uuid
+          required: true
+        - in: body
+          name: completion-params
+          required: true
+          schema:
+            $ref: '#/definitions/completion-params'
       responses:
         202:
           description: Success.
@@ -904,6 +941,7 @@ definitions:
     type: object
     required:
       - entity_id
+      - severity
       - message
       - event_time
     properties:
@@ -912,6 +950,9 @@ definitions:
         format: uuid
         description: Unique identifier of the object this event relates to.
         x-go-custom-tag: gorm:"index"
+      severity:
+        type: string
+        enum: [info, warning, error, critical]
       message:
         type: string
         x-go-custom-tag: gorm:"type:varchar(4096)"
@@ -983,6 +1024,8 @@ definitions:
           - disconnected
           - insufficient
           - disabled
+          - preparing-for-installation
+          - pending-for-input
           - installing
           - installing-in-progress
           - installing-pending-user-action
@@ -993,6 +1036,12 @@ definitions:
       status_info:
         type: string
         x-go-custom-tag: gorm:"type:varchar(2048)"
+      validations_info:
+        type: string
+        description:
+          Json formatted string containing the validations results for each validation id grouped by
+          category (network, hardware, etc.)
+        x-go-custom-tag: gorm:"type:varchar(2048)"
       status_updated_at:
         type: string
         format: date-time
@@ -1001,6 +1050,16 @@ definitions:
       progress:
         $ref: '#/definitions/host-progress'
         x-go-custom-tag: gorm:"embedded;embedded_prefix:progress_"
+      stage_started_at:
+        type: string
+        format: date-time
+        x-go-custom-tag: gorm:"type:datetime"
+        description: Time at which the current progress stage started
+      stage_updated_at:
+        type: string
+        format: date-time
+        x-go-custom-tag: gorm:"type:datetime"
+        description: Time at which the current progress stage was last updated
       progress_stages:
         type: array
         items:
@@ -1366,9 +1425,10 @@ definitions:
           - insufficient
           - ready
           - error
-          - installing
-          - installed
           - preparing-for-installation
+          - installing
+          - finalizing
+          - installed
       status_info:
         type: string
         x-go-custom-tag: gorm:"type:varchar(2048)"
@@ -1617,6 +1677,16 @@ definitions:
   ingress-cert-params:
     type: string
 
+  completion-params:
+    type: object
+    required:
+      - is_success
+    properties:
+      is_success:
+        type: boolean
+      error_info:
+        type: string
+
   host-progress:
     type: object
     required:
@@ -1636,7 +1706,6 @@ definitions:
       - Start Waiting for control plane
       - Installing
       - Writing image to disk
-      - Finish Waiting for control plane
       - Rebooting
       - Waiting for ignition
       - Configuring
@@ -1848,3 +1917,19 @@ definitions:
       - 'master'
       - 'worker'
       - 'bootstrap'
+
+  host-validation-id:
+    type: string
+    enum:
+      - 'connected'
+      - 'has-inventory'
+      - 'has-min-cpu-cores'
+      - 'has-min-valid-disks'
+      - 'has-min-memory'
+      - 'machine-cidr-defined'
+      - 'role-defined'
+      - 'has-cpu-cores-for-role'
+      - 'has-memory-for-role'
+      - 'hostname-unique'
+      - 'hostname-valid'
+      - 'belongs-to-machine-cidr'

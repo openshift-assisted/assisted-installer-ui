@@ -78,9 +78,10 @@ export interface Cluster {
     | 'insufficient'
     | 'ready'
     | 'error'
+    | 'preparing-for-installation'
     | 'installing'
-    | 'installed'
-    | 'preparing-for-installation';
+    | 'finalizing'
+    | 'installed';
   /**
    * Additional information pertaining to the status of the OpenShift cluster.
    */
@@ -210,6 +211,10 @@ export interface ClusterUpdateParams {
     hostname?: string;
   }[];
 }
+export interface CompletionParams {
+  isSuccess: boolean;
+  errorInfo?: string;
+}
 export interface ConnectivityCheckHost {
   hostId?: string; // uuid
   nics?: ConnectivityCheckNic[];
@@ -290,6 +295,7 @@ export interface Event {
    * Unique identifier of the object this event relates to.
    */
   entityId: string; // uuid
+  severity: 'info' | 'warning' | 'error' | 'critical';
   message: string;
   eventTime: string; // date-time
   /**
@@ -328,6 +334,8 @@ export interface Host {
     | 'disconnected'
     | 'insufficient'
     | 'disabled'
+    | 'preparing-for-installation'
+    | 'pending-for-input'
     | 'installing'
     | 'installing-in-progress'
     | 'installing-pending-user-action'
@@ -337,10 +345,22 @@ export interface Host {
     | 'resetting';
   statusInfo: string;
   /**
+   * Json formatted string containing the validations results for each validation id grouped by category (network, hardware, etc.)
+   */
+  validationsInfo?: string;
+  /**
    * The last time that the host status has been updated
    */
   statusUpdatedAt?: string; // date-time
   progress?: HostProgress;
+  /**
+   * Time at which the current progress stage started
+   */
+  stageStartedAt?: string; // date-time
+  /**
+   * Time at which the current progress stage was last updated
+   */
+  stageUpdatedAt?: string; // date-time
   progressStages?: HostStage[];
   connectivity?: string;
   hardwareInfo?: string;
@@ -381,13 +401,25 @@ export type HostStage =
   | 'Start Waiting for control plane'
   | 'Installing'
   | 'Writing image to disk'
-  | 'Finish Waiting for control plane'
   | 'Rebooting'
   | 'Waiting for ignition'
   | 'Configuring'
   | 'Joined'
   | 'Done'
   | 'Failed';
+export type HostValidationId =
+  | 'connected'
+  | 'has-inventory'
+  | 'has-min-cpu-cores'
+  | 'has-min-valid-disks'
+  | 'has-min-memory'
+  | 'machine-cidr-defined'
+  | 'role-defined'
+  | 'has-cpu-cores-for-role'
+  | 'has-memory-for-role'
+  | 'hostname-unique'
+  | 'hostname-valid'
+  | 'belongs-to-machine-cidr';
 export interface ImageCreateParams {
   /**
    * The URL of the HTTP/S proxy that agents should use to access the discovery service

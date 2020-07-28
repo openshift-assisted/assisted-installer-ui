@@ -15,28 +15,27 @@ import {
   Spinner,
   Button,
 } from '@patternfly/react-core';
-import { ExternalLinkAltIcon, WarningTriangleIcon, CheckCircleIcon } from '@patternfly/react-icons';
+import { WarningTriangleIcon, CheckCircleIcon } from '@patternfly/react-icons';
 import { global_success_color_100 as successColor } from '@patternfly/react-tokens';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens';
 import { useDispatch } from 'react-redux';
 
 import ClusterToolbar from '../clusters/ClusterToolbar';
 import PageSection from '../ui/PageSection';
-import { InputField, TextAreaField, TextAreaSecretField } from '../ui/formik';
+import { InputField, TextAreaField } from '../ui/formik';
 import { ToolbarButton, ToolbarText, ToolbarSecondaryGroup } from '../ui/Toolbar';
 import GridGap from '../ui/GridGap';
 import { EventsModalButton } from '../ui/eventsModal';
 import { Cluster, ClusterUpdateParams, ManagedDomain } from '../../api/types';
 import { patchCluster, postInstallCluster, getClusters } from '../../api/clusters';
 import { handleApiError, getErrorMessage } from '../../api/utils';
-import { CLUSTER_MANAGER_SITE_LINK } from '../../config/constants';
+import { routeBasePath } from '../../config/constants';
 import AlertsSection from '../ui/AlertsSection';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import BaremetalInventory from './BaremetalInventory';
 import {
   nameValidationSchema,
   sshPublicKeyValidationSchema,
-  validJSONSchema,
   ipBlockValidationSchema,
   dnsNameValidationSchema,
   hostPrefixValidationSchema,
@@ -60,7 +59,6 @@ const validationSchema = (hostSubnets: HostSubnets) =>
       serviceNetworkCidr: ipBlockValidationSchema,
       apiVip: vipValidationSchema(hostSubnets, values),
       ingressVip: vipValidationSchema(hostSubnets, values),
-      pullSecret: validJSONSchema,
       sshPublicKey: sshPublicKeyValidationSchema,
     }),
   );
@@ -104,10 +102,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
 
     // update the cluster configuration
     try {
-      let params = _.omit(values, ['hostSubnet', 'isPullSecretEdit', 'useRedHatDnsService']);
-      if (!values.isPullSecretEdit) {
-        params = _.omit(params, ['pullSecret']);
-      }
+      const params = _.omit(values, ['hostSubnet', 'useRedHatDnsService']);
       const { data } = await patchCluster(cluster.id, params);
       formikActions.resetForm({
         values: getInitialValues(data, managedDomains),
@@ -167,15 +162,6 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
           );
         }
 
-        const onPullSecretToggle = (isHidden: boolean) => {
-          if (isHidden) {
-            setFieldValue('isPullSecretEdit', false, false);
-          } else {
-            setFieldValue('isPullSecretEdit', true, false);
-            setFieldValue('pullSecret', '', false);
-          }
-        };
-
         return (
           <>
             <ClusterBreadcrumbs clusterName={cluster.name} />
@@ -205,30 +191,6 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
                       <TextContent>
                         <Text component="h2">Security</Text>
                       </TextContent>
-                      <TextAreaSecretField
-                        name="pullSecret"
-                        label="Pull Secret"
-                        isSet={cluster.pullSecretSet}
-                        isEdit={values.isPullSecretEdit}
-                        onToggle={onPullSecretToggle}
-                        helperTextHidden="The pull secret is already set and its value will not be shown for security reasons."
-                        helperText={
-                          <>
-                            The pull secret obtained from the Pull Secret page on the{' '}
-                            {
-                              <a
-                                href={CLUSTER_MANAGER_SITE_LINK}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                Red Hat OpenShift Cluster Manager site <ExternalLinkAltIcon />
-                              </a>
-                            }
-                            .
-                          </>
-                        }
-                        isRequired
-                      />
                       <TextAreaField
                         name="sshPublicKey"
                         label="SSH Public Key"
@@ -279,7 +241,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
               </ToolbarButton>
               <ToolbarButton
                 variant={ButtonVariant.link}
-                component={(props) => <Link to="/clusters" {...props} />}
+                component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
               >
                 Back to all clusters
               </ToolbarButton>
@@ -318,13 +280,14 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
               )}
               <ToolbarSecondaryGroup>
                 <EventsModalButton
+                  id="cluster-events-button"
                   entityKind="cluster"
                   entityId={cluster.id}
                   title="Cluster Events"
                   variant={ButtonVariant.link}
                   style={{ textAlign: 'right' }}
                 >
-                  View Cluster Events History
+                  View Cluster Events
                 </EventsModalButton>
               </ToolbarSecondaryGroup>
             </ClusterToolbar>
