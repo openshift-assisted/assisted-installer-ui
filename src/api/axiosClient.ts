@@ -11,9 +11,19 @@ const getDefaultClient = () => {
 };
 
 let client: AxiosInstance = getDefaultClient();
+let ocmClient: AxiosInstance;
 
-export const setClient = (axiosInstance: AxiosInstance) => {
-  client = applyCaseMiddleware(axiosInstance);
+const aiInterceptor = (client: AxiosInstance) => {
+  client.interceptors.request.use((cfg) => ({
+    ...cfg,
+    url: `/api/assisted-installer/v1${cfg.url}`,
+  }));
+  return client;
 };
 
-export { client };
+export const setClient = (axiosInstance: AxiosInstance) => {
+  ocmClient = applyCaseMiddleware(axiosInstance);
+  client = applyCaseMiddleware(aiInterceptor(axiosInstance));
+};
+
+export { client, ocmClient };
