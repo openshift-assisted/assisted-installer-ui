@@ -143,6 +143,7 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
                   label="Host SSH public key for troubleshooting during discovery"
                   name="sshPublicKey"
                   helperText="Provide a public key to debug any hosts that fail to register successfuly."
+                  idPostfix="discovery"
                   isRequired
                 />
               </GridGap>
