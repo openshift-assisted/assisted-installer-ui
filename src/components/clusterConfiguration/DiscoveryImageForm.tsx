@@ -1,6 +1,7 @@
 import React from 'react';
 import * as Yup from 'yup';
 import _ from 'lodash';
+import { useDispatch } from 'react-redux';
 import {
   Button,
   ButtonVariant,
@@ -22,6 +23,7 @@ import { handleApiError, getErrorMessage } from '../../api/utils';
 import { ImageCreateParams, ImageInfo, Cluster } from '../../api/types';
 import { sshPublicKeyValidationSchema } from '../ui/formik/validationSchemas';
 import GridGap from '../ui/GridGap';
+import { updateCluster, forceReload } from '../../features/clusters/currentClusterSlice';
 import DiscoveryProxyFields from './DiscoveryProxyFields';
 import { DiscoveryImageFormValues } from './types';
 
@@ -47,11 +49,17 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
 }) => {
   const cancelSourceRef = React.useRef<CancelTokenSource>();
   const { proxyUrl, sshPublicKey } = imageInfo;
+  const dispatch = useDispatch();
 
   React.useEffect(() => {
     cancelSourceRef.current = Axios.CancelToken.source();
     return () => cancelSourceRef.current?.cancel('Image generation cancelled by user.');
   }, []);
+
+  const handleCancel = () => {
+    dispatch(forceReload());
+    onCancel();
+  };
 
   const handleSubmit = async (
     values: DiscoveryImageFormValues,
@@ -64,6 +72,7 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
           cancelToken: cancelSourceRef.current?.token,
         });
         onSuccess(cluster.imageInfo);
+        dispatch(updateCluster(cluster));
       } catch (error) {
         handleApiError<ImageCreateParams>(error, () => {
           formikActions.setStatus({
@@ -95,7 +104,7 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
           <LoadingState
             content="Discovery image is being prepared, it will be available in a moment..."
             secondaryActions={[
-              <Button key="close" variant={ButtonVariant.secondary} onClick={onCancel}>
+              <Button key="close" variant={ButtonVariant.secondary} onClick={handleCancel}>
                 Cancel
               </Button>,
             ]}
@@ -131,9 +140,10 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
                 </TextContent>
                 <DiscoveryProxyFields />
                 <TextAreaField
-                  label="SSH public key"
+                  label="Host SSH public key for troubleshooting during discovery"
                   name="sshPublicKey"
-                  helperText="SSH public key for debugging the host registration/installation"
+                  helperText="Provide a public key to debug any hosts that fail to register successfuly."
+                  idPostfix="discovery"
                   isRequired
                 />
               </GridGap>

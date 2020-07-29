@@ -11,10 +11,11 @@ const TextAreaField: React.FC<TextAreaProps> = ({
   getErrorText,
   isRequired,
   children,
+  idPostfix,
   ...props
 }) => {
   const [field, { touched, error }] = useField(props.name);
-  const fieldId = getFieldId(props.name, 'input');
+  const fieldId = getFieldId(props.name, 'input', idPostfix);
   const isValid = !(touched && error);
 
   const getErrorMessage = () => {
@@ -24,6 +25,7 @@ const TextAreaField: React.FC<TextAreaProps> = ({
     return '';
   };
   const errorMessage = getErrorMessage();
+  const { isDisabled, ...restProps } = props;
 
   return (
     <FormGroup
@@ -51,13 +53,14 @@ const TextAreaField: React.FC<TextAreaProps> = ({
       {children}
       <TextArea
         {...field}
-        {...props}
+        {...restProps}
         id={fieldId}
         style={{ resize: 'vertical' }}
         validated={isValid ? 'default' : 'error'}
         isRequired={isRequired}
         aria-describedby={`${fieldId}-helper`}
         onChange={(value, event) => field.onChange(event)}
+        disabled={isDisabled}
       />
     </FormGroup>
   );

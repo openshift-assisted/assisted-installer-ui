@@ -66,4 +66,6 @@ export const getInitialValues = (
   hostSubnet: findMatchingSubnet(cluster.ingressVip, cluster.apiVip, getHostSubnets(cluster)),
   useRedHatDnsService:
     !!cluster.baseDnsDomain && managedDomains.map((d) => d.domain).includes(cluster.baseDnsDomain),
+  shareDiscoverySshKey:
+    !!cluster.imageInfo.sshPublicKey && cluster.sshPublicKey === cluster.imageInfo.sshPublicKey,
 });
