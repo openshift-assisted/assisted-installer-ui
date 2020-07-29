@@ -83,6 +83,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
               />
             </DetailList>
           </GridItem>
+          {cluster.status === 'installed' && <FailedHostsWarning cluster={cluster} />}
           {cluster.status === 'error' && (
             <ClusterInstallationError
               cluster={cluster}
@@ -97,7 +98,6 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
               retry={fetchCredentials}
             />
           )}
-          {cluster.status === 'installed' && <FailedHostsWarning cluster={cluster} />}
           <KubeconfigDownload status={cluster.status} clusterId={cluster.id} />
           <FeedbackAlert />
           <GridItem>
