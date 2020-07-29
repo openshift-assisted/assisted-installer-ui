@@ -12,10 +12,11 @@ const SelectField: React.FC<SelectFieldProps> = ({
   isRequired,
   onChange,
   getHelperText,
+  idPostfix,
   ...props
 }) => {
   const [field, { touched, error }] = useField(props.name);
-  const fieldId = getFieldId(props.name, 'input');
+  const fieldId = getFieldId(props.name, 'input', idPostfix);
   const isValid = !(touched && error);
   const errorMessage = !isValid ? error : '';
   const hText = getHelperText ? getHelperText(field.value) : helperText;
