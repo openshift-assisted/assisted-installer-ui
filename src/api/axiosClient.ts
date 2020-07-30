@@ -21,9 +21,9 @@ const aiInterceptor = (client: AxiosInstance) => {
   return client;
 };
 
-export const setClient = (axiosInstance: AxiosInstance) => {
-  ocmClient = applyCaseMiddleware(axiosInstance);
-  client = applyCaseMiddleware(aiInterceptor(axiosInstance));
+export const setAuthInterceptor = (authInterceptor: (client: AxiosInstance) => AxiosInstance) => {
+  ocmClient = authInterceptor(axios.create());
+  client = applyCaseMiddleware(aiInterceptor(authInterceptor(axios.create())));
 };
 
 export { client, ocmClient };

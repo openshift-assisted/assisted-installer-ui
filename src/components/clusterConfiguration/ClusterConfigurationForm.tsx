@@ -22,7 +22,7 @@ import { useDispatch } from 'react-redux';
 
 import ClusterToolbar from '../clusters/ClusterToolbar';
 import PageSection from '../ui/PageSection';
-import { InputField, TextAreaField } from '../ui/formik';
+import { InputField } from '../ui/formik';
 import { ToolbarButton, ToolbarText, ToolbarSecondaryGroup } from '../ui/Toolbar';
 import GridGap from '../ui/GridGap';
 import { EventsModalButton } from '../ui/eventsModal';

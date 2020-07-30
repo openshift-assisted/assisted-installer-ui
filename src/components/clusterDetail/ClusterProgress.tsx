@@ -3,6 +3,9 @@ import { Cluster, Host } from '../../api/types';
 import { Progress, ProgressVariant, ProgressMeasureLocation } from '@patternfly/react-core';
 import { CLUSTER_STATUS_LABELS } from '../../config/constants';
 import { getHostProgressStages, getHostProgressStageNumber } from '../hosts/utils';
+import { getHumanizedDateTime, getHumanizedTime, DetailList, DetailItem } from '../ui';
+
+import './ClusterProgress.css';
 
 const getProgressVariant = (status: Cluster['status']) => {
   switch (status) {
@@ -42,6 +45,16 @@ const getProgressPercent = (hosts: Host[] = []) => {
   return (completedSteps / totalSteps) * 100;
 };
 
+const getInstallationStatus = (cluster: Cluster) => {
+  const { status } = cluster;
+
+  if (status === 'installed') {
+    return `Installed at ${getHumanizedTime(cluster.installCompletedAt)}`;
+  }
+
+  return CLUSTER_STATUS_LABELS[status] || status;
+};
+
 type ClusterProgressProps = {
   cluster: Cluster;
 };
@@ -52,13 +65,20 @@ const ClusterProgress: React.FC<ClusterProgressProps> = ({ cluster }) => {
   const label = getProgressLabel(cluster, progressPercent);
 
   return (
-    <Progress
-      value={progressPercent}
-      title={CLUSTER_STATUS_LABELS[status] || status}
-      label={label}
-      measureLocation={getMeasureLocation(status)}
-      variant={getProgressVariant(status)}
-    />
+    <>
+      <DetailList>
+        <DetailItem title="Started on" value={getHumanizedDateTime(cluster.installStartedAt)} />
+        <DetailItem title="Status" value={getInstallationStatus(cluster)} />
+      </DetailList>
+      <Progress
+        value={progressPercent}
+        label={label}
+        title=" "
+        measureLocation={getMeasureLocation(status)}
+        variant={getProgressVariant(status)}
+        className="cluster-progress-bar"
+      />
+    </>
   );
 };
 
