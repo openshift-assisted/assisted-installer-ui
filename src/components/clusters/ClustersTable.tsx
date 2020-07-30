@@ -83,7 +83,7 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
 
   const rowFilter = React.useCallback(
     (row: IRow) => {
-      if (searchName && !(row.props.name || '').includes(searchName)) {
+      if (searchName && !(row.props.name || '').toLowerCase().includes(searchName.toLowerCase())) {
         return false;
       }
 
