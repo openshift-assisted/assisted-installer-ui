@@ -5,27 +5,33 @@ import { Cluster, Host } from '../../api/types';
 import { handleApiError } from '../../api/utils';
 import { ResourceUIState } from '../../types';
 
-export const fetchClusterAsync = createAsyncThunk(
-  'currentCluster/fetchClusterAsync',
-  async (clusterId: string) => {
-    try {
-      const { data } = await getCluster(clusterId);
-      return data;
-    } catch (e) {
-      return handleApiError(e, () => Promise.reject('Failed to fetch cluster.'));
-    }
-  },
-);
+type RetrievalErrorType = {
+  code: string;
+};
 
 type CurrentClusterStateSlice = {
   data?: Cluster;
   uiState: ResourceUIState;
   isReloadScheduled: number;
+  errorDetail?: RetrievalErrorType;
 };
+
+export const fetchClusterAsync = createAsyncThunk(
+  'currentCluster/fetchClusterAsync',
+  async (clusterId: string, { rejectWithValue }) => {
+    try {
+      const { data } = await getCluster(clusterId);
+      return data;
+    } catch (e) {
+      return handleApiError(e, () => rejectWithValue(e.response.data));
+    }
+  },
+);
 
 const initialState: CurrentClusterStateSlice = {
   data: undefined,
   uiState: ResourceUIState.LOADING,
+  errorDetail: undefined,
   isReloadScheduled: 0,
 };
 
@@ -65,9 +71,10 @@ export const currentClusterSlice = createSlice({
         data: action.payload as Cluster,
         uiState: ResourceUIState.LOADED,
       }))
-      .addCase(fetchClusterAsync.rejected, (state) => ({
+      .addCase(fetchClusterAsync.rejected, (state, action) => ({
         ...state,
         uiState: ResourceUIState.ERROR,
+        errorDetail: action.payload as RetrievalErrorType,
       }));
   },
 });

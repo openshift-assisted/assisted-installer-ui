@@ -56,7 +56,7 @@ const useClusterPolling = (clusterId: string) => {
 
 const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
   const { clusterId } = match.params;
-  const { data: cluster, uiState } = useSelector(selectCurrentClusterState);
+  const { data: cluster, uiState, errorDetail } = useSelector(selectCurrentClusterState);
   const [cancelInstallationModalOpen, setCancelInstallationModalOpen] = React.useState(false);
   const [resetClusterModalOpen, setResetClusterModalOpen] = React.useState(false);
   const fetchCluster = useFetchCluster(clusterId);
@@ -70,21 +70,6 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
     >
       Back
     </Button>
-  );
-
-  const errorState = (
-    <PageSection variant={PageSectionVariants.light} isMain>
-      <ErrorState
-        title={'Failed to fetch the cluster'}
-        fetchData={fetchCluster}
-        actions={[cancel]}
-      />
-    </PageSection>
-  );
-  const loadingState = (
-    <PageSection variant={PageSectionVariants.light} isMain>
-      <LoadingState />
-    </PageSection>
   );
 
   const getContent = (cluster: Cluster) => {
@@ -105,8 +90,30 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
     }
   };
 
-  if (uiState === ResourceUIState.LOADING) return loadingState;
-  if (uiState === ResourceUIState.ERROR) return errorState; // TODO(jtomasek): redirect to cluster list instead?
+  if (uiState === ResourceUIState.LOADING) {
+    return (
+      <PageSection variant={PageSectionVariants.light} isMain>
+        <LoadingState />
+      </PageSection>
+    );
+  }
+
+  if (uiState === ResourceUIState.ERROR) {
+    if (errorDetail?.code === '404') {
+      return <Redirect to="/clusters" />;
+    }
+
+    return (
+      <PageSection variant={PageSectionVariants.light} isMain>
+        <ErrorState
+          title="Failed to fetch the cluster"
+          fetchData={fetchCluster}
+          actions={[cancel]}
+        />
+      </PageSection>
+    );
+  }
+
   if (cluster) {
     return (
       <AlertsContextProvider>
@@ -124,6 +131,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
       </AlertsContextProvider>
     );
   }
+
   return <Redirect to="/clusters" />;
 };
 
