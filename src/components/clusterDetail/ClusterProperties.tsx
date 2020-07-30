@@ -14,19 +14,15 @@ const ClusterProperties: React.FC<ClusterPropertiesProps> = ({ cluster }) => (
         <Text component="h2">Cluster Details</Text>
       </TextContent>
     </GridItem>
-    <GridItem md={6} lg={4} xl={3}>
+    <GridItem md={6} lg={6} xl={6}>
       <DetailList>
         <DetailItem title="OpenShift version" value={cluster.openshiftVersion} />
-      </DetailList>
-    </GridItem>
-    <GridItem md={6} lg={4} xl={3}>
-      <DetailList>
         <DetailItem title="Base DNS domain" value={cluster.baseDnsDomain} />
         <DetailItem title="API virtual IP" value={cluster.apiVip} />
         <DetailItem title="Ingress virtual IP" value={cluster.ingressVip} />
       </DetailList>
     </GridItem>
-    <GridItem md={6} lg={4} xl={3}>
+    <GridItem md={6} lg={6} xl={6}>
       <DetailList>
         <DetailItem title="Cluster network CIDR" value={cluster.clusterNetworkCidr} />
         <DetailItem title="Cluster network host prefix" value={cluster.clusterNetworkHostPrefix} />
