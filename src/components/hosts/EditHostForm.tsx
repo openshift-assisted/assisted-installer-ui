@@ -23,7 +23,6 @@ import {
 } from '../ui/formik/validationSchemas';
 import GridGap from '../ui/GridGap';
 import StaticTextField from '../ui/StaticTextField';
-import { AlertsContext } from '../AlertsContextProvider';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import { canHostnameBeChanged } from './utils';
 

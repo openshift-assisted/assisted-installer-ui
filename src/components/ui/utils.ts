@@ -6,3 +6,9 @@ export const getHumanizedDateTime = (dateTime?: string) => {
   const date = new Date(`${dateTime}Z`);
   return date.toLocaleString();
 };
+
+export const getHumanizedTime = (dateTime?: string) => {
+  if (!dateTime) return DASH;
+  const date = new Date(`${dateTime}Z`);
+  return date.toLocaleTimeString();
+};
