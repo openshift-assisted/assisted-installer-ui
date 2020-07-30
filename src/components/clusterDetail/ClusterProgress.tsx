@@ -67,11 +67,8 @@ const ClusterProgress: React.FC<ClusterProgressProps> = ({ cluster }) => {
   return (
     <>
       <DetailList>
-        <DetailItem
-          title="Installation started on"
-          value={getHumanizedDateTime(cluster.installStartedAt)}
-        />
-        <DetailItem title="Installation status" value={getInstallationStatus(cluster)} />
+        <DetailItem title="Started on" value={getHumanizedDateTime(cluster.installStartedAt)} />
+        <DetailItem title="Status" value={getInstallationStatus(cluster)} />
       </DetailList>
       <Progress
         value={progressPercent}
