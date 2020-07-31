@@ -1,26 +1,34 @@
 import React from 'react';
-import { saveAs } from 'file-saver';
 import { GridItem, Button, ButtonVariant } from '@patternfly/react-core';
-import { getClusterFileURL, getClusterKubeconfigURL } from '../../api/clusters';
+import { downloadClusterFile, downloadClusterKubeconfig } from '../../api/clusters';
 import { Cluster } from '../../api/types';
 import { canDownloadKubeconfig } from '../hosts/utils';
+import { AlertsContext } from '../AlertsContextProvider';
+import { getErrorMessage } from '../../api';
 
 type KubeconfigDownloadProps = {
   clusterId: Cluster['id'];
   status: Cluster['status'];
 };
 
-const getUrl = (clusterId: Cluster['id'], status: Cluster['status']) =>
+const download = (clusterId: Cluster['id'], status: Cluster['status']) =>
   status === 'installed'
-    ? getClusterKubeconfigURL(clusterId)
-    : getClusterFileURL(clusterId, 'kubeconfig-noingress');
+    ? downloadClusterKubeconfig(clusterId)
+    : downloadClusterFile(clusterId, 'kubeconfig-noingress');
 
 const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({ clusterId, status }) => {
+  const { addAlert } = React.useContext(AlertsContext);
   return (
     <GridItem>
       <Button
         variant={ButtonVariant.secondary}
-        onClick={() => saveAs(getUrl(clusterId, status))}
+        onClick={() => {
+          try {
+            download(clusterId, status);
+          } catch (e) {
+            addAlert({ title: 'Could not download kubeconfig', message: getErrorMessage(e) });
+          }
+        }}
         isDisabled={!canDownloadKubeconfig(status)}
       >
         Download kubeconfig
