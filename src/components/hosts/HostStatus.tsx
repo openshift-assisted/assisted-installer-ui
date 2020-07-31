@@ -12,7 +12,7 @@ import {
   InProgressIcon,
   DisconnectedIcon,
   ConnectedIcon,
-  OffIcon,
+  BanIcon,
   UnknownIcon,
   PendingIcon,
 } from '@patternfly/react-icons';
@@ -33,7 +33,7 @@ const getStatusIcon = (status: Host['status']) => {
   if (status === 'pending-for-input') return <PendingIcon />;
   if (status === 'known') return <CheckCircleIcon color={okColor.value} />;
   if (status === 'disconnected') return <DisconnectedIcon />;
-  if (status === 'disabled') return <OffIcon />;
+  if (status === 'disabled') return <BanIcon />;
   if (status === 'insufficient') return <WarningTriangleIcon color={warningColor.value} />;
   if (status === 'preparing-for-installation') return <InProgressIcon />;
   if (status === 'installing') return <InProgressIcon />;
