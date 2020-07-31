@@ -102,6 +102,11 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
         params.sshPublicKey = cluster.imageInfo.sshPublicKey;
       }
 
+      // do not pass empty string since a number is expected (might happen when emptying input-box)
+      if (!params.clusterNetworkHostPrefix && params.clusterNetworkHostPrefix !== 0) {
+        delete params.clusterNetworkHostPrefix;
+      }
+
       const { data } = await patchCluster(cluster.id, params);
       formikActions.resetForm({
         values: getInitialValues(data, managedDomains),
