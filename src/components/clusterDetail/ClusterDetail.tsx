@@ -28,8 +28,11 @@ import FailedHostsWarning from './FailedHostsWarning';
 
 const canAbortInstallation = (cluster: Cluster) =>
   ['installing', 'installing-in-progress'].includes(cluster.status) &&
-  // TODO(jtomasek): remove this in case when backend allows cancelling installation when one of the hosts is already in 'installed' state
-  !(cluster.hosts || []).find((host) => ['installed', 'error'].includes(host.status));
+  // Backend currently does not allow cancelling installation when a host is already installed. This might change in the future.
+  // The 'installing-pending-user-action' can happen when there is mismatch in boot order and installation can not be aborted.
+  !(cluster.hosts || []).find((host) =>
+    ['installed', 'error', 'installing-pending-user-action'].includes(host.status),
+  );
 
 type ClusterDetailProps = {
   cluster: Cluster;
