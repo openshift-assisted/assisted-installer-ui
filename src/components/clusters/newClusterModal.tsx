@@ -29,6 +29,7 @@ import GridGap from '../ui/GridGap';
 import { handleApiError, getErrorMessage } from '../../api/utils';
 import { ToolbarButton } from '../ui/Toolbar';
 import { nameValidationSchema, validJSONSchema } from '../ui/formik/validationSchemas';
+import { ocmClient } from '../../api';
 
 const namesConfig: Config = {
   dictionaries: [adjectives, colors, animals],
@@ -75,6 +76,9 @@ export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal, hi
       node.focus();
     }
   }, []);
+  const [uniqueGeneratedName] = React.useState(() => uniqueNamesGenerator(namesConfig)); // never changed
+  const [initialPullSecret, setInitialPullSecret] = React.useState('');
+  const [initialError, setInitialError] = React.useState<{ title: string }>();
 
   const validationSchema = React.useCallback(
     () =>
@@ -85,6 +89,22 @@ export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal, hi
       }),
     [],
   );
+
+  React.useEffect(() => {
+    if (ocmClient) {
+      const getPullSecret = async () => {
+        try {
+          const response = await ocmClient.post('/api/accounts_mgmt/v1/access_token');
+          setInitialPullSecret(response?.request?.response || ''); // unmarshalled response as a string
+        } catch (e) {
+          console.warn('Failed to receive pull_secret, error: ', e);
+          setInitialError({ title: 'Failed to receive pull secret' });
+        }
+      };
+
+      getPullSecret();
+    }
+  }, []);
 
   const handleSubmit = async (
     values: ClusterCreateParams,
@@ -126,11 +146,12 @@ export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal, hi
     >
       <Formik
         initialValues={{
-          name: uniqueNamesGenerator(namesConfig),
+          name: uniqueGeneratedName,
           openshiftVersion: OPENSHIFT_VERSION_OPTIONS[0].value,
-          pullSecret: '',
+          pullSecret: initialPullSecret,
         }}
-        initialStatus={{ error: null }}
+        enableReinitialize
+        initialStatus={{ error: initialError }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
