@@ -9,7 +9,6 @@ import {
   ExclamationCircleIcon,
   WarningTriangleIcon,
   CheckCircleIcon,
-  UnknownIcon,
   InProgressIcon,
 } from '@patternfly/react-icons';
 import { Cluster } from '../../api/types';
@@ -20,14 +19,23 @@ type ClusterStatusProps = {
   cluster: Cluster;
 };
 
-const getStatusIcon = (status: Cluster['status']) => {
-  if (status === 'insufficient') return <WarningTriangleIcon color={warningColor.value} />;
-  if (status === 'ready') return <CheckCircleIcon color={okColor.value} />;
-  if (status === 'preparing-for-installation') return <InProgressIcon />;
-  if (status === 'installing') return <InProgressIcon />;
-  if (status === 'error') return <ExclamationCircleIcon color={dangerColor.value} />;
-  if (status === 'installed') return <CheckCircleIcon color={okColor.value} />;
-  return <UnknownIcon />;
+const getStatusIcon = (status: Cluster['status']): React.ReactElement => {
+  switch (status) {
+    case 'insufficient':
+      return <WarningTriangleIcon color={warningColor.value} />;
+    case 'ready':
+      return <CheckCircleIcon color={okColor.value} />;
+    case 'preparing-for-installation':
+      return <InProgressIcon />;
+    case 'installing':
+      return <InProgressIcon />;
+    case 'error':
+      return <ExclamationCircleIcon color={dangerColor.value} />;
+    case 'installed':
+      return <CheckCircleIcon color={okColor.value} />;
+    case 'finalizing':
+      return <InProgressIcon />;
+  }
 };
 
 export const getClusterStatusText = (cluster: Cluster) =>
@@ -36,7 +44,7 @@ export const getClusterStatusText = (cluster: Cluster) =>
 const ClusterStatus: React.FC<ClusterStatusProps> = ({ cluster }) => {
   const { status, statusInfo, statusUpdatedAt } = cluster;
   const title = getClusterStatusText(cluster);
-  const icon = getStatusIcon(status);
+  const icon = getStatusIcon(status) || null;
   if (statusInfo) {
     return (
       <Popover
