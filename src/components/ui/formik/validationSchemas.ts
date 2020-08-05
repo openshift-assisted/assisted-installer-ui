@@ -89,9 +89,21 @@ export const dnsNameValidationSchema = Yup.string().matches(DNS_NAME_REGEX, {
   excludeEmptyString: true,
 });
 
-export const hostPrefixValidationSchema = Yup.number()
-  .min(0, 'Host prefix is a number between 0 and 32.')
-  .max(32, 'Host prefix is a number between 0 and 32.');
+export const hostPrefixValidationSchema = (values: ClusterConfigurationValues) => {
+  const netBlock = (values.clusterNetworkCidr || '').split('/')[1];
+  if (!netBlock) {
+    return Yup.number()
+      .min(1, `The host prefix is a number between 1 and 32.`)
+      .max(32, `The host prefix is a number between 1 and 32.`);
+  }
+
+  let netBlockNumber = parseInt(netBlock);
+  if (isNaN(netBlockNumber)) {
+    netBlockNumber = 1;
+  }
+  const errorMsg = `The host prefix is a number between size of the cluster network CIDR range (${netBlockNumber}) and 32.`;
+  return Yup.number().min(netBlockNumber, errorMsg).max(32, errorMsg);
+};
 
 export const hostnameValidationSchema = Yup.string().matches(HOSTNAME_REGEX, {
   message: 'Value "${value}" is not valid hostname.',

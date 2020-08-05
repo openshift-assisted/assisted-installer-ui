@@ -55,7 +55,7 @@ const validationSchema = (hostSubnets: HostSubnets) =>
     Yup.object<ClusterConfigurationValues>().shape({
       name: nameValidationSchema,
       baseDnsDomain: dnsNameValidationSchema,
-      clusterNetworkHostPrefix: hostPrefixValidationSchema,
+      clusterNetworkHostPrefix: hostPrefixValidationSchema(values),
       clusterNetworkCidr: ipBlockValidationSchema,
       serviceNetworkCidr: ipBlockValidationSchema,
       apiVip: vipValidationSchema(hostSubnets, values),
