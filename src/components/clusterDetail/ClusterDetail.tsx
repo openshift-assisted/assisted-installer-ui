@@ -26,13 +26,37 @@ import ClusterProperties from './ClusterProperties';
 import { routeBasePath } from '../../config';
 import FailedHostsWarning from './FailedHostsWarning';
 
-const canAbortInstallation = (cluster: Cluster) =>
-  ['installing', 'installing-in-progress'].includes(cluster.status) &&
-  // The backend currently does not allow cancelling installation when a host is already installed. This might be changed in the future.
-  // The 'installing-pending-user-action' can happen when there is a mismatch in the boot order and so installation can not be aborted.
-  !(cluster.hosts || []).find((host) =>
-    ['installed', 'error', 'installing-pending-user-action'].includes(host.status),
-  );
+const canAbortInstallation = (cluster: Cluster) => {
+  if (
+    !['preparing-for-installation', 'installing', 'installing-in-progress'].includes(cluster.status)
+  ) {
+    return false;
+  }
+
+  if (cluster.hosts) {
+    if (cluster.hosts.find((h) => h.status === 'installing-pending-user-action')) {
+      // a host in installing-pending-user-action
+      return false;
+    }
+
+    if (cluster.hosts.find((h) => h.status === 'error')) {
+      // a host is in error
+      if (cluster.hosts.find((h) => h.status !== 'installing')) {
+        // no host is in installing
+        if (
+          cluster.hosts.find(
+            (h) => !['error', 'installed', 'preparing-for-installation'].includes(h.status),
+          )
+        ) {
+          // a host not yet in error or installed or preparing-for-installation
+          return false;
+        }
+      }
+    }
+  }
+
+  return true;
+};
 
 type ClusterDetailProps = {
   cluster: Cluster;
