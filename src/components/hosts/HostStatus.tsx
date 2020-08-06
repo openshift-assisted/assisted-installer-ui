@@ -13,7 +13,6 @@ import {
   DisconnectedIcon,
   ConnectedIcon,
   BanIcon,
-  UnknownIcon,
   PendingIcon,
 } from '@patternfly/react-icons';
 import { Host } from '../../api/types';
@@ -28,24 +27,37 @@ import { stringToJSON } from '../../api/utils';
 import './HostStatus.css';
 import HostValidationGroups from './HostValidationGroups';
 
-const getStatusIcon = (status: Host['status']) => {
-  if (status === 'discovering') return <ConnectedIcon />;
-  if (status === 'pending-for-input') return <PendingIcon />;
-  if (status === 'known') return <CheckCircleIcon color={okColor.value} />;
-  if (status === 'disconnected') return <DisconnectedIcon />;
-  if (status === 'disabled') return <BanIcon />;
-  if (status === 'insufficient') return <WarningTriangleIcon color={warningColor.value} />;
-  if (status === 'preparing-for-installation') return <InProgressIcon />;
-  if (status === 'installing') return <InProgressIcon />;
-  if (status === 'installing-in-progress') return <InProgressIcon />;
-  if (status === 'installing-pending-user-action')
-    return <WarningTriangleIcon color={warningColor.value} />;
-  if (status === 'error') return <ExclamationCircleIcon color={dangerColor.value} />;
-  if (status === 'installed') return <CheckCircleIcon color={okColor.value} />;
-  if (status === 'resetting') return <InProgressIcon />;
-  if (status === 'resetting-pending-user-action')
-    return <WarningTriangleIcon color={warningColor.value} />;
-  return <UnknownIcon />;
+const getStatusIcon = (status: Host['status']): React.ReactElement => {
+  switch (status) {
+    case 'discovering':
+      return <ConnectedIcon />;
+    case 'pending-for-input':
+      return <PendingIcon />;
+    case 'known':
+      return <CheckCircleIcon color={okColor.value} />;
+    case 'disconnected':
+      return <DisconnectedIcon />;
+    case 'disabled':
+      return <BanIcon />;
+    case 'insufficient':
+      return <WarningTriangleIcon color={warningColor.value} />;
+    case 'preparing-for-installation':
+      return <InProgressIcon />;
+    case 'installing':
+      return <InProgressIcon />;
+    case 'installing-in-progress':
+      return <InProgressIcon />;
+    case 'installing-pending-user-action':
+      return <WarningTriangleIcon color={warningColor.value} />;
+    case 'error':
+      return <ExclamationCircleIcon color={dangerColor.value} />;
+    case 'installed':
+      return <CheckCircleIcon color={okColor.value} />;
+    case 'resetting':
+      return <InProgressIcon />;
+    case 'resetting-pending-user-action':
+      return <WarningTriangleIcon color={warningColor.value} />;
+  }
 };
 
 const getPopoverContent = (host: Host) => {
@@ -100,7 +112,7 @@ type HostStatusProps = {
 const HostStatus: React.FC<HostStatusProps> = ({ host }) => {
   const { status, statusUpdatedAt } = host;
   const title = HOST_STATUS_LABELS[status] || status;
-  const icon = getStatusIcon(status);
+  const icon = getStatusIcon(status) || null;
   const hostProgressStages = getHostProgressStages(host);
 
   return (
