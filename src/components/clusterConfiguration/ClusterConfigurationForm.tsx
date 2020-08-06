@@ -77,7 +77,18 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
   const [isStartingInstallation, setIsStartingInstallation] = React.useState(false);
   const { addAlert } = React.useContext(AlertsContext);
   const dispatch = useDispatch();
-  const hostSubnets = getHostSubnets(cluster);
+  const hostSubnets = React.useMemo(() => getHostSubnets(cluster), [cluster]);
+  const clusterErrors = React.useMemo(() => validateCluster(cluster, managedDomains), [
+    cluster,
+    managedDomains,
+  ]);
+  const initialValues = React.useMemo(() => getInitialValues(cluster, managedDomains), [
+    cluster,
+    managedDomains,
+  ]);
+  const memoizedValidationSchema = React.useMemo(() => validationSchema(hostSubnets), [
+    hostSubnets,
+  ]);
 
   const handleSubmit = async (
     values: ClusterConfigurationValues,
@@ -135,16 +146,10 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
     setIsStartingInstallation(false);
   };
 
-  const clusterErrors = React.useMemo(() => validateCluster(cluster, managedDomains), [
-    cluster,
-    managedDomains,
-  ]);
-  const initialValues = getInitialValues(cluster, managedDomains);
-
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={validationSchema(hostSubnets)}
+      validationSchema={memoizedValidationSchema}
       onSubmit={handleSubmit}
       initialTouched={_.mapValues(initialValues, () => true)}
       validateOnMount
