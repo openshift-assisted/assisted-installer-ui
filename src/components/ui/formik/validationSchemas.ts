@@ -58,7 +58,9 @@ export const vipRangeValidationSchema = (
       return this.createError({ message: err.message });
     }
     const { subnet } = hostSubnets.find((hn) => hn.humanized === values.hostSubnet) || {};
-    return !!subnet?.contains(value) && value !== subnet?.broadcast && value !== subnet?.base;
+    return (
+      !subnet || (!!subnet.contains(value) && value !== subnet.broadcast && value !== subnet.base)
+    );
   });
 
 const vipUniqueValidationSchema = (hostSubnets: HostSubnets, values: ClusterConfigurationValues) =>
