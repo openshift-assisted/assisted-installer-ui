@@ -24,7 +24,7 @@ export interface Cluster {
   /**
    * Version of the OpenShift cluster.
    */
-  openshiftVersion?: '4.5';
+  openshiftVersion?: '4.5' | '4.6';
   imageInfo: ImageInfo;
   /**
    * Base domain of the cluster. All DNS records must be sub-domains of this base and include the cluster name.
@@ -106,6 +106,10 @@ export interface Cluster {
    */
   pullSecretSet?: boolean;
   ignitionGeneratorVersion?: string;
+  /**
+   * Indicate if VIP DHCP allocation mode is enabled.
+   */
+  vipDhcpAllocation?: boolean;
 }
 export interface ClusterCreateParams {
   /**
@@ -115,7 +119,7 @@ export interface ClusterCreateParams {
   /**
    * Version of the OpenShift cluster.
    */
-  openshiftVersion: '4.5';
+  openshiftVersion: '4.5' | '4.6';
   /**
    * Base domain of the cluster. All DNS records must be sub-domains of this base and include the cluster name.
    */
@@ -144,6 +148,10 @@ export interface ClusterCreateParams {
    * SSH public key for debugging OpenShift nodes.
    */
   sshPublicKey?: string;
+  /**
+   * Indicate if VIP DHCP allocation mode is enabled.
+   */
+  vipDhcpAllocation?: boolean;
 }
 export type ClusterList = Cluster[];
 export interface ClusterUpdateParams {
@@ -183,6 +191,10 @@ export interface ClusterUpdateParams {
    * SSH public key for debugging OpenShift nodes.
    */
   sshPublicKey?: string;
+  /**
+   * Indicate if VIP DHCP allocation mode is enabled.
+   */
+  vipDhcpAllocation?: boolean;
   /**
    * The desired role for hosts associated with the cluster.
    */
@@ -234,6 +246,30 @@ export interface Credentials {
 }
 export interface DebugStep {
   command: string;
+}
+export interface DhcpAllocationRequest {
+  /**
+   * The interface (NIC) to run the DHCP requests on.
+   */
+  interface: string;
+  /**
+   * MAC address for API VIP.
+   */
+  apiVipMac: string; // mac
+  /**
+   * MAC address for Ingress VIP.
+   */
+  ingressVipMac: string; // mac
+}
+export interface DhcpAllocationResponse {
+  /**
+   * The IPv4 address that was allocated by DHCP for API VIP.
+   */
+  apiVipAddress: string; // ipv4
+  /**
+   * The IPv4 address that was allocated by DHCP for Ingress VIP.
+   */
+  ingressVipAddress: string; // ipv4
 }
 export interface Disk {
   driveType?: string;
@@ -350,6 +386,10 @@ export interface Host {
    * Installer version
    */
   installerVersion?: string;
+  /**
+   * Host installation path
+   */
+  installationDiskPath?: string;
   updatedAt?: string; // date-time
   createdAt?: string; // date-time
   /**
@@ -510,7 +550,8 @@ export type StepType =
   | 'inventory'
   | 'install'
   | 'free-network-addresses'
-  | 'reset-installation';
+  | 'reset-installation'
+  | 'dhcp-lease-allocate';
 export interface Steps {
   nextInstructionSeconds?: number;
   instructions?: Step[];

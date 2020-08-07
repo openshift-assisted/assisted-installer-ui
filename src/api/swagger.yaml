@@ -16,6 +16,19 @@ consumes:
 produces:
   - application/json
 
+securityDefinitions:
+  agentAuth:
+    type: apiKey
+    in: header
+    name: X-Secret-Key
+  userAuth:
+    type: apiKey
+    in: header
+    name: Authorization
+
+security:
+  - userAuth: []
+
 paths:
   /clusters:
     post:
@@ -38,6 +51,18 @@ paths:
           description: Error.
           schema:
             $ref: '#/definitions/error'
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/error'
+        405:
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
         500:
           description: Error.
           schema:
@@ -53,6 +78,18 @@ paths:
           description: Success.
           schema:
             $ref: '#/definitions/cluster-list'
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/error'
+        405:
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
         500:
           description: Error.
           schema:
@@ -75,8 +112,20 @@ paths:
           description: Success.
           schema:
             $ref: '#/definitions/cluster'
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/error'
         404:
           description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        405:
+          description: Method Not Allowed.
           schema:
             $ref: '#/definitions/error'
         500:
@@ -109,8 +158,20 @@ paths:
           description: Error.
           schema:
             $ref: '#/definitions/error'
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/error'
         404:
           description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        405:
+          description: Method Not Allowed.
           schema:
             $ref: '#/definitions/error'
         409:
@@ -136,8 +197,20 @@ paths:
       responses:
         204:
           description: Success.
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/error'
         404:
           description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        405:
+          description: Method Not Allowed.
           schema:
             $ref: '#/definitions/error'
         409:
@@ -175,8 +248,20 @@ paths:
           description: Error.
           schema:
             $ref: '#/definitions/error'
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/error'
         404:
           description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        405:
+          description: Method Not Allowed.
           schema:
             $ref: '#/definitions/error'
         409:
@@ -212,8 +297,20 @@ paths:
           description: Error.
           schema:
             $ref: '#/definitions/error'
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/error'
         404:
           description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        405:
+          description: Method Not Allowed.
           schema:
             $ref: '#/definitions/error'
         500:
@@ -225,6 +322,9 @@ paths:
     get:
       tags:
         - installer
+      security:
+        - userAuth: []
+        - agentAuth: []
       summary: Downloads files relating to the installed/installing cluster.
       operationId: DownloadClusterFiles
       produces:
@@ -255,8 +355,20 @@ paths:
           description: Success.
           schema:
             type: file
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/error'
         404:
           description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        405:
+          description: Method Not Allowed.
           schema:
             $ref: '#/definitions/error'
         409:
@@ -284,8 +396,20 @@ paths:
           description: Success.
           schema:
             $ref: '#/definitions/credentials'
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/error'
         404:
           description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        405:
+          description: Method Not Allowed.
           schema:
             $ref: '#/definitions/error'
         409:
@@ -317,8 +441,20 @@ paths:
           schema:
             type: string
             format: binary
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/error'
         404:
           description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        405:
+          description: Method Not Allowed.
           schema:
             $ref: '#/definitions/error'
         409:
@@ -334,6 +470,8 @@ paths:
     post:
       tags:
         - installer
+      security:
+        - agentAuth: []
       summary: Transfer the ingress certificate for the cluster.
       operationId: UploadClusterIngressCert
       parameters:
@@ -354,8 +492,20 @@ paths:
           description: Error.
           schema:
             $ref: '#/definitions/error'
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/error'
         404:
           description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        405:
+          description: Method Not Allowed.
           schema:
             $ref: '#/definitions/error'
         500:
@@ -384,8 +534,20 @@ paths:
           description: Error.
           schema:
             $ref: '#/definitions/error'
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/error'
         404:
           description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        405:
+          description: Method Not Allowed.
           schema:
             $ref: '#/definitions/error'
         409:
@@ -414,8 +576,20 @@ paths:
           description: Success.
           schema:
             $ref: '#/definitions/cluster'
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/error'
         404:
           description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        405:
+          description: Method Not Allowed.
           schema:
             $ref: '#/definitions/error'
         409:
@@ -444,8 +618,20 @@ paths:
           description: Success.
           schema:
             $ref: '#/definitions/cluster'
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/error'
         404:
           description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        405:
+          description: Method Not Allowed.
           schema:
             $ref: '#/definitions/error'
         409:
@@ -479,8 +665,20 @@ paths:
           description: Success.
           schema:
             $ref: '#/definitions/cluster'
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/error'
         404:
           description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        405:
+          description: Method Not Allowed.
           schema:
             $ref: '#/definitions/error'
         409:
@@ -496,6 +694,8 @@ paths:
     post:
       tags:
         - installer
+      security:
+        - agentAuth: []
       summary: Registers a new OpenShift bare metal host.
       operationId: RegisterHost
       parameters:
@@ -518,12 +718,20 @@ paths:
           description: Error.
           schema:
             $ref: '#/definitions/error'
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/error'
         403:
-          description: Error.
+          description: Forbidden.
           schema:
             $ref: '#/definitions/error'
         404:
           description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        405:
+          description: Method Not Allowed.
           schema:
             $ref: '#/definitions/error'
         500:
@@ -547,6 +755,18 @@ paths:
           description: Success.
           schema:
             $ref: '#/definitions/host-list'
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/error'
+        405:
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
         500:
           description: Error.
           schema:
@@ -574,8 +794,20 @@ paths:
           description: Success.
           schema:
             $ref: '#/definitions/host'
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/error'
         404:
           description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        405:
+          description: Method Not Allowed.
           schema:
             $ref: '#/definitions/error'
         500:
@@ -606,8 +838,20 @@ paths:
           description: Error.
           schema:
             $ref: '#/definitions/error'
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/error'
         404:
           description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        405:
+          description: Method Not Allowed.
           schema:
             $ref: '#/definitions/error'
         500:
@@ -619,6 +863,8 @@ paths:
     put:
       tags:
         - installer
+      security:
+        - agentAuth: []
       summary: Update installation progress
       operationId: UpdateHostInstallProgress
       parameters:
@@ -643,8 +889,20 @@ paths:
       responses:
         200:
           description: Update install progress
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/error'
         404:
           description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        405:
+          description: Method Not Allowed.
           schema:
             $ref: '#/definitions/error'
         500:
@@ -679,8 +937,20 @@ paths:
       responses:
         204:
           description: Success.
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/error'
         404:
           description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        405:
+          description: Method Not Allowed.
           schema:
             $ref: '#/definitions/error'
         500:
@@ -710,8 +980,20 @@ paths:
           description: Success.
           schema:
             $ref: '#/definitions/host'
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/error'
         404:
           description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        405:
+          description: Method Not Allowed.
           schema:
             $ref: '#/definitions/error'
         409:
@@ -744,8 +1026,20 @@ paths:
           description: Success.
           schema:
             $ref: '#/definitions/host'
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/error'
         404:
           description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        405:
+          description: Method Not Allowed.
           schema:
             $ref: '#/definitions/error'
         409:
@@ -761,6 +1055,8 @@ paths:
     get:
       tags:
         - installer
+      security:
+        - agentAuth: []
       summary: Retrieves the next operations that the host agent needs to perform.
       operationId: GetNextSteps
       parameters:
@@ -779,8 +1075,20 @@ paths:
           description: Success.
           schema:
             $ref: '#/definitions/steps'
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/error'
         404:
           description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        405:
+          description: Method Not Allowed.
           schema:
             $ref: '#/definitions/error'
         500:
@@ -791,6 +1099,8 @@ paths:
     post:
       tags:
         - installer
+      security:
+        - agentAuth: []
       summary: Posts the result of the operations from the host agent.
       operationId: PostStepReply
       parameters:
@@ -815,8 +1125,20 @@ paths:
           description: Error.
           schema:
             $ref: '#/definitions/error'
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/error'
         404:
           description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        405:
+          description: Method Not Allowed.
           schema:
             $ref: '#/definitions/error'
         500:
@@ -858,8 +1180,20 @@ paths:
           description: Success
           schema:
             $ref: '#/definitions/free-addresses-list'
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/error'
         404:
           description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        405:
+          description: Method Not Allowed.
           schema:
             $ref: '#/definitions/error'
         500:
@@ -912,6 +1246,18 @@ paths:
           description: Success.
           schema:
             $ref: '#/definitions/event-list'
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/error'
+        405:
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
         500:
           description: Error.
           schema:
@@ -1094,6 +1440,9 @@ definitions:
       installer_version:
         type: string
         description: Installer version
+      installation_disk_path:
+        type: string
+        description: Host installation path
       updated_at:
         type: string
         format: date-time
@@ -1131,6 +1480,7 @@ definitions:
       - install
       - free-network-addresses
       - reset-installation
+      - dhcp-lease-allocate
 
   step:
     type: object
@@ -1209,7 +1559,7 @@ definitions:
         description: Name of the OpenShift cluster.
       openshift_version:
         type: string
-        enum: ['4.5']
+        enum: ['4.5', '4.6']
         description: Version of the OpenShift cluster.
       base_dns_domain:
         type: string
@@ -1256,6 +1606,11 @@ definitions:
       ssh_public_key:
         type: string
         description: SSH public key for debugging OpenShift nodes.
+      vip_dhcp_allocation:
+        type: boolean
+        description: Indicate if VIP DHCP allocation mode is enabled.
+        x-nullable: true
+        default: false
 
   cluster-update-params:
     type: object
@@ -1318,6 +1673,10 @@ definitions:
         type: string
         description: SSH public key for debugging OpenShift nodes.
         x-nullable: true
+      vip_dhcp_allocation:
+        type: boolean
+        description: Indicate if VIP DHCP allocation mode is enabled.
+        x-nullable: true
       hosts_roles:
         type: array
         x-go-custom-tag: gorm:"type:varchar(64)[]"
@@ -1378,7 +1737,7 @@ definitions:
         type: string
       openshift_version:
         type: string
-        enum: ['4.5']
+        enum: ['4.5', '4.6']
         description: Version of the OpenShift cluster.
       image_info:
         $ref: '#/definitions/image_info'
@@ -1489,6 +1848,10 @@ definitions:
         description: True if the pull-secret has been added to the cluster
       ignition_generator_version:
         type: string
+      vip_dhcp_allocation:
+        type: boolean
+        description: Indicate if VIP DHCP allocation mode is enabled.
+        x-nullable: true
 
   image_info:
     type: object
@@ -1870,3 +2233,37 @@ definitions:
       - 'hostname-unique'
       - 'hostname-valid'
       - 'belongs-to-machine-cidr'
+
+  dhcp_allocation_request:
+    type: object
+    required:
+      - interface
+      - api_vip_mac
+      - ingress_vip_mac
+    properties:
+      interface:
+        type: string
+        description: The interface (NIC) to run the DHCP requests on.
+      api_vip_mac:
+        type: string
+        format: mac
+        description: MAC address for API VIP.
+      ingress_vip_mac:
+        type: string
+        format: mac
+        description: MAC address for Ingress VIP.
+
+  dhcp_allocation_response:
+    type: object
+    required:
+      - api_vip_address
+      - ingress_vip_address
+    properties:
+      api_vip_address:
+        type: string
+        format: ipv4
+        description: The IPv4 address that was allocated by DHCP for API VIP.
+      ingress_vip_address:
+        type: string
+        format: ipv4
+        description: The IPv4 address that was allocated by DHCP for Ingress VIP.
