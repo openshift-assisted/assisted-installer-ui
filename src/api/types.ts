@@ -1,21 +1,6 @@
-export interface BlockDevice {
-  name?: string;
-  majorDeviceNumber?: number;
-  minorDeviceNumber?: number;
-  removableDevice?: number;
-  size?: number;
-  readOnly?: boolean;
-  deviceType?: string;
-  mountpoint?: string;
-  fstype?: string;
-}
 export interface Boot {
   currentBootMode?: string;
   pxeInterface?: string;
-}
-export interface Cidr {
-  ipAddress?: string;
-  mask?: number;
 }
 export interface Cluster {
   /**
@@ -34,6 +19,8 @@ export interface Cluster {
    * Name of the OpenShift cluster.
    */
   name?: string;
+  userId?: string;
+  orgId?: string;
   /**
    * Version of the OpenShift cluster.
    */
@@ -240,14 +227,6 @@ export interface Cpu {
   modelName?: string;
   architecture?: string;
 }
-export interface CpuDetails {
-  architecture?: string;
-  modelName?: string;
-  cpus?: number;
-  threadsPerCore?: number;
-  sockets?: number;
-  cpuMhz?: number;
-}
 export interface Credentials {
   username?: string;
   password?: string;
@@ -352,7 +331,7 @@ export interface Host {
    * The last time that the host status has been updated
    */
   statusUpdatedAt?: string; // date-time
-  progress?: HostProgress;
+  progress?: HostProgressInfo;
   /**
    * Time at which the current progress stage started
    */
@@ -363,7 +342,6 @@ export interface Host {
   stageUpdatedAt?: string; // date-time
   progressStages?: HostStage[];
   connectivity?: string;
-  hardwareInfo?: string;
   inventory?: string;
   freeAddresses?: string;
   role?: HostRole;
@@ -394,10 +372,23 @@ export interface HostProgress {
   currentStage: HostStage;
   progressInfo?: string;
 }
+export interface HostProgressInfo {
+  currentStage: HostStage;
+  progressInfo?: string;
+  /**
+   * Time at which the current progress stage started
+   */
+  stageStartedAt?: string; // date-time
+  /**
+   * Time at which the current progress stage was last updated
+   */
+  stageUpdatedAt?: string; // date-time
+}
 export type HostRole = 'master' | 'worker' | 'bootstrap';
 export type HostRoleUpdateParams = 'master' | 'worker';
 export type HostStage =
   | 'Starting installation'
+  | 'Waiting for control plane'
   | 'Start Waiting for control plane'
   | 'Installing'
   | 'Writing image to disk'
@@ -464,12 +455,6 @@ export interface Interface {
   flags?: string[];
   speedMbps?: number;
 }
-export interface Introspection {
-  cpu?: CpuDetails;
-  blockDevices?: BlockDevice[];
-  memory?: MemoryDetails[];
-  nics?: Nic[];
-}
 export interface Inventory {
   hostname?: string;
   bmcAddress?: string;
@@ -506,22 +491,6 @@ export interface Memory {
   physicalBytes?: number;
   usableBytes?: number;
 }
-export interface MemoryDetails {
-  name?: string;
-  total?: number;
-  used?: number;
-  free?: number;
-  shared?: number;
-  buffCached?: number;
-  available?: number;
-}
-export interface Nic {
-  name?: string;
-  state?: string;
-  mtu?: number;
-  mac?: string;
-  cidrs?: Cidr[];
-}
 export interface Step {
   stepType?: StepType;
   stepId?: string;
@@ -536,7 +505,6 @@ export interface StepReply {
   error?: string;
 }
 export type StepType =
-  | 'hardware-info'
   | 'connectivity-check'
   | 'execute'
   | 'inventory'

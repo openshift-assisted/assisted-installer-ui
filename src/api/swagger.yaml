@@ -247,6 +247,7 @@ paths:
               kubeadmin-password,
               kubeconfig,
               kubeconfig-noingress,
+              install-config.yaml,
             ]
           required: true
       responses:
@@ -521,6 +522,10 @@ paths:
           description: Error.
           schema:
             $ref: '#/definitions/error'
+        404:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
         500:
           description: Error.
           schema:
@@ -638,6 +643,14 @@ paths:
       responses:
         200:
           description: Update install progress
+        404:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        500:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
 
   /clusters/{cluster_id}/hosts/{host_id}/actions/debug:
     post:
@@ -959,7 +972,7 @@ definitions:
       event_time:
         type: string
         format: date-time
-        x-go-custom-tag: gorm:"type:datetime"
+        x-go-custom-tag: gorm:"type:timestamp with time zone"
       request_id:
         type: string
         format: uuid
@@ -1045,20 +1058,20 @@ definitions:
       status_updated_at:
         type: string
         format: date-time
-        x-go-custom-tag: gorm:"type:datetime"
+        x-go-custom-tag: gorm:"type:timestamp with time zone"
         description: The last time that the host status has been updated
       progress:
-        $ref: '#/definitions/host-progress'
+        $ref: '#/definitions/host-progress-info'
         x-go-custom-tag: gorm:"embedded;embedded_prefix:progress_"
       stage_started_at:
         type: string
         format: date-time
-        x-go-custom-tag: gorm:"type:datetime"
+        x-go-custom-tag: gorm:"type:timestamp with time zone"
         description: Time at which the current progress stage started
       stage_updated_at:
         type: string
         format: date-time
-        x-go-custom-tag: gorm:"type:datetime"
+        x-go-custom-tag: gorm:"type:timestamp with time zone"
         description: Time at which the current progress stage was last updated
       progress_stages:
         type: array
@@ -1066,9 +1079,6 @@ definitions:
           $ref: '#/definitions/host-stage'
         x-go-custom-tag: gorm:"-"
       connectivity:
-        x-go-custom-tag: gorm:"type:text"
-        type: string
-      hardware_info:
         x-go-custom-tag: gorm:"type:text"
         type: string
       inventory:
@@ -1087,15 +1097,15 @@ definitions:
       updated_at:
         type: string
         format: date-time
-        x-go-custom-tag: gorm:"type:datetime"
+        x-go-custom-tag: gorm:"type:timestamp with time zone"
       created_at:
         type: string
         format: date-time
-        x-go-custom-tag: gorm:"type:datetime"
+        x-go-custom-tag: gorm:"type:timestamp with time zone"
       checked_in_at:
         type: string
         format: date-time
-        x-go-custom-tag: gorm:"type:datetime"
+        x-go-custom-tag: gorm:"type:timestamp with time zone"
         description: The last time the host's agent communicated with the service.
       discovery_agent_version:
         type: string
@@ -1115,7 +1125,6 @@ definitions:
   step-type:
     type: string
     enum:
-      - hardware-info
       - connectivity-check
       - execute
       - inventory
@@ -1363,6 +1372,10 @@ definitions:
       name:
         type: string
         description: Name of the OpenShift cluster.
+      user_id:
+        type: string
+      org_id:
+        type: string
       openshift_version:
         type: string
         enum: ['4.5']
@@ -1436,7 +1449,7 @@ definitions:
       status_updated_at:
         type: string
         format: date-time
-        x-go-custom-tag: gorm:"type:datetime"
+        x-go-custom-tag: gorm:"type:timestamp with time zone"
         description: The last time that the cluster status has been updated
       hosts:
         x-go-custom-tag: gorm:"foreignkey:ClusterID;association_foreignkey:ID"
@@ -1448,22 +1461,22 @@ definitions:
       updated_at:
         type: string
         format: date-time
-        x-go-custom-tag: gorm:"type:datetime"
+        x-go-custom-tag: gorm:"type:timestamp with time zone"
         description: The last time that this cluster was updated.
       created_at:
         type: string
         format: date-time
-        x-go-custom-tag: gorm:"type:datetime"
+        x-go-custom-tag: gorm:"type:timestamp with time zone"
         description: The time that this cluster was created.
       install_started_at:
         type: string
         format: date-time
-        x-go-custom-tag: gorm:"type:datetime;default:0"
+        x-go-custom-tag: gorm:"type:timestamp with time zone;default:'2000-01-01 00:00:00z'"
         description: The time that this cluster began installation.
       install_completed_at:
         type: string
         format: date-time
-        x-go-custom-tag: gorm:"type:datetime;default:0"
+        x-go-custom-tag: gorm:"type:timestamp with time zone;default:'2000-01-01 00:00:00z'"
         description: The time that this cluster completed installation.
       host_networks:
         type: array
@@ -1495,7 +1508,7 @@ definitions:
       created_at:
         type: string
         format: date-time
-        x-go-custom-tag: gorm:"type:datetime"
+        x-go-custom-tag: gorm:"type:timestamp with time zone"
 
   free-addresses-list:
     type: array
@@ -1526,105 +1539,6 @@ definitions:
     properties:
       command:
         type: string
-
-  cpu_details:
-    type: object
-    properties:
-      architecture:
-        type: string
-      model_name:
-        type: string
-      cpus:
-        type: integer
-      threads_per_core:
-        type: integer
-      sockets:
-        type: integer
-      cpu_mhz:
-        type: number
-
-  block-device:
-    type: object
-    properties:
-      name:
-        type: string
-      major_device_number:
-        type: integer
-      minor_device_number:
-        type: integer
-      removable_device:
-        type: integer
-      size:
-        type: integer
-      read_only:
-        type: boolean
-      device_type:
-        type: string
-      mountpoint:
-        type: string
-      fstype:
-        type: string
-
-  memory_details:
-    type: object
-    properties:
-      name:
-        type: string
-      total:
-        type: integer
-      used:
-        type: integer
-      free:
-        type: integer
-      shared:
-        type: integer
-      buff_cached:
-        type: integer
-      available:
-        type: integer
-
-  cidr:
-    type: object
-    properties:
-      ip_address:
-        type: string
-      mask:
-        type: integer
-
-  nic:
-    type: object
-    properties:
-      name:
-        type: string
-      state:
-        type: string
-      mtu:
-        type: integer
-      mac:
-        type: string
-      cidrs:
-        type: array
-        items:
-          $ref: '#/definitions/cidr'
-
-  # Return value of hardware info
-  introspection:
-    type: object
-    properties:
-      cpu:
-        $ref: '#/definitions/cpu_details'
-      block_devices:
-        type: array
-        items:
-          $ref: '#/definitions/block-device'
-      memory:
-        type: array
-        items:
-          $ref: '#/definitions/memory_details'
-      nics:
-        type: array
-        items:
-          $ref: '#/definitions/nic'
 
   l2-connectivity:
     type: object
@@ -1699,10 +1613,33 @@ definitions:
         type: string
         x-go-custom-tag: gorm:"type:varchar(2048)"
 
+  host-progress-info:
+    type: object
+    required:
+      - current_stage
+    properties:
+      current_stage:
+        type: string
+        $ref: '#/definitions/host-stage'
+      progress_info:
+        type: string
+        x-go-custom-tag: gorm:"type:varchar(2048)"
+      stage_started_at:
+        type: string
+        format: date-time
+        x-go-custom-tag: gorm:"type:timestamp with time zone"
+        description: Time at which the current progress stage started
+      stage_updated_at:
+        type: string
+        format: date-time
+        x-go-custom-tag: gorm:"type:timestamp with time zone"
+        description: Time at which the current progress stage was last updated
+
   host-stage:
     type: string
     enum:
       - Starting installation
+      - Waiting for control plane
       - Start Waiting for control plane
       - Installing
       - Writing image to disk
