@@ -15,6 +15,7 @@ import {
   BanIcon,
   PendingIcon,
 } from '@patternfly/react-icons';
+import hdate from 'human-date';
 import { Cluster, Host } from '../../api/types';
 import { ValidationsInfo } from '../../types/hosts';
 import HostProgress from './HostProgress';
@@ -106,9 +107,30 @@ type HostStatusProps = {
   cluster: Cluster;
 };
 
+const getFooterText = (host: Host): string => {
+  const { progress, statusUpdatedAt } = host;
+
+  let footerText;
+  if (host.status === 'installing-in-progress') {
+    if (progress?.stageUpdatedAt && progress.stageUpdatedAt != progress.stageStartedAt) {
+      footerText = `Step started at ${getHumanizedDateTime(
+        progress.stageStartedAt,
+      )}, updated ${hdate.relativeTime(progress.stageUpdatedAt)}`;
+    } else {
+      footerText = `Step started at ${getHumanizedDateTime(
+        progress?.stageStartedAt || statusUpdatedAt,
+      )}`;
+    }
+  } else {
+    footerText = `Status updated at ${getHumanizedDateTime(statusUpdatedAt)}`;
+  }
+
+  return footerText;
+};
+
 const HostStatus: React.FC<HostStatusProps> = ({ host, cluster }) => {
   const [keepOnOutsideClick, onValidationActionToggle] = React.useState(false);
-  const { status, statusUpdatedAt } = host;
+  const { status } = host;
   const title = HOST_STATUS_LABELS[status] || status;
   const icon = getStatusIcon(status) || null;
   const hostProgressStages = getHostProgressStages(host);
@@ -118,7 +140,7 @@ const HostStatus: React.FC<HostStatusProps> = ({ host, cluster }) => {
       <Popover
         headerContent={<div>{title}</div>}
         bodyContent={getPopoverContent({ host, cluster, onValidationActionToggle })}
-        footerContent={<small>Status updated at {getHumanizedDateTime(statusUpdatedAt)}</small>}
+        footerContent={<small>{getFooterText(host)}</small>}
         minWidth="30rem"
         maxWidth="50rem"
         hideOnOutsideClick={!keepOnOutsideClick}
