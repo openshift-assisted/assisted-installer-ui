@@ -75,26 +75,45 @@ const vipUniqueValidationSchema = (hostSubnets: HostSubnets, values: ClusterConf
     },
   );
 
-export const vipValidationSchema = (hostSubnets: HostSubnets, values: ClusterConfigurationValues) =>
-  vipRangeValidationSchema(hostSubnets, values).concat(
-    vipUniqueValidationSchema(hostSubnets, values),
+// like .required() but passes for initially empty field
+const requiredOnceSet = (initialValue?: string, message?: string) =>
+  Yup.string().test(
+    'required-once-set',
+    message || 'The value is required.',
+    (value) => value || !initialValue,
   );
 
-export const ipBlockValidationSchema = Yup.string().matches(IP_ADDRESS_BLOCK_REGEX, {
-  message:
-    'Value "${value}" is not valid IP block address, expected value is IP/netmask. Example: 123.123.123.0/24', // eslint-disable-line no-template-curly-in-string
-  excludeEmptyString: true,
-});
+export const vipValidationSchema = (
+  hostSubnets: HostSubnets,
+  values: ClusterConfigurationValues,
+  initialValue?: string,
+) =>
+  requiredOnceSet(initialValue)
+    .concat(vipRangeValidationSchema(hostSubnets, values))
+    .concat(vipUniqueValidationSchema(hostSubnets, values));
 
-export const dnsNameValidationSchema = Yup.string().matches(DNS_NAME_REGEX, {
-  message: 'Value "${value}" is not valid DNS name. Example: basedomain.example.com', // eslint-disable-line no-template-curly-in-string
-  excludeEmptyString: true,
-});
+export const ipBlockValidationSchema = Yup.string()
+  .required('A value is required.')
+  .matches(IP_ADDRESS_BLOCK_REGEX, {
+    message:
+      'Value "${value}" is not valid IP block address, expected value is IP/netmask. Example: 123.123.123.0/24', // eslint-disable-line no-template-curly-in-string
+    excludeEmptyString: true,
+  });
+
+export const dnsNameValidationSchema = (initialValue?: string) =>
+  requiredOnceSet(initialValue).concat(
+    Yup.string().matches(DNS_NAME_REGEX, {
+      message: 'Value "${value}" is not valid DNS name. Example: basedomain.example.com', // eslint-disable-line no-template-curly-in-string
+      excludeEmptyString: true,
+    }),
+  );
 
 export const hostPrefixValidationSchema = (values: ClusterConfigurationValues) => {
+  const requiredText = 'The host prefix is required.';
   const netBlock = (values.clusterNetworkCidr || '').split('/')[1];
   if (!netBlock) {
     return Yup.number()
+      .required(requiredText)
       .min(1, `The host prefix is a number between 1 and 32.`)
       .max(32, `The host prefix is a number between 1 and 32.`);
   }
@@ -104,7 +123,7 @@ export const hostPrefixValidationSchema = (values: ClusterConfigurationValues) =
     netBlockNumber = 1;
   }
   const errorMsg = `The host prefix is a number between size of the cluster network CIDR range (${netBlockNumber}) and 32.`;
-  return Yup.number().min(netBlockNumber, errorMsg).max(32, errorMsg);
+  return Yup.number().required(requiredText).min(netBlockNumber, errorMsg).max(32, errorMsg);
 };
 
 export const hostnameValidationSchema = Yup.string().matches(HOSTNAME_REGEX, {
