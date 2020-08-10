@@ -16,7 +16,8 @@ let ocmClient: AxiosInstance;
 const aiInterceptor = (client: AxiosInstance) => {
   client.interceptors.request.use((cfg) => ({
     ...cfg,
-    url: `/api/assisted-installer/v1${cfg.url}`,
+    // conforms basePath in swagger.json
+    url: `/api/assisted-install/v1${cfg.url}`,
   }));
   return client;
 };
