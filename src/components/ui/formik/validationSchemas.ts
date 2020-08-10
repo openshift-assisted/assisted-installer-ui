@@ -75,10 +75,22 @@ const vipUniqueValidationSchema = (hostSubnets: HostSubnets, values: ClusterConf
     },
   );
 
-export const vipValidationSchema = (hostSubnets: HostSubnets, values: ClusterConfigurationValues) =>
-  vipRangeValidationSchema(hostSubnets, values).concat(
-    vipUniqueValidationSchema(hostSubnets, values),
+// like .required() but passes for initially empty field
+const requiredOnceSet = (initialValue?: string, message?: string) =>
+  Yup.string().test(
+    'required-once-set',
+    message || 'The value is required.',
+    (value) => value || !initialValue,
   );
+
+export const vipValidationSchema = (
+  hostSubnets: HostSubnets,
+  values: ClusterConfigurationValues,
+  initialValue?: string,
+) =>
+  requiredOnceSet(initialValue)
+    .concat(vipRangeValidationSchema(hostSubnets, values))
+    .concat(vipUniqueValidationSchema(hostSubnets, values));
 
 export const ipBlockValidationSchema = Yup.string()
   .required('A value is required.')
@@ -88,10 +100,13 @@ export const ipBlockValidationSchema = Yup.string()
     excludeEmptyString: true,
   });
 
-export const dnsNameValidationSchema = Yup.string().matches(DNS_NAME_REGEX, {
-  message: 'Value "${value}" is not valid DNS name. Example: basedomain.example.com', // eslint-disable-line no-template-curly-in-string
-  excludeEmptyString: true,
-});
+export const dnsNameValidationSchema = (initialValue?: string) =>
+  requiredOnceSet(initialValue).concat(
+    Yup.string().matches(DNS_NAME_REGEX, {
+      message: 'Value "${value}" is not valid DNS name. Example: basedomain.example.com', // eslint-disable-line no-template-curly-in-string
+      excludeEmptyString: true,
+    }),
+  );
 
 export const hostPrefixValidationSchema = (values: ClusterConfigurationValues) => {
   const requiredText = 'The host prefix is required.';
