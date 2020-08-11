@@ -67,7 +67,12 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
   ) => {
     if (clusterId) {
       try {
-        const params = _.omit(values, ['enableProxy']);
+        let params = _.omit(values, ['enableProxy']);
+
+        // TODO(mlibra): Hot-fix only: to enable safe merging of https://github.com/openshift/assisted-test-infra/pull/78
+        // Once merged, this will be replaced by http(s)Proxy and noProxy
+        params = _.omit(values, ['proxyUrl']);
+
         const { data: cluster } = await createClusterDownloadsImage(clusterId, params, {
           cancelToken: cancelSourceRef.current?.token,
         });
@@ -138,7 +143,7 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
                     during the installation.
                   </Text>
                 </TextContent>
-                <DiscoveryProxyFields />
+                {/* TODO(mlibra): Hot-fix, see comment in handleSubmit() above: <DiscoveryProxyFields />*/}
                 <TextAreaField
                   label="Host SSH public key for troubleshooting during discovery"
                   name="sshPublicKey"
