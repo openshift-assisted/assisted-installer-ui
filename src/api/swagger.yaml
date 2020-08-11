@@ -99,6 +99,9 @@ paths:
     get:
       tags:
         - installer
+      security:
+        - userAuth: []
+        - agentAuth: []
       summary: Retrieves the details of the OpenShift bare metal cluster.
       operationId: GetCluster
       parameters:
@@ -311,6 +314,8 @@ paths:
             $ref: '#/definitions/error'
         405:
           description: Method Not Allowed.
+        409:
+          description: Error.
           schema:
             $ref: '#/definitions/error'
         500:
@@ -647,6 +652,8 @@ paths:
     post:
       tags:
         - installer
+      security:
+        - agentAuth: []
       summary: Agent API to mark a finalizing installation as complete.
       operationId: CompleteInstallation
       parameters:
@@ -742,6 +749,9 @@ paths:
     get:
       tags:
         - installer
+      security:
+        - userAuth: []
+        - agentAuth: []
       summary: Retrieves the list of OpenShift bare metal hosts.
       operationId: ListHosts
       parameters:
@@ -1139,6 +1149,46 @@ paths:
             $ref: '#/definitions/error'
         405:
           description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        500:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
+  /clusters/{cluster_id}/hosts/{host_id}/logs:
+    post:
+      tags:
+        - installer
+      summary: Agent API to upload logs.
+      operationId: UploadHostLogs
+      consumes:
+        - multipart/form-data
+      parameters:
+        - in: path
+          name: cluster_id
+          type: string
+          format: uuid
+          required: true
+        - in: path
+          name: host_id
+          type: string
+          format: uuid
+          required: true
+        - in: formData
+          name: upfile
+          type: file
+          required: false
+          # TODO return after fix in go-swagger and moving to 0.25 or o.26
+          # https://github.com/go-swagger/go-swagger/issues/2362
+          # maxLength: 20971520  #20MB
+          description: The file to upload.
+          x-mimetype: application/zip
+      responses:
+        204:
+          description: Success.
+        404:
+          description: Error.
           schema:
             $ref: '#/definitions/error'
         500:
@@ -1865,10 +1915,19 @@ definitions:
         type: string
         x-go-custom-tag: gorm:"type:varchar(1024)"
         description: SSH public key for debugging the installation
+      size_bytes:
+        type: integer
+        minimum: 0
+      download_url:
+        type: string
       generator_version:
         type: string
         description: Image generator version
       created_at:
+        type: string
+        format: date-time
+        x-go-custom-tag: gorm:"type:timestamp with time zone"
+      expires_at:
         type: string
         format: date-time
         x-go-custom-tag: gorm:"type:timestamp with time zone"

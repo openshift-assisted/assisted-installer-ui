@@ -474,11 +474,14 @@ export interface ImageInfo {
    * SSH public key for debugging the installation
    */
   sshPublicKey?: string;
+  sizeBytes?: number;
+  downloadUrl?: string;
   /**
    * Image generator version
    */
   generatorVersion?: string;
   createdAt?: string; // date-time
+  expiresAt?: string; // date-time
 }
 export type IngressCertParams = string;
 export interface Interface {
