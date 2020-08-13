@@ -24,11 +24,9 @@ import { ImageCreateParams, ImageInfo, Cluster } from '../../api/types';
 import { sshPublicKeyValidationSchema } from '../ui/formik/validationSchemas';
 import GridGap from '../ui/GridGap';
 import { updateCluster, forceReload } from '../../features/clusters/currentClusterSlice';
-import DiscoveryProxyFields from './DiscoveryProxyFields';
 import { DiscoveryImageFormValues } from './types';
 
 const validationSchema = Yup.object().shape({
-  proxyUrl: Yup.string().url('Provide a valid URL.'),
   sshPublicKey: sshPublicKeyValidationSchema.required(
     'SSH key is required for debugging the host registration.',
   ),
@@ -48,7 +46,7 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
   onSuccess,
 }) => {
   const cancelSourceRef = React.useRef<CancelTokenSource>();
-  const { proxyUrl, sshPublicKey } = imageInfo;
+  const { sshPublicKey } = imageInfo;
   const dispatch = useDispatch();
 
   React.useEffect(() => {
@@ -67,13 +65,7 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
   ) => {
     if (clusterId) {
       try {
-        let params = _.omit(values, ['enableProxy']);
-
-        // TODO(mlibra): Hot-fix only: to enable safe merging of https://github.com/openshift/assisted-test-infra/pull/78
-        // Once merged, this will be replaced by http(s)Proxy and noProxy
-        params = _.omit(values, ['proxyUrl']);
-
-        const { data: cluster } = await createClusterDownloadsImage(clusterId, params, {
+        const { data: cluster } = await createClusterDownloadsImage(clusterId, values, {
           cancelToken: cancelSourceRef.current?.token,
         });
         onSuccess(cluster.imageInfo);
@@ -92,8 +84,6 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
   };
 
   const initialValues = {
-    enableProxy: !!proxyUrl,
-    proxyUrl: proxyUrl || '',
     sshPublicKey: sshPublicKey || '',
   };
 
@@ -143,7 +133,6 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
                     during the installation.
                   </Text>
                 </TextContent>
-                {/* TODO(mlibra): Hot-fix, see comment in handleSubmit() above: <DiscoveryProxyFields />*/}
                 <TextAreaField
                   label="Host SSH public key for troubleshooting during discovery"
                   name="sshPublicKey"

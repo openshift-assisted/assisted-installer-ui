@@ -1,5 +1,4 @@
 import { ImageCreateParams } from '../../api/types';
 
-export type DiscoveryImageFormValues = ImageCreateParams & {
-  enableProxy: boolean;
-};
+// Let's keep this for future extensibility
+export type DiscoveryImageFormValues = ImageCreateParams;

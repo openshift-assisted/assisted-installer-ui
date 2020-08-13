@@ -138,3 +138,63 @@ export const uniqueHostnameValidationSchema = (origHostname: string, hosts: Host
     }
     return !hosts.find((h) => h.requestedHostname === value);
   });
+
+const httpProxyValidationMessage = 'Provide a valid HTTP URL.';
+export const httpProxyValidationSchema = (
+  values: ClusterConfigurationValues,
+  pairValueName: 'httpProxy' | 'httpsProxy',
+) =>
+  Yup.string()
+    .url(httpProxyValidationMessage)
+    .test(
+      'http-proxy-no-empty-validation',
+      'At least one of the HTTP or HTTPS proxy URLs is required.',
+      (value) => !values.enableProxy || value || values[pairValueName],
+    )
+    .test('http-proxy-validation', httpProxyValidationMessage, (value) => {
+      if (!value) {
+        return true;
+      }
+
+      try {
+        const url = new URL(value);
+        return url.protocol === 'http:';
+      } catch {
+        return false;
+      }
+    });
+
+export const noProxyValidationSchema = Yup.string().test(
+  'no-proxy-validation',
+  'Provide comma-separated list of domains excluded from proxy.',
+  (value: string) => {
+    if (!value) {
+      return true;
+    }
+
+    // A comma-separated list of destination domain names, domains, IP addresses or other network CIDRs
+    // to exclude proxying. Preface a domain with . to include all subdomains of that domain.
+    // Use * to bypass proxy for all destinations."
+    const items = value.split(',');
+    return items.every((item) => {
+      if (item === '*') {
+        return true;
+      }
+
+      let domain = item;
+      if (item.charAt(0) === '.') {
+        domain = item.substr(1);
+      }
+
+      if (domain.match(DNS_NAME_REGEX)) {
+        return true;
+      }
+
+      if (item.match(IP_ADDRESS_REGEX)) {
+        return true;
+      }
+
+      return false;
+    });
+  },
+);

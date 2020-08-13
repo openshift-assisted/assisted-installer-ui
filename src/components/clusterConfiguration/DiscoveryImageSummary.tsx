@@ -32,7 +32,6 @@ const DiscoveryImageSummary: React.FC<DiscoveryImageSummaryProps> = ({
   onClose,
   onReset,
 }) => {
-  const { proxyUrl } = imageInfo;
   const isoPath = getClusterDownloadsImageUrl(clusterId);
   const isoUrl = `${window.location.origin}${isoPath}`;
   const downloadUrl = imageInfo.downloadUrl || isoUrl;
@@ -56,7 +55,6 @@ const DiscoveryImageSummary: React.FC<DiscoveryImageSummaryProps> = ({
                 </ClipboardCopy>
               }
             />
-            {proxyUrl && <DetailItem title="HTTP Proxy URL" value={proxyUrl} />}
           </DetailList>
         </TextContent>
       </ModalBoxBody>
