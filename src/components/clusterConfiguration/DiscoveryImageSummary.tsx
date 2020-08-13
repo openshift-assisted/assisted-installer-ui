@@ -32,10 +32,11 @@ const DiscoveryImageSummary: React.FC<DiscoveryImageSummaryProps> = ({
   onClose,
   onReset,
 }) => {
+  const { proxyUrl } = imageInfo;
   const isoPath = getClusterDownloadsImageUrl(clusterId);
   const isoUrl = `${window.location.origin}${isoPath}`;
-  const downloadIso = () => saveAs(isoPath);
-  const { proxyUrl } = imageInfo;
+  const downloadUrl = imageInfo.downloadUrl || isoUrl;
+
   return (
     <>
       <ModalBoxBody>
@@ -51,7 +52,7 @@ const DiscoveryImageSummary: React.FC<DiscoveryImageSummaryProps> = ({
               title="Discovery ISO URL"
               value={
                 <ClipboardCopy isReadOnly onCopy={(event) => clipboardCopyFunc(event, isoUrl)}>
-                  {isoUrl}
+                  {downloadUrl}
                 </ClipboardCopy>
               }
             />
@@ -60,7 +61,7 @@ const DiscoveryImageSummary: React.FC<DiscoveryImageSummaryProps> = ({
         </TextContent>
       </ModalBoxBody>
       <ModalBoxFooter>
-        <Button variant={ButtonVariant.primary} onClick={downloadIso}>
+        <Button variant={ButtonVariant.primary} onClick={() => saveAs(downloadUrl)}>
           Download Discovery ISO
         </Button>
         <Button variant={ButtonVariant.secondary} onClick={onClose}>
