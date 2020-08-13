@@ -36,6 +36,7 @@ import EditHostModal from './EditHostModal';
 import Hostname, { computeHostname } from './Hostname';
 
 import './HostsTable.css';
+import HostsCount from './HostsCount';
 
 type HostsTableProps = {
   cluster: Cluster;
@@ -51,7 +52,7 @@ type HostToDelete = {
   hostname: string;
 };
 
-const columns = [
+const getColumns = (hosts?: Host[]) => [
   { title: 'Hostname', transforms: [sortable], cellFormatters: [expandable] },
   { title: 'Role', transforms: [sortable] },
   { title: 'Status', transforms: [sortable] },
@@ -59,6 +60,7 @@ const columns = [
   { title: 'CPU Cores', transforms: [sortable] }, // cores per machine (sockets x cores)
   { title: 'Memory', transforms: [sortable] },
   { title: 'Disk', transforms: [sortable] },
+  { title: <HostsCount hosts={hosts} /> },
 ];
 
 const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host): IRow => {
@@ -150,12 +152,14 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster, skipDisabled = false }
     [cluster, skipDisabled, openRows, sortBy],
   );
 
+  const columns = React.useMemo(() => getColumns(cluster.hosts), [cluster.hosts]);
+
   const rows = React.useMemo(() => {
     if (hostRows.length) {
       return hostRows;
     }
     return getColSpanRow(<HostsTableEmptyState cluster={cluster} />, columns.length);
-  }, [hostRows, cluster]);
+  }, [hostRows, cluster, columns]);
 
   const onCollapse = React.useCallback(
     (_event, rowKey) => {
