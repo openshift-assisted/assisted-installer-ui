@@ -7,6 +7,7 @@ import {
   ClusterUpdateParams,
   ImageCreateParams,
   Credentials,
+  Presigned,
 } from './types';
 import { client } from './axiosClient';
 
@@ -59,6 +60,9 @@ type Config = {
   };
 };
 
+export const getPresignedFileUrl = (clusterId: string, fileName: string): AxiosPromise<Presigned> =>
+  client.get(`/clusters/${clusterId}/downloads/files-presigned?file_name=${fileName}`);
+
 const applyInterceptors = async (url: string) => {
   let cfg: Config = { url, headers: {} };
   const interceptors: ((cfg: Config) => Promise<Config>)[] = [];
@@ -82,13 +86,13 @@ export const downloadClusterFile = async (clusterID: string, fileName: string) =
     `/clusters/${clusterID}/downloads/files?file_name=${fileName}`,
   );
   const response = await fetch(url, headers);
+  if (!response.ok) {
+    throw new Error('Failed to fetch the requested file.');
+  }
   const contentHeader = response.headers.get('content-disposition');
   const filename = contentHeader?.match(/filename="(.+)"/)?.[1];
   saveAs(await response.blob(), filename);
 };
-
-export const downloadClusterKubeconfig = (clusterID: string) =>
-  downloadClusterFile(clusterID, 'kubeconfig');
 
 export const getClusterCredentials = (clusterID: string): AxiosPromise<Credentials> =>
   client.get(`/clusters/${clusterID}/credentials`);

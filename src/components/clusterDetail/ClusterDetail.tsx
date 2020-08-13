@@ -25,6 +25,7 @@ import FeedbackAlert from './FeedbackAlert';
 import ClusterProperties from './ClusterProperties';
 import { routeBasePath } from '../../config';
 import FailedHostsWarning from './FailedHostsWarning';
+import AlertsSection from '../ui/AlertsSection';
 
 const canAbortInstallation = (cluster: Cluster) => {
   if (
@@ -130,6 +131,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
           <ClusterProperties cluster={cluster} />
         </Grid>
       </PageSection>
+      <AlertsSection />
       <ClusterToolbar>
         {canAbortInstallation(cluster) && (
           <ToolbarButton
