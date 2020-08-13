@@ -1,7 +1,9 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps, Link } from 'react-router-dom';
 import {
+  Button,
+  ButtonVariant,
   PageSectionVariants,
   TextContent,
   Text,
@@ -10,6 +12,7 @@ import {
 } from '@patternfly/react-core';
 import PageSection from '../ui/PageSection';
 import { selectClusterTableRows, selectClustersUIState } from '../../selectors/clusters';
+import { routeBasePath } from '../../config/constants';
 import { ToolbarText, ToolbarButton } from '../ui/Toolbar';
 import ClusterToolbar from './ClusterToolbar';
 import { LoadingState, ErrorState, EmptyState } from '../ui/uiState';
@@ -18,7 +21,6 @@ import { ResourceUIState } from '../../types';
 import ClustersTable from './ClustersTable';
 import { fetchClustersAsync, deleteCluster } from '../../features/clusters/clustersSlice';
 import { deleteCluster as ApiDeleteCluster } from '../../api/clusters';
-import { NewClusterModalButton, NewClusterModal } from './newClusterModal';
 import AlertsSection from '../ui/AlertsSection';
 import { handleApiError, getErrorMessage } from '../../api/utils';
 import { AlertsContext, AlertsContextProvider } from '../AlertsContextProvider';
@@ -27,7 +29,6 @@ type ClustersProps = RouteComponentProps;
 
 const Clusters: React.FC<ClustersProps> = ({ history }) => {
   const { LOADING, EMPTY, ERROR, RELOADING } = ResourceUIState;
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
   const { addAlert } = React.useContext(AlertsContext);
   const clusterRows = useSelector(selectClusterTableRows);
   const clustersUIState = useSelector(selectClustersUIState);
@@ -58,40 +59,40 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
     fetchClusters();
   }, [fetchClusters]);
 
-  const openModal = React.useCallback(() => setIsModalOpen(true), [setIsModalOpen]);
-  const closeModal = React.useCallback(() => setIsModalOpen(false), [setIsModalOpen]);
-
-  let body: JSX.Element;
   switch (uiState.current) {
     case LOADING:
-      body = (
+      return (
         <PageSection variant={PageSectionVariants.light} isMain>
           <LoadingState />
         </PageSection>
       );
-      break;
     case ERROR:
-      body = (
+      return (
         <PageSection variant={PageSectionVariants.light} isMain>
           <ErrorState title="Failed to fetch clusters." fetchData={fetchClusters} />
         </PageSection>
       );
-      break;
     case EMPTY:
-      body = (
+      return (
         <PageSection variant={PageSectionVariants.light} isMain>
           <EmptyState
             icon={AddCircleOIcon}
             title="Create new bare metal cluster"
             content="There are no clusters yet. This wizard is going to guide you through the OpenShift bare metal cluster deployment."
-            primaryAction={<NewClusterModalButton onClick={openModal} />}
+            primaryAction={
+              <Button
+                variant={ButtonVariant.primary}
+                onClick={() => history.push(`${routeBasePath}/clusters/~new`)}
+                id="empty-state-new-cluster-button"
+              >
+                Create New Cluster
+              </Button>
+            }
           />
         </PageSection>
       );
-      break;
     default:
-      // TODO(jtomasek): if there is just one cluster, redirect to it's detail
-      body = (
+      return (
         <>
           <PageSection variant={PageSectionVariants.light}>
             <TextContent>
@@ -103,7 +104,13 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
           </PageSection>
           <AlertsSection />
           <ClusterToolbar>
-            <NewClusterModalButton onClick={openModal} ButtonComponent={ToolbarButton} />
+            <ToolbarButton
+              variant={ButtonVariant.primary}
+              onClick={() => history.push(`${routeBasePath}/clusters/~new`)}
+              id="button-create-new-cluster"
+            >
+              Create New Cluster
+            </ToolbarButton>
             <ToolbarText component={TextVariants.small}>
               {clustersUIState === RELOADING && (
                 <>
@@ -115,12 +122,6 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
         </>
       );
   }
-  return (
-    <>
-      {body}
-      {isModalOpen && <NewClusterModal closeModal={closeModal} history={history} />}
-    </>
-  );
 };
 
 const ClustersPage: React.FC<RouteComponentProps> = (props) => (

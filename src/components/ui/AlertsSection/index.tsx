@@ -1,14 +1,14 @@
 import React from 'react';
 import PageSection from '../PageSection';
 import { AlertGroup, AlertActionCloseButton, Alert } from '@patternfly/react-core';
-import { AlertProps, removeAlert } from '../../../features/alerts/alertsSlice';
+import { AlertProps } from '../../../features/alerts/alertsSlice';
 
 import './AlertsSection.css';
 import { AlertsContext } from '../../AlertsContextProvider';
 
 const AlertsSection: React.FC = () => {
-  const { alerts, dispatchAlertsAction } = React.useContext(AlertsContext);
-  const onClose = (alert: AlertProps) => dispatchAlertsAction(removeAlert(alert.key));
+  const { alerts, removeAlert } = React.useContext(AlertsContext);
+  const onClose = (alert: AlertProps) => removeAlert(alert.key);
 
   if (alerts.length) {
     return (
