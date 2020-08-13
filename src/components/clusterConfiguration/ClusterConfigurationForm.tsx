@@ -50,16 +50,16 @@ import { getInitialValues, getHostSubnets, findMatchingSubnet } from './utils';
 import { AlertsContext } from '../AlertsContextProvider';
 import ClusterSshKeyField from './ClusterSshKeyField';
 
-const validationSchema = (hostSubnets: HostSubnets) =>
+const validationSchema = (initialValues: ClusterConfigurationValues, hostSubnets: HostSubnets) =>
   Yup.lazy<ClusterConfigurationValues>((values) =>
     Yup.object<ClusterConfigurationValues>().shape({
       name: nameValidationSchema,
-      baseDnsDomain: dnsNameValidationSchema,
+      baseDnsDomain: dnsNameValidationSchema(initialValues.baseDnsDomain),
       clusterNetworkHostPrefix: hostPrefixValidationSchema(values),
       clusterNetworkCidr: ipBlockValidationSchema,
       serviceNetworkCidr: ipBlockValidationSchema,
-      apiVip: vipValidationSchema(hostSubnets, values),
-      ingressVip: vipValidationSchema(hostSubnets, values),
+      apiVip: vipValidationSchema(hostSubnets, values, initialValues.apiVip),
+      ingressVip: vipValidationSchema(hostSubnets, values, initialValues.ingressVip),
       sshPublicKey: sshPublicKeyValidationSchema,
     }),
   );
@@ -86,9 +86,10 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
     cluster,
     managedDomains,
   ]);
-  const memoizedValidationSchema = React.useMemo(() => validationSchema(hostSubnets), [
-    hostSubnets,
-  ]);
+  const memoizedValidationSchema = React.useMemo(
+    () => validationSchema(initialValues, hostSubnets),
+    [hostSubnets, initialValues],
+  );
 
   const handleSubmit = async (
     values: ClusterConfigurationValues,
@@ -111,11 +112,6 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
 
       if (values.shareDiscoverySshKey) {
         params.sshPublicKey = cluster.imageInfo.sshPublicKey;
-      }
-
-      // do not pass empty string since a number is expected (might happen when emptying input-box)
-      if (!params.clusterNetworkHostPrefix && params.clusterNetworkHostPrefix !== 0) {
-        delete params.clusterNetworkHostPrefix;
       }
 
       const { data } = await patchCluster(cluster.id, params);
