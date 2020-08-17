@@ -1,6 +1,5 @@
 import React from 'react';
 import * as Yup from 'yup';
-import _ from 'lodash';
 import { useDispatch } from 'react-redux';
 import {
   Button,
@@ -17,38 +16,44 @@ import {
 import Axios, { CancelTokenSource } from 'axios';
 import { TextAreaField } from '../ui/formik';
 import { Formik, FormikHelpers } from 'formik';
-import { createClusterDownloadsImage } from '../../api/clusters';
+import { createClusterDownloadsImage, patchCluster } from '../../api/clusters';
 import { LoadingState } from '../ui/uiState';
 import { handleApiError, getErrorMessage } from '../../api/utils';
-import { ImageCreateParams, ImageInfo, Cluster } from '../../api/types';
-import { sshPublicKeyValidationSchema } from '../ui/formik/validationSchemas';
+import { ImageCreateParams, Cluster, ClusterUpdateParams } from '../../api/types';
+import {
+  sshPublicKeyValidationSchema,
+  httpProxyValidationSchema,
+  noProxyValidationSchema,
+} from '../ui/formik/validationSchemas';
 import GridGap from '../ui/GridGap';
 import { updateCluster, forceReload } from '../../features/clusters/currentClusterSlice';
-import DiscoveryProxyFields from './DiscoveryProxyFields';
 import { DiscoveryImageFormValues } from './types';
+import ProxyFields from './ProxyFields';
 
-const validationSchema = Yup.object().shape({
-  proxyUrl: Yup.string().url('Provide a valid URL.'),
-  sshPublicKey: sshPublicKeyValidationSchema.required(
-    'SSH key is required for debugging the host registration.',
-  ),
-});
+const validationSchema = Yup.lazy<DiscoveryImageFormValues>((values) =>
+  Yup.object<DiscoveryImageFormValues>().shape({
+    sshPublicKey: sshPublicKeyValidationSchema.required(
+      'SSH key is required for debugging the host registration.',
+    ),
+    httpProxy: httpProxyValidationSchema(values, 'httpsProxy'),
+    httpsProxy: httpProxyValidationSchema(values, 'httpProxy'), // share the schema, httpS is currently not supported
+    noProxy: noProxyValidationSchema,
+  }),
+);
 
 type DiscoveryImageFormProps = {
-  clusterId: Cluster['id'];
-  imageInfo: ImageInfo;
+  cluster: Cluster;
   onCancel: () => void;
   onSuccess: (imageInfo: Cluster['imageInfo']) => void;
 };
 
 const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
-  clusterId,
-  imageInfo,
+  cluster,
   onCancel,
   onSuccess,
 }) => {
   const cancelSourceRef = React.useRef<CancelTokenSource>();
-  const { proxyUrl, sshPublicKey } = imageInfo;
+  const { sshPublicKey } = cluster.imageInfo;
   const dispatch = useDispatch();
 
   React.useEffect(() => {
@@ -65,19 +70,28 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
     values: DiscoveryImageFormValues,
     formikActions: FormikHelpers<DiscoveryImageFormValues>,
   ) => {
-    if (clusterId) {
+    if (cluster.id) {
       try {
-        let params = _.omit(values, ['enableProxy']);
+        const proxyParams: ClusterUpdateParams = {
+          httpProxy: values.httpProxy,
+          httpsProxy: values.httpsProxy,
+          noProxy: values.noProxy,
+        };
+        // either update or remove proxy details
+        await patchCluster(cluster.id, proxyParams);
 
-        // TODO(mlibra): Hot-fix only: to enable safe merging of https://github.com/openshift/assisted-test-infra/pull/78
-        // Once merged, this will be replaced by http(s)Proxy and noProxy
-        params = _.omit(values, ['proxyUrl']);
-
-        const { data: cluster } = await createClusterDownloadsImage(clusterId, params, {
-          cancelToken: cancelSourceRef.current?.token,
-        });
-        onSuccess(cluster.imageInfo);
-        dispatch(updateCluster(cluster));
+        const imageCreateParams: ImageCreateParams = {
+          sshPublicKey: values.sshPublicKey,
+        };
+        const { data: updatedCluster } = await createClusterDownloadsImage(
+          cluster.id,
+          imageCreateParams,
+          {
+            cancelToken: cancelSourceRef.current?.token,
+          },
+        );
+        onSuccess(updatedCluster.imageInfo);
+        dispatch(updateCluster(updatedCluster));
       } catch (error) {
         handleApiError<ImageCreateParams>(error, () => {
           formikActions.setStatus({
@@ -92,9 +106,11 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
   };
 
   const initialValues = {
-    enableProxy: !!proxyUrl,
-    proxyUrl: proxyUrl || '',
     sshPublicKey: sshPublicKey || '',
+    httpProxy: cluster.httpProxy || '',
+    httpsProxy: cluster.httpsProxy || '',
+    noProxy: cluster.noProxy || '',
+    enableProxy: !!(cluster.httpProxy || cluster.httpsProxy || cluster.noProxy),
   };
 
   return (
@@ -143,7 +159,6 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
                     during the installation.
                   </Text>
                 </TextContent>
-                {/* TODO(mlibra): Hot-fix, see comment in handleSubmit() above: <DiscoveryProxyFields />*/}
                 <TextAreaField
                   label="Host SSH public key for troubleshooting during discovery"
                   name="sshPublicKey"
@@ -151,6 +166,7 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
                   idPostfix="discovery"
                   isRequired
                 />
+                <ProxyFields />
               </GridGap>
             </ModalBoxBody>
             <ModalBoxFooter>
