@@ -12,6 +12,7 @@ interface ClusterSshKeyFieldProps extends FieldProps {
   isSwitchHidden: boolean;
   onToggle: (isChecked: boolean) => void;
   onClusterSshKeyVisibilityChanged: () => void;
+  onSshKeyBlur: () => void;
 }
 
 const sshPublicKeyHelperText = (
@@ -29,6 +30,7 @@ const ClusterSshKeyField: React.FC<ClusterSshKeyFieldProps> = ({
   onToggle,
   onClusterSshKeyVisibilityChanged,
   idPostfix,
+  onSshKeyBlur,
   ...props
 }) => {
   const [field] = useField({ name: props.name, validate });
@@ -59,6 +61,7 @@ const ClusterSshKeyField: React.FC<ClusterSshKeyFieldProps> = ({
       label={label}
       helperText={sshPublicKeyHelperText}
       className="ssh-public-key__textarea"
+      onBlur={onSshKeyBlur}
     >
       {!isSwitchHidden && checkbox}
     </TextAreaField>

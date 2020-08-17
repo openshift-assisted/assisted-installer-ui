@@ -119,8 +119,14 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
-      {({ submitForm, isSubmitting, status, setStatus }) =>
-        isSubmitting ? (
+      {({ submitForm, isSubmitting, status, setStatus, setFieldValue, values }) => {
+        const onSshKeyBlur = () => {
+          if (values.sshPublicKey) {
+            setFieldValue('sshPublicKey', values.sshPublicKey.trim());
+          }
+        };
+
+        return isSubmitting ? (
           <LoadingState
             content="Discovery image is being prepared, it will be available in a moment..."
             secondaryActions={[
@@ -164,6 +170,7 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
                   helperText="Provide a public key to debug any hosts that fail to register successfuly."
                   idPostfix="discovery"
                   isRequired
+                  onBlur={onSshKeyBlur}
                 />
                 <ProxyFields />
               </Form>
@@ -177,8 +184,8 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
               </Button>
             </ModalBoxFooter>
           </>
-        )
-      }
+        );
+      }}
     </Formik>
   );
 };
