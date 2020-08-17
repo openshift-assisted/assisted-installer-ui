@@ -25,7 +25,6 @@ import {
   httpProxyValidationSchema,
   noProxyValidationSchema,
 } from '../ui/formik/validationSchemas';
-import GridGap from '../ui/GridGap';
 import { updateCluster, forceReload } from '../../features/clusters/currentClusterSlice';
 import { DiscoveryImageFormValues } from './types';
 import ProxyFields from './ProxyFields';
@@ -120,7 +119,7 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
-      {({ handleSubmit, isSubmitting, status, setStatus }) =>
+      {({ submitForm, isSubmitting, status, setStatus }) =>
         isSubmitting ? (
           <LoadingState
             content="Discovery image is being prepared, it will be available in a moment..."
@@ -131,9 +130,9 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
             ]}
           />
         ) : (
-          <Form onSubmit={handleSubmit}>
+          <>
             <ModalBoxBody>
-              <GridGap>
+              <Form>
                 {status.error && (
                   <Alert
                     variant={AlertVariant.danger}
@@ -167,17 +166,17 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
                   isRequired
                 />
                 <ProxyFields />
-              </GridGap>
+              </Form>
             </ModalBoxBody>
             <ModalBoxFooter>
-              <Button key="submit" type="submit">
+              <Button key="submit" onClick={submitForm}>
                 Get Discovery ISO
               </Button>
               <Button key="cancel" variant="link" onClick={onCancel}>
                 Cancel
               </Button>
             </ModalBoxFooter>
-          </Form>
+          </>
         )
       }
     </Formik>
