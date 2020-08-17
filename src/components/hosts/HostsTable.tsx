@@ -31,7 +31,7 @@ import RoleCell, { getHostRole } from './RoleCell';
 import { DASH } from '../constants';
 import DeleteHostModal from './DeleteHostModal';
 import { AlertsContext } from '../AlertsContextProvider';
-import { canEnable, canDisable, canDelete } from './utils';
+import { canEnable, canDisable, canDelete, canEditHost } from './utils';
 import EditHostModal from './EditHostModal';
 import Hostname, { computeHostname } from './Hostname';
 
@@ -115,7 +115,7 @@ const HostsTableEmptyState: React.FC<{ cluster: Cluster }> = ({ cluster }) => (
     icon={ConnectedIcon}
     title="Waiting for hosts..."
     content="Boot the discovery ISO on hardware that should become part of this bare metal cluster. Hosts may take a few minutes to appear here after booting."
-    primaryAction={<DiscoveryImageModalButton imageInfo={cluster.imageInfo} />}
+    primaryAction={<DiscoveryImageModalButton cluster={cluster} />}
   />
 );
 
@@ -244,11 +244,13 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster, skipDisabled = false }
 
       const actions = [];
 
-      actions.push({
-        title: 'Edit Host',
-        id: `button-edit-host-${hostname}`, // id is everchanging, not ideal for tests
-        onClick: onEditHost,
-      });
+      if (canEditHost(clusterStatus, host.status)) {
+        actions.push({
+          title: 'Edit Host',
+          id: `button-edit-host-${hostname}`, // id is everchanging, not ideal for tests
+          onClick: onEditHost,
+        });
+      }
       if (canEnable(clusterStatus, host.status)) {
         actions.push({
           title: 'Enable in cluster',

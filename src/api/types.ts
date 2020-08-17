@@ -59,6 +59,22 @@ export interface Cluster {
    */
   sshPublicKey?: string;
   /**
+   * A proxy URL to use for creating HTTP connections outside the cluster.
+   * http://\<username\>:\<pswd\>@\<ip\>:\<port\>
+   *
+   */
+  httpProxy?: string;
+  /**
+   * A proxy URL to use for creating HTTPS connections outside the cluster.
+   * http://\<username\>:\<pswd\>@\<ip\>:\<port\>
+   *
+   */
+  httpsProxy?: string;
+  /**
+   * A comma-separated list of destination domain names, domains, IP addresses, or other network CIDRs to exclude proxying.
+   */
+  noProxy?: string;
+  /**
    * Status of the OpenShift cluster.
    */
   status:
@@ -152,6 +168,22 @@ export interface ClusterCreateParams {
    * Indicate if VIP DHCP allocation mode is enabled.
    */
   vipDhcpAllocation?: boolean;
+  /**
+   * A proxy URL to use for creating HTTP connections outside the cluster.
+   * http://\<username\>:\<pswd\>@\<ip\>:\<port\>
+   *
+   */
+  httpProxy?: string;
+  /**
+   * A proxy URL to use for creating HTTPS connections outside the cluster.
+   * http://\<username\>:\<pswd\>@\<ip\>:\<port\>
+   *
+   */
+  httpsProxy?: string;
+  /**
+   * A comma-separated list of destination domain names, domains, IP addresses, or other network CIDRs to exclude proxying.
+   */
+  noProxy?: string;
 }
 export type ClusterList = Cluster[];
 export interface ClusterUpdateParams {
@@ -195,6 +227,22 @@ export interface ClusterUpdateParams {
    * Indicate if VIP DHCP allocation mode is enabled.
    */
   vipDhcpAllocation?: boolean;
+  /**
+   * A proxy URL to use for creating HTTP connections outside the cluster.
+   * http://\<username\>:\<pswd\>@\<ip\>:\<port\>
+   *
+   */
+  httpProxy?: string;
+  /**
+   * A proxy URL to use for creating HTTPS connections outside the cluster.
+   * http://\<username\>:\<pswd\>@\<ip\>:\<port\>
+   *
+   */
+  httpsProxy?: string;
+  /**
+   * A comma-separated list of destination domain names, domains, IP addresses, or other network CIDRs to exclude proxying.
+   */
+  noProxy?: string;
   /**
    * The desired role for hosts associated with the cluster.
    */
@@ -453,23 +501,11 @@ export type HostValidationId =
   | 'belongs-to-machine-cidr';
 export interface ImageCreateParams {
   /**
-   * The URL of the HTTP/S proxy that agents should use to access the discovery service
-   * http://\<user\>:\<password\>@\<server\>:\<port\>/
-   *
-   */
-  proxyUrl?: string;
-  /**
    * SSH public key for debugging the installation.
    */
   sshPublicKey?: string;
 }
 export interface ImageInfo {
-  /**
-   * The URL of the HTTP/S proxy that agents should use to access the discovery service
-   * http://\<user\>:\<password\>@\<server\>:\<port\>/
-   *
-   */
-  proxyUrl?: string;
   /**
    * SSH public key for debugging the installation
    */
@@ -533,6 +569,9 @@ export interface ManagedDomain {
 export interface Memory {
   physicalBytes?: number;
   usableBytes?: number;
+}
+export interface Presigned {
+  url: string;
 }
 export interface Step {
   stepType?: StepType;
