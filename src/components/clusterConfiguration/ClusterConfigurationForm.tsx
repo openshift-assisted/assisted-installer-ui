@@ -40,8 +40,6 @@ import {
   dnsNameValidationSchema,
   hostPrefixValidationSchema,
   vipValidationSchema,
-  httpProxyValidationSchema,
-  noProxyValidationSchema,
 } from '../ui/formik/validationSchemas';
 import ClusterBreadcrumbs from '../clusters/ClusterBreadcrumbs';
 import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
@@ -63,9 +61,6 @@ const validationSchema = (initialValues: ClusterConfigurationValues, hostSubnets
       apiVip: vipValidationSchema(hostSubnets, values, initialValues.apiVip),
       ingressVip: vipValidationSchema(hostSubnets, values, initialValues.ingressVip),
       sshPublicKey: sshPublicKeyValidationSchema,
-      httpProxy: httpProxyValidationSchema(values, 'httpsProxy'),
-      httpsProxy: httpProxyValidationSchema(values, 'httpProxy'), // share the schema, httpS is currently not supported
-      noProxy: noProxyValidationSchema,
     }),
   );
 
@@ -113,12 +108,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
 
     // update the cluster configuration
     try {
-      const params = _.omit(values, [
-        'hostSubnet',
-        'useRedHatDnsService',
-        'shareDiscoverySshKey',
-        'enableProxy',
-      ]);
+      const params = _.omit(values, ['hostSubnet', 'useRedHatDnsService', 'shareDiscoverySshKey']);
 
       if (values.shareDiscoverySshKey) {
         params.sshPublicKey = cluster.imageInfo.sshPublicKey;

@@ -2,7 +2,6 @@ import React from 'react';
 import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
 import { InputField, SelectField } from '../ui/formik';
 import { useFormikContext } from 'formik';
-import DiscoveryProxyFields from './DiscoveryProxyFields';
 
 type BasicNetworkFieldsProps = {
   hostSubnets: HostSubnets;
@@ -53,7 +52,6 @@ const BasicNetworkFields: React.FC<BasicNetworkFieldsProps> = ({ hostSubnets }) 
         isRequired
         isDisabled={!hostSubnets.length}
       />
-      <DiscoveryProxyFields />
     </>
   );
 };

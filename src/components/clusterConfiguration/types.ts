@@ -1,4 +1,10 @@
-import { ImageCreateParams } from '../../api/types';
+import { ImageCreateParams, Cluster } from '../../api/types';
 
-// Let's keep this for future extensibility
-export type DiscoveryImageFormValues = ImageCreateParams;
+export type ProxyFieldsType = {
+  enableProxy: boolean;
+  httpProxy: Cluster['httpProxy'];
+  httpsProxy: Cluster['httpsProxy'];
+  noProxy: Cluster['noProxy'];
+};
+
+export type DiscoveryImageFormValues = ImageCreateParams & ProxyFieldsType;

@@ -1,19 +1,18 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
 import { Modal, Button, ButtonVariant, ModalVariant } from '@patternfly/react-core';
 import { ToolbarButton } from '../ui/Toolbar';
-import { ImageInfo, Cluster } from '../../api/types';
+import { Cluster } from '../../api/types';
 import DiscoveryImageForm from './DiscoveryImageForm';
 import DiscoveryImageSummary from './DiscoveryImageSummary';
 
 type DiscoveryImageModalButtonProps = {
   ButtonComponent?: typeof Button | typeof ToolbarButton;
-  imageInfo: ImageInfo;
+  cluster: Cluster;
 };
 
 export const DiscoveryImageModalButton: React.FC<DiscoveryImageModalButtonProps> = ({
   ButtonComponent = Button,
-  imageInfo,
+  cluster,
 }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
@@ -28,22 +27,18 @@ export const DiscoveryImageModalButton: React.FC<DiscoveryImageModalButtonProps>
       >
         Download discovery ISO
       </ButtonComponent>
-      {isModalOpen && <DiscoveryImageModal closeModal={closeModal} initialImageInfo={imageInfo} />}
+      {isModalOpen && <DiscoveryImageModal closeModal={closeModal} cluster={cluster} />}
     </>
   );
 };
 
 type DiscoveryImageModalProps = {
   closeModal: () => void;
-  initialImageInfo: ImageInfo;
+  cluster: Cluster;
 };
 
-export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({
-  closeModal,
-  initialImageInfo,
-}) => {
+const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({ closeModal, cluster }) => {
   const [imageInfo, setImageInfo] = React.useState<Cluster['imageInfo'] | undefined>();
-  const { clusterId } = useParams();
 
   return (
     <Modal
@@ -56,15 +51,14 @@ export const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({
     >
       {imageInfo ? (
         <DiscoveryImageSummary
-          clusterId={clusterId}
+          clusterId={cluster.id}
           imageInfo={imageInfo}
           onClose={closeModal}
           onReset={() => setImageInfo(undefined)}
         />
       ) : (
         <DiscoveryImageForm
-          imageInfo={initialImageInfo}
-          clusterId={clusterId}
+          cluster={cluster}
           onCancel={closeModal}
           onSuccess={(imageInfo: Cluster['imageInfo']) => setImageInfo(imageInfo)}
         />

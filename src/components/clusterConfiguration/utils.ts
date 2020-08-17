@@ -63,13 +63,9 @@ export const getInitialValues = (
   apiVip: cluster.apiVip || '',
   ingressVip: cluster.ingressVip || '',
   sshPublicKey: cluster.sshPublicKey || '',
-  httpProxy: cluster.httpProxy || '',
-  httpsProxy: cluster.httpsProxy || '',
-  noProxy: cluster.noProxy || '',
   hostSubnet: findMatchingSubnet(cluster.ingressVip, cluster.apiVip, getHostSubnets(cluster)),
   useRedHatDnsService:
     !!cluster.baseDnsDomain && managedDomains.map((d) => d.domain).includes(cluster.baseDnsDomain),
   shareDiscoverySshKey:
     !!cluster.imageInfo.sshPublicKey && cluster.sshPublicKey === cluster.imageInfo.sshPublicKey,
-  enableProxy: !!(cluster.httpProxy || cluster.httpsProxy || cluster.noProxy),
 });

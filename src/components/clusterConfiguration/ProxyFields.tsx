@@ -1,14 +1,20 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
 import { InputField, CheckboxField } from '../ui/formik';
-import { ClusterConfigurationValues } from '../../types/clusters';
+import { DiscoveryImageFormValues } from './types';
 
-const DiscoveryProxyFields: React.FC = () => {
-  const { setFieldValue, values } = useFormikContext<ClusterConfigurationValues>();
-  const resetProxy = () => {
-    setFieldValue('httpProxy', '');
-    setFieldValue('httpsProxy', '');
-    setFieldValue('noProxy', '');
+const ProxyFields: React.FC = () => {
+  const { setFieldValue, values, initialValues } = useFormikContext<DiscoveryImageFormValues>();
+  const resetProxy = (isNewlyChecked: boolean) => {
+    if (isNewlyChecked) {
+      setFieldValue('httpProxy', initialValues.httpProxy);
+      setFieldValue('httpsProxy', initialValues.httpsProxy);
+      setFieldValue('noProxy', initialValues.noProxy);
+    } else {
+      setFieldValue('httpProxy', '');
+      setFieldValue('httpsProxy', '');
+      setFieldValue('noProxy', '');
+    }
   };
 
   // https://docs.openshift.com/container-platform/4.4/networking/enable-cluster-wide-proxy.html
@@ -18,7 +24,7 @@ const DiscoveryProxyFields: React.FC = () => {
         label="Use HTTP Proxy"
         name="enableProxy"
         helperText="If hosts are behind a firewall that requires the use of a proxy, provide additional information about the proxy."
-        onChange={(value: boolean) => !value && resetProxy()}
+        onChange={(value: boolean) => resetProxy(value)}
       />
       {values.enableProxy && (
         <>
@@ -58,4 +64,4 @@ const DiscoveryProxyFields: React.FC = () => {
   );
 };
 
-export default DiscoveryProxyFields;
+export default ProxyFields;

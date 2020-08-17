@@ -1,6 +1,7 @@
 import * as Yup from 'yup';
 import { ClusterConfigurationValues, HostSubnets } from '../../../types/clusters';
 import { Host } from '../../../api/types';
+import { ProxyFieldsType } from '../../clusterConfiguration/types';
 
 const CLUSTER_NAME_REGEX = /^([a-z]([-a-z0-9]*[a-z0-9])?)*$/;
 const SSH_PUBLIC_KEY_REGEX = /^(ssh-rsa|ssh-ed25519|ecdsa-[-a-z0-9]*) AAAA[0-9A-Za-z+/]+[=]{0,3}( [^@]+@[^@| |\t|\n]+)?$/;
@@ -141,7 +142,7 @@ export const uniqueHostnameValidationSchema = (origHostname: string, hosts: Host
 
 const httpProxyValidationMessage = 'Provide a valid HTTP URL.';
 export const httpProxyValidationSchema = (
-  values: ClusterConfigurationValues,
+  values: ProxyFieldsType,
   pairValueName: 'httpProxy' | 'httpsProxy',
 ) =>
   Yup.string()
