@@ -384,6 +384,70 @@ paths:
           description: Error.
           schema:
             $ref: '#/definitions/error'
+
+  /clusters/{cluster_id}/downloads/files-presigned:
+    get:
+      tags:
+        - installer
+      security:
+        - userAuth: []
+      summary: Retrieves a presigned S3 URL for downloading cluster files.
+      operationId: GetPresignedForClusterFiles
+      parameters:
+        - in: path
+          name: cluster_id
+          type: string
+          format: uuid
+          required: true
+        - in: query
+          name: file_name
+          type: string
+          enum:
+            [
+              bootstrap.ign,
+              master.ign,
+              metadata.json,
+              worker.ign,
+              kubeadmin-password,
+              kubeconfig,
+              kubeconfig-noingress,
+              install-config.yaml,
+            ]
+          required: true
+      responses:
+        200:
+          description: Success.
+          schema:
+            $ref: '#/definitions/presigned'
+        400:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/error'
+        404:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        405:
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        409:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        500:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
   /clusters/{cluster_id}/credentials:
     get:
       tags:
@@ -1377,11 +1441,6 @@ definitions:
   image-create-params:
     type: object
     properties:
-      proxy_url:
-        type: string
-        description: |
-          The URL of the HTTP/S proxy that agents should use to access the discovery service
-          http://\<user\>:\<password\>@\<server\>:\<port\>/
       ssh_public_key:
         type: string
         description: SSH public key for debugging the installation.
@@ -1661,6 +1720,24 @@ definitions:
         description: Indicate if VIP DHCP allocation mode is enabled.
         x-nullable: true
         default: false
+      http_proxy:
+        type: string
+        description: |
+          A proxy URL to use for creating HTTP connections outside the cluster.
+          http://\<username\>:\<pswd\>@\<ip\>:\<port\>
+        x-nullable: true
+      https_proxy:
+        type: string
+        description: |
+          A proxy URL to use for creating HTTPS connections outside the cluster.
+          http://\<username\>:\<pswd\>@\<ip\>:\<port\>
+        x-nullable: true
+      no_proxy:
+        type: string
+        description:
+          A comma-separated list of destination domain names, domains, IP addresses, or other
+          network CIDRs to exclude proxying.
+        x-nullable: true
 
   cluster-update-params:
     type: object
@@ -1726,6 +1803,24 @@ definitions:
       vip_dhcp_allocation:
         type: boolean
         description: Indicate if VIP DHCP allocation mode is enabled.
+        x-nullable: true
+      http_proxy:
+        type: string
+        description: |
+          A proxy URL to use for creating HTTP connections outside the cluster.
+          http://\<username\>:\<pswd\>@\<ip\>:\<port\>
+        x-nullable: true
+      https_proxy:
+        type: string
+        description: |
+          A proxy URL to use for creating HTTPS connections outside the cluster.
+          http://\<username\>:\<pswd\>@\<ip\>:\<port\>
+        x-nullable: true
+      no_proxy:
+        type: string
+        description:
+          A comma-separated list of destination domain names, domains, IP addresses, or other
+          network CIDRs to exclude proxying.
         x-nullable: true
       hosts_roles:
         type: array
@@ -1840,6 +1935,22 @@ definitions:
         type: string
         x-go-custom-tag: gorm:"type:varchar(1024)"
         description: SSH public key for debugging OpenShift nodes.
+      http_proxy:
+        type: string
+        description: |
+          A proxy URL to use for creating HTTP connections outside the cluster.
+          http://\<username\>:\<pswd\>@\<ip\>:\<port\>
+      https_proxy:
+        type: string
+        description: |
+          A proxy URL to use for creating HTTPS connections outside the cluster.
+          http://\<username\>:\<pswd\>@\<ip\>:\<port\>
+        x-go-custom-tag: gorm:"column:https_proxy"
+      no_proxy:
+        type: string
+        description:
+          A comma-separated list of destination domain names, domains, IP addresses, or other
+          network CIDRs to exclude proxying.
       status:
         type: string
         description: Status of the OpenShift cluster.
@@ -1906,11 +2017,6 @@ definitions:
   image_info:
     type: object
     properties:
-      proxy_url:
-        type: string
-        description: |
-          The URL of the HTTP/S proxy that agents should use to access the discovery service
-          http://\<user\>:\<password\>@\<server\>:\<port\>/
       ssh_public_key:
         type: string
         x-go-custom-tag: gorm:"type:varchar(1024)"
@@ -2326,3 +2432,11 @@ definitions:
         type: string
         format: ipv4
         description: The IPv4 address that was allocated by DHCP for Ingress VIP.
+
+  presigned:
+    type: object
+    required:
+      - url
+    properties:
+      url:
+        type: string

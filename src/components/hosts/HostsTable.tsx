@@ -115,7 +115,7 @@ const HostsTableEmptyState: React.FC<{ cluster: Cluster }> = ({ cluster }) => (
     icon={ConnectedIcon}
     title="Waiting for hosts..."
     content="Boot the discovery ISO on hardware that should become part of this bare metal cluster. Hosts may take a few minutes to appear here after booting."
-    primaryAction={<DiscoveryImageModalButton imageInfo={cluster.imageInfo} />}
+    primaryAction={<DiscoveryImageModalButton cluster={cluster} />}
   />
 );
 
