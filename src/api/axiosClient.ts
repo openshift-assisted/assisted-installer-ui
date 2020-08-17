@@ -11,7 +11,7 @@ const getDefaultClient = () => {
 };
 
 let client: AxiosInstance = getDefaultClient();
-let ocmClient: AxiosInstance;
+let ocmClient: AxiosInstance | null;
 
 const aiInterceptor = (client: AxiosInstance) => {
   client.interceptors.request.use((cfg) => ({

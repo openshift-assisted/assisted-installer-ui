@@ -91,8 +91,8 @@ export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal, hi
   );
 
   React.useEffect(() => {
-    if (ocmClient) {
-      const getPullSecret = async () => {
+    const getPullSecret = async () => {
+      if (ocmClient) {
         try {
           const response = await ocmClient.post('/api/accounts_mgmt/v1/access_token');
           setInitialPullSecret(response?.request?.response || ''); // unmarshalled response as a string
@@ -100,10 +100,9 @@ export const NewClusterModal: React.FC<NewClusterModalProps> = ({ closeModal, hi
           console.warn('Failed to receive pull_secret, error: ', e);
           setInitialError({ title: 'Failed to receive pull secret' });
         }
-      };
-
-      getPullSecret();
-    }
+      }
+    };
+    getPullSecret();
   }, []);
 
   const handleSubmit = async (
