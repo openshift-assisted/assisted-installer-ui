@@ -31,6 +31,8 @@ export const canEditRole = (clusterStatus: Cluster['status'], status: Host['stat
     'pending-for-input',
   ].includes(status);
 
+export const canEditHost = canEditRole;
+
 export const canDownloadKubeconfig = (clusterStatus: Cluster['status']) =>
   ['installing', 'finalizing', 'installed'].includes(clusterStatus);
 
