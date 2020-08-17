@@ -20,7 +20,7 @@ export const nameValidationSchema = Yup.string()
   .max(253, 'Cannot be longer than 253 characters.')
   .required('Required');
 
-export const sshPublicKeyValidationSchema = Yup.string().matches(SSH_PUBLIC_KEY_REGEX, {
+export const sshPublicKeyValidationSchema = Yup.string().trim().matches(SSH_PUBLIC_KEY_REGEX, {
   message:
     'SSH public key must consist of "[TYPE] key [[EMAIL]]", supported types are: ssh-rsa, ssh-ed25519, ecdsa-[VARIANT]',
   excludeEmptyString: true,
