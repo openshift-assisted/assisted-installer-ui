@@ -175,6 +175,11 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
               (cluster.sshPublicKey === cluster.imageInfo.sshPublicKey || !cluster.sshPublicKey),
           );
         };
+        const onSshKeyBlur = () => {
+          if (values.sshPublicKey) {
+            setFieldValue('sshPublicKey', values.sshPublicKey.trim());
+          }
+        };
 
         return (
           <>
@@ -210,6 +215,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
                         name="shareDiscoverySshKey"
                         onToggle={onClusterSshKeyToggle}
                         onClusterSshKeyVisibilityChanged={onClusterSshKeyVisibilityChanged}
+                        onSshKeyBlur={onSshKeyBlur}
                       />
                     </GridGap>
                   </GridItem>
