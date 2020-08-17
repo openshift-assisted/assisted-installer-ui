@@ -1,5 +1,4 @@
 import { AxiosPromise, AxiosRequestConfig } from 'axios';
-import { saveAs } from 'file-saver';
 import {
   Cluster,
   ClusterCreateParams,
@@ -53,46 +52,19 @@ export const createClusterDownloadsImage = (
 // TODO(jtomasek): make the API_ROOT configurable so this can be used in cloud.redhat.com
 const API_ROOT = process.env.REACT_APP_API_ROOT;
 
-type Config = {
-  url: string;
-  headers: {
-    [key: string]: string;
-  };
-};
-
 export const getPresignedFileUrl = (clusterId: string, fileName: string): AxiosPromise<Presigned> =>
   client.get(`/clusters/${clusterId}/downloads/files-presigned?file_name=${fileName}`);
 
-const applyInterceptors = async (url: string) => {
-  let cfg: Config = { url, headers: {} };
-  const interceptors: ((cfg: Config) => Promise<Config>)[] = [];
-  // eslint-disable-next-line
-  // @ts-ignore
-  client.interceptors.request.forEach((i) => interceptors.push(i.fulfilled));
-
-  interceptors.reverse();
-
-  for (const i of interceptors) {
-    cfg = await i(cfg);
-  }
-  return cfg;
-};
+export const getClusterFileDownload = (clusterID: Cluster['id'], fileName: string): AxiosPromise =>
+  client.get(`/clusters/${clusterID}/downloads/files?file_name=${fileName}`, {
+    responseType: 'blob',
+    headers: {
+      Accept: 'application/octet-stream',
+    },
+  });
 
 export const getClusterDownloadsImageUrl = (clusterId: string) =>
   `${API_ROOT}/clusters/${clusterId}/downloads/image`;
-
-export const downloadClusterFile = async (clusterID: string, fileName: string) => {
-  const { url, headers } = await applyInterceptors(
-    `/clusters/${clusterID}/downloads/files?file_name=${fileName}`,
-  );
-  const response = await fetch(url, headers);
-  if (!response.ok) {
-    throw new Error('Failed to fetch the requested file.');
-  }
-  const contentHeader = response.headers.get('content-disposition');
-  const filename = contentHeader?.match(/filename="(.+)"/)?.[1];
-  saveAs(await response.blob(), filename);
-};
 
 export const getClusterCredentials = (clusterID: string): AxiosPromise<Credentials> =>
   client.get(`/clusters/${clusterID}/credentials`);

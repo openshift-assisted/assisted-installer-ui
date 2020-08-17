@@ -1,7 +1,7 @@
 import React from 'react';
 import { saveAs } from 'file-saver';
 import { GridItem, Button, ButtonVariant } from '@patternfly/react-core';
-import { downloadClusterFile, getPresignedFileUrl } from '../../api/clusters';
+import { getPresignedFileUrl, getClusterFileDownload } from '../../api/clusters';
 import { Cluster, Presigned } from '../../api/types';
 import { canDownloadKubeconfig } from '../hosts/utils';
 import { AlertsContext } from '../AlertsContextProvider';
@@ -29,9 +29,14 @@ const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({ clusterId, stat
         }
       } else {
         try {
-          await downloadClusterFile(clusterId, fileName);
+          const response = await getClusterFileDownload(clusterId, fileName);
+          const contentHeader = response.headers.contentDisposition;
+          const name = contentHeader?.match(/filename="(.+)"/)?.[1];
+          saveAs(response.data, name);
         } catch (e) {
-          addAlert({ title: 'Could not download kubeconfig', message: getErrorMessage(e) });
+          handleApiError(e, async (e) => {
+            addAlert({ title: 'Could not download kubeconfig', message: getErrorMessage(e) });
+          });
         }
       }
     },
