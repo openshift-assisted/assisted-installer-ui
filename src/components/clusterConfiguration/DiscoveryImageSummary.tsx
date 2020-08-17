@@ -50,7 +50,7 @@ const DiscoveryImageSummary: React.FC<DiscoveryImageSummaryProps> = ({
             <DetailItem
               title="Discovery ISO URL"
               value={
-                <ClipboardCopy isReadOnly onCopy={(event) => clipboardCopyFunc(event, isoUrl)}>
+                <ClipboardCopy isReadOnly onCopy={(event) => clipboardCopyFunc(event, downloadUrl)}>
                   {downloadUrl}
                 </ClipboardCopy>
               }
