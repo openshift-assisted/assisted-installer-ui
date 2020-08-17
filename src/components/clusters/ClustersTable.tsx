@@ -3,6 +3,8 @@ import {
   Table,
   TableHeader,
   TableBody,
+  RowWrapper,
+  RowWrapperProps,
   IRowData,
   SortByDirection,
   ISortBy,
@@ -43,6 +45,12 @@ const columns = [
 ];
 
 const getStatusCell = (row: IRow) => row.cells?.[3] as HumanizedSortable | undefined;
+
+const ClusterRowWrapper = (props: RowWrapperProps) => {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+  // @ts-ignore
+  return <RowWrapper {...props} id={`cluster-row-${props.row?.props?.name}`} />;
+};
 
 const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) => {
   const [deleteClusterID, setDeleteClusterID] = React.useState<DeleteClusterID>();
@@ -123,6 +131,7 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
         aria-label="Clusters table"
         sortBy={sortBy}
         onSort={onSort}
+        rowWrapper={ClusterRowWrapper}
       >
         <TableHeader />
         <TableBody rowKey={rowKey} />
