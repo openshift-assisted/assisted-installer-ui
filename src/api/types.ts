@@ -82,6 +82,7 @@ export interface Cluster {
     | 'ready'
     | 'error'
     | 'preparing-for-installation'
+    | 'pending-for-input'
     | 'installing'
     | 'finalizing'
     | 'installed';
@@ -126,6 +127,10 @@ export interface Cluster {
    * Indicate if VIP DHCP allocation mode is enabled.
    */
   vipDhcpAllocation?: boolean;
+  /**
+   * Json formatted string containing the validations results for each validation id grouped by category (network, hosts-data, etc.)
+   */
+  validationsInfo?: string;
 }
 export interface ClusterCreateParams {
   /**
@@ -216,6 +221,10 @@ export interface ClusterUpdateParams {
    */
   ingressVip?: string; // ^(([0-9]{1,3}\.){3}[0-9]{1,3})?$
   /**
+   * A CIDR that all hosts belonging to the cluster should have an interfaces with IP address that belongs to this CIDR. The apiVip belongs to this CIDR.
+   */
+  machineNetworkCidr?: string; // ^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$
+  /**
    * The pull secret that obtained from the Pull Secret page on the Red Hat OpenShift Cluster Manager site.
    */
   pullSecret?: string;
@@ -258,6 +267,15 @@ export interface ClusterUpdateParams {
     hostname?: string;
   }[];
 }
+export type ClusterValidationId =
+  | 'machine-cidr-defined'
+  | 'machine-cidr-equals-to-calculated-cidr'
+  | 'api-vip-defined'
+  | 'api-vip-valid'
+  | 'ingress-vip-defined'
+  | 'ingress-vip-valid'
+  | 'all-hosts-are-ready-to-install'
+  | 'has-exactly-three-masters';
 export interface CompletionParams {
   isSuccess: boolean;
   errorInfo?: string;
@@ -355,9 +373,13 @@ export interface Error {
 }
 export interface Event {
   /**
-   * Unique identifier of the object this event relates to.
+   * Unique identifier of the cluster this event relates to.
    */
-  entityId: string; // uuid
+  clusterId: string; // uuid
+  /**
+   * Unique identifier of the host this event relates to.
+   */
+  hostId?: string; // uuid
   severity: 'info' | 'warning' | 'error' | 'critical';
   message: string;
   eventTime: string; // date-time
