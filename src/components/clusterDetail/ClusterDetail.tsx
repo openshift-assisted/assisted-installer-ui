@@ -163,7 +163,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
           <EventsModalButton
             id="cluster-events-button"
             entityKind="cluster"
-            entityId={cluster.id}
+            clusterId={cluster.id}
             title="Cluster Events"
             variant={ButtonVariant.link}
             style={{ textAlign: 'right' }}

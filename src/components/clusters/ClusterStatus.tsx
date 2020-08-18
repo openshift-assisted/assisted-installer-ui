@@ -10,6 +10,7 @@ import {
   WarningTriangleIcon,
   CheckCircleIcon,
   InProgressIcon,
+  PendingIcon,
 } from '@patternfly/react-icons';
 import { Cluster } from '../../api/types';
 import { CLUSTER_STATUS_LABELS } from '../../config/constants';
@@ -23,6 +24,8 @@ const getStatusIcon = (status: Cluster['status']): React.ReactElement => {
   switch (status) {
     case 'insufficient':
       return <WarningTriangleIcon color={warningColor.value} />;
+    case 'pending-for-input':
+      return <PendingIcon />;
     case 'ready':
       return <CheckCircleIcon color={okColor.value} />;
     case 'preparing-for-installation':
