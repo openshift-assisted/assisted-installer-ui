@@ -23,8 +23,6 @@ import { getHumanizedDateTime } from '../ui/utils';
 import { toSentence } from '../ui/table/utils';
 import { getHostProgressStageNumber, getHostProgressStages } from './utils';
 import { stringToJSON } from '../../api/utils';
-
-import './HostStatus.css';
 import HostValidationGroups from './HostValidationGroups';
 
 const getStatusIcon = (status: Host['status']): React.ReactElement => {
@@ -124,7 +122,7 @@ const HostStatus: React.FC<HostStatusProps> = ({ host }) => {
         minWidth="30rem"
         maxWidth="50rem"
       >
-        <Button variant={ButtonVariant.link} className="host-status__button" isInline>
+        <Button variant={ButtonVariant.link} isInline>
           {icon} {title}{' '}
           {['installing', 'installing-in-progress', 'error'].includes(status) && (
             <>
