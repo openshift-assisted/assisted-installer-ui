@@ -32,6 +32,7 @@ export const EVENTS_POLLING_INTERVAL = 10 * 1000;
 export const HOST_ROLES = ['worker', 'master'];
 
 export const CLUSTER_STATUS_LABELS: { [key in Cluster['status']]: string } = {
+  'pending-for-input': 'Pending input',
   insufficient: 'Draft',
   ready: 'Ready',
   'preparing-for-installation': 'Preparing for installation',

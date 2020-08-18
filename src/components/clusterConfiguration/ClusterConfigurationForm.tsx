@@ -303,7 +303,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
                 <EventsModalButton
                   id="cluster-events-button"
                   entityKind="cluster"
-                  entityId={cluster.id}
+                  clusterId={cluster.id}
                   title="Cluster Events"
                   variant={ButtonVariant.link}
                   style={{ textAlign: 'right' }}
