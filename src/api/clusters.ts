@@ -7,6 +7,8 @@ import {
   ImageCreateParams,
   Credentials,
   Presigned,
+  EventList,
+  Event,
 } from './types';
 import { client } from './axiosClient';
 
@@ -68,3 +70,9 @@ export const getClusterDownloadsImageUrl = (clusterId: string) =>
 
 export const getClusterCredentials = (clusterID: string): AxiosPromise<Credentials> =>
   client.get(`/clusters/${clusterID}/credentials`);
+
+export const getEvents = (
+  clusterID: Event['clusterId'],
+  hostID: Event['hostId'],
+): AxiosPromise<EventList> =>
+  client.get(`/clusters/${clusterID}/events${hostID ? `?host_id=${hostID}` : ''}`);
