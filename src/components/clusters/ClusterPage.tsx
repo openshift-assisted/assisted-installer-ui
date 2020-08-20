@@ -14,11 +14,11 @@ import {
 } from '../../features/clusters/currentClusterSlice';
 import { Cluster } from '../../api/types';
 import { POLLING_INTERVAL, routeBasePath } from '../../config/constants';
-import ClusterConfiguration from '../clusterConfiguration/ClusterConfiguration';
 import ClusterDetail from '../clusterDetail/ClusterDetail';
 import CancelInstallationModal from '../clusterDetail/CancelInstallationModal';
 import ResetClusterModal from '../clusterDetail/ResetClusterModal';
 import { AlertsContextProvider } from '../AlertsContextProvider';
+import ClusterWizard from '../clusterWizard/ClusterWizard';
 
 type MatchParams = {
   clusterId: string;
@@ -91,7 +91,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
         />
       );
     } else {
-      return <ClusterConfiguration cluster={cluster} />;
+      return <ClusterWizard cluster={cluster} />;
     }
   };
 

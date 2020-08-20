@@ -1,18 +1,17 @@
 import React from 'react';
-import { PageSectionVariants } from '@patternfly/react-core';
 import { Cluster, ManagedDomain } from '../../api/types';
 import { getManagedDomains } from '../../api/domains';
 import { handleApiError, getErrorMessage } from '../../api/utils';
 import LoadingState from '../ui/uiState/LoadingState';
 import ClusterConfigurationForm from './ClusterConfigurationForm';
-import PageSection from '../ui/PageSection';
 import { AlertsContext } from '../AlertsContextProvider';
+import ClusterWizardStep from '../clusterWizard/ClusterWizardStep';
 
 type ClusterConfigurationProps = {
   cluster: Cluster;
 };
 const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) => {
-  const [domains, setDomains] = React.useState<ManagedDomain[] | undefined>();
+  const [domains, setDomains] = React.useState<ManagedDomain[]>();
   const { addAlert } = React.useContext(AlertsContext);
 
   React.useEffect(() => {
@@ -34,9 +33,9 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
     return <ClusterConfigurationForm cluster={cluster} managedDomains={domains} />;
   }
   return (
-    <PageSection variant={PageSectionVariants.light} isMain>
-      <LoadingState content="Loading configuration..." />
-    </PageSection>
+    <ClusterWizardStep>
+      <LoadingState content="Loading cluster configuration..." />
+    </ClusterWizardStep>
   );
 };
 

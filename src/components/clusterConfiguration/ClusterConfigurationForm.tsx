@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import {
   Form,
-  PageSectionVariants,
   TextContent,
   Text,
   ButtonVariant,
@@ -21,7 +20,6 @@ import { global_warning_color_100 as warningColor } from '@patternfly/react-toke
 import { useDispatch } from 'react-redux';
 
 import ClusterToolbar from '../clusters/ClusterToolbar';
-import PageSection from '../ui/PageSection';
 import { InputField } from '../ui/formik';
 import { ToolbarButton, ToolbarText, ToolbarSecondaryGroup } from '../ui/Toolbar';
 import GridGap from '../ui/GridGap';
@@ -32,7 +30,7 @@ import { handleApiError, getErrorMessage } from '../../api/utils';
 import { routeBasePath } from '../../config/constants';
 import AlertsSection from '../ui/AlertsSection';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
-import BaremetalInventory from './BaremetalInventory';
+import HostsTable from '../hosts/HostsTable';
 import {
   nameValidationSchema,
   sshPublicKeyValidationSchema,
@@ -41,7 +39,6 @@ import {
   hostPrefixValidationSchema,
   vipValidationSchema,
 } from '../ui/formik/validationSchemas';
-import ClusterBreadcrumbs from '../clusters/ClusterBreadcrumbs';
 import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
 import NetworkConfiguration from './NetworkConfiguration';
 import ClusterValidationSection from './ClusterValidationSection';
@@ -49,6 +46,8 @@ import { getInitialValues, getHostSubnets } from './utils';
 import { AlertsContext } from '../AlertsContextProvider';
 import ClusterSshKeyField from './ClusterSshKeyField';
 import { captureException } from '../../sentry';
+import ClusterWizardStep from '../clusterWizard/ClusterWizardStep';
+import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
 
 const validationSchema = (initialValues: ClusterConfigurationValues, hostSubnets: HostSubnets) =>
   Yup.lazy<ClusterConfigurationValues>((values) =>
@@ -73,6 +72,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
   cluster,
   managedDomains,
 }) => {
+  const { setCurrentStepId } = React.useContext(ClusterWizardContext);
   const [isValidationSectionOpen, setIsValidationSectionOpen] = React.useState(false);
   const [isStartingInstallation, setIsStartingInstallation] = React.useState(false);
   const { addAlert } = React.useContext(AlertsContext);
@@ -179,50 +179,42 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
           }
         };
 
-        return (
+        const form = (
+          <Form>
+            <Grid hasGutter>
+              <GridItem span={12} lg={10} xl={6}>
+                <GridGap>
+                  <NetworkConfiguration
+                    cluster={cluster}
+                    hostSubnets={hostSubnets}
+                    managedDomains={managedDomains}
+                  />
+                  <TextContent>
+                    <Text component="h2">Security</Text>
+                  </TextContent>
+                  <ClusterSshKeyField
+                    isSwitchHidden={!cluster.imageInfo.sshPublicKey}
+                    name="shareDiscoverySshKey"
+                    onToggle={onClusterSshKeyToggle}
+                    onClusterSshKeyVisibilityChanged={onClusterSshKeyVisibilityChanged}
+                    onSshKeyBlur={onSshKeyBlur}
+                  />
+                </GridGap>
+              </GridItem>
+              <GridItem span={12}>
+                <GridGap>
+                  <TextContent>
+                    <Text component="h2">Bare Metal Inventory</Text>
+                  </TextContent>
+                  <HostsTable cluster={cluster} />
+                </GridGap>
+              </GridItem>
+            </Grid>
+          </Form>
+        );
+
+        const footer = (
           <>
-            <ClusterBreadcrumbs clusterName={cluster.name} />
-            <PageSection variant={PageSectionVariants.light} isMain>
-              <Form>
-                <Grid hasGutter>
-                  <GridItem span={12} lg={10} xl={6}>
-                    {/* TODO(jtomasek): remove this if we're not putting full width content here (e.g. hosts table)*/}
-                    <GridGap>
-                      <TextContent>
-                        <Text component="h1">
-                          Install OpenShift on Bare Metal with the Assisted Installer
-                        </Text>
-                      </TextContent>
-                      <InputField label="Cluster Name" name="name" isRequired />
-                    </GridGap>
-                  </GridItem>
-                  <GridItem span={12}>
-                    <GridGap>
-                      <BaremetalInventory cluster={cluster} />
-                    </GridGap>
-                  </GridItem>
-                  <GridItem span={12} lg={10} xl={6}>
-                    <GridGap>
-                      <NetworkConfiguration
-                        cluster={cluster}
-                        hostSubnets={hostSubnets}
-                        managedDomains={managedDomains}
-                      />
-                      <TextContent>
-                        <Text component="h2">Security</Text>
-                      </TextContent>
-                      <ClusterSshKeyField
-                        isSwitchHidden={!cluster.imageInfo.sshPublicKey}
-                        name="shareDiscoverySshKey"
-                        onToggle={onClusterSshKeyToggle}
-                        onClusterSshKeyVisibilityChanged={onClusterSshKeyVisibilityChanged}
-                        onSshKeyBlur={onSshKeyBlur}
-                      />
-                    </GridGap>
-                  </GridItem>
-                </Grid>
-              </Form>
-            </PageSection>
             <AlertsSection />
             <ClusterToolbar
               validationSection={
@@ -261,6 +253,12 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
                 onClick={() => resetForm()}
               >
                 Discard Changes
+              </ToolbarButton>
+              <ToolbarButton
+                variant={ButtonVariant.secondary}
+                onClick={() => setCurrentStepId('baremetal-discovery')}
+              >
+                Back
               </ToolbarButton>
               <ToolbarButton
                 variant={ButtonVariant.link}
@@ -313,6 +311,8 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
             </ClusterToolbar>
           </>
         );
+
+        return <ClusterWizardStep footer={footer}>{form}</ClusterWizardStep>;
       }}
     </Formik>
   );

@@ -1,4 +1,20 @@
+import React from 'react';
 import { saveAs } from 'file-saver';
+import {
+  global_danger_color_100 as dangerColor,
+  global_warning_color_100 as warningColor,
+  global_success_color_100 as okColor,
+} from '@patternfly/react-tokens';
+import {
+  ExclamationCircleIcon,
+  CheckCircleIcon,
+  WarningTriangleIcon,
+  InProgressIcon,
+  DisconnectedIcon,
+  ConnectedIcon,
+  BanIcon,
+  PendingIcon,
+} from '@patternfly/react-icons';
 import { Host, Cluster, Presigned } from '../../api/types';
 import { HOST_ROLES, TIME_ZERO } from '../../config';
 import {
@@ -95,5 +111,35 @@ export const downloadHostInstallationLogs = async (
     }
   } else {
     saveAs(getHostLogsDownloadUrl(host.id, host.clusterId));
+  }
+};
+
+export const getHostStatusIcon = (status: Host['status']): React.ReactElement => {
+  switch (status) {
+    case 'discovering':
+      return <ConnectedIcon />;
+    case 'pending-for-input':
+      return <PendingIcon />;
+    case 'disconnected':
+      return <DisconnectedIcon />;
+    case 'cancelled':
+    case 'disabled':
+      return <BanIcon />;
+    case 'error':
+      return <ExclamationCircleIcon color={dangerColor.value} />;
+    case 'resetting-pending-user-action':
+      return <WarningTriangleIcon color={warningColor.value} />;
+    case 'insufficient':
+    case 'installing-pending-user-action':
+      return <WarningTriangleIcon color={warningColor.value} />;
+    case 'known':
+    case 'installed':
+      return <CheckCircleIcon color={okColor.value} />;
+    case 'preparing-for-installation':
+    case 'installing':
+    case 'installing-in-progress':
+    case 'resetting':
+    case 'added-to-existing-cluster':
+      return <InProgressIcon />;
   }
 };

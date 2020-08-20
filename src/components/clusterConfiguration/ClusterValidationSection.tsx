@@ -23,15 +23,15 @@ import './ClusterValidationSection.css';
 
 type ClusterValidationSectionProps = {
   cluster: Cluster;
-  dirty: boolean;
-  formErrors: FormikErrors<ClusterConfigurationValues>;
+  dirty?: boolean;
+  formErrors?: FormikErrors<ClusterConfigurationValues>;
   onClose: () => void;
 };
 
 const ClusterValidationSection: React.FC<ClusterValidationSectionProps> = ({
   cluster,
-  dirty,
-  formErrors,
+  dirty = false,
+  formErrors = {},
   onClose,
 }) => {
   const prevReadyRef = React.useRef<boolean>();

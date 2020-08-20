@@ -1,59 +1,14 @@
 import React from 'react';
 import { Popover, Button, ButtonVariant, Text, TextContent } from '@patternfly/react-core';
-import {
-  global_danger_color_100 as dangerColor,
-  global_warning_color_100 as warningColor,
-  global_success_color_100 as okColor,
-} from '@patternfly/react-tokens';
-import {
-  ExclamationCircleIcon,
-  CheckCircleIcon,
-  WarningTriangleIcon,
-  InProgressIcon,
-  DisconnectedIcon,
-  ConnectedIcon,
-  BanIcon,
-  PendingIcon,
-} from '@patternfly/react-icons';
 import { Host } from '../../api/types';
 import { ValidationsInfo } from '../../types/hosts';
 import HostProgress from './HostProgress';
 import { HOST_STATUS_LABELS, HOST_STATUS_DETAILS } from '../../config/constants';
 import { getHumanizedDateTime } from '../ui/utils';
 import { toSentence } from '../ui/table/utils';
-import { getHostProgressStageNumber, getHostProgressStages } from './utils';
+import { getHostProgressStageNumber, getHostProgressStages, getHostStatusIcon } from './utils';
 import { stringToJSON } from '../../api/utils';
 import HostValidationGroups from './HostValidationGroups';
-
-const getStatusIcon = (status: Host['status']): React.ReactElement => {
-  switch (status) {
-    case 'discovering':
-      return <ConnectedIcon />;
-    case 'pending-for-input':
-      return <PendingIcon />;
-    case 'disconnected':
-      return <DisconnectedIcon />;
-    case 'cancelled':
-    case 'disabled':
-      return <BanIcon />;
-    case 'error':
-      return <ExclamationCircleIcon color={dangerColor.value} />;
-    case 'resetting-pending-user-action':
-      return <WarningTriangleIcon color={warningColor.value} />;
-    case 'insufficient':
-    case 'installing-pending-user-action':
-      return <WarningTriangleIcon color={warningColor.value} />;
-    case 'known':
-    case 'installed':
-      return <CheckCircleIcon color={okColor.value} />;
-    case 'preparing-for-installation':
-    case 'installing':
-    case 'installing-in-progress':
-    case 'resetting':
-    case 'added-to-existing-cluster':
-      return <InProgressIcon />;
-  }
-};
 
 const getPopoverContent = (host: Host) => {
   const { status, statusInfo } = host;
@@ -107,7 +62,7 @@ type HostStatusProps = {
 const HostStatus: React.FC<HostStatusProps> = ({ host }) => {
   const { status, statusUpdatedAt } = host;
   const title = HOST_STATUS_LABELS[status] || status;
-  const icon = getStatusIcon(status) || null;
+  const icon = getHostStatusIcon(status) || null;
   const hostProgressStages = getHostProgressStages(host);
 
   return (

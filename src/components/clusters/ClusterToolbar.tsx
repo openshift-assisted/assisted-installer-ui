@@ -15,7 +15,11 @@ const ClusterToolbar: React.FC<Props> = ({ children, validationSection }) => {
   }
 
   return (
-    <PageSection variant={PageSectionVariants.light} className="pf-u-box-shadow-lg-top">
+    <PageSection
+      variant={PageSectionVariants.light}
+      // className="pf-u-box-shadow-lg-top"
+      padding={{ default: 'padding' }}
+    >
       {validationSection}
       <Toolbar id="cluster-toolbar" className={toolBarClassname}>
         <ToolbarContent className="cluster-toolbar__content">{children}</ToolbarContent>

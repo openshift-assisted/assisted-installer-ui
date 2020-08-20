@@ -125,6 +125,15 @@ export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
   'added-to-existing-cluster': 'This host is being added to an existing cluster.',
 };
 
+export const HOST_HARDWARE_STATUS_DETAILS = {
+  known: 'This host meets the minimum hardware requirements and will be included in the cluster.',
+  insufficient:
+    'This host does not meet the minimum hardware requirements and will not be included in the cluster.',
+  disabled: HOST_STATUS_DETAILS['disabled'],
+  disconnected: HOST_STATUS_DETAILS['disconnected'],
+  discovering: HOST_STATUS_DETAILS['discovering'],
+};
+
 export const HOST_VALIDATION_GROUP_LABELS: { [key in keyof ValidationsInfo]: string } = {
   hardware: 'Hardware',
   network: 'Network',
