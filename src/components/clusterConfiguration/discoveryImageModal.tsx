@@ -42,8 +42,8 @@ const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({ closeModal, c
 
   return (
     <Modal
-      aria-label="Download discovery ISO dialog"
-      title="Download discovery ISO"
+      aria-label="Generate Discovery ISO dialog"
+      title="Generate Discovery ISO"
       isOpen={true}
       onClose={closeModal}
       variant={ModalVariant.small}
