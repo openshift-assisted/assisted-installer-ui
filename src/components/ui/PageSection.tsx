@@ -14,7 +14,7 @@ const scrollableStyle: CSSProperties = {
   zIndex: 0,
   display: 'flex',
   flexDirection: 'column',
-  padding: 'var(--pf-c-page__main-section--PaddingTop)',
+  padding: 'var(--pf-global--spacer--md)',
 };
 
 const PageSection: React.FC<PageSectionProps> = ({ isMain = false, style, children, ...rest }) => (
