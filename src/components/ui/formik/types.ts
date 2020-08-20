@@ -13,7 +13,7 @@ export interface FieldProps {
   className?: string;
   isDisabled?: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  innerRef?: React.Ref<any>;
+  ref?: React.Ref<any>;
   validate?: FieldValidator;
   min?: number;
   max?: number;
