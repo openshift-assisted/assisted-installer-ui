@@ -1,4 +1,5 @@
 import Axios, { AxiosError } from 'axios';
+import _ from 'lodash';
 
 type OnError = <T>(arg0: AxiosError<T>) => void;
 
@@ -29,15 +30,12 @@ export const handleApiError = <T>(error: AxiosError<T>, onError?: OnError) => {
 export const getErrorMessage = (error: AxiosError) =>
   error.response?.data?.reason || error.response?.data?.message || error.message;
 
-const toCamelCase = (str: string): string =>
-  str.replace(/([-_][a-z])/g, (group) => group.toUpperCase().replace('_', ''));
-
 export const stringToJSON = <T>(string: string | undefined): T | undefined => {
   if (string) {
     try {
       const camelCased = string.replace(
-        /"([\w]+)":/g,
-        (_match, offset) => `"${toCamelCase(offset)}":`,
+        /"([\w-]+)":/g,
+        (_match, offset) => `"${_.camelCase(offset)}":`,
       );
       const json = JSON.parse(camelCased);
       return json;

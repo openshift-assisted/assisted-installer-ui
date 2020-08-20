@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import { FormikErrors } from 'formik';
 import {
   AlertGroup,
@@ -14,8 +15,9 @@ import {
 import { TimesIcon } from '@patternfly/react-icons';
 import { Cluster, ManagedDomain } from '../../api/types';
 import { validateCluster } from './clusterValidations';
-import { ClusterConfigurationValues } from '../../types/clusters';
+import { ClusterConfigurationValues, ValidationsInfo } from '../../types/clusters';
 import { CLUSTER_FIELD_LABELS } from '../../config/constants';
+import { stringToJSON } from '../../api/utils';
 import './ClusterValidationSection.css';
 
 type ClusterValidationSectionProps = {
@@ -40,6 +42,18 @@ const ClusterValidationSection: React.FC<ClusterValidationSectionProps> = ({
   ]);
   const errorFields = Object.keys(formErrors);
   const ready = cluster.status === 'ready' && !errors.length && !errorFields.length && !dirty;
+
+  const { pendingValidations, failedValidations } = React.useMemo(() => {
+    const validationsInfo = stringToJSON<ValidationsInfo>(cluster.validationsInfo) || {
+      hostsData: [],
+      network: [],
+    };
+    const flattenedValues = _.values(validationsInfo).flat();
+    return {
+      pendingValidations: flattenedValues.filter((validation) => validation.status === 'pending'),
+      failedValidations: flattenedValues.filter((validation) => validation.status === 'failure'),
+    };
+  }, [cluster.validationsInfo]);
 
   // When cluster becomes ready, close this section
   React.useEffect(() => {
@@ -73,19 +87,29 @@ const ClusterValidationSection: React.FC<ClusterValidationSectionProps> = ({
               {errorFields.map((field: string) => CLUSTER_FIELD_LABELS[field]).join(', ')}.
             </Alert>
           )}
-          {(cluster.status !== 'ready' || !!errors.length) && (
+          {!!pendingValidations.length && (
+            <Alert variant={AlertVariant.info} title="Cluster is pending configuration" isInline>
+              <TextList>
+                {pendingValidations.map((validation) => (
+                  <TextListItem key={validation.id}>{validation.message}</TextListItem>
+                ))}
+              </TextList>
+            </Alert>
+          )}
+          {(!!failedValidations.length || !!errors.length) && (
             <Alert
               variant={AlertVariant.warning}
               title="Cluster is not ready to be installed yet"
               isInline
             >
-              {!!errors.length && (
-                <TextList>
-                  {errors.map((error) => (
-                    <TextListItem key={error}>{error}</TextListItem>
-                  ))}
-                </TextList>
-              )}
+              <TextList>
+                {failedValidations.map((validation) => (
+                  <TextListItem key={validation.id}>{validation.message}</TextListItem>
+                ))}
+                {errors.map((error) => (
+                  <TextListItem key={error}>{error}</TextListItem>
+                ))}
+              </TextList>
             </Alert>
           )}
         </AlertGroup>
