@@ -6,6 +6,7 @@ import { ClusterConfigurationValues } from '../../types/clusters';
 import { sshPublicKeyValidationSchema } from '../ui/formik/validationSchemas';
 import { getInitialValues } from './utils';
 import { CLUSTER_FIELD_LABELS } from '../../config/constants';
+import { captureException, SEVERITY } from '../../sentry';
 
 // TODO(jtomasek): Add validation to identify hosts which are connected to network defined by VIPs
 // const validateConnectedHosts = (cluster: Cluster) => ...;
@@ -31,12 +32,11 @@ const validateRequiredFields = (cluster: Cluster, managedDomains: ManagedDomain[
       const errorFields = Object.keys(errors).map((field: string) => CLUSTER_FIELD_LABELS[field]);
       return `Not all required cluster properties are configured yet: ${errorFields.join(', ')}.`;
     } else {
-      if (process.env.NODE_ENV !== 'production') {
-        console.warn(
-          `Warning: An unhandled error was caught during validation in 'validateRequiredFields'`,
-          err,
-        );
-      }
+      captureException(
+        `Warning: An unhandled error was caught during validation in 'validateRequiredFields'`,
+        err,
+        SEVERITY.WARN,
+      );
     }
   }
 };
