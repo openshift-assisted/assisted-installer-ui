@@ -1,6 +1,7 @@
 import React from 'react';
 import { AxiosPromise } from 'axios';
 import { ResourceUIState } from '../types';
+import { captureException } from '../sentry';
 
 type ApiCall<P, T> = (params: P) => AxiosPromise<T>;
 
@@ -56,8 +57,7 @@ const fetchData = async <P, D>(
     const { data } = await apiCall(params!); // eslint-disable-line @typescript-eslint/no-non-null-assertion
     dispatch({ type: 'SUCCESS', payload: data });
   } catch (e) {
-    console.error(e);
-    console.error('Response data:', e.response?.data);
+    captureException(e);
     dispatch({ type: 'ERROR' });
   }
 };

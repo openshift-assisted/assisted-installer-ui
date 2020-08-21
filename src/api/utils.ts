@@ -1,28 +1,30 @@
 import Axios, { AxiosError } from 'axios';
 import _ from 'lodash';
+import { captureException } from '../sentry';
 
 type OnError = <T>(arg0: AxiosError<T>) => void;
 
 export const handleApiError = <T>(error: AxiosError<T>, onError?: OnError) => {
   if (Axios.isCancel(error)) {
-    console.error('Request canceled:', error.message);
+    captureException(error, 'Request canceled');
   } else {
+    let message = `Error config: ${error.config}\n`;
     if (error.response) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
-      console.error('Response data:', error.response.data);
-      console.error('Response status:', error.response.status);
-      console.error('Response headers:', error.response.headers);
+      message += `Response data: ${error.response.data}\n`;
+      message += `Response status: ${error.response.status}\n`;
+      message += `Response headers: ${error.response.headers}`;
     } else if (error.request) {
       // The request was made but no response was received
       // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
       // http.ClientRequest in node.js
-      console.error('Request:', error.request);
+      message += `Request: ${error.request}`;
     } else {
       // Something happened in setting up the request that triggered an Error
-      console.error('Error', error.message);
+      message += `Error: ${error.message}`;
     }
-    console.error('Error config:', error.config);
+    captureException(error, message);
     if (onError) return onError(error);
   }
 };
