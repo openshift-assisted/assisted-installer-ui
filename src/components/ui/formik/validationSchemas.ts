@@ -89,9 +89,12 @@ export const vipValidationSchema = (
   values: ClusterConfigurationValues,
   initialValue?: string,
 ) =>
-  requiredOnceSet(initialValue)
-    .concat(vipRangeValidationSchema(hostSubnets, values))
-    .concat(vipUniqueValidationSchema(hostSubnets, values));
+  Yup.mixed().when('vipDhcpAllocation', {
+    is: (value) => !value,
+    then: requiredOnceSet(initialValue)
+      .concat(vipRangeValidationSchema(hostSubnets, values))
+      .concat(vipUniqueValidationSchema(hostSubnets, values)),
+  });
 
 export const ipBlockValidationSchema = Yup.string()
   .required('A value is required.')

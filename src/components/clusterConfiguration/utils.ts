@@ -45,7 +45,7 @@ export const getHostSubnets = (cluster: Cluster): HostSubnets => {
       return {
         subnet,
         hostIDs: hn.hostIds?.map((id) => hostnameMap[id] || id) || [],
-        humanized: `${subnet.first}-${subnet.last}`,
+        humanized: `${subnet.toString()} (${subnet.first}-${subnet.last})`,
       };
     }) || []
   );
@@ -68,4 +68,5 @@ export const getInitialValues = (
     !!cluster.baseDnsDomain && managedDomains.map((d) => d.domain).includes(cluster.baseDnsDomain),
   shareDiscoverySshKey:
     !!cluster.imageInfo.sshPublicKey && cluster.sshPublicKey === cluster.imageInfo.sshPublicKey,
+  vipDhcpAllocation: cluster.vipDhcpAllocation,
 });

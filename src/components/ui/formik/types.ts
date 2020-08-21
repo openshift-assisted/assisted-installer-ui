@@ -27,6 +27,11 @@ export interface SelectFieldProps extends FieldProps {
   // onBlur?: (event: React.FormEvent<HTMLSelectElement>) => void;
 }
 
+export interface SwitchFieldProps extends FieldProps {
+  onChange?: (checked: boolean, event: React.FormEvent<HTMLInputElement>) => void;
+  getHelperText?: (value: string) => string | undefined;
+}
+
 export interface InputFieldProps extends FieldProps {
   type?: TextInputTypes;
   placeholder?: string;

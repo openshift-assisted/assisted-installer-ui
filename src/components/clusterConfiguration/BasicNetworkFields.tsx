@@ -1,13 +1,14 @@
 import React from 'react';
 import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
-import { InputField, SelectField } from '../ui/formik';
+import { InputField, SelectField, SwitchField } from '../ui/formik';
 import { useFormikContext } from 'formik';
 
 type BasicNetworkFieldsProps = {
   hostSubnets: HostSubnets;
+  isAdvanced: boolean;
 };
 
-const BasicNetworkFields: React.FC<BasicNetworkFieldsProps> = ({ hostSubnets }) => {
+const BasicNetworkFields: React.FC<BasicNetworkFieldsProps> = ({ hostSubnets, isAdvanced }) => {
   const { validateField, values } = useFormikContext<ClusterConfigurationValues>();
   const { hostSubnet } = values;
 
@@ -38,20 +39,25 @@ const BasicNetworkFields: React.FC<BasicNetworkFieldsProps> = ({ hostSubnets }) 
         }}
         isRequired
       />
-      <InputField
-        label="API Virtual IP"
-        name="apiVip"
-        helperText={`Virtual IP used to reach the OpenShift cluster API. Make sure that the VIP's are unique and not used by any other device on your network${subnet}.`}
-        isRequired
-        isDisabled={!hostSubnets.length}
-      />
-      <InputField
-        name="ingressVip"
-        label="Ingress Virtual IP"
-        helperText="Virtual IP used for cluster ingress traffic."
-        isRequired
-        isDisabled={!hostSubnets.length}
-      />
+      {isAdvanced && <SwitchField label="Use VIP DHCP allocation" name="vipDhcpAllocation" />}
+      {(!values.vipDhcpAllocation || !isAdvanced) && (
+        <>
+          <InputField
+            label="API Virtual IP"
+            name="apiVip"
+            helperText={`Virtual IP used to reach the OpenShift cluster API. Make sure that the VIP's are unique and not used by any other device on your network${subnet}.`}
+            isRequired
+            isDisabled={!hostSubnets.length}
+          />
+          <InputField
+            name="ingressVip"
+            label="Ingress Virtual IP"
+            helperText="Virtual IP used for cluster ingress traffic."
+            isRequired
+            isDisabled={!hostSubnets.length}
+          />
+        </>
+      )}
     </>
   );
 };

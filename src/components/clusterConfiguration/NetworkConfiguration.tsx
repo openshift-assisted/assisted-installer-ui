@@ -16,8 +16,8 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   hostSubnets,
   managedDomains,
 }) => {
-  const [type, setType] = React.useState<'basic' | 'advanced'>('basic');
   const { setFieldValue, initialValues, values } = useFormikContext<ClusterConfigurationValues>();
+  const [isAdvanced, setAdvanced] = React.useState<boolean>(!!values.vipDhcpAllocation);
   const { name: clusterName, baseDnsDomain, useRedHatDnsService } = values;
 
   const backToBasic = () => {
@@ -26,7 +26,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
     setFieldValue('clusterNetworkCidr', clusterNetworkCidr);
     setFieldValue('clusterNetworkHostPrefix', clusterNetworkHostPrefix);
     setFieldValue('serviceNetworkCidr', serviceNetworkCidr);
-    setType('basic');
+    setAdvanced(false);
   };
 
   const baseDnsHelperText = (
@@ -81,7 +81,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
         <Radio
           id="networkConfigurationTypeBasic"
           name="networkConfigurationType"
-          isChecked={type === 'basic'}
+          isChecked={!isAdvanced}
           value="basic"
           onChange={backToBasic}
           label="Basic"
@@ -92,15 +92,15 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
           id="networkConfigurationTypeAdvanced"
           name="networkConfigurationType"
           value="advanced"
-          isChecked={type === 'advanced'}
-          onChange={() => setType('advanced')}
+          isChecked={isAdvanced}
+          onChange={() => setAdvanced(true)}
           label="Advanced"
           description="Configure a custom networking type and CIDR ranges."
           isLabelWrapped
         />
       </FormGroup>
-      <BasicNetworkFields hostSubnets={hostSubnets} />
-      {type === 'advanced' && <AdvancedNetworkFields />}
+      <BasicNetworkFields hostSubnets={hostSubnets} isAdvanced={isAdvanced} />
+      {isAdvanced && <AdvancedNetworkFields />}
     </>
   );
 };
