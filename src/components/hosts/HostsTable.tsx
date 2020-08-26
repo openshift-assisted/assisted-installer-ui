@@ -27,11 +27,11 @@ import { HostDetail } from './HostRowDetail';
 import { forceReload, updateHost } from '../../features/clusters/currentClusterSlice';
 import { handleApiError, stringToJSON, getErrorMessage } from '../../api/utils';
 import sortable from '../ui/table/sortable';
-import RoleCell, { getHostRole } from './RoleCell';
+import RoleCell from './RoleCell';
 import { DASH } from '../constants';
 import DeleteHostModal from './DeleteHostModal';
 import { AlertsContext } from '../AlertsContextProvider';
-import { canEnable, canDisable, canDelete, canEditHost } from './utils';
+import { canEnable, canDisable, canDelete, canEditHost, getHostRole } from './utils';
 import EditHostModal from './EditHostModal';
 import Hostname, { computeHostname } from './Hostname';
 

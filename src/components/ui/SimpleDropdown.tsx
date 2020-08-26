@@ -4,25 +4,27 @@ import { CaretDownIcon } from '@patternfly/react-icons';
 
 type SimpleDropdownProps = {
   current?: string;
-  values: string[];
+  defaultValue: string;
+  items: { [key: string]: string };
   setValue: (value?: string) => void;
   isDisabled: boolean;
 };
 
 export const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
   current,
-  values,
+  defaultValue,
+  items,
   setValue,
   isDisabled,
 }) => {
   const [isOpen, setOpen] = React.useState(false);
-  const items = values.map((value) => (
-    <DropdownItem key={value} id={value}>
-      {value}
+  const dropdownItems = Object.keys(items).map((key) => (
+    <DropdownItem key={key} id={key}>
+      {items[key]}
     </DropdownItem>
   ));
 
-  const onRoleSelect = React.useCallback(
+  const onSelect = React.useCallback(
     (event?: React.SyntheticEvent<HTMLDivElement>) => {
       setValue(event?.currentTarget.id);
       setOpen(false);
@@ -30,24 +32,24 @@ export const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
     [setValue, setOpen],
   );
 
-  const roleToggle = React.useMemo(
+  const toggle = React.useMemo(
     () => (
       <DropdownToggle
         onToggle={(val) => setOpen(!isDisabled && val)}
         toggleIndicator={CaretDownIcon}
         isDisabled={isDisabled}
       >
-        {current || 'Select a role'}
+        {current || defaultValue}
       </DropdownToggle>
     ),
-    [setOpen, current, isDisabled],
+    [setOpen, current, isDisabled, defaultValue],
   );
 
   return (
     <Dropdown
-      onSelect={onRoleSelect}
-      dropdownItems={items}
-      toggle={roleToggle}
+      onSelect={onSelect}
+      dropdownItems={dropdownItems}
+      toggle={toggle}
       isOpen={isOpen}
       isPlain
     />
