@@ -19,7 +19,7 @@ export interface Cluster {
    * Name of the OpenShift cluster.
    */
   name?: string;
-  userId?: string;
+  userName?: string;
   orgId?: string;
   /**
    * Version of the OpenShift cluster.
@@ -275,7 +275,7 @@ export type ClusterValidationId =
   | 'ingress-vip-defined'
   | 'ingress-vip-valid'
   | 'all-hosts-are-ready-to-install'
-  | 'has-exactly-three-masters';
+  | 'sufficient-masters-count';
 export interface CompletionParams {
   isSuccess: boolean;
   errorInfo?: string;
@@ -468,6 +468,7 @@ export interface Host {
   checkedInAt?: string; // date-time
   discoveryAgentVersion?: string;
   requestedHostname?: string;
+  userName?: string;
 }
 export interface HostCreateParams {
   hostId: string; // uuid
@@ -494,8 +495,8 @@ export interface HostProgressInfo {
    */
   stageUpdatedAt?: string; // date-time
 }
-export type HostRole = 'master' | 'worker' | 'bootstrap';
-export type HostRoleUpdateParams = 'master' | 'worker';
+export type HostRole = 'auto-assign' | 'master' | 'worker' | 'bootstrap';
+export type HostRoleUpdateParams = 'auto-assign' | 'master' | 'worker';
 export type HostStage =
   | 'Starting installation'
   | 'Waiting for control plane'

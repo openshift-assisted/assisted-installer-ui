@@ -1,4 +1,5 @@
 import { Host, Cluster } from '../../api/types';
+import { HOST_ROLES } from '../../config';
 
 export const canEnable = (clusterStatus: Cluster['status'], status: Host['status']) =>
   ['pending-for-input', 'insufficient', 'ready'].includes(clusterStatus) &&
@@ -56,3 +57,6 @@ export const canHostnameBeChanged = (hostStatus: Host['status']) =>
   ['discovering', 'known', 'disconnected', 'insufficient', 'pending-for-input'].includes(
     hostStatus,
   );
+
+export const getHostRole = (host: Host): string =>
+  `${HOST_ROLES[host.role || 0]}${host.bootstrap ? ' (bootstrap)' : ''}`;
