@@ -13,10 +13,7 @@ import {
   Alert,
   AlertActionCloseButton,
   TextVariants,
-  Flex,
-  FlexItem,
 } from '@patternfly/react-core';
-import { ConnectedIcon, HddIcon, IconSize } from '@patternfly/react-icons';
 import Axios, { CancelTokenSource } from 'axios';
 import { UploadField } from '../ui/formik';
 import { Formik, FormikHelpers } from 'formik';
@@ -32,34 +29,6 @@ import {
 import { updateCluster, forceReload } from '../../features/clusters/currentClusterSlice';
 import { DiscoveryImageFormValues } from './types';
 import ProxyFields from './ProxyFields';
-
-import './discoveryImageModal.css';
-
-type BootOrderProps = {
-  order: number;
-  Icon: typeof HddIcon;
-  title: string;
-  description: string;
-};
-
-const BootOrder: React.FC<BootOrderProps> = ({ order, Icon, title, description }) => (
-  <Flex alignItems={{ default: 'alignItemsCenter' }} spaceItems={{ default: 'spaceItemsMd' }}>
-    <FlexItem>
-      <Text className="boot-order__order" component={TextVariants.small}>
-        #{order}
-      </Text>
-    </FlexItem>
-    <FlexItem>
-      <Icon size={IconSize.xl} />
-    </FlexItem>
-    <FlexItem>
-      <Text className="boot-order__title" component={TextVariants.h6}>
-        {title}
-      </Text>
-      <Text component={TextVariants.small}>{description}</Text>
-    </FlexItem>
-  </Flex>
-);
 
 const validationSchema = Yup.lazy<DiscoveryImageFormValues>((values) =>
   Yup.object<DiscoveryImageFormValues>().shape({
@@ -184,32 +153,17 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
                   </Alert>
                 )}
                 <TextContent>
-                  <Text component="p">
-                    Each host will need a valid IP address assigned by DHCP server with DNS records
-                    that fully resolve.
+                  <Text component={TextVariants.p}>
+                    Hosts must be connected to the internet to form a cluster using this installer.
+                    Each host will need a valid IP address assigned by a DHCP server with DNS
+                    records that fully resolve.
                   </Text>
-                  <Text className="boot-order__title" component={TextVariants.h3}>
-                    Boot Order Sequence
+                  <Text component={TextVariants.p}>
+                    The Discovery ISO should only be booted once per host. Either adjust the boot
+                    order in each host's BIOS to make it secondary after the first alphabetical
+                    disk, or select the ISO once manually. All other disks in the host will be wiped
+                    during the installation.
                   </Text>
-                  <Text component={TextVariants.small}>
-                    Please configure each host's BIOS to boot in this sequence:
-                  </Text>
-                </TextContent>
-                <TextContent>
-                  <Flex direction={{ default: 'column' }} spaceItems={{ default: 'spaceItemsMd' }}>
-                    <BootOrder
-                      order={1}
-                      Icon={HddIcon}
-                      title="Empty hard drive"
-                      description="OpenShift will be installed on this drive. Any data will be erased."
-                    />
-                    <BootOrder
-                      order={2}
-                      Icon={ConnectedIcon}
-                      title="Discovery ISO"
-                      description="Boot only once. Hardware must be connected to internet."
-                    />
-                  </Flex>
                 </TextContent>
                 <UploadField
                   label="SSH public key"
