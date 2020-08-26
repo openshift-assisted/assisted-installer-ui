@@ -1,5 +1,4 @@
 import React from 'react';
-import { AnyAction } from 'redux';
 import alertsReducer, {
   AlertProps,
   addAlert as addAlertAction,

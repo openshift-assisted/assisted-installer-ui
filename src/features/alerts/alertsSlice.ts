@@ -27,7 +27,7 @@ export const alertsSlice = createSlice({
     ],
     removeAlert: (state, action: PayloadAction<string>) =>
       state.filter((alert) => alert.key !== action.payload),
-    clearAlerts: (state, action: PayloadAction) => initialState,
+    clearAlerts: () => initialState,
   },
 });
 
