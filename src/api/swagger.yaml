@@ -11,6 +11,7 @@ tags:
 
 schemes:
   - http
+  - https
 consumes:
   - application/json
 produces:
@@ -1224,6 +1225,8 @@ paths:
     post:
       tags:
         - installer
+      security:
+        - agentAuth: []
       summary: Agent API to upload logs.
       operationId: UploadHostLogs
       consumes:
@@ -1252,6 +1255,56 @@ paths:
         204:
           description: Success.
         404:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        500:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
+    get:
+      tags:
+        - installer
+      summary: Download host logs
+      security:
+        - userAuth: []
+      operationId: DownloadHostLogs
+      produces:
+        - application/octet-stream
+      parameters:
+        - in: path
+          name: cluster_id
+          type: string
+          format: uuid
+          required: true
+        - in: path
+          name: host_id
+          type: string
+          format: uuid
+          required: true
+      responses:
+        200:
+          description: Success.
+          schema:
+            type: file
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/error'
+        404:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        405:
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        409:
           description: Error.
           schema:
             $ref: '#/definitions/error'
@@ -1582,6 +1635,8 @@ definitions:
         type: string
       requested_hostname:
         type: string
+      user_name:
+        type: string
 
   steps:
     type: object
@@ -1896,7 +1951,7 @@ definitions:
       name:
         type: string
         description: Name of the OpenShift cluster.
-      user_id:
+      user_name:
         type: string
       org_id:
         type: string
@@ -2400,12 +2455,14 @@ definitions:
   host-role-update-params:
     type: string
     enum:
+      - 'auto-assign'
       - 'master'
       - 'worker'
 
   host-role:
     type: string
     enum:
+      - 'auto-assign'
       - 'master'
       - 'worker'
       - 'bootstrap'
@@ -2478,4 +2535,4 @@ definitions:
       - 'ingress-vip-defined'
       - 'ingress-vip-valid'
       - 'all-hosts-are-ready-to-install'
-      - 'has-exactly-three-masters'
+      - 'sufficient-masters-count'

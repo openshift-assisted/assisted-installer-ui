@@ -46,7 +46,7 @@ import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
 import NetworkConfiguration from './NetworkConfiguration';
 import ClusterValidationSection from './ClusterValidationSection';
 import { validateCluster } from './clusterValidations';
-import { getInitialValues, getHostSubnets, findMatchingSubnet } from './utils';
+import { getInitialValues, getHostSubnets } from './utils';
 import { AlertsContext } from '../AlertsContextProvider';
 import ClusterSshKeyField from './ClusterSshKeyField';
 
@@ -160,13 +160,6 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
         values,
         errors,
       }: FormikProps<ClusterConfigurationValues>) => {
-        if (hostSubnets.length && !hostSubnets.find((hn) => hn.humanized === values.hostSubnet)) {
-          setFieldValue(
-            'hostSubnet',
-            findMatchingSubnet(cluster.ingressVip, cluster.apiVip, hostSubnets),
-          );
-        }
-
         const onClusterSshKeyToggle = (isChecked: boolean) =>
           setFieldValue('shareDiscoverySshKey', isChecked);
         const onClusterSshKeyVisibilityChanged = () => {

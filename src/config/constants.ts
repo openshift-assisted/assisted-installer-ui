@@ -1,4 +1,4 @@
-import { ClusterCreateParams, Cluster, Host } from '../api/types';
+import { ClusterCreateParams, Cluster, Host, HostRoleUpdateParams } from '../api/types';
 import { ValidationsInfo, Validation } from '../types/hosts';
 
 export let routeBasePath = '';
@@ -29,7 +29,11 @@ export const getProductBrandingCode = () => 'redhat';
 export const POLLING_INTERVAL = 10 * 1000;
 export const EVENTS_POLLING_INTERVAL = 10 * 1000;
 
-export const HOST_ROLES = ['worker', 'master'];
+export const HOST_ROLES: { [key in HostRoleUpdateParams]: string } = {
+  'auto-assign': 'Automatic',
+  master: 'Master',
+  worker: 'Worker',
+};
 
 export const CLUSTER_STATUS_LABELS: { [key in Cluster['status']]: string } = {
   'pending-for-input': 'Pending input',
