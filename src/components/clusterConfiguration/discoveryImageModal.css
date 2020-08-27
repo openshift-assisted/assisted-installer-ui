@@ -1,9 +1,0 @@
-.boot-order__order {
-  width: 1.4rem;
-  font-size: var(--pf-c-content--h3--FontSize) !important;
-}
-
-.boot-order__title {
-  margin: 0 !important;
-  line-height: 1 !important;
-}
