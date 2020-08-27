@@ -114,6 +114,15 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
         params.sshPublicKey = cluster.imageInfo.sshPublicKey;
       }
 
+      if (values.vipDhcpAllocation) {
+        delete params.apiVip;
+        delete params.ingressVip;
+        const cidr = hostSubnets
+          .find((hn) => hn.humanized === values.hostSubnet)
+          ?.subnet.toString();
+        params.machineNetworkCidr = cidr;
+      }
+
       const { data } = await patchCluster(cluster.id, params);
       formikActions.resetForm({
         values: getInitialValues(data, managedDomains),
