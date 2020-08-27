@@ -7,13 +7,14 @@ import { HOST_ROLES } from '../../config/constants';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import { handleApiError, getErrorMessage } from '../../api/utils';
 import { AlertsContext } from '../AlertsContextProvider';
+import { getHostRole } from './utils';
 
 type RoleDropdownProps = {
   host: Host;
 };
 
 export const RoleDropdown: React.FC<RoleDropdownProps> = ({ host }) => {
-  const { role, id, clusterId } = host;
+  const { id, clusterId } = host;
   const [isDisabled, setDisabled] = React.useState(false);
   const dispatch = useDispatch();
   const { addAlert } = React.useContext(AlertsContext);
@@ -35,8 +36,9 @@ export const RoleDropdown: React.FC<RoleDropdownProps> = ({ host }) => {
 
   return (
     <SimpleDropdown
-      current={role as string}
-      values={HOST_ROLES}
+      defaultValue={HOST_ROLES[0]}
+      current={getHostRole(host)}
+      items={HOST_ROLES}
       setValue={setRole}
       isDisabled={isDisabled}
     />

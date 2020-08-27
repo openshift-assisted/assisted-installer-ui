@@ -3,7 +3,7 @@ import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
 import { Cluster, Inventory, ManagedDomain } from '../../api/types';
 import { stringToJSON } from '../../api/utils';
 
-export const findMatchingSubnet = (
+const findMatchingSubnet = (
   ingressVip: string | undefined,
   apiVip: string | undefined,
   hostSubnets: HostSubnets,
@@ -13,16 +13,17 @@ export const findMatchingSubnet = (
     if (!ingressVip && !apiVip) {
       matchingSubnet = hostSubnets[0];
     } else {
-      matchingSubnet = hostSubnets.find((hn) => {
-        let found = true;
-        if (ingressVip) {
-          found = found && hn.subnet.contains(ingressVip);
-        }
-        if (apiVip) {
-          found = found && hn.subnet.contains(apiVip);
-        }
-        return found;
-      });
+      matchingSubnet =
+        hostSubnets.find((hn) => {
+          let found = true;
+          if (ingressVip) {
+            found = found && hn.subnet.contains(ingressVip);
+          }
+          if (apiVip) {
+            found = found && hn.subnet.contains(apiVip);
+          }
+          return found;
+        }) || hostSubnets[0];
     }
   }
   return matchingSubnet ? matchingSubnet.humanized : 'No subnets available';

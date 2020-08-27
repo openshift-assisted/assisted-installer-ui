@@ -1,10 +1,7 @@
 import React from 'react';
 import { RoleDropdown } from './RoleDropdown';
 import { Host, Cluster } from '../../api/types';
-import { canEditRole } from './utils';
-
-export const getHostRole = (host: Host): string =>
-  `${host.role}${host.bootstrap ? ' (bootstrap)' : ''}`;
+import { canEditRole, getHostRole } from './utils';
 
 type RoleCellProps = {
   host: Host;

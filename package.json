@@ -18,7 +18,7 @@
     "sync-to-facet": "FACET_ROOT=../facet ./scripts/sync-dist.sh",
     "prepare": "install-peers",
     "test": "run-s test:circular test:lint",
-    "test:lint": "eslint --ext .js,.jsx,.ts,.tsx --color ./src",
+    "test:lint": "eslint --ext .js,.jsx,.ts,.tsx --color --max-warnings=0 ./src",
     "test:unit": "cross-env CI=1 react-scripts test --env=jsdom",
     "test:circular": "dpdm --warning false --tree false src/index.ts | grep 'no circular dependency were found'",
     "test:watch": "react-scripts test --env=jsdom",
