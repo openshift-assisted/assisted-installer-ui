@@ -160,9 +160,9 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
                   </Text>
                   <Text component={TextVariants.p}>
                     The Discovery ISO should only be booted once per host. Either adjust the boot
-                    order in each host's BIOS to make it secondary after the first alphabetical
-                    disk, or select the ISO once manually. All other disks in the host will be wiped
-                    during the installation.
+                    order in each host's BIOS to make it secondary after the the disk that you want
+                    to use for the installation, or select to boot once from the ISO manually. The
+                    boot disk in the host will be wiped during the installation.
                   </Text>
                 </TextContent>
                 <UploadField
