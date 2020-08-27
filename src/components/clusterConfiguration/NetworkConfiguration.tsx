@@ -16,17 +16,45 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   hostSubnets,
   managedDomains,
 }) => {
-  const { setFieldValue, initialValues, values } = useFormikContext<ClusterConfigurationValues>();
+  const { setFieldValue, initialValues, values, validateField } = useFormikContext<
+    ClusterConfigurationValues
+  >();
   const [isAdvanced, setAdvanced] = React.useState<boolean>(!!values.vipDhcpAllocation);
   const { name: clusterName, baseDnsDomain, useRedHatDnsService } = values;
 
-  const backToBasic = () => {
+  const toBasic = () => {
     // Reset the advanced networking values
-    const { clusterNetworkCidr, clusterNetworkHostPrefix, serviceNetworkCidr } = initialValues;
+    const {
+      clusterNetworkCidr,
+      clusterNetworkHostPrefix,
+      serviceNetworkCidr,
+      vipDhcpAllocation,
+      apiVip,
+      ingressVip,
+    } = initialValues;
     setFieldValue('clusterNetworkCidr', clusterNetworkCidr);
     setFieldValue('clusterNetworkHostPrefix', clusterNetworkHostPrefix);
     setFieldValue('serviceNetworkCidr', serviceNetworkCidr);
+    setFieldValue('vipDhcpAllocation', false);
+    setFieldValue('apiVip', vipDhcpAllocation ? '' : apiVip);
+    setFieldValue('ingressVip', vipDhcpAllocation ? '' : ingressVip);
+    setTimeout(() => {
+      validateField('ingressVip');
+      validateField('apiVip');
+    }, 0);
     setAdvanced(false);
+  };
+
+  const toAdvanced = () => {
+    const { vipDhcpAllocation, apiVip, ingressVip } = initialValues;
+    setFieldValue('vipDhcpAllocation', vipDhcpAllocation);
+    vipDhcpAllocation && setFieldValue('apiVip', apiVip);
+    vipDhcpAllocation && setFieldValue('ingressVip', ingressVip);
+    setTimeout(() => {
+      validateField('ingressVip');
+      validateField('apiVip');
+    }, 0);
+    setAdvanced(true);
   };
 
   const baseDnsHelperText = (
@@ -83,7 +111,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
           name="networkConfigurationType"
           isChecked={!isAdvanced}
           value="basic"
-          onChange={backToBasic}
+          onChange={toBasic}
           label="Basic"
           description="Use default networking options."
           isLabelWrapped
@@ -93,7 +121,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
           name="networkConfigurationType"
           value="advanced"
           isChecked={isAdvanced}
-          onChange={() => setAdvanced(true)}
+          onChange={toAdvanced}
           label="Advanced"
           description="Configure a custom networking type and CIDR ranges."
           isLabelWrapped
