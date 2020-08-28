@@ -84,6 +84,7 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
                 variant={ButtonVariant.primary}
                 onClick={() => history.push(`${routeBasePath}/clusters/~new`)}
                 id="empty-state-new-cluster-button"
+                data-ouia-id="button-create-new-cluster"
               >
                 Create New Cluster
               </Button>
@@ -108,6 +109,7 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
               variant={ButtonVariant.primary}
               onClick={() => history.push(`${routeBasePath}/clusters/~new`)}
               id="button-create-new-cluster"
+              data-ouia-id="button-create-new-cluster"
             >
               Create New Cluster
             </ToolbarButton>
