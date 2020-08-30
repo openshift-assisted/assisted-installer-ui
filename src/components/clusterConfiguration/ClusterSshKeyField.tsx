@@ -17,8 +17,8 @@ interface ClusterSshKeyFieldProps extends FieldProps {
 
 const sshPublicKeyHelperText = (
   <>
-    Provide a SSH public key to debug OpenShift nodes after installation. To generate a new key, use
-    the <em>ssh-keygen -o</em> command and paste the value of <em>~/.ssh/id_rsa.pub</em> here.
+    Provide an SSH public key to debug OpenShift nodes after installation. To generate a new key,
+    use the <em>ssh-keygen -o</em> command and paste the value of <em>~/.ssh/id_rsa.pub</em> here.
   </>
 );
 
