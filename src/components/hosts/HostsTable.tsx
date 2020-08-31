@@ -306,7 +306,7 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster, skipDisabled = false }
 
       return actions;
     },
-    [onHostEnable, onHostDisable, onViewHostEvents, onEditHost],
+    [onHostEnable, onHostDisable, onViewHostEvents, onEditHost, onDownloadHostLogs],
   );
 
   const onSort: OnSort = React.useCallback(
