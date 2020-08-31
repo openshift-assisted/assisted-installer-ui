@@ -18,6 +18,9 @@ const InputField: React.FC<InputFieldProps> = ({
   const fieldId = getFieldId(props.name, 'input', idPostfix);
   const isValid = !(touched && error);
   const errorMessage = !isValid ? error : '';
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { innerRef, ...passedProps } = props;
+
   return (
     <FormGroup
       fieldId={fieldId}
@@ -35,7 +38,7 @@ const InputField: React.FC<InputFieldProps> = ({
     >
       <TextInput
         {...field}
-        {...props}
+        {...passedProps}
         id={fieldId}
         validated={isValid ? 'default' : 'error'}
         isRequired={isRequired}
