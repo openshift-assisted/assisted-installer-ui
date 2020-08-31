@@ -10,7 +10,7 @@ import {
   EventList,
   Event,
 } from './types';
-import { client } from './axiosClient';
+import { client, BASE_PATH } from './axiosClient';
 
 export const getClusters = (): AxiosPromise<Cluster[]> => client.get('/clusters');
 
@@ -52,7 +52,7 @@ export const createClusterDownloadsImage = (
 ): AxiosPromise<Cluster> => client.post(`/clusters/${id}/downloads/image`, params, axiosOptions);
 
 // TODO(jtomasek): make the API_ROOT configurable so this can be used in cloud.redhat.com
-const API_ROOT = process.env.REACT_APP_API_ROOT;
+const API_ROOT = process.env.REACT_APP_API_ROOT || BASE_PATH;
 
 export const getPresignedFileUrl = (clusterId: string, fileName: string): AxiosPromise<Presigned> =>
   client.get(`/clusters/${clusterId}/downloads/files-presigned?file_name=${fileName}`);
@@ -70,6 +70,10 @@ export const getClusterDownloadsImageUrl = (clusterId: string) =>
 
 export const getClusterCredentials = (clusterID: string): AxiosPromise<Credentials> =>
   client.get(`/clusters/${clusterID}/credentials`);
+
+export const getHostLogsDownloadUrl = (hostId: string, clusterId?: string) => {
+  return `${window.location.origin}${API_ROOT}/clusters/${clusterId}/hosts/${hostId}/logs`;
+};
 
 export const getEvents = (
   clusterID: Event['clusterId'],
