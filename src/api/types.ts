@@ -269,13 +269,19 @@ export interface ClusterUpdateParams {
 }
 export type ClusterValidationId =
   | 'machine-cidr-defined'
+  | 'cluster-cidr-defined'
+  | 'service-cidr-defined'
+  | 'no-cidrs-overlapping'
+  | 'network-prefix-valid'
   | 'machine-cidr-equals-to-calculated-cidr'
   | 'api-vip-defined'
   | 'api-vip-valid'
   | 'ingress-vip-defined'
   | 'ingress-vip-valid'
   | 'all-hosts-are-ready-to-install'
-  | 'sufficient-masters-count';
+  | 'sufficient-masters-count'
+  | 'dns-domain-defined'
+  | 'pull-secret-set';
 export interface CompletionParams {
   isSuccess: boolean;
   errorInfo?: string;
@@ -452,6 +458,7 @@ export interface Host {
   freeAddresses?: string;
   role?: HostRole;
   bootstrap?: boolean;
+  logsCollectedAt?: string; // datetime
   /**
    * Installer version
    */
@@ -494,6 +501,15 @@ export interface HostProgressInfo {
    * Time at which the current progress stage was last updated
    */
   stageUpdatedAt?: string; // date-time
+}
+export interface HostRequirements {
+  master?: HostRequirementsRole;
+  worker?: HostRequirementsRole;
+}
+export interface HostRequirementsRole {
+  cpuCores?: number;
+  ramGib?: number;
+  diskSizeGb?: number;
 }
 export type HostRole = 'auto-assign' | 'master' | 'worker' | 'bootstrap';
 export type HostRoleUpdateParams = 'auto-assign' | 'master' | 'worker';
@@ -541,6 +557,16 @@ export interface ImageInfo {
   generatorVersion?: string;
   createdAt?: string; // date-time
   expiresAt?: string; // date-time
+}
+export interface InfraError {
+  /**
+   * Numeric identifier of the error.
+   */
+  code: number; // int32
+  /**
+   * Human readable description of the error.
+   */
+  message: string;
 }
 export type IngressCertParams = string;
 export interface Interface {
