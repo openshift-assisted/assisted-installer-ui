@@ -320,8 +320,13 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster, skipDisabled = false }
     [setSortBy, setOpenRows],
   );
 
-  const getHostInventory = (hostId: Host['id']): Inventory =>
-    hostRows.find((rowData) => rowData.host?.id === hostId)?.inventory;
+  let eventsModalTitle = 'Host Events';
+  if (showEventsModal) {
+    const hostRow = hostRows.find((rowData) => rowData.host?.id === showEventsModal.host);
+    const hostname =
+      hostRow?.host.requestedHostname || hostRow?.inventory?.hostname || showEventsModal.host;
+    eventsModalTitle += `: ${hostname}`;
+  }
 
   return (
     <>
@@ -340,11 +345,7 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster, skipDisabled = false }
         <TableBody rowKey={rowKey} />
       </Table>
       <EventsModal
-        title={`Host Events${
-          showEventsModal
-            ? `: ${getHostInventory(showEventsModal.host)?.hostname || showEventsModal.host}`
-            : ''
-        }`}
+        title={eventsModalTitle}
         entityKind="host"
         clusterId={showEventsModal?.cluster || ''}
         hostId={showEventsModal?.host}
