@@ -43,7 +43,7 @@ const ClusterValidationSection: React.FC<ClusterValidationSectionProps> = ({
   const errorFields = Object.keys(formErrors);
   const ready = cluster.status === 'ready' && !errors.length && !errorFields.length && !dirty;
 
-  const { pendingValidations, failedValidations } = React.useMemo(() => {
+  const { failedValidations } = React.useMemo(() => {
     const validationsInfo = stringToJSON<ValidationsInfo>(cluster.validationsInfo) || {
       hostsData: [],
       network: [],
@@ -85,15 +85,6 @@ const ClusterValidationSection: React.FC<ClusterValidationSectionProps> = ({
             >
               Following fields have invalid value set:{' '}
               {errorFields.map((field: string) => CLUSTER_FIELD_LABELS[field]).join(', ')}.
-            </Alert>
-          )}
-          {!!pendingValidations.length && (
-            <Alert variant={AlertVariant.info} title="Cluster is pending configuration" isInline>
-              <TextList>
-                {pendingValidations.map((validation) => (
-                  <TextListItem key={validation.id}>{validation.message}</TextListItem>
-                ))}
-              </TextList>
             </Alert>
           )}
           {(!!failedValidations.length || !!errors.length) && (
