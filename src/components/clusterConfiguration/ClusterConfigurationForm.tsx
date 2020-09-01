@@ -115,8 +115,10 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
       }
 
       if (values.vipDhcpAllocation) {
-        delete params.apiVip;
-        delete params.ingressVip;
+        if (!initialValues.vipDhcpAllocation) {
+          delete params.apiVip;
+          delete params.ingressVip;
+        }
         const cidr = hostSubnets
           .find((hn) => hn.humanized === values.hostSubnet)
           ?.subnet.toString();
@@ -182,6 +184,22 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
             setFieldValue('sshPublicKey', values.sshPublicKey.trim());
           }
         };
+        if (
+          !values.apiVip &&
+          initialValues.apiVip !== values.apiVip &&
+          values.vipDhcpAllocation &&
+          initialValues.vipDhcpAllocation
+        ) {
+          setFieldValue('apiVip', initialValues.apiVip, true);
+        }
+        if (
+          !values.ingressVip &&
+          initialValues.ingressVip !== values.ingressVip &&
+          values.vipDhcpAllocation &&
+          initialValues.vipDhcpAllocation
+        ) {
+          setFieldValue('ingressVip', initialValues.ingressVip, true);
+        }
 
         return (
           <>
