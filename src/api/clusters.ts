@@ -72,7 +72,7 @@ export const getClusterCredentials = (clusterID: string): AxiosPromise<Credentia
   client.get(`/clusters/${clusterID}/credentials`);
 
 export const getHostLogsDownloadUrl = (hostId: string, clusterId?: string) => {
-  return `${window.location.origin}${API_ROOT}/clusters/${clusterId}/hosts/${hostId}/logs`;
+  return `${API_ROOT}/clusters/${clusterId}/hosts/${hostId}/logs`;
 };
 
 export const getEvents = (

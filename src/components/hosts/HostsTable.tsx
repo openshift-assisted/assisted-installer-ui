@@ -244,8 +244,8 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster, skipDisabled = false }
 
   const onDownloadHostLogs = React.useCallback(
     (event: React.MouseEvent, rowIndex: number, rowData: IRowData) =>
-      downloadHostInstallationLogs(rowData.host),
-    [],
+      downloadHostInstallationLogs(addAlert, rowData.host),
+    [addAlert],
   );
 
   const actionResolver = React.useCallback(
