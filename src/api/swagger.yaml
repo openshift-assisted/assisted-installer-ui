@@ -55,11 +55,11 @@ paths:
         401:
           description: Unauthorized.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         403:
           description: Forbidden.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         405:
           description: Method Not Allowed.
           schema:
@@ -82,11 +82,11 @@ paths:
         401:
           description: Unauthorized.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         403:
           description: Forbidden.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         405:
           description: Method Not Allowed.
           schema:
@@ -111,6 +111,10 @@ paths:
           type: string
           format: uuid
           required: true
+        - in: header
+          name: discovery_agent_version
+          type: string
+          required: false
       responses:
         200:
           description: Success.
@@ -119,11 +123,11 @@ paths:
         401:
           description: Unauthorized.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         403:
           description: Forbidden.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         404:
           description: Error.
           schema:
@@ -165,11 +169,11 @@ paths:
         401:
           description: Unauthorized.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         403:
           description: Forbidden.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         404:
           description: Error.
           schema:
@@ -204,11 +208,11 @@ paths:
         401:
           description: Unauthorized.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         403:
           description: Forbidden.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         404:
           description: Error.
           schema:
@@ -255,11 +259,11 @@ paths:
         401:
           description: Unauthorized.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         403:
           description: Forbidden.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         404:
           description: Error.
           schema:
@@ -304,11 +308,11 @@ paths:
         401:
           description: Unauthorized.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         403:
           description: Forbidden.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         404:
           description: Error.
           schema:
@@ -356,6 +360,10 @@ paths:
               install-config.yaml,
             ]
           required: true
+        - in: header
+          name: discovery_agent_version
+          type: string
+          required: false
       responses:
         200:
           description: Success.
@@ -364,11 +372,11 @@ paths:
         401:
           description: Unauthorized.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         403:
           description: Forbidden.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         404:
           description: Error.
           schema:
@@ -427,11 +435,11 @@ paths:
         401:
           description: Unauthorized.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         403:
           description: Forbidden.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         404:
           description: Error.
           schema:
@@ -469,11 +477,11 @@ paths:
         401:
           description: Unauthorized.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         403:
           description: Forbidden.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         404:
           description: Error.
           schema:
@@ -514,11 +522,11 @@ paths:
         401:
           description: Unauthorized.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         403:
           description: Forbidden.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         404:
           description: Error.
           schema:
@@ -555,6 +563,10 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/ingress-cert-params'
+        - in: header
+          name: discovery_agent_version
+          type: string
+          required: false
       responses:
         201:
           description: Success.
@@ -565,11 +577,11 @@ paths:
         401:
           description: Unauthorized.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         403:
           description: Forbidden.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         404:
           description: Error.
           schema:
@@ -607,11 +619,11 @@ paths:
         401:
           description: Unauthorized.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         403:
           description: Forbidden.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         404:
           description: Error.
           schema:
@@ -649,11 +661,11 @@ paths:
         401:
           description: Unauthorized.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         403:
           description: Forbidden.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         404:
           description: Error.
           schema:
@@ -691,11 +703,11 @@ paths:
         401:
           description: Unauthorized.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         403:
           description: Forbidden.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         404:
           description: Error.
           schema:
@@ -732,6 +744,10 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/completion-params'
+        - in: header
+          name: discovery_agent_version
+          type: string
+          required: false
       responses:
         202:
           description: Success.
@@ -740,11 +756,11 @@ paths:
         401:
           description: Unauthorized.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         403:
           description: Forbidden.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         404:
           description: Error.
           schema:
@@ -781,6 +797,10 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/host-create-params'
+        - in: header
+          name: discovery_agent_version
+          type: string
+          required: false
       responses:
         201:
           description: Success.
@@ -793,11 +813,11 @@ paths:
         401:
           description: Unauthorized.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         403:
           description: Forbidden.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         404:
           description: Error.
           schema:
@@ -825,6 +845,10 @@ paths:
           type: string
           format: uuid
           required: true
+        - in: header
+          name: discovery_agent_version
+          type: string
+          required: false
       responses:
         200:
           description: Success.
@@ -833,11 +857,11 @@ paths:
         401:
           description: Unauthorized.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         403:
           description: Forbidden.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         405:
           description: Method Not Allowed.
           schema:
@@ -872,11 +896,11 @@ paths:
         401:
           description: Unauthorized.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         403:
           description: Forbidden.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         404:
           description: Error.
           schema:
@@ -916,11 +940,11 @@ paths:
         401:
           description: Unauthorized.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         403:
           description: Forbidden.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         404:
           description: Error.
           schema:
@@ -943,6 +967,10 @@ paths:
       summary: Update installation progress
       operationId: UpdateHostInstallProgress
       parameters:
+        - in: header
+          name: discovery_agent_version
+          type: string
+          required: false
         - in: path
           name: cluster_id
           description: The ID of the cluster to retrieve
@@ -967,11 +995,11 @@ paths:
         401:
           description: Unauthorized.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         403:
           description: Forbidden.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         404:
           description: Error.
           schema:
@@ -1015,11 +1043,11 @@ paths:
         401:
           description: Unauthorized.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         403:
           description: Forbidden.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         404:
           description: Error.
           schema:
@@ -1058,11 +1086,11 @@ paths:
         401:
           description: Unauthorized.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         403:
           description: Forbidden.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         404:
           description: Error.
           schema:
@@ -1104,11 +1132,11 @@ paths:
         401:
           description: Unauthorized.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         403:
           description: Forbidden.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         404:
           description: Error.
           schema:
@@ -1145,6 +1173,10 @@ paths:
           type: string
           format: uuid
           required: true
+        - in: header
+          name: discovery_agent_version
+          type: string
+          required: false
       responses:
         200:
           description: Success.
@@ -1153,11 +1185,11 @@ paths:
         401:
           description: Unauthorized.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         403:
           description: Forbidden.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         404:
           description: Error.
           schema:
@@ -1179,6 +1211,10 @@ paths:
       summary: Posts the result of the operations from the host agent.
       operationId: PostStepReply
       parameters:
+        - in: header
+          name: discovery_agent_version
+          type: string
+          required: false
         - in: path
           name: cluster_id
           type: string
@@ -1203,11 +1239,11 @@ paths:
         401:
           description: Unauthorized.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         403:
           description: Forbidden.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         404:
           description: Error.
           schema:
@@ -1245,6 +1281,10 @@ paths:
         - in: formData
           name: upfile
           type: file
+          required: false
+        - in: header
+          name: discovery_agent_version
+          type: string
           required: false
           # TODO return after fix in go-swagger and moving to 0.25 or o.26
           # https://github.com/go-swagger/go-swagger/issues/2362
@@ -1291,11 +1331,11 @@ paths:
         401:
           description: Unauthorized.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         403:
           description: Forbidden.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         404:
           description: Error.
           schema:
@@ -1350,11 +1390,11 @@ paths:
         401:
           description: Unauthorized.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         403:
           description: Forbidden.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         404:
           description: Error.
           schema:
@@ -1393,11 +1433,11 @@ paths:
         401:
           description: Unauthorized.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         403:
           description: Forbidden.
           schema:
-            $ref: '#/definitions/error'
+            $ref: '#/definitions/infra_error'
         404:
           description: Error.
           schema:
@@ -1439,6 +1479,34 @@ paths:
           schema:
             $ref: '#/definitions/list-versions'
 
+  /host_requirements:
+    get:
+      tags:
+        - installer
+      summary: Get minimum host requirements
+      operationId: GetHostRequirements
+      responses:
+        200:
+          description: Success.
+          schema:
+            $ref: '#/definitions/host-requirements'
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/error'
+        405:
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        500:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
 definitions:
   list-managed-domains:
     type: array
@@ -1466,6 +1534,24 @@ definitions:
     type: object
     additionalProperties:
       type: string
+
+  host-requirements:
+    type: object
+    properties:
+      master:
+        $ref: '#/definitions/host-requirements-role'
+      worker:
+        $ref: '#/definitions/host-requirements-role'
+
+  host-requirements-role:
+    type: object
+    properties:
+      cpu_cores:
+        type: integer
+      ram_gib:
+        type: integer
+      disk_size_gb:
+        type: integer
 
   event-list:
     type: array
@@ -1612,6 +1698,10 @@ definitions:
         $ref: '#/definitions/host-role'
       bootstrap:
         type: boolean
+      logs_collected_at:
+        type: string
+        format: datetime
+        x-go-custom-tag: gorm:"type:timestamp with time zone"
       installer_version:
         type: string
         description: Installer version
@@ -2293,6 +2383,22 @@ definitions:
         type: string
         description: Human readable description of the error.
 
+  infra_error:
+    type: object
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: integer
+        format: int32
+        description: Numeric identifier of the error.
+        minimum: 401
+        maximum: 403
+      message:
+        type: string
+        description: Human readable description of the error.
+
   interface:
     type: object
     properties:
@@ -2529,6 +2635,10 @@ definitions:
     type: string
     enum:
       - 'machine-cidr-defined'
+      - 'cluster-cidr-defined'
+      - 'service-cidr-defined'
+      - 'no-cidrs-overlapping'
+      - 'network-prefix-valid'
       - 'machine-cidr-equals-to-calculated-cidr'
       - 'api-vip-defined'
       - 'api-vip-valid'
@@ -2536,3 +2646,5 @@ definitions:
       - 'ingress-vip-valid'
       - 'all-hosts-are-ready-to-install'
       - 'sufficient-masters-count'
+      - 'dns-domain-defined'
+      - 'pull-secret-set'
