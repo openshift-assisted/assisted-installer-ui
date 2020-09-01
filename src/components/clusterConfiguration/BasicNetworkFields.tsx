@@ -14,6 +14,16 @@ const BasicNetworkFields: React.FC<BasicNetworkFieldsProps> = ({ hostSubnets, is
 
   const subnet = hostSubnet ? ` (${hostSubnet})` : '';
 
+  const areVipDisabled = !hostSubnets.length;
+
+  let apiVipHelperText = `Virtual IP used to reach the OpenShift cluster API. Make sure that the VIP's are unique and not used by any other device on your network${subnet}.`;
+  let ingressVipHelperText = 'Virtual IP used for cluster ingress traffic.';
+  if (areVipDisabled) {
+    const suffix = ' This field will become available once at least one host gets discovered.';
+    apiVipHelperText += suffix;
+    ingressVipHelperText += suffix;
+  }
+
   return (
     <>
       <SelectField
@@ -25,7 +35,7 @@ const BasicNetworkFields: React.FC<BasicNetworkFieldsProps> = ({ hostSubnets, is
                 label: hn.humanized,
                 value: hn.humanized,
               }))
-            : [{ label: 'No subnets available', value: 'nosubnets' }]
+            : [{ label: 'No subnets currently available', value: 'nosubnets' }]
         }
         getHelperText={(value) => {
           const matchingSubnet = hostSubnets.find((hn) => hn.humanized === value);
@@ -45,16 +55,16 @@ const BasicNetworkFields: React.FC<BasicNetworkFieldsProps> = ({ hostSubnets, is
           <InputField
             label="API Virtual IP"
             name="apiVip"
-            helperText={`Virtual IP used to reach the OpenShift cluster API. Make sure that the VIP's are unique and not used by any other device on your network${subnet}.`}
+            helperText={apiVipHelperText}
             isRequired
-            isDisabled={!hostSubnets.length}
+            isDisabled={areVipDisabled}
           />
           <InputField
             name="ingressVip"
             label="Ingress Virtual IP"
-            helperText="Virtual IP used for cluster ingress traffic."
+            helperText={ingressVipHelperText}
             isRequired
-            isDisabled={!hostSubnets.length}
+            isDisabled={areVipDisabled}
           />
         </>
       )}
