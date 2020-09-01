@@ -9,6 +9,7 @@ import {
 } from '@patternfly/react-core';
 import { Cluster } from '../../api/types';
 import { toSentence } from '../ui/table/utils';
+import { getBugzillaLink } from '../../config';
 
 type ClusterInstallationErrorProps = {
   cluster: Cluster;
@@ -23,9 +24,26 @@ const ClusterInstallationError: React.FC<ClusterInstallationErrorProps> = ({
       variant={AlertVariant.danger}
       title={`Cluster installation failed`}
       actionLinks={
-        <AlertActionLink onClick={() => setResetClusterModalOpen(true)}>
-          Reset Cluster
-        </AlertActionLink>
+        <>
+          <AlertActionLink onClick={() => setResetClusterModalOpen(true)}>
+            Reset Cluster
+          </AlertActionLink>
+          {/* TODO(mlibra): Download cluster installation logs
+          <AlertActionLink
+            onClick={() => {
+            }}
+          >
+            Download Installation Logs
+          </AlertActionLink>
+          */}
+          <AlertActionLink
+            onClick={() => {
+              window.open(getBugzillaLink(cluster.openshiftVersion), '_blank');
+            }}
+          >
+            Create A New Bugzilla
+          </AlertActionLink>
+        </>
       }
       isInline
     >

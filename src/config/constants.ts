@@ -12,16 +12,21 @@ type OpenshiftVersionOptionType = {
 };
 
 export const OPENSHIFT_VERSION_OPTIONS: OpenshiftVersionOptionType[] = [
-  // { label: 'OpenShift 4.4', value: '4.4' },
   { label: 'OpenShift 4.5', value: '4.5' },
   // { label: 'OpenShift 4.6', value: '4.6' },
 ];
+export const DEFAULT_OPENSHIFT_VERSION: OpenshiftVersionOptionType['value'] = '4.5';
 
 export const CLUSTER_MANAGER_SITE_LINK =
   'https://cloud.redhat.com/openshift/install/metal/user-provisioned';
 
 export const FEEDBACK_FORM_LINK =
   'https://docs.google.com/forms/d/e/1FAIpQLSfg9M8wRW4m_HkWeAl6KpB5dTcMu8iI3iJ29GlLfZpF2hnjng/viewform';
+
+export const getBugzillaLink = (
+  version: OpenshiftVersionOptionType['value'] = DEFAULT_OPENSHIFT_VERSION,
+) =>
+  `https://bugzilla.redhat.com/enter_bug.cgi?product=OpenShift%20Container%20Platform&Component=OpenShift%20Container%20Platform&component=assisted-installer&version=${version}`;
 
 // TODO(mlibra): Retrieve branding dynamically, if needed, i.e. via injecting to the "window" object
 export const getProductBrandingCode = () => 'redhat';
