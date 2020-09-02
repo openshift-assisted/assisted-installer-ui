@@ -15,7 +15,8 @@ export const OPENSHIFT_VERSION_OPTIONS: OpenshiftVersionOptionType[] = [
   { label: 'OpenShift 4.5', value: '4.5' },
   // { label: 'OpenShift 4.6', value: '4.6' },
 ];
-export const DEFAULT_OPENSHIFT_VERSION: OpenshiftVersionOptionType['value'] = '4.5';
+export const DEFAULT_OPENSHIFT_VERSION: OpenshiftVersionOptionType['value'] =
+  OPENSHIFT_VERSION_OPTIONS[0].value;
 
 export const CLUSTER_MANAGER_SITE_LINK =
   'https://cloud.redhat.com/openshift/install/metal/user-provisioned';

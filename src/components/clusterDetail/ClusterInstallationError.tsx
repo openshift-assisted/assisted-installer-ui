@@ -41,7 +41,7 @@ const ClusterInstallationError: React.FC<ClusterInstallationErrorProps> = ({
               window.open(getBugzillaLink(cluster.openshiftVersion), '_blank');
             }}
           >
-            Create A New Bugzilla
+            Report a bug
           </AlertActionLink>
         </>
       }
