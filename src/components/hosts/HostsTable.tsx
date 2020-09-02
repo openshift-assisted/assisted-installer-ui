@@ -134,7 +134,7 @@ const isHostShown = (skipDisabled: boolean) => (host: Host) =>
 const HostsTable: React.FC<HostsTableProps> = ({ cluster, skipDisabled = false }) => {
   const { addAlert } = React.useContext(AlertsContext);
   const [showEventsModal, setShowEventsModal] = React.useState<
-    { cluster: Cluster['id']; host: Host['id'] } | undefined
+    { cluster: Cluster['id']; host: Host['id']; hostname: string } | undefined
   >();
   const [showEditHostModal, setShowEditHostModal] = React.useState<
     { host: Host; inventory: Inventory } | undefined
@@ -228,9 +228,10 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster, skipDisabled = false }
 
   const onViewHostEvents = React.useCallback(
     (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
-      const hostId = rowData.host.id;
-      const clusterId = rowData.host.clusterId;
-      setShowEventsModal({ cluster: clusterId, host: hostId });
+      const host = rowData.host;
+      const { id, clusterId, requestedHostname } = host;
+      const hostname = requestedHostname || rowData.inventory?.hostname || id;
+      setShowEventsModal({ cluster: clusterId, host: id, hostname });
     },
     [],
   );
@@ -320,14 +321,6 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster, skipDisabled = false }
     [setSortBy, setOpenRows],
   );
 
-  let eventsModalTitle = 'Host Events';
-  if (showEventsModal) {
-    const hostRow = hostRows.find((rowData) => rowData.host?.id === showEventsModal.host);
-    const hostname =
-      hostRow?.host.requestedHostname || hostRow?.inventory?.hostname || showEventsModal.host;
-    eventsModalTitle += `: ${hostname}`;
-  }
-
   return (
     <>
       <Table
@@ -345,7 +338,7 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster, skipDisabled = false }
         <TableBody rowKey={rowKey} />
       </Table>
       <EventsModal
-        title={eventsModalTitle}
+        title={`Host Events${showEventsModal ? `: ${showEventsModal.hostname}` : ''}`}
         entityKind="host"
         clusterId={showEventsModal?.cluster || ''}
         hostId={showEventsModal?.host}
