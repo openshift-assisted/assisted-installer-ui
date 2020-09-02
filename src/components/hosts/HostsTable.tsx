@@ -215,8 +215,10 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster, skipDisabled = false }
     async (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
       const hostId = rowData.host.id;
       try {
-        const { data } = await disableClusterHost(cluster.id, hostId);
-        dispatch(updateHost(data));
+        await disableClusterHost(cluster.id, hostId);
+        // Updated single host details will be atomically included in the overall refreshed cluster details, do not update by just received data to avoid race conditions.
+        // Cluster status can be changed, so refresh asap.
+        dispatch(forceReload());
       } catch (e) {
         handleApiError(e, () =>
           addAlert({ title: `Failed to disable host ${hostId}`, message: getErrorMessage(e) }),
