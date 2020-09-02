@@ -59,9 +59,8 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
 
   const baseDnsHelperText = (
     <>
-      The base domain of the cluster. All DNS records must be sub-domains of this base and include
-      the cluster name. This cannot be changed after cluster installation. The full cluster address
-      will be:{' '}
+      All DNS records must be subdomains of this base and include the cluster name. This cannot be
+      changed after cluster installation. The full cluster address will be: <br />
       <strong>
         {clusterName || '[Cluster Name]'}.{baseDnsDomain || '[example.com]'}
       </strong>
@@ -79,14 +78,14 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
       {!!managedDomains.length && (
         <CheckboxField
           name="useRedHatDnsService"
-          label="Use a temporary DNS domain from Red Hat"
-          helperText="A base DNS domain will be provided by Red Hat's DNS service. Because the cluster's DNS can't be changed after cluster installation, this should only be used for temporary, non-production clusters."
+          label="Use a temporary 60-day domain"
+          helperText="A base domain will be provided for temporary, non-production clusters."
           onChange={toggleRedHatDnsService}
         />
       )}
       {values.useRedHatDnsService ? (
         <SelectField
-          label="Base DNS Domain"
+          label="Base Domain"
           name="baseDnsDomain"
           helperText={baseDnsHelperText}
           options={managedDomains.map((d) => ({
@@ -97,7 +96,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
         />
       ) : (
         <InputField
-          label="Base DNS Domain"
+          label="Base Domain"
           name="baseDnsDomain"
           helperText={baseDnsHelperText}
           placeholder="example.com"
