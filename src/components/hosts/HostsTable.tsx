@@ -31,7 +31,15 @@ import RoleCell from './RoleCell';
 import { DASH } from '../constants';
 import DeleteHostModal from './DeleteHostModal';
 import { AlertsContext } from '../AlertsContextProvider';
-import { canEnable, canDisable, canDelete, canEditHost, getHostRole } from './utils';
+import {
+  canEnable,
+  canDisable,
+  canDelete,
+  canEditHost,
+  getHostRole,
+  canDownloadLogs,
+  downloadHostInstallationLogs,
+} from './utils';
 import EditHostModal from './EditHostModal';
 import Hostname, { computeHostname } from './Hostname';
 
@@ -234,6 +242,12 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster, skipDisabled = false }
     [],
   );
 
+  const onDownloadHostLogs = React.useCallback(
+    (event: React.MouseEvent, rowIndex: number, rowData: IRowData) =>
+      downloadHostInstallationLogs(addAlert, rowData.host),
+    [addAlert],
+  );
+
   const actionResolver = React.useCallback(
     (rowData: IRowData) => {
       const host: Host | undefined = rowData.host;
@@ -273,6 +287,13 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster, skipDisabled = false }
         id: `button-view-host-events-${hostname}`,
         onClick: onViewHostEvents,
       });
+      if (canDownloadLogs(host)) {
+        actions.push({
+          title: 'Download Installation Logs',
+          id: `button-download-host-installation-logs-${hostname}`,
+          onClick: onDownloadHostLogs,
+        });
+      }
       if (canDelete(clusterStatus, host.status)) {
         actions.push({
           title: 'Delete',
@@ -285,7 +306,7 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster, skipDisabled = false }
 
       return actions;
     },
-    [onHostEnable, onHostDisable, onViewHostEvents, onEditHost],
+    [onHostEnable, onHostDisable, onViewHostEvents, onEditHost, onDownloadHostLogs],
   );
 
   const onSort: OnSort = React.useCallback(

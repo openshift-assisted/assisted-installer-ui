@@ -1,5 +1,14 @@
-import { Host, Cluster } from '../../api/types';
+import { saveAs } from 'file-saver';
+import { Host, Cluster, Presigned } from '../../api/types';
 import { HOST_ROLES } from '../../config';
+import {
+  getHostLogsDownloadUrl,
+  ocmClient,
+  handleApiError,
+  getErrorMessage,
+  getPresignedFileUrl,
+} from '../../api';
+import { AlertsContextType } from '../AlertsContextProvider';
 
 export const canEnable = (clusterStatus: Cluster['status'], status: Host['status']) =>
   ['pending-for-input', 'insufficient', 'ready'].includes(clusterStatus) &&
@@ -60,3 +69,24 @@ export const canHostnameBeChanged = (hostStatus: Host['status']) =>
 
 export const getHostRole = (host: Host): string =>
   `${HOST_ROLES[host.role || 0]}${host.bootstrap ? ' (bootstrap)' : ''}`;
+
+export const canDownloadLogs = (host: Host) =>
+  !!host.logsCollectedAt && host.logsCollectedAt != '0001-01-01T00:00:00';
+
+export const downloadHostInstallationLogs = async (
+  addAlert: AlertsContextType['addAlert'],
+  host: Host,
+) => {
+  if (ocmClient) {
+    try {
+      const { data } = await getPresignedFileUrl(host.clusterId || '', `logs&host_id=${host.id}`);
+      saveAs(data.url);
+    } catch (e) {
+      handleApiError<Presigned>(e, async (e) => {
+        addAlert({ title: 'Could not download host logs.', message: getErrorMessage(e) });
+      });
+    }
+  } else {
+    saveAs(getHostLogsDownloadUrl(host.id, host.clusterId));
+  }
+};

@@ -1,6 +1,9 @@
 import axios, { AxiosInstance } from 'axios';
 import applyCaseMiddleware from 'axios-case-converter';
 
+// conforms basePath in swagger.json
+export const BASE_PATH = '/api/assisted-install/v1';
+
 const getDefaultClient = () => {
   const client = axios.create();
   client.interceptors.request.use((cfg) => ({
@@ -16,8 +19,7 @@ let ocmClient: AxiosInstance | null;
 const aiInterceptor = (client: AxiosInstance) => {
   client.interceptors.request.use((cfg) => ({
     ...cfg,
-    // conforms basePath in swagger.json
-    url: `/api/assisted-install/v1${cfg.url}`,
+    url: `${BASE_PATH}${cfg.url}`,
   }));
   return client;
 };
