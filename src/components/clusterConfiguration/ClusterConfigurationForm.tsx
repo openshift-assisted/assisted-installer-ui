@@ -45,7 +45,6 @@ import ClusterBreadcrumbs from '../clusters/ClusterBreadcrumbs';
 import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
 import NetworkConfiguration from './NetworkConfiguration';
 import ClusterValidationSection from './ClusterValidationSection';
-import { validateCluster } from './clusterValidations';
 import { getInitialValues, getHostSubnets } from './utils';
 import { AlertsContext } from '../AlertsContextProvider';
 import ClusterSshKeyField from './ClusterSshKeyField';
@@ -78,10 +77,6 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
   const { addAlert } = React.useContext(AlertsContext);
   const dispatch = useDispatch();
   const hostSubnets = React.useMemo(() => getHostSubnets(cluster), [cluster]);
-  const clusterErrors = React.useMemo(() => validateCluster(cluster, managedDomains), [
-    cluster,
-    managedDomains,
-  ]);
   const initialValues = React.useMemo(() => getInitialValues(cluster, managedDomains), [
     cluster,
     managedDomains,
@@ -248,7 +243,6 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
                 isValidationSectionOpen ? (
                   <ClusterValidationSection
                     cluster={cluster}
-                    managedDomains={managedDomains}
                     dirty={dirty}
                     formErrors={errors}
                     onClose={() => setIsValidationSectionOpen(false)}
@@ -261,11 +255,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
                 name="install"
                 onClick={handleClusterInstall}
                 isDisabled={
-                  cluster.status != 'ready' ||
-                  isStartingInstallation ||
-                  !isValid ||
-                  dirty ||
-                  !!clusterErrors.length
+                  isStartingInstallation || !isValid || dirty || cluster.status !== 'ready'
                 }
               >
                 Install Cluster
@@ -303,10 +293,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
                 </ToolbarText>
               ) : (
                 <ToolbarText component={TextVariants.small}>
-                  {!clusterErrors.length &&
-                  !Object.keys(errors).length &&
-                  !dirty &&
-                  cluster.status === 'ready' ? (
+                  {!Object.keys(errors).length && !dirty && cluster.status === 'ready' ? (
                     <>
                       <CheckCircleIcon color={successColor.value} /> The cluster is ready to be
                       installed.

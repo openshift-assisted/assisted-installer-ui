@@ -13,8 +13,7 @@ import {
   TextListItem,
 } from '@patternfly/react-core';
 import { TimesIcon } from '@patternfly/react-icons';
-import { Cluster, ManagedDomain } from '../../api/types';
-import { validateCluster } from './clusterValidations';
+import { Cluster } from '../../api/types';
 import { ClusterConfigurationValues, ValidationsInfo } from '../../types/clusters';
 import { CLUSTER_FIELD_LABELS } from '../../config/constants';
 import { stringToJSON } from '../../api/utils';
@@ -22,7 +21,6 @@ import './ClusterValidationSection.css';
 
 type ClusterValidationSectionProps = {
   cluster: Cluster;
-  managedDomains: ManagedDomain[];
   dirty: boolean;
   formErrors: FormikErrors<ClusterConfigurationValues>;
   onClose: () => void;
@@ -30,20 +28,15 @@ type ClusterValidationSectionProps = {
 
 const ClusterValidationSection: React.FC<ClusterValidationSectionProps> = ({
   cluster,
-  managedDomains,
   dirty,
   formErrors,
   onClose,
 }) => {
   const prevReadyRef = React.useRef<boolean>();
-  const errors = React.useMemo(() => validateCluster(cluster, managedDomains), [
-    cluster,
-    managedDomains,
-  ]);
   const errorFields = Object.keys(formErrors);
-  const ready = cluster.status === 'ready' && !errors.length && !errorFields.length && !dirty;
+  const ready = cluster.status === 'ready' && !errorFields.length && !dirty;
 
-  const { pendingValidations, failedValidations } = React.useMemo(() => {
+  const { failedValidations } = React.useMemo(() => {
     const validationsInfo = stringToJSON<ValidationsInfo>(cluster.validationsInfo) || {
       hostsData: [],
       network: [],
@@ -87,16 +80,7 @@ const ClusterValidationSection: React.FC<ClusterValidationSectionProps> = ({
               {errorFields.map((field: string) => CLUSTER_FIELD_LABELS[field]).join(', ')}.
             </Alert>
           )}
-          {!!pendingValidations.length && (
-            <Alert variant={AlertVariant.info} title="Cluster is pending configuration" isInline>
-              <TextList>
-                {pendingValidations.map((validation) => (
-                  <TextListItem key={validation.id}>{validation.message}</TextListItem>
-                ))}
-              </TextList>
-            </Alert>
-          )}
-          {(!!failedValidations.length || !!errors.length) && (
+          {!!failedValidations.length && (
             <Alert
               variant={AlertVariant.warning}
               title="Cluster is not ready to be installed yet"
@@ -105,9 +89,6 @@ const ClusterValidationSection: React.FC<ClusterValidationSectionProps> = ({
               <TextList>
                 {failedValidations.map((validation) => (
                   <TextListItem key={validation.id}>{validation.message}</TextListItem>
-                ))}
-                {errors.map((error) => (
-                  <TextListItem key={error}>{error}</TextListItem>
                 ))}
               </TextList>
             </Alert>
