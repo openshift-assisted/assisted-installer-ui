@@ -1,9 +1,12 @@
 import _ from 'lodash';
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import * as ReduxToolkit from '@reduxjs/toolkit';
 import { getCluster } from '../../api/clusters';
 import { Cluster, Host } from '../../api/types';
 import { handleApiError } from '../../api/utils';
 import { ResourceUIState } from '../../types';
+
+// workaround for TS2742 issue
+const { createSlice, createAsyncThunk } = ReduxToolkit;
 
 type RetrievalErrorType = {
   code: string;
@@ -35,12 +38,15 @@ const initialState: CurrentClusterStateSlice = {
   isReloadScheduled: 0,
 };
 
-export const currentClusterSlice = createSlice({
+export const currentClusterSlice: ReduxToolkit.Slice = createSlice({
   initialState,
   name: 'currentCluster',
   reducers: {
-    updateCluster: (state, action: PayloadAction<Cluster>) => ({ ...state, data: action.payload }),
-    updateHost: (state, action: PayloadAction<Host>) => {
+    updateCluster: (state, action: ReduxToolkit.PayloadAction<Cluster>) => ({
+      ...state,
+      data: action.payload,
+    }),
+    updateHost: (state, action: ReduxToolkit.PayloadAction<Host>) => {
       const hostIndex = _.findIndex(state.data?.hosts, (host) => host.id === action.payload.id);
       if (hostIndex >= 0) {
         _.set(state, `data.hosts[${hostIndex}]`, action.payload);
@@ -79,11 +85,8 @@ export const currentClusterSlice = createSlice({
   },
 });
 
-export const {
-  updateCluster,
-  updateHost,
-  cleanCluster,
-  forceReload,
-  cancelForceReload,
-} = currentClusterSlice.actions;
+export const cancelForceReload = () => currentClusterSlice.actions.cancelForceReload(null);
+export const cleanCluster = () => currentClusterSlice.actions.cleanCluster(null);
+export const forceReload = () => currentClusterSlice.actions.forceReload(null);
+export const { updateCluster, updateHost } = currentClusterSlice.actions;
 export default currentClusterSlice.reducer;

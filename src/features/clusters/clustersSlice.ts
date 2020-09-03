@@ -1,8 +1,11 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import * as ReduxToolkit from '@reduxjs/toolkit';
 import { getClusters } from '../../api/clusters';
 import { Cluster } from '../../api/types';
 import { handleApiError } from '../../api/utils';
 import { ResourceUIState } from '../../types';
+
+// workaround for TS2742 issue
+const { createSlice, createAsyncThunk } = ReduxToolkit;
 
 export const fetchClustersAsync = createAsyncThunk('clusters/fetchClustersAsync', async () => {
   try {
@@ -20,11 +23,11 @@ type ClustersStateSlice = {
 
 const initialState: ClustersStateSlice = { data: [], uiState: ResourceUIState.LOADING };
 
-export const clustersSlice = createSlice({
+export const clustersSlice: ReduxToolkit.Slice = createSlice({
   initialState,
   name: 'clusters',
   reducers: {
-    deleteCluster: (state, action: PayloadAction<Cluster['id']>) => ({
+    deleteCluster: (state, action: ReduxToolkit.PayloadAction<Cluster['id']>) => ({
       ...state,
       data: state.data.filter((item: Cluster) => item.id !== action.payload),
     }),

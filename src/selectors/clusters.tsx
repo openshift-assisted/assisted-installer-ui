@@ -65,11 +65,11 @@ export const selectClusterTableRows = createSelector(
 );
 
 export const selectClusterNames = createSelector(selectClusters, (clusters) =>
-  clusters.map((c) => c.name),
+  clusters.map((c: Cluster) => c.name),
 );
 
 export const selectClusterNamesButCurrent = createSelector(
   selectClusterNames,
   currentClusterName,
-  (clusterNames, currentName) => clusterNames.filter((n) => n !== currentName),
+  (clusterNames, currentName) => clusterNames.filter((n: string) => n !== currentName),
 );
