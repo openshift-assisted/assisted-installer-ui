@@ -23,20 +23,20 @@ One time action:
 
 ```bash
 sudo dnf install -y inotify-tools
-yarn install
+npm install
 ```
 
 Start webpack dev server to watch sources and keep compiling into `/dist`:
 
 ```bash
-yarn start
+npm run start
 ```
 
 Optionaly, sync `/dist` to the [Facet](https://github.com/openshift-metal3/facet) application's
 `node_modules`.
 
 ```bash
-yarn sync-to-facet
+npm run sync-to-facet
 
 # eventually:
 FACET_ROOT=../facet ./scripts/sync-dist.sh # to sync the "./dist" into facet's node_modules
