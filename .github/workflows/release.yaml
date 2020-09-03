@@ -32,7 +32,7 @@ jobs:
           git config user.email 'github@users.noreply.github.com'
       - run: npm version ${{ env.VERSION }}
       - run: npm install
-      - run: npm build
+      - run: npm run build
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPMJS_PUBLISH_TOKEN }}
