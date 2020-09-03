@@ -260,7 +260,13 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
                 variant={ButtonVariant.primary}
                 name="install"
                 onClick={handleClusterInstall}
-                isDisabled={isStartingInstallation || !isValid || dirty || !!clusterErrors.length}
+                isDisabled={
+                  cluster.status != 'ready' ||
+                  isStartingInstallation ||
+                  !isValid ||
+                  dirty ||
+                  !!clusterErrors.length
+                }
               >
                 Install Cluster
               </ToolbarButton>
