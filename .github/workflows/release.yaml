@@ -30,9 +30,10 @@ jobs:
       - run: |
           git config user.name 'GitHub action executed on release'
           git config user.email 'github@users.noreply.github.com'
-      - run: yarn install
-      - run: yarn build
-      - run: yarn publish --new-version ${{ env.VERSION }} --no-git-tag-version
+      - run: npm install
+      - run: npm build
+      - run: npm version ${{ env.VERSION }}
+      - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPMJS_PUBLISH_TOKEN }}
       - name: Create Pull Request
