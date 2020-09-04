@@ -1,3 +1,4 @@
+import * as packageJson from '../../package.json';
 import { ClusterCreateParams, Cluster, Host, HostRoleUpdateParams } from '../api/types';
 import { ValidationsInfo, Validation } from '../types/hosts';
 
@@ -125,3 +126,5 @@ export const HOST_VALIDATION_LABELS: { [key in Validation['id']]: string } = {
   'belongs-to-machine-cidr': 'Belongs to machine CIDR',
   'role-defined': 'Role',
 };
+
+export const getFacetLibVersion = () => packageJson.version;
