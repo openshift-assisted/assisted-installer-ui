@@ -134,7 +134,7 @@ const isHostShown = (skipDisabled: boolean) => (host: Host) =>
 const HostsTable: React.FC<HostsTableProps> = ({ cluster, skipDisabled = false }) => {
   const { addAlert } = React.useContext(AlertsContext);
   const [showEventsModal, setShowEventsModal] = React.useState<
-    { cluster: Cluster['id']; host: Host['id']; hostname: string } | undefined
+    { host: Host['id']; hostname: string } | undefined
   >();
   const [showEditHostModal, setShowEditHostModal] = React.useState<
     { host: Host; inventory: Inventory } | undefined
@@ -231,9 +231,9 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster, skipDisabled = false }
   const onViewHostEvents = React.useCallback(
     (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
       const host = rowData.host;
-      const { id, clusterId, requestedHostname } = host;
+      const { id, requestedHostname } = host;
       const hostname = requestedHostname || rowData.inventory?.hostname || id;
-      setShowEventsModal({ cluster: clusterId, host: id, hostname });
+      setShowEventsModal({ host: id, hostname });
     },
     [],
   );
@@ -342,7 +342,7 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster, skipDisabled = false }
       <EventsModal
         title={`Host Events${showEventsModal ? `: ${showEventsModal.hostname}` : ''}`}
         entityKind="host"
-        clusterId={showEventsModal?.cluster || ''}
+        cluster={cluster}
         hostId={showEventsModal?.host}
         onClose={() => setShowEventsModal(undefined)}
         isOpen={!!showEventsModal}

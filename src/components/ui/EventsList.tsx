@@ -39,7 +39,7 @@ const getLabelIcon = (severity: Event['severity']) => {
   }
 };
 
-type EventsListProps = {
+export type EventsListProps = {
   events: EventList;
 };
 

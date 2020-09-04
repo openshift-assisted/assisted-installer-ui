@@ -1,20 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import EventsList from '../ui/EventsList';
-import { EventList, Event } from '../../api/types';
+import { EventList, Event, Cluster } from '../../api/types';
 import { getEvents } from '../../api/clusters';
 import { EVENTS_POLLING_INTERVAL } from '../../config/constants';
 import { ErrorState, LoadingState } from '../ui/uiState';
+import ClusterEventsList from '../ui/ClusterEventsList';
 
 export type EventFetchProps = {
   hostId: Event['hostId'];
-  clusterId: Event['clusterId'];
+  cluster: Cluster;
 };
+
+export type EventsEntityKind = 'cluster' | 'host';
 
 type EventListFetchProps = EventFetchProps & {
-  entityKind: string;
+  entityKind: EventsEntityKind;
 };
 
-const EventListFetch: React.FC<EventListFetchProps> = ({ clusterId, hostId, entityKind }) => {
+const EventListFetch: React.FC<EventListFetchProps> = ({ cluster, hostId, entityKind }) => {
   const [events, setEvents] = useState<EventList>();
   const [lastPolling, setLastPolling] = useState(0);
   const [error, setError] = useState('');
@@ -23,18 +26,18 @@ const EventListFetch: React.FC<EventListFetchProps> = ({ clusterId, hostId, enti
     let timer: NodeJS.Timeout;
     const fetch = async () => {
       try {
-        const { data } = await getEvents(clusterId, hostId);
+        const { data } = await getEvents(cluster.id, hostId);
         setEvents(data);
         setError('');
       } catch (error) {
-        console.warn(`Failed to load events for ${entityKind} ${hostId || clusterId}: `, error);
+        console.warn(`Failed to load events for ${entityKind} ${hostId || cluster.id}: `, error);
         setError('Failed to load events');
       }
       timer = setTimeout(() => setLastPolling(Date.now()), EVENTS_POLLING_INTERVAL);
     };
     fetch();
     return () => clearTimeout(timer);
-  }, [clusterId, hostId, lastPolling, entityKind]);
+  }, [cluster.id, hostId, lastPolling, entityKind]);
 
   const forceRefetch = React.useCallback(() => {
     setLastPolling(Date.now());
@@ -46,6 +49,10 @@ const EventListFetch: React.FC<EventListFetchProps> = ({ clusterId, hostId, enti
 
   if (!events) {
     return <LoadingState />;
+  }
+
+  if (entityKind === 'cluster') {
+    return <ClusterEventsList events={events} cluster={cluster} />;
   }
 
   return <EventsList events={events} />;

@@ -1,0 +1,3 @@
+.events-modal__content {
+  min-height: 15rem; /* To fit filters better */
+}
