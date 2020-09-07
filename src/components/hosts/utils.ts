@@ -79,7 +79,7 @@ export const downloadHostInstallationLogs = async (
 ) => {
   if (ocmClient) {
     try {
-      const { data } = await getPresignedFileUrl(host.clusterId || '', `logs&host_id=${host.id}`);
+      const { data } = await getPresignedFileUrl(host.clusterId || '', 'logs', host.id);
       saveAs(data.url);
     } catch (e) {
       handleApiError<Presigned>(e, async (e) => {
