@@ -131,6 +131,12 @@ export interface Cluster {
    * Json formatted string containing the validations results for each validation id grouped by category (network, hosts-data, etc.)
    */
   validationsInfo?: string;
+  /**
+   * Json formatted string containing the user overrides for the install-config.yaml file
+   * example:
+   * {"networking":{"networkType": "OVN-Kubernetes"},"fips":true}
+   */
+  installConfigOverrides?: string;
 }
 export interface ClusterCreateParams {
   /**
@@ -315,9 +321,6 @@ export interface Credentials {
   username?: string;
   password?: string;
   consoleUrl?: string;
-}
-export interface DebugStep {
-  command: string;
 }
 export interface DhcpAllocationRequest {
   /**
