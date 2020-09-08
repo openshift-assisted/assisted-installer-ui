@@ -130,10 +130,12 @@ export const hostPrefixValidationSchema = (values: ClusterConfigurationValues) =
   return Yup.number().required(requiredText).min(netBlockNumber, errorMsg).max(32, errorMsg);
 };
 
-export const hostnameValidationSchema = Yup.string().matches(HOSTNAME_REGEX, {
-  message: 'Value "${value}" is not valid hostname.',
-  excludeEmptyString: true,
-});
+export const hostnameValidationSchema = Yup.string()
+  .max(64, 'The hostname can not be longer than 64 characters.')
+  .matches(HOSTNAME_REGEX, {
+    message: 'Value "${value}" is not valid hostname.',
+    excludeEmptyString: true,
+  });
 
 export const uniqueHostnameValidationSchema = (origHostname: string, hosts: Host[]) =>
   Yup.string().test('unique-hostname-validation', 'Hostname must be unique', (value) => {
