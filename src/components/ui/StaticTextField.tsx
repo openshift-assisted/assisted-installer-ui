@@ -6,15 +6,22 @@ import HelperText from './formik/HelperText';
 export interface StaticTextFieldProps {
   name: string;
   label: string;
-  value: string;
+  value: React.ReactNode;
   helperText?: React.ReactNode;
+  isRequired?: boolean;
 }
 
 /**
  * Simplified form component for rendering static text.
  * Does not take field value from formik.
  */
-const StaticTextField: React.FC<StaticTextFieldProps> = ({ label, name, value, helperText }) => {
+const StaticTextField: React.FC<StaticTextFieldProps> = ({
+  label,
+  name,
+  value,
+  helperText,
+  isRequired,
+}) => {
   const fieldId = getFieldId(name, 'status');
 
   return (
@@ -28,6 +35,7 @@ const StaticTextField: React.FC<StaticTextFieldProps> = ({ label, name, value, h
           <HelperText fieldId={fieldId}>{helperText}</HelperText>
         )
       }
+      isRequired={isRequired}
     >
       <TextContent>
         <Text component="p" id={fieldId} aria-describedby={`${fieldId}-helper`}>
