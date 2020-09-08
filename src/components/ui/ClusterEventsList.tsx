@@ -27,10 +27,18 @@ const ClusterEventsList: React.FC<ClusterEventsListProps> = ({ events, cluster }
     getInitialClusterEventsFilters(cluster),
   );
 
+  const filteredEvents = filterEvenets(filters, events);
+
   return (
     <>
       <ClusterEventsToolbar filters={filters} setFilters={setFilters} cluster={cluster} />
-      <EventsList events={filterEvenets(filters, events)} />
+      {filteredEvents.length === 0 && events.length > 0 ? (
+        <div>
+          There are no events matching the requested criteria, try changing it to get results.
+        </div>
+      ) : (
+        <EventsList events={filteredEvents} />
+      )}
     </>
   );
 };
