@@ -1,28 +1,64 @@
 import React from 'react';
+import { useFormikContext } from 'formik';
+import { Spinner } from '@patternfly/react-core';
 import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
 import { InputField, SelectField, SwitchField } from '../ui/formik';
-import { useFormikContext } from 'formik';
+import { Cluster } from '../../api/types';
+import StaticTextField from '../ui/StaticTextField';
 
-type BasicNetworkFieldsProps = {
-  hostSubnets: HostSubnets;
-  isAdvanced: boolean;
+type VipStaticValueProps = {
+  vipName: string;
+  cluster: Cluster;
 };
 
-const BasicNetworkFields: React.FC<BasicNetworkFieldsProps> = ({ hostSubnets, isAdvanced }) => {
-  const { validateField, values, initialValues, setFieldValue, setFieldTouched } = useFormikContext<
-    ClusterConfigurationValues
-  >();
+const VipStaticValue: React.FC<VipStaticValueProps> = ({ vipName, cluster }) => {
+  const { vipDhcpAllocation, machineNetworkCidr } = cluster;
+  if (vipDhcpAllocation && cluster[vipName]) {
+    return cluster[vipName];
+  }
+  if (vipDhcpAllocation && machineNetworkCidr) {
+    return (
+      <>
+        <Spinner size="md" />
+        <i> This IP is being allocated by the DHCP server</i>
+      </>
+    );
+  }
+  return <i>This IP will be allocated by the DHCP server</i>;
+};
 
-  const areVipDisabled = !hostSubnets.length || (values.vipDhcpAllocation && isAdvanced);
+const getVipHelperSuffix = (
+  vip?: string,
+  vipDhcpAllocation?: boolean,
+  vipDhcpAllocationFormValue?: boolean,
+): string => {
+  if (!vipDhcpAllocationFormValue) {
+    return 'Make sure that the VIP is unique and not used by any other device on your network.';
+  }
+  if (vipDhcpAllocation && vip) {
+    return 'This IP was allocated by the DHCP server.';
+  }
+  return '';
+};
 
-  const apiVipHelperText = `Virtual IP used to reach the OpenShift cluster API. ${
-    values.vipDhcpAllocation && isAdvanced
-      ? 'IP is allocated by DHCP server.'
-      : `Make sure that the VIP's are unique and not used by any other device on your network.`
-  }`;
-  const ingressVipHelperText = `Virtual IP used for cluster ingress traffic. ${
-    values.vipDhcpAllocation && isAdvanced ? 'IP is allocated by DHCP server.' : ''
-  }`;
+type BasicNetworkFieldsProps = {
+  cluster: Cluster;
+  hostSubnets: HostSubnets;
+};
+
+const BasicNetworkFields: React.FC<BasicNetworkFieldsProps> = ({ cluster, hostSubnets }) => {
+  const { validateField, values } = useFormikContext<ClusterConfigurationValues>();
+
+  const apiVipHelperText = `Virtual IP used to reach the OpenShift cluster API. ${getVipHelperSuffix(
+    cluster.apiVip,
+    cluster.vipDhcpAllocation,
+    values.vipDhcpAllocation,
+  )}`;
+  const ingressVipHelperText = `Virtual IP used for cluster ingress traffic. ${getVipHelperSuffix(
+    cluster.ingressVip,
+    cluster.vipDhcpAllocation,
+    values.vipDhcpAllocation,
+  )}`;
 
   return (
     <>
@@ -49,47 +85,42 @@ const BasicNetworkFields: React.FC<BasicNetworkFieldsProps> = ({ hostSubnets, is
         }}
         isRequired
       />
-      {isAdvanced && (
-        <SwitchField
-          label="Use VIP DHCP allocation"
-          name="vipDhcpAllocation"
-          onChange={(checked: boolean) => {
-            let apiVip: string | undefined;
-            let ingressVip: string | undefined;
-            if (checked) {
-              if (initialValues.vipDhcpAllocation) {
-                apiVip = initialValues.apiVip;
-                ingressVip = initialValues.ingressVip;
-              }
-            } else if (!initialValues.vipDhcpAllocation) {
-              apiVip = initialValues.apiVip;
-              ingressVip = initialValues.ingressVip;
-            }
-            setFieldTouched('ingressVip', false);
-            setFieldTouched('apiVip', false);
-            setFieldValue('ingressVip', ingressVip || '');
-            setFieldValue('apiVip', apiVip || '');
-            setTimeout(() => {
-              validateField('ingressVip');
-              validateField('apiVip');
-            }, 0);
-          }}
-        />
+      <SwitchField label="Allocate VIPs via DHCP server" name="vipDhcpAllocation" />
+      {values.vipDhcpAllocation ? (
+        <>
+          <StaticTextField
+            label="API Virtual IP"
+            name="apiVip"
+            helperText={apiVipHelperText}
+            value={<VipStaticValue vipName="apiVip" cluster={cluster} />}
+            isRequired
+          />
+          <StaticTextField
+            label="Ingress Virtual IP"
+            name="ingressVip"
+            helperText={ingressVipHelperText}
+            value={<VipStaticValue vipName="ingressVip" cluster={cluster} />}
+            isRequired
+          />
+        </>
+      ) : (
+        <>
+          <InputField
+            label="API Virtual IP"
+            name="apiVip"
+            helperText={apiVipHelperText}
+            isRequired
+            isDisabled={!hostSubnets.length}
+          />
+          <InputField
+            name="ingressVip"
+            label="Ingress Virtual IP"
+            helperText={ingressVipHelperText}
+            isRequired
+            isDisabled={!hostSubnets.length}
+          />
+        </>
       )}
-      <InputField
-        label="API Virtual IP"
-        name="apiVip"
-        helperText={apiVipHelperText}
-        isRequired
-        isDisabled={areVipDisabled}
-      />
-      <InputField
-        name="ingressVip"
-        label="Ingress Virtual IP"
-        helperText={ingressVipHelperText}
-        isRequired
-        isDisabled={areVipDisabled}
-      />
     </>
   );
 };

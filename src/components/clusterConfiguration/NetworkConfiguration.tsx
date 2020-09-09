@@ -5,56 +5,33 @@ import BasicNetworkFields from './BasicNetworkFields';
 import AdvancedNetworkFields from './AdvancedNetworkFields';
 import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
 import { InputField, CheckboxField, SelectField } from '../ui/formik';
-import { ManagedDomain } from '../../api/types';
+import { ManagedDomain, Cluster } from '../../api/types';
 
 type NetworkConfigurationProps = {
+  cluster: Cluster;
   hostSubnets: HostSubnets;
   managedDomains: ManagedDomain[];
 };
 
 const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
+  cluster,
   hostSubnets,
   managedDomains,
 }) => {
-  const { setFieldValue, initialValues, values, validateField } = useFormikContext<
-    ClusterConfigurationValues
-  >();
-  const [isAdvanced, setAdvanced] = React.useState<boolean>(!!values.vipDhcpAllocation);
+  const { setFieldValue, initialValues, values } = useFormikContext<ClusterConfigurationValues>();
+  // TODO(jtomasek): isAdvanced can be initially enabled if the advanced field values are different from their default setting
+  const [isAdvanced, setAdvanced] = React.useState(false);
   const { name: clusterName, baseDnsDomain, useRedHatDnsService } = values;
 
   const toBasic = () => {
     // Reset the advanced networking values
-    const {
-      clusterNetworkCidr,
-      clusterNetworkHostPrefix,
-      serviceNetworkCidr,
-      vipDhcpAllocation,
-      apiVip,
-      ingressVip,
-    } = initialValues;
+    const { clusterNetworkCidr, clusterNetworkHostPrefix, serviceNetworkCidr } = initialValues;
+    // TODO(jtomasek): when disabling advanced network configuration we should reset the values
+    // to deafult values rather than initial values. This requires keeping the defaults somewhere
     setFieldValue('clusterNetworkCidr', clusterNetworkCidr);
     setFieldValue('clusterNetworkHostPrefix', clusterNetworkHostPrefix);
     setFieldValue('serviceNetworkCidr', serviceNetworkCidr);
-    setFieldValue('vipDhcpAllocation', false);
-    setFieldValue('apiVip', vipDhcpAllocation ? '' : apiVip);
-    setFieldValue('ingressVip', vipDhcpAllocation ? '' : ingressVip);
-    setTimeout(() => {
-      validateField('ingressVip');
-      validateField('apiVip');
-    }, 0);
     setAdvanced(false);
-  };
-
-  const toAdvanced = () => {
-    const { vipDhcpAllocation, apiVip, ingressVip } = initialValues;
-    setFieldValue('vipDhcpAllocation', vipDhcpAllocation);
-    vipDhcpAllocation && setFieldValue('apiVip', apiVip);
-    vipDhcpAllocation && setFieldValue('ingressVip', ingressVip);
-    setTimeout(() => {
-      validateField('ingressVip');
-      validateField('apiVip');
-    }, 0);
-    setAdvanced(true);
   };
 
   const baseDnsHelperText = (
@@ -120,13 +97,13 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
           name="networkConfigurationType"
           value="advanced"
           isChecked={isAdvanced}
-          onChange={toAdvanced}
+          onChange={() => setAdvanced(true)}
           label="Advanced"
           description="Configure a custom networking type and CIDR ranges."
           isLabelWrapped
         />
       </FormGroup>
-      <BasicNetworkFields hostSubnets={hostSubnets} isAdvanced={isAdvanced} />
+      <BasicNetworkFields cluster={cluster} hostSubnets={hostSubnets} />
       {isAdvanced && <AdvancedNetworkFields />}
     </>
   );
