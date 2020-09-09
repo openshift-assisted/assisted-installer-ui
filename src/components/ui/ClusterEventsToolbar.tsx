@@ -192,7 +192,7 @@ const ClusterEventsToolbar: React.FC<ClustersFilterToolbarProps> = ({
               aria-label="text to be searched"
               onChange={onFulltextChange}
               value={filters.fulltext}
-              placeholder="Text to search"
+              placeholder="Filter by text ..."
             />
             <Button variant={ButtonVariant.control} aria-label="search text button">
               <SearchIcon />
