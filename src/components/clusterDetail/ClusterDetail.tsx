@@ -26,6 +26,9 @@ import ClusterProperties from './ClusterProperties';
 import { routeBasePath } from '../../config';
 import FailedHostsWarning from './FailedHostsWarning';
 import AlertsSection from '../ui/AlertsSection';
+import { downloadClusterInstallationLogs } from './utils';
+import { AlertsContext } from '../AlertsContextProvider';
+import { canDownloadClusterLogs } from '../hosts/utils';
 
 const canAbortInstallation = (cluster: Cluster) => {
   if (
@@ -70,6 +73,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
   setCancelInstallationModalOpen,
   setResetClusterModalOpen,
 }) => {
+  const { addAlert } = React.useContext(AlertsContext);
   const [credentials, setCredentials] = React.useState<Credentials>();
   const [credentialsError, setCredentialsError] = React.useState();
 
@@ -160,24 +164,20 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
           Back to all clusters
         </ToolbarButton>
         <ToolbarSecondaryGroup>
-          {/* TODO(mlibra): Download cluster installation logs
           <ToolbarButton
             id="cluster-installation-logs-button"
             variant={ButtonVariant.link}
-            style={{ textAlign: 'right' }}
-            onClick={() => {
-            }}
+            onClick={() => downloadClusterInstallationLogs(addAlert, cluster.id)}
+            isDisabled={!canDownloadClusterLogs(cluster)}
           >
             Download Installation Logs
           </ToolbarButton>
-          */}
           <EventsModalButton
             id="cluster-events-button"
             entityKind="cluster"
             clusterId={cluster.id}
             title="Cluster Events"
             variant={ButtonVariant.link}
-            style={{ textAlign: 'right' }}
           >
             View Cluster Events
           </EventsModalButton>
