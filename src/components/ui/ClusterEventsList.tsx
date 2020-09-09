@@ -16,7 +16,7 @@ type ClusterEventsListProps = {
 
 const filterEvenets = (filters: ClusterEventsFiltersType, events: EventList = []) => {
   return events
-    .filter((event) => filters.severity.includes(event.severity))
+    .filter((event) => filters.severity.length === 0 || filters.severity.includes(event.severity))
     .filter((event) => !event.hostId || filters.hosts.includes(event.hostId))
     .filter(
       (event) =>
@@ -34,7 +34,12 @@ const ClusterEventsList: React.FC<ClusterEventsListProps> = ({ events, cluster }
 
   return (
     <>
-      <ClusterEventsToolbar filters={filters} setFilters={setFilters} cluster={cluster} />
+      <ClusterEventsToolbar
+        filters={filters}
+        setFilters={setFilters}
+        cluster={cluster}
+        events={events}
+      />
       {filteredEvents.length === 0 && events.length > 0 ? (
         <EmptyState
           icon={SearchIcon}

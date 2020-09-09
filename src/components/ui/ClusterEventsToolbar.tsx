@@ -16,6 +16,7 @@ import {
   ToolbarFilterProps,
   SelectProps,
   TextInputProps,
+  Badge,
 } from '@patternfly/react-core';
 import { SearchIcon, FilterIcon } from '@patternfly/react-icons';
 import { Host, Event, Cluster, Inventory } from '../../api/types';
@@ -34,6 +35,7 @@ type ClustersFilterToolbarProps = {
   filters: ClusterEventsFiltersType;
   setFilters: (filters: ClusterEventsFiltersType) => void;
   cluster: Cluster;
+  events: Event[];
 };
 
 const Placeholder = ({ text }: { text: string }) => (
@@ -60,13 +62,17 @@ const mapHosts = (hosts: Host[] = []) =>
 export const getInitialClusterEventsFilters = (cluster: Cluster): ClusterEventsFiltersType => ({
   fulltext: '',
   hosts: mapHosts(cluster.hosts).map((host) => host.id),
-  severity: EVENT_SEVERITIES,
+  severity: [],
 });
+
+const getEventsCount = (severity: Event['severity'], events: Event[]) =>
+  events.filter((event) => event.severity === severity).length;
 
 const ClusterEventsToolbar: React.FC<ClustersFilterToolbarProps> = ({
   filters,
   setFilters,
   cluster,
+  events,
 }) => {
   const [isHostExpanded, setHostExpanded] = React.useState(false);
   const [isSeverityExpanded, setSeverityExpanded] = React.useState(false);
@@ -188,7 +194,7 @@ const ClusterEventsToolbar: React.FC<ClustersFilterToolbarProps> = ({
           >
             {EVENT_SEVERITIES.map((severity) => (
               <SelectOption key={severity} value={severity}>
-                {_.capitalize(severity)}
+                {_.capitalize(severity)} <Badge isRead>{getEventsCount(severity, events)}</Badge>
               </SelectOption>
             ))}
           </Select>
