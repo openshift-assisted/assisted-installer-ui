@@ -32,6 +32,7 @@ import InputField from '../ui/formik/InputField';
 import SelectField from '../ui/formik/SelectField';
 import TextAreaField from '../ui/formik/TextAreaField';
 import LoadingState from '../ui/uiState/LoadingState';
+import { captureException } from '../../sentry';
 
 const pullSecretHelperText = (
   <>
@@ -81,7 +82,7 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ history, pullSecret = '
         return formikActions.setFieldError('name', `Name "${values.name}" is already taken.`);
       }
     } catch (e) {
-      console.error('Failed to perform unique cluster name validation.', e);
+      captureException(e, 'Failed to perform unique cluster name validation.');
     }
 
     try {

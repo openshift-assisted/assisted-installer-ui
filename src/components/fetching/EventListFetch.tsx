@@ -5,6 +5,7 @@ import { getEvents } from '../../api/clusters';
 import { EVENTS_POLLING_INTERVAL } from '../../config/constants';
 import { ErrorState, LoadingState } from '../ui/uiState';
 import ClusterEventsList from '../ui/ClusterEventsList';
+import { handleApiError } from '../../api';
 
 export type EventFetchProps = {
   hostId: Event['hostId'];
@@ -30,8 +31,9 @@ const EventListFetch: React.FC<EventListFetchProps> = ({ cluster, hostId, entity
         setEvents(data);
         setError('');
       } catch (error) {
-        console.warn(`Failed to load events for ${entityKind} ${hostId || cluster.id}: `, error);
-        setError('Failed to load events');
+        handleApiError(error, () => {
+          setError('Failed to load events');
+        });
       }
       timer = setTimeout(() => setLastPolling(Date.now()), EVENTS_POLLING_INTERVAL);
     };

@@ -48,6 +48,7 @@ import ClusterValidationSection from './ClusterValidationSection';
 import { getInitialValues, getHostSubnets } from './utils';
 import { AlertsContext } from '../AlertsContextProvider';
 import ClusterSshKeyField from './ClusterSshKeyField';
+import { captureException } from '../../sentry';
 
 const validationSchema = (initialValues: ClusterConfigurationValues, hostSubnets: HostSubnets) =>
   Yup.lazy<ClusterConfigurationValues>((values) =>
@@ -98,7 +99,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
         return formikActions.setFieldError('name', `Name "${values.name}" is already taken.`);
       }
     } catch (e) {
-      console.error('Failed to perform unique cluster name validation.', e);
+      captureException('Failed to perform unique cluster name validation.', e);
     }
 
     // update the cluster configuration
