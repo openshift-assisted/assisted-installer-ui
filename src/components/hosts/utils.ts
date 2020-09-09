@@ -70,8 +70,11 @@ export const canHostnameBeChanged = (hostStatus: Host['status']) =>
 export const getHostRole = (host: Host): string =>
   `${HOST_ROLES[host.role || 0]}${host.bootstrap ? ' (bootstrap)' : ''}`;
 
-export const canDownloadLogs = (host: Host) =>
+export const canDownloadHostLogs = (host: Host) =>
   !!host.logsCollectedAt && host.logsCollectedAt != '0001-01-01T00:00:00';
+
+export const canDownloadClusterLogs = (cluster: Cluster) =>
+  !!(cluster.hosts || []).find((host) => canDownloadHostLogs(host));
 
 export const downloadHostInstallationLogs = async (
   addAlert: AlertsContextType['addAlert'],

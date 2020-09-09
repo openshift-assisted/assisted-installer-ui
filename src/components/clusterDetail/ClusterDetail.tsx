@@ -28,6 +28,7 @@ import FailedHostsWarning from './FailedHostsWarning';
 import AlertsSection from '../ui/AlertsSection';
 import { downloadClusterInstallationLogs } from './utils';
 import { AlertsContext } from '../AlertsContextProvider';
+import { canDownloadClusterLogs } from '../hosts/utils';
 
 const canAbortInstallation = (cluster: Cluster) => {
   if (
@@ -166,8 +167,8 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
           <ToolbarButton
             id="cluster-installation-logs-button"
             variant={ButtonVariant.link}
-            style={{ textAlign: 'right' }}
             onClick={() => downloadClusterInstallationLogs(addAlert, cluster.id)}
+            isDisabled={!canDownloadClusterLogs(cluster)}
           >
             Download Installation Logs
           </ToolbarButton>
@@ -177,7 +178,6 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
             clusterId={cluster.id}
             title="Cluster Events"
             variant={ButtonVariant.link}
-            style={{ textAlign: 'right' }}
           >
             View Cluster Events
           </EventsModalButton>

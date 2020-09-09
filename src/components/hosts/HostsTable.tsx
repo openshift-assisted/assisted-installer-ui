@@ -37,7 +37,7 @@ import {
   canDelete,
   canEditHost,
   getHostRole,
-  canDownloadLogs,
+  canDownloadHostLogs,
   downloadHostInstallationLogs,
 } from './utils';
 import EditHostModal from './EditHostModal';
@@ -290,7 +290,7 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster, skipDisabled = false }
         id: `button-view-host-events-${hostname}`,
         onClick: onViewHostEvents,
       });
-      if (canDownloadLogs(host)) {
+      if (canDownloadHostLogs(host)) {
         actions.push({
           title: 'Download Installation Logs',
           id: `button-download-host-installation-logs-${hostname}`,

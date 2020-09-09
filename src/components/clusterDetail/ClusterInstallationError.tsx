@@ -12,6 +12,7 @@ import { toSentence } from '../ui/table/utils';
 import { getBugzillaLink } from '../../config';
 import { AlertsContext } from '../AlertsContextProvider';
 import { downloadClusterInstallationLogs } from './utils';
+import { canDownloadClusterLogs } from '../hosts/utils';
 
 type ClusterInstallationErrorProps = {
   cluster: Cluster;
@@ -33,7 +34,10 @@ const ClusterInstallationError: React.FC<ClusterInstallationErrorProps> = ({
             <AlertActionLink onClick={() => setResetClusterModalOpen(true)}>
               Reset Cluster
             </AlertActionLink>
-            <AlertActionLink onClick={() => downloadClusterInstallationLogs(addAlert, cluster.id)}>
+            <AlertActionLink
+              onClick={() => downloadClusterInstallationLogs(addAlert, cluster.id)}
+              isDisabled={!canDownloadClusterLogs(cluster)}
+            >
               Download Installation Logs
             </AlertActionLink>
             <AlertActionLink
