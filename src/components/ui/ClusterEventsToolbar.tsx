@@ -1,9 +1,11 @@
 import React from 'react';
+import _ from 'lodash';
 import {
   Toolbar,
   ToolbarItem,
   ToolbarContent,
   ToolbarFilter,
+  ToolbarChip,
   Button,
   ButtonVariant,
   InputGroup,
@@ -113,8 +115,9 @@ const ClusterEventsToolbar: React.FC<ClustersFilterToolbarProps> = ({
     });
   };
 
-  const onDeleteChip: ToolbarFilterProps['deleteChip'] = (type, id) => {
+  const onDeleteChip: ToolbarFilterProps['deleteChip'] = (type, chip) => {
     if (type) {
+      const id = chip['key'] || chip;
       setFilters({
         ...filters,
         [type as string]: filters[type as string].filter((v: string) => v !== id),
@@ -148,6 +151,7 @@ const ClusterEventsToolbar: React.FC<ClustersFilterToolbarProps> = ({
             selections={filters.hosts}
             isOpen={isHostExpanded}
             placeholderText={<Placeholder text="Hosts" />}
+            isDisabled={allHosts.length === 0}
           >
             {[
               <SelectOption key={NO_HOSTS} value={NO_HOSTS}>
@@ -163,14 +167,19 @@ const ClusterEventsToolbar: React.FC<ClustersFilterToolbarProps> = ({
         </ToolbarFilter>
 
         <ToolbarFilter
-          chips={filters.severity}
+          chips={filters.severity.map(
+            (severity): ToolbarChip => ({
+              key: severity,
+              node: _.capitalize(severity),
+            }),
+          )}
           deleteChip={onDeleteChip}
           deleteChipGroup={onDeleteChipGroup}
           categoryName="severity"
         >
           <Select
             variant="checkbox"
-            aria-label="severity"
+            aria-label="Severity"
             onToggle={onSeverityToggle}
             onSelect={onSeveritySelect}
             selections={filters.severity}
@@ -178,7 +187,9 @@ const ClusterEventsToolbar: React.FC<ClustersFilterToolbarProps> = ({
             placeholderText={<Placeholder text="Severity" />}
           >
             {EVENT_SEVERITIES.map((severity) => (
-              <SelectOption key={severity} value={severity} />
+              <SelectOption key={severity} value={severity}>
+                {_.capitalize(severity)}
+              </SelectOption>
             ))}
           </Select>
         </ToolbarFilter>

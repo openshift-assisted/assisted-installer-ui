@@ -17,7 +17,7 @@ type ClusterEventsListProps = {
 const filterEvenets = (filters: ClusterEventsFiltersType, events: EventList = []) => {
   return events
     .filter((event) => filters.severity.includes(event.severity))
-    .filter((event) => filters.hosts.includes(event.hostId || ''))
+    .filter((event) => !event.hostId || filters.hosts.includes(event.hostId))
     .filter(
       (event) =>
         !filters.fulltext ||
