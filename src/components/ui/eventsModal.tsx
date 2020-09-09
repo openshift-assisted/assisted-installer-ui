@@ -4,8 +4,6 @@ import { ToolbarButton } from './Toolbar';
 import EventListFetch, { EventsEntityKind } from '../fetching/EventListFetch';
 import { Event, Cluster } from '../../api/types';
 
-import './eventsModal.css';
-
 type EventsModalButtonProps = React.ComponentProps<typeof Button> & {
   ButtonComponent?: typeof Button | typeof ToolbarButton;
   onClick?: () => void;
