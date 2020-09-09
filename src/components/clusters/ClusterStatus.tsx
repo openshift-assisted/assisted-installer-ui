@@ -2,12 +2,11 @@ import React from 'react';
 import { Popover, Button, ButtonVariant } from '@patternfly/react-core';
 import {
   global_danger_color_100 as dangerColor,
-  global_warning_color_100 as warningColor,
   global_success_color_100 as okColor,
 } from '@patternfly/react-tokens';
 import {
   ExclamationCircleIcon,
-  WarningTriangleIcon,
+  FileAltIcon,
   CheckCircleIcon,
   InProgressIcon,
   PendingIcon,
@@ -23,7 +22,7 @@ type ClusterStatusProps = {
 const getStatusIcon = (status: Cluster['status']): React.ReactElement => {
   switch (status) {
     case 'insufficient':
-      return <WarningTriangleIcon color={warningColor.value} />;
+      return <FileAltIcon />;
     case 'pending-for-input':
       return <PendingIcon />;
     case 'ready':
