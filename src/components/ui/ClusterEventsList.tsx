@@ -1,10 +1,13 @@
 import React from 'react';
+import { Button, ButtonVariant } from '@patternfly/react-core';
+import { SearchIcon } from '@patternfly/react-icons';
 import EventsList from './EventsList';
 import { EventList, Cluster } from '../../api/types';
 import ClusterEventsToolbar, {
   ClusterEventsFiltersType,
   getInitialClusterEventsFilters,
 } from './ClusterEventsToolbar';
+import { EmptyState } from './uiState';
 
 type ClusterEventsListProps = {
   events: EventList;
@@ -33,9 +36,21 @@ const ClusterEventsList: React.FC<ClusterEventsListProps> = ({ events, cluster }
     <>
       <ClusterEventsToolbar filters={filters} setFilters={setFilters} cluster={cluster} />
       {filteredEvents.length === 0 && events.length > 0 ? (
-        <div>
-          There are no events matching the requested criteria, try changing it to get results.
-        </div>
+        <EmptyState
+          icon={SearchIcon}
+          title="No matching events"
+          content="There are no events that match the current filters. Adjust or clear the filters to view events."
+          primaryAction={
+            <Button
+              variant={ButtonVariant.primary}
+              onClick={() => setFilters(getInitialClusterEventsFilters(cluster))}
+              id="empty-state-cluster-events-clear-filters-button"
+              data-ouia-id="button-clear-events-filter"
+            >
+              Clear filters
+            </Button>
+          }
+        />
       ) : (
         <EventsList events={filteredEvents} />
       )}

@@ -6,10 +6,12 @@ import {
   InfoCircleIcon,
   WarningTriangleIcon,
   ExclamationCircleIcon,
+  SearchIcon,
 } from '@patternfly/react-icons';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
 import { fitContent, noPadding } from '../ui/table/wrappable';
 import { getHumanizedDateTime } from './utils';
+import { EmptyState } from './uiState';
 
 const getEventRowKey = ({ rowData }: ExtraParamsType) =>
   rowData?.props?.event.sortableTime + rowData?.props?.event.message;
@@ -45,8 +47,11 @@ export type EventsListProps = {
 
 const EventsList: React.FC<EventsListProps> = ({ events }) => {
   if (events.length === 0) {
-    return <div>No events found.</div>;
+    return (
+      <EmptyState icon={SearchIcon} title="No events found" content="There are no events found." />
+    );
   }
+
   // Do not memoize result to keep it recomputed since we use "relative" time bellow
   const sortedEvents = events
     .map((event) => ({
