@@ -175,7 +175,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
           <EventsModalButton
             id="cluster-events-button"
             entityKind="cluster"
-            clusterId={cluster.id}
+            cluster={cluster}
             title="Cluster Events"
             variant={ButtonVariant.link}
           >

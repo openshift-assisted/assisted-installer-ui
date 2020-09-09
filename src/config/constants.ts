@@ -1,5 +1,5 @@
 import * as packageJson from '../../package.json';
-import { ClusterCreateParams, Cluster, Host, HostRoleUpdateParams } from '../api/types';
+import { ClusterCreateParams, Cluster, Host, HostRoleUpdateParams, Event } from '../api/types';
 import { ValidationsInfo, Validation } from '../types/hosts';
 
 export let routeBasePath = '';
@@ -127,3 +127,5 @@ export const HOST_VALIDATION_LABELS: { [key in Validation['id']]: string } = {
 };
 
 export const getFacetLibVersion = () => packageJson.version;
+
+export const EVENT_SEVERITIES: Event['severity'][] = ['info', 'warning', 'error', 'critical'];
