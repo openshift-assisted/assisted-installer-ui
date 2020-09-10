@@ -5,4 +5,6 @@ export * from './clusters';
 export * from './versions';
 export * from './domains';
 
+export * from './types';
+
 export { default as useApi } from './useApi';
