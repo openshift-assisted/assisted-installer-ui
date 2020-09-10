@@ -14,6 +14,7 @@ const UploadField: React.FC<TextAreaProps> = ({
   idPostfix,
   isDisabled,
   name,
+  onBlur,
 }) => {
   const [filename, setFilename] = React.useState<string>();
   const [isSSHKeyUploading, setSSHKeyUploading] = React.useState(false);
@@ -67,6 +68,7 @@ const UploadField: React.FC<TextAreaProps> = ({
           setFilename(filename);
           setValue(value);
         }}
+        onBlur={onBlur}
         onReadStarted={() => setSSHKeyUploading(true)}
         onReadFinished={() => setSSHKeyUploading(false)}
         isLoading={isSSHKeyUploading}

@@ -44,7 +44,7 @@ export interface TextAreaProps extends FieldProps {
   getErrorText?: (error: string) => React.ReactNode | undefined;
   placeholder?: string;
   onChange?: (event: React.FormEvent<HTMLTextAreaElement>) => void;
-  onBlur?: (event: React.FocusEvent<HTMLTextAreaElement>) => void;
+  onBlur?: () => void;
 }
 
 export interface TextAreaSecretProps extends TextAreaProps {
