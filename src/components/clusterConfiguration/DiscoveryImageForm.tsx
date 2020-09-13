@@ -155,8 +155,8 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
                 <TextContent>
                   <Text component={TextVariants.p}>
                     Hosts must be connected to the internet to form a cluster using this installer.
-                    Each host will need a valid IP address assigned by a DHCP server with DNS
-                    records that fully resolve.
+                    Each host will need a valid IP address assigned by a DHCP server and be on the
+                    same Layer 2 network.
                   </Text>
                   <Text component={TextVariants.p}>
                     The Discovery ISO should only be booted once per host. Either adjust the boot
