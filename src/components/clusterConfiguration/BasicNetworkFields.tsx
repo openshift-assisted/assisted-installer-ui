@@ -85,7 +85,7 @@ const BasicNetworkFields: React.FC<BasicNetworkFieldsProps> = ({ cluster, hostSu
         }}
         isRequired
       />
-      <SwitchField label="Allocate VIPs via DHCP server" name="vipDhcpAllocation" />
+      <SwitchField label="Allocate virtual IPs via DHCP server" name="vipDhcpAllocation" />
       {values.vipDhcpAllocation ? (
         <>
           <StaticTextField
