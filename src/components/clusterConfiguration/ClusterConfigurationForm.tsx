@@ -189,7 +189,9 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
                     {/* TODO(jtomasek): remove this if we're not putting full width content here (e.g. hosts table)*/}
                     <GridGap>
                       <TextContent>
-                        <Text component="h1">Configure a bare metal OpenShift cluster</Text>
+                        <Text component="h1">
+                          Install OpenShift on Bare Metal with the Assisted Installer
+                        </Text>
                       </TextContent>
                       <InputField label="Cluster Name" name="name" isRequired />
                     </GridGap>
