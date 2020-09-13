@@ -33,7 +33,7 @@ import ProxyFields from './ProxyFields';
 const validationSchema = Yup.lazy<DiscoveryImageFormValues>((values) =>
   Yup.object<DiscoveryImageFormValues>().shape({
     sshPublicKey: sshPublicKeyValidationSchema.required(
-      'SSH key is required for debugging the host registration.',
+      'An SSH key is required to debug hosts as they register.',
     ),
     httpProxy: httpProxyValidationSchema(values, 'httpsProxy'),
     httpsProxy: httpProxyValidationSchema(values, 'httpProxy'), // share the schema, httpS is currently not supported

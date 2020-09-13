@@ -76,7 +76,7 @@ const ClusterValidationSection: React.FC<ClusterValidationSectionProps> = ({
               title="Provided cluster configuration is not valid"
               isInline
             >
-              Following fields have invalid value set:{' '}
+              The following fields are not valid:{' '}
               {errorFields.map((field: string) => CLUSTER_FIELD_LABELS[field]).join(', ')}.
             </Alert>
           )}
