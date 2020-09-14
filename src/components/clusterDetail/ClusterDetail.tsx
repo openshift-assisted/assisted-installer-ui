@@ -21,7 +21,6 @@ import ClusterCredentials from './ClusterCredentials';
 import ClusterInstallationError from './ClusterInstallationError';
 import { LaunchOpenshiftConsoleButton } from './ConsoleModal';
 import KubeconfigDownload from './KubeconfigDownload';
-import FeedbackAlert from './FeedbackAlert';
 import ClusterProperties from './ClusterProperties';
 import { routeBasePath } from '../../config';
 import FailedHostsWarning from './FailedHostsWarning';
@@ -125,7 +124,6 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
             />
           )}
           <KubeconfigDownload status={cluster.status} clusterId={cluster.id} />
-          <FeedbackAlert />
           <GridItem>
             <TextContent>
               <Text component="h2">Bare Metal Inventory</Text>
