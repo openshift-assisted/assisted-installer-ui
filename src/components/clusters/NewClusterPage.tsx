@@ -36,13 +36,13 @@ import { captureException } from '../../sentry';
 
 const pullSecretHelperText = (
   <>
-    The pull secret can be obtained from the Pull Secret page on the{' '}
+    Your Red Hat account's pull secret will be used by default. The pull secret of an account can
+    found on{' '}
     {
       <a href={CLUSTER_MANAGER_SITE_LINK} target="_blank" rel="noopener noreferrer">
-        Red Hat OpenShift Cluster Manager site <ExternalLinkAltIcon />
+        this page <ExternalLinkAltIcon />
       </a>
     }
-    .
   </>
 );
 
