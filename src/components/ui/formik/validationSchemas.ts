@@ -67,7 +67,7 @@ export const vipRangeValidationSchema = (
 const vipUniqueValidationSchema = (hostSubnets: HostSubnets, values: ClusterConfigurationValues) =>
   Yup.string().test(
     'vip-uniqueness-validation',
-    'Ingress and API IP addresses can not be the same.',
+    'The Ingress and API Virtual IP addresses cannot be the same.',
     (value) => {
       if (!value) {
         return true;
