@@ -51,7 +51,7 @@ const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({ closeModal, c
     >
       {imageInfo ? (
         <DiscoveryImageSummary
-          clusterId={cluster.id}
+          cluster={cluster}
           imageInfo={imageInfo}
           onClose={closeModal}
           onReset={() => setImageInfo(undefined)}
