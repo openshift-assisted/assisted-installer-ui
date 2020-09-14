@@ -3,6 +3,8 @@ import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
 import { Cluster, Inventory, ManagedDomain } from '../../api/types';
 import { stringToJSON } from '../../api/utils';
 
+export const NO_SUBNETS_AVAILABLE = 'No subnets available';
+
 const findMatchingSubnet = (
   ingressVip: string | undefined,
   apiVip: string | undefined,
@@ -26,7 +28,7 @@ const findMatchingSubnet = (
         }) || hostSubnets[0];
     }
   }
-  return matchingSubnet ? matchingSubnet.humanized : 'No subnets available';
+  return matchingSubnet ? matchingSubnet.humanized : NO_SUBNETS_AVAILABLE;
 };
 
 export const getHostSubnets = (cluster: Cluster): HostSubnets => {
