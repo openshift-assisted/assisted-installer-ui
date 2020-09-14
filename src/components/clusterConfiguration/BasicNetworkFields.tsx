@@ -49,6 +49,8 @@ type BasicNetworkFieldsProps = {
 
 const BasicNetworkFields: React.FC<BasicNetworkFieldsProps> = ({ cluster, hostSubnets }) => {
   const { validateField, values, setFieldValue } = useFormikContext<ClusterConfigurationValues>();
+
+  // Automatically set hostSubnet if hostSubnets become available
   React.useEffect(() => {
     if (
       !values.hostSubnet ||
@@ -89,8 +91,10 @@ const BasicNetworkFields: React.FC<BasicNetworkFieldsProps> = ({ cluster, hostSu
             : undefined;
         }}
         onChange={() => {
-          validateField('ingressVip');
-          validateField('apiVip');
+          if (!values.vipDhcpAllocation) {
+            validateField('ingressVip');
+            validateField('apiVip');
+          }
         }}
         isRequired
       />
