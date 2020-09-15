@@ -36,7 +36,7 @@ import { captureException } from '../../sentry';
 
 const pullSecretHelperText = (
   <>
-    Your Red Hat account's pull secret will be used by default. The pull secret of an account can
+    Your Red Hat account's pull secret will be used by default. The pull secret of an account can be
     found on{' '}
     {
       <a href={CLUSTER_MANAGER_SITE_LINK} target="_blank" rel="noopener noreferrer">
