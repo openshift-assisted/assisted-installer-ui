@@ -16,7 +16,9 @@ export const downloadClusterInstallationLogs = async (
   if (ocmClient) {
     try {
       const { data } = await getPresignedFileUrl(clusterId, 'logs', undefined);
-      saveAs(data.url);
+      // TODO(mlibra): Setting of filename here is workaround till https://issues.redhat.com/browse/MGMT-2128 is fixed.The Content-Disposition header should be set.
+      const filename = `log_cluster_${clusterId}.tgz`;
+      saveAs(data.url, filename);
     } catch (e) {
       handleApiError<Presigned>(e, async (e) => {
         addAlert({
