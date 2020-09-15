@@ -18,8 +18,7 @@ export const OPENSHIFT_VERSION_OPTIONS: OpenshiftVersionOptionType[] = [
 export const DEFAULT_OPENSHIFT_VERSION: OpenshiftVersionOptionType['value'] =
   OPENSHIFT_VERSION_OPTIONS[0].value;
 
-export const CLUSTER_MANAGER_SITE_LINK =
-  'https://cloud.redhat.com/openshift/install/metal/user-provisioned';
+export const CLUSTER_MANAGER_SITE_LINK = 'https://cloud.redhat.com/openshift/install/pull-secret';
 
 export const FEEDBACK_FORM_LINK =
   'https://docs.google.com/forms/d/e/1FAIpQLSfg9M8wRW4m_HkWeAl6KpB5dTcMu8iI3iJ29GlLfZpF2hnjng/viewform';
