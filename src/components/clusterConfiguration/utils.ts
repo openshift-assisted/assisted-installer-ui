@@ -2,6 +2,7 @@ import { Netmask } from 'netmask';
 import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
 import { Cluster, Inventory, ManagedDomain } from '../../api/types';
 import { stringToJSON } from '../../api/utils';
+import { computeHostname } from '../hosts/Hostname';
 
 export const NO_SUBNETS_AVAILABLE = 'No subnets available';
 
@@ -37,7 +38,7 @@ export const getHostSubnets = (cluster: Cluster): HostSubnets => {
       const inventory = stringToJSON<Inventory>(host.inventory) || {};
       acc = {
         ...acc,
-        [host.id]: inventory.hostname,
+        [host.id]: computeHostname(host, inventory),
       };
       return acc;
     }, {}) || {};
@@ -54,6 +55,11 @@ export const getHostSubnets = (cluster: Cluster): HostSubnets => {
   );
 };
 
+export const getSubnetFromMachineNetworkCidr = (machineNetworkCidr: string) => {
+  const subnet = new Netmask(machineNetworkCidr as string);
+  return `${subnet.toString()} (${subnet.first}-${subnet.last})`;
+};
+
 export const getInitialValues = (
   cluster: Cluster,
   managedDomains: ManagedDomain[],
@@ -63,10 +69,13 @@ export const getInitialValues = (
   clusterNetworkCidr: cluster.clusterNetworkCidr || '',
   clusterNetworkHostPrefix: cluster.clusterNetworkHostPrefix || 0,
   serviceNetworkCidr: cluster.serviceNetworkCidr || '',
-  apiVip: cluster.apiVip || '',
-  ingressVip: cluster.ingressVip || '',
+  apiVip: cluster.vipDhcpAllocation ? '' : cluster.apiVip || '',
+  ingressVip: cluster.vipDhcpAllocation ? '' : cluster.ingressVip || '',
   sshPublicKey: cluster.sshPublicKey || '',
-  hostSubnet: findMatchingSubnet(cluster.ingressVip, cluster.apiVip, getHostSubnets(cluster)),
+  hostSubnet:
+    cluster.vipDhcpAllocation && cluster.machineNetworkCidr
+      ? getSubnetFromMachineNetworkCidr(cluster.machineNetworkCidr)
+      : findMatchingSubnet(cluster.ingressVip, cluster.apiVip, getHostSubnets(cluster)),
   useRedHatDnsService:
     !!cluster.baseDnsDomain && managedDomains.map((d) => d.domain).includes(cluster.baseDnsDomain),
   shareDiscoverySshKey:
