@@ -18,7 +18,7 @@ const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({ cluster }) => {
           <DiscoveryImageModalButton ButtonComponent={Button} cluster={cluster} />
         </Text>
         <Text component="p">
-          Boot the discovery ISO on hardware that should become part of this bare metal cluster.
+          Boot the Discovery ISO on hardware that should become part of this bare metal cluster.
           Hosts connected to the internet will be inspected and automatically appear below.{' '}
           <DiscoveryTroubleshootingModalButton>
             Hosts not showing up?
