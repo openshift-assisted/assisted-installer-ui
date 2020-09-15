@@ -33,7 +33,7 @@ import ProxyFields from './ProxyFields';
 const validationSchema = Yup.lazy<DiscoveryImageFormValues>((values) =>
   Yup.object<DiscoveryImageFormValues>().shape({
     sshPublicKey: sshPublicKeyValidationSchema.required(
-      'SSH key is required for debugging the host registration.',
+      'An SSH key is required to debug hosts as they register.',
     ),
     httpProxy: httpProxyValidationSchema(values, 'httpsProxy'),
     httpsProxy: httpProxyValidationSchema(values, 'httpProxy'), // share the schema, httpS is currently not supported
@@ -155,14 +155,14 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
                 <TextContent>
                   <Text component={TextVariants.p}>
                     Hosts must be connected to the internet to form a cluster using this installer.
-                    Each host will need a valid IP address assigned by a DHCP server with DNS
-                    records that fully resolve.
+                    Each host will need a valid IP address assigned by a DHCP server and be on the
+                    same Layer 2 network.
                   </Text>
                   <Text component={TextVariants.p}>
                     The Discovery ISO should only be booted once per host. Either adjust the boot
-                    order in each host's BIOS to make it secondary after the the disk that you want
-                    to use for the installation, or select to boot once from the ISO manually. The
-                    boot disk in the host will be wiped during the installation.
+                    order in each host's BIOS to make it secondary after the disk that you want to
+                    use for the installation, or select to boot once from the ISO manually. The boot
+                    disk in the host will be wiped during the installation.
                   </Text>
                 </TextContent>
                 <UploadField
