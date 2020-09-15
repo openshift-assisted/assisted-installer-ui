@@ -20,21 +20,23 @@ import { getClusterDownloadsImageUrl } from '../../api/clusters';
 import { DetailList, DetailItem } from '../ui/DetailList';
 
 type DiscoveryImageSummaryProps = {
-  clusterId: Cluster['id'];
+  cluster: Cluster;
   imageInfo: Cluster['imageInfo'];
   onClose: () => void;
   onReset: () => void;
 };
 
 const DiscoveryImageSummary: React.FC<DiscoveryImageSummaryProps> = ({
-  clusterId,
+  cluster,
   imageInfo,
   onClose,
   onReset,
 }) => {
-  const isoPath = getClusterDownloadsImageUrl(clusterId);
+  const isoPath = getClusterDownloadsImageUrl(cluster.id);
   const isoUrl = `${window.location.origin}${isoPath}`;
   const downloadUrl = imageInfo.downloadUrl || isoUrl;
+
+  const wgetCommand = `wget -O 'discovery_image_${cluster.name}.iso' '${downloadUrl}'`;
 
   return (
     <>
@@ -52,6 +54,14 @@ const DiscoveryImageSummary: React.FC<DiscoveryImageSummaryProps> = ({
               value={
                 <ClipboardCopy isReadOnly onCopy={(event) => clipboardCopyFunc(event, downloadUrl)}>
                   {downloadUrl}
+                </ClipboardCopy>
+              }
+            />
+            <DetailItem
+              title="Command to download the ISO"
+              value={
+                <ClipboardCopy isReadOnly onCopy={(event) => clipboardCopyFunc(event, wgetCommand)}>
+                  {wgetCommand}
                 </ClipboardCopy>
               }
             />

@@ -113,7 +113,9 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ history, pullSecret = '
                 <GridItem span={12} lg={10} xl={6}>
                   <Form>
                     <TextContent>
-                      <Text component="h1">Configure a bare metal OpenShift cluster</Text>
+                      <Text component="h1">
+                        Install OpenShift on Bare Metal with the Assisted Installer
+                      </Text>
                     </TextContent>
                     <InputField ref={nameInputRef} label="Cluster Name" name="name" isRequired />
                     <SelectField
