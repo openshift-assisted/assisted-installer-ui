@@ -5,7 +5,7 @@ import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
 import { InputField, SelectField, SwitchField } from '../ui/formik';
 import { Cluster } from '../../api/types';
 import StaticTextField from '../ui/StaticTextField';
-import { NO_SUBNETS_AVAILABLE } from './utils';
+import { NO_SUBNET_SET } from './utils';
 
 type VipStaticValueProps = {
   vipName: string;
@@ -52,10 +52,7 @@ const BasicNetworkFields: React.FC<BasicNetworkFieldsProps> = ({ cluster, hostSu
 
   // Automatically set hostSubnet if hostSubnets become available
   React.useEffect(() => {
-    if (
-      !values.hostSubnet ||
-      (values.hostSubnet === NO_SUBNETS_AVAILABLE && hostSubnets.length > 0)
-    ) {
+    if (!values.hostSubnet || (values.hostSubnet === NO_SUBNET_SET && hostSubnets.length)) {
       setFieldValue('hostSubnet', hostSubnets[0].humanized);
     }
   }, [setFieldValue, hostSubnets, values.hostSubnet]);
@@ -82,7 +79,7 @@ const BasicNetworkFields: React.FC<BasicNetworkFieldsProps> = ({ cluster, hostSu
                 label: hn.humanized,
                 value: hn.humanized,
               }))
-            : [{ label: 'No subnets currently available', value: 'nosubnets' }]
+            : [{ label: 'No subnets are currently available', value: NO_SUBNET_SET }]
         }
         getHelperText={(value) => {
           const matchingSubnet = hostSubnets.find((hn) => hn.humanized === value);
@@ -96,6 +93,7 @@ const BasicNetworkFields: React.FC<BasicNetworkFieldsProps> = ({ cluster, hostSu
             validateField('apiVip');
           }
         }}
+        isDisabled={!hostSubnets.length}
         isRequired
       />
       <SwitchField label="Allocate virtual IPs via DHCP server" name="vipDhcpAllocation" />

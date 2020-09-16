@@ -4,33 +4,7 @@ import { Cluster, Inventory, ManagedDomain } from '../../api/types';
 import { stringToJSON } from '../../api/utils';
 import { computeHostname } from '../hosts/Hostname';
 
-export const NO_SUBNETS_AVAILABLE = 'No subnets available';
-
-const findMatchingSubnet = (
-  ingressVip: string | undefined,
-  apiVip: string | undefined,
-  hostSubnets: HostSubnets,
-): string => {
-  let matchingSubnet;
-  if (hostSubnets.length) {
-    if (!ingressVip && !apiVip) {
-      matchingSubnet = hostSubnets[0];
-    } else {
-      matchingSubnet =
-        hostSubnets.find((hn) => {
-          let found = true;
-          if (ingressVip) {
-            found = found && hn.subnet.contains(ingressVip);
-          }
-          if (apiVip) {
-            found = found && hn.subnet.contains(apiVip);
-          }
-          return found;
-        }) || hostSubnets[0];
-    }
-  }
-  return matchingSubnet ? matchingSubnet.humanized : NO_SUBNETS_AVAILABLE;
-};
+export const NO_SUBNET_SET = 'NO_SUBNET_SET';
 
 export const getHostSubnets = (cluster: Cluster): HostSubnets => {
   const hostnameMap: { [id: string]: string } =
@@ -55,8 +29,11 @@ export const getHostSubnets = (cluster: Cluster): HostSubnets => {
   );
 };
 
-export const getSubnetFromMachineNetworkCidr = (machineNetworkCidr: string) => {
-  const subnet = new Netmask(machineNetworkCidr as string);
+export const getSubnetFromMachineNetworkCidr = (machineNetworkCidr?: string) => {
+  if (!machineNetworkCidr) {
+    return NO_SUBNET_SET;
+  }
+  const subnet = new Netmask(machineNetworkCidr);
   return `${subnet.toString()} (${subnet.first}-${subnet.last})`;
 };
 
@@ -72,10 +49,7 @@ export const getInitialValues = (
   apiVip: cluster.vipDhcpAllocation ? '' : cluster.apiVip || '',
   ingressVip: cluster.vipDhcpAllocation ? '' : cluster.ingressVip || '',
   sshPublicKey: cluster.sshPublicKey || '',
-  hostSubnet:
-    cluster.vipDhcpAllocation && cluster.machineNetworkCidr
-      ? getSubnetFromMachineNetworkCidr(cluster.machineNetworkCidr)
-      : findMatchingSubnet(cluster.ingressVip, cluster.apiVip, getHostSubnets(cluster)),
+  hostSubnet: getSubnetFromMachineNetworkCidr(cluster.machineNetworkCidr),
   useRedHatDnsService:
     !!cluster.baseDnsDomain && managedDomains.map((d) => d.domain).includes(cluster.baseDnsDomain),
   shareDiscoverySshKey:
