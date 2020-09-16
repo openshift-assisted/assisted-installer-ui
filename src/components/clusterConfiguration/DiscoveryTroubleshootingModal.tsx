@@ -8,6 +8,7 @@ import {
   Text,
   TextVariants,
 } from '@patternfly/react-core';
+import { InfoCircleIcon } from '@patternfly/react-icons';
 import { ToolbarButton } from '../ui/Toolbar';
 import PrismCode from '../ui/PrismCode';
 
@@ -134,3 +135,10 @@ May 17 14:01:33 localhost systemd[1]: Failed to start agent.service.`}
     </Modal>
   );
 };
+
+export const HostsNotShowingLink = () => (
+  <DiscoveryTroubleshootingModalButton>
+    <InfoCircleIcon />
+    &nbsp;Hosts not showing up?
+  </DiscoveryTroubleshootingModalButton>
+);

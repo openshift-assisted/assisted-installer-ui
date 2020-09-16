@@ -45,6 +45,7 @@ import Hostname, { computeHostname } from './Hostname';
 
 import './HostsTable.css';
 import HostsCount from './HostsCount';
+import { HostsNotShowingLink } from '../clusterConfiguration/DiscoveryTroubleshootingModal';
 
 type HostsTableProps = {
   cluster: Cluster;
@@ -124,6 +125,7 @@ const HostsTableEmptyState: React.FC<{ cluster: Cluster }> = ({ cluster }) => (
     title="Waiting for hosts..."
     content="Hosts may take a few minutes to appear here after booting."
     primaryAction={<DiscoveryImageModalButton cluster={cluster} />}
+    secondaryActions={[<HostsNotShowingLink key="hosts-not-showing" />]}
   />
 );
 
