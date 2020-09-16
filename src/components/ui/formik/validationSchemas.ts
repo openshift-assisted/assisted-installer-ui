@@ -202,6 +202,11 @@ export const noProxyValidationSchema = Yup.string().test(
         return true;
       }
 
+      // network CIDR
+      if (item.match(IP_ADDRESS_BLOCK_REGEX)) {
+        return true;
+      }
+
       return false;
     });
   },
