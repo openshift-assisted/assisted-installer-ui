@@ -178,15 +178,17 @@ export const noProxyValidationSchema = Yup.string().test(
       return true;
     }
 
+    // https://docs.openshift.com/container-platform/4.5/installing/installing_bare_metal/installing-restricted-networks-bare-metal.html#installation-configure-proxy_installing-restricted-networks-bare-metal
     // A comma-separated list of destination domain names, domains, IP addresses or other network CIDRs
     // to exclude proxying. Preface a domain with . to include all subdomains of that domain.
     // Use * to bypass proxy for all destinations."
     const items = value.split(',');
     return items.every((item) => {
+      /* TODO(mlibra): Uncomment after: https://bugzilla.redhat.com/show_bug.cgi?id=1877486
       if (item === '*') {
         return true;
       }
-
+      */
       let domain = item;
       if (item.charAt(0) === '.') {
         domain = item.substr(1);
