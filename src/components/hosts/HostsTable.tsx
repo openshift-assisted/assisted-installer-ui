@@ -318,7 +318,7 @@ const HostsTable: React.FC<HostsTableProps> = ({
       });
       if (canDownloadHostLogs(host)) {
         actions.push({
-          title: 'Download Installation Logs',
+          title: 'Download host logs',
           id: `button-download-host-installation-logs-${hostname}`,
           onClick: onDownloadHostLogs,
         });
