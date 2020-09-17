@@ -131,7 +131,7 @@ export const hostPrefixValidationSchema = (values: ClusterConfigurationValues) =
 };
 
 export const hostnameValidationSchema = Yup.string()
-  .max(64, 'The hostname can not be longer than 64 characters.')
+  .max(63, 'The hostname can not be longer than 63 characters.')
   .matches(HOSTNAME_REGEX, {
     message: 'Value "${value}" is not valid hostname.',
     excludeEmptyString: true,
