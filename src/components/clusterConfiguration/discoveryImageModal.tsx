@@ -25,7 +25,7 @@ export const DiscoveryImageModalButton: React.FC<DiscoveryImageModalButtonProps>
         onClick={() => setIsModalOpen(true)}
         id="button-download-discovery-iso"
       >
-        Download Discovery ISO
+        Generate Discovery ISO
       </ButtonComponent>
       {isModalOpen && <DiscoveryImageModal closeModal={closeModal} cluster={cluster} />}
     </>
