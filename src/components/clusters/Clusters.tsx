@@ -97,7 +97,7 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
         <>
           <PageSection variant={PageSectionVariants.light}>
             <TextContent>
-              <Text component="h1">Managed Clusters</Text>
+              <Text component="h1">Assisted Bare Metal Clusters</Text>
             </TextContent>
           </PageSection>
           <PageSection variant={PageSectionVariants.light} isMain>
