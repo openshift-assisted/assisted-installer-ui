@@ -1,7 +1,7 @@
 import React from 'react';
 import * as Yup from 'yup';
 import { Formik, FormikHelpers } from 'formik';
-import { RouteComponentProps, Link } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router-dom';
 import {
   Form,
   Grid,
@@ -151,7 +151,7 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ history, pullSecret = '
               </ToolbarButton>
               <ToolbarButton
                 variant={ButtonVariant.link}
-                component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
+                onClick={() => history.push(`${routeBasePath}/clusters`)}
               >
                 Cancel
               </ToolbarButton>
