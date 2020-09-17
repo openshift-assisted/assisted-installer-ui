@@ -48,14 +48,7 @@ type BasicNetworkFieldsProps = {
 };
 
 const BasicNetworkFields: React.FC<BasicNetworkFieldsProps> = ({ cluster, hostSubnets }) => {
-  const { validateField, values, setFieldValue } = useFormikContext<ClusterConfigurationValues>();
-
-  // Automatically set hostSubnet if hostSubnets become available
-  React.useEffect(() => {
-    if (!values.hostSubnet || (values.hostSubnet === NO_SUBNET_SET && hostSubnets.length)) {
-      setFieldValue('hostSubnet', hostSubnets[0].humanized);
-    }
-  }, [setFieldValue, hostSubnets, values.hostSubnet]);
+  const { validateField, values } = useFormikContext<ClusterConfigurationValues>();
 
   const apiVipHelperText = `Virtual IP used to reach the OpenShift cluster API. ${getVipHelperSuffix(
     cluster.apiVip,
@@ -75,10 +68,17 @@ const BasicNetworkFields: React.FC<BasicNetworkFieldsProps> = ({ cluster, hostSu
         label="Available subnets"
         options={
           hostSubnets.length
-            ? hostSubnets.map((hn) => ({
-                label: hn.humanized,
-                value: hn.humanized,
-              }))
+            ? [
+                {
+                  label: `Please select a subnet. (${hostSubnets.length} subnets available)`,
+                  value: NO_SUBNET_SET,
+                  isDisabled: true,
+                },
+                ...hostSubnets.map((hn) => ({
+                  label: hn.humanized,
+                  value: hn.humanized,
+                })),
+              ]
             : [{ label: 'No subnets are currently available', value: NO_SUBNET_SET }]
         }
         getHelperText={(value) => {
@@ -121,14 +121,14 @@ const BasicNetworkFields: React.FC<BasicNetworkFieldsProps> = ({ cluster, hostSu
             name="apiVip"
             helperText={apiVipHelperText}
             isRequired
-            isDisabled={!hostSubnets.length}
+            isDisabled={!hostSubnets.length || values.hostSubnet === NO_SUBNET_SET}
           />
           <InputField
             name="ingressVip"
             label="Ingress Virtual IP"
             helperText={ingressVipHelperText}
             isRequired
-            isDisabled={!hostSubnets.length}
+            isDisabled={!hostSubnets.length || values.hostSubnet === NO_SUBNET_SET}
           />
         </>
       )}
