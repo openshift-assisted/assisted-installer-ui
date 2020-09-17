@@ -17,6 +17,13 @@ const ProxyFields: React.FC = () => {
     }
   };
 
+  /* TODO(mlibra): Uncomment after: https://bugzilla.redhat.com/show_bug.cgi?id=1877486
+  const noProxyHelperText =
+    'A comma-separated list of destination domain names, domains, IP addresses or other network CIDRs to exclude proxying. Preface a domain with . to include all subdomains of that domain. Use * to bypass proxy for all destinations.';
+    */
+  const noProxyHelperText =
+    'A comma-separated list of destination domain names, domains, IP addresses or other network CIDRs to exclude proxying. Preface a domain with . to include all subdomains of that domain.';
+
   // https://docs.openshift.com/container-platform/4.4/networking/enable-cluster-wide-proxy.html
   return (
     <>
@@ -56,7 +63,7 @@ const ProxyFields: React.FC = () => {
             label="No Proxy domains"
             name="noProxy"
             placeholder="one.domain.com,second.domain.com"
-            helperText="A comma-separated list of destination domain names, domains, IP addresses or other network CIDRs to exclude proxying. Preface a domain with . to include all subdomains of that domain. Use * to bypass proxy for all destinations."
+            helperText={noProxyHelperText}
           />
         </>
       )}
