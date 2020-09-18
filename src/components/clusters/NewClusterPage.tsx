@@ -94,6 +94,9 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ history, pullSecret = '
       );
     }
   };
+
+  const isPullSecretHidden = ocmClient && pullSecret;
+
   return (
     <>
       <ClusterBreadcrumbs clusterName="New cluster" />
@@ -124,17 +127,19 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ history, pullSecret = '
                       options={OPENSHIFT_VERSION_OPTIONS}
                       isRequired
                     />
-                    <TextAreaField
-                      name="pullSecret"
-                      label="Pull Secret"
-                      getErrorText={(error) => (
-                        <>
-                          {error} {pullSecretHelperText}
-                        </>
-                      )}
-                      helperText={pullSecretHelperText}
-                      isRequired
-                    />
+                    {!isPullSecretHidden && (
+                      <TextAreaField
+                        name="pullSecret"
+                        label="Pull Secret"
+                        getErrorText={(error) => (
+                          <>
+                            {error} {pullSecretHelperText}
+                          </>
+                        )}
+                        helperText={pullSecretHelperText}
+                        isRequired
+                      />
+                    )}
                   </Form>
                 </GridItem>
               </Grid>
