@@ -24,7 +24,7 @@ import { getHostRowHardwareInfo, getDateTimeCell } from './hardwareInfo';
 import { DiscoveryImageModalButton } from '../clusterConfiguration/discoveryImageModal';
 import HostStatus from './HostStatus';
 import { HostDetail } from './HostRowDetail';
-import { forceReload, updateHost } from '../../features/clusters/currentClusterSlice';
+import { forceReload, updateCluster } from '../../features/clusters/currentClusterSlice';
 import { handleApiError, stringToJSON, getErrorMessage } from '../../api/utils';
 import sortable from '../ui/table/sortable';
 import RoleCell from './RoleCell';
@@ -227,7 +227,7 @@ const HostsTable: React.FC<HostsTableProps> = ({
       const hostId = rowData.host.id;
       try {
         const { data } = await enableClusterHost(cluster.id, hostId);
-        dispatch(updateHost(data));
+        dispatch(updateCluster(data));
       } catch (e) {
         handleApiError(e, () =>
           addAlert({ title: `Failed to enable host ${hostId}`, message: getErrorMessage(e) }),
@@ -241,10 +241,8 @@ const HostsTable: React.FC<HostsTableProps> = ({
     async (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
       const hostId = rowData.host.id;
       try {
-        await disableClusterHost(cluster.id, hostId);
-        // Updated single host details will be atomically included in the overall refreshed cluster details, do not update by just received data to avoid race conditions.
-        // Cluster status can be changed, so refresh asap.
-        dispatch(forceReload());
+        const { data } = await disableClusterHost(cluster.id, hostId);
+        dispatch(updateCluster(data));
       } catch (e) {
         handleApiError(e, () =>
           addAlert({ title: `Failed to disable host ${hostId}`, message: getErrorMessage(e) }),

@@ -27,10 +27,10 @@ export const deleteCluster = (id: string): AxiosPromise<void> => client.delete(`
 export const getClusterHosts = (id: string): AxiosPromise<Host[]> =>
   client.get(`/clusters/${id}/hosts`);
 
-export const enableClusterHost = (clusterId: string, hostId: string): AxiosPromise<Host> =>
+export const enableClusterHost = (clusterId: string, hostId: string): AxiosPromise<Cluster> =>
   client.post(`/clusters/${clusterId}/hosts/${hostId}/actions/enable`);
 
-export const disableClusterHost = (clusterId: string, hostId: string): AxiosPromise<Host> =>
+export const disableClusterHost = (clusterId: string, hostId: string): AxiosPromise<Cluster> =>
   client.delete(`/clusters/${clusterId}/hosts/${hostId}/actions/enable`);
 
 export const deleteClusterHost = (clusterId: string, hostId: string): AxiosPromise<void> =>
