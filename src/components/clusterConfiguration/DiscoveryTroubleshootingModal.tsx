@@ -8,42 +8,34 @@ import {
   Text,
   TextVariants,
 } from '@patternfly/react-core';
-import { ToolbarButton } from '../ui/Toolbar';
+import { InfoCircleIcon } from '@patternfly/react-icons';
 import PrismCode from '../ui/PrismCode';
 
-type DiscoveryTroubleshootingModalButtonProps = React.ComponentProps<typeof Button> & {
-  ButtonComponent?: typeof Button | typeof ToolbarButton;
-  onClick?: () => void;
-};
-
-export const DiscoveryTroubleshootingModalButton: React.FC<DiscoveryTroubleshootingModalButtonProps> = ({
-  ButtonComponent = Button,
-  onClick,
-  children,
-  ...props
-}) => {
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const closeModal = () => setIsModalOpen(false);
-  const handleClick = onClick || (() => setIsModalOpen(true));
-  return (
-    <>
-      <ButtonComponent variant={ButtonVariant.link} {...props} onClick={handleClick} isInline>
-        {children}
-      </ButtonComponent>
-      <DiscoveryTroubleshootingModal isOpen={isModalOpen} onClose={closeModal} />
-    </>
-  );
+export type HostsNotShowingLinkProps = {
+  setDiscoveryHintModalOpen: (isOpen: boolean) => void;
 };
 
 type DiscoveryTroubleshootingModalProps = {
-  onClose: () => void;
+  setDiscoveryHintModalOpen: (isOpen: boolean) => void;
   isOpen: boolean;
 };
 
+export const HostsNotShowingLink: React.FC<HostsNotShowingLinkProps> = ({
+  setDiscoveryHintModalOpen,
+}) => (
+  <Button variant={ButtonVariant.link} onClick={() => setDiscoveryHintModalOpen(true)} isInline>
+    <InfoCircleIcon />
+    &nbsp;Hosts not showing up?
+  </Button>
+);
+
 export const DiscoveryTroubleshootingModal: React.FC<DiscoveryTroubleshootingModalProps> = ({
-  onClose,
+  setDiscoveryHintModalOpen,
   isOpen,
 }) => {
+  const onClose = React.useCallback(() => setDiscoveryHintModalOpen(false), [
+    setDiscoveryHintModalOpen,
+  ]);
   return (
     <Modal
       title="Host Discovery Troubleshooting"
