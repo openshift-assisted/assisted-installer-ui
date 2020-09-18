@@ -1,7 +1,7 @@
 import React from 'react';
 import * as Yup from 'yup';
 import { Formik, FormikHelpers } from 'formik';
-import { RouteComponentProps, Link } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router-dom';
 import {
   Form,
   Grid,
@@ -94,6 +94,9 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ history, pullSecret = '
       );
     }
   };
+
+  const isPullSecretHidden = ocmClient && pullSecret;
+
   return (
     <>
       <ClusterBreadcrumbs clusterName="New cluster" />
@@ -124,17 +127,19 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ history, pullSecret = '
                       options={OPENSHIFT_VERSION_OPTIONS}
                       isRequired
                     />
-                    <TextAreaField
-                      name="pullSecret"
-                      label="Pull Secret"
-                      getErrorText={(error) => (
-                        <>
-                          {error} {pullSecretHelperText}
-                        </>
-                      )}
-                      helperText={pullSecretHelperText}
-                      isRequired
-                    />
+                    {!isPullSecretHidden && (
+                      <TextAreaField
+                        name="pullSecret"
+                        label="Pull Secret"
+                        getErrorText={(error) => (
+                          <>
+                            {error} {pullSecretHelperText}
+                          </>
+                        )}
+                        helperText={pullSecretHelperText}
+                        isRequired
+                      />
+                    )}
                   </Form>
                 </GridItem>
               </Grid>
@@ -151,7 +156,7 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ history, pullSecret = '
               </ToolbarButton>
               <ToolbarButton
                 variant={ButtonVariant.link}
-                component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
+                onClick={() => history.push(`${routeBasePath}/clusters`)}
               >
                 Cancel
               </ToolbarButton>
