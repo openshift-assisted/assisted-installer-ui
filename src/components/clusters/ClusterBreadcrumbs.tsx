@@ -3,6 +3,7 @@ import { PageSectionVariants, Breadcrumb, BreadcrumbItem } from '@patternfly/rea
 import { Link } from 'react-router-dom';
 import PageSection from '../ui/PageSection';
 import { routeBasePath } from '../../config';
+import DeveloperPreview from '../ui/DeveloperPreview';
 
 type Props = {
   clusterName?: string;
@@ -16,6 +17,7 @@ const ClusterBreadcrumbs: React.FC<Props> = ({ clusterName }) => (
       </BreadcrumbItem>
       <BreadcrumbItem isActive>{clusterName}</BreadcrumbItem>
     </Breadcrumb>
+    <DeveloperPreview />
   </PageSection>
 );
 

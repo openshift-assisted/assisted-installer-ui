@@ -33,7 +33,6 @@ import SelectField from '../ui/formik/SelectField';
 import TextAreaField from '../ui/formik/TextAreaField';
 import LoadingState from '../ui/uiState/LoadingState';
 import { captureException } from '../../sentry';
-import DeveloperPreview from '../ui/DeveloperPreview';
 
 const pullSecretHelperText = (
   <>
@@ -114,7 +113,6 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ history, pullSecret = '
                 <GridItem span={12} lg={10} xl={6}>
                   <Form>
                     <TextContent>
-                      <DeveloperPreview />
                       <Text component="h1">
                         Install OpenShift on Bare Metal with the Assisted Installer
                       </Text>
