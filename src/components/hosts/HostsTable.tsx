@@ -42,13 +42,18 @@ import {
 } from './utils';
 import EditHostModal from './EditHostModal';
 import Hostname, { computeHostname } from './Hostname';
+import HostsCount from './HostsCount';
+import {
+  HostsNotShowingLink,
+  HostsNotShowingLinkProps,
+} from '../clusterConfiguration/DiscoveryTroubleshootingModal';
 
 import './HostsTable.css';
-import HostsCount from './HostsCount';
 
 type HostsTableProps = {
   cluster: Cluster;
   skipDisabled?: boolean;
+  setDiscoveryHintModalOpen?: HostsNotShowingLinkProps['setDiscoveryHintModalOpen'];
 };
 
 type OpenRows = {
@@ -118,12 +123,23 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
   ];
 };
 
-const HostsTableEmptyState: React.FC<{ cluster: Cluster }> = ({ cluster }) => (
+const HostsTableEmptyState: React.FC<{
+  cluster: Cluster;
+  setDiscoveryHintModalOpen?: HostsNotShowingLinkProps['setDiscoveryHintModalOpen'];
+}> = ({ cluster, setDiscoveryHintModalOpen }) => (
   <EmptyState
     icon={ConnectedIcon}
     title="Waiting for hosts..."
     content="Hosts may take a few minutes to appear here after booting."
     primaryAction={<DiscoveryImageModalButton cluster={cluster} />}
+    secondaryActions={
+      setDiscoveryHintModalOpen && [
+        <HostsNotShowingLink
+          key="hosts-not-showing"
+          setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
+        />,
+      ]
+    }
   />
 );
 
@@ -131,7 +147,11 @@ const rowKey = ({ rowData }: ExtraParamsType) => rowData?.key;
 const isHostShown = (skipDisabled: boolean) => (host: Host) =>
   !skipDisabled || host.status != 'disabled';
 
-const HostsTable: React.FC<HostsTableProps> = ({ cluster, skipDisabled = false }) => {
+const HostsTable: React.FC<HostsTableProps> = ({
+  cluster,
+  skipDisabled = false,
+  setDiscoveryHintModalOpen,
+}) => {
   const { addAlert } = React.useContext(AlertsContext);
   const [showEventsModal, setShowEventsModal] = React.useState<
     { host: Host['id']; hostname: string } | undefined
@@ -168,8 +188,14 @@ const HostsTable: React.FC<HostsTableProps> = ({ cluster, skipDisabled = false }
     if (hostRows.length) {
       return hostRows;
     }
-    return getColSpanRow(<HostsTableEmptyState cluster={cluster} />, columns.length);
-  }, [hostRows, cluster, columns]);
+    return getColSpanRow(
+      <HostsTableEmptyState
+        cluster={cluster}
+        setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
+      />,
+      columns.length,
+    );
+  }, [hostRows, cluster, columns, setDiscoveryHintModalOpen]);
 
   const onCollapse = React.useCallback(
     (_event, rowKey) => {
