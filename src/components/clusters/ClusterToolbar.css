@@ -4,3 +4,6 @@
 .cluster-toolbar__content {
   padding: 0 !important;
 }
+.cluster-toolbar-ocm {
+  margin-right: 50px; /* fixed size of "a bulb" in OCM */
+}
