@@ -11,6 +11,9 @@ import {
   SplitItem,
   TextList,
   TextListItem,
+  TextContent,
+  Text,
+  TextVariants,
 } from '@patternfly/react-core';
 import { TimesIcon } from '@patternfly/react-icons';
 import { Cluster } from '../../api/types';
@@ -86,11 +89,14 @@ const ClusterValidationSection: React.FC<ClusterValidationSectionProps> = ({
               title="Cluster is not ready to be installed yet"
               isInline
             >
-              <TextList>
-                {failedValidations.map((validation) => (
-                  <TextListItem key={validation.id}>{validation.message}</TextListItem>
-                ))}
-              </TextList>
+              <TextContent>
+                <Text component={TextVariants.p}>Following validations need to pass:</Text>
+                <TextList>
+                  {failedValidations.map((validation) => (
+                    <TextListItem key={validation.id}>{validation.message}</TextListItem>
+                  ))}
+                </TextList>
+              </TextContent>
             </Alert>
           )}
         </AlertGroup>
