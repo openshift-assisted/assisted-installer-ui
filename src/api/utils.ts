@@ -1,5 +1,6 @@
-import Axios, { AxiosError } from 'axios';
+import Axios, { AxiosError, AxiosPromise } from 'axios';
 import _ from 'lodash';
+import { addAlert } from '../features/alerts/alertsSlice';
 import { captureException } from '../sentry';
 
 type OnError = <T>(arg0: AxiosError<T>) => void;
@@ -51,3 +52,34 @@ export const stringToJSON = <T>(string: string | undefined): T | undefined => {
 };
 
 export const removeProtocolFromURL = (url = '') => url.replace(/^(http|https):\/\//, '');
+
+type FetchApiEndpointParams<T> = {
+  apiCallback: () => AxiosPromise<T>;
+  onSuccess: (data: T) => void;
+  errorTitle: string;
+  onError?: (e: AxiosError<T>) => void;
+};
+
+export const fetchApiEndpoint = <T>({
+  apiCallback,
+  onSuccess,
+  onError,
+  errorTitle,
+}: FetchApiEndpointParams<T>) => {
+  const fetchFunc = async () => {
+    try {
+      const { data } = await apiCallback();
+      onSuccess(data);
+    } catch (e) {
+      handleApiError(e, () =>
+        onError
+          ? onError(e)
+          : addAlert({
+              title: errorTitle,
+              message: getErrorMessage(e),
+            }),
+      );
+    }
+  };
+  fetchFunc();
+};
