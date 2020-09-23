@@ -22,7 +22,7 @@ import {
   uniqueHostnameValidationSchema,
 } from '../ui/formik/validationSchemas';
 import GridGap from '../ui/GridGap';
-import StaticTextField from '../ui/StaticTextField';
+import { StaticTextField } from '../ui/StaticTextField';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import { canHostnameBeChanged } from './utils';
 
