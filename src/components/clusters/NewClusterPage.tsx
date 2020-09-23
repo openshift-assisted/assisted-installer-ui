@@ -10,6 +10,7 @@ import {
   TextContent,
   Text,
   ButtonVariant,
+  ExpandableSection,
 } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import PageSection from '../ui/PageSection';
@@ -46,8 +47,46 @@ const pullSecretHelperText = (
   </>
 );
 
-type NewClusterFormProps = RouteComponentProps & {
+type PullSecretProps = {
   pullSecret?: string;
+};
+
+type NewClusterFormProps = RouteComponentProps & PullSecretProps;
+
+const PullSecret: React.FC<PullSecretProps> = ({ pullSecret }) => {
+  // Fetched pull secret will never change - see LoadingState in NewCluster
+  const [isExpanded, setExpanded] = React.useState(!pullSecret);
+  const textArea = (
+    <TextAreaField
+      name="pullSecret"
+      label="Pull Secret"
+      getErrorText={(error) => (
+        <>
+          {error} {pullSecretHelperText}
+        </>
+      )}
+      helperText={pullSecretHelperText}
+      isRequired
+    />
+  );
+
+  if (ocmClient) {
+    return (
+      <ExpandableSection
+        toggleText={
+          isExpanded
+            ? 'Collapse pull secret'
+            : 'Pull secret retrieved automatically. Expand to edit.'
+        }
+        onToggle={() => setExpanded(!isExpanded)}
+        isExpanded={isExpanded}
+      >
+        {textArea}
+      </ExpandableSection>
+    );
+  }
+
+  return textArea;
 };
 
 const NewClusterForm: React.FC<NewClusterFormProps> = ({ history, pullSecret = '' }) => {
@@ -95,8 +134,6 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ history, pullSecret = '
     }
   };
 
-  const isPullSecretHidden = ocmClient && pullSecret;
-
   return (
     <>
       <ClusterBreadcrumbs clusterName="New cluster" />
@@ -127,19 +164,7 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ history, pullSecret = '
                       options={OPENSHIFT_VERSION_OPTIONS}
                       isRequired
                     />
-                    {!isPullSecretHidden && (
-                      <TextAreaField
-                        name="pullSecret"
-                        label="Pull Secret"
-                        getErrorText={(error) => (
-                          <>
-                            {error} {pullSecretHelperText}
-                          </>
-                        )}
-                        helperText={pullSecretHelperText}
-                        isRequired
-                      />
-                    )}
+                    <PullSecret pullSecret={pullSecret} />
                   </Form>
                 </GridItem>
               </Grid>
