@@ -9,8 +9,10 @@ import {
   ButtonVariant,
   Split,
   SplitItem,
-  TextList,
-  TextListItem,
+  Flex,
+  FlexItem,
+  List,
+  ListItem,
 } from '@patternfly/react-core';
 import { TimesIcon } from '@patternfly/react-icons';
 import { Cluster } from '../../api/types';
@@ -86,11 +88,16 @@ const ClusterValidationSection: React.FC<ClusterValidationSectionProps> = ({
               title="Cluster is not ready to be installed yet"
               isInline
             >
-              <TextList>
-                {failedValidations.map((validation) => (
-                  <TextListItem key={validation.id}>{validation.message}</TextListItem>
-                ))}
-              </TextList>
+              <Flex spaceItems={{ default: 'spaceItemsSm' }} direction={{ default: 'column' }}>
+                <FlexItem>The following requirements must be met:</FlexItem>
+                <FlexItem>
+                  <List>
+                    {failedValidations.map((validation) => (
+                      <ListItem key={validation.id}>{validation.message}</ListItem>
+                    ))}
+                  </List>
+                </FlexItem>
+              </Flex>
             </Alert>
           )}
         </AlertGroup>
