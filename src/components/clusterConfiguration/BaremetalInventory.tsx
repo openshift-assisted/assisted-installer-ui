@@ -8,7 +8,8 @@ import {
   DiscoveryTroubleshootingModal,
 } from './DiscoveryTroubleshootingModal';
 import { getHostRequirements } from '../../api/hostRequirements';
-import { fetchApiEndpoint } from '../../api';
+import { getErrorMessage, handleApiError } from '../../api';
+import { addAlert } from '../../features/alerts/alertsSlice';
 
 interface BareMetalInventoryProps {
   cluster: Cluster;
@@ -19,11 +20,20 @@ const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({ cluster }) => {
   const [hostRequirements, setHostRequirements] = React.useState<HostRequirements | null>(null);
 
   React.useEffect(() => {
-    fetchApiEndpoint<HostRequirements>({
-      apiCallback: getHostRequirements,
-      onSuccess: setHostRequirements,
-      errorTitle: 'Failed to retrieve minimal host requierements',
-    });
+    const fetchFunc = async () => {
+      try {
+        const { data } = await getHostRequirements();
+        setHostRequirements(data);
+      } catch (e) {
+        handleApiError(e, () =>
+          addAlert({
+            title: 'Failed to retrieve minimum host requierements',
+            message: getErrorMessage(e),
+          }),
+        );
+      }
+    };
+    fetchFunc();
   }, [setHostRequirements]);
 
   return (
