@@ -1,9 +1,10 @@
 import React from 'react';
 import { Checkbox, Popover } from '@patternfly/react-core';
 import { ExternalLinkAltIcon, OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
-import { ocmClient } from '../../api';
+import { ClusterCreateParams, ocmClient } from '../../api';
 import { CLUSTER_MANAGER_SITE_LINK, PULL_SECRET_INFO_LINK } from '../../config';
 import { TextAreaField } from '../ui';
+import { useFormikContext } from 'formik';
 
 export type PullSecretProps = {
   pullSecret?: string;
@@ -47,6 +48,8 @@ const PullSecretInfo = () => (
 const PullSecret: React.FC<PullSecretProps> = ({ pullSecret }) => {
   // Fetched pull secret will never change - see LoadingState in NewCluster
   const [isExpanded, setExpanded] = React.useState(!pullSecret);
+  const { setFieldValue } = useFormikContext<ClusterCreateParams>();
+
   const textArea = (
     <TextAreaField
       name="pullSecret"
@@ -63,6 +66,14 @@ const PullSecret: React.FC<PullSecretProps> = ({ pullSecret }) => {
   );
 
   if (ocmClient) {
+    const onCheckboxChange = () => {
+      if (isExpanded) {
+        // about to collapse, reset to original value
+        setFieldValue('pullSecret', pullSecret);
+      }
+      setExpanded(!isExpanded);
+    };
+
     return (
       <>
         <Checkbox
@@ -74,7 +85,7 @@ const PullSecret: React.FC<PullSecretProps> = ({ pullSecret }) => {
           }
           aria-label="customize pull secret"
           isChecked={isExpanded}
-          onChange={() => setExpanded(!isExpanded)}
+          onChange={onCheckboxChange}
         />
         {isExpanded && textArea}
       </>
