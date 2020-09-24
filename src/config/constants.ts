@@ -128,3 +128,5 @@ export const HOST_VALIDATION_LABELS: { [key in Validation['id']]: string } = {
 export const getFacetLibVersion = () => packageJson.version;
 
 export const EVENT_SEVERITIES: Event['severity'][] = ['info', 'warning', 'error', 'critical'];
+
+export const TIME_ZERO = '0001-01-01T00:00:00.000Z';
