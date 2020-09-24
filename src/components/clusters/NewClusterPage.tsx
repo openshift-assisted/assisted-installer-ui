@@ -10,9 +10,7 @@ import {
   TextContent,
   Text,
   ButtonVariant,
-  ExpandableSection,
 } from '@patternfly/react-core';
-import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import PageSection from '../ui/PageSection';
 import { ToolbarButton } from '../ui/Toolbar';
 import ClusterToolbar from './ClusterToolbar';
@@ -20,74 +18,18 @@ import AlertsSection from '../ui/AlertsSection';
 import { handleApiError, getErrorMessage } from '../../api/utils';
 import { AlertsContext, AlertsContextProvider } from '../AlertsContextProvider';
 import ClusterBreadcrumbs from './ClusterBreadcrumbs';
-import {
-  routeBasePath,
-  OPENSHIFT_VERSION_OPTIONS,
-  CLUSTER_MANAGER_SITE_LINK,
-} from '../../config/constants';
+import { routeBasePath, OPENSHIFT_VERSION_OPTIONS } from '../../config/constants';
 import { getClusters, postCluster } from '../../api/clusters';
 import { ClusterCreateParams } from '../../api/types';
 import { nameValidationSchema, validJSONSchema } from '../ui/formik/validationSchemas';
 import { ocmClient } from '../../api/axiosClient';
 import InputField from '../ui/formik/InputField';
 import SelectField from '../ui/formik/SelectField';
-import TextAreaField from '../ui/formik/TextAreaField';
 import LoadingState from '../ui/uiState/LoadingState';
 import { captureException } from '../../sentry';
-
-const pullSecretHelperText = (
-  <>
-    Your Red Hat account's pull secret will be used by default. The pull secret of an account can be
-    found on{' '}
-    {
-      <a href={CLUSTER_MANAGER_SITE_LINK} target="_blank" rel="noopener noreferrer">
-        this page <ExternalLinkAltIcon />
-      </a>
-    }
-  </>
-);
-
-type PullSecretProps = {
-  pullSecret?: string;
-};
+import PullSecret, { PullSecretProps } from './PullSecret';
 
 type NewClusterFormProps = RouteComponentProps & PullSecretProps;
-
-const PullSecret: React.FC<PullSecretProps> = ({ pullSecret }) => {
-  // Fetched pull secret will never change - see LoadingState in NewCluster
-  const [isExpanded, setExpanded] = React.useState(!pullSecret);
-  const textArea = (
-    <TextAreaField
-      name="pullSecret"
-      label="Pull Secret"
-      getErrorText={(error) => (
-        <>
-          {error} {pullSecretHelperText}
-        </>
-      )}
-      helperText={pullSecretHelperText}
-      isRequired
-    />
-  );
-
-  if (ocmClient) {
-    return (
-      <ExpandableSection
-        toggleText={
-          isExpanded
-            ? 'Collapse pull secret'
-            : 'Pull secret retrieved automatically. Expand to edit.'
-        }
-        onToggle={() => setExpanded(!isExpanded)}
-        isExpanded={isExpanded}
-      >
-        {textArea}
-      </ExpandableSection>
-    );
-  }
-
-  return textArea;
-};
 
 const NewClusterForm: React.FC<NewClusterFormProps> = ({ history, pullSecret = '' }) => {
   const { addAlert, clearAlerts } = React.useContext(AlertsContext);
