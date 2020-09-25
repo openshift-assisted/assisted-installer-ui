@@ -1,6 +1,6 @@
 import { saveAs } from 'file-saver';
 import { Host, Cluster, Presigned } from '../../api/types';
-import { HOST_ROLES } from '../../config';
+import { HOST_ROLES, TIME_ZERO } from '../../config';
 import {
   getHostLogsDownloadUrl,
   ocmClient,
@@ -71,7 +71,7 @@ export const getHostRole = (host: Host): string =>
   `${HOST_ROLES[host.role || 0]}${host.bootstrap ? ' (bootstrap)' : ''}`;
 
 export const canDownloadHostLogs = (host: Host) =>
-  !!host.logsCollectedAt && host.logsCollectedAt != '0001-01-01T00:00:00';
+  !!host.logsCollectedAt && host.logsCollectedAt != TIME_ZERO;
 
 export const canDownloadClusterLogs = (cluster: Cluster) =>
   !!(cluster.hosts || []).find((host) => canDownloadHostLogs(host));

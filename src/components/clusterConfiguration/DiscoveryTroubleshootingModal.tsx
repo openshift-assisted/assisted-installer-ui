@@ -50,11 +50,11 @@ export const DiscoveryTroubleshootingModal: React.FC<DiscoveryTroubleshootingMod
     >
       <TextContent>
         <Text component={TextVariants.p}>
-          Booting up an ISO might take a few minutes, and might depend heavily on your hardware and
-          network configuration, however, if you have verified that your host is on, DHCP is enabled
-          and yet the host does not appear in the UI, you may try to login over SSH to the host in
-          order to troubleshoot, for that you would need to know your machine IP-address, or use a
-          console such as BMC, virtual machine console etc.
+          Booting from an ISO takes a few minutes. It also depends heavily on the hardware and
+          network configuration. However, if you have verified that your host machine is powered on,
+          DHCP is enabled and yet the host does not appear in the inventory list, then login to the
+          host over SSH to troubleshoot. For that, you would need to know your machine IP-address.
+          You can also use a console such as BMC or virtual machine console.
         </Text>
         <Text component={TextVariants.h2}>SSH into your machine</Text>
         <PrismCode code={`ssh core@<machine-ip>`} />
