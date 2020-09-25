@@ -29,6 +29,7 @@ export type ClusterEventsFiltersType = {
   fulltext: string;
   hosts: Host['id'][];
   severity: Event['severity'][];
+  clusterLevel: boolean;
 };
 
 type ClustersFilterToolbarProps = {
@@ -45,6 +46,7 @@ const Placeholder = ({ text }: { text: string }) => (
 );
 
 export const NO_HOSTS = 'deselect-all-hosts-action';
+export const CLUSTER_LEVEL = 'cluster-level-action';
 
 const mapHosts = (hosts: Host[] = []) =>
   hosts.map((host) => {
@@ -63,6 +65,7 @@ export const getInitialClusterEventsFilters = (cluster: Cluster): ClusterEventsF
   fulltext: '',
   hosts: mapHosts(cluster.hosts).map((host) => host.id),
   severity: [],
+  clusterLevel: true,
 });
 
 const getEventsCount = (severity: Event['severity'], events: Event[]) =>
@@ -97,13 +100,22 @@ const ClusterEventsToolbar: React.FC<ClustersFilterToolbarProps> = ({
     // @ts-ignore
     const isChecked = event.target.checked;
 
-    if (value === NO_HOSTS) {
-      setFilters({
-        ...filters,
-        hosts: [], // clear all selection whenever clicked
-      });
-    } else {
-      onSelect('hosts', isChecked, value as string);
+    switch (value) {
+      case NO_HOSTS:
+        setFilters({
+          ...filters,
+          hosts: [], // clear all selection whenever clicked
+          clusterLevel: false,
+        });
+        break;
+      case CLUSTER_LEVEL:
+        setFilters({
+          ...filters,
+          clusterLevel: isChecked,
+        });
+        break;
+      default:
+        onSelect('hosts', isChecked, value as string);
     }
   };
 
@@ -140,6 +152,8 @@ const ClusterEventsToolbar: React.FC<ClustersFilterToolbarProps> = ({
     });
   };
 
+  const selections = filters.clusterLevel ? [...filters.hosts, CLUSTER_LEVEL] : filters.hosts;
+
   return (
     <Toolbar
       id="clusters-events-toolbar"
@@ -154,14 +168,22 @@ const ClusterEventsToolbar: React.FC<ClustersFilterToolbarProps> = ({
             aria-label="hosts"
             onToggle={onHostToggle}
             onSelect={onHostSelect}
-            selections={filters.hosts}
+            selections={selections}
+            customBadgeText={filters.hosts?.length || 0}
             isOpen={isHostExpanded}
             placeholderText={<Placeholder text="Hosts" />}
             isDisabled={allHosts.length === 0}
           >
             {[
-              <SelectOption key={NO_HOSTS} value={NO_HOSTS}>
+              <SelectOption inputId={`checkbox-${NO_HOSTS}`} key={NO_HOSTS} value={NO_HOSTS}>
                 Clear selection
+              </SelectOption>,
+              <SelectOption
+                inputId={`checkbox-${CLUSTER_LEVEL}`}
+                key={CLUSTER_LEVEL}
+                value={CLUSTER_LEVEL}
+              >
+                Cluster-level events
               </SelectOption>,
               ...allHosts.map((host) => (
                 <SelectOption key={host.id} value={host.id}>
