@@ -10,18 +10,22 @@ export type PullSecretProps = {
   pullSecret?: string;
 };
 
-const ClusterManagerSiteLink = ({ text = 'OpenShiftCluster Manager' }: { text?: string }) => (
+const ClusterManagerSiteLink = () => (
   <a href={CLUSTER_MANAGER_SITE_LINK} target="_blank" rel="noopener noreferrer">
-    {text} <ExternalLinkAltIcon />
+    OpenShift Cluster Manager <ExternalLinkAltIcon />
+  </a>
+);
+
+const PullSecretInfoLink = () => (
+  <a href={PULL_SECRET_INFO_LINK} target="_blank" rel="noopener noreferrer">
+    Learn more about pull secrets <ExternalLinkAltIcon />.
   </a>
 );
 
 const pullSecretHelperText = ocmClient ? (
   <>
     Your Red Hat account's pull secret is used by default.&nbsp;
-    <a href={PULL_SECRET_INFO_LINK} target="_blank" rel="noopener noreferrer">
-      Learn more about pull secrets <ExternalLinkAltIcon />
-    </a>
+    <PullSecretInfoLink />
   </>
 ) : (
   <>
@@ -36,12 +40,21 @@ const PullSecretInfo = () => (
     bodyContent={
       <>
         Pull secrets are used to download OpenShift Container Platform components and connect
-        clusters to a Red Hat account. Pull secrets can be found in&nbsp;
-        <ClusterManagerSiteLink />
+        clusters to a Red Hat account.&nbsp;
+        {ocmClient ? (
+          <PullSecretInfoLink />
+        ) : (
+          <>
+            Pull secrets can be found in&nbsp;
+            <ClusterManagerSiteLink />
+          </>
+        )}
       </>
     }
   >
-    <OutlinedQuestionCircleIcon />
+    <button onClick={(e) => e.preventDefault()} className="pf-c-form__group-label-help">
+      <OutlinedQuestionCircleIcon noVerticalAlign />
+    </button>
   </Popover>
 );
 
@@ -78,14 +91,15 @@ const PullSecret: React.FC<PullSecretProps> = ({ pullSecret }) => {
       <>
         <Checkbox
           id="checkbox-pull-secret"
-          label={
-            <span onClick={(event) => event.preventDefault()}>
-              Customize pull secret <PullSecretInfo />
-            </span>
-          }
-          aria-label="customize pull secret"
+          className="pf-u-display-inline-flex"
+          aria-label="edit pull secret"
           isChecked={isExpanded}
           onChange={onCheckboxChange}
+          label={
+            <>
+              Edit pull secret <PullSecretInfo />
+            </>
+          }
         />
         {isExpanded && textArea}
       </>
