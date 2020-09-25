@@ -1,10 +1,11 @@
 import React from 'react';
-import { Checkbox, Popover } from '@patternfly/react-core';
-import { ExternalLinkAltIcon, OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
+import { Checkbox } from '@patternfly/react-core';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { ClusterCreateParams, ocmClient } from '../../api';
 import { CLUSTER_MANAGER_SITE_LINK, PULL_SECRET_INFO_LINK } from '../../config';
 import { TextAreaField } from '../ui';
 import { useFormikContext } from 'formik';
+import PopoverIcon from '../ui/PopoverIcon';
 
 export type PullSecretProps = {
   pullSecret?: string;
@@ -35,8 +36,7 @@ const pullSecretHelperText = ocmClient ? (
 );
 
 const PullSecretInfo = () => (
-  <Popover
-    position="top"
+  <PopoverIcon
     bodyContent={
       <>
         Pull secrets are used to download OpenShift Container Platform components and connect
@@ -51,11 +51,7 @@ const PullSecretInfo = () => (
         )}
       </>
     }
-  >
-    <button onClick={(e) => e.preventDefault()} className="pf-c-form__group-label-help">
-      <OutlinedQuestionCircleIcon noVerticalAlign />
-    </button>
-  </Popover>
+  />
 );
 
 const PullSecret: React.FC<PullSecretProps> = ({ pullSecret }) => {
