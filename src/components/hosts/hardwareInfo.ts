@@ -64,7 +64,7 @@ export const getHostRowHardwareInfo = (inventory: Inventory): HostRowHardwareInf
   }
 
   return {
-    serialNumber: inventory.systemVendor?.serialNumber || DASH,
+    serialNumber: inventory.systemVendor?.serialNumber || 'Virtual machine',
     cores,
     cpuSpeed,
     memory,
