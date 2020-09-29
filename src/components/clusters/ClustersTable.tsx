@@ -71,7 +71,9 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
     if (marshalled) {
       try {
         const parsed = JSON.parse(marshalled);
-        setFilters(parsed);
+        parsed.filters && setFilters(parsed.filters);
+        parsed.sortBy && setSortBy(parsed.sortBy);
+        parsed.searchName && setSearchName(parsed.searchName);
       } catch (e) {
         console.info('Failed to restore clusters filter: ', e);
       }
@@ -79,8 +81,11 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
   }, []);
 
   React.useEffect(() => {
-    window.sessionStorage.setItem(STORAGE_KEY_CLUSTERS_FILTER, JSON.stringify(filters));
-  }, [filters]);
+    window.sessionStorage.setItem(
+      STORAGE_KEY_CLUSTERS_FILTER,
+      JSON.stringify({ filters, sortBy, searchName }),
+    );
+  }, [filters, sortBy, searchName]);
 
   const actionResolver: IActionsResolver = React.useCallback(
     (rowData) => [
