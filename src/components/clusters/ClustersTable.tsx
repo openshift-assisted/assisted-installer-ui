@@ -69,8 +69,12 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
   React.useEffect(() => {
     const marshalled = window.sessionStorage.getItem(STORAGE_KEY_CLUSTERS_FILTER);
     if (marshalled) {
-      const parsed = JSON.parse(marshalled);
-      setFilters(parsed);
+      try {
+        const parsed = JSON.parse(marshalled);
+        setFilters(parsed);
+      } catch (e) {
+        console.info('Failed to restore clusters filter: ', e);
+      }
     }
   }, []);
 
