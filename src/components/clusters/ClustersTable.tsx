@@ -44,6 +44,7 @@ const columns = [
   { title: 'Version', ...columnConfig },
   { title: 'Status', ...columnConfig },
   { title: 'Hosts', ...columnConfig },
+  { title: 'Created at', ...columnConfig },
 ];
 
 const getStatusCell = (row: IRow) => row.cells?.[3] as HumanizedSortable | undefined;
