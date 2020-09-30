@@ -12,6 +12,7 @@ const SwitchField: React.FC<SwitchFieldProps> = ({
   onChange,
   getHelperText,
   idPostfix,
+  labelIcon,
   ...props
 }) => {
   const [field, { touched, error }] = useField(props.name);
@@ -28,6 +29,7 @@ const SwitchField: React.FC<SwitchFieldProps> = ({
       helperTextInvalid={errorMessage}
       validated={isValid ? 'default' : 'error'}
       isRequired={isRequired}
+      labelIcon={labelIcon}
     >
       <Switch
         {...field}
