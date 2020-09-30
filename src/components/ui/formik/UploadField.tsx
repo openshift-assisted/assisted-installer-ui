@@ -7,6 +7,7 @@ import HelperText from './HelperText';
 
 const UploadField: React.FC<TextAreaProps> = ({
   label,
+  labelIcon,
   helperText,
   getErrorText,
   isRequired,
@@ -53,6 +54,7 @@ const UploadField: React.FC<TextAreaProps> = ({
       }
       validated={isValid ? 'default' : 'error'}
       isRequired={isRequired}
+      labelIcon={labelIcon}
     >
       {children}
       <FileUpload

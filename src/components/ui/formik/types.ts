@@ -4,6 +4,7 @@ import { FieldValidator } from 'formik';
 export interface FieldProps {
   name: string;
   label?: string;
+  labelIcon?: React.ReactElement;
   helperText?: React.ReactNode;
   isRequired?: boolean;
   style?: React.CSSProperties;
