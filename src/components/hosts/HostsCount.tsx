@@ -4,11 +4,20 @@ import { Host } from '../../api/types';
 
 type HostsCountProps = {
   hosts?: Host[];
+  inParenthesis?: boolean;
+  valueId?: string;
 };
 
-const HostsCount: React.FC<HostsCountProps> = ({ hosts = [] }) => {
+export const getEnabledHostsCount = (hosts: Host[] = []) =>
+  hosts.filter((h) => h.status != 'disabled').length;
+
+const HostsCount: React.FC<HostsCountProps> = ({
+  hosts = [],
+  inParenthesis = false,
+  valueId = 'hosts-count',
+}) => {
   const hostsDiscovered = hosts.length;
-  const hostsIncluded = hosts.filter((h) => h.status != 'disabled').length;
+  const hostsIncluded = getEnabledHostsCount(hosts);
 
   const body = (
     <>
@@ -24,11 +33,13 @@ const HostsCount: React.FC<HostsCountProps> = ({ hosts = [] }) => {
   );
 
   return (
-    <>
-      <Popover headerContent="Hosts in the cluster" bodyContent={body}>
-        <a>({hostsIncluded})</a>
-      </Popover>
-    </>
+    <Popover headerContent="Hosts in the cluster" bodyContent={body}>
+      <a id={valueId}>
+        {inParenthesis && '('}
+        {hostsIncluded}
+        {inParenthesis && ')'}
+      </a>
+    </Popover>
   );
 };
 
