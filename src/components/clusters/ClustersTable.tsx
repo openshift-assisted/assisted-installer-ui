@@ -23,6 +23,8 @@ import ClustersFilterToolbar, { ClusterFiltersType } from './ClustersFilterToolb
 
 const rowKey = ({ rowData }: ExtraParamsType) => rowData?.props.id;
 
+const STORAGE_KEY_CLUSTERS_FILTER = 'assisted-installer-cluster-list-filters';
+
 interface ClustersTableProps {
   rows: ClusterTableRows;
   deleteCluster: (id: string) => void;
@@ -63,6 +65,27 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
   const [filters, setFilters] = React.useState<ClusterFiltersType>({
     status: [],
   });
+
+  React.useEffect(() => {
+    const marshalled = window.sessionStorage.getItem(STORAGE_KEY_CLUSTERS_FILTER);
+    if (marshalled) {
+      try {
+        const parsed = JSON.parse(marshalled);
+        parsed.filters && setFilters(parsed.filters);
+        parsed.sortBy && setSortBy(parsed.sortBy);
+        parsed.searchName && setSearchName(parsed.searchName);
+      } catch (e) {
+        console.info('Failed to restore clusters filter: ', e);
+      }
+    }
+  }, []);
+
+  React.useEffect(() => {
+    window.sessionStorage.setItem(
+      STORAGE_KEY_CLUSTERS_FILTER,
+      JSON.stringify({ filters, sortBy, searchName }),
+    );
+  }, [filters, sortBy, searchName]);
 
   const actionResolver: IActionsResolver = React.useCallback(
     (rowData) => [
