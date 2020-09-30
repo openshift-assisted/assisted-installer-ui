@@ -30,7 +30,7 @@ const HostValidationGroups: React.FC<HostValidationGroupsProps> = ({ validations
           if (pendingValidations.length) {
             return (
               <>
-                Pending <PendingIcon />
+                Pending input <PendingIcon />
               </>
             );
           } else if (failedValidations.length) {
@@ -56,11 +56,13 @@ const HostValidationGroups: React.FC<HostValidationGroupsProps> = ({ validations
               <LevelItem>{getValidationGroupState()}</LevelItem>
             </Level>
             <AlertGroup>
-              <ValidationGroupAlert
-                variant={AlertVariant.info}
-                title="Pending validations:"
-                validations={pendingValidations}
-              />
+              {!failedValidations.length && ( // display pending validations only if there are no failing validations
+                <ValidationGroupAlert
+                  variant={AlertVariant.info}
+                  title="Pending validations:"
+                  validations={pendingValidations}
+                />
+              )}
               <ValidationGroupAlert
                 variant={AlertVariant.warning}
                 title="Failed validations:"
