@@ -73,7 +73,7 @@ const getColumns = (hosts?: Host[]) => [
   { title: 'CPU Cores', transforms: [sortable] }, // cores per machine (sockets x cores)
   { title: 'Memory', transforms: [sortable] },
   { title: 'Disk', transforms: [sortable] },
-  { title: <HostsCount hosts={hosts} /> },
+  { title: <HostsCount hosts={hosts} inParenthesis /> },
 ];
 
 const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host): IRow => {

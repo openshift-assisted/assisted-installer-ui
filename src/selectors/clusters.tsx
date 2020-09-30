@@ -11,6 +11,7 @@ import { HumanizedSortable } from '../components/ui/table/utils';
 import ClusterStatus, { getClusterStatusText } from '../components/clusters/ClusterStatus';
 import { DASH } from '../components/constants';
 import { routeBasePath } from '../config';
+import HostsCount, { getEnabledHostsCount } from '../components/hosts/HostsCount';
 
 const selectClusters = (state: RootState) => state.clusters.data;
 const clustersUIState = (state: RootState) => state.clusters.uiState;
@@ -26,8 +27,6 @@ export const selectClustersUIState = createSelector(
 
 const clusterToClusterTableRow = (cluster: Cluster): IRow => {
   const { id, name, hosts, openshiftVersion, baseDnsDomain } = cluster;
-  const hostsCount = hosts ? hosts.length : 0;
-
   return {
     cells: [
       {
@@ -45,8 +44,8 @@ const clusterToClusterTableRow = (cluster: Cluster): IRow => {
         sortableValue: getClusterStatusText(cluster),
       } as HumanizedSortable,
       {
-        title: hostsCount.toString(),
-        sortableValue: hostsCount,
+        title: <HostsCount hosts={hosts} valueId={`hosts-count-${cluster.name}`} />,
+        sortableValue: getEnabledHostsCount(hosts),
       } as HumanizedSortable,
     ],
     props: {
