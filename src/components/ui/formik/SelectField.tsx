@@ -13,6 +13,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
   onChange,
   getHelperText,
   idPostfix,
+  labelIcon,
   ...props
 }) => {
   const [field, { touched, error }] = useField(props.name);
@@ -30,6 +31,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
       helperTextInvalid={errorMessage}
       validated={isValid ? 'default' : 'error'}
       isRequired={isRequired}
+      labelIcon={labelIcon}
     >
       <FormSelect
         {...field}
