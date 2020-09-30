@@ -1,12 +1,15 @@
 import React from 'react';
 import { Text, TextContent, Button } from '@patternfly/react-core';
 import HostsTable from '../hosts/HostsTable';
-import { Cluster } from '../../api/types';
+import { Cluster, HostRequirements } from '../../api/types';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
 import {
   HostsNotShowingLink,
   DiscoveryTroubleshootingModal,
 } from './DiscoveryTroubleshootingModal';
+import { getHostRequirements } from '../../api/hostRequirements';
+import { getErrorMessage, handleApiError } from '../../api';
+import { addAlert } from '../../features/alerts/alertsSlice';
 
 interface BareMetalInventoryProps {
   cluster: Cluster;
@@ -14,6 +17,24 @@ interface BareMetalInventoryProps {
 
 const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({ cluster }) => {
   const [isDiscoveryHintModalOpen, setDiscoveryHintModalOpen] = React.useState(false);
+  const [hostRequirements, setHostRequirements] = React.useState<HostRequirements | null>(null);
+
+  React.useEffect(() => {
+    const fetchFunc = async () => {
+      try {
+        const { data } = await getHostRequirements();
+        setHostRequirements(data);
+      } catch (e) {
+        handleApiError(e, () =>
+          addAlert({
+            title: 'Failed to retrieve minimum host requierements',
+            message: getErrorMessage(e),
+          }),
+        );
+      }
+    };
+    fetchFunc();
+  }, [setHostRequirements]);
 
   return (
     <>
@@ -27,11 +48,18 @@ const BaremetalInventory: React.FC<BareMetalInventoryProps> = ({ cluster }) => {
           Hosts connected to the internet will be inspected and automatically appear below.{' '}
           <HostsNotShowingLink setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
         </Text>
-        <Text component="p">
-          Three master hosts are required with at least 4 CPU cores, 16 GB of RAM, and 120 GB of
-          filesystem storage each. Two or more additional worker hosts are recommended with at least
-          2 CPU cores, 8 GB of RAM, and 120 GB of filesystem storage each.
-        </Text>
+        {hostRequirements && (
+          <Text component="p">
+            Three master hosts are required with at least {hostRequirements.master?.cpuCores || 4}{' '}
+            CPU cores, {hostRequirements.master?.ramGib || 16} GB of RAM, and{' '}
+            {hostRequirements.master?.diskSizeGb || 120} GB of filesystem storage each. Two or more
+            additional worker hosts are recommended with at least{' '}
+            {hostRequirements.worker?.cpuCores || 2} CPU cores,{' '}
+            {hostRequirements.worker?.ramGib || 8} GB of RAM, and{' '}
+            {hostRequirements.worker?.diskSizeGb || 120}
+            GB of filesystem storage each.
+          </Text>
+        )}
       </TextContent>
       <HostsTable cluster={cluster} setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
       <DiscoveryTroubleshootingModal

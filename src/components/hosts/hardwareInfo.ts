@@ -37,7 +37,10 @@ export const getHostRowHardwareInfo = (inventory: Inventory): HostRowHardwareInf
   let cpuSpeed = DASH;
 
   if (inventory.cpu?.count) {
-    cpuSpeed = `${inventory.cpu?.count}x ${getHumanizedCpuClockSpeed(inventory)} MHz`;
+    const hyperThreading = inventory.cpu?.flags?.includes('ht') ? ' (hyper-threaded)' : '';
+    cpuSpeed = `${inventory.cpu?.count} cores${hyperThreading} at ${getHumanizedCpuClockSpeed(
+      inventory,
+    )} MHz`;
     cores = {
       title: inventory.cpu?.count.toString(),
       sortableValue: inventory.cpu?.count,

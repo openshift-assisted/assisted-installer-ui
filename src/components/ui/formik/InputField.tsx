@@ -7,7 +7,7 @@ import HelperText from './HelperText';
 
 const InputField: React.FC<InputFieldProps> = React.forwardRef(
   (
-    { label, helperText, isRequired, onChange, validate, idPostfix, ...props },
+    { label, labelIcon, helperText, isRequired, onChange, validate, idPostfix, ...props },
     ref: React.Ref<HTMLInputElement>,
   ) => {
     const [field, { touched, error }] = useField({ name: props.name, validate });
@@ -28,6 +28,7 @@ const InputField: React.FC<InputFieldProps> = React.forwardRef(
         helperTextInvalid={errorMessage}
         validated={isValid ? 'default' : 'error'}
         isRequired={isRequired}
+        labelIcon={labelIcon}
       >
         <TextInput
           {...field}

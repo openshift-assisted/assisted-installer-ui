@@ -142,7 +142,7 @@ export const HostDetail: React.FC<HostDetailProps> = ({ inventory }) => {
       <SectionColumn>
         <DetailItem title="CPU architecture" value={inventory.cpu?.architecture || DASH} />
         <DetailItem title="CPU model name" value={inventory.cpu?.modelName || DASH} />
-        <DetailItem title="CPU clock speed" value={rowInfo.cpuSpeed} />
+        <DetailItem title="CPU cores and clock speed" value={rowInfo.cpuSpeed} />
       </SectionColumn>
       <SectionColumn>
         <DetailItem title="Memory capacity" value={rowInfo.memory.title} />
