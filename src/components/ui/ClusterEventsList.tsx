@@ -14,10 +14,11 @@ type ClusterEventsListProps = {
   cluster: Cluster;
 };
 
-const filterEvenets = (filters: ClusterEventsFiltersType, events: EventList = []) => {
+const filterEvents = (filters: ClusterEventsFiltersType, events: EventList = []) => {
   return events
     .filter((event) => filters.severity.length === 0 || filters.severity.includes(event.severity))
     .filter((event) => !event.hostId || filters.hosts.includes(event.hostId))
+    .filter((event) => event.hostId || filters.clusterLevel)
     .filter(
       (event) =>
         !filters.fulltext ||
@@ -30,7 +31,7 @@ const ClusterEventsList: React.FC<ClusterEventsListProps> = ({ events, cluster }
     getInitialClusterEventsFilters(cluster),
   );
 
-  const filteredEvents = filterEvenets(filters, events);
+  const filteredEvents = React.useMemo(() => filterEvents(filters, events), [filters, events]);
 
   return (
     <>
