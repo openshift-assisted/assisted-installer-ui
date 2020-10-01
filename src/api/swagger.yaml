@@ -1938,6 +1938,7 @@ definitions:
           - error
           - resetting
           - added-to-existing-cluster
+          - cancelled
       status_info:
         type: string
         x-go-custom-tag: gorm:"type:varchar(2048)"
@@ -2439,6 +2440,7 @@ definitions:
           - finalizing
           - installed
           - adding-hosts
+          - cancelled
       status_info:
         type: string
         x-go-custom-tag: gorm:"type:varchar(2048)"
