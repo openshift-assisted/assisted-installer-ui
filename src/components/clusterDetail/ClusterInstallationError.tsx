@@ -16,10 +16,12 @@ import { canDownloadClusterLogs } from '../hosts/utils';
 
 type ClusterInstallationErrorProps = {
   cluster: Cluster;
+  title?: string;
   setResetClusterModalOpen: (isOpen: boolean) => void;
 };
 const ClusterInstallationError: React.FC<ClusterInstallationErrorProps> = ({
   cluster,
+  title = 'Cluster installation failed',
   setResetClusterModalOpen,
 }) => {
   const { addAlert } = React.useContext(AlertsContext);
@@ -28,7 +30,7 @@ const ClusterInstallationError: React.FC<ClusterInstallationErrorProps> = ({
     <GridItem>
       <Alert
         variant={AlertVariant.danger}
-        title={`Cluster installation failed`}
+        title={title}
         actionLinks={
           <>
             <AlertActionLink onClick={() => setResetClusterModalOpen(true)}>

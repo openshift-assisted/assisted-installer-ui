@@ -117,6 +117,13 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
               setResetClusterModalOpen={setResetClusterModalOpen}
             />
           )}
+          {cluster.status === 'cancelled' && (
+            <ClusterInstallationError
+              title="Cluster installation was cancelled"
+              cluster={cluster}
+              setResetClusterModalOpen={setResetClusterModalOpen}
+            />
+          )}
           {cluster.status === 'installed' && (
             <ClusterCredentials
               cluster={cluster}
