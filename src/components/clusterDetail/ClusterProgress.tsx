@@ -1,6 +1,12 @@
 import React from 'react';
 import { Cluster, Host } from '../../api/types';
-import { Progress, ProgressVariant, ProgressMeasureLocation } from '@patternfly/react-core';
+import {
+  Progress,
+  ProgressVariant,
+  ProgressMeasureLocation,
+  Flex,
+  FlexItem,
+} from '@patternfly/react-core';
 import { CLUSTER_STATUS_LABELS } from '../../config/constants';
 import { getHostProgressStages, getHostProgressStageNumber } from '../hosts/utils';
 import { getHumanizedDateTime, getHumanizedTime, DetailList, DetailItem } from '../ui';
@@ -66,23 +72,35 @@ const ClusterProgress: React.FC<ClusterProgressProps> = ({ cluster }) => {
 
   return (
     <>
-      <DetailList>
-        <DetailItem
-          title="Started on"
-          value={getHumanizedDateTime(cluster.installStartedAt)}
-          idPrefix="cluster-progress-started-on"
-        />
-        <DetailItem
-          title="Status"
-          value={getInstallationStatus(cluster)}
-          idPrefix="cluster-progress-status"
-        />
-        <DetailItem
-          title="Status reached on"
-          value={getHumanizedDateTime(cluster.statusUpdatedAt)}
-          idPrefix="cluster-progress-status-updated-on"
-        />
-      </DetailList>
+      <Flex spaceItems={{ default: 'spaceItemsXl' }}>
+        <FlexItem>
+          <DetailList>
+            <DetailItem
+              title="Started on"
+              value={getHumanizedDateTime(cluster.installStartedAt)}
+              idPrefix="cluster-progress-started-on"
+            />
+          </DetailList>
+        </FlexItem>
+        <FlexItem>
+          <DetailList>
+            <DetailItem
+              title="Status"
+              value={getInstallationStatus(cluster)}
+              idPrefix="cluster-progress-status"
+            />
+          </DetailList>
+        </FlexItem>
+        <FlexItem>
+          <DetailList>
+            <DetailItem
+              title="Status reached on"
+              value={getHumanizedDateTime(cluster.statusUpdatedAt)}
+              idPrefix="cluster-progress-status-updated-on"
+            />
+          </DetailList>
+        </FlexItem>
+      </Flex>
       <Progress
         value={progressPercent}
         label={label}
