@@ -1,21 +1,39 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
-import { Spinner } from '@patternfly/react-core';
-import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
+import { Spinner, Alert, AlertVariant } from '@patternfly/react-core';
+import { HostSubnets, ClusterConfigurationValues, ValidationsInfo } from '../../types/clusters';
 import { InputField, SelectField, SwitchField } from '../ui/formik';
 import { Cluster } from '../../api/types';
-import StaticTextField from '../ui/StaticTextField';
+import { StaticField } from '../ui/StaticTextField';
 import { NO_SUBNET_SET } from './utils';
+import { stringToJSON } from '../../api/utils';
 
 type VipStaticValueProps = {
   vipName: string;
   cluster: Cluster;
+  validationErrorMessage?: string;
 };
 
-const VipStaticValue: React.FC<VipStaticValueProps> = ({ vipName, cluster }) => {
+const VipStaticValue: React.FC<VipStaticValueProps> = ({
+  vipName,
+  cluster,
+  validationErrorMessage,
+}) => {
   const { vipDhcpAllocation, machineNetworkCidr } = cluster;
+
   if (vipDhcpAllocation && cluster[vipName]) {
     return cluster[vipName];
+  }
+  if (vipDhcpAllocation && validationErrorMessage) {
+    return (
+      <Alert
+        variant={AlertVariant.danger}
+        title="The DHCP server failed to allocate the IP"
+        isInline
+      >
+        {validationErrorMessage}
+      </Alert>
+    );
   }
   if (vipDhcpAllocation && machineNetworkCidr) {
     return (
@@ -42,6 +60,30 @@ const getVipHelperSuffix = (
   return '';
 };
 
+const getVipValidationsById = (
+  validationsInfoString?: Cluster['validationsInfo'],
+): { [key: string]: string | undefined } => {
+  const validationsInfo = stringToJSON<ValidationsInfo>(validationsInfoString) || {
+    hostsData: [],
+    network: [],
+    configuration: [],
+  };
+  const failedDhcpAllocationMessageStubs = [
+    'VIP IP allocation from DHCP server has been timed out', // TODO(jtomasek): remove this one once it is no longer in backend
+    'IP allocation from the DHCP server timed out.',
+  ];
+  return validationsInfo.network.reduce((lookup, validation) => {
+    if (['api-vip-defined', 'ingress-vip-defined'].includes(validation.id)) {
+      lookup[validation.id] =
+        validation.status === 'failure' &&
+        failedDhcpAllocationMessageStubs.find((stub) => validation.message.match(stub))
+          ? validation.message
+          : undefined;
+    }
+    return lookup;
+  }, {});
+};
+
 type BasicNetworkFieldsProps = {
   cluster: Cluster;
   hostSubnets: HostSubnets;
@@ -61,6 +103,13 @@ const BasicNetworkFields: React.FC<BasicNetworkFieldsProps> = ({ cluster, hostSu
     values.vipDhcpAllocation,
   )}`;
 
+  const {
+    'api-vip-defined': apiVipFailedValidationMessage,
+    'ingress-vip-defined': ingressVipFailedValidationMessage,
+  } = React.useMemo(() => getVipValidationsById(cluster.validationsInfo), [
+    cluster.validationsInfo,
+  ]);
+
   return (
     <>
       <SelectField
@@ -70,7 +119,7 @@ const BasicNetworkFields: React.FC<BasicNetworkFieldsProps> = ({ cluster, hostSu
           hostSubnets.length
             ? [
                 {
-                  label: `Please select a subnet. (${hostSubnets.length} subnets available)`,
+                  label: `Please select a subnet. (${hostSubnets.length} available)`,
                   value: NO_SUBNET_SET,
                   isDisabled: true,
                 },
@@ -99,18 +148,32 @@ const BasicNetworkFields: React.FC<BasicNetworkFieldsProps> = ({ cluster, hostSu
       <SwitchField label="Allocate virtual IPs via DHCP server" name="vipDhcpAllocation" />
       {values.vipDhcpAllocation ? (
         <>
-          <StaticTextField
+          <StaticField
             label="API Virtual IP"
             name="apiVip"
             helperText={apiVipHelperText}
-            value={<VipStaticValue vipName="apiVip" cluster={cluster} />}
+            value={
+              <VipStaticValue
+                vipName="apiVip"
+                cluster={cluster}
+                validationErrorMessage={apiVipFailedValidationMessage}
+              />
+            }
+            isValid={!apiVipFailedValidationMessage}
             isRequired
           />
-          <StaticTextField
+          <StaticField
             label="Ingress Virtual IP"
             name="ingressVip"
             helperText={ingressVipHelperText}
-            value={<VipStaticValue vipName="ingressVip" cluster={cluster} />}
+            value={
+              <VipStaticValue
+                vipName="ingressVip"
+                cluster={cluster}
+                validationErrorMessage={ingressVipFailedValidationMessage}
+              />
+            }
+            isValid={!ingressVipFailedValidationMessage}
             isRequired
           />
         </>
