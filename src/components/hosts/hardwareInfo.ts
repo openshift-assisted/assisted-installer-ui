@@ -2,7 +2,6 @@ import Humanize from 'humanize-plus';
 import { Disk, Inventory } from '../../api/types';
 import { DASH } from '../constants';
 import { HumanizedSortable } from '../ui/table/utils';
-import { getHumanizedDateTime } from '../ui/utils';
 
 export type HostRowHardwareInfo = {
   serialNumber: string;
@@ -16,14 +15,6 @@ export const getMemoryCapacity = (inventory: Inventory) => inventory.memory?.phy
 
 export const getHumanizedCpuClockSpeed = (inventory: Inventory) =>
   Humanize.formatNumber(inventory.cpu?.frequency || 0);
-
-export const getDateTimeCell = (time?: string): HumanizedSortable => {
-  const date = getHumanizedDateTime(time);
-  return {
-    title: date,
-    sortableValue: time ? new Date(date).getTime() : 0,
-  };
-};
 
 const EMPTY = {
   title: DASH,

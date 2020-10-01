@@ -1,6 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import { ISortBy, SortByDirection, IRow } from '@patternfly/react-table';
+import { getHumanizedDateTime } from '../utils';
 
 export type HumanizedSortable = {
   title: string | React.ReactNode;
@@ -47,3 +48,11 @@ export const rowSorter = (sortBy: ISortBy, getCell: getCellType) => (a: IRow, b:
 /** Converts string into a sentence by capitalizing first letter and appending with . */
 export const toSentence = (s: string) =>
   `${_.capitalize(s)}${_.endsWith(s, '.') || s === '' ? '' : '.'}`;
+
+export const getDateTimeCell = (time?: string): HumanizedSortable => {
+  const date = getHumanizedDateTime(time);
+  return {
+    title: date,
+    sortableValue: time ? new Date(time).getTime() : 0,
+  };
+};

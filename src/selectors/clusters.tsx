@@ -7,7 +7,7 @@ import { ResourceUIState } from '../types';
 import { Link } from 'react-router-dom';
 import { IRow, IRowData } from '@patternfly/react-table';
 import { RootState } from '../store/rootReducer';
-import { HumanizedSortable } from '../components/ui/table/utils';
+import { getDateTimeCell, HumanizedSortable } from '../components/ui/table/utils';
 import ClusterStatus, { getClusterStatusText } from '../components/clusters/ClusterStatus';
 import { DASH } from '../components/constants';
 import { routeBasePath } from '../config';
@@ -26,7 +26,7 @@ export const selectClustersUIState = createSelector(
 );
 
 const clusterToClusterTableRow = (cluster: Cluster): IRow => {
-  const { id, name, hosts, openshiftVersion, baseDnsDomain } = cluster;
+  const { id, name, hosts, openshiftVersion, baseDnsDomain, createdAt } = cluster;
   return {
     cells: [
       {
@@ -47,6 +47,7 @@ const clusterToClusterTableRow = (cluster: Cluster): IRow => {
         title: <HostsCount hosts={hosts} valueId={`hosts-count-${cluster.name}`} />,
         sortableValue: getEnabledHostsCount(hosts),
       } as HumanizedSortable,
+      getDateTimeCell(createdAt),
     ],
     props: {
       name,

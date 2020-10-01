@@ -16,11 +16,11 @@ import {
 import { ConnectedIcon } from '@patternfly/react-icons';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
 import { EmptyState } from '../ui/uiState';
-import { getColSpanRow, rowSorter } from '../ui/table/utils';
+import { getColSpanRow, rowSorter, getDateTimeCell } from '../ui/table/utils';
 import { Host, Cluster, Inventory } from '../../api/types';
 import { enableClusterHost, disableClusterHost, deleteClusterHost } from '../../api/clusters';
 import { EventsModal } from '../ui/eventsModal';
-import { getHostRowHardwareInfo, getDateTimeCell } from './hardwareInfo';
+import { getHostRowHardwareInfo } from './hardwareInfo';
 import { DiscoveryImageModalButton } from '../clusterConfiguration/discoveryImageModal';
 import HostStatus from './HostStatus';
 import { HostDetail } from './HostRowDetail';
