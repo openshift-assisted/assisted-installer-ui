@@ -108,7 +108,9 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
           <GridItem>
             <ClusterProgress cluster={cluster} />
           </GridItem>
-          {cluster.status === 'installed' && <FailedHostsWarning cluster={cluster} />}
+          {['installed', 'installing', 'finalizing'].includes(cluster.status) && (
+            <FailedHostsWarning cluster={cluster} />
+          )}
           {cluster.status === 'error' && (
             <ClusterInstallationError
               cluster={cluster}
