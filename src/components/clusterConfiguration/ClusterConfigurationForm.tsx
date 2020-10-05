@@ -99,7 +99,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
         return formikActions.setFieldError('name', `Name "${values.name}" is already taken.`);
       }
     } catch (e) {
-      captureException('Failed to perform unique cluster name validation.', e);
+      captureException(e, 'Failed to perform unique cluster name validation.');
     }
 
     // update the cluster configuration
