@@ -105,7 +105,7 @@ export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
   resetting: 'This host is resetting the installation.',
   'resetting-pending-user-action':
     'Host already booted from disk during previous installation. To finish resetting the installation please boot the host into Discovery ISO.',
-  'added-to-existing-cluster': 'Host is added to existing cluster', // TODO(mlibra): add this new state plus cluster's adding-hosts properly (in a follow up)
+  'added-to-existing-cluster': 'This host is being added to existing cluster.',
 };
 
 export const HOST_VALIDATION_GROUP_LABELS: { [key in keyof ValidationsInfo]: string } = {
