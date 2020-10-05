@@ -1,3 +1,4 @@
+import { Severity } from '@sentry/browser';
 import Axios, { AxiosError } from 'axios';
 import _ from 'lodash';
 import { captureException } from '../sentry';
@@ -6,7 +7,7 @@ type OnError = <T>(arg0: AxiosError<T>) => void;
 
 export const handleApiError = <T>(error: AxiosError<T>, onError?: OnError) => {
   if (Axios.isCancel(error)) {
-    captureException(error, 'Request canceled');
+    captureException(error, 'Request canceled', Severity.Info);
   } else {
     let message = `Error config: ${JSON.stringify(error.config, null, 2)}\n`;
     if (error.response) {
