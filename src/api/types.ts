@@ -1,12 +1,30 @@
+export interface AddHostsClusterCreateParams {
+  /**
+   * Unique identifier of the object.
+   */
+  id: string; // uuid
+  /**
+   * Name of the OpenShift cluster.
+   */
+  name: string;
+  /**
+   * api vip domain.
+   */
+  apiVipDnsname: string;
+  /**
+   * Version of the OpenShift cluster.
+   */
+  openshiftVersion: '4.6';
+}
 export interface Boot {
   currentBootMode?: string;
   pxeInterface?: string;
 }
 export interface Cluster {
   /**
-   * Indicates the type of this object. Will be 'Cluster' if this is a complete object or 'ClusterLink' if it is just a link.
+   * Indicates the type of this object. Will be 'Cluster' if this is a complete object or 'ClusterLink' if it is just a link, 'AddHostCluster' for cluster that add hosts to existing OCP cluster
    */
-  kind: 'Cluster';
+  kind: 'Cluster' | 'AddHostsCluster';
   /**
    * Unique identifier of the object.
    */
@@ -85,7 +103,8 @@ export interface Cluster {
     | 'pending-for-input'
     | 'installing'
     | 'finalizing'
-    | 'installed';
+    | 'installed'
+    | 'adding-hosts';
   /**
    * Additional information pertaining to the status of the OpenShift cluster.
    */
@@ -292,6 +311,12 @@ export interface CompletionParams {
   isSuccess: boolean;
   errorInfo?: string;
 }
+export interface ConnectivityCheckApiRequest {
+  /**
+   * URL address of the API.
+   */
+  url: string;
+}
 export interface ConnectivityCheckHost {
   hostId?: string; // uuid
   nics?: ConnectivityCheckNic[];
@@ -407,9 +432,11 @@ export interface FreeNetworkAddresses {
 export type FreeNetworksAddresses = FreeNetworkAddresses[];
 export interface Host {
   /**
-   * Indicates the type of this object. Will be 'Host' if this is a complete object or 'HostLink' if it is just a link.
+   * Indicates the type of this object. Will be 'Host' if this is a complete object or 'HostLink' if it is just a link, or
+   * 'AddToExistingClusterHost' for host being added to existing OCP cluster.
+   *
    */
-  kind: 'Host';
+  kind: 'Host' | 'AddToExistingClusterHost';
   /**
    * Unique identifier of the object.
    */
@@ -436,7 +463,8 @@ export interface Host {
     | 'resetting-pending-user-action'
     | 'installed'
     | 'error'
-    | 'resetting';
+    | 'resetting'
+    | 'added-to-existing-cluster';
   statusInfo: string;
   /**
    * Json formatted string containing the validations results for each validation id grouped by category (network, hardware, etc.)
@@ -614,6 +642,7 @@ export interface ListVersions {
   versions?: Versions;
   releaseTag?: string;
 }
+export type LogsType = 'host' | 'controller' | 'all' | '';
 export interface ManagedDomain {
   domain?: string;
   provider?: 'route53';
@@ -645,7 +674,8 @@ export type StepType =
   | 'install'
   | 'free-network-addresses'
   | 'reset-installation'
-  | 'dhcp-lease-allocate';
+  | 'dhcp-lease-allocate'
+  | 'api-vip-connectivity-check';
 export interface Steps {
   nextInstructionSeconds?: number;
   instructions?: Step[];

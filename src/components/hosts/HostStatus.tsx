@@ -55,6 +55,8 @@ const getStatusIcon = (status: Host['status']): React.ReactElement => {
       return <InProgressIcon />;
     case 'resetting-pending-user-action':
       return <WarningTriangleIcon color={warningColor.value} />;
+    case 'added-to-existing-cluster':
+      return <InProgressIcon />; // TODO(mlibra): hotfix only, review in a follow-up
   }
 };
 
