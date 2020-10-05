@@ -37,6 +37,8 @@ const getStatusIcon = (status: Cluster['status']): React.ReactElement => {
       return <CheckCircleIcon color={okColor.value} />;
     case 'finalizing':
       return <InProgressIcon />;
+    case 'adding-hosts':
+      return <InProgressIcon />;
   }
 };
 
