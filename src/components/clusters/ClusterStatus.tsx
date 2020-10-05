@@ -25,18 +25,14 @@ const getStatusIcon = (status: Cluster['status']): React.ReactElement => {
       return <FileAltIcon />;
     case 'pending-for-input':
       return <PendingIcon />;
-    case 'ready':
-      return <CheckCircleIcon color={okColor.value} />;
-    case 'preparing-for-installation':
-      return <InProgressIcon />;
-    case 'installing':
-      return <InProgressIcon />;
     case 'error':
       return <ExclamationCircleIcon color={dangerColor.value} />;
+    case 'ready':
     case 'installed':
       return <CheckCircleIcon color={okColor.value} />;
+    case 'preparing-for-installation':
+    case 'installing':
     case 'finalizing':
-      return <InProgressIcon />;
     case 'adding-hosts':
       return <InProgressIcon />;
   }

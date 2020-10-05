@@ -31,30 +31,24 @@ const getStatusIcon = (status: Host['status']): React.ReactElement => {
       return <ConnectedIcon />;
     case 'pending-for-input':
       return <PendingIcon />;
-    case 'known':
-      return <CheckCircleIcon color={okColor.value} />;
     case 'disconnected':
       return <DisconnectedIcon />;
     case 'disabled':
       return <BanIcon />;
-    case 'insufficient':
-      return <WarningTriangleIcon color={warningColor.value} />;
-    case 'preparing-for-installation':
-      return <InProgressIcon />;
-    case 'installing':
-      return <InProgressIcon />;
-    case 'installing-in-progress':
-      return <InProgressIcon />;
-    case 'installing-pending-user-action':
-      return <WarningTriangleIcon color={warningColor.value} />;
     case 'error':
       return <ExclamationCircleIcon color={dangerColor.value} />;
-    case 'installed':
-      return <CheckCircleIcon color={okColor.value} />;
-    case 'resetting':
-      return <InProgressIcon />;
     case 'resetting-pending-user-action':
       return <WarningTriangleIcon color={warningColor.value} />;
+    case 'insufficient':
+    case 'installing-pending-user-action':
+      return <WarningTriangleIcon color={warningColor.value} />;
+    case 'known':
+    case 'installed':
+      return <CheckCircleIcon color={okColor.value} />;
+    case 'preparing-for-installation':
+    case 'installing':
+    case 'installing-in-progress':
+    case 'resetting':
     case 'added-to-existing-cluster':
       return <InProgressIcon />;
   }
