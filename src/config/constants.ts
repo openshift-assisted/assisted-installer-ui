@@ -99,7 +99,7 @@ export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
   installing: '', // not rendered
   'installing-in-progress': '', // not rendered
   'installing-pending-user-action':
-    "This host rebooted into the Discovery ISO instead of disk where OpenShift was installed. Please adjust the host's boot order in its BIOS to boot from the disk first, and then reboot the host.",
+    "Please reconfigure this host's BIOS to boot from the disk where OpenShift was installed instead of the Discovery ISO.",
   installed: 'This host completed its installation successfully.',
   error: 'This host failed its installation.',
   resetting: 'This host is resetting the installation.',

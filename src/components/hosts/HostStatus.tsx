@@ -127,6 +127,9 @@ const HostStatus: React.FC<HostStatusProps> = ({ host }) => {
           )}
         </Button>
       </Popover>
+      {status === 'installing-pending-user-action' && (
+        <div className="hosts-table-sublabel">Action required</div>
+      )}
     </>
   );
 };
