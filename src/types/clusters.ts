@@ -5,11 +5,13 @@ import { Validation } from './hosts';
 
 export type ClusterTableRows = IRow[];
 
-export type HostSubnets = {
+export type HostSubnet = {
   subnet: Netmask;
   hostIDs: string[];
   humanized: string;
-}[];
+};
+
+export type HostSubnets = HostSubnet[];
 
 export type ClusterConfigurationValues = ClusterUpdateParams & {
   hostSubnet: string;
