@@ -99,7 +99,7 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
           sortableValue: getHostRole(host),
         },
         {
-          title: <HostStatus host={host} />,
+          title: <HostStatus host={host} cluster={cluster} />,
           sortableValue: status,
         },
         getDateTimeCell(createdAt),

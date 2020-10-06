@@ -2,3 +2,7 @@
   margin-top: var(--pf-global--spacer--md) !important;
   margin-bottom: var(--pf-global--spacer--sm) !important;
 }
+
+.host-validation-groups__validation_action {
+  float: right;
+}

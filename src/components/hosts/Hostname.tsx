@@ -5,22 +5,43 @@ import { Host, Inventory, Cluster } from '../../api/types';
 
 type HostnameProps = {
   host: Host;
-  inventory: Inventory;
   cluster: Cluster;
+  className?: string;
+  onToggle?: (isOpen: boolean) => void;
+  // Provide either inventory or title
+  inventory?: Inventory;
+  title?: string;
 };
 
 export const computeHostname = (host: Host, inventory: Inventory) =>
   host.requestedHostname || inventory.hostname;
 
-const Hostname: React.FC<HostnameProps> = ({ host, inventory, cluster }) => {
-  const [isOpen, setOpen] = React.useState(false);
+const Hostname: React.FC<HostnameProps> = ({
+  host,
+  inventory = {},
+  cluster,
+  title,
+  className,
+  onToggle,
+}) => {
+  const [isOpen, _setOpen] = React.useState(false);
 
-  const hostname = computeHostname(host, inventory);
-  const isHostnameChangeRequested = host.requestedHostname !== inventory.hostname;
+  const setOpen = (isOpen: boolean) => {
+    onToggle && onToggle(isOpen);
+    _setOpen(isOpen);
+  };
+
+  const hostname = title || computeHostname(host, inventory);
+  const isHostnameChangeRequested = !title && host.requestedHostname !== inventory.hostname;
 
   return (
     <>
-      <Button variant={ButtonVariant.link} isInline onClick={() => setOpen(true)}>
+      <Button
+        variant={ButtonVariant.link}
+        isInline
+        onClick={() => setOpen(true)}
+        className={className}
+      >
         {hostname}
         {isHostnameChangeRequested && ' *'}
       </Button>

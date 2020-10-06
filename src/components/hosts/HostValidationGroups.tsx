@@ -7,13 +7,76 @@ import {
 import { PendingIcon, CheckCircleIcon, WarningTriangleIcon } from '@patternfly/react-icons';
 import { ValidationsInfo, Validation } from '../../types/hosts';
 import { HOST_VALIDATION_GROUP_LABELS, HOST_VALIDATION_LABELS } from '../../config/constants';
+import { Cluster, Host } from '../../api';
+import Hostname from './Hostname';
+
 import './HostValidationGroups.css';
 
-type HostValidationGroupsProps = {
+export type ValidationInfoActionProps = {
+  host: Host;
+  cluster: Cluster;
+  onValidationActionToggle: (isOpen: boolean) => void;
+};
+
+type HostValidationGroupsProps = ValidationInfoActionProps & {
   validationsInfo: ValidationsInfo;
 };
 
-const HostValidationGroups: React.FC<HostValidationGroupsProps> = ({ validationsInfo }) => {
+type ValidationGroupAlertProps = ValidationInfoActionProps & {
+  variant: AlertVariant;
+  validations: Validation[];
+  title: string;
+};
+
+const ValidationInfoAction: React.FC<ValidationInfoActionProps & { validation: Validation }> = ({
+  validation,
+  onValidationActionToggle,
+  ...props
+}) => {
+  if (
+    validation.status === 'failure' &&
+    ['hostname-unique', 'hostname-valid'].includes(validation.id)
+  ) {
+    return (
+      <Hostname
+        title="Change hostname"
+        className="host-validation-groups__validation_action"
+        onToggle={onValidationActionToggle}
+        {...props}
+      />
+    );
+  }
+
+  return null;
+};
+
+const ValidationGroupAlert: React.FC<ValidationGroupAlertProps> = ({
+  variant,
+  validations,
+  title,
+  ...props
+}) => {
+  if (!validations.length) {
+    return null;
+  }
+  return (
+    <Alert title={title} variant={variant} isInline>
+      <ul>
+        {validations.map((v) => (
+          <li key={v.id}>
+            <strong>{HOST_VALIDATION_LABELS[v.id]}:</strong>&nbsp;{v.message}&nbsp;
+            <ValidationInfoAction validation={v} {...props} />
+          </li>
+        ))}
+      </ul>
+    </Alert>
+  );
+};
+
+const HostValidationGroups: React.FC<HostValidationGroupsProps> = ({
+  validationsInfo,
+  ...props
+}) => {
   return (
     <>
       {Object.keys(validationsInfo).map((groupName: string) => {
@@ -61,12 +124,14 @@ const HostValidationGroups: React.FC<HostValidationGroupsProps> = ({ validations
                   variant={AlertVariant.info}
                   title="Pending validations:"
                   validations={pendingValidations}
+                  {...props}
                 />
               )}
               <ValidationGroupAlert
                 variant={AlertVariant.warning}
                 title="Failed validations:"
                 validations={failedValidations}
+                {...props}
               />
             </AlertGroup>
           </Fragment>
@@ -77,30 +142,3 @@ const HostValidationGroups: React.FC<HostValidationGroupsProps> = ({ validations
 };
 
 export default HostValidationGroups;
-
-type ValidationGroupAlertProps = {
-  variant: AlertVariant;
-  validations: Validation[];
-  title: string;
-};
-
-const ValidationGroupAlert: React.FC<ValidationGroupAlertProps> = ({
-  variant,
-  validations,
-  title,
-}) => {
-  if (!validations.length) {
-    return null;
-  }
-  return (
-    <Alert title={title} variant={variant} isInline>
-      <ul>
-        {validations.map((v) => (
-          <li key={v.id}>
-            <strong>{HOST_VALIDATION_LABELS[v.id]}:</strong> {v.message}
-          </li>
-        ))}
-      </ul>
-    </Alert>
-  );
-};
