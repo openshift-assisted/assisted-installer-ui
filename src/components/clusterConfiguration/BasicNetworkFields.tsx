@@ -1,6 +1,13 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
-import { Spinner, Alert, AlertVariant, ExpandableSection } from '@patternfly/react-core';
+import {
+  Spinner,
+  Alert,
+  AlertVariant,
+  Button,
+  ButtonVariant,
+  Popover,
+} from '@patternfly/react-core';
 import {
   HostSubnets,
   ClusterConfigurationValues,
@@ -93,10 +100,8 @@ const SubnetHelperText: React.FC<{ matchingSubnet: HostSubnet; cluster: Cluster 
   matchingSubnet,
   cluster,
 }) => {
-  const [isExpanded, setExpanded] = React.useState(false);
-
   const excludedHosts =
-    cluster?.hosts?.filter(
+    cluster.hosts?.filter(
       (host) => !matchingSubnet.hostIDs.includes(host.requestedHostname || ''),
     ) || [];
 
@@ -104,26 +109,39 @@ const SubnetHelperText: React.FC<{ matchingSubnet: HostSubnet; cluster: Cluster 
     return null;
   }
 
-  const hostCount = `${excludedHosts.length} not matching host${
-    excludedHosts.length > 1 ? 's' : ''
-  }`;
-  const toggleText = isExpanded ? `Hide ${hostCount}` : `View ${hostCount}`;
-
   return (
-    <Alert title="This subnet range is not available on all hosts" variant={AlertVariant.warning}>
+    <Alert
+      title="This subnet range is not available on all hosts"
+      variant={AlertVariant.warning}
+      isInline
+    >
       Hosts outside of this range will not be included in the new cluster.
-      <ExpandableSection toggleText={toggleText} onToggle={setExpanded} isExpanded={isExpanded}>
-        <ul>
-          {excludedHosts
-            .sort(
-              (hostA, hostB) =>
-                hostA.requestedHostname?.localeCompare(hostB.requestedHostname || '') || 0,
-            )
-            .map((host) => (
-              <li key={host.id}>{host.requestedHostname}</li>
-            ))}
-        </ul>
-      </ExpandableSection>
+      <br />
+      <Popover
+        position="right"
+        bodyContent={
+          <ul>
+            {excludedHosts
+              .sort(
+                (hostA, hostB) =>
+                  hostA.requestedHostname?.localeCompare(hostB.requestedHostname || '') || 0,
+              )
+              .map((host) => (
+                <li key={host.id}>{host.requestedHostname}</li>
+              ))}
+          </ul>
+        }
+        minWidth="30rem"
+        maxWidth="50rem"
+      >
+        <Button
+          variant={ButtonVariant.link}
+          id="form-input-hostSubnet-field-helper-view-excluded"
+          isInline
+        >
+          {`View ${excludedHosts.length} affected host${excludedHosts.length > 1 ? 's' : ''}`}
+        </Button>
+      </Popover>
     </Alert>
   );
 };
