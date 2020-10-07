@@ -29,8 +29,10 @@ export const downloadClusterInstallationLogs = async (
           message: getErrorMessage(e),
         });
       });
+      return false;
     }
   } else {
     saveAs(getClusterLogsDownloadUrl(clusterId));
   }
+  return true;
 };

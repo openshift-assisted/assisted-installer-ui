@@ -16,6 +16,9 @@ import { getErrorMessage, handleApiError } from '../../api/utils';
 import LoadingState from '../ui/uiState/LoadingState';
 import ErrorState from '../ui/uiState/ErrorState';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
+import { canDownloadClusterLogs } from '../hosts/utils';
+import { downloadClusterInstallationLogs } from './utils';
+import { AlertsContext } from '../AlertsContextProvider';
 
 type ResetClusterModalButtonProps = React.ComponentProps<typeof Button> & {
   ButtonComponent?: typeof Button | typeof ToolbarButton | typeof AlertActionLink;
@@ -25,13 +28,16 @@ type ResetClusterModalButtonProps = React.ComponentProps<typeof Button> & {
 type ResetClusterModalProps = {
   onClose: () => void;
   isOpen: boolean;
-  clusterId: Cluster['id'];
+  cluster: Cluster;
 };
 
-const ResetClusterModal: React.FC<ResetClusterModalProps> = ({ onClose, isOpen, clusterId }) => {
+const ResetClusterModal: React.FC<ResetClusterModalProps> = ({ onClose, isOpen, cluster }) => {
   const dispatch = useDispatch();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [error, setError] = React.useState<{ title: string; message: string } | null>(null);
+  const { addAlert } = React.useContext(AlertsContext);
+
+  const areLogsAvailable = canDownloadClusterLogs(cluster);
 
   const handleClose = () => {
     setIsSubmitting(false);
@@ -39,11 +45,11 @@ const ResetClusterModal: React.FC<ResetClusterModalProps> = ({ onClose, isOpen, 
     onClose();
   };
 
-  const handleSubmit = async () => {
+  const doReset = async () => {
     setIsSubmitting(true);
     try {
       setError(null);
-      const { data } = await postResetCluster(clusterId);
+      const { data } = await postResetCluster(cluster.id);
       dispatch(updateCluster(data));
       onClose();
     } catch (e) {
@@ -52,6 +58,13 @@ const ResetClusterModal: React.FC<ResetClusterModalProps> = ({ onClose, isOpen, 
       });
     }
     setIsSubmitting(false);
+  };
+
+  const doDownloadAndReset = async () => {
+    setIsSubmitting(true);
+    if (await downloadClusterInstallationLogs(addAlert, cluster.id)) {
+      doReset();
+    }
   };
 
   const getModalContent = () => {
@@ -67,28 +80,58 @@ const ResetClusterModal: React.FC<ResetClusterModalProps> = ({ onClose, isOpen, 
           This will reset the installation and return to cluster configuration. Some hosts may need
           to be re-registered by rebooting into the Discovery ISO.
         </Text>
+        {areLogsAvailable && (
+          <Text component="p">
+            Existing installation logs will be deleted and will not be available once installation
+            reset is performed. Logs need to be attached when reporting a bug. Shall the logs be
+            downloaded?
+          </Text>
+        )}
       </TextContent>
     );
   };
+
+  const actions = [];
+  if (areLogsAvailable) {
+    actions.push(
+      <Button key="submit" onClick={doDownloadAndReset} isDisabled={isSubmitting}>
+        Download & Reset Cluster
+      </Button>,
+    );
+    actions.push(
+      <Button
+        key="forgetAndReset"
+        variant={ButtonVariant.link}
+        onClick={doReset}
+        isDisabled={isSubmitting}
+      >
+        Forget logs & Reset
+      </Button>,
+    );
+  } else {
+    actions.push(
+      <Button key="submit" onClick={doReset} isDisabled={isSubmitting}>
+        Reset Cluster
+      </Button>,
+    );
+  }
+  actions.push(
+    <Button
+      key="cancel"
+      variant={ButtonVariant.link}
+      onClick={handleClose}
+      isDisabled={isSubmitting}
+    >
+      Cancel
+    </Button>,
+  );
 
   return (
     <Modal
       title="Reset Cluster Installation"
       isOpen={isOpen}
       variant={ModalVariant.small}
-      actions={[
-        <Button key="submit" onClick={handleSubmit} isDisabled={isSubmitting}>
-          Reset Cluster
-        </Button>,
-        <Button
-          key="cancel"
-          variant={ButtonVariant.link}
-          onClick={handleClose}
-          isDisabled={isSubmitting}
-        >
-          Cancel
-        </Button>,
-      ]}
+      actions={actions}
       onClose={handleClose}
     >
       {getModalContent()}
