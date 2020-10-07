@@ -1,11 +1,12 @@
 import React from 'react';
 import { DropdownItem, DropdownToggle, Dropdown } from '@patternfly/react-core';
 import { CaretDownIcon } from '@patternfly/react-icons';
+import { HostRole } from '../../types/hosts';
 
 type SimpleDropdownProps = {
   current?: string;
   defaultValue: string;
-  items: { [key: string]: string };
+  items: HostRole[];
   setValue: (value?: string) => void;
   isDisabled: boolean;
 };
@@ -18,9 +19,9 @@ export const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
   isDisabled,
 }) => {
   const [isOpen, setOpen] = React.useState(false);
-  const dropdownItems = Object.keys(items).map((key) => (
-    <DropdownItem key={key} id={key}>
-      {items[key]}
+  const dropdownItems = items.map(({ value, label, description }) => (
+    <DropdownItem key={value} id={value} description={description}>
+      {label}
     </DropdownItem>
   ));
 
