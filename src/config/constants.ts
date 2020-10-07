@@ -48,6 +48,7 @@ export const CLUSTER_STATUS_LABELS: { [key in Cluster['status']]: string } = {
   'preparing-for-installation': 'Preparing for installation',
   installing: 'Installing',
   finalizing: 'Finalizing',
+  cancelled: 'Installation cancelled',
   error: 'Error',
   installed: 'Installed',
   'adding-hosts': 'Adding hosts',
@@ -65,6 +66,7 @@ export const HOST_STATUS_LABELS: { [key in Host['status']]: string } = {
   'installing-in-progress': 'Installing',
   'installing-pending-user-action': 'Incorrect boot order',
   installed: 'Installed',
+  cancelled: 'Installation cancelled',
   error: 'Error',
   resetting: 'Resetting',
   'resetting-pending-user-action': 'Reboot required',
@@ -101,11 +103,12 @@ export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
   'installing-pending-user-action':
     "Please reconfigure this host's BIOS to boot from the disk where OpenShift was installed instead of the Discovery ISO.",
   installed: 'This host completed its installation successfully.',
+  cancelled: 'This host installation has been cancelled.',
   error: 'This host failed its installation.',
   resetting: 'This host is resetting the installation.',
   'resetting-pending-user-action':
     'Host already booted from disk during previous installation. To finish resetting the installation please boot the host into Discovery ISO.',
-  'added-to-existing-cluster': 'Host is added to existing cluster', // TODO(mlibra): add this new state plus cluster's adding-hosts properly (in a follow up)
+  'added-to-existing-cluster': 'This host is being added to an existing cluster.',
 };
 
 export const HOST_VALIDATION_GROUP_LABELS: { [key in keyof ValidationsInfo]: string } = {

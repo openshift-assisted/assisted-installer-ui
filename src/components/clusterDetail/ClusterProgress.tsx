@@ -9,6 +9,7 @@ import './ClusterProgress.css';
 
 const getProgressVariant = (status: Cluster['status']) => {
   switch (status) {
+    case 'cancelled':
     case 'error':
       return ProgressVariant.danger;
     case 'installed':
@@ -26,7 +27,7 @@ const getProgressLabel = (cluster: Cluster, progressPercent: number): string => 
   if (['preparing-for-installation'].includes(status)) {
     return statusInfo;
   }
-  if (['error'].includes(status)) {
+  if (['error', 'cancelled'].includes(status)) {
     return `${progressPercent}%`;
   }
   return `${statusInfo}: ${progressPercent}%`;
