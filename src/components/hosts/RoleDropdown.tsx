@@ -36,7 +36,7 @@ export const RoleDropdown: React.FC<RoleDropdownProps> = ({ host }) => {
 
   return (
     <SimpleDropdown
-      defaultValue={HOST_ROLES[0]}
+      defaultValue={HOST_ROLES[0].value}
       current={getHostRole(host)}
       items={HOST_ROLES}
       setValue={setRole}
