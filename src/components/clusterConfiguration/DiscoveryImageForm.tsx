@@ -29,6 +29,7 @@ import {
 import { updateCluster, forceReload } from '../../features/clusters/currentClusterSlice';
 import { DiscoveryImageFormValues } from './types';
 import ProxyFields from './ProxyFields';
+import { SshPublicKeyHelperText } from './ClusterSshKeyField';
 
 const validationSchema = Yup.lazy<DiscoveryImageFormValues>((values) =>
   Yup.object<DiscoveryImageFormValues>().shape({
@@ -168,7 +169,7 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
                 <UploadField
                   label="SSH public key"
                   name="sshPublicKey"
-                  helperText="SSH key used to debug OpenShift nodes. Generate a new key using ssh-keygen -o and upload or paste the value of ~/.ssh/id_rsa.pub here."
+                  helperText={<SshPublicKeyHelperText />}
                   idPostfix="discovery"
                   isRequired
                   onBlur={onSshKeyBlur}
