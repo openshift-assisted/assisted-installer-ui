@@ -68,7 +68,9 @@ export const canHostnameBeChanged = (hostStatus: Host['status']) =>
   );
 
 export const getHostRole = (host: Host): string =>
-  `${HOST_ROLES[host.role || 0]}${host.bootstrap ? ' (bootstrap)' : ''}`;
+  `${HOST_ROLES.find((role) => role.value === host.role)?.label || HOST_ROLES[0].label}${
+    host.bootstrap ? ' (bootstrap)' : ''
+  }`;
 
 export const canDownloadHostLogs = (host: Host) =>
   !!host.logsCollectedAt && host.logsCollectedAt != TIME_ZERO;

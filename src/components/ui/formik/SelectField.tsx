@@ -46,7 +46,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
         }}
       >
         {options.map((option, index) => (
-          <FormSelectOption key={index} {...option} />
+          <FormSelectOption key={option.id || index} {...option} />
         ))}
       </FormSelect>
     </FormGroup>

@@ -1,7 +1,12 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
-import { Spinner, Alert, AlertVariant } from '@patternfly/react-core';
-import { HostSubnets, ClusterConfigurationValues, ValidationsInfo } from '../../types/clusters';
+import { Spinner, Alert, AlertVariant, Popover, AlertActionLink } from '@patternfly/react-core';
+import {
+  HostSubnets,
+  ClusterConfigurationValues,
+  ValidationsInfo,
+  HostSubnet,
+} from '../../types/clusters';
 import { InputField, SelectField, SwitchField } from '../ui/formik';
 import { Cluster } from '../../api/types';
 import { StaticField } from '../ui/StaticTextField';
@@ -84,6 +89,55 @@ const getVipValidationsById = (
   }, {});
 };
 
+const SubnetHelperText: React.FC<{ matchingSubnet: HostSubnet; cluster: Cluster }> = ({
+  matchingSubnet,
+  cluster,
+}) => {
+  const excludedHosts =
+    cluster.hosts?.filter(
+      (host) => !matchingSubnet.hostIDs.includes(host.requestedHostname || ''),
+    ) || [];
+
+  if (excludedHosts.length === 0) {
+    return null;
+  }
+
+  const actionLinks = (
+    <Popover
+      position="right"
+      bodyContent={
+        <ul>
+          {excludedHosts
+            .sort(
+              (hostA, hostB) =>
+                hostA.requestedHostname?.localeCompare(hostB.requestedHostname || '') || 0,
+            )
+            .map((host) => (
+              <li key={host.id}>{host.requestedHostname}</li>
+            ))}
+        </ul>
+      }
+      minWidth="30rem"
+      maxWidth="50rem"
+    >
+      <AlertActionLink id="form-input-hostSubnet-field-helper-view-excluded">{`View ${
+        excludedHosts.length
+      } affected host${excludedHosts.length > 1 ? 's' : ''}`}</AlertActionLink>
+    </Popover>
+  );
+
+  return (
+    <Alert
+      title="This subnet range is not available on all hosts"
+      variant={AlertVariant.warning}
+      actionLinks={actionLinks}
+      isInline
+    >
+      Hosts outside of this range will not be included in the new cluster.
+    </Alert>
+  );
+};
+
 type BasicNetworkFieldsProps = {
   cluster: Cluster;
   hostSubnets: HostSubnets;
@@ -110,6 +164,15 @@ const BasicNetworkFields: React.FC<BasicNetworkFieldsProps> = ({ cluster, hostSu
     cluster.validationsInfo,
   ]);
 
+  const getHelperText = (value: string) => {
+    const matchingSubnet = hostSubnets.find((hn) => hn.humanized === value);
+    if (matchingSubnet) {
+      return <SubnetHelperText matchingSubnet={matchingSubnet} cluster={cluster} />;
+    }
+
+    return undefined;
+  };
+
   return (
     <>
       <SelectField
@@ -122,20 +185,19 @@ const BasicNetworkFields: React.FC<BasicNetworkFieldsProps> = ({ cluster, hostSu
                   label: `Please select a subnet. (${hostSubnets.length} available)`,
                   value: NO_SUBNET_SET,
                   isDisabled: true,
+                  id: 'form-input-hostSubnet-field-option-no-subnet',
                 },
-                ...hostSubnets.map((hn) => ({
-                  label: hn.humanized,
-                  value: hn.humanized,
-                })),
+                ...hostSubnets
+                  .sort((subA, subB) => subA.humanized.localeCompare(subB.humanized))
+                  .map((hn, index) => ({
+                    label: hn.humanized,
+                    value: hn.humanized,
+                    id: `form-input-hostSubnet-field-option-${index}`,
+                  })),
               ]
             : [{ label: 'No subnets are currently available', value: NO_SUBNET_SET }]
         }
-        getHelperText={(value) => {
-          const matchingSubnet = hostSubnets.find((hn) => hn.humanized === value);
-          return matchingSubnet
-            ? `Subnet is available on hosts: ${matchingSubnet.hostIDs.join(', ')}`
-            : undefined;
-        }}
+        getHelperText={getHelperText}
         onChange={() => {
           if (!values.vipDhcpAllocation) {
             validateField('ingressVip');
