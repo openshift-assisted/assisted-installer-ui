@@ -122,6 +122,7 @@ const HostStatus: React.FC<HostStatusProps> = ({ host, cluster }) => {
         minWidth="30rem"
         maxWidth="50rem"
         hideOnOutsideClick={!keepOnOutsideClick}
+        zIndex={keepOnOutsideClick ? 300 : undefined}
       >
         <Button variant={ButtonVariant.link} isInline>
           {icon} {title}{' '}

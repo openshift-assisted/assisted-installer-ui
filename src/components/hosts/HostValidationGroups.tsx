@@ -28,44 +28,36 @@ type ValidationGroupAlertProps = ValidationInfoActionProps & {
   title: string;
 };
 
-const ValidationInfoAction: React.FC<ValidationInfoActionProps & { validation: Validation }> = ({
-  validation,
-  onValidationActionToggle,
-  ...props
-}) => {
-  if (
-    validation.status === 'failure' &&
-    ['hostname-unique', 'hostname-valid'].includes(validation.id)
-  ) {
-    return (
-      <Hostname
-        title="Change hostname"
-        className="host-validation-groups__validation_action"
-        onToggle={onValidationActionToggle}
-        {...props}
-      />
-    );
-  }
-
-  return null;
-};
-
 const ValidationGroupAlert: React.FC<ValidationGroupAlertProps> = ({
   variant,
   validations,
   title,
+  onValidationActionToggle,
   ...props
 }) => {
   if (!validations.length) {
     return null;
   }
+
+  const actionLinks = [];
+  if (
+    validations.find(
+      (validation) =>
+        validation.status === 'failure' &&
+        ['hostname-unique', 'hostname-valid'].includes(validation.id),
+    )
+  ) {
+    actionLinks.push(
+      <Hostname title="Change hostname" onToggle={onValidationActionToggle} {...props} />,
+    );
+  }
+
   return (
-    <Alert title={title} variant={variant} isInline>
+    <Alert title={title} variant={variant} actionLinks={actionLinks} isInline>
       <ul>
         {validations.map((v) => (
           <li key={v.id}>
             <strong>{HOST_VALIDATION_LABELS[v.id]}:</strong>&nbsp;{v.message}&nbsp;
-            <ValidationInfoAction validation={v} {...props} />
           </li>
         ))}
       </ul>
