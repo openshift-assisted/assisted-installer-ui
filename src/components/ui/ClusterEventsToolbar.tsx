@@ -30,6 +30,7 @@ export type ClusterEventsFiltersType = {
   hosts: Host['id'][];
   severity: Event['severity'][];
   clusterLevel: boolean;
+  orphanedHosts: boolean;
 };
 
 type ClustersFilterToolbarProps = {
@@ -45,8 +46,9 @@ const Placeholder = ({ text }: { text: string }) => (
   </>
 );
 
-export const NO_HOSTS = 'deselect-all-hosts-action';
-export const CLUSTER_LEVEL = 'cluster-level-action';
+const NO_HOSTS = 'deselect-all-hosts-action';
+const CLUSTER_LEVEL = 'cluster-level-action';
+const ORPHANS = 'deleted-hosts-action';
 
 const mapHosts = (hosts: Host[] = []) =>
   hosts.map((host) => {
@@ -66,6 +68,7 @@ export const getInitialClusterEventsFilters = (cluster: Cluster): ClusterEventsF
   hosts: mapHosts(cluster.hosts).map((host) => host.id),
   severity: [],
   clusterLevel: true,
+  orphanedHosts: true,
 });
 
 const getEventsCount = (severity: Event['severity'], events: Event[]) =>
@@ -106,6 +109,13 @@ const ClusterEventsToolbar: React.FC<ClustersFilterToolbarProps> = ({
           ...filters,
           hosts: [], // clear all selection whenever clicked
           clusterLevel: false,
+          orphanedHosts: false,
+        });
+        break;
+      case ORPHANS:
+        setFilters({
+          ...filters,
+          orphanedHosts: isChecked,
         });
         break;
       case CLUSTER_LEVEL:
@@ -152,7 +162,8 @@ const ClusterEventsToolbar: React.FC<ClustersFilterToolbarProps> = ({
     });
   };
 
-  const selections = filters.clusterLevel ? [...filters.hosts, CLUSTER_LEVEL] : filters.hosts;
+  let selections = filters.clusterLevel ? [...filters.hosts, CLUSTER_LEVEL] : filters.hosts;
+  selections = filters.orphanedHosts ? [...selections, ORPHANS] : selections;
 
   return (
     <Toolbar
@@ -184,6 +195,9 @@ const ClusterEventsToolbar: React.FC<ClustersFilterToolbarProps> = ({
                 value={CLUSTER_LEVEL}
               >
                 Cluster-level events
+              </SelectOption>,
+              <SelectOption inputId={`checkbox-${ORPHANS}`} key={ORPHANS} value={ORPHANS}>
+                Deleted hosts
               </SelectOption>,
               ...allHosts.map((host) => (
                 <SelectOption key={host.id} value={host.id}>

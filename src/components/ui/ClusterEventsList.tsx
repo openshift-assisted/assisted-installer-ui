@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, ButtonVariant } from '@patternfly/react-core';
 import { SearchIcon } from '@patternfly/react-icons';
 import EventsList from './EventsList';
-import { EventList, Cluster } from '../../api/types';
+import { EventList, Cluster, Host } from '../../api/types';
 import ClusterEventsToolbar, {
   ClusterEventsFiltersType,
   getInitialClusterEventsFilters,
@@ -14,10 +14,19 @@ type ClusterEventsListProps = {
   cluster: Cluster;
 };
 
-const filterEvents = (filters: ClusterEventsFiltersType, events: EventList = []) => {
+const filterEvents = (
+  filters: ClusterEventsFiltersType,
+  events: EventList = [],
+  clusterHosts: Host[] = [],
+) => {
   return events
     .filter((event) => filters.severity.length === 0 || filters.severity.includes(event.severity))
-    .filter((event) => !event.hostId || filters.hosts.includes(event.hostId))
+    .filter(
+      (event) =>
+        !event.hostId ||
+        filters.hosts.includes(event.hostId) ||
+        (filters.orphanedHosts && !clusterHosts.find((host) => host.id === event.hostId)),
+    )
     .filter((event) => event.hostId || filters.clusterLevel)
     .filter(
       (event) =>
@@ -31,7 +40,11 @@ const ClusterEventsList: React.FC<ClusterEventsListProps> = ({ events, cluster }
     getInitialClusterEventsFilters(cluster),
   );
 
-  const filteredEvents = React.useMemo(() => filterEvents(filters, events), [filters, events]);
+  const filteredEvents = React.useMemo(() => filterEvents(filters, events, cluster.hosts), [
+    filters,
+    events,
+    cluster.hosts,
+  ]);
 
   return (
     <>
