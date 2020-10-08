@@ -1,13 +1,6 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
-import {
-  Spinner,
-  Alert,
-  AlertVariant,
-  Button,
-  ButtonVariant,
-  Popover,
-} from '@patternfly/react-core';
+import { Spinner, Alert, AlertVariant, Popover, AlertActionLink } from '@patternfly/react-core';
 import {
   HostSubnets,
   ClusterConfigurationValues,
@@ -109,39 +102,38 @@ const SubnetHelperText: React.FC<{ matchingSubnet: HostSubnet; cluster: Cluster 
     return null;
   }
 
+  const actionLinks = (
+    <Popover
+      position="right"
+      bodyContent={
+        <ul>
+          {excludedHosts
+            .sort(
+              (hostA, hostB) =>
+                hostA.requestedHostname?.localeCompare(hostB.requestedHostname || '') || 0,
+            )
+            .map((host) => (
+              <li key={host.id}>{host.requestedHostname}</li>
+            ))}
+        </ul>
+      }
+      minWidth="30rem"
+      maxWidth="50rem"
+    >
+      <AlertActionLink id="form-input-hostSubnet-field-helper-view-excluded">{`View ${
+        excludedHosts.length
+      } affected host${excludedHosts.length > 1 ? 's' : ''}`}</AlertActionLink>
+    </Popover>
+  );
+
   return (
     <Alert
       title="This subnet range is not available on all hosts"
       variant={AlertVariant.warning}
+      actionLinks={actionLinks}
       isInline
     >
       Hosts outside of this range will not be included in the new cluster.
-      <br />
-      <Popover
-        position="right"
-        bodyContent={
-          <ul>
-            {excludedHosts
-              .sort(
-                (hostA, hostB) =>
-                  hostA.requestedHostname?.localeCompare(hostB.requestedHostname || '') || 0,
-              )
-              .map((host) => (
-                <li key={host.id}>{host.requestedHostname}</li>
-              ))}
-          </ul>
-        }
-        minWidth="30rem"
-        maxWidth="50rem"
-      >
-        <Button
-          variant={ButtonVariant.link}
-          id="form-input-hostSubnet-field-helper-view-excluded"
-          isInline
-        >
-          {`View ${excludedHosts.length} affected host${excludedHosts.length > 1 ? 's' : ''}`}
-        </Button>
-      </Popover>
     </Alert>
   );
 };
