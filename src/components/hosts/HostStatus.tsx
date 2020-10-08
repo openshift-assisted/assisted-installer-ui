@@ -15,7 +15,7 @@ import {
   BanIcon,
   PendingIcon,
 } from '@patternfly/react-icons';
-import { Host } from '../../api/types';
+import { Cluster, Host } from '../../api/types';
 import { ValidationsInfo } from '../../types/hosts';
 import HostProgress from './HostProgress';
 import { HOST_STATUS_LABELS, HOST_STATUS_DETAILS } from '../../config/constants';
@@ -23,7 +23,7 @@ import { getHumanizedDateTime } from '../ui/utils';
 import { toSentence } from '../ui/table/utils';
 import { getHostProgressStageNumber, getHostProgressStages } from './utils';
 import { stringToJSON } from '../../api/utils';
-import HostValidationGroups from './HostValidationGroups';
+import HostValidationGroups, { ValidationInfoActionProps } from './HostValidationGroups';
 
 const getStatusIcon = (status: Host['status']): React.ReactElement => {
   switch (status) {
@@ -55,7 +55,8 @@ const getStatusIcon = (status: Host['status']): React.ReactElement => {
   }
 };
 
-const getPopoverContent = (host: Host) => {
+const getPopoverContent = (props: ValidationInfoActionProps) => {
+  const { host } = props;
   const { status, statusInfo } = host;
   const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
   const statusDetails = HOST_STATUS_DETAILS[status];
@@ -95,16 +96,18 @@ const getPopoverContent = (host: Host) => {
           {toSentence(statusInfo)}
         </Text>
       </TextContent>
-      <HostValidationGroups validationsInfo={validationsInfo} />
+      <HostValidationGroups validationsInfo={validationsInfo} {...props} />
     </>
   );
 };
 
 type HostStatusProps = {
   host: Host;
+  cluster: Cluster;
 };
 
-const HostStatus: React.FC<HostStatusProps> = ({ host }) => {
+const HostStatus: React.FC<HostStatusProps> = ({ host, cluster }) => {
+  const [keepOnOutsideClick, onValidationActionToggle] = React.useState(false);
   const { status, statusUpdatedAt } = host;
   const title = HOST_STATUS_LABELS[status] || status;
   const icon = getStatusIcon(status) || null;
@@ -114,10 +117,12 @@ const HostStatus: React.FC<HostStatusProps> = ({ host }) => {
     <>
       <Popover
         headerContent={<div>{title}</div>}
-        bodyContent={getPopoverContent(host)}
+        bodyContent={getPopoverContent({ host, cluster, onValidationActionToggle })}
         footerContent={<small>Status updated at {getHumanizedDateTime(statusUpdatedAt)}</small>}
         minWidth="30rem"
         maxWidth="50rem"
+        hideOnOutsideClick={!keepOnOutsideClick}
+        zIndex={keepOnOutsideClick ? 300 : undefined}
       >
         <Button variant={ButtonVariant.link} isInline>
           {icon} {title}{' '}
@@ -128,7 +133,7 @@ const HostStatus: React.FC<HostStatusProps> = ({ host }) => {
           )}
         </Button>
       </Popover>
-      {status === 'installing-pending-user-action' && (
+      {['installing-pending-user-action', 'disconnected'].includes(status) && (
         <div className="hosts-table-sublabel">Action required</div>
       )}
     </>
