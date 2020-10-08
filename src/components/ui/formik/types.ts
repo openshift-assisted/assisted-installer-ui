@@ -24,7 +24,7 @@ export interface FieldProps {
 export interface SelectFieldProps extends FieldProps {
   options: FormSelectOptionProps[];
   onChange?: (event: React.FormEvent<HTMLSelectElement>) => void;
-  getHelperText?: (value: string) => string | undefined;
+  getHelperText?: (value: string) => React.ReactNode | undefined;
   // onBlur?: (event: React.FormEvent<HTMLSelectElement>) => void;
 }
 
