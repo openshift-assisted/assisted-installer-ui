@@ -185,11 +185,15 @@ const BasicNetworkFields: React.FC<BasicNetworkFieldsProps> = ({ cluster, hostSu
                   label: `Please select a subnet. (${hostSubnets.length} available)`,
                   value: NO_SUBNET_SET,
                   isDisabled: true,
+                  id: 'form-input-hostSubnet-field-option-no-subnet',
                 },
-                ...hostSubnets.map((hn) => ({
-                  label: hn.humanized,
-                  value: hn.humanized,
-                })),
+                ...hostSubnets
+                  .sort((subA, subB) => subA.humanized.localeCompare(subB.humanized))
+                  .map((hn, index) => ({
+                    label: hn.humanized,
+                    value: hn.humanized,
+                    id: `form-input-hostSubnet-field-option-${index}`,
+                  })),
               ]
             : [{ label: 'No subnets are currently available', value: NO_SUBNET_SET }]
         }

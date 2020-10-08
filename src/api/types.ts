@@ -104,7 +104,8 @@ export interface Cluster {
     | 'installing'
     | 'finalizing'
     | 'installed'
-    | 'adding-hosts';
+    | 'adding-hosts'
+    | 'cancelled';
   /**
    * Additional information pertaining to the status of the OpenShift cluster.
    */
@@ -464,7 +465,8 @@ export interface Host {
     | 'installed'
     | 'error'
     | 'resetting'
-    | 'added-to-existing-cluster';
+    | 'added-to-existing-cluster'
+    | 'cancelled';
   statusInfo: string;
   /**
    * Json formatted string containing the validations results for each validation id grouped by category (network, hardware, etc.)

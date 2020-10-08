@@ -33,6 +33,7 @@ const getStatusIcon = (status: Host['status']): React.ReactElement => {
       return <PendingIcon />;
     case 'disconnected':
       return <DisconnectedIcon />;
+    case 'cancelled':
     case 'disabled':
       return <BanIcon />;
     case 'error':
@@ -66,7 +67,7 @@ const getPopoverContent = (host: Host) => {
       </TextContent>
     );
   }
-  if (['error', 'installing-pending-user-action'].includes(status)) {
+  if (['error', 'cancelled', 'installing-pending-user-action'].includes(status)) {
     return (
       <TextContent>
         <Text>
@@ -120,7 +121,7 @@ const HostStatus: React.FC<HostStatusProps> = ({ host }) => {
       >
         <Button variant={ButtonVariant.link} isInline>
           {icon} {title}{' '}
-          {['installing', 'installing-in-progress', 'error'].includes(status) && (
+          {['installing', 'installing-in-progress', 'error', 'cancelled'].includes(status) && (
             <>
               {getHostProgressStageNumber(host)}/{hostProgressStages.length}
             </>

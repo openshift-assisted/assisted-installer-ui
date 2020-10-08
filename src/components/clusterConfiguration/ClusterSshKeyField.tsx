@@ -15,11 +15,14 @@ interface ClusterSshKeyFieldProps extends FieldProps {
   onSshKeyBlur: () => void;
 }
 
-const sshPublicKeyHelperText = (
-  <>
+export const SshPublicKeyHelperText: React.FC<{
+  fieldId?: string;
+}> = ({ fieldId = 'sshPublicKey' }) => (
+  <HelperText fieldId={fieldId}>
     Provide an SSH public key to debug OpenShift nodes after installation. To generate a new key,
-    use the <em>ssh-keygen -o</em> command and paste the value of <em>~/.ssh/id_rsa.pub</em> here.
-  </>
+    use the <em>ssh-keygen</em> command and paste the resulting public key (i.e. content of{' '}
+    <em>~/.ssh/id_rsa.pub</em> file) here.
+  </HelperText>
 );
 
 const label = 'Host SSH Public Key for troubleshooting after installation';
@@ -48,18 +51,14 @@ const ClusterSshKeyField: React.FC<ClusterSshKeyFieldProps> = ({
   );
 
   return !isSwitchHidden && field.value ? (
-    <FormGroup
-      fieldId={fieldId}
-      label={label}
-      helperText={<HelperText fieldId={fieldId}>{sshPublicKeyHelperText}</HelperText>}
-    >
+    <FormGroup fieldId={fieldId} label={label} helperText={<SshPublicKeyHelperText />}>
       {checkbox}
     </FormGroup>
   ) : (
     <TextAreaField
       name="sshPublicKey"
       label={label}
-      helperText={sshPublicKeyHelperText}
+      helperText={<SshPublicKeyHelperText />}
       className="ssh-public-key__textarea"
       onBlur={onSshKeyBlur}
     >

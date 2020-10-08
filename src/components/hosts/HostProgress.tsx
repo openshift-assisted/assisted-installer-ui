@@ -10,6 +10,7 @@ import { getHostProgress, getHostProgressStages, getHostProgressStageNumber } fr
 
 const getProgressVariant = (status: Host['status']) => {
   switch (status) {
+    case 'cancelled':
     case 'error':
       return ProgressVariant.danger;
     case 'installed':

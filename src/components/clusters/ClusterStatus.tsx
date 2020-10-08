@@ -10,6 +10,7 @@ import {
   CheckCircleIcon,
   InProgressIcon,
   PendingIcon,
+  BanIcon,
 } from '@patternfly/react-icons';
 import { Cluster } from '../../api/types';
 import { CLUSTER_STATUS_LABELS } from '../../config/constants';
@@ -21,6 +22,8 @@ type ClusterStatusProps = {
 
 const getStatusIcon = (status: Cluster['status']): React.ReactElement => {
   switch (status) {
+    case 'cancelled':
+      return <BanIcon />;
     case 'insufficient':
       return <FileAltIcon />;
     case 'pending-for-input':

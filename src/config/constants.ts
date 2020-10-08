@@ -1,6 +1,6 @@
 import * as packageJson from '../../package.json';
-import { ClusterCreateParams, Cluster, Host, HostRoleUpdateParams, Event } from '../api/types';
-import { ValidationsInfo, Validation } from '../types/hosts';
+import { ClusterCreateParams, Cluster, Host, Event } from '../api/types';
+import { ValidationsInfo, Validation, HostRole } from '../types/hosts';
 
 export let routeBasePath = '';
 export const setRouteBasePath = (basePath: string) => {
@@ -35,11 +35,25 @@ export const getProductBrandingCode = () => 'redhat';
 export const POLLING_INTERVAL = 10 * 1000;
 export const EVENTS_POLLING_INTERVAL = 10 * 1000;
 
-export const HOST_ROLES: { [key in HostRoleUpdateParams]: string } = {
-  'auto-assign': 'Automatic',
-  master: 'Master',
-  worker: 'Worker',
-};
+export const HOST_ROLES: HostRole[] = [
+  {
+    value: 'auto-assign',
+    label: 'Automatic',
+    description:
+      'A role will be chosen automatically based on detected hardware and network latency.',
+  },
+  {
+    value: 'master',
+    label: 'Master',
+    description: 'Runs the control plane components of OpenShift, including the API server.',
+  },
+  {
+    value: 'worker',
+    label: 'Worker',
+    description:
+      'Runs application workloads. Connect at least 5 hosts to enable dedicated workers.',
+  },
+];
 
 export const CLUSTER_STATUS_LABELS: { [key in Cluster['status']]: string } = {
   'pending-for-input': 'Pending input',
@@ -48,6 +62,7 @@ export const CLUSTER_STATUS_LABELS: { [key in Cluster['status']]: string } = {
   'preparing-for-installation': 'Preparing for installation',
   installing: 'Installing',
   finalizing: 'Finalizing',
+  cancelled: 'Installation cancelled',
   error: 'Error',
   installed: 'Installed',
   'adding-hosts': 'Adding hosts',
@@ -65,6 +80,7 @@ export const HOST_STATUS_LABELS: { [key in Host['status']]: string } = {
   'installing-in-progress': 'Installing',
   'installing-pending-user-action': 'Incorrect boot order',
   installed: 'Installed',
+  cancelled: 'Installation cancelled',
   error: 'Error',
   resetting: 'Resetting',
   'resetting-pending-user-action': 'Reboot required',
@@ -101,6 +117,7 @@ export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
   'installing-pending-user-action':
     "Please reconfigure this host's BIOS to boot from the disk where OpenShift was installed instead of the Discovery ISO.",
   installed: 'This host completed its installation successfully.',
+  cancelled: 'This host installation has been cancelled.',
   error: 'This host failed its installation.',
   resetting: 'This host is resetting the installation.',
   'resetting-pending-user-action':
