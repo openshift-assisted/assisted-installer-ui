@@ -29,7 +29,7 @@ import { EventsModalButton } from '../ui/eventsModal';
 import { Cluster, ClusterUpdateParams, ManagedDomain } from '../../api/types';
 import { patchCluster, postInstallCluster, getClusters } from '../../api/clusters';
 import { handleApiError, getErrorMessage } from '../../api/utils';
-import { routeBasePath } from '../../config/constants';
+import { isSingleClusterMode, routeBasePath } from '../../config/constants';
 import AlertsSection from '../ui/AlertsSection';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import BaremetalInventory from './BaremetalInventory';
@@ -265,6 +265,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
               <ToolbarButton
                 variant={ButtonVariant.link}
                 component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
+                isHidden={isSingleClusterMode()}
               >
                 Back to all clusters
               </ToolbarButton>
