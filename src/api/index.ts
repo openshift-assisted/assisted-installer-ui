@@ -4,6 +4,7 @@ export * from './utils';
 export * from './clusters';
 export * from './versions';
 export * from './domains';
+export * from './addHostsCluster';
 
 export * from './types';
 

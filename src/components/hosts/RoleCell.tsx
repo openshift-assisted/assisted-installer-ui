@@ -6,10 +6,11 @@ import { canEditRole, getHostRole } from './utils';
 type RoleCellProps = {
   host: Host;
   clusterStatus: Cluster['status'];
+  forceStatic?: boolean;
 };
 
-const RoleCell: React.FC<RoleCellProps> = ({ host, clusterStatus }) => {
-  return canEditRole(clusterStatus, host.status) ? (
+const RoleCell: React.FC<RoleCellProps> = ({ host, clusterStatus, forceStatic = false }) => {
+  return !forceStatic && canEditRole(clusterStatus, host.status) ? (
     <RoleDropdown host={host} />
   ) : (
     <>{getHostRole(host)}</>

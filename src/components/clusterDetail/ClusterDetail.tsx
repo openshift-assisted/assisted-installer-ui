@@ -137,7 +137,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
             <TextContent>
               <Text component="h2">Bare Metal Inventory</Text>
             </TextContent>
-            <HostsTable cluster={cluster} skipDisabled />
+            <HostsTable cluster={cluster} skipDisabled variant="Cluster" />
           </GridItem>
           <ClusterProperties cluster={cluster} />
         </Grid>

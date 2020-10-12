@@ -22,12 +22,11 @@ import { routeBasePath, OPENSHIFT_VERSION_OPTIONS } from '../../config/constants
 import { getClusters, postCluster } from '../../api/clusters';
 import { ClusterCreateParams } from '../../api/types';
 import { nameValidationSchema, validJSONSchema } from '../ui/formik/validationSchemas';
-import { ocmClient } from '../../api/axiosClient';
 import InputField from '../ui/formik/InputField';
 import SelectField from '../ui/formik/SelectField';
 import LoadingState from '../ui/uiState/LoadingState';
 import { captureException } from '../../sentry';
-import PullSecret from './PullSecret';
+import PullSecret, { PullSecretProps } from './PullSecret';
 
 type NewClusterFormProps = {
   pullSecret?: string;
@@ -138,29 +137,8 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ pullSecret = '' }) => {
   );
 };
 
-const NewCluster: React.FC<{}> = (props) => {
-  const [pullSecret, setPullSecret] = React.useState<string>();
-  const { addAlert } = React.useContext(AlertsContext);
-
-  React.useEffect(() => {
-    const getPullSecret = async () => {
-      if (ocmClient) {
-        try {
-          const response = await ocmClient.post('/api/accounts_mgmt/v1/access_token');
-          setPullSecret(response?.request?.response || ''); // unmarshalled response as a string
-        } catch (e) {
-          handleApiError(e, (e) => {
-            setPullSecret('');
-            addAlert({ title: 'Failed to retrieve pull secret', message: getErrorMessage(e) });
-          });
-        }
-      } else {
-        setPullSecret('');
-      }
-    };
-    getPullSecret();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
+const NewCluster: React.FC<RouteComponentProps> = (props) => {
+  const pullSecret = usePullSecretFetch();
   if (pullSecret === undefined) {
     return (
       <PageSection variant={PageSectionVariants.light} isMain>

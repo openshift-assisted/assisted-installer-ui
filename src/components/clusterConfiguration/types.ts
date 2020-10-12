@@ -8,3 +8,5 @@ export type ProxyFieldsType = {
 };
 
 export type DiscoveryImageFormValues = ImageCreateParams & ProxyFieldsType;
+
+export type BareMetalInventoryVariant = 'Cluster' | 'AddHostsCluster'; // conforms Cluster['kind'] but let's keep these two detechaed

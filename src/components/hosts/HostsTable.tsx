@@ -47,12 +47,14 @@ import {
   HostsNotShowingLink,
   HostsNotShowingLinkProps,
 } from '../clusterConfiguration/DiscoveryTroubleshootingModal';
+import { BareMetalInventoryVariant } from '../clusterConfiguration/types';
 
 import './HostsTable.css';
 
 type HostsTableProps = {
   cluster: Cluster;
   skipDisabled?: boolean;
+  variant: BareMetalInventoryVariant;
   setDiscoveryHintModalOpen?: HostsNotShowingLinkProps['setDiscoveryHintModalOpen'];
 };
 
@@ -76,7 +78,11 @@ const getColumns = (hosts?: Host[]) => [
   { title: <HostsCount hosts={hosts} inParenthesis /> },
 ];
 
-const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host): IRow => {
+const hostToHostTableRow = (
+  openRows: OpenRows,
+  cluster: Cluster,
+  variant: BareMetalInventoryVariant,
+) => (host: Host): IRow => {
   const { id, status, createdAt, inventory: inventoryString = '' } = host;
   const inventory = stringToJSON<Inventory>(inventoryString) || {};
   const { cores, memory, disk } = getHostRowHardwareInfo(inventory);
@@ -95,7 +101,13 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
           sortableValue: computedHostname || '',
         },
         {
-          title: <RoleCell host={host} clusterStatus={cluster.status} />,
+          title: (
+            <RoleCell
+              host={host}
+              clusterStatus={cluster.status}
+              forceStatic={variant != 'Cluster'}
+            />
+          ),
           sortableValue: getHostRole(host),
         },
         {
@@ -151,6 +163,7 @@ const HostsTable: React.FC<HostsTableProps> = ({
   cluster,
   skipDisabled = false,
   setDiscoveryHintModalOpen,
+  variant,
 }) => {
   const { addAlert } = React.useContext(AlertsContext);
   const [showEventsModal, setShowEventsModal] = React.useState<
@@ -172,14 +185,14 @@ const HostsTable: React.FC<HostsTableProps> = ({
       _.flatten(
         (cluster.hosts || [])
           .filter(isHostShown(skipDisabled))
-          .map(hostToHostTableRow(openRows, cluster))
+          .map(hostToHostTableRow(openRows, cluster, variant))
           .sort(rowSorter(sortBy, (row: IRow, index = 1) => row[0].cells[index - 1]))
           .map((row: IRow, index: number) => {
             row[1].parent = index * 2;
             return row;
           }),
       ),
-    [cluster, skipDisabled, openRows, sortBy],
+    [cluster, skipDisabled, openRows, sortBy, variant],
   );
 
   const columns = React.useMemo(() => getColumns(cluster.hosts), [cluster.hosts]);
@@ -236,7 +249,23 @@ const HostsTable: React.FC<HostsTableProps> = ({
     },
     [cluster.id, dispatch, addAlert],
   );
-
+  /*
+  So far installation per-host is not implemented.
+  const onInstallHost = React.useCallback(
+    async (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
+      const hostId = rowData.host.id;
+      try {
+        const { data } = await installHost(cluster.id, hostId);
+        dispatch(updateCluster(data));
+      } catch (e) {
+        handleApiError(e, () =>
+          addAlert({ title: `Failed to enable host ${hostId}`, message: getErrorMessage(e) }),
+        );
+      }
+    },
+    [cluster.id, dispatch, addAlert],
+  );
+*/
   const onHostDisable = React.useCallback(
     async (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
       const hostId = rowData.host.id;
@@ -287,7 +316,15 @@ const HostsTable: React.FC<HostsTableProps> = ({
       }
 
       const actions = [];
-
+      /*
+      if (canInstallHost(cluster, host.status)) {
+        actions.push({
+          title: 'Install Host',
+          id: `button-install-host-${hostname}`,
+          onClick: onInstallHost,
+        });
+      }
+      */
       if (canEditHost(clusterStatus, host.status)) {
         actions.push({
           title: 'Edit Host',
