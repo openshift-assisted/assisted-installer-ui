@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
   Toolbar,
@@ -16,13 +16,16 @@ import {
   TextInputProps,
   ButtonVariant,
   Spinner,
+  ToolbarGroup,
+  Tooltip,
 } from '@patternfly/react-core';
-import { FilterIcon } from '@patternfly/react-icons';
+import { FilterIcon, SyncIcon } from '@patternfly/react-icons';
 import { Cluster } from '../../api/types';
 import { CLUSTER_STATUS_LABELS, routeBasePath } from '../../config';
 import ToolbarButton from '../ui/Toolbar/ToolbarButton';
 import { ResourceUIState } from '../../types';
 import { selectClustersUIState } from '../../selectors/clusters';
+import { fetchClustersAsync } from '../../features/clusters/clustersSlice';
 
 export type ClusterFiltersType = {
   [key: string]: string[]; // value from CLUSTER_STATUS_LABELS
@@ -44,6 +47,8 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
   const [isStatusExpanded, setStatusExpanded] = React.useState(false);
   const history = useHistory();
   const clustersUIState = useSelector(selectClustersUIState);
+  const dispatch = useDispatch();
+  const fetchClusters = React.useCallback(() => dispatch(fetchClustersAsync()), [dispatch]);
 
   const onClearAllFilters: ToolbarProps['clearAllFilters'] = () => {
     setFilters({
@@ -110,8 +115,8 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
               aria-label="string to be searched in cluster names or ids"
               onChange={onSearchNameChanged}
               value={searchString}
-              placeholder="Search by Name, ID or Base domain"
-              title="Search by Name, ID or Base domain"
+              placeholder="Filter by Name, ID or Base domain"
+              title="Filter by Name, ID or Base domain"
             />
           </InputGroup>
         </ToolbarItem>
@@ -141,9 +146,20 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
           id="button-create-new-cluster"
           data-ouia-id="button-create-new-cluster"
         >
-          Create New Cluster
+          Create Cluster
         </ToolbarButton>
         {clustersUIState === ResourceUIState.RELOADING && <Spinner size="lg" />}
+        <ToolbarGroup alignment={{ lg: 'alignRight' }}>
+          <ToolbarButton
+            variant={ButtonVariant.plain}
+            onClick={() => fetchClusters()}
+            isDisabled={clustersUIState === ResourceUIState.RELOADING}
+          >
+            <Tooltip content="Refresh">
+              <SyncIcon />
+            </Tooltip>
+          </ToolbarButton>
+        </ToolbarGroup>
       </ToolbarContent>
     </Toolbar>
   );
