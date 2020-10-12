@@ -1,5 +1,5 @@
 import React from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { Redirect, RouteComponentProps } from 'react-router-dom';
 import { PageSectionVariants } from '@patternfly/react-core';
 import { Cluster, getClusters, handleApiError } from '../api';
 import { ErrorState, LoadingState, PageSection } from './ui';
@@ -7,7 +7,7 @@ import { routeBasePath } from '../config';
 
 type SingleClusterProps = RouteComponentProps;
 
-const SingleCluster: React.FC<SingleClusterProps> = ({ history }) => {
+const SingleCluster: React.FC<SingleClusterProps> = () => {
   const [error, setError] = React.useState('');
   const [clusters, setClusters] = React.useState<Cluster[]>();
 
@@ -23,21 +23,6 @@ const SingleCluster: React.FC<SingleClusterProps> = ({ history }) => {
   React.useEffect(() => {
     fetchClusters();
   }, [fetchClusters]);
-
-  React.useEffect(() => {
-    if (clusters) {
-      if (clusters.length === 0) {
-        history.push(`${routeBasePath}/clusters/~new`);
-        return;
-      }
-
-      if (clusters.length > 1) {
-        console.warn('More than one cluster found!', clusters);
-      }
-
-      history.push(`${routeBasePath}/clusters/${clusters[0].id}`);
-    }
-  }, [clusters, history]);
 
   if (error) {
     return (
@@ -55,7 +40,15 @@ const SingleCluster: React.FC<SingleClusterProps> = ({ history }) => {
     );
   }
 
-  return <div>Redirecting to cluster detail</div>;
+  if (clusters.length === 0) {
+    return <Redirect to={`${routeBasePath}/clusters/~new`} />;
+  }
+
+  if (clusters.length > 1) {
+    console.warn('More than one cluster found!', clusters);
+  }
+
+  return <Redirect to={`${routeBasePath}/clusters/${clusters[0].id}`} />;
 };
 
 export default SingleCluster;
