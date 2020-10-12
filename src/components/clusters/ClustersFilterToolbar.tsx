@@ -4,8 +4,6 @@ import {
   ToolbarItem,
   ToolbarContent,
   ToolbarFilter,
-  Button,
-  ButtonVariant,
   InputGroup,
   Select,
   SelectOption,
@@ -15,7 +13,7 @@ import {
   SelectProps,
   TextInputProps,
 } from '@patternfly/react-core';
-import { SearchIcon, FilterIcon } from '@patternfly/react-icons';
+import { FilterIcon } from '@patternfly/react-icons';
 import { Cluster } from '../../api/types';
 import { CLUSTER_STATUS_LABELS } from '../../config';
 
@@ -24,15 +22,15 @@ export type ClusterFiltersType = {
 };
 
 type ClustersFilterToolbarProps = {
-  searchName: string;
-  setSearchName: (value: string) => void;
+  searchString: string;
+  setSearchString: (value: string) => void;
   filters: ClusterFiltersType;
   setFilters: (filters: ClusterFiltersType) => void;
 };
 
 const ClustersFilterToolbar: React.FC<ClustersFilterToolbarProps> = ({
-  searchName,
-  setSearchName,
+  searchString,
+  setSearchString,
   filters,
   setFilters,
 }) => {
@@ -44,7 +42,7 @@ const ClustersFilterToolbar: React.FC<ClustersFilterToolbarProps> = ({
     });
   };
 
-  const onSearchNameChanged: TextInputProps['onChange'] = setSearchName;
+  const onSearchNameChanged: TextInputProps['onChange'] = setSearchString;
 
   const onSelect = (type: string, isChecked: boolean, value: Cluster['status']) => {
     setFilters({
@@ -94,6 +92,20 @@ const ClustersFilterToolbar: React.FC<ClustersFilterToolbarProps> = ({
       clearAllFilters={onClearAllFilters}
     >
       <ToolbarContent>
+        <ToolbarItem>
+          <InputGroup>
+            <TextInput
+              name="search-string"
+              id="search-string"
+              type="search"
+              aria-label="string to be searched in cluster names or ids"
+              onChange={onSearchNameChanged}
+              value={searchString}
+              placeholder="Search by Name, ID or Base domain"
+              title="Search by Name, ID or Base domain"
+            />
+          </InputGroup>
+        </ToolbarItem>
         <ToolbarFilter
           chips={filters.status}
           deleteChip={onDeleteChip}
@@ -114,23 +126,6 @@ const ClustersFilterToolbar: React.FC<ClustersFilterToolbarProps> = ({
             ))}
           </Select>
         </ToolbarFilter>
-
-        <ToolbarItem>
-          <InputGroup>
-            <TextInput
-              name="search-name"
-              id="search-name"
-              type="search"
-              aria-label="cluster name to be searched"
-              onChange={onSearchNameChanged}
-              value={searchName}
-              placeholder="Filter by name ..."
-            />
-            <Button variant={ButtonVariant.control} aria-label="search cluster name button">
-              <SearchIcon />
-            </Button>
-          </InputGroup>
-        </ToolbarItem>
       </ToolbarContent>
     </Toolbar>
   );
