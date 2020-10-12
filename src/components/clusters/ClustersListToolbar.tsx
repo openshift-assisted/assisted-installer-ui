@@ -1,4 +1,6 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import {
   Toolbar,
   ToolbarItem,
@@ -12,29 +14,36 @@ import {
   ToolbarFilterProps,
   SelectProps,
   TextInputProps,
+  ButtonVariant,
+  Spinner,
 } from '@patternfly/react-core';
 import { FilterIcon } from '@patternfly/react-icons';
 import { Cluster } from '../../api/types';
-import { CLUSTER_STATUS_LABELS } from '../../config';
+import { CLUSTER_STATUS_LABELS, routeBasePath } from '../../config';
+import ToolbarButton from '../ui/Toolbar/ToolbarButton';
+import { ResourceUIState } from '../../types';
+import { selectClustersUIState } from '../../selectors/clusters';
 
 export type ClusterFiltersType = {
   [key: string]: string[]; // value from CLUSTER_STATUS_LABELS
 };
 
-type ClustersFilterToolbarProps = {
+type ClustersListToolbarProps = {
   searchString: string;
   setSearchString: (value: string) => void;
   filters: ClusterFiltersType;
   setFilters: (filters: ClusterFiltersType) => void;
 };
 
-const ClustersFilterToolbar: React.FC<ClustersFilterToolbarProps> = ({
+const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
   searchString,
   setSearchString,
   filters,
   setFilters,
 }) => {
   const [isStatusExpanded, setStatusExpanded] = React.useState(false);
+  const history = useHistory();
+  const clustersUIState = useSelector(selectClustersUIState);
 
   const onClearAllFilters: ToolbarProps['clearAllFilters'] = () => {
     setFilters({
@@ -86,7 +95,7 @@ const ClustersFilterToolbar: React.FC<ClustersFilterToolbarProps> = ({
 
   return (
     <Toolbar
-      id="clusters-filter-toolbar"
+      id="clusters-list-toolbar"
       className="pf-m-toggle-group-container"
       collapseListedFiltersBreakpoint="xl"
       clearAllFilters={onClearAllFilters}
@@ -126,9 +135,18 @@ const ClustersFilterToolbar: React.FC<ClustersFilterToolbarProps> = ({
             ))}
           </Select>
         </ToolbarFilter>
+        <ToolbarButton
+          variant={ButtonVariant.primary}
+          onClick={() => history.push(`${routeBasePath}/clusters/~new`)}
+          id="button-create-new-cluster"
+          data-ouia-id="button-create-new-cluster"
+        >
+          Create New Cluster
+        </ToolbarButton>
+        {clustersUIState === ResourceUIState.RELOADING && <Spinner size="lg" />}
       </ToolbarContent>
     </Toolbar>
   );
 };
 
-export default ClustersFilterToolbar;
+export default ClustersListToolbar;

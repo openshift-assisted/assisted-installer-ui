@@ -33,7 +33,7 @@ export type ClusterEventsFiltersType = {
   orphanedHosts: boolean;
 };
 
-type ClustersFilterToolbarProps = {
+type ClustersListToolbarProps = {
   filters: ClusterEventsFiltersType;
   setFilters: (filters: ClusterEventsFiltersType) => void;
   cluster: Cluster;
@@ -74,7 +74,7 @@ export const getInitialClusterEventsFilters = (cluster: Cluster): ClusterEventsF
 const getEventsCount = (severity: Event['severity'], events: Event[]) =>
   events.filter((event) => event.severity === severity).length;
 
-const ClusterEventsToolbar: React.FC<ClustersFilterToolbarProps> = ({
+const ClusterEventsToolbar: React.FC<ClustersListToolbarProps> = ({
   filters,
   setFilters,
   cluster,
