@@ -14,7 +14,7 @@ const ClusterProperties: React.FC<ClusterPropertiesProps> = ({ cluster }) => (
         <Text component="h2">Cluster Details</Text>
       </TextContent>
     </GridItem>
-    <GridItem md={6} lg={6} xl={6}>
+    <GridItem md={6}>
       <DetailList>
         <DetailItem title="OpenShift version" value={cluster.openshiftVersion} />
         <DetailItem title="Base DNS domain" value={cluster.baseDnsDomain} />
@@ -22,8 +22,9 @@ const ClusterProperties: React.FC<ClusterPropertiesProps> = ({ cluster }) => (
         <DetailItem title="Ingress virtual IP" value={cluster.ingressVip} />
       </DetailList>
     </GridItem>
-    <GridItem md={6} lg={6} xl={6}>
+    <GridItem md={6}>
       <DetailList>
+        <DetailItem title="UUID" value={cluster.id} />
         <DetailItem title="Cluster network CIDR" value={cluster.clusterNetworkCidr} />
         <DetailItem title="Cluster network host prefix" value={cluster.clusterNetworkHostPrefix} />
         <DetailItem title="Service network CIDR" value={cluster.serviceNetworkCidr} />
