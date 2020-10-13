@@ -48,7 +48,12 @@ const ValidationGroupAlert: React.FC<ValidationGroupAlertProps> = ({
     )
   ) {
     actionLinks.push(
-      <Hostname title="Change hostname" onToggle={onValidationActionToggle} {...props} />,
+      <Hostname
+        key="change-hostname"
+        title="Change hostname"
+        onToggle={onValidationActionToggle}
+        {...props}
+      />,
     );
   }
 
