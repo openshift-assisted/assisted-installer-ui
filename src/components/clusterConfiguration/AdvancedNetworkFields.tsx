@@ -27,7 +27,7 @@ const AdvancedNetworkFields: React.FC = () => {
         label="Cluster Network Host Prefix"
         type={TextInputTypes.number}
         min={clusterNetworkCidrPrefix}
-        max={32}
+        max={25}
         onBlur={(e) => formatClusterNetworkHostPrefix(e as React.ChangeEvent<HTMLInputElement>)}
         helperText="The subnet prefix length to assign to each individual node. For example, if Cluster Network Host Prefix is set to 23, then each node is assigned a /23 subnet out of the given cidr (clusterNetworkCIDR), which allows for 510 (2^(32 - 23) - 2) pod IPs addresses. If you are required to provide access to nodes from an external network, configure load balancers and routers to manage the traffic."
         isRequired
