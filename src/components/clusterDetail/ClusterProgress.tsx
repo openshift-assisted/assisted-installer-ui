@@ -3,7 +3,7 @@ import { Cluster, Host } from '../../api/types';
 import { Progress, ProgressVariant, ProgressMeasureLocation } from '@patternfly/react-core';
 import { CLUSTER_STATUS_LABELS } from '../../config/constants';
 import { getHostProgressStages, getHostProgressStageNumber } from '../hosts/utils';
-import { getHumanizedDateTime, getHumanizedTime, DetailList, DetailItem } from '../ui';
+import { getHumanizedDateTime, DetailList, DetailItem } from '../ui';
 
 import './ClusterProgress.css';
 
@@ -50,7 +50,13 @@ const getInstallationStatus = (cluster: Cluster) => {
   const { status } = cluster;
 
   if (status === 'installed') {
-    return `Installed at ${getHumanizedTime(cluster.installCompletedAt)}`;
+    return `Installed on ${getHumanizedDateTime(cluster.installCompletedAt)}`;
+  }
+  if (status === 'error') {
+    return `Failed on ${getHumanizedDateTime(cluster.installCompletedAt)}`;
+  }
+  if (status === 'cancelled') {
+    return `Cancelled on ${getHumanizedDateTime(cluster.installCompletedAt)}`;
   }
 
   return CLUSTER_STATUS_LABELS[status] || status;
