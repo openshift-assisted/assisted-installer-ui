@@ -12,7 +12,7 @@ const DeveloperPreview: React.FC<{ position?: DeveloperPreviewPosition }> = ({
 }) => {
   let className = '';
   if (position === DeveloperPreviewPosition.inlineRight) {
-    className = 'pf-u-text-align-right';
+    className = 'pf-u-float-right';
   }
 
   return (
