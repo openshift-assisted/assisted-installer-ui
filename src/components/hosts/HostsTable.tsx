@@ -116,7 +116,7 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
       // expandable detail
       // parent will be set after sorting
       fullWidth: true,
-      cells: [{ title: <HostDetail key={id} inventory={inventory} /> }],
+      cells: [{ title: <HostDetail key={id} inventory={inventory} host={host} /> }],
       key: `${host.id}-detail`,
       inventory,
     },

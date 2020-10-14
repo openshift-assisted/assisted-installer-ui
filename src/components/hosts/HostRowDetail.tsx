@@ -3,13 +3,14 @@ import Humanize from 'humanize-plus';
 import { TextContent, Text, TextVariants, Grid, GridItem } from '@patternfly/react-core';
 import { Table, TableHeader, TableBody, TableVariant } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
-import { Inventory } from '../../api/types';
+import { Host, Inventory } from '../../api/types';
 import { getHostRowHardwareInfo } from './hardwareInfo';
 import { DASH } from '../constants';
 import { DetailList, DetailListProps, DetailItem } from '../ui/DetailList';
 
 type HostDetailProps = {
   inventory: Inventory;
+  host: Host;
 };
 
 type SectionTitleProps = {
@@ -122,7 +123,8 @@ const NicsTable: React.FC<NicsTableProps> = ({ interfaces = [] }) => {
   );
 };
 
-export const HostDetail: React.FC<HostDetailProps> = ({ inventory }) => {
+export const HostDetail: React.FC<HostDetailProps> = ({ inventory, host }) => {
+  const { id } = host;
   const rowInfo = getHostRowHardwareInfo(inventory);
 
   let bmcAddress = inventory.bmcAddress;
@@ -135,6 +137,7 @@ export const HostDetail: React.FC<HostDetailProps> = ({ inventory }) => {
     <Grid hasGutter>
       <SectionTitle title="Host Details" />
       <SectionColumn>
+        <DetailItem title="UUID" value={id} />
         <DetailItem title="Manufacturer" value={inventory.systemVendor?.manufacturer || DASH} />
         <DetailItem title="Product" value={inventory.systemVendor?.productName || DASH} />
         <DetailItem title="Serial number" value={rowInfo.serialNumber} />
