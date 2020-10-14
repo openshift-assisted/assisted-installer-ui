@@ -52,6 +52,7 @@ const clusterToClusterTableRow = (cluster: Cluster): IRow => {
     props: {
       name,
       id,
+      baseDnsDomain,
     },
   };
 };
