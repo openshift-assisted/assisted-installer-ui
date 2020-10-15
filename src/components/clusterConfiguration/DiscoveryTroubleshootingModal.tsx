@@ -38,7 +38,7 @@ export const DiscoveryTroubleshootingModal: React.FC<DiscoveryTroubleshootingMod
   ]);
   return (
     <Modal
-      title="Host Discovery Troubleshooting"
+      title="Troubleshooting Host Discovery Issues"
       isOpen={isOpen}
       actions={[
         <Button key="close" variant={ButtonVariant.primary} onClick={onClose}>
@@ -50,78 +50,72 @@ export const DiscoveryTroubleshootingModal: React.FC<DiscoveryTroubleshootingMod
     >
       <TextContent>
         <Text component={TextVariants.p}>
-          Booting from an ISO takes a few minutes. It also depends heavily on the hardware and
-          network configuration. However, if you have verified that your host machine is powered on,
-          DHCP is enabled and yet the host does not appear in the inventory list, then login to the
-          host over SSH to troubleshoot. For that, you would need to know your machine IP-address.
-          You can also use a console such as BMC or virtual machine console.
+          To troubleshoot host discovery issues, complete the following steps:
         </Text>
-        <Text component={TextVariants.h2}>SSH into your machine</Text>
-        <PrismCode code={`ssh core@<machine-ip>`} />
+        <Text component={TextVariants.h2}>Verify that your host machine is powered on</Text>
         <Text component={TextVariants.p}>
-          The SSH key provided when generating the discovery ISO is used to authenticate the user.
-          It should not be required to provide the password.
+          Note: Boot time depends on several factors such as your hardware and network
+          configuration, and if you are booting from an ISO.
+        </Text>
+        <Text component={TextVariants.h2}>Verify if DHCP is enabled</Text>
+        <Text component={TextVariants.h2}>SSH into your machine</Text>
+        <Text component={TextVariants.p}>
+          Verify that you can access your host machine using SSH, or a console such as BMC or
+          virtual machine console. In the CLI, enter the following command:
+        </Text>
+        <PrismCode code="ssh -i <identity_file> core@<machine-ip>" />
+        <Text component={TextVariants.p}>
+          NOTE: Authentication is provided by the discovery ISO, therefore when you access your host
+          using SSH, a password is not required. Optional -i parameter can be used to specify the
+          private key that matches the public key provided when generating Discovery ISO.
         </Text>
         <Text component={TextVariants.h2}>
-          Verify that the discovery agent is running correctly
+          Verify that the discovery agent is running with the correct parameters
         </Text>
-        <Text component={TextVariants.p}>Execute</Text>
         <PrismCode code={`ps -ef | grep agent`} />
+        <Text component={TextVariants.p}>The output displays the following:</Text>
+        <PrismCode
+          code={`root        1786       1  0 08:03 ?        00:00:00 /usr/local/bin/agent --url https://api.openshift.com --cluster-id e4c85fbe-77c7-411e-b107-5120f615c4fb --agent-version registry.redhat.io/openshift4/assisted-installer-agent-rhel8:v4.6.0-17 --insecure=false
+core        2362    2311  0 08:04 pts/0    00:00:00 grep --color=auto agent`}
+        />
+        <Text component={TextVariants.h2}>Verify that the agent ran successfully</Text>
         <Text component={TextVariants.p}>
-          and see whether the agent runs with correct parameters. The result should look similar to
-          this:
+          To verify that the agent ran successfully, check the logs:
+        </Text>
+        <PrismCode code="sudo journalctl -u agent.service" />
+        <Text component={TextVariants.p}>
+          In the following example, the errors indicate there is a network issue:
         </Text>
         <PrismCode
-          code={`root        1342       1  0 09:56 ?        00:00:00 /usr/local/bin/agent --host 192.168.39.162 --port 30956 --cluster-id a8142e14-8bfe-46bd-bfbd-4bd1a126892b core        2063    2003  0 10:41 pts/0    00:00:00 grep --color=auto agent`}
+          code={`Oct 15 11:26:35 localhost systemd[1]: agent.service: Service RestartSec=3s expired, scheduling restart.
+Oct 15 11:26:35 localhost systemd[1]: agent.service: Scheduled restart job, restart counter is at 9.
+Oct 15 11:26:35 localhost systemd[1]: Stopped agent.service.
+Oct 15 11:26:35 localhost systemd[1]: Starting agent.service...
+Oct 15 11:26:35 localhost podman[1834]: Trying to pull quay.io/ocpmetal/assisted-installer-agent:latest...
+Oct 15 11:26:35 localhost podman[1834]:   Get "https://quay.io/v2/": dial tcp: lookup quay.io on [::1]:53: read udp [::1]:58297->[::1]:53: read: connection refused
+Oct 15 11:26:35 localhost podman[1834]: Error: unable to pull quay.io/ocpmetal/assisted-installer-agent:latest: unable to pull image: Error initializing source docker://quay.io/ocpmetal/assisted-installer-agent:latest: error pinging dock>
+Oct 15 11:26:35 localhost systemd[1]: agent.service: Control process exited, code=exited status=125
+Oct 15 11:26:35 localhost systemd[1]: agent.service: Failed with result 'exit-code'.
+Oct 15 11:26:35 localhost systemd[1]: Failed to start agent.service.`}
         />
         <Text component={TextVariants.p}>
-          See that logs are indicating that agent was run successfully:
-        </Text>
-        <PrismCode
-          code={`[core@vm-11-47 ~]$ sudo journalctl -u agent
--- Logs begin at Mon 2020-05-25 14:02:10 UTC, end at Mon 2020-05-25 19:50:52 UTC. --
-May 25 14:02:25 localhost systemd[1]: Starting agent.service...
-May 25 14:02:31 vm-11-47 docker[957]: Unable to find image locally
-May 25 14:02:33 vm-11-47 docker[957]: latest: Pulling from agent
-May 25 14:02:33 vm-11-47 docker[957]: 5d20c808ce19: Pulling fs layer
-May 25 14:02:33 vm-11-47 docker[957]: 1b657f4d2d40: Pulling fs layer
-May 25 14:02:33 vm-11-47 docker[957]: 8843662234e1: Pulling fs layer
-May 25 14:02:35 vm-11-47 docker[957]: 5d20c808ce19: Download complete
-May 25 14:02:35 vm-11-47 docker[957]: 5d20c808ce19: Pull complete
-May 25 14:02:43 vm-11-47 docker[957]: 8843662234e1: Verifying Checksum
-May 25 14:02:43 vm-11-47 docker[957]: 8843662234e1: Download complete
-May 25 14:03:32 vm-11-47 docker[957]: 1b657f4d2d40: Download complete
-May 25 14:03:33 vm-11-47 docker[957]: 1b657f4d2d40: Pull complete
-May 25 14:03:34 vm-11-47 docker[957]: 8843662234e1: Pull complete
-May 25 14:03:34 vm-11-47 docker[957]: Digest: sha256:a6024573526db8ddff7ba796df29b61e09ca5ca0f1c47356088c2203d5872d16
-May 25 14:03:34 vm-11-47 docker[957]: Status: Downloaded newer image
-May 25 14:03:34 vm-11-47 systemd[1]: Started agent.service.`}
-        />
-        <Text component={TextVariants.p}>If you see something like this:</Text>
-        <PrismCode
-          code={`May 17 14:01:14 localhost systemd[1]: Starting agent.service...
-May 17 14:01:18 localhost docker[1013]: Unable to find image locally
-May 17 14:01:33 localhost docker[1013]: /usr/bin/docker: Error response from daemon: Get https://quay.io/v2/: net/http: request canceled while waiting for connection (Client.Timeout exceeded while awaiting headers).
-May 17 14:01:33 localhost docker[1013]: See '/usr/bin/docker run --help'.
-May 17 14:01:33 localhost systemd[1]: agent.service: Control process exited, code=exited, status=125/n/a
-May 17 14:01:33 localhost systemd[1]: agent.service: Failed with result 'exit-code'.
-May 17 14:01:33 localhost systemd[1]: Failed to start agent.service.`}
-        />
-        <Text component={TextVariants.p}>
-          That implies you have a networking issue, perhaps a wrong proxy or no connection to the
-          assisted installation service.You can use the nmcli to get additional information about
-          your network configuration.
+          Check the proxy settings and verify that the assisted installer service is connected to a
+          network. You can use <code>nmcli</code> to get additional information about your network
+          configuration.
         </Text>
         <Text component={TextVariants.h2}>Check agent logs</Text>
-        <PrismCode code={`[core@vm-11-47 ~]$ less /var/log/agent.log`} />
+        <Text component={TextVariants.p}>
+          To view detailed agent logs and communication use following command:
+        </Text>
+        <PrismCode code="sudo journalctl TAG=agent | less" />
         <Text component={TextVariants.h2}>Check assisted-installer logs</Text>
         <PrismCode
-          code={`[core@vm-11-47 ~]$ sudo su
-[core@vm-11-47 ~]$ podman ps -a | grep assisted-installer
-[core@vm-11-47 ~]$ podman logs <container id>`}
+          code={`sudo su
+podman ps -a | grep assisted-installer
+podman logs <container id>`}
         />
         <Text component={TextVariants.h2}>Check bootkube logs</Text>
-        <PrismCode code={`[core@vm-11-47 ~]$ journalctl -u bootkube`} />
+        <PrismCode code={`sudo journalctl -u bootkube`} />
       </TextContent>
     </Modal>
   );
