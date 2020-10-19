@@ -1,7 +1,7 @@
 import React from 'react';
 import * as Yup from 'yup';
 import { Formik, FormikHelpers } from 'formik';
-import { RouteComponentProps } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import {
   Form,
   Grid,
@@ -27,12 +27,15 @@ import InputField from '../ui/formik/InputField';
 import SelectField from '../ui/formik/SelectField';
 import LoadingState from '../ui/uiState/LoadingState';
 import { captureException } from '../../sentry';
-import PullSecret, { PullSecretProps } from './PullSecret';
+import PullSecret from './PullSecret';
 
-type NewClusterFormProps = RouteComponentProps & PullSecretProps;
+type NewClusterFormProps = {
+  pullSecret?: string;
+};
 
-const NewClusterForm: React.FC<NewClusterFormProps> = ({ history, pullSecret = '' }) => {
+const NewClusterForm: React.FC<NewClusterFormProps> = ({ pullSecret = '' }) => {
   const { addAlert, clearAlerts } = React.useContext(AlertsContext);
+  const history = useHistory();
 
   const nameInputRef = React.useRef<HTMLInputElement>();
   React.useEffect(() => {
@@ -135,7 +138,7 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ history, pullSecret = '
   );
 };
 
-const NewCluster: React.FC<RouteComponentProps> = (props) => {
+const NewCluster: React.FC<{}> = (props) => {
   const [pullSecret, setPullSecret] = React.useState<string>();
   const { addAlert } = React.useContext(AlertsContext);
 
@@ -168,7 +171,7 @@ const NewCluster: React.FC<RouteComponentProps> = (props) => {
   return <NewClusterForm pullSecret={pullSecret} {...props} />;
 };
 
-const NewClusterPage: React.FC<RouteComponentProps> = (props) => (
+const NewClusterPage: React.FC<{}> = (props) => (
   <AlertsContextProvider>
     <NewCluster {...props} />
   </AlertsContextProvider>

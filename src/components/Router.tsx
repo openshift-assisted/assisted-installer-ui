@@ -12,16 +12,20 @@ export const FacetRouter: React.FC = () => (
   </Provider>
 );
 
-export const Router: React.FC = ({ children }) => (
-  <Switch>
-    <Route path={`${routeBasePath}/clusters/~new`} component={NewClusterPage} />
-    <Route path={`${routeBasePath}/clusters/:clusterId`} component={ClusterPage} />
-    {isSingleClusterMode() ? (
+export const Router: React.FC = ({ children }) =>
+  isSingleClusterMode() ? (
+    <Switch>
+      <Route path={`${routeBasePath}/clusters/:clusterId`} component={ClusterPage} />
       <Route path={`${routeBasePath}/clusters`} component={SingleCluster} />
-    ) : (
+      {children}
+      <Redirect to={`${routeBasePath}/clusters`} />
+    </Switch>
+  ) : (
+    <Switch>
+      <Route path={`${routeBasePath}/clusters/~new`} component={NewClusterPage} />
+      <Route path={`${routeBasePath}/clusters/:clusterId`} component={ClusterPage} />
       <Route path={`${routeBasePath}/clusters`} component={Clusters} />
-    )}
-    {children}
-    <Redirect to={`${routeBasePath}/clusters`} />
-  </Switch>
-);
+      {children}
+      <Redirect to={`${routeBasePath}/clusters`} />
+    </Switch>
+  );

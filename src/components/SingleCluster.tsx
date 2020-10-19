@@ -4,6 +4,7 @@ import { PageSectionVariants } from '@patternfly/react-core';
 import { Cluster, getClusters, handleApiError } from '../api';
 import { ErrorState, LoadingState, PageSection } from './ui';
 import { routeBasePath } from '../config';
+import { NewClusterPage } from './clusters';
 
 type SingleClusterProps = RouteComponentProps;
 
@@ -41,7 +42,7 @@ const SingleCluster: React.FC<SingleClusterProps> = () => {
   }
 
   if (clusters.length === 0) {
-    return <Redirect to={`${routeBasePath}/clusters/~new`} />;
+    return <NewClusterPage />;
   }
 
   if (clusters.length > 1) {
