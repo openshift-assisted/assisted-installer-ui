@@ -16,6 +16,22 @@ export interface AddHostsClusterCreateParams {
    */
   openshiftVersion: '4.6';
 }
+export interface ApiVipConnectivityRequest {
+  /**
+   * URL address of the API.
+   */
+  url: string;
+  /**
+   * Whether to verify if the API VIP belongs to one of the interfaces.
+   */
+  verifyCidr?: boolean;
+}
+export interface ApiVipConnectivityResponse {
+  /**
+   * API VIP connecitivty check result.
+   */
+  isSuccess?: boolean;
+}
 export interface Boot {
   currentBootMode?: string;
   pxeInterface?: string;
@@ -49,7 +65,7 @@ export interface Cluster {
    */
   baseDnsDomain?: string;
   /**
-   * IP address block from which Pod IPs are allocated This block must not overlap with existing physical networks. These IP addresses are used for the Pod network, and if you need to access the Pods from an external network, configure load balancers and routers to manage the traffic.
+   * IP address block from which Pod IPs are allocated. This block must not overlap with existing physical networks. These IP addresses are used for the Pod network, and if you need to access the Pods from an external network, configure load balancers and routers to manage the traffic.
    */
   clusterNetworkCidr?: string; // ^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$
   /**
@@ -61,15 +77,19 @@ export interface Cluster {
    */
   serviceNetworkCidr?: string; // ^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$
   /**
-   * Virtual IP used to reach the OpenShift cluster API.
+   * The virtual IP used to reach the OpenShift cluster's API.
    */
   apiVip?: string; // ^(([0-9]{1,3}\.){3}[0-9]{1,3})?$
+  /**
+   * The domain name used to reach the OpenShift cluster API.
+   */
+  apiVipDnsName?: string;
   /**
    * A CIDR that all hosts belonging to the cluster should have an interfaces with IP address that belongs to this CIDR. The apiVip belongs to this CIDR.
    */
   machineNetworkCidr?: string; // ^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$
   /**
-   * Virtual IP used for cluster ingress traffic.
+   * The virtual IP used for cluster ingress traffic.
    */
   ingressVip?: string; // ^(([0-9]{1,3}\.){3}[0-9]{1,3})?$
   /**
@@ -89,7 +109,7 @@ export interface Cluster {
    */
   httpsProxy?: string;
   /**
-   * A comma-separated list of destination domain names, domains, IP addresses, or other network CIDRs to exclude proxying.
+   * A comma-separated list of destination domain names, domains, IP addresses, or other network CIDRs to exclude from proxying.
    */
   noProxy?: string;
   /**
@@ -111,7 +131,7 @@ export interface Cluster {
    */
   statusInfo: string;
   /**
-   * The last time that the cluster status has been updated
+   * The last time that the cluster status was updated.
    */
   statusUpdatedAt?: string; // date-time
   /**
@@ -127,7 +147,7 @@ export interface Cluster {
    */
   createdAt?: string; // date-time
   /**
-   * The time that this cluster began installation.
+   * The time that this cluster started installation.
    */
   installStartedAt?: string; // date-time
   /**
@@ -139,24 +159,35 @@ export interface Cluster {
    */
   hostNetworks?: HostNetwork[];
   /**
-   * True if the pull-secret has been added to the cluster
+   * True if the pull secret has been added to the cluster.
    */
   pullSecretSet?: boolean;
   ignitionGeneratorVersion?: string;
   /**
-   * Indicate if VIP DHCP allocation mode is enabled.
+   * Indicate if virtual IP DHCP allocation mode is enabled.
    */
   vipDhcpAllocation?: boolean;
   /**
-   * Json formatted string containing the validations results for each validation id grouped by category (network, hosts-data, etc.)
+   * JSON-formatted string containing the validation results for each validation id grouped by category (network, hosts-data, etc.)
    */
   validationsInfo?: string;
   /**
-   * Json formatted string containing the user overrides for the install-config.yaml file
+   * JSON-formatted string containing the user overrides for the install-config.yaml file.
    * example:
    * {"networking":{"networkType": "OVN-Kubernetes"},"fips":true}
    */
   installConfigOverrides?: string;
+  /**
+   * Json formatted string containing the user overrides for the initial ignition config
+   * example:
+   * {"ignition": {"version": "3.1.0"}, "storage": {"files": [{"path": "/tmp/example", "contents": {"source": "data:text/plain;base64,aGVscGltdHJhcHBlZGluYXN3YWdnZXJzcGVj"}}]}}
+   */
+  ignitionConfigOverrides?: string;
+  controllerLogsCollectedAt?: string; // date-time
+  /**
+   * Json formatted string containing the majority groups for conectivity checks.
+   */
+  connectivityMajorityGroups?: string;
 }
 export interface ClusterCreateParams {
   /**
@@ -172,7 +203,7 @@ export interface ClusterCreateParams {
    */
   baseDnsDomain?: string;
   /**
-   * IP address block from which Pod IPs are allocated This block must not overlap with existing physical networks. These IP addresses are used for the Pod network, and if you need to access the Pods from an external network, configure load balancers and routers to manage the traffic.
+   * IP address block from which Pod IPs are allocated. This block must not overlap with existing physical networks. These IP addresses are used for the Pod network, and if you need to access the Pods from an external network, configure load balancers and routers to manage the traffic.
    */
   clusterNetworkCidr?: string; // ^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$
   /**
@@ -184,11 +215,11 @@ export interface ClusterCreateParams {
    */
   serviceNetworkCidr?: string; // ^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$
   /**
-   * Virtual IP used for cluster ingress traffic.
+   * The virtual IP used for cluster ingress traffic.
    */
   ingressVip?: string; // ^(([0-9]{1,3}\.){3}[0-9]{1,3})?$
   /**
-   * The pull secret that obtained from the Pull Secret page on the Red Hat OpenShift Cluster Manager site.
+   * The pull secret obtained from Red Hat OpenShift Cluster Manager at cloud.redhat.com/openshift/install/pull-secret.
    */
   pullSecret?: string;
   /**
@@ -196,7 +227,7 @@ export interface ClusterCreateParams {
    */
   sshPublicKey?: string;
   /**
-   * Indicate if VIP DHCP allocation mode is enabled.
+   * Indicate if virtual IP DHCP allocation mode is enabled.
    */
   vipDhcpAllocation?: boolean;
   /**
@@ -212,14 +243,14 @@ export interface ClusterCreateParams {
    */
   httpsProxy?: string;
   /**
-   * A comma-separated list of destination domain names, domains, IP addresses, or other network CIDRs to exclude proxying.
+   * A comma-separated list of destination domain names, domains, IP addresses, or other network CIDRs to exclude from proxying.
    */
   noProxy?: string;
 }
 export type ClusterList = Cluster[];
 export interface ClusterUpdateParams {
   /**
-   * OpenShift cluster name
+   * OpenShift cluster name.
    */
   name?: string;
   /**
@@ -227,7 +258,7 @@ export interface ClusterUpdateParams {
    */
   baseDnsDomain?: string;
   /**
-   * IP address block from which Pod IPs are allocated This block must not overlap with existing physical networks. These IP addresses are used for the Pod network, and if you need to access the Pods from an external network, configure load balancers and routers to manage the traffic.
+   * IP address block from which Pod IPs are allocated. This block must not overlap with existing physical networks. These IP addresses are used for the Pod network, and if you need to access the Pods from an external network, configure load balancers and routers to manage the traffic.
    */
   clusterNetworkCidr?: string; // ^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$
   /**
@@ -239,19 +270,23 @@ export interface ClusterUpdateParams {
    */
   serviceNetworkCidr?: string; // ^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$
   /**
-   * Virtual IP used to reach the OpenShift cluster API.
+   * The virtual IP used to reach the OpenShift cluster's API.
    */
   apiVip?: string; // ^(([0-9]{1,3}\.){3}[0-9]{1,3})?$
   /**
-   * Virtual IP used for cluster ingress traffic.
+   * The virtual IP used for cluster ingress traffic.
    */
   ingressVip?: string; // ^(([0-9]{1,3}\.){3}[0-9]{1,3})?$
+  /**
+   * The domain name used to reach the OpenShift cluster API.
+   */
+  apiVipDnsName?: string;
   /**
    * A CIDR that all hosts belonging to the cluster should have an interfaces with IP address that belongs to this CIDR. The apiVip belongs to this CIDR.
    */
   machineNetworkCidr?: string; // ^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$
   /**
-   * The pull secret that obtained from the Pull Secret page on the Red Hat OpenShift Cluster Manager site.
+   * The pull secret obtained from Red Hat OpenShift Cluster Manager at cloud.redhat.com/openshift/install/pull-secret.
    */
   pullSecret?: string;
   /**
@@ -259,7 +294,7 @@ export interface ClusterUpdateParams {
    */
   sshPublicKey?: string;
   /**
-   * Indicate if VIP DHCP allocation mode is enabled.
+   * Indicate if virtual IP DHCP allocation mode is enabled.
    */
   vipDhcpAllocation?: boolean;
   /**
@@ -275,7 +310,7 @@ export interface ClusterUpdateParams {
    */
   httpsProxy?: string;
   /**
-   * A comma-separated list of destination domain names, domains, IP addresses, or other network CIDRs to exclude proxying.
+   * A comma-separated list of destination domain names, domains, IP addresses, or other network CIDRs to exclude from proxying.
    */
   noProxy?: string;
   /**
@@ -307,16 +342,11 @@ export type ClusterValidationId =
   | 'all-hosts-are-ready-to-install'
   | 'sufficient-masters-count'
   | 'dns-domain-defined'
-  | 'pull-secret-set';
+  | 'pull-secret-set'
+  | 'ntp-server-configured';
 export interface CompletionParams {
   isSuccess: boolean;
   errorInfo?: string;
-}
-export interface ConnectivityCheckApiRequest {
-  /**
-   * URL address of the API.
-   */
-  url: string;
 }
 export interface ConnectivityCheckHost {
   hostId?: string; // uuid
@@ -343,6 +373,20 @@ export interface Cpu {
   modelName?: string;
   architecture?: string;
 }
+export interface CreateManifestParams {
+  /**
+   * The folder that contains the files. Manifests can be placed in 'manifests' or 'openshift' directories.
+   */
+  folder?: 'manifests' | 'openshift';
+  /**
+   * The name of the manifest to be stored on S3 and to be created on '{folder}/{fileName}' at ignition generation using openshift-install.
+   */
+  fileName: string;
+  /**
+   * base64 encoded manifest content.
+   */
+  content: string;
+}
 export interface Credentials {
   username?: string;
   password?: string;
@@ -350,27 +394,30 @@ export interface Credentials {
 }
 export interface DhcpAllocationRequest {
   /**
-   * The interface (NIC) to run the DHCP requests on.
+   * The network interface (NIC) to run the DHCP requests on.
    */
   interface: string;
   /**
-   * MAC address for API VIP.
+   * MAC address for the API virtual IP.
    */
   apiVipMac: string; // mac
   /**
-   * MAC address for Ingress VIP.
+   * MAC address for the Ingress virtual IP.
    */
   ingressVipMac: string; // mac
 }
 export interface DhcpAllocationResponse {
   /**
-   * The IPv4 address that was allocated by DHCP for API VIP.
+   * The IPv4 address that was allocated by DHCP for the API virtual IP.
    */
   apiVipAddress: string; // ipv4
   /**
-   * The IPv4 address that was allocated by DHCP for Ingress VIP.
+   * The IPv4 address that was allocated by DHCP for the Ingress virtual IP.
    */
   ingressVipAddress: string; // ipv4
+}
+export interface DiscoveryIgnitionParams {
+  config?: string;
 }
 export interface Disk {
   driveType?: string;
@@ -383,6 +430,7 @@ export interface Disk {
   wwn?: string;
   serial?: string;
   sizeBytes?: number;
+  bootable?: boolean;
 }
 export interface Error {
   /**
@@ -398,11 +446,11 @@ export interface Error {
    */
   href: string;
   /**
-   * Globally unique code of the error, composed of the unique identifier of the API and the numeric identifier of the error. For example, for if the numeric identifier of the error is 93 and the identifier of the API is assistedInstall then the code will be ASSISTED-INSTALL-93.
+   * Globally unique code of the error, composed of the unique identifier of the API and the numeric identifier of the error. For example, if the numeric identifier of the error is 93 and the identifier of the API is assistedInstall then the code will be ASSISTED-INSTALL-93.
    */
   code: string;
   /**
-   * Human readable description of the error.
+   * Human-readable description of the error.
    */
   reason: string;
 }
@@ -419,7 +467,7 @@ export interface Event {
   message: string;
   eventTime: string; // date-time
   /**
-   * Unique identifier for the request that caused this event to occure
+   * Unique identifier of the request that caused this event to occur.
    */
   requestId?: string; // uuid
 }
@@ -469,35 +517,36 @@ export interface Host {
     | 'cancelled';
   statusInfo: string;
   /**
-   * Json formatted string containing the validations results for each validation id grouped by category (network, hardware, etc.)
+   * JSON-formatted string containing the validation results for each validation id grouped by category (network, hardware, etc.)
    */
   validationsInfo?: string;
   /**
-   * The last time that the host status has been updated
+   * The last time that the host status was updated.
    */
   statusUpdatedAt?: string; // date-time
   progress?: HostProgressInfo;
   /**
-   * Time at which the current progress stage started
+   * Time at which the current progress stage started.
    */
   stageStartedAt?: string; // date-time
   /**
-   * Time at which the current progress stage was last updated
+   * Time at which the current progress stage was last updated.
    */
   stageUpdatedAt?: string; // date-time
   progressStages?: HostStage[];
   connectivity?: string;
+  apiVipConnectivity?: string;
   inventory?: string;
   freeAddresses?: string;
   role?: HostRole;
   bootstrap?: boolean;
   logsCollectedAt?: string; // datetime
   /**
-   * Installer version
+   * Installer version.
    */
   installerVersion?: string;
   /**
-   * Host installation path
+   * Host installation path.
    */
   installationDiskPath?: string;
   updatedAt?: string; // date-time
@@ -527,13 +576,104 @@ export interface HostProgressInfo {
   currentStage: HostStage;
   progressInfo?: string;
   /**
-   * Time at which the current progress stage started
+   * Time at which the current progress stage started.
    */
   stageStartedAt?: string; // date-time
   /**
-   * Time at which the current progress stage was last updated
+   * Time at which the current progress stage was last updated.
    */
   stageUpdatedAt?: string; // date-time
+}
+export interface HostRegistrationResponse {
+  /**
+   * Indicates the type of this object. Will be 'Host' if this is a complete object or 'HostLink' if it is just a link, or
+   * 'AddToExistingClusterHost' for host being added to existing OCP cluster.
+   *
+   */
+  kind: 'Host' | 'AddToExistingClusterHost';
+  /**
+   * Unique identifier of the object.
+   */
+  id: string; // uuid
+  /**
+   * Self link.
+   */
+  href: string;
+  /**
+   * The cluster that this host is associated with.
+   */
+  clusterId?: string; // uuid
+  status:
+    | 'discovering'
+    | 'known'
+    | 'disconnected'
+    | 'insufficient'
+    | 'disabled'
+    | 'preparing-for-installation'
+    | 'pending-for-input'
+    | 'installing'
+    | 'installing-in-progress'
+    | 'installing-pending-user-action'
+    | 'resetting-pending-user-action'
+    | 'installed'
+    | 'error'
+    | 'resetting'
+    | 'added-to-existing-cluster'
+    | 'cancelled';
+  statusInfo: string;
+  /**
+   * JSON-formatted string containing the validation results for each validation id grouped by category (network, hardware, etc.)
+   */
+  validationsInfo?: string;
+  /**
+   * The last time that the host status was updated.
+   */
+  statusUpdatedAt?: string; // date-time
+  progress?: HostProgressInfo;
+  /**
+   * Time at which the current progress stage started.
+   */
+  stageStartedAt?: string; // date-time
+  /**
+   * Time at which the current progress stage was last updated.
+   */
+  stageUpdatedAt?: string; // date-time
+  progressStages?: HostStage[];
+  connectivity?: string;
+  apiVipConnectivity?: string;
+  inventory?: string;
+  freeAddresses?: string;
+  role?: HostRole;
+  bootstrap?: boolean;
+  logsCollectedAt?: string; // datetime
+  /**
+   * Installer version.
+   */
+  installerVersion?: string;
+  /**
+   * Host installation path.
+   */
+  installationDiskPath?: string;
+  updatedAt?: string; // date-time
+  createdAt?: string; // date-time
+  /**
+   * The last time the host's agent communicated with the service.
+   */
+  checkedInAt?: string; // date-time
+  discoveryAgentVersion?: string;
+  requestedHostname?: string;
+  userName?: string;
+  /**
+   * Command for starting the next step runner
+   */
+  nextStepRunnerCommand?: {
+    command?: string;
+    args?: string[];
+    /**
+     * How long in seconds to wait before retrying registration if the command fails
+     */
+    retrySeconds?: number;
+  };
 }
 export interface HostRequirements {
   master?: HostRequirementsRole;
@@ -549,7 +689,7 @@ export type HostRoleUpdateParams = 'auto-assign' | 'master' | 'worker';
 export type HostStage =
   | 'Starting installation'
   | 'Waiting for control plane'
-  | 'Start Waiting for control plane'
+  | 'Start waiting for control plane'
   | 'Installing'
   | 'Writing image to disk'
   | 'Rebooting'
@@ -570,7 +710,9 @@ export type HostValidationId =
   | 'has-memory-for-role'
   | 'hostname-unique'
   | 'hostname-valid'
-  | 'belongs-to-machine-cidr';
+  | 'belongs-to-machine-cidr'
+  | 'api-vip-connected'
+  | 'belongs-to-majority-group';
 export interface ImageCreateParams {
   /**
    * SSH public key for debugging the installation.
@@ -579,13 +721,13 @@ export interface ImageCreateParams {
 }
 export interface ImageInfo {
   /**
-   * SSH public key for debugging the installation
+   * SSH public key for debugging the installation.
    */
   sshPublicKey?: string;
   sizeBytes?: number;
   downloadUrl?: string;
   /**
-   * Image generator version
+   * Image generator version.
    */
   generatorVersion?: string;
   createdAt?: string; // date-time
@@ -597,7 +739,7 @@ export interface InfraError {
    */
   code: number; // int32
   /**
-   * Human readable description of the error.
+   * Human-readable description of the error.
    */
   message: string;
 }
@@ -626,6 +768,7 @@ export interface Inventory {
   bmcV6address?: string;
   memory?: Memory;
   cpu?: Cpu;
+  timestamp?: number;
 }
 export interface L2Connectivity {
   outgoingNic?: string;
@@ -640,6 +783,7 @@ export interface L3Connectivity {
   successful?: boolean;
 }
 export type ListManagedDomains = ManagedDomain[];
+export type ListManifests = Manifest[];
 export interface ListVersions {
   versions?: Versions;
   releaseTag?: string;
@@ -648,6 +792,16 @@ export type LogsType = 'host' | 'controller' | 'all' | '';
 export interface ManagedDomain {
   domain?: string;
   provider?: 'route53';
+}
+export interface Manifest {
+  /**
+   * The folder that contains the files. Manifests can be placed in 'manifests' or 'openshift' directories.
+   */
+  folder?: 'manifests' | 'openshift';
+  /**
+   * The file name prefaced by the folder that contains it.
+   */
+  fileName?: string;
 }
 export interface Memory {
   physicalBytes?: number;
@@ -680,6 +834,7 @@ export type StepType =
   | 'api-vip-connectivity-check';
 export interface Steps {
   nextInstructionSeconds?: number;
+  exitOnCompletion?: boolean;
   instructions?: Step[];
 }
 export type StepsReply = StepReply[];
