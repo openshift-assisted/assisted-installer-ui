@@ -144,6 +144,8 @@ export const HOST_VALIDATION_LABELS: { [key in Validation['id']]: string } = {
   'machine-cidr-defined': 'Machine CIDR',
   'belongs-to-machine-cidr': 'Belongs to machine CIDR',
   'role-defined': 'Role',
+  'api-vip-connected': 'API VIP connected',
+  'belongs-to-majority-group': 'Belongs to majority connected group',
 };
 
 export const getFacetLibVersion = () => packageJson.version;
