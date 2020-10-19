@@ -13,7 +13,7 @@ import {
   cancelForceReload,
 } from '../../features/clusters/currentClusterSlice';
 import { Cluster } from '../../api/types';
-import { POLLING_INTERVAL, routeBasePath } from '../../config/constants';
+import { isSingleClusterMode, POLLING_INTERVAL, routeBasePath } from '../../config/constants';
 import ClusterConfiguration from '../clusterConfiguration/ClusterConfiguration';
 import ClusterDetail from '../clusterDetail/ClusterDetail';
 import CancelInstallationModal from '../clusterDetail/CancelInstallationModal';
@@ -62,15 +62,18 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
   const fetchCluster = useFetchCluster(clusterId);
   useClusterPolling(clusterId);
 
-  const cancel = (
-    <Button
-      key="cancel"
-      variant={ButtonVariant.secondary}
-      component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
-    >
-      Back
-    </Button>
-  );
+  const errorStateActions = [];
+  if (!isSingleClusterMode()) {
+    errorStateActions.push(
+      <Button
+        key="cancel"
+        variant={ButtonVariant.secondary}
+        component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
+      >
+        Back
+      </Button>,
+    );
+  }
 
   const getContent = (cluster: Cluster) => {
     if (
@@ -113,7 +116,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
         <ErrorState
           title="Failed to fetch the cluster"
           fetchData={fetchCluster}
-          actions={[cancel]}
+          actions={errorStateActions}
         />
       </PageSection>
     );

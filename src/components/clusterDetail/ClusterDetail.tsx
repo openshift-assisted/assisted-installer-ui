@@ -22,7 +22,7 @@ import ClusterInstallationError from './ClusterInstallationError';
 import { LaunchOpenshiftConsoleButton } from './ConsoleModal';
 import KubeconfigDownload from './KubeconfigDownload';
 import ClusterProperties from './ClusterProperties';
-import { routeBasePath } from '../../config';
+import { isSingleClusterMode, routeBasePath } from '../../config';
 import FailedHostsWarning from './FailedHostsWarning';
 import AlertsSection from '../ui/AlertsSection';
 import { downloadClusterInstallationLogs } from './utils';
@@ -167,6 +167,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
         <ToolbarButton
           variant={ButtonVariant.link}
           component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
+          isHidden={isSingleClusterMode()}
         >
           Back to all clusters
         </ToolbarButton>

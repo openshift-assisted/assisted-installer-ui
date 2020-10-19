@@ -151,3 +151,5 @@ export const getFacetLibVersion = () => packageJson.version;
 export const EVENT_SEVERITIES: Event['severity'][] = ['info', 'warning', 'error', 'critical'];
 
 export const TIME_ZERO = '0001-01-01T00:00:00.000Z';
+
+export const isSingleClusterMode = () => process.env.REACT_APP_BUILD_MODE === 'single-cluster';
