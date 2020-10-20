@@ -12,6 +12,7 @@ import {
   ToolbarFilterProps,
   SelectProps,
   TextInputProps,
+  DropdownSeparator,
 } from '@patternfly/react-core';
 import { FilterIcon } from '@patternfly/react-icons';
 import { CLUSTER_STATUS_LABELS } from '../../config';
@@ -25,12 +26,6 @@ export type ClusterListFilter = {
 };
 
 export type ClustersFilterToolbarProps = {
-  /*
-  searchString: string;
-  setSearchString: (value: string) => void;
-  filters: ClusterFiltersType;
-  setFilters: (filters: ClusterFiltersType) => void;
-  */
   clusterListFilter: ClusterListFilter;
   setClusterListFilter: (filters: ClusterListFilter) => void;
 };
@@ -41,15 +36,11 @@ export const initialClusterListFilter: ClusterListFilter = {
   unregistered: false,
 };
 
+const UNREGISTERED = 'Unregistered';
+
 const ClustersFilterToolbar: React.FC<ClustersFilterToolbarProps> = ({
   clusterListFilter,
   setClusterListFilter,
-  /*
-  searchString,
-  setSearchString,
-  filters,
-  setFilters,
-  */
 }) => {
   const [isStatusExpanded, setStatusExpanded] = React.useState(false);
 
@@ -64,13 +55,20 @@ const ClustersFilterToolbar: React.FC<ClustersFilterToolbarProps> = ({
     });
 
   const onSelect = (state: string, isChecked: boolean) => {
-    setClusterListFilter({
-      ...clusterListFilter,
-      status: {
-        ...clusterListFilter.status,
-        [state]: isChecked,
-      },
-    });
+    if (state === UNREGISTERED) {
+      setClusterListFilter({
+        ...clusterListFilter,
+        unregistered: isChecked,
+      });
+    } else {
+      setClusterListFilter({
+        ...clusterListFilter,
+        status: {
+          ...clusterListFilter.status,
+          [state]: isChecked,
+        },
+      });
+    }
   };
 
   const onStatusToggle: SelectProps['onToggle'] = () => setStatusExpanded(!isStatusExpanded);
@@ -94,6 +92,7 @@ const ClustersFilterToolbar: React.FC<ClustersFilterToolbarProps> = ({
       setClusterListFilter({
         ...clusterListFilter,
         status: {},
+        unregistered: false,
       });
     } else {
       onClearAllFilters();
@@ -109,6 +108,9 @@ const ClustersFilterToolbar: React.FC<ClustersFilterToolbarProps> = ({
   const selectedStates = Object.getOwnPropertyNames(clusterListFilter.status).filter(
     (state) => clusterListFilter.status[state],
   );
+  if (clusterListFilter.unregistered) {
+    selectedStates.push(UNREGISTERED);
+  }
 
   return (
     <Toolbar
@@ -147,9 +149,25 @@ const ClustersFilterToolbar: React.FC<ClustersFilterToolbarProps> = ({
             isOpen={isStatusExpanded}
             placeholderText={statusPlaceholder}
           >
-            {Object.keys(CLUSTER_STATUS_LABELS).map((status) => (
-              <SelectOption key={status} value={CLUSTER_STATUS_LABELS[status]} />
-            ))}
+            {[
+              <SelectOption
+                key={UNREGISTERED}
+                value={UNREGISTERED}
+                id={`cluster-list-filter-status-unregistered`}
+              >
+                Include unregistered clusters
+              </SelectOption>,
+              {
+                /* TODO: Separator */
+              },
+              ...Object.keys(CLUSTER_STATUS_LABELS).map((status) => (
+                <SelectOption
+                  key={status}
+                  value={CLUSTER_STATUS_LABELS[status]}
+                  id={`cluster-list-filter-status-${status}`}
+                />
+              )),
+            ]}
           </Select>
         </ToolbarFilter>
       </ToolbarContent>

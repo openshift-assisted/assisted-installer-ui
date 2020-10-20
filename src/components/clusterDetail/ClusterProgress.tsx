@@ -74,13 +74,15 @@ const ClusterProgress: React.FC<ClusterProgressProps> = ({ cluster }) => {
   return (
     <>
       <DetailList>
-        {cluster.deletedAt && cluster.deletedAt !== TIME_ZERO ? (
+        {/* TODO(mlibra): uncomment once swagger is ready (TypeScript error)
+        cluster.deletedAt && cluster.deletedAt !== TIME_ZERO ? (
           <DetailItem
             title="This cluster has been deleted on"
             value={getHumanizedDateTime(cluster.deletedAt)}
             idPrefix="cluster-progress-deleted-on"
           />
-        ) : undefined}
+        ) : undefined
+        */}
         <DetailItem
           title="Started on"
           value={getHumanizedDateTime(cluster.installStartedAt)}
