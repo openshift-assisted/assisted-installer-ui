@@ -39,8 +39,11 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
     uiState.current = clustersUIState;
   }
   const dispatch = useDispatch();
-  const fetchClusters = React.useCallback(() => dispatch(fetchClustersAsync()), [dispatch]);
   const [clusterListFilter, setClusterListFilter] = React.useState(initialClusterListFilter);
+  const fetchClusters = React.useCallback(
+    () => dispatch(fetchClustersAsync(clusterListFilter.unregistered)),
+    [dispatch, clusterListFilter.unregistered],
+  );
 
   const deleteClusterAsync = React.useCallback(
     async (clusterId) => {

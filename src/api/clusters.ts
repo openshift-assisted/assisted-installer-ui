@@ -12,7 +12,13 @@ import {
 } from './types';
 import { client, BASE_PATH } from './axiosClient';
 
-export const getClusters = (): AxiosPromise<Cluster[]> => client.get('/clusters');
+export const getClusters = (unregistered: boolean): AxiosPromise<Cluster[]> =>
+  client.get('/clusters', {
+    headers: {
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      get_unregistered_clusters: unregistered,
+    },
+  });
 
 export const getCluster = (id: string): AxiosPromise<Cluster> => client.get(`/clusters/${id}`);
 

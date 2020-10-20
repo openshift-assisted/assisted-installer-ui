@@ -4,14 +4,17 @@ import { Cluster } from '../../api/types';
 import { handleApiError } from '../../api/utils';
 import { ResourceUIState } from '../../types';
 
-export const fetchClustersAsync = createAsyncThunk('clusters/fetchClustersAsync', async () => {
-  try {
-    const { data } = await getClusters();
-    return data;
-  } catch (e) {
-    return handleApiError(e, () => Promise.reject('Failed to fetch clusters.'));
-  }
-});
+export const fetchClustersAsync = createAsyncThunk(
+  'clusters/fetchClustersAsync',
+  async (unregistered: boolean) => {
+    try {
+      const { data } = await getClusters(unregistered);
+      return data;
+    } catch (e) {
+      return handleApiError(e, () => Promise.reject('Failed to fetch clusters.'));
+    }
+  },
+);
 
 type ClustersStateSlice = {
   data: Cluster[];
