@@ -1,7 +1,7 @@
 import React from 'react';
 import { Cluster, Host } from '../../api/types';
 import { Progress, ProgressVariant, ProgressMeasureLocation } from '@patternfly/react-core';
-import { CLUSTER_STATUS_LABELS } from '../../config/constants';
+import { CLUSTER_STATUS_LABELS, TIME_ZERO } from '../../config/constants';
 import { getHostProgressStages, getHostProgressStageNumber } from '../hosts/utils';
 import { getHumanizedDateTime, DetailList, DetailItem } from '../ui';
 
@@ -74,6 +74,13 @@ const ClusterProgress: React.FC<ClusterProgressProps> = ({ cluster }) => {
   return (
     <>
       <DetailList>
+        {cluster.deletedAt && cluster.deletedAt !== TIME_ZERO ? (
+          <DetailItem
+            title="This cluster has been deleted on"
+            value={getHumanizedDateTime(cluster.deletedAt)}
+            idPrefix="cluster-progress-deleted-on"
+          />
+        ) : undefined}
         <DetailItem
           title="Started on"
           value={getHumanizedDateTime(cluster.installStartedAt)}
