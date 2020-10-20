@@ -1,7 +1,7 @@
-import { HostRoleUpdateParams } from '../api/types';
+import { HostRoleUpdateParams, HostValidationId } from '../api/types';
 
 export type Validation = {
-  id: string;
+  id: HostValidationId;
   status: 'success' | 'failure' | 'pending';
   message: string;
 };

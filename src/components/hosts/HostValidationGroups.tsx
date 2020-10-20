@@ -62,7 +62,7 @@ const ValidationGroupAlert: React.FC<ValidationGroupAlertProps> = ({
       <ul>
         {validations.map((v) => (
           <li key={v.id}>
-            <strong>{HOST_VALIDATION_LABELS[v.id]}:</strong>&nbsp;{v.message}&nbsp;
+            <strong>{HOST_VALIDATION_LABELS[v.id] || v.id}:</strong>&nbsp;{v.message}&nbsp;
           </li>
         ))}
       </ul>
