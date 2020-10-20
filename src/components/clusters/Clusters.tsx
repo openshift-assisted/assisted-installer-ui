@@ -25,6 +25,7 @@ import AlertsSection from '../ui/AlertsSection';
 import { handleApiError, getErrorMessage } from '../../api/utils';
 import { AlertsContext, AlertsContextProvider } from '../AlertsContextProvider';
 import DeveloperPreview from '../ui/DeveloperPreview';
+import { initialClusterListFilter } from './ClustersFilterToolbar';
 
 type ClustersProps = RouteComponentProps;
 
@@ -39,6 +40,8 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
   }
   const dispatch = useDispatch();
   const fetchClusters = React.useCallback(() => dispatch(fetchClustersAsync()), [dispatch]);
+  const [clusterListFilter, setClusterListFilter] = React.useState(initialClusterListFilter);
+
   const deleteClusterAsync = React.useCallback(
     async (clusterId) => {
       try {
@@ -103,7 +106,12 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
             </TextContent>
           </PageSection>
           <PageSection variant={PageSectionVariants.light} isMain>
-            <ClustersTable rows={clusterRows} deleteCluster={deleteClusterAsync} />
+            <ClustersTable
+              rows={clusterRows}
+              deleteCluster={deleteClusterAsync}
+              clusterListFilter={clusterListFilter}
+              setClusterListFilter={setClusterListFilter}
+            />
           </PageSection>
           <AlertsSection />
           <ClusterToolbar>

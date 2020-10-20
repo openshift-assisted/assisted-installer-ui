@@ -19,7 +19,11 @@ import sortable from '../ui/table/sortable';
 import DeleteClusterModal from './DeleteClusterModal';
 import { getClusterTableStatusCell } from '../../selectors/clusters';
 import { CLUSTER_STATUS_LABELS } from '../../config/constants';
-import ClustersFilterToolbar, { ClusterFiltersType } from './ClustersFilterToolbar';
+import ClustersFilterToolbar, {
+  ClusterListFilter,
+  ClustersFilterToolbarProps,
+  initialClusterListFilter,
+} from './ClustersFilterToolbar';
 
 const rowKey = ({ rowData }: ExtraParamsType) => rowData?.props.id;
 
@@ -28,6 +32,8 @@ const STORAGE_KEY_CLUSTERS_FILTER = 'assisted-installer-cluster-list-filters';
 interface ClustersTableProps {
   rows: ClusterTableRows;
   deleteCluster: (id: string) => void;
+  clusterListFilter: ClusterListFilter;
+  setClusterListFilter: ClustersFilterToolbarProps['setClusterListFilter'];
 }
 
 const columnConfig = {
@@ -55,38 +61,41 @@ const ClusterRowWrapper = (props: RowWrapperProps) => {
   return <RowWrapper {...props} id={`cluster-row-${props.row?.props?.name}`} />;
 };
 
-const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) => {
+const ClustersTable: React.FC<ClustersTableProps> = ({
+  rows,
+  deleteCluster,
+  clusterListFilter,
+  setClusterListFilter,
+}) => {
   const [deleteClusterID, setDeleteClusterID] = React.useState<DeleteClusterID>();
   const [sortBy, setSortBy] = React.useState<ISortBy>({
     index: 0, // Name-column
     direction: SortByDirection.asc,
   });
 
-  const [searchString, setSearchString] = React.useState('');
-  const [filters, setFilters] = React.useState<ClusterFiltersType>({
-    status: [],
-  });
-
-  React.useEffect(() => {
-    const marshalled = window.sessionStorage.getItem(STORAGE_KEY_CLUSTERS_FILTER);
-    if (marshalled) {
-      try {
-        const parsed = JSON.parse(marshalled);
-        parsed.filters && setFilters(parsed.filters);
-        parsed.sortBy && setSortBy(parsed.sortBy);
-        parsed.searchString && setSearchString(parsed.searchString);
-      } catch (e) {
-        console.info('Failed to restore clusters filter: ', e);
+  React.useEffect(
+    () => {
+      const marshalled = window.sessionStorage.getItem(STORAGE_KEY_CLUSTERS_FILTER);
+      if (marshalled) {
+        try {
+          const parsed = JSON.parse(marshalled);
+          parsed.clusterListFilter && setClusterListFilter(parsed.clusterListFilter);
+          parsed.sortBy && setSortBy(parsed.sortBy);
+        } catch (e) {
+          console.info('Failed to restore clusters filter: ', e);
+        }
       }
-    }
-  }, []);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
 
   React.useEffect(() => {
     window.sessionStorage.setItem(
       STORAGE_KEY_CLUSTERS_FILTER,
-      JSON.stringify({ filters, sortBy, searchString }),
+      JSON.stringify({ clusterListFilter, sortBy }),
     );
-  }, [filters, sortBy, searchString]);
+  }, [clusterListFilter, sortBy]);
 
   const actionResolver: IActionsResolver = React.useCallback(
     (rowData) => [
@@ -120,21 +129,25 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
         row.props.id,
         row.props.baseDnsDomain,
       ].map((prop) => (prop || '').toLowerCase());
+
       if (
-        searchString &&
-        !searchableProps.find((prop) => prop.includes(searchString.toLowerCase()))
+        clusterListFilter.searchString &&
+        !searchableProps.find((prop) => prop.includes(clusterListFilter.searchString.toLowerCase()))
       ) {
         return false;
       }
 
+      const anyStatusSelected = !!Object.getOwnPropertyNames(clusterListFilter.status).find(
+        (state) => clusterListFilter.status[state],
+      );
       const value = getStatusCell(row)?.sortableValue as string;
-      if (filters.status.length > 0 && value && !filters.status.includes(value)) {
+      if (value && anyStatusSelected && !clusterListFilter.status[value]) {
         return false;
       }
 
       return true;
     },
-    [searchString, filters],
+    [clusterListFilter],
   );
 
   const sortedRows = React.useMemo(() => {
@@ -151,10 +164,8 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
   return (
     <>
       <ClustersFilterToolbar
-        searchString={searchString}
-        setSearchString={setSearchString}
-        filters={filters}
-        setFilters={setFilters}
+        clusterListFilter={clusterListFilter}
+        setClusterListFilter={setClusterListFilter}
       />
       <Table
         rows={sortedRows}

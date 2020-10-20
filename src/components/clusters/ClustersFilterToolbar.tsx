@@ -14,42 +14,62 @@ import {
   TextInputProps,
 } from '@patternfly/react-core';
 import { FilterIcon } from '@patternfly/react-icons';
-import { Cluster } from '../../api/types';
 import { CLUSTER_STATUS_LABELS } from '../../config';
 
-export type ClusterFiltersType = {
-  [key: string]: string[]; // value from CLUSTER_STATUS_LABELS
+export type ClusterListFilter = {
+  status: {
+    [key: string]: boolean; // key from CLUSTER_STATUS_LABELS
+  };
+  searchString: string;
+  unregistered: boolean;
 };
 
-type ClustersFilterToolbarProps = {
+export type ClustersFilterToolbarProps = {
+  /*
   searchString: string;
   setSearchString: (value: string) => void;
   filters: ClusterFiltersType;
   setFilters: (filters: ClusterFiltersType) => void;
+  */
+  clusterListFilter: ClusterListFilter;
+  setClusterListFilter: (filters: ClusterListFilter) => void;
+};
+
+export const initialClusterListFilter: ClusterListFilter = {
+  status: {},
+  searchString: '',
+  unregistered: false,
 };
 
 const ClustersFilterToolbar: React.FC<ClustersFilterToolbarProps> = ({
+  clusterListFilter,
+  setClusterListFilter,
+  /*
   searchString,
   setSearchString,
   filters,
   setFilters,
+  */
 }) => {
   const [isStatusExpanded, setStatusExpanded] = React.useState(false);
 
   const onClearAllFilters: ToolbarProps['clearAllFilters'] = () => {
-    setFilters({
-      status: [],
-    });
+    setClusterListFilter({ ...initialClusterListFilter });
   };
 
-  const onSearchNameChanged: TextInputProps['onChange'] = setSearchString;
+  const onSearchNameChanged: TextInputProps['onChange'] = (value) =>
+    setClusterListFilter({
+      ...clusterListFilter,
+      searchString: value,
+    });
 
-  const onSelect = (type: string, isChecked: boolean, value: Cluster['status']) => {
-    setFilters({
-      ...filters,
-      [type]: isChecked
-        ? [...filters[type], value]
-        : filters[type].filter((v: string) => v !== value),
+  const onSelect = (state: string, isChecked: boolean) => {
+    setClusterListFilter({
+      ...clusterListFilter,
+      status: {
+        ...clusterListFilter.status,
+        [state]: isChecked,
+      },
     });
   };
 
@@ -57,31 +77,37 @@ const ClustersFilterToolbar: React.FC<ClustersFilterToolbarProps> = ({
   const onStatusSelect: SelectProps['onSelect'] = (event, value) => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
     // @ts-ignore
-    onSelect('status', event.target.checked, value as string);
+    const isChecked = event.target.checked;
+    onSelect(value as string, isChecked);
   };
 
   const onDeleteChip: ToolbarFilterProps['deleteChip'] = (type, id) => {
     if (type) {
-      setFilters({
-        ...filters,
-        [type as string]: filters[type as string].filter((v: string) => v !== id),
-      });
+      onSelect(id as string, false);
     } else {
       onClearAllFilters();
     }
   };
 
   const onDeleteChipGroup: ToolbarFilterProps['deleteChipGroup'] = (type) => {
-    setFilters({
-      ...filters,
-      [type as string]: [],
-    });
+    if (type) {
+      setClusterListFilter({
+        ...clusterListFilter,
+        status: {},
+      });
+    } else {
+      onClearAllFilters();
+    }
   };
 
   const statusPlaceholder = (
     <>
       <FilterIcon /> Status
     </>
+  );
+
+  const selectedStates = Object.getOwnPropertyNames(clusterListFilter.status).filter(
+    (state) => clusterListFilter.status[state],
   );
 
   return (
@@ -100,14 +126,14 @@ const ClustersFilterToolbar: React.FC<ClustersFilterToolbarProps> = ({
               type="search"
               aria-label="string to be searched in cluster names or ids"
               onChange={onSearchNameChanged}
-              value={searchString}
+              value={clusterListFilter.searchString}
               placeholder="Search by Name, ID or Base domain"
               title="Search by Name, ID or Base domain"
             />
           </InputGroup>
         </ToolbarItem>
         <ToolbarFilter
-          chips={filters.status}
+          chips={selectedStates}
           deleteChip={onDeleteChip}
           deleteChipGroup={onDeleteChipGroup}
           categoryName="status"
@@ -117,7 +143,7 @@ const ClustersFilterToolbar: React.FC<ClustersFilterToolbarProps> = ({
             aria-label="status"
             onToggle={onStatusToggle}
             onSelect={onStatusSelect}
-            selections={filters.status}
+            selections={selectedStates}
             isOpen={isStatusExpanded}
             placeholderText={statusPlaceholder}
           >
