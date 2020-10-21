@@ -101,13 +101,7 @@ const hostToHostTableRow = (
           sortableValue: computedHostname || '',
         },
         {
-          title: (
-            <RoleCell
-              host={host}
-              clusterStatus={cluster.status}
-              forceStatic={variant != 'Cluster'}
-            />
-          ),
+          title: <RoleCell host={host} clusterStatus={cluster.status} />,
           sortableValue: getHostRole(host),
         },
         {
