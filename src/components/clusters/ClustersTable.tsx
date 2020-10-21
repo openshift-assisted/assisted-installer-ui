@@ -19,7 +19,7 @@ import sortable from '../ui/table/sortable';
 import DeleteClusterModal from './DeleteClusterModal';
 import { getClusterTableStatusCell } from '../../selectors/clusters';
 import { CLUSTER_STATUS_LABELS } from '../../config/constants';
-import ClustersFilterToolbar, { ClusterFiltersType } from './ClustersFilterToolbar';
+import ClustersListToolbar, { ClusterFiltersType } from './ClustersListToolbar';
 
 const rowKey = ({ rowData }: ExtraParamsType) => rowData?.props.id;
 
@@ -150,7 +150,7 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
 
   return (
     <>
-      <ClustersFilterToolbar
+      <ClustersListToolbar
         searchString={searchString}
         setSearchString={setSearchString}
         filters={filters}
