@@ -6,8 +6,8 @@ import { AddHostsClusterCreateParams, Cluster, getCluster, handleApiError } from
 import RedirectToCluster from '../ui/RedirectToCluster';
 import { getOcmClusterId } from './utils';
 import { usePullSecretFetch } from '../fetching/pullSecret';
-import { LoadingState } from '../ui';
-import { addHostsClusters } from '../../api/addHostsCluster';
+import { ErrorState, LoadingState } from '../ui';
+import { addHostsClusters } from '../../api/addHostsClusters';
 
 const AddBareMetalHostsDialog: React.FC<{
   isOpen: boolean;
@@ -63,6 +63,8 @@ const AddBareMetalHostsDialog: React.FC<{
         let dayTwoClusterExists = false;
         // try to find Day 2 cluster (can be missing)
         try {
+          // Assumption: recently Day 2 assisted-installer cluster ID is equal to the OCM cluster ID (as passed via the addHostsClusters() call bellow).
+          // The AI cluster _will_ be enhanced for openshift_cluster_id . Once this is available, we should rather search based on this new field.
           const { data } = await getCluster(clusterId);
           setRedirect(data.id);
           dayTwoClusterExists = true;
@@ -79,11 +81,10 @@ const AddBareMetalHostsDialog: React.FC<{
             // Optionally create Day 2 cluster
             const { data } = await addHostsClusters({
               id: clusterId,
-              name: cluster.name,
+              name: `scale-up-${cluster.display_name || cluster.name || clusterId}`, // both cluster.name and cluster.display-name contain just UUID which fails AI validation (k8s naming conventions)
               openshiftVersion,
               apiVipDnsname,
             });
-
             // all set, we can refirect
             setRedirect(data.id);
           } catch (e) {
@@ -113,12 +114,11 @@ const AddBareMetalHostsDialog: React.FC<{
       onClose={closeModal}
       variant={ModalVariant.small}
     >
-      {error && (
-        <Alert isInline variant={AlertVariant.danger} title="Add Bare Metal Hosts failed">
-          {error}
-        </Alert>
+      {error ? (
+        <ErrorState content={error} title="Failed to prepare the cluster for adding hosts." />
+      ) : (
+        <LoadingState content="Preparing cluster for adding hosts. You will be redirected to OpenShift Cluster Manager ..." />
       )}
-      <LoadingState content="About to redirect to OpenShift Cluster Manager." />
     </Modal>
   );
 };
