@@ -47,14 +47,12 @@ import {
   HostsNotShowingLink,
   HostsNotShowingLinkProps,
 } from '../clusterConfiguration/DiscoveryTroubleshootingModal';
-import { BareMetalInventoryVariant } from '../clusterConfiguration/types';
 
 import './HostsTable.css';
 
 type HostsTableProps = {
   cluster: Cluster;
   skipDisabled?: boolean;
-  variant: BareMetalInventoryVariant;
   setDiscoveryHintModalOpen?: HostsNotShowingLinkProps['setDiscoveryHintModalOpen'];
 };
 
@@ -78,11 +76,7 @@ const getColumns = (hosts?: Host[]) => [
   { title: <HostsCount hosts={hosts} inParenthesis /> },
 ];
 
-const hostToHostTableRow = (
-  openRows: OpenRows,
-  cluster: Cluster,
-  variant: BareMetalInventoryVariant,
-) => (host: Host): IRow => {
+const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host): IRow => {
   const { id, status, createdAt, inventory: inventoryString = '' } = host;
   const inventory = stringToJSON<Inventory>(inventoryString) || {};
   const { cores, memory, disk } = getHostRowHardwareInfo(inventory);
@@ -157,7 +151,6 @@ const HostsTable: React.FC<HostsTableProps> = ({
   cluster,
   skipDisabled = false,
   setDiscoveryHintModalOpen,
-  variant,
 }) => {
   const { addAlert } = React.useContext(AlertsContext);
   const [showEventsModal, setShowEventsModal] = React.useState<
@@ -179,14 +172,14 @@ const HostsTable: React.FC<HostsTableProps> = ({
       _.flatten(
         (cluster.hosts || [])
           .filter(isHostShown(skipDisabled))
-          .map(hostToHostTableRow(openRows, cluster, variant))
+          .map(hostToHostTableRow(openRows, cluster))
           .sort(rowSorter(sortBy, (row: IRow, index = 1) => row[0].cells[index - 1]))
           .map((row: IRow, index: number) => {
             row[1].parent = index * 2;
             return row;
           }),
       ),
-    [cluster, skipDisabled, openRows, sortBy, variant],
+    [cluster, skipDisabled, openRows, sortBy],
   );
 
   const columns = React.useMemo(() => getColumns(cluster.hosts), [cluster.hosts]);

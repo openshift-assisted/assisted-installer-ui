@@ -27,7 +27,7 @@ import {
   noProxyValidationSchema,
 } from '../ui/formik/validationSchemas';
 import { updateCluster, forceReload } from '../../features/clusters/currentClusterSlice';
-import { BareMetalInventoryVariant, DiscoveryImageFormValues } from './types';
+import { DiscoveryImageFormValues } from './types';
 import ProxyFields from './ProxyFields';
 import { SshPublicKeyHelperText } from './ClusterSshKeyField';
 import { usePullSecretFetch } from '../fetching/pullSecret';
@@ -47,7 +47,6 @@ type DiscoveryImageFormProps = {
   cluster: Cluster;
   onCancel: () => void;
   onSuccess: (imageInfo: Cluster['imageInfo']) => void;
-  variant?: BareMetalInventoryVariant;
 };
 
 const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({

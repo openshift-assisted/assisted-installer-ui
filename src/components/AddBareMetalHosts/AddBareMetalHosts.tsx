@@ -4,12 +4,12 @@ import { useDispatch } from 'react-redux';
 import { Cluster, getErrorMessage, handleApiError, installHosts } from '../../api';
 import { addAlert } from '../../features/alerts/alertsSlice';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
-import BaremetalInventory from '../clusterConfiguration/BaremetalInventory';
 import ClusterToolbar from '../clusters/ClusterToolbar';
 import ClusterBreadcrumbs from '../clusters/ClusterBreadcrumbs';
 import { isKnownHost } from '../hosts/utils';
 import { PageSection, ToolbarButton } from '../ui';
 import AlertsSection from '../ui/AlertsSection';
+import BaremetalInventoryAddHosts from './BareMetalInventoryAddHost';
 
 const AddBareMetalHosts: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const dispatch = useDispatch();
@@ -32,7 +32,7 @@ const AddBareMetalHosts: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
     <>
       <ClusterBreadcrumbs clusterName={cluster.name} />
       <PageSection variant={PageSectionVariants.light} isMain>
-        <BaremetalInventory cluster={cluster} variant="AddHostsCluster" />
+        <BaremetalInventoryAddHosts cluster={cluster} />
       </PageSection>
       <AlertsSection />
       <ClusterToolbar>

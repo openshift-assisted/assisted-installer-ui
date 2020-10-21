@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, AlertVariant, Modal, ModalVariant } from '@patternfly/react-core';
+import { Modal, ModalVariant } from '@patternfly/react-core';
 import { normalizeClusterVersion } from '../../config';
 import { OcmClusterType } from './types';
 import { AddHostsClusterCreateParams, Cluster, getCluster, handleApiError } from '../../api';
