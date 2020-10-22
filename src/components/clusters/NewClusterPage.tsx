@@ -26,7 +26,8 @@ import InputField from '../ui/formik/InputField';
 import SelectField from '../ui/formik/SelectField';
 import LoadingState from '../ui/uiState/LoadingState';
 import { captureException } from '../../sentry';
-import PullSecret, { PullSecretProps } from './PullSecret';
+import PullSecret from './PullSecret';
+import { usePullSecretFetch } from '../fetching/pullSecret';
 
 type NewClusterFormProps = {
   pullSecret?: string;
@@ -137,7 +138,7 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ pullSecret = '' }) => {
   );
 };
 
-const NewCluster: React.FC<RouteComponentProps> = (props) => {
+const NewCluster: React.FC = () => {
   const pullSecret = usePullSecretFetch();
   if (pullSecret === undefined) {
     return (
@@ -146,12 +147,12 @@ const NewCluster: React.FC<RouteComponentProps> = (props) => {
       </PageSection>
     );
   }
-  return <NewClusterForm pullSecret={pullSecret} {...props} />;
+  return <NewClusterForm pullSecret={pullSecret} />;
 };
 
-const NewClusterPage: React.FC<{}> = (props) => (
+const NewClusterPage: React.FC = () => (
   <AlertsContextProvider>
-    <NewCluster {...props} />
+    <NewCluster />
   </AlertsContextProvider>
 );
 
