@@ -29,6 +29,8 @@ import LoadingState from '../ui/uiState/LoadingState';
 import { captureException } from '../../sentry';
 import PullSecret from './PullSecret';
 
+import './NewClusterPage.css';
+
 type NewClusterFormProps = {
   pullSecret?: string;
 };
@@ -96,7 +98,7 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ pullSecret = '' }) => {
             <PageSection variant={PageSectionVariants.light} isMain>
               <Grid hasGutter>
                 <GridItem span={12} lg={10} xl={6}>
-                  <Form>
+                  <Form className="form-new-cluster">
                     <TextContent>
                       <Text component="h1">
                         Install OpenShift on Bare Metal with the Assisted Installer
