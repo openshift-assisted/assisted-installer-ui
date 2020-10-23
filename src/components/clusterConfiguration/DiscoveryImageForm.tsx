@@ -30,6 +30,7 @@ import { updateCluster, forceReload } from '../../features/clusters/currentClust
 import { DiscoveryImageFormValues } from './types';
 import ProxyFields from './ProxyFields';
 import { SshPublicKeyHelperText } from './ClusterSshKeyField';
+import { usePullSecretFetch } from '../fetching/pullSecret';
 
 const validationSchema = Yup.lazy<DiscoveryImageFormValues>((values) =>
   Yup.object<DiscoveryImageFormValues>().shape({
@@ -56,6 +57,7 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
   const cancelSourceRef = React.useRef<CancelTokenSource>();
   const { sshPublicKey } = cluster.imageInfo;
   const dispatch = useDispatch();
+  const ocmPullSecret = usePullSecretFetch();
 
   React.useEffect(() => {
     cancelSourceRef.current = Axios.CancelToken.source();
@@ -77,6 +79,9 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
           httpProxy: values.httpProxy,
           httpsProxy: values.httpsProxy,
           noProxy: values.noProxy,
+          // TODO(mlibra): Does the user need to change pull-secret?
+          pullSecret:
+            cluster.kind === 'AddHostsCluster' && ocmPullSecret ? ocmPullSecret : undefined,
         };
         // either update or remove proxy details
         await patchCluster(cluster.id, proxyParams);
