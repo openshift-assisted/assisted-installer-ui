@@ -236,7 +236,23 @@ const HostsTable: React.FC<HostsTableProps> = ({
     },
     [cluster.id, dispatch, addAlert],
   );
-
+  /*
+  So far installation per-host is not implemented.
+  const onInstallHost = React.useCallback(
+    async (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
+      const hostId = rowData.host.id;
+      try {
+        const { data } = await installHost(cluster.id, hostId);
+        dispatch(updateCluster(data));
+      } catch (e) {
+        handleApiError(e, () =>
+          addAlert({ title: `Failed to enable host ${hostId}`, message: getErrorMessage(e) }),
+        );
+      }
+    },
+    [cluster.id, dispatch, addAlert],
+  );
+*/
   const onHostDisable = React.useCallback(
     async (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
       const hostId = rowData.host.id;
@@ -287,7 +303,15 @@ const HostsTable: React.FC<HostsTableProps> = ({
       }
 
       const actions = [];
-
+      /*
+      if (canInstallHost(cluster, host.status)) {
+        actions.push({
+          title: 'Install Host',
+          id: `button-install-host-${hostname}`,
+          onClick: onInstallHost,
+        });
+      }
+      */
       if (canEditHost(clusterStatus, host.status)) {
         actions.push({
           title: 'Edit Host',
