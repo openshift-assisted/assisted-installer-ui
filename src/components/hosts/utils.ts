@@ -28,6 +28,7 @@ export const canDelete = (clusterStatus: Cluster['status'], status: Host['status
     'insufficient',
     'resetting',
     'resetting-pending-user-input',
+    'resetting-pending-user-action',
     'pending-for-input',
   ].includes(status);
 
