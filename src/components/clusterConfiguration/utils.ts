@@ -3,6 +3,7 @@ import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
 import { Cluster, Inventory, ManagedDomain } from '../../api/types';
 import { stringToJSON } from '../../api/utils';
 import { computeHostname } from '../hosts/Hostname';
+import { CLUSTER_DEFAULT_NETWORK_SETTINGS } from '../../config/constants';
 
 export const NO_SUBNET_SET = 'NO_SUBNET_SET';
 
@@ -37,15 +38,23 @@ export const getSubnetFromMachineNetworkCidr = (machineNetworkCidr?: string) => 
   return `${subnet.toString()} (${subnet.first}-${subnet.last})`;
 };
 
+export const isAdvConf = (cluster: Cluster) =>
+  cluster.clusterNetworkCidr !== CLUSTER_DEFAULT_NETWORK_SETTINGS.clusterNetworkCidr ||
+  cluster.clusterNetworkHostPrefix !== CLUSTER_DEFAULT_NETWORK_SETTINGS.clusterNetworkHostPrefix ||
+  cluster.serviceNetworkCidr !== CLUSTER_DEFAULT_NETWORK_SETTINGS.serviceNetworkCidr;
+
 export const getInitialValues = (
   cluster: Cluster,
   managedDomains: ManagedDomain[],
 ): ClusterConfigurationValues => ({
   name: cluster.name || '',
   baseDnsDomain: cluster.baseDnsDomain || '',
-  clusterNetworkCidr: cluster.clusterNetworkCidr || '',
-  clusterNetworkHostPrefix: cluster.clusterNetworkHostPrefix || 0,
-  serviceNetworkCidr: cluster.serviceNetworkCidr || '',
+  clusterNetworkCidr:
+    cluster.clusterNetworkCidr || CLUSTER_DEFAULT_NETWORK_SETTINGS.clusterNetworkCidr,
+  clusterNetworkHostPrefix:
+    cluster.clusterNetworkHostPrefix || CLUSTER_DEFAULT_NETWORK_SETTINGS.clusterNetworkHostPrefix,
+  serviceNetworkCidr:
+    cluster.serviceNetworkCidr || CLUSTER_DEFAULT_NETWORK_SETTINGS.serviceNetworkCidr,
   apiVip: cluster.vipDhcpAllocation ? '' : cluster.apiVip || '',
   ingressVip: cluster.vipDhcpAllocation ? '' : cluster.ingressVip || '',
   sshPublicKey: cluster.sshPublicKey || '',

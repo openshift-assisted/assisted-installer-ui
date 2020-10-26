@@ -161,6 +161,12 @@ export const HOST_VALIDATION_LABELS: { [key in Validation['id']]: string } = {
   'valid-platform': 'Platform',
 };
 
+export const CLUSTER_DEFAULT_NETWORK_SETTINGS = {
+  clusterNetworkCidr: '10.128.0.0/14',
+  clusterNetworkHostPrefix: 23,
+  serviceNetworkCidr: '172.30.0.0/16',
+};
+
 export const getFacetLibVersion = () => packageJson.version;
 
 export const EVENT_SEVERITIES: Event['severity'][] = ['info', 'warning', 'error', 'critical'];

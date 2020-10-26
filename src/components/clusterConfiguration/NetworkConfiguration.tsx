@@ -1,11 +1,13 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
-import { TextContent, Radio, Text, FormGroup } from '@patternfly/react-core';
+import { TextContent, Text, Checkbox } from '@patternfly/react-core';
 import BasicNetworkFields from './BasicNetworkFields';
 import AdvancedNetworkFields from './AdvancedNetworkFields';
 import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
 import { InputField, CheckboxField, SelectField } from '../ui/formik';
 import { ManagedDomain, Cluster } from '../../api/types';
+import { CLUSTER_DEFAULT_NETWORK_SETTINGS } from '../../config/constants';
+import { isAdvConf } from './utils';
 
 type NetworkConfigurationProps = {
   cluster: Cluster;
@@ -18,21 +20,10 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   hostSubnets,
   managedDomains,
 }) => {
-  const { setFieldValue, initialValues, values } = useFormikContext<ClusterConfigurationValues>();
-  // TODO(jtomasek): isAdvanced can be initially enabled if the advanced field values are different from their default setting
-  const [isAdvanced, setAdvanced] = React.useState(false);
+  const { setFieldValue, values } = useFormikContext<ClusterConfigurationValues>();
   const { name: clusterName, baseDnsDomain, useRedHatDnsService } = values;
 
-  const toBasic = () => {
-    // Reset the advanced networking values
-    const { clusterNetworkCidr, clusterNetworkHostPrefix, serviceNetworkCidr } = initialValues;
-    // TODO(jtomasek): when disabling advanced network configuration we should reset the values
-    // to deafult values rather than initial values. This requires keeping the defaults somewhere
-    setFieldValue('clusterNetworkCidr', clusterNetworkCidr);
-    setFieldValue('clusterNetworkHostPrefix', clusterNetworkHostPrefix);
-    setFieldValue('serviceNetworkCidr', serviceNetworkCidr);
-    setAdvanced(false);
-  };
+  const [isAdvanced, setAdvanced] = React.useState(isAdvConf(cluster));
 
   const baseDnsHelperText = (
     <>
@@ -46,6 +37,19 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
 
   const toggleRedHatDnsService = (checked: boolean) =>
     setFieldValue('baseDnsDomain', checked ? managedDomains.map((d) => d.domain)[0] : '');
+
+  const toggleAdvConfiguration = (checked: boolean) => {
+    setAdvanced(checked);
+
+    if (!checked) {
+      setFieldValue('clusterNetworkCidr', CLUSTER_DEFAULT_NETWORK_SETTINGS.clusterNetworkCidr);
+      setFieldValue(
+        'clusterNetworkHostPrefix',
+        CLUSTER_DEFAULT_NETWORK_SETTINGS.clusterNetworkHostPrefix,
+      );
+      setFieldValue('serviceNetworkCidr', CLUSTER_DEFAULT_NETWORK_SETTINGS.serviceNetworkCidr);
+    }
+  };
 
   return (
     <>
@@ -81,29 +85,14 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
           isRequired
         />
       )}
-      <FormGroup fieldId="networkConfigurationType" label="Network Configuration">
-        <Radio
-          id="networkConfigurationTypeBasic"
-          name="networkConfigurationType"
-          isChecked={!isAdvanced}
-          value="basic"
-          onChange={toBasic}
-          label="Basic"
-          description="Use default networking options."
-          isLabelWrapped
-        />
-        <Radio
-          id="networkConfigurationTypeAdvanced"
-          name="networkConfigurationType"
-          value="advanced"
-          isChecked={isAdvanced}
-          onChange={() => setAdvanced(true)}
-          label="Advanced"
-          description="Configure a custom networking type and CIDR ranges."
-          isLabelWrapped
-        />
-      </FormGroup>
       <BasicNetworkFields cluster={cluster} hostSubnets={hostSubnets} />
+      <Checkbox
+        id="useAdvancedNetworking"
+        label="Use Advanced Networking"
+        description="Configure a custom networking type and CIDR ranges"
+        isChecked={isAdvanced}
+        onChange={toggleAdvConfiguration}
+      />
       {isAdvanced && <AdvancedNetworkFields />}
     </>
   );
