@@ -11,6 +11,7 @@ type ClusterCredentialsProps = {
   error: boolean;
   retry: () => void;
   credentials?: Credentials;
+  idPrefix?: string;
 };
 
 const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
@@ -18,6 +19,7 @@ const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
   credentials,
   error,
   retry,
+  idPrefix = 'cluster-creds',
 }) => {
   let credentialsBody: JSX.Element;
   if (error) {
@@ -37,6 +39,7 @@ const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
                 iconPosition="right"
                 isInline
                 onClick={() => window.open(credentials.consoleUrl, '_blank', 'noopener')}
+                id={`${idPrefix}-link-console-url`}
               >
                 {credentials.consoleUrl}
               </Button>
@@ -44,6 +47,7 @@ const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
               <TroubleshootingOpenshiftConsoleButton
                 consoleUrl={credentials.consoleUrl}
                 cluster={cluster}
+                idPrefix={idPrefix}
               />
             </>
           }
