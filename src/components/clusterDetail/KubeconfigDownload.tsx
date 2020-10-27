@@ -20,7 +20,7 @@ const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({ clusterId, stat
       const fileName = status === 'installed' ? 'kubeconfig' : 'kubeconfig-noingress';
       if (ocmClient) {
         try {
-          const { data } = await getPresignedFileUrl(clusterId, fileName);
+          const { data } = await getPresignedFileUrl({ clusterId, fileName });
           saveAs(data.url);
         } catch (e) {
           handleApiError<Presigned>(e, async (e) => {

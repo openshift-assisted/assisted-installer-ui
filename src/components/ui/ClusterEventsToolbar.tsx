@@ -31,9 +31,10 @@ export type ClusterEventsFiltersType = {
   severity: Event['severity'][];
   clusterLevel: boolean;
   orphanedHosts: boolean;
+  selectAll: boolean;
 };
 
-type ClustersFilterToolbarProps = {
+type ClustersListToolbarProps = {
   filters: ClusterEventsFiltersType;
   setFilters: (filters: ClusterEventsFiltersType) => void;
   cluster: Cluster;
@@ -46,7 +47,7 @@ const Placeholder = ({ text }: { text: string }) => (
   </>
 );
 
-const NO_HOSTS = 'deselect-all-hosts-action';
+const SELECT_ALL = 'select-all-actions';
 const CLUSTER_LEVEL = 'cluster-level-action';
 const ORPHANS = 'deleted-hosts-action';
 
@@ -69,12 +70,13 @@ export const getInitialClusterEventsFilters = (cluster: Cluster): ClusterEventsF
   severity: [],
   clusterLevel: true,
   orphanedHosts: true,
+  selectAll: true,
 });
 
 const getEventsCount = (severity: Event['severity'], events: Event[]) =>
   events.filter((event) => event.severity === severity).length;
 
-const ClusterEventsToolbar: React.FC<ClustersFilterToolbarProps> = ({
+const ClusterEventsToolbar: React.FC<ClustersListToolbarProps> = ({
   filters,
   setFilters,
   cluster,
@@ -89,11 +91,19 @@ const ClusterEventsToolbar: React.FC<ClustersFilterToolbarProps> = ({
   };
 
   const onSelect = (type: 'hosts' | 'severity', isChecked: boolean, value: Host['id']) => {
+    const allOtherSelectedHosts =
+      type === 'hosts' ? filters[type].filter((v: string) => v !== value) : [];
+
     setFilters({
       ...filters,
-      [type]: isChecked
-        ? [...filters[type], value]
-        : [...filters[type].filter((v: string) => v !== value)],
+      [type]: isChecked ? [...filters[type], value] : [...allOtherSelectedHosts],
+      selectAll:
+        type === 'severity'
+          ? filters.selectAll
+          : isChecked &&
+            allOtherSelectedHosts.length === filters.hosts?.length &&
+            filters.orphanedHosts &&
+            filters.clusterLevel,
     });
   };
 
@@ -104,24 +114,39 @@ const ClusterEventsToolbar: React.FC<ClustersFilterToolbarProps> = ({
     const isChecked = event.target.checked;
 
     switch (value) {
-      case NO_HOSTS:
-        setFilters({
-          ...filters,
-          hosts: [], // clear all selection whenever clicked
-          clusterLevel: false,
-          orphanedHosts: false,
-        });
+      case SELECT_ALL:
+        if (isChecked) {
+          setFilters({
+            ...filters,
+            hosts: mapHosts(cluster.hosts).map((host) => host.id),
+            clusterLevel: true,
+            orphanedHosts: true,
+            selectAll: true,
+          });
+        } else {
+          setFilters({
+            ...filters,
+            clusterLevel: false,
+            orphanedHosts: false,
+            selectAll: false,
+            hosts: [],
+          });
+        }
         break;
       case ORPHANS:
         setFilters({
           ...filters,
           orphanedHosts: isChecked,
+          selectAll:
+            isChecked && filters.clusterLevel && filters.hosts.length === cluster.hosts?.length,
         });
         break;
       case CLUSTER_LEVEL:
         setFilters({
           ...filters,
           clusterLevel: isChecked,
+          selectAll:
+            isChecked && filters.orphanedHosts && filters.hosts.length === cluster.hosts?.length,
         });
         break;
       default:
@@ -162,8 +187,13 @@ const ClusterEventsToolbar: React.FC<ClustersFilterToolbarProps> = ({
     });
   };
 
-  let selections = filters.clusterLevel ? [...filters.hosts, CLUSTER_LEVEL] : filters.hosts;
-  selections = filters.orphanedHosts ? [...selections, ORPHANS] : selections;
+  const getSelections = (): string[] => {
+    let selections = filters.clusterLevel ? [...filters.hosts, CLUSTER_LEVEL] : filters.hosts;
+    selections = filters.orphanedHosts ? [...selections, ORPHANS] : selections;
+    selections = filters.selectAll ? [...selections, SELECT_ALL] : selections;
+
+    return selections;
+  };
 
   return (
     <Toolbar
@@ -179,15 +209,15 @@ const ClusterEventsToolbar: React.FC<ClustersFilterToolbarProps> = ({
             aria-label="hosts"
             onToggle={onHostToggle}
             onSelect={onHostSelect}
-            selections={selections}
+            selections={getSelections()}
             customBadgeText={filters.hosts?.length || 0}
             isOpen={isHostExpanded}
             placeholderText={<Placeholder text="Hosts" />}
             isDisabled={allHosts.length === 0}
           >
             {[
-              <SelectOption inputId={`checkbox-${NO_HOSTS}`} key={NO_HOSTS} value={NO_HOSTS}>
-                Clear selection
+              <SelectOption inputId={`checkbox-${SELECT_ALL}`} key={SELECT_ALL} value={SELECT_ALL}>
+                Select All
               </SelectOption>,
               <SelectOption
                 inputId={`checkbox-${CLUSTER_LEVEL}`}

@@ -9,6 +9,7 @@ import {
   Presigned,
   EventList,
   Event,
+  LogsType,
 } from './types';
 import { client, BASE_PATH } from './axiosClient';
 
@@ -54,15 +55,22 @@ export const createClusterDownloadsImage = (
 // TODO(jtomasek): make the API_ROOT configurable so this can be used in cloud.redhat.com
 const API_ROOT = process.env.REACT_APP_API_ROOT || BASE_PATH;
 
-export const getPresignedFileUrl = (
-  clusterId: string,
-  fileName: string,
-  hostId?: string,
-): AxiosPromise<Presigned> =>
+type getPresignedFileUrlProps = {
+  clusterId: string;
+  fileName: 'logs' | 'kubeconfig' | 'kubeconfig-noingress';
+  hostId?: string;
+  logsType?: LogsType;
+};
+export const getPresignedFileUrl = ({
+  clusterId,
+  fileName,
+  hostId,
+  logsType,
+}: getPresignedFileUrlProps): AxiosPromise<Presigned> =>
   client.get(
     `/clusters/${clusterId}/downloads/files-presigned?file_name=${fileName}${
-      hostId ? `&host_id=${hostId}` : ''
-    }`,
+      logsType ? `&logs_type=${logsType}` : ''
+    }${hostId ? `&host_id=${hostId}` : ''}`,
   );
 
 export const getClusterFileDownload = (clusterID: Cluster['id'], fileName: string): AxiosPromise =>
@@ -80,11 +88,11 @@ export const getClusterCredentials = (clusterID: string): AxiosPromise<Credentia
   client.get(`/clusters/${clusterID}/credentials`);
 
 export const getHostLogsDownloadUrl = (hostId: string, clusterId?: string) => {
-  return `${API_ROOT}/clusters/${clusterId}/hosts/${hostId}/logs`;
+  return `${API_ROOT}/clusters/${clusterId}/logs?logs_type=host&host_id=${hostId}`;
 };
 
 export const getClusterLogsDownloadUrl = (clusterId: string) => {
-  return `${API_ROOT}/clusters/${clusterId}/logs`;
+  return `${API_ROOT}/clusters/${clusterId}/logs?logs_type=all`;
 };
 
 export const getEvents = (

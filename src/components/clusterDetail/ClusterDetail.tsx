@@ -8,7 +8,7 @@ import {
   GridItem,
   Grid,
 } from '@patternfly/react-core';
-import { Cluster, Credentials } from '../../api/types';
+import { Cluster, Credentials, Host } from '../../api/types';
 import { getClusterCredentials } from '../../api/clusters';
 import PageSection from '../ui/PageSection';
 import { EventsModalButton } from '../ui/eventsModal';
@@ -30,35 +30,24 @@ import { AlertsContext } from '../AlertsContextProvider';
 import { canDownloadClusterLogs } from '../hosts/utils';
 
 const canAbortInstallation = (cluster: Cluster) => {
-  if (
-    !['preparing-for-installation', 'installing', 'installing-in-progress'].includes(cluster.status)
-  ) {
-    return false;
-  }
-
-  if (cluster.hosts) {
-    if (cluster.hosts.find((h) => h.status === 'installing-pending-user-action')) {
-      // a host in installing-pending-user-action
-      return false;
-    }
-
-    if (cluster.hosts.find((h) => h.status === 'error')) {
-      // a host is in error
-      if (cluster.hosts.find((h) => h.status !== 'installing')) {
-        // no host is in installing
-        if (
-          cluster.hosts.find(
-            (h) => !['error', 'installed', 'preparing-for-installation'].includes(h.status),
-          )
-        ) {
-          // a host not yet in error or installed or preparing-for-installation
-          return false;
-        }
-      }
-    }
-  }
-
-  return true;
+  const allowedClusterStates: Cluster['status'][] = [
+    'preparing-for-installation',
+    'installing',
+    'finalizing',
+  ];
+  const allowedHostStates: Host['status'][] = [
+    'preparing-for-installation',
+    'installing-pending-user-action',
+    'installing',
+    'installing-in-progress',
+    'installed',
+    'error',
+  ];
+  const { hosts = [] } = cluster;
+  return (
+    allowedClusterStates.includes(cluster.status) &&
+    hosts.find((host) => !allowedHostStates.includes(host.status))
+  );
 };
 
 type ClusterDetailProps = {

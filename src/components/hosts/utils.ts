@@ -28,6 +28,7 @@ export const canDelete = (clusterStatus: Cluster['status'], status: Host['status
     'insufficient',
     'resetting',
     'resetting-pending-user-input',
+    'resetting-pending-user-action',
     'pending-for-input',
   ].includes(status);
 
@@ -46,7 +47,10 @@ export const canEditHost = canEditRole;
 
 export const canDownloadKubeconfig = (clusterStatus: Cluster['status']) =>
   ['installing', 'finalizing', 'error', 'cancelled', 'installed'].includes(clusterStatus);
-
+/*
+export const canInstallHost = (cluster: Cluster, hostStatus: Host['status']) =>
+  cluster.kind === 'AddHostsCluster' && cluster.status === 'adding-hosts' && hostStatus === 'known';
+*/
 export const getHostProgressStages = (host: Host) => host.progressStages || [];
 
 export const getHostProgress = (host: Host) =>
@@ -84,10 +88,13 @@ export const downloadHostInstallationLogs = async (
 ) => {
   if (ocmClient) {
     try {
-      const { data } = await getPresignedFileUrl(host.clusterId || '', 'logs', host.id);
-      // TODO(mlibra): Setting of filename here is workaround till https://issues.redhat.com/browse/MGMT-2128 is fixed.The Content-Disposition header should be set.
-      const filename = `log_host_${host.id}_${host.requestedHostname}.tgz`;
-      saveAs(data.url, filename);
+      const { data } = await getPresignedFileUrl({
+        clusterId: host.clusterId || 'UNKNOWN_CLUSTER',
+        fileName: 'logs',
+        hostId: host.id,
+        logsType: 'host',
+      });
+      saveAs(data.url);
     } catch (e) {
       handleApiError<Presigned>(e, async (e) => {
         addAlert({ title: 'Could not download host logs.', message: getErrorMessage(e) });
@@ -97,3 +104,6 @@ export const downloadHostInstallationLogs = async (
     saveAs(getHostLogsDownloadUrl(host.id, host.clusterId));
   }
 };
+
+export const isKnownHost = (cluster: Cluster) =>
+  !!cluster.hosts?.find((host) => host.status === 'known');

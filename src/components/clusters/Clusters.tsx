@@ -7,14 +7,10 @@ import {
   PageSectionVariants,
   TextContent,
   Text,
-  TextVariants,
-  Spinner,
 } from '@patternfly/react-core';
 import PageSection from '../ui/PageSection';
 import { selectClusterTableRows, selectClustersUIState } from '../../selectors/clusters';
 import { routeBasePath } from '../../config/constants';
-import { ToolbarText, ToolbarButton } from '../ui/Toolbar';
-import ClusterToolbar from './ClusterToolbar';
 import { LoadingState, ErrorState, EmptyState } from '../ui/uiState';
 import { AddCircleOIcon } from '@patternfly/react-icons';
 import { ResourceUIState } from '../../types';
@@ -106,23 +102,6 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
             <ClustersTable rows={clusterRows} deleteCluster={deleteClusterAsync} />
           </PageSection>
           <AlertsSection />
-          <ClusterToolbar>
-            <ToolbarButton
-              variant={ButtonVariant.primary}
-              onClick={() => history.push(`${routeBasePath}/clusters/~new`)}
-              id="button-create-new-cluster"
-              data-ouia-id="button-create-new-cluster"
-            >
-              Create New Cluster
-            </ToolbarButton>
-            <ToolbarText component={TextVariants.small}>
-              {clustersUIState === RELOADING && (
-                <>
-                  <Spinner size="sm" /> Fetching clusters...
-                </>
-              )}
-            </ToolbarText>
-          </ClusterToolbar>
         </>
       );
   }
