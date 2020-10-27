@@ -56,6 +56,8 @@ type ClusterDetailProps = {
   setResetClusterModalOpen: (isOpen: boolean) => void;
 };
 
+const getID = (suffix: string) => `cluster-detail-${suffix}`;
+
 const ClusterDetail: React.FC<ClusterDetailProps> = ({
   cluster,
   setCancelInstallationModalOpen,
@@ -119,9 +121,14 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
               credentials={credentials}
               error={!!credentialsError}
               retry={fetchCredentials}
+              idPrefix={getID('cluster-creds')}
             />
           )}
-          <KubeconfigDownload status={cluster.status} clusterId={cluster.id} />
+          <KubeconfigDownload
+            status={cluster.status}
+            clusterId={cluster.id}
+            id={getID('button-download-kubeconfig')}
+          />
           <GridItem>
             <TextContent>
               <Text component="h2">Bare Metal Inventory</Text>
@@ -142,7 +149,10 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
           </ToolbarButton>
         )}
         {cluster.status === 'error' && (
-          <ToolbarButton onClick={() => setResetClusterModalOpen(true)}>
+          <ToolbarButton
+            id={getID('button-reset-cluster')}
+            onClick={() => setResetClusterModalOpen(true)}
+          >
             Reset Cluster
           </ToolbarButton>
         )}
@@ -151,12 +161,14 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
             isDisabled={!credentials || !!credentialsError}
             cluster={cluster}
             consoleUrl={credentials?.consoleUrl}
+            id={getID('button-launch-console')}
           />
         )}
         <ToolbarButton
           variant={ButtonVariant.link}
           component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
           isHidden={isSingleClusterMode()}
+          id={getID('button-back-to-all-clusters')}
         >
           Back to all clusters
         </ToolbarButton>
