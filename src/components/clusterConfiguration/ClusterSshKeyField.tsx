@@ -1,10 +1,12 @@
 import * as React from 'react';
-import { useField } from 'formik';
-import { FormGroup, Switch } from '@patternfly/react-core';
+import { useFormikContext } from 'formik';
+import { FormGroup } from '@patternfly/react-core';
 import { FieldProps } from '../ui/formik/types';
 import { getFieldId } from '../ui/formik/utils';
 import HelperText from '../ui/formik/HelperText';
 import TextAreaField from '../ui/formik/TextAreaField';
+import { CheckboxField } from '../ui/formik';
+import { ClusterConfigurationValues } from '../../types/clusters';
 
 import './ClusterSshKeyField.css';
 
@@ -28,7 +30,6 @@ export const SshPublicKeyHelperText: React.FC<{
 const label = 'Host SSH Public Key for troubleshooting after installation';
 
 const ClusterSshKeyField: React.FC<ClusterSshKeyFieldProps> = ({
-  validate,
   isSwitchHidden,
   onToggle,
   onClusterSshKeyVisibilityChanged,
@@ -36,34 +37,30 @@ const ClusterSshKeyField: React.FC<ClusterSshKeyFieldProps> = ({
   onSshKeyBlur,
   ...props
 }) => {
-  const [field] = useField({ name: props.name, validate });
   const fieldId = getFieldId(props.name, 'input', idPostfix);
+
+  const { values } = useFormikContext<ClusterConfigurationValues>();
 
   React.useEffect(onClusterSshKeyVisibilityChanged, [isSwitchHidden]);
 
-  const checkbox = (
-    <Switch
-      id="sshPublicKeySwitch"
-      label="Use the same host discovery SSH key"
-      isChecked={field.value}
-      onChange={onToggle}
-    />
-  );
-
-  return !isSwitchHidden && field.value ? (
-    <FormGroup fieldId={fieldId} label={label} helperText={<SshPublicKeyHelperText />}>
-      {checkbox}
+  return (
+    <FormGroup fieldId={fieldId} label={label}>
+      {!isSwitchHidden && (
+        <CheckboxField
+          label="Use the same host discovery SSH key"
+          name={props.name}
+          onChange={onToggle}
+        />
+      )}
+      {(isSwitchHidden || !values.shareDiscoverySshKey) && (
+        <TextAreaField
+          name="sshPublicKey"
+          helperText={<SshPublicKeyHelperText />}
+          className="ssh-public-key__textarea"
+          onBlur={onSshKeyBlur}
+        />
+      )}
     </FormGroup>
-  ) : (
-    <TextAreaField
-      name="sshPublicKey"
-      label={label}
-      helperText={<SshPublicKeyHelperText />}
-      className="ssh-public-key__textarea"
-      onBlur={onSshKeyBlur}
-    >
-      {!isSwitchHidden && checkbox}
-    </TextAreaField>
   );
 };
 
