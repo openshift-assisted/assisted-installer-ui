@@ -28,7 +28,7 @@ jobs:
           node-version: '12.x'
           registry-url: 'https://registry.npmjs.org'
       - run: |
-          git config user.name 'GitHub action executed on release'
+          git config user.name 'Facet-lib GitHub action executed on release'
           git config user.email 'github@users.noreply.github.com'
       - run: yarn install
       - run: yarn version --new-version ${{ env.VERSION }} --no-git-tag-version
@@ -36,7 +36,7 @@ jobs:
       - run: yarn publish --non-interactive --no-git-tag-version
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPMJS_PUBLISH_TOKEN }}
-      - name: Create Pull Request
+      - name: Create Pull Request in facet-lib with updated library version
         uses: peter-evans/create-pull-request@v2
         with:
           base: master
