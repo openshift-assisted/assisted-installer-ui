@@ -46,7 +46,7 @@ const canAbortInstallation = (cluster: Cluster) => {
   const { hosts = [] } = cluster;
   return (
     allowedClusterStates.includes(cluster.status) &&
-    hosts.find((host) => !allowedHostStates.includes(host.status))
+    !hosts.find((host) => !allowedHostStates.includes(host.status))
   );
 };
 
