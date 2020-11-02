@@ -132,7 +132,8 @@ export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
   resetting: 'This host is resetting the installation.',
   'resetting-pending-user-action':
     'Host already booted from disk during previous installation. To finish resetting the installation please boot the host into Discovery ISO.',
-  'added-to-existing-cluster': 'This host has been added to an existing cluster.',
+  'added-to-existing-cluster':
+    "This Host has booted RHCOS image, please use the Nodes section of the cluster's console to monitor further progress of adding this host to the cluster.",
 };
 
 export const HOST_VALIDATION_GROUP_LABELS: { [key in keyof ValidationsInfo]: string } = {
