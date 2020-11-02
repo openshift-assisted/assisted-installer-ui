@@ -8,15 +8,15 @@ type HostsCountProps = {
   valueId?: string;
 };
 
-export const getEnabledHostsCount = (hosts: Host[] = []) =>
-  hosts.filter((h) => h.status != 'disabled').length;
+export const getEnabledHostsCount = (hosts?: Host[]) =>
+  (hosts || []).filter((h) => h.status != 'disabled').length;
 
 const HostsCount: React.FC<HostsCountProps> = ({
-  hosts = [],
+  hosts,
   inParenthesis = false,
   valueId = 'hosts-count',
 }) => {
-  const hostsDiscovered = hosts.length;
+  const hostsDiscovered = hosts?.length || 0;
   const hostsIncluded = getEnabledHostsCount(hosts);
 
   const body = (

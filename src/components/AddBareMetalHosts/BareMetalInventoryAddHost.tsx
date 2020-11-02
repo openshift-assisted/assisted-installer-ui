@@ -23,7 +23,6 @@ const BaremetalInventoryAddHosts: React.FC<{ cluster: Cluster }> = ({ cluster })
   return (
     <>
       <TextContent>
-        <Text component="h2">Bare Metal Inventory</Text>
         <Text component="p">
           <DiscoveryImageModalButton ButtonComponent={Button} cluster={cluster} />
         </Text>

@@ -1,14 +1,12 @@
-import { ButtonVariant, PageSectionVariants } from '@patternfly/react-core';
+import { ButtonVariant, Card, CardBody, CardTitle, Title, Toolbar } from '@patternfly/react-core';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Cluster, getErrorMessage, handleApiError, installHosts } from '../../api';
 import { addAlert } from '../../features/alerts/alertsSlice';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
-import ClusterToolbar from '../clusters/ClusterToolbar';
-import ClusterBreadcrumbs from '../clusters/ClusterBreadcrumbs';
 import { isKnownHost } from '../hosts/utils';
-import { PageSection, ToolbarButton } from '../ui';
-import AlertsSection from '../ui/AlertsSection';
+import { ToolbarButton } from '../ui';
+import { AlertsSectionGroup } from '../ui/AlertsSection';
 import BaremetalInventoryAddHosts from './BareMetalInventoryAddHost';
 
 const AddBareMetalHosts: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
@@ -29,23 +27,27 @@ const AddBareMetalHosts: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   };
 
   return (
-    <>
-      <ClusterBreadcrumbs clusterName={cluster.name} />
-      <PageSection variant={PageSectionVariants.light} isMain>
+    <Card>
+      <CardTitle>
+        <Title headingLevel="h2" size="lg" className="card-title">
+          Bare Metal Inventory
+        </Title>
+      </CardTitle>
+      <CardBody>
         <BaremetalInventoryAddHosts cluster={cluster} />
-      </PageSection>
-      <AlertsSection />
-      <ClusterToolbar>
-        <ToolbarButton
-          variant={ButtonVariant.primary}
-          name="install"
-          onClick={handleHostsInstall}
-          isDisabled={!isKnownHost(cluster)}
-        >
-          Install ready hosts
-        </ToolbarButton>
-      </ClusterToolbar>
-    </>
+        <AlertsSectionGroup />
+        <Toolbar id="cluster-toolbar">
+          <ToolbarButton
+            variant={ButtonVariant.primary}
+            name="install"
+            onClick={handleHostsInstall}
+            isDisabled={!isKnownHost(cluster)}
+          >
+            Install ready hosts
+          </ToolbarButton>
+        </Toolbar>
+      </CardBody>
+    </Card>
   );
 };
 
