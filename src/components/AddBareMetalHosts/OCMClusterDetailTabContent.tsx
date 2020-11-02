@@ -6,8 +6,9 @@ import { getOcmClusterId } from './utils';
 import { usePullSecretFetch } from '../fetching/pullSecret';
 import { ErrorState, LoadingState } from '../ui';
 import { addHostsClusters } from '../../api/addHostsClusters';
-import AddBareMetalHosts from './AddBareMetalHosts';
 import { AlertsContextProvider } from '../AlertsContextProvider';
+import { POLLING_INTERVAL } from '../../config';
+import AddBareMetalHosts from './AddBareMetalHosts';
 
 type ClusterDetailTabType = {
   key: number;
@@ -18,23 +19,18 @@ type ClusterDetailTabType = {
   ref: React.RefObject<unknown>;
 };
 
-export const appendOCMClusterDetailTabs = (
+export const getOCMClusterDetailTab = (
   tabs: ClusterDetailTabType[],
   addBareMetalTabRef: React.RefObject<unknown>,
   displayAddBareMetalHosts: boolean,
-): ClusterDetailTabType[] => {
-  return [
-    ...tabs,
-    {
-      key: tabs.reduce((max, tab) => (tab.key > max ? tab.key : max), tabs[0].key) + 1,
-      title: 'Add Hosts',
-      contentId: 'addBareMetalHostsContent',
-      id: 'addBareMetalHosts',
-      show: displayAddBareMetalHosts,
-      ref: addBareMetalTabRef,
-    },
-  ];
-};
+): ClusterDetailTabType => ({
+  key: tabs.reduce((max, tab) => (tab.key > max ? tab.key : max), tabs[0].key) + 1,
+  title: 'Add Hosts',
+  contentId: 'addBareMetalHostsContent',
+  id: 'addBareMetalHosts',
+  show: displayAddBareMetalHosts,
+  ref: addBareMetalTabRef,
+});
 
 export const OCMClusterDetailTabContent: React.FC<{
   cluster?: OcmClusterType;
@@ -127,6 +123,23 @@ export const OCMClusterDetailTabContent: React.FC<{
     }
   }, [cluster, pullSecret, day2Cluster, isVisible]);
 
+  React.useEffect(() => {
+    if (day2Cluster) {
+      const id = setTimeout(() => {
+        const doItAsync = async () => {
+          try {
+            const { data } = await getCluster(day2Cluster.id);
+            setDay2Cluster(data);
+          } catch (e) {
+            handleApiError<AddHostsClusterCreateParams>(e);
+            setError('Failed to reload cluster data.');
+          }
+        };
+        doItAsync();
+      }, POLLING_INTERVAL);
+      return () => clearTimeout(id);
+    }
+  }, [day2Cluster]);
   if (error) {
     return <ErrorState content={error} title="Failed to prepare the cluster for adding hosts." />;
   }
