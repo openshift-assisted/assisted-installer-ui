@@ -11,6 +11,9 @@ type HostsCountProps = {
 export const getEnabledHostsCount = (hosts?: Host[]) =>
   (hosts || []).filter((h) => h.status != 'disabled').length;
 
+const getReadyHostsCount = (hosts?: Host[]) =>
+  (hosts || []).filter((h) => h.status != 'known').length;
+
 const HostsCount: React.FC<HostsCountProps> = ({
   hosts,
   inParenthesis = false,
@@ -18,15 +21,20 @@ const HostsCount: React.FC<HostsCountProps> = ({
 }) => {
   const hostsDiscovered = hosts?.length || 0;
   const hostsIncluded = getEnabledHostsCount(hosts);
+  const hostsReady = getReadyHostsCount(hosts);
 
   const body = (
     <>
       <Level>
-        <LevelItem>Included in the installation</LevelItem>
+        <LevelItem>Ready for the installation</LevelItem>
+        <LevelItem>{hostsReady}</LevelItem>
+      </Level>
+      <Level>
+        <LevelItem>Enabled for the installation</LevelItem>
         <LevelItem>{hostsIncluded}</LevelItem>
       </Level>
       <Level>
-        <LevelItem>Discovered</LevelItem>
+        <LevelItem>All discovered</LevelItem>
         <LevelItem>{hostsDiscovered}</LevelItem>
       </Level>
     </>
