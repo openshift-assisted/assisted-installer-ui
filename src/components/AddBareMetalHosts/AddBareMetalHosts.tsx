@@ -30,7 +30,7 @@ const AddBareMetalHosts: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
     <Card>
       <CardTitle>
         <Title headingLevel="h2" size="lg" className="card-title">
-          Bare Metal Inventory
+          Bare Metal Discovery
         </Title>
       </CardTitle>
       <CardBody>
