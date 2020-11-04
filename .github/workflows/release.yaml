@@ -18,7 +18,9 @@ jobs:
       # expected format of the new git tag: v1.2.3
       - name: Get tag
         id: get_tag
-        run: echo ::set-env name=VERSION::$(echo ${GITHUB_REF#refs/tags/} | sed -e 's/^v//g')
+        run: echo "VERSION=`echo ${GITHUB_REF#refs/tags/} | sed -e 's/^v//g'`" >> $GITHUB_ENV
+      - run: |
+          echo Detected version: ${VERSION}
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
