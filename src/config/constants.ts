@@ -81,7 +81,7 @@ export const CLUSTER_STATUS_LABELS: { [key in Cluster['status']]: string } = {
 export const HOST_STATUS_LABELS: { [key in Host['status']]: string } = {
   discovering: 'Discovering',
   'pending-for-input': 'Pending input',
-  known: 'Known',
+  known: 'Ready to install',
   disconnected: 'Disconnected',
   insufficient: 'Insufficient',
   disabled: 'Disabled',
