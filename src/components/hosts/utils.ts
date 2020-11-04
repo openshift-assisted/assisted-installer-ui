@@ -11,15 +11,15 @@ import {
 import { AlertsContextType } from '../AlertsContextProvider';
 
 export const canEnable = (clusterStatus: Cluster['status'], status: Host['status']) =>
-  ['pending-for-input', 'insufficient', 'ready'].includes(clusterStatus) &&
+  ['pending-for-input', 'insufficient', 'ready', 'adding-hosts'].includes(clusterStatus) &&
   ['disabled'].includes(status);
 
 export const canDisable = (clusterStatus: Cluster['status'], status: Host['status']) =>
-  ['pending-for-input', 'insufficient', 'ready'].includes(clusterStatus) &&
+  ['pending-for-input', 'insufficient', 'ready', 'adding-hosts'].includes(clusterStatus) &&
   ['discovering', 'disconnected', 'known', 'insufficient', 'pending-for-input'].includes(status);
 
 export const canDelete = (clusterStatus: Cluster['status'], status: Host['status']) =>
-  ['pending-for-input', 'insufficient', 'ready'].includes(clusterStatus) &&
+  ['pending-for-input', 'insufficient', 'ready', 'adding-hosts'].includes(clusterStatus) &&
   [
     'discovering',
     'known',
