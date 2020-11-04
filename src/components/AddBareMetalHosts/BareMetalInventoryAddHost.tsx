@@ -11,9 +11,8 @@ import {
 
 const HostRequirementsContent = ({ worker = {} }: { worker?: HostRequirementsType['worker'] }) => (
   <Text component="p">
-    Worker hosts are required to be equiped by at least {worker.cpuCores || 2} CPU cores,{' '}
-    {worker.ramGib || 8} GB of RAM, and {worker.diskSizeGb || 120}
-    GB of filesystem storage each.
+    Worker hosts must have at least {worker.cpuCores || 2} CPU cores, {worker.ramGib || 8} GB of
+    RAM, and {worker.diskSizeGb || 120} GB of filesystem storage.
   </Text>
 );
 
