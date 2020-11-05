@@ -25,7 +25,7 @@ export const getOCMClusterDetailTab = (
   displayAddBareMetalHosts: boolean,
 ): ClusterDetailTabType => ({
   key: tabs.reduce((max, tab) => (tab.key > max ? tab.key : max), tabs[0].key) + 1,
-  title: 'Add Hosts',
+  title: 'Bare Metal',
   contentId: 'addBareMetalHostsContent',
   id: 'addBareMetalHosts',
   show: displayAddBareMetalHosts,
