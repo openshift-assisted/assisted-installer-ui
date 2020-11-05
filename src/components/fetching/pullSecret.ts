@@ -23,7 +23,7 @@ export const usePullSecretFetch = () => {
       }
     };
     getPullSecret();
-  });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return pullSecret;
 };
