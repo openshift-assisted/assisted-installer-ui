@@ -4,9 +4,9 @@ import { useDispatch } from 'react-redux';
 import { Cluster, getErrorMessage, handleApiError, installHosts } from '../../api';
 import { addAlert } from '../../features/alerts/alertsSlice';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
-import { isKnownHost } from '../hosts/utils';
+import { hasKnownHost } from '../hosts/utils';
 import { ToolbarButton } from '../ui';
-import { AlertsSectionGroup } from '../ui/AlertsSection';
+import { Alerts } from '../ui/AlertsSection';
 import BaremetalInventoryAddHosts from './BareMetalInventoryAddHost';
 
 const AddBareMetalHosts: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
@@ -35,13 +35,13 @@ const AddBareMetalHosts: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
       </CardTitle>
       <CardBody>
         <BaremetalInventoryAddHosts cluster={cluster} />
-        <AlertsSectionGroup />
+        <Alerts />
         <Toolbar id="cluster-toolbar">
           <ToolbarButton
             variant={ButtonVariant.primary}
             name="install"
             onClick={handleHostsInstall}
-            isDisabled={!isKnownHost(cluster)}
+            isDisabled={!hasKnownHost(cluster)}
           >
             Install ready hosts
           </ToolbarButton>

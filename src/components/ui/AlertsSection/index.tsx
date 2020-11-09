@@ -6,7 +6,7 @@ import { AlertsContext } from '../../AlertsContextProvider';
 
 import './AlertsSection.css';
 
-export const AlertsSectionGroup: React.FC<{ className?: string }> = ({ className }) => {
+export const Alerts: React.FC<{ className?: string }> = ({ className }) => {
   const { alerts, removeAlert } = React.useContext(AlertsContext);
   const onClose = (alert: AlertProps) => removeAlert(alert.key);
 
@@ -30,7 +30,7 @@ const AlertsSection: React.FC = () => {
   if (alerts.length) {
     return (
       <PageSection padding={{ default: 'noPadding' }}>
-        <AlertsSectionGroup className="alerts-section" />
+        <Alerts className="alerts-section" />
       </PageSection>
     );
   }

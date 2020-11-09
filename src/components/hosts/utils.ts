@@ -105,5 +105,5 @@ export const downloadHostInstallationLogs = async (
   }
 };
 
-export const isKnownHost = (cluster: Cluster) =>
+export const hasKnownHost = (cluster: Cluster) =>
   !!cluster.hosts?.find((host) => host.status === 'known');

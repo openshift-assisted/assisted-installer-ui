@@ -19,7 +19,7 @@ type ClusterDetailTabType = {
   ref: React.RefObject<unknown>;
 };
 
-export const getOCMClusterDetailTab = (
+export const getBareMetalHostsClusterDetailTab = (
   tabs: ClusterDetailTabType[],
   addBareMetalTabRef: React.RefObject<unknown>,
   displayAddBareMetalHosts: boolean,
@@ -32,7 +32,7 @@ export const getOCMClusterDetailTab = (
   ref: addBareMetalTabRef,
 });
 
-export const OCMClusterDetailTabContent: React.FC<{
+export const BareMetalHostsClusterDetailTab: React.FC<{
   cluster?: OcmClusterType;
   isVisible: boolean;
 }> = ({ cluster, isVisible }) => {
