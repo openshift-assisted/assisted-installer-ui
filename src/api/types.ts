@@ -129,7 +129,8 @@ export interface Cluster {
     | 'finalizing'
     | 'installed'
     | 'adding-hosts'
-    | 'cancelled';
+    | 'cancelled'
+    | 'installing-pending-user-action';
   /**
    * Additional information pertaining to the status of the OpenShift cluster.
    */
