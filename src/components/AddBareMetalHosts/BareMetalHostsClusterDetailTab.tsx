@@ -1,25 +1,55 @@
 import React from 'react';
-import { Modal, ModalVariant } from '@patternfly/react-core';
 import { normalizeClusterVersion } from '../../config';
 import { OcmClusterType } from './types';
 import { AddHostsClusterCreateParams, Cluster, getCluster, handleApiError } from '../../api';
-import RedirectToCluster from '../ui/RedirectToCluster';
 import { getOcmClusterId } from './utils';
 import { usePullSecretFetch } from '../fetching/pullSecret';
 import { ErrorState, LoadingState } from '../ui';
 import { addHostsClusters } from '../../api/addHostsClusters';
+import { AlertsContextProvider } from '../AlertsContextProvider';
+import { POLLING_INTERVAL } from '../../config';
+import AddBareMetalHosts from './AddBareMetalHosts';
 
-const AddBareMetalHostsDialog: React.FC<{
-  isOpen: boolean;
-  closeModal: () => {};
-  cluster: OcmClusterType;
-}> = ({ isOpen, cluster, closeModal }) => {
+type ClusterDetailTabType = {
+  key: number;
+  title: string;
+  contentId: string;
+  id: string;
+  show: boolean;
+  ref: React.RefObject<unknown>;
+};
+
+export const getBareMetalHostsClusterDetailTab = (
+  tabs: ClusterDetailTabType[],
+  addBareMetalTabRef: React.RefObject<unknown>,
+  displayAddBareMetalHosts: boolean,
+): ClusterDetailTabType => ({
+  key: tabs.reduce((max, tab) => (tab.key > max ? tab.key : max), tabs[0].key) + 1,
+  title: 'Bare Metal',
+  contentId: 'addBareMetalHostsContent',
+  id: 'addBareMetalHosts',
+  show: displayAddBareMetalHosts,
+  ref: addBareMetalTabRef,
+});
+
+export const BareMetalHostsClusterDetailTab: React.FC<{
+  cluster?: OcmClusterType;
+  isVisible: boolean;
+}> = ({ cluster, isVisible }) => {
   const [error, setError] = React.useState<string>();
-  const [redirect, setRedirect] = React.useState<Cluster['id']>();
+  const [day2Cluster, setDay2Cluster] = React.useState<Cluster | null>();
   const pullSecret = usePullSecretFetch();
 
   React.useEffect(() => {
-    if (isOpen && pullSecret) {
+    if (!isVisible && day2Cluster) {
+      // the tab is not visible, stop polling
+      setDay2Cluster(undefined);
+    }
+
+    if (isVisible && day2Cluster === undefined && cluster && pullSecret) {
+      // ensure exclusive run
+      setDay2Cluster(null);
+
       // validate input
       const openshiftVersion = normalizeClusterVersion(cluster.openshift_version);
       if (!openshiftVersion) {
@@ -66,7 +96,7 @@ const AddBareMetalHostsDialog: React.FC<{
           // Assumption: recently Day 2 assisted-installer cluster ID is equal to the OCM cluster ID (as passed via the addHostsClusters() call bellow).
           // The AI cluster _will_ be enhanced for openshift_cluster_id . Once this is available, we should rather search based on this new field.
           const { data } = await getCluster(clusterId);
-          setRedirect(data.id);
+          setDay2Cluster(data);
           dayTwoClusterExists = true;
         } catch (e) {
           if (e.response?.status !== 404) {
@@ -86,7 +116,7 @@ const AddBareMetalHostsDialog: React.FC<{
               apiVipDnsname,
             });
             // all set, we can refirect
-            setRedirect(data.id);
+            setDay2Cluster(data);
           } catch (e) {
             handleApiError<AddHostsClusterCreateParams>(e);
             setError('Failed to create wrapping cluster for adding new hosts.');
@@ -96,31 +126,36 @@ const AddBareMetalHostsDialog: React.FC<{
 
       doItAsync();
     }
-  }, [isOpen, cluster, pullSecret]);
+  }, [cluster, pullSecret, day2Cluster, isVisible]);
 
-  if (!isOpen) {
-    return null;
+  React.useEffect(() => {
+    if (day2Cluster) {
+      const id = setTimeout(() => {
+        const doItAsync = async () => {
+          try {
+            const { data } = await getCluster(day2Cluster.id);
+            setDay2Cluster(data);
+          } catch (e) {
+            handleApiError<AddHostsClusterCreateParams>(e);
+            setError('Failed to reload cluster data.');
+          }
+        };
+        doItAsync();
+      }, POLLING_INTERVAL);
+      return () => clearTimeout(id);
+    }
+  }, [day2Cluster]);
+  if (error) {
+    return <ErrorState content={error} title="Failed to prepare the cluster for adding hosts." />;
   }
 
-  if (redirect) {
-    return <RedirectToCluster id={redirect} />;
+  if (!day2Cluster) {
+    return <LoadingState content="Preparing cluster for adding hosts..." />;
   }
 
   return (
-    <Modal
-      aria-label="Add Bare Metal Hosts dialog"
-      title="Add Bare Metal Hosts"
-      isOpen={true}
-      onClose={closeModal}
-      variant={ModalVariant.small}
-    >
-      {error ? (
-        <ErrorState content={error} title="Failed to prepare the cluster for adding hosts." />
-      ) : (
-        <LoadingState content="Preparing cluster for adding hosts. You will be redirected to OpenShift Cluster Manager ..." />
-      )}
-    </Modal>
+    <AlertsContextProvider>
+      <AddBareMetalHosts cluster={day2Cluster} />
+    </AlertsContextProvider>
   );
 };
-
-export default AddBareMetalHostsDialog;

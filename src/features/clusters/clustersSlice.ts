@@ -7,7 +7,7 @@ import { ResourceUIState } from '../../types';
 export const fetchClustersAsync = createAsyncThunk('clusters/fetchClustersAsync', async () => {
   try {
     const { data } = await getClusters();
-    return data;
+    return data.filter((cluster) => cluster.kind === 'Cluster');
   } catch (e) {
     return handleApiError(e, () => Promise.reject('Failed to fetch clusters.'));
   }
