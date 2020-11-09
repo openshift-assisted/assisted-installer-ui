@@ -35,6 +35,7 @@ const getStatusIcon = (status: Cluster['status']): React.ReactElement => {
       return <CheckCircleIcon color={okColor.value} />;
     case 'preparing-for-installation':
     case 'installing':
+    case 'installing-pending-user-action':
     case 'finalizing':
     case 'adding-hosts':
       return <InProgressIcon />;

@@ -33,6 +33,7 @@ const canAbortInstallation = (cluster: Cluster) => {
   const allowedClusterStates: Cluster['status'][] = [
     'preparing-for-installation',
     'installing',
+    'installing-pending-user-action',
     'finalizing',
   ];
   const allowedHostStates: Host['status'][] = [

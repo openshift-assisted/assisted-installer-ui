@@ -71,6 +71,7 @@ export const CLUSTER_STATUS_LABELS: { [key in Cluster['status']]: string } = {
   ready: 'Ready',
   'preparing-for-installation': 'Preparing for installation',
   installing: 'Installing',
+  'installing-pending-user-action': 'Installing (pending action)',
   finalizing: 'Finalizing',
   cancelled: 'Installation cancelled',
   error: 'Error',
