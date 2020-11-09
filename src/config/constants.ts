@@ -82,7 +82,7 @@ export const CLUSTER_STATUS_LABELS: { [key in Cluster['status']]: string } = {
 export const HOST_STATUS_LABELS: { [key in Host['status']]: string } = {
   discovering: 'Discovering',
   'pending-for-input': 'Pending input',
-  known: 'Known',
+  known: 'Ready to install',
   disconnected: 'Disconnected',
   insufficient: 'Insufficient',
   disabled: 'Disabled',
@@ -133,7 +133,8 @@ export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
   resetting: 'This host is resetting the installation.',
   'resetting-pending-user-action':
     'Host already booted from disk during previous installation. To finish resetting the installation please boot the host into Discovery ISO.',
-  'added-to-existing-cluster': 'This host has been added to an existing cluster.',
+  'added-to-existing-cluster':
+    "This host was successfully installed. Please visit the Nodes page in the cluster's Web Console to finish adding it to the cluster.",
 };
 
 export const HOST_VALIDATION_GROUP_LABELS: { [key in keyof ValidationsInfo]: string } = {

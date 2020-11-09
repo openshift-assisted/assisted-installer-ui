@@ -137,7 +137,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
         <ResetClusterModal
           isOpen={resetClusterModalOpen}
           onClose={() => setResetClusterModalOpen(false)}
-          clusterId={cluster.id}
+          cluster={cluster}
         />
       </AlertsContextProvider>
     );
