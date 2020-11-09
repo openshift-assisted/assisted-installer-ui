@@ -45,7 +45,7 @@ const ResetClusterModal: React.FC<ResetClusterModalProps> = ({ onClose, isOpen, 
     onClose();
   };
 
-  const doReset = async () => {
+  const handleReset = async () => {
     setIsSubmitting(true);
     try {
       setError(null);
@@ -60,12 +60,7 @@ const ResetClusterModal: React.FC<ResetClusterModalProps> = ({ onClose, isOpen, 
     setIsSubmitting(false);
   };
 
-  const doDownloadAndReset = async () => {
-    setIsSubmitting(true);
-    if (await downloadClusterInstallationLogs(addAlert, cluster.id)) {
-      doReset();
-    }
-  };
+  const handleDownloadLogs = () => downloadClusterInstallationLogs(addAlert, cluster.id);
 
   const getModalContent = () => {
     if (isSubmitting) {
@@ -77,41 +72,39 @@ const ResetClusterModal: React.FC<ResetClusterModalProps> = ({ onClose, isOpen, 
     return (
       <TextContent>
         <Text component="p">
-          This will reset the installation and return to cluster configuration. Some hosts may need
-          to be re-registered by rebooting into the Discovery ISO.
+          This will reset the installation and return to the cluster configuration. Some hosts may
+          need to be re-registered by rebooting into the Discovery ISO.
         </Text>
         {areLogsAvailable && (
           <Text component="p">
-            Existing installation logs will be deleted and will not be available once installation
-            reset is performed. Logs need to be attached when reporting a bug. Shall the logs be
-            downloaded?
+            <strong>Download the installation logs</strong> to troubleshoot or report a bug. Logs
+            won't be available after the installation is reset.
           </Text>
         )}
+        <Text component="p">Are you sure you want to reset the cluster?</Text>
       </TextContent>
     );
   };
 
-  const actions = [];
+  const actions = [
+    <Button
+      key="submit"
+      variant={ButtonVariant.danger}
+      onClick={handleReset}
+      isDisabled={isSubmitting}
+    >
+      Reset Cluster
+    </Button>,
+  ];
   if (areLogsAvailable) {
     actions.push(
-      <Button key="submit" onClick={doDownloadAndReset} isDisabled={isSubmitting}>
-        Download & Reset Cluster
-      </Button>,
-    );
-    actions.push(
       <Button
-        key="forgetAndReset"
-        variant={ButtonVariant.link}
-        onClick={doReset}
+        key="submit"
+        variant={ButtonVariant.secondary}
+        onClick={handleDownloadLogs}
         isDisabled={isSubmitting}
       >
-        Forget logs & Reset
-      </Button>,
-    );
-  } else {
-    actions.push(
-      <Button key="submit" onClick={doReset} isDisabled={isSubmitting}>
-        Reset Cluster
+        Download Installation Logs
       </Button>,
     );
   }
