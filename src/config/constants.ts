@@ -156,6 +156,7 @@ export const HOST_VALIDATION_LABELS: { [key in Validation['id']]: string } = {
   'role-defined': 'Role',
   'api-vip-connected': 'API VIP connected',
   'belongs-to-majority-group': 'Belongs to majority connected group',
+  'valid-platform': 'Platform',
 };
 
 export const getFacetLibVersion = () => packageJson.version;
