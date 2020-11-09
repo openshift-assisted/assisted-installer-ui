@@ -41,7 +41,12 @@ export const BareMetalHostsClusterDetailTab: React.FC<{
   const pullSecret = usePullSecretFetch();
 
   React.useEffect(() => {
-    if (cluster && pullSecret && day2Cluster === undefined && isVisible) {
+    if (!isVisible && day2Cluster) {
+      // the tab is not visible, stop polling
+      setDay2Cluster(undefined);
+    }
+
+    if (isVisible && day2Cluster === undefined && cluster && pullSecret) {
       // ensure exclusive run
       setDay2Cluster(null);
 
