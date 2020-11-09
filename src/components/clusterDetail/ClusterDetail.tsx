@@ -38,6 +38,7 @@ const canAbortInstallation = (cluster: Cluster) => {
   const allowedHostStates: Host['status'][] = [
     'preparing-for-installation',
     'installing-pending-user-action',
+    'resetting-pending-user-action',
     'installing',
     'installing-in-progress',
     'installed',
@@ -46,7 +47,7 @@ const canAbortInstallation = (cluster: Cluster) => {
   const { hosts = [] } = cluster;
   return (
     allowedClusterStates.includes(cluster.status) &&
-    hosts.find((host) => !allowedHostStates.includes(host.status))
+    !hosts.find((host) => !allowedHostStates.includes(host.status))
   );
 };
 
