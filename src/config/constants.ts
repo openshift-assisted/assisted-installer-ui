@@ -71,6 +71,7 @@ export const CLUSTER_STATUS_LABELS: { [key in Cluster['status']]: string } = {
   ready: 'Ready',
   'preparing-for-installation': 'Preparing for installation',
   installing: 'Installing',
+  'installing-pending-user-action': 'Installing (pending action)',
   finalizing: 'Finalizing',
   cancelled: 'Installation cancelled',
   error: 'Error',
@@ -157,6 +158,7 @@ export const HOST_VALIDATION_LABELS: { [key in Validation['id']]: string } = {
   'role-defined': 'Role',
   'api-vip-connected': 'API VIP connected',
   'belongs-to-majority-group': 'Belongs to majority connected group',
+  'valid-platform': 'Platform',
 };
 
 export const getFacetLibVersion = () => packageJson.version;
