@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { useField } from 'formik';
 import { FormGroup, FileUpload } from '@patternfly/react-core';
-import { TextAreaProps } from './types';
+import { UploadFieldProps } from './types';
 import { getFieldId } from './utils';
 import HelperText from './HelperText';
 
-const UploadField: React.FC<TextAreaProps> = ({
+const UploadField: React.FC<UploadFieldProps> = ({
   label,
   labelIcon,
   helperText,
@@ -16,11 +16,13 @@ const UploadField: React.FC<TextAreaProps> = ({
   isDisabled,
   name,
   onBlur,
+  allowEdittingUploadedText = true,
+  dropzoneProps,
 }) => {
   const [filename, setFilename] = React.useState<string>();
-  const [isSSHKeyUploading, setSSHKeyUploading] = React.useState(false);
+  const [isFileUploading, setIsFileUploading] = React.useState(false);
 
-  const [field, { touched, error }, { setError, setValue }] = useField(name);
+  const [field, { touched, error }, helpers] = useField(name);
   const fieldId = getFieldId(name, 'input', idPostfix);
   const isValid = !((touched || filename) && error);
 
@@ -58,7 +60,7 @@ const UploadField: React.FC<TextAreaProps> = ({
     >
       {children}
       <FileUpload
-        id={fieldId}
+        id={field.name}
         style={{ resize: 'vertical' }}
         validated={isValid ? 'default' : 'error'}
         isRequired={isRequired}
@@ -68,18 +70,22 @@ const UploadField: React.FC<TextAreaProps> = ({
         filename={filename}
         onChange={(value, filename) => {
           setFilename(filename);
-          setValue(value);
+          helpers.setTouched(true);
+          helpers.setValue(value);
         }}
-        onBlur={onBlur}
-        onReadStarted={() => setSSHKeyUploading(true)}
-        onReadFinished={() => setSSHKeyUploading(false)}
-        isLoading={isSSHKeyUploading}
+        onBlur={(e) => {
+          field.onBlur(e);
+          onBlur && onBlur(e);
+        }}
+        onReadStarted={() => setIsFileUploading(true)}
+        onReadFinished={() => setIsFileUploading(false)}
+        isLoading={isFileUploading}
         disabled={isDisabled}
         dropzoneProps={{
-          accept: '.pub',
-          maxSize: 2048,
-          onDropRejected: () => setError('File not supported.'),
+          ...dropzoneProps,
+          onDropRejected: dropzoneProps?.onDropRejected && dropzoneProps?.onDropRejected(helpers),
         }}
+        allowEditingUploadedText={allowEdittingUploadedText}
       />
     </FormGroup>
   );

@@ -176,8 +176,13 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
                   name="sshPublicKey"
                   helperText={<SshPublicKeyHelperText />}
                   idPostfix="discovery"
-                  isRequired
                   onBlur={onSshKeyBlur}
+                  dropzoneProps={{
+                    accept: '.pub',
+                    maxSize: 2048,
+                    onDropRejected: ({ setError }) => () => setError('File not supported.'),
+                  }}
+                  isRequired
                 />
                 <ProxyFields />
               </Form>
