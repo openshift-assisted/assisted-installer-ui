@@ -66,6 +66,15 @@ const DiscoveryImageSummary: React.FC<DiscoveryImageSummaryProps> = ({
               }
             />
           </DetailList>
+          <DetailItem
+            title="Boot instructions"
+            value={
+              <>
+                Use a bootable device (local disk, USB drive, etc.) or network booting (PXE) to boot
+                each host <b>once</b> from the Discovery ISO.
+              </>
+            }
+          ></DetailItem>
         </TextContent>
       </ModalBoxBody>
       <ModalBoxFooter>
