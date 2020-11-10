@@ -13,6 +13,7 @@ const TextAreaField: React.FC<TextAreaFieldProps> = ({
   children,
   idPostfix,
   labelIcon,
+  groupClassName,
   ...props
 }) => {
   const [field, { touched, error }] = useField(props.name);
@@ -51,6 +52,7 @@ const TextAreaField: React.FC<TextAreaFieldProps> = ({
       validated={isValid ? 'default' : 'error'}
       isRequired={isRequired}
       labelIcon={labelIcon}
+      className={groupClassName}
     >
       {children}
       <TextArea

@@ -13,6 +13,7 @@ export interface FieldProps {
   disableDeleteRow?: boolean;
   disableAddRow?: boolean;
   className?: string;
+  groupClassName?: string;
   isDisabled?: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ref?: React.Ref<any>;
