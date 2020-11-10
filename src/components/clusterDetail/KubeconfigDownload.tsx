@@ -10,9 +10,10 @@ import { getErrorMessage, handleApiError, ocmClient } from '../../api';
 type KubeconfigDownloadProps = {
   clusterId: Cluster['id'];
   status: Cluster['status'];
+  id?: string;
 };
 
-const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({ clusterId, status }) => {
+const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({ clusterId, status, id }) => {
   const { addAlert } = React.useContext(AlertsContext);
 
   const download = React.useCallback(
@@ -49,6 +50,7 @@ const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({ clusterId, stat
         variant={ButtonVariant.secondary}
         onClick={() => download(clusterId, status)}
         isDisabled={!canDownloadKubeconfig(status)}
+        id={id}
       >
         Download kubeconfig
       </Button>

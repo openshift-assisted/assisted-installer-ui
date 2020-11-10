@@ -76,6 +76,12 @@ paths:
         - userAuth: [admin, read-only-admin, user]
       summary: Retrieves the list of OpenShift bare metal clusters.
       operationId: ListClusters
+      parameters:
+        - in: header
+          name: get_unregistered_clusters
+          type: boolean
+          required: false
+          default: false
       responses:
         200:
           description: Success.
@@ -121,6 +127,11 @@ paths:
           name: discovery_agent_version
           type: string
           required: false
+        - in: header
+          name: get_unregistered_clusters
+          type: boolean
+          required: false
+          default: false
       responses:
         200:
           description: Success.
@@ -1294,7 +1305,7 @@ paths:
         409:
           description: Cluster cannot accept new hosts due to its current state.
           schema:
-            $ref: '#/definitions/infra_error'
+            $ref: '#/definitions/error'
         500:
           description: Error.
           schema:
@@ -1810,6 +1821,156 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
+  /clusters/{cluster_id}/hosts/{host_id}/ignition:
+    get:
+      tags:
+        - installer
+      summary: Get the customized ignition file for this host
+      operationId: GetHostIgnition
+      parameters:
+        - in: path
+          name: cluster_id
+          type: string
+          format: uuid
+          required: true
+        - in: path
+          name: host_id
+          type: string
+          format: uuid
+          required: true
+      responses:
+        200:
+          description: Success.
+          schema:
+            $ref: '#/definitions/host-ignition-params'
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        404:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        405:
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        409:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        500:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+    patch:
+      tags:
+        - installer
+      summary: Patch the ignition file for this host
+      operationId: UpdateHostIgnition
+      parameters:
+        - in: path
+          name: cluster_id
+          type: string
+          format: uuid
+          required: true
+        - in: path
+          name: host_id
+          type: string
+          format: uuid
+          required: true
+        - in: body
+          name: host-ignition-params
+          required: true
+          schema:
+            $ref: '#/definitions/host-ignition-params'
+      responses:
+        201:
+          description: Success.
+        400:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        404:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        405:
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        500:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
+  /clusters/{cluster_id}/hosts/{host_id}/downloads/ignition:
+    get:
+      tags:
+        - installer
+      security:
+        - agentAuth: []
+      summary: Downloads the customized ignition file for this host
+      operationId: DownloadHostIgnition
+      produces:
+        - application/octet-stream
+      parameters:
+        - in: path
+          name: cluster_id
+          type: string
+          format: uuid
+          required: true
+        - in: path
+          name: host_id
+          type: string
+          format: uuid
+          required: true
+      responses:
+        200:
+          description: Success.
+          schema:
+            type: file
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        404:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        405:
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        409:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        500:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        503:
+          description: Unavailable.
+          schema:
+            $ref: '#/definitions/error'
+
   /clusters/{cluster_id}/logs:
     post:
       tags:
@@ -2253,10 +2414,11 @@ definitions:
     properties:
       kind:
         type: string
-        enum: ['Host', 'AddToExistingClusterHost']
+        enum: ['Host', 'AddToExistingClusterHost', 'AddToExistingClusterOCPHost']
         description: |
           Indicates the type of this object. Will be 'Host' if this is a complete object or 'HostLink' if it is just a link, or
-          'AddToExistingClusterHost' for host being added to existing OCP cluster.
+          'AddToExistingClusterHost' for host being added to existing OCP cluster, or
+          'AddToExistingClusterOCPHost' for host being added to existing OCP cluster via OCP AI cluster
       id:
         type: string
         format: uuid
@@ -2366,14 +2528,33 @@ definitions:
         type: string
       user_name:
         type: string
+      deleted_at:
+        type: string
+        format: date-time
+        description: The time that the host was deleted.
+        x-go-custom-tag: gorm:"type:timestamp with time zone"
+        x-nullable: true
+      ignition_config_overrides:
+        x-go-custom-tag: gorm:"type:text"
+        type: string
+        description:
+          Json formatted string containing the user overrides for the host's pointer ignition
+        example:
+          '{"ignition": {"version": "3.1.0"}, "storage": {"files": [{"path": "/tmp/example",
+          "contents": {"source": "data:text/plain;base64,aGVscGltdHJhcHBlZGluYXN3YWdnZXJzcGVj"}}]}}'
 
   steps:
     type: object
     properties:
       next_instruction_seconds:
         type: integer
-      exit_on_completion:
-        type: boolean
+      post_step_action:
+        type: string
+        description: What to do after finishing to run step instructions
+        default: continue
+        enum:
+          - exit
+          - continue
       instructions:
         type: array
         items:
@@ -2695,11 +2876,11 @@ definitions:
     properties:
       kind:
         type: string
-        enum: ['Cluster', 'AddHostsCluster']
-        description:
-          Indicates the type of this object. Will be 'Cluster' if this is a complete object or
-          'ClusterLink' if it is just a link, 'AddHostCluster' for cluster that add hosts to
-          existing OCP cluster
+        enum: ['Cluster', 'AddHostsCluster', 'AddHostsOCPCluster']
+        description: |
+          Indicates the type of this object. Will be 'Cluster' if this is a complete object or 'ClusterLink' if it is just a link, 
+          'AddHostCluster' for cluster that add hosts to existing OCP cluster,
+          'AddHostsOCPCluster' for cluster running on the OCP and add hosts to it
       id:
         type: string
         format: uuid
@@ -2714,6 +2895,8 @@ definitions:
       user_name:
         type: string
       org_id:
+        type: string
+      email_domain:
         type: string
       openshift_version:
         type: string
@@ -2804,6 +2987,7 @@ definitions:
           - installed
           - adding-hosts
           - cancelled
+          - installing-pending-user-action
       status_info:
         type: string
         x-go-custom-tag: gorm:"type:varchar(2048)"
@@ -2862,12 +3046,13 @@ definitions:
           category (network, hosts-data, etc.)
         x-go-custom-tag: gorm:"type:varchar(2048)"
       install_config_overrides:
+        x-go-custom-tag: gorm:"type:text"
         type: string
         description:
           JSON-formatted string containing the user overrides for the install-config.yaml file.
         example: '{"networking":{"networkType": "OVN-Kubernetes"},"fips":true}'
-        x-go-custom-tag: gorm:"type:varchar(2048)"
       ignition_config_overrides:
+        x-go-custom-tag: gorm:"type:text"
         type: string
         description:
           Json formatted string containing the user overrides for the initial ignition config
@@ -2882,6 +3067,12 @@ definitions:
         type: string
         description: Json formatted string containing the majority groups for conectivity checks.
         x-go-custom-tag: gorm:"type:text"
+      deleted_at:
+        type: string
+        format: date-time
+        description: The time that the cluster was deleted.
+        x-go-custom-tag: gorm:"type:timestamp with time zone"
+        x-nullable: true
 
   image_info:
     type: object
@@ -3307,6 +3498,7 @@ definitions:
       - 'belongs-to-machine-cidr'
       - 'api-vip-connected'
       - 'belongs-to-majority-group'
+      - 'valid-platform'
 
   dhcp_allocation_request:
     type: object
@@ -3326,6 +3518,12 @@ definitions:
         type: string
         format: mac
         description: MAC address for the Ingress virtual IP.
+      api_vip_lease:
+        type: string
+        description: Contents of lease file to be used for API virtual IP.
+      ingress_vip_lease:
+        type: string
+        description: Contents of lease file to be used for for Ingress virtual IP.
 
   dhcp_allocation_response:
     type: object
@@ -3341,6 +3539,12 @@ definitions:
         type: string
         format: ipv4
         description: The IPv4 address that was allocated by DHCP for the Ingress virtual IP.
+      api_vip_lease:
+        type: string
+        description: Contents of last aquired lease for API virtual IP.
+      ingress_vip_lease:
+        type: string
+        description: Contents of last aquired lease for Ingress virtual IP.
 
   presigned:
     type: object
@@ -3416,3 +3620,8 @@ definitions:
     required:
       - file_name
       - content
+
+  host-ignition-params:
+    properties:
+      config:
+        type: string

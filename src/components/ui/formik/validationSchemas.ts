@@ -18,7 +18,7 @@ export const nameValidationSchema = Yup.string()
       'Name must consist of lower-case letters, numbers and hyphens. It must start with a letter and end with a letter or number.',
     excludeEmptyString: true,
   })
-  .max(253, 'Cannot be longer than 253 characters.')
+  .max(54, 'Cannot be longer than 54 characters.')
   .required('Required');
 
 export const sshPublicKeyValidationSchema = Yup.string().trim().matches(SSH_PUBLIC_KEY_REGEX, {

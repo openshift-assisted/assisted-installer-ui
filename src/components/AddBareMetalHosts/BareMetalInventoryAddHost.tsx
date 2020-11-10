@@ -3,30 +3,21 @@ import { Text, TextContent, Button } from '@patternfly/react-core';
 import HostsTable from '../hosts/HostsTable';
 import { Cluster, HostRequirements as HostRequirementsType } from '../../api/types';
 import HostRequirements from '../fetching/HostRequirements';
-import { DiscoveryImageModalButton } from './discoveryImageModal';
+import { DiscoveryImageModalButton } from '../clusterConfiguration/discoveryImageModal';
 import {
-  HostsNotShowingLink,
   DiscoveryTroubleshootingModal,
-} from './DiscoveryTroubleshootingModal';
-import FormatDiskWarning from './FormatDiskWarning';
+  HostsNotShowingLink,
+} from '../clusterConfiguration/DiscoveryTroubleshootingModal';
+import FormatDiskWarning from '../clusterConfiguration/FormatDiskWarning';
 
-const HostRequirementsContent = ({
-  worker = {},
-  master = {},
-}: {
-  worker?: HostRequirementsType['worker'];
-  master?: HostRequirementsType['master'];
-}) => (
+const HostRequirementsContent = ({ worker = {} }: { worker?: HostRequirementsType['worker'] }) => (
   <Text component="p">
-    Three master hosts are required with at least {master.cpuCores || 4} CPU cores,{' '}
-    {master.ramGib || 16} GB of RAM, and {master.diskSizeGb || 120} GB of filesystem storage each.
-    Two or more additional worker hosts are recommended with at least {worker.cpuCores || 2} CPU
-    cores, {worker.ramGib || 8} GB of RAM, and {worker.diskSizeGb || 120}
-    GB of filesystem storage each.
+    Worker hosts must have at least {worker.cpuCores || 2} CPU cores, {worker.ramGib || 8} GB of
+    RAM, and {worker.diskSizeGb || 120} GB of filesystem storage.
   </Text>
 );
 
-const BaremetalInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
+const BaremetalInventoryAddHosts: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const [isDiscoveryHintModalOpen, setDiscoveryHintModalOpen] = React.useState(false);
 
   return (
@@ -52,4 +43,4 @@ const BaremetalInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   );
 };
 
-export default BaremetalInventory;
+export default BaremetalInventoryAddHosts;

@@ -20,7 +20,7 @@ import { deleteCluster as ApiDeleteCluster } from '../../api/clusters';
 import AlertsSection from '../ui/AlertsSection';
 import { handleApiError, getErrorMessage } from '../../api/utils';
 import { AlertsContext, AlertsContextProvider } from '../AlertsContextProvider';
-import DeveloperPreview from '../ui/DeveloperPreview';
+import ClusterBreadcrumbs from './ClusterBreadcrumbs';
 
 type ClustersProps = RouteComponentProps;
 
@@ -92,8 +92,8 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
     default:
       return (
         <>
+          <ClusterBreadcrumbs />
           <PageSection variant={PageSectionVariants.light}>
-            <DeveloperPreview />
             <TextContent>
               <Text component="h1">Assisted Bare Metal Clusters</Text>
             </TextContent>

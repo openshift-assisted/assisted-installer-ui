@@ -17,10 +17,12 @@ import { InfoCircleIcon } from '@patternfly/react-icons';
 type WebConsoleHintProps = {
   cluster: Cluster;
   consoleUrl?: string;
+  idPrefix?: string;
 };
 
 type LaunchOpenshiftConsoleButtonProps = WebConsoleHintProps & {
   isDisabled: boolean;
+  id?: string;
 };
 
 type ConsoleModalProps = WebConsoleHintProps & {
@@ -68,6 +70,7 @@ export const LaunchOpenshiftConsoleButton: React.FC<LaunchOpenshiftConsoleButton
   cluster,
   consoleUrl,
   isDisabled,
+  id,
 }) => {
   const [isOpen, setOpen] = React.useState(false);
 
@@ -78,6 +81,7 @@ export const LaunchOpenshiftConsoleButton: React.FC<LaunchOpenshiftConsoleButton
         variant={ButtonVariant.primary}
         isDisabled={isDisabled}
         onClick={() => setOpen(true)}
+        id={id}
       >
         Launch OpenShift Console
       </ToolbarButton>
@@ -94,6 +98,7 @@ export const LaunchOpenshiftConsoleButton: React.FC<LaunchOpenshiftConsoleButton
 export const TroubleshootingOpenshiftConsoleButton: React.FC<WebConsoleHintProps> = ({
   cluster,
   consoleUrl,
+  idPrefix,
 }) => {
   const [isOpen, setOpen] = React.useState(false);
 
@@ -105,6 +110,7 @@ export const TroubleshootingOpenshiftConsoleButton: React.FC<WebConsoleHintProps
         iconPosition="left"
         isInline
         onClick={() => setOpen(true)}
+        id={`${idPrefix}-troubleshooting-hint-open`}
       >
         Not able to access the Web Console?
       </Button>

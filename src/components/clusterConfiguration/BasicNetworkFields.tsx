@@ -7,7 +7,7 @@ import {
   ValidationsInfo,
   HostSubnet,
 } from '../../types/clusters';
-import { InputField, SelectField, SwitchField } from '../ui/formik';
+import { CheckboxField, InputField, SelectField } from '../ui/formik';
 import { Cluster } from '../../api/types';
 import { StaticField } from '../ui/StaticTextField';
 import { NO_SUBNET_SET } from './utils';
@@ -207,7 +207,7 @@ const BasicNetworkFields: React.FC<BasicNetworkFieldsProps> = ({ cluster, hostSu
         isDisabled={!hostSubnets.length}
         isRequired
       />
-      <SwitchField label="Allocate virtual IPs via DHCP server" name="vipDhcpAllocation" />
+      <CheckboxField label="Allocate virtual IPs via DHCP server" name="vipDhcpAllocation" />
       {values.vipDhcpAllocation ? (
         <>
           <StaticField

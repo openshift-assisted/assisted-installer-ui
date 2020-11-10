@@ -1,29 +1,36 @@
 import React from 'react';
-import PageSection from '../PageSection';
 import { AlertGroup, AlertActionCloseButton, Alert } from '@patternfly/react-core';
+import PageSection from '../PageSection';
 import { AlertProps } from '../../../features/alerts/alertsSlice';
-
-import './AlertsSection.css';
 import { AlertsContext } from '../../AlertsContextProvider';
 
-const AlertsSection: React.FC = () => {
+import './AlertsSection.css';
+
+export const Alerts: React.FC<{ className?: string }> = ({ className }) => {
   const { alerts, removeAlert } = React.useContext(AlertsContext);
   const onClose = (alert: AlertProps) => removeAlert(alert.key);
 
   if (alerts.length) {
     return (
+      <AlertGroup className={className}>
+        {alerts.map((alert) => (
+          // eslint-disable-next-line react/jsx-key
+          <Alert actionClose={<AlertActionCloseButton onClose={() => onClose(alert)} />} {...alert}>
+            {alert.message}
+          </Alert>
+        ))}
+      </AlertGroup>
+    );
+  }
+  return null;
+};
+
+const AlertsSection: React.FC = () => {
+  const { alerts } = React.useContext(AlertsContext);
+  if (alerts.length) {
+    return (
       <PageSection padding={{ default: 'noPadding' }}>
-        <AlertGroup className="alerts-section">
-          {alerts.map((alert) => (
-            // eslint-disable-next-line react/jsx-key
-            <Alert
-              actionClose={<AlertActionCloseButton onClose={() => onClose(alert)} />}
-              {...alert}
-            >
-              {alert.message}
-            </Alert>
-          ))}
-        </AlertGroup>
+        <Alerts className="alerts-section" />
       </PageSection>
     );
   }
