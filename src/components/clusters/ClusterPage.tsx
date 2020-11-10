@@ -111,7 +111,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
 
   if (uiState === ResourceUIState.ERROR) {
     if (errorDetail?.code === '404') {
-      return <Redirect to="/clusters" />;
+      return <Redirect to={`${routeBasePath}/clusters`} />;
     }
 
     return (
