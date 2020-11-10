@@ -5,14 +5,11 @@ import {
   Button,
   ButtonVariant,
   Form,
-  TextContent,
-  Text,
   ModalBoxBody,
   ModalBoxFooter,
   AlertVariant,
   Alert,
   AlertActionCloseButton,
-  TextVariants,
 } from '@patternfly/react-core';
 import Axios, { CancelTokenSource } from 'axios';
 import { UploadField } from '../ui/formik';
@@ -135,7 +132,7 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
 
         return isSubmitting ? (
           <LoadingState
-            content="Discovery image is being prepared, it will be available in a moment..."
+            content="Discovery image is being prepared, this might take a few seconds."
             secondaryActions={[
               <Button key="close" variant={ButtonVariant.secondary} onClick={handleCancel}>
                 Cancel
@@ -158,19 +155,6 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
                     {status.error.message}
                   </Alert>
                 )}
-                <TextContent>
-                  <Text component={TextVariants.p}>
-                    Hosts must be connected to the internet to form a cluster using this installer.
-                    Each host will need a valid IP address assigned by a DHCP server and be on the
-                    same Layer 2 network.
-                  </Text>
-                  <Text component={TextVariants.p}>
-                    The Discovery ISO should only be booted once per host. Either adjust the boot
-                    order in each host's BIOS to make it secondary after the disk that you want to
-                    use for the installation, or select to boot once from the ISO manually. The boot
-                    disk in the host will be wiped during the installation.
-                  </Text>
-                </TextContent>
                 <UploadField
                   label="SSH public key"
                   name="sshPublicKey"
