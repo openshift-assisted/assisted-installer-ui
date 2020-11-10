@@ -19,6 +19,9 @@ type ClusterInstallationErrorProps = {
   title?: string;
   setResetClusterModalOpen: (isOpen: boolean) => void;
 };
+
+const getID = (suffix: string) => `cluster-install-error-${suffix}`;
+
 const ClusterInstallationError: React.FC<ClusterInstallationErrorProps> = ({
   cluster,
   title = 'Cluster installation failed',
@@ -33,17 +36,22 @@ const ClusterInstallationError: React.FC<ClusterInstallationErrorProps> = ({
         title={title}
         actionLinks={
           <>
-            <AlertActionLink onClick={() => setResetClusterModalOpen(true)}>
+            <AlertActionLink
+              onClick={() => setResetClusterModalOpen(true)}
+              id={getID('button-reset-cluster')}
+            >
               Reset Cluster
             </AlertActionLink>
             <AlertActionLink
               onClick={() => downloadClusterInstallationLogs(addAlert, cluster.id)}
               isDisabled={!canDownloadClusterLogs(cluster)}
+              id={getID('button-download-installation-logs')}
             >
               Download Installation Logs
             </AlertActionLink>
             <AlertActionLink
               onClick={() => window.open(getBugzillaLink(cluster.openshiftVersion), '_blank')}
+              id={getID('button-report-bug')}
             >
               Report a bug
             </AlertActionLink>

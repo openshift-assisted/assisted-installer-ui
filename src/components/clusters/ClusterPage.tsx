@@ -19,6 +19,7 @@ import ClusterDetail from '../clusterDetail/ClusterDetail';
 import CancelInstallationModal from '../clusterDetail/CancelInstallationModal';
 import ResetClusterModal from '../clusterDetail/ResetClusterModal';
 import { AlertsContextProvider } from '../AlertsContextProvider';
+import { AddBareMetalHosts } from '../AddBareMetalHosts';
 
 type MatchParams = {
   clusterId: string;
@@ -76,7 +77,9 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
   }
 
   const getContent = (cluster: Cluster) => {
-    if (
+    if (cluster.kind === 'AddHostsCluster') {
+      return <AddBareMetalHosts cluster={cluster} />;
+    } else if (
       [
         'preparing-for-installation',
         'installing',
@@ -108,7 +111,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
 
   if (uiState === ResourceUIState.ERROR) {
     if (errorDetail?.code === '404') {
-      return <Redirect to="/clusters" />;
+      return <Redirect to={`${routeBasePath}/clusters`} />;
     }
 
     return (
@@ -134,7 +137,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
         <ResetClusterModal
           isOpen={resetClusterModalOpen}
           onClose={() => setResetClusterModalOpen(false)}
-          clusterId={cluster.id}
+          cluster={cluster}
         />
       </AlertsContextProvider>
     );

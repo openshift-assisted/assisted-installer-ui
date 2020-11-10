@@ -38,9 +38,12 @@ export interface Boot {
 }
 export interface Cluster {
   /**
-   * Indicates the type of this object. Will be 'Cluster' if this is a complete object or 'ClusterLink' if it is just a link, 'AddHostCluster' for cluster that add hosts to existing OCP cluster
+   * Indicates the type of this object. Will be 'Cluster' if this is a complete object or 'ClusterLink' if it is just a link,
+   * 'AddHostCluster' for cluster that add hosts to existing OCP cluster,
+   * 'AddHostsOCPCluster' for cluster running on the OCP and add hosts to it
+   *
    */
-  kind: 'Cluster' | 'AddHostsCluster';
+  kind: 'Cluster' | 'AddHostsCluster' | 'AddHostsOCPCluster';
   /**
    * Unique identifier of the object.
    */
@@ -55,6 +58,7 @@ export interface Cluster {
   name?: string;
   userName?: string;
   orgId?: string;
+  emailDomain?: string;
   /**
    * Version of the OpenShift cluster.
    */
@@ -125,7 +129,8 @@ export interface Cluster {
     | 'finalizing'
     | 'installed'
     | 'adding-hosts'
-    | 'cancelled';
+    | 'cancelled'
+    | 'installing-pending-user-action';
   /**
    * Additional information pertaining to the status of the OpenShift cluster.
    */
@@ -188,6 +193,10 @@ export interface Cluster {
    * Json formatted string containing the majority groups for conectivity checks.
    */
   connectivityMajorityGroups?: string;
+  /**
+   * The time that the cluster was deleted.
+   */
+  deletedAt?: string; // date-time
 }
 export interface ClusterCreateParams {
   /**
@@ -405,6 +414,14 @@ export interface DhcpAllocationRequest {
    * MAC address for the Ingress virtual IP.
    */
   ingressVipMac: string; // mac
+  /**
+   * Contents of lease file to be used for API virtual IP.
+   */
+  apiVipLease?: string;
+  /**
+   * Contents of lease file to be used for for Ingress virtual IP.
+   */
+  ingressVipLease?: string;
 }
 export interface DhcpAllocationResponse {
   /**
@@ -415,6 +432,14 @@ export interface DhcpAllocationResponse {
    * The IPv4 address that was allocated by DHCP for the Ingress virtual IP.
    */
   ingressVipAddress: string; // ipv4
+  /**
+   * Contents of last aquired lease for API virtual IP.
+   */
+  apiVipLease?: string;
+  /**
+   * Contents of last aquired lease for Ingress virtual IP.
+   */
+  ingressVipLease?: string;
 }
 export interface DiscoveryIgnitionParams {
   config?: string;
@@ -482,10 +507,11 @@ export type FreeNetworksAddresses = FreeNetworkAddresses[];
 export interface Host {
   /**
    * Indicates the type of this object. Will be 'Host' if this is a complete object or 'HostLink' if it is just a link, or
-   * 'AddToExistingClusterHost' for host being added to existing OCP cluster.
+   * 'AddToExistingClusterHost' for host being added to existing OCP cluster, or
+   * 'AddToExistingClusterOCPHost' for host being added to existing OCP cluster via OCP AI cluster
    *
    */
-  kind: 'Host' | 'AddToExistingClusterHost';
+  kind: 'Host' | 'AddToExistingClusterHost' | 'AddToExistingClusterOCPHost';
   /**
    * Unique identifier of the object.
    */
@@ -558,10 +584,23 @@ export interface Host {
   discoveryAgentVersion?: string;
   requestedHostname?: string;
   userName?: string;
+  /**
+   * The time that the host was deleted.
+   */
+  deletedAt?: string; // date-time
+  /**
+   * Json formatted string containing the user overrides for the host's pointer ignition
+   * example:
+   * {"ignition": {"version": "3.1.0"}, "storage": {"files": [{"path": "/tmp/example", "contents": {"source": "data:text/plain;base64,aGVscGltdHJhcHBlZGluYXN3YWdnZXJzcGVj"}}]}}
+   */
+  ignitionConfigOverrides?: string;
 }
 export interface HostCreateParams {
   hostId: string; // uuid
   discoveryAgentVersion?: string;
+}
+export interface HostIgnitionParams {
+  config?: string;
 }
 export type HostList = Host[];
 export interface HostNetwork {
@@ -587,10 +626,11 @@ export interface HostProgressInfo {
 export interface HostRegistrationResponse {
   /**
    * Indicates the type of this object. Will be 'Host' if this is a complete object or 'HostLink' if it is just a link, or
-   * 'AddToExistingClusterHost' for host being added to existing OCP cluster.
+   * 'AddToExistingClusterHost' for host being added to existing OCP cluster, or
+   * 'AddToExistingClusterOCPHost' for host being added to existing OCP cluster via OCP AI cluster
    *
    */
-  kind: 'Host' | 'AddToExistingClusterHost';
+  kind: 'Host' | 'AddToExistingClusterHost' | 'AddToExistingClusterOCPHost';
   /**
    * Unique identifier of the object.
    */
@@ -663,6 +703,16 @@ export interface HostRegistrationResponse {
   discoveryAgentVersion?: string;
   requestedHostname?: string;
   userName?: string;
+  /**
+   * The time that the host was deleted.
+   */
+  deletedAt?: string; // date-time
+  /**
+   * Json formatted string containing the user overrides for the host's pointer ignition
+   * example:
+   * {"ignition": {"version": "3.1.0"}, "storage": {"files": [{"path": "/tmp/example", "contents": {"source": "data:text/plain;base64,aGVscGltdHJhcHBlZGluYXN3YWdnZXJzcGVj"}}]}}
+   */
+  ignitionConfigOverrides?: string;
   /**
    * Command for starting the next step runner
    */
@@ -712,7 +762,8 @@ export type HostValidationId =
   | 'hostname-valid'
   | 'belongs-to-machine-cidr'
   | 'api-vip-connected'
-  | 'belongs-to-majority-group';
+  | 'belongs-to-majority-group'
+  | 'valid-platform';
 export interface ImageCreateParams {
   /**
    * SSH public key for debugging the installation.
@@ -834,7 +885,10 @@ export type StepType =
   | 'api-vip-connectivity-check';
 export interface Steps {
   nextInstructionSeconds?: number;
-  exitOnCompletion?: boolean;
+  /**
+   * What to do after finishing to run step instructions
+   */
+  postStepAction?: 'exit' | 'continue';
   instructions?: Step[];
 }
 export type StepsReply = StepReply[];

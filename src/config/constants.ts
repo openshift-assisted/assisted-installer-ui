@@ -1,5 +1,11 @@
 import * as packageJson from '../../package.json';
-import { ClusterCreateParams, Cluster, Host, Event } from '../api/types';
+import {
+  ClusterCreateParams,
+  Cluster,
+  Host,
+  Event,
+  AddHostsClusterCreateParams,
+} from '../api/types';
 import { ValidationsInfo, Validation, HostRole } from '../types/hosts';
 
 export let routeBasePath = '';
@@ -12,11 +18,15 @@ type OpenshiftVersionOptionType = {
   value: ClusterCreateParams['openshiftVersion'];
 };
 
+const OPENSHIFT_VERSIONS_ADDHOST: AddHostsClusterCreateParams['openshiftVersion'][] = ['4.6'];
 export const OPENSHIFT_VERSION_OPTIONS: OpenshiftVersionOptionType[] = [
   { label: 'OpenShift 4.6', value: '4.6' },
 ];
 export const DEFAULT_OPENSHIFT_VERSION: OpenshiftVersionOptionType['value'] =
   OPENSHIFT_VERSION_OPTIONS[0].value;
+
+export const normalizeClusterVersion = (version: string) =>
+  OPENSHIFT_VERSIONS_ADDHOST.find((normalized) => version.startsWith(normalized));
 
 export const CLUSTER_MANAGER_SITE_LINK = 'https://cloud.redhat.com/openshift/install/pull-secret';
 export const PULL_SECRET_INFO_LINK = CLUSTER_MANAGER_SITE_LINK;
@@ -61,6 +71,7 @@ export const CLUSTER_STATUS_LABELS: { [key in Cluster['status']]: string } = {
   ready: 'Ready',
   'preparing-for-installation': 'Preparing for installation',
   installing: 'Installing',
+  'installing-pending-user-action': 'Installing (pending action)',
   finalizing: 'Finalizing',
   cancelled: 'Installation cancelled',
   error: 'Error',
@@ -71,7 +82,7 @@ export const CLUSTER_STATUS_LABELS: { [key in Cluster['status']]: string } = {
 export const HOST_STATUS_LABELS: { [key in Host['status']]: string } = {
   discovering: 'Discovering',
   'pending-for-input': 'Pending input',
-  known: 'Known',
+  known: 'Ready to install',
   disconnected: 'Disconnected',
   insufficient: 'Insufficient',
   disabled: 'Disabled',
@@ -122,7 +133,8 @@ export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
   resetting: 'This host is resetting the installation.',
   'resetting-pending-user-action':
     'Host already booted from disk during previous installation. To finish resetting the installation please boot the host into Discovery ISO.',
-  'added-to-existing-cluster': 'This host is being added to an existing cluster.',
+  'added-to-existing-cluster':
+    "This host was successfully installed. Please visit the Nodes page in the cluster's Web Console to finish adding it to the cluster.",
 };
 
 export const HOST_VALIDATION_GROUP_LABELS: { [key in keyof ValidationsInfo]: string } = {
@@ -146,6 +158,7 @@ export const HOST_VALIDATION_LABELS: { [key in Validation['id']]: string } = {
   'role-defined': 'Role',
   'api-vip-connected': 'API VIP connected',
   'belongs-to-majority-group': 'Belongs to majority connected group',
+  'valid-platform': 'Platform',
 };
 
 export const getFacetLibVersion = () => packageJson.version;

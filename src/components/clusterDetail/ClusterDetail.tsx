@@ -8,7 +8,7 @@ import {
   GridItem,
   Grid,
 } from '@patternfly/react-core';
-import { Cluster, Credentials } from '../../api/types';
+import { Cluster, Credentials, Host } from '../../api/types';
 import { getClusterCredentials } from '../../api/clusters';
 import PageSection from '../ui/PageSection';
 import { EventsModalButton } from '../ui/eventsModal';
@@ -30,35 +30,26 @@ import { AlertsContext } from '../AlertsContextProvider';
 import { canDownloadClusterLogs } from '../hosts/utils';
 
 const canAbortInstallation = (cluster: Cluster) => {
-  if (
-    !['preparing-for-installation', 'installing', 'installing-in-progress'].includes(cluster.status)
-  ) {
-    return false;
-  }
-
-  if (cluster.hosts) {
-    if (cluster.hosts.find((h) => h.status === 'installing-pending-user-action')) {
-      // a host in installing-pending-user-action
-      return false;
-    }
-
-    if (cluster.hosts.find((h) => h.status === 'error')) {
-      // a host is in error
-      if (cluster.hosts.find((h) => h.status !== 'installing')) {
-        // no host is in installing
-        if (
-          cluster.hosts.find(
-            (h) => !['error', 'installed', 'preparing-for-installation'].includes(h.status),
-          )
-        ) {
-          // a host not yet in error or installed or preparing-for-installation
-          return false;
-        }
-      }
-    }
-  }
-
-  return true;
+  const allowedClusterStates: Cluster['status'][] = [
+    'preparing-for-installation',
+    'installing',
+    'installing-pending-user-action',
+    'finalizing',
+  ];
+  const allowedHostStates: Host['status'][] = [
+    'preparing-for-installation',
+    'installing-pending-user-action',
+    'resetting-pending-user-action',
+    'installing',
+    'installing-in-progress',
+    'installed',
+    'error',
+  ];
+  const { hosts = [] } = cluster;
+  return (
+    allowedClusterStates.includes(cluster.status) &&
+    !hosts.find((host) => !allowedHostStates.includes(host.status))
+  );
 };
 
 type ClusterDetailProps = {
@@ -66,6 +57,8 @@ type ClusterDetailProps = {
   setCancelInstallationModalOpen: (isOpen: boolean) => void;
   setResetClusterModalOpen: (isOpen: boolean) => void;
 };
+
+const getID = (suffix: string) => `cluster-detail-${suffix}`;
 
 const ClusterDetail: React.FC<ClusterDetailProps> = ({
   cluster,
@@ -130,9 +123,14 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
               credentials={credentials}
               error={!!credentialsError}
               retry={fetchCredentials}
+              idPrefix={getID('cluster-creds')}
             />
           )}
-          <KubeconfigDownload status={cluster.status} clusterId={cluster.id} />
+          <KubeconfigDownload
+            status={cluster.status}
+            clusterId={cluster.id}
+            id={getID('button-download-kubeconfig')}
+          />
           <GridItem>
             <TextContent>
               <Text component="h2">Bare Metal Inventory</Text>
@@ -153,7 +151,10 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
           </ToolbarButton>
         )}
         {cluster.status === 'error' && (
-          <ToolbarButton onClick={() => setResetClusterModalOpen(true)}>
+          <ToolbarButton
+            id={getID('button-reset-cluster')}
+            onClick={() => setResetClusterModalOpen(true)}
+          >
             Reset Cluster
           </ToolbarButton>
         )}
@@ -162,12 +163,14 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
             isDisabled={!credentials || !!credentialsError}
             cluster={cluster}
             consoleUrl={credentials?.consoleUrl}
+            id={getID('button-launch-console')}
           />
         )}
         <ToolbarButton
           variant={ButtonVariant.link}
           component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
           isHidden={isSingleClusterMode()}
+          id={getID('button-back-to-all-clusters')}
         >
           Back to all clusters
         </ToolbarButton>

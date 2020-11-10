@@ -46,6 +46,7 @@ const SingleCluster: React.FC<SingleClusterProps> = () => {
   }
 
   if (clusters.length > 1) {
+    // TODO(mlibra): What about Day2 cluster in single-cluster flow?
     console.warn('More than one cluster found!', clusters);
   }
 
