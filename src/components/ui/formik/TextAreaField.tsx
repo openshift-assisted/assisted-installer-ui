@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { useField } from 'formik';
 import { FormGroup, TextArea } from '@patternfly/react-core';
-import { TextAreaProps } from './types';
+import { TextAreaFieldProps } from './types';
 import { getFieldId } from './utils';
 import HelperText from './HelperText';
 
-const TextAreaField: React.FC<TextAreaProps> = ({
+const TextAreaField: React.FC<TextAreaFieldProps> = ({
   label,
   helperText,
   getErrorText,
