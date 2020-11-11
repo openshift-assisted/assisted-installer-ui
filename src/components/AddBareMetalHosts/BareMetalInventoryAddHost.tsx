@@ -8,7 +8,6 @@ import {
   DiscoveryTroubleshootingModal,
   HostsNotShowingLink,
 } from '../clusterConfiguration/DiscoveryTroubleshootingModal';
-import FormatDiskWarning from '../clusterConfiguration/FormatDiskWarning';
 
 const HostRequirementsContent = ({ worker = {} }: { worker?: HostRequirementsType['worker'] }) => (
   <Text component="p">
@@ -35,7 +34,6 @@ const BaremetalInventoryAddHosts: React.FC<{ cluster: Cluster }> = ({ cluster })
         </Text>
         <HostRequirements ContentComponent={HostRequirementsContent} />
       </TextContent>
-      <FormatDiskWarning />
       <HostsTable cluster={cluster} setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
       <DiscoveryTroubleshootingModal
         isOpen={isDiscoveryHintModalOpen}
