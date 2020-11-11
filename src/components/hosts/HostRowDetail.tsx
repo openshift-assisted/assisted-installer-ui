@@ -60,7 +60,7 @@ const DisksTable: React.FC<DisksTableProps> = ({ disks = [] }) => {
     .sort((diskA, diskB) => diskA.name?.localeCompare(diskB.name || '') || 0)
     .map((disk) => ({
       cells: [
-        disk.bootable ? `${disk.name} (boot)` : disk.name,
+        disk.name,
         disk.driveType,
         Humanize.fileSize(disk.sizeBytes || 0),
         disk.serial,
