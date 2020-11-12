@@ -49,6 +49,7 @@ import { getInitialValues, getHostSubnets } from './utils';
 import { AlertsContext } from '../AlertsContextProvider';
 import ClusterSshKeyField from './ClusterSshKeyField';
 import { captureException } from '../../sentry';
+import { trimSshPublicKey } from '../ui/formik/utils';
 
 const validationSchema = (initialValues: ClusterConfigurationValues, hostSubnets: HostSubnets) =>
   Yup.lazy<ClusterConfigurationValues>((values) =>
@@ -175,7 +176,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
         };
         const onSshKeyBlur = () => {
           if (values.sshPublicKey) {
-            setFieldValue('sshPublicKey', values.sshPublicKey.trim());
+            setFieldValue('sshPublicKey', trimSshPublicKey(values.sshPublicKey));
           }
         };
 

@@ -2,6 +2,7 @@ import * as Yup from 'yup';
 import { ClusterConfigurationValues, HostSubnets } from '../../../types/clusters';
 import { Host } from '../../../api/types';
 import { ProxyFieldsType } from '../../clusterConfiguration/types';
+import { trimSshPublicKey } from './utils';
 
 const CLUSTER_NAME_REGEX = /^([a-z]([-a-z0-9]*[a-z0-9])?)*$/;
 const SSH_PUBLIC_KEY_REGEX = /^(ssh-rsa|ssh-ed25519|ecdsa-[-a-z0-9]*) AAAA[0-9A-Za-z+/]+[=]{0,3}( .+)?$/;
@@ -21,11 +22,21 @@ export const nameValidationSchema = Yup.string()
   .max(54, 'Cannot be longer than 54 characters.')
   .required('Required');
 
-export const sshPublicKeyValidationSchema = Yup.string().trim().matches(SSH_PUBLIC_KEY_REGEX, {
-  message:
-    'SSH public key must consist of "[TYPE] key [[EMAIL]]", supported types are: ssh-rsa, ssh-ed25519, ecdsa-[VARIANT]',
-  excludeEmptyString: true,
-});
+export const sshPublicKeyValidationSchema = Yup.string().test(
+  'ssh-public-key',
+  'SSH public key must consist of "[TYPE] key [[EMAIL]]", supported types are: ssh-rsa, ssh-ed25519, ecdsa-[VARIANT]. Additional keys are separated by a new line.',
+  (value) => {
+    if (!value) {
+      return true;
+    }
+
+    return (
+      trimSshPublicKey(value)
+        .split('\n')
+        .find((line: string) => !line.match(SSH_PUBLIC_KEY_REGEX)) === undefined
+    );
+  },
+);
 
 export const validJSONSchema = Yup.string().test(
   'is-json',
