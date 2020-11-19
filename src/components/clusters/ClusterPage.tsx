@@ -77,7 +77,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
   }
 
   const getContent = (cluster: Cluster) => {
-    if (cluster.kind === 'AddHostsCluster') {
+    if (cluster.status === 'adding-hosts') {
       return <AddBareMetalHosts cluster={cluster} />;
     } else if (
       [
