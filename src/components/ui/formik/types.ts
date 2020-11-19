@@ -1,5 +1,6 @@
 import { TextInputTypes, FormSelectOptionProps } from '@patternfly/react-core';
-import { FieldValidator } from 'formik';
+import { FieldValidator, FieldHelperProps } from 'formik';
+import { DropzoneProps, DropFileEventHandler } from 'react-dropzone';
 
 export interface FieldProps {
   name: string;
@@ -12,6 +13,7 @@ export interface FieldProps {
   disableDeleteRow?: boolean;
   disableAddRow?: boolean;
   className?: string;
+  groupClassName?: string;
   isDisabled?: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ref?: React.Ref<any>;
@@ -41,14 +43,25 @@ export interface InputFieldProps extends FieldProps {
   validate?: FieldValidator;
 }
 
-export interface TextAreaProps extends FieldProps {
+export interface TextAreaFieldProps extends FieldProps {
   getErrorText?: (error: string) => React.ReactNode | undefined;
   placeholder?: string;
   onChange?: (event: React.FormEvent<HTMLTextAreaElement>) => void;
   onBlur?: () => void;
 }
 
-export interface TextAreaSecretProps extends TextAreaProps {
+export interface UploadFieldProps extends FieldProps {
+  getErrorText?: (error: string) => React.ReactNode | undefined;
+  placeholder?: string;
+  onChange?: (event: React.FormEvent<HTMLTextAreaElement>) => void;
+  onBlur?: (event: React.FocusEvent<HTMLDivElement>) => void;
+  allowEdittingUploadedText?: boolean;
+  dropzoneProps?: Omit<DropzoneProps, 'onDropRejected'> & {
+    onDropRejected?: (helpers: FieldHelperProps<string>) => DropFileEventHandler;
+  };
+}
+
+export interface TextAreaSecretProps extends TextAreaFieldProps {
   isSet?: boolean;
   isEdit: boolean;
   helperTextHidden?: string;
