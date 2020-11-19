@@ -10,28 +10,6 @@ import { AlertsContextProvider } from '../AlertsContextProvider';
 import { POLLING_INTERVAL } from '../../config';
 import AddBareMetalHosts from './AddBareMetalHosts';
 
-type ClusterDetailTabType = {
-  key: number;
-  title: string;
-  contentId: string;
-  id: string;
-  show: boolean;
-  ref: React.RefObject<unknown>;
-};
-
-export const getBareMetalHostsClusterDetailTab = (
-  tabs: ClusterDetailTabType[],
-  addBareMetalTabRef: React.RefObject<unknown>,
-  displayAddBareMetalHosts: boolean,
-): ClusterDetailTabType => ({
-  key: tabs.reduce((max, tab) => (tab.key > max ? tab.key : max), tabs[0].key) + 1,
-  title: 'Bare Metal',
-  contentId: 'addBareMetalHostsContent',
-  id: 'addBareMetalHosts',
-  show: displayAddBareMetalHosts,
-  ref: addBareMetalTabRef,
-});
-
 export const BareMetalHostsClusterDetailTab: React.FC<{
   cluster?: OcmClusterType;
   isVisible: boolean;
