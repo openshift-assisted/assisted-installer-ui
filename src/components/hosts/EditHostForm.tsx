@@ -42,7 +42,10 @@ type EditHostFormProps = {
 const validationSchema = (initialValues: HostUpdateParams, hosts: Host[] = []) =>
   Yup.object().shape({
     hostname: hostnameValidationSchema.concat(
-      uniqueHostnameValidationSchema(initialValues.hostname, hosts),
+      uniqueHostnameValidationSchema(initialValues.hostname, hosts).notOneOf(
+        ['localhost'],
+        `Hostname 'localhost' is not allowed.`,
+      ),
     ),
   });
 
