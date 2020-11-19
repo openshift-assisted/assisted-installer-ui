@@ -43,10 +43,9 @@ jobs:
            echo "NODE_AUTH_TOKEN=${{ secrets.NPMJS_PUBLISH_TOKEN }}" >> $GITHUB_ENV
       - run: yarn publish --non-interactive --no-git-tag-version
       - run: |
-          echo ${NODE_AUTH_TOKEN}
           echo ${NODE_AUTH_TOKEN} | wc
       - name: Create Pull Request in facet-lib with updated library version
-        uses: peter-evans/create-pull-request@v2
+        uses: peter-evans/create-pull-request@v3
         with:
           base: master
           commit-message: Version ${{ env.VERSION }}
