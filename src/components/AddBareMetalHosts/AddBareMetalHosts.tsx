@@ -1,12 +1,21 @@
-import { ButtonVariant, Card, CardBody, CardTitle, Title, Toolbar } from '@patternfly/react-core';
+import {
+  ButtonVariant,
+  Card,
+  CardBody,
+  CardTitle,
+  Title,
+  Toolbar,
+  ToolbarContent,
+} from '@patternfly/react-core';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Cluster, getErrorMessage, handleApiError, installHosts } from '../../api';
 import { addAlert } from '../../features/alerts/alertsSlice';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import { hasKnownHost } from '../hosts/utils';
-import { ToolbarButton } from '../ui';
+import { ToolbarButton, ToolbarSecondaryGroup } from '../ui';
 import { Alerts } from '../ui/AlertsSection';
+import { EventsModalButton } from '../ui/eventsModal';
 import BaremetalInventoryAddHosts from './BareMetalInventoryAddHost';
 
 const AddBareMetalHosts: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
@@ -37,14 +46,28 @@ const AddBareMetalHosts: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         <BaremetalInventoryAddHosts cluster={cluster} />
         <Alerts />
         <Toolbar id="cluster-toolbar">
-          <ToolbarButton
-            variant={ButtonVariant.primary}
-            name="install"
-            onClick={handleHostsInstall}
-            isDisabled={!hasKnownHost(cluster)}
-          >
-            Install ready hosts
-          </ToolbarButton>
+          <ToolbarContent>
+            <ToolbarButton
+              variant={ButtonVariant.primary}
+              name="install"
+              onClick={handleHostsInstall}
+              isDisabled={!hasKnownHost(cluster)}
+            >
+              Install ready hosts
+            </ToolbarButton>
+            <ToolbarSecondaryGroup>
+              <EventsModalButton
+                id="cluster-events-button"
+                entityKind="cluster"
+                cluster={cluster}
+                title="Cluster Events"
+                variant={ButtonVariant.link}
+                style={{ textAlign: 'right' }}
+              >
+                View Cluster Events
+              </EventsModalButton>
+            </ToolbarSecondaryGroup>
+          </ToolbarContent>
         </Toolbar>
       </CardBody>
     </Card>
