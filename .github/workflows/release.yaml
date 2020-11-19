@@ -15,6 +15,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Set env variables
+        run: |
+           echo "NODE_AUTH_TOKEN=${{ secrets.NPMJS_PUBLISH_TOKEN }}" >> $GITHUB_ENV
+           echo "NODE_OPTIONS=--max-old-space-size=8192" >> $GITHUB_ENV
       # expected format of the new git tag: v1.2.3
       - name: Get tag
         id: get_tag
@@ -36,8 +40,6 @@ jobs:
       - run: yarn version --new-version ${{ env.VERSION }} --no-git-tag-version
       - run: yarn build
       - run: yarn publish --non-interactive --no-git-tag-version
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPMJS_PUBLISH_TOKEN }}
       - name: Create Pull Request in facet-lib with updated library version
         uses: peter-evans/create-pull-request@v2
         with:
