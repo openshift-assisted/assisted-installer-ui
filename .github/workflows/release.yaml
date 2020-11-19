@@ -17,7 +17,7 @@ jobs:
     steps:
       - name: Set env variables
         run: |
-           echo "NODE_OPTIONS=--max-old-space-size=8192" >> $GITHUB_ENV
+          echo "NODE_OPTIONS=--max-old-space-size=8192" >> $GITHUB_ENV
       # expected format of the new git tag: v1.2.3
       - name: Get tag
         id: get_tag
@@ -40,7 +40,7 @@ jobs:
       - run: yarn build
       - name: Set env variables
         run: |
-           echo "NODE_AUTH_TOKEN=${{ secrets.NPMJS_PUBLISH_TOKEN }}" >> $GITHUB_ENV
+          echo "NODE_AUTH_TOKEN=${{ secrets.NPMJS_PUBLISH_TOKEN }}" >> $GITHUB_ENV
       - run: yarn publish --non-interactive --no-git-tag-version
       - run: |
           echo ${NODE_AUTH_TOKEN} | wc
