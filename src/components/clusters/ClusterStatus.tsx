@@ -3,9 +3,11 @@ import { Popover, Button, ButtonVariant } from '@patternfly/react-core';
 import {
   global_danger_color_100 as dangerColor,
   global_success_color_100 as okColor,
+  global_warning_color_100 as warningColor,
 } from '@patternfly/react-tokens';
 import {
   ExclamationCircleIcon,
+  ExclamationTriangleIcon,
   FileAltIcon,
   CheckCircleIcon,
   InProgressIcon,
@@ -33,9 +35,10 @@ const getStatusIcon = (status: Cluster['status']): React.ReactElement => {
     case 'ready':
     case 'installed':
       return <CheckCircleIcon color={okColor.value} />;
+    case 'installing-pending-user-action':
+      return <ExclamationTriangleIcon color={warningColor.value} />;
     case 'preparing-for-installation':
     case 'installing':
-    case 'installing-pending-user-action':
     case 'finalizing':
     case 'adding-hosts':
       return <InProgressIcon />;

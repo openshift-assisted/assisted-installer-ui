@@ -2,8 +2,9 @@ import * as Yup from 'yup';
 import { ClusterConfigurationValues, HostSubnets } from '../../../types/clusters';
 import { Host } from '../../../api/types';
 import { ProxyFieldsType } from '../../clusterConfiguration/types';
+import { trimSshPublicKey } from './utils';
 
-const CLUSTER_NAME_REGEX = /^([a-z]([-a-z0-9]*[a-z0-9])?)*$/;
+const CLUSTER_NAME_REGEX = /^[a-z]([-a-z0-9]*[a-z0-9])?$/;
 const SSH_PUBLIC_KEY_REGEX = /^(ssh-rsa|ssh-ed25519|ecdsa-[-a-z0-9]*) AAAA[0-9A-Za-z+/]+[=]{0,3}( .+)?$/;
 // Future bug-fixer: Beer on me! (mlibra)
 const IP_ADDRESS_REGEX = /^(((([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5]))|([0-9a-f]{1,4}:){7,7}[0-9a-f]{1,4}|([0-9a-f]{1,4}:){1,7}:|([0-9a-f]{1,4}:){1,6}:[0-9a-f]{1,4}|([0-9a-f]{1,4}:){1,5}(:[0-9a-f]{1,4}){1,2}|([0-9a-f]{1,4}:){1,4}(:[0-9a-f]{1,4}){1,3}|([0-9a-f]{1,4}:){1,3}(:[0-9a-f]{1,4}){1,4}|([0-9a-f]{1,4}:){1,2}(:[0-9a-f]{1,4}){1,5}|[0-9a-f]{1,4}:((:[0-9a-f]{1,4}){1,6})|:((:[0-9a-f]{1,4}){1,7}|:)|fe80:(:[0-9a-f]{0,4}){0,4}%[0-9a-z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$/;
@@ -21,11 +22,21 @@ export const nameValidationSchema = Yup.string()
   .max(54, 'Cannot be longer than 54 characters.')
   .required('Required');
 
-export const sshPublicKeyValidationSchema = Yup.string().trim().matches(SSH_PUBLIC_KEY_REGEX, {
-  message:
-    'SSH public key must consist of "[TYPE] key [[EMAIL]]", supported types are: ssh-rsa, ssh-ed25519, ecdsa-[VARIANT]',
-  excludeEmptyString: true,
-});
+export const sshPublicKeyValidationSchema = Yup.string().test(
+  'ssh-public-key',
+  'SSH public key must consist of "[TYPE] key [[EMAIL]]", supported types are: ssh-rsa, ssh-ed25519, ecdsa-[VARIANT]. Additional keys are separated by a new line.',
+  (value) => {
+    if (!value) {
+      return true;
+    }
+
+    return (
+      trimSshPublicKey(value)
+        .split('\n')
+        .find((line: string) => !line.match(SSH_PUBLIC_KEY_REGEX)) === undefined
+    );
+  },
+);
 
 export const validJSONSchema = Yup.string().test(
   'is-json',
@@ -139,7 +150,7 @@ export const hostnameValidationSchema = Yup.string()
   });
 
 export const uniqueHostnameValidationSchema = (origHostname: string, hosts: Host[]) =>
-  Yup.string().test('unique-hostname-validation', 'Hostname must be unique', (value) => {
+  Yup.string().test('unique-hostname-validation', 'Hostname must be unique.', (value) => {
     if (!value || value === origHostname) {
       return true;
     }

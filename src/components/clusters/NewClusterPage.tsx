@@ -98,7 +98,14 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ pullSecret = '' }) => {
             <PageSection variant={PageSectionVariants.light} isMain>
               <Grid hasGutter>
                 <GridItem span={12} lg={10} xl={6}>
-                  <Form className="form-new-cluster">
+                  <Form
+                    className="form-new-cluster"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        submitForm();
+                      }
+                    }}
+                  >
                     <TextContent>
                       <Text component="h1">
                         Install OpenShift on Bare Metal with the Assisted Installer
