@@ -75,7 +75,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
 }) => {
   const [isValidationSectionOpen, setIsValidationSectionOpen] = React.useState(false);
   const [isStartingInstallation, setIsStartingInstallation] = React.useState(false);
-  const { addAlert } = React.useContext(AlertsContext);
+  const { addAlert, clearAlerts } = React.useContext(AlertsContext);
   const dispatch = useDispatch();
   const hostSubnets = React.useMemo(() => getHostSubnets(cluster), [cluster]);
   const initialValues = React.useMemo(() => getInitialValues(cluster, managedDomains), [
@@ -91,6 +91,8 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
     values: ClusterConfigurationValues,
     formikActions: FormikHelpers<ClusterConfigurationValues>,
   ) => {
+    clearAlerts();
+
     // async validation for cluster name - run only on submit
     try {
       const { data: clusters } = await getClusters();
