@@ -8,7 +8,7 @@ import {
   GridItem,
   Grid,
 } from '@patternfly/react-core';
-import { Cluster, Credentials, Host } from '../../api/types';
+import { Cluster, Credentials } from '../../api/types';
 import { getClusterCredentials } from '../../api/clusters';
 import PageSection from '../ui/PageSection';
 import { EventsModalButton } from '../ui/eventsModal';
@@ -36,20 +36,7 @@ const canAbortInstallation = (cluster: Cluster) => {
     'installing-pending-user-action',
     'finalizing',
   ];
-  const allowedHostStates: Host['status'][] = [
-    'preparing-for-installation',
-    'installing-pending-user-action',
-    'resetting-pending-user-action',
-    'installing',
-    'installing-in-progress',
-    'installed',
-    'error',
-  ];
-  const { hosts = [] } = cluster;
-  return (
-    allowedClusterStates.includes(cluster.status) &&
-    !hosts.find((host) => !allowedHostStates.includes(host.status))
-  );
+  return allowedClusterStates.includes(cluster.status);
 };
 
 type ClusterDetailProps = {
