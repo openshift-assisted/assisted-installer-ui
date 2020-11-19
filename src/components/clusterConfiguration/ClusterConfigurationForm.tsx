@@ -49,6 +49,7 @@ import { getInitialValues, getHostSubnets } from './utils';
 import { AlertsContext } from '../AlertsContextProvider';
 import ClusterSshKeyField from './ClusterSshKeyField';
 import { captureException } from '../../sentry';
+import { trimSshPublicKey } from '../ui/formik/utils';
 
 const validationSchema = (initialValues: ClusterConfigurationValues, hostSubnets: HostSubnets) =>
   Yup.lazy<ClusterConfigurationValues>((values) =>
@@ -75,7 +76,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
 }) => {
   const [isValidationSectionOpen, setIsValidationSectionOpen] = React.useState(false);
   const [isStartingInstallation, setIsStartingInstallation] = React.useState(false);
-  const { addAlert } = React.useContext(AlertsContext);
+  const { addAlert, clearAlerts } = React.useContext(AlertsContext);
   const dispatch = useDispatch();
   const hostSubnets = React.useMemo(() => getHostSubnets(cluster), [cluster]);
   const initialValues = React.useMemo(() => getInitialValues(cluster, managedDomains), [
@@ -91,6 +92,8 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
     values: ClusterConfigurationValues,
     formikActions: FormikHelpers<ClusterConfigurationValues>,
   ) => {
+    clearAlerts();
+
     // async validation for cluster name - run only on submit
     try {
       const { data: clusters } = await getClusters();
@@ -175,7 +178,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
         };
         const onSshKeyBlur = () => {
           if (values.sshPublicKey) {
-            setFieldValue('sshPublicKey', values.sshPublicKey.trim());
+            setFieldValue('sshPublicKey', trimSshPublicKey(values.sshPublicKey));
           }
         };
 
