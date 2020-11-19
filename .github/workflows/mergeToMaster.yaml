@@ -9,6 +9,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Set NODE_OPTIONS env variable
+        run: echo "NODE_OPTIONS=--max-old-space-size=8192" >> $GITHUB_ENV
       - name: Check out code
         uses: actions/checkout@v2
       - name: Install dependencies
@@ -17,7 +19,5 @@ jobs:
           cmd: install
       - name: Build code (includes test)
         uses: borales/actions-yarn@v2.0.0
-        env:
-          NODE_OPTIONS: '--max-old-space-size=8192'
         with:
           cmd: build
