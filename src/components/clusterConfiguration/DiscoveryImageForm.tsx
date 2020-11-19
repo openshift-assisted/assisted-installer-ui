@@ -28,6 +28,7 @@ import { DiscoveryImageFormValues } from './types';
 import ProxyFields from './ProxyFields';
 import { SshPublicKeyHelperText } from './ClusterSshKeyField';
 import { usePullSecretFetch } from '../fetching/pullSecret';
+import { trimSshPublicKey } from '../ui/formik/utils';
 
 const validationSchema = Yup.lazy<DiscoveryImageFormValues>((values) =>
   Yup.object<DiscoveryImageFormValues>().shape({
@@ -126,7 +127,7 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
       {({ submitForm, isSubmitting, status, setStatus, setFieldValue, values }) => {
         const onSshKeyBlur = () => {
           if (values.sshPublicKey) {
-            setFieldValue('sshPublicKey', values.sshPublicKey.trim());
+            setFieldValue('sshPublicKey', trimSshPublicKey(values.sshPublicKey));
           }
         };
 

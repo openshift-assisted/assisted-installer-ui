@@ -83,6 +83,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
       [
         'preparing-for-installation',
         'installing',
+        'installing-pending-user-action',
         'finalizing',
         'installed',
         'error',
