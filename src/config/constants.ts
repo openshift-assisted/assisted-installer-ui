@@ -159,6 +159,7 @@ export const HOST_VALIDATION_LABELS: { [key in Validation['id']]: string } = {
   'api-vip-connected': 'API VIP connected',
   'belongs-to-majority-group': 'Belongs to majority connected group',
   'valid-platform': 'Platform',
+  'ntp-synced': 'NTP synchronization',
 };
 
 export const CLUSTER_DEFAULT_NETWORK_SETTINGS = {
