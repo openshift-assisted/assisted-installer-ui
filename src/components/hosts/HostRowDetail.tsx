@@ -3,7 +3,7 @@ import Humanize from 'humanize-plus';
 import { TextContent, Text, TextVariants, Grid, GridItem } from '@patternfly/react-core';
 import { Table, TableHeader, TableBody, TableVariant } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
-import { Host, Inventory } from '../../api/types';
+import { Host, Inventory, Disk, Interface } from '../../api/types';
 import { getHostRowHardwareInfo } from './hardwareInfo';
 import { DASH } from '../constants';
 import { DetailList, DetailListProps, DetailItem } from '../ui/DetailList';
@@ -22,11 +22,11 @@ type SectionColumnProps = {
 };
 
 type DisksTableProps = {
-  disks?: Inventory['disks'];
+  disks: Disk[];
 };
 
 type NicsTableProps = {
-  interfaces?: Inventory['interfaces'];
+  interfaces: Interface[];
 };
 
 const SectionTitle: React.FC<SectionTitleProps> = ({ title }) => (
@@ -55,7 +55,7 @@ const diskColumns = [
 
 const diskRowKey = ({ rowData }: ExtraParamsType) => rowData?.name?.title;
 
-const DisksTable: React.FC<DisksTableProps> = ({ disks = [] }) => {
+const DisksTable: React.FC<DisksTableProps> = ({ disks }) => {
   const rows = disks
     .sort((diskA, diskB) => diskA.name?.localeCompare(diskB.name || '') || 0)
     .map((disk) => ({
@@ -96,7 +96,7 @@ const nicsColumns = [
 
 const nicsRowKey = ({ rowData }: ExtraParamsType) => rowData?.name?.title;
 
-const NicsTable: React.FC<NicsTableProps> = ({ interfaces = [] }) => {
+const NicsTable: React.FC<NicsTableProps> = ({ interfaces }) => {
   const rows = interfaces
     .sort((nicA, nicB) => nicA.name?.localeCompare(nicB.name || '') || 0)
     .map((nic) => ({
@@ -126,6 +126,8 @@ const NicsTable: React.FC<NicsTableProps> = ({ interfaces = [] }) => {
 export const HostDetail: React.FC<HostDetailProps> = ({ inventory, host }) => {
   const { id } = host;
   const rowInfo = getHostRowHardwareInfo(inventory);
+  const disks = inventory.disks || [];
+  const nics = inventory.interfaces || [];
 
   let bmcAddress = inventory.bmcAddress;
   if (inventory.bmcV6address) {
@@ -156,14 +158,14 @@ export const HostDetail: React.FC<HostDetailProps> = ({ inventory, host }) => {
         )}
       </SectionColumn>
 
-      <SectionTitle title={`${(inventory.disks || []).length} Disks`} />
+      <SectionTitle title={`${disks.length} Disk${disks.length === 1 ? '' : 's'}`} />
       <GridItem>
-        <DisksTable disks={inventory.disks} />
+        <DisksTable disks={disks} />
       </GridItem>
 
-      <SectionTitle title={`${(inventory.interfaces || []).length} NICs`} />
+      <SectionTitle title={`${nics.length} NIC${nics.length === 1 ? '' : 's'}`} />
       <GridItem>
-        <NicsTable interfaces={inventory.interfaces} />
+        <NicsTable interfaces={nics} />
       </GridItem>
     </Grid>
   );
