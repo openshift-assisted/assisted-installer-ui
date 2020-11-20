@@ -133,6 +133,13 @@ export const HostDetail: React.FC<HostDetailProps> = ({ inventory, host }) => {
   }
   bmcAddress = bmcAddress || DASH;
 
+  let virtualText = DASH;
+  if (inventory.systemVendor?.virtual) {
+    virtualText = 'Virtual machine';
+  } else if (inventory.systemVendor?.virtual !== undefined) {
+    virtualText = 'Bare metal';
+  }
+
   return (
     <Grid hasGutter>
       <SectionTitle title="Host Details" />
@@ -143,12 +150,13 @@ export const HostDetail: React.FC<HostDetailProps> = ({ inventory, host }) => {
         <DetailItem title="Serial number" value={rowInfo.serialNumber} />
       </SectionColumn>
       <SectionColumn>
+        <DetailItem title="Memory capacity" value={rowInfo.memory.title} />
         <DetailItem title="CPU architecture" value={inventory.cpu?.architecture || DASH} />
         <DetailItem title="CPU model name" value={inventory.cpu?.modelName || DASH} />
         <DetailItem title="CPU cores and clock speed" value={rowInfo.cpuSpeed} />
       </SectionColumn>
       <SectionColumn>
-        <DetailItem title="Memory capacity" value={rowInfo.memory.title} />
+        <DetailItem title="Hardware type" value={virtualText} />
         <DetailItem title="BMC address" value={bmcAddress} />
         <DetailItem title="Boot mode" value={inventory.boot?.currentBootMode || DASH} />
         {inventory.boot?.pxeInterface && (
