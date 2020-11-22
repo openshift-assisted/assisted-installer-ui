@@ -1,7 +1,7 @@
 import React from 'react';
 import { EventList, Event } from '../../api/types';
 import { Label } from '@patternfly/react-core';
-import { TableVariant, Table, TableBody } from '@patternfly/react-table';
+import { TableVariant, Table, TableBody, breakWord } from '@patternfly/react-table';
 import {
   InfoCircleIcon,
   WarningTriangleIcon,
@@ -89,7 +89,10 @@ const EventsList: React.FC<EventsListProps> = ({ events }) => {
   return (
     <Table
       rows={rows}
-      cells={[{ title: 'Time', cellTransforms: [fitContent, noPadding] }, { title: 'Message' }]}
+      cells={[
+        { title: 'Time', cellTransforms: [fitContent, noPadding] },
+        { title: 'Message', cellTransforms: [breakWord] },
+      ]}
       variant={TableVariant.compact}
       aria-label="Events table"
       borders={false}
