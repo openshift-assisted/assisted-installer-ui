@@ -4,8 +4,7 @@ import { Cluster, Inventory, ManagedDomain } from '../../api/types';
 import { stringToJSON } from '../../api/utils';
 import { computeHostname } from '../hosts/Hostname';
 import { CLUSTER_DEFAULT_NETWORK_SETTINGS } from '../../config/constants';
-
-export const NO_SUBNET_SET = 'NO_SUBNET_SET';
+import { NO_SUBNET_SET } from '../../config/constants';
 
 export const getHostSubnets = (cluster: Cluster): HostSubnets => {
   const hostnameMap: { [id: string]: string } =

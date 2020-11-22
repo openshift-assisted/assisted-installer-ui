@@ -3,6 +3,7 @@ import { ClusterConfigurationValues, HostSubnets } from '../../../types/clusters
 import { Host } from '../../../api/types';
 import { ProxyFieldsType } from '../../clusterConfiguration/types';
 import { trimSshPublicKey } from './utils';
+import { NO_SUBNET_SET } from '../../../config/constants';
 
 const CLUSTER_NAME_REGEX = /^[a-z]([-a-z0-9]*[a-z0-9])?$/;
 const SSH_PUBLIC_KEY_REGEX = /^(ssh-rsa|ssh-ed25519|ecdsa-[-a-z0-9]*) AAAA[0-9A-Za-z+/]+[=]{0,3}( .+)?$/;
@@ -105,7 +106,11 @@ export const vipValidationSchema = (
     is: (value) => !value,
     then: requiredOnceSet(initialValue)
       .concat(vipRangeValidationSchema(hostSubnets, values))
-      .concat(vipUniqueValidationSchema(hostSubnets, values)),
+      .concat(vipUniqueValidationSchema(hostSubnets, values))
+      .when('hostSubnet', {
+        is: (value: string) => value !== NO_SUBNET_SET,
+        then: Yup.string().required('Required. Please provide an IP address'),
+      }),
   });
 
 export const ipBlockValidationSchema = Yup.string()

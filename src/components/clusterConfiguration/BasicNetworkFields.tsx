@@ -10,8 +10,8 @@ import {
 import { CheckboxField, InputField, SelectField } from '../ui/formik';
 import { Cluster } from '../../api/types';
 import { StaticField } from '../ui/StaticTextField';
-import { NO_SUBNET_SET } from './utils';
 import { stringToJSON } from '../../api/utils';
+import { NO_SUBNET_SET } from '../../config/constants';
 
 type VipStaticValueProps = {
   vipName: string;
