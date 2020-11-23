@@ -40,6 +40,7 @@ import {
   dnsNameValidationSchema,
   hostPrefixValidationSchema,
   vipValidationSchema,
+  ntpSourceValidationSchema,
 } from '../ui/formik/validationSchemas';
 import ClusterBreadcrumbs from '../clusters/ClusterBreadcrumbs';
 import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
@@ -62,6 +63,7 @@ const validationSchema = (initialValues: ClusterConfigurationValues, hostSubnets
       apiVip: vipValidationSchema(hostSubnets, values, initialValues.apiVip),
       ingressVip: vipValidationSchema(hostSubnets, values, initialValues.ingressVip),
       sshPublicKey: sshPublicKeyValidationSchema,
+      ntpSource: ntpSourceValidationSchema,
     }),
   );
 

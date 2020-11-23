@@ -89,7 +89,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
       <Checkbox
         id="useAdvancedNetworking"
         label="Use Advanced Networking"
-        description="Configure a custom networking type and CIDR ranges"
+        description="Configure advanced networking properties (CIDR ranges, NTP)."
         isChecked={isAdvanced}
         onChange={toggleAdvConfiguration}
       />
