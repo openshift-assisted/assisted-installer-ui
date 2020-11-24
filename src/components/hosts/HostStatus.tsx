@@ -24,7 +24,6 @@ import { HOST_STATUS_LABELS, HOST_STATUS_DETAILS } from '../../config/constants'
 import { getHumanizedDateTime } from '../ui/utils';
 import { toSentence } from '../ui/table/utils';
 import { getHostProgressStageNumber, getHostProgressStages } from './utils';
-import { stringToJSON } from '../../api/utils';
 import HostValidationGroups, { ValidationInfoActionProps } from './HostValidationGroups';
 import OcpConsoleNodesSectionLink from './OcpConsoleNodesSectionLink';
 
@@ -59,10 +58,13 @@ const getStatusIcon = (status: Host['status']): React.ReactElement => {
   }
 };
 
-const HostStatusPopoverContent: React.FC<ValidationInfoActionProps> = (props) => {
+type HostStatusPopoverContentProps = ValidationInfoActionProps & {
+  validationsInfo: ValidationsInfo;
+};
+
+const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = (props) => {
   const { host } = props;
   const { status, statusInfo } = host;
-  const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
   const statusDetails = HOST_STATUS_DETAILS[status];
 
   if (status === 'added-to-existing-cluster') {
@@ -115,13 +117,14 @@ const HostStatusPopoverContent: React.FC<ValidationInfoActionProps> = (props) =>
           {toSentence(statusInfo)}
         </Text>
       </TextContent>
-      <HostValidationGroups validationsInfo={validationsInfo} {...props} />
+      <HostValidationGroups {...props} />
     </>
   );
 };
 
 type HostStatusProps = {
   host: Host;
+  validationsInfo: ValidationsInfo;
   cluster: Cluster;
 };
 
@@ -154,7 +157,7 @@ const HostStatusPopoverFooter: React.FC<{ host: Host }> = ({ host }) => {
   return <small>{footerText}</small>;
 };
 
-const HostStatus: React.FC<HostStatusProps> = ({ host, cluster }) => {
+const HostStatus: React.FC<HostStatusProps> = ({ host, cluster, validationsInfo }) => {
   const [keepOnOutsideClick, onValidationActionToggle] = React.useState(false);
   const { status } = host;
   const title = HOST_STATUS_LABELS[status] || status;
@@ -168,6 +171,7 @@ const HostStatus: React.FC<HostStatusProps> = ({ host, cluster }) => {
         bodyContent={
           <HostStatusPopoverContent
             host={host}
+            validationsInfo={validationsInfo}
             cluster={cluster}
             onValidationActionToggle={onValidationActionToggle}
           />

@@ -60,6 +60,7 @@ import Hostname, { computeHostname } from './Hostname';
 import HostsCount from './HostsCount';
 
 import './HostsTable.css';
+import { ValidationsInfo } from '../../types/hosts';
 
 type HostsTableProps = {
   cluster: Cluster;
@@ -94,6 +95,7 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
   const inventory = stringToJSON<Inventory>(inventoryString) || {};
   const { cores, memory, disk } = getHostRowHardwareInfo(inventory);
   const computedHostname = computeHostname(host, inventory);
+  const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
   return [
     {
       // visible row
@@ -112,7 +114,7 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
           sortableValue: getHostRole(host),
         },
         {
-          title: <HostStatus host={host} cluster={cluster} />,
+          title: <HostStatus host={host} cluster={cluster} validationsInfo={validationsInfo} />,
           sortableValue: status,
         },
         getDateTimeCell(createdAt),
@@ -129,7 +131,18 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
       // expandable detail
       // parent will be set after sorting
       fullWidth: true,
-      cells: [{ title: <HostDetail key={id} inventory={inventory} host={host} /> }],
+      cells: [
+        {
+          title: (
+            <HostDetail
+              key={id}
+              inventory={inventory}
+              host={host}
+              validationsInfo={validationsInfo}
+            />
+          ),
+        },
+      ],
       key: `${host.id}-detail`,
       inventory,
     },
