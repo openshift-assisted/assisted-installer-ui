@@ -106,17 +106,11 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = (props
 
   return (
     <>
-      <TextContent>
-        <Text>
-          {statusDetails && (
-            <>
-              {statusDetails}
-              <br />
-            </>
-          )}
-          {toSentence(statusInfo)}
-        </Text>
-      </TextContent>
+      {statusDetails && (
+        <TextContent>
+          <Text>{statusDetails}</Text>
+        </TextContent>
+      )}
       <HostValidationGroups {...props} />
     </>
   );
