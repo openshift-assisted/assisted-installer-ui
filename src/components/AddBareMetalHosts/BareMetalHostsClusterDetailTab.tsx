@@ -1,8 +1,14 @@
 import React from 'react';
 import { normalizeClusterVersion } from '../../config';
 import { OcmClusterType } from './types';
-import { AddHostsClusterCreateParams, Cluster, getCluster, handleApiError } from '../../api';
-import { getOcmClusterId } from './utils';
+import {
+  AddHostsClusterCreateParams,
+  Cluster,
+  getCluster,
+  getClustersByOpenshiftId,
+  handleApiError,
+} from '../../api';
+import { getOpenshiftClusterId } from './utils';
 import { usePullSecretFetch } from '../fetching/pullSecret';
 import { ErrorState, LoadingState } from '../ui';
 import { addHostsClusters } from '../../api/addHostsClusters';
@@ -65,31 +71,45 @@ export const BareMetalHostsClusterDetailTab: React.FC<{
         return;
       }
 
-      const clusterId = getOcmClusterId(cluster);
+      const openshiftClusterId = getOpenshiftClusterId(cluster);
 
       const doItAsync = async () => {
         let dayTwoClusterExists = false;
         // try to find Day 2 cluster (can be missing)
         try {
-          // Assumption: recently Day 2 assisted-installer cluster ID is equal to the OCM cluster ID (as passed via the addHostsClusters() call bellow).
-          // The AI cluster _will_ be enhanced for openshift_cluster_id . Once this is available, we should rather search based on this new field.
-          const { data } = await getCluster(clusterId);
-          setDay2Cluster(data);
-          dayTwoClusterExists = true;
-        } catch (e) {
-          if (e.response?.status !== 404) {
-            handleApiError(e);
-            setError('Failed to read cluster details.');
-            return;
+          const { data } = await getClustersByOpenshiftId(openshiftClusterId);
+
+          if (data?.length > 1) {
+            const bestMatch =
+              data.find((cluster) => cluster.openshiftClusterId === openshiftClusterId) ||
+              data.find((cluster) => cluster.id === openshiftClusterId);
+
+            console.warn(
+              `Expected to find 0 or 1 of the Day 2 clusters for "${openshiftClusterId}" OpenShift Cluster ID (external_id) but found ${data.length}. Choosing the first best match with assisted installer cluster ID: `,
+              bestMatch?.id,
+            );
+            if (bestMatch) {
+              setDay2Cluster(bestMatch);
+              dayTwoClusterExists = true;
+            }
           }
+
+          if (data?.length === 1) {
+            setDay2Cluster(data[0]);
+            dayTwoClusterExists = true;
+          }
+        } catch (e) {
+          handleApiError(e);
+          setError('Failed to read cluster details.');
+          return;
         }
 
         if (!dayTwoClusterExists) {
           try {
             // Optionally create Day 2 cluster
             const { data } = await addHostsClusters({
-              id: clusterId,
-              name: `scale-up-${cluster.display_name || cluster.name || clusterId}`, // both cluster.name and cluster.display-name contain just UUID which fails AI validation (k8s naming conventions)
+              id: openshiftClusterId,
+              name: `scale-up-${cluster.display_name || cluster.name || openshiftClusterId}`, // both cluster.name and cluster.display-name contain just UUID which fails AI validation (k8s naming conventions)
               openshiftVersion,
               apiVipDnsname,
             });
