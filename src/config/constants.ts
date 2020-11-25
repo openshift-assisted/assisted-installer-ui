@@ -66,7 +66,7 @@ export const HOST_ROLES: HostRole[] = [
 ];
 
 export const CLUSTER_STATUS_LABELS: { [key in Cluster['status']]: string } = {
-  'pending-for-input': 'Pending input',
+  'pending-for-input': 'Draft',
   insufficient: 'Draft',
   ready: 'Ready',
   'preparing-for-installation': 'Preparing for installation',
@@ -159,6 +159,12 @@ export const HOST_VALIDATION_LABELS: { [key in Validation['id']]: string } = {
   'api-vip-connected': 'API VIP connected',
   'belongs-to-majority-group': 'Belongs to majority connected group',
   'valid-platform': 'Platform',
+};
+
+export const CLUSTER_DEFAULT_NETWORK_SETTINGS = {
+  clusterNetworkCidr: '10.128.0.0/14',
+  clusterNetworkHostPrefix: 23,
+  serviceNetworkCidr: '172.30.0.0/16',
 };
 
 export const getFacetLibVersion = () => packageJson.version;
