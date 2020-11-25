@@ -66,7 +66,7 @@ export const HOST_ROLES: HostRole[] = [
 ];
 
 export const CLUSTER_STATUS_LABELS: { [key in Cluster['status']]: string } = {
-  'pending-for-input': 'Pending input',
+  'pending-for-input': 'Draft',
   insufficient: 'Draft',
   ready: 'Ready',
   'preparing-for-installation': 'Preparing for installation',
@@ -174,3 +174,5 @@ export const EVENT_SEVERITIES: Event['severity'][] = ['info', 'warning', 'error'
 export const TIME_ZERO = '0001-01-01T00:00:00.000Z';
 
 export const isSingleClusterMode = () => process.env.REACT_APP_BUILD_MODE === 'single-cluster';
+
+export const NO_SUBNET_SET = 'NO_SUBNET_SET';
