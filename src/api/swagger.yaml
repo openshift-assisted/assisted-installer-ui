@@ -82,6 +82,11 @@ paths:
           type: boolean
           required: false
           default: false
+        - in: query
+          name: openshift_cluster_id
+          type: string
+          format: uuid
+          required: false
       responses:
         200:
           description: Success.
@@ -1448,6 +1453,62 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
+  /clusters/{cluster_id}/hosts/{host_id}/installer-args:
+    patch:
+      tags:
+        - installer
+      summary: Updates an OpenShift bare metal host.
+      operationId: UpdateHostInstallerArgs
+      parameters:
+        - in: path
+          name: cluster_id
+          type: string
+          format: uuid
+          required: true
+        - in: path
+          name: host_id
+          type: string
+          format: uuid
+          required: true
+        - in: body
+          name: installer-args-params
+          required: true
+          schema:
+            $ref: '#/definitions/installer-args-params'
+      responses:
+        201:
+          description: Success.
+          schema:
+            $ref: '#/definitions/host'
+        400:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        404:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        405:
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        409:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        500:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
   /clusters/{cluster_id}/hosts/{host_id}/progress:
     put:
       tags:
@@ -1991,7 +2052,7 @@ paths:
           name: upfile
           type: file
           required: false
-          maxLength: 20971520 #20MB
+          maxLength: 104857600 #100MB
           description: The file to upload.
           x-mimetype: application/zip
         - in: query
@@ -2283,6 +2344,102 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
+  /assisted-service-iso:
+    post:
+      tags:
+        - assisted-service-iso
+      summary: Creates ISO for the user and uploads to S3.
+      operationId: CreateISOAndUploadToS3
+      parameters:
+        - in: body
+          name: assisted-service-iso-create-params
+          required: true
+          schema:
+            $ref: '#/definitions/assisted-service-iso-create-params'
+      responses:
+        201:
+          description: Success.
+        400:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        500:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
+  /assisted-service-iso/data:
+    get:
+      tags:
+        - assisted-service-iso
+      summary: Downloads the Assisted Service ISO.
+      security:
+        - userAuth: [admin, read-only-admin, user]
+      operationId: DownloadISO
+      produces:
+        # application/vnd.efi.iso is not supported
+        - application/octet-stream
+      responses:
+        200:
+          description: Success.
+          schema:
+            type: string
+            format: binary
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        404:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        500:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
+  /assisted-service-iso/presigned:
+    get:
+      tags:
+        - assisted-service-iso
+      security:
+        - userAuth: [admin, read-only-admin, user]
+      summary: Retrieves a pre-signed S3 URL for downloading assisted-service ISO.
+      operationId: GetPresignedForAssistedServiceISO
+      responses:
+        200:
+          description: Success.
+          schema:
+            $ref: '#/definitions/presigned'
+        401:
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        403:
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        404:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        500:
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
 definitions:
   list-managed-domains:
     type: array
@@ -2372,6 +2529,18 @@ definitions:
       ssh_public_key:
         type: string
         description: SSH public key for debugging the installation.
+
+  assisted-service-iso-create-params:
+    type: object
+    properties:
+      ssh_public_key:
+        type: string
+        description: SSH public key for debugging the installation.
+      pull_secret:
+        type: string
+        description:
+          The pull secret obtained from Red Hat OpenShift Cluster Manager at
+          cloud.redhat.com/openshift/install/pull-secret.
 
   host-create-params:
     type: object
@@ -2542,6 +2711,25 @@ definitions:
         example:
           '{"ignition": {"version": "3.1.0"}, "storage": {"files": [{"path": "/tmp/example",
           "contents": {"source": "data:text/plain;base64,aGVscGltdHJhcHBlZGluYXN3YWdnZXJzcGVj"}}]}}'
+      installer_args:
+        type: string
+
+  installer-args-params:
+    type: object
+    properties:
+      args:
+        description: List of additional arguments passed to coreos-installer
+        example:
+          [
+            '--append-karg',
+            'ip=192.0.2.2::192.0.2.254:255.255.255.0:core0.example.com:enp1s0:none',
+            '--save-partindex',
+            '1',
+            '-n',
+          ]
+        type: array
+        items:
+          type: string
 
   steps:
     type: object
@@ -2571,6 +2759,7 @@ definitions:
       - reset-installation
       - dhcp-lease-allocate
       - api-vip-connectivity-check
+      - ntp-synchronizer
 
   step:
     type: object
@@ -2643,9 +2832,12 @@ definitions:
     required:
       - name
       - openshift_version
+      - pull_secret
     properties:
       name:
         type: string
+        minLength: 1
+        maxLength: 54
         description: Name of the OpenShift cluster.
       openshift_version:
         type: string
@@ -2716,9 +2908,14 @@ definitions:
       no_proxy:
         type: string
         description:
-          A comma-separated list of destination domain names, domains, IP addresses, or other
-          network CIDRs to exclude from proxying.
+          An "*" or a comma-separated list of destination domain names, domains, IP addresses, or
+          other network CIDRs to exclude from proxying.
         x-nullable: true
+      user-managed-networking:
+        type: boolean
+        description: Indicate if the networking is managed by the user.
+        x-nullable: true
+        default: false
 
   cluster-update-params:
     type: object
@@ -2811,8 +3008,8 @@ definitions:
       no_proxy:
         type: string
         description:
-          A comma-separated list of destination domain names, domains, IP addresses, or other
-          network CIDRs to exclude from proxying.
+          An "*" or a comma-separated list of destination domain names, domains, IP addresses, or
+          other network CIDRs to exclude from proxying.
         x-nullable: true
       hosts_roles:
         type: array
@@ -2840,6 +3037,11 @@ definitions:
               format: uuid
             hostname:
               type: string
+      user-managed-networking:
+        type: boolean
+        description: Indicate if the networking is managed by the user.
+        x-nullable: true
+        default: false
 
   add-hosts-cluster-create-params:
     type: object
@@ -2878,7 +3080,7 @@ definitions:
         type: string
         enum: ['Cluster', 'AddHostsCluster', 'AddHostsOCPCluster']
         description: |
-          Indicates the type of this object. Will be 'Cluster' if this is a complete object or 'ClusterLink' if it is just a link, 
+          Indicates the type of this object. Will be 'Cluster' if this is a complete object or 'ClusterLink' if it is just a link,
           'AddHostCluster' for cluster that add hosts to existing OCP cluster,
           'AddHostsOCPCluster' for cluster running on the OCP and add hosts to it
       id:
@@ -2902,6 +3104,10 @@ definitions:
         type: string
         enum: ['4.5', '4.6']
         description: Version of the OpenShift cluster.
+      openshift_cluster_id:
+        type: string
+        format: uuid
+        description: Cluster ID on OCP system.
       image_info:
         $ref: '#/definitions/image_info'
         x-go-custom-tag: gorm:"embedded;embedded_prefix:image_"
@@ -3073,6 +3279,10 @@ definitions:
         description: The time that the cluster was deleted.
         x-go-custom-tag: gorm:"type:timestamp with time zone"
         x-nullable: true
+      user-managed-networking:
+        type: boolean
+        x-nullable: true
+        description: Indicate if the networking is managed by the user.
 
   image_info:
     type: object
@@ -3361,6 +3571,9 @@ definitions:
         type: string
       manufacturer:
         type: string
+      virtual:
+        type: boolean
+        description: Whether the machine appears to be a virtual machine or not
 
   memory:
     type: object
@@ -3545,6 +3758,42 @@ definitions:
       ingress_vip_lease:
         type: string
         description: Contents of last aquired lease for Ingress virtual IP.
+
+  ntp_synchronization_request:
+    type: object
+    required:
+      - ntp_source
+    properties:
+      ntp_source:
+        type: string
+        description: NTP source name or IP.
+
+  ntp_synchronization_response:
+    properties:
+      ntp_sources:
+        type: array
+        items:
+          $ref: '#/definitions/ntp_source'
+
+  ntp_source:
+    type: object
+    properties:
+      source_name:
+        type: string
+        description: NTP source name or IP.
+      source_state:
+        description: Indication of state of an NTP source.
+        $ref: '#/definitions/source_state'
+
+  source_state:
+    type: string
+    enum:
+      - synced
+      - combined
+      - not_combined
+      - error
+      - variable
+      - unreachable
 
   presigned:
     type: object

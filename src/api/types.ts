@@ -32,6 +32,16 @@ export interface ApiVipConnectivityResponse {
    */
   isSuccess?: boolean;
 }
+export interface AssistedServiceIsoCreateParams {
+  /**
+   * SSH public key for debugging the installation.
+   */
+  sshPublicKey?: string;
+  /**
+   * The pull secret obtained from Red Hat OpenShift Cluster Manager at cloud.redhat.com/openshift/install/pull-secret.
+   */
+  pullSecret?: string;
+}
 export interface Boot {
   currentBootMode?: string;
   pxeInterface?: string;
@@ -63,6 +73,10 @@ export interface Cluster {
    * Version of the OpenShift cluster.
    */
   openshiftVersion?: '4.5' | '4.6';
+  /**
+   * Cluster ID on OCP system.
+   */
+  openshiftClusterId?: string; // uuid
   imageInfo: ImageInfo;
   /**
    * Base domain of the cluster. All DNS records must be sub-domains of this base and include the cluster name.
@@ -197,6 +211,10 @@ export interface Cluster {
    * The time that the cluster was deleted.
    */
   deletedAt?: string; // date-time
+  /**
+   * Indicate if the networking is managed by the user.
+   */
+  'user-managed-networking'?: boolean;
 }
 export interface ClusterCreateParams {
   /**
@@ -230,7 +248,7 @@ export interface ClusterCreateParams {
   /**
    * The pull secret obtained from Red Hat OpenShift Cluster Manager at cloud.redhat.com/openshift/install/pull-secret.
    */
-  pullSecret?: string;
+  pullSecret: string;
   /**
    * SSH public key for debugging OpenShift nodes.
    */
@@ -252,9 +270,13 @@ export interface ClusterCreateParams {
    */
   httpsProxy?: string;
   /**
-   * A comma-separated list of destination domain names, domains, IP addresses, or other network CIDRs to exclude from proxying.
+   * An "*" or a comma-separated list of destination domain names, domains, IP addresses, or other network CIDRs to exclude from proxying.
    */
   noProxy?: string;
+  /**
+   * Indicate if the networking is managed by the user.
+   */
+  'user-managed-networking'?: boolean;
 }
 export type ClusterList = Cluster[];
 export interface ClusterUpdateParams {
@@ -319,7 +341,7 @@ export interface ClusterUpdateParams {
    */
   httpsProxy?: string;
   /**
-   * A comma-separated list of destination domain names, domains, IP addresses, or other network CIDRs to exclude from proxying.
+   * An "*" or a comma-separated list of destination domain names, domains, IP addresses, or other network CIDRs to exclude from proxying.
    */
   noProxy?: string;
   /**
@@ -336,6 +358,10 @@ export interface ClusterUpdateParams {
     id?: string; // uuid
     hostname?: string;
   }[];
+  /**
+   * Indicate if the networking is managed by the user.
+   */
+  'user-managed-networking'?: boolean;
 }
 export type ClusterValidationId =
   | 'machine-cidr-defined'
@@ -594,6 +620,7 @@ export interface Host {
    * {"ignition": {"version": "3.1.0"}, "storage": {"files": [{"path": "/tmp/example", "contents": {"source": "data:text/plain;base64,aGVscGltdHJhcHBlZGluYXN3YWdnZXJzcGVj"}}]}}
    */
   ignitionConfigOverrides?: string;
+  installerArgs?: string;
 }
 export interface HostCreateParams {
   hostId: string; // uuid
@@ -713,6 +740,7 @@ export interface HostRegistrationResponse {
    * {"ignition": {"version": "3.1.0"}, "storage": {"files": [{"path": "/tmp/example", "contents": {"source": "data:text/plain;base64,aGVscGltdHJhcHBlZGluYXN3YWdnZXJzcGVj"}}]}}
    */
   ignitionConfigOverrides?: string;
+  installerArgs?: string;
   /**
    * Command for starting the next step runner
    */
@@ -795,6 +823,14 @@ export interface InfraError {
   message: string;
 }
 export type IngressCertParams = string;
+export interface InstallerArgsParams {
+  /**
+   * List of additional arguments passed to coreos-installer
+   * example:
+   * --append-karg,ip=192.0.2.2::192.0.2.254:255.255.255.0:core0.example.com:enp1s0:none,--save-partindex,1,-n
+   */
+  args?: string[];
+}
 export interface Interface {
   ipv6Addresses?: string[];
   vendor?: string;
@@ -858,9 +894,35 @@ export interface Memory {
   physicalBytes?: number;
   usableBytes?: number;
 }
+export interface NtpSource {
+  /**
+   * NTP source name or IP.
+   */
+  sourceName?: string;
+  /**
+   * Indication of state of an NTP source.
+   */
+  sourceState?: SourceState;
+}
+export interface NtpSynchronizationRequest {
+  /**
+   * NTP source name or IP.
+   */
+  ntpSource: string;
+}
+export interface NtpSynchronizationResponse {
+  ntpSources?: NtpSource[];
+}
 export interface Presigned {
   url: string;
 }
+export type SourceState =
+  | 'synced'
+  | 'combined'
+  | 'notCombined'
+  | 'error'
+  | 'variable'
+  | 'unreachable';
 export interface Step {
   stepType?: StepType;
   stepId?: string;
@@ -882,7 +944,8 @@ export type StepType =
   | 'free-network-addresses'
   | 'reset-installation'
   | 'dhcp-lease-allocate'
-  | 'api-vip-connectivity-check';
+  | 'api-vip-connectivity-check'
+  | 'ntp-synchronizer';
 export interface Steps {
   nextInstructionSeconds?: number;
   /**
@@ -896,6 +959,10 @@ export interface SystemVendor {
   serialNumber?: string;
   productName?: string;
   manufacturer?: string;
+  /**
+   * Whether the machine appears to be a virtual machine or not
+   */
+  virtual?: boolean;
 }
 export interface Versions {
   [name: string]: string;
