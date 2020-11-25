@@ -63,6 +63,7 @@ import './HostsTable.css';
 
 type HostsTableProps = {
   cluster: Cluster;
+  ocpConsoleUrl?: string;
   skipDisabled?: boolean;
   setDiscoveryHintModalOpen?: HostsNotShowingLinkProps['setDiscoveryHintModalOpen'];
 };
@@ -89,7 +90,9 @@ const getColumns = (hosts?: Host[]) => [
   { title: <HostsCount hosts={hosts} inParenthesis /> },
 ];
 
-const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host): IRow => {
+const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster, ocpConsoleUrl?: string) => (
+  host: Host,
+): IRow => {
   const { id, status, createdAt, inventory: inventoryString = '' } = host;
   const inventory = stringToJSON<Inventory>(inventoryString) || {};
   const { cores, memory, disk } = getHostRowHardwareInfo(inventory);
@@ -112,7 +115,7 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
           sortableValue: getHostRole(host),
         },
         {
-          title: <HostStatus host={host} cluster={cluster} />,
+          title: <HostStatus host={host} cluster={cluster} ocpConsoleUrl={ocpConsoleUrl} />,
           sortableValue: status,
         },
         getDateTimeCell(createdAt),
@@ -162,6 +165,7 @@ const isHostShown = (skipDisabled: boolean) => (host: Host) =>
 
 const HostsTable: React.FC<HostsTableProps> = ({
   cluster,
+  ocpConsoleUrl,
   skipDisabled = false,
   setDiscoveryHintModalOpen,
 }) => {
@@ -186,14 +190,14 @@ const HostsTable: React.FC<HostsTableProps> = ({
       _.flatten(
         (cluster.hosts || [])
           .filter(isHostShown(skipDisabled))
-          .map(hostToHostTableRow(openRows, cluster))
+          .map(hostToHostTableRow(openRows, cluster, ocpConsoleUrl))
           .sort(rowSorter(sortBy, (row: IRow, index = 1) => row[0].cells[index - 1]))
           .map((row: IRow, index: number) => {
             row[1].parent = index * 2;
             return row;
           }),
       ),
-    [cluster, skipDisabled, openRows, sortBy],
+    [cluster, skipDisabled, openRows, sortBy, ocpConsoleUrl],
   );
 
   const columns = React.useMemo(() => getColumns(cluster.hosts), [cluster.hosts]);

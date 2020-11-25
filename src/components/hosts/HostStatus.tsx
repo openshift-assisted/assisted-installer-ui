@@ -14,6 +14,7 @@ import {
   ConnectedIcon,
   BanIcon,
   PendingIcon,
+  AddCircleOIcon,
 } from '@patternfly/react-icons';
 import hdate from 'human-date';
 import { Cluster, Host } from '../../api/types';
@@ -25,6 +26,7 @@ import { toSentence } from '../ui/table/utils';
 import { getHostProgressStageNumber, getHostProgressStages } from './utils';
 import { stringToJSON } from '../../api/utils';
 import HostValidationGroups, { ValidationInfoActionProps } from './HostValidationGroups';
+import OcpConsoleNodesSectionLink from './OcpConsoleNodesSectionLink';
 
 const getStatusIcon = (status: Host['status']): React.ReactElement => {
   switch (status) {
@@ -51,16 +53,30 @@ const getStatusIcon = (status: Host['status']): React.ReactElement => {
     case 'installing':
     case 'installing-in-progress':
     case 'resetting':
-    case 'added-to-existing-cluster':
       return <InProgressIcon />;
+    case 'added-to-existing-cluster':
+      return <AddCircleOIcon />;
   }
 };
 
-const getPopoverContent = (props: ValidationInfoActionProps) => {
+const HostStatusPopoverContent: React.FC<ValidationInfoActionProps> = (props) => {
   const { host } = props;
   const { status, statusInfo } = host;
   const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
   const statusDetails = HOST_STATUS_DETAILS[status];
+
+  if (status === 'added-to-existing-cluster') {
+    return (
+      <TextContent>
+        <Text>
+          This host was successfully installed.
+          <br />
+          To finish adding it to the cluster, approve its request to join in the Nodes section of
+          the OpenShift console.
+        </Text>
+      </TextContent>
+    );
+  }
 
   if (['installing', 'installing-in-progress'].includes(status)) {
     return (
@@ -69,6 +85,7 @@ const getPopoverContent = (props: ValidationInfoActionProps) => {
       </TextContent>
     );
   }
+
   if (['error', 'cancelled', 'installing-pending-user-action'].includes(status)) {
     return (
       <TextContent>
@@ -84,6 +101,7 @@ const getPopoverContent = (props: ValidationInfoActionProps) => {
       </TextContent>
     );
   }
+
   return (
     <>
       <TextContent>
@@ -105,10 +123,23 @@ const getPopoverContent = (props: ValidationInfoActionProps) => {
 type HostStatusProps = {
   host: Host;
   cluster: Cluster;
+  ocpConsoleUrl?: string;
 };
 
-const getFooterText = (host: Host): string => {
+const HostStatusPopoverFooter: React.FC<{ host: Host; ocpConsoleUrl?: string }> = ({
+  host,
+  ocpConsoleUrl,
+}) => {
   const { progress, statusUpdatedAt } = host;
+
+  if (host.status === 'added-to-existing-cluster') {
+    return (
+      <OcpConsoleNodesSectionLink
+        ocpConsoleUrl={ocpConsoleUrl}
+        id={`host-status-detail-link-to-ocp-nodes-${host.requestedHostname || host.id}`}
+      />
+    );
+  }
 
   let footerText;
   if (host.status === 'installing-in-progress') {
@@ -125,10 +156,10 @@ const getFooterText = (host: Host): string => {
     footerText = `Status updated at ${getHumanizedDateTime(statusUpdatedAt)}`;
   }
 
-  return footerText;
+  return <small>{footerText}</small>;
 };
 
-const HostStatus: React.FC<HostStatusProps> = ({ host, cluster }) => {
+const HostStatus: React.FC<HostStatusProps> = ({ host, cluster, ocpConsoleUrl }) => {
   const [keepOnOutsideClick, onValidationActionToggle] = React.useState(false);
   const { status } = host;
   const title = HOST_STATUS_LABELS[status] || status;
@@ -139,8 +170,14 @@ const HostStatus: React.FC<HostStatusProps> = ({ host, cluster }) => {
     <>
       <Popover
         headerContent={<div>{title}</div>}
-        bodyContent={getPopoverContent({ host, cluster, onValidationActionToggle })}
-        footerContent={<small>{getFooterText(host)}</small>}
+        bodyContent={
+          <HostStatusPopoverContent
+            host={host}
+            cluster={cluster}
+            onValidationActionToggle={onValidationActionToggle}
+          />
+        }
+        footerContent={<HostStatusPopoverFooter host={host} ocpConsoleUrl={ocpConsoleUrl} />}
         minWidth="30rem"
         maxWidth="50rem"
         hideOnOutsideClick={!keepOnOutsideClick}
@@ -157,6 +194,9 @@ const HostStatus: React.FC<HostStatusProps> = ({ host, cluster }) => {
       </Popover>
       {['installing-pending-user-action', 'disconnected'].includes(status) && (
         <div className="hosts-table-sublabel">Action required</div>
+      )}
+      {status === 'added-to-existing-cluster' && (
+        <div className="hosts-table-sublabel">Finish in console</div>
       )}
     </>
   );

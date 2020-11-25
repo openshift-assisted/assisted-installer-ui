@@ -18,7 +18,10 @@ import { Alerts } from '../ui/AlertsSection';
 import { EventsModalButton } from '../ui/eventsModal';
 import BaremetalInventoryAddHosts from './BareMetalInventoryAddHost';
 
-const AddBareMetalHosts: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
+const AddBareMetalHosts: React.FC<{ cluster: Cluster; ocpConsoleUrl?: string }> = ({
+  cluster,
+  ocpConsoleUrl,
+}) => {
   const dispatch = useDispatch();
 
   const handleHostsInstall = async () => {
@@ -43,7 +46,7 @@ const AddBareMetalHosts: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         </Title>
       </CardTitle>
       <CardBody>
-        <BaremetalInventoryAddHosts cluster={cluster} />
+        <BaremetalInventoryAddHosts cluster={cluster} ocpConsoleUrl={ocpConsoleUrl} />
         <Alerts />
         <Toolbar id="cluster-toolbar">
           <ToolbarContent>

@@ -177,7 +177,7 @@ export const BareMetalHostsClusterDetailTab: React.FC<{
 
   return (
     <AlertsContextProvider>
-      <AddBareMetalHosts cluster={day2Cluster} />
+      <AddBareMetalHosts cluster={day2Cluster} ocpConsoleUrl={cluster?.console?.url} />
     </AlertsContextProvider>
   );
 };

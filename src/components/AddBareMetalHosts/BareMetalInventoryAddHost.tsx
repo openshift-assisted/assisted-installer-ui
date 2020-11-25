@@ -17,7 +17,10 @@ const HostRequirementsContent = ({ worker = {} }: { worker?: HostRequirementsTyp
   </Text>
 );
 
-const BaremetalInventoryAddHosts: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
+const BaremetalInventoryAddHosts: React.FC<{ cluster: Cluster; ocpConsoleUrl?: string }> = ({
+  cluster,
+  ocpConsoleUrl,
+}) => {
   const [isDiscoveryHintModalOpen, setDiscoveryHintModalOpen] = React.useState(false);
 
   return (
@@ -34,7 +37,11 @@ const BaremetalInventoryAddHosts: React.FC<{ cluster: Cluster }> = ({ cluster })
         <HostRequirements ContentComponent={HostRequirementsContent} />
       </TextContent>
       {/* <FormatDiskWarning /> */}
-      <HostsTable cluster={cluster} setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
+      <HostsTable
+        cluster={cluster}
+        setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
+        ocpConsoleUrl={ocpConsoleUrl}
+      />
       <DiscoveryTroubleshootingModal
         isOpen={isDiscoveryHintModalOpen}
         setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
