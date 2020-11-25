@@ -73,9 +73,7 @@ export const EventsModal: React.FC<EventsModalProps> = ({
       variant={ModalVariant.large}
       className="events-modal"
     >
-      <div className="events-modal__content">
-        <EventListFetch hostId={hostId} cluster={cluster} entityKind={entityKind} />
-      </div>
+      <EventListFetch hostId={hostId} cluster={cluster} entityKind={entityKind} />
     </Modal>
   );
 };
