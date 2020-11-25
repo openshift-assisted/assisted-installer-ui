@@ -6,11 +6,16 @@ import {
 } from '@patternfly/react-tokens';
 import { PendingIcon, CheckCircleIcon, WarningTriangleIcon } from '@patternfly/react-icons';
 import { ValidationsInfo, Validation } from '../../types/hosts';
-import { HOST_VALIDATION_GROUP_LABELS, HOST_VALIDATION_LABELS } from '../../config/constants';
+import {
+  HOST_VALIDATION_GROUP_LABELS,
+  HOST_VALIDATION_HINTS,
+  HOST_VALIDATION_LABELS,
+} from '../../config/constants';
 import { Cluster, Host } from '../../api';
 import Hostname from './Hostname';
 
 import './HostValidationGroups.css';
+import { toSentence } from '../ui/table/utils';
 
 export type ValidationInfoActionProps = {
   host: Host;
@@ -62,7 +67,8 @@ const ValidationGroupAlert: React.FC<ValidationGroupAlertProps> = ({
       <ul>
         {validations.map((v) => (
           <li key={v.id}>
-            <strong>{HOST_VALIDATION_LABELS[v.id] || v.id}:</strong>&nbsp;{v.message}&nbsp;
+            <strong>{HOST_VALIDATION_LABELS[v.id] || v.id}:</strong>&nbsp;{toSentence(v.message)}{' '}
+            {v.status === 'failure' && HOST_VALIDATION_HINTS[v.id]}
           </li>
         ))}
       </ul>

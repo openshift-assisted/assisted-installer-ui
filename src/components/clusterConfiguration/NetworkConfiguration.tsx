@@ -48,6 +48,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
         CLUSTER_DEFAULT_NETWORK_SETTINGS.clusterNetworkHostPrefix,
       );
       setFieldValue('serviceNetworkCidr', CLUSTER_DEFAULT_NETWORK_SETTINGS.serviceNetworkCidr);
+      setFieldValue('ntpSource', CLUSTER_DEFAULT_NETWORK_SETTINGS.ntpSource);
     }
   };
 
