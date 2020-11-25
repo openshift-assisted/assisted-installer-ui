@@ -9,3 +9,10 @@ export const trimSshPublicKey = (key: string) =>
     .map((row) => row.trim())
     .filter(Boolean)
     .join('\n');
+
+export const trimCommaSeparatedList = (list: string) =>
+  list
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .join(',');

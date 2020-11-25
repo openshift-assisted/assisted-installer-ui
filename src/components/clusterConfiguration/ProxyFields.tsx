@@ -2,6 +2,7 @@ import React from 'react';
 import { useFormikContext } from 'formik';
 import { InputField, CheckboxField } from '../ui/formik';
 import { DiscoveryImageFormValues } from './types';
+import { trimCommaSeparatedList } from '../ui/formik/utils';
 
 const ProxyFields: React.FC = () => {
   const { setFieldValue, values, initialValues } = useFormikContext<DiscoveryImageFormValues>();
@@ -17,14 +18,15 @@ const ProxyFields: React.FC = () => {
     }
   };
 
-  /* TODO(mlibra): Uncomment after: https://bugzilla.redhat.com/show_bug.cgi?id=1877486
   const noProxyHelperText =
     'A comma-separated list of destination domain names, domains, IP addresses or other network CIDRs to exclude proxying. Preface a domain with . to include all subdomains of that domain. Use * to bypass proxy for all destinations.';
-    */
-  const noProxyHelperText =
-    'A comma-separated list of destination domain names, domains, IP addresses or other network CIDRs to exclude proxying. Preface a domain with . to include all subdomains of that domain.';
+  const onNoProxyBlur = () => {
+    if (values.noProxy) {
+      setFieldValue('noProxy', trimCommaSeparatedList(values.noProxy));
+    }
+  };
 
-  // https://docs.openshift.com/container-platform/4.4/networking/enable-cluster-wide-proxy.html
+  // https://docs.openshift.com/container-platform/4.6/networking/enable-cluster-wide-proxy.html
   return (
     <>
       <CheckboxField
@@ -64,6 +66,7 @@ const ProxyFields: React.FC = () => {
             name="noProxy"
             placeholder="one.domain.com,second.domain.com"
             helperText={noProxyHelperText}
+            onBlur={onNoProxyBlur}
           />
         </>
       )}
