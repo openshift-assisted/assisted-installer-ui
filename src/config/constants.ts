@@ -189,7 +189,7 @@ export const CLUSTER_DEFAULT_NETWORK_SETTINGS = {
   clusterNetworkCidr: '10.128.0.0/14',
   clusterNetworkHostPrefix: 23,
   serviceNetworkCidr: '172.30.0.0/16',
-  ntpSource: '0.rhel.pool.ntp.org',
+  additionalNtpSource: '0.rhel.pool.ntp.org',
 };
 
 export const getFacetLibVersion = () => packageJson.version;

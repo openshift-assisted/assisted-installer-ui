@@ -41,7 +41,7 @@ export const isAdvConf = (cluster: Cluster): boolean =>
   cluster.clusterNetworkCidr !== CLUSTER_DEFAULT_NETWORK_SETTINGS.clusterNetworkCidr ||
   cluster.clusterNetworkHostPrefix !== CLUSTER_DEFAULT_NETWORK_SETTINGS.clusterNetworkHostPrefix ||
   cluster.serviceNetworkCidr !== CLUSTER_DEFAULT_NETWORK_SETTINGS.serviceNetworkCidr ||
-  cluster.ntpSource !== CLUSTER_DEFAULT_NETWORK_SETTINGS.ntpSource;
+  cluster.additionalNtpSource !== CLUSTER_DEFAULT_NETWORK_SETTINGS.additionalNtpSource;
 
 export const getInitialValues = (
   cluster: Cluster,
@@ -64,5 +64,5 @@ export const getInitialValues = (
   shareDiscoverySshKey:
     !!cluster.imageInfo.sshPublicKey && cluster.sshPublicKey === cluster.imageInfo.sshPublicKey,
   vipDhcpAllocation: cluster.vipDhcpAllocation,
-  ntpSource: cluster.ntpSource || '',
+  additionalNtpSource: cluster.additionalNtpSource || '',
 });

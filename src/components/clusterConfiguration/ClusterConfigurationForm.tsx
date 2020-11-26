@@ -63,7 +63,7 @@ const validationSchema = (initialValues: ClusterConfigurationValues, hostSubnets
       apiVip: vipValidationSchema(hostSubnets, values, initialValues.apiVip),
       ingressVip: vipValidationSchema(hostSubnets, values, initialValues.ingressVip),
       sshPublicKey: sshPublicKeyValidationSchema,
-      ntpSource: ntpSourceValidationSchema,
+      additionalNtpSource: ntpSourceValidationSchema,
     }),
   );
 

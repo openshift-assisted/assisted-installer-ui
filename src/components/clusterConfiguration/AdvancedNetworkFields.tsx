@@ -39,7 +39,7 @@ const AdvancedNetworkFields: React.FC = () => {
         isRequired
       />
       <InputField
-        name="ntpSource"
+        name="additionalNtpSource"
         label="Additional NTP Source"
         helperText="IP or domain name of the NTP pool or server. Additional NTP source is added to all hosts to ensure all hosts clocks are synchronized with a valid NTP server."
       />
