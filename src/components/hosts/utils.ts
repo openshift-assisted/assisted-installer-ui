@@ -30,6 +30,7 @@ export const canDelete = (clusterStatus: Cluster['status'], status: Host['status
     'resetting-pending-user-input',
     'resetting-pending-user-action',
     'pending-for-input',
+    'added-to-existing-cluster',
   ].includes(status);
 
 export const canEditRole = (clusterStatus: Cluster['status'], status: Host['status']) =>
