@@ -1,0 +1,4 @@
+/* pf-u-float-right does not work in all flows */
+.facet-lib-float-right {
+  float: right !important;
+}
