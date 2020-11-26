@@ -4,13 +4,14 @@ import { Host } from '../../../api/types';
 import { ProxyFieldsType } from '../../clusterConfiguration/types';
 import { NO_SUBNET_SET } from '../../../config/constants';
 import { trimCommaSeparatedList, trimSshPublicKey } from './utils';
+import { getSubnet } from '../../clusterConfiguration/utils';
+import { Address4, Address6 } from 'ip-address';
 
 const CLUSTER_NAME_REGEX = /^[a-z]([-a-z0-9]*[a-z0-9])?$/;
 const SSH_PUBLIC_KEY_REGEX = /^(ssh-rsa|ssh-ed25519|ecdsa-[-a-z0-9]*) AAAA[0-9A-Za-z+/]+[=]{0,3}( .+)?$/;
 // Future bug-fixer: Beer on me! (mlibra)
 const IP_ADDRESS_REGEX = /^(((([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5]))|([0-9a-f]{1,4}:){7,7}[0-9a-f]{1,4}|([0-9a-f]{1,4}:){1,7}:|([0-9a-f]{1,4}:){1,6}:[0-9a-f]{1,4}|([0-9a-f]{1,4}:){1,5}(:[0-9a-f]{1,4}){1,2}|([0-9a-f]{1,4}:){1,4}(:[0-9a-f]{1,4}){1,3}|([0-9a-f]{1,4}:){1,3}(:[0-9a-f]{1,4}){1,4}|([0-9a-f]{1,4}:){1,2}(:[0-9a-f]{1,4}){1,5}|[0-9a-f]{1,4}:((:[0-9a-f]{1,4}){1,6})|:((:[0-9a-f]{1,4}){1,7}|:)|fe80:(:[0-9a-f]{0,4}){0,4}%[0-9a-z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$/;
 const IP_ADDRESS_BLOCK_REGEX = /^(((([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\/([0-9]|[1-2][0-9]|3[0-2]))|([0-9a-f]{1,4}:){7,7}[0-9a-f]{1,4}|([0-9a-f]{1,4}:){1,7}:|([0-9a-f]{1,4}:){1,6}:[0-9a-f]{1,4}|([0-9a-f]{1,4}:){1,5}(:[0-9a-f]{1,4}){1,2}|([0-9a-f]{1,4}:){1,4}(:[0-9a-f]{1,4}){1,3}|([0-9a-f]{1,4}:){1,3}(:[0-9a-f]{1,4}){1,4}|([0-9a-f]{1,4}:){1,2}(:[0-9a-f]{1,4}){1,5}|[0-9a-f]{1,4}:((:[0-9a-f]{1,4}){1,6})|:((:[0-9a-f]{1,4}){1,7}|:)|fe80:(:[0-9a-f]{0,4}){0,4}%[0-9a-z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\/([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-8]))$/;
-const SUBNET_CIDR_REGEX = /^(((([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\/([0-9]|1[0-9]|2[0-5]))|([0-9a-f]{1,4}:){7,7}[0-9a-f]{1,4}|([0-9a-f]{1,4}:){1,7}:|([0-9a-f]{1,4}:){1,6}:[0-9a-f]{1,4}|([0-9a-f]{1,4}:){1,5}(:[0-9a-f]{1,4}){1,2}|([0-9a-f]{1,4}:){1,4}(:[0-9a-f]{1,4}){1,3}|([0-9a-f]{1,4}:){1,3}(:[0-9a-f]{1,4}){1,4}|([0-9a-f]{1,4}:){1,2}(:[0-9a-f]{1,4}){1,5}|[0-9a-f]{1,4}:((:[0-9a-f]{1,4}){1,6})|:((:[0-9a-f]{1,4}){1,7}|:)|fe80:(:[0-9a-f]{0,4}){0,4}%[0-9a-z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\/([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-8]))$/;
 const DNS_NAME_REGEX = /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/;
 const HOSTNAME_REGEX = /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9-]*[A-Za-z0-9])$/;
 
@@ -71,9 +72,13 @@ export const vipRangeValidationSchema = (
     } catch (err) {
       return this.createError({ message: err.message });
     }
-    const { subnet } = hostSubnets.find((hn) => hn.humanized === values.hostSubnet) || {};
+    const hostSubnet = hostSubnets.find((hn) => hn.humanized === values.hostSubnet) || null;
+    const subnet = hostSubnet ? getSubnet(hostSubnet.subnet) : null;
     return (
-      !subnet || (!!subnet.contains(value) && value !== subnet.broadcast && value !== subnet.base)
+      !subnet ||
+      (subnet.isInSubnet(value) &&
+        value !== subnet.endAddress().address &&
+        value !== subnet.startAddress().address)
     );
   });
 
@@ -115,11 +120,23 @@ export const vipValidationSchema = (
 
 export const ipBlockValidationSchema = Yup.string()
   .required('A value is required.')
-  .matches(SUBNET_CIDR_REGEX, {
-    message:
-      'Value "${value}" is not a valid IP address block. Expected value is a network expressed in CIDR notation (IP/netmask). The netmask must be between 1-25 and include at least 128 addresses. Example: 123.123.123.0/24', // eslint-disable-line no-template-curly-in-string
-    excludeEmptyString: true,
-  });
+  .test(
+    'valid-ip-address',
+    'Invalid IP address block. Expected value is a network expressed in CIDR notation (IP/netmask). Examples: 123.123.123.0/24, 2055:d7a::/116',
+    (value: string) => Address4.isValid(value) || Address6.isValid(value),
+  )
+  .test(
+    'valid-netmask',
+    'IPv4 netmask must be between 1-25 and include at least 128 addresses.\nIPv6 netmask must be between 8-128 and include at least 256 addresses.',
+    (value: string) => {
+      const prefix = parseInt(value.split('/')[1]);
+      return (
+        !isNaN(prefix) &&
+        ((Address4.isValid(value) && prefix > 0 && prefix < 26) ||
+          (Address6.isValid(value) && prefix > 7 && prefix < 129))
+      );
+    },
+  );
 
 export const dnsNameValidationSchema = (initialValue?: string) =>
   requiredOnceSet(initialValue).concat(
@@ -131,20 +148,36 @@ export const dnsNameValidationSchema = (initialValue?: string) =>
 
 export const hostPrefixValidationSchema = (values: ClusterConfigurationValues) => {
   const requiredText = 'The host prefix is required.';
-  const netBlock = (values.clusterNetworkCidr || '').split('/')[1];
+  const minMaxText =
+    'The host prefix is a number between 1 and 32 for IPv4 and between 8 and 128 for IPv6.';
+  const { clusterNetworkCidr } = values;
+  const netBlock = (clusterNetworkCidr || '').split('/')[1];
   if (!netBlock) {
-    return Yup.number()
-      .required(requiredText)
-      .min(1, `The host prefix is a number between 1 and 32.`)
-      .max(32, `The host prefix is a number between 1 and 32.`);
+    return Yup.number().required(requiredText).min(1, minMaxText).max(32, minMaxText);
   }
 
   let netBlockNumber = parseInt(netBlock);
   if (isNaN(netBlockNumber)) {
     netBlockNumber = 1;
   }
-  const errorMsg = `The host prefix is a number between size of the cluster network CIDR range (${netBlockNumber}) and 25.`;
-  return Yup.number().required(requiredText).min(netBlockNumber, errorMsg).max(25, errorMsg);
+
+  const errorMsgPrefix =
+    'The host prefix is a number between size of the cluster network CIDR range';
+  const errorMsgIPv4 = `${errorMsgPrefix} (${netBlockNumber}) and 25.`;
+  const errorMsgIPv6 = `${errorMsgPrefix} (8) and 128.`;
+
+  if (Address6.isValid(clusterNetworkCidr || '')) {
+    return Yup.number().required(requiredText).min(8, errorMsgIPv6).max(128, errorMsgIPv6);
+  }
+
+  if (Address4.isValid(clusterNetworkCidr || '')) {
+    return Yup.number()
+      .required(requiredText)
+      .min(netBlockNumber, errorMsgIPv4)
+      .max(25, errorMsgIPv4);
+  }
+
+  return Yup.number().required(requiredText);
 };
 
 export const hostnameValidationSchema = Yup.string()

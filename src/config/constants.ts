@@ -185,11 +185,20 @@ export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string 
     'Please manually fix hosts NTP configuration or provide Additional NTP source in Advanced networking configuration section.',
 };
 
-export const CLUSTER_DEFAULT_NETWORK_SETTINGS = {
+export const CLUSTER_DEFAULTS = {
+  additionalNtpSource: '0.rhel.pool.ntp.org',
+};
+
+export const CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4 = {
   clusterNetworkCidr: '10.128.0.0/14',
   clusterNetworkHostPrefix: 23,
   serviceNetworkCidr: '172.30.0.0/16',
-  additionalNtpSource: '0.rhel.pool.ntp.org',
+};
+
+export const CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV6 = {
+  clusterNetworkCidr: '2002:db8::/53',
+  clusterNetworkHostPrefix: 64,
+  serviceNetworkCidr: '2003:db8::/112',
 };
 
 export const getFacetLibVersion = () => packageJson.version;
@@ -201,3 +210,8 @@ export const TIME_ZERO = '0001-01-01T00:00:00.000Z';
 export const isSingleClusterMode = () => process.env.REACT_APP_BUILD_MODE === 'single-cluster';
 
 export const NO_SUBNET_SET = 'NO_SUBNET_SET';
+
+export const PREFIX_MAX_RESTRICTION = {
+  IPv6: 128,
+  IPv4: 25,
+};

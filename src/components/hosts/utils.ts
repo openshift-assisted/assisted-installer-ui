@@ -1,5 +1,5 @@
 import { saveAs } from 'file-saver';
-import { Host, Cluster, Presigned } from '../../api/types';
+import { Host, Cluster, Presigned, Inventory } from '../../api/types';
 import { HOST_ROLES, TIME_ZERO } from '../../config';
 import {
   getHostLogsDownloadUrl,
@@ -111,3 +111,6 @@ export const downloadHostInstallationLogs = async (
 
 export const hasKnownHost = (cluster: Cluster) =>
   !!cluster.hosts?.find((host) => host.status === 'known');
+
+export const getHostname = (host: Host, inventory: Inventory) =>
+  host.requestedHostname || inventory.hostname;

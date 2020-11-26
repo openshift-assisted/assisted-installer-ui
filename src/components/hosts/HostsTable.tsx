@@ -54,9 +54,10 @@ import {
   canDownloadHostLogs,
   downloadHostInstallationLogs,
   canReset,
+  getHostname,
 } from './utils';
 import EditHostModal from './EditHostModal';
-import Hostname, { computeHostname } from './Hostname';
+import Hostname from './Hostname';
 import HostsCount from './HostsCount';
 import { ValidationsInfo } from '../../types/hosts';
 import HostPropertyValidationPopover from './HostPropertyValidationPopover';
@@ -95,13 +96,14 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
   const { id, status, createdAt, inventory: inventoryString = '' } = host;
   const inventory = stringToJSON<Inventory>(inventoryString) || {};
   const { cores, memory, disk } = getHostRowHardwareInfo(inventory);
-  const computedHostname = computeHostname(host, inventory);
   const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
   const memoryValidation = validationsInfo?.hardware?.find((v) => v.id === 'has-memory-for-role');
   const diskValidation = validationsInfo?.hardware?.find((v) => v.id === 'has-min-valid-disks');
   const cpuCoresValidation = validationsInfo?.hardware?.find(
     (v) => v.id === 'has-cpu-cores-for-role',
   );
+  const computedHostname = getHostname(host, inventory);
+
   return [
     {
       // visible row

@@ -1,10 +1,30 @@
-import { Netmask } from 'netmask';
 import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
 import { Cluster, Inventory, ManagedDomain } from '../../api/types';
 import { stringToJSON } from '../../api/utils';
-import { computeHostname } from '../hosts/Hostname';
-import { CLUSTER_DEFAULT_NETWORK_SETTINGS } from '../../config/constants';
+import {
+  CLUSTER_DEFAULTS,
+  CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4,
+  CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV6,
+} from '../../config/constants';
+import { Address4, Address6 } from 'ip-address';
+import { getHostname } from '../hosts/utils';
+import { ClusterNetworkDefaultSettings } from './types';
 import { NO_SUBNET_SET } from '../../config/constants';
+
+export const getSubnet = (cidr: string): Address6 | Address4 | null => {
+  if (Address4.isValid(cidr)) {
+    return new Address4(cidr);
+  } else if (Address6.isValid(cidr)) {
+    return new Address6(cidr);
+  } else {
+    return null;
+  }
+};
+
+const getHumanizedSubnet = (subnet: Address6 | Address4 | null) =>
+  subnet
+    ? `${subnet.address} (${subnet.startAddress().address}-${subnet.endAddress().address})`
+    : '';
 
 export const getHostSubnets = (cluster: Cluster): HostSubnets => {
   const hostnameMap: { [id: string]: string } =
@@ -12,18 +32,18 @@ export const getHostSubnets = (cluster: Cluster): HostSubnets => {
       const inventory = stringToJSON<Inventory>(host.inventory) || {};
       acc = {
         ...acc,
-        [host.id]: computeHostname(host, inventory),
+        [host.id]: getHostname(host, inventory),
       };
       return acc;
     }, {}) || {};
 
   return (
     cluster.hostNetworks?.map((hn) => {
-      const subnet = new Netmask(hn.cidr as string);
+      const subnet = getSubnet(hn.cidr as string);
       return {
-        subnet,
+        subnet: subnet ? subnet.subnet : '',
         hostIDs: hn.hostIds?.map((id) => hostnameMap[id] || id) || [],
-        humanized: `${subnet.toString()} (${subnet.first}-${subnet.last})`,
+        humanized: getHumanizedSubnet(subnet),
       };
     }) || []
   );
@@ -33,36 +53,64 @@ export const getSubnetFromMachineNetworkCidr = (machineNetworkCidr?: string) => 
   if (!machineNetworkCidr) {
     return NO_SUBNET_SET;
   }
-  const subnet = new Netmask(machineNetworkCidr);
-  return `${subnet.toString()} (${subnet.first}-${subnet.last})`;
+
+  const subnet = getSubnet(machineNetworkCidr);
+  return getHumanizedSubnet(subnet);
 };
 
-export const isAdvConf = (cluster: Cluster): boolean =>
-  cluster.clusterNetworkCidr !== CLUSTER_DEFAULT_NETWORK_SETTINGS.clusterNetworkCidr ||
-  cluster.clusterNetworkHostPrefix !== CLUSTER_DEFAULT_NETWORK_SETTINGS.clusterNetworkHostPrefix ||
-  cluster.serviceNetworkCidr !== CLUSTER_DEFAULT_NETWORK_SETTINGS.serviceNetworkCidr ||
-  cluster.additionalNtpSource !== CLUSTER_DEFAULT_NETWORK_SETTINGS.additionalNtpSource;
+const getDefaultNetworkSettings = (clusterNetworkCidr: string): ClusterNetworkDefaultSettings => {
+  const isIPv4 = Address4.isValid(clusterNetworkCidr);
+  return {
+    clusterNetworkCidr: isIPv4
+      ? CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4.clusterNetworkCidr
+      : CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV6.clusterNetworkCidr,
+    serviceNetworkCidr: isIPv4
+      ? CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4.serviceNetworkCidr
+      : CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV6.serviceNetworkCidr,
+    clusterNetworkHostPrefix: isIPv4
+      ? CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4.clusterNetworkHostPrefix
+      : CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV6.clusterNetworkHostPrefix,
+  };
+};
+
+// TODO: Replace this by API call to retrieve the defaults from the backend
+export const getClusterDefaultSettings = (clusterNetworkCidr: string) => ({
+  ...CLUSTER_DEFAULTS,
+  ...getDefaultNetworkSettings(clusterNetworkCidr),
+});
+
+export const isAdvConf = (cluster: Cluster) => {
+  const defaultNetworkSettings = getDefaultNetworkSettings(cluster.clusterNetworkCidr as string);
+  return (
+    cluster.clusterNetworkCidr !== defaultNetworkSettings.clusterNetworkCidr ||
+    cluster.clusterNetworkHostPrefix !== defaultNetworkSettings.clusterNetworkHostPrefix ||
+    cluster.serviceNetworkCidr !== defaultNetworkSettings.serviceNetworkCidr ||
+    cluster.additionalNtpSource !== CLUSTER_DEFAULTS.additionalNtpSource
+  );
+};
 
 export const getInitialValues = (
   cluster: Cluster,
   managedDomains: ManagedDomain[],
-): ClusterConfigurationValues => ({
-  name: cluster.name || '',
-  baseDnsDomain: cluster.baseDnsDomain || '',
-  clusterNetworkCidr:
-    cluster.clusterNetworkCidr || CLUSTER_DEFAULT_NETWORK_SETTINGS.clusterNetworkCidr,
-  clusterNetworkHostPrefix:
-    cluster.clusterNetworkHostPrefix || CLUSTER_DEFAULT_NETWORK_SETTINGS.clusterNetworkHostPrefix,
-  serviceNetworkCidr:
-    cluster.serviceNetworkCidr || CLUSTER_DEFAULT_NETWORK_SETTINGS.serviceNetworkCidr,
-  apiVip: cluster.vipDhcpAllocation ? '' : cluster.apiVip || '',
-  ingressVip: cluster.vipDhcpAllocation ? '' : cluster.ingressVip || '',
-  sshPublicKey: cluster.sshPublicKey || '',
-  hostSubnet: getSubnetFromMachineNetworkCidr(cluster.machineNetworkCidr),
-  useRedHatDnsService:
-    !!cluster.baseDnsDomain && managedDomains.map((d) => d.domain).includes(cluster.baseDnsDomain),
-  shareDiscoverySshKey:
-    !!cluster.imageInfo.sshPublicKey && cluster.sshPublicKey === cluster.imageInfo.sshPublicKey,
-  vipDhcpAllocation: cluster.vipDhcpAllocation,
-  additionalNtpSource: cluster.additionalNtpSource || '',
-});
+): ClusterConfigurationValues => {
+  const defaultNetworkSettings = getDefaultNetworkSettings(cluster.clusterNetworkCidr as string);
+  return {
+    name: cluster.name || '',
+    baseDnsDomain: cluster.baseDnsDomain || '',
+    clusterNetworkCidr: cluster.clusterNetworkCidr || defaultNetworkSettings.clusterNetworkCidr,
+    clusterNetworkHostPrefix:
+      cluster.clusterNetworkHostPrefix || defaultNetworkSettings.clusterNetworkHostPrefix,
+    serviceNetworkCidr: cluster.serviceNetworkCidr || defaultNetworkSettings.serviceNetworkCidr,
+    apiVip: cluster.vipDhcpAllocation ? '' : cluster.apiVip || '',
+    ingressVip: cluster.vipDhcpAllocation ? '' : cluster.ingressVip || '',
+    sshPublicKey: cluster.sshPublicKey || '',
+    hostSubnet: getSubnetFromMachineNetworkCidr(cluster.machineNetworkCidr),
+    useRedHatDnsService:
+      !!cluster.baseDnsDomain &&
+      managedDomains.map((d) => d.domain).includes(cluster.baseDnsDomain),
+    shareDiscoverySshKey:
+      !!cluster.imageInfo.sshPublicKey && cluster.sshPublicKey === cluster.imageInfo.sshPublicKey,
+    vipDhcpAllocation: cluster.vipDhcpAllocation,
+    additionalNtpSource: cluster.additionalNtpSource || '',
+  };
+};
