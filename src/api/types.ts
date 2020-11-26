@@ -215,6 +215,10 @@ export interface Cluster {
    * Indicate if the networking is managed by the user.
    */
   'user-managed-networking'?: boolean;
+  /**
+   * NTP source going to be added to all the hosts.
+   */
+  additionalNtpSource?: string;
 }
 export interface ClusterCreateParams {
   /**
@@ -277,6 +281,10 @@ export interface ClusterCreateParams {
    * Indicate if the networking is managed by the user.
    */
   'user-managed-networking'?: boolean;
+  /**
+   * NTP source going to be added to all the hosts.
+   */
+  additionalNtpSource?: string;
 }
 export type ClusterList = Cluster[];
 export interface ClusterUpdateParams {
@@ -362,6 +370,10 @@ export interface ClusterUpdateParams {
    * Indicate if the networking is managed by the user.
    */
   'user-managed-networking'?: boolean;
+  /**
+   * NTP source going to be added to all the hosts.
+   */
+  additionalNtpSource?: string;
 }
 export type ClusterValidationId =
   | 'machine-cidr-defined'
@@ -482,6 +494,7 @@ export interface Disk {
   serial?: string;
   sizeBytes?: number;
   bootable?: boolean;
+  smart?: string;
 }
 export interface Error {
   /**
@@ -590,6 +603,10 @@ export interface Host {
   apiVipConnectivity?: string;
   inventory?: string;
   freeAddresses?: string;
+  /**
+   * The configured NTP sources on the host.
+   */
+  ntpSources?: string;
   role?: HostRole;
   bootstrap?: boolean;
   logsCollectedAt?: string; // datetime
@@ -710,6 +727,10 @@ export interface HostRegistrationResponse {
   apiVipConnectivity?: string;
   inventory?: string;
   freeAddresses?: string;
+  /**
+   * The configured NTP sources on the host.
+   */
+  ntpSources?: string;
   role?: HostRole;
   bootstrap?: boolean;
   logsCollectedAt?: string; // datetime
@@ -791,7 +812,8 @@ export type HostValidationId =
   | 'belongs-to-machine-cidr'
   | 'api-vip-connected'
   | 'belongs-to-majority-group'
-  | 'valid-platform';
+  | 'valid-platform'
+  | 'ntp-synced';
 export interface ImageCreateParams {
   /**
    * SSH public key for debugging the installation.
