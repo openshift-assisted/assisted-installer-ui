@@ -18,13 +18,18 @@ import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Tabl
 import { EmptyState } from '../ui/uiState';
 import { getColSpanRow, rowSorter, getDateTimeCell } from '../ui/table/utils';
 import { Host, Cluster, Inventory } from '../../api/types';
-import { enableClusterHost, disableClusterHost, deleteClusterHost } from '../../api/clusters';
+import {
+  enableClusterHost,
+  disableClusterHost,
+  deleteClusterHost,
+  resetClusterHost,
+} from '../../api/clusters';
 import { EventsModal } from '../ui/eventsModal';
 import { getHostRowHardwareInfo } from './hardwareInfo';
 import { DiscoveryImageModalButton } from '../clusterConfiguration/discoveryImageModal';
 import HostStatus from './HostStatus';
 import { HostDetail } from './HostRowDetail';
-import { forceReload, updateCluster } from '../../features/clusters/currentClusterSlice';
+import { forceReload, updateCluster, updateHost } from '../../features/clusters/currentClusterSlice';
 import { handleApiError, stringToJSON, getErrorMessage } from '../../api/utils';
 import sortable from '../ui/table/sortable';
 import RoleCell from './RoleCell';
@@ -39,6 +44,7 @@ import {
   getHostRole,
   canDownloadHostLogs,
   downloadHostInstallationLogs,
+  canReset,
 } from './utils';
 import EditHostModal from './EditHostModal';
 import Hostname, { computeHostname } from './Hostname';
@@ -267,6 +273,20 @@ const HostsTable: React.FC<HostsTableProps> = ({
     },
     [cluster.id, dispatch, addAlert],
   );
+  const onHostReset = React.useCallback(
+    async (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
+      const hostId = rowData.host.id;
+      try {
+        const { data } = await resetClusterHost(cluster.id, hostId);
+        dispatch(updateHost(data));
+      } catch (e) {
+        handleApiError(e, () =>
+          addAlert({ title: `Failed to reset host ${hostId}`, message: getErrorMessage(e) }),
+        );
+      }
+    },
+    [cluster.id, dispatch, addAlert],
+  );
 
   const onViewHostEvents = React.useCallback(
     (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
@@ -331,6 +351,13 @@ const HostsTable: React.FC<HostsTableProps> = ({
           title: 'Disable in cluster',
           id: `button-disable-in-cluster-${hostname}`,
           onClick: onHostDisable,
+        });
+      }
+      if (canReset(clusterStatus, host.status)) {
+        actions.push({
+          title: 'Reset Host',
+          id: `button-reset-host-${hostname}`,
+          onClick: onHostReset,
         });
       }
       actions.push({
