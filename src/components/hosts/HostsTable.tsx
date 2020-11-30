@@ -25,17 +25,26 @@ import {
   resetClusterHost,
 } from '../../api/clusters';
 import { EventsModal } from '../ui/eventsModal';
-import { getHostRowHardwareInfo } from './hardwareInfo';
 import { DiscoveryImageModalButton } from '../clusterConfiguration/discoveryImageModal';
 import HostStatus from './HostStatus';
 import { HostDetail } from './HostRowDetail';
-import { forceReload, updateCluster, updateHost } from '../../features/clusters/currentClusterSlice';
+import {
+  forceReload,
+  updateCluster,
+  updateHost,
+} from '../../features/clusters/currentClusterSlice';
 import { handleApiError, stringToJSON, getErrorMessage } from '../../api/utils';
 import sortable from '../ui/table/sortable';
-import RoleCell from './RoleCell';
 import { DASH } from '../constants';
-import DeleteHostModal from './DeleteHostModal';
 import { AlertsContext } from '../AlertsContextProvider';
+import {
+  HostsNotShowingLink,
+  HostsNotShowingLinkProps,
+} from '../clusterConfiguration/DiscoveryTroubleshootingModal';
+import { getHostRowHardwareInfo } from './hardwareInfo';
+import RoleCell from './RoleCell';
+import DeleteHostModal from './DeleteHostModal';
+import ResetHostModal from './ResetHostModal';
 import {
   canEnable,
   canDisable,
@@ -49,10 +58,6 @@ import {
 import EditHostModal from './EditHostModal';
 import Hostname, { computeHostname } from './Hostname';
 import HostsCount from './HostsCount';
-import {
-  HostsNotShowingLink,
-  HostsNotShowingLinkProps,
-} from '../clusterConfiguration/DiscoveryTroubleshootingModal';
 
 import './HostsTable.css';
 
@@ -70,6 +75,8 @@ type HostToDelete = {
   id: string;
   hostname: string;
 };
+
+type HostToReset = HostToDelete;
 
 const getColumns = (hosts?: Host[]) => [
   { title: 'Hostname', transforms: [sortable], cellFormatters: [expandable] },
@@ -167,6 +174,7 @@ const HostsTable: React.FC<HostsTableProps> = ({
   >(undefined);
   const [openRows, setOpenRows] = React.useState({} as OpenRows);
   const [hostToDelete, setHostToDelete] = React.useState<HostToDelete>();
+  const [hostToReset, setHostToReset] = React.useState<HostToReset>();
   const [sortBy, setSortBy] = React.useState({
     index: 1, // Hostname-column
     direction: SortByDirection.asc,
@@ -274,13 +282,12 @@ const HostsTable: React.FC<HostsTableProps> = ({
     [cluster.id, dispatch, addAlert],
   );
   const onHostReset = React.useCallback(
-    async (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
-      const hostId = rowData.host.id;
+    async (hostId) => {
       try {
         const { data } = await resetClusterHost(cluster.id, hostId);
         dispatch(updateHost(data));
       } catch (e) {
-        handleApiError(e, () =>
+        return handleApiError(e, () =>
           addAlert({ title: `Failed to reset host ${hostId}`, message: getErrorMessage(e) }),
         );
       }
@@ -357,7 +364,9 @@ const HostsTable: React.FC<HostsTableProps> = ({
         actions.push({
           title: 'Reset Host',
           id: `button-reset-host-${hostname}`,
-          onClick: onHostReset,
+          onClick: () => {
+            setHostToReset({ id: host.id, hostname });
+          },
         });
       }
       actions.push({
@@ -421,6 +430,15 @@ const HostsTable: React.FC<HostsTableProps> = ({
         hostId={showEventsModal?.host}
         onClose={() => setShowEventsModal(undefined)}
         isOpen={!!showEventsModal}
+      />
+      <ResetHostModal
+        hostname={hostToReset?.hostname}
+        onClose={() => setHostToReset(undefined)}
+        isOpen={!!hostToReset}
+        onReset={() => {
+          onHostReset(hostToReset?.id);
+          setHostToReset(undefined);
+        }}
       />
       <DeleteHostModal
         hostname={hostToDelete?.hostname}
