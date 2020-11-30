@@ -15,6 +15,7 @@ import { addHostsClusters } from '../../api/addHostsClusters';
 import { AlertsContextProvider } from '../AlertsContextProvider';
 import { POLLING_INTERVAL } from '../../config';
 import AddBareMetalHosts from './AddBareMetalHosts';
+import { Button, ButtonVariant } from '@patternfly/react-core';
 
 export const BareMetalHostsClusterDetailTab: React.FC<{
   cluster?: OcmClusterType;
@@ -143,8 +144,31 @@ export const BareMetalHostsClusterDetailTab: React.FC<{
       return () => clearTimeout(id);
     }
   }, [day2Cluster]);
+
   if (error) {
-    return <ErrorState content={error} title="Failed to prepare the cluster for adding hosts." />;
+    return (
+      <ErrorState
+        content={
+          <>
+            {error}
+            <br />
+            Check your connection and{' '}
+            <Button
+              onClick={() => {
+                setError(undefined);
+                setDay2Cluster(undefined);
+              }}
+              variant={ButtonVariant.link}
+              isInline
+            >
+              try again
+            </Button>
+            .
+          </>
+        }
+        title="Failed to prepare the cluster for adding hosts."
+      />
+    );
   }
 
   if (!day2Cluster) {
