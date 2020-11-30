@@ -39,6 +39,9 @@ export const getBugzillaLink = (
 ) =>
   `https://bugzilla.redhat.com/enter_bug.cgi?product=OpenShift%20Container%20Platform&Component=OpenShift%20Container%20Platform&component=assisted-installer&version=${version}`;
 
+export const getOcpConsoleNodesPage = (ocpConsoleUrl: string) =>
+  `${ocpConsoleUrl}/k8s/cluster/nodes`;
+
 // TODO(mlibra): Retrieve branding dynamically, if needed, i.e. via injecting to the "window" object
 export const getProductBrandingCode = () => 'redhat';
 
@@ -95,7 +98,7 @@ export const HOST_STATUS_LABELS: { [key in Host['status']]: string } = {
   error: 'Error',
   resetting: 'Resetting',
   'resetting-pending-user-action': 'Reboot required',
-  'added-to-existing-cluster': 'Added to existing cluster',
+  'added-to-existing-cluster': 'Installed',
 };
 
 export const CLUSTER_FIELD_LABELS: { [key in string]: string } = {
@@ -133,8 +136,7 @@ export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
   resetting: 'This host is resetting the installation.',
   'resetting-pending-user-action':
     'Host already booted from disk during previous installation. To finish resetting the installation please boot the host into Discovery ISO.',
-  'added-to-existing-cluster':
-    "This host was successfully installed. Please visit the Nodes page in the cluster's Web Console to finish adding it to the cluster.",
+  'added-to-existing-cluster': '', // special formatting
 };
 
 export const HOST_VALIDATION_GROUP_LABELS: { [key in keyof ValidationsInfo]: string } = {
@@ -159,6 +161,7 @@ export const HOST_VALIDATION_LABELS: { [key in Validation['id']]: string } = {
   'api-vip-connected': 'API VIP connected',
   'belongs-to-majority-group': 'Belongs to majority connected group',
   'valid-platform': 'Platform',
+  'ntp-synced': 'NTP synchronization',
 };
 
 export const CLUSTER_DEFAULT_NETWORK_SETTINGS = {

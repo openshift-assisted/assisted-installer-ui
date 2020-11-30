@@ -1,13 +1,14 @@
 import React from 'react';
 import { Text, TextContent, Button } from '@patternfly/react-core';
 import HostsTable from '../hosts/HostsTable';
-import { Cluster, HostRequirements as HostRequirementsType } from '../../api/types';
+import { HostRequirements as HostRequirementsType } from '../../api/types';
 import HostRequirements from '../fetching/HostRequirements';
 import { DiscoveryImageModalButton } from '../clusterConfiguration/discoveryImageModal';
 import {
   DiscoveryTroubleshootingModal,
   HostsNotShowingLink,
 } from '../clusterConfiguration/DiscoveryTroubleshootingModal';
+import { AddBareMetalHostsContext } from './AddBareMetalHostsContext';
 // import FormatDiskWarning from '../clusterConfiguration/FormatDiskWarning';
 
 const HostRequirementsContent = ({ worker = {} }: { worker?: HostRequirementsType['worker'] }) => (
@@ -17,8 +18,13 @@ const HostRequirementsContent = ({ worker = {} }: { worker?: HostRequirementsTyp
   </Text>
 );
 
-const BaremetalInventoryAddHosts: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
+const BaremetalInventoryAddHosts: React.FC = () => {
+  const { cluster } = React.useContext(AddBareMetalHostsContext);
   const [isDiscoveryHintModalOpen, setDiscoveryHintModalOpen] = React.useState(false);
+
+  if (!cluster) {
+    return null;
+  }
 
   return (
     <>
