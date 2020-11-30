@@ -1,14 +1,18 @@
 import React from 'react';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
-import { getOcpConsoleNodesPage } from '../../config';
 import { Button, ButtonVariant } from '@patternfly/react-core';
+import { AddBareMetalHostsContext } from '../AddBareMetalHosts/AddBareMetalHostsContext';
+import { getOcpConsoleNodesPage } from '../../config';
 
 const OcpConsoleNodesSectionLink: React.FC<{
   id?: string;
-  ocpConsoleUrl?: string;
   title?: string;
-}> = ({ id, ocpConsoleUrl, title = 'OpenShift console' }) =>
-  ocpConsoleUrl ? (
+}> = ({ id, title = 'OpenShift console' }) => {
+  const { ocpConsoleUrl } = React.useContext(AddBareMetalHostsContext);
+  if (!ocpConsoleUrl) {
+    return null;
+  }
+  return (
     <Button
       variant={ButtonVariant.link}
       onClick={() =>
@@ -18,6 +22,7 @@ const OcpConsoleNodesSectionLink: React.FC<{
     >
       {title} <ExternalLinkAltIcon />
     </Button>
-  ) : null;
+  );
+};
 
 export default OcpConsoleNodesSectionLink;

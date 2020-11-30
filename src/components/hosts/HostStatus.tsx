@@ -123,19 +123,14 @@ const HostStatusPopoverContent: React.FC<ValidationInfoActionProps> = (props) =>
 type HostStatusProps = {
   host: Host;
   cluster: Cluster;
-  ocpConsoleUrl?: string;
 };
 
-const HostStatusPopoverFooter: React.FC<{ host: Host; ocpConsoleUrl?: string }> = ({
-  host,
-  ocpConsoleUrl,
-}) => {
+const HostStatusPopoverFooter: React.FC<{ host: Host }> = ({ host }) => {
   const { progress, statusUpdatedAt } = host;
 
   if (host.status === 'added-to-existing-cluster') {
     return (
       <OcpConsoleNodesSectionLink
-        ocpConsoleUrl={ocpConsoleUrl}
         id={`host-status-detail-link-to-ocp-nodes-${host.requestedHostname || host.id}`}
       />
     );
@@ -159,7 +154,7 @@ const HostStatusPopoverFooter: React.FC<{ host: Host; ocpConsoleUrl?: string }> 
   return <small>{footerText}</small>;
 };
 
-const HostStatus: React.FC<HostStatusProps> = ({ host, cluster, ocpConsoleUrl }) => {
+const HostStatus: React.FC<HostStatusProps> = ({ host, cluster }) => {
   const [keepOnOutsideClick, onValidationActionToggle] = React.useState(false);
   const { status } = host;
   const title = HOST_STATUS_LABELS[status] || status;
@@ -177,7 +172,7 @@ const HostStatus: React.FC<HostStatusProps> = ({ host, cluster, ocpConsoleUrl })
             onValidationActionToggle={onValidationActionToggle}
           />
         }
-        footerContent={<HostStatusPopoverFooter host={host} ocpConsoleUrl={ocpConsoleUrl} />}
+        footerContent={<HostStatusPopoverFooter host={host} />}
         minWidth="30rem"
         maxWidth="50rem"
         hideOnOutsideClick={!keepOnOutsideClick}

@@ -9,20 +9,23 @@ import {
 } from '@patternfly/react-core';
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { Cluster, getErrorMessage, handleApiError, installHosts } from '../../api';
+import { getErrorMessage, handleApiError, installHosts } from '../../api';
 import { addAlert } from '../../features/alerts/alertsSlice';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import { hasKnownHost } from '../hosts/utils';
 import { ToolbarButton, ToolbarSecondaryGroup } from '../ui';
 import { Alerts } from '../ui/AlertsSection';
 import { EventsModalButton } from '../ui/eventsModal';
+import { AddBareMetalHostsContext } from './AddBareMetalHostsContext';
 import BaremetalInventoryAddHosts from './BareMetalInventoryAddHost';
 
-const AddBareMetalHosts: React.FC<{ cluster: Cluster; ocpConsoleUrl?: string }> = ({
-  cluster,
-  ocpConsoleUrl,
-}) => {
+const AddBareMetalHosts: React.FC = () => {
+  const { cluster } = React.useContext(AddBareMetalHostsContext);
   const dispatch = useDispatch();
+
+  if (!cluster) {
+    return null;
+  }
 
   const handleHostsInstall = async () => {
     try {
@@ -46,7 +49,7 @@ const AddBareMetalHosts: React.FC<{ cluster: Cluster; ocpConsoleUrl?: string }> 
         </Title>
       </CardTitle>
       <CardBody>
-        <BaremetalInventoryAddHosts cluster={cluster} ocpConsoleUrl={ocpConsoleUrl} />
+        <BaremetalInventoryAddHosts />
         <Alerts />
         <Toolbar id="cluster-toolbar">
           <ToolbarContent>

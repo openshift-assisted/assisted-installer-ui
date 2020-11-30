@@ -20,6 +20,7 @@ import CancelInstallationModal from '../clusterDetail/CancelInstallationModal';
 import ResetClusterModal from '../clusterDetail/ResetClusterModal';
 import { AlertsContextProvider } from '../AlertsContextProvider';
 import { AddBareMetalHosts } from '../AddBareMetalHosts';
+import { AddBareMetalHostsContextProvider } from '../AddBareMetalHosts/AddBareMetalHostsContext';
 
 type MatchParams = {
   clusterId: string;
@@ -78,7 +79,11 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
 
   const getContent = (cluster: Cluster) => {
     if (cluster.status === 'adding-hosts') {
-      return <AddBareMetalHosts cluster={cluster} />;
+      return (
+        <AddBareMetalHostsContextProvider cluster={cluster}>
+          <AddBareMetalHosts />
+        </AddBareMetalHostsContextProvider>
+      );
     } else if (
       [
         'preparing-for-installation',
