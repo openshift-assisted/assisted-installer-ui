@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button, ButtonVariant } from '@patternfly/react-core';
 import { normalizeClusterVersion } from '../../config';
 import { OcmClusterType } from './types';
 import {
@@ -15,7 +16,7 @@ import { addHostsClusters } from '../../api/addHostsClusters';
 import { AlertsContextProvider } from '../AlertsContextProvider';
 import { POLLING_INTERVAL } from '../../config';
 import AddBareMetalHosts from './AddBareMetalHosts';
-import { Button, ButtonVariant } from '@patternfly/react-core';
+import { AddBareMetalHostsContextProvider } from './AddBareMetalHostsContext';
 
 export const BareMetalHostsClusterDetailTab: React.FC<{
   cluster?: OcmClusterType;
@@ -177,7 +178,9 @@ export const BareMetalHostsClusterDetailTab: React.FC<{
 
   return (
     <AlertsContextProvider>
-      <AddBareMetalHosts cluster={day2Cluster} />
+      <AddBareMetalHostsContextProvider cluster={day2Cluster} ocpConsoleUrl={cluster?.console?.url}>
+        <AddBareMetalHosts />
+      </AddBareMetalHostsContextProvider>
     </AlertsContextProvider>
   );
 };
