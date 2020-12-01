@@ -144,7 +144,7 @@ const HostsTableEmptyState: React.FC<{
     icon={ConnectedIcon}
     title="Waiting for hosts..."
     content="Hosts may take a few minutes to appear here after booting."
-    primaryAction={<DiscoveryImageModalButton cluster={cluster} />}
+    primaryAction={<DiscoveryImageModalButton cluster={cluster} idPrefix="host-table-empty" />}
     secondaryActions={
       setDiscoveryHintModalOpen && [
         <HostsNotShowingLink
