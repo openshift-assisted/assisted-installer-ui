@@ -95,7 +95,9 @@ const SubnetHelperText: React.FC<{ matchingSubnet: HostSubnet; cluster: Cluster 
 }) => {
   const excludedHosts =
     cluster.hosts?.filter(
-      (host) => !matchingSubnet.hostIDs.includes(host.requestedHostname || ''),
+      (host) =>
+        !['disabled', 'disconnected'].includes(host.status) &&
+        !matchingSubnet.hostIDs.includes(host.requestedHostname || ''),
     ) || [];
 
   if (excludedHosts.length === 0) {
