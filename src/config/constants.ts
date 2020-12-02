@@ -151,8 +151,8 @@ export const HOST_VALIDATION_LABELS: { [key in HostValidationId]: string } = {
   'has-min-cpu-cores': 'Minimum CPU cores',
   'has-min-memory': 'Minimum Memory',
   'has-min-valid-disks': 'Minimum disks of required size',
-  'has-cpu-cores-for-role': 'Min. CPU cores required for selected role',
-  'has-memory-for-role': 'Min. memory required for selected role',
+  'has-cpu-cores-for-role': 'Minimum CPU cores for selected role',
+  'has-memory-for-role': 'Minimum memory for selected role',
   'hostname-unique': 'Unique hostname',
   'hostname-valid': 'Valid hostname',
   connected: 'Connected',
@@ -165,7 +165,7 @@ export const HOST_VALIDATION_LABELS: { [key in HostValidationId]: string } = {
   'ntp-synced': 'NTP synchronization',
 };
 
-export const HOST_VALIDATION_HINTS: { [key in HostValidationId]: string } = {
+export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string } = {
   'has-inventory': '',
   'has-min-cpu-cores': '',
   'has-min-memory': '',

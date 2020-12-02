@@ -58,9 +58,10 @@ import {
 import EditHostModal from './EditHostModal';
 import Hostname, { computeHostname } from './Hostname';
 import HostsCount from './HostsCount';
+import { ValidationsInfo } from '../../types/hosts';
+import HostPropertyValidationPopover from './HostPropertyValidationPopover';
 
 import './HostsTable.css';
-import { ValidationsInfo } from '../../types/hosts';
 
 type HostsTableProps = {
   cluster: Cluster;
@@ -96,6 +97,11 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
   const { cores, memory, disk } = getHostRowHardwareInfo(inventory);
   const computedHostname = computeHostname(host, inventory);
   const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
+  const memoryValidation = validationsInfo?.hardware?.find((v) => v.id === 'has-memory-for-role');
+  const diskValidation = validationsInfo?.hardware?.find((v) => v.id === 'has-min-valid-disks');
+  const cpuCoresValidation = validationsInfo?.hardware?.find(
+    (v) => v.id === 'has-cpu-cores-for-role',
+  );
   return [
     {
       // visible row
@@ -118,9 +124,30 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
           sortableValue: status,
         },
         getDateTimeCell(createdAt),
-        cores,
-        memory,
-        disk,
+        {
+          title: (
+            <HostPropertyValidationPopover validation={cpuCoresValidation}>
+              {cores.title}
+            </HostPropertyValidationPopover>
+          ),
+          sortableValue: cores.sortableValue,
+        },
+        {
+          title: (
+            <HostPropertyValidationPopover validation={memoryValidation}>
+              {memory.title}
+            </HostPropertyValidationPopover>
+          ),
+          sortableValue: memory.sortableValue,
+        },
+        {
+          title: (
+            <HostPropertyValidationPopover validation={diskValidation}>
+              {disk.title}
+            </HostPropertyValidationPopover>
+          ),
+          sortableValue: disk.sortableValue,
+        },
       ],
       host,
       clusterStatus: cluster.status,
