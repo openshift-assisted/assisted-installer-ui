@@ -47,7 +47,7 @@ export const rowSorter = (sortBy: ISortBy, getCell: getCellType) => (a: IRow, b:
 
 /** Converts string into a sentence by capitalizing first letter and appending with . */
 export const toSentence = (s: string) =>
-  `${_.capitalize(s)}${_.endsWith(s, '.') || s === '' ? '' : '.'}`;
+  `${_.upperFirst(s)}${_.endsWith(s, '.') || s === '' ? '' : '.'}`;
 
 export const getDateTimeCell = (time?: string): HumanizedSortable => {
   const date = getHumanizedDateTime(time);

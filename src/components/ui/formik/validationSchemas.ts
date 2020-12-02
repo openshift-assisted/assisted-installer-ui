@@ -228,3 +228,20 @@ export const noProxyValidationSchema = Yup.string().test(
       });
   },
 );
+
+export const ntpSourceValidationSchema = Yup.string().test(
+  'ntp-source-validation',
+  'Provide a valid DNS or IP address.',
+  (value: string) => {
+    if (!value) {
+      return true;
+    }
+    if (value.match(DNS_NAME_REGEX)) {
+      return true;
+    }
+    if (value.match(IP_ADDRESS_REGEX)) {
+      return true;
+    }
+    return false;
+  },
+);

@@ -38,6 +38,11 @@ const AdvancedNetworkFields: React.FC = () => {
         helperText="The IP address pool to use for service IP addresses. You can enter only one IP address pool. If you need to access the services from an external network, configure load balancers and routers to manage the traffic."
         isRequired
       />
+      <InputField
+        name="additionalNtpSource"
+        label="Additional NTP Source"
+        helperText="IP or domain name of the NTP pool or server. Additional NTP source is added to all hosts to ensure all hosts clocks are synchronized with a valid NTP server."
+      />
     </>
   );
 };

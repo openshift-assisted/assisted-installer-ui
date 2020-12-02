@@ -7,10 +7,13 @@ import { Host, Inventory, Disk, Interface } from '../../api/types';
 import { getHostRowHardwareInfo } from './hardwareInfo';
 import { DASH } from '../constants';
 import { DetailList, DetailListProps, DetailItem } from '../ui/DetailList';
+import { ValidationsInfo } from '../../types/hosts';
+import NtpValidationStatus from './NtpValidationStatus';
 
 type HostDetailProps = {
   inventory: Inventory;
   host: Host;
+  validationsInfo: ValidationsInfo;
 };
 
 type SectionTitleProps = {
@@ -123,7 +126,7 @@ const NicsTable: React.FC<NicsTableProps> = ({ interfaces }) => {
   );
 };
 
-export const HostDetail: React.FC<HostDetailProps> = ({ inventory, host }) => {
+export const HostDetail: React.FC<HostDetailProps> = ({ inventory, host, validationsInfo }) => {
   const { id } = host;
   const rowInfo = getHostRowHardwareInfo(inventory);
   const disks = inventory.disks || [];
@@ -164,6 +167,10 @@ export const HostDetail: React.FC<HostDetailProps> = ({ inventory, host }) => {
         {inventory.boot?.pxeInterface && (
           <DetailItem title="PXE interface" value={inventory.boot?.pxeInterface} />
         )}
+        <DetailItem
+          title="NTP status"
+          value={<NtpValidationStatus validationsInfo={validationsInfo} />}
+        />
       </SectionColumn>
 
       <SectionTitle title={`${disks.length} Disk${disks.length === 1 ? '' : 's'}`} />

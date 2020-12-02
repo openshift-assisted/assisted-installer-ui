@@ -37,10 +37,11 @@ export const getSubnetFromMachineNetworkCidr = (machineNetworkCidr?: string) => 
   return `${subnet.toString()} (${subnet.first}-${subnet.last})`;
 };
 
-export const isAdvConf = (cluster: Cluster) =>
+export const isAdvConf = (cluster: Cluster): boolean =>
   cluster.clusterNetworkCidr !== CLUSTER_DEFAULT_NETWORK_SETTINGS.clusterNetworkCidr ||
   cluster.clusterNetworkHostPrefix !== CLUSTER_DEFAULT_NETWORK_SETTINGS.clusterNetworkHostPrefix ||
-  cluster.serviceNetworkCidr !== CLUSTER_DEFAULT_NETWORK_SETTINGS.serviceNetworkCidr;
+  cluster.serviceNetworkCidr !== CLUSTER_DEFAULT_NETWORK_SETTINGS.serviceNetworkCidr ||
+  cluster.additionalNtpSource !== CLUSTER_DEFAULT_NETWORK_SETTINGS.additionalNtpSource;
 
 export const getInitialValues = (
   cluster: Cluster,
@@ -63,4 +64,5 @@ export const getInitialValues = (
   shareDiscoverySshKey:
     !!cluster.imageInfo.sshPublicKey && cluster.sshPublicKey === cluster.imageInfo.sshPublicKey,
   vipDhcpAllocation: cluster.vipDhcpAllocation,
+  additionalNtpSource: cluster.additionalNtpSource || '',
 });

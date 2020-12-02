@@ -48,6 +48,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
         CLUSTER_DEFAULT_NETWORK_SETTINGS.clusterNetworkHostPrefix,
       );
       setFieldValue('serviceNetworkCidr', CLUSTER_DEFAULT_NETWORK_SETTINGS.serviceNetworkCidr);
+      setFieldValue('additionalNtpSource', CLUSTER_DEFAULT_NETWORK_SETTINGS.additionalNtpSource);
     }
   };
 
@@ -89,7 +90,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
       <Checkbox
         id="useAdvancedNetworking"
         label="Use Advanced Networking"
-        description="Configure a custom networking type and CIDR ranges"
+        description="Configure advanced networking properties (CIDR ranges, NTP)."
         isChecked={isAdvanced}
         onChange={toggleAdvConfiguration}
       />

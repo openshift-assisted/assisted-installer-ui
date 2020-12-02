@@ -5,8 +5,9 @@ import {
   Host,
   Event,
   AddHostsClusterCreateParams,
+  HostValidationId,
 } from '../api/types';
-import { ValidationsInfo, Validation, HostRole } from '../types/hosts';
+import { ValidationsInfo, HostRole } from '../types/hosts';
 
 export let routeBasePath = '';
 export const setRouteBasePath = (basePath: string) => {
@@ -145,7 +146,7 @@ export const HOST_VALIDATION_GROUP_LABELS: { [key in keyof ValidationsInfo]: str
   role: 'Roles',
 };
 
-export const HOST_VALIDATION_LABELS: { [key in Validation['id']]: string } = {
+export const HOST_VALIDATION_LABELS: { [key in HostValidationId]: string } = {
   'has-inventory': 'Hardware information',
   'has-min-cpu-cores': 'Minimum CPU cores',
   'has-min-memory': 'Minimum Memory',
@@ -164,10 +165,31 @@ export const HOST_VALIDATION_LABELS: { [key in Validation['id']]: string } = {
   'ntp-synced': 'NTP synchronization',
 };
 
+export const HOST_VALIDATION_HINTS: { [key in HostValidationId]: string } = {
+  'has-inventory': '',
+  'has-min-cpu-cores': '',
+  'has-min-memory': '',
+  'has-min-valid-disks': '',
+  'has-cpu-cores-for-role': '',
+  'has-memory-for-role': '',
+  'hostname-unique': '',
+  'hostname-valid': '',
+  connected: '',
+  'machine-cidr-defined': '',
+  'belongs-to-machine-cidr': '',
+  'role-defined': '',
+  'api-vip-connected': '',
+  'belongs-to-majority-group': '',
+  'valid-platform': '',
+  'ntp-synced':
+    'Please manually fix hosts NTP configuration or provide Additional NTP source in Advanced networking configuration section.',
+};
+
 export const CLUSTER_DEFAULT_NETWORK_SETTINGS = {
   clusterNetworkCidr: '10.128.0.0/14',
   clusterNetworkHostPrefix: 23,
   serviceNetworkCidr: '172.30.0.0/16',
+  additionalNtpSource: '0.rhel.pool.ntp.org',
 };
 
 export const getFacetLibVersion = () => packageJson.version;
