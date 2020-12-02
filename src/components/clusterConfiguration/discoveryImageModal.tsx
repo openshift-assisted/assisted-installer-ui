@@ -8,11 +8,13 @@ import DiscoveryImageSummary from './DiscoveryImageSummary';
 type DiscoveryImageModalButtonProps = {
   ButtonComponent?: typeof Button | typeof ToolbarButton;
   cluster: Cluster;
+  idPrefix: string;
 };
 
 export const DiscoveryImageModalButton: React.FC<DiscoveryImageModalButtonProps> = ({
   ButtonComponent = Button,
   cluster,
+  idPrefix,
 }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
@@ -23,7 +25,7 @@ export const DiscoveryImageModalButton: React.FC<DiscoveryImageModalButtonProps>
       <ButtonComponent
         variant={ButtonVariant.primary}
         onClick={() => setIsModalOpen(true)}
-        id="button-download-discovery-iso"
+        id={`${idPrefix}-button-download-discovery-iso`}
       >
         Generate Discovery ISO
       </ButtonComponent>
@@ -48,6 +50,7 @@ const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({ closeModal, c
       onClose={closeModal}
       variant={ModalVariant.small}
       hasNoBodyWrapper
+      id="generate-discovery-iso-modal"
     >
       {imageInfo ? (
         <DiscoveryImageSummary
