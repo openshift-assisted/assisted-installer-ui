@@ -3,16 +3,15 @@ import {
   Modal,
   Button,
   ButtonVariant,
-  TextContent,
   Text,
-  TextList,
-  TextListItem,
   ModalVariant,
+  ExpandableSection,
 } from '@patternfly/react-core';
-import { Cluster } from '../../api/types';
-import { removeProtocolFromURL } from '../../api/utils';
+import { Cluster, Host, Interface, Inventory } from '../../api/types';
+import { removeProtocolFromURL, stringToJSON } from '../../api/utils';
 import { ToolbarButton } from '../ui/Toolbar';
 import { InfoCircleIcon } from '@patternfly/react-icons';
+import PrismCode from '../ui/PrismCode';
 
 type WebConsoleHintProps = {
   cluster: Cluster;
@@ -30,39 +29,119 @@ type ConsoleModalProps = WebConsoleHintProps & {
   isOpen: boolean;
 };
 
+type ModalExpandableSectionProps = {
+  toggleText: string;
+  className: string;
+  isExpanded: boolean;
+  onToggle: () => void;
+  requiredList: string[];
+  optionalList: string[];
+};
+
+const formatMultilineString = (multiLineList: string[]): string =>
+  multiLineList && multiLineList.length > 0
+    ? [...multiLineList.slice(1)].reduce((accu, elem) => `${accu}\n${elem}`, multiLineList[0])
+    : '';
+
+const ModalExpandableSection: React.FC<ModalExpandableSectionProps> = (props) => {
+  const { requiredList, optionalList, ...otherProps } = props;
+
+  return (
+    <ExpandableSection {...otherProps}>
+      <PrismCode code={formatMultilineString(requiredList)} language="markup" />
+      <br />
+      <Text component="h6">Optional:</Text>
+      <PrismCode code={formatMultilineString(optionalList)} language="markup" />
+    </ExpandableSection>
+  );
+};
+
+const getHostIPs = (cluster: Cluster): { [key: string]: string } => {
+  const hostIPAddresses = {};
+
+  cluster.hosts?.map((host: Host) => {
+    if (host && host.requestedHostname) {
+      const interfaces: Interface[] | undefined =
+        stringToJSON<Inventory>(host.inventory)?.interfaces || undefined;
+      if (
+        interfaces &&
+        interfaces.length > 0 &&
+        interfaces[0].ipv4Addresses &&
+        interfaces[0].ipv4Addresses.length > 0
+      ) {
+        hostIPAddresses[host.requestedHostname] = interfaces[0].ipv4Addresses[0].split('/')[0];
+      }
+    }
+  });
+
+  return hostIPAddresses;
+};
+
 export const WebConsoleHint: React.FC<WebConsoleHintProps> = ({ cluster, consoleUrl }) => {
+  const [isDNSExpanded, setIsDNSExpanded] = React.useState(true);
+
+  const hostIPs = React.useMemo(() => getHostIPs(cluster), [cluster]);
+  const sortedHostIPs = Object.keys(hostIPs).sort();
+
   const clusterUrl = `${cluster.name}.${cluster.baseDnsDomain}`;
   const appsUrl = `apps.${clusterUrl}`;
   const etcHosts = [
-    `${cluster.ingressVip}\t${removeProtocolFromURL(consoleUrl)}`,
-    `${cluster.ingressVip}\toauth-openshift.${appsUrl}`,
-    `${cluster.ingressVip}\tgrafana-openshift-monitoring.${appsUrl}`,
-    `${cluster.ingressVip}\tprometheus-k8s-openshift-monitoring.${appsUrl}`,
-    `${cluster.ingressVip}\tthanos-querier-openshift-monitoring.${appsUrl}`,
-    `${cluster.ingressVip}\talertmanager-main-openshift-monitoring.${appsUrl}`,
     `${cluster.apiVip}\tapi.${clusterUrl}`,
+    `${cluster.ingressVip}\toauth-openshift.${appsUrl}`,
+    `${cluster.ingressVip}\t${removeProtocolFromURL(consoleUrl)}`,
+    `${cluster.ingressVip}\tgrafana-openshift-monitoring.${appsUrl}`,
+    `${cluster.ingressVip}\tthanos-querier-openshift-monitoring.${appsUrl}`,
+    `${cluster.ingressVip}\tprometheus-k8s-openshift-monitoring.${appsUrl}`,
+    `${cluster.ingressVip}\talertmanager-main-openshift-monitoring.${appsUrl}`,
   ];
 
+  const etcHostsOptional = sortedHostIPs.map(
+    (hostname: string) => `${hostIPs[hostname]}\t${hostname}`,
+  );
+
+  // Pad the lines as long as the longest record
+  const paddingNum = `alertmanager-main-openshift-monitoring.${appsUrl}.`.length + 1;
+
+  const aRecords = [
+    `api.${clusterUrl}.`.padEnd(paddingNum) + `A\t${cluster.apiVip}`,
+    `oauth-openshift.${appsUrl}.`.padEnd(paddingNum) + `A\t${cluster.ingressVip}`,
+    `${removeProtocolFromURL(consoleUrl)}.`.padEnd(paddingNum) + `A\t${cluster.ingressVip}`,
+    `grafana-openshift-monitoring.${appsUrl}.`.padEnd(paddingNum) + `A\t${cluster.ingressVip}`,
+    `thanos-querier-openshift-monitoring.${appsUrl}.`.padEnd(paddingNum) +
+      `A\t${cluster.ingressVip}`,
+    `prometheus-k8s-openshift-monitoring.${appsUrl}.`.padEnd(paddingNum) +
+      `A\t${cluster.ingressVip}`,
+    `alertmanager-main-openshift-monitoring.${appsUrl}.`.padEnd(paddingNum) +
+      `A\t${cluster.ingressVip}`,
+  ];
+
+  const aRecordsOptional = sortedHostIPs.map(
+    (hostname: string) => `${hostname}.\tA\t${hostIPs[hostname]}`,
+  );
+
   return (
-    <TextContent>
+    <>
       <Text component="p">
-        In order to access the OpenShift Web Console, make sure your local or external DNS server is
-        configured to resolve its hostname. To do so, either:
+        In order to access the OpenShift Web Console, use external DNS server or local configuration
+        to resolve its hostname. To do so, either:
       </Text>
-      <TextList>
-        <TextListItem>
-          Update your local /etc/hosts or /etc/resolve.conf files to resolve:
-          <Text component="p">
-            {etcHosts.map((item) => (
-              <div key={item}>{item}</div>
-            ))}
-          </Text>
-        </TextListItem>
-        <TextListItem>
-          Contact your network administrator to configure this resolution in an external DNS server.
-        </TextListItem>
-      </TextList>
-    </TextContent>
+      <ModalExpandableSection
+        toggleText="Option 1: Add the following records to your DNS server (recommended)"
+        className="pf-u-pb-md"
+        isExpanded={isDNSExpanded}
+        onToggle={() => setIsDNSExpanded(!isDNSExpanded)}
+        requiredList={aRecords}
+        optionalList={aRecordsOptional}
+      />
+      <ModalExpandableSection
+        toggleText="Option 2: Update your local /etc/hosts or /etc/resolve.conf files"
+        className="pf-u-pb-md"
+        isExpanded={!isDNSExpanded}
+        onToggle={() => setIsDNSExpanded(!isDNSExpanded)}
+        requiredList={etcHosts}
+        optionalList={etcHostsOptional}
+      />
+    </>
   );
 };
 
@@ -140,8 +219,8 @@ export const ConsoleModal: React.FC<ConsoleModalProps> = ({
     >
       Launch OpenShift Console
     </Button>,
-    <Button variant={ButtonVariant.secondary} onClick={() => closeModal()} key="cancel">
-      Cancel
+    <Button variant={ButtonVariant.secondary} onClick={() => closeModal()} key="close">
+      Close
     </Button>,
   ];
 
