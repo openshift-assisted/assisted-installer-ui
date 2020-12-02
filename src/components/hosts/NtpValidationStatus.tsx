@@ -1,41 +1,26 @@
 import React from 'react';
-import { CheckCircleIcon, ExclamationCircleIcon, PendingIcon } from '@patternfly/react-icons';
-import {
-  global_danger_color_100 as dangerColor,
-  global_success_color_100 as successColor,
-} from '@patternfly/react-tokens';
-import { ValidationsInfo } from '../../types/hosts';
+import { Validation, ValidationsInfo } from '../../types/hosts';
+import HostPropertyValidationPopover from './HostPropertyValidationPopover';
+
+const getLabel = (validationStatus?: Validation['status']) => {
+  switch (validationStatus) {
+    case 'failure':
+      return 'Unreachable';
+    case 'success':
+      return 'Synced';
+    default:
+      return 'Pending';
+  }
+};
 
 const NtpValidationStatus: React.FC<{ validationsInfo: ValidationsInfo }> = ({
   validationsInfo,
 }) => {
   const ntpSyncedValidation = validationsInfo.network?.find((v) => v.id === 'ntp-synced');
-  switch (ntpSyncedValidation?.status) {
-    case 'success':
-      return (
-        <>
-          <CheckCircleIcon color={successColor.value} /> Synced
-        </>
-      );
-    case 'failure':
-      return (
-        <>
-          <ExclamationCircleIcon color={dangerColor.value} /> Unreachable (Configure NTP source in
-          Advanced networking section)
-        </>
-      );
-    case 'pending':
-      return (
-        <>
-          <PendingIcon /> Pending
-        </>
-      );
-    default:
-      return (
-        <>
-          <ExclamationCircleIcon color={dangerColor.value} /> Failed to validate NTP status
-        </>
-      );
-  }
+  return (
+    <HostPropertyValidationPopover validation={ntpSyncedValidation} showSuccess showPending>
+      {getLabel(ntpSyncedValidation?.status)}
+    </HostPropertyValidationPopover>
+  );
 };
 export default NtpValidationStatus;
