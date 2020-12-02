@@ -6,8 +6,7 @@ import AdvancedNetworkFields from './AdvancedNetworkFields';
 import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
 import { InputField, CheckboxField, SelectField } from '../ui/formik';
 import { ManagedDomain, Cluster } from '../../api/types';
-import { CLUSTER_DEFAULT_NETWORK_SETTINGS } from '../../config/constants';
-import { isAdvConf } from './utils';
+import { getClusterDefaultSettings, isAdvConf } from './utils';
 
 type NetworkConfigurationProps = {
   cluster: Cluster;
@@ -42,13 +41,12 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
     setAdvanced(checked);
 
     if (!checked) {
-      setFieldValue('clusterNetworkCidr', CLUSTER_DEFAULT_NETWORK_SETTINGS.clusterNetworkCidr);
-      setFieldValue(
-        'clusterNetworkHostPrefix',
-        CLUSTER_DEFAULT_NETWORK_SETTINGS.clusterNetworkHostPrefix,
-      );
-      setFieldValue('serviceNetworkCidr', CLUSTER_DEFAULT_NETWORK_SETTINGS.serviceNetworkCidr);
-      setFieldValue('additionalNtpSource', CLUSTER_DEFAULT_NETWORK_SETTINGS.additionalNtpSource);
+      const defaultSettings = getClusterDefaultSettings(cluster.clusterNetworkCidr as string);
+
+      setFieldValue('clusterNetworkCidr', defaultSettings.clusterNetworkCidr);
+      setFieldValue('serviceNetworkCidr', defaultSettings.serviceNetworkCidr);
+      setFieldValue('clusterNetworkHostPrefix', defaultSettings.clusterNetworkHostPrefix);
+      setFieldValue('additionalNtpSource', defaultSettings.additionalNtpSource);
     }
   };
 

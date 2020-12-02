@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, ButtonVariant } from '@patternfly/react-core';
 import EditHostModal from './EditHostModal';
 import { Host, Inventory, Cluster } from '../../api/types';
+import { getHostname } from './utils';
 
 type HostnameProps = {
   host: Host;
@@ -12,9 +13,6 @@ type HostnameProps = {
   inventory?: Inventory;
   title?: string;
 };
-
-export const computeHostname = (host: Host, inventory: Inventory) =>
-  host.requestedHostname || inventory.hostname;
 
 const Hostname: React.FC<HostnameProps> = ({
   host,
@@ -31,7 +29,7 @@ const Hostname: React.FC<HostnameProps> = ({
     _setOpen(isOpen);
   };
 
-  const hostname = title || computeHostname(host, inventory);
+  const hostname = title || getHostname(host, inventory);
   const isHostnameChangeRequested = !title && host.requestedHostname !== inventory.hostname;
 
   return (

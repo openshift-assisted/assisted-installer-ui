@@ -118,9 +118,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
       if (values.vipDhcpAllocation) {
         delete params.apiVip;
         delete params.ingressVip;
-        const cidr = hostSubnets
-          .find((hn) => hn.humanized === values.hostSubnet)
-          ?.subnet.toString();
+        const cidr = hostSubnets.find((hn) => hn.humanized === values.hostSubnet)?.subnet;
         params.machineNetworkCidr = cidr;
       }
 

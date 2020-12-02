@@ -1,12 +1,11 @@
 import { IRow } from '@patternfly/react-table';
-import { Netmask } from 'netmask';
 import { ClusterUpdateParams } from '../api/types';
 import { Validation } from './hosts';
 
 export type ClusterTableRows = IRow[];
 
 export type HostSubnet = {
-  subnet: Netmask;
+  subnet: string;
   hostIDs: string[];
   humanized: string;
 };

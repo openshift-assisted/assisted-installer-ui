@@ -3,6 +3,8 @@ import { TextInputTypes } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 import { InputField } from '../ui/formik';
 import { ClusterConfigurationValues } from '../../types/clusters';
+import { Address6 } from 'ip-address';
+import { PREFIX_MAX_RESTRICTION } from '../../config/constants';
 
 const AdvancedNetworkFields: React.FC = () => {
   const { setFieldValue, values } = useFormikContext<ClusterConfigurationValues>();
@@ -13,6 +15,12 @@ const AdvancedNetworkFields: React.FC = () => {
       setFieldValue('clusterNetworkHostPrefix', clusterNetworkCidrPrefix);
     }
   };
+
+  const isClusterCIDRIPv6 = Address6.isValid(values.clusterNetworkCidr || '');
+
+  const clusterNetworkHostPrefixHelperText = isClusterCIDRIPv6
+    ? 'The subnet prefix length to assign to each individual node. For example, if Cluster Network Host Prefix is set to 116, then each node is assigned a /116 subnet out of the given cidr (clusterNetworkCIDR), which allows for 4,094 (2^(128 - 116) - 2) pod IPs addresses. If you are required to provide access to nodes from an external network, configure load balancers and routers to manage the traffic.'
+    : 'The subnet prefix length to assign to each individual node. For example, if Cluster Network Host Prefix is set to 23, then each node is assigned a /23 subnet out of the given cidr (clusterNetworkCIDR), which allows for 510 (2^(32 - 23) - 2) pod IPs addresses. If you are required to provide access to nodes from an external network, configure load balancers and routers to manage the traffic.';
 
   return (
     <>
@@ -27,9 +35,9 @@ const AdvancedNetworkFields: React.FC = () => {
         label="Cluster Network Host Prefix"
         type={TextInputTypes.number}
         min={clusterNetworkCidrPrefix}
-        max={25}
+        max={isClusterCIDRIPv6 ? PREFIX_MAX_RESTRICTION.IPv6 : PREFIX_MAX_RESTRICTION.IPv4}
         onBlur={(e) => formatClusterNetworkHostPrefix(e as React.ChangeEvent<HTMLInputElement>)}
-        helperText="The subnet prefix length to assign to each individual node. For example, if Cluster Network Host Prefix is set to 23, then each node is assigned a /23 subnet out of the given cidr (clusterNetworkCIDR), which allows for 510 (2^(32 - 23) - 2) pod IPs addresses. If you are required to provide access to nodes from an external network, configure load balancers and routers to manage the traffic."
+        helperText={clusterNetworkHostPrefixHelperText}
         isRequired
       />
       <InputField

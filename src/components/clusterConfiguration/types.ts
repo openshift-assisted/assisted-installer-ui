@@ -7,4 +7,10 @@ export type ProxyFieldsType = {
   noProxy: Cluster['noProxy'];
 };
 
+export type ClusterNetworkDefaultSettings = {
+  clusterNetworkCidr: string;
+  serviceNetworkCidr: string;
+  clusterNetworkHostPrefix: number;
+};
+
 export type DiscoveryImageFormValues = ImageCreateParams & ProxyFieldsType;
