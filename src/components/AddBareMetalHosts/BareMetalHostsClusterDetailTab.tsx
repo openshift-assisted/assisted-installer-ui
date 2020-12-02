@@ -79,12 +79,26 @@ export const BareMetalHostsClusterDetailTab: React.FC<{
         let dayTwoClusterExists = false;
         // try to find Day 2 cluster (can be missing)
         try {
-          const { data } = await getClustersByOpenshiftId(openshiftClusterId);
+          let { data } = await getClustersByOpenshiftId(openshiftClusterId);
+
+          if (!data || data.length === 0) {
+            const response = await getCluster(openshiftClusterId);
+            if (response.data) {
+              data = [response.data];
+            }
+          }
 
           if (data?.length > 1) {
             const bestMatch =
-              data.find((cluster) => cluster.openshiftClusterId === openshiftClusterId) ||
-              data.find((cluster) => cluster.id === openshiftClusterId);
+              data.find(
+                (cluster) =>
+                  cluster.kind === 'AddHostsCluster' &&
+                  cluster.openshiftClusterId === openshiftClusterId,
+              ) ||
+              data.find(
+                (cluster) =>
+                  cluster.kind === 'AddHostsCluster' && cluster.id === openshiftClusterId,
+              );
 
             console.warn(
               `Expected to find 0 or 1 of the Day 2 clusters for "${openshiftClusterId}" OpenShift Cluster ID (external_id) but found ${data.length}. Choosing the first best match with assisted installer cluster ID: `,
