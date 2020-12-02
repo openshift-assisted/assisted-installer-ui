@@ -12,7 +12,7 @@ export const getEnabledHostsCount = (hosts?: Host[]) =>
   (hosts || []).filter((h) => h.status != 'disabled').length;
 
 const getReadyHostsCount = (hosts?: Host[]) =>
-  (hosts || []).filter((h) => h.status != 'known').length;
+  (hosts || []).filter((h) => h.status === 'known').length;
 
 const HostsCount: React.FC<HostsCountProps> = ({
   hosts,

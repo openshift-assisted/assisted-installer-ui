@@ -50,6 +50,7 @@ const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({ closeModal, c
       onClose={closeModal}
       variant={ModalVariant.small}
       hasNoBodyWrapper
+      id="generate-discovery-iso-modal"
     >
       {imageInfo ? (
         <DiscoveryImageSummary
