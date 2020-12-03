@@ -2,13 +2,7 @@ import React from 'react';
 import { Button, ButtonVariant } from '@patternfly/react-core';
 import { normalizeClusterVersion } from '../../config';
 import { OcmClusterType } from './types';
-import {
-  AddHostsClusterCreateParams,
-  Cluster,
-  getCluster,
-  getClustersByOpenshiftId,
-  handleApiError,
-} from '../../api';
+import { AddHostsClusterCreateParams, Cluster, getCluster, handleApiError } from '../../api';
 import { getOpenshiftClusterId } from './utils';
 import { usePullSecretFetch } from '../fetching/pullSecret';
 import { ErrorState, LoadingState } from '../ui';
@@ -55,7 +49,7 @@ export const BareMetalHostsClusterDetailTab: React.FC<{
         }
       } else if (cluster.console?.url) {
         // Try to guess API URL from Console URL.
-        // Assumption: the cluster is originated by Assisted Installer, so console URL format should be fixed.
+        // Assumption: the cluster is originated by Assisted Installer, so console URL format should be of a fixed format.
         try {
           // protocol://console-openshift-console.apps.[CLUSTER_NAME].[BASE_DOMAIN]"
           const consoleUrlHostname = new URL(cluster.console.url).hostname;
@@ -79,52 +73,25 @@ export const BareMetalHostsClusterDetailTab: React.FC<{
         let dayTwoClusterExists = false;
         // try to find Day 2 cluster (can be missing)
         try {
-          let { data } = await getClustersByOpenshiftId(openshiftClusterId);
-
-          if (!data || data.length === 0) {
-            const response = await getCluster(openshiftClusterId);
-            if (response.data) {
-              data = [response.data];
-            }
-          }
-
-          if (data?.length > 1) {
-            const bestMatch =
-              data.find(
-                (cluster) =>
-                  cluster.kind === 'AddHostsCluster' &&
-                  cluster.openshiftClusterId === openshiftClusterId,
-              ) ||
-              data.find(
-                (cluster) =>
-                  cluster.kind === 'AddHostsCluster' && cluster.id === openshiftClusterId,
-              );
-
-            console.warn(
-              `Expected to find 0 or 1 of the Day 2 clusters for "${openshiftClusterId}" OpenShift Cluster ID (external_id) but found ${data.length}. Choosing the first best match with assisted installer cluster ID: `,
-              bestMatch?.id,
-            );
-            if (bestMatch) {
-              setDay2Cluster(bestMatch);
-              dayTwoClusterExists = true;
-            }
-          }
-
-          if (data?.length === 1) {
-            setDay2Cluster(data[0]);
-            dayTwoClusterExists = true;
-          }
+          // The Day-2's cluster.id is always equal to the openshift_cluster_id, there is recently
+          // no way how to pass openshif_cluster_id other way than set it to the cluster.id (not even via API).
+          // There can not be >1 of Day 2 clusters. The Cluster.openshift_cluster_id is irrelevant to the Day 2 clusters.
+          const { data } = await getCluster(openshiftClusterId);
+          setDay2Cluster(data);
+          dayTwoClusterExists = true;
         } catch (e) {
-          handleApiError(e);
-          setError('Failed to read cluster details.');
-          return;
+          if (e.response?.status !== 404) {
+            handleApiError(e);
+            setError('Failed to read cluster details.');
+            return;
+          }
         }
 
         if (!dayTwoClusterExists) {
           try {
             // Optionally create Day 2 cluster
             const { data } = await addHostsClusters({
-              id: openshiftClusterId,
+              id: openshiftClusterId, // used to both match OpenShift Cluster and as an assisted-installer ID
               name: `scale-up-${cluster.display_name || cluster.name || openshiftClusterId}`, // both cluster.name and cluster.display-name contain just UUID which fails AI validation (k8s naming conventions)
               openshiftVersion,
               apiVipDnsname,
