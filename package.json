@@ -44,7 +44,6 @@
     "http-proxy-middleware": "^1.0.3",
     "human-date": "^1.4.0",
     "humanize-plus": "^1.8.2",
-    "ip-address": "^7.1.0",
     "lodash": "^4.17.15",
     "prism-react-renderer": "^1.1.1",
     "react": "^16.13.1",
@@ -101,6 +100,7 @@
   ],
   "dependencies": {
     "axios-case-converter": "^0.6.0",
-    "unique-names-generator": "^4.2.0"
+    "unique-names-generator": "^4.2.0",
+    "ip-address": "^7.1.0"
   }
 }
