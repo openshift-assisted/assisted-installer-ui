@@ -39,11 +39,10 @@ export const getHostSubnets = (cluster: Cluster): HostSubnets => {
 
   return (
     cluster.hostNetworks?.map((hn) => {
-      const subnet = getSubnet(hn.cidr as string);
       return {
-        subnet: subnet ? subnet.subnet : '',
+        subnet: hn.cidr || '',
         hostIDs: hn.hostIds?.map((id) => hostnameMap[id] || id) || [],
-        humanized: getHumanizedSubnet(subnet),
+        humanized: getHumanizedSubnet(getSubnet(hn.cidr as string)),
       };
     }) || []
   );
