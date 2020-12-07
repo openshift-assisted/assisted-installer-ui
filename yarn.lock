@@ -6123,6 +6123,11 @@ is-glob@^4.0.0, is-glob@^4.0.1, is-glob@~4.0.1:
   dependencies:
     is-extglob "^2.1.1"
 
+is-in-subnet@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/is-in-subnet/-/is-in-subnet-3.1.0.tgz#ae6fa5f29f953de5c5c3c3fb2ce2e70b9378458c"
+  integrity sha512-UpHSoZ+S53dhiM5q48atdahm6GmaTFlZaelKTdtBQeSihWZdToE7b8hlTzWVVLghntGlCK97c1JTIdzV5Q+Vcw==
+
 is-interactive@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/is-interactive/-/is-interactive-1.0.0.tgz#cea6e6ae5c870a7b0a0004070b7b587e0252912e"
