@@ -51,8 +51,8 @@ const SELECT_ALL = 'select-all-actions';
 const CLUSTER_LEVEL = 'cluster-level-action';
 const ORPHANS = 'deleted-hosts-action';
 
-const mapHosts = (hosts: Host[] = []) =>
-  hosts.map((host) => {
+const mapHosts = (hosts: Cluster['hosts']) =>
+  (hosts || []).map((host) => {
     const inventory = stringToJSON<Inventory>(host.inventory) || {};
     let hostname = host.requestedHostname;
     if (inventory.hostname !== host.requestedHostname) {

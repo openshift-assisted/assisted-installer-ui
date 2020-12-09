@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, ButtonVariant } from '@patternfly/react-core';
 import { SearchIcon } from '@patternfly/react-icons';
 import EventsList from './EventsList';
-import { EventList, Cluster, Host } from '../../api/types';
+import { EventList, Cluster } from '../../api/types';
 import ClusterEventsToolbar, {
   ClusterEventsFiltersType,
   getInitialClusterEventsFilters,
@@ -17,7 +17,7 @@ type ClusterEventsListProps = {
 const filterEvents = (
   filters: ClusterEventsFiltersType,
   events: EventList = [],
-  clusterHosts: Host[] = [],
+  clusterHosts: Cluster['hosts'],
 ) => {
   return events
     .filter((event) => filters.severity.length === 0 || filters.severity.includes(event.severity))
@@ -25,7 +25,7 @@ const filterEvents = (
       (event) =>
         !event.hostId ||
         filters.hosts.includes(event.hostId) ||
-        (filters.orphanedHosts && !clusterHosts.find((host) => host.id === event.hostId)),
+        (filters.orphanedHosts && !(clusterHosts || []).find((host) => host.id === event.hostId)),
     )
     .filter((event) => event.hostId || filters.clusterLevel)
     .filter(
