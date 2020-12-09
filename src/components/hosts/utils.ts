@@ -29,12 +29,14 @@ export const canDelete = (clusterStatus: Cluster['status'], status: Host['status
     'resetting',
     'resetting-pending-user-input',
     'resetting-pending-user-action',
+    'installing-pending-user-action',
     'pending-for-input',
     'added-to-existing-cluster',
   ].includes(status);
 
 export const canReset = (clusterStatus: Cluster['status'], status: Host['status']) =>
-  ['adding-hosts'].includes(clusterStatus) && ['error'].includes(status);
+  ['adding-hosts'].includes(clusterStatus) &&
+  ['error', 'installing-pending-user-action'].includes(status);
 
 export const canEditRole = (clusterStatus: Cluster['status'], status: Host['status']) =>
   ['pending-for-input', 'insufficient', 'ready'].includes(clusterStatus) &&

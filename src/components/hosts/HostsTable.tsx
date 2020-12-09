@@ -405,7 +405,7 @@ const HostsTable: React.FC<HostsTableProps> = ({
       }
       if (canReset(clusterStatus, host.status)) {
         actions.push({
-          title: 'Reset Host',
+          title: 'Reset',
           id: `button-reset-host-${hostname}`,
           onClick: () => {
             setHostToReset({ id: host.id, hostname });
