@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import {
   Form,
-  PageSectionVariants,
   TextContent,
   Text,
   ButtonVariant,
@@ -14,6 +13,8 @@ import {
   TextVariants,
   Spinner,
   Button,
+  Stack,
+  StackItem,
 } from '@patternfly/react-core';
 import { WarningTriangleIcon, CheckCircleIcon } from '@patternfly/react-icons';
 import { global_success_color_100 as successColor } from '@patternfly/react-tokens';
@@ -21,7 +22,6 @@ import { global_warning_color_100 as warningColor } from '@patternfly/react-toke
 import { useDispatch } from 'react-redux';
 
 import ClusterToolbar from '../clusters/ClusterToolbar';
-import PageSection from '../ui/PageSection';
 import { InputField } from '../ui/formik';
 import { ToolbarButton, ToolbarText, ToolbarSecondaryGroup } from '../ui/Toolbar';
 import GridGap from '../ui/GridGap';
@@ -42,7 +42,6 @@ import {
   vipValidationSchema,
   ntpSourceValidationSchema,
 } from '../ui/formik/validationSchemas';
-import ClusterBreadcrumbs from '../clusters/ClusterBreadcrumbs';
 import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
 import NetworkConfiguration from './NetworkConfiguration';
 import ClusterValidationSection from './ClusterValidationSection';
@@ -183,19 +182,13 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
         };
 
         return (
-          <>
-            <ClusterBreadcrumbs clusterName={cluster.name} />
-            <PageSection variant={PageSectionVariants.light} isMain>
+          <Stack hasGutter>
+            <StackItem>
               <Form>
                 <Grid hasGutter>
                   <GridItem span={12} lg={10} xl={6}>
                     {/* TODO(jtomasek): remove this if we're not putting full width content here (e.g. hosts table)*/}
                     <GridGap>
-                      <TextContent>
-                        <Text component="h1">
-                          Install OpenShift on Bare Metal with the Assisted Installer
-                        </Text>
-                      </TextContent>
                       <InputField label="Cluster Name" name="name" isRequired />
                     </GridGap>
                   </GridItem>
@@ -225,97 +218,101 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
                   </GridItem>
                 </Grid>
               </Form>
-            </PageSection>
-            <AlertsSection />
-            <ClusterToolbar
-              validationSection={
-                isValidationSectionOpen ? (
-                  <ClusterValidationSection
-                    cluster={cluster}
-                    dirty={dirty}
-                    formErrors={errors}
-                    onClose={() => setIsValidationSectionOpen(false)}
-                  />
-                ) : null
-              }
-            >
-              <ToolbarButton
-                variant={ButtonVariant.primary}
-                name="install"
-                onClick={handleClusterInstall}
-                isDisabled={
-                  isStartingInstallation || !isValid || dirty || cluster.status !== 'ready'
+            </StackItem>
+            <StackItem>
+              <AlertsSection />
+            </StackItem>
+            <StackItem>
+              <ClusterToolbar
+                validationSection={
+                  isValidationSectionOpen ? (
+                    <ClusterValidationSection
+                      cluster={cluster}
+                      dirty={dirty}
+                      formErrors={errors}
+                      onClose={() => setIsValidationSectionOpen(false)}
+                    />
+                  ) : null
                 }
               >
-                Install Cluster
-              </ToolbarButton>
-              <ToolbarButton
-                type="submit"
-                name="save"
-                variant={ButtonVariant.secondary}
-                isDisabled={isSubmitting || !isValid || !dirty}
-                onClick={submitForm}
-              >
-                Validate & Save Changes
-              </ToolbarButton>
-              <ToolbarButton
-                variant={ButtonVariant.secondary}
-                isDisabled={isSubmitting || !dirty}
-                onClick={() => resetForm()}
-              >
-                Discard Changes
-              </ToolbarButton>
-              <ToolbarButton
-                variant={ButtonVariant.link}
-                component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
-                isHidden={isSingleClusterMode()}
-              >
-                Back to all clusters
-              </ToolbarButton>
-              {isSubmitting && (
-                <ToolbarText component={TextVariants.small}>
-                  <Spinner size="sm" /> Saving changes...
-                </ToolbarText>
-              )}
-              {isStartingInstallation ? (
-                <ToolbarText component={TextVariants.small}>
-                  <Spinner size="sm" /> Starting installation...
-                </ToolbarText>
-              ) : (
-                <ToolbarText component={TextVariants.small}>
-                  {!Object.keys(errors).length && !dirty && cluster.status === 'ready' ? (
-                    <>
-                      <CheckCircleIcon color={successColor.value} /> The cluster is ready to be
-                      installed.
-                    </>
-                  ) : (
-                    <>
-                      <Button
-                        variant={ButtonVariant.link}
-                        onClick={() => setIsValidationSectionOpen(!isValidationSectionOpen)}
-                        isInline
-                      >
-                        <WarningTriangleIcon color={warningColor.value} />{' '}
-                        <small>The cluster is not ready to be installed yet</small>
-                      </Button>
-                    </>
-                  )}
-                </ToolbarText>
-              )}
-              <ToolbarSecondaryGroup>
-                <EventsModalButton
-                  id="cluster-events-button"
-                  entityKind="cluster"
-                  cluster={cluster}
-                  title="Cluster Events"
-                  variant={ButtonVariant.link}
-                  style={{ textAlign: 'right' }}
+                <ToolbarButton
+                  variant={ButtonVariant.primary}
+                  name="install"
+                  onClick={handleClusterInstall}
+                  isDisabled={
+                    isStartingInstallation || !isValid || dirty || cluster.status !== 'ready'
+                  }
                 >
-                  View Cluster Events
-                </EventsModalButton>
-              </ToolbarSecondaryGroup>
-            </ClusterToolbar>
-          </>
+                  Install Cluster
+                </ToolbarButton>
+                <ToolbarButton
+                  type="submit"
+                  name="save"
+                  variant={ButtonVariant.secondary}
+                  isDisabled={isSubmitting || !isValid || !dirty}
+                  onClick={submitForm}
+                >
+                  Validate & Save Changes
+                </ToolbarButton>
+                <ToolbarButton
+                  variant={ButtonVariant.secondary}
+                  isDisabled={isSubmitting || !dirty}
+                  onClick={() => resetForm()}
+                >
+                  Discard Changes
+                </ToolbarButton>
+                <ToolbarButton
+                  variant={ButtonVariant.link}
+                  component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
+                  isHidden={isSingleClusterMode()}
+                >
+                  Back to all clusters
+                </ToolbarButton>
+                {isSubmitting && (
+                  <ToolbarText component={TextVariants.small}>
+                    <Spinner size="sm" /> Saving changes...
+                  </ToolbarText>
+                )}
+                {isStartingInstallation ? (
+                  <ToolbarText component={TextVariants.small}>
+                    <Spinner size="sm" /> Starting installation...
+                  </ToolbarText>
+                ) : (
+                  <ToolbarText component={TextVariants.small}>
+                    {!Object.keys(errors).length && !dirty && cluster.status === 'ready' ? (
+                      <>
+                        <CheckCircleIcon color={successColor.value} /> The cluster is ready to be
+                        installed.
+                      </>
+                    ) : (
+                      <>
+                        <Button
+                          variant={ButtonVariant.link}
+                          onClick={() => setIsValidationSectionOpen(!isValidationSectionOpen)}
+                          isInline
+                        >
+                          <WarningTriangleIcon color={warningColor.value} />{' '}
+                          <small>The cluster is not ready to be installed yet</small>
+                        </Button>
+                      </>
+                    )}
+                  </ToolbarText>
+                )}
+                <ToolbarSecondaryGroup>
+                  <EventsModalButton
+                    id="cluster-events-button"
+                    entityKind="cluster"
+                    cluster={cluster}
+                    title="Cluster Events"
+                    variant={ButtonVariant.link}
+                    style={{ textAlign: 'right' }}
+                  >
+                    View Cluster Events
+                  </EventsModalButton>
+                </ToolbarSecondaryGroup>
+              </ClusterToolbar>
+            </StackItem>
+          </Stack>
         );
       }}
     </Formik>
