@@ -55,6 +55,7 @@ import {
   downloadHostInstallationLogs,
   canReset,
   getHostname,
+  canInstallHost,
 } from './utils';
 import EditHostModal from './EditHostModal';
 import Hostname from './Hostname';
@@ -63,6 +64,7 @@ import { ValidationsInfo } from '../../types/hosts';
 import HostPropertyValidationPopover from './HostPropertyValidationPopover';
 
 import './HostsTable.css';
+import { installHost } from '../../api';
 
 type HostsTableProps = {
   cluster: Cluster;
@@ -292,14 +294,13 @@ const HostsTable: React.FC<HostsTableProps> = ({
     },
     [cluster.id, dispatch, addAlert],
   );
-  /*
-  So far installation per-host is not implemented.
+
   const onInstallHost = React.useCallback(
     async (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
       const hostId = rowData.host.id;
       try {
         const { data } = await installHost(cluster.id, hostId);
-        dispatch(updateCluster(data));
+        dispatch(updateHost(data));
       } catch (e) {
         handleApiError(e, () =>
           addAlert({ title: `Failed to enable host ${hostId}`, message: getErrorMessage(e) }),
@@ -308,7 +309,7 @@ const HostsTable: React.FC<HostsTableProps> = ({
     },
     [cluster.id, dispatch, addAlert],
   );
-*/
+
   const onHostDisable = React.useCallback(
     async (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
       const hostId = rowData.host.id;
@@ -372,7 +373,7 @@ const HostsTable: React.FC<HostsTableProps> = ({
       }
 
       const actions = [];
-      /*
+
       if (canInstallHost(cluster, host.status)) {
         actions.push({
           title: 'Install Host',
@@ -380,7 +381,7 @@ const HostsTable: React.FC<HostsTableProps> = ({
           onClick: onInstallHost,
         });
       }
-      */
+
       if (canEditHost(clusterStatus, host.status)) {
         actions.push({
           title: 'Edit Host',
@@ -435,7 +436,15 @@ const HostsTable: React.FC<HostsTableProps> = ({
 
       return actions;
     },
-    [onHostEnable, onHostDisable, onViewHostEvents, onEditHost, onDownloadHostLogs],
+    [
+      cluster,
+      onHostEnable,
+      onHostDisable,
+      onViewHostEvents,
+      onEditHost,
+      onDownloadHostLogs,
+      onInstallHost,
+    ],
   );
 
   const onSort: OnSort = React.useCallback(

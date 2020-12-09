@@ -26,8 +26,8 @@ export const OPENSHIFT_VERSION_OPTIONS: OpenshiftVersionOptionType[] = [
 export const DEFAULT_OPENSHIFT_VERSION: OpenshiftVersionOptionType['value'] =
   OPENSHIFT_VERSION_OPTIONS[0].value;
 
-export const normalizeClusterVersion = (version: string) =>
-  OPENSHIFT_VERSIONS_ADDHOST.find((normalized) => version.startsWith(normalized));
+export const normalizeClusterVersion = (version?: string) =>
+  version && OPENSHIFT_VERSIONS_ADDHOST.find((normalized) => version.startsWith(normalized));
 
 export const CLUSTER_MANAGER_SITE_LINK = 'https://cloud.redhat.com/openshift/install/pull-secret';
 export const PULL_SECRET_INFO_LINK = CLUSTER_MANAGER_SITE_LINK;
