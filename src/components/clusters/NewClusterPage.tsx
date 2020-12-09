@@ -10,8 +10,10 @@ import {
   TextContent,
   Text,
   ButtonVariant,
+  PageSection,
+  Stack,
+  StackItem,
 } from '@patternfly/react-core';
-import PageSection from '../ui/PageSection';
 import { ToolbarButton } from '../ui/Toolbar';
 import ClusterToolbar from './ClusterToolbar';
 import AlertsSection from '../ui/AlertsSection';
@@ -28,8 +30,6 @@ import LoadingState from '../ui/uiState/LoadingState';
 import { captureException } from '../../sentry';
 import PullSecret from './PullSecret';
 import { usePullSecretFetch } from '../fetching/pullSecret';
-
-import './NewClusterPage.css';
 
 type NewClusterFormProps = {
   pullSecret?: string;
@@ -83,7 +83,6 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ pullSecret = '' }) => {
 
   return (
     <>
-      <ClusterBreadcrumbs clusterName="New cluster" />
       <Formik
         initialValues={{
           name: '',
@@ -94,36 +93,34 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ pullSecret = '' }) => {
         onSubmit={handleSubmit}
       >
         {({ submitForm, isSubmitting, isValid, dirty }) => (
-          <>
-            <PageSection variant={PageSectionVariants.light} isMain>
-              <Grid hasGutter>
-                <GridItem span={12} lg={10} xl={6}>
-                  <Form
-                    className="form-new-cluster"
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        submitForm();
-                      }
-                    }}
-                  >
-                    <TextContent>
-                      <Text component="h1">
-                        Install OpenShift on Bare Metal with the Assisted Installer
-                      </Text>
-                    </TextContent>
+          <Form
+            className="form-new-cluster"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                submitForm();
+              }
+            }}
+          >
+            <Grid hasGutter>
+              <GridItem span={12} lg={10} xl={6}>
+                <Stack hasGutter>
+                  <StackItem>
                     <InputField ref={nameInputRef} label="Cluster Name" name="name" isRequired />
+                  </StackItem>
+                  <StackItem>
                     <SelectField
                       label="OpenShift Version"
                       name="openshiftVersion"
                       options={OPENSHIFT_VERSION_OPTIONS}
                       isRequired
                     />
+                  </StackItem>
+                  <StackItem>
                     <PullSecret pullSecret={pullSecret} />
-                  </Form>
-                </GridItem>
-              </Grid>
-            </PageSection>
-            <AlertsSection />
+                  </StackItem>
+                </Stack>
+              </GridItem>
+            </Grid>
             <ClusterToolbar>
               <ToolbarButton
                 name="save"
@@ -140,7 +137,7 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ pullSecret = '' }) => {
                 Cancel
               </ToolbarButton>
             </ClusterToolbar>
-          </>
+          </Form>
         )}
       </Formik>
     </>
@@ -149,14 +146,20 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ pullSecret = '' }) => {
 
 const NewCluster: React.FC = () => {
   const pullSecret = usePullSecretFetch();
-  if (pullSecret === undefined) {
-    return (
-      <PageSection variant={PageSectionVariants.light} isMain>
-        <LoadingState />
+  return (
+    <>
+      <ClusterBreadcrumbs clusterName="New cluster" />
+      <PageSection variant={PageSectionVariants.light}>
+        <TextContent>
+          <Text component="h1">Install OpenShift on Bare Metal with the Assisted Installer</Text>
+        </TextContent>
       </PageSection>
-    );
-  }
-  return <NewClusterForm pullSecret={pullSecret} />;
+      <PageSection variant={PageSectionVariants.light} isFilled>
+        {pullSecret === undefined ? <LoadingState /> : <NewClusterForm pullSecret={pullSecret} />}
+        <AlertsSection />
+      </PageSection>
+    </>
+  );
 };
 
 const NewClusterPage: React.FC = () => (
