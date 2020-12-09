@@ -26,7 +26,9 @@ export const BareMetalHostsClusterDetailTab: React.FC<{
       setDay2Cluster(undefined);
     }
 
-    if (isVisible && day2Cluster === undefined && cluster && pullSecret) {
+    const openshiftClusterId = getOpenshiftClusterId(cluster);
+
+    if (isVisible && day2Cluster === undefined && cluster && openshiftClusterId && pullSecret) {
       // ensure exclusive run
       setDay2Cluster(null);
 
@@ -66,8 +68,6 @@ export const BareMetalHostsClusterDetailTab: React.FC<{
         setError('Missing API URL');
         return;
       }
-
-      const openshiftClusterId = getOpenshiftClusterId(cluster);
 
       const doItAsync = async () => {
         let dayTwoClusterExists = false;
