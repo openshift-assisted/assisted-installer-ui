@@ -1,6 +1,6 @@
 {
   "name": "facet-lib",
-  "version": "1.4.8-3",
+  "version": "1.4.8-4",
   "description": "React component library for the Bare Metal Installer",
   "author": "mareklibra",
   "license": "Apache-2.0",
@@ -101,6 +101,7 @@
   "dependencies": {
     "axios-case-converter": "^0.6.0",
     "ip-address": "^7.1.0",
+    "is-in-subnet": "^3.1.0",
     "unique-names-generator": "^4.2.0"
   }
 }

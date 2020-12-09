@@ -4,8 +4,8 @@ import { Host } from '../../../api/types';
 import { ProxyFieldsType } from '../../clusterConfiguration/types';
 import { NO_SUBNET_SET } from '../../../config/constants';
 import { trimCommaSeparatedList, trimSshPublicKey } from './utils';
-import { getSubnet } from '../../clusterConfiguration/utils';
 import { Address4, Address6 } from 'ip-address';
+import { isInSubnet } from 'is-in-subnet';
 
 const CLUSTER_NAME_REGEX = /^[a-z]([-a-z0-9]*[a-z0-9])?$/;
 const SSH_PUBLIC_KEY_REGEX = /^(ssh-rsa|ssh-ed25519|ecdsa-[-a-z0-9]*) AAAA[0-9A-Za-z+/]+[=]{0,3}( .+)?$/;
@@ -73,13 +73,8 @@ export const vipRangeValidationSchema = (
       return this.createError({ message: err.message });
     }
     const hostSubnet = hostSubnets.find((hn) => hn.humanized === values.hostSubnet) || null;
-    const subnet = hostSubnet ? getSubnet(hostSubnet.subnet) : null;
-    return (
-      !subnet ||
-      (subnet.isInSubnet(value) &&
-        value !== subnet.endAddress().address &&
-        value !== subnet.startAddress().address)
-    );
+    const subnetCidr = hostSubnet ? hostSubnet.subnet : '';
+    return !subnetCidr || isInSubnet(value, subnetCidr);
   });
 
 const vipUniqueValidationSchema = (hostSubnets: HostSubnets, values: ClusterConfigurationValues) =>
