@@ -51,10 +51,10 @@ export const canEditHost = canEditRole;
 
 export const canDownloadKubeconfig = (clusterStatus: Cluster['status']) =>
   ['installing', 'finalizing', 'error', 'cancelled', 'installed'].includes(clusterStatus);
-/*
+
 export const canInstallHost = (cluster: Cluster, hostStatus: Host['status']) =>
   cluster.kind === 'AddHostsCluster' && cluster.status === 'adding-hosts' && hostStatus === 'known';
-*/
+
 export const getHostProgressStages = (host: Host) => host.progressStages || [];
 
 export const getHostProgress = (host: Host) =>
