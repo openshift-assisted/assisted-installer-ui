@@ -6,7 +6,7 @@ import { store } from '../store';
 import { isSingleClusterMode, routeBasePath } from '../config/constants';
 import SingleCluster from './SingleCluster';
 
-export const FacetRouter: React.FC = () => (
+export const AssistedUiRouter: React.FC = () => (
   <Provider store={store}>
     <Router />
   </Provider>
