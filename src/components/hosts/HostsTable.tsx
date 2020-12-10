@@ -376,7 +376,7 @@ const HostsTable: React.FC<HostsTableProps> = ({
 
       if (canInstallHost(cluster, host.status)) {
         actions.push({
-          title: 'Install Host',
+          title: 'Install host',
           id: `button-install-host-${hostname}`,
           onClick: onInstallHost,
         });
@@ -384,7 +384,7 @@ const HostsTable: React.FC<HostsTableProps> = ({
 
       if (canEditHost(clusterStatus, host.status)) {
         actions.push({
-          title: 'Edit Host',
+          title: 'Edit host',
           id: `button-edit-host-${hostname}`, // id is everchanging, not ideal for tests
           onClick: onEditHost,
         });
@@ -405,7 +405,7 @@ const HostsTable: React.FC<HostsTableProps> = ({
       }
       if (canReset(clusterStatus, host.status)) {
         actions.push({
-          title: 'Reset',
+          title: 'Reset host',
           id: `button-reset-host-${hostname}`,
           onClick: () => {
             setHostToReset({ id: host.id, hostname });
@@ -413,7 +413,7 @@ const HostsTable: React.FC<HostsTableProps> = ({
         });
       }
       actions.push({
-        title: 'View Host Events',
+        title: 'View host events',
         id: `button-view-host-events-${hostname}`,
         onClick: onViewHostEvents,
       });
@@ -426,7 +426,7 @@ const HostsTable: React.FC<HostsTableProps> = ({
       }
       if (canDelete(clusterStatus, host.status)) {
         actions.push({
-          title: 'Delete',
+          title: 'Delete host',
           id: `button-delete-host-${hostname}`,
           onClick: () => {
             setHostToDelete({ id: host.id, hostname });
