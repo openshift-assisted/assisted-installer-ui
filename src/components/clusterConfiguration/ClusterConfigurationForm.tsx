@@ -30,7 +30,7 @@ import { Cluster, ClusterUpdateParams, ManagedDomain } from '../../api/types';
 import { patchCluster, postInstallCluster, getClusters } from '../../api/clusters';
 import { handleApiError, getErrorMessage } from '../../api/utils';
 import { isSingleClusterMode, routeBasePath } from '../../config/constants';
-import AlertsSection from '../ui/AlertsSection';
+import Alerts from '../ui/Alerts';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import BaremetalInventory from './BaremetalInventory';
 import {
@@ -235,7 +235,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
               </Form>
             </StackItem>
             <StackItem>
-              <AlertsSection />
+              <Alerts />
             </StackItem>
             <StackItem>
               <ClusterToolbar
