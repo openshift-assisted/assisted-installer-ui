@@ -14,7 +14,7 @@ import { addAlert } from '../../features/alerts/alertsSlice';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import { hasKnownHost } from '../hosts/utils';
 import { ToolbarButton, ToolbarSecondaryGroup } from '../ui';
-import { Alerts } from '../ui/AlertsSection';
+import Alerts from '../ui/Alerts';
 import { EventsModalButton } from '../ui/eventsModal';
 import { AddBareMetalHostsContext } from './AddBareMetalHostsContext';
 import BaremetalInventoryAddHosts from './BareMetalInventoryAddHost';
