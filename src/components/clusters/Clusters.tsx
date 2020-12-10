@@ -17,7 +17,7 @@ import { ResourceUIState } from '../../types';
 import ClustersTable from './ClustersTable';
 import { fetchClustersAsync, deleteCluster } from '../../features/clusters/clustersSlice';
 import { deleteCluster as ApiDeleteCluster } from '../../api/clusters';
-import AlertsSection from '../ui/AlertsSection';
+import Alerts from '../ui/Alerts';
 import { handleApiError, getErrorMessage } from '../../api/utils';
 import { AlertsContext, AlertsContextProvider } from '../AlertsContextProvider';
 import ClusterBreadcrumbs from './ClusterBreadcrumbs';
@@ -99,9 +99,9 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
             </TextContent>
           </PageSection>
           <PageSection variant={PageSectionVariants.light} isMain>
+            <Alerts />
             <ClustersTable rows={clusterRows} deleteCluster={deleteClusterAsync} />
           </PageSection>
-          <AlertsSection />
         </>
       );
   }

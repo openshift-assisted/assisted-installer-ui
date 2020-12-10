@@ -23,7 +23,7 @@ import KubeconfigDownload from './KubeconfigDownload';
 import ClusterProperties from './ClusterProperties';
 import { isSingleClusterMode, routeBasePath } from '../../config';
 import FailedHostsWarning from './FailedHostsWarning';
-import AlertsSection from '../ui/AlertsSection';
+import Alerts from '../ui/Alerts';
 import { downloadClusterInstallationLogs } from './utils';
 import { AlertsContext } from '../AlertsContextProvider';
 import { canDownloadClusterLogs } from '../hosts/utils';
@@ -126,7 +126,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
         </Grid>
       </StackItem>
       <StackItem>
-        <AlertsSection />
+        <Alerts />
       </StackItem>
       <StackItem>
         <ClusterToolbar>
