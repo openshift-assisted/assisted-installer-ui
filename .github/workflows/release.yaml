@@ -33,7 +33,7 @@ jobs:
           node-version: '12.x'
           registry-url: 'https://registry.npmjs.org'
       - run: |
-          git config user.name 'Facet-lib GitHub action executed on release'
+          git config user.name 'assisted-ui-lib GitHub action executed on release'
           git config user.email 'github@users.noreply.github.com'
       - run: yarn install
       - run: yarn version --new-version ${{ env.VERSION }} --no-git-tag-version

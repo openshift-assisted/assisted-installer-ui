@@ -201,7 +201,7 @@ export const CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV6 = {
   serviceNetworkCidr: '2003:db8::/112',
 };
 
-export const getFacetLibVersion = () => packageJson.version;
+export const getAssistedUiLibVersion = () => packageJson.version;
 
 export const EVENT_SEVERITIES: Event['severity'][] = ['info', 'warning', 'error', 'critical'];
 

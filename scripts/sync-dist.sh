@@ -14,7 +14,7 @@ function sync {
   fi
 
   if [ -d "${UHC_PORTAL}" ]; then
-    rsync -avz --delete ${BUILD_OUTPUT} ${UHC_PORTAL}/node_modules/assisted-ui
+    rsync -avz --delete ${BUILD_OUTPUT} ${UHC_PORTAL}/node_modules/assisted-ui-lib
   else
     echo Sync to ${UHC_PORTAL}/node_modules/openshift-assisted-ui-lib skipped
   fi
