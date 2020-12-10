@@ -1,10 +1,9 @@
 {
-  "name": "facet-lib",
-  "version": "1.4.9",
+  "name": "openshift-assisted-ui-lib",
+  "version": "1.5.0",
   "description": "React component library for the Bare Metal Installer",
-  "author": "mareklibra",
   "license": "Apache-2.0",
-  "repository": "mareklibra/facet-lib",
+  "repository": "openshift-assisted/assisted-ui-lib",
   "main": "dist/index.js",
   "module": "dist/index.modern.js",
   "source": "src/index.ts",
@@ -96,6 +95,9 @@
   "keywords": [
     "react",
     "facet-lib",
+    "openshift",
+    "assisted-ui",
+    "assisted-ui-lib",
     "library"
   ],
   "dependencies": {
