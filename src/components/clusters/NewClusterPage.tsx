@@ -18,7 +18,7 @@ import { ToolbarButton } from '../ui/Toolbar';
 import ClusterToolbar from './ClusterToolbar';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens';
-import AlertsSection from '../ui/AlertsSection';
+import Alerts from '../ui/Alerts';
 import { handleApiError, getErrorMessage } from '../../api/utils';
 import { AlertsContext, AlertsContextProvider } from '../AlertsContextProvider';
 import ClusterBreadcrumbs from './ClusterBreadcrumbs';
@@ -141,6 +141,7 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ pullSecret = '', versio
                 </Stack>
               </GridItem>
             </Grid>
+            <Alerts />
             <ClusterToolbar>
               <ToolbarButton
                 name="save"
@@ -190,7 +191,6 @@ const NewCluster: React.FC = () => {
         ) : (
           <NewClusterForm pullSecret={pullSecret} versions={versions} />
         )}
-        <AlertsSection />
       </PageSection>
     </>
   );
