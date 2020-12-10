@@ -12,7 +12,7 @@ const DeveloperPreview: React.FC<{ position?: DeveloperPreviewPosition }> = ({
 }) => {
   let className = '';
   if (position === DeveloperPreviewPosition.inlineRight) {
-    className = 'facet-lib-float-right';
+    className = 'assisted-ui-float-right';
   }
 
   return (
