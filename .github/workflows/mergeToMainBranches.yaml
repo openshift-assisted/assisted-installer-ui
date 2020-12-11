@@ -1,9 +1,10 @@
-name: Build on merge to master
+name: Build on merge to master or a feature branch
 
 on:
   push:
     branches:
       - master
+      - wizard
 
 jobs:
   build:
