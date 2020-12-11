@@ -1,9 +1,10 @@
-name: Build on pull request to master
+name: Build on pull request to master or a feature branch
 
 on:
   pull_request:
     branches:
       - master
+      - wizard
 
 jobs:
   build:
