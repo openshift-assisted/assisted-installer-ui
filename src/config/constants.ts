@@ -56,14 +56,14 @@ export const HOST_ROLES: HostRole[] = [
 export const CLUSTER_STATUS_LABELS: { [key in Cluster['status']]: string } = {
   'pending-for-input': 'Draft',
   insufficient: 'Draft',
-  ready: 'Ready',
+  ready: 'Ready to Install',
   'preparing-for-installation': 'Preparing for installation',
   installing: 'Installing',
   'installing-pending-user-action': 'Installing (pending action)',
   finalizing: 'Finalizing',
   cancelled: 'Installation cancelled',
   error: 'Error',
-  installed: 'Installed',
+  installed: 'Ready',
   'adding-hosts': 'Adding hosts',
 };
 

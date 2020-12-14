@@ -12,34 +12,41 @@ import {
   CheckCircleIcon,
   InProgressIcon,
   BanIcon,
+  IconSize,
 } from '@patternfly/react-icons';
-import { Cluster } from '../../api/types';
+import { Cluster, ClusterStatusEnum } from '../../api/types';
 import { CLUSTER_STATUS_LABELS } from '../../config/constants';
-import { getHumanizedDateTime } from '../ui/utils';
+
+import './ClusterStatus.css';
 
 type ClusterStatusProps = {
   cluster: Cluster;
 };
 
-const getStatusIcon = (status: Cluster['status']): React.ReactElement => {
+const iconProps = {
+  className: 'clusterStatus',
+  size: IconSize.sm,
+};
+
+const getStatusIcon = (status: ClusterStatusEnum): React.ReactElement => {
   switch (status) {
-    case 'cancelled':
-      return <BanIcon />;
-    case 'insufficient':
-    case 'pending-for-input':
-      return <FileAltIcon />;
-    case 'error':
-      return <ExclamationCircleIcon color={dangerColor.value} />;
-    case 'ready':
-    case 'installed':
-      return <CheckCircleIcon color={okColor.value} />;
-    case 'installing-pending-user-action':
-      return <ExclamationTriangleIcon color={warningColor.value} />;
-    case 'preparing-for-installation':
-    case 'installing':
-    case 'finalizing':
-    case 'adding-hosts':
-      return <InProgressIcon />;
+    case ClusterStatusEnum.CANCELLED:
+      return <BanIcon {...iconProps} />;
+    case ClusterStatusEnum.INSUFFICIENT:
+    case ClusterStatusEnum.PENDING_FOR_INPUT:
+      return <FileAltIcon {...iconProps} />;
+    case ClusterStatusEnum.ERROR:
+      return <ExclamationCircleIcon color={dangerColor.value} {...iconProps} />;
+    case ClusterStatusEnum.READY:
+    case ClusterStatusEnum.INSTALLED:
+      return <CheckCircleIcon color={okColor.value} {...iconProps} />;
+    case ClusterStatusEnum.INSTALLING_PENDING_USER_INPUT:
+      return <ExclamationTriangleIcon color={warningColor.value} {...iconProps} />;
+    case ClusterStatusEnum.PREPARING_FOR_INSTALLATION:
+    case ClusterStatusEnum.INSTALLING:
+    case ClusterStatusEnum.FINALIZING:
+    case ClusterStatusEnum.ADDING_HOSTS:
+      return <InProgressIcon {...iconProps} />;
   }
 };
 
@@ -47,28 +54,14 @@ export const getClusterStatusText = (cluster: Cluster) =>
   CLUSTER_STATUS_LABELS[cluster.status] || cluster.status;
 
 const ClusterStatus: React.FC<ClusterStatusProps> = ({ cluster }) => {
-  const { status, statusInfo, statusUpdatedAt } = cluster;
+  const { status } = cluster;
   const title = getClusterStatusText(cluster);
   const icon = getStatusIcon(status) || null;
-  if (statusInfo) {
-    return (
-      <Popover
-        headerContent={<div>{title}</div>}
-        bodyContent={<div>{statusInfo}</div>}
-        footerContent={<small>Status updated at {getHumanizedDateTime(statusUpdatedAt)}</small>}
-        minWidth="30rem"
-        maxWidth="50rem"
-      >
-        <Button variant={ButtonVariant.link} isInline id={`button-cluster-status-${cluster.name}`}>
-          {icon} {title}
-        </Button>
-      </Popover>
-    );
-  }
+
   return (
-    <>
+    <div className="cluster-status-string">
       {icon} {title}
-    </>
+    </div>
   );
 };
 
