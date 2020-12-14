@@ -49,6 +49,7 @@ import { AlertsContext } from '../AlertsContextProvider';
 import ClusterSshKeyField from './ClusterSshKeyField';
 import { captureException } from '../../sentry';
 import { trimSshPublicKey } from '../ui/formik/utils';
+import ClusterWizardStep from '../clusterWizard/ClusterWizardStep';
 
 const validationSchema = (initialValues: ClusterConfigurationValues, hostSubnets: HostSubnets) =>
   Yup.lazy<ClusterConfigurationValues>((values) =>
@@ -75,7 +76,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
 }) => {
   const [isValidationSectionOpen, setIsValidationSectionOpen] = React.useState(false);
   const [isStartingInstallation, setIsStartingInstallation] = React.useState(false);
-  const { addAlert, clearAlerts } = React.useContext(AlertsContext);
+  const { alerts, addAlert, clearAlerts } = React.useContext(AlertsContext);
   const dispatch = useDispatch();
   const hostSubnets = React.useMemo(() => getHostSubnets(cluster), [cluster]);
   const initialValues = React.useMemo(() => getInitialValues(cluster, managedDomains), [
@@ -179,47 +180,50 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
           }
         };
 
-        return (
+        const form = (
+          <Form>
+            <Grid hasGutter>
+              <GridItem span={12} lg={10} xl={6}>
+                {/* TODO(jtomasek): remove this if we're not putting full width content here (e.g. hosts table)*/}
+                <GridGap>
+                  <InputField label="Cluster Name" name="name" isRequired />
+                </GridGap>
+              </GridItem>
+              <GridItem span={12}>
+                <GridGap>
+                  <BaremetalInventory cluster={cluster} />
+                </GridGap>
+              </GridItem>
+              <GridItem span={12} lg={10} xl={6}>
+                <GridGap>
+                  <NetworkConfiguration
+                    cluster={cluster}
+                    hostSubnets={hostSubnets}
+                    managedDomains={managedDomains}
+                  />
+                  <TextContent>
+                    <Text component="h2">Security</Text>
+                  </TextContent>
+                  <ClusterSshKeyField
+                    isSwitchHidden={!cluster.imageInfo.sshPublicKey}
+                    name="shareDiscoverySshKey"
+                    onToggle={onClusterSshKeyToggle}
+                    onClusterSshKeyVisibilityChanged={onClusterSshKeyVisibilityChanged}
+                    onSshKeyBlur={onSshKeyBlur}
+                  />
+                </GridGap>
+              </GridItem>
+            </Grid>
+          </Form>
+        );
+
+        const footer = (
           <Stack hasGutter>
-            <StackItem>
-              <Form>
-                <Grid hasGutter>
-                  <GridItem span={12} lg={10} xl={6}>
-                    {/* TODO(jtomasek): remove this if we're not putting full width content here (e.g. hosts table)*/}
-                    <GridGap>
-                      <InputField label="Cluster Name" name="name" isRequired />
-                    </GridGap>
-                  </GridItem>
-                  <GridItem span={12}>
-                    <GridGap>
-                      <BaremetalInventory cluster={cluster} />
-                    </GridGap>
-                  </GridItem>
-                  <GridItem span={12} lg={10} xl={6}>
-                    <GridGap>
-                      <NetworkConfiguration
-                        cluster={cluster}
-                        hostSubnets={hostSubnets}
-                        managedDomains={managedDomains}
-                      />
-                      <TextContent>
-                        <Text component="h2">Security</Text>
-                      </TextContent>
-                      <ClusterSshKeyField
-                        isSwitchHidden={!cluster.imageInfo.sshPublicKey}
-                        name="shareDiscoverySshKey"
-                        onToggle={onClusterSshKeyToggle}
-                        onClusterSshKeyVisibilityChanged={onClusterSshKeyVisibilityChanged}
-                        onSshKeyBlur={onSshKeyBlur}
-                      />
-                    </GridGap>
-                  </GridItem>
-                </Grid>
-              </Form>
-            </StackItem>
-            <StackItem>
-              <Alerts />
-            </StackItem>
+            {!!alerts.length && (
+              <StackItem>
+                <Alerts />
+              </StackItem>
+            )}
             <StackItem>
               <ClusterToolbar
                 validationSection={
@@ -322,6 +326,8 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
             </StackItem>
           </Stack>
         );
+
+        return <ClusterWizardStep footer={footer}>{form}</ClusterWizardStep>;
       }}
     </Formik>
   );
