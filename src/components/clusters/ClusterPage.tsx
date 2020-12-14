@@ -22,7 +22,6 @@ import {
 } from '../../features/clusters/currentClusterSlice';
 import { Cluster } from '../../api/types';
 import { isSingleClusterMode, POLLING_INTERVAL, routeBasePath } from '../../config/constants';
-import ClusterConfiguration from '../clusterConfiguration/ClusterConfiguration';
 import ClusterDetail from '../clusterDetail/ClusterDetail';
 import CancelInstallationModal from '../clusterDetail/CancelInstallationModal';
 import ResetClusterModal from '../clusterDetail/ResetClusterModal';
@@ -31,6 +30,7 @@ import { AddBareMetalHosts } from '../AddBareMetalHosts';
 import { AddBareMetalHostsContextProvider } from '../AddBareMetalHosts/AddBareMetalHostsContext';
 import ClusterBreadcrumbs from './ClusterBreadcrumbs';
 import { EventsModalButton } from '../ui/eventsModal';
+import ClusterWizard from '../clusterWizard/ClusterWizard';
 
 type MatchParams = {
   clusterId: string;
@@ -150,7 +150,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
             </Split>
           </PageSection>
           <PageSection variant={PageSectionVariants.light}>
-            <ClusterConfiguration cluster={cluster} />
+            <ClusterWizard cluster={cluster} />
           </PageSection>
         </>
       );
