@@ -486,7 +486,7 @@ const HostsTable: React.FC<HostsTableProps> = ({
   );
 
   return (
-    <>
+    <div className="assisted-ui-vertical-margin">
       <Table
         rows={rows}
         cells={columns}
@@ -542,7 +542,7 @@ const HostsTable: React.FC<HostsTableProps> = ({
         isOpen={additionalNTPSourcesDialog.isOpen}
         onClose={() => additionalNTPSourcesDialog.close()}
       />
-    </>
+    </div>
   );
 };
 
