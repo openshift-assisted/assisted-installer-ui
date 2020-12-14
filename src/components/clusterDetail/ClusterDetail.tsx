@@ -8,7 +8,7 @@ import {
   GridItem,
   Grid,
 } from '@patternfly/react-core';
-import { Cluster, Credentials } from '../../api/types';
+import { Cluster, ClusterStatusEnum, Credentials } from '../../api/types';
 import { getClusterCredentials } from '../../api/clusters';
 import PageSection from '../ui/PageSection';
 import { EventsModalButton } from '../ui/eventsModal';
@@ -31,10 +31,10 @@ import { canDownloadClusterLogs } from '../hosts/utils';
 
 const canAbortInstallation = (cluster: Cluster) => {
   const allowedClusterStates: Cluster['status'][] = [
-    'preparing-for-installation',
-    'installing',
-    'installing-pending-user-action',
-    'finalizing',
+    ClusterStatusEnum.PREPARING_FOR_INSTALLATION,
+    ClusterStatusEnum.INSTALLING,
+    ClusterStatusEnum.INSTALLING_PENDING_USER_INPUT,
+    ClusterStatusEnum.FINALIZING,
   ];
   return allowedClusterStates.includes(cluster.status);
 };
