@@ -14,8 +14,8 @@
   "scripts": {
     "prebuild": "run-s test",
     "build": "microbundle-crl --no-compress --format modern,cjs --css-modules false",
-    "start": "echo Consider running: yarn sync-to-facet ; echo ; microbundle-crl watch --no-compress --format modern,cjs --css-modules false",
-    "sync-to-facet": "FACET_ROOT=../facet ./scripts/sync-dist.sh",
+    "start": "echo Consider running: yarn sync-to-ui ; echo ; microbundle-crl watch --no-compress --format modern,cjs --css-modules false",
+    "sync-to-ui": "ASSISTED_UI_ROOT=../assisted-ui ./scripts/sync-dist.sh",
     "prepare": "install-peers",
     "test": "run-s test:circular test:lint",
     "test:lint": "eslint --ext .js,.jsx,.ts,.tsx --color --max-warnings=0 ./src",

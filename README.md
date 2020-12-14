@@ -1,6 +1,6 @@
 # Assisted Installer User Interface Library
 
-React component library for https://github.com/openshift-metal3/facet.
+React component library for [https://github.com/openshift-assisted/assisted-ui](https://github.com/openshift-assisted/assisted-ui).
 
 Please note, the project's upstream has been renamed and moved from **mareklibra/facet-lib** to [https://github.com/openshift-assisted/assisted-ui-lib](https://github.com/openshift-assisted/assisted-ui-lib) in December 2020.
 
@@ -34,14 +34,14 @@ Start webpack dev server to watch sources and keep compiling into `/dist`:
 yarn start
 ```
 
-Optionaly, sync `/dist` to the [Facet](https://github.com/openshift-metal3/facet) application's
+Optionaly, sync `/dist` to the [assisted-ui](https://github.com/openshift-assisted/assisted-ui) application's
 `node_modules`.
 
 ```bash
-yarn sync-to-facet
+yarn sync-to-ui
 
 # eventually:
-FACET_ROOT=../facet ./scripts/sync-dist.sh # to sync the "./dist" into facet's node_modules
+ASSISTED_UI_ROOT=../assisted-ui UHC_PORTAL=../uhc-portal ./scripts/sync-dist.sh # listen to changes and sync the "./dist" with assisted-ui and uhc-portal node_modules
 ```
 
 ## Publish
