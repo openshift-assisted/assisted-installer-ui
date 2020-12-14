@@ -381,7 +381,6 @@ const HostsTable: React.FC<HostsTableProps> = ({
           onClick: onInstallHost,
         });
       }
-
       if (canEditHost(clusterStatus, host.status)) {
         actions.push({
           title: 'Edit host',
