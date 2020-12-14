@@ -3,15 +3,15 @@
 set -e
 
 BUILD_OUTPUT=${BUILD_OUTPUT:-./dist}
-FACET_ROOT=${FACET_ROOT:-../facet}
+ASSISTED_UI_ROOT=${ASSISTED_UI_ROOT:-../assisted-ui}
 UHC_PORTAL=${UHC_PORTAL:-../uhc-portal}
 NPM_PROJECT=openshift-assisted-ui-lib
 
 function sync {
-  if [ -d "${FACET_ROOT}" ]; then
-    rsync -avz --delete ${BUILD_OUTPUT} ${FACET_ROOT}/node_modules/${NPM_PROJECT}
+  if [ -d "${ASSISTED_UI_ROOT}" ]; then
+    rsync -avz --delete ${BUILD_OUTPUT} ${ASSISTED_UI_ROOT}/node_modules/${NPM_PROJECT}
   else
-    echo Sync to ${FACET_ROOT}/node_modules/${NPM_PROJECT} skipped
+    echo Sync to ${ASSISTED_UI_ROOT}/node_modules/${NPM_PROJECT} skipped
   fi
 
   if [ -d "${UHC_PORTAL}" ]; then
@@ -22,7 +22,7 @@ function sync {
 }
 
 sync
-cp ./package.json ${FACET_ROOT}/node_modules/${NPM_PROJECT}/package.json || true
+cp ./package.json ${ASSISTED_UI_ROOT}/node_modules/${NPM_PROJECT}/package.json || true
 cp ./package.json ${UHC_PORTAL}/node_modules/${NPM_PROJECT}/package.json || true
 
 while inotifywait -r -e modify,create,delete,move ./dist ; do
