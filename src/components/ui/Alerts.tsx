@@ -12,7 +12,11 @@ const Alerts: React.FC<{ className?: string }> = ({ className }) => {
       <AlertGroup className={className}>
         {alerts.map((alert) => (
           // eslint-disable-next-line react/jsx-key
-          <Alert actionClose={<AlertActionCloseButton onClose={() => onClose(alert)} />} {...alert}>
+          <Alert
+            actionClose={<AlertActionCloseButton onClose={() => onClose(alert)} />}
+            isInline
+            {...alert}
+          >
             {alert.message}
           </Alert>
         ))}
