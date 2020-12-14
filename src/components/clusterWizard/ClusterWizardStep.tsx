@@ -13,6 +13,14 @@ const ClusterWizardStep: React.FC<ClusterWizardStepProps> = ({ footer, children 
   const nav = (
     <WizardNav>
       <WizardNavItem
+        key="cluster-configuration"
+        content="Cluster Configuration"
+        isCurrent={currentStepId === 'cluster-configuration'}
+        isDisabled={false}
+        step={1}
+        onNavItemClick={() => setCurrentStepId('cluster-configuration')}
+      />
+      {/* <WizardNavItem
         key="baremetal-discovery"
         content="Bare Metal Discovery"
         isCurrent={currentStepId === 'baremetal-discovery'}
@@ -27,7 +35,7 @@ const ClusterWizardStep: React.FC<ClusterWizardStepProps> = ({ footer, children 
         isDisabled={false}
         step={2}
         onNavItemClick={() => setCurrentStepId('networking')}
-      />
+      /> */}
     </WizardNav>
   );
 
@@ -39,10 +47,7 @@ const ClusterWizardStep: React.FC<ClusterWizardStepProps> = ({ footer, children 
           {children}
         </WizardBody>
       </div>
-      {/* NOTE(jtomasek): Adding explicit padding as nested PageSection inherits noPadding set by the parent PageSection */}
-      {footer && (
-        <div style={{ padding: 'var(--pf-c-wizard__main-body--PaddingTop)' }}>{footer}</div>
-      )}
+      {footer && <div className="pf-c-wizard__footer">{footer}</div>}
     </div>
   );
 };
