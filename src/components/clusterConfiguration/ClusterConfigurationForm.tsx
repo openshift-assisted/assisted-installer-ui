@@ -1,7 +1,6 @@
 import React from 'react';
 import { Formik, FormikProps, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
-import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import {
   Form,
@@ -23,13 +22,11 @@ import { useDispatch } from 'react-redux';
 
 import ClusterToolbar from '../clusters/ClusterToolbar';
 import { InputField } from '../ui/formik';
-import { ToolbarButton, ToolbarText, ToolbarSecondaryGroup } from '../ui/Toolbar';
+import { ToolbarButton, ToolbarText } from '../ui/Toolbar';
 import GridGap from '../ui/GridGap';
-import { EventsModalButton } from '../ui/eventsModal';
 import { Cluster, ClusterUpdateParams, ManagedDomain } from '../../api/types';
 import { patchCluster, postInstallCluster, getClusters } from '../../api/clusters';
 import { handleApiError, getErrorMessage } from '../../api/utils';
-import { isSingleClusterMode, routeBasePath } from '../../config/constants';
 import Alerts from '../ui/Alerts';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import BaremetalInventory from './BaremetalInventory';
@@ -278,14 +275,6 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
                 >
                   Discard Changes
                 </ToolbarButton>
-                <ToolbarButton
-                  variant={ButtonVariant.link}
-                  component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
-                  isHidden={isSingleClusterMode()}
-                  id="cluster-configuration-back-to-all-clusters"
-                >
-                  Back to all clusters
-                </ToolbarButton>
                 {isSubmitting && (
                   <ToolbarText component={TextVariants.small}>
                     <Spinner size="sm" id="cluster-configuration-spinner-saving-changes" /> Saving
@@ -322,18 +311,6 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
                     )}
                   </ToolbarText>
                 )}
-                <ToolbarSecondaryGroup>
-                  <EventsModalButton
-                    id="cluster-events-button"
-                    entityKind="cluster"
-                    cluster={cluster}
-                    title="Cluster Events"
-                    variant={ButtonVariant.link}
-                    style={{ textAlign: 'right' }}
-                  >
-                    View Cluster Events
-                  </EventsModalButton>
-                </ToolbarSecondaryGroup>
               </ClusterToolbar>
             </StackItem>
           </Stack>
