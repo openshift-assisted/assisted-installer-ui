@@ -7,6 +7,8 @@ import {
   Button,
   TextContent,
   Text,
+  Split,
+  SplitItem,
 } from '@patternfly/react-core';
 import { useSelector, useDispatch } from 'react-redux';
 import { ErrorState, LoadingState } from '../ui/uiState';
@@ -28,6 +30,7 @@ import { AddBareMetalHosts } from '../AddBareMetalHosts';
 import { AddBareMetalHostsContextProvider } from '../AddBareMetalHosts/AddBareMetalHostsContext';
 import ClusterBreadcrumbs from './ClusterBreadcrumbs';
 import ClusterWizard from '../clusterWizard/ClusterWizard';
+import { EventsModalButton } from '../ui/eventsModal';
 
 type MatchParams = {
   clusterId: string;
@@ -124,11 +127,27 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
         <>
           <ClusterBreadcrumbs clusterName={cluster.name} />
           <PageSection variant={PageSectionVariants.light}>
-            <TextContent>
-              <Text component="h1">
-                Install OpenShift on Bare Metal with the Assisted Installer
-              </Text>
-            </TextContent>
+            <Split>
+              <SplitItem>
+                <TextContent>
+                  <Text component="h1">
+                    Install OpenShift on Bare Metal with the Assisted Installer
+                  </Text>
+                </TextContent>
+              </SplitItem>
+              <SplitItem isFilled />
+              <SplitItem>
+                <EventsModalButton
+                  id="cluster-events-button"
+                  entityKind="cluster"
+                  cluster={cluster}
+                  title="Cluster Events"
+                  variant={ButtonVariant.secondary}
+                >
+                  View Cluster Events
+                </EventsModalButton>
+              </SplitItem>
+            </Split>
           </PageSection>
           <PageSection variant={PageSectionVariants.light}>
             <ClusterWizard cluster={cluster} />
