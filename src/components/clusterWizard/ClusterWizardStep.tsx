@@ -3,6 +3,11 @@ import { WizardBody, WizardNav, WizardNavItem } from '@patternfly/react-core';
 import { css } from '@patternfly/react-styles';
 import styles from '@patternfly/react-styles/css/components/Wizard/wizard';
 import ClusterWizardContext from './ClusterWizardContext';
+import {
+  CLUSTER_STEPS_ORDER,
+  CLUSTER_STEP_CONFIGURATION,
+  CLUSTER_STEP_NETWORKING,
+} from './constants';
 
 type ClusterWizardStepProps = {
   footer?: React.ReactNode;
@@ -10,15 +15,20 @@ type ClusterWizardStepProps = {
 
 const ClusterWizardStep: React.FC<ClusterWizardStepProps> = ({ footer, children }) => {
   const { currentStepId, setCurrentStepId } = React.useContext(ClusterWizardContext);
+
+  const getTransitionProps = (step: string) => ({
+    key: step,
+    isCurrent: currentStepId === step,
+    isDisabled: CLUSTER_STEPS_ORDER[step] > CLUSTER_STEPS_ORDER[currentStepId],
+    step: CLUSTER_STEPS_ORDER[step],
+    onNavItemClick: () => setCurrentStepId(step),
+  });
+
   const nav = (
     <WizardNav>
       <WizardNavItem
-        key="cluster-configuration"
         content="Cluster Configuration"
-        isCurrent={currentStepId === 'cluster-configuration'}
-        isDisabled={false}
-        step={1}
-        onNavItemClick={() => setCurrentStepId('cluster-configuration')}
+        {...getTransitionProps(CLUSTER_STEP_CONFIGURATION)}
       />
       {/* <WizardNavItem
         key="baremetal-discovery"
@@ -27,15 +37,8 @@ const ClusterWizardStep: React.FC<ClusterWizardStepProps> = ({ footer, children 
         isDisabled={false}
         step={1}
         onNavItemClick={() => setCurrentStepId('baremetal-discovery')}
-      />
-      <WizardNavItem
-        key="networking"
-        content="Networking"
-        isCurrent={currentStepId === 'networking'}
-        isDisabled={false}
-        step={2}
-        onNavItemClick={() => setCurrentStepId('networking')}
-      /> */}
+      />*/}
+      <WizardNavItem content="Networking" {...getTransitionProps(CLUSTER_STEP_NETWORKING)} />
     </WizardNav>
   );
 
