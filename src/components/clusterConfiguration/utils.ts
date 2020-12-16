@@ -1,4 +1,8 @@
-import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
+import {
+  BareMetalDiscoveryValues,
+  HostSubnets,
+  NetworkConfigurationValues,
+} from '../../types/clusters';
 import { Cluster, Inventory, ListOperators, ManagedDomain } from '../../api/types';
 import { stringToJSON } from '../../api/utils';
 import {
@@ -90,15 +94,22 @@ export const isAdvConf = (cluster: Cluster) => {
   );
 };
 
-export const getInitialValues = (
-  cluster: Cluster,
-  managedDomains: ManagedDomain[],
-): ClusterConfigurationValues => {
-  const defaultNetworkSettings = getDefaultNetworkSettings(cluster.clusterNetworkCidr as string);
+export const getBareMetalDiscoveryInitialValues = (cluster: Cluster): BareMetalDiscoveryValues => {
   const operators = stringToJSON<ListOperators>(cluster.operators);
-
   return {
     name: cluster.name || '',
+    useExtraDisksForLocalStorage:
+      operators?.find((o) => o.operatorType === 'ocs')?.enabled || false,
+  };
+};
+
+export const getNetworkInitialValues = (
+  cluster: Cluster,
+  managedDomains: ManagedDomain[],
+): NetworkConfigurationValues => {
+  const defaultNetworkSettings = getDefaultNetworkSettings(cluster.clusterNetworkCidr as string);
+
+  return {
     baseDnsDomain: cluster.baseDnsDomain || '',
     clusterNetworkCidr: cluster.clusterNetworkCidr || defaultNetworkSettings.clusterNetworkCidr,
     clusterNetworkHostPrefix:
@@ -114,8 +125,6 @@ export const getInitialValues = (
     shareDiscoverySshKey:
       !!cluster.imageInfo.sshPublicKey && cluster.sshPublicKey === cluster.imageInfo.sshPublicKey,
     vipDhcpAllocation: cluster.vipDhcpAllocation,
-    useExtraDisksForLocalStorage:
-      operators?.find((o) => o.operatorType === 'ocs')?.enabled || false,
   };
 };
 

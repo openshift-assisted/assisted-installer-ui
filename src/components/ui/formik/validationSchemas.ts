@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { ClusterConfigurationValues, HostSubnets } from '../../../types/clusters';
+import { NetworkConfigurationValues, HostSubnets } from '../../../types/clusters';
 import { Host } from '../../../api/types';
 import { ProxyFieldsType } from '../../clusterConfiguration/types';
 import { NO_SUBNET_SET } from '../../../config/constants';
@@ -64,7 +64,7 @@ export const ipValidationSchema = Yup.string().matches(IP_ADDRESS_REGEX, {
 
 export const vipRangeValidationSchema = (
   hostSubnets: HostSubnets,
-  values: ClusterConfigurationValues,
+  values: NetworkConfigurationValues,
 ) =>
   Yup.string().test('vip-validation', 'IP Address is outside of selected subnet', function (value) {
     if (!value) {
@@ -80,7 +80,7 @@ export const vipRangeValidationSchema = (
     return !subnetCidr || isInSubnet(value, subnetCidr);
   });
 
-const vipUniqueValidationSchema = (hostSubnets: HostSubnets, values: ClusterConfigurationValues) =>
+const vipUniqueValidationSchema = (hostSubnets: HostSubnets, values: NetworkConfigurationValues) =>
   Yup.string().test(
     'vip-uniqueness-validation',
     'The Ingress and API Virtual IP addresses cannot be the same.',
@@ -113,7 +113,7 @@ const stringToIPAddress = (value: string): Address4 | Address6 | null => {
 
 export const vipValidationSchema = (
   hostSubnets: HostSubnets,
-  values: ClusterConfigurationValues,
+  values: NetworkConfigurationValues,
   initialValue?: string,
 ) =>
   Yup.mixed().when('vipDhcpAllocation', {
@@ -180,7 +180,7 @@ export const dnsNameValidationSchema = (initialValue?: string) =>
     }),
   );
 
-export const hostPrefixValidationSchema = (values: ClusterConfigurationValues) => {
+export const hostPrefixValidationSchema = (values: NetworkConfigurationValues) => {
   const requiredText = 'The host prefix is required.';
   const minMaxText =
     'The host prefix is a number between 1 and 32 for IPv4 and between 8 and 128 for IPv6.';
