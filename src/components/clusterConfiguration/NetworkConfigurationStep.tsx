@@ -3,13 +3,12 @@ import { Cluster, ManagedDomain } from '../../api/types';
 import { getManagedDomains } from '../../api/domains';
 import { handleApiError, getErrorMessage } from '../../api/utils';
 import LoadingState from '../ui/uiState/LoadingState';
-import ClusterConfigurationForm from './ClusterConfigurationForm';
+import NetworkConfigurationForm from './NetworkConfigurationForm';
 import { AlertsContext } from '../AlertsContextProvider';
 
-type ClusterConfigurationProps = {
+const NetworkConfigurationStep: React.FC<{
   cluster: Cluster;
-};
-const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) => {
+}> = ({ cluster }) => {
   const [domains, setDomains] = React.useState<ManagedDomain[] | undefined>();
   const { addAlert } = React.useContext(AlertsContext);
 
@@ -34,9 +33,9 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (domains) {
-    return <ClusterConfigurationForm cluster={cluster} managedDomains={domains} />;
+    return <NetworkConfigurationForm cluster={cluster} managedDomains={domains} />;
   }
   return <LoadingState content="Loading configuration..." />;
 };
 
-export default ClusterConfiguration;
+export default NetworkConfigurationStep;

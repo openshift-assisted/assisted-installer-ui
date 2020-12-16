@@ -4,6 +4,8 @@
 .cluster-toolbar__content {
   padding: 0 !important;
 }
+
+/* TODO(mlibra): Remove, no more needed */
 .cluster-toolbar-ocm {
   margin-right: 50px; /* fixed size of "a bulb" in OCM */
 }
