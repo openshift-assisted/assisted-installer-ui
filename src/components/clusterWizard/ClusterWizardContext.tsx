@@ -1,4 +1,5 @@
 import React from 'react';
+import { CLUSTER_STEPS_INDEXED } from './constants';
 
 type ClusterWizardContextType = {
   currentStepId: string;
@@ -6,7 +7,7 @@ type ClusterWizardContextType = {
 };
 
 const ClusterWizardContext = React.createContext<ClusterWizardContextType>({
-  currentStepId: 'baremetal-discovery',
+  currentStepId: CLUSTER_STEPS_INDEXED[0],
   setCurrentStepId: () => {
     console.warn('Tried to use ClusterWizardContext but there was no provider rendered.');
   },

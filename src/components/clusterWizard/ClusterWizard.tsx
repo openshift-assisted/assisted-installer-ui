@@ -1,8 +1,14 @@
 import React from 'react';
-import ClusterConfiguration from '../clusterConfiguration/ClusterConfiguration';
-import BaremetalInventory from '../clusterConfiguration/BaremetalInventory';
+// import BaremetalInventory from '../clusterConfiguration/BaremetalInventory';
 import { Cluster } from '../../api/types';
+import ClusterConfigurationForm from '../clusterConfiguration/ClusterConfigurationForm';
+import NetworkConfigurationStep from '../clusterConfiguration/NetworkConfigurationStep';
 import ClusterWizardContext from './ClusterWizardContext';
+import {
+  CLUSTER_STEP_CONFIGURATION,
+  // CLUSTER_STEP_DETAIL,
+  CLUSTER_STEP_NETWORKING,
+} from './constants';
 
 type ClusterWizardProps = {
   cluster: Cluster;
@@ -13,12 +19,14 @@ const ClusterWizard: React.FC<ClusterWizardProps> = ({ cluster }) => {
 
   const renderCurrentStep = React.useCallback(() => {
     switch (currentStepId) {
-      case 'baremetal-discovery':
-        return <BaremetalInventory cluster={cluster} />;
-      case 'cluster-configuration':
-        return <ClusterConfiguration cluster={cluster} />;
+      //case CLUSTER_STEP_DETAIL:
+      // TODO(mlibra): use different component!!
+      //  return <BaremetalInventory cluster={cluster} />;
+      case CLUSTER_STEP_NETWORKING:
+        return <NetworkConfigurationStep cluster={cluster} />;
+      case CLUSTER_STEP_CONFIGURATION:
       default:
-        return <ClusterConfiguration cluster={cluster} />;
+        return <ClusterConfigurationForm cluster={cluster} />;
     }
   }, [currentStepId, cluster]);
 

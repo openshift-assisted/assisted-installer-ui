@@ -12,11 +12,15 @@ export type HostSubnet = {
 
 export type HostSubnets = HostSubnet[];
 
-export type ClusterConfigurationValues = ClusterUpdateParams & {
-  hostSubnet: string;
-  useRedHatDnsService: boolean;
-  shareDiscoverySshKey: boolean;
+// TODO(mlibra): use just selected params?
+export type NetworkConfigurationValues = ClusterUpdateParams & {
+  hostSubnet?: string;
+  useRedHatDnsService?: boolean;
+  shareDiscoverySshKey?: boolean;
 };
+
+// TODO(mlibra): just name?
+export type BareMetalDiscoveryValues = ClusterUpdateParams;
 
 export type ValidationsInfo = {
   hostsData: Validation[];
