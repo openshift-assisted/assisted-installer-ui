@@ -10,6 +10,7 @@ interface Props {
 const ClusterToolbar: React.FC<Props> = ({ children, validationSection }) => {
   let toolBarClassname = 'cluster-toolbar';
   if (ocmClient) {
+    // TODO(mlibra): Remove, no more needed
     toolBarClassname += ' cluster-toolbar-ocm';
   }
 
