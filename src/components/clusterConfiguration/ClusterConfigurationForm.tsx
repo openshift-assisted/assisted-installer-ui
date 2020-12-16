@@ -1,104 +1,49 @@
 import React from 'react';
-import { Formik, FormikProps, FormikHelpers } from 'formik';
+import { Formik, FormikHelpers, FormikProps } from 'formik';
 import * as Yup from 'yup';
 import _ from 'lodash';
-import {
-  Form,
-  TextContent,
-  Text,
-  ButtonVariant,
-  Grid,
-  GridItem,
-  TextVariants,
-  Spinner,
-  Button,
-  Stack,
-  StackItem,
-} from '@patternfly/react-core';
-import { WarningTriangleIcon, CheckCircleIcon } from '@patternfly/react-icons';
-import { global_success_color_100 as successColor } from '@patternfly/react-tokens';
-import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens';
+import { Form, Grid, GridItem, Stack, StackItem } from '@patternfly/react-core';
 import { useDispatch } from 'react-redux';
 
-import ClusterToolbar from '../clusters/ClusterToolbar';
 import { InputField } from '../ui/formik';
-import { ToolbarButton, ToolbarText } from '../ui/Toolbar';
 import GridGap from '../ui/GridGap';
-import { Cluster, ClusterUpdateParams, ManagedDomain } from '../../api/types';
-import { patchCluster, postInstallCluster, getClusters } from '../../api/clusters';
+import { Cluster, ClusterUpdateParams } from '../../api/types';
+import { patchCluster, getClusters } from '../../api/clusters';
 import { handleApiError, getErrorMessage } from '../../api/utils';
 import Alerts from '../ui/Alerts';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import BaremetalInventory from './BaremetalInventory';
-import {
-  nameValidationSchema,
-  sshPublicKeyValidationSchema,
-  ipBlockValidationSchema,
-  dnsNameValidationSchema,
-  hostPrefixValidationSchema,
-  vipValidationSchema,
-} from '../ui/formik/validationSchemas';
-import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
-import NetworkConfiguration from './NetworkConfiguration';
-import ClusterValidationSection from './ClusterValidationSection';
-import { getInitialValues, getHostSubnets } from './utils';
+import { nameValidationSchema } from '../ui/formik/validationSchemas';
+import { BareMetalDiscoveryValues } from '../../types/clusters';
 import { AlertsContext } from '../AlertsContextProvider';
-import ClusterSshKeyField from './ClusterSshKeyField';
 import { captureException } from '../../sentry';
-import { trimSshPublicKey } from '../ui/formik/utils';
 import { useFeature } from '../../features';
-<<<<<<< HEAD
-import { useDefaultConfiguration } from './ClusterDefaultConfigurationContext';
-=======
 import ClusterWizardStep from '../clusterWizard/ClusterWizardStep';
->>>>>>> MGMT-3232 Convert ClusterConfiguration into a wizard step
+import ClusterWizardToolbar from '../clusterWizard/ClusterWizardToolbar';
+import {
+  canNextClusterConfiguration,
+  useClusterWizardTransitionFunctions,
+} from '../clusterWizard/wizardTransition';
+import { CLUSTER_STEP_CONFIGURATION } from '../clusterWizard/constants';
+import { getBareMetalDiscoveryInitialValues } from './utils';
 
-const validationSchema = (initialValues: ClusterConfigurationValues, hostSubnets: HostSubnets) =>
-  Yup.lazy<ClusterConfigurationValues>((values) =>
-    Yup.object<ClusterConfigurationValues>().shape({
-      name: nameValidationSchema,
-      baseDnsDomain: dnsNameValidationSchema(initialValues.baseDnsDomain),
-      clusterNetworkHostPrefix: hostPrefixValidationSchema(values),
-      clusterNetworkCidr: ipBlockValidationSchema,
-      serviceNetworkCidr: ipBlockValidationSchema,
-      apiVip: vipValidationSchema(hostSubnets, values, initialValues.apiVip),
-      ingressVip: vipValidationSchema(hostSubnets, values, initialValues.ingressVip),
-      sshPublicKey: sshPublicKeyValidationSchema,
-    }),
-  );
+const validationSchema = Yup.object<BareMetalDiscoveryValues>().shape({
+  name: nameValidationSchema,
+});
 
-type ClusterConfigurationFormProps = {
+const ClusterConfigurationForm: React.FC<{
   cluster: Cluster;
-  managedDomains: ManagedDomain[];
-};
-
-const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
-  cluster,
-  managedDomains,
-}) => {
-  const [isValidationSectionOpen, setIsValidationSectionOpen] = React.useState(false);
-  const [isStartingInstallation, setIsStartingInstallation] = React.useState(false);
+}> = ({ cluster }) => {
+  const { onBack, onNext } = useClusterWizardTransitionFunctions(CLUSTER_STEP_CONFIGURATION);
   const { alerts, addAlert, clearAlerts } = React.useContext(AlertsContext);
   const dispatch = useDispatch();
-  const hostSubnets = React.useMemo(() => getHostSubnets(cluster), [cluster]);
-  const defaultNetworkSettings = useDefaultConfiguration([
-    'clusterNetworkCidr',
-    'serviceNetworkCidr',
-    'clusterNetworkHostPrefix',
-  ]);
-  const initialValues = React.useMemo(
-    () => getInitialValues(cluster, managedDomains, defaultNetworkSettings),
-    [cluster, defaultNetworkSettings, managedDomains],
-  );
-  const memoizedValidationSchema = React.useMemo(
-    () => validationSchema(initialValues, hostSubnets),
-    [hostSubnets, initialValues],
-  );
   const isOpenshiftClusterStorageEnabled = useFeature('ASSISTED_INSTALLER_OCS_FEATURE');
 
+  const initialValues = React.useMemo(() => getBareMetalDiscoveryInitialValues(cluster), [cluster]);
+
   const handleSubmit = async (
-    values: ClusterConfigurationValues,
-    formikActions: FormikHelpers<ClusterConfigurationValues>,
+    values: BareMetalDiscoveryValues,
+    formikActions: FormikHelpers<BareMetalDiscoveryValues>,
   ) => {
     clearAlerts();
 
@@ -113,20 +58,8 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
       captureException(e, 'Failed to perform unique cluster name validation.');
     }
 
-    // update the cluster configuration
     try {
       const params = _.omit(values, ['hostSubnet', 'useRedHatDnsService', 'shareDiscoverySshKey']);
-
-      if (values.shareDiscoverySshKey) {
-        params.sshPublicKey = cluster.imageInfo.sshPublicKey;
-      }
-
-      if (values.vipDhcpAllocation) {
-        delete params.apiVip;
-        delete params.ingressVip;
-        const cidr = hostSubnets.find((hn) => hn.humanized === values.hostSubnet)?.subnet;
-        params.machineNetworkCidr = cidr;
-      }
 
       if (isOpenshiftClusterStorageEnabled) {
         params.operators = [
@@ -139,9 +72,16 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
 
       const { data } = await patchCluster(cluster.id, params);
       formikActions.resetForm({
-        values: getInitialValues(data, managedDomains, defaultNetworkSettings),
+        values: getBareMetalDiscoveryInitialValues(data),
       });
       dispatch(updateCluster(data));
+      formikActions.resetForm({
+        values: getBareMetalDiscoveryInitialValues(data),
+      });
+
+      if (canNextClusterConfiguration({ cluster })) {
+        onNext && onNext();
+      }
     } catch (e) {
       handleApiError<ClusterUpdateParams>(e, () =>
         addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),
@@ -149,6 +89,9 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
     }
   };
 
+  /* REMOVE once implemented in the Summary step
+  const handleClusterInstall = () => {};
+  
   const handleClusterInstall = async () => {
     setIsStartingInstallation(true);
     try {
@@ -164,11 +107,11 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
     }
     setIsStartingInstallation(false);
   };
-
+*/
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={memoizedValidationSchema}
+      validationSchema={validationSchema}
       onSubmit={handleSubmit}
       initialTouched={_.mapValues(initialValues, () => true)}
       validateOnMount
@@ -177,26 +120,9 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
         isSubmitting,
         isValid,
         dirty,
-        submitForm,
-        resetForm,
-        setFieldValue,
-        values,
         errors,
-      }: FormikProps<ClusterConfigurationValues>) => {
-        const onClusterSshKeyToggle = (isChecked: boolean) =>
-          setFieldValue('shareDiscoverySshKey', isChecked);
-        const onClusterSshKeyVisibilityChanged = () => {
-          onClusterSshKeyToggle(
-            !!cluster.imageInfo.sshPublicKey &&
-              (cluster.sshPublicKey === cluster.imageInfo.sshPublicKey || !cluster.sshPublicKey),
-          );
-        };
-        const onSshKeyBlur = () => {
-          if (values.sshPublicKey) {
-            setFieldValue('sshPublicKey', trimSshPublicKey(values.sshPublicKey));
-          }
-        };
-
+        submitForm,
+      }: FormikProps<BareMetalDiscoveryValues>) => {
         const form = (
           <Form>
             <Grid hasGutter>
@@ -211,25 +137,6 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
                   <BaremetalInventory cluster={cluster} />
                 </GridGap>
               </GridItem>
-              <GridItem span={12} lg={10} xl={6}>
-                <GridGap>
-                  <NetworkConfiguration
-                    cluster={cluster}
-                    hostSubnets={hostSubnets}
-                    managedDomains={managedDomains}
-                  />
-                  <TextContent>
-                    <Text component="h2">Security</Text>
-                  </TextContent>
-                  <ClusterSshKeyField
-                    isSwitchHidden={!cluster.imageInfo.sshPublicKey}
-                    name="shareDiscoverySshKey"
-                    onToggle={onClusterSshKeyToggle}
-                    onClusterSshKeyVisibilityChanged={onClusterSshKeyVisibilityChanged}
-                    onSshKeyBlur={onSshKeyBlur}
-                  />
-                </GridGap>
-              </GridItem>
             </Grid>
           </Form>
         );
@@ -242,84 +149,15 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
               </StackItem>
             )}
             <StackItem>
-              <ClusterToolbar
-                validationSection={
-                  isValidationSectionOpen ? (
-                    <ClusterValidationSection
-                      cluster={cluster}
-                      dirty={dirty}
-                      formErrors={errors}
-                      onClose={() => setIsValidationSectionOpen(false)}
-                    />
-                  ) : null
-                }
-              >
-                <ToolbarButton
-                  variant={ButtonVariant.primary}
-                  name="install"
-                  onClick={handleClusterInstall}
-                  isDisabled={
-                    isStartingInstallation || !isValid || dirty || cluster.status !== 'ready'
-                  }
-                  id="cluster-configuration-install"
-                >
-                  Install Cluster
-                </ToolbarButton>
-                <ToolbarButton
-                  type="submit"
-                  name="save"
-                  variant={ButtonVariant.secondary}
-                  isDisabled={isSubmitting || !isValid || !dirty}
-                  onClick={submitForm}
-                  id="cluster-configuration-save"
-                >
-                  Validate & Save Changes
-                </ToolbarButton>
-                <ToolbarButton
-                  variant={ButtonVariant.secondary}
-                  isDisabled={isSubmitting || !dirty}
-                  onClick={() => resetForm()}
-                  id="cluster-configuration-discard"
-                >
-                  Discard Changes
-                </ToolbarButton>
-                {isSubmitting && (
-                  <ToolbarText component={TextVariants.small}>
-                    <Spinner size="sm" id="cluster-configuration-spinner-saving-changes" /> Saving
-                    changes...
-                  </ToolbarText>
-                )}
-                {isStartingInstallation ? (
-                  <ToolbarText component={TextVariants.small}>
-                    <Spinner size="sm" id="cluster-configuration-spinner-starting-installation" />{' '}
-                    Starting installation...
-                  </ToolbarText>
-                ) : (
-                  <ToolbarText component={TextVariants.small}>
-                    {!Object.keys(errors).length && !dirty && cluster.status === 'ready' ? (
-                      <>
-                        <CheckCircleIcon
-                          color={successColor.value}
-                          id="cluster-configuration-icon-ready-to-install"
-                        />{' '}
-                        The cluster is ready to be installed.
-                      </>
-                    ) : (
-                      <>
-                        <Button
-                          variant={ButtonVariant.link}
-                          onClick={() => setIsValidationSectionOpen(!isValidationSectionOpen)}
-                          id="cluster-configuration-button-not-ready-to-install"
-                          isInline
-                        >
-                          <WarningTriangleIcon color={warningColor.value} />{' '}
-                          <small>The cluster is not ready to be installed yet</small>
-                        </Button>
-                      </>
-                    )}
-                  </ToolbarText>
-                )}
-              </ClusterToolbar>
+              <ClusterWizardToolbar
+                cluster={cluster}
+                errors={errors}
+                dirty={dirty}
+                isSubmitting={isSubmitting}
+                isNextDisabled={!canNextClusterConfiguration({ isValid, isSubmitting, cluster })}
+                onNext={submitForm}
+                onBack={onBack}
+              />
             </StackItem>
           </Stack>
         );

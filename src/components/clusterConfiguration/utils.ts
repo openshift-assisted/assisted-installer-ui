@@ -1,4 +1,8 @@
-import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
+import {
+  BareMetalDiscoveryValues,
+  HostSubnets,
+  NetworkConfigurationValues,
+} from '../../types/clusters';
 import {
   Cluster,
   ClusterDefaultConfig,
@@ -67,31 +71,32 @@ export const isAdvConf = (cluster: Cluster, defaultNetworkSettings: ClusterDefau
   cluster.clusterNetworkHostPrefix !== defaultNetworkSettings.clusterNetworkHostPrefix ||
   cluster.serviceNetworkCidr !== defaultNetworkSettings.serviceNetworkCidr;
 
-export const getInitialValues = (
-  cluster: Cluster,
-  managedDomains: ManagedDomain[],
-  defaultNetworkSettings: ClusterDefaultConfig,
-): ClusterConfigurationValues => {
+export const getBareMetalDiscoveryInitialValues = (cluster: Cluster): BareMetalDiscoveryValues => {
   const operators = stringToJSON<ListOperators>(cluster.operators);
-
   return {
     name: cluster.name || '',
-    baseDnsDomain: cluster.baseDnsDomain || '',
-    clusterNetworkCidr: cluster.clusterNetworkCidr || defaultNetworkSettings.clusterNetworkCidr,
-    clusterNetworkHostPrefix:
-      cluster.clusterNetworkHostPrefix || defaultNetworkSettings.clusterNetworkHostPrefix,
-    serviceNetworkCidr: cluster.serviceNetworkCidr || defaultNetworkSettings.serviceNetworkCidr,
-    apiVip: cluster.vipDhcpAllocation ? '' : cluster.apiVip || '',
-    ingressVip: cluster.vipDhcpAllocation ? '' : cluster.ingressVip || '',
-    sshPublicKey: cluster.sshPublicKey || '',
-    hostSubnet: getSubnetFromMachineNetworkCidr(cluster.machineNetworkCidr),
-    useRedHatDnsService:
-      !!cluster.baseDnsDomain &&
-      managedDomains.map((d) => d.domain).includes(cluster.baseDnsDomain),
-    shareDiscoverySshKey:
-      !!cluster.imageInfo.sshPublicKey && cluster.sshPublicKey === cluster.imageInfo.sshPublicKey,
-    vipDhcpAllocation: cluster.vipDhcpAllocation,
     useExtraDisksForLocalStorage:
       operators?.find((o) => o.operatorType === 'ocs')?.enabled || false,
   };
 };
+
+export const getNetworkInitialValues = (
+  cluster: Cluster,
+  managedDomains: ManagedDomain[],
+  defaultNetworkSettings: ClusterDefaultConfig,
+): NetworkConfigurationValues => ({
+  baseDnsDomain: cluster.baseDnsDomain || '',
+  clusterNetworkCidr: cluster.clusterNetworkCidr || defaultNetworkSettings.clusterNetworkCidr,
+  clusterNetworkHostPrefix:
+    cluster.clusterNetworkHostPrefix || defaultNetworkSettings.clusterNetworkHostPrefix,
+  serviceNetworkCidr: cluster.serviceNetworkCidr || defaultNetworkSettings.serviceNetworkCidr,
+  apiVip: cluster.vipDhcpAllocation ? '' : cluster.apiVip || '',
+  ingressVip: cluster.vipDhcpAllocation ? '' : cluster.ingressVip || '',
+  sshPublicKey: cluster.sshPublicKey || '',
+  hostSubnet: getSubnetFromMachineNetworkCidr(cluster.machineNetworkCidr),
+  useRedHatDnsService:
+    !!cluster.baseDnsDomain && managedDomains.map((d) => d.domain).includes(cluster.baseDnsDomain),
+  shareDiscoverySshKey:
+    !!cluster.imageInfo.sshPublicKey && cluster.sshPublicKey === cluster.imageInfo.sshPublicKey,
+  vipDhcpAllocation: cluster.vipDhcpAllocation,
+});
