@@ -3,7 +3,7 @@ import { useFormikContext } from 'formik';
 import { Spinner, Alert, AlertVariant, Popover, AlertActionLink } from '@patternfly/react-core';
 import {
   HostSubnets,
-  ClusterConfigurationValues,
+  NetworkConfigurationValues,
   ValidationsInfo,
   HostSubnet,
 } from '../../types/clusters';
@@ -146,7 +146,7 @@ type BasicNetworkFieldsProps = {
 };
 
 const BasicNetworkFields: React.FC<BasicNetworkFieldsProps> = ({ cluster, hostSubnets }) => {
-  const { validateField, values } = useFormikContext<ClusterConfigurationValues>();
+  const { validateField, values } = useFormikContext<NetworkConfigurationValues>();
 
   const apiVipHelperText = `Virtual IP used to reach the OpenShift cluster API. ${getVipHelperSuffix(
     cluster.apiVip,

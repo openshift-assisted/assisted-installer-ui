@@ -1,4 +1,8 @@
-import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
+import {
+  BareMetalDiscoveryValues,
+  HostSubnets,
+  NetworkConfigurationValues,
+} from '../../types/clusters';
 import { Cluster, Inventory, ManagedDomain } from '../../api/types';
 import { stringToJSON } from '../../api/utils';
 import {
@@ -90,13 +94,16 @@ export const isAdvConf = (cluster: Cluster) => {
   );
 };
 
-export const getInitialValues = (
+export const getBareMetalDiscoveryInitialValues = (cluster: Cluster): BareMetalDiscoveryValues => ({
+  name: cluster.name || '',
+});
+
+export const getNetworkInitialValues = (
   cluster: Cluster,
   managedDomains: ManagedDomain[],
-): ClusterConfigurationValues => {
+): NetworkConfigurationValues => {
   const defaultNetworkSettings = getDefaultNetworkSettings(cluster.clusterNetworkCidr as string);
   return {
-    name: cluster.name || '',
     baseDnsDomain: cluster.baseDnsDomain || '',
     clusterNetworkCidr: cluster.clusterNetworkCidr || defaultNetworkSettings.clusterNetworkCidr,
     clusterNetworkHostPrefix:
