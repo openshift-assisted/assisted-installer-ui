@@ -1,9 +1,9 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
-import { TextContent, Text, Checkbox } from '@patternfly/react-core';
+import { Checkbox } from '@patternfly/react-core';
 import BasicNetworkFields from './BasicNetworkFields';
 import AdvancedNetworkFields from './AdvancedNetworkFields';
-import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
+import { HostSubnets, NetworkConfigurationValues } from '../../types/clusters';
 import { InputField, CheckboxField, SelectField } from '../ui/formik';
 import { ManagedDomain, Cluster } from '../../api/types';
 import { isAdvConf, isSingleNodeCluster } from './utils';
@@ -20,7 +20,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   hostSubnets,
   managedDomains,
 }) => {
-  const { setFieldValue, values } = useFormikContext<ClusterConfigurationValues>();
+  const { setFieldValue, values } = useFormikContext<NetworkConfigurationValues>();
   const { name: clusterName, baseDnsDomain, useRedHatDnsService } = values;
   const defaultNetworkSettings = useDefaultConfiguration([
     'clusterNetworkCidr',
@@ -55,9 +55,6 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
 
   return (
     <>
-      <TextContent>
-        <Text component="h2">Networking</Text>
-      </TextContent>
       {!!managedDomains.length && (
         <CheckboxField
           name="useRedHatDnsService"

@@ -16,7 +16,7 @@ import {
 } from '@patternfly/react-core';
 import { TimesIcon } from '@patternfly/react-icons';
 import { Cluster } from '../../api/types';
-import { ClusterConfigurationValues, ValidationsInfo } from '../../types/clusters';
+import { NetworkConfigurationValues, ValidationsInfo } from '../../types/clusters';
 import { CLUSTER_FIELD_LABELS } from '../../config/constants';
 import { stringToJSON } from '../../api/utils';
 import './ClusterValidationSection.css';
@@ -24,7 +24,7 @@ import './ClusterValidationSection.css';
 type ClusterValidationSectionProps = {
   cluster: Cluster;
   dirty: boolean;
-  formErrors: FormikErrors<ClusterConfigurationValues>;
+  formErrors: FormikErrors<NetworkConfigurationValues>;
   onClose: () => void;
 };
 
