@@ -186,7 +186,7 @@ export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string 
 };
 
 export const CLUSTER_DEFAULTS = {
-  additionalNtpSource: '0.rhel.pool.ntp.org',
+  additionalNtpSource: undefined,
 };
 
 export const CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4 = {

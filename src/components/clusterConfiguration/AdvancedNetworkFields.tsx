@@ -1,10 +1,11 @@
 import React from 'react';
 import { TextInputTypes } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
-import { InputField } from '../ui/formik';
+import { InputField, TextAreaField } from '../ui/formik';
 import { ClusterConfigurationValues } from '../../types/clusters';
 import { Address6 } from 'ip-address';
 import { PREFIX_MAX_RESTRICTION } from '../../config/constants';
+import { trimCommaSeparatedList } from '../ui/formik/utils';
 
 const AdvancedNetworkFields: React.FC = () => {
   const { setFieldValue, values } = useFormikContext<ClusterConfigurationValues>();
@@ -13,6 +14,12 @@ const AdvancedNetworkFields: React.FC = () => {
   const formatClusterNetworkHostPrefix = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (isNaN(parseInt(e.target.value))) {
       setFieldValue('clusterNetworkHostPrefix', clusterNetworkCidrPrefix);
+    }
+  };
+
+  const formatAdditionalNtpSource = () => {
+    if (values.additionalNtpSource) {
+      setFieldValue('additionalNtpSource', trimCommaSeparatedList(values.additionalNtpSource));
     }
   };
 
@@ -46,10 +53,12 @@ const AdvancedNetworkFields: React.FC = () => {
         helperText="The IP address pool to use for service IP addresses. You can enter only one IP address pool. If you need to access the services from an external network, configure load balancers and routers to manage the traffic."
         isRequired
       />
-      <InputField
+      <TextAreaField
         name="additionalNtpSource"
-        label="Additional NTP Source"
-        helperText="IP or domain name of the NTP pool or server. Additional NTP source is added to all hosts to ensure all hosts clocks are synchronized with a valid NTP server."
+        label="Additional NTP Sources"
+        helperText="A comma separated list of IP or domain names of the NTP pools or servers. Additional NTP sources are added to all hosts to ensure all hosts clocks are synchronized with a valid NTP server."
+        onBlur={formatAdditionalNtpSource}
+        spellCheck={false}
       />
     </>
   );
