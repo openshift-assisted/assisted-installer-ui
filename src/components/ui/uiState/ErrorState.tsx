@@ -21,6 +21,7 @@ type Props = {
   icon?: EmptyStateIconProps['icon'];
   iconColor?: string;
   actions?: React.ReactNode[];
+  variant?: EmptyStateVariant;
 };
 
 const ErrorState: React.FC<Props> = ({
@@ -29,6 +30,7 @@ const ErrorState: React.FC<Props> = ({
   fetchData,
   icon = ExclamationCircleIcon,
   iconColor = globalDangerColor200.value,
+  variant = EmptyStateVariant.small,
   actions,
 }) => {
   const defaultContent = (
@@ -47,7 +49,7 @@ const ErrorState: React.FC<Props> = ({
 
   return (
     <Bullseye>
-      <EmptyState variant={EmptyStateVariant.small}>
+      <EmptyState variant={variant}>
         <EmptyStateIcon icon={icon} color={iconColor} />
         <Title headingLevel="h2">{title}</Title>
         <EmptyStateBody>{content || defaultContent}</EmptyStateBody>
