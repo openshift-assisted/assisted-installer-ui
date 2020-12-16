@@ -111,6 +111,11 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
     try {
       const params = _.omit(values, ['hostSubnet', 'useRedHatDnsService', 'shareDiscoverySshKey']);
 
+      // Discard additionalNtpSource if it is empty
+      if (!values.additionalNtpSource) {
+        delete params.additionalNtpSource;
+      }
+
       if (values.shareDiscoverySshKey) {
         params.sshPublicKey = cluster.imageInfo.sshPublicKey;
       }
