@@ -259,17 +259,21 @@ export const noProxyValidationSchema = Yup.string().test(
 
 export const ntpSourceValidationSchema = Yup.string().test(
   'ntp-source-validation',
-  'Provide a valid DNS or IP address.',
+  'Provide a comma separated list of valid DNS names or IP addresses.',
   (value: string) => {
     if (!value) {
       return true;
     }
-    if (value.match(DNS_NAME_REGEX)) {
-      return true;
-    }
-    if (value.match(IP_ADDRESS_REGEX)) {
-      return true;
-    }
-    return false;
+    return trimCommaSeparatedList(value)
+      .split(',')
+      .every((item) => {
+        if (item.match(DNS_NAME_REGEX)) {
+          return true;
+        }
+        if (item.match(IP_ADDRESS_REGEX)) {
+          return true;
+        }
+        return false;
+      });
   },
 );
