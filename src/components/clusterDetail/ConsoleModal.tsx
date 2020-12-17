@@ -100,19 +100,11 @@ export const WebConsoleHint: React.FC<WebConsoleHintProps> = ({ cluster, console
   );
 
   // Pad the lines as long as the longest record
-  const paddingNum = `alertmanager-main-openshift-monitoring.${appsUrl}.`.length + 1;
+  const paddingNum = `*.${appsUrl}.`.length + 2;
 
   const aRecords = [
     `api.${clusterUrl}.`.padEnd(paddingNum) + `A\t${cluster.apiVip}`,
-    `oauth-openshift.${appsUrl}.`.padEnd(paddingNum) + `A\t${cluster.ingressVip}`,
-    `${removeProtocolFromURL(consoleUrl)}.`.padEnd(paddingNum) + `A\t${cluster.ingressVip}`,
-    `grafana-openshift-monitoring.${appsUrl}.`.padEnd(paddingNum) + `A\t${cluster.ingressVip}`,
-    `thanos-querier-openshift-monitoring.${appsUrl}.`.padEnd(paddingNum) +
-      `A\t${cluster.ingressVip}`,
-    `prometheus-k8s-openshift-monitoring.${appsUrl}.`.padEnd(paddingNum) +
-      `A\t${cluster.ingressVip}`,
-    `alertmanager-main-openshift-monitoring.${appsUrl}.`.padEnd(paddingNum) +
-      `A\t${cluster.ingressVip}`,
+    `*.${appsUrl}.`.padEnd(paddingNum) + `A\t${cluster.ingressVip}`,
   ];
 
   const aRecordsOptional = sortedHostIPs.map(
