@@ -77,7 +77,7 @@ const getVipValidationsById = (
     'VIP IP allocation from DHCP server has been timed out', // TODO(jtomasek): remove this one once it is no longer in backend
     'IP allocation from the DHCP server timed out.',
   ];
-  return validationsInfo.network.reduce((lookup, validation) => {
+  return (validationsInfo.network || []).reduce((lookup, validation) => {
     if (['api-vip-defined', 'ingress-vip-defined'].includes(validation.id)) {
       lookup[validation.id] =
         validation.status === 'failure' &&
