@@ -20,7 +20,7 @@ import {
   Tooltip,
 } from '@patternfly/react-core';
 import { FilterIcon, SyncIcon } from '@patternfly/react-icons';
-import { ClusterStatusEnum } from '../../api/types';
+import { Cluster } from '../../api/types';
 import { CLUSTER_STATUS_LABELS, routeBasePath } from '../../config';
 import ToolbarButton from '../ui/Toolbar/ToolbarButton';
 import { ResourceUIState } from '../../types';
@@ -60,7 +60,7 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
 
   const onSearchNameChanged: TextInputProps['onChange'] = setSearchString;
 
-  const onSelect = (type: string, isChecked: boolean, value: ClusterStatusEnum) => {
+  const onSelect = (type: string, isChecked: boolean, value: Cluster['status']) => {
     setFilters({
       ...filters,
       [type]: isChecked

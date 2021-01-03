@@ -40,8 +40,8 @@ const clusterToClusterTableRow = (cluster: Cluster): IRow => {
       baseDnsDomain || DASH,
       openshiftVersion,
       {
-        title: <ClusterStatus cluster={cluster} />,
-        sortableValue: getClusterStatusText(cluster),
+        title: <ClusterStatus status={cluster.status} />,
+        sortableValue: getClusterStatusText(cluster.status),
       } as HumanizedSortable,
       {
         title: <HostsCount hosts={hosts} valueId={`hosts-count-${cluster.name}`} />,

@@ -8,7 +8,7 @@ import {
   GridItem,
   Grid,
 } from '@patternfly/react-core';
-import { Cluster, ClusterStatusEnum, Credentials } from '../../api/types';
+import { Cluster, Credentials } from '../../api/types';
 import { getClusterCredentials } from '../../api/clusters';
 import PageSection from '../ui/PageSection';
 import { EventsModalButton } from '../ui/eventsModal';
@@ -30,11 +30,11 @@ import { AlertsContext } from '../AlertsContextProvider';
 import { canDownloadClusterLogs } from '../hosts/utils';
 
 const canAbortInstallation = (cluster: Cluster) => {
-  const allowedClusterStates: ClusterStatusEnum[] = [
-    ClusterStatusEnum.PREPARING_FOR_INSTALLATION,
-    ClusterStatusEnum.INSTALLING,
-    ClusterStatusEnum.INSTALLING_PENDING_USER_INPUT,
-    ClusterStatusEnum.FINALIZING,
+  const allowedClusterStates: Cluster['status'][] = [
+    'preparing-for-installation',
+    'installing',
+    'installing-pending-user-action',
+    'finalizing',
   ];
   return allowedClusterStates.includes(cluster.status);
 };
@@ -70,7 +70,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
   }, [cluster.id]);
 
   React.useEffect(() => {
-    if ([ClusterStatusEnum.FINALIZING, ClusterStatusEnum.INSTALLED].includes(cluster.status)) {
+    if (['finalizing', 'installed'].includes(cluster.status)) {
       fetchCredentials();
     }
   }, [cluster.status, fetchCredentials]);
@@ -88,25 +88,23 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
           <GridItem>
             <ClusterProgress cluster={cluster} />
           </GridItem>
-          {[
-            ClusterStatusEnum.INSTALLED,
-            ClusterStatusEnum.INSTALLING,
-            ClusterStatusEnum.FINALIZING,
-          ].includes(cluster.status) && <FailedHostsWarning cluster={cluster} />}
-          {cluster.status === ClusterStatusEnum.ERROR && (
+          {['installed', 'installing', 'installing-pending-user-action', 'finalizing'].includes(
+            cluster.status,
+          ) && <FailedHostsWarning cluster={cluster} />}
+          {cluster.status === 'error' && (
             <ClusterInstallationError
               cluster={cluster}
               setResetClusterModalOpen={setResetClusterModalOpen}
             />
           )}
-          {cluster.status === ClusterStatusEnum.CANCELLED && (
+          {cluster.status === 'cancelled' && (
             <ClusterInstallationError
               title="Cluster installation was cancelled"
               cluster={cluster}
               setResetClusterModalOpen={setResetClusterModalOpen}
             />
           )}
-          {[ClusterStatusEnum.FINALIZING, ClusterStatusEnum.INSTALLED].includes(cluster.status) && (
+          {['finalizing', 'installed'].includes(cluster.status) && (
             <ClusterCredentials
               cluster={cluster}
               credentials={credentials}
@@ -139,7 +137,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
             Abort Installation
           </ToolbarButton>
         )}
-        {cluster.status === ClusterStatusEnum.ERROR && (
+        {cluster.status === 'error' && (
           <ToolbarButton
             id={getID('button-reset-cluster')}
             onClick={() => setResetClusterModalOpen(true)}
@@ -147,7 +145,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
             Reset Cluster
           </ToolbarButton>
         )}
-        {[ClusterStatusEnum.FINALIZING, ClusterStatusEnum.INSTALLING].includes(cluster.status) && (
+        {['finalizing', 'installed'].includes(cluster.status) && (
           <LaunchOpenshiftConsoleButton
             isDisabled={!credentials || !!credentialsError}
             cluster={cluster}

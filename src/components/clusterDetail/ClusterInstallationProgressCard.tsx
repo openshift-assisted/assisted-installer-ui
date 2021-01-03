@@ -1,12 +1,6 @@
 import React from 'react';
 import { Card, Title, CardBody, CardHeader, CardExpandableContent } from '@patternfly/react-core';
-import {
-  Cluster,
-  ClusterStatusEnum,
-  Credentials,
-  getClusterCredentials,
-  stringToJSON,
-} from '../../api';
+import { Cluster, Credentials, getClusterCredentials, stringToJSON } from '../../api';
 import { AlertsContextProvider } from '../AlertsContextProvider';
 import CancelInstallationModal from './CancelInstallationModal';
 import ClusterCredentials from './ClusterCredentials';
@@ -18,23 +12,20 @@ import HostsTable from '../hosts/HostsTable';
 import ClusterDetailsButtonGroup from './ClusterDetailsButtonGroup';
 import { ClusterStatusIcon } from '../clusters/ClusterStatus';
 
-import './ClusterInstallationProgressCard.css';
-
 type AIClusterDetailsCardProps = {
-  clusterObj: Cluster;
+  clusterStringObj: string;
 };
 
 const getID = (suffix: string) => `cluster-detail-${suffix}`;
 
-const AIClusterDetailsCard: React.FC<AIClusterDetailsCardProps> = ({ clusterObj }) => {
+const AIClusterDetailsCard: React.FC<AIClusterDetailsCardProps> = ({ clusterStringObj }) => {
+  const cluster: Cluster = stringToJSON<Cluster>(clusterStringObj) as Cluster;
+
   const [cancelInstallationModalOpen, setCancelInstallationModalOpen] = React.useState(false);
   const [resetClusterModalOpen, setResetClusterModalOpen] = React.useState(false);
   const [credentials, setCredentials] = React.useState<Credentials>();
   const [credentialsError, setCredentialsError] = React.useState();
-  const [isCardExpanded, setIsCardExpanded] = React.useState(true);
-
-  // CamelCase the cluster object
-  const cluster: Cluster = stringToJSON<Cluster>(JSON.stringify(clusterObj)) || clusterObj;
+  const [isCardExpanded, setIsCardExpanded] = React.useState(cluster.status !== 'installed');
 
   const fetchCredentials = React.useCallback(() => {
     const fetch = async () => {
@@ -50,13 +41,13 @@ const AIClusterDetailsCard: React.FC<AIClusterDetailsCardProps> = ({ clusterObj 
   }, [cluster.id]);
 
   React.useEffect(() => {
-    if (cluster.status === ClusterStatusEnum.INSTALLED) {
+    if (cluster.status === 'installed') {
       fetchCredentials();
     }
   }, [cluster.status, fetchCredentials]);
 
   return (
-    <>
+    <Card id="ai-cluster-details-card" isExpanded={isCardExpanded}>
       <AlertsContextProvider>
         <CancelInstallationModal
           isOpen={cancelInstallationModalOpen}
@@ -69,70 +60,59 @@ const AIClusterDetailsCard: React.FC<AIClusterDetailsCardProps> = ({ clusterObj 
           cluster={cluster}
         />
       </AlertsContextProvider>
-      <Card id="ai-cluster-details-card" isExpanded={isCardExpanded}>
-        <CardHeader
-          onExpand={() => setIsCardExpanded(!isCardExpanded)}
-          toggleButtonProps={{
-            id: 'toggle-ai-cluster-details',
-            'aria-label': 'AI Cluster Details',
-            'aria-labelledby': 'titleId toggle-button',
-            'aria-expanded': isCardExpanded,
-          }}
-        >
-          <Title headingLevel="h1" size="lg" className="card-title">
-            Installation progress
-          </Title>
-          {!isCardExpanded && (
-            <div className="pf-u-ml-md">
-              <ClusterStatusIcon status={cluster.status} />
-            </div>
-          )}
-        </CardHeader>
+      <CardHeader
+        onExpand={() => setIsCardExpanded(!isCardExpanded)}
+        toggleButtonProps={{
+          id: 'toggle-ai-cluster-details',
+          'aria-label': 'AI Cluster Details',
+          'aria-labelledby': 'titleId toggle-button',
+          'aria-expanded': isCardExpanded,
+        }}
+      >
+        <Title headingLevel="h1" size="lg" className="card-title">
+          Installation progress
+        </Title>
         {!isCardExpanded && (
-          <CardBody>
-            <ClusterProgress cluster={cluster} hideProgressBar />
-            <ClusterDetailsButtonGroup cluster={cluster} />
-          </CardBody>
+          <div className="pf-u-ml-md">
+            <ClusterStatusIcon status={cluster.status} />
+          </div>
         )}
-        <CardExpandableContent>
-          <CardBody>
-            {[
-              ClusterStatusEnum.INSTALLED,
-              ClusterStatusEnum.INSTALLING,
-              ClusterStatusEnum.FINALIZING,
-            ].includes(cluster.status) && <FailedHostsWarning cluster={cluster} />}
-            {cluster.status === ClusterStatusEnum.ERROR && (
-              <ClusterInstallationError
-                cluster={cluster}
-                setResetClusterModalOpen={setResetClusterModalOpen}
-              />
-            )}
-            {cluster.status === ClusterStatusEnum.CANCELLED && (
-              <ClusterInstallationError
-                title="Cluster installation was cancelled"
-                cluster={cluster}
-                setResetClusterModalOpen={setResetClusterModalOpen}
-              />
-            )}
-            <ClusterProgress cluster={cluster} />
-            <ClusterDetailsButtonGroup cluster={cluster} />
-
-            {cluster.status === ClusterStatusEnum.INSTALLED && (
-              <ClusterCredentials
-                cluster={cluster}
-                credentials={credentials}
-                error={!!credentialsError}
-                retry={fetchCredentials}
-                idPrefix={getID('cluster-creds')}
-              />
-            )}
-            <div className="vertical-margin">
-              <HostsTable cluster={cluster} skipDisabled />
-            </div>
-          </CardBody>
-        </CardExpandableContent>
-      </Card>
-    </>
+      </CardHeader>
+      <CardBody>
+        <ClusterProgress cluster={cluster} minimizedView={!isCardExpanded} />
+        <ClusterDetailsButtonGroup cluster={cluster} />
+      </CardBody>
+      <CardExpandableContent>
+        <CardBody>
+          {['installed', 'installing', 'finalizing'].includes(cluster.status) && (
+            <FailedHostsWarning cluster={cluster} />
+          )}
+          {cluster.status === 'error' && (
+            <ClusterInstallationError
+              cluster={cluster}
+              setResetClusterModalOpen={setResetClusterModalOpen}
+            />
+          )}
+          {cluster.status === 'cancelled' && (
+            <ClusterInstallationError
+              title="Cluster installation was cancelled"
+              cluster={cluster}
+              setResetClusterModalOpen={setResetClusterModalOpen}
+            />
+          )}
+          {cluster.status === 'installed' && (
+            <ClusterCredentials
+              cluster={cluster}
+              credentials={credentials}
+              error={!!credentialsError}
+              retry={fetchCredentials}
+              idPrefix={getID('cluster-creds')}
+            />
+          )}
+          <HostsTable cluster={cluster} skipDisabled />
+        </CardBody>
+      </CardExpandableContent>
+    </Card>
   );
 };
 

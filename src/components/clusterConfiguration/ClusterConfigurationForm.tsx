@@ -26,7 +26,7 @@ import { InputField } from '../ui/formik';
 import { ToolbarButton, ToolbarText, ToolbarSecondaryGroup } from '../ui/Toolbar';
 import GridGap from '../ui/GridGap';
 import { EventsModalButton } from '../ui/eventsModal';
-import { Cluster, ClusterStatusEnum, ClusterUpdateParams, ManagedDomain } from '../../api/types';
+import { Cluster, ClusterUpdateParams, ManagedDomain } from '../../api/types';
 import { patchCluster, postInstallCluster, getClusters } from '../../api/clusters';
 import { handleApiError, getErrorMessage } from '../../api/utils';
 import { isSingleClusterMode, routeBasePath } from '../../config/constants';
@@ -259,10 +259,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
                 name="install"
                 onClick={handleClusterInstall}
                 isDisabled={
-                  isStartingInstallation ||
-                  !isValid ||
-                  dirty ||
-                  cluster.status !== ClusterStatusEnum.READY
+                  isStartingInstallation || !isValid || dirty || cluster.status !== 'ready'
                 }
                 id="cluster-configuration-install"
               >
@@ -307,9 +304,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
                 </ToolbarText>
               ) : (
                 <ToolbarText component={TextVariants.small}>
-                  {!Object.keys(errors).length &&
-                  !dirty &&
-                  cluster.status === ClusterStatusEnum.READY ? (
+                  {!Object.keys(errors).length && !dirty && cluster.status === 'ready' ? (
                     <>
                       <CheckCircleIcon
                         color={successColor.value}

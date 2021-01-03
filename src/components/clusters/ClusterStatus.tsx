@@ -13,57 +13,55 @@ import {
   BanIcon,
   IconSize,
 } from '@patternfly/react-icons';
-import { Cluster, ClusterStatusEnum } from '../../api/types';
+import { Cluster } from '../../api/types';
 import { CLUSTER_STATUS_LABELS } from '../../config/constants';
 
 type ClusterStatusProps = {
-  cluster: Cluster;
+  status: Cluster['status'];
 };
 
 const iconProps = {
-  // className: 'clusterStatus',
   size: IconSize.sm,
 };
 
 type ClusterStatusIconProps = {
-  status: ClusterStatusEnum;
+  status: Cluster['status'];
 };
 
 export const ClusterStatusIcon: React.FC<ClusterStatusIconProps> = ({ status }) => {
   switch (status) {
-    case ClusterStatusEnum.CANCELLED:
+    case 'cancelled':
       return <BanIcon {...iconProps} />;
-    case ClusterStatusEnum.INSUFFICIENT:
-    case ClusterStatusEnum.PENDING_FOR_INPUT:
+    case 'insufficient':
+    case 'pending-for-input':
       return <FileAltIcon {...iconProps} />;
-    case ClusterStatusEnum.ERROR:
+    case 'error':
       return <ExclamationCircleIcon color={dangerColor.value} {...iconProps} />;
-    case ClusterStatusEnum.READY:
-    case ClusterStatusEnum.INSTALLED:
+    case 'ready':
+    case 'installed':
       return <CheckCircleIcon color={okColor.value} {...iconProps} />;
-    case ClusterStatusEnum.INSTALLING_PENDING_USER_INPUT:
+    case 'installing-pending-user-action':
       return <ExclamationTriangleIcon color={warningColor.value} {...iconProps} />;
-    case ClusterStatusEnum.PREPARING_FOR_INSTALLATION:
-    case ClusterStatusEnum.INSTALLING:
-    case ClusterStatusEnum.FINALIZING:
-    case ClusterStatusEnum.ADDING_HOSTS:
+    case 'preparing-for-installation':
+    case 'installing':
+    case 'finalizing':
+    case 'adding-hosts':
       return <InProgressIcon {...iconProps} />;
     default:
       return <></>;
   }
 };
 
-export const getClusterStatusText = (cluster: Cluster) =>
-  CLUSTER_STATUS_LABELS[cluster.status] || cluster.status;
+export const getClusterStatusText = (status: Cluster['status']) =>
+  CLUSTER_STATUS_LABELS[status] || status;
 
-const ClusterStatus: React.FC<ClusterStatusProps> = ({ cluster }) => {
-  const { status } = cluster;
-  const title = getClusterStatusText(cluster);
+const ClusterStatus: React.FC<ClusterStatusProps> = ({ status }) => {
+  const title = getClusterStatusText(status);
 
   return (
-    <div>
+    <>
       <ClusterStatusIcon status={status} /> {title}
-    </div>
+    </>
   );
 };
 

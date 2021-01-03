@@ -17,7 +17,7 @@ import { ConnectedIcon } from '@patternfly/react-icons';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
 import { EmptyState } from '../ui/uiState';
 import { getColSpanRow, rowSorter, getDateTimeCell } from '../ui/table/utils';
-import { Host, Cluster, Inventory, ClusterStatusEnum } from '../../api/types';
+import { Host, Cluster, Inventory } from '../../api/types';
 import {
   enableClusterHost,
   disableClusterHost,
@@ -360,7 +360,7 @@ const HostsTable: React.FC<HostsTableProps> = ({
   const actionResolver = React.useCallback(
     (rowData: IRowData) => {
       const host: Host | undefined = rowData.host;
-      const clusterStatus: ClusterStatusEnum = rowData.clusterStatus;
+      const clusterStatus: Cluster['status'] = rowData.clusterStatus;
       const hostname = rowData.host?.requestedHostname || rowData.inventory?.hostname;
 
       if (!host) {
@@ -456,7 +456,7 @@ const HostsTable: React.FC<HostsTableProps> = ({
   );
 
   return (
-    <>
+    <div className="assisted-ui-vertical-margin">
       <Table
         rows={rows}
         cells={columns}
@@ -511,7 +511,7 @@ const HostsTable: React.FC<HostsTableProps> = ({
         isOpen={additionalNTPSourcesDialog.isOpen}
         onClose={() => additionalNTPSourcesDialog.close()}
       />
-    </>
+    </div>
   );
 };
 

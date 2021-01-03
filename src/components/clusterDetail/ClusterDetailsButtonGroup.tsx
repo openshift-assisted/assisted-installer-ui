@@ -5,8 +5,6 @@ import { canDownloadClusterLogs } from '../hosts/utils';
 import { EventsModalButton } from '../ui/eventsModal';
 import KubeconfigDownload from './KubeconfigDownload';
 import { downloadClusterInstallationLogs } from './utils';
-
-import './ClusterInstallationProgressCard.css';
 import { AlertsContext } from '../AlertsContextProvider';
 
 type ClusterDetailsButtonGroupProps = {
@@ -19,7 +17,7 @@ const ClusterDetailsButtonGroup: React.FC<ClusterDetailsButtonGroupProps> = ({ c
   const { addAlert } = React.useContext(AlertsContext);
   return (
     <Flex
-      className="vertical-margin"
+      className="assisted-ui-vertical-margin"
       spaceItems={{ default: 'spaceItemsSm' }}
       direction={{ default: 'row' }}
       justifyContent={{ default: 'justifyContentFlexStart' }}

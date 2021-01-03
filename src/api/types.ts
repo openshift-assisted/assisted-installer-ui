@@ -54,20 +54,6 @@ export interface BootFiles {
   openshiftVersion: string;
   fileType: 'initrd.img' | 'rootfs.img' | 'vmlinuz';
 }
-
-export enum ClusterStatusEnum {
-  INSUFFICIENT = 'insufficient',
-  READY = 'ready',
-  ERROR = 'error',
-  PREPARING_FOR_INSTALLATION = 'preparing-for-installation',
-  PENDING_FOR_INPUT = 'pending-for-input',
-  INSTALLING = 'installing',
-  FINALIZING = 'finalizing',
-  INSTALLED = 'installed',
-  ADDING_HOSTS = 'adding-hosts',
-  CANCELLED = 'cancelled',
-  INSTALLING_PENDING_USER_INPUT = 'installing-pending-user-action',
-}
 export interface Cluster {
   /**
    * Indicates the type of this object. Will be 'Cluster' if this is a complete object,
@@ -161,7 +147,18 @@ export interface Cluster {
   /**
    * Status of the OpenShift cluster.
    */
-  status: ClusterStatusEnum;
+  status:
+    | 'insufficient'
+    | 'ready'
+    | 'error'
+    | 'pending-for-input'
+    | 'preparing-for-installation'
+    | 'installing'
+    | 'finalizing'
+    | 'installed'
+    | 'adding-hosts'
+    | 'cancelled'
+    | 'installing-pending-user-action';
   /**
    * Additional information pertaining to the status of the OpenShift cluster.
    */
