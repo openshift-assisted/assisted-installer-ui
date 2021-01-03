@@ -30,7 +30,7 @@ import { AlertsContext } from '../AlertsContextProvider';
 import { canDownloadClusterLogs } from '../hosts/utils';
 
 const canAbortInstallation = (cluster: Cluster) => {
-  const allowedClusterStates: Cluster['status'][] = [
+  const allowedClusterStates: ClusterStatusEnum[] = [
     ClusterStatusEnum.PREPARING_FOR_INSTALLATION,
     ClusterStatusEnum.INSTALLING,
     ClusterStatusEnum.INSTALLING_PENDING_USER_INPUT,
@@ -70,7 +70,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
   }, [cluster.id]);
 
   React.useEffect(() => {
-    if (['finalizing', 'installed'].includes(cluster.status)) {
+    if ([ClusterStatusEnum.FINALIZING, ClusterStatusEnum.INSTALLED].includes(cluster.status)) {
       fetchCredentials();
     }
   }, [cluster.status, fetchCredentials]);
@@ -88,23 +88,25 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
           <GridItem>
             <ClusterProgress cluster={cluster} />
           </GridItem>
-          {['installed', 'installing', 'installing-pending-user-action', 'finalizing'].includes(
-            cluster.status,
-          ) && <FailedHostsWarning cluster={cluster} />}
-          {cluster.status === 'error' && (
+          {[
+            ClusterStatusEnum.INSTALLED,
+            ClusterStatusEnum.INSTALLING,
+            ClusterStatusEnum.FINALIZING,
+          ].includes(cluster.status) && <FailedHostsWarning cluster={cluster} />}
+          {cluster.status === ClusterStatusEnum.ERROR && (
             <ClusterInstallationError
               cluster={cluster}
               setResetClusterModalOpen={setResetClusterModalOpen}
             />
           )}
-          {cluster.status === 'cancelled' && (
+          {cluster.status === ClusterStatusEnum.CANCELLED && (
             <ClusterInstallationError
               title="Cluster installation was cancelled"
               cluster={cluster}
               setResetClusterModalOpen={setResetClusterModalOpen}
             />
           )}
-          {['finalizing', 'installed'].includes(cluster.status) && (
+          {[ClusterStatusEnum.FINALIZING, ClusterStatusEnum.INSTALLED].includes(cluster.status) && (
             <ClusterCredentials
               cluster={cluster}
               credentials={credentials}
@@ -137,7 +139,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
             Abort Installation
           </ToolbarButton>
         )}
-        {cluster.status === 'error' && (
+        {cluster.status === ClusterStatusEnum.ERROR && (
           <ToolbarButton
             id={getID('button-reset-cluster')}
             onClick={() => setResetClusterModalOpen(true)}
@@ -145,7 +147,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
             Reset Cluster
           </ToolbarButton>
         )}
-        {['finalizing', 'installed'].includes(cluster.status) && (
+        {[ClusterStatusEnum.FINALIZING, ClusterStatusEnum.INSTALLING].includes(cluster.status) && (
           <LaunchOpenshiftConsoleButton
             isDisabled={!credentials || !!credentialsError}
             cluster={cluster}

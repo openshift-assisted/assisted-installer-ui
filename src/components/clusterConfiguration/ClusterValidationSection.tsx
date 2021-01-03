@@ -15,7 +15,7 @@ import {
   ListItem,
 } from '@patternfly/react-core';
 import { TimesIcon } from '@patternfly/react-icons';
-import { Cluster } from '../../api/types';
+import { Cluster, ClusterStatusEnum } from '../../api/types';
 import { ClusterConfigurationValues, ValidationsInfo } from '../../types/clusters';
 import { CLUSTER_FIELD_LABELS } from '../../config/constants';
 import { stringToJSON } from '../../api/utils';
@@ -36,7 +36,7 @@ const ClusterValidationSection: React.FC<ClusterValidationSectionProps> = ({
 }) => {
   const prevReadyRef = React.useRef<boolean>();
   const errorFields = Object.keys(formErrors);
-  const ready = cluster.status === 'ready' && !errorFields.length && !dirty;
+  const ready = cluster.status === ClusterStatusEnum.READY && !errorFields.length && !dirty;
 
   const { failedValidations } = React.useMemo(() => {
     const validationsInfo = stringToJSON<ValidationsInfo>(cluster.validationsInfo) || {

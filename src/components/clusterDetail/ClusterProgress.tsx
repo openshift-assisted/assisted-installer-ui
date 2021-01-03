@@ -1,5 +1,5 @@
 import React from 'react';
-import { Cluster, Host, HostRole } from '../../api/types';
+import { Cluster, Host, HostRole, ClusterStatusEnum } from '../../api/types';
 import {
   Progress,
   ProgressVariant,
@@ -29,24 +29,26 @@ import { EventsModal } from '../ui/eventsModal';
 
 import './ClusterProgress.css';
 
-const getProgressVariant = (status: Cluster['status']) => {
+const getProgressVariant = (status: ClusterStatusEnum) => {
   switch (status) {
-    case 'cancelled':
-    case 'error':
+    case ClusterStatusEnum.CANCELLED:
+    case ClusterStatusEnum.ERROR:
       return ProgressVariant.danger;
-    case 'installed':
+    case ClusterStatusEnum.INSTALLED:
       return ProgressVariant.success;
     default:
       return undefined;
   }
 };
 
-const getMeasureLocation = (status: Cluster['status']) =>
-  status === 'installed' ? ProgressMeasureLocation.none : ProgressMeasureLocation.top;
+const getMeasureLocation = (status: ClusterStatusEnum) =>
+  status === ClusterStatusEnum.INSTALLED
+    ? ProgressMeasureLocation.none
+    : ProgressMeasureLocation.top;
 
 const getProgressLabel = (cluster: Cluster, progressPercent: number): string => {
   const { status, statusInfo } = cluster;
-  if (['preparing-for-installation'].includes(status)) {
+  if ([ClusterStatusEnum.PREPARING_FOR_INSTALLATION].includes(status)) {
     return statusInfo;
   }
 
@@ -69,13 +71,13 @@ const getProgressPercent = (hosts: Host[] = []) => {
 const getInstallationStatus = (cluster: Cluster) => {
   const { status } = cluster;
 
-  if (status === 'installed') {
+  if (status === ClusterStatusEnum.INSTALLED) {
     return `Installed on ${getHumanizedDateTime(cluster.installCompletedAt)}`;
   }
-  if (status === 'error') {
+  if (status === ClusterStatusEnum.ERROR) {
     return `Failed on ${getHumanizedDateTime(cluster.installCompletedAt)}`;
   }
-  if (status === 'cancelled') {
+  if (status === ClusterStatusEnum.CANCELLED) {
     return `Cancelled on ${getHumanizedDateTime(cluster.installCompletedAt)}`;
   }
 
@@ -186,9 +188,10 @@ const FinalizingProgress: React.FC<FinalizingProgressProps> = ({ cluster }) => {
 
 type ClusterProgressProps = {
   cluster: Cluster;
+  hideProgressBar?: boolean;
 };
 
-const ClusterProgress: React.FC<ClusterProgressProps> = ({ cluster }) => {
+const ClusterProgress: React.FC<ClusterProgressProps> = ({ cluster, hideProgressBar = false }) => {
   const { status, hosts = [] } = cluster;
   const progressPercent = React.useMemo(() => Math.round(getProgressPercent(hosts)), [hosts]);
   const label = getProgressLabel(cluster, progressPercent);
@@ -229,6 +232,16 @@ const ClusterProgress: React.FC<ClusterProgressProps> = ({ cluster }) => {
           <FinalizingProgress cluster={cluster} />
         </FlexItem>
       </Flex>
+      {!hideProgressBar && (
+        <Progress
+          value={progressPercent}
+          label={label}
+          title=" "
+          measureLocation={getMeasureLocation(status)}
+          variant={getProgressVariant(status)}
+          className="cluster-progress-bar"
+        />
+      )}
     </>
   );
 };

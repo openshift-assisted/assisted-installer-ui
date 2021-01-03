@@ -1,5 +1,5 @@
 import * as packageJson from '../../package.json';
-import { Cluster, Host, Event, HostValidationId, DiskRole } from '../api/types';
+import { Host, Event, HostValidationId, DiskRole, ClusterStatusEnum } from '../api/types';
 import { ValidationsInfo, HostRole } from '../types/hosts';
 import { OpenshiftVersionOptionType } from '../types/versions';
 
@@ -53,17 +53,17 @@ export const HOST_ROLES: HostRole[] = [
   },
 ];
 
-export const CLUSTER_STATUS_LABELS: { [key in Cluster['status']]: string } = {
+export const CLUSTER_STATUS_LABELS: { [key in ClusterStatusEnum]: string } = {
   'pending-for-input': 'Draft',
   insufficient: 'Draft',
-  ready: 'Ready to Install',
+  ready: 'Ready',
   'preparing-for-installation': 'Preparing for installation',
   installing: 'Installing',
   'installing-pending-user-action': 'Installing (pending action)',
   finalizing: 'Finalizing',
   cancelled: 'Installation cancelled',
   error: 'Error',
-  installed: 'Ready',
+  installed: 'Installed',
   'adding-hosts': 'Adding hosts',
 };
 

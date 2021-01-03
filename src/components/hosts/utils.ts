@@ -1,5 +1,5 @@
 import { saveAs } from 'file-saver';
-import { Host, Cluster, Presigned, Inventory } from '../../api/types';
+import { Host, Cluster, Presigned, Inventory, ClusterStatusEnum, HostRole } from '../../api/types';
 import { HOST_ROLES, TIME_ZERO } from '../../config';
 import {
   getHostLogsDownloadUrl,
@@ -12,16 +12,30 @@ import { AlertsContextType } from '../AlertsContextProvider';
 import { DASH } from '../constants';
 import filesize from 'filesize.js';
 
-export const canEnable = (clusterStatus: Cluster['status'], status: Host['status']) =>
-  ['pending-for-input', 'insufficient', 'ready', 'adding-hosts'].includes(clusterStatus) &&
-  ['disabled'].includes(status);
+export const canEnable = (clusterStatus: ClusterStatusEnum, status: Host['status']) =>
+  [
+    ClusterStatusEnum.PENDING_FOR_INPUT,
+    ClusterStatusEnum.INSUFFICIENT,
+    ClusterStatusEnum.READY,
+    ClusterStatusEnum.ADDING_HOSTS,
+  ].includes(clusterStatus) && ['disabled'].includes(status);
 
-export const canDisable = (clusterStatus: Cluster['status'], status: Host['status']) =>
-  ['pending-for-input', 'insufficient', 'ready', 'adding-hosts'].includes(clusterStatus) &&
+export const canDisable = (clusterStatus: ClusterStatusEnum, status: Host['status']) =>
+  [
+    ClusterStatusEnum.PENDING_FOR_INPUT,
+    ClusterStatusEnum.INSUFFICIENT,
+    ClusterStatusEnum.READY,
+    ClusterStatusEnum.ADDING_HOSTS,
+  ].includes(clusterStatus) &&
   ['discovering', 'disconnected', 'known', 'insufficient', 'pending-for-input'].includes(status);
 
-export const canDelete = (clusterStatus: Cluster['status'], status: Host['status']) =>
-  ['pending-for-input', 'insufficient', 'ready', 'adding-hosts'].includes(clusterStatus) &&
+export const canDelete = (clusterStatus: ClusterStatusEnum, status: Host['status']) =>
+  [
+    ClusterStatusEnum.PENDING_FOR_INPUT,
+    ClusterStatusEnum.INSUFFICIENT,
+    ClusterStatusEnum.READY,
+    ClusterStatusEnum.ADDING_HOSTS,
+  ].includes(clusterStatus) &&
   [
     'discovering',
     'known',
@@ -36,12 +50,16 @@ export const canDelete = (clusterStatus: Cluster['status'], status: Host['status
     'added-to-existing-cluster',
   ].includes(status);
 
-export const canReset = (clusterStatus: Cluster['status'], status: Host['status']) =>
-  ['adding-hosts'].includes(clusterStatus) &&
+export const canReset = (clusterStatus: ClusterStatusEnum, status: Host['status']) =>
+  [ClusterStatusEnum.ADDING_HOSTS].includes(clusterStatus) &&
   ['error', 'installing-pending-user-action'].includes(status);
 
-export const canEditRole = (clusterStatus: Cluster['status'], status: Host['status']) =>
-  ['pending-for-input', 'insufficient', 'ready'].includes(clusterStatus) &&
+export const canEditRole = (clusterStatus: ClusterStatusEnum, status: Host['status']) =>
+  [
+    ClusterStatusEnum.PENDING_FOR_INPUT,
+    ClusterStatusEnum.INSUFFICIENT,
+    ClusterStatusEnum.READY,
+  ].includes(clusterStatus) &&
   [
     'discovering',
     'known',
@@ -55,13 +73,30 @@ export const canEditHost = canEditRole;
 
 export const canEditDisks = canEditRole;
 
-export const canDownloadKubeconfig = (clusterStatus: Cluster['status']) =>
-  ['installing', 'finalizing', 'error', 'cancelled', 'installed'].includes(clusterStatus);
+export const canDownloadKubeconfig = (clusterStatus: ClusterStatusEnum) =>
+  [
+    ClusterStatusEnum.INSTALLING,
+    ClusterStatusEnum.FINALIZING,
+    ClusterStatusEnum.ERROR,
+    ClusterStatusEnum.CANCELLED,
+    ClusterStatusEnum.INSTALLED,
+  ].includes(clusterStatus);
 
 export const canInstallHost = (cluster: Cluster, hostStatus: Host['status']) =>
-  cluster.kind === 'AddHostsCluster' && cluster.status === 'adding-hosts' && hostStatus === 'known';
+  cluster.kind === 'AddHostsCluster' &&
+  cluster.status === ClusterStatusEnum.ADDING_HOSTS &&
+  hostStatus === 'known';
 
-export const getHostProgressStages = (host: Host) => host.progressStages || [];
+export const getHostProgressStages = (host: Host) =>
+  host.progressStages || [
+    'Starting installation',
+    'Installing',
+    'Writing image to disk',
+    'Rebooting',
+    'Configuring',
+    'Joined',
+    'Done',
+  ];
 
 export const getHostProgress = (host: Host) =>
   host.progress || { currentStage: 'Preparing installation', progressInfo: undefined };
@@ -141,3 +176,10 @@ export const fileSize: typeof filesize = (...args) =>
     .call(null, ...args)
     .toUpperCase()
     .replace(/I/, 'i');
+
+const getHostRoleCount = (hosts: Host[], role: HostRole) =>
+  hosts.filter((host) => host.role === role).length;
+
+export const getMasterCount = (hosts: Host[]) => getHostRoleCount(hosts, 'master');
+
+export const getWorkerCount = (hosts: Host[]) => getHostRoleCount(hosts, 'worker');
