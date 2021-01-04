@@ -8,8 +8,9 @@ import {
   DiscoveryTroubleshootingModal,
   HostsNotShowingLink,
 } from '../clusterConfiguration/DiscoveryTroubleshootingModal';
+import FormatDiskWarning from '../clusterConfiguration/FormatDiskWarning';
+import VMRebootConfigurationInfo from '../hosts/VMRebootConfigurationInfo';
 import { AddBareMetalHostsContext } from './AddBareMetalHostsContext';
-// import FormatDiskWarning from '../clusterConfiguration/FormatDiskWarning';
 
 const HostRequirementsContent = ({ worker = {} }: { worker?: HostRequirementsType['worker'] }) => (
   <Text component="p">
@@ -42,8 +43,9 @@ const BaremetalInventoryAddHosts: React.FC = () => {
           <HostsNotShowingLink setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
         </Text>
         <HostRequirements ContentComponent={HostRequirementsContent} />
+        <FormatDiskWarning />
+        <VMRebootConfigurationInfo hosts={cluster.hosts} />
       </TextContent>
-      {/* <FormatDiskWarning /> */}
       <HostsTable cluster={cluster} setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
       <DiscoveryTroubleshootingModal
         isOpen={isDiscoveryHintModalOpen}

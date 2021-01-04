@@ -41,6 +41,8 @@ import {
   HostsNotShowingLink,
   HostsNotShowingLinkProps,
 } from '../clusterConfiguration/DiscoveryTroubleshootingModal';
+import { ValidationsInfo } from '../../types/hosts';
+import { installHost } from '../../api';
 import { getHostRowHardwareInfo } from './hardwareInfo';
 import RoleCell from './RoleCell';
 import DeleteHostModal from './DeleteHostModal';
@@ -60,11 +62,9 @@ import {
 import EditHostModal from './EditHostModal';
 import Hostname from './Hostname';
 import HostsCount from './HostsCount';
-import { ValidationsInfo } from '../../types/hosts';
 import HostPropertyValidationPopover from './HostPropertyValidationPopover';
 
 import './HostsTable.css';
-import { installHost } from '../../api';
 
 type HostsTableProps = {
   cluster: Cluster;
