@@ -25,7 +25,7 @@ const getHumanizedSubnet = (subnet: Address6 | Address4 | null) => {
   if (subnet) {
     const subnetStart = subnet.startAddress().correctForm();
     const subnetEnd = subnet.endAddress().correctForm();
-    return `${subnet.address} (${subnetStart}-${subnetEnd})`;
+    return `${subnet.address} (${subnetStart} - ${subnetEnd})`;
   }
 
   return '';
