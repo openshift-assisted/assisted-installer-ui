@@ -1,33 +1,32 @@
 import React from 'react';
-import { Button, ButtonVariant, Popover, Text, TextVariants } from '@patternfly/react-core';
+import prismTheme from 'prism-react-renderer/themes/github';
+import {
+  Button,
+  ButtonVariant,
+  Popover,
+  Text,
+  TextContent,
+  TextVariants,
+} from '@patternfly/react-core';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens';
 import { Host, stringToJSON, Inventory } from '../../api';
+import PrismCode from '../ui/PrismCode';
 
 const Hint = () => (
-  <>
+  <TextContent>
     <Text component={TextVariants.p}>
       Your libvirt virtual machines should be configured to restart automatically after a reboot.
       You can check this by running:
     </Text>
-    <Text component={TextVariants.p}>
-      <code>
-        virsh dumpxml {'<'}name{'>'} | grep on_reboot{' '}
-      </code>
-    </Text>
+    <PrismCode code="virsh dumpxml <name> | grep on_reboot" theme={prismTheme} />
     <Text component={TextVariants.p}>And verify that this is the output:</Text>
-    <Text component={TextVariants.p}>
-      <code>
-        {'<'}on_reboot{'>'}restart{'</'}on_reboot{'>'}
-      </code>
-    </Text>
+    <PrismCode code="<on_reboot>restart</on_reboot>" theme={prismTheme} />
     <Text component={TextVariants.p}>
       If not, please start your VMs with the following configuration:
     </Text>
-    <Text component={TextVariants.p}>
-      <code>--events on_reboot=restart</code>
-    </Text>
-  </>
+    <PrismCode code="--events on_reboot=restart" theme={prismTheme} />
+  </TextContent>
 );
 
 const VMRebootConfigurationInfo: React.FC<{ hosts?: Host[] }> = ({ hosts = [] }) => {
