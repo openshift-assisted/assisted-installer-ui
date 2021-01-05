@@ -9,10 +9,10 @@ import {
 } from '@patternfly/react-core';
 import { Cluster } from '../../api/types';
 import { toSentence } from '../ui/table/utils';
-import { getBugzillaLink } from '../../config';
 import { AlertsContext } from '../AlertsContextProvider';
-import { downloadClusterInstallationLogs } from './utils';
 import { canDownloadClusterLogs } from '../hosts/utils';
+import { OpenshiftVersionsContext } from '../OpenshiftVersionsContextProvider';
+import { downloadClusterInstallationLogs } from './utils';
 
 type ClusterInstallationErrorProps = {
   cluster: Cluster;
@@ -28,6 +28,7 @@ const ClusterInstallationError: React.FC<ClusterInstallationErrorProps> = ({
   setResetClusterModalOpen,
 }) => {
   const { addAlert } = React.useContext(AlertsContext);
+  const { getBugzillaLink } = React.useContext(OpenshiftVersionsContext);
 
   return (
     <GridItem>

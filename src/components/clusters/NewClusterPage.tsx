@@ -11,6 +11,8 @@ import {
   Text,
   ButtonVariant,
 } from '@patternfly/react-core';
+import { ExclamationTriangleIcon } from '@patternfly/react-icons';
+import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens';
 import PageSection from '../ui/PageSection';
 import { ToolbarButton } from '../ui/Toolbar';
 import ClusterToolbar from './ClusterToolbar';
@@ -18,7 +20,7 @@ import AlertsSection from '../ui/AlertsSection';
 import { handleApiError, getErrorMessage } from '../../api/utils';
 import { AlertsContext, AlertsContextProvider } from '../AlertsContextProvider';
 import ClusterBreadcrumbs from './ClusterBreadcrumbs';
-import { routeBasePath, OPENSHIFT_VERSION_OPTIONS } from '../../config/constants';
+import { routeBasePath } from '../../config/constants';
 import { getClusters, postCluster } from '../../api/clusters';
 import { ClusterCreateParams } from '../../api/types';
 import { nameValidationSchema, validJSONSchema } from '../ui/formik/validationSchemas';
@@ -26,8 +28,9 @@ import InputField from '../ui/formik/InputField';
 import SelectField from '../ui/formik/SelectField';
 import LoadingState from '../ui/uiState/LoadingState';
 import { captureException } from '../../sentry';
-import PullSecret from './PullSecret';
 import { usePullSecretFetch } from '../fetching/pullSecret';
+import { OpenshiftVersionsContext } from '../OpenshiftVersionsContextProvider';
+import PullSecret from './PullSecret';
 
 import './NewClusterPage.css';
 
@@ -37,6 +40,7 @@ type NewClusterFormProps = {
 
 const NewClusterForm: React.FC<NewClusterFormProps> = ({ pullSecret = '' }) => {
   const { addAlert, clearAlerts } = React.useContext(AlertsContext);
+  const { versions, getDefaultVersion } = React.useContext(OpenshiftVersionsContext);
   const history = useHistory();
 
   const nameInputRef = React.useRef<HTMLInputElement>();
@@ -81,13 +85,21 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ pullSecret = '' }) => {
     }
   };
 
+  const getOpenshiftVersionHelperText = (value: string) =>
+    versions.find((version) => version.value === value)?.supportLevel !== 'production' ? (
+      <>
+        <ExclamationTriangleIcon color={warningColor.value} size="sm" />
+        &nbsp;Please note that this version is not production ready.
+      </>
+    ) : null;
+
   return (
     <>
       <ClusterBreadcrumbs clusterName="New cluster" />
       <Formik
         initialValues={{
           name: '',
-          openshiftVersion: OPENSHIFT_VERSION_OPTIONS[0].value,
+          openshiftVersion: getDefaultVersion(),
           pullSecret: pullSecret,
         }}
         validationSchema={validationSchema}
@@ -115,7 +127,11 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ pullSecret = '' }) => {
                     <SelectField
                       label="OpenShift Version"
                       name="openshiftVersion"
-                      options={OPENSHIFT_VERSION_OPTIONS}
+                      options={versions.map((version) => ({
+                        label: version.label,
+                        value: version.value,
+                      }))}
+                      getHelperText={getOpenshiftVersionHelperText}
                       isRequired
                     />
                     <PullSecret pullSecret={pullSecret} />
