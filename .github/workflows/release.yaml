@@ -53,5 +53,5 @@ jobs:
           author: GitHub action executed on release <noreply@github.com>
           title: Generated - New ${{ env.VERSION }} version
           body:
-            Triggered by new tag - https://github.com/openshift-assisted/assisted-ui-lib/releases/tag/v${{
-            env.VERSION }}
+            Triggered by new tag -
+            https://github.com/openshift-assisted/assisted-ui-lib/releases/tag/v${{ env.VERSION }}
