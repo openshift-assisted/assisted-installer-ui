@@ -5,7 +5,7 @@ import { OcmClusterType } from './types';
 import { AddHostsClusterCreateParams, Cluster, getCluster, handleApiError } from '../../api';
 import { getOpenshiftClusterId } from './utils';
 import { usePullSecretFetch } from '../fetching/pullSecret';
-import { ErrorState, LoadingState } from '../ui';
+import { AssistedUILibVersion, ErrorState, LoadingState } from '../ui';
 import { addHostsClusters } from '../../api/addHostsClusters';
 import { AlertsContextProvider } from '../AlertsContextProvider';
 import { POLLING_INTERVAL } from '../../config';
@@ -14,11 +14,17 @@ import { AddBareMetalHostsContextProvider } from './AddBareMetalHostsContext';
 
 type OpenModalType = (modalName: string, cluster?: OcmClusterType) => void;
 
-export const BareMetalHostsClusterDetailTab: React.FC<{
+type BareMetalHostsClusterDetailTabProps = {
   cluster?: OcmClusterType;
   isVisible: boolean;
   openModal?: OpenModalType;
-}> = ({ cluster, isVisible, openModal }) => {
+};
+
+const BareMetalHostsClusterDetailTabContent: React.FC<BareMetalHostsClusterDetailTabProps> = ({
+  cluster,
+  isVisible,
+  openModal,
+}) => {
   const [error, setError] = React.useState<ReactNode>();
   const [day2Cluster, setDay2Cluster] = React.useState<Cluster | null>();
   const pullSecret = usePullSecretFetch();
@@ -222,3 +228,11 @@ export const BareMetalHostsClusterDetailTab: React.FC<{
     </AlertsContextProvider>
   );
 };
+
+export const BareMetalHostsClusterDetailTab: React.FC<BareMetalHostsClusterDetailTabProps> = (
+  props,
+) => (
+  <AssistedUILibVersion>
+    <BareMetalHostsClusterDetailTabContent {...props} />
+  </AssistedUILibVersion>
+);
