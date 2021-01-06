@@ -3,6 +3,7 @@ import { Text, TextContent, Button } from '@patternfly/react-core';
 import HostsTable from '../hosts/HostsTable';
 import { Cluster, HostRequirements as HostRequirementsType } from '../../api/types';
 import HostRequirements from '../fetching/HostRequirements';
+import VMRebootConfigurationInfo from '../hosts/VMRebootConfigurationInfo';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
 import {
   HostsNotShowingLink,
@@ -46,6 +47,7 @@ const BaremetalInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         </Text>
         <HostRequirements ContentComponent={HostRequirementsContent} />
         <FormatDiskWarning />
+        <VMRebootConfigurationInfo hosts={cluster.hosts} />
       </TextContent>
       <HostsTable cluster={cluster} setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
       <DiscoveryTroubleshootingModal
