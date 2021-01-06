@@ -1,6 +1,5 @@
 import React, { ReactNode } from 'react';
 import { Button, ButtonVariant, EmptyStateVariant } from '@patternfly/react-core';
-import { normalizeClusterVersion } from '../../config';
 import { OcmClusterType } from './types';
 import { AddHostsClusterCreateParams, Cluster, getCluster, handleApiError } from '../../api';
 import { getOpenshiftClusterId } from './utils';
@@ -9,6 +8,10 @@ import { AssistedUILibVersion, ErrorState, LoadingState } from '../ui';
 import { addHostsClusters } from '../../api/addHostsClusters';
 import { AlertsContextProvider } from '../AlertsContextProvider';
 import { POLLING_INTERVAL } from '../../config';
+import {
+  OpenshiftVersionsContext,
+  OpenshiftVersionsContextProvider,
+} from '../OpenshiftVersionsContextProvider';
 import AddBareMetalHosts from './AddBareMetalHosts';
 import { AddBareMetalHostsContextProvider } from './AddBareMetalHostsContext';
 
@@ -28,6 +31,7 @@ const BareMetalHostsClusterDetailTabContent: React.FC<BareMetalHostsClusterDetai
   const [error, setError] = React.useState<ReactNode>();
   const [day2Cluster, setDay2Cluster] = React.useState<Cluster | null>();
   const pullSecret = usePullSecretFetch();
+  const { normalizeClusterVersion } = React.useContext(OpenshiftVersionsContext);
 
   const TryAgain = React.useCallback(
     () => (
@@ -180,7 +184,7 @@ const BareMetalHostsClusterDetailTabContent: React.FC<BareMetalHostsClusterDetai
 
       doItAsync();
     }
-  }, [cluster, openModal, pullSecret, day2Cluster, isVisible]);
+  }, [cluster, openModal, pullSecret, day2Cluster, isVisible, normalizeClusterVersion]);
 
   React.useEffect(() => {
     if (day2Cluster) {
@@ -221,18 +225,21 @@ const BareMetalHostsClusterDetailTabContent: React.FC<BareMetalHostsClusterDetai
   }
 
   return (
-    <AlertsContextProvider>
-      <AddBareMetalHostsContextProvider cluster={day2Cluster} ocpConsoleUrl={cluster?.console?.url}>
-        <AddBareMetalHosts />
-      </AddBareMetalHostsContextProvider>
-    </AlertsContextProvider>
+    <AddBareMetalHostsContextProvider cluster={day2Cluster} ocpConsoleUrl={cluster?.console?.url}>
+      <AddBareMetalHosts />
+    </AddBareMetalHostsContextProvider>
   );
 };
 
 export const BareMetalHostsClusterDetailTab: React.FC<BareMetalHostsClusterDetailTabProps> = (
   props,
 ) => (
-  <AssistedUILibVersion>
-    <BareMetalHostsClusterDetailTabContent {...props} />
-  </AssistedUILibVersion>
+  <>
+    <AssistedUILibVersion />
+    <AlertsContextProvider>
+      <OpenshiftVersionsContextProvider>
+        <BareMetalHostsClusterDetailTabContent {...props} />
+      </OpenshiftVersionsContextProvider>
+    </AlertsContextProvider>
+  </>
 );

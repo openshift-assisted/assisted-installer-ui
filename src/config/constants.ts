@@ -1,44 +1,28 @@
 import * as packageJson from '../../package.json';
-import {
-  ClusterCreateParams,
-  Cluster,
-  Host,
-  Event,
-  AddHostsClusterCreateParams,
-  HostValidationId,
-} from '../api/types';
+import { Cluster, Host, Event, HostValidationId } from '../api/types';
 import { ValidationsInfo, HostRole } from '../types/hosts';
+import { OpenshiftVersionOptionType } from '../types/versions';
 
 export let routeBasePath = '';
 export const setRouteBasePath = (basePath: string) => {
   routeBasePath = basePath;
 };
 
-type OpenshiftVersionOptionType = {
-  label: string;
-  value: ClusterCreateParams['openshiftVersion'];
-};
-
-const OPENSHIFT_VERSIONS_ADDHOST: AddHostsClusterCreateParams['openshiftVersion'][] = ['4.6'];
-export const OPENSHIFT_VERSION_OPTIONS: OpenshiftVersionOptionType[] = [
-  { label: 'OpenShift 4.6', value: '4.6' },
-];
-export const DEFAULT_OPENSHIFT_VERSION: OpenshiftVersionOptionType['value'] =
-  OPENSHIFT_VERSION_OPTIONS[0].value;
-
-export const normalizeClusterVersion = (version?: string) =>
-  version && OPENSHIFT_VERSIONS_ADDHOST.find((normalized) => version.startsWith(normalized));
-
 export const CLUSTER_MANAGER_SITE_LINK = 'https://cloud.redhat.com/openshift/install/pull-secret';
 export const PULL_SECRET_INFO_LINK = CLUSTER_MANAGER_SITE_LINK;
 
+// Used as a default before effective values are retrieved from the API
+export const DEFAULT_OPENSHIFT_VERSION: OpenshiftVersionOptionType = {
+  label: 'OpenShift 4.6',
+  value: '4.6',
+  supportLevel: 'production',
+};
+
+export const getBugzillaLink = (version: string = DEFAULT_OPENSHIFT_VERSION.value) =>
+  `https://bugzilla.redhat.com/enter_bug.cgi?product=OpenShift%20Container%20Platform&Component=OpenShift%20Container%20Platform&component=assisted-installer&version=${version}`;
+
 export const FEEDBACK_FORM_LINK =
   'https://docs.google.com/forms/d/e/1FAIpQLSfg9M8wRW4m_HkWeAl6KpB5dTcMu8iI3iJ29GlLfZpF2hnjng/viewform';
-
-export const getBugzillaLink = (
-  version: OpenshiftVersionOptionType['value'] = DEFAULT_OPENSHIFT_VERSION,
-) =>
-  `https://bugzilla.redhat.com/enter_bug.cgi?product=OpenShift%20Container%20Platform&Component=OpenShift%20Container%20Platform&component=assisted-installer&version=${version}`;
 
 export const getOcpConsoleNodesPage = (ocpConsoleUrl: string) =>
   `${ocpConsoleUrl}/k8s/cluster/nodes`;

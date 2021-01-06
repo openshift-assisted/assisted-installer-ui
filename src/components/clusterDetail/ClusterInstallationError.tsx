@@ -9,10 +9,10 @@ import {
 } from '@patternfly/react-core';
 import { Cluster } from '../../api/types';
 import { toSentence } from '../ui/table/utils';
-import { getBugzillaLink } from '../../config';
 import { AlertsContext } from '../AlertsContextProvider';
-import { downloadClusterInstallationLogs } from './utils';
 import { canDownloadClusterLogs } from '../hosts/utils';
+import { getBugzillaLink } from '../../config';
+import { downloadClusterInstallationLogs } from './utils';
 
 type ClusterInstallationErrorProps = {
   cluster: Cluster;
