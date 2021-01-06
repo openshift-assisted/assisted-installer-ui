@@ -14,7 +14,7 @@ export interface AddHostsClusterCreateParams {
   /**
    * Version of the OpenShift cluster.
    */
-  openshiftVersion: '4.6';
+  openshiftVersion: string;
 }
 export interface ApiVipConnectivityRequest {
   /**
@@ -34,6 +34,10 @@ export interface ApiVipConnectivityResponse {
 }
 export interface AssistedServiceIsoCreateParams {
   /**
+   * Version of the OpenShift cluster.
+   */
+  openshiftVersion?: string;
+  /**
    * SSH public key for debugging the installation.
    */
   sshPublicKey?: string;
@@ -46,14 +50,24 @@ export interface Boot {
   currentBootMode?: string;
   pxeInterface?: string;
 }
+export interface BootFiles {
+  openshiftVersion: string;
+  fileType: 'initrd.img' | 'rootfs.img' | 'vmlinuz';
+}
 export interface Cluster {
   /**
-   * Indicates the type of this object. Will be 'Cluster' if this is a complete object or 'ClusterLink' if it is just a link,
-   * 'AddHostCluster' for cluster that add hosts to existing OCP cluster,
+   * Indicates the type of this object. Will be 'Cluster' if this is a complete object,
+   * 'AddHostsCluster' for cluster that add hosts to existing OCP cluster,
    * 'AddHostsOCPCluster' for cluster running on the OCP and add hosts to it
    *
    */
   kind: 'Cluster' | 'AddHostsCluster' | 'AddHostsOCPCluster';
+  /**
+   * Guaranteed availability of the installed cluster. 'Full' installs a Highly-Available cluster
+   * over multiple master nodes whereas 'None' installs a full cluster over one node.
+   *
+   */
+  highAvailabilityMode?: 'Full' | 'None';
   /**
    * Unique identifier of the object.
    */
@@ -72,7 +86,7 @@ export interface Cluster {
   /**
    * Version of the OpenShift cluster.
    */
-  openshiftVersion?: '4.5' | '4.6';
+  openshiftVersion?: string;
   /**
    * Cluster ID on OCP system.
    */
@@ -215,9 +229,11 @@ export interface Cluster {
    */
   'user-managed-networking'?: boolean;
   /**
-   * NTP source going to be added to all the hosts.
+   * A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
    */
   additionalNtpSource?: string;
+  progress?: ClusterProgressInfo;
+  operators?: Operators;
 }
 export interface ClusterCreateParams {
   /**
@@ -225,9 +241,15 @@ export interface ClusterCreateParams {
    */
   name: string;
   /**
+   * Guaranteed availability of the installed cluster. 'Full' installs a Highly-Available cluster
+   * over multiple master nodes whereas 'None' installs a full cluster over one node.
+   *
+   */
+  highAvailabilityMode?: 'Full' | 'None';
+  /**
    * Version of the OpenShift cluster.
    */
-  openshiftVersion: '4.5' | '4.6';
+  openshiftVersion: string;
   /**
    * Base domain of the cluster. All DNS records must be sub-domains of this base and include the cluster name.
    */
@@ -281,11 +303,19 @@ export interface ClusterCreateParams {
    */
   'user-managed-networking'?: boolean;
   /**
-   * NTP source going to be added to all the hosts.
+   * A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
    */
   additionalNtpSource?: string;
+  operators?: Operators;
 }
 export type ClusterList = Cluster[];
+export interface ClusterProgressInfo {
+  progressInfo?: string;
+  /**
+   * Time at which the cluster install progress was last updated.
+   */
+  progressUpdatedAt?: string; // date-time
+}
 export interface ClusterUpdateParams {
   /**
    * OpenShift cluster name.
@@ -365,6 +395,13 @@ export interface ClusterUpdateParams {
     id?: string; // uuid
     hostname?: string;
   }[];
+  disksSelectedConfig?: {
+    id?: string; // uuid
+    /**
+     * The desired disks parameters (such as the disk's role).
+     */
+    disksConfig?: DiskConfigParams[];
+  }[];
   /**
    * The desired machine config pool for hosts associated with the cluster.
    */
@@ -377,9 +414,10 @@ export interface ClusterUpdateParams {
    */
   'user-managed-networking'?: boolean;
   /**
-   * NTP source going to be added to all the hosts.
+   * A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
    */
   additionalNtpSource?: string;
+  operators?: Operators;
 }
 export type ClusterValidationId =
   | 'machine-cidr-defined'
@@ -500,8 +538,28 @@ export interface Disk {
   serial?: string;
   sizeBytes?: number;
   bootable?: boolean;
+  /**
+   * Whether the disk appears to be an installation media or not
+   */
+  isInstallationMedia?: boolean;
+  installationEligibility?: {
+    /**
+     * Whether the disk is eligible for installation or not.
+     */
+    eligible?: boolean;
+    /**
+     * Reasons for why this disk is not elligible for installation.
+     */
+    notEligibleReasons?: string[];
+  };
   smart?: string;
+  ioPerf?: IoPerf;
 }
+export interface DiskConfigParams {
+  id: string;
+  role?: DiskRole;
+}
+export type DiskRole = 'none' | 'install';
 export interface Error {
   /**
    * Indicates the type of this object. Will always be 'Error'.
@@ -542,6 +600,26 @@ export interface Event {
   requestId?: string; // uuid
 }
 export type EventList = Event[];
+export interface FioPerfCheckRequest {
+  /**
+   * --filename argument for fio (expects a file or a block device path).
+   */
+  path: string;
+  /**
+   * The maximal fdatasync duration that is considered acceptable.
+   */
+  durationThreshold: number;
+  /**
+   * Exit code to return in case of an error.
+   */
+  exitCode: number;
+}
+export interface FioPerfCheckResponse {
+  /**
+   * The 99th percentile of fdatasync durations in milliseconds.
+   */
+  ioSyncDuration?: number;
+}
 export type FreeAddressesList = string /* ipv4 */[];
 export type FreeAddressesRequest = string /* ^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$ */[];
 export interface FreeNetworkAddresses {
@@ -827,6 +905,7 @@ export interface ImageCreateParams {
    * SSH public key for debugging the installation.
    */
   sshPublicKey?: string;
+  staticIpsConfig?: StaticIpConfig[];
 }
 export interface ImageInfo {
   /**
@@ -841,6 +920,10 @@ export interface ImageInfo {
   generatorVersion?: string;
   createdAt?: string; // date-time
   expiresAt?: string; // date-time
+  /**
+   * statip ips configuration string in the format expected by discovery ignition
+   */
+  staticIpsConfig?: string;
 }
 export interface InfraError {
   /**
@@ -887,6 +970,12 @@ export interface Inventory {
   cpu?: Cpu;
   timestamp?: number;
 }
+export interface IoPerf {
+  /**
+   * 99th percentile of fsync duration in milliseconds
+   */
+  syncDuration?: number;
+}
 export interface L2Connectivity {
   outgoingNic?: string;
   outgoingIpAddress?: string;
@@ -906,6 +995,9 @@ export interface ListVersions {
   releaseTag?: string;
 }
 export type LogsType = 'host' | 'controller' | 'all' | '';
+export interface Lso {
+  enabled?: boolean;
+}
 export interface ManagedDomain {
   domain?: string;
   provider?: 'route53';
@@ -936,12 +1028,36 @@ export interface NtpSource {
 }
 export interface NtpSynchronizationRequest {
   /**
-   * NTP source name or IP.
+   * A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
    */
   ntpSource: string;
 }
 export interface NtpSynchronizationResponse {
   ntpSources?: NtpSource[];
+}
+export interface OpenshiftVersion {
+  /**
+   * Name of the version to be presented to the user.
+   */
+  displayName?: string;
+  /**
+   * The installation image of the OpenShift cluster.
+   */
+  releaseImage?: string;
+  /**
+   * The base RHCOS image used for the discovery iso.
+   */
+  rhcosImage?: string;
+  /**
+   * Level of support of the version.
+   */
+  supportLevel?: 'beta' | 'production';
+}
+export interface OpenshiftVersions {
+  [name: string]: OpenshiftVersion;
+}
+export interface Operators {
+  lso?: Lso;
 }
 export interface Presigned {
   url: string;
@@ -953,6 +1069,13 @@ export type SourceState =
   | 'error'
   | 'variable'
   | 'unreachable';
+export interface StaticIpConfig {
+  ip?: string; // ^([0-9]{1,3}\.){3}[0-9]{1,3}$
+  mac?: string; // ^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$
+  gateway?: string; // ^([0-9]{1,3}\.){3}[0-9]{1,3}$
+  mask?: string; // ^[0-9]|[1-2][0-9]|3[0-2]?$
+  dns?: string;
+}
 export interface Step {
   stepType?: StepType;
   stepId?: string;
@@ -975,7 +1098,8 @@ export type StepType =
   | 'reset-installation'
   | 'dhcp-lease-allocate'
   | 'api-vip-connectivity-check'
-  | 'ntp-synchronizer';
+  | 'ntp-synchronizer'
+  | 'fio-perf-check';
 export interface Steps {
   nextInstructionSeconds?: number;
   /**
