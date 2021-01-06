@@ -1,5 +1,4 @@
 import React from 'react';
-import prismTheme from 'prism-react-renderer/themes/github';
 import {
   Button,
   ButtonVariant,
@@ -19,13 +18,13 @@ const Hint = () => (
       Your libvirt virtual machines should be configured to restart automatically after a reboot.
       You can check this by running:
     </Text>
-    <PrismCode code="virsh dumpxml <name> | grep on_reboot" theme={prismTheme} />
+    <PrismCode code="virsh dumpxml <name> | grep on_reboot" />
     <Text component={TextVariants.p}>And verify that this is the output:</Text>
-    <PrismCode code="<on_reboot>restart</on_reboot>" theme={prismTheme} />
+    <PrismCode code="<on_reboot>restart</on_reboot>" />
     <Text component={TextVariants.p}>
       If not, please start your VMs with the following configuration:
     </Text>
-    <PrismCode code="--events on_reboot=restart" theme={prismTheme} />
+    <PrismCode code="--events on_reboot=restart" />
   </TextContent>
 );
 
