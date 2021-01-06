@@ -3,9 +3,6 @@ import { AddHostsClusterCreateParams, getOpenshiftVersions, handleApiError } fro
 import { DEFAULT_OPENSHIFT_VERSION } from '../config';
 import { OpenshiftVersionOptionType } from '../types/versions';
 
-const generateBugzillaLink = (version: string) =>
-  `https://bugzilla.redhat.com/enter_bug.cgi?product=OpenShift%20Container%20Platform&Component=OpenShift%20Container%20Platform&component=assisted-installer&version=${version}`;
-
 export type OpenshiftVersionsContextType = {
   versions: OpenshiftVersionOptionType[];
 
@@ -13,14 +10,12 @@ export type OpenshiftVersionsContextType = {
   // In case this assumption is wrong, let's pass the "wrong" value to the Day 2 API and let it fail on server validation.
   getDefaultVersion: () => AddHostsClusterCreateParams['openshiftVersion'];
   normalizeClusterVersion: (version?: string) => AddHostsClusterCreateParams['openshiftVersion'];
-  getBugzillaLink: (version?: OpenshiftVersionOptionType['value']) => string;
 };
 
 export const OpenshiftVersionsContext = React.createContext<OpenshiftVersionsContextType>({
   versions: [],
   getDefaultVersion: () => '',
   normalizeClusterVersion: () => '',
-  getBugzillaLink: () => generateBugzillaLink(DEFAULT_OPENSHIFT_VERSION.value),
 });
 
 export const OpenshiftVersionsContextProvider: React.FC = ({ children }) => {
@@ -32,7 +27,7 @@ export const OpenshiftVersionsContextProvider: React.FC = ({ children }) => {
     const doAsync = async () => {
       try {
         const { data } = await getOpenshiftVersions();
-        const versions: OpenshiftVersionOptionType[] = Object.getOwnPropertyNames(data)
+        const versions: OpenshiftVersionOptionType[] = Object.keys(data)
           .sort()
           .map((key) => ({
             label: `OpenShift ${data[key].displayName || key}`,
@@ -60,15 +55,9 @@ export const OpenshiftVersionsContextProvider: React.FC = ({ children }) => {
     [versions],
   );
 
-  const getBugzillaLink = React.useCallback(
-    (version: OpenshiftVersionOptionType['value'] = getDefaultVersion()) =>
-      generateBugzillaLink(version),
-    [getDefaultVersion],
-  );
-
   return (
     <OpenshiftVersionsContext.Provider
-      value={{ versions, normalizeClusterVersion, getBugzillaLink, getDefaultVersion }}
+      value={{ versions, normalizeClusterVersion, getDefaultVersion }}
     >
       {children}
     </OpenshiftVersionsContext.Provider>

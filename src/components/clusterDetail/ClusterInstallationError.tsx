@@ -11,7 +11,7 @@ import { Cluster } from '../../api/types';
 import { toSentence } from '../ui/table/utils';
 import { AlertsContext } from '../AlertsContextProvider';
 import { canDownloadClusterLogs } from '../hosts/utils';
-import { OpenshiftVersionsContext } from '../OpenshiftVersionsContextProvider';
+import { getBugzillaLink } from '../../config';
 import { downloadClusterInstallationLogs } from './utils';
 
 type ClusterInstallationErrorProps = {
@@ -28,7 +28,6 @@ const ClusterInstallationError: React.FC<ClusterInstallationErrorProps> = ({
   setResetClusterModalOpen,
 }) => {
   const { addAlert } = React.useContext(AlertsContext);
-  const { getBugzillaLink } = React.useContext(OpenshiftVersionsContext);
 
   return (
     <GridItem>

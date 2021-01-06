@@ -18,6 +18,9 @@ export const DEFAULT_OPENSHIFT_VERSION: OpenshiftVersionOptionType = {
   supportLevel: 'production',
 };
 
+export const getBugzillaLink = (version: string = DEFAULT_OPENSHIFT_VERSION.value) =>
+  `https://bugzilla.redhat.com/enter_bug.cgi?product=OpenShift%20Container%20Platform&Component=OpenShift%20Container%20Platform&component=assisted-installer&version=${version}`;
+
 export const FEEDBACK_FORM_LINK =
   'https://docs.google.com/forms/d/e/1FAIpQLSfg9M8wRW4m_HkWeAl6KpB5dTcMu8iI3iJ29GlLfZpF2hnjng/viewform';
 
