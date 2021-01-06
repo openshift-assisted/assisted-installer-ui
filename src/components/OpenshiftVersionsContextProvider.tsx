@@ -36,8 +36,7 @@ export const OpenshiftVersionsContextProvider: React.FC = ({ children }) => {
           .sort()
           .map((key) => ({
             label: `OpenShift ${data[key].displayName || key}`,
-            // TODO(mlibra): Nasty hotfix to workaround bug on backend. Expected value: '4.6', received value: '4_6'
-            value: key.replace('_', '.'),
+            value: key,
             supportLevel: data[key].supportLevel,
           }));
         setVersions(versions);
