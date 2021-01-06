@@ -21,10 +21,15 @@ export const getSubnet = (cidr: string): Address6 | Address4 | null => {
   }
 };
 
-const getHumanizedSubnet = (subnet: Address6 | Address4 | null) =>
-  subnet
-    ? `${subnet.address} (${subnet.startAddress().address}-${subnet.endAddress().address})`
-    : '';
+const getHumanizedSubnet = (subnet: Address6 | Address4 | null) => {
+  if (subnet) {
+    const subnetStart = subnet.startAddress().correctForm();
+    const subnetEnd = subnet.endAddress().correctForm();
+    return `${subnet.address} (${subnetStart} - ${subnetEnd})`;
+  }
+
+  return '';
+};
 
 export const getHostSubnets = (cluster: Cluster): HostSubnets => {
   const hostnameMap: { [id: string]: string } =
