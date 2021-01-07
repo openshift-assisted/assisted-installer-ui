@@ -29,7 +29,7 @@ import SelectField from '../ui/formik/SelectField';
 import LoadingState from '../ui/uiState/LoadingState';
 import { captureException } from '../../sentry';
 import { usePullSecretFetch } from '../fetching/pullSecret';
-import { OpenshiftVersionsContext } from '../OpenshiftVersionsContextProvider';
+import { useOpenshiftVersions } from '../fetching/openshiftVersions';
 import PullSecret from './PullSecret';
 
 import './NewClusterPage.css';
@@ -40,13 +40,23 @@ type NewClusterFormProps = {
 
 const NewClusterForm: React.FC<NewClusterFormProps> = ({ pullSecret = '' }) => {
   const { addAlert, clearAlerts } = React.useContext(AlertsContext);
-  const { versions, getDefaultVersion } = React.useContext(OpenshiftVersionsContext);
+  const {
+    error: errorOCPVersions,
+    loading: loadingOCPVersions,
+    versions,
+    getDefaultVersion,
+  } = useOpenshiftVersions();
   const history = useHistory();
 
   const nameInputRef = React.useRef<HTMLInputElement>();
   React.useEffect(() => {
     nameInputRef.current?.focus();
   }, []);
+
+  React.useEffect(() => errorOCPVersions && addAlert(errorOCPVersions), [
+    errorOCPVersions,
+    addAlert,
+  ]);
 
   const validationSchema = React.useCallback(
     () =>
@@ -85,13 +95,27 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ pullSecret = '' }) => {
     }
   };
 
-  const getOpenshiftVersionHelperText = (value: string) =>
-    versions.find((version) => version.value === value)?.supportLevel !== 'production' ? (
+  const getOpenshiftVersionHelperText = (value: string) => {
+    return versions &&
+      versions.find((version) => version.value === value)?.supportLevel !== 'production' ? (
       <>
         <ExclamationTriangleIcon color={warningColor.value} size="sm" />
         &nbsp;Please note that this version is not production ready.
       </>
     ) : null;
+  };
+
+  const ocpVersionOptions = versions
+    ? versions.map((version) => ({
+        label: version.label,
+        value: version.value,
+      }))
+    : [
+        {
+          label: 'Loading list of OpenShift versions',
+          value: '', // to fail validation
+        },
+      ];
 
   return (
     <>
@@ -102,6 +126,7 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ pullSecret = '' }) => {
           openshiftVersion: getDefaultVersion(),
           pullSecret: pullSecret,
         }}
+        enableReinitialize
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
@@ -127,11 +152,9 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ pullSecret = '' }) => {
                     <SelectField
                       label="OpenShift Version"
                       name="openshiftVersion"
-                      options={versions.map((version) => ({
-                        label: version.label,
-                        value: version.value,
-                      }))}
+                      options={ocpVersionOptions}
                       getHelperText={getOpenshiftVersionHelperText}
+                      isDisabled={!!errorOCPVersions || loadingOCPVersions}
                       isRequired
                     />
                     <PullSecret pullSecret={pullSecret} />
