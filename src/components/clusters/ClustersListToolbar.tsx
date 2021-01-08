@@ -38,7 +38,7 @@ type ClustersListToolbarProps = {
   setFilters: (filters: ClusterFiltersType) => void;
 };
 
-const clusterStatusLabelUniqueValues = new Set(Object.values(CLUSTER_STATUS_LABELS));
+const clusterStatusLabelUniqueValues = Array.from(new Set(Object.values(CLUSTER_STATUS_LABELS)));
 
 const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
   searchString,
@@ -137,7 +137,7 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
             isOpen={isStatusExpanded}
             placeholderText={statusPlaceholder}
           >
-            {[...clusterStatusLabelUniqueValues].map((label) => (
+            {clusterStatusLabelUniqueValues.map((label) => (
               <SelectOption key={label} value={label} />
             ))}
           </Select>
