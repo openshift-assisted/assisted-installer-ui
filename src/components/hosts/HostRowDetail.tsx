@@ -9,6 +9,7 @@ import { DASH } from '../constants';
 import { DetailList, DetailListProps, DetailItem } from '../ui/DetailList';
 import { ValidationsInfo } from '../../types/hosts';
 import NtpValidationStatus from './NtpValidationStatus';
+import DiskLimitations from './DiskLimitations';
 
 type HostDetailProps = {
   inventory: Inventory;
@@ -26,6 +27,7 @@ type SectionColumnProps = {
 
 type DisksTableProps = {
   disks: Disk[];
+  installationDiskPath?: string;
 };
 
 type NicsTableProps = {
@@ -48,29 +50,35 @@ const SectionColumn: React.FC<SectionColumnProps> = ({ children }) => (
 
 const diskColumns = [
   { title: 'Name' },
+  { title: 'Role' },
   { title: 'Drive type' },
   { title: 'Size' },
   { title: 'Serial' },
   // { title: 'Vendor' }, TODO(mlibra): search HW database for humanized values
   { title: 'Model' },
   { title: 'WWN' },
+  { title: undefined },
 ];
 
-const diskRowKey = ({ rowData }: ExtraParamsType) => rowData?.name?.title;
+const diskRowKey = ({ rowData }: ExtraParamsType) => rowData?.key;
 
-const DisksTable: React.FC<DisksTableProps> = ({ disks }) => {
+const DisksTable: React.FC<DisksTableProps> = ({ disks, installationDiskPath }) => {
+  console.log('disks', disks);
   const rows = disks
     .sort((diskA, diskB) => diskA.name?.localeCompare(diskB.name || '') || 0)
     .map((disk) => ({
       cells: [
-        disk.bootable ? `${disk.name} (boot)` : disk.name,
+        { title: disk.bootable ? `${disk.name} (bootable)` : disk.name },
+        disk.path === installationDiskPath ? 'Install disk' : '-',
         disk.driveType,
         Humanize.fileSize(disk.sizeBytes || 0),
         disk.serial,
         // disk.vendor, TODO(mlibra): search HW database for humanized values
         disk.model,
         disk.wwn,
+        { title: <DiskLimitations disk={disk} /> },
       ],
+      key: disk.path,
     }));
 
   return (
@@ -127,7 +135,7 @@ const NicsTable: React.FC<NicsTableProps> = ({ interfaces }) => {
 };
 
 export const HostDetail: React.FC<HostDetailProps> = ({ inventory, host, validationsInfo }) => {
-  const { id } = host;
+  const { id, installationDiskPath } = host;
   const rowInfo = getHostRowHardwareInfo(inventory);
   const disks = inventory.disks || [];
   const nics = inventory.interfaces || [];
@@ -175,7 +183,7 @@ export const HostDetail: React.FC<HostDetailProps> = ({ inventory, host, validat
 
       <SectionTitle title={`${disks.length} Disk${disks.length === 1 ? '' : 's'}`} />
       <GridItem>
-        <DisksTable disks={disks} />
+        <DisksTable disks={disks} installationDiskPath={installationDiskPath} />
       </GridItem>
 
       <SectionTitle title={`${nics.length} NIC${nics.length === 1 ? '' : 's'}`} />
