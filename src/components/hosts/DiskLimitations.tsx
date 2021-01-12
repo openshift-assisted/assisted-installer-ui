@@ -8,8 +8,6 @@ import {
   ListItem,
   Popover,
 } from '@patternfly/react-core';
-import { WarningTriangleIcon } from '@patternfly/react-icons';
-import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens';
 import { Disk } from '../../api/types';
 
 type DiskLimitationsProps = {
@@ -25,11 +23,7 @@ const DiskLimitations: React.FC<DiskLimitationsProps> = ({ disk }) => {
         minWidth="30rem"
         maxWidth="50rem"
       >
-        <Button
-          variant={ButtonVariant.link}
-          icon={<WarningTriangleIcon color={warningColor.value} />}
-          isInline
-        >
+        <Button variant={ButtonVariant.link} isInline>
           {limitationsCount}
         </Button>
       </Popover>
