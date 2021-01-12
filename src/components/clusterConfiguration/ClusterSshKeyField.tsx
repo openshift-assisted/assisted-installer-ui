@@ -21,9 +21,9 @@ export const SshPublicKeyHelperText: React.FC<{
   fieldId?: string;
 }> = ({ fieldId = 'sshPublicKey' }) => (
   <HelperText fieldId={fieldId}>
-    SSH key used to debug OpenShift nodes. Generate a new key using
-    <em>ssh-keygen</em> command and upload or paste the resulting public key here (by default it is
-    content of the <em>~/.ssh/id_rsa.pub</em> file).
+    SSH key used to debug OpenShift nodes. Generate a new key using <em>ssh-keygen</em> command and
+    upload or paste the resulting public key here (by default it is content of the{' '}
+    <em>~/.ssh/id_rsa.pub</em> file).
   </HelperText>
 );
 
