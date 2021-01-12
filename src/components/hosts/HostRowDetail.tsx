@@ -3,15 +3,18 @@ import Humanize from 'humanize-plus';
 import { TextContent, Text, TextVariants, Grid, GridItem } from '@patternfly/react-core';
 import { Table, TableHeader, TableBody, TableVariant } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
-import { Host, Inventory, Disk, Interface } from '../../api/types';
+import { Host, Inventory, Disk, Interface, Cluster } from '../../api/types';
 import { getHostRowHardwareInfo } from './hardwareInfo';
 import { DASH } from '../constants';
 import { DetailList, DetailListProps, DetailItem } from '../ui/DetailList';
 import { ValidationsInfo } from '../../types/hosts';
 import NtpValidationStatus from './NtpValidationStatus';
 import DiskLimitations from './DiskLimitations';
+import DiskRole from './DiskRole';
+import { canEditDisks } from './utils';
 
 type HostDetailProps = {
+  cluster: Cluster;
   inventory: Inventory;
   host: Host;
   validationsInfo: ValidationsInfo;
@@ -26,6 +29,8 @@ type SectionColumnProps = {
 };
 
 type DisksTableProps = {
+  cluster: Cluster;
+  host: Host;
   disks: Disk[];
   installationDiskPath?: string;
 };
@@ -51,32 +56,41 @@ const SectionColumn: React.FC<SectionColumnProps> = ({ children }) => (
 const diskColumns = [
   { title: 'Name' },
   { title: 'Role' },
+  { title: 'Limitations' },
   { title: 'Drive type' },
   { title: 'Size' },
   { title: 'Serial' },
   // { title: 'Vendor' }, TODO(mlibra): search HW database for humanized values
   { title: 'Model' },
   { title: 'WWN' },
-  { title: undefined },
 ];
 
 const diskRowKey = ({ rowData }: ExtraParamsType) => rowData?.key;
 
-const DisksTable: React.FC<DisksTableProps> = ({ disks, installationDiskPath }) => {
-  console.log('disks', disks);
+const DisksTable: React.FC<DisksTableProps> = ({ cluster, host, disks, installationDiskPath }) => {
+  const isEditable = canEditDisks(cluster.status, host.status);
   const rows = disks
     .sort((diskA, diskB) => diskA.name?.localeCompare(diskB.name || '') || 0)
     .map((disk) => ({
       cells: [
         { title: disk.bootable ? `${disk.name} (bootable)` : disk.name },
-        disk.path === installationDiskPath ? 'Install disk' : '-',
+        {
+          title: (
+            <DiskRole
+              host={host}
+              disk={disk}
+              installationDiskPath={installationDiskPath}
+              isEditable={isEditable}
+            />
+          ),
+        },
+        { title: <DiskLimitations disk={disk} /> },
         disk.driveType,
         Humanize.fileSize(disk.sizeBytes || 0),
         disk.serial,
         // disk.vendor, TODO(mlibra): search HW database for humanized values
         disk.model,
         disk.wwn,
-        { title: <DiskLimitations disk={disk} /> },
       ],
       key: disk.path,
     }));
@@ -134,7 +148,12 @@ const NicsTable: React.FC<NicsTableProps> = ({ interfaces }) => {
   );
 };
 
-export const HostDetail: React.FC<HostDetailProps> = ({ inventory, host, validationsInfo }) => {
+export const HostDetail: React.FC<HostDetailProps> = ({
+  cluster,
+  inventory,
+  host,
+  validationsInfo,
+}) => {
   const { id, installationDiskPath } = host;
   const rowInfo = getHostRowHardwareInfo(inventory);
   const disks = inventory.disks || [];
@@ -183,7 +202,12 @@ export const HostDetail: React.FC<HostDetailProps> = ({ inventory, host, validat
 
       <SectionTitle title={`${disks.length} Disk${disks.length === 1 ? '' : 's'}`} />
       <GridItem>
-        <DisksTable disks={disks} installationDiskPath={installationDiskPath} />
+        <DisksTable
+          cluster={cluster}
+          host={host}
+          disks={disks}
+          installationDiskPath={installationDiskPath}
+        />
       </GridItem>
 
       <SectionTitle title={`${nics.length} NIC${nics.length === 1 ? '' : 's'}`} />

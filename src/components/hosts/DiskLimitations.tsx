@@ -1,5 +1,13 @@
 import React from 'react';
-import { Alert, AlertVariant, Button, ButtonVariant, Popover } from '@patternfly/react-core';
+import {
+  Alert,
+  AlertVariant,
+  Button,
+  ButtonVariant,
+  List,
+  ListItem,
+  Popover,
+} from '@patternfly/react-core';
 import { WarningTriangleIcon } from '@patternfly/react-icons';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens';
 import { Disk } from '../../api/types';
@@ -9,6 +17,7 @@ type DiskLimitationsProps = {
 };
 const DiskLimitations: React.FC<DiskLimitationsProps> = ({ disk }) => {
   if (!disk.installationEligibility?.eligible) {
+    const limitationsCount = disk.installationEligibility?.notEligibleReasons?.length || 0;
     return (
       <Popover
         headerContent={<div>Disk limitations</div>}
@@ -21,7 +30,7 @@ const DiskLimitations: React.FC<DiskLimitationsProps> = ({ disk }) => {
           icon={<WarningTriangleIcon color={warningColor.value} />}
           isInline
         >
-          Limitations
+          {limitationsCount}
         </Button>
       </Popover>
     );
@@ -51,11 +60,11 @@ const DiskLimitationsPopoverContent: React.FC<DiskLimitationsPopoverContentProps
         isInline
       >
         {notEligibleReasons && (
-          <ul>
+          <List>
             {notEligibleReasons.map((reason: string) => (
-              <li key={reason}>{reason}</li>
+              <ListItem key={reason}>{reason}</ListItem>
             ))}
-          </ul>
+          </List>
         )}
       </Alert>,
     );
