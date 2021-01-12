@@ -22,60 +22,6 @@ import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import { getErrorMessage, handleApiError } from '../../api/utils';
 import { trimCommaSeparatedList } from '../ui/formik/utils';
 
-type AdditionalNTPSourcesDialogToggleProps = {
-  cluster: Cluster;
-  onToggle?: (isOpen: boolean) => void;
-};
-
-export const AdditionalNTPSourcesDialogToggle: React.FC<AdditionalNTPSourcesDialogToggleProps> = ({
-  cluster,
-  onToggle,
-}) => {
-  const [isOpen, setIsOpen] = React.useState(false);
-  const setOpen = (isOpen: boolean) => {
-    onToggle && onToggle(isOpen);
-    setIsOpen(isOpen);
-  };
-
-  return (
-    <>
-      <AlertActionLink onClick={() => setOpen(true)}>Add NTP sources</AlertActionLink>
-      <AdditionalNTPSourcesDialog
-        isOpen={isOpen}
-        cluster={cluster}
-        onClose={() => setOpen(false)}
-      />
-    </>
-  );
-};
-
-type AdditionalNTPSourcesDialogProps = {
-  isOpen: boolean;
-  cluster: Cluster;
-  onClose: () => void;
-};
-
-const AdditionalNTPSourcesDialog: React.FC<AdditionalNTPSourcesDialogProps> = ({
-  cluster,
-  isOpen,
-  onClose,
-}) => {
-  return (
-    <Modal
-      aria-label="Configure additional NTP sources"
-      title="Configure additional NTP sources"
-      isOpen={isOpen}
-      onClose={onClose}
-      variant={ModalVariant.small}
-      hasNoBodyWrapper
-    >
-      <AdditionalNTPSourcesForm cluster={cluster} onClose={onClose} />
-    </Modal>
-  );
-};
-
-export default AdditionalNTPSourcesDialog;
-
 type AdditionalNTPSourcesFormProps = {
   cluster: Cluster;
   onClose: () => void;
@@ -164,7 +110,7 @@ const AdditionalNTPSourcesForm: React.FC<AdditionalNTPSourcesFormProps> = ({
                 <TextAreaField
                   name="additionalNtpSource"
                   label="Additional NTP Sources"
-                  helperText="A comma separated list of IP or domain names of the NTP pools or servers. Alternative NTP sources are added to all hosts to ensure all hosts clocks are synchronized with a valid NTP server."
+                  helperText="A comma separated list of IP or domain names of the NTP pools or servers. Additional NTP sources are added to all hosts to ensure all hosts clocks are synchronized with a valid NTP server."
                   onBlur={formatAdditionalNtpSource}
                   spellCheck={false}
                   isRequired
@@ -188,5 +134,55 @@ const AdditionalNTPSourcesForm: React.FC<AdditionalNTPSourcesFormProps> = ({
         );
       }}
     </Formik>
+  );
+};
+
+type AdditionalNTPSourcesDialogProps = {
+  isOpen: boolean;
+  cluster: Cluster;
+  onClose: () => void;
+};
+
+const AdditionalNTPSourcesDialog: React.FC<AdditionalNTPSourcesDialogProps> = ({
+  cluster,
+  isOpen,
+  onClose,
+}) => (
+  <Modal
+    aria-label="Configure additional NTP sources"
+    title="Configure additional NTP sources"
+    isOpen={isOpen}
+    onClose={onClose}
+    variant={ModalVariant.small}
+    hasNoBodyWrapper
+  >
+    <AdditionalNTPSourcesForm cluster={cluster} onClose={onClose} />
+  </Modal>
+);
+
+type AdditionalNTPSourcesDialogToggleProps = {
+  cluster: Cluster;
+  onToggle?: (isOpen: boolean) => void;
+};
+
+export const AdditionalNTPSourcesDialogToggle: React.FC<AdditionalNTPSourcesDialogToggleProps> = ({
+  cluster,
+  onToggle,
+}) => {
+  const [isOpen, setIsOpen] = React.useState(false);
+  const setOpen = (isOpen: boolean) => {
+    onToggle && onToggle(isOpen);
+    setIsOpen(isOpen);
+  };
+
+  return (
+    <>
+      <AlertActionLink onClick={() => setOpen(true)}>Add NTP sources</AlertActionLink>
+      <AdditionalNTPSourcesDialog
+        isOpen={isOpen}
+        cluster={cluster}
+        onClose={() => setOpen(false)}
+      />
+    </>
   );
 };

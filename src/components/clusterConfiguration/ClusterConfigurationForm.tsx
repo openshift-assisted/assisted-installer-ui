@@ -40,7 +40,6 @@ import {
   dnsNameValidationSchema,
   hostPrefixValidationSchema,
   vipValidationSchema,
-  ntpSourceValidationSchema,
 } from '../ui/formik/validationSchemas';
 import ClusterBreadcrumbs from '../clusters/ClusterBreadcrumbs';
 import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
@@ -63,7 +62,6 @@ const validationSchema = (initialValues: ClusterConfigurationValues, hostSubnets
       apiVip: vipValidationSchema(hostSubnets, values, initialValues.apiVip),
       ingressVip: vipValidationSchema(hostSubnets, values, initialValues.ingressVip),
       sshPublicKey: sshPublicKeyValidationSchema,
-      additionalNtpSource: ntpSourceValidationSchema,
     }),
   );
 
@@ -110,11 +108,6 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
     // update the cluster configuration
     try {
       const params = _.omit(values, ['hostSubnet', 'useRedHatDnsService', 'shareDiscoverySshKey']);
-
-      // Discard additionalNtpSource if it is empty
-      if (!values.additionalNtpSource) {
-        delete params.additionalNtpSource;
-      }
 
       if (values.shareDiscoverySshKey) {
         params.sshPublicKey = cluster.imageInfo.sshPublicKey;
