@@ -166,7 +166,7 @@ export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string 
   'belongs-to-majority-group': '',
   'valid-platform': '',
   'ntp-synced':
-    'Please manually fix hosts NTP configuration or provide Additional NTP source in Advanced networking configuration section.',
+    "Please manually fix host's NTP configuration or provide an alternative NTP source in the Advanced networking configuration section.",
 };
 
 export const CLUSTER_DEFAULTS = {
