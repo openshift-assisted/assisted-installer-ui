@@ -1,7 +1,7 @@
 import React from 'react';
 import Highlight, { defaultProps, Language, PrismTheme } from 'prism-react-renderer';
 import { Text, TextVariants } from '@patternfly/react-core';
-import defaultTheme from 'prism-react-renderer/themes/nightOwl';
+import defaultTheme from 'prism-react-renderer/themes/github';
 import './PrismCode.css';
 
 type PrismCodeProps = {
