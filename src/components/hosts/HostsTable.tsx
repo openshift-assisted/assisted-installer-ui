@@ -167,6 +167,7 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
           title: (
             <HostDetail
               key={id}
+              cluster={cluster}
               inventory={inventory}
               host={host}
               validationsInfo={validationsInfo}

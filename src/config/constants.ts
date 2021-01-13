@@ -1,5 +1,5 @@
 import * as packageJson from '../../package.json';
-import { Cluster, Host, Event, HostValidationId } from '../api/types';
+import { Cluster, Host, Event, HostValidationId, DiskRole } from '../api/types';
 import { ValidationsInfo, HostRole } from '../types/hosts';
 import { OpenshiftVersionOptionType } from '../types/versions';
 
@@ -198,4 +198,9 @@ export const NO_SUBNET_SET = 'NO_SUBNET_SET';
 export const PREFIX_MAX_RESTRICTION = {
   IPv6: 128,
   IPv4: 25,
+};
+
+export const DISK_ROLE_LABELS: { [key in DiskRole]: string } = {
+  none: 'None',
+  install: 'Installation disk',
 };

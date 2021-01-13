@@ -51,6 +51,8 @@ export const canEditRole = (clusterStatus: Cluster['status'], status: Host['stat
 
 export const canEditHost = canEditRole;
 
+export const canEditDisks = canEditRole;
+
 export const canDownloadKubeconfig = (clusterStatus: Cluster['status']) =>
   ['installing', 'finalizing', 'error', 'cancelled', 'installed'].includes(clusterStatus);
 
