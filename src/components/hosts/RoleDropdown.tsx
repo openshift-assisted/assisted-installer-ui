@@ -41,6 +41,7 @@ export const RoleDropdown: React.FC<RoleDropdownProps> = ({ host }) => {
       items={HOST_ROLES}
       setValue={setRole}
       isDisabled={isDisabled}
+      idPrefix={`role-${host.requestedHostname}`}
     />
   );
 };
