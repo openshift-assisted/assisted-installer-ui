@@ -39,12 +39,12 @@ const columnConfig = {
 };
 
 const columns = [
-  { title: 'Name', ...columnConfig },
-  { title: 'Base domain', ...columnConfig },
-  { title: 'Version', ...columnConfig },
-  { title: 'Status', ...columnConfig },
-  { title: 'Hosts', ...columnConfig },
-  { title: 'Created at', ...columnConfig },
+  { title: 'Name', dataLabel: 'Name', ...columnConfig },
+  { title: 'Base domain', dataLabel: 'Base domain', ...columnConfig },
+  { title: 'Version', dataLabel: 'Version', ...columnConfig },
+  { title: 'Status', dataLabel: 'Status', ...columnConfig },
+  { title: 'Hosts', dataLabel: 'Hosts', ...columnConfig },
+  { title: 'Created at', dataLabel: 'Created at', ...columnConfig },
 ];
 
 const getStatusCell = (row: IRow) => row.cells?.[3] as HumanizedSortable | undefined;

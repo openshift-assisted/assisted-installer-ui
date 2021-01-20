@@ -136,9 +136,14 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
             selections={filters.status}
             isOpen={isStatusExpanded}
             placeholderText={statusPlaceholder}
+            toggleId="cluster-list-filter-status"
           >
             {clusterStatusLabelUniqueValues.map((label) => (
-              <SelectOption key={label} value={label} />
+              <SelectOption
+                key={label}
+                value={label}
+                inputId={`cluster-list-filter-status-${label}`}
+              />
             ))}
           </Select>
         </ToolbarFilter>
