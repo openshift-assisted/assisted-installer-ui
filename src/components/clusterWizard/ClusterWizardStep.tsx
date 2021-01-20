@@ -9,7 +9,11 @@ type ClusterWizardStepProps = {
   footer?: React.ReactNode;
 };
 
-const wizardSteps: ClusterWizardStepsType[] = ['cluster-configuration', 'networking'];
+const wizardSteps: ClusterWizardStepsType[] = [
+  'cluster-details',
+  'cluster-configuration',
+  'networking',
+];
 
 const ClusterWizardStep: React.FC<ClusterWizardStepProps> = ({ footer, children }) => {
   const { currentStepId, setCurrentStepId } = React.useContext(ClusterWizardContext);
@@ -17,11 +21,25 @@ const ClusterWizardStep: React.FC<ClusterWizardStepProps> = ({ footer, children 
   const nav = (
     <WizardNav>
       <WizardNavItem
-        content="Cluster Configuration"
+        key="cluster-details"
+        content="Cluster Details"
+        isCurrent={currentStepId === 'cluster-details'}
+        isDisabled={false}
         step={0}
-        isDisabled={false /* Always enabled */}
+        onNavItemClick={() => setCurrentStepId('cluster-details')}
+      />
+      <WizardNavItem
         key="cluster-configuration"
+        content="Cluster Configuration"
+        isDisabled={
+          !wizardSteps
+            .slice(
+              1 /* TODO(mlibra): just to show principle. we will simplify when all steps are added. Step order - 1 */,
+            )
+            .includes(currentStepId)
+        }
         isCurrent={currentStepId === 'cluster-configuration'}
+        step={1}
         onNavItemClick={() => setCurrentStepId('cluster-configuration')}
       />
       {/* <WizardNavItem
@@ -34,11 +52,11 @@ const ClusterWizardStep: React.FC<ClusterWizardStepProps> = ({ footer, children 
       />*/}
       <WizardNavItem
         content="Networking"
-        step={1}
+        step={2}
         isDisabled={
           !wizardSteps
             .slice(
-              1 /* TODO(mlibra): just to show principle. we will simplify when all steps are added. Step order - 1 */,
+              2 /* TODO(mlibra): just to show principle. we will simplify when all steps are added. Step order - 1 */,
             )
             .includes(currentStepId)
         }
