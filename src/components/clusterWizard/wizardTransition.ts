@@ -1,6 +1,11 @@
 import { Cluster } from '../../api';
 
-export type ClusterWizardStepsType = 'cluster-configuration' | 'networking';
+export type ClusterWizardStepsType =
+  | 'cluster-details'
+  | 'baremetal-discovery'
+  | 'networking'
+  | 'cluster-configuration';
+
 export const CLUSTER_WIZARD_FIRST_STEP: ClusterWizardStepsType = 'cluster-configuration';
 
 // We are collocating all these canNext* functions for easier maintenance.
