@@ -165,12 +165,7 @@ export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string 
   'api-vip-connected': '',
   'belongs-to-majority-group': '',
   'valid-platform': '',
-  'ntp-synced':
-    "Please manually fix the hosts' NTP configuration or provide Additional NTP sources in the Advanced networking configuration section.",
-};
-
-export const CLUSTER_DEFAULTS = {
-  additionalNtpSource: undefined,
+  'ntp-synced': "Please manually fix host's NTP configuration or provide additional NTP sources.",
 };
 
 export const CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4 = {

@@ -13,6 +13,7 @@ import {
 } from '../../config/constants';
 import { Cluster, Host } from '../../api';
 import Hostname from './Hostname';
+import { AdditionalNTPSourcesDialogToggle } from './AdditionalNTPSourcesDialog';
 
 import './HostValidationGroups.css';
 import { toSentence } from '../ui/table/utils';
@@ -58,6 +59,19 @@ const ValidationGroupAlert: React.FC<ValidationGroupAlertProps> = ({
         title="Change hostname"
         onToggle={onValidationActionToggle}
         {...props}
+      />,
+    );
+  }
+  if (
+    validations.find(
+      (validation) => validation.status === 'failure' && validation.id === 'ntp-synced',
+    )
+  ) {
+    actionLinks.push(
+      <AdditionalNTPSourcesDialogToggle
+        key="add-ntp-sources"
+        onToggle={onValidationActionToggle}
+        cluster={props.cluster}
       />,
     );
   }
