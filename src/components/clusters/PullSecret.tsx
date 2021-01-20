@@ -70,7 +70,7 @@ const PullSecret: React.FC<PullSecretProps> = ({ pullSecret }) => {
         </>
       )}
       helperText={pullSecretHelperText}
-      rows={20}
+      rows={10}
       isRequired
     />
   );
