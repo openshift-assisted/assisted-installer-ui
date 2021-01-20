@@ -31,9 +31,7 @@ const validationSchema = Yup.object<BareMetalDiscoveryValues>().shape({
   name: nameValidationSchema,
 });
 
-const ClusterConfigurationForm: React.FC<{
-  cluster: Cluster;
-}> = ({ cluster }) => {
+const ClusterConfigurationForm: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const { alerts, addAlert, clearAlerts } = React.useContext(AlertsContext);
   const { setCurrentStepId } = React.useContext(ClusterWizardContext);
   const dispatch = useDispatch();
@@ -154,7 +152,7 @@ const ClusterConfigurationForm: React.FC<{
                 isSubmitting={isSubmitting}
                 isNextDisabled={!canNextClusterConfiguration({ isValid, isSubmitting, cluster })}
                 onNext={submitForm}
-                onBack={undefined /* No transition back from the first step */}
+                onBack={() => setCurrentStepId('cluster-details')}
               />
             </StackItem>
           </Stack>
