@@ -18,6 +18,10 @@ export type NetworkConfigurationValues = ClusterUpdateParams & {
   shareDiscoverySshKey?: boolean;
 };
 
+export type ClusterDetailsValues = ClusterUpdateParams & {
+  useRedHatDnsService: boolean;
+};
+
 // TODO(mlibra): just name?
 export type BareMetalDiscoveryValues = ClusterUpdateParams;
 
