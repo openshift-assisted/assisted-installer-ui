@@ -47,7 +47,7 @@ export interface TextAreaFieldProps extends FieldProps {
   getErrorText?: (error: string) => React.ReactNode | undefined;
   placeholder?: string;
   onChange?: (event: React.FormEvent<HTMLTextAreaElement>) => void;
-  onBlur?: () => void;
+  onBlur?: (event: React.FormEvent<HTMLTextAreaElement>) => void;
   spellCheck?: boolean;
 }
 

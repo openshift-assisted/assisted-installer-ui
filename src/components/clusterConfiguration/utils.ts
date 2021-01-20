@@ -2,7 +2,6 @@ import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
 import { Cluster, Inventory, ManagedDomain } from '../../api/types';
 import { stringToJSON } from '../../api/utils';
 import {
-  CLUSTER_DEFAULTS,
   CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4,
   CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV6,
 } from '../../config/constants';
@@ -79,7 +78,6 @@ const getDefaultNetworkSettings = (clusterNetworkCidr: string): ClusterNetworkDe
 
 // TODO: Replace this by API call to retrieve the defaults from the backend
 export const getClusterDefaultSettings = (clusterNetworkCidr: string) => ({
-  ...CLUSTER_DEFAULTS,
   ...getDefaultNetworkSettings(clusterNetworkCidr),
 });
 
@@ -88,8 +86,7 @@ export const isAdvConf = (cluster: Cluster) => {
   return (
     cluster.clusterNetworkCidr !== defaultNetworkSettings.clusterNetworkCidr ||
     cluster.clusterNetworkHostPrefix !== defaultNetworkSettings.clusterNetworkHostPrefix ||
-    cluster.serviceNetworkCidr !== defaultNetworkSettings.serviceNetworkCidr ||
-    cluster.additionalNtpSource !== CLUSTER_DEFAULTS.additionalNtpSource
+    cluster.serviceNetworkCidr !== defaultNetworkSettings.serviceNetworkCidr
   );
 };
 
@@ -115,6 +112,5 @@ export const getInitialValues = (
     shareDiscoverySshKey:
       !!cluster.imageInfo.sshPublicKey && cluster.sshPublicKey === cluster.imageInfo.sshPublicKey,
     vipDhcpAllocation: cluster.vipDhcpAllocation,
-    additionalNtpSource: cluster.additionalNtpSource || '',
   };
 };
