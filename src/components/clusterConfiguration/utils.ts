@@ -3,7 +3,7 @@ import {
   HostSubnets,
   NetworkConfigurationValues,
 } from '../../types/clusters';
-import { Cluster, Inventory, ManagedDomain } from '../../api/types';
+import { Cluster, Inventory } from '../../api/types';
 import { stringToJSON } from '../../api/utils';
 import {
   CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4,
@@ -98,13 +98,9 @@ export const getBareMetalDiscoveryInitialValues = (cluster: Cluster): BareMetalD
   name: cluster.name || '',
 });
 
-export const getNetworkInitialValues = (
-  cluster: Cluster,
-  managedDomains: ManagedDomain[],
-): NetworkConfigurationValues => {
+export const getNetworkInitialValues = (cluster: Cluster): NetworkConfigurationValues => {
   const defaultNetworkSettings = getDefaultNetworkSettings(cluster.clusterNetworkCidr as string);
   return {
-    baseDnsDomain: cluster.baseDnsDomain || '',
     clusterNetworkCidr: cluster.clusterNetworkCidr || defaultNetworkSettings.clusterNetworkCidr,
     clusterNetworkHostPrefix:
       cluster.clusterNetworkHostPrefix || defaultNetworkSettings.clusterNetworkHostPrefix,
@@ -113,9 +109,6 @@ export const getNetworkInitialValues = (
     ingressVip: cluster.vipDhcpAllocation ? '' : cluster.ingressVip || '',
     sshPublicKey: cluster.sshPublicKey || '',
     hostSubnet: getSubnetFromMachineNetworkCidr(cluster.machineNetworkCidr),
-    useRedHatDnsService:
-      !!cluster.baseDnsDomain &&
-      managedDomains.map((d) => d.domain).includes(cluster.baseDnsDomain),
     shareDiscoverySshKey:
       !!cluster.imageInfo.sshPublicKey && cluster.sshPublicKey === cluster.imageInfo.sshPublicKey,
     vipDhcpAllocation: cluster.vipDhcpAllocation,
