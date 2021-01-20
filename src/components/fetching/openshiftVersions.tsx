@@ -8,8 +8,7 @@ import {
 import { OpenshiftVersionOptionType } from '../../types/versions';
 
 type useOpenshiftVersionsType = {
-  versions?: OpenshiftVersionOptionType[];
-  getDefaultVersion: () => AddHostsClusterCreateParams['openshiftVersion'];
+  versions: OpenshiftVersionOptionType[];
   normalizeClusterVersion: (version?: string) => AddHostsClusterCreateParams['openshiftVersion'];
   error?: { title: string; message: string };
   loading: boolean;
@@ -51,16 +50,10 @@ export const useOpenshiftVersions = (): useOpenshiftVersionsType => {
     [versions],
   );
 
-  const getDefaultVersion = React.useCallback(
-    () => (versions && versions[0]?.value) || '', // let validation fail if versions are not loaded
-    [versions],
-  );
-
   return {
     error,
     loading: !error && !versions,
-    versions,
+    versions: versions || [],
     normalizeClusterVersion,
-    getDefaultVersion,
   };
 };
