@@ -11,7 +11,7 @@ import { ValidationsInfo } from '../../types/hosts';
 import NtpValidationStatus from './NtpValidationStatus';
 import DiskLimitations from './DiskLimitations';
 import DiskRole from './DiskRole';
-import { canEditDisks } from './utils';
+import { canEditDisks, getHardwareTypeText } from './utils';
 
 type HostDetailProps = {
   cluster: Cluster;
@@ -165,12 +165,7 @@ export const HostDetail: React.FC<HostDetailProps> = ({
   }
   bmcAddress = bmcAddress || DASH;
 
-  let virtualText = DASH;
-  if (inventory.systemVendor?.virtual) {
-    virtualText = 'Virtual machine';
-  } else if (inventory.systemVendor?.virtual !== undefined) {
-    virtualText = 'Bare metal';
-  }
+  const hardwareType = getHardwareTypeText(inventory);
 
   return (
     <Grid hasGutter>
@@ -188,7 +183,7 @@ export const HostDetail: React.FC<HostDetailProps> = ({
         <DetailItem title="CPU architecture" value={inventory.cpu?.architecture || DASH} />
       </SectionColumn>
       <SectionColumn>
-        <DetailItem title="Hardware type" value={virtualText} />
+        <DetailItem title="Hardware type" value={hardwareType} />
         <DetailItem title="BMC address" value={bmcAddress} />
         <DetailItem title="Boot mode" value={inventory.boot?.currentBootMode || DASH} />
         {inventory.boot?.pxeInterface && (

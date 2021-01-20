@@ -146,12 +146,14 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ pullSecret = '' }) => {
                 variant={ButtonVariant.primary}
                 isDisabled={isSubmitting || !isValid || !dirty}
                 onClick={submitForm}
+                id="new-cluster-page-save"
               >
                 Save & Continue
               </ToolbarButton>
               <ToolbarButton
                 variant={ButtonVariant.link}
                 onClick={() => history.push(`${routeBasePath}/clusters`)}
+                id="new-cluster-page-cancel"
               >
                 Cancel
               </ToolbarButton>

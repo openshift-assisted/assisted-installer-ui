@@ -251,6 +251,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
                 isDisabled={
                   isStartingInstallation || !isValid || dirty || cluster.status !== 'ready'
                 }
+                id="cluster-configuration-install"
               >
                 Install Cluster
               </ToolbarButton>
@@ -260,6 +261,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
                 variant={ButtonVariant.secondary}
                 isDisabled={isSubmitting || !isValid || !dirty}
                 onClick={submitForm}
+                id="cluster-configuration-save"
               >
                 Validate & Save Changes
               </ToolbarButton>
@@ -267,6 +269,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
                 variant={ButtonVariant.secondary}
                 isDisabled={isSubmitting || !dirty}
                 onClick={() => resetForm()}
+                id="cluster-configuration-discard"
               >
                 Discard Changes
               </ToolbarButton>
@@ -274,30 +277,37 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
                 variant={ButtonVariant.link}
                 component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
                 isHidden={isSingleClusterMode()}
+                id="cluster-configuration-back-to-all-clusters"
               >
                 Back to all clusters
               </ToolbarButton>
               {isSubmitting && (
                 <ToolbarText component={TextVariants.small}>
-                  <Spinner size="sm" /> Saving changes...
+                  <Spinner size="sm" id="cluster-configuration-spinner-saving-changes" /> Saving
+                  changes...
                 </ToolbarText>
               )}
               {isStartingInstallation ? (
                 <ToolbarText component={TextVariants.small}>
-                  <Spinner size="sm" /> Starting installation...
+                  <Spinner size="sm" id="cluster-configuration-spinner-starting-installation" />{' '}
+                  Starting installation...
                 </ToolbarText>
               ) : (
                 <ToolbarText component={TextVariants.small}>
                   {!Object.keys(errors).length && !dirty && cluster.status === 'ready' ? (
                     <>
-                      <CheckCircleIcon color={successColor.value} /> The cluster is ready to be
-                      installed.
+                      <CheckCircleIcon
+                        color={successColor.value}
+                        id="cluster-configuration-icon-ready-to-install"
+                      />{' '}
+                      The cluster is ready to be installed.
                     </>
                   ) : (
                     <>
                       <Button
                         variant={ButtonVariant.link}
                         onClick={() => setIsValidationSectionOpen(!isValidationSectionOpen)}
+                        id="cluster-configuration-button-not-ready-to-install"
                         isInline
                       >
                         <WarningTriangleIcon color={warningColor.value} />{' '}

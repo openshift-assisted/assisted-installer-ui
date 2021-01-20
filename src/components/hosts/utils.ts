@@ -9,6 +9,7 @@ import {
   getPresignedFileUrl,
 } from '../../api';
 import { AlertsContextType } from '../AlertsContextProvider';
+import { DASH } from '../constants';
 
 export const canEnable = (clusterStatus: Cluster['status'], status: Host['status']) =>
   ['pending-for-input', 'insufficient', 'ready', 'adding-hosts'].includes(clusterStatus) &&
@@ -118,3 +119,18 @@ export const hasKnownHost = (cluster: Cluster) =>
 
 export const getHostname = (host: Host, inventory: Inventory) =>
   host.requestedHostname || inventory.hostname;
+
+export const getHardwareTypeText = (inventory: Inventory) => {
+  let hardwareTypeText = DASH;
+  const { systemVendor } = inventory;
+
+  if (systemVendor !== undefined) {
+    if (systemVendor.virtual) {
+      hardwareTypeText = 'Virtual machine';
+    } else {
+      hardwareTypeText = 'Bare metal';
+    }
+  }
+
+  return hardwareTypeText;
+};
