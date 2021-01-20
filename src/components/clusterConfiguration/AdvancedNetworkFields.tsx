@@ -55,8 +55,8 @@ const AdvancedNetworkFields: React.FC = () => {
       />
       <TextAreaField
         name="additionalNtpSource"
-        label="Alternative NTP Sources"
-        helperText="A comma separated list of IP or domain names of the NTP pools or servers. Alternative NTP sources are added to all hosts to ensure all hosts clocks are synchronized with a valid NTP server."
+        label="Additional NTP Sources"
+        helperText="A comma separated list of IP or domain names of the NTP pools or servers. Additional NTP sources are added to all hosts to ensure all hosts clocks are synchronized with a valid NTP server."
         onBlur={formatAdditionalNtpSource}
         spellCheck={false}
       />
