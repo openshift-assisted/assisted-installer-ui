@@ -165,7 +165,7 @@ export const HostDetail: React.FC<HostDetailProps> = ({
   }
   bmcAddress = bmcAddress || DASH;
 
-  const virtualText = getHardwareTypeText(inventory);
+  const hardwareType = getHardwareTypeText(inventory);
 
   return (
     <Grid hasGutter>
@@ -183,7 +183,7 @@ export const HostDetail: React.FC<HostDetailProps> = ({
         <DetailItem title="CPU architecture" value={inventory.cpu?.architecture || DASH} />
       </SectionColumn>
       <SectionColumn>
-        <DetailItem title="Hardware type" value={virtualText} />
+        <DetailItem title="Hardware type" value={hardwareType} />
         <DetailItem title="BMC address" value={bmcAddress} />
         <DetailItem title="Boot mode" value={inventory.boot?.currentBootMode || DASH} />
         {inventory.boot?.pxeInterface && (
