@@ -22,6 +22,10 @@ export type BareMetalDiscoveryValues = ClusterUpdateParams & {
   useExtraDisksForLocalStorage: boolean;
 };
 
+export type ClusterDetailsValues = ClusterUpdateParams & {
+  useRedHatDnsService: boolean;
+};
+
 export type ValidationsInfo = {
   hostsData?: Validation[];
   network?: Validation[];
