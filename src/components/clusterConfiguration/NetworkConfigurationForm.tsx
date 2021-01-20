@@ -8,10 +8,9 @@ import {
   ClusterUpdateParams,
   getErrorMessage,
   handleApiError,
-  ManagedDomain,
   patchCluster,
 } from '../../api';
-import { Form, Grid, GridItem, Text, TextContent } from '@patternfly/react-core';
+import { Form, Grid, GridItem, Stack, StackItem, Text, TextContent } from '@patternfly/react-core';
 
 import { trimSshPublicKey } from '../ui/formik/utils';
 import { AlertsContext } from '../AlertsContextProvider';
@@ -19,10 +18,8 @@ import Alerts from '../ui/Alerts';
 import {
   sshPublicKeyValidationSchema,
   ipBlockValidationSchema,
-  dnsNameValidationSchema,
   hostPrefixValidationSchema,
   vipValidationSchema,
-  ntpSourceValidationSchema,
 } from '../ui/formik/validationSchemas';
 import ClusterWizardStep from '../clusterWizard/ClusterWizardStep';
 import { HostSubnets, NetworkConfigurationValues } from '../../types/clusters';
@@ -34,7 +31,6 @@ import {
   ClusterWizardStepsType,
 } from '../clusterWizard/wizardTransition';
 import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
-
 import NetworkConfiguration from './NetworkConfiguration';
 import ClusterSshKeyField from './ClusterSshKeyField';
 import { getHostSubnets, getNetworkInitialValues } from './utils';
@@ -43,21 +39,18 @@ import { useDefaultConfiguration } from './ClusterDefaultConfigurationContext';
 const validationSchema = (initialValues: NetworkConfigurationValues, hostSubnets: HostSubnets) =>
   Yup.lazy<NetworkConfigurationValues>((values) =>
     Yup.object<NetworkConfigurationValues>().shape({
-      baseDnsDomain: dnsNameValidationSchema(initialValues.baseDnsDomain),
       clusterNetworkHostPrefix: hostPrefixValidationSchema(values),
       clusterNetworkCidr: ipBlockValidationSchema,
       serviceNetworkCidr: ipBlockValidationSchema,
       apiVip: vipValidationSchema(hostSubnets, values, initialValues.apiVip),
       ingressVip: vipValidationSchema(hostSubnets, values, initialValues.ingressVip),
       sshPublicKey: sshPublicKeyValidationSchema,
-      additionalNtpSource: ntpSourceValidationSchema,
     }),
   );
 
 const NetworkConfigurationForm: React.FC<{
   cluster: Cluster;
-  managedDomains: ManagedDomain[];
-}> = ({ cluster, managedDomains }) => {
+}> = ({ cluster }) => {
   /* TODO(mlibra): Refactor alerts section along the butons
     const [isValidationSectionOpen, setIsValidationSectionOpen] = React.useState(false);
   const [isStartingInstallation, setIsStartingInstallation] = React.useState(false);
@@ -72,8 +65,8 @@ const NetworkConfigurationForm: React.FC<{
   const dispatch = useDispatch();
   const hostSubnets = React.useMemo(() => getHostSubnets(cluster), [cluster]);
   const initialValues = React.useMemo(
-    () => getNetworkInitialValues(cluster, managedDomains, defaultNetworkSettings),
-    [cluster, defaultNetworkSettings, managedDomains],
+    () => getNetworkInitialValues(cluster, defaultNetworkSettings),
+    [cluster, defaultNetworkSettings],
   );
 
   const memoizedValidationSchema = React.useMemo(
@@ -91,11 +84,6 @@ const NetworkConfigurationForm: React.FC<{
     try {
       const params = _.omit(values, ['hostSubnet', 'useRedHatDnsService', 'shareDiscoverySshKey']);
 
-      // Discard additionalNtpSource if it is empty
-      if (!values.additionalNtpSource) {
-        delete params.additionalNtpSource;
-      }
-
       if (values.shareDiscoverySshKey) {
         params.sshPublicKey = cluster.imageInfo.sshPublicKey;
       }
@@ -109,7 +97,7 @@ const NetworkConfigurationForm: React.FC<{
 
       const { data } = await patchCluster(cluster.id, params);
       formikActions.resetForm({
-        values: getNetworkInitialValues(data, managedDomains, defaultNetworkSettings),
+        values: getNetworkInitialValues(data, defaultNetworkSettings),
       });
       dispatch(updateCluster(data));
 
@@ -155,15 +143,9 @@ const NetworkConfigurationForm: React.FC<{
 
         const form = (
           <Grid hasGutter>
-            <Form>
-              <GridItem span={12} lg={10} xl={9} xl2={7}>
-                <NetworkConfiguration
-                  cluster={cluster}
-                  hostSubnets={hostSubnets}
-                  managedDomains={managedDomains}
-                />
-              </GridItem>
-              <GridItem span={12} lg={10} xl={9} xl2={7}>
+            <GridItem span={12} lg={10} xl={9} xl2={7}>
+              <Form>
+                <NetworkConfiguration cluster={cluster} hostSubnets={hostSubnets} />
                 <TextContent>
                   <Text component="h2">Security</Text>
                 </TextContent>
@@ -174,19 +156,19 @@ const NetworkConfigurationForm: React.FC<{
                   onClusterSshKeyVisibilityChanged={onClusterSshKeyVisibilityChanged}
                   onSshKeyBlur={onSshKeyBlur}
                 />
-              </GridItem>
-            </Form>
+              </Form>
+            </GridItem>
           </Grid>
         );
 
         const footer = (
-          <Grid hasGutter>
+          <Stack hasGutter>
             {!!alerts.length && (
-              <GridItem span={12} lg={10} xl={9} xl2={7}>
+              <StackItem>
                 <Alerts />
-              </GridItem>
+              </StackItem>
             )}
-            <GridItem span={12} lg={10} xl={9} xl2={7}>
+            <StackItem>
               <ClusterWizardToolbar
                 cluster={cluster}
                 errors={errors}
@@ -196,8 +178,8 @@ const NetworkConfigurationForm: React.FC<{
                 onNext={submitForm}
                 onBack={() => setCurrentStepId('cluster-configuration')}
               />
-            </GridItem>
-          </Grid>
+            </StackItem>
+          </Stack>
         );
         return <ClusterWizardStep footer={footer}>{form}</ClusterWizardStep>;
       }}
