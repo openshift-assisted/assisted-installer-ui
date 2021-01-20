@@ -8,10 +8,7 @@ import { AssistedUILibVersion, ErrorState, LoadingState } from '../ui';
 import { addHostsClusters } from '../../api/addHostsClusters';
 import { AlertsContextProvider } from '../AlertsContextProvider';
 import { POLLING_INTERVAL } from '../../config';
-import {
-  OpenshiftVersionsContext,
-  OpenshiftVersionsContextProvider,
-} from '../OpenshiftVersionsContextProvider';
+import { useOpenshiftVersions } from '../fetching/openshiftVersions';
 import AddBareMetalHosts from './AddBareMetalHosts';
 import { AddBareMetalHostsContextProvider } from './AddBareMetalHostsContext';
 
@@ -31,7 +28,7 @@ const BareMetalHostsClusterDetailTabContent: React.FC<BareMetalHostsClusterDetai
   const [error, setError] = React.useState<ReactNode>();
   const [day2Cluster, setDay2Cluster] = React.useState<Cluster | null>();
   const pullSecret = usePullSecretFetch();
-  const { normalizeClusterVersion } = React.useContext(OpenshiftVersionsContext);
+  const { normalizeClusterVersion } = useOpenshiftVersions();
 
   const TryAgain = React.useCallback(
     () => (
@@ -237,9 +234,7 @@ export const BareMetalHostsClusterDetailTab: React.FC<BareMetalHostsClusterDetai
   <>
     <AssistedUILibVersion />
     <AlertsContextProvider>
-      <OpenshiftVersionsContextProvider>
-        <BareMetalHostsClusterDetailTabContent {...props} />
-      </OpenshiftVersionsContextProvider>
+      <BareMetalHostsClusterDetailTabContent {...props} />
     </AlertsContextProvider>
   </>
 );

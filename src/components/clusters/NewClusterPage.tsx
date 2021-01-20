@@ -11,11 +11,11 @@ import {
   Text,
   ButtonVariant,
 } from '@patternfly/react-core';
-import { ExclamationTriangleIcon } from '@patternfly/react-icons';
-import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens';
 import PageSection from '../ui/PageSection';
 import { ToolbarButton } from '../ui/Toolbar';
 import ClusterToolbar from './ClusterToolbar';
+import { ExclamationTriangleIcon } from '@patternfly/react-icons';
+import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens';
 import AlertsSection from '../ui/AlertsSection';
 import { handleApiError, getErrorMessage } from '../../api/utils';
 import { AlertsContext, AlertsContextProvider } from '../AlertsContextProvider';
@@ -29,18 +29,19 @@ import SelectField from '../ui/formik/SelectField';
 import LoadingState from '../ui/uiState/LoadingState';
 import { captureException } from '../../sentry';
 import { usePullSecretFetch } from '../fetching/pullSecret';
-import { OpenshiftVersionsContext } from '../OpenshiftVersionsContextProvider';
 import PullSecret from './PullSecret';
+import { useOpenshiftVersions } from '../fetching/openshiftVersions';
+import { OpenshiftVersionOptionType } from '../../types/versions';
 
 import './NewClusterPage.css';
 
 type NewClusterFormProps = {
   pullSecret?: string;
+  versions: OpenshiftVersionOptionType[];
 };
 
-const NewClusterForm: React.FC<NewClusterFormProps> = ({ pullSecret = '' }) => {
+const NewClusterForm: React.FC<NewClusterFormProps> = ({ pullSecret = '', versions }) => {
   const { addAlert, clearAlerts } = React.useContext(AlertsContext);
-  const { versions, getDefaultVersion } = React.useContext(OpenshiftVersionsContext);
   const history = useHistory();
 
   const nameInputRef = React.useRef<HTMLInputElement>();
@@ -93,13 +94,18 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ pullSecret = '' }) => {
       </>
     ) : null;
 
+  const ocpVersionOptions = versions.map((version) => ({
+    label: version.label,
+    value: version.value,
+  }));
+
   return (
     <>
       <ClusterBreadcrumbs clusterName="New cluster" />
       <Formik
         initialValues={{
           name: '',
-          openshiftVersion: getDefaultVersion(),
+          openshiftVersion: versions[0]?.value,
           pullSecret: pullSecret,
         }}
         validationSchema={validationSchema}
@@ -127,11 +133,9 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ pullSecret = '' }) => {
                     <SelectField
                       label="OpenShift Version"
                       name="openshiftVersion"
-                      options={versions.map((version) => ({
-                        label: version.label,
-                        value: version.value,
-                      }))}
+                      options={ocpVersionOptions}
                       getHelperText={getOpenshiftVersionHelperText}
+                      isDisabled={versions.length === 0}
                       isRequired
                     />
                     <PullSecret pullSecret={pullSecret} />
@@ -166,15 +170,25 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ pullSecret = '' }) => {
 };
 
 const NewCluster: React.FC = () => {
+  const { addAlert } = React.useContext(AlertsContext);
   const pullSecret = usePullSecretFetch();
-  if (pullSecret === undefined) {
+  const { error: errorOCPVersions, loading: loadingOCPVersions, versions } = useOpenshiftVersions();
+
+  // Loading errors will be rendered by a subcomponent
+  React.useEffect(() => errorOCPVersions && addAlert(errorOCPVersions), [
+    errorOCPVersions,
+    addAlert,
+  ]);
+
+  if (pullSecret === undefined || loadingOCPVersions) {
     return (
       <PageSection variant={PageSectionVariants.light} isMain>
         <LoadingState />
       </PageSection>
     );
   }
-  return <NewClusterForm pullSecret={pullSecret} />;
+
+  return <NewClusterForm pullSecret={pullSecret} versions={versions} />;
 };
 
 const NewClusterPage: React.FC = () => (
