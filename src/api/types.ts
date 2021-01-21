@@ -227,13 +227,16 @@ export interface Cluster {
   /**
    * Indicate if the networking is managed by the user.
    */
-  'user-managed-networking'?: boolean;
+  userManagedNetworking?: boolean;
   /**
    * A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
    */
   additionalNtpSource?: string;
   progress?: ClusterProgressInfo;
-  operators?: Operators;
+  /**
+   * Operators that are associated with this cluster and their properties.
+   */
+  operators?: string;
 }
 export interface ClusterCreateParams {
   /**
@@ -301,14 +304,24 @@ export interface ClusterCreateParams {
   /**
    * Indicate if the networking is managed by the user.
    */
-  'user-managed-networking'?: boolean;
+  userManagedNetworking?: boolean;
   /**
    * A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
    */
   additionalNtpSource?: string;
-  operators?: Operators;
+  operators?: ListOperators;
 }
 export type ClusterList = Cluster[];
+export interface ClusterOperator {
+  operatorType?: OperatorType;
+  enabled?: boolean;
+  status?: string;
+  statusInfo?: string;
+  /**
+   * JSON-formatted string containing the properties for each operator
+   */
+  properties?: string;
+}
 export interface ClusterProgressInfo {
   progressInfo?: string;
   /**
@@ -412,12 +425,12 @@ export interface ClusterUpdateParams {
   /**
    * Indicate if the networking is managed by the user.
    */
-  'user-managed-networking'?: boolean;
+  userManagedNetworking?: boolean;
   /**
    * A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
    */
   additionalNtpSource?: string;
-  operators?: Operators;
+  operators?: ListOperators;
 }
 export type ClusterValidationId =
   | 'machine-cidr-defined'
@@ -434,7 +447,9 @@ export type ClusterValidationId =
   | 'sufficient-masters-count'
   | 'dns-domain-defined'
   | 'pull-secret-set'
-  | 'ntp-server-configured';
+  | 'ntp-server-configured'
+  | 'lso-requirements-satisfied'
+  | 'ocs-requirements-satisfied';
 export interface CompletionParams {
   isSuccess: boolean;
   errorInfo?: string;
@@ -457,6 +472,29 @@ export interface ConnectivityRemoteHost {
 export interface ConnectivityReport {
   remoteHosts?: ConnectivityRemoteHost[];
 }
+export interface ContainerImageAvailability {
+  /**
+   * A fully qualified image name (FQIN).
+   */
+  name?: string;
+  result?: ContainerImageAvailabilityResult;
+}
+export interface ContainerImageAvailabilityRequest {
+  /**
+   * List of image names to be checked.
+   */
+  images: string[];
+}
+export interface ContainerImageAvailabilityResponse {
+  /**
+   * List of images that were checked.
+   */
+  images: ContainerImageAvailability[];
+}
+/**
+ * Image availability result.
+ */
+export type ContainerImageAvailabilityResult = 'success' | 'failure';
 export interface Cpu {
   count?: number;
   frequency?: number;
@@ -606,9 +644,9 @@ export interface FioPerfCheckRequest {
    */
   path: string;
   /**
-   * The maximal fdatasync duration that is considered acceptable.
+   * The maximal fdatasync duration in ms that is considered acceptable.
    */
-  durationThreshold: number;
+  durationThresholdMs: number;
   /**
    * Exit code to return in case of an error.
    */
@@ -619,6 +657,10 @@ export interface FioPerfCheckResponse {
    * The 99th percentile of fdatasync durations in milliseconds.
    */
   ioSyncDuration?: number;
+  /**
+   * The device path.
+   */
+  path?: string;
 }
 export type FreeAddressesList = string /* ipv4 */[];
 export type FreeAddressesRequest = string /* ^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$ */[];
@@ -990,14 +1032,12 @@ export interface L3Connectivity {
 }
 export type ListManagedDomains = ManagedDomain[];
 export type ListManifests = Manifest[];
+export type ListOperators = Operator[];
 export interface ListVersions {
   versions?: Versions;
   releaseTag?: string;
 }
 export type LogsType = 'host' | 'controller' | 'all' | '';
-export interface Lso {
-  enabled?: boolean;
-}
 export interface ManagedDomain {
   domain?: string;
   provider?: 'route53';
@@ -1039,26 +1079,40 @@ export interface OpenshiftVersion {
   /**
    * Name of the version to be presented to the user.
    */
-  displayName?: string;
+  displayName: string;
   /**
    * The installation image of the OpenShift cluster.
    */
-  releaseImage?: string;
+  releaseImage: string;
   /**
    * The base RHCOS image used for the discovery iso.
    */
-  rhcosImage?: string;
+  rhcosImage: string;
+  /**
+   * Build ID of the RHCOS image.
+   */
+  rhcosVersion: string;
   /**
    * Level of support of the version.
    */
-  supportLevel?: 'beta' | 'production';
+  supportLevel: 'beta' | 'production';
 }
 export interface OpenshiftVersions {
   [name: string]: OpenshiftVersion;
 }
-export interface Operators {
-  lso?: Lso;
+export interface Operator {
+  operatorType?: OperatorType;
+  enabled?: boolean;
+  /**
+   * JSON-formatted string containing the properties for each operator
+   */
+  properties?: string;
 }
+export type OperatorType = 'lso' | 'ocs';
+/**
+ * Operators that are associated with this cluster and their properties.
+ */
+export type Operators = ClusterOperator[];
 export interface Presigned {
   url: string;
 }
@@ -1075,6 +1129,10 @@ export interface StaticIpConfig {
   gateway?: string; // ^([0-9]{1,3}\.){3}[0-9]{1,3}$
   mask?: string; // ^[0-9]|[1-2][0-9]|3[0-2]?$
   dns?: string;
+  ipV6?: string; // ^(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}$
+  gatewayV6?: string; // ^(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}$
+  maskV6?: string; // ^([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-8])$
+  dnsV6?: string;
 }
 export interface Step {
   stepType?: StepType;
@@ -1099,7 +1157,8 @@ export type StepType =
   | 'dhcp-lease-allocate'
   | 'api-vip-connectivity-check'
   | 'ntp-synchronizer'
-  | 'fio-perf-check';
+  | 'fio-perf-check'
+  | 'container-image-availability';
 export interface Steps {
   nextInstructionSeconds?: number;
   /**
@@ -1109,6 +1168,7 @@ export interface Steps {
   instructions?: Step[];
 }
 export type StepsReply = StepReply[];
+export type SupportedOperatorsList = OperatorType[];
 export interface SystemVendor {
   serialNumber?: string;
   productName?: string;
