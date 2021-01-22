@@ -36,7 +36,7 @@ export type ClusterEventsFiltersType = {
 
 type ClustersListToolbarProps = {
   filters: ClusterEventsFiltersType;
-  setFilters: (filters: ClusterEventsFiltersType) => void;
+  setFilters: React.Dispatch<React.SetStateAction<ClusterEventsFiltersType>>;
   cluster: Cluster;
   events: Event[];
 };
@@ -90,21 +90,42 @@ const ClusterEventsToolbar: React.FC<ClustersListToolbarProps> = ({
     setFilters(getInitialClusterEventsFilters(cluster));
   };
 
-  const onSelect = (type: 'hosts' | 'severity', isChecked: boolean, value: Host['id']) => {
-    const allOtherSelectedHosts =
-      type === 'hosts' ? filters[type].filter((v: string) => v !== value) : [];
-
-    setFilters({
+  const onSelect = (
+    type: 'hosts' | 'severity',
+    isChecked: boolean,
+    value: Host['id'] | Event['severity'],
+  ) => {
+    const setNextSelectedValues = (
+      type: 'hosts' | 'severity',
+      isChecked: boolean,
+      value: Host['id'] | Event['severity'],
+      filters: ClusterEventsFiltersType,
+    ) => ({
       ...filters,
-      [type]: isChecked ? [...filters[type], value] : [...allOtherSelectedHosts],
+      [type]: isChecked
+        ? [...filters[type], value]
+        : filters[type].filter((val: string) => val !== value),
+    });
+
+    const setNextSelectAllValue = (
+      totalHostsInCluster: number,
+      filters: ClusterEventsFiltersType,
+    ) => ({
+      ...filters,
       selectAll:
         type === 'severity'
           ? filters.selectAll
-          : isChecked &&
-            allOtherSelectedHosts.length === filters.hosts?.length &&
+          : filters.hosts.length === totalHostsInCluster &&
             filters.orphanedHosts &&
             filters.clusterLevel,
     });
+
+    setFilters(
+      _.flow(
+        _.curry(setNextSelectedValues)(type, isChecked, value),
+        _.curry(setNextSelectAllValue)(cluster.hosts?.length ?? 0),
+      ),
+    );
   };
 
   const onHostToggle: SelectProps['onToggle'] = () => setHostExpanded(!isHostExpanded);
