@@ -4,19 +4,26 @@ import { global_warning_color_100 as warningColor } from '@patternfly/react-toke
 
 export enum DeveloperPreviewPosition {
   default,
+  inline,
   inlineRight,
 }
 
-const DeveloperPreview: React.FC<{ position?: DeveloperPreviewPosition }> = ({
+const DeveloperPreview: React.FC<{ position?: DeveloperPreviewPosition; className?: string }> = ({
   position = DeveloperPreviewPosition.inlineRight,
+  className = '',
 }) => {
-  let className = '';
-  if (position === DeveloperPreviewPosition.inlineRight) {
-    className = 'assisted-ui-float-right';
+  let clsName = className;
+  switch (position) {
+    case DeveloperPreviewPosition.inlineRight:
+      clsName += ' assisted-ui-float-right';
+      break;
+    case DeveloperPreviewPosition.inline:
+      clsName += ' assisted-ui-display-inline';
+      break;
   }
 
   return (
-    <div className={className}>
+    <div className={clsName}>
       <CodeIcon color={warningColor.value} />
       &nbsp;Developer Preview
     </div>
