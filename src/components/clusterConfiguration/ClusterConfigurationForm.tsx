@@ -20,11 +20,11 @@ import { captureException } from '../../sentry';
 import { useFeature } from '../../features';
 import ClusterWizardStep from '../clusterWizard/ClusterWizardStep';
 import ClusterWizardToolbar from '../clusterWizard/ClusterWizardToolbar';
+import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
 import {
   canNextClusterConfiguration,
-  useClusterWizardTransitionFunctions,
+  canNextClusterConfigurationBackend,
 } from '../clusterWizard/wizardTransition';
-import { CLUSTER_STEP_CONFIGURATION } from '../clusterWizard/constants';
 import { getBareMetalDiscoveryInitialValues } from './utils';
 
 const validationSchema = Yup.object<BareMetalDiscoveryValues>().shape({
@@ -34,8 +34,8 @@ const validationSchema = Yup.object<BareMetalDiscoveryValues>().shape({
 const ClusterConfigurationForm: React.FC<{
   cluster: Cluster;
 }> = ({ cluster }) => {
-  const { onBack, onNext } = useClusterWizardTransitionFunctions(CLUSTER_STEP_CONFIGURATION);
   const { alerts, addAlert, clearAlerts } = React.useContext(AlertsContext);
+  const { setCurrentStepId } = React.useContext(ClusterWizardContext);
   const dispatch = useDispatch();
   const isOpenshiftClusterStorageEnabled = useFeature('ASSISTED_INSTALLER_OCS_FEATURE');
 
@@ -79,9 +79,7 @@ const ClusterConfigurationForm: React.FC<{
         values: getBareMetalDiscoveryInitialValues(data),
       });
 
-      if (canNextClusterConfiguration({ cluster })) {
-        onNext && onNext();
-      }
+      canNextClusterConfigurationBackend({ cluster }) && setCurrentStepId('networking');
     } catch (e) {
       handleApiError<ClusterUpdateParams>(e, () =>
         addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),
@@ -125,6 +123,7 @@ const ClusterConfigurationForm: React.FC<{
       }: FormikProps<BareMetalDiscoveryValues>) => {
         const form = (
           <Form>
+            {/* TODO(mlibra): unify structure accross steps - see NetworkConfigurationForm */}
             <Grid hasGutter>
               <GridItem span={12} lg={10} xl={6}>
                 {/* TODO(jtomasek): remove this if we're not putting full width content here (e.g. hosts table)*/}
@@ -156,7 +155,7 @@ const ClusterConfigurationForm: React.FC<{
                 isSubmitting={isSubmitting}
                 isNextDisabled={!canNextClusterConfiguration({ isValid, isSubmitting, cluster })}
                 onNext={submitForm}
-                onBack={onBack}
+                onBack={undefined /* No transition back from the first step */}
               />
             </StackItem>
           </Stack>
