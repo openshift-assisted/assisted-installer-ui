@@ -11,7 +11,8 @@ import {
   ManagedDomain,
   patchCluster,
 } from '../../api';
-import { Form, Stack, StackItem, Text, TextContent } from '@patternfly/react-core';
+import { Form, Grid, GridItem, Text, TextContent } from '@patternfly/react-core';
+
 import { trimSshPublicKey } from '../ui/formik/utils';
 import { AlertsContext } from '../AlertsContextProvider';
 import Alerts from '../ui/Alerts';
@@ -29,9 +30,10 @@ import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import ClusterWizardToolbar from '../clusterWizard/ClusterWizardToolbar';
 import {
   canNextNetwork,
-  useClusterWizardTransitionFunctions,
+  canNextNetworkBackend,
+  ClusterWizardStepsType,
 } from '../clusterWizard/wizardTransition';
-import { CLUSTER_STEP_NETWORKING } from '../clusterWizard/constants';
+import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
 
 import NetworkConfiguration from './NetworkConfiguration';
 import ClusterSshKeyField from './ClusterSshKeyField';
@@ -59,8 +61,8 @@ const NetworkConfigurationForm: React.FC<{
     const [isValidationSectionOpen, setIsValidationSectionOpen] = React.useState(false);
   const [isStartingInstallation, setIsStartingInstallation] = React.useState(false);
   */
-  const { onBack, onNext } = useClusterWizardTransitionFunctions(CLUSTER_STEP_NETWORKING);
   const { alerts, addAlert, clearAlerts } = React.useContext(AlertsContext);
+  const { setCurrentStepId } = React.useContext(ClusterWizardContext);
   const dispatch = useDispatch();
   const hostSubnets = React.useMemo(() => getHostSubnets(cluster), [cluster]);
   const initialValues = React.useMemo(() => getNetworkInitialValues(cluster, managedDomains), [
@@ -105,9 +107,8 @@ const NetworkConfigurationForm: React.FC<{
       });
       dispatch(updateCluster(data));
 
-      if (canNextNetwork({ cluster })) {
-        onNext && onNext();
-      }
+      canNextNetworkBackend({ cluster }) &&
+        setCurrentStepId('TODO-NOT-YET-EXISTING-NEXT-STEP' as ClusterWizardStepsType);
     } catch (e) {
       handleApiError<ClusterUpdateParams>(e, () =>
         addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),
@@ -147,16 +148,16 @@ const NetworkConfigurationForm: React.FC<{
         };
 
         const form = (
-          <Form>
-            <Stack hasGutter>
-              <StackItem>
+          <Grid hasGutter>
+            <Form>
+              <GridItem span={12} lg={10} xl={9} xl2={7}>
                 <NetworkConfiguration
                   cluster={cluster}
                   hostSubnets={hostSubnets}
                   managedDomains={managedDomains}
                 />
-              </StackItem>
-              <StackItem>
+              </GridItem>
+              <GridItem span={12} lg={10} xl={9} xl2={7}>
                 <TextContent>
                   <Text component="h2">Security</Text>
                 </TextContent>
@@ -167,19 +168,19 @@ const NetworkConfigurationForm: React.FC<{
                   onClusterSshKeyVisibilityChanged={onClusterSshKeyVisibilityChanged}
                   onSshKeyBlur={onSshKeyBlur}
                 />
-              </StackItem>
-            </Stack>
-          </Form>
+              </GridItem>
+            </Form>
+          </Grid>
         );
 
         const footer = (
-          <Stack hasGutter>
+          <Grid hasGutter>
             {!!alerts.length && (
-              <StackItem>
+              <GridItem span={12} lg={10} xl={9} xl2={7}>
                 <Alerts />
-              </StackItem>
+              </GridItem>
             )}
-            <StackItem>
+            <GridItem span={12} lg={10} xl={9} xl2={7}>
               <ClusterWizardToolbar
                 cluster={cluster}
                 errors={errors}
@@ -187,10 +188,10 @@ const NetworkConfigurationForm: React.FC<{
                 isSubmitting={isSubmitting}
                 isNextDisabled={!canNextNetwork({ isValid, isSubmitting, cluster })}
                 onNext={submitForm}
-                onBack={onBack}
+                onBack={() => setCurrentStepId('cluster-configuration')}
               />
-            </StackItem>
-          </Stack>
+            </GridItem>
+          </Grid>
         );
         return <ClusterWizardStep footer={footer}>{form}</ClusterWizardStep>;
       }}
