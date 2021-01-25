@@ -147,7 +147,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
             </ToolbarButton>
           )}
           {['finalizing', 'installed'].includes(cluster.status) && (
-              <LaunchOpenshiftConsoleButton
+            <LaunchOpenshiftConsoleButton
               isDisabled={!credentials || !!credentialsError}
               cluster={cluster}
               consoleUrl={credentials?.consoleUrl}

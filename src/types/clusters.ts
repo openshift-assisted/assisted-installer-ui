@@ -12,7 +12,6 @@ export type HostSubnet = {
 
 export type HostSubnets = HostSubnet[];
 
-// TODO(mlibra): use just selected params?
 export type NetworkConfigurationValues = ClusterUpdateParams & {
   hostSubnet?: string;
   useRedHatDnsService?: boolean;

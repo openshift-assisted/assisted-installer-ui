@@ -3,32 +3,26 @@ import { WizardBody, WizardNav, WizardNavItem } from '@patternfly/react-core';
 import { css } from '@patternfly/react-styles';
 import styles from '@patternfly/react-styles/css/components/Wizard/wizard';
 import ClusterWizardContext from './ClusterWizardContext';
-import {
-  CLUSTER_STEPS_ORDER,
-  CLUSTER_STEP_CONFIGURATION,
-  CLUSTER_STEP_NETWORKING,
-} from './constants';
+import { ClusterWizardStepsType } from './wizardTransition';
 
 type ClusterWizardStepProps = {
   footer?: React.ReactNode;
 };
 
+const wizardSteps: ClusterWizardStepsType[] = ['cluster-configuration', 'networking'];
+
 const ClusterWizardStep: React.FC<ClusterWizardStepProps> = ({ footer, children }) => {
   const { currentStepId, setCurrentStepId } = React.useContext(ClusterWizardContext);
-
-  const getTransitionProps = (step: string) => ({
-    key: step,
-    isCurrent: currentStepId === step,
-    isDisabled: CLUSTER_STEPS_ORDER[step] > CLUSTER_STEPS_ORDER[currentStepId],
-    step: CLUSTER_STEPS_ORDER[step],
-    onNavItemClick: () => setCurrentStepId(step),
-  });
 
   const nav = (
     <WizardNav>
       <WizardNavItem
         content="Cluster Configuration"
-        {...getTransitionProps(CLUSTER_STEP_CONFIGURATION)}
+        step={0}
+        isDisabled={false /* Always enabled */}
+        key="cluster-configuration"
+        isCurrent={currentStepId === 'cluster-configuration'}
+        onNavItemClick={() => setCurrentStepId('cluster-configuration')}
       />
       {/* <WizardNavItem
         key="baremetal-discovery"
@@ -38,7 +32,20 @@ const ClusterWizardStep: React.FC<ClusterWizardStepProps> = ({ footer, children 
         step={1}
         onNavItemClick={() => setCurrentStepId('baremetal-discovery')}
       />*/}
-      <WizardNavItem content="Networking" {...getTransitionProps(CLUSTER_STEP_NETWORKING)} />
+      <WizardNavItem
+        content="Networking"
+        step={1}
+        isDisabled={
+          !wizardSteps
+            .slice(
+              1 /* TODO(mlibra): just to show principle. we will simplify when all steps are added. Step order - 1 */,
+            )
+            .includes(currentStepId)
+        }
+        key="networking"
+        isCurrent={currentStepId === 'networking'}
+        onNavItemClick={() => setCurrentStepId('networking')}
+      />
     </WizardNav>
   );
 
