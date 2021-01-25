@@ -32,6 +32,8 @@ import { usePullSecretFetch } from '../fetching/pullSecret';
 import PullSecret from './PullSecret';
 import { useOpenshiftVersions } from '../fetching/openshiftVersions';
 import { OpenshiftVersionOptionType } from '../../types/versions';
+import SingleNodeCheckbox from '../ui/formik/SingleNodeCheckbox';
+import { ocmClient } from '../../api/axiosClient';
 
 import './NewClusterPage.css';
 
@@ -107,6 +109,7 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ pullSecret = '', versio
           name: '',
           openshiftVersion: versions[0]?.value,
           pullSecret: pullSecret,
+          highAvailabilityMode: 'Full',
         }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
@@ -130,6 +133,7 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ pullSecret = '', versio
                       </Text>
                     </TextContent>
                     <InputField ref={nameInputRef} label="Cluster Name" name="name" isRequired />
+                    {!ocmClient && <SingleNodeCheckbox name="highAvailabilityMode" />}
                     <SelectField
                       label="OpenShift Version"
                       name="openshiftVersion"
