@@ -67,13 +67,7 @@ const ValidationGroupAlert: React.FC<ValidationGroupAlertProps> = ({
       (validation) => validation.status === 'failure' && validation.id === 'ntp-synced',
     )
   ) {
-    actionLinks.push(
-      <AdditionalNTPSourcesDialogToggle
-        key="add-ntp-sources"
-        onToggle={onValidationActionToggle}
-        cluster={props.cluster}
-      />,
-    );
+    actionLinks.push(<AdditionalNTPSourcesDialogToggle key="add-ntp-sources" />);
   }
 
   return (
