@@ -120,12 +120,10 @@ const ClusterEventsToolbar: React.FC<ClustersListToolbarProps> = ({
             filters.clusterLevel,
     });
 
-    setFilters(
-      _.flow(
-        _.curry(setNextSelectedValues)(type, isChecked, value),
-        _.curry(setNextSelectAllValue)(cluster.hosts?.length ?? 0),
-      ),
-    );
+    let nextFilters = setNextSelectedValues(type, isChecked, value, filters);
+    nextFilters = setNextSelectAllValue(cluster.hosts?.length ?? 0, nextFilters);
+
+    setFilters(nextFilters);
   };
 
   const onHostToggle: SelectProps['onToggle'] = () => setHostExpanded(!isHostExpanded);
