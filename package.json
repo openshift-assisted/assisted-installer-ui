@@ -15,7 +15,7 @@
     "prebuild": "run-s test",
     "build": "microbundle-crl --no-compress --format modern,cjs --css-modules false",
     "start": "microbundle-crl watch --no-compress --format modern,cjs --css-modules false",
-    "concurrently": "./scripts/concurrently.sh",
+    "start-assisted-ui": "./scripts/start-assisted-ui.sh",
     "sync-to-ui": "ASSISTED_UI_ROOT=../assisted-ui ./scripts/sync-dist.sh",
     "prepare": "install-peers",
     "test": "run-s test:circular test:lint",
