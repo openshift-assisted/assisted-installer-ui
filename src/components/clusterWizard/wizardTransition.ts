@@ -4,9 +4,10 @@ export type ClusterWizardStepsType =
   | 'cluster-details'
   | 'baremetal-discovery'
   | 'networking'
-  | 'cluster-configuration';
+  | 'cluster-configuration'
+  | 'review';
 
-export const CLUSTER_WIZARD_FIRST_STEP: ClusterWizardStepsType = 'cluster-configuration';
+export const CLUSTER_WIZARD_FIRST_STEP: ClusterWizardStepsType = 'cluster-details';
 
 // We are collocating all these canNext* functions for easier maintenance.
 // However they should be independent on each other anyway.
