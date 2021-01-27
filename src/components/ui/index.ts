@@ -7,3 +7,4 @@ export * from './AssistedUILibVersion';
 
 export { default as PageSection } from './PageSection';
 export { default as ExternalLink } from './ExternalLink';
+export { DeveloperPreviewPosition, default as DeveloperPreview } from './DeveloperPreview';
