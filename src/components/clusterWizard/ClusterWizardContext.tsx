@@ -1,12 +1,13 @@
 import React from 'react';
+import { ClusterWizardStepsType, CLUSTER_WIZARD_FIRST_STEP } from './wizardTransition';
 
 type ClusterWizardContextType = {
-  currentStepId: string;
-  setCurrentStepId: (stepId: string) => void;
+  currentStepId: ClusterWizardStepsType;
+  setCurrentStepId: (stepId: ClusterWizardStepsType) => void;
 };
 
 const ClusterWizardContext = React.createContext<ClusterWizardContextType>({
-  currentStepId: 'baremetal-discovery',
+  currentStepId: CLUSTER_WIZARD_FIRST_STEP,
   setCurrentStepId: () => {
     console.warn('Tried to use ClusterWizardContext but there was no provider rendered.');
   },

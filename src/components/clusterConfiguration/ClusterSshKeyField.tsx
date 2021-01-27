@@ -6,7 +6,7 @@ import { getFieldId } from '../ui/formik/utils';
 import HelperText from '../ui/formik/HelperText';
 import TextAreaField from '../ui/formik/TextAreaField';
 import { CheckboxField } from '../ui/formik';
-import { ClusterConfigurationValues } from '../../types/clusters';
+import { NetworkConfigurationValues } from '../../types/clusters';
 
 import './ClusterSshKeyField.css';
 
@@ -39,7 +39,7 @@ const ClusterSshKeyField: React.FC<ClusterSshKeyFieldProps> = ({
 }) => {
   const fieldId = getFieldId(props.name, 'input', idPostfix);
 
-  const { values } = useFormikContext<ClusterConfigurationValues>();
+  const { values } = useFormikContext<NetworkConfigurationValues>();
 
   React.useEffect(onClusterSshKeyVisibilityChanged, [isSwitchHidden]);
 

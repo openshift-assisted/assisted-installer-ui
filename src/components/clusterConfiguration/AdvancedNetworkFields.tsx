@@ -2,12 +2,12 @@ import React from 'react';
 import { TextInputTypes } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 import { InputField } from '../ui/formik';
-import { ClusterConfigurationValues } from '../../types/clusters';
+import { NetworkConfigurationValues } from '../../types/clusters';
 import { Address6 } from 'ip-address';
 import { PREFIX_MAX_RESTRICTION } from '../../config/constants';
 
 const AdvancedNetworkFields: React.FC = () => {
-  const { setFieldValue, values } = useFormikContext<ClusterConfigurationValues>();
+  const { setFieldValue, values } = useFormikContext<NetworkConfigurationValues>();
   const clusterNetworkCidrPrefix = parseInt((values.clusterNetworkCidr || '').split('/')[1]) || 1;
 
   const formatClusterNetworkHostPrefix = (e: React.ChangeEvent<HTMLInputElement>) => {
