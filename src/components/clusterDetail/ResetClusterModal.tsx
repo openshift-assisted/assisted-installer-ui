@@ -88,7 +88,7 @@ const ResetClusterModal: React.FC<ResetClusterModalProps> = ({ onClose, isOpen, 
 
   const actions = [
     <Button
-      key="submit"
+      key="reset"
       variant={ButtonVariant.danger}
       onClick={handleReset}
       isDisabled={isSubmitting}
@@ -99,7 +99,7 @@ const ResetClusterModal: React.FC<ResetClusterModalProps> = ({ onClose, isOpen, 
   if (areLogsAvailable) {
     actions.push(
       <Button
-        key="submit"
+        key="download-logs"
         variant={ButtonVariant.secondary}
         onClick={handleDownloadLogs}
         isDisabled={isSubmitting}

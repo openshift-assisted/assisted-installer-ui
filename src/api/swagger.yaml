@@ -23,6 +23,8 @@ tags:
     description: Managed dns domains for a cluster installation.
   - name: manifests
     description: Manifests for customizing a cluster installation.
+  - name: operators
+    description: Information regarding supported operators.
   - name: versions
     description: Information regarding versions.
 
@@ -2540,8 +2542,10 @@ paths:
     get:
       tags:
         - versions
+      security:
+        - userAuth: [admin, read-only-admin, user]
       operationId: ListSupportedOpenshiftVersions
-      description: Retrieves the list of OpenShift supported versions
+      description: Retrieves the list of OpenShift supported versions.
       responses:
         '200':
           description: Success.
@@ -2549,6 +2553,67 @@ paths:
             $ref: '#/definitions/openshift-versions'
         '503':
           description: Unavailable.
+          schema:
+            $ref: '#/definitions/error'
+
+  /supported-operators:
+    get:
+      tags:
+        - operators
+      operationId: ListSupportedOperators
+      description: Retrieves the list of supported operators.
+      responses:
+        '200':
+          description: Success.
+          schema:
+            $ref: '#/definitions/supported-operators-list'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
+  /supported-operators/{operator_type}:
+    get:
+      tags:
+        - operators
+      security:
+        - userAuth: [admin, read-only-admin, user]
+      description: Lists properties for an operator type.
+      operationId: ListOperatorProperties
+      parameters:
+        - in: path
+          name: operator_type
+          description: The operator type.
+          type: string
+          enum: ['lso', 'ocs']
+          required: true
+      responses:
+        '200':
+          description: Success.
+          schema:
+            type: string
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
           schema:
             $ref: '#/definitions/error'
 
@@ -2630,6 +2695,7 @@ paths:
       parameters:
         - in: query
           name: openshift_version
+          description: The corresponding OpenShift version for the boot file.
           type: string
           required: true
         - in: query
@@ -2759,19 +2825,38 @@ paths:
             $ref: '#/definitions/error'
 
 definitions:
-  lso:
+  operator:
     type: object
     properties:
+      operator_type:
+        $ref: '#/definitions/operator-type'
       enabled:
         type: boolean
         default: false
+      properties:
+        type: string
+        description: JSON-formatted string containing the properties for each operator
 
-  operators:
+  cluster-operator:
     type: object
     properties:
-      lso:
-        $ref: '#/definitions/lso'
-        x-go-custom-tag: gorm:"embedded;embedded_prefix:lso_"
+      operator_type:
+        $ref: '#/definitions/operator-type'
+      enabled:
+        type: boolean
+        default: false
+      status:
+        type: string
+      status_info:
+        type: string
+      properties:
+        type: string
+        description: JSON-formatted string containing the properties for each operator
+
+  supported-operators-list:
+    type: array
+    items:
+      $ref: '#/definitions/operator-type'
 
   list-managed-domains:
     type: array
@@ -3111,6 +3196,7 @@ definitions:
       - api-vip-connectivity-check
       - ntp-synchronizer
       - fio-perf-check
+      - container-image-availability
 
   step:
     type: object
@@ -3268,7 +3354,7 @@ definitions:
           An "*" or a comma-separated list of destination domain names, domains, IP addresses, or
           other network CIDRs to exclude from proxying.
         x-nullable: true
-      user-managed-networking:
+      user_managed_networking:
         type: boolean
         description: Indicate if the networking is managed by the user.
         x-nullable: true
@@ -3279,8 +3365,7 @@ definitions:
           A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
         x-nullable: true
       operators:
-        $ref: '#/definitions/operators'
-        x-nullable: true
+        $ref: '#/definitions/list-operators'
 
   cluster-update-params:
     type: object
@@ -3416,7 +3501,6 @@ definitions:
               type: array
               items:
                 $ref: '#/definitions/disk-config-params'
-
       hosts_machine_config_pool_names:
         type: array
         description: The desired machine config pool for hosts associated with the cluster.
@@ -3429,19 +3513,17 @@ definitions:
               format: uuid
             machine_config_pool_name:
               type: string
-      user-managed-networking:
+      user_managed_networking:
         type: boolean
         description: Indicate if the networking is managed by the user.
         x-nullable: true
-        default: false
       additional_ntp_source:
         type: string
         description:
           A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
         x-nullable: true
       operators:
-        $ref: '#/definitions/operators'
-        x-nullable: true
+        $ref: '#/definitions/list-operators'
 
   add-hosts-cluster-create-params:
     type: object
@@ -3681,7 +3763,7 @@ definitions:
         description: The time that the cluster was deleted.
         x-go-custom-tag: gorm:"type:timestamp with time zone"
         x-nullable: true
-      user-managed-networking:
+      user_managed_networking:
         type: boolean
         x-nullable: true
         description: Indicate if the networking is managed by the user.
@@ -3693,9 +3775,9 @@ definitions:
         $ref: '#/definitions/cluster-progress-info'
         x-go-custom-tag: gorm:"embedded;embedded_prefix:progress_"
       operators:
-        $ref: '#/definitions/operators'
-        x-go-custom-tag: gorm:"embedded;embedded_prefix:operators_"
-        x-nullable: true
+        x-go-custom-tag: gorm:"type:text"
+        type: string
+        description: Operators that are associated with this cluster and their properties.
 
   image_info:
     type: object
@@ -4126,15 +4208,15 @@ definitions:
     type: object
     required:
       - path
-      - duration_threshold
+      - duration_threshold_ms
       - exit_code
     properties:
       path:
         type: string
         description: --filename argument for fio (expects a file or a block device path).
-      duration_threshold:
+      duration_threshold_ms:
         type: integer
-        description: The maximal fdatasync duration that is considered acceptable.
+        description: The maximal fdatasync duration in ms that is considered acceptable.
       exit_code:
         type: integer
         description: Exit code to return in case of an error.
@@ -4145,6 +4227,9 @@ definitions:
       io_sync_duration:
         type: integer
         description: The 99th percentile of fdatasync durations in milliseconds.
+      path:
+        type: string
+        description: The device path.
 
   credentials:
     type: object
@@ -4280,6 +4365,43 @@ definitions:
         description: Indication of state of an NTP source.
         $ref: '#/definitions/source_state'
 
+  container_image_availability_request:
+    type: object
+    required:
+      - images
+    properties:
+      images:
+        type: array
+        description: List of image names to be checked.
+        items:
+          type: string
+          description: A fully qualified image name (FQIN).
+
+  container_image_availability_response:
+    type: object
+    required:
+      - images
+    properties:
+      images:
+        type: array
+        description: List of images that were checked.
+        items:
+          $ref: '#/definitions/container_image_availability'
+
+  container_image_availability:
+    type: object
+    properties:
+      name:
+        type: string
+        description: A fully qualified image name (FQIN).
+      result:
+        $ref: '#/definitions/container_image_availability_result'
+
+  container_image_availability_result:
+    type: string
+    enum: ['success', 'failure']
+    description: Image availability result.
+
   source_state:
     type: string
     enum:
@@ -4316,6 +4438,8 @@ definitions:
       - 'dns-domain-defined'
       - 'pull-secret-set'
       - 'ntp-server-configured'
+      - 'lso-requirements-satisfied'
+      - 'ocs-requirements-satisfied'
 
   logs_type:
     type: string
@@ -4324,6 +4448,26 @@ definitions:
       - 'controller'
       - 'all'
       - ''
+
+  operators:
+    type: array
+    items:
+      $ref: '#/definitions/cluster-operator'
+    x-nullable: true
+    description: Operators that are associated with this cluster and their properties.
+
+  operator-type:
+    type: string
+    enum:
+      - 'lso'
+      - 'ocs'
+
+  list-operators:
+    type: array
+    items:
+      $ref: '#/definitions/operator'
+      x-nullable: true
+      description: Operators that are associated with this cluster and their properties.
 
   list-manifests:
     type: array
@@ -4387,9 +4531,26 @@ definitions:
         pattern: '^[0-9]|[1-2][0-9]|3[0-2]?$'
       dns:
         type: string
+      ip_v6:
+        type: string
+        pattern: '^(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}$'
+      gateway_v6:
+        type: string
+        pattern: '^(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}$'
+      mask_v6:
+        type: string
+        pattern: '^([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-8])$'
+      dns_v6:
+        type: string
 
   openshift-version:
     type: object
+    required:
+      - display_name
+      - release_image
+      - rhcos_image
+      - rhcos_version
+      - support_level
     properties:
       display_name:
         type: string
@@ -4400,6 +4561,9 @@ definitions:
       rhcos_image:
         type: string
         description: The base RHCOS image used for the discovery iso.
+      rhcos_version:
+        type: string
+        description: Build ID of the RHCOS image.
       support_level:
         type: string
         enum: [beta, production]
