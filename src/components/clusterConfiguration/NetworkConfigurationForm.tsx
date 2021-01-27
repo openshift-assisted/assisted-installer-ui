@@ -25,11 +25,7 @@ import ClusterWizardStep from '../clusterWizard/ClusterWizardStep';
 import { HostSubnets, NetworkConfigurationValues } from '../../types/clusters';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import ClusterWizardToolbar from '../clusterWizard/ClusterWizardToolbar';
-import {
-  canNextNetwork,
-  canNextNetworkBackend,
-  ClusterWizardStepsType,
-} from '../clusterWizard/wizardTransition';
+import { canNextNetwork, canNextNetworkBackend } from '../clusterWizard/wizardTransition';
 import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
 import NetworkConfiguration from './NetworkConfiguration';
 import ClusterSshKeyField from './ClusterSshKeyField';
@@ -92,8 +88,7 @@ const NetworkConfigurationForm: React.FC<{
       });
       dispatch(updateCluster(data));
 
-      canNextNetworkBackend({ cluster }) &&
-        setCurrentStepId('TODO-NOT-YET-EXISTING-NEXT-STEP' as ClusterWizardStepsType);
+      canNextNetworkBackend({ cluster }) && setCurrentStepId('review');
     } catch (e) {
       handleApiError<ClusterUpdateParams>(e, () =>
         addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),
