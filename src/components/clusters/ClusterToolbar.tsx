@@ -1,8 +1,7 @@
 import React from 'react';
-import { PageSectionVariants, ToolbarContent, Toolbar } from '@patternfly/react-core';
-import PageSection from '../ui/PageSection';
-import './ClusterToolbar.css';
+import { ToolbarContent, Toolbar, ActionGroup } from '@patternfly/react-core';
 import { ocmClient } from '../../api';
+import './ClusterToolbar.css';
 
 interface Props {
   validationSection?: React.ReactNode;
@@ -15,12 +14,12 @@ const ClusterToolbar: React.FC<Props> = ({ children, validationSection }) => {
   }
 
   return (
-    <PageSection variant={PageSectionVariants.light} className="pf-u-box-shadow-lg-top">
+    <ActionGroup>
       {validationSection}
       <Toolbar id="cluster-toolbar" className={toolBarClassname}>
         <ToolbarContent className="cluster-toolbar__content">{children}</ToolbarContent>
       </Toolbar>
-    </PageSection>
+    </ActionGroup>
   );
 };
 
