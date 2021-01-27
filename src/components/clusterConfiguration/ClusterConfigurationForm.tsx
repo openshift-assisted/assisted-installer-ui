@@ -84,25 +84,6 @@ const ClusterConfigurationForm: React.FC<{ cluster: Cluster }> = ({ cluster }) =
     }
   };
 
-  /* REMOVE once implemented in the Summary step
-  const handleClusterInstall = () => {};
-  
-  const handleClusterInstall = async () => {
-    setIsStartingInstallation(true);
-    try {
-      const { data } = await postInstallCluster(cluster.id);
-      dispatch(updateCluster(data));
-    } catch (e) {
-      handleApiError(e, () =>
-        addAlert({
-          title: 'Failed to start cluster installation',
-          message: getErrorMessage(e),
-        }),
-      );
-    }
-    setIsStartingInstallation(false);
-  };
-*/
   return (
     <Formik
       initialValues={initialValues}
