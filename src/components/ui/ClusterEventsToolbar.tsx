@@ -278,7 +278,11 @@ const ClusterEventsToolbar: React.FC<ClustersListToolbarProps> = ({
             placeholderText={<Placeholder text="Severity" />}
           >
             {EVENT_SEVERITIES.map((severity) => (
-              <SelectOption key={severity} value={severity}>
+              <SelectOption
+                data-testid={`${severity}-filter-option`}
+                key={severity}
+                value={severity}
+              >
                 {_.capitalize(severity)} <Badge isRead>{getEventsCount(severity, events)}</Badge>
               </SelectOption>
             ))}
