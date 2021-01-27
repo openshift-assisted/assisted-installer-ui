@@ -36,7 +36,7 @@ export type ClusterEventsFiltersType = {
 
 type ClustersListToolbarProps = {
   filters: ClusterEventsFiltersType;
-  setFilters: (filters: ClusterEventsFiltersType) => void;
+  setFilters: React.Dispatch<React.SetStateAction<ClusterEventsFiltersType>>;
   cluster: Cluster;
   events: Event[];
 };
@@ -90,21 +90,40 @@ const ClusterEventsToolbar: React.FC<ClustersListToolbarProps> = ({
     setFilters(getInitialClusterEventsFilters(cluster));
   };
 
-  const onSelect = (type: 'hosts' | 'severity', isChecked: boolean, value: Host['id']) => {
-    const allOtherSelectedHosts =
-      type === 'hosts' ? filters[type].filter((v: string) => v !== value) : [];
-
-    setFilters({
+  const onSelect = (
+    type: 'hosts' | 'severity',
+    isChecked: boolean,
+    value: Host['id'] | Event['severity'],
+  ) => {
+    const setNextSelectedValues = (
+      type: 'hosts' | 'severity',
+      isChecked: boolean,
+      value: Host['id'] | Event['severity'],
+      filters: ClusterEventsFiltersType,
+    ) => ({
       ...filters,
-      [type]: isChecked ? [...filters[type], value] : [...allOtherSelectedHosts],
+      [type]: isChecked
+        ? [...filters[type], value]
+        : filters[type].filter((val: string) => val !== value),
+    });
+
+    const setNextSelectAllValue = (
+      totalHostsInCluster: number,
+      filters: ClusterEventsFiltersType,
+    ) => ({
+      ...filters,
       selectAll:
         type === 'severity'
           ? filters.selectAll
-          : isChecked &&
-            allOtherSelectedHosts.length === filters.hosts?.length &&
+          : filters.hosts.length === totalHostsInCluster &&
             filters.orphanedHosts &&
             filters.clusterLevel,
     });
+
+    let nextFilters = setNextSelectedValues(type, isChecked, value, filters);
+    nextFilters = setNextSelectAllValue(cluster.hosts?.length ?? 0, nextFilters);
+
+    setFilters(nextFilters);
   };
 
   const onHostToggle: SelectProps['onToggle'] = () => setHostExpanded(!isHostExpanded);
@@ -259,7 +278,11 @@ const ClusterEventsToolbar: React.FC<ClustersListToolbarProps> = ({
             placeholderText={<Placeholder text="Severity" />}
           >
             {EVENT_SEVERITIES.map((severity) => (
-              <SelectOption key={severity} value={severity}>
+              <SelectOption
+                data-testid={`${severity}-filter-option`}
+                key={severity}
+                value={severity}
+              >
                 {_.capitalize(severity)} <Badge isRead>{getEventsCount(severity, events)}</Badge>
               </SelectOption>
             ))}

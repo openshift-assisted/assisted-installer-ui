@@ -14,7 +14,8 @@
   "scripts": {
     "prebuild": "run-s test",
     "build": "microbundle-crl --no-compress --format modern,cjs --css-modules false",
-    "start": "echo Consider running: yarn sync-to-ui ; echo ; microbundle-crl watch --no-compress --format modern,cjs --css-modules false",
+    "start": "microbundle-crl watch --no-compress --format modern,cjs --css-modules false",
+    "start-assisted-ui": "./scripts/start-assisted-ui.sh",
     "sync-to-ui": "ASSISTED_UI_ROOT=../assisted-ui ./scripts/sync-dist.sh",
     "prepare": "install-peers",
     "test": "run-s test:circular test:lint",
@@ -71,6 +72,7 @@
     "@typescript-eslint/eslint-plugin": "^2.26.0",
     "@typescript-eslint/parser": "^2.26.0",
     "babel-eslint": "^10.0.3",
+    "concurrently": "^5.3.0",
     "cross-env": "^7.0.2",
     "dpdm": "^3.4.3",
     "eslint": "^6.8.0",

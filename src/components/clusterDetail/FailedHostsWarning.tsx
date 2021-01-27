@@ -47,6 +47,11 @@ const FailedHostsWarning: React.FC<FailedHostsWarningProps> = ({ cluster }) => {
       ' The cluster installation will time-out after 30 minutes if a master host does not reboot properly.';
   }
 
+  let failedHostsText = 'Error information for each host is available below.';
+  if (cluster.status !== 'finalizing') {
+    failedHostsText += ' Debug and reboot each failed worker to retry their installation.';
+  }
+
   return (
     <>
       <FailedHosts
@@ -59,7 +64,7 @@ const FailedHostsWarning: React.FC<FailedHostsWarningProps> = ({ cluster }) => {
         failedHosts={failedHosts}
         title={`${failedHosts.length} worker hosts failed to install`}
         titleSingle="1 worker host failed to install"
-        text="Error information for each worker host is available below. Debug and reboot each host to try again."
+        text={failedHostsText}
       />
     </>
   );
