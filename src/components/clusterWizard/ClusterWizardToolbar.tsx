@@ -13,18 +13,27 @@ import { routeBasePath } from '../../config';
 
 const ClusterWizardToolbar: React.FC<{
   cluster: Cluster;
-  errors: FormikErrors<ClusterUpdateParams>;
-  dirty: boolean;
-  isSubmitting: boolean;
+  errors?: FormikErrors<ClusterUpdateParams>;
+  dirty?: boolean;
+  isSubmitting?: boolean;
   onNext?: () => void;
   isNextDisabled?: boolean;
   onBack?: () => void;
   onCancel?: () => void;
-}> = ({ cluster, errors, dirty, isSubmitting, onCancel, onNext, isNextDisabled, onBack }) => {
+  onInstall?: () => Promise<void>;
+}> = ({
+  cluster,
+  errors = {},
+  dirty = false,
+  isSubmitting = false,
+  onCancel,
+  onNext,
+  onInstall,
+  isNextDisabled,
+  onBack,
+}) => {
   const [isValidationSectionOpen, setIsValidationSectionOpen] = React.useState(false);
-  const [isStartingInstallation /* TODO(mlibra), setIsStartingInstallation*/] = React.useState(
-    false,
-  );
+  const [isStartingInstallation, setIsStartingInstallation] = React.useState(false);
   const history = useHistory();
 
   const handleCancel = React.useCallback(() => {
@@ -32,7 +41,17 @@ const ClusterWizardToolbar: React.FC<{
     history.push(`${routeBasePath}/clusters/`);
   }, [onCancel, history]);
 
-  // TODO(mlibra): show only step-relevant validations
+  const handleClusterInstall = React.useCallback(() => {
+    if (!onInstall) {
+      return;
+    }
+
+    setIsStartingInstallation(true);
+    onInstall().then(() => {
+      setIsStartingInstallation(false);
+    });
+  }, [setIsStartingInstallation, onInstall]);
+
   return (
     <ClusterToolbar
       validationSection={
@@ -46,34 +65,16 @@ const ClusterWizardToolbar: React.FC<{
         ) : null
       }
     >
-      {/* TODO(mlibra) Back, Next, Cancel only; Handle validation section
-    <ToolbarButton
-      variant={ButtonVariant.primary}
-      name="install"
-      onClick={handleClusterInstall}
-      isDisabled={
-        isStartingInstallation || !isValid || dirty || cluster.status !== 'ready'
-      }
-    >
-      Install Cluster
-    </ToolbarButton>
-    <ToolbarButton
-      type="submit"
-      name="save"
-      variant={ButtonVariant.secondary}
-      isDisabled={isSubmitting || !isValid || !dirty}
-      onClick={submitForm}
-    >
-      Validate & Save Changes
-    </ToolbarButton>
-    <ToolbarButton
-      variant={ButtonVariant.secondary}
-      isDisabled={isSubmitting || !dirty}
-      onClick={() => resetForm()}
-    >
-      Discard Changes
-    </ToolbarButton>
-    */}
+      {onInstall && (
+        <ToolbarButton
+          variant={ButtonVariant.primary}
+          name="install"
+          onClick={handleClusterInstall}
+          isDisabled={isStartingInstallation || cluster.status !== 'ready'}
+        >
+          Install Cluster
+        </ToolbarButton>
+      )}
       {onNext && (
         <ToolbarButton
           variant={ButtonVariant.primary}
@@ -94,7 +95,6 @@ const ClusterWizardToolbar: React.FC<{
           Back
         </ToolbarButton>
       )}
-      {/* TODO(mlibra) separate following buttons by space */}
       <ToolbarButton
         variant={ButtonVariant.link}
         name="cancel"
