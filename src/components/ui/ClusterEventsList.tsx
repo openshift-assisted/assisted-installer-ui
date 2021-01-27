@@ -9,7 +9,7 @@ import ClusterEventsToolbar, {
 } from './ClusterEventsToolbar';
 import { EmptyState } from './uiState';
 
-type ClusterEventsListProps = {
+export type ClusterEventsListProps = {
   events: EventList;
   cluster: Cluster;
 };
