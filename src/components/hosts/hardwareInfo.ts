@@ -11,10 +11,26 @@ export type HostRowHardwareInfo = {
   disk: HumanizedSortable;
 };
 
-export const getMemoryCapacity = (inventory: Inventory) => inventory.memory?.physicalBytes || 0;
+export type SimpleHardwareInfo = {
+  cores: number;
+  memory: number;
+  disks: number;
+};
+
+export const getMemoryCapacity = (inventory: Inventory): number =>
+  inventory.memory?.physicalBytes || 0;
+export const getDiskCapacity = (inventory: Inventory): number =>
+  inventory.disks?.reduce((diskSize: number, disk: Disk) => diskSize + (disk.sizeBytes || 0), 0) ||
+  0;
 
 export const getHumanizedCpuClockSpeed = (inventory: Inventory) =>
   Humanize.formatNumber(inventory.cpu?.frequency || 0);
+
+export const getSimpleHardwareInfo = (inventory: Inventory): SimpleHardwareInfo => ({
+  cores: inventory.cpu?.count || 0,
+  memory: getMemoryCapacity(inventory),
+  disks: getDiskCapacity(inventory),
+});
 
 const EMPTY = {
   title: DASH,
@@ -46,10 +62,7 @@ export const getHostRowHardwareInfo = (inventory: Inventory): HostRowHardwareInf
     };
   }
 
-  const disksCapacity = (inventory.disks || []).reduce(
-    (diskSize: number, disk: Disk) => diskSize + (disk.sizeBytes || 0),
-    0,
-  );
+  const disksCapacity = getDiskCapacity(inventory);
   if (disksCapacity) {
     disk = {
       title: Humanize.fileSize(disksCapacity),
