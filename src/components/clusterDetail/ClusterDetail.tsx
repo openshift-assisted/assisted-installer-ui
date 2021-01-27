@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import {
-  PageSectionVariants,
+  Stack,
+  StackItem,
   TextContent,
   Text,
   ButtonVariant,
@@ -10,12 +11,10 @@ import {
 } from '@patternfly/react-core';
 import { Cluster, Credentials } from '../../api/types';
 import { getClusterCredentials } from '../../api/clusters';
-import PageSection from '../ui/PageSection';
 import { EventsModalButton } from '../ui/eventsModal';
 import HostsTable from '../hosts/HostsTable';
 import ClusterToolbar from '../clusters/ClusterToolbar';
 import { ToolbarButton, ToolbarSecondaryGroup } from '../ui/Toolbar';
-import ClusterBreadcrumbs from '../clusters/ClusterBreadcrumbs';
 import ClusterProgress from './ClusterProgress';
 import ClusterCredentials from './ClusterCredentials';
 import ClusterInstallationError from './ClusterInstallationError';
@@ -76,13 +75,12 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
   }, [cluster.status, fetchCredentials]);
 
   return (
-    <>
-      <ClusterBreadcrumbs clusterName={cluster.name} />
-      <PageSection variant={PageSectionVariants.light} isMain>
+    <Stack hasGutter>
+      <StackItem>
         <Grid hasGutter>
           <GridItem>
             <TextContent>
-              <Text component="h1">Installation progress: {cluster.name}</Text>
+              <Text component="h2">Installation progress</Text>
             </TextContent>
           </GridItem>
           <GridItem>
@@ -126,62 +124,66 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
           </GridItem>
           <ClusterProperties cluster={cluster} />
         </Grid>
-      </PageSection>
-      <AlertsSection />
-      <ClusterToolbar>
-        {canAbortInstallation(cluster) && (
+      </StackItem>
+      <StackItem>
+        <AlertsSection />
+      </StackItem>
+      <StackItem>
+        <ClusterToolbar>
+          {canAbortInstallation(cluster) && (
+            <ToolbarButton
+              variant={ButtonVariant.danger}
+              onClick={() => setCancelInstallationModalOpen(true)}
+            >
+              Abort Installation
+            </ToolbarButton>
+          )}
+          {cluster.status === 'error' && (
+            <ToolbarButton
+              id={getID('button-reset-cluster')}
+              onClick={() => setResetClusterModalOpen(true)}
+            >
+              Reset Cluster
+            </ToolbarButton>
+          )}
+          {['finalizing', 'installed'].includes(cluster.status) && (
+              <LaunchOpenshiftConsoleButton
+              isDisabled={!credentials || !!credentialsError}
+              cluster={cluster}
+              consoleUrl={credentials?.consoleUrl}
+              id={getID('button-launch-console')}
+            />
+          )}
           <ToolbarButton
-            variant={ButtonVariant.danger}
-            onClick={() => setCancelInstallationModalOpen(true)}
-          >
-            Abort Installation
-          </ToolbarButton>
-        )}
-        {cluster.status === 'error' && (
-          <ToolbarButton
-            id={getID('button-reset-cluster')}
-            onClick={() => setResetClusterModalOpen(true)}
-          >
-            Reset Cluster
-          </ToolbarButton>
-        )}
-        {['finalizing', 'installed'].includes(cluster.status) && (
-          <LaunchOpenshiftConsoleButton
-            isDisabled={!credentials || !!credentialsError}
-            cluster={cluster}
-            consoleUrl={credentials?.consoleUrl}
-            id={getID('button-launch-console')}
-          />
-        )}
-        <ToolbarButton
-          variant={ButtonVariant.link}
-          component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
-          isHidden={isSingleClusterMode()}
-          id={getID('button-back-to-all-clusters')}
-        >
-          Back to all clusters
-        </ToolbarButton>
-        <ToolbarSecondaryGroup>
-          <ToolbarButton
-            id="cluster-installation-logs-button"
             variant={ButtonVariant.link}
-            onClick={() => downloadClusterInstallationLogs(addAlert, cluster.id)}
-            isDisabled={!canDownloadClusterLogs(cluster)}
+            component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
+            isHidden={isSingleClusterMode()}
+            id={getID('button-back-to-all-clusters')}
           >
-            Download Installation Logs
+            Back to all clusters
           </ToolbarButton>
-          <EventsModalButton
-            id="cluster-events-button"
-            entityKind="cluster"
-            cluster={cluster}
-            title="Cluster Events"
-            variant={ButtonVariant.link}
-          >
-            View Cluster Events
-          </EventsModalButton>
-        </ToolbarSecondaryGroup>
-      </ClusterToolbar>
-    </>
+          <ToolbarSecondaryGroup>
+            <ToolbarButton
+              id="cluster-installation-logs-button"
+              variant={ButtonVariant.link}
+              onClick={() => downloadClusterInstallationLogs(addAlert, cluster.id)}
+              isDisabled={!canDownloadClusterLogs(cluster)}
+            >
+              Download Installation Logs
+            </ToolbarButton>
+            <EventsModalButton
+              id="cluster-events-button"
+              entityKind="cluster"
+              cluster={cluster}
+              title="Cluster Events"
+              variant={ButtonVariant.link}
+            >
+              View Cluster Events
+            </EventsModalButton>
+          </ToolbarSecondaryGroup>
+        </ClusterToolbar>
+      </StackItem>
+    </Stack>
   );
 };
 
