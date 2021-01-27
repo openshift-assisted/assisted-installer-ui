@@ -70,7 +70,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
   }, [cluster.id]);
 
   React.useEffect(() => {
-    if (cluster.status === 'installed') {
+    if (['finalizing', 'installed'].includes(cluster.status)) {
       fetchCredentials();
     }
   }, [cluster.status, fetchCredentials]);
@@ -104,7 +104,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
               setResetClusterModalOpen={setResetClusterModalOpen}
             />
           )}
-          {cluster.status === 'installed' && (
+          {['finalizing', 'installed'].includes(cluster.status) && (
             <ClusterCredentials
               cluster={cluster}
               credentials={credentials}
@@ -145,7 +145,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
             Reset Cluster
           </ToolbarButton>
         )}
-        {cluster.status === 'installed' && (
+        {['finalizing', 'installed'].includes(cluster.status) && (
           <LaunchOpenshiftConsoleButton
             isDisabled={!credentials || !!credentialsError}
             cluster={cluster}
