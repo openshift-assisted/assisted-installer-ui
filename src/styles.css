@@ -2,3 +2,7 @@
 .assisted-ui-float-right {
   float: right !important;
 }
+
+.assisted-ui-display-inline {
+  display: inline;
+}
