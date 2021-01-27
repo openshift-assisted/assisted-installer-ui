@@ -1,11 +1,9 @@
 import React from 'react';
-import { PageSectionVariants } from '@patternfly/react-core';
 import { Cluster, ManagedDomain } from '../../api/types';
 import { getManagedDomains } from '../../api/domains';
 import { handleApiError, getErrorMessage } from '../../api/utils';
 import LoadingState from '../ui/uiState/LoadingState';
 import ClusterConfigurationForm from './ClusterConfigurationForm';
-import PageSection from '../ui/PageSection';
 import { AlertsContext } from '../AlertsContextProvider';
 
 type ClusterConfigurationProps = {
@@ -38,11 +36,7 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
   if (domains) {
     return <ClusterConfigurationForm cluster={cluster} managedDomains={domains} />;
   }
-  return (
-    <PageSection variant={PageSectionVariants.light} isMain>
-      <LoadingState content="Loading configuration..." />
-    </PageSection>
-  );
+  return <LoadingState content="Loading configuration..." />;
 };
 
 export default ClusterConfiguration;

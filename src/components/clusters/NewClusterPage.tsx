@@ -11,6 +11,8 @@ import {
   Text,
   ButtonVariant,
   Button,
+  Stack,
+  StackItem,
 } from '@patternfly/react-core';
 import PageSection from '../ui/PageSection';
 import { ToolbarButton } from '../ui/Toolbar';
@@ -34,8 +36,6 @@ import SingleNodeCheckbox from '../ui/formik/SingleNodeCheckbox';
 import OpenShiftVersionSelect from '../clusterConfiguration/OpenShiftVersionSelect';
 import { ClusterDefaultConfigurationProvider } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
 import { ErrorState } from '../ui/uiState';
-
-import './NewClusterPage.css';
 
 const getDefaultOpenShiftVersion = (versions: OpenshiftVersionOptionType[]) =>
   // TODO(jtomasek): one of the available versions should be flagged as a default
@@ -96,7 +96,6 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ pullSecret = '', versio
 
   return (
     <>
-      <ClusterBreadcrumbs clusterName="New cluster" />
       <Formik
         initialValues={{
           name: '',
@@ -108,32 +107,32 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ pullSecret = '', versio
         onSubmit={handleSubmit}
       >
         {({ submitForm, isSubmitting, isValid, dirty }) => (
-          <>
-            <PageSection variant={PageSectionVariants.light} isMain>
-              <Grid hasGutter>
-                <GridItem span={12} lg={10} xl={6}>
-                  <Form
-                    className="form-new-cluster"
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        submitForm();
-                      }
-                    }}
-                  >
-                    <TextContent>
-                      <Text component="h1">
-                        Install OpenShift on Bare Metal with the Assisted Installer
-                      </Text>
-                    </TextContent>
+          <Form
+            className="form-new-cluster"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                submitForm();
+              }
+            }}
+          >
+            <Grid hasGutter>
+              <GridItem span={12} lg={10} xl={6}>
+                <Stack hasGutter>
+                  <StackItem>
                     <InputField ref={nameInputRef} label="Cluster Name" name="name" isRequired />
+                  </StackItem>
+                  <StackItem>
                     <SingleNodeCheckbox name="highAvailabilityMode" versions={versions} />
+                  </StackItem>
+                  <StackItem>
                     <OpenShiftVersionSelect versions={versions} />
+                  </StackItem>
+                  <StackItem>
                     <PullSecret pullSecret={pullSecret} />
-                  </Form>
-                </GridItem>
-              </Grid>
-            </PageSection>
-            <AlertsSection />
+                  </StackItem>
+                </Stack>
+              </GridItem>
+            </Grid>
             <ClusterToolbar>
               <ToolbarButton
                 name="save"
@@ -152,39 +151,51 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ pullSecret = '', versio
                 Cancel
               </ToolbarButton>
             </ClusterToolbar>
-          </>
+          </Form>
         )}
       </Formik>
     </>
   );
 };
 
-const loadingUI = (
-  <PageSection variant={PageSectionVariants.light} isMain>
-    <LoadingState />
-  </PageSection>
-);
-
 const NewCluster: React.FC = () => {
   const { addAlert } = React.useContext(AlertsContext);
   const pullSecret = usePullSecretFetch();
   const { error: errorOCPVersions, loading: loadingOCPVersions, versions } = useOpenshiftVersions();
 
-  // Loading errors will be rendered by a subcomponent
   React.useEffect(() => errorOCPVersions && addAlert(errorOCPVersions), [
     errorOCPVersions,
     addAlert,
   ]);
 
-  if (pullSecret === undefined || loadingOCPVersions) {
-    return loadingUI;
-  }
-
-  return <NewClusterForm pullSecret={pullSecret} versions={versions} />;
+  return (
+    <>
+      <ClusterBreadcrumbs clusterName="New cluster" />
+      <PageSection variant={PageSectionVariants.light}>
+        <TextContent>
+          <Text component="h1">Install OpenShift on Bare Metal with the Assisted Installer</Text>
+        </TextContent>
+      </PageSection>
+      <PageSection variant={PageSectionVariants.light} isFilled>
+        {pullSecret === undefined || loadingOCPVersions ? (
+          <LoadingState />
+        ) : (
+          <NewClusterForm pullSecret={pullSecret} versions={versions} />
+        )}
+        <AlertsSection />
+      </PageSection>
+    </>
+  );
 };
 
+const loadingUI = (
+  <PageSection variant={PageSectionVariants.light} isFilled>
+    <LoadingState />
+  </PageSection>
+);
+
 const errorUI = (
-  <PageSection variant={PageSectionVariants.light} isMain>
+  <PageSection variant={PageSectionVariants.light} isFilled>
     <ErrorState
       title="Failed to retrieve the default configuration"
       actions={[

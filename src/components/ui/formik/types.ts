@@ -50,6 +50,7 @@ export interface TextAreaFieldProps extends FieldProps {
   onChange?: (event: React.FormEvent<HTMLTextAreaElement>) => void;
   onBlur?: (event: React.FormEvent<HTMLTextAreaElement>) => void;
   spellCheck?: boolean;
+  rows?: number;
 }
 
 export interface UploadFieldProps extends FieldProps {
