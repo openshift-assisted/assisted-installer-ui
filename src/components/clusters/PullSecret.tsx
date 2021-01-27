@@ -63,7 +63,6 @@ const PullSecret: React.FC<PullSecretProps> = ({ pullSecret }) => {
     <TextAreaField
       name="pullSecret"
       label="Pull Secret"
-      groupClassName="form-group-pull-secret"
       labelIcon={ocmClient ? undefined : <PullSecretInfo />}
       getErrorText={(error) => (
         <>
@@ -71,6 +70,7 @@ const PullSecret: React.FC<PullSecretProps> = ({ pullSecret }) => {
         </>
       )}
       helperText={pullSecretHelperText}
+      rows={20}
       isRequired
     />
   );

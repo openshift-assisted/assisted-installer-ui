@@ -1,8 +1,14 @@
 import React from 'react';
 import { Link, RouteComponentProps, Redirect } from 'react-router-dom';
-import { PageSectionVariants, ButtonVariant, Button } from '@patternfly/react-core';
+import {
+  PageSection,
+  PageSectionVariants,
+  ButtonVariant,
+  Button,
+  TextContent,
+  Text,
+} from '@patternfly/react-core';
 import { useSelector, useDispatch } from 'react-redux';
-import PageSection from '../ui/PageSection';
 import { ErrorState, LoadingState } from '../ui/uiState';
 import { ResourceUIState } from '../../types';
 import { selectCurrentClusterState } from '../../selectors/currentCluster';
@@ -22,6 +28,7 @@ import { AlertsContextProvider } from '../AlertsContextProvider';
 import { AddBareMetalHosts } from '../AddBareMetalHosts';
 import { AddBareMetalHostsContextProvider } from '../AddBareMetalHosts/AddBareMetalHostsContext';
 import { ClusterDefaultConfigurationProvider } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
+import ClusterBreadcrumbs from './ClusterBreadcrumbs';
 
 type MatchParams = {
   clusterId: string;
@@ -97,20 +104,44 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
       ].includes(cluster.status)
     ) {
       return (
-        <ClusterDetail
-          cluster={cluster}
-          setCancelInstallationModalOpen={setCancelInstallationModalOpen}
-          setResetClusterModalOpen={setResetClusterModalOpen}
-        />
+        <>
+          <ClusterBreadcrumbs clusterName={cluster.name} />
+          <PageSection variant={PageSectionVariants.light}>
+            <TextContent>
+              <Text component="h1">{cluster.name}</Text>
+            </TextContent>
+          </PageSection>
+          <PageSection variant={PageSectionVariants.light} isFilled>
+            <ClusterDetail
+              cluster={cluster}
+              setCancelInstallationModalOpen={setCancelInstallationModalOpen}
+              setResetClusterModalOpen={setResetClusterModalOpen}
+            />
+          </PageSection>
+        </>
       );
     } else {
-      return <ClusterConfiguration cluster={cluster} />;
+      return (
+        <>
+          <ClusterBreadcrumbs clusterName={cluster.name} />
+          <PageSection variant={PageSectionVariants.light}>
+            <TextContent>
+              <Text component="h1">
+                Install OpenShift on Bare Metal with the Assisted Installer
+              </Text>
+            </TextContent>
+          </PageSection>
+          <PageSection variant={PageSectionVariants.light}>
+            <ClusterConfiguration cluster={cluster} />
+          </PageSection>
+        </>
+      );
     }
   };
 
   if (uiState === ResourceUIState.LOADING) {
     return (
-      <PageSection variant={PageSectionVariants.light} isMain>
+      <PageSection variant={PageSectionVariants.light} isFilled>
         <LoadingState />
       </PageSection>
     );
@@ -122,7 +153,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
     }
 
     return (
-      <PageSection variant={PageSectionVariants.light} isMain>
+      <PageSection variant={PageSectionVariants.light} isFilled>
         <ErrorState
           title="Failed to fetch the cluster"
           fetchData={fetchCluster}
