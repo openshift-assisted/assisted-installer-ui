@@ -2,6 +2,7 @@ import React from 'react';
 import { Cluster } from '../../api/types';
 import ClusterConfigurationForm from '../clusterConfiguration/ClusterConfigurationForm';
 import NetworkConfigurationForm from '../clusterConfiguration/NetworkConfigurationForm';
+import ReviewStep from '../clusterConfiguration/ReviewStep';
 import ClusterWizardContext from './ClusterWizardContext';
 import { ClusterWizardStepsType, CLUSTER_WIZARD_FIRST_STEP } from './wizardTransition';
 import BaremetalInventory from '../clusterConfiguration/BaremetalInventory';
@@ -24,7 +25,8 @@ const ClusterWizard: React.FC<ClusterWizardProps> = ({ cluster }) => {
         return <BaremetalInventory cluster={cluster} />;
       case 'networking':
         return <NetworkConfigurationForm cluster={cluster} />;
-      //TODO(jtomasek): This goes away once we tear it apart into other steps
+      case 'review':
+        return <ReviewStep cluster={cluster} />;
       case 'cluster-configuration':
       default:
         return <ClusterConfigurationForm cluster={cluster} />;
