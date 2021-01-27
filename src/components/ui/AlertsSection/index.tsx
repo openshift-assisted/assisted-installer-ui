@@ -1,6 +1,11 @@
 import React from 'react';
-import { AlertGroup, AlertActionCloseButton, Alert } from '@patternfly/react-core';
-import PageSection from '../PageSection';
+import {
+  AlertGroup,
+  AlertActionCloseButton,
+  Alert,
+  PageSection,
+  PageSectionVariants,
+} from '@patternfly/react-core';
 import { AlertProps } from '../../../features/alerts/alertsSlice';
 import { AlertsContext } from '../../AlertsContextProvider';
 
@@ -28,11 +33,7 @@ export const Alerts: React.FC<{ className?: string }> = ({ className }) => {
 const AlertsSection: React.FC = () => {
   const { alerts } = React.useContext(AlertsContext);
   if (alerts.length) {
-    return (
-      <PageSection padding={{ default: 'noPadding' }}>
-        <Alerts className="alerts-section" />
-      </PageSection>
-    );
+    return <Alerts className="alerts-section" />;
   }
   return null;
 };
