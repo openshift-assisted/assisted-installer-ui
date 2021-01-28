@@ -5,8 +5,6 @@ import styles from '@patternfly/react-styles/css/components/Wizard/wizard';
 import ClusterWizardContext from './ClusterWizardContext';
 import { ClusterWizardStepsType } from './wizardTransition';
 
-import './ClusterWizardStep.css';
-
 type ClusterWizardStepProps = {
   footer?: React.ReactNode;
 };
