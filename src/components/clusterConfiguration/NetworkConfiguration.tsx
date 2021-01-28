@@ -1,6 +1,6 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
-import { Checkbox, Text, TextContent } from '@patternfly/react-core';
+import { Checkbox } from '@patternfly/react-core';
 import BasicNetworkFields from './BasicNetworkFields';
 import AdvancedNetworkFields from './AdvancedNetworkFields';
 import { HostSubnets, NetworkConfigurationValues } from '../../types/clusters';
@@ -36,9 +36,6 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({ cluster, ho
 
   return (
     <>
-      <TextContent>
-        <Text component="h2">Networking</Text>
-      </TextContent>
       {!isSingleNodeCluster(cluster) && (
         <BasicNetworkFields cluster={cluster} hostSubnets={hostSubnets} />
       )}
