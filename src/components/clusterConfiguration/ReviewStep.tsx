@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { Grid, GridItem, Text, TextContent } from '@patternfly/react-core';
+import { Grid, GridItem, Stack, StackItem, Text, TextContent } from '@patternfly/react-core';
 import { Cluster } from '../../api/types';
 import ClusterWizardStep from '../clusterWizard/ClusterWizardStep';
 import { AlertsContext } from '../AlertsContextProvider';
@@ -33,31 +33,31 @@ const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   };
 
   const footer = (
-    <Grid hasGutter>
+    <Stack hasGutter>
       {!!alerts.length && (
-        <GridItem span={12} lg={10} xl={9} xl2={7}>
+        <StackItem>
           <Alerts />
-        </GridItem>
+        </StackItem>
       )}
-      <GridItem span={12} lg={10} xl={9} xl2={7}>
+      <StackItem>
         <ClusterWizardToolbar
           cluster={cluster}
           onBack={() => setCurrentStepId('networking')}
           onInstall={onInstall}
         />
-      </GridItem>
-    </Grid>
+      </StackItem>
+    </Stack>
   );
 
   return (
     <ClusterWizardStep footer={footer}>
       <Grid hasGutter>
-        <GridItem span={12} lg={10} xl={9} xl2={7}>
+        <GridItem span={12}>
           <TextContent>
             <Text component="h2">Review and create</Text>
           </TextContent>
         </GridItem>
-        <GridItem>
+        <GridItem span={12} lg={10} xl={9} xl2={7}>
           <ReviewCluster cluster={cluster} />
         </GridItem>
 
