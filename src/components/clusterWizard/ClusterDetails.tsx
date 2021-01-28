@@ -17,6 +17,8 @@ import {
   Spinner,
   Stack,
   StackItem,
+  Text,
+  TextContent,
 } from '@patternfly/react-core';
 import InputField from '../ui/formik/InputField';
 import SelectField from '../ui/formik/SelectField';
@@ -110,7 +112,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = ({
 
       const { data } = await patchCluster(cluster.id, params);
       dispatch(updateCluster(data));
-      setCurrentStepId('cluster-configuration');
+      setCurrentStepId('baremetal-discovery');
     } catch (e) {
       handleApiError<ClusterUpdateParams>(e, () =>
         addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),
@@ -141,58 +143,58 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = ({
           setFieldValue('baseDnsDomain', checked ? managedDomains.map((d) => d.domain)[0] : '');
 
         const form = (
-          <Grid hasGutter>
-            <GridItem span={12} lg={10} xl={9} xl2={7}>
-              <Form
-                id="wizard-cluster-details__form"
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    submitForm();
-                  }
-                }}
-              >
-                <InputField ref={nameInputRef} label="Cluster Name" name="name" isRequired />
-                <SelectField
-                  label="OpenShift Version"
-                  name="openshiftVersion"
-                  options={[{ label: openshiftVersion, value: openshiftVersion }]}
-                  // getHelperText={getOpenshiftVersionHelperText}
-                  isDisabled
-                  isRequired
-                />
-                {(pullSecret || !pullSecretSet) && <PullSecret pullSecret={pullSecret} />}
-                {!!managedDomains.length && (
-                  <CheckboxField
-                    name="useRedHatDnsService"
-                    label="Use a temporary 60-day domain"
-                    helperText="A base domain will be provided for temporary, non-production clusters."
-                    onChange={toggleRedHatDnsService}
-                  />
-                )}
-                {values.useRedHatDnsService ? (
+          <>
+            <Grid hasGutter>
+              <GridItem>
+                <TextContent>
+                  <Text component="h2">Cluster Details</Text>
+                </TextContent>
+              </GridItem>
+              <GridItem span={12} lg={10} xl={9} xl2={7}>
+                <Form id="wizard-cluster-details__form">
+                  <InputField ref={nameInputRef} label="Cluster Name" name="name" isRequired />
                   <SelectField
-                    label="Base Domain"
-                    name="baseDnsDomain"
-                    helperText={baseDnsHelperText}
-                    options={managedDomains.map((d) => ({
-                      label: `${d.domain} (${d.provider})`,
-                      value: d.domain,
-                    }))}
+                    label="OpenShift Version"
+                    name="openshiftVersion"
+                    options={[{ label: openshiftVersion, value: openshiftVersion }]}
+                    // getHelperText={getOpenshiftVersionHelperText}
+                    isDisabled
                     isRequired
                   />
-                ) : (
-                  <InputField
-                    label="Base Domain"
-                    name="baseDnsDomain"
-                    helperText={baseDnsHelperText}
-                    placeholder="example.com"
-                    isDisabled={useRedHatDnsService}
-                    isRequired
-                  />
-                )}
-              </Form>
-            </GridItem>
-          </Grid>
+                  {(pullSecret || !pullSecretSet) && <PullSecret pullSecret={pullSecret} />}
+                  {!!managedDomains.length && (
+                    <CheckboxField
+                      name="useRedHatDnsService"
+                      label="Use a temporary 60-day domain"
+                      helperText="A base domain will be provided for temporary, non-production clusters."
+                      onChange={toggleRedHatDnsService}
+                    />
+                  )}
+                  {values.useRedHatDnsService ? (
+                    <SelectField
+                      label="Base Domain"
+                      name="baseDnsDomain"
+                      helperText={baseDnsHelperText}
+                      options={managedDomains.map((d) => ({
+                        label: `${d.domain} (${d.provider})`,
+                        value: d.domain,
+                      }))}
+                      isRequired
+                    />
+                  ) : (
+                    <InputField
+                      label="Base Domain"
+                      name="baseDnsDomain"
+                      helperText={baseDnsHelperText}
+                      placeholder="example.com"
+                      isDisabled={useRedHatDnsService}
+                      isRequired
+                    />
+                  )}
+                </Form>
+              </GridItem>
+            </Grid>
+          </>
         );
         const footer = (
           <Stack hasGutter>
