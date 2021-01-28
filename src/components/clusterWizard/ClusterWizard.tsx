@@ -1,12 +1,11 @@
 import React from 'react';
 import { Cluster } from '../../api/types';
-import ClusterConfigurationForm from '../clusterConfiguration/ClusterConfigurationForm';
 import NetworkConfigurationForm from '../clusterConfiguration/NetworkConfigurationForm';
 import ReviewStep from '../clusterConfiguration/ReviewStep';
 import ClusterWizardContext from './ClusterWizardContext';
 import { ClusterWizardStepsType, CLUSTER_WIZARD_FIRST_STEP } from './wizardTransition';
-import BaremetalInventory from '../clusterConfiguration/BaremetalInventory';
 import ClusterDetails from './ClusterDetails';
+import BaremetalDiscovery from './BaremetalDiscovery';
 
 type ClusterWizardProps = {
   cluster: Cluster;
@@ -19,17 +18,15 @@ const ClusterWizard: React.FC<ClusterWizardProps> = ({ cluster }) => {
 
   const renderCurrentStep = React.useCallback(() => {
     switch (currentStepId) {
-      case 'cluster-details':
-        return <ClusterDetails cluster={cluster} />;
       case 'baremetal-discovery':
-        return <BaremetalInventory cluster={cluster} />;
+        return <BaremetalDiscovery cluster={cluster} />;
       case 'networking':
         return <NetworkConfigurationForm cluster={cluster} />;
       case 'review':
         return <ReviewStep cluster={cluster} />;
-      case 'cluster-configuration':
+      case 'cluster-details':
       default:
-        return <ClusterConfigurationForm cluster={cluster} />;
+        return <ClusterDetails cluster={cluster} />;
     }
   }, [currentStepId, cluster]);
 

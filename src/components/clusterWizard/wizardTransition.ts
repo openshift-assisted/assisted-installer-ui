@@ -4,7 +4,6 @@ export type ClusterWizardStepsType =
   | 'cluster-details'
   | 'baremetal-discovery'
   | 'networking'
-  | 'cluster-configuration'
   | 'review';
 
 export const CLUSTER_WIZARD_FIRST_STEP: ClusterWizardStepsType = 'cluster-details';
@@ -13,24 +12,6 @@ export const CLUSTER_WIZARD_FIRST_STEP: ClusterWizardStepsType = 'cluster-detail
 // However they should be independent on each other anyway.
 type TransitionBackendProps = { cluster: Cluster };
 type TransitionProps = TransitionBackendProps & { isValid?: boolean; isSubmitting?: boolean };
-
-export const canNextClusterConfigurationBackend = ({ cluster }: TransitionBackendProps) => {
-  // TODO(mlibra): check backend validations
-  return !!cluster;
-};
-
-export const canNextClusterConfiguration = ({
-  isValid,
-  isSubmitting,
-  cluster,
-}: TransitionProps) => {
-  let uiValidation = true;
-  if (isValid !== undefined) {
-    uiValidation = isValid && !isSubmitting;
-  }
-
-  return uiValidation && canNextClusterConfigurationBackend({ cluster });
-};
 
 export const canNextNetworkBackend = ({ cluster }: TransitionBackendProps) => {
   // TODO(mlibra): check backend validations
@@ -44,4 +25,11 @@ export const canNextNetwork = ({ isValid, isSubmitting, cluster }: TransitionPro
   }
 
   return uiValidation && canNextNetworkBackend({ cluster });
+};
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const canNextBaremetalDiscovery = ({ cluster }: TransitionProps) => {
+  // TODO(jtomasek): ensure that there are no hardware validations failing
+  // on any of the host, ensure that selected cluster validations are passing
+  return true;
 };
