@@ -13,6 +13,7 @@ const wizardSteps: ClusterWizardStepsType[] = [
   'cluster-details',
   'cluster-configuration',
   'networking',
+  'review',
 ];
 
 const ClusterWizardStep: React.FC<ClusterWizardStepProps> = ({ footer, children }) => {
@@ -31,13 +32,7 @@ const ClusterWizardStep: React.FC<ClusterWizardStepProps> = ({ footer, children 
       <WizardNavItem
         key="cluster-configuration"
         content="Cluster Configuration"
-        isDisabled={
-          !wizardSteps
-            .slice(
-              1 /* TODO(mlibra): just to show principle. we will simplify when all steps are added. Step order - 1 */,
-            )
-            .includes(currentStepId)
-        }
+        isDisabled={!wizardSteps.slice(1).includes(currentStepId)}
         isCurrent={currentStepId === 'cluster-configuration'}
         step={1}
         onNavItemClick={() => setCurrentStepId('cluster-configuration')}
@@ -53,16 +48,18 @@ const ClusterWizardStep: React.FC<ClusterWizardStepProps> = ({ footer, children 
       <WizardNavItem
         content="Networking"
         step={2}
-        isDisabled={
-          !wizardSteps
-            .slice(
-              2 /* TODO(mlibra): just to show principle. we will simplify when all steps are added. Step order - 1 */,
-            )
-            .includes(currentStepId)
-        }
+        isDisabled={!wizardSteps.slice(2).includes(currentStepId)}
         key="networking"
         isCurrent={currentStepId === 'networking'}
         onNavItemClick={() => setCurrentStepId('networking')}
+      />
+      <WizardNavItem
+        content="Review & Create"
+        step={2}
+        isDisabled={!wizardSteps.slice(2).includes(currentStepId)}
+        key="review"
+        isCurrent={currentStepId === 'review'}
+        onNavItemClick={() => setCurrentStepId('review')}
       />
     </WizardNav>
   );
