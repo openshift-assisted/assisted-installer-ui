@@ -1,63 +1,42 @@
 import React from 'react';
-import { Table, TableBody, TableHeader, TableVariant } from '@patternfly/react-table';
+import { Table, TableBody, TableVariant } from '@patternfly/react-table';
 import Humanize from 'humanize-plus';
 import { Cluster, Host, Inventory, stringToJSON } from '../../api';
 import { getSimpleHardwareInfo } from '../hosts/hardwareInfo';
 import { DetailList, DetailItem } from '../ui/DetailList';
 
-// DO NOT MERGE: https://marvelapp.com/prototype/7ce7ib3/screen/73292721
-const ReviewHostsInventoryColumns = ['Role', 'CPU', 'Memory', 'Filesystem'];
-
 const ReviewHostsInventory: React.FC<{ hosts?: Host[] }> = ({ hosts = [] }) => {
   const rows = React.useMemo(() => {
     const summary = {
-      master: {
-        count: 0,
-        cores: 0,
-        memory: 0,
-        fs: 0,
-      },
-      worker: {
-        count: 0,
-        cores: 0,
-        memory: 0,
-        fs: 0,
-      },
+      count: 0,
+      cores: 0,
+      memory: 0,
+      fs: 0,
     };
 
     hosts.forEach((host) => {
-      // TODO(mlibra): auto-assign role
-      let summaryGroup = summary.worker;
-      if (host.role === 'master') {
-        summaryGroup = summary.master;
-      }
-
-      summaryGroup.count++;
+      summary.count++;
       const inventory = stringToJSON<Inventory>(host.inventory);
       if (inventory) {
         const hwInfo = getSimpleHardwareInfo(inventory);
-        summaryGroup.cores += hwInfo.cores;
-        summaryGroup.memory += hwInfo.memory;
-        summaryGroup.fs += hwInfo.disks;
+        summary.cores += hwInfo.cores;
+        summary.memory += hwInfo.memory;
+        summary.fs += hwInfo.disks;
       }
     });
 
     return [
       {
-        cells: [
-          `${summary.master.count} master${summary.master.count === 1 ? '' : 's'}`,
-          `${summary.master.cores} cores`,
-          Humanize.fileSize(summary.master.memory),
-          Humanize.fileSize(summary.master.fs),
-        ],
+        cells: ['Hosts:', summary.count],
       },
       {
-        cells: [
-          `${summary.worker.count} worker${summary.worker.count === 1 ? '' : 's'}`,
-          `${summary.worker.cores} cores`,
-          Humanize.fileSize(summary.worker.memory),
-          Humanize.fileSize(summary.worker.fs),
-        ],
+        cells: ['Cores:', summary.cores],
+      },
+      {
+        cells: ['Memory:', Humanize.fileSize(summary.memory)],
+      },
+      {
+        cells: ['Storage:', Humanize.fileSize(summary.fs)],
       },
     ];
   }, [hosts]);
@@ -65,12 +44,11 @@ const ReviewHostsInventory: React.FC<{ hosts?: Host[] }> = ({ hosts = [] }) => {
   return (
     <Table
       rows={rows}
-      cells={ReviewHostsInventoryColumns}
+      cells={['Group', 'Value']}
       variant={TableVariant.compact}
       borders={false}
-      aria-label="Hosts summary table"
+      aria-label="Cluster summary table"
     >
-      <TableHeader />
       <TableBody />
     </Table>
   );
@@ -81,10 +59,7 @@ const ReviewCluster: React.FC<{ cluster: Cluster }> = ({ cluster }) => (
     <DetailItem title="Cluster address" value={`${cluster.name}.${cluster.baseDnsDomain}`} />
     <DetailItem title="OpenShift version" value={cluster.openshiftVersion} />
     <DetailItem title="Management network CIDR" value={cluster.clusterNetworkCidr} />
-    <DetailItem
-      title="Bare metal inventory"
-      value={<ReviewHostsInventory hosts={cluster.hosts} />}
-    />
+    <DetailItem title="Cluster summary" value={<ReviewHostsInventory hosts={cluster.hosts} />} />
   </DetailList>
 );
 
