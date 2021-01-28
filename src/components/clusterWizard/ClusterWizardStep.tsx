@@ -11,7 +11,7 @@ type ClusterWizardStepProps = {
 
 const wizardSteps: ClusterWizardStepsType[] = [
   'cluster-details',
-  'cluster-configuration',
+  'baremetal-discovery',
   'networking',
   'review',
 ];
@@ -30,21 +30,13 @@ const ClusterWizardStep: React.FC<ClusterWizardStepProps> = ({ footer, children 
         onNavItemClick={() => setCurrentStepId('cluster-details')}
       />
       <WizardNavItem
-        key="cluster-configuration"
-        content="Cluster Configuration"
-        isDisabled={!wizardSteps.slice(1).includes(currentStepId)}
-        isCurrent={currentStepId === 'cluster-configuration'}
-        step={1}
-        onNavItemClick={() => setCurrentStepId('cluster-configuration')}
-      />
-      {/* <WizardNavItem
         key="baremetal-discovery"
         content="Bare Metal Discovery"
+        isDisabled={!wizardSteps.slice(1).includes(currentStepId)}
         isCurrent={currentStepId === 'baremetal-discovery'}
-        isDisabled={false}
         step={1}
         onNavItemClick={() => setCurrentStepId('baremetal-discovery')}
-      />*/}
+      />
       <WizardNavItem
         content="Networking"
         step={2}
@@ -55,8 +47,8 @@ const ClusterWizardStep: React.FC<ClusterWizardStepProps> = ({ footer, children 
       />
       <WizardNavItem
         content="Review & Create"
-        step={2}
-        isDisabled={!wizardSteps.slice(2).includes(currentStepId)}
+        step={3}
+        isDisabled={!wizardSteps.slice(3).includes(currentStepId)}
         key="review"
         isCurrent={currentStepId === 'review'}
         onNavItemClick={() => setCurrentStepId('review')}
