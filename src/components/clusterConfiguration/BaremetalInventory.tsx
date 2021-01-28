@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, TextContent, Button } from '@patternfly/react-core';
+import { Text, TextContent, Button, Stack, StackItem } from '@patternfly/react-core';
 import HostsTable from '../hosts/HostsTable';
 import { Cluster, HostRequirements as HostRequirementsType } from '../../api/types';
 import HostRequirements from '../fetching/HostRequirements';
@@ -43,34 +43,41 @@ const BaremetalInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const [isDiscoveryHintModalOpen, setDiscoveryHintModalOpen] = React.useState(false);
 
   return (
-    <>
-      <TextContent>
-        <Text component="p">
-          <DiscoveryImageModalButton
-            ButtonComponent={Button}
-            cluster={cluster}
-            idPrefix="bare-metal-inventory"
-          />
-        </Text>
-        <Text component="p">
-          Boot the Discovery ISO on hardware that should become part of this bare metal cluster.
-          Hosts connected to the internet will be inspected and automatically appear below.{' '}
-          <HostsNotShowingLink setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
-        </Text>
-        {isSingleNodeCluster(cluster) ? (
-          <HostRequirements ContentComponent={SingleHostRequirementsContent} />
-        ) : (
-          <HostRequirements ContentComponent={HostRequirementsContent} />
-        )}
-        <FormatDiskWarning />
-        <VMRebootConfigurationInfo hosts={cluster.hosts} />
-      </TextContent>
-      <HostsTable cluster={cluster} setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
-      <DiscoveryTroubleshootingModal
-        isOpen={isDiscoveryHintModalOpen}
-        setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
-      />
-    </>
+    <Stack hasGutter>
+      <StackItem>
+        <TextContent>
+          <Text component="h2">Bare Metal Discovery</Text>
+        </TextContent>
+      </StackItem>
+      <StackItem>
+        <TextContent>
+          <Text component="p">
+            <DiscoveryImageModalButton
+              ButtonComponent={Button}
+              cluster={cluster}
+              idPrefix="bare-metal-inventory"
+            />
+          </Text>
+          <Text component="p">
+            Boot the Discovery ISO on hardware that should become part of this bare metal cluster.
+            Hosts connected to the internet will be inspected and automatically appear below.{' '}
+            <HostsNotShowingLink setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
+          </Text>
+          {isSingleNodeCluster(cluster) ? (
+            <HostRequirements ContentComponent={SingleHostRequirementsContent} />
+          ) : (
+            <HostRequirements ContentComponent={HostRequirementsContent} />
+          )}
+          <FormatDiskWarning />
+          <VMRebootConfigurationInfo hosts={cluster.hosts} />
+        </TextContent>
+        <HostsTable cluster={cluster} setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
+        <DiscoveryTroubleshootingModal
+          isOpen={isDiscoveryHintModalOpen}
+          setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
+        />
+      </StackItem>
+    </Stack>
   );
 };
 
