@@ -137,23 +137,30 @@ const NetworkConfigurationForm: React.FC<{
         };
 
         const form = (
-          <Grid hasGutter>
-            <GridItem span={12} lg={10} xl={9} xl2={7}>
-              <Form>
-                <NetworkConfiguration cluster={cluster} hostSubnets={hostSubnets} />
+          <>
+            <Grid hasGutter>
+              <GridItem>
                 <TextContent>
-                  <Text component="h2">Security</Text>
+                  <Text component="h2">Networking</Text>
                 </TextContent>
-                <ClusterSshKeyField
-                  isSwitchHidden={!cluster.imageInfo.sshPublicKey}
-                  name="shareDiscoverySshKey"
-                  onToggle={onClusterSshKeyToggle}
-                  onClusterSshKeyVisibilityChanged={onClusterSshKeyVisibilityChanged}
-                  onSshKeyBlur={onSshKeyBlur}
-                />
-              </Form>
-            </GridItem>
-          </Grid>
+              </GridItem>
+              <GridItem span={12} lg={10} xl={9} xl2={7}>
+                <Form>
+                  <NetworkConfiguration cluster={cluster} hostSubnets={hostSubnets} />
+                  <TextContent>
+                    <Text component="h2">Security</Text>
+                  </TextContent>
+                  <ClusterSshKeyField
+                    isSwitchHidden={!cluster.imageInfo.sshPublicKey}
+                    name="shareDiscoverySshKey"
+                    onToggle={onClusterSshKeyToggle}
+                    onClusterSshKeyVisibilityChanged={onClusterSshKeyVisibilityChanged}
+                    onSshKeyBlur={onSshKeyBlur}
+                  />
+                </Form>
+              </GridItem>
+            </Grid>
+          </>
         );
 
         const footer = (
@@ -171,7 +178,7 @@ const NetworkConfigurationForm: React.FC<{
                 isSubmitting={isSubmitting}
                 isNextDisabled={!canNextNetwork({ isValid, isSubmitting, cluster })}
                 onNext={submitForm}
-                onBack={() => setCurrentStepId('cluster-configuration')}
+                onBack={() => setCurrentStepId('baremetal-discovery')}
               />
             </StackItem>
           </Stack>
