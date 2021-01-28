@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, TextContent, Button } from '@patternfly/react-core';
+import { Text, TextContent, Button, Stack, StackItem } from '@patternfly/react-core';
 import HostsTable from '../hosts/HostsTable';
 import { Cluster, HostRequirements as HostRequirementsType } from '../../api/types';
 import HostRequirements from '../fetching/HostRequirements';
@@ -11,8 +11,6 @@ import {
 } from './DiscoveryTroubleshootingModal';
 import FormatDiskWarning from './FormatDiskWarning';
 import { isSingleNodeCluster } from './utils';
-import { CheckboxField } from '../ui';
-import { useFeature } from '../../features';
 
 const HostRequirementsContent = ({
   worker = {},
@@ -41,55 +39,63 @@ const SingleHostRequirementsContent = ({
   </Text>
 );
 
-const OCSLabel: React.FC = () => (
-  <>
-    Install OpenShift Container Storage
-    {/* TODO(mlibra): List of OCS requierements is stabilizing now - https://issues.redhat.com/browse/MGMT-4220 )
-    <PopoverIcon headerContent="Additional Requirements" bodyContent={<>FOO BAR </>} />*/}
-  </>
-);
+// const OCSLabel: React.FC = () => (
+//   <>
+//     Install OpenShift Container Storage
+//     {/* TODO(mlibra): List of OCS requierements is stabilizing now - https://issues.redhat.com/browse/MGMT-4220 )
+//     <PopoverIcon headerContent="Additional Requirements" bodyContent={<>FOO BAR </>} />*/}
+//   </>
+// );
 
 const BaremetalInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const [isDiscoveryHintModalOpen, setDiscoveryHintModalOpen] = React.useState(false);
-  const isOpenshiftClusterStorageEnabled = useFeature('ASSISTED_INSTALLER_OCS_FEATURE');
+  // const isOpenshiftClusterStorageEnabled = useFeature('ASSISTED_INSTALLER_OCS_FEATURE');
 
   return (
-    <>
-      <TextContent>
-        <Text component="p">
-          <DiscoveryImageModalButton
-            ButtonComponent={Button}
-            cluster={cluster}
-            idPrefix="bare-metal-inventory"
-          />
-        </Text>
-        <Text component="p">
-          Boot the Discovery ISO on hardware that should become part of this bare metal cluster.
-          Hosts connected to the internet will be inspected and automatically appear below.{' '}
-          <HostsNotShowingLink setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
-        </Text>
-        {isSingleNodeCluster(cluster) ? (
-          <HostRequirements ContentComponent={SingleHostRequirementsContent} />
-        ) : (
-          <HostRequirements ContentComponent={HostRequirementsContent} />
-        )}
-        {isOpenshiftClusterStorageEnabled && (
-          <CheckboxField
-            name="useExtraDisksForLocalStorage"
-            label={<OCSLabel />}
-            helperText="Persistent software-defined storage for hybrid applications."
-          />
-        )}
-        <Text />
-        <FormatDiskWarning />
-        <VMRebootConfigurationInfo hosts={cluster.hosts} />
-      </TextContent>
-      <HostsTable cluster={cluster} setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
-      <DiscoveryTroubleshootingModal
-        isOpen={isDiscoveryHintModalOpen}
-        setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
-      />
-    </>
+    <Stack hasGutter>
+      <StackItem>
+        <TextContent>
+          <Text component="h2">Bare Metal Discovery</Text>
+        </TextContent>
+      </StackItem>
+      <StackItem>
+        <TextContent>
+          <Text component="p">
+            <DiscoveryImageModalButton
+              ButtonComponent={Button}
+              cluster={cluster}
+              idPrefix="bare-metal-inventory"
+            />
+          </Text>
+          <Text component="p">
+            Boot the Discovery ISO on hardware that should become part of this bare metal cluster.
+            Hosts connected to the internet will be inspected and automatically appear below.{' '}
+            <HostsNotShowingLink setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
+          </Text>
+          {isSingleNodeCluster(cluster) ? (
+            <HostRequirements ContentComponent={SingleHostRequirementsContent} />
+          ) : (
+            <HostRequirements ContentComponent={HostRequirementsContent} />
+          )}
+          {/* TODO(jtomasek): Turn baremetal inventory into a form and enable this field */}
+          {/* {isOpenshiftClusterStorageEnabled && (
+            <CheckboxField
+              name="useExtraDisksForLocalStorage"
+              label={<OCSLabel />}
+              helperText="Persistent software-defined storage for hybrid applications."
+            />
+          )}
+          <Text /> */}
+          <FormatDiskWarning />
+          <VMRebootConfigurationInfo hosts={cluster.hosts} />
+        </TextContent>
+        <HostsTable cluster={cluster} setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
+        <DiscoveryTroubleshootingModal
+          isOpen={isDiscoveryHintModalOpen}
+          setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
+        />
+      </StackItem>
+    </Stack>
   );
 };
 
