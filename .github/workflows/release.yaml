@@ -27,7 +27,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-          ref: master
+          ##ref: master
       - uses: actions/setup-node@v1
         with:
           node-version: '12.x'
@@ -35,6 +35,8 @@ jobs:
       - run: |
           git config user.name 'assisted-ui-lib GitHub action executed on release'
           git config user.email 'github@users.noreply.github.com'
+          git branch
+          git log -4
       - run: yarn install
       - run: yarn version --new-version ${{ env.VERSION }} --no-git-tag-version
       - run: yarn build
