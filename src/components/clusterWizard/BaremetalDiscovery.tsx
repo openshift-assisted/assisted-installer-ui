@@ -23,7 +23,7 @@ const BaremetalDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
 
   return (
     <ClusterWizardStep footer={footer}>
-      <BaremetalInventory cluster={cluster} />;
+      <BaremetalInventory cluster={cluster} />
     </ClusterWizardStep>
   );
 };
