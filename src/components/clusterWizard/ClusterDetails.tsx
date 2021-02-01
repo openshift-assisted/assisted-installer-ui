@@ -2,7 +2,7 @@ import React from 'react';
 import * as Yup from 'yup';
 import _ from 'lodash';
 import { Formik, FormikHelpers } from 'formik';
-import { Cluster, ClusterUpdateParams, ManagedDomain } from '../../api/types';
+import { Cluster, ClusterCreateParams, ClusterUpdateParams, ManagedDomain } from '../../api/types';
 import ClusterWizardStep from './ClusterWizardStep';
 import {
   dnsNameValidationSchema,
@@ -30,8 +30,7 @@ import { useHistory } from 'react-router-dom';
 import LoadingState from '../ui/uiState/LoadingState';
 import { usePullSecretFetch } from '../fetching/pullSecret';
 import { captureException } from '../../sentry';
-import { ClusterDetailsValues } from '../../types/clusters';
-import { getClusters, patchCluster } from '../../api/clusters';
+import { getClusters, patchCluster, postCluster } from '../../api/clusters';
 import { getErrorMessage, handleApiError } from '../../api/utils';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import { useDispatch } from 'react-redux';
@@ -42,18 +41,74 @@ import CheckboxField from '../ui/formik/CheckboxField';
 import { getManagedDomains } from '../../api/domains';
 import ToolbarText from '../ui/Toolbar/ToolbarText';
 import { canNextClusterDetails } from './wizardTransition';
+import { useOpenshiftVersions } from '../fetching/openshiftVersions';
+import { OpenshiftVersionOptionType } from '../../types/versions';
+import SingleNodeCheckbox from '../ui/formik/SingleNodeCheckbox';
+import OpenShiftVersionSelect from '../clusterConfiguration/OpenShiftVersionSelect';
 
 type ClusterDetailsFormProps = {
-  cluster: Cluster;
+  cluster?: Cluster;
   pullSecret: string;
   managedDomains: ManagedDomain[];
+  versions: OpenshiftVersionOptionType[];
 };
 
-const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = ({
-  cluster,
-  pullSecret,
-  managedDomains,
-}) => {
+type ClusterDetailsValues = {
+  name: string;
+  highAvailabilityMode: 'Full' | 'None';
+  openshiftVersion: string;
+  pullSecret: string;
+  baseDnsDomain: string;
+  useRedHatDnsService: boolean;
+};
+
+const getInitialValues = (props: ClusterDetailsFormProps): ClusterDetailsValues => {
+  const { cluster, pullSecret, managedDomains, versions } = props;
+  const {
+    name = '',
+    highAvailabilityMode = 'Full',
+    baseDnsDomain = '',
+    openshiftVersion = versions[0]?.value || '',
+  } = cluster || {};
+  return {
+    name,
+    highAvailabilityMode,
+    openshiftVersion,
+    pullSecret,
+    baseDnsDomain,
+    useRedHatDnsService:
+      !!baseDnsDomain && managedDomains.map((d) => d.domain).includes(baseDnsDomain),
+  };
+};
+
+const getValidationSchema = (cluster?: Cluster) => {
+  if (cluster?.pullSecretSet) {
+    return Yup.object({
+      name: nameValidationSchema,
+      baseDnsDomain: dnsNameValidationSchema.required('Base Domain is required.'),
+    });
+  }
+  return Yup.object({
+    name: nameValidationSchema,
+    pullSecret: validJSONSchema.required('Pull secret must be provided.'),
+    baseDnsDomain: dnsNameValidationSchema.required('Base Domain is required.'),
+  });
+};
+
+const validateClusterName = async (newName: string, existingClusterName?: string) => {
+  try {
+    const { data: clusters } = await getClusters();
+    const names = clusters.map((c) => c.name).filter((n) => n !== existingClusterName);
+    if (names.includes(newName)) {
+      return `Name "${newName}" is already taken.`;
+    }
+  } catch (e) {
+    captureException(e, 'Failed to perform unique cluster name validation.');
+  }
+};
+
+const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
+  const { cluster, pullSecret, managedDomains, versions } = props;
   const { alerts, addAlert, clearAlerts } = React.useContext(AlertsContext);
   const { setCurrentStepId } = React.useContext(ClusterWizardContext);
   const history = useHistory();
@@ -62,56 +117,18 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = ({
   React.useEffect(() => {
     nameInputRef.current?.focus();
   }, []);
-  const { name, openshiftVersion = '', pullSecretSet, baseDnsDomain } = cluster;
 
-  const initialValues = {
-    name,
-    openshiftVersion,
-    pullSecret,
-    baseDnsDomain,
-    useRedHatDnsService:
-      !!baseDnsDomain && managedDomains.map((d) => d.domain).includes(baseDnsDomain),
-  };
-
-  const validationSchema = React.useCallback(
-    () =>
-      Yup.object({
-        name: nameValidationSchema,
-        openshiftVersion: Yup.string().required('Required'),
-        pullSecret: pullSecretSet
-          ? validJSONSchema
-          : validJSONSchema.required('Pull secret must be provided.'),
-        baseDnsDomain: dnsNameValidationSchema(initialValues.baseDnsDomain),
-      }),
-    [initialValues.baseDnsDomain, pullSecretSet],
-  );
-
-  const handleSubmit = async (
-    values: ClusterDetailsValues,
-    formikActions: FormikHelpers<ClusterDetailsValues>,
-  ) => {
-    clearAlerts();
-
-    // async validation for cluster name - run only on submit
-    // TODO(jtomasek): Update this to validate combination of cluster name + dns domain
-    try {
-      const { data: clusters } = await getClusters();
-      const names = clusters.map((c) => c.name).filter((n) => n !== cluster.name);
-      if (names.includes(values.name)) {
-        return formikActions.setFieldError('name', `Name "${values.name}" is already taken.`);
-      }
-    } catch (e) {
-      captureException(e, 'Failed to perform unique cluster name validation.');
-    }
+  // TODO(jtomasek): Update this to validate combination of cluster name + dns domain
+  const handleClusterUpdate = async (clusterId: Cluster['id'], values: ClusterDetailsValues) => {
+    const params: ClusterUpdateParams = _.omit(values, [
+      'highAvailabilityMode',
+      'pullSecret',
+      'openshiftVersion',
+      'useRedHatDnsService',
+    ]);
 
     try {
-      const params = _.omit(values, ['useRedHatDnsService']);
-
-      if (pullSecretSet) {
-        delete params.pullSecret;
-      }
-
-      const { data } = await patchCluster(cluster.id, params);
+      const { data } = await patchCluster(clusterId, params);
       dispatch(updateCluster(data));
 
       canNextClusterDetails({ cluster: data }) && setCurrentStepId('baremetal-discovery');
@@ -122,13 +139,50 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = ({
     }
   };
 
+  const handleClusterCreate = async (values: ClusterDetailsValues) => {
+    const params: ClusterCreateParams = _.omit(values, ['useRedHatDnsService']);
+
+    try {
+      const { data } = await postCluster(params);
+      history.push(`${routeBasePath}/clusters/${data.id}`);
+    } catch (e) {
+      handleApiError<ClusterCreateParams>(e, () =>
+        addAlert({ title: 'Failed to create new cluster', message: getErrorMessage(e) }),
+      );
+    }
+  };
+
+  const handleSubmit = async (
+    values: ClusterDetailsValues,
+    formikActions: FormikHelpers<ClusterDetailsValues>,
+  ) => {
+    clearAlerts();
+
+    if (cluster) {
+      const clusterNameError = await validateClusterName(values.name, cluster.name);
+      if (clusterNameError) {
+        return formikActions.setFieldError('name', clusterNameError);
+      }
+      await handleClusterUpdate(cluster.id, values);
+    } else {
+      const clusterNameError = await validateClusterName(values.name);
+      if (clusterNameError) {
+        return formikActions.setFieldError('name', clusterNameError);
+      }
+      await handleClusterCreate(values);
+    }
+  };
+
+  const initialValues = getInitialValues(props);
+  const validationSchema = getValidationSchema(cluster);
+
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
-      {({ submitForm, isSubmitting, isValid, values, setFieldValue }) => {
+      {({ submitForm, isSubmitting, isValid, dirty, values, setFieldValue }) => {
         const { name: clusterName, baseDnsDomain, useRedHatDnsService } = values;
 
         const baseDnsHelperText = (
@@ -155,15 +209,13 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = ({
               <GridItem span={12} lg={10} xl={9} xl2={7}>
                 <Form id="wizard-cluster-details__form">
                   <InputField ref={nameInputRef} label="Cluster Name" name="name" isRequired />
-                  <SelectField
-                    label="OpenShift Version"
-                    name="openshiftVersion"
-                    options={[{ label: openshiftVersion, value: openshiftVersion }]}
-                    // getHelperText={getOpenshiftVersionHelperText}
-                    isDisabled
-                    isRequired
+                  <SingleNodeCheckbox
+                    name="highAvailabilityMode"
+                    versions={versions}
+                    isDisabled={!!cluster}
                   />
-                  {(pullSecret || !pullSecretSet) && <PullSecret pullSecret={pullSecret} />}
+                  <OpenShiftVersionSelect versions={versions} />
+                  {!cluster?.pullSecretSet && <PullSecret pullSecret={pullSecret} />}
                   {!!managedDomains.length && (
                     <CheckboxField
                       name="useRedHatDnsService"
@@ -211,7 +263,9 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = ({
                 <ToolbarButton
                   name="save"
                   variant={ButtonVariant.primary}
-                  isDisabled={isSubmitting || !isValid}
+                  isDisabled={
+                    cluster ? isSubmitting || !isValid : isSubmitting || !isValid || !dirty
+                  }
                   onClick={submitForm}
                 >
                   Next
@@ -243,7 +297,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = ({
 };
 
 type ClusterDetailsProps = {
-  cluster: Cluster;
+  cluster?: Cluster;
 };
 
 const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster }) => {
@@ -267,7 +321,14 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster }) => {
 
   const pullSecret = usePullSecretFetch();
 
-  if (pullSecret === undefined || !managedDomains) {
+  const { error: errorOCPVersions, loading: loadingOCPVersions, versions } = useOpenshiftVersions();
+
+  React.useEffect(() => errorOCPVersions && addAlert(errorOCPVersions), [
+    errorOCPVersions,
+    addAlert,
+  ]);
+
+  if (pullSecret === undefined || !managedDomains || loadingOCPVersions) {
     return (
       <ClusterWizardStep cluster={cluster}>
         <LoadingState />
@@ -275,7 +336,12 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster }) => {
     );
   }
   return (
-    <ClusterDetailsForm cluster={cluster} pullSecret={pullSecret} managedDomains={managedDomains} />
+    <ClusterDetailsForm
+      cluster={cluster}
+      pullSecret={pullSecret}
+      managedDomains={managedDomains}
+      versions={versions}
+    />
   );
 };
 
