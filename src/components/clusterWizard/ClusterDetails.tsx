@@ -41,6 +41,7 @@ import Alerts from '../ui/Alerts';
 import CheckboxField from '../ui/formik/CheckboxField';
 import { getManagedDomains } from '../../api/domains';
 import ToolbarText from '../ui/Toolbar/ToolbarText';
+import { canNextClusterDetails } from './wizardTransition';
 
 type ClusterDetailsFormProps = {
   cluster: Cluster;
@@ -112,7 +113,8 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = ({
 
       const { data } = await patchCluster(cluster.id, params);
       dispatch(updateCluster(data));
-      setCurrentStepId('baremetal-discovery');
+
+      canNextClusterDetails({ cluster: data }) && setCurrentStepId('baremetal-discovery');
     } catch (e) {
       handleApiError<ClusterUpdateParams>(e, () =>
         addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),
@@ -205,6 +207,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = ({
             )}
             <StackItem>
               <ClusterToolbar>
+                {/* TODO(mlibra): unify toolbar with other steps */}
                 <ToolbarButton
                   name="save"
                   variant={ButtonVariant.primary}
