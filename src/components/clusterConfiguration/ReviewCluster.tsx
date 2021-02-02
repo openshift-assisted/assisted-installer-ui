@@ -5,6 +5,8 @@ import { Cluster, Host, Inventory, stringToJSON } from '../../api';
 import { getSimpleHardwareInfo } from '../hosts/hardwareInfo';
 import { DetailList, DetailItem } from '../ui/DetailList';
 
+import './ReviewCluster.css';
+
 const ReviewHostsInventory: React.FC<{ hosts?: Host[] }> = ({ hosts = [] }) => {
   const rows = React.useMemo(() => {
     const summary = {
@@ -44,7 +46,7 @@ const ReviewHostsInventory: React.FC<{ hosts?: Host[] }> = ({ hosts = [] }) => {
   return (
     <Table
       rows={rows}
-      cells={['Group', 'Value']}
+      cells={['', ''] /* Group, Value */}
       variant={TableVariant.compact}
       borders={false}
       aria-label="Cluster summary table"
@@ -59,7 +61,11 @@ const ReviewCluster: React.FC<{ cluster: Cluster }> = ({ cluster }) => (
     <DetailItem title="Cluster address" value={`${cluster.name}.${cluster.baseDnsDomain}`} />
     <DetailItem title="OpenShift version" value={cluster.openshiftVersion} />
     <DetailItem title="Management network CIDR" value={cluster.clusterNetworkCidr} />
-    <DetailItem title="Cluster summary" value={<ReviewHostsInventory hosts={cluster.hosts} />} />
+    <DetailItem
+      title="Cluster summary"
+      value={<ReviewHostsInventory hosts={cluster.hosts} />}
+      classNameValue="review-cluster-summary"
+    />
   </DetailList>
 );
 
