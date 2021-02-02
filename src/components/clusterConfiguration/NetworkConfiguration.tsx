@@ -6,7 +6,7 @@ import AdvancedNetworkFields from './AdvancedNetworkFields';
 import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
 import { InputField, CheckboxField, SelectField } from '../ui/formik';
 import { ManagedDomain, Cluster } from '../../api/types';
-import { getClusterDefaultSettings, isAdvConf } from './utils';
+import { getClusterDefaultSettings, isAdvConf, isSingleNodeCluster } from './utils';
 
 type NetworkConfigurationProps = {
   cluster: Cluster;
@@ -83,7 +83,9 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
           isRequired
         />
       )}
-      <BasicNetworkFields cluster={cluster} hostSubnets={hostSubnets} />
+      {!isSingleNodeCluster(cluster) && (
+        <BasicNetworkFields cluster={cluster} hostSubnets={hostSubnets} />
+      )}
       <Checkbox
         id="useAdvancedNetworking"
         label="Use Advanced Networking"

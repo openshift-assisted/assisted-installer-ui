@@ -114,3 +114,5 @@ export const getInitialValues = (
     vipDhcpAllocation: cluster.vipDhcpAllocation,
   };
 };
+
+export const isSingleNodeCluster = (cluster: Cluster) => cluster.highAvailabilityMode === 'None';

@@ -26,6 +26,7 @@ export type DetailItemProps = {
       }[]
     | React.ReactNode;
   idPrefix?: string;
+  isHidden?: boolean;
 };
 
 export const DetailList: React.FC<DetailListProps> = ({
@@ -41,32 +42,38 @@ export const DetailList: React.FC<DetailListProps> = ({
   </TextContent>
 );
 
-export const DetailItem: React.FC<DetailItemProps> = ({ title, value = '', idPrefix }) => (
-  <>
-    <TextListItem
-      component={TextListItemVariants.dt}
-      id={idPrefix ? `${idPrefix}-title` : undefined}
-    >
-      {title}
-    </TextListItem>
-    <TextListItem
-      component={TextListItemVariants.dd}
-      id={idPrefix ? `${idPrefix}-value` : undefined}
-    >
-      {Array.isArray(value) ? (
-        <TextList component={TextListVariants.dl}>
-          {value.map((item) => [
-            <TextListItem key={item.title} component={TextListItemVariants.dt}>
-              {item.title}
-            </TextListItem>,
-            <TextListItem key={`dd-${item.title}`} component={TextListItemVariants.dd}>
-              {item.value}
-            </TextListItem>,
-          ])}
-        </TextList>
-      ) : (
-        value
-      )}
-    </TextListItem>
-  </>
-);
+export const DetailItem: React.FC<DetailItemProps> = ({
+  title,
+  value = '',
+  idPrefix,
+  isHidden = false,
+}) =>
+  isHidden ? null : (
+    <>
+      <TextListItem
+        component={TextListItemVariants.dt}
+        id={idPrefix ? `${idPrefix}-title` : undefined}
+      >
+        {title}
+      </TextListItem>
+      <TextListItem
+        component={TextListItemVariants.dd}
+        id={idPrefix ? `${idPrefix}-value` : undefined}
+      >
+        {Array.isArray(value) ? (
+          <TextList component={TextListVariants.dl}>
+            {value.map((item) => [
+              <TextListItem key={item.title} component={TextListItemVariants.dt}>
+                {item.title}
+              </TextListItem>,
+              <TextListItem key={`dd-${item.title}`} component={TextListItemVariants.dd}>
+                {item.value}
+              </TextListItem>,
+            ])}
+          </TextList>
+        ) : (
+          value
+        )}
+      </TextListItem>
+    </>
+  );

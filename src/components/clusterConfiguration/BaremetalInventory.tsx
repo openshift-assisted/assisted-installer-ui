@@ -10,6 +10,7 @@ import {
   DiscoveryTroubleshootingModal,
 } from './DiscoveryTroubleshootingModal';
 import FormatDiskWarning from './FormatDiskWarning';
+import { isSingleNodeCluster } from './utils';
 
 const HostRequirementsContent = ({
   worker = {},
@@ -24,6 +25,17 @@ const HostRequirementsContent = ({
     Two or more additional worker hosts are recommended with at least {worker.cpuCores || 2} CPU
     cores, {worker.ramGib || 8} GB of RAM, and {worker.diskSizeGb || 120}
     GB of filesystem storage each.
+  </Text>
+);
+
+const SingleHostRequirementsContent = ({
+  master = {},
+}: {
+  master?: HostRequirementsType['master'];
+}) => (
+  <Text component="p">
+    One host is required with at least {master.cpuCores || 4} CPU cores, {master.ramGib || 16} GB of
+    RAM, and {master.diskSizeGb || 120} GB of filesystem storage.
   </Text>
 );
 
@@ -45,7 +57,11 @@ const BaremetalInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
           Hosts connected to the internet will be inspected and automatically appear below.{' '}
           <HostsNotShowingLink setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
         </Text>
-        <HostRequirements ContentComponent={HostRequirementsContent} />
+        {isSingleNodeCluster(cluster) ? (
+          <HostRequirements ContentComponent={SingleHostRequirementsContent} />
+        ) : (
+          <HostRequirements ContentComponent={HostRequirementsContent} />
+        )}
         <FormatDiskWarning />
         <VMRebootConfigurationInfo hosts={cluster.hosts} />
       </TextContent>

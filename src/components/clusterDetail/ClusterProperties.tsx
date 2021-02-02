@@ -2,6 +2,7 @@ import React from 'react';
 import { TextContent, Text, GridItem } from '@patternfly/react-core';
 import { Cluster } from '../../api/types';
 import { DetailList, DetailItem } from '../ui/DetailList';
+import { isSingleNodeCluster } from '../clusterConfiguration/utils';
 
 type ClusterPropertiesProps = {
   cluster: Cluster;
@@ -18,8 +19,17 @@ const ClusterProperties: React.FC<ClusterPropertiesProps> = ({ cluster }) => (
       <DetailList>
         <DetailItem title="OpenShift version" value={cluster.openshiftVersion} />
         <DetailItem title="Base DNS domain" value={cluster.baseDnsDomain} />
-        <DetailItem title="API virtual IP" value={cluster.apiVip} />
-        <DetailItem title="Ingress virtual IP" value={cluster.ingressVip} />
+        <DetailItem
+          title="API virtual IP"
+          value={cluster.apiVip}
+          isHidden={isSingleNodeCluster(cluster)}
+        />
+
+        <DetailItem
+          title="Ingress virtual IP"
+          value={cluster.ingressVip}
+          isHidden={isSingleNodeCluster(cluster)}
+        />
       </DetailList>
     </GridItem>
     <GridItem md={6}>
