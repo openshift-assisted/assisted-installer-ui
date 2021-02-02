@@ -63,6 +63,8 @@ import EditHostModal from './EditHostModal';
 import Hostname from './Hostname';
 import HostsCount from './HostsCount';
 import HostPropertyValidationPopover from './HostPropertyValidationPopover';
+import { HostDialogsContextProvider, useHostDialogsContext } from './HostDialogsContext';
+import { AdditionalNTPSourcesDialog } from './AdditionalNTPSourcesDialog';
 
 import './HostsTable.css';
 
@@ -75,13 +77,6 @@ type HostsTableProps = {
 type OpenRows = {
   [id: string]: boolean;
 };
-
-type HostToDelete = {
-  id: string;
-  hostname: string;
-};
-
-type HostToReset = HostToDelete;
 
 const getColumns = (hosts?: Host[]) => [
   { title: 'Hostname', transforms: [sortable], cellFormatters: [expandable] },
@@ -211,15 +206,15 @@ const HostsTable: React.FC<HostsTableProps> = ({
   setDiscoveryHintModalOpen,
 }) => {
   const { addAlert } = React.useContext(AlertsContext);
-  const [showEventsModal, setShowEventsModal] = React.useState<
-    { host: Host['id']; hostname: string } | undefined
-  >();
-  const [showEditHostModal, setShowEditHostModal] = React.useState<
-    { host: Host; inventory: Inventory } | undefined
-  >(undefined);
+  const {
+    eventsDialog,
+    editHostDialog,
+    deleteHostDialog,
+    resetHostDialog,
+    additionalNTPSourcesDialog,
+  } = useHostDialogsContext();
+
   const [openRows, setOpenRows] = React.useState({} as OpenRows);
-  const [hostToDelete, setHostToDelete] = React.useState<HostToDelete>();
-  const [hostToReset, setHostToReset] = React.useState<HostToReset>();
   const [sortBy, setSortBy] = React.useState({
     index: 1, // Hostname-column
     direction: SortByDirection.asc,
@@ -344,16 +339,16 @@ const HostsTable: React.FC<HostsTableProps> = ({
       const host = rowData.host;
       const { id, requestedHostname } = host;
       const hostname = requestedHostname || rowData.inventory?.hostname || id;
-      setShowEventsModal({ host: id, hostname });
+      eventsDialog.open({ hostId: id, hostname });
     },
-    [],
+    [eventsDialog],
   );
 
   const onEditHost = React.useCallback(
     (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
-      setShowEditHostModal({ host: rowData.host, inventory: rowData.inventory });
+      editHostDialog.open({ host: rowData.host, inventory: rowData.inventory });
     },
-    [],
+    [editHostDialog],
   );
 
   const onDownloadHostLogs = React.useCallback(
@@ -408,7 +403,7 @@ const HostsTable: React.FC<HostsTableProps> = ({
           title: 'Reset host',
           id: `button-reset-host-${hostname}`,
           onClick: () => {
-            setHostToReset({ id: host.id, hostname });
+            resetHostDialog.open({ hostId: host.id, hostname });
           },
         });
       }
@@ -429,7 +424,7 @@ const HostsTable: React.FC<HostsTableProps> = ({
           title: 'Delete host',
           id: `button-delete-host-${hostname}`,
           onClick: () => {
-            setHostToDelete({ id: host.id, hostname });
+            deleteHostDialog.open({ hostId: host.id, hostname });
           },
         });
       }
@@ -444,6 +439,8 @@ const HostsTable: React.FC<HostsTableProps> = ({
       onEditHost,
       onDownloadHostLogs,
       onInstallHost,
+      deleteHostDialog,
+      resetHostDialog,
     ],
   );
 
@@ -475,41 +472,53 @@ const HostsTable: React.FC<HostsTableProps> = ({
         <TableBody rowKey={rowKey} />
       </Table>
       <EventsModal
-        title={`Host Events${showEventsModal ? `: ${showEventsModal.hostname}` : ''}`}
+        title={`Host Events${eventsDialog.isOpen ? `: ${eventsDialog.data?.hostname}` : ''}`}
         entityKind="host"
         cluster={cluster}
-        hostId={showEventsModal?.host}
-        onClose={() => setShowEventsModal(undefined)}
-        isOpen={!!showEventsModal}
+        hostId={eventsDialog.data?.hostId}
+        onClose={() => eventsDialog.close()}
+        isOpen={eventsDialog.isOpen}
       />
       <ResetHostModal
-        hostname={hostToReset?.hostname}
-        onClose={() => setHostToReset(undefined)}
-        isOpen={!!hostToReset}
+        hostname={resetHostDialog.data?.hostname}
+        onClose={() => resetHostDialog.close()}
+        isOpen={resetHostDialog.isOpen}
         onReset={() => {
-          onHostReset(hostToReset?.id);
-          setHostToReset(undefined);
+          onHostReset(resetHostDialog.data?.hostId);
+          resetHostDialog.close();
         }}
       />
       <DeleteHostModal
-        hostname={hostToDelete?.hostname}
-        onClose={() => setHostToDelete(undefined)}
-        isOpen={!!hostToDelete}
+        hostname={deleteHostDialog.data?.hostname}
+        onClose={() => deleteHostDialog.close()}
+        isOpen={deleteHostDialog.isOpen}
         onDelete={() => {
-          onDeleteHost(hostToDelete?.id);
-          setHostToDelete(undefined);
+          onDeleteHost(deleteHostDialog.data?.hostId);
+          deleteHostDialog.close();
         }}
       />
+      {editHostDialog.isOpen && <>Hey, edit Host modal should be now open!</>}
       <EditHostModal
-        host={showEditHostModal?.host}
-        inventory={showEditHostModal?.inventory}
+        host={editHostDialog.data?.host}
+        inventory={editHostDialog.data?.inventory}
         cluster={cluster}
-        onClose={() => setShowEditHostModal(undefined)}
-        isOpen={!!showEditHostModal}
-        onSave={() => setShowEditHostModal(undefined)}
+        onClose={() => editHostDialog.close()}
+        isOpen={editHostDialog.isOpen}
+        onSave={() => editHostDialog.close()}
+      />
+      <AdditionalNTPSourcesDialog
+        cluster={cluster}
+        isOpen={additionalNTPSourcesDialog.isOpen}
+        onClose={() => additionalNTPSourcesDialog.close()}
       />
     </>
   );
 };
 
-export default HostsTable;
+const Wrapper: React.FC<HostsTableProps> = (props) => (
+  <HostDialogsContextProvider>
+    <HostsTable {...props} />
+  </HostDialogsContextProvider>
+);
+
+export default Wrapper;

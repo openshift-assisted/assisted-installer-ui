@@ -11,9 +11,10 @@ import { toSentence } from '../ui/table/utils';
 
 type ValidationPopoverProps = {
   validation: Validation;
+  actions?: React.ReactNode[];
 };
 
-const ValidationPopover: React.FC<ValidationPopoverProps> = ({ validation, children }) => {
+const ValidationPopover: React.FC<ValidationPopoverProps> = ({ validation, actions, children }) => {
   const failedValidationHint = HOST_VALIDATION_FAILURE_HINTS[validation.id];
   return (
     <Popover
@@ -24,6 +25,8 @@ const ValidationPopover: React.FC<ValidationPopoverProps> = ({ validation, child
           {validation.status === 'failure' && failedValidationHint && ` ${failedValidationHint}`}
         </div>
       }
+      footerContent={actions}
+      zIndex={300}
     >
       <Button variant={ButtonVariant.link} isInline>
         {children}
@@ -34,6 +37,8 @@ const ValidationPopover: React.FC<ValidationPopoverProps> = ({ validation, child
 
 type HostPropertyValidationPopoverProps = {
   validation?: Validation;
+  failureActions?: React.ReactNode[];
+  pendingActions?: React.ReactNode[];
   showFailure?: boolean;
   showPending?: boolean;
   showSuccess?: boolean;
@@ -41,6 +46,8 @@ type HostPropertyValidationPopoverProps = {
 
 const HostPropertyValidationPopover: React.FC<HostPropertyValidationPopoverProps> = ({
   validation,
+  failureActions,
+  pendingActions,
   children,
   showFailure = true,
   showPending = false,
@@ -49,14 +56,14 @@ const HostPropertyValidationPopover: React.FC<HostPropertyValidationPopoverProps
   if (validation) {
     if (showFailure && validation.status === 'failure') {
       return (
-        <ValidationPopover validation={validation}>
+        <ValidationPopover validation={validation} actions={failureActions}>
           <ExclamationCircleIcon color={dangerColor.value} /> {children}
         </ValidationPopover>
       );
     }
     if (showPending && validation.status === 'pending') {
       return (
-        <ValidationPopover validation={validation}>
+        <ValidationPopover validation={validation} actions={pendingActions}>
           <PendingIcon /> {children}
         </ValidationPopover>
       );

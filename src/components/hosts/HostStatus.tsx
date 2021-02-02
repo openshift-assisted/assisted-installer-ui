@@ -174,7 +174,7 @@ const HostStatus: React.FC<HostStatusProps> = ({ host, cluster, validationsInfo 
         minWidth="30rem"
         maxWidth="50rem"
         hideOnOutsideClick={!keepOnOutsideClick}
-        zIndex={keepOnOutsideClick ? 300 : undefined}
+        zIndex={300}
       >
         <Button variant={ButtonVariant.link} isInline>
           {icon} {title}{' '}
