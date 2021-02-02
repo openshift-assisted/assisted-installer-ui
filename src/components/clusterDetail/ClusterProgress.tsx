@@ -157,7 +157,7 @@ const FinalizingProgress: React.FC<FinalizingProgressProps> = ({ cluster }) => {
           {status === 'finalizing' ? (
             <Popover
               zIndex={300} // set the zIndex below Cluster Events Modal
-              headerContent={<div>Finalizing</div>}
+              headerContent={<>Initialization</>}
               bodyContent={
                 <TextContent>
                   <Text>
