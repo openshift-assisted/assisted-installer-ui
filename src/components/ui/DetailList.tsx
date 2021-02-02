@@ -27,6 +27,7 @@ export type DetailItemProps = {
     | React.ReactNode;
   idPrefix?: string;
   isHidden?: boolean;
+  classNameValue?: string;
 };
 
 export const DetailList: React.FC<DetailListProps> = ({
@@ -47,6 +48,7 @@ export const DetailItem: React.FC<DetailItemProps> = ({
   value = '',
   idPrefix,
   isHidden = false,
+  classNameValue,
 }) =>
   isHidden ? null : (
     <>
@@ -59,6 +61,7 @@ export const DetailItem: React.FC<DetailItemProps> = ({
       <TextListItem
         component={TextListItemVariants.dd}
         id={idPrefix ? `${idPrefix}-value` : undefined}
+        className={classNameValue}
       >
         {Array.isArray(value) ? (
           <TextList component={TextListVariants.dl}>
