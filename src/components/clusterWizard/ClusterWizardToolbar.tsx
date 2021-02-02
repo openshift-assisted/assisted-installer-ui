@@ -11,7 +11,15 @@ import ClusterToolbar from '../clusters/ClusterToolbar';
 import { ToolbarButton, ToolbarText } from '../ui';
 import { routeBasePath } from '../../config';
 
-const ClusterWizardToolbar: React.FC<{
+type ValidationSectionProps = {
+  cluster: Cluster;
+  errors: FormikErrors<ClusterUpdateParams>;
+  isStartingInstallation: boolean;
+  onInstall?: () => Promise<void>;
+  toggleValidationSection: () => void;
+};
+
+type ClusterWizardToolbarProps = {
   cluster: Cluster;
   errors?: FormikErrors<ClusterUpdateParams>;
   dirty?: boolean;
@@ -21,7 +29,57 @@ const ClusterWizardToolbar: React.FC<{
   onBack?: () => void;
   onCancel?: () => void;
   onInstall?: () => Promise<void>;
-}> = ({
+};
+
+const ValidationSection: React.FC<ValidationSectionProps> = ({
+  cluster,
+  isStartingInstallation,
+  errors,
+  onInstall,
+  toggleValidationSection,
+}) => {
+  if (isStartingInstallation) {
+    return (
+      <ToolbarText component={TextVariants.small}>
+        <Spinner size="sm" />
+        &nbsp;Starting installation...
+      </ToolbarText>
+    );
+  }
+
+  if (Object.keys(errors).length) {
+    return (
+      <Button variant={ButtonVariant.link} onClick={toggleValidationSection} isInline>
+        <WarningTriangleIcon color={warningColor.value} />
+        &nbsp;<small>Validation errors found</small>
+      </Button>
+    );
+  }
+
+  if (onInstall) {
+    if (cluster.status === 'ready') {
+      return (
+        <>
+          <CheckCircleIcon color={successColor.value} />
+          &nbsp;
+          <small>The cluster is ready to be installed.</small>
+        </>
+      );
+    }
+
+    return (
+      <>
+        <WarningTriangleIcon color={warningColor.value} />
+        &nbsp;
+        <small>The cluster is not ready to be installed yet</small>
+      </>
+    );
+  }
+
+  return null;
+};
+
+const ClusterWizardToolbar: React.FC<ClusterWizardToolbarProps> = ({
   cluster,
   errors = {},
   dirty = false,
@@ -104,34 +162,18 @@ const ClusterWizardToolbar: React.FC<{
         Cancel
       </ToolbarButton>
 
-      {isSubmitting && (
+      {isSubmitting ? (
         <ToolbarText component={TextVariants.small}>
           <Spinner size="sm" /> Saving changes...
         </ToolbarText>
-      )}
-      {isStartingInstallation ? (
-        <ToolbarText component={TextVariants.small}>
-          <Spinner size="sm" /> Starting installation...
-        </ToolbarText>
       ) : (
-        <ToolbarText component={TextVariants.small}>
-          {!Object.keys(errors).length && !dirty && cluster.status === 'ready' ? (
-            <>
-              <CheckCircleIcon color={successColor.value} /> The cluster is ready to be installed.
-            </>
-          ) : (
-            <>
-              <Button
-                variant={ButtonVariant.link}
-                onClick={() => setIsValidationSectionOpen(!isValidationSectionOpen)}
-                isInline
-              >
-                <WarningTriangleIcon color={warningColor.value} />{' '}
-                <small>The cluster is not ready to be installed yet</small>
-              </Button>
-            </>
-          )}
-        </ToolbarText>
+        <ValidationSection
+          cluster={cluster}
+          errors={errors}
+          isStartingInstallation={isStartingInstallation}
+          onInstall={onInstall}
+          toggleValidationSection={() => setIsValidationSectionOpen(!isValidationSectionOpen)}
+        />
       )}
     </ClusterToolbar>
   );
