@@ -40,9 +40,11 @@ const BaremetalInventoryAddHosts: React.FC = () => {
         <Text component="p">
           Boot the Discovery ISO on hardware that should become part of this bare metal cluster.
           Hosts connected to the internet will be inspected and automatically appear below.{' '}
+        </Text>
+        <Text component="p">
+          <HostRequirements ContentComponent={HostRequirementsContent} />
           <HostsNotShowingLink setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
         </Text>
-        <HostRequirements ContentComponent={HostRequirementsContent} />
         <FormatDiskWarning />
         <VMRebootConfigurationInfo hosts={cluster.hosts} />
       </TextContent>
