@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, TextContent, Button } from '@patternfly/react-core';
 import HostsTable from '../hosts/HostsTable';
 import { HostRequirements as HostRequirementsType } from '../../api/types';
-import HostRequirements from '../fetching/HostRequirements';
+import { HostRequirementsLink } from '../fetching/HostRequirements';
 import { DiscoveryImageModalButton } from '../clusterConfiguration/discoveryImageModal';
 import {
   DiscoveryTroubleshootingModal,
@@ -42,7 +42,7 @@ const BaremetalInventoryAddHosts: React.FC = () => {
           Hosts connected to the internet will be inspected and automatically appear below.{' '}
         </Text>
         <Text component="p">
-          <HostRequirements ContentComponent={HostRequirementsContent} />
+          <HostRequirementsLink ContentComponent={HostRequirementsContent} />
           <HostsNotShowingLink setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
         </Text>
         <FormatDiskWarning />
