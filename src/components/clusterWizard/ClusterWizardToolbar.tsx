@@ -11,7 +11,7 @@ import ClusterToolbar from '../clusters/ClusterToolbar';
 import { ToolbarButton, ToolbarText } from '../ui';
 import { routeBasePath } from '../../config';
 
-type ValidationSectionProps = {
+type ValidationSectionToggleProps = {
   cluster: Cluster;
   errors: FormikErrors<ClusterUpdateParams>;
   isStartingInstallation: boolean;
@@ -31,7 +31,7 @@ type ClusterWizardToolbarProps = {
   onInstall?: () => Promise<void>;
 };
 
-const ValidationSection: React.FC<ValidationSectionProps> = ({
+const ValidationSectionToggle: React.FC<ValidationSectionToggleProps> = ({
   cluster,
   isStartingInstallation,
   errors,
@@ -167,7 +167,7 @@ const ClusterWizardToolbar: React.FC<ClusterWizardToolbarProps> = ({
           <Spinner size="sm" /> Saving changes...
         </ToolbarText>
       ) : (
-        <ValidationSection
+        <ValidationSectionToggle
           cluster={cluster}
           errors={errors}
           isStartingInstallation={isStartingInstallation}
