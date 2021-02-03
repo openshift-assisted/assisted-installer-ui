@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, TextContent, Button, Stack, StackItem } from '@patternfly/react-core';
 import HostsTable from '../hosts/HostsTable';
 import { Cluster, HostRequirements as HostRequirementsType } from '../../api/types';
-import HostRequirements from '../fetching/HostRequirements';
+import { HostRequirementsLink } from '../fetching/HostRequirements';
 import VMRebootConfigurationInfo from '../hosts/VMRebootConfigurationInfo';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
 import {
@@ -67,12 +67,10 @@ const BaremetalInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
             should be configured to boot the ISO <b>once</b> and not after a reboot.
           </Text>
           <Text component="p">
-            {/* TODO(mlibra): move HostRequirements into a modal */}
-            <HostRequirements ContentComponent={HostRequirementsContent} />
             {isSingleNodeCluster(cluster) ? (
-              <HostRequirements ContentComponent={SingleHostRequirementsContent} />
+              <HostRequirementsLink ContentComponent={SingleHostRequirementsContent} />
             ) : (
-              <HostRequirements ContentComponent={HostRequirementsContent} />
+              <HostRequirementsLink ContentComponent={HostRequirementsContent} />
             )}
             <HostsNotShowingLink setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
           </Text>
