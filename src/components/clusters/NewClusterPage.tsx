@@ -33,7 +33,11 @@ import PullSecret from './PullSecret';
 import { useOpenshiftVersions } from '../fetching/openshiftVersions';
 import { OpenshiftVersionOptionType } from '../../types/versions';
 import SingleNodeCheckbox from '../ui/formik/SingleNodeCheckbox';
-import { ocmClient } from '../../api/axiosClient';
+import {
+  FeatureGateContext,
+  FeatureGateContextProvider,
+  FeatureListType,
+} from '../../features/featureGate';
 
 import './NewClusterPage.css';
 
@@ -44,6 +48,7 @@ type NewClusterFormProps = {
 
 const NewClusterForm: React.FC<NewClusterFormProps> = ({ pullSecret = '', versions }) => {
   const { addAlert, clearAlerts } = React.useContext(AlertsContext);
+  const { isFeatureEnabled } = React.useContext(FeatureGateContext);
   const history = useHistory();
 
   const nameInputRef = React.useRef<HTMLInputElement>();
@@ -133,7 +138,9 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ pullSecret = '', versio
                       </Text>
                     </TextContent>
                     <InputField ref={nameInputRef} label="Cluster Name" name="name" isRequired />
-                    {!ocmClient && <SingleNodeCheckbox name="highAvailabilityMode" />}
+                    {isFeatureEnabled('ASSISTED_INSTALLER_SNO_FEATURE') && (
+                      <SingleNodeCheckbox name="highAvailabilityMode" />
+                    )}
                     <SelectField
                       label="OpenShift Version"
                       name="openshiftVersion"
@@ -195,9 +202,11 @@ const NewCluster: React.FC = () => {
   return <NewClusterForm pullSecret={pullSecret} versions={versions} />;
 };
 
-const NewClusterPage: React.FC = () => (
+const NewClusterPage: React.FC<{ features: FeatureListType }> = ({ features }) => (
   <AlertsContextProvider>
-    <NewCluster />
+    <FeatureGateContextProvider features={features}>
+      <NewCluster />
+    </FeatureGateContextProvider>
   </AlertsContextProvider>
 );
 
