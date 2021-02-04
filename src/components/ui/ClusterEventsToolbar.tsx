@@ -121,7 +121,7 @@ const ClusterEventsToolbar: React.FC<ClustersListToolbarProps> = ({
     });
 
     let nextFilters = setNextSelectedValues(type, isChecked, value, filters);
-    nextFilters = setNextSelectAllValue(cluster.hosts?.length ?? 0, nextFilters);
+    nextFilters = setNextSelectAllValue(cluster.hosts?.length || 0, nextFilters);
 
     setFilters(nextFilters);
   };
