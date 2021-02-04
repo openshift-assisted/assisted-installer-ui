@@ -34,9 +34,9 @@ import { useOpenshiftVersions } from '../fetching/openshiftVersions';
 import { OpenshiftVersionOptionType } from '../../types/versions';
 import SingleNodeCheckbox from '../ui/formik/SingleNodeCheckbox';
 import {
-  FeatureGateContext,
   FeatureGateContextProvider,
   FeatureListType,
+  useFeature,
 } from '../../features/featureGate';
 
 import './NewClusterPage.css';
@@ -48,7 +48,7 @@ type NewClusterFormProps = {
 
 const NewClusterForm: React.FC<NewClusterFormProps> = ({ pullSecret = '', versions }) => {
   const { addAlert, clearAlerts } = React.useContext(AlertsContext);
-  const { isFeatureEnabled } = React.useContext(FeatureGateContext);
+  const isSingleNodeOpenshiftEnabled = useFeature('ASSISTED_INSTALLER_SNO_FEATURE');
   const history = useHistory();
 
   const nameInputRef = React.useRef<HTMLInputElement>();
@@ -138,7 +138,7 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ pullSecret = '', versio
                       </Text>
                     </TextContent>
                     <InputField ref={nameInputRef} label="Cluster Name" name="name" isRequired />
-                    {isFeatureEnabled('ASSISTED_INSTALLER_SNO_FEATURE') && (
+                    {isSingleNodeOpenshiftEnabled && (
                       <SingleNodeCheckbox name="highAvailabilityMode" />
                     )}
                     <SelectField

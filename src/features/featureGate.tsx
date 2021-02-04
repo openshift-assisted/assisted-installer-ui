@@ -37,3 +37,8 @@ export const FeatureGateContextProvider: React.FC<{
     </FeatureGateContext.Provider>
   );
 };
+
+export const useFeature = (feature: AssistedInstallerFeatureType): boolean => {
+  const { isFeatureEnabled } = React.useContext(FeatureGateContext);
+  return isFeatureEnabled(feature);
+};
