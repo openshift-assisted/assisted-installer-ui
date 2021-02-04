@@ -196,7 +196,6 @@ export const httpProxyValidationSchema = (
   pairValueName: 'httpProxy' | 'httpsProxy',
 ) =>
   Yup.string()
-    .url(httpProxyValidationMessage)
     .test(
       'http-proxy-no-empty-validation',
       'At least one of the HTTP or HTTPS proxy URLs is required.',
