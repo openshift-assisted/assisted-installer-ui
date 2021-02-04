@@ -111,7 +111,7 @@ const AdditionalNTPSourcesForm: React.FC<AdditionalNTPSourcesFormProps> = ({
                 <TextAreaField
                   name="additionalNtpSource"
                   label="Additional NTP Sources"
-                  helperText="A comma separated list of IP or domain names of the NTP pools or servers. Additional NTP sources are added to all hosts to ensure all hosts clocks are synchronized with a valid NTP server."
+                  helperText="A comma separated list of IP or domain names of the NTP pools or servers. Additional NTP sources are added to all hosts to ensure all hosts clocks are synchronized with a valid NTP server. It may take a few minutes for the new NTP sources to sync."
                   onBlur={formatAdditionalNtpSource}
                   spellCheck={false}
                   isRequired
@@ -150,8 +150,8 @@ export const AdditionalNTPSourcesDialog: React.FC<AdditionalNTPSourcesDialogProp
   onClose,
 }) => (
   <Modal
-    aria-label="Configure additional NTP sources"
-    title="Configure additional NTP sources"
+    aria-label="Add NTP sources"
+    title="Add NTP sources"
     isOpen={isOpen}
     onClose={onClose}
     variant={ModalVariant.small}
