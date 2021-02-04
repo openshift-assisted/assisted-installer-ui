@@ -5,6 +5,7 @@ import { Cluster, getClusters, handleApiError } from '../api';
 import { ErrorState, LoadingState, PageSection } from './ui';
 import { routeBasePath } from '../config';
 import { NewClusterPage } from './clusters';
+import { SINGLE_CLUSTER_ENABLED_FEATURES } from '../features/featureGate';
 
 type SingleClusterProps = RouteComponentProps;
 
@@ -42,7 +43,7 @@ const SingleCluster: React.FC<SingleClusterProps> = () => {
   }
 
   if (clusters.length === 0) {
-    return <NewClusterPage />;
+    return <NewClusterPage features={SINGLE_CLUSTER_ENABLED_FEATURES} />;
   }
 
   if (clusters.length > 1) {
