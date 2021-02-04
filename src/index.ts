@@ -8,4 +8,6 @@ export * as Api from './api';
 export * as Config from './config';
 export * as Selectors from './selectors';
 export * as Store from './store';
+export * as Features from './features';
+
 // export * as Types from './types';

@@ -6,14 +6,17 @@ import { store } from '../store';
 import { isSingleClusterMode, routeBasePath } from '../config/constants';
 import SingleCluster from './SingleCluster';
 import { AssistedUILibVersion } from './ui';
+import { FeatureListType } from '../features/featureGate';
 
-export const AssistedUiRouter: React.FC = () => (
+export const AssistedUiRouter: React.FC<{ allEnabledFeatures: FeatureListType }> = ({
+  allEnabledFeatures,
+}) => (
   <Provider store={store}>
-    <Router />
+    <Router features={allEnabledFeatures} />
   </Provider>
 );
 
-export const Router: React.FC = ({ children }) => (
+export const Router: React.FC<{ features: FeatureListType }> = ({ features, children }) => (
   <>
     <AssistedUILibVersion />
     {isSingleClusterMode() ? (
@@ -25,7 +28,10 @@ export const Router: React.FC = ({ children }) => (
       </Switch>
     ) : (
       <Switch>
-        <Route path={`${routeBasePath}/clusters/~new`} component={NewClusterPage} />
+        <Route
+          path={`${routeBasePath}/clusters/~new`}
+          component={() => <NewClusterPage features={features} />}
+        />
         <Route path={`${routeBasePath}/clusters/:clusterId`} component={ClusterPage} />
         <Route path={`${routeBasePath}/clusters`} component={Clusters} />
         {children}
