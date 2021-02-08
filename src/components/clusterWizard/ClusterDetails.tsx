@@ -232,7 +232,11 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = ({
             </StackItem>
           </Stack>
         );
-        return <ClusterWizardStep footer={footer}>{form}</ClusterWizardStep>;
+        return (
+          <ClusterWizardStep cluster={cluster} footer={footer}>
+            {form}
+          </ClusterWizardStep>
+        );
       }}
     </Formik>
   );
@@ -265,7 +269,7 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster }) => {
 
   if (pullSecret === undefined || !managedDomains) {
     return (
-      <ClusterWizardStep>
+      <ClusterWizardStep cluster={cluster}>
         <LoadingState />
       </ClusterWizardStep>
     );
