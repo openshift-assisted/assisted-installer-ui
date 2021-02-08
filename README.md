@@ -61,11 +61,14 @@ New version of the package will be published to
 [npmjs.com](https://www.npmjs.com/package/openshift-assisted-ui-lib) and a new PR with version
 change will be created automatically by a GitHub action.
 
-## Troubleshooting 
+## Troubleshooting
 
 ### Increasing the amount of inotify watchers
-If you see the following error: `Error: ENOSPC: System limit for number of file watchers reached`, you will need to increase the number of inotify watchers.  
+
+If you see the following error: `Error: ENOSPC: System limit for number of file watchers reached`,
+you will need to increase the number of inotify watchers.  
 From the terminal run the following commands:
+
 ```bash
 $ sudo sh -c "echo fs.inotify.max_user_watches=524288 >> /etc/sysctl.conf"
 $ sudo sysctl -p
