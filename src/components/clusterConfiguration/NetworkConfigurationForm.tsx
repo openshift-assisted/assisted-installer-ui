@@ -183,7 +183,11 @@ const NetworkConfigurationForm: React.FC<{
             </StackItem>
           </Stack>
         );
-        return <ClusterWizardStep footer={footer}>{form}</ClusterWizardStep>;
+        return (
+          <ClusterWizardStep cluster={cluster} footer={footer}>
+            {form}
+          </ClusterWizardStep>
+        );
       }}
     </Formik>
   );

@@ -54,9 +54,9 @@ const checkHostValidationGroups = (
     hostValidationsInfo[group]?.every((validation) => validation.status === 'success'),
   );
 
-export const canNextClusterDetails = ({ cluster }: TransitionBackendProps) => {
+export const canNextClusterDetails = ({ cluster }: TransitionBackendProps): boolean => {
   const clusterValidationsInfo = stringToJSON<ClusterValidationsInfo>(cluster.validationsInfo);
-  return (
+  return !!(
     clusterValidationsInfo &&
     checkClusterValidations(clusterValidationsInfo, 'configuration', ['pull-secret-set'])
   );
@@ -64,7 +64,7 @@ export const canNextClusterDetails = ({ cluster }: TransitionBackendProps) => {
 
 // Check backend validations relevant for the networking step.
 // Since BaremetalDiscovery step is is not a UI form, we do not need frontend validation checks.
-export const canNextBaremetalDiscovery = ({ cluster }: TransitionProps) => {
+export const canNextBaremetalDiscovery = ({ cluster }: TransitionProps): boolean => {
   const clusterValidationsInfo = stringToJSON<ClusterValidationsInfo>(cluster.validationsInfo);
   if (!clusterValidationsInfo?.hostsData || !clusterValidationsInfo?.network) {
     return false;
@@ -81,7 +81,7 @@ export const canNextBaremetalDiscovery = ({ cluster }: TransitionProps) => {
   }
 
   // For every host
-  return cluster.hosts?.every((host) => {
+  return !!cluster.hosts?.every((host) => {
     const hostValidationsInfo = stringToJSON<HostValidationsInfo>(host.validationsInfo);
     if (!hostValidationsInfo?.hardware || !hostValidationsInfo.network) {
       return false;
@@ -104,7 +104,7 @@ export const canNextBaremetalDiscovery = ({ cluster }: TransitionProps) => {
 };
 
 // Check backend validations relevant for the networking step.
-export const canNextNetworkBackend = ({ cluster }: TransitionBackendProps) => {
+export const canNextNetworkBackend = ({ cluster }: TransitionBackendProps): boolean => {
   const clusterValidationsInfo = stringToJSON<ClusterValidationsInfo>(cluster.validationsInfo);
   if (!clusterValidationsInfo?.network) {
     return false;
@@ -116,13 +116,13 @@ export const canNextNetworkBackend = ({ cluster }: TransitionBackendProps) => {
   }
 
   // All network validations for every host must be passing
-  return cluster.hosts?.every((host) => {
+  return !!cluster.hosts?.every((host) => {
     const hostValidationsInfo = stringToJSON<HostValidationsInfo>(host.validationsInfo);
     return hostValidationsInfo && checkHostValidationGroups(hostValidationsInfo, ['network']);
   });
 };
 
-export const canNextNetwork = ({ isValid, isSubmitting, cluster }: TransitionProps) => {
+export const canNextNetwork = ({ isValid, isSubmitting, cluster }: TransitionProps): boolean => {
   let uiValidation = true;
   if (isValid !== undefined) {
     uiValidation = isValid && !isSubmitting;
