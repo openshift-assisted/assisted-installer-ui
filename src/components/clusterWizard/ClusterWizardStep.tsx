@@ -14,7 +14,7 @@ import {
 } from './wizardTransition';
 
 type ClusterWizardStepProps = {
-  cluster: Cluster;
+  cluster?: Cluster;
   footer?: React.ReactNode;
 };
 
@@ -57,7 +57,7 @@ const ClusterWizardStep: React.FC<ClusterWizardStepProps> = ({ cluster, footer, 
         key="cluster-details"
         content="Cluster Details"
         isCurrent={currentStepId === 'cluster-details'}
-        isValid={() => canNextClusterDetails({ cluster })}
+        isValid={() => !cluster || canNextClusterDetails({ cluster })}
         isDisabled={false}
         step={0}
         onNavItemClick={() => setCurrentStepId('cluster-details')}
@@ -66,7 +66,7 @@ const ClusterWizardStep: React.FC<ClusterWizardStepProps> = ({ cluster, footer, 
         key="baremetal-discovery"
         content="Bare Metal Discovery"
         isDisabled={!wizardSteps.slice(1).includes(currentStepId)}
-        isValid={() => canNextBaremetalDiscovery({ cluster })}
+        isValid={() => !cluster || canNextBaremetalDiscovery({ cluster })}
         isCurrent={currentStepId === 'baremetal-discovery'}
         step={1}
         onNavItemClick={() => setCurrentStepId('baremetal-discovery')}
@@ -75,7 +75,7 @@ const ClusterWizardStep: React.FC<ClusterWizardStepProps> = ({ cluster, footer, 
         content="Networking"
         step={2}
         isDisabled={!wizardSteps.slice(2).includes(currentStepId)}
-        isValid={() => canNextNetworkBackend({ cluster })}
+        isValid={() => !cluster || canNextNetworkBackend({ cluster })}
         key="networking"
         isCurrent={currentStepId === 'networking'}
         onNavItemClick={() => setCurrentStepId('networking')}

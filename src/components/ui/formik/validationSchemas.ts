@@ -133,13 +133,9 @@ export const ipBlockValidationSchema = Yup.string()
     },
   );
 
-export const dnsNameValidationSchema = (initialValue?: string) =>
-  requiredOnceSet(initialValue).concat(
-    Yup.string().matches(DNS_NAME_REGEX, {
-      message: 'Value "${value}" is not valid DNS name. Example: basedomain.example.com', // eslint-disable-line no-template-curly-in-string
-      excludeEmptyString: true,
-    }),
-  );
+export const dnsNameValidationSchema = Yup.string().matches(DNS_NAME_REGEX, {
+  message: 'Value "${value}" is not valid DNS name. Example: basedomain.example.com', // eslint-disable-line no-template-curly-in-string
+});
 
 export const hostPrefixValidationSchema = (values: NetworkConfigurationValues) => {
   const requiredText = 'The host prefix is required.';
