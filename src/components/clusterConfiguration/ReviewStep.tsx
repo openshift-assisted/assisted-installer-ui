@@ -50,7 +50,7 @@ const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   );
 
   return (
-    <ClusterWizardStep footer={footer}>
+    <ClusterWizardStep cluster={cluster} footer={footer}>
       <Grid hasGutter>
         <GridItem span={12}>
           <TextContent>
