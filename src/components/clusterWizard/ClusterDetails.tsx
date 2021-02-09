@@ -95,12 +95,15 @@ const getValidationSchema = (cluster?: Cluster) => {
   });
 };
 
-const validateClusterName = async (newName: string, existingClusterName?: string) => {
+// For performance reasons, this is validated on submit only
+const validateClusterName = async (newFullName: string, existingClusterFullName?: string) => {
   try {
     const { data: clusters } = await getClusters();
-    const names = clusters.map((c) => c.name).filter((n) => n !== existingClusterName);
-    if (names.includes(newName)) {
-      return `Name "${newName}" is already taken.`;
+    const names = clusters
+      .map((c) => `${c.name}.${c.baseDnsDomain}`)
+      .filter((n) => n !== existingClusterFullName);
+    if (names.includes(newFullName)) {
+      return `Name "${newFullName}" is already taken.`;
     }
   } catch (e) {
     captureException(e, 'Failed to perform unique cluster name validation.');
@@ -158,14 +161,18 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
   ) => {
     clearAlerts();
 
+    const newClusterFullName = `${values.name}.${values.baseDnsDomain}`;
     if (cluster) {
-      const clusterNameError = await validateClusterName(values.name, cluster.name);
+      const clusterNameError = await validateClusterName(
+        newClusterFullName,
+        `${cluster.name}.${cluster.baseDnsDomain}`,
+      );
       if (clusterNameError) {
         return formikActions.setFieldError('name', clusterNameError);
       }
       await handleClusterUpdate(cluster.id, values);
     } else {
-      const clusterNameError = await validateClusterName(values.name);
+      const clusterNameError = await validateClusterName(newClusterFullName);
       if (clusterNameError) {
         return formikActions.setFieldError('name', clusterNameError);
       }
