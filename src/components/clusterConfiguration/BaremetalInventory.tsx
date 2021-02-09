@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, TextContent, Button, Stack, StackItem } from '@patternfly/react-core';
 import HostsTable from '../hosts/HostsTable';
 import { Cluster, HostRequirements as HostRequirementsType } from '../../api/types';
-import HostRequirements from '../fetching/HostRequirements';
+import { HostRequirementsLink } from '../fetching/HostRequirements';
 import VMRebootConfigurationInfo from '../hosts/VMRebootConfigurationInfo';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
 import {
@@ -52,6 +52,10 @@ const BaremetalInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
       <StackItem>
         <TextContent>
           <Text component="p">
+            Generate a Discovery ISO and boot it from a USB key, hard drive, or over a network on
+            hardware that should become part of this bare metal cluster.
+          </Text>
+          <Text component="p">
             <DiscoveryImageModalButton
               ButtonComponent={Button}
               cluster={cluster}
@@ -59,15 +63,17 @@ const BaremetalInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
             />
           </Text>
           <Text component="p">
-            Boot the Discovery ISO on hardware that should become part of this bare metal cluster.
-            Hosts connected to the internet will be inspected and automatically appear below.{' '}
+            Hosts connected to the internet with a valid IP address will appear bellow. Each host
+            should be configured to boot the ISO <b>once</b> and not after a reboot.
+          </Text>
+          <Text component="p">
+            {isSingleNodeCluster(cluster) ? (
+              <HostRequirementsLink ContentComponent={SingleHostRequirementsContent} />
+            ) : (
+              <HostRequirementsLink ContentComponent={HostRequirementsContent} />
+            )}
             <HostsNotShowingLink setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
           </Text>
-          {isSingleNodeCluster(cluster) ? (
-            <HostRequirements ContentComponent={SingleHostRequirementsContent} />
-          ) : (
-            <HostRequirements ContentComponent={HostRequirementsContent} />
-          )}
           <FormatDiskWarning />
           <VMRebootConfigurationInfo hosts={cluster.hosts} />
         </TextContent>

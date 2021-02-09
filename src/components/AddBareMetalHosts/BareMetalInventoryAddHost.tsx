@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, TextContent, Button } from '@patternfly/react-core';
 import HostsTable from '../hosts/HostsTable';
 import { HostRequirements as HostRequirementsType } from '../../api/types';
-import HostRequirements from '../fetching/HostRequirements';
+import { HostRequirementsLink } from '../fetching/HostRequirements';
 import { DiscoveryImageModalButton } from '../clusterConfiguration/discoveryImageModal';
 import {
   DiscoveryTroubleshootingModal,
@@ -40,9 +40,11 @@ const BaremetalInventoryAddHosts: React.FC = () => {
         <Text component="p">
           Boot the Discovery ISO on hardware that should become part of this bare metal cluster.
           Hosts connected to the internet will be inspected and automatically appear below.{' '}
+        </Text>
+        <Text component="p">
+          <HostRequirementsLink ContentComponent={HostRequirementsContent} />
           <HostsNotShowingLink setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
         </Text>
-        <HostRequirements ContentComponent={HostRequirementsContent} />
         <FormatDiskWarning />
         <VMRebootConfigurationInfo hosts={cluster.hosts} />
       </TextContent>
