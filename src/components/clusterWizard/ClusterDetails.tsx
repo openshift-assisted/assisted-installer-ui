@@ -150,7 +150,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
 
     try {
       const { data } = await postCluster(params);
-      history.push(`${routeBasePath}/clusters/${data.id}`);
+      history.push(`${routeBasePath}/clusters/${data.id}?flow=new`);
     } catch (e) {
       handleApiError<ClusterCreateParams>(e, () =>
         addAlert({ title: 'Failed to create new cluster', message: getErrorMessage(e) }),
