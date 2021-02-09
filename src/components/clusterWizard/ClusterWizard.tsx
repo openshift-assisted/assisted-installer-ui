@@ -3,7 +3,7 @@ import { Cluster } from '../../api/types';
 import NetworkConfigurationForm from '../clusterConfiguration/NetworkConfigurationForm';
 import ReviewStep from '../clusterConfiguration/ReviewStep';
 import ClusterWizardContext from './ClusterWizardContext';
-import { ClusterWizardStepsType, CLUSTER_WIZARD_FIRST_STEP } from './wizardTransition';
+import { ClusterWizardStepsType, getClusterWizardFirstStep } from './wizardTransition';
 import ClusterDetails from './ClusterDetails';
 import BaremetalDiscovery from './BaremetalDiscovery';
 
@@ -13,7 +13,8 @@ type ClusterWizardProps = {
 
 const ClusterWizard: React.FC<ClusterWizardProps> = ({ cluster }) => {
   const [currentStepId, setCurrentStepId] = React.useState<ClusterWizardStepsType>(
-    CLUSTER_WIZARD_FIRST_STEP,
+    // lazy called
+    getClusterWizardFirstStep,
   );
 
   const renderCurrentStep = React.useCallback(() => {
