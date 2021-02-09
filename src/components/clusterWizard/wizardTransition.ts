@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { Cluster, ClusterValidationId, HostValidationId, stringToJSON } from '../../api';
 import { ValidationsInfo as ClusterValidationsInfo } from '../../types/clusters';
 import { ValidationsInfo as HostValidationsInfo } from '../../types/hosts';
@@ -20,14 +21,16 @@ type TransitionProps = TransitionBackendProps & { isValid?: boolean; isSubmittin
 
 const checkClusterValidations = (
   clusterValidationsInfo: ClusterValidationsInfo,
-  group: 'hostsData' | 'network' | 'configuration',
   requiredIds: ClusterValidationId[],
-): boolean =>
-  requiredIds.every((id) => {
-    const validation = clusterValidationsInfo[group].find((validation) => id === validation.id);
-    return validation?.status === 'success';
-  });
-
+): boolean => {
+  const requiredValidations = _.values(clusterValidationsInfo)
+    .flat()
+    .filter((v) => v && requiredIds.includes(v.id));
+  return (
+    requiredValidations.length === requiredIds.length &&
+    requiredValidations.every((v) => v?.status === 'success')
+  );
+};
 const checkClusterValidationGroups = (
   clusterValidationsInfo: ClusterValidationsInfo,
   groups: ('hostsData' | 'network' | 'configuration')[],
@@ -38,13 +41,17 @@ const checkClusterValidationGroups = (
 
 const checkHostValidations = (
   hostValidationsInfo: HostValidationsInfo,
-  group: 'hardware' | 'network',
   requiredIds: HostValidationId[],
-): boolean =>
-  requiredIds.every((id) => {
-    const validation = hostValidationsInfo[group]?.find((validation) => id === validation.id);
-    return validation?.status === 'success';
-  });
+): boolean => {
+  const requiredValidations = _.values(hostValidationsInfo)
+    .flat()
+    .filter((v) => v && requiredIds.includes(v.id));
+
+  return (
+    requiredValidations.length === requiredIds.length &&
+    requiredValidations.every((v) => v?.status === 'success')
+  );
+};
 
 const checkHostValidationGroups = (
   hostValidationsInfo: HostValidationsInfo,
@@ -57,8 +64,7 @@ const checkHostValidationGroups = (
 export const canNextClusterDetails = ({ cluster }: TransitionBackendProps): boolean => {
   const clusterValidationsInfo = stringToJSON<ClusterValidationsInfo>(cluster.validationsInfo);
   return !!(
-    clusterValidationsInfo &&
-    checkClusterValidations(clusterValidationsInfo, 'configuration', ['pull-secret-set'])
+    clusterValidationsInfo && checkClusterValidations(clusterValidationsInfo, ['pull-secret-set'])
   );
 };
 
@@ -70,13 +76,13 @@ export const canNextBaremetalDiscovery = ({ cluster }: TransitionProps): boolean
     return false;
   }
 
-  // Cluster level: Selected hostsData validations must be passing
-  if (!checkClusterValidations(clusterValidationsInfo, 'hostsData', ['sufficient-masters-count'])) {
-    return false;
-  }
-
-  // Cluster level: Selected network validations must be passing
-  if (!checkClusterValidations(clusterValidationsInfo, 'network', ['ntp-server-configured'])) {
+  // Cluster level: Selected hostsData and network validations must be passing
+  if (
+    !checkClusterValidations(clusterValidationsInfo, [
+      'sufficient-masters-count',
+      'ntp-server-configured',
+    ])
+  ) {
     return false;
   }
 
@@ -89,7 +95,7 @@ export const canNextBaremetalDiscovery = ({ cluster }: TransitionProps): boolean
 
     // Selected network validations for every host must be passing
     if (
-      !checkHostValidations(hostValidationsInfo, 'network', [
+      !checkHostValidations(hostValidationsInfo, [
         'connected',
         'belongs-to-majority-group',
         'ntp-synced',
