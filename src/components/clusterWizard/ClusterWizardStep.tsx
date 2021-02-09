@@ -12,7 +12,6 @@ import {
   canNextNetworkBackend,
   ClusterWizardStepsType,
 } from './wizardTransition';
-import './ClusterWizardStep.css';
 
 type ClusterWizardStepProps = {
   cluster: Cluster;
@@ -27,12 +26,11 @@ const wizardSteps: ClusterWizardStepsType[] = [
 ];
 
 const NavItem: React.FC<WizardNavItemProps & { isValid?: () => boolean }> = ({
-  content,
-  isDisabled,
-  isCurrent,
   isValid = () => true,
-  ...rest
+  ...props
 }) => {
+  const { content, isDisabled, isCurrent } = props;
+
   let validatedLinkName = content;
   if (!isDisabled && !isCurrent && !isValid()) {
     validatedLinkName = (
@@ -47,14 +45,7 @@ const NavItem: React.FC<WizardNavItemProps & { isValid?: () => boolean }> = ({
     );
   }
 
-  return (
-    <WizardNavItem
-      content={validatedLinkName}
-      isDisabled={isDisabled}
-      isCurrent={isCurrent}
-      {...rest}
-    />
-  );
+  return <WizardNavItem {...props} content={validatedLinkName} />;
 };
 
 const ClusterWizardStep: React.FC<ClusterWizardStepProps> = ({ cluster, footer, children }) => {
@@ -66,7 +57,7 @@ const ClusterWizardStep: React.FC<ClusterWizardStepProps> = ({ cluster, footer, 
         key="cluster-details"
         content="Cluster Details"
         isCurrent={currentStepId === 'cluster-details'}
-        isValid={() => !cluster || canNextClusterDetails({ cluster })}
+        isValid={() => canNextClusterDetails({ cluster })}
         isDisabled={false}
         step={0}
         onNavItemClick={() => setCurrentStepId('cluster-details')}
