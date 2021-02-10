@@ -1,5 +1,5 @@
 import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
-import { Cluster, Inventory, ManagedDomain } from '../../api/types';
+import { Cluster, Inventory, ListOperators, ManagedDomain } from '../../api/types';
 import { stringToJSON } from '../../api/utils';
 import {
   CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4,
@@ -95,6 +95,8 @@ export const getInitialValues = (
   managedDomains: ManagedDomain[],
 ): ClusterConfigurationValues => {
   const defaultNetworkSettings = getDefaultNetworkSettings(cluster.clusterNetworkCidr as string);
+  const operators = stringToJSON<ListOperators>(cluster.operators);
+
   return {
     name: cluster.name || '',
     baseDnsDomain: cluster.baseDnsDomain || '',
@@ -112,6 +114,8 @@ export const getInitialValues = (
     shareDiscoverySshKey:
       !!cluster.imageInfo.sshPublicKey && cluster.sshPublicKey === cluster.imageInfo.sshPublicKey,
     vipDhcpAllocation: cluster.vipDhcpAllocation,
+    useExtraDisksForLocalStorage:
+      operators?.find((o) => o.operatorType === 'ocs')?.enabled || false,
   };
 };
 

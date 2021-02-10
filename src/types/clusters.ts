@@ -16,6 +16,7 @@ export type ClusterConfigurationValues = ClusterUpdateParams & {
   hostSubnet: string;
   useRedHatDnsService: boolean;
   shareDiscoverySshKey: boolean;
+  useExtraDisksForLocalStorage: boolean;
 };
 
 export type ValidationsInfo = {

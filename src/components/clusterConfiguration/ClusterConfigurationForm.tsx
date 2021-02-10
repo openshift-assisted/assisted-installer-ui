@@ -120,6 +120,13 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
         params.machineNetworkCidr = cidr;
       }
 
+      params.operators = [
+        {
+          enabled: values.useExtraDisksForLocalStorage,
+          operatorType: 'ocs',
+        },
+      ];
+
       const { data } = await patchCluster(cluster.id, params);
       formikActions.resetForm({
         values: getInitialValues(data, managedDomains),
