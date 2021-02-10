@@ -120,6 +120,7 @@ type HostStatusProps = {
   host: Host;
   validationsInfo: ValidationsInfo;
   cluster: Cluster;
+  statusOverride?: Host['status'];
 };
 
 const HostStatusPopoverFooter: React.FC<{ host: Host }> = ({ host }) => {
@@ -151,9 +152,14 @@ const HostStatusPopoverFooter: React.FC<{ host: Host }> = ({ host }) => {
   return <small>{footerText}</small>;
 };
 
-const HostStatus: React.FC<HostStatusProps> = ({ host, cluster, validationsInfo }) => {
+const HostStatus: React.FC<HostStatusProps> = ({
+  host,
+  cluster,
+  validationsInfo,
+  statusOverride,
+}) => {
   const [keepOnOutsideClick, onValidationActionToggle] = React.useState(false);
-  const { status } = host;
+  const status = statusOverride || host.status;
   const title = HOST_STATUS_LABELS[status] || status;
   const icon = getStatusIcon(status) || null;
   const hostProgressStages = getHostProgressStages(host);
