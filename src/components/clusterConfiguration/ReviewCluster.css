@@ -1,3 +1,7 @@
-.review-cluster-summary {
-  width: 30%;
-};
+.review-hosts-table tr > *:first-child  {
+  width: 6rem !important;
+}
+
+.review-hosts-table tr > td  {
+  padding-bottom: 0px !important;
+}
