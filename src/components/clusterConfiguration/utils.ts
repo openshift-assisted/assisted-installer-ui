@@ -97,7 +97,6 @@ export const isAdvConf = (cluster: Cluster) => {
 export const getBareMetalDiscoveryInitialValues = (cluster: Cluster): BareMetalDiscoveryValues => {
   const operators = stringToJSON<ListOperators>(cluster.operators);
   return {
-    name: cluster.name || '',
     useExtraDisksForLocalStorage:
       operators?.find((o) => o.operatorType === 'ocs')?.enabled || false,
   };
