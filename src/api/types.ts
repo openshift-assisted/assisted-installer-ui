@@ -932,7 +932,6 @@ export type HostValidationId =
   | 'has-min-valid-disks'
   | 'has-min-memory'
   | 'machine-cidr-defined'
-  | 'role-defined'
   | 'has-cpu-cores-for-role'
   | 'has-memory-for-role'
   | 'hostname-unique'
@@ -941,7 +940,8 @@ export type HostValidationId =
   | 'api-vip-connected'
   | 'belongs-to-majority-group'
   | 'valid-platform'
-  | 'ntp-synced';
+  | 'ntp-synced'
+  | 'container-images-available';
 export interface ImageCreateParams {
   /**
    * SSH public key for debugging the installation.
