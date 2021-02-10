@@ -10,18 +10,21 @@ import ClusterValidationSection from '../clusterConfiguration/ClusterValidationS
 import ClusterToolbar from '../clusters/ClusterToolbar';
 import { ToolbarButton, ToolbarText } from '../ui';
 import { routeBasePath } from '../../config';
+import { getWizardStepClusterStatus } from './wizardTransition';
+import ClusterWizardContext from './ClusterWizardContext';
 
 type ValidationSectionToggleProps = {
   cluster: Cluster;
-  errors: FormikErrors<ClusterUpdateParams>;
-  isStartingInstallation: boolean;
+  formErrors: FormikErrors<ClusterUpdateParams>;
+  isSubmitting?: boolean;
+  isStartingInstallation?: boolean;
   onInstall?: () => Promise<void>;
   toggleValidationSection: () => void;
 };
 
 type ClusterWizardToolbarProps = {
   cluster: Cluster;
-  errors?: FormikErrors<ClusterUpdateParams>;
+  formErrors?: FormikErrors<ClusterUpdateParams>;
   dirty?: boolean;
   isSubmitting?: boolean;
   onNext?: () => void;
@@ -34,24 +37,43 @@ type ClusterWizardToolbarProps = {
 const ValidationSectionToggle: React.FC<ValidationSectionToggleProps> = ({
   cluster,
   isStartingInstallation,
-  errors,
+  isSubmitting,
+  formErrors,
   onInstall,
   toggleValidationSection,
 }) => {
-  if (isStartingInstallation) {
+  const { currentStepId } = React.useContext(ClusterWizardContext);
+
+  if (isSubmitting) {
     return (
       <ToolbarText component={TextVariants.small}>
-        <Spinner size="sm" />
-        &nbsp;Starting installation...
+        <Spinner size="sm" /> Saving changes...
       </ToolbarText>
     );
   }
 
-  if (Object.keys(errors).length) {
+  if (isStartingInstallation) {
+    return (
+      <ToolbarText component={TextVariants.small}>
+        <Spinner size="sm" /> Starting installation...
+      </ToolbarText>
+    );
+  }
+
+  if (Object.keys(formErrors).length) {
+    return (
+      <ToolbarButton variant={ButtonVariant.link} onClick={toggleValidationSection} isInline>
+        <WarningTriangleIcon color={warningColor.value} />
+        &nbsp;<small>The configuration form has unresolved validation errors.</small>
+      </ToolbarButton>
+    );
+  }
+
+  if (getWizardStepClusterStatus(cluster, currentStepId) !== 'ready') {
     return (
       <Button variant={ButtonVariant.link} onClick={toggleValidationSection} isInline>
         <WarningTriangleIcon color={warningColor.value} />
-        &nbsp;<small>Validation errors found</small>
+        &nbsp;<small>Cluster is not ready.</small>
       </Button>
     );
   }
@@ -81,7 +103,7 @@ const ValidationSectionToggle: React.FC<ValidationSectionToggleProps> = ({
 
 const ClusterWizardToolbar: React.FC<ClusterWizardToolbarProps> = ({
   cluster,
-  errors = {},
+  formErrors = {},
   dirty = false,
   isSubmitting = false,
   onCancel,
@@ -117,7 +139,7 @@ const ClusterWizardToolbar: React.FC<ClusterWizardToolbarProps> = ({
           <ClusterValidationSection
             cluster={cluster}
             dirty={dirty}
-            formErrors={errors}
+            formErrors={formErrors}
             onClose={() => setIsValidationSectionOpen(false)}
           />
         ) : null
@@ -162,19 +184,14 @@ const ClusterWizardToolbar: React.FC<ClusterWizardToolbarProps> = ({
         Cancel
       </ToolbarButton>
 
-      {isSubmitting ? (
-        <ToolbarText component={TextVariants.small}>
-          <Spinner size="sm" /> Saving changes...
-        </ToolbarText>
-      ) : (
-        <ValidationSectionToggle
-          cluster={cluster}
-          errors={errors}
-          isStartingInstallation={isStartingInstallation}
-          onInstall={onInstall}
-          toggleValidationSection={() => setIsValidationSectionOpen(!isValidationSectionOpen)}
-        />
-      )}
+      <ValidationSectionToggle
+        cluster={cluster}
+        formErrors={formErrors}
+        isSubmitting={isSubmitting}
+        isStartingInstallation={isStartingInstallation}
+        onInstall={onInstall}
+        toggleValidationSection={() => setIsValidationSectionOpen(!isValidationSectionOpen)}
+      />
     </ClusterToolbar>
   );
 };

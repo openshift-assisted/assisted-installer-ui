@@ -68,7 +68,6 @@ export const isAdvConf = (cluster: Cluster, defaultNetworkSettings: ClusterDefau
 export const getBareMetalDiscoveryInitialValues = (cluster: Cluster): BareMetalDiscoveryValues => {
   const monitoredOperators = cluster.monitoredOperators || [];
   return {
-    name: cluster.name || '',
     useExtraDisksForLocalStorage: !!monitoredOperators.find((operator) => operator.name === 'ocs'),
   };
 };

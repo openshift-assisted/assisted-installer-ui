@@ -9,7 +9,7 @@ import ClusterWizardContext from './ClusterWizardContext';
 import {
   canNextBaremetalDiscovery,
   canNextClusterDetails,
-  canNextNetworkBackend,
+  canNextNetwork,
   ClusterWizardStepsType,
 } from './wizardTransition';
 
@@ -75,7 +75,7 @@ const ClusterWizardStep: React.FC<ClusterWizardStepProps> = ({ cluster, footer, 
         content="Networking"
         step={2}
         isDisabled={!wizardSteps.slice(2).includes(currentStepId)}
-        isValid={() => !cluster || canNextNetworkBackend({ cluster })}
+        isValid={() => !cluster || canNextNetwork({ cluster })}
         key="networking"
         isCurrent={currentStepId === 'networking'}
         onNavItemClick={() => setCurrentStepId('networking')}
