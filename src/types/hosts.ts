@@ -6,10 +6,10 @@ export type Validation = {
   message: string;
 };
 
+export type ValidationGroup = 'hardware' | 'network' | 'role';
+
 export type ValidationsInfo = {
-  hardware?: Validation[];
-  network?: Validation[];
-  role?: Validation[];
+  [key in ValidationGroup]?: Validation[];
 };
 
 export type HostRole = {

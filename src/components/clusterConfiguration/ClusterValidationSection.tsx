@@ -16,10 +16,12 @@ import {
 } from '@patternfly/react-core';
 import { TimesIcon } from '@patternfly/react-icons';
 import { Cluster } from '../../api/types';
-import { NetworkConfigurationValues, ValidationsInfo } from '../../types/clusters';
+import { NetworkConfigurationValues, Validation, ValidationsInfo } from '../../types/clusters';
 import { CLUSTER_FIELD_LABELS } from '../../config/constants';
 import { stringToJSON } from '../../api/utils';
 import './ClusterValidationSection.css';
+import { getWizardStepClusterValidationsInfo } from '../clusterWizard/wizardTransition';
+import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
 
 type ClusterValidationSectionProps = {
   cluster: Cluster;
@@ -37,18 +39,20 @@ const ClusterValidationSection: React.FC<ClusterValidationSectionProps> = ({
   const prevReadyRef = React.useRef<boolean>();
   const errorFields = Object.keys(formErrors);
   const ready = cluster.status === 'ready' && !errorFields.length && !dirty;
+  const { currentStepId } = React.useContext(ClusterWizardContext);
 
   const { failedValidations } = React.useMemo(() => {
-    const validationsInfo = stringToJSON<ValidationsInfo>(cluster.validationsInfo) || {
-      hostsData: [],
-      network: [],
-    };
-    const flattenedValues = _.values(validationsInfo).flat();
+    const validationsInfo = stringToJSON<ValidationsInfo>(cluster.validationsInfo) || {};
+    const reducedValidationsInfo = getWizardStepClusterValidationsInfo(
+      validationsInfo,
+      currentStepId,
+    );
+    const flattenedValues = _.values(reducedValidationsInfo).flat() as Validation[];
     return {
       pendingValidations: flattenedValues.filter((validation) => validation.status === 'pending'),
       failedValidations: flattenedValues.filter((validation) => validation.status === 'failure'),
     };
-  }, [cluster.validationsInfo]);
+  }, [cluster.validationsInfo, currentStepId]);
 
   // When cluster becomes ready, close this section
   React.useEffect(() => {

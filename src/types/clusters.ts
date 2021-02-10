@@ -6,6 +6,12 @@ export type Validation = HostValidation & {
   id: ClusterValidationId;
 };
 
+export type ValidationGroup = 'configuration' | 'hostsData' | 'network' | 'operators';
+
+export type ValidationsInfo = {
+  [key in ValidationGroup]?: Validation[];
+};
+
 export type ClusterTableRows = IRow[];
 
 export type HostSubnet = {
@@ -28,9 +34,3 @@ export type ClusterDetailsValues = ClusterUpdateParams & {
 };
 
 export type BareMetalDiscoveryValues = ClusterUpdateParams;
-
-export type ValidationsInfo = {
-  hostsData: Validation[];
-  network: Validation[];
-  configuration: Validation[];
-};
