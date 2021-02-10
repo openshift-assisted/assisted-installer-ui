@@ -12,7 +12,6 @@ const BaremetalDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const footer = (
     <ClusterWizardToolbar
       cluster={cluster}
-      errors={{}}
       dirty={false}
       isSubmitting={false}
       isNextDisabled={!canNextBaremetalDiscovery({ cluster })}
