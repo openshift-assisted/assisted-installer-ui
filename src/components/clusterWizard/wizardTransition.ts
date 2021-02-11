@@ -14,10 +14,14 @@ export type ClusterWizardStepsType =
   | 'networking'
   | 'review';
 
-export const getClusterWizardFirstStep = (): ClusterWizardStepsType => {
-  const searchParams = new URLSearchParams(window.location.search);
-  return searchParams.get('flow') === 'new' ? 'baremetal-discovery' : 'cluster-details';
+export type ClusterWizardFlowStateType = {
+  wizardFlow?: 'new' | undefined;
 };
+
+export const getClusterWizardFirstStep = (
+  props?: ClusterWizardFlowStateType,
+): ClusterWizardStepsType =>
+  props?.wizardFlow === 'new' ? 'baremetal-discovery' : 'cluster-details';
 
 type TransitionBackendProps = { cluster: Cluster };
 type TransitionProps = TransitionBackendProps & { isValid?: boolean; isSubmitting?: boolean };
