@@ -40,7 +40,7 @@ import Alerts from '../ui/Alerts';
 import CheckboxField from '../ui/formik/CheckboxField';
 import { getManagedDomains } from '../../api/domains';
 import ToolbarText from '../ui/Toolbar/ToolbarText';
-import { canNextClusterDetails } from './wizardTransition';
+import { canNextClusterDetails, ClusterWizardFlowStateType } from './wizardTransition';
 import { useOpenshiftVersions } from '../fetching/openshiftVersions';
 import { OpenshiftVersionOptionType } from '../../types/versions';
 import SingleNodeCheckbox from '../ui/formik/SingleNodeCheckbox';
@@ -153,7 +153,8 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
 
     try {
       const { data } = await postCluster(params);
-      history.push(`${routeBasePath}/clusters/${data.id}?flow=new`);
+      const locationState: ClusterWizardFlowStateType = { wizardFlow: 'new' };
+      history.push(`${routeBasePath}/clusters/${data.id}`, locationState);
     } catch (e) {
       handleApiError<ClusterCreateParams>(e, () =>
         addAlert({ title: 'Failed to create new cluster', message: getErrorMessage(e) }),
