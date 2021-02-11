@@ -1,9 +1,14 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import { Cluster } from '../../api/types';
 import NetworkConfigurationForm from '../clusterConfiguration/NetworkConfigurationForm';
 import ReviewStep from '../clusterConfiguration/ReviewStep';
 import ClusterWizardContext from './ClusterWizardContext';
-import { ClusterWizardStepsType, CLUSTER_WIZARD_FIRST_STEP } from './wizardTransition';
+import {
+  ClusterWizardFlowStateType,
+  ClusterWizardStepsType,
+  getClusterWizardFirstStep,
+} from './wizardTransition';
 import ClusterDetails from './ClusterDetails';
 import BaremetalDiscovery from './BaremetalDiscovery';
 
@@ -12,8 +17,9 @@ type ClusterWizardProps = {
 };
 
 const ClusterWizard: React.FC<ClusterWizardProps> = ({ cluster }) => {
-  const [currentStepId, setCurrentStepId] = React.useState<ClusterWizardStepsType>(
-    CLUSTER_WIZARD_FIRST_STEP,
+  const history = useHistory();
+  const [currentStepId, setCurrentStepId] = React.useState<ClusterWizardStepsType>(() =>
+    getClusterWizardFirstStep(history.location.state as ClusterWizardFlowStateType),
   );
 
   const renderCurrentStep = React.useCallback(() => {

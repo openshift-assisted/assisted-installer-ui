@@ -14,7 +14,14 @@ export type ClusterWizardStepsType =
   | 'networking'
   | 'review';
 
-export const CLUSTER_WIZARD_FIRST_STEP: ClusterWizardStepsType = 'baremetal-discovery';
+export type ClusterWizardFlowStateType = {
+  wizardFlow?: 'new' | undefined;
+};
+
+export const getClusterWizardFirstStep = (
+  props?: ClusterWizardFlowStateType,
+): ClusterWizardStepsType =>
+  props?.wizardFlow === 'new' ? 'baremetal-discovery' : 'cluster-details';
 
 type TransitionBackendProps = { cluster: Cluster };
 type TransitionProps = TransitionBackendProps & { isValid?: boolean; isSubmitting?: boolean };

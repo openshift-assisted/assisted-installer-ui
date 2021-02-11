@@ -1,5 +1,5 @@
 import React from 'react';
-import { ClusterWizardStepsType, CLUSTER_WIZARD_FIRST_STEP } from './wizardTransition';
+import { ClusterWizardStepsType } from './wizardTransition';
 
 type ClusterWizardContextType = {
   currentStepId: ClusterWizardStepsType;
@@ -7,7 +7,7 @@ type ClusterWizardContextType = {
 };
 
 const ClusterWizardContext = React.createContext<ClusterWizardContextType>({
-  currentStepId: CLUSTER_WIZARD_FIRST_STEP,
+  currentStepId: 'cluster-details',
   setCurrentStepId: () => {
     console.warn('Tried to use ClusterWizardContext but there was no provider rendered.');
   },
