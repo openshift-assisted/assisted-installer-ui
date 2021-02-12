@@ -11,7 +11,6 @@ import {
 } from './DiscoveryTroubleshootingModal';
 import FormatDiskWarning from './FormatDiskWarning';
 import { isSingleNodeCluster } from './utils';
-import { CheckboxField } from '../ui';
 
 const HostRequirementsContent = ({
   worker = {},
@@ -67,13 +66,14 @@ const BaremetalInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
             Hosts connected to the internet with a valid IP address will appear bellow. Each host
             should be configured to boot the ISO <b>once</b> and not after a reboot.
           </Text>
-          <Text component="p">
+          {/* TODO(jtomasek): Turn baremetal inventory into a form and enable this field */}
+          {/* <Text component="p">
             <CheckboxField
               name="useExtraDisksForLocalStorage"
               label="Use extra disks for local storage."
               helperText="Non-boot disks will be usable by workloads for persistent storage."
             />
-          </Text>
+          </Text> */}
           <Text component="p">
             {isSingleNodeCluster(cluster) ? (
               <HostRequirementsLink ContentComponent={SingleHostRequirementsContent} />
