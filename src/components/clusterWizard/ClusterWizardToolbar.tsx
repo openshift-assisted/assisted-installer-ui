@@ -23,7 +23,7 @@ type ValidationSectionToggleProps = {
 };
 
 type ClusterWizardToolbarProps = {
-  cluster: Cluster;
+  cluster?: Cluster;
   formErrors?: FormikErrors<ClusterUpdateParams>;
   dirty?: boolean;
   isSubmitting?: boolean;
@@ -135,7 +135,7 @@ const ClusterWizardToolbar: React.FC<ClusterWizardToolbarProps> = ({
   return (
     <ClusterToolbar
       validationSection={
-        isValidationSectionOpen ? (
+        isValidationSectionOpen && cluster ? (
           <ClusterValidationSection
             cluster={cluster}
             dirty={dirty}
@@ -145,7 +145,7 @@ const ClusterWizardToolbar: React.FC<ClusterWizardToolbarProps> = ({
         ) : null
       }
     >
-      {onInstall && (
+      {onInstall && cluster && (
         <ToolbarButton
           variant={ButtonVariant.primary}
           name="install"
@@ -184,14 +184,16 @@ const ClusterWizardToolbar: React.FC<ClusterWizardToolbarProps> = ({
         Cancel
       </ToolbarButton>
 
-      <ValidationSectionToggle
-        cluster={cluster}
-        formErrors={formErrors}
-        isSubmitting={isSubmitting}
-        isStartingInstallation={isStartingInstallation}
-        onInstall={onInstall}
-        toggleValidationSection={() => setIsValidationSectionOpen(!isValidationSectionOpen)}
-      />
+      {cluster && (
+        <ValidationSectionToggle
+          cluster={cluster}
+          formErrors={formErrors}
+          isSubmitting={isSubmitting}
+          isStartingInstallation={isStartingInstallation}
+          onInstall={onInstall}
+          toggleValidationSection={() => setIsValidationSectionOpen(!isValidationSectionOpen)}
+        />
+      )}
     </ClusterToolbar>
   );
 };
