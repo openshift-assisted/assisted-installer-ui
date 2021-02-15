@@ -86,7 +86,7 @@ const reviewStepValidationsMap: WizardStepValidationMap = {
   },
 };
 
-const wizardStepsValidationsMap: WizardStepsValidationMap = {
+export const wizardStepsValidationsMap: WizardStepsValidationMap = {
   'cluster-details': clusterDetailsStepValidationsMap,
   'baremetal-discovery': baremetalDiscoveryStepValidationsMap,
   networking: networkingStepValidationsMap,
@@ -224,9 +224,34 @@ export const getWizardStepClusterStatus = (
   return status;
 };
 
+export const findValidationFixStep = ({
+  id,
+  hostGroup,
+  clusterGroup,
+}: {
+  // validation IDs are unique
+  id: ClusterValidationId | HostValidationId;
+  hostGroup?: HostValidationGroup;
+  clusterGroup?: ClusterValidationGroup;
+}): ClusterWizardStepsType | undefined => {
+  const keys = _.keys(wizardStepsValidationsMap) as ClusterWizardStepsType[];
+  return keys.find((key) => {
+    // find first matching validation-map name
+    const { cluster: clusterValidationMap, host: hostValidationMap } = wizardStepsValidationsMap[
+      key
+    ];
+    return (
+      clusterValidationMap.validationIds.includes(id as ClusterValidationId) ||
+      hostValidationMap.validationIds.includes(id as HostValidationId) ||
+      (clusterGroup && clusterValidationMap.groups.includes(clusterGroup)) ||
+      (hostGroup && hostValidationMap.groups.includes(hostGroup))
+    );
+  });
+};
+
 /*
 We are colocating all these canNext* functions for easier maintenance.
-However they should be independent on each other anyway.
+However transitions among steps should be independent on each other.
 */
 export const canNextClusterDetails = ({ cluster }: TransitionProps): boolean =>
   getWizardStepClusterStatus(cluster, 'cluster-details') === 'ready';

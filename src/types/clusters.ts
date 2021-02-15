@@ -2,7 +2,7 @@ import { IRow } from '@patternfly/react-table';
 import { ClusterUpdateParams, ClusterValidationId } from '../api/types';
 import { Validation as HostValidation } from './hosts';
 
-export type Validation = HostValidation & {
+export type Validation = Omit<HostValidation, 'id'> & {
   id: ClusterValidationId;
 };
 

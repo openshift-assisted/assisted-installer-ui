@@ -4,6 +4,7 @@ import Humanize from 'humanize-plus';
 import { Cluster, Host, Inventory, stringToJSON } from '../../api';
 import { getSimpleHardwareInfo } from '../hosts/hardwareInfo';
 import { DetailList, DetailItem } from '../ui/DetailList';
+import { ClusterValidations, HostsValidations } from './ReviewValidations';
 
 import './ReviewCluster.css';
 
@@ -65,6 +66,11 @@ const ReviewCluster: React.FC<{ cluster: Cluster }> = ({ cluster }) => (
     <DetailItem title="OpenShift version" value={cluster.openshiftVersion} />
     <DetailItem title="Management network CIDR" value={cluster.clusterNetworkCidr} />
     <DetailItem title="Cluster summary" value={<ReviewHostsInventory hosts={cluster.hosts} />} />
+    <DetailItem
+      title="Cluster validations"
+      value={<ClusterValidations validationsInfo={cluster.validationsInfo} />}
+    />
+    <DetailItem title="Host validations" value={<HostsValidations hosts={cluster.hosts} />} />
   </DetailList>
 );
 
