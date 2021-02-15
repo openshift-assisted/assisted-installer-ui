@@ -32,6 +32,7 @@ const ClusterWizard: React.FC<ClusterWizardProps> = ({ cluster }) => {
         return <ReviewStep cluster={cluster} />;
       case 'cluster-details':
       default:
+        // return <ReviewStep cluster={cluster} />;
         return <ClusterDetails cluster={cluster} />;
     }
   }, [currentStepId, cluster]);
