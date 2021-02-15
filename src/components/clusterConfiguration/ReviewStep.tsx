@@ -57,7 +57,7 @@ const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
             <Text component="h2">Review and create</Text>
           </TextContent>
         </GridItem>
-        <GridItem span={12} lg={10} xl={9} xl2={7}>
+        <GridItem>
           <ReviewCluster cluster={cluster} />
         </GridItem>
 
