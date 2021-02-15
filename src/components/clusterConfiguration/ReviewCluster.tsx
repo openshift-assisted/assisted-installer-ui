@@ -31,16 +31,16 @@ const ReviewHostsInventory: React.FC<{ hosts?: Host[] }> = ({ hosts = [] }) => {
 
     return [
       {
-        cells: [{ title: <b>Hosts</b> }, summary.count],
+        cells: ['Hosts', summary.count],
       },
       {
-        cells: [{ title: <b>Cores</b> }, summary.cores],
+        cells: ['Cores', summary.cores],
       },
       {
-        cells: [{ title: <b>Memory</b> }, Humanize.fileSize(summary.memory)],
+        cells: ['Memory', Humanize.fileSize(summary.memory)],
       },
       {
-        cells: [{ title: <b>Storage</b> }, Humanize.fileSize(summary.fs)],
+        cells: ['Storage', Humanize.fileSize(summary.fs)],
       },
     ];
   }, [hosts]);
