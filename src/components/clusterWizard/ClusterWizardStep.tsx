@@ -2,8 +2,8 @@ import React from 'react';
 import { WizardBody, WizardNav, WizardNavItem, WizardNavItemProps } from '@patternfly/react-core';
 import { css } from '@patternfly/react-styles';
 import styles from '@patternfly/react-styles/css/components/Wizard/wizard';
-import { ExclamationTriangleIcon } from '@patternfly/react-icons';
-import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens';
+import { ExclamationCircleIcon } from '@patternfly/react-icons';
+import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens';
 import { Cluster } from '../../api/types';
 import ClusterWizardContext from './ClusterWizardContext';
 import {
@@ -13,6 +13,8 @@ import {
   ClusterWizardStepsType,
   wizardStepsValidationsMap,
 } from './wizardTransition';
+
+import './ClusterWizardStep.css';
 
 type ClusterWizardStepProps = {
   cluster?: Cluster;
@@ -40,9 +42,9 @@ const NavItem: React.FC<WizardNavItemProps & { isValid?: () => boolean }> = ({
   if (!isDisabled && !isCurrent && !isValid()) {
     validatedLinkName = (
       <>
-        <ExclamationTriangleIcon
+        <ExclamationCircleIcon
           className="wizard-nav-item-warning-icon"
-          color={warningColor.value}
+          color={dangerColor.value}
           size="sm"
         />{' '}
         {content}
@@ -97,7 +99,7 @@ const ClusterWizardStep: React.FC<ClusterWizardStepProps> = ({ cluster, footer, 
   );
 
   return (
-    <div className={css(styles.wizardOuterWrap)}>
+    <div className={css(styles.wizardOuterWrap, 'cluster-wizard-step')}>
       <div className={css(styles.wizardInnerWrap)}>
         {nav}
         <WizardBody aria-labelledby="step-id" hasNoBodyPadding={false}>
