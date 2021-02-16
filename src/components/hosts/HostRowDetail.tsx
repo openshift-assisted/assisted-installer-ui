@@ -1,5 +1,5 @@
 import React from 'react';
-import Humanize from 'humanize-plus';
+import filesize from 'filesize.js';
 import { TextContent, Text, TextVariants, Grid, GridItem } from '@patternfly/react-core';
 import { Table, TableHeader, TableBody, TableVariant } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
@@ -86,7 +86,7 @@ const DisksTable: React.FC<DisksTableProps> = ({ cluster, host, disks, installat
         },
         { title: <DiskLimitations disk={disk} /> },
         disk.driveType,
-        Humanize.fileSize(disk.sizeBytes || 0),
+        filesize(disk.sizeBytes || 0, 2, 'iec'),
         disk.serial,
         // disk.vendor, TODO(mlibra): search HW database for humanized values
         disk.model,
