@@ -199,3 +199,5 @@ export const DISK_ROLE_LABELS: { [key in DiskRole]: string } = {
   none: 'None',
   install: 'Installation disk',
 };
+
+export const SNO_SUPPORT_MIN_VERSION = 4.8;
