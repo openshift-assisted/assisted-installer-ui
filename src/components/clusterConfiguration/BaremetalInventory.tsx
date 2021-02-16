@@ -12,6 +12,7 @@ import {
 import FormatDiskWarning from './FormatDiskWarning';
 import { isSingleNodeCluster } from './utils';
 import { CheckboxField } from '../ui';
+import { useFeature } from '../../features';
 
 const HostRequirementsContent = ({
   worker = {},
@@ -42,6 +43,7 @@ const SingleHostRequirementsContent = ({
 
 const BaremetalInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const [isDiscoveryHintModalOpen, setDiscoveryHintModalOpen] = React.useState(false);
+  const isOpenshiftClusterStorageEnabled = useFeature('ASSISTED_INSTALLER_OCS_FEATURE');
 
   return (
     <>
@@ -63,11 +65,13 @@ const BaremetalInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         ) : (
           <HostRequirements ContentComponent={HostRequirementsContent} />
         )}
-        <CheckboxField
-          name="useExtraDisksForLocalStorage"
-          label="Use extra disks for local storage."
-          helperText="Non-boot disks will be usable by workloads for persistent storage."
-        />
+        {isOpenshiftClusterStorageEnabled && (
+          <CheckboxField
+            name="useExtraDisksForLocalStorage"
+            label="Use extra disks for local storage."
+            helperText="Non-boot disks will be usable by workloads for persistent storage."
+          />
+        )}
         <Text />
         <FormatDiskWarning />
         <VMRebootConfigurationInfo hosts={cluster.hosts} />

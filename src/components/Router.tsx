@@ -4,9 +4,9 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import { Clusters, ClusterPage, NewClusterPage } from './clusters';
 import { store } from '../store';
 import { isSingleClusterMode, routeBasePath } from '../config/constants';
+import { FeatureGateContextProvider, FeatureListType } from '../features/featureGate';
 import SingleCluster from './SingleCluster';
 import { AssistedUILibVersion } from './ui';
-import { FeatureListType } from '../features/featureGate';
 
 export const AssistedUiRouter: React.FC<{ allEnabledFeatures: FeatureListType }> = ({
   allEnabledFeatures,
@@ -17,7 +17,7 @@ export const AssistedUiRouter: React.FC<{ allEnabledFeatures: FeatureListType }>
 );
 
 export const Router: React.FC<{ features: FeatureListType }> = ({ features, children }) => (
-  <>
+  <FeatureGateContextProvider features={features}>
     <AssistedUILibVersion />
     {isSingleClusterMode() ? (
       <Switch>
@@ -28,15 +28,12 @@ export const Router: React.FC<{ features: FeatureListType }> = ({ features, chil
       </Switch>
     ) : (
       <Switch>
-        <Route
-          path={`${routeBasePath}/clusters/~new`}
-          component={() => <NewClusterPage features={features} />}
-        />
+        <Route path={`${routeBasePath}/clusters/~new`} component={NewClusterPage} />
         <Route path={`${routeBasePath}/clusters/:clusterId`} component={ClusterPage} />
         <Route path={`${routeBasePath}/clusters`} component={Clusters} />
         {children}
         <Redirect to={`${routeBasePath}/clusters`} />
       </Switch>
     )}
-  </>
+  </FeatureGateContextProvider>
 );

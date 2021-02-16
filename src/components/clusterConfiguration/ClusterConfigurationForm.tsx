@@ -50,6 +50,7 @@ import { AlertsContext } from '../AlertsContextProvider';
 import ClusterSshKeyField from './ClusterSshKeyField';
 import { captureException } from '../../sentry';
 import { trimSshPublicKey } from '../ui/formik/utils';
+import { useFeature } from '../../features';
 
 const validationSchema = (initialValues: ClusterConfigurationValues, hostSubnets: HostSubnets) =>
   Yup.lazy<ClusterConfigurationValues>((values) =>
@@ -87,6 +88,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
     () => validationSchema(initialValues, hostSubnets),
     [hostSubnets, initialValues],
   );
+  const isOpenshiftClusterStorageEnabled = useFeature('ASSISTED_INSTALLER_OCS_FEATURE');
 
   const handleSubmit = async (
     values: ClusterConfigurationValues,
@@ -120,12 +122,14 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
         params.machineNetworkCidr = cidr;
       }
 
-      params.operators = [
-        {
-          enabled: values.useExtraDisksForLocalStorage,
-          operatorType: 'ocs',
-        },
-      ];
+      if (isOpenshiftClusterStorageEnabled) {
+        params.operators = [
+          {
+            enabled: values.useExtraDisksForLocalStorage,
+            operatorType: 'ocs',
+          },
+        ];
+      }
 
       const { data } = await patchCluster(cluster.id, params);
       formikActions.resetForm({
