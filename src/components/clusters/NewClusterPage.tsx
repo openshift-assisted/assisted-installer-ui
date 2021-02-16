@@ -33,11 +33,7 @@ import PullSecret from './PullSecret';
 import { useOpenshiftVersions } from '../fetching/openshiftVersions';
 import { OpenshiftVersionOptionType } from '../../types/versions';
 import SingleNodeCheckbox from '../ui/formik/SingleNodeCheckbox';
-import {
-  FeatureGateContextProvider,
-  FeatureListType,
-  useFeature,
-} from '../../features/featureGate';
+import { useFeature } from '../../features/featureGate';
 
 import './NewClusterPage.css';
 
@@ -202,11 +198,9 @@ const NewCluster: React.FC = () => {
   return <NewClusterForm pullSecret={pullSecret} versions={versions} />;
 };
 
-const NewClusterPage: React.FC<{ features: FeatureListType }> = ({ features }) => (
+const NewClusterPage: React.FC = () => (
   <AlertsContextProvider>
-    <FeatureGateContextProvider features={features}>
-      <NewCluster />
-    </FeatureGateContextProvider>
+    <NewCluster />
   </AlertsContextProvider>
 );
 

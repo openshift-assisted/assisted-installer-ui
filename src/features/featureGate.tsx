@@ -1,19 +1,23 @@
 import React from 'react';
 
 // Must conform Unleash constants
-type AssistedInstallerFeatureType = 'ASSISTED_INSTALLER_SNO_FEATURE';
+type AssistedInstallerFeatureType =
+  | 'ASSISTED_INSTALLER_SNO_FEATURE'
+  | 'ASSISTED_INSTALLER_OCS_FEATURE';
 export type FeatureListType = {
-  [key in AssistedInstallerFeatureType]: boolean;
+  [key in AssistedInstallerFeatureType]?: boolean;
 };
 
 // Hardcoded outside OCM
 export const SINGLE_CLUSTER_ENABLED_FEATURES: FeatureListType = {
   ASSISTED_INSTALLER_SNO_FEATURE: false,
+  ASSISTED_INSTALLER_OCS_FEATURE: false,
 };
 
 // Hardcoded outside OCM
 export const STANDALONE_DEPLOYMENT_ENABLED_FEATURES: FeatureListType = {
   ASSISTED_INSTALLER_SNO_FEATURE: true,
+  ASSISTED_INSTALLER_OCS_FEATURE: true,
 };
 
 export type FeatureGateContextType = {
@@ -27,8 +31,15 @@ export const FeatureGateContext = React.createContext<FeatureGateContextType>({
 export const FeatureGateContextProvider: React.FC<{
   features: FeatureListType;
 }> = ({ features, children }) => {
+  // hardcoded defaults
+  const featuresWithDefaults: FeatureListType = {
+    ASSISTED_INSTALLER_OCS_FEATURE: false,
+    ...features,
+  };
+
   const isFeatureEnabled = (feature: AssistedInstallerFeatureType) => {
-    return features[feature];
+    // Configured via Unleash in the OCM
+    return !!featuresWithDefaults[feature];
   };
 
   return (
