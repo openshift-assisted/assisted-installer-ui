@@ -1,4 +1,5 @@
 import Humanize from 'humanize-plus';
+import filesize from 'filesize.js';
 import { Disk, Inventory } from '../../api/types';
 import { DASH } from '../constants';
 import { HumanizedSortable } from '../ui/table/utils';
@@ -41,7 +42,7 @@ export const getHostRowHardwareInfo = (inventory: Inventory): HostRowHardwareInf
   const memCapacity = getMemoryCapacity(inventory);
   if (memCapacity) {
     memory = {
-      title: Humanize.fileSize(memCapacity),
+      title: filesize(memCapacity, 2, 'iec'),
       sortableValue: memCapacity,
     };
   }
@@ -52,7 +53,7 @@ export const getHostRowHardwareInfo = (inventory: Inventory): HostRowHardwareInf
   );
   if (disksCapacity) {
     disk = {
-      title: Humanize.fileSize(disksCapacity),
+      title: filesize(disksCapacity, 2, 'iec'),
       sortableValue: disksCapacity,
     };
   }

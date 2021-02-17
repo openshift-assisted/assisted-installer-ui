@@ -23,10 +23,10 @@ const HostRequirementsContent = ({
 }) => (
   <Text component="p">
     Three master hosts are required with at least {master.cpuCores || 4} CPU cores,{' '}
-    {master.ramGib || 16} GB of RAM, and {master.diskSizeGb || 120} GB of filesystem storage each.
+    {master.ramGib || 16} Gib of RAM, and {master.diskSizeGb || 120} Gib of filesystem storage each.
     Two or more additional worker hosts are recommended with at least {worker.cpuCores || 2} CPU
-    cores, {worker.ramGib || 8} GB of RAM, and {worker.diskSizeGb || 120}
-    GB of filesystem storage each.
+    cores, {worker.ramGib || 8} Gib of RAM, and {worker.diskSizeGb || 120}
+    Gib of filesystem storage each.
   </Text>
 );
 
@@ -36,8 +36,8 @@ const SingleHostRequirementsContent = ({
   master?: HostRequirementsType['master'];
 }) => (
   <Text component="p">
-    One host is required with at least {master.cpuCores || 4} CPU cores, {master.ramGib || 16} GB of
-    RAM, and {master.diskSizeGb || 120} GB of filesystem storage.
+    One host is required with at least {master.cpuCores || 4} CPU cores, {master.ramGib || 16} Gib
+    of RAM, and {master.diskSizeGb || 120} Gib of filesystem storage.
   </Text>
 );
 
