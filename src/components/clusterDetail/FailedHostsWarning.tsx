@@ -40,12 +40,8 @@ const FailedHostsWarning: React.FC<FailedHostsWarningProps> = ({ cluster }) => {
   const failedBootOrder =
     cluster.hosts?.filter((host) => host.status === 'installing-pending-user-action') || [];
 
-  let failedBootOrderText =
+  const failedBootOrderText =
     "Please reconfigure each host's BIOS to boot from the disk where OpenShift was installed instead of the Discovery ISO.";
-  if (failedBootOrder.find((host) => host.role === 'master')) {
-    failedBootOrderText +=
-      ' The cluster installation will time-out after 30 minutes if a master host does not reboot properly.';
-  }
 
   let failedHostsText = 'Error information for each host is available below.';
   if (cluster.status !== 'finalizing') {
