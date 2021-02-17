@@ -6,6 +6,7 @@ import { NO_SUBNET_SET } from '../../../config/constants';
 import { trimCommaSeparatedList, trimSshPublicKey } from './utils';
 import { Address4, Address6 } from 'ip-address';
 import { isInSubnet } from 'is-in-subnet';
+import isCIDR from 'is-cidr';
 
 const CLUSTER_NAME_REGEX = /^[a-z]([-a-z0-9]*[a-z0-9])?$/;
 const SSH_PUBLIC_KEY_REGEX = /^(ssh-rsa|ssh-ed25519|ecdsa-[-a-z0-9]*) AAAA[0-9A-Za-z+/]+[=]{0,3}( .+)?$/;
@@ -14,6 +15,8 @@ const IP_ADDRESS_REGEX = /^(((([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])
 const IP_ADDRESS_BLOCK_REGEX = /^(((([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\/([0-9]|[1-2][0-9]|3[0-2]))|([0-9a-f]{1,4}:){7,7}[0-9a-f]{1,4}|([0-9a-f]{1,4}:){1,7}:|([0-9a-f]{1,4}:){1,6}:[0-9a-f]{1,4}|([0-9a-f]{1,4}:){1,5}(:[0-9a-f]{1,4}){1,2}|([0-9a-f]{1,4}:){1,4}(:[0-9a-f]{1,4}){1,3}|([0-9a-f]{1,4}:){1,3}(:[0-9a-f]{1,4}){1,4}|([0-9a-f]{1,4}:){1,2}(:[0-9a-f]{1,4}){1,5}|[0-9a-f]{1,4}:((:[0-9a-f]{1,4}){1,6})|:((:[0-9a-f]{1,4}){1,7}|:)|fe80:(:[0-9a-f]{0,4}){0,4}%[0-9a-z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\/([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-8]))$/;
 const DNS_NAME_REGEX = /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/;
 const HOSTNAME_REGEX = /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9-]*[A-Za-z0-9])$/;
+const IP_V4_ZERO = '0.0.0.0';
+const IP_V6_ZERO = '0000:0000:0000:0000:0000:0000:0000:0000';
 
 export const nameValidationSchema = Yup.string()
   .matches(CLUSTER_NAME_REGEX, {
@@ -97,6 +100,17 @@ const requiredOnceSet = (initialValue?: string, message?: string) =>
     (value) => value || !initialValue,
   );
 
+const stringToIPAddress = (value: string): Address4 | Address6 | null => {
+  let ip = null;
+  if (Address4.isValid(value)) {
+    ip = new Address4(value);
+  } else if (Address6.isValid(value)) {
+    ip = new Address6(value);
+  }
+
+  return ip;
+};
+
 export const vipValidationSchema = (
   hostSubnets: HostSubnets,
   values: ClusterConfigurationValues,
@@ -117,19 +131,44 @@ export const ipBlockValidationSchema = Yup.string()
   .required('A value is required.')
   .test(
     'valid-ip-address',
-    'Invalid IP address block. Expected value is a network expressed in CIDR notation (IP/netmask). Examples: 123.123.123.0/24, 2055:d7a::/116',
-    (value: string) => Address4.isValid(value) || Address6.isValid(value),
+    'Invalid IP address block. Expected value is a network expressed in CIDR notation (IP/netmask). For example: 123.123.123.0/24, 2055:d7a::/116',
+    (value: string) => isCIDR.v4(value) || isCIDR.v6(value),
   )
   .test(
     'valid-netmask',
     'IPv4 netmask must be between 1-25 and include at least 128 addresses.\nIPv6 netmask must be between 8-128 and include at least 256 addresses.',
     (value: string) => {
       const prefix = parseInt(value.split('/')[1]);
-      return (
-        !isNaN(prefix) &&
-        ((Address4.isValid(value) && prefix > 0 && prefix < 26) ||
-          (Address6.isValid(value) && prefix > 7 && prefix < 129))
-      );
+      return (!isNaN(prefix) && 0 < prefix && prefix < 26) || (7 < prefix && prefix < 129);
+    },
+  )
+  .test(
+    'cidr-is-not-unspecified',
+    'The specified CIDR is invalid because its resulting routing prefix matches the unspecified address.',
+    (value: string) => {
+      const ip = stringToIPAddress(value);
+      if (ip === null) {
+        return false;
+      }
+
+      // The first address is used to represent the network
+      const startAddress = ip.startAddress().address;
+
+      return startAddress !== IP_V4_ZERO && startAddress !== IP_V6_ZERO;
+    },
+  )
+  .test(
+    'valid-cidr',
+    ({ value }) => `${value} is not a valid CIDR`,
+    (value: string) => {
+      const ip = stringToIPAddress(value);
+      if (ip === null) {
+        return false;
+      }
+
+      const startAddress = ip.startAddress().address;
+
+      return ip.addressMinusSuffix === startAddress;
     },
   );
 
