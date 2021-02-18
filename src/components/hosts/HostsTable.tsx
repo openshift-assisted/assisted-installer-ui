@@ -12,6 +12,7 @@ import {
   SortByDirection,
   ISortBy,
   OnSort,
+  ICell,
 } from '@patternfly/react-table';
 import { ConnectedIcon } from '@patternfly/react-icons';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
@@ -68,17 +69,11 @@ import { AdditionalNTPSourcesDialog } from './AdditionalNTPSourcesDialog';
 
 import './HostsTable.css';
 
-type HostsTableProps = {
-  cluster: Cluster;
-  skipDisabled?: boolean;
-  setDiscoveryHintModalOpen?: HostsNotShowingLinkProps['setDiscoveryHintModalOpen'];
-};
-
-type OpenRows = {
+export type OpenRows = {
   [id: string]: boolean;
 };
 
-const getColumns = (hosts?: Host[]) => [
+const defaultGetColumns = (hosts?: Host[]) => [
   { title: 'Hostname', transforms: [sortable], cellFormatters: [expandable] },
   { title: 'Role', transforms: [sortable] },
   { title: 'Status', transforms: [sortable] },
@@ -89,7 +84,7 @@ const getColumns = (hosts?: Host[]) => [
   { title: <HostsCount hosts={hosts} inParenthesis /> },
 ];
 
-const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host): IRow => {
+const defaultHostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host): IRow => {
   const { id, status, createdAt, inventory: inventoryString = '' } = host;
   const inventory = stringToJSON<Inventory>(inventoryString) || {};
   const { cores, memory, disk } = getHostRowHardwareInfo(inventory);
@@ -200,8 +195,18 @@ const rowKey = ({ rowData }: ExtraParamsType) => rowData?.key;
 const isHostShown = (skipDisabled: boolean) => (host: Host) =>
   !skipDisabled || host.status != 'disabled';
 
+type HostsTableProps = {
+  cluster: Cluster;
+  getColumns?: (hosts?: Host[]) => (string | ICell)[];
+  hostToHostTableRow?: (openRows: OpenRows, cluster: Cluster) => (host: Host) => IRow;
+  skipDisabled?: boolean;
+  setDiscoveryHintModalOpen?: HostsNotShowingLinkProps['setDiscoveryHintModalOpen'];
+};
+
 const HostsTable: React.FC<HostsTableProps> = ({
   cluster,
+  hostToHostTableRow = defaultHostToHostTableRow,
+  getColumns = defaultGetColumns,
   skipDisabled = false,
   setDiscoveryHintModalOpen,
 }) => {
@@ -233,10 +238,10 @@ const HostsTable: React.FC<HostsTableProps> = ({
             return row;
           }),
       ),
-    [cluster, skipDisabled, openRows, sortBy],
+    [cluster, skipDisabled, openRows, sortBy, hostToHostTableRow],
   );
 
-  const columns = React.useMemo(() => getColumns(cluster.hosts), [cluster.hosts]);
+  const columns = React.useMemo(() => getColumns(cluster.hosts), [cluster.hosts, getColumns]);
 
   const rows = React.useMemo(() => {
     if (hostRows.length) {
@@ -497,7 +502,6 @@ const HostsTable: React.FC<HostsTableProps> = ({
           deleteHostDialog.close();
         }}
       />
-      {editHostDialog.isOpen && <>Hey, edit Host modal should be now open!</>}
       <EditHostModal
         host={editHostDialog.data?.host}
         inventory={editHostDialog.data?.inventory}

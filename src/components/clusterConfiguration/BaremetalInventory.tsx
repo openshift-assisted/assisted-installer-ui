@@ -1,6 +1,5 @@
 import React from 'react';
 import { Text, TextContent, Button, Stack, StackItem } from '@patternfly/react-core';
-import HostsTable from '../hosts/HostsTable';
 import { Cluster, HostRequirements as HostRequirementsType } from '../../api/types';
 import { HostRequirementsLink } from '../fetching/HostRequirements';
 import VMRebootConfigurationInfo from '../hosts/VMRebootConfigurationInfo';
@@ -11,6 +10,7 @@ import {
 } from './DiscoveryTroubleshootingModal';
 import FormatDiskWarning from './FormatDiskWarning';
 import { isSingleNodeCluster } from './utils';
+import BaremetalDiscoveryHostsTable from '../hosts/BaremetalDiscoveryHostsTable';
 
 const HostRequirementsContent = ({
   worker = {},
@@ -87,7 +87,10 @@ const BaremetalInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
           <FormatDiskWarning />
           <VMRebootConfigurationInfo hosts={cluster.hosts} />
         </TextContent>
-        <HostsTable cluster={cluster} setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
+        <BaremetalDiscoveryHostsTable
+          cluster={cluster}
+          setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
+        />
         <DiscoveryTroubleshootingModal
           isOpen={isDiscoveryHintModalOpen}
           setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
