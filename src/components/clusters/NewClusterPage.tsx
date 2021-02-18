@@ -4,22 +4,19 @@ import PageSection from '../ui/PageSection';
 import { AlertsContextProvider } from '../AlertsContextProvider';
 import ClusterBreadcrumbs from './ClusterBreadcrumbs';
 import NewClusterWizard from '../clusterWizard/NewClusterWizard';
-import { FeatureGateContextProvider, FeatureListType } from '../../features/featureGate';
 
-const NewClusterPage: React.FC<{ features: FeatureListType }> = ({ features }) => {
+const NewClusterPage: React.FC = () => {
   return (
     <AlertsContextProvider>
-      <FeatureGateContextProvider features={features}>
-        <ClusterBreadcrumbs clusterName="New cluster" />
-        <PageSection variant={PageSectionVariants.light}>
-          <TextContent>
-            <Text component="h1">Install OpenShift on Bare Metal with the Assisted Installer</Text>
-          </TextContent>
-        </PageSection>
-        <PageSection variant={PageSectionVariants.light} isFilled>
-          <NewClusterWizard />
-        </PageSection>
-      </FeatureGateContextProvider>
+      <ClusterBreadcrumbs clusterName="New cluster" />
+      <PageSection variant={PageSectionVariants.light}>
+        <TextContent>
+          <Text component="h1">Install OpenShift on Bare Metal with the Assisted Installer</Text>
+        </TextContent>
+      </PageSection>
+      <PageSection variant={PageSectionVariants.light} isFilled>
+        <NewClusterWizard />
+      </PageSection>
     </AlertsContextProvider>
   );
 };
