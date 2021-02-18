@@ -42,12 +42,12 @@ const NavItem: React.FC<WizardNavItemProps & { isValid?: () => boolean }> = ({
   if (!isDisabled && !isCurrent && !isValid()) {
     validatedLinkName = (
       <>
+        {content}
         <ExclamationCircleIcon
           className="wizard-nav-item-warning-icon"
           color={dangerColor.value}
           size="sm"
-        />{' '}
-        {content}
+        />
       </>
     );
   }
