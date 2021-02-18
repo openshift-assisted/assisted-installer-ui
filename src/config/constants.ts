@@ -1,5 +1,12 @@
 import * as packageJson from '../../package.json';
-import { Cluster, Host, Event, HostValidationId, DiskRole } from '../api/types';
+import {
+  Cluster,
+  Host,
+  Event,
+  HostValidationId,
+  DiskRole,
+  ClusterValidationId,
+} from '../api/types';
 import { ValidationsInfo, HostRole } from '../types/hosts';
 import { OpenshiftVersionOptionType } from '../types/versions';
 
@@ -176,6 +183,27 @@ export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string 
   'ocs-requirements-satisfied': '',
   'sufficient-installation-disk-speed': '',
   'cnv-requirements-satisfied': '',
+};
+
+export const CLUSTER_VALIDATION_LABELS: { [key in ClusterValidationId]: string } = {
+  'machine-cidr-defined': 'Machine CIDR',
+  'cluster-cidr-defined': 'Cluster CIDR',
+  'service-cidr-defined': 'Service CIDR',
+  'no-cidrs-overlapping': 'No overlapping CIDR',
+  'network-prefix-valid': 'Valid network prefix',
+  'machine-cidr-equals-to-calculated-cidr': 'Machine CIDR conforms expected',
+  'api-vip-defined': 'API VIP',
+  'api-vip-valid': 'API VIP validity',
+  'ingress-vip-defined': 'Ingress VIP',
+  'ingress-vip-valid': 'Ingress VIP validity',
+  'all-hosts-are-ready-to-install': 'All hosts are ready to install',
+  'sufficient-masters-count': 'Masters count',
+  'dns-domain-defined': 'DNS domain',
+  'pull-secret-set': 'Pull secret',
+  'ntp-server-configured': 'NTP server',
+  'lso-requirements-satisfied': 'LSO requirements',
+  'ocs-requirements-satisfied': 'OCS requirements',
+  'cnv-requirements-satisfied': 'CNV requirements',
 };
 
 export const CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4 = {
