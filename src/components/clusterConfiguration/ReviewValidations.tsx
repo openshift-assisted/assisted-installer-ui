@@ -20,6 +20,7 @@ import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
 import { ClusterWizardStepsType, findValidationFixStep } from '../clusterWizard/wizardTransition';
 import { wizardStepNames } from '../clusterWizard/ClusterWizardStep';
 import { Cluster, Host, stringToJSON } from '../../api';
+import { CLUSTER_VALIDATION_LABELS, HOST_VALIDATION_LABELS } from '../../config';
 
 const AllValidationsPassed = () => (
   <>
@@ -48,14 +49,18 @@ const FailingValidation: React.FC<{
   clusterGroup?: ClusterValidationGroup;
   hostGroup?: HostValidationGroup;
 }> = ({ validation, clusterGroup, hostGroup }) => {
-  const issue = `Checking of ${_.lowerFirst(validation.message).replace(/\.$/, '')}, failed. `;
+  const issue = `${
+    HOST_VALIDATION_LABELS[validation.id] ||
+    CLUSTER_VALIDATION_LABELS[validation.id] ||
+    validation.id
+  } check failed. `;
 
   let fix;
   const step = findValidationFixStep({ id: validation.id, clusterGroup, hostGroup });
   if (step) {
     fix = (
       <>
-        Fix can be done in the <ValidationActionLink step={step} /> step.
+        It can be fixed in the <ValidationActionLink step={step} /> step.
       </>
     );
   } else {
