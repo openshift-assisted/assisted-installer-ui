@@ -9,23 +9,11 @@ import {
   nameValidationSchema,
   validJSONSchema,
 } from '../ui/formik/validationSchemas';
-import {
-  ButtonVariant,
-  Form,
-  Grid,
-  GridItem,
-  Spinner,
-  Stack,
-  StackItem,
-  Text,
-  TextContent,
-} from '@patternfly/react-core';
+import { Form, Grid, GridItem, Stack, StackItem, Text, TextContent } from '@patternfly/react-core';
 import InputField from '../ui/formik/InputField';
 import SelectField from '../ui/formik/SelectField';
 import PullSecret from '../clusters/PullSecret';
 import { routeBasePath } from '../../config/constants';
-import ClusterToolbar from '../clusters/ClusterToolbar';
-import ToolbarButton from '../ui/Toolbar/ToolbarButton';
 import { useHistory } from 'react-router-dom';
 import LoadingState from '../ui/uiState/LoadingState';
 import { usePullSecretFetch } from '../fetching/pullSecret';
@@ -39,12 +27,12 @@ import ClusterWizardContext from './ClusterWizardContext';
 import Alerts from '../ui/Alerts';
 import CheckboxField from '../ui/formik/CheckboxField';
 import { getManagedDomains } from '../../api/domains';
-import ToolbarText from '../ui/Toolbar/ToolbarText';
 import { canNextClusterDetails, ClusterWizardFlowStateType } from './wizardTransition';
 import { useOpenshiftVersions } from '../fetching/openshiftVersions';
 import { OpenshiftVersionOptionType } from '../../types/versions';
 import SingleNodeCheckbox from '../ui/formik/SingleNodeCheckbox';
 import OpenShiftVersionSelect from '../clusterConfiguration/OpenShiftVersionSelect';
+import ClusterWizardToolbar from './ClusterWizardToolbar';
 
 type ClusterDetailsFormProps = {
   cluster?: Cluster;
@@ -121,7 +109,6 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
     nameInputRef.current?.focus();
   }, []);
 
-  // TODO(jtomasek): Update this to validate combination of cluster name + dns domain
   const handleClusterUpdate = async (clusterId: Cluster['id'], values: ClusterDetailsValues) => {
     const params: ClusterUpdateParams = _.omit(values, [
       'highAvailabilityMode',
@@ -190,7 +177,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
-      {({ submitForm, isSubmitting, isValid, dirty, values, setFieldValue }) => {
+      {({ submitForm, isSubmitting, isValid, dirty, values, setFieldValue, errors }) => {
         const { name: clusterName, baseDnsDomain, useRedHatDnsService } = values;
 
         const baseDnsHelperText = (
@@ -217,13 +204,6 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
               <GridItem span={12} lg={10} xl={9} xl2={7}>
                 <Form id="wizard-cluster-details__form">
                   <InputField ref={nameInputRef} label="Cluster Name" name="name" isRequired />
-                  <SingleNodeCheckbox
-                    name="highAvailabilityMode"
-                    versions={versions}
-                    isDisabled={!!cluster}
-                  />
-                  <OpenShiftVersionSelect versions={versions} />
-                  {!cluster?.pullSecretSet && <PullSecret pullSecret={pullSecret} />}
                   {!!managedDomains.length && (
                     <CheckboxField
                       name="useRedHatDnsService"
@@ -253,6 +233,13 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
                       isRequired
                     />
                   )}
+                  <SingleNodeCheckbox
+                    name="highAvailabilityMode"
+                    versions={versions}
+                    isDisabled={!!cluster}
+                  />
+                  <OpenShiftVersionSelect versions={versions} />
+                  {!cluster?.pullSecretSet && <PullSecret pullSecret={pullSecret} />}
                 </Form>
               </GridItem>
             </Grid>
@@ -266,31 +253,16 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
               </StackItem>
             )}
             <StackItem>
-              <ClusterToolbar>
-                {/* TODO(mlibra): unify toolbar with other steps */}
-                <ToolbarButton
-                  name="save"
-                  variant={ButtonVariant.primary}
-                  isDisabled={
-                    cluster ? isSubmitting || !isValid : isSubmitting || !isValid || !dirty
-                  }
-                  onClick={submitForm}
-                >
-                  Next
-                </ToolbarButton>
-
-                <ToolbarButton
-                  variant={ButtonVariant.link}
-                  onClick={() => history.push(`${routeBasePath}/clusters`)}
-                >
-                  Cancel
-                </ToolbarButton>
-                {isSubmitting && (
-                  <ToolbarText>
-                    <Spinner size="md" /> Submitting...
-                  </ToolbarText>
-                )}
-              </ClusterToolbar>
+              <ClusterWizardToolbar
+                cluster={cluster}
+                formErrors={errors}
+                dirty={dirty}
+                isSubmitting={isSubmitting}
+                isNextDisabled={
+                  !(isValid && (dirty || (cluster && canNextClusterDetails({ cluster }))))
+                }
+                onNext={submitForm}
+              />
             </StackItem>
           </Stack>
         );
