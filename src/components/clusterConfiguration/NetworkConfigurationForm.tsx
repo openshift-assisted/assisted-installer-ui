@@ -30,6 +30,7 @@ import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
 import NetworkConfiguration from './NetworkConfiguration';
 import ClusterSshKeyField from './ClusterSshKeyField';
 import { getHostSubnets, getNetworkInitialValues } from './utils';
+import NetworkingHostsTable from '../hosts/NetworkingHostsTable';
 
 const validationSchema = (initialValues: NetworkConfigurationValues, hostSubnets: HostSubnets) =>
   Yup.lazy<NetworkConfigurationValues>((values) =>
@@ -88,7 +89,7 @@ const NetworkConfigurationForm: React.FC<{
       });
       dispatch(updateCluster(data));
 
-      canNextNetwork({ cluster }) && setCurrentStepId('review');
+      canNextNetwork({ cluster: data }) && setCurrentStepId('review');
     } catch (e) {
       handleApiError<ClusterUpdateParams>(e, () =>
         addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),
@@ -149,6 +150,12 @@ const NetworkConfigurationForm: React.FC<{
                     onSshKeyBlur={onSshKeyBlur}
                   />
                 </Form>
+              </GridItem>
+              <GridItem>
+                <TextContent>
+                  <Text component="h2">Bare metal inventory</Text>
+                </TextContent>
+                <NetworkingHostsTable cluster={cluster} />
               </GridItem>
             </Grid>
           </>
