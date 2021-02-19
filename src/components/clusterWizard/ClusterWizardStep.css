@@ -1,0 +1,7 @@
+.cluster-wizard-step .pf-c-wizard__nav-item {
+  white-space: nowrap;
+}
+
+.wizard-nav-item-warning-icon {
+  margin-left: var(--pf-global--spacer--sm);
+}

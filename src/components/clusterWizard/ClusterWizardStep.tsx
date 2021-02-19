@@ -2,8 +2,8 @@ import React from 'react';
 import { WizardBody, WizardNav, WizardNavItem, WizardNavItemProps } from '@patternfly/react-core';
 import { css } from '@patternfly/react-styles';
 import styles from '@patternfly/react-styles/css/components/Wizard/wizard';
-import { ExclamationTriangleIcon } from '@patternfly/react-icons';
-import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens';
+import { ExclamationCircleIcon } from '@patternfly/react-icons';
+import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens';
 import { Cluster } from '../../api/types';
 import ClusterWizardContext from './ClusterWizardContext';
 import {
@@ -11,19 +11,26 @@ import {
   canNextClusterDetails,
   canNextNetwork,
   ClusterWizardStepsType,
+  wizardStepsValidationsMap,
 } from './wizardTransition';
+
+import './ClusterWizardStep.css';
 
 type ClusterWizardStepProps = {
   cluster?: Cluster;
   footer?: React.ReactNode;
 };
 
-const wizardSteps: ClusterWizardStepsType[] = [
-  'cluster-details',
-  'baremetal-discovery',
-  'networking',
-  'review',
-];
+const wizardSteps = Object.keys(wizardStepsValidationsMap) as ClusterWizardStepsType[];
+
+export const wizardStepNames: {
+  [key in ClusterWizardStepsType]: string;
+} = {
+  'cluster-details': 'Cluster Details',
+  'baremetal-discovery': 'Bare Metal Discovery',
+  networking: 'Networking',
+  review: 'Review & Create',
+};
 
 const NavItem: React.FC<WizardNavItemProps & { isValid?: () => boolean }> = ({
   isValid = () => true,
@@ -35,12 +42,12 @@ const NavItem: React.FC<WizardNavItemProps & { isValid?: () => boolean }> = ({
   if (!isDisabled && !isCurrent && !isValid()) {
     validatedLinkName = (
       <>
-        <ExclamationTriangleIcon
-          className="wizard-nav-item-warning-icon"
-          color={warningColor.value}
-          size="sm"
-        />{' '}
         {content}
+        <ExclamationCircleIcon
+          className="wizard-nav-item-warning-icon"
+          color={dangerColor.value}
+          size="sm"
+        />
       </>
     );
   }
@@ -55,7 +62,7 @@ const ClusterWizardStep: React.FC<ClusterWizardStepProps> = ({ cluster, footer, 
     <WizardNav>
       <NavItem
         key="cluster-details"
-        content="Cluster Details"
+        content={wizardStepNames['cluster-details']}
         isCurrent={currentStepId === 'cluster-details'}
         isValid={() => !cluster || canNextClusterDetails({ cluster })}
         isDisabled={false}
@@ -64,7 +71,7 @@ const ClusterWizardStep: React.FC<ClusterWizardStepProps> = ({ cluster, footer, 
       />
       <NavItem
         key="baremetal-discovery"
-        content="Bare Metal Discovery"
+        content={wizardStepNames['baremetal-discovery']}
         isDisabled={!wizardSteps.slice(1).includes(currentStepId)}
         isValid={() => !cluster || canNextBaremetalDiscovery({ cluster })}
         isCurrent={currentStepId === 'baremetal-discovery'}
@@ -72,7 +79,7 @@ const ClusterWizardStep: React.FC<ClusterWizardStepProps> = ({ cluster, footer, 
         onNavItemClick={() => setCurrentStepId('baremetal-discovery')}
       />
       <NavItem
-        content="Networking"
+        content={wizardStepNames['networking']}
         step={2}
         isDisabled={!wizardSteps.slice(2).includes(currentStepId)}
         isValid={() => !cluster || canNextNetwork({ cluster })}
@@ -81,7 +88,7 @@ const ClusterWizardStep: React.FC<ClusterWizardStepProps> = ({ cluster, footer, 
         onNavItemClick={() => setCurrentStepId('networking')}
       />
       <NavItem
-        content="Review & Create"
+        content={wizardStepNames['review']}
         step={3}
         isDisabled={!wizardSteps.slice(3).includes(currentStepId)}
         key="review"
@@ -92,7 +99,7 @@ const ClusterWizardStep: React.FC<ClusterWizardStepProps> = ({ cluster, footer, 
   );
 
   return (
-    <div className={css(styles.wizardOuterWrap)}>
+    <div className={css(styles.wizardOuterWrap, 'cluster-wizard-step')}>
       <div className={css(styles.wizardInnerWrap)}>
         {nav}
         <WizardBody aria-labelledby="step-id" hasNoBodyPadding={false}>
