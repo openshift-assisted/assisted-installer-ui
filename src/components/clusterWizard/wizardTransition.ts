@@ -93,7 +93,7 @@ export const wizardStepsValidationsMap: WizardStepsValidationMap = {
   review: reviewStepValidationsMap,
 };
 
-const checkClusterValidations = (
+export const checkClusterValidations = (
   clusterValidationsInfo: ClusterValidationsInfo,
   requiredIds: ClusterValidationId[],
 ): boolean => {
@@ -106,7 +106,7 @@ const checkClusterValidations = (
   );
 };
 
-const checkClusterValidationGroups = (
+export const checkClusterValidationGroups = (
   clusterValidationsInfo: ClusterValidationsInfo,
   groups: ClusterValidationGroup[],
 ) =>
