@@ -7,12 +7,14 @@ interface Props {
 }
 
 const ClusterToolbar: React.FC<Props> = ({ children, validationSection }) => (
-  <ActionGroup>
+  <>
     {validationSection}
-    <Toolbar id="cluster-toolbar" className="cluster-toolbar">
-      <ToolbarContent className="cluster-toolbar__content">{children}</ToolbarContent>
-    </Toolbar>
-  </ActionGroup>
+    <ActionGroup>
+      <Toolbar id="cluster-toolbar" className="cluster-toolbar">
+        <ToolbarContent className="cluster-toolbar__content">{children}</ToolbarContent>
+      </Toolbar>
+    </ActionGroup>
+  </>
 );
 
 export default ClusterToolbar;
