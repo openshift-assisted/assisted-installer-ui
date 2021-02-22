@@ -106,7 +106,7 @@ const ClusterWizardStep: React.FC<ClusterWizardStepProps> = ({ cluster, footer, 
           {children}
         </WizardBody>
       </div>
-      {footer && <div className="pf-c-wizard__footer">{footer}</div>}
+      {footer && <div className="pf-c-wizard__footer cluster-wizard-step__footer">{footer}</div>}
     </div>
   );
 };
