@@ -174,7 +174,7 @@ export const getWizardStepHostStatus = (
     return checkHostValidationGroups(validationsInfo, groups) &&
       checkHostValidations(validationsInfo, validationIds)
       ? 'known'
-      : host.status;
+      : status;
   }
   return status;
 };
@@ -219,7 +219,7 @@ export const getWizardStepClusterStatus = (
       checkClusterValidationGroups(validationsInfo, groups) &&
       checkClusterValidations(validationsInfo, validationIds)
       ? 'ready'
-      : cluster.status;
+      : status;
   }
   return status;
 };
