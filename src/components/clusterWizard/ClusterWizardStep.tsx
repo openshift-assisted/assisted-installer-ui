@@ -64,7 +64,7 @@ const ClusterWizardStep: React.FC<ClusterWizardStepProps> = ({ cluster, footer, 
         key="cluster-details"
         content={wizardStepNames['cluster-details']}
         isCurrent={currentStepId === 'cluster-details'}
-        isValid={() => !cluster || canNextClusterDetails({ cluster })}
+        isValid={() => !cluster?.validationsInfo || canNextClusterDetails({ cluster })}
         isDisabled={false}
         step={0}
         onNavItemClick={() => setCurrentStepId('cluster-details')}
