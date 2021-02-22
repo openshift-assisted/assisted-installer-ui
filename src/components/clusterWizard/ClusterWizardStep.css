@@ -5,3 +5,7 @@
 .wizard-nav-item-warning-icon {
   margin-left: var(--pf-global--spacer--sm);
 }
+
+.cluster-wizard-step__footer {
+  display: block;
+}
