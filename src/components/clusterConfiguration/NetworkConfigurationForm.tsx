@@ -10,11 +10,10 @@ import {
   handleApiError,
   patchCluster,
 } from '../../api';
-import { Form, Grid, GridItem, Stack, StackItem, Text, TextContent } from '@patternfly/react-core';
+import { Form, Grid, GridItem, Text, TextContent } from '@patternfly/react-core';
 
 import { trimSshPublicKey } from '../ui/formik/utils';
 import { AlertsContext } from '../AlertsContextProvider';
-import Alerts from '../ui/Alerts';
 import {
   sshPublicKeyValidationSchema,
   ipBlockValidationSchema,
@@ -47,11 +46,7 @@ const validationSchema = (initialValues: NetworkConfigurationValues, hostSubnets
 const NetworkConfigurationForm: React.FC<{
   cluster: Cluster;
 }> = ({ cluster }) => {
-  /* TODO(mlibra): Refactor alerts section along the butons
-    const [isValidationSectionOpen, setIsValidationSectionOpen] = React.useState(false);
-  const [isStartingInstallation, setIsStartingInstallation] = React.useState(false);
-  */
-  const { alerts, addAlert, clearAlerts } = React.useContext(AlertsContext);
+  const { addAlert, clearAlerts } = React.useContext(AlertsContext);
   const { setCurrentStepId } = React.useContext(ClusterWizardContext);
   const dispatch = useDispatch();
   const hostSubnets = React.useMemo(() => getHostSubnets(cluster), [cluster]);
@@ -162,24 +157,15 @@ const NetworkConfigurationForm: React.FC<{
         );
 
         const footer = (
-          <Stack hasGutter>
-            {!!alerts.length && (
-              <StackItem>
-                <Alerts />
-              </StackItem>
-            )}
-            <StackItem>
-              <ClusterWizardToolbar
-                cluster={cluster}
-                formErrors={errors}
-                dirty={dirty}
-                isSubmitting={isSubmitting}
-                isNextDisabled={!(isValid && (dirty || canNextNetwork({ cluster })))}
-                onNext={submitForm}
-                onBack={() => setCurrentStepId('baremetal-discovery')}
-              />
-            </StackItem>
-          </Stack>
+          <ClusterWizardToolbar
+            cluster={cluster}
+            formErrors={errors}
+            dirty={dirty}
+            isSubmitting={isSubmitting}
+            isNextDisabled={!(isValid && (dirty || canNextNetwork({ cluster })))}
+            onNext={submitForm}
+            onBack={() => setCurrentStepId('baremetal-discovery')}
+          />
         );
         return (
           <ClusterWizardStep cluster={cluster} footer={footer}>
