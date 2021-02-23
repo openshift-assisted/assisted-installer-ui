@@ -11,6 +11,8 @@ import {
 import FormatDiskWarning from './FormatDiskWarning';
 import { isSingleNodeCluster } from './utils';
 import BaremetalDiscoveryHostsTable from '../hosts/BaremetalDiscoveryHostsTable';
+import { useFeature } from '../../features/featureGate';
+import CheckboxField from '../ui/formik/CheckboxField';
 
 const HostRequirementsContent = ({
   worker = {},
@@ -41,7 +43,7 @@ const SingleHostRequirementsContent = ({
 
 const BaremetalInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const [isDiscoveryHintModalOpen, setDiscoveryHintModalOpen] = React.useState(false);
-  // const isOpenshiftClusterStorageEnabled = useFeature('ASSISTED_INSTALLER_OCS_FEATURE');
+  const isOpenshiftClusterStorageEnabled = useFeature('ASSISTED_INSTALLER_OCS_FEATURE');
 
   return (
     <Stack hasGutter>
@@ -67,15 +69,14 @@ const BaremetalInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
             Hosts connected to the internet with a valid IP address will appear bellow. Each host
             should be configured to boot the ISO <b>once</b> and not after a reboot.
           </Text>
-          {/* TODO(jtomasek): Turn baremetal inventory into a form and enable this field */}
-          {/* {isOpenshiftClusterStorageEnabled && (
+          {isOpenshiftClusterStorageEnabled && (
             <CheckboxField
               name="useExtraDisksForLocalStorage"
               label="Use extra disks for local storage."
               helperText="Non-boot disks will be usable by workloads for persistent storage."
             />
           )}
-          <Text /> */}
+          <Text />
           <Text component="p">
             {isSingleNodeCluster(cluster) ? (
               <HostRequirementsLink ContentComponent={SingleHostRequirementsContent} />
