@@ -158,7 +158,7 @@ export const ipBlockValidationSchema = Yup.string()
     },
   )
   .test(
-    'valid-cidr',
+    'valid-cidr-base-address',
     ({ value }) => `${value} is not a valid CIDR`,
     (value: string) => {
       const ip = stringToIPAddress(value);
@@ -166,9 +166,11 @@ export const ipBlockValidationSchema = Yup.string()
         return false;
       }
 
-      const startAddress = ip.startAddress().address;
+      const networkAddress = ip.startAddress().parsedAddress;
+      const ipAddress = ip.parsedAddress;
+      const result = ipAddress.every((part, idx) => part === networkAddress[idx]);
 
-      return ip.addressMinusSuffix === startAddress;
+      return result;
     },
   );
 
