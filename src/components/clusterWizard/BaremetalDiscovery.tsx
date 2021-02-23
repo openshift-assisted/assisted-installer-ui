@@ -9,9 +9,7 @@ import ClusterWizardToolbar from './ClusterWizardToolbar';
 import { canNextBaremetalDiscovery } from './wizardTransition';
 import { getErrorMessage, handleApiError, stringToJSON } from '../../api/utils';
 import { BareMetalDiscoveryValues } from '../../types/clusters';
-import { Stack, StackItem } from '@patternfly/react-core';
 import { AlertsContext } from '../AlertsContextProvider';
-import Alerts from '../ui/Alerts';
 import { useFeature } from '../../features/featureGate';
 import { patchCluster } from '../../api/clusters';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
@@ -27,7 +25,7 @@ const getInitialValues = (cluster: Cluster) => {
 const BaremetalDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const dispatch = useDispatch();
   const { setCurrentStepId } = React.useContext(ClusterWizardContext);
-  const { alerts, addAlert, clearAlerts } = React.useContext(AlertsContext);
+  const { addAlert, clearAlerts } = React.useContext(AlertsContext);
   const isOpenshiftClusterStorageEnabled = useFeature('ASSISTED_INSTALLER_OCS_FEATURE');
 
   const handleSubmit = async (
@@ -71,24 +69,15 @@ const BaremetalDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         submitForm,
       }: FormikProps<BareMetalDiscoveryValues>) => {
         const footer = (
-          <Stack hasGutter>
-            {!!alerts.length && (
-              <StackItem>
-                <Alerts />
-              </StackItem>
-            )}
-            <StackItem>
-              <ClusterWizardToolbar
-                cluster={cluster}
-                dirty={dirty}
-                formErrors={errors}
-                isSubmitting={isSubmitting}
-                isNextDisabled={!(isValid && (dirty || canNextBaremetalDiscovery({ cluster })))}
-                onNext={submitForm}
-                onBack={() => setCurrentStepId('cluster-details')}
-              />
-            </StackItem>
-          </Stack>
+          <ClusterWizardToolbar
+            cluster={cluster}
+            dirty={dirty}
+            formErrors={errors}
+            isSubmitting={isSubmitting}
+            isNextDisabled={!(isValid && (dirty || canNextBaremetalDiscovery({ cluster })))}
+            onNext={submitForm}
+            onBack={() => setCurrentStepId('cluster-details')}
+          />
         );
 
         return (
