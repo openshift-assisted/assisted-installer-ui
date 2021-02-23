@@ -125,24 +125,26 @@ export const ClusterValidations: React.FC<{ validationsInfo?: Cluster['validatio
 
 export const HostsValidations: React.FC<{ hosts?: Host[] }> = ({ hosts = [] }) => {
   const failingValidations = {};
-  hosts.forEach((host) => {
-    const validationsInfo = stringToJSON<HostValidationsInfo>(host.validationsInfo) || {};
-    Object.keys(validationsInfo).forEach((group) => {
-      const f: (validation: HostValidation) => void = (validation) => {
-        if (validation.status === 'failure') {
-          failingValidations[validation.id] = failingValidations[validation.id] || (
-            <FailingValidation
-              key={validation.id}
-              validation={validation}
-              hostGroup={group as HostValidationGroup}
-            />
-          );
-        }
-      };
+  hosts
+    .filter((host) => host.status !== 'disabled')
+    .forEach((host) => {
+      const validationsInfo = stringToJSON<HostValidationsInfo>(host.validationsInfo) || {};
+      Object.keys(validationsInfo).forEach((group) => {
+        const f: (validation: HostValidation) => void = (validation) => {
+          if (validation.status === 'failure') {
+            failingValidations[validation.id] = failingValidations[validation.id] || (
+              <FailingValidation
+                key={validation.id}
+                validation={validation}
+                hostGroup={group as HostValidationGroup}
+              />
+            );
+          }
+        };
 
-      validationsInfo[group].forEach(f);
+        validationsInfo[group].forEach(f);
+      });
     });
-  });
 
   const array = _.values(failingValidations);
   if (array.length === 0) {
