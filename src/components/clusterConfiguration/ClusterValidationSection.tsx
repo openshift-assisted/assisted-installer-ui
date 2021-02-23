@@ -63,6 +63,8 @@ const ClusterValidationSection: React.FC<ClusterValidationSectionProps> = ({
     }
   });
 
+  const isContentToDisplay =
+    (!errorFields.length && dirty) || !!errorFields.length || !!failedValidations.length;
   return (
     <Split>
       <SplitItem isFilled>
@@ -102,6 +104,11 @@ const ClusterValidationSection: React.FC<ClusterValidationSectionProps> = ({
                   </List>
                 </FlexItem>
               </Flex>
+            </Alert>
+          )}
+          {!isContentToDisplay && (
+            <Alert variant={AlertVariant.info} title="Host validations are failing" isInline>
+              All relevant cluster-level validations are passing, inspect individual hosts.
             </Alert>
           )}
         </AlertGroup>
