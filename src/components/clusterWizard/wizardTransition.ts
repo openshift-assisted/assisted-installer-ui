@@ -32,6 +32,7 @@ type WizardStepValidationMap = {
     validationIds: ClusterValidationId[];
   };
   host: {
+    allowedStatuses: Host['status'][];
     groups: HostValidationGroup[];
     validationIds: HostValidationId[];
   };
@@ -47,6 +48,7 @@ const clusterDetailsStepValidationsMap: WizardStepValidationMap = {
     validationIds: ['pull-secret-set', 'dns-domain-defined'],
   },
   host: {
+    allowedStatuses: ['known', 'disabled', 'discovering'],
     groups: [],
     validationIds: [],
   },
@@ -59,6 +61,7 @@ const baremetalDiscoveryStepValidationsMap: WizardStepValidationMap = {
     validationIds: [/*'sufficient-masters-count',*/ 'ocs-requirements-satisfied'],
   },
   host: {
+    allowedStatuses: ['known', 'disabled'],
     groups: ['hardware'],
     validationIds: ['connected', 'container-images-available'],
   },
@@ -70,6 +73,7 @@ const networkingStepValidationsMap: WizardStepValidationMap = {
     validationIds: [],
   },
   host: {
+    allowedStatuses: ['known', 'disabled'],
     groups: ['network'],
     validationIds: [],
   },
@@ -81,6 +85,7 @@ const reviewStepValidationsMap: WizardStepValidationMap = {
     validationIds: ['all-hosts-are-ready-to-install'],
   },
   host: {
+    allowedStatuses: ['known', 'disabled'],
     groups: [],
     validationIds: [],
   },
@@ -166,7 +171,7 @@ export const getWizardStepHostStatus = (
   wizardStepId: ClusterWizardStepsType,
 ): Host['status'] => {
   const { status } = host;
-  if (['insufficient', 'pending-for-input'].includes(host.status)) {
+  if (['insufficient', 'pending-for-input'].includes(status)) {
     const validationsInfo = stringToJSON<HostValidationsInfo>(host.validationsInfo) || {};
     const { groups, validationIds } = wizardStepsValidationsMap[wizardStepId].host;
 
@@ -174,7 +179,7 @@ export const getWizardStepHostStatus = (
     return checkHostValidationGroups(validationsInfo, groups) &&
       checkHostValidations(validationsInfo, validationIds)
       ? 'known'
-      : host.status;
+      : status;
   }
   return status;
 };
@@ -209,17 +214,18 @@ export const getWizardStepClusterStatus = (
   wizardStepId: ClusterWizardStepsType,
 ): Cluster['status'] => {
   const { status } = cluster;
-  if (['insufficient', 'pending-for-input'].includes(cluster.status)) {
+  if (['insufficient', 'pending-for-input'].includes(status)) {
     const validationsInfo = stringToJSON<ClusterValidationsInfo>(cluster.validationsInfo) || {};
     const { groups, validationIds } = wizardStepsValidationsMap[wizardStepId].cluster;
-    const allHostsReady = (cluster?.hosts || []).every(
-      (host) => getWizardStepHostStatus(host, wizardStepId) === 'known',
+    const { allowedStatuses } = wizardStepsValidationsMap[wizardStepId].host;
+    const allHostsReady = (cluster?.hosts || []).every((host) =>
+      allowedStatuses.includes(getWizardStepHostStatus(host, wizardStepId)),
     );
     return allHostsReady &&
       checkClusterValidationGroups(validationsInfo, groups) &&
       checkClusterValidations(validationsInfo, validationIds)
       ? 'ready'
-      : cluster.status;
+      : status;
   }
   return status;
 };
