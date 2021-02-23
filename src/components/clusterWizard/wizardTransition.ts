@@ -57,8 +57,7 @@ const clusterDetailsStepValidationsMap: WizardStepValidationMap = {
 const baremetalDiscoveryStepValidationsMap: WizardStepValidationMap = {
   cluster: {
     groups: [],
-    // TODO(jtomasek): enable sufficient-masters-count once https://bugzilla.redhat.com/show_bug.cgi?id=1928086 is fixed
-    validationIds: [/*'sufficient-masters-count',*/ 'ocs-requirements-satisfied'],
+    validationIds: ['sufficient-masters-count', 'ocs-requirements-satisfied'],
   },
   host: {
     allowedStatuses: ['known', 'disabled'],
@@ -174,8 +173,6 @@ export const getWizardStepHostStatus = (
   if (['insufficient', 'pending-for-input'].includes(status)) {
     const validationsInfo = stringToJSON<HostValidationsInfo>(host.validationsInfo) || {};
     const { groups, validationIds } = wizardStepsValidationsMap[wizardStepId].host;
-
-    // TODO(jtomasek): alternatively we could getWizardStepValidationsInfo and ensure that all validations are passing
     return checkHostValidationGroups(validationsInfo, groups) &&
       checkHostValidations(validationsInfo, validationIds)
       ? 'known'
