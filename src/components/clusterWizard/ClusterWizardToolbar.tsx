@@ -1,6 +1,13 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { TextVariants, Spinner, Button, ButtonVariant } from '@patternfly/react-core';
+import {
+  TextVariants,
+  Spinner,
+  Button,
+  ButtonVariant,
+  Stack,
+  StackItem,
+} from '@patternfly/react-core';
 import { WarningTriangleIcon, CheckCircleIcon } from '@patternfly/react-icons';
 import { global_success_color_100 as successColor } from '@patternfly/react-tokens';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens';
@@ -10,6 +17,8 @@ import ClusterValidationSection from '../clusterConfiguration/ClusterValidationS
 import ClusterToolbar from '../clusters/ClusterToolbar';
 import { ToolbarButton, ToolbarText } from '../ui';
 import { routeBasePath } from '../../config';
+import Alerts from '../ui/Alerts';
+import { AlertsContext } from '../AlertsContextProvider';
 import { getWizardStepClusterStatus } from './wizardTransition';
 import ClusterWizardContext from './ClusterWizardContext';
 
@@ -114,6 +123,7 @@ const ClusterWizardToolbar: React.FC<ClusterWizardToolbarProps> = ({
 }) => {
   const [isValidationSectionOpen, setIsValidationSectionOpen] = React.useState(false);
   const [isStartingInstallation, setIsStartingInstallation] = React.useState(false);
+  const { alerts } = React.useContext(AlertsContext);
   const history = useHistory();
 
   const handleCancel = React.useCallback(() => {
@@ -133,68 +143,77 @@ const ClusterWizardToolbar: React.FC<ClusterWizardToolbarProps> = ({
   }, [setIsStartingInstallation, onInstall]);
 
   return (
-    <ClusterToolbar
-      validationSection={
-        isValidationSectionOpen && cluster ? (
-          <ClusterValidationSection
-            cluster={cluster}
-            dirty={dirty}
-            formErrors={formErrors}
-            onClose={() => setIsValidationSectionOpen(false)}
-          />
-        ) : null
-      }
-    >
-      {onInstall && cluster && (
-        <ToolbarButton
-          variant={ButtonVariant.primary}
-          name="install"
-          onClick={handleClusterInstall}
-          isDisabled={isStartingInstallation || cluster.status !== 'ready'}
-        >
-          Install Cluster
-        </ToolbarButton>
+    <Stack hasGutter>
+      {!!alerts.length && (
+        <StackItem>
+          <Alerts />
+        </StackItem>
       )}
-      {onNext && (
-        <ToolbarButton
-          variant={ButtonVariant.primary}
-          name="next"
-          onClick={onNext}
-          isDisabled={isNextDisabled}
+      <StackItem>
+        <ClusterToolbar
+          validationSection={
+            isValidationSectionOpen && cluster ? (
+              <ClusterValidationSection
+                cluster={cluster}
+                dirty={dirty}
+                formErrors={formErrors}
+                onClose={() => setIsValidationSectionOpen(false)}
+              />
+            ) : null
+          }
         >
-          Next
-        </ToolbarButton>
-      )}
-      {onBack && (
-        <ToolbarButton
-          variant={ButtonVariant.secondary}
-          name="back"
-          onClick={onBack}
-          isDisabled={false}
-        >
-          Back
-        </ToolbarButton>
-      )}
-      <ToolbarButton
-        variant={ButtonVariant.link}
-        name="cancel"
-        onClick={handleCancel}
-        isDisabled={false}
-      >
-        Cancel
-      </ToolbarButton>
+          {onInstall && cluster && (
+            <ToolbarButton
+              variant={ButtonVariant.primary}
+              name="install"
+              onClick={handleClusterInstall}
+              isDisabled={isStartingInstallation || cluster.status !== 'ready'}
+            >
+              Install Cluster
+            </ToolbarButton>
+          )}
+          {onNext && (
+            <ToolbarButton
+              variant={ButtonVariant.primary}
+              name="next"
+              onClick={onNext}
+              isDisabled={isNextDisabled}
+            >
+              Next
+            </ToolbarButton>
+          )}
+          {onBack && (
+            <ToolbarButton
+              variant={ButtonVariant.secondary}
+              name="back"
+              onClick={onBack}
+              isDisabled={false}
+            >
+              Back
+            </ToolbarButton>
+          )}
+          <ToolbarButton
+            variant={ButtonVariant.link}
+            name="cancel"
+            onClick={handleCancel}
+            isDisabled={false}
+          >
+            Cancel
+          </ToolbarButton>
 
-      {cluster && (
-        <ValidationSectionToggle
-          cluster={cluster}
-          formErrors={formErrors}
-          isSubmitting={isSubmitting}
-          isStartingInstallation={isStartingInstallation}
-          onInstall={onInstall}
-          toggleValidationSection={() => setIsValidationSectionOpen(!isValidationSectionOpen)}
-        />
-      )}
-    </ClusterToolbar>
+          {cluster && (
+            <ValidationSectionToggle
+              cluster={cluster}
+              formErrors={formErrors}
+              isSubmitting={isSubmitting}
+              isStartingInstallation={isStartingInstallation}
+              onInstall={onInstall}
+              toggleValidationSection={() => setIsValidationSectionOpen(!isValidationSectionOpen)}
+            />
+          )}
+        </ClusterToolbar>
+      </StackItem>
+    </Stack>
   );
 };
 
