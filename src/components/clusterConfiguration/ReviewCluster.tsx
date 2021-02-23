@@ -10,25 +10,27 @@ import './ReviewCluster.css';
 
 const ReviewHostsInventory: React.FC<{ hosts?: Host[] }> = ({ hosts = [] }) => {
   const rows = React.useMemo(() => {
-    const summary = hosts.reduce(
-      (summary, host) => {
-        summary.count++;
-        const inventory = stringToJSON<Inventory>(host.inventory);
-        if (inventory) {
-          const hwInfo = getSimpleHardwareInfo(inventory);
-          summary.cores += hwInfo.cores;
-          summary.memory += hwInfo.memory;
-          summary.fs += hwInfo.disks;
-        }
-        return summary;
-      },
-      {
-        count: 0,
-        cores: 0,
-        memory: 0,
-        fs: 0,
-      },
-    );
+    const summary = hosts
+      .filter((host) => host.status !== 'disabled')
+      .reduce(
+        (summary, host) => {
+          summary.count++;
+          const inventory = stringToJSON<Inventory>(host.inventory);
+          if (inventory) {
+            const hwInfo = getSimpleHardwareInfo(inventory);
+            summary.cores += hwInfo.cores;
+            summary.memory += hwInfo.memory;
+            summary.fs += hwInfo.disks;
+          }
+          return summary;
+        },
+        {
+          count: 0,
+          cores: 0,
+          memory: 0,
+          fs: 0,
+        },
+      );
 
     return [
       {
