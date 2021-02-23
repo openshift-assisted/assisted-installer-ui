@@ -1,18 +1,17 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { Grid, GridItem, Stack, StackItem, Text, TextContent } from '@patternfly/react-core';
+import { Grid, GridItem, Text, TextContent } from '@patternfly/react-core';
 import { Cluster } from '../../api/types';
 import ClusterWizardStep from '../clusterWizard/ClusterWizardStep';
 import { AlertsContext } from '../AlertsContextProvider';
 import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
-import Alerts from '../ui/Alerts';
 import ClusterWizardToolbar from '../clusterWizard/ClusterWizardToolbar';
 import { getErrorMessage, handleApiError, postInstallCluster } from '../../api';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import ReviewCluster from './ReviewCluster';
 
 const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
-  const { alerts, addAlert } = React.useContext(AlertsContext);
+  const { addAlert } = React.useContext(AlertsContext);
   const { setCurrentStepId } = React.useContext(ClusterWizardContext);
   const dispatch = useDispatch();
 
@@ -33,20 +32,11 @@ const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   };
 
   const footer = (
-    <Stack hasGutter>
-      {!!alerts.length && (
-        <StackItem>
-          <Alerts />
-        </StackItem>
-      )}
-      <StackItem>
-        <ClusterWizardToolbar
-          cluster={cluster}
-          onBack={() => setCurrentStepId('networking')}
-          onInstall={onInstall}
-        />
-      </StackItem>
-    </Stack>
+    <ClusterWizardToolbar
+      cluster={cluster}
+      onBack={() => setCurrentStepId('networking')}
+      onInstall={onInstall}
+    />
   );
 
   return (
