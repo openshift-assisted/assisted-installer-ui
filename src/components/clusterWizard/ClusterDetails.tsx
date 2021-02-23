@@ -9,7 +9,7 @@ import {
   nameValidationSchema,
   validJSONSchema,
 } from '../ui/formik/validationSchemas';
-import { Form, Grid, GridItem, Stack, StackItem, Text, TextContent } from '@patternfly/react-core';
+import { Form, Grid, GridItem, Text, TextContent } from '@patternfly/react-core';
 import InputField from '../ui/formik/InputField';
 import SelectField from '../ui/formik/SelectField';
 import PullSecret from '../clusters/PullSecret';
@@ -24,7 +24,6 @@ import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import { useDispatch } from 'react-redux';
 import { AlertsContext } from '../AlertsContextProvider';
 import ClusterWizardContext from './ClusterWizardContext';
-import Alerts from '../ui/Alerts';
 import CheckboxField from '../ui/formik/CheckboxField';
 import { getManagedDomains } from '../../api/domains';
 import { canNextClusterDetails, ClusterWizardFlowStateType } from './wizardTransition';
@@ -106,7 +105,7 @@ const validateClusterName = async (newFullName: string, existingClusterFullName?
 
 const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
   const { cluster, pullSecret, managedDomains, versions } = props;
-  const { alerts, addAlert, clearAlerts } = React.useContext(AlertsContext);
+  const { addAlert, clearAlerts } = React.useContext(AlertsContext);
   const { setCurrentStepId } = React.useContext(ClusterWizardContext);
   const history = useHistory();
   const dispatch = useDispatch();
@@ -252,25 +251,16 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
           </>
         );
         const footer = (
-          <Stack hasGutter>
-            {!!alerts.length && (
-              <StackItem>
-                <Alerts />
-              </StackItem>
-            )}
-            <StackItem>
-              <ClusterWizardToolbar
-                cluster={cluster}
-                formErrors={errors}
-                dirty={dirty}
-                isSubmitting={isSubmitting}
-                isNextDisabled={
-                  !(isValid && (dirty || (cluster && canNextClusterDetails({ cluster }))))
-                }
-                onNext={submitForm}
-              />
-            </StackItem>
-          </Stack>
+          <ClusterWizardToolbar
+            cluster={cluster}
+            formErrors={errors}
+            dirty={dirty}
+            isSubmitting={isSubmitting}
+            isNextDisabled={
+              !(isValid && (dirty || (cluster && canNextClusterDetails({ cluster }))))
+            }
+            onNext={submitForm}
+          />
         );
         return (
           <ClusterWizardStep cluster={cluster} footer={footer}>
