@@ -5,8 +5,10 @@ import {
   ValidationsInfo as ClusterValidationsInfo,
 } from '../../types/clusters';
 import {
+  Validation,
   ValidationGroup as HostValidationGroup,
   ValidationsInfo as HostValidationsInfo,
+  ValidationsInfo,
 } from '../../types/hosts';
 
 export type ClusterWizardStepsType =
@@ -36,6 +38,7 @@ type WizardStepValidationMap = {
     groups: HostValidationGroup[];
     validationIds: HostValidationId[];
   };
+  softValidationIds: (HostValidationId | ClusterValidationId)[];
 };
 
 type WizardStepsValidationMap = {
@@ -52,6 +55,7 @@ const clusterDetailsStepValidationsMap: WizardStepValidationMap = {
     groups: [],
     validationIds: [],
   },
+  softValidationIds: [],
 };
 
 const baremetalDiscoveryStepValidationsMap: WizardStepValidationMap = {
@@ -64,6 +68,7 @@ const baremetalDiscoveryStepValidationsMap: WizardStepValidationMap = {
     groups: ['hardware'],
     validationIds: ['connected', 'container-images-available'],
   },
+  softValidationIds: [],
 };
 
 const networkingStepValidationsMap: WizardStepValidationMap = {
@@ -76,6 +81,7 @@ const networkingStepValidationsMap: WizardStepValidationMap = {
     groups: ['network'],
     validationIds: [],
   },
+  softValidationIds: ['ntp-synced'],
 };
 
 const reviewStepValidationsMap: WizardStepValidationMap = {
@@ -88,6 +94,7 @@ const reviewStepValidationsMap: WizardStepValidationMap = {
     groups: [],
     validationIds: [],
   },
+  softValidationIds: [],
 };
 
 export const wizardStepsValidationsMap: WizardStepsValidationMap = {
@@ -95,6 +102,30 @@ export const wizardStepsValidationsMap: WizardStepsValidationMap = {
   'baremetal-discovery': baremetalDiscoveryStepValidationsMap,
   networking: networkingStepValidationsMap,
   review: reviewStepValidationsMap,
+};
+
+export const allClusterWizardSoftValidationIds: WizardStepValidationMap['softValidationIds'] = Object.keys(
+  wizardStepsValidationsMap,
+).reduce(
+  (prev, curr) => [...prev, ...wizardStepsValidationsMap[curr].softValidationIds],
+  [] as WizardStepValidationMap['softValidationIds'],
+);
+
+export const getFailingClusterWizardSoftValidationIds = (
+  wizardHostStepValidationsInfo: ValidationsInfo,
+  wizardStepId: ClusterWizardStepsType,
+) => {
+  const failingValidationIds = Object.keys(wizardHostStepValidationsInfo)
+    .reduce((curr, group) => {
+      const failingValidations = wizardHostStepValidationsInfo[group].filter(
+        (validation: Validation) => validation.status === 'failure',
+      );
+      return [...curr, ...failingValidations];
+    }, [] as Validation[])
+    .map((validation) => validation.id);
+  return failingValidationIds.filter((id) =>
+    wizardStepsValidationsMap[wizardStepId].softValidationIds.includes(id),
+  );
 };
 
 export const checkClusterValidations = (
