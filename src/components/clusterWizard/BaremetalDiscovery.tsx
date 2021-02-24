@@ -14,6 +14,7 @@ import { patchCluster } from '../../api/clusters';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import { getBareMetalDiscoveryInitialValues } from '../clusterConfiguration/utils';
 import { getOlmOperatorsByName } from '../clusters/utils';
+import FormikAutoSave from '../ui/formik/FormikAutoSave';
 
 const BaremetalDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const dispatch = useDispatch();
@@ -42,8 +43,6 @@ const BaremetalDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         values: getBareMetalDiscoveryInitialValues(data),
       });
       dispatch(updateCluster(data));
-
-      canNextBaremetalDiscovery({ cluster: data }) && setCurrentStepId('networking');
     } catch (e) {
       handleApiError<ClusterUpdateParams>(e, () =>
         addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),
@@ -53,21 +52,15 @@ const BaremetalDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
 
   return (
     <Formik initialValues={getBareMetalDiscoveryInitialValues(cluster)} onSubmit={handleSubmit}>
-      {({
-        isSubmitting,
-        isValid,
-        dirty,
-        errors,
-        submitForm,
-      }: FormikProps<BareMetalDiscoveryValues>) => {
+      {({ isSubmitting, dirty, errors }: FormikProps<BareMetalDiscoveryValues>) => {
         const footer = (
           <ClusterWizardToolbar
             cluster={cluster}
             dirty={dirty}
             formErrors={errors}
             isSubmitting={isSubmitting}
-            isNextDisabled={!(isValid && (dirty || canNextBaremetalDiscovery({ cluster })))}
-            onNext={submitForm}
+            isNextDisabled={dirty || !canNextBaremetalDiscovery({ cluster })}
+            onNext={() => setCurrentStepId('networking')}
             onBack={() => setCurrentStepId('cluster-details')}
           />
         );
@@ -75,6 +68,7 @@ const BaremetalDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         return (
           <ClusterWizardStep cluster={cluster} footer={footer}>
             <BaremetalInventory cluster={cluster} />
+            <FormikAutoSave />
           </ClusterWizardStep>
         );
       }}
