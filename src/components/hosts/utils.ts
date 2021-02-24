@@ -10,6 +10,7 @@ import {
 } from '../../api';
 import { AlertsContextType } from '../AlertsContextProvider';
 import { DASH } from '../constants';
+import filesize from 'filesize.js';
 
 export const canEnable = (clusterStatus: Cluster['status'], status: Host['status']) =>
   ['pending-for-input', 'insufficient', 'ready', 'adding-hosts'].includes(clusterStatus) &&
@@ -134,3 +135,9 @@ export const getHardwareTypeText = (inventory: Inventory) => {
 
   return hardwareTypeText;
 };
+
+export const fileSize: typeof filesize = (...args) =>
+  filesize
+    .call(null, ...args)
+    .toUpperCase()
+    .replace(/I/, 'i');

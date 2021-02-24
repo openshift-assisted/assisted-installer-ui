@@ -1,5 +1,4 @@
 import React from 'react';
-import filesize from 'filesize.js';
 import { TextContent, Text, TextVariants, Grid, GridItem } from '@patternfly/react-core';
 import { Table, TableHeader, TableBody, TableVariant } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
@@ -11,7 +10,7 @@ import { ValidationsInfo } from '../../types/hosts';
 import NtpValidationStatus from './NtpValidationStatus';
 import DiskLimitations from './DiskLimitations';
 import DiskRole from './DiskRole';
-import { canEditDisks, getHardwareTypeText } from './utils';
+import { canEditDisks, getHardwareTypeText, fileSize } from './utils';
 
 type HostDetailProps = {
   cluster: Cluster;
@@ -86,7 +85,7 @@ const DisksTable: React.FC<DisksTableProps> = ({ cluster, host, disks, installat
         },
         { title: <DiskLimitations disk={disk} /> },
         disk.driveType,
-        filesize(disk.sizeBytes || 0, 2, 'iec'),
+        fileSize(disk.sizeBytes || 0, 2, 'si'),
         disk.serial,
         // disk.vendor, TODO(mlibra): search HW database for humanized values
         disk.model,
