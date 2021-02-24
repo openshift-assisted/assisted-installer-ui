@@ -3,6 +3,7 @@ import { Cluster, Host } from '../../api/types';
 import { ValidationsInfo } from '../../types/hosts';
 import HostStatus from './HostStatus';
 import {
+  getFailingClusterWizardSoftValidationIds,
   getWizardStepHostStatus,
   getWizardStepHostValidationsInfo,
 } from '../clusterWizard/wizardTransition';
@@ -19,8 +20,18 @@ const HardwareStatus: React.FC<HardwareStatusProps> = (props) => {
     props.validationsInfo,
     'baremetal-discovery',
   );
+  const sublabel = getFailingClusterWizardSoftValidationIds(validationsInfo, 'baremetal-discovery')
+    .length
+    ? 'Some validations failed'
+    : undefined;
+
   return (
-    <HostStatus {...props} statusOverride={hardwareStatus} validationsInfo={validationsInfo} />
+    <HostStatus
+      {...props}
+      statusOverride={hardwareStatus}
+      validationsInfo={validationsInfo}
+      sublabel={sublabel}
+    />
   );
 };
 
