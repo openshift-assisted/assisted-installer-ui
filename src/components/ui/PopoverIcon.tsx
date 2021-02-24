@@ -1,5 +1,5 @@
 import React from 'react';
-import { Popover } from '@patternfly/react-core';
+import { Button, ButtonVariant, Popover } from '@patternfly/react-core';
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
 import { PopoverProps } from '@patternfly/react-core/dist/js/components/Popover/Popover';
 import { SVGIconProps } from '@patternfly/react-icons/dist/js/createIcon';
@@ -13,9 +13,13 @@ const PopoverIcon: React.FC<PopoverIconProps> = ({
   ...props
 }) => (
   <Popover {...props}>
-    <button onClick={(e) => e.preventDefault()} className="pf-c-form__group-label-help">
+    <Button
+      variant={ButtonVariant.link}
+      onClick={(e) => e.preventDefault()}
+      className="pf-c-form__group-label-help"
+    >
       <IconComponent noVerticalAlign />
-    </button>
+    </Button>
   </Popover>
 );
 

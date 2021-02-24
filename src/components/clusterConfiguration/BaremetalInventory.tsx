@@ -41,6 +41,14 @@ const SingleHostRequirementsContent = ({
   </Text>
 );
 
+const OCSLabel: React.FC = () => (
+  <>
+    Install OpenShift Container Storage
+    {/* TODO(mlibra): List of OCS requierements is stabilizing now - https://issues.redhat.com/browse/MGMT-4220 )
+    <PopoverIcon headerContent="Additional Requirements" bodyContent={<>FOO BAR </>} />*/}
+  </>
+);
+
 const BaremetalInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const [isDiscoveryHintModalOpen, setDiscoveryHintModalOpen] = React.useState(false);
   const isOpenshiftClusterStorageEnabled = useFeature('ASSISTED_INSTALLER_OCS_FEATURE');
@@ -68,8 +76,8 @@ const BaremetalInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         {isOpenshiftClusterStorageEnabled && (
           <CheckboxField
             name="useExtraDisksForLocalStorage"
-            label="Use extra disks for local storage."
-            helperText="Non-boot disks will be usable by workloads for persistent storage."
+            label={<OCSLabel />}
+            helperText="Persistent software-defined storage for hybrid applications."
           />
         )}
         <Text />
