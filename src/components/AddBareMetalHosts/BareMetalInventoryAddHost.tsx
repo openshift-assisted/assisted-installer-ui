@@ -14,8 +14,8 @@ import { AddBareMetalHostsContext } from './AddBareMetalHostsContext';
 
 const HostRequirementsContent = ({ worker = {} }: { worker?: HostRequirementsType['worker'] }) => (
   <Text component="p">
-    Worker hosts must have at least {worker.cpuCores || 2} CPU cores, {worker.ramGib || 8} Gib of
-    RAM, and {worker.diskSizeGb || 120} Gib of filesystem storage.
+    Worker hosts must have at least {worker.cpuCores || 2} CPU cores, {worker.ramGib || 8} GiB of
+    RAM, and {worker.diskSizeGb || 120} GB of filesystem storage.
   </Text>
 );
 
