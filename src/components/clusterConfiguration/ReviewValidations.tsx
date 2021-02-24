@@ -1,10 +1,15 @@
 import React from 'react';
 import _ from 'lodash';
 import { Button, ButtonVariant } from '@patternfly/react-core';
-import { CheckCircleIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
+import {
+  CheckCircleIcon,
+  ExclamationCircleIcon,
+  WarningTriangleIcon,
+} from '@patternfly/react-icons';
 import {
   global_success_color_100 as okColor,
   global_danger_color_100 as dangerColor,
+  global_warning_color_100 as warningColor,
 } from '@patternfly/react-tokens';
 import {
   ValidationsInfo as ClusterValidationsInfo,
@@ -17,7 +22,11 @@ import {
   Validation as HostValidation,
 } from '../../types/hosts';
 import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
-import { ClusterWizardStepsType, findValidationFixStep } from '../clusterWizard/wizardTransition';
+import {
+  allClusterWizardSoftValidationIds,
+  ClusterWizardStepsType,
+  findValidationFixStep,
+} from '../clusterWizard/wizardTransition';
 import { wizardStepNames } from '../clusterWizard/ClusterWizardStep';
 import { Cluster, Host, stringToJSON } from '../../api';
 import { CLUSTER_VALIDATION_LABELS, HOST_VALIDATION_LABELS } from '../../config';
@@ -48,7 +57,8 @@ const FailingValidation: React.FC<{
   validation: HostValidation | ClusterValidation;
   clusterGroup?: ClusterValidationGroup;
   hostGroup?: HostValidationGroup;
-}> = ({ validation, clusterGroup, hostGroup }) => {
+  severity?: 'danger' | 'warning';
+}> = ({ validation, clusterGroup, hostGroup, severity = 'danger' }) => {
   const issue = `${
     HOST_VALIDATION_LABELS[validation.id] ||
     CLUSTER_VALIDATION_LABELS[validation.id] ||
@@ -72,9 +82,16 @@ const FailingValidation: React.FC<{
     );
   }
 
+  let icon;
+  if (severity === 'warning') {
+    icon = <WarningTriangleIcon color={warningColor.value} />;
+  } else {
+    icon = <ExclamationCircleIcon color={dangerColor.value} size="sm" />;
+  }
+
   return (
     <div id={`failing-validation-${validation.id}`}>
-      <ExclamationCircleIcon color={dangerColor.value} size="sm" /> {issue}
+      {icon} {issue}
       {fix}
     </div>
   );
@@ -132,11 +149,15 @@ export const HostsValidations: React.FC<{ hosts?: Host[] }> = ({ hosts = [] }) =
       Object.keys(validationsInfo).forEach((group) => {
         const f: (validation: HostValidation) => void = (validation) => {
           if (validation.status === 'failure') {
+            const severity = allClusterWizardSoftValidationIds.includes(validation.id)
+              ? 'warning'
+              : 'danger';
             failingValidations[validation.id] = failingValidations[validation.id] || (
               <FailingValidation
                 key={validation.id}
                 validation={validation}
                 hostGroup={group as HostValidationGroup}
+                severity={severity}
               />
             );
           }
