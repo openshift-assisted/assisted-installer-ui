@@ -3,7 +3,7 @@ import { PageSectionVariants, Breadcrumb, BreadcrumbItem } from '@patternfly/rea
 import { Link } from 'react-router-dom';
 import PageSection from '../ui/PageSection';
 import { isSingleClusterMode, routeBasePath } from '../../config';
-import DeveloperPreview from '../ui/DeveloperPreview';
+import { TechnologyPreview } from '../ui/PreviewBadge';
 import { ocmClient } from '../../api';
 
 type Props = {
@@ -29,7 +29,7 @@ const ClusterBreadcrumbs: React.FC<Props> = ({ clusterName, isHidden = isSingleC
           {clusterName && <BreadcrumbItem isActive>{clusterName}</BreadcrumbItem>}
         </Breadcrumb>
       )}
-      <DeveloperPreview />
+      <TechnologyPreview />
     </PageSection>
   );
 
