@@ -6,3 +6,7 @@
 .assisted-ui-display-inline {
   display: inline;
 }
+
+.margin-left-md {
+  margin-left: var(--pf-global--spacer--md);
+}
