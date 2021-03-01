@@ -121,6 +121,7 @@ type HostStatusProps = {
   validationsInfo: ValidationsInfo;
   cluster: Cluster;
   statusOverride?: Host['status'];
+  sublabel?: string;
 };
 
 const HostStatusPopoverFooter: React.FC<{ host: Host }> = ({ host }) => {
@@ -157,12 +158,19 @@ const HostStatus: React.FC<HostStatusProps> = ({
   cluster,
   validationsInfo,
   statusOverride,
+  sublabel,
 }) => {
   const [keepOnOutsideClick, onValidationActionToggle] = React.useState(false);
   const status = statusOverride || host.status;
   const title = HOST_STATUS_LABELS[status] || status;
   const icon = getStatusIcon(status) || null;
   const hostProgressStages = getHostProgressStages(host);
+
+  sublabel =
+    sublabel ||
+    (['installing-pending-user-action', 'disconnected'].includes(status) && 'Action required') ||
+    (status === 'added-to-existing-cluster' && 'Finish in console') ||
+    undefined;
 
   return (
     <>
@@ -191,12 +199,7 @@ const HostStatus: React.FC<HostStatusProps> = ({
           )}
         </Button>
       </Popover>
-      {['installing-pending-user-action', 'disconnected'].includes(status) && (
-        <div className="hosts-table-sublabel">Action required</div>
-      )}
-      {status === 'added-to-existing-cluster' && (
-        <div className="hosts-table-sublabel">Finish in console</div>
-      )}
+      {sublabel && <div className="hosts-table-sublabel">{sublabel}</div>}
     </>
   );
 };
