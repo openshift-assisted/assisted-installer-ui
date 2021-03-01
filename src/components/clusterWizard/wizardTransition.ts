@@ -51,7 +51,14 @@ const clusterDetailsStepValidationsMap: WizardStepValidationMap = {
     validationIds: ['pull-secret-set', 'dns-domain-defined'],
   },
   host: {
-    allowedStatuses: ['known', 'disabled', 'discovering', 'disconnected'],
+    allowedStatuses: [
+      'known',
+      'disabled',
+      'discovering',
+      'disconnected',
+      'resetting',
+      'resetting-pending-user-action',
+    ],
     groups: [],
     validationIds: [],
   },
