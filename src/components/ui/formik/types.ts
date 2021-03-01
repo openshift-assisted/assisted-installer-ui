@@ -1,10 +1,11 @@
+import * as React from 'react';
 import { TextInputTypes, FormSelectOptionProps } from '@patternfly/react-core';
 import { FieldValidator, FieldHelperProps } from 'formik';
 import { DropzoneProps, DropFileEventHandler } from 'react-dropzone';
 
 export interface FieldProps {
   name: string;
-  label?: string;
+  label?: React.ReactNode;
   labelIcon?: React.ReactElement;
   helperText?: React.ReactNode;
   isRequired?: boolean;
