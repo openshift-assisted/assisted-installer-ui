@@ -1,12 +1,12 @@
 import React from 'react';
 import { Table, TableBody, TableVariant } from '@patternfly/react-table';
-import Humanize from 'humanize-plus';
 import { Cluster, Host, Inventory, stringToJSON } from '../../api';
 import { getSimpleHardwareInfo } from '../hosts/hardwareInfo';
 import { DetailList, DetailItem } from '../ui/DetailList';
 import { ClusterValidations, HostsValidations } from './ReviewValidations';
 
 import './ReviewCluster.css';
+import { fileSize } from '../hosts/utils';
 
 const ReviewHostsInventory: React.FC<{ hosts?: Host[] }> = ({ hosts = [] }) => {
   const rows = React.useMemo(() => {
@@ -40,10 +40,10 @@ const ReviewHostsInventory: React.FC<{ hosts?: Host[] }> = ({ hosts = [] }) => {
         cells: ['Cores', summary.cores],
       },
       {
-        cells: ['Memory', Humanize.fileSize(summary.memory)],
+        cells: ['Memory', fileSize(summary.memory, 2, 'iec')],
       },
       {
-        cells: ['Storage', Humanize.fileSize(summary.fs)],
+        cells: ['Storage', fileSize(summary.fs, 2, 'si')],
       },
     ];
   }, [hosts]);
