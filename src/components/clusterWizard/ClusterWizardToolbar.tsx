@@ -36,8 +36,10 @@ type ClusterWizardToolbarProps = {
   formErrors?: FormikErrors<ClusterUpdateParams>;
   dirty?: boolean;
   isSubmitting?: boolean;
+  onSaveChanges?: () => void;
   onNext?: () => void;
   isNextDisabled?: boolean;
+  isSaveChangesDisabled?: boolean;
   onBack?: () => void;
   onCancel?: () => void;
   onInstall?: () => Promise<void>;
@@ -117,6 +119,8 @@ const ClusterWizardToolbar: React.FC<ClusterWizardToolbarProps> = ({
   isSubmitting = false,
   onCancel,
   onNext,
+  onSaveChanges,
+  isSaveChangesDisabled,
   onInstall,
   isNextDisabled,
   onBack,
@@ -172,7 +176,17 @@ const ClusterWizardToolbar: React.FC<ClusterWizardToolbarProps> = ({
               Install Cluster
             </ToolbarButton>
           )}
-          {onNext && (
+          {onSaveChanges && dirty && (
+            <ToolbarButton
+              variant={ButtonVariant.primary}
+              name="saveChanges"
+              onClick={onSaveChanges}
+              isDisabled={isSaveChangesDisabled}
+            >
+              Save Changes
+            </ToolbarButton>
+          )}
+          {onNext && (!dirty || !onSaveChanges) && (
             <ToolbarButton
               variant={ButtonVariant.primary}
               name="next"

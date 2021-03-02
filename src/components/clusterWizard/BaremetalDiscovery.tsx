@@ -50,8 +50,6 @@ const BaremetalDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         values: getInitialValues(data),
       });
       dispatch(updateCluster(data));
-
-      canNextBaremetalDiscovery({ cluster: data }) && setCurrentStepId('networking');
     } catch (e) {
       handleApiError<ClusterUpdateParams>(e, () =>
         addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),
@@ -74,8 +72,10 @@ const BaremetalDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
             dirty={dirty}
             formErrors={errors}
             isSubmitting={isSubmitting}
-            isNextDisabled={!(isValid && (dirty || canNextBaremetalDiscovery({ cluster })))}
-            onNext={submitForm}
+            isSaveChangesDisabled={!isValid || isSubmitting}
+            onSaveChanges={submitForm}
+            isNextDisabled={!canNextBaremetalDiscovery({ cluster })}
+            onNext={() => setCurrentStepId('networking')}
             onBack={() => setCurrentStepId('cluster-details')}
           />
         );

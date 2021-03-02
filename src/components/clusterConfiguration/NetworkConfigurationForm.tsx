@@ -92,8 +92,6 @@ const NetworkConfigurationForm: React.FC<{
         values: getNetworkInitialValues(data, defaultNetworkSettings),
       });
       dispatch(updateCluster(data));
-
-      canNextNetwork({ cluster: data }) && setCurrentStepId('review');
     } catch (e) {
       handleApiError<ClusterUpdateParams>(e, () =>
         addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),
@@ -171,8 +169,10 @@ const NetworkConfigurationForm: React.FC<{
             formErrors={errors}
             dirty={dirty}
             isSubmitting={isSubmitting}
-            isNextDisabled={!(isValid && (dirty || canNextNetwork({ cluster })))}
-            onNext={submitForm}
+            isNextDisabled={!canNextNetwork({ cluster })}
+            onNext={() => setCurrentStepId('review')}
+            isSaveChangesDisabled={!isValid || isSubmitting}
+            onSaveChanges={submitForm}
             onBack={() => setCurrentStepId('baremetal-discovery')}
           />
         );
