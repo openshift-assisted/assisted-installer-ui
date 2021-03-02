@@ -73,7 +73,7 @@ const baremetalDiscoveryStepValidationsMap: WizardStepValidationMap = {
   host: {
     allowedStatuses: ['known', 'disabled'],
     groups: ['hardware'],
-    validationIds: ['connected', 'container-images-available'],
+    validationIds: ['connected'],
   },
   softValidationIds: [],
 };
@@ -88,7 +88,10 @@ const networkingStepValidationsMap: WizardStepValidationMap = {
     groups: ['network'],
     validationIds: [],
   },
-  softValidationIds: ['ntp-synced'],
+  // TODO(jtomasek): container-images-available validation is currently not running on the backend, it stays in pending.
+  // marking it as soft validation is the easy way to prevent it from blocking the progress.
+  // Alternatively we would have to whitelist network validations instead of using group
+  softValidationIds: ['ntp-synced', 'container-images-available'],
 };
 
 const reviewStepValidationsMap: WizardStepValidationMap = {
