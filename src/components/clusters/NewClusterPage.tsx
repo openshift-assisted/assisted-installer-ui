@@ -34,6 +34,12 @@ import OpenShiftVersionSelect from '../clusterConfiguration/OpenShiftVersionSele
 
 import './NewClusterPage.css';
 
+const getDefaultOpenShiftVersion = (versions: OpenshiftVersionOptionType[]) =>
+  // TODO(jtomasek): one of the available versions should be flagged as a default
+  // from the server so we don't have to hardcode here
+  // https://issues.redhat.com/browse/MGMT-4363
+  versions.find((v) => v.value === '4.7')?.value || versions[0]?.value || '';
+
 type NewClusterFormProps = {
   pullSecret?: string;
   versions: OpenshiftVersionOptionType[];
@@ -91,7 +97,7 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ pullSecret = '', versio
       <Formik
         initialValues={{
           name: '',
-          openshiftVersion: versions[0]?.value,
+          openshiftVersion: getDefaultOpenShiftVersion(versions),
           pullSecret: pullSecret,
           highAvailabilityMode: 'Full',
         }}
