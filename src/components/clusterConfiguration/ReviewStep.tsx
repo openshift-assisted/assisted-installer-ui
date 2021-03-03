@@ -9,11 +9,20 @@ import ClusterWizardToolbar from '../clusterWizard/ClusterWizardToolbar';
 import { getErrorMessage, handleApiError, postInstallCluster } from '../../api';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import ReviewCluster from './ReviewCluster';
+import { useOpenshiftVersions } from '../fetching/openshiftVersions';
+import LoadingState from '../ui/uiState/LoadingState';
 
 const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const { addAlert } = React.useContext(AlertsContext);
   const { setCurrentStepId } = React.useContext(ClusterWizardContext);
   const dispatch = useDispatch();
+
+  const { error: errorOCPVersions, loading: loadingOCPVersions, versions } = useOpenshiftVersions();
+
+  React.useEffect(() => errorOCPVersions && addAlert(errorOCPVersions), [
+    errorOCPVersions,
+    addAlert,
+  ]);
 
   const onInstall = async () => {
     try {
@@ -30,6 +39,14 @@ const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
       );
     }
   };
+
+  if (loadingOCPVersions) {
+    return (
+      <ClusterWizardStep cluster={cluster}>
+        <LoadingState />
+      </ClusterWizardStep>
+    );
+  }
 
   const footer = (
     <ClusterWizardToolbar
@@ -48,7 +65,7 @@ const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
           </TextContent>
         </GridItem>
         <GridItem>
-          <ReviewCluster cluster={cluster} />
+          <ReviewCluster cluster={cluster} versions={versions} />
         </GridItem>
 
         {/* TODO(mlibra): Implement in context of the initial configuration selection

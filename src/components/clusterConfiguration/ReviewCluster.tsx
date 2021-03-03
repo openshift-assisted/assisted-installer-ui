@@ -5,6 +5,7 @@ import { getSimpleHardwareInfo } from '../hosts/hardwareInfo';
 import { DetailList, DetailItem } from '../ui/DetailList';
 import { ClusterValidations, HostsValidations } from './ReviewValidations';
 import { fileSize } from '../hosts/utils';
+import { OpenshiftVersionOptionType } from '../../types/versions';
 
 import './ReviewCluster.css';
 
@@ -62,18 +63,24 @@ const ReviewHostsInventory: React.FC<{ hosts?: Host[] }> = ({ hosts = [] }) => {
   );
 };
 
-const ReviewCluster: React.FC<{ cluster: Cluster }> = ({ cluster }) => (
-  <DetailList>
-    <DetailItem title="Cluster address" value={`${cluster.name}.${cluster.baseDnsDomain}`} />
-    <DetailItem title="OpenShift version" value={cluster.openshiftVersion} />
-    <DetailItem title="Management network CIDR" value={cluster.clusterNetworkCidr} />
-    <DetailItem title="Cluster summary" value={<ReviewHostsInventory hosts={cluster.hosts} />} />
-    <DetailItem
-      title="Cluster validations"
-      value={<ClusterValidations validationsInfo={cluster.validationsInfo} />}
-    />
-    <DetailItem title="Host validations" value={<HostsValidations hosts={cluster.hosts} />} />
-  </DetailList>
-);
+type ReviewClusterProps = { cluster: Cluster; versions: OpenshiftVersionOptionType[] };
+
+const ReviewCluster: React.FC<ReviewClusterProps> = ({ cluster, versions }) => {
+  const versionLabel =
+    versions.find((v) => v.value === cluster.openshiftVersion)?.label || cluster.openshiftVersion;
+  return (
+    <DetailList>
+      <DetailItem title="Cluster address" value={`${cluster.name}.${cluster.baseDnsDomain}`} />
+      <DetailItem title="OpenShift version" value={versionLabel} />
+      <DetailItem title="Management network CIDR" value={cluster.clusterNetworkCidr} />
+      <DetailItem title="Cluster summary" value={<ReviewHostsInventory hosts={cluster.hosts} />} />
+      <DetailItem
+        title="Cluster validations"
+        value={<ClusterValidations validationsInfo={cluster.validationsInfo} />}
+      />
+      <DetailItem title="Host validations" value={<HostsValidations hosts={cluster.hosts} />} />
+    </DetailList>
+  );
+};
 
 export default ReviewCluster;
