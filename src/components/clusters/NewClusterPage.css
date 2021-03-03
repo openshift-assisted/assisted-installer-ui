@@ -1,5 +1,6 @@
 .form-new-cluster .form-group-pull-secret {
   height: calc(100vh - 650px);
+  min-height: 200px;
 }
 
 .form-new-cluster .form-group-pull-secret .pf-c-form__group-control {
