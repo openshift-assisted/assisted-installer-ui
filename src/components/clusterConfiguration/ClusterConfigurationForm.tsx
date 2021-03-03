@@ -51,6 +51,7 @@ import ClusterSshKeyField from './ClusterSshKeyField';
 import { captureException } from '../../sentry';
 import { trimSshPublicKey } from '../ui/formik/utils';
 import { useFeature } from '../../features';
+import { useDefaultConfiguration } from './ClusterDefaultConfigurationContext';
 
 const validationSchema = (initialValues: ClusterConfigurationValues, hostSubnets: HostSubnets) =>
   Yup.lazy<ClusterConfigurationValues>((values) =>
@@ -80,10 +81,15 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
   const { addAlert, clearAlerts } = React.useContext(AlertsContext);
   const dispatch = useDispatch();
   const hostSubnets = React.useMemo(() => getHostSubnets(cluster), [cluster]);
-  const initialValues = React.useMemo(() => getInitialValues(cluster, managedDomains), [
-    cluster,
-    managedDomains,
+  const defaultNetworkSettings = useDefaultConfiguration([
+    'clusterNetworkCidr',
+    'serviceNetworkCidr',
+    'clusterNetworkHostPrefix',
   ]);
+  const initialValues = React.useMemo(
+    () => getInitialValues(cluster, managedDomains, defaultNetworkSettings),
+    [cluster, defaultNetworkSettings, managedDomains],
+  );
   const memoizedValidationSchema = React.useMemo(
     () => validationSchema(initialValues, hostSubnets),
     [hostSubnets, initialValues],
@@ -133,7 +139,7 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
 
       const { data } = await patchCluster(cluster.id, params);
       formikActions.resetForm({
-        values: getInitialValues(data, managedDomains),
+        values: getInitialValues(data, managedDomains, defaultNetworkSettings),
       });
       dispatch(updateCluster(data));
     } catch (e) {
