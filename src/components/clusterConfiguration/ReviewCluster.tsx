@@ -4,9 +4,9 @@ import { Cluster, Host, Inventory, stringToJSON } from '../../api';
 import { getSimpleHardwareInfo } from '../hosts/hardwareInfo';
 import { DetailList, DetailItem } from '../ui/DetailList';
 import { ClusterValidations, HostsValidations } from './ReviewValidations';
+import { fileSize } from '../hosts/utils';
 
 import './ReviewCluster.css';
-import { fileSize } from '../hosts/utils';
 
 const ReviewHostsInventory: React.FC<{ hosts?: Host[] }> = ({ hosts = [] }) => {
   const rows = React.useMemo(() => {
