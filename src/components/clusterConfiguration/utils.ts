@@ -1,10 +1,15 @@
 import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
-import { Cluster, Inventory, ListOperators, ManagedDomain } from '../../api/types';
+import {
+  Cluster,
+  ClusterDefaultConfig,
+  Inventory,
+  ListOperators,
+  ManagedDomain,
+} from '../../api/types';
 import { stringToJSON } from '../../api/utils';
 import { Address4, Address6 } from 'ip-address';
 import { getHostname } from '../hosts/utils';
 import { NO_SUBNET_SET } from '../../config/constants';
-import { ClusterNetworkDefaultSettings } from './types';
 
 export const getSubnet = (cidr: string): Address6 | Address4 | null => {
   if (Address4.isValid(cidr)) {
@@ -57,10 +62,7 @@ export const getSubnetFromMachineNetworkCidr = (machineNetworkCidr?: string) => 
   return getHumanizedSubnet(subnet);
 };
 
-export const isAdvConf = (
-  cluster: Cluster,
-  defaultNetworkSettings: Partial<ClusterNetworkDefaultSettings>,
-) =>
+export const isAdvConf = (cluster: Cluster, defaultNetworkSettings: ClusterDefaultConfig) =>
   cluster.clusterNetworkCidr !== defaultNetworkSettings.clusterNetworkCidr ||
   cluster.clusterNetworkHostPrefix !== defaultNetworkSettings.clusterNetworkHostPrefix ||
   cluster.serviceNetworkCidr !== defaultNetworkSettings.serviceNetworkCidr;
@@ -68,7 +70,7 @@ export const isAdvConf = (
 export const getInitialValues = (
   cluster: Cluster,
   managedDomains: ManagedDomain[],
-  defaultNetworkSettings: Partial<ClusterNetworkDefaultSettings>,
+  defaultNetworkSettings: ClusterDefaultConfig,
 ): ClusterConfigurationValues => {
   const operators = stringToJSON<ListOperators>(cluster.operators);
 
