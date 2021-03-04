@@ -138,8 +138,12 @@ export const ipBlockValidationSchema = Yup.string()
     'valid-netmask',
     'IPv4 netmask must be between 1-25 and include at least 128 addresses.\nIPv6 netmask must be between 8-128 and include at least 256 addresses.',
     (value: string) => {
-      const prefix = parseInt(value.split('/')[1]);
-      return (!isNaN(prefix) && 0 < prefix && prefix < 26) || (7 < prefix && prefix < 129);
+      const suffix = parseInt(value.split('/')[1]);
+
+      return (
+        (isCIDR.v4(value) && 0 < suffix && suffix < 26) ||
+        (isCIDR.v6(value) && 7 < suffix && suffix < 129)
+      );
     },
   )
   .test(
