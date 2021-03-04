@@ -10,10 +10,13 @@ import {
   EventList,
   Event,
   LogsType,
+  ClusterDefaultConfig,
 } from './types';
 import { client, BASE_PATH } from './axiosClient';
 
 export const getClusters = (): AxiosPromise<Cluster[]> => client.get('/clusters');
+export const getClustersDefaultConfiguration = (): AxiosPromise<ClusterDefaultConfig> =>
+  client.get('/clusters/default-config');
 
 export const getCluster = (id: string): AxiosPromise<Cluster> => client.get(`/clusters/${id}`);
 export const getClustersByOpenshiftId = (openshiftId: string): AxiosPromise<Cluster[]> =>

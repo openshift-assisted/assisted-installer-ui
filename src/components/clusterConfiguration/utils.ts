@@ -1,13 +1,14 @@
 import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
-import { Cluster, Inventory, ListOperators, ManagedDomain } from '../../api/types';
-import { stringToJSON } from '../../api/utils';
 import {
-  CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4,
-  CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV6,
-} from '../../config/constants';
+  Cluster,
+  ClusterDefaultConfig,
+  Inventory,
+  ListOperators,
+  ManagedDomain,
+} from '../../api/types';
+import { stringToJSON } from '../../api/utils';
 import { Address4, Address6 } from 'ip-address';
 import { getHostname } from '../hosts/utils';
-import { ClusterNetworkDefaultSettings } from './types';
 import { NO_SUBNET_SET } from '../../config/constants';
 
 export const getSubnet = (cidr: string): Address6 | Address4 | null => {
@@ -61,40 +62,16 @@ export const getSubnetFromMachineNetworkCidr = (machineNetworkCidr?: string) => 
   return getHumanizedSubnet(subnet);
 };
 
-const getDefaultNetworkSettings = (clusterNetworkCidr: string): ClusterNetworkDefaultSettings => {
-  const isIPv4 = Address4.isValid(clusterNetworkCidr);
-  return {
-    clusterNetworkCidr: isIPv4
-      ? CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4.clusterNetworkCidr
-      : CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV6.clusterNetworkCidr,
-    serviceNetworkCidr: isIPv4
-      ? CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4.serviceNetworkCidr
-      : CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV6.serviceNetworkCidr,
-    clusterNetworkHostPrefix: isIPv4
-      ? CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4.clusterNetworkHostPrefix
-      : CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV6.clusterNetworkHostPrefix,
-  };
-};
-
-// TODO: Replace this by API call to retrieve the defaults from the backend
-export const getClusterDefaultSettings = (clusterNetworkCidr: string) => ({
-  ...getDefaultNetworkSettings(clusterNetworkCidr),
-});
-
-export const isAdvConf = (cluster: Cluster) => {
-  const defaultNetworkSettings = getDefaultNetworkSettings(cluster.clusterNetworkCidr as string);
-  return (
-    cluster.clusterNetworkCidr !== defaultNetworkSettings.clusterNetworkCidr ||
-    cluster.clusterNetworkHostPrefix !== defaultNetworkSettings.clusterNetworkHostPrefix ||
-    cluster.serviceNetworkCidr !== defaultNetworkSettings.serviceNetworkCidr
-  );
-};
+export const isAdvConf = (cluster: Cluster, defaultNetworkSettings: ClusterDefaultConfig) =>
+  cluster.clusterNetworkCidr !== defaultNetworkSettings.clusterNetworkCidr ||
+  cluster.clusterNetworkHostPrefix !== defaultNetworkSettings.clusterNetworkHostPrefix ||
+  cluster.serviceNetworkCidr !== defaultNetworkSettings.serviceNetworkCidr;
 
 export const getInitialValues = (
   cluster: Cluster,
   managedDomains: ManagedDomain[],
+  defaultNetworkSettings: ClusterDefaultConfig,
 ): ClusterConfigurationValues => {
-  const defaultNetworkSettings = getDefaultNetworkSettings(cluster.clusterNetworkCidr as string);
   const operators = stringToJSON<ListOperators>(cluster.operators);
 
   return {

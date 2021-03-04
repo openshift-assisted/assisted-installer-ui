@@ -21,6 +21,7 @@ import ResetClusterModal from '../clusterDetail/ResetClusterModal';
 import { AlertsContextProvider } from '../AlertsContextProvider';
 import { AddBareMetalHosts } from '../AddBareMetalHosts';
 import { AddBareMetalHostsContextProvider } from '../AddBareMetalHosts/AddBareMetalHostsContext';
+import { ClusterDefaultConfigurationProvider } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
 
 type MatchParams = {
   clusterId: string;
@@ -134,17 +135,19 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
   if (cluster) {
     return (
       <AlertsContextProvider>
-        {getContent(cluster)}
-        <CancelInstallationModal
-          isOpen={cancelInstallationModalOpen}
-          onClose={() => setCancelInstallationModalOpen(false)}
-          clusterId={cluster.id}
-        />
-        <ResetClusterModal
-          isOpen={resetClusterModalOpen}
-          onClose={() => setResetClusterModalOpen(false)}
-          cluster={cluster}
-        />
+        <ClusterDefaultConfigurationProvider>
+          {getContent(cluster)}
+          <CancelInstallationModal
+            isOpen={cancelInstallationModalOpen}
+            onClose={() => setCancelInstallationModalOpen(false)}
+            clusterId={cluster.id}
+          />
+          <ResetClusterModal
+            isOpen={resetClusterModalOpen}
+            onClose={() => setResetClusterModalOpen(false)}
+            cluster={cluster}
+          />
+        </ClusterDefaultConfigurationProvider>
       </AlertsContextProvider>
     );
   }

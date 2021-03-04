@@ -154,7 +154,7 @@ paths:
         - in: header
           name: discovery_agent_version
           description:
-            The software version of the discovery agent that is retreiving the cluster details.
+            The software version of the discovery agent that is retrieving the cluster details.
           type: string
           required: false
         - in: header
@@ -636,6 +636,31 @@ paths:
           description: Error.
           schema:
             $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+  /clusters/default-config:
+    get:
+      tags:
+        - installer
+      security:
+        - userAuth: [admin, read-only-admin, user]
+      description: Get the default values for various cluster properties.
+      operationId: GetClusterDefaultConfig
+      responses:
+        '200':
+          description: Success.
+          schema:
+            $ref: '#/definitions/cluster_default_config'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
         '500':
           description: Error.
           schema:
@@ -1336,7 +1361,7 @@ paths:
           required: true
         - in: body
           name: completion-params
-          description: The final status of the cluster installationthe cluster installation.
+          description: The final status of the cluster installation.
           required: true
           schema:
             $ref: '#/definitions/completion-params'
@@ -1501,13 +1526,13 @@ paths:
       parameters:
         - in: path
           name: cluster_id
-          description: The cluster of the host that should be retreived.
+          description: The cluster of the host that should be retrieved.
           type: string
           format: uuid
           required: true
         - in: path
           name: host_id
-          description: The host that should be retreived.
+          description: The host that should be retrieved.
           type: string
           format: uuid
           required: true
@@ -1900,13 +1925,13 @@ paths:
       parameters:
         - in: path
           name: cluster_id
-          description: The cluster of the host that is retreiving instructions.
+          description: The cluster of the host that is retrieving instructions.
           type: string
           format: uuid
           required: true
         - in: path
           name: host_id
-          description: The host that is retreiving instructions.
+          description: The host that is retrieving instructions.
           type: string
           format: uuid
           required: true
@@ -2951,10 +2976,15 @@ definitions:
       ssh_public_key:
         type: string
         description: SSH public key for debugging the installation.
-      static_ips_config:
+      static_network_config:
         type: array
         items:
-          $ref: '#/definitions/static-ip-config'
+          type: string
+          description: array of string in nmstate yaml format, each string is one host configuration
+      image_type:
+        type: string
+        description: Type of image that should be generated.
+        $ref: '#/definitions/image_type'
 
   assisted-service-iso-create-params:
     type: object
@@ -3148,6 +3178,10 @@ definitions:
         type: string
       machine_config_pool_name:
         type: string
+      images_status:
+        x-go-custom-tag: gorm:"type:text"
+        type: string
+        description: Array of image statuses.
 
   installer-args-params:
     type: object
@@ -3197,6 +3231,7 @@ definitions:
       - ntp-synchronizer
       - fio-perf-check
       - container-image-availability
+      - domain-resolution
 
   step:
     type: object
@@ -3755,7 +3790,7 @@ definitions:
         x-go-custom-tag: gorm:"type:timestamp with time zone"
       connectivity_majority_groups:
         type: string
-        description: Json formatted string containing the majority groups for conectivity checks.
+        description: Json formatted string containing the majority groups for connectivity checks.
         x-go-custom-tag: gorm:"type:text"
       deleted_at:
         type: string
@@ -3801,9 +3836,18 @@ definitions:
         type: string
         format: date-time
         x-go-custom-tag: gorm:"type:timestamp with time zone"
-      static_ips_config:
+      static_network_config:
         type: string
-        description: statip ips configuration string in the format expected by discovery ignition
+        description:
+          static network configuration string in the format expected by discovery ignition
+          generation
+      type:
+        type: string
+        $ref: '#/definitions/image_type'
+
+  image_type:
+    type: string
+    enum: [full-iso, minimal-iso]
 
   free-addresses-list:
     type: array
@@ -3987,6 +4031,23 @@ definitions:
         type: string
         description: Human-readable description of the error.
 
+  cluster_default_config:
+    type: object
+    properties:
+      cluster_network_cidr:
+        type: string
+        pattern: '^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)[\/]([1-9]|[1-2][0-9]|3[0-2]?)$'
+      cluster_network_host_prefix:
+        type: integer
+        minimum: 1
+        maximum: 32
+      service_network_cidr:
+        type: string
+        pattern: '^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)[\/]([1-9]|[1-2][0-9]|3[0-2]?)$'
+      ntp_source:
+        type: string
+        x-omitempty: false
+
   infra_error:
     type: object
     required:
@@ -4074,7 +4135,7 @@ definitions:
             description: Whether the disk is eligible for installation or not.
           not_eligible_reasons:
             type: array
-            description: Reasons for why this disk is not elligible for installation.
+            description: Reasons for why this disk is not eligible for installation.
             items:
               type: string
       smart:
@@ -4202,7 +4263,7 @@ definitions:
     properties:
       is_success:
         type: boolean
-        description: API VIP connecitivty check result.
+        description: API VIP connectivity check result.
 
   fio_perf_check_request:
     type: object
@@ -4230,6 +4291,52 @@ definitions:
       path:
         type: string
         description: The device path.
+
+  domain_resolution_request:
+    type: object
+    required:
+      - domains
+    properties:
+      domains:
+        type: array
+        items:
+          x-go-name: DomainResolutionRequestDomain
+          type: object
+          required:
+            - domain_name
+          properties:
+            domain_name:
+              description: 'The domain name that should be resolved'
+              type: string
+
+  domain_resolution_response:
+    type: object
+    required:
+      - resolutions
+    properties:
+      resolutions:
+        type: array
+        items:
+          x-go-name: DomainResolutionResponseDomain
+          type: object
+          required:
+            - domain_name
+          properties:
+            domain_name:
+              type: string
+              description: 'The domain that was resolved'
+            ipv4_addresses:
+              type: array
+              description: 'The IPv4 addresses of the domain, empty if none'
+              items:
+                type: string
+                format: ipv4
+            ipv6_addresses:
+              type: array
+              description: 'The IPv6 addresses of the domain, empty if none'
+              items:
+                type: string
+                format: ipv6
 
   credentials:
     type: object
@@ -4333,10 +4440,10 @@ definitions:
         description: The IPv4 address that was allocated by DHCP for the Ingress virtual IP.
       api_vip_lease:
         type: string
-        description: Contents of last aquired lease for API virtual IP.
+        description: Contents of last acquired lease for API virtual IP.
       ingress_vip_lease:
         type: string
-        description: Contents of last aquired lease for Ingress virtual IP.
+        description: Contents of last acquired lease for Ingress virtual IP.
 
   ntp_synchronization_request:
     type: object
@@ -4370,6 +4477,9 @@ definitions:
     required:
       - images
     properties:
+      timeout:
+        type: integer
+        description: Positive number represents a timeout in seconds for a pull operation.
       images:
         type: array
         description: List of image names to be checked.
@@ -4394,6 +4504,15 @@ definitions:
       name:
         type: string
         description: A fully qualified image name (FQIN).
+      size_bytes:
+        type: number
+        description: Size of the image in bytes.
+      time:
+        type: number
+        description: Seconds it took to pull the image.
+      download_rate:
+        type: number
+        description: The rate of size/time in seconds MBps.
       result:
         $ref: '#/definitions/container_image_availability_result'
 
@@ -4512,35 +4631,6 @@ definitions:
   host-ignition-params:
     properties:
       config:
-        type: string
-
-  static-ip-config:
-    type: object
-    properties:
-      ip:
-        type: string
-        pattern: '^([0-9]{1,3}\.){3}[0-9]{1,3}$'
-      mac:
-        type: string
-        pattern: '^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$'
-      gateway:
-        type: string
-        pattern: '^([0-9]{1,3}\.){3}[0-9]{1,3}$'
-      mask:
-        type: string
-        pattern: '^[0-9]|[1-2][0-9]|3[0-2]?$'
-      dns:
-        type: string
-      ip_v6:
-        type: string
-        pattern: '^(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}$'
-      gateway_v6:
-        type: string
-        pattern: '^(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}$'
-      mask_v6:
-        type: string
-        pattern: '^([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-8])$'
-      dns_v6:
         type: string
 
   openshift-version:

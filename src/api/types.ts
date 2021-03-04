@@ -28,7 +28,7 @@ export interface ApiVipConnectivityRequest {
 }
 export interface ApiVipConnectivityResponse {
   /**
-   * API VIP connecitivty check result.
+   * API VIP connectivity check result.
    */
   isSuccess?: boolean;
 }
@@ -217,7 +217,7 @@ export interface Cluster {
   ignitionConfigOverrides?: string;
   controllerLogsCollectedAt?: string; // date-time
   /**
-   * Json formatted string containing the majority groups for conectivity checks.
+   * Json formatted string containing the majority groups for connectivity checks.
    */
   connectivityMajorityGroups?: string;
   /**
@@ -310,6 +310,12 @@ export interface ClusterCreateParams {
    */
   additionalNtpSource?: string;
   operators?: ListOperators;
+}
+export interface ClusterDefaultConfig {
+  clusterNetworkCidr?: string; // ^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)[\/]([1-9]|[1-2][0-9]|3[0-2]?)$
+  clusterNetworkHostPrefix?: number;
+  serviceNetworkCidr?: string; // ^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)[\/]([1-9]|[1-2][0-9]|3[0-2]?)$
+  ntpSource?: string;
 }
 export type ClusterList = Cluster[];
 export interface ClusterOperator {
@@ -477,9 +483,25 @@ export interface ContainerImageAvailability {
    * A fully qualified image name (FQIN).
    */
   name?: string;
+  /**
+   * Size of the image in bytes.
+   */
+  sizeBytes?: number;
+  /**
+   * Seconds it took to pull the image.
+   */
+  time?: number;
+  /**
+   * The rate of size/time in seconds MBps.
+   */
+  downloadRate?: number;
   result?: ContainerImageAvailabilityResult;
 }
 export interface ContainerImageAvailabilityRequest {
+  /**
+   * Positive number represents a timeout in seconds for a pull operation.
+   */
+  timeout?: number;
   /**
    * List of image names to be checked.
    */
@@ -553,11 +575,11 @@ export interface DhcpAllocationResponse {
    */
   ingressVipAddress: string; // ipv4
   /**
-   * Contents of last aquired lease for API virtual IP.
+   * Contents of last acquired lease for API virtual IP.
    */
   apiVipLease?: string;
   /**
-   * Contents of last aquired lease for Ingress virtual IP.
+   * Contents of last acquired lease for Ingress virtual IP.
    */
   ingressVipLease?: string;
 }
@@ -586,7 +608,7 @@ export interface Disk {
      */
     eligible?: boolean;
     /**
-     * Reasons for why this disk is not elligible for installation.
+     * Reasons for why this disk is not eligible for installation.
      */
     notEligibleReasons?: string[];
   };
@@ -598,6 +620,30 @@ export interface DiskConfigParams {
   role?: DiskRole;
 }
 export type DiskRole = 'none' | 'install';
+export interface DomainResolutionRequest {
+  domains: {
+    /**
+     * The domain name that should be resolved
+     */
+    domainName: string;
+  }[];
+}
+export interface DomainResolutionResponse {
+  resolutions: {
+    /**
+     * The domain that was resolved
+     */
+    domainName: string;
+    /**
+     * The IPv4 addresses of the domain, empty if none
+     */
+    ipv4Addresses?: string /* ipv4 */[];
+    /**
+     * The IPv6 addresses of the domain, empty if none
+     */
+    ipv6Addresses?: string /* ipv6 */[];
+  }[];
+}
 export interface Error {
   /**
    * Indicates the type of this object. Will always be 'Error'.
@@ -765,6 +811,10 @@ export interface Host {
   ignitionConfigOverrides?: string;
   installerArgs?: string;
   machineConfigPoolName?: string;
+  /**
+   * Array of image statuses.
+   */
+  imagesStatus?: string;
 }
 export interface HostCreateParams {
   hostId: string; // uuid
@@ -891,6 +941,10 @@ export interface HostRegistrationResponse {
   installerArgs?: string;
   machineConfigPoolName?: string;
   /**
+   * Array of image statuses.
+   */
+  imagesStatus?: string;
+  /**
    * Command for starting the next step runner
    */
   nextStepRunnerCommand?: {
@@ -947,7 +1001,11 @@ export interface ImageCreateParams {
    * SSH public key for debugging the installation.
    */
   sshPublicKey?: string;
-  staticIpsConfig?: StaticIpConfig[];
+  staticNetworkConfig?: string[];
+  /**
+   * Type of image that should be generated.
+   */
+  imageType?: ImageType;
 }
 export interface ImageInfo {
   /**
@@ -963,10 +1021,12 @@ export interface ImageInfo {
   createdAt?: string; // date-time
   expiresAt?: string; // date-time
   /**
-   * statip ips configuration string in the format expected by discovery ignition
+   * static network configuration string in the format expected by discovery ignition generation
    */
-  staticIpsConfig?: string;
+  staticNetworkConfig?: string;
+  type?: ImageType;
 }
+export type ImageType = 'full-iso' | 'minimal-iso';
 export interface InfraError {
   /**
    * Numeric identifier of the error.
@@ -1123,17 +1183,6 @@ export type SourceState =
   | 'error'
   | 'variable'
   | 'unreachable';
-export interface StaticIpConfig {
-  ip?: string; // ^([0-9]{1,3}\.){3}[0-9]{1,3}$
-  mac?: string; // ^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$
-  gateway?: string; // ^([0-9]{1,3}\.){3}[0-9]{1,3}$
-  mask?: string; // ^[0-9]|[1-2][0-9]|3[0-2]?$
-  dns?: string;
-  ipV6?: string; // ^(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}$
-  gatewayV6?: string; // ^(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}$
-  maskV6?: string; // ^([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-8])$
-  dnsV6?: string;
-}
 export interface Step {
   stepType?: StepType;
   stepId?: string;
@@ -1158,7 +1207,8 @@ export type StepType =
   | 'api-vip-connectivity-check'
   | 'ntp-synchronizer'
   | 'fio-perf-check'
-  | 'container-image-availability';
+  | 'container-image-availability'
+  | 'domain-resolution';
 export interface Steps {
   nextInstructionSeconds?: number;
   /**

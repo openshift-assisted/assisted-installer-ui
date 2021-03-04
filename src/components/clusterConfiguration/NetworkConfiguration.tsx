@@ -6,7 +6,8 @@ import AdvancedNetworkFields from './AdvancedNetworkFields';
 import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
 import { InputField, CheckboxField, SelectField } from '../ui/formik';
 import { ManagedDomain, Cluster } from '../../api/types';
-import { getClusterDefaultSettings, isAdvConf, isSingleNodeCluster } from './utils';
+import { isAdvConf, isSingleNodeCluster } from './utils';
+import { useDefaultConfiguration } from './ClusterDefaultConfigurationContext';
 
 type NetworkConfigurationProps = {
   cluster: Cluster;
@@ -21,8 +22,13 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
 }) => {
   const { setFieldValue, values } = useFormikContext<ClusterConfigurationValues>();
   const { name: clusterName, baseDnsDomain, useRedHatDnsService } = values;
+  const defaultNetworkSettings = useDefaultConfiguration([
+    'clusterNetworkCidr',
+    'serviceNetworkCidr',
+    'clusterNetworkHostPrefix',
+  ]);
 
-  const [isAdvanced, setAdvanced] = React.useState(isAdvConf(cluster));
+  const [isAdvanced, setAdvanced] = React.useState(isAdvConf(cluster, defaultNetworkSettings));
 
   const baseDnsHelperText = (
     <>
@@ -41,11 +47,9 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
     setAdvanced(checked);
 
     if (!checked) {
-      const defaultSettings = getClusterDefaultSettings(cluster.clusterNetworkCidr as string);
-
-      setFieldValue('clusterNetworkCidr', defaultSettings.clusterNetworkCidr);
-      setFieldValue('serviceNetworkCidr', defaultSettings.serviceNetworkCidr);
-      setFieldValue('clusterNetworkHostPrefix', defaultSettings.clusterNetworkHostPrefix);
+      setFieldValue('clusterNetworkCidr', defaultNetworkSettings.clusterNetworkCidr);
+      setFieldValue('serviceNetworkCidr', defaultNetworkSettings.serviceNetworkCidr);
+      setFieldValue('clusterNetworkHostPrefix', defaultNetworkSettings.clusterNetworkHostPrefix);
     }
   };
 

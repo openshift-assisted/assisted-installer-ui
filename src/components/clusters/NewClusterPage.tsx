@@ -31,6 +31,7 @@ import { useOpenshiftVersions } from '../fetching/openshiftVersions';
 import { OpenshiftVersionOptionType } from '../../types/versions';
 import SingleNodeCheckbox from '../ui/formik/SingleNodeCheckbox';
 import OpenShiftVersionSelect from '../clusterConfiguration/OpenShiftVersionSelect';
+import { ClusterDefaultConfigurationProvider } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
 
 import './NewClusterPage.css';
 
@@ -180,7 +181,9 @@ const NewCluster: React.FC = () => {
 
 const NewClusterPage: React.FC = () => (
   <AlertsContextProvider>
-    <NewCluster />
+    <ClusterDefaultConfigurationProvider>
+      <NewCluster />
+    </ClusterDefaultConfigurationProvider>
   </AlertsContextProvider>
 );
 
