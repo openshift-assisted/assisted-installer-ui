@@ -27,11 +27,12 @@ import ClusterWizardContext from './ClusterWizardContext';
 import CheckboxField from '../ui/formik/CheckboxField';
 import { getManagedDomains } from '../../api/domains';
 import { canNextClusterDetails, ClusterWizardFlowStateType } from './wizardTransition';
-import { useOpenshiftVersions } from '../fetching/openshiftVersions';
 import { OpenshiftVersionOptionType } from '../../types/versions';
 import SingleNodeCheckbox from '../ui/formik/SingleNodeCheckbox';
 import OpenShiftVersionSelect from '../clusterConfiguration/OpenShiftVersionSelect';
 import ClusterWizardToolbar from './ClusterWizardToolbar';
+import { useOpenShiftVersions } from '../fetching/OpenShiftVersions';
+import { getDefaultOpenShiftVersion } from '../clusters/utils';
 
 type ClusterDetailsFormProps = {
   cluster?: Cluster;
@@ -48,12 +49,6 @@ type ClusterDetailsValues = {
   baseDnsDomain: string;
   useRedHatDnsService: boolean;
 };
-
-const getDefaultOpenShiftVersion = (versions: OpenshiftVersionOptionType[]) =>
-  // TODO(jtomasek): one of the available versions should be flagged as a default
-  // from the server so we don't have to hardcode here
-  // https://issues.redhat.com/browse/MGMT-4363
-  versions.find((v) => v.value === '4.7')?.value || versions[0]?.value || '';
 
 const getInitialValues = (props: ClusterDetailsFormProps): ClusterDetailsValues => {
   const { cluster, pullSecret, managedDomains, versions } = props;
@@ -297,14 +292,9 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster }) => {
 
   const pullSecret = usePullSecretFetch();
 
-  const { error: errorOCPVersions, loading: loadingOCPVersions, versions } = useOpenshiftVersions();
+  const { openShiftVersions } = useOpenShiftVersions();
 
-  React.useEffect(() => errorOCPVersions && addAlert(errorOCPVersions), [
-    errorOCPVersions,
-    addAlert,
-  ]);
-
-  if (pullSecret === undefined || !managedDomains || loadingOCPVersions) {
+  if (pullSecret === undefined || !managedDomains) {
     return (
       <ClusterWizardStep cluster={cluster}>
         <LoadingState />
@@ -316,7 +306,7 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster }) => {
       cluster={cluster}
       pullSecret={pullSecret}
       managedDomains={managedDomains}
-      versions={versions}
+      versions={openShiftVersions}
     />
   );
 };

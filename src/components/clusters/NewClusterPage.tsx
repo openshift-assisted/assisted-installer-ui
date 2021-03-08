@@ -14,6 +14,10 @@ import { ClusterDefaultConfigurationProvider } from '../clusterConfiguration/Clu
 import { ErrorState, LoadingState } from '../ui/uiState';
 import NewClusterWizard from '../clusterWizard/NewClusterWizard';
 import { routeBasePath } from '../../config/constants';
+import {
+  OpenShiftVersionsProvider,
+  useFetchOpenShiftVersions,
+} from '../fetching/OpenShiftVersions';
 
 const loadingUI = (
   <PageSection variant={PageSectionVariants.light} isFilled>
@@ -39,18 +43,51 @@ const errorUI = (
 );
 
 const NewClusterPage: React.FC = () => {
+  const {
+    openShiftVersions,
+    status: openShiftVersionsStatus,
+    fetchOpenShiftVersions,
+  } = useFetchOpenShiftVersions();
+
+  if (openShiftVersionsStatus === 'loading') {
+    return loadingUI;
+  }
+  if (openShiftVersionsStatus === 'failed') {
+    return (
+      <PageSection variant={PageSectionVariants.light} isFilled>
+        <ErrorState
+          title="Failed to fetch available OpenShift versions"
+          fetchData={fetchOpenShiftVersions}
+          actions={[
+            <Button
+              key="cancel"
+              variant={ButtonVariant.secondary}
+              component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
+            >
+              Back
+            </Button>,
+          ]}
+        />
+      </PageSection>
+    );
+  }
+
   return (
     <AlertsContextProvider>
       <ClusterDefaultConfigurationProvider loadingUI={loadingUI} errorUI={errorUI}>
-        <ClusterBreadcrumbs clusterName="New cluster" />
-        <PageSection variant={PageSectionVariants.light}>
-          <TextContent>
-            <Text component="h1">Install OpenShift on Bare Metal with the Assisted Installer</Text>
-          </TextContent>
-        </PageSection>
-        <PageSection variant={PageSectionVariants.light} isFilled>
-          <NewClusterWizard />
-        </PageSection>
+        <OpenShiftVersionsProvider openShiftVersions={openShiftVersions || []}>
+          <ClusterBreadcrumbs clusterName="New cluster" />
+          <PageSection variant={PageSectionVariants.light}>
+            <TextContent>
+              <Text component="h1">
+                Install OpenShift on Bare Metal with the Assisted Installer
+              </Text>
+            </TextContent>
+          </PageSection>
+          <PageSection variant={PageSectionVariants.light} isFilled>
+            <NewClusterWizard />
+          </PageSection>
+        </OpenShiftVersionsProvider>
       </ClusterDefaultConfigurationProvider>
     </AlertsContextProvider>
   );

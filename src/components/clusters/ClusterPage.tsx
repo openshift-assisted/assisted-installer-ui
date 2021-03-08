@@ -32,6 +32,10 @@ import { ClusterDefaultConfigurationProvider } from '../clusterConfiguration/Clu
 import ClusterBreadcrumbs from './ClusterBreadcrumbs';
 import { EventsModalButton } from '../ui/eventsModal';
 import ClusterWizard from '../clusterWizard/ClusterWizard';
+import {
+  OpenShiftVersionsProvider,
+  useFetchOpenShiftVersions,
+} from '../fetching/OpenShiftVersions';
 
 type MatchParams = {
   clusterId: string;
@@ -74,6 +78,11 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
   const [resetClusterModalOpen, setResetClusterModalOpen] = React.useState(false);
   const fetchCluster = useFetchCluster(clusterId);
   useClusterPolling(clusterId);
+  const {
+    openShiftVersions,
+    status: openShiftVersionsStatus,
+    fetchOpenShiftVersions,
+  } = useFetchOpenShiftVersions();
 
   const errorStateActions = [];
   if (!isSingleClusterMode()) {
@@ -164,7 +173,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
     </PageSection>
   );
 
-  if (uiState === ResourceUIState.LOADING) {
+  if (uiState === ResourceUIState.LOADING || openShiftVersionsStatus === 'loading') {
     return loadingUI;
   }
 
@@ -184,6 +193,18 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
     );
   }
 
+  if (openShiftVersionsStatus === 'failed') {
+    return (
+      <PageSection variant={PageSectionVariants.light} isFilled>
+        <ErrorState
+          title="Failed to fetch available OpenShift versions"
+          fetchData={fetchOpenShiftVersions}
+          actions={errorStateActions}
+        />
+      </PageSection>
+    );
+  }
+
   const errorUI = (
     <PageSection variant={PageSectionVariants.light} isFilled>
       <ErrorState
@@ -193,22 +214,24 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
     </PageSection>
   );
 
-  if (cluster) {
+  if (cluster && openShiftVersions) {
     return (
       <AlertsContextProvider>
-        <ClusterDefaultConfigurationProvider loadingUI={loadingUI} errorUI={errorUI}>
-          {getContent(cluster)}
-          <CancelInstallationModal
-            isOpen={cancelInstallationModalOpen}
-            onClose={() => setCancelInstallationModalOpen(false)}
-            clusterId={cluster.id}
-          />
-          <ResetClusterModal
-            isOpen={resetClusterModalOpen}
-            onClose={() => setResetClusterModalOpen(false)}
-            cluster={cluster}
-          />
-        </ClusterDefaultConfigurationProvider>
+        <OpenShiftVersionsProvider openShiftVersions={openShiftVersions}>
+          <ClusterDefaultConfigurationProvider loadingUI={loadingUI} errorUI={errorUI}>
+            {getContent(cluster)}
+            <CancelInstallationModal
+              isOpen={cancelInstallationModalOpen}
+              onClose={() => setCancelInstallationModalOpen(false)}
+              clusterId={cluster.id}
+            />
+            <ResetClusterModal
+              isOpen={resetClusterModalOpen}
+              onClose={() => setResetClusterModalOpen(false)}
+              cluster={cluster}
+            />
+          </ClusterDefaultConfigurationProvider>
+        </OpenShiftVersionsProvider>
       </AlertsContextProvider>
     );
   }

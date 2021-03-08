@@ -8,9 +8,10 @@ import { AssistedUILibVersion, ErrorState, LoadingState } from '../ui';
 import { addHostsClusters } from '../../api/addHostsClusters';
 import { AlertsContextProvider } from '../AlertsContextProvider';
 import { POLLING_INTERVAL } from '../../config';
-import { useOpenshiftVersions } from '../fetching/openshiftVersions';
 import AddBareMetalHosts from './AddBareMetalHosts';
 import { AddBareMetalHostsContextProvider } from './AddBareMetalHostsContext';
+import { useFetchOpenShiftVersions } from '../fetching/OpenShiftVersions';
+import { getNormalizedClusterVersion } from '../clusters/utils';
 
 type OpenModalType = (modalName: string, cluster?: OcmClusterType) => void;
 
@@ -28,7 +29,7 @@ const BareMetalHostsClusterDetailTabContent: React.FC<BareMetalHostsClusterDetai
   const [error, setError] = React.useState<ReactNode>();
   const [day2Cluster, setDay2Cluster] = React.useState<Cluster | null>();
   const pullSecret = usePullSecretFetch();
-  const { normalizeClusterVersion } = useOpenshiftVersions();
+  const { openShiftVersions } = useFetchOpenShiftVersions();
 
   const TryAgain = React.useCallback(
     () => (
@@ -81,7 +82,10 @@ const BareMetalHostsClusterDetailTabContent: React.FC<BareMetalHostsClusterDetai
       setDay2Cluster(null);
 
       // validate input
-      const openshiftVersion = normalizeClusterVersion(cluster.openshift_version);
+      const openshiftVersion = getNormalizedClusterVersion(
+        openShiftVersions || [],
+        cluster.openshift_version,
+      );
       if (!openshiftVersion) {
         setError(
           <>
@@ -181,7 +185,7 @@ const BareMetalHostsClusterDetailTabContent: React.FC<BareMetalHostsClusterDetai
 
       doItAsync();
     }
-  }, [cluster, openModal, pullSecret, day2Cluster, isVisible, normalizeClusterVersion]);
+  }, [cluster, openModal, pullSecret, day2Cluster, isVisible, openShiftVersions]);
 
   React.useEffect(() => {
     if (day2Cluster) {

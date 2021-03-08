@@ -1,4 +1,5 @@
 import { Cluster, LogsState, OperatorCreateParams } from '../../api/types';
+import { OpenshiftVersionOptionType } from '../../types/versions';
 
 export const isSingleNodeCluster = (cluster: Cluster) => cluster.highAvailabilityMode === 'None';
 
@@ -25,3 +26,21 @@ export const getOlmOperatorsByName = (cluster: Cluster): { [key: string]: Operat
     }
     return result;
   }, {});
+
+export const getNormalizedClusterVersion = (
+  openShiftVersions: OpenshiftVersionOptionType[],
+  version = '',
+): string =>
+  openShiftVersions.map((obj) => obj.value).find((normalized) => version.startsWith(normalized)) ||
+  version;
+
+export const getOpenShiftVersionLabel = (
+  openShiftVersions: OpenshiftVersionOptionType[],
+  versionValue = '',
+) => openShiftVersions.find((v) => v.value === versionValue)?.label || versionValue;
+
+export const getDefaultOpenShiftVersion = (openShiftVersions: OpenshiftVersionOptionType[]) =>
+  // TODO(jtomasek): one of the available versions should be flagged as a default
+  // from the server so we don't have to hardcode here
+  // https://issues.redhat.com/browse/MGMT-4363
+  openShiftVersions.find((v) => v.value === '4.7')?.value || openShiftVersions[0]?.value || '';

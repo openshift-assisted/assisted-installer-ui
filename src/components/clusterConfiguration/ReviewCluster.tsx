@@ -6,6 +6,7 @@ import { DetailList, DetailItem } from '../ui/DetailList';
 import { ClusterValidations, HostsValidations } from './ReviewValidations';
 import { fileSize } from '../hosts/utils';
 import { OpenshiftVersionOptionType } from '../../types/versions';
+import { getOpenShiftVersionLabel } from '../clusters/utils';
 
 import './ReviewCluster.css';
 
@@ -66,8 +67,7 @@ const ReviewHostsInventory: React.FC<{ hosts?: Host[] }> = ({ hosts = [] }) => {
 type ReviewClusterProps = { cluster: Cluster; versions: OpenshiftVersionOptionType[] };
 
 const ReviewCluster: React.FC<ReviewClusterProps> = ({ cluster, versions }) => {
-  const versionLabel =
-    versions.find((v) => v.value === cluster.openshiftVersion)?.label || cluster.openshiftVersion;
+  const versionLabel = getOpenShiftVersionLabel(versions, cluster.openshiftVersion);
   return (
     <DetailList>
       <DetailItem title="Cluster address" value={`${cluster.name}.${cluster.baseDnsDomain}`} />
