@@ -243,7 +243,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
                     versions={versions}
                     isDisabled={!!cluster}
                   />
-                  <OpenShiftVersionSelect versions={versions} />
+                  <OpenShiftVersionSelect versions={versions} isDisabled={!!cluster} />
                   {!cluster?.pullSecretSet && <PullSecret pullSecret={pullSecret} />}
                 </Form>
               </GridItem>
