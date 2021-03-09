@@ -20,7 +20,7 @@ import HostsCount from './HostsCount';
 const getColumns = (hosts?: Host[]) => [
   { title: 'Hostname', transforms: [sortable], cellFormatters: [expandable] },
   { title: 'Role', transforms: [sortable] },
-  { title: 'Hardware Status', transforms: [sortable] },
+  { title: 'Status', transforms: [sortable] },
   { title: 'Discovered At', transforms: [sortable] },
   { title: 'CPU Cores', transforms: [sortable] }, // cores per machine (sockets x cores)
   { title: 'Memory', transforms: [sortable] },
