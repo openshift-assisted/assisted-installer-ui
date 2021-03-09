@@ -42,7 +42,7 @@ const getSelectedNic = (nics: Interface[], currentSubnet: Address4 | Address6) =
 const getColumns = (hosts?: Host[]) => [
   { title: 'Hostname', transforms: [sortable], cellFormatters: [expandable] },
   { title: 'Role', transforms: [sortable] },
-  { title: 'Network Status', transforms: [sortable] },
+  { title: 'Status', transforms: [sortable] },
   { title: 'Active NIC', transforms: [sortable] }, // cores per machine (sockets x cores)
   { title: 'IPv4 address', transforms: [sortable] },
   { title: 'Ipv6 address', transforms: [sortable] },
