@@ -16,18 +16,23 @@ const ClusterConfiguration: React.FC<ClusterConfigurationProps> = ({ cluster }) 
   const { addAlert } = React.useContext(AlertsContext);
 
   React.useEffect(() => {
+    let mounted = true;
     const fetchManagedDomains = async () => {
       try {
         const { data } = await getManagedDomains();
-        setDomains(data);
+        if (mounted) setDomains(data);
       } catch (e) {
-        setDomains([]);
+        if (mounted) setDomains([]);
         handleApiError(e, () =>
           addAlert({ title: 'Failed to retrieve managed domains', message: getErrorMessage(e) }),
         );
       }
     };
     fetchManagedDomains();
+
+    return () => {
+      mounted = false;
+    };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (domains) {
