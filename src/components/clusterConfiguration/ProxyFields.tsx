@@ -30,7 +30,7 @@ const ProxyFields: React.FC = () => {
   return (
     <>
       <CheckboxField
-        label="Configure HTTP Proxy"
+        label="Configure cluster-wide proxy settings"
         name="enableProxy"
         helperText="If hosts are behind a firewall that requires the use of a proxy, provide additional information about the proxy."
         onChange={(value: boolean) => resetProxy(value)}
