@@ -1,7 +1,7 @@
 import React from 'react';
 import * as Yup from 'yup';
 import { Formik, FormikHelpers } from 'formik';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import {
   Form,
   Grid,
@@ -10,6 +10,7 @@ import {
   TextContent,
   Text,
   ButtonVariant,
+  Button,
 } from '@patternfly/react-core';
 import PageSection from '../ui/PageSection';
 import { ToolbarButton } from '../ui/Toolbar';
@@ -32,6 +33,7 @@ import { OpenshiftVersionOptionType } from '../../types/versions';
 import SingleNodeCheckbox from '../ui/formik/SingleNodeCheckbox';
 import OpenShiftVersionSelect from '../clusterConfiguration/OpenShiftVersionSelect';
 import { ClusterDefaultConfigurationProvider } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
+import { ErrorState } from '../ui/uiState';
 
 import './NewClusterPage.css';
 
@@ -157,6 +159,12 @@ const NewClusterForm: React.FC<NewClusterFormProps> = ({ pullSecret = '', versio
   );
 };
 
+const loadingUI = (
+  <PageSection variant={PageSectionVariants.light} isMain>
+    <LoadingState />
+  </PageSection>
+);
+
 const NewCluster: React.FC = () => {
   const { addAlert } = React.useContext(AlertsContext);
   const pullSecret = usePullSecretFetch();
@@ -169,19 +177,32 @@ const NewCluster: React.FC = () => {
   ]);
 
   if (pullSecret === undefined || loadingOCPVersions) {
-    return (
-      <PageSection variant={PageSectionVariants.light} isMain>
-        <LoadingState />
-      </PageSection>
-    );
+    return loadingUI;
   }
 
   return <NewClusterForm pullSecret={pullSecret} versions={versions} />;
 };
 
+const errorUI = (
+  <PageSection variant={PageSectionVariants.light} isMain>
+    <ErrorState
+      title="Failed to retrieve the default configuration"
+      actions={[
+        <Button
+          key="cancel"
+          variant={ButtonVariant.secondary}
+          component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
+        >
+          Back
+        </Button>,
+      ]}
+    />
+  </PageSection>
+);
+
 const NewClusterPage: React.FC = () => (
   <AlertsContextProvider>
-    <ClusterDefaultConfigurationProvider>
+    <ClusterDefaultConfigurationProvider loadingUI={loadingUI} errorUI={errorUI}>
       <NewCluster />
     </ClusterDefaultConfigurationProvider>
   </AlertsContextProvider>

@@ -108,12 +108,14 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
     }
   };
 
+  const loadingUI = (
+    <PageSection variant={PageSectionVariants.light} isMain>
+      <LoadingState />
+    </PageSection>
+  );
+
   if (uiState === ResourceUIState.LOADING) {
-    return (
-      <PageSection variant={PageSectionVariants.light} isMain>
-        <LoadingState />
-      </PageSection>
-    );
+    return loadingUI;
   }
 
   if (uiState === ResourceUIState.ERROR) {
@@ -132,10 +134,19 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
     );
   }
 
+  const errorUI = (
+    <PageSection variant={PageSectionVariants.light} isMain>
+      <ErrorState
+        title="Failed to retrieve the default configuration"
+        actions={errorStateActions}
+      />
+    </PageSection>
+  );
+
   if (cluster) {
     return (
       <AlertsContextProvider>
-        <ClusterDefaultConfigurationProvider>
+        <ClusterDefaultConfigurationProvider loadingUI={loadingUI} errorUI={errorUI}>
           {getContent(cluster)}
           <CancelInstallationModal
             isOpen={cancelInstallationModalOpen}
