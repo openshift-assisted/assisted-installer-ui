@@ -22,10 +22,10 @@ import { ValidationsInfo } from '../../types/hosts';
 import HostProgress from './HostProgress';
 import { HOST_STATUS_LABELS, HOST_STATUS_DETAILS } from '../../config/constants';
 import { getHumanizedDateTime } from '../ui/utils';
-import { toSentence } from '../ui/table/utils';
 import { getHostProgressStageNumber, getHostProgressStages } from './utils';
 import HostValidationGroups, { ValidationInfoActionProps } from './HostValidationGroups';
 import OcpConsoleNodesSectionLink from './OcpConsoleNodesSectionLink';
+import { toSentence } from '../ui/table/utils';
 
 const getStatusIcon = (status: Host['status']): React.ReactElement => {
   switch (status) {
@@ -92,13 +92,19 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = (props
     return (
       <TextContent>
         <Text>
-          {statusDetails && (
-            <>
-              {statusDetails} <br />
-            </>
-          )}
+          {statusDetails}
+          <br />
           {toSentence(statusInfo)}
         </Text>
+        <HostProgress host={host} />
+      </TextContent>
+    );
+  }
+
+  if (['installed'].includes(status)) {
+    return (
+      <TextContent>
+        <Text>{statusDetails}</Text>
         <HostProgress host={host} />
       </TextContent>
     );
