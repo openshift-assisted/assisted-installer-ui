@@ -29,17 +29,20 @@ export const nameValidationSchema = Yup.string()
 
 export const sshPublicKeyValidationSchema = Yup.string().test(
   'ssh-public-key',
-  'SSH public key must consist of "[TYPE] key [[EMAIL]]", supported types are: ssh-rsa, ssh-ed25519, ecdsa-[VARIANT]. Additional keys are separated by a new line.',
+  'SSH public key must consist of "[TYPE] key [[EMAIL]]", supported types are: ssh-rsa, ssh-ed25519, ecdsa-[VARIANT]. A single key can be provided only.',
   (value) => {
     if (!value) {
       return true;
     }
 
+    return !!trimSshPublicKey(value).match(SSH_PUBLIC_KEY_REGEX);
+    /* TODO(mlibra): disabled till muliple ssh-keys are supported: https://issues.redhat.com/browse/MGMT-3560
     return (
       trimSshPublicKey(value)
         .split('\n')
         .find((line: string) => !line.match(SSH_PUBLIC_KEY_REGEX)) === undefined
     );
+    */
   },
 );
 
