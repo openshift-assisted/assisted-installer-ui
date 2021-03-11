@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { Formik, FormikProps, FormikHelpers } from 'formik';
+import { Formik, FormikProps } from 'formik';
 import * as Yup from 'yup';
 import _ from 'lodash';
 import {
@@ -67,10 +67,7 @@ const NetworkConfigurationForm: React.FC<{
     [hostSubnets, initialValues],
   );
 
-  const handleSubmit = async (
-    values: NetworkConfigurationValues,
-    formikActions: FormikHelpers<NetworkConfigurationValues>,
-  ) => {
+  const handleSubmit = async (values: NetworkConfigurationValues) => {
     clearAlerts();
 
     // update the cluster configuration
@@ -89,9 +86,6 @@ const NetworkConfigurationForm: React.FC<{
       }
 
       const { data } = await patchCluster(cluster.id, params);
-      formikActions.resetForm({
-        values: getNetworkInitialValues(data, defaultNetworkSettings),
-      });
       dispatch(updateCluster(data));
     } catch (e) {
       handleApiError<ClusterUpdateParams>(e, () =>

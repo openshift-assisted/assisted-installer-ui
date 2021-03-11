@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { Formik, FormikHelpers, FormikProps } from 'formik';
 import { Cluster, ClusterUpdateParams } from '../../api/types';
+import { Formik, FormikProps } from 'formik';
 import BaremetalInventory from '../clusterConfiguration/BaremetalInventory';
 import ClusterWizardContext from './ClusterWizardContext';
 import ClusterWizardStep from './ClusterWizardStep';
@@ -21,10 +21,7 @@ const BaremetalDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const { setCurrentStepId } = React.useContext(ClusterWizardContext);
   const { addAlert, clearAlerts } = React.useContext(AlertsContext);
 
-  const handleSubmit = async (
-    values: BareMetalDiscoveryValues,
-    formikActions: FormikHelpers<BareMetalDiscoveryValues>,
-  ) => {
+  const handleSubmit = async (values: BareMetalDiscoveryValues) => {
     clearAlerts();
 
     const params: ClusterUpdateParams = {};
@@ -39,9 +36,6 @@ const BaremetalDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
 
     try {
       const { data } = await patchCluster(cluster.id, params);
-      formikActions.resetForm({
-        values: getBareMetalDiscoveryInitialValues(data),
-      });
       dispatch(updateCluster(data));
     } catch (e) {
       handleApiError<ClusterUpdateParams>(e, () =>
