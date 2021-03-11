@@ -10,7 +10,7 @@ import {
   DiscoveryTroubleshootingModal,
 } from './DiscoveryTroubleshootingModal';
 import FormatDiskWarning from './FormatDiskWarning';
-import { isSingleNodeCluster } from './utils';
+import { isSingleNodeCluster } from '../clusters/utils';
 import { CheckboxField } from '../ui';
 import { useFeature } from '../../features';
 

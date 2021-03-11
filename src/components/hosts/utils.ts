@@ -11,7 +11,7 @@ import {
 import { AlertsContextType } from '../AlertsContextProvider';
 import { DASH } from '../constants';
 import filesize from 'filesize.js';
-import { isSingleNodeCluster } from '../clusterConfiguration/utils';
+import { isSingleNodeCluster } from '../clusters/utils';
 
 export const canEnable = (clusterStatus: Cluster['status'], status: Host['status']) =>
   ['pending-for-input', 'insufficient', 'ready', 'adding-hosts'].includes(clusterStatus) &&
