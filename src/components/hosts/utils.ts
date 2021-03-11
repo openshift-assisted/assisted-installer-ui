@@ -11,6 +11,7 @@ import {
 import { AlertsContextType } from '../AlertsContextProvider';
 import { DASH } from '../constants';
 import filesize from 'filesize.js';
+import { isSingleNodeCluster } from '../clusterConfiguration/utils';
 
 export const canEnable = (clusterStatus: Cluster['status'], status: Host['status']) =>
   ['pending-for-input', 'insufficient', 'ready', 'adding-hosts'].includes(clusterStatus) &&
@@ -40,7 +41,19 @@ export const canReset = (clusterStatus: Cluster['status'], status: Host['status'
   ['adding-hosts'].includes(clusterStatus) &&
   ['error', 'installing-pending-user-action'].includes(status);
 
-export const canEditRole = (clusterStatus: Cluster['status'], status: Host['status']) =>
+export const canEditRole = (cluster: Cluster, hostStatus: Host['status']) =>
+  !isSingleNodeCluster(cluster) &&
+  ['pending-for-input', 'insufficient', 'ready'].includes(cluster.status) &&
+  [
+    'discovering',
+    'known',
+    'disconnected',
+    'disabled',
+    'insufficient',
+    'pending-for-input',
+  ].includes(hostStatus);
+
+export const canEditHost = (clusterStatus: Cluster['status'], status: Host['status']) =>
   ['pending-for-input', 'insufficient', 'ready'].includes(clusterStatus) &&
   [
     'discovering',
@@ -51,9 +64,7 @@ export const canEditRole = (clusterStatus: Cluster['status'], status: Host['stat
     'pending-for-input',
   ].includes(status);
 
-export const canEditHost = canEditRole;
-
-export const canEditDisks = canEditRole;
+export const canEditDisks = canEditHost;
 
 export const canDownloadKubeconfig = (clusterStatus: Cluster['status']) =>
   ['installing', 'finalizing', 'error', 'cancelled', 'installed'].includes(clusterStatus);
