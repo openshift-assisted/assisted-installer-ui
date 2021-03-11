@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { Formik, FormikHelpers, FormikProps } from 'formik';
+import { Formik, FormikProps } from 'formik';
 import { Cluster, ClusterUpdateParams, ListOperators } from '../../api/types';
 import BaremetalInventory from '../clusterConfiguration/BaremetalInventory';
 import ClusterWizardContext from './ClusterWizardContext';
@@ -29,10 +29,7 @@ const BaremetalDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const { addAlert, clearAlerts } = React.useContext(AlertsContext);
   const isOpenshiftClusterStorageEnabled = useFeature('ASSISTED_INSTALLER_OCS_FEATURE');
 
-  const handleSubmit = async (
-    values: BareMetalDiscoveryValues,
-    formikActions: FormikHelpers<BareMetalDiscoveryValues>,
-  ) => {
+  const handleSubmit = async (values: BareMetalDiscoveryValues) => {
     clearAlerts();
 
     const params: ClusterUpdateParams = {};
@@ -47,9 +44,6 @@ const BaremetalDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
 
     try {
       const { data } = await patchCluster(cluster.id, params);
-      formikActions.resetForm({
-        values: getInitialValues(data),
-      });
       dispatch(updateCluster(data));
     } catch (e) {
       handleApiError<ClusterUpdateParams>(e, () =>
