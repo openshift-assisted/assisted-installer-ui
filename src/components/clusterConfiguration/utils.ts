@@ -95,5 +95,3 @@ export const getInitialValues = (
       operators?.find((o) => o.operatorType === 'ocs')?.enabled || false,
   };
 };
-
-export const isSingleNodeCluster = (cluster: Cluster) => cluster.highAvailabilityMode === 'None';

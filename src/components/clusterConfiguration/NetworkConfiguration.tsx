@@ -6,7 +6,8 @@ import AdvancedNetworkFields from './AdvancedNetworkFields';
 import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
 import { InputField, CheckboxField, SelectField } from '../ui/formik';
 import { ManagedDomain, Cluster } from '../../api/types';
-import { isAdvConf, isSingleNodeCluster } from './utils';
+import { isSingleNodeCluster } from '../clusters/utils';
+import { isAdvConf } from './utils';
 import { useDefaultConfiguration } from './ClusterDefaultConfigurationContext';
 
 type NetworkConfigurationProps = {

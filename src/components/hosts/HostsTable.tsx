@@ -58,6 +58,7 @@ import {
   canReset,
   getHostname,
   canInstallHost,
+  canEditRole,
 } from './utils';
 import EditHostModal from './EditHostModal';
 import Hostname from './Hostname';
@@ -100,6 +101,7 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
     (v) => v.id === 'has-cpu-cores-for-role',
   );
   const computedHostname = getHostname(host, inventory);
+  const hostRole = getHostRole(host);
 
   return [
     {
@@ -115,8 +117,10 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
           sortableValue: computedHostname || '',
         },
         {
-          title: <RoleCell host={host} clusterStatus={cluster.status} />,
-          sortableValue: getHostRole(host),
+          title: (
+            <RoleCell host={host} readonly={!canEditRole(cluster, host.status)} role={hostRole} />
+          ),
+          sortableValue: hostRole,
         },
         {
           title: <HostStatus host={host} cluster={cluster} validationsInfo={validationsInfo} />,
