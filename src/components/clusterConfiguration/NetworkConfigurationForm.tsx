@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { Formik, FormikProps, FormikHelpers } from 'formik';
+import { Formik, FormikProps } from 'formik';
 import * as Yup from 'yup';
 import _ from 'lodash';
 import {
@@ -31,6 +31,7 @@ import ClusterSshKeyField from './ClusterSshKeyField';
 import { getHostSubnets, getNetworkInitialValues } from './utils';
 import { useDefaultConfiguration } from './ClusterDefaultConfigurationContext';
 import NetworkingHostsTable from '../hosts/NetworkingHostsTable';
+import FormikAutoSave from '../ui/formik/FormikAutoSave';
 
 const validationSchema = (initialValues: NetworkConfigurationValues, hostSubnets: HostSubnets) =>
   Yup.lazy<NetworkConfigurationValues>((values) =>
@@ -66,10 +67,7 @@ const NetworkConfigurationForm: React.FC<{
     [hostSubnets, initialValues],
   );
 
-  const handleSubmit = async (
-    values: NetworkConfigurationValues,
-    formikActions: FormikHelpers<NetworkConfigurationValues>,
-  ) => {
+  const handleSubmit = async (values: NetworkConfigurationValues) => {
     clearAlerts();
 
     // update the cluster configuration
@@ -88,12 +86,7 @@ const NetworkConfigurationForm: React.FC<{
       }
 
       const { data } = await patchCluster(cluster.id, params);
-      formikActions.resetForm({
-        values: getNetworkInitialValues(data, defaultNetworkSettings),
-      });
       dispatch(updateCluster(data));
-
-      canNextNetwork({ cluster: data }) && setCurrentStepId('review');
     } catch (e) {
       handleApiError<ClusterUpdateParams>(e, () =>
         addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),
@@ -111,11 +104,9 @@ const NetworkConfigurationForm: React.FC<{
     >
       {({
         isSubmitting,
-        isValid,
         dirty,
         values,
         errors,
-        submitForm,
         setFieldValue,
       }: FormikProps<NetworkConfigurationValues>) => {
         const onClusterSshKeyToggle = (isChecked: boolean) =>
@@ -162,6 +153,7 @@ const NetworkConfigurationForm: React.FC<{
                 <NetworkingHostsTable cluster={cluster} />
               </GridItem>
             </Grid>
+            <FormikAutoSave />
           </>
         );
 
@@ -171,8 +163,8 @@ const NetworkConfigurationForm: React.FC<{
             formErrors={errors}
             dirty={dirty}
             isSubmitting={isSubmitting}
-            isNextDisabled={!(isValid && (dirty || canNextNetwork({ cluster })))}
-            onNext={submitForm}
+            isNextDisabled={dirty || !canNextNetwork({ cluster })}
+            onNext={() => setCurrentStepId('review')}
             onBack={() => setCurrentStepId('baremetal-discovery')}
           />
         );

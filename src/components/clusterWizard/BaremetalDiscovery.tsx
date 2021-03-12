@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { Formik, FormikHelpers, FormikProps } from 'formik';
+import { Formik, FormikProps } from 'formik';
 import { Cluster, ClusterUpdateParams, ListOperators } from '../../api/types';
 import BaremetalInventory from '../clusterConfiguration/BaremetalInventory';
 import ClusterWizardContext from './ClusterWizardContext';
@@ -13,6 +13,7 @@ import { AlertsContext } from '../AlertsContextProvider';
 import { useFeature } from '../../features/featureGate';
 import { patchCluster } from '../../api/clusters';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
+import FormikAutoSave from '../ui/formik/FormikAutoSave';
 
 const getInitialValues = (cluster: Cluster) => {
   const operators = stringToJSON<ListOperators>(cluster.operators);
@@ -28,10 +29,7 @@ const BaremetalDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const { addAlert, clearAlerts } = React.useContext(AlertsContext);
   const isOpenshiftClusterStorageEnabled = useFeature('ASSISTED_INSTALLER_OCS_FEATURE');
 
-  const handleSubmit = async (
-    values: BareMetalDiscoveryValues,
-    formikActions: FormikHelpers<BareMetalDiscoveryValues>,
-  ) => {
+  const handleSubmit = async (values: BareMetalDiscoveryValues) => {
     clearAlerts();
 
     const params: ClusterUpdateParams = {};
@@ -46,12 +44,7 @@ const BaremetalDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
 
     try {
       const { data } = await patchCluster(cluster.id, params);
-      formikActions.resetForm({
-        values: getInitialValues(data),
-      });
       dispatch(updateCluster(data));
-
-      canNextBaremetalDiscovery({ cluster: data }) && setCurrentStepId('networking');
     } catch (e) {
       handleApiError<ClusterUpdateParams>(e, () =>
         addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),
@@ -61,21 +54,15 @@ const BaremetalDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
 
   return (
     <Formik initialValues={getInitialValues(cluster)} onSubmit={handleSubmit}>
-      {({
-        isSubmitting,
-        isValid,
-        dirty,
-        errors,
-        submitForm,
-      }: FormikProps<BareMetalDiscoveryValues>) => {
+      {({ isSubmitting, dirty, errors }: FormikProps<BareMetalDiscoveryValues>) => {
         const footer = (
           <ClusterWizardToolbar
             cluster={cluster}
             dirty={dirty}
             formErrors={errors}
             isSubmitting={isSubmitting}
-            isNextDisabled={!(isValid && (dirty || canNextBaremetalDiscovery({ cluster })))}
-            onNext={submitForm}
+            isNextDisabled={dirty || !canNextBaremetalDiscovery({ cluster })}
+            onNext={() => setCurrentStepId('networking')}
             onBack={() => setCurrentStepId('cluster-details')}
           />
         );
@@ -83,6 +70,7 @@ const BaremetalDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         return (
           <ClusterWizardStep cluster={cluster} footer={footer}>
             <BaremetalInventory cluster={cluster} />
+            <FormikAutoSave />
           </ClusterWizardStep>
         );
       }}
