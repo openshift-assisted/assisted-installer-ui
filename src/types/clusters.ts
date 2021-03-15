@@ -23,4 +23,5 @@ export type ValidationsInfo = {
   hostsData: Validation[];
   network: Validation[];
   configuration: Validation[];
+  operators: Validation[];
 };
