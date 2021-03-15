@@ -239,9 +239,9 @@ export interface Cluster {
   additionalNtpSource?: string;
   progress?: ClusterProgressInfo;
   /**
-   * Operators that are associated with this cluster and their properties.
+   * Operators that are associated with this cluster.
    */
-  operators?: string;
+  monitoredOperators?: MonitoredOperator[];
 }
 export interface ClusterCreateParams {
   /**
@@ -314,7 +314,10 @@ export interface ClusterCreateParams {
    * A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
    */
   additionalNtpSource?: string;
-  operators?: ListOperators;
+  /**
+   * List of OLM operators to be installed.
+   */
+  olmOperators?: OperatorCreateParams[];
 }
 export interface ClusterDefaultConfig {
   clusterNetworkCidr?: string; // ^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)[\/]([1-9]|[1-2][0-9]|3[0-2]?)$
@@ -322,17 +325,44 @@ export interface ClusterDefaultConfig {
   serviceNetworkCidr?: string; // ^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)[\/]([1-9]|[1-2][0-9]|3[0-2]?)$
   ntpSource?: string;
 }
-export type ClusterList = Cluster[];
-export interface ClusterOperator {
-  operatorType?: OperatorType;
-  enabled?: boolean;
-  status?: string;
-  statusInfo?: string;
+export interface ClusterHostRequirements {
   /**
-   * JSON-formatted string containing the properties for each operator
+   * Unique identifier of the host the requirements relate to.
    */
-  properties?: string;
+  hostId?: string; // uuid
+  /**
+   * Total host requirements for the cluster configuration
+   */
+  total?: ClusterHostRequirementsDetails;
+  /**
+   * Host requirements for the OCP installation
+   */
+  ocp?: ClusterHostRequirementsDetails;
+  /**
+   * Host requirements related to requested operators
+   */
+  operators?: OperatorHostRequirements[];
 }
+export interface ClusterHostRequirementsDetails {
+  /**
+   * Required number of CPU cores
+   */
+  cpuCores?: number;
+  /**
+   * Required number of RAM in GiB
+   */
+  ramGib?: number;
+  /**
+   * Required disk size in GB
+   */
+  diskSizeGb?: number;
+  /**
+   * Required installation disk speed in ms
+   */
+  installationDiskSpeedThresholdMs?: number;
+}
+export type ClusterHostRequirementsList = ClusterHostRequirements[];
+export type ClusterList = Cluster[];
 export interface ClusterProgressInfo {
   progressInfo?: string;
   /**
@@ -441,7 +471,10 @@ export interface ClusterUpdateParams {
    * A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
    */
   additionalNtpSource?: string;
-  operators?: ListOperators;
+  /**
+   * List of OLM operators to be installed.
+   */
+  olmOperators?: OperatorCreateParams[];
 }
 export type ClusterValidationId =
   | 'machine-cidr-defined'
@@ -460,7 +493,8 @@ export type ClusterValidationId =
   | 'pull-secret-set'
   | 'ntp-server-configured'
   | 'lso-requirements-satisfied'
-  | 'ocs-requirements-satisfied';
+  | 'ocs-requirements-satisfied'
+  | 'cnv-requirements-satisfied';
 export interface CompletionParams {
   isSuccess: boolean;
   errorInfo?: string;
@@ -592,12 +626,23 @@ export interface DiscoveryIgnitionParams {
   config?: string;
 }
 export interface Disk {
+  /**
+   * Determine the disk's unique identifier which is the by-id field if it exists and fallback to the by-path field otherwise
+   */
+  id?: string;
   driveType?: string;
   vendor?: string;
   name?: string;
   path?: string;
   hctl?: string;
+  /**
+   * by-path is the shortest physical path to the device
+   */
   byPath?: string;
+  /**
+   * by-id is the wwn/enve-ei which guaranteed to be unique for every storage device
+   */
+  byId?: string;
   model?: string;
   wwn?: string;
   serial?: string;
@@ -624,7 +669,33 @@ export interface DiskConfigParams {
   id: string;
   role?: DiskRole;
 }
+export interface DiskInfo {
+  id?: string; // uuid
+  path?: string;
+  diskSpeed?: DiskSpeed;
+}
 export type DiskRole = 'none' | 'install';
+export interface DiskSpeed {
+  tested?: boolean;
+  exitCode?: number;
+  speedMs?: number;
+}
+export interface DiskSpeedCheckRequest {
+  /**
+   * --filename argument for fio (expects a file or a block device path).
+   */
+  path: string;
+}
+export interface DiskSpeedCheckResponse {
+  /**
+   * The 99th percentile of fdatasync durations in milliseconds.
+   */
+  ioSyncDuration?: number;
+  /**
+   * The device path.
+   */
+  path?: string;
+}
 export interface DomainResolutionRequest {
   domains: {
     /**
@@ -747,6 +818,7 @@ export interface Host {
     | 'insufficient'
     | 'disabled'
     | 'preparing-for-installation'
+    | 'preparing-successful'
     | 'pending-for-input'
     | 'installing'
     | 'installing-in-progress'
@@ -788,6 +860,10 @@ export interface Host {
    * The configured NTP sources on the host.
    */
   ntpSources?: string;
+  /**
+   * Additional information about disks, formatted as JSON.
+   */
+  disksInfo?: string;
   role?: HostRole;
   bootstrap?: boolean;
   logsCollectedAt?: string; // datetime
@@ -881,6 +957,7 @@ export interface HostRegistrationResponse {
     | 'insufficient'
     | 'disabled'
     | 'preparing-for-installation'
+    | 'preparing-successful'
     | 'pending-for-input'
     | 'installing'
     | 'installing-in-progress'
@@ -922,6 +999,10 @@ export interface HostRegistrationResponse {
    * The configured NTP sources on the host.
    */
   ntpSources?: string;
+  /**
+   * Additional information about disks, formatted as JSON.
+   */
+  disksInfo?: string;
   role?: HostRole;
   bootstrap?: boolean;
   logsCollectedAt?: string; // datetime
@@ -979,6 +1060,7 @@ export interface HostRequirementsRole {
   cpuCores?: number;
   ramGib?: number;
   diskSizeGb?: number;
+  installationDiskSpeedThresholdMs?: number;
 }
 export type HostRole = 'auto-assign' | 'master' | 'worker' | 'bootstrap';
 export type HostRoleUpdateParams = 'auto-assign' | 'master' | 'worker';
@@ -994,6 +1076,16 @@ export type HostStage =
   | 'Joined'
   | 'Done'
   | 'Failed';
+export interface HostStaticNetworkConfig {
+  /**
+   * yaml string that can be processed by nmstate
+   */
+  networkYaml?: string;
+  /**
+   * mapping of host macs to logical interfaces used in the network yaml
+   */
+  macInterfaceMap?: MacInterfaceMap;
+}
 export type HostValidationId =
   | 'connected'
   | 'has-inventory'
@@ -1010,13 +1102,17 @@ export type HostValidationId =
   | 'belongs-to-majority-group'
   | 'valid-platform'
   | 'ntp-synced'
-  | 'container-images-available';
+  | 'container-images-available'
+  | 'lso-requirements-satisfied'
+  | 'ocs-requirements-satisfied'
+  | 'sufficient-installation-disk-speed'
+  | 'cnv-requirements-satisfied';
 export interface ImageCreateParams {
   /**
    * SSH public key for debugging the installation.
    */
   sshPublicKey?: string;
-  staticNetworkConfig?: string[];
+  staticNetworkConfig?: HostStaticNetworkConfig[];
   /**
    * Type of image that should be generated.
    */
@@ -1107,7 +1203,6 @@ export interface L3Connectivity {
 }
 export type ListManagedDomains = ManagedDomain[];
 export type ListManifests = Manifest[];
-export type ListOperators = Operator[];
 export interface ListVersions {
   versions?: Versions;
   releaseTag?: string;
@@ -1120,6 +1215,16 @@ export interface LogsProgressParams {
 }
 export type LogsState = 'requested' | 'collecting' | 'completed' | 'timeout' | '';
 export type LogsType = 'host' | 'controller' | 'all' | '';
+export type MacInterfaceMap = {
+  /**
+   * mac address present on the host
+   */
+  macAddress?: string; // ^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$
+  /**
+   * nic name used in the yaml, which relates 1:1 to the mac address
+   */
+  logicalNicName?: string;
+}[];
 export interface ManagedDomain {
   domain?: string;
   provider?: 'route53';
@@ -1138,6 +1243,43 @@ export interface Memory {
   physicalBytes?: number;
   usableBytes?: number;
 }
+export interface MonitoredOperator {
+  /**
+   * The cluster that this operator is associated with.
+   */
+  clusterId?: string; // uuid
+  /**
+   * Unique name of the operator.
+   */
+  name?: string;
+  /**
+   * Namespace where to deploy an operator. Only some operators require a namespace.
+   */
+  namespace?: string;
+  /**
+   * The name of the subscription of the operator.
+   */
+  subscriptionName?: string;
+  operatorType?: OperatorType;
+  /**
+   * Blob of operator-dependent parameters that are required for installation.
+   */
+  properties?: string;
+  /**
+   * Positive number represents a timeout in seconds for the operator to be available.
+   */
+  timeoutSeconds?: number;
+  status?: OperatorStatus;
+  /**
+   * Detailed information about the operator state.
+   */
+  statusInfo?: string;
+  /**
+   * Time at which the operator was last updated.
+   */
+  statusUpdatedAt?: string; // date-time
+}
+export type MonitoredOperatorsList = MonitoredOperator[];
 export interface NtpSource {
   /**
    * NTP source name or IP.
@@ -1182,19 +1324,69 @@ export interface OpenshiftVersion {
 export interface OpenshiftVersions {
   [name: string]: OpenshiftVersion;
 }
-export interface Operator {
-  operatorType?: OperatorType;
-  enabled?: boolean;
+export interface OperatorCreateParams {
+  name?: string;
   /**
-   * JSON-formatted string containing the properties for each operator
+   * Blob of operator-dependent parameters that are required for installation.
    */
   properties?: string;
 }
-export type OperatorType = 'lso' | 'ocs';
+export interface OperatorHostRequirements {
+  /**
+   * Name of the operator
+   */
+  operatorName?: string;
+  /**
+   * Host requirements for the operator
+   */
+  requirements?: ClusterHostRequirementsDetails;
+}
+export interface OperatorMonitorReport {
+  /**
+   * Unique name of the operator.
+   */
+  name?: string;
+  status?: OperatorStatus;
+  /**
+   * Detailed information about the operator state.
+   */
+  statusInfo?: string;
+}
+export type OperatorProperties = OperatorProperty[];
+export interface OperatorProperty {
+  /**
+   * Name of the property
+   */
+  name?: string;
+  /**
+   * Type of the property
+   */
+  dataType?: 'boolean' | 'string' | 'integer' | 'float';
+  /**
+   * Indicates whether the property is reqired
+   */
+  mandatory?: boolean;
+  /**
+   * Values to select from
+   */
+  options?: string[];
+  /**
+   * Description of a property
+   */
+  description?: string;
+  /**
+   * Default value for the property
+   */
+  defaultValue?: string;
+}
 /**
- * Operators that are associated with this cluster and their properties.
+ * Represents the operator state.
  */
-export type Operators = ClusterOperator[];
+export type OperatorStatus = 'failed' | 'progressing' | 'available';
+/**
+ * Kind of operator. Different types are monitored by the service differently.
+ */
+export type OperatorType = 'builtin' | 'olm';
 export interface Presigned {
   url: string;
 }
@@ -1229,6 +1421,7 @@ export type StepType =
   | 'api-vip-connectivity-check'
   | 'ntp-synchronizer'
   | 'fio-perf-check'
+  | 'installation-disk-speed-check'
   | 'container-image-availability'
   | 'domain-resolution';
 export interface Steps {
@@ -1240,7 +1433,6 @@ export interface Steps {
   instructions?: Step[];
 }
 export type StepsReply = StepReply[];
-export type SupportedOperatorsList = OperatorType[];
 export interface SystemVendor {
   serialNumber?: string;
   productName?: string;

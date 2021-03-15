@@ -2643,6 +2643,150 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
+  /clusters/{cluster_id}/monitored_operators:
+    get:
+      tags:
+        - operators
+        - installer
+      security:
+        - agentAuth: []
+      description: Lists operators to be monitored for a cluster.
+      operationId: ListOfClusterOperators
+      parameters:
+        - in: path
+          name: cluster_id
+          description: The cluster to return operators for.
+          type: string
+          format: uuid
+          required: true
+        - in: query
+          name: operator_name
+          description: An operator in the specified cluster to return its data.
+          type: string
+          required: false
+      responses:
+        '200':
+          description: Success.
+          schema:
+            $ref: '#/definitions/monitored-operators-list'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+    put:
+      tags:
+        - operators
+        - installer
+      security:
+        - agentAuth: []
+      description: Controller API to report of monitored operators.
+      operationId: ReportMonitoredOperatorStatus
+      parameters:
+        - in: path
+          name: cluster_id
+          description: The cluster whose operators are being monitored.
+          type: string
+          format: uuid
+          required: true
+        - in: body
+          name: report-params
+          description: The operators monitor report.
+          required: true
+          schema:
+            $ref: '#/definitions/operator-monitor-report'
+      responses:
+        '200':
+          description: Success.
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '409':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '503':
+          description: Unavailable.
+          schema:
+            $ref: '#/definitions/error'
+
+  /clusters/{cluster_id}/host-requirements:
+    get:
+      tags:
+        - installer
+      security:
+        - agentAuth: [admin, read-only-admin, user]
+      description: Get host requirements of a cluster.
+      operationId: GetClusterHostRequirements
+      parameters:
+        - in: path
+          name: cluster_id
+          description: The cluster to return operators for.
+          type: string
+          format: uuid
+          required: true
+      responses:
+        '200':
+          description: Success.
+          schema:
+            $ref: '#/definitions/cluster-host-requirements-list'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
   /domains:
     get:
       tags:
@@ -2703,7 +2847,9 @@ paths:
         '200':
           description: Success.
           schema:
-            $ref: '#/definitions/supported-operators-list'
+            type: array
+            items:
+              type: string
         '401':
           description: Unauthorized.
           schema:
@@ -2717,26 +2863,25 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /supported-operators/{operator_type}:
+  /supported-operators/{operator_name}:
     get:
       tags:
         - operators
       security:
         - userAuth: [admin, read-only-admin, user]
-      description: Lists properties for an operator type.
+      description: Lists properties for an operator.
       operationId: ListOperatorProperties
       parameters:
         - in: path
-          name: operator_type
-          description: The operator type.
+          name: operator_name
+          description: The operator name.
           type: string
-          enum: ['lso', 'ocs']
           required: true
       responses:
         '200':
           description: Success.
           schema:
-            type: string
+            $ref: '#/definitions/operator-properties'
         '401':
           description: Unauthorized.
           schema:
@@ -2753,7 +2898,6 @@ paths:
           description: Error.
           schema:
             $ref: '#/definitions/error'
-
   /host_requirements:
     get:
       tags:
@@ -2962,38 +3106,81 @@ paths:
             $ref: '#/definitions/error'
 
 definitions:
-  operator:
+  monitored-operator:
     type: object
     properties:
+      cluster_id:
+        type: string
+        format: uuid
+        description: The cluster that this operator is associated with.
+        x-go-custom-tag: gorm:"primary_key;foreignkey:Cluster"
+      name:
+        type: string
+        description: Unique name of the operator.
+        x-go-custom-tag: gorm:"primary_key"
+      namespace:
+        type: string
+        description: Namespace where to deploy an operator. Only some operators require a namespace.
+      subscription_name:
+        type: string
+        description: The name of the subscription of the operator.
       operator_type:
         $ref: '#/definitions/operator-type'
-      enabled:
-        type: boolean
-        default: false
       properties:
         type: string
-        description: JSON-formatted string containing the properties for each operator
-
-  cluster-operator:
-    type: object
-    properties:
-      operator_type:
-        $ref: '#/definitions/operator-type'
-      enabled:
-        type: boolean
-        default: false
+        description: Blob of operator-dependent parameters that are required for installation.
+        x-go-custom-tag: gorm:"type:text"
+      timeout_seconds:
+        type: integer
+        description:
+          Positive number represents a timeout in seconds for the operator to be available.
       status:
-        type: string
+        $ref: '#/definitions/operator-status'
       status_info:
         type: string
+        description: Detailed information about the operator state.
+      status_updated_at:
+        type: string
+        format: date-time
+        x-go-custom-tag: gorm:"type:timestamp with time zone"
+        description: Time at which the operator was last updated.
+
+  operator-monitor-report:
+    type: object
+    properties:
+      name:
+        type: string
+        description: Unique name of the operator.
+      status:
+        $ref: '#/definitions/operator-status'
+      status_info:
+        type: string
+        description: Detailed information about the operator state.
+
+  operator-type:
+    type: string
+    enum: ['builtin', 'olm']
+    description: Kind of operator. Different types are monitored by the service differently.
+
+  operator-status:
+    type: string
+    enum: ['failed', 'progressing', 'available']
+    description: Represents the operator state.
+
+  operator-create-params:
+    type: object
+    properties:
+      name:
+        type: string
       properties:
         type: string
-        description: JSON-formatted string containing the properties for each operator
+        description: Blob of operator-dependent parameters that are required for installation.
+        x-go-custom-tag: gorm:"type:text"
 
-  supported-operators-list:
+  monitored-operators-list:
     type: array
     items:
-      $ref: '#/definitions/operator-type'
+      $ref: '#/definitions/monitored-operator'
 
   list-managed-domains:
     type: array
@@ -3035,6 +3222,56 @@ definitions:
       worker:
         $ref: '#/definitions/host-requirements-role'
 
+  cluster-host-requirements-list:
+    type: array
+    items:
+      $ref: '#/definitions/cluster-host-requirements'
+
+  cluster-host-requirements:
+    type: object
+    properties:
+      host_id:
+        type: string
+        format: uuid
+        description: Unique identifier of the host the requirements relate to.
+      total:
+        $ref: '#/definitions/cluster-host-requirements-details'
+        description: Total host requirements for the cluster configuration
+      ocp:
+        $ref: '#/definitions/cluster-host-requirements-details'
+        description: Host requirements for the OCP installation
+      operators:
+        type: array
+        items:
+          $ref: '#/definitions/operator-host-requirements'
+        description: Host requirements related to requested operators
+
+  operator-host-requirements:
+    type: object
+    properties:
+      operator_name:
+        type: string
+        description: Name of the operator
+      requirements:
+        $ref: '#/definitions/cluster-host-requirements-details'
+        description: Host requirements for the operator
+
+  cluster-host-requirements-details:
+    type: object
+    properties:
+      cpu_cores:
+        type: integer
+        description: Required number of CPU cores
+      ram_gib:
+        type: integer
+        description: Required number of RAM in GiB
+      disk_size_gb:
+        type: integer
+        description: Required disk size in GB
+      installation_disk_speed_threshold_ms:
+        type: integer
+        description: Required installation disk speed in ms
+
   host-requirements-role:
     type: object
     properties:
@@ -3043,6 +3280,8 @@ definitions:
       ram_gib:
         type: integer
       disk_size_gb:
+        type: integer
+      installation_disk_speed_threshold_ms:
         type: integer
 
   event-list:
@@ -3091,10 +3330,8 @@ definitions:
       static_network_config:
         type: array
         items:
-          type: string
-          description: array of string in nmstate yaml format, each string is one host configuration
+          $ref: '#/definitions/host_static_network_config'
       image_type:
-        type: string
         description: Type of image that should be generated.
         $ref: '#/definitions/image_type'
 
@@ -3181,6 +3418,7 @@ definitions:
           - insufficient
           - disabled
           - preparing-for-installation
+          - preparing-successful
           - pending-for-input
           - installing
           - installing-in-progress
@@ -3243,6 +3481,10 @@ definitions:
         x-go-custom-tag: gorm:"type:text"
         type: string
         description: The configured NTP sources on the host.
+      disks_info:
+        x-go-custom-tag: gorm:"type:text"
+        type: string
+        description: Additional information about disks, formatted as JSON.
       role:
         $ref: '#/definitions/host-role'
       bootstrap:
@@ -3350,6 +3592,7 @@ definitions:
       - api-vip-connectivity-check
       - ntp-synchronizer
       - fio-perf-check
+      - installation-disk-speed-check
       - container-image-availability
       - domain-resolution
 
@@ -3519,8 +3762,11 @@ definitions:
         description:
           A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
         x-nullable: true
-      operators:
-        $ref: '#/definitions/list-operators'
+      olm_operators:
+        type: array
+        description: List of OLM operators to be installed.
+        items:
+          $ref: '#/definitions/operator-create-params'
 
   cluster-update-params:
     type: object
@@ -3677,8 +3923,11 @@ definitions:
         description:
           A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
         x-nullable: true
-      operators:
-        $ref: '#/definitions/list-operators'
+      olm_operators:
+        type: array
+        description: List of OLM operators to be installed.
+        items:
+          $ref: '#/definitions/operator-create-params'
 
   add-hosts-cluster-create-params:
     type: object
@@ -3937,10 +4186,13 @@ definitions:
       progress:
         $ref: '#/definitions/cluster-progress-info'
         x-go-custom-tag: gorm:"embedded;embedded_prefix:progress_"
-      operators:
-        x-go-custom-tag: gorm:"type:text"
-        type: string
-        description: Operators that are associated with this cluster and their properties.
+      monitored_operators:
+        x-go-custom-tag: gorm:"foreignkey:ClusterID;association_foreignkey:ID"
+        type: array
+        description: Operators that are associated with this cluster.
+        items:
+          type: object
+          $ref: '#/definitions/monitored-operator'
 
   image_info:
     type: object
@@ -3970,8 +4222,30 @@ definitions:
           static network configuration string in the format expected by discovery ignition
           generation
       type:
-        type: string
         $ref: '#/definitions/image_type'
+
+  host_static_network_config:
+    type: object
+    properties:
+      network_yaml:
+        type: string
+        description: yaml string that can be processed by nmstate
+      mac_interface_map:
+        $ref: '#/definitions/mac_interface_map'
+        description: mapping of host macs to logical interfaces used in the network yaml
+
+  mac_interface_map:
+    type: array
+    items:
+      type: object
+      properties:
+        mac_address:
+          type: string
+          pattern: '^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$'
+          description: mac address present on the host
+        logical_nic_name:
+          type: string
+          description: nic name used in the yaml, which relates 1:1 to the mac address
 
   image_type:
     type: string
@@ -4229,6 +4503,11 @@ definitions:
   disk:
     type: object
     properties:
+      id:
+        type: string
+        description:
+          Determine the disk's unique identifier which is the by-id field if it exists and fallback
+          to the by-path field otherwise
       drive_type:
         type: string
       vendor:
@@ -4241,6 +4520,10 @@ definitions:
         type: string
       by_path:
         type: string
+        description: by-path is the shortest physical path to the device
+      by_id:
+        type: string
+        description: by-id is the wwn/enve-ei which guaranteed to be unique for every storage device
       model:
         type: string
       wwn:
@@ -4420,6 +4703,25 @@ definitions:
         type: string
         description: The device path.
 
+  disk_speed_check_request:
+    type: object
+    required:
+      - path
+    properties:
+      path:
+        type: string
+        description: --filename argument for fio (expects a file or a block device path).
+
+  disk_speed_check_response:
+    type: object
+    properties:
+      io_sync_duration:
+        type: integer
+        description: The 99th percentile of fdatasync durations in milliseconds.
+      path:
+        type: string
+        description: The device path.
+
   domain_resolution_request:
     type: object
     required:
@@ -4465,6 +4767,26 @@ definitions:
               items:
                 type: string
                 format: ipv6
+  disk_speed:
+    type: object
+    properties:
+      tested:
+        type: boolean
+      exit_code:
+        type: integer
+      speed_ms:
+        type: integer
+
+  disk_info:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+      path:
+        type: string
+      disk_speed:
+        $ref: '#/definitions/disk_speed'
 
   credentials:
     type: object
@@ -4526,6 +4848,10 @@ definitions:
       - 'valid-platform'
       - 'ntp-synced'
       - 'container-images-available'
+      - 'lso-requirements-satisfied'
+      - 'ocs-requirements-satisfied'
+      - 'sufficient-installation-disk-speed'
+      - 'cnv-requirements-satisfied'
 
   dhcp_allocation_request:
     type: object
@@ -4687,6 +5013,7 @@ definitions:
       - 'ntp-server-configured'
       - 'lso-requirements-satisfied'
       - 'ocs-requirements-satisfied'
+      - 'cnv-requirements-satisfied'
 
   logs_type:
     type: string
@@ -4696,19 +5023,6 @@ definitions:
       - 'all'
       - ''
 
-  operators:
-    type: array
-    items:
-      $ref: '#/definitions/cluster-operator'
-    x-nullable: true
-    description: Operators that are associated with this cluster and their properties.
-
-  operator-type:
-    type: string
-    enum:
-      - 'lso'
-      - 'ocs'
-
   logs_state:
     type: string
     enum:
@@ -4717,13 +5031,6 @@ definitions:
       - 'completed'
       - 'timeout'
       - ''
-
-  list-operators:
-    type: array
-    items:
-      $ref: '#/definitions/operator'
-      x-nullable: true
-      description: Operators that are associated with this cluster and their properties.
 
   logs-progress-params:
     type: object
@@ -4804,3 +5111,33 @@ definitions:
         type: string
         enum: [beta, production]
         description: Level of support of the version.
+
+  operator-property:
+    type: object
+    properties:
+      name:
+        type: string
+        description: Name of the property
+      data_type:
+        type: string
+        enum: ['boolean', 'string', 'integer', 'float']
+        description: Type of the property
+      mandatory:
+        type: boolean
+        description: Indicates whether the property is reqired
+      options:
+        type: array
+        items:
+          type: string
+        description: Values to select from
+      description:
+        type: string
+        description: Description of a property
+      default_value:
+        type: string
+        description: Default value for the property
+
+  operator-properties:
+    type: array
+    items:
+      $ref: '#/definitions/operator-property'
