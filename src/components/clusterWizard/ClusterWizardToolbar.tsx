@@ -38,6 +38,7 @@ type ClusterWizardToolbarProps = {
   isSubmitting?: boolean;
   onNext?: () => void;
   isNextDisabled?: boolean;
+  isBackDisabled?: boolean;
   onBack?: () => void;
   onCancel?: () => void;
   onInstall?: () => Promise<void>;
@@ -118,7 +119,8 @@ const ClusterWizardToolbar: React.FC<ClusterWizardToolbarProps> = ({
   onCancel,
   onNext,
   onInstall,
-  isNextDisabled,
+  isNextDisabled = false,
+  isBackDisabled = false,
   onBack,
 }) => {
   const [isValidationSectionOpen, setIsValidationSectionOpen] = React.useState(false);
@@ -187,7 +189,7 @@ const ClusterWizardToolbar: React.FC<ClusterWizardToolbarProps> = ({
               variant={ButtonVariant.secondary}
               name="back"
               onClick={onBack}
-              isDisabled={false}
+              isDisabled={isBackDisabled}
             >
               Back
             </ToolbarButton>
