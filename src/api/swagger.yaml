@@ -2032,6 +2032,65 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
+  /clusters/{cluster_id}/hosts/{host_id}/logs_progress:
+    put:
+      tags:
+        - installer
+      security:
+        - agentAuth: []
+      description: Update log collection state and progress.
+      operationId: UpdateHostLogsProgress
+      parameters:
+        - in: path
+          name: cluster_id
+          description: The cluster whose log progress is being updated.
+          type: string
+          format: uuid
+          required: true
+        - in: path
+          name: host_id
+          description: The host whose log progress is being updated.
+          type: string
+          format: uuid
+          required: true
+        - in: body
+          name: logs-progress-params
+          description: Parameters for updating log progress.
+          required: true
+          schema:
+            $ref: '#/definitions/logs-progress-params'
+      responses:
+        '204':
+          description: Update cluster install progress.
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '409':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '503':
+          description: Unavailable.
+          schema:
+            $ref: '#/definitions/error'
+
   /clusters/{cluster_id}/hosts/{host_id}/logs:
     post:
       tags:
@@ -2276,6 +2335,59 @@ paths:
           description: Success.
           schema:
             type: file
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '409':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '503':
+          description: Unavailable.
+          schema:
+            $ref: '#/definitions/error'
+
+  /clusters/{cluster_id}/logs_progress:
+    put:
+      tags:
+        - installer
+      security:
+        - agentAuth: []
+      description: Update log collection state and progress.
+      operationId: UpdateClusterLogsProgress
+      parameters:
+        - in: path
+          name: cluster_id
+          description: The cluster whose log progress is being updated.
+          type: string
+          format: uuid
+          required: true
+        - in: body
+          name: logs-progress-params
+          description: Parameters for updating log progress.
+          required: true
+          schema:
+            $ref: '#/definitions/logs-progress-params'
+      responses:
+        '204':
+          description: Update cluster install progress.
         '401':
           description: Unauthorized.
           schema:
@@ -3087,6 +3199,10 @@ definitions:
         description:
           JSON-formatted string containing the validation results for each validation id grouped by
           category (network, hardware, etc.)
+        x-go-custom-tag: gorm:"type:text"
+      logs_info:
+        $ref: '#/definitions/logs_state'
+        description: The progress of log collection or empty if logs are not applicable
         x-go-custom-tag: gorm:"type:varchar(2048)"
       status_updated_at:
         type: string
@@ -3132,6 +3248,10 @@ definitions:
       bootstrap:
         type: boolean
       logs_collected_at:
+        type: string
+        format: datetime
+        x-go-custom-tag: gorm:"type:timestamp with time zone"
+      logs_started_at:
         type: string
         format: datetime
         x-go-custom-tag: gorm:"type:timestamp with time zone"
@@ -3769,6 +3889,10 @@ definitions:
         description:
           JSON-formatted string containing the validation results for each validation id grouped by
           category (network, hosts-data, etc.)
+        x-go-custom-tag: gorm:"type:text"
+      logs_info:
+        $ref: '#/definitions/logs_state'
+        description: The progress of log collection or empty if logs are not applicable
         x-go-custom-tag: gorm:"type:varchar(2048)"
       install_config_overrides:
         x-go-custom-tag: gorm:"type:text"
@@ -3785,6 +3909,10 @@ definitions:
           '{"ignition": {"version": "3.1.0"}, "storage": {"files": [{"path": "/tmp/example",
           "contents": {"source": "data:text/plain;base64,aGVscGltdHJhcHBlZGluYXN3YWdnZXJzcGVj"}}]}}'
       controller_logs_collected_at:
+        type: string
+        format: date-time
+        x-go-custom-tag: gorm:"type:timestamp with time zone"
+      controller_logs_started_at:
         type: string
         format: date-time
         x-go-custom-tag: gorm:"type:timestamp with time zone"
@@ -4581,12 +4709,30 @@ definitions:
       - 'lso'
       - 'ocs'
 
+  logs_state:
+    type: string
+    enum:
+      - 'requested'
+      - 'collecting'
+      - 'completed'
+      - 'timeout'
+      - ''
+
   list-operators:
     type: array
     items:
       $ref: '#/definitions/operator'
       x-nullable: true
       description: Operators that are associated with this cluster and their properties.
+
+  logs-progress-params:
+    type: object
+    required:
+      - logs_state
+    properties:
+      logs_state:
+        description: The state of collecting logs.
+        $ref: '#/definitions/logs_state'
 
   list-manifests:
     type: array
