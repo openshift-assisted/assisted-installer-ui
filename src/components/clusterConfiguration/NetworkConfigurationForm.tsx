@@ -99,7 +99,8 @@ const NetworkConfigurationForm: React.FC<{
       initialValues={initialValues}
       validationSchema={memoizedValidationSchema}
       onSubmit={handleSubmit}
-      initialTouched={_.mapValues(initialValues, () => true)}
+      enableReinitialize={true}
+      /*initialTouched={_.mapValues(initialValues, () => true)}*/
       validateOnMount
     >
       {({
