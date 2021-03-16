@@ -129,7 +129,7 @@ export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
 export const HOST_VALIDATION_GROUP_LABELS: { [key in keyof ValidationsInfo]: string } = {
   hardware: 'Hardware',
   network: 'Network',
-  role: 'Roles',
+  operators: 'Operators',
 };
 
 export const HOST_VALIDATION_LABELS: { [key in HostValidationId]: string } = {

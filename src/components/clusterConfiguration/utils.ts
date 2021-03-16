@@ -1,11 +1,5 @@
 import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
-import {
-  Cluster,
-  ClusterDefaultConfig,
-  Inventory,
-  ListOperators,
-  ManagedDomain,
-} from '../../api/types';
+import { Cluster, ClusterDefaultConfig, Inventory, ManagedDomain } from '../../api/types';
 import { stringToJSON } from '../../api/utils';
 import { Address4, Address6 } from 'ip-address';
 import { getHostname } from '../hosts/utils';
@@ -72,7 +66,7 @@ export const getInitialValues = (
   managedDomains: ManagedDomain[],
   defaultNetworkSettings: ClusterDefaultConfig,
 ): ClusterConfigurationValues => {
-  const operators = stringToJSON<ListOperators>(cluster.operators);
+  const monitoredOperators = cluster.monitoredOperators || [];
 
   return {
     name: cluster.name || '',
@@ -91,7 +85,6 @@ export const getInitialValues = (
     shareDiscoverySshKey:
       !!cluster.imageInfo.sshPublicKey && cluster.sshPublicKey === cluster.imageInfo.sshPublicKey,
     vipDhcpAllocation: cluster.vipDhcpAllocation,
-    useExtraDisksForLocalStorage:
-      operators?.find((o) => o.operatorType === 'ocs')?.enabled || false,
+    useExtraDisksForLocalStorage: !!monitoredOperators.find((operator) => operator.name === 'ocs'),
   };
 };

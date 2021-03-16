@@ -20,8 +20,8 @@ export type ClusterConfigurationValues = ClusterUpdateParams & {
 };
 
 export type ValidationsInfo = {
-  hostsData: Validation[];
-  network: Validation[];
-  configuration: Validation[];
-  operators: Validation[];
+  hostsData?: Validation[];
+  network?: Validation[];
+  configuration?: Validation[];
+  operators?: Validation[];
 };
