@@ -7,8 +7,7 @@ import {
   TextContent,
   TextVariants,
 } from '@patternfly/react-core';
-import { ExclamationTriangleIcon } from '@patternfly/react-icons';
-import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens';
+import { InfoCircleIcon } from '@patternfly/react-icons';
 import { Host, stringToJSON, Inventory } from '../../api';
 import PrismCode from '../ui/PrismCode';
 
@@ -42,7 +41,7 @@ const VMRebootConfigurationInfo: React.FC<{ hosts?: Host[] }> = ({ hosts = [] })
     <Text component="p">
       <Popover bodyContent={<Hint />} minWidth="30rem">
         <Button variant={ButtonVariant.link} isInline>
-          <ExclamationTriangleIcon className="status-icon" color={warningColor.value} size="sm" />
+          <InfoCircleIcon className="status-icon" size="sm" />
           &nbsp;Please check the reboot configuration of your VMs
         </Button>
       </Popover>
