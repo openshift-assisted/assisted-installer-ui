@@ -8,7 +8,7 @@ import {
   Text,
   TextVariants,
 } from '@patternfly/react-core';
-import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
+import { InfoCircleIcon } from '@patternfly/react-icons';
 import PrismCode from '../ui/PrismCode';
 
 export type HostsNotShowingLinkProps = {
@@ -24,7 +24,7 @@ export const HostsNotShowingLink: React.FC<HostsNotShowingLinkProps> = ({
   setDiscoveryHintModalOpen,
 }) => (
   <Button variant={ButtonVariant.link} onClick={() => setDiscoveryHintModalOpen(true)} isInline>
-    <OutlinedQuestionCircleIcon />
+    <InfoCircleIcon size="sm" />
     &nbsp;Hosts not showing up?
   </Button>
 );
