@@ -9,7 +9,7 @@ import {
 } from '../../types/clusters';
 import { CheckboxField, InputField, SelectField } from '../ui/formik';
 import { Cluster } from '../../api/types';
-import { StaticField } from '../ui/StaticTextField';
+import { FormikStaticField } from '../ui/StaticTextField';
 import { stringToJSON } from '../../api/utils';
 import { NO_SUBNET_SET } from '../../config/constants';
 
@@ -212,34 +212,34 @@ const BasicNetworkFields: React.FC<BasicNetworkFieldsProps> = ({ cluster, hostSu
       <CheckboxField label="Allocate virtual IPs via DHCP server" name="vipDhcpAllocation" />
       {values.vipDhcpAllocation ? (
         <>
-          <StaticField
+          <FormikStaticField
             label="API Virtual IP"
             name="apiVip"
             helperText={apiVipHelperText}
-            value={
-              <VipStaticValue
-                vipName="apiVip"
-                cluster={cluster}
-                validationErrorMessage={apiVipFailedValidationMessage}
-              />
-            }
+            value={cluster.apiVip || ''}
             isValid={!apiVipFailedValidationMessage}
             isRequired
-          />
-          <StaticField
+          >
+            <VipStaticValue
+              vipName="apiVip"
+              cluster={cluster}
+              validationErrorMessage={apiVipFailedValidationMessage}
+            />
+          </FormikStaticField>
+          <FormikStaticField
             label="Ingress Virtual IP"
             name="ingressVip"
             helperText={ingressVipHelperText}
-            value={
-              <VipStaticValue
-                vipName="ingressVip"
-                cluster={cluster}
-                validationErrorMessage={ingressVipFailedValidationMessage}
-              />
-            }
+            value={cluster.ingressVip || ''}
             isValid={!ingressVipFailedValidationMessage}
             isRequired
-          />
+          >
+            <VipStaticValue
+              vipName="ingressVip"
+              cluster={cluster}
+              validationErrorMessage={ingressVipFailedValidationMessage}
+            />
+          </FormikStaticField>
         </>
       ) : (
         <>
