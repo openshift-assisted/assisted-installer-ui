@@ -75,6 +75,7 @@ export const HOST_STATUS_LABELS: { [key in Host['status']]: string } = {
   insufficient: 'Insufficient',
   disabled: 'Disabled',
   'preparing-for-installation': 'Preparing for installation',
+  'preparing-successful': 'Preparing installation successful',
   installing: 'Starting installation',
   'installing-in-progress': 'Installing',
   'installing-pending-user-action': 'Incorrect boot order',
@@ -111,6 +112,7 @@ export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
   disabled:
     'This host was manually disabled and will not be included in the cluster. Enable this host to include it again.',
   'preparing-for-installation': '',
+  'preparing-successful': '',
   installing: '', // not rendered
   'installing-in-progress': '', // not rendered
   'installing-pending-user-action':
@@ -127,7 +129,7 @@ export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
 export const HOST_VALIDATION_GROUP_LABELS: { [key in keyof ValidationsInfo]: string } = {
   hardware: 'Hardware',
   network: 'Network',
-  role: 'Roles',
+  operators: 'Operators',
 };
 
 export const HOST_VALIDATION_LABELS: { [key in HostValidationId]: string } = {
@@ -142,11 +144,15 @@ export const HOST_VALIDATION_LABELS: { [key in HostValidationId]: string } = {
   connected: 'Connected',
   'machine-cidr-defined': 'Machine CIDR',
   'belongs-to-machine-cidr': 'Belongs to machine CIDR',
-  'container-images-available': 'Container images availability',
   'api-vip-connected': 'API VIP connected',
   'belongs-to-majority-group': 'Belongs to majority connected group',
   'valid-platform': 'Platform',
   'ntp-synced': 'NTP synchronization',
+  'container-images-available': 'Container images availability',
+  'lso-requirements-satisfied': 'LSO requirements',
+  'ocs-requirements-satisfied': 'OCS requirements',
+  'sufficient-installation-disk-speed': 'Installation disk speed',
+  'cnv-requirements-satisfied': 'CNV requirements',
 };
 
 export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string } = {
@@ -161,11 +167,15 @@ export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string 
   connected: '',
   'machine-cidr-defined': '',
   'belongs-to-machine-cidr': '',
-  'container-images-available': '',
   'api-vip-connected': '',
   'belongs-to-majority-group': '',
   'valid-platform': '',
   'ntp-synced': "Please manually fix host's NTP configuration or provide additional NTP sources.",
+  'container-images-available': '',
+  'lso-requirements-satisfied': '',
+  'ocs-requirements-satisfied': '',
+  'sufficient-installation-disk-speed': '',
+  'cnv-requirements-satisfied': '',
 };
 
 export const CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4 = {
