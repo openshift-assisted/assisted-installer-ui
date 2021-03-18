@@ -50,8 +50,8 @@ import { AlertsContext } from '../AlertsContextProvider';
 import ClusterSshKeyField from './ClusterSshKeyField';
 import { captureException } from '../../sentry';
 import { trimSshPublicKey } from '../ui/formik/utils';
-import { useFeature } from '../../features';
 import { useDefaultConfiguration } from './ClusterDefaultConfigurationContext';
+import { getOlmOperatorsByName } from '../clusters/utils';
 
 const validationSchema = (initialValues: ClusterConfigurationValues, hostSubnets: HostSubnets) =>
   Yup.lazy<ClusterConfigurationValues>((values) =>
@@ -94,7 +94,6 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
     () => validationSchema(initialValues, hostSubnets),
     [hostSubnets, initialValues],
   );
-  const isOpenshiftClusterStorageEnabled = useFeature('ASSISTED_INSTALLER_OCS_FEATURE');
 
   const handleSubmit = async (
     values: ClusterConfigurationValues,
@@ -128,14 +127,14 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = ({
         params.machineNetworkCidr = cidr;
       }
 
-      if (isOpenshiftClusterStorageEnabled) {
-        params.operators = [
-          {
-            enabled: values.useExtraDisksForLocalStorage,
-            operatorType: 'ocs',
-          },
-        ];
+      const enabledOlmOperatorsByName = getOlmOperatorsByName(cluster);
+
+      if (values.useExtraDisksForLocalStorage) {
+        enabledOlmOperatorsByName.ocs = { name: 'ocs' };
+      } else {
+        delete enabledOlmOperatorsByName.ocs;
       }
+      params.olmOperators = Object.values(enabledOlmOperatorsByName);
 
       const { data } = await patchCluster(cluster.id, params);
       formikActions.resetForm({

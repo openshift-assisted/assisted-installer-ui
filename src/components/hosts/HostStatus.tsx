@@ -49,6 +49,7 @@ const getStatusIcon = (status: Host['status']): React.ReactElement => {
     case 'installed':
       return <CheckCircleIcon color={okColor.value} />;
     case 'preparing-for-installation':
+    case 'preparing-successful':
     case 'installing':
     case 'installing-in-progress':
     case 'resetting':

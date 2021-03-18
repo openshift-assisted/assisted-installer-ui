@@ -19,6 +19,8 @@ import { Cluster } from '../../api/types';
 import { ClusterConfigurationValues, ValidationsInfo } from '../../types/clusters';
 import { CLUSTER_FIELD_LABELS } from '../../config/constants';
 import { stringToJSON } from '../../api/utils';
+import { Validation } from '../../types/hosts';
+
 import './ClusterValidationSection.css';
 
 type ClusterValidationSectionProps = {
@@ -39,11 +41,8 @@ const ClusterValidationSection: React.FC<ClusterValidationSectionProps> = ({
   const ready = cluster.status === 'ready' && !errorFields.length && !dirty;
 
   const { failedValidations } = React.useMemo(() => {
-    const validationsInfo = stringToJSON<ValidationsInfo>(cluster.validationsInfo) || {
-      hostsData: [],
-      network: [],
-    };
-    const flattenedValues = _.values(validationsInfo).flat();
+    const validationsInfo = stringToJSON<ValidationsInfo>(cluster.validationsInfo) || {};
+    const flattenedValues = _.values(validationsInfo).flat() as Validation[];
     return {
       pendingValidations: flattenedValues.filter((validation) => validation.status === 'pending'),
       failedValidations: flattenedValues.filter((validation) => validation.status === 'failure'),
