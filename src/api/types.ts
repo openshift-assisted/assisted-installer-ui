@@ -204,6 +204,10 @@ export interface Cluster {
    */
   validationsInfo?: string;
   /**
+   * The progress of log collection or empty if logs are not applicable
+   */
+  logsInfo?: LogsState;
+  /**
    * JSON-formatted string containing the user overrides for the install-config.yaml file.
    * example:
    * {"networking":{"networkType": "OVN-Kubernetes"},"fips":true}
@@ -216,6 +220,7 @@ export interface Cluster {
    */
   ignitionConfigOverrides?: string;
   controllerLogsCollectedAt?: string; // date-time
+  controllerLogsStartedAt?: string; // date-time
   /**
    * Json formatted string containing the majority groups for connectivity checks.
    */
@@ -758,6 +763,10 @@ export interface Host {
    */
   validationsInfo?: string;
   /**
+   * The progress of log collection or empty if logs are not applicable
+   */
+  logsInfo?: LogsState;
+  /**
    * The last time that the host status was updated.
    */
   statusUpdatedAt?: string; // date-time
@@ -782,6 +791,7 @@ export interface Host {
   role?: HostRole;
   bootstrap?: boolean;
   logsCollectedAt?: string; // datetime
+  logsStartedAt?: string; // datetime
   /**
    * Installer version.
    */
@@ -887,6 +897,10 @@ export interface HostRegistrationResponse {
    */
   validationsInfo?: string;
   /**
+   * The progress of log collection or empty if logs are not applicable
+   */
+  logsInfo?: LogsState;
+  /**
    * The last time that the host status was updated.
    */
   statusUpdatedAt?: string; // date-time
@@ -911,6 +925,7 @@ export interface HostRegistrationResponse {
   role?: HostRole;
   bootstrap?: boolean;
   logsCollectedAt?: string; // datetime
+  logsStartedAt?: string; // datetime
   /**
    * Installer version.
    */
@@ -1097,6 +1112,13 @@ export interface ListVersions {
   versions?: Versions;
   releaseTag?: string;
 }
+export interface LogsProgressParams {
+  /**
+   * The state of collecting logs.
+   */
+  logsState: LogsState;
+}
+export type LogsState = 'requested' | 'collecting' | 'completed' | 'timeout' | '';
 export type LogsType = 'host' | 'controller' | 'all' | '';
 export interface ManagedDomain {
   domain?: string;
