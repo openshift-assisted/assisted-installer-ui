@@ -48,12 +48,16 @@ export const sshPublicKeyValidationSchema = Yup.string().test(
 
 export const validJSONSchema = Yup.string().test(
   'is-json',
-  'Value must be valid JSON.',
+  'The pull-secret format is invalid, refer to the documentation for examples.',
   (value) => {
     if (!value) return true;
     try {
-      JSON.parse(value);
-      return true;
+      const pullSecret = JSON.parse(value);
+      return (
+        pullSecret.constructor.name === 'Object' &&
+        Object.hasOwnProperty.call(pullSecret, 'auths') &&
+        pullSecret.auths.constructor.name === 'Object'
+      );
     } catch {
       return false;
     }
