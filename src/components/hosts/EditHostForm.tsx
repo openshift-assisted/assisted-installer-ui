@@ -123,11 +123,9 @@ const EditHostForm: React.FC<EditHostFormProps> = ({
                   {status.error.message}
                 </Alert>
               )}
-              <StaticTextField
-                name="discoveredHostname"
-                label="Discovered Hostname"
-                value={hostname || ''}
-              />
+              <StaticTextField name="discoveredHostname" label="Discovered Hostname">
+                {hostname || ''}
+              </StaticTextField>
               <InputField
                 label="Requested hostname"
                 name="hostname"

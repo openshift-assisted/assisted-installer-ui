@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useField } from 'formik';
 import { FormGroup, TextContent, Text } from '@patternfly/react-core';
 import { getFieldId } from './formik/utils';
 import HelperText from './formik/HelperText';
@@ -6,7 +7,6 @@ import HelperText from './formik/HelperText';
 export interface StaticFieldProps {
   name: string;
   label: string;
-  value: React.ReactNode;
   helperText?: React.ReactNode;
   helperTextInvalid?: React.ReactNode;
   isRequired?: boolean;
@@ -16,13 +16,13 @@ export interface StaticFieldProps {
 export const StaticField: React.FC<StaticFieldProps> = ({
   label,
   name,
-  value,
+  children,
   helperText,
   helperTextInvalid,
   isRequired,
   isValid = true,
 }) => {
-  const fieldId = getFieldId(name, 'status');
+  const fieldId = getFieldId(name, 'static');
 
   return (
     <FormGroup
@@ -39,28 +39,42 @@ export const StaticField: React.FC<StaticFieldProps> = ({
       validated={isValid ? 'default' : 'error'}
       isRequired={isRequired}
     >
-      {value}
+      {children}
     </FormGroup>
   );
 };
 
 /**
- * Simplified form component for rendering static text.
- * Does not take field value from formik.
+ * Static Formik field which sets value prop as formik field value
  */
-export const StaticTextField: React.FC<StaticFieldProps> = ({ value, ...props }) => {
-  const fieldId = getFieldId(name, 'status');
+type FormikStaticFieldProps = {
+  value: string;
+} & StaticFieldProps;
+
+export const FormikStaticField: React.FC<FormikStaticFieldProps> = ({ value, ...props }) => {
+  const [, , helpers] = useField({ name: props.name });
+
+  React.useEffect(() => {
+    helpers.setValue(value);
+  }, [value]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return <StaticField {...props} />;
+};
+
+/**
+ * Simplified form component for rendering static text.
+ * Does not reflect field value from formik.
+ */
+export const StaticTextField: React.FC<StaticFieldProps> = ({ children, ...props }) => {
+  const fieldId = getFieldId(props.name, 'static');
 
   return (
-    <StaticField
-      {...props}
-      value={
-        <TextContent>
-          <Text component="p" id={fieldId} aria-describedby={`${fieldId}-helper`}>
-            {value}
-          </Text>
-        </TextContent>
-      }
-    />
+    <StaticField {...props}>
+      <TextContent>
+        <Text component="p" id={fieldId} aria-describedby={`${fieldId}-helper`}>
+          {children}
+        </Text>
+      </TextContent>
+    </StaticField>
   );
 };
