@@ -69,6 +69,15 @@ const ClusterValidationSection: React.FC<ClusterValidationSectionProps> = ({
     <Split>
       <SplitItem isFilled>
         <AlertGroup className="cluster-validation-section">
+          {!cluster.validationsInfo && (
+            <Alert
+              variant={AlertVariant.info}
+              title="Cluster validations are initializing"
+              isInline
+            >
+              Please hold on till backgroud checks are started.
+            </Alert>
+          )}
           {!errorFields.length && dirty && (
             <Alert
               variant={AlertVariant.info}
@@ -106,7 +115,7 @@ const ClusterValidationSection: React.FC<ClusterValidationSectionProps> = ({
               </Flex>
             </Alert>
           )}
-          {!isContentToDisplay && (
+          {!isContentToDisplay && !!cluster.validationsInfo && (
             <Alert variant={AlertVariant.info} title="Host validations are failing" isInline>
               All relevant cluster-level validations are passing, inspect individual hosts.
             </Alert>
