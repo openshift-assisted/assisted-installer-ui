@@ -68,11 +68,7 @@ const getVipHelperSuffix = (
 const getVipValidationsById = (
   validationsInfoString?: Cluster['validationsInfo'],
 ): { [key: string]: string | undefined } => {
-  const validationsInfo = stringToJSON<ValidationsInfo>(validationsInfoString) || {
-    hostsData: [],
-    network: [],
-    configuration: [],
-  };
+  const validationsInfo = stringToJSON<ValidationsInfo>(validationsInfoString) || {};
   const failedDhcpAllocationMessageStubs = [
     'VIP IP allocation from DHCP server has been timed out', // TODO(jtomasek): remove this one once it is no longer in backend
     'IP allocation from the DHCP server timed out.',

@@ -9,7 +9,7 @@ export type Validation = {
 export type ValidationsInfo = {
   hardware?: Validation[];
   network?: Validation[];
-  role?: Validation[];
+  operators?: Validation[];
 };
 
 export type HostRole = {
