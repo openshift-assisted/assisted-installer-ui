@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, ButtonVariant, Modal, ModalVariant, TextContent } from '@patternfly/react-core';
-import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
+import { InfoCircleIcon } from '@patternfly/react-icons';
 import {
   HostRequirementsRole,
   HostRequirements as HostRequirementsType,
@@ -83,7 +83,7 @@ export const HostRequirementsLink: React.FC<HostRequirementsLinkProps> = ({ Cont
         isInline
         className="host-requirements-link"
       >
-        <OutlinedQuestionCircleIcon />
+        <InfoCircleIcon size="sm" />
         &nbsp;Minimum hardware requirements
       </Button>
       <HostRequirementsModal

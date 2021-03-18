@@ -41,7 +41,7 @@ const VMRebootConfigurationInfo: React.FC<{ hosts?: Host[] }> = ({ hosts = [] })
     <Text component="p">
       <Popover bodyContent={<Hint />} minWidth="30rem">
         <Button variant={ButtonVariant.link} isInline>
-          <InfoCircleIcon className="status-icon" size="sm" />
+          <InfoCircleIcon size="sm" />
           &nbsp;Please check the reboot configuration of your VMs
         </Button>
       </Popover>
