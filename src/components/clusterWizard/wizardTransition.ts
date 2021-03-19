@@ -73,7 +73,7 @@ const baremetalDiscoveryStepValidationsMap: WizardStepValidationMap = {
   host: {
     allowedStatuses: ['known', 'disabled'],
     groups: ['hardware'],
-    validationIds: ['connected'],
+    validationIds: ['connected', 'ocs-requirements-satisfied'],
   },
   softValidationIds: [],
 };
