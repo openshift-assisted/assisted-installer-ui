@@ -1,18 +1,14 @@
 import React from 'react';
 import { Text, TextContent, Button, Stack, StackItem } from '@patternfly/react-core';
 import { Cluster, HostRequirements as HostRequirementsType } from '../../api/types';
-import { HostRequirementsLink } from '../fetching/HostRequirements';
-import VMRebootConfigurationInfo from '../hosts/VMRebootConfigurationInfo';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
-import {
-  HostsNotShowingLink,
-  DiscoveryTroubleshootingModal,
-} from './DiscoveryTroubleshootingModal';
-import FormatDiskWarning from './FormatDiskWarning';
-import { isSingleNodeCluster } from '../clusters/utils';
+import { DiscoveryTroubleshootingModal } from './DiscoveryTroubleshootingModal';
 import BaremetalDiscoveryHostsTable from '../hosts/BaremetalDiscoveryHostsTable';
 import { useFeature } from '../../features/featureGate';
 import CheckboxField from '../ui/formik/CheckboxField';
+import { isSingleNodeCluster } from '../clusters/utils';
+import InformationAndAlerts from './InformationAndAlerts';
+import DiscoveryInstructions from './DiscoveryInstructions';
 
 const HostRequirementsContent = ({
   worker = {},
@@ -62,20 +58,13 @@ const BaremetalInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
       </StackItem>
       <StackItem>
         <TextContent>
-          <Text component="p">
-            Generate a Discovery ISO and boot it from a USB key, hard drive, or over a network on
-            hardware that should become part of this bare metal cluster.
-          </Text>
+          <DiscoveryInstructions />
           <Text component="p">
             <DiscoveryImageModalButton
               ButtonComponent={Button}
               cluster={cluster}
               idPrefix="bare-metal-inventory"
             />
-          </Text>
-          <Text component="p">
-            Hosts connected to the internet with a valid IP address will appear bellow. Each host
-            should be configured to boot the ISO <b>once</b> and not after a reboot.
           </Text>
           {isOpenshiftClusterStorageEnabled && (
             <CheckboxField
@@ -84,17 +73,13 @@ const BaremetalInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
               helperText="Persistent software-defined storage for hybrid applications."
             />
           )}
-          <Text />
-          <Text component="p">
-            {isSingleNodeCluster(cluster) ? (
-              <HostRequirementsLink ContentComponent={SingleHostRequirementsContent} />
-            ) : (
-              <HostRequirementsLink ContentComponent={HostRequirementsContent} />
-            )}
-            <HostsNotShowingLink setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
-          </Text>
-          <FormatDiskWarning />
-          <VMRebootConfigurationInfo hosts={cluster.hosts} />
+          <InformationAndAlerts
+            cluster={cluster}
+            HostRequirementsContent={
+              isSingleNodeCluster(cluster) ? SingleHostRequirementsContent : HostRequirementsContent
+            }
+            setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
+          />
         </TextContent>
         <BaremetalDiscoveryHostsTable
           cluster={cluster}
