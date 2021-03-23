@@ -239,3 +239,11 @@ export const DISK_ROLE_LABELS: { [key in DiskRole]: string } = {
 };
 
 export const SNO_SUPPORT_MIN_VERSION = 4.8;
+
+export const OPERATOR_LABELS = {
+  console: 'OpenShift Console',
+  cvo: 'OpenShift Cluster Version Operator',
+  lso: 'OpenShift Local Storage',
+  ocs: 'OpenShift Container Storage',
+  cnv: 'OpenShift Virtualization',
+};
