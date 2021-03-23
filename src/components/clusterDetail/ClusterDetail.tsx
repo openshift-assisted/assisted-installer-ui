@@ -27,6 +27,8 @@ import Alerts from '../ui/Alerts';
 import { downloadClusterInstallationLogs } from './utils';
 import { AlertsContext } from '../AlertsContextProvider';
 import { canDownloadClusterLogs } from '../hosts/utils';
+import { getOlmOperators } from '../clusters/utils';
+import FailedOperatorsWarning from './FailedOperatorsWarning';
 
 const canAbortInstallation = (cluster: Cluster) => {
   const allowedClusterStates: Cluster['status'][] = [
@@ -54,6 +56,8 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
   const { addAlert } = React.useContext(AlertsContext);
   const [credentials, setCredentials] = React.useState<Credentials>();
   const [credentialsError, setCredentialsError] = React.useState();
+  const olmOperators = getOlmOperators(cluster.monitoredOperators);
+  const failedOlmOperators = olmOperators.filter((o) => o.status === 'failed');
 
   const fetchCredentials = React.useCallback(() => {
     const fetch = async () => {
@@ -89,6 +93,11 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
           {['installed', 'installing', 'installing-pending-user-action', 'finalizing'].includes(
             cluster.status,
           ) && <FailedHostsWarning cluster={cluster} />}
+          {!!failedOlmOperators.length && (
+            <GridItem>
+              <FailedOperatorsWarning failedOperators={failedOlmOperators} />
+            </GridItem>
+          )}
           {cluster.status === 'error' && (
             <ClusterInstallationError
               cluster={cluster}

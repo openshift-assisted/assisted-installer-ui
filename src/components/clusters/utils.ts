@@ -1,4 +1,10 @@
-import { Cluster, LogsState, OperatorCreateParams } from '../../api/types';
+import {
+  Cluster,
+  LogsState,
+  MonitoredOperator,
+  MonitoredOperatorsList,
+  OperatorCreateParams,
+} from '../../api/types';
 
 export const isSingleNodeCluster = (cluster: Cluster) => cluster.highAvailabilityMode === 'None';
 
@@ -13,15 +19,27 @@ export const calculateCollectedLogsCount = (cluster: Cluster) => {
   return (clusterHasCollectedLogs ? 1 : 0) + hostsWithCollectedLogsCount;
 };
 
-export const getOlmOperators = (cluster: Cluster) =>
-  (cluster.monitoredOperators || [])
-    .filter((op) => op.operatorType !== 'builtin')
-    .map((op) => ({ name: op.name, properties: op.properties }));
+export const getBuiltInOperators = (monitoredOperators: MonitoredOperatorsList = []) =>
+  monitoredOperators.filter((operator: MonitoredOperator) => operator.operatorType === 'builtin');
 
-export const getOlmOperatorsByName = (cluster: Cluster): { [key: string]: OperatorCreateParams } =>
-  getOlmOperators(cluster).reduce((result, operator) => {
-    if (operator.name) {
-      result[operator.name] = operator;
-    }
-    return result;
-  }, {});
+export const getOlmOperators = (monitoredOperators: MonitoredOperatorsList = []) =>
+  monitoredOperators.filter((operator) => operator.operatorType === 'olm');
+
+export const getOlmOperatorCreateParams = (
+  monitoredOperators: MonitoredOperatorsList = [],
+): OperatorCreateParams[] =>
+  getOlmOperators(monitoredOperators).map((operator) => ({
+    name: operator.name,
+    properties: operator.properties,
+  }));
+
+export const getOlmOperatorCreateParamsByName = (monitoredOperators: MonitoredOperatorsList = []) =>
+  getOlmOperatorCreateParams(monitoredOperators).reduce(
+    (result: { [key: string]: OperatorCreateParams }, operator) => {
+      if (operator.name) {
+        result[operator.name] = operator;
+      }
+      return result;
+    },
+    {},
+  );

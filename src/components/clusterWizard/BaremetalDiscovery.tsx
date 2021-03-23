@@ -13,7 +13,7 @@ import { AlertsContext } from '../AlertsContextProvider';
 import { patchCluster } from '../../api/clusters';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import { getBareMetalDiscoveryInitialValues } from '../clusterConfiguration/utils';
-import { getOlmOperatorsByName } from '../clusters/utils';
+import { getOlmOperatorCreateParamsByName } from '../clusters/utils';
 import FormikAutoSave from '../ui/formik/FormikAutoSave';
 
 const BaremetalDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
@@ -25,7 +25,7 @@ const BaremetalDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
     clearAlerts();
 
     const params: ClusterUpdateParams = {};
-    const enabledOlmOperatorsByName = getOlmOperatorsByName(cluster);
+    const enabledOlmOperatorsByName = getOlmOperatorCreateParamsByName(cluster.monitoredOperators);
 
     if (values.useExtraDisksForLocalStorage) {
       enabledOlmOperatorsByName.ocs = { name: 'ocs' };
