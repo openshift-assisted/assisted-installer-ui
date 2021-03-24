@@ -58,6 +58,8 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
   const [credentialsError, setCredentialsError] = React.useState();
   const olmOperators = getOlmOperators(cluster.monitoredOperators);
   const failedOlmOperators = olmOperators.filter((o) => o.status === 'failed');
+  const consoleOperatorStatus = cluster.monitoredOperators?.find((o) => o.name === 'console')
+    ?.status;
 
   const fetchCredentials = React.useCallback(() => {
     const fetch = async () => {
@@ -73,10 +75,10 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
   }, [cluster.id]);
 
   React.useEffect(() => {
-    if (['finalizing', 'installed'].includes(cluster.status)) {
+    if (consoleOperatorStatus === 'available') {
       fetchCredentials();
     }
-  }, [cluster.status, fetchCredentials]);
+  }, [consoleOperatorStatus, fetchCredentials]);
 
   return (
     <Stack hasGutter>
@@ -111,7 +113,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
               setResetClusterModalOpen={setResetClusterModalOpen}
             />
           )}
-          {['finalizing', 'installed'].includes(cluster.status) && (
+          {consoleOperatorStatus === 'available' && (
             <ClusterCredentials
               cluster={cluster}
               credentials={credentials}
