@@ -27,7 +27,7 @@ const Hint = () => (
   </TextContent>
 );
 
-const VMRebootConfigurationInfo: React.FC<{ hosts?: Host[] }> = ({ hosts = [] }) => {
+const VMRebootConfigurationInfo: React.FC<{ hosts: Host[] }> = ({ hosts }) => {
   const isVM = React.useMemo(
     () =>
       !!hosts.find((host) => {
