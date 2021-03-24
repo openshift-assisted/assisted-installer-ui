@@ -12,6 +12,7 @@ type NetworkingStatusProps = {
   host: Host;
   validationsInfo: ValidationsInfo;
   cluster: Cluster;
+  testId?: string;
 };
 
 const NetworkingStatus: React.FC<NetworkingStatusProps> = (props) => {

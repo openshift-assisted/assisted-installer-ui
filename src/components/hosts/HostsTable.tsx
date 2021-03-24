@@ -13,6 +13,8 @@ import {
   ISortBy,
   OnSort,
   ICell,
+  RowWrapperProps,
+  RowWrapper,
 } from '@patternfly/react-table';
 import { ConnectedIcon } from '@patternfly/react-icons';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
@@ -97,6 +99,7 @@ const defaultHostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (hos
   );
   const computedHostname = getHostname(host, inventory);
   const hostRole = getHostRole(host);
+  const dateTimeCell = getDateTimeCell(createdAt);
 
   return [
     {
@@ -104,28 +107,50 @@ const defaultHostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (hos
       isOpen: !!openRows[id],
       cells: [
         {
-          title: computedHostname ? (
-            <Hostname host={host} inventory={inventory} cluster={cluster} />
-          ) : (
-            DASH
+          title: (
+            <Hostname
+              testId={`host-name-${computedHostname}`}
+              host={host}
+              inventory={inventory}
+              cluster={cluster}
+            />
           ),
           sortableValue: computedHostname || '',
         },
         {
           title: (
-            <RoleCell host={host} readonly={!canEditRole(cluster, host.status)} role={hostRole} />
+            <RoleCell
+              testId={`host-role-${computedHostname}`}
+              host={host}
+              readonly={!canEditRole(cluster, host.status)}
+              role={hostRole}
+            />
           ),
           sortableValue: hostRole,
         },
         {
-          title: <HostStatus host={host} cluster={cluster} validationsInfo={validationsInfo} />,
+          title: (
+            <HostStatus
+              testId={`host-status-${computedHostname}`}
+              host={host}
+              cluster={cluster}
+              validationsInfo={validationsInfo}
+            />
+          ),
           sortableValue: status,
         },
-        getDateTimeCell(createdAt),
+        {
+          title: (
+            <span data-testid={`host-discovered-time-${computedHostname}`}>
+              {dateTimeCell.title}
+            </span>
+          ),
+          sortableValue: dateTimeCell.sortableValue,
+        },
         {
           title: (
             <HostPropertyValidationPopover validation={cpuCoresValidation}>
-              {cores.title}
+              <span data-testid={`host-cpu-cores-${computedHostname}`}>{cores.title}</span>
             </HostPropertyValidationPopover>
           ),
           sortableValue: cores.sortableValue,
@@ -133,7 +158,7 @@ const defaultHostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (hos
         {
           title: (
             <HostPropertyValidationPopover validation={memoryValidation}>
-              {memory.title}
+              <span data-testid={`host-memory-${computedHostname}`}>{memory.title + 'foo'}</span>
             </HostPropertyValidationPopover>
           ),
           sortableValue: memory.sortableValue,
@@ -141,7 +166,7 @@ const defaultHostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (hos
         {
           title: (
             <HostPropertyValidationPopover validation={diskValidation}>
-              {disk.title}
+              <span data-testid={`host-disks-${computedHostname}`}>{disk.title}</span>
             </HostPropertyValidationPopover>
           ),
           sortableValue: disk.sortableValue,
@@ -199,12 +224,17 @@ const rowKey = ({ rowData }: ExtraParamsType) => rowData?.key;
 const isHostShown = (skipDisabled: boolean) => (host: Host) =>
   !skipDisabled || host.status != 'disabled';
 
+const HostsTableRowWrapper = (props: RowWrapperProps) => (
+  <RowWrapper {...props} data-testid={`host-row-${props.rowProps?.rowIndex}`} />
+);
+
 type HostsTableProps = {
   cluster: Cluster;
   getColumns?: (hosts?: Host[]) => (string | ICell)[];
   hostToHostTableRow?: (openRows: OpenRows, cluster: Cluster) => (host: Host) => IRow;
   skipDisabled?: boolean;
   setDiscoveryHintModalOpen?: HostsNotShowingLinkProps['setDiscoveryHintModalOpen'];
+  testId?: string;
 };
 
 const HostsTable: React.FC<HostsTableProps> = ({
@@ -213,6 +243,7 @@ const HostsTable: React.FC<HostsTableProps> = ({
   getColumns = defaultGetColumns,
   skipDisabled = false,
   setDiscoveryHintModalOpen,
+  testId = 'hosts-table',
 }) => {
   const { addAlert } = React.useContext(AlertsContext);
   const {
@@ -476,6 +507,8 @@ const HostsTable: React.FC<HostsTableProps> = ({
         className="hosts-table"
         sortBy={sortBy}
         onSort={onSort}
+        rowWrapper={HostsTableRowWrapper}
+        data-testid={testId}
       >
         <TableHeader />
         <TableBody rowKey={rowKey} />

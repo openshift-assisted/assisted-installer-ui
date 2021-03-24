@@ -40,6 +40,7 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
   );
   const computedHostname = getHostname(host, inventory);
   const hostRole = getHostRole(host);
+  const dateTimeCell = getDateTimeCell(createdAt);
 
   return [
     {
@@ -47,28 +48,50 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
       isOpen: !!openRows[id],
       cells: [
         {
-          title: computedHostname ? (
-            <Hostname host={host} inventory={inventory} cluster={cluster} />
-          ) : (
-            DASH
+          title: (
+            <Hostname
+              testId={`host-name-${computedHostname}`}
+              host={host}
+              inventory={inventory}
+              cluster={cluster}
+            />
           ),
           sortableValue: computedHostname || '',
         },
         {
           title: (
-            <RoleCell host={host} readonly={!canEditRole(cluster, host.status)} role={hostRole} />
+            <RoleCell
+              testId={`host-role-${computedHostname}`}
+              host={host}
+              readonly={!canEditRole(cluster, host.status)}
+              role={hostRole}
+            />
           ),
           sortableValue: hostRole,
         },
         {
-          title: <HardwareStatus host={host} cluster={cluster} validationsInfo={validationsInfo} />,
+          title: (
+            <HardwareStatus
+              testId={`host-hw-status-${computedHostname}`}
+              host={host}
+              cluster={cluster}
+              validationsInfo={validationsInfo}
+            />
+          ),
           sortableValue: status,
         },
-        getDateTimeCell(createdAt),
+        {
+          title: (
+            <span data-testid={`host-discovered-time-${computedHostname}`}>
+              {dateTimeCell.title}
+            </span>
+          ),
+          sortableValue: dateTimeCell.sortableValue,
+        },
         {
           title: (
             <HostPropertyValidationPopover validation={cpuCoresValidation}>
-              {cores.title}
+              <span data-testid={`host-cpu-cores-${computedHostname}`}>{cores.title}</span>
             </HostPropertyValidationPopover>
           ),
           sortableValue: cores.sortableValue,
@@ -76,7 +99,7 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
         {
           title: (
             <HostPropertyValidationPopover validation={memoryValidation}>
-              {memory.title}
+              <span data-testid={`host-memory-${computedHostname}`}>{memory.title}</span>
             </HostPropertyValidationPopover>
           ),
           sortableValue: memory.sortableValue,
@@ -84,7 +107,7 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
         {
           title: (
             <HostPropertyValidationPopover validation={diskValidation}>
-              {disk.title}
+              <span data-testid={`host-disk-${computedHostname}`}>{disk.title}</span>
             </HostPropertyValidationPopover>
           ),
           sortableValue: disk.sortableValue,
@@ -125,7 +148,14 @@ type BaremetalDiscoveryHostsTableProps = {
 };
 
 const BaremetalDiscoveryHostsTable: React.FC<BaremetalDiscoveryHostsTableProps> = (props) => {
-  return <HostsTable {...props} getColumns={getColumns} hostToHostTableRow={hostToHostTableRow} />;
+  return (
+    <HostsTable
+      {...props}
+      testId={'bare-metal-discovery-hosts-table'}
+      getColumns={getColumns}
+      hostToHostTableRow={hostToHostTableRow}
+    />
+  );
 };
 
 export default BaremetalDiscoveryHostsTable;
