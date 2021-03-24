@@ -27,27 +27,43 @@ export const selectClustersUIState = createSelector(
 
 const clusterToClusterTableRow = (cluster: Cluster): IRow => {
   const { id, name, hosts, openshiftVersion, baseDnsDomain, createdAt } = cluster;
+  const dateTimeCell = getDateTimeCell(createdAt);
+
   return {
     cells: [
       {
         title: (
-          <Link key={name} to={`${routeBasePath}/clusters/${id}`} id={`cluster-link-${name}`}>
+          <Link
+            key={name}
+            to={`${routeBasePath}/clusters/${id}`}
+            data-testid={`cluster-name-${name}`}
+            id={`cluster-link-${name}`}
+          >
             {name}
           </Link>
         ),
         sortableValue: name,
       } as HumanizedSortable,
-      baseDnsDomain || DASH,
-      openshiftVersion,
       {
-        title: <ClusterStatus cluster={cluster} />,
+        title: <span data-testid={`cluster-base-domain-${name}`}>{baseDnsDomain || DASH}</span>,
+        sortableValue: baseDnsDomain,
+      },
+      {
+        title: <span data-testid={`cluster-version-${name}`}>{openshiftVersion}</span>,
+        sortableValue: openshiftVersion,
+      },
+      {
+        title: <ClusterStatus cluster={cluster} testId={`cluster-status-${name}`} />,
         sortableValue: getClusterStatusText(cluster),
       } as HumanizedSortable,
       {
-        title: <HostsCount hosts={hosts} valueId={`hosts-count-${cluster.name}`} />,
+        title: <HostsCount hosts={hosts} testId={`cluster-hosts-count-${name}`} />,
         sortableValue: getEnabledHostsCount(hosts),
       } as HumanizedSortable,
-      getDateTimeCell(createdAt),
+      {
+        title: <span data-testid={`cluster-created-time-${name}`}>{dateTimeCell.title}</span>,
+        sortableValue: dateTimeCell.sortableValue,
+      } as HumanizedSortable,
     ],
     props: {
       name,

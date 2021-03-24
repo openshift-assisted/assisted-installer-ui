@@ -50,9 +50,17 @@ const columns = [
 const getStatusCell = (row: IRow) => row.cells?.[3] as HumanizedSortable | undefined;
 
 const ClusterRowWrapper = (props: RowWrapperProps) => {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-  // @ts-ignore
-  return <RowWrapper {...props} id={`cluster-row-${props.row?.props?.name}`} />;
+  /* eslint-disable @typescript-eslint/ban-ts-ignore */
+  return (
+    <RowWrapper
+      {...props}
+      // @ts-ignore
+      data-testid={`cluster-row-${props.row?.props?.name}`}
+      // @ts-ignore
+      id={`cluster-row-${props.row?.props?.name}`}
+    />
+  );
+  /* eslint-enable @typescript-eslint/ban-ts-ignore */
 };
 
 const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) => {
@@ -164,6 +172,7 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
         sortBy={sortBy}
         onSort={onSort}
         rowWrapper={ClusterRowWrapper}
+        data-testid={'ClustersTable'}
       >
         <TableHeader />
         <TableBody rowKey={rowKey} />
