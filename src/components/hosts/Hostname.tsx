@@ -3,6 +3,7 @@ import { Button, ButtonVariant } from '@patternfly/react-core';
 import EditHostModal from './EditHostModal';
 import { Host, Inventory, Cluster } from '../../api/types';
 import { getHostname } from './utils';
+import { DASH } from '../constants';
 
 type HostnameProps = {
   host: Host;
@@ -12,6 +13,7 @@ type HostnameProps = {
   // Provide either inventory or title
   inventory?: Inventory;
   title?: string;
+  testId?: string;
 };
 
 const Hostname: React.FC<HostnameProps> = ({
@@ -21,6 +23,7 @@ const Hostname: React.FC<HostnameProps> = ({
   title,
   className,
   onToggle,
+  testId = 'host-name',
 }) => {
   const [isOpen, _setOpen] = React.useState(false);
 
@@ -29,12 +32,13 @@ const Hostname: React.FC<HostnameProps> = ({
     _setOpen(isOpen);
   };
 
-  const hostname = title || getHostname(host, inventory);
+  const hostname = title || getHostname(host, inventory) || DASH;
   const isHostnameChangeRequested = !title && host.requestedHostname !== inventory.hostname;
 
   return (
     <>
       <Button
+        data-testid={testId}
         variant={ButtonVariant.link}
         isInline
         onClick={() => setOpen(true)}

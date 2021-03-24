@@ -11,9 +11,10 @@ import { getHostRole } from './utils';
 
 type RoleDropdownProps = {
   host: Host;
+  testId?: string;
 };
 
-export const RoleDropdown: React.FC<RoleDropdownProps> = ({ host }) => {
+export const RoleDropdown: React.FC<RoleDropdownProps> = ({ host, testId }) => {
   const { id, clusterId } = host;
   const [isDisabled, setDisabled] = React.useState(false);
   const dispatch = useDispatch();
@@ -42,6 +43,7 @@ export const RoleDropdown: React.FC<RoleDropdownProps> = ({ host }) => {
       setValue={setRole}
       isDisabled={isDisabled}
       idPrefix={`role-${host.requestedHostname}`}
+      testId={testId}
     />
   );
 };
