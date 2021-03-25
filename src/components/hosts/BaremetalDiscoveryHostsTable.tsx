@@ -10,7 +10,6 @@ import { getHostRowHardwareInfo } from './hardwareInfo';
 import { ValidationsInfo } from '../../types/hosts';
 import { canEditRole, getHostname, getHostRole } from './utils';
 import Hostname from './Hostname';
-import { DASH } from '../constants';
 import RoleCell from './RoleCell';
 import HardwareStatus from './HardwareStatus';
 import { getDateTimeCell } from '../ui/table/utils';
