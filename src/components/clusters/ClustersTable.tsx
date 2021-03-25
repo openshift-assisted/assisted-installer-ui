@@ -172,7 +172,7 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
         sortBy={sortBy}
         onSort={onSort}
         rowWrapper={ClusterRowWrapper}
-        data-testid={'ClustersTable'}
+        data-testid={'clusters-table'}
       >
         <TableHeader />
         <TableBody rowKey={rowKey} />
