@@ -70,30 +70,18 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
       cells: [
         {
           title: (
-            <Hostname
-              testId={`host-name-${computedHostname}`}
-              host={host}
-              inventory={inventory}
-              cluster={cluster}
-            />
+            <Hostname testId={`host-name`} host={host} inventory={inventory} cluster={cluster} />
           ),
           sortableValue: computedHostname || '',
         },
         {
-          title: (
-            <RoleCell
-              testId={`host-role-${computedHostname}`}
-              host={host}
-              readonly
-              role={hostRole}
-            />
-          ),
+          title: <RoleCell testId={`host-role`} host={host} readonly role={hostRole} />,
           sortableValue: hostRole,
         },
         {
           title: (
             <NetworkingStatus
-              testId={`nic-status-${computedHostname}`}
+              testId={`nic-status`}
               host={host}
               cluster={cluster}
               validationsInfo={validationsInfo}
@@ -102,14 +90,12 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
           sortableValue: status,
         },
         {
-          title: (
-            <span data-testid={`nic-name-${computedHostname}`}>{selectedNic?.name || DASH}</span>
-          ),
+          title: <span data-testid={`nic-name`}>{selectedNic?.name || DASH}</span>,
           sortableValue: selectedNic?.name || DASH,
         },
         {
           title: (
-            <span data-testid={`nic-ipv4-addresses-${computedHostname}`}>
+            <span data-testid={`nic-ipv4-addresses`}>
               {(selectedNic?.ipv4Addresses || []).join(', ') || DASH}
             </span>
           ),
@@ -117,18 +103,14 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
         },
         {
           title: (
-            <span data-testid={`nic-ipv6-addresses-${computedHostname}`}>
+            <span data-testid={`nic-ipv6-addresses`}>
               {(selectedNic?.ipv6Addresses || []).join(', ') || DASH}
             </span>
           ),
           sortableValue: (selectedNic?.ipv6Addresses || []).join(', ') || DASH,
         },
         {
-          title: (
-            <span data-testid={`nic-mac-address-${computedHostname}`}>
-              {selectedNic?.macAddress || DASH}
-            </span>
-          ),
+          title: <span data-testid={`nic-mac-address`}>{selectedNic?.macAddress || DASH}</span>,
           sortableValue: selectedNic?.macAddress || DASH,
         },
       ],

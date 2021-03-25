@@ -48,19 +48,14 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
       cells: [
         {
           title: (
-            <Hostname
-              testId={`host-name-${computedHostname}`}
-              host={host}
-              inventory={inventory}
-              cluster={cluster}
-            />
+            <Hostname testId={`host-name`} host={host} inventory={inventory} cluster={cluster} />
           ),
           sortableValue: computedHostname || '',
         },
         {
           title: (
             <RoleCell
-              testId={`host-role-${computedHostname}`}
+              testId={`host-role`}
               host={host}
               readonly={!canEditRole(cluster, host.status)}
               role={hostRole}
@@ -71,7 +66,7 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
         {
           title: (
             <HardwareStatus
-              testId={`host-hw-status-${computedHostname}`}
+              testId={`host-hw-status`}
               host={host}
               cluster={cluster}
               validationsInfo={validationsInfo}
@@ -80,17 +75,13 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
           sortableValue: status,
         },
         {
-          title: (
-            <span data-testid={`host-discovered-time-${computedHostname}`}>
-              {dateTimeCell.title}
-            </span>
-          ),
+          title: <span data-testid={`host-discovered-time`}>{dateTimeCell.title}</span>,
           sortableValue: dateTimeCell.sortableValue,
         },
         {
           title: (
             <HostPropertyValidationPopover validation={cpuCoresValidation}>
-              <span data-testid={`host-cpu-cores-${computedHostname}`}>{cores.title}</span>
+              <span data-testid={`host-cpu-cores`}>{cores.title}</span>
             </HostPropertyValidationPopover>
           ),
           sortableValue: cores.sortableValue,
@@ -98,7 +89,7 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
         {
           title: (
             <HostPropertyValidationPopover validation={memoryValidation}>
-              <span data-testid={`host-memory-${computedHostname}`}>{memory.title}</span>
+              <span data-testid={`host-memory`}>{memory.title}</span>
             </HostPropertyValidationPopover>
           ),
           sortableValue: memory.sortableValue,
@@ -106,7 +97,7 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
         {
           title: (
             <HostPropertyValidationPopover validation={diskValidation}>
-              <span data-testid={`host-disk-${computedHostname}`}>{disk.title}</span>
+              <span data-testid={`host-disk`}>{disk.title}</span>
             </HostPropertyValidationPopover>
           ),
           sortableValue: disk.sortableValue,
