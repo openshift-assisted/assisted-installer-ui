@@ -257,7 +257,11 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
             dirty={dirty}
             isSubmitting={isSubmitting}
             isNextDisabled={
-              !(isValid && (dirty || (cluster && canNextClusterDetails({ cluster }))))
+              !(
+                !isSubmitting &&
+                isValid &&
+                (dirty || (cluster && canNextClusterDetails({ cluster })))
+              )
             }
             onNext={submitForm}
           />
