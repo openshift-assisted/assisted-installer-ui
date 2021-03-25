@@ -38,7 +38,6 @@ import {
 } from '../../features/clusters/currentClusterSlice';
 import { handleApiError, stringToJSON, getErrorMessage } from '../../api/utils';
 import sortable from '../ui/table/sortable';
-import { DASH } from '../constants';
 import { AlertsContext } from '../AlertsContextProvider';
 import {
   HostsNotShowingLink,
