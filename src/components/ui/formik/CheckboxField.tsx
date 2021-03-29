@@ -14,7 +14,7 @@ const CheckboxField: React.FC<CheckboxFieldProps> = ({
   ...props
 }) => {
   const [field] = useField({ name: props.name, validate });
-  const fieldId = getFieldId(props.name, 'input', idPostfix);
+  const fieldId = getFieldId(props.name, 'checkbox', idPostfix);
   return (
     <Checkbox
       {...field}

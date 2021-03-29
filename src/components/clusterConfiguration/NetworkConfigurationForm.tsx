@@ -12,7 +12,6 @@ import {
 } from '../../api';
 import { Form, Grid, GridItem, Text, TextContent } from '@patternfly/react-core';
 
-import { trimSshPublicKey } from '../ui/formik/utils';
 import { AlertsContext } from '../AlertsContextProvider';
 import {
   sshPublicKeyValidationSchema,
@@ -27,7 +26,7 @@ import ClusterWizardToolbar from '../clusterWizard/ClusterWizardToolbar';
 import { canNextNetwork } from '../clusterWizard/wizardTransition';
 import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
 import NetworkConfiguration from './NetworkConfiguration';
-import ClusterSshKeyField from './ClusterSshKeyField';
+import ClusterSshKeyFields from './ClusterSshKeyFields';
 import { getHostSubnets, getNetworkInitialValues } from './utils';
 import { useDefaultConfiguration } from './ClusterDefaultConfigurationContext';
 import NetworkingHostsTable from '../hosts/NetworkingHostsTable';
@@ -72,11 +71,7 @@ const NetworkConfigurationForm: React.FC<{
 
     // update the cluster configuration
     try {
-      const params = _.omit(values, ['hostSubnet', 'useRedHatDnsService', 'shareDiscoverySshKey']);
-
-      if (values.shareDiscoverySshKey) {
-        params.sshPublicKey = cluster.imageInfo.sshPublicKey;
-      }
+      const params = _.omit(values, ['hostSubnet', 'useRedHatDnsService']);
 
       if (values.vipDhcpAllocation) {
         delete params.apiVip;
@@ -102,27 +97,7 @@ const NetworkConfigurationForm: React.FC<{
       initialTouched={_.mapValues(initialValues, () => true)}
       validateOnMount
     >
-      {({
-        isSubmitting,
-        dirty,
-        values,
-        errors,
-        setFieldValue,
-      }: FormikProps<NetworkConfigurationValues>) => {
-        const onClusterSshKeyToggle = (isChecked: boolean) =>
-          setFieldValue('shareDiscoverySshKey', isChecked);
-        const onClusterSshKeyVisibilityChanged = () => {
-          onClusterSshKeyToggle(
-            !!cluster.imageInfo.sshPublicKey &&
-              (cluster.sshPublicKey === cluster.imageInfo.sshPublicKey || !cluster.sshPublicKey),
-          );
-        };
-        const onSshKeyBlur = () => {
-          if (values.sshPublicKey) {
-            setFieldValue('sshPublicKey', trimSshPublicKey(values.sshPublicKey));
-          }
-        };
-
+      {({ isSubmitting, dirty, errors }: FormikProps<NetworkConfigurationValues>) => {
         const form = (
           <>
             <Grid hasGutter>
@@ -137,12 +112,9 @@ const NetworkConfigurationForm: React.FC<{
                   <TextContent>
                     <Text component="h2">Security</Text>
                   </TextContent>
-                  <ClusterSshKeyField
-                    isSwitchHidden={!cluster.imageInfo.sshPublicKey}
-                    name="shareDiscoverySshKey"
-                    onToggle={onClusterSshKeyToggle}
-                    onClusterSshKeyVisibilityChanged={onClusterSshKeyVisibilityChanged}
-                    onSshKeyBlur={onSshKeyBlur}
+                  <ClusterSshKeyFields
+                    clusterSshKey={cluster.sshPublicKey}
+                    imageSshKey={cluster.imageInfo.sshPublicKey}
                   />
                 </Form>
               </GridItem>
