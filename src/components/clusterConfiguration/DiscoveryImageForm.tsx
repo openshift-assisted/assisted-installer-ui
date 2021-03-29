@@ -26,7 +26,7 @@ import {
 import { updateCluster, forceReload } from '../../features/clusters/currentClusterSlice';
 import { DiscoveryImageFormValues } from './types';
 import ProxyFields from './ProxyFields';
-import { SshPublicKeyHelperText } from './ClusterSshKeyField';
+import { SshPublicKeyHelperText } from './ClusterSshKeyFields';
 import { usePullSecretFetch } from '../fetching/pullSecret';
 import { trimSshPublicKey } from '../ui/formik/utils';
 

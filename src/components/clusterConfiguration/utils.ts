@@ -85,8 +85,6 @@ export const getNetworkInitialValues = (
     ingressVip: cluster.ingressVip || '',
     sshPublicKey: cluster.sshPublicKey || '',
     hostSubnet: getSubnetFromMachineNetworkCidr(cluster.machineNetworkCidr),
-    shareDiscoverySshKey:
-      !!cluster.imageInfo.sshPublicKey && cluster.sshPublicKey === cluster.imageInfo.sshPublicKey,
     vipDhcpAllocation: cluster.vipDhcpAllocation,
   };
 };
