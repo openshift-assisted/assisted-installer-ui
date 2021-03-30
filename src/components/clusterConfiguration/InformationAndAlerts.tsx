@@ -17,7 +17,7 @@ const InformationAndAlerts: React.FC<{
       <HostRequirementsLink ContentComponent={HostRequirementsContent} />
       <HostsNotShowingLink setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
     </Text>
-    <VMRebootConfigurationInfo hosts={cluster.hosts} />
+    <VMRebootConfigurationInfo hosts={cluster.hosts || []} />
     <FormatDiskWarning />
   </>
 );
