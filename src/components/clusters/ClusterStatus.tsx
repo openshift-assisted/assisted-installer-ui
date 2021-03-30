@@ -19,6 +19,7 @@ import { getHumanizedDateTime } from '../ui/utils';
 
 type ClusterStatusProps = {
   cluster: Cluster;
+  testId?: string;
 };
 
 const getStatusIcon = (status: Cluster['status']): React.ReactElement => {
@@ -46,7 +47,7 @@ const getStatusIcon = (status: Cluster['status']): React.ReactElement => {
 export const getClusterStatusText = (cluster: Cluster) =>
   CLUSTER_STATUS_LABELS[cluster.status] || cluster.status;
 
-const ClusterStatus: React.FC<ClusterStatusProps> = ({ cluster }) => {
+const ClusterStatus: React.FC<ClusterStatusProps> = ({ cluster, testId }) => {
   const { status, statusInfo, statusUpdatedAt } = cluster;
   const title = getClusterStatusText(cluster);
   const icon = getStatusIcon(status) || null;
@@ -59,7 +60,12 @@ const ClusterStatus: React.FC<ClusterStatusProps> = ({ cluster }) => {
         minWidth="30rem"
         maxWidth="50rem"
       >
-        <Button variant={ButtonVariant.link} isInline id={`button-cluster-status-${cluster.name}`}>
+        <Button
+          variant={ButtonVariant.link}
+          isInline
+          data-testid={testId}
+          id={`button-cluster-status-${cluster.name}`}
+        >
           {icon} {title}
         </Button>
       </Popover>

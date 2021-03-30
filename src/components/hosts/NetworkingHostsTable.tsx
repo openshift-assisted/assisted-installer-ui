@@ -14,6 +14,7 @@ import HostsCount from './HostsCount';
 import NetworkingStatus from './NetworkingStatus';
 import { getSubnet } from '../clusterConfiguration/utils';
 import { Address4, Address6 } from 'ip-address';
+import RoleCell from './RoleCell';
 
 const getSelectedNic = (nics: Interface[], currentSubnet: Address4 | Address6) => {
   return nics.find((nic) => {
@@ -68,38 +69,49 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
       isOpen: !!openRows[id],
       cells: [
         {
-          title: computedHostname ? (
-            <Hostname host={host} inventory={inventory} cluster={cluster} />
-          ) : (
-            DASH
+          title: (
+            <Hostname testId={`host-name`} host={host} inventory={inventory} cluster={cluster} />
           ),
           sortableValue: computedHostname || '',
         },
         {
-          title: hostRole,
+          title: <RoleCell testId={`host-role`} host={host} readonly role={hostRole} />,
           sortableValue: hostRole,
         },
         {
           title: (
-            <NetworkingStatus host={host} cluster={cluster} validationsInfo={validationsInfo} />
+            <NetworkingStatus
+              testId={`nic-status`}
+              host={host}
+              cluster={cluster}
+              validationsInfo={validationsInfo}
+            />
           ),
           sortableValue: status,
         },
         {
-          title: selectedNic ? selectedNic.name : DASH,
-          sortableValue: selectedNic ? selectedNic.name : DASH,
+          title: <span data-testid={`nic-name`}>{selectedNic?.name || DASH}</span>,
+          sortableValue: selectedNic?.name || DASH,
         },
         {
-          title: selectedNic ? (selectedNic.ipv4Addresses || []).join(', ') : DASH,
-          sortableValue: selectedNic ? (selectedNic.ipv4Addresses || []).join(', ') : DASH,
+          title: (
+            <span data-testid={`nic-ipv4-addresses`}>
+              {(selectedNic?.ipv4Addresses || []).join(', ') || DASH}
+            </span>
+          ),
+          sortableValue: (selectedNic?.ipv4Addresses || []).join(', ') || DASH,
         },
         {
-          title: selectedNic ? (selectedNic.ipv6Addresses || []).join(', ') : DASH,
-          sortableValueitle: selectedNic ? (selectedNic.ipv6Addresses || []).join(', ') : DASH,
+          title: (
+            <span data-testid={`nic-ipv6-addresses`}>
+              {(selectedNic?.ipv6Addresses || []).join(', ') || DASH}
+            </span>
+          ),
+          sortableValue: (selectedNic?.ipv6Addresses || []).join(', ') || DASH,
         },
         {
-          title: selectedNic ? selectedNic.macAddress : DASH,
-          sortableValueitle: selectedNic ? selectedNic.macAddress : DASH,
+          title: <span data-testid={`nic-mac-address`}>{selectedNic?.macAddress || DASH}</span>,
+          sortableValue: selectedNic?.macAddress || DASH,
         },
       ],
       host,
