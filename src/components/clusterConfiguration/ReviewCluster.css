@@ -1,0 +1,8 @@
+.review-hosts-table tr > *:first-child  {
+  width: 6rem !important;
+  padding-left: 0px;
+}
+
+.review-hosts-table tr > td  {
+  padding-bottom: 0px !important;
+}

@@ -16,17 +16,18 @@ import {
 } from '@patternfly/react-core';
 import { TimesIcon } from '@patternfly/react-icons';
 import { Cluster } from '../../api/types';
-import { ClusterConfigurationValues, ValidationsInfo } from '../../types/clusters';
+import { NetworkConfigurationValues, Validation, ValidationsInfo } from '../../types/clusters';
 import { CLUSTER_FIELD_LABELS } from '../../config/constants';
 import { stringToJSON } from '../../api/utils';
-import { Validation } from '../../types/hosts';
 
 import './ClusterValidationSection.css';
+import { getWizardStepClusterValidationsInfo } from '../clusterWizard/wizardTransition';
+import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
 
 type ClusterValidationSectionProps = {
   cluster: Cluster;
   dirty: boolean;
-  formErrors: FormikErrors<ClusterConfigurationValues>;
+  formErrors: FormikErrors<NetworkConfigurationValues>;
   onClose: () => void;
 };
 
@@ -39,15 +40,20 @@ const ClusterValidationSection: React.FC<ClusterValidationSectionProps> = ({
   const prevReadyRef = React.useRef<boolean>();
   const errorFields = Object.keys(formErrors);
   const ready = cluster.status === 'ready' && !errorFields.length && !dirty;
+  const { currentStepId } = React.useContext(ClusterWizardContext);
 
   const { failedValidations } = React.useMemo(() => {
     const validationsInfo = stringToJSON<ValidationsInfo>(cluster.validationsInfo) || {};
-    const flattenedValues = _.values(validationsInfo).flat() as Validation[];
+    const reducedValidationsInfo = getWizardStepClusterValidationsInfo(
+      validationsInfo,
+      currentStepId,
+    );
+    const flattenedValues = _.values(reducedValidationsInfo).flat() as Validation[];
     return {
       pendingValidations: flattenedValues.filter((validation) => validation.status === 'pending'),
       failedValidations: flattenedValues.filter((validation) => validation.status === 'failure'),
     };
-  }, [cluster.validationsInfo]);
+  }, [cluster.validationsInfo, currentStepId]);
 
   // When cluster becomes ready, close this section
   React.useEffect(() => {
@@ -58,10 +64,21 @@ const ClusterValidationSection: React.FC<ClusterValidationSectionProps> = ({
     }
   });
 
+  const isContentToDisplay =
+    (!errorFields.length && dirty) || !!errorFields.length || !!failedValidations.length;
   return (
     <Split>
       <SplitItem isFilled>
         <AlertGroup className="cluster-validation-section">
+          {!cluster.validationsInfo && (
+            <Alert
+              variant={AlertVariant.info}
+              title="Cluster validations are initializing"
+              isInline
+            >
+              Please hold on till backgroud checks are started.
+            </Alert>
+          )}
           {!errorFields.length && dirty && (
             <Alert
               variant={AlertVariant.info}
@@ -97,6 +114,11 @@ const ClusterValidationSection: React.FC<ClusterValidationSectionProps> = ({
                   </List>
                 </FlexItem>
               </Flex>
+            </Alert>
+          )}
+          {!isContentToDisplay && !!cluster.validationsInfo && (
+            <Alert variant={AlertVariant.info} title="Host validations are failing" isInline>
+              All relevant cluster-level validations are passing, inspect individual hosts.
             </Alert>
           )}
         </AlertGroup>

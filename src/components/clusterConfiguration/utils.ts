@@ -1,5 +1,9 @@
-import { HostSubnets, ClusterConfigurationValues } from '../../types/clusters';
-import { Cluster, ClusterDefaultConfig, Inventory, ManagedDomain } from '../../api/types';
+import {
+  BareMetalDiscoveryValues,
+  HostSubnets,
+  NetworkConfigurationValues,
+} from '../../types/clusters';
+import { Cluster, ClusterDefaultConfig, Inventory } from '../../api/types';
 import { stringToJSON } from '../../api/utils';
 import { Address4, Address6 } from 'ip-address';
 import { getHostname } from '../hosts/utils';
@@ -61,30 +65,26 @@ export const isAdvConf = (cluster: Cluster, defaultNetworkSettings: ClusterDefau
   cluster.clusterNetworkHostPrefix !== defaultNetworkSettings.clusterNetworkHostPrefix ||
   cluster.serviceNetworkCidr !== defaultNetworkSettings.serviceNetworkCidr;
 
-export const getInitialValues = (
-  cluster: Cluster,
-  managedDomains: ManagedDomain[],
-  defaultNetworkSettings: ClusterDefaultConfig,
-): ClusterConfigurationValues => {
+export const getBareMetalDiscoveryInitialValues = (cluster: Cluster): BareMetalDiscoveryValues => {
   const monitoredOperators = cluster.monitoredOperators || [];
-
   return {
-    name: cluster.name || '',
-    baseDnsDomain: cluster.baseDnsDomain || '',
+    useExtraDisksForLocalStorage: !!monitoredOperators.find((operator) => operator.name === 'ocs'),
+  };
+};
+
+export const getNetworkInitialValues = (
+  cluster: Cluster,
+  defaultNetworkSettings: ClusterDefaultConfig,
+): NetworkConfigurationValues => {
+  return {
     clusterNetworkCidr: cluster.clusterNetworkCidr || defaultNetworkSettings.clusterNetworkCidr,
     clusterNetworkHostPrefix:
       cluster.clusterNetworkHostPrefix || defaultNetworkSettings.clusterNetworkHostPrefix,
     serviceNetworkCidr: cluster.serviceNetworkCidr || defaultNetworkSettings.serviceNetworkCidr,
-    apiVip: cluster.vipDhcpAllocation ? '' : cluster.apiVip || '',
-    ingressVip: cluster.vipDhcpAllocation ? '' : cluster.ingressVip || '',
+    apiVip: cluster.apiVip || '',
+    ingressVip: cluster.ingressVip || '',
     sshPublicKey: cluster.sshPublicKey || '',
     hostSubnet: getSubnetFromMachineNetworkCidr(cluster.machineNetworkCidr),
-    useRedHatDnsService:
-      !!cluster.baseDnsDomain &&
-      managedDomains.map((d) => d.domain).includes(cluster.baseDnsDomain),
-    shareDiscoverySshKey:
-      !!cluster.imageInfo.sshPublicKey && cluster.sshPublicKey === cluster.imageInfo.sshPublicKey,
     vipDhcpAllocation: cluster.vipDhcpAllocation,
-    useExtraDisksForLocalStorage: !!monitoredOperators.find((operator) => operator.name === 'ocs'),
   };
 };

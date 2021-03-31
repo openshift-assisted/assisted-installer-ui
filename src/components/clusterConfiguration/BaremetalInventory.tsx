@@ -1,18 +1,14 @@
 import React from 'react';
-import { Text, TextContent, Button } from '@patternfly/react-core';
-import HostsTable from '../hosts/HostsTable';
+import { Text, TextContent, Button, Stack, StackItem } from '@patternfly/react-core';
 import { Cluster, HostRequirements as HostRequirementsType } from '../../api/types';
-import HostRequirements from '../fetching/HostRequirements';
-import VMRebootConfigurationInfo from '../hosts/VMRebootConfigurationInfo';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
-import {
-  HostsNotShowingLink,
-  DiscoveryTroubleshootingModal,
-} from './DiscoveryTroubleshootingModal';
-import FormatDiskWarning from './FormatDiskWarning';
+import { DiscoveryTroubleshootingModal } from './DiscoveryTroubleshootingModal';
+import BaremetalDiscoveryHostsTable from '../hosts/BaremetalDiscoveryHostsTable';
+import { useFeature } from '../../features/featureGate';
+import CheckboxField from '../ui/formik/CheckboxField';
 import { isSingleNodeCluster } from '../clusters/utils';
-import { CheckboxField } from '../ui';
-import { useFeature } from '../../features';
+import InformationAndAlerts from './InformationAndAlerts';
+import DiscoveryInstructions from './DiscoveryInstructions';
 
 const HostRequirementsContent = ({
   worker = {},
@@ -54,42 +50,47 @@ const BaremetalInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const isOpenshiftClusterStorageEnabled = useFeature('ASSISTED_INSTALLER_OCS_FEATURE');
 
   return (
-    <>
-      <TextContent>
-        <Text component="p">
-          <DiscoveryImageModalButton
-            ButtonComponent={Button}
+    <Stack hasGutter>
+      <StackItem>
+        <TextContent>
+          <Text component="h2">Bare Metal Discovery</Text>
+        </TextContent>
+      </StackItem>
+      <StackItem>
+        <TextContent>
+          <DiscoveryInstructions />
+          <Text component="p">
+            <DiscoveryImageModalButton
+              ButtonComponent={Button}
+              cluster={cluster}
+              idPrefix="bare-metal-inventory"
+            />
+          </Text>
+          {isOpenshiftClusterStorageEnabled && (
+            <CheckboxField
+              name="useExtraDisksForLocalStorage"
+              label={<OCSLabel />}
+              helperText="Persistent software-defined storage for hybrid applications."
+            />
+          )}
+          <InformationAndAlerts
             cluster={cluster}
-            idPrefix="bare-metal-inventory"
+            HostRequirementsContent={
+              isSingleNodeCluster(cluster) ? SingleHostRequirementsContent : HostRequirementsContent
+            }
+            setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
           />
-        </Text>
-        <Text component="p">
-          Boot the Discovery ISO on hardware that should become part of this bare metal cluster.
-          Hosts connected to the internet will be inspected and automatically appear below.{' '}
-          <HostsNotShowingLink setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
-        </Text>
-        {isSingleNodeCluster(cluster) ? (
-          <HostRequirements ContentComponent={SingleHostRequirementsContent} />
-        ) : (
-          <HostRequirements ContentComponent={HostRequirementsContent} />
-        )}
-        {isOpenshiftClusterStorageEnabled && (
-          <CheckboxField
-            name="useExtraDisksForLocalStorage"
-            label={<OCSLabel />}
-            helperText="Persistent software-defined storage for hybrid applications."
-          />
-        )}
-        <Text />
-        <FormatDiskWarning />
-        <VMRebootConfigurationInfo hosts={cluster.hosts} />
-      </TextContent>
-      <HostsTable cluster={cluster} setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
-      <DiscoveryTroubleshootingModal
-        isOpen={isDiscoveryHintModalOpen}
-        setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
-      />
-    </>
+        </TextContent>
+        <BaremetalDiscoveryHostsTable
+          cluster={cluster}
+          setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
+        />
+        <DiscoveryTroubleshootingModal
+          isOpen={isDiscoveryHintModalOpen}
+          setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
+        />
+      </StackItem>
+    </Stack>
   );
 };
 

@@ -6,6 +6,7 @@ type HostsCountProps = {
   hosts?: Host[];
   inParenthesis?: boolean;
   valueId?: string;
+  testId?: string;
 };
 
 export const getEnabledHostsCount = (hosts?: Host[]) =>
@@ -18,6 +19,7 @@ const HostsCount: React.FC<HostsCountProps> = ({
   hosts,
   inParenthesis = false,
   valueId = 'hosts-count',
+  testId,
 }) => {
   const hostsDiscovered = hosts?.length || 0;
   const hostsIncluded = getEnabledHostsCount(hosts);
@@ -42,7 +44,7 @@ const HostsCount: React.FC<HostsCountProps> = ({
 
   return (
     <Popover headerContent="Hosts in the cluster" bodyContent={body}>
-      <a id={valueId}>
+      <a id={valueId} data-testid={testId}>
         {inParenthesis && '('}
         {hostsIncluded}
         {inParenthesis && ')'}

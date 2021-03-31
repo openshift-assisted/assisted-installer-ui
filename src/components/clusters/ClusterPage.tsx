@@ -1,8 +1,16 @@
 import React from 'react';
 import { Link, RouteComponentProps, Redirect } from 'react-router-dom';
-import { PageSectionVariants, ButtonVariant, Button } from '@patternfly/react-core';
+import {
+  PageSection,
+  PageSectionVariants,
+  ButtonVariant,
+  Button,
+  TextContent,
+  Text,
+  Split,
+  SplitItem,
+} from '@patternfly/react-core';
 import { useSelector, useDispatch } from 'react-redux';
-import PageSection from '../ui/PageSection';
 import { ErrorState, LoadingState } from '../ui/uiState';
 import { ResourceUIState } from '../../types';
 import { selectCurrentClusterState } from '../../selectors/currentCluster';
@@ -14,7 +22,6 @@ import {
 } from '../../features/clusters/currentClusterSlice';
 import { Cluster } from '../../api/types';
 import { isSingleClusterMode, POLLING_INTERVAL, routeBasePath } from '../../config/constants';
-import ClusterConfiguration from '../clusterConfiguration/ClusterConfiguration';
 import ClusterDetail from '../clusterDetail/ClusterDetail';
 import CancelInstallationModal from '../clusterDetail/CancelInstallationModal';
 import ResetClusterModal from '../clusterDetail/ResetClusterModal';
@@ -22,6 +29,9 @@ import { AlertsContextProvider } from '../AlertsContextProvider';
 import { AddBareMetalHosts } from '../AddBareMetalHosts';
 import { AddBareMetalHostsContextProvider } from '../AddBareMetalHosts/AddBareMetalHostsContext';
 import { ClusterDefaultConfigurationProvider } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
+import ClusterBreadcrumbs from './ClusterBreadcrumbs';
+import { EventsModalButton } from '../ui/eventsModal';
+import ClusterWizard from '../clusterWizard/ClusterWizard';
 
 type MatchParams = {
   clusterId: string;
@@ -97,19 +107,59 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
       ].includes(cluster.status)
     ) {
       return (
-        <ClusterDetail
-          cluster={cluster}
-          setCancelInstallationModalOpen={setCancelInstallationModalOpen}
-          setResetClusterModalOpen={setResetClusterModalOpen}
-        />
+        <>
+          <ClusterBreadcrumbs clusterName={cluster.name} />
+          <PageSection variant={PageSectionVariants.light}>
+            <TextContent>
+              <Text component="h1">{cluster.name}</Text>
+            </TextContent>
+          </PageSection>
+          <PageSection variant={PageSectionVariants.light} isFilled>
+            <ClusterDetail
+              cluster={cluster}
+              setCancelInstallationModalOpen={setCancelInstallationModalOpen}
+              setResetClusterModalOpen={setResetClusterModalOpen}
+            />
+          </PageSection>
+        </>
       );
     } else {
-      return <ClusterConfiguration cluster={cluster} />;
+      return (
+        <>
+          <ClusterBreadcrumbs clusterName={cluster.name} />
+          <PageSection variant={PageSectionVariants.light}>
+            <Split>
+              <SplitItem>
+                <TextContent>
+                  <Text component="h1">
+                    Install OpenShift on Bare Metal with the Assisted Installer
+                  </Text>
+                </TextContent>
+              </SplitItem>
+              <SplitItem isFilled />
+              <SplitItem>
+                <EventsModalButton
+                  id="cluster-events-button"
+                  entityKind="cluster"
+                  cluster={cluster}
+                  title="Cluster Events"
+                  variant={ButtonVariant.secondary}
+                >
+                  View Cluster Events
+                </EventsModalButton>
+              </SplitItem>
+            </Split>
+          </PageSection>
+          <PageSection variant={PageSectionVariants.light}>
+            <ClusterWizard cluster={cluster} />
+          </PageSection>
+        </>
+      );
     }
   };
 
   const loadingUI = (
-    <PageSection variant={PageSectionVariants.light} isMain>
+    <PageSection variant={PageSectionVariants.light} isFilled>
       <LoadingState />
     </PageSection>
   );
@@ -124,7 +174,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
     }
 
     return (
-      <PageSection variant={PageSectionVariants.light} isMain>
+      <PageSection variant={PageSectionVariants.light} isFilled>
         <ErrorState
           title="Failed to fetch the cluster"
           fetchData={fetchCluster}
@@ -135,7 +185,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
   }
 
   const errorUI = (
-    <PageSection variant={PageSectionVariants.light} isMain>
+    <PageSection variant={PageSectionVariants.light} isFilled>
       <ErrorState
         title="Failed to retrieve the default configuration"
         actions={errorStateActions}

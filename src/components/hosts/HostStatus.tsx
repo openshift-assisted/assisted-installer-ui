@@ -127,6 +127,9 @@ type HostStatusProps = {
   host: Host;
   validationsInfo: ValidationsInfo;
   cluster: Cluster;
+  statusOverride?: Host['status'];
+  sublabel?: string;
+  testId?: string;
 };
 
 const HostStatusPopoverFooter: React.FC<{ host: Host }> = ({ host }) => {
@@ -158,12 +161,25 @@ const HostStatusPopoverFooter: React.FC<{ host: Host }> = ({ host }) => {
   return <small>{footerText}</small>;
 };
 
-const HostStatus: React.FC<HostStatusProps> = ({ host, cluster, validationsInfo }) => {
+const HostStatus: React.FC<HostStatusProps> = ({
+  host,
+  cluster,
+  validationsInfo,
+  statusOverride,
+  sublabel,
+  testId = 'host-status',
+}) => {
   const [keepOnOutsideClick, onValidationActionToggle] = React.useState(false);
-  const { status } = host;
+  const status = statusOverride || host.status;
   const title = HOST_STATUS_LABELS[status] || status;
   const icon = getStatusIcon(status) || null;
   const hostProgressStages = getHostProgressStages(host);
+
+  sublabel =
+    sublabel ||
+    (['installing-pending-user-action', 'disconnected'].includes(status) && 'Action required') ||
+    (status === 'added-to-existing-cluster' && 'Finish in console') ||
+    undefined;
 
   return (
     <>
@@ -183,7 +199,7 @@ const HostStatus: React.FC<HostStatusProps> = ({ host, cluster, validationsInfo 
         hideOnOutsideClick={!keepOnOutsideClick}
         zIndex={300}
       >
-        <Button variant={ButtonVariant.link} isInline>
+        <Button data-testid={testId} variant={ButtonVariant.link} isInline>
           {icon} {title}{' '}
           {['installing', 'installing-in-progress', 'error', 'cancelled'].includes(status) && (
             <>
@@ -192,12 +208,7 @@ const HostStatus: React.FC<HostStatusProps> = ({ host, cluster, validationsInfo 
           )}
         </Button>
       </Popover>
-      {['installing-pending-user-action', 'disconnected'].includes(status) && (
-        <div className="hosts-table-sublabel">Action required</div>
-      )}
-      {status === 'added-to-existing-cluster' && (
-        <div className="hosts-table-sublabel">Finish in console</div>
-      )}
+      {sublabel && <div className="hosts-table-sublabel">{sublabel}</div>}
     </>
   );
 };

@@ -26,6 +26,7 @@ import {
   PendingIcon,
 } from '@patternfly/react-icons';
 import { EventsModal } from '../ui/eventsModal';
+import OperatorsProgressItem from './OperatorsProgressItem';
 
 import './ClusterProgress.css';
 
@@ -112,7 +113,7 @@ const HostProgress: React.FC<HostProgressProps> = ({ hosts, hostRole }) => {
     hostRole === 'master' ? `Control Plane (${hostCountText} masters)` : `${hostCountText} workers`;
 
   return (
-    <Flex className="pf-u-mr-3xl" display={{ default: 'inlineFlex' }}>
+    <Flex className="pf-u-mr-3xl">
       <FlexItem>{icon}</FlexItem>
       <FlexItem>{text}</FlexItem>
     </Flex>
@@ -151,7 +152,7 @@ const FinalizingProgress: React.FC<FinalizingProgressProps> = ({ cluster }) => {
         cluster={cluster}
         entityKind="cluster"
       />
-      <Flex className="pf-u-mr-3xl" display={{ default: 'inlineFlex' }}>
+      <Flex className="pf-u-mr-3xl">
         <FlexItem>{getFinalizingStatusIcon(status)}</FlexItem>
         <FlexItem>
           {status === 'finalizing' ? (
@@ -189,7 +190,7 @@ type ClusterProgressProps = {
 };
 
 const ClusterProgress: React.FC<ClusterProgressProps> = ({ cluster }) => {
-  const { status, hosts = [] } = cluster;
+  const { status, hosts = [], monitoredOperators = [] } = cluster;
   const progressPercent = React.useMemo(() => Math.round(getProgressPercent(hosts)), [hosts]);
   const label = getProgressLabel(cluster, progressPercent);
   const isWorkersPresent = hosts && hosts.some((host) => host.role === 'worker');
@@ -216,7 +217,7 @@ const ClusterProgress: React.FC<ClusterProgressProps> = ({ cluster }) => {
         variant={getProgressVariant(status)}
         className="cluster-progress-bar"
       />
-      <Flex className="pf-u-mt-md" display={{ default: 'inlineFlex' }}>
+      <Flex className="pf-u-mt-md">
         <FlexItem>
           <HostProgress hosts={hosts} hostRole="master" />
         </FlexItem>
@@ -228,6 +229,11 @@ const ClusterProgress: React.FC<ClusterProgressProps> = ({ cluster }) => {
         <FlexItem>
           <FinalizingProgress cluster={cluster} />
         </FlexItem>
+        {!!monitoredOperators.length && (
+          <FlexItem>
+            <OperatorsProgressItem operators={monitoredOperators} />
+          </FlexItem>
+        )}
       </Flex>
     </>
   );

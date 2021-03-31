@@ -1,5 +1,12 @@
 import * as packageJson from '../../package.json';
-import { Cluster, Host, Event, HostValidationId, DiskRole } from '../api/types';
+import {
+  Cluster,
+  Host,
+  Event,
+  HostValidationId,
+  DiskRole,
+  ClusterValidationId,
+} from '../api/types';
 import { ValidationsInfo, HostRole } from '../types/hosts';
 import { OpenshiftVersionOptionType } from '../types/versions';
 
@@ -70,7 +77,7 @@ export const CLUSTER_STATUS_LABELS: { [key in Cluster['status']]: string } = {
 export const HOST_STATUS_LABELS: { [key in Host['status']]: string } = {
   discovering: 'Discovering',
   'pending-for-input': 'Pending input',
-  known: 'Ready to install',
+  known: 'Ready',
   disconnected: 'Disconnected',
   insufficient: 'Insufficient',
   disabled: 'Disabled',
@@ -178,6 +185,27 @@ export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string 
   'cnv-requirements-satisfied': '',
 };
 
+export const CLUSTER_VALIDATION_LABELS: { [key in ClusterValidationId]: string } = {
+  'machine-cidr-defined': 'Machine CIDR',
+  'cluster-cidr-defined': 'Cluster CIDR',
+  'service-cidr-defined': 'Service CIDR',
+  'no-cidrs-overlapping': 'No overlapping CIDR',
+  'network-prefix-valid': 'Valid network prefix',
+  'machine-cidr-equals-to-calculated-cidr': 'Machine CIDR conforms expected',
+  'api-vip-defined': 'API VIP',
+  'api-vip-valid': 'API VIP validity',
+  'ingress-vip-defined': 'Ingress VIP',
+  'ingress-vip-valid': 'Ingress VIP validity',
+  'all-hosts-are-ready-to-install': 'All hosts are ready to install',
+  'sufficient-masters-count': 'Masters count',
+  'dns-domain-defined': 'DNS domain',
+  'pull-secret-set': 'Pull secret',
+  'ntp-server-configured': 'NTP server',
+  'lso-requirements-satisfied': 'LSO requirements',
+  'ocs-requirements-satisfied': 'OCS requirements',
+  'cnv-requirements-satisfied': 'CNV requirements',
+};
+
 export const CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4 = {
   clusterNetworkCidr: '10.128.0.0/14',
   clusterNetworkHostPrefix: 23,
@@ -211,3 +239,11 @@ export const DISK_ROLE_LABELS: { [key in DiskRole]: string } = {
 };
 
 export const SNO_SUPPORT_MIN_VERSION = 4.8;
+
+export const OPERATOR_LABELS = {
+  console: 'OpenShift Console',
+  cvo: 'OpenShift Cluster Version Operator',
+  lso: 'OpenShift Local Storage',
+  ocs: 'OpenShift Container Storage',
+  cnv: 'OpenShift Virtualization',
+};

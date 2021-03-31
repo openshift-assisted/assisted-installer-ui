@@ -24,8 +24,8 @@ export const HostsNotShowingLink: React.FC<HostsNotShowingLinkProps> = ({
   setDiscoveryHintModalOpen,
 }) => (
   <Button variant={ButtonVariant.link} onClick={() => setDiscoveryHintModalOpen(true)} isInline>
-    <InfoCircleIcon />
-    &nbsp;Are hosts not showing up?
+    <InfoCircleIcon size="sm" />
+    &nbsp;Hosts not showing up?
   </Button>
 );
 
