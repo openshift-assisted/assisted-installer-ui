@@ -224,10 +224,9 @@ type HostsTableProps = {
   hostToHostTableRow?: (openRows: OpenRows, cluster: Cluster) => (host: Host) => IRow;
   skipDisabled?: boolean;
   setDiscoveryHintModalOpen?: HostsNotShowingLinkProps['setDiscoveryHintModalOpen'];
-  testId?: string;
 };
 
-const HostsTable: React.FC<HostsTableProps> = ({
+const HostsTable: React.FC<HostsTableProps & WithTestID> = ({
   cluster,
   hostToHostTableRow = defaultHostToHostTableRow,
   getColumns = defaultGetColumns,

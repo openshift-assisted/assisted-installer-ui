@@ -6,10 +6,9 @@ type RoleCellProps = {
   host: Host;
   role: string;
   readonly?: boolean;
-  testId?: string;
 };
 
-const RoleCell: React.FC<RoleCellProps> = ({
+const RoleCell: React.FC<RoleCellProps & WithTestID> = ({
   host,
   role,
   readonly = false,

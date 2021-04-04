@@ -13,10 +13,9 @@ type HostnameProps = {
   // Provide either inventory or title
   inventory?: Inventory;
   title?: string;
-  testId?: string;
 };
 
-const Hostname: React.FC<HostnameProps> = ({
+const Hostname: React.FC<HostnameProps & WithTestID> = ({
   host,
   inventory = {},
   cluster,

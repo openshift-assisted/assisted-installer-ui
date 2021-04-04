@@ -10,10 +10,9 @@ type SimpleDropdownProps = {
   setValue: (value?: string) => void;
   isDisabled: boolean;
   idPrefix?: string;
-  testId?: string;
 };
 
-export const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
+export const SimpleDropdown: React.FC<SimpleDropdownProps & WithTestID> = ({
   current,
   defaultValue,
   items,

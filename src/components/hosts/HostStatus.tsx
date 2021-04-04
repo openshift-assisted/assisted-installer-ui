@@ -129,7 +129,6 @@ type HostStatusProps = {
   cluster: Cluster;
   statusOverride?: Host['status'];
   sublabel?: string;
-  testId?: string;
 };
 
 const HostStatusPopoverFooter: React.FC<{ host: Host }> = ({ host }) => {
@@ -161,7 +160,7 @@ const HostStatusPopoverFooter: React.FC<{ host: Host }> = ({ host }) => {
   return <small>{footerText}</small>;
 };
 
-const HostStatus: React.FC<HostStatusProps> = ({
+const HostStatus: React.FC<HostStatusProps & WithTestID> = ({
   host,
   cluster,
   validationsInfo,

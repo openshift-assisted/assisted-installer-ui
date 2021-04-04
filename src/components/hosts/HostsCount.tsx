@@ -6,7 +6,6 @@ type HostsCountProps = {
   hosts?: Host[];
   inParenthesis?: boolean;
   valueId?: string;
-  testId?: string;
 };
 
 export const getEnabledHostsCount = (hosts?: Host[]) =>
@@ -15,7 +14,7 @@ export const getEnabledHostsCount = (hosts?: Host[]) =>
 const getReadyHostsCount = (hosts?: Host[]) =>
   (hosts || []).filter((h) => h.status === 'known').length;
 
-const HostsCount: React.FC<HostsCountProps> = ({
+const HostsCount: React.FC<HostsCountProps & WithTestID> = ({
   hosts,
   inParenthesis = false,
   valueId = 'hosts-count',

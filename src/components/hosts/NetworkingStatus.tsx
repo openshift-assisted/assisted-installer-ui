@@ -12,10 +12,9 @@ type NetworkingStatusProps = {
   host: Host;
   validationsInfo: ValidationsInfo;
   cluster: Cluster;
-  testId?: string;
 };
 
-const NetworkingStatus: React.FC<NetworkingStatusProps> = (props) => {
+const NetworkingStatus: React.FC<NetworkingStatusProps & WithTestID> = (props) => {
   const networkingStatus = getWizardStepHostStatus(props.host, 'networking');
   const validationsInfo = getWizardStepHostValidationsInfo(props.validationsInfo, 'networking');
   const sublabel = getFailingClusterWizardSoftValidationIds(validationsInfo, 'networking').length

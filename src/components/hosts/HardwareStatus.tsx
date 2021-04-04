@@ -12,10 +12,9 @@ type HardwareStatusProps = {
   host: Host;
   validationsInfo: ValidationsInfo;
   cluster: Cluster;
-  testId?: string;
 };
 
-const HardwareStatus: React.FC<HardwareStatusProps> = (props) => {
+const HardwareStatus: React.FC<HardwareStatusProps & WithTestID> = (props) => {
   const hardwareStatus = getWizardStepHostStatus(props.host, 'host-discovery');
   const validationsInfo = getWizardStepHostValidationsInfo(props.validationsInfo, 'host-discovery');
   const sublabel = getFailingClusterWizardSoftValidationIds(validationsInfo, 'host-discovery')
