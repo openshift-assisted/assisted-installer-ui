@@ -149,7 +149,14 @@ type NetworkingHostsTableProps = {
 };
 
 const NetworkingHostsTable: React.FC<NetworkingHostsTableProps> = (props) => {
-  return <HostsTable {...props} getColumns={getColumns} hostToHostTableRow={hostToHostTableRow} />;
+  return (
+    <HostsTable
+      {...props}
+      testId={'networking-hosts-table'}
+      getColumns={getColumns}
+      hostToHostTableRow={hostToHostTableRow}
+    />
+  );
 };
 
 export default NetworkingHostsTable;
