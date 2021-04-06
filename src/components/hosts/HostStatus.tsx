@@ -160,13 +160,12 @@ const HostStatusPopoverFooter: React.FC<{ host: Host }> = ({ host }) => {
   return <small>{footerText}</small>;
 };
 
-const HostStatus: React.FC<HostStatusProps & WithTestID> = ({
+const HostStatus: React.FC<HostStatusProps> = ({
   host,
   cluster,
   validationsInfo,
   statusOverride,
   sublabel,
-  testId = 'host-status',
 }) => {
   const [keepOnOutsideClick, onValidationActionToggle] = React.useState(false);
   const status = statusOverride || host.status;
@@ -198,7 +197,7 @@ const HostStatus: React.FC<HostStatusProps & WithTestID> = ({
         hideOnOutsideClick={!keepOnOutsideClick}
         zIndex={300}
       >
-        <Button data-testid={testId} variant={ButtonVariant.link} isInline>
+        <Button variant={ButtonVariant.link} isInline>
           {icon} {title}{' '}
           {['installing', 'installing-in-progress', 'error', 'cancelled'].includes(status) && (
             <>

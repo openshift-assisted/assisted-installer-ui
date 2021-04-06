@@ -27,7 +27,7 @@ const getColumns = (hosts?: Host[]) => [
   { title: <HostsCount hosts={hosts} inParenthesis /> },
 ];
 
-const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host): IRow => {
+const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host): IRow[] => {
   const { id, status, createdAt, inventory: inventoryString = '' } = host;
   const inventory = stringToJSON<Inventory>(inventoryString) || {};
   const { cores, memory, disk } = getHostRowHardwareInfo(inventory);
@@ -47,59 +47,52 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
       isOpen: !!openRows[id],
       cells: [
         {
-          title: (
-            <Hostname testId={`host-name`} host={host} inventory={inventory} cluster={cluster} />
-          ),
+          title: <Hostname host={host} inventory={inventory} cluster={cluster} />,
+          props: { 'data-testid': 'host-name' },
           sortableValue: computedHostname || '',
         },
         {
           title: (
-            <RoleCell
-              testId={`host-role`}
-              host={host}
-              readonly={!canEditRole(cluster, host.status)}
-              role={hostRole}
-            />
+            <RoleCell host={host} readonly={!canEditRole(cluster, host.status)} role={hostRole} />
           ),
+          props: { 'data-testid': 'host-role' },
           sortableValue: hostRole,
         },
         {
-          title: (
-            <HardwareStatus
-              testId={`host-hw-status`}
-              host={host}
-              cluster={cluster}
-              validationsInfo={validationsInfo}
-            />
-          ),
+          title: <HardwareStatus host={host} cluster={cluster} validationsInfo={validationsInfo} />,
+          props: { 'data-testid': 'host-hw-status' },
           sortableValue: status,
         },
         {
-          title: <span data-testid={`host-discovered-time`}>{dateTimeCell.title}</span>,
+          title: dateTimeCell.title,
+          props: { 'data-testid': 'host-discovered-time' },
           sortableValue: dateTimeCell.sortableValue,
         },
         {
           title: (
             <HostPropertyValidationPopover validation={cpuCoresValidation}>
-              <span data-testid={`host-cpu-cores`}>{cores.title}</span>
+              {cores.title}
             </HostPropertyValidationPopover>
           ),
+          props: { 'data-testid': 'host-cpu-cores' },
           sortableValue: cores.sortableValue,
         },
         {
           title: (
             <HostPropertyValidationPopover validation={memoryValidation}>
-              <span data-testid={`host-memory`}>{memory.title}</span>
+              {memory.title}
             </HostPropertyValidationPopover>
           ),
+          props: { 'data-testid': 'host-memory' },
           sortableValue: memory.sortableValue,
         },
         {
           title: (
             <HostPropertyValidationPopover validation={diskValidation}>
-              <span data-testid={`host-disk`}>{disk.title}</span>
+              {disk.title}
             </HostPropertyValidationPopover>
           ),
+          props: { 'data-testid': 'host-disk' },
           sortableValue: disk.sortableValue,
         },
       ],

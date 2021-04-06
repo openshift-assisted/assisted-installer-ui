@@ -106,59 +106,52 @@ const defaultHostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (hos
       isOpen: !!openRows[id],
       cells: [
         {
-          title: (
-            <Hostname testId={`host-name`} host={host} inventory={inventory} cluster={cluster} />
-          ),
+          title: <Hostname host={host} inventory={inventory} cluster={cluster} />,
+          props: { 'data-testid': 'host-name' },
           sortableValue: computedHostname || '',
         },
         {
           title: (
-            <RoleCell
-              testId={`host-role`}
-              host={host}
-              readonly={!canEditRole(cluster, host.status)}
-              role={hostRole}
-            />
+            <RoleCell host={host} readonly={!canEditRole(cluster, host.status)} role={hostRole} />
           ),
+          props: { 'data-testid': 'host-role' },
           sortableValue: hostRole,
         },
         {
-          title: (
-            <HostStatus
-              testId={`host-status`}
-              host={host}
-              cluster={cluster}
-              validationsInfo={validationsInfo}
-            />
-          ),
+          title: <HostStatus host={host} cluster={cluster} validationsInfo={validationsInfo} />,
+          props: { 'data-testid': 'host-status' },
           sortableValue: status,
         },
         {
-          title: <span data-testid={`host-discovered-time`}>{dateTimeCell.title}</span>,
+          title: dateTimeCell.title,
+          props: { 'data-testid': 'host-discovered-time' },
           sortableValue: dateTimeCell.sortableValue,
         },
         {
           title: (
             <HostPropertyValidationPopover validation={cpuCoresValidation}>
-              <span data-testid={`host-cpu-cores`}>{cores.title}</span>
+              {cores.title}
             </HostPropertyValidationPopover>
           ),
+          props: { 'data-testid': 'host-cpu-cores' },
           sortableValue: cores.sortableValue,
         },
         {
           title: (
             <HostPropertyValidationPopover validation={memoryValidation}>
-              <span data-testid={`host-memory`}>{memory.title}</span>
+              {memory.title}
             </HostPropertyValidationPopover>
           ),
+          props: { 'data-testid': 'host-memory' },
           sortableValue: memory.sortableValue,
         },
         {
           title: (
             <HostPropertyValidationPopover validation={diskValidation}>
-              <span data-testid={`host-disks`}>{disk.title}</span>
+              {disk.title}
             </HostPropertyValidationPopover>
           ),
+          props: { 'data-testid': 'host-disks' },
           sortableValue: disk.sortableValue,
         },
       ],

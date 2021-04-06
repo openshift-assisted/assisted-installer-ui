@@ -33,35 +33,36 @@ const clusterToClusterTableRow = (cluster: Cluster): IRow => {
     cells: [
       {
         title: (
-          <Link
-            key={name}
-            to={`${routeBasePath}/clusters/${id}`}
-            data-testid={`cluster-name-${name}`}
-            id={`cluster-link-${name}`}
-          >
+          <Link key={name} to={`${routeBasePath}/clusters/${id}`} id={`cluster-link-${name}`}>
             {name}
           </Link>
         ),
+        props: { 'data-testid': `cluster-name-${name}` },
         sortableValue: name,
       } as HumanizedSortable,
       {
-        title: <span data-testid={`cluster-base-domain-${name}`}>{baseDnsDomain || DASH}</span>,
+        title: baseDnsDomain || DASH,
+        props: { 'data-testid': `cluster-base-domain-${name}` },
         sortableValue: baseDnsDomain,
       },
       {
-        title: <span data-testid={`cluster-version-${name}`}>{openshiftVersion}</span>,
+        title: openshiftVersion,
+        props: { 'data-testid': `cluster-version-${name}` },
         sortableValue: openshiftVersion,
       },
       {
-        title: <ClusterStatus status={cluster.status} testId={`cluster-status-${name}`} />,
+        title: <ClusterStatus status={cluster.status} />,
+        props: { 'data-testid': `cluster-status-${name}` },
         sortableValue: getClusterStatusText(cluster.status),
       } as HumanizedSortable,
       {
-        title: <HostsCount hosts={hosts} testId={`cluster-hosts-count-${name}`} />,
+        title: <HostsCount hosts={hosts} />,
+        props: { 'data-testid': `cluster-hosts-count-${name}` },
         sortableValue: getEnabledHostsCount(hosts),
       } as HumanizedSortable,
       {
-        title: <span data-testid={`cluster-created-time-${name}`}>{dateTimeCell.title}</span>,
+        title: dateTimeCell.title,
+        props: { 'data-testid': `cluster-created-time-${name}` },
         sortableValue: dateTimeCell.sortableValue,
       } as HumanizedSortable,
     ],

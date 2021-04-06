@@ -14,11 +14,10 @@ export const getEnabledHostsCount = (hosts?: Host[]) =>
 const getReadyHostsCount = (hosts?: Host[]) =>
   (hosts || []).filter((h) => h.status === 'known').length;
 
-const HostsCount: React.FC<HostsCountProps & WithTestID> = ({
+const HostsCount: React.FC<HostsCountProps> = ({
   hosts,
   inParenthesis = false,
   valueId = 'hosts-count',
-  testId,
 }) => {
   const hostsDiscovered = hosts?.length || 0;
   const hostsIncluded = getEnabledHostsCount(hosts);
@@ -43,7 +42,7 @@ const HostsCount: React.FC<HostsCountProps & WithTestID> = ({
 
   return (
     <Popover headerContent="Hosts in the cluster" bodyContent={body}>
-      <a id={valueId} data-testid={testId}>
+      <a id={valueId}>
         {inParenthesis && '('}
         {hostsIncluded}
         {inParenthesis && ')'}

@@ -15,14 +15,13 @@ type HostnameProps = {
   title?: string;
 };
 
-const Hostname: React.FC<HostnameProps & WithTestID> = ({
+const Hostname: React.FC<HostnameProps> = ({
   host,
   inventory = {},
   cluster,
   title,
   className,
   onToggle,
-  testId = 'host-name',
 }) => {
   const [isOpen, _setOpen] = React.useState(false);
 
@@ -37,7 +36,6 @@ const Hostname: React.FC<HostnameProps & WithTestID> = ({
   return (
     <>
       <Button
-        data-testid={testId}
         variant={ButtonVariant.link}
         isInline
         onClick={() => setOpen(true)}
