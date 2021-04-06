@@ -31,6 +31,8 @@ const BaremetalDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
       enabledOlmOperatorsByName.ocs = { name: 'ocs' };
     } else {
       delete enabledOlmOperatorsByName.ocs;
+      // TODO(jtomasek): remove this once enabling OCS is moved into a separate storage step and LSO option is exposed to the user
+      delete enabledOlmOperatorsByName.lso;
     }
     params.olmOperators = Object.values(enabledOlmOperatorsByName);
 
