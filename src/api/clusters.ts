@@ -11,6 +11,7 @@ import {
   Event,
   LogsType,
   ClusterDefaultConfig,
+  PreflightHardwareRequirements,
 } from './types';
 import { client, BASE_PATH } from './axiosClient';
 
@@ -108,3 +109,8 @@ export const getEvents = (
   hostID: Event['hostId'],
 ): AxiosPromise<EventList> =>
   client.get(`/clusters/${clusterID}/events${hostID ? `?host_id=${hostID}` : ''}`);
+
+export const getClusterPreflightRequirements = (
+  clusterID: Cluster['id'],
+): AxiosPromise<PreflightHardwareRequirements> =>
+  client.get(`/clusters/${clusterID}/preflight-requirements`);
