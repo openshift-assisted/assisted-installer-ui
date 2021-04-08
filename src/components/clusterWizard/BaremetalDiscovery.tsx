@@ -57,7 +57,6 @@ const BaremetalDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
             isSubmitting={isSubmitting}
             isNextDisabled={dirty || !canNextBaremetalDiscovery({ cluster })}
             onNext={() => setCurrentStepId('networking')}
-            isBackDisabled={!cluster.validationsInfo}
             onBack={() => setCurrentStepId('cluster-details')}
           />
         );
