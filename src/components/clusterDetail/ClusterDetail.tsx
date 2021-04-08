@@ -58,8 +58,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
   const [credentialsError, setCredentialsError] = React.useState();
   const olmOperators = getOlmOperators(cluster.monitoredOperators);
   const failedOlmOperators = olmOperators.filter((o) => o.status === 'failed');
-  const consoleOperatorStatus = cluster.monitoredOperators?.find((o) => o.name === 'console')
-    ?.status;
+  const consoleOperator = cluster.monitoredOperators?.find((o) => o.name === 'console');
 
   const fetchCredentials = React.useCallback(() => {
     const fetch = async () => {
@@ -75,10 +74,16 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
   }, [cluster.id]);
 
   React.useEffect(() => {
-    if (consoleOperatorStatus === 'available') {
+    if (
+      (!consoleOperator && cluster.status === 'installed') || // Retain backwards compatibility with clusters which don't have monitored clusters
+      consoleOperator?.status === 'available'
+    ) {
       fetchCredentials();
     }
-  }, [consoleOperatorStatus, fetchCredentials]);
+  }, [cluster.status, consoleOperator, fetchCredentials]);
+
+  const showClusterCredentials =
+    consoleOperator?.status === 'available' || (!consoleOperator && cluster.status === 'installed'); // Retain backwards compatibility with clusters which don't have monitored clusters
 
   return (
     <Stack hasGutter>
@@ -113,7 +118,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
               setResetClusterModalOpen={setResetClusterModalOpen}
             />
           )}
-          {consoleOperatorStatus === 'available' && (
+          {showClusterCredentials && (
             <ClusterCredentials
               cluster={cluster}
               credentials={credentials}
