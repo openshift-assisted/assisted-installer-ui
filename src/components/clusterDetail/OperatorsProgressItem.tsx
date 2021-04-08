@@ -89,6 +89,8 @@ const OperatorsPopover: React.FC<OperatorsPopoverProps> = ({ operators, children
           })}
         </List>
       }
+      minWidth="30rem"
+      maxWidth="50rem"
     >
       {children}
     </Popover>
