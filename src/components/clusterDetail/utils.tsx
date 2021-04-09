@@ -8,9 +8,8 @@ import {
   getClusterLogsDownloadUrl,
   stringToJSON,
 } from '../../api';
-import { Cluster, Host, Inventory, Presigned } from '../../api/types';
+import { Cluster, Host, HostRole, Inventory, Presigned } from '../../api/types';
 import { AlertsContextType } from '../AlertsContextProvider';
-import { getMasterCount, getWorkerCount } from '../hosts/utils';
 
 export const downloadClusterInstallationLogs = async (
   addAlert: AlertsContextType['addAlert'],
@@ -37,6 +36,13 @@ export const downloadClusterInstallationLogs = async (
     saveAs(getClusterLogsDownloadUrl(clusterId));
   }
 };
+
+const getHostRoleCount = (hosts: Host[], role: HostRole) =>
+  hosts.filter((host) => host.status !== 'disabled' && host.role === role).length;
+
+export const getMasterCount = (hosts: Host[]) => getHostRoleCount(hosts, 'master');
+
+export const getWorkerCount = (hosts: Host[]) => getHostRoleCount(hosts, 'worker');
 
 const getClusterResources = (cluster: Cluster, resoucePath: string): number => {
   if (!cluster.hosts) {
@@ -76,3 +82,5 @@ export const getClustervCPUCount = (cluster: Cluster): number =>
 
 export const getClusterMemoryAmount = (cluster: Cluster): number =>
   getClusterResources(cluster, 'memory.physicalBytes');
+
+export const getClusterDetailId = (suffix: string) => `cluster-detail-${suffix}`;

@@ -26,12 +26,12 @@ const ClusterDetailsButtonGroup: React.FC<ClusterDetailsButtonGroupProps> = ({ c
         <KubeconfigDownload
           status={cluster.status}
           clusterId={cluster.id}
-          id={getID('button-download-kubeconfig')}
+          data-testid={getID('button-download-kubeconfig')}
         />
       </FlexItem>
       <FlexItem>
         <Button
-          id="cluster-installation-logs-button"
+          data-testid="cluster-installation-logs-button"
           variant={ButtonVariant.link}
           onClick={() => downloadClusterInstallationLogs(addAlert, cluster.id)}
           isDisabled={!canDownloadClusterLogs(cluster)}
@@ -41,7 +41,7 @@ const ClusterDetailsButtonGroup: React.FC<ClusterDetailsButtonGroupProps> = ({ c
       </FlexItem>
       <FlexItem>
         <EventsModalButton
-          id="cluster-events-button"
+          data-testid="cluster-events-button"
           entityKind="cluster"
           cluster={cluster}
           title="Cluster Events"

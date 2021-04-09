@@ -1,5 +1,5 @@
 import { saveAs } from 'file-saver';
-import { Host, Cluster, Presigned, Inventory, HostRole } from '../../api/types';
+import { Host, Cluster, Presigned, Inventory } from '../../api/types';
 import { HOST_ROLES, TIME_ZERO } from '../../config';
 import {
   getHostLogsDownloadUrl,
@@ -152,10 +152,3 @@ export const fileSize: typeof filesize = (...args) =>
     .call(null, ...args)
     .toUpperCase()
     .replace(/I/, 'i');
-
-const getHostRoleCount = (hosts: Host[], role: HostRole) =>
-  hosts.filter((host) => host.role === role).length;
-
-export const getMasterCount = (hosts: Host[]) => getHostRoleCount(hosts, 'master');
-
-export const getWorkerCount = (hosts: Host[]) => getHostRoleCount(hosts, 'worker');

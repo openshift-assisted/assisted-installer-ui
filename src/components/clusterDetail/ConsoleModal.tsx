@@ -152,7 +152,7 @@ export const LaunchOpenshiftConsoleButton: React.FC<LaunchOpenshiftConsoleButton
         variant={ButtonVariant.primary}
         isDisabled={isDisabled}
         onClick={() => setOpen(true)}
-        id={id}
+        data-testid={id}
       >
         Launch OpenShift Console
       </ToolbarButton>
@@ -181,7 +181,7 @@ export const TroubleshootingOpenshiftConsoleButton: React.FC<WebConsoleHintProps
         iconPosition="left"
         isInline
         onClick={() => setOpen(true)}
-        id={`${idPrefix}-troubleshooting-hint-open`}
+        data-testid={`${idPrefix}-troubleshooting-hint-open`}
       >
         Not able to access the Web Console?
       </Button>
