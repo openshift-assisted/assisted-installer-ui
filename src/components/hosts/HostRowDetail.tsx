@@ -39,7 +39,7 @@ type DisksTableProps = {
   cluster: Cluster;
   host: Host;
   disks: Disk[];
-  installationDiskPath?: string;
+  installationDiskId?: string;
 };
 
 type NicsTableProps = {
@@ -84,7 +84,7 @@ const DisksTable: React.FC<DisksTableProps & WithTestID> = ({
   cluster,
   host,
   disks,
-  installationDiskPath,
+  installationDiskId,
   testId,
 }) => {
   const isEditable = canEditDisks(cluster.status, host.status);
@@ -101,7 +101,7 @@ const DisksTable: React.FC<DisksTableProps & WithTestID> = ({
             <DiskRole
               host={host}
               disk={disk}
-              installationDiskPath={installationDiskPath}
+              installationDiskId={installationDiskId}
               isEditable={isEditable}
             />
           ),
@@ -195,7 +195,7 @@ export const HostDetail: React.FC<HostDetailProps> = ({
   host,
   validationsInfo,
 }) => {
-  const { id, installationDiskPath } = host;
+  const { id, installationDiskId } = host;
   const rowInfo = getHostRowHardwareInfo(inventory);
   const disks = inventory.disks || [];
   const nics = inventory.interfaces || [];
@@ -279,7 +279,7 @@ export const HostDetail: React.FC<HostDetailProps> = ({
           cluster={cluster}
           host={host}
           disks={disks}
-          installationDiskPath={installationDiskPath}
+          installationDiskId={installationDiskId}
         />
       </GridItem>
 
