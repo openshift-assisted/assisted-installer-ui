@@ -836,13 +836,9 @@ export interface Gpu {
    */
   name?: string;
   /**
-   * Device bus information (for example "pci@0000:00:02.0")
+   * Device address (for example "0000:00:02.0")
    */
-  busInfo?: string;
-  /**
-   * GPU clock frequency in Hz
-   */
-  clockHz?: number;
+  address?: string;
 }
 export interface Host {
   /**
@@ -1351,7 +1347,7 @@ export interface MirrorRegistry {
    */
   location?: string;
   /**
-   * the mirror regsitry location
+   * the mirror registry location
    */
   mirrorLocation?: string;
 }
@@ -1432,6 +1428,10 @@ export interface OpenshiftVersion {
    * Level of support of the version.
    */
   supportLevel: 'beta' | 'production';
+  /**
+   * Indication that the version is the recommended one.
+   */
+  default?: boolean;
 }
 export interface OpenshiftVersions {
   [name: string]: OpenshiftVersion;

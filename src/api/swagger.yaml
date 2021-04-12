@@ -393,6 +393,55 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
+    head:
+      tags:
+        - installer
+      description: Downloads the OpenShift per-cluster Discovery ISO Headers only.
+      security:
+        - userAuth: [admin, read-only-admin, user]
+        - urlAuth: []
+      operationId: DownloadClusterISOHeaders
+      parameters:
+        - in: path
+          name: cluster_id
+          description: The cluster whose ISO headers should be downloaded.
+          type: string
+          format: uuid
+          required: true
+      responses:
+        '200':
+          description: Success.
+          headers:
+            Content-Length:
+              type: integer
+              description: Size of the ISO in bytes
+        '400':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+        '409':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
   /clusters/{cluster_id}/downloads/files:
     get:
       tags:
@@ -4358,7 +4407,7 @@ definitions:
         description: the original registry location
       mirror_location:
         type: string
-        description: the mirror regsitry location
+        description: the mirror registry location
 
   free-addresses-list:
     type: array
@@ -4741,12 +4790,9 @@ definitions:
       name:
         type: string
         description: Product name of the device (for example "UHD Graphics 620 (Whiskey Lake)")
-      bus_info:
+      address:
         type: string
-        description: Device bus information (for example "pci@0000:00:02.0")
-      clock_hz:
-        type: integer
-        description: GPU clock frequency in Hz
+        description: Device address (for example "0000:00:02.0")
 
   inventory:
     type: object
@@ -5255,6 +5301,9 @@ definitions:
         type: string
         enum: [beta, production]
         description: Level of support of the version.
+      default:
+        type: boolean
+        description: Indication that the version is the recommended one.
 
   operator-property:
     type: object
