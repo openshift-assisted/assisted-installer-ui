@@ -126,7 +126,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
       const { data } = await patchCluster(clusterId, params);
       dispatch(updateCluster(data));
 
-      canNextClusterDetails({ cluster: data }) && setCurrentStepId('baremetal-discovery');
+      canNextClusterDetails({ cluster: data }) && setCurrentStepId('host-discovery');
     } catch (e) {
       handleApiError<ClusterUpdateParams>(e, () =>
         addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),

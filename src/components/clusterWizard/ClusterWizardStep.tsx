@@ -7,7 +7,7 @@ import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens
 import { Cluster } from '../../api/types';
 import ClusterWizardContext from './ClusterWizardContext';
 import {
-  canNextBaremetalDiscovery,
+  canNextHostDiscovery,
   canNextClusterDetails,
   canNextNetwork,
   ClusterWizardStepsType,
@@ -27,7 +27,7 @@ export const wizardStepNames: {
   [key in ClusterWizardStepsType]: string;
 } = {
   'cluster-details': 'Cluster Details',
-  'baremetal-discovery': 'Bare Metal Discovery',
+  'host-discovery': 'Host Discovery',
   networking: 'Networking',
   review: 'Review & Create',
 };
@@ -70,13 +70,13 @@ const ClusterWizardStep: React.FC<ClusterWizardStepProps> = ({ cluster, footer, 
         onNavItemClick={() => setCurrentStepId('cluster-details')}
       />
       <NavItem
-        key="baremetal-discovery"
-        content={wizardStepNames['baremetal-discovery']}
+        key="host-discovery"
+        content={wizardStepNames['host-discovery']}
         isDisabled={!wizardSteps.slice(1).includes(currentStepId)}
-        isValid={() => !cluster || canNextBaremetalDiscovery({ cluster })}
-        isCurrent={currentStepId === 'baremetal-discovery'}
+        isValid={() => !cluster || canNextHostDiscovery({ cluster })}
+        isCurrent={currentStepId === 'host-discovery'}
         step={1}
-        onNavItemClick={() => setCurrentStepId('baremetal-discovery')}
+        onNavItemClick={() => setCurrentStepId('host-discovery')}
       />
       <NavItem
         content={wizardStepNames['networking']}

@@ -9,18 +9,18 @@ import { addHostsClusters } from '../../api/addHostsClusters';
 import { AlertsContextProvider } from '../AlertsContextProvider';
 import { POLLING_INTERVAL } from '../../config';
 import { useOpenshiftVersions } from '../fetching/openshiftVersions';
-import AddBareMetalHosts from './AddBareMetalHosts';
-import { AddBareMetalHostsContextProvider } from './AddBareMetalHostsContext';
+import AddHosts from './AddHosts';
+import { AddHostsContextProvider } from './AddHostsContext';
 
 type OpenModalType = (modalName: string, cluster?: OcmClusterType) => void;
 
-type BareMetalHostsClusterDetailTabProps = {
+type HostsClusterDetailTabProps = {
   cluster?: OcmClusterType;
   isVisible: boolean;
   openModal?: OpenModalType;
 };
 
-const BareMetalHostsClusterDetailTabContent: React.FC<BareMetalHostsClusterDetailTabProps> = ({
+const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
   cluster,
   isVisible,
   openModal,
@@ -222,19 +222,17 @@ const BareMetalHostsClusterDetailTabContent: React.FC<BareMetalHostsClusterDetai
   }
 
   return (
-    <AddBareMetalHostsContextProvider cluster={day2Cluster} ocpConsoleUrl={cluster?.console?.url}>
-      <AddBareMetalHosts />
-    </AddBareMetalHostsContextProvider>
+    <AddHostsContextProvider cluster={day2Cluster} ocpConsoleUrl={cluster?.console?.url}>
+      <AddHosts />
+    </AddHostsContextProvider>
   );
 };
 
-export const BareMetalHostsClusterDetailTab: React.FC<BareMetalHostsClusterDetailTabProps> = (
-  props,
-) => (
+export const HostsClusterDetailTab: React.FC<HostsClusterDetailTabProps> = (props) => (
   <>
     <AssistedUILibVersion />
     <AlertsContextProvider>
-      <BareMetalHostsClusterDetailTabContent {...props} />
+      <HostsClusterDetailTabContent {...props} />
     </AlertsContextProvider>
   </>
 );

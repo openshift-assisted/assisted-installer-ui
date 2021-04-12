@@ -16,12 +16,9 @@ type HardwareStatusProps = {
 };
 
 const HardwareStatus: React.FC<HardwareStatusProps> = (props) => {
-  const hardwareStatus = getWizardStepHostStatus(props.host, 'baremetal-discovery');
-  const validationsInfo = getWizardStepHostValidationsInfo(
-    props.validationsInfo,
-    'baremetal-discovery',
-  );
-  const sublabel = getFailingClusterWizardSoftValidationIds(validationsInfo, 'baremetal-discovery')
+  const hardwareStatus = getWizardStepHostStatus(props.host, 'host-discovery');
+  const validationsInfo = getWizardStepHostValidationsInfo(props.validationsInfo, 'host-discovery');
+  const sublabel = getFailingClusterWizardSoftValidationIds(validationsInfo, 'host-discovery')
     .length
     ? 'Some validations failed'
     : undefined;

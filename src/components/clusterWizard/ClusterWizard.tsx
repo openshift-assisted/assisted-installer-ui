@@ -10,7 +10,7 @@ import {
   getClusterWizardFirstStep,
 } from './wizardTransition';
 import ClusterDetails from './ClusterDetails';
-import BaremetalDiscovery from './BaremetalDiscovery';
+import HostDiscovery from './HostDiscovery';
 
 type ClusterWizardProps = {
   cluster: Cluster;
@@ -24,8 +24,8 @@ const ClusterWizard: React.FC<ClusterWizardProps> = ({ cluster }) => {
 
   const renderCurrentStep = React.useCallback(() => {
     switch (currentStepId) {
-      case 'baremetal-discovery':
-        return <BaremetalDiscovery cluster={cluster} />;
+      case 'host-discovery':
+        return <HostDiscovery cluster={cluster} />;
       case 'networking':
         return <NetworkConfigurationForm cluster={cluster} />;
       case 'review':

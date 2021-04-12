@@ -131,21 +131,21 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
   ];
 };
 
-type BaremetalDiscoveryHostsTableProps = {
+type HostsDiscoveryTableProps = {
   cluster: Cluster;
   skipDisabled?: boolean;
   setDiscoveryHintModalOpen?: HostsNotShowingLinkProps['setDiscoveryHintModalOpen'];
 };
 
-const BaremetalDiscoveryHostsTable: React.FC<BaremetalDiscoveryHostsTableProps> = (props) => {
+const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = (props) => {
   return (
     <HostsTable
       {...props}
-      testId={'bare-metal-discovery-hosts-table'}
+      testId={'hosts-discovery-table'}
       getColumns={getColumns}
       hostToHostTableRow={hostToHostTableRow}
     />
   );
 };
 
-export default BaremetalDiscoveryHostsTable;
+export default HostsDiscoveryTable;
