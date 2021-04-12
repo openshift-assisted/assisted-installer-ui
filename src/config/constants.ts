@@ -8,7 +8,6 @@ import {
   ClusterValidationId,
 } from '../api/types';
 import { ValidationsInfo, HostRole } from '../types/hosts';
-import { OpenshiftVersionOptionType } from '../types/versions';
 
 export let routeBasePath = '';
 export const setRouteBasePath = (basePath: string) => {
@@ -18,14 +17,7 @@ export const setRouteBasePath = (basePath: string) => {
 export const CLUSTER_MANAGER_SITE_LINK = 'https://cloud.redhat.com/openshift/install/pull-secret';
 export const PULL_SECRET_INFO_LINK = CLUSTER_MANAGER_SITE_LINK;
 
-// Used as a default before effective values are retrieved from the API
-export const DEFAULT_OPENSHIFT_VERSION: OpenshiftVersionOptionType = {
-  label: 'OpenShift 4.6',
-  value: '4.6',
-  supportLevel: 'production',
-};
-
-export const getBugzillaLink = (version: string = DEFAULT_OPENSHIFT_VERSION.value) =>
+export const getBugzillaLink = (version = '') =>
   `https://bugzilla.redhat.com/enter_bug.cgi?product=OpenShift%20Container%20Platform&Component=OpenShift%20Container%20Platform&component=assisted-installer&version=${version}`;
 
 export const FEEDBACK_FORM_LINK =

@@ -50,10 +50,7 @@ type ClusterDetailsValues = {
 };
 
 const getDefaultOpenShiftVersion = (versions: OpenshiftVersionOptionType[]) =>
-  // TODO(jtomasek): one of the available versions should be flagged as a default
-  // from the server so we don't have to hardcode here
-  // https://issues.redhat.com/browse/MGMT-4363
-  versions.find((v) => v.value === '4.7')?.value || versions[0]?.value || '';
+  versions.find((v) => v.default)?.value || versions[0]?.value || '';
 
 const getInitialValues = (props: ClusterDetailsFormProps): ClusterDetailsValues => {
   const { cluster, pullSecret, managedDomains, versions } = props;
