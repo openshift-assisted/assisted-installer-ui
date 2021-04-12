@@ -13,7 +13,7 @@ import {
   Text,
 } from '@patternfly/react-core';
 import { CLUSTER_STATUS_LABELS } from '../../config/constants';
-import { getHostProgressStages, getHostProgressStageNumber } from '../hosts/utils';
+import { getHostProgressStages, getHostProgressStageNumber, getEnabledHosts } from '../hosts/utils';
 import { getHumanizedDateTime, DetailList, DetailItem } from '../ui';
 import {
   global_danger_color_100 as dangerColor,
@@ -191,7 +191,8 @@ type ClusterProgressProps = {
 };
 
 const ClusterProgress: React.FC<ClusterProgressProps> = ({ cluster, minimizedView = false }) => {
-  const { status, hosts = [], monitoredOperators = [] } = cluster;
+  const { status, monitoredOperators = [] } = cluster;
+  const hosts = getEnabledHosts(cluster);
   const progressPercent = React.useMemo(() => Math.round(getProgressPercent(hosts)), [hosts]);
   const label = getProgressLabel(cluster, progressPercent);
   const isWorkersPresent = hosts && hosts.some((host) => host.role === 'worker');
