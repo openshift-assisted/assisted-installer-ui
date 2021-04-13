@@ -67,7 +67,10 @@ const FailingValidation: React.FC<{
 
   let fix;
   const step = findValidationFixStep({ id: validation.id, clusterGroup, hostGroup });
-  if (step) {
+  if (step === 'review') {
+    // no sooner step, so the user can not do anything about it ...
+    fix = 'Please wait till all validations are finished.';
+  } else if (step) {
     fix = (
       <>
         It can be fixed in the <ValidationActionLink step={step} /> step.
