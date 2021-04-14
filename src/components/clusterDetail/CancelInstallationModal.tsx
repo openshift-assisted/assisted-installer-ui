@@ -9,26 +9,23 @@ import {
   TextContent,
 } from '@patternfly/react-core';
 import { postCancelInstallation } from '../../api/clusters';
-import { Cluster } from '../../api/types';
 import { getErrorMessage, handleApiError } from '../../api/utils';
 import ErrorState from '../ui/uiState/ErrorState';
 import LoadingState from '../ui/uiState/LoadingState';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
+import { useHostDialogsContext } from '../hosts/HostDialogsContext';
 
-type CancelInstallationModalProps = {
-  onClose: () => void;
-  isOpen: boolean;
-  clusterId: Cluster['id'];
-};
-
-const CancelInstallationModal: React.FC<CancelInstallationModalProps> = ({
-  onClose,
-  isOpen,
-  clusterId,
-}) => {
+const CancelInstallationModal: React.FC = () => {
   const dispatch = useDispatch();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [error, setError] = React.useState<{ title: string; message: string } | null>(null);
+  const { cancelInstallationDialog } = useHostDialogsContext();
+  const { data, isOpen, close: onClose } = cancelInstallationDialog;
+  const clusterId = data?.clusterId;
+
+  if (!clusterId) {
+    return null;
+  }
 
   const handleSubmit = async () => {
     setIsSubmitting(true);

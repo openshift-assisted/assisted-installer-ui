@@ -1,11 +1,12 @@
 import { Flex, FlexItem, Button, ButtonVariant } from '@patternfly/react-core';
 import React from 'react';
 import { Cluster } from '../../api';
-import { canDownloadClusterLogs } from '../hosts/utils';
+import { canAbortInstallation, canDownloadClusterLogs } from '../hosts/utils';
 import { EventsModalButton } from '../ui/eventsModal';
 import KubeconfigDownload from './KubeconfigDownload';
 import { downloadClusterInstallationLogs } from './utils';
 import { AlertsContext } from '../AlertsContextProvider';
+import { useHostDialogsContext } from '../hosts/HostDialogsContext';
 
 type ClusterDetailsButtonGroupProps = {
   cluster: Cluster;
@@ -15,6 +16,8 @@ const getID = (suffix: string) => `cluster-detail-${suffix}`;
 
 const ClusterDetailsButtonGroup: React.FC<ClusterDetailsButtonGroupProps> = ({ cluster }) => {
   const { addAlert } = React.useContext(AlertsContext);
+  const { cancelInstallationDialog } = useHostDialogsContext();
+
   return (
     <Flex
       className="assisted-ui-vertical-margin"
@@ -22,6 +25,16 @@ const ClusterDetailsButtonGroup: React.FC<ClusterDetailsButtonGroupProps> = ({ c
       direction={{ default: 'row' }}
       justifyContent={{ default: 'justifyContentFlexStart' }}
     >
+      <FlexItem>
+        <Button
+          data-testid="cluster-installation-abort-button"
+          variant={ButtonVariant.danger}
+          onClick={() => cancelInstallationDialog.open({ clusterId: cluster.id })}
+          isDisabled={!canAbortInstallation(cluster)}
+        >
+          Abort Installation
+        </Button>
+      </FlexItem>
       <FlexItem>
         <KubeconfigDownload
           status={cluster.status}

@@ -13,11 +13,11 @@ import { AlertsContext } from '../AlertsContextProvider';
 import { canDownloadClusterLogs } from '../hosts/utils';
 import { getBugzillaLink } from '../../config';
 import { downloadClusterInstallationLogs } from './utils';
+import { useHostDialogsContext } from '../hosts/HostDialogsContext';
 
 type ClusterInstallationErrorProps = {
   cluster: Cluster;
   title?: string;
-  setResetClusterModalOpen: (isOpen: boolean) => void;
 };
 
 const getID = (suffix: string) => `cluster-install-error-${suffix}`;
@@ -25,9 +25,9 @@ const getID = (suffix: string) => `cluster-install-error-${suffix}`;
 const ClusterInstallationError: React.FC<ClusterInstallationErrorProps> = ({
   cluster,
   title = 'Cluster installation failed',
-  setResetClusterModalOpen,
 }) => {
   const { addAlert } = React.useContext(AlertsContext);
+  const { resetClusterDialog } = useHostDialogsContext();
 
   return (
     <GridItem>
@@ -37,7 +37,7 @@ const ClusterInstallationError: React.FC<ClusterInstallationErrorProps> = ({
         actionLinks={
           <>
             <AlertActionLink
-              onClick={() => setResetClusterModalOpen(true)}
+              onClick={() => resetClusterDialog.open({ cluster })}
               id={getID('button-reset-cluster')}
             >
               Reset Cluster

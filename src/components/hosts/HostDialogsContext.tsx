@@ -1,5 +1,5 @@
 import React from 'react';
-import { Host, Inventory } from '../../api/types';
+import { Host, Inventory, Cluster } from '../../api/types';
 import dialogsReducer, {
   openDialog as openDialogAction,
   closeDialog as closeDialogAction,
@@ -15,12 +15,22 @@ type EditHostProps = {
   inventory: Inventory;
 };
 
+type ResetClusterProps = {
+  cluster: Cluster;
+};
+
+type CancelInstallationProps = {
+  clusterId: Cluster['id'];
+};
+
 type DialogsDataTypes = {
   eventsDialog: HostIdAndHostname;
   editHostDialog: EditHostProps;
   deleteHostDialog: HostIdAndHostname;
   resetHostDialog: HostIdAndHostname;
   additionalNTPSourcesDialog: void;
+  resetClusterDialog: ResetClusterProps;
+  cancelInstallationDialog: CancelInstallationProps;
 };
 
 type DialogId =
@@ -28,7 +38,9 @@ type DialogId =
   | 'editHostDialog'
   | 'deleteHostDialog'
   | 'resetHostDialog'
-  | 'additionalNTPSourcesDialog';
+  | 'additionalNTPSourcesDialog'
+  | 'resetClusterDialog'
+  | 'cancelInstallationDialog';
 
 export type HostDialogsContextType = {
   [key in DialogId]: {
@@ -45,6 +57,8 @@ const dialogIds: DialogId[] = [
   'deleteHostDialog',
   'resetHostDialog',
   'additionalNTPSourcesDialog',
+  'resetClusterDialog',
+  'cancelInstallationDialog',
 ];
 
 const HostDialogsContext = React.createContext<HostDialogsContextType | undefined>(undefined);

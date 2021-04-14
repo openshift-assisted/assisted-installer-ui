@@ -103,6 +103,16 @@ export const canDownloadHostLogs = (host: Host) =>
 export const canDownloadClusterLogs = (cluster: Cluster) =>
   !!(cluster.hosts || []).find((host) => canDownloadHostLogs(host));
 
+export const canAbortInstallation = (cluster: Cluster) => {
+  const allowedClusterStates: Cluster['status'][] = [
+    'preparing-for-installation',
+    'installing',
+    'installing-pending-user-action',
+    'finalizing',
+  ];
+  return allowedClusterStates.includes(cluster.status);
+};
+
 export const downloadHostInstallationLogs = async (
   addAlert: AlertsContextType['addAlert'],
   host: Host,

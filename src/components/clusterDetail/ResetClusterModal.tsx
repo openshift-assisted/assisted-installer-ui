@@ -1,7 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import {
-  AlertActionLink,
   Button,
   Modal,
   ModalVariant,
@@ -9,9 +8,7 @@ import {
   Text,
   TextContent,
 } from '@patternfly/react-core';
-import { ToolbarButton } from '../ui/Toolbar';
 import { postResetCluster } from '../../api/clusters';
-import { Cluster } from '../../api/types';
 import { getErrorMessage, handleApiError } from '../../api/utils';
 import LoadingState from '../ui/uiState/LoadingState';
 import ErrorState from '../ui/uiState/ErrorState';
@@ -19,22 +16,19 @@ import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens';
 import { calculateCollectedLogsCount } from '../clusters/utils';
+import { useHostDialogsContext } from '../hosts/HostDialogsContext';
 
-type ResetClusterModalButtonProps = React.ComponentProps<typeof Button> & {
-  ButtonComponent?: typeof Button | typeof ToolbarButton | typeof AlertActionLink;
-  clusterId: Cluster['id'];
-};
-
-type ResetClusterModalProps = {
-  onClose: () => void;
-  isOpen: boolean;
-  cluster: Cluster;
-};
-
-const ResetClusterModal: React.FC<ResetClusterModalProps> = ({ onClose, isOpen, cluster }) => {
+const ResetClusterModal: React.FC = () => {
   const dispatch = useDispatch();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [error, setError] = React.useState<{ title: string; message: string } | null>(null);
+  const { resetClusterDialog } = useHostDialogsContext();
+  const { data, isOpen, close: onClose } = resetClusterDialog;
+  const cluster = data?.cluster;
+
+  if (!cluster) {
+    return null;
+  }
 
   const handleClose = () => {
     setIsSubmitting(false);

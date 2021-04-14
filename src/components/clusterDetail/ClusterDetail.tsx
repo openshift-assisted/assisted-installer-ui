@@ -17,7 +17,7 @@ import { ToolbarButton, ToolbarSecondaryGroup } from '../ui/Toolbar';
 import Alerts from '../ui/Alerts';
 import { downloadClusterInstallationLogs, getClusterDetailId } from './utils';
 import { AlertsContext } from '../AlertsContextProvider';
-import { canDownloadClusterLogs } from '../hosts/utils';
+import { canAbortInstallation, canDownloadClusterLogs } from '../hosts/utils';
 import ClusterProgress from './ClusterProgress';
 import { LaunchOpenshiftConsoleButton } from './ConsoleModal';
 import KubeconfigDownload from './KubeconfigDownload';
@@ -26,29 +26,15 @@ import { isSingleClusterMode, routeBasePath } from '../../config';
 import ClusterDetailStatusVarieties, {
   useClusterStatusVarieties,
 } from './ClusterDetailStatusVarieties';
-
-const canAbortInstallation = (cluster: Cluster) => {
-  const allowedClusterStates: Cluster['status'][] = [
-    'preparing-for-installation',
-    'installing',
-    'installing-pending-user-action',
-    'finalizing',
-  ];
-  return allowedClusterStates.includes(cluster.status);
-};
+import { useHostDialogsContext } from '../hosts/HostDialogsContext';
 
 type ClusterDetailProps = {
   cluster: Cluster;
-  setCancelInstallationModalOpen: (isOpen: boolean) => void;
-  setResetClusterModalOpen: (isOpen: boolean) => void;
 };
 
-const ClusterDetail: React.FC<ClusterDetailProps> = ({
-  cluster,
-  setCancelInstallationModalOpen,
-  setResetClusterModalOpen,
-}) => {
+const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
   const { addAlert } = React.useContext(AlertsContext);
+  const { resetClusterDialog, cancelInstallationDialog } = useHostDialogsContext();
   const clusterVarieties = useClusterStatusVarieties(cluster);
   const { credentials, credentialsError } = clusterVarieties;
 
@@ -64,11 +50,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
           <GridItem>
             <ClusterProgress cluster={cluster} />
           </GridItem>
-          <ClusterDetailStatusVarieties
-            cluster={cluster}
-            setResetClusterModalOpen={setResetClusterModalOpen}
-            clusterVarieties={clusterVarieties}
-          />
+          <ClusterDetailStatusVarieties cluster={cluster} clusterVarieties={clusterVarieties} />
           <KubeconfigDownload
             status={cluster.status}
             clusterId={cluster.id}
@@ -90,8 +72,9 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
         <ClusterToolbar>
           {canAbortInstallation(cluster) && (
             <ToolbarButton
+              id={getClusterDetailId('button-cancel-installation')}
               variant={ButtonVariant.danger}
-              onClick={() => setCancelInstallationModalOpen(true)}
+              onClick={() => cancelInstallationDialog.open({ clusterId: cluster.id })}
             >
               Abort Installation
             </ToolbarButton>
@@ -99,7 +82,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
           {cluster.status === 'error' && (
             <ToolbarButton
               id={getClusterDetailId('button-reset-cluster')}
-              onClick={() => setResetClusterModalOpen(true)}
+              onClick={() => resetClusterDialog.open({ cluster })}
             >
               Reset Cluster
             </ToolbarButton>

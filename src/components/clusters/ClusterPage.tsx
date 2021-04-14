@@ -32,6 +32,7 @@ import { ClusterDefaultConfigurationProvider } from '../clusterConfiguration/Clu
 import ClusterBreadcrumbs from './ClusterBreadcrumbs';
 import { EventsModalButton } from '../ui/eventsModal';
 import ClusterWizard from '../clusterWizard/ClusterWizard';
+import { HostDialogsContextProvider } from '../hosts/HostDialogsContext';
 
 type MatchParams = {
   clusterId: string;
@@ -70,8 +71,6 @@ const useClusterPolling = (clusterId: string) => {
 const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
   const { clusterId } = match.params;
   const { data: cluster, uiState, errorDetail } = useSelector(selectCurrentClusterState);
-  const [cancelInstallationModalOpen, setCancelInstallationModalOpen] = React.useState(false);
-  const [resetClusterModalOpen, setResetClusterModalOpen] = React.useState(false);
   const fetchCluster = useFetchCluster(clusterId);
   useClusterPolling(clusterId);
 
@@ -115,11 +114,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
             </TextContent>
           </PageSection>
           <PageSection variant={PageSectionVariants.light} isFilled>
-            <ClusterDetail
-              cluster={cluster}
-              setCancelInstallationModalOpen={setCancelInstallationModalOpen}
-              setResetClusterModalOpen={setResetClusterModalOpen}
-            />
+            <ClusterDetail cluster={cluster} />
           </PageSection>
         </>
       );
@@ -196,19 +191,13 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
   if (cluster) {
     return (
       <AlertsContextProvider>
-        <ClusterDefaultConfigurationProvider loadingUI={loadingUI} errorUI={errorUI}>
-          {getContent(cluster)}
-          <CancelInstallationModal
-            isOpen={cancelInstallationModalOpen}
-            onClose={() => setCancelInstallationModalOpen(false)}
-            clusterId={cluster.id}
-          />
-          <ResetClusterModal
-            isOpen={resetClusterModalOpen}
-            onClose={() => setResetClusterModalOpen(false)}
-            cluster={cluster}
-          />
-        </ClusterDefaultConfigurationProvider>
+        <HostDialogsContextProvider>
+          <ClusterDefaultConfigurationProvider loadingUI={loadingUI} errorUI={errorUI}>
+            {getContent(cluster)}
+            <CancelInstallationModal />
+            <ResetClusterModal />
+          </ClusterDefaultConfigurationProvider>
+        </HostDialogsContextProvider>
       </AlertsContextProvider>
     );
   }

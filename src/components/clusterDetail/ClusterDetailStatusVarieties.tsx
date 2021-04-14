@@ -69,9 +69,8 @@ export const useClusterStatusVarieties = (cluster: Cluster): ClusterStatusVariet
 
 const ClusterDetailStatusVarieties: React.FC<{
   cluster: Cluster;
-  setResetClusterModalOpen: (isOpen: boolean) => void;
   clusterVarieties: ClusterStatusVarieties;
-}> = ({ cluster, setResetClusterModalOpen, clusterVarieties }) => {
+}> = ({ cluster, clusterVarieties }) => {
   const {
     credentials,
     credentialsError,
@@ -93,18 +92,9 @@ const ClusterDetailStatusVarieties: React.FC<{
           <FailedOperatorsWarning failedOperators={failedOlmOperators} />
         </GridItem>
       )}
-      {cluster.status === 'error' && (
-        <ClusterInstallationError
-          cluster={cluster}
-          setResetClusterModalOpen={setResetClusterModalOpen}
-        />
-      )}
+      {cluster.status === 'error' && <ClusterInstallationError cluster={cluster} />}
       {cluster.status === 'cancelled' && (
-        <ClusterInstallationError
-          title="Cluster installation was cancelled"
-          cluster={cluster}
-          setResetClusterModalOpen={setResetClusterModalOpen}
-        />
+        <ClusterInstallationError title="Cluster installation was cancelled" cluster={cluster} />
       )}
       {showClusterCredentials && (
         <ClusterCredentials
