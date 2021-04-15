@@ -158,7 +158,7 @@ export const HOST_VALIDATION_LABELS: { [key in HostValidationId]: string } = {
   'container-images-available': 'Container images availability',
   'lso-requirements-satisfied': 'LSO requirements',
   'ocs-requirements-satisfied': 'OCS requirements',
-  'sufficient-installation-disk-speed': 'Installation disk speed',
+  'sufficient-or-unknown-installation-disk-speed': 'Installation disk speed',
   'cnv-requirements-satisfied': 'CNV requirements',
 };
 
@@ -181,7 +181,7 @@ export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string 
   'container-images-available': '',
   'lso-requirements-satisfied': '',
   'ocs-requirements-satisfied': '',
-  'sufficient-installation-disk-speed': '',
+  'sufficient-or-unknown-installation-disk-speed': '',
   'cnv-requirements-satisfied': '',
 };
 
