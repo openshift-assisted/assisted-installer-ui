@@ -26,7 +26,7 @@ import { ClusterDefaultConfigurationProvider } from '../clusterConfiguration/Clu
 import ClusterBreadcrumbs from './ClusterBreadcrumbs';
 import { EventsModalButton } from '../ui/eventsModal';
 import ClusterWizard from '../clusterWizard/ClusterWizard';
-import { HostDialogsContextProvider } from '../hosts/HostDialogsContext';
+import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
 import { useClusterPolling, useFetchCluster } from './clusterPolling';
 
 type MatchParams = {
@@ -156,13 +156,13 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
   if (cluster) {
     return (
       <AlertsContextProvider>
-        <HostDialogsContextProvider>
+        <ModalDialogsContextProvider>
           <ClusterDefaultConfigurationProvider loadingUI={loadingUI} errorUI={errorUI}>
             {getContent(cluster)}
             <CancelInstallationModal />
             <ResetClusterModal />
           </ClusterDefaultConfigurationProvider>
-        </HostDialogsContextProvider>
+        </ModalDialogsContextProvider>
       </AlertsContextProvider>
     );
   }

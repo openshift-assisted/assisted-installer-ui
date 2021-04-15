@@ -23,7 +23,7 @@ type CancelInstallationProps = {
   clusterId: Cluster['id'];
 };
 
-type DialogsDataTypes = {
+type ModalDialogsDataTypes = {
   eventsDialog: HostIdAndHostname;
   editHostDialog: EditHostProps;
   deleteHostDialog: HostIdAndHostname;
@@ -42,12 +42,12 @@ type DialogId =
   | 'resetClusterDialog'
   | 'cancelInstallationDialog';
 
-export type HostDialogsContextType = {
+export type ModalDialogsContextType = {
   [key in DialogId]: {
     isOpen: boolean;
-    open: (data: DialogsDataTypes[key]) => void;
+    open: (data: ModalDialogsDataTypes[key]) => void;
     close: () => void;
-    data?: DialogsDataTypes[key];
+    data?: ModalDialogsDataTypes[key];
   };
 };
 
@@ -61,9 +61,9 @@ const dialogIds: DialogId[] = [
   'cancelInstallationDialog',
 ];
 
-const HostDialogsContext = React.createContext<HostDialogsContextType | undefined>(undefined);
+const ModalDialogsContext = React.createContext<ModalDialogsContextType | undefined>(undefined);
 
-const HostDialogsContextProvider: React.FC = ({ children }) => {
+const ModalDialogsContextProvider: React.FC = ({ children }) => {
   const [dialogsState, dispatchDialogsAction] = React.useReducer(dialogsReducer, {});
 
   function getOpenDialog<DataType>(dialogId: string) {
@@ -76,8 +76,8 @@ const HostDialogsContextProvider: React.FC = ({ children }) => {
   const context = dialogIds.reduce((context, dialogId) => {
     context[dialogId] = {
       isOpen: !!dialogsState[dialogId],
-      open: (data: DialogsDataTypes[typeof dialogId]) =>
-        getOpenDialog<DialogsDataTypes[typeof dialogId]>(dialogId)(data),
+      open: (data: ModalDialogsDataTypes[typeof dialogId]) =>
+        getOpenDialog<ModalDialogsDataTypes[typeof dialogId]>(dialogId)(data),
       close: () => getCloseDialog(dialogId)(),
       data: dialogsState[dialogId],
     };
@@ -85,18 +85,18 @@ const HostDialogsContextProvider: React.FC = ({ children }) => {
   }, {});
 
   return (
-    <HostDialogsContext.Provider value={context as HostDialogsContextType}>
+    <ModalDialogsContext.Provider value={context as ModalDialogsContextType}>
       {children}
-    </HostDialogsContext.Provider>
+    </ModalDialogsContext.Provider>
   );
 };
 
-const useHostDialogsContext = () => {
-  const context = React.useContext(HostDialogsContext);
+const useModalDialogsContext = () => {
+  const context = React.useContext(ModalDialogsContext);
   if (context === undefined) {
-    throw new Error('useHostDialogsContext must be used within a HostDialogsContextProvider');
+    throw new Error('useModalDialogsContext must be used within a ModalDialogsContextProvider');
   }
   return context;
 };
 
-export { HostDialogsContextProvider, useHostDialogsContext };
+export { ModalDialogsContextProvider, useModalDialogsContext };

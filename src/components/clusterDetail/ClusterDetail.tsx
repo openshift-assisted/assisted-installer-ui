@@ -17,7 +17,7 @@ import { ToolbarButton, ToolbarSecondaryGroup } from '../ui/Toolbar';
 import Alerts from '../ui/Alerts';
 import { downloadClusterInstallationLogs, getClusterDetailId } from './utils';
 import { AlertsContext } from '../AlertsContextProvider';
-import { canAbortInstallation, canDownloadClusterLogs } from '../hosts/utils';
+import { canDownloadClusterLogs } from '../hosts/utils';
 import ClusterProgress from './ClusterProgress';
 import { LaunchOpenshiftConsoleButton } from './ConsoleModal';
 import KubeconfigDownload from './KubeconfigDownload';
@@ -26,7 +26,8 @@ import { isSingleClusterMode, routeBasePath } from '../../config';
 import ClusterDetailStatusVarieties, {
   useClusterStatusVarieties,
 } from './ClusterDetailStatusVarieties';
-import { useHostDialogsContext } from '../hosts/HostDialogsContext';
+import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
+import { canAbortInstallation } from '../clusters/utils';
 
 type ClusterDetailProps = {
   cluster: Cluster;
@@ -34,7 +35,7 @@ type ClusterDetailProps = {
 
 const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
   const { addAlert } = React.useContext(AlertsContext);
-  const { resetClusterDialog, cancelInstallationDialog } = useHostDialogsContext();
+  const { resetClusterDialog, cancelInstallationDialog } = useModalDialogsContext();
   const clusterVarieties = useClusterStatusVarieties(cluster);
   const { credentials, credentialsError } = clusterVarieties;
 

@@ -1,12 +1,13 @@
 import { Flex, FlexItem, Button, ButtonVariant } from '@patternfly/react-core';
 import React from 'react';
 import { Cluster } from '../../api';
-import { canAbortInstallation, canDownloadClusterLogs } from '../hosts/utils';
+import { canDownloadClusterLogs } from '../hosts/utils';
 import { EventsModalButton } from '../ui/eventsModal';
 import KubeconfigDownload from './KubeconfigDownload';
 import { downloadClusterInstallationLogs } from './utils';
 import { AlertsContext } from '../AlertsContextProvider';
-import { useHostDialogsContext } from '../hosts/HostDialogsContext';
+import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
+import { canAbortInstallation } from '../clusters/utils';
 
 type ClusterDetailsButtonGroupProps = {
   cluster: Cluster;
@@ -16,7 +17,7 @@ const getID = (suffix: string) => `cluster-detail-${suffix}`;
 
 const ClusterDetailsButtonGroup: React.FC<ClusterDetailsButtonGroupProps> = ({ cluster }) => {
   const { addAlert } = React.useContext(AlertsContext);
-  const { cancelInstallationDialog } = useHostDialogsContext();
+  const { cancelInstallationDialog } = useModalDialogsContext();
 
   return (
     <Flex

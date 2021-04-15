@@ -13,7 +13,7 @@ import { AlertsContext } from '../AlertsContextProvider';
 import { canDownloadClusterLogs } from '../hosts/utils';
 import { getBugzillaLink } from '../../config';
 import { downloadClusterInstallationLogs } from './utils';
-import { useHostDialogsContext } from '../hosts/HostDialogsContext';
+import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
 
 type ClusterInstallationErrorProps = {
   cluster: Cluster;
@@ -27,7 +27,7 @@ const ClusterInstallationError: React.FC<ClusterInstallationErrorProps> = ({
   title = 'Cluster installation failed',
 }) => {
   const { addAlert } = React.useContext(AlertsContext);
-  const { resetClusterDialog } = useHostDialogsContext();
+  const { resetClusterDialog } = useModalDialogsContext();
 
   return (
     <GridItem>

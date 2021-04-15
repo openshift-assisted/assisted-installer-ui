@@ -13,13 +13,13 @@ import { getErrorMessage, handleApiError } from '../../api/utils';
 import ErrorState from '../ui/uiState/ErrorState';
 import LoadingState from '../ui/uiState/LoadingState';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
-import { useHostDialogsContext } from '../hosts/HostDialogsContext';
+import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
 
 const CancelInstallationModal: React.FC = () => {
   const dispatch = useDispatch();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [error, setError] = React.useState<{ title: string; message: string } | null>(null);
-  const { cancelInstallationDialog } = useHostDialogsContext();
+  const { cancelInstallationDialog } = useModalDialogsContext();
   const { data, isOpen, close: onClose } = cancelInstallationDialog;
   const clusterId = data?.clusterId;
 

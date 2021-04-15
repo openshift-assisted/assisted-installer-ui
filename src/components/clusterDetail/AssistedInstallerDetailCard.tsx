@@ -10,7 +10,7 @@ import { AlertsContextProvider } from '../AlertsContextProvider';
 import { useClusterPolling, useFetchCluster } from '../clusters/clusterPolling';
 import ClusterWizard from '../clusterWizard/ClusterWizard';
 import { ClusterDefaultConfigurationProvider } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
-import { HostDialogsContextProvider } from '../hosts/HostDialogsContext';
+import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
 import { ErrorState, LoadingState } from '../ui';
 import { FeatureGateContextProvider } from '../../features';
 import ClusterInstallationProgressCard from './ClusterInstallationProgressCard';
@@ -118,7 +118,7 @@ const AssistedInstallerDetailCard: React.FC<AssistedInstallerDetailCardProps> = 
       }
     >
       <AlertsContextProvider>
-        <HostDialogsContextProvider>
+        <ModalDialogsContextProvider>
           <ClusterDefaultConfigurationProvider
             loadingUI={<LoadingCard />}
             errorUI={<LoadingDefaultConfigFailedCard />}
@@ -127,7 +127,7 @@ const AssistedInstallerDetailCard: React.FC<AssistedInstallerDetailCardProps> = 
             <CancelInstallationModal />
             <ResetClusterModal />
           </ClusterDefaultConfigurationProvider>
-        </HostDialogsContextProvider>
+        </ModalDialogsContextProvider>
       </AlertsContextProvider>
     </FeatureGateContextProvider>
   );

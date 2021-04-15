@@ -16,13 +16,13 @@ import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens';
 import { calculateCollectedLogsCount } from '../clusters/utils';
-import { useHostDialogsContext } from '../hosts/HostDialogsContext';
+import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
 
 const ResetClusterModal: React.FC = () => {
   const dispatch = useDispatch();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [error, setError] = React.useState<{ title: string; message: string } | null>(null);
-  const { resetClusterDialog } = useHostDialogsContext();
+  const { resetClusterDialog } = useModalDialogsContext();
   const { data, isOpen, close: onClose } = resetClusterDialog;
   const cluster = data?.cluster;
 
