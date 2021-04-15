@@ -10,18 +10,12 @@ import {
   Split,
   SplitItem,
 } from '@patternfly/react-core';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { ErrorState, LoadingState } from '../ui/uiState';
 import { ResourceUIState } from '../../types';
 import { selectCurrentClusterState } from '../../selectors/currentCluster';
-import {
-  fetchClusterAsync,
-  cleanCluster,
-  forceReload,
-  cancelForceReload,
-} from '../../features/clusters/currentClusterSlice';
 import { Cluster } from '../../api/types';
-import { isSingleClusterMode, POLLING_INTERVAL, routeBasePath } from '../../config/constants';
+import { isSingleClusterMode, routeBasePath } from '../../config/constants';
 import ClusterDetail from '../clusterDetail/ClusterDetail';
 import CancelInstallationModal from '../clusterDetail/CancelInstallationModal';
 import ResetClusterModal from '../clusterDetail/ResetClusterModal';
@@ -33,39 +27,10 @@ import ClusterBreadcrumbs from './ClusterBreadcrumbs';
 import { EventsModalButton } from '../ui/eventsModal';
 import ClusterWizard from '../clusterWizard/ClusterWizard';
 import { HostDialogsContextProvider } from '../hosts/HostDialogsContext';
+import { useClusterPolling, useFetchCluster } from './clusterPolling';
 
 type MatchParams = {
   clusterId: string;
-};
-
-const useFetchCluster = (clusterId: string) => {
-  const dispatch = useDispatch();
-  return React.useCallback(() => dispatch(fetchClusterAsync(clusterId)), [clusterId, dispatch]);
-};
-
-const useClusterPolling = (clusterId: string) => {
-  const { isReloadScheduled, uiState } = useSelector(selectCurrentClusterState);
-  const dispatch = useDispatch();
-  const fetchCluster = useFetchCluster(clusterId);
-
-  React.useEffect(() => {
-    if (isReloadScheduled) {
-      if (![ResourceUIState.LOADING, ResourceUIState.RELOADING].includes(uiState)) {
-        fetchCluster();
-      }
-    }
-    dispatch(cancelForceReload());
-  }, [fetchCluster, dispatch, isReloadScheduled, uiState]);
-
-  React.useEffect(() => {
-    fetchCluster();
-    const timer = setInterval(() => dispatch(forceReload()), POLLING_INTERVAL);
-    return () => {
-      clearInterval(timer);
-      dispatch(cancelForceReload());
-      dispatch(cleanCluster());
-    };
-  }, [dispatch, fetchCluster]);
 };
 
 const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
