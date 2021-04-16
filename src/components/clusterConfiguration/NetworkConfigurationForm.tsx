@@ -120,7 +120,7 @@ const NetworkConfigurationForm: React.FC<{
               </GridItem>
               <GridItem>
                 <TextContent>
-                  <Text component="h2">Bare metal inventory</Text>
+                  <Text component="h2">Host inventory</Text>
                 </TextContent>
                 <NetworkingHostsTable cluster={cluster} />
               </GridItem>
@@ -137,7 +137,7 @@ const NetworkConfigurationForm: React.FC<{
             isSubmitting={isSubmitting}
             isNextDisabled={dirty || !canNextNetwork({ cluster })}
             onNext={() => setCurrentStepId('review')}
-            onBack={() => setCurrentStepId('baremetal-discovery')}
+            onBack={() => setCurrentStepId('host-discovery')}
           />
         );
         return (

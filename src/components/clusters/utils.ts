@@ -43,3 +43,13 @@ export const getOlmOperatorCreateParamsByName = (monitoredOperators: MonitoredOp
     },
     {},
   );
+
+export const canAbortInstallation = (cluster: Cluster) => {
+  const allowedClusterStates: Cluster['status'][] = [
+    'preparing-for-installation',
+    'installing',
+    'installing-pending-user-action',
+    'finalizing',
+  ];
+  return allowedClusterStates.includes(cluster.status);
+};
