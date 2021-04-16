@@ -1,8 +1,4 @@
-import {
-  BareMetalDiscoveryValues,
-  HostSubnets,
-  NetworkConfigurationValues,
-} from '../../types/clusters';
+import { HostDiscoveryValues, HostSubnets, NetworkConfigurationValues } from '../../types/clusters';
 import { Cluster, ClusterDefaultConfig, Inventory } from '../../api/types';
 import { stringToJSON } from '../../api/utils';
 import { Address4, Address6 } from 'ip-address';
@@ -65,7 +61,7 @@ export const isAdvConf = (cluster: Cluster, defaultNetworkSettings: ClusterDefau
   cluster.clusterNetworkHostPrefix !== defaultNetworkSettings.clusterNetworkHostPrefix ||
   cluster.serviceNetworkCidr !== defaultNetworkSettings.serviceNetworkCidr;
 
-export const getBareMetalDiscoveryInitialValues = (cluster: Cluster): BareMetalDiscoveryValues => {
+export const getHostDiscoveryInitialValues = (cluster: Cluster): HostDiscoveryValues => {
   const monitoredOperators = cluster.monitoredOperators || [];
   return {
     useExtraDisksForLocalStorage: !!monitoredOperators.find((operator) => operator.name === 'ocs'),

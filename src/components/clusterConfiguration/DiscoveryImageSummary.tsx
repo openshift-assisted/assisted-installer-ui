@@ -81,14 +81,14 @@ const DiscoveryImageSummary: React.FC<DiscoveryImageSummaryProps> = ({
         <Button
           variant={ButtonVariant.primary}
           onClick={() => saveAs(downloadUrl)}
-          data-test-id="download-iso-btn"
+          data-testid="download-iso-btn"
         >
           Download Discovery ISO
         </Button>
-        <Button variant={ButtonVariant.secondary} onClick={onClose} data-test-id="close-iso-btn">
+        <Button variant={ButtonVariant.secondary} onClick={onClose} data-testid="close-iso-btn">
           Close
         </Button>
-        <Button variant={ButtonVariant.link} onClick={onReset} data-test-id="edit-iso-btn">
+        <Button variant={ButtonVariant.link} onClick={onReset} data-testid="edit-iso-btn">
           Edit ISO Configuration
         </Button>
       </ModalBoxFooter>

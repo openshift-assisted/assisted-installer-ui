@@ -27,6 +27,7 @@ export const useOpenshiftVersions = (): useOpenshiftVersionsType => {
           .map((key) => ({
             label: `OpenShift ${data[key].displayName || key}`,
             value: key,
+            default: !!data[key].default,
             supportLevel: data[key].supportLevel,
           }));
 

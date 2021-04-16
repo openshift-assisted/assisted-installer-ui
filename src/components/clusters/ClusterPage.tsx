@@ -10,68 +10,32 @@ import {
   Split,
   SplitItem,
 } from '@patternfly/react-core';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { ErrorState, LoadingState } from '../ui/uiState';
 import { ResourceUIState } from '../../types';
 import { selectCurrentClusterState } from '../../selectors/currentCluster';
-import {
-  fetchClusterAsync,
-  cleanCluster,
-  forceReload,
-  cancelForceReload,
-} from '../../features/clusters/currentClusterSlice';
 import { Cluster } from '../../api/types';
-import { isSingleClusterMode, POLLING_INTERVAL, routeBasePath } from '../../config/constants';
+import { isSingleClusterMode, routeBasePath } from '../../config/constants';
 import ClusterDetail from '../clusterDetail/ClusterDetail';
 import CancelInstallationModal from '../clusterDetail/CancelInstallationModal';
 import ResetClusterModal from '../clusterDetail/ResetClusterModal';
 import { AlertsContextProvider } from '../AlertsContextProvider';
-import { AddBareMetalHosts } from '../AddBareMetalHosts';
-import { AddBareMetalHostsContextProvider } from '../AddBareMetalHosts/AddBareMetalHostsContext';
+import { AddHosts } from '../AddHosts';
+import { AddHostsContextProvider } from '../AddHosts/AddHostsContext';
 import { ClusterDefaultConfigurationProvider } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
 import ClusterBreadcrumbs from './ClusterBreadcrumbs';
 import { EventsModalButton } from '../ui/eventsModal';
 import ClusterWizard from '../clusterWizard/ClusterWizard';
+import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
+import { useClusterPolling, useFetchCluster } from './clusterPolling';
 
 type MatchParams = {
   clusterId: string;
 };
 
-const useFetchCluster = (clusterId: string) => {
-  const dispatch = useDispatch();
-  return React.useCallback(() => dispatch(fetchClusterAsync(clusterId)), [clusterId, dispatch]);
-};
-
-const useClusterPolling = (clusterId: string) => {
-  const { isReloadScheduled, uiState } = useSelector(selectCurrentClusterState);
-  const dispatch = useDispatch();
-  const fetchCluster = useFetchCluster(clusterId);
-
-  React.useEffect(() => {
-    if (isReloadScheduled) {
-      if (![ResourceUIState.LOADING, ResourceUIState.RELOADING].includes(uiState)) {
-        fetchCluster();
-      }
-    }
-    dispatch(cancelForceReload());
-  }, [fetchCluster, dispatch, isReloadScheduled, uiState]);
-
-  React.useEffect(() => {
-    fetchCluster();
-    const timer = setInterval(() => dispatch(forceReload()), POLLING_INTERVAL);
-    return () => {
-      clearInterval(timer);
-      dispatch(cancelForceReload());
-      dispatch(cleanCluster());
-    };
-  }, [dispatch, fetchCluster]);
-};
-
 const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
   const { clusterId } = match.params;
   const { data: cluster, uiState, errorDetail } = useSelector(selectCurrentClusterState);
-  const [cancelInstallationModalOpen, setCancelInstallationModalOpen] = React.useState(false);
-  const [resetClusterModalOpen, setResetClusterModalOpen] = React.useState(false);
   const fetchCluster = useFetchCluster(clusterId);
   useClusterPolling(clusterId);
 
@@ -91,9 +55,9 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
   const getContent = (cluster: Cluster) => {
     if (cluster.status === 'adding-hosts') {
       return (
-        <AddBareMetalHostsContextProvider cluster={cluster}>
-          <AddBareMetalHosts />
-        </AddBareMetalHostsContextProvider>
+        <AddHostsContextProvider cluster={cluster}>
+          <AddHosts />
+        </AddHostsContextProvider>
       );
     } else if (
       [
@@ -115,11 +79,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
             </TextContent>
           </PageSection>
           <PageSection variant={PageSectionVariants.light} isFilled>
-            <ClusterDetail
-              cluster={cluster}
-              setCancelInstallationModalOpen={setCancelInstallationModalOpen}
-              setResetClusterModalOpen={setResetClusterModalOpen}
-            />
+            <ClusterDetail cluster={cluster} />
           </PageSection>
         </>
       );
@@ -131,9 +91,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
             <Split>
               <SplitItem>
                 <TextContent>
-                  <Text component="h1">
-                    Install OpenShift on Bare Metal with the Assisted Installer
-                  </Text>
+                  <Text component="h1">Install OpenShift with the Assisted Installer</Text>
                 </TextContent>
               </SplitItem>
               <SplitItem isFilled />
@@ -196,19 +154,13 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
   if (cluster) {
     return (
       <AlertsContextProvider>
-        <ClusterDefaultConfigurationProvider loadingUI={loadingUI} errorUI={errorUI}>
-          {getContent(cluster)}
-          <CancelInstallationModal
-            isOpen={cancelInstallationModalOpen}
-            onClose={() => setCancelInstallationModalOpen(false)}
-            clusterId={cluster.id}
-          />
-          <ResetClusterModal
-            isOpen={resetClusterModalOpen}
-            onClose={() => setResetClusterModalOpen(false)}
-            cluster={cluster}
-          />
-        </ClusterDefaultConfigurationProvider>
+        <ModalDialogsContextProvider>
+          <ClusterDefaultConfigurationProvider loadingUI={loadingUI} errorUI={errorUI}>
+            {getContent(cluster)}
+            <CancelInstallationModal />
+            <ResetClusterModal />
+          </ClusterDefaultConfigurationProvider>
+        </ModalDialogsContextProvider>
       </AlertsContextProvider>
     );
   }

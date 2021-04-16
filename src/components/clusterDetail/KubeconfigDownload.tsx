@@ -51,6 +51,7 @@ const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({ clusterId, stat
         onClick={() => download(clusterId, status)}
         isDisabled={!canDownloadKubeconfig(status)}
         id={id}
+        data-testid={id}
       >
         Download kubeconfig
       </Button>
