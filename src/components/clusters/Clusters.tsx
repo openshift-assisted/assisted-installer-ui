@@ -74,8 +74,8 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
         <PageSection variant={PageSectionVariants.light} isMain>
           <EmptyState
             icon={AddCircleOIcon}
-            title="Create new bare metal cluster"
-            content="There are no clusters yet. This wizard is going to guide you through the OpenShift bare metal cluster deployment."
+            title="Create new assisted cluster"
+            content="There are no clusters yet. This wizard is going to guide you through the OpenShift cluster deployment."
             primaryAction={
               <Button
                 variant={ButtonVariant.primary}
@@ -95,7 +95,7 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
           <ClusterBreadcrumbs />
           <PageSection variant={PageSectionVariants.light}>
             <TextContent>
-              <Text component="h1">Assisted Bare Metal Clusters</Text>
+              <Text component="h1">Assisted Clusters</Text>
             </TextContent>
           </PageSection>
           <PageSection variant={PageSectionVariants.light} isMain>

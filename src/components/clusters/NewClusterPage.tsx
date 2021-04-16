@@ -45,7 +45,7 @@ const NewClusterPage: React.FC = () => {
         <ClusterBreadcrumbs clusterName="New cluster" />
         <PageSection variant={PageSectionVariants.light}>
           <TextContent>
-            <Text component="h1">Install OpenShift on Bare Metal with the Assisted Installer</Text>
+            <Text component="h1">Install OpenShift with the Assisted Installer</Text>
           </TextContent>
         </PageSection>
         <PageSection variant={PageSectionVariants.light} isFilled>

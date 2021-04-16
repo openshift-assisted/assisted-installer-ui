@@ -20,8 +20,8 @@ import ClusterDetail from '../clusterDetail/ClusterDetail';
 import CancelInstallationModal from '../clusterDetail/CancelInstallationModal';
 import ResetClusterModal from '../clusterDetail/ResetClusterModal';
 import { AlertsContextProvider } from '../AlertsContextProvider';
-import { AddBareMetalHosts } from '../AddBareMetalHosts';
-import { AddBareMetalHostsContextProvider } from '../AddBareMetalHosts/AddBareMetalHostsContext';
+import { AddHosts } from '../AddHosts';
+import { AddHostsContextProvider } from '../AddHosts/AddHostsContext';
 import { ClusterDefaultConfigurationProvider } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
 import ClusterBreadcrumbs from './ClusterBreadcrumbs';
 import { EventsModalButton } from '../ui/eventsModal';
@@ -55,9 +55,9 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
   const getContent = (cluster: Cluster) => {
     if (cluster.status === 'adding-hosts') {
       return (
-        <AddBareMetalHostsContextProvider cluster={cluster}>
-          <AddBareMetalHosts />
-        </AddBareMetalHostsContextProvider>
+        <AddHostsContextProvider cluster={cluster}>
+          <AddHosts />
+        </AddHostsContextProvider>
       );
     } else if (
       [
@@ -91,9 +91,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
             <Split>
               <SplitItem>
                 <TextContent>
-                  <Text component="h1">
-                    Install OpenShift on Bare Metal with the Assisted Installer
-                  </Text>
+                  <Text component="h1">Install OpenShift with the Assisted Installer</Text>
                 </TextContent>
               </SplitItem>
               <SplitItem isFilled />
