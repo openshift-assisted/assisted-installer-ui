@@ -50,10 +50,7 @@ type ClusterDetailsValues = {
 };
 
 const getDefaultOpenShiftVersion = (versions: OpenshiftVersionOptionType[]) =>
-  // TODO(jtomasek): one of the available versions should be flagged as a default
-  // from the server so we don't have to hardcode here
-  // https://issues.redhat.com/browse/MGMT-4363
-  versions.find((v) => v.value === '4.7')?.value || versions[0]?.value || '';
+  versions.find((v) => v.default)?.value || versions[0]?.value || '';
 
 const getInitialValues = (props: ClusterDetailsFormProps): ClusterDetailsValues => {
   const { cluster, pullSecret, managedDomains, versions } = props;
@@ -126,7 +123,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
       const { data } = await patchCluster(clusterId, params);
       dispatch(updateCluster(data));
 
-      canNextClusterDetails({ cluster: data }) && setCurrentStepId('baremetal-discovery');
+      canNextClusterDetails({ cluster: data }) && setCurrentStepId('host-discovery');
     } catch (e) {
       handleApiError<ClusterUpdateParams>(e, () =>
         addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),
@@ -140,6 +137,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
     try {
       const { data } = await postCluster(params);
       const locationState: ClusterWizardFlowStateType = { wizardFlow: 'new' };
+      // TODO(mlibra): figure out subscription ID and navigate to ${routeBasePath}/../details/s/${subscriptionId} instead
       history.push(`${routeBasePath}/clusters/${data.id}`, locationState);
     } catch (e) {
       handleApiError<ClusterCreateParams>(e, () =>

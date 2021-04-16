@@ -16,7 +16,7 @@ const ResetHostModal: React.FC<ResetHostModalProps> = ({ isOpen, hostname, onClo
     variant={ModalVariant.small}
     actions={[
       <Button
-        data-test-id="reset-host-submit"
+        data-testid="reset-host-submit"
         key="confirm"
         variant={ButtonVariant.danger}
         onClick={onReset}

@@ -21,7 +21,7 @@ const DeleteHostModal: React.FC<DeleteHostModalProps> = ({
     variant={ModalVariant.small}
     actions={[
       <Button
-        data-test-id="delete-host-submit"
+        data-testid="delete-host-submit"
         key="confirm"
         variant={ButtonVariant.danger}
         onClick={onDelete}

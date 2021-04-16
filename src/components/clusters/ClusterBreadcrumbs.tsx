@@ -21,10 +21,10 @@ const ClusterBreadcrumbs: React.FC<Props> = ({ clusterName, isHidden = isSingleC
           </BreadcrumbItem>
           {clusterName ? (
             <BreadcrumbItem>
-              <Link to={`${routeBasePath}/clusters`}>Assisted Bare Metal Clusters</Link>
+              <Link to={`${routeBasePath}/clusters`}>Assisted Clusters</Link>
             </BreadcrumbItem>
           ) : (
-            <BreadcrumbItem isActive>Assisted Bare Metal Clusters</BreadcrumbItem>
+            <BreadcrumbItem isActive>Assisted Clusters</BreadcrumbItem>
           )}
           {clusterName && <BreadcrumbItem isActive>{clusterName}</BreadcrumbItem>}
         </Breadcrumb>

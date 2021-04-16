@@ -8,7 +8,6 @@ import {
   ClusterValidationId,
 } from '../api/types';
 import { ValidationsInfo, HostRole } from '../types/hosts';
-import { OpenshiftVersionOptionType } from '../types/versions';
 
 export let routeBasePath = '';
 export const setRouteBasePath = (basePath: string) => {
@@ -17,15 +16,9 @@ export const setRouteBasePath = (basePath: string) => {
 
 export const CLUSTER_MANAGER_SITE_LINK = 'https://cloud.redhat.com/openshift/install/pull-secret';
 export const PULL_SECRET_INFO_LINK = CLUSTER_MANAGER_SITE_LINK;
+export const OCM_CLUSTER_LIST_LINK = '/openshift'; // TODO(mlibra): Tweak it!!!
 
-// Used as a default before effective values are retrieved from the API
-export const DEFAULT_OPENSHIFT_VERSION: OpenshiftVersionOptionType = {
-  label: 'OpenShift 4.6',
-  value: '4.6',
-  supportLevel: 'production',
-};
-
-export const getBugzillaLink = (version: string = DEFAULT_OPENSHIFT_VERSION.value) =>
+export const getBugzillaLink = (version = '') =>
   `https://bugzilla.redhat.com/enter_bug.cgi?product=OpenShift%20Container%20Platform&Component=OpenShift%20Container%20Platform&component=assisted-installer&version=${version}`;
 
 export const FEEDBACK_FORM_LINK =
@@ -158,7 +151,7 @@ export const HOST_VALIDATION_LABELS: { [key in HostValidationId]: string } = {
   'container-images-available': 'Container images availability',
   'lso-requirements-satisfied': 'LSO requirements',
   'ocs-requirements-satisfied': 'OCS requirements',
-  'sufficient-installation-disk-speed': 'Installation disk speed',
+  'sufficient-or-unknown-installation-disk-speed': 'Installation disk speed',
   'cnv-requirements-satisfied': 'CNV requirements',
 };
 
@@ -181,7 +174,7 @@ export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string 
   'container-images-available': '',
   'lso-requirements-satisfied': '',
   'ocs-requirements-satisfied': '',
-  'sufficient-installation-disk-speed': '',
+  'sufficient-or-unknown-installation-disk-speed': '',
   'cnv-requirements-satisfied': '',
 };
 
