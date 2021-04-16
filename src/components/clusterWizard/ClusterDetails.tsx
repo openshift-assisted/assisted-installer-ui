@@ -126,7 +126,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
       const { data } = await patchCluster(clusterId, params);
       dispatch(updateCluster(data));
 
-      canNextClusterDetails({ cluster: data }) && setCurrentStepId('baremetal-discovery');
+      canNextClusterDetails({ cluster: data }) && setCurrentStepId('host-discovery');
     } catch (e) {
       handleApiError<ClusterUpdateParams>(e, () =>
         addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),
@@ -140,6 +140,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
     try {
       const { data } = await postCluster(params);
       const locationState: ClusterWizardFlowStateType = { wizardFlow: 'new' };
+      // TODO(mlibra): figure out subscription ID and navigate to ${routeBasePath}/../details/s/${subscriptionId} instead
       history.push(`${routeBasePath}/clusters/${data.id}`, locationState);
     } catch (e) {
       handleApiError<ClusterCreateParams>(e, () =>

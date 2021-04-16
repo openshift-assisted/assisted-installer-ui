@@ -16,11 +16,11 @@ import { hasKnownHost } from '../hosts/utils';
 import { ToolbarButton, ToolbarSecondaryGroup } from '../ui';
 import Alerts from '../ui/Alerts';
 import { EventsModalButton } from '../ui/eventsModal';
-import { AddBareMetalHostsContext } from './AddBareMetalHostsContext';
-import BaremetalInventoryAddHosts from './BareMetalInventoryAddHost';
+import { AddHostsContext } from './AddHostsContext';
+import InventoryAddHosts from './InventoryAddHost';
 
-const AddBareMetalHosts: React.FC = () => {
-  const { cluster } = React.useContext(AddBareMetalHostsContext);
+const AddHosts: React.FC = () => {
+  const { cluster } = React.useContext(AddHostsContext);
   const dispatch = useDispatch();
 
   if (!cluster) {
@@ -45,11 +45,11 @@ const AddBareMetalHosts: React.FC = () => {
     <Card>
       <CardTitle>
         <Title headingLevel="h2" size="lg" className="card-title">
-          Bare Metal Discovery
+          Host Discovery
         </Title>
       </CardTitle>
       <CardBody>
-        <BaremetalInventoryAddHosts />
+        <InventoryAddHosts />
         <Alerts />
         <Toolbar id="cluster-toolbar">
           <ToolbarContent>
@@ -80,4 +80,4 @@ const AddBareMetalHosts: React.FC = () => {
   );
 };
 
-export default AddBareMetalHosts;
+export default AddHosts;

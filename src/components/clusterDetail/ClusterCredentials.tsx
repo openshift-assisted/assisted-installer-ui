@@ -39,7 +39,7 @@ const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
                 iconPosition="right"
                 isInline
                 onClick={() => window.open(credentials.consoleUrl, '_blank', 'noopener')}
-                id={`${idPrefix}-link-console-url`}
+                data-testid={`${idPrefix}-link-console-url`}
               >
                 {credentials.consoleUrl}
               </Button>
@@ -68,11 +68,7 @@ const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
     );
   }
 
-  return (
-    <GridItem span={12} lg={10} xl={6}>
-      {credentialsBody}
-    </GridItem>
-  );
+  return <GridItem span={12}>{credentialsBody}</GridItem>;
 };
 
 export default ClusterCredentials;

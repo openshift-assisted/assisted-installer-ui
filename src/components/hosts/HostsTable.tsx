@@ -66,8 +66,8 @@ import EditHostModal from './EditHostModal';
 import Hostname from './Hostname';
 import HostsCount from './HostsCount';
 import HostPropertyValidationPopover from './HostPropertyValidationPopover';
-import { HostDialogsContextProvider, useHostDialogsContext } from './HostDialogsContext';
 import { AdditionalNTPSourcesDialog } from './AdditionalNTPSourcesDialog';
+import { useModalDialogsContext } from './ModalDialogsContext';
 
 import './HostsTable.css';
 
@@ -242,7 +242,7 @@ const HostsTable: React.FC<HostsTableProps> = ({
     deleteHostDialog,
     resetHostDialog,
     additionalNTPSourcesDialog,
-  } = useHostDialogsContext();
+  } = useModalDialogsContext();
 
   const [openRows, setOpenRows] = React.useState({} as OpenRows);
   const [sortBy, setSortBy] = React.useState({
@@ -546,10 +546,4 @@ const HostsTable: React.FC<HostsTableProps> = ({
   );
 };
 
-const Wrapper: React.FC<HostsTableProps> = (props) => (
-  <HostDialogsContextProvider>
-    <HostsTable {...props} />
-  </HostDialogsContextProvider>
-);
-
-export default Wrapper;
+export default HostsTable;

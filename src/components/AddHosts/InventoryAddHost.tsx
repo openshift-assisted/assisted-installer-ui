@@ -6,7 +6,7 @@ import { DiscoveryImageModalButton } from '../clusterConfiguration/discoveryImag
 import { DiscoveryTroubleshootingModal } from '../clusterConfiguration/DiscoveryTroubleshootingModal';
 import InformationAndAlerts from '../clusterConfiguration/InformationAndAlerts';
 import DiscoveryInstructions from '../clusterConfiguration/DiscoveryInstructions';
-import { AddBareMetalHostsContext } from './AddBareMetalHostsContext';
+import { AddHostsContext } from './AddHostsContext';
 
 const HostRequirementsContent = ({ worker = {} }: { worker?: HostRequirementsType['worker'] }) => (
   <Text component="p">
@@ -15,8 +15,8 @@ const HostRequirementsContent = ({ worker = {} }: { worker?: HostRequirementsTyp
   </Text>
 );
 
-const BaremetalInventoryAddHosts: React.FC = () => {
-  const { cluster } = React.useContext(AddBareMetalHostsContext);
+const InventoryAddHosts: React.FC = () => {
+  const { cluster } = React.useContext(AddHostsContext);
   const [isDiscoveryHintModalOpen, setDiscoveryHintModalOpen] = React.useState(false);
 
   if (!cluster) {
@@ -49,4 +49,4 @@ const BaremetalInventoryAddHosts: React.FC = () => {
   );
 };
 
-export default BaremetalInventoryAddHosts;
+export default InventoryAddHosts;
