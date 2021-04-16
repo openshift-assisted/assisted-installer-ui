@@ -53,8 +53,8 @@ const clusterToClusterTableRow = (cluster: Cluster): IRow => {
         sortableValue: openshiftVersion,
       },
       {
-        title: <ClusterStatus cluster={cluster} testId={`cluster-status-${name}`} />,
-        sortableValue: getClusterStatusText(cluster),
+        title: <ClusterStatus status={cluster.status} testId={`cluster-status-${name}`} />,
+        sortableValue: getClusterStatusText(cluster.status),
       } as HumanizedSortable,
       {
         title: <HostsCount hosts={hosts} testId={`cluster-hosts-count-${name}`} />,
