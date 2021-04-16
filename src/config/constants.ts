@@ -17,6 +17,7 @@ export const setRouteBasePath = (basePath: string) => {
 
 export const CLUSTER_MANAGER_SITE_LINK = 'https://cloud.redhat.com/openshift/install/pull-secret';
 export const PULL_SECRET_INFO_LINK = CLUSTER_MANAGER_SITE_LINK;
+export const OCM_CLUSTER_LIST_LINK = '/openshift'; // TODO(mlibra): Tweak it!!!
 
 // Used as a default before effective values are retrieved from the API
 export const DEFAULT_OPENSHIFT_VERSION: OpenshiftVersionOptionType = {

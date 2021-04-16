@@ -140,6 +140,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
     try {
       const { data } = await postCluster(params);
       const locationState: ClusterWizardFlowStateType = { wizardFlow: 'new' };
+      // TODO(mlibra): figure out subscription ID and navigate to ${routeBasePath}/../details/s/${subscriptionId} instead
       history.push(`${routeBasePath}/clusters/${data.id}`, locationState);
     } catch (e) {
       handleApiError<ClusterCreateParams>(e, () =>
