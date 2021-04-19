@@ -43,10 +43,11 @@ export const DetailList: React.FC<DetailListProps> = ({
   </TextContent>
 );
 
-export const DetailItem: React.FC<DetailItemProps> = ({
+export const DetailItem: React.FC<DetailItemProps & WithTestID> = ({
   title,
   value = '',
   idPrefix,
+  testId,
   isHidden = false,
   classNameValue,
 }) =>
@@ -55,21 +56,31 @@ export const DetailItem: React.FC<DetailItemProps> = ({
       <TextListItem
         component={TextListItemVariants.dt}
         id={idPrefix ? `${idPrefix}-title` : undefined}
+        data-testid={testId ? `${testId}-title` : undefined}
       >
         {title}
       </TextListItem>
       <TextListItem
         component={TextListItemVariants.dd}
         id={idPrefix ? `${idPrefix}-value` : undefined}
+        data-testid={testId ? `${testId}-value` : undefined}
         className={classNameValue}
       >
         {Array.isArray(value) ? (
           <TextList component={TextListVariants.dl}>
-            {value.map((item) => [
-              <TextListItem key={item.title} component={TextListItemVariants.dt}>
+            {value.map((item, idx) => [
+              <TextListItem
+                data-testid={testId ? `${testId}-title-${idx}` : undefined}
+                key={item.title}
+                component={TextListItemVariants.dt}
+              >
                 {item.title}
               </TextListItem>,
-              <TextListItem key={`dd-${item.title}`} component={TextListItemVariants.dd}>
+              <TextListItem
+                data-testid={testId ? `${testId}-value-${idx}` : undefined}
+                key={`dd-${item.title}`}
+                component={TextListItemVariants.dd}
+              >
                 {item.value}
               </TextListItem>,
             ])}

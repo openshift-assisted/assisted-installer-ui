@@ -1,6 +1,14 @@
 import React from 'react';
 import { TextContent, Text, TextVariants, Grid, GridItem } from '@patternfly/react-core';
-import { Table, TableHeader, TableBody, TableVariant } from '@patternfly/react-table';
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableVariant,
+  RowWrapperProps,
+  RowWrapper,
+  IRow,
+} from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
 import { Host, Inventory, Disk, Interface, Cluster } from '../../api/types';
 import { getHostRowHardwareInfo } from './hardwareInfo';
@@ -38,10 +46,12 @@ type NicsTableProps = {
   interfaces: Interface[];
 };
 
-const SectionTitle: React.FC<SectionTitleProps> = ({ title }) => (
+const SectionTitle: React.FC<SectionTitleProps & WithTestID> = ({ title, testId }) => (
   <GridItem>
     <TextContent>
-      <Text component={TextVariants.h3}>{title}</Text>
+      <Text data-testid={testId} component={TextVariants.h3}>
+        {title}
+      </Text>
     </TextContent>
   </GridItem>
 );
@@ -66,13 +76,26 @@ const diskColumns = [
 
 const diskRowKey = ({ rowData }: ExtraParamsType) => rowData?.key;
 
-const DisksTable: React.FC<DisksTableProps> = ({ cluster, host, disks, installationDiskPath }) => {
+const DisksTableRowWrapper = (props: RowWrapperProps) => (
+  <RowWrapper {...props} data-testid={`disk-row:${props.row?.key}`} />
+);
+
+const DisksTable: React.FC<DisksTableProps & WithTestID> = ({
+  cluster,
+  host,
+  disks,
+  installationDiskPath,
+  testId,
+}) => {
   const isEditable = canEditDisks(cluster.status, host.status);
-  const rows = disks
+  const rows: IRow[] = disks
     .sort((diskA, diskB) => diskA.name?.localeCompare(diskB.name || '') || 0)
     .map((disk) => ({
       cells: [
-        { title: disk.bootable ? `${disk.name} (bootable)` : disk.name },
+        {
+          title: disk.bootable ? `${disk.name} (bootable)` : disk.name,
+          props: { 'data-testid': 'disk-name' },
+        },
         {
           title: (
             <DiskRole
@@ -82,25 +105,28 @@ const DisksTable: React.FC<DisksTableProps> = ({ cluster, host, disks, installat
               isEditable={isEditable}
             />
           ),
+          props: { 'data-testid': 'disk-role' },
         },
-        { title: <DiskLimitations disk={disk} /> },
-        disk.driveType,
-        fileSize(disk.sizeBytes || 0, 2, 'si'),
-        disk.serial,
+        { title: <DiskLimitations disk={disk} />, props: { 'data-testid': 'disk-limitations' } },
+        { title: disk.driveType, props: { 'data-testid': 'drive-type' } },
+        { title: fileSize(disk.sizeBytes || 0, 2, 'si'), props: { 'data-testid': 'disk-size' } },
+        { title: disk.serial, props: { 'data-testid': 'disk-serial' } },
         // disk.vendor, TODO(mlibra): search HW database for humanized values
-        disk.model,
-        disk.wwn,
+        { title: disk.model, props: { 'data-testid': 'disk-model' } },
+        { title: disk.wwn, props: { 'data-testid': 'disk-wwn' } },
       ],
       key: disk.path,
     }));
 
   return (
     <Table
+      data-testid={testId}
       rows={rows}
       cells={diskColumns}
       variant={TableVariant.compact}
       aria-label="Host's disks table"
       borders={false}
+      rowWrapper={DisksTableRowWrapper}
     >
       <TableHeader />
       <TableBody rowKey={diskRowKey} />
@@ -120,26 +146,42 @@ const nicsColumns = [
 
 const nicsRowKey = ({ rowData }: ExtraParamsType) => rowData?.name?.title;
 
-const NicsTable: React.FC<NicsTableProps> = ({ interfaces }) => {
-  const rows = interfaces
+const NICsTableRowWrapper = (props: RowWrapperProps) => (
+  <RowWrapper {...props} data-testid={`nic-row:${props.row?.key}`} />
+);
+
+const NicsTable: React.FC<NicsTableProps & WithTestID> = ({ interfaces, testId }) => {
+  const rows: IRow[] = interfaces
     .sort((nicA, nicB) => nicA.name?.localeCompare(nicB.name || '') || 0)
     .map((nic) => ({
       cells: [
-        nic.name,
-        nic.macAddress,
-        (nic.ipv4Addresses || []).join(', '),
-        (nic.ipv6Addresses || []).join(', '),
-        `${nic.speedMbps && nic.speedMbps > 0 ? `${nic.speedMbps} Mbps` : 'N/A'}`,
+        { title: nic.name, props: { 'data-testid': 'nic-name' } },
+        { title: nic.macAddress, props: { 'data-testid': 'nic-mac' } },
+        {
+          title: (nic.ipv4Addresses || []).join(', '),
+          props: { 'data-testid': 'nic-ipv4' },
+        },
+        {
+          title: (nic.ipv6Addresses || []).join(', '),
+          props: { 'data-testid': 'nic-ipv6' },
+        },
+        {
+          title: nic.speedMbps && nic.speedMbps > 0 ? `${nic.speedMbps} Mbps` : 'N/A',
+          props: { 'data-testid': 'nic-speed' },
+        },
       ],
+      key: nic.name,
     }));
 
   return (
     <Table
+      data-testid={testId}
       rows={rows}
       cells={nicsColumns}
       variant={TableVariant.compact}
       aria-label="Host's network interfaces table"
       borders={false}
+      rowWrapper={NICsTableRowWrapper}
     >
       <TableHeader />
       <TableBody rowKey={nicsRowKey} />
@@ -168,35 +210,72 @@ export const HostDetail: React.FC<HostDetailProps> = ({
 
   return (
     <Grid hasGutter>
-      <SectionTitle title="Host Details" />
+      <SectionTitle testId={'host-details-section'} title="Host Details" />
       <SectionColumn>
-        <DetailItem title="UUID" value={id} />
-        <DetailItem title="Manufacturer" value={inventory.systemVendor?.manufacturer || DASH} />
-        <DetailItem title="Product" value={inventory.systemVendor?.productName || DASH} />
-        <DetailItem title="Serial number" value={rowInfo.serialNumber} />
+        <DetailItem testId={'uuid'} title="UUID" value={id} />
+        <DetailItem
+          testId={'manufacturer'}
+          title="Manufacturer"
+          value={inventory.systemVendor?.manufacturer || DASH}
+        />
+        <DetailItem
+          testId={'product'}
+          title="Product"
+          value={inventory.systemVendor?.productName || DASH}
+        />
+        <DetailItem testId={'serial-number'} title="Serial number" value={rowInfo.serialNumber} />
       </SectionColumn>
       <SectionColumn>
-        <DetailItem title="Memory capacity" value={rowInfo.memory.title} />
-        <DetailItem title="CPU model name" value={inventory.cpu?.modelName || DASH} />
-        <DetailItem title="CPU cores and clock speed" value={rowInfo.cpuSpeed} />
-        <DetailItem title="CPU architecture" value={inventory.cpu?.architecture || DASH} />
+        <DetailItem
+          testId={'memory-capacity'}
+          title="Memory capacity"
+          value={rowInfo.memory.title}
+        />
+        <DetailItem
+          testId={'cpu-model'}
+          title="CPU model name"
+          value={inventory.cpu?.modelName || DASH}
+        />
+        <DetailItem
+          testId={'cpu-cores-and-clock'}
+          title="CPU cores and clock speed"
+          value={rowInfo.cpuSpeed}
+        />
+        <DetailItem
+          testId={'cpu-arch'}
+          title="CPU architecture"
+          value={inventory.cpu?.architecture || DASH}
+        />
       </SectionColumn>
       <SectionColumn>
-        <DetailItem title="Hardware type" value={hardwareType} />
-        <DetailItem title="BMC address" value={bmcAddress} />
-        <DetailItem title="Boot mode" value={inventory.boot?.currentBootMode || DASH} />
+        <DetailItem testId={'hw-type'} title="Hardware type" value={hardwareType} />
+        <DetailItem testId={'bmc-address'} title="BMC address" value={bmcAddress} />
+        <DetailItem
+          testId={'boot-mode'}
+          title="Boot mode"
+          value={inventory.boot?.currentBootMode || DASH}
+        />
         {inventory.boot?.pxeInterface && (
-          <DetailItem title="PXE interface" value={inventory.boot?.pxeInterface} />
+          <DetailItem
+            testId={'pxe-interface'}
+            title="PXE interface"
+            value={inventory.boot?.pxeInterface}
+          />
         )}
         <DetailItem
+          testId={'ntp-status'}
           title="NTP status"
           value={<NtpValidationStatus validationsInfo={validationsInfo} />}
         />
       </SectionColumn>
 
-      <SectionTitle title={`${disks.length} Disk${disks.length === 1 ? '' : 's'}`} />
+      <SectionTitle
+        testId={'disks-section'}
+        title={`${disks.length} Disk${disks.length === 1 ? '' : 's'}`}
+      />
       <GridItem>
         <DisksTable
+          testId={'disks-table'}
           cluster={cluster}
           host={host}
           disks={disks}
@@ -204,9 +283,12 @@ export const HostDetail: React.FC<HostDetailProps> = ({
         />
       </GridItem>
 
-      <SectionTitle title={`${nics.length} NIC${nics.length === 1 ? '' : 's'}`} />
+      <SectionTitle
+        testId={'nics-section'}
+        title={`${nics.length} NIC${nics.length === 1 ? '' : 's'}`}
+      />
       <GridItem>
-        <NicsTable interfaces={nics} />
+        <NicsTable interfaces={nics} testId={'nics-table'} />
       </GridItem>
     </Grid>
   );

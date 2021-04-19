@@ -17,7 +17,6 @@ import { Cluster } from '../../api/types';
 import { CLUSTER_STATUS_LABELS } from '../../config/constants';
 
 type ClusterStatusProps = {
-  testId?: string;
   status: Cluster['status'];
 };
 
@@ -57,7 +56,7 @@ export const ClusterStatusIcon: React.FC<ClusterStatusIconProps> = ({ status, ..
 export const getClusterStatusText = (status: Cluster['status']) =>
   CLUSTER_STATUS_LABELS[status] || status;
 
-const ClusterStatus: React.FC<ClusterStatusProps> = ({ status, testId }) => {
+const ClusterStatus: React.FC<ClusterStatusProps & WithTestID> = ({ status, testId }) => {
   const title = getClusterStatusText(status);
 
   return (

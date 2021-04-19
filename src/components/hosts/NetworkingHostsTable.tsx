@@ -51,7 +51,7 @@ const getColumns = (hosts?: Host[]) => [
   { title: <HostsCount hosts={hosts} inParenthesis /> },
 ];
 
-const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host): IRow => {
+const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host): IRow[] => {
   const { id, status, inventory: inventoryString = '' } = host;
   const inventory = stringToJSON<Inventory>(inventoryString) || {};
   const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
@@ -69,48 +69,40 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
       isOpen: !!openRows[id],
       cells: [
         {
-          title: (
-            <Hostname testId={`host-name`} host={host} inventory={inventory} cluster={cluster} />
-          ),
+          title: <Hostname host={host} inventory={inventory} cluster={cluster} />,
+          props: { 'data-testid': 'host-name' },
           sortableValue: computedHostname || '',
         },
         {
-          title: <RoleCell testId={`host-role`} host={host} readonly role={hostRole} />,
+          title: <RoleCell host={host} readonly role={hostRole} />,
+          props: { 'data-testid': 'host-role' },
           sortableValue: hostRole,
         },
         {
           title: (
-            <NetworkingStatus
-              testId={`nic-status`}
-              host={host}
-              cluster={cluster}
-              validationsInfo={validationsInfo}
-            />
+            <NetworkingStatus host={host} cluster={cluster} validationsInfo={validationsInfo} />
           ),
+          props: { 'data-testid': 'nic-status' },
           sortableValue: status,
         },
         {
-          title: <span data-testid={`nic-name`}>{selectedNic?.name || DASH}</span>,
+          title: selectedNic?.name || DASH,
+          props: { 'data-testid': 'nic-name' },
           sortableValue: selectedNic?.name || DASH,
         },
         {
-          title: (
-            <span data-testid={`nic-ipv4-addresses`}>
-              {(selectedNic?.ipv4Addresses || []).join(', ') || DASH}
-            </span>
-          ),
+          title: (selectedNic?.ipv4Addresses || []).join(', ') || DASH,
+          props: { 'data-testid': 'nic-ipv4' },
           sortableValue: (selectedNic?.ipv4Addresses || []).join(', ') || DASH,
         },
         {
-          title: (
-            <span data-testid={`nic-ipv6-addresses`}>
-              {(selectedNic?.ipv6Addresses || []).join(', ') || DASH}
-            </span>
-          ),
+          title: (selectedNic?.ipv6Addresses || []).join(', ') || DASH,
+          props: { 'data-testid': 'nic-ipv6' },
           sortableValue: (selectedNic?.ipv6Addresses || []).join(', ') || DASH,
         },
         {
-          title: <span data-testid={`nic-mac-address`}>{selectedNic?.macAddress || DASH}</span>,
+          title: selectedNic?.macAddress || DASH,
+          props: { 'data-testid': 'nic-mac-address' },
           sortableValue: selectedNic?.macAddress || DASH,
         },
       ],
@@ -149,7 +141,14 @@ type NetworkingHostsTableProps = {
 };
 
 const NetworkingHostsTable: React.FC<NetworkingHostsTableProps> = (props) => {
-  return <HostsTable {...props} getColumns={getColumns} hostToHostTableRow={hostToHostTableRow} />;
+  return (
+    <HostsTable
+      {...props}
+      testId={'networking-host-table'}
+      getColumns={getColumns}
+      hostToHostTableRow={hostToHostTableRow}
+    />
+  );
 };
 
 export default NetworkingHostsTable;

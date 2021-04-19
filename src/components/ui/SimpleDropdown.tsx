@@ -10,7 +10,6 @@ type SimpleDropdownProps = {
   setValue: (value?: string) => void;
   isDisabled: boolean;
   idPrefix?: string;
-  testId?: string;
 };
 
 export const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
@@ -20,7 +19,6 @@ export const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
   setValue,
   isDisabled,
   idPrefix,
-  testId = 'SimpleDropdown',
 }) => {
   const [isOpen, setOpen] = React.useState(false);
   const dropdownItems = items.map(({ value, label, description }) => (
@@ -59,7 +57,6 @@ export const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
       isOpen={isOpen}
       isPlain
       id={idPrefix ? `${idPrefix}-dropdown-toggle` : undefined}
-      data-testid={testId}
     />
   );
 };

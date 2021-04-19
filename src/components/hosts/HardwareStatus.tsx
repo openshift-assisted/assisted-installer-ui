@@ -12,7 +12,6 @@ type HardwareStatusProps = {
   host: Host;
   validationsInfo: ValidationsInfo;
   cluster: Cluster;
-  testId?: string;
 };
 
 const HardwareStatus: React.FC<HardwareStatusProps> = (props) => {
