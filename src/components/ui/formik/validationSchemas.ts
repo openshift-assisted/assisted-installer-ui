@@ -185,9 +185,16 @@ export const ipBlockValidationSchema = Yup.string()
     },
   );
 
-export const dnsNameValidationSchema = Yup.string().matches(DNS_NAME_REGEX, {
-  message: 'Value "${value}" is not valid DNS name. Example: basedomain.example.com', // eslint-disable-line no-template-curly-in-string
-});
+export const dnsNameValidationSchema = Yup.string()
+  .max(255, 'The DNS name can not be longer than 255 characters.')
+  .test(
+    'dns-name-label-length',
+    'Single label of the DNS name can not be longer than 63 characters.',
+    (value = '') => value.split('.').every((label: string) => label.length <= 63),
+  )
+  .matches(DNS_NAME_REGEX, {
+    message: 'Value "${value}" is not valid DNS name. Example: basedomain.example.com', // eslint-disable-line no-template-curly-in-string
+  });
 
 export const hostPrefixValidationSchema = (values: NetworkConfigurationValues) => {
   const requiredText = 'The host prefix is required.';

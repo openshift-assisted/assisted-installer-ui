@@ -13,7 +13,7 @@ import {
   Text,
 } from '@patternfly/react-core';
 import { CLUSTER_STATUS_LABELS } from '../../config/constants';
-import { getHostProgressStages, getHostProgressStageNumber } from '../hosts/utils';
+import { getHostProgressStages, getHostProgressStageNumber, getEnabledHosts } from '../hosts/utils';
 import { getHumanizedDateTime, DetailList, DetailItem } from '../ui';
 import {
   global_danger_color_100 as dangerColor,
@@ -47,7 +47,7 @@ const getMeasureLocation = (status: Cluster['status']) =>
 
 const getProgressLabel = (cluster: Cluster, progressPercent: number): string => {
   const { status, statusInfo } = cluster;
-  if (['preparing-for-installation'].includes(status)) {
+  if (status === 'preparing-for-installation') {
     return statusInfo;
   }
 
@@ -55,7 +55,7 @@ const getProgressLabel = (cluster: Cluster, progressPercent: number): string => 
 };
 
 const getProgressPercent = (hosts: Host[] = []) => {
-  const accountedHosts = hosts.filter((host) => !['disabled'].includes(host.status));
+  const accountedHosts = getEnabledHosts(hosts);
   const totalSteps = accountedHosts.reduce(
     (steps, host) => steps + getHostProgressStages(host).length,
     0,
@@ -187,10 +187,12 @@ const FinalizingProgress: React.FC<FinalizingProgressProps> = ({ cluster }) => {
 
 type ClusterProgressProps = {
   cluster: Cluster;
+  minimizedView?: boolean;
 };
 
-const ClusterProgress: React.FC<ClusterProgressProps> = ({ cluster }) => {
-  const { status, hosts = [], monitoredOperators = [] } = cluster;
+const ClusterProgress: React.FC<ClusterProgressProps> = ({ cluster, minimizedView = false }) => {
+  const { status, monitoredOperators = [] } = cluster;
+  const hosts = getEnabledHosts(cluster.hosts);
   const progressPercent = React.useMemo(() => Math.round(getProgressPercent(hosts)), [hosts]);
   const label = getProgressLabel(cluster, progressPercent);
   const isWorkersPresent = hosts && hosts.some((host) => host.role === 'worker');
@@ -198,43 +200,53 @@ const ClusterProgress: React.FC<ClusterProgressProps> = ({ cluster }) => {
   return (
     <>
       <DetailList>
-        <DetailItem
-          title="Started on"
-          value={getHumanizedDateTime(cluster.installStartedAt)}
-          idPrefix="cluster-progress-started-on"
-        />
-        <DetailItem
-          title="Status"
-          value={getInstallationStatus(cluster)}
-          idPrefix="cluster-progress-status"
-        />
+        <Flex direction={{ default: minimizedView ? 'row' : 'column' }}>
+          <FlexItem>
+            <DetailItem
+              title="Started on"
+              value={getHumanizedDateTime(cluster.installStartedAt)}
+              idPrefix="cluster-progress-started-on"
+            />
+          </FlexItem>
+          <FlexItem>
+            <DetailItem
+              title="Status"
+              value={getInstallationStatus(cluster)}
+              idPrefix="cluster-progress-status"
+            />
+          </FlexItem>
+        </Flex>
       </DetailList>
-      <Progress
-        value={progressPercent}
-        label={label}
-        title=" "
-        measureLocation={getMeasureLocation(status)}
-        variant={getProgressVariant(status)}
-        className="cluster-progress-bar"
-      />
-      <Flex className="pf-u-mt-md">
-        <FlexItem>
-          <HostProgress hosts={hosts} hostRole="master" />
-        </FlexItem>
-        {isWorkersPresent && (
-          <FlexItem>
-            <HostProgress hosts={hosts} hostRole="worker" />
-          </FlexItem>
-        )}
-        <FlexItem>
-          <FinalizingProgress cluster={cluster} />
-        </FlexItem>
-        {!!monitoredOperators.length && (
-          <FlexItem>
-            <OperatorsProgressItem operators={monitoredOperators} />
-          </FlexItem>
-        )}
-      </Flex>
+      {!minimizedView && (
+        <>
+          <Progress
+            value={progressPercent}
+            label={label}
+            title=" "
+            measureLocation={getMeasureLocation(status)}
+            variant={getProgressVariant(status)}
+            className="cluster-progress-bar"
+          />
+          <Flex className="pf-u-mt-md" display={{ default: 'inlineFlex' }}>
+            <FlexItem>
+              <HostProgress hosts={hosts} hostRole="master" />
+            </FlexItem>
+            {!!monitoredOperators.length && (
+              <FlexItem>
+                <OperatorsProgressItem operators={monitoredOperators} />
+              </FlexItem>
+            )}
+            {isWorkersPresent && (
+              <FlexItem>
+                <HostProgress hosts={hosts} hostRole="worker" />
+              </FlexItem>
+            )}
+            <FlexItem>
+              <FinalizingProgress cluster={cluster} />
+            </FlexItem>
+          </Flex>
+        </>
+      )}
     </>
   );
 };

@@ -14,12 +14,7 @@ const DeleteClusterModal: React.FC<DeleteClusterModalProps> = ({ name, onClose, 
     onClose={onClose}
     variant={ModalVariant.small}
     actions={[
-      <Button
-        data-test-id="delete-cluster-submit"
-        key="confirm"
-        variant="danger"
-        onClick={onDelete}
-      >
+      <Button data-testid="delete-cluster-submit" key="confirm" variant="danger" onClick={onDelete}>
         Delete
       </Button>,
       <Button key="cancel" variant="link" onClick={onClose}>

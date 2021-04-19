@@ -58,10 +58,9 @@ export interface Cluster {
   /**
    * Indicates the type of this object. Will be 'Cluster' if this is a complete object,
    * 'AddHostsCluster' for cluster that add hosts to existing OCP cluster,
-   * 'AddHostsOCPCluster' for cluster running on the OCP and add hosts to it
    *
    */
-  kind: 'Cluster' | 'AddHostsCluster' | 'AddHostsOCPCluster';
+  kind: 'Cluster' | 'AddHostsCluster';
   /**
    * Guaranteed availability of the installed cluster. 'Full' installs a Highly-Available cluster
    * over multiple master nodes whereas 'None' installs a full cluster over one node.
@@ -172,6 +171,18 @@ export interface Cluster {
    */
   hosts?: Host[];
   /**
+   * hosts associated to this cluster that are in 'known' state.
+   */
+  readyHostCount?: number; // int64
+  /**
+   * hosts associated to this cluster that are not in 'disabled' state.
+   */
+  enabledHostCount?: number; // int64
+  /**
+   * All hosts associated to this cluster.
+   */
+  totalHostCount?: number; // int64
+  /**
    * The last time that this cluster was updated.
    */
   updatedAt?: string; // date-time
@@ -242,6 +253,14 @@ export interface Cluster {
    * Operators that are associated with this cluster.
    */
   monitoredOperators?: MonitoredOperator[];
+  /**
+   * Unique identifier of the AMS subscription in OCM.
+   */
+  amsSubscriptionId?: string; // uuid
+  /**
+   * Enable/disable hyperthreading on master nodes, worker nodes, or all nodes
+   */
+  hyperthreading?: 'masters' | 'workers' | 'all' | 'none';
 }
 export interface ClusterCreateParams {
   /**
@@ -318,6 +337,10 @@ export interface ClusterCreateParams {
    * List of OLM operators to be installed.
    */
   olmOperators?: OperatorCreateParams[];
+  /**
+   * Enable/disable hyperthreading on master nodes, worker nodes, or all nodes.
+   */
+  hyperthreading?: 'masters' | 'workers' | 'none' | 'all';
 }
 export interface ClusterDefaultConfig {
   clusterNetworkCidr?: string; // ^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)[\/]([1-9]|[1-2][0-9]|3[0-2]?)$
@@ -349,9 +372,9 @@ export interface ClusterHostRequirementsDetails {
    */
   cpuCores?: number;
   /**
-   * Required number of RAM in GiB
+   * Required number of RAM in MiB
    */
-  ramGib?: number;
+  ramMib?: number;
   /**
    * Required disk size in GB
    */
@@ -475,6 +498,10 @@ export interface ClusterUpdateParams {
    * List of OLM operators to be installed.
    */
   olmOperators?: OperatorCreateParams[];
+  /**
+   * Enable/disable hyperthreading on master nodes, worker nodes, or all nodes.
+   */
+  hyperthreading?: 'masters' | 'workers' | 'all' | 'none';
 }
 export type ClusterValidationId =
   | 'machine-cidr-defined'
@@ -569,9 +596,9 @@ export interface CreateManifestParams {
    */
   folder?: 'manifests' | 'openshift';
   /**
-   * The name of the manifest to be stored on S3 and to be created on '{folder}/{fileName}' at ignition generation using openshift-install.
+   * The name of the manifest to customize the installed OCP cluster.
    */
-  fileName: string;
+  fileName: string; // ^[^/]*\.(yaml|yml|json)$
   /**
    * base64 encoded manifest content.
    */
@@ -640,7 +667,7 @@ export interface Disk {
    */
   byPath?: string;
   /**
-   * by-id is the wwn/enve-ei which guaranteed to be unique for every storage device
+   * by-id is the World Wide Number of the device which guaranteed to be unique for every storage device
    */
   byId?: string;
   model?: string;
@@ -791,14 +818,35 @@ export interface FreeNetworkAddresses {
   freeAddresses?: string /* ipv4 */[];
 }
 export type FreeNetworksAddresses = FreeNetworkAddresses[];
+export interface Gpu {
+  /**
+   * The name of the device vendor (for example "Intel Corporation")
+   */
+  vendor?: string;
+  /**
+   * ID of the vendor (for example "8086")
+   */
+  vendorId?: string;
+  /**
+   * ID of the device (for example "3ea0")
+   */
+  deviceId?: string;
+  /**
+   * Product name of the device (for example "UHD Graphics 620 (Whiskey Lake)")
+   */
+  name?: string;
+  /**
+   * Device address (for example "0000:00:02.0")
+   */
+  address?: string;
+}
 export interface Host {
   /**
    * Indicates the type of this object. Will be 'Host' if this is a complete object or 'HostLink' if it is just a link, or
    * 'AddToExistingClusterHost' for host being added to existing OCP cluster, or
-   * 'AddToExistingClusterOCPHost' for host being added to existing OCP cluster via OCP AI cluster
    *
    */
-  kind: 'Host' | 'AddToExistingClusterHost' | 'AddToExistingClusterOCPHost';
+  kind: 'Host' | 'AddToExistingClusterHost';
   /**
    * Unique identifier of the object.
    */
@@ -873,9 +921,15 @@ export interface Host {
    */
   installerVersion?: string;
   /**
-   * Host installation path.
+   * Contains the inventory disk path, This field is replaced by installationDiskId field and used for backward compatability with the old UI.
+   * example:
+   * /dev/sda
    */
   installationDiskPath?: string;
+  /**
+   * Contains the inventory disk id to install on.
+   */
+  installationDiskId?: string;
   updatedAt?: string; // date-time
   createdAt?: string; // date-time
   /**
@@ -934,10 +988,9 @@ export interface HostRegistrationResponse {
   /**
    * Indicates the type of this object. Will be 'Host' if this is a complete object or 'HostLink' if it is just a link, or
    * 'AddToExistingClusterHost' for host being added to existing OCP cluster, or
-   * 'AddToExistingClusterOCPHost' for host being added to existing OCP cluster via OCP AI cluster
    *
    */
-  kind: 'Host' | 'AddToExistingClusterHost' | 'AddToExistingClusterOCPHost';
+  kind: 'Host' | 'AddToExistingClusterHost';
   /**
    * Unique identifier of the object.
    */
@@ -1012,9 +1065,15 @@ export interface HostRegistrationResponse {
    */
   installerVersion?: string;
   /**
-   * Host installation path.
+   * Contains the inventory disk path, This field is replaced by installationDiskId field and used for backward compatability with the old UI.
+   * example:
+   * /dev/sda
    */
   installationDiskPath?: string;
+  /**
+   * Contains the inventory disk id to install on.
+   */
+  installationDiskId?: string;
   updatedAt?: string; // date-time
   createdAt?: string; // date-time
   /**
@@ -1105,7 +1164,7 @@ export type HostValidationId =
   | 'container-images-available'
   | 'lso-requirements-satisfied'
   | 'ocs-requirements-satisfied'
-  | 'sufficient-installation-disk-speed'
+  | 'sufficient-or-unknown-installation-disk-speed'
   | 'cnv-requirements-satisfied';
 export interface ImageCreateParams {
   /**
@@ -1117,6 +1176,10 @@ export interface ImageCreateParams {
    * Type of image that should be generated.
    */
   imageType?: ImageType;
+  /**
+   * configuration of the mirror registries for discovery ISO and installed nodes
+   */
+  mirrorRegistriesCaConfig?: MirrorRegistriesCaConfig;
 }
 export interface ImageInfo {
   /**
@@ -1136,6 +1199,14 @@ export interface ImageInfo {
    */
   staticNetworkConfig?: string;
   type?: ImageType;
+  /**
+   * CA config data for mirror registries
+   */
+  caConfig?: string;
+  /**
+   * registries.conf file contents in a TOML format
+   */
+  mirrorRegistriesConfig?: string;
 }
 export type ImageType = 'full-iso' | 'minimal-iso';
 export interface InfraError {
@@ -1182,6 +1253,7 @@ export interface Inventory {
   memory?: Memory;
   cpu?: Cpu;
   timestamp?: number;
+  gpus?: Gpu[];
 }
 export interface IoPerf {
   /**
@@ -1200,6 +1272,14 @@ export interface L3Connectivity {
   outgoingNic?: string;
   remoteIpAddress?: string;
   successful?: boolean;
+  /**
+   * Average round trip time in milliseconds.
+   */
+  averageRttMs?: number; // double
+  /**
+   * Percentage of packets lost during connectivity check.
+   */
+  packetLossPercentage?: number; // double
 }
 export type ListManagedDomains = ManagedDomain[];
 export type ListManifests = Manifest[];
@@ -1242,6 +1322,34 @@ export interface Manifest {
 export interface Memory {
   physicalBytes?: number;
   usableBytes?: number;
+}
+export interface MirrorRegistriesCaConfig {
+  /**
+   * configuration of registries conf
+   */
+  mirrorRegistriesConfig?: MirrorRegistriesConfig;
+  /**
+   * string containing CA or CA bundle for mirrored registries
+   */
+  caConfig?: string;
+}
+export interface MirrorRegistriesConfig {
+  'unqualified-search-registries'?: string[];
+  mirrorRegistries?: MirrorRegistry[];
+}
+export interface MirrorRegistry {
+  /**
+   * prefix for choosing this specific mirror
+   */
+  prefix?: string;
+  /**
+   * the original registry location
+   */
+  location?: string;
+  /**
+   * the mirror registry location
+   */
+  mirrorLocation?: string;
 }
 export interface MonitoredOperator {
   /**
@@ -1320,6 +1428,10 @@ export interface OpenshiftVersion {
    * Level of support of the version.
    */
   supportLevel: 'beta' | 'production';
+  /**
+   * Indication that the version is the recommended one.
+   */
+  default?: boolean;
 }
 export interface OpenshiftVersions {
   [name: string]: OpenshiftVersion;
@@ -1441,6 +1553,20 @@ export interface SystemVendor {
    * Whether the machine appears to be a virtual machine or not
    */
   virtual?: boolean;
+}
+export interface VersionedHostRequirements {
+  /**
+   * Version of the component for which requirements are defined
+   */
+  version?: string;
+  /**
+   * Master node requirements
+   */
+  master?: ClusterHostRequirementsDetails;
+  /**
+   * Worker node requirements
+   */
+  worker?: ClusterHostRequirementsDetails;
 }
 export interface Versions {
   [name: string]: string;

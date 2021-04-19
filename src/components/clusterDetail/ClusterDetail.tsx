@@ -9,81 +9,35 @@ import {
   GridItem,
   Grid,
 } from '@patternfly/react-core';
-import { Cluster, Credentials } from '../../api/types';
-import { getClusterCredentials } from '../../api/clusters';
+import { Cluster } from '../../api/types';
 import { EventsModalButton } from '../ui/eventsModal';
 import HostsTable from '../hosts/HostsTable';
 import ClusterToolbar from '../clusters/ClusterToolbar';
 import { ToolbarButton, ToolbarSecondaryGroup } from '../ui/Toolbar';
+import Alerts from '../ui/Alerts';
+import { downloadClusterInstallationLogs, getClusterDetailId } from './utils';
+import { AlertsContext } from '../AlertsContextProvider';
+import { canDownloadClusterLogs } from '../hosts/utils';
 import ClusterProgress from './ClusterProgress';
-import ClusterCredentials from './ClusterCredentials';
-import ClusterInstallationError from './ClusterInstallationError';
 import { LaunchOpenshiftConsoleButton } from './ConsoleModal';
 import KubeconfigDownload from './KubeconfigDownload';
 import ClusterProperties from './ClusterProperties';
 import { isSingleClusterMode, routeBasePath } from '../../config';
-import FailedHostsWarning from './FailedHostsWarning';
-import Alerts from '../ui/Alerts';
-import { downloadClusterInstallationLogs } from './utils';
-import { AlertsContext } from '../AlertsContextProvider';
-import { canDownloadClusterLogs } from '../hosts/utils';
-import { getOlmOperators } from '../clusters/utils';
-import FailedOperatorsWarning from './FailedOperatorsWarning';
-
-const canAbortInstallation = (cluster: Cluster) => {
-  const allowedClusterStates: Cluster['status'][] = [
-    'preparing-for-installation',
-    'installing',
-    'installing-pending-user-action',
-    'finalizing',
-  ];
-  return allowedClusterStates.includes(cluster.status);
-};
+import ClusterDetailStatusVarieties, {
+  useClusterStatusVarieties,
+} from './ClusterDetailStatusVarieties';
+import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
+import { canAbortInstallation } from '../clusters/utils';
 
 type ClusterDetailProps = {
   cluster: Cluster;
-  setCancelInstallationModalOpen: (isOpen: boolean) => void;
-  setResetClusterModalOpen: (isOpen: boolean) => void;
 };
 
-const getID = (suffix: string) => `cluster-detail-${suffix}`;
-
-const ClusterDetail: React.FC<ClusterDetailProps> = ({
-  cluster,
-  setCancelInstallationModalOpen,
-  setResetClusterModalOpen,
-}) => {
+const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
   const { addAlert } = React.useContext(AlertsContext);
-  const [credentials, setCredentials] = React.useState<Credentials>();
-  const [credentialsError, setCredentialsError] = React.useState();
-  const olmOperators = getOlmOperators(cluster.monitoredOperators);
-  const failedOlmOperators = olmOperators.filter((o) => o.status === 'failed');
-  const consoleOperator = cluster.monitoredOperators?.find((o) => o.name === 'console');
-
-  const fetchCredentials = React.useCallback(() => {
-    const fetch = async () => {
-      setCredentialsError(undefined);
-      try {
-        const response = await getClusterCredentials(cluster.id);
-        setCredentials(response.data);
-      } catch (err) {
-        setCredentialsError(err);
-      }
-    };
-    fetch();
-  }, [cluster.id]);
-
-  React.useEffect(() => {
-    if (
-      (!consoleOperator && cluster.status === 'installed') || // Retain backwards compatibility with clusters which don't have monitored clusters
-      consoleOperator?.status === 'available'
-    ) {
-      fetchCredentials();
-    }
-  }, [cluster.status, consoleOperator, fetchCredentials]);
-
-  const showClusterCredentials =
-    consoleOperator?.status === 'available' || (!consoleOperator && cluster.status === 'installed'); // Retain backwards compatibility with clusters which don't have monitored clusters
+  const { resetClusterDialog, cancelInstallationDialog } = useModalDialogsContext();
+  const clusterVarieties = useClusterStatusVarieties(cluster);
+  const { credentials, credentialsError } = clusterVarieties;
 
   return (
     <Stack hasGutter>
@@ -97,44 +51,15 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
           <GridItem>
             <ClusterProgress cluster={cluster} />
           </GridItem>
-          {['installed', 'installing', 'installing-pending-user-action', 'finalizing'].includes(
-            cluster.status,
-          ) && <FailedHostsWarning cluster={cluster} />}
-          {!!failedOlmOperators.length && (
-            <GridItem>
-              <FailedOperatorsWarning failedOperators={failedOlmOperators} />
-            </GridItem>
-          )}
-          {cluster.status === 'error' && (
-            <ClusterInstallationError
-              cluster={cluster}
-              setResetClusterModalOpen={setResetClusterModalOpen}
-            />
-          )}
-          {cluster.status === 'cancelled' && (
-            <ClusterInstallationError
-              title="Cluster installation was cancelled"
-              cluster={cluster}
-              setResetClusterModalOpen={setResetClusterModalOpen}
-            />
-          )}
-          {showClusterCredentials && (
-            <ClusterCredentials
-              cluster={cluster}
-              credentials={credentials}
-              error={!!credentialsError}
-              retry={fetchCredentials}
-              idPrefix={getID('cluster-creds')}
-            />
-          )}
+          <ClusterDetailStatusVarieties cluster={cluster} clusterVarieties={clusterVarieties} />
           <KubeconfigDownload
             status={cluster.status}
             clusterId={cluster.id}
-            id={getID('button-download-kubeconfig')}
+            id={getClusterDetailId('button-download-kubeconfig')}
           />
           <GridItem>
             <TextContent>
-              <Text component="h2">Bare Metal Inventory</Text>
+              <Text component="h2">Host Inventory</Text>
             </TextContent>
             <HostsTable cluster={cluster} skipDisabled />
           </GridItem>
@@ -148,16 +73,17 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
         <ClusterToolbar>
           {canAbortInstallation(cluster) && (
             <ToolbarButton
+              id={getClusterDetailId('button-cancel-installation')}
               variant={ButtonVariant.danger}
-              onClick={() => setCancelInstallationModalOpen(true)}
+              onClick={() => cancelInstallationDialog.open({ clusterId: cluster.id })}
             >
               Abort Installation
             </ToolbarButton>
           )}
           {cluster.status === 'error' && (
             <ToolbarButton
-              id={getID('button-reset-cluster')}
-              onClick={() => setResetClusterModalOpen(true)}
+              id={getClusterDetailId('button-reset-cluster')}
+              onClick={() => resetClusterDialog.open({ cluster })}
             >
               Reset Cluster
             </ToolbarButton>
@@ -167,14 +93,14 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({
               isDisabled={!credentials || !!credentialsError}
               cluster={cluster}
               consoleUrl={credentials?.consoleUrl}
-              id={getID('button-launch-console')}
+              id={getClusterDetailId('button-launch-console')}
             />
           )}
           <ToolbarButton
             variant={ButtonVariant.link}
             component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
             isHidden={isSingleClusterMode()}
-            id={getID('button-back-to-all-clusters')}
+            id={getClusterDetailId('button-back-to-all-clusters')}
           >
             Back to all clusters
           </ToolbarButton>

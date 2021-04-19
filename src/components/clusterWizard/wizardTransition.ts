@@ -11,11 +11,7 @@ import {
   ValidationsInfo,
 } from '../../types/hosts';
 
-export type ClusterWizardStepsType =
-  | 'cluster-details'
-  | 'baremetal-discovery'
-  | 'networking'
-  | 'review';
+export type ClusterWizardStepsType = 'cluster-details' | 'host-discovery' | 'networking' | 'review';
 
 export type ClusterWizardFlowStateType = {
   wizardFlow?: 'new' | undefined;
@@ -23,8 +19,7 @@ export type ClusterWizardFlowStateType = {
 
 export const getClusterWizardFirstStep = (
   props?: ClusterWizardFlowStateType,
-): ClusterWizardStepsType =>
-  props?.wizardFlow === 'new' ? 'baremetal-discovery' : 'cluster-details';
+): ClusterWizardStepsType => (props?.wizardFlow === 'new' ? 'host-discovery' : 'cluster-details');
 
 type TransitionProps = { cluster: Cluster };
 
@@ -65,7 +60,7 @@ const clusterDetailsStepValidationsMap: WizardStepValidationMap = {
   softValidationIds: [],
 };
 
-const baremetalDiscoveryStepValidationsMap: WizardStepValidationMap = {
+const hostDiscoveryStepValidationsMap: WizardStepValidationMap = {
   cluster: {
     groups: [],
     validationIds: ['sufficient-masters-count', 'ocs-requirements-satisfied'],
@@ -109,7 +104,7 @@ const reviewStepValidationsMap: WizardStepValidationMap = {
 
 export const wizardStepsValidationsMap: WizardStepsValidationMap = {
   'cluster-details': clusterDetailsStepValidationsMap,
-  'baremetal-discovery': baremetalDiscoveryStepValidationsMap,
+  'host-discovery': hostDiscoveryStepValidationsMap,
   networking: networkingStepValidationsMap,
   review: reviewStepValidationsMap,
 };
@@ -300,8 +295,8 @@ However transitions among steps should be independent on each other.
 export const canNextClusterDetails = ({ cluster }: TransitionProps): boolean =>
   getWizardStepClusterStatus(cluster, 'cluster-details') === 'ready';
 
-export const canNextBaremetalDiscovery = ({ cluster }: TransitionProps): boolean =>
-  getWizardStepClusterStatus(cluster, 'baremetal-discovery') === 'ready';
+export const canNextHostDiscovery = ({ cluster }: TransitionProps): boolean =>
+  getWizardStepClusterStatus(cluster, 'host-discovery') === 'ready';
 
 export const canNextNetwork = ({ cluster }: TransitionProps): boolean =>
   getWizardStepClusterStatus(cluster, 'networking') === 'ready';

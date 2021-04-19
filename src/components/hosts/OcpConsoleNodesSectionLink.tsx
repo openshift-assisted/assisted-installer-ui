@@ -1,14 +1,14 @@
 import React from 'react';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { Button, ButtonVariant } from '@patternfly/react-core';
-import { AddBareMetalHostsContext } from '../AddBareMetalHosts/AddBareMetalHostsContext';
+import { AddHostsContext } from '../AddHosts/AddHostsContext';
 import { getOcpConsoleNodesPage } from '../../config';
 
 const OcpConsoleNodesSectionLink: React.FC<{
   id?: string;
   title?: string;
 }> = ({ id, title = 'OpenShift console' }) => {
-  const { ocpConsoleUrl } = React.useContext(AddBareMetalHostsContext);
+  const { ocpConsoleUrl } = React.useContext(AddHostsContext);
   if (!ocpConsoleUrl) {
     return null;
   }

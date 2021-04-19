@@ -3,7 +3,7 @@ import { Text, TextContent, Button, Stack, StackItem } from '@patternfly/react-c
 import { Cluster, HostRequirements as HostRequirementsType } from '../../api/types';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
 import { DiscoveryTroubleshootingModal } from './DiscoveryTroubleshootingModal';
-import BaremetalDiscoveryHostsTable from '../hosts/BaremetalDiscoveryHostsTable';
+import HostsDiscoveryTable from '../hosts/HostsDiscoveryTable';
 import { useFeature } from '../../features/featureGate';
 import CheckboxField from '../ui/formik/CheckboxField';
 import { isSingleNodeCluster } from '../clusters/utils';
@@ -45,7 +45,7 @@ const OCSLabel: React.FC = () => (
   </>
 );
 
-const BaremetalInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
+const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const [isDiscoveryHintModalOpen, setDiscoveryHintModalOpen] = React.useState(false);
   const isOpenshiftClusterStorageEnabled = useFeature('ASSISTED_INSTALLER_OCS_FEATURE');
 
@@ -53,7 +53,7 @@ const BaremetalInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
     <Stack hasGutter>
       <StackItem>
         <TextContent>
-          <Text component="h2">Bare Metal Discovery</Text>
+          <Text component="h2">Host Discovery</Text>
         </TextContent>
       </StackItem>
       <StackItem>
@@ -63,7 +63,7 @@ const BaremetalInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
             <DiscoveryImageModalButton
               ButtonComponent={Button}
               cluster={cluster}
-              idPrefix="bare-metal-inventory"
+              idPrefix="host-inventory"
             />
           </Text>
           {isOpenshiftClusterStorageEnabled && (
@@ -81,7 +81,7 @@ const BaremetalInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
             setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
           />
         </TextContent>
-        <BaremetalDiscoveryHostsTable
+        <HostsDiscoveryTable
           cluster={cluster}
           setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
         />
@@ -94,4 +94,4 @@ const BaremetalInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   );
 };
 
-export default BaremetalInventory;
+export default HostInventory;

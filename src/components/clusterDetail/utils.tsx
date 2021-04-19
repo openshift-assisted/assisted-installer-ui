@@ -1,12 +1,14 @@
 import { saveAs } from 'file-saver';
+import { get } from 'lodash';
 import {
   ocmClient,
   getPresignedFileUrl,
   handleApiError,
   getErrorMessage,
   getClusterLogsDownloadUrl,
+  stringToJSON,
 } from '../../api';
-import { Presigned } from '../../api/types';
+import { Cluster, Host, HostRole, Inventory, Presigned } from '../../api/types';
 import { AlertsContextType } from '../AlertsContextProvider';
 
 export const downloadClusterInstallationLogs = async (
@@ -34,3 +36,51 @@ export const downloadClusterInstallationLogs = async (
     saveAs(getClusterLogsDownloadUrl(clusterId));
   }
 };
+
+const getHostRoleCount = (hosts: Host[], role: HostRole) =>
+  hosts.filter((host) => host.status !== 'disabled' && host.role === role).length;
+
+export const getMasterCount = (hosts: Host[]) => getHostRoleCount(hosts, 'master');
+
+export const getWorkerCount = (hosts: Host[]) => getHostRoleCount(hosts, 'worker');
+
+const getClusterResources = (cluster: Cluster, resoucePath: string): number => {
+  if (!cluster.hosts) {
+    return 0;
+  }
+
+  const masterCount = getMasterCount(cluster.hosts);
+  const workerCount = getWorkerCount(cluster.hosts);
+
+  // Cluster contain only master hosts
+  const countMastersOnly = masterCount >= 3 && workerCount === 0;
+
+  // Cluster contain master and worker hosts
+  const countWorkersOnly = masterCount >= 3 && workerCount >= 2;
+
+  const singleNodeMode = masterCount === 1;
+
+  const result = cluster.hosts.reduce((acc, host: Host) => {
+    if (!host.inventory) {
+      return acc;
+    }
+    if (
+      (host.role === 'worker' && countWorkersOnly) ||
+      (host.role === 'master' && countMastersOnly) ||
+      (host.role === 'master' && singleNodeMode)
+    ) {
+      const hostInventory = stringToJSON<Inventory>(host.inventory) || {};
+      return (acc += get(hostInventory, resoucePath, 0));
+    }
+  }, 0);
+
+  return result;
+};
+
+export const getClustervCPUCount = (cluster: Cluster): number =>
+  getClusterResources(cluster, 'cpu.count');
+
+export const getClusterMemoryAmount = (cluster: Cluster): number =>
+  getClusterResources(cluster, 'memory.physicalBytes');
+
+export const getClusterDetailId = (suffix: string) => `cluster-detail-${suffix}`;
