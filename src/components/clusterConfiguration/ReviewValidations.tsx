@@ -30,6 +30,7 @@ import {
 import { wizardStepNames } from '../clusterWizard/ClusterWizardStep';
 import { Cluster, Host, stringToJSON } from '../../api';
 import { CLUSTER_VALIDATION_LABELS, HOST_VALIDATION_LABELS } from '../../config';
+import { getEnabledHosts } from '../hosts/utils';
 
 const AllValidationsPassed = () => (
   <>
@@ -142,30 +143,28 @@ export const ClusterValidations: React.FC<{ validationsInfo?: Cluster['validatio
 
 export const HostsValidations: React.FC<{ hosts?: Host[] }> = ({ hosts = [] }) => {
   const failingValidations = {};
-  hosts
-    .filter((host) => host.status !== 'disabled')
-    .forEach((host) => {
-      const validationsInfo = stringToJSON<HostValidationsInfo>(host.validationsInfo) || {};
-      Object.keys(validationsInfo).forEach((group) => {
-        const f: (validation: HostValidation) => void = (validation) => {
-          if (validation.status === 'failure') {
-            const severity = allClusterWizardSoftValidationIds.includes(validation.id)
-              ? 'warning'
-              : 'danger';
-            failingValidations[validation.id] = failingValidations[validation.id] || (
-              <FailingValidation
-                key={validation.id}
-                validation={validation}
-                hostGroup={group as HostValidationGroup}
-                severity={severity}
-              />
-            );
-          }
-        };
+  getEnabledHosts(hosts).forEach((host) => {
+    const validationsInfo = stringToJSON<HostValidationsInfo>(host.validationsInfo) || {};
+    Object.keys(validationsInfo).forEach((group) => {
+      const f: (validation: HostValidation) => void = (validation) => {
+        if (validation.status === 'failure') {
+          const severity = allClusterWizardSoftValidationIds.includes(validation.id)
+            ? 'warning'
+            : 'danger';
+          failingValidations[validation.id] = failingValidations[validation.id] || (
+            <FailingValidation
+              key={validation.id}
+              validation={validation}
+              hostGroup={group as HostValidationGroup}
+              severity={severity}
+            />
+          );
+        }
+      };
 
-        validationsInfo[group].forEach(f);
-      });
+      validationsInfo[group].forEach(f);
     });
+  });
 
   const array = _.values(failingValidations);
   if (array.length === 0) {
