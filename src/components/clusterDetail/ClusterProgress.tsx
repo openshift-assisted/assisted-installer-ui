@@ -55,7 +55,7 @@ const getProgressLabel = (cluster: Cluster, progressPercent: number): string => 
 };
 
 const getProgressPercent = (hosts: Host[] = []) => {
-  const accountedHosts = hosts.filter((host) => !['disabled'].includes(host.status));
+  const accountedHosts = getEnabledHosts(hosts);
   const totalSteps = accountedHosts.reduce(
     (steps, host) => steps + getHostProgressStages(host).length,
     0,
@@ -192,7 +192,7 @@ type ClusterProgressProps = {
 
 const ClusterProgress: React.FC<ClusterProgressProps> = ({ cluster, minimizedView = false }) => {
   const { status, monitoredOperators = [] } = cluster;
-  const hosts = getEnabledHosts(cluster);
+  const hosts = getEnabledHosts(cluster.hosts);
   const progressPercent = React.useMemo(() => Math.round(getProgressPercent(hosts)), [hosts]);
   const label = getProgressLabel(cluster, progressPercent);
   const isWorkersPresent = hosts && hosts.some((host) => host.role === 'worker');

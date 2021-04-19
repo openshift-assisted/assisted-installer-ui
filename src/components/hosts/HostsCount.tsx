@@ -1,6 +1,7 @@
 import React from 'react';
 import { Popover, Level, LevelItem } from '@patternfly/react-core';
 import { Host } from '../../api/types';
+import { getEnabledHosts } from './utils';
 
 type HostsCountProps = {
   hosts?: Host[];
@@ -9,8 +10,7 @@ type HostsCountProps = {
   testId?: string;
 };
 
-export const getEnabledHostsCount = (hosts?: Host[]) =>
-  (hosts || []).filter((h) => h.status != 'disabled').length;
+export const getEnabledHostsCount = (hosts?: Host[]) => getEnabledHosts(hosts).length;
 
 const getReadyHostsCount = (hosts?: Host[]) =>
   (hosts || []).filter((h) => h.status === 'known').length;
