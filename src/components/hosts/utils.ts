@@ -129,6 +129,9 @@ export const downloadHostInstallationLogs = async (
 export const hasKnownHost = (cluster: Cluster) =>
   !!cluster.hosts?.find((host) => host.status === 'known');
 
+export const getEnabledHosts = (hosts: Host[] = []) =>
+  hosts.filter((host) => host.status !== 'disabled');
+
 export const getHostname = (host: Host, inventory: Inventory) =>
   host.requestedHostname || inventory.hostname;
 
