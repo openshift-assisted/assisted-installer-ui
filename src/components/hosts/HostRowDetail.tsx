@@ -93,7 +93,7 @@ const DisksTable: React.FC<DisksTableProps & WithTestID> = ({
     .map((disk) => ({
       cells: [
         {
-          title: disk.bootable ? `${disk.name} (bootable)` : disk.name,
+          title: disk.name,
           props: { 'data-testid': 'disk-name' },
         },
         {
