@@ -808,59 +808,6 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}/progress:
-    put:
-      tags:
-        - installer
-      security:
-        - agentAuth: []
-      description: Update cluster installation progress.
-      operationId: UpdateClusterInstallProgress
-      parameters:
-        - in: path
-          name: cluster_id
-          description: The cluster whose progress is being updated.
-          type: string
-          format: uuid
-          required: true
-        - in: body
-          name: cluster-progress
-          description: Cluster install progress value.
-          required: true
-          schema:
-            type: string
-      responses:
-        '204':
-          description: Update cluster install progress.
-        '401':
-          description: Unauthorized.
-          schema:
-            $ref: '#/definitions/infra_error'
-        '403':
-          description: Forbidden.
-          schema:
-            $ref: '#/definitions/infra_error'
-        '404':
-          description: Error.
-          schema:
-            $ref: '#/definitions/error'
-        '405':
-          description: Method Not Allowed.
-          schema:
-            $ref: '#/definitions/error'
-        '409':
-          description: Error.
-          schema:
-            $ref: '#/definitions/error'
-        '500':
-          description: Error.
-          schema:
-            $ref: '#/definitions/error'
-        '503':
-          description: Unavailable.
-          schema:
-            $ref: '#/definitions/error'
-
   /clusters/{cluster_id}/discovery-ignition:
     get:
       tags:
@@ -2848,6 +2795,47 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
+  /clusters/{cluster_id}/preflight-requirements:
+    get:
+      tags:
+        - installer
+      security:
+        - userAuth: [admin, read-only-admin, user]
+      description: Get preflight requirements for a cluster.
+      operationId: GetPreflightRequirements
+      parameters:
+        - in: path
+          name: cluster_id
+          description: The cluster to return preflight requrements for.
+          type: string
+          format: uuid
+          required: true
+      responses:
+        '200':
+          description: Success.
+          schema:
+            $ref: '#/definitions/preflight-hardware-requirements'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
   /domains:
     get:
       tags:
@@ -3282,6 +3270,60 @@ definitions:
         $ref: '#/definitions/host-requirements-role'
       worker:
         $ref: '#/definitions/host-requirements-role'
+
+  preflight-hardware-requirements:
+    type: object
+    properties:
+      operators:
+        description: Preflight operators hardware requirements
+        type: array
+        items:
+          $ref: '#/definitions/operator-hardware-requirements'
+      ocp:
+        description: Preflight OCP requirements
+        $ref: '#/definitions/host-type-hardware-requirements-wrapper'
+
+  operator-hardware-requirements:
+    type: object
+    properties:
+      operator_name:
+        description:
+          Unique name of the operator. Corresponds to name property of the monitored-operator, i.e.
+          "lso", "cnv", etc.
+        type: string
+      dependencies:
+        description:
+          List of other operator unique names that are required to be installed. Corresponds to name
+          property of the monitored-operator, i.e. "lso", "cnv", etc.
+        type: array
+        items:
+          type: string
+      requirements:
+        $ref: '#/definitions/host-type-hardware-requirements-wrapper'
+
+  host-type-hardware-requirements-wrapper:
+    type: object
+    properties:
+      worker:
+        description: Requirements towards a worker node
+        $ref: '#/definitions/host-type-hardware-requirements'
+      master:
+        description: Requirements towards a master node
+        $ref: '#/definitions/host-type-hardware-requirements'
+
+  host-type-hardware-requirements:
+    type: object
+    properties:
+      quantitative:
+        description: Host requirements that can be quantified
+        $ref: '#/definitions/cluster-host-requirements-details'
+      qualitative:
+        description:
+          Host requirements that cannot be quantified at the time of calculation. Descriptions or
+          formulas of requiements
+        type: array
+        items:
+          type: string
 
   cluster-host-requirements-list:
     type: array
@@ -3768,6 +3810,9 @@ definitions:
       openshift_version:
         type: string
         description: Version of the OpenShift cluster.
+      ocp_release_image:
+        type: string
+        description: OpenShift release image URI.
       base_dns_domain:
         type: string
         description:
@@ -4088,6 +4133,9 @@ definitions:
       openshift_version:
         type: string
         description: Version of the OpenShift cluster.
+      ocp_release_image:
+        type: string
+        description: OpenShift release image URI.
       openshift_cluster_id:
         type: string
         format: uuid
@@ -4292,9 +4340,6 @@ definitions:
         type: string
         description:
           A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
-      progress:
-        $ref: '#/definitions/cluster-progress-info'
-        x-go-custom-tag: gorm:"embedded;embedded_prefix:progress_"
       monitored_operators:
         x-go-custom-tag: gorm:"foreignkey:ClusterID;association_foreignkey:ID"
         type: array
@@ -4310,6 +4355,10 @@ definitions:
         type: string
         enum: ['masters', 'workers', 'all', 'none']
         description: Enable/disable hyperthreading on master nodes, worker nodes, or all nodes
+      feature_usage:
+        type: string
+        description: JSON-formatted string containing the usage information by feature name
+        x-go-custom-tag: gorm:"type:text;default:'{}'"
 
   image_info:
     type: object
@@ -4539,18 +4588,6 @@ definitions:
         format: date-time
         x-go-custom-tag: gorm:"type:timestamp with time zone"
         description: Time at which the current progress stage was last updated.
-
-  cluster-progress-info:
-    type: object
-    properties:
-      progress_info:
-        type: string
-        x-go-custom-tag: gorm:"type:varchar(2048)"
-      progress_updated_at:
-        type: string
-        format: date-time
-        x-go-custom-tag: gorm:"type:timestamp with time zone"
-        description: Time at which the cluster install progress was last updated.
 
   host-stage:
     type: string
@@ -5281,6 +5318,7 @@ definitions:
     required:
       - display_name
       - release_image
+      - release_version
       - rhcos_image
       - rhcos_version
       - support_level
@@ -5291,6 +5329,9 @@ definitions:
       release_image:
         type: string
         description: The installation image of the OpenShift cluster.
+      release_version:
+        type: string
+        description: OCP version from the release metadata.
       rhcos_image:
         type: string
         description: The base RHCOS image used for the discovery iso.
@@ -5299,7 +5340,7 @@ definitions:
         description: Build ID of the RHCOS image.
       support_level:
         type: string
-        enum: [beta, production]
+        enum: [beta, production, custom]
         description: Level of support of the version.
       default:
         type: boolean
@@ -5334,3 +5375,15 @@ definitions:
     type: array
     items:
       $ref: '#/definitions/operator-property'
+
+  usage:
+    type: object
+    properties:
+      name:
+        type: string
+        description: name of the feature to track
+      data:
+        type: object
+        description: additional properties of the feature
+        additionalProperties:
+          type: object
