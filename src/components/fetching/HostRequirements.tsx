@@ -1,20 +1,13 @@
 import React from 'react';
 import { Button, ButtonVariant, Modal, ModalVariant, TextContent } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons';
-import {
-  HostRequirementsRole,
-  HostRequirements as HostRequirementsType,
-  handleApiError,
-  getErrorMessage,
-} from '../../api';
-import { getHostRequirements } from '../../api/hostRequirements';
-import { addAlert } from '../../features/alerts/alertsSlice';
 import { LoadingState } from '../ui';
 
 import './HostRequirements.css';
+import { useClusterPreflightRequirementsContext } from '../clusterConfiguration/ClusterPreflightRequirementsContext';
 
 export type HostRequirementsLinkProps = {
-  ContentComponent: React.FC<{ worker?: HostRequirementsRole; master?: HostRequirementsRole }>;
+  ContentComponent: React.FC;
 };
 
 type HostRequirementsModalProps = HostRequirementsLinkProps & {
@@ -27,27 +20,10 @@ const HostRequirementsModal: React.FC<HostRequirementsModalProps> = ({
   isOpen,
   ContentComponent,
 }) => {
-  const [hostRequirements, setHostRequirements] = React.useState<HostRequirementsType>();
+  const { preflightRequirements } = useClusterPreflightRequirementsContext();
   const onClose = React.useCallback(() => setHostRequirementsOpen(false), [
     setHostRequirementsOpen,
   ]);
-
-  React.useEffect(() => {
-    const fetchFunc = async () => {
-      try {
-        const { data } = await getHostRequirements();
-        setHostRequirements(data);
-      } catch (e) {
-        handleApiError(e, () =>
-          addAlert({
-            title: 'Failed to retrieve minimum host requierements',
-            message: getErrorMessage(e),
-          }),
-        );
-      }
-    };
-    fetchFunc();
-  }, [setHostRequirements]);
 
   return (
     <Modal
@@ -61,9 +37,9 @@ const HostRequirementsModal: React.FC<HostRequirementsModalProps> = ({
       onClose={onClose}
       variant={ModalVariant.medium}
     >
-      {hostRequirements ? (
+      {preflightRequirements ? (
         <TextContent>
-          <ContentComponent {...hostRequirements} />
+          <ContentComponent />
         </TextContent>
       ) : (
         <LoadingState content="Loading hardware requirements ..." />
@@ -72,7 +48,7 @@ const HostRequirementsModal: React.FC<HostRequirementsModalProps> = ({
   );
 };
 
-export const HostRequirementsLink: React.FC<HostRequirementsLinkProps> = ({ ContentComponent }) => {
+export const HostRequirementsLink: React.FC<HostRequirementsLinkProps> = (props) => {
   const [isHostRequirementsOpen, setHostRequirementsOpen] = React.useState(false);
 
   return (
@@ -87,7 +63,7 @@ export const HostRequirementsLink: React.FC<HostRequirementsLinkProps> = ({ Cont
         &nbsp;Minimum hardware requirements
       </Button>
       <HostRequirementsModal
-        ContentComponent={ContentComponent}
+        {...props}
         isOpen={isHostRequirementsOpen}
         setHostRequirementsOpen={setHostRequirementsOpen}
       />

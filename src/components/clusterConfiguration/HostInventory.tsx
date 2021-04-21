@@ -8,50 +8,52 @@ import {
   List,
   ListItem,
 } from '@patternfly/react-core';
-import {
-  Cluster,
-  PreflightHardwareRequirements,
-  HostRequirements as HostRequirementsType,
-} from '../../api/types';
-import { DiscoveryImageModalButton } from './discoveryImageModal';
-import { DiscoveryTroubleshootingModal } from './DiscoveryTroubleshootingModal';
+import { Cluster } from '../../api/types';
 import HostsDiscoveryTable from '../hosts/HostsDiscoveryTable';
 import { useFeature } from '../../features/featureGate';
 import CheckboxField from '../ui/formik/CheckboxField';
 import { isSingleNodeCluster } from '../clusters/utils';
-import InformationAndAlerts from './InformationAndAlerts';
 import DiscoveryInstructions from './DiscoveryInstructions';
 import { PopoverIcon } from '../ui';
-import { getClusterPreflightRequirements, getErrorMessage, handleApiError } from '../../api';
-import { addAlert } from '../../features/alerts/alertsSlice';
 import { OPERATOR_NAME_CNV } from '../../config';
+import { fileSize } from '../hosts/utils';
+import { DiscoveryImageModalButton } from './discoveryImageModal';
+import { DiscoveryTroubleshootingModal } from './DiscoveryTroubleshootingModal';
+import InformationAndAlerts from './InformationAndAlerts';
+import { useClusterPreflightRequirementsContext } from './ClusterPreflightRequirementsContext';
 
-const HostRequirementsContent = ({
-  worker = {},
-  master = {},
-}: {
-  worker?: HostRequirementsType['worker'];
-  master?: HostRequirementsType['master'];
-}) => (
-  <Text component="p">
-    Three master hosts are required with at least {master.cpuCores || 4} CPU cores,{' '}
-    {master.ramGib || 16} GiB of RAM, and {master.diskSizeGb || 120} GB of filesystem storage each.
-    Two or more additional worker hosts are recommended with at least {worker.cpuCores || 2} CPU
-    cores, {worker.ramGib || 8} GiB of RAM, and {worker.diskSizeGb || 120} GB of filesystem storage
-    each.
-  </Text>
-);
+const HostRequirementsContent = () => {
+  const { preflightRequirements } = useClusterPreflightRequirementsContext();
 
-const SingleHostRequirementsContent = ({
-  master = {},
-}: {
-  master?: HostRequirementsType['master'];
-}) => (
-  <Text component="p">
-    One host is required with at least {master.cpuCores || 4} CPU cores, {master.ramGib || 16} GiB
-    of RAM, and {master.diskSizeGb || 120} GB of filesystem storage.
-  </Text>
-);
+  const master = preflightRequirements?.ocp?.master?.quantitative;
+  const worker = preflightRequirements?.ocp?.worker?.quantitative;
+
+  const masterRam = fileSize((master?.ramMib || 16 * 1024) * 1024 * 1024, 2, 'iec');
+  const workerRam = fileSize((worker?.ramMib || 8 * 1024) * 1024 * 1024, 2, 'iec');
+
+  return (
+    <Text component="p">
+      Three master hosts are required with at least {master?.cpuCores || 4} CPU cores, {masterRam}{' '}
+      of RAM, and {master?.diskSizeGb || 120} GB of filesystem storage each. Two or more additional
+      worker hosts are recommended with at least {worker?.cpuCores || 2} CPU cores, {workerRam} of
+      RAM, and {worker?.diskSizeGb || 120} GB of filesystem storage each.
+    </Text>
+  );
+};
+
+const SingleHostRequirementsContent = () => {
+  const { preflightRequirements } = useClusterPreflightRequirementsContext();
+
+  const master = preflightRequirements?.ocp?.master?.quantitative;
+  const masterRam = fileSize((master?.ramMib || 16 * 1024) * 1024 * 1024, 2, 'iec');
+
+  return (
+    <Text component="p">
+      One host is required with at least {master?.cpuCores || 4} CPU cores, {masterRam}
+      of RAM, and {master?.diskSizeGb || 120} GB of filesystem storage.
+    </Text>
+  );
+};
 
 const OCSLabel: React.FC = () => (
   <>
@@ -61,29 +63,10 @@ const OCSLabel: React.FC = () => (
   </>
 );
 
-const CNVLabel: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
-  const [clusterPreflightRequirements, setClusterPreflightRequirements] = React.useState<
-    PreflightHardwareRequirements
-  >();
+const CNVLabel: React.FC = () => {
+  const { preflightRequirements } = useClusterPreflightRequirementsContext();
 
-  React.useEffect(() => {
-    const fetchFunc = async () => {
-      try {
-        const { data } = await getClusterPreflightRequirements(cluster.id);
-        setClusterPreflightRequirements(data);
-      } catch (e) {
-        handleApiError(e, () =>
-          addAlert({
-            title: 'Failed to retrieve cluster requirements',
-            message: getErrorMessage(e),
-          }),
-        );
-      }
-    };
-    fetchFunc();
-  }, [setClusterPreflightRequirements, cluster.id]);
-
-  const cnvRequirements = clusterPreflightRequirements?.operators?.find(
+  const cnvRequirements = preflightRequirements?.operators?.find(
     (operatorRequirements) => operatorRequirements.operatorName === OPERATOR_NAME_CNV,
   );
 
@@ -158,7 +141,7 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
           {isContainerNativeVirtualizationEnabled && (
             <CheckboxField
               name="useContainerNativeVirtualization"
-              label={<CNVLabel cluster={cluster} />}
+              label={<CNVLabel />}
               helperText="Run virtual machines along containers."
             />
           )}
