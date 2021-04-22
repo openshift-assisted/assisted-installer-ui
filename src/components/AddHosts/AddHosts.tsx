@@ -12,6 +12,7 @@ import { useDispatch } from 'react-redux';
 import { getErrorMessage, handleApiError, installHosts } from '../../api';
 import { addAlert } from '../../features/alerts/alertsSlice';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
+import { ClusterPreflightRequirementsContextProvider } from '../clusterConfiguration/ClusterPreflightRequirementsContext';
 import { hasKnownHost } from '../hosts/utils';
 import { ToolbarButton, ToolbarSecondaryGroup } from '../ui';
 import Alerts from '../ui/Alerts';
@@ -42,41 +43,43 @@ const AddHosts: React.FC = () => {
   };
 
   return (
-    <Card>
-      <CardTitle>
-        <Title headingLevel="h2" size="lg" className="card-title">
-          Host Discovery
-        </Title>
-      </CardTitle>
-      <CardBody>
-        <InventoryAddHosts />
-        <Alerts />
-        <Toolbar id="cluster-toolbar">
-          <ToolbarContent>
-            <ToolbarButton
-              variant={ButtonVariant.primary}
-              name="install"
-              onClick={handleHostsInstall}
-              isDisabled={!hasKnownHost(cluster)}
-            >
-              Install ready hosts
-            </ToolbarButton>
-            <ToolbarSecondaryGroup>
-              <EventsModalButton
-                id="cluster-events-button"
-                entityKind="cluster"
-                cluster={cluster}
-                title="Cluster Events"
-                variant={ButtonVariant.link}
-                style={{ textAlign: 'right' }}
+    <ClusterPreflightRequirementsContextProvider clusterId={cluster.id}>
+      <Card>
+        <CardTitle>
+          <Title headingLevel="h2" size="lg" className="card-title">
+            Host Discovery
+          </Title>
+        </CardTitle>
+        <CardBody>
+          <InventoryAddHosts />
+          <Alerts />
+          <Toolbar id="cluster-toolbar">
+            <ToolbarContent>
+              <ToolbarButton
+                variant={ButtonVariant.primary}
+                name="install"
+                onClick={handleHostsInstall}
+                isDisabled={!hasKnownHost(cluster)}
               >
-                View Cluster Events
-              </EventsModalButton>
-            </ToolbarSecondaryGroup>
-          </ToolbarContent>
-        </Toolbar>
-      </CardBody>
-    </Card>
+                Install ready hosts
+              </ToolbarButton>
+              <ToolbarSecondaryGroup>
+                <EventsModalButton
+                  id="cluster-events-button"
+                  entityKind="cluster"
+                  cluster={cluster}
+                  title="Cluster Events"
+                  variant={ButtonVariant.link}
+                  style={{ textAlign: 'right' }}
+                >
+                  View Cluster Events
+                </EventsModalButton>
+              </ToolbarSecondaryGroup>
+            </ToolbarContent>
+          </Toolbar>
+        </CardBody>
+      </Card>
+    </ClusterPreflightRequirementsContextProvider>
   );
 };
 
