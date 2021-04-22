@@ -1,7 +1,11 @@
 import React from 'react';
-import { PageSectionVariants, Breadcrumb, BreadcrumbItem } from '@patternfly/react-core';
+import {
+  PageSectionVariants,
+  Breadcrumb,
+  BreadcrumbItem,
+  PageSection,
+} from '@patternfly/react-core';
 import { Link } from 'react-router-dom';
-import PageSection from '../ui/PageSection';
 import { isSingleClusterMode, routeBasePath } from '../../config';
 import { PreviewBadgePosition, TechnologyPreview } from '../ui/PreviewBadge';
 import { ocmClient } from '../../api';

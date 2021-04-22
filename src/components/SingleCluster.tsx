@@ -1,8 +1,8 @@
 import React from 'react';
 import { Redirect, RouteComponentProps } from 'react-router-dom';
-import { PageSectionVariants } from '@patternfly/react-core';
+import { PageSectionVariants, PageSection } from '@patternfly/react-core';
 import { Cluster, getClusters, handleApiError } from '../api';
-import { ErrorState, LoadingState, PageSection } from './ui';
+import { ErrorState, LoadingState } from './ui';
 import { routeBasePath } from '../config';
 import { NewClusterPage } from './clusters';
 
@@ -27,7 +27,7 @@ const SingleCluster: React.FC<SingleClusterProps> = () => {
 
   if (error) {
     return (
-      <PageSection variant={PageSectionVariants.light} isMain>
+      <PageSection variant={PageSectionVariants.light} isFilled>
         <ErrorState title="Failed to fetch cluster." fetchData={fetchClusters} />
       </PageSection>
     );
@@ -35,7 +35,7 @@ const SingleCluster: React.FC<SingleClusterProps> = () => {
 
   if (!clusters) {
     return (
-      <PageSection variant={PageSectionVariants.light} isMain>
+      <PageSection variant={PageSectionVariants.light} isFilled>
         <LoadingState />
       </PageSection>
     );
