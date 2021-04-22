@@ -5,6 +5,7 @@ import { HostRequirementsLink, HostRequirementsLinkProps } from '../fetching/Hos
 import VMRebootConfigurationInfo from '../hosts/VMRebootConfigurationInfo';
 import { HostsNotShowingLink, HostsNotShowingLinkProps } from './DiscoveryTroubleshootingModal';
 import FormatDiskWarning from './FormatDiskWarning';
+import OCSDisksManualFormattingHint from '../hosts/OCSDisksManualFormattingHint';
 
 const InformationAndAlerts: React.FC<{
   cluster: Cluster;
@@ -18,6 +19,7 @@ const InformationAndAlerts: React.FC<{
       <HostsNotShowingLink setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
     </Text>
     <VMRebootConfigurationInfo hosts={cluster.hosts || []} />
+    <OCSDisksManualFormattingHint />
     <FormatDiskWarning />
   </>
 );
