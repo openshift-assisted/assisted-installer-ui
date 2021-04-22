@@ -14,6 +14,8 @@ export const setRouteBasePath = (basePath: string) => {
   routeBasePath = basePath;
 };
 
+export const OPENSHIFT_NETWORKING_DOCS_LINK =
+  'https://docs.openshift.com/container-platform/4.7/installing/installing_bare_metal/installing-bare-metal.html#installation-network-user-infra_installing-bare-metal';
 export const CLUSTER_MANAGER_SITE_LINK = 'https://cloud.redhat.com/openshift/install/pull-secret';
 export const PULL_SECRET_INFO_LINK = CLUSTER_MANAGER_SITE_LINK;
 export const OCM_CLUSTER_LIST_LINK = '/openshift'; // TODO(mlibra): Tweak it!!!
@@ -233,10 +235,17 @@ export const DISK_ROLE_LABELS: { [key in DiskRole]: string } = {
 
 export const SNO_SUPPORT_MIN_VERSION = 4.8;
 
+// The API uses free-form string for operator names, so let's gueard at least using constants
+export const OPERATOR_NAME_CNV = 'cnv';
+export const OPERATOR_NAME_LSO = 'lso';
+export const OPERATOR_NAME_OCS = 'ocs';
+export const OPERATOR_NAME_CVO = 'cvo';
+export const OPERATOR_NAME_CONSOLE = 'console';
+
 export const OPERATOR_LABELS = {
-  console: 'OpenShift Console',
-  cvo: 'OpenShift Cluster Version Operator',
-  lso: 'OpenShift Local Storage',
-  ocs: 'OpenShift Container Storage',
-  cnv: 'OpenShift Virtualization',
+  [OPERATOR_NAME_CONSOLE]: 'OpenShift Console',
+  [OPERATOR_NAME_CVO]: 'OpenShift Cluster Version Operator',
+  [OPERATOR_NAME_LSO]: 'OpenShift Local Storage',
+  [OPERATOR_NAME_OCS]: 'OpenShift Container Storage',
+  [OPERATOR_NAME_CNV]: 'OpenShift Virtualization',
 };

@@ -7,7 +7,7 @@ interface ExternalLinkProps {
   children?: ReactNode;
 }
 const ExternalLink: React.FC<ExternalLinkProps> = ({ href, children, ...rest }) => (
-  <Text component="a" href={href} target="_blank" {...rest}>
+  <Text component="a" href={href} target="_blank" rel="noopener noreferrer" {...rest}>
     {children ? children : href} <ExternalLinkAltIcon color="rgb(0, 123, 186)" />
   </Text>
 );
