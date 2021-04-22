@@ -25,6 +25,7 @@ export type HostSubnets = HostSubnet[];
 export type NetworkConfigurationValues = ClusterUpdateParams & {
   hostSubnet?: string;
   useRedHatDnsService?: boolean;
+  networkingType: 'userManaged' | 'clusterManaged';
 };
 
 export type HostDiscoveryValues = ClusterUpdateParams & {
