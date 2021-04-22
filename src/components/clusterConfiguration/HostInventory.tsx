@@ -1,41 +1,59 @@
 import React from 'react';
-import { Text, TextContent, Button, Stack, StackItem } from '@patternfly/react-core';
-import { Cluster, HostRequirements as HostRequirementsType } from '../../api/types';
-import { DiscoveryImageModalButton } from './discoveryImageModal';
-import { DiscoveryTroubleshootingModal } from './DiscoveryTroubleshootingModal';
+import {
+  Text,
+  TextContent,
+  Button,
+  Stack,
+  StackItem,
+  List,
+  ListItem,
+} from '@patternfly/react-core';
+import { Cluster } from '../../api/types';
 import HostsDiscoveryTable from '../hosts/HostsDiscoveryTable';
 import { useFeature } from '../../features/featureGate';
 import CheckboxField from '../ui/formik/CheckboxField';
 import { isSingleNodeCluster } from '../clusters/utils';
-import InformationAndAlerts from './InformationAndAlerts';
 import DiscoveryInstructions from './DiscoveryInstructions';
+import { PopoverIcon } from '../ui';
+import { OPERATOR_NAME_CNV } from '../../config';
+import { fileSize } from '../hosts/utils';
+import { DiscoveryImageModalButton } from './discoveryImageModal';
+import { DiscoveryTroubleshootingModal } from './DiscoveryTroubleshootingModal';
+import InformationAndAlerts from './InformationAndAlerts';
+import { useClusterPreflightRequirementsContext } from './ClusterPreflightRequirementsContext';
 
-const HostRequirementsContent = ({
-  worker = {},
-  master = {},
-}: {
-  worker?: HostRequirementsType['worker'];
-  master?: HostRequirementsType['master'];
-}) => (
-  <Text component="p">
-    Three master hosts are required with at least {master.cpuCores || 4} CPU cores,{' '}
-    {master.ramGib || 16} GiB of RAM, and {master.diskSizeGb || 120} GB of filesystem storage each.
-    Two or more additional worker hosts are recommended with at least {worker.cpuCores || 2} CPU
-    cores, {worker.ramGib || 8} GiB of RAM, and {worker.diskSizeGb || 120} GB of filesystem storage
-    each.
-  </Text>
-);
+const HostRequirementsContent = () => {
+  const { preflightRequirements } = useClusterPreflightRequirementsContext();
 
-const SingleHostRequirementsContent = ({
-  master = {},
-}: {
-  master?: HostRequirementsType['master'];
-}) => (
-  <Text component="p">
-    One host is required with at least {master.cpuCores || 4} CPU cores, {master.ramGib || 16} GiB
-    of RAM, and {master.diskSizeGb || 120} GB of filesystem storage.
-  </Text>
-);
+  const master = preflightRequirements?.ocp?.master?.quantitative;
+  const worker = preflightRequirements?.ocp?.worker?.quantitative;
+
+  const masterRam = fileSize((master?.ramMib || 16 * 1024) * 1024 * 1024, 2, 'iec');
+  const workerRam = fileSize((worker?.ramMib || 8 * 1024) * 1024 * 1024, 2, 'iec');
+
+  return (
+    <Text component="p">
+      Three master hosts are required with at least {master?.cpuCores || 4} CPU cores, {masterRam}{' '}
+      of RAM, and {master?.diskSizeGb || 120} GB of filesystem storage each. Two or more additional
+      worker hosts are recommended with at least {worker?.cpuCores || 2} CPU cores, {workerRam} of
+      RAM, and {worker?.diskSizeGb || 120} GB of filesystem storage each.
+    </Text>
+  );
+};
+
+const SingleHostRequirementsContent = () => {
+  const { preflightRequirements } = useClusterPreflightRequirementsContext();
+
+  const master = preflightRequirements?.ocp?.master?.quantitative;
+  const masterRam = fileSize((master?.ramMib || 16 * 1024) * 1024 * 1024, 2, 'iec');
+
+  return (
+    <Text component="p">
+      One host is required with at least {master?.cpuCores || 4} CPU cores, {masterRam}
+      of RAM, and {master?.diskSizeGb || 120} GB of filesystem storage.
+    </Text>
+  );
+};
 
 const OCSLabel: React.FC = () => (
   <>
@@ -45,9 +63,63 @@ const OCSLabel: React.FC = () => (
   </>
 );
 
+const CNVLabel: React.FC = () => {
+  const { preflightRequirements } = useClusterPreflightRequirementsContext();
+
+  const cnvRequirements = preflightRequirements?.operators?.find(
+    (operatorRequirements) => operatorRequirements.operatorName === OPERATOR_NAME_CNV,
+  );
+
+  const workerRequirements = cnvRequirements?.requirements?.worker?.quantitative;
+  const masterRequirements = cnvRequirements?.requirements?.master?.quantitative;
+
+  return (
+    <>
+      Install OpenShift Virtualization{' '}
+      <PopoverIcon
+        headerContent="Additional Requirements"
+        className="margin-left-md"
+        hasAutoWidth
+        maxWidth="50rem"
+        bodyContent={
+          <TextContent>
+            <Text></Text>
+            <List>
+              <ListItem>
+                enabled CPU virtualization support in BIOS (Intel-VT / AMD-V) on all worker nodes
+              </ListItem>
+              <ListItem>
+                worker node requires additional {workerRequirements?.ramMib || 360} MiB of memory{' '}
+                {workerRequirements?.diskSizeGb ? ',' : ' and'} {workerRequirements?.cpuCores || 2}{' '}
+                CPUs
+                {workerRequirements?.diskSizeGb
+                  ? ` and ${workerRequirements?.diskSizeGb} storage space`
+                  : ''}
+              </ListItem>
+              <ListItem>
+                master node requires additional {masterRequirements?.ramMib || 150} MiB of memory{' '}
+                {masterRequirements?.diskSizeGb ? ',' : ' and'} {masterRequirements?.cpuCores || 4}{' '}
+                CPUs
+                {masterRequirements?.diskSizeGb
+                  ? ` and ${masterRequirements?.diskSizeGb} storage space`
+                  : ''}
+              </ListItem>
+              {/* TODO(mlibra): Wording of storage requirements needs special care - https://issues.redhat.com/browse/MGMT-5284
+              <ListItem>either Cluster or Local Storage (the LSO operator will be added by default)</ListItem>
+              */}
+            </List>
+          </TextContent>
+        }
+      />
+    </>
+  );
+};
+
 const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const [isDiscoveryHintModalOpen, setDiscoveryHintModalOpen] = React.useState(false);
   const isOpenshiftClusterStorageEnabled = useFeature('ASSISTED_INSTALLER_OCS_FEATURE');
+  const isContainerNativeVirtualizationEnabled = useFeature('ASSISTED_INSTALLER_CNV_FEATURE');
+  const isSNO = isSingleNodeCluster(cluster);
 
   return (
     <Stack hasGutter>
@@ -66,7 +138,14 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
               idPrefix="host-inventory"
             />
           </Text>
-          {isOpenshiftClusterStorageEnabled && (
+          {isContainerNativeVirtualizationEnabled && (
+            <CheckboxField
+              name="useContainerNativeVirtualization"
+              label={<CNVLabel />}
+              helperText="Run virtual machines along containers."
+            />
+          )}
+          {isOpenshiftClusterStorageEnabled && !isSNO && (
             <CheckboxField
               name="useExtraDisksForLocalStorage"
               label={<OCSLabel />}
@@ -76,7 +155,7 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
           <InformationAndAlerts
             cluster={cluster}
             HostRequirementsContent={
-              isSingleNodeCluster(cluster) ? SingleHostRequirementsContent : HostRequirementsContent
+              isSNO ? SingleHostRequirementsContent : HostRequirementsContent
             }
             setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
           />

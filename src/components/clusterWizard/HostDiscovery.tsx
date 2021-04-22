@@ -15,6 +15,8 @@ import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import { getHostDiscoveryInitialValues } from '../clusterConfiguration/utils';
 import { getOlmOperatorCreateParamsByName } from '../clusters/utils';
 import FormikAutoSave from '../ui/formik/FormikAutoSave';
+import { OPERATOR_NAME_CNV, OPERATOR_NAME_LSO, OPERATOR_NAME_OCS } from '../../config';
+import { ClusterPreflightRequirementsContextProvider } from '../clusterConfiguration/ClusterPreflightRequirementsContext';
 
 const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const dispatch = useDispatch();
@@ -25,15 +27,23 @@ const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
     clearAlerts();
 
     const params: ClusterUpdateParams = {};
-    const enabledOlmOperatorsByName = getOlmOperatorCreateParamsByName(cluster.monitoredOperators);
 
-    if (values.useExtraDisksForLocalStorage) {
-      enabledOlmOperatorsByName.ocs = { name: 'ocs' };
-    } else {
-      delete enabledOlmOperatorsByName.ocs;
-      // TODO(jtomasek): remove this once enabling OCS is moved into a separate storage step and LSO option is exposed to the user
-      delete enabledOlmOperatorsByName.lso;
+    const enabledOlmOperatorsByName = getOlmOperatorCreateParamsByName(cluster.monitoredOperators);
+    const setOperator = (name: string, enabled: boolean) => {
+      if (enabled) {
+        enabledOlmOperatorsByName[name] = { name };
+      } else {
+        delete enabledOlmOperatorsByName[name];
+      }
+    };
+
+    setOperator(OPERATOR_NAME_CNV, values.useContainerNativeVirtualization);
+    setOperator(OPERATOR_NAME_OCS, values.useExtraDisksForLocalStorage);
+    // TODO(jtomasek): remove following once enabling OCS is moved into a separate storage step and LSO option is exposed to the user
+    if (!values.useExtraDisksForLocalStorage && !values.useContainerNativeVirtualization) {
+      setOperator(OPERATOR_NAME_LSO, false);
     }
+
     params.olmOperators = Object.values(enabledOlmOperatorsByName);
 
     try {
@@ -63,7 +73,9 @@ const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
 
         return (
           <ClusterWizardStep cluster={cluster} footer={footer}>
-            <HostInventory cluster={cluster} />
+            <ClusterPreflightRequirementsContextProvider clusterId={cluster.id}>
+              <HostInventory cluster={cluster} />
+            </ClusterPreflightRequirementsContextProvider>
             <FormikAutoSave />
           </ClusterWizardStep>
         );
