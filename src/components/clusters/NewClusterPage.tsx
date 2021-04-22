@@ -6,8 +6,8 @@ import {
   Text,
   Button,
   ButtonVariant,
+  PageSection,
 } from '@patternfly/react-core';
-import PageSection from '../ui/PageSection';
 import { AlertsContextProvider } from '../AlertsContextProvider';
 import ClusterBreadcrumbs from './ClusterBreadcrumbs';
 import { ClusterDefaultConfigurationProvider } from '../clusterConfiguration/ClusterDefaultConfigurationContext';

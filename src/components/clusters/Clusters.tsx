@@ -7,8 +7,8 @@ import {
   PageSectionVariants,
   TextContent,
   Text,
+  PageSection,
 } from '@patternfly/react-core';
-import PageSection from '../ui/PageSection';
 import { selectClusterTableRows, selectClustersUIState } from '../../selectors/clusters';
 import { routeBasePath } from '../../config/constants';
 import { LoadingState, ErrorState, EmptyState } from '../ui/uiState';
@@ -59,19 +59,19 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
   switch (uiState.current) {
     case LOADING:
       return (
-        <PageSection variant={PageSectionVariants.light} isMain>
+        <PageSection variant={PageSectionVariants.light} isFilled>
           <LoadingState />
         </PageSection>
       );
     case ERROR:
       return (
-        <PageSection variant={PageSectionVariants.light} isMain>
+        <PageSection variant={PageSectionVariants.light} isFilled>
           <ErrorState title="Failed to fetch clusters." fetchData={fetchClusters} />
         </PageSection>
       );
     case EMPTY:
       return (
-        <PageSection variant={PageSectionVariants.light} isMain>
+        <PageSection variant={PageSectionVariants.light} isFilled>
           <EmptyState
             icon={AddCircleOIcon}
             title="Create new assisted cluster"
@@ -98,7 +98,7 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
               <Text component="h1">Assisted Clusters</Text>
             </TextContent>
           </PageSection>
-          <PageSection variant={PageSectionVariants.light} isMain>
+          <PageSection variant={PageSectionVariants.light} isFilled>
             <Alerts />
             <ClustersTable rows={clusterRows} deleteCluster={deleteClusterAsync} />
           </PageSection>
