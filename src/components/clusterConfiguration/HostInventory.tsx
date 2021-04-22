@@ -136,6 +136,7 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const [isDiscoveryHintModalOpen, setDiscoveryHintModalOpen] = React.useState(false);
   const isOpenshiftClusterStorageEnabled = useFeature('ASSISTED_INSTALLER_OCS_FEATURE');
   const isContainerNativeVirtualizationEnabled = useFeature('ASSISTED_INSTALLER_CNV_FEATURE');
+  const isSNO = isSingleNodeCluster(cluster);
 
   return (
     <Stack hasGutter>
@@ -161,7 +162,7 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
               helperText="Run virtual machines along containers."
             />
           )}
-          {isOpenshiftClusterStorageEnabled && (
+          {isOpenshiftClusterStorageEnabled && !isSNO && (
             <CheckboxField
               name="useExtraDisksForLocalStorage"
               label={<OCSLabel />}
@@ -171,7 +172,7 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
           <InformationAndAlerts
             cluster={cluster}
             HostRequirementsContent={
-              isSingleNodeCluster(cluster) ? SingleHostRequirementsContent : HostRequirementsContent
+              isSNO ? SingleHostRequirementsContent : HostRequirementsContent
             }
             setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
           />
