@@ -30,6 +30,7 @@ export type NetworkConfigurationValues = ClusterUpdateParams & {
 
 export type HostDiscoveryValues = ClusterUpdateParams & {
   useExtraDisksForLocalStorage: boolean;
+  useContainerNativeVirtualization: boolean;
 };
 
 export type ClusterDetailsValues = ClusterUpdateParams & {
