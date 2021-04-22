@@ -63,8 +63,11 @@ export const isAdvConf = (cluster: Cluster, defaultNetworkSettings: ClusterDefau
 
 export const getHostDiscoveryInitialValues = (cluster: Cluster): HostDiscoveryValues => {
   const monitoredOperators = cluster.monitoredOperators || [];
+  const isOperatorEnabled = (name: string) =>
+    !!monitoredOperators.find((operator) => operator.name === name);
   return {
-    useExtraDisksForLocalStorage: !!monitoredOperators.find((operator) => operator.name === 'ocs'),
+    useExtraDisksForLocalStorage: isOperatorEnabled('ocs'),
+    useContainerNativeVirtualization: isOperatorEnabled('cnv'),
   };
 };
 
