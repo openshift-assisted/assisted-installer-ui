@@ -82,5 +82,6 @@ export const getNetworkInitialValues = (
     sshPublicKey: cluster.sshPublicKey || '',
     hostSubnet: getSubnetFromMachineNetworkCidr(cluster.machineNetworkCidr),
     vipDhcpAllocation: cluster.vipDhcpAllocation,
+    networkingType: cluster.userManagedNetworking ? 'userManaged' : 'clusterManaged',
   };
 };
