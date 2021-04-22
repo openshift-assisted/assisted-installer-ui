@@ -15,22 +15,20 @@ import { getErrorMessage, handleApiError } from '../../api/utils';
 import { AlertsContext } from '../AlertsContextProvider';
 import { DISK_ROLE_LABELS } from '../../config/constants';
 
-const getCurrentDiskRoleLabel = (disk: Disk, installationDiskPath: Host['installationDiskPath']) =>
-  disk.path === installationDiskPath ? DISK_ROLE_LABELS.install : DISK_ROLE_LABELS.none;
+const getCurrentDiskRoleLabel = (disk: Disk, installationDiskId: Host['installationDiskId']) =>
+  disk.id === installationDiskId ? DISK_ROLE_LABELS.install : DISK_ROLE_LABELS.none;
 
 type DiskRoleProps = {
   host: Host;
   disk: Disk;
-  installationDiskPath: Host['installationDiskPath'];
+  installationDiskId: Host['installationDiskId'];
   isEditable: boolean;
 };
-const DiskRole: React.FC<DiskRoleProps> = ({ host, disk, installationDiskPath, isEditable }) => {
-  if (isEditable && disk.path !== installationDiskPath) {
-    return <DiskRoleDropdown host={host} disk={disk} installationDiskPath={installationDiskPath} />;
+const DiskRole: React.FC<DiskRoleProps> = ({ host, disk, installationDiskId, isEditable }) => {
+  if (isEditable && disk.id !== installationDiskId) {
+    return <DiskRoleDropdown host={host} disk={disk} installationDiskId={installationDiskId} />;
   }
-  return (
-    <>{disk.path === installationDiskPath ? DISK_ROLE_LABELS.install : DISK_ROLE_LABELS.none}</>
-  );
+  return <>{getCurrentDiskRoleLabel(disk, installationDiskId)}</>;
 };
 
 export default DiskRole;
@@ -38,13 +36,9 @@ export default DiskRole;
 type DiskRoleDropdownProps = {
   host: Host;
   disk: Disk;
-  installationDiskPath: Host['installationDiskPath'];
+  installationDiskId: Host['installationDiskId'];
 };
-const DiskRoleDropdown: React.FC<DiskRoleDropdownProps> = ({
-  host,
-  disk,
-  installationDiskPath,
-}) => {
+const DiskRoleDropdown: React.FC<DiskRoleDropdownProps> = ({ host, disk, installationDiskId }) => {
   const [isOpen, setOpen] = React.useState(false);
   const [isDisabled, setDisabled] = React.useState(false);
   const dispatch = useDispatch();
@@ -67,23 +61,25 @@ const DiskRoleDropdown: React.FC<DiskRoleDropdownProps> = ({
   const onSelect = React.useCallback(
     (event?: React.SyntheticEvent<HTMLDivElement>) => {
       const setRole = async (role: DiskRoleValue) => {
-        setDisabled(true);
+        if (disk.id) {
+          setDisabled(true);
 
-        const params: ClusterUpdateParams = {};
-        params.disksSelectedConfig = [
-          { id, disksConfig: [{ id: disk.path, role } as DiskConfigParams] },
-        ];
+          const params: ClusterUpdateParams = {};
+          params.disksSelectedConfig = [
+            { id, disksConfig: [{ id: disk.id, role } as DiskConfigParams] },
+          ];
 
-        try {
-          const { data } = await patchCluster(clusterId as string, params);
-          dispatch(updateCluster(data));
-        } catch (e) {
-          handleApiError(e, () =>
-            addAlert({ title: 'Failed to set disk role', message: getErrorMessage(e) }),
-          );
+          try {
+            const { data } = await patchCluster(clusterId as string, params);
+            dispatch(updateCluster(data));
+          } catch (e) {
+            handleApiError(e, () =>
+              addAlert({ title: 'Failed to set disk role', message: getErrorMessage(e) }),
+            );
+          }
+
+          setDisabled(false);
         }
-
-        setDisabled(false);
       };
 
       if (event?.currentTarget.id) {
@@ -91,10 +87,10 @@ const DiskRoleDropdown: React.FC<DiskRoleDropdownProps> = ({
       }
       setOpen(false);
     },
-    [setOpen, addAlert, clusterId, disk.path, dispatch, id],
+    [setOpen, addAlert, clusterId, disk.id, dispatch, id],
   );
 
-  const currentRoleLabel = getCurrentDiskRoleLabel(disk, installationDiskPath);
+  const currentRoleLabel = getCurrentDiskRoleLabel(disk, installationDiskId);
   const toggle = React.useMemo(
     () => (
       <DropdownToggle

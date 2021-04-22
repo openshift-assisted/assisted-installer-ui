@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { Formik, FormikProps } from 'formik';
+import { Formik, FormikConfig, FormikProps } from 'formik';
 import * as Yup from 'yup';
 import _ from 'lodash';
 import {
@@ -31,6 +31,7 @@ import { getHostSubnets, getNetworkInitialValues } from './utils';
 import { useDefaultConfiguration } from './ClusterDefaultConfigurationContext';
 import NetworkingHostsTable from '../hosts/NetworkingHostsTable';
 import FormikAutoSave from '../ui/formik/FormikAutoSave';
+import { isSingleNodeCluster } from '../clusters/utils';
 
 const validationSchema = (initialValues: NetworkConfigurationValues, hostSubnets: HostSubnets) =>
   Yup.lazy<NetworkConfigurationValues>((values) =>
@@ -66,18 +67,34 @@ const NetworkConfigurationForm: React.FC<{
     [hostSubnets, initialValues],
   );
 
-  const handleSubmit = async (values: NetworkConfigurationValues) => {
+  const handleSubmit: FormikConfig<NetworkConfigurationValues>['onSubmit'] = async (values) => {
     clearAlerts();
 
     // update the cluster configuration
     try {
-      const params = _.omit(values, ['hostSubnet', 'useRedHatDnsService']);
+      const isMultiNodeCluster = !isSingleNodeCluster(cluster);
+      const isUserManagedNetworking = values.networkingType === 'userManaged';
+      const params = _.omit(values, ['hostSubnet', 'useRedHatDnsService', 'networkingType']);
+      params.userManagedNetworking = isUserManagedNetworking;
+      params.machineNetworkCidr = hostSubnets.find(
+        (hn) => hn.humanized === values.hostSubnet,
+      )?.subnet;
 
-      if (values.vipDhcpAllocation) {
+      if (isUserManagedNetworking) {
+        if (isMultiNodeCluster) {
+          delete params.machineNetworkCidr;
+        }
+
         delete params.apiVip;
         delete params.ingressVip;
-        const cidr = hostSubnets.find((hn) => hn.humanized === values.hostSubnet)?.subnet;
-        params.machineNetworkCidr = cidr;
+      } else {
+        // cluster-managed can't be chosen in SNO, so this must be a multi-node cluster
+        if (values.vipDhcpAllocation) {
+          delete params.apiVip;
+          delete params.ingressVip;
+        } else {
+          delete params.machineNetworkCidr;
+        }
       }
 
       const { data } = await patchCluster(cluster.id, params);

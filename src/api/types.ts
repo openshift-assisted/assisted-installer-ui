@@ -87,6 +87,10 @@ export interface Cluster {
    */
   openshiftVersion?: string;
   /**
+   * OpenShift release image URI.
+   */
+  ocpReleaseImage?: string;
+  /**
    * Cluster ID on OCP system.
    */
   openshiftClusterId?: string; // uuid
@@ -248,7 +252,6 @@ export interface Cluster {
    * A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
    */
   additionalNtpSource?: string;
-  progress?: ClusterProgressInfo;
   /**
    * Operators that are associated with this cluster.
    */
@@ -261,6 +264,10 @@ export interface Cluster {
    * Enable/disable hyperthreading on master nodes, worker nodes, or all nodes
    */
   hyperthreading?: 'masters' | 'workers' | 'all' | 'none';
+  /**
+   * JSON-formatted string containing the usage information by feature name
+   */
+  featureUsage?: string;
 }
 export interface ClusterCreateParams {
   /**
@@ -277,6 +284,10 @@ export interface ClusterCreateParams {
    * Version of the OpenShift cluster.
    */
   openshiftVersion: string;
+  /**
+   * OpenShift release image URI.
+   */
+  ocpReleaseImage?: string;
   /**
    * Base domain of the cluster. All DNS records must be sub-domains of this base and include the cluster name.
    */
@@ -386,13 +397,6 @@ export interface ClusterHostRequirementsDetails {
 }
 export type ClusterHostRequirementsList = ClusterHostRequirements[];
 export type ClusterList = Cluster[];
-export interface ClusterProgressInfo {
-  progressInfo?: string;
-  /**
-   * Time at which the cluster install progress was last updated.
-   */
-  progressUpdatedAt?: string; // date-time
-}
 export interface ClusterUpdateParams {
   /**
    * OpenShift cluster name.
@@ -1145,6 +1149,26 @@ export interface HostStaticNetworkConfig {
    */
   macInterfaceMap?: MacInterfaceMap;
 }
+export interface HostTypeHardwareRequirements {
+  /**
+   * Host requirements that can be quantified
+   */
+  quantitative?: ClusterHostRequirementsDetails;
+  /**
+   * Host requirements that cannot be quantified at the time of calculation. Descriptions or formulas of requiements
+   */
+  qualitative?: string[];
+}
+export interface HostTypeHardwareRequirementsWrapper {
+  /**
+   * Requirements towards a worker node
+   */
+  worker?: HostTypeHardwareRequirements;
+  /**
+   * Requirements towards a master node
+   */
+  master?: HostTypeHardwareRequirements;
+}
 export type HostValidationId =
   | 'connected'
   | 'has-inventory'
@@ -1417,6 +1441,10 @@ export interface OpenshiftVersion {
    */
   releaseImage: string;
   /**
+   * OCP version from the release metadata.
+   */
+  releaseVersion: string;
+  /**
    * The base RHCOS image used for the discovery iso.
    */
   rhcosImage: string;
@@ -1427,7 +1455,7 @@ export interface OpenshiftVersion {
   /**
    * Level of support of the version.
    */
-  supportLevel: 'beta' | 'production';
+  supportLevel: 'beta' | 'production' | 'custom';
   /**
    * Indication that the version is the recommended one.
    */
@@ -1442,6 +1470,17 @@ export interface OperatorCreateParams {
    * Blob of operator-dependent parameters that are required for installation.
    */
   properties?: string;
+}
+export interface OperatorHardwareRequirements {
+  /**
+   * Unique name of the operator. Corresponds to name property of the monitored-operator, i.e. "lso", "cnv", etc.
+   */
+  operatorName?: string;
+  /**
+   * List of other operator unique names that are required to be installed. Corresponds to name property of the monitored-operator, i.e. "lso", "cnv", etc.
+   */
+  dependencies?: string[];
+  requirements?: HostTypeHardwareRequirementsWrapper;
 }
 export interface OperatorHostRequirements {
   /**
@@ -1499,6 +1538,16 @@ export type OperatorStatus = 'failed' | 'progressing' | 'available';
  * Kind of operator. Different types are monitored by the service differently.
  */
 export type OperatorType = 'builtin' | 'olm';
+export interface PreflightHardwareRequirements {
+  /**
+   * Preflight operators hardware requirements
+   */
+  operators?: OperatorHardwareRequirements[];
+  /**
+   * Preflight OCP requirements
+   */
+  ocp?: HostTypeHardwareRequirementsWrapper;
+}
 export interface Presigned {
   url: string;
 }
@@ -1553,6 +1602,18 @@ export interface SystemVendor {
    * Whether the machine appears to be a virtual machine or not
    */
   virtual?: boolean;
+}
+export interface Usage {
+  /**
+   * name of the feature to track
+   */
+  name?: string;
+  /**
+   * additional properties of the feature
+   */
+  data?: {
+    [name: string]: {};
+  };
 }
 export interface VersionedHostRequirements {
   /**

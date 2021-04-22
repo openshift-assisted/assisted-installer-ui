@@ -231,11 +231,6 @@ const ClusterProgress: React.FC<ClusterProgressProps> = ({ cluster, minimizedVie
             <FlexItem>
               <HostProgress hosts={hosts} hostRole="master" />
             </FlexItem>
-            {!!monitoredOperators.length && (
-              <FlexItem>
-                <OperatorsProgressItem operators={monitoredOperators} />
-              </FlexItem>
-            )}
             {isWorkersPresent && (
               <FlexItem>
                 <HostProgress hosts={hosts} hostRole="worker" />
@@ -244,6 +239,11 @@ const ClusterProgress: React.FC<ClusterProgressProps> = ({ cluster, minimizedVie
             <FlexItem>
               <FinalizingProgress cluster={cluster} />
             </FlexItem>
+            {!!monitoredOperators.length && (
+              <FlexItem>
+                <OperatorsProgressItem operators={monitoredOperators} />
+              </FlexItem>
+            )}
           </Flex>
         </>
       )}

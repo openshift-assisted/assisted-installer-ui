@@ -3,7 +3,8 @@ import React from 'react';
 // Must conform Unleash constants
 type AssistedInstallerFeatureType =
   | 'ASSISTED_INSTALLER_SNO_FEATURE'
-  | 'ASSISTED_INSTALLER_OCS_FEATURE';
+  | 'ASSISTED_INSTALLER_OCS_FEATURE'
+  | 'ASSISTED_INSTALLER_CNV_FEATURE';
 export type FeatureListType = {
   [key in AssistedInstallerFeatureType]?: boolean;
 };
@@ -12,12 +13,14 @@ export type FeatureListType = {
 export const SINGLE_CLUSTER_ENABLED_FEATURES: FeatureListType = {
   ASSISTED_INSTALLER_SNO_FEATURE: false,
   ASSISTED_INSTALLER_OCS_FEATURE: false,
+  ASSISTED_INSTALLER_CNV_FEATURE: false,
 };
 
 // Hardcoded outside OCM
 export const STANDALONE_DEPLOYMENT_ENABLED_FEATURES: FeatureListType = {
   ASSISTED_INSTALLER_SNO_FEATURE: true,
   ASSISTED_INSTALLER_OCS_FEATURE: true,
+  ASSISTED_INSTALLER_CNV_FEATURE: true,
 };
 
 export type FeatureGateContextType = {
@@ -34,6 +37,7 @@ export const FeatureGateContextProvider: React.FC<{
   // hardcoded defaults
   const featuresWithDefaults: FeatureListType = {
     ASSISTED_INSTALLER_OCS_FEATURE: false,
+    ASSISTED_INSTALLER_CNV_FEATURE: false,
     ...features,
   };
 

@@ -123,13 +123,14 @@ export const vipValidationSchema = (
   values: NetworkConfigurationValues,
   initialValue?: string,
 ) =>
-  Yup.mixed().when('vipDhcpAllocation', {
-    is: (value) => !value,
+  Yup.mixed().when(['vipDhcpAllocation', 'networkingType'], {
+    is: (vipDhcpAllocation, networkingType) =>
+      !vipDhcpAllocation && networkingType !== 'userManaged',
     then: requiredOnceSet(initialValue)
       .concat(vipRangeValidationSchema(hostSubnets, values))
       .concat(vipUniqueValidationSchema(hostSubnets, values))
       .when('hostSubnet', {
-        is: (value: string) => value !== NO_SUBNET_SET,
+        is: (hostSubnet) => hostSubnet !== NO_SUBNET_SET,
         then: Yup.string().required('Required. Please provide an IP address'),
       }),
   });
@@ -139,12 +140,12 @@ export const ipBlockValidationSchema = Yup.string()
   .test(
     'valid-ip-address',
     'Invalid IP address block. Expected value is a network expressed in CIDR notation (IP/netmask). For example: 123.123.123.0/24, 2055:d7a::/116',
-    (value: string) => isCIDR.v4(value) || isCIDR.v6(value),
+    (value = '') => isCIDR.v4(value) || isCIDR.v6(value),
   )
   .test(
     'valid-netmask',
     'IPv4 netmask must be between 1-25 and include at least 128 addresses.\nIPv6 netmask must be between 8-128 and include at least 256 addresses.',
-    (value: string) => {
+    (value = '') => {
       const suffix = parseInt(value.split('/')[1]);
 
       return (
@@ -156,7 +157,7 @@ export const ipBlockValidationSchema = Yup.string()
   .test(
     'cidr-is-not-unspecified',
     'The specified CIDR is invalid because its resulting routing prefix matches the unspecified address.',
-    (value: string) => {
+    (value = '') => {
       const ip = stringToIPAddress(value);
       if (ip === null) {
         return false;
@@ -171,7 +172,7 @@ export const ipBlockValidationSchema = Yup.string()
   .test(
     'valid-cidr-base-address',
     ({ value }) => `${value} is not a valid CIDR`,
-    (value: string) => {
+    (value = '') => {
       const ip = stringToIPAddress(value);
       if (ip === null) {
         return false;
