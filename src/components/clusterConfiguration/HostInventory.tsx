@@ -14,7 +14,7 @@ import { useFeature } from '../../features/featureGate';
 import CheckboxField from '../ui/formik/CheckboxField';
 import { isSingleNodeCluster } from '../clusters/utils';
 import DiscoveryInstructions from './DiscoveryInstructions';
-import { PopoverIcon } from '../ui';
+import { ExternalLink, PopoverIcon } from '../ui';
 import { OPERATOR_NAME_CNV } from '../../config';
 import { fileSize } from '../hosts/utils';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
@@ -32,12 +32,21 @@ const HostRequirementsContent = () => {
   const workerRam = fileSize((worker?.ramMib || 8 * 1024) * 1024 * 1024, 2, 'iec');
 
   return (
-    <Text component="p">
-      Three master hosts are required with at least {master?.cpuCores || 4} CPU cores, {masterRam}{' '}
-      of RAM, and {master?.diskSizeGb || 120} GB of filesystem storage each. Two or more additional
-      worker hosts are recommended with at least {worker?.cpuCores || 2} CPU cores, {workerRam} of
-      RAM, and {worker?.diskSizeGb || 120} GB of filesystem storage each.
-    </Text>
+    <List>
+      <ListItem>
+        Masters: At least {master?.cpuCores || 4} CPU cores, {masterRam} RAM,{' '}
+        {master?.diskSizeGb || 120} GB filesystem for every supervisor.
+      </ListItem>
+      <ListItem>
+        Workers: At least {worker?.cpuCores || 2} CPU cores, {workerRam} RAM,{' '}
+        {worker?.diskSizeGb || 120} GB filesystem for each worker
+      </ListItem>
+      <ListItem>
+        Also note that each hosts' disk write speed should meet the minimum requirements to run
+        OpenShift.{' '}
+        <ExternalLink href={'https://access.redhat.com/solutions/4885641'}>Learn more</ExternalLink>
+      </ListItem>
+    </List>
   );
 };
 
