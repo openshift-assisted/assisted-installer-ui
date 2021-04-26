@@ -40,7 +40,7 @@ const getSelectedNic = (nics: Interface[], currentSubnet: Address4 | Address6) =
   });
 };
 
-const getColumns = (hosts?: Host[]) => [
+const getColumns = (cluster: Cluster) => [
   { title: 'Hostname', transforms: [sortable], cellFormatters: [expandable] },
   { title: 'Role', transforms: [sortable] },
   { title: 'Status', transforms: [sortable] },
@@ -48,7 +48,7 @@ const getColumns = (hosts?: Host[]) => [
   { title: 'IPv4 address', transforms: [sortable] },
   { title: 'Ipv6 address', transforms: [sortable] },
   { title: 'MAC address', transforms: [sortable] },
-  { title: <HostsCount hosts={hosts} inParenthesis /> },
+  { title: <HostsCount cluster={cluster} inParenthesis /> },
 ];
 
 const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host): IRow[] => {

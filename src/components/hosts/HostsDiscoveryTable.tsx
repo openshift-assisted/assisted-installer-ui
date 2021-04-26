@@ -16,7 +16,7 @@ import { getDateTimeCell } from '../ui/table/utils';
 import { HostsNotShowingLinkProps } from '../clusterConfiguration/DiscoveryTroubleshootingModal';
 import HostsCount from './HostsCount';
 
-const getColumns = (hosts?: Host[]) => [
+const getColumns = (cluster: Cluster) => [
   { title: 'Hostname', transforms: [sortable], cellFormatters: [expandable] },
   { title: 'Role', transforms: [sortable] },
   { title: 'Status', transforms: [sortable] },
@@ -24,7 +24,7 @@ const getColumns = (hosts?: Host[]) => [
   { title: 'CPU Cores', transforms: [sortable] }, // cores per machine (sockets x cores)
   { title: 'Memory', transforms: [sortable] },
   { title: 'Disk', transforms: [sortable] },
-  { title: <HostsCount hosts={hosts} inParenthesis /> },
+  { title: <HostsCount cluster={cluster} inParenthesis /> },
 ];
 
 const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host): IRow[] => {
