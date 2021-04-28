@@ -108,7 +108,7 @@ export const WebConsoleHint: React.FC<WebConsoleHintProps> = ({ cluster, console
   ];
 
   const aRecordsOptional = sortedHostIPs.map((hostname: string) => {
-    const fqdn = cluster.baseDnsDomain ? `${hostname}${`.${cluster.baseDnsDomain}`}` : hostname;
+    const fqdn = cluster.baseDnsDomain ? `${hostname}.${cluster.baseDnsDomain}` : hostname;
     return `${fqdn}\tA\t${hostIPs[hostname]}`;
   });
 
