@@ -783,12 +783,17 @@ export interface Event {
    */
   hostId?: string; // uuid
   severity: 'info' | 'warning' | 'error' | 'critical';
+  category?: 'user' | 'metrics';
   message: string;
   eventTime: string; // date-time
   /**
    * Unique identifier of the request that caused this event to occur.
    */
   requestId?: string; // uuid
+  /**
+   * Additional properties for the event in JSON format.
+   */
+  props?: string;
 }
 export type EventList = Event[];
 export interface FioPerfCheckRequest {
@@ -1200,10 +1205,6 @@ export interface ImageCreateParams {
    * Type of image that should be generated.
    */
   imageType?: ImageType;
-  /**
-   * configuration of the mirror registries for discovery ISO and installed nodes
-   */
-  mirrorRegistriesCaConfig?: MirrorRegistriesCaConfig;
 }
 export interface ImageInfo {
   /**
@@ -1223,14 +1224,6 @@ export interface ImageInfo {
    */
   staticNetworkConfig?: string;
   type?: ImageType;
-  /**
-   * CA config data for mirror registries
-   */
-  caConfig?: string;
-  /**
-   * registries.conf file contents in a TOML format
-   */
-  mirrorRegistriesConfig?: string;
 }
 export type ImageType = 'full-iso' | 'minimal-iso';
 export interface InfraError {
@@ -1346,34 +1339,6 @@ export interface Manifest {
 export interface Memory {
   physicalBytes?: number;
   usableBytes?: number;
-}
-export interface MirrorRegistriesCaConfig {
-  /**
-   * configuration of registries conf
-   */
-  mirrorRegistriesConfig?: MirrorRegistriesConfig;
-  /**
-   * string containing CA or CA bundle for mirrored registries
-   */
-  caConfig?: string;
-}
-export interface MirrorRegistriesConfig {
-  'unqualified-search-registries'?: string[];
-  mirrorRegistries?: MirrorRegistry[];
-}
-export interface MirrorRegistry {
-  /**
-   * prefix for choosing this specific mirror
-   */
-  prefix?: string;
-  /**
-   * the original registry location
-   */
-  location?: string;
-  /**
-   * the mirror registry location
-   */
-  mirrorLocation?: string;
 }
 export interface MonitoredOperator {
   /**
