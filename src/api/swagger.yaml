@@ -1920,6 +1920,63 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
+  /clusters/{cluster_id}/hosts/{host_id}/actions/reset-validation/{validation_id}:
+    patch:
+      tags:
+        - installer
+      summary: Reset failed host validation.
+      operationId: ResetHostValidation
+      description:
+        Reset failed host validation.  It may be performed on any host validation with persistent
+        validation result.
+      parameters:
+        - in: path
+          name: cluster_id
+          description: The cluster of the host that its validation is being reset.
+          type: string
+          format: uuid
+          required: true
+        - in: path
+          name: host_id
+          description: The host that its validation is being reset.
+          type: string
+          format: uuid
+          required: true
+        - in: path
+          description: The id of the validation being reset.
+          type: string
+          name: validation_id
+          required: true
+      responses:
+        '200':
+          description: Success.
+          schema:
+            $ref: '#/definitions/host'
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '409':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
   /clusters/{cluster_id}/hosts/{host_id}/instructions:
     get:
       tags:
@@ -2624,6 +2681,13 @@ paths:
           description: A host in the specified cluster to return events for.
           type: string
           format: uuid
+          required: false
+        - in: query
+          name: categories
+          description: A comma-separated list of event categories.
+          type: array
+          items:
+            type: string
           required: false
       responses:
         '200':
@@ -3427,6 +3491,10 @@ definitions:
       severity:
         type: string
         enum: [info, warning, error, critical]
+      category:
+        type: string
+        enum: ['user', 'metrics']
+        x-go-custom-tag: gorm:"default:'user'"
       message:
         type: string
         x-go-custom-tag: gorm:"type:varchar(4096)"
@@ -3438,6 +3506,10 @@ definitions:
         type: string
         format: uuid
         description: Unique identifier of the request that caused this event to occur.
+      props:
+        type: string
+        description: Additional properties for the event in JSON format.
+        x-go-custom-tag: gorm:"type:text"
 
   image-create-params:
     type: object
@@ -3452,9 +3524,6 @@ definitions:
       image_type:
         description: Type of image that should be generated.
         $ref: '#/definitions/image_type'
-      mirror_registries_ca_config:
-        description: configuration of the mirror registries for discovery ISO and installed nodes
-        $ref: '#/definitions/mirror_registries_ca_config'
 
   assisted-service-iso-create-params:
     type: object
@@ -4358,7 +4427,7 @@ definitions:
       feature_usage:
         type: string
         description: JSON-formatted string containing the usage information by feature name
-        x-go-custom-tag: gorm:"type:text;default:'{}'"
+        x-go-custom-tag: gorm:"type:text"
 
   image_info:
     type: object
@@ -4389,12 +4458,6 @@ definitions:
           generation
       type:
         $ref: '#/definitions/image_type'
-      ca_config:
-        type: string
-        description: CA config data for mirror registries
-      mirror_registries_config:
-        type: string
-        description: registries.conf file contents in a TOML format
 
   host_static_network_config:
     type: object
@@ -4422,41 +4485,6 @@ definitions:
   image_type:
     type: string
     enum: [full-iso, minimal-iso]
-
-  mirror_registries_ca_config:
-    type: object
-    properties:
-      mirror_registries_config:
-        $ref: '#/definitions/mirror_registries_config'
-        description: configuration of registries conf
-      ca_config:
-        type: string
-        description: string containing CA or CA bundle for mirrored registries
-
-  mirror_registries_config:
-    type: object
-    properties:
-      unqualified-search-registries:
-        type: array
-        items:
-          type: string
-      mirror_registries:
-        type: array
-        items:
-          $ref: '#/definitions/mirror_registry'
-
-  mirror_registry:
-    type: object
-    properties:
-      prefix:
-        type: string
-        description: prefix for choosing this specific mirror
-      location:
-        type: string
-        description: the original registry location
-      mirror_location:
-        type: string
-        description: the mirror registry location
 
   free-addresses-list:
     type: array
