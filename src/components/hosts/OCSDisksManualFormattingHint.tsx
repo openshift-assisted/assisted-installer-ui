@@ -14,7 +14,7 @@ import { InfoCircleIcon } from '@patternfly/react-icons';
 const Hint = () => (
   <TextContent>
     <Text component={TextVariants.p}>
-      All installation disks are going to be used for local storage. <br />
+      All non-installation disks are going to be used for local storage. <br />
       The list of the disks is available under each host row in the table below.
       <br />
       Please format the disks before installing.
