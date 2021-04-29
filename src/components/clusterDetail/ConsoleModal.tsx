@@ -103,13 +103,14 @@ export const WebConsoleHint: React.FC<WebConsoleHintProps> = ({ cluster, console
   const paddingNum = `*.${appsUrl}.`.length + 2;
 
   const aRecords = [
-    `api.${clusterUrl}.`.padEnd(paddingNum) + `A\t${cluster.apiVip}`,
-    `*.${appsUrl}.`.padEnd(paddingNum) + `A\t${cluster.ingressVip}`,
+    `api.${clusterUrl}`.padEnd(paddingNum) + `A\t${cluster.apiVip}`,
+    `*.${appsUrl}`.padEnd(paddingNum) + `A\t${cluster.ingressVip}`,
   ];
 
-  const aRecordsOptional = sortedHostIPs.map(
-    (hostname: string) => `${hostname}.\tA\t${hostIPs[hostname]}`,
-  );
+  const aRecordsOptional = sortedHostIPs.map((hostname: string) => {
+    const fqdn = cluster.baseDnsDomain ? `${hostname}.${cluster.baseDnsDomain}` : hostname;
+    return `${fqdn}\tA\t${hostIPs[hostname]}`;
+  });
 
   return (
     <>

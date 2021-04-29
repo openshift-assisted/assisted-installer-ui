@@ -8,13 +8,9 @@ import { ClusterCreateParams } from '../../api/types';
 import { SNO_SUPPORT_MIN_VERSION } from '../../config/constants';
 
 type OpenShiftVersionSelectProps = {
-  isDisabled: boolean;
   versions: OpenshiftVersionOptionType[];
 };
-const OpenShiftVersionSelect: React.FC<OpenShiftVersionSelectProps> = ({
-  versions,
-  isDisabled,
-}) => {
+const OpenShiftVersionSelect: React.FC<OpenShiftVersionSelectProps> = ({ versions }) => {
   const {
     values: { highAvailabilityMode },
     setFieldValue,
@@ -57,7 +53,7 @@ const OpenShiftVersionSelect: React.FC<OpenShiftVersionSelectProps> = ({
       name="openshiftVersion"
       options={selectOptions}
       getHelperText={getOpenshiftVersionHelperText}
-      isDisabled={isDisabled || versions.length === 0}
+      isDisabled={versions.length === 0}
       isRequired
     />
   );
