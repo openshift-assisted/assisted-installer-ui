@@ -32,6 +32,7 @@ import { OpenshiftVersionOptionType } from '../../types/versions';
 import SingleNodeCheckbox from '../ui/formik/SingleNodeCheckbox';
 import OpenShiftVersionSelect from '../clusterConfiguration/OpenShiftVersionSelect';
 import ClusterWizardToolbar from './ClusterWizardToolbar';
+import { StaticTextField } from '../ui/StaticTextField';
 
 type ClusterDetailsFormProps = {
   cluster?: Cluster;
@@ -241,7 +242,13 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
                     versions={versions}
                     isDisabled={!!cluster}
                   />
-                  <OpenShiftVersionSelect versions={versions} isDisabled={!!cluster} />
+                  {cluster ? (
+                    <StaticTextField name="openshiftVersion" label="OpenShift version" isRequired>
+                      OpenShift {cluster.openshiftVersion}
+                    </StaticTextField>
+                  ) : (
+                    <OpenShiftVersionSelect versions={versions} />
+                  )}
                   {!cluster?.pullSecretSet && <PullSecret pullSecret={pullSecret} />}
                 </Form>
               </GridItem>
