@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { shallowEqual, useDispatch } from 'react-redux';
 import { Formik, FormikConfig, FormikProps } from 'formik';
 import * as Yup from 'yup';
 import _ from 'lodash';
@@ -114,7 +114,9 @@ const NetworkConfigurationForm: React.FC<{
       initialTouched={_.mapValues(initialValues, () => true)}
       validateOnMount
     >
-      {({ isSubmitting, dirty, errors }: FormikProps<NetworkConfigurationValues>) => {
+      {({ isSubmitting, errors, values }: FormikProps<NetworkConfigurationValues>) => {
+        // Workaround, Formik's "dirty" stays true unless we use enableReinitialize or play with resetForm()
+        const isFormikDirty = !shallowEqual(values, initialValues);
         const form = (
           <>
             <Grid hasGutter>
@@ -150,9 +152,9 @@ const NetworkConfigurationForm: React.FC<{
           <ClusterWizardToolbar
             cluster={cluster}
             formErrors={errors}
-            dirty={dirty}
+            dirty={isFormikDirty}
             isSubmitting={isSubmitting}
-            isNextDisabled={dirty || !canNextNetwork({ cluster })}
+            isNextDisabled={isFormikDirty || !canNextNetwork({ cluster })}
             onNext={() => setCurrentStepId('review')}
             onBack={() => setCurrentStepId('host-discovery')}
           />
