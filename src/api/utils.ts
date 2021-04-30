@@ -33,22 +33,23 @@ export const handleApiError = <T>(error: AxiosError<T>, onError?: OnError) => {
 export const getErrorMessage = (error: AxiosError) =>
   error.response?.data?.reason || error.response?.data?.message || error.message;
 
-export const stringToJSON = <T>(string: string | undefined): T | undefined => {
-  if (string) {
+export const stringToJSON = <T>(jsonString: string | undefined): T | undefined => {
+  let jsObject: T | undefined;
+  if (jsonString) {
     try {
-      const camelCased = string.replace(
+      const camelCased = jsonString.replace(
         /"([\w-]+)":/g,
         (_match, offset) => `"${_.camelCase(offset)}":`,
       );
-      const json = JSON.parse(camelCased);
-      return json;
+      jsObject = JSON.parse(camelCased) as T;
     } catch (e) {
-      console.error('Failed to parse api string', e, string);
+      console.error('Failed to parse api string', e, jsonString);
     }
   } else {
     console.info('Empty api string received.');
   }
-  return undefined;
+
+  return jsObject;
 };
 
 export const removeProtocolFromURL = (url = '') => url.replace(/^(http|https):\/\//, '');
