@@ -8,7 +8,7 @@ import {
 describe('wizardTransitions module tests', () => {
   describe('checkHostValidationGroups', () => {
     it('should return false when validationsInfo parameter is empty object', () => {
-      expect(checkHostValidationGroups({}, ['hardware'])).toBeFalsy();
+      expect(checkHostValidationGroups({}, ['hardware'], [])).toBeFalsy();
     });
   });
   describe('checkHostValidations', () => {
@@ -18,7 +18,7 @@ describe('wizardTransitions module tests', () => {
   });
   describe('checkClusterValidationGroups', () => {
     it('should return false when validationsInfo parameter is empty object', () => {
-      expect(checkClusterValidationGroups({}, ['hostsData'])).toBeFalsy();
+      expect(checkClusterValidationGroups({}, ['hostsData'], [])).toBeFalsy();
     });
   });
   describe('checkClusterValidations', () => {
