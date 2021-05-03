@@ -7,8 +7,6 @@ import {
   Button,
   TextContent,
   Text,
-  Split,
-  SplitItem,
 } from '@patternfly/react-core';
 import { useSelector } from 'react-redux';
 import { ErrorState, LoadingState } from '../ui/uiState';
@@ -24,7 +22,6 @@ import { AddHosts } from '../AddHosts';
 import { AddHostsContextProvider } from '../AddHosts/AddHostsContext';
 import { ClusterDefaultConfigurationProvider } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
 import ClusterBreadcrumbs from './ClusterBreadcrumbs';
-import { EventsModalButton } from '../ui/eventsModal';
 import ClusterWizard from '../clusterWizard/ClusterWizard';
 import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
 import { useClusterPolling, useFetchCluster } from './clusterPolling';
@@ -88,25 +85,9 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
         <>
           <ClusterBreadcrumbs clusterName={cluster.name} />
           <PageSection variant={PageSectionVariants.light}>
-            <Split>
-              <SplitItem>
-                <TextContent>
-                  <Text component="h1">Install OpenShift with the Assisted Installer</Text>
-                </TextContent>
-              </SplitItem>
-              <SplitItem isFilled />
-              <SplitItem>
-                <EventsModalButton
-                  id="cluster-events-button"
-                  entityKind="cluster"
-                  cluster={cluster}
-                  title="Cluster Events"
-                  variant={ButtonVariant.secondary}
-                >
-                  View Cluster Events
-                </EventsModalButton>
-              </SplitItem>
-            </Split>
+            <TextContent>
+              <Text component="h1">Install OpenShift with the Assisted Installer</Text>
+            </TextContent>
           </PageSection>
           <PageSection variant={PageSectionVariants.light}>
             <ClusterWizard cluster={cluster} />

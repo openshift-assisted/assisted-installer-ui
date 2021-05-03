@@ -63,12 +63,22 @@ const clusterDetailsStepValidationsMap: WizardStepValidationMap = {
 const hostDiscoveryStepValidationsMap: WizardStepValidationMap = {
   cluster: {
     groups: [],
-    validationIds: ['sufficient-masters-count', 'ocs-requirements-satisfied'],
+    validationIds: [
+      'sufficient-masters-count',
+      'ocs-requirements-satisfied',
+      'lso-requirements-satisfied',
+      'cnv-requirements-satisfied',
+    ],
   },
   host: {
     allowedStatuses: ['known', 'disabled'],
     groups: ['hardware'],
-    validationIds: ['connected', 'ocs-requirements-satisfied'],
+    validationIds: [
+      'connected',
+      'ocs-requirements-satisfied',
+      'lso-requirements-satisfied',
+      'cnv-requirements-satisfied',
+    ],
   },
   softValidationIds: [],
 };
@@ -86,6 +96,8 @@ const networkingStepValidationsMap: WizardStepValidationMap = {
   // TODO(jtomasek): container-images-available validation is currently not running on the backend, it stays in pending.
   // marking it as soft validation is the easy way to prevent it from blocking the progress.
   // Alternatively we would have to whitelist network validations instead of using group
+  // TODO(mlibra): remove that container-images-available from soft validations and let backend drive it via disabling it.
+  //   Depends on: https://issues.redhat.com/browse/MGMT-5265
   softValidationIds: ['ntp-synced', 'container-images-available'],
 };
 
@@ -142,16 +154,22 @@ export const checkClusterValidations = (
     .filter((v) => v && requiredIds.includes(v.id));
   return (
     requiredValidations.length === requiredIds.length &&
-    requiredValidations.every((v) => v?.status === 'success')
+    requiredValidations.every((v) => v?.status === 'disabled' || v?.status === 'success')
   );
 };
 
 export const checkClusterValidationGroups = (
   clusterValidationsInfo: ClusterValidationsInfo,
   groups: ClusterValidationGroup[],
+  softValidationIds: WizardStepValidationMap['softValidationIds'],
 ) =>
   groups.every((group) =>
-    clusterValidationsInfo[group]?.every((validation) => validation.status === 'success'),
+    clusterValidationsInfo[group]?.every(
+      (validation) =>
+        validation.status === 'disabled' ||
+        validation.status === 'success' ||
+        softValidationIds.includes(validation.id),
+    ),
   );
 
 export const checkHostValidations = (
@@ -164,16 +182,22 @@ export const checkHostValidations = (
 
   return (
     requiredValidations.length === requiredIds.length &&
-    requiredValidations.every((v) => v?.status === 'success')
+    requiredValidations.every((v) => v?.status === 'disabled' || v?.status === 'success')
   );
 };
 
 export const checkHostValidationGroups = (
   hostValidationsInfo: HostValidationsInfo,
   groups: HostValidationGroup[],
+  softValidationIds: WizardStepValidationMap['softValidationIds'],
 ) =>
   groups.every((group) =>
-    hostValidationsInfo[group]?.every((validation) => validation.status === 'success'),
+    hostValidationsInfo[group]?.every(
+      (validation) =>
+        validation.status === 'disabled' ||
+        validation.status === 'success' ||
+        softValidationIds.includes(validation.id),
+    ),
   );
 
 export const getWizardStepHostValidationsInfo = (
@@ -207,9 +231,10 @@ export const getWizardStepHostStatus = (
 ): Host['status'] => {
   const { status } = host;
   if (['insufficient', 'pending-for-input'].includes(status)) {
+    const { softValidationIds } = wizardStepsValidationsMap[wizardStepId];
     const validationsInfo = stringToJSON<HostValidationsInfo>(host.validationsInfo) || {};
     const { groups, validationIds } = wizardStepsValidationsMap[wizardStepId].host;
-    return checkHostValidationGroups(validationsInfo, groups) &&
+    return checkHostValidationGroups(validationsInfo, groups, softValidationIds) &&
       checkHostValidations(validationsInfo, validationIds)
       ? 'known'
       : status;
@@ -250,12 +275,13 @@ export const getWizardStepClusterStatus = (
   if (['insufficient', 'pending-for-input'].includes(status)) {
     const validationsInfo = stringToJSON<ClusterValidationsInfo>(cluster.validationsInfo) || {};
     const { groups, validationIds } = wizardStepsValidationsMap[wizardStepId].cluster;
+    const { softValidationIds } = wizardStepsValidationsMap[wizardStepId];
     const { allowedStatuses } = wizardStepsValidationsMap[wizardStepId].host;
     const allHostsReady = (cluster?.hosts || []).every((host) =>
       allowedStatuses.includes(getWizardStepHostStatus(host, wizardStepId)),
     );
     return allHostsReady &&
-      checkClusterValidationGroups(validationsInfo, groups) &&
+      checkClusterValidationGroups(validationsInfo, groups, softValidationIds) &&
       checkClusterValidations(validationsInfo, validationIds)
       ? 'ready'
       : status;

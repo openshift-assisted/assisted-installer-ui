@@ -49,8 +49,8 @@ const SingleHostRequirementsContent = () => {
 
   return (
     <Text component="p">
-      One host is required with at least {master?.cpuCores || 4} CPU cores, {masterRam}
-      of RAM, and {master?.diskSizeGb || 120} GB of filesystem storage.
+      One host is required with at least {master?.cpuCores || 4} CPU cores, {masterRam} of RAM, and{' '}
+      {master?.diskSizeGb || 120} GB of filesystem storage.
     </Text>
   );
 };
@@ -138,20 +138,28 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
               idPrefix="host-inventory"
             />
           </Text>
-          {isContainerNativeVirtualizationEnabled && (
-            <CheckboxField
-              name="useContainerNativeVirtualization"
-              label={<CNVLabel />}
-              helperText="Run virtual machines along containers."
-            />
-          )}
-          {isOpenshiftClusterStorageEnabled && !isSNO && (
-            <CheckboxField
-              name="useExtraDisksForLocalStorage"
-              label={<OCSLabel />}
-              helperText="Persistent software-defined storage for hybrid applications."
-            />
-          )}
+        </TextContent>
+      </StackItem>
+      <StackItem>
+        {isContainerNativeVirtualizationEnabled && (
+          <CheckboxField
+            name="useContainerNativeVirtualization"
+            label={<CNVLabel />}
+            helperText="Run virtual machines along containers."
+          />
+        )}
+      </StackItem>
+      <StackItem>
+        {isOpenshiftClusterStorageEnabled && !isSNO && (
+          <CheckboxField
+            name="useExtraDisksForLocalStorage"
+            label={<OCSLabel />}
+            helperText="Persistent software-defined storage for hybrid applications."
+          />
+        )}
+      </StackItem>
+      <StackItem>
+        <TextContent>
           <InformationAndAlerts
             cluster={cluster}
             HostRequirementsContent={
@@ -160,15 +168,17 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
             setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
           />
         </TextContent>
+      </StackItem>
+      <StackItem>
         <HostsDiscoveryTable
           cluster={cluster}
           setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
         />
-        <DiscoveryTroubleshootingModal
-          isOpen={isDiscoveryHintModalOpen}
-          setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
-        />
       </StackItem>
+      <DiscoveryTroubleshootingModal
+        isOpen={isDiscoveryHintModalOpen}
+        setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
+      />
     </Stack>
   );
 };
