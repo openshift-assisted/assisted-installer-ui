@@ -1,41 +1,32 @@
 import React from 'react';
 import { Popover, Level, LevelItem } from '@patternfly/react-core';
-import { Host } from '../../api/types';
-import { getEnabledHosts } from './utils';
+import { Cluster } from '../../api/types';
+import { getEnabledHostCount, getReadyHostCount, getTotalHostCount } from './utils';
 
 type HostsCountProps = {
-  hosts?: Host[];
+  cluster: Cluster;
   inParenthesis?: boolean;
   valueId?: string;
 };
 
-export const getEnabledHostsCount = (hosts?: Host[]) => getEnabledHosts(hosts).length;
-
-const getReadyHostsCount = (hosts?: Host[]) =>
-  (hosts || []).filter((h) => h.status === 'known').length;
-
 const HostsCount: React.FC<HostsCountProps> = ({
-  hosts,
+  cluster,
   inParenthesis = false,
   valueId = 'hosts-count',
 }) => {
-  const hostsDiscovered = hosts?.length || 0;
-  const hostsIncluded = getEnabledHostsCount(hosts);
-  const hostsReady = getReadyHostsCount(hosts);
-
   const body = (
     <>
       <Level>
         <LevelItem>Ready for the installation</LevelItem>
-        <LevelItem>{hostsReady}</LevelItem>
+        <LevelItem>{getReadyHostCount(cluster)}</LevelItem>
       </Level>
       <Level>
         <LevelItem>Enabled for the installation</LevelItem>
-        <LevelItem>{hostsIncluded}</LevelItem>
+        <LevelItem>{getEnabledHostCount(cluster)}</LevelItem>
       </Level>
       <Level>
         <LevelItem>All discovered</LevelItem>
-        <LevelItem>{hostsDiscovered}</LevelItem>
+        <LevelItem>{getTotalHostCount(cluster)}</LevelItem>
       </Level>
     </>
   );
@@ -44,7 +35,7 @@ const HostsCount: React.FC<HostsCountProps> = ({
     <Popover headerContent="Hosts in the cluster" bodyContent={body}>
       <a id={valueId}>
         {inParenthesis && '('}
-        {hostsIncluded}
+        {getEnabledHostCount(cluster)}
         {inParenthesis && ')'}
       </a>
     </Popover>

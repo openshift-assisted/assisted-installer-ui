@@ -75,7 +75,7 @@ export type OpenRows = {
   [id: string]: boolean;
 };
 
-const defaultGetColumns = (hosts?: Host[]) => [
+const defaultGetColumns = (cluster: Cluster) => [
   { title: 'Hostname', transforms: [sortable], cellFormatters: [expandable] },
   { title: 'Role', transforms: [sortable] },
   { title: 'Status', transforms: [sortable] },
@@ -83,7 +83,7 @@ const defaultGetColumns = (hosts?: Host[]) => [
   { title: 'CPU Cores', transforms: [sortable] }, // cores per machine (sockets x cores)
   { title: 'Memory', transforms: [sortable] },
   { title: 'Disk', transforms: [sortable] },
-  { title: <HostsCount hosts={hosts} inParenthesis /> },
+  { title: <HostsCount cluster={cluster} inParenthesis /> },
 ];
 
 const defaultHostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host): IRow => {
@@ -213,7 +213,7 @@ const HostsTableRowWrapper = (props: RowWrapperProps) => (
 
 type HostsTableProps = {
   cluster: Cluster;
-  getColumns?: (hosts?: Host[]) => (string | ICell)[];
+  getColumns?: (cluster: Cluster) => (string | ICell)[];
   hostToHostTableRow?: (openRows: OpenRows, cluster: Cluster) => (host: Host) => IRow;
   skipDisabled?: boolean;
   setDiscoveryHintModalOpen?: HostsNotShowingLinkProps['setDiscoveryHintModalOpen'];
@@ -258,7 +258,7 @@ const HostsTable: React.FC<HostsTableProps & WithTestID> = ({
     [cluster, skipDisabled, openRows, sortBy, hostToHostTableRow],
   );
 
-  const columns = React.useMemo(() => getColumns(cluster.hosts), [cluster.hosts, getColumns]);
+  const columns = React.useMemo(() => getColumns(cluster), [cluster, getColumns]);
 
   const rows = React.useMemo(() => {
     if (hostRows.length) {

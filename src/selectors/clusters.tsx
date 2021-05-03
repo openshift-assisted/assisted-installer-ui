@@ -11,7 +11,8 @@ import { getDateTimeCell, HumanizedSortable } from '../components/ui/table/utils
 import ClusterStatus, { getClusterStatusText } from '../components/clusters/ClusterStatus';
 import { DASH } from '../components/constants';
 import { routeBasePath } from '../config';
-import HostsCount, { getEnabledHostsCount } from '../components/hosts/HostsCount';
+import HostsCount from '../components/hosts/HostsCount';
+import { getReadyHostCount } from '../components/hosts/utils';
 
 const selectClusters = (state: RootState) => state.clusters.data;
 const clustersUIState = (state: RootState) => state.clusters.uiState;
@@ -26,7 +27,7 @@ export const selectClustersUIState = createSelector(
 );
 
 const clusterToClusterTableRow = (cluster: Cluster): IRow => {
-  const { id, name, hosts, openshiftVersion, baseDnsDomain, createdAt } = cluster;
+  const { id, name, openshiftVersion, baseDnsDomain, createdAt } = cluster;
   const dateTimeCell = getDateTimeCell(createdAt);
 
   return {
@@ -56,9 +57,9 @@ const clusterToClusterTableRow = (cluster: Cluster): IRow => {
         sortableValue: getClusterStatusText(cluster.status),
       } as HumanizedSortable,
       {
-        title: <HostsCount hosts={hosts} />,
+        title: <HostsCount cluster={cluster} />,
         props: { 'data-testid': `cluster-hosts-count-${name}` },
-        sortableValue: getEnabledHostsCount(hosts),
+        sortableValue: getReadyHostCount(cluster),
       } as HumanizedSortable,
       {
         title: dateTimeCell.title,

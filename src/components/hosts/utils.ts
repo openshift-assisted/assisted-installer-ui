@@ -126,8 +126,9 @@ export const downloadHostInstallationLogs = async (
   }
 };
 
-export const hasKnownHost = (cluster: Cluster) =>
-  !!cluster.hosts?.find((host) => host.status === 'known');
+export const getReadyHostCount = (cluster: Cluster) => cluster.readyHostCount || 0;
+export const getEnabledHostCount = (cluster: Cluster) => cluster.enabledHostCount || 0;
+export const getTotalHostCount = (cluster: Cluster) => cluster.totalHostCount || 0;
 
 export const getEnabledHosts = (hosts: Host[] = []) =>
   hosts.filter((host) => host.status !== 'disabled');

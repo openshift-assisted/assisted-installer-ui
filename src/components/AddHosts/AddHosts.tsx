@@ -13,7 +13,7 @@ import { getErrorMessage, handleApiError, installHosts } from '../../api';
 import { addAlert } from '../../features/alerts/alertsSlice';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import { ClusterPreflightRequirementsContextProvider } from '../clusterConfiguration/ClusterPreflightRequirementsContext';
-import { hasKnownHost } from '../hosts/utils';
+import { getReadyHostCount } from '../hosts/utils';
 import { ToolbarButton, ToolbarSecondaryGroup } from '../ui';
 import Alerts from '../ui/Alerts';
 import { EventsModalButton } from '../ui/eventsModal';
@@ -59,7 +59,7 @@ const AddHosts: React.FC = () => {
                 variant={ButtonVariant.primary}
                 name="install"
                 onClick={handleHostsInstall}
-                isDisabled={!hasKnownHost(cluster)}
+                isDisabled={getReadyHostCount(cluster) <= 0}
               >
                 Install ready hosts
               </ToolbarButton>
