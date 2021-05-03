@@ -63,12 +63,22 @@ const clusterDetailsStepValidationsMap: WizardStepValidationMap = {
 const hostDiscoveryStepValidationsMap: WizardStepValidationMap = {
   cluster: {
     groups: [],
-    validationIds: ['sufficient-masters-count', 'ocs-requirements-satisfied'],
+    validationIds: [
+      'sufficient-masters-count',
+      'ocs-requirements-satisfied',
+      'lso-requirements-satisfied',
+      'cnv-requirements-satisfied',
+    ],
   },
   host: {
     allowedStatuses: ['known', 'disabled'],
     groups: ['hardware'],
-    validationIds: ['connected', 'ocs-requirements-satisfied'],
+    validationIds: [
+      'connected',
+      'ocs-requirements-satisfied',
+      'lso-requirements-satisfied',
+      'cnv-requirements-satisfied',
+    ],
   },
   softValidationIds: [],
 };
