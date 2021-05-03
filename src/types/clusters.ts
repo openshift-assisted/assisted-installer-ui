@@ -34,5 +34,6 @@ export type HostDiscoveryValues = ClusterUpdateParams & {
 };
 
 export type ClusterDetailsValues = ClusterUpdateParams & {
+  SNODisclaimer: boolean;
   useRedHatDnsService: boolean;
 };
