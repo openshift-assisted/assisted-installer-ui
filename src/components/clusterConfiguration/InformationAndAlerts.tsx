@@ -15,7 +15,7 @@ const InformationAndAlerts: React.FC<{
   <>
     <Text component="h3">Information &amp; Warnings</Text>
     <Text component="p">
-      <HostRequirementsLink ContentComponent={HostRequirementsContent} />
+      <HostRequirementsLink clusterId={cluster.id} ContentComponent={HostRequirementsContent} />
       <HostsNotShowingLink setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
     </Text>
     <VMRebootConfigurationInfo hosts={cluster.hosts || []} />
