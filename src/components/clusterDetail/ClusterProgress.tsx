@@ -27,6 +27,7 @@ import {
 } from '@patternfly/react-icons';
 import { EventsModal } from '../ui/eventsModal';
 import OperatorsProgressItem from './OperatorsProgressItem';
+import { pluralize } from 'humanize-plus';
 
 import './ClusterProgress.css';
 
@@ -104,13 +105,15 @@ const HostProgress: React.FC<HostProgressProps> = ({ hosts, hostRole }) => {
   const filteredHosts = hosts.filter((host) => host.role && hostRole === host.role);
   const icon = getHostStatusIcon(filteredHosts);
   const failedHostsCount = filteredHosts.filter((host) => host.status === 'error').length;
-  const hostCountText =
+  const hostCountText = (hostType: 'worker' | 'master') =>
     failedHostsCount === 0
-      ? `${filteredHosts.length}`
-      : `${failedHostsCount}/${filteredHosts.length}`;
+      ? `${filteredHosts.length} ${pluralize(filteredHosts.length, hostType)}`
+      : `${failedHostsCount}/${filteredHosts.length} ${pluralize(failedHostsCount, hostType)}`;
 
   const text =
-    hostRole === 'master' ? `Control Plane (${hostCountText} masters)` : `${hostCountText} workers`;
+    hostRole === 'master'
+      ? `Control Plane (${hostCountText('master')})`
+      : `${hostCountText('worker')}`;
 
   return (
     <Flex className="pf-u-mr-3xl">
