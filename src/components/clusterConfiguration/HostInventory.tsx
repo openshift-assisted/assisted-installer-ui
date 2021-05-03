@@ -49,8 +49,8 @@ const SingleHostRequirementsContent = () => {
 
   return (
     <Text component="p">
-      One host is required with at least {master?.cpuCores || 4} CPU cores, {masterRam}
-      of RAM, and {master?.diskSizeGb || 120} GB of filesystem storage.
+      One host is required with at least {master?.cpuCores || 4} CPU cores, {masterRam} of RAM, and{' '}
+      {master?.diskSizeGb || 120} GB of filesystem storage.
     </Text>
   );
 };
