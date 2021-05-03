@@ -29,10 +29,10 @@ import { getManagedDomains } from '../../api/domains';
 import { canNextClusterDetails, ClusterWizardFlowStateType } from './wizardTransition';
 import { useOpenshiftVersions } from '../fetching/openshiftVersions';
 import { OpenshiftVersionOptionType } from '../../types/versions';
-import SingleNodeCheckbox from '../ui/formik/SingleNodeCheckbox';
 import OpenShiftVersionSelect from '../clusterConfiguration/OpenShiftVersionSelect';
 import ClusterWizardToolbar from './ClusterWizardToolbar';
 import { StaticTextField } from '../ui/StaticTextField';
+import SNOControlGroup from '../clusterConfiguration/SNOControlGroup';
 
 type ClusterDetailsFormProps = {
   cluster?: Cluster;
@@ -47,6 +47,7 @@ type ClusterDetailsValues = {
   openshiftVersion: string;
   pullSecret: string;
   baseDnsDomain: string;
+  SNODisclaimer: boolean;
   useRedHatDnsService: boolean;
 };
 
@@ -67,6 +68,7 @@ const getInitialValues = (props: ClusterDetailsFormProps): ClusterDetailsValues 
     openshiftVersion,
     pullSecret,
     baseDnsDomain,
+    SNODisclaimer: highAvailabilityMode === 'None',
     useRedHatDnsService:
       !!baseDnsDomain && managedDomains.map((d) => d.domain).includes(baseDnsDomain),
   };
@@ -83,6 +85,10 @@ const getValidationSchema = (cluster?: Cluster) => {
     name: nameValidationSchema,
     pullSecret: validJSONSchema.required('Pull secret must be provided.'),
     baseDnsDomain: dnsNameValidationSchema.required('Base Domain is required.'),
+    SNODisclaimer: Yup.boolean().when('highAvailabilityMode', {
+      is: 'None',
+      then: Yup.bool().oneOf([true], 'Consent is required.'),
+    }),
   });
 };
 
@@ -118,6 +124,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
       'pullSecret',
       'openshiftVersion',
       'useRedHatDnsService',
+      'SNODisclaimer',
     ]);
 
     try {
@@ -133,7 +140,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
   };
 
   const handleClusterCreate = async (values: ClusterDetailsValues) => {
-    const params: ClusterCreateParams = _.omit(values, ['useRedHatDnsService']);
+    const params: ClusterCreateParams = _.omit(values, ['useRedHatDnsService', 'SNODisclaimer']);
 
     try {
       const { data } = await postCluster(params);
@@ -237,11 +244,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
                       isRequired
                     />
                   )}
-                  <SingleNodeCheckbox
-                    name="highAvailabilityMode"
-                    versions={versions}
-                    isDisabled={!!cluster}
-                  />
+                  <SNOControlGroup isDisabled={!!cluster} versions={versions} />
                   {cluster ? (
                     <StaticTextField name="openshiftVersion" label="OpenShift version" isRequired>
                       OpenShift {cluster.openshiftVersion}
