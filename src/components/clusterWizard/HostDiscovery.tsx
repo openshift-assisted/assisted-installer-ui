@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { shallowEqual, useDispatch } from 'react-redux';
 import { Cluster, ClusterUpdateParams } from '../../api/types';
 import { Formik, FormikProps } from 'formik';
 import HostInventory from '../clusterConfiguration/HostInventory';
@@ -22,6 +22,7 @@ const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const dispatch = useDispatch();
   const { setCurrentStepId } = React.useContext(ClusterWizardContext);
   const { addAlert, clearAlerts } = React.useContext(AlertsContext);
+  const initialValues = React.useMemo(() => getHostDiscoveryInitialValues(cluster), [cluster]);
 
   const handleSubmit = async (values: HostDiscoveryValues) => {
     clearAlerts();
@@ -57,15 +58,17 @@ const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   };
 
   return (
-    <Formik initialValues={getHostDiscoveryInitialValues(cluster)} onSubmit={handleSubmit}>
-      {({ isSubmitting, dirty, errors }: FormikProps<HostDiscoveryValues>) => {
+    <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+      {({ isSubmitting, errors, values }: FormikProps<HostDiscoveryValues>) => {
+        // Workaround, Formik's "dirty" stays true unless we use enableReinitialize or play with resetForm()
+        const isFormikDirty = !shallowEqual(values, initialValues);
         const footer = (
           <ClusterWizardToolbar
             cluster={cluster}
-            dirty={dirty}
+            dirty={isFormikDirty}
             formErrors={errors}
             isSubmitting={isSubmitting}
-            isNextDisabled={dirty || !canNextHostDiscovery({ cluster })}
+            isNextDisabled={isFormikDirty || !canNextHostDiscovery({ cluster })}
             onNext={() => setCurrentStepId('networking')}
             onBack={() => setCurrentStepId('cluster-details')}
           />

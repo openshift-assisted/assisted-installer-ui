@@ -1,10 +1,17 @@
 import React from 'react';
-import { WizardBody, WizardNav, WizardNavItem, WizardNavItemProps } from '@patternfly/react-core';
+import {
+  ButtonVariant,
+  WizardBody,
+  WizardNav,
+  WizardNavItem,
+  WizardNavItemProps,
+} from '@patternfly/react-core';
 import { css } from '@patternfly/react-styles';
 import styles from '@patternfly/react-styles/css/components/Wizard/wizard';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens';
 import { Cluster } from '../../api/types';
+import { EventsModalButton } from '../ui/eventsModal';
 import ClusterWizardContext from './ClusterWizardContext';
 import {
   canNextHostDiscovery,
@@ -103,6 +110,18 @@ const ClusterWizardStep: React.FC<ClusterWizardStepProps> = ({ cluster, footer, 
       <div className={css(styles.wizardInnerWrap)}>
         {nav}
         <WizardBody aria-labelledby="step-id" hasNoBodyPadding={false}>
+          {cluster && (
+            <EventsModalButton
+              className="wizard-cluster-events-button"
+              id="cluster-events-button"
+              entityKind="cluster"
+              cluster={cluster}
+              title="Cluster Events"
+              variant={ButtonVariant.secondary}
+            >
+              View Cluster Events
+            </EventsModalButton>
+          )}
           {children}
         </WizardBody>
       </div>

@@ -44,7 +44,7 @@ export const getMasterCount = (hosts: Host[]) => getHostRoleCount(hosts, 'master
 
 export const getWorkerCount = (hosts: Host[]) => getHostRoleCount(hosts, 'worker');
 
-const getClusterResources = (cluster: Cluster, resoucePath: string): number => {
+const getClusterResources = (cluster: Cluster, resourcePath: string): number => {
   if (!cluster.hosts) {
     return 0;
   }
@@ -60,19 +60,17 @@ const getClusterResources = (cluster: Cluster, resoucePath: string): number => {
 
   const singleNodeMode = masterCount === 1;
 
-  const result = cluster.hosts.reduce((acc, host: Host) => {
-    if (!host.inventory) {
-      return acc;
-    }
-    if (
-      (host.role === 'worker' && countWorkersOnly) ||
-      (host.role === 'master' && countMastersOnly) ||
-      (host.role === 'master' && singleNodeMode)
-    ) {
-      const hostInventory = stringToJSON<Inventory>(host.inventory) || {};
-      return (acc += get(hostInventory, resoucePath, 0));
-    }
-  }, 0);
+  const result = cluster.hosts
+    .filter((host) => 'inventory' in host)
+    .filter(
+      (host) =>
+        (host.role === 'worker' && countWorkersOnly) ||
+        (host.role === 'master' && countMastersOnly) ||
+        (host.role === 'master' && singleNodeMode),
+    )
+    .map((host) => stringToJSON<Inventory>(host.inventory) || {})
+    .map((inventory) => get(inventory, resourcePath, 0))
+    .reduce((total, value) => total + value, 0);
 
   return result;
 };
