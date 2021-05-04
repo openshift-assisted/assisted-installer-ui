@@ -1,25 +1,29 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { Grid, GridItem } from '@patternfly/react-core';
+import { ButtonVariant, Grid, GridItem } from '@patternfly/react-core';
 import { Cluster } from '../../api/types';
 import ClusterWizardStep from '../clusterWizard/ClusterWizardStep';
 import { useAlerts } from '../AlertsContextProvider';
 import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
-import ClusterWizardToolbar from '../clusterWizard/ClusterWizardToolbar';
 import { getErrorMessage, handleApiError, postInstallCluster } from '../../api';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import ReviewCluster from './ReviewCluster';
 import ClusterWizardStepHeader from '../clusterWizard/ClusterWizardStepHeader';
+import ClusterWizardFooter from '../clusterWizard/ClusterWizardFooter';
+import ToolbarButton from '../ui/Toolbar/ToolbarButton';
 
 const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const { addAlert } = useAlerts();
   const { setCurrentStepId } = React.useContext(ClusterWizardContext);
+  const [isStartingInstallation, setIsStartingInstallation] = React.useState(false);
   const dispatch = useDispatch();
 
-  const onInstall = async () => {
+  const handleClusterInstall = async () => {
+    setIsStartingInstallation(true);
     try {
       const { data } = await postInstallCluster(cluster.id);
       dispatch(updateCluster(data));
+      setIsStartingInstallation(false);
       // If successful, backend changes cluster state which leads to unmounting the Wizard
       // If validation fails, the wizard stays on this step and shows alerts
     } catch (e) {
@@ -29,14 +33,26 @@ const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
           message: getErrorMessage(e),
         }),
       );
+      setIsStartingInstallation(false);
     }
   };
 
   const footer = (
-    <ClusterWizardToolbar
+    <ClusterWizardFooter
       cluster={cluster}
       onBack={() => setCurrentStepId('networking')}
-      onInstall={onInstall}
+      isSubmitting={isStartingInstallation}
+      submittingText="Starting installation..."
+      additionalActions={
+        <ToolbarButton
+          variant={ButtonVariant.primary}
+          name="install"
+          onClick={handleClusterInstall}
+          isDisabled={isStartingInstallation || cluster.status !== 'ready'}
+        >
+          Install cluster
+        </ToolbarButton>
+      }
     />
   );
 

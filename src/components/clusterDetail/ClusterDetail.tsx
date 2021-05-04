@@ -96,14 +96,15 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
               id={getClusterDetailId('button-launch-console')}
             />
           )}
-          <ToolbarButton
-            variant={ButtonVariant.link}
-            component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
-            isHidden={isSingleClusterMode()}
-            id={getClusterDetailId('button-back-to-all-clusters')}
-          >
-            Back to all clusters
-          </ToolbarButton>
+          {!isSingleClusterMode() && (
+            <ToolbarButton
+              variant={ButtonVariant.link}
+              component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
+              id={getClusterDetailId('button-back-to-all-clusters')}
+            >
+              Back to all clusters
+            </ToolbarButton>
+          )}
           <ToolbarSecondaryGroup>
             <ToolbarButton
               id="cluster-installation-logs-button"

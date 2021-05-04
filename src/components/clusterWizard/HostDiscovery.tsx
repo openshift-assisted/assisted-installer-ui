@@ -5,7 +5,6 @@ import { Formik, FormikConfig, FormikProps } from 'formik';
 import HostInventory from '../clusterConfiguration/HostInventory';
 import ClusterWizardContext from './ClusterWizardContext';
 import ClusterWizardStep from './ClusterWizardStep';
-import ClusterWizardToolbar from './ClusterWizardToolbar';
 import { canNextHostDiscovery } from './wizardTransition';
 import { getErrorMessage, handleApiError } from '../../api/utils';
 import { HostDiscoveryValues } from '../../types/clusters';
@@ -16,6 +15,8 @@ import { getHostDiscoveryInitialValues } from '../clusterConfiguration/utils';
 import { getOlmOperatorCreateParamsByName } from '../clusters/utils';
 import FormikAutoSave from '../ui/formik/FormikAutoSave';
 import { OPERATOR_NAME_CNV, OPERATOR_NAME_LSO, OPERATOR_NAME_OCS } from '../../config';
+import ClusterWizardFooter from './ClusterWizardFooter';
+import { getFormikErrorFields } from '../ui/formik/utils';
 
 const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const dispatch = useDispatch();
@@ -66,12 +67,13 @@ const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
 
   return (
     <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-      {({ isSubmitting, errors, dirty }: FormikProps<HostDiscoveryValues>) => {
+      {({ isSubmitting, dirty, errors, touched }: FormikProps<HostDiscoveryValues>) => {
+        const errorFields = getFormikErrorFields(errors, touched);
+
         const footer = (
-          <ClusterWizardToolbar
+          <ClusterWizardFooter
             cluster={cluster}
-            dirty={dirty}
-            formErrors={errors}
+            errorFields={errorFields}
             isSubmitting={isSubmitting}
             isNextDisabled={dirty || !canNextHostDiscovery({ cluster })}
             onNext={() => setCurrentStepId('networking')}

@@ -30,10 +30,11 @@ import { canNextClusterDetails, ClusterWizardFlowStateType } from './wizardTrans
 import { useOpenshiftVersions } from '../fetching/openshiftVersions';
 import { OpenshiftVersionOptionType } from '../../types/versions';
 import OpenShiftVersionSelect from '../clusterConfiguration/OpenShiftVersionSelect';
-import ClusterWizardToolbar from './ClusterWizardToolbar';
 import { StaticTextField } from '../ui/StaticTextField';
 import SNOControlGroup from '../clusterConfiguration/SNOControlGroup';
 import ClusterWizardStepHeader from './ClusterWizardStepHeader';
+import ClusterWizardFooter from './ClusterWizardFooter';
+import { getFormikErrorFields } from '../ui/formik/utils';
 
 type ClusterDetailsFormProps = {
   cluster?: Cluster;
@@ -189,8 +190,9 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
-      {({ submitForm, isSubmitting, isValid, dirty, values, setFieldValue, errors }) => {
+      {({ submitForm, isSubmitting, isValid, dirty, values, setFieldValue, errors, touched }) => {
         const { name: clusterName, baseDnsDomain, useRedHatDnsService } = values;
+        const errorFields = getFormikErrorFields(errors, touched);
 
         const baseDnsHelperText = (
           <>
@@ -258,10 +260,9 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
           </>
         );
         const footer = (
-          <ClusterWizardToolbar
+          <ClusterWizardFooter
             cluster={cluster}
-            formErrors={errors}
-            dirty={dirty}
+            errorFields={errorFields}
             isSubmitting={isSubmitting}
             isNextDisabled={
               !(
