@@ -35,7 +35,7 @@ const InventoryAddHosts: React.FC = () => {
   return (
     <>
       <TextContent>
-        <DiscoveryInstructions isMultiNodeCluster={!isSingleNodeCluster(cluster)} />
+        <DiscoveryInstructions isSingleNodeCluster={isSingleNodeCluster(cluster)} />
         <Text component="p">
           <DiscoveryImageModalButton
             ButtonComponent={Button}
