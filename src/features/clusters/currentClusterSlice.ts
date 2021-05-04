@@ -5,7 +5,7 @@ import { Cluster, Host } from '../../api/types';
 import { handleApiError } from '../../api/utils';
 import { ResourceUIState } from '../../types';
 
-type RetrievalErrorType = {
+export type RetrievalErrorType = {
   code: string;
 };
 
