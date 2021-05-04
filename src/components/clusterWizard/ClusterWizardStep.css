@@ -7,5 +7,5 @@
 }
 
 .cluster-wizard-step__footer {
-  display: block;
+  display: block !important;
 }
