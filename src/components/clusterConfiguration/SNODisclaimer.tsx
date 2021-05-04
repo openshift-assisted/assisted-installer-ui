@@ -20,8 +20,8 @@ const SNODisclaimer = ({ isDisabled }: SNODisclaimerProps) => {
               Installing SNO will result in a non-highly available OpenShift deployment.
             </ListItem>
             <ListItem>
-              OpenShift in-place upgrades aren't expected to work with SNO. If and upgrade is
-              needed, your system will need a redeployment.
+              OpenShift in-place upgrades aren't expected to work with SNO. If an upgrade is needed,
+              your system will need a redeployment.
             </ListItem>
             <ListItem>
               Adding additional machines to your cluster is currently out of scope.
