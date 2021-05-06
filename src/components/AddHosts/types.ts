@@ -17,27 +17,21 @@ export type OcmClusterType = {
 
   state: string; // i.e: ready
 
+  product?: {
+    id: string; // OCP-AssistedInstall
+  };
+
+  // Missing for AI-clusters since Subcription is created by AI-service.
+  // Keeping here for backwards compatibility with old clusters
   cloud_provider?: {
     kind: string;
     id: string; // baremetal
   };
+
   console?: {
     url: string;
   };
   api?: {
     url: string;
-  };
-  nodes?: {
-    total: number;
-    master: number;
-    compute: number;
-  };
-  dns?: {
-    base_domain: string;
-  };
-  network?: {
-    machine_cidr: string;
-    service_cidr: string;
-    pod_cidr: string;
   };
 };
