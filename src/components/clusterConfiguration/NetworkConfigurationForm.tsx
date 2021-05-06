@@ -1,5 +1,5 @@
 import React from 'react';
-import { shallowEqual, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Formik, FormikConfig, FormikProps } from 'formik';
 import * as Yup from 'yup';
 import _ from 'lodash';
@@ -59,7 +59,8 @@ const NetworkConfigurationForm: React.FC<{
   const hostSubnets = React.useMemo(() => getHostSubnets(cluster), [cluster]);
   const initialValues = React.useMemo(
     () => getNetworkInitialValues(cluster, defaultNetworkSettings),
-    [cluster, defaultNetworkSettings],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [], // just once, Formik does not reinitialize
   );
 
   const memoizedValidationSchema = React.useMemo(
@@ -67,7 +68,10 @@ const NetworkConfigurationForm: React.FC<{
     [hostSubnets, initialValues],
   );
 
-  const handleSubmit: FormikConfig<NetworkConfigurationValues>['onSubmit'] = async (values) => {
+  const handleSubmit: FormikConfig<NetworkConfigurationValues>['onSubmit'] = async (
+    values,
+    actions,
+  ) => {
     clearAlerts();
 
     // update the cluster configuration
@@ -99,6 +103,9 @@ const NetworkConfigurationForm: React.FC<{
 
       const { data } = await patchCluster(cluster.id, params);
       dispatch(updateCluster(data));
+      actions.resetForm({
+        values: getNetworkInitialValues(data, defaultNetworkSettings),
+      });
     } catch (e) {
       handleApiError<ClusterUpdateParams>(e, () =>
         addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),
@@ -114,9 +121,7 @@ const NetworkConfigurationForm: React.FC<{
       initialTouched={_.mapValues(initialValues, () => true)}
       validateOnMount
     >
-      {({ isSubmitting, errors, values }: FormikProps<NetworkConfigurationValues>) => {
-        // Workaround, Formik's "dirty" stays true unless we use enableReinitialize or play with resetForm()
-        const isFormikDirty = !shallowEqual(values, initialValues);
+      {({ isSubmitting, errors, dirty }: FormikProps<NetworkConfigurationValues>) => {
         const form = (
           <>
             <Grid hasGutter>
@@ -152,9 +157,9 @@ const NetworkConfigurationForm: React.FC<{
           <ClusterWizardToolbar
             cluster={cluster}
             formErrors={errors}
-            dirty={isFormikDirty}
+            dirty={dirty}
             isSubmitting={isSubmitting}
-            isNextDisabled={isFormikDirty || !canNextNetwork({ cluster })}
+            isNextDisabled={dirty || !canNextNetwork({ cluster })}
             onNext={() => setCurrentStepId('review')}
             onBack={() => setCurrentStepId('host-discovery')}
           />

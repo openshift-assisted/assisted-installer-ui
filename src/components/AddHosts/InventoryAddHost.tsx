@@ -8,6 +8,7 @@ import DiscoveryInstructions from '../clusterConfiguration/DiscoveryInstructions
 import { fileSize } from '../hosts/utils';
 import { AddHostsContext } from './AddHostsContext';
 import { useClusterPreflightRequirementsContext } from '../clusterConfiguration/ClusterPreflightRequirementsContext';
+import { isSingleNodeCluster } from '../clusters/utils';
 
 const HostRequirementsContent = () => {
   const { preflightRequirements } = useClusterPreflightRequirementsContext();
@@ -34,7 +35,7 @@ const InventoryAddHosts: React.FC = () => {
   return (
     <>
       <TextContent>
-        <DiscoveryInstructions />
+        <DiscoveryInstructions isSingleNodeCluster={isSingleNodeCluster(cluster)} />
         <Text component="p">
           <DiscoveryImageModalButton
             ButtonComponent={Button}

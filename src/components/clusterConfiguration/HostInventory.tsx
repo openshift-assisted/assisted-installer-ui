@@ -139,7 +139,7 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
       </StackItem>
       <StackItem>
         <TextContent>
-          <DiscoveryInstructions />
+          <DiscoveryInstructions isSingleNodeCluster={isSNO} />
           <Text component="p">
             <DiscoveryImageModalButton
               ButtonComponent={Button}

@@ -46,7 +46,7 @@ const getColumns = (cluster: Cluster) => [
   { title: 'Status', transforms: [sortable] },
   { title: 'Active NIC', transforms: [sortable] }, // cores per machine (sockets x cores)
   { title: 'IPv4 address', transforms: [sortable] },
-  { title: 'Ipv6 address', transforms: [sortable] },
+  { title: 'IPv6 address', transforms: [sortable] },
   { title: 'MAC address', transforms: [sortable] },
   { title: <HostsCount cluster={cluster} inParenthesis /> },
 ];
