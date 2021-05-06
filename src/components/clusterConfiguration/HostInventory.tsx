@@ -1,68 +1,20 @@
 import React from 'react';
-import {
-  Text,
-  TextContent,
-  Button,
-  Stack,
-  StackItem,
-  List,
-  ListItem,
-} from '@patternfly/react-core';
+import { Text, TextContent, Button, Stack, StackItem } from '@patternfly/react-core';
 import { Cluster } from '../../api/types';
 import HostsDiscoveryTable from '../hosts/HostsDiscoveryTable';
 import { useFeature } from '../../features/featureGate';
 import CheckboxField from '../ui/formik/CheckboxField';
 import { isSingleNodeCluster } from '../clusters/utils';
 import DiscoveryInstructions from './DiscoveryInstructions';
-import { ExternalLink, PopoverIcon } from '../ui';
-import { OPERATOR_NAME_CNV } from '../../config';
-import { fileSize } from '../hosts/utils';
+import { PopoverIcon } from '../ui';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
 import { DiscoveryTroubleshootingModal } from './DiscoveryTroubleshootingModal';
 import InformationAndAlerts from './InformationAndAlerts';
-import { useClusterPreflightRequirementsContext } from './ClusterPreflightRequirementsContext';
-
-const HostRequirementsContent = () => {
-  const { preflightRequirements } = useClusterPreflightRequirementsContext();
-
-  const master = preflightRequirements?.ocp?.master?.quantitative;
-  const worker = preflightRequirements?.ocp?.worker?.quantitative;
-
-  const masterRam = fileSize((master?.ramMib || 16 * 1024) * 1024 * 1024, 2, 'iec');
-  const workerRam = fileSize((worker?.ramMib || 8 * 1024) * 1024 * 1024, 2, 'iec');
-
-  return (
-    <List>
-      <ListItem>
-        Masters: At least {master?.cpuCores || 4} CPU cores, {masterRam} RAM,{' '}
-        {master?.diskSizeGb || 120} GB filesystem for every supervisor.
-      </ListItem>
-      <ListItem>
-        Workers: At least {worker?.cpuCores || 2} CPU cores, {workerRam} RAM,{' '}
-        {worker?.diskSizeGb || 120} GB filesystem for each worker
-      </ListItem>
-      <ListItem>
-        Also note that each hosts' disk write speed should meet the minimum requirements to run
-        OpenShift.{' '}
-        <ExternalLink href={'https://access.redhat.com/solutions/4885641'}>Learn more</ExternalLink>
-      </ListItem>
-    </List>
-  );
-};
-
-const SingleHostRequirementsContent = () => {
-  const { preflightRequirements } = useClusterPreflightRequirementsContext();
-
-  const master = preflightRequirements?.ocp?.master?.quantitative;
-  const masterRam = fileSize((master?.ramMib || 16 * 1024) * 1024 * 1024, 2, 'iec');
-
-  return (
-    <Text component="p">
-      One host is required with at least {master?.cpuCores || 4} CPU cores, {masterRam} of RAM, and{' '}
-      {master?.diskSizeGb || 120} GB of filesystem storage.
-    </Text>
-  );
-};
+import {
+  HostRequirementsContent,
+  SingleHostRequirementsContent,
+  CNVHostRequirementsContent,
+} from '../hosts/HostRequirementsContent';
 
 const OCSLabel: React.FC = () => (
   <>
@@ -72,16 +24,7 @@ const OCSLabel: React.FC = () => (
   </>
 );
 
-const CNVLabel: React.FC = () => {
-  const { preflightRequirements } = useClusterPreflightRequirementsContext();
-
-  const cnvRequirements = preflightRequirements?.operators?.find(
-    (operatorRequirements) => operatorRequirements.operatorName === OPERATOR_NAME_CNV,
-  );
-
-  const workerRequirements = cnvRequirements?.requirements?.worker?.quantitative;
-  const masterRequirements = cnvRequirements?.requirements?.master?.quantitative;
-
+const CNVLabel: React.FC<{ clusterId: Cluster['id'] }> = ({ clusterId }) => {
   return (
     <>
       Install OpenShift Virtualization{' '}
@@ -90,35 +33,7 @@ const CNVLabel: React.FC = () => {
         className="margin-left-md"
         hasAutoWidth
         maxWidth="50rem"
-        bodyContent={
-          <TextContent>
-            <Text></Text>
-            <List>
-              <ListItem>
-                enabled CPU virtualization support in BIOS (Intel-VT / AMD-V) on all worker nodes
-              </ListItem>
-              <ListItem>
-                worker node requires additional {workerRequirements?.ramMib || 360} MiB of memory{' '}
-                {workerRequirements?.diskSizeGb ? ',' : ' and'} {workerRequirements?.cpuCores || 2}{' '}
-                CPUs
-                {workerRequirements?.diskSizeGb
-                  ? ` and ${workerRequirements?.diskSizeGb} storage space`
-                  : ''}
-              </ListItem>
-              <ListItem>
-                master node requires additional {masterRequirements?.ramMib || 150} MiB of memory{' '}
-                {masterRequirements?.diskSizeGb ? ',' : ' and'} {masterRequirements?.cpuCores || 4}{' '}
-                CPUs
-                {masterRequirements?.diskSizeGb
-                  ? ` and ${masterRequirements?.diskSizeGb} storage space`
-                  : ''}
-              </ListItem>
-              {/* TODO(mlibra): Wording of storage requirements needs special care - https://issues.redhat.com/browse/MGMT-5284
-              <ListItem>either Cluster or Local Storage (the LSO operator will be added by default)</ListItem>
-              */}
-            </List>
-          </TextContent>
-        }
+        bodyContent={<CNVHostRequirementsContent clusterId={clusterId} />}
       />
     </>
   );
@@ -139,7 +54,7 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
       </StackItem>
       <StackItem>
         <TextContent>
-          <DiscoveryInstructions />
+          <DiscoveryInstructions isSingleNodeCluster={isSNO} />
           <Text component="p">
             <DiscoveryImageModalButton
               ButtonComponent={Button}
@@ -153,7 +68,7 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         {isContainerNativeVirtualizationEnabled && (
           <CheckboxField
             name="useContainerNativeVirtualization"
-            label={<CNVLabel />}
+            label={<CNVLabel clusterId={cluster.id} />}
             helperText="Run virtual machines along containers."
           />
         )}
