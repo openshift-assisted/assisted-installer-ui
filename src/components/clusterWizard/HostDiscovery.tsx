@@ -1,7 +1,7 @@
 import React from 'react';
-import { shallowEqual, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Cluster, ClusterUpdateParams } from '../../api/types';
-import { Formik, FormikProps } from 'formik';
+import { Formik, FormikConfig, FormikProps } from 'formik';
 import HostInventory from '../clusterConfiguration/HostInventory';
 import ClusterWizardContext from './ClusterWizardContext';
 import ClusterWizardStep from './ClusterWizardStep';
@@ -22,9 +22,16 @@ const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const dispatch = useDispatch();
   const { setCurrentStepId } = React.useContext(ClusterWizardContext);
   const { addAlert, clearAlerts } = React.useContext(AlertsContext);
-  const initialValues = React.useMemo(() => getHostDiscoveryInitialValues(cluster), [cluster]);
+  const initialValues = React.useMemo(
+    () => getHostDiscoveryInitialValues(cluster),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [], // just once, Formik does not reinitialize
+  );
 
-  const handleSubmit = async (values: HostDiscoveryValues) => {
+  const handleSubmit: FormikConfig<HostDiscoveryValues>['onSubmit'] = async (
+    values: HostDiscoveryValues,
+    actions,
+  ) => {
     clearAlerts();
 
     const params: ClusterUpdateParams = {};
@@ -50,6 +57,7 @@ const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
     try {
       const { data } = await patchCluster(cluster.id, params);
       dispatch(updateCluster(data));
+      actions.resetForm({ values: getHostDiscoveryInitialValues(data) });
     } catch (e) {
       handleApiError<ClusterUpdateParams>(e, () =>
         addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),
@@ -59,16 +67,14 @@ const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
 
   return (
     <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-      {({ isSubmitting, errors, values }: FormikProps<HostDiscoveryValues>) => {
-        // Workaround, Formik's "dirty" stays true unless we use enableReinitialize or play with resetForm()
-        const isFormikDirty = !shallowEqual(values, initialValues);
+      {({ isSubmitting, errors, dirty }: FormikProps<HostDiscoveryValues>) => {
         const footer = (
           <ClusterWizardToolbar
             cluster={cluster}
-            dirty={isFormikDirty}
+            dirty={dirty}
             formErrors={errors}
             isSubmitting={isSubmitting}
-            isNextDisabled={isFormikDirty || !canNextHostDiscovery({ cluster })}
+            isNextDisabled={dirty || !canNextHostDiscovery({ cluster })}
             onNext={() => setCurrentStepId('networking')}
             onBack={() => setCurrentStepId('cluster-details')}
           />
