@@ -9,7 +9,7 @@ import {
   nameValidationSchema,
   validJSONSchema,
 } from '../ui/formik/validationSchemas';
-import { Form, Grid, GridItem, Text, TextContent } from '@patternfly/react-core';
+import { Form, Grid, GridItem } from '@patternfly/react-core';
 import InputField from '../ui/formik/InputField';
 import SelectField from '../ui/formik/SelectField';
 import PullSecret from '../clusters/PullSecret';
@@ -33,6 +33,7 @@ import OpenShiftVersionSelect from '../clusterConfiguration/OpenShiftVersionSele
 import ClusterWizardToolbar from './ClusterWizardToolbar';
 import { StaticTextField } from '../ui/StaticTextField';
 import SNOControlGroup from '../clusterConfiguration/SNOControlGroup';
+import ClusterWizardStepHeader from './ClusterWizardStepHeader';
 
 type ClusterDetailsFormProps = {
   cluster?: Cluster;
@@ -208,9 +209,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
           <>
             <Grid hasGutter>
               <GridItem>
-                <TextContent>
-                  <Text component="h2">Cluster Details</Text>
-                </TextContent>
+                <ClusterWizardStepHeader cluster={cluster}>Cluster Details</ClusterWizardStepHeader>
               </GridItem>
               <GridItem span={12} lg={10} xl={9} xl2={7}>
                 <Form id="wizard-cluster-details__form">

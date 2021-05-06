@@ -32,6 +32,7 @@ import { useDefaultConfiguration } from './ClusterDefaultConfigurationContext';
 import NetworkingHostsTable from '../hosts/NetworkingHostsTable';
 import FormikAutoSave from '../ui/formik/FormikAutoSave';
 import { isSingleNodeCluster } from '../clusters/utils';
+import ClusterWizardStepHeader from '../clusterWizard/ClusterWizardStepHeader';
 
 const validationSchema = (initialValues: NetworkConfigurationValues, hostSubnets: HostSubnets) =>
   Yup.lazy<NetworkConfigurationValues>((values) =>
@@ -126,9 +127,7 @@ const NetworkConfigurationForm: React.FC<{
           <>
             <Grid hasGutter>
               <GridItem>
-                <TextContent>
-                  <Text component="h2">Networking</Text>
-                </TextContent>
+                <ClusterWizardStepHeader cluster={cluster}>Networking</ClusterWizardStepHeader>
               </GridItem>
               <GridItem span={12} lg={10} xl={9} xl2={7}>
                 <Form>
