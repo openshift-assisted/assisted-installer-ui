@@ -177,10 +177,9 @@ export const WebConsoleHint: React.FC<WebConsoleHintProps> = ({ cluster, console
     `*.${appsUrl}`.padEnd(paddingNum) + `A\t${virtualIPs.ingressVip}`,
   ];
 
-  const aRecordsOptional = sortedHostIPs.map((hostname: string) => {
-    const fqdn = cluster.baseDnsDomain ? `${hostname}.${cluster.baseDnsDomain}` : hostname;
-    return `${fqdn}\tA\t${hostIPs[hostname]}`;
-  });
+  const aRecordsOptional = sortedHostIPs.map(
+    (hostname: string) => `${hostname}\tA\t${hostIPs[hostname]}`,
+  );
 
   return (
     <>
