@@ -99,7 +99,7 @@
     "axios-case-converter": "^0.6.0",
     "file-saver": "^2.0.2",
     "filesize.js": "^2.0.0",
-    "formik": "2.1.5",
+    "formik": "2.2.6",
     "http-proxy-middleware": "^1.0.3",
     "human-date": "^1.4.0",
     "humanize-plus": "^1.8.2",
