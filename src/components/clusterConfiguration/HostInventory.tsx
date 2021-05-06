@@ -15,6 +15,7 @@ import {
   SingleHostRequirementsContent,
   CNVHostRequirementsContent,
 } from '../hosts/HostRequirementsContent';
+import ClusterWizardStepHeader from '../clusterWizard/ClusterWizardStepHeader';
 
 const OCSLabel: React.FC = () => (
   <>
@@ -48,9 +49,7 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   return (
     <Stack hasGutter>
       <StackItem>
-        <TextContent>
-          <Text component="h2">Host Discovery</Text>
-        </TextContent>
+        <ClusterWizardStepHeader cluster={cluster}>Host Discovery</ClusterWizardStepHeader>
       </StackItem>
       <StackItem>
         <TextContent>

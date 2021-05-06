@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { Grid, GridItem, Text, TextContent } from '@patternfly/react-core';
+import { Grid, GridItem } from '@patternfly/react-core';
 import { Cluster } from '../../api/types';
 import ClusterWizardStep from '../clusterWizard/ClusterWizardStep';
 import { AlertsContext } from '../AlertsContextProvider';
@@ -9,6 +9,7 @@ import ClusterWizardToolbar from '../clusterWizard/ClusterWizardToolbar';
 import { getErrorMessage, handleApiError, postInstallCluster } from '../../api';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import ReviewCluster from './ReviewCluster';
+import ClusterWizardStepHeader from '../clusterWizard/ClusterWizardStepHeader';
 
 const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const { addAlert } = React.useContext(AlertsContext);
@@ -42,10 +43,8 @@ const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   return (
     <ClusterWizardStep cluster={cluster} footer={footer}>
       <Grid hasGutter>
-        <GridItem span={12}>
-          <TextContent>
-            <Text component="h2">Review and create</Text>
-          </TextContent>
+        <GridItem>
+          <ClusterWizardStepHeader cluster={cluster}>Review and create</ClusterWizardStepHeader>
         </GridItem>
         <GridItem>
           <ReviewCluster cluster={cluster} />
