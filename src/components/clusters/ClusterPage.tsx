@@ -8,10 +8,8 @@ import {
   TextContent,
   Text,
 } from '@patternfly/react-core';
-import { useSelector } from 'react-redux';
 import { ErrorState, LoadingState } from '../ui/uiState';
 import { ResourceUIState } from '../../types';
-import { selectCurrentClusterState } from '../../selectors/currentCluster';
 import { Cluster } from '../../api/types';
 import { isSingleClusterMode, routeBasePath } from '../../config/constants';
 import ClusterDetail from '../clusterDetail/ClusterDetail';
@@ -32,9 +30,8 @@ type MatchParams = {
 
 const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
   const { clusterId } = match.params;
-  const { data: cluster, uiState, errorDetail } = useSelector(selectCurrentClusterState);
   const fetchCluster = useFetchCluster(clusterId);
-  useClusterPolling(clusterId);
+  const { cluster, uiState, errorDetail } = useClusterPolling(clusterId);
 
   const errorStateActions = [];
   if (!isSingleClusterMode()) {

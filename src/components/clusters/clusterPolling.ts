@@ -1,11 +1,13 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { Cluster } from '../../api';
 import { POLLING_INTERVAL } from '../../config';
 import {
   fetchClusterAsync,
   cleanCluster,
   forceReload,
   cancelForceReload,
+  RetrievalErrorType,
 } from '../../features/clusters/currentClusterSlice';
 import { selectCurrentClusterState } from '../../selectors';
 import { ResourceUIState } from '../../types';
@@ -15,8 +17,14 @@ export const useFetchCluster = (clusterId: string) => {
   return React.useCallback(() => dispatch(fetchClusterAsync(clusterId)), [clusterId, dispatch]);
 };
 
-export const useClusterPolling = (clusterId: string) => {
-  const { isReloadScheduled, uiState } = useSelector(selectCurrentClusterState);
+export const useClusterPolling = (
+  clusterId: string,
+): {
+  cluster: Cluster | undefined;
+  uiState: ResourceUIState;
+  errorDetail: RetrievalErrorType | undefined;
+} => {
+  const { isReloadScheduled, uiState, data, errorDetail } = useSelector(selectCurrentClusterState);
   const dispatch = useDispatch();
   const fetchCluster = useFetchCluster(clusterId);
 
@@ -38,4 +46,6 @@ export const useClusterPolling = (clusterId: string) => {
       dispatch(cleanCluster());
     };
   }, [dispatch, fetchCluster]);
+
+  return { cluster: data, uiState, errorDetail };
 };

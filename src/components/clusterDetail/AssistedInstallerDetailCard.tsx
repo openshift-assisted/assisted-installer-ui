@@ -1,10 +1,9 @@
 import React from 'react';
-import { Provider, useSelector } from 'react-redux';
+import { Provider } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Button, ButtonVariant, Card, CardBody, CardHeader, Title } from '@patternfly/react-core';
 import { store } from '../../store';
 import { isSingleClusterMode, OCM_CLUSTER_LIST_LINK } from '../../config';
-import { selectCurrentClusterState } from '../../selectors';
 import { ResourceUIState } from '../../types';
 import { AlertsContextProvider } from '../AlertsContextProvider';
 import { useClusterPolling, useFetchCluster } from '../clusters/clusterPolling';
@@ -83,9 +82,8 @@ const LoadingDefaultConfigFailedCard: React.FC = () => (
 const AssistedInstallerDetailCard: React.FC<AssistedInstallerDetailCardProps> = ({
   aiClusterId,
 }) => {
-  const { data: cluster, uiState } = useSelector(selectCurrentClusterState);
   const fetchCluster = useFetchCluster(aiClusterId);
-  useClusterPolling(aiClusterId);
+  const { cluster, uiState } = useClusterPolling(aiClusterId);
 
   if (uiState === ResourceUIState.LOADING) {
     return <LoadingCard />;
