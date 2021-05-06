@@ -8,6 +8,9 @@ import {
 
 export const isSingleNodeCluster = (cluster: Cluster) => cluster.highAvailabilityMode === 'None';
 
+// The Day2 cluster
+export const isAddHostsCluster = (cluster: Cluster) => cluster.kind === 'AddHostsCluster';
+
 export const filterHostsByLogStates = (cluster: Cluster, logStates: LogsState[]) =>
   cluster.hosts?.filter(({ logsInfo }) => logsInfo && logStates.includes(logsInfo)) || [];
 
