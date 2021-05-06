@@ -9,8 +9,3 @@
 .cluster-wizard-step__footer {
   display: block;
 }
-
-.wizard-cluster-events-button {
-  position: relative;
-  float: right;
-}
