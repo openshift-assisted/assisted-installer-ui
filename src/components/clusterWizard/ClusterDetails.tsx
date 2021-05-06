@@ -87,7 +87,7 @@ const getValidationSchema = (cluster?: Cluster) => {
     baseDnsDomain: dnsNameValidationSchema.required('Base Domain is required.'),
     SNODisclaimer: Yup.boolean().when('highAvailabilityMode', {
       is: 'None',
-      then: Yup.bool().oneOf([true], 'Consent is required.'),
+      then: Yup.bool().oneOf([true], 'Confirm the Single Node OpenShift disclaimer to continue.'),
     }),
   });
 };
