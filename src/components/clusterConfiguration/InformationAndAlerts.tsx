@@ -3,9 +3,10 @@ import { Text } from '@patternfly/react-core';
 import { Cluster } from '../../api';
 import { HostRequirementsLink, HostRequirementsLinkProps } from '../fetching/HostRequirements';
 import VMRebootConfigurationInfo from '../hosts/VMRebootConfigurationInfo';
+import OCSDisksManualFormattingHint from '../hosts/OCSDisksManualFormattingHint';
+import { isAddHostsCluster } from '../clusters/utils';
 import { HostsNotShowingLink, HostsNotShowingLinkProps } from './DiscoveryTroubleshootingModal';
 import FormatDiskWarning from './FormatDiskWarning';
-import OCSDisksManualFormattingHint from '../hosts/OCSDisksManualFormattingHint';
 
 const InformationAndAlerts: React.FC<{
   cluster: Cluster;
@@ -19,7 +20,7 @@ const InformationAndAlerts: React.FC<{
       <HostsNotShowingLink setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
     </Text>
     <VMRebootConfigurationInfo hosts={cluster.hosts || []} />
-    <OCSDisksManualFormattingHint />
+    {!isAddHostsCluster(cluster) && <OCSDisksManualFormattingHint />}
     <FormatDiskWarning />
   </>
 );
