@@ -16,7 +16,6 @@ import { getHostDiscoveryInitialValues } from '../clusterConfiguration/utils';
 import { getOlmOperatorCreateParamsByName } from '../clusters/utils';
 import FormikAutoSave from '../ui/formik/FormikAutoSave';
 import { OPERATOR_NAME_CNV, OPERATOR_NAME_LSO, OPERATOR_NAME_OCS } from '../../config';
-import { ClusterPreflightRequirementsContextProvider } from '../clusterConfiguration/ClusterPreflightRequirementsContext';
 
 const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const dispatch = useDispatch();
@@ -82,9 +81,7 @@ const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
 
         return (
           <ClusterWizardStep cluster={cluster} footer={footer}>
-            <ClusterPreflightRequirementsContextProvider clusterId={cluster.id}>
-              <HostInventory cluster={cluster} />
-            </ClusterPreflightRequirementsContextProvider>
+            <HostInventory cluster={cluster} />
             <FormikAutoSave />
           </ClusterWizardStep>
         );

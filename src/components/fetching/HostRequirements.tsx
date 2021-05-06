@@ -1,13 +1,14 @@
 import React from 'react';
-import { Button, ButtonVariant, Modal, ModalVariant, TextContent } from '@patternfly/react-core';
+import { Button, ButtonVariant, Modal, ModalVariant } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons';
-import { LoadingState } from '../ui';
+import { Cluster } from '../../api';
+import { PreflightHWRequirementsContentComponent } from '../hosts/HostRequirementsContent';
 
 import './HostRequirements.css';
-import { useClusterPreflightRequirementsContext } from '../clusterConfiguration/ClusterPreflightRequirementsContext';
 
 export type HostRequirementsLinkProps = {
-  ContentComponent: React.FC;
+  clusterId: Cluster['id'];
+  ContentComponent: PreflightHWRequirementsContentComponent;
 };
 
 type HostRequirementsModalProps = HostRequirementsLinkProps & {
@@ -19,8 +20,8 @@ const HostRequirementsModal: React.FC<HostRequirementsModalProps> = ({
   setHostRequirementsOpen,
   isOpen,
   ContentComponent,
+  clusterId,
 }) => {
-  const { preflightRequirements } = useClusterPreflightRequirementsContext();
   const onClose = React.useCallback(() => setHostRequirementsOpen(false), [
     setHostRequirementsOpen,
   ]);
@@ -37,13 +38,7 @@ const HostRequirementsModal: React.FC<HostRequirementsModalProps> = ({
       onClose={onClose}
       variant={ModalVariant.medium}
     >
-      {preflightRequirements ? (
-        <TextContent>
-          <ContentComponent />
-        </TextContent>
-      ) : (
-        <LoadingState content="Loading hardware requirements ..." />
-      )}
+      <ContentComponent clusterId={clusterId} />
     </Modal>
   );
 };
