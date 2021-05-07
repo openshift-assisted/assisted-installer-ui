@@ -9,7 +9,7 @@ import ClusterWizardToolbar from './ClusterWizardToolbar';
 import { canNextHostDiscovery } from './wizardTransition';
 import { getErrorMessage, handleApiError } from '../../api/utils';
 import { HostDiscoveryValues } from '../../types/clusters';
-import { AlertsContext } from '../AlertsContextProvider';
+import { useAlerts } from '../AlertsContextProvider';
 import { patchCluster } from '../../api/clusters';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import { getHostDiscoveryInitialValues } from '../clusterConfiguration/utils';
@@ -20,7 +20,7 @@ import { OPERATOR_NAME_CNV, OPERATOR_NAME_LSO, OPERATOR_NAME_OCS } from '../../c
 const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const dispatch = useDispatch();
   const { setCurrentStepId } = React.useContext(ClusterWizardContext);
-  const { addAlert, clearAlerts } = React.useContext(AlertsContext);
+  const { addAlert, clearAlerts } = useAlerts();
   const initialValues = React.useMemo(
     () => getHostDiscoveryInitialValues(cluster),
     // eslint-disable-next-line react-hooks/exhaustive-deps

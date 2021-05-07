@@ -22,7 +22,7 @@ import { getClusters, patchCluster, postCluster } from '../../api/clusters';
 import { getErrorMessage, handleApiError } from '../../api/utils';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import { useDispatch } from 'react-redux';
-import { AlertsContext } from '../AlertsContextProvider';
+import { useAlerts } from '../AlertsContextProvider';
 import ClusterWizardContext from './ClusterWizardContext';
 import CheckboxField from '../ui/formik/CheckboxField';
 import { getManagedDomains } from '../../api/domains';
@@ -110,7 +110,7 @@ const validateClusterName = async (newFullName: string, existingClusterFullName?
 
 const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
   const { cluster, pullSecret, managedDomains, versions } = props;
-  const { addAlert, clearAlerts } = React.useContext(AlertsContext);
+  const { addAlert, clearAlerts } = useAlerts();
   const { setCurrentStepId } = React.useContext(ClusterWizardContext);
   const history = useHistory();
   const dispatch = useDispatch();
@@ -289,7 +289,7 @@ type ClusterDetailsProps = {
 
 const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster }) => {
   const [managedDomains, setManagedDomains] = React.useState<ManagedDomain[]>();
-  const { addAlert } = React.useContext(AlertsContext);
+  const { addAlert } = useAlerts();
 
   React.useEffect(() => {
     const fetchManagedDomains = async () => {

@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { Grid, GridItem } from '@patternfly/react-core';
 import { Cluster } from '../../api/types';
 import ClusterWizardStep from '../clusterWizard/ClusterWizardStep';
-import { AlertsContext } from '../AlertsContextProvider';
+import { useAlerts } from '../AlertsContextProvider';
 import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
 import ClusterWizardToolbar from '../clusterWizard/ClusterWizardToolbar';
 import { getErrorMessage, handleApiError, postInstallCluster } from '../../api';
@@ -12,7 +12,7 @@ import ReviewCluster from './ReviewCluster';
 import ClusterWizardStepHeader from '../clusterWizard/ClusterWizardStepHeader';
 
 const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
-  const { addAlert } = React.useContext(AlertsContext);
+  const { addAlert } = useAlerts();
   const { setCurrentStepId } = React.useContext(ClusterWizardContext);
   const dispatch = useDispatch();
 

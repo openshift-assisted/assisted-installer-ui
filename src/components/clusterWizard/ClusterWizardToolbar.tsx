@@ -18,7 +18,7 @@ import ClusterToolbar from '../clusters/ClusterToolbar';
 import { ToolbarButton, ToolbarText } from '../ui';
 import { routeBasePath } from '../../config';
 import Alerts from '../ui/Alerts';
-import { AlertsContext } from '../AlertsContextProvider';
+import { useAlerts } from '../AlertsContextProvider';
 import { getWizardStepClusterStatus } from './wizardTransition';
 import ClusterWizardContext from './ClusterWizardContext';
 
@@ -125,7 +125,7 @@ const ClusterWizardToolbar: React.FC<ClusterWizardToolbarProps> = ({
 }) => {
   const [isValidationSectionOpen, setIsValidationSectionOpen] = React.useState(false);
   const [isStartingInstallation, setIsStartingInstallation] = React.useState(false);
-  const { alerts } = React.useContext(AlertsContext);
+  const { alerts } = useAlerts();
   const history = useHistory();
 
   const handleCancel = React.useCallback(() => {

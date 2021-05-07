@@ -12,7 +12,7 @@ import {
 } from '../../api';
 import { Form, Grid, GridItem, Text, TextContent } from '@patternfly/react-core';
 
-import { AlertsContext } from '../AlertsContextProvider';
+import { useAlerts } from '../AlertsContextProvider';
 import {
   sshPublicKeyValidationSchema,
   ipBlockValidationSchema,
@@ -54,7 +54,7 @@ const NetworkConfigurationForm: React.FC<{
     'serviceNetworkCidr',
     'clusterNetworkHostPrefix',
   ]);
-  const { addAlert, clearAlerts } = React.useContext(AlertsContext);
+  const { addAlert, clearAlerts } = useAlerts();
   const { setCurrentStepId } = React.useContext(ClusterWizardContext);
   const dispatch = useDispatch();
   const hostSubnets = React.useMemo(() => getHostSubnets(cluster), [cluster]);
