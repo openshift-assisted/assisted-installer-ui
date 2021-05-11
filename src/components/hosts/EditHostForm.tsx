@@ -127,9 +127,9 @@ const EditHostForm: React.FC<EditHostFormProps> = ({
                 {hostname || ''}
               </StaticTextField>
               <InputField
-                label="Requested hostname"
+                label="Requested hostname (FQDN)"
                 name="hostname"
-                helperText="This name will replace the original discovered hostname after installation."
+                helperText="This name will replace the original discovered hostname after installation. A Fully qualified domain name is preferred."
                 isRequired
                 isDisabled={!canHostnameBeChanged(host.status)}
               />
