@@ -18,10 +18,12 @@ import { CLUSTER_STATUS_LABELS } from '../../config/constants';
 
 type ClusterStatusProps = {
   status: Cluster['status'];
+  className?: string;
 };
 
 type ClusterStatusIconProps = {
   status: Cluster['status'];
+  className?: string;
 };
 
 export const ClusterStatusIcon: React.FC<ClusterStatusIconProps> = ({ status, ...extraProps }) => {
@@ -56,12 +58,16 @@ export const ClusterStatusIcon: React.FC<ClusterStatusIconProps> = ({ status, ..
 export const getClusterStatusText = (status: Cluster['status']) =>
   CLUSTER_STATUS_LABELS[status] || status;
 
-const ClusterStatus: React.FC<ClusterStatusProps & WithTestID> = ({ status, testId }) => {
+const ClusterStatus: React.FC<ClusterStatusProps & WithTestID> = ({
+  status,
+  testId,
+  className,
+}) => {
   const title = getClusterStatusText(status);
 
   return (
     <>
-      <ClusterStatusIcon status={status} data-testid={testId} /> {title}
+      <ClusterStatusIcon status={status} data-testid={testId} className={className} /> {title}
     </>
   );
 };
