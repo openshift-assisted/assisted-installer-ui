@@ -35,10 +35,10 @@ export const ClusterStatusIcon: React.FC<ClusterStatusIconProps> = ({ status, ..
       return <BanIcon {...iconProps} />;
     case 'insufficient':
     case 'pending-for-input':
+    case 'ready':
       return <FileAltIcon {...iconProps} />;
     case 'error':
       return <ExclamationCircleIcon color={dangerColor.value} {...iconProps} />;
-    case 'ready':
     case 'installed':
       return <CheckCircleIcon color={okColor.value} {...iconProps} />;
     case 'installing-pending-user-action':
