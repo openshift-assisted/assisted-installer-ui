@@ -38,7 +38,7 @@ import {
 } from '../../features/clusters/currentClusterSlice';
 import { handleApiError, stringToJSON, getErrorMessage } from '../../api/utils';
 import sortable from '../ui/table/sortable';
-import { AlertsContext } from '../AlertsContextProvider';
+import { useAlerts } from '../AlertsContextProvider';
 import {
   HostsNotShowingLink,
   HostsNotShowingLinkProps,
@@ -227,7 +227,7 @@ const HostsTable: React.FC<HostsTableProps & WithTestID> = ({
   setDiscoveryHintModalOpen,
   testId = 'hosts-table',
 }) => {
-  const { addAlert } = React.useContext(AlertsContext);
+  const { addAlert } = useAlerts();
   const {
     eventsDialog,
     editHostDialog,

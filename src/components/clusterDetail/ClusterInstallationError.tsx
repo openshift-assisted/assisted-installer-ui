@@ -9,7 +9,7 @@ import {
 } from '@patternfly/react-core';
 import { Cluster } from '../../api/types';
 import { toSentence } from '../ui/table/utils';
-import { AlertsContext } from '../AlertsContextProvider';
+import { useAlerts } from '../AlertsContextProvider';
 import { canDownloadClusterLogs } from '../hosts/utils';
 import { getBugzillaLink } from '../../config';
 import { downloadClusterInstallationLogs } from './utils';
@@ -26,7 +26,7 @@ const ClusterInstallationError: React.FC<ClusterInstallationErrorProps> = ({
   cluster,
   title = 'Cluster installation failed',
 }) => {
-  const { addAlert } = React.useContext(AlertsContext);
+  const { addAlert } = useAlerts();
   const { resetClusterDialog } = useModalDialogsContext();
 
   return (

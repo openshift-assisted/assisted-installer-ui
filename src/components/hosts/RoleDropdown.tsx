@@ -6,7 +6,7 @@ import { patchCluster } from '../../api/clusters';
 import { HOST_ROLES } from '../../config/constants';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import { handleApiError, getErrorMessage } from '../../api/utils';
-import { AlertsContext } from '../AlertsContextProvider';
+import { useAlerts } from '../AlertsContextProvider';
 import { getHostRole } from './utils';
 
 type RoleDropdownProps = {
@@ -17,7 +17,7 @@ export const RoleDropdown: React.FC<RoleDropdownProps> = ({ host }) => {
   const { id, clusterId } = host;
   const [isDisabled, setDisabled] = React.useState(false);
   const dispatch = useDispatch();
-  const { addAlert } = React.useContext(AlertsContext);
+  const { addAlert } = useAlerts();
 
   const setRole = async (role?: string) => {
     const params: ClusterUpdateParams = {};

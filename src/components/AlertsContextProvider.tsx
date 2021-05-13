@@ -32,3 +32,11 @@ export const AlertsContextProvider: React.FC = ({ children }) => {
     </AlertsContext.Provider>
   );
 };
+
+export const useAlerts = () => {
+  const context = React.useContext(AlertsContext);
+  if (context === undefined) {
+    throw new Error('useAlerts must be used within AlertsContextProvider');
+  }
+  return context;
+};

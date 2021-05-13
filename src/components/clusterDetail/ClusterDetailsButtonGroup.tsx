@@ -5,7 +5,7 @@ import { canDownloadClusterLogs } from '../hosts/utils';
 import { EventsModalButton } from '../ui/eventsModal';
 import KubeconfigDownload from './KubeconfigDownload';
 import { downloadClusterInstallationLogs } from './utils';
-import { AlertsContext } from '../AlertsContextProvider';
+import { useAlerts } from '../AlertsContextProvider';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
 import { canAbortInstallation } from '../clusters/utils';
 
@@ -16,7 +16,7 @@ type ClusterDetailsButtonGroupProps = {
 const getID = (suffix: string) => `cluster-detail-${suffix}`;
 
 const ClusterDetailsButtonGroup: React.FC<ClusterDetailsButtonGroupProps> = ({ cluster }) => {
-  const { addAlert } = React.useContext(AlertsContext);
+  const { addAlert } = useAlerts();
   const { cancelInstallationDialog } = useModalDialogsContext();
 
   return (
