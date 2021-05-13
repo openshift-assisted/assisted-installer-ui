@@ -57,6 +57,8 @@ const EditHostForm: React.FC<EditHostFormProps> = ({
   onSuccess,
 }) => {
   const dispatch = useDispatch();
+  const hostnameInputRef = React.useRef<HTMLInputElement>();
+  React.useEffect(() => hostnameInputRef.current?.focus(), []);
 
   const { requestedHostname } = host;
   const { hostname } = inventory;
@@ -129,6 +131,7 @@ const EditHostForm: React.FC<EditHostFormProps> = ({
               <InputField
                 label="Requested hostname"
                 name="hostname"
+                ref={hostnameInputRef}
                 helperText="This name will replace the original discovered hostname after installation."
                 isRequired
                 isDisabled={!canHostnameBeChanged(host.status)}
