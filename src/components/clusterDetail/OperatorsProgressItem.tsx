@@ -22,6 +22,7 @@ import { MonitoredOperatorsList, OperatorStatus } from '../../api/types';
 import { OPERATOR_LABELS } from '../../config/constants';
 
 import './OperatorsProgressItem.css';
+import { pluralize } from 'humanize-plus';
 
 export function getAggregatedStatus(operators: MonitoredOperatorsList) {
   const operatorStates: (OperatorStatus | 'pending')[] = operators.map(
@@ -33,8 +34,7 @@ export function getAggregatedStatus(operators: MonitoredOperatorsList) {
   return 'available';
 }
 
-export const getOperatorCountString = (count: number) =>
-  `${count} operator${count === 1 ? '' : 's'}`;
+export const getOperatorCountString = (count: number) => `${count} ${pluralize(count, 'operator')}`;
 
 export function getLabel(operators: MonitoredOperatorsList) {
   const failedOperatorsCount = operators.filter((o) => o.status === 'failed').length;

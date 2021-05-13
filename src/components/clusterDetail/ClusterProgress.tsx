@@ -1,5 +1,5 @@
 import React from 'react';
-import { Cluster, Host, HostRole } from '../../api/types';
+import { Cluster, Host, HostRole, MonitoredOperatorsList } from '../../api/types';
 import {
   Progress,
   ProgressVariant,
@@ -28,6 +28,8 @@ import {
 import { EventsModal } from '../ui/eventsModal';
 import OperatorsProgressItem from './OperatorsProgressItem';
 import { pluralize } from 'humanize-plus';
+import { RenderIf } from '../ui/RenderIf';
+import { getOlmOperators } from '../clusters/utils';
 
 import './ClusterProgress.css';
 
@@ -55,7 +57,7 @@ const getProgressLabel = (cluster: Cluster, progressPercent: number): string => 
   return `${progressPercent}%`;
 };
 
-const getProgressPercent = (hosts: Host[] = []) => {
+const getHostsProgressPercent = (hosts: Host[] = []) => {
   const accountedHosts = getEnabledHosts(hosts);
   const totalSteps = accountedHosts.reduce(
     (steps, host) => steps + getHostProgressStages(host).length,
@@ -66,6 +68,16 @@ const getProgressPercent = (hosts: Host[] = []) => {
     0,
   );
   return (completedSteps / totalSteps) * 100;
+};
+
+const getOperatorsProgressPercent = (monitoredOperators: MonitoredOperatorsList) => {
+  const completeOperators = monitoredOperators.filter(
+    (operator) =>
+      (operator.operatorType === 'builtin' && operator.status === 'available') ||
+      (operator.operatorType === 'olm' && ['available', 'failed'].includes(operator.status || '')),
+  );
+
+  return (completeOperators.length / monitoredOperators.length) * 100;
 };
 
 const getInstallationStatus = (cluster: Cluster) => {
@@ -123,25 +135,36 @@ const HostProgress: React.FC<HostProgressProps> = ({ hosts, hostRole }) => {
   );
 };
 
-const getFinalizingStatusIcon = (status: string) => {
-  switch (status) {
-    case 'installed':
-      return <CheckCircleIcon color={okColor.value} />;
-    case 'finalizing':
-      return <InProgressIcon />;
-    case 'error':
-    case 'cancelled':
-      return <ExclamationCircleIcon color={dangerColor.value} />;
-    default:
-      return <PendingIcon />;
+const getFinalizingStatusIcon = (cluster: Cluster) => {
+  let statusIcon;
+  const { monitoredOperators = [] } = cluster;
+  const areAllBuiltInOperatorsAvailable = monitoredOperators
+    .filter((op) => op.operatorType === 'builtin')
+    ?.every((op) => op.status === 'available');
+  if (areAllBuiltInOperatorsAvailable) {
+    statusIcon = <CheckCircleIcon color={okColor.value} />;
+  } else {
+    switch (cluster.status) {
+      case 'finalizing':
+        statusIcon = <InProgressIcon />;
+        break;
+      case 'error':
+      case 'cancelled':
+        statusIcon = <ExclamationCircleIcon color={dangerColor.value} />;
+        break;
+      default:
+        statusIcon = <PendingIcon />;
+    }
   }
+
+  return statusIcon;
 };
 
 type FinalizingProgressProps = {
   cluster: Cluster;
 };
 
-const FinalizingProgress: React.FC<FinalizingProgressProps> = ({ cluster }) => {
+const FinalizingProgress = ({ cluster }: FinalizingProgressProps) => {
   const { status } = cluster;
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const closeModal = () => setIsModalOpen(false);
@@ -156,7 +179,7 @@ const FinalizingProgress: React.FC<FinalizingProgressProps> = ({ cluster }) => {
         entityKind="cluster"
       />
       <Flex className="pf-u-mr-3xl">
-        <FlexItem>{getFinalizingStatusIcon(status)}</FlexItem>
+        <FlexItem>{getFinalizingStatusIcon(cluster)}</FlexItem>
         <FlexItem>
           {status === 'finalizing' ? (
             <Popover
@@ -195,10 +218,20 @@ type ClusterProgressProps = {
 
 const ClusterProgress: React.FC<ClusterProgressProps> = ({ cluster, minimizedView = false }) => {
   const { status, monitoredOperators = [] } = cluster;
-  const hosts = getEnabledHosts(cluster.hosts);
-  const progressPercent = React.useMemo(() => Math.round(getProgressPercent(hosts)), [hosts]);
-  const label = getProgressLabel(cluster, progressPercent);
-  const isWorkersPresent = hosts && hosts.some((host) => host.role === 'worker');
+  const hostsProgressPercent = React.useMemo(() => getHostsProgressPercent(cluster.hosts), [
+    cluster.hosts,
+  ]);
+  const operatorsProgressPercent = React.useMemo(
+    () => getOperatorsProgressPercent(monitoredOperators),
+    [monitoredOperators],
+  );
+  const label = getProgressLabel(
+    cluster,
+    Math.round(hostsProgressPercent * 0.75 + operatorsProgressPercent * 0.25),
+  );
+  const enabledHosts = getEnabledHosts(cluster.hosts);
+  const isWorkersPresent = enabledHosts && enabledHosts.some((host) => host.role === 'worker');
+  const olmOperators = getOlmOperators(monitoredOperators);
 
   return (
     <>
@@ -220,36 +253,37 @@ const ClusterProgress: React.FC<ClusterProgressProps> = ({ cluster, minimizedVie
           </FlexItem>
         </Flex>
       </DetailList>
-      {!minimizedView && (
-        <>
-          <Progress
-            value={progressPercent}
-            label={label}
-            title=" "
-            measureLocation={getMeasureLocation(status)}
-            variant={getProgressVariant(status)}
-            className="cluster-progress-bar"
-          />
-          <Flex className="pf-u-mt-md" display={{ default: 'inlineFlex' }}>
+      <RenderIf condition={!minimizedView}>
+        <Progress
+          value={hostsProgressPercent}
+          label={label}
+          title=" "
+          measureLocation={getMeasureLocation(status)}
+          variant={getProgressVariant(status)}
+          className="cluster-progress-bar"
+        />
+        <Flex className="pf-u-mt-md" display={{ default: 'inlineFlex' }}>
+          <FlexItem>
+            <HostProgress hosts={enabledHosts} hostRole="master" />
+          </FlexItem>
+
+          <RenderIf condition={isWorkersPresent}>
             <FlexItem>
-              <HostProgress hosts={hosts} hostRole="master" />
+              <HostProgress hosts={enabledHosts} hostRole="worker" />
             </FlexItem>
-            {isWorkersPresent && (
-              <FlexItem>
-                <HostProgress hosts={hosts} hostRole="worker" />
-              </FlexItem>
-            )}
+          </RenderIf>
+
+          <FlexItem>
+            <FinalizingProgress cluster={cluster} />
+          </FlexItem>
+
+          <RenderIf condition={olmOperators.length > 0}>
             <FlexItem>
-              <FinalizingProgress cluster={cluster} />
+              <OperatorsProgressItem operators={olmOperators} />
             </FlexItem>
-            {!!monitoredOperators.length && (
-              <FlexItem>
-                <OperatorsProgressItem operators={monitoredOperators} />
-              </FlexItem>
-            )}
-          </Flex>
-        </>
-      )}
+          </RenderIf>
+        </Flex>
+      </RenderIf>
     </>
   );
 };
