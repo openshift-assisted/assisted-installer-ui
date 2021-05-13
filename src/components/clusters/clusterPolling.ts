@@ -30,7 +30,12 @@ export const useClusterPolling = (
 
   React.useEffect(() => {
     if (isReloadScheduled) {
-      if (![ResourceUIState.LOADING, ResourceUIState.RELOADING].includes(uiState)) {
+      const bannedUIStates = [
+        ResourceUIState.LOADING,
+        ResourceUIState.RELOADING,
+        ResourceUIState.ERROR,
+      ];
+      if (!bannedUIStates.includes(uiState)) {
         fetchCluster();
       }
     }
@@ -39,7 +44,7 @@ export const useClusterPolling = (
 
   React.useEffect(() => {
     fetchCluster();
-    const timer = setInterval(() => dispatch(forceReload()), POLLING_INTERVAL);
+    const timer = window.setInterval(() => dispatch(forceReload()), POLLING_INTERVAL);
     return () => {
       clearInterval(timer);
       dispatch(cancelForceReload());
