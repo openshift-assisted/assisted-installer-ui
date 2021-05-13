@@ -1,3 +1,5 @@
+import { FormikErrors, FormikTouched } from 'formik';
+
 export const getFieldId = (fieldName: string, fieldType: string, unique?: string) => {
   unique = unique ? `${unique}-` : '';
   return `form-${fieldType}-${fieldName.replace(/\./g, '-')}-${unique}field`;
@@ -16,3 +18,8 @@ export const trimCommaSeparatedList = (list: string) =>
     .map((item) => item.trim())
     .filter(Boolean)
     .join(',');
+
+export const getFormikErrorFields = <FormikValues>(
+  errors: FormikErrors<FormikValues>,
+  touched: FormikTouched<FormikValues>,
+) => Object.keys(errors).filter((field) => touched[field]);

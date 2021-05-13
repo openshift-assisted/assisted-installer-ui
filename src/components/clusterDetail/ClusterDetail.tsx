@@ -16,7 +16,7 @@ import ClusterToolbar from '../clusters/ClusterToolbar';
 import { ToolbarButton, ToolbarSecondaryGroup } from '../ui/Toolbar';
 import Alerts from '../ui/Alerts';
 import { downloadClusterInstallationLogs, getClusterDetailId } from './utils';
-import { AlertsContext } from '../AlertsContextProvider';
+import { useAlerts } from '../AlertsContextProvider';
 import { canDownloadClusterLogs } from '../hosts/utils';
 import ClusterProgress from './ClusterProgress';
 import { LaunchOpenshiftConsoleButton } from './ConsoleModal';
@@ -34,7 +34,7 @@ type ClusterDetailProps = {
 };
 
 const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
-  const { addAlert } = React.useContext(AlertsContext);
+  const { addAlert } = useAlerts();
   const { resetClusterDialog, cancelInstallationDialog } = useModalDialogsContext();
   const clusterVarieties = useClusterStatusVarieties(cluster);
   const { credentials, credentialsError } = clusterVarieties;
@@ -96,14 +96,15 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
               id={getClusterDetailId('button-launch-console')}
             />
           )}
-          <ToolbarButton
-            variant={ButtonVariant.link}
-            component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
-            isHidden={isSingleClusterMode()}
-            id={getClusterDetailId('button-back-to-all-clusters')}
-          >
-            Back to all clusters
-          </ToolbarButton>
+          {!isSingleClusterMode() && (
+            <ToolbarButton
+              variant={ButtonVariant.link}
+              component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
+              id={getClusterDetailId('button-back-to-all-clusters')}
+            >
+              Back to all clusters
+            </ToolbarButton>
+          )}
           <ToolbarSecondaryGroup>
             <ToolbarButton
               id="cluster-installation-logs-button"

@@ -19,14 +19,14 @@ import { fetchClustersAsync, deleteCluster } from '../../features/clusters/clust
 import { deleteCluster as ApiDeleteCluster } from '../../api/clusters';
 import Alerts from '../ui/Alerts';
 import { handleApiError, getErrorMessage } from '../../api/utils';
-import { AlertsContext, AlertsContextProvider } from '../AlertsContextProvider';
+import { useAlerts, AlertsContextProvider } from '../AlertsContextProvider';
 import ClusterBreadcrumbs from './ClusterBreadcrumbs';
 
 type ClustersProps = RouteComponentProps;
 
 const Clusters: React.FC<ClustersProps> = ({ history }) => {
   const { LOADING, EMPTY, ERROR, RELOADING } = ResourceUIState;
-  const { addAlert } = React.useContext(AlertsContext);
+  const { addAlert } = useAlerts();
   const clusterRows = useSelector(selectClusterTableRows);
   const clustersUIState = useSelector(selectClustersUIState);
   const uiState = React.useRef(clustersUIState);

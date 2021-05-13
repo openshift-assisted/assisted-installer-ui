@@ -1,10 +1,10 @@
 import React from 'react';
 import { AlertGroup, AlertActionCloseButton, Alert } from '@patternfly/react-core';
 import { AlertProps } from '../../features/alerts/alertsSlice';
-import { AlertsContext } from '../AlertsContextProvider';
+import { useAlerts } from '../AlertsContextProvider';
 
 const Alerts: React.FC<{ className?: string }> = ({ className }) => {
-  const { alerts, removeAlert } = React.useContext(AlertsContext);
+  const { alerts, removeAlert } = useAlerts();
   const onClose = (alert: AlertProps) => removeAlert(alert.key);
 
   if (alerts.length) {

@@ -12,7 +12,7 @@ import {
 } from '../../api';
 import { Form, Grid, GridItem, Text, TextContent } from '@patternfly/react-core';
 
-import { AlertsContext } from '../AlertsContextProvider';
+import { useAlerts } from '../AlertsContextProvider';
 import {
   sshPublicKeyValidationSchema,
   ipBlockValidationSchema,
@@ -22,7 +22,6 @@ import {
 import ClusterWizardStep from '../clusterWizard/ClusterWizardStep';
 import { HostSubnets, NetworkConfigurationValues } from '../../types/clusters';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
-import ClusterWizardToolbar from '../clusterWizard/ClusterWizardToolbar';
 import { canNextNetwork } from '../clusterWizard/wizardTransition';
 import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
 import NetworkConfiguration from './NetworkConfiguration';
@@ -33,6 +32,8 @@ import NetworkingHostsTable from '../hosts/NetworkingHostsTable';
 import FormikAutoSave from '../ui/formik/FormikAutoSave';
 import { isSingleNodeCluster } from '../clusters/utils';
 import ClusterWizardStepHeader from '../clusterWizard/ClusterWizardStepHeader';
+import ClusterWizardFooter from '../clusterWizard/ClusterWizardFooter';
+import { getFormikErrorFields } from '../ui/formik/utils';
 
 const validationSchema = (initialValues: NetworkConfigurationValues, hostSubnets: HostSubnets) =>
   Yup.lazy<NetworkConfigurationValues>((values) =>
@@ -54,7 +55,7 @@ const NetworkConfigurationForm: React.FC<{
     'serviceNetworkCidr',
     'clusterNetworkHostPrefix',
   ]);
-  const { addAlert, clearAlerts } = React.useContext(AlertsContext);
+  const { addAlert, clearAlerts } = useAlerts();
   const { setCurrentStepId } = React.useContext(ClusterWizardContext);
   const dispatch = useDispatch();
   const hostSubnets = React.useMemo(() => getHostSubnets(cluster), [cluster]);
@@ -104,9 +105,7 @@ const NetworkConfigurationForm: React.FC<{
 
       const { data } = await patchCluster(cluster.id, params);
       dispatch(updateCluster(data));
-      actions.resetForm({
-        values: getNetworkInitialValues(data, defaultNetworkSettings),
-      });
+      actions.resetForm({ values: getNetworkInitialValues(data, defaultNetworkSettings) });
     } catch (e) {
       handleApiError<ClusterUpdateParams>(e, () =>
         addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),
@@ -122,7 +121,8 @@ const NetworkConfigurationForm: React.FC<{
       initialTouched={_.mapValues(initialValues, () => true)}
       validateOnMount
     >
-      {({ isSubmitting, errors, dirty }: FormikProps<NetworkConfigurationValues>) => {
+      {({ isSubmitting, dirty, errors, touched }: FormikProps<NetworkConfigurationValues>) => {
+        const errorFields = getFormikErrorFields(errors, touched);
         const form = (
           <>
             <Grid hasGutter>
@@ -153,10 +153,9 @@ const NetworkConfigurationForm: React.FC<{
         );
 
         const footer = (
-          <ClusterWizardToolbar
+          <ClusterWizardFooter
             cluster={cluster}
-            formErrors={errors}
-            dirty={dirty}
+            errorFields={errorFields}
             isSubmitting={isSubmitting}
             isNextDisabled={dirty || !canNextNetwork({ cluster })}
             onNext={() => setCurrentStepId('review')}

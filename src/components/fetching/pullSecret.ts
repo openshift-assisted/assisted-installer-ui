@@ -1,10 +1,10 @@
 import React from 'react';
 import { getErrorMessage, handleApiError, ocmClient } from '../../api';
-import { AlertsContext } from '../AlertsContextProvider';
+import { useAlerts } from '../AlertsContextProvider';
 
 export const usePullSecretFetch = () => {
   const [pullSecret, setPullSecret] = React.useState<string>();
-  const { addAlert } = React.useContext(AlertsContext);
+  const { addAlert } = useAlerts();
 
   React.useEffect(() => {
     const getPullSecret = async () => {

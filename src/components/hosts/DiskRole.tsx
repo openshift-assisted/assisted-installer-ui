@@ -12,7 +12,7 @@ import {
 import { patchCluster } from '../../api/clusters';
 import { updateCluster } from '../../features/clusters/currentClusterSlice';
 import { getErrorMessage, handleApiError } from '../../api/utils';
-import { AlertsContext } from '../AlertsContextProvider';
+import { useAlerts } from '../AlertsContextProvider';
 import { DISK_ROLE_LABELS } from '../../config/constants';
 
 const getCurrentDiskRoleLabel = (disk: Disk, installationDiskId: Host['installationDiskId']) =>
@@ -42,7 +42,7 @@ const DiskRoleDropdown: React.FC<DiskRoleDropdownProps> = ({ host, disk, install
   const [isOpen, setOpen] = React.useState(false);
   const [isDisabled, setDisabled] = React.useState(false);
   const dispatch = useDispatch();
-  const { addAlert } = React.useContext(AlertsContext);
+  const { addAlert } = useAlerts();
   const { id, clusterId } = host;
 
   const dropdownItems = [

@@ -4,7 +4,7 @@ import { GridItem, Button, ButtonVariant } from '@patternfly/react-core';
 import { getPresignedFileUrl, getClusterFileDownload } from '../../api/clusters';
 import { Cluster, Presigned } from '../../api/types';
 import { canDownloadKubeconfig } from '../hosts/utils';
-import { AlertsContext } from '../AlertsContextProvider';
+import { useAlerts } from '../AlertsContextProvider';
 import { getErrorMessage, handleApiError, ocmClient } from '../../api';
 
 type KubeconfigDownloadProps = {
@@ -14,7 +14,7 @@ type KubeconfigDownloadProps = {
 };
 
 const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({ clusterId, status, id }) => {
-  const { addAlert } = React.useContext(AlertsContext);
+  const { addAlert } = useAlerts();
 
   const download = React.useCallback(
     async (clusterId: Cluster['id'], status: Cluster['status']) => {
