@@ -1,5 +1,5 @@
 import React from 'react';
-import { Cluster, Host } from '../../api/types';
+import { Host } from '../../api/types';
 import { ValidationsInfo } from '../../types/hosts';
 import HostStatus from './HostStatus';
 import {
@@ -11,7 +11,7 @@ import {
 type HardwareStatusProps = {
   host: Host;
   validationsInfo: ValidationsInfo;
-  cluster: Cluster;
+  onEditHostname?: () => void;
 };
 
 const HardwareStatus: React.FC<HardwareStatusProps> = (props) => {

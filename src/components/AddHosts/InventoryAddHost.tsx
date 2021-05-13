@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, TextContent, Button } from '@patternfly/react-core';
-import HostsTable from '../hosts/HostsTable';
+import ClusterHostsTable from '../hosts/ClusterHostsTable';
 import { DiscoveryImageModalButton } from '../clusterConfiguration/discoveryImageModal';
 import { DiscoveryTroubleshootingModal } from '../clusterConfiguration/DiscoveryTroubleshootingModal';
 import InformationAndAlerts from '../clusterConfiguration/InformationAndAlerts';
@@ -34,7 +34,7 @@ const InventoryAddHosts: React.FC = () => {
           setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
         />
       </TextContent>
-      <HostsTable cluster={cluster} setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
+      <ClusterHostsTable cluster={cluster} setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
       <DiscoveryTroubleshootingModal
         isOpen={isDiscoveryHintModalOpen}
         setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}

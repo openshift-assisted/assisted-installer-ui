@@ -10,7 +10,7 @@ import {
 } from '@patternfly/react-core';
 import { Cluster } from '../../api';
 import ClusterProgress from './ClusterProgress';
-import HostsTable from '../hosts/HostsTable';
+import ClusterHostsTable from '../hosts/ClusterHostsTable';
 import ClusterDetailsButtonGroup from './ClusterDetailsButtonGroup';
 import { ClusterStatusIcon } from '../clusters/ClusterStatus';
 import ClusterDetailStatusVarieties, {
@@ -50,7 +50,7 @@ const ClusterInstallationProgressCard: React.FC<{ cluster: Cluster }> = ({ clust
           <Grid hasGutter>
             <ClusterDetailStatusVarieties cluster={cluster} clusterVarieties={clusterVarieties} />
             <GridItem>
-              <HostsTable cluster={cluster} skipDisabled />
+              <ClusterHostsTable cluster={cluster} skipDisabled />
             </GridItem>
           </Grid>
         </CardBody>

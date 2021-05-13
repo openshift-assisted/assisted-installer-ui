@@ -17,7 +17,7 @@ import {
   AddCircleOIcon,
 } from '@patternfly/react-icons';
 import hdate from 'human-date';
-import { Cluster, Host } from '../../api/types';
+import { Host } from '../../api/types';
 import { ValidationsInfo } from '../../types/hosts';
 import HostProgress from './HostProgress';
 import { HOST_STATUS_LABELS, HOST_STATUS_DETAILS } from '../../config/constants';
@@ -126,7 +126,7 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = (props
 type HostStatusProps = {
   host: Host;
   validationsInfo: ValidationsInfo;
-  cluster: Cluster;
+  onEditHostname?: () => void;
   statusOverride?: Host['status'];
   sublabel?: string;
 };
@@ -162,16 +162,21 @@ const HostStatusPopoverFooter: React.FC<{ host: Host }> = ({ host }) => {
 
 const HostStatus: React.FC<HostStatusProps> = ({
   host,
-  cluster,
   validationsInfo,
   statusOverride,
   sublabel,
+  onEditHostname,
 }) => {
   const [keepOnOutsideClick, onValidationActionToggle] = React.useState(false);
   const status = statusOverride || host.status;
   const title = HOST_STATUS_LABELS[status] || status;
   const icon = getStatusIcon(status) || null;
   const hostProgressStages = getHostProgressStages(host);
+
+  const toggleHostname = React.useCallback(() => {
+    onValidationActionToggle(!keepOnOutsideClick);
+    onEditHostname?.();
+  }, [keepOnOutsideClick, onEditHostname]);
 
   sublabel =
     sublabel ||
@@ -187,8 +192,7 @@ const HostStatus: React.FC<HostStatusProps> = ({
           <HostStatusPopoverContent
             host={host}
             validationsInfo={validationsInfo}
-            cluster={cluster}
-            onValidationActionToggle={onValidationActionToggle}
+            onEditHostname={toggleHostname}
           />
         }
         footerContent={<HostStatusPopoverFooter host={host} />}

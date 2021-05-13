@@ -11,7 +11,7 @@ import {
 } from '@patternfly/react-core';
 import { Cluster } from '../../api/types';
 import { EventsModalButton } from '../ui/eventsModal';
-import HostsTable from '../hosts/HostsTable';
+import ClusterHostsTable from '../hosts/ClusterHostsTable';
 import ClusterToolbar from '../clusters/ClusterToolbar';
 import { ToolbarButton, ToolbarSecondaryGroup } from '../ui/Toolbar';
 import Alerts from '../ui/Alerts';
@@ -61,7 +61,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
             <TextContent>
               <Text component="h2">Host Inventory</Text>
             </TextContent>
-            <HostsTable cluster={cluster} skipDisabled />
+            <ClusterHostsTable cluster={cluster} skipDisabled />
           </GridItem>
           <ClusterProperties cluster={cluster} />
         </Grid>

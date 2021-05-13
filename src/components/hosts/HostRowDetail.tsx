@@ -10,7 +10,7 @@ import {
   IRow,
 } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
-import { Host, Inventory, Disk, Interface, Cluster } from '../../api/types';
+import { Host, Inventory, Disk, Interface } from '../../api/types';
 import { getHostRowHardwareInfo } from './hardwareInfo';
 import { DASH } from '../constants';
 import { DetailList, DetailListProps, DetailItem } from '../ui/DetailList';
@@ -18,10 +18,11 @@ import { ValidationsInfo } from '../../types/hosts';
 import NtpValidationStatus from './NtpValidationStatus';
 import DiskLimitations from './DiskLimitations';
 import DiskRole from './DiskRole';
-import { canEditDisks, getHardwareTypeText, fileSize } from './utils';
+import { getHardwareTypeText, fileSize } from './utils';
+import { WithTestID } from '../../types';
 
 type HostDetailProps = {
-  cluster: Cluster;
+  canEditDisks?: (host: Host) => boolean;
   inventory: Inventory;
   host: Host;
   validationsInfo: ValidationsInfo;
@@ -36,7 +37,7 @@ type SectionColumnProps = {
 };
 
 type DisksTableProps = {
-  cluster: Cluster;
+  canEditDisks?: (host: Host) => boolean;
   host: Host;
   disks: Disk[];
   installationDiskId?: string;
@@ -81,13 +82,13 @@ const DisksTableRowWrapper = (props: RowWrapperProps) => (
 );
 
 const DisksTable: React.FC<DisksTableProps & WithTestID> = ({
-  cluster,
+  canEditDisks,
   host,
   disks,
   installationDiskId,
   testId,
 }) => {
-  const isEditable = canEditDisks(cluster.status, host.status);
+  const isEditable = !!canEditDisks?.(host);
   const rows: IRow[] = disks
     .sort((diskA, diskB) => diskA.name?.localeCompare(diskB.name || '') || 0)
     .map((disk) => ({
@@ -190,7 +191,7 @@ const NicsTable: React.FC<NicsTableProps & WithTestID> = ({ interfaces, testId }
 };
 
 export const HostDetail: React.FC<HostDetailProps> = ({
-  cluster,
+  canEditDisks,
   inventory,
   host,
   validationsInfo,
@@ -276,7 +277,7 @@ export const HostDetail: React.FC<HostDetailProps> = ({
       <GridItem>
         <DisksTable
           testId={'disks-table'}
-          cluster={cluster}
+          canEditDisks={canEditDisks}
           host={host}
           disks={disks}
           installationDiskId={installationDiskId}

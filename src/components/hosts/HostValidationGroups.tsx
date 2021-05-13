@@ -11,7 +11,7 @@ import {
   HOST_VALIDATION_FAILURE_HINTS,
   HOST_VALIDATION_LABELS,
 } from '../../config/constants';
-import { Cluster, Host } from '../../api';
+import { Host } from '../../api';
 import Hostname from './Hostname';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionalNTPSourcesDialog';
 
@@ -19,9 +19,8 @@ import './HostValidationGroups.css';
 import { toSentence } from '../ui/table/utils';
 
 export type ValidationInfoActionProps = {
+  onEditHostname?: () => void;
   host: Host;
-  cluster: Cluster;
-  onValidationActionToggle: (isOpen: boolean) => void;
 };
 
 type HostValidationGroupsProps = ValidationInfoActionProps & {
@@ -38,7 +37,6 @@ const ValidationGroupAlert: React.FC<ValidationGroupAlertProps> = ({
   variant,
   validations,
   title,
-  onValidationActionToggle,
   ...props
 }) => {
   if (!validations.length) {
@@ -53,14 +51,7 @@ const ValidationGroupAlert: React.FC<ValidationGroupAlertProps> = ({
         ['hostname-unique', 'hostname-valid'].includes(validation.id),
     )
   ) {
-    actionLinks.push(
-      <Hostname
-        key="change-hostname"
-        title="Change hostname"
-        onToggle={onValidationActionToggle}
-        {...props}
-      />,
-    );
+    actionLinks.push(<Hostname key="change-hostname" title="Change hostname" {...props} />);
   }
   if (
     validations.find(
