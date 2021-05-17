@@ -8,3 +8,4 @@ export * from './AlertsContextProvider';
 export * from './Router';
 export * from './AddHosts';
 export * from './bmc';
+export * from './InfraEnv';

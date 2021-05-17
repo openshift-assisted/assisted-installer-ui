@@ -12,7 +12,6 @@ import {
   AlertActionCloseButton,
 } from '@patternfly/react-core';
 import Axios, { CancelTokenSource } from 'axios';
-import { UploadField } from '../ui/formik';
 import { Formik, FormikHelpers } from 'formik';
 import { createClusterDownloadsImage, patchCluster } from '../../api/clusters';
 import { LoadingState } from '../ui/uiState';
@@ -26,9 +25,8 @@ import {
 import { updateCluster, forceReload } from '../../reducers/clusters/currentClusterSlice';
 import { DiscoveryImageFormValues } from './types';
 import ProxyFields from './ProxyFields';
-import { SshPublicKeyHelperText } from './ClusterSshKeyFields';
 import { usePullSecretFetch } from '../fetching/pullSecret';
-import { trimSshPublicKey } from '../ui/formik/utils';
+import UploadSSH from './UploadSSH';
 
 const validationSchema = Yup.lazy<DiscoveryImageFormValues>((values) =>
   Yup.object<DiscoveryImageFormValues>().shape({
@@ -109,7 +107,7 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
     }
   };
 
-  const initialValues = {
+  const initialValues: DiscoveryImageFormValues = {
     sshPublicKey: sshPublicKey || '',
     httpProxy: cluster.httpProxy || '',
     httpsProxy: cluster.httpsProxy || '',
@@ -119,18 +117,12 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
 
   return (
     <Formik
-      initialValues={initialValues as DiscoveryImageFormValues}
+      initialValues={initialValues}
       initialStatus={{ error: null }}
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
-      {({ submitForm, isSubmitting, status, setStatus, setFieldValue, values }) => {
-        const onSshKeyBlur = () => {
-          if (values.sshPublicKey) {
-            setFieldValue('sshPublicKey', trimSshPublicKey(values.sshPublicKey));
-          }
-        };
-
+      {({ submitForm, isSubmitting, status, setStatus }) => {
         return isSubmitting ? (
           <LoadingState
             content="Discovery image is being prepared, this might take a few seconds."
@@ -156,19 +148,7 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
                     {status.error.message}
                   </Alert>
                 )}
-                <UploadField
-                  label="SSH public key"
-                  name="sshPublicKey"
-                  helperText={<SshPublicKeyHelperText />}
-                  idPostfix="discovery"
-                  onBlur={onSshKeyBlur}
-                  dropzoneProps={{
-                    accept: '.pub',
-                    maxSize: 2048,
-                    onDropRejected: ({ setError }) => () => setError('File not supported.'),
-                  }}
-                  isRequired
-                />
+                <UploadSSH />
                 <ProxyFields />
               </Form>
             </ModalBoxBody>
