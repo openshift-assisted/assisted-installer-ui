@@ -10,7 +10,7 @@ import { getErrorMessage, handleApiError } from '../../api/utils';
 import { HostDiscoveryValues } from '../../types/clusters';
 import { useAlerts } from '../AlertsContextProvider';
 import { patchCluster } from '../../api/clusters';
-import { updateCluster } from '../../features/clusters/currentClusterSlice';
+import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
 import { getHostDiscoveryInitialValues } from '../clusterConfiguration/utils';
 import { getOlmOperatorCreateParamsByName } from '../clusters/utils';
 import FormikAutoSave from '../ui/formik/FormikAutoSave';

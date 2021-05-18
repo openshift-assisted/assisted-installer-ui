@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
-import clustersReducer from '../features/clusters/clustersSlice';
-import currentClusterReducer from '../features/clusters/currentClusterSlice';
+import clustersReducer from '../reducers/clusters/clustersSlice';
+import currentClusterReducer from '../reducers/clusters/currentClusterSlice';
 
 const rootReducer = combineReducers({
   clusters: clustersReducer,

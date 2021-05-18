@@ -23,7 +23,7 @@ import {
   httpProxyValidationSchema,
   noProxyValidationSchema,
 } from '../ui/formik/validationSchemas';
-import { updateCluster, forceReload } from '../../features/clusters/currentClusterSlice';
+import { updateCluster, forceReload } from '../../reducers/clusters/currentClusterSlice';
 import { DiscoveryImageFormValues } from './types';
 import ProxyFields from './ProxyFields';
 import { SshPublicKeyHelperText } from './ClusterSshKeyFields';

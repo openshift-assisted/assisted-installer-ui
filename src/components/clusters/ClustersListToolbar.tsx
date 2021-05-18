@@ -25,7 +25,7 @@ import { CLUSTER_STATUS_LABELS, routeBasePath } from '../../config';
 import ToolbarButton from '../ui/Toolbar/ToolbarButton';
 import { ResourceUIState } from '../../types';
 import { selectClustersUIState } from '../../selectors/clusters';
-import { fetchClustersAsync } from '../../features/clusters/clustersSlice';
+import { fetchClustersAsync } from '../../reducers/clusters/clustersSlice';
 
 export type ClusterFiltersType = {
   [key: string]: string[]; // value from CLUSTER_STATUS_LABELS

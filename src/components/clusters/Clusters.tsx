@@ -15,7 +15,7 @@ import { LoadingState, ErrorState, EmptyState } from '../ui/uiState';
 import { AddCircleOIcon } from '@patternfly/react-icons';
 import { ResourceUIState } from '../../types';
 import ClustersTable from './ClustersTable';
-import { fetchClustersAsync, deleteCluster } from '../../features/clusters/clustersSlice';
+import { fetchClustersAsync, deleteCluster } from '../../reducers/clusters/clustersSlice';
 import { deleteCluster as ApiDeleteCluster } from '../../api/clusters';
 import Alerts from '../ui/Alerts';
 import { handleApiError, getErrorMessage } from '../../api/utils';

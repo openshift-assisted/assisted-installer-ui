@@ -1,6 +1,6 @@
 import React from 'react';
 import { AlertGroup, AlertActionCloseButton, Alert } from '@patternfly/react-core';
-import { AlertProps } from '../../features/alerts/alertsSlice';
+import { AlertProps } from '../../reducers/alerts/alertsSlice';
 import { useAlerts } from '../AlertsContextProvider';
 
 const Alerts: React.FC<{ className?: string }> = ({ className }) => {
