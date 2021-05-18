@@ -1,33 +1,25 @@
 import React from 'react';
-import { IRow, sortable, expandable } from '@patternfly/react-table';
-import { Cluster, Host, Inventory } from '../../api/types';
-import { HostsTable } from '.';
+import { Cluster, Inventory } from '../../api/types';
+import { ClusterHostsTable } from '.';
 import { HostDetail } from './HostRowDetail';
 import HostPropertyValidationPopover from './HostPropertyValidationPopover';
-import { OpenRows } from './HostsTable';
+import { HostsTableProps } from './HostsTable';
 import { stringToJSON } from '../../api/utils';
 import { getHostRowHardwareInfo } from './hardwareInfo';
 import { ValidationsInfo } from '../../types/hosts';
-import { canEditRole, getHostname, getHostRole } from './utils';
+import { getHostname, getHostRole } from './utils';
 import Hostname from './Hostname';
 import RoleCell from './RoleCell';
 import HardwareStatus from './HardwareStatus';
 import { getDateTimeCell } from '../ui/table/utils';
 import { HostsNotShowingLinkProps } from '../clusterConfiguration/DiscoveryTroubleshootingModal';
-import HostsCount from './HostsCount';
 
-const getColumns = (cluster: Cluster) => [
-  { title: 'Hostname', transforms: [sortable], cellFormatters: [expandable] },
-  { title: 'Role', transforms: [sortable] },
-  { title: 'Status', transforms: [sortable] },
-  { title: 'Discovered At', transforms: [sortable] },
-  { title: 'CPU Cores', transforms: [sortable] }, // cores per machine (sockets x cores)
-  { title: 'Memory', transforms: [sortable] },
-  { title: 'Disk', transforms: [sortable] },
-  { title: <HostsCount cluster={cluster} inParenthesis /> },
-];
-
-const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host): IRow[] => {
+const hostToHostTableRow: HostsTableProps['hostToHostTableRow'] = (
+  openRows,
+  canEditDisks,
+  onEditHostname,
+  canEditRole,
+) => (host) => {
   const { id, status, createdAt, inventory: inventoryString = '' } = host;
   const inventory = stringToJSON<Inventory>(inventoryString) || {};
   const { cores, memory, disk } = getHostRowHardwareInfo(inventory);
@@ -41,25 +33,31 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
   const hostRole = getHostRole(host);
   const dateTimeCell = getDateTimeCell(createdAt);
 
+  const editHostname = onEditHostname ? () => onEditHostname(host, inventory) : undefined;
+
   return [
     {
       // visible row
       isOpen: !!openRows[id],
       cells: [
         {
-          title: <Hostname host={host} inventory={inventory} cluster={cluster} />,
+          title: <Hostname host={host} inventory={inventory} onEditHostname={editHostname} />,
           props: { 'data-testid': 'host-name' },
           sortableValue: computedHostname || '',
         },
         {
-          title: (
-            <RoleCell host={host} readonly={!canEditRole(cluster, host.status)} role={hostRole} />
-          ),
+          title: <RoleCell host={host} readonly={!canEditRole?.(host)} role={hostRole} />,
           props: { 'data-testid': 'host-role' },
           sortableValue: hostRole,
         },
         {
-          title: <HardwareStatus host={host} cluster={cluster} validationsInfo={validationsInfo} />,
+          title: (
+            <HardwareStatus
+              host={host}
+              onEditHostname={editHostname}
+              validationsInfo={validationsInfo}
+            />
+          ),
           props: { 'data-testid': 'host-hw-status' },
           sortableValue: status,
         },
@@ -97,7 +95,6 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
         },
       ],
       host,
-      clusterStatus: cluster.status,
       inventory,
       key: `${host.id}-master`,
     },
@@ -110,7 +107,7 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
           title: (
             <HostDetail
               key={id}
-              cluster={cluster}
+              canEditDisks={canEditDisks}
               inventory={inventory}
               host={host}
               validationsInfo={validationsInfo}
@@ -132,10 +129,9 @@ type HostsDiscoveryTableProps = {
 
 const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = (props) => {
   return (
-    <HostsTable
+    <ClusterHostsTable
       {...props}
       testId={'hosts-discovery-table'}
-      getColumns={getColumns}
       hostToHostTableRow={hostToHostTableRow}
     />
   );

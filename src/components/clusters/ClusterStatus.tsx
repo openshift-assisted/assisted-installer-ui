@@ -15,6 +15,7 @@ import {
 } from '@patternfly/react-icons';
 import { Cluster } from '../../api/types';
 import { CLUSTER_STATUS_LABELS } from '../../config/constants';
+import { WithTestID } from '../../types';
 
 type ClusterStatusProps = {
   status: Cluster['status'];

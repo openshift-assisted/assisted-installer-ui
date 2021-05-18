@@ -1,9 +1,9 @@
 import React from 'react';
-import { IRow, sortable, expandable } from '@patternfly/react-table';
-import { Cluster, Host, Interface, Inventory } from '../../api/types';
-import { HostsTable } from '.';
+import { sortable, expandable } from '@patternfly/react-table';
+import { Cluster, Interface, Inventory } from '../../api/types';
+import { ClusterHostsTable } from '.';
 import { HostDetail } from './HostRowDetail';
-import { OpenRows } from './HostsTable';
+import { HostsTableProps } from './HostsTable';
 import { stringToJSON } from '../../api/utils';
 import { ValidationsInfo } from '../../types/hosts';
 import { getHostname, getHostRole } from './utils';
@@ -51,7 +51,13 @@ const getColumns = (cluster: Cluster) => [
   { title: <HostsCount cluster={cluster} inParenthesis /> },
 ];
 
-const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host): IRow[] => {
+type HostToHostTableRow = (cluster: Cluster) => HostsTableProps['hostToHostTableRow'];
+
+const hostToHostTableRow: HostToHostTableRow = (cluster) => (
+  openRows,
+  canEditDisks,
+  onEditHostname,
+) => (host) => {
   const { id, status, inventory: inventoryString = '' } = host;
   const inventory = stringToJSON<Inventory>(inventoryString) || {};
   const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
@@ -63,13 +69,15 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
   const computedHostname = getHostname(host, inventory);
   const hostRole = getHostRole(host);
 
+  const editHostname = onEditHostname ? () => onEditHostname(host, inventory) : undefined;
+
   return [
     {
       // visible row
       isOpen: !!openRows[id],
       cells: [
         {
-          title: <Hostname host={host} inventory={inventory} cluster={cluster} />,
+          title: <Hostname host={host} inventory={inventory} onEditHostname={editHostname} />,
           props: { 'data-testid': 'host-name' },
           sortableValue: computedHostname || '',
         },
@@ -80,7 +88,11 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
         },
         {
           title: (
-            <NetworkingStatus host={host} cluster={cluster} validationsInfo={validationsInfo} />
+            <NetworkingStatus
+              host={host}
+              onEditHostname={editHostname}
+              validationsInfo={validationsInfo}
+            />
           ),
           props: { 'data-testid': 'nic-status' },
           sortableValue: status,
@@ -120,7 +132,7 @@ const hostToHostTableRow = (openRows: OpenRows, cluster: Cluster) => (host: Host
           title: (
             <HostDetail
               key={id}
-              cluster={cluster}
+              canEditDisks={canEditDisks}
               inventory={inventory}
               host={host}
               validationsInfo={validationsInfo}
@@ -141,12 +153,13 @@ type NetworkingHostsTableProps = {
 };
 
 const NetworkingHostsTable: React.FC<NetworkingHostsTableProps> = (props) => {
+  const columns = React.useMemo(() => getColumns(props.cluster), [props.cluster]);
   return (
-    <HostsTable
+    <ClusterHostsTable
       {...props}
       testId={'networking-host-table'}
-      getColumns={getColumns}
-      hostToHostTableRow={hostToHostTableRow}
+      columns={columns}
+      hostToHostTableRow={hostToHostTableRow(props.cluster)}
     />
   );
 };

@@ -10,6 +10,7 @@ import {
 } from '@patternfly/react-core';
 
 import './DetailList.css';
+import { WithTestID } from '../../types';
 
 export type DetailListProps = {
   children: ReactChild | (ReactChild | undefined)[];

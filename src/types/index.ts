@@ -5,3 +5,7 @@ export enum ResourceUIState {
   EMPTY = 'EMPTY',
   LOADED = 'LOADED',
 }
+
+export type WithTestID = {
+  testId?: string;
+};

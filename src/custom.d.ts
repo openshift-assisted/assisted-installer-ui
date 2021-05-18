@@ -7,7 +7,3 @@ declare module '*.jpg' {
   const content: string;
   export default content;
 }
-
-interface WithTestID {
-  testId?: string;
-}
