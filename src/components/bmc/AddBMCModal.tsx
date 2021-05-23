@@ -19,16 +19,7 @@ import {
   macAddressValidationSchema,
 } from '../ui/formik/validationSchemas';
 import { InputField } from '../ui';
-
-export type AddBmcValues = {
-  hostname: string;
-  bmcAddress: string;
-  username: string;
-  password: string;
-  bootMACAddress: string;
-  disableCertificateVerification: boolean;
-  online: boolean;
-};
+import { AddBmcValues } from './types';
 
 type AddBmcFormProps = {
   onClose: () => void;
