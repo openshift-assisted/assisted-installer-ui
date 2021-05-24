@@ -4,7 +4,7 @@ import { Button, ButtonVariant } from '@patternfly/react-core';
 import {
   CheckCircleIcon,
   ExclamationCircleIcon,
-  WarningTriangleIcon,
+  ExclamationTriangleIcon,
 } from '@patternfly/react-icons';
 import {
   global_success_color_100 as okColor,
@@ -88,7 +88,7 @@ const FailingValidation: React.FC<{
 
   let icon;
   if (severity === 'warning') {
-    icon = <WarningTriangleIcon color={warningColor.value} />;
+    icon = <ExclamationTriangleIcon color={warningColor.value} />;
   } else {
     icon = <ExclamationCircleIcon color={dangerColor.value} size="sm" />;
   }
