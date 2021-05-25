@@ -216,7 +216,7 @@ type ClusterProgressProps = {
   minimizedView?: boolean;
 };
 
-const ClusterProgress: React.FC<ClusterProgressProps> = ({ cluster, minimizedView = false }) => {
+const ClusterProgress = ({ cluster, minimizedView = false }: ClusterProgressProps) => {
   const { status, monitoredOperators = [] } = cluster;
   const hostsProgressPercent = React.useMemo(() => getHostsProgressPercent(cluster.hosts), [
     cluster.hosts,
@@ -225,10 +225,8 @@ const ClusterProgress: React.FC<ClusterProgressProps> = ({ cluster, minimizedVie
     () => getOperatorsProgressPercent(monitoredOperators),
     [monitoredOperators],
   );
-  const label = getProgressLabel(
-    cluster,
-    Math.round(hostsProgressPercent * 0.75 + operatorsProgressPercent * 0.25),
-  );
+  const progressValue = Math.round(hostsProgressPercent * 0.75 + operatorsProgressPercent * 0.25);
+  const label = getProgressLabel(cluster, progressValue);
   const enabledHosts = getEnabledHosts(cluster.hosts);
   const isWorkersPresent = enabledHosts && enabledHosts.some((host) => host.role === 'worker');
   const olmOperators = getOlmOperators(monitoredOperators);
@@ -255,7 +253,7 @@ const ClusterProgress: React.FC<ClusterProgressProps> = ({ cluster, minimizedVie
       </DetailList>
       <RenderIf condition={!minimizedView}>
         <Progress
-          value={hostsProgressPercent}
+          value={progressValue}
           label={label}
           title=" "
           measureLocation={getMeasureLocation(status)}
