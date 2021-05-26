@@ -17,6 +17,7 @@ const DNS_NAME_REGEX = /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/;
 const HOSTNAME_REGEX = /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9-]*[A-Za-z0-9])$/;
 const IP_V4_ZERO = '0.0.0.0';
 const IP_V6_ZERO = '0000:0000:0000:0000:0000:0000:0000:0000';
+const MAC_REGEX = /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})|([0-9a-fA-F]{4}\\.[0-9a-fA-F]{4}\\.[0-9a-fA-F]{4})$”/;
 
 export const nameValidationSchema = Yup.string()
   .matches(CLUSTER_NAME_REGEX, {
@@ -66,6 +67,11 @@ export const validJSONSchema = Yup.string().test(
 
 export const ipValidationSchema = Yup.string().matches(IP_ADDRESS_REGEX, {
   message: 'Value "${value}" is not valid IP address.', // eslint-disable-line no-template-curly-in-string
+  excludeEmptyString: true,
+});
+
+export const macAddressValidationSchema = Yup.string().matches(MAC_REGEX, {
+  message: 'Value "${value}" is not valid MAC address.', // eslint-disable-line no-template-curly-in-string
   excludeEmptyString: true,
 });
 
@@ -312,6 +318,19 @@ export const noProxyValidationSchema = Yup.string().test(
   },
 );
 
+const isIPorDN = (value: string) => {
+  if (!value) {
+    return true;
+  }
+  if (value.match(DNS_NAME_REGEX)) {
+    return true;
+  }
+  if (value.match(IP_ADDRESS_REGEX)) {
+    return true;
+  }
+  return false;
+};
+
 export const ntpSourceValidationSchema = Yup.string().test(
   'ntp-source-validation',
   'Provide a comma separated list of valid DNS names or IP addresses.',
@@ -319,16 +338,12 @@ export const ntpSourceValidationSchema = Yup.string().test(
     if (!value) {
       return true;
     }
-    return trimCommaSeparatedList(value)
-      .split(',')
-      .every((item) => {
-        if (item.match(DNS_NAME_REGEX)) {
-          return true;
-        }
-        if (item.match(IP_ADDRESS_REGEX)) {
-          return true;
-        }
-        return false;
-      });
+    return trimCommaSeparatedList(value).split(',').every(isIPorDN);
   },
+);
+
+export const ipOrDomainValidationSchema = Yup.string().test(
+  'host-address-validation',
+  'Provide either IP address or a valid DNS name.',
+  isIPorDN,
 );
