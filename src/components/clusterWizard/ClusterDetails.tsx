@@ -20,7 +20,7 @@ import { usePullSecretFetch } from '../fetching/pullSecret';
 import { captureException } from '../../sentry';
 import { getClusters, patchCluster, postCluster } from '../../api/clusters';
 import { getErrorMessage, handleApiError } from '../../api/utils';
-import { updateCluster } from '../../features/clusters/currentClusterSlice';
+import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
 import { useDispatch } from 'react-redux';
 import { useAlerts } from '../AlertsContextProvider';
 import ClusterWizardContext from './ClusterWizardContext';

@@ -1,9 +1,10 @@
 import React from 'react';
 import { Host, Inventory, Cluster } from '../../api/types';
-import dialogsReducer, {
+import {
+  dialogsReducer,
   openDialog as openDialogAction,
   closeDialog as closeDialogAction,
-} from '../../features/dialogs/dialogsSlice';
+} from '../../reducers/dialogs';
 
 type HostIdAndHostname = {
   hostId: Host['id'];

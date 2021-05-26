@@ -12,7 +12,7 @@ import { postResetCluster } from '../../api/clusters';
 import { getErrorMessage, handleApiError } from '../../api/utils';
 import LoadingState from '../ui/uiState/LoadingState';
 import ErrorState from '../ui/uiState/ErrorState';
-import { updateCluster } from '../../features/clusters/currentClusterSlice';
+import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens';
 import { calculateCollectedLogsCount } from '../clusters/utils';

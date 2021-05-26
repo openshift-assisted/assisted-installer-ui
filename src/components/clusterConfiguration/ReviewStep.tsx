@@ -6,7 +6,7 @@ import ClusterWizardStep from '../clusterWizard/ClusterWizardStep';
 import { useAlerts } from '../AlertsContextProvider';
 import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
 import { getErrorMessage, handleApiError, postInstallCluster } from '../../api';
-import { updateCluster } from '../../features/clusters/currentClusterSlice';
+import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
 import ReviewCluster from './ReviewCluster';
 import ClusterWizardStepHeader from '../clusterWizard/ClusterWizardStepHeader';
 import ClusterWizardFooter from '../clusterWizard/ClusterWizardFooter';
