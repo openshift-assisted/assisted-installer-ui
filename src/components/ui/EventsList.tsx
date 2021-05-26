@@ -4,7 +4,7 @@ import { Label } from '@patternfly/react-core';
 import { TableVariant, Table, TableBody, breakWord } from '@patternfly/react-table';
 import {
   InfoCircleIcon,
-  WarningTriangleIcon,
+  ExclamationTriangleIcon,
   ExclamationCircleIcon,
   SearchIcon,
 } from '@patternfly/react-icons';
@@ -34,7 +34,7 @@ const getLabelIcon = (severity: Event['severity']) => {
     case 'info':
       return <InfoCircleIcon />;
     case 'warning':
-      return <WarningTriangleIcon />;
+      return <ExclamationTriangleIcon />;
     case 'error':
     case 'critical':
       return <ExclamationCircleIcon />;
