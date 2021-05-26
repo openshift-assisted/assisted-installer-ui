@@ -10,8 +10,8 @@ import {
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { getErrorMessage, handleApiError, installHosts } from '../../api';
-import { addAlert } from '../../features/alerts/alertsSlice';
-import { updateCluster } from '../../features/clusters/currentClusterSlice';
+import { addAlert } from '../../reducers/alerts/alertsSlice';
+import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
 import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
 import { getReadyHostCount } from '../hosts/utils';
 import { ToolbarButton, ToolbarSecondaryGroup } from '../ui';

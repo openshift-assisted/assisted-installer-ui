@@ -5,7 +5,7 @@ import alertsReducer, {
   removeAlert as removeAlertAction,
   clearAlerts as clearAlertsAction,
   AlertPayload,
-} from '../features/alerts/alertsSlice';
+} from '../reducers/alerts/alertsSlice';
 
 export type AlertsContextType = {
   alerts: AlertProps[];

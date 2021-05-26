@@ -8,7 +8,7 @@ import {
   forceReload,
   cancelForceReload,
   RetrievalErrorType,
-} from '../../features/clusters/currentClusterSlice';
+} from '../../reducers/clusters/currentClusterSlice';
 import { selectCurrentClusterState } from '../../selectors';
 import { ResourceUIState } from '../../types';
 
