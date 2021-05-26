@@ -8,7 +8,7 @@ import {
 import {
   ExclamationCircleIcon,
   CheckCircleIcon,
-  WarningTriangleIcon,
+  ExclamationTriangleIcon,
   InProgressIcon,
   DisconnectedIcon,
   ConnectedIcon,
@@ -41,10 +41,10 @@ const getStatusIcon = (status: Host['status']): React.ReactElement => {
     case 'error':
       return <ExclamationCircleIcon color={dangerColor.value} />;
     case 'resetting-pending-user-action':
-      return <WarningTriangleIcon color={warningColor.value} />;
+      return <ExclamationTriangleIcon color={warningColor.value} />;
     case 'insufficient':
     case 'installing-pending-user-action':
-      return <WarningTriangleIcon color={warningColor.value} />;
+      return <ExclamationTriangleIcon color={warningColor.value} />;
     case 'known':
     case 'installed':
       return <CheckCircleIcon color={okColor.value} />;

@@ -4,7 +4,7 @@ import {
   global_warning_color_100 as warningColor,
   global_success_color_100 as okColor,
 } from '@patternfly/react-tokens';
-import { PendingIcon, CheckCircleIcon, WarningTriangleIcon } from '@patternfly/react-icons';
+import { PendingIcon, CheckCircleIcon, ExclamationTriangleIcon } from '@patternfly/react-icons';
 import { ValidationsInfo, Validation } from '../../types/hosts';
 import {
   HOST_VALIDATION_GROUP_LABELS,
@@ -101,7 +101,7 @@ const HostValidationGroups: React.FC<HostValidationGroupsProps> = ({
           } else if (failedValidations.length) {
             return (
               <>
-                Failed <WarningTriangleIcon color={warningColor.value} />
+                Failed <ExclamationTriangleIcon color={warningColor.value} />
               </>
             );
           }
