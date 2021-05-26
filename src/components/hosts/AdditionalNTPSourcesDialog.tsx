@@ -18,7 +18,7 @@ import { Cluster, ClusterUpdateParams } from '../../api/types';
 import { ntpSourceValidationSchema } from '../ui/formik/validationSchemas';
 import TextAreaField from '../ui/formik/TextAreaField';
 import { patchCluster } from '../../api/clusters';
-import { updateCluster } from '../../features/clusters/currentClusterSlice';
+import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
 import { getErrorMessage, handleApiError } from '../../api/utils';
 import { trimCommaSeparatedList } from '../ui/formik/utils';
 import { useModalDialogsContext } from './ModalDialogsContext';

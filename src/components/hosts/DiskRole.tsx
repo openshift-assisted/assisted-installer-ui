@@ -10,7 +10,7 @@ import {
   Host,
 } from '../../api/types';
 import { patchCluster } from '../../api/clusters';
-import { updateCluster } from '../../features/clusters/currentClusterSlice';
+import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
 import { getErrorMessage, handleApiError } from '../../api/utils';
 import { useAlerts } from '../AlertsContextProvider';
 import { DISK_ROLE_LABELS } from '../../config/constants';

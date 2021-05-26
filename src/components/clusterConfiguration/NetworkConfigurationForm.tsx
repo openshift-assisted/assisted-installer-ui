@@ -21,7 +21,7 @@ import {
 } from '../ui/formik/validationSchemas';
 import ClusterWizardStep from '../clusterWizard/ClusterWizardStep';
 import { HostSubnets, NetworkConfigurationValues } from '../../types/clusters';
-import { updateCluster } from '../../features/clusters/currentClusterSlice';
+import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
 import { canNextNetwork } from '../clusterWizard/wizardTransition';
 import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
 import NetworkConfiguration from './NetworkConfiguration';

@@ -9,7 +9,7 @@ import {
   handleApiError,
   PreflightHardwareRequirements,
 } from '../../api';
-import { addAlert } from '../../features/alerts/alertsSlice';
+import { addAlert } from '../../reducers/alerts/alertsSlice';
 import { OPERATOR_NAME_CNV } from '../../config';
 import { ErrorState, ExternalLink, LoadingState } from '../ui';
 

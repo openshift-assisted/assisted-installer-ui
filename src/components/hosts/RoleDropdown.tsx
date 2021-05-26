@@ -4,7 +4,7 @@ import { Host, ClusterUpdateParams, HostRoleUpdateParams } from '../../api/types
 import { SimpleDropdown } from '../ui/SimpleDropdown';
 import { patchCluster } from '../../api/clusters';
 import { HOST_ROLES } from '../../config/constants';
-import { updateCluster } from '../../features/clusters/currentClusterSlice';
+import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
 import { handleApiError, getErrorMessage } from '../../api/utils';
 import { useAlerts } from '../AlertsContextProvider';
 import { getHostRole } from './utils';

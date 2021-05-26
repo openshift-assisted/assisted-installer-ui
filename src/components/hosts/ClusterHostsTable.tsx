@@ -13,11 +13,7 @@ import {
   Inventory,
   resetClusterHost,
 } from '../../api';
-import {
-  forceReload,
-  updateCluster,
-  updateHost,
-} from '../../features/clusters/currentClusterSlice';
+import { forceReload, updateCluster, updateHost } from '../../reducers/clusters';
 import { WithTestID } from '../../types';
 import { AlertsContext } from '../AlertsContextProvider';
 import {
