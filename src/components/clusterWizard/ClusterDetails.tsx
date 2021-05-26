@@ -181,6 +181,19 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
     }
   };
 
+  const handleOnNext = (
+    dirty: boolean,
+    submitForm: FormikHelpers<unknown>['submitForm'],
+    cluster?: Cluster,
+  ): (() => Promise<void> | void) => {
+    let fn: () => Promise<void> | void = submitForm;
+    if (!dirty && !_.isUndefined(cluster) && canNextClusterDetails({ cluster })) {
+      fn = () => setCurrentStepId('host-discovery');
+    }
+
+    return fn;
+  };
+
   const initialValues = getInitialValues(props);
   const validationSchema = getValidationSchema(cluster);
 
@@ -271,7 +284,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
                 (dirty || (cluster && canNextClusterDetails({ cluster })))
               )
             }
-            onNext={submitForm}
+            onNext={handleOnNext(dirty, submitForm, cluster)}
           />
         );
         return (
