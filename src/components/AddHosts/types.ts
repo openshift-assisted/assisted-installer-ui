@@ -1,3 +1,5 @@
+import { Cluster } from '../../api';
+
 /* The type is reverse engineered.
    The OCM object contains additional data.
  */
@@ -34,4 +36,6 @@ export type OcmClusterType = {
   api?: {
     url: string;
   };
+
+  aiCluster?: Cluster;
 };
