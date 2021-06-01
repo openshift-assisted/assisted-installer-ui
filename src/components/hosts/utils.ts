@@ -7,6 +7,7 @@ import {
   handleApiError,
   getErrorMessage,
   getPresignedFileUrl,
+  stringToJSON,
 } from '../../api';
 import { AlertsContextType } from '../AlertsContextProvider';
 import { DASH } from '../constants';
@@ -157,3 +158,8 @@ export const fileSize: typeof filesize = (...args) =>
     .call(null, ...args)
     .toUpperCase()
     .replace(/I/, 'i');
+
+export const findHostById = (hosts: Host[] = [], id: string) =>
+  hosts?.find((host) => host.id === id);
+
+export const unmarshallInventory = (inventory = '') => stringToJSON<Inventory>(inventory);
