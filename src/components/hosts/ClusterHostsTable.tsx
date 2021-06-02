@@ -226,25 +226,23 @@ const ClusterHostsTable: React.FC<ClusterHostsTableProps & WithTestID> = ({
   }, [addAlert, cluster.id, dispatch, resetHostDialog]);
 
   const onDelete = React.useCallback(() => {
-    () => {
-      const deleteHost = async (hostId: string | undefined) => {
-        if (hostId) {
-          try {
-            await deleteClusterHost(cluster.id, hostId);
-            dispatch(forceReload());
-          } catch (e) {
-            return handleApiError(e, () =>
-              addAlert({
-                title: `Failed to delete host ${hostId}`,
-                message: getErrorMessage(e),
-              }),
-            );
-          }
+    const deleteHost = async (hostId: string | undefined) => {
+      if (hostId) {
+        try {
+          await deleteClusterHost(cluster.id, hostId);
+          dispatch(forceReload());
+        } catch (e) {
+          return handleApiError(e, () =>
+            addAlert({
+              title: `Failed to delete host ${hostId}`,
+              message: getErrorMessage(e),
+            }),
+          );
         }
-      };
-      deleteHost(deleteHostDialog.data?.hostId);
-      deleteHostDialog.close();
+      }
     };
+    deleteHost(deleteHostDialog.data?.hostId);
+    deleteHostDialog.close();
   }, [addAlert, cluster.id, dispatch, deleteHostDialog]);
 
   return (
