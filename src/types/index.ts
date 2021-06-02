@@ -9,3 +9,5 @@ export enum ResourceUIState {
 export type WithTestID = {
   testId?: string;
 };
+
+export * from './versions';

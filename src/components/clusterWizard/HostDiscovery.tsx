@@ -17,6 +17,7 @@ import FormikAutoSave from '../ui/formik/FormikAutoSave';
 import { OPERATOR_NAME_CNV, OPERATOR_NAME_LSO, OPERATOR_NAME_OCS } from '../../config';
 import ClusterWizardFooter from './ClusterWizardFooter';
 import { getFormikErrorFields } from '../ui/formik/utils';
+import ClusterWizardNavigation from './ClusterWizardNavigation';
 
 const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const dispatch = useDispatch();
@@ -82,7 +83,10 @@ const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         );
 
         return (
-          <ClusterWizardStep cluster={cluster} footer={footer}>
+          <ClusterWizardStep
+            navigation={<ClusterWizardNavigation cluster={cluster} />}
+            footer={footer}
+          >
             <HostInventory cluster={cluster} />
             <FormikAutoSave />
           </ClusterWizardStep>
