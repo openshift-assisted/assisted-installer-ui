@@ -5,8 +5,13 @@ export const getOpenshiftClusterId = (ocmCluster?: OcmClusterType) =>
 
 export const canAddHost = ({ cluster }: { cluster: OcmClusterType }) => {
   if (getOpenshiftClusterId(cluster)) {
-    if (cluster.product?.id === 'OCP-AssistedInstall' && cluster.state === 'installed') {
-      // TODO(mlibra): Review that "installed" state once we start getting cluster state from metrics
+    // Collision of "ready" states for AI and Telemetry
+    // Show the tab only if telemetry reports "ready", not the AI
+    if (
+      cluster.product?.id === 'OCP-AssistedInstall' &&
+      cluster.state === 'ready' &&
+      (!cluster.aiCluster || cluster.aiCluster.status === 'installed')
+    ) {
       return true;
     }
     if (

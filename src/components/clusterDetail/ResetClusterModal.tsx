@@ -51,9 +51,9 @@ const ResetClusterModal: React.FC = () => {
     setIsSubmitting(false);
   };
 
-  const collectedLogsRatio = `${calculateCollectedLogsCount(cluster)}/${
-    (cluster.hosts?.length || 0) + 1
-  }`;
+  const collectedLogsPercentage = `${Math.round(
+    (calculateCollectedLogsCount(cluster) / ((cluster.hosts?.length || 0) + 1)) * 100,
+  )} `;
 
   const getModalContent = () => {
     if (isSubmitting) {
@@ -74,8 +74,8 @@ const ResetClusterModal: React.FC = () => {
         <Text component="p">
           <strong>Download the installation logs</strong> to troubleshoot or report a bug.
           <br />
-          Currently, {collectedLogsRatio} installation logs were collected and are ready for
-          download.
+          Currently, {collectedLogsPercentage}% of the installation logs were collected and are
+          ready for download.
         </Text>
 
         <Text component="p">
