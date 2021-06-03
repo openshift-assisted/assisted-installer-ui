@@ -28,7 +28,7 @@ type MatchParams = {
   clusterId: string;
 };
 
-const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match, history }) => {
+const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
   const { clusterId } = match.params;
   const fetchCluster = useFetchCluster(clusterId);
   const { cluster, uiState, errorDetail } = useClusterPolling(clusterId);
@@ -113,7 +113,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match, histor
       <PageSection variant={PageSectionVariants.light} isFilled>
         <ErrorState
           title="Failed to fetch the cluster"
-          fetchData={errorDetail?.code === '401' ? () => history.go(0) : fetchCluster}
+          fetchData={errorDetail?.code === '401' ? () => window.location.reload() : fetchCluster}
           actions={errorStateActions}
         />
       </PageSection>
