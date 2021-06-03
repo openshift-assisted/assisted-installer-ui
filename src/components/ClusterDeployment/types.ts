@@ -2,6 +2,7 @@ import { ClusterCreateParams } from '../../api';
 import { OpenshiftVersionOptionType } from '../../types';
 
 export type ClusterDeploymentDetailsProps = {
+  className?: string;
   onClusterCreate: (params: ClusterCreateParams) => Promise<void>;
 
   pullSecret: string;
