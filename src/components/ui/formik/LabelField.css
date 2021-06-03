@@ -1,0 +1,8 @@
+.label-field__value {
+  margin: 0 var(--pf-global--spacer--sm) 0 0;
+}
+
+.label-field__input {
+  border: 1px solid transparent;
+  outline: none;
+}
