@@ -39,6 +39,7 @@ export interface SwitchFieldProps extends FieldProps {
 export interface InputFieldProps extends FieldProps {
   type?: TextInputTypes;
   placeholder?: string;
+  noDefaultOnChange?: boolean;
   onChange?: (event: React.FormEvent<HTMLInputElement>) => void;
   onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
   validate?: FieldValidator;
