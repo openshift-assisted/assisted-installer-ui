@@ -1,24 +1,13 @@
 import * as React from 'react';
 import { useField } from 'formik';
-import { FormGroup, Split, SplitItem, TextInput } from '@patternfly/react-core';
+import { FormGroup, TextInput } from '@patternfly/react-core';
 import { InputFieldProps } from './types';
 import { getFieldId } from './utils';
 import HelperText from './HelperText';
 
 const InputField: React.FC<InputFieldProps> = React.forwardRef(
   (
-    {
-      label,
-      labelIcon,
-      helperText,
-      isRequired,
-      onChange,
-      validate,
-      idPostfix,
-      children,
-      noDefaultOnChange,
-      ...props
-    },
+    { label, labelIcon, helperText, isRequired, onChange, validate, idPostfix, ...props },
     ref: React.Ref<HTMLInputElement>,
   ) => {
     const [field, { touched, error }] = useField({ name: props.name, validate });
@@ -41,24 +30,19 @@ const InputField: React.FC<InputFieldProps> = React.forwardRef(
         isRequired={isRequired}
         labelIcon={labelIcon}
       >
-        <Split>
-          <SplitItem isFilled>
-            <TextInput
-              {...field}
-              {...props}
-              ref={ref}
-              id={fieldId}
-              validated={isValid ? 'default' : 'error'}
-              isRequired={isRequired}
-              aria-describedby={`${fieldId}-helper`}
-              onChange={(value, event) => {
-                !noDefaultOnChange && field.onChange(event);
-                onChange && onChange(event);
-              }}
-            />
-          </SplitItem>
-          <SplitItem>{children}</SplitItem>
-        </Split>
+        <TextInput
+          {...field}
+          {...props}
+          ref={ref}
+          id={fieldId}
+          validated={isValid ? 'default' : 'error'}
+          isRequired={isRequired}
+          aria-describedby={`${fieldId}-helper`}
+          onChange={(value, event) => {
+            field.onChange(event);
+            onChange && onChange(event);
+          }}
+        />
       </FormGroup>
     );
   },
