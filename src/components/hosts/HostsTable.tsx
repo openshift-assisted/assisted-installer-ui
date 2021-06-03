@@ -16,7 +16,7 @@ import {
   RowWrapper,
 } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
-import { EmptyState } from '../ui/uiState';
+import { EmptyState as DefaultEmptyState } from '../ui/uiState';
 import { getColSpanRow, rowSorter, getDateTimeCell } from '../ui/table/utils';
 import { Host, Inventory } from '../../api/types';
 import HostStatus from './HostStatus';
@@ -215,6 +215,7 @@ const HostsTable: React.FC<HostsTableProps & WithTestID> = ({
   canReset,
   canDownloadHostLogs,
   canDelete,
+  EmptyState = DefaultEmptyState,
 }) => {
   const [openRows, setOpenRows] = React.useState<OpenRows>({});
   const [sortBy, setSortBy] = React.useState<ISortBy>({
