@@ -1,17 +1,19 @@
-import { ClusterCreateParams } from '../../api';
 import { OpenshiftVersionOptionType } from '../../types';
+import { ClusterDetailsValues } from '../clusterWizard/types';
 
 export type ClusterDeploymentDetailsProps = {
-  className?: string;
-  onClusterCreate: (params: ClusterCreateParams) => Promise<void>;
-
-  pullSecret: string;
+  defaultPullSecret: string;
   ocpVersions: OpenshiftVersionOptionType[];
+};
+
+// TODO(mlibra): expose other steps
+export type ClusterDeploymentWizardProps = ClusterDeploymentDetailsProps & {
+  className?: string;
+  onClusterCreate: (params: ClusterDeploymentWizardValues) => Promise<void>;
+  onClose: () => void;
   usedClusterNames: string[];
 };
 
-export type ClusterDeploymentWizardProps = ClusterDeploymentDetailsProps & {
-  /* TODO: expose other steps */
+export type ClusterDeploymentWizardValues = ClusterDetailsValues & {
+  /* TODO(mlibra): other steps */
 };
-
-export type ClusterDeploymentWizardStepsType = 'cluster-details' | 'todo-next-wizard-step-id';

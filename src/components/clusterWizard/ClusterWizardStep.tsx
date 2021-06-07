@@ -7,7 +7,7 @@ import './ClusterWizardStep.css';
 
 type ClusterWizardStepProps = {
   footer?: React.ReactNode;
-  navigation: React.ReactNode;
+  navigation?: React.ReactNode;
 };
 
 const ClusterWizardStep: React.FC<ClusterWizardStepProps> = ({ navigation, footer, children }) => {

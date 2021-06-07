@@ -1,46 +1,44 @@
 import React from 'react';
-import { ClusterCreateParams, ManagedDomain } from '../../api';
-import { useAlerts } from '../AlertsContextProvider';
-import { ClusterDetailsForm } from '../clusterWizard';
+import { Grid, GridItem } from '@patternfly/react-core';
+import { useFormikContext } from 'formik';
+import ClusterDetailsFormFields from '../clusterWizard/ClusterDetailsFormFields';
+import ClusterWizardStepHeader from '../clusterWizard/ClusterWizardStepHeader';
+import { ClusterDetailsValues } from '../clusterWizard/types';
 import { ClusterDeploymentDetailsProps } from './types';
+import Alerts from '../ui/Alerts';
 
-const ClusterDeploymentDetails: React.FC<
-  ClusterDeploymentDetailsProps & {
-    moveNext: () => void;
-    navigation: React.ReactNode;
-  }
-> = ({ moveNext, navigation, onClusterCreate, pullSecret, ocpVersions, usedClusterNames }) => {
-  const { addAlert, clearAlerts } = useAlerts();
-
-  const manageDomains: ManagedDomain[] = []; // not supported
-
-  const handleClusterCreate = async (params: ClusterCreateParams) => {
-    clearAlerts();
-
-    try {
-      await onClusterCreate(params);
-      moveNext();
-    } catch (e) {
-      addAlert({ title: 'Failed to create new Cluster Deployment', message: e });
-    }
-  };
-
-  const handleClusterUpdate = async () => {
-    console.log('Cluster details update flow is recently not supported');
+const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
+  ocpVersions,
+  defaultPullSecret,
+}) => {
+  const { values } = useFormikContext<ClusterDetailsValues>();
+  const toggleRedHatDnsService = () => {
+    console.error(
+      'toggleRedHatDnsService() should not be called, managedDomains are recently not used.',
+    );
   };
 
   return (
-    <ClusterDetailsForm
-      cluster={undefined /* We recently support the Create-flow only (not Edit) */}
-      pullSecret={pullSecret}
-      managedDomains={manageDomains}
-      versions={ocpVersions}
-      usedClusterNames={usedClusterNames}
-      moveNext={moveNext}
-      handleClusterCreate={handleClusterCreate}
-      handleClusterUpdate={handleClusterUpdate}
-      navigation={navigation}
-    />
+    <Grid hasGutter>
+      <GridItem>
+        <ClusterWizardStepHeader cluster={undefined}>Cluster Details</ClusterWizardStepHeader>
+      </GridItem>
+      <GridItem span={12} lg={10} xl={9} xl2={7}>
+        <ClusterDetailsFormFields
+          toggleRedHatDnsService={toggleRedHatDnsService}
+          versions={ocpVersions}
+          defaultPullSecret={defaultPullSecret}
+          canEditPullSecret={true}
+          isSNOGroupDisabled={true}
+          forceOpenshiftVersion={undefined}
+          {...values}
+        />
+      </GridItem>
+      <GridItem>
+        {/* TODO(mlibra): position it better */}
+        <Alerts />
+      </GridItem>
+    </Grid>
   );
 };
 

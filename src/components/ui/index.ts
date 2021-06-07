@@ -8,3 +8,4 @@ export * from './PreviewBadge';
 
 export { default as ExternalLink } from './ExternalLink';
 export { default as PopoverIcon } from './PopoverIcon';
+export { default as WizardFooter } from './WizardFooter';

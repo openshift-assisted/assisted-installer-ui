@@ -1,22 +1,12 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import {
-  ButtonVariant,
-  Spinner,
-  Stack,
-  StackItem,
-  Text,
-  TextVariants,
-  Toolbar,
-  ToolbarContent,
-  ToolbarItem,
-} from '@patternfly/react-core';
+import { Spinner, Text, TextVariants, ToolbarItem } from '@patternfly/react-core';
 import Alerts from '../ui/Alerts';
 import { useAlerts } from '../AlertsContextProvider';
 import { routeBasePath } from '../../config/constants';
-import ToolbarButton from '../ui/Toolbar/ToolbarButton';
 import { Cluster } from '../../api/types';
 import ClusterValidationSection from '../clusterConfiguration/ClusterValidationSection';
+import { WizardFooter } from '../ui';
 
 interface ClusterWizardFooterProps {
   cluster?: Cluster;
@@ -50,59 +40,28 @@ const ClusterWizardFooter = ({
     history,
   ]);
 
+  const rightExtraActions = isSubmitting ? (
+    <ToolbarItem>
+      <Text component={TextVariants.small}>
+        <Spinner size="sm" /> {submittingText}
+      </Text>
+    </ToolbarItem>
+  ) : undefined;
+
+  const alertsSection = alerts.length ? <Alerts /> : undefined;
+
   return (
-    <Stack hasGutter>
-      {!!alerts.length && (
-        <StackItem>
-          <Alerts />
-        </StackItem>
-      )}
-      <StackItem>
-        <ClusterValidationSection cluster={cluster} errorFields={errorFields} />
-      </StackItem>
-      <StackItem>
-        <Toolbar data-testid="wizard-step-actions">
-          <ToolbarContent>
-            {additionalActions}
-            {onNext && (
-              <ToolbarButton
-                variant={ButtonVariant.primary}
-                name="next"
-                onClick={onNext}
-                isDisabled={isNextDisabled}
-              >
-                Next
-              </ToolbarButton>
-            )}
-            {onBack && (
-              <ToolbarButton
-                variant={ButtonVariant.secondary}
-                name="back"
-                onClick={onBack}
-                isDisabled={isBackDisabled}
-              >
-                Back
-              </ToolbarButton>
-            )}
-            <ToolbarButton
-              variant={ButtonVariant.link}
-              name="cancel"
-              onClick={onCancel || handleCancel}
-              isDisabled={false}
-            >
-              Cancel
-            </ToolbarButton>
-            {isSubmitting && (
-              <ToolbarItem>
-                <Text component={TextVariants.small}>
-                  <Spinner size="sm" /> {submittingText}
-                </Text>
-              </ToolbarItem>
-            )}
-          </ToolbarContent>
-        </Toolbar>
-      </StackItem>
-    </Stack>
+    <WizardFooter
+      alerts={alertsSection}
+      errors={<ClusterValidationSection cluster={cluster} errorFields={errorFields} />}
+      onNext={onNext}
+      onBack={onBack}
+      onCancel={onCancel || handleCancel}
+      isNextDisabled={isNextDisabled}
+      isBackDisabled={isBackDisabled}
+      leftExtraActions={additionalActions}
+      rightExtraActions={rightExtraActions}
+    />
   );
 };
 
