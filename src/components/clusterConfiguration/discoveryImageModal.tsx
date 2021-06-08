@@ -4,6 +4,7 @@ import { ToolbarButton } from '../ui/Toolbar';
 import { Cluster } from '../../api/types';
 import DiscoveryImageForm from './DiscoveryImageForm';
 import DiscoveryImageSummary from './DiscoveryImageSummary';
+import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
 
 type DiscoveryImageModalButtonProps = {
   ButtonComponent?: typeof Button | typeof ToolbarButton;
@@ -16,38 +17,38 @@ export const DiscoveryImageModalButton: React.FC<DiscoveryImageModalButtonProps>
   cluster,
   idPrefix,
 }) => {
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
-
-  const closeModal = () => setIsModalOpen(false);
+  const { discoveryImageDialog } = useModalDialogsContext();
+  const { open } = discoveryImageDialog;
 
   return (
     <>
       <ButtonComponent
         variant={ButtonVariant.primary}
-        onClick={() => setIsModalOpen(true)}
+        onClick={() => open({ cluster })}
         id={`${idPrefix}-button-download-discovery-iso`}
       >
         Generate Discovery ISO
       </ButtonComponent>
-      {isModalOpen && <DiscoveryImageModal closeModal={closeModal} cluster={cluster} />}
     </>
   );
 };
 
-type DiscoveryImageModalProps = {
-  closeModal: () => void;
-  cluster: Cluster;
-};
-
-const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({ closeModal, cluster }) => {
+export const DiscoveryImageModal: React.FC = () => {
   const [imageInfo, setImageInfo] = React.useState<Cluster['imageInfo'] | undefined>();
+  const { discoveryImageDialog } = useModalDialogsContext();
+  const { data, isOpen, close } = discoveryImageDialog;
+  const cluster = data?.cluster;
+
+  if (!cluster) {
+    return null;
+  }
 
   return (
     <Modal
       aria-label="Generate Discovery ISO dialog"
       title="Generate Discovery ISO"
-      isOpen={true}
-      onClose={closeModal}
+      isOpen={isOpen}
+      onClose={close}
       variant={ModalVariant.small}
       hasNoBodyWrapper
       id="generate-discovery-iso-modal"
@@ -56,13 +57,13 @@ const DiscoveryImageModal: React.FC<DiscoveryImageModalProps> = ({ closeModal, c
         <DiscoveryImageSummary
           cluster={cluster}
           imageInfo={imageInfo}
-          onClose={closeModal}
+          onClose={close}
           onReset={() => setImageInfo(undefined)}
         />
       ) : (
         <DiscoveryImageForm
           cluster={cluster}
-          onCancel={closeModal}
+          onCancel={close}
           onSuccess={(imageInfo: Cluster['imageInfo']) => setImageInfo(imageInfo)}
         />
       )}

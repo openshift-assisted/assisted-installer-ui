@@ -12,6 +12,7 @@ import { useDispatch } from 'react-redux';
 import { getErrorMessage, handleApiError, installHosts } from '../../api';
 import { addAlert } from '../../reducers/alerts/alertsSlice';
 import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
+import { DiscoveryImageModal } from '../clusterConfiguration/discoveryImageModal';
 import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
 import { getReadyHostCount } from '../hosts/utils';
 import { ToolbarButton, ToolbarSecondaryGroup } from '../ui';
@@ -79,6 +80,7 @@ const AddHosts: React.FC = () => {
           </Toolbar>
         </CardBody>
       </Card>
+      <DiscoveryImageModal />
     </ModalDialogsContextProvider>
   );
 };

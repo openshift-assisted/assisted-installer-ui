@@ -15,6 +15,7 @@ import { FeatureGateContextProvider } from '../../features';
 import ClusterInstallationProgressCard from './ClusterInstallationProgressCard';
 import CancelInstallationModal from './CancelInstallationModal';
 import ResetClusterModal from './ResetClusterModal';
+import { DiscoveryImageModal } from '../clusterConfiguration/discoveryImageModal';
 
 type AssistedInstallerDetailCardProps = {
   aiClusterId: string;
@@ -124,6 +125,7 @@ const AssistedInstallerDetailCard: React.FC<AssistedInstallerDetailCardProps> = 
             {content}
             <CancelInstallationModal />
             <ResetClusterModal />
+            <DiscoveryImageModal />
           </ClusterDefaultConfigurationProvider>
         </ModalDialogsContextProvider>
       </AlertsContextProvider>

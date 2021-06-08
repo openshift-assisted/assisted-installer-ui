@@ -24,6 +24,10 @@ type CancelInstallationProps = {
   clusterId: Cluster['id'];
 };
 
+type DiscoveryImageDialogProps = {
+  cluster: Cluster;
+};
+
 type ModalDialogsDataTypes = {
   eventsDialog: HostIdAndHostname;
   editHostDialog: EditHostProps;
@@ -32,6 +36,7 @@ type ModalDialogsDataTypes = {
   additionalNTPSourcesDialog: void;
   resetClusterDialog: ResetClusterProps;
   cancelInstallationDialog: CancelInstallationProps;
+  discoveryImageDialog: DiscoveryImageDialogProps;
 };
 
 type DialogId =
@@ -41,14 +46,15 @@ type DialogId =
   | 'resetHostDialog'
   | 'additionalNTPSourcesDialog'
   | 'resetClusterDialog'
-  | 'cancelInstallationDialog';
+  | 'cancelInstallationDialog'
+  | 'discoveryImageDialog';
 
 export type ModalDialogsContextType = {
   [key in DialogId]: {
     isOpen: boolean;
     open: (data: ModalDialogsDataTypes[key]) => void;
     close: () => void;
-    data?: ModalDialogsDataTypes[key];
+    data: ModalDialogsDataTypes[key];
   };
 };
 
@@ -60,6 +66,7 @@ const dialogIds: DialogId[] = [
   'additionalNTPSourcesDialog',
   'resetClusterDialog',
   'cancelInstallationDialog',
+  'discoveryImageDialog',
 ];
 
 const ModalDialogsContext = React.createContext<ModalDialogsContextType | undefined>(undefined);
