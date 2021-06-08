@@ -27,6 +27,7 @@ import { DiscoveryImageFormValues } from './types';
 import ProxyFields from './ProxyFields';
 import { usePullSecretFetch } from '../fetching/pullSecret';
 import UploadSSH from './UploadSSH';
+import DiscoveryImageTypeControlGroup from './DiscoveryImageTypeControlGroup';
 
 const validationSchema = Yup.lazy<DiscoveryImageFormValues>((values) =>
   Yup.object<DiscoveryImageFormValues>().shape({
@@ -84,6 +85,7 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
 
         const imageCreateParams: ImageCreateParams = {
           sshPublicKey: values.sshPublicKey,
+          imageType: values.imageType,
         };
         const { data: updatedCluster } = await createClusterDownloadsImage(
           cluster.id,
@@ -113,6 +115,7 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
     httpsProxy: cluster.httpsProxy || '',
     noProxy: cluster.noProxy || '',
     enableProxy: !!(cluster.httpProxy || cluster.httpsProxy || cluster.noProxy),
+    imageType: cluster.imageInfo.type || 'full-iso',
   };
 
   return (
@@ -148,6 +151,7 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
                     {status.error.message}
                   </Alert>
                 )}
+                <DiscoveryImageTypeControlGroup />
                 <UploadSSH />
                 <ProxyFields />
               </Form>
