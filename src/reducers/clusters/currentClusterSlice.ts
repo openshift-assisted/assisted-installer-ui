@@ -16,17 +16,20 @@ type CurrentClusterStateSlice = {
   errorDetail?: RetrievalErrorType;
 };
 
-export const fetchClusterAsync = createAsyncThunk(
-  'currentCluster/fetchClusterAsync',
-  async (clusterId: string, { rejectWithValue }) => {
-    try {
-      const { data } = await getCluster(clusterId);
-      return data;
-    } catch (e) {
-      return handleApiError(e, () => rejectWithValue(e.response.data));
-    }
-  },
-);
+export const fetchClusterAsync = createAsyncThunk<
+  Cluster | void,
+  string,
+  {
+    rejectValue: RetrievalErrorType;
+  }
+>('currentCluster/fetchClusterAsync', async (clusterId, { rejectWithValue }) => {
+  try {
+    const { data } = await getCluster(clusterId);
+    return data;
+  } catch (e) {
+    return handleApiError(e, () => rejectWithValue(e.response.data));
+  }
+});
 
 const initialState: CurrentClusterStateSlice = {
   data: undefined,
