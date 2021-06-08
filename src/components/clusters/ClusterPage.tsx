@@ -23,6 +23,7 @@ import ClusterBreadcrumbs from './ClusterBreadcrumbs';
 import ClusterWizard from '../clusterWizard/ClusterWizard';
 import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
 import { useClusterPolling, useFetchCluster } from './clusterPolling';
+import { DiscoveryImageModal } from '../clusterConfiguration/discoveryImageModal';
 
 type MatchParams = {
   clusterId: string;
@@ -137,6 +138,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
             {getContent(cluster)}
             <CancelInstallationModal />
             <ResetClusterModal />
+            <DiscoveryImageModal />
           </ClusterDefaultConfigurationProvider>
         </ModalDialogsContextProvider>
       </AlertsContextProvider>
