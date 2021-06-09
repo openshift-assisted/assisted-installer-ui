@@ -1,5 +1,4 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import * as Yup from 'yup';
 import {
   Button,
@@ -12,18 +11,16 @@ import {
   Alert,
   AlertActionCloseButton,
 } from '@patternfly/react-core';
-import { Formik, FormikHelpers } from 'formik';
+import { Formik } from 'formik';
 import { InputField } from '../ui/formik';
 import { handleApiError, getErrorMessage } from '../../api/utils';
-import { Host, Inventory, Cluster, ClusterUpdateParams } from '../../api/types';
-import { patchCluster } from '../../api/clusters';
+import { Host, Inventory } from '../../api/types';
 import {
   hostnameValidationSchema,
   uniqueHostnameValidationSchema,
 } from '../ui/formik/validationSchemas';
 import GridGap from '../ui/GridGap';
 import { StaticTextField } from '../ui/StaticTextField';
-import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
 import { canHostnameBeChanged } from './utils';
 
 export type HostUpdateParams = {
@@ -34,15 +31,16 @@ export type HostUpdateParams = {
 type EditHostFormProps = {
   host: Host;
   inventory: Inventory;
-  cluster: Cluster;
+  usedHostnames: string[] | undefined;
   onCancel: () => void;
-  onSuccess: () => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onSave: (values: HostUpdateParams) => Promise<any>;
 };
 
-const validationSchema = (initialValues: HostUpdateParams, hosts: Host[] = []) =>
+const validationSchema = (initialValues: HostUpdateParams, usedHostnames: string[] = []) =>
   Yup.object().shape({
     hostname: hostnameValidationSchema.concat(
-      uniqueHostnameValidationSchema(initialValues.hostname, hosts).notOneOf(
+      uniqueHostnameValidationSchema(initialValues.hostname, usedHostnames).notOneOf(
         ['localhost'],
         `Hostname 'localhost' is not allowed.`,
       ),
@@ -52,11 +50,10 @@ const validationSchema = (initialValues: HostUpdateParams, hosts: Host[] = []) =
 const EditHostForm: React.FC<EditHostFormProps> = ({
   host,
   inventory,
-  cluster,
+  usedHostnames,
   onCancel,
-  onSuccess,
+  onSave,
 }) => {
-  const dispatch = useDispatch();
   const hostnameInputRef = React.useRef<HTMLInputElement>();
   React.useEffect(() => hostnameInputRef.current?.focus(), []);
 
@@ -68,46 +65,31 @@ const EditHostForm: React.FC<EditHostFormProps> = ({
     hostname: requestedHostname || '',
   };
 
-  const handleSubmit = async (
-    values: HostUpdateParams,
-    formikActions: FormikHelpers<HostUpdateParams>,
-  ) => {
-    if (values.hostname === initialValues.hostname) {
-      // no change to save
-      onSuccess();
-      return;
-    }
-
-    const params: ClusterUpdateParams = {};
-    params.hostsNames = [
-      {
-        id: values.hostId,
-        hostname: values.hostname,
-      },
-    ];
-
-    try {
-      const { data } = await patchCluster(cluster.id, params);
-      dispatch(updateCluster(data));
-      onSuccess();
-    } catch (e) {
-      handleApiError(e, () =>
-        formikActions.setStatus({
-          error: {
-            title: 'Failed to update host',
-            message: getErrorMessage(e),
-          },
-        }),
-      );
-    }
-  };
-
   return (
     <Formik
       initialValues={initialValues}
       initialStatus={{ error: null }}
-      validationSchema={validationSchema(initialValues, cluster.hosts)}
-      onSubmit={handleSubmit}
+      validationSchema={validationSchema(initialValues, usedHostnames)}
+      onSubmit={async (values, formikActions) => {
+        if (values.hostname === initialValues.hostname) {
+          // no change to save
+          onCancel();
+          return;
+        }
+        try {
+          await onSave(values);
+          onCancel();
+        } catch (e) {
+          handleApiError(e, () =>
+            formikActions.setStatus({
+              error: {
+                title: 'Failed to update host',
+                message: getErrorMessage(e),
+              },
+            }),
+          );
+        }
+      }}
     >
       {({ handleSubmit, status, setStatus, isSubmitting, isValid, dirty }) => (
         <Form onSubmit={handleSubmit}>

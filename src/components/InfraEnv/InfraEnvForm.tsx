@@ -122,7 +122,7 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ usedNames, onSubmit, onClos
               </GridItem>
               <GridItem>
                 Infrastructure Environments are used by Clusters. Create an Infrastructure
-                Environment in order to add resources to your cluster
+                Environment in order to add resources to your cluster.
               </GridItem>
               <GridItem>
                 <Form>
@@ -140,7 +140,6 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ usedNames, onSubmit, onClos
           {error && (
             <StackItem>
               <Alert
-                className="kv-create-vm__error"
                 variant={AlertVariant.danger}
                 actionClose={<AlertActionCloseButton onClose={() => setError(undefined)} />}
                 title="Error creating InfraEnv"
