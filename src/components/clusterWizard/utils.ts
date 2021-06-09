@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import { Cluster, ManagedDomain } from '../../api';
-import { OpenshiftVersionOptionType } from '../../types';
+import { OpenshiftVersionOptionType } from '../../types/versions';
 import { getDefaultOpenShiftVersion } from '../ui/formik/utils';
 import {
   dnsNameValidationSchema,

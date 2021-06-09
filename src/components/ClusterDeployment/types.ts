@@ -1,4 +1,4 @@
-import { OpenshiftVersionOptionType } from '../../types';
+import { OpenshiftVersionOptionType } from '../../types/versions';
 import { ClusterDetailsValues } from '../clusterWizard/types';
 
 export type ClusterDeploymentDetailsProps = {

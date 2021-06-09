@@ -1,5 +1,5 @@
 import { FormikErrors, FormikTouched } from 'formik';
-import { OpenshiftVersionOptionType } from '../../../types';
+import { OpenshiftVersionOptionType } from '../../../types/versions';
 
 export const getFieldId = (fieldName: string, fieldType: string, unique?: string) => {
   unique = unique ? `${unique}-` : '';

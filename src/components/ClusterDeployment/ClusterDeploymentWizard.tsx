@@ -2,17 +2,17 @@ import * as React from 'react';
 import { Formik, useFormikContext } from 'formik';
 import { Wizard, WizardStep, WizardStepFunctionType } from '@patternfly/react-core';
 import { AlertsContextProvider, useAlerts } from '../AlertsContextProvider';
-import { OpenshiftVersionOptionType } from '../../types';
+import {
+  getClusterDetailsInitialValues,
+  getClusterDetailsValidationSchema,
+} from '../clusterWizard/utils';
+import { OpenshiftVersionOptionType } from '../../types/versions';
 import {
   ClusterDeploymentDetailsProps,
   ClusterDeploymentWizardProps,
   ClusterDeploymentWizardValues,
 } from './types';
 import ClusterDeploymentDetails from './ClusterDeploymentDetails';
-import {
-  getClusterDetailsInitialValues,
-  getClusterDetailsValidationSchema,
-} from '../clusterWizard/utils';
 
 const getInitialValues = (
   versions: OpenshiftVersionOptionType[],

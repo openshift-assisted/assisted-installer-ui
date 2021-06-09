@@ -5,7 +5,7 @@ import SelectField from '../ui/formik/SelectField';
 import PullSecret from '../clusters/PullSecret';
 import CheckboxField from '../ui/formik/CheckboxField';
 import { ManagedDomain } from '../../api';
-import { OpenshiftVersionOptionType } from '../../types';
+import { OpenshiftVersionOptionType } from '../../types/versions';
 import OpenShiftVersionSelect from '../clusterConfiguration/OpenShiftVersionSelect';
 import { StaticTextField } from '../ui/StaticTextField';
 import SNOControlGroup from '../clusterConfiguration/SNOControlGroup';
