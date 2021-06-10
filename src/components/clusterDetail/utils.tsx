@@ -75,6 +75,9 @@ const getClusterResources = (cluster: Cluster, resourcePath: string): number => 
   return result;
 };
 
+export const getClustervCPUCount = (cluster: Cluster): number =>
+  getClusterResources(cluster, 'cpu.count');
+
 export const getClusterMemoryAmount = (cluster: Cluster): number =>
   getClusterResources(cluster, 'memory.usableBytes');
 
