@@ -19,7 +19,7 @@ export type SimpleHardwareInfo = {
 };
 
 export const getMemoryCapacity = (inventory: Inventory): number =>
-  inventory.memory?.physicalBytes || 0;
+  inventory.memory?.usableBytes || 0;
 export const getDiskCapacity = (inventory: Inventory): number =>
   inventory.disks?.reduce((diskSize: number, disk: Disk) => diskSize + (disk.sizeBytes || 0), 0) ||
   0;
