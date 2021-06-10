@@ -3,13 +3,14 @@ import { Button, Form, Grid, GridItem, Title, TitleSizes } from '@patternfly/rea
 
 import ProxyFields from '../../../clusterConfiguration/ProxyFields';
 import UploadSSH from '../../../clusterConfiguration/UploadSSH';
-import { InputField, TextAreaField } from '../../../ui';
+import { InputField } from '../../../ui';
 import LabelField from '../../../ui/formik/LabelField';
 import { PlusCircleIcon } from '@patternfly/react-icons';
 import { FieldArray, useFormikContext } from 'formik';
 import { EnvironmentStepFormValues } from '../types';
 import ConfigureNetworkModal from './ConfigureNetworkModal';
 import { getNMStateTemplate } from '../utils';
+import PullSecretField from '../../../ui/formik/PullSecretField';
 
 const EnvironmentStep: React.FC = () => {
   const [configureMac, setConfigureMac] = React.useState<number | undefined>();
@@ -69,7 +70,7 @@ const EnvironmentStep: React.FC = () => {
               }}
             />
             <LabelField label="Labels" name="labels" isRequired />
-            <TextAreaField label="Pull secret" name="pullSecret" isRequired />
+            <PullSecretField />
             <UploadSSH />
             <ProxyFields />
           </Form>
