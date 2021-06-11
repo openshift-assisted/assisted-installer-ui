@@ -6,6 +6,7 @@ import {
   getClusterDetailsInitialValues,
   getClusterDetailsValidationSchema,
 } from '../clusterWizard/utils';
+import { Cluster } from '../../api';
 import { OpenshiftVersionOptionType } from '../../types/versions';
 import {
   ClusterDeploymentDetailsProps,
@@ -14,16 +15,21 @@ import {
 } from './types';
 import ClusterDeploymentDetails from './ClusterDeploymentDetails';
 
-const getInitialValues = (
-  versions: OpenshiftVersionOptionType[],
-  defaultPullSecret?: string,
-): ClusterDeploymentWizardValues => {
+const getInitialValues = ({
+  cluster,
+  ocpVersions,
+  defaultPullSecret,
+}: {
+  cluster?: Cluster;
+  ocpVersions: OpenshiftVersionOptionType[];
+  defaultPullSecret?: string;
+}): ClusterDeploymentWizardValues => {
   // TODO(mlibra): update for other steps
   return getClusterDetailsInitialValues({
-    cluster: undefined,
+    cluster,
     pullSecret: defaultPullSecret,
     managedDomains: [], // not supported
-    versions,
+    ocpVersions,
   });
 };
 
@@ -34,7 +40,7 @@ const getValidationSchema = (usedClusterNames: string[]) => {
 
 const ClusterDeploymentWizardInternal: React.FC<
   ClusterDeploymentDetailsProps & { className?: string; onClose: () => void }
-> = ({ className, ocpVersions, defaultPullSecret, onClose }) => {
+> = ({ className, ocpVersions, defaultPullSecret, cluster, onClose }) => {
   const { isValid, isValidating, isSubmitting, submitForm } = useFormikContext<
     ClusterDeploymentWizardValues
   >();
@@ -43,12 +49,14 @@ const ClusterDeploymentWizardInternal: React.FC<
     // at the transition from the last step
     submitForm();
   };
+
   const onNext: WizardStepFunctionType = () => {
-    // probably nothing to do here since we have canNextClusterDetails()
+    submitForm(); // TODO(mlibra): Let's see if we can do it like this
   };
 
   const onBack: WizardStepFunctionType = () => {
     // probably nothing to do here
+    // No submitForm() here. Just dismiss changes.
   };
 
   const canNextClusterDetails = () => {
@@ -61,7 +69,11 @@ const ClusterDeploymentWizardInternal: React.FC<
       id: 'cluster-details',
       name: 'Cluster details',
       component: (
-        <ClusterDeploymentDetails defaultPullSecret={defaultPullSecret} ocpVersions={ocpVersions} />
+        <ClusterDeploymentDetails
+          defaultPullSecret={defaultPullSecret}
+          ocpVersions={ocpVersions}
+          cluster={cluster}
+        />
       ),
       enableNext: canNextClusterDetails(),
     },
@@ -89,7 +101,8 @@ const ClusterDeploymentWizardInternal: React.FC<
 
 const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   className,
-  onClusterCreate,
+  cluster,
+  onClusterSave,
   onClose,
   ocpVersions,
   defaultPullSecret,
@@ -99,19 +112,20 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
 
   const handleSubmit = async (values: ClusterDeploymentWizardValues) => {
     clearAlerts();
+
     // const params: ClusterCreateParams = _.omit(values, ['useRedHatDnsService', 'SNODisclaimer']);
     try {
-      await onClusterCreate(values);
+      await onClusterSave(values);
       onClose();
     } catch (e) {
-      addAlert({ title: 'Failed to create ClusterDeployment', message: e });
+      addAlert({ title: 'Failed to save ClusterDeployment', message: e });
     }
   };
 
-  const initialValues = React.useMemo(() => getInitialValues(ocpVersions, defaultPullSecret), [
-    ocpVersions,
-    defaultPullSecret,
-  ]);
+  const initialValues = React.useMemo(
+    () => getInitialValues({ cluster, ocpVersions, defaultPullSecret }),
+    [cluster, ocpVersions, defaultPullSecret],
+  );
   const validationSchema = React.useMemo(() => getValidationSchema(usedClusterNames), [
     usedClusterNames,
   ]);

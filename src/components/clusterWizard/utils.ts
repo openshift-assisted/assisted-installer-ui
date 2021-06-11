@@ -13,18 +13,18 @@ export const getClusterDetailsInitialValues = ({
   cluster,
   pullSecret,
   managedDomains,
-  versions,
+  ocpVersions,
 }: {
   cluster?: Cluster;
   pullSecret?: string;
   managedDomains: ManagedDomain[];
-  versions: OpenshiftVersionOptionType[];
+  ocpVersions: OpenshiftVersionOptionType[];
 }): ClusterDetailsValues => {
   const {
     name = '',
     highAvailabilityMode = 'Full',
     baseDnsDomain = '',
-    openshiftVersion = getDefaultOpenShiftVersion(versions),
+    openshiftVersion = getDefaultOpenShiftVersion(ocpVersions),
   } = cluster || {};
   return {
     name,
