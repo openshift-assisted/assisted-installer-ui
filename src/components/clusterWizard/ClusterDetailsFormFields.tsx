@@ -53,6 +53,7 @@ const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> = ({
     nameInputRef.current?.focus();
   }, []);
 
+  // TODO(mlibra): Disable fields based on props passed from the caller context. In CIM, the name or domain can not be edited.
   return (
     <Form id="wizard-cluster-details__form">
       <InputField ref={nameInputRef} label="Cluster Name" name="name" isRequired />

@@ -17,7 +17,7 @@ type ClusterDetailsFormProps = {
   cluster?: Cluster;
   pullSecret: string;
   managedDomains: ManagedDomain[];
-  versions: OpenshiftVersionOptionType[];
+  ocpVersions: OpenshiftVersionOptionType[];
   usedClusterNames: string[];
 
   navigation: React.ReactNode;
@@ -32,7 +32,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
     cluster,
     pullSecret,
     managedDomains,
-    versions,
+    ocpVersions,
     usedClusterNames = [],
     moveNext,
     handleClusterUpdate,
@@ -86,7 +86,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
               <GridItem span={12} lg={10} xl={9} xl2={7}>
                 <ClusterDetailsFormFields
                   toggleRedHatDnsService={toggleRedHatDnsService}
-                  versions={versions}
+                  versions={ocpVersions}
                   canEditPullSecret={!cluster?.pullSecretSet}
                   forceOpenshiftVersion={cluster?.openshiftVersion}
                   isSNOGroupDisabled={!!cluster}

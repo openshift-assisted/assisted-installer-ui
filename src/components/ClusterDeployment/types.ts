@@ -2,21 +2,26 @@ import { Cluster } from '../../api';
 import { OpenshiftVersionOptionType } from '../../types';
 import { ClusterDetailsValues } from '../clusterWizard/types';
 
+export type ClusterDeploymentWizardStepsType = 'cluster-details' | 'todo';
+
 export type ClusterDeploymentDetailsProps = {
   defaultPullSecret: string;
   ocpVersions: OpenshiftVersionOptionType[];
-  cluster?: Cluster; // TODO(mlibra): isn't it generic even for other steps??
+  cluster?: Cluster;
+  usedClusterNames: string[];
 };
 
-// TODO(mlibra): expose other steps
-export type ClusterDeploymentWizardProps = ClusterDeploymentDetailsProps & {
-  className?: string;
-  usedClusterNames: string[];
+export type ClusterDeploymentDetailsValues = ClusterDetailsValues;
 
-  onClusterSave: (params: ClusterDeploymentWizardValues) => Promise<void>;
+export type ClusterDeploymentDetailsStepProps = ClusterDeploymentDetailsProps & {
+  onSaveDetails: (values: ClusterDeploymentDetailsValues) => Promise<string | void>;
   onClose: () => void;
 };
 
-export type ClusterDeploymentWizardValues = ClusterDetailsValues & {
-  /* TODO(mlibra): other steps */
+export type ClusterDeploymentWizardProps = ClusterDeploymentDetailsProps & {
+  className?: string;
+
+  onClose: () => void;
+  onSaveDetails: ClusterDeploymentDetailsStepProps['onSaveDetails'];
+  // onClusterSave: (params: ClusterDeploymentWizardValues) => Promise<void>;
 };

@@ -128,7 +128,7 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster }) => {
       cluster={cluster}
       pullSecret={pullSecret}
       managedDomains={managedDomains}
-      versions={versions}
+      ocpVersions={versions}
       usedClusterNames={usedClusterNames}
       moveNext={moveNext}
       handleClusterUpdate={handleClusterUpdate}

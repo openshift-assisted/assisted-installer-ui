@@ -4,13 +4,14 @@ import { useFormikContext } from 'formik';
 import ClusterDetailsFormFields from '../clusterWizard/ClusterDetailsFormFields';
 import ClusterWizardStepHeader from '../clusterWizard/ClusterWizardStepHeader';
 import { ClusterDetailsValues } from '../clusterWizard/types';
-import { ClusterDeploymentDetailsProps } from './types';
-import Alerts from '../ui/Alerts';
+import { OpenshiftVersionOptionType } from '../../types';
+import { Cluster } from '../../api';
 
-const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
-  ocpVersions,
-  defaultPullSecret,
-}) => {
+const ClusterDeploymentDetails: React.FC<{
+  defaultPullSecret: string;
+  ocpVersions: OpenshiftVersionOptionType[];
+  cluster?: Cluster;
+}> = ({ ocpVersions, defaultPullSecret, cluster }) => {
   const { values } = useFormikContext<ClusterDetailsValues>();
   const toggleRedHatDnsService = () => {
     console.error(
@@ -21,22 +22,20 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
   return (
     <Grid hasGutter>
       <GridItem>
-        <ClusterWizardStepHeader cluster={undefined}>Cluster Details</ClusterWizardStepHeader>
+        <ClusterWizardStepHeader cluster={undefined /* Intentional to hide Events */}>
+          Cluster Details
+        </ClusterWizardStepHeader>
       </GridItem>
       <GridItem span={12} lg={10} xl={9} xl2={7}>
         <ClusterDetailsFormFields
           toggleRedHatDnsService={toggleRedHatDnsService}
           versions={ocpVersions}
           defaultPullSecret={defaultPullSecret}
-          canEditPullSecret={true}
+          canEditPullSecret={!cluster || !cluster.pullSecretSet}
           isSNOGroupDisabled={true}
           forceOpenshiftVersion={undefined}
           {...values}
         />
-      </GridItem>
-      <GridItem>
-        {/* TODO(mlibra): position it better */}
-        <Alerts />
       </GridItem>
     </Grid>
   );
