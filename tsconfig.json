@@ -25,5 +25,10 @@
     "isolatedModules": true,
   },
   "include": ["src"],
-  "exclude": ["node_modules", "dist", "example"]
+  "exclude": [
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.test.js",
+    "**/*.test.jsx"
+  ]
 }
