@@ -1,4 +1,4 @@
-import packageJson from '../../package.json';
+import * as packageJson from '../../package.json';
 import {
   Cluster,
   Host,
