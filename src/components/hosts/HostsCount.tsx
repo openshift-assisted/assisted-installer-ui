@@ -16,14 +16,18 @@ const HostsCount: React.FC<HostsCountProps> = ({
 }) => {
   const body = (
     <>
-      <Level>
-        <LevelItem>Ready for the installation</LevelItem>
-        <LevelItem>{getReadyHostCount(cluster)}</LevelItem>
-      </Level>
-      <Level>
-        <LevelItem>Enabled for the installation</LevelItem>
-        <LevelItem>{getEnabledHostCount(cluster)}</LevelItem>
-      </Level>
+      {'readyHostCount' in cluster && (
+        <Level>
+          <LevelItem>Ready for the installation</LevelItem>
+          <LevelItem>{getReadyHostCount(cluster)}</LevelItem>
+        </Level>
+      )}
+      {'enabledHostCount' in cluster && (
+        <Level>
+          <LevelItem>Enabled for the installation</LevelItem>
+          <LevelItem>{getEnabledHostCount(cluster)}</LevelItem>
+        </Level>
+      )}
       <Level>
         <LevelItem>All discovered</LevelItem>
         <LevelItem>{getTotalHostCount(cluster)}</LevelItem>
@@ -31,11 +35,13 @@ const HostsCount: React.FC<HostsCountProps> = ({
     </>
   );
 
+  const summary =
+    'enabledHostCount' in cluster ? getEnabledHostCount(cluster) : getTotalHostCount(cluster);
   return (
     <Popover headerContent="Hosts in the cluster" bodyContent={body}>
       <a id={valueId}>
         {inParenthesis && '('}
-        {getEnabledHostCount(cluster)}
+        {summary}
         {inParenthesis && ')'}
       </a>
     </Popover>

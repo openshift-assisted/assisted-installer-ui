@@ -1,4 +1,4 @@
-import { HostDiscoveryValues, HostSubnets, NetworkConfigurationValues } from '../../types/clusters';
+import { HostDiscoveryValues, HostSubnets } from '../../types/clusters';
 import { Cluster, ClusterDefaultConfig, Inventory } from '../../api/types';
 import { stringToJSON } from '../../api/utils';
 import { Address4, Address6 } from 'ip-address';
@@ -68,23 +68,5 @@ export const getHostDiscoveryInitialValues = (cluster: Cluster): HostDiscoveryVa
   return {
     useExtraDisksForLocalStorage: isOperatorEnabled('ocs'),
     useContainerNativeVirtualization: isOperatorEnabled('cnv'),
-  };
-};
-
-export const getNetworkInitialValues = (
-  cluster: Cluster,
-  defaultNetworkSettings: ClusterDefaultConfig,
-): NetworkConfigurationValues => {
-  return {
-    clusterNetworkCidr: cluster.clusterNetworkCidr || defaultNetworkSettings.clusterNetworkCidr,
-    clusterNetworkHostPrefix:
-      cluster.clusterNetworkHostPrefix || defaultNetworkSettings.clusterNetworkHostPrefix,
-    serviceNetworkCidr: cluster.serviceNetworkCidr || defaultNetworkSettings.serviceNetworkCidr,
-    apiVip: cluster.apiVip || '',
-    ingressVip: cluster.ingressVip || '',
-    sshPublicKey: cluster.sshPublicKey || '',
-    hostSubnet: getSubnetFromMachineNetworkCidr(cluster.machineNetworkCidr),
-    vipDhcpAllocation: cluster.vipDhcpAllocation,
-    networkingType: cluster.userManagedNetworking ? 'userManaged' : 'clusterManaged',
   };
 };

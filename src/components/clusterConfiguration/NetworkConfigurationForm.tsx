@@ -1,7 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Formik, FormikConfig, FormikProps } from 'formik';
-import * as Yup from 'yup';
 import _ from 'lodash';
 import {
   Cluster,
@@ -10,23 +9,15 @@ import {
   handleApiError,
   patchCluster,
 } from '../../api';
-import { Form, Grid, GridItem, Text, TextContent } from '@patternfly/react-core';
+import { Grid, GridItem, Text, TextContent } from '@patternfly/react-core';
 
 import { useAlerts } from '../AlertsContextProvider';
-import {
-  sshPublicKeyValidationSchema,
-  ipBlockValidationSchema,
-  hostPrefixValidationSchema,
-  vipValidationSchema,
-} from '../ui/formik/validationSchemas';
 import ClusterWizardStep from '../clusterWizard/ClusterWizardStep';
-import { HostSubnets, NetworkConfigurationValues } from '../../types/clusters';
+import { NetworkConfigurationValues } from '../../types/clusters';
 import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
 import { canNextNetwork } from '../clusterWizard/wizardTransition';
 import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
-import NetworkConfiguration from './NetworkConfiguration';
-import ClusterSshKeyFields from './ClusterSshKeyFields';
-import { getHostSubnets, getNetworkInitialValues } from './utils';
+import { getHostSubnets } from './utils';
 import { useDefaultConfiguration } from './ClusterDefaultConfigurationContext';
 import NetworkingHostsTable from '../hosts/NetworkingHostsTable';
 import FormikAutoSave from '../ui/formik/FormikAutoSave';
@@ -35,18 +26,12 @@ import ClusterWizardStepHeader from '../clusterWizard/ClusterWizardStepHeader';
 import ClusterWizardFooter from '../clusterWizard/ClusterWizardFooter';
 import { getFormikErrorFields } from '../ui/formik/utils';
 import ClusterWizardNavigation from '../clusterWizard/ClusterWizardNavigation';
-
-const validationSchema = (initialValues: NetworkConfigurationValues, hostSubnets: HostSubnets) =>
-  Yup.lazy<NetworkConfigurationValues>((values) =>
-    Yup.object<NetworkConfigurationValues>().shape({
-      clusterNetworkHostPrefix: hostPrefixValidationSchema(values),
-      clusterNetworkCidr: ipBlockValidationSchema,
-      serviceNetworkCidr: ipBlockValidationSchema,
-      apiVip: vipValidationSchema(hostSubnets, values, initialValues.apiVip),
-      ingressVip: vipValidationSchema(hostSubnets, values, initialValues.ingressVip),
-      sshPublicKey: sshPublicKeyValidationSchema,
-    }),
-  );
+import NetworkConfigurationFormFields from './NetworkConfigurationFormFields';
+import {
+  getNetworkConfigurationValidationSchema,
+  getNetworkInitialValues,
+} from './networkConfigurationValidation';
+import { ClusterHostsTable } from '../hosts';
 
 const NetworkConfigurationForm: React.FC<{
   cluster: Cluster;
@@ -67,7 +52,7 @@ const NetworkConfigurationForm: React.FC<{
   );
 
   const memoizedValidationSchema = React.useMemo(
-    () => validationSchema(initialValues, hostSubnets),
+    () => getNetworkConfigurationValidationSchema(initialValues, hostSubnets),
     [hostSubnets, initialValues],
   );
 
@@ -131,22 +116,13 @@ const NetworkConfigurationForm: React.FC<{
                 <ClusterWizardStepHeader cluster={cluster}>Networking</ClusterWizardStepHeader>
               </GridItem>
               <GridItem span={12} lg={10} xl={9} xl2={7}>
-                <Form>
-                  <NetworkConfiguration cluster={cluster} hostSubnets={hostSubnets} />
-                  <TextContent>
-                    <Text component="h2">Security</Text>
-                  </TextContent>
-                  <ClusterSshKeyFields
-                    clusterSshKey={cluster.sshPublicKey}
-                    imageSshKey={cluster.imageInfo.sshPublicKey}
-                  />
-                </Form>
+                <NetworkConfigurationFormFields cluster={cluster} hostSubnets={hostSubnets} />
               </GridItem>
               <GridItem>
                 <TextContent>
                   <Text component="h2">Host inventory</Text>
                 </TextContent>
-                <NetworkingHostsTable cluster={cluster} />
+                <NetworkingHostsTable cluster={cluster} TableComponent={ClusterHostsTable} />
               </GridItem>
             </Grid>
             <FormikAutoSave />

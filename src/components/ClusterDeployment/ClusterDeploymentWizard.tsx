@@ -3,11 +3,15 @@ import { AlertsContextProvider } from '../AlertsContextProvider';
 import { ClusterDeploymentWizardProps, ClusterDeploymentWizardStepsType } from './types';
 import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
 import ClusterDeploymentDetailsStep from './ClusterDeploymentDetailsStep';
+import ClusterDeploymentNetworkingStep from './ClusterDeploymentNetworkingStep';
 
 const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   className = '',
   onSaveDetails,
+  onSaveNetworking,
   onClose,
+  onEditHost,
+  canEditHost,
   cluster,
   ocpVersions,
   defaultPullSecret,
@@ -18,14 +22,29 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   );
   const renderCurrentStep = React.useCallback(() => {
     switch (currentStepId) {
+      case 'networking':
+        if (cluster) {
+          return (
+            <ClusterDeploymentNetworkingStep
+              cluster={cluster}
+              onSaveNetworking={onSaveNetworking}
+              onClose={onClose}
+              onEditHost={onEditHost}
+              canEditHost={canEditHost}
+            />
+          );
+        }
+
+        console.error(`Missing the AI Cluster object for the ${currentStepId} step`);
+      // falls through to default
       case 'cluster-details':
       default:
         return (
           <ClusterDeploymentDetailsStep
-            cluster={cluster}
             defaultPullSecret={defaultPullSecret}
             ocpVersions={ocpVersions}
             usedClusterNames={usedClusterNames}
+            cluster={cluster}
             onSaveDetails={onSaveDetails}
             onClose={onClose}
           />
@@ -38,7 +57,10 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
     ocpVersions,
     usedClusterNames,
     onSaveDetails,
+    onSaveNetworking,
     onClose,
+    onEditHost,
+    canEditHost,
   ]);
 
   return (
