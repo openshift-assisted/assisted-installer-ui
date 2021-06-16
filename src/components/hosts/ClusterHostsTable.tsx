@@ -3,14 +3,17 @@ import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import {
   Cluster,
+  ClusterUpdateParams,
   deleteClusterHost,
   disableClusterHost,
   enableClusterHost,
   getErrorMessage,
   handleApiError,
   Host,
+  HostRoleUpdateParams,
   installHost,
   Inventory,
+  patchCluster,
   resetClusterHost,
 } from '../../api';
 import { forceReload, updateCluster, updateHost } from '../../reducers/clusters';
@@ -43,6 +46,7 @@ import ResetHostModal from './ResetHostModal';
 import DeleteHostModal from './DeleteHostModal';
 import { AdditionalNTPSourcesDialog } from './AdditionalNTPSourcesDialog';
 import HostsCount from './HostsCount';
+import { HostUpdateParams } from './EditHostForm';
 
 type HostsTableEmptyStateProps = {
   cluster: Cluster;
@@ -245,6 +249,22 @@ const ClusterHostsTable: React.FC<ClusterHostsTableProps & WithTestID> = ({
     deleteHostDialog.close();
   }, [addAlert, cluster.id, dispatch, deleteHostDialog]);
 
+  const onEditRole = React.useCallback(
+    async ({ id, clusterId }: Host, role?: string) => {
+      const params: ClusterUpdateParams = {};
+      params.hostsRoles = [{ id, role: role as HostRoleUpdateParams }];
+      try {
+        const { data } = await patchCluster(clusterId as string, params);
+        dispatch(updateCluster(data));
+      } catch (e) {
+        handleApiError(e, () =>
+          addAlert({ title: 'Failed to set role', message: getErrorMessage(e) }),
+        );
+      }
+    },
+    [addAlert, dispatch],
+  );
+
   return (
     <>
       <HostsTable
@@ -260,6 +280,7 @@ const ClusterHostsTable: React.FC<ClusterHostsTableProps & WithTestID> = ({
         onDownloadHostLogs={onDownloadHostLogs}
         hostToHostTableRow={hostToHostTableRow}
         canDownloadHostLogs={canDownloadHostLogs}
+        onEditRole={onEditRole}
       />
       <EventsModal
         title={`Host Events${eventsDialog.isOpen ? `: ${eventsDialog.data?.hostname}` : ''}`}
@@ -284,10 +305,25 @@ const ClusterHostsTable: React.FC<ClusterHostsTableProps & WithTestID> = ({
       <EditHostModal
         host={editHostDialog.data?.host}
         inventory={editHostDialog.data?.inventory}
-        cluster={cluster}
+        usedHostnames={
+          cluster?.hosts?.map((h) => h.requestedHostname).filter((h) => h) as string[] | undefined
+        }
         onClose={editHostDialog.close}
         isOpen={editHostDialog.isOpen}
-        onSave={editHostDialog.close}
+        onSave={async (values: HostUpdateParams) => {
+          const params: ClusterUpdateParams = {
+            hostsNames: [
+              {
+                id: values.hostId,
+                hostname: values.hostname,
+              },
+            ],
+          };
+
+          const { data } = await patchCluster(cluster.id, params);
+          dispatch(updateCluster(data));
+          editHostDialog.close();
+        }}
       />
       <AdditionalNTPSourcesDialog
         cluster={cluster}

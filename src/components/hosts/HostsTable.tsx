@@ -52,6 +52,8 @@ const defaultHostToHostTableRow = (
   canEditDisks?: (host: Host) => boolean,
   onEditHostname?: (host: Host, inventory: Inventory) => void,
   canEditRole?: (host: Host) => boolean,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onEditRole?: (host: Host, role?: string) => Promise<any>,
 ) => (host: Host): IRow => {
   const { id, status, createdAt, inventory: inventoryString = '' } = host;
   const inventory = stringToJSON<Inventory>(inventoryString) || {};
@@ -67,6 +69,7 @@ const defaultHostToHostTableRow = (
   const dateTimeCell = getDateTimeCell(createdAt);
 
   const editHostname = onEditHostname ? () => onEditHostname(host, inventory) : undefined;
+  const editRole = onEditRole ? (role?: string) => onEditRole(host, role) : undefined;
 
   return [
     {
@@ -79,7 +82,14 @@ const defaultHostToHostTableRow = (
           sortableValue: computedHostname || '',
         },
         {
-          title: <RoleCell host={host} readonly={!canEditRole?.(host)} role={hostRole} />,
+          title: (
+            <RoleCell
+              host={host}
+              readonly={!canEditRole?.(host)}
+              role={hostRole}
+              onEditRole={editRole}
+            />
+          ),
           props: { 'data-testid': 'host-role' },
           sortableValue: hostRole,
         },
@@ -172,6 +182,8 @@ export type HostsTableProps = {
     canEditDisks?: (host: Host) => boolean,
     onEditHostname?: (host: Host, inventory: Inventory) => void,
     canEditRole?: (host: Host) => boolean,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onEditRole?: (host: Host, role?: string) => Promise<any>,
   ) => (host: Host) => IRow;
   skipDisabled?: boolean;
   onDeleteHost?: (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => void;
@@ -190,6 +202,8 @@ export type HostsTableProps = {
   canReset?: (host: Host) => boolean;
   canDownloadHostLogs?: (host: Host) => boolean;
   canDelete?: (host: Host) => boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onEditRole?: (host: Host, role?: string) => Promise<any>;
 };
 
 const HostsTable: React.FC<HostsTableProps & WithTestID> = ({
@@ -215,6 +229,7 @@ const HostsTable: React.FC<HostsTableProps & WithTestID> = ({
   canReset,
   canDownloadHostLogs,
   canDelete,
+  onEditRole,
   EmptyState = DefaultEmptyState,
 }) => {
   const [openRows, setOpenRows] = React.useState<OpenRows>({});
@@ -228,7 +243,7 @@ const HostsTable: React.FC<HostsTableProps & WithTestID> = ({
       _.flatten(
         (hosts || [])
           .filter(isHostShown(skipDisabled))
-          .map(hostToHostTableRow(openRows, canEditDisks, onEditHost, canEditRole))
+          .map(hostToHostTableRow(openRows, canEditDisks, onEditHost, canEditRole, onEditRole))
           .sort(rowSorter(sortBy, (row: IRow, index = 1) => row[0].cells[index - 1]))
           .map((row: IRow, index: number) => {
             row[1].parent = index * 2;
@@ -244,6 +259,7 @@ const HostsTable: React.FC<HostsTableProps & WithTestID> = ({
       onEditHost,
       canEditRole,
       canEditDisks,
+      onEditRole,
     ],
   );
 

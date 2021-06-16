@@ -1,6 +1,5 @@
 import * as Yup from 'yup';
 import { NetworkConfigurationValues, HostSubnets } from '../../../types/clusters';
-import { Host } from '../../../api/types';
 import { ProxyFieldsType } from '../../clusterConfiguration/types';
 import { NO_SUBNET_SET } from '../../../config/constants';
 import { trimCommaSeparatedList, trimSshPublicKey } from './utils';
@@ -244,12 +243,12 @@ export const hostnameValidationSchema = Yup.string()
     excludeEmptyString: true,
   });
 
-export const uniqueHostnameValidationSchema = (origHostname: string, hosts: Host[]) =>
+export const uniqueHostnameValidationSchema = (origHostname: string, usedHostnames: string[]) =>
   Yup.string().test('unique-hostname-validation', 'Hostname must be unique.', (value) => {
     if (!value || value === origHostname) {
       return true;
     }
-    return !hosts.find((h) => h.requestedHostname === value);
+    return !usedHostnames.find((h) => h === value);
   });
 
 const httpProxyValidationMessage = 'Provide a valid HTTP URL.';
