@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Form } from '@patternfly/react-core';
+import { useFormikContext } from 'formik';
 import InputField from '../ui/formik/InputField';
 import SelectField from '../ui/formik/SelectField';
 import PullSecret from '../clusters/PullSecret';
@@ -11,7 +12,7 @@ import { StaticTextField } from '../ui/StaticTextField';
 import SNOControlGroup from '../clusterConfiguration/SNOControlGroup';
 import { ClusterDetailsValues } from './types';
 
-type ClusterDetailsFormFieldsProps = ClusterDetailsValues & {
+type ClusterDetailsFormFieldsProps = {
   canEditPullSecret: boolean;
   forceOpenshiftVersion?: string;
   isSNOGroupDisabled: boolean;
@@ -40,14 +41,12 @@ const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> = ({
   toggleRedHatDnsService,
   canEditPullSecret,
   isSNOGroupDisabled,
-  useRedHatDnsService,
-  name,
-  baseDnsDomain,
   versions,
   defaultPullSecret,
   forceOpenshiftVersion,
-  highAvailabilityMode,
 }) => {
+  const { values } = useFormikContext<ClusterDetailsValues>();
+  const { name, baseDnsDomain, highAvailabilityMode, useRedHatDnsService } = values;
   const nameInputRef = React.useRef<HTMLInputElement>();
   React.useEffect(() => {
     nameInputRef.current?.focus();

@@ -34,14 +34,7 @@ const ClusterDeploymentWizardFooter = ({
   const alertsSection = alerts.length ? <Alerts /> : undefined;
   const errorsSection = <ValidationSection errorFields={errorFields} />;
 
-  return (
-    <WizardFooter
-      alerts={alertsSection}
-      errors={errorsSection}
-      leftExtraActions={undefined}
-      {...rest}
-    />
-  );
+  return <WizardFooter alerts={alertsSection} errors={errorsSection} {...rest} />;
 };
 
 export default ClusterDeploymentWizardFooter;

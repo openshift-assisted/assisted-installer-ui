@@ -1,9 +1,7 @@
 import React from 'react';
 import { Grid, GridItem } from '@patternfly/react-core';
-import { useFormikContext } from 'formik';
 import ClusterDetailsFormFields from '../clusterWizard/ClusterDetailsFormFields';
 import ClusterWizardStepHeader from '../clusterWizard/ClusterWizardStepHeader';
-import { ClusterDetailsValues } from '../clusterWizard/types';
 import { OpenshiftVersionOptionType } from '../../types';
 import { Cluster } from '../../api';
 
@@ -12,7 +10,6 @@ const ClusterDeploymentDetails: React.FC<{
   ocpVersions: OpenshiftVersionOptionType[];
   cluster?: Cluster;
 }> = ({ ocpVersions, defaultPullSecret, cluster }) => {
-  const { values } = useFormikContext<ClusterDetailsValues>();
   const toggleRedHatDnsService = () => {
     console.error(
       'toggleRedHatDnsService() should not be called, managedDomains are recently not used.',
@@ -34,7 +31,6 @@ const ClusterDeploymentDetails: React.FC<{
           canEditPullSecret={!cluster || !cluster.pullSecretSet}
           isSNOGroupDisabled={true}
           forceOpenshiftVersion={undefined}
-          {...values}
         />
       </GridItem>
     </Grid>

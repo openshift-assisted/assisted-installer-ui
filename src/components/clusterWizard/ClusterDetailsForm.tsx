@@ -71,7 +71,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
-      {({ submitForm, isSubmitting, isValid, dirty, values, setFieldValue, errors, touched }) => {
+      {({ submitForm, isSubmitting, isValid, dirty, setFieldValue, errors, touched }) => {
         const errorFields = getFormikErrorFields(errors, touched);
 
         const toggleRedHatDnsService = (checked: boolean) =>
@@ -91,7 +91,6 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
                   forceOpenshiftVersion={cluster?.openshiftVersion}
                   isSNOGroupDisabled={!!cluster}
                   defaultPullSecret={pullSecret}
-                  {...values}
                 />
               </GridItem>
             </Grid>

@@ -31,7 +31,6 @@ type WizardFooterProps = WizardFooterGenericProps & {
 const WizardFooter: React.FC<WizardFooterProps> = ({
   alerts,
   errors,
-
   onNext,
   onBack,
   onCancel,
@@ -40,57 +39,53 @@ const WizardFooter: React.FC<WizardFooterProps> = ({
   leftExtraActions,
   isSubmitting,
   submittingText = 'Saving changes...',
-}) => {
-  const rightExtraActions = isSubmitting ? (
-    <ToolbarItem>
-      <Text component={TextVariants.small}>
-        <Spinner size="sm" /> {submittingText}
-      </Text>
-    </ToolbarItem>
-  ) : undefined;
-
-  return (
-    <Stack hasGutter>
-      {alerts && <StackItem>{alerts}</StackItem>}
-      {errors && <StackItem>{errors}</StackItem>}
-      <StackItem>
-        <Toolbar data-testid="wizard-step-actions">
-          <ToolbarContent>
-            {leftExtraActions}
-            {onNext && (
-              <ToolbarButton
-                variant={ButtonVariant.primary}
-                name="next"
-                onClick={onNext}
-                isDisabled={isNextDisabled}
-              >
-                Next
-              </ToolbarButton>
-            )}
-            {onBack && (
-              <ToolbarButton
-                variant={ButtonVariant.secondary}
-                name="back"
-                onClick={onBack}
-                isDisabled={isBackDisabled}
-              >
-                Back
-              </ToolbarButton>
-            )}
+}) => (
+  <Stack hasGutter>
+    {alerts && <StackItem>{alerts}</StackItem>}
+    {errors && <StackItem>{errors}</StackItem>}
+    <StackItem>
+      <Toolbar data-testid="wizard-step-actions">
+        <ToolbarContent>
+          {leftExtraActions}
+          {onNext && (
             <ToolbarButton
-              variant={ButtonVariant.link}
-              name="cancel"
-              onClick={onCancel}
-              isDisabled={false}
+              variant={ButtonVariant.primary}
+              name="next"
+              onClick={onNext}
+              isDisabled={isNextDisabled}
             >
-              Cancel
+              Next
             </ToolbarButton>
-            {rightExtraActions}
-          </ToolbarContent>
-        </Toolbar>
-      </StackItem>
-    </Stack>
-  );
-};
+          )}
+          {onBack && (
+            <ToolbarButton
+              variant={ButtonVariant.secondary}
+              name="back"
+              onClick={onBack}
+              isDisabled={isBackDisabled}
+            >
+              Back
+            </ToolbarButton>
+          )}
+          <ToolbarButton
+            variant={ButtonVariant.link}
+            name="cancel"
+            onClick={onCancel}
+            isDisabled={false}
+          >
+            Cancel
+          </ToolbarButton>
+          {isSubmitting && (
+            <ToolbarItem>
+              <Text component={TextVariants.small}>
+                <Spinner size="sm" /> {submittingText}
+              </Text>
+            </ToolbarItem>
+          )}
+        </ToolbarContent>
+      </Toolbar>
+    </StackItem>
+  </Stack>
+);
 
 export default WizardFooter;
