@@ -4,19 +4,17 @@
   "description": "React component library for the Bare Metal Installer",
   "license": "Apache-2.0",
   "repository": "openshift-assisted/assisted-ui-lib",
-  "main": "dist/src/index.js",
+  "main": "dist/index.js",
+  "module": "dist/index.modern.js",
+  "source": "src/index.ts",
+  "types": "dist/src/index.d.ts",
   "engines": {
-    "node": ">=12"
-  },
-  "exports": {
-    ".": "./dist/src/index.js"
+    "node": ">=10"
   },
   "scripts": {
     "prebuild": "run-s test",
-    "build": "tsc && yarn copy",
-    "start": "tsc --watch & yarn watch-css",
-    "copy": "copyfiles \"./src/**/*.css\" \"./dist/\"",
-    "watch-css": "nodemon --watch ./src -e css --exec \"yarn copy\"",
+    "build": "microbundle-crl --no-compress --format modern,cjs --css-modules false",
+    "start": "microbundle-crl watch --no-compress --format modern,cjs --css-modules false",
     "start-assisted-ui": "./scripts/start-assisted-ui.sh",
     "start-uhc-portal": "./scripts/start-uhc-portal.sh",
     "sync-to-ui": "./scripts/sync-dist.sh",
@@ -42,19 +40,7 @@
     "@reduxjs/toolkit": "1.5.x",
     "@sentry/browser": "5.19.1",
     "axios": "^0.19.2",
-    "axios-case-converter": "^0.6.0",
-    "file-saver": "^2.0.2",
-    "filesize.js": "^2.0.0",
-    "formik": "2.2.6",
-    "http-proxy-middleware": "^1.0.3",
-    "human-date": "^1.4.0",
-    "humanize-plus": "^1.8.2",
-    "ip-address": "^7.1.0",
-    "is-cidr": "^4.0.2",
-    "is-in-subnet": "^3.1.0",
-    "js-yaml": "^4.1.0",
     "lodash": "^4.17.15",
-    "prism-react-renderer": "^1.1.1",
     "react": "^16.4.0",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.0",
@@ -63,7 +49,6 @@
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0",
-    "unique-names-generator": "^4.2.0",
     "uuid": "^8.1.0",
     "yup": "^0.28.3"
   },
@@ -87,7 +72,6 @@
     "@typescript-eslint/parser": "^2.26.0",
     "babel-eslint": "^10.0.3",
     "concurrently": "^5.3.0",
-    "copyfiles": "^2.4.1",
     "cross-env": "^7.0.2",
     "dpdm": "^3.4.3",
     "eslint": "^6.8.0",
@@ -97,7 +81,7 @@
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-hooks": "^2.5.0",
     "install-peers-cli": "^2.2.0",
-    "nodemon": "^2.0.7",
+    "microbundle-crl": "^0.13.10",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.0.4",
     "react-scripts": "^3.4.1",
@@ -115,5 +99,20 @@
     "assisted-ui",
     "assisted-ui-lib",
     "library"
-  ]
+  ],
+  "dependencies": {
+    "axios-case-converter": "^0.6.0",
+    "file-saver": "^2.0.2",
+    "filesize.js": "^2.0.0",
+    "formik": "2.2.6",
+    "http-proxy-middleware": "^1.0.3",
+    "human-date": "^1.4.0",
+    "humanize-plus": "^1.8.2",
+    "ip-address": "^7.1.0",
+    "is-cidr": "^4.0.2",
+    "is-in-subnet": "^3.1.0",
+    "js-yaml": "^4.1.0",
+    "prism-react-renderer": "^1.1.1",
+    "unique-names-generator": "^4.2.0"
+  }
 }
