@@ -9,3 +9,5 @@ export * from './Router';
 export * from './AddHosts';
 export * from './bmc';
 export * from './InfraEnv';
+export * from './clusterWizard';
+export * from './ClusterDeployment';

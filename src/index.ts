@@ -10,5 +10,4 @@ export * as Selectors from './selectors';
 export * as Store from './store';
 export * as Features from './features';
 export * as Reducers from './reducers';
-
-// export * as Types from './types';
+export * as Types from './types';

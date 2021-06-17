@@ -27,10 +27,10 @@ import {
   ClusterWizardStepsType,
   findValidationFixStep,
 } from '../clusterWizard/wizardTransition';
-import { wizardStepNames } from '../clusterWizard/ClusterWizardStep';
 import { Cluster, Host, stringToJSON } from '../../api';
 import { CLUSTER_VALIDATION_LABELS, HOST_VALIDATION_LABELS } from '../../config';
 import { getEnabledHosts } from '../hosts/utils';
+import { wizardStepNames } from '../clusterWizard/constants';
 
 const AllValidationsPassed = () => (
   <>

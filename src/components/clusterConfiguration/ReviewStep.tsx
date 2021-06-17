@@ -11,6 +11,7 @@ import ReviewCluster from './ReviewCluster';
 import ClusterWizardStepHeader from '../clusterWizard/ClusterWizardStepHeader';
 import ClusterWizardFooter from '../clusterWizard/ClusterWizardFooter';
 import ToolbarButton from '../ui/Toolbar/ToolbarButton';
+import ClusterWizardNavigation from '../clusterWizard/ClusterWizardNavigation';
 
 const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const { addAlert } = useAlerts();
@@ -57,7 +58,7 @@ const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   );
 
   return (
-    <ClusterWizardStep cluster={cluster} footer={footer}>
+    <ClusterWizardStep navigation={<ClusterWizardNavigation cluster={cluster} />} footer={footer}>
       <Grid hasGutter>
         <GridItem>
           <ClusterWizardStepHeader cluster={cluster}>Review and create</ClusterWizardStepHeader>

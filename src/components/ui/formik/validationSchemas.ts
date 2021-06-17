@@ -18,14 +18,19 @@ const IP_V4_ZERO = '0.0.0.0';
 const IP_V6_ZERO = '0000:0000:0000:0000:0000:0000:0000:0000';
 const MAC_REGEX = /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})|([0-9a-fA-F]{4}\\.[0-9a-fA-F]{4}\\.[0-9a-fA-F]{4})$”/;
 
-export const nameValidationSchema = Yup.string()
-  .matches(CLUSTER_NAME_REGEX, {
-    message:
-      'Name must consist of lower-case letters, numbers and hyphens. It must start with a letter and end with a letter or number.',
-    excludeEmptyString: true,
-  })
-  .max(54, 'Cannot be longer than 54 characters.')
-  .required('Required');
+export const nameValidationSchema = (usedClusterNames: string[], baseDnsDomain = '') =>
+  Yup.string()
+    .matches(CLUSTER_NAME_REGEX, {
+      message:
+        'Name must consist of lower-case letters, numbers and hyphens. It must start with a letter and end with a letter or number.',
+      excludeEmptyString: true,
+    })
+    .max(54, 'Cannot be longer than 54 characters.')
+    .required('Required')
+    .test('is-name-unique', 'The name is already taken.', (value: string) => {
+      const clusterFullName = `${value}.${baseDnsDomain}`;
+      return !value || !usedClusterNames.includes(clusterFullName);
+    });
 
 export const sshPublicKeyValidationSchema = Yup.string().test(
   'ssh-public-key',

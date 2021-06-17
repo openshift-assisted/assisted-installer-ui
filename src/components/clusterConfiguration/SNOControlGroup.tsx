@@ -1,23 +1,20 @@
 import React from 'react';
-import { useFormikContext } from 'formik';
 import { OpenshiftVersionOptionType } from '../../types/versions';
 import SNODisclaimer from './SNODisclaimer';
 import SingleNodeCheckbox from '../ui/formik/SingleNodeCheckbox';
-import { ClusterCreateParams } from '../../api/types';
+import { ClusterDetailsValues } from '../clusterWizard/types';
 
 type SNOControlGroupProps = {
   isDisabled: boolean;
   versions: OpenshiftVersionOptionType[];
+  highAvailabilityMode: ClusterDetailsValues['highAvailabilityMode'];
 };
 
-const SNOControlGroup = ({ versions, isDisabled }: SNOControlGroupProps) => {
-  const { values } = useFormikContext<ClusterCreateParams>();
-  return (
-    <>
-      <SingleNodeCheckbox name="highAvailabilityMode" versions={versions} isDisabled={isDisabled} />
-      {values.highAvailabilityMode === 'None' && <SNODisclaimer isDisabled={isDisabled} />}
-    </>
-  );
-};
+const SNOControlGroup = ({ versions, highAvailabilityMode, isDisabled }: SNOControlGroupProps) => (
+  <>
+    <SingleNodeCheckbox name="highAvailabilityMode" versions={versions} isDisabled={isDisabled} />
+    {highAvailabilityMode === 'None' && <SNODisclaimer isDisabled={isDisabled} />}
+  </>
+);
 
 export default SNOControlGroup;
