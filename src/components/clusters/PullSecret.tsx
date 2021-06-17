@@ -5,19 +5,19 @@ import { useFormikContext } from 'formik';
 import PullSecretField, { PullSecretInfo } from '../ui/formik/PullSecretField';
 
 export type PullSecretProps = {
-  pullSecret?: string;
+  defaultPullSecret?: string;
 };
 
-const PullSecret: React.FC<PullSecretProps> = ({ pullSecret }) => {
+const PullSecret: React.FC<PullSecretProps> = ({ defaultPullSecret }) => {
   // Fetched pull secret will never change - see LoadingState in NewCluster
-  const [isExpanded, setExpanded] = React.useState(!pullSecret);
+  const [isExpanded, setExpanded] = React.useState(!defaultPullSecret);
   const { setFieldValue } = useFormikContext<ClusterCreateParams>();
 
   if (ocmClient) {
     const onCheckboxChange = () => {
       if (isExpanded) {
         // about to collapse, reset to original value
-        setFieldValue('pullSecret', pullSecret);
+        setFieldValue('pullSecret', defaultPullSecret);
       }
       setExpanded(!isExpanded);
     };

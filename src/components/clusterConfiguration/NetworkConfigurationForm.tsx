@@ -34,6 +34,7 @@ import { isSingleNodeCluster } from '../clusters/utils';
 import ClusterWizardStepHeader from '../clusterWizard/ClusterWizardStepHeader';
 import ClusterWizardFooter from '../clusterWizard/ClusterWizardFooter';
 import { getFormikErrorFields } from '../ui/formik/utils';
+import ClusterWizardNavigation from '../clusterWizard/ClusterWizardNavigation';
 
 const validationSchema = (initialValues: NetworkConfigurationValues, hostSubnets: HostSubnets) =>
   Yup.lazy<NetworkConfigurationValues>((values) =>
@@ -163,7 +164,10 @@ const NetworkConfigurationForm: React.FC<{
           />
         );
         return (
-          <ClusterWizardStep cluster={cluster} footer={footer}>
+          <ClusterWizardStep
+            navigation={<ClusterWizardNavigation cluster={cluster} />}
+            footer={footer}
+          >
             {form}
           </ClusterWizardStep>
         );

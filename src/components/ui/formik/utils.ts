@@ -1,4 +1,5 @@
 import { FormikErrors, FormikTouched } from 'formik';
+import { OpenshiftVersionOptionType } from '../../../types/versions';
 
 export const getFieldId = (fieldName: string, fieldType: string, unique?: string) => {
   unique = unique ? `${unique}-` : '';
@@ -23,3 +24,6 @@ export const getFormikErrorFields = <FormikValues>(
   errors: FormikErrors<FormikValues>,
   touched: FormikTouched<FormikValues>,
 ) => Object.keys(errors).filter((field) => touched[field]);
+
+export const getDefaultOpenShiftVersion = (versions: OpenshiftVersionOptionType[]) =>
+  versions.find((v) => v.default)?.value || versions[0]?.value || '';
