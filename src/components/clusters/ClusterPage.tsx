@@ -106,7 +106,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
   }
 
   if (uiState === ResourceUIState.ERROR) {
-    if (errorDetail?.code.toString() === '404') {
+    if (Number(errorDetail?.code) === 404) {
       return <Redirect to={`${routeBasePath}/clusters`} />;
     }
 
@@ -115,7 +115,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
         <ErrorState
           title="Failed to fetch the cluster"
           fetchData={
-            errorDetail?.code.toString() === '401' ? () => window.location.reload() : fetchCluster
+            Number(errorDetail?.code) === 401 ? () => window.location.reload() : fetchCluster
           }
           actions={errorStateActions}
         />
