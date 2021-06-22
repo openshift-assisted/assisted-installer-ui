@@ -50,7 +50,9 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster }) => {
       const fetcher = async () => {
         try {
           const { data: clusters } = await getClusters();
-          const names = clusters.map((c) => `${c.name}.${c.baseDnsDomain}`);
+          const names = clusters
+            .filter((c) => !cluster || c.id !== cluster.id)
+            .map((c) => `${c.name}.${c.baseDnsDomain}`);
           setUsedClusterNames(names);
         } catch (e) {
           setUsedClusterNames([]);
