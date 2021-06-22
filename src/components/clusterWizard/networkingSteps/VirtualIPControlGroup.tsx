@@ -76,12 +76,17 @@ const getVipValidationsById = (
   }, {});
 };
 
-export interface VirtualIPControlGroupProps {
+export type VirtualIPControlGroupProps = {
   cluster: Cluster;
   hostSubnets: HostSubnets;
-}
+  isVipDhcpAllocationDisabled?: boolean;
+};
 
-export const VirtualIPControlGroup = ({ cluster, hostSubnets }: VirtualIPControlGroupProps) => {
+export const VirtualIPControlGroup = ({
+  cluster,
+  hostSubnets,
+  isVipDhcpAllocationDisabled,
+}: VirtualIPControlGroupProps) => {
   const { values } = useFormikContext<NetworkConfigurationValues>();
 
   const apiVipHelperText = `Virtual IP used to reach the OpenShift cluster API. ${getVipHelperSuffix(
@@ -104,7 +109,9 @@ export const VirtualIPControlGroup = ({ cluster, hostSubnets }: VirtualIPControl
 
   return (
     <>
-      <CheckboxField label="Allocate virtual IPs via DHCP server" name="vipDhcpAllocation" />
+      {!isVipDhcpAllocationDisabled && (
+        <CheckboxField label="Allocate virtual IPs via DHCP server" name="vipDhcpAllocation" />
+      )}
       {values.vipDhcpAllocation ? (
         <>
           <FormikStaticField

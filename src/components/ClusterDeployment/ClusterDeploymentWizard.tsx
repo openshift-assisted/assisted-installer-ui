@@ -31,6 +31,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
               onClose={onClose}
               onEditHost={onEditHost}
               canEditHost={canEditHost}
+              // TODO(mlibra) Add more networking-table actions here
             />
           );
         }

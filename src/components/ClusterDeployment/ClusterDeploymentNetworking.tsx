@@ -5,9 +5,8 @@ import { Cluster } from '../../api';
 import NetworkConfigurationFormFields from '../clusterConfiguration/NetworkConfigurationFormFields';
 import { HostSubnets } from '../../types/clusters';
 import NetworkingHostsTable from '../hosts/NetworkingHostsTable';
-import ClusterDeploymentHostsTable, {
-  ClusterDeploymentHostsTablePropsActions,
-} from './ClusterDeploymentHostsTable';
+import ClusterDeploymentHostsTable from './ClusterDeploymentHostsTable';
+import { ClusterDeploymentHostsTablePropsActions } from './types';
 
 const ClusterDeploymentNetworking: React.FC<
   {
@@ -15,6 +14,8 @@ const ClusterDeploymentNetworking: React.FC<
     hostSubnets: HostSubnets;
   } & ClusterDeploymentHostsTablePropsActions
 > = ({ cluster, hostSubnets, ...rest }) => {
+  const isVipDhcpAllocationDisabled = true; // So far not supported
+
   return (
     <Grid hasGutter>
       <GridItem>
@@ -23,7 +24,11 @@ const ClusterDeploymentNetworking: React.FC<
         </ClusterWizardStepHeader>
       </GridItem>
       <GridItem span={12} lg={10} xl={9} xl2={7}>
-        <NetworkConfigurationFormFields cluster={cluster} hostSubnets={hostSubnets} />
+        <NetworkConfigurationFormFields
+          cluster={cluster}
+          hostSubnets={hostSubnets}
+          isVipDhcpAllocationDisabled={isVipDhcpAllocationDisabled}
+        />
       </GridItem>
 
       <GridItem>

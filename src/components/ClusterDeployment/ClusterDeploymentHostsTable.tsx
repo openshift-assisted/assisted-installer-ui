@@ -1,10 +1,11 @@
-import { ICell } from '@patternfly/react-table';
 import * as React from 'react';
+import { ICell } from '@patternfly/react-table';
+import { ConnectedIcon } from '@patternfly/react-icons';
 import { Cluster } from '../../api';
 import { WithTestID } from '../../types';
 import HostsTable, { HostsTableProps } from '../hosts/HostsTable';
 import { EmptyState } from '../ui/uiState';
-import { ConnectedIcon } from '@patternfly/react-icons';
+import { ClusterDeploymentHostsTablePropsActions } from './types';
 
 const HostsTableEmptyState: React.FC<{}> = () => (
   <EmptyState
@@ -22,12 +23,6 @@ const HostsTableEmptyState: React.FC<{}> = () => (
     // }
   />
 );
-
-// TODO(mlibra): List other picked hooks
-export type ClusterDeploymentHostsTablePropsActions = Pick<
-  HostsTableProps,
-  'onEditHost' | 'canEditHost'
->;
 
 type ClusterDeploymentHostsTableProps = {
   cluster: Cluster;

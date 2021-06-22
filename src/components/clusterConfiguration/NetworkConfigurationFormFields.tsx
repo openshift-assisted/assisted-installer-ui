@@ -1,18 +1,16 @@
 import React from 'react';
 import { Form } from 'formik';
 import { TextContent, Text } from '@patternfly/react-core';
-import { HostSubnets } from '../../types/clusters';
-import NetworkConfiguration from './NetworkConfiguration';
+import NetworkConfiguration, { NetworkConfigurationProps } from './NetworkConfiguration';
 import ClusterSshKeyFields from './ClusterSshKeyFields';
-import { Cluster } from '../../api';
 
-const NetworkConfigurationFormFields: React.FC<{
-  cluster: Cluster;
-  hostSubnets: HostSubnets;
-}> = ({ cluster, hostSubnets }) => {
+type NetworkConfigurationFormFieldsProps = NetworkConfigurationProps;
+
+const NetworkConfigurationFormFields: React.FC<NetworkConfigurationFormFieldsProps> = (props) => {
+  const { cluster } = props;
   return (
     <Form>
-      <NetworkConfiguration cluster={cluster} hostSubnets={hostSubnets} />
+      <NetworkConfiguration {...props} />
       <TextContent>
         <Text component="h2">Security</Text>
       </TextContent>
