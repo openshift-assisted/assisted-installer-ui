@@ -20,7 +20,6 @@ const UploadSSH: React.FC = () => {
         maxSize: 2048,
         onDropRejected: ({ setError }) => () => setError('File not supported.'),
       }}
-      isRequired
     />
   );
 };
