@@ -6,7 +6,8 @@ import HelperText from '../ui/formik/HelperText';
 import TextAreaField from '../ui/formik/TextAreaField';
 import { trimSshPublicKey } from '../ui/formik/utils';
 import { NetworkConfigurationValues } from '../../types/clusters';
-import { Cluster } from '../../api/types';
+import { Cluster } from '../../api';
+import { RenderIf } from '../ui/RenderIf';
 
 export const SshPublicKeyHelperText: React.FC<{
   fieldId?: string;
@@ -54,27 +55,24 @@ const ClusterSshKeyFields: React.FC<ClusterSshKeyFieldsProps> = ({
   return (
     <>
       <FormGroup fieldId={fieldId} label={label}>
-        {imageSshKey && (
+        <RenderIf condition={Boolean(imageSshKey)}>
           <Checkbox
             name="shareDiscoverySshKey"
             id={fieldId}
             label="Use the same host discovery SSH key"
             aria-describedby={`${fieldId}-helper`}
             isChecked={shareSshKey}
-            onChange={(checked) => {
-              setShareSshKey(checked);
-            }}
+            onChange={setShareSshKey}
           />
-        )}
+        </RenderIf>
+        <RenderIf condition={!shareSshKey}>
+          <TextAreaField
+            name="sshPublicKey"
+            helperText={<SshPublicKeyHelperText />}
+            onBlur={handleSshKeyBlur}
+          />
+        </RenderIf>
       </FormGroup>
-      {!shareSshKey && (
-        <TextAreaField
-          name="sshPublicKey"
-          label={!imageSshKey && label}
-          helperText={<SshPublicKeyHelperText />}
-          onBlur={handleSshKeyBlur}
-        />
-      )}
     </>
   );
 };

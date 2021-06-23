@@ -1,12 +1,5 @@
 import * as packageJson from '../../package.json';
-import {
-  Cluster,
-  Host,
-  Event,
-  HostValidationId,
-  DiskRole,
-  ClusterValidationId,
-} from '../api/types';
+import { Cluster, Host, Event, HostValidationId, DiskRole, ClusterValidationId } from '../api';
 import { ValidationsInfo, HostRole } from '../types/hosts';
 
 export let routeBasePath = '';
@@ -99,6 +92,7 @@ export const CLUSTER_FIELD_LABELS: { [key in string]: string } = {
   ingressVip: 'Ingress Virtual IP',
   pullSecret: 'Pull Secret',
   sshPublicKey: 'SSH Public Key',
+  SNODisclaimer: 'Single Node OpenShift disclaimer',
 };
 
 export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {

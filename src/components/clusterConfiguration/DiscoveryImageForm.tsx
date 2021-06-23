@@ -13,16 +13,16 @@ import {
 } from '@patternfly/react-core';
 import Axios, { CancelTokenSource } from 'axios';
 import { Formik, FormikHelpers } from 'formik';
-import { createClusterDownloadsImage, patchCluster } from '../../api/clusters';
+import { createClusterDownloadsImage, patchCluster } from '../../api';
 import { LoadingState } from '../ui/uiState';
-import { handleApiError, getErrorMessage } from '../../api/utils';
-import { ImageCreateParams, Cluster, ClusterUpdateParams } from '../../api/types';
+import { handleApiError, getErrorMessage } from '../../api';
+import { ImageCreateParams, Cluster, ClusterUpdateParams } from '../../api';
 import {
-  sshPublicKeyValidationSchema,
   httpProxyValidationSchema,
   noProxyValidationSchema,
+  sshPublicKeyValidationSchema,
 } from '../ui/formik/validationSchemas';
-import { updateCluster, forceReload } from '../../reducers/clusters/currentClusterSlice';
+import { updateCluster, forceReload } from '../../reducers/clusters';
 import { DiscoveryImageFormValues } from './types';
 import ProxyFields from './ProxyFields';
 import { usePullSecretFetch } from '../fetching/pullSecret';
@@ -31,9 +31,7 @@ import DiscoveryImageTypeControlGroup from './DiscoveryImageTypeControlGroup';
 
 const validationSchema = Yup.lazy<DiscoveryImageFormValues>((values) =>
   Yup.object<DiscoveryImageFormValues>().shape({
-    sshPublicKey: sshPublicKeyValidationSchema.required(
-      'An SSH key is required to debug hosts as they register.',
-    ),
+    sshPublicKey: sshPublicKeyValidationSchema,
     httpProxy: httpProxyValidationSchema(values, 'httpsProxy'),
     httpsProxy: httpProxyValidationSchema(values, 'httpProxy'), // share the schema, httpS is currently not supported
     noProxy: noProxyValidationSchema,
