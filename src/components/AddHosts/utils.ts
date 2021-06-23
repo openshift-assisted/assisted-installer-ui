@@ -20,7 +20,7 @@ export const canAddHost = ({ cluster }: { cluster: OcmClusterType }) => {
       isAllowed = true;
     }
 
-    if (cluster.aiCluster && cluster.aiCluster['high_availability_mode'] !== 'None') {
+    if (cluster.aiCluster && cluster.aiCluster['high_availability_mode'] === 'None') {
       isAllowed = false;
     }
   }
