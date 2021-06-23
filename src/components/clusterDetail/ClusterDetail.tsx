@@ -8,8 +8,9 @@ import {
   ButtonVariant,
   GridItem,
   Grid,
+  Alert,
 } from '@patternfly/react-core';
-import { Cluster } from '../../api/types';
+import { Cluster } from '../../api';
 import { EventsModalButton } from '../ui/eventsModal';
 import ClusterHostsTable from '../hosts/ClusterHostsTable';
 import ClusterToolbar from '../clusters/ClusterToolbar';
@@ -28,6 +29,8 @@ import ClusterDetailStatusVarieties, {
 } from './ClusterDetailStatusVarieties';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
 import { canAbortInstallation } from '../clusters/utils';
+import { useDefaultConfiguration } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
+import { RenderIf } from '../ui/RenderIf';
 
 type ClusterDetailProps = {
   cluster: Cluster;
@@ -38,6 +41,8 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
   const { resetClusterDialog, cancelInstallationDialog } = useModalDialogsContext();
   const clusterVarieties = useClusterStatusVarieties(cluster);
   const { credentials, credentialsError } = clusterVarieties;
+  const { inactiveDeletionHours } = useDefaultConfiguration(['inactiveDeletionHours']);
+  const inactiveDeletionDays = Math.round((inactiveDeletionHours || 0) / 24);
 
   return (
     <Stack hasGutter>
@@ -57,6 +62,17 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
             clusterId={cluster.id}
             id={getClusterDetailId('button-download-kubeconfig')}
           />
+          <RenderIf condition={Boolean(inactiveDeletionDays)}>
+            <Alert
+              variant="info"
+              isInline
+              title={
+                'Download and save your kubeconfig file in a safe place. This file will be ' +
+                "automatically deleted from Assisted Installer's service in " +
+                `${inactiveDeletionDays} days.`
+              }
+            />
+          </RenderIf>
           <GridItem>
             <TextContent>
               <Text component="h2">Host Inventory</Text>
