@@ -21,6 +21,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
     'cluster-details',
   );
   const renderCurrentStep = React.useCallback(() => {
+    // console.log('--- ClusterDeploymentWizard.renderCurrentStep), currentStepId: ', currentStepId, ', cluster: ', cluster);
     switch (currentStepId) {
       case 'networking':
         if (cluster) {
@@ -36,7 +37,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
           );
         }
 
-        console.error(`Missing the AI Cluster object for the ${currentStepId} step`);
+        console.log(`Missing the AI Cluster object for the ${currentStepId} step, waiting ...`);
       // falls through to default
       case 'cluster-details':
       default:

@@ -300,7 +300,6 @@ const HostsTable: React.FC<HostsTableProps & WithTestID> = ({
           onClick: onInstallHost,
         });
       }
-      console.log('--- onEditHost: ', onEditHost, ', canEditHost: ', canEditHost);
       if (onEditHost && canEditHost?.(host)) {
         actions.push({
           title: 'Edit host',
