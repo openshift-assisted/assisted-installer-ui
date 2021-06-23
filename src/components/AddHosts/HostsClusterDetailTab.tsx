@@ -142,7 +142,7 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
           setDay2Cluster(data);
           dayTwoClusterExists = true;
         } catch (e) {
-          if (e.response?.status.toString() !== '404') {
+          if (Number(e?.response?.status) !== 404) {
             handleApiError(e);
             setError(
               <>
