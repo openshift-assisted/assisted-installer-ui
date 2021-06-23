@@ -12,6 +12,10 @@ import {
   ModalBoxBody,
   ModalBoxFooter,
   TextContent,
+  DescriptionList,
+  DescriptionListDescription,
+  DescriptionListGroup,
+  DescriptionListTerm,
 } from '@patternfly/react-core';
 import { global_success_color_100 as successColor } from '@patternfly/react-tokens';
 import { CheckCircleIcon } from '@patternfly/react-icons';
@@ -41,35 +45,31 @@ const DownloadIso: React.FC<DownloadISOProps> = ({
             Discovery ISO is ready to download
           </Title>
         </EmptyState>
-        <TextContent>
-          <DetailList>
-            <DetailItem
-              title="Discovery ISO URL"
-              value={
-                <ClipboardCopy isReadOnly onCopy={(event) => clipboardCopyFunc(event, downloadUrl)}>
-                  {downloadUrl}
-                </ClipboardCopy>
-              }
-            />
-            <DetailItem
-              title="Command to download the ISO"
-              value={
-                <ClipboardCopy isReadOnly onCopy={(event) => clipboardCopyFunc(event, wgetCommand)}>
-                  {wgetCommand}
-                </ClipboardCopy>
-              }
-            />
-          </DetailList>
-          <DetailItem
-            title="Boot instructions"
-            value={
-              <>
-                Use a bootable device (local disk, USB drive, etc.) or network booting (PXE) to boot
-                each host <b>once</b> from the Discovery ISO.
-              </>
-            }
-          ></DetailItem>
-        </TextContent>
+        <DescriptionList>
+          <DescriptionListGroup>
+            <DescriptionListTerm>Discovery ISO URL</DescriptionListTerm>
+            <DescriptionListDescription>
+              <ClipboardCopy isReadOnly onCopy={(event) => clipboardCopyFunc(event, downloadUrl)}>
+                {downloadUrl}
+              </ClipboardCopy>
+            </DescriptionListDescription>
+          </DescriptionListGroup>
+          <DescriptionListGroup>
+            <DescriptionListTerm>Command to download the ISO</DescriptionListTerm>
+            <DescriptionListDescription>
+              <ClipboardCopy isReadOnly onCopy={(event) => clipboardCopyFunc(event, wgetCommand)}>
+                {wgetCommand}
+              </ClipboardCopy>
+            </DescriptionListDescription>
+          </DescriptionListGroup>
+          <DescriptionListGroup>
+            <DescriptionListTerm>Boot instructions</DescriptionListTerm>
+            <DescriptionListDescription>
+              Use a bootable device (local disk, USB drive, etc.) or network booting (PXE) to boot
+              each host <b>once</b> from the Discovery ISO.
+            </DescriptionListDescription>
+          </DescriptionListGroup>
+        </DescriptionList>
       </ModalBoxBody>
       <ModalBoxFooter>
         <Button
