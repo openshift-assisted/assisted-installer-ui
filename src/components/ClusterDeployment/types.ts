@@ -6,7 +6,7 @@ import { HostsTableProps } from '../hosts/HostsTable';
 
 export type ClusterDeploymentHostsTablePropsActions = Pick<
   HostsTableProps,
-  'onEditHost' | 'canEditHost' | 'onDeleteHost' | 'canDelete'
+  'onEditHost' | 'canEditHost' | 'onEditRole' | 'canEditRole' | 'onDeleteHost' | 'canDelete'
 
   /* TODO(mlibra): List other actions
       onHostEnable: async (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {

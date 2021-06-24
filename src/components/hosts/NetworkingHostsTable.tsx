@@ -13,7 +13,7 @@ import HostsCount from './HostsCount';
 import NetworkingStatus from './NetworkingStatus';
 import { getSubnet } from '../clusterConfiguration/utils';
 import { Address4, Address6 } from 'ip-address';
-import RoleCell from './RoleCell';
+import RoleCell, { RoleCellProps } from './RoleCell';
 import { ClusterHostsTableProps } from './ClusterHostsTable';
 import { WithTestID } from '../../types';
 
@@ -58,6 +58,8 @@ const hostToHostTableRow: HostToHostTableRow = (cluster) => (
   openRows,
   canEditDisks,
   onEditHostname,
+  canEditRole,
+  onEditRole,
 ) => (host) => {
   const { id, status, inventory: inventoryString = '' } = host;
   const inventory = stringToJSON<Inventory>(inventoryString) || {};
@@ -72,6 +74,9 @@ const hostToHostTableRow: HostToHostTableRow = (cluster) => (
 
   const editHostname = onEditHostname ? () => onEditHostname(host, inventory) : undefined;
 
+  const onEditHostRole: RoleCellProps['onEditRole'] = onEditRole
+    ? (role) => onEditRole(host, role)
+    : undefined;
   return [
     {
       // visible row
@@ -83,7 +88,14 @@ const hostToHostTableRow: HostToHostTableRow = (cluster) => (
           sortableValue: computedHostname || '',
         },
         {
-          title: <RoleCell host={host} readonly role={hostRole} />,
+          title: (
+            <RoleCell
+              host={host}
+              readonly={!onEditRole || !canEditRole || !canEditRole(host)}
+              onEditRole={onEditHostRole}
+              role={hostRole}
+            />
+          ),
           props: { 'data-testid': 'host-role' },
           sortableValue: hostRole,
         },

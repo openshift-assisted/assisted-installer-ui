@@ -12,6 +12,8 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   onClose,
   onEditHost,
   canEditHost,
+  onEditRole,
+  canEditRole,
   cluster,
   ocpVersions,
   defaultPullSecret,
@@ -31,6 +33,8 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
               onClose={onClose}
               onEditHost={onEditHost}
               canEditHost={canEditHost}
+              onEditRole={onEditRole}
+              canEditRole={canEditRole}
               // TODO(mlibra) Add more networking-table actions here
             />
           );
@@ -62,6 +66,8 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
     onClose,
     onEditHost,
     canEditHost,
+    onEditRole,
+    canEditRole,
   ]);
 
   return (
