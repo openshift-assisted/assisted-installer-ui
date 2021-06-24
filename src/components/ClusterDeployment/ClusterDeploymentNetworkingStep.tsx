@@ -95,7 +95,12 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
 
         return (
           <ClusterDeploymentWizardStep navigation={navigation} footer={footer}>
-            <ClusterDeploymentNetworking cluster={cluster} hostSubnets={hostSubnets} {...rest} />
+            <ClusterDeploymentNetworking
+              cluster={cluster}
+              hostSubnets={hostSubnets}
+              defaultNetworkSettings={defaultNetworkSettings}
+              {...rest}
+            />
           </ClusterDeploymentWizardStep>
         );
       }}

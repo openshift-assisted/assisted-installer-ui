@@ -5,7 +5,6 @@ import AdvancedNetworkFields from './AdvancedNetworkFields';
 import { NetworkConfigurationValues } from '../../types/clusters';
 import { isSingleNodeCluster } from '../clusters/utils';
 import { isAdvConf } from './utils';
-import { useDefaultConfiguration } from './ClusterDefaultConfigurationContext';
 import {
   AvailableSubnetsControl,
   UserManagedNetworkingTextContent,
@@ -14,23 +13,21 @@ import {
 } from '../clusterWizard/networkingSteps';
 import { RenderIf } from '../ui/RenderIf';
 import { NO_SUBNET_SET } from '../../config';
+import { ClusterDefaultConfig } from '../../api';
 
-export type NetworkConfigurationProps = VirtualIPControlGroupProps;
+export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
+  defaultNetworkSettings: ClusterDefaultConfig;
+};
 
 const NetworkConfiguration = ({
   cluster,
   hostSubnets,
   isVipDhcpAllocationDisabled,
+  defaultNetworkSettings,
 }: NetworkConfigurationProps) => {
   const { setFieldValue, values, touched, validateField } = useFormikContext<
     NetworkConfigurationValues
   >();
-  const defaultNetworkSettings = useDefaultConfiguration([
-    'clusterNetworkCidr',
-    'serviceNetworkCidr',
-    'clusterNetworkHostPrefix',
-  ]);
-
   const [isAdvanced, setAdvanced] = React.useState(isAdvConf(cluster, defaultNetworkSettings));
 
   const toggleAdvConfiguration = (checked: boolean) => {

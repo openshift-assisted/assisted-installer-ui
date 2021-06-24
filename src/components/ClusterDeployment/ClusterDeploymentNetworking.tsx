@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid, GridItem, Text, TextContent } from '@patternfly/react-core';
 import ClusterWizardStepHeader from '../clusterWizard/ClusterWizardStepHeader';
-import { Cluster } from '../../api';
+import { Cluster, ClusterDefaultConfig } from '../../api';
 import NetworkConfigurationFormFields from '../clusterConfiguration/NetworkConfigurationFormFields';
 import { HostSubnets } from '../../types/clusters';
 import NetworkingHostsTable from '../hosts/NetworkingHostsTable';
@@ -12,8 +12,9 @@ const ClusterDeploymentNetworking: React.FC<
   {
     cluster: Cluster;
     hostSubnets: HostSubnets;
+    defaultNetworkSettings: ClusterDefaultConfig;
   } & ClusterDeploymentHostsTablePropsActions
-> = ({ cluster, hostSubnets, ...rest }) => {
+> = ({ cluster, hostSubnets, defaultNetworkSettings, ...rest }) => {
   const isVipDhcpAllocationDisabled = true; // So far not supported
 
   return (
@@ -28,6 +29,7 @@ const ClusterDeploymentNetworking: React.FC<
           cluster={cluster}
           hostSubnets={hostSubnets}
           isVipDhcpAllocationDisabled={isVipDhcpAllocationDisabled}
+          defaultNetworkSettings={defaultNetworkSettings}
         />
       </GridItem>
 

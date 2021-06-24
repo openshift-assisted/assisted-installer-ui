@@ -116,7 +116,11 @@ const NetworkConfigurationForm: React.FC<{
                 <ClusterWizardStepHeader cluster={cluster}>Networking</ClusterWizardStepHeader>
               </GridItem>
               <GridItem span={12} lg={10} xl={9} xl2={7}>
-                <NetworkConfigurationFormFields cluster={cluster} hostSubnets={hostSubnets} />
+                <NetworkConfigurationFormFields
+                  cluster={cluster}
+                  hostSubnets={hostSubnets}
+                  defaultNetworkSettings={defaultNetworkSettings}
+                />
               </GridItem>
               <GridItem>
                 <TextContent>
