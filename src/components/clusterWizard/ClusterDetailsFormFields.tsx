@@ -16,6 +16,8 @@ type ClusterDetailsFormFieldsProps = {
   canEditPullSecret: boolean;
   forceOpenshiftVersion?: string;
   isSNOGroupDisabled: boolean;
+  isNameDisabled: boolean;
+  isBaseDnsDomainDisabled: boolean;
   defaultPullSecret?: string;
 
   managedDomains?: ManagedDomain[];
@@ -41,6 +43,8 @@ const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> = ({
   toggleRedHatDnsService,
   canEditPullSecret,
   isSNOGroupDisabled,
+  isNameDisabled,
+  isBaseDnsDomainDisabled,
   versions,
   defaultPullSecret,
   forceOpenshiftVersion,
@@ -55,7 +59,13 @@ const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> = ({
   // TODO(mlibra): Disable fields based on props passed from the caller context. In CIM, the name or domain can not be edited.
   return (
     <Form id="wizard-cluster-details__form">
-      <InputField ref={nameInputRef} label="Cluster Name" name="name" isRequired />
+      <InputField
+        ref={nameInputRef}
+        label="Cluster Name"
+        name="name"
+        isRequired
+        isDisabled={isNameDisabled}
+      />
       {!!managedDomains.length && (
         <CheckboxField
           name="useRedHatDnsService"
@@ -81,7 +91,7 @@ const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> = ({
           name="baseDnsDomain"
           helperText={<BaseDnsHelperText name={name} baseDnsDomain={baseDnsDomain} />}
           placeholder="example.com"
-          isDisabled={useRedHatDnsService}
+          isDisabled={isBaseDnsDomainDisabled || useRedHatDnsService}
           isRequired
         />
       )}

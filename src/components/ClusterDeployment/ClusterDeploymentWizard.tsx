@@ -21,7 +21,6 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
     'cluster-details',
   );
   const renderCurrentStep = React.useCallback(() => {
-    // console.log('--- ClusterDeploymentWizard.renderCurrentStep), currentStepId: ', currentStepId, ', cluster: ', cluster);
     switch (currentStepId) {
       case 'networking':
         if (cluster) {

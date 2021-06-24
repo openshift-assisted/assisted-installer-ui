@@ -78,7 +78,7 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
             submitForm();
           }
           // TODO(mlibra): check behaviour if submit fails, no transition in that case
-          // setCurrentStepId('networking'); // TODO(mlibra): set next step ID here
+          // setCurrentStepId('something-next'); // TODO(mlibra): set next step ID here
           onClose(); // TODO(mlibra): just temporarily - the flow will continue
         };
 
