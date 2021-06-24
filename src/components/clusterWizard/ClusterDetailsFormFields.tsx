@@ -15,9 +15,9 @@ import { ClusterDetailsValues } from './types';
 type ClusterDetailsFormFieldsProps = {
   canEditPullSecret: boolean;
   forceOpenshiftVersion?: string;
-  isSNOGroupDisabled: boolean;
-  isNameDisabled: boolean;
-  isBaseDnsDomainDisabled: boolean;
+  isSNOGroupDisabled?: boolean;
+  isNameDisabled?: boolean;
+  isBaseDnsDomainDisabled?: boolean;
   defaultPullSecret?: string;
 
   managedDomains?: ManagedDomain[];

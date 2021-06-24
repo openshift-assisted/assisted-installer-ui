@@ -3,9 +3,9 @@ import { Alert, AlertVariant, List, ListItem, Stack, StackItem } from '@patternf
 import { CheckboxField } from '../ui';
 
 type SNODisclaimerProps = {
-  isDisabled: boolean;
+  isDisabled?: boolean;
 };
-const SNODisclaimer = ({ isDisabled }: SNODisclaimerProps) => {
+const SNODisclaimer = ({ isDisabled = false }: SNODisclaimerProps) => {
   return (
     <Alert
       variant={AlertVariant.warning}
