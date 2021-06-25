@@ -9,24 +9,31 @@ NPM_PROJECT=openshift-assisted-ui-lib
 
 function sync {
   if [ -d "${ASSISTED_UI_ROOT}" ]; then
-    rsync -avz --delete ${BUILD_OUTPUT} ${ASSISTED_UI_ROOT}/node_modules/${NPM_PROJECT}
+    rsync -avz --delete "${BUILD_OUTPUT}" "${ASSISTED_UI_ROOT}"/node_modules/${NPM_PROJECT}
   else
-    echo Sync to ${ASSISTED_UI_ROOT}/node_modules/${NPM_PROJECT} skipped
+    echo Sync to "${ASSISTED_UI_ROOT}"/node_modules/${NPM_PROJECT} skipped
   fi
 
   if [ -d "${UHC_PORTAL}" ]; then
-    rsync -avz --delete ${BUILD_OUTPUT} ${UHC_PORTAL}/node_modules/${NPM_PROJECT}
+    rsync -avz --delete "${BUILD_OUTPUT}" "${UHC_PORTAL}"/node_modules/${NPM_PROJECT}
   else
-    echo Sync to ${UHC_PORTAL}/node_modules/${NPM_PROJECT} skipped
+    echo Sync to "${UHC_PORTAL}"/node_modules/${NPM_PROJECT} skipped
   fi
 }
 
-sync
-cp ./package.json ${ASSISTED_UI_ROOT}/node_modules/${NPM_PROJECT}/package.json || true
-cp ./package.json ${UHC_PORTAL}/node_modules/${NPM_PROJECT}/package.json || true
+function main {
+  if [ ! -d "${BUILD_OUTPUT}" ]; then
+    mkdir "${BUILD_OUTPUT}"
+  fi
 
-while inotifywait -r -e modify,create,delete,move ./dist ; do
-  sleep 2 # give JS bundler time to write everything
   sync
-done
+  cp ./package.json "${ASSISTED_UI_ROOT}"/node_modules/${NPM_PROJECT}/package.json || true
+  cp ./package.json "${UHC_PORTAL}"/node_modules/${NPM_PROJECT}/package.json || true
 
+  while inotifywait -r -e modify,create,delete,move ./dist ; do
+    sleep 2 # give JS bundler time to write everything
+    sync
+  done
+}
+
+main
