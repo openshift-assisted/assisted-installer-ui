@@ -19,6 +19,7 @@ const hostToHostTableRow: HostsTableProps['hostToHostTableRow'] = (
   canEditDisks,
   onEditHostname,
   canEditRole,
+  onEditRole,
 ) => (host) => {
   const { id, status, createdAt, inventory: inventoryString = '' } = host;
   const inventory = stringToJSON<Inventory>(inventoryString) || {};
@@ -34,6 +35,7 @@ const hostToHostTableRow: HostsTableProps['hostToHostTableRow'] = (
   const dateTimeCell = getDateTimeCell(createdAt);
 
   const editHostname = onEditHostname ? () => onEditHostname(host, inventory) : undefined;
+  const editRole = onEditRole ? (role?: string) => onEditRole(host, role) : undefined;
 
   return [
     {
@@ -46,7 +48,14 @@ const hostToHostTableRow: HostsTableProps['hostToHostTableRow'] = (
           sortableValue: computedHostname || '',
         },
         {
-          title: <RoleCell host={host} readonly={!canEditRole?.(host)} role={hostRole} />,
+          title: (
+            <RoleCell
+              host={host}
+              readonly={!canEditRole?.(host)}
+              role={hostRole}
+              onEditRole={editRole}
+            />
+          ),
           props: { 'data-testid': 'host-role' },
           sortableValue: hostRole,
         },
