@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form } from 'formik';
+import { Form } from '@patternfly/react-core';
 import { TextContent, Text } from '@patternfly/react-core';
 import NetworkConfiguration, { NetworkConfigurationProps } from './NetworkConfiguration';
 import ClusterSshKeyFields from './ClusterSshKeyFields';
