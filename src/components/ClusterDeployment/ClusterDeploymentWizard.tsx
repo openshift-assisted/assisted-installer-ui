@@ -3,11 +3,17 @@ import { AlertsContextProvider } from '../AlertsContextProvider';
 import { ClusterDeploymentWizardProps, ClusterDeploymentWizardStepsType } from './types';
 import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
 import ClusterDeploymentDetailsStep from './ClusterDeploymentDetailsStep';
+import ClusterDeploymentNetworkingStep from './ClusterDeploymentNetworkingStep';
 
 const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   className = '',
   onSaveDetails,
+  onSaveNetworking,
   onClose,
+  onEditHost,
+  canEditHost,
+  onEditRole,
+  canEditRole,
   cluster,
   ocpVersions,
   defaultPullSecret,
@@ -18,14 +24,32 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   );
   const renderCurrentStep = React.useCallback(() => {
     switch (currentStepId) {
+      case 'networking':
+        if (cluster) {
+          return (
+            <ClusterDeploymentNetworkingStep
+              cluster={cluster}
+              onSaveNetworking={onSaveNetworking}
+              onClose={onClose}
+              onEditHost={onEditHost}
+              canEditHost={canEditHost}
+              onEditRole={onEditRole}
+              canEditRole={canEditRole}
+              // TODO(mlibra) Add more networking-table actions here
+            />
+          );
+        }
+
+        console.log(`Missing the AI Cluster object for the ${currentStepId} step, waiting ...`);
+      // falls through to default
       case 'cluster-details':
       default:
         return (
           <ClusterDeploymentDetailsStep
-            cluster={cluster}
             defaultPullSecret={defaultPullSecret}
             ocpVersions={ocpVersions}
             usedClusterNames={usedClusterNames}
+            cluster={cluster}
             onSaveDetails={onSaveDetails}
             onClose={onClose}
           />
@@ -38,7 +62,12 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
     ocpVersions,
     usedClusterNames,
     onSaveDetails,
+    onSaveNetworking,
     onClose,
+    onEditHost,
+    canEditHost,
+    onEditRole,
+    canEditRole,
   ]);
 
   return (

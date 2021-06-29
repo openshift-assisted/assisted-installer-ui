@@ -87,5 +87,6 @@ export const ClusterDefaultConfigurationProvider = ({
 };
 
 export const useDefaultConfiguration = (keys: Array<keyof ClusterDefaultConfig>) => {
+  // TODO(mlibra): There is no more the need to pick just selected values here, we can pass all the retrieved data
   return _.pick(useContext(ClusterDefaultConfigurationContext), keys);
 };

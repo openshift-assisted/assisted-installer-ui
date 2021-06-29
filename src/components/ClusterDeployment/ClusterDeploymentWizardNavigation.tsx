@@ -3,9 +3,9 @@ import { WizardNav } from '@patternfly/react-core';
 import WizardNavItem from '../ui/WizardNavItem';
 import { wizardStepNames } from './constants';
 import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
-// import { ClusterDeploymentWizardStepsType } from './types';
+import { ClusterDeploymentWizardStepsType } from './types';
 
-// const wizardSteps = Object.keys(wizardStepNames) as ClusterDeploymentWizardStepsType[];
+const wizardSteps = Object.keys(wizardStepNames) as ClusterDeploymentWizardStepsType[];
 
 const ClusterDeploymentWizardNavigation: React.FC<{
   // cluster?: Cluster
@@ -23,15 +23,18 @@ const ClusterDeploymentWizardNavigation: React.FC<{
         step={0}
         onNavItemClick={() => setCurrentStepId('cluster-details')}
       />
-      {/* <WizardNavItem
-        key="host-discovery"
-        content={wizardStepNames['host-discovery']}
+      <WizardNavItem
+        key="networking"
+        content={wizardStepNames['networking']}
         isDisabled={!wizardSteps.slice(1).includes(currentStepId)}
-        isValid={() => !cluster || canNextHostDiscovery({ cluster })}
-        isCurrent={currentStepId === 'host-discovery'}
+        isValid={
+          () => true /* TODO(mlibra)*/ /* () => !cluster || canNextHostDiscovery({ cluster })*/
+        }
+        isCurrent={currentStepId === 'networking'}
         step={1}
-        onNavItemClick={() => setCurrentStepId('host-discovery')}
+        onNavItemClick={() => setCurrentStepId('networking')}
       />
+      {/*
       <WizardNavItem
         content={wizardStepNames['networking']}
         step={2}

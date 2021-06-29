@@ -81,7 +81,7 @@ export const macAddressValidationSchema = Yup.string().matches(MAC_REGEX, {
 
 export const vipRangeValidationSchema = (
   hostSubnets: HostSubnets,
-  values: NetworkConfigurationValues,
+  { hostSubnet }: Partial<NetworkConfigurationValues>,
 ) =>
   Yup.string().test('vip-validation', 'IP Address is outside of selected subnet', function (value) {
     if (!value) {
@@ -92,12 +92,12 @@ export const vipRangeValidationSchema = (
     } catch (err) {
       return this.createError({ message: err.message });
     }
-    const hostSubnet = hostSubnets.find((hn) => hn.humanized === values.hostSubnet) || null;
-    const subnetCidr = hostSubnet ? hostSubnet.subnet : '';
+    const foundHostSubnet = hostSubnets.find((hn) => hn.humanized === hostSubnet);
+    const subnetCidr = foundHostSubnet ? foundHostSubnet.subnet : '';
     return !subnetCidr || isInSubnet(value, subnetCidr);
   });
 
-const vipUniqueValidationSchema = (hostSubnets: HostSubnets, values: NetworkConfigurationValues) =>
+const vipUniqueValidationSchema = ({ ingressVip, apiVip }: Partial<NetworkConfigurationValues>) =>
   Yup.string().test(
     'vip-uniqueness-validation',
     'The Ingress and API Virtual IP addresses cannot be the same.',
@@ -105,7 +105,7 @@ const vipUniqueValidationSchema = (hostSubnets: HostSubnets, values: NetworkConf
       if (!value) {
         return true;
       }
-      return values.ingressVip !== values.apiVip;
+      return ingressVip !== apiVip;
     },
   );
 
@@ -130,7 +130,10 @@ const stringToIPAddress = (value: string): Address4 | Address6 | null => {
 
 export const vipValidationSchema = (
   hostSubnets: HostSubnets,
-  values: NetworkConfigurationValues,
+  values: {
+    ingressVip: NetworkConfigurationValues['ingressVip'];
+    apiVip: NetworkConfigurationValues['apiVip'];
+  },
   initialValue?: string,
 ) =>
   Yup.mixed().when(['vipDhcpAllocation', 'networkingType'], {
@@ -138,7 +141,7 @@ export const vipValidationSchema = (
       !vipDhcpAllocation && networkingType !== 'userManaged',
     then: requiredOnceSet(initialValue)
       .concat(vipRangeValidationSchema(hostSubnets, values))
-      .concat(vipUniqueValidationSchema(hostSubnets, values))
+      .concat(vipUniqueValidationSchema(values))
       .when('hostSubnet', {
         is: (hostSubnet) => hostSubnet !== NO_SUBNET_SET,
         then: Yup.string().required('Required. Please provide an IP address'),
@@ -207,11 +210,12 @@ export const dnsNameValidationSchema = Yup.string()
     message: 'Value "${value}" is not valid DNS name. Example: basedomain.example.com', // eslint-disable-line no-template-curly-in-string
   });
 
-export const hostPrefixValidationSchema = (values: NetworkConfigurationValues) => {
+export const hostPrefixValidationSchema = ({
+  clusterNetworkCidr,
+}: Partial<NetworkConfigurationValues>) => {
   const requiredText = 'The host prefix is required.';
   const minMaxText =
     'The host prefix is a number between 1 and 32 for IPv4 and between 8 and 128 for IPv6.';
-  const { clusterNetworkCidr } = values;
   const netBlock = (clusterNetworkCidr || '').split('/')[1];
   if (!netBlock) {
     return Yup.number().required(requiredText).min(1, minMaxText).max(32, minMaxText);

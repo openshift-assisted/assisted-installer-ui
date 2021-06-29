@@ -1,7 +1,6 @@
 import React from 'react';
 import { sortable, expandable } from '@patternfly/react-table';
 import { Cluster, Interface, Inventory } from '../../api/types';
-import { ClusterHostsTable } from '.';
 import { HostDetail } from './HostRowDetail';
 import { HostsTableProps } from './HostsTable';
 import { stringToJSON } from '../../api/utils';
@@ -14,7 +13,9 @@ import HostsCount from './HostsCount';
 import NetworkingStatus from './NetworkingStatus';
 import { getSubnet } from '../clusterConfiguration/utils';
 import { Address4, Address6 } from 'ip-address';
-import RoleCell from './RoleCell';
+import RoleCell, { RoleCellProps } from './RoleCell';
+import { ClusterHostsTableProps } from './ClusterHostsTable';
+import { WithTestID } from '../../types';
 
 const getSelectedNic = (nics: Interface[], currentSubnet: Address4 | Address6) => {
   return nics.find((nic) => {
@@ -57,6 +58,8 @@ const hostToHostTableRow: HostToHostTableRow = (cluster) => (
   openRows,
   canEditDisks,
   onEditHostname,
+  canEditRole,
+  onEditRole,
 ) => (host) => {
   const { id, status, inventory: inventoryString = '' } = host;
   const inventory = stringToJSON<Inventory>(inventoryString) || {};
@@ -71,6 +74,9 @@ const hostToHostTableRow: HostToHostTableRow = (cluster) => (
 
   const editHostname = onEditHostname ? () => onEditHostname(host, inventory) : undefined;
 
+  const onEditHostRole: RoleCellProps['onEditRole'] = onEditRole
+    ? (role) => onEditRole(host, role)
+    : undefined;
   return [
     {
       // visible row
@@ -82,7 +88,14 @@ const hostToHostTableRow: HostToHostTableRow = (cluster) => (
           sortableValue: computedHostname || '',
         },
         {
-          title: <RoleCell host={host} readonly role={hostRole} />,
+          title: (
+            <RoleCell
+              host={host}
+              readonly={!onEditRole || !canEditRole || !canEditRole(host)}
+              onEditRole={onEditHostRole}
+              role={hostRole}
+            />
+          ),
           props: { 'data-testid': 'host-role' },
           sortableValue: hostRole,
         },
@@ -150,12 +163,19 @@ type NetworkingHostsTableProps = {
   cluster: Cluster;
   skipDisabled?: boolean;
   setDiscoveryHintModalOpen?: HostsNotShowingLinkProps['setDiscoveryHintModalOpen'];
+  TableComponent: React.FC<NetworkingHostsTableComponentProps>;
 };
 
-const NetworkingHostsTable: React.FC<NetworkingHostsTableProps> = (props) => {
+// So far we can reuse ClusterHostsTableProps even for the ClusterDeployment flow. Change it if needed.
+export type NetworkingHostsTableComponentProps = ClusterHostsTableProps & WithTestID;
+
+const NetworkingHostsTable: React.FC<NetworkingHostsTableProps> = ({
+  TableComponent,
+  ...props
+}) => {
   const columns = React.useMemo(() => getColumns(props.cluster), [props.cluster]);
   return (
-    <ClusterHostsTable
+    <TableComponent
       {...props}
       testId={'networking-host-table'}
       columns={columns}
