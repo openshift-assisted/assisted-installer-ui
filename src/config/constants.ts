@@ -129,6 +129,9 @@ export const HOST_VALIDATION_GROUP_LABELS: { [key in keyof ValidationsInfo]: str
 };
 
 export const HOST_VALIDATION_LABELS: { [key in HostValidationId]: string } = {
+  'has-default-route': 'Default route to host',
+  'sufficient-network-latency-requirement-for-role': 'Network latency',
+  'sufficient-packet-loss-requirement-for-role': 'Packet loss',
   'has-inventory': 'Hardware information',
   'has-min-cpu-cores': 'Minimum CPU cores',
   'has-min-memory': 'Minimum Memory',
@@ -147,11 +150,14 @@ export const HOST_VALIDATION_LABELS: { [key in HostValidationId]: string } = {
   'container-images-available': 'Container images availability',
   'lso-requirements-satisfied': 'LSO requirements',
   'ocs-requirements-satisfied': 'OCS requirements',
-  'sufficient-or-unknown-installation-disk-speed': 'Installation disk speed',
+  'sufficient-installation-disk-speed': 'Installation disk speed',
   'cnv-requirements-satisfied': 'CNV requirements',
 };
 
 export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string } = {
+  'has-default-route': '',
+  'sufficient-network-latency-requirement-for-role': '',
+  'sufficient-packet-loss-requirement-for-role': '',
   'has-inventory': '',
   'has-min-cpu-cores': '',
   'has-min-memory': '',
@@ -170,7 +176,7 @@ export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string 
   'container-images-available': '',
   'lso-requirements-satisfied': '',
   'ocs-requirements-satisfied': '',
-  'sufficient-or-unknown-installation-disk-speed': '',
+  'sufficient-installation-disk-speed': '',
   'cnv-requirements-satisfied': '',
 };
 

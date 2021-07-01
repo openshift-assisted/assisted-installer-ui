@@ -50,10 +50,6 @@ export interface Boot {
   currentBootMode?: string;
   pxeInterface?: string;
 }
-export interface BootFiles {
-  openshiftVersion: string;
-  fileType: 'initrd.img' | 'rootfs.img' | 'vmlinuz';
-}
 export interface Cluster {
   /**
    * Indicates the type of this object. Will be 'Cluster' if this is a complete object,
@@ -395,6 +391,14 @@ export interface ClusterHostRequirementsDetails {
    * Required installation disk speed in ms
    */
   installationDiskSpeedThresholdMs?: number;
+  /**
+   * Maximum network average latency (RTT) at L3 for role.
+   */
+  networkLatencyThresholdMs?: number; // double
+  /**
+   * Maximum packet loss allowed at L3 for role.
+   */
+  packetLossPercentage?: number; // double
 }
 export type ClusterHostRequirementsList = ClusterHostRequirements[];
 export type ClusterList = Cluster[];
@@ -797,30 +801,6 @@ export interface Event {
   props?: string;
 }
 export type EventList = Event[];
-export interface FioPerfCheckRequest {
-  /**
-   * --filename argument for fio (expects a file or a block device path).
-   */
-  path: string;
-  /**
-   * The maximal fdatasync duration in ms that is considered acceptable.
-   */
-  durationThresholdMs: number;
-  /**
-   * Exit code to return in case of an error.
-   */
-  exitCode: number;
-}
-export interface FioPerfCheckResponse {
-  /**
-   * The 99th percentile of fdatasync durations in milliseconds.
-   */
-  ioSyncDuration?: number;
-  /**
-   * The device path.
-   */
-  path?: string;
-}
 export type FreeAddressesList = string /* ipv4 */[];
 export type FreeAddressesRequest = string /* ^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$ */[];
 export interface FreeNetworkAddresses {
@@ -1136,7 +1116,8 @@ export type HostRoleUpdateParams = 'auto-assign' | 'master' | 'worker';
 export type HostStage =
   | 'Starting installation'
   | 'Waiting for control plane'
-  | 'Start waiting for control plane'
+  | 'Waiting for bootkube'
+  | 'Waiting for controller'
   | 'Installing'
   | 'Writing image to disk'
   | 'Rebooting'
@@ -1194,8 +1175,11 @@ export type HostValidationId =
   | 'container-images-available'
   | 'lso-requirements-satisfied'
   | 'ocs-requirements-satisfied'
-  | 'sufficient-or-unknown-installation-disk-speed'
-  | 'cnv-requirements-satisfied';
+  | 'sufficient-installation-disk-speed'
+  | 'cnv-requirements-satisfied'
+  | 'sufficient-network-latency-requirement-for-role'
+  | 'sufficient-packet-loss-requirement-for-role'
+  | 'has-default-route';
 export interface ImageCreateParams {
   /**
    * SSH public key for debugging the installation.
@@ -1272,6 +1256,7 @@ export interface Inventory {
   cpu?: Cpu;
   timestamp?: number;
   gpus?: Gpu[];
+  routes?: Route[];
 }
 export interface IoPerf {
   /**
@@ -1415,6 +1400,10 @@ export interface OpenshiftVersion {
    */
   rhcosImage: string;
   /**
+   * The RHCOS rootfs url.
+   */
+  rhcosRootfs: string;
+  /**
    * Build ID of the RHCOS image.
    */
   rhcosVersion: string;
@@ -1517,6 +1506,24 @@ export interface PreflightHardwareRequirements {
 export interface Presigned {
   url: string;
 }
+export interface Route {
+  /**
+   * Interface to which packets for this route will be sent
+   */
+  interface?: string;
+  /**
+   * Gateway address where the packets are sent
+   */
+  gateway?: string;
+  /**
+   * The destination network or destination host
+   */
+  destination?: string;
+  /**
+   * Defines whether this is an IPv4 (4) or IPv6 route (6)
+   */
+  family?: number; // int32
+}
 export type SourceState =
   | 'synced'
   | 'combined'
@@ -1547,7 +1554,6 @@ export type StepType =
   | 'dhcp-lease-allocate'
   | 'api-vip-connectivity-check'
   | 'ntp-synchronizer'
-  | 'fio-perf-check'
   | 'installation-disk-speed-check'
   | 'container-image-availability'
   | 'domain-resolution';
@@ -1594,6 +1600,10 @@ export interface VersionedHostRequirements {
    * Worker node requirements
    */
   worker?: ClusterHostRequirementsDetails;
+  /**
+   * Single node OpenShift node requirements
+   */
+  sno?: ClusterHostRequirementsDetails;
 }
 export interface Versions {
   [name: string]: string;
