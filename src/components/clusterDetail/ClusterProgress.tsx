@@ -48,8 +48,11 @@ const getProgressVariant = (status: Cluster['status']) => {
 const getMeasureLocation = (status: Cluster['status']) =>
   status === 'installed' ? ProgressMeasureLocation.none : ProgressMeasureLocation.top;
 
-const getProgressLabel = (cluster: Cluster, progressPercent: number): string => {
-  const { status, statusInfo } = cluster;
+const getProgressLabel = (
+  status: Cluster['status'],
+  statusInfo: Cluster['statusInfo'],
+  progressPercent: number,
+): string => {
   if (status === 'preparing-for-installation') {
     return statusInfo;
   }
@@ -77,20 +80,23 @@ const getOperatorsProgressPercent = (monitoredOperators: MonitoredOperatorsList)
       (operator.operatorType === 'olm' && ['available', 'failed'].includes(operator.status || '')),
   );
 
-  return (completeOperators.length / monitoredOperators.length) * 100;
+  return monitoredOperators.length
+    ? (completeOperators.length / monitoredOperators.length) * 100
+    : 0;
 };
 
-const getInstallationStatus = (cluster: Cluster) => {
-  const { status } = cluster;
-
+const getInstallationStatus = (
+  status: Cluster['status'],
+  installCompletedAt: Cluster['installCompletedAt'],
+) => {
   if (status === 'installed') {
-    return `Installed on ${getHumanizedDateTime(cluster.installCompletedAt)}`;
+    return `Installed on ${getHumanizedDateTime(installCompletedAt)}`;
   }
   if (status === 'error') {
-    return `Failed on ${getHumanizedDateTime(cluster.installCompletedAt)}`;
+    return `Failed on ${getHumanizedDateTime(installCompletedAt)}`;
   }
   if (status === 'cancelled') {
-    return `Cancelled on ${getHumanizedDateTime(cluster.installCompletedAt)}`;
+    return `Cancelled on ${getHumanizedDateTime(installCompletedAt)}`;
   }
 
   return CLUSTER_STATUS_LABELS[status] || status;
@@ -226,7 +232,7 @@ const ClusterProgress = ({ cluster, minimizedView = false }: ClusterProgressProp
     [monitoredOperators],
   );
   const progressValue = Math.round(hostsProgressPercent * 0.75 + operatorsProgressPercent * 0.25);
-  const label = getProgressLabel(cluster, progressValue);
+  const label = getProgressLabel(cluster.status, cluster.statusInfo, progressValue);
   const enabledHosts = getEnabledHosts(cluster.hosts);
   const isWorkersPresent = enabledHosts && enabledHosts.some((host) => host.role === 'worker');
   const olmOperators = getOlmOperators(monitoredOperators);
@@ -245,7 +251,7 @@ const ClusterProgress = ({ cluster, minimizedView = false }: ClusterProgressProp
           <FlexItem>
             <DetailItem
               title="Status"
-              value={getInstallationStatus(cluster)}
+              value={getInstallationStatus(cluster.status, cluster.installCompletedAt)}
               idPrefix="cluster-progress-status"
             />
           </FlexItem>
