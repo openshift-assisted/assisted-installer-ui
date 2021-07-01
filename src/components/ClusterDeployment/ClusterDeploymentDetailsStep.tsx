@@ -79,7 +79,7 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
             submitForm();
           }
           // TODO(mlibra): check behaviour if submit fails, no transition in that case
-          setCurrentStepId('todo'); // TODO(mlibra): set next step ID here
+          setCurrentStepId('networking'); // TODO(mlibra): fix the next step to Hosts once ready
         };
 
         const footer = (

@@ -73,7 +73,7 @@ const HostsTableEmptyState: React.FC<HostsTableEmptyStateProps> = ({
   />
 );
 
-type ClusterHostsTableProps = {
+export type ClusterHostsTableProps = {
   cluster: Cluster;
   columns?: (string | ICell)[];
   hostToHostTableRow?: HostsTableProps['hostToHostTableRow'];

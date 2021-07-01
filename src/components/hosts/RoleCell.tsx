@@ -2,7 +2,7 @@ import React from 'react';
 import { RoleDropdown } from './RoleDropdown';
 import { Host } from '../../api/types';
 
-type RoleCellProps = {
+export type RoleCellProps = {
   host: Host;
   role: string;
   readonly?: boolean;

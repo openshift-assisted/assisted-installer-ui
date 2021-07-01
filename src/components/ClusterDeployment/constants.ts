@@ -10,5 +10,5 @@ export const wizardStepNames: {
   [key in ClusterDeploymentWizardStepsType]: string;
 } = {
   'cluster-details': 'Cluster Details',
-  todo: 'Next Step Name',
+  networking: 'Installation details',
 };

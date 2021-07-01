@@ -2,34 +2,32 @@ import React, { useEffect } from 'react';
 import { useFormikContext } from 'formik';
 import { Checkbox } from '@patternfly/react-core';
 import AdvancedNetworkFields from './AdvancedNetworkFields';
-import { HostSubnets, NetworkConfigurationValues } from '../../types/clusters';
-import { Cluster } from '../../api';
+import { NetworkConfigurationValues } from '../../types/clusters';
 import { isSingleNodeCluster } from '../clusters/utils';
 import { isAdvConf } from './utils';
-import { useDefaultConfiguration } from './ClusterDefaultConfigurationContext';
 import {
   AvailableSubnetsControl,
   UserManagedNetworkingTextContent,
   VirtualIPControlGroup,
+  VirtualIPControlGroupProps,
 } from '../clusterWizard/networkingSteps';
 import { RenderIf } from '../ui/RenderIf';
 import { NO_SUBNET_SET } from '../../config';
+import { ClusterDefaultConfig } from '../../api';
 
-type NetworkConfigurationProps = {
-  cluster: Cluster;
-  hostSubnets: HostSubnets;
+export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
+  defaultNetworkSettings: ClusterDefaultConfig;
 };
 
-const NetworkConfiguration = ({ cluster, hostSubnets }: NetworkConfigurationProps) => {
+const NetworkConfiguration = ({
+  cluster,
+  hostSubnets,
+  isVipDhcpAllocationDisabled,
+  defaultNetworkSettings,
+}: NetworkConfigurationProps) => {
   const { setFieldValue, values, touched, validateField } = useFormikContext<
     NetworkConfigurationValues
   >();
-  const defaultNetworkSettings = useDefaultConfiguration([
-    'clusterNetworkCidr',
-    'serviceNetworkCidr',
-    'clusterNetworkHostPrefix',
-  ]);
-
   const [isAdvanced, setAdvanced] = React.useState(isAdvConf(cluster, defaultNetworkSettings));
 
   const toggleAdvConfiguration = (checked: boolean) => {
@@ -93,7 +91,11 @@ const NetworkConfiguration = ({ cluster, hostSubnets }: NetworkConfigurationProp
       </RenderIf>
 
       <RenderIf condition={!isUserManagedNetworking}>
-        <VirtualIPControlGroup cluster={cluster} hostSubnets={hostSubnets} />
+        <VirtualIPControlGroup
+          cluster={cluster}
+          hostSubnets={hostSubnets}
+          isVipDhcpAllocationDisabled={isVipDhcpAllocationDisabled}
+        />
       </RenderIf>
 
       <Checkbox

@@ -13,8 +13,6 @@ tags:
     description: Agent-driven installation
   - name: assisted-service-iso
     description: ISO that contains the Assisted Service.
-  - name: bootfiles
-    description: Non-customized files used to boot hosts.
   - name: events
     description: Events related to a cluster installation.
   - name: installer
@@ -113,6 +111,14 @@ paths:
           type: string
           format: uuid
           required: false
+        - in: query
+          name: ams_subscription_ids
+          description:
+            If non-empty, returned Clusters are filtered to those with matching subscription IDs.
+          required: false
+          type: array
+          items:
+            type: string
       responses:
         '200':
           description: Success.
@@ -476,6 +482,7 @@ paths:
               kubeconfig-noingress,
               install-config.yaml,
               discovery.ign,
+              custom_manifests.yaml,
             ]
           required: true
         - in: header
@@ -2667,6 +2674,7 @@ paths:
         - events
       security:
         - userAuth: [admin, read-only-admin, user]
+        - urlAuth: []
       description: Lists events for a cluster.
       operationId: ListEvents
       parameters:
@@ -3019,6 +3027,13 @@ paths:
         - userAuth: [admin, read-only-admin, user]
       description: Get minimum host requirements.
       operationId: GetHostRequirements
+      parameters:
+        - in: header
+          name: single_node
+          description: Get hw requirements for single node.
+          type: boolean
+          required: false
+          default: false
       responses:
         '200':
           description: Success.
@@ -3064,50 +3079,6 @@ paths:
           description: Error.
           schema:
             $ref: '#/definitions/error'
-        '401':
-          description: Unauthorized.
-          schema:
-            $ref: '#/definitions/infra_error'
-        '403':
-          description: Forbidden.
-          schema:
-            $ref: '#/definitions/infra_error'
-        '500':
-          description: Error.
-          schema:
-            $ref: '#/definitions/error'
-
-  /boot-files:
-    get:
-      tags:
-        - bootfiles
-      security: []
-      description: Downloads files used for booting servers.
-      operationId: DownloadBootFiles
-      produces:
-        - application/octet-stream
-      parameters:
-        - in: query
-          name: openshift_version
-          description: The corresponding OpenShift version for the boot file.
-          type: string
-          required: true
-        - in: query
-          name: file_type
-          description: The file type to download.
-          type: string
-          enum: [initrd.img, rootfs.img, vmlinuz]
-          required: true
-      responses:
-        '200':
-          description: Success.
-          schema:
-            type: file
-        '307':
-          description: Redirect.
-          headers:
-            Location:
-              type: string
         '401':
           description: Unauthorized.
           schema:
@@ -3438,6 +3409,16 @@ definitions:
       installation_disk_speed_threshold_ms:
         type: integer
         description: Required installation disk speed in ms
+      network_latency_threshold_ms:
+        type: number
+        format: double
+        x-nullable: true
+        description: Maximum network average latency (RTT) at L3 for role.
+      packet_loss_percentage:
+        type: number
+        format: double
+        x-nullable: true
+        description: Maximum packet loss allowed at L3 for role.
 
   versioned-host-requirements:
     type: object
@@ -3453,6 +3434,10 @@ definitions:
         x-go-name: WorkerRequirements
         $ref: '#/definitions/cluster-host-requirements-details'
         description: Worker node requirements
+      sno:
+        x-go-name: SNORequirements
+        $ref: '#/definitions/cluster-host-requirements-details'
+        description: Single node OpenShift node requirements
 
   host-requirements-role:
     type: object
@@ -3786,7 +3771,6 @@ definitions:
       - dhcp-lease-allocate
       - api-vip-connectivity-check
       - ntp-synchronizer
-      - fio-perf-check
       - installation-disk-speed-check
       - container-image-availability
       - domain-resolution
@@ -4622,7 +4606,8 @@ definitions:
     enum:
       - Starting installation
       - Waiting for control plane
-      - Start waiting for control plane
+      - Waiting for bootkube
+      - Waiting for controller
       - Installing
       - Writing image to disk
       - Rebooting
@@ -4861,6 +4846,23 @@ definitions:
         type: string
         description: Device address (for example "0000:00:02.0")
 
+  route:
+    type: object
+    properties:
+      interface:
+        type: string
+        description: Interface to which packets for this route will be sent
+      gateway:
+        type: string
+        description: Gateway address where the packets are sent
+      destination:
+        type: string
+        description: The destination network or destination host
+      family:
+        type: integer
+        format: int32
+        description: Defines whether this is an IPv4 (4) or IPv6 route (6)
+
   inventory:
     type: object
     properties:
@@ -4892,6 +4894,10 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/gpu'
+      routes:
+        type: array
+        items:
+          $ref: '#/definitions/route'
 
   free_network_addresses:
     type: object
@@ -4934,33 +4940,6 @@ definitions:
       is_success:
         type: boolean
         description: API VIP connectivity check result.
-
-  fio_perf_check_request:
-    type: object
-    required:
-      - path
-      - duration_threshold_ms
-      - exit_code
-    properties:
-      path:
-        type: string
-        description: --filename argument for fio (expects a file or a block device path).
-      duration_threshold_ms:
-        type: integer
-        description: The maximal fdatasync duration in ms that is considered acceptable.
-      exit_code:
-        type: integer
-        description: Exit code to return in case of an error.
-
-  fio_perf_check_response:
-    type: object
-    properties:
-      io_sync_duration:
-        type: integer
-        description: The 99th percentile of fdatasync durations in milliseconds.
-      path:
-        type: string
-        description: The device path.
 
   disk_speed_check_request:
     type: object
@@ -5109,8 +5088,11 @@ definitions:
       - 'container-images-available'
       - 'lso-requirements-satisfied'
       - 'ocs-requirements-satisfied'
-      - 'sufficient-or-unknown-installation-disk-speed'
+      - 'sufficient-installation-disk-speed'
       - 'cnv-requirements-satisfied'
+      - 'sufficient-network-latency-requirement-for-role'
+      - 'sufficient-packet-loss-requirement-for-role'
+      - 'has-default-route'
 
   dhcp_allocation_request:
     type: object
@@ -5350,6 +5332,7 @@ definitions:
       - release_image
       - release_version
       - rhcos_image
+      - rhcos_rootfs
       - rhcos_version
       - support_level
     properties:
@@ -5365,6 +5348,9 @@ definitions:
       rhcos_image:
         type: string
         description: The base RHCOS image used for the discovery iso.
+      rhcos_rootfs:
+        type: string
+        description: The RHCOS rootfs url.
       rhcos_version:
         type: string
         description: Build ID of the RHCOS image.

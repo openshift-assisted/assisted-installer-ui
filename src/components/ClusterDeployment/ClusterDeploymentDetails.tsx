@@ -16,6 +16,7 @@ const ClusterDeploymentDetails: React.FC<{
     );
   };
 
+  const isEditFlow = !!cluster;
   return (
     <Grid hasGutter>
       <GridItem>
@@ -30,7 +31,9 @@ const ClusterDeploymentDetails: React.FC<{
           defaultPullSecret={defaultPullSecret}
           canEditPullSecret={!cluster || !cluster.pullSecretSet}
           isSNOGroupDisabled={true}
-          forceOpenshiftVersion={undefined}
+          isNameDisabled={isEditFlow}
+          isBaseDnsDomainDisabled={isEditFlow}
+          forceOpenshiftVersion={cluster?.openshiftVersion}
         />
       </GridItem>
     </Grid>

@@ -5,7 +5,7 @@ import SingleNodeCheckbox from '../ui/formik/SingleNodeCheckbox';
 import { ClusterDetailsValues } from '../clusterWizard/types';
 
 type SNOControlGroupProps = {
-  isDisabled: boolean;
+  isDisabled?: boolean;
   versions: OpenshiftVersionOptionType[];
   highAvailabilityMode: ClusterDetailsValues['highAvailabilityMode'];
 };

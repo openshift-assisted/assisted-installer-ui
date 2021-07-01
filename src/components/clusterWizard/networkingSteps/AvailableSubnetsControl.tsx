@@ -33,7 +33,7 @@ const SubnetHelperText = ({ matchingSubnet, hosts }: SubnetHelperTextProps) => {
                 hostA.requestedHostname?.localeCompare(hostB.requestedHostname || '') || 0,
             )
             .map((host) => (
-              <li key={host.id}>{host.requestedHostname}</li>
+              <li key={host.id}>{host.requestedHostname || host.id}</li>
             ))}
         </ul>
       }
