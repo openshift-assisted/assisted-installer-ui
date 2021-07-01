@@ -111,7 +111,7 @@ const EditHostForm: React.FC<EditHostFormProps> = ({
                 {hostname || ''}
               </StaticTextField>
               <InputField
-                label="Requested hostname"
+                label="Requested Hostname"
                 name="hostname"
                 ref={hostnameInputRef}
                 helperText="This name will replace the original discovered hostname after installation."
