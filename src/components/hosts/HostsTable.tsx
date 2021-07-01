@@ -16,6 +16,7 @@ import {
   RowWrapper,
 } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
+import classnames from 'classnames';
 import { EmptyState as DefaultEmptyState } from '../ui/uiState';
 import { getColSpanRow, rowSorter, getDateTimeCell } from '../ui/table/utils';
 import { Host, Inventory } from '../../api/types';
@@ -204,6 +205,7 @@ export type HostsTableProps = {
   canDelete?: (host: Host) => boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onEditRole?: (host: Host, role?: string) => Promise<any>;
+  className?: string;
 };
 
 const HostsTable: React.FC<HostsTableProps & WithTestID> = ({
@@ -231,6 +233,7 @@ const HostsTable: React.FC<HostsTableProps & WithTestID> = ({
   canDelete,
   onEditRole,
   EmptyState = DefaultEmptyState,
+  className,
 }) => {
   const [openRows, setOpenRows] = React.useState<OpenRows>({});
   const [sortBy, setSortBy] = React.useState<ISortBy>({
@@ -392,7 +395,7 @@ const HostsTable: React.FC<HostsTableProps & WithTestID> = ({
       variant={TableVariant.compact}
       aria-label="Hosts table"
       actionResolver={actionResolver}
-      className="hosts-table"
+      className={classnames(className, 'hosts-table')}
       sortBy={sortBy}
       onSort={onSort}
       rowWrapper={HostsTableRowWrapper}
