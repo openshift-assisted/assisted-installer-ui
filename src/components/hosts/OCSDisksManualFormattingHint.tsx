@@ -9,15 +9,14 @@ import {
   TextContent,
   TextVariants,
 } from '@patternfly/react-core';
-import { InfoCircleIcon } from '@patternfly/react-icons';
+import { ExclamationTriangleIcon } from '@patternfly/react-icons';
+import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
 
 const Hint = () => (
   <TextContent>
     <Text component={TextVariants.p}>
-      All non-installation disks are going to be used for local storage. <br />
-      The list of the disks is available under each host row in the table below.
-      <br />
-      Please format the disks before installing.
+      All non-installation disks will be used for local storage. To view available disks, expand
+      each host row in the table
     </Text>
   </TextContent>
 );
@@ -28,8 +27,8 @@ const OCSDisksManualFormattingHint = () => {
     <Text component="p">
       <Popover bodyContent={<Hint />} minWidth="30rem">
         <Button variant={ButtonVariant.link} isInline>
-          <InfoCircleIcon size="sm" />
-          &nbsp;Ensure that storage disks are formatted before installation
+          <ExclamationTriangleIcon className="status-icon" color={warningColor.value} size="sm" />
+          &nbsp;Format all non-installation disks
         </Button>
       </Popover>
     </Text>
