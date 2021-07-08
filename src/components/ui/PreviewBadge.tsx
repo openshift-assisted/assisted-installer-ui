@@ -27,7 +27,7 @@ const PreviewBadge: React.FC<
   }
 
   return (
-    <Label variant="outline" className={clsName} color={color}>
+    <Label className={clsName} color={color}>
       {text}
     </Label>
   );
