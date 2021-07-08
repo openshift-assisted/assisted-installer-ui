@@ -62,14 +62,14 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
             clusterId={cluster.id}
             id={getClusterDetailId('button-download-kubeconfig')}
           />
-          <RenderIf condition={Boolean(inactiveDeletionDays)}>
+          <RenderIf condition={typeof inactiveDeletionHours === 'number'}>
             <Alert
               variant="info"
               isInline
               title={
                 'Download and save your kubeconfig file in a safe place. This file will be ' +
-                "automatically deleted from Assisted Installer's service in " +
-                `${inactiveDeletionDays} days.`
+                "automatically deleted from Assisted Installer's service " +
+                `${inactiveDeletionDays > 0 ? `in ${inactiveDeletionDays} days.` : 'today'}`
               }
             />
           </RenderIf>
