@@ -33,11 +33,8 @@ const DiscoveryImageTypeControlGroup = () => (
         value={'full-iso'}
         label={
           <DiscoveryImageTypeControlGroupLabel
-            text={'Full ISO'}
-            popoverContent={
-              'Use when you want to boot from a USB drive or use PXE booting. ' +
-              'All data is present in a full ISO and will be downloaded on the first boot.'
-            }
+            text={'USB drive'}
+            popoverContent={'The generated discovery ISO will contain the full image file'}
           />
         }
       />
@@ -50,12 +47,8 @@ const DiscoveryImageTypeControlGroup = () => (
         value={'minimal-iso'}
         label={
           <DiscoveryImageTypeControlGroupLabel
-            text={'Minimal ISO'}
-            popoverContent={
-              'Use when you plan to boot your host by attaching the ISO with virtual media. ' +
-              'Minimal ISO contains a smaller image size, and only part of the image will ' +
-              'download on the first boot.'
-            }
+            text={'Virtual media'}
+            popoverContent={'The generated discovery ISO will contain the minimal image file'}
           />
         }
       />
