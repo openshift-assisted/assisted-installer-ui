@@ -1363,6 +1363,11 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
+"@openshift-console/dynamic-plugin-sdk@0.0.0-alpha12":
+  version "0.0.0-alpha12"
+  resolved "https://registry.yarnpkg.com/@openshift-console/dynamic-plugin-sdk/-/dynamic-plugin-sdk-0.0.0-alpha12.tgz#3afe6d8b9ed62873006fc08b26bfd779c2590223"
+  integrity sha512-KtTYzMpJq/rbg8SC1iuKG1x+VPCqMsXt9MFh2K4ihhunnJee82bJVlwBole1fLmGN8j57YY/OfnE+jrBOVBGXQ==
+
 "@rollup/plugin-alias@^3.0.1":
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/@rollup/plugin-alias/-/plugin-alias-3.1.1.tgz#bb96cf37fefeb0a953a6566c284855c7d1cd290c"

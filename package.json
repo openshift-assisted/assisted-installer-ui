@@ -1,6 +1,6 @@
 {
   "name": "openshift-assisted-ui-lib",
-  "version": "1.5.26",
+  "version": "1.5.27-1",
   "description": "React component library for the Bare Metal Installer",
   "license": "Apache-2.0",
   "repository": "openshift-assisted/assisted-ui-lib",
@@ -53,6 +53,7 @@
     "yup": "^0.28.3"
   },
   "devDependencies": {
+    "@openshift-console/dynamic-plugin-sdk": "0.0.0-alpha12",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
