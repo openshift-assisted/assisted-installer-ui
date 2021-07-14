@@ -1,7 +1,7 @@
 import { K8sResourceCommon } from 'console-sdk-ai-lib';
 import { Host, HostRole, HostStage, Inventory } from '../../../common';
 import { ValidationsInfo } from '../../../common/types/hosts';
-import { StatusCondition } from './common';
+import { StatusCondition } from './shared';
 
 export type AgentStatusConditionType =
   | 'SpecSynced'
