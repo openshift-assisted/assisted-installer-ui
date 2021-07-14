@@ -89,12 +89,12 @@ export const VirtualIPControlGroup = ({
 }: VirtualIPControlGroupProps) => {
   const { values } = useFormikContext<NetworkConfigurationValues>();
 
-  const apiVipHelperText = `Virtual IP used to reach the OpenShift cluster API. ${getVipHelperSuffix(
+  const apiVipHelperText = `Provide an endpoint for users, both human and machine, to interact with and configure the platform. If needed, contact your IT manager for more information. ${getVipHelperSuffix(
     cluster.apiVip,
     cluster.vipDhcpAllocation,
     values.vipDhcpAllocation,
   )}`;
-  const ingressVipHelperText = `Virtual IP used for cluster ingress traffic. ${getVipHelperSuffix(
+  const ingressVipHelperText = `Provide an endpoint for application traffic flowing in from outside the cluster. If needed, contact your IT manager for more information. ${getVipHelperSuffix(
     cluster.ingressVip,
     cluster.vipDhcpAllocation,
     values.vipDhcpAllocation,
