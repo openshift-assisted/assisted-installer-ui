@@ -16,25 +16,39 @@ import {
   CNVHostRequirementsContent,
 } from '../hosts/HostRequirementsContent';
 import ClusterWizardStepHeader from '../clusterWizard/ClusterWizardStepHeader';
+import { HelpIcon } from '@patternfly/react-icons';
 
 const OCSLabel: React.FC = () => (
   <>
     Install OpenShift Container Storage
     {/* TODO(mlibra): List of OCS requierements is stabilizing now - https://issues.redhat.com/browse/MGMT-4220 )
-    <PopoverIcon headerContent="Additional Requirements" bodyContent={<>FOO BAR </>} />*/}
+    <PopoverIcon
+      component={'a'}
+      variant={'plain'}
+      IconComponent={HelpIcon}
+      hasAutoWidth
+      headerContent="Additional Requirements"
+      bodyContent={<>FOO BAR </>}/>
+    */}
   </>
 );
 
-const CNVLabel: React.FC<{ clusterId: Cluster['id'] }> = ({ clusterId }) => {
+const CNVLabel: React.FC<{ clusterId: Cluster['id']; isSingleNode?: boolean }> = ({
+  clusterId,
+  isSingleNode,
+}) => {
   return (
     <>
       Install OpenShift Virtualization{' '}
       <PopoverIcon
-        headerContent="Additional Requirements"
-        className="margin-left-md"
+        component={'a'}
+        variant={'plain'}
+        IconComponent={HelpIcon}
         hasAutoWidth
-        maxWidth="50rem"
-        bodyContent={<CNVHostRequirementsContent clusterId={clusterId} />}
+        headerContent="Additional Requirements"
+        bodyContent={
+          <CNVHostRequirementsContent clusterId={clusterId} isSingleNode={isSingleNode} />
+        }
       />
     </>
   );
@@ -67,7 +81,7 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         {isContainerNativeVirtualizationEnabled && (
           <CheckboxField
             name="useContainerNativeVirtualization"
-            label={<CNVLabel clusterId={cluster.id} />}
+            label={<CNVLabel clusterId={cluster.id} isSingleNode={isSNO} />}
             helperText="Run virtual machines along containers."
           />
         )}
