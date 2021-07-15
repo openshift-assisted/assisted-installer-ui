@@ -61,7 +61,7 @@ const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> = ({
     <Form id="wizard-cluster-details__form">
       <InputField
         ref={nameInputRef}
-        label="Cluster Name"
+        label="Cluster name"
         name="name"
         isRequired
         isDisabled={isNameDisabled}
@@ -76,7 +76,7 @@ const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> = ({
       )}
       {useRedHatDnsService ? (
         <SelectField
-          label="Base Domain"
+          label="Base domain"
           name="baseDnsDomain"
           helperText={<BaseDnsHelperText name={name} baseDnsDomain={baseDnsDomain} />}
           options={managedDomains.map((d) => ({
@@ -87,7 +87,7 @@ const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> = ({
         />
       ) : (
         <InputField
-          label="Base Domain"
+          label="Base domain"
           name="baseDnsDomain"
           helperText={<BaseDnsHelperText name={name} baseDnsDomain={baseDnsDomain} />}
           placeholder="example.com"

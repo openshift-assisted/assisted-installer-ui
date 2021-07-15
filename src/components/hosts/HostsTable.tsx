@@ -42,7 +42,7 @@ const defaultColumns = [
   { title: 'Hostname', transforms: [sortable], cellFormatters: [expandable] },
   { title: 'Role', transforms: [sortable] },
   { title: 'Status', transforms: [sortable] },
-  { title: 'Discovered At', transforms: [sortable] },
+  { title: 'Discovered at', transforms: [sortable] },
   { title: 'CPU Cores', transforms: [sortable] }, // cores per machine (sockets x cores)
   { title: 'Memory', transforms: [sortable] },
   { title: 'Disk', transforms: [sortable] },

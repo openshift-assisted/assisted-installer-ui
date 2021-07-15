@@ -81,7 +81,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
           <>
             <Grid hasGutter>
               <GridItem>
-                <ClusterWizardStepHeader cluster={cluster}>Cluster Details</ClusterWizardStepHeader>
+                <ClusterWizardStepHeader cluster={cluster}>Cluster details</ClusterWizardStepHeader>
               </GridItem>
               <GridItem span={12} lg={10} xl={9} xl2={7}>
                 <ClusterDetailsFormFields

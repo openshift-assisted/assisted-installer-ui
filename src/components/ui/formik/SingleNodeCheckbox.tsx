@@ -33,11 +33,11 @@ const SingleNodeCheckbox: React.FC<SingleNodeCheckboxProps> = ({
         {...field}
         {...props}
         id={fieldId}
-        label="I want to install single node OpenShift (SNO)"
+        label="Install single node OpenShift (SNO)"
         aria-describedby={`${fieldId}-helper`}
         description={
           <HelperText fieldId={fieldId}>
-            {'This enables you to install OpenShift using only 1 host.'}
+            SNO enables you to install OpenShift using only one host.
           </HelperText>
         }
         isChecked={value === 'None'}

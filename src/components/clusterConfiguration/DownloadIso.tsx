@@ -52,7 +52,7 @@ const DownloadIso: React.FC<DownloadISOProps> = ({
               }
             />
             <DetailItem
-              title="Command to download the ISO"
+              title="Command to download the ISO:"
               value={
                 <ClipboardCopy isReadOnly onCopy={(event) => clipboardCopyFunc(event, wgetCommand)}>
                   {wgetCommand}
@@ -68,7 +68,7 @@ const DownloadIso: React.FC<DownloadISOProps> = ({
                 each host <b>once</b> from the Discovery ISO.
               </>
             }
-          ></DetailItem>
+          />
         </TextContent>
       </ModalBoxBody>
       <ModalBoxFooter>
@@ -84,7 +84,7 @@ const DownloadIso: React.FC<DownloadISOProps> = ({
         </Button>
         {onReset && (
           <Button variant={ButtonVariant.link} onClick={onReset} data-testid="edit-iso-btn">
-            Edit ISO Configuration
+            Edit ISO configuration
           </Button>
         )}
       </ModalBoxFooter>

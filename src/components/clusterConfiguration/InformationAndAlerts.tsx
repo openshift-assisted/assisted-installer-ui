@@ -14,7 +14,7 @@ const InformationAndAlerts: React.FC<{
   setDiscoveryHintModalOpen: HostsNotShowingLinkProps['setDiscoveryHintModalOpen'];
 }> = ({ cluster, HostRequirementsContent, setDiscoveryHintModalOpen }) => (
   <>
-    <Text component="h3">Information &amp; Warnings</Text>
+    <Text component="h3">Information and warnings</Text>
     <Text component="p">
       <HostRequirementsLink clusterId={cluster.id} ContentComponent={HostRequirementsContent} />
       <HostsNotShowingLink setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />

@@ -100,7 +100,7 @@ const NetworkConfiguration = ({
 
       <Checkbox
         id="useAdvancedNetworking"
-        label="Use Advanced Networking"
+        label="Use advanced networking"
         description="Configure advanced networking properties (e.g. CIDR ranges)."
         isChecked={isAdvanced}
         onChange={toggleAdvConfiguration}
