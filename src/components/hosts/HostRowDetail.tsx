@@ -211,7 +211,7 @@ export const HostDetail: React.FC<HostDetailProps> = ({
 
   return (
     <Grid hasGutter>
-      <SectionTitle testId={'host-details-section'} title="Host Details" />
+      <SectionTitle testId={'host-details-section'} title="Host details" />
       <SectionColumn>
         <DetailItem testId={'uuid'} title="UUID" value={id} />
         <DetailItem

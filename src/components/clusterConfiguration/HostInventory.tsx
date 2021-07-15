@@ -49,7 +49,7 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   return (
     <Stack hasGutter>
       <StackItem>
-        <ClusterWizardStepHeader cluster={cluster}>Host Discovery</ClusterWizardStepHeader>
+        <ClusterWizardStepHeader cluster={cluster}>Host discovery</ClusterWizardStepHeader>
       </StackItem>
       <StackItem>
         <TextContent>
