@@ -6,7 +6,7 @@ import {
 } from '@patternfly/react-tokens';
 import { PendingIcon, CheckCircleIcon, ExclamationTriangleIcon } from '@patternfly/react-icons';
 
-import { Host } from '../../api';
+import { Cluster, Host } from '../../api';
 import { Validation, ValidationsInfo } from '../../types/hosts';
 import {
   HOST_VALIDATION_FAILURE_HINTS,
@@ -18,13 +18,18 @@ import Hostname from './Hostname';
 
 import './HostValidationGroups.css';
 
-export type ValidationInfoActionProps = {
-  onEditHostname?: () => void;
+export type AdditionNtpSourcePropsType = {
+  /*
   onAdditionalNtpSource?: (
     additionalNtpSource: string,
     onError: (message: string) => void,
   ) => Promise<void>; // TODO(mlibra): change to optional once tested
+  */
   AdditionalNTPSourcesDialogToggleComponent?: React.FC;
+};
+
+export type ValidationInfoActionProps = AdditionNtpSourcePropsType & {
+  onEditHostname?: () => void;
   host: Host;
 };
 

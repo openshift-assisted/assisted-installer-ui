@@ -61,10 +61,6 @@ const ClusterDeploymentHostsTable: React.FC<ClusterDeploymentHostsTableProps> = 
         hostToHostTableRow={hostToHostTableRow}
         hosts={cluster.hosts}
         EmptyState={HostsTableEmptyState}
-        onAdditionalNtpSource={async () =>
-          console.info('TODO: ClusterDeploymentHostsTable, onAdditionalNtpSource')
-        }
-        AdditionalNTPSourcesDialogToggleComponent={() => null}
       />
     </>
   );

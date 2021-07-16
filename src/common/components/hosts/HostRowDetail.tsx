@@ -95,6 +95,8 @@ const DisksTable: React.FC<DisksTableProps & WithTestID> = ({
   testId,
   onDiskRole,
 }) => {
+  console.log('---- DisksTable: start');
+
   const isEditable = !!canEditDisks?.(host);
   const rows: IRow[] = disks
     .sort((diskA, diskB) => diskA.name?.localeCompare(diskB.name || '') || 0)
@@ -127,6 +129,7 @@ const DisksTable: React.FC<DisksTableProps & WithTestID> = ({
       key: disk.path,
     }));
 
+  console.log('---- DisksTable: before return');
   return (
     <Table
       data-testid={testId}

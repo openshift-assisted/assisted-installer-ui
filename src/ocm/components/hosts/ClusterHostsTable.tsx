@@ -50,8 +50,10 @@ import {
   resetClusterHost,
 } from '../../api';
 import { downloadHostInstallationLogs, onAdditionalNtpSourceAction } from './utils';
-import { ValidationInfoActionProps } from '../../../common/components/hosts/HostValidationGroups';
-import { AdditionalNTPSourcesDialog } from '../../../common/components/hosts/AdditionalNTPSourcesDialog';
+import {
+  AdditionalNTPSourcesDialog,
+  AdditionalNTPSourcesFormProps,
+} from '../../../common/components/hosts/AdditionalNTPSourcesDialog';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
 import { onFetchEvents } from '../fetching/fetchEvents';
 
@@ -188,7 +190,7 @@ const ClusterHostsTable: React.FC<ClusterHostsTableProps & WithTestID> = ({
     }
   };
 
-  const onAdditionalNtpSource: ValidationInfoActionProps['onAdditionalNtpSource'] = async (
+  const onAdditionalNtpSource: AdditionalNTPSourcesFormProps['onAdditionalNtpSource'] = async (
     ...args
   ) => await onAdditionalNtpSourceAction(dispatch, cluster.id, ...args);
 
@@ -301,7 +303,7 @@ const ClusterHostsTable: React.FC<ClusterHostsTableProps & WithTestID> = ({
         canDownloadHostLogs={canDownloadHostLogs}
         onEditRole={onEditRole}
         onDiskRole={onDiskRole}
-        onAdditionalNtpSource={onAdditionalNtpSource}
+        // onAdditionalNtpSource={onAdditionalNtpSource}
         AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
       />
       <EventsModal

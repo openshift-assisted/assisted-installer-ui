@@ -4,7 +4,14 @@ import { NetworkConfigurationValues } from '../../../common/types/clusters';
 
 export type ClusterDeploymentHostsTablePropsActions = Pick<
   HostsTableProps,
-  'onEditHost' | 'canEditHost' | 'onEditRole' | 'canEditRole' | 'onDeleteHost' | 'canDelete'
+  | 'onEditHost'
+  | 'canEditHost'
+  | 'onEditRole'
+  | 'canEditRole'
+  | 'onDeleteHost'
+  | 'canDelete'
+  //  | 'onAdditionalNtpSource'
+  | 'AdditionalNTPSourcesDialogToggleComponent'
 
   /* TODO(mlibra): List other actions
       onHostEnable: async (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {

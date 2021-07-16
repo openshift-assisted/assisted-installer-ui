@@ -8,6 +8,7 @@ import ClusterDeploymentHostsTable from './ClusterDeploymentHostsTable';
 import { ClusterDeploymentHostsTablePropsActions } from './types';
 import NetworkingStatus from './NetworkingStatus';
 import { HostNetworkingStatusComponentProps } from '../../../common/components/hosts/NetworkingHostsTable';
+import { AdditionalNTPSourcesDialogToggle } from './AdditionalNTPSourcesDialogToggle';
 
 const ClusterDeploymentNetworking: React.FC<
   {
@@ -18,9 +19,13 @@ const ClusterDeploymentNetworking: React.FC<
 > = ({ cluster, hostSubnets, defaultNetworkSettings, ...rest }) => {
   const isVipDhcpAllocationDisabled = true; // So far not supported
 
-  // TODO(mlibra): We refactor to avoid that
-  const CimNetworkingStatus: React.FC<HostNetworkingStatusComponentProps> = (props) => (
-    <NetworkingStatus cluster={cluster} {...props} />
+  const CimNetworkingStatus: React.FC<HostNetworkingStatusComponentProps> = React.useMemo(
+    () => (props) => <NetworkingStatus cluster={cluster} {...props} />,
+    [cluster],
+  );
+  const AdditionalNTPSourcesDialogToggleWithCluster: React.FC = React.useMemo(
+    () => () => <AdditionalNTPSourcesDialogToggle cluster={cluster} />,
+    [cluster],
   );
 
   return (
@@ -45,6 +50,7 @@ const ClusterDeploymentNetworking: React.FC<
           cluster={cluster}
           TableComponent={ClusterDeploymentHostsTable}
           HostNetworkingStatusComponent={CimNetworkingStatus}
+          AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleWithCluster}
           {...rest}
         />
       </GridItem>

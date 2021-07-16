@@ -19,12 +19,14 @@ import {
   trimCommaSeparatedList,
   ntpSourceValidationSchema,
 } from '../../../common';
-import { ValidationInfoActionProps } from './HostValidationGroups';
 
-type AdditionalNTPSourcesFormProps = {
+export type AdditionalNTPSourcesFormProps = {
   cluster: Cluster;
   onClose: () => void;
-  onAdditionalNtpSource: ValidationInfoActionProps['onAdditionalNtpSource'];
+  onAdditionalNtpSource: (
+    additionalNtpSource: string,
+    onError: (message: string) => void,
+  ) => Promise<void>; // TODO(mlibra): change to optional once tested
 };
 
 const AdditionalNTPSourcesForm: React.FC<AdditionalNTPSourcesFormProps> = ({

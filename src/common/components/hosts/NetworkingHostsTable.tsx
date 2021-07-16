@@ -15,7 +15,7 @@ import { getHostname, getHostRole } from './utils';
 import Hostname from './Hostname';
 import HostsCount from './HostsCount';
 import RoleCell, { RoleCellProps } from './RoleCell';
-import { ValidationInfoActionProps } from './HostValidationGroups';
+import { AdditionNtpSourcePropsType, ValidationInfoActionProps } from './HostValidationGroups';
 import { ClusterHostsTableProps } from './types';
 
 const getSelectedNic = (nics: Interface[], currentSubnet: Address4 | Address6) => {
@@ -177,7 +177,7 @@ const hostToHostTableRow: HostToHostTableRow = (cluster, HostNetworkingStatusCom
   ];
 };
 
-type NetworkingHostsTableProps = {
+type NetworkingHostsTableProps = AdditionNtpSourcePropsType & {
   cluster: Cluster;
   skipDisabled?: boolean;
   setDiscoveryHintModalOpen?: HostsNotShowingLinkProps['setDiscoveryHintModalOpen'];
@@ -186,11 +186,7 @@ type NetworkingHostsTableProps = {
 };
 
 // So far we can reuse ClusterHostsTableProps even for the ClusterDeployment flow. Change it if needed.
-export type NetworkingHostsTableComponentProps = ClusterHostsTableProps &
-  WithTestID & {
-    onAdditionalNtpSource: ValidationInfoActionProps['onAdditionalNtpSource'];
-    AdditionalNTPSourcesDialogToggleComponent: ValidationInfoActionProps['AdditionalNTPSourcesDialogToggleComponent'];
-  };
+export type NetworkingHostsTableComponentProps = ClusterHostsTableProps & WithTestID;
 
 const NetworkingHostsTable: React.FC<NetworkingHostsTableProps> = ({
   TableComponent,
@@ -204,10 +200,6 @@ const NetworkingHostsTable: React.FC<NetworkingHostsTableProps> = ({
       testId={'networking-host-table'}
       columns={columns}
       hostToHostTableRow={hostToHostTableRow(props.cluster, HostNetworkingStatusComponent)}
-      onAdditionalNtpSource={async () =>
-        console.info('TODO: NetworkingHostsTable, onAdditionalNtpSource')
-      }
-      AdditionalNTPSourcesDialogToggleComponent={() => null}
     />
   );
 };

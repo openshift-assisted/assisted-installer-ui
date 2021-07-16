@@ -32,7 +32,7 @@ import { getHostname, getHostRole } from './utils';
 import { onDiskRoleType } from './DiskRole';
 
 import './HostsTable.css';
-import { ValidationInfoActionProps } from './HostValidationGroups';
+import { AdditionNtpSourcePropsType, ValidationInfoActionProps } from './HostValidationGroups';
 import { ValidationsInfo } from '../../types/hosts';
 
 export type OpenRows = {
@@ -51,7 +51,7 @@ const defaultColumns = [
 
 const defaultHostToHostTableRow = (
   openRows: OpenRows,
-  onAdditionalNtpSource: ValidationInfoActionProps['onAdditionalNtpSource'],
+  // onAdditionalNtpSource: ValidationInfoActionProps['onAdditionalNtpSource'],
   AdditionalNTPSourcesDialogToggleComponent: ValidationInfoActionProps['AdditionalNTPSourcesDialogToggleComponent'],
   canEditDisks?: (host: Host) => boolean,
   onEditHostname?: (host: Host, inventory: Inventory) => void,
@@ -105,7 +105,7 @@ const defaultHostToHostTableRow = (
               onEditHostname={editHostname}
               validationsInfo={validationsInfo}
               AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
-              onAdditionalNtpSource={onAdditionalNtpSource}
+              // onAdditionalNtpSource={onAdditionalNtpSource}
             />
           ),
           props: { 'data-testid': 'host-status' },
@@ -181,14 +181,14 @@ const HostsTableRowWrapper = (props: RowWrapperProps) => (
   <RowWrapper {...props} data-testid={`host-row-${props.rowProps?.rowIndex}`} />
 );
 
-export type HostsTableProps = {
+export type HostsTableProps = AdditionNtpSourcePropsType & {
   hosts: Host[] | undefined;
   EmptyState: React.ComponentType<{}>;
   canEditRole?: (host: Host) => boolean;
   columns?: (string | ICell)[];
   hostToHostTableRow?: (
     openRows: OpenRows,
-    onAdditionalNtpSource: ValidationInfoActionProps['onAdditionalNtpSource'],
+    // onAdditionalNtpSource: ValidationInfoActionProps['onAdditionalNtpSource'],
     AdditionalNTPSourcesDialogToggleComponent: ValidationInfoActionProps['AdditionalNTPSourcesDialogToggleComponent'],
     canEditDisks?: (host: Host) => boolean,
     onEditHostname?: (host: Host, inventory: Inventory) => void,
@@ -217,8 +217,6 @@ export type HostsTableProps = {
   canDelete?: (host: Host) => boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onEditRole?: (host: Host, role?: string) => Promise<any>;
-  onAdditionalNtpSource: ValidationInfoActionProps['onAdditionalNtpSource'];
-  AdditionalNTPSourcesDialogToggleComponent: ValidationInfoActionProps['AdditionalNTPSourcesDialogToggleComponent'];
   className?: string;
 };
 
@@ -248,7 +246,7 @@ export const HostsTable: React.FC<HostsTableProps & WithTestID> = ({
   onEditRole,
   onDiskRole,
   EmptyState = DefaultEmptyState,
-  onAdditionalNtpSource,
+  // onAdditionalNtpSource,
   AdditionalNTPSourcesDialogToggleComponent,
   className,
 }) => {
@@ -266,7 +264,7 @@ export const HostsTable: React.FC<HostsTableProps & WithTestID> = ({
           .map(
             hostToHostTableRow(
               openRows,
-              onAdditionalNtpSource,
+              // onAdditionalNtpSource,
               AdditionalNTPSourcesDialogToggleComponent,
               canEditDisks,
               onEditHost,
@@ -292,7 +290,7 @@ export const HostsTable: React.FC<HostsTableProps & WithTestID> = ({
       canEditDisks,
       onEditRole,
       onDiskRole,
-      onAdditionalNtpSource,
+      // onAdditionalNtpSource,
       AdditionalNTPSourcesDialogToggleComponent,
     ],
   );

@@ -34,7 +34,11 @@ import { getHumanizedDateTime } from '../ui';
 
 import HostProgress from './HostProgress';
 import { getHostProgressStageNumber, getHostProgressStages } from './utils';
-import { HostValidationGroups, ValidationInfoActionProps } from './HostValidationGroups';
+import {
+  AdditionNtpSourcePropsType,
+  HostValidationGroups,
+  ValidationInfoActionProps,
+} from './HostValidationGroups';
 import OcpConsoleNodesSectionLink from './OcpConsoleNodesSectionLink';
 import { toSentence } from '../ui/table/utils';
 import { RenderIf, RenderIfElse } from '../ui/RenderIf';
@@ -191,16 +195,16 @@ const HostStatusPopoverFooter: React.FC<{ host: Host }> = ({ host }) => {
 };
 
 const WithHostStatusPopover = (
-  props: PropsWithChildren<{
-    hideOnOutsideClick: PopoverProps['hideOnOutsideClick'];
-    host: Host;
-    onEditHostName: HostStatusPopoverContentProps['onEditHostname'];
-    onAdditionalNtpSource: ValidationInfoActionProps['onAdditionalNtpSource'];
-    AdditionalNTPSourcesDialogToggleComponent: ValidationInfoActionProps['AdditionalNTPSourcesDialogToggleComponent'];
-    title: string;
-    validationsInfo: ValidationsInfo;
-    isSmall?: ButtonProps['isSmall'];
-  }>,
+  props: PropsWithChildren<
+    AdditionNtpSourcePropsType & {
+      hideOnOutsideClick: PopoverProps['hideOnOutsideClick'];
+      host: Host;
+      onEditHostName: HostStatusPopoverContentProps['onEditHostname'];
+      title: string;
+      validationsInfo: ValidationsInfo;
+      isSmall?: ButtonProps['isSmall'];
+    }
+  >,
 ) => (
   <Popover
     headerContent={<div>{props.title}</div>}
@@ -217,14 +221,12 @@ const WithHostStatusPopover = (
   </Popover>
 );
 
-type HostStatusProps = {
+type HostStatusProps = AdditionNtpSourcePropsType & {
   host: Host;
   validationsInfo: ValidationsInfo;
   onEditHostname?: () => void;
   statusOverride?: Host['status'];
   sublabel?: string;
-  onAdditionalNtpSource?: ValidationInfoActionProps['onAdditionalNtpSource'];
-  AdditionalNTPSourcesDialogToggleComponent?: ValidationInfoActionProps['AdditionalNTPSourcesDialogToggleComponent'];
 };
 
 const HostStatus: React.FC<HostStatusProps> = ({
@@ -234,7 +236,7 @@ const HostStatus: React.FC<HostStatusProps> = ({
   sublabel,
   onEditHostname,
   AdditionalNTPSourcesDialogToggleComponent,
-  onAdditionalNtpSource,
+  // onAdditionalNtpSource,
 }) => {
   const [keepOnOutsideClick, onValidationActionToggle] = React.useState(false);
   const status = statusOverride || host.status || '';
@@ -268,7 +270,7 @@ const HostStatus: React.FC<HostStatusProps> = ({
               hideOnOutsideClick={!keepOnOutsideClick}
               host={host}
               onEditHostName={toggleHostname}
-              onAdditionalNtpSource={onAdditionalNtpSource}
+              // onAdditionalNtpSource={onAdditionalNtpSource}
               AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
               title={title}
               validationsInfo={validationsInfo}
@@ -288,7 +290,7 @@ const HostStatus: React.FC<HostStatusProps> = ({
               hideOnOutsideClick={!keepOnOutsideClick}
               host={host}
               onEditHostName={toggleHostname}
-              onAdditionalNtpSource={onAdditionalNtpSource}
+              // onAdditionalNtpSource={onAdditionalNtpSource}
               AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
               title={title}
               validationsInfo={validationsInfo}
