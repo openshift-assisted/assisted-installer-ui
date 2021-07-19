@@ -26,7 +26,14 @@ export const nameValidationSchema = (usedClusterNames: string[], baseDnsDomain =
       excludeEmptyString: true,
     })
     .max(54, 'Cannot be longer than 54 characters.')
-    .required('Required');
+    .required('Required')
+    .when('useRedHatDnsService', {
+      is: true,
+      then: Yup.string().test('is-name-unique', 'The name is already taken.', (value: string) => {
+        const clusterFullName = `${value}.${baseDnsDomain}`;
+        return !value || !usedClusterNames.includes(clusterFullName);
+      }),
+    });
 
 export const sshPublicKeyValidationSchema = Yup.string().test(
   'ssh-public-key',
