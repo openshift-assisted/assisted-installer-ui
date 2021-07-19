@@ -10,7 +10,6 @@ export type ClusterDeploymentHostsTablePropsActions = Pick<
   | 'canEditRole'
   | 'onDeleteHost'
   | 'canDelete'
-  //  | 'onAdditionalNtpSource'
   | 'AdditionalNTPSourcesDialogToggleComponent'
 
   /* TODO(mlibra): List other actions

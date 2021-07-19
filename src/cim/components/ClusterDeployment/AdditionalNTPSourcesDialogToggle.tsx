@@ -13,13 +13,15 @@ export const AdditionalNTPSourcesDialogToggle: React.FC<{ cluster: Cluster }> = 
 
   return (
     <>
-      <AlertActionLink onClick={() => open()}>Add NTP sources</AlertActionLink>;
-      <AdditionalNTPSourcesDialog
-        cluster={cluster}
-        isOpen={isOpen}
-        onClose={() => setOpen(false)}
-        onAdditionalNtpSource={onAdditionalNtpSource}
-      />
+      <AlertActionLink onClick={() => setOpen(true)}>Add NTP sources</AlertActionLink>;
+      {isOpen && (
+        <AdditionalNTPSourcesDialog
+          cluster={cluster}
+          isOpen={isOpen}
+          onClose={() => setOpen(false)}
+          onAdditionalNtpSource={onAdditionalNtpSource}
+        />
+      )}
     </>
   );
 };

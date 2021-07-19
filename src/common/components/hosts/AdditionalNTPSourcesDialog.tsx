@@ -26,7 +26,7 @@ export type AdditionalNTPSourcesFormProps = {
   onAdditionalNtpSource: (
     additionalNtpSource: string,
     onError: (message: string) => void,
-  ) => Promise<void>; // TODO(mlibra): change to optional once tested
+  ) => Promise<void>;
 };
 
 const AdditionalNTPSourcesForm: React.FC<AdditionalNTPSourcesFormProps> = ({

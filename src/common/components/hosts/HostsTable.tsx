@@ -39,6 +39,46 @@ export type OpenRows = {
   [id: string]: boolean;
 };
 
+export type hostToHostTableRowParamsType = {
+  openRows: OpenRows;
+  AdditionalNTPSourcesDialogToggleComponent: ValidationInfoActionProps['AdditionalNTPSourcesDialogToggleComponent'];
+  canEditDisks?: (host: Host) => boolean;
+  onEditHostname?: (host: Host, inventory: Inventory) => void;
+  canEditRole?: (host: Host) => boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onEditRole?: (host: Host, role?: string) => Promise<any>;
+  onDiskRole?: onDiskRoleType;
+};
+
+export type HostsTableProps = AdditionNtpSourcePropsType & {
+  hosts: Host[] | undefined;
+  EmptyState: React.ComponentType<{}>;
+  canEditRole?: (host: Host) => boolean;
+  columns?: (string | ICell)[];
+  hostToHostTableRow?: (params: hostToHostTableRowParamsType) => (host: Host) => IRow;
+  skipDisabled?: boolean;
+  onDeleteHost?: (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => void;
+  onHostEnable?: (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => void;
+  onInstallHost?: (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => void;
+  onHostDisable?: (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => void;
+  onHostReset?: (host: Host, inventory: Inventory) => void;
+  onViewHostEvents?: (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => void;
+  onEditHost?: (host: Host, inventory: Inventory) => void;
+  onDownloadHostLogs?: (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => void;
+  canInstallHost?: (host: Host) => boolean;
+  canEditDisks?: (host: Host) => boolean;
+  onDiskRole?: onDiskRoleType;
+  canEditHost?: (host: Host) => boolean;
+  canEnable?: (host: Host) => boolean;
+  canDisable?: (host: Host) => boolean;
+  canReset?: (host: Host) => boolean;
+  canDownloadHostLogs?: (host: Host) => boolean;
+  canDelete?: (host: Host) => boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onEditRole?: (host: Host, role?: string) => Promise<any>;
+  className?: string;
+};
+
 const defaultColumns = [
   { title: 'Hostname', transforms: [sortable], cellFormatters: [expandable] },
   { title: 'Role', transforms: [sortable] },
@@ -49,21 +89,22 @@ const defaultColumns = [
   { title: 'Disk', transforms: [sortable] },
 ];
 
-const defaultHostToHostTableRow = (
-  openRows: OpenRows,
-  // onAdditionalNtpSource: ValidationInfoActionProps['onAdditionalNtpSource'],
-  AdditionalNTPSourcesDialogToggleComponent: ValidationInfoActionProps['AdditionalNTPSourcesDialogToggleComponent'],
-  canEditDisks?: (host: Host) => boolean,
-  onEditHostname?: (host: Host, inventory: Inventory) => void,
-  canEditRole?: (host: Host) => boolean,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onEditRole?: (host: Host, role?: string) => Promise<any>,
-  onDiskRole?: onDiskRoleType,
-) => (host: Host): IRow => {
+const defaultHostToHostTableRow: HostsTableProps['hostToHostTableRow'] = ({
+  openRows,
+  AdditionalNTPSourcesDialogToggleComponent,
+  canEditDisks,
+  onEditHostname,
+  canEditRole,
+  onEditRole,
+  onDiskRole,
+}) => (host: Host): IRow => {
   const { id, status, createdAt, inventory: inventoryString = '' } = host;
   const inventory = stringToJSON<Inventory>(inventoryString) || {};
   const { cores, memory, disk } = getHostRowHardwareInfo(inventory);
-  const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
+  const validationsInfo = React.useMemo(
+    () => stringToJSON<ValidationsInfo>(host.validationsInfo) || {},
+    [host.validationsInfo],
+  );
   const memoryValidation = validationsInfo?.hardware?.find((v) => v.id === 'has-memory-for-role');
   const diskValidation = validationsInfo?.hardware?.find((v) => v.id === 'has-min-valid-disks');
   const cpuCoresValidation = validationsInfo?.hardware?.find(
@@ -105,7 +146,6 @@ const defaultHostToHostTableRow = (
               onEditHostname={editHostname}
               validationsInfo={validationsInfo}
               AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
-              // onAdditionalNtpSource={onAdditionalNtpSource}
             />
           ),
           props: { 'data-testid': 'host-status' },
@@ -181,45 +221,6 @@ const HostsTableRowWrapper = (props: RowWrapperProps) => (
   <RowWrapper {...props} data-testid={`host-row-${props.rowProps?.rowIndex}`} />
 );
 
-export type HostsTableProps = AdditionNtpSourcePropsType & {
-  hosts: Host[] | undefined;
-  EmptyState: React.ComponentType<{}>;
-  canEditRole?: (host: Host) => boolean;
-  columns?: (string | ICell)[];
-  hostToHostTableRow?: (
-    openRows: OpenRows,
-    // onAdditionalNtpSource: ValidationInfoActionProps['onAdditionalNtpSource'],
-    AdditionalNTPSourcesDialogToggleComponent: ValidationInfoActionProps['AdditionalNTPSourcesDialogToggleComponent'],
-    canEditDisks?: (host: Host) => boolean,
-    onEditHostname?: (host: Host, inventory: Inventory) => void,
-    canEditRole?: (host: Host) => boolean,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onEditRole?: (host: Host, role?: string) => Promise<any>,
-    onDiskRole?: onDiskRoleType,
-  ) => (host: Host) => IRow;
-  skipDisabled?: boolean;
-  onDeleteHost?: (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => void;
-  onHostEnable?: (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => void;
-  onInstallHost?: (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => void;
-  onHostDisable?: (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => void;
-  onHostReset?: (host: Host, inventory: Inventory) => void;
-  onViewHostEvents?: (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => void;
-  onEditHost?: (host: Host, inventory: Inventory) => void;
-  onDownloadHostLogs?: (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => void;
-  canInstallHost?: (host: Host) => boolean;
-  canEditDisks?: (host: Host) => boolean;
-  onDiskRole?: onDiskRoleType;
-  canEditHost?: (host: Host) => boolean;
-  canEnable?: (host: Host) => boolean;
-  canDisable?: (host: Host) => boolean;
-  canReset?: (host: Host) => boolean;
-  canDownloadHostLogs?: (host: Host) => boolean;
-  canDelete?: (host: Host) => boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onEditRole?: (host: Host, role?: string) => Promise<any>;
-  className?: string;
-};
-
 export const HostsTable: React.FC<HostsTableProps & WithTestID> = ({
   hosts,
   hostToHostTableRow = defaultHostToHostTableRow,
@@ -246,7 +247,6 @@ export const HostsTable: React.FC<HostsTableProps & WithTestID> = ({
   onEditRole,
   onDiskRole,
   EmptyState = DefaultEmptyState,
-  // onAdditionalNtpSource,
   AdditionalNTPSourcesDialogToggleComponent,
   className,
 }) => {
@@ -262,16 +262,15 @@ export const HostsTable: React.FC<HostsTableProps & WithTestID> = ({
         (hosts || [])
           .filter(isHostShown(skipDisabled))
           .map(
-            hostToHostTableRow(
+            hostToHostTableRow({
               openRows,
-              // onAdditionalNtpSource,
               AdditionalNTPSourcesDialogToggleComponent,
               canEditDisks,
-              onEditHost,
+              onEditHostname: onEditHost,
               canEditRole,
               onEditRole,
               onDiskRole,
-            ),
+            }),
           )
           .sort(rowSorter(sortBy, (row: IRow, index = 1) => row[0].cells[index - 1]))
           .map((row: IRow, index: number) => {
@@ -290,7 +289,6 @@ export const HostsTable: React.FC<HostsTableProps & WithTestID> = ({
       canEditDisks,
       onEditRole,
       onDiskRole,
-      // onAdditionalNtpSource,
       AdditionalNTPSourcesDialogToggleComponent,
     ],
   );

@@ -95,8 +95,6 @@ const DisksTable: React.FC<DisksTableProps & WithTestID> = ({
   testId,
   onDiskRole,
 }) => {
-  console.log('---- DisksTable: start');
-
   const isEditable = !!canEditDisks?.(host);
   const rows: IRow[] = disks
     .sort((diskA, diskB) => diskA.name?.localeCompare(diskB.name || '') || 0)
@@ -129,7 +127,6 @@ const DisksTable: React.FC<DisksTableProps & WithTestID> = ({
       key: disk.path,
     }));
 
-  console.log('---- DisksTable: before return');
   return (
     <Table
       data-testid={testId}
@@ -222,6 +219,16 @@ export const HostDetail: React.FC<HostDetailProps> = ({
 
   const hardwareType = getHardwareTypeText(inventory);
 
+  const ntpValidationStatus = React.useMemo(
+    () => (
+      <NtpValidationStatus
+        AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
+        validationsInfo={validationsInfo}
+      />
+    ),
+    [AdditionalNTPSourcesDialogToggleComponent, validationsInfo],
+  );
+
   return (
     <Grid hasGutter>
       <SectionTitle testId={'host-details-section'} title="Host details" />
@@ -276,16 +283,7 @@ export const HostDetail: React.FC<HostDetailProps> = ({
             value={inventory.boot?.pxeInterface}
           />
         )}
-        <DetailItem
-          testId={'ntp-status'}
-          title="NTP status"
-          value={
-            <NtpValidationStatus
-              AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
-              validationsInfo={validationsInfo}
-            />
-          }
-        />
+        <DetailItem testId={'ntp-status'} title="NTP status" value={ntpValidationStatus} />
       </SectionColumn>
 
       <SectionTitle

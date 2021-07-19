@@ -18,16 +18,15 @@ import { getHostRowHardwareInfo } from '../../../common/components/hosts/hardwar
 import HostPropertyValidationPopover from '../../../common/components/hosts/HostPropertyValidationPopover';
 import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
 
-const hostToHostTableRow: HostsTableProps['hostToHostTableRow'] = (
+const hostToHostTableRow: HostsTableProps['hostToHostTableRow'] = ({
   openRows,
-  onAdditionalNtpSource,
   AdditionalNTPSourcesDialogToggleComponent,
   canEditDisks,
   onEditHostname,
   canEditRole,
   onEditRole,
   onDiskRole,
-) => (host) => {
+}) => (host) => {
   const { id, status, createdAt, inventory: inventoryString = '' } = host;
   const inventory = stringToJSON<Inventory>(inventoryString) || {};
   const { cores, memory, disk } = getHostRowHardwareInfo(inventory);

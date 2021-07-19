@@ -195,16 +195,15 @@ const HostStatusPopoverFooter: React.FC<{ host: Host }> = ({ host }) => {
 };
 
 const WithHostStatusPopover = (
-  props: PropsWithChildren<
-    AdditionNtpSourcePropsType & {
+  props: AdditionNtpSourcePropsType &
+    PropsWithChildren<{
       hideOnOutsideClick: PopoverProps['hideOnOutsideClick'];
       host: Host;
       onEditHostName: HostStatusPopoverContentProps['onEditHostname'];
       title: string;
       validationsInfo: ValidationsInfo;
       isSmall?: ButtonProps['isSmall'];
-    }
-  >,
+    }>,
 ) => (
   <Popover
     headerContent={<div>{props.title}</div>}
@@ -236,7 +235,6 @@ const HostStatus: React.FC<HostStatusProps> = ({
   sublabel,
   onEditHostname,
   AdditionalNTPSourcesDialogToggleComponent,
-  // onAdditionalNtpSource,
 }) => {
   const [keepOnOutsideClick, onValidationActionToggle] = React.useState(false);
   const status = statusOverride || host.status || '';
@@ -270,7 +268,6 @@ const HostStatus: React.FC<HostStatusProps> = ({
               hideOnOutsideClick={!keepOnOutsideClick}
               host={host}
               onEditHostName={toggleHostname}
-              // onAdditionalNtpSource={onAdditionalNtpSource}
               AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
               title={title}
               validationsInfo={validationsInfo}

@@ -190,9 +190,10 @@ const ClusterHostsTable: React.FC<ClusterHostsTableProps & WithTestID> = ({
     }
   };
 
-  const onAdditionalNtpSource: AdditionalNTPSourcesFormProps['onAdditionalNtpSource'] = async (
-    ...args
-  ) => await onAdditionalNtpSourceAction(dispatch, cluster.id, ...args);
+  const onAdditionalNtpSource: AdditionalNTPSourcesFormProps['onAdditionalNtpSource'] = React.useMemo(
+    () => async (...args) => await onAdditionalNtpSourceAction(dispatch, cluster.id, ...args),
+    [cluster.id, dispatch],
+  );
 
   const EmptyState = React.useCallback(
     () => (
@@ -303,7 +304,6 @@ const ClusterHostsTable: React.FC<ClusterHostsTableProps & WithTestID> = ({
         canDownloadHostLogs={canDownloadHostLogs}
         onEditRole={onEditRole}
         onDiskRole={onDiskRole}
-        // onAdditionalNtpSource={onAdditionalNtpSource}
         AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
       />
       <EventsModal

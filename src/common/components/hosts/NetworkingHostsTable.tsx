@@ -15,7 +15,7 @@ import { getHostname, getHostRole } from './utils';
 import Hostname from './Hostname';
 import HostsCount from './HostsCount';
 import RoleCell, { RoleCellProps } from './RoleCell';
-import { AdditionNtpSourcePropsType, ValidationInfoActionProps } from './HostValidationGroups';
+import { AdditionNtpSourcePropsType } from './HostValidationGroups';
 import { ClusterHostsTableProps } from './types';
 
 const getSelectedNic = (nics: Interface[], currentSubnet: Address4 | Address6) => {
@@ -65,19 +65,19 @@ type HostToHostTableRow = (
   HostNetworkingStatusComponent: React.FC<HostNetworkingStatusComponentProps>,
 ) => HostsTableProps['hostToHostTableRow'];
 
-const hostToHostTableRow: HostToHostTableRow = (cluster, HostNetworkingStatusComponent) => (
+const hostToHostTableRow: HostToHostTableRow = (cluster, HostNetworkingStatusComponent) => ({
   openRows,
-  onAdditionalNtpSource,
   AdditionalNTPSourcesDialogToggleComponent,
   canEditDisks,
   onEditHostname,
   canEditRole,
   onEditRole,
   onDiskRole,
-) => (host) => {
+}) => (host) => {
   const { id, status, inventory: inventoryString = '' } = host;
-  const inventory = stringToJSON<Inventory>(inventoryString) || {};
   const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
+
+  const inventory = stringToJSON<Inventory>(inventoryString) || {};
   const nics = inventory.interfaces || [];
 
   const currentSubnet = cluster.machineNetworkCidr ? getSubnet(cluster.machineNetworkCidr) : null;

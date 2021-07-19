@@ -47,11 +47,11 @@ const ClusterDeploymentNetworking: React.FC<
           <Text component="h2">Host inventory</Text>
         </TextContent>
         <NetworkingHostsTable
+          {...rest}
           cluster={cluster}
           TableComponent={ClusterDeploymentHostsTable}
           HostNetworkingStatusComponent={CimNetworkingStatus}
           AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleWithCluster}
-          {...rest}
         />
       </GridItem>
     </Grid>
