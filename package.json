@@ -53,7 +53,6 @@
     "yup": "^0.28.3"
   },
   "devDependencies": {
-    "@openshift-console/dynamic-plugin-sdk": "0.0.0-alpha12",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
@@ -74,6 +73,7 @@
     "@typescript-eslint/parser": "^2.26.0",
     "babel-eslint": "^10.0.3",
     "concurrently": "^5.3.0",
+    "console-sdk-ai-lib": "0.0.1",
     "cross-env": "^7.0.2",
     "dpdm": "^3.4.3",
     "eslint": "^6.8.0",
