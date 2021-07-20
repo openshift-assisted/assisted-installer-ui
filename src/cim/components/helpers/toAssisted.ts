@@ -1,9 +1,10 @@
 import _ from 'lodash';
 import { AgentK8sResource } from '../../types/k8s/agent';
-import { Cluster, Host, Inventory } from '../../../common';
-import { getAgentStatus, getClusterStatus } from './status';
+import { Host, Inventory } from '../../../common';
 import { ClusterDeploymentK8sResource } from '../../types/k8s/cluster-deployment';
 import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-install';
+import { ClusterCIMExtended } from '../../types';
+import { getAgentStatus, getClusterStatus } from './status';
 import { getHostNetworks } from './network';
 
 export const getAIHosts = (agents: AgentK8sResource[] = []) =>
@@ -67,9 +68,9 @@ export const getAICluster = ({
   agentClusterInstall?: AgentClusterInstallK8sResource;
   agents?: AgentK8sResource[];
   pullSecretSet?: boolean;
-}): Cluster => {
+}): ClusterCIMExtended => {
   const [status, statusInfo] = getClusterStatus(agentClusterInstall);
-  const aiCluster: Cluster = {
+  const aiCluster: ClusterCIMExtended = {
     id: clusterDeployment.metadata?.uid || '',
     kind: 'Cluster',
     href: '',
@@ -100,5 +101,26 @@ export const getAICluster = ({
     installCompletedAt: clusterDeployment.status?.installedTimestamp,
   };
 
+  aiCluster.agentSelectorLabels =
+    clusterDeployment.spec?.platform?.agentBareMetal?.agentSelector?.matchLabels;
+
   return aiCluster;
+};
+
+export const labelsToArray = (labels: { [key in string]: string } = {}): string[] => {
+  const result: string[] = [];
+  for (const key in labels) {
+    result.push(`${key}=${labels[key]}`);
+  }
+  return result;
+};
+
+// strValues: array of 'key=value' items
+export const arrayToLabels = (strValues: string[]) => {
+  const labels = strValues.reduce((acc, curr) => {
+    const label = curr.split('=');
+    acc[label[0]] = label[1];
+    return acc;
+  }, {});
+  return labels;
 };

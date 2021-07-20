@@ -45,6 +45,17 @@ export interface InputFieldProps extends FieldProps {
   validate?: FieldValidator;
 }
 
+export interface NumberInputFieldProps extends FieldProps {
+  minValue?: number;
+  maxValue?: number;
+  minusBtnAriaLabel?: string;
+  plusBtnAriaLabel?: string;
+  unit?: string;
+  onChange: (newValue: number) => void;
+  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
+  validate?: FieldValidator;
+}
+
 export interface TextAreaFieldProps extends FieldProps {
   getErrorText?: (error: string) => React.ReactNode | undefined;
   placeholder?: string;

@@ -14,8 +14,9 @@ export type ClusterDeploymentK8sResource = K8sResourceCommon & {
     clusterName: string;
     platform: {
       agentBareMetal: {
-        agentSelector?: unknown;
-        // agentSelector: Selector;
+        agentSelector?: {
+          matchLabels: { [key in string]: string };
+        };
       };
     };
     pullSecretRef?: {

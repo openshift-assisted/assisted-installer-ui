@@ -10,6 +10,7 @@ export { default as FormikAutoSave } from './FormikAutoSave';
 export { default as PullSecretField } from './PullSecretField';
 export { default as RadioField } from './RadioField';
 export { default as SingleNodeCheckbox } from './SingleNodeCheckbox';
+export { default as NumberInputField } from './NumberInputField';
 
 export * from './utils';
 export * from './PullSecretField';

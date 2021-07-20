@@ -4,11 +4,13 @@ import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
 import ClusterDeploymentDetailsStep from './ClusterDeploymentDetailsStep';
 import ClusterDeploymentNetworkingStep from './ClusterDeploymentNetworkingStep';
 import { AlertsContextProvider } from '../../../common';
+import ClusterDeploymentHostSelectionStep from './ClusterDeploymentHostSelectionStep';
 
 const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   className = '',
   onSaveDetails,
   onSaveNetworking,
+  onSaveHostsSelection,
   onClose,
   onEditHost,
   canEditHost,
@@ -27,31 +29,41 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   const [currentStepId, setCurrentStepId] = React.useState<ClusterDeploymentWizardStepsType>(
     'cluster-details',
   );
-  const renderCurrentStep = React.useCallback(() => {
-    switch (currentStepId) {
-      case 'networking':
-        if (clusterDeployment && agentClusterInstall) {
-          return (
-            <ClusterDeploymentNetworkingStep
-              clusterDeployment={clusterDeployment}
-              agentClusterInstall={agentClusterInstall}
-              agents={agents}
-              pullSecretSet={pullSecretSet}
-              onSaveNetworking={onSaveNetworking}
-              onClose={onClose}
-              onEditHost={onEditHost}
-              canEditHost={canEditHost}
-              onEditRole={onEditRole}
-              canEditRole={canEditRole}
-              onDeleteHost={onDeleteHost}
-              canDelete={canDelete}
-              // TODO(mlibra) Add more networking-table actions here
-            />
-          );
-        }
 
-        console.log(`Missing the AI Cluster object for the ${currentStepId} step, waiting ...`);
-      // falls through to default
+  const renderCurrentStep = React.useCallback(() => {
+    const stepId: ClusterDeploymentWizardStepsType = !clusterDeployment
+      ? 'cluster-details'
+      : currentStepId;
+
+    switch (stepId) {
+      case 'hosts-selection':
+        return (
+          <ClusterDeploymentHostSelectionStep
+            clusterDeployment={clusterDeployment}
+            agentClusterInstall={agentClusterInstall}
+            agents={agents}
+            onClose={onClose}
+            onSaveHostsSelection={onSaveHostsSelection}
+          />
+        );
+      case 'networking':
+        return (
+          <ClusterDeploymentNetworkingStep
+            clusterDeployment={clusterDeployment}
+            agentClusterInstall={agentClusterInstall}
+            agents={agents}
+            pullSecretSet={pullSecretSet}
+            onSaveNetworking={onSaveNetworking}
+            onClose={onClose}
+            onEditHost={onEditHost}
+            canEditHost={canEditHost}
+            onEditRole={onEditRole}
+            canEditRole={canEditRole}
+            onDeleteHost={onDeleteHost}
+            canDelete={canDelete}
+            // TODO(mlibra) Add more networking-table actions here
+          />
+        );
       case 'cluster-details':
       default:
         return (
@@ -79,6 +91,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
     usedClusterNames,
     onSaveDetails,
     onSaveNetworking,
+    onSaveHostsSelection,
     onClose,
     onEditHost,
     canEditHost,
