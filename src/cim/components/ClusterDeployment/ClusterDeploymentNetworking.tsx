@@ -19,12 +19,12 @@ const ClusterDeploymentNetworking: React.FC<
 > = ({ cluster, hostSubnets, defaultNetworkSettings, ...rest }) => {
   const isVipDhcpAllocationDisabled = true; // So far not supported
 
-  const CimNetworkingStatus: React.FC<HostNetworkingStatusComponentProps> = React.useMemo(
-    () => (props) => <NetworkingStatus cluster={cluster} {...props} />,
+  const CimNetworkingStatus: React.FC<HostNetworkingStatusComponentProps> = React.useCallback(
+    (props) => <NetworkingStatus cluster={cluster} {...props} />,
     [cluster],
   );
-  const AdditionalNTPSourcesDialogToggleWithCluster: React.FC = React.useMemo(
-    () => () => <AdditionalNTPSourcesDialogToggle cluster={cluster} />,
+  const AdditionalNTPSourcesDialogToggleWithCluster: React.FC = React.useCallback(
+    () => <AdditionalNTPSourcesDialogToggle cluster={cluster} />,
     [cluster],
   );
 

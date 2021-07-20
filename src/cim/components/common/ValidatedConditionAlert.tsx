@@ -6,7 +6,7 @@ type ValidationAlertProps = {
   condition: StatusCondition<'Validated'>;
 };
 
-const ValidatedConditionAlert = ({ condition }: ValidationAlertProps) => {
+const ValidatedConditionAlert: React.FC<ValidationAlertProps> = ({ condition }) => {
   const { status, message } = condition;
   if (status === 'True') return null;
   if (status === 'Unknown') {

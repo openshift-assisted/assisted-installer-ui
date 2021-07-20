@@ -171,7 +171,7 @@ type FinalizingProgressProps = {
   onFetchEvents: EventListFetchProps['onFetchEvents'];
 };
 
-const FinalizingProgress = ({ cluster, onFetchEvents }: FinalizingProgressProps) => {
+const FinalizingProgress: React.FC<FinalizingProgressProps> = ({ cluster, onFetchEvents }) => {
   const { status } = cluster;
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const closeModal = () => setIsModalOpen(false);

@@ -12,8 +12,8 @@ const NetworkingStatus: React.FC<HostNetworkingStatusComponentProps & { cluster:
   const validationsInfo: ValidationsInfo = {};
   const sublabel = undefined;
 
-  const AdditionalNTPSourcesDialogToggleWithCluster: ValidationInfoActionProps['AdditionalNTPSourcesDialogToggleComponent'] = React.useMemo(
-    () => (compProps) => <AdditionalNTPSourcesDialogToggle cluster={cluster} {...compProps} />,
+  const AdditionalNTPSourcesDialogToggleWithCluster: ValidationInfoActionProps['AdditionalNTPSourcesDialogToggleComponent'] = React.useCallback(
+    (compProps) => <AdditionalNTPSourcesDialogToggle cluster={cluster} {...compProps} />,
     [cluster],
   );
 
