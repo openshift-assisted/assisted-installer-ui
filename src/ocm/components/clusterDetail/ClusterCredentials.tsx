@@ -13,8 +13,8 @@ import { TroubleshootingOpenshiftConsoleButton } from './ConsoleModal';
 
 type ClusterCredentialsProps = {
   cluster: Cluster;
-  error: boolean;
-  retry: () => void;
+  error?: boolean;
+  retry?: () => void;
   credentials?: Credentials;
   idPrefix?: string;
 };
@@ -22,7 +22,7 @@ type ClusterCredentialsProps = {
 const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
   cluster,
   credentials,
-  error,
+  error = false,
   retry,
   idPrefix = 'cluster-creds',
 }) => {

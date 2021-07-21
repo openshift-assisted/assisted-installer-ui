@@ -18,12 +18,12 @@ import {
   canDownloadClusterLogs,
   useAlerts,
   RenderIf,
+  KubeconfigDownload,
 } from '../../../common';
 import ClusterHostsTable from '../hosts/ClusterHostsTable';
 import ClusterToolbar from '../clusters/ClusterToolbar';
 import { downloadClusterInstallationLogs, getClusterDetailId } from './utils';
 import { LaunchOpenshiftConsoleButton } from './ConsoleModal';
-import KubeconfigDownload from './KubeconfigDownload';
 import ClusterProperties from './ClusterProperties';
 import { isSingleClusterMode, routeBasePath } from '../../config';
 import ClusterDetailStatusVarieties, {
