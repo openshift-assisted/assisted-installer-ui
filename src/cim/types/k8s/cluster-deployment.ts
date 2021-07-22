@@ -1,4 +1,4 @@
-import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
+import { K8sResourceCommon } from 'console-sdk-ai-lib';
 
 export type ClusterInstallRef = {
   group: string;

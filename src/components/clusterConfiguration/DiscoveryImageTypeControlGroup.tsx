@@ -20,6 +20,7 @@ const DiscoveryImageTypeControlGroupLabel = ({
       variant={'plain'}
       IconComponent={HelpIcon}
       bodyContent={popoverContent}
+      noVerticalAlign
     />
   </>
 );
