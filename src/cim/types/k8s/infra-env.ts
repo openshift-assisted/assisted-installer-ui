@@ -1,4 +1,4 @@
-import { K8sResourceCommon, Selector } from '@openshift-console/dynamic-plugin-sdk';
+import { K8sResourceCommon, Selector } from 'console-sdk-ai-lib';
 
 export type InfraEnv = K8sResourceCommon & {
   spec?: {

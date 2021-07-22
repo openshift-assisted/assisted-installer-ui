@@ -12,8 +12,12 @@ import {
 import { addAlert } from '../../reducers/alerts/alertsSlice';
 import { OPERATOR_NAME_CNV } from '../../config';
 import { ErrorState, ExternalLink, LoadingState } from '../ui';
+import { RenderIf } from '../ui/RenderIf';
 
-export type PreflightHWRequirementsContentComponent = React.FC<{ clusterId: Cluster['id'] }>;
+export type PreflightHWRequirementsContentComponent = React.FC<{
+  clusterId: Cluster['id'];
+  isSingleNode?: boolean;
+}>;
 
 const useClusterPreflightRequirements = (clusterId: Cluster['id']) => {
   const [preflightRequirements, setPreflightRequirements] = React.useState<
@@ -141,6 +145,7 @@ export const SingleHostRequirementsContent: PreflightHWRequirementsContentCompon
 
 export const CNVHostRequirementsContent: PreflightHWRequirementsContentComponent = ({
   clusterId,
+  isSingleNode = false,
 }) => {
   const { preflightRequirements, error, isLoading } = useClusterPreflightRequirements(clusterId);
 
@@ -162,25 +167,30 @@ export const CNVHostRequirementsContent: PreflightHWRequirementsContentComponent
     <TextContent>
       <List>
         <ListItem>
-          enabled CPU virtualization support in BIOS (Intel-VT / AMD-V) on all worker nodes
+          Enabled CPU virtualization support in BIOS (Intel-VT / AMD-V) on all nodes
         </ListItem>
+        <RenderIf condition={!isSingleNode}>
+          <ListItem>
+            Each worker node requires an additional {workerRequirements?.ramMib || 360} MiB of
+            memory {workerRequirements?.diskSizeGb ? ',' : ' and'}{' '}
+            {workerRequirements?.cpuCores || 2} CPUs
+            {workerRequirements?.diskSizeGb
+              ? ` and ${workerRequirements?.diskSizeGb} storage space`
+              : ''}
+          </ListItem>
+        </RenderIf>
         <ListItem>
-          worker node requires additional {workerRequirements?.ramMib || 360} MiB of memory{' '}
-          {workerRequirements?.diskSizeGb ? ',' : ' and'} {workerRequirements?.cpuCores || 2} CPUs
-          {workerRequirements?.diskSizeGb
-            ? ` and ${workerRequirements?.diskSizeGb} storage space`
-            : ''}
-        </ListItem>
-        <ListItem>
-          master node requires additional {masterRequirements?.ramMib || 150} MiB of memory{' '}
-          {masterRequirements?.diskSizeGb ? ',' : ' and'} {masterRequirements?.cpuCores || 4} CPUs
+          Each supervisor node requires an additional {masterRequirements?.ramMib || 150} MiB of
+          memory {masterRequirements?.diskSizeGb ? ',' : ' and'} {masterRequirements?.cpuCores || 4}{' '}
+          CPUs
           {masterRequirements?.diskSizeGb
             ? ` and ${masterRequirements?.diskSizeGb} storage space`
             : ''}
         </ListItem>
-        {/* TODO(mlibra): Wording of storage requirements needs special care - https://issues.redhat.com/browse/MGMT-5284
-            <ListItem>either Cluster or Local Storage (the LSO operator will be added by default)</ListItem>
-        */}
+        <ListItem>
+          OpenShift Data Foundation (recommended for full functionality) or another persistent
+          storage service
+        </ListItem>
       </List>
     </TextContent>
   );

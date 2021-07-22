@@ -1,5 +1,5 @@
-import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
-import { K8sKind, KebabOption } from '@openshift-console/dynamic-plugin-sdk/lib/api/api-types';
+import { K8sResourceCommon } from 'console-sdk-ai-lib';
+import { K8sKind, KebabOption } from 'console-sdk-ai-lib/lib/api/api-types';
 
 export type KebabAction = (
   kind: K8sKind,

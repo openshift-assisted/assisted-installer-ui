@@ -18,10 +18,10 @@ const ClusterWizardStepHeader: React.FC<{ cluster?: Cluster }> = ({ cluster, chi
             id="cluster-events-button"
             entityKind="cluster"
             cluster={cluster}
-            title="Cluster Events"
+            title="Cluster events"
             variant={ButtonVariant.secondary}
           >
-            View Cluster Events
+            View cluster events
           </EventsModalButton>
         </SplitItem>
       )}

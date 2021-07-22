@@ -6,7 +6,7 @@ import { global_warning_color_100 as warningColor } from '@patternfly/react-toke
 const FormatDiskWarning = () => (
   <Text component="p">
     <ExclamationTriangleIcon className="status-icon" color={warningColor.value} size="sm" />
-    &nbsp;Note that all bootable disks will be formatted when the installation starts.
+    &nbsp;All bootable disks will be formatted during installation
   </Text>
 );
 
