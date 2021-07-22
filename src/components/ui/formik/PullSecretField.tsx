@@ -12,6 +12,7 @@ export type PullSecretFieldProps = {
 
 export const PullSecretInfo: React.FC = () => (
   <PopoverIcon
+    noVerticalAlign
     bodyContent={
       <>
         Pull secrets are used to download OpenShift Container Platform components and connect
