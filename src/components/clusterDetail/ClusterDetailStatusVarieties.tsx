@@ -48,14 +48,15 @@ export const useClusterStatusVarieties = (cluster: Cluster): ClusterStatusVariet
     fetch();
   }, [cluster.id]);
 
+  const consoleOperatorStatus = consoleOperator?.status;
   React.useEffect(() => {
     if (
-      (!consoleOperator && cluster.status === 'installed') || // Retain backwards compatibility with clusters which don't have monitored clusters
-      consoleOperator?.status === 'available'
+      (!consoleOperatorStatus && cluster.status === 'installed') || // Retain backwards compatibility with clusters which don't have monitored clusters
+      consoleOperatorStatus === 'available'
     ) {
       fetchCredentials();
     }
-  }, [cluster.status, consoleOperator, fetchCredentials]);
+  }, [cluster.status, consoleOperatorStatus, fetchCredentials]);
 
   return {
     credentials,
