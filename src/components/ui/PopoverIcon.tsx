@@ -8,12 +8,14 @@ type PopoverIconProps = PopoverProps & {
   variant?: ButtonProps['variant'];
   component?: ButtonProps['component'];
   IconComponent?: React.ComponentClass<SVGIconProps>;
+  noVerticalAlign?: boolean;
 };
 
 const PopoverIcon: React.FC<PopoverIconProps> = ({
   component,
   variant = 'link',
   IconComponent = OutlinedQuestionCircleIcon,
+  noVerticalAlign = false,
   ...props
 }) => (
   <Popover {...props}>
@@ -23,7 +25,7 @@ const PopoverIcon: React.FC<PopoverIconProps> = ({
       onClick={(e) => e.preventDefault()}
       className="pf-c-form__group-label-help"
     >
-      <IconComponent noVerticalAlign />
+      <IconComponent noVerticalAlign={noVerticalAlign} />
     </Button>
   </Popover>
 );
