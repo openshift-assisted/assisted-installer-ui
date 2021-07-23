@@ -20,7 +20,11 @@ const PrismCode: React.FC<PrismCodeProps> = ({
       return (
         <React.Fragment>
           {copiable && (
-            <ClipboardCopy isReadOnly onCopy={(e) => clipboardCopyFunc(e, code)}>
+            <ClipboardCopy
+              isReadOnly
+              variant={'inline-compact'}
+              onCopy={(e) => clipboardCopyFunc(e, code)}
+            >
               {}
             </ClipboardCopy>
           )}
