@@ -16,31 +16,29 @@ const PrismCode: React.FC<PrismCodeProps> = ({
   copiable = false,
 }) => (
   <Highlight {...defaultProps} code={code} language={language} theme={theme}>
-    {({ className, style, tokens, getLineProps, getTokenProps }) => {
-      return (
-        <>
-          {copiable && (
-            <ClipboardCopy
-              isReadOnly
-              variant={'inline-compact'}
-              onCopy={(e) => clipboardCopyFunc(e, code)}
-            >
-              {}
-            </ClipboardCopy>
-          )}
+    {({ className, style, tokens, getLineProps, getTokenProps }) => (
+      <>
+        {copiable && (
+          <ClipboardCopy
+            isReadOnly
+            variant={'inline-compact'}
+            onCopy={(e) => clipboardCopyFunc(e, code)}
+          >
+            {}
+          </ClipboardCopy>
+        )}
 
-          <Text component={TextVariants.pre} className={className} style={style}>
-            {tokens.map((line, i) => (
-              <div key={i} {...getLineProps({ line, key: i })}>
-                {line.map((token, key) => (
-                  <span key={key} {...getTokenProps({ token, key })} />
-                ))}
-              </div>
-            ))}
-          </Text>
-        </>
-      );
-    }}
+        <Text component={TextVariants.pre} className={className} style={style}>
+          {tokens.map((line, i) => (
+            <div key={i} {...getLineProps({ line, key: i })}>
+              {line.map((token, key) => (
+                <span key={key} {...getTokenProps({ token, key })} />
+              ))}
+            </div>
+          ))}
+        </Text>
+      </>
+    )}
   </Highlight>
 );
 
