@@ -18,7 +18,7 @@ const PrismCode: React.FC<PrismCodeProps> = ({
   <Highlight {...defaultProps} code={code} language={language} theme={theme}>
     {({ className, style, tokens, getLineProps, getTokenProps }) => {
       return (
-        <React.Fragment>
+        <>
           {copiable && (
             <ClipboardCopy
               isReadOnly
@@ -38,7 +38,7 @@ const PrismCode: React.FC<PrismCodeProps> = ({
               </div>
             ))}
           </Text>
-        </React.Fragment>
+        </>
       );
     }}
   </Highlight>
