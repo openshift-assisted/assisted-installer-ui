@@ -101,10 +101,7 @@ const defaultHostToHostTableRow: HostsTableProps['hostToHostTableRow'] = ({
   const { id, status, createdAt, inventory: inventoryString = '' } = host;
   const inventory = stringToJSON<Inventory>(inventoryString) || {};
   const { cores, memory, disk } = getHostRowHardwareInfo(inventory);
-  const validationsInfo = React.useMemo(
-    () => stringToJSON<ValidationsInfo>(host.validationsInfo) || {},
-    [host.validationsInfo],
-  );
+  const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
   const memoryValidation = validationsInfo?.hardware?.find((v) => v.id === 'has-memory-for-role');
   const diskValidation = validationsInfo?.hardware?.find((v) => v.id === 'has-min-valid-disks');
   const cpuCoresValidation = validationsInfo?.hardware?.find(
