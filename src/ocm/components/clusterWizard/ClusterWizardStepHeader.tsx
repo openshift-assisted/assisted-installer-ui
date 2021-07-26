@@ -1,7 +1,7 @@
 import React from 'react';
 import { Split, SplitItem, Text, TextContent, ButtonVariant } from '@patternfly/react-core';
-import { EventsModalButton } from '../ui/eventsModal';
-import { Cluster } from '../../../common';
+import { Cluster, EventsModalButton } from '../../../common';
+import { onFetchEvents } from '../fetching/fetchEvents';
 
 const ClusterWizardStepHeader: React.FC<{ cluster?: Cluster }> = ({ cluster, children }) => {
   return (
@@ -20,6 +20,7 @@ const ClusterWizardStepHeader: React.FC<{ cluster?: Cluster }> = ({ cluster, chi
             cluster={cluster}
             title="Cluster events"
             variant={ButtonVariant.secondary}
+            onFetchEvents={onFetchEvents}
           >
             View cluster events
           </EventsModalButton>
