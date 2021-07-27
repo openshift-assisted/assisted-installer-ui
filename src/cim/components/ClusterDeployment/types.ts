@@ -1,6 +1,12 @@
-import { Cluster, HostsTableProps, OpenshiftVersionOptionType } from '../../../common';
+import { HostsTableProps } from '../../../common';
 import { ClusterDetailsValues } from '../../../common/components/clusterWizard/types';
 import { NetworkConfigurationValues } from '../../../common/types/clusters';
+import {
+  AgentK8sResource,
+  ClusterDeploymentK8sResource,
+  AgentClusterInstallK8sResource,
+} from '../../types';
+import { ClusterImageSetK8sResource } from '../../types/k8s/cluster-image-set';
 
 export type ClusterDeploymentHostsTablePropsActions = Pick<
   HostsTableProps,
@@ -34,8 +40,11 @@ export type ClusterDeploymentWizardStepsType = 'cluster-details' | 'networking';
 
 export type ClusterDeploymentDetailsProps = {
   defaultPullSecret: string;
-  ocpVersions: OpenshiftVersionOptionType[];
-  cluster?: Cluster;
+  clusterImages: ClusterImageSetK8sResource[];
+  clusterDeployment: ClusterDeploymentK8sResource;
+  agentClusterInstall: AgentClusterInstallK8sResource;
+  agents: AgentK8sResource[];
+  pullSecretSet: boolean;
   usedClusterNames: string[];
 };
 
@@ -49,7 +58,10 @@ export type ClusterDeploymentDetailsStepProps = ClusterDeploymentDetailsProps & 
 };
 
 export type ClusterDeploymentDetailsNetworkingProps = {
-  cluster: Cluster;
+  clusterDeployment: ClusterDeploymentK8sResource;
+  agentClusterInstall: AgentClusterInstallK8sResource;
+  agents: AgentK8sResource[];
+  pullSecretSet: boolean;
 
   onSaveNetworking: (values: ClusterDeploymentNetworkingValues) => Promise<string | void>;
   onClose: () => void;
