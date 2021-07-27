@@ -23,7 +23,7 @@ import {
 import ClusterHostsTable from '../hosts/ClusterHostsTable';
 import ClusterToolbar from '../clusters/ClusterToolbar';
 import { downloadClusterInstallationLogs, getClusterDetailId } from './utils';
-import { LaunchOpenshiftConsoleButton } from './ConsoleModal';
+import { LaunchOpenshiftConsoleButton } from '../../../common/components/clusterDetail/ConsoleModal';
 import ClusterProperties from './ClusterProperties';
 import { isSingleClusterMode, routeBasePath } from '../../config';
 import ClusterDetailStatusVarieties, {

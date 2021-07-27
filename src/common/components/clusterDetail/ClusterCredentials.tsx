@@ -1,14 +1,9 @@
 import React from 'react';
 import { GridItem, Button, ClipboardCopy, clipboardCopyFunc } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
-import {
-  Credentials,
-  Cluster,
-  LoadingState,
-  ErrorState,
-  DetailList,
-  DetailItem,
-} from '../../../common';
+import { Credentials, Cluster } from '../../api/types';
+import { LoadingState, ErrorState } from '../../components/ui/uiState';
+import { DetailList, DetailItem } from '../../components/ui/DetailList';
 import { TroubleshootingOpenshiftConsoleButton } from './ConsoleModal';
 
 type ClusterCredentialsProps = {
