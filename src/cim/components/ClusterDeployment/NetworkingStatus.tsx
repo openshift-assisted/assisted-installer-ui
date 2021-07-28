@@ -1,19 +1,16 @@
 import React from 'react';
-import { Cluster, Host, HostStatus, ValidationInfoActionProps } from '../../../common';
+import { Host, HostStatus } from '../../../common';
+import { HostNetworkingStatusComponentProps } from '../../../common/components/hosts/networking-hosts-table';
 import { ValidationsInfo } from '../../../common/types/hosts';
-import { HostNetworkingStatusComponentProps } from '../../../common/components/hosts/NetworkingHostsTable';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionalNTPSourcesDialogToggle';
 
-const NetworkingStatus: React.FC<HostNetworkingStatusComponentProps & { cluster: Cluster }> = ({
-  cluster,
-  ...props
-}) => {
+const NetworkingStatus: React.FC<HostNetworkingStatusComponentProps> = ({ cluster, ...props }) => {
   const networkingStatus: Host['status'] = 'discovering'; // TODO(mlibra)
   const validationsInfo: ValidationsInfo = {};
   const sublabel = undefined;
 
-  const AdditionalNTPSourcesDialogToggleWithCluster: ValidationInfoActionProps['AdditionalNTPSourcesDialogToggleComponent'] = React.useCallback(
-    (compProps) => <AdditionalNTPSourcesDialogToggle cluster={cluster} {...compProps} />,
+  const AdditionalNTPSourcesDialogToggleWithCluster = React.useCallback<React.FC>(
+    () => <AdditionalNTPSourcesDialogToggle cluster={cluster} />,
     [cluster],
   );
 
