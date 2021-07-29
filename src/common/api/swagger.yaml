@@ -5026,6 +5026,12 @@ definitions:
       disk_speed:
         $ref: '#/definitions/disk_speed'
 
+  platform_type:
+    type: string
+    enum:
+      - baremetal
+      - vsphere
+
   credentials:
     type: object
     properties:
@@ -5093,6 +5099,9 @@ definitions:
       - 'sufficient-network-latency-requirement-for-role'
       - 'sufficient-packet-loss-requirement-for-role'
       - 'has-default-route'
+      - 'api-domain-name-resolved-correctly'
+      - 'api-int-domain-name-resolved-correctly'
+      - 'apps-domain-name-resolved-correctly'
 
   dhcp_allocation_request:
     type: object
