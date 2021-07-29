@@ -5026,12 +5026,6 @@ definitions:
       disk_speed:
         $ref: '#/definitions/disk_speed'
 
-  platform_type:
-    type: string
-    enum:
-      - baremetal
-      - vsphere
-
   credentials:
     type: object
     properties:

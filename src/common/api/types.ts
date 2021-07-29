@@ -1496,7 +1496,6 @@ export type OperatorStatus = 'failed' | 'progressing' | 'available';
  * Kind of operator. Different types are monitored by the service differently.
  */
 export type OperatorType = 'builtin' | 'olm';
-export type PlatformType = 'baremetal' | 'vsphere';
 export interface PreflightHardwareRequirements {
   /**
    * Preflight operators hardware requirements
