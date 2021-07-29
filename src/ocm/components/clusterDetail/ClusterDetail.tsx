@@ -61,11 +61,13 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
             <ClusterProgress cluster={cluster} onFetchEvents={onFetchEvents} />
           </GridItem>
           <ClusterDetailStatusVarieties cluster={cluster} clusterVarieties={clusterVarieties} />
-          <KubeconfigDownload
-            status={cluster.status}
-            clusterId={cluster.id}
-            id={getClusterDetailId('button-download-kubeconfig')}
-          />
+          <GridItem>
+            <KubeconfigDownload
+              status={cluster.status}
+              clusterId={cluster.id}
+              id={getClusterDetailId('button-download-kubeconfig')}
+            />
+          </GridItem>
           <RenderIf condition={typeof inactiveDeletionHours === 'number'}>
             <Alert
               variant="info"

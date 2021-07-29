@@ -1,6 +1,6 @@
 import React from 'react';
 import { saveAs } from 'file-saver';
-import { GridItem, Button, ButtonVariant } from '@patternfly/react-core';
+import { Button, ButtonVariant } from '@patternfly/react-core';
 import { getPresignedFileUrl, getClusterFileDownload } from '../../../ocm/api/clusters';
 import { canDownloadKubeconfig } from '../hosts/utils';
 import { useAlerts } from '../AlertsContextProvider';
@@ -52,17 +52,15 @@ const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({
   );
 
   return (
-    <GridItem>
-      <Button
-        variant={ButtonVariant.secondary}
-        onClick={handleDownload || (() => download(clusterId, status))}
-        isDisabled={!canDownloadKubeconfig(status)}
-        id={id}
-        data-testid={id}
-      >
-        Download kubeconfig
-      </Button>
-    </GridItem>
+    <Button
+      variant={ButtonVariant.secondary}
+      onClick={handleDownload || (() => download(clusterId, status))}
+      isDisabled={!canDownloadKubeconfig(status)}
+      id={id}
+      data-testid={id}
+    >
+      Download kubeconfig
+    </Button>
   );
 };
 
