@@ -6,3 +6,24 @@
   border: 1px solid transparent;
   outline: none;
 }
+
+.label-field .react-autosuggest__suggestions-list {
+  margin-left: var(--pf-global--spacer-xs);
+  list-style-type: none;
+  box-shadow: var(--pf-global--BoxShadow--lg);
+}
+
+.label-field .react-autosuggest__suggestion {
+  cursor: pointer;
+}
+
+.label-field .react-autosuggest__suggestion--highlighted {
+  /* TODO(mlibra): maybe a lighter color would be better */
+  background-color: var(--pf-global--primary-color--light-100);
+}
+
+.label-field .react-autosuggest__section-title {
+  padding: 10px 0 0 10px;
+  font-size: var(--pf-global--FontSize--sm);
+  color: var(--pf-global--Color--200);
+}
