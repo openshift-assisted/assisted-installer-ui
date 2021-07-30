@@ -130,7 +130,7 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ usedNames, onSubmit, onClos
                   <InputField label="Base domain" name="baseDomain" isRequired />
                   <InputField label="Location" name="location" isRequired />
                   <LabelField label="Labels" name="labels" isRequired />
-                  <PullSecretField isOcm={false} />
+                  <PullSecretField isOcm={false} isRequired={true} />
                   <UploadSSH />
                   <ProxyFields />
                 </Form>
