@@ -29,30 +29,40 @@ const getInitialValues = ({
 }): ClusterDeploymentHostsSelectionValues => ({
   hostCount: agents.length,
   useMastersAsWorkers: true, // TODO: calculate
-  labels: labelsToArray(clusterDeployment.spec?.platform.agentBareMetal.agentSelector?.matchLabels),
+  masterLabels: labelsToArray(
+    clusterDeployment.spec?.platform.agentBareMetal.agentSelector?.matchLabels,
+  ),
+  workerLabels: labelsToArray({
+    /* TODO(mlibra): wait for late-binding to be ready - API is about to be changed */
+  }),
   autoSelectMasters: true, // TODO: read
 });
 
 const getValidationSchema = () =>
-  Yup.object({
-    hostCount: hostCountValidationSchema,
-    useMastersAsWorkers: Yup.boolean().required(),
-    labels: hostLabelsValidationSchema,
-    autoSelectMasters: Yup.boolean().required(),
-  });
+  Yup.lazy<Pick<ClusterDeploymentHostsSelectionValues, 'autoSelectMasters'>>(
+    ({ autoSelectMasters }) =>
+      Yup.object().shape({
+        hostCount: hostCountValidationSchema,
+        useMastersAsWorkers: Yup.boolean().required(),
+        masterLabels: hostLabelsValidationSchema.required(),
+        workerLabels: autoSelectMasters
+          ? hostLabelsValidationSchema.required()
+          : hostLabelsValidationSchema,
+        autoSelectMasters: Yup.boolean().required(),
+      }),
+  );
 
 const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectionStepProps> = ({
   clusterDeployment,
   agentClusterInstall,
   agents,
-  usedAgentlabels,
   onClose,
   onSaveHostsSelection,
+  ...props
 }) => {
   const { addAlert } = useAlerts();
   const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
 
-  // TODO(mlibra): avoid "cluster" in favor of direct resources
   const initialValues = React.useMemo(
     () => getInitialValues({ clusterDeployment, agentClusterInstall, agents }),
     [], // eslint-disable-line react-hooks/exhaustive-deps
@@ -101,7 +111,7 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
 
         return (
           <ClusterDeploymentWizardStep navigation={navigation} footer={footer}>
-            <ClusterDeploymentHostsSelection usedAgentlabels={usedAgentlabels} />
+            <ClusterDeploymentHostsSelection {...props} />
           </ClusterDeploymentWizardStep>
         );
       }}

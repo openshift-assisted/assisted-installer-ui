@@ -26,6 +26,10 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   defaultPullSecret,
   usedClusterNames,
   usedAgentlabels,
+  matchingMastersCount,
+  matchingWorkersCount,
+  onMasterAgentSelectorChange,
+  onWorkerAgentSelectorChange,
 }) => {
   const [currentStepId, setCurrentStepId] = React.useState<ClusterDeploymentWizardStepsType>(
     'cluster-details',
@@ -46,6 +50,10 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
             onClose={onClose}
             onSaveHostsSelection={onSaveHostsSelection}
             usedAgentlabels={usedAgentlabels}
+            matchingMastersCount={matchingMastersCount}
+            matchingWorkersCount={matchingWorkersCount}
+            onMasterAgentSelectorChange={onMasterAgentSelectorChange}
+            onWorkerAgentSelectorChange={onWorkerAgentSelectorChange}
           />
         );
       case 'networking':
@@ -101,6 +109,11 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
     canEditRole,
     onDeleteHost,
     canDelete,
+    matchingMastersCount,
+    matchingWorkersCount,
+    onMasterAgentSelectorChange,
+    onWorkerAgentSelectorChange,
+    usedAgentlabels,
   ]);
 
   return (

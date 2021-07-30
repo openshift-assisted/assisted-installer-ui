@@ -25,7 +25,7 @@ export const LabelValue: React.FC<LabelValueProps> = ({ value, onClose }) => (
   </Label>
 );
 
-type LabelFieldProps = InputFieldProps & {
+type LabelFieldProps = Omit<InputFieldProps, 'onChange'> & {
   // eslint-disable-next-line
   onChange?: (tags: any[]) => void;
   autocompleteValues?: string[];
@@ -136,6 +136,15 @@ export const LabelField: React.FC<LabelFieldProps> = ({
     [autocompleteValues, input],
   );
 
+  console.log(
+    '--- isValid: ',
+    isValid,
+    ', errorMessage: ',
+    errorMessage,
+    ', isRequired: ',
+    isRequired,
+  );
+
   return (
     <FormGroup
       fieldId={fieldId}
@@ -157,7 +166,7 @@ export const LabelField: React.FC<LabelFieldProps> = ({
         <TagsInput
           {...field}
           onChange={(allTags) => {
-            const tags = forceUniqueKeys ? uniqueLabels(allTags) : allTags;
+            const tags: string[] = forceUniqueKeys ? uniqueLabels(allTags) : allTags;
             setValue(tags);
             setInput('');
             onChange && onChange(tags);

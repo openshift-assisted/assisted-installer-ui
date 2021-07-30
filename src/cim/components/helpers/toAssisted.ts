@@ -101,8 +101,14 @@ export const getAICluster = ({
     installCompletedAt: clusterDeployment.status?.installedTimestamp,
   };
 
-  aiCluster.agentSelectorLabels =
+  aiCluster.agentSelectorMasterLabels =
     clusterDeployment.spec?.platform?.agentBareMetal?.agentSelector?.matchLabels;
+
+  // TODO(mlibra): Where to store that in K8S resources?
+  //
+  // Initial value of the "Auto-select control plane (master) hosts" switch
+  // is driven by either undefined or actual value of agentSelectorWorkerLabels
+  aiCluster.agentSelectorWorkerLabels = undefined;
 
   return aiCluster;
 };

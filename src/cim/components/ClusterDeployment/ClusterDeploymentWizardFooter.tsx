@@ -9,6 +9,12 @@ type ClusterDeploymentWizardFooterProps = WizardFooterGenericProps & {
 };
 
 const ValidationSection: React.FC<{ errorFields?: string[] }> = ({ errorFields = [] }) => {
+  console.log(
+    '--- errorFields: ',
+    errorFields,
+    ', CLUSTER_DEPLOYMENT_FIELD_LABELS: ',
+    CLUSTER_DEPLOYMENT_FIELD_LABELS,
+  );
   return errorFields.length > 0 ? (
     <AlertGroup>
       <Alert
@@ -17,7 +23,10 @@ const ValidationSection: React.FC<{ errorFields?: string[] }> = ({ errorFields =
         isInline
       >
         The following fields are not valid:{' '}
-        {errorFields.map((field: string) => CLUSTER_DEPLOYMENT_FIELD_LABELS[field]).join(', ')}.
+        {errorFields
+          .map((field: string) => CLUSTER_DEPLOYMENT_FIELD_LABELS[field] || field)
+          .join(', ')}
+        .
       </Alert>
     </AlertGroup>
   ) : null;

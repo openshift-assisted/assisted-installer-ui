@@ -1,6 +1,14 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
-import { Grid, GridItem } from '@patternfly/react-core';
+import {
+  Grid,
+  GridItem,
+  AlertGroup,
+  Alert,
+  AlertVariant,
+  TextContent,
+  Text,
+} from '@patternfly/react-core';
 import {
   CheckboxField,
   ClusterWizardStepHeader,
@@ -28,15 +36,20 @@ const AutoSelectMastersLabel: React.FC = () => (
 // TODO(mlibra): implement for Single Node Cluster as well
 const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionProps> = ({
   usedAgentlabels,
+  matchingMastersCount,
+  matchingWorkersCount,
+  onMasterAgentSelectorChange,
+  onWorkerAgentSelectorChange,
 }) => {
   const { setFieldValue, values } = useFormikContext<ClusterDeploymentHostsSelectionValues>();
-  const { hostCount } = values;
+  const { hostCount, autoSelectMasters } = values;
 
   return (
     <Grid hasGutter>
       <GridItem>
         <ClusterWizardStepHeader>Hosts selection</ClusterWizardStepHeader>
       </GridItem>
+
       <GridItem span={12} lg={10} xl={9} xl2={7}>
         <NumberInputField
           labelIcon={<HostCountLabelIcon />}
@@ -53,6 +66,7 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
           }}
         />
       </GridItem>
+
       <GridItem>
         <CheckboxField
           idPostfix="mastersasworkers"
@@ -61,6 +75,7 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
           isDisabled={hostCount < 5}
         />
       </GridItem>
+
       <GridItem>
         <ClusterWizardStepHeader
           extraItems={
@@ -68,23 +83,84 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
               name="autoSelectMasters"
               idPostfix="autoselectmasters"
               label={<AutoSelectMastersLabel />}
+              onChange={(newVal: boolean) => {
+                if (newVal) {
+                  onWorkerAgentSelectorChange(undefined);
+                  setFieldValue('workerLabels', []);
+                  // TODO(mlibra): tweak for proper error alerts
+                }
+              }}
             />
           }
         >
           Labels
         </ClusterWizardStepHeader>
       </GridItem>
+
       <GridItem>
+        {!autoSelectMasters && (
+          <TextContent>
+            <Text component="h3">Control plane (master) hosts</Text>
+          </TextContent>
+        )}
         <LabelField
-          label="Labels matching hosts"
-          name="labels"
-          idPostfix="labels"
+          label={
+            autoSelectMasters
+              ? 'Labels matching hosts'
+              : 'Labels matching control plane (master) hosts'
+          }
+          name="masterLabels"
+          idPostfix="masterlabels"
           helperText="Please provide as many labels as you can to find the relevant hosts."
           forceUniqueKeys={true}
           autocompleteValues={usedAgentlabels}
+          onChange={(tags: string[]) => onMasterAgentSelectorChange(tags)}
           isRequired
         />
       </GridItem>
+      {matchingMastersCount !== undefined && (
+        <GridItem>
+          <AlertGroup>
+            <Alert
+              variant={AlertVariant.success}
+              title={`${matchingMastersCount} hosts (out of XYZ) match the requirements.`}
+              isInline
+            />
+          </AlertGroup>
+        </GridItem>
+      )}
+
+      {!autoSelectMasters && (
+        <>
+          <GridItem>
+            <TextContent>
+              <Text component="h3">Worker hosts</Text>
+            </TextContent>
+
+            <LabelField
+              label="Labels matching worker hosts"
+              name="workerLabels"
+              idPostfix="workerlabels"
+              helperText="Please provide as many labels as you can to find the relevant hosts."
+              forceUniqueKeys={true}
+              autocompleteValues={usedAgentlabels}
+              onChange={(tags: string[]) => onWorkerAgentSelectorChange(tags)}
+              isRequired
+            />
+          </GridItem>
+          {matchingWorkersCount !== undefined && (
+            <GridItem>
+              <AlertGroup>
+                <Alert
+                  variant={AlertVariant.success}
+                  title={`${matchingWorkersCount} hosts (out of XYZ) match the requirements.`}
+                  isInline
+                />
+              </AlertGroup>
+            </GridItem>
+          )}
+        </>
+      )}
     </Grid>
   );
 };

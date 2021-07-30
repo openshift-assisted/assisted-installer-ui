@@ -1,9 +1,15 @@
 import { CLUSTER_FIELD_LABELS } from '../../../common';
 import { ClusterDeploymentWizardStepsType } from './types';
 
+export const CLUSTER_HOSTS_SELECTION_LABELS: { [key in string]: string } = {
+  hostCount: 'Host Count',
+  masterLabels: 'Host Labels', // used in both masters-only and "auto-select masters" contexts
+  workerLabels: 'Worker Hosts Labels',
+};
+
 export const CLUSTER_DEPLOYMENT_FIELD_LABELS: { [key in string]: string } = {
   ...CLUSTER_FIELD_LABELS,
-  // Wwe do not have any specific fields
+  ...CLUSTER_HOSTS_SELECTION_LABELS,
 };
 
 export const wizardStepNames: {

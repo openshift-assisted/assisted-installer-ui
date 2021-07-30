@@ -68,7 +68,8 @@ export type ClusterDeploymentNetworkingValues = NetworkConfigurationValues;
 export type ClusterDeploymentHostsSelectionValues = {
   hostCount: number;
   useMastersAsWorkers: boolean;
-  labels: string[];
+  masterLabels: string[];
+  workerLabels?: string[];
   autoSelectMasters: boolean;
 };
 
@@ -88,6 +89,10 @@ export type ClusterDeploymentDetailsNetworkingProps = ClusterDeploymentHostsTabl
 
 export type ClusterDeploymentHostsSelectionProps = {
   usedAgentlabels?: string[];
+  matchingMastersCount?: number;
+  matchingWorkersCount?: number;
+  onMasterAgentSelectorChange: (newLabels: string[]) => void;
+  onWorkerAgentSelectorChange: (newLabels: string[] | undefined) => void;
 };
 
 export type ClusterDeploymentHostSelectionStepProps = ClusterDeploymentHostsSelectionProps & {
