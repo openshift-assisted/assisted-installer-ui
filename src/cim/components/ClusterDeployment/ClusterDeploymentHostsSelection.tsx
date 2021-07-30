@@ -26,7 +26,9 @@ const AutoSelectMastersLabel: React.FC = () => (
 );
 
 // TODO(mlibra): implement for Single Node Cluster as well
-const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionProps> = () => {
+const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionProps> = ({
+  usedAgentlabels,
+}) => {
   const { setFieldValue, values } = useFormikContext<ClusterDeploymentHostsSelectionValues>();
   const { hostCount } = values;
 
@@ -78,6 +80,8 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
           name="labels"
           idPostfix="labels"
           helperText="Please provide as many labels as you can to find the relevant hosts."
+          forceUniqueKeys={true}
+          autocompleteValues={usedAgentlabels}
           isRequired
         />
       </GridItem>

@@ -1,15 +1,12 @@
 import React from 'react';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
-import { getFormikErrorFields, useAlerts } from '../../../common';
+import { getFormikErrorFields, labelsToArray, useAlerts } from '../../../common';
 import {
   AgentClusterInstallK8sResource,
   AgentK8sResource,
-  ClusterCIMExtended,
   ClusterDeploymentK8sResource,
 } from '../../types';
-import { labelsToArray } from '../helpers';
-
 import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
 import ClusterDeploymentWizardFooter from './ClusterDeploymentWizardFooter';
 import ClusterDeploymentWizardNavigation from './ClusterDeploymentWizardNavigation';
@@ -45,10 +42,10 @@ const getValidationSchema = () =>
   });
 
 const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectionStepProps> = ({
-  // cluster,
   clusterDeployment,
   agentClusterInstall,
   agents,
+  usedAgentlabels,
   onClose,
   onSaveHostsSelection,
 }) => {
@@ -104,7 +101,7 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
 
         return (
           <ClusterDeploymentWizardStep navigation={navigation} footer={footer}>
-            <ClusterDeploymentHostsSelection />
+            <ClusterDeploymentHostsSelection usedAgentlabels={usedAgentlabels} />
           </ClusterDeploymentWizardStep>
         );
       }}

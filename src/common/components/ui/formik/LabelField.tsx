@@ -4,7 +4,7 @@ import { FormGroup, Label } from '@patternfly/react-core';
 import TagsInput from 'react-tagsinput';
 import Autosuggest from 'react-autosuggest';
 import { InputFieldProps } from './types';
-import { getFieldId } from './utils';
+import { getFieldId, uniqueLabels } from './utils';
 import HelperText from './HelperText';
 
 import './LabelField.css';
@@ -29,6 +29,8 @@ type LabelFieldProps = InputFieldProps & {
   // eslint-disable-next-line
   onChange?: (tags: any[]) => void;
   autocompleteValues?: string[];
+  // Keep keys unique. Later key wins.
+  forceUniqueKeys?: boolean;
 };
 
 export const LabelField: React.FC<LabelFieldProps> = ({
@@ -39,6 +41,7 @@ export const LabelField: React.FC<LabelFieldProps> = ({
   onChange,
   validate,
   idPostfix,
+  forceUniqueKeys,
   autocompleteValues = [],
   ...props
 }) => {
@@ -153,7 +156,8 @@ export const LabelField: React.FC<LabelFieldProps> = ({
       <div className="co-search-input pf-c-form-control label-field">
         <TagsInput
           {...field}
-          onChange={(tags) => {
+          onChange={(allTags) => {
+            const tags = forceUniqueKeys ? uniqueLabels(allTags) : allTags;
             setValue(tags);
             setInput('');
             onChange && onChange(tags);

@@ -27,3 +27,30 @@ export const getFormikErrorFields = <FormikValues>(
 
 export const getDefaultOpenShiftVersion = (versions: OpenshiftVersionOptionType[]) =>
   versions.find((v) => v.default)?.value || versions[0]?.value || '';
+
+export const labelsToArray = (labels: { [key in string]: string } = {}): string[] => {
+  const result: string[] = [];
+  for (const key in labels) {
+    result.push(`${key}=${labels[key]}`);
+  }
+  return result;
+};
+
+// strValues: array of 'key=value' items
+export const parseStringLabels = (
+  strValues: string[],
+): {
+  [key in string]: string;
+} => {
+  const labels = strValues.reduce((acc, curr) => {
+    const label = curr.split('=');
+    acc[label[0]] = label[1];
+    return acc;
+  }, {});
+  return labels;
+};
+
+// Input: ['foo=bar', 'key=value', 'foo=blee']
+// Result: ['key=value', 'foo=blee']
+export const uniqueLabels = (labelPairs: string[]): string[] =>
+  labelsToArray(parseStringLabels(labelPairs));

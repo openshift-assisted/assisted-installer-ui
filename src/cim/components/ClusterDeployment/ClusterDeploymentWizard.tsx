@@ -25,6 +25,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   clusterImages,
   defaultPullSecret,
   usedClusterNames,
+  usedAgentlabels,
 }) => {
   const [currentStepId, setCurrentStepId] = React.useState<ClusterDeploymentWizardStepsType>(
     'cluster-details',
@@ -44,6 +45,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
             agents={agents}
             onClose={onClose}
             onSaveHostsSelection={onSaveHostsSelection}
+            usedAgentlabels={usedAgentlabels}
           />
         );
       case 'networking':

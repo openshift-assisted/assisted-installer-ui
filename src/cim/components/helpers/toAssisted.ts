@@ -106,21 +106,3 @@ export const getAICluster = ({
 
   return aiCluster;
 };
-
-export const labelsToArray = (labels: { [key in string]: string } = {}): string[] => {
-  const result: string[] = [];
-  for (const key in labels) {
-    result.push(`${key}=${labels[key]}`);
-  }
-  return result;
-};
-
-// strValues: array of 'key=value' items
-export const arrayToLabels = (strValues: string[]) => {
-  const labels = strValues.reduce((acc, curr) => {
-    const label = curr.split('=');
-    acc[label[0]] = label[1];
-    return acc;
-  }, {});
-  return labels;
-};
