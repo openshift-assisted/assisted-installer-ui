@@ -54,7 +54,10 @@ const getPullSecretHelperText = (isOcm: boolean) =>
     </>
   );
 
-const PullSecretField: React.FC<{ isOcm: boolean }> = ({ isOcm }) => (
+const PullSecretField: React.FC<{ isOcm: boolean; isRequired: boolean }> = ({
+  isOcm,
+  isRequired,
+}) => (
   <TextAreaField
     name="pullSecret"
     label="Pull Secret"
@@ -66,7 +69,7 @@ const PullSecretField: React.FC<{ isOcm: boolean }> = ({ isOcm }) => (
     )}
     helperText={getPullSecretHelperText(isOcm)}
     rows={10}
-    isRequired
+    isRequired={isRequired}
   />
 );
 

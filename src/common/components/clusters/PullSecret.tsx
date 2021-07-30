@@ -7,9 +7,10 @@ import { PullSecretField, PullSecretInfo } from '../ui';
 export type PullSecretProps = {
   defaultPullSecret?: string;
   isOcm: boolean;
+  isRequired: boolean;
 };
 
-const PullSecret: React.FC<PullSecretProps> = ({ defaultPullSecret, isOcm }) => {
+const PullSecret: React.FC<PullSecretProps> = ({ defaultPullSecret, isOcm, isRequired }) => {
   // Fetched pull secret will never change - see LoadingState in NewCluster
   const [isExpanded, setExpanded] = React.useState(!defaultPullSecret);
   const { setFieldValue } = useFormikContext<ClusterCreateParams>();
@@ -37,12 +38,12 @@ const PullSecret: React.FC<PullSecretProps> = ({ defaultPullSecret, isOcm }) => 
             </>
           }
         />
-        {isExpanded && <PullSecretField isOcm={isOcm} />}
+        {isExpanded && <PullSecretField isOcm={isOcm} isRequired={isRequired} />}
       </>
     );
   }
 
-  return <PullSecretField isOcm={isOcm} />;
+  return <PullSecretField isOcm={isOcm} isRequired={isRequired} />;
 };
 
 export default PullSecret;

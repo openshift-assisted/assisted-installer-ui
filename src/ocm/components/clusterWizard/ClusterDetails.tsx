@@ -88,11 +88,10 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster }) => {
 
   const handleClusterUpdate = async (clusterId: Cluster['id'], values: ClusterUpdateParams) => {
     clearAlerts();
-    const params: ClusterUpdateParams = _.omit(values, [
-      'highAvailabilityMode',
-      'pullSecret',
-      'openshiftVersion',
-    ]);
+    const params: ClusterUpdateParams =
+      values.pullSecret == '' && cluster?.pullSecretSet
+        ? _.omit(values, ['highAvailabilityMode', 'openshiftVersion', 'pullSecret'])
+        : _.omit(values, ['highAvailabilityMode', 'openshiftVersion']);
 
     try {
       const { data } = await patchCluster(clusterId, params);

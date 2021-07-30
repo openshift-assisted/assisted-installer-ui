@@ -58,6 +58,8 @@ const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> = ({
     nameInputRef.current?.focus();
   }, []);
 
+  const [editingPullSecret, toggleEdit] = React.useState(canEditPullSecret);
+
   // TODO(mlibra): Disable fields based on props passed from the caller context. In CIM, the name or domain can not be edited.
   return (
     <Form id="wizard-cluster-details__form">
@@ -109,7 +111,36 @@ const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> = ({
       ) : (
         <OpenShiftVersionSelect versions={versions} />
       )}
-      {canEditPullSecret && <PullSecret isOcm={isOcm} defaultPullSecret={defaultPullSecret} />}
+
+      {editingPullSecret ? (
+        <>
+          <PullSecret
+            isOcm={isOcm}
+            defaultPullSecret={defaultPullSecret}
+            isRequired={canEditPullSecret}
+          />
+          {!canEditPullSecret && (
+            <button
+              className="pf-c-button pf-m-control"
+              type="button"
+              onClick={() => toggleEdit(!editingPullSecret)}
+            >
+              Stop editing Pull Secret
+            </button>
+          )}
+        </>
+      ) : (
+        <StaticTextField label="Pull Secret" name="pullSecret">
+          Pull Secret is set
+          <button
+            className="pf-c-button pf-m-control margin-left-md"
+            type="button"
+            onClick={() => toggleEdit(!editingPullSecret)}
+          >
+            Edit Pull Secret
+          </button>
+        </StaticTextField>
+      )}
     </Form>
   );
 };
