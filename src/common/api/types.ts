@@ -1179,7 +1179,10 @@ export type HostValidationId =
   | 'cnv-requirements-satisfied'
   | 'sufficient-network-latency-requirement-for-role'
   | 'sufficient-packet-loss-requirement-for-role'
-  | 'has-default-route';
+  | 'has-default-route'
+  | 'api-domain-name-resolved-correctly'
+  | 'api-int-domain-name-resolved-correctly'
+  | 'apps-domain-name-resolved-correctly';
 export interface ImageCreateParams {
   /**
    * SSH public key for debugging the installation.

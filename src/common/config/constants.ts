@@ -147,6 +147,9 @@ export const HOST_VALIDATION_LABELS: { [key in HostValidationId]: string } = {
   'ocs-requirements-satisfied': 'OCS requirements',
   'sufficient-installation-disk-speed': 'Installation disk speed',
   'cnv-requirements-satisfied': 'CNV requirements',
+  'api-domain-name-resolved-correctly': 'API domain name resolution',
+  'api-int-domain-name-resolved-correctly': 'API internal domain name resolution',
+  'apps-domain-name-resolved-correctly': 'Application ingress domain name resolution',
 };
 
 export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string } = {
@@ -173,6 +176,9 @@ export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string 
   'ocs-requirements-satisfied': '',
   'sufficient-installation-disk-speed': '',
   'cnv-requirements-satisfied': '',
+  'api-domain-name-resolved-correctly': '',
+  'api-int-domain-name-resolved-correctly': '',
+  'apps-domain-name-resolved-correctly': '',
 };
 
 export const CLUSTER_VALIDATION_LABELS: { [key in ClusterValidationId]: string } = {
