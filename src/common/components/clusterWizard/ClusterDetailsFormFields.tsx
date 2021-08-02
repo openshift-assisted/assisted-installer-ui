@@ -23,7 +23,7 @@ type ClusterDetailsFormFieldsProps = {
 
   managedDomains?: ManagedDomain[];
   versions: OpenshiftVersionOptionType[];
-  toggleRedHatDnsService: (checked: boolean) => void;
+  toggleRedHatDnsService?: (checked: boolean) => void;
 };
 
 const BaseDnsHelperText: React.FC<{ name?: string; baseDnsDomain?: string }> = ({
@@ -68,7 +68,7 @@ const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> = ({
         isRequired
         isDisabled={isNameDisabled}
       />
-      {!!managedDomains.length && (
+      {!!managedDomains.length && toggleRedHatDnsService && (
         <CheckboxField
           name="useRedHatDnsService"
           label="Use a temporary 60-day domain"
