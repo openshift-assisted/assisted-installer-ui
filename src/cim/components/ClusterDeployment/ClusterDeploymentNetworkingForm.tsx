@@ -5,11 +5,7 @@ import {
   CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4,
   getHostSubnets,
   NetworkConfigurationFormFields,
-  NetworkingHostsTable,
 } from '../../../common';
-import { HostNetworkingStatusComponentProps } from '../../../common/components/hosts/NetworkingHostsTable';
-import { AdditionalNTPSourcesDialogToggle } from './AdditionalNTPSourcesDialogToggle';
-import NetworkingStatus from './NetworkingStatus';
 import ClusterDeploymentHostsTable from './ClusterDeploymentHostsTable';
 import { getAICluster } from '../helpers';
 import {
@@ -52,14 +48,6 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
     agents,
     pullSecretSet,
   });
-  const CimNetworkingStatus = React.useCallback<React.FC<HostNetworkingStatusComponentProps>>(
-    (props) => <NetworkingStatus cluster={cluster} {...props} />,
-    [cluster],
-  );
-  const AdditionalNTPSourcesDialogToggleWithCluster = React.useCallback<React.FC>(
-    () => <AdditionalNTPSourcesDialogToggle cluster={cluster} />,
-    [cluster],
-  );
 
   const hostSubnets = getHostSubnets(cluster);
 
@@ -73,17 +61,16 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
           defaultNetworkSettings={defaultNetworkSettings}
         />
       </GridItem>
-
       <GridItem>
         <TextContent>
           <Text component="h2">Host inventory</Text>
         </TextContent>
-        <NetworkingHostsTable
+        <ClusterDeploymentHostsTable
+          clusterDeployment={clusterDeployment}
+          agentClusterInstall={agentClusterInstall}
+          agents={agents}
+          pullSecretSet={pullSecretSet}
           {...rest}
-          cluster={cluster}
-          TableComponent={ClusterDeploymentHostsTable}
-          HostNetworkingStatusComponent={CimNetworkingStatus}
-          AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleWithCluster}
         />
       </GridItem>
     </Grid>

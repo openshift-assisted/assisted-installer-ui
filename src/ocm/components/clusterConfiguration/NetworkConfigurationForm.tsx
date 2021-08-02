@@ -12,7 +12,6 @@ import {
   useAlerts,
   ClusterWizardStep,
   isSingleNodeCluster,
-  NetworkingHostsTable,
   ClusterWizardStepHeader,
   NetworkConfigurationFormFields,
   getNetworkConfigurationValidationSchema,
@@ -30,6 +29,10 @@ import { getErrorMessage, handleApiError, patchCluster } from '../../api';
 import NetworkingStatus from '../hosts/NetworkingStatus';
 import ClusterWizardHeaderExtraActions from './ClusterWizardHeaderExtraActions';
 import { useDefaultConfiguration } from './ClusterDefaultConfigurationContext';
+import {
+  getColumns,
+  hostToHostTableRow,
+} from '../../../common/components/hosts/networking-hosts-table';
 
 const NetworkConfigurationForm: React.FC<{
   cluster: Cluster;
@@ -96,6 +99,7 @@ const NetworkConfigurationForm: React.FC<{
       );
     }
   };
+  const columns = React.useMemo(() => getColumns(cluster), [cluster]);
 
   return (
     <Formik
@@ -128,10 +132,11 @@ const NetworkConfigurationForm: React.FC<{
                 <TextContent>
                   <Text component="h2">Host inventory</Text>
                 </TextContent>
-                <NetworkingHostsTable
+                <ClusterHostsTable
                   cluster={cluster}
-                  TableComponent={ClusterHostsTable}
-                  HostNetworkingStatusComponent={NetworkingStatus}
+                  hostToHostTableRow={hostToHostTableRow(cluster, NetworkingStatus)}
+                  testId={'networking-host-table'}
+                  columns={columns}
                 />
               </GridItem>
             </Grid>
