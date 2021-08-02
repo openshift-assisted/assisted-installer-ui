@@ -184,6 +184,7 @@ export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string 
 };
 
 export const CLUSTER_VALIDATION_LABELS: { [key in ClusterValidationId]: string } = {
+  'network-type-valid': 'Valid network type',
   'machine-cidr-defined': 'Machine CIDR',
   'cluster-cidr-defined': 'Cluster CIDR',
   'service-cidr-defined': 'Service CIDR',

@@ -264,6 +264,10 @@ export interface Cluster {
    * JSON-formatted string containing the usage information by feature name
    */
   featureUsage?: string;
+  /**
+   * The desired network type used.
+   */
+  networkType?: 'OpenShiftSDN' | 'OVNKubernetes';
 }
 export interface ClusterCreateParams {
   /**
@@ -348,6 +352,10 @@ export interface ClusterCreateParams {
    * Enable/disable hyperthreading on master nodes, worker nodes, or all nodes.
    */
   hyperthreading?: 'masters' | 'workers' | 'none' | 'all';
+  /**
+   * The desired network type used.
+   */
+  networkType?: 'OpenShiftSDN' | 'OVNKubernetes';
 }
 export interface ClusterDefaultConfig {
   clusterNetworkCidr?: string; // ^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)[\/]([1-9]|[1-2][0-9]|3[0-2]?)$
@@ -511,6 +519,10 @@ export interface ClusterUpdateParams {
    * Enable/disable hyperthreading on master nodes, worker nodes, or all nodes.
    */
   hyperthreading?: 'masters' | 'workers' | 'all' | 'none';
+  /**
+   * The desired network type used.
+   */
+  networkType?: 'OpenShiftSDN' | 'OVNKubernetes';
 }
 export type ClusterValidationId =
   | 'machine-cidr-defined'
@@ -530,7 +542,8 @@ export type ClusterValidationId =
   | 'ntp-server-configured'
   | 'lso-requirements-satisfied'
   | 'ocs-requirements-satisfied'
-  | 'cnv-requirements-satisfied';
+  | 'cnv-requirements-satisfied'
+  | 'network-type-valid';
 export interface CompletionParams {
   isSuccess: boolean;
   errorInfo?: string;
@@ -1110,6 +1123,8 @@ export interface HostRequirementsRole {
   ramGib?: number;
   diskSizeGb?: number;
   installationDiskSpeedThresholdMs?: number;
+  networkLatencyThresholdMs?: number; // double
+  packetLossPercentage?: number; // double
 }
 export type HostRole = 'auto-assign' | 'master' | 'worker' | 'bootstrap';
 export type HostRoleUpdateParams = 'auto-assign' | 'master' | 'worker';

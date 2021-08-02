@@ -140,9 +140,9 @@ export const vipValidationSchema = (
   },
   initialValue?: string,
 ) =>
-  Yup.mixed().when(['vipDhcpAllocation', 'networkingType'], {
-    is: (vipDhcpAllocation, networkingType) =>
-      !vipDhcpAllocation && networkingType !== 'userManaged',
+  Yup.mixed().when(['vipDhcpAllocation', 'managedNetworkingType'], {
+    is: (vipDhcpAllocation, managedNetworkingType) =>
+      !vipDhcpAllocation && managedNetworkingType !== 'userManaged',
     then: requiredOnceSet(initialValue)
       .concat(vipRangeValidationSchema(hostSubnets, values))
       .concat(vipUniqueValidationSchema(values))

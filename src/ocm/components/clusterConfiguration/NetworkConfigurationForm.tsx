@@ -63,8 +63,8 @@ const NetworkConfigurationForm: React.FC<{
     // update the cluster configuration
     try {
       const isMultiNodeCluster = !isSingleNodeCluster(cluster);
-      const isUserManagedNetworking = values.networkingType === 'userManaged';
-      const params = _.omit(values, ['hostSubnet', 'useRedHatDnsService', 'networkingType']);
+      const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';
+      const params = _.omit(values, ['hostSubnet', 'useRedHatDnsService', 'managedNetworkingType']);
       params.userManagedNetworking = isUserManagedNetworking;
       params.machineNetworkCidr = hostSubnets.find(
         (hn: HostSubnet) => hn.humanized === values.hostSubnet,
