@@ -1,7 +1,22 @@
-import { Cluster, HostsTableProps, OpenshiftVersionOptionType } from '../../../common';
 import { ClusterDetailsValues } from '../../../common/components/clusterWizard/types';
 import { NetworkConfigurationValues } from '../../../common/types/clusters';
+import {
+  AgentK8sResource,
+  ClusterDeploymentK8sResource,
+  AgentClusterInstallK8sResource,
+} from '../../types';
+import { ClusterImageSetK8sResource } from '../../types/k8s/cluster-image-set';
 
+export type ClusterDeploymentHostsTablePropsActions = {
+  canEditHost?: (agent: AgentK8sResource) => boolean;
+  onEditHost?: (agent: AgentK8sResource) => void;
+  canEditRole?: (agent: AgentK8sResource) => boolean;
+  onEditRole?: (agent: AgentK8sResource, role: string | undefined) => Promise<void>;
+  canDelete?: (agent: AgentK8sResource) => boolean;
+  onDeleteHost?: (agent: AgentK8sResource) => void;
+};
+
+/*
 export type ClusterDeploymentHostsTablePropsActions = Pick<
   HostsTableProps,
   | 'onEditHost'
@@ -27,15 +42,19 @@ export type ClusterDeploymentHostsTablePropsActions = Pick<
       canDisable: (host: Host) => canDisableUtil(cluster.status, host.status),
       canEditHost: (host: Host) => canEditHostUtil(cluster.status, host.status),
       canReset: (host: Host) => canResetUtil(cluster.status, host.status),
-  */
+  
 >;
+*/
 
 export type ClusterDeploymentWizardStepsType = 'cluster-details' | 'networking';
 
 export type ClusterDeploymentDetailsProps = {
   defaultPullSecret: string;
-  ocpVersions: OpenshiftVersionOptionType[];
-  cluster?: Cluster;
+  clusterImages: ClusterImageSetK8sResource[];
+  clusterDeployment: ClusterDeploymentK8sResource;
+  agentClusterInstall: AgentClusterInstallK8sResource;
+  agents: AgentK8sResource[];
+  pullSecretSet: boolean;
   usedClusterNames: string[];
 };
 
@@ -49,7 +68,10 @@ export type ClusterDeploymentDetailsStepProps = ClusterDeploymentDetailsProps & 
 };
 
 export type ClusterDeploymentDetailsNetworkingProps = {
-  cluster: Cluster;
+  clusterDeployment: ClusterDeploymentK8sResource;
+  agentClusterInstall: AgentClusterInstallK8sResource;
+  agents: AgentK8sResource[];
+  pullSecretSet: boolean;
 
   onSaveNetworking: (values: ClusterDeploymentNetworkingValues) => Promise<string | void>;
   onClose: () => void;

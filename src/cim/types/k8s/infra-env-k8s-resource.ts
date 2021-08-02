@@ -1,6 +1,6 @@
 import { K8sResourceCommon, Selector } from 'console-sdk-ai-lib';
 
-export type InfraEnv = K8sResourceCommon & {
+export type InfraEnvK8sResource = K8sResourceCommon & {
   spec?: {
     agentLabels?: string[];
     clusterRef?: {

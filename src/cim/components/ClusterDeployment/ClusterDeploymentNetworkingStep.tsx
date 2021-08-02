@@ -1,13 +1,9 @@
 import React from 'react';
 import { Formik } from 'formik';
+import { Grid, GridItem } from '@patternfly/react-core';
+import { Lazy } from 'yup';
 
-import {
-  getFormikErrorFields,
-  Cluster,
-  ClusterDefaultConfig,
-  useAlerts,
-  CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4,
-} from '../../../common';
+import { getFormikErrorFields, useAlerts, ClusterWizardStepHeader } from '../../../common';
 
 import {
   ClusterDeploymentDetailsNetworkingProps,
@@ -16,27 +12,64 @@ import {
 import ClusterDeploymentWizardFooter from './ClusterDeploymentWizardFooter';
 import ClusterDeploymentWizardNavigation from './ClusterDeploymentWizardNavigation';
 import ClusterDeploymentWizardStep from './ClusterDeploymentWizardStep';
-import ClusterDeploymentNetworking from './ClusterDeploymentNetworking';
-import { HostSubnets, NetworkConfigurationValues } from '../../../common/types/clusters';
 import { getHostSubnets } from '../../../common/components/clusterConfiguration/utils';
 import {
   getNetworkConfigurationValidationSchema,
   getNetworkInitialValues,
 } from '../../../common/components/clusterConfiguration';
-
-const getInitialValues = ({
-  cluster,
+import {
+  AgentClusterInstallK8sResource,
+  AgentK8sResource,
+  ClusterDeploymentK8sResource,
+} from '../../types';
+import ClusterDeploymentNetworkingForm, {
   defaultNetworkSettings,
-}: {
-  cluster: Cluster;
-  defaultNetworkSettings: ClusterDefaultConfig;
-}): ClusterDeploymentNetworkingValues => getNetworkInitialValues(cluster, defaultNetworkSettings);
+} from './ClusterDeploymentNetworkingForm';
+import { getAICluster } from '../helpers';
 
-const getValidationSchema = (initialValues: NetworkConfigurationValues, hostSubnets: HostSubnets) =>
-  getNetworkConfigurationValidationSchema(initialValues, hostSubnets);
+type UseNetworkingFormikArgs = {
+  clusterDeployment: ClusterDeploymentK8sResource;
+  agentClusterInstall: AgentClusterInstallK8sResource;
+  agents: AgentK8sResource[];
+  pullSecretSet: boolean;
+};
+
+export const useNetworkingFormik = ({
+  clusterDeployment,
+  agentClusterInstall,
+  agents,
+  pullSecretSet,
+}: UseNetworkingFormikArgs): [ClusterDeploymentNetworkingValues, Lazy] => {
+  const initialValues = React.useMemo(
+    () => {
+      const cluster = getAICluster({
+        clusterDeployment,
+        agentClusterInstall,
+        agents,
+        pullSecretSet,
+      });
+      return getNetworkInitialValues(cluster, defaultNetworkSettings);
+    },
+    [], // eslint-disable-line react-hooks/exhaustive-deps
+  );
+  const validationSchema = React.useMemo(() => {
+    const cluster = getAICluster({
+      clusterDeployment,
+      agentClusterInstall,
+      agents,
+      pullSecretSet,
+    });
+    const hostSubnets = getHostSubnets(cluster);
+    return getNetworkConfigurationValidationSchema(initialValues, hostSubnets);
+  }, [initialValues, clusterDeployment, agentClusterInstall, agents, pullSecretSet]);
+  return [initialValues, validationSchema];
+};
 
 const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworkingProps> = ({
-  cluster,
+  clusterDeployment,
+  agentClusterInstall,
+  agents,
+  pullSecretSet,
   onSaveNetworking,
   onClose,
   ...rest
@@ -44,19 +77,12 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
   const { addAlert } = useAlerts();
   // TODO(mlibra) - see bellow const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
 
-  // TODO(mlibra): So far a constant. Should be queried from somewhere.
-  const defaultNetworkSettings: ClusterDefaultConfig = CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4;
-
-  const hostSubnets = React.useMemo(() => getHostSubnets(cluster), [cluster]);
-
-  const initialValues = React.useMemo(
-    () => getInitialValues({ cluster, defaultNetworkSettings }),
-    [], // eslint-disable-line react-hooks/exhaustive-deps
-  );
-  const validationSchema = React.useMemo(() => getValidationSchema(initialValues, hostSubnets), [
-    initialValues,
-    hostSubnets,
-  ]);
+  const [initialValues, validationSchema] = useNetworkingFormik({
+    clusterDeployment,
+    agentClusterInstall,
+    agents,
+    pullSecretSet,
+  });
 
   const handleSubmit = async (values: ClusterDeploymentNetworkingValues) => {
     try {
@@ -98,12 +124,20 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
 
         return (
           <ClusterDeploymentWizardStep navigation={navigation} footer={footer}>
-            <ClusterDeploymentNetworking
-              cluster={cluster}
-              hostSubnets={hostSubnets}
-              defaultNetworkSettings={defaultNetworkSettings}
-              {...rest}
-            />
+            <Grid hasGutter>
+              <GridItem>
+                <ClusterWizardStepHeader>Networking</ClusterWizardStepHeader>
+              </GridItem>
+              <GridItem>
+                <ClusterDeploymentNetworkingForm
+                  clusterDeployment={clusterDeployment}
+                  agentClusterInstall={agentClusterInstall}
+                  agents={agents}
+                  pullSecretSet={pullSecretSet}
+                  {...rest}
+                />
+              </GridItem>
+            </Grid>
           </ClusterDeploymentWizardStep>
         );
       }}

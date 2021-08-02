@@ -1,6 +1,6 @@
 {
   "name": "openshift-assisted-ui-lib",
-  "version": "1.5.29-1",
+  "version": "1.5.30",
   "description": "React component library for the Bare Metal Installer",
   "license": "Apache-2.0",
   "repository": "openshift-assisted/assisted-ui-lib",
@@ -32,11 +32,11 @@
     "postswagger": "sed -i -r 's/([a-z1-9]+)_([a-z])/\\1\\U\\2/g' src/common/api/types.ts && yarn prettier"
   },
   "peerDependencies": {
-    "@patternfly/react-code-editor": "^4.1.25",
-    "@patternfly/react-core": "^4.97.2",
-    "@patternfly/react-icons": "^4.9.2",
-    "@patternfly/react-table": "^4.23.2",
-    "@patternfly/react-tokens": "^4.10.2",
+    "@patternfly/react-code-editor": "^4.2.92",
+    "@patternfly/react-core": "^4.135.0",
+    "@patternfly/react-icons": "^4.11.0",
+    "@patternfly/react-table": "^4.29.0",
+    "@patternfly/react-tokens": "^4.12.0",
     "@reduxjs/toolkit": "1.5.x",
     "@sentry/browser": "5.19.1",
     "axios": "^0.19.2",

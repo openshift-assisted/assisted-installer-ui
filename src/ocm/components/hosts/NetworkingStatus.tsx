@@ -1,6 +1,6 @@
 import React from 'react';
 import { HostStatus } from '../../../common';
-import { HostNetworkingStatusComponentProps } from '../../../common/components/hosts/NetworkingHostsTable';
+import { HostNetworkingStatusComponentProps } from '../../../common/components/hosts/networking-hosts-table';
 import {
   getFailingClusterWizardSoftValidationIds,
   getWizardStepHostStatus,

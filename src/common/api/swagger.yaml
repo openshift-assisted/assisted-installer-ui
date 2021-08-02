@@ -7,7 +7,7 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
 host: api.openshift.com
-basePath: /api/assisted-install/v1
+basePath: /api/assisted-install
 tags:
   - name: Assisted installation
     description: Agent-driven installation
@@ -52,7 +52,7 @@ security:
   - userAuth: [admin, user]
 
 paths:
-  /clusters:
+  /v1/clusters:
     post:
       tags:
         - installer
@@ -119,6 +119,12 @@ paths:
           type: array
           items:
             type: string
+        - in: query
+          name: with_hosts
+          description: Include hosts in the returned list.
+          type: boolean
+          allowEmptyValue: true
+          default: false
       responses:
         '200':
           description: Success.
@@ -145,7 +151,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}:
+  /v1/clusters/{cluster_id}:
     get:
       tags:
         - installer
@@ -295,7 +301,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}/downloads/image:
+  /v1/clusters/{cluster_id}/downloads/image:
     post:
       tags:
         - installer
@@ -448,7 +454,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}/downloads/files:
+  /v1/clusters/{cluster_id}/downloads/files:
     get:
       tags:
         - installer
@@ -524,7 +530,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}/downloads/files-presigned:
+  /v1/clusters/{cluster_id}/downloads/files-presigned:
     get:
       tags:
         - installer
@@ -610,7 +616,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}/credentials:
+  /v1/clusters/{cluster_id}/credentials:
     get:
       tags:
         - installer
@@ -655,7 +661,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}/downloads/kubeconfig:
+  /v1/clusters/{cluster_id}/downloads/kubeconfig:
     get:
       tags:
         - installer
@@ -703,7 +709,7 @@ paths:
           description: Error.
           schema:
             $ref: '#/definitions/error'
-  /clusters/default-config:
+  /v1/clusters/default-config:
     get:
       tags:
         - installer
@@ -729,7 +735,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}/install-config:
+  /v1/clusters/{cluster_id}/install-config:
     get:
       tags:
         - installer
@@ -815,7 +821,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}/discovery-ignition:
+  /v1/clusters/{cluster_id}/discovery-ignition:
     get:
       tags:
         - installer
@@ -904,7 +910,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}/manifests:
+  /v1/clusters/{cluster_id}/manifests:
     get:
       tags:
         - manifests
@@ -1057,7 +1063,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}/manifests/files:
+  /v1/clusters/{cluster_id}/manifests/files:
     get:
       tags:
         - manifests
@@ -1118,7 +1124,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}/uploads/ingress-cert:
+  /v1/clusters/{cluster_id}/uploads/ingress-cert:
     post:
       tags:
         - installer
@@ -1177,7 +1183,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}/actions/install:
+  /v1/clusters/{cluster_id}/actions/install:
     post:
       tags:
         - installer
@@ -1224,7 +1230,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}/actions/cancel:
+  /v1/clusters/{cluster_id}/actions/cancel:
     post:
       tags:
         - installer
@@ -1267,7 +1273,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}/actions/install_hosts:
+  /v1/clusters/{cluster_id}/actions/install_hosts:
     post:
       tags:
         - installer
@@ -1314,7 +1320,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}/actions/reset:
+  /v1/clusters/{cluster_id}/actions/reset:
     post:
       tags:
         - installer
@@ -1357,7 +1363,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}/actions/complete_installation:
+  /v1/clusters/{cluster_id}/actions/complete_installation:
     post:
       tags:
         - installer
@@ -1418,7 +1424,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}/hosts:
+  /v1/clusters/{cluster_id}/hosts:
     post:
       tags:
         - installer
@@ -1528,7 +1534,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}/hosts/{host_id}:
+  /v1/clusters/{cluster_id}/hosts/{host_id}:
     get:
       tags:
         - installer
@@ -1621,7 +1627,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}/hosts/{host_id}/installer-args:
+  /v1/clusters/{cluster_id}/hosts/{host_id}/installer-args:
     patch:
       tags:
         - installer
@@ -1680,7 +1686,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}/hosts/{host_id}/progress:
+  /v1/clusters/{cluster_id}/hosts/{host_id}/progress:
     put:
       tags:
         - installer
@@ -1740,7 +1746,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}/hosts/{host_id}/actions/enable:
+  /v1/clusters/{cluster_id}/hosts/{host_id}/actions/enable:
     post:
       tags:
         - installer
@@ -1837,7 +1843,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}/hosts/{host_id}/actions/install:
+  /v1/clusters/{cluster_id}/hosts/{host_id}/actions/install:
     post:
       tags:
         - installer
@@ -1882,7 +1888,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}/hosts/{host_id}/actions/reset:
+  /v1/clusters/{cluster_id}/hosts/{host_id}/actions/reset:
     post:
       tags:
         - installer
@@ -1927,7 +1933,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}/hosts/{host_id}/actions/reset-validation/{validation_id}:
+  /v1/clusters/{cluster_id}/hosts/{host_id}/actions/reset-validation/{validation_id}:
     patch:
       tags:
         - installer
@@ -1984,7 +1990,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}/hosts/{host_id}/instructions:
+  /v1/clusters/{cluster_id}/hosts/{host_id}/instructions:
     get:
       tags:
         - installer
@@ -2102,7 +2108,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}/hosts/{host_id}/logs_progress:
+  /v1/clusters/{cluster_id}/hosts/{host_id}/logs_progress:
     put:
       tags:
         - installer
@@ -2161,7 +2167,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}/hosts/{host_id}/logs:
+  /v1/clusters/{cluster_id}/hosts/{host_id}/logs:
     post:
       tags:
         - installer
@@ -2277,7 +2283,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}/hosts/{host_id}/ignition:
+  /v1/clusters/{cluster_id}/hosts/{host_id}/ignition:
     get:
       tags:
         - installer
@@ -2377,7 +2383,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}/hosts/{host_id}/downloads/ignition:
+  /v1/clusters/{cluster_id}/hosts/{host_id}/downloads/ignition:
     get:
       tags:
         - installer
@@ -2435,7 +2441,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}/logs_progress:
+  /v1/clusters/{cluster_id}/logs_progress:
     put:
       tags:
         - installer
@@ -2488,7 +2494,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}/logs:
+  /v1/clusters/{cluster_id}/logs:
     post:
       tags:
         - installer
@@ -2608,7 +2614,7 @@ paths:
             $ref: '#/definitions/error'
 
   # The following API call should be admin only
-  /clusters/{cluster_id}/free_addresses:
+  /v1/clusters/{cluster_id}/free_addresses:
     get:
       tags:
         - installer
@@ -2668,7 +2674,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}/events:
+  /v1/clusters/{cluster_id}/events:
     get:
       tags:
         - events
@@ -2723,7 +2729,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}/monitored_operators:
+  /v1/clusters/{cluster_id}/monitored_operators:
     get:
       tags:
         - operators
@@ -2826,7 +2832,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}/host-requirements:
+  /v1/clusters/{cluster_id}/host-requirements:
     get:
       tags:
         - installer
@@ -2867,7 +2873,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /clusters/{cluster_id}/preflight-requirements:
+  /v1/clusters/{cluster_id}/preflight-requirements:
     get:
       tags:
         - installer
@@ -2908,7 +2914,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /domains:
+  /v1/domains:
     get:
       tags:
         - managed_domains
@@ -2926,7 +2932,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /component_versions:
+  /v1/component_versions:
     get:
       tags:
         - versions
@@ -2940,7 +2946,7 @@ paths:
           schema:
             $ref: '#/definitions/list-versions'
 
-  /openshift_versions:
+  /v1/openshift_versions:
     get:
       tags:
         - versions
@@ -2958,7 +2964,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /supported-operators:
+  /v1/supported-operators:
     get:
       tags:
         - operators
@@ -2984,7 +2990,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /supported-operators/{operator_name}:
+  /v1/supported-operators/{operator_name}:
     get:
       tags:
         - operators
@@ -3019,44 +3025,8 @@ paths:
           description: Error.
           schema:
             $ref: '#/definitions/error'
-  /host_requirements:
-    get:
-      tags:
-        - installer
-      security:
-        - userAuth: [admin, read-only-admin, user]
-      description: Get minimum host requirements.
-      operationId: GetHostRequirements
-      parameters:
-        - in: header
-          name: single_node
-          description: Get hw requirements for single node.
-          type: boolean
-          required: false
-          default: false
-      responses:
-        '200':
-          description: Success.
-          schema:
-            $ref: '#/definitions/host-requirements'
-        '401':
-          description: Unauthorized.
-          schema:
-            $ref: '#/definitions/infra_error'
-        '403':
-          description: Forbidden.
-          schema:
-            $ref: '#/definitions/infra_error'
-        '405':
-          description: Method Not Allowed.
-          schema:
-            $ref: '#/definitions/error'
-        '500':
-          description: Error.
-          schema:
-            $ref: '#/definitions/error'
 
-  /add_hosts_clusters:
+  /v1/add_hosts_clusters:
     post:
       tags:
         - installer
@@ -3092,7 +3062,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /assisted-service-iso:
+  /v1/assisted-service-iso:
     post:
       tags:
         - assisted-service-iso
@@ -3125,7 +3095,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /assisted-service-iso/data:
+  /v1/assisted-service-iso/data:
     get:
       tags:
         - assisted-service-iso
@@ -3159,7 +3129,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /assisted-service-iso/presigned:
+  /v1/assisted-service-iso/presigned:
     get:
       tags:
         - assisted-service-iso
@@ -3189,7 +3159,349 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
+  /v2/infra-envs:
+    post:
+      tags:
+        - installer
+      description: Creates a new OpenShift Discovery ISO.
+      operationId: v2RegisterInfraEnv
+      parameters:
+        - in: body
+          name: infraenv-create-params
+          description: The parameters for the generated ISO.
+          required: true
+          schema:
+            $ref: '#/definitions/infraenv_create_params'
+      responses:
+        '201':
+          description: Success.
+          schema:
+            $ref: '#/definitions/infra_env'
+        '400':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '409':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '501':
+          description: Not implemented.
+          schema:
+            $ref: '#/definitions/error'
+
+  /v2/infra-envs/{infra_env_id}/hosts:
+    post:
+      tags:
+        - installer
+      security:
+        - agentAuth: []
+      description: Registers a new OpenShift agent.
+      operationId: v2RegisterHost
+      parameters:
+        - in: path
+          name: infra_env_id
+          description: The InfraEnv that the agent is associated with.
+          type: string
+          format: uuid
+          required: true
+        - in: body
+          name: new-host-params
+          description: The description of the agent being registered.
+          required: true
+          schema:
+            $ref: '#/definitions/host-create-params'
+        - in: header
+          name: discovery_agent_version
+          description: The software version of the discovery agent that is registering the agent.
+          type: string
+          required: false
+      responses:
+        '201':
+          description: Success.
+          schema:
+            $ref: '#/definitions/host_registration_response'
+        '400':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '409':
+          description: Cluster cannot accept new agents due to its current state.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '501':
+          description: Not implemented.
+          schema:
+            $ref: '#/definitions/error'
+        '503':
+          description: Unavailable.
+          schema:
+            $ref: '#/definitions/error'
+
+  /v2/infra-envs/{infra_env_id}/hosts/{host_id}:
+    get:
+      tags:
+        - installer
+      security:
+        - userAuth: [admin, read-only-admin, user]
+      description: Retrieves the details of the OpenShift host.
+      operationId: v2GetHost
+      parameters:
+        - in: path
+          name: infra_env_id
+          description: The infra env of the host that should be retrieved.
+          type: string
+          format: uuid
+          required: true
+        - in: path
+          name: host_id
+          description: The host that should be retrieved.
+          type: string
+          format: uuid
+          required: true
+      responses:
+        '200':
+          description: Success.
+          schema:
+            $ref: '#/definitions/host'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '501':
+          description: Not implemented.
+          schema:
+            $ref: '#/definitions/error'
+
+  /v2/infra-envs/{infra_env_id}/hosts/{host_id}/instructions:
+    get:
+      tags:
+        - installer
+      security:
+        - agentAuth: []
+      description: Retrieves the next operations that the host agent needs to perform.
+      operationId: v2GetNextSteps
+      parameters:
+        - in: path
+          name: infra_env_id
+          description: The infra env of the host that is retrieving instructions.
+          type: string
+          format: uuid
+          required: true
+        - in: path
+          name: host_id
+          description: The host that is retrieving instructions.
+          type: string
+          format: uuid
+          required: true
+        - in: header
+          name: discovery_agent_version
+          description: The software version of the discovery agent that is retrieving instructions.
+          type: string
+          required: false
+      responses:
+        '200':
+          description: Success.
+          schema:
+            $ref: '#/definitions/steps'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '501':
+          description: Not implemented.
+          schema:
+            $ref: '#/definitions/error'
+        '503':
+          description: Unavailable.
+          schema:
+            $ref: '#/definitions/error'
+
+    post:
+      tags:
+        - installer
+      security:
+        - agentAuth: []
+      description: Posts the result of the operations from the host agent.
+      operationId: v2PostStepReply
+      parameters:
+        - in: header
+          name: discovery_agent_version
+          description: The software version of the discovery agent that is posting results.
+          type: string
+          required: false
+        - in: path
+          name: infra_env_id
+          description: The infra env of the host that is posting results.
+          type: string
+          format: uuid
+          required: true
+        - in: path
+          name: host_id
+          description: The host that is posting results.
+          type: string
+          format: uuid
+          required: true
+        - name: reply
+          description: The results to be posted.
+          in: body
+          schema:
+            $ref: '#/definitions/step-reply'
+      responses:
+        '204':
+          description: Success.
+        '400':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '501':
+          description: Not implemented.
+          schema:
+            $ref: '#/definitions/error'
+        '503':
+          description: Unavailable.
+          schema:
+            $ref: '#/definitions/error'
+
 definitions:
+  vsphere_platform:
+    type: object
+    description: Vsphere platform specific configuration upon which to perform the installation
+    properties:
+      username:
+        type: string
+        description:
+          The user name to use to connect to the vCenter instance with. This user must have at least
+          the roles and privileges that are required for static or dynamic persistent volume
+          provisioning in vSphere.
+        x-nullable: true
+      password:
+        type: string
+        description: The password for the vCenter user name.
+        format: password
+        x-nullable: true
+      datacenter:
+        type: string
+        description: The name of the datacenter to use in the vCenter instance.
+        x-nullable: true
+      vCenter:
+        type: string
+        description: The fully-qualified hostname or IP address of the vCenter server.
+        x-nullable: true
+      cluster:
+        type: string
+        description: The vCenter cluster to install the OpenShift Container Platform cluster in.
+        x-nullable: true
+      defaultDatastore:
+        type: string
+        description: The name of the default datastore to use for provisioning volumes.
+        x-nullable: true
+      network:
+        type: string
+        description:
+          The network in the vCenter instance that contains the virtual IP addresses and DNS records
+          that you configured.
+        x-nullable: true
+      folder:
+        type: string
+        description:
+          Optional. The absolute path of an existing folder where the installation program creates
+          the virtual machines. If you do not provide this value, the installation program creates a
+          folder that is named with the infrastructure ID in the datacenter virtual machine folder.
+        x-nullable: true
+
   monitored-operator:
     type: object
     properties:
@@ -3297,14 +3609,6 @@ definitions:
     type: object
     additionalProperties:
       $ref: '#/definitions/openshift-version'
-
-  host-requirements:
-    type: object
-    properties:
-      master:
-        $ref: '#/definitions/host-requirements-role'
-      worker:
-        $ref: '#/definitions/host-requirements-role'
 
   preflight-hardware-requirements:
     type: object
@@ -3439,18 +3743,6 @@ definitions:
         $ref: '#/definitions/cluster-host-requirements-details'
         description: Single node OpenShift node requirements
 
-  host-requirements-role:
-    type: object
-    properties:
-      cpu_cores:
-        type: integer
-      ram_gib:
-        type: integer
-      disk_size_gb:
-        type: integer
-      installation_disk_speed_threshold_ms:
-        type: integer
-
   event-list:
     type: array
     items:
@@ -3581,8 +3873,13 @@ definitions:
       cluster_id:
         type: string
         format: uuid
-        x-go-custom-tag: gorm:"primary_key;foreignkey:Cluster"
+        x-go-custom-tag: gorm:"foreignkey:Cluster"
         description: The cluster that this host is associated with.
+      infra_env_id:
+        type: string
+        format: uuid
+        x-go-custom-tag: gorm:"primary_key;foreignkey:InfraEnvID"
+        description: The InfraEnv that this host is associated with.
       status:
         type: string
         enum:
@@ -3724,6 +4021,10 @@ definitions:
         x-go-custom-tag: gorm:"type:text"
         type: string
         description: Array of image statuses.
+      domain_name_resolutions:
+        x-go-custom-tag: gorm:"type:text"
+        type: string
+        description: The domain name resolution result.
 
   installer-args-params:
     type: object
@@ -3954,6 +4255,18 @@ definitions:
         description: Enable/disable hyperthreading on master nodes, worker nodes, or all nodes.
         enum: ['masters', 'workers', 'none', 'all']
         default: 'all'
+      network_type:
+        type: string
+        description: 'The desired network type used.'
+        enum: ['OpenShiftSDN', 'OVNKubernetes']
+        default: 'OpenShiftSDN'
+      schedulable_masters:
+        type: boolean
+        description: Schedule workloads on masters
+        default: false
+      network_configuration:
+        $ref: '#/definitions/network_configuration'
+        x-nullable: true
 
   cluster-update-params:
     type: object
@@ -3979,6 +4292,9 @@ definitions:
           manage the traffic.
         pattern: '^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$'
         x-nullable: true
+      platform:
+        type: object
+        $ref: '#/definitions/platform'
       cluster_network_host_prefix:
         type: integer
         description:
@@ -4120,6 +4436,18 @@ definitions:
         description: Enable/disable hyperthreading on master nodes, worker nodes, or all nodes.
         enum: ['masters', 'workers', 'all', 'none']
         x-nullable: true
+      network_type:
+        type: string
+        description: The desired network type used.
+        enum: ['OpenShiftSDN', 'OVNKubernetes']
+        x-nullable: true
+      schedulable_masters:
+        type: boolean
+        description: Schedule workloads on masters
+        default: false
+      network_configuration:
+        $ref: '#/definitions/network_configuration'
+        x-nullable: true
 
   add-hosts-cluster-create-params:
     type: object
@@ -4196,6 +4524,9 @@ definitions:
       image_info:
         $ref: '#/definitions/image_info'
         x-go-custom-tag: gorm:"embedded;embedded_prefix:image_"
+      platform:
+        $ref: '#/definitions/platform'
+        x-go-custom-tag: gorm:"embedded;embedded_prefix:platform_"
       base_dns_domain:
         type: string
         description:
@@ -4287,6 +4618,10 @@ definitions:
         format: date-time
         x-go-custom-tag: gorm:"type:timestamp with time zone"
         description: The last time that the cluster status was updated.
+      progress:
+        $ref: '#/definitions/cluster-progress-info'
+        x-go-custom-tag: gorm:"embedded;embedded_prefix:progress_"
+        description: Installation progress percentages of the cluster.
       hosts:
         x-go-custom-tag: gorm:"foreignkey:ClusterID;association_foreignkey:ID"
         type: array
@@ -4309,6 +4644,10 @@ definitions:
         format: int64
         description: All hosts associated to this cluster.
         x-go-custom-tag: gorm:"-"
+      schedulable_masters:
+        type: boolean
+        description: Schedule workloads on masters
+        default: false
 
       updated_at:
         type: string
@@ -4412,6 +4751,29 @@ definitions:
         type: string
         description: JSON-formatted string containing the usage information by feature name
         x-go-custom-tag: gorm:"type:text"
+      network_type:
+        type: string
+        description: The desired network type used.
+        enum: ['OpenShiftSDN', 'OVNKubernetes']
+        x-nullable: true
+      network_configuration:
+        type: string
+        description:
+          JSON-formatted string containing the networking data for the install-config.yaml file.
+
+  platform:
+    type: object
+    description: The configuration for the specific platform upon which to perform the installation.
+    required:
+      - type
+    properties:
+      type:
+        $ref: '#/definitions/platform_type'
+      vsphere:
+        type: object
+        $ref: '#/definitions/vsphere_platform'
+        x-go-custom-tag: gorm:"embedded;embedded_prefix:vsphere_"
+        x-nullable: true
 
   image_info:
     type: object
@@ -4584,6 +4946,8 @@ definitions:
     required:
       - current_stage
     properties:
+      installation_percentage:
+        type: integer
       current_stage:
         type: string
         $ref: '#/definitions/host-stage'
@@ -4600,6 +4964,18 @@ definitions:
         format: date-time
         x-go-custom-tag: gorm:"type:timestamp with time zone"
         description: Time at which the current progress stage was last updated.
+
+  cluster-progress-info:
+    type: object
+    properties:
+      total_percentage:
+        type: integer
+      preparing_for_installation_stage_percentage:
+        type: integer
+      installing_stage_percentage:
+        type: integer
+      finalizing_stage_percentage:
+        type: integer
 
   host-stage:
     type: string
@@ -5026,6 +5402,12 @@ definitions:
       disk_speed:
         $ref: '#/definitions/disk_speed'
 
+  platform_type:
+    type: string
+    enum:
+      - baremetal
+      - vsphere
+
   credentials:
     type: object
     properties:
@@ -5258,6 +5640,7 @@ definitions:
       - 'lso-requirements-satisfied'
       - 'ocs-requirements-satisfied'
       - 'cnv-requirements-satisfied'
+      - 'network-type-valid'
 
   logs_type:
     type: string
@@ -5406,3 +5789,184 @@ definitions:
         description: additional properties of the feature
         additionalProperties:
           type: object
+
+  infra_env:
+    type: object
+    properties:
+      kind:
+        type: string
+        enum: ['InfraEnv']
+        description: Indicates the type of this object.
+      id:
+        type: string
+        format: uuid
+        description: Unique identifier of the object.
+        x-go-custom-tag: gorm:"primary_key"
+      href:
+        type: string
+        description: Self link.
+      openshift_version:
+        type: string
+        description:
+          Version of the OpenShift cluster (used to infer the RHCOS version - temporary until
+          generic logic implemented).
+      name:
+        type: string
+        description: Name of the InfraEnv.
+      proxy:
+        $ref: '#/definitions/proxy'
+        x-go-custom-tag: gorm:"embedded;embedded_prefix:proxy_"
+      additional_ntp_sources:
+        type: string
+        description:
+          A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
+      ssh_authorized_key:
+        type: string
+        description: SSH public key for debugging the installation.
+      pull_secret_set:
+        type: boolean
+        description: True if the pull secret has been added to the cluster.
+      static_network_config:
+        type: string
+        description:
+          static network configuration string in the format expected by discovery ignition
+          generation.
+      type:
+        $ref: '#/definitions/image_type'
+      ignition_config_override:
+        type: string
+        description:
+          Json formatted string containing the user overrides for the initial ignition config.
+      cluster_id:
+        type: string
+        format: uuid
+        description: If set, all hosts that register will be associated with the specified cluster.
+      size_bytes:
+        type: integer
+        minimum: 0
+      download_url:
+        type: string
+      generator_version:
+        type: string
+        description: Image generator version.
+      created_at:
+        type: string
+        format: date-time
+        x-go-custom-tag: gorm:"type:timestamp with time zone"
+      expires_at:
+        type: string
+        format: date-time
+        x-go-custom-tag: gorm:"type:timestamp with time zone"
+
+  proxy:
+    type: object
+    properties:
+      http_proxy:
+        type: string
+        description: |
+          A proxy URL to use for creating HTTP connections outside the cluster.
+          http://\<username\>:\<pswd\>@\<ip\>:\<port\>
+        x-nullable: true
+      https_proxy:
+        type: string
+        description: |
+          A proxy URL to use for creating HTTPS connections outside the cluster.
+          http://\<username\>:\<pswd\>@\<ip\>:\<port\>
+        x-nullable: true
+      no_proxy:
+        type: string
+        description:
+          An "*" or a comma-separated list of destination domain names, domains, IP addresses, or
+          other network CIDRs to exclude from proxying.
+        x-nullable: true
+
+  infra_env_list:
+    type: array
+    items:
+      $ref: '#/definitions/infra_env'
+
+  infraenv_create_params:
+    type: object
+    properties:
+      name:
+        type: string
+        description: Name of the InfraEnv.
+      proxy:
+        $ref: '#/definitions/proxy'
+      additional_ntp_sources:
+        type: string
+        description:
+          A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
+      ssh_authorized_key:
+        type: string
+        description: SSH public key for debugging the installation.
+      pull_secret:
+        type: string
+        description:
+          The pull secret obtained from Red Hat OpenShift Cluster Manager at
+          cloud.redhat.com/openshift/install/pull-secret.
+      static_network_config:
+        type: array
+        items:
+          $ref: '#/definitions/host_static_network_config'
+      image_type:
+        $ref: '#/definitions/image_type'
+      ignition_config_override:
+        type: string
+        description:
+          JSON formatted string containing the user overrides for the initial ignition config.
+      cluster_id:
+        type: string
+        format: uuid
+        description: If set, all hosts that register will be associated with the specified cluster.
+
+  subnet:
+    type: string
+    pattern: '^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$'
+
+  network_configuration:
+    type: object
+    properties:
+      cluster_network:
+        type: array
+        items:
+          $ref: '#/definitions/cluster_network'
+      machine_network:
+        type: array
+        items:
+          $ref: '#/definitions/machine_network'
+      service_network:
+        type: array
+        items:
+          $ref: '#/definitions/service_network'
+
+  cluster_network:
+    type: object
+    description: IP address block for pod IP blocks.
+    properties:
+      cidr:
+        $ref: '#/definitions/subnet'
+        description: The IP block address pool.
+      host_prefix:
+        type: integer
+        description:
+          The prefix size to allocate to each node from the CIDR. For example, 24 would allocate
+          2^8=256 adresses to each node.
+        minimum: 1
+        maximum: 128
+
+  machine_network:
+    type: object
+    description: IP address block for node IP blocks.
+    properties:
+      cidr:
+        $ref: '#/definitions/subnet'
+        description: The IP block address pool for machines within the cluster.
+
+  service_network:
+    type: object
+    description: List of IP address pools for services.
+    properties:
+      cidr:
+        $ref: '#/definitions/subnet'
+        description: The IP block address pool.

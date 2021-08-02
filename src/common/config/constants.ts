@@ -3,6 +3,8 @@ import * as packageJson from '../../../package.json';
 import { ValidationsInfo, HostRole } from '../../common/types/hosts';
 import { Cluster, ClusterValidationId, DiskRole, Event, Host, HostValidationId } from '../api';
 
+export const OPENSHIFT_LIFE_CYCLE_DATES_LINK =
+  'https://access.redhat.com/support/policy/updates/openshift#dates';
 export const OPENSHIFT_NETWORKING_DOCS_LINK =
   'https://docs.openshift.com/container-platform/4.7/installing/installing_bare_metal/installing-bare-metal.html#installation-network-user-infra_installing-bare-metal';
 export const CLUSTER_MANAGER_SITE_LINK = 'https://cloud.redhat.com/openshift/install/pull-secret';
@@ -182,6 +184,7 @@ export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string 
 };
 
 export const CLUSTER_VALIDATION_LABELS: { [key in ClusterValidationId]: string } = {
+  'network-type-valid': 'Valid network type',
   'machine-cidr-defined': 'Machine CIDR',
   'cluster-cidr-defined': 'Cluster CIDR',
   'service-cidr-defined': 'Service CIDR',
