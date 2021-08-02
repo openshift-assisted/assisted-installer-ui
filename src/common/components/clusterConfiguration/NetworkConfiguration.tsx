@@ -39,11 +39,12 @@ const NetworkConfiguration = ({
       setFieldValue('clusterNetworkCidr', defaultNetworkSettings.clusterNetworkCidr);
       setFieldValue('serviceNetworkCidr', defaultNetworkSettings.serviceNetworkCidr);
       setFieldValue('clusterNetworkHostPrefix', defaultNetworkSettings.clusterNetworkHostPrefix);
+      setFieldValue('networkType', 'OpenShiftSDN');
     }
   };
 
   const isMultiNodeCluster = !isSingleNodeCluster(cluster);
-  const isUserManagedNetworking = values.networkingType === 'userManaged';
+  const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';
 
   useEffect(() => {
     if (isUserManagedNetworking) {

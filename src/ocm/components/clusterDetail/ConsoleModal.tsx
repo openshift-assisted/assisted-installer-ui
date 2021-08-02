@@ -52,20 +52,18 @@ const formatMultilineString = (multiLineList: string[]): string =>
 
 const ModalExpandableSection: React.FC<ModalExpandableSectionProps> = (props) => {
   const { requiredList, optionalList, ...otherProps } = props;
-
   return (
     <ExpandableSection {...otherProps}>
-      <PrismCode code={formatMultilineString(requiredList)} language="markup" />
+      <PrismCode code={formatMultilineString(requiredList)} language="markup" copiable />
       <br />
       <Text component="h6">Optional:</Text>
-      <PrismCode code={formatMultilineString(optionalList)} language="markup" />
+      <PrismCode code={formatMultilineString(optionalList)} language="markup" copiable />
     </ExpandableSection>
   );
 };
 
 const getHostIPs = (cluster: Cluster): { [key: string]: string } => {
   const hostIPAddresses = {};
-
   cluster.hosts?.map((host: Host) => {
     if (host && host.requestedHostname) {
       const interfaces: Interface[] | undefined =
@@ -80,7 +78,6 @@ const getHostIPs = (cluster: Cluster): { [key: string]: string } => {
       }
     }
   });
-
   return hostIPAddresses;
 };
 
@@ -92,7 +89,6 @@ export const WebConsoleHint: React.FC<WebConsoleHintProps> = ({ cluster, console
   const etcHostsOptional = sortedHostIPs.map(
     (hostname: string) => `${hostIPs[hostname]}\t${hostname}`,
   );
-
   const clusterUrl = `${cluster.name}.${cluster.baseDnsDomain}`;
   const appsUrl = `apps.${clusterUrl}`;
   const etcHosts = [
@@ -104,10 +100,8 @@ export const WebConsoleHint: React.FC<WebConsoleHintProps> = ({ cluster, console
     `${cluster.ingressVip}\tprometheus-k8s-openshift-monitoring.${appsUrl}`,
     `${cluster.ingressVip}\talertmanager-main-openshift-monitoring.${appsUrl}`,
   ];
-
   // Pad the lines as long as the longest record
   const paddingNum = `*.${appsUrl}.`.length + 2;
-
   const aRecords = [
     `api.${clusterUrl}`.padEnd(paddingNum) + `A\t${cluster.apiVip}`,
     `*.${appsUrl}`.padEnd(paddingNum) + `A\t${cluster.ingressVip}`,
@@ -150,7 +144,6 @@ export const LaunchOpenshiftConsoleButton: React.FC<LaunchOpenshiftConsoleButton
   id,
 }) => {
   const [isOpen, setOpen] = React.useState(false);
-
   return (
     <>
       <ToolbarButton
@@ -178,7 +171,6 @@ export const TroubleshootingOpenshiftConsoleButton: React.FC<WebConsoleHintProps
   idPrefix,
 }) => {
   const [isOpen, setOpen] = React.useState(false);
-
   return (
     <>
       <Button
@@ -221,7 +213,6 @@ export const ConsoleModal: React.FC<ConsoleModalProps> = ({
       Close
     </Button>,
   ];
-
   return (
     <Modal
       title="OpenShift Web Console troubleshooting"

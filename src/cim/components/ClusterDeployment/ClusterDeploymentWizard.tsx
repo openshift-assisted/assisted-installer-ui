@@ -16,8 +16,11 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   canEditRole,
   onDeleteHost,
   canDelete,
-  cluster,
-  ocpVersions,
+  clusterDeployment,
+  agentClusterInstall,
+  agents,
+  pullSecretSet,
+  clusterImages,
   defaultPullSecret,
   usedClusterNames,
 }) => {
@@ -27,10 +30,13 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   const renderCurrentStep = React.useCallback(() => {
     switch (currentStepId) {
       case 'networking':
-        if (cluster) {
+        if (clusterDeployment && agentClusterInstall) {
           return (
             <ClusterDeploymentNetworkingStep
-              cluster={cluster}
+              clusterDeployment={clusterDeployment}
+              agentClusterInstall={agentClusterInstall}
+              agents={agents}
+              pullSecretSet={pullSecretSet}
               onSaveNetworking={onSaveNetworking}
               onClose={onClose}
               onEditHost={onEditHost}
@@ -51,9 +57,12 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
         return (
           <ClusterDeploymentDetailsStep
             defaultPullSecret={defaultPullSecret}
-            ocpVersions={ocpVersions}
+            clusterImages={clusterImages}
             usedClusterNames={usedClusterNames}
-            cluster={cluster}
+            clusterDeployment={clusterDeployment}
+            agentClusterInstall={agentClusterInstall}
+            agents={agents}
+            pullSecretSet={pullSecretSet}
             onSaveDetails={onSaveDetails}
             onClose={onClose}
           />
@@ -61,9 +70,12 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
     }
   }, [
     currentStepId,
-    cluster,
+    clusterDeployment,
+    agentClusterInstall,
+    agents,
+    pullSecretSet,
     defaultPullSecret,
-    ocpVersions,
+    clusterImages,
     usedClusterNames,
     onSaveDetails,
     onSaveNetworking,

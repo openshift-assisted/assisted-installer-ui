@@ -1,45 +1,87 @@
 import React from 'react';
 import { Formik } from 'formik';
+import { Lazy } from 'yup';
+import { Grid, GridItem } from '@patternfly/react-core';
 
 import {
-  Cluster,
   useAlerts,
-  OpenshiftVersionOptionType,
   getFormikErrorFields,
   getClusterDetailsInitialValues,
   getClusterDetailsValidationSchema,
+  ClusterWizardStepHeader,
+  ClusterDetailsValues,
 } from '../../../common';
 
-import ClusterDeploymentDetails from './ClusterDeploymentDetails';
 import { ClusterDeploymentDetailsStepProps, ClusterDeploymentDetailsValues } from './types';
 import ClusterDeploymentWizardFooter from './ClusterDeploymentWizardFooter';
 import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
 import ClusterDeploymentWizardNavigation from './ClusterDeploymentWizardNavigation';
 import ClusterDeploymentWizardStep from './ClusterDeploymentWizardStep';
+import { getAICluster, getOCPVersions } from '../helpers';
+import {
+  AgentClusterInstallK8sResource,
+  AgentK8sResource,
+  ClusterDeploymentK8sResource,
+} from '../../types';
+import ClusterDeploymentDetailsForm from './ClusterDeploymentDetailsForm';
+import { ClusterImageSetK8sResource } from '../../types/k8s/cluster-image-set';
 
-const getInitialValues = ({
-  cluster,
-  ocpVersions,
-  defaultPullSecret: pullSecret,
-}: {
-  cluster?: Cluster;
-  ocpVersions: OpenshiftVersionOptionType[];
+type UseDetailsFormikArgs = {
+  clusterImages: ClusterImageSetK8sResource[];
+  usedClusterNames: string[];
+  pullSecretSet?: boolean;
   defaultPullSecret?: string;
-}): ClusterDeploymentDetailsValues =>
-  getClusterDetailsInitialValues({
-    managedDomains: [], // not supported
-    cluster,
-    pullSecret,
-    ocpVersions,
-  });
+  clusterDeployment?: ClusterDeploymentK8sResource;
+  agentClusterInstall?: AgentClusterInstallK8sResource;
+  agents?: AgentK8sResource[];
+};
 
-const getValidationSchema = (usedClusterNames: string[], cluster?: Cluster) =>
-  getClusterDetailsValidationSchema(usedClusterNames, cluster);
+export const useDetailsFormik = ({
+  clusterDeployment,
+  agentClusterInstall,
+  agents,
+  pullSecretSet,
+  clusterImages,
+  defaultPullSecret,
+  usedClusterNames,
+}: UseDetailsFormikArgs): [ClusterDetailsValues, Lazy] => {
+  const cluster = React.useMemo(
+    () =>
+      clusterDeployment && agentClusterInstall
+        ? getAICluster({
+            clusterDeployment,
+            agentClusterInstall,
+            agents,
+            pullSecretSet,
+          })
+        : undefined,
+    [agentClusterInstall, clusterDeployment, agents, pullSecretSet],
+  );
+  const initialValues = React.useMemo(
+    () =>
+      getClusterDetailsInitialValues({
+        managedDomains: [], // not supported
+        cluster,
+        pullSecret: defaultPullSecret,
+        ocpVersions: getOCPVersions(clusterImages),
+      }),
+    [], // eslint-disable-line react-hooks/exhaustive-deps
+  );
+  const validationSchema = React.useMemo(
+    () => getClusterDetailsValidationSchema(usedClusterNames, cluster),
+    [usedClusterNames, cluster],
+  );
+
+  return [initialValues, validationSchema];
+};
 
 const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> = ({
   defaultPullSecret,
-  ocpVersions,
-  cluster,
+  clusterImages,
+  clusterDeployment,
+  agentClusterInstall,
+  agents,
+  pullSecretSet,
   usedClusterNames,
   onSaveDetails,
   onClose,
@@ -47,14 +89,15 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
   const { addAlert } = useAlerts();
   const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
 
-  const initialValues = React.useMemo(
-    () => getInitialValues({ cluster, ocpVersions, defaultPullSecret }),
-    [], // eslint-disable-line react-hooks/exhaustive-deps
-  );
-  const validationSchema = React.useMemo(() => getValidationSchema(usedClusterNames, cluster), [
+  const [initialValues, validationSchema] = useDetailsFormik({
+    clusterDeployment,
+    agentClusterInstall,
+    agents,
+    pullSecretSet,
+    clusterImages,
+    defaultPullSecret,
     usedClusterNames,
-    cluster,
-  ]);
+  });
 
   const handleSubmit = async (values: ClusterDeploymentDetailsValues) => {
     try {
@@ -95,11 +138,20 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
 
         return (
           <ClusterDeploymentWizardStep navigation={navigation} footer={footer}>
-            <ClusterDeploymentDetails
-              ocpVersions={ocpVersions}
-              defaultPullSecret={defaultPullSecret}
-              cluster={cluster}
-            />
+            <Grid hasGutter>
+              <GridItem>
+                <ClusterWizardStepHeader>Cluster Details</ClusterWizardStepHeader>
+              </GridItem>
+              <GridItem span={12} lg={10} xl={9} xl2={7}>
+                <ClusterDeploymentDetailsForm
+                  agentClusterInstall={agentClusterInstall}
+                  clusterDeployment={clusterDeployment}
+                  pullSecretSet={pullSecretSet}
+                  clusterImages={clusterImages}
+                  defaultPullSecret={defaultPullSecret}
+                />
+              </GridItem>
+            </Grid>
           </ClusterDeploymentWizardStep>
         );
       }}

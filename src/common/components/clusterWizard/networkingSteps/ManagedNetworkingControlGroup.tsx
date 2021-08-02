@@ -8,7 +8,7 @@ export interface ManagedNetworkingControlGroupProps {
 export const ManagedNetworkingControlGroup = ({
   disabled = false,
 }: ManagedNetworkingControlGroupProps) => {
-  const GROUP_NAME = 'networkingType';
+  const GROUP_NAME = 'managedNetworkingType';
 
   return (
     <Split hasGutter>
@@ -16,17 +16,15 @@ export const ManagedNetworkingControlGroup = ({
         <RadioField
           name={GROUP_NAME}
           isDisabled={disabled}
-          id={'clusterManagedNetworking'}
           value={'clusterManaged'}
           label="Cluster-Managed Networking"
         />
       </SplitItem>
-      <SplitItem style={{ marginRight: '2.4rem' }} />
+      <SplitItem />
       <SplitItem>
         <RadioField
           name={GROUP_NAME}
           isDisabled={disabled}
-          id={'userManagedNetworking'}
           value={'userManaged'}
           label="User-Managed Networking"
         />
