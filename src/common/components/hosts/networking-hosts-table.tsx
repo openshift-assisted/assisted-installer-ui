@@ -3,11 +3,9 @@ import { sortable, expandable } from '@patternfly/react-table';
 import { Address4, Address6 } from 'ip-address';
 
 import { getSubnet } from '../clusterConfiguration/utils';
-import { HostsNotShowingLinkProps } from '../clusterConfiguration/DiscoveryTroubleshootingModal';
 import { Cluster, Host, Interface, Inventory, stringToJSON } from '../../api';
 import { ValidationsInfo } from '../../types/hosts';
 import { DASH } from '../constants';
-import { WithTestID } from '../../types';
 
 import { HostDetail } from './HostRowDetail';
 import { HostsTableProps } from './HostsTable';
@@ -15,10 +13,8 @@ import { getHostname, getHostRole } from './utils';
 import Hostname from './Hostname';
 import HostsCount from './HostsCount';
 import RoleCell, { RoleCellProps } from './RoleCell';
-import { AdditionNtpSourcePropsType } from './HostValidationGroups';
-import { ClusterHostsTableProps } from './types';
 
-const getSelectedNic = (nics: Interface[], currentSubnet: Address4 | Address6) => {
+export const getSelectedNic = (nics: Interface[], currentSubnet: Address4 | Address6) => {
   return nics.find((nic) => {
     const ipv4Addresses = (nic.ipv4Addresses || []).reduce<Address4[]>((addresses, address) => {
       if (Address4.isValid(address)) {
@@ -42,7 +38,7 @@ const getSelectedNic = (nics: Interface[], currentSubnet: Address4 | Address6) =
   });
 };
 
-const getColumns = (cluster: Cluster) => [
+export const getColumns = (cluster: Cluster) => [
   { title: 'Hostname', transforms: [sortable], cellFormatters: [expandable] },
   { title: 'Role', transforms: [sortable] },
   { title: 'Status', transforms: [sortable] },
@@ -54,7 +50,7 @@ const getColumns = (cluster: Cluster) => [
 ];
 
 export type HostNetworkingStatusComponentProps = {
-  clusterId: Cluster['id'];
+  cluster: Cluster;
   host: Host;
   validationsInfo: ValidationsInfo;
   onEditHostname?: () => void;
@@ -65,7 +61,7 @@ type HostToHostTableRow = (
   HostNetworkingStatusComponent: React.FC<HostNetworkingStatusComponentProps>,
 ) => HostsTableProps['hostToHostTableRow'];
 
-const hostToHostTableRow: HostToHostTableRow = (cluster, HostNetworkingStatusComponent) => ({
+export const hostToHostTableRow: HostToHostTableRow = (cluster, HostNetworkingStatusComponent) => ({
   openRows,
   AdditionalNTPSourcesDialogToggleComponent,
   canEditDisks,
@@ -117,8 +113,8 @@ const hostToHostTableRow: HostToHostTableRow = (cluster, HostNetworkingStatusCom
         {
           title: (
             <HostNetworkingStatusComponent
+              cluster={cluster}
               host={host}
-              clusterId={cluster.id}
               onEditHostname={editHostname}
               validationsInfo={validationsInfo}
             />
@@ -176,32 +172,3 @@ const hostToHostTableRow: HostToHostTableRow = (cluster, HostNetworkingStatusCom
     },
   ];
 };
-
-type NetworkingHostsTableProps = AdditionNtpSourcePropsType & {
-  cluster: Cluster;
-  skipDisabled?: boolean;
-  setDiscoveryHintModalOpen?: HostsNotShowingLinkProps['setDiscoveryHintModalOpen'];
-  TableComponent: React.FC<NetworkingHostsTableComponentProps>;
-  HostNetworkingStatusComponent: React.FC<HostNetworkingStatusComponentProps>;
-};
-
-// So far we can reuse ClusterHostsTableProps even for the ClusterDeployment flow. Change it if needed.
-export type NetworkingHostsTableComponentProps = ClusterHostsTableProps & WithTestID;
-
-const NetworkingHostsTable: React.FC<NetworkingHostsTableProps> = ({
-  TableComponent,
-  HostNetworkingStatusComponent,
-  ...props
-}) => {
-  const columns = React.useMemo(() => getColumns(props.cluster), [props.cluster]);
-  return (
-    <TableComponent
-      {...props}
-      testId={'networking-host-table'}
-      columns={columns}
-      hostToHostTableRow={hostToHostTableRow(props.cluster, HostNetworkingStatusComponent)}
-    />
-  );
-};
-
-export default NetworkingHostsTable;
