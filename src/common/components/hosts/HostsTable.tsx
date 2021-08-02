@@ -50,13 +50,7 @@ export type hostToHostTableRowParamsType = {
   onDiskRole?: onDiskRoleType;
 };
 
-export type HostsTableProps = AdditionNtpSourcePropsType & {
-  hosts: Host[] | undefined;
-  EmptyState: React.ComponentType<{}>;
-  canEditRole?: (host: Host) => boolean;
-  columns?: (string | ICell)[];
-  hostToHostTableRow?: (params: hostToHostTableRowParamsType) => (host: Host) => IRow;
-  skipDisabled?: boolean;
+export type HostsTableActions = {
   onDeleteHost?: (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => void;
   onHostEnable?: (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => void;
   onInstallHost?: (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => void;
@@ -76,8 +70,18 @@ export type HostsTableProps = AdditionNtpSourcePropsType & {
   canDelete?: (host: Host) => boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onEditRole?: (host: Host, role?: string) => Promise<any>;
-  className?: string;
+  canEditRole?: (host: Host) => boolean;
 };
+
+export type HostsTableProps = AdditionNtpSourcePropsType &
+  HostsTableActions & {
+    hosts: Host[] | undefined;
+    EmptyState: React.ComponentType<{}>;
+    columns?: (string | ICell)[];
+    hostToHostTableRow?: (params: hostToHostTableRowParamsType) => (host: Host) => IRow;
+    skipDisabled?: boolean;
+    className?: string;
+  };
 
 const defaultColumns = [
   { title: 'Hostname', transforms: [sortable], cellFormatters: [expandable] },
