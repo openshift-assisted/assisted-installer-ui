@@ -8,4 +8,11 @@
 
 .cluster-wizard-step__footer {
   display: block !important;
+  z-index: 90 !important;
+}
+
+@media (min-width: 768px) {
+  .cluster-wizard-step .pf-c-wizard__main {
+    overflow: inherit !important;
+  }
 }
