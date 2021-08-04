@@ -5,6 +5,8 @@ import { Cluster, Event } from '../../api';
 import { EventListFetchProps, EventsEntityKind } from '../../types';
 import { EventListFetch } from '../fetching/EventListFetch';
 
+import './EventsModal.css';
+
 type EventsModalButtonProps = React.ComponentProps<typeof Button> & {
   ButtonComponent?: typeof Button | typeof ToolbarButton;
   onFetchEvents: EventListFetchProps['onFetchEvents'];

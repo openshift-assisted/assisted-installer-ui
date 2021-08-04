@@ -1,3 +1,12 @@
 #checkbox-deselect-all-hosts-action {
   visibility: hidden;
 }
+
+#clusters-events-toolbar {
+  position: fixed;
+  background: var(--pf-global--palette--white);
+  z-index: var(--pf-global--ZIndex--sm);
+  gap: 0;
+  width: calc(var(--pf-c-modal-box--Width) - var(--pf-global--spacer--3xl));
+  max-width: calc(var(--pf-c-modal-box--MaxWidth) - var(--pf-global--spacer--3xl));
+}
