@@ -31,6 +31,7 @@ export type NetworkConfigurationValues = ClusterUpdateParams & {
 export type HostDiscoveryValues = ClusterUpdateParams & {
   useExtraDisksForLocalStorage: boolean;
   useContainerNativeVirtualization: boolean;
+  usePlatformIntegration: boolean;
 };
 /* TODO: verify that this is really not needed
 export type ClusterDetailsValues = ClusterUpdateParams & {
