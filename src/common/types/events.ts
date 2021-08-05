@@ -26,4 +26,5 @@ export type EventListFetchProps = EventFetchProps & {
     onSuccess: (data: EventList) => void,
     onError: (message: string) => void,
   ) => Promise<void>;
+  className: string;
 };

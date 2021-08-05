@@ -1,8 +1,12 @@
 .events-modal .pf-c-modal-box__body {
-  padding-top:0;
+  display: flex;
+}
+
+.events-modal__body {
   display: flex;
   flex-direction: column;
 }
-.events-modal .events-list-wrapper {
-  overflow-y: auto;
+
+.events-modal__event-list {
+  overflow: auto;
 }

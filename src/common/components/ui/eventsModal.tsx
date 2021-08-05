@@ -81,12 +81,15 @@ export const EventsModal: React.FC<EventsModalProps> = ({
       variant={ModalVariant.large}
       className="events-modal"
     >
-      <EventListFetch
-        hostId={hostId}
-        cluster={cluster}
-        entityKind={entityKind}
-        onFetchEvents={onFetchEvents}
-      />
+      <div className="events-modal__body">
+        <EventListFetch
+          hostId={hostId}
+          cluster={cluster}
+          entityKind={entityKind}
+          onFetchEvents={onFetchEvents}
+          className="events-modal__event-list"
+        />
+      </div>
     </Modal>
   );
 };
