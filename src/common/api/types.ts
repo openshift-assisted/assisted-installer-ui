@@ -374,6 +374,7 @@ export interface ClusterCreateParams {
    */
   schedulableMasters?: boolean;
   networkConfiguration?: NetworkConfiguration;
+  platform?: Platform;
 }
 export interface ClusterDefaultConfig {
   clusterNetworkCidr?: string; // ^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)[\/]([1-9]|[1-2][0-9]|3[0-2]?)$
@@ -926,7 +927,13 @@ export interface Host {
     | 'error'
     | 'resetting'
     | 'added-to-existing-cluster'
-    | 'cancelled';
+    | 'cancelled'
+    | 'binding'
+    | 'known-unbound'
+    | 'disconnected-unbound'
+    | 'insufficient-unbound'
+    | 'disabled-unbound'
+    | 'discovering-unbound';
   statusInfo: string;
   /**
    * JSON-formatted string containing the validation results for each validation id grouped by category (network, hardware, etc.)
@@ -1079,7 +1086,13 @@ export interface HostRegistrationResponse {
     | 'error'
     | 'resetting'
     | 'added-to-existing-cluster'
-    | 'cancelled';
+    | 'cancelled'
+    | 'binding'
+    | 'known-unbound'
+    | 'disconnected-unbound'
+    | 'insufficient-unbound'
+    | 'disabled-unbound'
+    | 'discovering-unbound';
   statusInfo: string;
   /**
    * JSON-formatted string containing the validation results for each validation id grouped by category (network, hardware, etc.)
@@ -1245,7 +1258,8 @@ export type HostValidationId =
   | 'has-default-route'
   | 'api-domain-name-resolved-correctly'
   | 'api-int-domain-name-resolved-correctly'
-  | 'apps-domain-name-resolved-correctly';
+  | 'apps-domain-name-resolved-correctly'
+  | 'compatible-with-cluster-platform';
 export interface ImageCreateParams {
   /**
    * SSH public key for debugging the installation.
@@ -1330,25 +1344,48 @@ export interface InfraEnv {
    * Image generator version.
    */
   generatorVersion?: string;
+  /**
+   * The last time that this infraenv was updated.
+   */
+  updatedAt?: string; // date-time
   createdAt?: string; // date-time
   expiresAt?: string; // date-time
 }
-export type InfraEnvList = InfraEnv[];
-export interface InfraError {
-  /**
-   * Numeric identifier of the error.
-   */
-  code: number; // int32
-  /**
-   * Human-readable description of the error.
-   */
-  message: string;
-}
-export interface InfraenvCreateParams {
+export interface InfraEnvCreateParams {
   /**
    * Name of the InfraEnv.
    */
-  name?: string;
+  name: string;
+  proxy?: Proxy;
+  /**
+   * A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
+   */
+  additionalNtpSources?: string;
+  /**
+   * SSH public key for debugging the installation.
+   */
+  sshAuthorizedKey?: string;
+  /**
+   * The pull secret obtained from Red Hat OpenShift Cluster Manager at cloud.redhat.com/openshift/install/pull-secret.
+   */
+  pullSecret: string;
+  staticNetworkConfig?: HostStaticNetworkConfig[];
+  imageType?: ImageType;
+  /**
+   * JSON formatted string containing the user overrides for the initial ignition config.
+   */
+  ignitionConfigOverride?: string;
+  /**
+   * If set, all hosts that register will be associated with the specified cluster.
+   */
+  clusterId?: string; // uuid
+  /**
+   * Version of the OpenShift cluster (used to infer the RHCOS version - temporary until generic logic implemented).
+   */
+  openshiftVersion: string;
+}
+export type InfraEnvList = InfraEnv[];
+export interface InfraEnvUpdateParams {
   proxy?: Proxy;
   /**
    * A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
@@ -1372,6 +1409,16 @@ export interface InfraenvCreateParams {
    * If set, all hosts that register will be associated with the specified cluster.
    */
   clusterId?: string; // uuid
+}
+export interface InfraError {
+  /**
+   * Numeric identifier of the error.
+   */
+  code: number; // int32
+  /**
+   * Human-readable description of the error.
+   */
+  message: string;
 }
 export type IngressCertParams = string;
 export interface InstallerArgsParams {
