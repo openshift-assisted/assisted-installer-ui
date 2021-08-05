@@ -3,3 +3,6 @@
   display: flex;
   flex-direction: column;
 }
+.events-modal .events-list-wrapper {
+  overflow-y: auto;
+}

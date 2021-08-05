@@ -13,8 +13,6 @@ import { EmptyState } from './uiState';
 import { getHumanizedDateTime } from './utils';
 import { fitContent, noPadding } from './table';
 
-import './EventsList.css';
-
 const getEventRowKey = ({ rowData }: ExtraParamsType) =>
   rowData?.props?.event.sortableTime + rowData?.props?.event.message;
 
