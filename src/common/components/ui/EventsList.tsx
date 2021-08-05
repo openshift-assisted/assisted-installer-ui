@@ -89,19 +89,20 @@ const EventsList: React.FC<EventsListProps> = ({ events }) => {
   }));
 
   return (
-    <Table
-      className="events-list"
-      rows={rows}
-      cells={[
-        { title: 'Time', cellTransforms: [fitContent, noPadding] },
-        { title: 'Message', cellTransforms: [breakWord] },
-      ]}
-      variant={TableVariant.compact}
-      aria-label="Events table"
-      borders={false}
-    >
-      <TableBody rowKey={getEventRowKey} />
-    </Table>
+    <div className="events-list-wrapper">
+      <Table
+        rows={rows}
+        cells={[
+          { title: 'Time', cellTransforms: [fitContent, noPadding] },
+          { title: 'Message', cellTransforms: [breakWord] },
+        ]}
+        variant={TableVariant.compact}
+        aria-label="Events table"
+        borders={false}
+      >
+        <TableBody rowKey={getEventRowKey} />
+      </Table>
+    </div>
   );
 };
 

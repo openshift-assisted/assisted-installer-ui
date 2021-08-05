@@ -1,3 +1,4 @@
-.events-list {
-  margin-top: var(--pf-global--spacer--3xl);
+.events-modal .events-list-wrapper {
+  height: calc(100vh - 4 * var(--pf-global--spacer--3xl));
+  overflow-y: auto;
 }
