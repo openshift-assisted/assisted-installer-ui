@@ -1,7 +1,3 @@
-.events-modal .pf-c-modal-box__body {
-  display: flex;
-}
-
 .events-modal__body {
   display: flex;
   flex-direction: column;

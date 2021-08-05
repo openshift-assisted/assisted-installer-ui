@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Modal, ButtonVariant, ModalVariant } from '@patternfly/react-core';
+import { Button, Modal, ButtonVariant, ModalVariant, ModalBoxBody } from '@patternfly/react-core';
 import { ToolbarButton } from './Toolbar';
 import { Cluster, Event } from '../../api';
 import { EventListFetchProps, EventsEntityKind } from '../../types';
@@ -72,6 +72,7 @@ export const EventsModal: React.FC<EventsModalProps> = ({
     <Modal
       title={title}
       isOpen={isOpen}
+      hasNoBodyWrapper={true}
       actions={[
         <Button key="close" variant={ButtonVariant.primary} onClick={onClose}>
           Close
@@ -81,7 +82,7 @@ export const EventsModal: React.FC<EventsModalProps> = ({
       variant={ModalVariant.large}
       className="events-modal"
     >
-      <div className="events-modal__body">
+      <ModalBoxBody className="events-modal__body">
         <EventListFetch
           hostId={hostId}
           cluster={cluster}
@@ -89,7 +90,7 @@ export const EventsModal: React.FC<EventsModalProps> = ({
           onFetchEvents={onFetchEvents}
           className="events-modal__event-list"
         />
-      </div>
+      </ModalBoxBody>
     </Modal>
   );
 };
