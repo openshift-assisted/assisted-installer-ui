@@ -11,6 +11,8 @@ import {
   OnSort,
   IRow,
   IActionsResolver,
+  cellWidth,
+  breakWord,
 } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base/types';
 import { ClusterTableRows } from '../../../common/types/clusters';
@@ -37,8 +39,20 @@ const columnConfig = {
 };
 
 const columns = [
-  { title: 'Name', dataLabel: 'Name', ...columnConfig },
-  { title: 'Base domain', dataLabel: 'Base domain', ...columnConfig },
+  {
+    title: 'Name',
+    dataLabel: 'Name',
+    ...columnConfig,
+    transforms: [...columnConfig.transforms.concat(cellWidth(20))],
+    cellTransforms: [breakWord],
+  },
+  {
+    title: 'Base domain',
+    dataLabel: 'Base domain',
+    ...columnConfig,
+    transforms: [...columnConfig.transforms.concat(cellWidth(40))],
+    cellTransforms: [breakWord],
+  },
   { title: 'Version', dataLabel: 'Version', ...columnConfig },
   { title: 'Status', dataLabel: 'Status', ...columnConfig },
   { title: 'Hosts', dataLabel: 'Hosts', ...columnConfig },
