@@ -91,6 +91,7 @@ export interface Cluster {
    */
   openshiftClusterId?: string; // uuid
   imageInfo: ImageInfo;
+  platform?: Platform;
   /**
    * Base domain of the cluster. All DNS records must be sub-domains of this base and include the cluster name.
    */
@@ -167,6 +168,10 @@ export interface Cluster {
    */
   statusUpdatedAt?: string; // date-time
   /**
+   * Installation progress percentages of the cluster.
+   */
+  progress?: ClusterProgressInfo;
+  /**
    * Hosts that are associated with this cluster.
    */
   hosts?: Host[];
@@ -182,6 +187,10 @@ export interface Cluster {
    * All hosts associated to this cluster.
    */
   totalHostCount?: number; // int64
+  /**
+   * Schedule workloads on masters
+   */
+  schedulableMasters?: boolean;
   /**
    * The last time that this cluster was updated.
    */
@@ -264,6 +273,14 @@ export interface Cluster {
    * JSON-formatted string containing the usage information by feature name
    */
   featureUsage?: string;
+  /**
+   * The desired network type used.
+   */
+  networkType?: 'OpenShiftSDN' | 'OVNKubernetes';
+  /**
+   * JSON-formatted string containing the networking data for the install-config.yaml file.
+   */
+  networkConfiguration?: string;
 }
 export interface ClusterCreateParams {
   /**
@@ -348,6 +365,16 @@ export interface ClusterCreateParams {
    * Enable/disable hyperthreading on master nodes, worker nodes, or all nodes.
    */
   hyperthreading?: 'masters' | 'workers' | 'none' | 'all';
+  /**
+   * The desired network type used.
+   */
+  networkType?: 'OpenShiftSDN' | 'OVNKubernetes';
+  /**
+   * Schedule workloads on masters
+   */
+  schedulableMasters?: boolean;
+  networkConfiguration?: NetworkConfiguration;
+  platform?: Platform;
 }
 export interface ClusterDefaultConfig {
   clusterNetworkCidr?: string; // ^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)[\/]([1-9]|[1-2][0-9]|3[0-2]?)$
@@ -402,6 +429,25 @@ export interface ClusterHostRequirementsDetails {
 }
 export type ClusterHostRequirementsList = ClusterHostRequirements[];
 export type ClusterList = Cluster[];
+/**
+ * IP address block for pod IP blocks.
+ */
+export interface ClusterNetwork {
+  /**
+   * The IP block address pool.
+   */
+  cidr?: Subnet; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$
+  /**
+   * The prefix size to allocate to each node from the CIDR. For example, 24 would allocate 2^8=256 adresses to each node.
+   */
+  hostPrefix?: number;
+}
+export interface ClusterProgressInfo {
+  totalPercentage?: number;
+  preparingForInstallationStagePercentage?: number;
+  installingStagePercentage?: number;
+  finalizingStagePercentage?: number;
+}
 export interface ClusterUpdateParams {
   /**
    * OpenShift cluster name.
@@ -415,6 +461,7 @@ export interface ClusterUpdateParams {
    * IP address block from which Pod IPs are allocated. This block must not overlap with existing physical networks. These IP addresses are used for the Pod network, and if you need to access the Pods from an external network, configure load balancers and routers to manage the traffic.
    */
   clusterNetworkCidr?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$
+  platform?: Platform;
   /**
    * The subnet prefix length to assign to each individual node. For example, if clusterNetworkHostPrefix is set to 23, then each node is assigned a /23 subnet out of the given cidr (clusterNetworkCIDR), which allows for 510 (2^(32 - 23) - 2) pod IPs addresses. If you are required to provide access to nodes from an external network, configure load balancers and routers to manage the traffic.
    */
@@ -511,6 +558,15 @@ export interface ClusterUpdateParams {
    * Enable/disable hyperthreading on master nodes, worker nodes, or all nodes.
    */
   hyperthreading?: 'masters' | 'workers' | 'all' | 'none';
+  /**
+   * The desired network type used.
+   */
+  networkType?: 'OpenShiftSDN' | 'OVNKubernetes';
+  /**
+   * Schedule workloads on masters
+   */
+  schedulableMasters?: boolean;
+  networkConfiguration?: NetworkConfiguration;
 }
 export type ClusterValidationId =
   | 'machine-cidr-defined'
@@ -530,7 +586,8 @@ export type ClusterValidationId =
   | 'ntp-server-configured'
   | 'lso-requirements-satisfied'
   | 'ocs-requirements-satisfied'
-  | 'cnv-requirements-satisfied';
+  | 'cnv-requirements-satisfied'
+  | 'network-type-valid';
 export interface CompletionParams {
   isSuccess: boolean;
   errorInfo?: string;
@@ -849,6 +906,10 @@ export interface Host {
    * The cluster that this host is associated with.
    */
   clusterId?: string; // uuid
+  /**
+   * The InfraEnv that this host is associated with.
+   */
+  infraEnvId?: string; // uuid
   status:
     | 'discovering'
     | 'known'
@@ -866,7 +927,13 @@ export interface Host {
     | 'error'
     | 'resetting'
     | 'added-to-existing-cluster'
-    | 'cancelled';
+    | 'cancelled'
+    | 'binding'
+    | 'known-unbound'
+    | 'disconnected-unbound'
+    | 'insufficient-unbound'
+    | 'disabled-unbound'
+    | 'discovering-unbound';
   statusInfo: string;
   /**
    * JSON-formatted string containing the validation results for each validation id grouped by category (network, hardware, etc.)
@@ -945,6 +1012,10 @@ export interface Host {
    * Array of image statuses.
    */
   imagesStatus?: string;
+  /**
+   * The domain name resolution result.
+   */
+  domainNameResolutions?: string;
 }
 export interface HostCreateParams {
   hostId: string; // uuid
@@ -963,6 +1034,7 @@ export interface HostProgress {
   progressInfo?: string;
 }
 export interface HostProgressInfo {
+  installationPercentage?: number;
   currentStage: HostStage;
   progressInfo?: string;
   /**
@@ -993,6 +1065,10 @@ export interface HostRegistrationResponse {
    * The cluster that this host is associated with.
    */
   clusterId?: string; // uuid
+  /**
+   * The InfraEnv that this host is associated with.
+   */
+  infraEnvId?: string; // uuid
   status:
     | 'discovering'
     | 'known'
@@ -1010,7 +1086,13 @@ export interface HostRegistrationResponse {
     | 'error'
     | 'resetting'
     | 'added-to-existing-cluster'
-    | 'cancelled';
+    | 'cancelled'
+    | 'binding'
+    | 'known-unbound'
+    | 'disconnected-unbound'
+    | 'insufficient-unbound'
+    | 'disabled-unbound'
+    | 'discovering-unbound';
   statusInfo: string;
   /**
    * JSON-formatted string containing the validation results for each validation id grouped by category (network, hardware, etc.)
@@ -1090,6 +1172,10 @@ export interface HostRegistrationResponse {
    */
   imagesStatus?: string;
   /**
+   * The domain name resolution result.
+   */
+  domainNameResolutions?: string;
+  /**
    * Command for starting the next step runner
    */
   nextStepRunnerCommand?: {
@@ -1100,16 +1186,6 @@ export interface HostRegistrationResponse {
      */
     retrySeconds?: number;
   };
-}
-export interface HostRequirements {
-  master?: HostRequirementsRole;
-  worker?: HostRequirementsRole;
-}
-export interface HostRequirementsRole {
-  cpuCores?: number;
-  ramGib?: number;
-  diskSizeGb?: number;
-  installationDiskSpeedThresholdMs?: number;
 }
 export type HostRole = 'auto-assign' | 'master' | 'worker' | 'bootstrap';
 export type HostRoleUpdateParams = 'auto-assign' | 'master' | 'worker';
@@ -1179,7 +1255,11 @@ export type HostValidationId =
   | 'cnv-requirements-satisfied'
   | 'sufficient-network-latency-requirement-for-role'
   | 'sufficient-packet-loss-requirement-for-role'
-  | 'has-default-route';
+  | 'has-default-route'
+  | 'api-domain-name-resolved-correctly'
+  | 'api-int-domain-name-resolved-correctly'
+  | 'apps-domain-name-resolved-correctly'
+  | 'compatible-with-cluster-platform';
 export interface ImageCreateParams {
   /**
    * SSH public key for debugging the installation.
@@ -1211,6 +1291,125 @@ export interface ImageInfo {
   type?: ImageType;
 }
 export type ImageType = 'full-iso' | 'minimal-iso';
+export interface InfraEnv {
+  /**
+   * Indicates the type of this object.
+   */
+  kind?: 'InfraEnv';
+  /**
+   * Unique identifier of the object.
+   */
+  id?: string; // uuid
+  /**
+   * Self link.
+   */
+  href?: string;
+  /**
+   * Version of the OpenShift cluster (used to infer the RHCOS version - temporary until generic logic implemented).
+   */
+  openshiftVersion?: string;
+  /**
+   * Name of the InfraEnv.
+   */
+  name?: string;
+  proxy?: Proxy;
+  /**
+   * A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
+   */
+  additionalNtpSources?: string;
+  /**
+   * SSH public key for debugging the installation.
+   */
+  sshAuthorizedKey?: string;
+  /**
+   * True if the pull secret has been added to the cluster.
+   */
+  pullSecretSet?: boolean;
+  /**
+   * static network configuration string in the format expected by discovery ignition generation.
+   */
+  staticNetworkConfig?: string;
+  type?: ImageType;
+  /**
+   * Json formatted string containing the user overrides for the initial ignition config.
+   */
+  ignitionConfigOverride?: string;
+  /**
+   * If set, all hosts that register will be associated with the specified cluster.
+   */
+  clusterId?: string; // uuid
+  sizeBytes?: number;
+  downloadUrl?: string;
+  /**
+   * Image generator version.
+   */
+  generatorVersion?: string;
+  /**
+   * The last time that this infraenv was updated.
+   */
+  updatedAt?: string; // date-time
+  createdAt?: string; // date-time
+  expiresAt?: string; // date-time
+}
+export interface InfraEnvCreateParams {
+  /**
+   * Name of the InfraEnv.
+   */
+  name: string;
+  proxy?: Proxy;
+  /**
+   * A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
+   */
+  additionalNtpSources?: string;
+  /**
+   * SSH public key for debugging the installation.
+   */
+  sshAuthorizedKey?: string;
+  /**
+   * The pull secret obtained from Red Hat OpenShift Cluster Manager at cloud.redhat.com/openshift/install/pull-secret.
+   */
+  pullSecret: string;
+  staticNetworkConfig?: HostStaticNetworkConfig[];
+  imageType?: ImageType;
+  /**
+   * JSON formatted string containing the user overrides for the initial ignition config.
+   */
+  ignitionConfigOverride?: string;
+  /**
+   * If set, all hosts that register will be associated with the specified cluster.
+   */
+  clusterId?: string; // uuid
+  /**
+   * Version of the OpenShift cluster (used to infer the RHCOS version - temporary until generic logic implemented).
+   */
+  openshiftVersion: string;
+}
+export type InfraEnvList = InfraEnv[];
+export interface InfraEnvUpdateParams {
+  proxy?: Proxy;
+  /**
+   * A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
+   */
+  additionalNtpSources?: string;
+  /**
+   * SSH public key for debugging the installation.
+   */
+  sshAuthorizedKey?: string;
+  /**
+   * The pull secret obtained from Red Hat OpenShift Cluster Manager at cloud.redhat.com/openshift/install/pull-secret.
+   */
+  pullSecret?: string;
+  staticNetworkConfig?: HostStaticNetworkConfig[];
+  imageType?: ImageType;
+  /**
+   * JSON formatted string containing the user overrides for the initial ignition config.
+   */
+  ignitionConfigOverride?: string;
+  /**
+   * If set, all hosts that register will be associated with the specified cluster.
+   */
+  clusterId?: string; // uuid
+}
 export interface InfraError {
   /**
    * Numeric identifier of the error.
@@ -1308,6 +1507,15 @@ export type MacInterfaceMap = {
    */
   logicalNicName?: string;
 }[];
+/**
+ * IP address block for node IP blocks.
+ */
+export interface MachineNetwork {
+  /**
+   * The IP block address pool for machines within the cluster.
+   */
+  cidr?: Subnet; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$
+}
 export interface ManagedDomain {
   domain?: string;
   provider?: 'route53';
@@ -1363,6 +1571,11 @@ export interface MonitoredOperator {
   statusUpdatedAt?: string; // date-time
 }
 export type MonitoredOperatorsList = MonitoredOperator[];
+export interface NetworkConfiguration {
+  clusterNetwork?: ClusterNetwork[];
+  machineNetwork?: MachineNetwork[];
+  serviceNetwork?: ServiceNetwork[];
+}
 export interface NtpSource {
   /**
    * NTP source name or IP.
@@ -1493,6 +1706,14 @@ export type OperatorStatus = 'failed' | 'progressing' | 'available';
  * Kind of operator. Different types are monitored by the service differently.
  */
 export type OperatorType = 'builtin' | 'olm';
+/**
+ * The configuration for the specific platform upon which to perform the installation.
+ */
+export interface Platform {
+  type: PlatformType;
+  vsphere?: VspherePlatform;
+}
+export type PlatformType = 'baremetal' | 'vsphere';
 export interface PreflightHardwareRequirements {
   /**
    * Preflight operators hardware requirements
@@ -1505,6 +1726,24 @@ export interface PreflightHardwareRequirements {
 }
 export interface Presigned {
   url: string;
+}
+export interface Proxy {
+  /**
+   * A proxy URL to use for creating HTTP connections outside the cluster.
+   * http://\<username\>:\<pswd\>@\<ip\>:\<port\>
+   *
+   */
+  httpProxy?: string;
+  /**
+   * A proxy URL to use for creating HTTPS connections outside the cluster.
+   * http://\<username\>:\<pswd\>@\<ip\>:\<port\>
+   *
+   */
+  httpsProxy?: string;
+  /**
+   * An "*" or a comma-separated list of destination domain names, domains, IP addresses, or other network CIDRs to exclude from proxying.
+   */
+  noProxy?: string;
 }
 export interface Route {
   /**
@@ -1523,6 +1762,15 @@ export interface Route {
    * Defines whether this is an IPv4 (4) or IPv6 route (6)
    */
   family?: number; // int32
+}
+/**
+ * List of IP address pools for services.
+ */
+export interface ServiceNetwork {
+  /**
+   * The IP block address pool.
+   */
+  cidr?: Subnet; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$
 }
 export type SourceState =
   | 'synced'
@@ -1566,6 +1814,7 @@ export interface Steps {
   instructions?: Step[];
 }
 export type StepsReply = StepReply[];
+export type Subnet = string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$
 export interface SystemVendor {
   serialNumber?: string;
   productName?: string;
@@ -1607,4 +1856,41 @@ export interface VersionedHostRequirements {
 }
 export interface Versions {
   [name: string]: string;
+}
+/**
+ * Vsphere platform specific configuration upon which to perform the installation
+ */
+export interface VspherePlatform {
+  /**
+   * The user name to use to connect to the vCenter instance with. This user must have at least the roles and privileges that are required for static or dynamic persistent volume provisioning in vSphere.
+   */
+  username?: string;
+  /**
+   * The password for the vCenter user name.
+   */
+  password?: string; // password
+  /**
+   * The name of the datacenter to use in the vCenter instance.
+   */
+  datacenter?: string;
+  /**
+   * The fully-qualified hostname or IP address of the vCenter server.
+   */
+  vCenter?: string;
+  /**
+   * The vCenter cluster to install the OpenShift Container Platform cluster in.
+   */
+  cluster?: string;
+  /**
+   * The name of the default datastore to use for provisioning volumes.
+   */
+  defaultDatastore?: string;
+  /**
+   * The network in the vCenter instance that contains the virtual IP addresses and DNS records that you configured.
+   */
+  network?: string;
+  /**
+   * Optional. The absolute path of an existing folder where the installation program creates the virtual machines. If you do not provide this value, the installation program creates a folder that is named with the infrastructure ID in the datacenter virtual machine folder.
+   */
+  folder?: string;
 }

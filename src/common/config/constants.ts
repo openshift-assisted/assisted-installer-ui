@@ -3,6 +3,8 @@ import * as packageJson from '../../../package.json';
 import { ValidationsInfo, HostRole } from '../../common/types/hosts';
 import { Cluster, ClusterValidationId, DiskRole, Event, Host, HostValidationId } from '../api';
 
+export const OPENSHIFT_LIFE_CYCLE_DATES_LINK =
+  'https://access.redhat.com/support/policy/updates/openshift#dates';
 export const OPENSHIFT_NETWORKING_DOCS_LINK =
   'https://docs.openshift.com/container-platform/4.7/installing/installing_bare_metal/installing-bare-metal.html#installation-network-user-infra_installing-bare-metal';
 export const CLUSTER_MANAGER_SITE_LINK = 'https://cloud.redhat.com/openshift/install/pull-secret';
@@ -58,6 +60,12 @@ export const CLUSTER_STATUS_LABELS: { [key in Cluster['status']]: string } = {
 };
 
 export const HOST_STATUS_LABELS: { [key in Host['status']]: string } = {
+  'disabled-unbound': '',
+  'disconnected-unbound': '',
+  'discovering-unbound': '',
+  'insufficient-unbound': '',
+  'known-unbound': '',
+  binding: '',
   discovering: 'Discovering',
   'pending-for-input': 'Pending input',
   known: 'Ready',
@@ -91,6 +99,12 @@ export const CLUSTER_FIELD_LABELS: { [key in string]: string } = {
 };
 
 export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
+  'disabled-unbound': '',
+  'disconnected-unbound': '',
+  'discovering-unbound': '',
+  'insufficient-unbound': '',
+  'known-unbound': '',
+  binding: '',
   discovering:
     'This host is transmitting its hardware and networking information to the installer. Please wait while this information is received.',
   'pending-for-input': '',
@@ -124,6 +138,7 @@ export const HOST_VALIDATION_GROUP_LABELS: { [key in keyof ValidationsInfo]: str
 };
 
 export const HOST_VALIDATION_LABELS: { [key in HostValidationId]: string } = {
+  'compatible-with-cluster-platform': '',
   'has-default-route': 'Default route to host',
   'sufficient-network-latency-requirement-for-role': 'Network latency',
   'sufficient-packet-loss-requirement-for-role': 'Packet loss',
@@ -147,9 +162,13 @@ export const HOST_VALIDATION_LABELS: { [key in HostValidationId]: string } = {
   'ocs-requirements-satisfied': 'OCS requirements',
   'sufficient-installation-disk-speed': 'Installation disk speed',
   'cnv-requirements-satisfied': 'CNV requirements',
+  'api-domain-name-resolved-correctly': 'API domain name resolution',
+  'api-int-domain-name-resolved-correctly': 'API internal domain name resolution',
+  'apps-domain-name-resolved-correctly': 'Application ingress domain name resolution',
 };
 
 export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string } = {
+  'compatible-with-cluster-platform': '',
   'has-default-route': '',
   'sufficient-network-latency-requirement-for-role': '',
   'sufficient-packet-loss-requirement-for-role': '',
@@ -173,9 +192,13 @@ export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string 
   'ocs-requirements-satisfied': '',
   'sufficient-installation-disk-speed': '',
   'cnv-requirements-satisfied': '',
+  'api-domain-name-resolved-correctly': '',
+  'api-int-domain-name-resolved-correctly': '',
+  'apps-domain-name-resolved-correctly': '',
 };
 
 export const CLUSTER_VALIDATION_LABELS: { [key in ClusterValidationId]: string } = {
+  'network-type-valid': 'Valid network type',
   'machine-cidr-defined': 'Machine CIDR',
   'cluster-cidr-defined': 'Cluster CIDR',
   'service-cidr-defined': 'Service CIDR',
