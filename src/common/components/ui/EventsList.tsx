@@ -43,7 +43,7 @@ const getLabelIcon = (severity: Event['severity']) => {
 
 export type EventsListProps = {
   events: EventList;
-  className: string;
+  className?: string;
 };
 
 const EventsList: React.FC<EventsListProps> = ({ events, className }) => {

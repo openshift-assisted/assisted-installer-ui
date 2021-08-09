@@ -10,7 +10,7 @@ import ClusterEventsToolbar, { getInitialClusterEventsFilters } from './ClusterE
 export type ClusterEventsListProps = {
   events: EventList;
   cluster: Cluster;
-  className: string;
+  className?: string;
 };
 
 const filterEvents = (

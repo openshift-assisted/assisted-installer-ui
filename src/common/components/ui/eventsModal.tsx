@@ -72,7 +72,7 @@ export const EventsModal: React.FC<EventsModalProps> = ({
     <Modal
       title={title}
       isOpen={isOpen}
-      hasNoBodyWrapper={true}
+      hasNoBodyWrapper
       actions={[
         <Button key="close" variant={ButtonVariant.primary} onClick={onClose}>
           Close
