@@ -1,5 +1,5 @@
 import React from 'react';
-import { Split, SplitItem, Tooltip } from '@patternfly/react-core';
+import { Split, SplitItem, Tooltip, FormGroup } from '@patternfly/react-core';
 import { RadioField } from '../../ui/formik';
 import { PopoverIcon } from '../../../components/ui';
 
@@ -13,46 +13,52 @@ export const NetworkTypeControlGroup: React.FC<NetworkTypeControlGroupProps> = (
   const GROUP_NAME = 'networkType';
 
   return (
-    <Split hasGutter>
-      <SplitItem>
-        <Tooltip
-          hidden={!isIPv6}
-          content={'Software-Defined Networking (SDN) can be selected only when IPv4 is detected.'}
-        >
+    <FormGroup fieldId={GROUP_NAME} label="Network type">
+      <Split hasGutter>
+        <SplitItem>
+          <Tooltip
+            hidden={!isIPv6}
+            content={
+              'Software-Defined Networking (SDN) can be selected only when IPv4 is detected.'
+            }
+          >
+            <RadioField
+              id={GROUP_NAME}
+              name={GROUP_NAME}
+              isDisabled={isIPv6}
+              value={'OpenShiftSDN'}
+              label={
+                <>
+                  Software-Defined Networking (SDN){' '}
+                  <PopoverIcon
+                    variant={'plain'}
+                    bodyContent={'The classic bullet-proof networking type'}
+                  />
+                </>
+              }
+            />
+          </Tooltip>
+        </SplitItem>
+        <SplitItem />
+        <SplitItem>
           <RadioField
+            id={GROUP_NAME}
             name={GROUP_NAME}
-            isDisabled={isIPv6}
-            value={'OpenShiftSDN'}
+            value={'OVNKubernetes'}
             label={
               <>
-                Software-Defined Networking{' '}
+                Open Virtual Networking (OVN){' '}
                 <PopoverIcon
                   variant={'plain'}
-                  bodyContent={'The classic bullet-proof networking type'}
+                  bodyContent={
+                    "The next generation networking type, select this when you're using new features and telco features"
+                  }
                 />
               </>
             }
           />
-        </Tooltip>
-      </SplitItem>
-      <SplitItem />
-      <SplitItem>
-        <RadioField
-          name={GROUP_NAME}
-          value={'OVNKubernetes'}
-          label={
-            <>
-              Open Virtual Networking{' '}
-              <PopoverIcon
-                variant={'plain'}
-                bodyContent={
-                  "The next generation networking type, select this when you're using new features and telco features"
-                }
-              />
-            </>
-          }
-        />
-      </SplitItem>
-    </Split>
+        </SplitItem>
+      </Split>
+    </FormGroup>
   );
 };
