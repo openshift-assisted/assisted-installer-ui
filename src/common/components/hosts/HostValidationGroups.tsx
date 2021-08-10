@@ -57,7 +57,6 @@ const ValidationGroupAlert: React.FC<ValidationGroupAlertProps> = ({
         ['hostname-unique', 'hostname-valid'].includes(validation.id),
     )
   ) {
-    console.log(props);
     actionLinks.push(
       <Hostname
         key="change-hostname"
@@ -86,6 +85,7 @@ const ValidationGroupAlert: React.FC<ValidationGroupAlertProps> = ({
           </li>
         ))}
       </ul>
+      To fix this click the “Change hostname” link and rename the host.
     </Alert>
   );
 };
