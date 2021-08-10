@@ -60,6 +60,12 @@ export const CLUSTER_STATUS_LABELS: { [key in Cluster['status']]: string } = {
 };
 
 export const HOST_STATUS_LABELS: { [key in Host['status']]: string } = {
+  'disabled-unbound': '',
+  'disconnected-unbound': '',
+  'discovering-unbound': '',
+  'insufficient-unbound': '',
+  'known-unbound': '',
+  binding: '',
   discovering: 'Discovering',
   'pending-for-input': 'Pending input',
   known: 'Ready',
@@ -93,6 +99,12 @@ export const CLUSTER_FIELD_LABELS: { [key in string]: string } = {
 };
 
 export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
+  'disabled-unbound': '',
+  'disconnected-unbound': '',
+  'discovering-unbound': '',
+  'insufficient-unbound': '',
+  'known-unbound': '',
+  binding: '',
   discovering:
     'This host is transmitting its hardware and networking information to the installer. Please wait while this information is received.',
   'pending-for-input': '',
@@ -126,6 +138,7 @@ export const HOST_VALIDATION_GROUP_LABELS: { [key in keyof ValidationsInfo]: str
 };
 
 export const HOST_VALIDATION_LABELS: { [key in HostValidationId]: string } = {
+  'compatible-with-cluster-platform': '',
   'has-default-route': 'Default route to host',
   'sufficient-network-latency-requirement-for-role': 'Network latency',
   'sufficient-packet-loss-requirement-for-role': 'Packet loss',
@@ -155,6 +168,7 @@ export const HOST_VALIDATION_LABELS: { [key in HostValidationId]: string } = {
 };
 
 export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string } = {
+  'compatible-with-cluster-platform': '',
   'has-default-route': '',
   'sufficient-network-latency-requirement-for-role': '',
   'sufficient-packet-loss-requirement-for-role': '',

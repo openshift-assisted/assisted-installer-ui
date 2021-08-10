@@ -3,7 +3,7 @@ import applyCaseMiddleware from 'axios-case-converter';
 import { camelCase } from 'camel-case';
 
 // conforms basePath in swagger.json
-export const BASE_PATH = '/api/assisted-install/v1';
+export const BASE_PATH = '/api/assisted-install';
 
 // Prevent axios converter to change object keys from '4.7' to '4_7'
 const axiosCaseConverterOptions = {
