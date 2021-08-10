@@ -4,3 +4,4 @@
 */
 
 export const DASH = '-';
+export const OpticalDiskDriveType = 'ODD';

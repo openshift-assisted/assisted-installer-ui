@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Table,
+  TableProps,
   TableHeader,
   TableBody,
   RowWrapper,
@@ -11,6 +12,8 @@ import {
   OnSort,
   IRow,
   IActionsResolver,
+  cellWidth,
+  breakWord,
 } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base/types';
 import { ClusterTableRows } from '../../../common/types/clusters';
@@ -28,7 +31,9 @@ interface ClustersTableProps {
   deleteCluster: (id: string) => void;
 }
 
-const columnConfig = {
+type TablePropsCellType = TableProps['cells'][0];
+
+const columnConfig: TablePropsCellType = {
   transforms: [sortable],
   cellTransforms: [],
   formatters: [],
@@ -36,9 +41,21 @@ const columnConfig = {
   props: {},
 };
 
-const columns = [
-  { title: 'Name', dataLabel: 'Name', ...columnConfig },
-  { title: 'Base domain', dataLabel: 'Base domain', ...columnConfig },
+const columns: TablePropsCellType[] = [
+  {
+    title: 'Name',
+    dataLabel: 'Name',
+    ...columnConfig,
+    transforms: columnConfig?.transforms?.concat(cellWidth(20)),
+    cellTransforms: columnConfig?.transforms?.concat(breakWord),
+  },
+  {
+    title: 'Base domain',
+    dataLabel: 'Base domain',
+    ...columnConfig,
+    transforms: columnConfig?.transforms?.concat(cellWidth(40)),
+    cellTransforms: columnConfig?.transforms?.concat(breakWord),
+  },
   { title: 'Version', dataLabel: 'Version', ...columnConfig },
   { title: 'Status', dataLabel: 'Status', ...columnConfig },
   { title: 'Hosts', dataLabel: 'Hosts', ...columnConfig },
