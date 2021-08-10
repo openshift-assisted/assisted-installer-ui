@@ -72,6 +72,7 @@ export const EventsModal: React.FC<EventsModalProps> = ({
     <Modal
       title={title}
       isOpen={isOpen}
+      aria-label="Displays events"
       hasNoBodyWrapper
       actions={[
         <Button key="close" variant={ButtonVariant.primary} onClick={onClose}>
