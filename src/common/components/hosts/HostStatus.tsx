@@ -41,7 +41,7 @@ import {
 } from './HostValidationGroups';
 import OcpConsoleNodesSectionLink from './OcpConsoleNodesSectionLink';
 import { toSentence } from '../ui/table/utils';
-import { RenderIf, RenderIfElse } from '../ui/RenderIf';
+import { RenderIf } from '../ui';
 
 const getStatusIcon = (status: Host['status']) => {
   let icon = null;
@@ -199,7 +199,7 @@ const WithHostStatusPopover = (
     PropsWithChildren<{
       hideOnOutsideClick: PopoverProps['hideOnOutsideClick'];
       host: Host;
-      onEditHostName: HostStatusPopoverContentProps['onEditHostname'];
+      onEditHostname: HostStatusPopoverContentProps['onEditHostname'];
       title: string;
       validationsInfo: ValidationsInfo;
       isSmall?: ButtonProps['isSmall'];
@@ -261,23 +261,20 @@ const HostStatus: React.FC<HostStatusProps> = ({
       <FlexItem className={'pf-u-mr-xs'}>{icon}</FlexItem>
 
       <Flex direction={{ default: 'column' }}>
-        <RenderIfElse
-          condition={!sublabel}
-          truthy={
-            <WithHostStatusPopover
-              hideOnOutsideClick={!keepOnOutsideClick}
-              host={host}
-              onEditHostName={toggleHostname}
-              AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
-              title={title}
-              validationsInfo={validationsInfo}
-            >
-              {titleWithProgress}
-            </WithHostStatusPopover>
-          }
-          falsy={<FlexItem className={'pf-u-mb-0'}>{titleWithProgress}</FlexItem>}
-        />
-
+        {!sublabel ? (
+          <WithHostStatusPopover
+            hideOnOutsideClick={!keepOnOutsideClick}
+            host={host}
+            onEditHostname={toggleHostname}
+            AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
+            title={title}
+            validationsInfo={validationsInfo}
+          >
+            {titleWithProgress}
+          </WithHostStatusPopover>
+        ) : (
+          <FlexItem className={'pf-u-mb-0'}>{titleWithProgress}</FlexItem>
+        )}
         <RenderIf condition={Boolean(sublabel)}>
           <FlexItem
             className={'pf-u-font-size-xs'}
@@ -286,7 +283,7 @@ const HostStatus: React.FC<HostStatusProps> = ({
             <WithHostStatusPopover
               hideOnOutsideClick={!keepOnOutsideClick}
               host={host}
-              onEditHostName={toggleHostname}
+              onEditHostname={toggleHostname}
               // onAdditionalNtpSource={onAdditionalNtpSource}
               AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
               title={title}
