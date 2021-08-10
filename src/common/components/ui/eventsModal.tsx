@@ -70,6 +70,7 @@ export const EventsModal: React.FC<EventsModalProps> = ({
 }) => {
   return (
     <Modal
+      aria-label="Displays events"
       title={title}
       isOpen={isOpen}
       hasNoBodyWrapper
