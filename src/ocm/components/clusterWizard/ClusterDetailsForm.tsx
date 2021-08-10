@@ -78,9 +78,21 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
-      {({ submitForm, isSubmitting, isValid, dirty, setFieldValue, errors, touched }) => {
-        const errorFields = getFormikErrorFields(errors, touched);
+      {({
+        submitForm,
+        isSubmitting,
+        isValid,
+        dirty,
+        setFieldValue,
+        setFieldTouched,
+        errors,
+        touched,
+      }) => {
+        if (!touched.name) {
+          setFieldTouched('name');
+        }
 
+        const errorFields = getFormikErrorFields(errors, touched);
         const toggleRedHatDnsService = (checked: boolean) =>
           setFieldValue('baseDnsDomain', checked ? managedDomains.map((d) => d.domain)[0] : '');
 
