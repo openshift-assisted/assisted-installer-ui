@@ -59,7 +59,7 @@ export const isAdvNetworkConf = (cluster: Cluster, defaultNetworkSettings: Clust
   cluster.clusterNetworkCidr !== defaultNetworkSettings.clusterNetworkCidr ||
   cluster.clusterNetworkHostPrefix !== defaultNetworkSettings.clusterNetworkHostPrefix ||
   cluster.serviceNetworkCidr !== defaultNetworkSettings.serviceNetworkCidr ||
-  cluster.networkType !== 'OpenShiftSDN';
+  (Boolean(cluster.networkType) && cluster.networkType !== 'OpenShiftSDN');
 
 export const getHostDiscoveryInitialValues = (cluster: Cluster): HostDiscoveryValues => {
   const monitoredOperators = cluster.monitoredOperators || [];

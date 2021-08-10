@@ -23,8 +23,6 @@ import { ClusterEventsFiltersType } from '../../types';
 import { Cluster, Event, Host, Inventory, stringToJSON } from '../../api';
 import { EVENT_SEVERITIES } from '../../config';
 
-import './ClusterEventsToolbar.css';
-
 type ClustersListToolbarProps = {
   filters: ClusterEventsFiltersType;
   setFilters: React.Dispatch<React.SetStateAction<ClusterEventsFiltersType>>;
@@ -207,7 +205,6 @@ const ClusterEventsToolbar: React.FC<ClustersListToolbarProps> = ({
 
   return (
     <Toolbar
-      id="clusters-events-toolbar"
       className="pf-m-toggle-group-container"
       collapseListedFiltersBreakpoint="xl"
       clearAllFilters={onClearAllFilters}
