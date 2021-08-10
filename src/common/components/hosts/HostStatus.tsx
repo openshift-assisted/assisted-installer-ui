@@ -41,7 +41,7 @@ import {
 } from './HostValidationGroups';
 import OcpConsoleNodesSectionLink from './OcpConsoleNodesSectionLink';
 import { toSentence } from '../ui/table/utils';
-import { RenderIf } from '../ui/RenderIf';
+import { RenderIf } from '../ui';
 
 const getStatusIcon = (status: Host['status']) => {
   let icon = null;
