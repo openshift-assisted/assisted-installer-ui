@@ -10,6 +10,7 @@ import ClusterEventsToolbar, { getInitialClusterEventsFilters } from './ClusterE
 export type ClusterEventsListProps = {
   events: EventList;
   cluster: Cluster;
+  className?: string;
 };
 
 const filterEvents = (
@@ -33,7 +34,7 @@ const filterEvents = (
     );
 };
 
-const ClusterEventsList: React.FC<ClusterEventsListProps> = ({ events, cluster }) => {
+const ClusterEventsList: React.FC<ClusterEventsListProps> = ({ events, cluster, className }) => {
   const [filters, setFilters] = React.useState<ClusterEventsFiltersType>(() =>
     getInitialClusterEventsFilters(cluster),
   );
@@ -69,7 +70,7 @@ const ClusterEventsList: React.FC<ClusterEventsListProps> = ({ events, cluster }
           }
         />
       ) : (
-        <EventsList events={filteredEvents} />
+        <EventsList events={filteredEvents} className={className} />
       )}
     </>
   );
