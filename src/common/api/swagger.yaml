@@ -301,6 +301,45 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
+  /v2/clusters/{cluster_id}/supported-platforms:
+    get:
+      tags:
+        - installer
+      description: A list of platforms that this cluster can support in its current configuration.
+      operationId: GetClusterSupportedPlatforms
+      security:
+        - userAuth: [admin, read-only-admin, user]
+      parameters:
+        - in: path
+          name: cluster_id
+          description: The cluster whose platform types should be retrieved.
+          type: string
+          format: uuid
+          required: true
+      responses:
+        '200':
+          description: Success.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/platform_type'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
   /v1/clusters/{cluster_id}/downloads/image:
     post:
       tags:
@@ -3164,19 +3203,19 @@ paths:
       tags:
         - installer
       description: Creates a new OpenShift Discovery ISO.
-      operationId: v2RegisterInfraEnv
+      operationId: RegisterInfraEnv
       parameters:
         - in: body
           name: infraenv-create-params
           description: The parameters for the generated ISO.
           required: true
           schema:
-            $ref: '#/definitions/infraenv_create_params'
+            $ref: '#/definitions/infra-env-create-params'
       responses:
         '201':
           description: Success.
           schema:
-            $ref: '#/definitions/infra_env'
+            $ref: '#/definitions/infra-env'
         '400':
           description: Error.
           schema:
@@ -3197,6 +3236,302 @@ paths:
           description: Method Not Allowed.
           schema:
             $ref: '#/definitions/error'
+        '409':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '501':
+          description: Not implemented.
+          schema:
+            $ref: '#/definitions/error'
+
+    get:
+      tags:
+        - installer
+      security:
+        - userAuth: [admin, read-only-admin, user]
+      description: Retrieves the list of InfraEnvs.
+      operationId: ListInfraEnvs
+      responses:
+        '200':
+          description: Success.
+          schema:
+            $ref: '#/definitions/infra-env-list'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '501':
+          description: Not implemented.
+          schema:
+            $ref: '#/definitions/error'
+        '503':
+          description: Unavailable.
+          schema:
+            $ref: '#/definitions/error'
+
+  /v2/infra-envs/{infra_env_id}:
+    get:
+      tags:
+        - installer
+      security:
+        - userAuth: [admin, read-only-admin, user]
+        - agentAuth: []
+      description: Retrieves the details of the InfraEnv.
+      operationId: GetInfraEnv
+      parameters:
+        - in: path
+          name: infra_env_id
+          description: The InfraEnv to be retrieved.
+          type: string
+          format: uuid
+          required: true
+      responses:
+        '200':
+          description: Success.
+          schema:
+            $ref: '#/definitions/infra-env'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '501':
+          description: Not implemented.
+          schema:
+            $ref: '#/definitions/error'
+        '503':
+          description: Unavailable.
+          schema:
+            $ref: '#/definitions/error'
+
+    patch:
+      tags:
+        - installer
+      description: Updates an InfraEnv.
+      operationId: UpdateInfraEnv
+      parameters:
+        - in: path
+          name: infra_env_id
+          description: The InfraEnv to be updated.
+          type: string
+          format: uuid
+          required: true
+        - in: body
+          name: infra-env-update-params
+          description: The properties to update.
+          required: true
+          schema:
+            $ref: '#/definitions/infra-env-update-params'
+      responses:
+        '201':
+          description: Success.
+          schema:
+            $ref: '#/definitions/infra-env'
+        '400':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '409':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '501':
+          description: Not implemented.
+          schema:
+            $ref: '#/definitions/error'
+
+    delete:
+      tags:
+        - installer
+      description: Deletes an InfraEnv.
+      operationId: DeregisterInfraEnv
+      parameters:
+        - in: path
+          name: infra_env_id
+          description: The InfraEnv to be deleted.
+          format: uuid
+          type: string
+          required: true
+      responses:
+        '204':
+          description: Success.
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '409':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '501':
+          description: Not implemented.
+          schema:
+            $ref: '#/definitions/error'
+
+  /v2/infra-envs/{infra_env_id}/image:
+    get:
+      tags:
+        - installer
+      description: Downloads the discovery image.
+      security:
+        - userAuth: [admin, read-only-admin, user]
+        - urlAuth: []
+      operationId: DownloadInfraEnvDiscoveryImage
+      produces:
+        # application/vnd.efi.iso is not supported
+        - application/octet-stream
+      parameters:
+        - in: path
+          name: infra_env_id
+          description: The InfraEnv whose image should be downloaded.
+          type: string
+          format: uuid
+          required: true
+      responses:
+        '200':
+          description: Success.
+          schema:
+            type: string
+            format: binary
+        '400':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+        '409':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '501':
+          description: Not implemented.
+          schema:
+            $ref: '#/definitions/error'
+
+    head:
+      tags:
+        - installer
+      description: Downloads the discovery image Headers only.
+      security:
+        - userAuth: [admin, read-only-admin, user]
+        - urlAuth: []
+      operationId: DownloadInfraEnvDiscoveryImageHeaders
+      parameters:
+        - in: path
+          name: infra_env_id
+          description: The InfraEnv whose image headers should be retrieved.
+          type: string
+          format: uuid
+          required: true
+      responses:
+        '200':
+          description: Success.
+          headers:
+            Content-Length:
+              type: integer
+              description: Size of the ISO in bytes
+        '400':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
         '409':
           description: Error.
           schema:
@@ -3874,6 +4209,7 @@ definitions:
         type: string
         format: uuid
         x-go-custom-tag: gorm:"foreignkey:Cluster"
+        x-nullable: true
         description: The cluster that this host is associated with.
       infra_env_id:
         type: string
@@ -3900,6 +4236,12 @@ definitions:
           - resetting
           - added-to-existing-cluster
           - cancelled
+          - binding
+          - known-unbound
+          - disconnected-unbound
+          - insufficient-unbound
+          - disabled-unbound
+          - discovering-unbound
       status_info:
         type: string
         x-go-custom-tag: gorm:"type:varchar(2048)"
@@ -4266,6 +4608,10 @@ definitions:
         default: false
       network_configuration:
         $ref: '#/definitions/network_configuration'
+        x-nullable: true
+      platform:
+        type: object
+        $ref: '#/definitions/platform'
         x-nullable: true
 
   cluster-update-params:
@@ -5478,6 +5824,7 @@ definitions:
       - 'api-domain-name-resolved-correctly'
       - 'api-int-domain-name-resolved-correctly'
       - 'apps-domain-name-resolved-correctly'
+      - 'compatible-with-cluster-platform'
 
   dhcp_allocation_request:
     type: object
@@ -5790,7 +6137,7 @@ definitions:
         additionalProperties:
           type: object
 
-  infra_env:
+  infra-env:
     type: object
     properties:
       kind:
@@ -5849,6 +6196,11 @@ definitions:
       generator_version:
         type: string
         description: Image generator version.
+      updated_at:
+        type: string
+        format: date-time
+        x-go-custom-tag: gorm:"type:timestamp with time zone"
+        description: The last time that this infraenv was updated.
       created_at:
         type: string
         format: date-time
@@ -5880,13 +6232,17 @@ definitions:
           other network CIDRs to exclude from proxying.
         x-nullable: true
 
-  infra_env_list:
+  infra-env-list:
     type: array
     items:
-      $ref: '#/definitions/infra_env'
+      $ref: '#/definitions/infra-env'
 
-  infraenv_create_params:
+  infra-env-create-params:
     type: object
+    required:
+      - name
+      - openshift_version
+      - pull_secret
     properties:
       name:
         type: string
@@ -5897,9 +6253,11 @@ definitions:
         type: string
         description:
           A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
+        x-nullable: true
       ssh_authorized_key:
         type: string
         description: SSH public key for debugging the installation.
+        x-nullable: true
       pull_secret:
         type: string
         description:
@@ -5919,6 +6277,47 @@ definitions:
         type: string
         format: uuid
         description: If set, all hosts that register will be associated with the specified cluster.
+        x-nullable: true
+      openshift_version:
+        type: string
+        description:
+          Version of the OpenShift cluster (used to infer the RHCOS version - temporary until
+          generic logic implemented).
+
+  infra-env-update-params:
+    type: object
+    properties:
+      proxy:
+        $ref: '#/definitions/proxy'
+      additional_ntp_sources:
+        type: string
+        description:
+          A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
+        x-nullable: true
+      ssh_authorized_key:
+        type: string
+        description: SSH public key for debugging the installation.
+        x-nullable: true
+      pull_secret:
+        type: string
+        description:
+          The pull secret obtained from Red Hat OpenShift Cluster Manager at
+          cloud.redhat.com/openshift/install/pull-secret.
+      static_network_config:
+        type: array
+        items:
+          $ref: '#/definitions/host_static_network_config'
+      image_type:
+        $ref: '#/definitions/image_type'
+      ignition_config_override:
+        type: string
+        description:
+          JSON formatted string containing the user overrides for the initial ignition config.
+      cluster_id:
+        type: string
+        format: uuid
+        description: If set, all hosts that register will be associated with the specified cluster.
+        x-nullable: true
 
   subnet:
     type: string
