@@ -41,6 +41,7 @@ const ValidationGroupAlert: React.FC<ValidationGroupAlertProps> = ({
   variant,
   validations,
   title,
+  onEditHostname,
   AdditionalNTPSourcesDialogToggleComponent,
   ...props
 }) => {
@@ -56,7 +57,15 @@ const ValidationGroupAlert: React.FC<ValidationGroupAlertProps> = ({
         ['hostname-unique', 'hostname-valid'].includes(validation.id),
     )
   ) {
-    actionLinks.push(<Hostname key="change-hostname" title="Change hostname" {...props} />);
+    console.log(props);
+    actionLinks.push(
+      <Hostname
+        key="change-hostname"
+        title="Change hostname"
+        onEditHostname={onEditHostname}
+        {...props}
+      />,
+    );
   }
   if (
     AdditionalNTPSourcesDialogToggleComponent &&

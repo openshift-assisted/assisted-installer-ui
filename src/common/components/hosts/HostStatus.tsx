@@ -199,7 +199,7 @@ const WithHostStatusPopover = (
     PropsWithChildren<{
       hideOnOutsideClick: PopoverProps['hideOnOutsideClick'];
       host: Host;
-      onEditHostName: HostStatusPopoverContentProps['onEditHostname'];
+      onEditHostname: HostStatusPopoverContentProps['onEditHostname'];
       title: string;
       validationsInfo: ValidationsInfo;
       isSmall?: ButtonProps['isSmall'];
@@ -267,7 +267,7 @@ const HostStatus: React.FC<HostStatusProps> = ({
             <WithHostStatusPopover
               hideOnOutsideClick={!keepOnOutsideClick}
               host={host}
-              onEditHostName={toggleHostname}
+              onEditHostname={toggleHostname}
               AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
               title={title}
               validationsInfo={validationsInfo}
@@ -286,7 +286,7 @@ const HostStatus: React.FC<HostStatusProps> = ({
             <WithHostStatusPopover
               hideOnOutsideClick={!keepOnOutsideClick}
               host={host}
-              onEditHostName={toggleHostname}
+              onEditHostname={toggleHostname}
               // onAdditionalNtpSource={onAdditionalNtpSource}
               AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
               title={title}
