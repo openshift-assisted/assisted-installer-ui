@@ -1,6 +1,6 @@
 import Humanize from 'humanize-plus';
 import { Disk, Inventory } from '../../api';
-import { DASH } from '../constants';
+import { DASH, OpticalDiskDriveType } from '../constants';
 import { HumanizedSortable } from '../ui/table/utils';
 import { fileSize } from './utils';
 
@@ -21,8 +21,9 @@ export type SimpleHardwareInfo = {
 export const getMemoryCapacity = (inventory: Inventory): number =>
   inventory.memory?.usableBytes || 0;
 export const getDiskCapacity = (inventory: Inventory): number =>
-  inventory.disks?.reduce((diskSize: number, disk: Disk) => diskSize + (disk.sizeBytes || 0), 0) ||
-  0;
+  inventory.disks
+    ?.filter((disk) => disk.driveType !== OpticalDiskDriveType)
+    .reduce((diskSize: number, disk: Disk) => diskSize + (disk.sizeBytes || 0), 0) || 0;
 
 export const getHumanizedCpuClockSpeed = (inventory: Inventory) =>
   Humanize.formatNumber(inventory.cpu?.frequency || 0);

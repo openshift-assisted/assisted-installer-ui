@@ -13,7 +13,7 @@ export const EventListFetch: React.FC<EventListFetchProps> = ({ onFetchEvents, .
   const [lastPolling, setLastPolling] = useState(0);
   const [error, setError] = useState('');
 
-  const { cluster, hostId, entityKind } = props;
+  const { cluster, hostId, entityKind, className } = props;
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -47,8 +47,8 @@ export const EventListFetch: React.FC<EventListFetchProps> = ({ onFetchEvents, .
   }
 
   if (entityKind === 'cluster') {
-    return <ClusterEventsList events={events} cluster={cluster} />;
+    return <ClusterEventsList events={events} cluster={cluster} className={className} />;
   }
 
-  return <EventsList events={events} />;
+  return <EventsList events={events} className={className} />;
 };

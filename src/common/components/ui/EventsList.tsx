@@ -43,9 +43,10 @@ const getLabelIcon = (severity: Event['severity']) => {
 
 export type EventsListProps = {
   events: EventList;
+  className?: string;
 };
 
-const EventsList: React.FC<EventsListProps> = ({ events }) => {
+const EventsList: React.FC<EventsListProps> = ({ events, className }) => {
   if (events.length === 0) {
     return (
       <EmptyState icon={SearchIcon} title="No events found" content="There are no events found." />
@@ -87,18 +88,20 @@ const EventsList: React.FC<EventsListProps> = ({ events }) => {
   }));
 
   return (
-    <Table
-      rows={rows}
-      cells={[
-        { title: 'Time', cellTransforms: [fitContent, noPadding] },
-        { title: 'Message', cellTransforms: [breakWord] },
-      ]}
-      variant={TableVariant.compact}
-      aria-label="Events table"
-      borders={false}
-    >
-      <TableBody rowKey={getEventRowKey} />
-    </Table>
+    <div className={className}>
+      <Table
+        rows={rows}
+        cells={[
+          { title: 'Time', cellTransforms: [fitContent, noPadding] },
+          { title: 'Message', cellTransforms: [breakWord] },
+        ]}
+        variant={TableVariant.compact}
+        aria-label="Events table"
+        borders={false}
+      >
+        <TableBody rowKey={getEventRowKey} />
+      </Table>
+    </div>
   );
 };
 
