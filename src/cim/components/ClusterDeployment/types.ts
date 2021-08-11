@@ -90,13 +90,19 @@ export type ClusterDeploymentDetailsNetworkingProps = ClusterDeploymentHostsTabl
   onClose: () => void;
 };
 
+export type AgentSelectorChageProps = {
+  labels?: string[];
+  locations?: string[];
+};
+
 export type ClusterDeploymentHostsSelectionProps = {
   usedAgentLabels?: string[];
   agentLocations?: AgentLocation[];
   matchingMastersCount?: number;
   matchingWorkersCount?: number;
-  onMasterAgentSelectorChange: (newLabels: string[]) => void;
-  onWorkerAgentSelectorChange: (newLabels: string[] | undefined) => void;
+  allAgentsCount?: number;
+  onMasterAgentSelectorChange: (props: AgentSelectorChageProps) => void;
+  onWorkerAgentSelectorChange: (props: AgentSelectorChageProps) => void;
 };
 
 export type ClusterDeploymentHostSelectionStepProps = ClusterDeploymentHostsSelectionProps & {

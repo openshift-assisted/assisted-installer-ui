@@ -29,6 +29,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   agentLocations,
   matchingMastersCount,
   matchingWorkersCount,
+  allAgentsCount,
   onMasterAgentSelectorChange,
   onWorkerAgentSelectorChange,
 }) => {
@@ -54,6 +55,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
             agentLocations={agentLocations}
             matchingMastersCount={matchingMastersCount}
             matchingWorkersCount={matchingWorkersCount}
+            allAgentsCount={allAgentsCount}
             onMasterAgentSelectorChange={onMasterAgentSelectorChange}
             onWorkerAgentSelectorChange={onWorkerAgentSelectorChange}
           />

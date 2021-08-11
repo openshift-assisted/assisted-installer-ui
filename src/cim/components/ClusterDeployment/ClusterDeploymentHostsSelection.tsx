@@ -48,6 +48,7 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
   agentLocations = [],
   matchingMastersCount,
   matchingWorkersCount,
+  allAgentsCount,
   onMasterAgentSelectorChange,
   onWorkerAgentSelectorChange,
 }) => {
@@ -99,9 +100,14 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
               label={<AutoSelectMastersLabel />}
               onChange={(newVal: boolean) => {
                 if (newVal) {
-                  onWorkerAgentSelectorChange(undefined);
+                  onWorkerAgentSelectorChange({ labels: undefined, locations: undefined });
                   setFieldValue('workerLabels', []);
                   // TODO(mlibra): tweak for proper error alerts
+                } else {
+                  onWorkerAgentSelectorChange({
+                    labels: values.workerLabels,
+                    locations: values.locations,
+                  });
                 }
               }}
             />
@@ -138,7 +144,9 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
           helperText="Please provide as many labels as you can to find the relevant hosts."
           forceUniqueKeys={true}
           autocompleteValues={usedAgentLabelsWithoutLocation}
-          onChange={(tags: string[]) => onMasterAgentSelectorChange(tags)}
+          onChange={(tags: string[]) =>
+            onMasterAgentSelectorChange({ labels: tags, locations: values.locations })
+          }
           isRequired
         />
       </GridItem>
@@ -147,7 +155,7 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
           <AlertGroup>
             <Alert
               variant={AlertVariant.success}
-              title={`${matchingMastersCount} hosts (out of XYZ) match the requirements.`}
+              title={`${matchingMastersCount} hosts (out of ${allAgentsCount}) match the requirements.`}
               isInline
             />
           </AlertGroup>
@@ -168,7 +176,9 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
               helperText="Please provide as many labels as you can to find the relevant hosts."
               forceUniqueKeys={true}
               autocompleteValues={usedAgentLabelsWithoutLocation}
-              onChange={(tags: string[]) => onWorkerAgentSelectorChange(tags)}
+              onChange={(tags: string[]) =>
+                onWorkerAgentSelectorChange({ labels: tags, locations: values.locations })
+              }
               isRequired
             />
           </GridItem>
@@ -177,7 +187,7 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
               <AlertGroup>
                 <Alert
                   variant={AlertVariant.success}
-                  title={`${matchingWorkersCount} hosts (out of XYZ) match the requirements.`}
+                  title={`${matchingWorkersCount} hosts (out of ${allAgentsCount}) match the requirements.`}
                   isInline
                 />
               </AlertGroup>
