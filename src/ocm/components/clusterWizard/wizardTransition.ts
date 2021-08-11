@@ -19,13 +19,18 @@ import {
 
 export type ClusterWizardStepsType = 'cluster-details' | 'host-discovery' | 'networking' | 'review';
 
-export type ClusterWizardFlowStateType = {
-  wizardFlow?: 'new' | undefined;
+export const getClusterWizardFirstStep = (state?: Cluster['status']): ClusterWizardStepsType => {
+  switch (state) {
+    case 'ready':
+      return 'review';
+    case 'pending-for-input':
+    case 'adding-hosts':
+    case 'insufficient':
+      return 'host-discovery';
+    default:
+      return 'cluster-details';
+  }
 };
-
-export const getClusterWizardFirstStep = (
-  props?: ClusterWizardFlowStateType,
-): ClusterWizardStepsType => (props?.wizardFlow === 'new' ? 'host-discovery' : 'cluster-details');
 
 type TransitionProps = { cluster: Cluster };
 
