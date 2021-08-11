@@ -18,7 +18,7 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
   helperText,
   placeholderText,
   isRequired,
-  // onChange,
+  onChange,
   getHelperText,
   idPostfix,
   labelIcon,
@@ -35,18 +35,20 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
   const onClearSelection = () => {
     // onChange && onChange(event);
     setValue([]);
+    onChange && onChange([]);
     setOpen(false);
   };
 
   const onSelect: SelectProps['onSelect'] = (event, selection) => {
-    // const { selected } = this.state;
     const selected = field.value;
-    console.log('--- onSelect, selection: ', selection, ', selected: ', selected);
+    let newValue;
     if (selected.includes(selection)) {
-      setValue(selected.filter((sel: string) => sel !== selection));
+      newValue = selected.filter((sel: string) => sel !== selection);
     } else {
-      setValue([...field.value, selection]);
+      newValue = [...field.value, selection];
     }
+    setValue(newValue);
+    onChange && onChange(newValue);
   };
 
   return (

@@ -124,6 +124,18 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
           label={<LocationsLabel />}
           placeholderText="Type or select location(s)"
           options={agentLocations}
+          onChange={(locations) => {
+            onMasterAgentSelectorChange({
+              labels: values.masterLabels,
+              locations,
+            });
+            if (!values.autoSelectMasters) {
+              onWorkerAgentSelectorChange({
+                labels: values.masterLabels,
+                locations,
+              });
+            }
+          }}
         />
       </GridItem>
 
