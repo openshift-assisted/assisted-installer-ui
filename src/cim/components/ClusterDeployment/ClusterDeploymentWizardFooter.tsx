@@ -9,12 +9,6 @@ type ClusterDeploymentWizardFooterProps = WizardFooterGenericProps & {
 };
 
 const ValidationSection: React.FC<{ errorFields?: string[] }> = ({ errorFields = [] }) => {
-  console.log(
-    '--- errorFields: ',
-    errorFields,
-    ', CLUSTER_DEPLOYMENT_FIELD_LABELS: ',
-    CLUSTER_DEPLOYMENT_FIELD_LABELS,
-  );
   return errorFields.length > 0 ? (
     <AlertGroup>
       <Alert

@@ -1,9 +1,8 @@
 import _ from 'lodash';
 import { AgentK8sResource } from '../../types/k8s/agent';
-import { Host, Inventory } from '../../../common';
+import { Cluster, Host, Inventory } from '../../../common';
 import { ClusterDeploymentK8sResource } from '../../types/k8s/cluster-deployment';
 import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-install';
-import { ClusterCIMExtended } from '../../types';
 import { getAgentStatus, getClusterStatus } from './status';
 import { getHostNetworks } from './network';
 
@@ -68,9 +67,9 @@ export const getAICluster = ({
   agentClusterInstall?: AgentClusterInstallK8sResource;
   agents?: AgentK8sResource[];
   pullSecretSet?: boolean;
-}): ClusterCIMExtended => {
+}): Cluster => {
   const [status, statusInfo] = getClusterStatus(agentClusterInstall);
-  const aiCluster: ClusterCIMExtended = {
+  const aiCluster: Cluster = {
     id: clusterDeployment.metadata?.uid || '',
     kind: 'Cluster',
     href: '',
@@ -100,7 +99,7 @@ export const getAICluster = ({
     installStartedAt: clusterDeployment.status?.installStartedTimestamp,
     installCompletedAt: clusterDeployment.status?.installedTimestamp,
   };
-
+  /*
   aiCluster.agentSelectorMasterLabels =
     clusterDeployment.spec?.platform?.agentBareMetal?.agentSelector?.matchLabels;
 
@@ -109,6 +108,6 @@ export const getAICluster = ({
   // Initial value of the "Auto-select control plane (master) hosts" switch
   // is driven by either undefined or actual value of agentSelectorWorkerLabels
   aiCluster.agentSelectorWorkerLabels = undefined;
-
+*/
   return aiCluster;
 };

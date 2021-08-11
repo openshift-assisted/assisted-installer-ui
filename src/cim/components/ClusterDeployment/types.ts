@@ -1,11 +1,9 @@
-import { Cluster, OpenshiftVersionOptionType } from '../../../common';
 import { ClusterDetailsValues } from '../../../common/components/clusterWizard/types';
 import { NetworkConfigurationValues } from '../../../common/types/clusters';
 import {
   AgentK8sResource,
   ClusterDeploymentK8sResource,
   AgentClusterInstallK8sResource,
-  ClusterCIMExtended,
 } from '../../types';
 import { ClusterImageSetK8sResource } from '../../types/k8s/cluster-image-set';
 
@@ -50,6 +48,10 @@ export type ClusterDeploymentHostsTablePropsActions = Pick<
 */
 
 export type ClusterDeploymentWizardStepsType = 'cluster-details' | 'hosts-selection' | 'networking';
+export type AgentLocation = {
+  value: string;
+  itemCount: number;
+};
 
 export type ClusterDeploymentDetailsProps = {
   defaultPullSecret: string;
@@ -71,6 +73,7 @@ export type ClusterDeploymentHostsSelectionValues = {
   masterLabels: string[];
   workerLabels?: string[];
   autoSelectMasters: boolean;
+  locations: string[];
 };
 
 export type ClusterDeploymentDetailsStepProps = ClusterDeploymentDetailsProps & {
@@ -88,7 +91,8 @@ export type ClusterDeploymentDetailsNetworkingProps = ClusterDeploymentHostsTabl
 };
 
 export type ClusterDeploymentHostsSelectionProps = {
-  usedAgentlabels?: string[];
+  usedAgentLabels?: string[];
+  agentLocations?: AgentLocation[];
   matchingMastersCount?: number;
   matchingWorkersCount?: number;
   onMasterAgentSelectorChange: (newLabels: string[]) => void;

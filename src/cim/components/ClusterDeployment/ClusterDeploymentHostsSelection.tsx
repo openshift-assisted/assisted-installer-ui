@@ -13,10 +13,12 @@ import {
   CheckboxField,
   ClusterWizardStepHeader,
   LabelField,
+  MultiSelectField,
   NumberInputField,
   PopoverIcon,
   SwitchField,
 } from '../../../common';
+import { AGENT_LOCATION_LABEL_KEY } from '../common';
 import {
   ClusterDeploymentHostsSelectionProps,
   ClusterDeploymentHostsSelectionValues,
@@ -33,9 +35,17 @@ const AutoSelectMastersLabel: React.FC = () => (
   </>
 );
 
+const LocationsLabel: React.FC = () => (
+  <>
+    Locations{' '}
+    <PopoverIcon bodyContent="Select one or multiple locations to choose the hosts from." />
+  </>
+);
+
 // TODO(mlibra): implement for Single Node Cluster as well
 const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionProps> = ({
-  usedAgentlabels,
+  usedAgentLabels = [],
+  agentLocations = [],
   matchingMastersCount,
   matchingWorkersCount,
   onMasterAgentSelectorChange,
@@ -43,6 +53,10 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
 }) => {
   const { setFieldValue, values } = useFormikContext<ClusterDeploymentHostsSelectionValues>();
   const { hostCount, autoSelectMasters } = values;
+
+  const usedAgentLabelsWithoutLocation = usedAgentLabels.filter(
+    (key) => key !== AGENT_LOCATION_LABEL_KEY,
+  );
 
   return (
     <Grid hasGutter>
@@ -98,6 +112,16 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
       </GridItem>
 
       <GridItem>
+        <MultiSelectField
+          idPostfix="locations"
+          name="locations"
+          label={<LocationsLabel />}
+          placeholderText="Type or select location(s)"
+          options={agentLocations}
+        />
+      </GridItem>
+
+      <GridItem>
         {!autoSelectMasters && (
           <TextContent>
             <Text component="h3">Control plane (master) hosts</Text>
@@ -113,7 +137,7 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
           idPostfix="masterlabels"
           helperText="Please provide as many labels as you can to find the relevant hosts."
           forceUniqueKeys={true}
-          autocompleteValues={usedAgentlabels}
+          autocompleteValues={usedAgentLabelsWithoutLocation}
           onChange={(tags: string[]) => onMasterAgentSelectorChange(tags)}
           isRequired
         />
@@ -143,7 +167,7 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
               idPostfix="workerlabels"
               helperText="Please provide as many labels as you can to find the relevant hosts."
               forceUniqueKeys={true}
-              autocompleteValues={usedAgentlabels}
+              autocompleteValues={usedAgentLabels}
               onChange={(tags: string[]) => onWorkerAgentSelectorChange(tags)}
               isRequired
             />

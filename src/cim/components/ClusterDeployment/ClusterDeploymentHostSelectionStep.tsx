@@ -2,11 +2,7 @@ import React from 'react';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import { getFormikErrorFields, labelsToArray, useAlerts } from '../../../common';
-import {
-  AgentClusterInstallK8sResource,
-  AgentK8sResource,
-  ClusterDeploymentK8sResource,
-} from '../../types';
+import { AgentK8sResource, ClusterDeploymentK8sResource } from '../../types';
 import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
 import ClusterDeploymentWizardFooter from './ClusterDeploymentWizardFooter';
 import ClusterDeploymentWizardNavigation from './ClusterDeploymentWizardNavigation';
@@ -17,25 +13,28 @@ import {
   ClusterDeploymentHostsSelectionValues,
 } from './types';
 import { hostCountValidationSchema, hostLabelsValidationSchema } from './validationSchemas';
+import { AGENT_LOCATION_LABEL_KEY } from '../common';
 
 const getInitialValues = ({
   clusterDeployment,
-  // agentClusterInstall,
-  agents,
 }: {
   clusterDeployment: ClusterDeploymentK8sResource;
-  agentClusterInstall: AgentClusterInstallK8sResource;
+  // agentClusterInstall: AgentClusterInstallK8sResource;
   agents: AgentK8sResource[];
 }): ClusterDeploymentHostsSelectionValues => ({
-  hostCount: agents.length,
-  useMastersAsWorkers: true, // TODO: calculate
+  hostCount: 3, // agents.length, // TODO(mlibra): it can not be agents.length since that is an user's requirement which does not need to match reality of k8s resources
+  useMastersAsWorkers: true, // TODO: read but where from?
+  autoSelectMasters: true, // TODO: Calculate. Should it be based on presence of workerLabels??
   masterLabels: labelsToArray(
-    clusterDeployment.spec?.platform.agentBareMetal.agentSelector?.matchLabels,
+    clusterDeployment.spec?.platform?.agentBareMetal?.agentSelector?.matchLabels,
   ),
   workerLabels: labelsToArray({
     /* TODO(mlibra): wait for late-binding to be ready - API is about to be changed */
   }),
-  autoSelectMasters: true, // TODO: read
+  locations:
+    clusterDeployment.spec?.platform?.agentBareMetal?.agentSelector?.matchLabels?.[
+      AGENT_LOCATION_LABEL_KEY
+    ]?.split(',') || [], // [AGENT_LOCATION_LABEL_KEY]=location1,location2
 });
 
 const getValidationSchema = () =>
@@ -46,15 +45,16 @@ const getValidationSchema = () =>
         useMastersAsWorkers: Yup.boolean().required(),
         masterLabels: hostLabelsValidationSchema.required(),
         workerLabels: autoSelectMasters
-          ? hostLabelsValidationSchema.required()
-          : hostLabelsValidationSchema,
+          ? /* always passing */ Yup.array()
+          : hostLabelsValidationSchema.required(),
         autoSelectMasters: Yup.boolean().required(),
+        locations: Yup.array().min(0).required(),
       }),
   );
 
 const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectionStepProps> = ({
   clusterDeployment,
-  agentClusterInstall,
+  // agentClusterInstall,
   agents,
   onClose,
   onSaveHostsSelection,
@@ -64,7 +64,7 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
   const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
 
   const initialValues = React.useMemo(
-    () => getInitialValues({ clusterDeployment, agentClusterInstall, agents }),
+    () => getInitialValues({ clusterDeployment, agents }),
     [], // eslint-disable-line react-hooks/exhaustive-deps
   );
   const validationSchema = React.useMemo(() => getValidationSchema(), []);
@@ -96,6 +96,20 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
             next();
           }
         };
+        console.log(
+          '--- ClusterDeploymentWizardFooter: isValid: ',
+          isValid,
+          ', isValidating: ',
+          isValidating,
+          ', isSubmitting: ',
+          isSubmitting,
+          ', dirty: ',
+          dirty,
+          ', touched: ',
+          touched,
+          ', errors: ',
+          errors,
+        );
 
         const footer = (
           <ClusterDeploymentWizardFooter

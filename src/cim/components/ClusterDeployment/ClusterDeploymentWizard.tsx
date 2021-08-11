@@ -25,7 +25,8 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   clusterImages,
   defaultPullSecret,
   usedClusterNames,
-  usedAgentlabels,
+  usedAgentLabels,
+  agentLocations,
   matchingMastersCount,
   matchingWorkersCount,
   onMasterAgentSelectorChange,
@@ -49,7 +50,8 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
             agents={agents}
             onClose={onClose}
             onSaveHostsSelection={onSaveHostsSelection}
-            usedAgentlabels={usedAgentlabels}
+            usedAgentLabels={usedAgentLabels}
+            agentLocations={agentLocations}
             matchingMastersCount={matchingMastersCount}
             matchingWorkersCount={matchingWorkersCount}
             onMasterAgentSelectorChange={onMasterAgentSelectorChange}
@@ -113,7 +115,8 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
     matchingWorkersCount,
     onMasterAgentSelectorChange,
     onWorkerAgentSelectorChange,
-    usedAgentlabels,
+    usedAgentLabels,
+    agentLocations,
   ]);
 
   return (
