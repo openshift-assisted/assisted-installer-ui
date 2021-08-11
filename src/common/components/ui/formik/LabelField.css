@@ -5,12 +5,17 @@
 .label-field__input {
   border: 1px solid transparent;
   outline: none;
+  width: 100%;
 }
 
 .label-field .react-autosuggest__suggestions-list {
   margin-left: var(--pf-global--spacer-xs);
-  list-style-type: none;
+  margin-right: var(--pf-global--spacer-xs);
   box-shadow: var(--pf-global--BoxShadow--lg);
+  
+  max-height: 10rem;
+  overflow: auto;
+  list-style-type: none;
 }
 
 .label-field .react-autosuggest__suggestion {
@@ -26,4 +31,8 @@
   padding: 10px 0 0 10px;
   font-size: var(--pf-global--FontSize--sm);
   color: var(--pf-global--Color--200);
+}
+
+.label-field .react-tagsinput {
+  width: 100%;
 }

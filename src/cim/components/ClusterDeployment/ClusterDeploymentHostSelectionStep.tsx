@@ -96,6 +96,7 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
             next();
           }
         };
+
         console.log(
           '--- ClusterDeploymentWizardFooter: isValid: ',
           isValid,

@@ -54,9 +54,9 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
   const { setFieldValue, values } = useFormikContext<ClusterDeploymentHostsSelectionValues>();
   const { hostCount, autoSelectMasters } = values;
 
-  const usedAgentLabelsWithoutLocation = usedAgentLabels.filter(
-    (key) => key !== AGENT_LOCATION_LABEL_KEY,
-  );
+  const usedAgentLabelsWithoutLocation = usedAgentLabels
+    .filter((key) => key !== AGENT_LOCATION_LABEL_KEY)
+    .sort();
 
   return (
     <Grid hasGutter>
@@ -167,7 +167,7 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
               idPostfix="workerlabels"
               helperText="Please provide as many labels as you can to find the relevant hosts."
               forceUniqueKeys={true}
-              autocompleteValues={usedAgentLabels}
+              autocompleteValues={usedAgentLabelsWithoutLocation}
               onChange={(tags: string[]) => onWorkerAgentSelectorChange(tags)}
               isRequired
             />

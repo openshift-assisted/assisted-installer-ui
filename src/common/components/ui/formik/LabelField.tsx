@@ -54,20 +54,30 @@ export const LabelField: React.FC<LabelFieldProps> = ({
   const isValid = !(touched && error);
   const errorMessage = !isValid ? error : '';
 
+  const usedKeys: string[] = React.useMemo(
+    () => (field.value || []).map((keyValue: string) => keyValue.split('=')[0]),
+    [field.value],
+  );
+
   // TODO(mlibra): Use Patternfly component once available, sort of
   // https://patternflyelements.org/components/autocomplete/
   const autocompleteRenderInput = React.useMemo(
     (): TagsInput.ReactTagsInputProps['renderInput'] => (props) => {
       const trimmedInput = input?.trim();
       let suggestions: string[] = [];
-      if (trimmedInput && !trimmedInput.includes('=')) {
-        suggestions = autocompleteValues.filter((suggestion) =>
-          suggestion.startsWith(trimmedInput),
-        );
-        if (!autocompleteValues.includes(input)) {
-          suggestions.push(`${input}${NEW_KEY}`);
+      if (trimmedInput) {
+        if (!trimmedInput.includes('=')) {
+          suggestions = autocompleteValues.filter((suggestion) =>
+            suggestion.startsWith(trimmedInput),
+          );
+          if (!autocompleteValues.includes(input)) {
+            suggestions.push(`${input}${NEW_KEY}`);
+          }
         }
+      } else {
+        suggestions = autocompleteValues;
       }
+      suggestions = suggestions.filter((suggestion) => !usedKeys.includes(suggestion));
 
       const sections = [
         // We have just a single section to highlight the "key"
@@ -78,7 +88,7 @@ export const LabelField: React.FC<LabelFieldProps> = ({
       ];
 
       const shouldRenderSuggestions = (value: string): boolean => {
-        return value?.trim()?.length > 0 && !value.includes('=');
+        return !value.includes('=');
       };
 
       const renderSectionTitle = (section: { title: string }) => {
@@ -133,16 +143,7 @@ export const LabelField: React.FC<LabelFieldProps> = ({
         />
       );
     },
-    [autocompleteValues, input],
-  );
-
-  console.log(
-    '--- isValid: ',
-    isValid,
-    ', errorMessage: ',
-    errorMessage,
-    ', isRequired: ',
-    isRequired,
+    [autocompleteValues, input, usedKeys],
   );
 
   return (
