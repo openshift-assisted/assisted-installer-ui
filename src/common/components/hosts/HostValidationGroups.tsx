@@ -45,6 +45,7 @@ const ValidationGroupAlert: React.FC<ValidationGroupAlertProps> = ({
   AdditionalNTPSourcesDialogToggleComponent,
   ...props
 }) => {
+  let isValidHostname = true;
   if (!validations.length) {
     return null;
   }
@@ -65,6 +66,7 @@ const ValidationGroupAlert: React.FC<ValidationGroupAlertProps> = ({
         {...props}
       />,
     );
+    isValidHostname = false;
   }
   if (
     AdditionalNTPSourcesDialogToggleComponent &&
@@ -85,7 +87,9 @@ const ValidationGroupAlert: React.FC<ValidationGroupAlertProps> = ({
           </li>
         ))}
       </ul>
-      To fix this click the “Change hostname” link and rename the host.
+      {!isValidHostname && (
+        <span>To fix this click the "Change hostname" link and rename the host.</span>
+      )}
     </Alert>
   );
 };

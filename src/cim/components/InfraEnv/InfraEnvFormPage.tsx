@@ -14,7 +14,7 @@ import {
   Title,
   TitleSizes,
 } from '@patternfly/react-core';
-import { Formik, FormikProps } from 'formik';
+import { Formik, FormikProps, useFormikContext } from 'formik';
 
 import {
   httpProxyValidationSchema,
@@ -26,6 +26,8 @@ import {
   UploadSSH,
   ProxyFields,
 } from '../../../common';
+
+import './infra-env.css';
 
 export type EnvironmentStepFormValues = {
   name: string;
@@ -88,14 +90,48 @@ const initialValues: EnvironmentStepFormValues = {
 };
 
 type InfraEnvFormProps = {
-  usedNames: string[];
-  // eslint-disable-next-line
-  onSubmit: (values: EnvironmentStepFormValues) => Promise<any>;
-  onFinish: (values: EnvironmentStepFormValues) => void;
-  onClose: VoidFunction;
+  onValuesChanged?: (values: EnvironmentStepFormValues) => void;
 };
 
-const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ usedNames, onSubmit, onClose, onFinish }) => {
+const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged }) => {
+  const { values } = useFormikContext<EnvironmentStepFormValues>();
+  React.useEffect(() => onValuesChanged?.(values), [onValuesChanged, values]);
+  return (
+    <Stack hasGutter>
+      <StackItem>
+        Infrastructure Environments are used by Clusters. Create an Infrastructure Environment in
+        order to add resources to your cluster.
+      </StackItem>
+      <StackItem>
+        <Form>
+          <InputField label="Name" name="name" isRequired />
+          <InputField label="Base domain" name="baseDomain" isRequired />
+          <InputField label="Location" name="location" isRequired />
+          <LabelField label="Labels" name="labels" isRequired />
+          <PullSecretField isOcm={false} />
+          <UploadSSH />
+          <ProxyFields />
+        </Form>
+      </StackItem>
+    </Stack>
+  );
+};
+
+type InfraEnvFormPageProps = InfraEnvFormProps & {
+  usedNames: string[];
+  // eslint-disable-next-line
+  onSubmit?: (values: EnvironmentStepFormValues) => Promise<any>;
+  onFinish?: (values: EnvironmentStepFormValues) => void;
+  onClose?: VoidFunction;
+};
+
+const InfraEnvFormPage: React.FC<InfraEnvFormPageProps> = ({
+  usedNames,
+  onSubmit,
+  onClose,
+  onFinish,
+  onValuesChanged,
+}) => {
   const [error, setError] = React.useState<string | undefined>();
   return (
     <Formik
@@ -104,8 +140,8 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ usedNames, onSubmit, onClos
       validationSchema={validationSchema(usedNames)}
       onSubmit={async (values: EnvironmentStepFormValues) => {
         try {
-          await onSubmit(values);
-          onFinish(values);
+          await onSubmit?.(values);
+          onFinish?.(values);
         } catch (e) {
           setError(e?.message ?? 'An error occured');
         }
@@ -114,28 +150,22 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ usedNames, onSubmit, onClos
       {({ isValid, isSubmitting, submitForm }: FormikProps<EnvironmentStepFormValues>) => (
         <Stack hasGutter>
           <StackItem>
-            <Grid hasGutter span={8}>
-              <GridItem>
-                <Title headingLevel="h1" size={TitleSizes.xl}>
-                  Configure environment
-                </Title>
-              </GridItem>
-              <GridItem>
-                Infrastructure Environments are used by Clusters. Create an Infrastructure
-                Environment in order to add resources to your cluster.
-              </GridItem>
-              <GridItem>
-                <Form>
-                  <InputField label="Name" name="name" isRequired />
-                  <InputField label="Base domain" name="baseDomain" isRequired />
-                  <InputField label="Location" name="location" isRequired />
-                  <LabelField label="Labels" name="labels" isRequired />
-                  <PullSecretField isOcm={false} />
-                  <UploadSSH />
-                  <ProxyFields />
-                </Form>
-              </GridItem>
-            </Grid>
+            {onSubmit && onClose ? (
+              <Grid hasGutter span={8}>
+                <GridItem>
+                  <Title headingLevel="h1" size={TitleSizes.xl}>
+                    Configure environment
+                  </Title>
+                </GridItem>
+                <GridItem>
+                  <InfraEnvForm onValuesChanged={onValuesChanged} />
+                </GridItem>
+              </Grid>
+            ) : (
+              <div className="infra-env__form">
+                <InfraEnvForm onValuesChanged={onValuesChanged} />
+              </div>
+            )}
           </StackItem>
           {error && (
             <StackItem>
@@ -148,25 +178,27 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ usedNames, onSubmit, onClos
               </Alert>
             </StackItem>
           )}
-          <StackItem>
-            <>
-              <Button
-                variant="primary"
-                type="submit"
-                isDisabled={!isValid || isSubmitting}
-                onClick={submitForm}
-              >
-                Create {isSubmitting && <Spinner isSVG size="md" />}
-              </Button>
-              <Button variant="link" onClick={onClose} isDisabled={isSubmitting}>
-                Cancel
-              </Button>
-            </>
-          </StackItem>
+          {onSubmit && onClose && (
+            <StackItem>
+              <>
+                <Button
+                  variant="primary"
+                  type="submit"
+                  isDisabled={!isValid || isSubmitting}
+                  onClick={submitForm}
+                >
+                  Create {isSubmitting && <Spinner isSVG size="md" />}
+                </Button>
+                <Button variant="link" onClick={onClose} isDisabled={isSubmitting}>
+                  Cancel
+                </Button>
+              </>
+            </StackItem>
+          )}
         </Stack>
       )}
     </Formik>
   );
 };
 
-export default InfraEnvForm;
+export default InfraEnvFormPage;
