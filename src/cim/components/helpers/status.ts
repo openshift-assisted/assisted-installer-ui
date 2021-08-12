@@ -69,6 +69,10 @@ export const getClusterStatus = (
   return [status || 'insufficient', statusInfo || ''];
 };
 
+export const isDraft = (agentClusterInstall?: AgentClusterInstallK8sResource): boolean =>
+  !!agentClusterInstall &&
+  ['pending-for-input', 'insufficient', 'ready'].includes(getClusterStatus(agentClusterInstall)[0]);
+
 export const getAgentStatusFromConditions = (agent: AgentK8sResource): [Host['status'], string] => {
   const conditions = agent.status?.conditions;
 
