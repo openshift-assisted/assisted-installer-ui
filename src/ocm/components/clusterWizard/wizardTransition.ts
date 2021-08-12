@@ -18,8 +18,11 @@ import {
 } from '../../../common/types/hosts';
 
 export type ClusterWizardStepsType = 'cluster-details' | 'host-discovery' | 'networking' | 'review';
+export type ClusterWizardFlowStateType = Cluster['status'] | 'new';
 
-export const getClusterWizardFirstStep = (state?: Cluster['status']): ClusterWizardStepsType => {
+export const getClusterWizardFirstStep = (
+  state?: ClusterWizardFlowStateType,
+): ClusterWizardStepsType => {
   switch (state) {
     case 'ready':
       return 'review';
