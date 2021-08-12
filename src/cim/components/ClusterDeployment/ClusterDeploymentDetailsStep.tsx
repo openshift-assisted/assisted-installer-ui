@@ -34,6 +34,7 @@ type UseDetailsFormikArgs = {
   clusterDeployment?: ClusterDeploymentK8sResource;
   agentClusterInstall?: AgentClusterInstallK8sResource;
   agents?: AgentK8sResource[];
+  defaultBaseDomain?: string;
 };
 
 export const useDetailsFormik = ({
@@ -44,6 +45,7 @@ export const useDetailsFormik = ({
   clusterImages,
   defaultPullSecret,
   usedClusterNames,
+  defaultBaseDomain,
 }: UseDetailsFormikArgs): [ClusterDetailsValues, Lazy] => {
   const cluster = React.useMemo(
     () =>
@@ -64,6 +66,7 @@ export const useDetailsFormik = ({
         cluster,
         pullSecret: defaultPullSecret,
         ocpVersions: getOCPVersions(clusterImages),
+        baseDomain: defaultBaseDomain,
       }),
     [], // eslint-disable-line react-hooks/exhaustive-deps
   );

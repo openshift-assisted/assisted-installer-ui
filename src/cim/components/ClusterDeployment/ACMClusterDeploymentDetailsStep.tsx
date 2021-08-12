@@ -20,6 +20,7 @@ type ACMClusterDeploymentDetailsStepProps = {
   agentClusterInstall?: AgentClusterInstallK8sResource;
   pullSecretSet?: boolean;
   agents?: AgentK8sResource[];
+  defaultBaseDomain?: string;
 };
 
 const ACMClusterDeploymentDetailsStep: React.FC<ACMClusterDeploymentDetailsStepProps> = ({
@@ -31,6 +32,7 @@ const ACMClusterDeploymentDetailsStep: React.FC<ACMClusterDeploymentDetailsStepP
   onValuesChanged,
   usedClusterNames,
   agents,
+  defaultBaseDomain,
 }) => {
   const [initialValues, validationSchema] = useDetailsFormik({
     clusterDeployment,
@@ -40,6 +42,7 @@ const ACMClusterDeploymentDetailsStep: React.FC<ACMClusterDeploymentDetailsStepP
     clusterImages,
     usedClusterNames,
     agents,
+    defaultBaseDomain,
   });
   return (
     <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={noop}>
