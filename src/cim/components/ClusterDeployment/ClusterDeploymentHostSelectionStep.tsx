@@ -29,12 +29,14 @@ const getInitialValues = ({
     clusterDeployment.spec?.platform?.agentBareMetal?.agentSelector?.matchLabels,
   ),
   workerLabels: labelsToArray({
-    /* TODO(mlibra): wait for late-binding to be ready - API is about to be changed */
+    /* TODO(mlibra): wait for late-binding to be ready - API is about to be changed
+       The workerLabels and autoSelectMasters will probably go away completely.
+     */
   }),
   locations:
-    clusterDeployment.spec?.platform?.agentBareMetal?.agentSelector?.matchLabels?.[
-      AGENT_LOCATION_LABEL_KEY
-    ]?.split(',') || [], // [AGENT_LOCATION_LABEL_KEY]=location1,location2
+    clusterDeployment.spec?.platform?.agentBareMetal?.agentSelector?.matchExpressions?.find(
+      (expr) => expr.key === AGENT_LOCATION_LABEL_KEY,
+    )?.values || [],
 });
 
 const getValidationSchema = () =>
@@ -48,7 +50,7 @@ const getValidationSchema = () =>
           ? /* always passing */ Yup.array()
           : hostLabelsValidationSchema.required(),
         autoSelectMasters: Yup.boolean().required(),
-        locations: Yup.array().min(0).required(),
+        locations: Yup.array().min(0),
       }),
   );
 

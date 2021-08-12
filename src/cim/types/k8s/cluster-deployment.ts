@@ -1,4 +1,4 @@
-import { K8sResourceCommon } from 'console-sdk-ai-lib';
+import { K8sResourceCommon, Selector } from 'console-sdk-ai-lib';
 
 export type ClusterInstallRef = {
   group: string;
@@ -14,10 +14,7 @@ export type ClusterDeploymentK8sResource = K8sResourceCommon & {
     clusterName: string;
     platform: {
       agentBareMetal: {
-        agentSelector?: {
-          matchLabels: { [key in string]: string };
-          // TODO(mlibra): add matchExpressions or use Selector type
-        };
+        agentSelector?: Selector;
       };
     };
     pullSecretRef?: {

@@ -38,7 +38,17 @@ const AutoSelectMastersLabel: React.FC = () => (
 const LocationsLabel: React.FC = () => (
   <>
     Locations{' '}
-    <PopoverIcon bodyContent="Select one or multiple locations to choose the hosts from." />
+    <PopoverIcon
+      bodyContent={
+        <>
+          Select one or multiple locations to choose the hosts from.
+          <br />
+          Keep the field empty to match <b>any</b> location.
+          <br />
+          Set <b>{AGENT_LOCATION_LABEL_KEY}</b> label in Agent resource to specify it's location.
+        </>
+      }
+    />
   </>
 );
 
