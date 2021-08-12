@@ -1,6 +1,7 @@
 import React from 'react';
 import { saveAs } from 'file-saver';
 import {
+  Alert,
   Button,
   ButtonVariant,
   ClipboardCopy,
@@ -11,7 +12,6 @@ import {
   Title,
   ModalBoxBody,
   ModalBoxFooter,
-  TextContent,
 } from '@patternfly/react-core';
 import { global_success_color_100 as successColor } from '@patternfly/react-tokens';
 import { CheckCircleIcon } from '@patternfly/react-icons';
@@ -41,25 +41,23 @@ const DownloadIso: React.FC<DownloadISOProps> = ({
             Discovery ISO is ready to download
           </Title>
         </EmptyState>
-        <TextContent>
-          <DetailList>
-            <DetailItem
-              title="Discovery ISO URL"
-              value={
-                <ClipboardCopy isReadOnly onCopy={(event) => clipboardCopyFunc(event, downloadUrl)}>
-                  {downloadUrl}
-                </ClipboardCopy>
-              }
-            />
-            <DetailItem
-              title="Command to download the ISO:"
-              value={
-                <ClipboardCopy isReadOnly onCopy={(event) => clipboardCopyFunc(event, wgetCommand)}>
-                  {wgetCommand}
-                </ClipboardCopy>
-              }
-            />
-          </DetailList>
+        <DetailList>
+          <DetailItem
+            title="Discovery ISO URL"
+            value={
+              <ClipboardCopy isReadOnly onCopy={(event) => clipboardCopyFunc(event, downloadUrl)}>
+                {downloadUrl}
+              </ClipboardCopy>
+            }
+          />
+          <DetailItem
+            title="Command to download the ISO:"
+            value={
+              <ClipboardCopy isReadOnly onCopy={(event) => clipboardCopyFunc(event, wgetCommand)}>
+                {wgetCommand}
+              </ClipboardCopy>
+            }
+          />
           <DetailItem
             title="Boot instructions"
             value={
@@ -69,7 +67,15 @@ const DownloadIso: React.FC<DownloadISOProps> = ({
               </>
             }
           />
-        </TextContent>
+        </DetailList>
+        <Alert
+          variant="info"
+          isInline
+          title={
+            'Never share your downloaded ISO with anyone else. ' +
+            'Forwarding it could put your credentials and personal data at risk.'
+          }
+        />
       </ModalBoxBody>
       <ModalBoxFooter>
         <Button
