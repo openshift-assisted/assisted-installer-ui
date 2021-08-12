@@ -18,6 +18,9 @@ export type ClusterDeploymentK8sResource = K8sResourceCommon & {
         // agentSelector: Selector;
       };
     };
+    pullSecretRef?: {
+      name: string;
+    };
   };
   status?: {
     installVersion?: string;

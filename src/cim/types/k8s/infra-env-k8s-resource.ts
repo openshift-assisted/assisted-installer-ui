@@ -2,7 +2,7 @@ import { K8sResourceCommon, Selector } from 'console-sdk-ai-lib';
 
 export type InfraEnvK8sResource = K8sResourceCommon & {
   spec?: {
-    agentLabels?: string[];
+    agentLabels?: { [key: string]: string };
     clusterRef?: {
       name: string;
       namespace: string;
