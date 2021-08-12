@@ -79,17 +79,19 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
         onClear={onClearSelection}
         selections={field.value}
       >
-        {options.map((option, index) => {
-          // const { itemCount } = option;
-          return (
-            <SelectOption
-              key={option.id || option.value.toString() || index}
-              id={option.id || option.value.toString()}
-              value={option.value}
-              // itemCount={itemCount} TODO: This is broken ATM
-            />
-          );
-        })}
+        {options
+          .filter((option) => !(field.value || []).includes(option.value))
+          .map((option, index) => {
+            // const { itemCount } = option;
+            return (
+              <SelectOption
+                key={option.id || option.value.toString() || index}
+                id={option.id || option.value.toString()}
+                value={option.value}
+                // itemCount={itemCount} TODO: This is broken ATM
+              />
+            );
+          })}
       </Select>
     </FormGroup>
   );

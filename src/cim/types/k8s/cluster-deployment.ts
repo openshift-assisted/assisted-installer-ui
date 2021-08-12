@@ -16,6 +16,7 @@ export type ClusterDeploymentK8sResource = K8sResourceCommon & {
       agentBareMetal: {
         agentSelector?: {
           matchLabels: { [key in string]: string };
+          // TODO(mlibra): add matchExpressions or use Selector type
         };
       };
     };
