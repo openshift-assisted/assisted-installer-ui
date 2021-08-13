@@ -205,6 +205,7 @@ const ClusterEventsToolbar: React.FC<ClustersListToolbarProps> = ({
 
   return (
     <Toolbar
+      id="clusters-events-toolbar"
       className="pf-m-toggle-group-container"
       collapseListedFiltersBreakpoint="xl"
       clearAllFilters={onClearAllFilters}
