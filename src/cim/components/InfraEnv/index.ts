@@ -1,2 +1,3 @@
-export { default as InfraEnvForm } from './InfraEnvForm';
+export { default as InfraEnvFormPage } from './InfraEnvFormPage';
 export { default as EnvironmentDetails } from './EnvironmentDetails';
+export * from './utils';

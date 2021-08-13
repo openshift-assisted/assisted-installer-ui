@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { ConnectedIcon } from '@patternfly/react-icons';
-import { IRowData } from '@patternfly/react-table';
-import { WithTestID, EmptyState, HostsTable, Host } from '../../../common';
+import { WithTestID, EmptyState, HostsTable } from '../../../common';
 import { ClusterDeploymentHostsTablePropsActions } from './types';
 import {
   AgentClusterInstallK8sResource,
@@ -15,19 +14,7 @@ import {
   getColumns,
   hostToHostTableRow,
 } from '../../../common/components/hosts/networking-hosts-table';
-
-type GetAgentCallback = <R>(
-  agentCallback: ((agent: AgentK8sResource) => R) | undefined,
-  agents: AgentK8sResource[],
-) => ((host: Host) => R) | undefined;
-
-const getAgentCallback: GetAgentCallback = (agentCallback, agents) =>
-  agentCallback
-    ? (host) => {
-        const agent = agents.find((a) => a.metadata?.uid === host.id) as AgentK8sResource;
-        return agentCallback(agent);
-      }
-    : undefined;
+import { useAgentTableActions } from '../Agent/AgentTable';
 
 const HostsTableEmptyState: React.FC<{}> = () => (
   <EmptyState
@@ -51,38 +38,14 @@ const ClusterDeploymentHostsTable: React.FC<ClusterDeploymentHostsTableProps> = 
   agentClusterInstall,
   agents,
   pullSecretSet,
-  onDeleteHost,
-  onEditHost,
-  onEditRole,
-  canDelete,
-  canEditHost,
-  canEditRole,
+  ...actions
 }) => {
   const cluster = getAICluster({ clusterDeployment, agentClusterInstall, agents, pullSecretSet });
 
-  const tableCallbacks = React.useMemo(
-    () => ({
-      onDeleteHost: onDeleteHost
-        ? (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
-            const agent = agents.find(
-              (a) => a.metadata?.uid === rowData.host.id,
-            ) as AgentK8sResource;
-            onDeleteHost(agent);
-          }
-        : undefined,
-      onEditRole: onEditRole
-        ? (host: Host, role: string | undefined) => {
-            const agent = agents.find((a) => a.metadata?.uid === host.id) as AgentK8sResource;
-            return onEditRole(agent, role);
-          }
-        : undefined,
-      onEditHost: getAgentCallback(onEditHost, agents),
-      canDelete: getAgentCallback(canDelete, agents),
-      canEditHost: getAgentCallback(canEditHost, agents),
-      canEditRole: getAgentCallback(canEditRole, agents),
-    }),
-    [onDeleteHost, onEditHost, onEditRole, canDelete, canEditHost, canEditRole, agents],
-  );
+  const tableCallbacks = useAgentTableActions({
+    ...actions,
+    agents,
+  });
 
   const AdditionalNTPSourcesDialogToggleWithCluster = React.useCallback<React.FC>(
     () => <AdditionalNTPSourcesDialogToggle cluster={cluster} />,
