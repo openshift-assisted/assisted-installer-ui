@@ -13,7 +13,7 @@ import {
   ClusterDeploymentHostsSelectionValues,
 } from './types';
 import { hostCountValidationSchema, hostLabelsValidationSchema } from './validationSchemas';
-import { AGENT_LOCATION_LABEL_KEY } from '../common';
+import { getLocationsFormMatchExpressions } from '../helpers';
 
 const getInitialValues = ({
   clusterDeployment,
@@ -24,36 +24,21 @@ const getInitialValues = ({
 }): ClusterDeploymentHostsSelectionValues => ({
   hostCount: 3, // agents.length, // TODO(mlibra): it can not be agents.length since that is an user's requirement which does not need to match reality of k8s resources
   useMastersAsWorkers: true, // TODO: read but where from?
-  autoSelectMasters: true, // TODO: Calculate. Should it be based on presence of workerLabels??
-  masterLabels: labelsToArray(
+  agentLabels: labelsToArray(
     clusterDeployment.spec?.platform?.agentBareMetal?.agentSelector?.matchLabels,
   ),
-  workerLabels: labelsToArray({
-    /* TODO(mlibra): wait for late-binding to be ready - API is about to be changed
-       The workerLabels and autoSelectMasters will probably go away completely.
-     */
-  }),
-  locations:
-    clusterDeployment.spec?.platform?.agentBareMetal?.agentSelector?.matchExpressions?.find(
-      (expr) => expr.key === AGENT_LOCATION_LABEL_KEY,
-    )?.values || [],
+  locations: getLocationsFormMatchExpressions(
+    clusterDeployment.spec?.platform?.agentBareMetal?.agentSelector?.matchExpressions,
+  ),
 });
 
 const getValidationSchema = () =>
-  Yup.lazy<Pick<ClusterDeploymentHostsSelectionValues, 'autoSelectMasters'>>(
-    ({ autoSelectMasters }) =>
-      Yup.object().shape({
-        hostCount: hostCountValidationSchema,
-        useMastersAsWorkers: Yup.boolean().required(),
-        masterLabels: hostLabelsValidationSchema.required(),
-        workerLabels: autoSelectMasters
-          ? /* always passing */ Yup.array()
-          : hostLabelsValidationSchema.required(),
-        autoSelectMasters: Yup.boolean().required(),
-        locations: Yup.array().min(0),
-      }),
-  );
-
+  Yup.object().shape({
+    hostCount: hostCountValidationSchema,
+    useMastersAsWorkers: Yup.boolean().required(),
+    agentLabels: hostLabelsValidationSchema.required(),
+    locations: Yup.array().min(0),
+  });
 const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectionStepProps> = ({
   clusterDeployment,
   // agentClusterInstall,

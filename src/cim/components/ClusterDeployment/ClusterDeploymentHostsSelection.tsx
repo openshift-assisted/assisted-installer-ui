@@ -1,14 +1,6 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
-import {
-  Grid,
-  GridItem,
-  AlertGroup,
-  Alert,
-  AlertVariant,
-  TextContent,
-  Text,
-} from '@patternfly/react-core';
+import { Grid, GridItem, AlertGroup, Alert, AlertVariant } from '@patternfly/react-core';
 import {
   CheckboxField,
   ClusterWizardStepHeader,
@@ -16,7 +8,6 @@ import {
   MultiSelectField,
   NumberInputField,
   PopoverIcon,
-  SwitchField,
 } from '../../../common';
 import { AGENT_LOCATION_LABEL_KEY } from '../common';
 import {
@@ -27,13 +18,6 @@ import { HOSTS_MAX_COUNT, HOSTS_MIN_COUNT } from './constants';
 
 // TODO(mlibra): Something more descriptive
 const HostCountLabelIcon: React.FC = () => <>Total count of hosts included in the cluster.</>;
-
-const AutoSelectMastersLabel: React.FC = () => (
-  <>
-    Auto-select control plane (master) hosts.{' '}
-    <PopoverIcon bodyContent="Allowing to auto allocate control plane (master) hosts based on the matched labels." />
-  </>
-);
 
 const LocationsLabel: React.FC = () => (
   <>
@@ -56,14 +40,12 @@ const LocationsLabel: React.FC = () => (
 const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionProps> = ({
   usedAgentLabels = [],
   agentLocations = [],
-  matchingMastersCount,
-  matchingWorkersCount,
+  matchingAgentsCount,
   allAgentsCount,
-  onMasterAgentSelectorChange,
-  onWorkerAgentSelectorChange,
+  onAgentSelectorChange,
 }) => {
   const { setFieldValue, values } = useFormikContext<ClusterDeploymentHostsSelectionValues>();
-  const { hostCount, autoSelectMasters } = values;
+  const { hostCount } = values;
 
   const usedAgentLabelsWithoutLocation = usedAgentLabels
     .filter((key) => key !== AGENT_LOCATION_LABEL_KEY)
@@ -102,29 +84,7 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
       </GridItem>
 
       <GridItem>
-        <ClusterWizardStepHeader
-          extraItems={
-            <SwitchField
-              name="autoSelectMasters"
-              idPostfix="autoselectmasters"
-              label={<AutoSelectMastersLabel />}
-              onChange={(newVal: boolean) => {
-                if (newVal) {
-                  onWorkerAgentSelectorChange({ labels: undefined, locations: undefined });
-                  setFieldValue('workerLabels', []);
-                  // TODO(mlibra): tweak for proper error alerts
-                } else {
-                  onWorkerAgentSelectorChange({
-                    labels: values.workerLabels,
-                    locations: values.locations,
-                  });
-                }
-              }}
-            />
-          }
-        >
-          Labels
-        </ClusterWizardStepHeader>
+        <ClusterWizardStepHeader>Labels</ClusterWizardStepHeader>
       </GridItem>
 
       <GridItem>
@@ -135,87 +95,38 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
           placeholderText="Type or select location(s)"
           options={agentLocations}
           onChange={(locations) => {
-            onMasterAgentSelectorChange({
-              labels: values.masterLabels,
+            onAgentSelectorChange({
+              labels: values.agentLabels,
               locations,
             });
-            if (!values.autoSelectMasters) {
-              onWorkerAgentSelectorChange({
-                labels: values.masterLabels,
-                locations,
-              });
-            }
           }}
         />
       </GridItem>
 
       <GridItem>
-        {!autoSelectMasters && (
-          <TextContent>
-            <Text component="h3">Control plane (master) hosts</Text>
-          </TextContent>
-        )}
         <LabelField
-          label={
-            autoSelectMasters
-              ? 'Labels matching hosts'
-              : 'Labels matching control plane (master) hosts'
-          }
-          name="masterLabels"
-          idPostfix="masterlabels"
+          label="Labels matching hosts"
+          name="agentLabels"
+          idPostfix="agentlabels"
           helperText="Please provide as many labels as you can to find the relevant hosts."
           forceUniqueKeys={true}
           autocompleteValues={usedAgentLabelsWithoutLocation}
           onChange={(tags: string[]) =>
-            onMasterAgentSelectorChange({ labels: tags, locations: values.locations })
+            onAgentSelectorChange({ labels: tags, locations: values.locations })
           }
           isRequired
         />
       </GridItem>
-      {matchingMastersCount !== undefined && (
+      {matchingAgentsCount !== undefined && (
         <GridItem>
           <AlertGroup>
             <Alert
               variant={AlertVariant.success}
-              title={`${matchingMastersCount} hosts (out of ${allAgentsCount}) match the requirements.`}
+              title={`${matchingAgentsCount} hosts (out of ${allAgentsCount}) match the requirements.`}
               isInline
             />
           </AlertGroup>
         </GridItem>
-      )}
-
-      {!autoSelectMasters && (
-        <>
-          <GridItem>
-            <TextContent>
-              <Text component="h3">Worker hosts</Text>
-            </TextContent>
-
-            <LabelField
-              label="Labels matching worker hosts"
-              name="workerLabels"
-              idPostfix="workerlabels"
-              helperText="Please provide as many labels as you can to find the relevant hosts."
-              forceUniqueKeys={true}
-              autocompleteValues={usedAgentLabelsWithoutLocation}
-              onChange={(tags: string[]) =>
-                onWorkerAgentSelectorChange({ labels: tags, locations: values.locations })
-              }
-              isRequired
-            />
-          </GridItem>
-          {matchingWorkersCount !== undefined && (
-            <GridItem>
-              <AlertGroup>
-                <Alert
-                  variant={AlertVariant.success}
-                  title={`${matchingWorkersCount} hosts (out of ${allAgentsCount}) match the requirements.`}
-                  isInline
-                />
-              </AlertGroup>
-            </GridItem>
-          )}
-        </>
       )}
     </Grid>
   );

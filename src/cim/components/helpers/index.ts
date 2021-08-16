@@ -3,3 +3,4 @@ export * from './toAssisted';
 export * from './network';
 export * from './conditions';
 export * from './versions';
+export * from './labels';
