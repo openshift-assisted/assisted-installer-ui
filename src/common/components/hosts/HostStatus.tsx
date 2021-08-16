@@ -29,7 +29,11 @@ import hdate from 'human-date';
 
 import { Host } from '../../api';
 import { ValidationsInfo } from '../../types/hosts';
-import { HOST_STATUS_DETAILS, HOST_STATUS_LABELS } from '../../config';
+import {
+  HOST_STATUS_DETAILS,
+  HOST_STATUS_LABELS,
+  HOST_VALIDATION_FAILURE_HINTS,
+} from '../../config';
 import { getHumanizedDateTime } from '../ui';
 
 import HostProgress from './HostProgress';
@@ -106,9 +110,19 @@ type HostStatusPopoverContentProps = ValidationInfoActionProps & {
 };
 
 const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = (props) => {
-  const { host } = props;
+  const { host, validationsInfo } = props;
   const { status, statusInfo } = host;
   const statusDetails = HOST_STATUS_DETAILS[status];
+
+  const hints: string[] = [];
+
+  if (validationsInfo?.network) {
+    validationsInfo.network.forEach((element) => {
+      if (element.status == 'failure') {
+        hints.push(HOST_VALIDATION_FAILURE_HINTS[element.id]);
+      }
+    });
+  }
 
   if (status === 'added-to-existing-cluster') {
     return (
@@ -139,7 +153,14 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = (props
           <br />
           {toSentence(statusInfo)}
           <br />
-          {statusInfo.includes('ISO') && 'Please generate a new minimal ISO and reboot the hosts.'}
+          {hints
+            .filter((hint) => hint)
+            .map((hint, index) => (
+              <span key={index}>
+                {hint}
+                <br />
+              </span>
+            ))}
         </Text>
         <HostProgress host={host} />
       </TextContent>
