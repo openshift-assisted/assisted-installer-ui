@@ -12,12 +12,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   onSaveNetworking,
   onSaveHostsSelection,
   onClose,
-  onEditHost,
-  canEditHost,
-  onEditRole,
-  canEditRole,
-  onDeleteHost,
-  canDelete,
+  hostActions,
   clusterDeployment,
   agentClusterInstall,
   agents,
@@ -27,7 +22,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   usedClusterNames,
   usedAgentLabels,
   agentLocations,
-  matchingAgentsCount,
+  matchingAgents,
   allAgentsCount,
   onAgentSelectorChange,
 }) => {
@@ -51,9 +46,10 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
             onSaveHostsSelection={onSaveHostsSelection}
             usedAgentLabels={usedAgentLabels}
             agentLocations={agentLocations}
-            matchingAgentsCount={matchingAgentsCount}
+            matchingAgents={matchingAgents}
             allAgentsCount={allAgentsCount}
             onAgentSelectorChange={onAgentSelectorChange}
+            hostActions={hostActions}
           />
         );
       case 'networking':
@@ -65,12 +61,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
             pullSecretSet={pullSecretSet}
             onSaveNetworking={onSaveNetworking}
             onClose={onClose}
-            onEditHost={onEditHost}
-            canEditHost={canEditHost}
-            onEditRole={onEditRole}
-            canEditRole={canEditRole}
-            onDeleteHost={onDeleteHost}
-            canDelete={canDelete}
+            hostActions={hostActions}
             // TODO(mlibra) Add more networking-table actions here
           />
         );
@@ -103,13 +94,8 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
     onSaveNetworking,
     onSaveHostsSelection,
     onClose,
-    onEditHost,
-    canEditHost,
-    onEditRole,
-    canEditRole,
-    onDeleteHost,
-    canDelete,
-    matchingAgentsCount,
+    matchingAgents,
+    hostActions,
     onAgentSelectorChange,
     usedAgentLabels,
     agentLocations,

@@ -30,20 +30,20 @@ type ClusterDeploymentHostsTableProps = {
   agents: AgentK8sResource[];
   pullSecretSet: boolean;
   skipDisabled?: boolean;
-} & ClusterDeploymentHostsTablePropsActions &
-  WithTestID;
+  hostActions: ClusterDeploymentHostsTablePropsActions;
+} & WithTestID;
 
 const ClusterDeploymentHostsTable: React.FC<ClusterDeploymentHostsTableProps> = ({
   clusterDeployment,
   agentClusterInstall,
   agents,
   pullSecretSet,
-  ...actions
+  hostActions,
 }) => {
   const cluster = getAICluster({ clusterDeployment, agentClusterInstall, agents, pullSecretSet });
 
   const tableCallbacks = useAgentTableActions({
-    ...actions,
+    ...hostActions,
     agents,
   });
 

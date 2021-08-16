@@ -15,6 +15,7 @@ import {
   ClusterDeploymentHostsSelectionValues,
 } from './types';
 import { HOSTS_MAX_COUNT, HOSTS_MIN_COUNT } from './constants';
+import { AgentTable } from '../Agent';
 
 // TODO(mlibra): Something more descriptive
 const HostCountLabelIcon: React.FC = () => <>Total count of hosts included in the cluster.</>;
@@ -40,9 +41,10 @@ const LocationsLabel: React.FC = () => (
 const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionProps> = ({
   usedAgentLabels = [],
   agentLocations = [],
-  matchingAgentsCount,
+  matchingAgents,
   allAgentsCount,
   onAgentSelectorChange,
+  hostActions,
 }) => {
   const { setFieldValue, values } = useFormikContext<ClusterDeploymentHostsSelectionValues>();
   const { hostCount } = values;
@@ -117,16 +119,22 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
           isRequired
         />
       </GridItem>
-      {matchingAgentsCount !== undefined && (
-        <GridItem>
-          <AlertGroup>
-            <Alert
-              variant={AlertVariant.success}
-              title={`${matchingAgentsCount} hosts (out of ${allAgentsCount}) match the requirements.`}
-              isInline
-            />
-          </AlertGroup>
-        </GridItem>
+      {matchingAgents !== undefined && (
+        <>
+          <GridItem>
+            <AlertGroup>
+              <Alert
+                variant={AlertVariant.success}
+                title={`${matchingAgents.length} hosts (out of ${allAgentsCount}) match the requirements.`}
+                isInline
+              />
+            </AlertGroup>
+          </GridItem>
+
+          <GridItem>
+            <AgentTable agents={matchingAgents} {...hostActions} />
+          </GridItem>
+        </>
       )}
     </Grid>
   );

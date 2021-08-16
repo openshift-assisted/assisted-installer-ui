@@ -45,7 +45,7 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
   agents,
   onClose,
   onSaveHostsSelection,
-  ...props
+  ...rest
 }) => {
   const { addAlert } = useAlerts();
   const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
@@ -113,7 +113,7 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
 
         return (
           <ClusterDeploymentWizardStep navigation={navigation} footer={footer}>
-            <ClusterDeploymentHostsSelection {...props} />
+            <ClusterDeploymentHostsSelection {...rest} />
           </ClusterDeploymentWizardStep>
         );
       }}

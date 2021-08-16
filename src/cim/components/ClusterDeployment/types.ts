@@ -79,13 +79,14 @@ export type ClusterDeploymentDetailsStepProps = ClusterDeploymentDetailsProps & 
   onClose: () => void;
 };
 
-export type ClusterDeploymentDetailsNetworkingProps = ClusterDeploymentHostsTablePropsActions & {
+export type ClusterDeploymentDetailsNetworkingProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall: AgentClusterInstallK8sResource;
   agents: AgentK8sResource[];
   pullSecretSet: boolean;
   onSaveNetworking: (values: ClusterDeploymentNetworkingValues) => Promise<string | void>;
   onClose: () => void;
+  hostActions: ClusterDeploymentHostsTablePropsActions;
 };
 
 export type AgentSelectorChageProps = {
@@ -96,11 +97,10 @@ export type AgentSelectorChageProps = {
 export type ClusterDeploymentHostsSelectionProps = {
   usedAgentLabels?: string[];
   agentLocations?: AgentLocation[];
-  matchingAgentsCount?: number;
-  // matchingWorkersCount?: number;
+  matchingAgents?: AgentK8sResource[];
   allAgentsCount?: number;
   onAgentSelectorChange: (props: AgentSelectorChageProps) => void;
-  // onWorkerAgentSelectorChange: (props: AgentSelectorChageProps) => void;
+  hostActions: ClusterDeploymentHostsTablePropsActions;
 };
 
 export type ClusterDeploymentHostSelectionStepProps = ClusterDeploymentHostsSelectionProps & {
@@ -112,8 +112,7 @@ export type ClusterDeploymentHostSelectionStepProps = ClusterDeploymentHostsSele
 };
 
 export type ClusterDeploymentWizardProps = ClusterDeploymentDetailsProps &
-  ClusterDeploymentHostsSelectionProps &
-  ClusterDeploymentHostsTablePropsActions & {
+  ClusterDeploymentHostsSelectionProps & {
     className?: string;
 
     onClose: () => void;
