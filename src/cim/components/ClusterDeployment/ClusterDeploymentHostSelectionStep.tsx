@@ -30,6 +30,7 @@ const getInitialValues = ({
   locations: getLocationsFormMatchExpressions(
     clusterDeployment.spec?.platform?.agentBareMetal?.agentSelector?.matchExpressions,
   ),
+  selectedHostIds: [], // TODO(mlibra): compute based on selector
 });
 
 const getValidationSchema = () =>

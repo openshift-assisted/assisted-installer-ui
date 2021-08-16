@@ -15,6 +15,9 @@ export type ClusterDeploymentHostsTablePropsActions = {
   canDelete?: (agent: AgentK8sResource) => boolean;
   onDeleteHost?: (agent: AgentK8sResource) => void;
   onApprove?: (agent: AgentK8sResource) => void;
+  onHostSelected?: (agent: AgentK8sResource, selected: boolean) => void;
+
+  selectedHostIds?: string[];
 };
 
 /*
@@ -72,6 +75,7 @@ export type ClusterDeploymentHostsSelectionValues = {
   useMastersAsWorkers: boolean;
   agentLabels: string[];
   locations: string[];
+  selectedHostIds: string[];
 };
 
 export type ClusterDeploymentDetailsStepProps = ClusterDeploymentDetailsProps & {

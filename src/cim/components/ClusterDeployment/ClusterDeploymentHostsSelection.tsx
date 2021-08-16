@@ -16,6 +16,7 @@ import {
 } from './types';
 import { HOSTS_MAX_COUNT, HOSTS_MIN_COUNT } from './constants';
 import { AgentTable } from '../Agent';
+import { AgentK8sResource } from '../../types';
 
 // TODO(mlibra): Something more descriptive
 const HostCountLabelIcon: React.FC = () => <>Total count of hosts included in the cluster.</>;
@@ -52,6 +53,17 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
   const usedAgentLabelsWithoutLocation = usedAgentLabels
     .filter((key) => key !== AGENT_LOCATION_LABEL_KEY)
     .sort();
+
+  const onHostSelected = (agent: AgentK8sResource, selected: boolean) => {
+    if (selected) {
+      setFieldValue('selectedHostIds', [...values.selectedHostIds, agent.metadata?.uid]);
+    } else {
+      setFieldValue(
+        'selectedHostIds',
+        values.selectedHostIds.filter((uid) => uid !== agent.metadata?.uid),
+      );
+    }
+  };
 
   return (
     <Grid hasGutter>
@@ -132,7 +144,12 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
           </GridItem>
 
           <GridItem>
-            <AgentTable agents={matchingAgents} {...hostActions} />
+            <AgentTable
+              agents={matchingAgents}
+              selectedHostIds={values.selectedHostIds}
+              onHostSelected={onHostSelected}
+              {...hostActions}
+            />
           </GridItem>
         </>
       )}
