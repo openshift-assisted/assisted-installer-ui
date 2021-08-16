@@ -278,10 +278,9 @@ export const getWizardStepClusterStatus = (
     const { allowedStatuses } = wizardStepsValidationsMap[wizardStepId].host;
     const allHostsReady = (cluster?.hosts || []).every(
       (host) =>
-        allowedStatuses.length == 0 ||
+        allowedStatuses.length === 0 ||
         allowedStatuses.includes(getWizardStepHostStatus(host, wizardStepId)),
     );
-
     return allHostsReady &&
       checkClusterValidationGroups(validationsInfo, groups, softValidationIds) &&
       checkClusterValidations(validationsInfo, validationIds)
