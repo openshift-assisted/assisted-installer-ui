@@ -54,23 +54,38 @@ export const sshPublicKeyValidationSchema = Yup.string().test(
   },
 );
 
-export const validJSONSchema = Yup.string().test(
-  'is-json',
-  'The pull-secret format is invalid, refer to the documentation for examples.',
-  (value) => {
-    if (!value) return true;
-    try {
-      const pullSecret = JSON.parse(value);
-      return (
-        pullSecret.constructor.name === 'Object' &&
-        Object.hasOwnProperty.call(pullSecret, 'auths') &&
-        pullSecret.auths.constructor.name === 'Object'
-      );
-    } catch {
-      return false;
-    }
-  },
-);
+export const pullSecretValidationSchema = Yup.string()
+  .test(
+    'is-well-formed-json',
+    'The pull-secret format is malformed, refer to the documentation for examples.',
+    (value) => {
+      const isValid = true;
+      if (!value) return isValid;
+      try {
+        JSON.parse(value);
+        return isValid;
+      } catch {
+        return !isValid;
+      }
+    },
+  )
+  .test(
+    'is-valid-pull-secret',
+    'The pull-secret format is invalid, refer to the documentation for examples.',
+    (value) => {
+      if (!value) return true;
+      try {
+        const pullSecret = JSON.parse(value);
+        return (
+          pullSecret.constructor.name === 'Object' &&
+          Object.hasOwnProperty.call(pullSecret, 'auths') &&
+          pullSecret.auths.constructor.name === 'Object'
+        );
+      } catch {
+        return false;
+      }
+    },
+  );
 
 export const ipValidationSchema = Yup.string().matches(IP_ADDRESS_REGEX, {
   message: 'Value "${value}" is not valid IP address.', // eslint-disable-line no-template-curly-in-string
