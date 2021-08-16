@@ -138,6 +138,8 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = (props
           {statusDetails}
           <br />
           {toSentence(statusInfo)}
+          <br />
+          {statusInfo.includes('ISO') && 'Please generate a new minimal ISO and reboot the hosts.'}
         </Text>
         <HostProgress host={host} />
       </TextContent>
