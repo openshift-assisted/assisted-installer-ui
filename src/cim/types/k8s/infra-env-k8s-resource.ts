@@ -16,6 +16,7 @@ export type InfraEnvK8sResource = K8sResourceCommon & {
       httpsProxy: string;
       noProxy: string;
     };
+    nmStateConfigLabelSelector?: Selector;
   };
   status?: {
     agentLabelSelector?: Selector;
