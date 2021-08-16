@@ -286,7 +286,8 @@ export const getWizardStepClusterStatus = (
     const allHostsReady = (cluster?.hosts || []).every((host) =>
       allowedStatuses.includes(getWizardStepHostStatus(host, wizardStepId)),
     );
-    return allHostsReady &&
+
+    return (wizardStepId === 'cluster-details' || allHostsReady) &&
       checkClusterValidationGroups(validationsInfo, groups, softValidationIds) &&
       checkClusterValidations(validationsInfo, validationIds)
       ? 'ready'
