@@ -52,14 +52,7 @@ const clusterDetailsStepValidationsMap: WizardStepValidationMap = {
     validationIds: ['pull-secret-set', 'dns-domain-defined'],
   },
   host: {
-    allowedStatuses: [
-      'known',
-      'disabled',
-      'discovering',
-      'disconnected',
-      'resetting',
-      'resetting-pending-user-action',
-    ],
+    allowedStatuses: [],
     groups: [],
     validationIds: [],
   },
@@ -283,11 +276,13 @@ export const getWizardStepClusterStatus = (
     const { groups, validationIds } = wizardStepsValidationsMap[wizardStepId].cluster;
     const { softValidationIds } = wizardStepsValidationsMap[wizardStepId];
     const { allowedStatuses } = wizardStepsValidationsMap[wizardStepId].host;
-    const allHostsReady = (cluster?.hosts || []).every((host) =>
-      allowedStatuses.includes(getWizardStepHostStatus(host, wizardStepId)),
+    const allHostsReady = (cluster?.hosts || []).every(
+      (host) =>
+        allowedStatuses.length == 0 ||
+        allowedStatuses.includes(getWizardStepHostStatus(host, wizardStepId)),
     );
 
-    return (wizardStepId === 'cluster-details' || allHostsReady) &&
+    return allHostsReady &&
       checkClusterValidationGroups(validationsInfo, groups, softValidationIds) &&
       checkClusterValidations(validationsInfo, validationIds)
       ? 'ready'
