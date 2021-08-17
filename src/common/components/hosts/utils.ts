@@ -58,7 +58,9 @@ export const canEditHost = (clusterStatus: Cluster['status'], status: Host['stat
 export const canEditDisks = canEditHost;
 
 export const canDownloadKubeconfig = (clusterStatus: Cluster['status']) =>
-  ['installing', 'finalizing', 'error', 'cancelled', 'installed'].includes(clusterStatus);
+  ['installing', 'finalizing', 'error', 'cancelled', 'installed', 'adding-hosts'].includes(
+    clusterStatus,
+  );
 
 export const canInstallHost = (cluster: Cluster, hostStatus: Host['status']) =>
   cluster.kind === 'AddHostsCluster' && cluster.status === 'adding-hosts' && hostStatus === 'known';

@@ -1,7 +1,12 @@
 import { Flex, FlexItem, Button, ButtonVariant } from '@patternfly/react-core';
 import React from 'react';
-import { Cluster, canDownloadClusterLogs, useAlerts, EventsModalButton } from '../../../common';
-import KubeconfigDownload from './KubeconfigDownload';
+import {
+  Cluster,
+  canDownloadClusterLogs,
+  useAlerts,
+  EventsModalButton,
+  KubeconfigDownload,
+} from '../../../common';
 import { downloadClusterInstallationLogs } from './utils';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
 import { canAbortInstallation } from '../clusters/utils';

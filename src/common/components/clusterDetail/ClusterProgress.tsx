@@ -39,6 +39,7 @@ const getProgressVariant = (status: Cluster['status']) => {
     case 'error':
       return ProgressVariant.danger;
     case 'installed':
+    case 'adding-hosts':
       return ProgressVariant.success;
     default:
       return undefined;
@@ -46,7 +47,9 @@ const getProgressVariant = (status: Cluster['status']) => {
 };
 
 const getMeasureLocation = (status: Cluster['status']) =>
-  status === 'installed' ? ProgressMeasureLocation.none : ProgressMeasureLocation.top;
+  ['installed', 'adding-hosts'].includes(status)
+    ? ProgressMeasureLocation.none
+    : ProgressMeasureLocation.top;
 
 const getProgressLabel = (
   status: Cluster['status'],
@@ -70,7 +73,7 @@ const getHostsProgressPercent = (hosts: Host[] = []) => {
     (steps, host) => steps + getHostProgressStageNumber(host),
     0,
   );
-  return (completedSteps / totalSteps) * 100;
+  return totalSteps ? (completedSteps / totalSteps) * 100 : 100;
 };
 
 const getOperatorsProgressPercent = (monitoredOperators: MonitoredOperatorsList) => {
@@ -82,7 +85,7 @@ const getOperatorsProgressPercent = (monitoredOperators: MonitoredOperatorsList)
 
   return monitoredOperators.length
     ? (completeOperators.length / monitoredOperators.length) * 100
-    : 0;
+    : 100;
 };
 
 const getInstallationStatus = (
