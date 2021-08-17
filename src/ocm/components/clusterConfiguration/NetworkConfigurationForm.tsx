@@ -149,7 +149,7 @@ const NetworkConfigurationForm: React.FC<{
             cluster={cluster}
             errorFields={errorFields}
             isSubmitting={isSubmitting}
-            isNextDisabled={dirty || !canNextNetwork({ cluster })}
+            isNextDisabled={isSubmitting || dirty || !canNextNetwork({ cluster })}
             onNext={() => setCurrentStepId('review')}
             onBack={() => setCurrentStepId('host-discovery')}
           />
