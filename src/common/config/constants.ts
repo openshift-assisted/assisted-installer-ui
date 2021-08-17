@@ -171,8 +171,7 @@ export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string 
   'compatible-with-cluster-platform': '',
   'has-default-route': '',
   'sufficient-network-latency-requirement-for-role': '',
-  'sufficient-packet-loss-requirement-for-role':
-    'Please generate a new minimal ISO and reboot the hosts.',
+  'sufficient-packet-loss-requirement-for-role': '',
   'has-inventory': '',
   'has-min-cpu-cores': '',
   'has-min-memory': '',

@@ -133,17 +133,14 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = (props
 
   if (['error', 'cancelled', 'installing-pending-user-action'].includes(status)) {
     return (
-      <>
-        <TextContent>
-          <Text>
-            {statusDetails}
-            <br />
-            {toSentence(statusInfo)}
-            <br />
-          </Text>
-          <HostProgress host={host} />
-        </TextContent>
-      </>
+      <TextContent>
+        <Text>
+          {statusDetails}
+          <br />
+          {toSentence(statusInfo)}
+        </Text>
+        <HostProgress host={host} />
+      </TextContent>
     );
   }
 
