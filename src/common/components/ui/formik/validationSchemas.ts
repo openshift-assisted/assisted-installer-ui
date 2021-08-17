@@ -78,7 +78,7 @@ export const pullSecretValidationSchema = Yup.string()
         const pullSecret = JSON.parse(value);
         return (
           pullSecret.constructor.name === 'Object' &&
-          Object.hasOwnProperty.call(pullSecret, 'auths') &&
+          !!pullSecret?.auths &&
           pullSecret.auths.constructor.name === 'Object'
         );
       } catch {
