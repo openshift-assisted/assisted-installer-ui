@@ -13,7 +13,7 @@ import {
   ClusterDefaultConfig,
   PreflightHardwareRequirements,
   PlatformType,
-} from '../../common';
+} from '../../common/api/types';
 import { client, BASE_PATH } from './axiosClient';
 
 export const getClusters = (): AxiosPromise<Cluster[]> => client.get('/v1/clusters');
