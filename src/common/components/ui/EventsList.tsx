@@ -90,6 +90,7 @@ const EventsList: React.FC<EventsListProps> = ({ events, className }) => {
   return (
     <div className={className}>
       <Table
+        className="events-table"
         rows={rows}
         cells={[
           { title: 'Time', cellTransforms: [fitContent, noPadding] },

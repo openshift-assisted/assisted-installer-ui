@@ -8,17 +8,10 @@ import {
   ExpandableSection,
 } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons';
-
-import {
-  Cluster,
-  Host,
-  Interface,
-  Inventory,
-  removeProtocolFromURL,
-  stringToJSON,
-  ToolbarButton,
-  PrismCode,
-} from '../../../common';
+import { Cluster, Host, Interface, Inventory } from '../../api/types';
+import { removeProtocolFromURL, stringToJSON } from '../../api/utils';
+import { ToolbarButton } from '../ui/Toolbar';
+import PrismCode from '../ui/PrismCode';
 
 type WebConsoleHintProps = {
   cluster: Cluster;

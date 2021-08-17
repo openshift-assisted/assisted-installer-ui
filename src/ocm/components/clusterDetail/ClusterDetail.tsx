@@ -18,12 +18,12 @@ import {
   canDownloadClusterLogs,
   useAlerts,
   RenderIf,
+  KubeconfigDownload,
 } from '../../../common';
 import ClusterHostsTable from '../hosts/ClusterHostsTable';
 import ClusterToolbar from '../clusters/ClusterToolbar';
 import { downloadClusterInstallationLogs, getClusterDetailId } from './utils';
-import { LaunchOpenshiftConsoleButton } from './ConsoleModal';
-import KubeconfigDownload from './KubeconfigDownload';
+import { LaunchOpenshiftConsoleButton } from '../../../common/components/clusterDetail/ConsoleModal';
 import ClusterProperties from './ClusterProperties';
 import { isSingleClusterMode, routeBasePath } from '../../config';
 import ClusterDetailStatusVarieties, {
@@ -61,11 +61,13 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
             <ClusterProgress cluster={cluster} onFetchEvents={onFetchEvents} />
           </GridItem>
           <ClusterDetailStatusVarieties cluster={cluster} clusterVarieties={clusterVarieties} />
-          <KubeconfigDownload
-            status={cluster.status}
-            clusterId={cluster.id}
-            id={getClusterDetailId('button-download-kubeconfig')}
-          />
+          <GridItem>
+            <KubeconfigDownload
+              status={cluster.status}
+              clusterId={cluster.id}
+              id={getClusterDetailId('button-download-kubeconfig')}
+            />
+          </GridItem>
           <RenderIf condition={typeof inactiveDeletionHours === 'number'}>
             <Alert
               variant="info"

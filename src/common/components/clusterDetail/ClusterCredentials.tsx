@@ -1,20 +1,15 @@
 import React from 'react';
 import { GridItem, Button, ClipboardCopy, clipboardCopyFunc } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
-import {
-  Credentials,
-  Cluster,
-  LoadingState,
-  ErrorState,
-  DetailList,
-  DetailItem,
-} from '../../../common';
+import { Credentials, Cluster } from '../../api/types';
+import { LoadingState, ErrorState } from '../../components/ui/uiState';
+import { DetailList, DetailItem } from '../../components/ui/DetailList';
 import { TroubleshootingOpenshiftConsoleButton } from './ConsoleModal';
 
 type ClusterCredentialsProps = {
   cluster: Cluster;
-  error: boolean;
-  retry: () => void;
+  error?: boolean;
+  retry?: () => void;
   credentials?: Credentials;
   idPrefix?: string;
 };
@@ -22,7 +17,7 @@ type ClusterCredentialsProps = {
 const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
   cluster,
   credentials,
-  error,
+  error = false,
   retry,
   idPrefix = 'cluster-creds',
 }) => {

@@ -1,17 +1,26 @@
 import React from 'react';
 import { saveAs } from 'file-saver';
-import { GridItem, Button, ButtonVariant } from '@patternfly/react-core';
-import { getPresignedFileUrl, getClusterFileDownload } from '../../api/clusters';
-import { Cluster, Presigned, canDownloadKubeconfig, useAlerts } from '../../../common';
-import { getErrorMessage, handleApiError, ocmClient } from '../../api';
+import { Button, ButtonVariant } from '@patternfly/react-core';
+import { getPresignedFileUrl, getClusterFileDownload } from '../../../ocm/api/clusters';
+import { canDownloadKubeconfig } from '../hosts/utils';
+import { useAlerts } from '../AlertsContextProvider';
+import { Cluster, Presigned } from '../../api/types';
+import { ocmClient } from '../../../ocm/api/axiosClient';
+import { getErrorMessage, handleApiError } from '../../../ocm/api/utils';
 
 type KubeconfigDownloadProps = {
   clusterId: Cluster['id'];
   status: Cluster['status'];
   id?: string;
+  handleDownload?: () => void;
 };
 
-const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({ clusterId, status, id }) => {
+const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({
+  clusterId,
+  status,
+  id,
+  handleDownload,
+}) => {
   const { addAlert } = useAlerts();
 
   const download = React.useCallback(
@@ -43,17 +52,15 @@ const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({ clusterId, stat
   );
 
   return (
-    <GridItem>
-      <Button
-        variant={ButtonVariant.secondary}
-        onClick={() => download(clusterId, status)}
-        isDisabled={!canDownloadKubeconfig(status)}
-        id={id}
-        data-testid={id}
-      >
-        Download kubeconfig
-      </Button>
-    </GridItem>
+    <Button
+      variant={ButtonVariant.secondary}
+      onClick={handleDownload || (() => download(clusterId, status))}
+      isDisabled={!canDownloadKubeconfig(status)}
+      id={id}
+      data-testid={id}
+    >
+      Download kubeconfig
+    </Button>
   );
 };
 
