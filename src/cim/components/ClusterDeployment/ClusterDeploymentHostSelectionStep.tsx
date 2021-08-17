@@ -17,10 +17,12 @@ import { getLocationsFormMatchExpressions } from '../helpers';
 
 const getInitialValues = ({
   clusterDeployment,
+  selectedHostIds,
 }: {
   clusterDeployment: ClusterDeploymentK8sResource;
   // agentClusterInstall: AgentClusterInstallK8sResource;
-  agents: AgentK8sResource[];
+  // agents: AgentK8sResource[];
+  selectedHostIds: string[];
 }): ClusterDeploymentHostsSelectionValues => ({
   hostCount: 3, // agents.length, // TODO(mlibra): it can not be agents.length since that is an user's requirement which does not need to match reality of k8s resources
   useMastersAsWorkers: true, // TODO: read but where from?
@@ -30,7 +32,7 @@ const getInitialValues = ({
   locations: getLocationsFormMatchExpressions(
     clusterDeployment.spec?.platform?.agentBareMetal?.agentSelector?.matchExpressions,
   ),
-  selectedHostIds: [], // TODO(mlibra): compute based on selector
+  selectedHostIds,
 });
 
 const getValidationSchema = () =>
@@ -40,10 +42,12 @@ const getValidationSchema = () =>
     agentLabels: hostLabelsValidationSchema.required(),
     locations: Yup.array().min(0),
   });
+
 const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectionStepProps> = ({
   clusterDeployment,
   // agentClusterInstall,
-  agents,
+  // agents,
+  selectedHostIds,
   onClose,
   onSaveHostsSelection,
   ...rest
@@ -52,7 +56,7 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
   const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
 
   const initialValues = React.useMemo(
-    () => getInitialValues({ clusterDeployment, agents }),
+    () => getInitialValues({ clusterDeployment, selectedHostIds }),
     [], // eslint-disable-line react-hooks/exhaustive-deps
   );
   const validationSchema = React.useMemo(() => getValidationSchema(), []);

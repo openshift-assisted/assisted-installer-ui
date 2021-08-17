@@ -24,6 +24,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   agentLocations,
   matchingAgents,
   allAgentsCount,
+  selectedHostIds,
   onAgentSelectorChange,
 }) => {
   const [currentStepId, setCurrentStepId] = React.useState<ClusterDeploymentWizardStepsType>(
@@ -40,8 +41,9 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
         return (
           <ClusterDeploymentHostSelectionStep
             clusterDeployment={clusterDeployment}
-            agentClusterInstall={agentClusterInstall}
-            agents={agents}
+            selectedHostIds={selectedHostIds}
+            // agentClusterInstall={agentClusterInstall}
+            // agents={agents}
             onClose={onClose}
             onSaveHostsSelection={onSaveHostsSelection}
             usedAgentLabels={usedAgentLabels}

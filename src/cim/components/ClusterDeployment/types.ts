@@ -14,10 +14,14 @@ export type ClusterDeploymentHostsTablePropsActions = {
   onEditRole?: (agent: AgentK8sResource, role: string | undefined) => Promise<void>;
   canDelete?: (agent: AgentK8sResource) => boolean;
   onDeleteHost?: (agent: AgentK8sResource) => void;
+<<<<<<< HEAD
   onApprove?: (agent: AgentK8sResource) => void;
   onHostSelected?: (agent: AgentK8sResource, selected: boolean) => void;
+=======
+>>>>>>> 9fe0054 (Persist selection of agents)
 
-  selectedHostIds?: string[];
+  // onHostSelected?: (agent: AgentK8sResource, selected: boolean) => void;
+  // selectedHostIds?: string[]; // not needed when onHostSelected === undefined in HostTable
 };
 
 /*
@@ -99,24 +103,36 @@ export type AgentSelectorChageProps = {
 };
 
 export type ClusterDeploymentHostsSelectionProps = {
+  // All unique labels used in the Agents. Used for auto-suggestion.
   usedAgentLabels?: string[];
+
+  // calculated from AGENT_LOCATION_LABEL_KEY label
   agentLocations?: AgentLocation[];
+
+  // on-the-fly result of a qeury based on value just entered & passed through onAgentSelectorChange()
   matchingAgents?: AgentK8sResource[];
+
+  // Count of all Agent resources in the k8s database (no label applied). For user's info only.
   allAgentsCount?: number;
+
+  // Callback trigerred when the user changes labels in the UI. It is expected that "matchingAgents" list is updated based on the new value.
   onAgentSelectorChange: (props: AgentSelectorChageProps) => void;
+
+  // wrapping objects with HostTable callbacks
   hostActions: ClusterDeploymentHostsTablePropsActions;
 };
 
 export type ClusterDeploymentHostSelectionStepProps = ClusterDeploymentHostsSelectionProps & {
   clusterDeployment: ClusterDeploymentK8sResource;
-  agentClusterInstall: AgentClusterInstallK8sResource;
-  agents: AgentK8sResource[];
+  selectedHostIds: string[];
+  // agentClusterInstall: AgentClusterInstallK8sResource;
+  // agents: AgentK8sResource[];
   onSaveHostsSelection: (values: ClusterDeploymentHostsSelectionValues) => Promise<string | void>;
   onClose: () => void;
 };
 
 export type ClusterDeploymentWizardProps = ClusterDeploymentDetailsProps &
-  ClusterDeploymentHostsSelectionProps & {
+  ClusterDeploymentHostSelectionStepProps & {
     className?: string;
 
     onClose: () => void;

@@ -65,6 +65,12 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
     }
   };
 
+  const agentLocationOptions = agentLocations.map((loc) => ({
+    // Why is that bloody prop set as mandatory in the SelectOptionProps??
+    isLastOptionBeforeFooter: (index: number): boolean => index === agentLocations.length,
+    ...loc,
+  }));
+
   return (
     <Grid hasGutter>
       <GridItem>
@@ -107,7 +113,7 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
           name="locations"
           label={<LocationsLabel />}
           placeholderText="Type or select location(s)"
-          options={agentLocations}
+          options={agentLocationOptions}
           onChange={(locations) => {
             onAgentSelectorChange({
               labels: values.agentLabels,
