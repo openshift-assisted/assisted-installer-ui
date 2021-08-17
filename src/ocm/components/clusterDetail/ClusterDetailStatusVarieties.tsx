@@ -6,8 +6,8 @@ import {
   getOlmOperators,
   MonitoredOperator,
   MonitoredOperatorsList,
+  ClusterCredentials,
 } from '../../../common';
-import ClusterCredentials from './ClusterCredentials';
 import ClusterInstallationError from './ClusterInstallationError';
 import FailedHostsWarning from './FailedHostsWarning';
 import FailedOperatorsWarning from './FailedOperatorsWarning';

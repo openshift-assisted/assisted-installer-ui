@@ -12,6 +12,7 @@ import {
   ClusterWizardStep,
   useAlerts,
   getHostDiscoveryInitialValues,
+  MonitoredOperator,
 } from '../../../common';
 import { HostDiscoveryValues } from '../../../common/types/clusters';
 import HostInventory from '../clusterConfiguration/HostInventory';
@@ -23,6 +24,43 @@ import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
 import { getOlmOperatorCreateParamsByName } from '../clusters/utils';
 import ClusterWizardFooter from './ClusterWizardFooter';
 import ClusterWizardNavigation from './ClusterWizardNavigation';
+
+const setPlatform = (params: ClusterUpdateParams, usePlatformIntegration: boolean) => {
+  if (usePlatformIntegration) {
+    params.platform = {
+      type: 'vsphere',
+      vsphere: {},
+    };
+  } else {
+    params.platform = {
+      type: 'baremetal',
+    };
+  }
+};
+
+const setOLMOperators = (
+  params: ClusterUpdateParams,
+  values: HostDiscoveryValues,
+  monitoredOperators: MonitoredOperator[] = [],
+) => {
+  const enabledOlmOperatorsByName = getOlmOperatorCreateParamsByName(monitoredOperators);
+  const setOperator = (name: string, enabled: boolean) => {
+    if (enabled) {
+      enabledOlmOperatorsByName[name] = { name };
+    } else {
+      delete enabledOlmOperatorsByName[name];
+    }
+  };
+
+  setOperator(OPERATOR_NAME_CNV, values.useContainerNativeVirtualization);
+  setOperator(OPERATOR_NAME_OCS, values.useExtraDisksForLocalStorage);
+  // TODO(jtomasek): remove following once enabling OCS is moved into a separate storage step and LSO option is exposed to the user
+  if (!values.useExtraDisksForLocalStorage && !values.useContainerNativeVirtualization) {
+    setOperator(OPERATOR_NAME_LSO, false);
+  }
+
+  params.olmOperators = Object.values(enabledOlmOperatorsByName);
+};
 
 const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const dispatch = useDispatch();
@@ -41,24 +79,8 @@ const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
     clearAlerts();
 
     const params: ClusterUpdateParams = {};
-
-    const enabledOlmOperatorsByName = getOlmOperatorCreateParamsByName(cluster.monitoredOperators);
-    const setOperator = (name: string, enabled: boolean) => {
-      if (enabled) {
-        enabledOlmOperatorsByName[name] = { name };
-      } else {
-        delete enabledOlmOperatorsByName[name];
-      }
-    };
-
-    setOperator(OPERATOR_NAME_CNV, values.useContainerNativeVirtualization);
-    setOperator(OPERATOR_NAME_OCS, values.useExtraDisksForLocalStorage);
-    // TODO(jtomasek): remove following once enabling OCS is moved into a separate storage step and LSO option is exposed to the user
-    if (!values.useExtraDisksForLocalStorage && !values.useContainerNativeVirtualization) {
-      setOperator(OPERATOR_NAME_LSO, false);
-    }
-
-    params.olmOperators = Object.values(enabledOlmOperatorsByName);
+    setPlatform(params, values.usePlatformIntegration);
+    setOLMOperators(params, values, cluster.monitoredOperators);
 
     try {
       const { data } = await patchCluster(cluster.id, params);
