@@ -5,7 +5,7 @@ import {
   dnsNameValidationSchema,
   getDefaultOpenShiftVersion,
   nameValidationSchema,
-  validJSONSchema,
+  pullSecretValidationSchema,
 } from '../ui';
 import { ClusterDetailsValues } from './types';
 
@@ -50,7 +50,7 @@ export const getClusterDetailsValidationSchema = (usedClusterNames: string[], cl
     }
     return Yup.object({
       name: nameValidationSchema(usedClusterNames, values.baseDnsDomain),
-      pullSecret: validJSONSchema.required('Pull secret must be provided.'),
+      pullSecret: pullSecretValidationSchema.required('Pull secret must be provided.'),
       baseDnsDomain: dnsNameValidationSchema.required('Base Domain is required.'),
       SNODisclaimer: Yup.boolean().when('highAvailabilityMode', {
         is: 'None',
