@@ -35,6 +35,7 @@ const SwitchField: React.FC<SwitchFieldProps> = ({
         {...field}
         id={fieldId}
         label={label}
+        isDisabled={props.isDisabled}
         isChecked={field.value}
         onChange={(checked, event) => {
           field.onChange(event);

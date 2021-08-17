@@ -68,5 +68,6 @@ export const getHostDiscoveryInitialValues = (cluster: Cluster): HostDiscoveryVa
   return {
     useExtraDisksForLocalStorage: isOperatorEnabled('ocs'),
     useContainerNativeVirtualization: isOperatorEnabled('cnv'),
+    usePlatformIntegration: cluster.platform?.type !== 'baremetal',
   };
 };

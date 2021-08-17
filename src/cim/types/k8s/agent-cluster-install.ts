@@ -19,6 +19,14 @@ export type AgentClusterInstallK8sResource = K8sResourceCommon & {
     clusterDeploymentRef: {
       name: string;
     };
+    clusterMetadata?: {
+      adminKubeconfigSecretRef?: {
+        name: string;
+      };
+      adminPasswordSecretRef?: {
+        name: string;
+      };
+    };
     apiVIP?: string;
     ingressVIP?: string;
     sshPublicKey?: string;
@@ -43,8 +51,8 @@ export type AgentClusterInstallK8sResource = K8sResourceCommon & {
     connectivityMajorityGroups?: string;
     conditions?: AgentClusterInstallStatusCondition[];
     debugInfo?: {
-      eventsUrl: string;
-      logsUrl: string;
+      eventsURL: string;
+      logsURL: string;
       state: Cluster['status'];
       stateInfo: Cluster['statusInfo'];
     };

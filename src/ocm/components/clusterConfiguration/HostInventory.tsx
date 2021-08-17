@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, TextContent, Button, Stack, StackItem } from '@patternfly/react-core';
+import { Text, TextContent, Button, Stack, StackItem, Tooltip } from '@patternfly/react-core';
 import { HelpIcon } from '@patternfly/react-icons';
 import {
   Cluster,
@@ -9,6 +9,7 @@ import {
   isSingleNodeCluster,
   ClusterWizardStepHeader,
   DiscoveryTroubleshootingModal,
+  SwitchField,
 } from '../../../common';
 import HostsDiscoveryTable from '../hosts/HostsDiscoveryTable';
 import DiscoveryInstructions from './DiscoveryInstructions';
@@ -20,6 +21,7 @@ import {
   CNVHostRequirementsContent,
 } from '../hosts/HostRequirementsContent';
 import ClusterWizardHeaderExtraActions from './ClusterWizardHeaderExtraActions';
+import useClusterSupportedPlatforms from '../../api/hooks/useClusterSupportedPlatforms';
 
 const OCSLabel: React.FC = () => (
   <>
@@ -57,8 +59,33 @@ const CNVLabel: React.FC<{ clusterId: Cluster['id']; isSingleNode?: boolean }> =
   );
 };
 
+const PlatformIntegrationLabel: React.FC<{ isTooltipHidden: boolean }> = ({
+  isTooltipHidden = false,
+}) => (
+  <>
+    <Tooltip
+      hidden={isTooltipHidden}
+      content={
+        'Platform integration is applicable only when all discovered hosts are from the same platform'
+      }
+    >
+      <span>Integrate with platform</span>
+    </Tooltip>{' '}
+    <PopoverIcon
+      variant={'plain'}
+      bodyContent={
+        "Enable platform integration to access your platform's features directly in OpenShift."
+      }
+    />
+  </>
+);
+
 const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const [isDiscoveryHintModalOpen, setDiscoveryHintModalOpen] = React.useState(false);
+  const { isPlatformIntegrationSupported } = useClusterSupportedPlatforms(cluster.id);
+  const isPlatformIntegrationFeatureEnabled = useFeature(
+    'ASSISTED_INSTALLER_PLATFORM_INTEGRATION_FEATURE',
+  );
   const isOpenshiftClusterStorageEnabled = useFeature('ASSISTED_INSTALLER_OCS_FEATURE');
   const isContainerNativeVirtualizationEnabled = useFeature('ASSISTED_INSTALLER_CNV_FEATURE');
   const isSNO = isSingleNodeCluster(cluster);
@@ -97,6 +124,15 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
             name="useExtraDisksForLocalStorage"
             label={<OCSLabel />}
             helperText="Persistent software-defined storage for hybrid applications."
+          />
+        )}
+      </StackItem>
+      <StackItem>
+        {isPlatformIntegrationFeatureEnabled && (
+          <SwitchField
+            isDisabled={!isPlatformIntegrationSupported && cluster?.platform?.type === 'baremetal'}
+            name={'usePlatformIntegration'}
+            label={<PlatformIntegrationLabel isTooltipHidden={isPlatformIntegrationSupported} />}
           />
         )}
       </StackItem>
