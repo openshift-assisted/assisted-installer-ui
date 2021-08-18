@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { expandable, IRowData, sortable } from '@patternfly/react-table';
-import { Host, HostsTable, HostsTableActions } from '../../../common';
+import { Host, HostsTable, HostsTableActions, HostsTableProps } from '../../../common';
 import { AdditionalNTPSourcesDialogToggle } from '../../../ocm/components/hosts/AdditionaNTPSourceDialogToggle';
 import { AgentK8sResource } from '../../types';
 import { ClusterDeploymentHostsTablePropsActions } from '../ClusterDeployment/types';
@@ -54,7 +54,7 @@ export const useAgentTableActions = ({
     [onDeleteHost, onEditHost, onEditRole, canDelete, canEditHost, canEditRole, agents],
   );
 
-const columns = [
+const defaultColumns = [
   { title: 'Hostname', transforms: [sortable], cellFormatters: [expandable] },
   { title: 'Role', transforms: [sortable] },
   { title: 'Status', transforms: [sortable] },
@@ -68,9 +68,17 @@ const columns = [
 type AgentTableProps = ClusterDeploymentHostsTablePropsActions & {
   agents: AgentK8sResource[];
   className?: string;
+  columns?: HostsTableProps['columns'];
+  hostToHostTableRow?: HostsTableProps['hostToHostTableRow'];
 };
 
-const AgentTable: React.FC<AgentTableProps> = ({ agents, className, ...actions }) => {
+const AgentTable: React.FC<AgentTableProps> = ({
+  agents,
+  className,
+  columns = defaultColumns,
+  hostToHostTableRow,
+  ...actions
+}) => {
   const tableCallbacks = useAgentTableActions({
     ...actions,
     agents,
@@ -83,6 +91,7 @@ const AgentTable: React.FC<AgentTableProps> = ({ agents, className, ...actions }
       columns={columns}
       className={className}
       AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
+      hostToHostTableRow={hostToHostTableRow}
       {...tableCallbacks}
     />
   );

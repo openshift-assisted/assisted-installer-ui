@@ -26,6 +26,6 @@ export type ClusterDeploymentK8sResource = K8sResourceCommon & {
     installVersion?: string;
     installedTimestamp?: string;
     installStartedTimestamp: string;
-    webConsoleUrl?: string;
+    webConsoleURL?: string;
   };
 };
