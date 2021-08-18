@@ -99,6 +99,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
     matchingAgents,
     hostActions,
     onAgentSelectorChange,
+    selectedHostIds,
     usedAgentLabels,
     agentLocations,
     allAgentsCount,

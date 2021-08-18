@@ -2,7 +2,7 @@ import React from 'react';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import { getFormikErrorFields, labelsToArray, useAlerts } from '../../../common';
-import { AgentK8sResource, ClusterDeploymentK8sResource } from '../../types';
+import { ClusterDeploymentK8sResource } from '../../types';
 import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
 import ClusterDeploymentWizardFooter from './ClusterDeploymentWizardFooter';
 import ClusterDeploymentWizardNavigation from './ClusterDeploymentWizardNavigation';
