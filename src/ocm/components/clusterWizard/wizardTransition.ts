@@ -71,7 +71,7 @@ const hostDiscoveryStepValidationsMap: WizardStepValidationMap = {
   },
   host: {
     allowedStatuses: ['known', 'disabled'],
-    groups: ['hardware', 'network'],
+    groups: ['hardware'],
     validationIds: [
       'connected',
       'ocs-requirements-satisfied',
