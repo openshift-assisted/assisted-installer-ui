@@ -12,7 +12,8 @@
 }
 
 @media (min-width: 768px) {
-  .cluster-wizard-step .pf-c-wizard__main {
+  .cluster-wizard .cluster-wizard-step .pf-c-wizard__main {
+    /* That breaks scrollbar in the ClusterDeployment wizard. As a fix, the "cluster-wizard" class is on the ClusterWizard and CreateClusterWizard only. */
     overflow: inherit !important;
   }
 }
