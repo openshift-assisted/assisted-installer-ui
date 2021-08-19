@@ -103,6 +103,9 @@ const hostToHostTableRow = (
 
   const editHostname = onEditHostname ? () => onEditHostname(host, inventory) : undefined;
   const agent = agents.find((a) => a.metadata?.uid === host.id);
+  const discoveryType = agent?.metadata?.labels?.hasOwnProperty('agent-install.openshift.io/bmh')
+    ? 'Discovery ISO'
+    : 'BMC';
 
   return [
     {
@@ -116,9 +119,9 @@ const hostToHostTableRow = (
         },
 
         {
-          title: 'bmc',
+          title: discoveryType,
           props: { 'data-testid': 'discovery-type' },
-          sortableValue: 'bmc',
+          sortableValue: discoveryType,
         },
         {
           title: (
