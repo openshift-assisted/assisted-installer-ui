@@ -218,7 +218,6 @@ export const ipBlockValidationSchema = Yup.string()
   );
 
 export const dnsNameValidationSchema = Yup.string()
-  .max(255, 'The DNS name can not be longer than 255 characters.')
   .test(
     'dns-name-label-length',
     'Single label of the DNS name can not be longer than 63 characters.',
