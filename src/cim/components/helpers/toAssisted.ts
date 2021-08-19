@@ -76,6 +76,8 @@ export const getAICluster = ({
     openshiftVersion: agentClusterInstall?.spec?.imageSetRef?.name,
     apiVip: agentClusterInstall?.spec?.apiVIP,
     ingressVip: agentClusterInstall?.spec?.ingressVIP,
+    highAvailabilityMode:
+      agentClusterInstall?.spec?.provisionRequirements?.controlPlaneAgents === 1 ? 'None' : 'Full',
     status,
     statusInfo,
     imageInfo: {

@@ -3,7 +3,7 @@ import { ClusterDeploymentWizardProps, ClusterDeploymentWizardStepsType } from '
 import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
 import ClusterDeploymentDetailsStep from './ClusterDeploymentDetailsStep';
 import ClusterDeploymentNetworkingStep from './ClusterDeploymentNetworkingStep';
-import { AlertsContextProvider } from '../../../common';
+import { AlertsContextProvider, LoadingState } from '../../../common';
 import ClusterDeploymentHostSelectionStep from './ClusterDeploymentHostSelectionStep';
 import classNames from 'classnames';
 
@@ -31,7 +31,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
 
     switch (stepId) {
       case 'hosts-selection':
-        return (
+        return agentClusterInstall?.metadata?.name ? (
           <ClusterDeploymentHostSelectionStep
             clusterDeployment={clusterDeployment}
             agentClusterInstall={agentClusterInstall}
@@ -40,6 +40,8 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
             hostActions={hostActions}
             agents={agents}
           />
+        ) : (
+          <LoadingState />
         );
       case 'networking':
         return (
