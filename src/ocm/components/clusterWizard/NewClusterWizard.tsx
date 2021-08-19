@@ -21,7 +21,7 @@ const NewClusterWizard: React.FC = () => {
   return (
     <>
       <ClusterWizardContext.Provider value={{ currentStepId, setCurrentStepId }}>
-        <div className="pf-c-wizard">{renderCurrentStep()}</div>
+        <div className="pf-c-wizard cluster-wizard">{renderCurrentStep()}</div>
       </ClusterWizardContext.Provider>
     </>
   );
