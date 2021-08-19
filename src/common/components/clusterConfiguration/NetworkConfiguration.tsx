@@ -5,6 +5,7 @@ import AdvancedNetworkFields from './AdvancedNetworkFields';
 import { NetworkConfigurationValues } from '../../../common/types/clusters';
 import {
   AvailableSubnetsControl,
+  ManagedNetworkingControlGroup,
   UserManagedNetworkingTextContent,
   VirtualIPControlGroup,
   VirtualIPControlGroupProps,
@@ -74,13 +75,8 @@ const NetworkConfiguration = ({
 
   return (
     <>
-      {
-        // TODO(jkilzi): The BE currently doesn't support user-managed networking in a non-SNO
-        // installation. Once they implement support for this scenario we can uncomment the line
-        // below and add an import statement for the ManagedNetworkingControlGroup component above.
-        // See https://issues.redhat.com/browse/MGMT-6608 for more info.
-        /*<ManagedNetworkingControlGroup disabled={!isMultiNodeCluster} />*/
-      }
+      <ManagedNetworkingControlGroup disabled={!isMultiNodeCluster} />
+
       <RenderIf condition={isUserManagedNetworking}>
         <UserManagedNetworkingTextContent shouldDisplayLoadBalancersBullet={isMultiNodeCluster} />
       </RenderIf>
