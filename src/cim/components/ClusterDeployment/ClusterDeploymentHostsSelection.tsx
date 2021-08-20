@@ -4,19 +4,25 @@ import { Grid, GridItem, AlertGroup, Alert, AlertVariant } from '@patternfly/rea
 import {
   CheckboxField,
   ClusterWizardStepHeader,
+  getHostToHostTableRowMapper,
+  HostToHostTableRowPatcherType,
   LabelField,
   MultiSelectField,
   NumberInputField,
   PopoverIcon,
 } from '../../../common';
-import { AGENT_LOCATION_LABEL_KEY } from '../common';
+import { AGENT_LOCATION_LABEL_KEY, INFRAENV_AGENTINSTALL_LABEL_KEY } from '../common';
+import { AgentTable } from '../Agent';
+import { AgentK8sResource } from '../../types';
+import { getAgentTableColumns } from '../Agent/AgentTable';
 import {
   ClusterDeploymentHostsSelectionProps,
   ClusterDeploymentHostsSelectionValues,
+  ClusterDeploymentHostsTablePropsActions,
 } from './types';
 import { HOSTS_MAX_COUNT, HOSTS_MIN_COUNT } from './constants';
-import { AgentTable } from '../Agent';
-import { AgentK8sResource } from '../../types';
+import { hostToAgent } from '../helpers';
+import { ICell } from '@patternfly/react-table';
 
 // TODO(mlibra): Something more descriptive
 const HostCountLabelIcon: React.FC = () => <>Total count of hosts included in the cluster.</>;
@@ -38,7 +44,60 @@ const LocationsLabel: React.FC = () => (
   </>
 );
 
-// TODO(mlibra): implement for Single Node Cluster as well
+type AgentsSelectionTableProps = {
+  matchingAgents: AgentK8sResource[];
+  hostActions: ClusterDeploymentHostsTablePropsActions;
+};
+
+const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
+  matchingAgents,
+  hostActions,
+}) => {
+  const { setFieldValue, values } = useFormikContext<ClusterDeploymentHostsSelectionValues>();
+
+  const onHostSelected = (agent: AgentK8sResource, selected: boolean) => {
+    if (selected) {
+      setFieldValue('selectedHostIds', [...values.selectedHostIds, agent.metadata?.uid]);
+    } else {
+      setFieldValue(
+        'selectedHostIds',
+        values.selectedHostIds.filter((uid) => uid !== agent.metadata?.uid),
+      );
+    }
+  };
+
+  // Customize default AgentTable columns
+  const columns = getAgentTableColumns((colIndex: number, colDefault: ICell) =>
+    // Replace Discovery At
+    colIndex === 3 ? { ...colDefault, title: 'Infrastructure env' } : colDefault,
+  );
+
+  const rowPatcher: HostToHostTableRowPatcherType = (getDefaultValueFunc, host, colIndex) => {
+    if (colIndex === 3) {
+      const agent = hostToAgent(matchingAgents, host);
+      const infraEnvName = agent.metadata?.labels?.[INFRAENV_AGENTINSTALL_LABEL_KEY] || 'N/A';
+
+      return {
+        title: infraEnvName,
+        props: { 'data-testid': 'infra-env' },
+        sortableValue: infraEnvName,
+      };
+    }
+    return getDefaultValueFunc();
+  };
+
+  return (
+    <AgentTable
+      agents={matchingAgents}
+      columns={columns}
+      hostToHostTableRow={getHostToHostTableRowMapper(rowPatcher)}
+      selectedHostIds={values.selectedHostIds}
+      onHostSelected={onHostSelected}
+      {...hostActions}
+    />
+  );
+};
+
 const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionProps> = ({
   usedAgentLabels = [],
   agentLocations = [],
@@ -53,17 +112,6 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
   const usedAgentLabelsWithoutLocation = usedAgentLabels
     .filter((key) => key !== AGENT_LOCATION_LABEL_KEY)
     .sort();
-
-  const onHostSelected = (agent: AgentK8sResource, selected: boolean) => {
-    if (selected) {
-      setFieldValue('selectedHostIds', [...values.selectedHostIds, agent.metadata?.uid]);
-    } else {
-      setFieldValue(
-        'selectedHostIds',
-        values.selectedHostIds.filter((uid) => uid !== agent.metadata?.uid),
-      );
-    }
-  };
 
   const agentLocationOptions = agentLocations.map((loc) => ({
     // Why is that bloody prop set as mandatory in the SelectOptionProps??
@@ -150,12 +198,7 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
           </GridItem>
 
           <GridItem>
-            <AgentTable
-              agents={matchingAgents}
-              selectedHostIds={values.selectedHostIds}
-              onHostSelected={onHostSelected}
-              {...hostActions}
-            />
+            <AgentsSelectionTable matchingAgents={matchingAgents} hostActions={hostActions} />
           </GridItem>
         </>
       )}

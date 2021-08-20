@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { expandable, IRowData, sortable } from '@patternfly/react-table';
+import { expandable, ICell, IRowData, sortable } from '@patternfly/react-table';
+import { ConnectedIcon } from '@patternfly/react-icons';
 import {
   getDateTimeCell,
   getHostname,
@@ -13,9 +14,8 @@ import {
 import { AdditionalNTPSourcesDialogToggle } from '../../../ocm/components/hosts/AdditionaNTPSourceDialogToggle';
 import { AgentK8sResource } from '../../types';
 import { ClusterDeploymentHostsTablePropsActions } from '../ClusterDeployment/types';
-import { getAIHosts } from '../helpers';
+import { getAIHosts, hostToAgent } from '../helpers';
 import DefaultEmptyState from '../../../common/components/ui/uiState/EmptyState';
-import { ConnectedIcon } from '@patternfly/react-icons';
 import AgentStatus from './AgentStatus';
 import Hostname from '../../../common/components/hosts/Hostname';
 import HostPropertyValidationPopover from '../../../common/components/hosts/HostPropertyValidationPopover';
@@ -28,12 +28,7 @@ type GetAgentCallback = <R>(
 ) => ((host: Host) => R) | undefined;
 
 const getAgentCallback: GetAgentCallback = (agentCallback, agents) =>
-  agentCallback
-    ? (host) => {
-        const agent = agents.find((a) => a.metadata?.uid === host.id) as AgentK8sResource;
-        return agentCallback(agent);
-      }
-    : undefined;
+  agentCallback ? (host) => agentCallback(hostToAgent(agents, host)) : undefined;
 
 export const useAgentTableActions = ({
   onDeleteHost,
@@ -90,7 +85,7 @@ export const useAgentTableActions = ({
     ],
   );
 
-const defaultColumns = [
+const defaultAgentTableColumns = [
   { title: 'Hostname', transforms: [sortable], cellFormatters: [expandable] },
   { title: 'Role', transforms: [sortable] },
   { title: 'Status', transforms: [sortable] },
@@ -212,7 +207,18 @@ const AgentTableEmptyState = () => (
   />
 );
 
-export type AgentTableProps = ClusterDeploymentHostsTablePropsActions & {
+export const getAgentTableColumns = (
+  patchFunc?: (colIndex: number, colDefault: ICell) => ICell,
+) => {
+  if (patchFunc) {
+    return defaultAgentTableColumns
+      .map((col, colIndex) => patchFunc(colIndex, col))
+      .filter(Boolean);
+  }
+  return defaultAgentTableColumns;
+};
+
+type AgentTableProps = ClusterDeploymentHostsTablePropsActions & {
   agents: AgentK8sResource[];
   className?: string;
   columns?: HostsTableProps['columns'];
@@ -228,10 +234,10 @@ export type AgentTableProps = ClusterDeploymentHostsTablePropsActions & {
 const AgentTable: React.FC<AgentTableProps> = ({
   agents,
   className,
-  columns = defaultColumns,
-  hostToHostTableRow = defaultHostToHostTableRow,
   EmptyState = AgentTableEmptyState,
   onApprove,
+  columns = getAgentTableColumns(),
+  hostToHostTableRow = defaultHostToHostTableRow,
   selectedHostIds,
   ...hostActions
 }) => {

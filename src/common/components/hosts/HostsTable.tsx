@@ -14,6 +14,7 @@ import {
   ICell,
   RowWrapperProps,
   RowWrapper,
+  IRowCell,
 } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
 import classnames from 'classnames';
@@ -78,15 +79,23 @@ export type HostsTableActions = {
   selectedHostIds?: string[];
 };
 
+export type hostToHostTableRowType = (params: hostToHostTableRowParamsType) => (host: Host) => IRow;
+
 export type HostsTableProps = AdditionNtpSourcePropsType &
   HostsTableActions & {
     hosts: Host[] | undefined;
     EmptyState: React.ComponentType<{}>;
     columns?: (string | ICell)[];
-    hostToHostTableRow?: (params: hostToHostTableRowParamsType) => (host: Host) => IRow;
+    hostToHostTableRow?: hostToHostTableRowType;
     skipDisabled?: boolean;
     className?: string;
   };
+
+export type HostToHostTableRowPatcherType = (
+  getDefaultValueFunc: () => IRowCell,
+  host: Host,
+  colIndex: number,
+) => IRowCell;
 
 const defaultColumns = [
   { title: 'Hostname', transforms: [sortable], cellFormatters: [expandable] },
@@ -98,7 +107,12 @@ const defaultColumns = [
   { title: 'Disk', transforms: [sortable] },
 ];
 
-const defaultHostToHostTableRow: HostsTableProps['hostToHostTableRow'] = ({
+const defaultRowPatcherFunc: HostToHostTableRowPatcherType = (getDefaultValueFunc) =>
+  getDefaultValueFunc();
+
+export const getHostToHostTableRowMapper = (
+  rowPatcherFunc: HostToHostTableRowPatcherType = defaultRowPatcherFunc,
+): hostToHostTableRowType => ({
   openRows,
   AdditionalNTPSourcesDialogToggleComponent,
   canEditDisks,
@@ -125,68 +139,97 @@ const defaultHostToHostTableRow: HostsTableProps['hostToHostTableRow'] = ({
   const editHostname = onEditHostname ? () => onEditHostname(host, inventory) : undefined;
   const editRole = onEditRole ? (role?: string) => onEditRole(host, role) : undefined;
 
+  let colIndex = 0;
   let cells: IRow['cells'] = [
-    {
-      title: <Hostname host={host} inventory={inventory} onEditHostname={editHostname} />,
-      props: { 'data-testid': 'host-name' },
-      sortableValue: computedHostname || '',
-    },
-    {
-      title: (
-        <RoleCell
-          host={host}
-          readonly={!canEditRole?.(host)}
-          role={hostRole}
-          onEditRole={editRole}
-        />
-      ),
-      props: { 'data-testid': 'host-role' },
-      sortableValue: hostRole,
-    },
-    {
-      title: (
-        <HostStatus
-          host={host}
-          onEditHostname={editHostname}
-          validationsInfo={validationsInfo}
-          AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
-        />
-      ),
-      props: { 'data-testid': 'host-status' },
-      sortableValue: status,
-    },
-    {
-      title: dateTimeCell.title,
-      props: { 'data-testid': 'host-discovered-time' },
-      sortableValue: dateTimeCell.sortableValue,
-    },
-    {
-      title: (
-        <HostPropertyValidationPopover validation={cpuCoresValidation}>
-          {cores.title}
-        </HostPropertyValidationPopover>
-      ),
-      props: { 'data-testid': 'host-cpu-cores' },
-      sortableValue: cores.sortableValue,
-    },
-    {
-      title: (
-        <HostPropertyValidationPopover validation={memoryValidation}>
-          {memory.title}
-        </HostPropertyValidationPopover>
-      ),
-      props: { 'data-testid': 'host-memory' },
-      sortableValue: memory.sortableValue,
-    },
-    {
-      title: (
-        <HostPropertyValidationPopover validation={diskValidation}>
-          {disk.title}
-        </HostPropertyValidationPopover>
-      ),
-      props: { 'data-testid': 'host-disks' },
-      sortableValue: disk.sortableValue,
-    },
+    rowPatcherFunc(
+      () => ({
+        title: <Hostname host={host} inventory={inventory} onEditHostname={editHostname} />,
+        props: { 'data-testid': 'host-name' },
+        sortableValue: computedHostname || '',
+      }),
+      host,
+      colIndex++,
+    ),
+    rowPatcherFunc(
+      () => ({
+        title: (
+          <RoleCell
+            host={host}
+            readonly={!canEditRole?.(host)}
+            role={hostRole}
+            onEditRole={editRole}
+          />
+        ),
+        props: { 'data-testid': 'host-role' },
+        sortableValue: hostRole,
+      }),
+      host,
+      colIndex++,
+    ),
+    rowPatcherFunc(
+      () => ({
+        title: (
+          <HostStatus
+            host={host}
+            onEditHostname={editHostname}
+            validationsInfo={validationsInfo}
+            AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
+          />
+        ),
+        props: { 'data-testid': 'host-status' },
+        sortableValue: status,
+      }),
+      host,
+      colIndex++,
+    ),
+    rowPatcherFunc(
+      () => ({
+        title: dateTimeCell.title,
+        props: { 'data-testid': 'host-discovered-time' },
+        sortableValue: dateTimeCell.sortableValue,
+      }),
+      host,
+      colIndex++,
+    ),
+    rowPatcherFunc(
+      () => ({
+        title: (
+          <HostPropertyValidationPopover validation={cpuCoresValidation}>
+            {cores.title}
+          </HostPropertyValidationPopover>
+        ),
+        props: { 'data-testid': 'host-cpu-cores' },
+        sortableValue: cores.sortableValue,
+      }),
+      host,
+      colIndex++,
+    ),
+    rowPatcherFunc(
+      () => ({
+        title: (
+          <HostPropertyValidationPopover validation={memoryValidation}>
+            {memory.title}
+          </HostPropertyValidationPopover>
+        ),
+        props: { 'data-testid': 'host-memory' },
+        sortableValue: memory.sortableValue,
+      }),
+      host,
+      colIndex++,
+    ),
+    rowPatcherFunc(
+      () => ({
+        title: (
+          <HostPropertyValidationPopover validation={diskValidation}>
+            {disk.title}
+          </HostPropertyValidationPopover>
+        ),
+        props: { 'data-testid': 'host-disks' },
+        sortableValue: disk.sortableValue,
+      }),
+      host,
+      colIndex++,
+    ),
   ];
 
   if (onHostSelected) {
@@ -207,6 +250,7 @@ const defaultHostToHostTableRow: HostsTableProps['hostToHostTableRow'] = ({
       ...cells,
     ];
   }
+
   return [
     {
       // visible row
@@ -251,7 +295,7 @@ const HostsTableRowWrapper = (props: RowWrapperProps) => (
 
 export const HostsTable: React.FC<HostsTableProps & WithTestID> = ({
   hosts,
-  hostToHostTableRow = defaultHostToHostTableRow,
+  hostToHostTableRow = getHostToHostTableRowMapper(),
   columns = defaultColumns,
   skipDisabled = false,
   testId = 'hosts-table',
