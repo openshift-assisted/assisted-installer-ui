@@ -15,7 +15,7 @@
     "clean": "rm -rf dist",
     "prebuild": "run-s test",
     "build": "yarn clean && microbundle-crl --no-compress --format modern,cjs --css-modules false",
-    "start": "yarn clean microbundle-crl watch --no-compress --format modern --css-modules false",
+    "start": "yarn clean && microbundle-crl watch --no-compress --format modern --css-modules false",
     "start-assisted-ui": "./scripts/start-assisted-ui.sh",
     "start-uhc-portal": "./scripts/start-uhc-portal.sh",
     "sync-to-ui": "./scripts/sync-dist.sh",
