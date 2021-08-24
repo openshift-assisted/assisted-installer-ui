@@ -11,7 +11,6 @@ import {
   getFormikErrorFields,
   useAlerts,
   ClusterWizardStep,
-  isSingleNodeCluster,
   ClusterWizardStepHeader,
   NetworkConfigurationFormFields,
   getNetworkConfigurationValidationSchema,
@@ -65,19 +64,35 @@ const NetworkConfigurationForm: React.FC<{
 
     // update the cluster configuration
     try {
-      const isMultiNodeCluster = !isSingleNodeCluster(cluster);
       const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';
-      const params = _.omit(values, ['hostSubnet', 'useRedHatDnsService', 'managedNetworkingType']);
+      const params = _.omit(values, [
+        'hostSubnet',
+        'useRedHatDnsService',
+        'managedNetworkingType',
+        'machineNetworkCidr',
+        'serviceNetworkCidr',
+        'clusterNetworkCidr',
+        'clusterNetworkHostPrefix',
+      ]);
       params.userManagedNetworking = isUserManagedNetworking;
-      params.machineNetworkCidr = hostSubnets.find(
-        (hn: HostSubnet) => hn.humanized === values.hostSubnet,
-      )?.subnet;
+      params.clusterNetworks = [
+        {
+          cidr: values.clusterNetworkCidr,
+          hostPrefix: values.clusterNetworkHostPrefix,
+        },
+      ];
+      params.serviceNetworks = [
+        {
+          cidr: values.serviceNetworkCidr,
+        },
+      ];
+      params.machineNetworks = [
+        {
+          cidr: hostSubnets.find((hn: HostSubnet) => hn.humanized === values.hostSubnet)?.subnet,
+        },
+      ];
 
       if (isUserManagedNetworking) {
-        if (isMultiNodeCluster) {
-          delete params.machineNetworkCidr;
-        }
-
         delete params.apiVip;
         delete params.ingressVip;
       } else {
@@ -85,8 +100,6 @@ const NetworkConfigurationForm: React.FC<{
         if (values.vipDhcpAllocation) {
           delete params.apiVip;
           delete params.ingressVip;
-        } else {
-          delete params.machineNetworkCidr;
         }
       }
 
