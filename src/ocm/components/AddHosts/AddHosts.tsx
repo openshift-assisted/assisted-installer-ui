@@ -37,6 +37,7 @@ const AddHosts: React.FC = () => {
   }
 
   const handleHostsInstall = async () => {
+    setSubmitting(true);
     try {
       const { data } = await installHosts(cluster.id);
       dispatch(updateCluster(data));
@@ -68,10 +69,7 @@ const AddHosts: React.FC = () => {
               <ToolbarButton
                 variant={ButtonVariant.primary}
                 name="install"
-                onClick={() => {
-                  setSubmitting(true);
-                  handleHostsInstall();
-                }}
+                onClick={handleHostsInstall}
                 isDisabled={getReadyHostCount(cluster) <= 0 || isSubmitting}
               >
                 Install ready hosts
