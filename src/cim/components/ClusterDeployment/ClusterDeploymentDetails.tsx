@@ -13,7 +13,6 @@ import {
 import { sortable, expandable } from '@patternfly/react-table';
 import ValidatedConditionAlert from '../common/ValidatedConditionAlert';
 import { getClusterValidatedCondition } from '../helpers/conditions';
-import { HostsTable } from '../../../common/components/hosts/HostsTable';
 import ClusterPropertiesList from '../../../common/components/clusterDetail/ClusterPropertiesList';
 import { getAICluster } from '../helpers/toAssisted';
 import { getClusterStatus } from '../helpers/status';
@@ -23,14 +22,19 @@ import {
   ClusterDeploymentK8sResource,
 } from '../../types';
 import ClusterDeploymentCredentials from './ClusterDeploymentCredentials';
-import { AdditionalNTPSourcesDialogToggle } from '../../../ocm/components/hosts/AdditionaNTPSourceDialogToggle';
+import {
+  shouldShowClusterCredentials,
+  shouldShowClusterInstallationError,
+  shouldShowClusterInstallationProgress,
+} from './helpers';
 import ClusterProgress from '../../../common/components/clusterDetail/ClusterProgress';
 import ClusterInstallationError from './ClusterInstallationError';
 import { EventsModalButton } from '../../../common/components/ui/eventsModal';
 import KubeconfigDownload from '../../../common/components/clusterDetail/KubeconfigDownload';
 import { EventListFetchProps } from '../../../common/types/events';
+import AgentTable from '../Agent/AgentTable';
 
-const hostsTableColumns = [
+const agentTableColumns = [
   { title: 'Hostname', transforms: [sortable], cellFormatters: [expandable] },
   { title: 'Role', transforms: [sortable] },
   { title: 'Status', transforms: [sortable] },
@@ -48,6 +52,7 @@ type ClusterDeploymentDetailsProps = {
   downloadKubeconfig: () => Promise<void>;
   fetchEvents: EventListFetchProps['onFetchEvents'];
   fetchCredentials: (setCredentials: unknown) => Promise<void>;
+  agentTableClassName?: string;
 };
 
 const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
@@ -57,6 +62,7 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
   downloadKubeconfig,
   fetchEvents,
   fetchCredentials,
+  agentTableClassName,
 }) => {
   const [progressCardExpanded, setProgressCardExpanded] = React.useState(true);
   const [inventoryCardExpanded, setInventoryCardExpanded] = React.useState(true);
@@ -66,16 +72,7 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
   const [clusterStatus, clusterStatusInfo] = getClusterStatus(agentClusterInstall);
   return (
     <Stack hasGutter>
-      {[
-        'preparing-for-installation',
-        'installing',
-        'installing-pending-user-action',
-        'finalizing',
-        'installed',
-        'error',
-        'cancelled',
-        'adding-hosts',
-      ].includes(clusterStatus) && (
+      {shouldShowClusterInstallationProgress(agentClusterInstall) && (
         <StackItem>
           <Card id="cluster-installation-progress-card" isExpanded={progressCardExpanded}>
             <CardHeader
@@ -100,10 +97,12 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
                       }
                     />
                   </StackItem>
-                  {['installed', 'adding-hosts'].includes(clusterStatus) && (
+                  {shouldShowClusterCredentials(agentClusterInstall) && (
                     <StackItem>
                       <ClusterDeploymentCredentials
-                        cluster={cluster}
+                        clusterDeployment={clusterDeployment}
+                        agentClusterInstall={agentClusterInstall}
+                        agents={agents}
                         fetchCredentials={fetchCredentials}
                         consoleUrl={
                           clusterDeployment.status?.webConsoleURL ||
@@ -131,7 +130,7 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
                       View Cluster Events
                     </EventsModalButton>
                   </StackItem>
-                  {['error', 'cancelled'].includes(clusterStatus) && (
+                  {shouldShowClusterInstallationError(agentClusterInstall) && (
                     <StackItem>
                       <ClusterInstallationError
                         title={
@@ -166,12 +165,10 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
           </CardHeader>
           <CardExpandableContent>
             <CardBody>
-              <HostsTable
-                hosts={cluster.hosts}
-                EmptyState={() => <div>empty</div>}
-                columns={hostsTableColumns}
-                className="agents-table"
-                AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
+              <AgentTable
+                agents={agents}
+                columns={agentTableColumns}
+                className={agentTableClassName}
               />
             </CardBody>
           </CardExpandableContent>

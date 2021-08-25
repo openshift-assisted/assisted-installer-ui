@@ -1,25 +1,31 @@
 import React from 'react';
-import { Cluster } from '../../../common/api/types';
 import ClusterCredentials from '../../../common/components/clusterDetail/ClusterCredentials';
+import { AgentK8sResource } from '../../types/k8s/agent';
+import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-install';
+import { ClusterDeploymentK8sResource } from '../../types/k8s/cluster-deployment';
+import { getAICluster } from '../helpers/toAssisted';
 
 type ClusterDeploymentCredentialsProps = {
-  cluster: Cluster;
+  clusterDeployment: ClusterDeploymentK8sResource;
+  agentClusterInstall: AgentClusterInstallK8sResource;
+  agents: AgentK8sResource[];
   consoleUrl: string;
   fetchCredentials: (setCredentials: React.Dispatch<React.SetStateAction<{}>>) => void;
 };
 
 const ClusterDeploymentCredentials = ({
-  cluster,
+  clusterDeployment,
+  agentClusterInstall,
+  agents,
   consoleUrl,
   fetchCredentials,
 }: ClusterDeploymentCredentialsProps) => {
   const [credentials, setCredentials] = React.useState({});
+  const cluster = getAICluster({ clusterDeployment, agentClusterInstall, agents });
 
   React.useEffect(() => {
-    if (['installed', 'adding-hosts'].includes(cluster.status)) {
-      fetchCredentials(setCredentials);
-    }
-  }, [cluster.status, fetchCredentials]);
+    fetchCredentials(setCredentials);
+  }, [agentClusterInstall, fetchCredentials]);
 
   return <ClusterCredentials cluster={cluster} credentials={{ ...credentials, consoleUrl }} />;
 };
