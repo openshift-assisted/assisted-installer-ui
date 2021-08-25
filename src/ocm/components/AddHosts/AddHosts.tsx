@@ -30,6 +30,7 @@ const { addAlert } = alertsSlice.actions;
 const AddHosts: React.FC = () => {
   const { cluster } = React.useContext(AddHostsContext);
   const dispatch = useDispatch();
+  const [isSubmitting, setSubmitting] = React.useState(false);
 
   if (!cluster) {
     return null;
@@ -46,6 +47,8 @@ const AddHosts: React.FC = () => {
           message: getErrorMessage(e),
         }),
       );
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -65,8 +68,11 @@ const AddHosts: React.FC = () => {
               <ToolbarButton
                 variant={ButtonVariant.primary}
                 name="install"
-                onClick={handleHostsInstall}
-                isDisabled={getReadyHostCount(cluster) <= 0}
+                onClick={() => {
+                  setSubmitting(true);
+                  handleHostsInstall();
+                }}
+                isDisabled={getReadyHostCount(cluster) <= 0 || isSubmitting}
               >
                 Install ready hosts
               </ToolbarButton>
