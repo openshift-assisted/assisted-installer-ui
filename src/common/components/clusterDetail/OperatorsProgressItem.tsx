@@ -110,7 +110,7 @@ const OperatorsProgressItem = ({ operators }: OperatorsProgressItemProps) => {
       <FlexItem>{icon}</FlexItem>
       <FlexItem>
         <OperatorsPopover operators={operators}>
-          <Button variant={ButtonVariant.link} isInline>
+          <Button variant={ButtonVariant.link} isInline data-testid="operators-progress-item">
             {label}
           </Button>
         </OperatorsPopover>
