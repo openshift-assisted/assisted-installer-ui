@@ -46,6 +46,9 @@ export interface AssistedServiceIsoCreateParams {
    */
   pullSecret?: string;
 }
+export interface BindHostParams {
+  clusterId: string; // uuid
+}
 export interface Boot {
   currentBootMode?: string;
   pxeInterface?: string;
@@ -278,9 +281,17 @@ export interface Cluster {
    */
   networkType?: 'OpenShiftSDN' | 'OVNKubernetes';
   /**
-   * JSON-formatted string containing the networking data for the install-config.yaml file.
+   * Cluster networks that are associated with this cluster.
    */
-  networkConfiguration?: string;
+  clusterNetworks?: ClusterNetwork[];
+  /**
+   * Service networks that are associated with this cluster.
+   */
+  serviceNetworks?: ServiceNetwork[];
+  /**
+   * Machine networks that are associated with this cluster.
+   */
+  machineNetworks?: MachineNetwork[];
 }
 export interface ClusterCreateParams {
   /**
@@ -373,7 +384,18 @@ export interface ClusterCreateParams {
    * Schedule workloads on masters
    */
   schedulableMasters?: boolean;
-  networkConfiguration?: NetworkConfiguration;
+  /**
+   * Cluster networks that are associated with this cluster.
+   */
+  clusterNetworks?: ClusterNetwork[];
+  /**
+   * Service networks that are associated with this cluster.
+   */
+  serviceNetworks?: ServiceNetwork[];
+  /**
+   * Machine networks that are associated with this cluster.
+   */
+  machineNetworks?: MachineNetwork[];
   platform?: Platform;
 }
 export interface ClusterDefaultConfig {
@@ -433,6 +455,10 @@ export type ClusterList = Cluster[];
  * IP address block for pod IP blocks.
  */
 export interface ClusterNetwork {
+  /**
+   * The cluster that this network is associated with.
+   */
+  clusterId?: string; // uuid
   /**
    * The IP block address pool.
    */
@@ -566,7 +592,18 @@ export interface ClusterUpdateParams {
    * Schedule workloads on masters
    */
   schedulableMasters?: boolean;
-  networkConfiguration?: NetworkConfiguration;
+  /**
+   * Cluster networks that are associated with this cluster.
+   */
+  clusterNetworks?: ClusterNetwork[];
+  /**
+   * Service networks that are associated with this cluster.
+   */
+  serviceNetworks?: ServiceNetwork[];
+  /**
+   * Machine networks that are associated with this cluster.
+   */
+  machineNetworks?: MachineNetwork[];
 }
 export type ClusterValidationId =
   | 'machine-cidr-defined'
@@ -741,6 +778,7 @@ export interface Disk {
   serial?: string;
   sizeBytes?: number;
   bootable?: boolean;
+  removable?: boolean;
   /**
    * Whether the disk appears to be an installation media or not
    */
@@ -929,6 +967,7 @@ export interface Host {
     | 'added-to-existing-cluster'
     | 'cancelled'
     | 'binding'
+    | 'unbinding'
     | 'known-unbound'
     | 'disconnected-unbound'
     | 'insufficient-unbound'
@@ -1088,6 +1127,7 @@ export interface HostRegistrationResponse {
     | 'added-to-existing-cluster'
     | 'cancelled'
     | 'binding'
+    | 'unbinding'
     | 'known-unbound'
     | 'disconnected-unbound'
     | 'insufficient-unbound'
@@ -1512,6 +1552,10 @@ export type MacInterfaceMap = {
  */
 export interface MachineNetwork {
   /**
+   * The cluster that this network is associated with.
+   */
+  clusterId?: string; // uuid
+  /**
    * The IP block address pool for machines within the cluster.
    */
   cidr?: Subnet; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$
@@ -1571,11 +1615,6 @@ export interface MonitoredOperator {
   statusUpdatedAt?: string; // date-time
 }
 export type MonitoredOperatorsList = MonitoredOperator[];
-export interface NetworkConfiguration {
-  clusterNetwork?: ClusterNetwork[];
-  machineNetwork?: MachineNetwork[];
-  serviceNetwork?: ServiceNetwork[];
-}
 export interface NtpSource {
   /**
    * NTP source name or IP.
@@ -1706,6 +1745,29 @@ export type OperatorStatus = 'failed' | 'progressing' | 'available';
  * Kind of operator. Different types are monitored by the service differently.
  */
 export type OperatorType = 'builtin' | 'olm';
+export interface OsImage {
+  /**
+   * Version of the OpenShift cluster.
+   */
+  openshiftVersion: string;
+  /**
+   * The CPU architecture of the image (x86_64/arm64/etc).
+   */
+  cpuArchitecture: string;
+  /**
+   * The base OS image used for the discovery iso.
+   */
+  url: string;
+  /**
+   * The OS rootfs url.
+   */
+  rootfsUrl: string;
+  /**
+   * Build ID of the OS image.
+   */
+  version: string;
+}
+export type OsImages = OsImage[];
 /**
  * The configuration for the specific platform upon which to perform the installation.
  */
@@ -1764,9 +1826,13 @@ export interface Route {
   family?: number; // int32
 }
 /**
- * List of IP address pools for services.
+ * IP address block for service IP blocks.
  */
 export interface ServiceNetwork {
+  /**
+   * The cluster that this network is associated with.
+   */
+  clusterId?: string; // uuid
   /**
    * The IP block address pool.
    */

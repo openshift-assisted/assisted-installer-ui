@@ -60,6 +60,7 @@ export const CLUSTER_STATUS_LABELS: { [key in Cluster['status']]: string } = {
 };
 
 export const HOST_STATUS_LABELS: { [key in Host['status']]: string } = {
+  unbinding: '',
   'disabled-unbound': '',
   'disconnected-unbound': '',
   'discovering-unbound': '',
@@ -99,6 +100,7 @@ export const CLUSTER_FIELD_LABELS: { [key in string]: string } = {
 };
 
 export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
+  unbinding: '',
   'disabled-unbound': '',
   'disconnected-unbound': '',
   'discovering-unbound': '',
