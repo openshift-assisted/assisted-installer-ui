@@ -77,7 +77,7 @@ export const HOST_STATUS_LABELS: { [key in Host['status']]: string } = {
   'preparing-successful': 'Preparing installation successful',
   installing: 'Starting installation',
   'installing-in-progress': 'Installing',
-  'installing-pending-user-action': 'Incorrect boot order',
+  'installing-pending-user-action': 'Pending user action',
   installed: 'Installed',
   cancelled: 'Installation cancelled',
   error: 'Error',
@@ -122,8 +122,7 @@ export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
   'preparing-successful': '',
   installing: '', // not rendered
   'installing-in-progress': '', // not rendered
-  'installing-pending-user-action':
-    "Please reconfigure this host's BIOS to boot from the disk where OpenShift was installed instead of the Discovery ISO.",
+  'installing-pending-user-action': 'This host is pending user action',
   installed: 'This host completed its installation successfully.',
   cancelled: 'This host installation has been cancelled.',
   error: 'This host failed its installation.',
