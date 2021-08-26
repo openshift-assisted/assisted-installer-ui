@@ -14,37 +14,8 @@ export type ClusterDeploymentHostsTablePropsActions = {
   onEditRole?: (agent: AgentK8sResource, role: string | undefined) => Promise<void>;
   canDelete?: (agent: AgentK8sResource) => boolean;
   onDeleteHost?: (agent: AgentK8sResource) => void;
+  onApprove?: (agent: AgentK8sResource) => void;
 };
-
-/*
-export type ClusterDeploymentHostsTablePropsActions = Pick<
-  HostsTableProps,
-  | 'onEditHost'
-  | 'canEditHost'
-  | 'onEditRole'
-  | 'canEditRole'
-  | 'onDeleteHost'
-  | 'canDelete'
-  | 'AdditionalNTPSourcesDialogToggleComponent'
-
-  /* TODO(mlibra): List other actions
-      onHostEnable: async (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
-      onInstallHost: async (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
-      onHostDisable: async (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
-      onViewHostEvents 
-      onHostReset
-      onDownloadHostLogs
-
-      canEditRole: (host: Host) => canEditRoleUtil(cluster, host.status),
-      canInstallHost: (host: Host) => canInstallHostUtil(cluster, host.status),
-      canEditDisks: (host: Host) => canEditDisksUtil(cluster.status, host.status),
-      canEnable: (host: Host) => canEnableUtil(cluster.status, host.status),
-      canDisable: (host: Host) => canDisableUtil(cluster.status, host.status),
-      canEditHost: (host: Host) => canEditHostUtil(cluster.status, host.status),
-      canReset: (host: Host) => canResetUtil(cluster.status, host.status),
-  
->;
-*/
 
 export type ClusterDeploymentWizardStepsType = 'cluster-details' | 'networking';
 
