@@ -5,6 +5,8 @@ import { AdditionalNTPSourcesDialogToggle } from '../../../ocm/components/hosts/
 import { AgentK8sResource } from '../../types';
 import { ClusterDeploymentHostsTablePropsActions } from '../ClusterDeployment/types';
 import { getAIHosts } from '../helpers';
+import DefaultEmptyState from '../../../common/components/ui/uiState/EmptyState';
+import { ConnectedIcon } from '@patternfly/react-icons';
 
 type GetAgentCallback = <R>(
   agentCallback: ((agent: AgentK8sResource) => R) | undefined,
@@ -65,11 +67,20 @@ const defaultColumns = [
   { title: '' },
 ];
 
+const AgentTableEmptyState = () => (
+  <DefaultEmptyState
+    icon={ConnectedIcon}
+    title="Waiting for hosts..."
+    content="Hosts may take a few minutes to appear here after booting."
+  />
+);
+
 type AgentTableProps = ClusterDeploymentHostsTablePropsActions & {
   agents: AgentK8sResource[];
   className?: string;
   columns?: HostsTableProps['columns'];
   hostToHostTableRow?: HostsTableProps['hostToHostTableRow'];
+  EmptyState?: HostsTableProps['EmptyState'];
 };
 
 const AgentTable: React.FC<AgentTableProps> = ({
@@ -77,6 +88,7 @@ const AgentTable: React.FC<AgentTableProps> = ({
   className,
   columns = defaultColumns,
   hostToHostTableRow,
+  EmptyState = AgentTableEmptyState,
   ...actions
 }) => {
   const tableCallbacks = useAgentTableActions({
@@ -87,7 +99,7 @@ const AgentTable: React.FC<AgentTableProps> = ({
   return (
     <HostsTable
       hosts={restHosts}
-      EmptyState={() => <div>no hosts</div>}
+      EmptyState={EmptyState}
       columns={columns}
       className={className}
       AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
