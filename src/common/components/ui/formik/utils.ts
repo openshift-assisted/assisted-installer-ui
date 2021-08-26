@@ -54,3 +54,8 @@ export const parseStringLabels = (
 // Result: ['key=value', 'foo=blee']
 export const uniqueLabels = (labelPairs: string[]): string[] =>
   labelsToArray(parseStringLabels(labelPairs));
+
+// Input: (['foo=bar', 'key=value'], ['foo', 'bar'])
+// Result: ['foo=bar']
+export const selectedLabelsOnly = (labelPairs: string[], allowedKeys: string[]) =>
+  labelPairs.filter((pair) => allowedKeys.includes(pair.split('=')[0]));

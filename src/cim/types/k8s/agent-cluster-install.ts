@@ -35,6 +35,7 @@ export type AgentClusterInstallK8sResource = K8sResourceCommon & {
     };
     provisionRequirements: {
       controlPlaneAgents: number;
+      workerAgents?: number;
     };
     networking: {
       clusterNetwork?: {

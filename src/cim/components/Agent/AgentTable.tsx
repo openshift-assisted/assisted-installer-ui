@@ -39,9 +39,9 @@ export const useAgentTableActions = ({
   canEditRole,
   onApprove,
   onHostSelected,
-  agents,
+  agents = [],
 }: ClusterDeploymentHostsTablePropsActions & {
-  agents: AgentK8sResource[];
+  agents?: AgentK8sResource[];
   onHostSelected?: (agent: AgentK8sResource, selected: boolean) => void;
 }): HostsTableActions =>
   React.useMemo(
@@ -208,18 +208,19 @@ const AgentTableEmptyState = () => (
 );
 
 export const getAgentTableColumns = (
-  patchFunc?: (colIndex: number, colDefault: ICell) => ICell,
-) => {
+  patchFunc?: (colIndex: number, colDefault: ICell) => ICell | undefined,
+): ICell[] => {
   if (patchFunc) {
-    return defaultAgentTableColumns
-      .map((col, colIndex) => patchFunc(colIndex, col))
-      .filter(Boolean);
+    const patchedCols: (ICell | undefined)[] = defaultAgentTableColumns.map((col, colIndex) =>
+      patchFunc(colIndex, col),
+    );
+    return patchedCols.filter(Boolean) as ICell[]; // allow removing columns
   }
   return defaultAgentTableColumns;
 };
 
 type AgentTableProps = ClusterDeploymentHostsTablePropsActions & {
-  agents: AgentK8sResource[];
+  agents?: AgentK8sResource[];
   className?: string;
   columns?: HostsTableProps['columns'];
   hostToHostTableRow?: (

@@ -4,7 +4,7 @@ import { FormGroup, Label } from '@patternfly/react-core';
 import TagsInput from 'react-tagsinput';
 import Autosuggest from 'react-autosuggest';
 import { InputFieldProps } from './types';
-import { getFieldId, uniqueLabels } from './utils';
+import { getFieldId, selectedLabelsOnly, uniqueLabels } from './utils';
 import HelperText from './HelperText';
 
 import './LabelField.css';
@@ -31,6 +31,7 @@ type LabelFieldProps = Omit<InputFieldProps, 'onChange'> & {
   autocompleteValues?: string[];
   // Keep keys unique. Later key wins.
   forceUniqueKeys?: boolean;
+  // Can the user enter a key which is not listed among autocompleteValues?
 };
 
 export const LabelField: React.FC<LabelFieldProps> = ({
@@ -162,7 +163,7 @@ export const LabelField: React.FC<LabelFieldProps> = ({
       isRequired={isRequired}
       labelIcon={labelIcon}
     >
-      Enter key=value and then press 'enter' or 'space' or use a ',' to input the label.
+      {/* Enter key=value and then press 'enter' or 'space' or use a ',' to input the label.*/}
       <div className="co-search-input pf-c-form-control label-field">
         <TagsInput
           {...field}

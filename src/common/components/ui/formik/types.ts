@@ -39,6 +39,9 @@ export interface MultiSelectFieldProps extends FieldProps {
 }
 
 export interface SwitchFieldProps extends FieldProps {
+  // replace the default onChange handler
+  onChangeCustomOverride?: (checked: boolean, event: React.FormEvent<HTMLInputElement>) => void;
+  // called in addition to the default internal onChange handler
   onChange?: (checked: boolean, event: React.FormEvent<HTMLInputElement>) => void;
   getHelperText?: (value: string) => string | undefined;
 }

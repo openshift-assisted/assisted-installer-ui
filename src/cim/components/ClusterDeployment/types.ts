@@ -75,11 +75,14 @@ export type ClusterDeploymentDetailsProps = {
 export type ClusterDeploymentDetailsValues = ClusterDetailsValues;
 export type ClusterDeploymentNetworkingValues = NetworkConfigurationValues;
 export type ClusterDeploymentHostsSelectionValues = {
+  autoSelectHosts: boolean;
   hostCount: number;
   useMastersAsWorkers: boolean;
   agentLabels: string[];
   locations: string[];
   selectedHostIds: string[];
+
+  isSNOCluster: boolean; // read-only, never changed
 };
 
 export type ClusterDeploymentDetailsStepProps = ClusterDeploymentDetailsProps & {
@@ -113,7 +116,7 @@ export type ClusterDeploymentHostsSelectionProps = {
   matchingAgents?: AgentK8sResource[];
 
   // Count of all Agent resources in the k8s database (no label applied). For user's info only.
-  allAgentsCount?: number;
+  // allAgentsCount?: number;
 
   // Callback trigerred when the user changes labels in the UI. It is expected that "matchingAgents" list is updated based on the new value.
   onAgentSelectorChange: (props: AgentSelectorChageProps) => void;
@@ -125,7 +128,7 @@ export type ClusterDeploymentHostsSelectionProps = {
 export type ClusterDeploymentHostSelectionStepProps = ClusterDeploymentHostsSelectionProps & {
   clusterDeployment: ClusterDeploymentK8sResource;
   selectedHostIds: string[];
-  // agentClusterInstall: AgentClusterInstallK8sResource;
+  agentClusterInstall: AgentClusterInstallK8sResource;
   // agents: AgentK8sResource[];
   onSaveHostsSelection: (values: ClusterDeploymentHostsSelectionValues) => Promise<string | void>;
   onClose: () => void;

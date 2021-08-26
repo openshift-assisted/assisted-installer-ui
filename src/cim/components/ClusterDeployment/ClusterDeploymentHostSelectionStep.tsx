@@ -2,7 +2,7 @@ import React from 'react';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import { getFormikErrorFields, labelsToArray, useAlerts } from '../../../common';
-import { ClusterDeploymentK8sResource } from '../../types';
+import { AgentClusterInstallK8sResource, ClusterDeploymentK8sResource } from '../../types';
 import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
 import ClusterDeploymentWizardFooter from './ClusterDeploymentWizardFooter';
 import ClusterDeploymentWizardNavigation from './ClusterDeploymentWizardNavigation';
@@ -13,41 +13,70 @@ import {
   ClusterDeploymentHostsSelectionValues,
 } from './types';
 import { hostCountValidationSchema, hostLabelsValidationSchema } from './validationSchemas';
-import { getLocationsFormMatchExpressions } from '../helpers';
+import { getAgentStatus, getLocationsFormMatchExpressions } from '../helpers';
+import { RESERVED_AGENT_LABEL_KEY } from '../common';
 
 const getInitialValues = ({
   clusterDeployment,
+  agentClusterInstall,
   selectedHostIds,
 }: {
   clusterDeployment: ClusterDeploymentK8sResource;
-  // agentClusterInstall: AgentClusterInstallK8sResource;
+  agentClusterInstall: AgentClusterInstallK8sResource;
   // agents: AgentK8sResource[];
   selectedHostIds: string[];
-}): ClusterDeploymentHostsSelectionValues => ({
-  hostCount: 3, // agents.length, // TODO(mlibra): it can not be agents.length since that is an user's requirement which does not need to match reality of k8s resources
-  useMastersAsWorkers: true, // TODO: read but where from?
-  agentLabels: labelsToArray(
-    clusterDeployment.spec?.platform?.agentBareMetal?.agentSelector?.matchLabels,
-  ),
-  locations: getLocationsFormMatchExpressions(
-    clusterDeployment.spec?.platform?.agentBareMetal?.agentSelector?.matchExpressions,
-  ),
-  selectedHostIds,
-});
+}): ClusterDeploymentHostsSelectionValues => {
+  const isSNOCluster = agentClusterInstall?.spec?.provisionRequirements?.controlPlaneAgents === 1;
+
+  let hostCount =
+    (agentClusterInstall?.spec?.provisionRequirements?.controlPlaneAgents || 0) +
+    (agentClusterInstall?.spec?.provisionRequirements?.workerAgents || 0);
+  if (isSNOCluster) {
+    hostCount = 1;
+  } else if (hostCount === 2 || hostCount === 0) {
+    hostCount = 3;
+  } else if (hostCount === 4) {
+    hostCount = 5;
+  }
+
+  const matchLabels = {
+    ...(clusterDeployment.spec?.platform?.agentBareMetal?.agentSelector?.matchLabels || {}),
+  };
+  delete matchLabels[RESERVED_AGENT_LABEL_KEY];
+  // false if we have additional labels (without RESERVED)
+  const autoSelectHosts = !Object.keys(matchLabels).length;
+
+  return {
+    autoSelectHosts,
+    hostCount,
+    useMastersAsWorkers: hostCount === 1 || hostCount === 3, // TODO: Recently not supported - https://issues.redhat.com/browse/MGMT-7677
+    agentLabels: labelsToArray(
+      clusterDeployment.spec?.platform?.agentBareMetal?.agentSelector?.matchLabels,
+    ),
+    locations: getLocationsFormMatchExpressions(
+      clusterDeployment.spec?.platform?.agentBareMetal?.agentSelector?.matchExpressions,
+    ),
+    selectedHostIds,
+
+    // Read-only, hidden for the user, not meant to be modified by the form
+    isSNOCluster,
+  };
+};
 
 const getValidationSchema = () =>
   Yup.object().shape({
     hostCount: hostCountValidationSchema,
     useMastersAsWorkers: Yup.boolean().required(),
-    agentLabels: hostLabelsValidationSchema.required(),
-    locations: Yup.array().min(0),
+    agentLabels: hostLabelsValidationSchema,
+    locations: Yup.array().min(1),
   });
 
 const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectionStepProps> = ({
   clusterDeployment,
-  // agentClusterInstall,
+  agentClusterInstall,
   // agents,
   selectedHostIds,
+  matchingAgents: unfilteredMatchingAgents,
   onClose,
   onSaveHostsSelection,
   ...rest
@@ -56,15 +85,42 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
   const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
 
   const initialValues = React.useMemo(
-    () => getInitialValues({ clusterDeployment, selectedHostIds }),
+    () => getInitialValues({ clusterDeployment, agentClusterInstall, selectedHostIds }),
     [], // eslint-disable-line react-hooks/exhaustive-deps
   );
   const validationSchema = React.useMemo(() => getValidationSchema(), []);
 
+  // Use Ready hosts only
+  const matchingAgents = React.useMemo(
+    () =>
+      (unfilteredMatchingAgents || []).filter((agent) => {
+        const [status] = getAgentStatus(agent);
+        return (
+          true ||
+          [
+            'known',
+            /* insufficient should be good for this step, a role has to be selected first */ 'insufficient',
+          ].includes(status)
+        ); // DO NOT MERGE: remove "true" for here - debugging only
+      }),
+    [unfilteredMatchingAgents],
+  );
+
   const next = () => setCurrentStepId('networking');
   const handleSubmit = async (values: ClusterDeploymentHostsSelectionValues) => {
     try {
-      await onSaveHostsSelection(values);
+      const params = { ...values };
+      if (values.autoSelectHosts) {
+        // TODO(mlibra): Hosts do not need to be reallocated everytime
+        const selectedAgents = matchingAgents.splice(0, params.hostCount);
+        params.selectedHostIds = selectedAgents.map((agent) => agent.metadata?.uid || '');
+
+        if (params.selectedHostIds.length !== params.hostCount) {
+          throw 'Host auto-selection failed. Can not allocate the requested host count.';
+        }
+      }
+
+      await onSaveHostsSelection(params);
       next();
     } catch (error) {
       addAlert({
@@ -118,7 +174,7 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
 
         return (
           <ClusterDeploymentWizardStep navigation={navigation} footer={footer}>
-            <ClusterDeploymentHostsSelection {...rest} />
+            <ClusterDeploymentHostsSelection {...rest} matchingAgents={matchingAgents} />
           </ClusterDeploymentWizardStep>
         );
       }}

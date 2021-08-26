@@ -23,13 +23,25 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   usedAgentLabels,
   agentLocations,
   matchingAgents,
-  allAgentsCount,
+  // allAgentsCount,
   selectedHostIds,
   onAgentSelectorChange,
 }) => {
   const [currentStepId, setCurrentStepId] = React.useState<ClusterDeploymentWizardStepsType>(
     'cluster-details',
   );
+
+  // DO NOT MERGE: debug only
+  // if (clusterDeployment?.spec?.platform.agentBareMetal.agentSelector) {
+  //   clusterDeployment.spec.platform.agentBareMetal.agentSelector.matchExpressions = clusterDeployment
+  //     .spec.platform.agentBareMetal.agentSelector.matchExpressions || [
+  //     {
+  //       key: 'agentclusterinstalls.extensions.hive.openshift.io/location',
+  //       operator: 'In',
+  //       values: ['brno'],
+  //     },
+  //   ];
+  // }
 
   const renderCurrentStep = React.useCallback(() => {
     const stepId: ClusterDeploymentWizardStepsType = !clusterDeployment
@@ -42,14 +54,14 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
           <ClusterDeploymentHostSelectionStep
             clusterDeployment={clusterDeployment}
             selectedHostIds={selectedHostIds}
-            // agentClusterInstall={agentClusterInstall}
+            agentClusterInstall={agentClusterInstall}
             // agents={agents}
             onClose={onClose}
             onSaveHostsSelection={onSaveHostsSelection}
             usedAgentLabels={usedAgentLabels}
             agentLocations={agentLocations}
             matchingAgents={matchingAgents}
-            allAgentsCount={allAgentsCount}
+            // allAgentsCount={allAgentsCount}
             onAgentSelectorChange={onAgentSelectorChange}
             hostActions={hostActions}
           />
@@ -102,7 +114,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
     selectedHostIds,
     usedAgentLabels,
     agentLocations,
-    allAgentsCount,
+    // allAgentsCount,
   ]);
 
   return (

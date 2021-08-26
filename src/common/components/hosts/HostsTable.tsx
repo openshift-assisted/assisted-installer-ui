@@ -95,7 +95,7 @@ export type HostToHostTableRowPatcherType = (
   getDefaultValueFunc: () => IRowCell,
   host: Host,
   colIndex: number,
-) => IRowCell;
+) => IRowCell | undefined;
 
 const defaultColumns = [
   { title: 'Hostname', transforms: [sortable], cellFormatters: [expandable] },
@@ -230,7 +230,9 @@ export const getHostToHostTableRowMapper = (
       host,
       colIndex++,
     ),
-  ];
+  ]
+    // skip removed columns
+    .filter(Boolean);
 
   if (onHostSelected) {
     const isChecked = selectedHostIds?.includes(host.id);
