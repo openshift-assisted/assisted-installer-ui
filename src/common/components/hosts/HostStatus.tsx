@@ -43,7 +43,7 @@ import OcpConsoleNodesSectionLink from './OcpConsoleNodesSectionLink';
 import { toSentence } from '../ui/table/utils';
 import { RenderIf } from '../ui';
 
-const getStatusIcon = (status: Host['status']) => {
+const getStatusIcon = (status: Host['status'] | 'Discovered') => {
   let icon = null;
   switch (status) {
     case 'discovering':
@@ -224,7 +224,7 @@ type HostStatusProps = AdditionNtpSourcePropsType & {
   host: Host;
   validationsInfo: ValidationsInfo;
   onEditHostname?: () => void;
-  statusOverride?: Host['status'];
+  statusOverride?: Host['status'] | 'Discovered';
   sublabel?: string;
 };
 
@@ -258,10 +258,10 @@ const HostStatus: React.FC<HostStatusProps> = ({
 
   return (
     <Flex alignItems={{ default: 'alignItemsCenter' }}>
-      <FlexItem className={'pf-u-mr-xs'}>{icon}</FlexItem>
+      {icon && <FlexItem className={'pf-u-mr-xs'}>{icon}</FlexItem>}
 
       <Flex direction={{ default: 'column' }}>
-        {!sublabel ? (
+        {!sublabel && status !== 'Discovered' ? (
           <WithHostStatusPopover
             hideOnOutsideClick={!keepOnOutsideClick}
             host={host}
