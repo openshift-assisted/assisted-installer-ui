@@ -44,7 +44,7 @@
     "i18next": "^20.4.0",
     "i18next-browser-languagedetector": "^6.1.2",
     "lodash": "^4.17.15",
-    "react": "^16.4.0",
+    "react": "^16.14.0",
     "react-dom": "^16.13.1",
     "react-i18next": "^11.11.4",
     "react-redux": "^7.2.0",
