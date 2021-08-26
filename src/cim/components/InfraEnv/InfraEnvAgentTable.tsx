@@ -1,71 +1,16 @@
 import * as React from 'react';
-import { expandable, IRow, IRowData, sortable } from '@patternfly/react-table';
-import {
-  getDateTimeCell,
-  getHostname,
-  Host,
-  HostsTableActions,
-  HostStatus,
-  Inventory,
-  stringToJSON,
-  HostsTableProps,
-} from '../../../common';
+import { expandable, sortable } from '@patternfly/react-table';
+import { getDateTimeCell, getHostname } from '../../../common';
 import { AgentK8sResource } from '../../types';
 import { ClusterDeploymentHostsTablePropsActions } from '../ClusterDeployment/types';
 import { getHostRowHardwareInfo } from '../../../common/components/hosts/hardwareInfo';
-import { ValidationsInfo } from '../../../common/types/hosts';
 import Hostname from '../../../common/components/hosts/Hostname';
 import HostPropertyValidationPopover from '../../../common/components/hosts/HostPropertyValidationPopover';
 import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
 import { Link } from 'react-router-dom';
 import { AgentTable } from '../Agent';
-type GetAgentCallback = <R>(
-  agentCallback: ((agent: AgentK8sResource) => R) | undefined,
-  agents: AgentK8sResource[],
-) => ((host: Host) => R) | undefined;
-
-const getAgentCallback: GetAgentCallback = (agentCallback, agents) =>
-  agentCallback
-    ? (host) => {
-        const agent = agents.find((a) => a.metadata?.uid === host.id) as AgentK8sResource;
-        return agentCallback(agent);
-      }
-    : undefined;
-
-export const useAgentTableActions = ({
-  onDeleteHost,
-  onEditRole,
-  onEditHost,
-  canDelete,
-  canEditHost,
-  canEditRole,
-  agents,
-}: ClusterDeploymentHostsTablePropsActions & {
-  agents: AgentK8sResource[];
-}): HostsTableActions =>
-  React.useMemo(
-    () => ({
-      onDeleteHost: onDeleteHost
-        ? (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
-            const agent = agents.find(
-              (a) => a.metadata?.uid === rowData.host.id,
-            ) as AgentK8sResource;
-            onDeleteHost(agent);
-          }
-        : undefined,
-      onEditRole: onEditRole
-        ? (host: Host, role: string | undefined) => {
-            const agent = agents.find((a) => a.metadata?.uid === host.id) as AgentK8sResource;
-            return onEditRole(agent, role);
-          }
-        : undefined,
-      onEditHost: getAgentCallback(onEditHost, agents),
-      canDelete: getAgentCallback(canDelete, agents),
-      canEditHost: getAgentCallback(canEditHost, agents),
-      canEditRole: getAgentCallback(canEditRole, agents),
-    }),
-    [onDeleteHost, onEditHost, onEditRole, canDelete, canEditHost, canEditRole, agents],
-  );
+import { AgentTableProps } from '../Agent/AgentTable';
+import AgentStatus from '../Agent/AgentStatus';
 
 const columns = [
   { title: 'Hostname', transforms: [sortable], cellFormatters: [expandable] },
@@ -80,19 +25,19 @@ const columns = [
 ];
 
 const hostToHostTableRow = (
-  agents: AgentK8sResource[],
   getClusterDeploymentLink: (cd: { name: string; namespace: string }) => string,
-): HostsTableProps['hostToHostTableRow'] => ({
+): AgentTableProps['hostToHostTableRow'] => (agents, onApprove) => ({
   openRows,
   AdditionalNTPSourcesDialogToggleComponent,
   canEditDisks,
   onEditHostname,
   onDiskRole,
-}) => (host: Host): IRow => {
-  const { id, status, createdAt, inventory: inventoryString = '' } = host;
-  const inventory = stringToJSON<Inventory>(inventoryString) || {};
+}) => (host) => {
+  const agent = agents.find((a) => a.metadata?.uid === host.id) as AgentK8sResource;
+  const { id, status, createdAt } = host;
+  const inventory = agent.status?.inventory || {};
   const { cores, memory, disk } = getHostRowHardwareInfo(inventory);
-  const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
+  const validationsInfo = agent.status?.hostValidationInfo || {};
   const memoryValidation = validationsInfo?.hardware?.find((v) => v.id === 'has-memory-for-role');
   const diskValidation = validationsInfo?.hardware?.find((v) => v.id === 'has-min-valid-disks');
   const cpuCoresValidation = validationsInfo?.hardware?.find(
@@ -102,7 +47,6 @@ const hostToHostTableRow = (
   const dateTimeCell = getDateTimeCell(createdAt);
 
   const editHostname = onEditHostname ? () => onEditHostname(host, inventory) : undefined;
-  const agent = agents.find((a) => a.metadata?.uid === host.id);
   const discoveryType = agent?.metadata?.labels?.hasOwnProperty('agent-install.openshift.io/bmh')
     ? 'Discovery ISO'
     : 'BMC';
@@ -124,14 +68,7 @@ const hostToHostTableRow = (
           sortableValue: discoveryType,
         },
         {
-          title: (
-            <HostStatus
-              host={host}
-              onEditHostname={editHostname}
-              validationsInfo={validationsInfo}
-              AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
-            />
-          ),
+          title: <AgentStatus agent={agent} onApprove={onApprove} onEditHostname={editHostname} />,
           props: { 'data-testid': 'host-status' },
           sortableValue: status,
         },
@@ -208,13 +145,13 @@ const hostToHostTableRow = (
   ];
 };
 
-type AgentTableProps = ClusterDeploymentHostsTablePropsActions & {
+type InfraEnvAgentTable = ClusterDeploymentHostsTablePropsActions & {
   agents: AgentK8sResource[];
   getClusterDeploymentLink: (cd: { name: string; namespace: string }) => string;
   className?: string;
 };
 
-const InfraEnvAgentTable: React.FC<AgentTableProps> = ({
+const InfraEnvAgentTable: React.FC<InfraEnvAgentTable> = ({
   agents,
   getClusterDeploymentLink,
   className,
@@ -225,7 +162,7 @@ const InfraEnvAgentTable: React.FC<AgentTableProps> = ({
       agents={agents}
       columns={columns}
       className={className}
-      hostToHostTableRow={hostToHostTableRow(agents, getClusterDeploymentLink)}
+      hostToHostTableRow={hostToHostTableRow(getClusterDeploymentLink)}
       {...actions}
     />
   );
