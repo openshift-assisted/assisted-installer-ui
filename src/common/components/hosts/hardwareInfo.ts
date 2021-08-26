@@ -19,7 +19,7 @@ export type SimpleHardwareInfo = {
 };
 
 export const getMemoryCapacity = (inventory: Inventory): number =>
-  inventory.memory?.usableBytes || 0;
+  inventory.memory?.physicalBytes || 0;
 export const getDiskCapacity = (inventory: Inventory): number =>
   inventory.disks
     ?.filter((disk) => disk.driveType !== OpticalDiskDriveType)
