@@ -199,13 +199,14 @@ const FinalizingProgress: React.FC<FinalizingProgressProps> = ({ cluster, onFetc
               bodyContent={
                 <TextContent>
                   <Text>
-                    Initializing, this may take a while. For more information see Cluster Events.
+                    This stage may take a while to finish. To view detailed information, click the
+                    events log link below.
                   </Text>
                 </TextContent>
               }
               footerContent={
                 <Button variant={ButtonVariant.link} isInline onClick={() => setIsModalOpen(true)}>
-                  View Cluster Events
+                  Open Events Log
                 </Button>
               }
             >
