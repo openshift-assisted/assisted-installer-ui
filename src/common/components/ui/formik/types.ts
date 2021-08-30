@@ -32,7 +32,7 @@ export interface SelectFieldProps extends FieldProps {
 }
 
 export interface MultiSelectFieldProps extends FieldProps {
-  options: SelectOptionProps[];
+  options: (SelectOptionProps & { displayName?: string })[];
   placeholderText?: string;
   onChange?: (val: string[]) => void;
   getHelperText?: (value: string) => React.ReactNode | undefined;

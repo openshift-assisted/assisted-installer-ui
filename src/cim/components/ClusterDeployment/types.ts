@@ -57,6 +57,7 @@ export type ClusterDeploymentHostsTablePropsActions = Pick<
 export type ClusterDeploymentWizardStepsType = 'cluster-details' | 'hosts-selection' | 'networking';
 export type AgentLocation = {
   value: string;
+  displayName?: string;
   itemCount: number;
 };
 
