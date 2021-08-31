@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ConnectedIcon } from '@patternfly/react-icons';
-import { WithTestID, EmptyState, HostsTable } from '../../../common';
+import { WithTestID, EmptyState } from '../../../common';
 import { ClusterDeploymentHostsTablePropsActions } from './types';
 import {
   AgentClusterInstallK8sResource,
@@ -8,21 +8,9 @@ import {
   ClusterDeploymentK8sResource,
 } from '../../types';
 import { getAICluster } from '../helpers';
-import NetworkingStatus from './NetworkingStatus';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionalNTPSourcesDialogToggle';
-import {
-  getColumns,
-  hostToHostTableRow,
-} from '../../../common/components/hosts/networking-hosts-table';
-import { useAgentTableActions } from '../Agent/AgentTable';
-
-const HostsTableEmptyState: React.FC<{}> = () => (
-  <EmptyState
-    icon={ConnectedIcon}
-    title="Waiting for hosts..."
-    content="Hosts may take a few minutes to appear here after booting."
-  />
-);
+import NetworkConfigurationTable from '../../../common/components/clusterConfiguration/NetworkConfigurationTable';
+import { useAgentsTable } from '../Agent/tableUtils';
 
 type ClusterDeploymentHostsTableProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
@@ -32,7 +20,6 @@ type ClusterDeploymentHostsTableProps = {
   skipDisabled?: boolean;
   hostActions: ClusterDeploymentHostsTablePropsActions;
   selectedHostIds?: string[];
-  onHostSelected?: (agent: AgentK8sResource, selected: boolean) => void;
 } & WithTestID;
 
 const ClusterDeploymentHostsTable: React.FC<ClusterDeploymentHostsTableProps> = ({
@@ -40,17 +27,12 @@ const ClusterDeploymentHostsTable: React.FC<ClusterDeploymentHostsTableProps> = 
   agentClusterInstall,
   agents,
   pullSecretSet,
-  onHostSelected,
   selectedHostIds,
   hostActions,
 }) => {
   const cluster = getAICluster({ clusterDeployment, agentClusterInstall, agents, pullSecretSet });
 
-  const tableCallbacks = useAgentTableActions({
-    ...hostActions,
-    onHostSelected,
-    agents,
-  });
+  const [, agentActions, actionResolver] = useAgentsTable(hostActions, agents);
 
   const AdditionalNTPSourcesDialogToggleWithCluster = React.useCallback<React.FC>(
     () => <AdditionalNTPSourcesDialogToggle cluster={cluster} />,
@@ -58,15 +40,19 @@ const ClusterDeploymentHostsTable: React.FC<ClusterDeploymentHostsTableProps> = 
   );
 
   return (
-    <HostsTable
-      columns={getColumns(cluster)}
-      hostToHostTableRow={hostToHostTableRow(cluster, NetworkingStatus)}
-      hosts={cluster.hosts}
-      EmptyState={HostsTableEmptyState}
+    <NetworkConfigurationTable
+      cluster={cluster}
       AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleWithCluster}
-      selectedHostIds={selectedHostIds}
-      {...tableCallbacks}
-    />
+      actionResolver={actionResolver}
+      selectedIDs={selectedHostIds}
+      {...agentActions}
+    >
+      <EmptyState
+        icon={ConnectedIcon}
+        title="Waiting for hosts..."
+        content="Hosts may take a few minutes to appear here after booting."
+      />
+    </NetworkConfigurationTable>
   );
 };
 

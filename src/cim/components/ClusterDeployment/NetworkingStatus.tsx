@@ -1,6 +1,5 @@
 import React from 'react';
-import { Host, HostStatus } from '../../../common';
-import { HostNetworkingStatusComponentProps } from '../../../common/components/hosts/networking-hosts-table';
+import { Host, HostNetworkingStatusComponentProps, HostStatus } from '../../../common';
 import { ValidationsInfo } from '../../../common/types/hosts';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionalNTPSourcesDialogToggle';
 

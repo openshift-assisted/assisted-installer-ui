@@ -24,15 +24,10 @@ import { canNextNetwork } from '../clusterWizard/wizardTransition';
 import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
 import ClusterWizardFooter from '../clusterWizard/ClusterWizardFooter';
 import ClusterWizardNavigation from '../clusterWizard/ClusterWizardNavigation';
-import { ClusterHostsTable } from '../hosts';
 import { getErrorMessage, handleApiError, patchCluster } from '../../api';
-import NetworkingStatus from '../hosts/NetworkingStatus';
 import ClusterWizardHeaderExtraActions from './ClusterWizardHeaderExtraActions';
 import { useDefaultConfiguration } from './ClusterDefaultConfigurationContext';
-import {
-  getColumns,
-  hostToHostTableRow,
-} from '../../../common/components/hosts/networking-hosts-table';
+import NetworkConfigurationTable from './NetworkConfigurationTable';
 
 const NetworkConfigurationForm: React.FC<{
   cluster: Cluster;
@@ -119,7 +114,6 @@ const NetworkConfigurationForm: React.FC<{
       );
     }
   };
-  const columns = React.useMemo(() => getColumns(cluster), [cluster]);
 
   return (
     <Formik
@@ -152,12 +146,7 @@ const NetworkConfigurationForm: React.FC<{
                 <TextContent>
                   <Text component="h2">Host inventory</Text>
                 </TextContent>
-                <ClusterHostsTable
-                  cluster={cluster}
-                  hostToHostTableRow={hostToHostTableRow(cluster, NetworkingStatus)}
-                  testId={'networking-host-table'}
-                  columns={columns}
-                />
+                <NetworkConfigurationTable cluster={cluster} />
               </GridItem>
             </Grid>
             <FormikAutoSave />

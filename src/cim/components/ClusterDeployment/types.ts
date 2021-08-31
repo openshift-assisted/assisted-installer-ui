@@ -15,9 +15,7 @@ export type ClusterDeploymentHostsTablePropsActions = {
   canDelete?: (agent: AgentK8sResource) => boolean;
   onDeleteHost?: (agent: AgentK8sResource) => void;
   onApprove?: (agent: AgentK8sResource) => void;
-
-  // onHostSelected?: (agent: AgentK8sResource, selected: boolean) => void;
-  // selectedHostIds?: string[]; // not needed when onHostSelected === undefined in HostTable
+  onSelect?: (agent: AgentK8sResource, selected: boolean) => void;
 };
 
 /*

@@ -1,17 +1,18 @@
 import { GridItem } from '@patternfly/react-core';
-import { ICell } from '@patternfly/react-table';
 import { useFormikContext } from 'formik';
 import React from 'react';
+import { LabelField } from '../../../common';
+import HostsTable from '../../../common/components/hosts/HostsTable';
 import {
-  getHostToHostTableRowMapper,
-  HostToHostTableRowPatcherType,
-  LabelField,
-} from '../../../common';
+  cpuCoresColumn,
+  disksColumn,
+  hostnameColumn,
+  memoryColumn,
+} from '../../../common/components/hosts/tableUtils';
 import { AgentK8sResource } from '../../types';
-import { AgentTable } from '../Agent';
-import { getAgentTableColumns } from '../Agent/AgentTable';
-import { AGENT_LOCATION_LABEL_KEY, INFRAENV_AGENTINSTALL_LABEL_KEY } from '../common';
-import { hostToAgent } from '../helpers';
+import { AgentTableEmptyState } from '../Agent/AgentTable';
+import { infraEnvColumn, statusColumn, useAgentsTable } from '../Agent/tableUtils';
+import { AGENT_LOCATION_LABEL_KEY } from '../common';
 import LocationsSelector from './LocationsSelector';
 import {
   ClusterDeploymentHostsSelectionProps,
@@ -21,16 +22,16 @@ import {
 
 type AgentsSelectionTableProps = {
   matchingAgents?: AgentK8sResource[];
-  hostActions: ClusterDeploymentHostsTablePropsActions;
+  actions: ClusterDeploymentHostsTablePropsActions;
 };
 
 const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
-  matchingAgents,
-  hostActions,
+  matchingAgents = [],
+  actions,
 }) => {
   const { setFieldValue, values } = useFormikContext<ClusterDeploymentHostsSelectionValues>();
 
-  const onHostSelected = (agent: AgentK8sResource, selected: boolean) => {
+  const onSelect = (agent: AgentK8sResource, selected: boolean) => {
     if (selected) {
       setFieldValue('selectedHostIds', [...values.selectedHostIds, agent.metadata?.uid]);
     } else {
@@ -41,45 +42,33 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
     }
   };
 
-  // Customize default AgentTable columns
-  const columns = getAgentTableColumns((colIndex: number, colDefault: ICell) => {
-    if (colIndex === 3) {
-      // Replace Discovery At
-      return { ...colDefault, title: 'Infrastructure env' };
-    }
-    if (colIndex === 1) {
-      // Remove Role column
-      return undefined;
-    }
-    return colDefault;
-  });
-
-  const rowPatcher: HostToHostTableRowPatcherType = (getDefaultValueFunc, host, colIndex) => {
-    if (colIndex === 1) {
-      return undefined;
-    }
-    if (colIndex === 3) {
-      const agent = hostToAgent(matchingAgents, host);
-      const infraEnvName = agent.metadata?.labels?.[INFRAENV_AGENTINSTALL_LABEL_KEY] || 'N/A';
-
-      return {
-        title: infraEnvName,
-        props: { 'data-testid': 'infra-env' },
-        sortableValue: infraEnvName,
-      };
-    }
-    return getDefaultValueFunc();
-  };
+  const [hosts, hostActions, actionResolver] = useAgentsTable(
+    { ...actions, onSelect },
+    matchingAgents,
+  );
+  const content = React.useMemo(
+    () => [
+      hostnameColumn(hostActions.onEditHost),
+      statusColumn(matchingAgents, actions.onEditHost),
+      infraEnvColumn(matchingAgents),
+      cpuCoresColumn,
+      memoryColumn,
+      disksColumn,
+    ],
+    [matchingAgents, hostActions, actions],
+  );
 
   return (
-    <AgentTable
-      agents={matchingAgents}
-      columns={columns}
-      hostToHostTableRow={getHostToHostTableRowMapper(rowPatcher)}
-      selectedHostIds={values.selectedHostIds}
-      onHostSelected={onHostSelected}
+    <HostsTable
+      hosts={hosts}
+      content={content}
+      selectedIDs={values.selectedHostIds}
+      actionResolver={actionResolver}
+      className="agents-table"
       {...hostActions}
-    />
+    >
+      <AgentTableEmptyState />
+    </HostsTable>
   );
 };
 
@@ -127,7 +116,7 @@ const ClusterDeploymentHostsSelectionAdvanced: React.FC<ClusterDeploymentHostsSe
 
       {!!values.locations.length && (
         <GridItem>
-          <AgentsSelectionTable matchingAgents={matchingAgents} hostActions={hostActions} />
+          <AgentsSelectionTable matchingAgents={matchingAgents} actions={hostActions} />
         </GridItem>
       )}
     </>
