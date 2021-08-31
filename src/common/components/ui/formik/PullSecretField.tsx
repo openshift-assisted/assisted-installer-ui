@@ -57,7 +57,7 @@ const getPullSecretHelperText = (isOcm: boolean) =>
 const PullSecretField: React.FC<{ isOcm: boolean }> = ({ isOcm }) => (
   <TextAreaField
     name="pullSecret"
-    label="Pull Secret"
+    label="Pull secret"
     labelIcon={isOcm ? undefined : <PullSecretInfo isOcm={isOcm} />}
     getErrorText={(error) => (
       <>
