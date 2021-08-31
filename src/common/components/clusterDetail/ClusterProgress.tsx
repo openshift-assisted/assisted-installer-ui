@@ -51,6 +51,16 @@ const getMeasureLocation = (status: Cluster['status']) =>
     ? ProgressMeasureLocation.none
     : ProgressMeasureLocation.top;
 
+const getProgressValue = (
+  clusterProgress: Cluster['progress'],
+  hostProgress: number,
+  operatorProgress: number,
+) => {
+  return clusterProgress?.totalPercentage
+    ? clusterProgress.totalPercentage
+    : Math.round(hostProgress * 0.75 + operatorProgress * 0.25);
+};
+
 const getProgressLabel = (
   status: Cluster['status'],
   statusInfo: Cluster['statusInfo'],
@@ -242,7 +252,12 @@ const ClusterProgress = ({
     () => getOperatorsProgressPercent(monitoredOperators),
     [monitoredOperators],
   );
-  const progressValue = Math.round(hostsProgressPercent * 0.75 + operatorsProgressPercent * 0.25);
+
+  const progressValue = React.useMemo(
+    () => getProgressValue(cluster.progress, hostsProgressPercent, operatorsProgressPercent),
+    [cluster.progress, hostsProgressPercent, operatorsProgressPercent],
+  );
+
   const label = getProgressLabel(cluster.status, cluster.statusInfo, progressValue);
   const enabledHosts = getEnabledHosts(cluster.hosts);
   const isWorkersPresent = enabledHosts && enabledHosts.some((host) => host.role === 'worker');
