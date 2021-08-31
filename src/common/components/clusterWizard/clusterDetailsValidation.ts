@@ -45,13 +45,13 @@ export const getClusterDetailsValidationSchema = (usedClusterNames: string[], cl
     if (cluster?.pullSecretSet) {
       return Yup.object({
         name: nameValidationSchema(usedClusterNames, values.baseDnsDomain),
-        baseDnsDomain: dnsNameValidationSchema.required('Base Domain is required.'),
+        baseDnsDomain: dnsNameValidationSchema.required('Required'),
       });
     }
     return Yup.object({
       name: nameValidationSchema(usedClusterNames, values.baseDnsDomain),
-      pullSecret: pullSecretValidationSchema.required('Pull secret must be provided.'),
-      baseDnsDomain: dnsNameValidationSchema.required('Base Domain is required.'),
+      pullSecret: pullSecretValidationSchema.required('Required.'),
+      baseDnsDomain: dnsNameValidationSchema.required('Required'),
       SNODisclaimer: Yup.boolean().when('highAvailabilityMode', {
         is: 'None',
         then: Yup.bool().oneOf([true], 'Confirm the Single Node OpenShift disclaimer to continue.'),
