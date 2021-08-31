@@ -7,7 +7,6 @@ import {
 } from '@patternfly/react-core';
 import { Link } from 'react-router-dom';
 import { isSingleClusterMode, routeBasePath } from '../../config';
-import { PreviewBadgePosition, TechnologyPreview } from '../ui/PreviewBadge';
 import { ocmClient } from '../../api';
 
 type Props = {
@@ -33,10 +32,6 @@ const ClusterBreadcrumbs: React.FC<Props> = ({ clusterName, isHidden = isSingleC
           {clusterName && <BreadcrumbItem isActive>{clusterName}</BreadcrumbItem>}
         </Breadcrumb>
       )}
-      <TechnologyPreview
-        className="margin-left-md"
-        position={clusterName || ocmClient ? PreviewBadgePosition.inline : undefined}
-      />
     </PageSection>
   );
 
