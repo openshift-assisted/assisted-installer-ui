@@ -61,18 +61,6 @@ const getProgressValue = (
     : Math.round(hostProgress * 0.75 + operatorProgress * 0.25);
 };
 
-const getProgressLabel = (
-  status: Cluster['status'],
-  statusInfo: Cluster['statusInfo'],
-  progressPercent: number,
-): string => {
-  if (status === 'preparing-for-installation') {
-    return statusInfo;
-  }
-
-  return `${progressPercent}%`;
-};
-
 const getHostsProgressPercent = (hosts: Host[] = []) => {
   const accountedHosts = getEnabledHosts(hosts);
   const totalSteps = accountedHosts.reduce(
@@ -258,7 +246,6 @@ const ClusterProgress = ({
     [cluster.progress, hostsProgressPercent, operatorsProgressPercent],
   );
 
-  const label = getProgressLabel(cluster.status, cluster.statusInfo, progressValue);
   const enabledHosts = getEnabledHosts(cluster.hosts);
   const isWorkersPresent = enabledHosts && enabledHosts.some((host) => host.role === 'worker');
   const olmOperators = getOlmOperators(monitoredOperators);
@@ -286,7 +273,7 @@ const ClusterProgress = ({
       <RenderIf condition={!minimizedView}>
         <Progress
           value={progressValue}
-          label={label}
+          label={`${progressValue}%`}
           title=" "
           measureLocation={getMeasureLocation(status)}
           variant={getProgressVariant(status)}
