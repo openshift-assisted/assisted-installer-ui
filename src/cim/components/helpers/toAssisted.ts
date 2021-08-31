@@ -6,7 +6,7 @@ import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-in
 import { getAgentStatus, getClusterStatus } from './status';
 import { getHostNetworks } from './network';
 
-export const getAIHosts = (agents: AgentK8sResource[] = []) =>
+export const getAIHosts = (agents: AgentK8sResource[]) =>
   agents.map(
     (agent): Host => {
       const [status, statusInfo] = getAgentStatus(agent);

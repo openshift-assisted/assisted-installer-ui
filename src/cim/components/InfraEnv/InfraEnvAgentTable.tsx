@@ -26,7 +26,9 @@ const columns = [
 
 const hostToHostTableRow = (
   getClusterDeploymentLink: (cd: { name: string; namespace: string }) => string,
-): AgentTableProps['hostToHostTableRow'] => (agents, onApprove) => ({
+  agents: AgentK8sResource[],
+  onApprove: ClusterDeploymentHostsTablePropsActions['onApprove'],
+): AgentTableProps['hostToHostTableRow'] => ({
   openRows,
   AdditionalNTPSourcesDialogToggleComponent,
   canEditDisks,
@@ -155,6 +157,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTable> = ({
   agents,
   getClusterDeploymentLink,
   className,
+  onApprove,
   ...actions
 }) => {
   return (
@@ -162,7 +165,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTable> = ({
       agents={agents}
       columns={columns}
       className={className}
-      hostToHostTableRow={hostToHostTableRow(getClusterDeploymentLink)}
+      hostToHostTableRow={hostToHostTableRow(getClusterDeploymentLink, agents, onApprove)}
       {...actions}
     />
   );

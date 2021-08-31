@@ -3,7 +3,6 @@ import { ICell } from '@patternfly/react-table';
 import { useFormikContext } from 'formik';
 import React from 'react';
 import {
-  ClusterWizardStepHeader,
   getHostToHostTableRowMapper,
   HostToHostTableRowPatcherType,
   LabelField,

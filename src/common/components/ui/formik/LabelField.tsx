@@ -4,7 +4,7 @@ import { FormGroup, Label } from '@patternfly/react-core';
 import TagsInput from 'react-tagsinput';
 import Autosuggest from 'react-autosuggest';
 import { InputFieldProps } from './types';
-import { getFieldId, selectedLabelsOnly, uniqueLabels } from './utils';
+import { getFieldId, uniqueLabels } from './utils';
 import HelperText from './HelperText';
 
 import './LabelField.css';

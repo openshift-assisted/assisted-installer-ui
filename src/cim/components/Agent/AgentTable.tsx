@@ -2,25 +2,17 @@ import * as React from 'react';
 import { expandable, ICell, IRowData, sortable } from '@patternfly/react-table';
 import { ConnectedIcon } from '@patternfly/react-icons';
 import {
-  getDateTimeCell,
-  getHostname,
-  getHostRole,
   Host,
   HostsTable,
   HostsTableActions,
   HostsTableProps,
-  RoleCell,
+  hostToHostTableRowType,
 } from '../../../common';
 import { AdditionalNTPSourcesDialogToggle } from '../../../ocm/components/hosts/AdditionaNTPSourceDialogToggle';
 import { AgentK8sResource } from '../../types';
 import { ClusterDeploymentHostsTablePropsActions } from '../ClusterDeployment/types';
 import { getAIHosts, hostToAgent } from '../helpers';
 import DefaultEmptyState from '../../../common/components/ui/uiState/EmptyState';
-import AgentStatus from './AgentStatus';
-import Hostname from '../../../common/components/hosts/Hostname';
-import HostPropertyValidationPopover from '../../../common/components/hosts/HostPropertyValidationPopover';
-import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
-import { getHostRowHardwareInfo } from '../../../common/components/hosts/hardwareInfo';
 
 type GetAgentCallback = <R>(
   agentCallback: ((agent: AgentK8sResource) => R) | undefined,
@@ -39,9 +31,9 @@ export const useAgentTableActions = ({
   canEditRole,
   onApprove,
   onHostSelected,
-  agents = [],
+  agents,
 }: ClusterDeploymentHostsTablePropsActions & {
-  agents?: AgentK8sResource[];
+  agents: AgentK8sResource[];
   onHostSelected?: (agent: AgentK8sResource, selected: boolean) => void;
 }): HostsTableActions =>
   React.useMemo(
@@ -95,11 +87,13 @@ const defaultAgentTableColumns = [
   { title: 'Disk', transforms: [sortable] },
   { title: '' },
 ];
-
-const defaultHostToHostTableRow: AgentTableProps['hostToHostTableRow'] = (agents, onApprove) => ({
+/*
+const defaultHostToHostTableRow: hostToHostTableRowType = (agents, onApprove): hostToHostTableRowType => ({
   openRows,
   onEditHostname,
   onEditRole,
+  agents,
+  onApprove,
   AdditionalNTPSourcesDialogToggleComponent,
 }) => (host) => {
   const agent = agents.find((a) => a.metadata?.uid === host.id) as AgentK8sResource;
@@ -198,7 +192,7 @@ const defaultHostToHostTableRow: AgentTableProps['hostToHostTableRow'] = (agents
     },
   ];
 };
-
+*/
 const AgentTableEmptyState = () => (
   <DefaultEmptyState
     icon={ConnectedIcon}
@@ -219,26 +213,27 @@ export const getAgentTableColumns = (
   return defaultAgentTableColumns;
 };
 
-type AgentTableProps = ClusterDeploymentHostsTablePropsActions & {
+export type AgentTableProps = ClusterDeploymentHostsTablePropsActions & {
   agents?: AgentK8sResource[];
   className?: string;
   columns?: HostsTableProps['columns'];
-  hostToHostTableRow?: (
-    agents: AgentK8sResource[],
-    onApprove?: ClusterDeploymentHostsTablePropsActions['onApprove'],
-  ) => HostsTableProps['hostToHostTableRow'];
+  // hostToHostTableRow?: (
+  //   agents: AgentK8sResource[],
+  //   onApprove?: ClusterDeploymentHostsTablePropsActions['onApprove'],
+  // ) => HostsTableProps['hostToHostTableRow'];
+  hostToHostTableRow: hostToHostTableRowType;
   EmptyState?: HostsTableProps['EmptyState'];
   onHostSelected?: (agent: AgentK8sResource, selected: boolean) => void;
   selectedHostIds?: string[];
 };
 
 const AgentTable: React.FC<AgentTableProps> = ({
-  agents,
+  agents = [],
   className,
   EmptyState = AgentTableEmptyState,
-  onApprove,
+  // onApprove,
   columns = getAgentTableColumns(),
-  hostToHostTableRow = defaultHostToHostTableRow,
+  hostToHostTableRow, // = defaultHostToHostTableRow,
   selectedHostIds,
   ...hostActions
 }) => {
@@ -255,7 +250,7 @@ const AgentTable: React.FC<AgentTableProps> = ({
       columns={columns}
       className={`agents-table ${className || ''}`}
       AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
-      hostToHostTableRow={hostToHostTableRow(agents, onApprove)}
+      hostToHostTableRow={hostToHostTableRow}
       selectedHostIds={selectedHostIds}
       {...tableCallbacks}
     />
