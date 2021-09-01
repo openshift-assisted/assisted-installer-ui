@@ -22,8 +22,8 @@ import {
   InProgressIcon,
   PendingIcon,
 } from '@patternfly/react-icons';
-import { Cluster, Host, HostRole, MonitoredOperatorsList } from '../../api';
-import { getEnabledHosts, getHostProgressStageNumber, getHostProgressStages } from '../hosts';
+import { Cluster, Host, HostRole } from '../../api';
+import { getEnabledHosts } from '../hosts';
 import { DetailItem, DetailList, getHumanizedDateTime, RenderIf } from '../ui';
 import { CLUSTER_STATUS_LABELS } from '../../config';
 import OperatorsProgressItem from './OperatorsProgressItem';
@@ -50,43 +50,6 @@ const getMeasureLocation = (status: Cluster['status']) =>
   ['installed', 'adding-hosts'].includes(status)
     ? ProgressMeasureLocation.none
     : ProgressMeasureLocation.top;
-
-const getProgressLabel = (
-  status: Cluster['status'],
-  statusInfo: Cluster['statusInfo'],
-  progressPercent: number,
-): string => {
-  if (status === 'preparing-for-installation') {
-    return statusInfo;
-  }
-
-  return `${progressPercent}%`;
-};
-
-const getHostsProgressPercent = (hosts: Host[] = []) => {
-  const accountedHosts = getEnabledHosts(hosts);
-  const totalSteps = accountedHosts.reduce(
-    (steps, host) => steps + getHostProgressStages(host).length,
-    0,
-  );
-  const completedSteps = accountedHosts.reduce(
-    (steps, host) => steps + getHostProgressStageNumber(host),
-    0,
-  );
-  return totalSteps ? (completedSteps / totalSteps) * 100 : 100;
-};
-
-const getOperatorsProgressPercent = (monitoredOperators: MonitoredOperatorsList) => {
-  const completeOperators = monitoredOperators.filter(
-    (operator) =>
-      (operator.operatorType === 'builtin' && operator.status === 'available') ||
-      (operator.operatorType === 'olm' && ['available', 'failed'].includes(operator.status || '')),
-  );
-
-  return monitoredOperators.length
-    ? (completeOperators.length / monitoredOperators.length) * 100
-    : 100;
-};
 
 const getInstallationStatus = (
   status: Cluster['status'],
@@ -199,13 +162,14 @@ const FinalizingProgress: React.FC<FinalizingProgressProps> = ({ cluster, onFetc
               bodyContent={
                 <TextContent>
                   <Text>
-                    Initializing, this may take a while. For more information see Cluster Events.
+                    This stage may take a while to finish. To view detailed information, click the
+                    events log link below.
                   </Text>
                 </TextContent>
               }
               footerContent={
                 <Button variant={ButtonVariant.link} isInline onClick={() => setIsModalOpen(true)}>
-                  View Cluster Events
+                  Open Events Log
                 </Button>
               }
             >
@@ -226,23 +190,17 @@ type ClusterProgressProps = {
   cluster: Cluster;
   minimizedView?: boolean;
   onFetchEvents: EventListFetchProps['onFetchEvents'];
+  totalPercentage: number;
 };
 
 const ClusterProgress = ({
   cluster,
   minimizedView = false,
+  totalPercentage,
   onFetchEvents,
 }: ClusterProgressProps) => {
   const { status, monitoredOperators = [] } = cluster;
-  const hostsProgressPercent = React.useMemo(() => getHostsProgressPercent(cluster.hosts), [
-    cluster.hosts,
-  ]);
-  const operatorsProgressPercent = React.useMemo(
-    () => getOperatorsProgressPercent(monitoredOperators),
-    [monitoredOperators],
-  );
-  const progressValue = Math.round(hostsProgressPercent * 0.75 + operatorsProgressPercent * 0.25);
-  const label = getProgressLabel(cluster.status, cluster.statusInfo, progressValue);
+
   const enabledHosts = getEnabledHosts(cluster.hosts);
   const isWorkersPresent = enabledHosts && enabledHosts.some((host) => host.role === 'worker');
   const olmOperators = getOlmOperators(monitoredOperators);
@@ -269,8 +227,8 @@ const ClusterProgress = ({
       </DetailList>
       <RenderIf condition={!minimizedView}>
         <Progress
-          value={progressValue}
-          label={label}
+          value={totalPercentage}
+          label={`${totalPercentage}%`}
           title=" "
           measureLocation={getMeasureLocation(status)}
           variant={getProgressVariant(status)}
