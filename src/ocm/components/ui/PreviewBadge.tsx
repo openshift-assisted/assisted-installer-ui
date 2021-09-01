@@ -19,10 +19,10 @@ const PreviewBadge: React.FC<
   let clsName = className;
   switch (position) {
     case PreviewBadgePosition.inlineRight:
-      clsName += ' assisted-ui-float-right';
+      clsName += ' pf-u-float-right';
       break;
     case PreviewBadgePosition.inline:
-      clsName += ' assisted-ui-display-inline';
+      clsName += ' pf-u-display-inline';
       break;
   }
 
