@@ -46,6 +46,7 @@ const ClusterInstallationProgressCard: React.FC<{ cluster: Cluster }> = ({ clust
           cluster={cluster}
           minimizedView={!isCardExpanded}
           onFetchEvents={onFetchEvents}
+          totalPercentage={cluster.progress?.totalPercentage}
         />
         <ClusterDetailsButtonGroup cluster={cluster} />
       </CardBody>

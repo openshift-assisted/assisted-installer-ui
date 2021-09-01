@@ -22,8 +22,8 @@ import {
   InProgressIcon,
   PendingIcon,
 } from '@patternfly/react-icons';
-import { Cluster, Host, HostRole, MonitoredOperatorsList } from '../../api';
-import { getEnabledHosts, getHostProgressStageNumber, getHostProgressStages } from '../hosts';
+import { Cluster, Host, HostRole } from '../../api';
+import { getEnabledHosts } from '../hosts';
 import { DetailItem, DetailList, getHumanizedDateTime, RenderIf } from '../ui';
 import { CLUSTER_STATUS_LABELS } from '../../config';
 import OperatorsProgressItem from './OperatorsProgressItem';
@@ -50,41 +50,6 @@ const getMeasureLocation = (status: Cluster['status']) =>
   ['installed', 'adding-hosts'].includes(status)
     ? ProgressMeasureLocation.none
     : ProgressMeasureLocation.top;
-
-const getProgressValue = (
-  clusterProgress: Cluster['progress'],
-  hostProgress: number,
-  operatorProgress: number,
-) => {
-  return clusterProgress?.totalPercentage
-    ? clusterProgress.totalPercentage
-    : Math.round(hostProgress * 0.75 + operatorProgress * 0.25);
-};
-
-const getHostsProgressPercent = (hosts: Host[] = []) => {
-  const accountedHosts = getEnabledHosts(hosts);
-  const totalSteps = accountedHosts.reduce(
-    (steps, host) => steps + getHostProgressStages(host).length,
-    0,
-  );
-  const completedSteps = accountedHosts.reduce(
-    (steps, host) => steps + getHostProgressStageNumber(host),
-    0,
-  );
-  return totalSteps ? (completedSteps / totalSteps) * 100 : 100;
-};
-
-const getOperatorsProgressPercent = (monitoredOperators: MonitoredOperatorsList) => {
-  const completeOperators = monitoredOperators.filter(
-    (operator) =>
-      (operator.operatorType === 'builtin' && operator.status === 'available') ||
-      (operator.operatorType === 'olm' && ['available', 'failed'].includes(operator.status || '')),
-  );
-
-  return monitoredOperators.length
-    ? (completeOperators.length / monitoredOperators.length) * 100
-    : 100;
-};
 
 const getInstallationStatus = (
   status: Cluster['status'],
@@ -225,26 +190,16 @@ type ClusterProgressProps = {
   cluster: Cluster;
   minimizedView?: boolean;
   onFetchEvents: EventListFetchProps['onFetchEvents'];
+  totalPercentage: number | undefined;
 };
 
 const ClusterProgress = ({
   cluster,
   minimizedView = false,
+  totalPercentage,
   onFetchEvents,
 }: ClusterProgressProps) => {
   const { status, monitoredOperators = [] } = cluster;
-  const hostsProgressPercent = React.useMemo(() => getHostsProgressPercent(cluster.hosts), [
-    cluster.hosts,
-  ]);
-  const operatorsProgressPercent = React.useMemo(
-    () => getOperatorsProgressPercent(monitoredOperators),
-    [monitoredOperators],
-  );
-
-  const progressValue = React.useMemo(
-    () => getProgressValue(cluster.progress, hostsProgressPercent, operatorsProgressPercent),
-    [cluster.progress, hostsProgressPercent, operatorsProgressPercent],
-  );
 
   const enabledHosts = getEnabledHosts(cluster.hosts);
   const isWorkersPresent = enabledHosts && enabledHosts.some((host) => host.role === 'worker');
@@ -272,8 +227,8 @@ const ClusterProgress = ({
       </DetailList>
       <RenderIf condition={!minimizedView}>
         <Progress
-          value={progressValue}
-          label={`${progressValue}%`}
+          value={totalPercentage || 0}
+          label={`${totalPercentage || 0}%`}
           title=" "
           measureLocation={getMeasureLocation(status)}
           variant={getProgressVariant(status)}

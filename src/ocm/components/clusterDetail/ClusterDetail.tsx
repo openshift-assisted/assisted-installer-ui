@@ -58,7 +58,11 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
             </TextContent>
           </GridItem>
           <GridItem>
-            <ClusterProgress cluster={cluster} onFetchEvents={onFetchEvents} />
+            <ClusterProgress
+              cluster={cluster}
+              onFetchEvents={onFetchEvents}
+              totalPercentage={cluster.progress?.totalPercentage}
+            />
           </GridItem>
           <ClusterDetailStatusVarieties cluster={cluster} clusterVarieties={clusterVarieties} />
           <GridItem>
