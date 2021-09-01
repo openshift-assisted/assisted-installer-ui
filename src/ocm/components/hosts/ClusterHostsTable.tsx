@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import { ConnectedIcon } from '@patternfly/react-icons';
 import { expandable, IRowData, sortable } from '@patternfly/react-table';
-import { DiscoveryImageModalButton } from '../clusterConfiguration/discoveryImageModal';
 import {
   canEditDisks as canEditDisksUtil,
   canEditRole as canEditRoleUtil,
@@ -63,14 +62,12 @@ type HostsTableEmptyStateProps = {
 };
 
 const HostsTableEmptyState: React.FC<HostsTableEmptyStateProps> = ({
-  cluster,
   setDiscoveryHintModalOpen,
 }) => (
   <EmptyState
     icon={ConnectedIcon}
     title="Waiting for hosts..."
     content="Hosts may take a few minutes to appear here after booting."
-    primaryAction={<DiscoveryImageModalButton cluster={cluster} idPrefix="host-table-empty" />}
     secondaryActions={
       setDiscoveryHintModalOpen && [
         <HostsNotShowingLink

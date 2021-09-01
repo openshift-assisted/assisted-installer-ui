@@ -76,7 +76,7 @@ const OpenShiftVersionSelect: React.FC<OpenShiftVersionSelectProps> = ({ version
 
   return (
     <SelectField
-      label="OpenShift Version"
+      label="OpenShift version"
       name="openshiftVersion"
       options={selectOptions}
       getHelperText={getOpenshiftVersionHelperText(versions)}

@@ -27,6 +27,7 @@ import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
 import { useClusterPolling, useFetchCluster } from './clusterPolling';
 import { DiscoveryImageModal } from '../clusterConfiguration/discoveryImageModal';
 import { isSingleClusterMode, routeBasePath } from '../../config';
+import { PreviewBadgePosition, TechnologyPreview } from '../ui/PreviewBadge';
 
 type MatchParams = {
   clusterId: string;
@@ -87,7 +88,10 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
           <ClusterBreadcrumbs clusterName={cluster.name} />
           <PageSection variant={PageSectionVariants.light}>
             <TextContent>
-              <Text component="h1">Install OpenShift with the Assisted Installer</Text>
+              <Text component="h1" className="pf-u-display-inline">
+                Install OpenShift with the Assisted Installer
+              </Text>
+              <TechnologyPreview className="pf-u-ml-md" position={PreviewBadgePosition.inline} />
             </TextContent>
           </PageSection>
           <PageSection variant={PageSectionVariants.light}>
