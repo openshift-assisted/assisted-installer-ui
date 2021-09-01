@@ -1,7 +1,7 @@
 import React from 'react';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
-import { getFormikErrorFields, labelsToArray, useAlerts } from '../../../common';
+import { getFormikErrorFields, useAlerts } from '../../../common';
 import { AgentClusterInstallK8sResource, ClusterDeploymentK8sResource } from '../../types';
 import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
 import ClusterDeploymentWizardFooter from './ClusterDeploymentWizardFooter';
@@ -13,8 +13,7 @@ import {
   ClusterDeploymentHostsSelectionValues,
 } from './types';
 import { hostCountValidationSchema, hostLabelsValidationSchema } from './validationSchemas';
-import { getAgentStatus, getLocationsFormMatchExpressions } from '../helpers';
-import { RESERVED_AGENT_LABEL_KEY } from '../common';
+import { getAgentSelectorFieldsFromAnnotations, getAgentStatus } from '../helpers';
 
 const getInitialValues = ({
   clusterDeployment,
@@ -39,23 +38,20 @@ const getInitialValues = ({
     hostCount = 5;
   }
 
-  const matchLabels = {
-    ...(clusterDeployment.spec?.platform?.agentBareMetal?.agentSelector?.matchLabels || {}),
-  };
-  delete matchLabels[RESERVED_AGENT_LABEL_KEY];
-  // false if we have additional labels (without RESERVED)
-  const autoSelectHosts = !Object.keys(matchLabels).length;
+  const agentSelector = getAgentSelectorFieldsFromAnnotations(
+    clusterDeployment?.metadata?.annotations,
+  );
+
+  // false if we have additional agent-labels set
+  const autoSelectHosts = !agentSelector?.labels?.length;
+  // !agentSelector?.matchLabels || !Object.keys(agentSelector.matchLabels).length;
 
   return {
     autoSelectHosts,
     hostCount,
     useMastersAsWorkers: hostCount === 1 || hostCount === 3, // TODO: Recently not supported - https://issues.redhat.com/browse/MGMT-7677
-    agentLabels: labelsToArray(
-      clusterDeployment.spec?.platform?.agentBareMetal?.agentSelector?.matchLabels,
-    ),
-    locations: getLocationsFormMatchExpressions(
-      clusterDeployment.spec?.platform?.agentBareMetal?.agentSelector?.matchExpressions,
-    ),
+    agentLabels: agentSelector?.labels || [], // labelsToArray(agentSelector?.matchLabels),
+    locations: agentSelector?.locations || [], // getLocationsFromMatchExpressions(agentSelector?.matchExpressions),
     selectedHostIds,
 
     // Read-only, hidden for the user, not meant to be modified by the form
@@ -144,21 +140,6 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
             next();
           }
         };
-
-        console.log(
-          '--- ClusterDeploymentWizardFooter: isValid: ',
-          isValid,
-          ', isValidating: ',
-          isValidating,
-          ', isSubmitting: ',
-          isSubmitting,
-          ', dirty: ',
-          dirty,
-          ', touched: ',
-          touched,
-          ', errors: ',
-          errors,
-        );
 
         const footer = (
           <ClusterDeploymentWizardFooter

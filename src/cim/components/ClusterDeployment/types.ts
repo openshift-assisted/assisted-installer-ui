@@ -95,7 +95,7 @@ export type ClusterDeploymentDetailsNetworkingProps = {
   hostActions: ClusterDeploymentHostsTablePropsActions;
 };
 
-export type AgentSelectorChageProps = {
+export type AgentSelectorChangeProps = {
   labels?: string[];
   locations?: string[];
 };
@@ -114,7 +114,7 @@ export type ClusterDeploymentHostsSelectionProps = {
   // allAgentsCount?: number;
 
   // Callback trigerred when the user changes labels in the UI. It is expected that "matchingAgents" list is updated based on the new value.
-  onAgentSelectorChange: (props: AgentSelectorChageProps) => void;
+  onAgentSelectorChange: (props: AgentSelectorChangeProps) => void;
 
   // wrapping objects with HostTable callbacks
   hostActions: ClusterDeploymentHostsTablePropsActions;
