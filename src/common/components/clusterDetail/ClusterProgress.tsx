@@ -227,8 +227,8 @@ const ClusterProgress = ({
       </DetailList>
       <RenderIf condition={!minimizedView}>
         <Progress
-          value={totalPercentage || 0}
-          label={`${totalPercentage || 0}%`}
+          value={totalPercentage}
+          label={`${totalPercentage}%`}
           title=" "
           measureLocation={getMeasureLocation(status)}
           variant={getProgressVariant(status)}
