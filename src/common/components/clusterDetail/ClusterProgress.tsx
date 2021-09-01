@@ -190,7 +190,7 @@ type ClusterProgressProps = {
   cluster: Cluster;
   minimizedView?: boolean;
   onFetchEvents: EventListFetchProps['onFetchEvents'];
-  totalPercentage: number | undefined;
+  totalPercentage: number;
 };
 
 const ClusterProgress = ({
