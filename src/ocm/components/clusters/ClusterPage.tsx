@@ -88,13 +88,10 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
           <ClusterBreadcrumbs clusterName={cluster.name} />
           <PageSection variant={PageSectionVariants.light}>
             <TextContent>
-              <Text component="h1" className="assisted-ui-display-inline">
+              <Text component="h1" className="pf-u-display-inline">
                 Install OpenShift with the Assisted Installer
               </Text>
-              <TechnologyPreview
-                className="margin-left-md"
-                position={PreviewBadgePosition.inline}
-              />
+              <TechnologyPreview className="pf-u-ml-md" position={PreviewBadgePosition.inline} />
             </TextContent>
           </PageSection>
           <PageSection variant={PageSectionVariants.light}>
