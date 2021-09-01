@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flex, FlexItem } from '@patternfly/react-core';
+import { Stack, StackItem } from '@patternfly/react-core';
 import { HelpIcon } from '@patternfly/react-icons';
 import { PopoverIcon, RadioField } from '../../../common';
 
@@ -25,35 +25,34 @@ const DiscoveryImageTypeControlGroupLabel = ({
 );
 
 const DiscoveryImageTypeControlGroup = () => (
-  <Flex justifyContent={{ default: 'justifyContentFlexStart' }}>
-    <FlexItem>
+  <Stack hasGutter>
+    <StackItem>
       <RadioField
         name={GROUP_NAME}
         id={'full-iso'}
         value={'full-iso'}
         label={
           <DiscoveryImageTypeControlGroupLabel
-            text={'USB drive'}
+            text={'Full image file: Provision with physical media'}
             popoverContent={'The generated discovery ISO will contain the full image file'}
           />
         }
       />
-    </FlexItem>
-    <FlexItem spacer={{ default: 'spacer4xl' }} />
-    <FlexItem>
+    </StackItem>
+    <StackItem>
       <RadioField
         name={GROUP_NAME}
         id={'minimal-iso'}
         value={'minimal-iso'}
         label={
           <DiscoveryImageTypeControlGroupLabel
-            text={'Virtual media'}
+            text={'Minimal image file: Provision with virtual media'}
             popoverContent={'The generated discovery ISO will contain the minimal image file'}
           />
         }
       />
-    </FlexItem>
-  </Flex>
+    </StackItem>
+  </Stack>
 );
 
 export default DiscoveryImageTypeControlGroup;

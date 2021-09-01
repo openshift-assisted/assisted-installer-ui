@@ -37,11 +37,8 @@ const FailedHostsWarning: React.FC<FailedHostsWarningProps> = ({ cluster }) => {
   const failedHosts =
     cluster.hosts?.filter((host) => host.role === 'worker' && host.status === 'error') || [];
 
-  const failedBootOrder =
+  const hostsPendingUserAction =
     cluster.hosts?.filter((host) => host.status === 'installing-pending-user-action') || [];
-
-  const failedBootOrderText =
-    "Please reconfigure each host's BIOS to boot from the disk where OpenShift was installed instead of the Discovery ISO.";
 
   let failedHostsText = 'Error information for each host is available below.';
   if (cluster.status !== 'finalizing') {
@@ -51,10 +48,10 @@ const FailedHostsWarning: React.FC<FailedHostsWarningProps> = ({ cluster }) => {
   return (
     <>
       <FailedHosts
-        failedHosts={failedBootOrder}
-        title={`${failedBootOrder.length} hosts have an incorrect boot order`}
-        titleSingle="1 host has an incorrect boot order"
-        text={failedBootOrderText}
+        failedHosts={hostsPendingUserAction}
+        title={`${hostsPendingUserAction.length} are waiting for user action`}
+        titleSingle="1 host is waiting for user action"
+        text={cluster.statusInfo}
       />
       <FailedHosts
         failedHosts={failedHosts}
