@@ -22,7 +22,7 @@ export const DiscoveryImageModalButton: React.FC<DiscoveryImageModalButtonProps>
   return (
     <>
       <ButtonComponent
-        variant={ButtonVariant.primary}
+        variant={ButtonVariant.secondary}
         onClick={() => open({ cluster })}
         id={`${idPrefix}-button-download-discovery-iso`}
       >
