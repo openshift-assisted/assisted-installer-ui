@@ -38,8 +38,8 @@ const validationSchema = (initialValues: HostUpdateParams, usedHostnames: string
   Yup.object().shape({
     hostname: hostnameValidationSchema.concat(
       uniqueHostnameValidationSchema(initialValues.hostname, usedHostnames).notOneOf(
-        ['localhost'],
-        `Hostname 'localhost' is not allowed.`,
+        ['localhost', 'localhost.localdomain'],
+        'Hostname ${value} is not allowed.',
       ),
     ),
   });

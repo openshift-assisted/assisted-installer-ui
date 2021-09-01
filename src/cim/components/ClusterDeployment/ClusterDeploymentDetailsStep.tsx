@@ -2,6 +2,7 @@ import React from 'react';
 import { Formik } from 'formik';
 import { Lazy } from 'yup';
 import { Grid, GridItem } from '@patternfly/react-core';
+import { useTranslation } from 'react-i18next';
 
 import {
   useAlerts,
@@ -89,6 +90,7 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
   onSaveDetails,
   onClose,
 }) => {
+  const { t } = useTranslation();
   const { addAlert } = useAlerts();
   const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
 
@@ -143,7 +145,7 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
           <ClusterDeploymentWizardStep navigation={navigation} footer={footer}>
             <Grid hasGutter>
               <GridItem>
-                <ClusterWizardStepHeader>Cluster Details</ClusterWizardStepHeader>
+                <ClusterWizardStepHeader>{t('Cluster Details')}</ClusterWizardStepHeader>
               </GridItem>
               <GridItem span={12} lg={10} xl={9} xl2={7}>
                 <ClusterDeploymentDetailsForm

@@ -527,6 +527,7 @@ paths:
               kubeconfig-noingress,
               install-config.yaml,
               discovery.ign,
+              custom_manifests.json,
               custom_manifests.yaml,
             ]
           required: true
@@ -660,7 +661,7 @@ paths:
       tags:
         - installer
       security:
-        - userAuth: [admin, read-only-admin, user]
+        - userAuth: [user]
       description: Get the cluster admin credentials.
       operationId: GetCredentials
       parameters:
@@ -705,7 +706,7 @@ paths:
       tags:
         - installer
       security:
-        - userAuth: [admin, read-only-admin, user]
+        - userAuth: [user]
         - urlAuth: []
       description: Downloads the kubeconfig file for this cluster.
       operationId: DownloadClusterKubeconfig
@@ -1464,69 +1465,6 @@ paths:
             $ref: '#/definitions/error'
 
   /v1/clusters/{cluster_id}/hosts:
-    post:
-      tags:
-        - installer
-      security:
-        - agentAuth: []
-      description: Registers a new OpenShift host.
-      operationId: RegisterHost
-      parameters:
-        - in: path
-          name: cluster_id
-          description: The cluster into which the host should be registered.
-          type: string
-          format: uuid
-          required: true
-        - in: body
-          name: new-host-params
-          description: The description of the host being registered.
-          required: true
-          schema:
-            $ref: '#/definitions/host-create-params'
-        - in: header
-          name: discovery_agent_version
-          description: The software version of the discovery agent that is registering the host.
-          type: string
-          required: false
-      responses:
-        '201':
-          description: Success.
-          schema:
-            $ref: '#/definitions/host_registration_response'
-        '400':
-          description: Error.
-          schema:
-            $ref: '#/definitions/error'
-        '401':
-          description: Unauthorized.
-          schema:
-            $ref: '#/definitions/infra_error'
-        '403':
-          description: Forbidden.
-          schema:
-            $ref: '#/definitions/infra_error'
-        '404':
-          description: Error.
-          schema:
-            $ref: '#/definitions/error'
-        '405':
-          description: Method Not Allowed.
-          schema:
-            $ref: '#/definitions/error'
-        '409':
-          description: Cluster cannot accept new hosts due to its current state.
-          schema:
-            $ref: '#/definitions/error'
-        '500':
-          description: Error.
-          schema:
-            $ref: '#/definitions/error'
-        '503':
-          description: Unavailable.
-          schema:
-            $ref: '#/definitions/error'
-
     get:
       tags:
         - installer
@@ -2026,124 +1964,6 @@ paths:
             $ref: '#/definitions/error'
         '500':
           description: Error.
-          schema:
-            $ref: '#/definitions/error'
-
-  /v1/clusters/{cluster_id}/hosts/{host_id}/instructions:
-    get:
-      tags:
-        - installer
-      security:
-        - agentAuth: []
-      description: Retrieves the next operations that the host agent needs to perform.
-      operationId: GetNextSteps
-      parameters:
-        - in: path
-          name: cluster_id
-          description: The cluster of the host that is retrieving instructions.
-          type: string
-          format: uuid
-          required: true
-        - in: path
-          name: host_id
-          description: The host that is retrieving instructions.
-          type: string
-          format: uuid
-          required: true
-        - in: header
-          name: discovery_agent_version
-          description: The software version of the discovery agent that is retrieving instructions.
-          type: string
-          required: false
-      responses:
-        '200':
-          description: Success.
-          schema:
-            $ref: '#/definitions/steps'
-        '401':
-          description: Unauthorized.
-          schema:
-            $ref: '#/definitions/infra_error'
-        '403':
-          description: Forbidden.
-          schema:
-            $ref: '#/definitions/infra_error'
-        '404':
-          description: Error.
-          schema:
-            $ref: '#/definitions/error'
-        '405':
-          description: Method Not Allowed.
-          schema:
-            $ref: '#/definitions/error'
-        '500':
-          description: Error.
-          schema:
-            $ref: '#/definitions/error'
-        '503':
-          description: Unavailable.
-          schema:
-            $ref: '#/definitions/error'
-
-    post:
-      tags:
-        - installer
-      security:
-        - agentAuth: []
-      description: Posts the result of the operations from the host agent.
-      operationId: PostStepReply
-      parameters:
-        - in: header
-          name: discovery_agent_version
-          description: The software version of the discovery agent that is posting results.
-          type: string
-          required: false
-        - in: path
-          name: cluster_id
-          description: The cluster of the host that is posting results.
-          type: string
-          format: uuid
-          required: true
-        - in: path
-          name: host_id
-          description: The host that is posting results.
-          type: string
-          format: uuid
-          required: true
-        - name: reply
-          description: The results to be posted.
-          in: body
-          schema:
-            $ref: '#/definitions/step-reply'
-      responses:
-        '204':
-          description: Success.
-        '400':
-          description: Error.
-          schema:
-            $ref: '#/definitions/error'
-        '401':
-          description: Unauthorized.
-          schema:
-            $ref: '#/definitions/infra_error'
-        '403':
-          description: Forbidden.
-          schema:
-            $ref: '#/definitions/infra_error'
-        '404':
-          description: Error.
-          schema:
-            $ref: '#/definitions/error'
-        '405':
-          description: Method Not Allowed.
-          schema:
-            $ref: '#/definitions/error'
-        '500':
-          description: Error.
-          schema:
-            $ref: '#/definitions/error'
-        '503':
-          description: Unavailable.
           schema:
             $ref: '#/definitions/error'
 
@@ -3436,7 +3256,7 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
-  /v2/infra-envs/{infra_env_id}/image:
+  /v2/infra-envs/{infra_env_id}/downloads/image:
     get:
       tags:
         - installer
@@ -3612,6 +3432,50 @@ paths:
           description: Unavailable.
           schema:
             $ref: '#/definitions/error'
+    get:
+      tags:
+        - installer
+      security:
+        - userAuth: [admin, read-only-admin, user]
+        - agentAuth: []
+      description: Retrieves the list of OpenShift hosts that belong to infra-env.
+      operationId: v2ListHosts
+      parameters:
+        - in: path
+          name: infra_env_id
+          description: The InfraEnv that the hosts are asociated with.
+          type: string
+          format: uuid
+          required: true
+      responses:
+        '200':
+          description: Success.
+          schema:
+            $ref: '#/definitions/host-list'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '501':
+          description: Not implemented.
+          schema:
+            $ref: '#/definitions/error'
+        '503':
+          description: Unavailable.
+          schema:
+            $ref: '#/definitions/error'
 
   /v2/infra-envs/{infra_env_id}/hosts/{host_id}:
     get:
@@ -3661,6 +3525,51 @@ paths:
             $ref: '#/definitions/error'
         '501':
           description: Not implemented.
+          schema:
+            $ref: '#/definitions/error'
+    delete:
+      tags:
+        - installer
+      description: Deregisters an OpenShift host.
+      operationId: v2DeregisterHost
+      parameters:
+        - in: path
+          name: infra_env_id
+          description: The infra env of the host that should be deregistered.
+          type: string
+          format: uuid
+          required: true
+        - in: path
+          name: host_id
+          description: The host that should be deregistered.
+          type: string
+          format: uuid
+          required: true
+      responses:
+        '204':
+          description: Success.
+        '400':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
           schema:
             $ref: '#/definitions/error'
 
@@ -3787,6 +3696,758 @@ paths:
             $ref: '#/definitions/error'
         '503':
           description: Unavailable.
+          schema:
+            $ref: '#/definitions/error'
+
+  /v2/infra-envs/{infra_env_id}/hosts/{host_id}/progress:
+    put:
+      tags:
+        - installer
+      security:
+        - agentAuth: []
+      description: Update installation progress.
+      operationId: v2UpdateHostInstallProgress
+      parameters:
+        - in: header
+          name: discovery_agent_version
+          description: The software version of the discovery agent that is updating progress.
+          type: string
+          required: false
+        - in: path
+          name: infra_env_id
+          description: The InfraEnv of the host being updated.
+          type: string
+          format: uuid
+          required: true
+        - in: path
+          name: host_id
+          description: The ID of the host to update.
+          type: string
+          format: uuid
+          required: true
+        - in: body
+          name: host-progress
+          description: New progress value.
+          required: true
+          schema:
+            $ref: '#/definitions/host-progress'
+      responses:
+        '200':
+          description: Update install progress.
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '503':
+          description: Unavailable.
+          schema:
+            $ref: '#/definitions/error'
+
+  /v2/infra-envs/{infra_env_id}/hosts/{host_id}/actions/bind:
+    post:
+      tags:
+        - installer
+      security:
+        - agentAuth: []
+      description: Bind host to a cluster
+      operationId: BindHost
+      parameters:
+        - in: path
+          name: infra_env_id
+          description: The infra env of the host that is being bound.
+          type: string
+          format: uuid
+          required: true
+        - in: path
+          name: host_id
+          description: The host that is being bound.
+          type: string
+          format: uuid
+          required: true
+        - name: bind-host-params
+          description: The parameters for the host binding.
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/bind-host-params'
+      responses:
+        '200':
+          description: Success.
+          schema:
+            $ref: '#/definitions/host'
+        '400':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '501':
+          description: Not implemented.
+          schema:
+            $ref: '#/definitions/error'
+        '503':
+          description: Unavailable.
+          schema:
+            $ref: '#/definitions/error'
+
+  /v2/infra-envs/{infra_env_id}/hosts/{host_id}/actions/unbind:
+    post:
+      tags:
+        - installer
+      security:
+        - agentAuth: []
+      description: Unbind host to a cluster
+      operationId: UnbindHost
+      parameters:
+        - in: path
+          name: infra_env_id
+          description: The infra env of the host that is being bound.
+          type: string
+          format: uuid
+          required: true
+        - in: path
+          name: host_id
+          description: The host that is being bound.
+          type: string
+          format: uuid
+          required: true
+      responses:
+        '200':
+          description: Success.
+          schema:
+            $ref: '#/definitions/host'
+        '400':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '501':
+          description: Not implemented.
+          schema:
+            $ref: '#/definitions/error'
+        '503':
+          description: Unavailable.
+          schema:
+            $ref: '#/definitions/error'
+
+  /v2/infra-envs/{infra_env_id}/hosts/{host_id}/actions/reset-validation/{validation_id}:
+    patch:
+      tags:
+        - installer
+      summary: Reset failed host validation.
+      operationId: v2ResetHostValidation
+      description:
+        Reset failed host validation. It may be performed on any host validation with persistent
+        validation result.
+      parameters:
+        - in: path
+          name: infra_env_id
+          description: The InfraEnv of the host that its validation is being reset.
+          type: string
+          format: uuid
+          required: true
+        - in: path
+          name: host_id
+          description: The host that its validation is being reset.
+          type: string
+          format: uuid
+          required: true
+        - in: path
+          description: The id of the validation being reset.
+          type: string
+          name: validation_id
+          required: true
+      responses:
+        '200':
+          description: Success.
+          schema:
+            $ref: '#/definitions/host'
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '409':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
+  /v2/infra-envs/{infra_env_id}/hosts/{host_id}/actions/reset:
+    post:
+      tags:
+        - installer
+      description: reset a failed host for day2 cluster.
+      operationId: v2ResetHost
+      parameters:
+        - in: path
+          name: infra_env_id
+          description: The InfraEnv of the host that is being reset.
+          type: string
+          format: uuid
+          required: true
+        - in: path
+          name: host_id
+          description: The host that is being reset.
+          type: string
+          format: uuid
+          required: true
+      responses:
+        '200':
+          description: Success.
+          schema:
+            $ref: '#/definitions/host'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '409':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
+  /v2/infra-envs/{infra_env_id}/hosts/{host_id}/actions/install:
+    post:
+      tags:
+        - installer
+      description: install specific host for day2 cluster.
+      operationId: v2InstallHost
+      parameters:
+        - in: path
+          name: infra_env_id
+          description: The InfraEnv of the host that is being installed.
+          type: string
+          format: uuid
+          required: true
+        - in: path
+          name: host_id
+          description: The host that is being installed.
+          type: string
+          format: uuid
+          required: true
+      responses:
+        '202':
+          description: Success.
+          schema:
+            $ref: '#/definitions/host'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '409':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
+  /v2/infra-envs/{infra_env_id}/hosts/{host_id}/installer-args:
+    patch:
+      tags:
+        - installer
+      description: Updates a host's installer arguments.
+      operationId: v2UpdateHostInstallerArgs
+      parameters:
+        - in: path
+          name: infra_env_id
+          description: The InfraEnv of the host whose installer arguments should be updated.
+          type: string
+          format: uuid
+          required: true
+        - in: path
+          name: host_id
+          description: The host whose installer arguments should be updated.
+          type: string
+          format: uuid
+          required: true
+        - in: body
+          name: installer-args-params
+          description: The updated installer arguments.
+          required: true
+          schema:
+            $ref: '#/definitions/installer-args-params'
+      responses:
+        '201':
+          description: Success.
+          schema:
+            $ref: '#/definitions/host'
+        '400':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '409':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '501':
+          description: Not implemented.
+          schema:
+            $ref: '#/definitions/error'
+
+  /v2/infra-envs/{infra_env_id}/hosts/{host_id}/ignition:
+    get:
+      tags:
+        - installer
+      description: Fetch the ignition file for this host.
+      operationId: v2GetHostIgnition
+      parameters:
+        - in: path
+          name: infra_env_id
+          description: The infra env of the host whose ignition file should be obtained.
+          type: string
+          format: uuid
+          required: true
+        - in: path
+          name: host_id
+          description: The host whose ignition file should be obtained.
+          type: string
+          format: uuid
+          required: true
+      responses:
+        '200':
+          description: Success.
+          schema:
+            $ref: '#/definitions/host-ignition-params'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '501':
+          description: Not implemented.
+          schema:
+            $ref: '#/definitions/error'
+        '503':
+          description: Unavailable.
+          schema:
+            $ref: '#/definitions/error'
+    patch:
+      tags:
+        - installer
+      description: Patch the ignition file for this host
+      operationId: v2UpdateHostIgnition
+      parameters:
+        - in: path
+          name: infra_env_id
+          description: The InfraEnv of the host whose ignition file should be updated.
+          type: string
+          format: uuid
+          required: true
+        - in: path
+          name: host_id
+          description: The host whose ignition file should be updated.
+          type: string
+          format: uuid
+          required: true
+        - in: body
+          name: host-ignition-params
+          description: Ignition config overrides.
+          required: true
+          schema:
+            $ref: '#/definitions/host-ignition-params'
+      responses:
+        '201':
+          description: Success.
+        '400':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '501':
+          description: Not implemented.
+          schema:
+            $ref: '#/definitions/error'
+
+  /v2/infra-envs/{infra_env_id}/downloads/files:
+    get:
+      tags:
+        - installer
+      security:
+        - userAuth: [admin, read-only-admin, user]
+        - agentAuth: []
+      description: Downloads the customized ignition file for this host
+      operationId: v2DownloadInfraEnvFiles
+      produces:
+        - application/octet-stream
+      parameters:
+        - in: path
+          name: infra_env_id
+          description: The InfraEnv whose file should be downloaded.
+          type: string
+          format: uuid
+          required: true
+        - in: query
+          name: file_name
+          description: The file to be downloaded.
+          type: string
+          enum: [discovery.ign]
+          required: true
+      responses:
+        '200':
+          description: Success.
+          schema:
+            type: file
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '409':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '501':
+          description: Not implemented.
+          schema:
+            $ref: '#/definitions/error'
+        '503':
+          description: Unavailable.
+          schema:
+            $ref: '#/definitions/error'
+
+  /v2/infra-envs/{infra_env_id}/hosts/{host_id}/logs-progress:
+    put:
+      tags:
+        - installer
+      security:
+        - agentAuth: []
+      description: Update log collection state and progress.
+      operationId: v2UpdateHostLogsProgress
+      parameters:
+        - in: path
+          name: infra_env_id
+          description: The InfraEnv whose log progress is being updated.
+          type: string
+          format: uuid
+          required: true
+        - in: path
+          name: host_id
+          description: The host whose log progress is being updated.
+          type: string
+          format: uuid
+          required: true
+        - in: body
+          name: logs-progress-params
+          description: Parameters for updating log progress.
+          required: true
+          schema:
+            $ref: '#/definitions/logs-progress-params'
+      responses:
+        '204':
+          description: Update cluster install progress.
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '409':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '501':
+          description: Not implemented.
+          schema:
+            $ref: '#/definitions/error'
+        '503':
+          description: Unavailable.
+          schema:
+            $ref: '#/definitions/error'
+
+  /v2/clusters/{cluster_id}/downloads/files:
+    get:
+      tags:
+        - installer
+      security:
+        - userAuth: [admin, read-only-admin, user]
+        - agentAuth: []
+        - urlAuth: []
+      description: Downloads files relating to the installed/installing cluster.
+      operationId: V2DownloadClusterFiles
+      produces:
+        - application/octet-stream
+      parameters:
+        - in: path
+          name: cluster_id
+          description: The cluster that owns the file that should be downloaded.
+          type: string
+          format: uuid
+          required: true
+        - in: query
+          name: file_name
+          description: The file to be downloaded.
+          type: string
+          enum:
+            [
+              bootstrap.ign,
+              master.ign,
+              metadata.json,
+              worker.ign,
+              install-config.yaml,
+              custom_manifests.json,
+              custom_manifests.yaml,
+            ]
+          required: true
+        - in: header
+          name: discovery_agent_version
+          description: The software version of the discovery agent that is downloading the file.
+          type: string
+          required: false
+      responses:
+        '200':
+          description: Success.
+          schema:
+            type: file
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '409':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '503':
+          description: Unavailable.
+          schema:
+            $ref: '#/definitions/error'
+
+  /v2/infra-envs/{infra_env_id}/downloads/minimal-initrd:
+    get:
+      tags:
+        - installer
+      security:
+        - userAuth: [admin, read-only-admin, user]
+        - urlAuth: []
+      description: |
+        Get the initial ramdisk for minimal ISO based installations.
+      operationId: DownloadMinimalInitrd
+      parameters:
+        - in: path
+          name: infra_env_id
+          description: The infra env of the host that should be retrieved.
+          type: string
+          format: uuid
+          required: true
+      produces:
+        - application/octet-stream
+      responses:
+        '200':
+          description: Success.
+          schema:
+            type: string
+            format: binary
+        '204':
+          description: Empty Success.
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '409':
+          description: Conflict.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
           schema:
             $ref: '#/definitions/error'
 
@@ -4237,6 +4898,7 @@ definitions:
           - added-to-existing-cluster
           - cancelled
           - binding
+          - unbinding
           - known-unbound
           - disconnected-unbound
           - insufficient-unbound
@@ -4606,8 +5268,26 @@ definitions:
         type: boolean
         description: Schedule workloads on masters
         default: false
-      network_configuration:
-        $ref: '#/definitions/network_configuration'
+      cluster_networks:
+        type: array
+        description: Cluster networks that are associated with this cluster.
+        items:
+          type: object
+          $ref: '#/definitions/cluster_network'
+        x-nullable: true
+      service_networks:
+        type: array
+        description: Service networks that are associated with this cluster.
+        items:
+          type: object
+          $ref: '#/definitions/service_network'
+        x-nullable: true
+      machine_networks:
+        type: array
+        description: Machine networks that are associated with this cluster.
+        items:
+          type: object
+          $ref: '#/definitions/machine_network'
         x-nullable: true
       platform:
         type: object
@@ -4791,8 +5471,26 @@ definitions:
         type: boolean
         description: Schedule workloads on masters
         default: false
-      network_configuration:
-        $ref: '#/definitions/network_configuration'
+      cluster_networks:
+        type: array
+        description: Cluster networks that are associated with this cluster.
+        items:
+          type: object
+          $ref: '#/definitions/cluster_network'
+        x-nullable: true
+      service_networks:
+        type: array
+        description: Service networks that are associated with this cluster.
+        items:
+          type: object
+          $ref: '#/definitions/service_network'
+        x-nullable: true
+      machine_networks:
+        type: array
+        description: Machine networks that are associated with this cluster.
+        items:
+          type: object
+          $ref: '#/definitions/machine_network'
         x-nullable: true
 
   add-hosts-cluster-create-params:
@@ -5102,10 +5800,27 @@ definitions:
         description: The desired network type used.
         enum: ['OpenShiftSDN', 'OVNKubernetes']
         x-nullable: true
-      network_configuration:
-        type: string
-        description:
-          JSON-formatted string containing the networking data for the install-config.yaml file.
+      cluster_networks:
+        x-go-custom-tag: gorm:"foreignkey:ClusterID;association_foreignkey:ID"
+        type: array
+        description: Cluster networks that are associated with this cluster.
+        items:
+          type: object
+          $ref: '#/definitions/cluster_network'
+      service_networks:
+        x-go-custom-tag: gorm:"foreignkey:ClusterID;association_foreignkey:ID"
+        type: array
+        description: Service networks that are associated with this cluster.
+        items:
+          type: object
+          $ref: '#/definitions/service_network'
+      machine_networks:
+        x-go-custom-tag: gorm:"foreignkey:ClusterID;association_foreignkey:ID"
+        type: array
+        description: Machine networks that are associated with this cluster.
+        items:
+          type: object
+          $ref: '#/definitions/machine_network'
 
   platform:
     type: object
@@ -5476,6 +6191,8 @@ definitions:
       size_bytes:
         type: integer
       bootable:
+        type: boolean
+      removable:
         type: boolean
       is_installation_media:
         type: boolean
@@ -6095,6 +6812,36 @@ definitions:
         type: boolean
         description: Indication that the version is the recommended one.
 
+  os-image:
+    type: object
+    required:
+      - openshift_version
+      - cpu_architecture
+      - url
+      - rootfs_url
+      - version
+    properties:
+      openshift_version:
+        type: string
+        description: Version of the OpenShift cluster.
+      cpu_architecture:
+        type: string
+        description: The CPU architecture of the image (x86_64/arm64/etc).
+      url:
+        type: string
+        description: The base OS image used for the discovery iso.
+      rootfs_url:
+        type: string
+        description: The OS rootfs url.
+      version:
+        type: string
+        description: Build ID of the OS image.
+
+  os-images:
+    type: array
+    items:
+      $ref: '#/definitions/os-image'
+
   operator-property:
     type: object
     properties:
@@ -6323,29 +7070,19 @@ definitions:
     type: string
     pattern: '^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$'
 
-  network_configuration:
-    type: object
-    properties:
-      cluster_network:
-        type: array
-        items:
-          $ref: '#/definitions/cluster_network'
-      machine_network:
-        type: array
-        items:
-          $ref: '#/definitions/machine_network'
-      service_network:
-        type: array
-        items:
-          $ref: '#/definitions/service_network'
-
   cluster_network:
     type: object
     description: IP address block for pod IP blocks.
     properties:
+      cluster_id:
+        type: string
+        format: uuid
+        description: The cluster that this network is associated with.
+        x-go-custom-tag: gorm:"primary_key;foreignkey:Cluster"
       cidr:
         $ref: '#/definitions/subnet'
         description: The IP block address pool.
+        x-go-custom-tag: gorm:"primary_key"
       host_prefix:
         type: integer
         description:
@@ -6358,14 +7095,34 @@ definitions:
     type: object
     description: IP address block for node IP blocks.
     properties:
+      cluster_id:
+        type: string
+        format: uuid
+        description: The cluster that this network is associated with.
+        x-go-custom-tag: gorm:"primary_key;foreignkey:Cluster"
       cidr:
         $ref: '#/definitions/subnet'
         description: The IP block address pool for machines within the cluster.
+        x-go-custom-tag: gorm:"primary_key"
 
   service_network:
     type: object
-    description: List of IP address pools for services.
+    description: IP address block for service IP blocks.
     properties:
+      cluster_id:
+        type: string
+        format: uuid
+        description: The cluster that this network is associated with.
+        x-go-custom-tag: gorm:"primary_key;foreignkey:Cluster"
       cidr:
         $ref: '#/definitions/subnet'
         description: The IP block address pool.
+        x-go-custom-tag: gorm:"primary_key"
+
+  bind-host-params:
+    required:
+      - cluster_id
+    properties:
+      cluster_id:
+        type: string
+        format: uuid

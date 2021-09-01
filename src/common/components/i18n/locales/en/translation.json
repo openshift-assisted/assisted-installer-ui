@@ -1,0 +1,15 @@
+{
+  "dynamic-cim~failed-to-create-CD": "Failed to cretate the ClusterDeployment or agentClusterInstall resource: {{msg}}",
+  "dynamic-cim~Name": "Name",
+  "dynamic-cim~Status": "Status",
+  "dynamic-cim~Distribution version": "Distribution version",
+  "dynamic-cim~Clusters": "Clusters",
+  "dynamic-cim~Edit": "Edit",
+  "dynamic-cim~Delete": "Delete",
+
+  "Cluster Details": "Cluster Details",
+  "Saving changes...": "Saving changes...",
+  "Next": "Next",
+  "Cancel": "Cancel",
+  "Back": "Back"
+}
