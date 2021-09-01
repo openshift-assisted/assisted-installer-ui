@@ -1,4 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/camelcase */
 import React from 'react';
+import { saveAs } from 'file-saver';
 import {
   Button,
   ButtonVariant,
@@ -23,6 +26,7 @@ import {
 } from '../../types';
 import ClusterDeploymentCredentials from './ClusterDeploymentCredentials';
 import {
+  formatEventsData,
   shouldShowClusterCredentials,
   shouldShowClusterInstallationError,
   shouldShowClusterInstallationProgress,
@@ -33,6 +37,8 @@ import { EventsModalButton } from '../../../common/components/ui/eventsModal';
 import KubeconfigDownload from '../../../common/components/clusterDetail/KubeconfigDownload';
 import { EventListFetchProps } from '../../../common/types/events';
 import AgentTable from '../Agent/AgentTable';
+import { FetchSecret } from './types';
+import { EventList } from '../../../common/api/types';
 
 const agentTableColumns = [
   { title: 'Hostname', transforms: [sortable], cellFormatters: [expandable] },
@@ -49,9 +55,7 @@ type ClusterDeploymentDetailsProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall: AgentClusterInstallK8sResource;
   agents: AgentK8sResource[];
-  downloadKubeconfig: () => Promise<void>;
-  fetchEvents: EventListFetchProps['onFetchEvents'];
-  fetchCredentials: (setCredentials: unknown) => Promise<void>;
+  fetchSecret: FetchSecret;
   agentTableClassName?: string;
 };
 
@@ -59,14 +63,51 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
   clusterDeployment,
   agentClusterInstall,
   agents,
-  downloadKubeconfig,
-  fetchEvents,
-  fetchCredentials,
+  fetchSecret,
   agentTableClassName,
 }) => {
   const [progressCardExpanded, setProgressCardExpanded] = React.useState(true);
   const [inventoryCardExpanded, setInventoryCardExpanded] = React.useState(true);
   const [detailsCardExpanded, setDetailsCardExpanded] = React.useState(true);
+
+  const handleKubeconfigDownload = async () => {
+    const kubeconfigSecretName =
+      agentClusterInstall.spec?.clusterMetadata?.adminKubeconfigSecretRef?.name;
+    const kubeconfigSecretNamespace = clusterDeployment.metadata?.namespace;
+
+    if (kubeconfigSecretName && kubeconfigSecretNamespace) {
+      try {
+        const kubeconfigSecret = await fetchSecret(kubeconfigSecretName, kubeconfigSecretNamespace);
+        const kubeconfig = kubeconfigSecret.data?.kubeconfig;
+
+        if (!kubeconfig) throw new Error('Kubeconfig is empty.');
+
+        const blob = new Blob([atob(kubeconfig)], { type: 'text/plain;charset=utf-8' });
+        saveAs(blob, 'kubeconfig.json');
+      } catch (e) {
+        console.error('Failed to fetch kubeconfig secret.', e);
+      }
+    }
+  };
+
+  const handleFetchEvents: EventListFetchProps['onFetchEvents'] = async (
+    props,
+    onSuccess,
+    onError,
+  ) => {
+    try {
+      const eventsURL = agentClusterInstall.status?.debugInfo?.eventsURL;
+      if (!eventsURL) throw 'Events URL is not available.';
+
+      const res = await fetch(eventsURL);
+      const rawData: Record<string, string>[] = await res.json();
+      const data = formatEventsData(rawData);
+
+      onSuccess(data);
+    } catch (e) {
+      onError('Failed to fetch cluster events.');
+    }
+  };
 
   const cluster = getAICluster({ clusterDeployment, agentClusterInstall, agents });
   const [clusterStatus, clusterStatusInfo] = getClusterStatus(agentClusterInstall);
@@ -90,12 +131,7 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
               <CardBody>
                 <Stack hasGutter>
                   <StackItem>
-                    <ClusterProgress
-                      cluster={cluster}
-                      onFetchEvents={async () =>
-                        console.log('ClusterProgress - onFetchEvents missing implementation')
-                      }
-                    />
+                    <ClusterProgress cluster={cluster} onFetchEvents={handleFetchEvents} />
                   </StackItem>
                   {shouldShowClusterCredentials(agentClusterInstall) && (
                     <StackItem>
@@ -103,7 +139,7 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
                         clusterDeployment={clusterDeployment}
                         agentClusterInstall={agentClusterInstall}
                         agents={agents}
-                        fetchCredentials={fetchCredentials}
+                        fetchSecret={fetchSecret}
                         consoleUrl={
                           clusterDeployment.status?.webConsoleURL ||
                           `https://console-openshift-console.apps.${clusterDeployment.spec?.clusterName}.${clusterDeployment.spec?.baseDomain}`
@@ -113,7 +149,7 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
                   )}
                   <StackItem>
                     <KubeconfigDownload
-                      handleDownload={downloadKubeconfig}
+                      handleDownload={handleKubeconfigDownload}
                       clusterId={clusterDeployment.metadata?.uid || ''}
                       status={clusterStatus}
                     />{' '}
@@ -124,7 +160,7 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
                       title="Cluster Events"
                       variant={ButtonVariant.link}
                       style={{ textAlign: 'right' }}
-                      onFetchEvents={fetchEvents}
+                      onFetchEvents={handleFetchEvents}
                       ButtonComponent={Button}
                     >
                       View Cluster Events

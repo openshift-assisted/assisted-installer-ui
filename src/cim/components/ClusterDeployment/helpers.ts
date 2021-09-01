@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import _ from 'lodash';
+import { EventList } from '../../../common/api/types';
 import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-install';
 import { getClusterStatus } from '../helpers/status';
 
@@ -30,3 +33,6 @@ export const shouldShowClusterInstallationError = (
   const [clusterStatus] = getClusterStatus(agentClusterInstall);
   return ['error', 'cancelled'].includes(clusterStatus);
 };
+
+export const formatEventsData = (rawData: any): EventList =>
+  rawData.map((event: any) => _.mapKeys(event, (value, key) => _.camelCase(key)));

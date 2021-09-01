@@ -4,13 +4,14 @@ import { AgentK8sResource } from '../../types/k8s/agent';
 import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-install';
 import { ClusterDeploymentK8sResource } from '../../types/k8s/cluster-deployment';
 import { getAICluster } from '../helpers/toAssisted';
+import { FetchSecret } from './types';
 
 type ClusterDeploymentCredentialsProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall: AgentClusterInstallK8sResource;
   agents: AgentK8sResource[];
   consoleUrl: string;
-  fetchCredentials: (setCredentials: React.Dispatch<React.SetStateAction<{}>>) => void;
+  fetchSecret: FetchSecret;
 };
 
 const ClusterDeploymentCredentials = ({
@@ -18,14 +19,34 @@ const ClusterDeploymentCredentials = ({
   agentClusterInstall,
   agents,
   consoleUrl,
-  fetchCredentials,
+  fetchSecret,
 }: ClusterDeploymentCredentialsProps) => {
   const [credentials, setCredentials] = React.useState({});
+
   const cluster = getAICluster({ clusterDeployment, agentClusterInstall, agents });
 
   React.useEffect(() => {
-    fetchCredentials(setCredentials);
-  }, [agentClusterInstall, fetchCredentials]);
+    const fetchCredentials = async () => {
+      const adminPasswordSecretRefName =
+        agentClusterInstall.spec?.clusterMetadata?.adminPasswordSecretRef?.name;
+      const namespace = clusterDeployment.metadata?.namespace;
+
+      if (adminPasswordSecretRefName && namespace) {
+        try {
+          const secret = await fetchSecret(adminPasswordSecretRefName, namespace);
+          // const secret = await k8sGet(SecretModel, adminPasswordSecretRefName, namespace);
+          setCredentials({
+            username: atob(secret?.data?.username || ''),
+            password: atob(secret?.data?.password || ''),
+          });
+        } catch (e) {
+          console.error('Failed to fetch adminPasswordSecret secret.', e);
+        }
+      }
+    };
+
+    fetchCredentials();
+  }, [agentClusterInstall, fetchSecret, clusterDeployment.metadata]);
 
   return <ClusterCredentials cluster={cluster} credentials={{ ...credentials, consoleUrl }} />;
 };
