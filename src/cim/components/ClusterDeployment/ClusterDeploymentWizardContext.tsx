@@ -9,7 +9,7 @@ type ClusterDeploymentWizardContextType = {
 const ClusterDeploymentWizardContext = React.createContext<ClusterDeploymentWizardContextType>({
   currentStepId: 'cluster-details',
   setCurrentStepId: () => {
-    console.warn('Tried to use ClusterWizardContext but there was no provider rendered.');
+    console.error('Tried to use ClusterWizardContext but there was no provider rendered.');
   },
 });
 

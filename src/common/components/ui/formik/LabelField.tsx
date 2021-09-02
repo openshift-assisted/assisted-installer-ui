@@ -43,7 +43,7 @@ export const LabelField: React.FC<LabelFieldProps> = ({
   validate,
   idPostfix,
   forceUniqueKeys,
-  autocompleteValues = [],
+  autocompleteValues,
   ...props
 }) => {
   const [input, setInput] = React.useState('');
@@ -62,21 +62,21 @@ export const LabelField: React.FC<LabelFieldProps> = ({
 
   // TODO(mlibra): Use Patternfly component once available, sort of
   // https://patternflyelements.org/components/autocomplete/
-  const autocompleteRenderInput = React.useMemo(
-    (): TagsInput.ReactTagsInputProps['renderInput'] => (props) => {
+  const autocompleteRenderInput = React.useCallback(
+    (props: TagsInput.RenderInputProps) => {
       const trimmedInput = input?.trim();
       let suggestions: string[] = [];
       if (trimmedInput) {
         if (!trimmedInput.includes('=')) {
-          suggestions = autocompleteValues.filter((suggestion) =>
+          suggestions = (autocompleteValues || []).filter((suggestion) =>
             suggestion.startsWith(trimmedInput),
           );
-          if (!autocompleteValues.includes(input)) {
+          if (!autocompleteValues?.includes(input)) {
             suggestions.push(`${input}${NEW_KEY}`);
           }
         }
       } else {
-        suggestions = autocompleteValues;
+        suggestions = autocompleteValues || [];
       }
       suggestions = suggestions.filter((suggestion) => !usedKeys.includes(suggestion));
 

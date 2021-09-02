@@ -37,13 +37,6 @@ export const getAgentSelectorFieldsFromAnnotations = (
     })
     .filter(Boolean) as string[];
 
-  console.log(
-    '--- getAgentSelectorFieldsFromAnnotations, labels: ',
-    labels,
-    ', locations: ',
-    locations,
-  );
-
   return {
     labels,
     locations,
@@ -72,7 +65,6 @@ export const getAnnotationsFromAgentSelector = (
     annotations[AGENT_LOCATION_LABEL_KEY] = locations.join(',');
   }
 
-  console.log('--- getAnnotationsFromAgentSelector, annotations: ', annotations);
   return annotations;
 };
 

@@ -3,7 +3,7 @@ import { Modal, Button, ModalVariant, ButtonProps } from '@patternfly/react-core
 
 type ConfirmationModalProps = {
   title: string;
-  content: React.ReactElement | string;
+  content: React.ReactNode;
   confirmationButtonVariant?: ButtonProps['variant'];
   confirmationButtonText?: string;
   onClose: () => void;

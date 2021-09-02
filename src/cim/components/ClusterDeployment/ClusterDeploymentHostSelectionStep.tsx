@@ -91,13 +91,10 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
     () =>
       (unfilteredMatchingAgents || []).filter((agent) => {
         const [status] = getAgentStatus(agent);
-        return (
-          true ||
-          [
-            'known',
-            /* insufficient should be good for this step, a role has to be selected first */ 'insufficient',
-          ].includes(status)
-        ); // DO NOT MERGE: remove "true" for here - debugging only
+        return [
+          'known',
+          /* insufficient should be good for this step, a role has to be selected first */ 'insufficient',
+        ].includes(status);
       }),
     [unfilteredMatchingAgents],
   );

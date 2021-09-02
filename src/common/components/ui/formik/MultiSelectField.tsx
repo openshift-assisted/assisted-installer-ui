@@ -51,7 +51,6 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
       }).value || selection;
 
     let newValue;
-    console.log('--- onSelect, selected: ', selected, ', selection: ', selection);
     if (selected.includes(selectionValue)) {
       newValue = selected.filter((sel: string) => sel !== selectionValue);
     } else {
@@ -68,10 +67,7 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
       ? {
           value: option.value,
           toString: () => option.displayName,
-          compareTo: (selectOption: { value: string }) => {
-            console.log('--- compareTo, selectOption: ', selectOption, ', value: ', value);
-            return selectOption.value === value;
-          },
+          compareTo: (selectOption: { value: string }) => selectOption.value === value,
         }
       : value;
   });
@@ -106,12 +102,12 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
       >
         {options
           .filter((option) => !(field.value || []).includes(option.value))
-          .map((option, index) => {
+          .map((option) => {
             // const { itemCount } = option;
             return (
               <SelectOption
-                key={option.id || option.value.toString() || index}
-                id={option.id || option.value.toString()}
+                key={option.id}
+                id={option.id}
                 value={option.value}
                 // itemCount={itemCount} TODO: This is broken in Patternfly ATM
               >

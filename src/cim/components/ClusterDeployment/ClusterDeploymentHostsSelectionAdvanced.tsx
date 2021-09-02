@@ -1,5 +1,5 @@
 import { GridItem } from '@patternfly/react-core';
-import { useFormikContext } from 'formik';
+import { useField, useFormikContext } from 'formik';
 import React from 'react';
 import { LabelField } from '../../../common';
 import HostsTable from '../../../common/components/hosts/HostsTable';
@@ -29,15 +29,16 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
   matchingAgents = [],
   actions,
 }) => {
-  const { setFieldValue, values } = useFormikContext<ClusterDeploymentHostsSelectionValues>();
+  const [selectedHostIdsField, , { setValue: setSelectedHostIdsValue }] = useField(
+    'selectedHostIds',
+  );
 
   const onSelect = (agent: AgentK8sResource, selected: boolean) => {
     if (selected) {
-      setFieldValue('selectedHostIds', [...values.selectedHostIds, agent.metadata?.uid]);
+      setSelectedHostIdsValue([...selectedHostIdsField.value, agent.metadata?.uid]);
     } else {
-      setFieldValue(
-        'selectedHostIds',
-        values.selectedHostIds.filter((uid) => uid !== agent.metadata?.uid),
+      setSelectedHostIdsValue(
+        selectedHostIdsField.value.filter((uid: string) => uid !== agent.metadata?.uid),
       );
     }
   };
@@ -62,7 +63,7 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
     <HostsTable
       hosts={hosts}
       content={content}
-      selectedIDs={values.selectedHostIds}
+      selectedIDs={selectedHostIdsField.value}
       actionResolver={actionResolver}
       className="agents-table"
       {...hostActions}

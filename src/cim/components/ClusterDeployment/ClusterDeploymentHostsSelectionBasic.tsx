@@ -63,11 +63,12 @@ const ClusterDeploymentHostsSelectionBasic: React.FC<ClusterDeploymentHostsSelec
         />
       </GridItem>
 
+      {/* That field is not supported ATM - (requires MGMT-7677) */}
       <GridItem>
         <CheckboxField
           idPostfix="mastersasworkers"
           name="useMastersAsWorkers"
-          label="Run workloads on control plane (master) hosts (TODO: UNSUPPORTED - MGMT-7677)"
+          label="Run workloads on control plane (master) hosts"
           isDisabled={hostCount < 5}
         />
       </GridItem>
