@@ -63,7 +63,6 @@ const validationSchema = (usedNames: string[]) =>
       noProxy: noProxyValidationSchema,
       labels: Yup.array()
         .of(Yup.string())
-        .required()
         .test(
           'label-equals-validation',
           'Label selector needs to be in a `key=value` form',
@@ -107,7 +106,7 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged }) => {
           <InputField label="Name" name="name" isRequired />
           <InputField label="Base domain" name="baseDomain" isRequired />
           <InputField label="Location" name="location" isRequired />
-          <LabelField label="Labels" name="labels" isRequired />
+          <LabelField label="Labels" name="labels" />
           <PullSecretField isOcm={false} />
           <UploadSSH />
           <ProxyFields />
