@@ -5,7 +5,10 @@ import {
   AlertActionCloseButton,
   AlertVariant,
   Button,
+  Flex,
+  FlexItem,
   Form,
+  FormGroup,
   Grid,
   GridItem,
   Spinner,
@@ -25,6 +28,8 @@ import {
   LabelField,
   UploadSSH,
   ProxyFields,
+  RadioField,
+  PopoverIcon,
 } from '../../../common';
 
 import './infra-env.css';
@@ -40,6 +45,7 @@ export type EnvironmentStepFormValues = {
   noProxy: string;
   enableProxy: boolean;
   labels: string[];
+  networkType: 'dhcp' | 'static';
 };
 
 const validationSchema = (usedNames: string[]) =>
@@ -87,6 +93,7 @@ const initialValues: EnvironmentStepFormValues = {
   noProxy: '',
   enableProxy: false,
   labels: [],
+  networkType: 'dhcp',
 };
 
 type InfraEnvFormProps = {
@@ -105,6 +112,37 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged }) => {
       <StackItem>
         <Form>
           <InputField label="Name" name="name" isRequired />
+          <FormGroup
+            fieldId="network-type"
+            label="Network type"
+            labelIcon={
+              <PopoverIcon
+                noVerticalAlign
+                bodyContent={
+                  <>
+                    This will determine for the infrastructure environment which kind of hosts would
+                    be able to be added. If the hosts that you want to add are using DHCP server,
+                    select this option, else, select the static IP.
+                  </>
+                }
+              />
+            }
+          >
+            <Flex justifyContent={{ default: 'justifyContentFlexStart' }}>
+              <FlexItem>
+                <RadioField name="networkType" id="dhcp" value="dhcp" label="Use DHCP server" />
+              </FlexItem>
+              <FlexItem spacer={{ default: 'spacer4xl' }} />
+              <FlexItem>
+                <RadioField
+                  name="networkType"
+                  id="static-ip"
+                  value="static"
+                  label="Use static IP"
+                />
+              </FlexItem>
+            </Flex>
+          </FormGroup>
           <InputField label="Base domain" name="baseDomain" isRequired />
           <InputField label="Location" name="location" isRequired />
           <LabelField label="Labels" name="labels" isRequired />

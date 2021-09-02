@@ -12,6 +12,7 @@ export { default as PullSecretField } from './PullSecretField';
 export { default as RadioField } from './RadioField';
 export { default as SingleNodeCheckbox } from './SingleNodeCheckbox';
 export { default as NumberInputField } from './NumberInputField';
+export { default as CodeField } from './CodeField';
 
 export * from './utils';
 export * from './PullSecretField';
