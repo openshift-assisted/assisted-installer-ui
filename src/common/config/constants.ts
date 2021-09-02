@@ -87,15 +87,15 @@ export const HOST_STATUS_LABELS: { [key in Host['status']]: string } = {
 };
 
 export const CLUSTER_FIELD_LABELS: { [key in string]: string } = {
-  name: 'Cluster Name',
-  baseDnsDomain: 'Base DNS Domain',
-  clusterNetworkCidr: 'Cluster Network CIDR',
-  clusterNetworkHostPrefix: 'Cluster Network Host Prefix',
-  serviceNetworkCidr: 'Service Network CIDR',
+  name: 'Cluster name',
+  baseDnsDomain: 'Base domain',
+  clusterNetworkCidr: 'Cluster network CIDR',
+  clusterNetworkHostPrefix: 'Cluster network host prefix',
+  serviceNetworkCidr: 'Service network CIDR',
   apiVip: 'API Virtual IP',
   ingressVip: 'Ingress Virtual IP',
-  pullSecret: 'Pull Secret',
-  sshPublicKey: 'SSH Public Key',
+  pullSecret: 'Pull secret',
+  sshPublicKey: 'SSH public key',
   SNODisclaimer: 'Single Node OpenShift disclaimer',
 };
 

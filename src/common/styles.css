@@ -1,16 +1,3 @@
-/* pf-u-float-right does not work in all flows */
-.assisted-ui-float-right {
-  float: right !important;
-}
-
-.assisted-ui-display-inline {
-  display: inline;
-}
-
-.margin-left-md {
-  margin-left: var(--pf-global--spacer--md);
-}
-
 .assisted-ui-vertical-margin {
   margin-top: var(--pf-global--spacer--lg);
   margin-bottom: var(--pf-global--spacer--lg);

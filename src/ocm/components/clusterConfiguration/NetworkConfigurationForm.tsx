@@ -16,6 +16,7 @@ import {
   getNetworkConfigurationValidationSchema,
   getNetworkInitialValues,
   getHostSubnets,
+  isSingleNodeCluster,
 } from '../../../common';
 import { HostSubnet, NetworkConfigurationValues } from '../../../common/types/clusters';
 import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
@@ -64,6 +65,7 @@ const NetworkConfigurationForm: React.FC<{
 
     // update the cluster configuration
     try {
+      const isMultiNodeCluster = !isSingleNodeCluster(cluster);
       const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';
       const params = _.omit(values, [
         'hostSubnet',
@@ -95,11 +97,16 @@ const NetworkConfigurationForm: React.FC<{
       if (isUserManagedNetworking) {
         delete params.apiVip;
         delete params.ingressVip;
+        if (isMultiNodeCluster) {
+          delete params.machineNetworks;
+        }
       } else {
         // cluster-managed can't be chosen in SNO, so this must be a multi-node cluster
         if (values.vipDhcpAllocation) {
           delete params.apiVip;
           delete params.ingressVip;
+        } else {
+          delete params.machineNetworks;
         }
       }
 
