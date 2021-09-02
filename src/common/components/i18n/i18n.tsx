@@ -10,6 +10,7 @@ import zh from './locales/zh/translation.json';
 const DEFAULT_LANG = 'en';
 
 const i18nInstance = i18n
+  .createInstance()
   // detect user language
   .use(LanguageDetector)
   // pass the i18n instance to react-i18next.
@@ -21,22 +22,31 @@ const resources = {
 };
 
 console.info('Initializing i18n for assisted-ui-lib');
-i18nInstance.init({
-  debug: true,
-  fallbackLng: DEFAULT_LANG,
-  interpolation: {
-    escapeValue: false, // not needed for react as it escapes by default
+i18nInstance.init(
+  {
+    debug: true,
+    fallbackLng: DEFAULT_LANG,
+    interpolation: {
+      escapeValue: false, // not needed for react as it escapes by default
+    },
+    // So far statically loaded since we have just a few of them
+    resources,
+    react: {
+      useSuspense: true,
+    },
+    saveMissing: true,
+    missingKeyHandler: (lngs: readonly string[], ns: string, key: string) => {
+      console.error(`= Missing i18n key "${key}" in namespace "${ns}" and language "${lngs}."`);
+    },
   },
-  // So far statically loaded since we have just a few of them
-  resources,
-  react: {
-    useSuspense: true,
+  (err) => {
+    if (err) {
+      console.error('Failed to initialize i18next for the Assisted UI: ', err);
+      return;
+    }
+    console.info("Assisted UI's i18next initialized.");
   },
-  saveMissing: true,
-  missingKeyHandler: (lngs: readonly string[], ns: string, key: string) => {
-    console.error(`= Missing i18n key "${key}" in namespace "${ns}" and language "${lngs}."`);
-  },
-});
+);
 
 export type I18NProps = {
   preferredLang?: string;
