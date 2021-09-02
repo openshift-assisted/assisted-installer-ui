@@ -2,6 +2,7 @@ import * as React from 'react';
 import { TextInputTypes, FormSelectOptionProps, SelectOptionProps } from '@patternfly/react-core';
 import { FieldValidator, FieldHelperProps } from 'formik';
 import { DropzoneProps, DropFileEventHandler } from 'react-dropzone';
+import { CodeEditorProps } from '@patternfly/react-code-editor';
 
 export interface FieldProps {
   name: string;
@@ -108,4 +109,9 @@ export interface DropdownFieldProps extends FieldProps {
   fullWidth?: boolean;
   disabled?: boolean;
   onChange?: (value: string) => void;
+}
+
+export interface CodeFieldProps extends FieldProps {
+  language: CodeEditorProps['language'];
+  description?: React.ReactNode;
 }
