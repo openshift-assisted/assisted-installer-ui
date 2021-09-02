@@ -3,6 +3,7 @@ import { useFormikContext } from 'formik';
 import { MultiSelectField, PopoverIcon } from '../../../common';
 import { AGENT_LOCATION_LABEL_KEY } from '../common';
 import {
+  AgentLocation,
   ClusterDeploymentHostsSelectionProps,
   ClusterDeploymentHostsSelectionValues,
 } from './types';
@@ -35,9 +36,10 @@ const LocationsSelector: React.FC<LocationsSelectorProps> = ({
 }) => {
   const { values } = useFormikContext<ClusterDeploymentHostsSelectionValues>();
 
-  const agentLocationOptions = agentLocations.map((loc) => ({
+  const agentLocationOptions = agentLocations.map((loc: AgentLocation) => ({
     // Why is that bloody prop set as mandatory in the SelectOptionProps??
     isLastOptionBeforeFooter: (index: number): boolean => index === agentLocations.length,
+    id: loc.value,
     ...loc,
   }));
 
