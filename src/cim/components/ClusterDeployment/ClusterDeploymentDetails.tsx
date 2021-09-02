@@ -40,17 +40,6 @@ import AgentTable from '../Agent/AgentTable';
 import { FetchSecret } from './types';
 import { EventList } from '../../../common/api/types';
 
-const agentTableColumns = [
-  { title: 'Hostname', transforms: [sortable], cellFormatters: [expandable] },
-  { title: 'Role', transforms: [sortable] },
-  { title: 'Status', transforms: [sortable] },
-  { title: 'Discovered At', transforms: [sortable] },
-  { title: 'CPU Cores', transforms: [sortable] }, // cores per machine (sockets x cores)
-  { title: 'Memory', transforms: [sortable] },
-  { title: 'Disk', transforms: [sortable] },
-  { title: '' },
-];
-
 type ClusterDeploymentDetailsProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall: AgentClusterInstallK8sResource;
@@ -201,11 +190,7 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
           </CardHeader>
           <CardExpandableContent>
             <CardBody>
-              <AgentTable
-                agents={agents}
-                columns={agentTableColumns}
-                className={agentTableClassName}
-              />
+              <AgentTable agents={agents} className={agentTableClassName} />
             </CardBody>
           </CardExpandableContent>
         </Card>
