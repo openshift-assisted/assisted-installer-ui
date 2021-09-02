@@ -22,10 +22,11 @@ import {
   AgentK8sResource,
   ClusterDeploymentK8sResource,
 } from '../../types';
+import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
+import { getAICluster } from '../helpers';
 import ClusterDeploymentNetworkingForm, {
   defaultNetworkSettings,
 } from './ClusterDeploymentNetworkingForm';
-import { getAICluster } from '../helpers';
 
 type UseNetworkingFormikArgs = {
   clusterDeployment: ClusterDeploymentK8sResource;
@@ -75,7 +76,7 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
   ...rest
 }) => {
   const { addAlert } = useAlerts();
-  // TODO(mlibra) - see bellow const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
+  const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
 
   const [initialValues, validationSchema] = useNetworkingFormik({
     clusterDeployment,
@@ -84,9 +85,15 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
     pullSecretSet,
   });
 
+  const next = () => {
+    // setCurrentStepId('something-next'); // TODO(mlibra): set the next step ID here
+    onClose(); // TODO(mlibra): just temporarily - the flow will continue
+  };
+
   const handleSubmit = async (values: ClusterDeploymentNetworkingValues) => {
     try {
       await onSaveNetworking(values);
+      next();
     } catch (error) {
       addAlert({
         title: 'Failed to save ClusterDeployment',
@@ -105,10 +112,9 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
         const handleOnNext = () => {
           if (dirty) {
             submitForm();
+          } else {
+            next();
           }
-          // TODO(mlibra): check behaviour if submit fails, no transition in that case
-          // setCurrentStepId('something-next'); // TODO(mlibra): set next step ID here
-          onClose(); // TODO(mlibra): just temporarily - the flow will continue
         };
 
         const footer = (
@@ -117,6 +123,7 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
             isSubmitting={isSubmitting}
             isNextDisabled={!isValid || isValidating || isSubmitting}
             onNext={handleOnNext}
+            onBack={() => setCurrentStepId('hosts-selection')}
             onCancel={onClose}
           />
         );

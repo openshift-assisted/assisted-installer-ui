@@ -5,6 +5,7 @@ import {
   SecretKind,
 } from '../../types';
 import { EnvironmentStepFormValues } from './InfraEnvFormPage';
+import { getClusterDeploymentResource } from '../helpers';
 
 export const getLabels = (values: EnvironmentStepFormValues) =>
   values.labels.reduce((acc, curr) => {
@@ -13,38 +14,19 @@ export const getLabels = (values: EnvironmentStepFormValues) =>
     return acc;
   }, {});
 
-export const getClusterDeployment = (
+// TODO(mlibra): This should not be needed once we have late-binding
+export const getClusterDeploymentForInfraEnv = (
   pullSecretName: string,
   namespace: string,
   values: EnvironmentStepFormValues,
-): ClusterDeploymentK8sResource => ({
-  apiVersion: 'hive.openshift.io/v1',
-  kind: 'ClusterDeployment',
-  metadata: {
+): ClusterDeploymentK8sResource =>
+  getClusterDeploymentResource({
     name: values.name,
     namespace,
-  },
-  spec: {
-    baseDomain: values.baseDomain,
-    clusterInstallRef: {
-      group: 'extensions.hive.openshift.io',
-      kind: 'AgentClusterInstall',
-      name: values.name,
-      version: 'v1beta1',
-    },
-    clusterName: values.name,
-    platform: {
-      agentBareMetal: {
-        agentSelector: {
-          matchLabels: getLabels(values),
-        },
-      },
-    },
-    pullSecretRef: {
-      name: pullSecretName,
-    },
-  },
-});
+    baseDnsDomain: values.baseDomain,
+    annotations: getLabels(values),
+    pullSecretName,
+  });
 
 export const getAgentClusterInstall = (
   clusterDeploymentName: string,

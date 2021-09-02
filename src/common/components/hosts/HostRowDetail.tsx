@@ -12,7 +12,7 @@ import {
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
 
 import { DetailItem, DetailList, DetailListProps } from '../ui';
-import { Disk, Host, Interface, Inventory } from '../../api';
+import { Disk, Host, Interface, Inventory, stringToJSON } from '../../api';
 import { ValidationsInfo } from '../../types/hosts';
 import { WithTestID } from '../../types';
 import { DASH } from '../constants';
@@ -27,9 +27,7 @@ import { ValidationInfoActionProps } from './HostValidationGroups';
 type HostDetailProps = {
   canEditDisks?: (host: Host) => boolean;
   onDiskRole?: onDiskRoleType;
-  inventory: Inventory;
   host: Host;
-  validationsInfo: ValidationsInfo;
   AdditionalNTPSourcesDialogToggleComponent: ValidationInfoActionProps['AdditionalNTPSourcesDialogToggleComponent'];
 };
 
@@ -96,7 +94,7 @@ const DisksTable: React.FC<DisksTableProps & WithTestID> = ({
   onDiskRole,
 }) => {
   const isEditable = !!canEditDisks?.(host);
-  const rows: IRow[] = disks
+  const rows: IRow[] = [...disks]
     .sort((diskA, diskB) => diskA.name?.localeCompare(diskB.name || '') || 0)
     .map((disk) => ({
       cells: [
@@ -201,12 +199,12 @@ const NicsTable: React.FC<NicsTableProps & WithTestID> = ({ interfaces, testId }
 export const HostDetail: React.FC<HostDetailProps> = ({
   canEditDisks,
   onDiskRole,
-  inventory,
   host,
-  validationsInfo,
   AdditionalNTPSourcesDialogToggleComponent,
 }) => {
-  const { id, installationDiskId } = host;
+  const { id, installationDiskId, inventory: inventoryString = '' } = host;
+  const inventory = stringToJSON<Inventory>(inventoryString) || {};
+  const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
   const rowInfo = getHostRowHardwareInfo(inventory);
   const disks = inventory.disks || [];
   const nics = inventory.interfaces || [];

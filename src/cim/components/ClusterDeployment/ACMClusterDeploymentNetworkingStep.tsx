@@ -13,12 +13,13 @@ import {
   ClusterDeploymentNetworkingValues,
 } from './types';
 
-type ACMClusterDeploymentNetworkingStepProps = ClusterDeploymentHostsTablePropsActions & {
+type ACMClusterDeploymentNetworkingStepProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall: AgentClusterInstallK8sResource;
   pullSecretSet: boolean;
   agents: AgentK8sResource[];
   onValuesChanged: (values: ClusterDeploymentNetworkingValues) => void;
+  hostActions: ClusterDeploymentHostsTablePropsActions;
 };
 
 const ACMClusterDeploymentNetworkingStep: React.FC<ACMClusterDeploymentNetworkingStepProps> = ({

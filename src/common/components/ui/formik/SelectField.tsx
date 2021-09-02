@@ -5,6 +5,9 @@ import { getFieldId } from './utils';
 import { SelectFieldProps } from './types';
 import HelperText from './HelperText';
 
+// Reimplement this component to use custom Select in case of using it along the MultiSelectField component due to visual differences.
+// Idea: use Formik's field.multiple to switch among single and multi-selection.
+// See: https://www.patternfly.org/v4/components/form-select/design-guidelines#usage
 const SelectField: React.FC<SelectFieldProps> = ({
   label,
   options,

@@ -24,14 +24,25 @@ const ClusterDeploymentWizardNavigation: React.FC<{
         onNavItemClick={() => setCurrentStepId('cluster-details')}
       />
       <WizardNavItem
-        key="networking"
-        content={wizardStepNames['networking']}
+        key="hosts-selection"
+        content={wizardStepNames['hosts-selection']}
         isDisabled={!wizardSteps.slice(1).includes(currentStepId)}
         isValid={
           () => true /* TODO(mlibra)*/ /* () => !cluster || canNextHostDiscovery({ cluster })*/
         }
-        isCurrent={currentStepId === 'networking'}
+        isCurrent={currentStepId === 'hosts-selection'}
         step={1}
+        onNavItemClick={() => setCurrentStepId('hosts-selection')}
+      />
+      <WizardNavItem
+        key="networking"
+        content={wizardStepNames['networking']}
+        isDisabled={!wizardSteps.slice(2).includes(currentStepId)}
+        isValid={
+          () => true /* TODO(mlibra)*/ /* () => !cluster || canNextHostDiscovery({ cluster })*/
+        }
+        isCurrent={currentStepId === 'networking'}
+        step={2}
         onNavItemClick={() => setCurrentStepId('networking')}
       />
       {/*
