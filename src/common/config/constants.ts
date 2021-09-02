@@ -166,6 +166,7 @@ export const HOST_VALIDATION_LABELS: { [key in HostValidationId]: string } = {
   'api-domain-name-resolved-correctly': 'API domain name resolution',
   'api-int-domain-name-resolved-correctly': 'API internal domain name resolution',
   'apps-domain-name-resolved-correctly': 'Application ingress domain name resolution',
+  'dns-wildcard-not-configured': 'DNS wildcard not configured',
 };
 
 export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string } = {
@@ -196,6 +197,7 @@ export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string 
   'api-domain-name-resolved-correctly': '',
   'api-int-domain-name-resolved-correctly': '',
   'apps-domain-name-resolved-correctly': '',
+  'dns-wildcard-not-configured': '',
 };
 
 export const CLUSTER_VALIDATION_LABELS: { [key in ClusterValidationId]: string } = {
