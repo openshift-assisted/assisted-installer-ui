@@ -83,6 +83,21 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
               }
             />
           </RenderIf>
+          <RenderIf condition={cluster.platform?.type !== 'baremetal'}>
+            <Alert
+              variant="warning"
+              isInline
+              title={
+                <p>
+                  Modify your platform configuration to access your platform's features directly in
+                  OpenShift.{' '}
+                  <a href="#">
+                    Learn more <i className="fas fa-external-link-alt" />
+                  </a>
+                </p>
+              }
+            />
+          </RenderIf>
           <GridItem>
             <TextContent>
               <Text component="h2">Host Inventory</Text>
