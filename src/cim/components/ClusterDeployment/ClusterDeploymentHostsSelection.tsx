@@ -8,35 +8,15 @@ import {
 } from './types';
 import ClusterDeploymentHostsSelectionBasic from './ClusterDeploymentHostsSelectionBasic';
 import ClusterDeploymentHostsSelectionAdvanced from './ClusterDeploymentHostsSelectionAdvanced';
-import ConfirmationModal from '../../../common/components/ui/ConfirmationModal';
 
 const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionProps> = ({
-  agentLocations,
-  matchingAgents,
-  onAgentSelectorChange,
-  // allAgentsCount,
-  usedAgentLabels,
+  agentClusterInstall,
+  availableAgents,
   hostActions,
 }) => {
-  const { setFieldValue, values } = useFormikContext<ClusterDeploymentHostsSelectionValues>();
-  const [isConfirmAutoSelectHostsSwitchOpen, setConfirmAutoSelectHostsSwitch] = React.useState(
-    false,
-  );
-  const { autoSelectHosts, isSNOCluster } = values;
-
-  const onChangeCustomOverride =
-    !values.autoSelectHosts && (values.agentLabels.length > 0 || values.selectedHostIds.length > 0)
-      ? () => {
-          setConfirmAutoSelectHostsSwitch(true);
-        }
-      : undefined;
-
-  const onAutoSelectConfirmed = () => {
-    setFieldValue('autoSelectHosts', !values.autoSelectHosts);
-    setFieldValue('agentLabels', []);
-    setFieldValue('selectedHostIds', []);
-    setConfirmAutoSelectHostsSwitch(false);
-  };
+  const { values } = useFormikContext<ClusterDeploymentHostsSelectionValues>();
+  const { autoSelectHosts } = values;
+  const isSNOCluster = agentClusterInstall?.spec?.provisionRequirements?.controlPlaneAgents === 1;
 
   return (
     <Grid hasGutter>
@@ -50,43 +30,20 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
       </GridItem>
 
       <GridItem>
-        <SwitchField
-          name="autoSelectHosts"
-          label="Auto-select hosts"
-          onChangeCustomOverride={onChangeCustomOverride}
-        />
+        <SwitchField name="autoSelectHosts" label="Auto-select hosts" />
       </GridItem>
 
       {autoSelectHosts && (
         <ClusterDeploymentHostsSelectionBasic
-          agentLocations={agentLocations}
-          onAgentSelectorChange={onAgentSelectorChange}
-          matchingAgents={matchingAgents}
+          availableAgents={availableAgents}
+          isSNOCluster={isSNOCluster}
         />
       )}
 
       {!autoSelectHosts && (
         <ClusterDeploymentHostsSelectionAdvanced
-          agentLocations={agentLocations}
-          usedAgentLabels={usedAgentLabels}
-          onAgentSelectorChange={onAgentSelectorChange}
+          availableAgents={availableAgents}
           hostActions={hostActions}
-          matchingAgents={matchingAgents}
-        />
-      )}
-
-      {isConfirmAutoSelectHostsSwitchOpen && (
-        <ConfirmationModal
-          title="Renounce labels and hosts selection"
-          content={
-            <>
-              By changing the view, entered hosts selection and labels will be lost.
-              <br />
-              Do you want to continue?
-            </>
-          }
-          onClose={() => setConfirmAutoSelectHostsSwitch(false)}
-          onConfirm={onAutoSelectConfirmed}
         />
       )}
     </Grid>

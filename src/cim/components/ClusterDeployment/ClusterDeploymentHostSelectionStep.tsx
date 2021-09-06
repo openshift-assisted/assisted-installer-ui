@@ -2,7 +2,11 @@ import React from 'react';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import { getFormikErrorFields, useAlerts } from '../../../common';
-import { AgentClusterInstallK8sResource, ClusterDeploymentK8sResource } from '../../types';
+import {
+  AgentClusterInstallK8sResource,
+  AgentK8sResource,
+  ClusterDeploymentK8sResource,
+} from '../../types';
 import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
 import ClusterDeploymentWizardFooter from './ClusterDeploymentWizardFooter';
 import ClusterDeploymentWizardNavigation from './ClusterDeploymentWizardNavigation';
@@ -12,18 +16,22 @@ import {
   ClusterDeploymentHostSelectionStepProps,
   ClusterDeploymentHostsSelectionValues,
 } from './types';
-import { hostCountValidationSchema, hostLabelsValidationSchema } from './validationSchemas';
-import { getAgentSelectorFieldsFromAnnotations, getAgentStatus } from '../helpers';
+import { hostCountValidationSchema } from './validationSchemas';
+import {
+  getAgentSelectorFieldsFromAnnotations,
+  getAgentStatus,
+  getClusterDeploymentAgentReservedValue,
+} from '../helpers';
+import { RESERVED_AGENT_LABEL_KEY } from '../common';
 
 const getInitialValues = ({
+  agents,
   clusterDeployment,
   agentClusterInstall,
-  selectedHostIds,
 }: {
+  agents: AgentK8sResource[];
   clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall: AgentClusterInstallK8sResource;
-  // agents: AgentK8sResource[];
-  selectedHostIds: string[];
 }): ClusterDeploymentHostsSelectionValues => {
   const isSNOCluster = agentClusterInstall?.spec?.provisionRequirements?.controlPlaneAgents === 1;
 
@@ -42,78 +50,90 @@ const getInitialValues = ({
     clusterDeployment?.metadata?.annotations,
   );
 
-  // false if we have additional agent-labels set
-  const autoSelectHosts = !agentSelector?.labels?.length;
-  // !agentSelector?.matchLabels || !Object.keys(agentSelector.matchLabels).length;
+  const selectedIds = agents
+    .filter(
+      (agent) =>
+        agent.metadata?.labels?.[RESERVED_AGENT_LABEL_KEY] ===
+        getClusterDeploymentAgentReservedValue(
+          clusterDeployment.metadata?.namespace || '',
+          clusterDeployment.metadata?.name || '',
+        ),
+    )
+    .map((agent) => agent.metadata?.uid as string);
+
+  const autoSelectHosts = agentSelector.autoSelect;
 
   return {
     autoSelectHosts,
     hostCount,
     useMastersAsWorkers: hostCount === 1 || hostCount === 3, // TODO: Recently not supported - https://issues.redhat.com/browse/MGMT-7677
-    agentLabels: agentSelector?.labels || [], // labelsToArray(agentSelector?.matchLabels),
-    locations: agentSelector?.locations || [], // getLocationsFromMatchExpressions(agentSelector?.matchExpressions),
-    selectedHostIds,
-
-    // Read-only, hidden for the user, not meant to be modified by the form
-    isSNOCluster,
+    agentLabels: agentSelector?.labels || [],
+    locations: agentSelector?.locations || [],
+    selectedHostIds: autoSelectHosts ? [] : selectedIds,
+    autoSelectedHostIds: autoSelectHosts ? selectedIds : [],
   };
 };
 
-const getValidationSchema = () =>
-  Yup.object().shape({
-    hostCount: hostCountValidationSchema,
-    useMastersAsWorkers: Yup.boolean().required(),
-    agentLabels: hostLabelsValidationSchema,
-    locations: Yup.array().min(1),
+const getValidationSchema = (agentClusterInstall: AgentClusterInstallK8sResource) => {
+  const isSNOCluster = agentClusterInstall?.spec?.provisionRequirements?.controlPlaneAgents === 1;
+
+  return Yup.lazy<ClusterDeploymentHostsSelectionValues>((values) => {
+    return Yup.object<ClusterDeploymentHostsSelectionValues>().shape({
+      hostCount: hostCountValidationSchema,
+      useMastersAsWorkers: Yup.boolean().required(),
+      autoSelectedHostIds: values.autoSelectHosts
+        ? Yup.array<string>().min(values.hostCount)
+        : Yup.array<string>(),
+      selectedHostIds: values.autoSelectHosts
+        ? Yup.array<string>()
+        : Yup.array<string>().min(isSNOCluster ? 1 : values.selectedHostIds.length === 4 ? 5 : 3),
+    });
   });
+};
 
 const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectionStepProps> = ({
   clusterDeployment,
   agentClusterInstall,
-  // agents,
-  selectedHostIds,
-  matchingAgents: unfilteredMatchingAgents,
+  agents,
   onClose,
   onSaveHostsSelection,
-  ...rest
+  hostActions,
 }) => {
   const { addAlert } = useAlerts();
   const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
 
   const initialValues = React.useMemo(
-    () => getInitialValues({ clusterDeployment, agentClusterInstall, selectedHostIds }),
+    () => getInitialValues({ agents, clusterDeployment, agentClusterInstall }),
     [], // eslint-disable-line react-hooks/exhaustive-deps
   );
-  const validationSchema = React.useMemo(() => getValidationSchema(), []);
 
-  // Use Ready hosts only
-  const matchingAgents = React.useMemo(
+  const validationSchema = React.useMemo(() => getValidationSchema(agentClusterInstall), [
+    agentClusterInstall,
+  ]);
+
+  const cdName = clusterDeployment?.metadata?.name;
+  const cdNamespace = clusterDeployment?.metadata?.namespace;
+
+  const availableAgents = React.useMemo(
     () =>
-      (unfilteredMatchingAgents || []).filter((agent) => {
+      (agents || []).filter((agent) => {
         const [status] = getAgentStatus(agent);
-        return [
-          'known',
-          /* insufficient should be good for this step, a role has to be selected first */ 'insufficient',
-        ].includes(status);
+        return (
+          ['known', 'insufficient', 'pending-for-input'].includes(status) &&
+          agent.spec.approved &&
+          (Object.hasOwnProperty.call(agent.metadata?.labels, RESERVED_AGENT_LABEL_KEY)
+            ? agent.metadata?.labels?.[RESERVED_AGENT_LABEL_KEY] ===
+              getClusterDeploymentAgentReservedValue(cdNamespace || '', cdName || '')
+            : true)
+        );
       }),
-    [unfilteredMatchingAgents],
+    [agents, cdNamespace, cdName],
   );
 
   const next = () => setCurrentStepId('networking');
   const handleSubmit = async (values: ClusterDeploymentHostsSelectionValues) => {
     try {
-      const params = { ...values };
-      if (values.autoSelectHosts) {
-        // TODO(mlibra): Hosts do not need to be reallocated everytime
-        const selectedAgents = matchingAgents.splice(0, params.hostCount);
-        params.selectedHostIds = selectedAgents.map((agent) => agent.metadata?.uid || '');
-
-        if (params.selectedHostIds.length !== params.hostCount) {
-          throw 'Host auto-selection failed. Can not allocate the requested host count.';
-        }
-      }
-
-      await onSaveHostsSelection(params);
+      await onSaveHostsSelection(values);
       next();
     } catch (error) {
       addAlert({
@@ -152,7 +172,11 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
 
         return (
           <ClusterDeploymentWizardStep navigation={navigation} footer={footer}>
-            <ClusterDeploymentHostsSelection {...rest} matchingAgents={matchingAgents} />
+            <ClusterDeploymentHostsSelection
+              agentClusterInstall={agentClusterInstall}
+              hostActions={hostActions}
+              availableAgents={availableAgents}
+            />
           </ClusterDeploymentWizardStep>
         );
       }}

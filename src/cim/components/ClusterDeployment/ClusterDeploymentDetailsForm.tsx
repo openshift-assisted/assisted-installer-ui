@@ -7,22 +7,20 @@ import { getOCPVersions } from '../helpers';
 
 type ClusterDeploymentDetailsFormProps = {
   clusterImages: ClusterImageSetK8sResource[];
-  defaultPullSecret?: string;
   clusterDeployment?: ClusterDeploymentK8sResource;
   agentClusterInstall?: AgentClusterInstallK8sResource;
-  pullSecretSet?: boolean;
   toggleRedHatDnsService?: (checked: boolean) => void;
   onValuesChanged?: (values: ClusterDetailsValues) => void;
+  pullSecret?: string;
 };
 
 const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> = ({
   agentClusterInstall,
   clusterDeployment,
-  pullSecretSet,
   clusterImages,
-  defaultPullSecret,
   toggleRedHatDnsService,
   onValuesChanged,
+  pullSecret,
 }) => {
   const { values } = useFormikContext<ClusterDetailsValues>();
   React.useEffect(() => onValuesChanged?.(values), [onValuesChanged, values]);
@@ -32,13 +30,13 @@ const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> 
     <ClusterDetailsFormFields
       toggleRedHatDnsService={toggleRedHatDnsService}
       versions={ocpVersions}
-      defaultPullSecret={defaultPullSecret}
-      canEditPullSecret={!clusterDeployment || !pullSecretSet}
+      canEditPullSecret={!clusterDeployment}
       isSNOGroupDisabled={true}
       isNameDisabled={isEditFlow}
       isBaseDnsDomainDisabled={isEditFlow}
       forceOpenshiftVersion={agentClusterInstall?.spec?.imageSetRef?.name}
       isOcm={false}
+      defaultPullSecret={pullSecret}
     />
   );
 };

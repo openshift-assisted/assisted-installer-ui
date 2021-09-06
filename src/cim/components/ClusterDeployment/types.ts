@@ -19,53 +19,15 @@ export type ClusterDeploymentHostsTablePropsActions = {
   onSelect?: (agent: AgentK8sResource, selected: boolean) => void;
 };
 
-/*
-export type ClusterDeploymentHostsTablePropsActions = Pick<
-  HostsTableProps,
-  | 'onEditHost'
-  | 'canEditHost'
-  | 'onEditRole'
-  | 'canEditRole'
-  | 'onDeleteHost'
-  | 'canDelete'
-  | 'AdditionalNTPSourcesDialogToggleComponent'
-
-  /* TODO(mlibra): List other actions
-      onHostEnable: async (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
-      onInstallHost: async (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
-      onHostDisable: async (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
-      onViewHostEvents 
-      onHostReset
-      onDownloadHostLogs
-
-      canEditRole: (host: Host) => canEditRoleUtil(cluster, host.status),
-      canInstallHost: (host: Host) => canInstallHostUtil(cluster, host.status),
-      canEditDisks: (host: Host) => canEditDisksUtil(cluster.status, host.status),
-      canEnable: (host: Host) => canEnableUtil(cluster.status, host.status),
-      canDisable: (host: Host) => canDisableUtil(cluster.status, host.status),
-      canEditHost: (host: Host) => canEditHostUtil(cluster.status, host.status),
-      canReset: (host: Host) => canResetUtil(cluster.status, host.status),
-  
->;
-*/
-
 export type ClusterDeploymentWizardStepsType = 'cluster-details' | 'hosts-selection' | 'networking';
-export type AgentLocation = {
-  value: string;
-  displayName?: string;
-  itemCount: number;
-};
 
 export type ClusterDeploymentDetailsProps = {
-  defaultPullSecret: string;
-
   clusterImages: ClusterImageSetK8sResource[];
   clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall: AgentClusterInstallK8sResource;
   agents: AgentK8sResource[];
-  pullSecretSet: boolean;
-
   usedClusterNames: string[];
+  pullSecret?: string;
 };
 
 export type ClusterDeploymentDetailsValues = ClusterDetailsValues;
@@ -77,8 +39,7 @@ export type ClusterDeploymentHostsSelectionValues = {
   agentLabels: string[];
   locations: string[];
   selectedHostIds: string[];
-
-  isSNOCluster: boolean; // read-only, never changed
+  autoSelectedHostIds: string[];
 };
 
 export type ClusterDeploymentDetailsStepProps = ClusterDeploymentDetailsProps & {
@@ -90,54 +51,44 @@ export type ClusterDeploymentDetailsNetworkingProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall: AgentClusterInstallK8sResource;
   agents: AgentK8sResource[];
-  pullSecretSet: boolean;
   onSaveNetworking: (values: ClusterDeploymentNetworkingValues) => Promise<string | void>;
   onClose: () => void;
   hostActions: ClusterDeploymentHostsTablePropsActions;
 };
 
 export type AgentSelectorChangeProps = {
-  labels?: string[];
-  locations?: string[];
+  labels: string[];
+  locations: string[];
+  autoSelect: boolean;
 };
 
-export type ClusterDeploymentHostsSelectionProps = {
-  // All unique labels used in the Agents. Used for auto-suggestion.
-  usedAgentLabels?: string[];
-
-  // calculated from AGENT_LOCATION_LABEL_KEY label
-  agentLocations?: AgentLocation[];
-
-  // on-the-fly result of a qeury based on value just entered & passed through onAgentSelectorChange()
-  matchingAgents?: AgentK8sResource[];
-
-  // Count of all Agent resources in the k8s database (no label applied). For user's info only.
-  // allAgentsCount?: number;
-
-  // Callback trigerred when the user changes labels in the UI. It is expected that "matchingAgents" list is updated based on the new value.
-  onAgentSelectorChange: (props: AgentSelectorChangeProps) => void;
-
-  // wrapping objects with HostTable callbacks
+export type ClusterDeploymentHostSelectionStepProps = {
+  clusterDeployment: ClusterDeploymentK8sResource;
+  agentClusterInstall: AgentClusterInstallK8sResource;
+  agents: AgentK8sResource[];
+  onSaveHostsSelection: (values: ClusterDeploymentHostsSelectionValues) => Promise<string | void>;
+  onClose: () => void;
   hostActions: ClusterDeploymentHostsTablePropsActions;
 };
 
-export type ClusterDeploymentHostSelectionStepProps = ClusterDeploymentHostsSelectionProps & {
-  clusterDeployment: ClusterDeploymentK8sResource;
-  selectedHostIds: string[];
-  agentClusterInstall: AgentClusterInstallK8sResource;
-  // agents: AgentK8sResource[];
-  onSaveHostsSelection: (values: ClusterDeploymentHostsSelectionValues) => Promise<string | void>;
+export type ClusterDeploymentWizardProps = {
+  className?: string;
   onClose: () => void;
+  onSaveDetails: ClusterDeploymentDetailsStepProps['onSaveDetails'];
+  onSaveNetworking: ClusterDeploymentDetailsNetworkingProps['onSaveNetworking'];
+  onSaveHostsSelection: ClusterDeploymentHostSelectionStepProps['onSaveHostsSelection'];
+  hostActions: ClusterDeploymentHostsTablePropsActions;
+  clusterDeployment: ClusterDeploymentK8sResource;
+  agentClusterInstall: AgentClusterInstallK8sResource;
+  agents: AgentK8sResource[];
+  clusterImages: ClusterImageSetK8sResource[];
+  usedClusterNames: string[];
 };
 
-export type ClusterDeploymentWizardProps = ClusterDeploymentDetailsProps &
-  ClusterDeploymentHostSelectionStepProps & {
-    className?: string;
-
-    onClose: () => void;
-    onSaveDetails: ClusterDeploymentDetailsStepProps['onSaveDetails'];
-    onSaveNetworking: ClusterDeploymentDetailsNetworkingProps['onSaveNetworking'];
-    onSaveHostsSelection: ClusterDeploymentHostSelectionStepProps['onSaveHostsSelection'];
-  };
-
 export type FetchSecret = (name: string, namespace: string) => Promise<SecretK8sResource>;
+
+export type ClusterDeploymentHostsSelectionProps = {
+  agentClusterInstall: AgentClusterInstallK8sResource;
+  availableAgents: AgentK8sResource[];
+  hostActions: ClusterDeploymentHostsTablePropsActions;
+};

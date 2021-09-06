@@ -1,6 +1,10 @@
 export const AGENT_LOCATION_LABEL_KEY =
   'agentclusterinstalls.extensions.hive.openshift.io/location';
 
+export const AGENT_SELECTOR = 'agentBareMetal-agentSelector-';
+
+export const AGENT_AUTO_SELECT_ANNOTATION_KEY = `agentBareMetal-agentSelector/autoSelect`;
+
 export const AGENT_NOLOCATION_VALUE = 'NOLOCATION';
 
 // We need that in addition to the AgentClusterInstall's clusterDeploymentRefName

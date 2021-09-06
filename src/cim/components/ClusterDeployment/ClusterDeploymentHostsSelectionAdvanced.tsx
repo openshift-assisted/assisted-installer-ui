@@ -1,7 +1,7 @@
 import { GridItem } from '@patternfly/react-core';
+import * as _ from 'lodash';
 import { useField, useFormikContext } from 'formik';
 import React from 'react';
-import { LabelField } from '../../../common';
 import HostsTable from '../../../common/components/hosts/HostsTable';
 import {
   cpuCoresColumn,
@@ -10,32 +10,37 @@ import {
   memoryColumn,
 } from '../../../common/components/hosts/tableUtils';
 import { AgentK8sResource } from '../../types';
-import { AgentTableEmptyState } from '../Agent/AgentTable';
+import DefaultEmptyState from '../../../common/components/ui/uiState/EmptyState';
 import { infraEnvColumn, statusColumn, useAgentsTable } from '../Agent/tableUtils';
-import { AGENT_LOCATION_LABEL_KEY } from '../common';
+import { AGENT_LOCATION_LABEL_KEY, AGENT_NOLOCATION_VALUE } from '../common';
 import LocationsSelector from './LocationsSelector';
 import {
-  ClusterDeploymentHostsSelectionProps,
   ClusterDeploymentHostsSelectionValues,
   ClusterDeploymentHostsTablePropsActions,
 } from './types';
+import LabelsSelector from './LabelsSelector';
 
 type AgentsSelectionTableProps = {
-  matchingAgents?: AgentK8sResource[];
+  matchingAgents: AgentK8sResource[];
   actions: ClusterDeploymentHostsTablePropsActions;
 };
 
-const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
-  matchingAgents = [],
-  actions,
-}) => {
-  const [selectedHostIdsField, , { setValue: setSelectedHostIdsValue }] = useField(
-    'selectedHostIds',
-  );
+const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({ matchingAgents, actions }) => {
+  const [selectedHostIdsField, , { setValue: setSelectedHostIdsValue }] = useField<
+    ClusterDeploymentHostsSelectionValues['selectedHostIds']
+  >('selectedHostIds');
+
+  React.useEffect(() => {
+    const allIds = matchingAgents.map((a) => a.metadata?.uid);
+    const presentIds = selectedHostIdsField.value.filter((id) => allIds.includes(id));
+    if (presentIds.length !== selectedHostIdsField.value.length) {
+      setSelectedHostIdsValue(presentIds);
+    }
+  }, [matchingAgents, setSelectedHostIdsValue, selectedHostIdsField.value]);
 
   const onSelect = (agent: AgentK8sResource, selected: boolean) => {
     if (selected) {
-      setSelectedHostIdsValue([...selectedHostIdsField.value, agent.metadata?.uid]);
+      setSelectedHostIdsValue([...selectedHostIdsField.value, agent.metadata?.uid || '']);
     } else {
       setSelectedHostIdsValue(
         selectedHostIdsField.value.filter((uid: string) => uid !== agent.metadata?.uid),
@@ -68,58 +73,57 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
       className="agents-table"
       {...hostActions}
     >
-      <AgentTableEmptyState />
+      <DefaultEmptyState
+        title="No hosts found"
+        content="No host matches provided labels/locations"
+      />
     </HostsTable>
   );
 };
 
-type ClusterDeploymentHostsSelectionAdvancedProps = Pick<
-  ClusterDeploymentHostsSelectionProps,
-  'hostActions' | 'agentLocations' | 'onAgentSelectorChange' | 'matchingAgents' | 'usedAgentLabels'
->;
+type ClusterDeploymentHostsSelectionAdvancedProps = {
+  availableAgents: AgentK8sResource[];
+  hostActions: ClusterDeploymentHostsTablePropsActions;
+};
 
 const ClusterDeploymentHostsSelectionAdvanced: React.FC<ClusterDeploymentHostsSelectionAdvancedProps> = ({
+  availableAgents,
   hostActions,
-  matchingAgents,
-  usedAgentLabels = [],
-  agentLocations,
-  onAgentSelectorChange,
 }) => {
   const { values } = useFormikContext<ClusterDeploymentHostsSelectionValues>();
 
-  const usedAgentLabelsWithoutLocation = usedAgentLabels
-    .filter((key) => key !== AGENT_LOCATION_LABEL_KEY)
-    .sort();
+  const matchingAgents = React.useMemo(
+    () =>
+      availableAgents.filter((agent) => {
+        const labels = values.agentLabels.reduce((acc, curr) => {
+          const label = curr.split('=');
+          acc[label[0]] = label[1];
+          return acc;
+        }, {});
+        const matchesLocation = values.locations.length
+          ? values.locations.includes(
+              agent.metadata?.annotations?.[AGENT_LOCATION_LABEL_KEY] || AGENT_NOLOCATION_VALUE,
+            )
+          : true;
+        const matchesLabels = agent.metadata?.labels
+          ? _.isMatch(agent.metadata?.labels, labels)
+          : true;
+        return matchesLocation && matchesLabels;
+      }),
+    [availableAgents, values.locations, values.agentLabels],
+  );
 
   return (
     <>
       <GridItem>
-        <LocationsSelector
-          agentLocations={agentLocations}
-          onAgentSelectorChange={onAgentSelectorChange}
-        />
+        <LocationsSelector agents={availableAgents} />
       </GridItem>
-
       <GridItem>
-        <LabelField
-          label="Labels matching hosts"
-          name="agentLabels"
-          idPostfix="agentlabels"
-          helperText="Please provide as many labels as you can to narrow the list to relevant hosts only."
-          forceUniqueKeys={true}
-          autocompleteValues={usedAgentLabelsWithoutLocation}
-          isDisabled={values.locations.length === 0}
-          onChange={(tags: string[]) =>
-            onAgentSelectorChange({ labels: tags, locations: values.locations })
-          }
-        />
+        <LabelsSelector agents={matchingAgents} />
       </GridItem>
-
-      {!!values.locations.length && (
-        <GridItem>
-          <AgentsSelectionTable matchingAgents={matchingAgents} actions={hostActions} />
-        </GridItem>
-      )}
+      <GridItem>
+        <AgentsSelectionTable matchingAgents={matchingAgents} actions={hostActions} />
+      </GridItem>
     </>
   );
 };

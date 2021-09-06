@@ -32,8 +32,10 @@ export interface SelectFieldProps extends FieldProps {
   // onBlur?: (event: React.FormEvent<HTMLSelectElement>) => void;
 }
 
+export type MultiSelectOption = SelectOptionProps & { id: string; displayName: string };
+
 export interface MultiSelectFieldProps extends FieldProps {
-  options: (SelectOptionProps & { id: string; displayName?: string })[];
+  options: MultiSelectOption[];
   placeholderText?: string;
   onChange?: (val: string[]) => void;
   getHelperText?: (value: string) => React.ReactNode | undefined;
