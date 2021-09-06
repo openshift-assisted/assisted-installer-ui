@@ -31,14 +31,13 @@ import {
   shouldShowClusterInstallationError,
   shouldShowClusterInstallationProgress,
 } from './helpers';
-import ClusterProgress from '../../../common/components/clusterDetail/ClusterProgress';
 import ClusterInstallationError from './ClusterInstallationError';
 import { EventsModalButton } from '../../../common/components/ui/eventsModal';
 import KubeconfigDownload from '../../../common/components/clusterDetail/KubeconfigDownload';
 import { EventListFetchProps } from '../../../common/types/events';
 import AgentTable from '../Agent/AgentTable';
 import { FetchSecret } from './types';
-import { EventList } from '../../../common/api/types';
+import ClusterDeploymentProgress from './ClusterDeploymentProgress';
 
 type ClusterDeploymentDetailsProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
@@ -120,7 +119,12 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
               <CardBody>
                 <Stack hasGutter>
                   <StackItem>
-                    <ClusterProgress cluster={cluster} onFetchEvents={handleFetchEvents} />
+                    <ClusterDeploymentProgress
+                      clusterDeployment={clusterDeployment}
+                      agentClusterInstall={agentClusterInstall}
+                      agents={agents}
+                      onFetchEvents={handleFetchEvents}
+                    />
                   </StackItem>
                   {shouldShowClusterCredentials(agentClusterInstall) && (
                     <StackItem>
