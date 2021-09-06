@@ -91,8 +91,12 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
                 <p>
                   Modify your platform configuration to access your platform's features directly in
                   OpenShift.{' '}
-                  <a href="#">
-                    Learn more <i className="fas fa-external-link-alt" />
+                  <a
+                    href="https://issues.redhat.com/secure/attachment/12531134/12531134_How+to+modify+the+vSphere+configuration+in+OpenShift+4.x+-+Red+Hat+Customer+Portal.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Learn how to configure <i className="fas fa-external-link-alt" />
                   </a>
                 </p>
               }
