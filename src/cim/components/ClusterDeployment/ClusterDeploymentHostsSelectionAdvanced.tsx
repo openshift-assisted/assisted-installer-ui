@@ -102,7 +102,7 @@ const ClusterDeploymentHostsSelectionAdvanced: React.FC<ClusterDeploymentHostsSe
         }, {});
         const matchesLocation = values.locations.length
           ? values.locations.includes(
-              agent.metadata?.annotations?.[AGENT_LOCATION_LABEL_KEY] || AGENT_NOLOCATION_VALUE,
+              agent.metadata?.labels?.[AGENT_LOCATION_LABEL_KEY] || AGENT_NOLOCATION_VALUE,
             )
           : true;
         const matchesLabels = agent.metadata?.labels

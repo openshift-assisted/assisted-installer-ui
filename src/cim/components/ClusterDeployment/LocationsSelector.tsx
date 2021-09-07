@@ -25,8 +25,7 @@ const LocationsSelector: React.FC<{ agents: AgentK8sResource[] }> = ({ agents })
   const agentLocationOptions = Array.from(
     new Set(
       agents.map(
-        (agent) =>
-          agent.metadata?.annotations?.[AGENT_LOCATION_LABEL_KEY] || AGENT_NOLOCATION_VALUE,
+        (agent) => agent.metadata?.labels?.[AGENT_LOCATION_LABEL_KEY] || AGENT_NOLOCATION_VALUE,
       ),
     ),
   ).map<MultiSelectOption>((value) => ({

@@ -36,7 +36,7 @@ const ClusterDeploymentHostsSelectionBasic: React.FC<ClusterDeploymentHostsSelec
   const [matchingAgents, selectedAgents] = React.useMemo(() => {
     const mAgents = availableAgents.filter((agent) => {
       const agentLocation =
-        agent.metadata?.annotations?.[AGENT_LOCATION_LABEL_KEY] || AGENT_NOLOCATION_VALUE;
+        agent.metadata?.labels?.[AGENT_LOCATION_LABEL_KEY] || AGENT_NOLOCATION_VALUE;
       return locations.length ? locations.includes(agentLocation) : true;
     });
     const sAgents = mAgents.filter((a) => autoSelectedHostIds.includes(a.metadata?.uid || ''));
