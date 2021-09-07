@@ -96,7 +96,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    Learn how to configure <i className="fas fa-external-link-alt" />
+                    Learn more about configuration <i className="fas fa-external-link-alt" />
                   </a>
                 </p>
               }
