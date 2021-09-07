@@ -1,7 +1,7 @@
 import React from 'react';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
-import { getFormikErrorFields, useAlerts } from '../../../common';
+import { getFormikErrorFields, Host, useAlerts } from '../../../common';
 import {
   AgentClusterInstallK8sResource,
   AgentK8sResource,
@@ -91,6 +91,13 @@ const getValidationSchema = (agentClusterInstall: AgentClusterInstallK8sResource
   });
 };
 
+const LISTED_HOST_STATUSES: Host['status'][] = [
+  'known',
+  'insufficient',
+  'pending-for-input',
+  'discovering',
+];
+
 const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectionStepProps> = ({
   clusterDeployment,
   agentClusterInstall,
@@ -119,7 +126,7 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
       (agents || []).filter((agent) => {
         const [status] = getAgentStatus(agent);
         return (
-          ['known', 'insufficient', 'pending-for-input'].includes(status) &&
+          LISTED_HOST_STATUSES.includes(status) &&
           agent.spec.approved &&
           (Object.hasOwnProperty.call(agent.metadata?.labels, RESERVED_AGENT_LABEL_KEY)
             ? agent.metadata?.labels?.[RESERVED_AGENT_LABEL_KEY] ===
