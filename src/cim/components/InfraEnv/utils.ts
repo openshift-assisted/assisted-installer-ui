@@ -6,6 +6,7 @@ import {
 } from '../../types';
 import { EnvironmentStepFormValues } from './InfraEnvFormPage';
 import { getClusterDeploymentResource } from '../helpers';
+import { AGENT_LOCATION_LABEL_KEY } from '../common';
 
 export const getLabels = (values: EnvironmentStepFormValues) =>
   values.labels.reduce((acc, curr) => {
@@ -28,11 +29,17 @@ export const getClusterDeploymentForInfraEnv = (
     pullSecretName,
   });
 
-export const getAgentClusterInstall = (
-  clusterDeploymentName: string,
-  namespace: string,
-  values: EnvironmentStepFormValues,
-): AgentClusterInstallK8sResource => {
+type getAgentClusterInstallProps = {
+  clusterDeploymentName?: string;
+  namespace: string;
+  values: EnvironmentStepFormValues;
+};
+
+export const getAgentClusterInstall = ({
+  clusterDeploymentName,
+  namespace,
+  values,
+}: getAgentClusterInstallProps): AgentClusterInstallK8sResource => {
   const obj: AgentClusterInstallK8sResource = {
     apiVersion: 'extensions.hive.openshift.io/v1beta1',
     kind: 'AgentClusterInstall',
@@ -41,9 +48,12 @@ export const getAgentClusterInstall = (
       namespace,
     },
     spec: {
-      clusterDeploymentRef: {
-        name: clusterDeploymentName,
-      },
+      clusterDeploymentRef: clusterDeploymentName
+        ? {
+            name: clusterDeploymentName,
+            namespace,
+          }
+        : {},
       networking: {
         clusterNetwork: [
           {
@@ -87,6 +97,10 @@ export const getInfraEnv = (
   values: EnvironmentStepFormValues,
 ): InfraEnvK8sResource => {
   const labels = getLabels(values);
+  if (values.location) {
+    labels[AGENT_LOCATION_LABEL_KEY] = labels[AGENT_LOCATION_LABEL_KEY] || values.location;
+  }
+
   const infraEnv: InfraEnvK8sResource = {
     apiVersion: 'agent-install.openshift.io/v1beta1',
     kind: 'InfraEnv',
@@ -94,7 +108,7 @@ export const getInfraEnv = (
       name: values.name,
       namespace,
       labels: {
-        'assisted-install-location': values.location,
+        [AGENT_LOCATION_LABEL_KEY]: values.location,
       },
     },
     spec: {
