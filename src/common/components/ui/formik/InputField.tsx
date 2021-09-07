@@ -1,11 +1,13 @@
 import * as React from 'react';
 import { useField } from 'formik';
-import { FormGroup, Split, SplitItem, TextInput } from '@patternfly/react-core';
+import { FormGroup, HelperTextItem, Split, SplitItem, TextInput } from '@patternfly/react-core';
 import { InputFieldProps } from './types';
 import { getFieldId } from './utils';
 import HelperText from './HelperText';
 
-const InputField: React.FC<InputFieldProps> = React.forwardRef(
+const InputField: React.FC<
+  InputFieldProps & { inputError?: string; description?: React.ReactNode }
+> = React.forwardRef(
   (
     {
       label,
@@ -17,14 +19,16 @@ const InputField: React.FC<InputFieldProps> = React.forwardRef(
       idPostfix,
       children,
       noDefaultOnChange,
+      inputError,
+      description,
       ...props
     },
     ref: React.Ref<HTMLInputElement>,
   ) => {
     const [field, { touched, error }] = useField({ name: props.name, validate });
     const fieldId = getFieldId(props.name, 'input', idPostfix);
-    const isValid = !(touched && error);
-    const errorMessage = !isValid ? error : '';
+    const isValid = !(touched && error) || !inputError;
+    const errorMessage = (!isValid ? error : '') || inputError;
     return (
       <FormGroup
         fieldId={fieldId}
@@ -41,6 +45,11 @@ const InputField: React.FC<InputFieldProps> = React.forwardRef(
         isRequired={isRequired}
         labelIcon={labelIcon}
       >
+        {description && (
+          <HelperText fieldId={fieldId}>
+            <HelperTextItem variant="indeterminate">{description}</HelperTextItem>
+          </HelperText>
+        )}
         <Split>
           <SplitItem isFilled>
             <TextInput

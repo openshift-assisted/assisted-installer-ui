@@ -22,12 +22,13 @@ import { useFormikContext } from 'formik';
 // TODO(mlibra): So far a constant. Should be queried from somewhere.
 export const defaultNetworkSettings: ClusterDefaultConfig = CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4;
 
-type ClusterDeploymentNetworkingFormProps = ClusterDeploymentHostsTablePropsActions & {
+type ClusterDeploymentNetworkingFormProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall: AgentClusterInstallK8sResource;
   agents: AgentK8sResource[];
   pullSecretSet: boolean;
   onValuesChanged?: (values: ClusterDeploymentNetworkingValues) => void;
+  hostActions: ClusterDeploymentHostsTablePropsActions;
 };
 
 const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormProps> = ({

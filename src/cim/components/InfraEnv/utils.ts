@@ -5,6 +5,8 @@ import {
   SecretKind,
 } from '../../types';
 import { EnvironmentStepFormValues } from './InfraEnvFormPage';
+import { getClusterDeploymentResource } from '../helpers';
+import { AGENT_LOCATION_LABEL_KEY } from '../common';
 
 export const getLabels = (values: EnvironmentStepFormValues) =>
   values.labels.reduce((acc, curr) => {
@@ -13,44 +15,31 @@ export const getLabels = (values: EnvironmentStepFormValues) =>
     return acc;
   }, {});
 
-export const getClusterDeployment = (
+// TODO(mlibra): This should not be needed once we have late-binding
+export const getClusterDeploymentForInfraEnv = (
   pullSecretName: string,
   namespace: string,
   values: EnvironmentStepFormValues,
-): ClusterDeploymentK8sResource => ({
-  apiVersion: 'hive.openshift.io/v1',
-  kind: 'ClusterDeployment',
-  metadata: {
+): ClusterDeploymentK8sResource =>
+  getClusterDeploymentResource({
     name: values.name,
     namespace,
-  },
-  spec: {
-    baseDomain: values.baseDomain,
-    clusterInstallRef: {
-      group: 'extensions.hive.openshift.io',
-      kind: 'AgentClusterInstall',
-      name: values.name,
-      version: 'v1beta1',
-    },
-    clusterName: values.name,
-    platform: {
-      agentBareMetal: {
-        agentSelector: {
-          matchLabels: getLabels(values),
-        },
-      },
-    },
-    pullSecretRef: {
-      name: pullSecretName,
-    },
-  },
-});
+    baseDnsDomain: values.baseDomain,
+    annotations: getLabels(values),
+    pullSecretName,
+  });
 
-export const getAgentClusterInstall = (
-  clusterDeploymentName: string,
-  namespace: string,
-  values: EnvironmentStepFormValues,
-): AgentClusterInstallK8sResource => {
+type getAgentClusterInstallProps = {
+  clusterDeploymentName?: string;
+  namespace: string;
+  values: EnvironmentStepFormValues;
+};
+
+export const getAgentClusterInstall = ({
+  clusterDeploymentName,
+  namespace,
+  values,
+}: getAgentClusterInstallProps): AgentClusterInstallK8sResource => {
   const obj: AgentClusterInstallK8sResource = {
     apiVersion: 'extensions.hive.openshift.io/v1beta1',
     kind: 'AgentClusterInstall',
@@ -59,9 +48,12 @@ export const getAgentClusterInstall = (
       namespace,
     },
     spec: {
-      clusterDeploymentRef: {
-        name: clusterDeploymentName,
-      },
+      clusterDeploymentRef: clusterDeploymentName
+        ? {
+            name: clusterDeploymentName,
+            namespace,
+          }
+        : {},
       networking: {
         clusterNetwork: [
           {
@@ -105,6 +97,10 @@ export const getInfraEnv = (
   values: EnvironmentStepFormValues,
 ): InfraEnvK8sResource => {
   const labels = getLabels(values);
+  if (values.location) {
+    labels[AGENT_LOCATION_LABEL_KEY] = labels[AGENT_LOCATION_LABEL_KEY] || values.location;
+  }
+
   const infraEnv: InfraEnvK8sResource = {
     apiVersion: 'agent-install.openshift.io/v1beta1',
     kind: 'InfraEnv',
@@ -112,7 +108,7 @@ export const getInfraEnv = (
       name: values.name,
       namespace,
       labels: {
-        'assisted-install-location': values.location,
+        [AGENT_LOCATION_LABEL_KEY]: values.location,
       },
     },
     spec: {

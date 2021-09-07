@@ -10,6 +10,7 @@ const SwitchField: React.FC<SwitchFieldProps> = ({
   helperText,
   isRequired,
   onChange,
+  onChangeCustomOverride,
   getHelperText,
   idPostfix,
   labelIcon,
@@ -38,8 +39,12 @@ const SwitchField: React.FC<SwitchFieldProps> = ({
         isDisabled={props.isDisabled}
         isChecked={field.value}
         onChange={(checked, event) => {
-          field.onChange(event);
-          onChange && onChange(checked, event);
+          if (onChangeCustomOverride) {
+            onChangeCustomOverride(checked, event);
+          } else {
+            field.onChange(event);
+            onChange && onChange(checked, event);
+          }
         }}
       />
     </FormGroup>

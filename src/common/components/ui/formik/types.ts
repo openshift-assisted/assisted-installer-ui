@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { TextInputTypes, FormSelectOptionProps } from '@patternfly/react-core';
+import { TextInputTypes, FormSelectOptionProps, SelectOptionProps } from '@patternfly/react-core';
 import { FieldValidator, FieldHelperProps } from 'formik';
 import { DropzoneProps, DropFileEventHandler } from 'react-dropzone';
+import { CodeEditorProps } from '@patternfly/react-code-editor';
 
 export interface FieldProps {
   name: string;
@@ -31,7 +32,17 @@ export interface SelectFieldProps extends FieldProps {
   // onBlur?: (event: React.FormEvent<HTMLSelectElement>) => void;
 }
 
+export interface MultiSelectFieldProps extends FieldProps {
+  options: (SelectOptionProps & { id: string; displayName?: string })[];
+  placeholderText?: string;
+  onChange?: (val: string[]) => void;
+  getHelperText?: (value: string) => React.ReactNode | undefined;
+}
+
 export interface SwitchFieldProps extends FieldProps {
+  // replace the default onChange handler
+  onChangeCustomOverride?: (checked: boolean, event: React.FormEvent<HTMLInputElement>) => void;
+  // called in addition to the default internal onChange handler
   onChange?: (checked: boolean, event: React.FormEvent<HTMLInputElement>) => void;
   getHelperText?: (value: string) => string | undefined;
 }
@@ -41,6 +52,17 @@ export interface InputFieldProps extends FieldProps {
   placeholder?: string;
   noDefaultOnChange?: boolean;
   onChange?: (event: React.FormEvent<HTMLInputElement>) => void;
+  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
+  validate?: FieldValidator;
+}
+
+export interface NumberInputFieldProps extends FieldProps {
+  minValue?: number;
+  maxValue?: number;
+  minusBtnAriaLabel?: string;
+  plusBtnAriaLabel?: string;
+  unit?: string;
+  onChange: (newValue: number) => void;
   onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
   validate?: FieldValidator;
 }
@@ -87,4 +109,9 @@ export interface DropdownFieldProps extends FieldProps {
   fullWidth?: boolean;
   disabled?: boolean;
   onChange?: (value: string) => void;
+}
+
+export interface CodeFieldProps extends FieldProps {
+  language: CodeEditorProps['language'];
+  description?: React.ReactNode;
 }

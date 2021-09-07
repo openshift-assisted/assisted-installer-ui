@@ -1,12 +1,12 @@
 import _ from 'lodash';
 import { AgentK8sResource } from '../../types/k8s/agent';
 import { Cluster, Host, Inventory } from '../../../common';
-import { getAgentStatus, getClusterStatus } from './status';
 import { ClusterDeploymentK8sResource } from '../../types/k8s/cluster-deployment';
 import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-install';
+import { getAgentStatus, getClusterStatus } from './status';
 import { getHostNetworks } from './network';
 
-export const getAIHosts = (agents: AgentK8sResource[] = []) =>
+export const getAIHosts = (agents: AgentK8sResource[]) =>
   agents.map(
     (agent): Host => {
       const [status, statusInfo] = getAgentStatus(agent);
@@ -99,6 +99,15 @@ export const getAICluster = ({
     installStartedAt: clusterDeployment.status?.installStartedTimestamp,
     installCompletedAt: clusterDeployment.status?.installedTimestamp,
   };
+  /*
+  aiCluster.agentSelectorMasterLabels =
+    clusterDeployment.spec?.platform?.agentBareMetal?.agentSelector?.matchLabels;
 
+  // TODO(mlibra): Where to store that in K8S resources?
+  //
+  // Initial value of the "Auto-select control plane (master) hosts" switch
+  // is driven by either undefined or actual value of agentSelectorWorkerLabels
+  aiCluster.agentSelectorWorkerLabels = undefined;
+*/
   return aiCluster;
 };

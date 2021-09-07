@@ -16,9 +16,12 @@ export type AgentClusterInstallStatusCondition = StatusCondition<
 
 export type AgentClusterInstallK8sResource = K8sResourceCommon & {
   spec?: {
-    clusterDeploymentRef: {
-      name: string;
-    };
+    clusterDeploymentRef?:
+      | {
+          name: string;
+          namespace: string;
+        }
+      | {};
     clusterMetadata?: {
       adminKubeconfigSecretRef?: {
         name: string;
@@ -35,6 +38,7 @@ export type AgentClusterInstallK8sResource = K8sResourceCommon & {
     };
     provisionRequirements: {
       controlPlaneAgents: number;
+      workerAgents?: number;
     };
     networking: {
       clusterNetwork?: {
