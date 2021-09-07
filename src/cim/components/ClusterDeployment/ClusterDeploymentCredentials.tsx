@@ -22,33 +22,40 @@ const ClusterDeploymentCredentials = ({
   fetchSecret,
 }: ClusterDeploymentCredentialsProps) => {
   const [credentials, setCredentials] = React.useState({});
+  const [isError, setIsError] = React.useState(false);
 
   const cluster = getAICluster({ clusterDeployment, agentClusterInstall, agents });
 
+  const adminPasswordSecretRefName =
+    agentClusterInstall.spec?.clusterMetadata?.adminPasswordSecretRef?.name;
+  const namespace = clusterDeployment.metadata?.namespace;
+
   React.useEffect(() => {
     const fetchCredentials = async () => {
-      const adminPasswordSecretRefName =
-        agentClusterInstall.spec?.clusterMetadata?.adminPasswordSecretRef?.name;
-      const namespace = clusterDeployment.metadata?.namespace;
-
       if (adminPasswordSecretRefName && namespace) {
         try {
           const secret = await fetchSecret(adminPasswordSecretRefName, namespace);
-          // const secret = await k8sGet(SecretModel, adminPasswordSecretRefName, namespace);
           setCredentials({
             username: atob(secret?.data?.username || ''),
             password: atob(secret?.data?.password || ''),
           });
         } catch (e) {
+          setIsError(true);
           console.error('Failed to fetch adminPasswordSecret secret.', e);
         }
       }
     };
 
     fetchCredentials();
-  }, [agentClusterInstall, fetchSecret, clusterDeployment.metadata]);
+  }, [adminPasswordSecretRefName, namespace, fetchSecret]);
 
-  return <ClusterCredentials cluster={cluster} credentials={{ ...credentials, consoleUrl }} />;
+  return (
+    <ClusterCredentials
+      cluster={cluster}
+      credentials={{ ...credentials, consoleUrl }}
+      error={isError}
+    />
+  );
 };
 
 export default ClusterDeploymentCredentials;

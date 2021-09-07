@@ -38,6 +38,7 @@ import { EventListFetchProps } from '../../../common/types/events';
 import AgentTable from '../Agent/AgentTable';
 import { FetchSecret } from './types';
 import ClusterDeploymentProgress from './ClusterDeploymentProgress';
+import { getConsoleUrl } from '../helpers/clusterDeployment';
 
 type ClusterDeploymentDetailsProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
@@ -133,10 +134,7 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
                         agentClusterInstall={agentClusterInstall}
                         agents={agents}
                         fetchSecret={fetchSecret}
-                        consoleUrl={
-                          clusterDeployment.status?.webConsoleURL ||
-                          `https://console-openshift-console.apps.${clusterDeployment.spec?.clusterName}.${clusterDeployment.spec?.baseDomain}`
-                        }
+                        consoleUrl={getConsoleUrl(clusterDeployment)}
                       />
                     </StackItem>
                   )}
