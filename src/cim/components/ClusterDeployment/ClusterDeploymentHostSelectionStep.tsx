@@ -127,11 +127,11 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
         const [status] = getAgentStatus(agent);
         return (
           LISTED_HOST_STATUSES.includes(status) &&
-          agent.spec.approved &&
-          (Object.hasOwnProperty.call(agent.metadata?.labels, RESERVED_AGENT_LABEL_KEY)
-            ? agent.metadata?.labels?.[RESERVED_AGENT_LABEL_KEY] ===
-              getClusterDeploymentAgentReservedValue(cdNamespace || '', cdName || '')
-            : true)
+          agent.spec?.approved &&
+          ((agent.spec.clusterDeploymentName?.name === cdName &&
+            agent.spec.clusterDeploymentName?.namespace === cdNamespace) ||
+            (!agent.spec.clusterDeploymentName?.name &&
+              !agent.spec.clusterDeploymentName?.namespace))
         );
       }),
     [agents, cdNamespace, cdName],
