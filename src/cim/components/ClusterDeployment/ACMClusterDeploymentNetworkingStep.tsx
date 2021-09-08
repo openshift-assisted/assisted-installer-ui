@@ -17,7 +17,6 @@ import {
 type ACMClusterDeploymentNetworkingStepProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall: AgentClusterInstallK8sResource;
-  pullSecretSet: boolean;
   formRef: Ref<FormikProps<ClusterDeploymentNetworkingValues>>;
   agents: AgentK8sResource[];
   onValuesChanged: (values: ClusterDeploymentNetworkingValues) => void;
@@ -29,7 +28,6 @@ const ACMClusterDeploymentNetworkingStep: React.FC<ACMClusterDeploymentNetworkin
   agentClusterInstall,
   agents,
   formRef,
-  pullSecretSet,
   onValuesChanged,
   ...rest
 }) => {
@@ -37,7 +35,6 @@ const ACMClusterDeploymentNetworkingStep: React.FC<ACMClusterDeploymentNetworkin
     clusterDeployment,
     agentClusterInstall,
     agents,
-    pullSecretSet,
   });
   return (
     <Formik initialValues={initialValues} validationSchema={validationSchema}  innerRef={formRef} onSubmit={noop}>
@@ -45,7 +42,6 @@ const ACMClusterDeploymentNetworkingStep: React.FC<ACMClusterDeploymentNetworkin
         clusterDeployment={clusterDeployment}
         agentClusterInstall={agentClusterInstall}
         agents={agents}
-        pullSecretSet={pullSecretSet}
         onValuesChanged={onValuesChanged}
         {...rest}
       />

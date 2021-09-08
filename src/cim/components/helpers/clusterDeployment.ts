@@ -1,8 +1,16 @@
 import { ObjectMetadata } from 'console-sdk-ai-lib';
 import { parseStringLabels } from '../../../common';
 import { ClusterDeploymentK8sResource } from '../../types';
-import { AgentSelectorChangeProps } from '../ClusterDeployment/types';
-import { AGENT_LOCATION_LABEL_KEY, RESERVED_AGENT_LABEL_KEY } from '../common';
+import {
+  AgentSelectorChangeProps,
+  ClusterDeploymentHostsSelectionValues,
+} from '../ClusterDeployment/types';
+import {
+  AGENT_LOCATION_LABEL_KEY,
+  RESERVED_AGENT_LABEL_KEY,
+  AGENT_AUTO_SELECT_ANNOTATION_KEY,
+  AGENT_SELECTOR,
+} from '../common';
 
 export type ClusterDeploymentParams = {
   name: string;
@@ -16,21 +24,15 @@ export type ClusterDeploymentParams = {
 export const getClusterDeploymentAgentReservedValue = (namespace: string, name: string) =>
   `cluster-deployment-${namespace}-${name}`;
 
-const AGENT_BAREMETAL_ANNOTATION_PREFIX = 'agentBareMetal-agentSelector-';
 export const getAgentSelectorFieldsFromAnnotations = (
   annotations: ObjectMetadata['annotations'] = {},
-): AgentSelectorChangeProps | undefined => {
+): AgentSelectorChangeProps => {
   const locations = annotations[AGENT_LOCATION_LABEL_KEY]?.split(',');
-
-  // A location must be set
-  if (!locations?.length) {
-    return undefined;
-  }
 
   const labels = Object.keys(annotations)
     .map((key) => {
-      if (key.startsWith(AGENT_BAREMETAL_ANNOTATION_PREFIX)) {
-        const label = key.substr(AGENT_BAREMETAL_ANNOTATION_PREFIX.length);
+      if (key.startsWith(AGENT_SELECTOR)) {
+        const label = key.substr(AGENT_SELECTOR.length);
         return `${label}=${annotations[key]}`;
       }
       return undefined;
@@ -40,31 +42,37 @@ export const getAgentSelectorFieldsFromAnnotations = (
   return {
     labels,
     locations,
+    autoSelect: annotations[AGENT_AUTO_SELECT_ANNOTATION_KEY] === 'true',
   };
 };
 
 export const getAnnotationsFromAgentSelector = (
-  existingAnnotations: ObjectMetadata['annotations'],
-  labelValuePairs?: string[],
-  locations?: string[],
+  clusterDeployment: ClusterDeploymentK8sResource,
+  values: ClusterDeploymentHostsSelectionValues,
 ): ObjectMetadata['annotations'] => {
+  const { agentLabels: labelValuePairs, locations, autoSelectHosts } = values;
   const agentLabels = parseStringLabels(labelValuePairs || []);
   const annotations: ObjectMetadata['annotations'] = {
-    ...(existingAnnotations || {}),
+    ...(clusterDeployment?.metadata?.annotations || {}),
   };
   Object.keys(annotations).forEach((key) => {
-    if (key.startsWith('agentBareMetal-agentSelector-')) {
+    if (key.startsWith(AGENT_SELECTOR)) {
       delete annotations[key];
     }
   });
   Object.keys(agentLabels).forEach((key) => {
-    annotations[`agentBareMetal-agentSelector-${key}`] = agentLabels[key];
+    annotations[`${AGENT_SELECTOR}${key}`] = agentLabels[key];
   });
+
+  delete annotations[AGENT_AUTO_SELECT_ANNOTATION_KEY];
 
   if (locations?.length) {
     annotations[AGENT_LOCATION_LABEL_KEY] = locations.join(',');
   }
 
+  if (autoSelectHosts) {
+    annotations[AGENT_AUTO_SELECT_ANNOTATION_KEY] = 'true';
+  }
   return annotations;
 };
 

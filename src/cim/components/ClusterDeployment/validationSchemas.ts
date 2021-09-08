@@ -6,6 +6,3 @@ export const hostCountValidationSchema = Yup.number()
   .max(HOSTS_MAX_COUNT, `Maximum hosts count (${HOSTS_MAX_COUNT}) reached.`)
   .test('not-four', 'A cluster needs 2 or more worker nodes.', (value) => value != 4)
   .required();
-
-export const hostLabelsValidationSchema = Yup.array();
-// .min(1, 'Labels matching hosts are required.');
