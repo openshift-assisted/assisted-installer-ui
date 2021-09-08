@@ -109,3 +109,7 @@ export const getClusterDeploymentResource = ({
     },
   };
 };
+
+export const getConsoleUrl = (clusterDeployment: ClusterDeploymentK8sResource) =>
+  clusterDeployment.status?.webConsoleURL ||
+  `https://console-openshift-console.apps.${clusterDeployment.spec?.clusterName}.${clusterDeployment.spec?.baseDomain}`;

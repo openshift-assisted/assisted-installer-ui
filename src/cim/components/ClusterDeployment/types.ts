@@ -4,6 +4,7 @@ import {
   AgentK8sResource,
   ClusterDeploymentK8sResource,
   AgentClusterInstallK8sResource,
+  SecretK8sResource,
 } from '../../types';
 import { ClusterImageSetK8sResource } from '../../types/k8s/cluster-image-set';
 
@@ -138,3 +139,5 @@ export type ClusterDeploymentWizardProps = ClusterDeploymentDetailsProps &
     onSaveNetworking: ClusterDeploymentDetailsNetworkingProps['onSaveNetworking'];
     onSaveHostsSelection: ClusterDeploymentHostSelectionStepProps['onSaveHostsSelection'];
   };
+
+export type FetchSecret = (name: string, namespace: string) => Promise<SecretK8sResource>;
