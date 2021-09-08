@@ -15,8 +15,8 @@ export const discoveryTypeColumn = (agents: AgentK8sResource[]): TableRow<Host> 
   cell: (host) => {
     const agent = agents.find((a) => a.metadata?.uid === host.id) as AgentK8sResource;
     const discoveryType = agent?.metadata?.labels?.hasOwnProperty('agent-install.openshift.io/bmh')
-      ? 'Discovery ISO'
-      : 'BMC';
+      ? 'BMC'
+      : 'Discovery ISO';
     return {
       title: discoveryType,
       props: { 'data-testid': 'discovery-type' },
