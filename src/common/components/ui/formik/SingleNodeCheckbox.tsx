@@ -3,10 +3,10 @@ import { useField } from 'formik';
 import { Checkbox } from '@patternfly/react-core';
 import { useFeature } from '../../../features';
 import { OpenshiftVersionOptionType } from '../../../types';
-import { SNO_SUPPORT_MIN_VERSION } from '../../../config';
 import { getFieldId } from './utils';
 import HelperText from './HelperText';
 import { CheckboxFieldProps } from './types';
+import { isSNOSupportedVersion } from '../utils';
 
 type SingleNodeCheckboxProps = CheckboxFieldProps & { versions: OpenshiftVersionOptionType[] };
 
@@ -23,9 +23,7 @@ const SingleNodeCheckbox: React.FC<SingleNodeCheckboxProps> = ({
   const { value } = meta;
   const { setValue } = helpers;
 
-  const isSupportedVersionAvailable = !!versions.find(
-    (version) => parseFloat(version.value) >= SNO_SUPPORT_MIN_VERSION,
-  );
+  const isSupportedVersionAvailable = !!versions.find(isSNOSupportedVersion);
 
   if (isSingleNodeOpenshiftEnabled && isSupportedVersionAvailable) {
     return (
