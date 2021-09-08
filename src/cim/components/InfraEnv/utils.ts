@@ -2,7 +2,7 @@ import {
   AgentClusterInstallK8sResource,
   ClusterDeploymentK8sResource,
   InfraEnvK8sResource,
-  SecretKind,
+  SecretK8sResource,
 } from '../../types';
 import { EnvironmentStepFormValues } from './InfraEnvFormPage';
 import { getClusterDeploymentResource } from '../helpers';
@@ -79,7 +79,10 @@ export const getAgentClusterInstall = ({
   return obj;
 };
 
-export const getSecret = (namespace: string, values: EnvironmentStepFormValues): SecretKind => ({
+export const getSecret = (
+  namespace: string,
+  values: EnvironmentStepFormValues,
+): SecretK8sResource => ({
   kind: 'Secret',
   apiVersion: 'v1',
   metadata: {
