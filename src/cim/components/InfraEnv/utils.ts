@@ -24,7 +24,7 @@ export const getClusterDeploymentForInfraEnv = (
   getClusterDeploymentResource({
     name: values.name,
     namespace,
-    baseDnsDomain: values.baseDomain,
+    baseDnsDomain: '', // TODO(mlibra): This function is about to be removed anyway
     annotations: getLabels(values),
     pullSecretName,
   });

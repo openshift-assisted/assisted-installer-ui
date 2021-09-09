@@ -15,7 +15,7 @@ export type AgentStatusCondition = StatusCondition<AgentStatusConditionType>;
 export type AgentK8sResource = K8sResourceCommon & {
   spec: {
     approved: boolean;
-    clusterDeploymentName: {
+    clusterDeploymentName?: {
       name: string;
       namespace: string;
     };

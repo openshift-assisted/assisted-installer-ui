@@ -96,6 +96,7 @@ const LISTED_HOST_STATUSES: Host['status'][] = [
   'insufficient',
   'pending-for-input',
   'discovering',
+  'known-unbound',
 ];
 
 const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectionStepProps> = ({
