@@ -2,7 +2,7 @@ import {
   AgentClusterInstallK8sResource,
   ClusterDeploymentK8sResource,
   InfraEnvK8sResource,
-  SecretKind,
+  SecretK8sResource,
 } from '../../types';
 import { EnvironmentStepFormValues } from './InfraEnvFormPage';
 import { getClusterDeploymentResource } from '../helpers';
@@ -24,7 +24,7 @@ export const getClusterDeploymentForInfraEnv = (
   getClusterDeploymentResource({
     name: values.name,
     namespace,
-    baseDnsDomain: values.baseDomain,
+    baseDnsDomain: '', // TODO(mlibra): This function is about to be removed anyway
     annotations: getLabels(values),
     pullSecretName,
   });
@@ -79,7 +79,10 @@ export const getAgentClusterInstall = ({
   return obj;
 };
 
-export const getSecret = (namespace: string, values: EnvironmentStepFormValues): SecretKind => ({
+export const getSecret = (
+  namespace: string,
+  values: EnvironmentStepFormValues,
+): SecretK8sResource => ({
   kind: 'Secret',
   apiVersion: 'v1',
   metadata: {

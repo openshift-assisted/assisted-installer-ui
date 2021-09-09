@@ -2,10 +2,10 @@ import React from 'react';
 import { useFormikContext } from 'formik';
 import { ExclamationTriangleIcon, ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens';
-import { OPENSHIFT_LIFE_CYCLE_DATES_LINK, SNO_SUPPORT_MIN_VERSION } from '../../config';
+import { OPENSHIFT_LIFE_CYCLE_DATES_LINK } from '../../config';
 import { ClusterCreateParams } from '../../api';
 import { OpenshiftVersionOptionType } from '../../types';
-import { SelectField } from '../ui';
+import { isSNOSupportedVersion, SelectField } from '../ui';
 
 const OpenShiftLifeCycleDatesLink = () => (
   <a href={OPENSHIFT_LIFE_CYCLE_DATES_LINK} target="_blank" rel="noopener noreferrer">
@@ -52,9 +52,7 @@ const OpenShiftVersionSelect: React.FC<OpenShiftVersionSelectProps> = ({ version
   } = useFormikContext<ClusterCreateParams>();
   React.useEffect(() => {
     if (highAvailabilityMode === 'None') {
-      const firstSupportedVersionValue = versions.find(
-        (version) => parseFloat(version.value) >= SNO_SUPPORT_MIN_VERSION,
-      )?.value;
+      const firstSupportedVersionValue = versions.find(isSNOSupportedVersion)?.value;
       setFieldValue('openshiftVersion', firstSupportedVersionValue);
     }
   }, [highAvailabilityMode, setFieldValue, versions]);
@@ -62,15 +60,11 @@ const OpenShiftVersionSelect: React.FC<OpenShiftVersionSelectProps> = ({ version
   const selectOptions = React.useMemo(
     () =>
       versions
+        .filter((version) => highAvailabilityMode !== 'None' || isSNOSupportedVersion(version))
         .map((version) => ({
           label: version.label,
           value: version.value,
-        }))
-        .filter((version) =>
-          highAvailabilityMode === 'None'
-            ? parseFloat(version.value) >= SNO_SUPPORT_MIN_VERSION
-            : true,
-        ),
+        })),
     [versions, highAvailabilityMode],
   );
 

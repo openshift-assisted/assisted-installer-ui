@@ -2,17 +2,11 @@ import * as React from 'react';
 import { useField } from 'formik';
 import { FormGroup, Label } from '@patternfly/react-core';
 import TagsInput from 'react-tagsinput';
-import Autosuggest from 'react-autosuggest';
 import { InputFieldProps } from './types';
-import { getFieldId, uniqueLabels } from './utils';
+import { getFieldId } from './utils';
 import HelperText from './HelperText';
 
 import './LabelField.css';
-
-const NEW_KEY = ' (new key)';
-const noop = () => {
-  return;
-};
 
 type LabelValueProps = {
   value: React.ReactText;
@@ -25,13 +19,9 @@ export const LabelValue: React.FC<LabelValueProps> = ({ value, onClose }) => (
   </Label>
 );
 
-type LabelFieldProps = Omit<InputFieldProps, 'onChange'> & {
+type LabelFieldProps = InputFieldProps & {
   // eslint-disable-next-line
   onChange?: (tags: any[]) => void;
-  autocompleteValues?: string[];
-  // Keep keys unique. Later key wins.
-  forceUniqueKeys?: boolean;
-  // Can the user enter a key which is not listed among autocompleteValues?
 };
 
 export const LabelField: React.FC<LabelFieldProps> = ({
@@ -42,8 +32,6 @@ export const LabelField: React.FC<LabelFieldProps> = ({
   onChange,
   validate,
   idPostfix,
-  forceUniqueKeys,
-  autocompleteValues,
   ...props
 }) => {
   const [input, setInput] = React.useState('');
@@ -54,99 +42,6 @@ export const LabelField: React.FC<LabelFieldProps> = ({
   const fieldId = getFieldId(props.name, 'input', idPostfix);
   const isValid = !(touched && error);
   const errorMessage = !isValid ? error : '';
-
-  const usedKeys: string[] = React.useMemo(
-    () => (field.value || []).map((keyValue: string) => keyValue.split('=')[0]),
-    [field.value],
-  );
-
-  // TODO(mlibra): Use Patternfly component once available, sort of
-  // https://patternflyelements.org/components/autocomplete/
-  const autocompleteRenderInput = React.useCallback(
-    (props: TagsInput.RenderInputProps) => {
-      const trimmedInput = input?.trim();
-      let suggestions: string[] = [];
-      if (trimmedInput) {
-        if (!trimmedInput.includes('=')) {
-          suggestions = (autocompleteValues || []).filter((suggestion) =>
-            suggestion.startsWith(trimmedInput),
-          );
-          if (!autocompleteValues?.includes(input)) {
-            suggestions.push(`${input}${NEW_KEY}`);
-          }
-        }
-      } else {
-        suggestions = autocompleteValues || [];
-      }
-      suggestions = suggestions.filter((suggestion) => !usedKeys.includes(suggestion));
-
-      const sections = [
-        // We have just a single section to highlight the "key"
-        {
-          title: 'key',
-          suggestions,
-        },
-      ];
-
-      const shouldRenderSuggestions = (value: string): boolean => {
-        return !value.includes('=');
-      };
-
-      const renderSectionTitle = (section: { title: string }) => {
-        return <>{section.title}</>;
-      };
-
-      const getSectionSuggestions = (section: { suggestions: string[] }) => {
-        return section.suggestions;
-      };
-
-      const renderSuggestion = (suggestion: string) => (
-        <>
-          {input}
-          {suggestion.includes(NEW_KEY) ? (
-            <>{NEW_KEY}</>
-          ) : (
-            <b>{suggestion.substring(input?.length || 0)}</b>
-          )}
-        </>
-      );
-
-      const inputProps: Autosuggest.InputProps<string> = {
-        ...props,
-        onChange: (e, { method }) => {
-          if (method === 'enter') {
-            e.preventDefault();
-          } else {
-            const event = (e as unknown) as React.ChangeEvent<{ readonly value: string }>;
-            props.onChange(event);
-          }
-        },
-      };
-      delete inputProps['addTag'];
-
-      return (
-        <Autosuggest
-          ref={props.ref}
-          multiSection={true}
-          renderSectionTitle={renderSectionTitle}
-          getSectionSuggestions={getSectionSuggestions}
-          suggestions={sections}
-          shouldRenderSuggestions={shouldRenderSuggestions}
-          getSuggestionValue={(suggestion) => suggestion}
-          renderSuggestion={renderSuggestion}
-          inputProps={inputProps}
-          onSuggestionSelected={(e, data) => {
-            const value = data.suggestion.split(NEW_KEY)[0];
-            setInput(`${value}=`);
-          }}
-          onSuggestionsClearRequested={noop}
-          onSuggestionsFetchRequested={noop}
-        />
-      );
-    },
-    [autocompleteValues, input, usedKeys],
-  );
-
   return (
     <FormGroup
       fieldId={fieldId}
@@ -163,12 +58,11 @@ export const LabelField: React.FC<LabelFieldProps> = ({
       isRequired={isRequired}
       labelIcon={labelIcon}
     >
-      {/* Enter key=value and then press 'enter' or 'space' or use a ',' to input the label.*/}
-      <div className="co-search-input pf-c-form-control label-field">
+      Enter key=value and then press 'enter' or 'space' or use a ',' to input the label.
+      <div className="co-search-input pf-c-form-control">
         <TagsInput
           {...field}
-          onChange={(allTags) => {
-            const tags: string[] = forceUniqueKeys ? uniqueLabels(allTags) : allTags;
+          onChange={(tags) => {
             setValue(tags);
             setInput('');
             onChange && onChange(tags);
@@ -190,7 +84,6 @@ export const LabelField: React.FC<LabelFieldProps> = ({
             onChange: (e: any) => setInput(e.target.value),
             ['data-test']: 'tags-input',
           }}
-          renderInput={autocompleteRenderInput}
         />
       </div>
     </FormGroup>

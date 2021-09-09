@@ -61,12 +61,10 @@ export const getAICluster = ({
   clusterDeployment,
   agentClusterInstall,
   agents = [],
-  pullSecretSet = false,
 }: {
   clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall?: AgentClusterInstallK8sResource;
   agents?: AgentK8sResource[];
-  pullSecretSet?: boolean;
 }): Cluster => {
   const [status, statusInfo] = getClusterStatus(agentClusterInstall);
   const aiCluster: Cluster = {
@@ -78,6 +76,8 @@ export const getAICluster = ({
     openshiftVersion: agentClusterInstall?.spec?.imageSetRef?.name,
     apiVip: agentClusterInstall?.spec?.apiVIP,
     ingressVip: agentClusterInstall?.spec?.ingressVIP,
+    highAvailabilityMode:
+      agentClusterInstall?.spec?.provisionRequirements?.controlPlaneAgents === 1 ? 'None' : 'Full',
     status,
     statusInfo,
     imageInfo: {
@@ -90,7 +90,6 @@ export const getAICluster = ({
     serviceNetworkCidr: agentClusterInstall?.spec?.networking?.serviceNetwork?.[0],
     machineNetworkCidr: agentClusterInstall?.spec?.networking?.machineNetwork?.[0]?.cidr,
     monitoredOperators: [],
-    pullSecretSet,
     vipDhcpAllocation: false,
     userManagedNetworking: false,
     hostNetworks: getHostNetworks(agents, agentClusterInstall),

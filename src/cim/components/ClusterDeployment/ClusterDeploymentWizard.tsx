@@ -3,11 +3,12 @@ import { ClusterDeploymentWizardProps, ClusterDeploymentWizardStepsType } from '
 import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
 import ClusterDeploymentDetailsStep from './ClusterDeploymentDetailsStep';
 import ClusterDeploymentNetworkingStep from './ClusterDeploymentNetworkingStep';
-import { AlertsContextProvider } from '../../../common';
+import { AlertsContextProvider, LoadingState } from '../../../common';
 import ClusterDeploymentHostSelectionStep from './ClusterDeploymentHostSelectionStep';
+import classNames from 'classnames';
 
 const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
-  className = '',
+  className,
   onSaveDetails,
   onSaveNetworking,
   onSaveHostsSelection,
@@ -16,15 +17,8 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   clusterDeployment,
   agentClusterInstall,
   agents,
-  pullSecretSet,
   clusterImages,
-  defaultPullSecret,
   usedClusterNames,
-  usedAgentLabels,
-  agentLocations,
-  matchingAgents,
-  selectedHostIds,
-  onAgentSelectorChange,
 }) => {
   const [currentStepId, setCurrentStepId] = React.useState<ClusterDeploymentWizardStepsType>(
     'cluster-details',
@@ -37,19 +31,17 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
 
     switch (stepId) {
       case 'hosts-selection':
-        return (
+        return agentClusterInstall?.metadata?.name ? (
           <ClusterDeploymentHostSelectionStep
             clusterDeployment={clusterDeployment}
-            selectedHostIds={selectedHostIds}
             agentClusterInstall={agentClusterInstall}
             onClose={onClose}
             onSaveHostsSelection={onSaveHostsSelection}
-            usedAgentLabels={usedAgentLabels}
-            agentLocations={agentLocations}
-            matchingAgents={matchingAgents}
-            onAgentSelectorChange={onAgentSelectorChange}
             hostActions={hostActions}
+            agents={agents}
           />
+        ) : (
+          <LoadingState />
         );
       case 'networking':
         return (
@@ -57,24 +49,20 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
             clusterDeployment={clusterDeployment}
             agentClusterInstall={agentClusterInstall}
             agents={agents}
-            pullSecretSet={pullSecretSet}
             onSaveNetworking={onSaveNetworking}
             onClose={onClose}
             hostActions={hostActions}
-            // TODO(mlibra) Add more networking-table actions here
           />
         );
       case 'cluster-details':
       default:
         return (
           <ClusterDeploymentDetailsStep
-            defaultPullSecret={defaultPullSecret}
             clusterImages={clusterImages}
             usedClusterNames={usedClusterNames}
             clusterDeployment={clusterDeployment}
             agentClusterInstall={agentClusterInstall}
             agents={agents}
-            pullSecretSet={pullSecretSet}
             onSaveDetails={onSaveDetails}
             onClose={onClose}
           />
@@ -85,26 +73,19 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
     clusterDeployment,
     agentClusterInstall,
     agents,
-    pullSecretSet,
-    defaultPullSecret,
     clusterImages,
     usedClusterNames,
     onSaveDetails,
     onSaveNetworking,
     onSaveHostsSelection,
     onClose,
-    matchingAgents,
     hostActions,
-    onAgentSelectorChange,
-    selectedHostIds,
-    usedAgentLabels,
-    agentLocations,
   ]);
 
   return (
     <AlertsContextProvider>
       <ClusterDeploymentWizardContext.Provider value={{ currentStepId, setCurrentStepId }}>
-        <div className={`pf-c-wizard ${className}`}>{renderCurrentStep()}</div>
+        <div className={classNames('pf-c-wizard', className)}>{renderCurrentStep()}</div>
       </ClusterDeploymentWizardContext.Provider>
     </AlertsContextProvider>
   );
