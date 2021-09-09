@@ -17,12 +17,7 @@ import {
   ClusterDeploymentHostsSelectionValues,
 } from './types';
 import { hostCountValidationSchema } from './validationSchemas';
-import {
-  getAgentSelectorFieldsFromAnnotations,
-  getAgentStatus,
-  getClusterDeploymentAgentReservedValue,
-} from '../helpers';
-import { RESERVED_AGENT_LABEL_KEY } from '../common';
+import { getAgentSelectorFieldsFromAnnotations, getAgentStatus } from '../helpers';
 
 const getInitialValues = ({
   agents,
@@ -34,6 +29,8 @@ const getInitialValues = ({
   agentClusterInstall: AgentClusterInstallK8sResource;
 }): ClusterDeploymentHostsSelectionValues => {
   const isSNOCluster = agentClusterInstall?.spec?.provisionRequirements?.controlPlaneAgents === 1;
+  const cdName = clusterDeployment?.metadata?.name;
+  const cdNamespace = clusterDeployment?.metadata?.namespace;
 
   let hostCount =
     (agentClusterInstall?.spec?.provisionRequirements?.controlPlaneAgents || 0) +
@@ -53,14 +50,10 @@ const getInitialValues = ({
   const selectedIds = agents
     .filter(
       (agent) =>
-        agent.metadata?.labels?.[RESERVED_AGENT_LABEL_KEY] ===
-        getClusterDeploymentAgentReservedValue(
-          clusterDeployment.metadata?.namespace || '',
-          clusterDeployment.metadata?.name || '',
-        ),
+        agent.spec?.clusterDeploymentName?.name === cdName &&
+        agent.spec?.clusterDeploymentName?.namespace === cdNamespace,
     )
     .map((agent) => agent.metadata?.uid as string);
-
   const autoSelectHosts = agentSelector.autoSelect;
 
   return {
@@ -122,21 +115,18 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
   const cdName = clusterDeployment?.metadata?.name;
   const cdNamespace = clusterDeployment?.metadata?.namespace;
 
-  const availableAgents = React.useMemo(
-    () =>
-      (agents || []).filter((agent) => {
-        const [status] = getAgentStatus(agent);
-        return (
-          LISTED_HOST_STATUSES.includes(status) &&
-          agent.spec?.approved &&
-          ((agent.spec.clusterDeploymentName?.name === cdName &&
-            agent.spec.clusterDeploymentName?.namespace === cdNamespace) ||
-            (!agent.spec.clusterDeploymentName?.name &&
-              !agent.spec.clusterDeploymentName?.namespace))
-        );
-      }),
-    [agents, cdNamespace, cdName],
-  );
+  const availableAgents = React.useMemo(() => {
+    return (agents || []).filter((agent) => {
+      const [status] = getAgentStatus(agent);
+      return (
+        LISTED_HOST_STATUSES.includes(status) &&
+        agent.spec?.approved &&
+        ((agent.spec.clusterDeploymentName?.name === cdName &&
+          agent.spec.clusterDeploymentName?.namespace === cdNamespace) ||
+          (!agent.spec.clusterDeploymentName?.name && !agent.spec.clusterDeploymentName?.namespace))
+      );
+    });
+  }, [agents, cdNamespace, cdName]);
 
   const next = () => setCurrentStepId('networking');
   const handleSubmit = async (values: ClusterDeploymentHostsSelectionValues) => {
