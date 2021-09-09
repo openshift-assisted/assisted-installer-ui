@@ -1,10 +1,12 @@
 import React from 'react';
 import { useField } from 'formik';
+import fuzzysearch from 'fuzzysearch';
 import {
   FormGroup,
   Select,
   SelectOption,
   SelectOptionObject,
+  SelectOptionProps,
   SelectProps,
   SelectVariant,
 } from '@patternfly/react-core';
@@ -72,6 +74,22 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
       : value;
   });
 
+  const children = options
+    .filter((option) => !(field.value || []).includes(option.value))
+    .map((option) => {
+      // const { itemCount } = option;
+      return (
+        <SelectOption
+          key={option.id}
+          id={option.id}
+          value={option.value}
+          // itemCount={itemCount} TODO: This is broken in Patternfly ATM
+        >
+          {option.displayName}
+        </SelectOption>
+      );
+    });
+
   return (
     <FormGroup
       fieldId={fieldId}
@@ -99,22 +117,19 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
         onSelect={onSelect}
         onClear={onClearSelection}
         selections={selections}
+        onFilter={(e, val) => {
+          return (React.Children.toArray(children) as React.ReactElement<
+            SelectOptionProps
+          >[]).filter(({ props }) => {
+            if (val) {
+              const option = options.find((o) => o.id === props.id);
+              return fuzzysearch(val.toLowerCase(), option?.displayName?.toLowerCase());
+            }
+            return true;
+          });
+        }}
       >
-        {options
-          .filter((option) => !(field.value || []).includes(option.value))
-          .map((option) => {
-            // const { itemCount } = option;
-            return (
-              <SelectOption
-                key={option.id}
-                id={option.id}
-                value={option.value}
-                // itemCount={itemCount} TODO: This is broken in Patternfly ATM
-              >
-                {option.displayName || option.value}
-              </SelectOption>
-            );
-          })}
+        {children}
       </Select>
     </FormGroup>
   );

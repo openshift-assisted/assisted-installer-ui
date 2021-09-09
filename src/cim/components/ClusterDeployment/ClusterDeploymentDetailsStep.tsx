@@ -30,8 +30,6 @@ import { ClusterImageSetK8sResource } from '../../types/k8s/cluster-image-set';
 type UseDetailsFormikArgs = {
   clusterImages: ClusterImageSetK8sResource[];
   usedClusterNames: string[];
-  pullSecretSet?: boolean;
-  defaultPullSecret?: string;
   clusterDeployment?: ClusterDeploymentK8sResource;
   agentClusterInstall?: AgentClusterInstallK8sResource;
   agents?: AgentK8sResource[];
@@ -42,9 +40,7 @@ export const useDetailsFormik = ({
   clusterDeployment,
   agentClusterInstall,
   agents,
-  pullSecretSet,
   clusterImages,
-  defaultPullSecret,
   usedClusterNames,
   defaultBaseDomain,
 }: UseDetailsFormikArgs): [ClusterDetailsValues, Lazy] => {
@@ -55,17 +51,15 @@ export const useDetailsFormik = ({
             clusterDeployment,
             agentClusterInstall,
             agents,
-            pullSecretSet,
           })
         : undefined,
-    [agentClusterInstall, clusterDeployment, agents, pullSecretSet],
+    [agentClusterInstall, clusterDeployment, agents],
   );
   const initialValues = React.useMemo(
     () =>
       getClusterDetailsInitialValues({
         managedDomains: [], // not supported
         cluster,
-        pullSecret: defaultPullSecret,
         ocpVersions: getOCPVersions(clusterImages),
         baseDomain: defaultBaseDomain,
       }),
@@ -80,15 +74,14 @@ export const useDetailsFormik = ({
 };
 
 const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> = ({
-  defaultPullSecret,
   clusterImages,
   clusterDeployment,
   agentClusterInstall,
   agents,
-  pullSecretSet,
   usedClusterNames,
   onSaveDetails,
   onClose,
+  pullSecret,
 }) => {
   const { t } = useTranslation();
   const { addAlert } = useAlerts();
@@ -98,9 +91,7 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
     clusterDeployment,
     agentClusterInstall,
     agents,
-    pullSecretSet,
     clusterImages,
-    defaultPullSecret,
     usedClusterNames,
   });
 
@@ -154,9 +145,8 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
                 <ClusterDeploymentDetailsForm
                   agentClusterInstall={agentClusterInstall}
                   clusterDeployment={clusterDeployment}
-                  pullSecretSet={pullSecretSet}
                   clusterImages={clusterImages}
-                  defaultPullSecret={defaultPullSecret}
+                  pullSecret={pullSecret}
                 />
               </GridItem>
             </Grid>
