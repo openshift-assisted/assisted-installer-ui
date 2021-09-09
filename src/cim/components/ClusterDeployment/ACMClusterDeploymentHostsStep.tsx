@@ -1,3 +1,4 @@
+import { Alert, Stack, StackItem } from '@patternfly/react-core';
 import { Formik, FormikProps } from 'formik';
 import { noop } from 'lodash';
 import * as React from 'react';
@@ -9,7 +10,10 @@ import {
 } from '../../types';
 import { useHostsSelectionFormik } from './ClusterDeploymentHostSelectionStep';
 import ClusterDeploymentHostsSelection from './ClusterDeploymentHostsSelection';
-import { ClusterDeploymentHostsSelectionValues } from './types';
+import {
+  ClusterDeploymentHostsSelectionValues,
+  ClusterDeploymentHostsTablePropsActions,
+} from './types';
 
 type ACMClusterDeploymentHostsStepProps = {
   onValuesChanged: (values: ClusterDeploymentHostsSelectionValues) => void;
@@ -17,6 +21,8 @@ type ACMClusterDeploymentHostsStepProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall: AgentClusterInstallK8sResource;
   agents: AgentK8sResource[];
+  error?: string;
+  hostActions: ClusterDeploymentHostsTablePropsActions;
 };
 
 const ACMClusterDeploymentHostsStep: React.FC<ACMClusterDeploymentHostsStepProps> = ({
@@ -25,6 +31,8 @@ const ACMClusterDeploymentHostsStep: React.FC<ACMClusterDeploymentHostsStepProps
   formRef,
   onValuesChanged,
   agents,
+  error,
+  hostActions,
 }) => {
   const [initialValues, validationSchema] = useHostsSelectionFormik({
     agents,
@@ -32,20 +40,31 @@ const ACMClusterDeploymentHostsStep: React.FC<ACMClusterDeploymentHostsStepProps
     agentClusterInstall,
   });
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      innerRef={formRef}
-      onSubmit={noop}
-    >
-      <ClusterDeploymentHostsSelection
-        agents={agents}
-        clusterDeployment={clusterDeployment}
-        agentClusterInstall={agentClusterInstall}
-        onValuesChanged={onValuesChanged}
-        hostActions={{}} // TODO
-      />
-    </Formik>
+    <Stack hasGutter>
+      <StackItem>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          innerRef={formRef}
+          onSubmit={noop}
+        >
+          <ClusterDeploymentHostsSelection
+            agents={agents}
+            clusterDeployment={clusterDeployment}
+            agentClusterInstall={agentClusterInstall}
+            onValuesChanged={onValuesChanged}
+            hostActions={hostActions}
+          />
+        </Formik>
+      </StackItem>
+      {error && (
+        <StackItem>
+          <Alert variant="danger" title="Failed host selection">
+            {error}
+          </Alert>
+        </StackItem>
+      )}
+    </Stack>
   );
 };
 
