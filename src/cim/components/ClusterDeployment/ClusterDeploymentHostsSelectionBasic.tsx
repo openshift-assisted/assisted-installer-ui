@@ -33,6 +33,7 @@ const ClusterDeploymentHostsSelectionBasic: React.FC<ClusterDeploymentHostsSelec
 }) => {
   const { setFieldValue, values } = useFormikContext<ClusterDeploymentHostsSelectionValues>();
   const { hostCount, locations, autoSelectedHostIds } = values;
+
   const [matchingAgents, selectedAgents] = React.useMemo(() => {
     const mAgents = availableAgents.filter((agent) => {
       const agentLocation =
@@ -48,9 +49,9 @@ const ClusterDeploymentHostsSelectionBasic: React.FC<ClusterDeploymentHostsSelec
   }, [availableAgents, locations, autoSelectedHostIds, hostCount]);
 
   React.useEffect(() => {
-    const ids = matchingAgents.map((a) => a.metadata?.uid);
+    const ids = matchingAgents.map((a) => a.metadata?.uid).splice(0, hostCount);
     if (!_.isEqual(ids, autoSelectedHostIds)) {
-      setFieldValue('autoSelectedHostIds', ids.splice(0, hostCount));
+      setFieldValue('autoSelectedHostIds', ids);
     }
   }, [matchingAgents, setFieldValue, autoSelectedHostIds, hostCount]);
 

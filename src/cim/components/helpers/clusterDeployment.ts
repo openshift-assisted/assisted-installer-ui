@@ -7,7 +7,6 @@ import {
 } from '../ClusterDeployment/types';
 import {
   AGENT_LOCATION_LABEL_KEY,
-  RESERVED_AGENT_LABEL_KEY,
   AGENT_AUTO_SELECT_ANNOTATION_KEY,
   AGENT_SELECTOR,
 } from '../common';
@@ -19,10 +18,6 @@ export type ClusterDeploymentParams = {
   annotations?: { [key: string]: string };
   pullSecretName: string;
 };
-
-// better than UID - we can calculate immediately without subsequent patching
-export const getClusterDeploymentAgentReservedValue = (namespace: string, name: string) =>
-  `cluster-deployment-${namespace}-${name}`;
 
 export const getAgentSelectorFieldsFromAnnotations = (
   annotations: ObjectMetadata['annotations'] = {},
@@ -72,8 +67,8 @@ export const getAnnotationsFromAgentSelector = (
     annotations[AGENT_LOCATION_LABEL_KEY] = locations.join(',');
   }
 
-  if (autoSelectHosts) {
-    annotations[AGENT_AUTO_SELECT_ANNOTATION_KEY] = 'true';
+  if (!autoSelectHosts) {
+    annotations[AGENT_AUTO_SELECT_ANNOTATION_KEY] = 'false';
   }
   return annotations;
 };
@@ -85,10 +80,6 @@ export const getClusterDeploymentResource = ({
   annotations,
   pullSecretName,
 }: ClusterDeploymentParams): ClusterDeploymentK8sResource => {
-  const matchLabels = {
-    [RESERVED_AGENT_LABEL_KEY]: getClusterDeploymentAgentReservedValue(namespace, name),
-  };
-
   return {
     apiVersion: 'hive.openshift.io/v1',
     kind: 'ClusterDeployment',
@@ -109,7 +100,9 @@ export const getClusterDeploymentResource = ({
       platform: {
         agentBareMetal: {
           agentSelector: {
-            matchLabels,
+            /* So far left empty, annotations are used instead.
+               Needs https://issues.redhat.com/browse/HIVE-1636 to be fixed.
+             */
           },
         },
       },
