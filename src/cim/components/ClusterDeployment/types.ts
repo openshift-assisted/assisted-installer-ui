@@ -89,6 +89,8 @@ export type FetchSecret = (name: string, namespace: string) => Promise<SecretK8s
 
 export type ClusterDeploymentHostsSelectionProps = {
   agentClusterInstall: AgentClusterInstallK8sResource;
-  availableAgents: AgentK8sResource[];
+  agents: AgentK8sResource[];
   hostActions: ClusterDeploymentHostsTablePropsActions;
+  clusterDeployment: ClusterDeploymentK8sResource;
+  onValuesChanged?: (values: ClusterDeploymentHostsSelectionValues) => void;
 };
