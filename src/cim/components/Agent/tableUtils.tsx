@@ -53,7 +53,7 @@ export const clusterColumn = (
     cell: (host) => {
       const agent = agents.find((a) => a.metadata?.uid === host.id) as AgentK8sResource;
       return {
-        title: agent?.spec?.clusterDeploymentName ? (
+        title: agent?.spec?.clusterDeploymentName?.name ? (
           <Link to={getClusterDeploymentLink(agent.spec.clusterDeploymentName)}>
             {agent.spec.clusterDeploymentName.name}
           </Link>
@@ -61,7 +61,7 @@ export const clusterColumn = (
           '--'
         ),
         props: { 'data-testid': 'cluster' },
-        sortableValue: agent?.spec?.clusterDeploymentName.name ?? '--',
+        sortableValue: agent?.spec?.clusterDeploymentName?.name ?? '--',
       };
     },
   };

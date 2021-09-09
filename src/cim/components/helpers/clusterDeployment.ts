@@ -42,7 +42,9 @@ export const getAgentSelectorFieldsFromAnnotations = (
   return {
     labels,
     locations,
-    autoSelect: annotations[AGENT_AUTO_SELECT_ANNOTATION_KEY] === 'true',
+    autoSelect:
+      !annotations[AGENT_AUTO_SELECT_ANNOTATION_KEY] ||
+      annotations[AGENT_AUTO_SELECT_ANNOTATION_KEY] === 'true',
   };
 };
 
