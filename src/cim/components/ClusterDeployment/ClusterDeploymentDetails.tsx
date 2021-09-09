@@ -1,7 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/camelcase */
 import React from 'react';
-import { saveAs } from 'file-saver';
 import {
   Button,
   ButtonVariant,
@@ -13,7 +10,6 @@ import {
   Stack,
   StackItem,
 } from '@patternfly/react-core';
-import { sortable, expandable } from '@patternfly/react-table';
 import ValidatedConditionAlert from '../common/ValidatedConditionAlert';
 import { getClusterValidatedCondition } from '../helpers/conditions';
 import ClusterPropertiesList from '../../../common/components/clusterDetail/ClusterPropertiesList';
@@ -33,12 +29,12 @@ import {
 } from './helpers';
 import ClusterInstallationError from './ClusterInstallationError';
 import { EventsModalButton } from '../../../common/components/ui/eventsModal';
-import KubeconfigDownload from '../../../common/components/clusterDetail/KubeconfigDownload';
 import { EventListFetchProps } from '../../../common/types/events';
 import AgentTable from '../Agent/AgentTable';
 import { FetchSecret } from './types';
 import ClusterDeploymentProgress from './ClusterDeploymentProgress';
 import { getConsoleUrl } from '../helpers/clusterDeployment';
+import ClusterDeploymentKubeconfigDownload from './ClusterDeploymentKubeconfigDownload';
 
 type ClusterDeploymentDetailsProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
@@ -58,26 +54,6 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
   const [progressCardExpanded, setProgressCardExpanded] = React.useState(true);
   const [inventoryCardExpanded, setInventoryCardExpanded] = React.useState(true);
   const [detailsCardExpanded, setDetailsCardExpanded] = React.useState(true);
-
-  const handleKubeconfigDownload = async () => {
-    const kubeconfigSecretName =
-      agentClusterInstall.spec?.clusterMetadata?.adminKubeconfigSecretRef?.name;
-    const kubeconfigSecretNamespace = clusterDeployment.metadata?.namespace;
-
-    if (kubeconfigSecretName && kubeconfigSecretNamespace) {
-      try {
-        const kubeconfigSecret = await fetchSecret(kubeconfigSecretName, kubeconfigSecretNamespace);
-        const kubeconfig = kubeconfigSecret.data?.kubeconfig;
-
-        if (!kubeconfig) throw new Error('Kubeconfig is empty.');
-
-        const blob = new Blob([atob(kubeconfig)], { type: 'text/plain;charset=utf-8' });
-        saveAs(blob, 'kubeconfig.json');
-      } catch (e) {
-        console.error('Failed to fetch kubeconfig secret.', e);
-      }
-    }
-  };
 
   const handleFetchEvents: EventListFetchProps['onFetchEvents'] = async (
     props,
@@ -139,10 +115,10 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
                     </StackItem>
                   )}
                   <StackItem>
-                    <KubeconfigDownload
-                      handleDownload={handleKubeconfigDownload}
-                      clusterId={clusterDeployment.metadata?.uid || ''}
-                      status={clusterStatus}
+                    <ClusterDeploymentKubeconfigDownload
+                      clusterDeployment={clusterDeployment}
+                      agentClusterInstall={agentClusterInstall}
+                      fetchSecret={fetchSecret}
                     />{' '}
                     <EventsModalButton
                       id="cluster-events-button"
