@@ -12,10 +12,12 @@ import { getAgentStatus } from '../helpers';
 
 const LISTED_HOST_STATUSES: Host['status'][] = [
   'known',
+  'known-unbound',
   'insufficient',
+  'insufficient-unbound',
   'pending-for-input',
   'discovering',
-  'known-unbound',
+  'discovering-unbound',
 ];
 
 const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionProps> = ({
