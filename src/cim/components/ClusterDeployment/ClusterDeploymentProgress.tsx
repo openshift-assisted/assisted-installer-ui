@@ -31,7 +31,7 @@ export const getAgentProgressStageNumber = (agent: AgentK8sResource) => {
   // TODO(jkilzi): progress cannot be undefined! This condition seems to be redundant.
   if (progress) {
     const currentStage = progress.currentStage;
-    return stages.findIndex((s) => currentStage.match(s)) + 1;
+    return stages.findIndex((s) => currentStage?.match(s)) + 1;
   }
   return 0;
 };

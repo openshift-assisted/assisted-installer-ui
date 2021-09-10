@@ -1,5 +1,4 @@
 import React from 'react';
-import * as _ from 'lodash';
 import { Formik } from 'formik';
 import { Grid, GridItem } from '@patternfly/react-core';
 import { Lazy } from 'yup';
@@ -74,11 +73,10 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
   const { addAlert } = useAlerts();
   const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
 
-  const matchingAgents = agents.filter((a) =>
-    _.isMatch(
-      a.metadata?.labels || {},
-      clusterDeployment.spec?.platform.agentBareMetal.agentSelector?.matchLabels || {},
-    ),
+  const matchingAgents = agents.filter(
+    (a) =>
+      a.spec.clusterDeploymentName?.name === clusterDeployment.metadata?.name &&
+      a.spec.clusterDeploymentName?.namespace === clusterDeployment.metadata?.namespace,
   );
 
   const [initialValues, validationSchema] = useNetworkingFormik({
