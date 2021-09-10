@@ -35,6 +35,7 @@ import { useDefaultConfiguration } from '../clusterConfiguration/ClusterDefaultC
 import ClusterProgress from '../../../common/components/clusterDetail/ClusterProgress';
 import { EventsModalButton } from '../../../common/components/ui/eventsModal';
 import { onFetchEvents } from '../fetching/fetchEvents';
+import { VSPHERE_CONFIG_LINK } from '../../../common/config/constants';
 
 type ClusterDetailProps = {
   cluster: Cluster;
@@ -91,11 +92,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
                 <p>
                   Modify your platform configuration to access your platform's features directly in
                   OpenShift.{' '}
-                  <a
-                    href="https://issues.redhat.com/secure/attachment/12531134/12531134_How+to+modify+the+vSphere+configuration+in+OpenShift+4.x+-+Red+Hat+Customer+Portal.pdf"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
+                  <a href={VSPHERE_CONFIG_LINK} target="_blank" rel="noopener noreferrer">
                     Learn more about configuration <i className="fas fa-external-link-alt" />
                   </a>
                 </p>
