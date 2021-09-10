@@ -11,6 +11,15 @@ export type FeatureListType = {
   [key in AssistedInstallerFeatureType]?: boolean;
 };
 
+// Hardcoded for ACM
+export const ACM_ENABLED_FEATURES: FeatureListType = {
+  ASSISTED_INSTALLER_SNO_FEATURE: true,
+  ASSISTED_INSTALLER_OCS_FEATURE: false,
+  ASSISTED_INSTALLER_CNV_FEATURE: false,
+  ASSISTED_INSTALLER_NETWORK_TYPE_SELECTION_FEATURE: false,
+  ASSISTED_INSTALLER_PLATFORM_INTEGRATION_FEATURE: false,
+};
+
 // Hardcoded outside OCM
 export const SINGLE_CLUSTER_ENABLED_FEATURES: FeatureListType = {
   ASSISTED_INSTALLER_SNO_FEATURE: false,

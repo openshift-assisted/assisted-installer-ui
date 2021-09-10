@@ -51,7 +51,6 @@ import ResetHostModal from './ResetHostModal';
 import DeleteHostModal from './DeleteHostModal';
 import { onFetchEvents } from '../fetching/fetchEvents';
 import { ConnectedIcon } from '@patternfly/react-icons';
-import { DiscoveryImageModalButton } from '../clusterConfiguration/discoveryImageModal';
 
 export const useHostsTable = (cluster: Cluster) => {
   const { addAlert } = React.useContext(AlertsContext);
@@ -370,14 +369,12 @@ type HostsTableEmptyStateProps = {
 };
 
 export const HostsTableEmptyState: React.FC<HostsTableEmptyStateProps> = ({
-  cluster,
   setDiscoveryHintModalOpen,
 }) => (
   <EmptyState
     icon={ConnectedIcon}
     title="Waiting for hosts..."
     content="Hosts may take a few minutes to appear here after booting."
-    primaryAction={<DiscoveryImageModalButton cluster={cluster} idPrefix="host-table-empty" />}
     secondaryActions={
       setDiscoveryHintModalOpen && [
         <HostsNotShowingLink

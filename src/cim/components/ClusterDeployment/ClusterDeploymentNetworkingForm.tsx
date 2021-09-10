@@ -26,7 +26,6 @@ type ClusterDeploymentNetworkingFormProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall: AgentClusterInstallK8sResource;
   agents: AgentK8sResource[];
-  pullSecretSet: boolean;
   onValuesChanged?: (values: ClusterDeploymentNetworkingValues) => void;
   hostActions: ClusterDeploymentHostsTablePropsActions;
 };
@@ -35,7 +34,6 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
   clusterDeployment,
   agentClusterInstall,
   agents,
-  pullSecretSet,
   onValuesChanged,
   ...rest
 }) => {
@@ -47,7 +45,6 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
     clusterDeployment,
     agentClusterInstall,
     agents,
-    pullSecretSet,
   });
 
   const hostSubnets = getHostSubnets(cluster);
@@ -70,7 +67,6 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
           clusterDeployment={clusterDeployment}
           agentClusterInstall={agentClusterInstall}
           agents={agents}
-          pullSecretSet={pullSecretSet}
           {...rest}
         />
       </GridItem>

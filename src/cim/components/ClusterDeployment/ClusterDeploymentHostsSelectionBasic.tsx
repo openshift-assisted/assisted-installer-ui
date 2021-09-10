@@ -1,22 +1,21 @@
 import React from 'react';
+import * as _ from 'lodash';
 import { Alert, AlertGroup, AlertVariant, GridItem } from '@patternfly/react-core';
 import { CheckboxField, NumberInputField } from '../../../common';
 import { HOSTS_MAX_COUNT, HOSTS_MIN_COUNT } from './constants';
 import { useFormikContext } from 'formik';
-import {
-  ClusterDeploymentHostsSelectionProps,
-  ClusterDeploymentHostsSelectionValues,
-} from './types';
+import { ClusterDeploymentHostsSelectionValues } from './types';
 import LocationsSelector from './LocationsSelector';
 import ShortCapacitySummary from './ShortCapacitySummary';
+import { AgentK8sResource } from '../../types';
+import { AGENT_LOCATION_LABEL_KEY, AGENT_NOLOCATION_VALUE } from '../common';
 
-// TODO(mlibra): Something more descriptive
 const HostCountLabelIcon: React.FC = () => <>Total count of hosts to be included in the cluster.</>;
 
-type ClusterDeploymentHostsSelectionBasicProps = Pick<
-  ClusterDeploymentHostsSelectionProps,
-  'agentLocations' | 'onAgentSelectorChange' | 'matchingAgents'
->;
+type ClusterDeploymentHostsSelectionBasicProps = {
+  availableAgents: AgentK8sResource[];
+  isSNOCluster: boolean;
+};
 
 const getHostCountWarningText = (hostsSelected: number) => {
   switch (hostsSelected) {
@@ -29,15 +28,33 @@ const getHostCountWarningText = (hostsSelected: number) => {
 };
 
 const ClusterDeploymentHostsSelectionBasic: React.FC<ClusterDeploymentHostsSelectionBasicProps> = ({
-  agentLocations,
-  onAgentSelectorChange,
-  matchingAgents,
+  isSNOCluster,
+  availableAgents,
 }) => {
   const { setFieldValue, values } = useFormikContext<ClusterDeploymentHostsSelectionValues>();
-  const { hostCount, isSNOCluster } = values;
+  const { hostCount, locations, autoSelectedHostIds } = values;
 
-  // Take first n from top
-  const selectedAgents = (matchingAgents || []).slice(0, hostCount);
+  const [matchingAgents, selectedAgents] = React.useMemo(() => {
+    const mAgents = availableAgents.filter((agent) => {
+      const agentLocation =
+        agent.metadata?.labels?.[AGENT_LOCATION_LABEL_KEY] || AGENT_NOLOCATION_VALUE;
+      return locations.length ? locations.includes(agentLocation) : true;
+    });
+    const sAgents = mAgents.filter((a) => autoSelectedHostIds.includes(a.metadata?.uid || ''));
+    if (sAgents.length !== autoSelectedHostIds.length) {
+      const freeAgents = mAgents.filter((a) => a.metadata?.uid);
+      sAgents.push(...freeAgents.splice(0, hostCount));
+    }
+    return [mAgents, sAgents];
+  }, [availableAgents, locations, autoSelectedHostIds, hostCount]);
+
+  React.useEffect(() => {
+    const ids = matchingAgents.map((a) => a.metadata?.uid).splice(0, hostCount);
+    if (!_.isEqual(ids, autoSelectedHostIds)) {
+      setFieldValue('autoSelectedHostIds', ids);
+    }
+  }, [matchingAgents, setFieldValue, autoSelectedHostIds, hostCount]);
+
   return (
     <>
       <GridItem span={12} lg={10} xl={9} xl2={7}>
@@ -49,9 +66,7 @@ const ClusterDeploymentHostsSelectionBasic: React.FC<ClusterDeploymentHostsSelec
           minValue={isSNOCluster ? 1 : HOSTS_MIN_COUNT}
           maxValue={isSNOCluster ? 1 : HOSTS_MAX_COUNT}
           isDisabled={isSNOCluster}
-          onChange={(newValue: number) => {
-            // Never called in the SNO flow
-
+          onChange={(newValue) => {
             if (newValue === 4) {
               newValue = values.hostCount >= 4 ? 3 : 5;
             }
@@ -74,10 +89,7 @@ const ClusterDeploymentHostsSelectionBasic: React.FC<ClusterDeploymentHostsSelec
       </GridItem>
 
       <GridItem>
-        <LocationsSelector
-          agentLocations={agentLocations}
-          onAgentSelectorChange={onAgentSelectorChange}
-        />
+        <LocationsSelector agents={availableAgents} />
       </GridItem>
 
       {selectedAgents.length === hostCount && (
@@ -86,7 +98,7 @@ const ClusterDeploymentHostsSelectionBasic: React.FC<ClusterDeploymentHostsSelec
             <AlertGroup>
               <Alert
                 variant={AlertVariant.success}
-                title={`${selectedAgents.length} hosts selected out of ${matchingAgents?.length} matching.`}
+                title={`${selectedAgents.length} hosts selected out of ${matchingAgents.length} matching.`}
                 isInline
               />
             </AlertGroup>
