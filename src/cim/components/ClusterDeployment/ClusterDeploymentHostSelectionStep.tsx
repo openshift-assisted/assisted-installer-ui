@@ -1,7 +1,7 @@
 import React from 'react';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
-import { getFormikErrorFields, Host, useAlerts } from '../../../common';
+import { getFormikErrorFields, useAlerts } from '../../../common';
 import {
   AgentClusterInstallK8sResource,
   AgentK8sResource,
@@ -17,7 +17,7 @@ import {
   ClusterDeploymentHostsSelectionValues,
 } from './types';
 import { hostCountValidationSchema } from './validationSchemas';
-import { getAgentSelectorFieldsFromAnnotations, getAgentStatus } from '../helpers';
+import { getAgentSelectorFieldsFromAnnotations } from '../helpers';
 
 const getInitialValues = ({
   agents,
@@ -84,13 +84,28 @@ const getValidationSchema = (agentClusterInstall: AgentClusterInstallK8sResource
   });
 };
 
-const LISTED_HOST_STATUSES: Host['status'][] = [
-  'known',
-  'insufficient',
-  'pending-for-input',
-  'discovering',
-  'known-unbound',
-];
+type UseHostsSelectionFormikArgs = {
+  agents: AgentK8sResource[];
+  clusterDeployment: ClusterDeploymentK8sResource;
+  agentClusterInstall: AgentClusterInstallK8sResource;
+};
+
+export const useHostsSelectionFormik = ({
+  agents,
+  clusterDeployment,
+  agentClusterInstall,
+}: UseHostsSelectionFormikArgs): [ClusterDeploymentHostsSelectionValues, Yup.Lazy] => {
+  const initialValues = React.useMemo(
+    () => getInitialValues({ agents, clusterDeployment, agentClusterInstall }),
+    [], // eslint-disable-line react-hooks/exhaustive-deps
+  );
+
+  const validationSchema = React.useMemo(() => getValidationSchema(agentClusterInstall), [
+    agentClusterInstall,
+  ]);
+
+  return [initialValues, validationSchema];
+};
 
 const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectionStepProps> = ({
   clusterDeployment,
@@ -103,30 +118,11 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
   const { addAlert } = useAlerts();
   const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
 
-  const initialValues = React.useMemo(
-    () => getInitialValues({ agents, clusterDeployment, agentClusterInstall }),
-    [], // eslint-disable-line react-hooks/exhaustive-deps
-  );
-
-  const validationSchema = React.useMemo(() => getValidationSchema(agentClusterInstall), [
+  const [initialValues, validationSchema] = useHostsSelectionFormik({
+    agents,
+    clusterDeployment,
     agentClusterInstall,
-  ]);
-
-  const cdName = clusterDeployment?.metadata?.name;
-  const cdNamespace = clusterDeployment?.metadata?.namespace;
-
-  const availableAgents = React.useMemo(() => {
-    return (agents || []).filter((agent) => {
-      const [status] = getAgentStatus(agent);
-      return (
-        LISTED_HOST_STATUSES.includes(status) &&
-        agent.spec?.approved &&
-        ((agent.spec.clusterDeploymentName?.name === cdName &&
-          agent.spec.clusterDeploymentName?.namespace === cdNamespace) ||
-          (!agent.spec.clusterDeploymentName?.name && !agent.spec.clusterDeploymentName?.namespace))
-      );
-    });
-  }, [agents, cdNamespace, cdName]);
+  });
 
   const next = () => setCurrentStepId('networking');
   const handleSubmit = async (values: ClusterDeploymentHostsSelectionValues) => {
@@ -173,7 +169,8 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
             <ClusterDeploymentHostsSelection
               agentClusterInstall={agentClusterInstall}
               hostActions={hostActions}
-              availableAgents={availableAgents}
+              agents={agents}
+              clusterDeployment={clusterDeployment}
             />
           </ClusterDeploymentWizardStep>
         );
