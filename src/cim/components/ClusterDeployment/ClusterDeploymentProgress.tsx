@@ -45,7 +45,7 @@ const getAgentsProgressPercent = (agents: AgentK8sResource[] = []) => {
     (steps, agent) => steps + getAgentProgressStageNumber(agent),
     0,
   );
-  return totalSteps ? (completedSteps / totalSteps) * 100 : 100;
+  return totalSteps ? Math.round((completedSteps / totalSteps) * 100) : 100;
 };
 
 type ClusterDeploymentProgressProps = {
