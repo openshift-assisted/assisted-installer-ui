@@ -31,7 +31,7 @@ export const getAgentProgressStageNumber = (agent: AgentK8sResource) => {
   // TODO(jkilzi): progress cannot be undefined! This condition seems to be redundant.
   if (progress) {
     const currentStage = progress.currentStage;
-    return stages.findIndex((s) => currentStage.match(s)) + 1;
+    return stages.findIndex((s) => currentStage?.match(s)) + 1;
   }
   return 0;
 };
@@ -45,7 +45,7 @@ const getAgentsProgressPercent = (agents: AgentK8sResource[] = []) => {
     (steps, agent) => steps + getAgentProgressStageNumber(agent),
     0,
   );
-  return totalSteps ? (completedSteps / totalSteps) * 100 : 100;
+  return totalSteps ? Math.round((completedSteps / totalSteps) * 100) : 100;
 };
 
 type ClusterDeploymentProgressProps = {
