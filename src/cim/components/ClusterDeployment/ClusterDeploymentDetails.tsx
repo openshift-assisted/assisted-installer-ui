@@ -55,6 +55,12 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
   const [inventoryCardExpanded, setInventoryCardExpanded] = React.useState(true);
   const [detailsCardExpanded, setDetailsCardExpanded] = React.useState(true);
 
+  const clusterAgents = agents.filter(
+    (a) =>
+      a.spec.clusterDeploymentName?.name === clusterDeployment.metadata?.name &&
+      a.spec.clusterDeploymentName?.namespace === clusterDeployment.metadata?.namespace,
+  );
+
   const handleFetchEvents: EventListFetchProps['onFetchEvents'] = async (
     props,
     onSuccess,
@@ -74,7 +80,7 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
     }
   };
 
-  const cluster = getAICluster({ clusterDeployment, agentClusterInstall, agents });
+  const cluster = getAICluster({ clusterDeployment, agentClusterInstall, agents: clusterAgents });
   const [clusterStatus, clusterStatusInfo] = getClusterStatus(agentClusterInstall);
   return (
     <Stack hasGutter>
@@ -99,7 +105,7 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
                     <ClusterDeploymentProgress
                       clusterDeployment={clusterDeployment}
                       agentClusterInstall={agentClusterInstall}
-                      agents={agents}
+                      agents={clusterAgents}
                       onFetchEvents={handleFetchEvents}
                     />
                   </StackItem>
@@ -108,7 +114,7 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
                       <ClusterDeploymentCredentials
                         clusterDeployment={clusterDeployment}
                         agentClusterInstall={agentClusterInstall}
-                        agents={agents}
+                        agents={clusterAgents}
                         fetchSecret={fetchSecret}
                         consoleUrl={getConsoleUrl(clusterDeployment)}
                       />
@@ -168,7 +174,7 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
           </CardHeader>
           <CardExpandableContent>
             <CardBody>
-              <AgentTable agents={agents} className={agentTableClassName} />
+              <AgentTable agents={clusterAgents} className={agentTableClassName} />
             </CardBody>
           </CardExpandableContent>
         </Card>

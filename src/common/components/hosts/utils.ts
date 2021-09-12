@@ -6,20 +6,35 @@ import { isSingleNodeCluster } from '../clusters/utils';
 
 export const canEnable = (clusterStatus: Cluster['status'], status: Host['status']) =>
   ['pending-for-input', 'insufficient', 'ready', 'adding-hosts'].includes(clusterStatus) &&
-  ['disabled'].includes(status);
+  ['disabled', 'disabled-unbound'].includes(status);
 
 export const canDisable = (clusterStatus: Cluster['status'], status: Host['status']) =>
   ['pending-for-input', 'insufficient', 'ready', 'adding-hosts'].includes(clusterStatus) &&
-  ['discovering', 'disconnected', 'known', 'insufficient', 'pending-for-input'].includes(status);
+  [
+    'discovering',
+    'discovering-unbound',
+    'disconnected',
+    'disconnected-unbound',
+    'known',
+    'known-unbound',
+    'insufficient',
+    'insufficient-unbound',
+    'pending-for-input',
+  ].includes(status);
 
 export const canDelete = (clusterStatus: Cluster['status'], status: Host['status']) =>
   ['pending-for-input', 'insufficient', 'ready', 'adding-hosts'].includes(clusterStatus) &&
   [
     'discovering',
+    'discovering-unbound',
     'known',
+    'known-unbound',
     'disconnected',
+    'disconnected-unbound',
     'disabled',
+    'disabled-unbound',
     'insufficient',
+    'insufficient-unbound',
     'resetting',
     'resetting-pending-user-input',
     'resetting-pending-user-action',
@@ -37,10 +52,15 @@ export const canEditRole = (cluster: Cluster, hostStatus: Host['status']) =>
   ['pending-for-input', 'insufficient', 'ready'].includes(cluster.status) &&
   [
     'discovering',
+    'discovering-unbound',
     'known',
+    'known-unbound',
     'disconnected',
+    'disconnected-unbound',
     'disabled',
+    'disabled-unbound',
     'insufficient',
+    'insufficient-unbound',
     'pending-for-input',
   ].includes(hostStatus);
 
@@ -48,10 +68,15 @@ export const canEditHost = (clusterStatus: Cluster['status'], status: Host['stat
   ['pending-for-input', 'insufficient', 'ready'].includes(clusterStatus) &&
   [
     'discovering',
+    'discovering-unbound',
     'known',
+    'known-unbound',
     'disconnected',
+    'disconnected-unbound',
     'disabled',
+    'disabled-unbound',
     'insufficient',
+    'insufficient-unbound',
     'pending-for-input',
   ].includes(status);
 
@@ -82,9 +107,17 @@ export const getHostProgressStageNumber = (host: Host) => {
 };
 
 export const canHostnameBeChanged = (hostStatus: Host['status']) =>
-  ['discovering', 'known', 'disconnected', 'insufficient', 'pending-for-input'].includes(
-    hostStatus,
-  );
+  [
+    'discovering',
+    'discovering-unbound',
+    'known',
+    'known-unbound',
+    'disconnected',
+    'disconnected-unbound',
+    'insufficient',
+    'insufficient-unbound',
+    'pending-for-input',
+  ].includes(hostStatus);
 
 export const getHostRole = (host: Host): string =>
   `${HOST_ROLES.find((role) => role.value === host.role)?.label || HOST_ROLES[0].label}${
