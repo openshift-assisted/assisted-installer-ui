@@ -37,7 +37,6 @@ import './infra-env.css';
 export type EnvironmentStepFormValues = {
   name: string;
   location: string;
-  baseDomain: string;
   pullSecret: string;
   sshPublicKey: string;
   httpProxy: string;
@@ -59,7 +58,6 @@ const validationSchema = (usedNames: string[]) =>
           (value: string) => !usedNames.find((n) => n === value),
         ),
       location: Yup.string().required(),
-      baseDomain: Yup.string().required(),
       pullSecret: Yup.string().required(),
       sshPublicKey: sshPublicKeyValidationSchema.required(
         'An SSH key is required to debug hosts as they register.',
@@ -84,7 +82,6 @@ const validationSchema = (usedNames: string[]) =>
 const initialValues: EnvironmentStepFormValues = {
   name: '',
   location: '',
-  baseDomain: '',
   pullSecret: '',
   sshPublicKey: '',
   httpProxy: '',
@@ -142,7 +139,6 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged }) => {
               </FlexItem>
             </Flex>
           </FormGroup>
-          <InputField label="Base domain" name="baseDomain" isRequired />
           <InputField label="Location" name="location" isRequired />
           <LabelField label="Labels" name="labels" />
           <PullSecretField isOcm={false} />

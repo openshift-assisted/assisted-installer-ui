@@ -1,42 +1,54 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
 import { Grid, GridItem, TextContent } from '@patternfly/react-core';
-import { ClusterWizardStepHeader, SwitchField } from '../../../common';
+import { ClusterWizardStepHeader, Host, SwitchField } from '../../../common';
 import {
   ClusterDeploymentHostsSelectionProps,
   ClusterDeploymentHostsSelectionValues,
 } from './types';
 import ClusterDeploymentHostsSelectionBasic from './ClusterDeploymentHostsSelectionBasic';
 import ClusterDeploymentHostsSelectionAdvanced from './ClusterDeploymentHostsSelectionAdvanced';
-import ConfirmationModal from '../../../common/components/ui/ConfirmationModal';
+import { getAgentStatus } from '../helpers';
+
+const LISTED_HOST_STATUSES: Host['status'][] = [
+  'known',
+  'known-unbound',
+  'insufficient',
+  'insufficient-unbound',
+  'pending-for-input',
+  'discovering',
+  'discovering-unbound',
+];
 
 const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionProps> = ({
-  agentLocations,
-  matchingAgents,
-  onAgentSelectorChange,
-  // allAgentsCount,
-  usedAgentLabels,
+  agentClusterInstall,
+  clusterDeployment,
+  agents,
   hostActions,
+  onValuesChanged,
 }) => {
-  const { setFieldValue, values } = useFormikContext<ClusterDeploymentHostsSelectionValues>();
-  const [isConfirmAutoSelectHostsSwitchOpen, setConfirmAutoSelectHostsSwitch] = React.useState(
-    false,
-  );
-  const { autoSelectHosts, isSNOCluster } = values;
+  const { values } = useFormikContext<ClusterDeploymentHostsSelectionValues>();
 
-  const onChangeCustomOverride =
-    !values.autoSelectHosts && (values.agentLabels.length > 0 || values.selectedHostIds.length > 0)
-      ? () => {
-          setConfirmAutoSelectHostsSwitch(true);
-        }
-      : undefined;
+  React.useEffect(() => onValuesChanged?.(values), [values, onValuesChanged]);
 
-  const onAutoSelectConfirmed = () => {
-    setFieldValue('autoSelectHosts', !values.autoSelectHosts);
-    setFieldValue('agentLabels', []);
-    setFieldValue('selectedHostIds', []);
-    setConfirmAutoSelectHostsSwitch(false);
-  };
+  const { autoSelectHosts } = values;
+  const isSNOCluster = agentClusterInstall?.spec?.provisionRequirements?.controlPlaneAgents === 1;
+
+  const cdName = clusterDeployment?.metadata?.name;
+  const cdNamespace = clusterDeployment?.metadata?.namespace;
+
+  const availableAgents = React.useMemo(() => {
+    return (agents || []).filter((agent) => {
+      const [status] = getAgentStatus(agent);
+      return (
+        LISTED_HOST_STATUSES.includes(status) &&
+        agent.spec?.approved &&
+        ((agent.spec.clusterDeploymentName?.name === cdName &&
+          agent.spec.clusterDeploymentName?.namespace === cdNamespace) ||
+          (!agent.spec.clusterDeploymentName?.name && !agent.spec.clusterDeploymentName?.namespace))
+      );
+    });
+  }, [agents, cdNamespace, cdName]);
 
   return (
     <Grid hasGutter>
@@ -50,43 +62,20 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
       </GridItem>
 
       <GridItem>
-        <SwitchField
-          name="autoSelectHosts"
-          label="Auto-select hosts"
-          onChangeCustomOverride={onChangeCustomOverride}
-        />
+        <SwitchField name="autoSelectHosts" label="Auto-select hosts" />
       </GridItem>
 
       {autoSelectHosts && (
         <ClusterDeploymentHostsSelectionBasic
-          agentLocations={agentLocations}
-          onAgentSelectorChange={onAgentSelectorChange}
-          matchingAgents={matchingAgents}
+          availableAgents={availableAgents}
+          isSNOCluster={isSNOCluster}
         />
       )}
 
       {!autoSelectHosts && (
         <ClusterDeploymentHostsSelectionAdvanced
-          agentLocations={agentLocations}
-          usedAgentLabels={usedAgentLabels}
-          onAgentSelectorChange={onAgentSelectorChange}
+          availableAgents={availableAgents}
           hostActions={hostActions}
-          matchingAgents={matchingAgents}
-        />
-      )}
-
-      {isConfirmAutoSelectHostsSwitchOpen && (
-        <ConfirmationModal
-          title="Renounce labels and hosts selection"
-          content={
-            <>
-              By changing the view, entered hosts selection and labels will be lost.
-              <br />
-              Do you want to continue?
-            </>
-          }
-          onClose={() => setConfirmAutoSelectHostsSwitch(false)}
-          onConfirm={onAutoSelectConfirmed}
         />
       )}
     </Grid>

@@ -10,6 +10,9 @@ export const OPENSHIFT_NETWORKING_DOCS_LINK =
 export const CLUSTER_MANAGER_SITE_LINK = 'https://cloud.redhat.com/openshift/install/pull-secret';
 export const PULL_SECRET_INFO_LINK = CLUSTER_MANAGER_SITE_LINK;
 
+export const VSPHERE_CONFIG_LINK =
+  'https://issues.redhat.com/secure/attachment/12531134/12531134_How+to+modify+the+vSphere+configuration+in+OpenShift+4.x+-+Red+Hat+Customer+Portal.pdf';
+
 export const getBugzillaLink = (version = '') =>
   `https://bugzilla.redhat.com/enter_bug.cgi?product=OpenShift%20Container%20Platform&Component=OpenShift%20Container%20Platform&component=assisted-installer&version=${version}`;
 
@@ -60,13 +63,13 @@ export const CLUSTER_STATUS_LABELS: { [key in Cluster['status']]: string } = {
 };
 
 export const HOST_STATUS_LABELS: { [key in Host['status']]: string } = {
-  unbinding: '',
-  'disabled-unbound': '',
-  'disconnected-unbound': '',
-  'discovering-unbound': '',
-  'insufficient-unbound': '',
-  'known-unbound': '',
-  binding: '',
+  unbinding: 'Unbinding',
+  'disabled-unbound': 'Disabled',
+  'disconnected-unbound': 'Disconnected',
+  'discovering-unbound': 'Discovering',
+  'insufficient-unbound': 'Insufficient',
+  'known-unbound': 'Ready',
+  binding: 'Binding',
   discovering: 'Discovering',
   'pending-for-input': 'Pending input',
   known: 'Ready',
@@ -100,13 +103,18 @@ export const CLUSTER_FIELD_LABELS: { [key in string]: string } = {
 };
 
 export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
-  unbinding: '',
-  'disabled-unbound': '',
-  'disconnected-unbound': '',
-  'discovering-unbound': '',
-  'insufficient-unbound': '',
-  'known-unbound': '',
-  binding: '',
+  unbinding: 'This host is being unbound from the cluster.',
+  'disabled-unbound':
+    'This host was manually disabled and can not be included in the cluster. Enable this host to make it available again.',
+  'disconnected-unbound':
+    'This host has lost its connection to the installer and can not be included in the cluster unless connectivity is restored.',
+  'discovering-unbound':
+    'This host is transmitting its hardware and networking information to the installer. Please wait while this information is received.',
+  'insufficient-unbound':
+    'This host does not meet the minimum hardware or networking requirements and can not be included in the cluster.',
+  'known-unbound':
+    'This host meets the minimum hardware and networking requirements and can be included in the cluster.',
+  binding: 'This host is being bound to the cluster.',
   discovering:
     'This host is transmitting its hardware and networking information to the installer. Please wait while this information is received.',
   'pending-for-input': '',

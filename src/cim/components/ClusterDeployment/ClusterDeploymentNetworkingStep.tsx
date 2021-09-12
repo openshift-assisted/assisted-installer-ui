@@ -32,14 +32,12 @@ type UseNetworkingFormikArgs = {
   clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall: AgentClusterInstallK8sResource;
   agents: AgentK8sResource[];
-  pullSecretSet: boolean;
 };
 
 export const useNetworkingFormik = ({
   clusterDeployment,
   agentClusterInstall,
   agents,
-  pullSecretSet,
 }: UseNetworkingFormikArgs): [ClusterDeploymentNetworkingValues, Lazy] => {
   const initialValues = React.useMemo(
     () => {
@@ -47,7 +45,6 @@ export const useNetworkingFormik = ({
         clusterDeployment,
         agentClusterInstall,
         agents,
-        pullSecretSet,
       });
       return getNetworkInitialValues(cluster, defaultNetworkSettings);
     },
@@ -58,11 +55,10 @@ export const useNetworkingFormik = ({
       clusterDeployment,
       agentClusterInstall,
       agents,
-      pullSecretSet,
     });
     const hostSubnets = getHostSubnets(cluster);
     return getNetworkConfigurationValidationSchema(initialValues, hostSubnets);
-  }, [initialValues, clusterDeployment, agentClusterInstall, agents, pullSecretSet]);
+  }, [initialValues, clusterDeployment, agentClusterInstall, agents]);
   return [initialValues, validationSchema];
 };
 
@@ -70,7 +66,6 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
   clusterDeployment,
   agentClusterInstall,
   agents,
-  pullSecretSet,
   onSaveNetworking,
   onClose,
   ...rest
@@ -78,11 +73,16 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
   const { addAlert } = useAlerts();
   const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
 
+  const matchingAgents = agents.filter(
+    (a) =>
+      a.spec.clusterDeploymentName?.name === clusterDeployment.metadata?.name &&
+      a.spec.clusterDeploymentName?.namespace === clusterDeployment.metadata?.namespace,
+  );
+
   const [initialValues, validationSchema] = useNetworkingFormik({
     clusterDeployment,
     agentClusterInstall,
-    agents,
-    pullSecretSet,
+    agents: matchingAgents,
   });
 
   const next = () => {
@@ -139,8 +139,7 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
                 <ClusterDeploymentNetworkingForm
                   clusterDeployment={clusterDeployment}
                   agentClusterInstall={agentClusterInstall}
-                  agents={agents}
-                  pullSecretSet={pullSecretSet}
+                  agents={matchingAgents}
                   {...rest}
                 />
               </GridItem>
