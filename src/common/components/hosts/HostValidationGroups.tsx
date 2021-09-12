@@ -107,7 +107,7 @@ export const HostValidationGroups: React.FC<HostValidationGroupsProps> = ({
           (v: Validation) => v.status === 'pending',
         );
         const failedValidations = validationsInfo[groupName].filter(
-          (v: Validation) => v.status === 'failure',
+          (v: Validation) => v.status === 'failure' || v.status === 'error',
         );
 
         const getValidationGroupState = () => {
