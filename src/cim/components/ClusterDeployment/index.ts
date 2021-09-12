@@ -11,3 +11,4 @@ export { default as ClusterInstallationError } from './ClusterInstallationError'
 
 export { default as ACMClusterDeploymentDetailsStep } from './ACMClusterDeploymentDetailsStep';
 export { default as ACMClusterDeploymentNetworkingStep } from './ACMClusterDeploymentNetworkingStep';
+export { default as ACMClusterDeploymentHostsStep } from './ACMClusterDeploymentHostsStep';

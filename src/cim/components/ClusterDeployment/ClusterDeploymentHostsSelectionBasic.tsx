@@ -41,12 +41,8 @@ const ClusterDeploymentHostsSelectionBasic: React.FC<ClusterDeploymentHostsSelec
       return locations.length ? locations.includes(agentLocation) : true;
     });
     const sAgents = mAgents.filter((a) => autoSelectedHostIds.includes(a.metadata?.uid || ''));
-    if (sAgents.length !== autoSelectedHostIds.length) {
-      const freeAgents = mAgents.filter((a) => a.metadata?.uid);
-      sAgents.push(...freeAgents.splice(0, hostCount));
-    }
     return [mAgents, sAgents];
-  }, [availableAgents, locations, autoSelectedHostIds, hostCount]);
+  }, [availableAgents, locations, autoSelectedHostIds]);
 
   React.useEffect(() => {
     const ids = matchingAgents.map((a) => a.metadata?.uid).splice(0, hostCount);
