@@ -16,7 +16,7 @@ export const wizardStepNames: {
   [key in ClusterDeploymentWizardStepsType]: string;
 } = {
   'cluster-details': 'Cluster details',
-  'hosts-selection': 'Hosts selection',
+  'hosts-selection': 'Cluster hosts',
   networking: 'Installation details',
 };
 

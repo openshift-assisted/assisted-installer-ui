@@ -1,7 +1,7 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
-import { Grid, GridItem, TextContent } from '@patternfly/react-core';
-import { ClusterWizardStepHeader, Host, SwitchField } from '../../../common';
+import { Grid, GridItem, TextContent, Text } from '@patternfly/react-core';
+import { Host, SwitchField } from '../../../common';
 import {
   ClusterDeploymentHostsSelectionProps,
   ClusterDeploymentHostsSelectionValues,
@@ -24,7 +24,6 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
   agentClusterInstall,
   clusterDeployment,
   agents,
-  hostActions,
   onValuesChanged,
 }) => {
   const { values } = useFormikContext<ClusterDeploymentHostsSelectionValues>();
@@ -53,7 +52,11 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
   return (
     <Grid hasGutter>
       <GridItem>
-        <ClusterWizardStepHeader>Hosts selection</ClusterWizardStepHeader>
+        <TextContent>
+          <Text component="h3">Number of hosts</Text>
+        </TextContent>
+      </GridItem>
+      <GridItem>
         <TextContent>
           {isSNOCluster
             ? 'Exactly 1 host is required, capable of functioning both as control plane (master) and worker node.'
@@ -73,10 +76,7 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
       )}
 
       {!autoSelectHosts && (
-        <ClusterDeploymentHostsSelectionAdvanced
-          availableAgents={availableAgents}
-          hostActions={hostActions}
-        />
+        <ClusterDeploymentHostsSelectionAdvanced availableAgents={availableAgents} />
       )}
     </Grid>
   );

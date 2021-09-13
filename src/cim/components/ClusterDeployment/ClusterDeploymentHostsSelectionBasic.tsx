@@ -47,7 +47,7 @@ const ClusterDeploymentHostsSelectionBasic: React.FC<ClusterDeploymentHostsSelec
   React.useEffect(() => {
     const ids = matchingAgents.map((a) => a.metadata?.uid).splice(0, hostCount);
     if (!_.isEqual(ids, autoSelectedHostIds)) {
-      setFieldValue('autoSelectedHostIds', ids);
+      setTimeout(() => setFieldValue('autoSelectedHostIds', ids, true));
     }
   }, [matchingAgents, setFieldValue, autoSelectedHostIds, hostCount]);
 

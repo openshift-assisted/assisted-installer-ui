@@ -1,0 +1,7 @@
+.locations-selector__title {
+    margin-bottom: var(--pf-global--spacer--md)
+}
+
+.locations-selector__title-icon {
+    margin-left: var(--pf-global--spacer--sm)
+}
