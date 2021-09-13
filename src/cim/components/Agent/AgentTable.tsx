@@ -30,7 +30,7 @@ export type AgentTableProps = ClusterDeploymentHostsTablePropsActions & {
 };
 
 const AgentTable: React.FC<AgentTableProps> = ({ agents, className, ...actions }) => {
-  const [hosts, hostActions, actionResolver] = useAgentsTable(actions, agents);
+  const [hosts, hostActions, actionResolver] = useAgentsTable(actions, { agents });
   const content = React.useMemo(
     () => [
       hostnameColumn(hostActions.onEditHost),

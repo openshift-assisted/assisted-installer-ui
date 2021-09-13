@@ -30,7 +30,7 @@ const ClusterDeploymentHostsTable: React.FC<ClusterDeploymentHostsTableProps> = 
 }) => {
   const cluster = getAICluster({ clusterDeployment, agentClusterInstall, agents });
 
-  const [, agentActions, actionResolver] = useAgentsTable(hostActions, agents);
+  const [, agentActions, actionResolver] = useAgentsTable(hostActions, { agents });
 
   const AdditionalNTPSourcesDialogToggleWithCluster = React.useCallback<React.FC>(
     () => <AdditionalNTPSourcesDialogToggle cluster={cluster} />,

@@ -54,6 +54,10 @@ const CodeField: React.FC<CodeFieldProps> = ({
           setTouched(true);
           setValue(val, true);
         }}
+        onEditorDidMount={(editor) => {
+          setTouched(true);
+          setValue(editor.getValue(), true);
+        }}
       />
     </FormGroup>
   );
