@@ -1,7 +1,7 @@
 import React from 'react';
 import { saveAs } from 'file-saver';
 import { Button, ButtonVariant } from '@patternfly/react-core';
-import { getPresignedFileUrl, getClusterFileDownload } from '../../../ocm/api/clusters';
+import { getPresignedFileUrl, getClusterCredentialsDownload } from '../../../ocm/api/clusters';
 import { canDownloadKubeconfig } from '../hosts/utils';
 import { useAlerts } from '../AlertsContextProvider';
 import { Cluster, Presigned } from '../../api/types';
@@ -37,7 +37,7 @@ const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({
         }
       } else {
         try {
-          const response = await getClusterFileDownload(clusterId, fileName);
+          const response = await getClusterCredentialsDownload(clusterId, fileName);
           const contentHeader = response.headers.contentDisposition;
           const name = contentHeader?.match(/filename="(.+)"/)?.[1];
           saveAs(response.data, name);
