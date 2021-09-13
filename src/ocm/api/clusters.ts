@@ -49,13 +49,13 @@ export const deleteClusterHost = (clusterId: string, hostId: string): AxiosPromi
   client.delete(`/v1/clusters/${clusterId}/hosts/${hostId}`);
 
 export const postInstallCluster = (clusterId: string): AxiosPromise<Cluster> =>
-  client.post(`/v1/clusters/${clusterId}/actions/install`);
+  client.post(`/v2/clusters/${clusterId}/actions/install`);
 
 export const postResetCluster = (clusterId: string): AxiosPromise<Cluster> =>
-  client.post(`/v1/clusters/${clusterId}/actions/reset`);
+  client.post(`/v2/clusters/${clusterId}/actions/reset`);
 
 export const postCancelInstallation = (clusterId: string): AxiosPromise<Cluster> =>
-  client.post(`/v1/clusters/${clusterId}/actions/cancel`);
+  client.post(`/v2/clusters/${clusterId}/actions/cancel`);
 
 export const createClusterDownloadsImage = (
   id: string,
