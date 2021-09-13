@@ -74,7 +74,12 @@ const PlatformIntegrationLabel: React.FC<{ isTooltipHidden: boolean }> = ({
     <PopoverIcon
       variant={'plain'}
       bodyContent={
-        "Enable platform integration to access your platform's features directly in OpenShift."
+        <p>
+          Enable platform integration to access your platform's features directly in OpenShift.
+          <br />
+          <strong>Note:</strong> You will need to modify your platform configuration after cluster
+          installation is completed.
+        </p>
       }
     />
   </>

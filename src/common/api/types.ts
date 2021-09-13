@@ -1299,7 +1299,9 @@ export type HostValidationId =
   | 'api-domain-name-resolved-correctly'
   | 'api-int-domain-name-resolved-correctly'
   | 'apps-domain-name-resolved-correctly'
-  | 'compatible-with-cluster-platform';
+  | 'compatible-with-cluster-platform'
+  | 'dns-wildcard-not-configured';
+
 export interface ImageCreateParams {
   /**
    * SSH public key for debugging the installation.

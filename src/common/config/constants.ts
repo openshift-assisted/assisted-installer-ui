@@ -10,6 +10,9 @@ export const OPENSHIFT_NETWORKING_DOCS_LINK =
 export const CLUSTER_MANAGER_SITE_LINK = 'https://cloud.redhat.com/openshift/install/pull-secret';
 export const PULL_SECRET_INFO_LINK = CLUSTER_MANAGER_SITE_LINK;
 
+export const VSPHERE_CONFIG_LINK =
+  'https://issues.redhat.com/secure/attachment/12531134/12531134_How+to+modify+the+vSphere+configuration+in+OpenShift+4.x+-+Red+Hat+Customer+Portal.pdf';
+
 export const getBugzillaLink = (version = '') =>
   `https://bugzilla.redhat.com/enter_bug.cgi?product=OpenShift%20Container%20Platform&Component=OpenShift%20Container%20Platform&component=assisted-installer&version=${version}`;
 
@@ -171,6 +174,7 @@ export const HOST_VALIDATION_LABELS: { [key in HostValidationId]: string } = {
   'api-domain-name-resolved-correctly': 'API domain name resolution',
   'api-int-domain-name-resolved-correctly': 'API internal domain name resolution',
   'apps-domain-name-resolved-correctly': 'Application ingress domain name resolution',
+  'dns-wildcard-not-configured': 'DNS wildcard not configured',
 };
 
 export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string } = {
@@ -201,6 +205,7 @@ export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string 
   'api-domain-name-resolved-correctly': '',
   'api-int-domain-name-resolved-correctly': '',
   'apps-domain-name-resolved-correctly': '',
+  'dns-wildcard-not-configured': '',
 };
 
 export const CLUSTER_VALIDATION_LABELS: { [key in ClusterValidationId]: string } = {

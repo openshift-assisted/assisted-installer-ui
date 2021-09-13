@@ -35,6 +35,7 @@ import { useDefaultConfiguration } from '../clusterConfiguration/ClusterDefaultC
 import ClusterProgress from '../../../common/components/clusterDetail/ClusterProgress';
 import { EventsModalButton } from '../../../common/components/ui/eventsModal';
 import { onFetchEvents } from '../fetching/fetchEvents';
+import { VSPHERE_CONFIG_LINK } from '../../../common/config/constants';
 
 type ClusterDetailProps = {
   cluster: Cluster;
@@ -80,6 +81,21 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
                 'Download and save your kubeconfig file in a safe place. This file will be ' +
                 "automatically deleted from Assisted Installer's service " +
                 `${inactiveDeletionDays > 0 ? `in ${inactiveDeletionDays} days.` : 'today'}`
+              }
+            />
+          </RenderIf>
+          <RenderIf condition={cluster.platform?.type !== 'baremetal'}>
+            <Alert
+              variant="warning"
+              isInline
+              title={
+                <p>
+                  Modify your platform configuration to access your platform's features directly in
+                  OpenShift.{' '}
+                  <a href={VSPHERE_CONFIG_LINK} target="_blank" rel="noopener noreferrer">
+                    Learn more about configuration <i className="fas fa-external-link-alt" />
+                  </a>
+                </p>
               }
             />
           </RenderIf>
