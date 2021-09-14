@@ -35,6 +35,8 @@ export type HostsTableActions = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onEditRole?: (host: Host, role?: string) => Promise<any>;
   canEditRole?: (host: Host) => boolean;
+  onEditBMH?: (host: Host) => void;
+  canEditBMH?: (host: Host) => boolean;
 };
 
 export type HostNetworkingStatusComponentProps = {

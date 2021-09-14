@@ -15,6 +15,7 @@ import { global_warning_color_100 as warningColor } from '@patternfly/react-toke
 
 import { LabelValue } from '../../../common';
 import { InfraEnvK8sResource } from '../../types';
+import { AGENT_LOCATION_LABEL_KEY } from '../common';
 
 type EnvironmentDetailsProps = {
   infraEnv: InfraEnvK8sResource;
@@ -37,7 +38,7 @@ const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({ infraEnv }) => 
           <DescriptionListGroup>
             <DescriptionListTerm>Location</DescriptionListTerm>
             <DescriptionListDescription>
-              {infraEnv.metadata?.labels?.['assisted-install-location'] ?? 'No location'}
+              {infraEnv.metadata?.labels?.[AGENT_LOCATION_LABEL_KEY] ?? 'No location'}
             </DescriptionListDescription>
           </DescriptionListGroup>
           <DescriptionListGroup>

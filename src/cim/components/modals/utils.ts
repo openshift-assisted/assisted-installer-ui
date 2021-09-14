@@ -1,3 +1,6 @@
+import { InfraEnvK8sResource, SecretK8sResource } from '../../types';
+import { INFRAENV_AGENTINSTALL_LABEL_KEY } from '../common';
+
 export const getBareMetalHostCredentialsSecret = (
   values: {
     username: string;
@@ -8,7 +11,7 @@ export const getBareMetalHostCredentialsSecret = (
 ) => ({
   apiVersion: 'v1',
   kind: 'Secret',
-  stringData: {
+  data: {
     username: btoa(values.username),
     password: btoa(values.password),
   },
@@ -27,16 +30,16 @@ export const getBareMetalHost = (
     bootMACAddress: string;
     online: boolean;
   },
-  namespace: string,
-  secretName: string,
+  infraEnv: InfraEnvK8sResource,
+  secret: SecretK8sResource,
 ) => ({
   apiVersion: 'metal3.io/v1alpha1',
   kind: 'BareMetalHost',
   metadata: {
     name: values.hostname,
-    namespace,
+    namespace: infraEnv.metadata?.namespace,
     labels: {
-      'infraenvs.agent-install.openshift.io': 'test-cluster-virtual-installenv',
+      [INFRAENV_AGENTINSTALL_LABEL_KEY]: infraEnv.metadata?.name,
     },
     annotations: {
       'inspect.metal3.io': 'disabled',
@@ -45,7 +48,7 @@ export const getBareMetalHost = (
   spec: {
     bmc: {
       address: values.bmcAddress,
-      credentialsName: secretName,
+      credentialsName: secret.metadata?.name,
       disableCertificateVerification: !!values.disableCertificateVerification,
     },
     bootMACAddress: values.bootMACAddress,
