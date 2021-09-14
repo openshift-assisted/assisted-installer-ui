@@ -1,13 +1,11 @@
 import * as React from 'react';
 import { Flex, FlexItem, Modal, ModalBoxBody, ModalVariant, Radio } from '@patternfly/react-core';
-import { InfraEnvK8sResource } from '../../types';
 import { DownloadIso } from '../../../common';
 import { BMCFormProps } from '../Agent/types';
 import { BMCForm } from '../Agent';
 
-type AddHostModalProps = Pick<BMCFormProps, 'onClose' | 'onCreate'> & {
+type AddHostModalProps = Pick<BMCFormProps, 'onClose' | 'onCreate' | 'infraEnv'> & {
   isOpen: boolean;
-  infraEnv: InfraEnvK8sResource;
 };
 
 const AddHostModal: React.FC<AddHostModalProps> = ({ isOpen, onClose, infraEnv, onCreate }) => {

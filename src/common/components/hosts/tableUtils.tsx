@@ -324,6 +324,8 @@ export const hostActionResolver = ({
   canDownloadHostLogs,
   onDeleteHost,
   canDelete,
+  onEditBMH,
+  canEditBMH,
 }: HostsTableActions): ActionsResolver<Host> => (host) => {
   const actions = [];
   if (host) {
@@ -385,6 +387,13 @@ export const hostActionResolver = ({
         title: 'Delete host',
         id: `button-delete-host-${hostname}`,
         onClick: () => onDeleteHost(host),
+      });
+    }
+    if (onEditBMH && canEditBMH?.(host)) {
+      actions.push({
+        title: 'Edit BMC',
+        id: `button-edit-bmh-host-${hostname}`,
+        onClick: () => onEditBMH(host),
       });
     }
   }

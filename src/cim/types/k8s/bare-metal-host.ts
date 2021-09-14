@@ -1,0 +1,25 @@
+import { K8sResourceCommon } from 'console-sdk-ai-lib';
+
+export type BareMetalHostK8sResource = K8sResourceCommon & {
+  spec?: {
+    bmc?: {
+      address: string;
+      credentialsName: string;
+      disableCertificateVerification: boolean;
+    };
+    bootMACAddress: string;
+    consumerRef?: {
+      apiVersion: string;
+      kind: string;
+      name: string;
+      namespace: string;
+    };
+    image?: {
+      checksum: string;
+      url: string;
+    };
+    online: boolean;
+    externallyProvisioned?: boolean;
+    description?: string;
+  };
+};
