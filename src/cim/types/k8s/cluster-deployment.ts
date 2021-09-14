@@ -1,4 +1,29 @@
 import { K8sResourceCommon, Selector } from 'console-sdk-ai-lib';
+import { StatusCondition } from './shared';
+
+export type ClusterDeploymentStatusConditionType =
+  | 'ClusterInstallCompleted'
+  | 'ClusterInstallFailed'
+  | 'ClusterInstallStopped'
+  | 'ProvisionFailed'
+  | 'ProvisionStopped'
+  | 'RequirementsMet'
+  | 'AuthenticationFailure'
+  | 'ClusterInstallRequirementsMet'
+  | 'InstallImagesNotResolved'
+  | 'InstallerImageResolutionFailed'
+  | 'RelocationFailed'
+  | 'AWSPrivateLinkFailed'
+  | 'AWSPrivateLinkReady'
+  | 'ActiveAPIURLOverride'
+  | 'ControlPlaneCertificateNotFound'
+  | 'DNSNotReady'
+  | 'DeprovisionLaunchError'
+  | 'Hibernating'
+  | 'IngressCertificateNotFound'
+  | 'InstallLaunchError'
+  | 'SyncSetFailed'
+  | 'Unreachable';
 
 export type ClusterInstallRef = {
   group: string;
@@ -26,5 +51,6 @@ export type ClusterDeploymentK8sResource = K8sResourceCommon & {
     installedTimestamp?: string;
     installStartedTimestamp: string;
     webConsoleURL?: string;
+    conditions?: StatusCondition<ClusterDeploymentStatusConditionType>[];
   };
 };
