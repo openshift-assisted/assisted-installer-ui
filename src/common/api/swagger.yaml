@@ -151,6 +151,105 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
+  /v2/clusters:
+    post:
+      tags:
+        - installer
+      description: Creates a new OpenShift cluster definition.
+      operationId: v2RegisterCluster
+      parameters:
+        - in: body
+          name: new-cluster-params
+          description: The properties describing the new cluster.
+          required: true
+          schema:
+            $ref: '#/definitions/cluster-create-params'
+      responses:
+        '201':
+          description: Success.
+          schema:
+            $ref: '#/definitions/cluster'
+        '400':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
+    get:
+      tags:
+        - installer
+      security:
+        - userAuth: [admin, read-only-admin, user]
+      description: Retrieves the list of OpenShift clusters.
+      operationId: v2ListClusters
+      parameters:
+        - in: header
+          name: get_unregistered_clusters
+          description: Whether to return clusters that have been unregistered.
+          type: boolean
+          required: false
+          default: false
+        - in: query
+          name: openshift_cluster_id
+          description: A specific cluster to retrieve.
+          type: string
+          format: uuid
+          required: false
+        - in: query
+          name: ams_subscription_ids
+          description:
+            If non-empty, returned Clusters are filtered to those with matching subscription IDs.
+          required: false
+          type: array
+          items:
+            type: string
+        - in: query
+          name: with_hosts
+          description: Include hosts in the returned list.
+          type: boolean
+          allowEmptyValue: true
+          default: false
+      responses:
+        '200':
+          description: Success.
+          schema:
+            $ref: '#/definitions/cluster-list'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '503':
+          description: Unavailable.
+          schema:
+            $ref: '#/definitions/error'
+
   /v1/clusters/{cluster_id}:
     get:
       tags:
@@ -276,6 +375,156 @@ paths:
       responses:
         '204':
           description: Success.
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '409':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
+  /v2/clusters/{cluster_id}:
+    get:
+      tags:
+        - installer
+      security:
+        - userAuth: [admin, read-only-admin, user]
+        - agentAuth: []
+      description: Retrieves the details of the OpenShift cluster.
+      operationId: v2GetCluster
+      parameters:
+        - in: path
+          name: cluster_id
+          description: The cluster to be retrieved.
+          type: string
+          format: uuid
+          required: true
+        - in: header
+          name: discovery_agent_version
+          description:
+            The software version of the discovery agent that is retrieving the cluster details.
+          type: string
+          required: false
+        - in: header
+          name: get_unregistered_clusters
+          description: Whether to return clusters that have been unregistered.
+          type: boolean
+          required: false
+          default: false
+      responses:
+        '200':
+          description: Success.
+          schema:
+            $ref: '#/definitions/cluster'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '503':
+          description: Unavailable.
+          schema:
+            $ref: '#/definitions/error'
+
+    delete:
+      tags:
+        - installer
+      description: Deletes an OpenShift cluster definition.
+      operationId: v2DeregisterCluster
+      parameters:
+        - in: path
+          name: cluster_id
+          description: The cluster to be deregistered.
+          format: uuid
+          type: string
+          required: true
+      responses:
+        '204':
+          description: Success.
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '409':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
+    patch:
+      tags:
+        - installer
+      description: Updates an OpenShift cluster definition.
+      operationId: V2UpdateCluster
+      parameters:
+        - in: path
+          name: cluster_id
+          description: The cluster to be updated.
+          type: string
+          format: uuid
+          required: true
+        - in: body
+          name: cluster-update-params
+          description: The properties to update.
+          required: true
+          schema:
+            $ref: '#/definitions/v2-cluster-update-params'
+      responses:
+        '201':
+          description: Success.
+          schema:
+            $ref: '#/definitions/cluster'
+        '400':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
         '401':
           description: Unauthorized.
           schema:
@@ -528,7 +777,6 @@ paths:
               install-config.yaml,
               discovery.ign,
               custom_manifests.json,
-              custom_manifests.yaml,
             ]
           required: true
         - in: header
@@ -2698,6 +2946,7 @@ paths:
       security:
         - userAuth: [admin, read-only-admin, user]
       description: Get host requirements of a cluster.
+      deprecated: true
       operationId: GetClusterHostRequirements
       parameters:
         - in: path
@@ -3527,6 +3776,63 @@ paths:
           description: Not implemented.
           schema:
             $ref: '#/definitions/error'
+    patch:
+      tags:
+        - installer
+      description: Update an Openshift host
+      operationId: v2UpdateHost
+      parameters:
+        - in: path
+          name: infra_env_id
+          description: The infra_env_id of the host to be updated.
+          type: string
+          format: uuid
+          required: true
+        - in: path
+          name: host_id
+          description: The host that should be updated.
+          type: string
+          format: uuid
+          required: true
+        - in: body
+          name: host-update-params
+          description: The properties to update.
+          required: true
+          schema:
+            $ref: '#/definitions/host-update-params'
+      responses:
+        '201':
+          description: Success.
+          schema:
+            $ref: '#/definitions/host'
+        '400':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '409':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
     delete:
       tags:
         - installer
@@ -3763,8 +4069,6 @@ paths:
     post:
       tags:
         - installer
-      security:
-        - agentAuth: []
       description: Bind host to a cluster
       operationId: BindHost
       parameters:
@@ -3828,8 +4132,6 @@ paths:
     post:
       tags:
         - installer
-      security:
-        - agentAuth: []
       description: Unbind host to a cluster
       operationId: UnbindHost
       parameters:
@@ -4208,6 +4510,7 @@ paths:
       security:
         - userAuth: [admin, read-only-admin, user]
         - agentAuth: []
+        - urlAuth: []
       description: Downloads the customized ignition file for this host
       operationId: v2DownloadInfraEnvFiles
       produces:
@@ -4326,6 +4629,32 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
+  /v2/clusters/default-config:
+    get:
+      tags:
+        - installer
+      security:
+        - userAuth: [admin, read-only-admin, user]
+      description: Get the default values for various cluster properties.
+      operationId: V2GetClusterDefaultConfig
+      responses:
+        '200':
+          description: Success.
+          schema:
+            $ref: '#/definitions/cluster_default_config'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
   /v2/clusters/{cluster_id}/downloads/files:
     get:
       tags:
@@ -4399,6 +4728,147 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
+  /v2/clusters/{cluster_id}/downloads/credentials:
+    get:
+      tags:
+        - installer
+      security:
+        - userAuth: [user]
+        - urlAuth: []
+      description: Downloads credentials relating to the installed/installing cluster.
+      operationId: V2DownloadClusterCredentials
+      produces:
+        - application/octet-stream
+      parameters:
+        - in: path
+          name: cluster_id
+          description: The cluster that owns the credential file that should be downloaded.
+          type: string
+          format: uuid
+          required: true
+        - in: query
+          name: file_name
+          description: The credential file to be downloaded.
+          type: string
+          enum: [kubeadmin-password, kubeconfig, kubeconfig-noingress]
+          required: true
+      responses:
+        '200':
+          description: Success.
+          schema:
+            type: file
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '409':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '503':
+          description: Unavailable.
+          schema:
+            $ref: '#/definitions/error'
+
+  /v2/clusters/{cluster_id}/downloads/files-presigned:
+    get:
+      tags:
+        - installer
+      security:
+        - userAuth: [admin, read-only-admin, user]
+      description: Retrieves a pre-signed S3 URL for downloading cluster files.
+      operationId: V2GetPresignedForClusterFiles
+      parameters:
+        - in: path
+          name: cluster_id
+          description: The cluster that owns the file that should be downloaded.
+          type: string
+          format: uuid
+          required: true
+        - in: query
+          name: file_name
+          description: The file to be downloaded.
+          type: string
+          enum:
+            [
+              bootstrap.ign,
+              master.ign,
+              metadata.json,
+              worker.ign,
+              install-config.yaml,
+              logs,
+              manifests,
+            ]
+          required: true
+        - in: query
+          name: logs_type
+          description: If downloading logs, the type of logs to download.
+          type: string
+          enum: ['host', 'controller', 'all']
+          required: false
+        - in: query
+          name: host_id
+          description: If downloading a file related to a host, the relevant host.
+          type: string
+          format: uuid
+          required: false
+        - in: query
+          name: additional_name
+          description:
+            If downloading a manifest, the file name, prefaced with folder name, for example,
+            openshift/99-openshift-xyz.yaml.
+          type: string
+          required: false
+      responses:
+        '200':
+          description: Success.
+          schema:
+            $ref: '#/definitions/presigned'
+        '400':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '409':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
   /v2/infra-envs/{infra_env_id}/downloads/minimal-initrd:
     get:
       tags:
@@ -4448,6 +4918,607 @@ paths:
             $ref: '#/definitions/error'
         '500':
           description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
+  /v2/clusters/{cluster_id}/install-config:
+    get:
+      tags:
+        - installer
+      security:
+        - userAuth: [admin, read-only-admin, user]
+      description: Get the cluster's install config YAML.
+      operationId: v2GetClusterInstallConfig
+      parameters:
+        - in: path
+          name: cluster_id
+          description: The cluster whose install config is being retrieved.
+          type: string
+          format: uuid
+          required: true
+      responses:
+        '200':
+          description: Success.
+          schema:
+            type: string
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+    patch:
+      tags:
+        - installer
+      description: Override values in the install config.
+      operationId: v2UpdateClusterInstallConfig
+      parameters:
+        - in: path
+          name: cluster_id
+          description: The cluster whose install config is being updated.
+          type: string
+          format: uuid
+          required: true
+        - in: body
+          name: install-config-params
+          description: Install config overrides.
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Success.
+        '400':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+  /v2/domains:
+    get:
+      tags:
+        - managed_domains
+      security:
+        - userAuth: [admin, read-only-admin, user]
+      description: List of managed DNS domains.
+      operationId: V2ListManagedDomains
+      responses:
+        '200':
+          description: Success.
+          schema:
+            $ref: '#/definitions/list-managed-domains'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
+  /v2/clusters/{cluster_id}/actions/install:
+    post:
+      tags:
+        - installer
+      description: Installs the OpenShift cluster.
+      operationId: v2InstallCluster
+      parameters:
+        - in: path
+          name: cluster_id
+          description: The cluster to be installed.
+          type: string
+          format: uuid
+          required: true
+      responses:
+        '202':
+          description: Success.
+          schema:
+            $ref: '#/definitions/cluster'
+        '400':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '409':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
+  /v2/clusters/{cluster_id}/actions/cancel:
+    post:
+      tags:
+        - installer
+      description: Cancels an ongoing installation.
+      operationId: V2CancelInstallation
+      parameters:
+        - in: path
+          name: cluster_id
+          description: The cluster whose installation is to be canceled.
+          type: string
+          format: uuid
+          required: true
+      responses:
+        '202':
+          description: Success.
+          schema:
+            $ref: '#/definitions/cluster'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '409':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
+  /v2/clusters/{cluster_id}/actions/reset:
+    post:
+      tags:
+        - installer
+      description: Resets a failed installation.
+      operationId: v2ResetCluster
+      parameters:
+        - in: path
+          name: cluster_id
+          description: The cluster whose installation is to be reset.
+          type: string
+          format: uuid
+          required: true
+      responses:
+        '202':
+          description: Success.
+          schema:
+            $ref: '#/definitions/cluster'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '409':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
+  /v2/clusters/{cluster_id}/preflight-requirements:
+    get:
+      tags:
+        - installer
+      security:
+        - userAuth: [admin, read-only-admin, user]
+      description: Get preflight requirements for a cluster.
+      operationId: v2GetPreflightRequirements
+      parameters:
+        - in: path
+          name: cluster_id
+          description: The cluster to return preflight requrements for.
+          type: string
+          format: uuid
+          required: true
+      responses:
+        '200':
+          description: Success.
+          schema:
+            $ref: '#/definitions/preflight-hardware-requirements'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
+  /v2/clusters/{cluster_id}/uploads/ingress-cert:
+    post:
+      tags:
+        - installer
+      security:
+        - agentAuth: []
+      description: Transfer the ingress certificate for the cluster.
+      operationId: v2UploadClusterIngressCert
+      parameters:
+        - in: path
+          name: cluster_id
+          description: The cluster to associate with the ingress certificate.
+          type: string
+          format: uuid
+          required: true
+        - in: body
+          name: ingress-cert-params
+          description: The ingress certificate.
+          required: true
+          schema:
+            $ref: '#/definitions/ingress-cert-params'
+        - in: header
+          name: discovery_agent_version
+          description:
+            The software version of the discovery agent that is uploading the ingress certificate.
+          type: string
+          required: false
+      responses:
+        '201':
+          description: Success.
+        '400':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '503':
+          description: Unavailable.
+          schema:
+            $ref: '#/definitions/error'
+
+  /v2/clusters/{cluster_id}/actions/complete-installation:
+    post:
+      tags:
+        - installer
+      security:
+        - agentAuth: []
+      description: Agent API to mark a finalizing installation as complete.
+      operationId: v2CompleteInstallation
+      parameters:
+        - in: path
+          name: cluster_id
+          description: The cluster whose installation is being completing.
+          type: string
+          format: uuid
+          required: true
+        - in: body
+          name: completion-params
+          description: The final status of the cluster installation.
+          required: true
+          schema:
+            $ref: '#/definitions/completion-params'
+        - in: header
+          name: discovery_agent_version
+          description:
+            The software version of the discovery agent that is completing the installation.
+          type: string
+          required: false
+      responses:
+        '202':
+          description: Success.
+          schema:
+            $ref: '#/definitions/cluster'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '409':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '503':
+          description: Unavailable.
+          schema:
+            $ref: '#/definitions/error'
+
+  /v2/clusters/{cluster_id}/logs-progress:
+    put:
+      tags:
+        - installer
+      security:
+        - agentAuth: []
+      description: Update log collection state and progress.
+      operationId: v2UpdateClusterLogsProgress
+      parameters:
+        - in: path
+          name: cluster_id
+          description: The cluster whose log progress is being updated.
+          type: string
+          format: uuid
+          required: true
+        - in: body
+          name: logs-progress-params
+          description: Parameters for updating log progress.
+          required: true
+          schema:
+            $ref: '#/definitions/logs-progress-params'
+      responses:
+        '204':
+          description: Update cluster install progress.
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '409':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '503':
+          description: Unavailable.
+          schema:
+            $ref: '#/definitions/error'
+
+  /v2/component-versions:
+    get:
+      tags:
+        - versions
+      security:
+        - userAuth: [admin, read-only-admin, user]
+      description: List of component versions.
+      operationId: v2ListComponentVersions
+      responses:
+        '200':
+          description: Success.
+          schema:
+            $ref: '#/definitions/list-versions'
+
+  /v2/openshift-versions:
+    get:
+      tags:
+        - versions
+      security:
+        - userAuth: [admin, read-only-admin, user]
+      operationId: v2ListSupportedOpenshiftVersions
+      description: Retrieves the list of OpenShift supported versions.
+      responses:
+        '200':
+          description: Success.
+          schema:
+            $ref: '#/definitions/openshift-versions'
+        '503':
+          description: Unavailable.
+          schema:
+            $ref: '#/definitions/error'
+
+  /v2/clusters/{cluster_id}/manifests/files:
+    get:
+      tags:
+        - manifests
+      security:
+        - userAuth: []
+      description: Downloads cluster manifest.
+      operationId: v2DownloadClusterManifest
+      produces:
+        - application/octet-stream
+      parameters:
+        - in: path
+          name: cluster_id
+          description: The cluster whose manifest should be downloaded.
+          type: string
+          format: uuid
+          required: true
+        - in: query
+          name: folder
+          description:
+            The folder that contains the files. Manifests can be placed in 'manifests' or
+            'openshift' directories.
+          type: string
+          enum: [manifests, openshift]
+          required: false
+          default: manifests
+        - in: query
+          name: file_name
+          description: The manifest file name to download.
+          type: string
+          required: true
+      responses:
+        '200':
+          description: Success.
+          schema:
+            type: file
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '409':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
+  /v2/clusters/{cluster_id}/monitored-operators:
+    put:
+      tags:
+        - operators
+        - installer
+      security:
+        - agentAuth: []
+      description: Controller API to report of monitored operators.
+      operationId: v2ReportMonitoredOperatorStatus
+      parameters:
+        - in: path
+          name: cluster_id
+          description: The cluster whose operators are being monitored.
+          type: string
+          format: uuid
+          required: true
+        - in: body
+          name: report-params
+          description: The operators monitor report.
+          required: true
+          schema:
+            $ref: '#/definitions/operator-monitor-report'
+      responses:
+        '200':
+          description: Success.
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
+          schema:
+            $ref: '#/definitions/error'
+        '409':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '503':
+          description: Unavailable.
           schema:
             $ref: '#/definitions/error'
 
@@ -4761,6 +5832,10 @@ definitions:
         type: string
         format: uuid
         description: Unique identifier of the host this event relates to.
+      infra_env_id:
+        type: string
+        format: uuid
+        description: Unique identifier of the infra env this event relates to.
       severity:
         type: string
         enum: [info, warning, error, critical]
@@ -4961,6 +6036,8 @@ definitions:
         type: string
         description: Additional information about disks, formatted as JSON.
       role:
+        $ref: '#/definitions/host-role'
+      suggested_role:
         $ref: '#/definitions/host-role'
       bootstrap:
         type: boolean
@@ -5293,6 +6370,34 @@ definitions:
         type: object
         $ref: '#/definitions/platform'
         x-nullable: true
+      cpu_architecture:
+        type: string
+        x-nullable: false
+        default: 'x86_64'
+        description: The CPU architecture of the image (x86_64/arm64/etc).
+      disk_encryption:
+        type: object
+        $ref: '#/definitions/disk-encryption'
+        description: Installation disks encryption mode and host roles to be applied.
+
+  host-update-params:
+    type: object
+    properties:
+      host_role:
+        type: string
+        x-nullable: true
+        enum: ['auto-assign', 'master', 'worker']
+      host_name:
+        type: string
+        x-nullable: true
+      disks_selected_config:
+        type: array
+        x-nullable: true
+        items:
+          $ref: '#/definitions/disk-config-params'
+      machine_config_pool_name:
+        type: string
+        x-nullable: true
 
   cluster-update-params:
     type: object
@@ -5492,6 +6597,163 @@ definitions:
           type: object
           $ref: '#/definitions/machine_network'
         x-nullable: true
+      disk_encryption:
+        type: object
+        $ref: '#/definitions/disk-encryption'
+        description: Installation disks encryption mode and host roles to be applied.
+
+  v2-cluster-update-params:
+    type: object
+    properties:
+      name:
+        type: string
+        minLength: 1
+        maxLength: 54
+        description: OpenShift cluster name.
+        x-nullable: true
+      base_dns_domain:
+        type: string
+        description:
+          Base domain of the cluster. All DNS records must be sub-domains of this base and include
+          the cluster name.
+        x-nullable: true
+      cluster_network_cidr:
+        type: string
+        description:
+          IP address block from which Pod IPs are allocated. This block must not overlap with
+          existing physical networks. These IP addresses are used for the Pod network, and if you
+          need to access the Pods from an external network, configure load balancers and routers to
+          manage the traffic.
+        pattern: '^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$'
+        x-nullable: true
+      platform:
+        type: object
+        $ref: '#/definitions/platform'
+      cluster_network_host_prefix:
+        type: integer
+        description:
+          The subnet prefix length to assign to each individual node. For example, if
+          clusterNetworkHostPrefix is set to 23, then each node is assigned a /23 subnet out of the
+          given cidr (clusterNetworkCIDR), which allows for 510 (2^(32 - 23) - 2) pod IPs addresses.
+          If you are required to provide access to nodes from an external network, configure load
+          balancers and routers to manage the traffic.
+        minimum: 1
+        maximum: 128
+        x-nullable: true
+      service_network_cidr:
+        type: string
+        description:
+          The IP address pool to use for service IP addresses. You can enter only one IP address
+          pool. If you need to access the services from an external network, configure load
+          balancers and routers to manage the traffic.
+        pattern: '^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$'
+        x-nullable: true
+      api_vip:
+        type: string
+        pattern: '^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))?$'
+        description: The virtual IP used to reach the OpenShift cluster's API.
+        x-nullable: true
+      ingress_vip:
+        type: string
+        pattern: '^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))?$'
+        description: The virtual IP used for cluster ingress traffic.
+        x-nullable: true
+      api_vip_dns_name:
+        type: string
+        description: The domain name used to reach the OpenShift cluster API.
+        x-nullable: true
+      machine_network_cidr:
+        type: string
+        description:
+          A CIDR that all hosts belonging to the cluster should have an interfaces with IP address
+          that belongs to this CIDR. The api_vip belongs to this CIDR.
+        pattern: '^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$'
+        x-nullable: true
+      pull_secret:
+        type: string
+        description:
+          The pull secret obtained from Red Hat OpenShift Cluster Manager at
+          cloud.redhat.com/openshift/install/pull-secret.
+        x-nullable: true
+      ssh_public_key:
+        type: string
+        description: SSH public key for debugging OpenShift nodes.
+        x-nullable: true
+      vip_dhcp_allocation:
+        type: boolean
+        description: Indicate if virtual IP DHCP allocation mode is enabled.
+        x-nullable: true
+      http_proxy:
+        type: string
+        description: |
+          A proxy URL to use for creating HTTP connections outside the cluster.
+          http://\<username\>:\<pswd\>@\<ip\>:\<port\>
+        x-nullable: true
+      https_proxy:
+        type: string
+        description: |
+          A proxy URL to use for creating HTTPS connections outside the cluster.
+          http://\<username\>:\<pswd\>@\<ip\>:\<port\>
+        x-nullable: true
+      no_proxy:
+        type: string
+        description:
+          An "*" or a comma-separated list of destination domain names, domains, IP addresses, or
+          other network CIDRs to exclude from proxying.
+        x-nullable: true
+      user_managed_networking:
+        type: boolean
+        description: Indicate if the networking is managed by the user.
+        x-nullable: true
+      additional_ntp_source:
+        type: string
+        description:
+          A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
+        x-nullable: true
+      olm_operators:
+        type: array
+        description: List of OLM operators to be installed.
+        items:
+          $ref: '#/definitions/operator-create-params'
+      hyperthreading:
+        type: string
+        description: Enable/disable hyperthreading on master nodes, worker nodes, or all nodes.
+        enum: ['masters', 'workers', 'all', 'none']
+        x-nullable: true
+      network_type:
+        type: string
+        description: The desired network type used.
+        enum: ['OpenShiftSDN', 'OVNKubernetes']
+        x-nullable: true
+      schedulable_masters:
+        type: boolean
+        description: Schedule workloads on masters
+        default: false
+      cluster_networks:
+        type: array
+        description: Cluster networks that are associated with this cluster.
+        items:
+          type: object
+          $ref: '#/definitions/cluster_network'
+        x-nullable: true
+      service_networks:
+        type: array
+        description: Service networks that are associated with this cluster.
+        items:
+          type: object
+          $ref: '#/definitions/service_network'
+        x-nullable: true
+      machine_networks:
+        type: array
+        description: Machine networks that are associated with this cluster.
+        items:
+          type: object
+          $ref: '#/definitions/machine_network'
+        x-nullable: true
+      disk_encryption:
+        type: object
+        $ref: '#/definitions/disk-encryption'
+        description: Installation disks encryption mode and host roles to be applied.
 
   add-hosts-cluster-create-params:
     type: object
@@ -5666,6 +6928,11 @@ definitions:
         $ref: '#/definitions/cluster-progress-info'
         x-go-custom-tag: gorm:"embedded;embedded_prefix:progress_"
         description: Installation progress percentages of the cluster.
+      disk_encryption:
+        type: object
+        $ref: '#/definitions/disk-encryption'
+        x-go-custom-tag: gorm:"embedded;embedded_prefix:disk_encryption_"
+        description: Information regarding hosts' installation disks encryption.
       hosts:
         x-go-custom-tag: gorm:"foreignkey:ClusterID;association_foreignkey:ID"
         type: array
@@ -5741,7 +7008,7 @@ definitions:
         type: string
         description:
           JSON-formatted string containing the user overrides for the install-config.yaml file.
-        example: '{"networking":{"networkType": "OVN-Kubernetes"},"fips":true}'
+        example: '{"networking":{"networkType": "OVNKubernetes"},"fips":true}'
       ignition_config_overrides:
         x-go-custom-tag: gorm:"type:text"
         type: string
@@ -5821,6 +7088,11 @@ definitions:
         items:
           type: object
           $ref: '#/definitions/machine_network'
+      cpu_architecture:
+        type: string
+        x-nullable: false
+        default: 'x86_64'
+        description: The CPU architecture of the image (x86_64/arm64/etc).
 
   platform:
     type: object
@@ -6038,6 +7310,25 @@ definitions:
       finalizing_stage_percentage:
         type: integer
 
+  disk-encryption:
+    type: object
+    properties:
+      enable_on:
+        type: string
+        description: Enable/disable disk encryption on master nodes, worker nodes, or all nodes.
+        enum: ['none', 'all', 'masters', 'workers']
+        default: none
+      mode:
+        type: string
+        description: The disk encryption mode to use.
+        enum: ['tpmv2', 'tang']
+        default: tpmv2
+      tang_servers:
+        type: string
+        description:
+          JSON-formatted string containing additional information regarding tang's configuration
+        x-go-custom-tag: gorm:"type:text"
+
   host-stage:
     type: string
     enum:
@@ -6249,6 +7540,9 @@ definitions:
         type: integer
       usable_bytes:
         type: integer
+      physical_bytes_method:
+        description: The method by which the physical memory was set
+        $ref: '#/definitions/memory_method'
 
   cpu:
     type: object
@@ -6337,6 +7631,9 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/route'
+      tpm_version:
+        type: string
+        enum: ['none', '1.2', '2.0']
 
   free_network_addresses:
     type: object
@@ -6470,6 +7767,14 @@ definitions:
     enum:
       - baremetal
       - vsphere
+      - none
+
+  memory_method:
+    type: string
+    enum:
+      - dmidecode
+      - ghw
+      - meminfo
 
   credentials:
     type: object
@@ -6528,7 +7833,7 @@ definitions:
       - 'belongs-to-machine-cidr'
       - 'api-vip-connected'
       - 'belongs-to-majority-group'
-      - 'valid-platform'
+      - 'valid-platform-network-settings'
       - 'ntp-synced'
       - 'container-images-available'
       - 'lso-requirements-satisfied'
@@ -6542,6 +7847,8 @@ definitions:
       - 'api-int-domain-name-resolved-correctly'
       - 'apps-domain-name-resolved-correctly'
       - 'compatible-with-cluster-platform'
+      - 'dns-wildcard-not-configured'
+      - 'disk-encryption-requirements-satisfied'
 
   dhcp_allocation_request:
     type: object
@@ -6842,6 +8149,32 @@ definitions:
     items:
       $ref: '#/definitions/os-image'
 
+  release-image:
+    type: object
+    required:
+      - openshift_version
+      - cpu_architecture
+      - url
+      - version
+    properties:
+      openshift_version:
+        type: string
+        description: Version of the OpenShift cluster.
+      cpu_architecture:
+        type: string
+        description: The CPU architecture of the image (x86_64/arm64/etc).
+      url:
+        type: string
+        description: The installation image of the OpenShift cluster.
+      version:
+        type: string
+        description: OCP version from the release metadata.
+
+  release-images:
+    type: array
+    items:
+      $ref: '#/definitions/release-image'
+
   operator-property:
     type: object
     properties:
@@ -6907,6 +8240,12 @@ definitions:
       name:
         type: string
         description: Name of the InfraEnv.
+      user_name:
+        type: string
+      org_id:
+        type: string
+      email_domain:
+        type: string
       proxy:
         $ref: '#/definitions/proxy'
         x-go-custom-tag: gorm:"embedded;embedded_prefix:proxy_"
@@ -6956,6 +8295,11 @@ definitions:
         type: string
         format: date-time
         x-go-custom-tag: gorm:"type:timestamp with time zone"
+      cpu_architecture:
+        type: string
+        x-nullable: false
+        default: 'x86_64'
+        description: The CPU architecture of the image (x86_64/arm64/etc).
 
   proxy:
     type: object
@@ -7030,6 +8374,11 @@ definitions:
         description:
           Version of the OpenShift cluster (used to infer the RHCOS version - temporary until
           generic logic implemented).
+      cpu_architecture:
+        type: string
+        x-nullable: false
+        default: 'x86_64'
+        description: The CPU architecture of the image (x86_64/arm64/etc).
 
   infra-env-update-params:
     type: object
@@ -7060,11 +8409,6 @@ definitions:
         type: string
         description:
           JSON formatted string containing the user overrides for the initial ignition config.
-      cluster_id:
-        type: string
-        format: uuid
-        description: If set, all hosts that register will be associated with the specified cluster.
-        x-nullable: true
 
   subnet:
     type: string

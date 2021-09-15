@@ -147,6 +147,7 @@ export const HOST_VALIDATION_GROUP_LABELS: { [key in keyof ValidationsInfo]: str
 };
 
 export const HOST_VALIDATION_LABELS: { [key in HostValidationId]: string } = {
+  'disk-encryption-requirements-satisfied': 'Disk encryption requirements',
   'compatible-with-cluster-platform': '',
   'has-default-route': 'Default route to host',
   'sufficient-network-latency-requirement-for-role': 'Network latency',
@@ -164,7 +165,7 @@ export const HOST_VALIDATION_LABELS: { [key in HostValidationId]: string } = {
   'belongs-to-machine-cidr': 'Belongs to machine CIDR',
   'api-vip-connected': 'API VIP connected',
   'belongs-to-majority-group': 'Belongs to majority connected group',
-  'valid-platform': 'Platform',
+  'valid-platform-network-settings': 'Platform network settings',
   'ntp-synced': 'NTP synchronization',
   'container-images-available': 'Container images availability',
   'lso-requirements-satisfied': 'LSO requirements',
@@ -178,6 +179,7 @@ export const HOST_VALIDATION_LABELS: { [key in HostValidationId]: string } = {
 };
 
 export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string } = {
+  'disk-encryption-requirements-satisfied': '',
   'compatible-with-cluster-platform': '',
   'has-default-route': '',
   'sufficient-network-latency-requirement-for-role': '',
@@ -195,7 +197,7 @@ export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string 
   'belongs-to-machine-cidr': '',
   'api-vip-connected': '',
   'belongs-to-majority-group': '',
-  'valid-platform': '',
+  'valid-platform-network-settings': '',
   'ntp-synced': "Please manually fix host's NTP configuration or provide additional NTP sources.",
   'container-images-available': '',
   'lso-requirements-satisfied': '',
