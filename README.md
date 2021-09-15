@@ -13,7 +13,6 @@ in December 2020.
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 ## Install
-
 ```bash
 npm install --save openshift-assisted-ui-lib
 
@@ -23,28 +22,22 @@ yarn add openshift-assisted-ui-lib
 ```
 
 ## Develop
-
 One time action:
-
 ```bash
 sudo dnf install -y inotify-tools
 yarn install
 ```
 
-Start webpack dev server to watch sources and keep compiling into `/dist`:
+### Scripts
+- **yarn start**: Watches for changes in the `/src` folder and bundles the files into `/dist` folder  
+- **yarn sync-to-ui**: Synchronizes `/dist` with the [assisted-ui](https://github.com/openshift-assisted/assisted-ui)
+application's `node_modules/openshift-assisted-ui-lib` folder.  
+- **yarn start-assisted-ui**: runs `yarn start` and `yarn sync-to-ui` and runs `yarn start` inside the [assisted-ui](https://github.com/openshift-assisted/assisted-ui) project.    
 
-```bash
-yarn start
-```
-
-Optionaly, sync `/dist` to the [assisted-ui](https://github.com/openshift-assisted/assisted-ui)
-application's `node_modules`.
-
-```bash
-yarn sync-to-ui
-
-# eventually:
-ASSISTED_UI_ROOT=../assisted-ui UHC_PORTAL=../uhc-portal ./scripts/sync-dist.sh # listen to changes and sync the "./dist" with assisted-ui and uhc-portal node_modules
+Before using the **yarn start-assisted-ui** script, make sure this project and the `assisted-ui` (and optionally the `uhc-portal`) project are located in the same folder.  
+Next, create a `.env.local` file at the root folder of this repository and include this variable:
+```dotenv
+REACT_APP_API_URL=...ask the team
 ```
 
 ## Publish
