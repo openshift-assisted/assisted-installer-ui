@@ -43,6 +43,7 @@ export type ClusterDeploymentHostsSelectionValues = {
   selectedHostIds: string[];
   autoSelectedHostIds: string[];
 };
+export type ScaleUpFormValues = Omit<ClusterDeploymentHostsSelectionValues, 'useMastersAsWorkers'>;
 
 export type ClusterDeploymentDetailsStepProps = ClusterDeploymentDetailsProps & {
   onSaveDetails: (values: ClusterDeploymentDetailsValues) => Promise<string | void>;

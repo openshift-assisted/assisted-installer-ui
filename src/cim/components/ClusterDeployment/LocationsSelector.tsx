@@ -1,34 +1,23 @@
 import React from 'react';
 import * as _ from 'lodash';
-import { TextContent, Text } from '@patternfly/react-core';
 import { MultiSelectField, PopoverIcon } from '../../../common';
 import { AGENT_LOCATION_LABEL_KEY, AGENT_NOLOCATION_VALUE } from '../common';
 import { AgentK8sResource } from '../../types';
 import { MultiSelectOption } from '../../../common/components/ui/formik/types';
 
-import './locations-selector.css';
-
-const LocationsLabel: React.FC = () => (
-  <TextContent>
-    <Text component="h3">
-      <div className="locations-selector__title">
-        Host locations
-        <PopoverIcon
-          buttonClassName="locations-selector__title-icon"
-          bodyContent={
-            <>
-              Select one or multiple locations to choose the hosts from.
-              <br />
-              Keep the field empty to match <b>any</b> location.
-              <br />
-              Set <b>{AGENT_LOCATION_LABEL_KEY}</b> label in Agent resource to specify it's
-              location.
-            </>
-          }
-        />
-      </div>
-    </Text>
-  </TextContent>
+const LocationsLabelIcon: React.FC = () => (
+  <PopoverIcon
+    position="right"
+    bodyContent={
+      <>
+        Select one or multiple locations to choose the hosts from.
+        <br />
+        Keep the field empty to match <b>any</b> location.
+        <br />
+        Set <b>{AGENT_LOCATION_LABEL_KEY}</b> label in Agent resource to specify it's location.
+      </>
+    }
+  />
 );
 
 const getNumOfHosts = (size: number) => {
@@ -60,7 +49,8 @@ const LocationsSelector: React.FC<{ agents: AgentK8sResource[] }> = ({ agents })
     <MultiSelectField
       idPostfix="locations"
       name="locations"
-      label={<LocationsLabel />}
+      label="Host locations"
+      labelIcon={<LocationsLabelIcon />}
       placeholderText="Type or select location(s)"
       helperText="Select one or more locations to view hosts"
       options={agentLocationOptions}
