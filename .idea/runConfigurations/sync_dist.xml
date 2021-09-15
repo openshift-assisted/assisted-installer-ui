@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="sync-dist" type="js.build_tools.npm" singleton="false">
+    <package-json value="$PROJECT_DIR$/package.json" />
+    <command value="run" />
+    <scripts>
+      <script value="sync-to-ui" />
+    </scripts>
+    <node-interpreter value="project" />
+    <package-manager value="yarn" />
+    <envs />
+    <method v="2" />
+  </configuration>
+</component>
