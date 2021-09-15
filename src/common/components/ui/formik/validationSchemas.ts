@@ -111,8 +111,7 @@ export const vipRangeValidationSchema = (
       return this.createError({ message: err.message });
     }
     const foundHostSubnet = hostSubnets.find((hn) => hn.humanized === hostSubnet);
-    const subnetCidr = foundHostSubnet ? foundHostSubnet.subnet : '';
-    return !subnetCidr || isInSubnet(value, subnetCidr);
+    return !!foundHostSubnet?.subnet && isInSubnet(value, foundHostSubnet.subnet);
   });
 
 const vipUniqueValidationSchema = ({ ingressVip, apiVip }: Partial<NetworkConfigurationValues>) =>

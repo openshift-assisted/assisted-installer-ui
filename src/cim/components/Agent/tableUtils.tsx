@@ -10,6 +10,7 @@ import { hostActionResolver } from '../../../common/components/hosts/tableUtils'
 import { getAIHosts } from '../helpers';
 import { AGENT_BMH_HOSTNAME_LABEL_KEY, INFRAENV_AGENTINSTALL_LABEL_KEY } from '../common';
 import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
+import NetworkingStatus from '../status/NetworkingStatus';
 
 export const discoveryTypeColumn = (
   agents: AgentK8sResource[],
@@ -100,6 +101,20 @@ export const infraEnvColumn = (agents: AgentK8sResource[]): TableRow<Host> => {
     },
   };
 };
+
+export const networkingStatusColumn = (
+  onEditHostname?: HostsTableActions['onEditHost'],
+): TableRow<Host> => ({
+  header: { title: 'Status', transforms: [sortable] },
+  cell: (host) => {
+    const editHostname = onEditHostname ? () => onEditHostname(host) : undefined;
+    return {
+      title: <NetworkingStatus host={host} onEditHostname={editHostname} />,
+      props: { 'data-testid': 'nic-status' },
+      sortableValue: status,
+    };
+  },
+});
 
 type AgentsTableResources = {
   agents: AgentK8sResource[];

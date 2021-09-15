@@ -1,6 +1,6 @@
 import React from 'react';
 import { useField } from 'formik';
-import fuzzysearch from 'fuzzysearch';
+import Fuse from 'fuse.js';
 import {
   FormGroup,
   Select,
@@ -10,7 +10,7 @@ import {
   SelectProps,
   SelectVariant,
 } from '@patternfly/react-core';
-import { MultiSelectFieldProps } from './types';
+import { MultiSelectFieldProps, MultiSelectOption } from './types';
 import { getFieldId } from './utils';
 import HelperText from './HelperText';
 
@@ -76,19 +76,16 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
 
   const children = options
     .filter((option) => !(field.value || []).includes(option.value))
-    .map((option) => {
-      // const { itemCount } = option;
-      return (
-        <SelectOption
-          key={option.id}
-          id={option.id}
-          value={option.value}
-          // itemCount={itemCount} TODO: This is broken in Patternfly ATM
-        >
-          {option.displayName}
-        </SelectOption>
-      );
-    });
+    .map((option) => (
+      <SelectOption key={option.id} id={option.id} value={option.value}>
+        {option.displayName}
+      </SelectOption>
+    ));
+
+  const fuse = new Fuse(options, {
+    ignoreLocation: true,
+    keys: ['displayName'],
+  });
 
   return (
     <FormGroup
@@ -118,15 +115,13 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
         onClear={onClearSelection}
         selections={selections}
         onFilter={(e, val) => {
+          if (!val || val === '') {
+            return children;
+          }
+          const results = fuse.search<MultiSelectOption>(val).map((result) => result.item.id);
           return (React.Children.toArray(children) as React.ReactElement<
             SelectOptionProps
-          >[]).filter(({ props }) => {
-            if (val) {
-              const option = options.find((o) => o.id === props.id);
-              return fuzzysearch(val.toLowerCase(), option?.displayName?.toLowerCase());
-            }
-            return true;
-          });
+          >[]).filter(({ props }) => results.includes(props.id as string));
         }}
       >
         {children}
