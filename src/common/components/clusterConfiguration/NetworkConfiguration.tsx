@@ -18,6 +18,7 @@ import { isAdvNetworkConf } from './utils';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   defaultNetworkSettings: ClusterDefaultConfig;
+  hideManagedNetworking?: boolean;
 };
 
 const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
@@ -25,6 +26,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   hostSubnets,
   isVipDhcpAllocationDisabled,
   defaultNetworkSettings,
+  hideManagedNetworking,
   children,
 }) => {
   const { setFieldValue, values, touched, validateField } = useFormikContext<
@@ -76,7 +78,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
 
   return (
     <>
-      <ManagedNetworkingControlGroup disabled={!isMultiNodeCluster} />
+      {!hideManagedNetworking && <ManagedNetworkingControlGroup disabled={!isMultiNodeCluster} />}
 
       <RenderIf condition={isUserManagedNetworking}>
         <UserManagedNetworkingTextContent shouldDisplayLoadBalancersBullet={isMultiNodeCluster} />
@@ -89,6 +91,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
           hostSubnets={hostSubnets}
           hosts={cluster.hosts || []}
           isRequired={!isUserManagedNetworking}
+          isMultiNodeCluster={isMultiNodeCluster}
         />
       </RenderIf>
 

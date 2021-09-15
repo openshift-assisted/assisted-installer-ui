@@ -12,6 +12,7 @@ import { Cluster, Host, Interface, Inventory } from '../../api/types';
 import { removeProtocolFromURL, stringToJSON } from '../../api/utils';
 import { ToolbarButton } from '../ui/Toolbar';
 import PrismCode from '../ui/PrismCode';
+import { isSingleNodeCluster } from '../clusters';
 
 type WebConsoleHintProps = {
   cluster: Cluster;
@@ -78,6 +79,9 @@ export const WebConsoleHint: React.FC<WebConsoleHintProps> = ({ cluster, console
   const [isDNSExpanded, setIsDNSExpanded] = React.useState(true);
   const handleToggle = () => setIsDNSExpanded(!isDNSExpanded);
   const hostIPs = React.useMemo(() => getHostIPs(cluster), [cluster]);
+  const [apiVip, ingressVip] = isSingleNodeCluster(cluster)
+    ? [Object.values(hostIPs || {})[0], Object.values(hostIPs || {})[0]]
+    : [cluster.apiVip, cluster.ingressVip];
   const sortedHostIPs = Object.keys(hostIPs).sort();
   const etcHostsOptional = sortedHostIPs.map(
     (hostname: string) => `${hostIPs[hostname]}\t${hostname}`,
@@ -85,19 +89,19 @@ export const WebConsoleHint: React.FC<WebConsoleHintProps> = ({ cluster, console
   const clusterUrl = `${cluster.name}.${cluster.baseDnsDomain}`;
   const appsUrl = `apps.${clusterUrl}`;
   const etcHosts = [
-    `${cluster.apiVip}\tapi.${clusterUrl}`,
-    `${cluster.ingressVip}\toauth-openshift.${appsUrl}`,
-    `${cluster.ingressVip}\t${removeProtocolFromURL(consoleUrl)}`,
-    `${cluster.ingressVip}\tgrafana-openshift-monitoring.${appsUrl}`,
-    `${cluster.ingressVip}\tthanos-querier-openshift-monitoring.${appsUrl}`,
-    `${cluster.ingressVip}\tprometheus-k8s-openshift-monitoring.${appsUrl}`,
-    `${cluster.ingressVip}\talertmanager-main-openshift-monitoring.${appsUrl}`,
+    `${apiVip}\tapi.${clusterUrl}`,
+    `${ingressVip}\toauth-openshift.${appsUrl}`,
+    `${ingressVip}\t${removeProtocolFromURL(consoleUrl)}`,
+    `${ingressVip}\tgrafana-openshift-monitoring.${appsUrl}`,
+    `${ingressVip}\tthanos-querier-openshift-monitoring.${appsUrl}`,
+    `${ingressVip}\tprometheus-k8s-openshift-monitoring.${appsUrl}`,
+    `${ingressVip}\talertmanager-main-openshift-monitoring.${appsUrl}`,
   ];
   // Pad the lines as long as the longest record
   const paddingNum = `*.${appsUrl}.`.length + 2;
   const aRecords = [
-    `api.${clusterUrl}`.padEnd(paddingNum) + `A\t${cluster.apiVip}`,
-    `*.${appsUrl}`.padEnd(paddingNum) + `A\t${cluster.ingressVip}`,
+    `api.${clusterUrl}`.padEnd(paddingNum) + `A\t${apiVip}`,
+    `*.${appsUrl}`.padEnd(paddingNum) + `A\t${ingressVip}`,
   ];
 
   const aRecordsOptional = sortedHostIPs.map(
