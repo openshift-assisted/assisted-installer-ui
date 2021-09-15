@@ -43,7 +43,7 @@ import OcpConsoleNodesSectionLink from './OcpConsoleNodesSectionLink';
 import { toSentence } from '../ui/table/utils';
 import { RenderIf } from '../ui';
 
-const getStatusIcon = (status: Host['status'] | 'Discovered') => {
+const getStatusIcon = (status: Host['status'] | 'Discovered' | 'Bound') => {
   let icon = null;
   switch (status) {
     case 'discovering':
@@ -224,7 +224,7 @@ type HostStatusProps = AdditionNtpSourcePropsType & {
   host: Host;
   validationsInfo: ValidationsInfo;
   onEditHostname?: () => void;
-  statusOverride?: Host['status'] | 'Discovered';
+  statusOverride?: Host['status'] | 'Discovered' | 'Bound';
   sublabel?: string;
 };
 

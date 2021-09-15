@@ -6,6 +6,7 @@ import {
   AgentClusterInstallK8sResource,
   SecretK8sResource,
 } from '../../types';
+import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
 import { ClusterImageSetK8sResource } from '../../types/k8s/cluster-image-set';
 
 export type ClusterDeploymentHostsTablePropsActions = {
@@ -13,10 +14,11 @@ export type ClusterDeploymentHostsTablePropsActions = {
   onEditHost?: (agent: AgentK8sResource) => void;
   canEditRole?: (agent: AgentK8sResource) => boolean;
   onEditRole?: (agent: AgentK8sResource, role: string | undefined) => Promise<void>;
-  canDelete?: (agent: AgentK8sResource) => boolean;
-  onDeleteHost?: (agent: AgentK8sResource) => void;
+  canDelete?: (agent?: AgentK8sResource, bmh?: BareMetalHostK8sResource) => boolean;
+  onDeleteHost?: (agent?: AgentK8sResource, bmh?: BareMetalHostK8sResource) => void;
   onApprove?: (agent: AgentK8sResource) => void;
   onSelect?: (agent: AgentK8sResource, selected: boolean) => void;
+  onEditBMH?: (bmh: BareMetalHostK8sResource) => void;
 };
 
 export type ClusterDeploymentWizardStepsType = 'cluster-details' | 'hosts-selection' | 'networking';
@@ -68,7 +70,6 @@ export type ClusterDeploymentHostSelectionStepProps = {
   agents: AgentK8sResource[];
   onSaveHostsSelection: (values: ClusterDeploymentHostsSelectionValues) => Promise<string | void>;
   onClose: () => void;
-  hostActions: ClusterDeploymentHostsTablePropsActions;
 };
 
 export type ClusterDeploymentWizardProps = {
@@ -90,7 +91,6 @@ export type FetchSecret = (name: string, namespace: string) => Promise<SecretK8s
 export type ClusterDeploymentHostsSelectionProps = {
   agentClusterInstall: AgentClusterInstallK8sResource;
   agents: AgentK8sResource[];
-  hostActions: ClusterDeploymentHostsTablePropsActions;
   clusterDeployment: ClusterDeploymentK8sResource;
   onValuesChanged?: (values: ClusterDeploymentHostsSelectionValues) => void;
 };

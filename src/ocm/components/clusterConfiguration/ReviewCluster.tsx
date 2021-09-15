@@ -1,5 +1,7 @@
 import React from 'react';
 import { Table, TableBody, TableVariant } from '@patternfly/react-table';
+import { ExclamationTriangleIcon } from '@patternfly/react-icons';
+import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens';
 import {
   Cluster,
   Host,
@@ -10,8 +12,10 @@ import {
   DetailList,
   DetailItem,
 } from '../../../common';
+import { RenderIf } from '../../../common/components/ui/';
 import { getSimpleHardwareInfo } from '../../../common/components/hosts/hardwareInfo';
 import { ClusterValidations, HostsValidations } from './ReviewValidations';
+import { VSPHERE_CONFIG_LINK } from '../../../common';
 
 import './ReviewCluster.css';
 
@@ -67,6 +71,18 @@ const ReviewHostsInventory: React.FC<{ hosts?: Host[] }> = ({ hosts = [] }) => {
   );
 };
 
+const PlatformIntegrationNote: React.FC<{}> = () => {
+  return (
+    <p>
+      <ExclamationTriangleIcon color={warningColor.value} size="sm" /> You will need to modify your
+      platform configuration after cluster installation is completed.{' '}
+      <a href={VSPHERE_CONFIG_LINK} target="_blank" rel="noopener noreferrer">
+        Learn more <i className="fas fa-external-link-alt" />
+      </a>
+    </p>
+  );
+};
+
 const ReviewCluster: React.FC<{ cluster: Cluster }> = ({ cluster }) => (
   <DetailList>
     <DetailItem title="Cluster address" value={`${cluster.name}.${cluster.baseDnsDomain}`} />
@@ -78,6 +94,9 @@ const ReviewCluster: React.FC<{ cluster: Cluster }> = ({ cluster }) => (
       value={<ClusterValidations validationsInfo={cluster.validationsInfo} />}
     />
     <DetailItem title="Host validations" value={<HostsValidations hosts={cluster.hosts} />} />
+    <RenderIf condition={cluster.platform?.type !== 'baremetal'}>
+      <DetailItem title="Platform integration" value={<PlatformIntegrationNote />} />
+    </RenderIf>
   </DetailList>
 );
 

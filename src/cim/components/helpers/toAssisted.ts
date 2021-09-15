@@ -5,9 +5,16 @@ import { ClusterDeploymentK8sResource } from '../../types/k8s/cluster-deployment
 import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-install';
 import { getAgentStatus, getClusterStatus } from './status';
 import { getHostNetworks } from './network';
+import { BareMetalHostK8sResource, InfraEnvK8sResource } from '../../types';
+import { AGENT_BMH_HOSTNAME_LABEL_KEY, INFRAENV_AGENTINSTALL_LABEL_KEY } from '../common';
 
-export const getAIHosts = (agents: AgentK8sResource[]) =>
-  agents.map(
+export const getAIHosts = (
+  agents: AgentK8sResource[],
+  bmhs?: BareMetalHostK8sResource[],
+  infraEnv?: InfraEnvK8sResource,
+) => {
+  const bmhAgents: string[] = [];
+  const hosts = agents.map(
     (agent): Host => {
       const [status, statusInfo] = getAgentStatus(agent);
       // TODO(mlibra) Remove that workaround once https://issues.redhat.com/browse/MGMT-7052 is fixed
@@ -17,6 +24,10 @@ export const getAIHosts = (agents: AgentK8sResource[]) =>
         // @ts-ignore
         intf.ipv4Addresses = _.cloneDeep(intf.ipV4Addresses);
       });
+
+      if (agent.metadata?.labels?.[AGENT_BMH_HOSTNAME_LABEL_KEY]) {
+        bmhAgents.push(agent.metadata?.labels?.[AGENT_BMH_HOSTNAME_LABEL_KEY]);
+      }
 
       const {
         currentStage = 'Starting installation',
@@ -56,6 +67,45 @@ export const getAIHosts = (agents: AgentK8sResource[]) =>
       };
     },
   );
+
+  const restBmhs =
+    infraEnv && bmhs
+      ? bmhs
+          ?.filter((h) =>
+            h.metadata?.namespace === infraEnv.metadata?.namespace &&
+            h.metadata?.labels?.[INFRAENV_AGENTINSTALL_LABEL_KEY] === infraEnv.metadata?.name &&
+            h.metadata?.name
+              ? !bmhAgents.includes(h.metadata.name)
+              : true,
+          )
+          .map((h) => {
+            const hostInventory: Inventory = {
+              hostname: h.metadata?.name,
+              bmcAddress: h.spec?.bmc?.address,
+              systemVendor: {
+                virtual: false,
+                productName: 'Bare Metal Host',
+              },
+            };
+
+            const restBmh: Host = {
+              id: h.metadata?.uid || '',
+              href: '',
+              kind: 'Host', // It's BMC
+              status: 'known',
+              statusInfo: '',
+              inventory: JSON.stringify(hostInventory),
+              requestedHostname: h.metadata?.name,
+              role: undefined,
+              createdAt: h.metadata?.creationTimestamp,
+            };
+
+            return restBmh;
+          })
+      : [];
+
+  return [...hosts, ...restBmhs];
+};
 
 export const getAICluster = ({
   clusterDeployment,

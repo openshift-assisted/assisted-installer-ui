@@ -44,7 +44,7 @@ import {
   canDownloadHostLogs,
   canReset as canResetUtil,
   EditHostModal,
-  HostUpdateParams,
+  EditHostFormValues,
 } from '../../../common/components/hosts';
 import { hostActionResolver } from '../../../common/components/hosts/tableUtils';
 import ResetHostModal from './ResetHostModal';
@@ -330,7 +330,7 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
         }
         onClose={editHostDialog.close}
         isOpen={editHostDialog.isOpen}
-        onSave={async (values: HostUpdateParams) => {
+        onSave={async (values: EditHostFormValues) => {
           const params: ClusterUpdateParams = {
             hostsNames: [
               {

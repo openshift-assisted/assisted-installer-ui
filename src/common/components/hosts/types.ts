@@ -9,7 +9,7 @@ export type ClusterHostsTableProps = {
   setDiscoveryHintModalOpen?: HostsNotShowingLinkProps['setDiscoveryHintModalOpen'];
 };
 
-export type HostUpdateParams = {
+export type EditHostFormValues = {
   hostId: string; // identifier, uuid
   hostname: string; // requested change
 };
@@ -35,10 +35,12 @@ export type HostsTableActions = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onEditRole?: (host: Host, role?: string) => Promise<any>;
   canEditRole?: (host: Host) => boolean;
+  onEditBMH?: (host: Host) => void;
+  canEditBMH?: (host: Host) => boolean;
+  onSelect?: (host: Host, selected: boolean) => void;
 };
 
 export type HostNetworkingStatusComponentProps = {
-  cluster: Cluster;
   host: Host;
   validationsInfo: ValidationsInfo;
   onEditHostname?: () => void;

@@ -1,22 +1,35 @@
 import * as React from 'react';
 import { sortable } from '@patternfly/react-table';
 import { Host, HostsTableActions } from '../../../common';
-import { AgentK8sResource } from '../../types';
+import { AgentK8sResource, InfraEnvK8sResource } from '../../types';
 import AgentStatus from './AgentStatus';
 import { Link } from 'react-router-dom';
 import { ActionsResolver, TableRow } from '../../../common/components/hosts/AITable';
 import { ClusterDeploymentHostsTablePropsActions } from '../ClusterDeployment/types';
 import { hostActionResolver } from '../../../common/components/hosts/tableUtils';
 import { getAIHosts } from '../helpers';
-import { INFRAENV_AGENTINSTALL_LABEL_KEY } from '../common';
+import { AGENT_BMH_HOSTNAME_LABEL_KEY, INFRAENV_AGENTINSTALL_LABEL_KEY } from '../common';
+import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
+import NetworkingStatus from '../status/NetworkingStatus';
 
-export const discoveryTypeColumn = (agents: AgentK8sResource[]): TableRow<Host> => ({
+export const discoveryTypeColumn = (
+  agents: AgentK8sResource[],
+  bareMetalHosts: BareMetalHostK8sResource[],
+): TableRow<Host> => ({
   header: { title: 'Discovery type', transforms: [sortable] },
   cell: (host) => {
-    const agent = agents.find((a) => a.metadata?.uid === host.id) as AgentK8sResource;
-    const discoveryType = agent?.metadata?.labels?.hasOwnProperty('agent-install.openshift.io/bmh')
-      ? 'BMC'
-      : 'Discovery ISO';
+    const agent = agents.find((a) => a.metadata?.uid === host.id);
+    let discoveryType = 'Unknown';
+    if (agent) {
+      discoveryType = agent?.metadata?.labels?.hasOwnProperty(AGENT_BMH_HOSTNAME_LABEL_KEY)
+        ? 'BMC'
+        : 'Discovery ISO';
+    } else {
+      const bmh = bareMetalHosts.find((bmh) => bmh.metadata?.uid === host.id);
+      if (bmh) {
+        discoveryType = 'BMC';
+      }
+    }
     return {
       title: discoveryType,
       props: { 'data-testid': 'discovery-type' },
@@ -31,14 +44,18 @@ export const statusColumn = (
   onApprove?: ClusterDeploymentHostsTablePropsActions['onApprove'],
 ): TableRow<Host> => {
   return {
-    header: { title: 'Status', transforms: [sortable] },
+    header: { title: 'Status' },
     cell: (host) => {
-      const agent = agents.find((a) => a.metadata?.uid === host.id) as AgentK8sResource;
-      const editHostname = onEditHostname ? () => onEditHostname(agent) : undefined;
+      const agent = agents.find((a) => a.metadata?.uid === host.id);
+      let title: React.ReactNode = '--';
+      if (agent) {
+        const editHostname = onEditHostname ? () => onEditHostname(agent) : undefined;
+        title = <AgentStatus agent={agent} onApprove={onApprove} onEditHostname={editHostname} />;
+      }
+
       return {
-        title: <AgentStatus agent={agent} onApprove={onApprove} onEditHostname={editHostname} />,
+        title,
         props: { 'data-testid': 'host-status' },
-        sortableValue: status,
       };
     },
   };
@@ -51,15 +68,17 @@ export const clusterColumn = (
   return {
     header: { title: 'Cluster', transforms: [sortable] },
     cell: (host) => {
-      const agent = agents.find((a) => a.metadata?.uid === host.id) as AgentK8sResource;
-      return {
-        title: agent?.spec?.clusterDeploymentName?.name ? (
+      const agent = agents.find((a) => a.metadata?.uid === host.id);
+      let title: React.ReactNode = '--';
+      if (agent?.spec?.clusterDeploymentName) {
+        title = (
           <Link to={getClusterDeploymentLink(agent.spec.clusterDeploymentName)}>
             {agent.spec.clusterDeploymentName.name}
           </Link>
-        ) : (
-          '--'
-        ),
+        );
+      }
+      return {
+        title,
         props: { 'data-testid': 'cluster' },
         sortableValue: agent?.spec?.clusterDeploymentName?.name ?? '--',
       };
@@ -82,6 +101,27 @@ export const infraEnvColumn = (agents: AgentK8sResource[]): TableRow<Host> => {
     },
   };
 };
+
+export const networkingStatusColumn = (
+  onEditHostname?: HostsTableActions['onEditHost'],
+): TableRow<Host> => ({
+  header: { title: 'Status', transforms: [sortable] },
+  cell: (host) => {
+    const editHostname = onEditHostname ? () => onEditHostname(host) : undefined;
+    return {
+      title: <NetworkingStatus host={host} onEditHostname={editHostname} />,
+      props: { 'data-testid': 'nic-status' },
+      sortableValue: status,
+    };
+  },
+});
+
+type AgentsTableResources = {
+  agents: AgentK8sResource[];
+  bmhs?: BareMetalHostK8sResource[];
+  infraEnv?: InfraEnvK8sResource;
+};
+
 export const useAgentsTable = (
   {
     onEditHost,
@@ -91,12 +131,13 @@ export const useAgentsTable = (
     onEditRole,
     canEditRole,
     onSelect,
+    onEditBMH,
   }: ClusterDeploymentHostsTablePropsActions,
-  agents: AgentK8sResource[],
+  { agents, bmhs, infraEnv }: AgentsTableResources,
 ): [Host[], HostsTableActions, ActionsResolver<Host>] => {
   const [hosts, actions] = React.useMemo(
     () => [
-      getAIHosts(agents),
+      getAIHosts(agents, bmhs, infraEnv),
       {
         onEditHost: onEditHost
           ? (host: Host) => {
@@ -106,20 +147,22 @@ export const useAgentsTable = (
           : undefined,
         canEditHost: canEditHost
           ? (host: Host) => {
-              const agent = agents.find((a) => a.metadata?.uid === host.id) as AgentK8sResource;
-              return canEditHost(agent);
+              const agent = agents.find((a) => a.metadata?.uid === host.id);
+              return agent ? canEditHost(agent) : false;
             }
           : undefined,
         onDeleteHost: onDeleteHost
           ? (host: Host) => {
-              const agent = agents.find((a) => a.metadata?.uid === host.id) as AgentK8sResource;
-              return onDeleteHost(agent);
+              const agent = agents.find((a) => a.metadata?.uid === host.id);
+              const bmh = bmhs?.find((a) => a.metadata?.uid === host.id);
+              return onDeleteHost(agent, bmh);
             }
           : undefined,
         canDelete: canDelete
           ? (host: Host) => {
-              const agent = agents.find((a) => a.metadata?.uid === host.id) as AgentK8sResource;
-              return canDelete(agent);
+              const agent = agents.find((a) => a.metadata?.uid === host.id);
+              const bmh = bmhs?.find((a) => a.metadata?.uid === host.id);
+              return canDelete(agent, bmh);
             }
           : undefined,
         onEditRole: onEditRole
@@ -130,8 +173,8 @@ export const useAgentsTable = (
           : undefined,
         canEditRole: canEditRole
           ? (host: Host) => {
-              const agent = agents.find((a) => a.metadata?.uid === host.id) as AgentK8sResource;
-              return canEditRole(agent);
+              const agent = agents.find((a) => a.metadata?.uid === host.id);
+              return agent ? canEditRole(agent) : false;
             }
           : undefined,
         onSelect: onSelect
@@ -140,9 +183,30 @@ export const useAgentsTable = (
               return onSelect(agent, selected);
             }
           : undefined,
+        onEditBMH: onEditBMH
+          ? (host: Host) => {
+              const bmh = bmhs?.find(
+                (h) => h.metadata?.uid === host.id,
+              ) as BareMetalHostK8sResource;
+              return onEditBMH(bmh);
+            }
+          : undefined,
+        canEditBMH: (host: Host) => !!bmhs?.find((h) => h.metadata?.uid === host.id),
       },
     ],
-    [onEditHost, canEditHost, onDeleteHost, canDelete, onEditRole, canEditRole, agents, onSelect],
+    [
+      onEditHost,
+      canEditHost,
+      onDeleteHost,
+      canDelete,
+      onEditRole,
+      canEditRole,
+      agents,
+      onSelect,
+      onEditBMH,
+      bmhs,
+      infraEnv,
+    ],
   );
   const actionResolver = React.useMemo(() => hostActionResolver(actions), [actions]);
   return [hosts, actions, actionResolver];

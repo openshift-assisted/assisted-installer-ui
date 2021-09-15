@@ -17,7 +17,7 @@ import {
 } from '@patternfly/react-core';
 import { Formik, FormikProps, FormikConfig, FieldArray, useField } from 'formik';
 import * as Yup from 'yup';
-import { InfraEnvK8sResource } from '../../types';
+import { InfraEnvK8sResource, SecretK8sResource } from '../../types';
 import {
   hostnameValidationSchema,
   InputField,
@@ -29,6 +29,9 @@ import {
 import { Language } from '@patternfly/react-code-editor';
 import { MinusCircleIcon, PlusCircleIcon } from '@patternfly/react-icons';
 import { AddBmcValues, BMCFormProps } from './types';
+import { NMStateK8sResource } from '../../types/k8s/nm-state';
+import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
+import { AGENT_BMH_HOSTNAME_LABEL_KEY } from '../common';
 
 const MacMapping = () => {
   const [field, { touched, error }] = useField<{ macAddress: string; name: string }[]>({
@@ -93,7 +96,7 @@ const MacMapping = () => {
   );
 };
 
-const getNMState = (values: AddBmcValues, infraEnv: InfraEnvK8sResource) => {
+const getNMState = (values: AddBmcValues, infraEnv: InfraEnvK8sResource): NMStateK8sResource => {
   // eslint-disable-next-line
   const config: any = yaml.load(values.nmState);
   const nmState = {
@@ -103,8 +106,7 @@ const getNMState = (values: AddBmcValues, infraEnv: InfraEnvK8sResource) => {
       generateName: `${infraEnv.metadata?.name}-`,
       namespace: infraEnv.metadata?.namespace,
       labels: {
-        infraEnv: infraEnv.metadata?.name,
-        bmcMAC: values.bmcAddress,
+        [AGENT_BMH_HOSTNAME_LABEL_KEY]: values.hostname,
       },
     },
     spec: {
@@ -142,7 +144,39 @@ const emptyValues: AddBmcValues = {
   macMapping: [{ macAddress: '', name: '' }],
 };
 
-const BMCForm: React.FC<BMCFormProps> = ({ onCreate, onClose, hasDHCP, infraEnv }) => {
+const getInitValues = (
+  bmh?: BareMetalHostK8sResource,
+  nmState?: NMStateK8sResource,
+  secret?: SecretK8sResource,
+  isEdit?: boolean,
+): AddBmcValues => {
+  if (isEdit) {
+    return {
+      hostname: bmh?.metadata?.name || '',
+      bmcAddress: bmh?.spec?.bmc?.address || '',
+      username: secret?.data?.username ? atob(secret.data.username) : '',
+      password: secret?.data?.password ? atob(secret.data.password) : '',
+      bootMACAddress: bmh?.spec?.bootMACAddress || '',
+      disableCertificateVerification: bmh?.spec?.bmc?.disableCertificateVerification || false,
+      online: bmh?.spec?.online || false,
+      nmState: yaml.dump(nmState?.spec?.config),
+      macMapping: nmState?.spec?.interfaces || [{ macAddress: '', name: '' }],
+    };
+  } else {
+    return emptyValues;
+  }
+};
+
+const BMCForm: React.FC<BMCFormProps> = ({
+  onCreate,
+  onClose,
+  hasDHCP,
+  infraEnv,
+  bmh,
+  nmState,
+  secret,
+  isEdit,
+}) => {
   const [error, setError] = React.useState();
 
   const handleSubmit: FormikConfig<AddBmcValues>['onSubmit'] = async (values) => {
@@ -157,7 +191,7 @@ const BMCForm: React.FC<BMCFormProps> = ({ onCreate, onClose, hasDHCP, infraEnv 
   };
   return (
     <Formik
-      initialValues={emptyValues}
+      initialValues={getInitValues(bmh, nmState, secret, isEdit)}
       isInitialValid={false}
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
@@ -172,6 +206,7 @@ const BMCForm: React.FC<BMCFormProps> = ({ onCreate, onClose, hasDHCP, infraEnv 
                   name="hostname"
                   placeholder="Enter the name for the Host"
                   isRequired
+                  isDisabled={isEdit}
                 />
                 <InputField
                   label="Baseboard Management Controller Address"
@@ -225,7 +260,7 @@ const BMCForm: React.FC<BMCFormProps> = ({ onCreate, onClose, hasDHCP, infraEnv 
             </ModalBoxBody>
             <ModalBoxFooter>
               <Button onClick={submitForm} isDisabled={isSubmitting || !isValid}>
-                Create
+                {isEdit ? 'Submit' : 'Create'}
               </Button>
               <Button onClick={onClose} variant={ButtonVariant.secondary}>
                 Cancel
