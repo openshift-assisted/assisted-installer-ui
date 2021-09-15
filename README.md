@@ -32,7 +32,7 @@ yarn install
 - **yarn start**: Watches for changes in the `/src` folder and bundles the files into `/dist` folder  
 - **yarn sync-to-ui**: Synchronizes `/dist` with the [assisted-ui](https://github.com/openshift-assisted/assisted-ui)
 application's `node_modules/openshift-assisted-ui-lib` folder.  
-- **yarn start-assisted-ui**: runs `yarn start` and `yarn sync-to-ui` and runs `yarn start` inside the [assisted-ui](https://github.com/openshift-assisted/assisted-ui) project.    
+- **yarn start-assisted-ui**: Runs the following 3 scripts in parallel: `yarn start`, `yarn sync-to-ui` and `yarn start` inside the [assisted-ui](https://github.com/openshift-assisted/assisted-ui) project.    
 
 Before using the **yarn start-assisted-ui** script, make sure this project and the `assisted-ui` (and optionally the `uhc-portal`) project are located in the same folder.  
 Next, create a `.env.local` file at the root folder of this repository and include this variable:
