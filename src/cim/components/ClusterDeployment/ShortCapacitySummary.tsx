@@ -20,7 +20,7 @@ const ShortCapacitySummary: React.FC<ShortCapacitySummaryProps> = ({ selectedAge
   );
   return (
     <div>
-      Total {fileSize(totals.memory, 2, 'iec')} memory and {totals.cpus} CPUs.
+      Total compute: {totals.cpus} CPUs | {fileSize(totals.memory, 2, 'iec')} Memory
     </div>
   );
 };
