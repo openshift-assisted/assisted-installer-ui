@@ -27,7 +27,7 @@ export const SingleResourceAlerts: React.FC<{
           {conditions.map((c) => {
             const [title, ...messages] = c.message.split(/:|\.,/);
             return (
-              <>
+              <React.Fragment key={title}>
                 <TextListItem component={TextListItemVariants.li}>
                   <strong>{title}</strong>
                 </TextListItem>
@@ -36,7 +36,7 @@ export const SingleResourceAlerts: React.FC<{
                     {m}
                   </TextListItem>
                 ))}
-              </>
+              </React.Fragment>
             );
           })}
         </TextList>

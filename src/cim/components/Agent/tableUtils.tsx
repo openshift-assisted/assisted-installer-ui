@@ -7,7 +7,11 @@ import AgentStatus from './AgentStatus';
 import { ActionsResolver, TableRow } from '../../../common/components/hosts/AITable';
 import { ClusterDeploymentHostsTablePropsActions } from '../ClusterDeployment/types';
 import { hostActionResolver } from '../../../common/components/hosts/tableUtils';
-import { getAIHosts, getFailingResourceConditions } from '../helpers';
+import {
+  getAIHosts,
+  getFailingResourceConditions,
+  REQUIRED_AGENT_CONDITION_TYPES,
+} from '../helpers';
 import { AGENT_BMH_HOSTNAME_LABEL_KEY, INFRAENV_AGENTINSTALL_LABEL_KEY } from '../common';
 import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
 import NetworkingStatus from '../status/NetworkingStatus';
@@ -82,7 +86,7 @@ export const infraEnvStatusColumn = ({
       if (agent) {
         const editHostname = onEditHostname ? () => onEditHostname(agent) : undefined;
 
-        const conditions = getFailingResourceConditions(agent, ['SpecSynced', 'Connected']);
+        const conditions = getFailingResourceConditions(agent, REQUIRED_AGENT_CONDITION_TYPES);
         let validationsInfo;
         if (conditions?.length) {
           validationsInfo = {

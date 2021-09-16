@@ -1,12 +1,12 @@
 import { Button, Popover, Stack, StackItem } from '@patternfly/react-core';
 import * as React from 'react';
-import { getHostname, HostStatus } from '../../../common';
+import { getHostname, HostStatus, HostStatusProps } from '../../../common';
 import { AgentK8sResource } from '../../types';
 import { ClusterDeploymentHostsTablePropsActions } from '../ClusterDeployment/types';
 import { getAIHosts } from '../helpers';
+import { ValidationsInfo } from '../../../common/types/hosts';
 
 import '@patternfly/react-styles/css/utilities/Text/text.css';
-import { ValidationsInfo } from '../../../common/types/hosts';
 
 type AgentStatusProps = {
   agent: AgentK8sResource;
@@ -28,6 +28,15 @@ const AgentStatus: React.FC<AgentStatusProps> = ({
 
   const macAddress = agent.status?.inventory?.interfaces?.[0]?.macAddress;
   const hostname = getHostname(host, agent.status?.inventory || {});
+
+  let statusOverride: HostStatusProps['statusOverride'];
+  if (pendingApproval) {
+    // TODO(mlibra): Add icon
+    statusOverride = 'Discovered';
+  } else if (validationsInfo.infrastructure) {
+    statusOverride = 'insufficient';
+  }
+
   return (
     <Stack>
       <StackItem>
@@ -35,9 +44,7 @@ const AgentStatus: React.FC<AgentStatusProps> = ({
           host={host}
           onEditHostname={editHostname}
           validationsInfo={validationsInfo}
-          statusOverride={
-            pendingApproval || !!validationsInfo.infrastructure ? 'Discovered' : undefined
-          }
+          statusOverride={statusOverride}
         />
       </StackItem>
       {pendingApproval && onApprove && (
