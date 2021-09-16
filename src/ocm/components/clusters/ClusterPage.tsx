@@ -15,6 +15,8 @@ import {
   LoadingState,
   AlertsContextProvider,
   AddHostsContextProvider,
+  PreviewBadgePosition,
+  TechnologyPreview,
 } from '../../../common';
 import ClusterDetail from '../clusterDetail/ClusterDetail';
 import CancelInstallationModal from '../clusterDetail/CancelInstallationModal';
@@ -27,7 +29,6 @@ import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
 import { useClusterPolling, useFetchCluster } from './clusterPolling';
 import { DiscoveryImageModal } from '../clusterConfiguration/discoveryImageModal';
 import { isSingleClusterMode, routeBasePath } from '../../config';
-import { PreviewBadgePosition, TechnologyPreview } from '../ui/PreviewBadge';
 
 type MatchParams = {
   clusterId: string;
