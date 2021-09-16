@@ -17,13 +17,15 @@ export const getFailingAgentConditions = (agents: AgentK8sResource[] = []) => {
   return agentsAlerts;
 };
 
-// What about Unknown status?
 export const getFailingResourceConditions = (
   resource: {
     status?: {
       conditions?: StatusCondition<string>[];
     };
   } = {},
-  ofType = ['Validated'],
+  // ofType === unknown matches ALL condition types
+  ofType?: string[],
 ): StatusCondition<string>[] =>
-  resource.status?.conditions?.filter((c) => ofType.includes(c.type) && c.status === 'False') || [];
+  resource.status?.conditions?.filter(
+    (c) => (!ofType || ofType?.includes(c.type)) && c.status === 'False',
+  ) || [];
