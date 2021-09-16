@@ -3,7 +3,7 @@ import { AgentK8sResource, BareMetalHostK8sResource, InfraEnvK8sResource } from 
 import { ClusterDeploymentHostsTablePropsActions } from '../ClusterDeployment/types';
 import {
   discoveryTypeColumn,
-  statusColumn,
+  infraEnvStatusColumn,
   clusterColumn,
   useAgentsTable,
 } from '../Agent/tableUtils';
@@ -42,7 +42,11 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTable> = ({
     () => [
       hostnameColumn(hostActions.onEditHost),
       discoveryTypeColumn(agents, bareMetalHosts),
-      statusColumn(agents, actions.onEditHost, actions.onApprove),
+      infraEnvStatusColumn({
+        agents,
+        onEditHostname: actions.onEditHost,
+        onApprove: actions.onApprove,
+      }),
       clusterColumn(agents, getClusterDeploymentLink),
       discoveredAtColumn,
       cpuCoresColumn,

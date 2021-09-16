@@ -38,7 +38,7 @@ const ClusterHostsTable: React.FC<ClusterHostsTableProps> = ({
     () => [
       hostnameColumn(onEditHost),
       roleColumn(actionChecks.canEditRole, onEditRole),
-      statusColumn(AdditionalNTPSourcesDialogToggle, onEditHost),
+      statusColumn(AdditionalNTPSourcesDialogToggle, onEditHost), // Upravit tady pro ClusterDetail
       discoveredAtColumn,
       cpuCoresColumn,
       memoryColumn,

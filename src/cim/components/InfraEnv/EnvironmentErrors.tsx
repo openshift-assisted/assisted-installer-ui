@@ -1,26 +1,16 @@
 import * as React from 'react';
-import { getFailingAgentConditions, getFailingResourceConditions } from '../helpers';
-import { AgentK8sResource, InfraEnvK8sResource } from '../../types';
-import { AgentAlerts, SingleResourceAlerts } from '../common/ResourceAlerts';
+import { getFailingResourceConditions } from '../helpers';
+import { InfraEnvK8sResource } from '../../types';
+import { SingleResourceAlerts } from '../common/ResourceAlerts';
 
 export type EnvironmentErrorsProps = {
   infraEnv: InfraEnvK8sResource;
-  infraAgents: AgentK8sResource[];
-  // bareMetalHosts: BareMetalHostK8sResource[]; // TODO(mlibra)
 };
 
-export const EnvironmentErrors: React.FC<EnvironmentErrorsProps> = ({ infraEnv, infraAgents }) => {
-  const infraEnvAlerts = getFailingResourceConditions(infraEnv);
-  const agentsAlerts = getFailingAgentConditions(infraAgents);
+export const EnvironmentErrors: React.FC<EnvironmentErrorsProps> = ({ infraEnv }) => {
+  const infraEnvAlerts = getFailingResourceConditions(infraEnv, undefined /* For ALL */);
 
   return (
-    <>
-      <SingleResourceAlerts
-        title="Failing infrastructure environment"
-        conditions={infraEnvAlerts}
-      />
-
-      <AgentAlerts agentsAlerts={agentsAlerts} />
-    </>
+    <SingleResourceAlerts title="Failing infrastructure environment" conditions={infraEnvAlerts} />
   );
 };

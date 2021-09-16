@@ -6,17 +6,24 @@ import { ClusterDeploymentHostsTablePropsActions } from '../ClusterDeployment/ty
 import { getAIHosts } from '../helpers';
 
 import '@patternfly/react-styles/css/utilities/Text/text.css';
+import { ValidationsInfo } from '../../../common/types/hosts';
 
 type AgentStatusProps = {
   agent: AgentK8sResource;
   onApprove: ClusterDeploymentHostsTablePropsActions['onApprove'];
   onEditHostname: ClusterDeploymentHostsTablePropsActions['onEditHost'];
+  validationsInfo?: ValidationsInfo;
 };
 
-const AgentStatus: React.FC<AgentStatusProps> = ({ agent, onApprove, onEditHostname }) => {
+const AgentStatus: React.FC<AgentStatusProps> = ({
+  agent,
+  onApprove,
+  onEditHostname,
+  validationsInfo: validationsInfoProps,
+}) => {
   const [host] = getAIHosts([agent]);
   const editHostname = onEditHostname ? () => onEditHostname(agent) : undefined;
-  const validationsInfo = agent.status?.hostValidationInfo || {};
+  const validationsInfo = validationsInfoProps || agent.status?.hostValidationInfo || {};
   const pendingApproval = !agent.spec.approved;
 
   const macAddress = agent.status?.inventory?.interfaces?.[0]?.macAddress;
@@ -28,7 +35,9 @@ const AgentStatus: React.FC<AgentStatusProps> = ({ agent, onApprove, onEditHostn
           host={host}
           onEditHostname={editHostname}
           validationsInfo={validationsInfo}
-          statusOverride={pendingApproval ? 'Discovered' : undefined}
+          statusOverride={
+            pendingApproval || !!validationsInfo.infrastructure ? 'Discovered' : undefined
+          }
         />
       </StackItem>
       {pendingApproval && onApprove && (
