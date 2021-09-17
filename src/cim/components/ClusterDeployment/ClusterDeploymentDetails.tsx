@@ -12,7 +12,6 @@ import {
 } from '@patternfly/react-core';
 import ClusterPropertiesList from '../../../common/components/clusterDetail/ClusterPropertiesList';
 import { getAICluster } from '../helpers/toAssisted';
-import { getClusterStatus } from '../helpers/status';
 import {
   AgentClusterInstallK8sResource,
   AgentK8sResource,
@@ -22,15 +21,12 @@ import ClusterDeploymentCredentials from './ClusterDeploymentCredentials';
 import {
   formatEventsData,
   shouldShowClusterCredentials,
-  shouldShowClusterInstallationError,
   shouldShowClusterInstallationProgress,
 } from './helpers';
-import ClusterInstallationError from './ClusterInstallationError';
 import { EventsModalButton } from '../../../common/components/ui/eventsModal';
 import { EventListFetchProps } from '../../../common/types/events';
 import AgentTable from '../Agent/AgentTable';
 import { FetchSecret } from './types';
-import ClusterDeploymentProgress from './ClusterDeploymentProgress';
 import { getConsoleUrl } from '../helpers/clusterDeployment';
 import ClusterDeploymentKubeconfigDownload from './ClusterDeploymentKubeconfigDownload';
 
@@ -79,7 +75,6 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
   };
 
   const cluster = getAICluster({ clusterDeployment, agentClusterInstall, agents: clusterAgents });
-  const [clusterStatus, clusterStatusInfo] = getClusterStatus(agentClusterInstall);
   return (
     <Stack hasGutter>
       {shouldShowClusterInstallationProgress(agentClusterInstall) && (
@@ -99,14 +94,6 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
             <CardExpandableContent>
               <CardBody>
                 <Stack hasGutter>
-                  <StackItem>
-                    <ClusterDeploymentProgress
-                      clusterDeployment={clusterDeployment}
-                      agentClusterInstall={agentClusterInstall}
-                      agents={clusterAgents}
-                      onFetchEvents={handleFetchEvents}
-                    />
-                  </StackItem>
                   {shouldShowClusterCredentials(agentClusterInstall) && (
                     <StackItem>
                       <ClusterDeploymentCredentials
@@ -137,20 +124,6 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
                       View Cluster Events
                     </EventsModalButton>
                   </StackItem>
-                  {shouldShowClusterInstallationError(agentClusterInstall) && (
-                    <StackItem>
-                      <ClusterInstallationError
-                        title={
-                          clusterStatus === 'cancelled'
-                            ? 'Cluster installation was cancelled'
-                            : undefined
-                        }
-                        statusInfo={clusterStatusInfo}
-                        logsUrl={agentClusterInstall.status?.debugInfo?.logsURL}
-                        openshiftVersion={clusterDeployment.status?.installVersion}
-                      />
-                    </StackItem>
-                  )}
                 </Stack>
               </CardBody>
             </CardExpandableContent>
