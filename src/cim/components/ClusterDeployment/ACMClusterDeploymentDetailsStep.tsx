@@ -42,6 +42,7 @@ const ACMClusterDeploymentDetailsStep: React.FC<ACMClusterDeploymentDetailsStepP
     usedClusterNames,
     agents,
     defaultBaseDomain,
+    pullSecret,
   });
   return (
     <Formik
