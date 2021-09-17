@@ -10,8 +10,6 @@ import {
   Stack,
   StackItem,
 } from '@patternfly/react-core';
-import ValidatedConditionAlert from '../common/ValidatedConditionAlert';
-import { getClusterValidatedCondition } from '../helpers/conditions';
 import ClusterPropertiesList from '../../../common/components/clusterDetail/ClusterPropertiesList';
 import { getAICluster } from '../helpers/toAssisted';
 import { getClusterStatus } from '../helpers/status';
@@ -211,9 +209,6 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
             </CardBody>
           </CardExpandableContent>
         </Card>
-      </StackItem>
-      <StackItem>
-        <ValidatedConditionAlert condition={getClusterValidatedCondition(agentClusterInstall)} />
       </StackItem>
     </Stack>
   );

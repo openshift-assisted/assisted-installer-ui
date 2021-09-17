@@ -35,7 +35,7 @@ const AgentTable: React.FC<AgentTableProps> = ({ agents, className, ...actions }
     () => [
       hostnameColumn(hostActions.onEditHost),
       roleColumn(hostActions.canEditRole, hostActions.onEditRole),
-      statusColumn(agents, actions.onEditHost, actions.onApprove),
+      statusColumn({ agents, onEditHostname: actions.onEditHost, onApprove: actions.onApprove }),
       discoveredAtColumn,
       cpuCoresColumn,
       memoryColumn,
