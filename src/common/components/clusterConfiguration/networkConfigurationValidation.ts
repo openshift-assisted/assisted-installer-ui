@@ -33,18 +33,13 @@ export const getNetworkConfigurationValidationSchema = (
   initialValues: NetworkConfigurationValues,
   hostSubnets: HostSubnets,
 ) =>
-  Yup.lazy<Pick<NetworkConfigurationValues, 'clusterNetworkCidr' | 'apiVip' | 'ingressVip'>>(
-    ({ clusterNetworkCidr, apiVip, ingressVip }) =>
-      Yup.object<NetworkConfigurationValues>().shape({
-        clusterNetworkHostPrefix: hostPrefixValidationSchema({ clusterNetworkCidr }),
-        clusterNetworkCidr: ipBlockValidationSchema,
-        serviceNetworkCidr: ipBlockValidationSchema,
-        apiVip: vipValidationSchema(hostSubnets, { apiVip, ingressVip }, initialValues.apiVip),
-        ingressVip: vipValidationSchema(
-          hostSubnets,
-          { apiVip, ingressVip },
-          initialValues.ingressVip,
-        ),
-        sshPublicKey: sshPublicKeyValidationSchema,
-      }),
+  Yup.lazy<NetworkConfigurationValues>((values) =>
+    Yup.object<NetworkConfigurationValues>().shape({
+      clusterNetworkHostPrefix: hostPrefixValidationSchema(values),
+      clusterNetworkCidr: ipBlockValidationSchema,
+      serviceNetworkCidr: ipBlockValidationSchema,
+      apiVip: vipValidationSchema(hostSubnets, values, initialValues.apiVip),
+      ingressVip: vipValidationSchema(hostSubnets, values, initialValues.ingressVip),
+      sshPublicKey: sshPublicKeyValidationSchema,
+    }),
   );
