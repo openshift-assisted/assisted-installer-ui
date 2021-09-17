@@ -1,4 +1,8 @@
 import { K8sResourceCommon, Selector } from 'console-sdk-ai-lib';
+import { StatusCondition } from './shared';
+
+// TODO(mlibra): Add all known types
+export type InfraEnvStatusConditionType = 'ImageCreated';
 
 export type InfraEnvK8sResource = K8sResourceCommon & {
   spec?: {
@@ -20,7 +24,7 @@ export type InfraEnvK8sResource = K8sResourceCommon & {
   };
   status?: {
     agentLabelSelector?: Selector;
-    conditions?: unknown[];
+    conditions?: StatusCondition<InfraEnvStatusConditionType>[];
     isoDownloadURL?: string;
   };
 };

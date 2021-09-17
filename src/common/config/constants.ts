@@ -144,6 +144,7 @@ export const HOST_VALIDATION_GROUP_LABELS: { [key in keyof ValidationsInfo]: str
   hardware: 'Hardware',
   network: 'Network',
   operators: 'Operators',
+  infrastructure: 'Infrastructure',
 };
 
 export const HOST_VALIDATION_LABELS: { [key in HostValidationId]: string } = {

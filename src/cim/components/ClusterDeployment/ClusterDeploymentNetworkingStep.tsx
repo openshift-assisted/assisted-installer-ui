@@ -68,6 +68,7 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
   agents,
   onSaveNetworking,
   onClose,
+  onFinish,
   ...rest
 }) => {
   const { addAlert } = useAlerts();
@@ -87,7 +88,7 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
 
   const next = () => {
     // setCurrentStepId('something-next'); // TODO(mlibra): set the next step ID here
-    onClose(); // TODO(mlibra): just temporarily - the flow will continue
+    onFinish(); // TODO(mlibra): just temporarily - the flow will continue
   };
 
   const handleSubmit = async (values: ClusterDeploymentNetworkingValues) => {
