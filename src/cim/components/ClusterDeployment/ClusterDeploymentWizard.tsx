@@ -37,7 +37,6 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
             agentClusterInstall={agentClusterInstall}
             onClose={onClose}
             onSaveHostsSelection={onSaveHostsSelection}
-            hostActions={hostActions}
             agents={agents}
           />
         ) : (

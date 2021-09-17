@@ -1,13 +1,13 @@
 import * as React from 'react';
-import { Grid, GridItem, Text, TextContent } from '@patternfly/react-core';
+import { Alert, Grid, GridItem, Text, TextContent } from '@patternfly/react-core';
 import {
   ClusterDefaultConfig,
   CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4,
   getHostSubnets,
   NetworkConfigurationFormFields,
 } from '../../../common';
-import ClusterDeploymentHostsTable from './ClusterDeploymentHostsTable';
-import { getAICluster } from '../helpers';
+import ClusterDeploymentHostsNetworkTable from './ClusterDeploymentHostsNetworkTable';
+import { getAgentStatus, getAICluster } from '../helpers';
 import {
   AgentClusterInstallK8sResource,
   AgentK8sResource,
@@ -49,28 +49,43 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
 
   const hostSubnets = getHostSubnets(cluster);
 
+  const bindingAgents = agents.filter((a) => {
+    const [status] = getAgentStatus(a);
+    return status === 'binding';
+  });
+
   return (
-    <Grid hasGutter>
-      <GridItem span={12} lg={10} xl={9} xl2={7}>
-        <NetworkConfigurationFormFields
-          cluster={cluster}
-          hostSubnets={hostSubnets}
-          isVipDhcpAllocationDisabled={isVipDhcpAllocationDisabled}
-          defaultNetworkSettings={defaultNetworkSettings}
-        />
-      </GridItem>
-      <GridItem>
-        <TextContent>
-          <Text component="h2">Host inventory</Text>
-        </TextContent>
-        <ClusterDeploymentHostsTable
-          clusterDeployment={clusterDeployment}
-          agentClusterInstall={agentClusterInstall}
-          agents={agents}
-          {...rest}
-        />
-      </GridItem>
-    </Grid>
+    <NetworkConfigurationFormFields
+      cluster={cluster}
+      hostSubnets={hostSubnets}
+      isVipDhcpAllocationDisabled={isVipDhcpAllocationDisabled}
+      defaultNetworkSettings={defaultNetworkSettings}
+    >
+      <Grid hasGutter>
+        {!!bindingAgents.length && (
+          <GridItem>
+            <Alert
+              variant="info"
+              isInline
+              title={`${bindingAgents.length} hosts are binding. Please wait until they are available to continue configuring. It may take serveral seconds.`}
+            />
+          </GridItem>
+        )}
+        <GridItem>
+          <TextContent>
+            <Text component="h2">Host inventory</Text>
+          </TextContent>
+        </GridItem>
+        <GridItem>
+          <ClusterDeploymentHostsNetworkTable
+            clusterDeployment={clusterDeployment}
+            agentClusterInstall={agentClusterInstall}
+            agents={agents}
+            {...rest}
+          />
+        </GridItem>
+      </Grid>
+    </NetworkConfigurationFormFields>
   );
 };
 

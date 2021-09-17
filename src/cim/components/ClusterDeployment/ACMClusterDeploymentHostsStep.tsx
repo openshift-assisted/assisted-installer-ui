@@ -10,10 +10,7 @@ import {
 } from '../../types';
 import { useHostsSelectionFormik } from './ClusterDeploymentHostSelectionStep';
 import ClusterDeploymentHostsSelection from './ClusterDeploymentHostsSelection';
-import {
-  ClusterDeploymentHostsSelectionValues,
-  ClusterDeploymentHostsTablePropsActions,
-} from './types';
+import { ClusterDeploymentHostsSelectionValues } from './types';
 
 type ACMClusterDeploymentHostsStepProps = {
   onValuesChanged: (values: ClusterDeploymentHostsSelectionValues) => void;
@@ -22,7 +19,6 @@ type ACMClusterDeploymentHostsStepProps = {
   agentClusterInstall: AgentClusterInstallK8sResource;
   agents: AgentK8sResource[];
   error?: string;
-  hostActions: ClusterDeploymentHostsTablePropsActions;
 };
 
 const ACMClusterDeploymentHostsStep: React.FC<ACMClusterDeploymentHostsStepProps> = ({
@@ -32,7 +28,6 @@ const ACMClusterDeploymentHostsStep: React.FC<ACMClusterDeploymentHostsStepProps
   onValuesChanged,
   agents,
   error,
-  hostActions,
 }) => {
   const [initialValues, validationSchema] = useHostsSelectionFormik({
     agents,
@@ -53,7 +48,6 @@ const ACMClusterDeploymentHostsStep: React.FC<ACMClusterDeploymentHostsStepProps
             clusterDeployment={clusterDeployment}
             agentClusterInstall={agentClusterInstall}
             onValuesChanged={onValuesChanged}
-            hostActions={hostActions}
           />
         </Formik>
       </StackItem>

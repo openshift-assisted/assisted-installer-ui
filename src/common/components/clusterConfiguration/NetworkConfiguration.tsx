@@ -20,12 +20,13 @@ export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   defaultNetworkSettings: ClusterDefaultConfig;
 };
 
-const NetworkConfiguration = ({
+const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   cluster,
   hostSubnets,
   isVipDhcpAllocationDisabled,
   defaultNetworkSettings,
-}: NetworkConfigurationProps) => {
+  children,
+}) => {
   const { setFieldValue, values, touched, validateField } = useFormikContext<
     NetworkConfigurationValues
   >();
@@ -80,6 +81,8 @@ const NetworkConfiguration = ({
       <RenderIf condition={isUserManagedNetworking}>
         <UserManagedNetworkingTextContent shouldDisplayLoadBalancersBullet={isMultiNodeCluster} />
       </RenderIf>
+
+      {children}
 
       <RenderIf condition={!(isMultiNodeCluster && isUserManagedNetworking)}>
         <AvailableSubnetsControl

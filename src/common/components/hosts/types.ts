@@ -37,10 +37,10 @@ export type HostsTableActions = {
   canEditRole?: (host: Host) => boolean;
   onEditBMH?: (host: Host) => void;
   canEditBMH?: (host: Host) => boolean;
+  onSelect?: (host: Host, selected: boolean) => void;
 };
 
 export type HostNetworkingStatusComponentProps = {
-  cluster: Cluster;
   host: Host;
   validationsInfo: ValidationsInfo;
   onEditHostname?: () => void;

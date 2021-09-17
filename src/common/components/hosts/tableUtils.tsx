@@ -44,6 +44,7 @@ export const getSelectedNic = (nics: Interface[], currentSubnet: Address4 | Addr
 
 export const hostnameColumn = (
   onEditHostname?: HostsTableActions['onEditHost'],
+  hosts?: Host[],
 ): TableRow<Host> => {
   return {
     header: { title: 'Hostname', transforms: [sortable], cellFormatters: [expandable] },
@@ -53,7 +54,9 @@ export const hostnameColumn = (
       const editHostname = onEditHostname ? () => onEditHostname(host) : undefined;
       const computedHostname = getHostname(host, inventory);
       return {
-        title: <Hostname host={host} inventory={inventory} onEditHostname={editHostname} />,
+        title: (
+          <Hostname host={host} inventory={inventory} onEditHostname={editHostname} hosts={hosts} />
+        ),
         props: { 'data-testid': 'host-name' },
         sortableValue: computedHostname || '',
       };
@@ -214,7 +217,6 @@ export const countColumn = (cluster: Cluster): TableRow<Host> => ({
 });
 
 export const networkingStatusColumn = (
-  cluster: Cluster,
   onEditHostname?: HostsTableActions['onEditHost'],
 ): TableRow<Host> => ({
   header: { title: 'Status', transforms: [sortable] },
@@ -224,7 +226,6 @@ export const networkingStatusColumn = (
     return {
       title: (
         <NetworkingStatus
-          cluster={cluster}
           host={host}
           onEditHostname={editHostname}
           validationsInfo={validationsInfo}

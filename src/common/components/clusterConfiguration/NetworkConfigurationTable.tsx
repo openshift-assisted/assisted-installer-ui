@@ -45,7 +45,7 @@ const NetworkConfigurationTable: React.FC<NetworkConfigurationTableProps> = ({
     () => [
       hostnameColumn(onEditHost),
       roleColumn(canEditRole, onEditRole),
-      networkingStatusColumn(cluster, onEditHost),
+      networkingStatusColumn(onEditHost),
       activeNICColumn(cluster),
       ipv4Column(cluster),
       ipv6Column(cluster),

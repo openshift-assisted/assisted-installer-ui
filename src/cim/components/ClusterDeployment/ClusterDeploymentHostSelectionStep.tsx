@@ -1,7 +1,8 @@
 import React from 'react';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
-import { getFormikErrorFields, useAlerts } from '../../../common';
+import { Grid, GridItem } from '@patternfly/react-core';
+import { ClusterWizardStepHeader, getFormikErrorFields, useAlerts } from '../../../common';
 import {
   AgentClusterInstallK8sResource,
   AgentK8sResource,
@@ -72,7 +73,7 @@ const getValidationSchema = (agentClusterInstall: AgentClusterInstallK8sResource
 
   return Yup.lazy<ClusterDeploymentHostsSelectionValues>((values) => {
     return Yup.object<ClusterDeploymentHostsSelectionValues>().shape({
-      hostCount: hostCountValidationSchema,
+      hostCount: isSNOCluster ? Yup.number() : hostCountValidationSchema,
       useMastersAsWorkers: Yup.boolean().required(),
       autoSelectedHostIds: values.autoSelectHosts
         ? Yup.array<string>().min(values.hostCount)
@@ -113,7 +114,6 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
   agents,
   onClose,
   onSaveHostsSelection,
-  hostActions,
 }) => {
   const { addAlert } = useAlerts();
   const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
@@ -166,12 +166,18 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
 
         return (
           <ClusterDeploymentWizardStep navigation={navigation} footer={footer}>
-            <ClusterDeploymentHostsSelection
-              agentClusterInstall={agentClusterInstall}
-              hostActions={hostActions}
-              agents={agents}
-              clusterDeployment={clusterDeployment}
-            />
+            <Grid hasGutter>
+              <GridItem>
+                <ClusterWizardStepHeader>Cluster hosts</ClusterWizardStepHeader>
+              </GridItem>
+              <GridItem>
+                <ClusterDeploymentHostsSelection
+                  agentClusterInstall={agentClusterInstall}
+                  agents={agents}
+                  clusterDeployment={clusterDeployment}
+                />
+              </GridItem>
+            </Grid>
           </ClusterDeploymentWizardStep>
         );
       }}
