@@ -18,7 +18,7 @@ import { client, BASE_PATH } from './axiosClient';
 
 export const getClusters = (): AxiosPromise<Cluster[]> => client.get('/v1/clusters');
 export const getClustersDefaultConfiguration = (): AxiosPromise<ClusterDefaultConfig> =>
-  client.get('/v1/clusters/default-config');
+  client.get('/v2/clusters/default-config');
 
 export const getCluster = (id: string): AxiosPromise<Cluster> => client.get(`/v1/clusters/${id}`);
 export const getClustersByOpenshiftId = (openshiftId: string): AxiosPromise<Cluster[]> =>
