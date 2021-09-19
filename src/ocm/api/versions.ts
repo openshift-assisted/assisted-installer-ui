@@ -5,4 +5,4 @@ import { ListVersions, OpenshiftVersions } from '../../common';
 export const getVersions = (): AxiosPromise<ListVersions> => client.get('/v1/component_versions');
 
 export const getOpenshiftVersions = (): AxiosPromise<OpenshiftVersions> =>
-  client.get('/v1/openshift_versions');
+  client.get('/v2/openshift-versions');
