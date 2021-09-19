@@ -85,7 +85,7 @@ const NetworkConfigurationForm: React.FC<{
       ];
       params.machineNetworks = [
         {
-          cidr: hostSubnets.find((hn: HostSubnet) => hn.humanized === values.hostSubnet)?.subnet,
+          cidr: hostSubnets.find((hn: HostSubnet) => hn.subnet === values.hostSubnet)?.subnet,
         },
       ];
 

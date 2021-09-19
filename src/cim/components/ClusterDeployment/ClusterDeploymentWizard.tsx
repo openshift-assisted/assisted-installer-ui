@@ -19,6 +19,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   agents,
   clusterImages,
   usedClusterNames,
+  onFinish,
 }) => {
   const [currentStepId, setCurrentStepId] = React.useState<ClusterDeploymentWizardStepsType>(
     'cluster-details',
@@ -37,7 +38,6 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
             agentClusterInstall={agentClusterInstall}
             onClose={onClose}
             onSaveHostsSelection={onSaveHostsSelection}
-            hostActions={hostActions}
             agents={agents}
           />
         ) : (
@@ -52,6 +52,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
             onSaveNetworking={onSaveNetworking}
             onClose={onClose}
             hostActions={hostActions}
+            onFinish={onFinish}
           />
         );
       case 'cluster-details':
@@ -80,6 +81,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
     onSaveHostsSelection,
     onClose,
     hostActions,
+    onFinish,
   ]);
 
   return (

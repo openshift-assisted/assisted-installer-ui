@@ -21,7 +21,7 @@ import {
 } from '../ui';
 import { canHostnameBeChanged } from './utils';
 import GridGap from '../ui/GridGap';
-import { HostUpdateParams } from './types';
+import { EditHostFormValues } from './types';
 
 export type EditHostFormProps = {
   host: Host;
@@ -29,12 +29,12 @@ export type EditHostFormProps = {
   usedHostnames: string[] | undefined;
   onCancel: () => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onSave: (values: HostUpdateParams) => Promise<any>;
+  onSave: (values: EditHostFormValues) => Promise<any>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onFormSaveError: (e: any) => void;
 };
 
-const validationSchema = (initialValues: HostUpdateParams, usedHostnames: string[] = []) =>
+const validationSchema = (initialValues: EditHostFormValues, usedHostnames: string[] = []) =>
   Yup.object().shape({
     hostname: hostnameValidationSchema.concat(
       uniqueHostnameValidationSchema(initialValues.hostname, usedHostnames).notOneOf(
@@ -58,7 +58,7 @@ const EditHostForm: React.FC<EditHostFormProps> = ({
   const { requestedHostname } = host;
   const { hostname } = inventory;
 
-  const initialValues: HostUpdateParams = {
+  const initialValues: EditHostFormValues = {
     hostId: host.id,
     hostname: requestedHostname || '',
   };

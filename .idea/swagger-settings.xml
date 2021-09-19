@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SwaggerSettings">
+    <remoteSpecificationUrls>
+      <UrlInfo>
+        <option name="urlString" value="https://raw.githubusercontent.com/openshift/assisted-service/master/swagger.yaml" />
+      </UrlInfo>
+    </remoteSpecificationUrls>
+  </component>
+</project>

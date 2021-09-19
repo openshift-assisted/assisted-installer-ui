@@ -42,8 +42,9 @@ import {
 import OcpConsoleNodesSectionLink from './OcpConsoleNodesSectionLink';
 import { toSentence } from '../ui/table/utils';
 import { RenderIf } from '../ui';
+import { HostStatusProps } from './types';
 
-const getStatusIcon = (status: Host['status'] | 'Discovered') => {
+const getStatusIcon = (status: Host['status'] | 'Discovered' | 'Bound') => {
   let icon = null;
   switch (status) {
     case 'discovering':
@@ -219,14 +220,6 @@ const WithHostStatusPopover = (
     </Button>
   </Popover>
 );
-
-type HostStatusProps = AdditionNtpSourcePropsType & {
-  host: Host;
-  validationsInfo: ValidationsInfo;
-  onEditHostname?: () => void;
-  statusOverride?: Host['status'] | 'Discovered';
-  sublabel?: string;
-};
 
 const HostStatus: React.FC<HostStatusProps> = ({
   host,

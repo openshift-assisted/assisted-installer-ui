@@ -2,6 +2,7 @@ import { Cluster, Host } from '../../api';
 import { ValidationsInfo } from '../../types/hosts';
 import { HostsNotShowingLinkProps } from '../clusterConfiguration';
 import { onDiskRoleType } from './DiskRole';
+import { AdditionNtpSourcePropsType } from './HostValidationGroups';
 
 export type ClusterHostsTableProps = {
   cluster: Cluster;
@@ -9,7 +10,7 @@ export type ClusterHostsTableProps = {
   setDiscoveryHintModalOpen?: HostsNotShowingLinkProps['setDiscoveryHintModalOpen'];
 };
 
-export type HostUpdateParams = {
+export type EditHostFormValues = {
   hostId: string; // identifier, uuid
   hostname: string; // requested change
 };
@@ -37,11 +38,19 @@ export type HostsTableActions = {
   canEditRole?: (host: Host) => boolean;
   onEditBMH?: (host: Host) => void;
   canEditBMH?: (host: Host) => boolean;
+  onSelect?: (host: Host, selected: boolean) => void;
 };
 
 export type HostNetworkingStatusComponentProps = {
-  cluster: Cluster;
   host: Host;
   validationsInfo: ValidationsInfo;
   onEditHostname?: () => void;
+};
+
+export type HostStatusProps = AdditionNtpSourcePropsType & {
+  host: Host;
+  validationsInfo: ValidationsInfo;
+  onEditHostname?: () => void;
+  statusOverride?: Host['status'] | 'Discovered' | 'Bound';
+  sublabel?: string;
 };

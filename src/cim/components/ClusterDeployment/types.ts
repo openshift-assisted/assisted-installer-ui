@@ -56,6 +56,7 @@ export type ClusterDeploymentDetailsNetworkingProps = {
   onSaveNetworking: (values: ClusterDeploymentNetworkingValues) => Promise<string | void>;
   onClose: () => void;
   hostActions: ClusterDeploymentHostsTablePropsActions;
+  onFinish: VoidFunction;
 };
 
 export type AgentSelectorChangeProps = {
@@ -70,7 +71,6 @@ export type ClusterDeploymentHostSelectionStepProps = {
   agents: AgentK8sResource[];
   onSaveHostsSelection: (values: ClusterDeploymentHostsSelectionValues) => Promise<string | void>;
   onClose: () => void;
-  hostActions: ClusterDeploymentHostsTablePropsActions;
 };
 
 export type ClusterDeploymentWizardProps = {
@@ -85,6 +85,7 @@ export type ClusterDeploymentWizardProps = {
   agents: AgentK8sResource[];
   clusterImages: ClusterImageSetK8sResource[];
   usedClusterNames: string[];
+  onFinish: VoidFunction;
 };
 
 export type FetchSecret = (name: string, namespace: string) => Promise<SecretK8sResource>;
@@ -92,7 +93,6 @@ export type FetchSecret = (name: string, namespace: string) => Promise<SecretK8s
 export type ClusterDeploymentHostsSelectionProps = {
   agentClusterInstall: AgentClusterInstallK8sResource;
   agents: AgentK8sResource[];
-  hostActions: ClusterDeploymentHostsTablePropsActions;
   clusterDeployment: ClusterDeploymentK8sResource;
   onValuesChanged?: (values: ClusterDeploymentHostsSelectionValues) => void;
 };

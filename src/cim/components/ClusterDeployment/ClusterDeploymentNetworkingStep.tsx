@@ -68,6 +68,7 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
   agents,
   onSaveNetworking,
   onClose,
+  onFinish,
   ...rest
 }) => {
   const { addAlert } = useAlerts();
@@ -87,7 +88,7 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
 
   const next = () => {
     // setCurrentStepId('something-next'); // TODO(mlibra): set the next step ID here
-    onClose(); // TODO(mlibra): just temporarily - the flow will continue
+    onFinish(); // TODO(mlibra): just temporarily - the flow will continue
   };
 
   const handleSubmit = async (values: ClusterDeploymentNetworkingValues) => {
@@ -125,6 +126,7 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
             onNext={handleOnNext}
             onBack={() => setCurrentStepId('hosts-selection')}
             onCancel={onClose}
+            nextButtonText="Save and install"
           />
         );
         const navigation = <ClusterDeploymentWizardNavigation />;
@@ -135,7 +137,7 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
               <GridItem>
                 <ClusterWizardStepHeader>Networking</ClusterWizardStepHeader>
               </GridItem>
-              <GridItem>
+              <GridItem span={12} lg={10} xl={9} xl2={7}>
                 <ClusterDeploymentNetworkingForm
                   clusterDeployment={clusterDeployment}
                   agentClusterInstall={agentClusterInstall}

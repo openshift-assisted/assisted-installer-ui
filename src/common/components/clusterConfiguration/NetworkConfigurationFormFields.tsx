@@ -6,7 +6,9 @@ import ClusterSshKeyFields from './ClusterSshKeyFields';
 
 type NetworkConfigurationFormFieldsProps = NetworkConfigurationProps;
 
-const NetworkConfigurationFormFields: React.FC<NetworkConfigurationFormFieldsProps> = (props) => {
+const NetworkConfigurationFormFields: React.FC<NetworkConfigurationFormFieldsProps> = ({
+  ...props
+}) => {
   const { cluster } = props;
   return (
     <Form>

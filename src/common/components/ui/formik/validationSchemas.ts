@@ -99,7 +99,7 @@ export const macAddressValidationSchema = Yup.string().matches(MAC_REGEX, {
 
 export const vipRangeValidationSchema = (
   hostSubnets: HostSubnets,
-  { hostSubnet }: Partial<NetworkConfigurationValues>,
+  { hostSubnet }: NetworkConfigurationValues,
 ) =>
   Yup.string().test('vip-validation', 'IP Address is outside of selected subnet', function (value) {
     if (!value) {
@@ -110,12 +110,11 @@ export const vipRangeValidationSchema = (
     } catch (err) {
       return this.createError({ message: err.message });
     }
-    const foundHostSubnet = hostSubnets.find((hn) => hn.humanized === hostSubnet);
-    const subnetCidr = foundHostSubnet ? foundHostSubnet.subnet : '';
-    return !subnetCidr || isInSubnet(value, subnetCidr);
+    const foundHostSubnet = hostSubnets.find((hn) => hn.subnet === hostSubnet);
+    return !!foundHostSubnet?.subnet && isInSubnet(value, foundHostSubnet.subnet);
   });
 
-const vipUniqueValidationSchema = ({ ingressVip, apiVip }: Partial<NetworkConfigurationValues>) =>
+const vipUniqueValidationSchema = ({ ingressVip, apiVip }: NetworkConfigurationValues) =>
   Yup.string().test(
     'vip-uniqueness-validation',
     'The Ingress and API Virtual IP addresses cannot be the same.',
@@ -148,10 +147,7 @@ const stringToIPAddress = (value: string): Address4 | Address6 | null => {
 
 export const vipValidationSchema = (
   hostSubnets: HostSubnets,
-  values: {
-    ingressVip: NetworkConfigurationValues['ingressVip'];
-    apiVip: NetworkConfigurationValues['apiVip'];
-  },
+  values: NetworkConfigurationValues,
   initialValue?: string,
 ) =>
   Yup.mixed().when(['vipDhcpAllocation', 'managedNetworkingType'], {

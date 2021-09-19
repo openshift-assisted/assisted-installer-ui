@@ -21,6 +21,7 @@ export type WizardFooterGenericProps = {
   isBackDisabled?: boolean;
   isSubmitting?: boolean;
   submittingText?: string;
+  nextButtonText?: string;
 };
 
 type WizardFooterProps = WizardFooterGenericProps & {
@@ -40,6 +41,7 @@ export const WizardFooter: React.FC<WizardFooterProps> = ({
   leftExtraActions,
   isSubmitting,
   submittingText,
+  nextButtonText,
 }) => {
   const { t } = useTranslation();
   submittingText = submittingText || t('Saving changes...');
@@ -58,7 +60,7 @@ export const WizardFooter: React.FC<WizardFooterProps> = ({
                 onClick={onNext}
                 isDisabled={isNextDisabled}
               >
-                {t('Next')}
+                {nextButtonText || t('Next')}
               </ToolbarButton>
             )}
             {onBack && (

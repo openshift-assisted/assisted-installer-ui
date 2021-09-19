@@ -11,21 +11,17 @@ import {
 } from '../../../common/components/hosts/tableUtils';
 import { AgentK8sResource } from '../../types';
 import DefaultEmptyState from '../../../common/components/ui/uiState/EmptyState';
-import { infraEnvColumn, statusColumn, useAgentsTable } from '../Agent/tableUtils';
+import { infraEnvColumn, useAgentsTable } from '../Agent/tableUtils';
 import { AGENT_LOCATION_LABEL_KEY, AGENT_NOLOCATION_VALUE } from '../common';
 import LocationsSelector from './LocationsSelector';
-import {
-  ClusterDeploymentHostsSelectionValues,
-  ClusterDeploymentHostsTablePropsActions,
-} from './types';
+import { ClusterDeploymentHostsSelectionValues } from './types';
 import LabelsSelector from './LabelsSelector';
 
 type AgentsSelectionTableProps = {
   matchingAgents: AgentK8sResource[];
-  actions: ClusterDeploymentHostsTablePropsActions;
 };
 
-const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({ matchingAgents, actions }) => {
+const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({ matchingAgents }) => {
   const [selectedHostIdsField, , { setValue: setSelectedHostIdsValue }] = useField<
     ClusterDeploymentHostsSelectionValues['selectedHostIds']
   >('selectedHostIds');
@@ -48,20 +44,16 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({ matchingAge
     }
   };
 
-  const [hosts, hostActions, actionResolver] = useAgentsTable(
-    { ...actions, onSelect },
-    { agents: matchingAgents },
-  );
+  const [hosts, actions, actionResolver] = useAgentsTable({ onSelect }, { agents: matchingAgents });
   const content = React.useMemo(
     () => [
-      hostnameColumn(hostActions.onEditHost),
-      statusColumn(matchingAgents, actions.onEditHost),
+      hostnameColumn(),
       infraEnvColumn(matchingAgents),
       cpuCoresColumn,
       memoryColumn,
       disksColumn,
     ],
-    [matchingAgents, hostActions, actions],
+    [matchingAgents],
   );
 
   return (
@@ -71,7 +63,7 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({ matchingAge
       selectedIDs={selectedHostIdsField.value}
       actionResolver={actionResolver}
       className="agents-table"
-      {...hostActions}
+      {...actions}
     >
       <DefaultEmptyState
         title="No hosts found"
@@ -83,12 +75,10 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({ matchingAge
 
 type ClusterDeploymentHostsSelectionAdvancedProps = {
   availableAgents: AgentK8sResource[];
-  hostActions: ClusterDeploymentHostsTablePropsActions;
 };
 
 const ClusterDeploymentHostsSelectionAdvanced: React.FC<ClusterDeploymentHostsSelectionAdvancedProps> = ({
   availableAgents,
-  hostActions,
 }) => {
   const { values } = useFormikContext<ClusterDeploymentHostsSelectionValues>();
 
@@ -122,7 +112,7 @@ const ClusterDeploymentHostsSelectionAdvanced: React.FC<ClusterDeploymentHostsSe
         <LabelsSelector agents={matchingAgents} />
       </GridItem>
       <GridItem>
-        <AgentsSelectionTable matchingAgents={matchingAgents} actions={hostActions} />
+        <AgentsSelectionTable matchingAgents={matchingAgents} />
       </GridItem>
     </>
   );

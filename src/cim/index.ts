@@ -13,3 +13,4 @@ export * from '../common/components/hosts';
 export * from '../common/components/clusterDetail';
 export * from '../common/components/i18n';
 export { default as DownloadIsoModal } from '../common/components/clusterConfiguration/DownloadIsoModal';
+export * from '../common/types/clusters';

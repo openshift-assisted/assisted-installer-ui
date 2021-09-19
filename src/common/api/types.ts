@@ -175,6 +175,10 @@ export interface Cluster {
    */
   progress?: ClusterProgressInfo;
   /**
+   * Information regarding hosts' installation disks encryption.
+   */
+  diskEncryption?: DiskEncryption;
+  /**
    * Hosts that are associated with this cluster.
    */
   hosts?: Host[];
@@ -233,7 +237,7 @@ export interface Cluster {
   /**
    * JSON-formatted string containing the user overrides for the install-config.yaml file.
    * example:
-   * {"networking":{"networkType": "OVN-Kubernetes"},"fips":true}
+   * {"networking":{"networkType": "OVNKubernetes"},"fips":true}
    */
   installConfigOverrides?: string;
   /**
@@ -292,6 +296,10 @@ export interface Cluster {
    * Machine networks that are associated with this cluster.
    */
   machineNetworks?: MachineNetwork[];
+  /**
+   * The CPU architecture of the image (x86_64/arm64/etc).
+   */
+  cpuArchitecture?: string;
 }
 export interface ClusterCreateParams {
   /**
@@ -397,6 +405,14 @@ export interface ClusterCreateParams {
    */
   machineNetworks?: MachineNetwork[];
   platform?: Platform;
+  /**
+   * The CPU architecture of the image (x86_64/arm64/etc).
+   */
+  cpuArchitecture?: string;
+  /**
+   * Installation disks encryption mode and host roles to be applied.
+   */
+  diskEncryption?: DiskEncryption;
 }
 export interface ClusterDefaultConfig {
   clusterNetworkCidr?: string; // ^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)[\/]([1-9]|[1-2][0-9]|3[0-2]?)$
@@ -604,6 +620,10 @@ export interface ClusterUpdateParams {
    * Machine networks that are associated with this cluster.
    */
   machineNetworks?: MachineNetwork[];
+  /**
+   * Installation disks encryption mode and host roles to be applied.
+   */
+  diskEncryption?: DiskEncryption;
 }
 export type ClusterValidationId =
   | 'machine-cidr-defined'
@@ -800,6 +820,20 @@ export interface DiskConfigParams {
   id: string;
   role?: DiskRole;
 }
+export interface DiskEncryption {
+  /**
+   * Enable/disable disk encryption on master nodes, worker nodes, or all nodes.
+   */
+  enableOn?: 'none' | 'all' | 'masters' | 'workers';
+  /**
+   * The disk encryption mode to use.
+   */
+  mode?: 'tpmv2' | 'tang';
+  /**
+   * JSON-formatted string containing additional information regarding tang's configuration
+   */
+  tangServers?: string;
+}
 export interface DiskInfo {
   id?: string; // uuid
   path?: string;
@@ -882,6 +916,10 @@ export interface Event {
    * Unique identifier of the host this event relates to.
    */
   hostId?: string; // uuid
+  /**
+   * Unique identifier of the infra env this event relates to.
+   */
+  infraEnvId?: string; // uuid
   severity: 'info' | 'warning' | 'error' | 'critical';
   category?: 'user' | 'metrics';
   message: string;
@@ -1009,6 +1047,7 @@ export interface Host {
    */
   disksInfo?: string;
   role?: HostRole;
+  suggestedRole?: HostRole;
   bootstrap?: boolean;
   logsCollectedAt?: string; // datetime
   logsStartedAt?: string; // datetime
@@ -1169,6 +1208,7 @@ export interface HostRegistrationResponse {
    */
   disksInfo?: string;
   role?: HostRole;
+  suggestedRole?: HostRole;
   bootstrap?: boolean;
   logsCollectedAt?: string; // datetime
   logsStartedAt?: string; // datetime
@@ -1272,6 +1312,12 @@ export interface HostTypeHardwareRequirementsWrapper {
    */
   master?: HostTypeHardwareRequirements;
 }
+export interface HostUpdateParams {
+  hostRole?: 'auto-assign' | 'master' | 'worker';
+  hostName?: string;
+  disksSelectedConfig?: DiskConfigParams[];
+  machineConfigPoolName?: string;
+}
 export type HostValidationId =
   | 'connected'
   | 'has-inventory'
@@ -1286,7 +1332,7 @@ export type HostValidationId =
   | 'belongs-to-machine-cidr'
   | 'api-vip-connected'
   | 'belongs-to-majority-group'
-  | 'valid-platform'
+  | 'valid-platform-network-settings'
   | 'ntp-synced'
   | 'container-images-available'
   | 'lso-requirements-satisfied'
@@ -1300,8 +1346,8 @@ export type HostValidationId =
   | 'api-int-domain-name-resolved-correctly'
   | 'apps-domain-name-resolved-correctly'
   | 'compatible-with-cluster-platform'
-  | 'dns-wildcard-not-configured';
-
+  | 'dns-wildcard-not-configured'
+  | 'disk-encryption-requirements-satisfied';
 export interface ImageCreateParams {
   /**
    * SSH public key for debugging the installation.
@@ -1354,6 +1400,9 @@ export interface InfraEnv {
    * Name of the InfraEnv.
    */
   name?: string;
+  userName?: string;
+  orgId?: string;
+  emailDomain?: string;
   proxy?: Proxy;
   /**
    * A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
@@ -1392,6 +1441,10 @@ export interface InfraEnv {
   updatedAt?: string; // date-time
   createdAt?: string; // date-time
   expiresAt?: string; // date-time
+  /**
+   * The CPU architecture of the image (x86_64/arm64/etc).
+   */
+  cpuArchitecture?: string;
 }
 export interface InfraEnvCreateParams {
   /**
@@ -1425,6 +1478,10 @@ export interface InfraEnvCreateParams {
    * Version of the OpenShift cluster (used to infer the RHCOS version - temporary until generic logic implemented).
    */
   openshiftVersion: string;
+  /**
+   * The CPU architecture of the image (x86_64/arm64/etc).
+   */
+  cpuArchitecture?: string;
 }
 export type InfraEnvList = InfraEnv[];
 export interface InfraEnvUpdateParams {
@@ -1447,10 +1504,6 @@ export interface InfraEnvUpdateParams {
    * JSON formatted string containing the user overrides for the initial ignition config.
    */
   ignitionConfigOverride?: string;
-  /**
-   * If set, all hosts that register will be associated with the specified cluster.
-   */
-  clusterId?: string; // uuid
 }
 export interface InfraError {
   /**
@@ -1498,6 +1551,7 @@ export interface Inventory {
   timestamp?: number;
   gpus?: Gpu[];
   routes?: Route[];
+  tpmVersion?: 'none' | '1.2' | '2.0';
 }
 export interface IoPerf {
   /**
@@ -1579,7 +1633,12 @@ export interface Manifest {
 export interface Memory {
   physicalBytes?: number;
   usableBytes?: number;
+  /**
+   * The method by which the physical memory was set
+   */
+  physicalBytesMethod?: MemoryMethod;
 }
+export type MemoryMethod = 'dmidecode' | 'ghw' | 'meminfo';
 export interface MonitoredOperator {
   /**
    * The cluster that this operator is associated with.
@@ -1777,7 +1836,7 @@ export interface Platform {
   type: PlatformType;
   vsphere?: VspherePlatform;
 }
-export type PlatformType = 'baremetal' | 'vsphere';
+export type PlatformType = 'baremetal' | 'vsphere' | 'none';
 export interface PreflightHardwareRequirements {
   /**
    * Preflight operators hardware requirements
@@ -1809,6 +1868,25 @@ export interface Proxy {
    */
   noProxy?: string;
 }
+export interface ReleaseImage {
+  /**
+   * Version of the OpenShift cluster.
+   */
+  openshiftVersion: string;
+  /**
+   * The CPU architecture of the image (x86_64/arm64/etc).
+   */
+  cpuArchitecture: string;
+  /**
+   * The installation image of the OpenShift cluster.
+   */
+  url: string;
+  /**
+   * OCP version from the release metadata.
+   */
+  version: string;
+}
+export type ReleaseImages = ReleaseImage[];
 export interface Route {
   /**
    * Interface to which packets for this route will be sent
@@ -1903,6 +1981,113 @@ export interface Usage {
   data?: {
     [name: string]: {};
   };
+}
+export interface V2ClusterUpdateParams {
+  /**
+   * OpenShift cluster name.
+   */
+  name?: string;
+  /**
+   * Base domain of the cluster. All DNS records must be sub-domains of this base and include the cluster name.
+   */
+  baseDnsDomain?: string;
+  /**
+   * IP address block from which Pod IPs are allocated. This block must not overlap with existing physical networks. These IP addresses are used for the Pod network, and if you need to access the Pods from an external network, configure load balancers and routers to manage the traffic.
+   */
+  clusterNetworkCidr?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$
+  platform?: Platform;
+  /**
+   * The subnet prefix length to assign to each individual node. For example, if clusterNetworkHostPrefix is set to 23, then each node is assigned a /23 subnet out of the given cidr (clusterNetworkCIDR), which allows for 510 (2^(32 - 23) - 2) pod IPs addresses. If you are required to provide access to nodes from an external network, configure load balancers and routers to manage the traffic.
+   */
+  clusterNetworkHostPrefix?: number;
+  /**
+   * The IP address pool to use for service IP addresses. You can enter only one IP address pool. If you need to access the services from an external network, configure load balancers and routers to manage the traffic.
+   */
+  serviceNetworkCidr?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$
+  /**
+   * The virtual IP used to reach the OpenShift cluster's API.
+   */
+  apiVip?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))?$
+  /**
+   * The virtual IP used for cluster ingress traffic.
+   */
+  ingressVip?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))?$
+  /**
+   * The domain name used to reach the OpenShift cluster API.
+   */
+  apiVipDnsName?: string;
+  /**
+   * A CIDR that all hosts belonging to the cluster should have an interfaces with IP address that belongs to this CIDR. The apiVip belongs to this CIDR.
+   */
+  machineNetworkCidr?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$
+  /**
+   * The pull secret obtained from Red Hat OpenShift Cluster Manager at cloud.redhat.com/openshift/install/pull-secret.
+   */
+  pullSecret?: string;
+  /**
+   * SSH public key for debugging OpenShift nodes.
+   */
+  sshPublicKey?: string;
+  /**
+   * Indicate if virtual IP DHCP allocation mode is enabled.
+   */
+  vipDhcpAllocation?: boolean;
+  /**
+   * A proxy URL to use for creating HTTP connections outside the cluster.
+   * http://\<username\>:\<pswd\>@\<ip\>:\<port\>
+   *
+   */
+  httpProxy?: string;
+  /**
+   * A proxy URL to use for creating HTTPS connections outside the cluster.
+   * http://\<username\>:\<pswd\>@\<ip\>:\<port\>
+   *
+   */
+  httpsProxy?: string;
+  /**
+   * An "*" or a comma-separated list of destination domain names, domains, IP addresses, or other network CIDRs to exclude from proxying.
+   */
+  noProxy?: string;
+  /**
+   * Indicate if the networking is managed by the user.
+   */
+  userManagedNetworking?: boolean;
+  /**
+   * A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
+   */
+  additionalNtpSource?: string;
+  /**
+   * List of OLM operators to be installed.
+   */
+  olmOperators?: OperatorCreateParams[];
+  /**
+   * Enable/disable hyperthreading on master nodes, worker nodes, or all nodes.
+   */
+  hyperthreading?: 'masters' | 'workers' | 'all' | 'none';
+  /**
+   * The desired network type used.
+   */
+  networkType?: 'OpenShiftSDN' | 'OVNKubernetes';
+  /**
+   * Schedule workloads on masters
+   */
+  schedulableMasters?: boolean;
+  /**
+   * Cluster networks that are associated with this cluster.
+   */
+  clusterNetworks?: ClusterNetwork[];
+  /**
+   * Service networks that are associated with this cluster.
+   */
+  serviceNetworks?: ServiceNetwork[];
+  /**
+   * Machine networks that are associated with this cluster.
+   */
+  machineNetworks?: MachineNetwork[];
+  /**
+   * Installation disks encryption mode and host roles to be applied.
+   */
+  diskEncryption?: DiskEncryption;
 }
 export interface VersionedHostRequirements {
   /**

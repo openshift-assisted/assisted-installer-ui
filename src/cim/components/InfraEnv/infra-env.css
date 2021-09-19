@@ -2,3 +2,6 @@
   padding-right: var(--pf-c-wizard__main-body--PaddingRight)
 }
 
+.infra-env-hosts-tab-title__icon {
+  margin-left: var(--pf-global--spacer--xs)
+}
