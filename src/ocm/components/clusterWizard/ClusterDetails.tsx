@@ -12,6 +12,7 @@ import {
 } from '../../../common';
 import { usePullSecretFetch } from '../fetching/pullSecret';
 import { getClusters, patchCluster, postCluster } from '../../api/clusters';
+import { registerInfraEnv } from '../../api/InfraEnvService';
 import { getErrorMessage, handleApiError } from '../../api/utils';
 import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
 import { useDispatch } from 'react-redux';
@@ -22,6 +23,7 @@ import { useOpenshiftVersions } from '../fetching/openshiftVersions';
 import ClusterDetailsForm from './ClusterDetailsForm';
 import ClusterWizardNavigation from './ClusterWizardNavigation';
 import { routeBasePath } from '../../config/routeBaseBath';
+import LocalStorageBackedCache from '../../adapters/LocalStorageBackedCache';
 
 type ClusterDetailsProps = {
   cluster?: Cluster;
@@ -110,10 +112,24 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster }) => {
     clearAlerts();
 
     try {
-      const { data } = await postCluster(params);
+      const { data: cluster } = await postCluster(params);
+      const { data: infraEnv } = await registerInfraEnv({
+        name: `${params.name}_infra-env`,
+        pullSecret: params.pullSecret,
+        clusterId: cluster.id,
+        // TODO(jkilzi): MGMT-7709 will deprecate the openshiftVersion field, remove the line below once it happens.
+        openshiftVersion: params.openshiftVersion,
+      });
+
+      if (!infraEnv.id) {
+        throw new Error('API returned no ID for the underlying InfraEnv');
+      }
+
+      LocalStorageBackedCache.setItem(cluster.id, infraEnv.id);
+
       const locationState: ClusterWizardFlowStateType = 'new';
       // TODO(mlibra): figure out subscription ID and navigate to ${routeBasePath}/../details/s/${subscriptionId} instead
-      history.push(`${routeBasePath}/clusters/${data.id}`, locationState);
+      history.push(`${routeBasePath}/clusters/${cluster.id}`, locationState);
     } catch (e) {
       handleApiError<ClusterCreateParams>(e, () =>
         addAlert({ title: 'Failed to create new cluster', message: getErrorMessage(e) }),
