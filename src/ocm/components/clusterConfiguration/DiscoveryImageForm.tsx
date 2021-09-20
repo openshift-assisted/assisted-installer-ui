@@ -25,11 +25,15 @@ import {
   LoadingState,
   ProxyFields,
   UploadSSH,
+  InfraEnv,
+  InfraEnvUpdateParams,
 } from '../../../common';
 import { updateCluster, forceReload } from '../../reducers/clusters';
 import { DiscoveryImageFormValues } from './types';
 import { usePullSecretFetch } from '../fetching/pullSecret';
 import DiscoveryImageTypeControlGroup from '../../../common/components/clusterConfiguration/DiscoveryImageTypeControlGroup';
+import LocalStorageBackedCache from '../../adapters/LocalStorageBackedCache';
+import { getInfraEnv, patchInfraEnv } from '../../api/InfraEnvService';
 
 const validationSchema = Yup.lazy<DiscoveryImageFormValues>((values) =>
   Yup.object<DiscoveryImageFormValues>().shape({
@@ -43,7 +47,7 @@ const validationSchema = Yup.lazy<DiscoveryImageFormValues>((values) =>
 type DiscoveryImageFormProps = {
   cluster: Cluster;
   onCancel: () => void;
-  onSuccess: (imageInfo: Cluster['imageInfo']) => void;
+  onSuccess: (downloadUrl: InfraEnv['downloadUrl']) => void;
 };
 
 const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
@@ -72,6 +76,11 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
   ) => {
     if (cluster.id) {
       try {
+        const infraEnvId = LocalStorageBackedCache.getItem(cluster.id);
+        if (infraEnvId === null) {
+          return;
+        }
+
         const proxyParams: ClusterUpdateParams = {
           httpProxy: values.httpProxy,
           httpsProxy: values.httpsProxy,
@@ -79,22 +88,25 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
           // TODO(mlibra): Does the user need to change pull-secret?
           pullSecret:
             cluster.kind === 'AddHostsCluster' && ocmPullSecret ? ocmPullSecret : undefined,
-        };
-        // either update or remove proxy details
-        await patchCluster(cluster.id, proxyParams);
-
-        const imageCreateParams: ImageCreateParams = {
           sshPublicKey: values.sshPublicKey,
+        };
+
+        const infraParams: InfraEnvUpdateParams = {
+          proxy: {
+            httpProxy: values.httpProxy,
+            httpsProxy: values.httpsProxy,
+            noProxy: values.noProxy,
+          },
           imageType: values.imageType,
         };
-        const { data: updatedCluster } = await createClusterDownloadsImage(
-          cluster.id,
-          imageCreateParams,
-          {
-            cancelToken: cancelSourceRef.current?.token,
-          },
-        );
-        onSuccess(updatedCluster.imageInfo);
+
+        // either update or remove proxy details
+        const { data: updatedCluster } = await patchCluster(cluster.id, proxyParams);
+        const { data: infraEnv } = await patchInfraEnv(infraEnvId, infraParams);
+
+        console.log(infraEnv);
+
+        onSuccess(infraEnv.downloadUrl);
         dispatch(updateCluster(updatedCluster));
       } catch (error) {
         handleApiError<ImageCreateParams>(error, () => {
