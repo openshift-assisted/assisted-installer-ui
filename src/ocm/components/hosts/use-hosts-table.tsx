@@ -55,6 +55,8 @@ import { ConnectedIcon } from '@patternfly/react-icons';
 import LocalStorageBackedCache from '../../adapters/LocalStorageBackedCache';
 
 export const useHostsTable = (cluster: Cluster) => {
+  const infraEnvId = LocalStorageBackedCache.getItem(cluster.id) || '';
+
   const { addAlert } = React.useContext(AlertsContext);
   const {
     eventsDialog,
@@ -224,19 +226,20 @@ export const useHostsTable = (cluster: Cluster) => {
   }, [addAlert, cluster.id, dispatch, deleteHostDialog]);
 
   const onEditRole = React.useCallback(
-    async ({ id, clusterId }: Host, role?: string) => {
-      const params: ClusterUpdateParams = {};
-      params.hostsRoles = [{ id, role: role as HostRoleUpdateParams }];
+    async (host: Host, role?: string) => {
+      const params: HostUpdateParams = {
+        hostRole: role as HostRoleUpdateParams,
+      };
       try {
-        const { data } = await patchCluster(clusterId as string, params);
-        dispatch(updateCluster(data));
+        const { data } = await patchHost(infraEnvId, host.id, params);
+        dispatch(updateHost(data));
       } catch (e) {
         handleApiError(e, () =>
           addAlert({ title: 'Failed to set role', message: getErrorMessage(e) }),
         );
       }
     },
-    [addAlert, dispatch],
+    [addAlert, dispatch, infraEnvId],
   );
 
   const actionResolver = React.useMemo(
@@ -291,6 +294,7 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
   onReset,
   onAdditionalNtpSource,
 }) => {
+  const infraEnvId = LocalStorageBackedCache.getItem(cluster.id) || '';
   const dispatch = useDispatch();
   const {
     eventsDialog,
@@ -299,7 +303,7 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
     resetHostDialog,
     additionalNTPSourcesDialog,
   } = useModalDialogsContext();
-  const infraEnvId = LocalStorageBackedCache.getItem(cluster.id) || '';
+
   return (
     <>
       <EventsModal
