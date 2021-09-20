@@ -13,6 +13,7 @@ import {
   HostRoleUpdateParams,
   HostsNotShowingLink,
   HostsNotShowingLinkProps,
+  HostUpdateParams,
   Inventory,
   stringToJSON,
 } from '../../../common';
@@ -28,6 +29,7 @@ import {
   handleApiError,
   installHost,
   patchCluster,
+  patchHost,
   resetClusterHost,
 } from '../../api';
 import { forceReload, updateCluster, updateHost } from '../../reducers/clusters';
@@ -44,13 +46,13 @@ import {
   canDownloadHostLogs,
   canReset as canResetUtil,
   EditHostModal,
-  EditHostFormValues,
 } from '../../../common/components/hosts';
 import { hostActionResolver } from '../../../common/components/hosts/tableUtils';
 import ResetHostModal from './ResetHostModal';
 import DeleteHostModal from './DeleteHostModal';
 import { onFetchEvents } from '../fetching/fetchEvents';
 import { ConnectedIcon } from '@patternfly/react-icons';
+import LocalStorageBackedCache from '../../adapters/LocalStorageBackedCache';
 
 export const useHostsTable = (cluster: Cluster) => {
   const { addAlert } = React.useContext(AlertsContext);
@@ -297,6 +299,7 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
     resetHostDialog,
     additionalNTPSourcesDialog,
   } = useModalDialogsContext();
+  const infraEnvId = LocalStorageBackedCache.getItem(cluster.id) || '';
   return (
     <>
       <EventsModal
@@ -320,6 +323,7 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
         isOpen={deleteHostDialog.isOpen}
         onDelete={onDelete}
       />
+
       <EditHostModal
         host={editHostDialog.data?.host}
         inventory={editHostDialog.data?.inventory}
@@ -330,18 +334,9 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
         }
         onClose={editHostDialog.close}
         isOpen={editHostDialog.isOpen}
-        onSave={async (values: EditHostFormValues) => {
-          const params: ClusterUpdateParams = {
-            hostsNames: [
-              {
-                id: values.hostId,
-                hostname: values.hostname,
-              },
-            ],
-          };
-
-          const { data } = await patchCluster(cluster.id, params);
-          dispatch(updateCluster(data));
+        onSave={async (params: HostUpdateParams) => {
+          const { data } = await patchHost(infraEnvId, editHostDialog.data.host.id, params);
+          dispatch(updateHost(data));
           editHostDialog.close();
         }}
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

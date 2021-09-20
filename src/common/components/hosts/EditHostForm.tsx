@@ -12,7 +12,7 @@ import {
   AlertActionCloseButton,
 } from '@patternfly/react-core';
 import { Formik } from 'formik';
-import { Host, Inventory } from '../../api';
+import { Host, HostUpdateParams, Inventory } from '../../api';
 import {
   hostnameValidationSchema,
   InputField,
@@ -21,7 +21,6 @@ import {
 } from '../ui';
 import { canHostnameBeChanged } from './utils';
 import GridGap from '../ui/GridGap';
-import { EditHostFormValues } from './types';
 
 export type EditHostFormProps = {
   host: Host;
@@ -29,15 +28,15 @@ export type EditHostFormProps = {
   usedHostnames: string[] | undefined;
   onCancel: () => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onSave: (values: EditHostFormValues) => Promise<any>;
+  onSave: (values: HostUpdateParams) => Promise<any>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onFormSaveError: (e: any) => void;
 };
 
-const validationSchema = (initialValues: EditHostFormValues, usedHostnames: string[] = []) =>
+const validationSchema = (initialValues: HostUpdateParams, usedHostnames: string[] = []) =>
   Yup.object().shape({
-    hostname: hostnameValidationSchema.concat(
-      uniqueHostnameValidationSchema(initialValues.hostname, usedHostnames).notOneOf(
+    hostName: hostnameValidationSchema.concat(
+      uniqueHostnameValidationSchema(initialValues.hostName, usedHostnames).notOneOf(
         ['localhost', 'localhost.localdomain'],
         'Hostname ${value} is not allowed.',
       ),
@@ -56,11 +55,10 @@ const EditHostForm: React.FC<EditHostFormProps> = ({
   React.useEffect(() => hostnameInputRef.current?.focus(), []);
 
   const { requestedHostname } = host;
-  const { hostname } = inventory;
+  const { hostname: hostName } = inventory;
 
-  const initialValues: EditHostFormValues = {
-    hostId: host.id,
-    hostname: requestedHostname || '',
+  const initialValues: HostUpdateParams = {
+    hostName: requestedHostname || '',
   };
 
   return (
@@ -68,8 +66,8 @@ const EditHostForm: React.FC<EditHostFormProps> = ({
       initialValues={initialValues}
       initialStatus={{ error: null }}
       validationSchema={validationSchema(initialValues, usedHostnames)}
-      onSubmit={async (values, formikActions) => {
-        if (values.hostname === initialValues.hostname) {
+      onSubmit={async (values: HostUpdateParams, formikActions) => {
+        if (values.hostName === initialValues.hostName) {
           // no change to save
           onCancel();
           return;
@@ -104,14 +102,14 @@ const EditHostForm: React.FC<EditHostFormProps> = ({
                   {status.error.message}
                 </Alert>
               )}
-              <StaticTextField name="discoveredHostname" label="Discovered Hostname">
-                {hostname || ''}
+              <StaticTextField name="discoveredHostname" label="Discovered hostName">
+                {hostName || ''}
               </StaticTextField>
               <InputField
-                label="Requested Hostname"
-                name="hostname"
+                label="Requested hostName"
+                name="hostName"
                 ref={hostnameInputRef}
-                helperText="This name will replace the original discovered hostname after installation."
+                helperText="This name will replace the original discovered hostName after installation."
                 isRequired
                 isDisabled={!canHostnameBeChanged(host.status)}
               />

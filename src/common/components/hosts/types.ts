@@ -10,11 +10,6 @@ export type ClusterHostsTableProps = {
   setDiscoveryHintModalOpen?: HostsNotShowingLinkProps['setDiscoveryHintModalOpen'];
 };
 
-export type EditHostFormValues = {
-  hostId: string; // identifier, uuid
-  hostname: string; // requested change
-};
-
 export type HostsTableActions = {
   onDeleteHost?: (host: Host) => void;
   onHostEnable?: (host: Host) => void;

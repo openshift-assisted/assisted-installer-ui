@@ -265,7 +265,10 @@ export const hostnameValidationSchema = Yup.string()
     excludeEmptyString: true,
   });
 
-export const uniqueHostnameValidationSchema = (origHostname: string, usedHostnames: string[]) =>
+export const uniqueHostnameValidationSchema = (
+  origHostname: string | undefined,
+  usedHostnames: string[],
+) =>
   Yup.string().test('unique-hostname-validation', 'Hostname must be unique.', (value) => {
     if (!value || value === origHostname) {
       return true;
