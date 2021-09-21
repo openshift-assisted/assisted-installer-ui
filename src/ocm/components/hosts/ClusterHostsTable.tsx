@@ -12,8 +12,8 @@ import {
   countColumn,
 } from '../../../common/components/hosts/tableUtils';
 import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
-import { useHostsTable, HostsTableModals, HostsTableEmptyState } from './use-hosts-table';
-import HostsTable from '../../../common/components/hosts/HostsTable';
+import { useHostsTable, HostsTableModals } from './use-hosts-table';
+import HostsTable, { HostsTableEmptyState } from '../../../common/components/hosts/HostsTable';
 import { ExpandComponentProps } from '../../../common/components/hosts/AITable';
 
 const ExpandComponent: React.FC<ExpandComponentProps<Host>> = ({ obj }) => {
@@ -57,10 +57,7 @@ const ClusterHostsTable: React.FC<ClusterHostsTableProps> = ({
         content={content}
         actionResolver={actionResolver}
       >
-        <HostsTableEmptyState
-          cluster={cluster}
-          setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
-        />
+        <HostsTableEmptyState setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
       </HostsTable>
       <HostsTableModals cluster={cluster} {...modalProps} />
     </>

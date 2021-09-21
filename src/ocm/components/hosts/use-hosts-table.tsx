@@ -7,12 +7,9 @@ import {
   Disk,
   DiskConfigParams,
   DiskRole,
-  EmptyState,
   EventsModal,
   Host,
   HostRoleUpdateParams,
-  HostsNotShowingLink,
-  HostsNotShowingLinkProps,
   Inventory,
   stringToJSON,
 } from '../../../common';
@@ -50,7 +47,6 @@ import { hostActionResolver } from '../../../common/components/hosts/tableUtils'
 import ResetHostModal from './ResetHostModal';
 import DeleteHostModal from './DeleteHostModal';
 import { onFetchEvents } from '../fetching/fetchEvents';
-import { ConnectedIcon } from '@patternfly/react-icons';
 
 export const useHostsTable = (cluster: Cluster) => {
   const { addAlert } = React.useContext(AlertsContext);
@@ -362,26 +358,3 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
 };
 
 export const getHostId = (host: Host) => host.id;
-
-type HostsTableEmptyStateProps = {
-  cluster: Cluster;
-  setDiscoveryHintModalOpen?: HostsNotShowingLinkProps['setDiscoveryHintModalOpen'];
-};
-
-export const HostsTableEmptyState: React.FC<HostsTableEmptyStateProps> = ({
-  setDiscoveryHintModalOpen,
-}) => (
-  <EmptyState
-    icon={ConnectedIcon}
-    title="Waiting for hosts..."
-    content="Hosts may take a few minutes to appear here after booting."
-    secondaryActions={
-      setDiscoveryHintModalOpen && [
-        <HostsNotShowingLink
-          key="hosts-not-showing"
-          setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
-        />,
-      ]
-    }
-  />
-);
