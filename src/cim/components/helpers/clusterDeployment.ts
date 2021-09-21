@@ -22,7 +22,7 @@ export type ClusterDeploymentParams = {
 export const getAgentSelectorFieldsFromAnnotations = (
   annotations: ObjectMetadata['annotations'] = {},
 ): AgentSelectorChangeProps => {
-  const locations = annotations[AGENT_LOCATION_LABEL_KEY]?.split(',');
+  const locations = annotations[AGENT_LOCATION_LABEL_KEY]?.split(',') || [];
 
   const labels = Object.keys(annotations)
     .map((key) => {
