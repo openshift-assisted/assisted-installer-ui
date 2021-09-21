@@ -1,6 +1,6 @@
 import React from 'react';
 import { Cluster, HostsNotShowingLinkProps } from '../../../common';
-import { HostsTableEmptyState, HostsTableModals, useHostsTable } from './use-hosts-table';
+import { HostsTableModals, useHostsTable } from './use-hosts-table';
 import {
   countColumn,
   cpuCoresColumn,
@@ -11,7 +11,7 @@ import {
   memoryColumn,
   roleColumn,
 } from '../../../common/components/hosts/tableUtils';
-import HostsTable from '../../../common/components/hosts/HostsTable';
+import HostsTable, { HostsTableEmptyState } from '../../../common/components/hosts/HostsTable';
 
 type HostsDiscoveryTableProps = {
   cluster: Cluster;
@@ -49,10 +49,7 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({
         content={content}
         actionResolver={actionResolver}
       >
-        <HostsTableEmptyState
-          cluster={cluster}
-          setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
-        />
+        <HostsTableEmptyState setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
       </HostsTable>
       <HostsTableModals cluster={cluster} {...modalProps} />
     </>
