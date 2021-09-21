@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Host, HostStatus, stringToJSON } from '../../../common';
+import { HostStatusProps } from '../../../common/components/hosts/types';
 import { ValidationsInfo } from '../../../common/types/hosts';
 import {
   getFailingClusterWizardSoftValidationIds,
@@ -11,11 +12,13 @@ import { AdditionalNTPSourcesDialogToggle } from '../../../ocm/components/hosts/
 type HostNetworkingStatusComponentProps = {
   host: Host;
   onEditHostname?: () => void;
+  isSNOCluster: boolean;
 };
 
 const NetworkingStatus: React.FC<HostNetworkingStatusComponentProps> = ({
   host,
   onEditHostname,
+  isSNOCluster,
 }) => {
   const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
   const networkingStatus = getWizardStepHostStatus(host, 'networking');
@@ -24,11 +27,19 @@ const NetworkingStatus: React.FC<HostNetworkingStatusComponentProps> = ({
     ? 'Some validations failed'
     : undefined;
 
+  let statusOverride: HostStatusProps['statusOverride'] = networkingStatus;
+  if (
+    networkingStatus === 'pending-for-input' ||
+    (isSNOCluster && networkingStatus === 'insufficient')
+  ) {
+    statusOverride = 'Bound';
+  }
+
   return (
     <HostStatus
       host={host}
       onEditHostname={onEditHostname}
-      statusOverride={networkingStatus === 'pending-for-input' ? 'Bound' : networkingStatus}
+      statusOverride={statusOverride}
       validationsInfo={netValidationsInfo}
       sublabel={sublabel}
       AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
