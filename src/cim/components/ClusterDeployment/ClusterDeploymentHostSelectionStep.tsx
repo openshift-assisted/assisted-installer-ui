@@ -18,7 +18,7 @@ import {
   ClusterDeploymentHostsSelectionValues,
 } from './types';
 import { hostCountValidationSchema } from './validationSchemas';
-import { getAgentSelectorFieldsFromAnnotations } from '../helpers';
+import { getAgentSelectorFieldsFromAnnotations, getIsSNOCluster } from '../helpers';
 
 const getInitialValues = ({
   agents,
@@ -29,7 +29,7 @@ const getInitialValues = ({
   clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall: AgentClusterInstallK8sResource;
 }): ClusterDeploymentHostsSelectionValues => {
-  const isSNOCluster = agentClusterInstall?.spec?.provisionRequirements?.controlPlaneAgents === 1;
+  const isSNOCluster = getIsSNOCluster(agentClusterInstall);
   const cdName = clusterDeployment?.metadata?.name;
   const cdNamespace = clusterDeployment?.metadata?.namespace;
 
@@ -69,7 +69,7 @@ const getInitialValues = ({
 };
 
 const getValidationSchema = (agentClusterInstall: AgentClusterInstallK8sResource) => {
-  const isSNOCluster = agentClusterInstall?.spec?.provisionRequirements?.controlPlaneAgents === 1;
+  const isSNOCluster = getIsSNOCluster(agentClusterInstall);
 
   return Yup.lazy<ClusterDeploymentHostsSelectionValues>((values) => {
     return Yup.object<ClusterDeploymentHostsSelectionValues>().shape({
@@ -132,7 +132,7 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
     } catch (error) {
       addAlert({
         title: 'Failed to save host selection.',
-        message: error,
+        message: error as string,
       });
     }
   };

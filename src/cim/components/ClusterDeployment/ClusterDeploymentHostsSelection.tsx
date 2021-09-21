@@ -1,24 +1,14 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
-import { Grid, GridItem, TextContent, Text } from '@patternfly/react-core';
-import { Host, SwitchField } from '../../../common';
+import { Grid, GridItem, TextContent, Text, Form } from '@patternfly/react-core';
+import { SwitchField } from '../../../common';
 import {
   ClusterDeploymentHostsSelectionProps,
   ClusterDeploymentHostsSelectionValues,
 } from './types';
 import ClusterDeploymentHostsSelectionBasic from './ClusterDeploymentHostsSelectionBasic';
 import ClusterDeploymentHostsSelectionAdvanced from './ClusterDeploymentHostsSelectionAdvanced';
-import { getAgentStatus } from '../helpers';
-
-const LISTED_HOST_STATUSES: Host['status'][] = [
-  'known',
-  'known-unbound',
-  'insufficient',
-  'insufficient-unbound',
-  'pending-for-input',
-  'discovering',
-  'discovering-unbound',
-];
+import { getAgentsForSelection, getIsSNOCluster } from '../helpers';
 
 const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionProps> = ({
   agentClusterInstall,
@@ -31,23 +21,21 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
   React.useEffect(() => onValuesChanged?.(values), [values, onValuesChanged]);
 
   const { autoSelectHosts } = values;
-  const isSNOCluster = agentClusterInstall?.spec?.provisionRequirements?.controlPlaneAgents === 1;
+  const isSNOCluster = getIsSNOCluster(agentClusterInstall);
 
   const cdName = clusterDeployment?.metadata?.name;
   const cdNamespace = clusterDeployment?.metadata?.namespace;
 
-  const availableAgents = React.useMemo(() => {
-    return (agents || []).filter((agent) => {
-      const [status] = getAgentStatus(agent);
-      return (
-        LISTED_HOST_STATUSES.includes(status) &&
-        agent.spec?.approved &&
-        ((agent.spec.clusterDeploymentName?.name === cdName &&
-          agent.spec.clusterDeploymentName?.namespace === cdNamespace) ||
-          (!agent.spec.clusterDeploymentName?.name && !agent.spec.clusterDeploymentName?.namespace))
-      );
-    });
-  }, [agents, cdNamespace, cdName]);
+  const availableAgents = React.useMemo(
+    () =>
+      getAgentsForSelection(agents).filter(
+        (agent) =>
+          (agent.spec.clusterDeploymentName?.name === cdName &&
+            agent.spec.clusterDeploymentName?.namespace === cdNamespace) ||
+          (!agent.spec.clusterDeploymentName?.name && !agent.spec.clusterDeploymentName?.namespace),
+      ),
+    [agents, cdNamespace, cdName],
+  );
 
   return (
     <Grid hasGutter>
@@ -65,19 +53,23 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
       </GridItem>
 
       <GridItem>
-        <SwitchField name="autoSelectHosts" label="Auto-select hosts" />
+        <Form>
+          <SwitchField name="autoSelectHosts" label="Auto-select hosts" />
+
+          {autoSelectHosts && (
+            <ClusterDeploymentHostsSelectionBasic
+              availableAgents={availableAgents}
+              isSNOCluster={isSNOCluster}
+            />
+          )}
+
+          {!autoSelectHosts && (
+            <ClusterDeploymentHostsSelectionAdvanced<ClusterDeploymentHostsSelectionValues>
+              availableAgents={availableAgents}
+            />
+          )}
+        </Form>
       </GridItem>
-
-      {autoSelectHosts && (
-        <ClusterDeploymentHostsSelectionBasic
-          availableAgents={availableAgents}
-          isSNOCluster={isSNOCluster}
-        />
-      )}
-
-      {!autoSelectHosts && (
-        <ClusterDeploymentHostsSelectionAdvanced availableAgents={availableAgents} />
-      )}
     </Grid>
   );
 };

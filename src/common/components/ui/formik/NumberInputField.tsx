@@ -12,17 +12,17 @@ const NumberInputField: React.FC<NumberInputFieldProps> = React.forwardRef(
       labelIcon,
       helperText,
       isRequired,
-      onChange,
       validate,
       idPostfix,
       minValue = 0,
       maxValue,
       children,
+      formatValue,
       ...props
     },
     ref: React.Ref<HTMLInputElement>,
   ) => {
-    const [field, { touched, error }] = useField({ name: props.name, validate });
+    const [field, { touched, error }, { setValue }] = useField({ name: props.name, validate });
     const fieldId = getFieldId(props.name, 'numberinput', idPostfix);
     const isValid = !(touched && error);
     const errorMessage = !isValid ? error : '';
@@ -30,7 +30,7 @@ const NumberInputField: React.FC<NumberInputFieldProps> = React.forwardRef(
     const doChange = (value: number) => {
       let newValue = value < minValue ? minValue : value;
       newValue = maxValue && newValue > maxValue ? maxValue : newValue;
-      onChange(newValue);
+      setValue(formatValue ? formatValue(newValue) : newValue);
     };
 
     const onPlus: NumberInputProps['onPlus'] = () => {
@@ -65,8 +65,8 @@ const NumberInputField: React.FC<NumberInputFieldProps> = React.forwardRef(
         <Split>
           <SplitItem isFilled>
             <NumberInput
-              {...field}
               {...props}
+              value={field.value}
               onMinus={onMinus}
               onChange={handleChange}
               onPlus={onPlus}
