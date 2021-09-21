@@ -76,11 +76,13 @@ const getValidationSchema = (agentClusterInstall: AgentClusterInstallK8sResource
       hostCount: isSNOCluster ? Yup.number() : hostCountValidationSchema,
       useMastersAsWorkers: Yup.boolean().required(),
       autoSelectedHostIds: values.autoSelectHosts
-        ? Yup.array<string>().min(values.hostCount)
+        ? Yup.array<string>().min(values.hostCount).max(values.hostCount)
         : Yup.array<string>(),
       selectedHostIds: values.autoSelectHosts
         ? Yup.array<string>()
-        : Yup.array<string>().min(isSNOCluster ? 1 : values.selectedHostIds.length === 4 ? 5 : 3),
+        : isSNOCluster
+        ? Yup.array<string>().min(1).max(1)
+        : Yup.array<string>().min(values.selectedHostIds.length === 4 ? 5 : 3),
     });
   });
 };
