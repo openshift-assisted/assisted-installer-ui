@@ -200,11 +200,11 @@ const HostStatusPopoverFooter: React.FC<{ host: Host }> = ({ host }) => {
         progress?.stageStartedAt || statusUpdatedAt,
       )}`;
     }
-  } else {
+  } else if (statusUpdatedAt) {
     footerText = `Status updated at ${getHumanizedDateTime(statusUpdatedAt)}`;
   }
 
-  return <small>{footerText}</small>;
+  return <>{!!footerText && <small>{footerText}</small>}</>;
 };
 
 const WithHostStatusPopover = (
