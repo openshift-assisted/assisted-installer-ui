@@ -41,7 +41,7 @@ export const getAIHosts = (
         href: '',
         status,
         statusInfo,
-        role: agent.spec.role,
+        role: agent.spec.role || agent.status?.role,
         requestedHostname: agent.spec.hostname || inventory.hostname,
         // validationsInfo: JSON.stringify(agent.status.hostValidationInfo),
         createdAt: agent.metadata?.creationTimestamp,
