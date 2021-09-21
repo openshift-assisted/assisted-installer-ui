@@ -14,3 +14,4 @@ export { default as ACMClusterDeploymentDetailsStep } from './ACMClusterDeployme
 export { default as ACMClusterDeploymentNetworkingStep } from './ACMClusterDeploymentNetworkingStep';
 export { default as ACMClusterDeploymentHostsStep } from './ACMClusterDeploymentHostsStep';
 export { default as ClusterDeploymentCreateProgress } from './ClusterDeploymentCreateProgress';
+export { getTotalCompute } from './ShortCapacitySummary';
