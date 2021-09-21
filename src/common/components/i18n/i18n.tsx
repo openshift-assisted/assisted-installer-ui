@@ -21,7 +21,7 @@ const resources = {
   zh: { translation: zh },
 };
 
-console.info('Initializing i18n for assisted-ui-lib');
+// console.info('Initializing i18n for assisted-ui-lib');
 i18nInstance.init(
   {
     debug: true,
