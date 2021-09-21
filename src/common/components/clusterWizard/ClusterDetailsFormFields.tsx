@@ -12,7 +12,7 @@ import { CheckboxField, InputField, SelectField } from '../ui';
 
 import { ClusterDetailsValues } from './types';
 
-type ClusterDetailsFormFieldsProps = {
+export type ClusterDetailsFormFieldsProps = {
   canEditPullSecret: boolean;
   forceOpenshiftVersion?: string;
   isSNOGroupDisabled?: boolean;
@@ -20,6 +20,8 @@ type ClusterDetailsFormFieldsProps = {
   isBaseDnsDomainDisabled?: boolean;
   defaultPullSecret?: string;
   isOcm: boolean;
+
+  extensionAfter?: { [key: string]: React.ReactElement };
 
   managedDomains?: ManagedDomain[];
   versions: OpenshiftVersionOptionType[];
@@ -39,7 +41,7 @@ const BaseDnsHelperText: React.FC<{ name?: string; baseDnsDomain?: string }> = (
   </>
 );
 
-const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> = ({
+export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> = ({
   managedDomains = [],
   toggleRedHatDnsService,
   canEditPullSecret,
@@ -49,6 +51,7 @@ const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> = ({
   versions,
   defaultPullSecret,
   forceOpenshiftVersion,
+  extensionAfter,
   isOcm, // TODO(mlibra): make it optional, false by default
 }) => {
   const { values } = useFormikContext<ClusterDetailsValues>();
@@ -68,6 +71,7 @@ const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> = ({
         isRequired
         isDisabled={isNameDisabled}
       />
+      {extensionAfter?.['name'] && extensionAfter['name']}
       {!!managedDomains.length && toggleRedHatDnsService && (
         <CheckboxField
           name="useRedHatDnsService"
@@ -109,9 +113,8 @@ const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> = ({
       ) : (
         <OpenShiftVersionSelect versions={versions} />
       )}
+      {extensionAfter?.['openshiftVersion'] && extensionAfter['openshiftVersion']}
       {canEditPullSecret && <PullSecret isOcm={isOcm} defaultPullSecret={defaultPullSecret} />}
     </Form>
   );
 };
-
-export default ClusterDetailsFormFields;

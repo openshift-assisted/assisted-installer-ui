@@ -56,7 +56,7 @@ const ClusterDeploymentHostsSelectionBasic: React.FC<ClusterDeploymentHostsSelec
           <CheckboxField
             idPostfix="mastersasworkers"
             name="useMastersAsWorkers"
-            label="Run workloads on control plane (master) hosts"
+            label="Run workloads on control plane hosts"
             isDisabled={hostCount < 5}
           />
         </GridItem>
