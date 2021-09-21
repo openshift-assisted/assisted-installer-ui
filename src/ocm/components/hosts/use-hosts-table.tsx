@@ -22,15 +22,15 @@ import {
   AdditionalNTPSourcesFormProps,
 } from '../../../common/components/hosts/AdditionalNTPSourcesDialog';
 import {
-  deleteClusterHost,
-  disableClusterHost,
-  enableClusterHost,
+  deleteHost as ApiDeleteHost,
   getErrorMessage,
   handleApiError,
   installHost,
   patchCluster,
-  patchHost,
+  patchInfraHost,
   resetClusterHost,
+  bindHost,
+  unbindHost,
 } from '../../api';
 import { forceReload, updateCluster, updateHost } from '../../reducers/clusters';
 import { useModalDialogsContext } from './ModalDialogsContext';
@@ -53,7 +53,6 @@ import DeleteHostModal from './DeleteHostModal';
 import { onFetchEvents } from '../fetching/fetchEvents';
 import { ConnectedIcon } from '@patternfly/react-icons';
 import LocalStorageBackedCache from '../../adapters/LocalStorageBackedCache';
-import { deleteInfraHost } from '../../api/InfraEnvService';
 
 export const useHostsTable = (cluster: Cluster) => {
   const infraEnvId = LocalStorageBackedCache.getItem(cluster.id) || '';
@@ -80,8 +79,8 @@ export const useHostsTable = (cluster: Cluster) => {
       onHostEnable: async (host: Host) => {
         const hostId = host.id;
         try {
-          const { data } = await enableClusterHost(cluster.id, hostId);
-          dispatch(updateCluster(data));
+          const { data } = await bindHost(infraEnvId, hostId);
+          dispatch(updateHost(data));
         } catch (e) {
           handleApiError(e, () =>
             addAlert({ title: `Failed to enable host ${hostId}`, message: getErrorMessage(e) }),
@@ -91,6 +90,7 @@ export const useHostsTable = (cluster: Cluster) => {
       onInstallHost: async (host: Host) => {
         const hostId = host.id;
         try {
+          //TODO(jgyselov)
           const { data } = await installHost(cluster.id, hostId);
           dispatch(updateHost(data));
         } catch (e) {
@@ -102,8 +102,8 @@ export const useHostsTable = (cluster: Cluster) => {
       onHostDisable: async (host: Host) => {
         const hostId = host.id;
         try {
-          const { data } = await disableClusterHost(cluster.id, hostId);
-          dispatch(updateCluster(data));
+          const { data } = await unbindHost(infraEnvId, hostId);
+          dispatch(updateHost(data));
         } catch (e) {
           handleApiError(e, () =>
             addAlert({ title: `Failed to disable host ${hostId}`, message: getErrorMessage(e) }),
@@ -111,7 +111,7 @@ export const useHostsTable = (cluster: Cluster) => {
         }
       },
     }),
-    [cluster.id, dispatch, addAlert, deleteHostDialog],
+    [infraEnvId, cluster.id, dispatch, addAlert, deleteHostDialog],
   );
 
   const onViewHostEvents = React.useCallback(
@@ -210,7 +210,7 @@ export const useHostsTable = (cluster: Cluster) => {
     const deleteHost = async (hostId: string | undefined) => {
       if (hostId) {
         try {
-          await deleteInfraHost(infraEnvId, hostId);
+          await ApiDeleteHost(infraEnvId, hostId);
           dispatch(forceReload());
         } catch (e) {
           return handleApiError(e, () =>
@@ -232,7 +232,7 @@ export const useHostsTable = (cluster: Cluster) => {
         hostRole: role as HostRoleUpdateParams,
       };
       try {
-        const { data } = await patchHost(infraEnvId, host.id, params);
+        const { data } = await patchInfraHost(infraEnvId, host.id, params);
         dispatch(updateHost(data));
       } catch (e) {
         handleApiError(e, () =>
@@ -340,7 +340,7 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
         onClose={editHostDialog.close}
         isOpen={editHostDialog.isOpen}
         onSave={async (params: HostUpdateParams) => {
-          const { data } = await patchHost(infraEnvId, editHostDialog.data.host.id, params);
+          const { data } = await patchInfraHost(infraEnvId, editHostDialog.data.host.id, params);
           dispatch(updateHost(data));
           editHostDialog.close();
         }}
