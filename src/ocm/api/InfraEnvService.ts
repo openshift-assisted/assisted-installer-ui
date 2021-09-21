@@ -22,3 +22,6 @@ export const patchInfraEnv = (
   infraEnvId: string,
   params: InfraEnvUpdateParams,
 ): AxiosPromise<InfraEnv> => client.patch(`/v2/infra-envs/${infraEnvId}`, params);
+
+export const deleteInfraHost = (infraEnvId: string, hostId: string): AxiosPromise<void> =>
+  client.delete(`/v2/infra-envs/${infraEnvId}/hosts/${hostId}`);

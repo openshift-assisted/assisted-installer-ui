@@ -53,6 +53,7 @@ import DeleteHostModal from './DeleteHostModal';
 import { onFetchEvents } from '../fetching/fetchEvents';
 import { ConnectedIcon } from '@patternfly/react-icons';
 import LocalStorageBackedCache from '../../adapters/LocalStorageBackedCache';
+import { deleteInfraHost } from '../../api/InfraEnvService';
 
 export const useHostsTable = (cluster: Cluster) => {
   const infraEnvId = LocalStorageBackedCache.getItem(cluster.id) || '';
@@ -209,7 +210,7 @@ export const useHostsTable = (cluster: Cluster) => {
     const deleteHost = async (hostId: string | undefined) => {
       if (hostId) {
         try {
-          await deleteClusterHost(cluster.id, hostId);
+          await deleteInfraHost(infraEnvId, hostId);
           dispatch(forceReload());
         } catch (e) {
           return handleApiError(e, () =>
@@ -223,7 +224,7 @@ export const useHostsTable = (cluster: Cluster) => {
     };
     deleteHost(deleteHostDialog.data?.hostId);
     deleteHostDialog.close();
-  }, [addAlert, cluster.id, dispatch, deleteHostDialog]);
+  }, [addAlert, infraEnvId, dispatch, deleteHostDialog]);
 
   const onEditRole = React.useCallback(
     async (host: Host, role?: string) => {
