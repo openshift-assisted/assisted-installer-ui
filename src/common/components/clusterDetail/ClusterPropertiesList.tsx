@@ -8,87 +8,45 @@ import {
   GridItem,
 } from '@patternfly/react-core';
 import { DASH } from '../constants';
-import { getHumanizedDateTime } from '../ui';
 
-type ClusterPropertiesList = {
-  name?: string;
-  id?: string;
-  openshiftVersion?: string;
-  baseDnsDomain?: string;
-  apiVip?: string;
-  ingressVip?: string;
-  clusterNetworkCidr?: string;
-  clusterNetworkHostPrefix?: number;
-  serviceNetworkCidr?: string;
-  installedTimestamp?: string;
+type ClusterPropertyItem = {
+  key: string;
+  value?: React.ReactNode;
 };
 
-const ClusterPropertiesList = ({
-  name,
-  openshiftVersion,
-  baseDnsDomain,
-  apiVip,
-  ingressVip,
-  id,
-  clusterNetworkCidr,
-  clusterNetworkHostPrefix,
-  serviceNetworkCidr,
-  installedTimestamp,
-}: ClusterPropertiesList) => (
-  <Grid hasGutter>
-    <GridItem span={6}>
-      <DescriptionList>
-        <DescriptionListGroup>
-          <DescriptionListTerm>Name</DescriptionListTerm>
-          <DescriptionListDescription>{name || DASH}</DescriptionListDescription>
-        </DescriptionListGroup>
-        <DescriptionListGroup>
-          <DescriptionListTerm>OpenShift version</DescriptionListTerm>
-          <DescriptionListDescription>{openshiftVersion || DASH}</DescriptionListDescription>
-        </DescriptionListGroup>
-        <DescriptionListGroup>
-          <DescriptionListTerm>Cluster ID</DescriptionListTerm>
-          <DescriptionListDescription>{id || DASH}</DescriptionListDescription>
-        </DescriptionListGroup>
-        <DescriptionListGroup>
-          <DescriptionListTerm>Installed at</DescriptionListTerm>
-          <DescriptionListDescription>
-            {getHumanizedDateTime(installedTimestamp) || DASH}
-          </DescriptionListDescription>
-        </DescriptionListGroup>
-        <DescriptionListGroup>
-          <DescriptionListTerm>Base DNS domain</DescriptionListTerm>
-          <DescriptionListDescription>{baseDnsDomain || DASH}</DescriptionListDescription>
-        </DescriptionListGroup>
-      </DescriptionList>
-    </GridItem>
-    <GridItem span={6}>
-      <DescriptionList>
-        <DescriptionListGroup>
-          <DescriptionListTerm>API Virtual IP</DescriptionListTerm>
-          <DescriptionListDescription>{apiVip || DASH}</DescriptionListDescription>
-        </DescriptionListGroup>
-        <DescriptionListGroup>
-          <DescriptionListTerm>Ingress Virtual IP</DescriptionListTerm>
-          <DescriptionListDescription>{ingressVip || DASH}</DescriptionListDescription>
-        </DescriptionListGroup>
-        <DescriptionListGroup>
-          <DescriptionListTerm>Cluster network CIDR</DescriptionListTerm>
-          <DescriptionListDescription>{clusterNetworkCidr || DASH}</DescriptionListDescription>
-        </DescriptionListGroup>
-        <DescriptionListGroup>
-          <DescriptionListTerm>Cluster network host prefix</DescriptionListTerm>
-          <DescriptionListDescription>
-            {clusterNetworkHostPrefix || DASH}
-          </DescriptionListDescription>
-        </DescriptionListGroup>
-        <DescriptionListGroup>
-          <DescriptionListTerm>ServiceNetworkCidr</DescriptionListTerm>
-          <DescriptionListDescription>{serviceNetworkCidr || DASH}</DescriptionListDescription>
-        </DescriptionListGroup>
-      </DescriptionList>
-    </GridItem>
-  </Grid>
+const ListItem = ({ item }: { item: ClusterPropertyItem }) => (
+  <DescriptionListGroup>
+    <DescriptionListTerm>{item.key}</DescriptionListTerm>
+    <DescriptionListDescription>{item.value || DASH}</DescriptionListDescription>
+  </DescriptionListGroup>
 );
+
+type ClusterPropertiesListProps = {
+  leftItems: ClusterPropertyItem[];
+  rightItems?: ClusterPropertyItem[];
+};
+
+const ClusterPropertiesList = ({ leftItems, rightItems = [] }: ClusterPropertiesListProps) => {
+  return (
+    <Grid hasGutter>
+      <GridItem span={rightItems.length ? 6 : 12}>
+        <DescriptionList>
+          {leftItems.map((item) => (
+            <ListItem key={item.key} item={item} />
+          ))}
+        </DescriptionList>
+      </GridItem>
+      {rightItems.length && (
+        <GridItem span={6}>
+          <DescriptionList>
+            {rightItems.map((item) => (
+              <ListItem key={item.key} item={item} />
+            ))}
+          </DescriptionList>
+        </GridItem>
+      )}
+    </Grid>
+  );
+};
 
 export default ClusterPropertiesList;
