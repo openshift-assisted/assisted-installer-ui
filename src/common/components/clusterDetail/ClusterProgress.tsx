@@ -110,9 +110,11 @@ const HostProgress: React.FC<HostProgressProps> = ({ hosts, hostRole }) => {
 const getFinalizingStatusIcon = (cluster: Cluster) => {
   let statusIcon;
   const { monitoredOperators = [] } = cluster;
-  const areAllBuiltInOperatorsAvailable = monitoredOperators
-    .filter((op) => op.operatorType === 'builtin')
-    ?.every((op) => op.status === 'available');
+  const areAllBuiltInOperatorsAvailable = monitoredOperators.length
+    ? monitoredOperators
+        .filter((op) => op.operatorType === 'builtin')
+        .every((op) => op.status === 'available')
+    : false;
   if (areAllBuiltInOperatorsAvailable) {
     statusIcon = <CheckCircleIcon color={okColor.value} />;
   } else {
@@ -123,6 +125,10 @@ const getFinalizingStatusIcon = (cluster: Cluster) => {
       case 'error':
       case 'cancelled':
         statusIcon = <ExclamationCircleIcon color={dangerColor.value} />;
+        break;
+      case 'installed':
+      case 'adding-hosts':
+        statusIcon = <CheckCircleIcon color={okColor.value} />;
         break;
       default:
         statusIcon = <PendingIcon />;
