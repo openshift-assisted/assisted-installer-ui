@@ -9,12 +9,14 @@ import {
 import ClusterDeploymentHostsSelectionBasic from './ClusterDeploymentHostsSelectionBasic';
 import ClusterDeploymentHostsSelectionAdvanced from './ClusterDeploymentHostsSelectionAdvanced';
 import { getAgentsForSelection, getIsSNOCluster } from '../helpers';
+import MinimalHWRequirements from '../Agent/MinimalHWRequirements';
 
 const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionProps> = ({
   agentClusterInstall,
   clusterDeployment,
   agents,
   onValuesChanged,
+  aiConfigMap,
 }) => {
   const { values } = useFormikContext<ClusterDeploymentHostsSelectionValues>();
 
@@ -50,6 +52,9 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
             ? 'Exactly 1 host is required, capable of functioning both as control plane (master) and worker node.'
             : 'At least 3 hosts are required, capable of functioning as control plane (master) nodes.'}
         </TextContent>
+      </GridItem>
+      <GridItem>
+        <MinimalHWRequirements aiConfigMap={aiConfigMap} isSNOCluster={isSNOCluster} />
       </GridItem>
 
       <GridItem>

@@ -7,6 +7,7 @@ import {
   AgentClusterInstallK8sResource,
   AgentK8sResource,
   ClusterDeploymentK8sResource,
+  ConfigMapK8sResource,
 } from '../../types';
 import { useHostsSelectionFormik } from './ClusterDeploymentHostSelectionStep';
 import ClusterDeploymentHostsSelection from './ClusterDeploymentHostsSelection';
@@ -19,6 +20,7 @@ type ACMClusterDeploymentHostsStepProps = {
   agentClusterInstall: AgentClusterInstallK8sResource;
   agents: AgentK8sResource[];
   error?: string;
+  aiConfigMap: ConfigMapK8sResource;
 };
 
 const ACMClusterDeploymentHostsStep: React.FC<ACMClusterDeploymentHostsStepProps> = ({
@@ -28,6 +30,7 @@ const ACMClusterDeploymentHostsStep: React.FC<ACMClusterDeploymentHostsStepProps
   onValuesChanged,
   agents,
   error,
+  aiConfigMap,
 }) => {
   const [initialValues, validationSchema] = useHostsSelectionFormik({
     agents,
@@ -48,6 +51,7 @@ const ACMClusterDeploymentHostsStep: React.FC<ACMClusterDeploymentHostsStepProps
             clusterDeployment={clusterDeployment}
             agentClusterInstall={agentClusterInstall}
             onValuesChanged={onValuesChanged}
+            aiConfigMap={aiConfigMap}
           />
         </Formik>
       </StackItem>

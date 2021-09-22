@@ -116,6 +116,7 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
   agents,
   onClose,
   onSaveHostsSelection,
+  aiConfigMap,
 }) => {
   const { addAlert } = useAlerts();
   const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
@@ -177,6 +178,7 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
                   agentClusterInstall={agentClusterInstall}
                   agents={agents}
                   clusterDeployment={clusterDeployment}
+                  aiConfigMap={aiConfigMap}
                 />
               </GridItem>
             </Grid>
