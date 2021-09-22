@@ -51,14 +51,14 @@ const ClusterDeploymentHostsNetworkTable: React.FC<ClusterDeploymentHostsNetwork
       isSNOCluster
         ? [
             hostnameColumn(onEditHost, hosts),
-            networkingStatusColumn(onEditHost, isSNOCluster),
+            networkingStatusColumn(onEditHost),
             activeNICColumn(cluster),
             countColumn(cluster),
           ]
         : [
             hostnameColumn(onEditHost, hosts),
             roleColumn(canEditRole, onEditRole),
-            networkingStatusColumn(onEditHost, isSNOCluster),
+            networkingStatusColumn(onEditHost),
             activeNICColumn(cluster),
             countColumn(cluster),
           ],
