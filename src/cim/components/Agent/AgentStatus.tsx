@@ -1,10 +1,10 @@
 import { Button, Popover, Stack, StackItem } from '@patternfly/react-core';
 import * as React from 'react';
-import { getHostname, HostStatus, HostStatusProps } from '../../../common';
+import { getHostname, HostStatus } from '../../../common';
 import { AgentK8sResource } from '../../types';
 import { ClusterDeploymentHostsTablePropsActions } from '../ClusterDeployment/types';
-import { getAIHosts } from '../helpers';
-import { ValidationsInfo } from '../../../common/types/hosts';
+import { getAIHosts } from '../helpers/toAssisted';
+import { getAgentStatus } from '../helpers/status';
 
 import '@patternfly/react-styles/css/utilities/Text/text.css';
 
@@ -12,30 +12,17 @@ type AgentStatusProps = {
   agent: AgentK8sResource;
   onApprove: ClusterDeploymentHostsTablePropsActions['onApprove'];
   onEditHostname: ClusterDeploymentHostsTablePropsActions['onEditHost'];
-  validationsInfo?: ValidationsInfo;
 };
 
-const AgentStatus: React.FC<AgentStatusProps> = ({
-  agent,
-  onApprove,
-  onEditHostname,
-  validationsInfo: validationsInfoProps,
-}) => {
+const AgentStatus: React.FC<AgentStatusProps> = ({ agent, onApprove, onEditHostname }) => {
   const [host] = getAIHosts([agent]);
   const editHostname = onEditHostname ? () => onEditHostname(agent) : undefined;
-  const validationsInfo = validationsInfoProps || agent.status?.hostValidationInfo || {};
   const pendingApproval = !agent.spec.approved;
 
   const macAddress = agent.status?.inventory?.interfaces?.[0]?.macAddress;
   const hostname = getHostname(host, agent.status?.inventory || {});
 
-  let statusOverride: HostStatusProps['statusOverride'];
-  if (pendingApproval) {
-    // TODO(mlibra): Add icon
-    statusOverride = 'Discovered';
-  } else if (validationsInfo.infrastructure) {
-    statusOverride = 'insufficient';
-  }
+  const [status, , validationsInfo] = getAgentStatus(agent);
 
   return (
     <Stack>
@@ -44,7 +31,7 @@ const AgentStatus: React.FC<AgentStatusProps> = ({
           host={host}
           onEditHostname={editHostname}
           validationsInfo={validationsInfo}
-          statusOverride={statusOverride}
+          statusOverride={status}
         />
       </StackItem>
       {pendingApproval && onApprove && (
