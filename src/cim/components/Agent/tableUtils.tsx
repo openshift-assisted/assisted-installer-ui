@@ -45,29 +45,6 @@ type StatusColumnProps = {
   onApprove?: ClusterDeploymentHostsTablePropsActions['onApprove'];
 };
 
-export const statusColumn = ({
-  agents,
-  onEditHostname,
-  onApprove,
-}: StatusColumnProps): TableRow<Host> => {
-  return {
-    header: { title: 'Status' },
-    cell: (host) => {
-      const agent = agents.find((a) => a.metadata?.uid === host.id);
-      let title: React.ReactNode = '--';
-      if (agent) {
-        const editHostname = onEditHostname ? () => onEditHostname(agent) : undefined;
-        title = <AgentStatus agent={agent} onApprove={onApprove} onEditHostname={editHostname} />;
-      }
-
-      return {
-        title,
-        props: { 'data-testid': 'host-status' },
-      };
-    },
-  };
-};
-
 export const infraEnvStatusColumn = ({
   agents,
   onEditHostname,
