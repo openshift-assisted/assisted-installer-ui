@@ -6,11 +6,11 @@ import {
   PreflightHardwareRequirements,
   OPERATOR_NAME_CNV,
   ErrorState,
-  ExternalLink,
   LoadingState,
   fileSize,
   RenderIf,
   alertsSlice,
+  HostRequirements,
 } from '../../../common';
 import { getClusterPreflightRequirements, getErrorMessage, handleApiError } from '../../api';
 
@@ -93,30 +93,7 @@ export const HostRequirementsContent: PreflightHWRequirementsContentComponent = 
   const master = preflightRequirements?.ocp?.master?.quantitative;
   const worker = preflightRequirements?.ocp?.worker?.quantitative;
 
-  const masterRam = fileSize((master?.ramMib || 16 * 1024) * 1024 * 1024, 2, 'iec');
-  const workerRam = fileSize((worker?.ramMib || 8 * 1024) * 1024 * 1024, 2, 'iec');
-
-  return (
-    <TextContent>
-      <List>
-        <ListItem>
-          Masters: At least {master?.cpuCores || 4} CPU cores, {masterRam} RAM,{' '}
-          {master?.diskSizeGb || 120} GB filesystem for every supervisor.
-        </ListItem>
-        <ListItem>
-          Workers: At least {worker?.cpuCores || 2} CPU cores, {workerRam} RAM,{' '}
-          {worker?.diskSizeGb || 120} GB filesystem for each worker
-        </ListItem>
-        <ListItem>
-          Also note that each hosts' disk write speed should meet the minimum requirements to run
-          OpenShift.{' '}
-          <ExternalLink href={'https://access.redhat.com/solutions/4885641'}>
-            Learn more
-          </ExternalLink>
-        </ListItem>
-      </List>
-    </TextContent>
-  );
+  return <HostRequirements master={master} worker={worker} />;
 };
 
 // For Single Node Operator
