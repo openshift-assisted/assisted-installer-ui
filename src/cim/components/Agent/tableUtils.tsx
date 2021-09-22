@@ -112,15 +112,12 @@ export const infraEnvColumn = (agents: AgentK8sResource[]): TableRow<Host> => {
 
 export const networkingStatusColumn = (
   onEditHostname?: HostsTableActions['onEditHost'],
-  isSNOCluster?: boolean,
 ): TableRow<Host> => ({
   header: { title: 'Status', transforms: [sortable] },
   cell: (host) => {
     const editHostname = onEditHostname ? () => onEditHostname(host) : undefined;
     return {
-      title: (
-        <NetworkingStatus host={host} onEditHostname={editHostname} isSNOCluster={!!isSNOCluster} />
-      ),
+      title: <NetworkingStatus host={host} onEditHostname={editHostname} />,
       props: { 'data-testid': 'nic-status' },
       sortableValue: status,
     };
