@@ -5,7 +5,6 @@ import { HOSTS_MAX_COUNT, HOSTS_MIN_COUNT } from './constants';
 import { useFormikContext } from 'formik';
 import { ClusterDeploymentHostsSelectionValues } from './types';
 import LocationsSelector from './LocationsSelector';
-import ShortCapacitySummary from './ShortCapacitySummary';
 import { AgentK8sResource } from '../../types';
 import AgentsSelectionHostCountAlerts from '../Agent/AgentsSelectionHostCountAlerts';
 import AgentsSelectionHostCountLabelIcon from '../Agent/AgentsSelectionHostCountLabelIcon';
@@ -68,11 +67,9 @@ const ClusterDeploymentHostsSelectionBasic: React.FC<ClusterDeploymentHostsSelec
 
       <AgentsSelectionHostCountAlerts
         matchingAgentsCount={matchingAgents.length}
-        selectedAgentsCount={selectedAgents.length}
+        selectedAgents={selectedAgents}
         targetHostCount={hostCount}
       />
-
-      <ShortCapacitySummary selectedAgents={selectedAgents} />
     </>
   );
 };

@@ -2,7 +2,6 @@ import React from 'react';
 import { Grid, GridItem } from '@patternfly/react-core';
 import { NumberInputField } from '../../../common';
 import LocationsSelector from './LocationsSelector';
-import ShortCapacitySummary from './ShortCapacitySummary';
 import { AgentK8sResource } from '../../types';
 import AgentsSelectionHostCountAlerts from '../Agent/AgentsSelectionHostCountAlerts';
 import AgentsSelectionHostCountLabelIcon from '../Agent/AgentsSelectionHostCountLabelIcon';
@@ -38,11 +37,9 @@ const ClusterScaleUpAutoHostsSelection: React.FC<ClusterScaleUpAutoHostsSelectio
 
       <AgentsSelectionHostCountAlerts
         matchingAgentsCount={matchingAgents.length}
-        selectedAgentsCount={selectedAgents.length}
+        selectedAgents={selectedAgents}
         targetHostCount={hostCount}
       />
-
-      <ShortCapacitySummary selectedAgents={selectedAgents} />
     </>
   );
 };
