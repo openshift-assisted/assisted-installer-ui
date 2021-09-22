@@ -58,10 +58,10 @@ const ClusterDeploymentCreateProgress: React.FC<ClusterDeploymentCreateProgressP
       )}
       <EmptyStateSecondaryActions>
         <Button variant="primary" onClick={toDetails}>
-          Details page
+          See cluster details
         </Button>
         <Button variant="link" onClick={toListView}>
-          List view
+          Go to cluster list
         </Button>
       </EmptyStateSecondaryActions>
     </EmptyState>
