@@ -31,7 +31,7 @@ const HostRequirements: React.FC<HostRequirementsProps> = ({
   return (
     <TextContent>
       <List>
-        {(isSNOCluster === false || undefined) && (
+        {!isSNOCluster && (
           <>
             <ListItem>
               Masters: At least {master?.cpuCores || 4} CPU cores, {masterRam} RAM,{' '}
@@ -43,7 +43,7 @@ const HostRequirements: React.FC<HostRequirementsProps> = ({
             </ListItem>
           </>
         )}
-        {(isSNOCluster === true || undefined) && (
+        {(isSNOCluster === true || isSNOCluster === undefined) && (
           <>
             <ListItem>
               SNO: One host is required with at least {sno?.cpuCores || 4} CPU cores, {snoRam} of
