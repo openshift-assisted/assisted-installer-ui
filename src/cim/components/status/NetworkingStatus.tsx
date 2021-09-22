@@ -12,13 +12,11 @@ import { AdditionalNTPSourcesDialogToggle } from '../../../ocm/components/hosts/
 type HostNetworkingStatusComponentProps = {
   host: Host;
   onEditHostname?: () => void;
-  isSNOCluster: boolean;
 };
 
 const NetworkingStatus: React.FC<HostNetworkingStatusComponentProps> = ({
   host,
   onEditHostname,
-  isSNOCluster,
 }) => {
   const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
   const networkingStatus = getWizardStepHostStatus(host, 'networking');
@@ -28,10 +26,7 @@ const NetworkingStatus: React.FC<HostNetworkingStatusComponentProps> = ({
     : undefined;
 
   let statusOverride: HostStatusProps['statusOverride'] = networkingStatus;
-  if (
-    networkingStatus === 'pending-for-input' ||
-    (isSNOCluster && networkingStatus === 'insufficient')
-  ) {
+  if (networkingStatus === 'pending-for-input' || networkingStatus === 'insufficient') {
     statusOverride = 'Bound';
   }
 

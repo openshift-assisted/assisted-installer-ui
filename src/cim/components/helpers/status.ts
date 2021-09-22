@@ -125,11 +125,10 @@ export const getAgentStatus = (
       ),
     };
   }
-
   if (!excludeDiscovered && !agent.spec.approved) {
     // TODO(mlibra): Add icon
     state = 'Discovered';
-  } else if (validationsInfo?.infrastructure) {
+  } else if (state !== 'binding' && validationsInfo?.infrastructure) {
     state = 'insufficient';
   }
   return [state, agent.status?.debugInfo?.stateInfo || '', validationsInfo];
