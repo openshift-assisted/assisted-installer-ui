@@ -16,7 +16,7 @@ import {
 } from '../../common/api/types';
 import { client, BASE_PATH } from './axiosClient';
 
-export const getClusters = (): AxiosPromise<Cluster[]> => client.get('/v1/clusters');
+export const getClusters = (): AxiosPromise<Cluster[]> => client.get('/v2/clusters');
 export const getClustersDefaultConfiguration = (): AxiosPromise<ClusterDefaultConfig> =>
   client.get('/v2/clusters/default-config');
 
@@ -31,7 +31,7 @@ export const patchCluster = (id: string, params: ClusterUpdateParams): AxiosProm
   client.patch(`/v1/clusters/${id}`, params);
 
 export const deleteCluster = (id: string): AxiosPromise<void> =>
-  client.delete(`/v1/clusters/${id}`);
+  client.delete(`/v2/clusters/${id}`);
 
 export const getClusterHosts = (id: string): AxiosPromise<Host[]> =>
   client.get(`/v1/clusters/${id}/hosts`);

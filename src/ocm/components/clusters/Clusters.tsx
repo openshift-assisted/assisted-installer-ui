@@ -27,6 +27,9 @@ import { deleteCluster as ApiDeleteCluster } from '../../api/clusters';
 import { handleApiError, getErrorMessage } from '../../api/utils';
 import ClusterBreadcrumbs from './ClusterBreadcrumbs';
 import { routeBasePath } from '../../config';
+import LocalStorageBackedCache from '../../adapters/LocalStorageBackedCache';
+import { getHosts, deleteHost as ApiDeleteHost } from '../../api';
+import { deregisterInfraEnv } from '../../api/InfraEnvService';
 
 type ClustersProps = RouteComponentProps;
 
@@ -44,7 +47,20 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
   const deleteClusterAsync = React.useCallback(
     async (clusterId) => {
       try {
+        const infraEnvId = LocalStorageBackedCache.getItem(clusterId);
+        if (infraEnvId === null) {
+          console.error('InfraEnv id not found.');
+          return;
+        }
+
+        const { data: hosts } = await getHosts(infraEnvId);
+        for (const host of hosts) {
+          await ApiDeleteHost(infraEnvId, host.id);
+        }
+
+        await deregisterInfraEnv(infraEnvId);
         await ApiDeleteCluster(clusterId);
+
         dispatch(deleteCluster(clusterId));
       } catch (e) {
         return handleApiError(e, () =>
