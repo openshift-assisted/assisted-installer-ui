@@ -21,7 +21,7 @@ const EditAgentModal: React.FC<EditAgentModalProps> = ({ agent, onSave, ...rest 
       host={host}
       inventory={agent?.status?.inventory}
       {...rest}
-      onSave={async ({ hostname }) => agent && onSave(agent, hostname)}
+      onSave={async ({ hostName }) => agent && onSave(agent, hostName || '')}
     />
   );
 };
