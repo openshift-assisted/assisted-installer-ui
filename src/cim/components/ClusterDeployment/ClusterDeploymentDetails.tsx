@@ -10,11 +10,8 @@ import {
   Stack,
   StackItem,
 } from '@patternfly/react-core';
-import ValidatedConditionAlert from '../common/ValidatedConditionAlert';
-import { getClusterValidatedCondition } from '../helpers/conditions';
 import ClusterPropertiesList from '../../../common/components/clusterDetail/ClusterPropertiesList';
 import { getAICluster } from '../helpers/toAssisted';
-import { getClusterStatus } from '../helpers/status';
 import {
   AgentClusterInstallK8sResource,
   AgentK8sResource,
@@ -24,16 +21,13 @@ import ClusterDeploymentCredentials from './ClusterDeploymentCredentials';
 import {
   formatEventsData,
   shouldShowClusterCredentials,
-  shouldShowClusterInstallationError,
   shouldShowClusterInstallationProgress,
 } from './helpers';
-import ClusterInstallationError from './ClusterInstallationError';
 import { EventsModalButton } from '../../../common/components/ui/eventsModal';
 import { EventListFetchProps } from '../../../common/types/events';
 import AgentTable from '../Agent/AgentTable';
 import { FetchSecret } from './types';
-import ClusterDeploymentProgress from './ClusterDeploymentProgress';
-import { getConsoleUrl } from '../helpers/clusterDeployment';
+import { getClusterProperties, getConsoleUrl } from '../helpers/clusterDeployment';
 import ClusterDeploymentKubeconfigDownload from './ClusterDeploymentKubeconfigDownload';
 
 type ClusterDeploymentDetailsProps = {
@@ -81,7 +75,12 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
   };
 
   const cluster = getAICluster({ clusterDeployment, agentClusterInstall, agents: clusterAgents });
-  const [clusterStatus, clusterStatusInfo] = getClusterStatus(agentClusterInstall);
+
+  const clusterProperties = React.useMemo(
+    () => getClusterProperties(clusterDeployment, agentClusterInstall),
+    [clusterDeployment, agentClusterInstall],
+  );
+
   return (
     <Stack hasGutter>
       {shouldShowClusterInstallationProgress(agentClusterInstall) && (
@@ -101,14 +100,6 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
             <CardExpandableContent>
               <CardBody>
                 <Stack hasGutter>
-                  <StackItem>
-                    <ClusterDeploymentProgress
-                      clusterDeployment={clusterDeployment}
-                      agentClusterInstall={agentClusterInstall}
-                      agents={clusterAgents}
-                      onFetchEvents={handleFetchEvents}
-                    />
-                  </StackItem>
                   {shouldShowClusterCredentials(agentClusterInstall) && (
                     <StackItem>
                       <ClusterDeploymentCredentials
@@ -139,20 +130,6 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
                       View Cluster Events
                     </EventsModalButton>
                   </StackItem>
-                  {shouldShowClusterInstallationError(agentClusterInstall) && (
-                    <StackItem>
-                      <ClusterInstallationError
-                        title={
-                          clusterStatus === 'cancelled'
-                            ? 'Cluster installation was cancelled'
-                            : undefined
-                        }
-                        statusInfo={clusterStatusInfo}
-                        logsUrl={agentClusterInstall.status?.debugInfo?.logsURL}
-                        openshiftVersion={clusterDeployment.status?.installVersion}
-                      />
-                    </StackItem>
-                  )}
                 </Stack>
               </CardBody>
             </CardExpandableContent>
@@ -195,25 +172,24 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
           <CardExpandableContent>
             <CardBody>
               <ClusterPropertiesList
-                name={clusterDeployment.metadata?.name}
-                id={clusterDeployment.metadata?.uid}
-                openshiftVersion={agentClusterInstall?.spec?.imageSetRef?.name}
-                baseDnsDomain={clusterDeployment.spec?.baseDomain}
-                apiVip={agentClusterInstall?.spec?.apiVIP}
-                ingressVip={agentClusterInstall?.spec?.ingressVIP}
-                clusterNetworkCidr={agentClusterInstall.spec?.networking?.clusterNetwork?.[0].cidr}
-                clusterNetworkHostPrefix={
-                  agentClusterInstall.spec?.networking?.clusterNetwork?.[0]?.hostPrefix
-                }
-                serviceNetworkCidr={agentClusterInstall.spec?.networking?.serviceNetwork?.[0]}
-                installedTimestamp={clusterDeployment.status?.installedTimestamp}
+                leftItems={[
+                  clusterProperties.name,
+                  clusterProperties.openshiftVersion,
+                  clusterProperties.clusterId,
+                  clusterProperties.installedTimestamp,
+                  clusterProperties.baseDnsDomain,
+                ]}
+                rightItems={[
+                  clusterProperties.apiVip,
+                  clusterProperties.ingressVip,
+                  clusterProperties.clusterNetworkCidr,
+                  clusterProperties.clusterNetworkHostPrefix,
+                  clusterProperties.serviceNetworkCidr,
+                ]}
               />
             </CardBody>
           </CardExpandableContent>
         </Card>
-      </StackItem>
-      <StackItem>
-        <ValidatedConditionAlert condition={getClusterValidatedCondition(agentClusterInstall)} />
       </StackItem>
     </Stack>
   );

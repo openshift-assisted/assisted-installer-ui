@@ -18,7 +18,8 @@ const SubnetHelperText = ({ matchingSubnet, hosts }: SubnetHelperTextProps) => {
         !matchingSubnet.hostIDs.includes(host.requestedHostname || ''),
     ) || [];
 
-  if (excludedHosts.length === 0) {
+  // Workaround for bug in CIM backend. hostIDs are empty
+  if (excludedHosts.length === 0 || !matchingSubnet.hostIDs.length) {
     return null;
   }
 
@@ -62,17 +63,21 @@ export interface AvailableSubnetsControlProps {
   hostSubnets: HostSubnets;
   hosts: Host[];
   isRequired: boolean;
+  isMultiNodeCluster: boolean;
 }
 
 export const AvailableSubnetsControl = ({
   hostSubnets,
   hosts,
   isRequired = false,
+  isMultiNodeCluster,
 }: AvailableSubnetsControlProps) => {
   const getHelperText = (value: string) => {
-    const matchingSubnet = hostSubnets.find((hn) => hn.humanized === value);
+    const matchingSubnet = hostSubnets.find((hn) => hn.subnet === value);
     if (matchingSubnet) {
-      return <SubnetHelperText matchingSubnet={matchingSubnet} hosts={hosts} />;
+      return (
+        isMultiNodeCluster && <SubnetHelperText matchingSubnet={matchingSubnet} hosts={hosts} />
+      );
     }
 
     return undefined;
@@ -95,7 +100,7 @@ export const AvailableSubnetsControl = ({
                 .sort((subA, subB) => subA.humanized.localeCompare(subB.humanized))
                 .map((hn, index) => ({
                   label: hn.humanized,
-                  value: hn.humanized,
+                  value: hn.subnet,
                   id: `form-input-hostSubnet-field-option-${index}`,
                 })),
             ]

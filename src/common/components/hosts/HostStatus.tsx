@@ -42,6 +42,7 @@ import {
 import OcpConsoleNodesSectionLink from './OcpConsoleNodesSectionLink';
 import { toSentence } from '../ui/table/utils';
 import { RenderIf } from '../ui';
+import { HostStatusProps } from './types';
 
 const getStatusIcon = (status: Host['status'] | 'Discovered' | 'Bound') => {
   let icon = null;
@@ -103,9 +104,21 @@ const withProgress = (
 
 type HostStatusPopoverContentProps = ValidationInfoActionProps & {
   validationsInfo: ValidationsInfo;
+  statusOverride: HostStatusProps['statusOverride'];
 };
 
-const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = (props) => {
+const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({
+  statusOverride,
+  ...props
+}) => {
+  if (statusOverride === 'Bound') {
+    return (
+      <TextContent>
+        <Text>This host is bound to the cluster.</Text>
+      </TextContent>
+    );
+  }
+
   const { host } = props;
   const { status, statusInfo } = host;
   const statusDetails = HOST_STATUS_DETAILS[status];
@@ -187,11 +200,11 @@ const HostStatusPopoverFooter: React.FC<{ host: Host }> = ({ host }) => {
         progress?.stageStartedAt || statusUpdatedAt,
       )}`;
     }
-  } else {
+  } else if (statusUpdatedAt) {
     footerText = `Status updated at ${getHumanizedDateTime(statusUpdatedAt)}`;
   }
 
-  return <small>{footerText}</small>;
+  return <>{!!footerText && <small>{footerText}</small>}</>;
 };
 
 const WithHostStatusPopover = (
@@ -203,6 +216,7 @@ const WithHostStatusPopover = (
       title: string;
       validationsInfo: ValidationsInfo;
       isSmall?: ButtonProps['isSmall'];
+      statusOverride: HostStatusProps['statusOverride'];
     }>,
 ) => (
   <Popover
@@ -219,14 +233,6 @@ const WithHostStatusPopover = (
     </Button>
   </Popover>
 );
-
-type HostStatusProps = AdditionNtpSourcePropsType & {
-  host: Host;
-  validationsInfo: ValidationsInfo;
-  onEditHostname?: () => void;
-  statusOverride?: Host['status'] | 'Discovered' | 'Bound';
-  sublabel?: string;
-};
 
 const HostStatus: React.FC<HostStatusProps> = ({
   host,
@@ -269,6 +275,7 @@ const HostStatus: React.FC<HostStatusProps> = ({
             AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
             title={title}
             validationsInfo={validationsInfo}
+            statusOverride={status}
           >
             {titleWithProgress}
           </WithHostStatusPopover>
@@ -288,6 +295,7 @@ const HostStatus: React.FC<HostStatusProps> = ({
               AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
               title={title}
               validationsInfo={validationsInfo}
+              statusOverride={status}
             >
               {sublabel}
             </WithHostStatusPopover>

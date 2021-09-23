@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { sortable } from '@patternfly/react-table';
+import { Link } from 'react-router-dom';
 import { Host, HostsTableActions } from '../../../common';
 import { AgentK8sResource, InfraEnvK8sResource } from '../../types';
 import AgentStatus from './AgentStatus';
-import { Link } from 'react-router-dom';
 import { ActionsResolver, TableRow } from '../../../common/components/hosts/AITable';
 import { ClusterDeploymentHostsTablePropsActions } from '../ClusterDeployment/types';
 import { hostActionResolver } from '../../../common/components/hosts/tableUtils';
@@ -11,6 +11,7 @@ import { getAIHosts } from '../helpers';
 import { AGENT_BMH_HOSTNAME_LABEL_KEY, INFRAENV_AGENTINSTALL_LABEL_KEY } from '../common';
 import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
 import NetworkingStatus from '../status/NetworkingStatus';
+import { getAgentStatus } from '../helpers/status';
 
 export const discoveryTypeColumn = (
   agents: AgentK8sResource[],
@@ -38,13 +39,19 @@ export const discoveryTypeColumn = (
   },
 });
 
-export const statusColumn = (
-  agents: AgentK8sResource[],
-  onEditHostname?: ClusterDeploymentHostsTablePropsActions['onEditHost'],
-  onApprove?: ClusterDeploymentHostsTablePropsActions['onApprove'],
-): TableRow<Host> => {
+type StatusColumnProps = {
+  agents: AgentK8sResource[];
+  onEditHostname?: ClusterDeploymentHostsTablePropsActions['onEditHost'];
+  onApprove?: ClusterDeploymentHostsTablePropsActions['onApprove'];
+};
+
+export const infraEnvStatusColumn = ({
+  agents,
+  onEditHostname,
+  onApprove,
+}: StatusColumnProps): TableRow<Host> => {
   return {
-    header: { title: 'Status' },
+    header: { title: 'Status', transforms: [sortable] },
     cell: (host) => {
       const agent = agents.find((a) => a.metadata?.uid === host.id);
       let title: React.ReactNode = '--';
@@ -56,6 +63,7 @@ export const statusColumn = (
       return {
         title,
         props: { 'data-testid': 'host-status' },
+        sortableValue: agent ? getAgentStatus(agent)[0] : '',
       };
     },
   };
@@ -104,12 +112,15 @@ export const infraEnvColumn = (agents: AgentK8sResource[]): TableRow<Host> => {
 
 export const networkingStatusColumn = (
   onEditHostname?: HostsTableActions['onEditHost'],
+  isSNOCluster?: boolean,
 ): TableRow<Host> => ({
   header: { title: 'Status', transforms: [sortable] },
   cell: (host) => {
     const editHostname = onEditHostname ? () => onEditHostname(host) : undefined;
     return {
-      title: <NetworkingStatus host={host} onEditHostname={editHostname} />,
+      title: (
+        <NetworkingStatus host={host} onEditHostname={editHostname} isSNOCluster={!!isSNOCluster} />
+      ),
       props: { 'data-testid': 'nic-status' },
       sortableValue: status,
     };

@@ -6,7 +6,8 @@ export type Validation = {
   message: string;
 };
 
-export type ValidationGroup = 'hardware' | 'network' | 'operators';
+// "infrastructure" relates to the CIM InfraEnv flow
+export type ValidationGroup = 'hardware' | 'network' | 'operators' | 'infrastructure';
 
 export type ValidationsInfo = {
   [key in ValidationGroup]?: Validation[];

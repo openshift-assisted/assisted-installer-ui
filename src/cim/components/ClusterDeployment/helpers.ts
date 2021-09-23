@@ -27,6 +27,21 @@ export const shouldShowClusterInstallationProgress = (
   ].includes(clusterStatus);
 };
 
+export const isInstallationReady = (agentClusterInstall: AgentClusterInstallK8sResource) => {
+  const [clusterStatus] = getClusterStatus(agentClusterInstall);
+  return [
+    'ready',
+    'error',
+    'preparing-for-installation',
+    'installing',
+    'finalizing',
+    'installed',
+    'adding-hosts',
+    'cancelled',
+    'installing-pending-user-action',
+  ].includes(clusterStatus);
+};
+
 export const shouldShowClusterInstallationError = (
   agentClusterInstall: AgentClusterInstallK8sResource,
 ) => {

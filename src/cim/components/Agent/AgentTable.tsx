@@ -3,10 +3,9 @@ import { AgentK8sResource } from '../../types';
 import { ClusterDeploymentHostsTablePropsActions } from '../ClusterDeployment/types';
 import DefaultEmptyState from '../../../common/components/ui/uiState/EmptyState';
 import { ConnectedIcon } from '@patternfly/react-icons';
-import { statusColumn, useAgentsTable } from './tableUtils';
+import { infraEnvColumn, infraEnvStatusColumn, useAgentsTable } from './tableUtils';
 import {
   cpuCoresColumn,
-  discoveredAtColumn,
   disksColumn,
   hostnameColumn,
   memoryColumn,
@@ -35,8 +34,12 @@ const AgentTable: React.FC<AgentTableProps> = ({ agents, className, ...actions }
     () => [
       hostnameColumn(hostActions.onEditHost),
       roleColumn(hostActions.canEditRole, hostActions.onEditRole),
-      statusColumn(agents, actions.onEditHost, actions.onApprove),
-      discoveredAtColumn,
+      infraEnvStatusColumn({
+        agents,
+        onEditHostname: actions.onEditHost,
+        onApprove: actions.onApprove,
+      }),
+      infraEnvColumn(agents),
       cpuCoresColumn,
       memoryColumn,
       disksColumn,

@@ -16,7 +16,7 @@ export const getAIHosts = (
   const bmhAgents: string[] = [];
   const hosts = agents.map(
     (agent): Host => {
-      const [status, statusInfo] = getAgentStatus(agent);
+      const [status, statusInfo] = getAgentStatus(agent, true);
       // TODO(mlibra) Remove that workaround once https://issues.redhat.com/browse/MGMT-7052 is fixed
       const inventory: Inventory = _.cloneDeep(agent.status?.inventory || {});
       inventory.interfaces?.forEach((intf) => {
@@ -39,9 +39,9 @@ export const getAIHosts = (
         kind: 'Host',
         id: agent.metadata?.uid || '',
         href: '',
-        status,
+        status: status as Host['status'],
         statusInfo,
-        role: agent.spec.role,
+        role: agent.spec.role || agent.status?.role,
         requestedHostname: agent.spec.hostname || inventory.hostname,
         // validationsInfo: JSON.stringify(agent.status.hostValidationInfo),
         createdAt: agent.metadata?.creationTimestamp,
@@ -141,7 +141,8 @@ export const getAICluster = ({
     machineNetworkCidr: agentClusterInstall?.spec?.networking?.machineNetwork?.[0]?.cidr,
     monitoredOperators: [],
     vipDhcpAllocation: false,
-    userManagedNetworking: false,
+    userManagedNetworking:
+      agentClusterInstall?.spec?.provisionRequirements?.controlPlaneAgents === 1,
     hostNetworks: getHostNetworks(agents, agentClusterInstall),
     totalHostCount: agents?.length,
     hosts: getAIHosts(agents),

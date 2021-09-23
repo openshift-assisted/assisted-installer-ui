@@ -2,7 +2,7 @@ import { Formik, FormikProps } from 'formik';
 import { noop } from 'lodash';
 import * as React from 'react';
 import { Ref } from 'react';
-import { ClusterDetailsValues } from '../../../common';
+import { ClusterDetailsFormFieldsProps, ClusterDetailsValues } from '../../../common';
 import {
   AgentClusterInstallK8sResource,
   AgentK8sResource,
@@ -22,6 +22,7 @@ type ACMClusterDeploymentDetailsStepProps = {
   agents?: AgentK8sResource[];
   defaultBaseDomain?: string;
   pullSecret?: string;
+  extensionAfter: ClusterDetailsFormFieldsProps['extensionAfter'];
 };
 
 const ACMClusterDeploymentDetailsStep: React.FC<ACMClusterDeploymentDetailsStepProps> = ({
@@ -34,6 +35,7 @@ const ACMClusterDeploymentDetailsStep: React.FC<ACMClusterDeploymentDetailsStepP
   agents,
   defaultBaseDomain,
   pullSecret,
+  extensionAfter,
 }) => {
   const [initialValues, validationSchema] = useDetailsFormik({
     clusterDeployment,
@@ -42,6 +44,7 @@ const ACMClusterDeploymentDetailsStep: React.FC<ACMClusterDeploymentDetailsStepP
     usedClusterNames,
     agents,
     defaultBaseDomain,
+    pullSecret,
   });
   return (
     <Formik
@@ -56,6 +59,7 @@ const ACMClusterDeploymentDetailsStep: React.FC<ACMClusterDeploymentDetailsStepP
         onValuesChanged={onValuesChanged}
         clusterImages={clusterImages}
         pullSecret={pullSecret}
+        extensionAfter={extensionAfter}
       />
     </Formik>
   );

@@ -3,12 +3,11 @@ import { AgentK8sResource, BareMetalHostK8sResource, InfraEnvK8sResource } from 
 import { ClusterDeploymentHostsTablePropsActions } from '../ClusterDeployment/types';
 import {
   discoveryTypeColumn,
-  statusColumn,
+  infraEnvStatusColumn,
   clusterColumn,
   useAgentsTable,
 } from '../Agent/tableUtils';
-import { AgentTableEmptyState } from '../Agent/AgentTable';
-import HostsTable from '../../../common/components/hosts/HostsTable';
+import HostsTable, { HostsTableEmptyState } from '../../../common/components/hosts/HostsTable';
 import {
   cpuCoresColumn,
   discoveredAtColumn,
@@ -16,6 +15,7 @@ import {
   hostnameColumn,
   memoryColumn,
 } from '../../../common/components/hosts/tableUtils';
+import { DiscoveryTroubleshootingModal } from '../../../common';
 
 type InfraEnvAgentTable = ClusterDeploymentHostsTablePropsActions & {
   agents: AgentK8sResource[];
@@ -33,6 +33,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTable> = ({
   infraEnv,
   ...actions
 }) => {
+  const [isDiscoveryHintModalOpen, setDiscoveryHintModalOpen] = React.useState(false);
   const [hosts, hostActions, actionResolver] = useAgentsTable(actions, {
     agents,
     bmhs: bareMetalHosts,
@@ -42,7 +43,11 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTable> = ({
     () => [
       hostnameColumn(hostActions.onEditHost),
       discoveryTypeColumn(agents, bareMetalHosts),
-      statusColumn(agents, actions.onEditHost, actions.onApprove),
+      infraEnvStatusColumn({
+        agents,
+        onEditHostname: actions.onEditHost,
+        onApprove: actions.onApprove,
+      }),
       clusterColumn(agents, getClusterDeploymentLink),
       discoveredAtColumn,
       cpuCoresColumn,
@@ -52,14 +57,20 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTable> = ({
     [agents, actions, getClusterDeploymentLink, hostActions, bareMetalHosts],
   );
   return (
-    <HostsTable
-      hosts={hosts}
-      content={content}
-      actionResolver={actionResolver}
-      className={className}
-    >
-      <AgentTableEmptyState />
-    </HostsTable>
+    <>
+      <HostsTable
+        hosts={hosts}
+        content={content}
+        actionResolver={actionResolver}
+        className={className}
+      >
+        <HostsTableEmptyState setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
+      </HostsTable>
+      <DiscoveryTroubleshootingModal
+        isOpen={isDiscoveryHintModalOpen}
+        setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
+      />
+    </>
   );
 };
 
