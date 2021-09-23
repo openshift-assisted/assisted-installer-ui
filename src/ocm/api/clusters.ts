@@ -16,7 +16,7 @@ import {
 } from '../../common/api/types';
 import { client, BASE_PATH } from './axiosClient';
 
-export const getClusters = (): AxiosPromise<Cluster[]> => client.get('/v1/clusters');
+export const getClusters = (): AxiosPromise<Cluster[]> => client.get('/v2/clusters');
 export const getClustersDefaultConfiguration = (): AxiosPromise<ClusterDefaultConfig> =>
   client.get('/v2/clusters/default-config');
 
