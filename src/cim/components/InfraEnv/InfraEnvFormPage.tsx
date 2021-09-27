@@ -51,14 +51,14 @@ const validationSchema = (usedNames: string[]) =>
   Yup.lazy<EnvironmentStepFormValues>((values) =>
     Yup.object<EnvironmentStepFormValues>().shape({
       name: Yup.string()
-        .required()
+        .required('Name is a required field.')
         .test(
           'duplicate-name',
           'Infrastructure environment with the same name already exists!',
           (value: string) => !usedNames.find((n) => n === value),
         ),
-      location: Yup.string().required(),
-      pullSecret: Yup.string().required(),
+      location: Yup.string().required('Location is a required field.'),
+      pullSecret: Yup.string().required('Pull secret is a required field.'),
       sshPublicKey: sshPublicKeyValidationSchema.required(
         'An SSH key is required to debug hosts as they register.',
       ),
@@ -102,12 +102,17 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged }) => {
   return (
     <Stack hasGutter>
       <StackItem>
-        Infrastructure Environments are used by Clusters. Create an Infrastructure Environment in
-        order to add resources to your cluster.
+        Infrastructure environments are used by clusters. Create an infrastructure environment to
+        add resources to your cluster.
       </StackItem>
       <StackItem>
         <Form>
-          <InputField label="Name" name="name" isRequired />
+          <InputField
+            label="Name"
+            name="name"
+            placeholder="Enter infrastructure environment name"
+            isRequired
+          />
           <FormGroup
             fieldId="network-type"
             label="Network type"
@@ -142,8 +147,9 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged }) => {
           <InputField
             label="Location"
             name="location"
-            isRequired
+            placeholder="Enter geographic location for the environment"
             helperText="Used to describe hosts' physical location. Helps for quicker host selection during cluster creation."
+            isRequired
           />
           <LabelField label="Labels" name="labels" />
           <PullSecretField isOcm={false} />
