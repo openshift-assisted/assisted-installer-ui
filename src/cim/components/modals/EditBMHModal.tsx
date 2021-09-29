@@ -2,12 +2,16 @@ import * as React from 'react';
 import { Modal, ModalVariant } from '@patternfly/react-core';
 import { BMCFormProps } from '../Agent/types';
 import { BMCForm } from '../Agent';
-import { NMStateK8sResource, SecretK8sResource } from '../../types';
+import { NMStateK8sResource, SecretK8sResource, BareMetalHostK8sResource } from '../../types';
 import { LoadingState } from '../../../common';
 
 type EditBMHModalProps = Pick<BMCFormProps, 'onClose' | 'infraEnv' | 'bmh'> & {
   isOpen: boolean;
-  onEdit: BMCFormProps['onCreate'];
+  onEdit: (resources: {
+    bmh?: BareMetalHostK8sResource;
+    secret?: SecretK8sResource;
+    nmState?: NMStateK8sResource;
+  }) => BMCFormProps['onCreate'];
   fetchNMState: (namespace: string, name: string) => Promise<NMStateK8sResource>;
   fetchSecret: (namespace: string, bmhName: string) => Promise<SecretK8sResource>;
 };
@@ -23,7 +27,7 @@ const EditBMHModal: React.FC<EditBMHModalProps> = ({
 }) => {
   const [nmState, setNMState] = React.useState<NMStateK8sResource>();
   const [secret, setSecret] = React.useState<SecretK8sResource>();
-  const [isLoading, setLoading] = React.useState(false);
+  const [isLoading, setLoading] = React.useState(true);
   const hasDHCP = infraEnv.metadata?.labels?.networkType !== 'static';
 
   const bmhName = bmh?.metadata?.name;
@@ -34,7 +38,7 @@ const EditBMHModal: React.FC<EditBMHModalProps> = ({
     setNMState(undefined);
     setSecret(undefined);
     const getResources = async () => {
-      if (bmhName && bmhNamespace) {
+      if (bmhName && bmhNamespace && !hasDHCP) {
         try {
           const nmStateResult = await fetchNMState(bmhNamespace, bmhName);
           setNMState(nmStateResult);
@@ -58,7 +62,7 @@ const EditBMHModal: React.FC<EditBMHModalProps> = ({
       setLoading(true);
       getResources();
     }
-  }, [bmhName, bmhNamespace, fetchNMState, fetchSecret, bmhSecret]);
+  }, [bmhName, bmhNamespace, fetchNMState, fetchSecret, bmhSecret, hasDHCP]);
   return (
     <Modal
       aria-label="Edit BMH dialog"
@@ -74,7 +78,7 @@ const EditBMHModal: React.FC<EditBMHModalProps> = ({
       ) : (
         <BMCForm
           isEdit
-          onCreate={onEdit}
+          onCreate={onEdit({ bmh, secret, nmState })}
           onClose={onClose}
           hasDHCP={hasDHCP}
           infraEnv={infraEnv}
