@@ -5,6 +5,7 @@ import {
   InfraEnvList,
   InfraEnvUpdateParams,
 } from '../../common/api/types';
+
 import { client } from './axiosClient';
 
 export const registerInfraEnv = (params: InfraEnvCreateParams): AxiosPromise<InfraEnv> =>
@@ -22,3 +23,4 @@ export const patchInfraEnv = (
   infraEnvId: string,
   params: InfraEnvUpdateParams,
 ): AxiosPromise<InfraEnv> => client.patch(`/v2/infra-envs/${infraEnvId}`, params);
+
