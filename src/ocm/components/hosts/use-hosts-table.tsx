@@ -48,7 +48,6 @@ import { hostActionResolver } from '../../../common/components/hosts/tableUtils'
 import ResetHostModal from './ResetHostModal';
 import DeleteHostModal from './DeleteHostModal';
 import { onFetchEvents } from '../fetching/fetchEvents';
-import { ConnectedIcon } from '@patternfly/react-icons';
 import LocalStorageBackedCache from '../../adapters/LocalStorageBackedCache';
 
 export const useHostsTable = (cluster: Cluster) => {

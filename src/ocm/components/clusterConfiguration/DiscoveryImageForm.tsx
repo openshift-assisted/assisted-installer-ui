@@ -13,7 +13,7 @@ import {
 } from '@patternfly/react-core';
 import Axios, { CancelTokenSource } from 'axios';
 import { Formik, FormikHelpers } from 'formik';
-import { createClusterDownloadsImage, patchCluster } from '../../api';
+import { patchCluster } from '../../api';
 import { handleApiError, getErrorMessage } from '../../api';
 import {
   ImageCreateParams,
@@ -33,7 +33,7 @@ import { DiscoveryImageFormValues } from './types';
 import { usePullSecretFetch } from '../fetching/pullSecret';
 import DiscoveryImageTypeControlGroup from '../../../common/components/clusterConfiguration/DiscoveryImageTypeControlGroup';
 import LocalStorageBackedCache from '../../adapters/LocalStorageBackedCache';
-import { getInfraEnv, patchInfraEnv } from '../../api/InfraEnvService';
+import { patchInfraEnv } from '../../api/InfraEnvService';
 
 const validationSchema = Yup.lazy<DiscoveryImageFormValues>((values) =>
   Yup.object<DiscoveryImageFormValues>().shape({
