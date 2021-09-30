@@ -1,8 +1,6 @@
 import React from 'react';
 import { Cluster, InfraEnv } from '../../../common';
 import DownloadIso from '../../../common/components/clusterConfiguration/DownloadIso';
-import { getInfraEnv } from '../../api/InfraEnvService';
-import LocalStorageBackedCache from '../../adapters/LocalStorageBackedCache';
 
 type DiscoveryImageSummaryProps = {
   cluster: Cluster;
