@@ -7,16 +7,11 @@ import AgentStatus from './AgentStatus';
 import { ActionsResolver, TableRow } from '../../../common/components/hosts/AITable';
 import { ClusterDeploymentHostsTablePropsActions } from '../ClusterDeployment/types';
 import { hostActionResolver } from '../../../common/components/hosts/tableUtils';
-import {
-  getAIHosts,
-  getFailingResourceConditions,
-  REQUIRED_AGENT_CONDITION_TYPES,
-} from '../helpers';
+import { getAIHosts } from '../helpers';
 import { AGENT_BMH_HOSTNAME_LABEL_KEY, INFRAENV_AGENTINSTALL_LABEL_KEY } from '../common';
 import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
 import NetworkingStatus from '../status/NetworkingStatus';
-import { Validation } from '../../../common/types/hosts';
-import { HostValidationId } from '../../../common/api/types';
+import { getAgentStatus } from '../helpers/status';
 
 export const discoveryTypeColumn = (
   agents: AgentK8sResource[],
@@ -50,13 +45,13 @@ type StatusColumnProps = {
   onApprove?: ClusterDeploymentHostsTablePropsActions['onApprove'];
 };
 
-export const statusColumn = ({
+export const infraEnvStatusColumn = ({
   agents,
   onEditHostname,
   onApprove,
 }: StatusColumnProps): TableRow<Host> => {
   return {
-    header: { title: 'Status' },
+    header: { title: 'Status', transforms: [sortable] },
     cell: (host) => {
       const agent = agents.find((a) => a.metadata?.uid === host.id);
       let title: React.ReactNode = '--';
@@ -68,51 +63,7 @@ export const statusColumn = ({
       return {
         title,
         props: { 'data-testid': 'host-status' },
-      };
-    },
-  };
-};
-
-export const infraEnvStatusColumn = ({
-  agents,
-  onEditHostname,
-  onApprove,
-}: StatusColumnProps): TableRow<Host> => {
-  return {
-    header: { title: 'Status' },
-    cell: (host) => {
-      const agent = agents.find((a) => a.metadata?.uid === host.id);
-      let title: React.ReactNode = '--';
-      if (agent) {
-        const editHostname = onEditHostname ? () => onEditHostname(agent) : undefined;
-
-        const conditions = getFailingResourceConditions(agent, REQUIRED_AGENT_CONDITION_TYPES);
-        let validationsInfo;
-        if (conditions?.length) {
-          validationsInfo = {
-            infrastructure: conditions.map(
-              (c): Validation => ({
-                id: c.type as HostValidationId /* Hack: the ID is used for displaying only */,
-                status: 'failure',
-                message: c.message,
-              }),
-            ),
-          };
-        }
-
-        title = (
-          <AgentStatus
-            agent={agent}
-            onApprove={onApprove}
-            onEditHostname={editHostname}
-            validationsInfo={validationsInfo}
-          />
-        );
-      }
-
-      return {
-        title,
-        props: { 'data-testid': 'host-status' },
+        sortableValue: agent ? getAgentStatus(agent)[0] : '',
       };
     },
   };

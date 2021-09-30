@@ -1,6 +1,6 @@
 import { ObjectMetadata } from 'console-sdk-ai-lib';
-import { parseStringLabels } from '../../../common';
-import { ClusterDeploymentK8sResource } from '../../types';
+import { getHumanizedDateTime, parseStringLabels } from '../../../common';
+import { AgentClusterInstallK8sResource, ClusterDeploymentK8sResource } from '../../types';
 import {
   AgentSelectorChangeProps,
   ClusterDeploymentHostsSelectionValues,
@@ -22,7 +22,7 @@ export type ClusterDeploymentParams = {
 export const getAgentSelectorFieldsFromAnnotations = (
   annotations: ObjectMetadata['annotations'] = {},
 ): AgentSelectorChangeProps => {
-  const locations = annotations[AGENT_LOCATION_LABEL_KEY]?.split(',');
+  const locations = annotations[AGENT_LOCATION_LABEL_KEY]?.split(',') || [];
 
   const labels = Object.keys(annotations)
     .map((key) => {
@@ -116,3 +116,66 @@ export const getClusterDeploymentResource = ({
 export const getConsoleUrl = (clusterDeployment: ClusterDeploymentK8sResource) =>
   clusterDeployment.status?.webConsoleURL ||
   `https://console-openshift-console.apps.${clusterDeployment.spec?.clusterName}.${clusterDeployment.spec?.baseDomain}`;
+
+type ClusterPropertyKeys =
+  | 'name'
+  | 'openshiftVersion'
+  | 'baseDnsDomain'
+  | 'apiVip'
+  | 'ingressVip'
+  | 'clusterId'
+  | 'clusterNetworkCidr'
+  | 'clusterNetworkHostPrefix'
+  | 'serviceNetworkCidr'
+  | 'installedTimestamp';
+
+type ClusterPropertyItem = {
+  key: string;
+  value?: React.ReactNode;
+};
+
+export const getClusterProperties = (
+  clusterDeployment: ClusterDeploymentK8sResource,
+  agentClusterInstall: AgentClusterInstallK8sResource,
+): { [key in ClusterPropertyKeys]: ClusterPropertyItem } => ({
+  name: {
+    key: 'Name',
+    value: clusterDeployment.metadata?.name,
+  },
+  openshiftVersion: {
+    key: 'OpenShift version',
+    value: agentClusterInstall?.spec?.imageSetRef?.name,
+  },
+  clusterId: {
+    key: 'Cluster ID',
+    value: clusterDeployment.metadata?.uid,
+  },
+  baseDnsDomain: {
+    key: 'Base DNS domain',
+    value: clusterDeployment.spec?.baseDomain,
+  },
+  apiVip: {
+    key: 'API Virtual IP',
+    value: agentClusterInstall?.spec?.apiVIP,
+  },
+  ingressVip: {
+    key: 'Ingress Virtual IP',
+    value: agentClusterInstall?.spec?.ingressVIP,
+  },
+  clusterNetworkCidr: {
+    key: 'Cluster network CIDR',
+    value: agentClusterInstall.spec?.networking?.clusterNetwork?.[0].cidr,
+  },
+  clusterNetworkHostPrefix: {
+    key: 'Cluster network host prefix',
+    value: agentClusterInstall.spec?.networking?.clusterNetwork?.[0]?.hostPrefix,
+  },
+  serviceNetworkCidr: {
+    key: 'Service network CIDR',
+    value: agentClusterInstall.spec?.networking?.serviceNetwork?.[0],
+  },
+  installedTimestamp: {
+    key: 'Installed at',
+    value: getHumanizedDateTime(clusterDeployment.status?.installedTimestamp),
+  },
+});
