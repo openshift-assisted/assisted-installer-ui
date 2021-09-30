@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Host, HostStatus, stringToJSON } from '../../../common';
+import { HostStatusProps } from '../../../common/components/hosts/types';
 import { ValidationsInfo } from '../../../common/types/hosts';
 import {
   getFailingClusterWizardSoftValidationIds,
@@ -24,11 +25,16 @@ const NetworkingStatus: React.FC<HostNetworkingStatusComponentProps> = ({
     ? 'Some validations failed'
     : undefined;
 
+  let statusOverride: HostStatusProps['statusOverride'] = networkingStatus;
+  if (networkingStatus === 'pending-for-input' || networkingStatus === 'insufficient') {
+    statusOverride = 'Bound';
+  }
+
   return (
     <HostStatus
       host={host}
       onEditHostname={onEditHostname}
-      statusOverride={networkingStatus === 'pending-for-input' ? 'Bound' : networkingStatus}
+      statusOverride={statusOverride}
       validationsInfo={netValidationsInfo}
       sublabel={sublabel}
       AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}

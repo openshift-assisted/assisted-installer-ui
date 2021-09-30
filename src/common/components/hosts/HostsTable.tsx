@@ -1,4 +1,9 @@
+import { ConnectedIcon } from '@patternfly/react-icons';
 import * as React from 'react';
+import {
+  HostsNotShowingLink,
+  HostsNotShowingLinkProps,
+} from '../clusterConfiguration/DiscoveryTroubleshootingModal';
 import { Host } from '../../../common';
 import AITable, {
   ActionsResolver,
@@ -9,6 +14,29 @@ import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
 import { AdditionalNTPSourcesDialogToggle } from '../../../ocm/components/hosts/AdditionaNTPSourceDialogToggle';
 import { getHostId } from '../../../ocm/components/hosts/use-hosts-table';
 import { WithTestID } from '../../types';
+import EmptyState from '../ui/uiState/EmptyState';
+
+type HostsTableEmptyStateProps = {
+  setDiscoveryHintModalOpen?: HostsNotShowingLinkProps['setDiscoveryHintModalOpen'];
+};
+
+export const HostsTableEmptyState: React.FC<HostsTableEmptyStateProps> = ({
+  setDiscoveryHintModalOpen,
+}) => (
+  <EmptyState
+    icon={ConnectedIcon}
+    title="Waiting for hosts..."
+    content="Hosts may take a few minutes to appear here after booting."
+    secondaryActions={
+      setDiscoveryHintModalOpen && [
+        <HostsNotShowingLink
+          key="hosts-not-showing"
+          setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
+        />,
+      ]
+    }
+  />
+);
 
 export const DefaultExpandComponent: React.FC<ExpandComponentProps<Host>> = ({ obj }) => (
   <HostDetail

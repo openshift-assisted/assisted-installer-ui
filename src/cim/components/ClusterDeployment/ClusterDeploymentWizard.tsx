@@ -20,6 +20,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   clusterImages,
   usedClusterNames,
   onFinish,
+  aiConfigMap,
 }) => {
   const [currentStepId, setCurrentStepId] = React.useState<ClusterDeploymentWizardStepsType>(
     'cluster-details',
@@ -39,6 +40,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
             onClose={onClose}
             onSaveHostsSelection={onSaveHostsSelection}
             agents={agents}
+            aiConfigMap={aiConfigMap}
           />
         ) : (
           <LoadingState />
@@ -82,6 +84,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
     onClose,
     hostActions,
     onFinish,
+    aiConfigMap,
   ]);
 
   return (

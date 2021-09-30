@@ -1,5 +1,3 @@
-import './hacks';
-
 export * as Api from './api';
 export * as Store from './store';
 export * as Selectors from './selectors';
