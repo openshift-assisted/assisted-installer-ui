@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as yaml from 'js-yaml';
 import {
   Alert,
+  AlertActionCloseButton,
   AlertVariant,
   Button,
   ButtonVariant,
@@ -252,7 +253,7 @@ const BMCForm: React.FC<BMCFormProps> = ({
                   title="Failed to add host"
                   variant={AlertVariant.danger}
                   isInline
-                  actionClose={() => setError(undefined)}
+                  actionClose={<AlertActionCloseButton onClose={() => setError(undefined)} />}
                 >
                   {error}
                 </Alert>

@@ -10,6 +10,7 @@ export type ClusterErrorsProps = {
 export const ClusterErrors: React.FC<ClusterErrorsProps> = ({ agentClusterInstall }) => {
   const agentClusterInstallAlerts = getFailingResourceConditions(agentClusterInstall, [
     'Validated',
+    'SpecSynced',
   ]);
 
   return (

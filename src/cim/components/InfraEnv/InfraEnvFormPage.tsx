@@ -139,7 +139,12 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged }) => {
               </FlexItem>
             </Flex>
           </FormGroup>
-          <InputField label="Location" name="location" isRequired />
+          <InputField
+            label="Location"
+            name="location"
+            isRequired
+            helperText="Used to describe hosts' physical location. Helps for quicker host selection during cluster creation."
+          />
           <LabelField label="Labels" name="labels" />
           <PullSecretField isOcm={false} />
           <UploadSSH />
