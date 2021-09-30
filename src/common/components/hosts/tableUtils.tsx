@@ -108,7 +108,7 @@ export const statusColumn = (
           />
         ),
         props: { 'data-testid': 'host-status' },
-        sortableValue: status,
+        sortableValue: host.status,
       };
     },
   };

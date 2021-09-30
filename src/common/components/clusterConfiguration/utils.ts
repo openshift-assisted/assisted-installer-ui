@@ -52,7 +52,7 @@ export const getSubnetFromMachineNetworkCidr = (machineNetworkCidr?: string) => 
   }
 
   const subnet = getSubnet(machineNetworkCidr);
-  return getHumanizedSubnet(subnet);
+  return subnet?.address;
 };
 
 export const isAdvNetworkConf = (cluster: Cluster, defaultNetworkSettings: ClusterDefaultConfig) =>
