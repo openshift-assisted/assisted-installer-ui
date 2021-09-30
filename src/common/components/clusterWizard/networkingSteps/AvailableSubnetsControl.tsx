@@ -18,7 +18,8 @@ const SubnetHelperText = ({ matchingSubnet, hosts }: SubnetHelperTextProps) => {
         !matchingSubnet.hostIDs.includes(host.requestedHostname || ''),
     ) || [];
 
-  if (excludedHosts.length === 0) {
+  // Workaround for bug in CIM backend. hostIDs are empty
+  if (excludedHosts.length === 0 || !matchingSubnet.hostIDs.length) {
     return null;
   }
 

@@ -7,7 +7,7 @@ import {
   AgentK8sResource,
   ClusterDeploymentK8sResource,
 } from '../../types';
-import { getAICluster } from '../helpers';
+import { getAICluster, getIsSNOCluster } from '../helpers';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionalNTPSourcesDialogToggle';
 import { networkingStatusColumn, useAgentsTable } from '../Agent/tableUtils';
 import HostsTable from '../../../common/components/hosts/HostsTable';
@@ -45,8 +45,7 @@ const ClusterDeploymentHostsNetworkTable: React.FC<ClusterDeploymentHostsNetwork
     [cluster],
   );
 
-  const isSNOCluster = agentClusterInstall?.spec?.provisionRequirements?.controlPlaneAgents === 1;
-
+  const isSNOCluster = getIsSNOCluster(agentClusterInstall);
   const content = React.useMemo(
     () =>
       isSNOCluster

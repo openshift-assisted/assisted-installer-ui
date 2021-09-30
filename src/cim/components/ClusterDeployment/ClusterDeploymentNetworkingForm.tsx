@@ -68,7 +68,9 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
             <Alert
               variant="info"
               isInline
-              title={`${bindingAgents.length} hosts are binding. Please wait until they are available to continue configuring. It may take serveral seconds.`}
+              title={`${bindingAgents.length} ${
+                bindingAgents.length === 1 ? 'host is' : 'hosts are'
+              } binding. Please wait until they are available to continue configuring. It may take serveral seconds.`}
             />
           </GridItem>
         )}

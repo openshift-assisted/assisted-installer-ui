@@ -4,7 +4,7 @@ on:
   pull_request:
     branches:
       - master
-      - wizard
+      - v2-api-migration
 
 jobs:
   build:

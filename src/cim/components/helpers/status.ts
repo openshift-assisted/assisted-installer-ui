@@ -10,6 +10,9 @@ import {
   AgentStatusConditionType,
 } from '../../types/k8s/agent';
 import { StatusCondition } from '../../types';
+import { getFailingResourceConditions, REQUIRED_AGENT_CONDITION_TYPES } from './conditions';
+import { Validation, ValidationsInfo } from '../../../common/types/hosts';
+import { HostValidationId } from '../../../common/api/types';
 
 const conditionsByTypeReducer = <K>(
   result: { K?: StatusCondition<string> },
@@ -101,7 +104,32 @@ export const getAgentStatusFromConditions = (agent: AgentK8sResource): [Host['st
   return ['insufficient', 'Unexpected Agent conditions.'];
 };
 
-export const getAgentStatus = (agent: AgentK8sResource): [Host['status'], Host['statusInfo']] => [
-  agent.status?.debugInfo?.state || 'insufficient',
-  agent.status?.debugInfo?.stateInfo || '',
-];
+export type AgentStatus = Host['status'] | 'Discovered';
+
+export const getAgentStatus = (
+  agent: AgentK8sResource,
+  excludeDiscovered = false,
+): [AgentStatus, Host['statusInfo'], ValidationsInfo] => {
+  let state: AgentStatus = agent.status?.debugInfo?.state || 'insufficient';
+
+  const conditions = getFailingResourceConditions(agent, REQUIRED_AGENT_CONDITION_TYPES);
+  let validationsInfo = agent.status?.hostValidationInfo || {};
+  if (conditions?.length) {
+    validationsInfo = {
+      infrastructure: conditions.map(
+        (c): Validation => ({
+          id: c.type as HostValidationId /* Hack: the ID is used for displaying only */,
+          status: 'failure',
+          message: c.message,
+        }),
+      ),
+    };
+  }
+  if (!excludeDiscovered && !agent.spec.approved) {
+    // TODO(mlibra): Add icon
+    state = 'Discovered';
+  } else if (state !== 'binding' && validationsInfo?.infrastructure) {
+    state = 'insufficient';
+  }
+  return [state, agent.status?.debugInfo?.stateInfo || '', validationsInfo];
+};

@@ -111,7 +111,11 @@ export const vipRangeValidationSchema = (
       return this.createError({ message: err.message });
     }
     const foundHostSubnet = hostSubnets.find((hn) => hn.subnet === hostSubnet);
-    return !!foundHostSubnet?.subnet && isInSubnet(value, foundHostSubnet.subnet);
+    if (foundHostSubnet?.subnet) {
+      // Workaround for bug in CIM backend. hostIDs are empty
+      return foundHostSubnet.hostIDs.length ? isInSubnet(value, foundHostSubnet.subnet) : true;
+    }
+    return false;
   });
 
 const vipUniqueValidationSchema = ({ ingressVip, apiVip }: NetworkConfigurationValues) =>
