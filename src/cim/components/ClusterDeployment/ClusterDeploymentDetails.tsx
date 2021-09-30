@@ -27,7 +27,7 @@ import { EventsModalButton } from '../../../common/components/ui/eventsModal';
 import { EventListFetchProps } from '../../../common/types/events';
 import AgentTable from '../Agent/AgentTable';
 import { FetchSecret } from './types';
-import { getConsoleUrl } from '../helpers/clusterDeployment';
+import { getClusterProperties, getConsoleUrl } from '../helpers/clusterDeployment';
 import ClusterDeploymentKubeconfigDownload from './ClusterDeploymentKubeconfigDownload';
 
 type ClusterDeploymentDetailsProps = {
@@ -75,6 +75,12 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
   };
 
   const cluster = getAICluster({ clusterDeployment, agentClusterInstall, agents: clusterAgents });
+
+  const clusterProperties = React.useMemo(
+    () => getClusterProperties(clusterDeployment, agentClusterInstall),
+    [clusterDeployment, agentClusterInstall],
+  );
+
   return (
     <Stack hasGutter>
       {shouldShowClusterInstallationProgress(agentClusterInstall) && (
@@ -166,18 +172,20 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
           <CardExpandableContent>
             <CardBody>
               <ClusterPropertiesList
-                name={clusterDeployment.metadata?.name}
-                id={clusterDeployment.metadata?.uid}
-                openshiftVersion={agentClusterInstall?.spec?.imageSetRef?.name}
-                baseDnsDomain={clusterDeployment.spec?.baseDomain}
-                apiVip={agentClusterInstall?.spec?.apiVIP}
-                ingressVip={agentClusterInstall?.spec?.ingressVIP}
-                clusterNetworkCidr={agentClusterInstall.spec?.networking?.clusterNetwork?.[0].cidr}
-                clusterNetworkHostPrefix={
-                  agentClusterInstall.spec?.networking?.clusterNetwork?.[0]?.hostPrefix
-                }
-                serviceNetworkCidr={agentClusterInstall.spec?.networking?.serviceNetwork?.[0]}
-                installedTimestamp={clusterDeployment.status?.installedTimestamp}
+                leftItems={[
+                  clusterProperties.name,
+                  clusterProperties.openshiftVersion,
+                  clusterProperties.clusterId,
+                  clusterProperties.installedTimestamp,
+                  clusterProperties.baseDnsDomain,
+                ]}
+                rightItems={[
+                  clusterProperties.apiVip,
+                  clusterProperties.ingressVip,
+                  clusterProperties.clusterNetworkCidr,
+                  clusterProperties.clusterNetworkHostPrefix,
+                  clusterProperties.serviceNetworkCidr,
+                ]}
               />
             </CardBody>
           </CardExpandableContent>

@@ -18,7 +18,7 @@ import {
   ClusterDeploymentHostsSelectionValues,
 } from './types';
 import { hostCountValidationSchema } from './validationSchemas';
-import { getAgentSelectorFieldsFromAnnotations } from '../helpers';
+import { getAgentSelectorFieldsFromAnnotations, getIsSNOCluster } from '../helpers';
 
 const getInitialValues = ({
   agents,
@@ -29,7 +29,7 @@ const getInitialValues = ({
   clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall: AgentClusterInstallK8sResource;
 }): ClusterDeploymentHostsSelectionValues => {
-  const isSNOCluster = agentClusterInstall?.spec?.provisionRequirements?.controlPlaneAgents === 1;
+  const isSNOCluster = getIsSNOCluster(agentClusterInstall);
   const cdName = clusterDeployment?.metadata?.name;
   const cdNamespace = clusterDeployment?.metadata?.namespace;
 
@@ -69,18 +69,20 @@ const getInitialValues = ({
 };
 
 const getValidationSchema = (agentClusterInstall: AgentClusterInstallK8sResource) => {
-  const isSNOCluster = agentClusterInstall?.spec?.provisionRequirements?.controlPlaneAgents === 1;
+  const isSNOCluster = getIsSNOCluster(agentClusterInstall);
 
   return Yup.lazy<ClusterDeploymentHostsSelectionValues>((values) => {
     return Yup.object<ClusterDeploymentHostsSelectionValues>().shape({
       hostCount: isSNOCluster ? Yup.number() : hostCountValidationSchema,
       useMastersAsWorkers: Yup.boolean().required(),
       autoSelectedHostIds: values.autoSelectHosts
-        ? Yup.array<string>().min(values.hostCount)
+        ? Yup.array<string>().min(values.hostCount).max(values.hostCount)
         : Yup.array<string>(),
       selectedHostIds: values.autoSelectHosts
         ? Yup.array<string>()
-        : Yup.array<string>().min(isSNOCluster ? 1 : values.selectedHostIds.length === 4 ? 5 : 3),
+        : isSNOCluster
+        ? Yup.array<string>().min(1).max(1)
+        : Yup.array<string>().min(values.selectedHostIds.length === 4 ? 5 : 3),
     });
   });
 };
@@ -114,6 +116,7 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
   agents,
   onClose,
   onSaveHostsSelection,
+  aiConfigMap,
 }) => {
   const { addAlert } = useAlerts();
   const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
@@ -132,7 +135,7 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
     } catch (error) {
       addAlert({
         title: 'Failed to save host selection.',
-        message: error,
+        message: error as string,
       });
     }
   };
@@ -175,6 +178,7 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
                   agentClusterInstall={agentClusterInstall}
                   agents={agents}
                   clusterDeployment={clusterDeployment}
+                  aiConfigMap={aiConfigMap}
                 />
               </GridItem>
             </Grid>
