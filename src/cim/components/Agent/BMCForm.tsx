@@ -22,7 +22,7 @@ import { InfraEnvK8sResource, SecretK8sResource } from '../../types';
 import {
   hostnameValidationSchema,
   InputField,
-  ipOrDomainValidationSchema,
+  bmcAddressValidationSchema,
   macAddressValidationSchema,
   CodeField,
   getFieldId,
@@ -118,20 +118,23 @@ const getNMState = (values: AddBmcValues, infraEnv: InfraEnvK8sResource): NMStat
   return nmState;
 };
 
-const validationSchema = Yup.object({
-  hostname: hostnameValidationSchema.required(),
-  bmcAddress: ipOrDomainValidationSchema.required(),
-  username: Yup.string().required(),
-  password: Yup.string().required(),
-  bootMACAddress: macAddressValidationSchema.required(),
-  nmState: Yup.string().required(),
-  macMapping: Yup.array().of(
-    Yup.object().shape({
-      macAddress: macAddressValidationSchema.required('MAC Address is a required field'),
-      name: Yup.string().required('NIC is a required field'),
-    }),
-  ),
-});
+const getValidationSchema = (hasDHCP: boolean) =>
+  Yup.object({
+    hostname: hostnameValidationSchema.required(),
+    bmcAddress: bmcAddressValidationSchema.required(),
+    username: Yup.string().required(),
+    password: Yup.string().required(),
+    bootMACAddress: macAddressValidationSchema.required(),
+    nmState: hasDHCP ? Yup.string() : Yup.string().required(),
+    macMapping: hasDHCP
+      ? Yup.array()
+      : Yup.array().of(
+          Yup.object().shape({
+            macAddress: macAddressValidationSchema.required('MAC Address is a required field'),
+            name: Yup.string().required('NIC is a required field'),
+          }),
+        ),
+  });
 
 const emptyValues: AddBmcValues = {
   hostname: '',
@@ -158,9 +161,9 @@ const getInitValues = (
       username: secret?.data?.username ? atob(secret.data.username) : '',
       password: secret?.data?.password ? atob(secret.data.password) : '',
       bootMACAddress: bmh?.spec?.bootMACAddress || '',
-      disableCertificateVerification: bmh?.spec?.bmc?.disableCertificateVerification || false,
-      online: bmh?.spec?.online || false,
-      nmState: yaml.dump(nmState?.spec?.config),
+      disableCertificateVerification: !!bmh?.spec?.bmc?.disableCertificateVerification,
+      online: !!bmh?.spec?.online,
+      nmState: nmState ? yaml.dump(nmState?.spec?.config) : '',
       macMapping: nmState?.spec?.interfaces || [{ macAddress: '', name: '' }],
     };
   } else {
@@ -190,6 +193,8 @@ const BMCForm: React.FC<BMCFormProps> = ({
       setError(e.message);
     }
   };
+
+  const validationSchema = React.useMemo(() => getValidationSchema(hasDHCP), [hasDHCP]);
   return (
     <Formik
       initialValues={getInitValues(bmh, nmState, secret, isEdit)}
