@@ -89,15 +89,13 @@ const HostProgress: React.FC<HostProgressProps> = ({ hosts, hostRole }) => {
   const filteredHosts = hosts.filter((host) => host.role && hostRole === host.role);
   const icon = getHostStatusIcon(filteredHosts);
   const failedHostsCount = filteredHosts.filter((host) => host.status === 'error').length;
-  const hostCountText = (hostType: 'worker' | 'master') =>
+  const hostCountText = (hostType: 'worker' | 'control plane node') =>
     failedHostsCount === 0
       ? `${filteredHosts.length} ${pluralize(filteredHosts.length, hostType)}`
-      : `${failedHostsCount}/${filteredHosts.length} ${pluralize(failedHostsCount, hostType)}`;
+      : `${failedHostsCount}/${filteredHosts.length} ${pluralize(filteredHosts.length, hostType)}`;
 
   const text =
-    hostRole === 'master'
-      ? `Control Plane (${hostCountText('master')})`
-      : `${hostCountText('worker')}`;
+    hostRole === 'master' ? `${hostCountText('control plane node')}` : `${hostCountText('worker')}`;
 
   return (
     <Flex className="pf-u-mr-3xl">
