@@ -27,7 +27,7 @@ const InputField: React.FC<
   ) => {
     const [field, { touched, error }] = useField({ name: props.name, validate });
     const fieldId = getFieldId(props.name, 'input', idPostfix);
-    const isValid = !(touched && error) || !inputError;
+    const isValid = inputError ? false : !(touched && error);
     const errorMessage = (!isValid ? error : '') || inputError;
     return (
       <FormGroup

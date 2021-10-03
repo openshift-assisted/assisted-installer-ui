@@ -23,6 +23,7 @@ import {
   BanIcon,
   PendingIcon,
   AddCircleOIcon,
+  UnknownIcon,
 } from '@patternfly/react-icons';
 import { PopoverProps } from '@patternfly/react-core/dist/js/components/Popover/Popover';
 import hdate from 'human-date';
@@ -48,16 +49,19 @@ const getStatusIcon = (status: Host['status'] | 'Discovered' | 'Bound') => {
   let icon = null;
   switch (status) {
     case 'discovering':
+    case 'discovering-unbound':
       icon = <ConnectedIcon />;
       break;
     case 'pending-for-input':
       icon = <PendingIcon />;
       break;
     case 'disconnected':
+    case 'disconnected-unbound':
       icon = <DisconnectedIcon />;
       break;
     case 'cancelled':
     case 'disabled':
+    case 'disabled-unbound':
       icon = <BanIcon />;
       break;
     case 'error':
@@ -65,10 +69,12 @@ const getStatusIcon = (status: Host['status'] | 'Discovered' | 'Bound') => {
       break;
     case 'resetting-pending-user-action':
     case 'insufficient':
+    case 'insufficient-unbound':
     case 'installing-pending-user-action':
       icon = <ExclamationTriangleIcon color={warningColor.value} />;
       break;
     case 'known':
+    case 'known-unbound':
     case 'installed':
       icon = <CheckCircleIcon color={okColor.value} />;
       break;
@@ -82,6 +88,8 @@ const getStatusIcon = (status: Host['status'] | 'Discovered' | 'Bound') => {
     case 'added-to-existing-cluster':
       icon = <AddCircleOIcon />;
       break;
+    default:
+      icon = <UnknownIcon />;
   }
 
   return icon;
