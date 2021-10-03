@@ -38,5 +38,6 @@ export type AgentK8sResource = K8sResourceCommon & {
       stateInfo: Host['statusInfo'];
     };
     role?: Host['role'];
+    bootstrap?: Host['bootstrap'];
   };
 };
