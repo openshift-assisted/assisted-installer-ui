@@ -15,7 +15,7 @@ export const getHumanizedTime = (dateTime?: string) => {
 };
 
 export const isSNOSupportedVersion = (version: OpenshiftVersionOptionType) => {
-  const parsed = parseFloat(version.value);
+  const parsed = parseFloat(version.version || version.value);
   if (isNaN(parsed)) {
     // openshift-v4.8.0
     return parseFloat(version.value?.split('-v')?.[1]) >= SNO_SUPPORT_MIN_VERSION;
