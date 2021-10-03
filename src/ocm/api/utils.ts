@@ -29,5 +29,5 @@ export const handleApiError = <T>(error: AxiosError<T>, onError?: OnError) => {
   }
 };
 
-export const getErrorMessage = (error: AxiosError) =>
+export const getErrorMessage = (error: AxiosError<Partial<{ reason: string; message: string }>>) =>
   error.response?.data?.reason || error.response?.data?.message || error.message;
