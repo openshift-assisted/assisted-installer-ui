@@ -38,7 +38,7 @@ const ClusterSshKeyFields: React.FC<ClusterSshKeyFieldsProps> = ({
   };
 
   React.useEffect(() => {
-    if (imageSshKey && clusterSshKey === imageSshKey) {
+    if (imageSshKey && (clusterSshKey === imageSshKey || !clusterSshKey)) {
       setShareSshKey(true);
     }
   }, [imageSshKey, clusterSshKey]);

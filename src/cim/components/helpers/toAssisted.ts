@@ -7,6 +7,7 @@ import { getAgentStatus, getClusterStatus } from './status';
 import { getHostNetworks } from './network';
 import { BareMetalHostK8sResource, InfraEnvK8sResource } from '../../types';
 import { AGENT_BMH_HOSTNAME_LABEL_KEY, INFRAENV_AGENTINSTALL_LABEL_KEY } from '../common';
+import { getAgentRole } from './agents';
 
 export const getAIHosts = (
   agents: AgentK8sResource[],
@@ -41,7 +42,7 @@ export const getAIHosts = (
         href: '',
         status: status as Host['status'],
         statusInfo,
-        role: agent.spec.role || agent.status?.role,
+        role: getAgentRole(agent),
         requestedHostname: agent.spec.hostname || inventory.hostname,
         // validationsInfo: JSON.stringify(agent.status.hostValidationInfo),
         createdAt: agent.metadata?.creationTimestamp,

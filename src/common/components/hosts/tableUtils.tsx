@@ -1,4 +1,4 @@
-import { expandable, sortable } from '@patternfly/react-table';
+import { breakWord, expandable, sortable } from '@patternfly/react-table';
 import * as React from 'react';
 import { Address4, Address6 } from 'ip-address';
 import HardwareStatus from '../../../ocm/components/hosts/HardwareStatus';
@@ -47,7 +47,12 @@ export const hostnameColumn = (
   hosts?: Host[],
 ): TableRow<Host> => {
   return {
-    header: { title: 'Hostname', transforms: [sortable], cellFormatters: [expandable] },
+    header: {
+      title: 'Hostname',
+      transforms: [sortable],
+      cellFormatters: [expandable],
+      cellTransforms: [breakWord],
+    },
     cell: (host) => {
       const { inventory: inventoryString = '' } = host;
       const inventory = stringToJSON<Inventory>(inventoryString) || {};
