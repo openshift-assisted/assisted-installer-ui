@@ -19,3 +19,5 @@ export const getAgentsForSelection = (agents: AgentK8sResource[]) =>
     const [status] = getAgentStatus(agent);
     return AGENT_FOR_SELECTION_STATUSES.includes(status);
   });
+
+export const getAgentRole = (agent: AgentK8sResource) => agent.spec.role || agent.status?.role;

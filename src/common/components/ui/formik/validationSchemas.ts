@@ -18,6 +18,10 @@ const IP_V4_ZERO = '0.0.0.0';
 const IP_V6_ZERO = '0000:0000:0000:0000:0000:0000:0000:0000';
 const MAC_REGEX = /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})|([0-9a-fA-F]{4}\\.[0-9a-fA-F]{4}\\.[0-9a-fA-F]{4})$”/;
 
+const BMC_ADDRESS_REGEX = new RegExp(
+  /^((ipmi|idrac|idrac\+http|idrac-virtualmedia|irmc|redfish|redfish\+http|redfish-virtualmedia|ilo5-virtualmedia|https?|ftp):(\/\/([a-z0-9\-._~%!$&'()*+,;=]+@)?([a-z0-9\-._~%]+|\[[a-f0-9:.]+\]|\[v[a-f0-9][a-z0-9\-._~%!$&'()*+,;=:]+\])(:[0-9]+)?(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?|(\/?[a-z0-9\-._~%!$&'()*+,;=:@]+(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?)?)|([a-z0-9\-._~%!$&'()*+,;=@]+(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?|(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)+\/?))(\?[a-z0-9\-._~%!$&'()*+,;=:@/?]*)?(#[a-z0-9\-._~%!$&'()*+,;=:@/?]*)?$/i,
+);
+
 export const nameValidationSchema = (usedClusterNames: string[], baseDnsDomain = '') =>
   Yup.string()
     .matches(CLUSTER_NAME_REGEX, {
@@ -366,8 +370,15 @@ export const ntpSourceValidationSchema = Yup.string().test(
   },
 );
 
-export const ipOrDomainValidationSchema = Yup.string().test(
+const isBMCAddress = (value: string) => {
+  if (!value) {
+    return true;
+  }
+  return !!value.match(BMC_ADDRESS_REGEX);
+};
+
+export const bmcAddressValidationSchema = Yup.string().test(
   'host-address-validation',
-  'Provide either IP address or a valid DNS name.',
-  isIPorDN,
+  'Provided value is not valid BMC address',
+  isBMCAddress,
 );

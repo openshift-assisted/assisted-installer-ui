@@ -68,8 +68,9 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
         ref={nameInputRef}
         label="Cluster name"
         name="name"
-        isRequired
+        placeholder={isOcm ? '' : 'Enter cluster name'}
         isDisabled={isNameDisabled}
+        isRequired
       />
       {extensionAfter?.['name'] && extensionAfter['name']}
       {!!managedDomains.length && toggleRedHatDnsService && (
