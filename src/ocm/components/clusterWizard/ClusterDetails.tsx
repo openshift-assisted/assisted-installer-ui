@@ -12,7 +12,7 @@ import {
 } from '../../../common';
 import { usePullSecretFetch } from '../fetching/pullSecret';
 import { getClusters, patchCluster, postCluster } from '../../api/clusters';
-import { registerInfraEnv } from '../../api/InfraEnvService';
+import { registerInfraEnv } from '../../api/services/InfraEnvService';
 import { getErrorMessage, handleApiError } from '../../api/utils';
 import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
 import { useDispatch } from 'react-redux';
@@ -23,7 +23,7 @@ import { useOpenshiftVersions } from '../fetching/openshiftVersions';
 import ClusterDetailsForm from './ClusterDetailsForm';
 import ClusterWizardNavigation from './ClusterWizardNavigation';
 import { routeBasePath } from '../../config/routeBaseBath';
-import LocalStorageBackedCache from '../../adapters/LocalStorageBackedCache';
+import InfraEnvIdsCache from '../../api/services/InfraEnvIdsCache';
 
 type ClusterDetailsProps = {
   cluster?: Cluster;
@@ -125,7 +125,7 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster }) => {
         throw new Error('API returned no ID for the underlying InfraEnv');
       }
 
-      LocalStorageBackedCache.setItem(cluster.id, infraEnv.id);
+      InfraEnvIdsCache.setItem(cluster.id, infraEnv.id);
 
       const locationState: ClusterWizardFlowStateType = 'new';
       // TODO(mlibra): figure out subscription ID and navigate to ${routeBasePath}/../details/s/${subscriptionId} instead
