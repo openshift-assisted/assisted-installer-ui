@@ -15,7 +15,7 @@ const read = (): Record<string, string> => {
   }
 };
 
-const LocalStorageBackedCache: Storage = {
+const InfraEnvIdsCache: Storage = {
   key(index: number): string | null {
     return localStorage.key(index);
   },
@@ -58,4 +58,4 @@ const LocalStorageBackedCache: Storage = {
   },
 };
 
-export default LocalStorageBackedCache;
+export default InfraEnvIdsCache;
