@@ -33,7 +33,7 @@ export const patchCluster = (id: string, params: ClusterUpdateParams): AxiosProm
   client.patch(`/v2/clusters/${id}`, params);
 
 export const deleteCluster = (id: string): AxiosPromise<void> =>
-  client.delete(`/v1/clusters/${id}`);
+  client.delete(`/v2/clusters/${id}`);
 
 export const getClusterHosts = (id: string): AxiosPromise<Host[]> =>
   client.get(`/v1/clusters/${id}/hosts`);
