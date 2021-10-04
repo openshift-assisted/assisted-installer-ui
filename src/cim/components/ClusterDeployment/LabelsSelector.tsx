@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import { MultiSelectField } from '../../../common';
 import { AgentK8sResource } from '../../types';
 import { MultiSelectOption } from '../../../common/components/ui/formik/types';
-import { AGENT_LOCATION_LABEL_KEY } from '../common';
+import { AGENT_LOCATION_LABEL_KEY, INFRAENV_AGENTINSTALL_LABEL_KEY } from '../common';
 
 const LabelsSelector: React.FC<{ agents: AgentK8sResource[] }> = ({ agents }) => {
   const agentLabelOptions = Array.from(
@@ -11,7 +11,7 @@ const LabelsSelector: React.FC<{ agents: AgentK8sResource[] }> = ({ agents }) =>
       _.flatten(
         agents.map((agent) =>
           Object.keys(agent.metadata?.labels || {})
-            .filter((k) => k !== AGENT_LOCATION_LABEL_KEY)
+            .filter((k) => ![INFRAENV_AGENTINSTALL_LABEL_KEY, AGENT_LOCATION_LABEL_KEY].includes(k))
             .map((k) => `${k}=${agent.metadata?.labels?.[k]}`),
         ),
       ),
