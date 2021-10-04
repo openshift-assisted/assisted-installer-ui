@@ -9,3 +9,5 @@ export const deregisterInfraEnv = (infraEnvId: string): AxiosPromise<void> =>
   client.delete(`/v2/infra-envs/${infraEnvId}`);
 
 export const listInfraEnvs = (): AxiosPromise<InfraEnvList> => client.get('/v2/infra-envs/');
+
+// export const deleteInfraEnv = (clusterId: Cluster['id']) => {};
