@@ -27,6 +27,7 @@ import { deleteCluster as ApiDeleteCluster } from '../../api/clusters';
 import { handleApiError, getErrorMessage } from '../../api/utils';
 import ClusterBreadcrumbs from './ClusterBreadcrumbs';
 import { routeBasePath } from '../../config';
+import HostsService from '../../api/services/HostsService';
 
 type ClustersProps = RouteComponentProps;
 
@@ -44,7 +45,14 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
   const deleteClusterAsync = React.useCallback(
     async (clusterId) => {
       try {
+        // 0. get the f**ing infra-env-id
+        const infraEnvId = 'ed8b0040-8c3f-4d7d-80c3-828be23e6f0a';
+        // 1. remove all hosts: needs we need infra-env-id
+        await HostsService.deleteAllHosts(infraEnvId);
+        // 2. call await ApiDeleteCluster(clusterId);
         await ApiDeleteCluster(clusterId);
+        // remove infraEnv: needs infra-env-id
+        // await InfraEnvService.deleteInfraEnv(clusterId)
         dispatch(deleteCluster(clusterId));
       } catch (e) {
         return handleApiError(e, () =>
