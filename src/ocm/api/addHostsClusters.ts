@@ -11,13 +11,13 @@ export const installHosts = (clusterId: Cluster['id']): AxiosPromise<Cluster> =>
 export const installHost = (clusterId: Cluster['id'], hostId: Host['id']): AxiosPromise<Host> =>
   client.post(`/v1/clusters/${clusterId}/hosts/${hostId}/actions/install`);
 
-export const patchInfraHost = (
+export const updateHost = (
   infraEnvId: string,
   hostId: string,
   params: HostUpdateParams,
 ): AxiosPromise<Host> => client.patch(`/v2/infra-envs/${infraEnvId}/hosts/${hostId}`, params);
 
-export const deleteHost = (infraEnvId: string, hostId: string): AxiosPromise<void> =>
+export const deregisterHost = (infraEnvId: string, hostId: string): AxiosPromise<void> =>
   client.delete(`/v2/infra-envs/${infraEnvId}/hosts/${hostId}`);
 
 export const bindHost = (infraEnvId: string, hostId: string): AxiosPromise<Host> =>

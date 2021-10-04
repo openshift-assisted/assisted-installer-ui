@@ -104,8 +104,6 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
         const { data: updatedCluster } = await patchCluster(cluster.id, proxyParams);
         const { data: infraEnv } = await patchInfraEnv(infraEnvId, infraParams);
 
-        console.log(infraEnv);
-
         onSuccess(infraEnv.downloadUrl);
         dispatch(updateCluster(updatedCluster));
       } catch (error) {

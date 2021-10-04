@@ -19,12 +19,12 @@ import {
   AdditionalNTPSourcesFormProps,
 } from '../../../common/components/hosts/AdditionalNTPSourcesDialog';
 import {
-  deleteHost as ApiDeleteHost,
+  deregisterHost,
   getErrorMessage,
   handleApiError,
   installHost,
   patchCluster,
-  patchInfraHost,
+  updateHost as ApiUpdateHost,
   resetClusterHost,
   bindHost,
   unbindHost,
@@ -206,7 +206,7 @@ export const useHostsTable = (cluster: Cluster) => {
     const deleteHost = async (hostId: string | undefined) => {
       if (hostId) {
         try {
-          await ApiDeleteHost(infraEnvId, hostId);
+          await deregisterHost(infraEnvId, hostId);
           dispatch(forceReload());
         } catch (e) {
           return handleApiError(e, () =>
@@ -228,7 +228,7 @@ export const useHostsTable = (cluster: Cluster) => {
         hostRole: role as HostRoleUpdateParams,
       };
       try {
-        const { data } = await patchInfraHost(infraEnvId, host.id, params);
+        const { data } = await ApiUpdateHost(infraEnvId, host.id, params);
         dispatch(updateHost(data));
       } catch (e) {
         handleApiError(e, () =>
@@ -336,7 +336,7 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
         onClose={editHostDialog.close}
         isOpen={editHostDialog.isOpen}
         onSave={async (params: HostUpdateParams) => {
-          const { data } = await patchInfraHost(infraEnvId, editHostDialog.data.host.id, params);
+          const { data } = await ApiUpdateHost(infraEnvId, editHostDialog.data.host.id, params);
           dispatch(updateHost(data));
           editHostDialog.close();
         }}
