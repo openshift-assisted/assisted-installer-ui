@@ -12,7 +12,6 @@ import {
 } from '../../../common';
 import { usePullSecretFetch } from '../fetching/pullSecret';
 import { getClusters, patchCluster, postCluster } from '../../api/clusters';
-import { registerInfraEnv } from '../../api/InfraEnvService';
 import { getErrorMessage, handleApiError } from '../../api/utils';
 import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
 import { useDispatch } from 'react-redux';
