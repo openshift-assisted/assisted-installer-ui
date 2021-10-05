@@ -23,11 +23,12 @@ import {
 } from '../../../common';
 import ClustersTable from './ClustersTable';
 import { fetchClustersAsync, deleteCluster } from '../../reducers/clusters/clustersSlice';
-import { deleteCluster as ApiDeleteCluster } from '../../api/clusters';
 import { handleApiError, getErrorMessage } from '../../api/utils';
 import ClusterBreadcrumbs from './ClusterBreadcrumbs';
 import { routeBasePath } from '../../config';
-import HostService from '../../api/services/HostService';
+import HostService from '../../services/HostService';
+import ClusterService from '../../services/ClusterService';
+import InfraEnvService from '../../services/InfraEnvService';
 
 type ClustersProps = RouteComponentProps;
 
@@ -45,12 +46,9 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
   const deleteClusterAsync = React.useCallback(
     async (clusterId) => {
       try {
-        // 1. remove all hosts: needs we need infra-env-id
-        await HostService.deleteAllHosts(clusterId);
-        // 2. call await ApiDeleteCluster(clusterId);
-        await ApiDeleteCluster(clusterId);
-        // 3. remove infraEnv: needs infra-env-id
-        // await InfraEnvService.deleteInfraEnv(clusterId)
+        await HostService.deleteAll(clusterId);
+        await ClusterService.deregister(clusterId);
+        await InfraEnvService.delete(clusterId);
         dispatch(deleteCluster(clusterId));
       } catch (e) {
         return handleApiError(e, () =>
