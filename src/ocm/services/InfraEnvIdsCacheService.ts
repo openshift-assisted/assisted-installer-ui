@@ -1,4 +1,4 @@
-const CACHE_KEY = 'ai-lib-cache';
+const CACHE_KEY = 'infra-env-ids-cache';
 
 const update = (cache: Record<string, string>): void => {
   localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
@@ -15,13 +15,15 @@ const read = (): Record<string, string> => {
   }
 };
 
-const LocalStorageBackedCache: Storage = {
+const InfraEnvIdsCacheService: Storage = {
   key(index: number): string | null {
-    return localStorage.key(index);
+    const cache = read();
+    return Object.keys(cache)[index];
   },
 
   get length(): number {
-    return localStorage.length;
+    const cache = read();
+    return Object.keys(cache).length;
   },
 
   clear(): void {
@@ -58,4 +60,4 @@ const LocalStorageBackedCache: Storage = {
   },
 };
 
-export default LocalStorageBackedCache;
+export default InfraEnvIdsCacheService;
