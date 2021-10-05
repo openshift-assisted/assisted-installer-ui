@@ -18,17 +18,13 @@ import {
   ClusterDeploymentK8sResource,
 } from '../../types';
 import ClusterDeploymentCredentials from './ClusterDeploymentCredentials';
-import {
-  formatEventsData,
-  shouldShowClusterCredentials,
-  shouldShowClusterInstallationProgress,
-} from './helpers';
+import { shouldShowClusterCredentials, shouldShowClusterInstallationProgress } from './helpers';
 import { EventsModalButton } from '../../../common/components/ui/eventsModal';
-import { EventListFetchProps } from '../../../common/types/events';
 import AgentTable from '../Agent/AgentTable';
 import { FetchSecret } from './types';
 import { getClusterProperties, getConsoleUrl } from '../helpers/clusterDeployment';
 import ClusterDeploymentKubeconfigDownload from './ClusterDeploymentKubeconfigDownload';
+import { EventListFetchProps } from '../../../common';
 
 type ClusterDeploymentDetailsProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
@@ -36,6 +32,7 @@ type ClusterDeploymentDetailsProps = {
   agents: AgentK8sResource[];
   fetchSecret: FetchSecret;
   agentTableClassName?: string;
+  onFetchEvents: EventListFetchProps['onFetchEvents'];
 };
 
 const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
@@ -44,6 +41,7 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
   agents,
   fetchSecret,
   agentTableClassName,
+  onFetchEvents,
 }) => {
   const [progressCardExpanded, setProgressCardExpanded] = React.useState(true);
   const [inventoryCardExpanded, setInventoryCardExpanded] = React.useState(true);
@@ -54,25 +52,6 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
       a.spec.clusterDeploymentName?.name === clusterDeployment.metadata?.name &&
       a.spec.clusterDeploymentName?.namespace === clusterDeployment.metadata?.namespace,
   );
-
-  const handleFetchEvents: EventListFetchProps['onFetchEvents'] = async (
-    props,
-    onSuccess,
-    onError,
-  ) => {
-    try {
-      const eventsURL = agentClusterInstall.status?.debugInfo?.eventsURL;
-      if (!eventsURL) throw 'Events URL is not available.';
-
-      const res = await fetch(eventsURL);
-      const rawData: Record<string, string>[] = await res.json();
-      const data = formatEventsData(rawData);
-
-      onSuccess(data);
-    } catch (e) {
-      onError('Failed to fetch cluster events.');
-    }
-  };
 
   const cluster = getAICluster({ clusterDeployment, agentClusterInstall, agents: clusterAgents });
 
@@ -124,7 +103,7 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
                       title="Cluster Events"
                       variant={ButtonVariant.link}
                       style={{ textAlign: 'right' }}
-                      onFetchEvents={handleFetchEvents}
+                      onFetchEvents={onFetchEvents}
                       ButtonComponent={Button}
                     >
                       View Cluster Events

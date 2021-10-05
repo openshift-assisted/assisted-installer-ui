@@ -1,11 +1,10 @@
 import React from 'react';
-import { saveAs } from 'file-saver';
 import { GridItem, Alert, AlertVariant, AlertActionLink } from '@patternfly/react-core';
 import { toSentence } from '../../../common/components/ui/table/utils';
 import { getBugzillaLink } from '../../../common/config';
 import { AgentClusterInstallK8sResource, ClusterDeploymentK8sResource } from '../../types';
-import { k8sProxyURL } from '../helpers/proxy';
 import { getClusterStatus } from '../helpers';
+import { LogsDownloadButton } from './LogsDownloadButton';
 
 type ClusterInstallationErrorProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
@@ -14,14 +13,6 @@ type ClusterInstallationErrorProps = {
 };
 
 const getID = (suffix: string) => `cluster-install-error-${suffix}`;
-
-const getLogsURL = (backendURL: string, agentClusterInstall?: AgentClusterInstallK8sResource) => {
-  if (agentClusterInstall?.status?.debugInfo?.logsURL) {
-    const logsURL = new URL(agentClusterInstall.status?.debugInfo?.logsURL);
-    return `${backendURL}${k8sProxyURL}${logsURL.pathname}${logsURL.search}`;
-  }
-  return null;
-};
 
 const ClusterInstallationError: React.FC<ClusterInstallationErrorProps> = ({
   clusterDeployment,
@@ -34,7 +25,7 @@ const ClusterInstallationError: React.FC<ClusterInstallationErrorProps> = ({
     clusterStatus === 'cancelled'
       ? 'Cluster installation was cancelled'
       : 'Cluster installation failed';
-  const logsURL = getLogsURL(backendURL, agentClusterInstall);
+
   return (
     <GridItem>
       <Alert
@@ -42,13 +33,12 @@ const ClusterInstallationError: React.FC<ClusterInstallationErrorProps> = ({
         title={title}
         actionLinks={
           <>
-            <AlertActionLink
-              onClick={() => logsURL && saveAs(logsURL)}
-              isDisabled={!logsURL}
+            <LogsDownloadButton
               id={getID('button-download-installation-logs')}
-            >
-              Download Installation Logs
-            </AlertActionLink>
+              Component={AlertActionLink}
+              agentClusterInstall={agentClusterInstall}
+              backendURL={backendURL}
+            />
             <AlertActionLink
               onClick={() => window.open(getBugzillaLink(openshiftVersion), '_blank')}
               id={getID('button-report-bug')}
