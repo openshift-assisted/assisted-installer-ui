@@ -6,3 +6,4 @@ export * from './shared';
 export * from './cluster-image-set';
 export * from './nm-state';
 export * from './bare-metal-host';
+export * from './infrastructure';

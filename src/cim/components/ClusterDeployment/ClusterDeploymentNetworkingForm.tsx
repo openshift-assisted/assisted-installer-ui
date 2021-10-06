@@ -6,6 +6,7 @@ import {
   getHostSubnets,
   NetworkConfigurationFormFields,
 } from '../../../common';
+import { HostSubnets } from '../../../common/types';
 import ClusterDeploymentHostsNetworkTable from './ClusterDeploymentHostsNetworkTable';
 import { getAgentStatus, getAICluster } from '../helpers';
 import {
@@ -47,12 +48,26 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
     agents,
   });
 
-  const hostSubnets = getHostSubnets(cluster);
+  let hostSubnets: HostSubnets = [];
 
-  const bindingAgents = agents.filter((a) => {
+  const bindingAgents: AgentK8sResource[] = [];
+  const discoveringAgents: AgentK8sResource[] = [];
+
+  agents.forEach((a) => {
     const [status] = getAgentStatus(a);
-    return status === 'binding';
+    if (status === 'binding') {
+      bindingAgents.push(a);
+    }
+    if (status === 'discovering') {
+      // will happen once the agent is bound
+      discoveringAgents.push(a);
+    }
   });
+
+  if (bindingAgents.length === 0 && discoveringAgents.length === 0) {
+    // Assumption: Agents already passed one of the AGENT_FOR_SELECTION_STATUSES states to get here
+    hostSubnets = getHostSubnets(cluster);
+  }
 
   return (
     <NetworkConfigurationFormFields
@@ -70,7 +85,7 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
               isInline
               title={`${bindingAgents.length} ${
                 bindingAgents.length === 1 ? 'host is' : 'hosts are'
-              } binding. Please wait until they are available to continue configuring. It may take serveral seconds.`}
+              } binding. Please wait until they are available to continue configuring. It may take several seconds.`}
             />
           </GridItem>
         )}

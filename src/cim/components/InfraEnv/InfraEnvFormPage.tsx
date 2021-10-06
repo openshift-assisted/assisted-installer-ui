@@ -30,6 +30,7 @@ import {
   ProxyFields,
   RadioField,
   PopoverIcon,
+  pullSecretValidationSchema,
 } from '../../../common';
 
 import './infra-env.css';
@@ -58,7 +59,7 @@ const validationSchema = (usedNames: string[]) =>
           (value: string) => !usedNames.find((n) => n === value),
         ),
       location: Yup.string().required('Location is a required field.'),
-      pullSecret: Yup.string().required('Pull secret is a required field.'),
+      pullSecret: pullSecretValidationSchema.required('Pull secret is a required field.'),
       sshPublicKey: sshPublicKeyValidationSchema.required(
         'An SSH key is required to debug hosts as they register.',
       ),
@@ -94,9 +95,10 @@ const initialValues: EnvironmentStepFormValues = {
 
 type InfraEnvFormProps = {
   onValuesChanged?: (values: EnvironmentStepFormValues) => void;
+  isBMPlatform: boolean;
 };
 
-const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged }) => {
+const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged, isBMPlatform }) => {
   const { values } = useFormikContext<EnvironmentStepFormValues>();
   React.useEffect(() => onValuesChanged?.(values), [onValuesChanged, values]);
   return (
@@ -124,6 +126,13 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged }) => {
                     This will determine for the infrastructure environment which kind of hosts would
                     be able to be added. If the hosts that you want to add are using DHCP server,
                     select this option, else, select the static IP.
+                    {!isBMPlatform && (
+                      // TODO(mlibra): This limitation needs to be updated once https://github.com/openshift/enhancements/pull/871 lands.
+                      <>
+                        <br />
+                        Static IPs are only supported on bare metal platforms.
+                      </>
+                    )}
                   </>
                 }
               />
@@ -140,6 +149,7 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged }) => {
                   id="static-ip"
                   value="static"
                   label="Use static IP"
+                  isDisabled={!isBMPlatform}
                 />
               </FlexItem>
             </Flex>
@@ -163,14 +173,16 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged }) => {
 
 type InfraEnvFormPageProps = InfraEnvFormProps & {
   usedNames: string[];
+  isBMPlatform: boolean;
   // eslint-disable-next-line
   onSubmit?: (values: EnvironmentStepFormValues) => Promise<any>;
   onFinish?: (values: EnvironmentStepFormValues) => void;
   onClose?: VoidFunction;
 };
 
-const InfraEnvFormPage: React.FC<InfraEnvFormPageProps> = ({
+export const InfraEnvFormPage: React.FC<InfraEnvFormPageProps> = ({
   usedNames,
+  isBMPlatform,
   onSubmit,
   onClose,
   onFinish,
@@ -202,12 +214,12 @@ const InfraEnvFormPage: React.FC<InfraEnvFormPageProps> = ({
                   </Title>
                 </GridItem>
                 <GridItem>
-                  <InfraEnvForm onValuesChanged={onValuesChanged} />
+                  <InfraEnvForm onValuesChanged={onValuesChanged} isBMPlatform={isBMPlatform} />
                 </GridItem>
               </Grid>
             ) : (
               <div className="infra-env__form">
-                <InfraEnvForm onValuesChanged={onValuesChanged} />
+                <InfraEnvForm onValuesChanged={onValuesChanged} isBMPlatform={isBMPlatform} />
               </div>
             )}
           </StackItem>
@@ -244,5 +256,3 @@ const InfraEnvFormPage: React.FC<InfraEnvFormPageProps> = ({
     </Formik>
   );
 };
-
-export default InfraEnvFormPage;
