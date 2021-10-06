@@ -30,6 +30,7 @@ import {
   ProxyFields,
   RadioField,
   PopoverIcon,
+  pullSecretValidationSchema,
 } from '../../../common';
 
 import './infra-env.css';
@@ -58,7 +59,7 @@ const validationSchema = (usedNames: string[]) =>
           (value: string) => !usedNames.find((n) => n === value),
         ),
       location: Yup.string().required('Location is a required field.'),
-      pullSecret: Yup.string().required('Pull secret is a required field.'),
+      pullSecret: pullSecretValidationSchema.required('Pull secret is a required field.'),
       sshPublicKey: sshPublicKeyValidationSchema.required(
         'An SSH key is required to debug hosts as they register.',
       ),
