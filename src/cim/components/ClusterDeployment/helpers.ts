@@ -4,6 +4,7 @@ import { EventList } from '../../../common/api/types';
 import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-install';
 import { getClusterStatus } from '../helpers/status';
 import { k8sProxyURL } from '../helpers/proxy';
+import { EventListFetchProps } from '../../../common';
 
 export const shouldShowClusterCredentials = (
   agentClusterInstall: AgentClusterInstallK8sResource,
@@ -71,4 +72,22 @@ export const getEventsURL = (agentClusterInstall?: AgentClusterInstallK8sResourc
     return `${k8sProxyURL}${eventsURL.pathname}${eventsURL.search}`;
   }
   return null;
+};
+
+export const getOnFetchEventsHandler = (
+  fetchEvents: (url: string) => Promise<string>,
+  agentClusterInstall?: AgentClusterInstallK8sResource,
+): EventListFetchProps['onFetchEvents'] => async (params, onSuccess, onError) => {
+  const eventsURL = getEventsURL(agentClusterInstall);
+  if (!eventsURL) {
+    onError('Cannot determine events URL');
+    return;
+  }
+  try {
+    const result = await fetchEvents(eventsURL);
+    const data = formatEventsData(result);
+    onSuccess(data);
+  } catch (e) {
+    onError(e.message);
+  }
 };
