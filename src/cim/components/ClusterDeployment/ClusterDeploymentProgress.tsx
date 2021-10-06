@@ -4,7 +4,7 @@ import { AgentK8sResource } from '../../types/k8s/agent';
 import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-install';
 import { ClusterDeploymentK8sResource } from '../../types/k8s/cluster-deployment';
 import { getAgentRole } from '../helpers/agents';
-import { k8sProxyURL } from '../helpers/proxy';
+import { EventListFetchProps } from '../../../common';
 import { getAICluster } from '../helpers/toAssisted';
 
 // NOTE: based host stages defined in https://github.com/openshift/assisted-service/blob/master/internal/host/host.go
@@ -80,27 +80,18 @@ const getAgentsProgressPercent = (agents: AgentK8sResource[] = []) => {
   return totalSteps ? Math.round((completedSteps / totalSteps) * 100) : 100;
 };
 
-const getEventsURL = (agentClusterInstall?: AgentClusterInstallK8sResource) => {
-  if (agentClusterInstall?.status?.debugInfo?.eventsURL) {
-    const eventsURL = new URL(agentClusterInstall.status?.debugInfo?.eventsURL);
-    return `${k8sProxyURL}${eventsURL.pathname}${eventsURL.search}`;
-  }
-  return null;
-};
-
 type ClusterDeploymentProgressProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall: AgentClusterInstallK8sResource;
   agents: AgentK8sResource[];
-  // eslint-disable-next-line
-  fetchEvents: (url: string) => Promise<any>;
+  onFetchEvents: EventListFetchProps['onFetchEvents'];
 };
 
 const ClusterDeploymentProgress = ({
   clusterDeployment,
   agentClusterInstall,
   agents,
-  fetchEvents,
+  onFetchEvents,
 }: ClusterDeploymentProgressProps) => {
   const agentsProgressPercent = React.useMemo(() => getAgentsProgressPercent(agents), [agents]);
 
@@ -109,19 +100,7 @@ const ClusterDeploymentProgress = ({
     <ClusterProgress
       totalPercentage={agentsProgressPercent}
       cluster={cluster}
-      onFetchEvents={async (params, onSuccess, onError) => {
-        const eventsURL = getEventsURL(agentClusterInstall);
-        if (!eventsURL) {
-          onError('Cannot determine events URL');
-          return;
-        }
-        try {
-          const result = await fetchEvents(eventsURL);
-          onSuccess(result);
-        } catch (e) {
-          onError(e.message);
-        }
-      }}
+      onFetchEvents={onFetchEvents}
     />
   );
 };
