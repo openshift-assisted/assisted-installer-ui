@@ -14,11 +14,15 @@ export const getHumanizedTime = (dateTime?: string) => {
   return date.toLocaleTimeString();
 };
 
-export const isSNOSupportedVersion = (version: OpenshiftVersionOptionType) => {
-  const parsed = parseFloat(version.version || version.value);
+export const isSNOSupportedVersionValue = (versionValue: string) => {
+  const parsed = parseFloat(versionValue);
   if (isNaN(parsed)) {
     // openshift-v4.8.0
-    return parseFloat(version.value?.split('-v')?.[1]) >= SNO_SUPPORT_MIN_VERSION;
+    return parseFloat(versionValue?.split('-v')?.[1]) >= SNO_SUPPORT_MIN_VERSION;
   }
   return parsed >= SNO_SUPPORT_MIN_VERSION;
+};
+
+export const isSNOSupportedVersion = (version: OpenshiftVersionOptionType) => {
+  return isSNOSupportedVersionValue(version.version || version.value);
 };

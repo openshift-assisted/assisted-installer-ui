@@ -5,7 +5,7 @@ import { global_warning_color_100 as warningColor } from '@patternfly/react-toke
 import { OPENSHIFT_LIFE_CYCLE_DATES_LINK } from '../../config';
 import { ClusterCreateParams } from '../../api';
 import { OpenshiftVersionOptionType } from '../../types';
-import { isSNOSupportedVersion, SelectField } from '../ui';
+import { isSNOSupportedVersion, SelectField, isSNOSupportedVersionValue } from '../ui';
 
 const OpenShiftLifeCycleDatesLink = () => (
   <a href={OPENSHIFT_LIFE_CYCLE_DATES_LINK} target="_blank" rel="noopener noreferrer">
@@ -47,15 +47,15 @@ type OpenShiftVersionSelectProps = {
 };
 const OpenShiftVersionSelect: React.FC<OpenShiftVersionSelectProps> = ({ versions }) => {
   const {
-    values: { highAvailabilityMode },
+    values: { highAvailabilityMode, openshiftVersion },
     setFieldValue,
   } = useFormikContext<ClusterCreateParams>();
   React.useEffect(() => {
-    if (highAvailabilityMode === 'None') {
+    if (highAvailabilityMode === 'None' && !isSNOSupportedVersionValue(openshiftVersion)) {
       const firstSupportedVersionValue = versions.find(isSNOSupportedVersion)?.value;
       setFieldValue('openshiftVersion', firstSupportedVersionValue);
     }
-  }, [highAvailabilityMode, setFieldValue, versions]);
+  }, [highAvailabilityMode, openshiftVersion, setFieldValue, versions]);
 
   const selectOptions = React.useMemo(
     () =>
