@@ -1,14 +1,34 @@
 import * as React from 'react';
 import { Flex, FlexItem, Modal, ModalBoxBody, ModalVariant, Radio } from '@patternfly/react-core';
-import { DownloadIso } from '../../../common';
+import { DownloadIso, PopoverIcon } from '../../../common';
 import { BMCFormProps } from '../Agent/types';
 import { BMCForm } from '../Agent';
 
 type AddHostModalProps = Pick<BMCFormProps, 'onClose' | 'onCreate' | 'infraEnv'> & {
   isOpen: boolean;
+  isBMPlatform: boolean;
 };
 
-const AddHostModal: React.FC<AddHostModalProps> = ({ isOpen, onClose, infraEnv, onCreate }) => {
+// TODO(mlibra): This limitation needs to be updated once https://github.com/openshift/enhancements/pull/871 lands.
+const BmOnBmOnlyPopoverIcon = () => (
+  <PopoverIcon
+    noVerticalAlign
+    bodyContent={
+      <>
+        The Advanced Cluster Manager can manage bare metal hosts when deployed on bare metal
+        platform only.
+      </>
+    }
+  />
+);
+
+const AddHostModal: React.FC<AddHostModalProps> = ({
+  isOpen,
+  onClose,
+  infraEnv,
+  onCreate,
+  isBMPlatform,
+}) => {
   const hasDHCP = infraEnv.metadata?.labels?.networkType !== 'static';
   const [isDiscoveryISO, setDiscoveryISO] = React.useState(hasDHCP);
   return (
@@ -33,7 +53,7 @@ const AddHostModal: React.FC<AddHostModalProps> = ({ isOpen, onClose, infraEnv, 
                 onChange={setDiscoveryISO}
               />
             </FlexItem>
-            <FlexItem spacer={{ default: 'spacerXl' }} />
+            <FlexItem spacer={{ default: isBMPlatform ? 'spacerXl' : 'spacerMd' }} />
             <FlexItem>
               <Radio
                 id="bmc"
@@ -41,8 +61,14 @@ const AddHostModal: React.FC<AddHostModalProps> = ({ isOpen, onClose, infraEnv, 
                 label="Baseboard Management Controller (BMC)"
                 isChecked={!isDiscoveryISO}
                 onChange={(checked) => setDiscoveryISO(!checked)}
+                isDisabled={!isBMPlatform}
               />
             </FlexItem>
+            {!isBMPlatform && (
+              <FlexItem>
+                <BmOnBmOnlyPopoverIcon />
+              </FlexItem>
+            )}
           </Flex>
         </ModalBoxBody>
       )}
