@@ -8,11 +8,11 @@ import {
   Text,
   TextContent,
 } from '@patternfly/react-core';
-import { postCancelInstallation } from '../../api/clusters';
 import { getErrorMessage, handleApiError } from '../../api/utils';
 import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
 import { ErrorState, LoadingState } from '../../../common';
+import ClusterService from '../../services/ClusterService';
 
 const CancelInstallationModal: React.FC = () => {
   const dispatch = useDispatch();
@@ -30,7 +30,7 @@ const CancelInstallationModal: React.FC = () => {
     setIsSubmitting(true);
     try {
       setError(null);
-      const { data } = await postCancelInstallation(clusterId);
+      const { data } = await ClusterService.cancel(clusterId);
       dispatch(updateCluster(data));
       onClose();
     } catch (e) {
