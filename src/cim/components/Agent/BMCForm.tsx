@@ -22,7 +22,6 @@ import { InfraEnvK8sResource, SecretK8sResource } from '../../types';
 import {
   hostnameValidationSchema,
   InputField,
-  bmcAddressValidationSchema,
   macAddressValidationSchema,
   CodeField,
   getFieldId,
@@ -121,10 +120,10 @@ const getNMState = (values: AddBmcValues, infraEnv: InfraEnvK8sResource): NMStat
 const getValidationSchema = (hasDHCP: boolean) =>
   Yup.object({
     hostname: hostnameValidationSchema.required(),
-    bmcAddress: bmcAddressValidationSchema.required(),
+    bmcAddress: Yup.string().required(),
     username: Yup.string().required(),
     password: Yup.string().required(),
-    bootMACAddress: macAddressValidationSchema.required(),
+    bootMACAddress: macAddressValidationSchema,
     nmState: hasDHCP ? Yup.string() : Yup.string().required(),
     macMapping: hasDHCP
       ? Yup.array()
@@ -225,7 +224,6 @@ const BMCForm: React.FC<BMCFormProps> = ({
                   name="bootMACAddress"
                   placeholder="Enter an address"
                   description="The MAC address of the host's network connected NIC that wll be used to provision the host."
-                  isRequired
                 />
                 <InputField
                   label="Username"
