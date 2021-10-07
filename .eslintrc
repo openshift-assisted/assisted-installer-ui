@@ -19,7 +19,6 @@
   "plugins": ["prettier", "react", "react-hooks", "@typescript-eslint"],
   "extends": [
     "eslint:recommended",
-    "plugin:cypress/recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:react/recommended",
     "plugin:prettier/recommended",
