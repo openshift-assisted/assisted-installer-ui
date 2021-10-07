@@ -42,6 +42,17 @@ const getAgentProgressStages = (agent: AgentK8sResource) => {
     'Writing image to disk',
     'Waiting for control plane',
     'Rebooting',
+    'Configuring',
+    'Joined',
+    'Done',
+  ];
+
+  const workerHostStages = [
+    'Starting installation',
+    'Installing',
+    'Writing image to disk',
+    'Waiting for control plane',
+    'Rebooting',
     'Waiting for ignition',
     'Configuring',
     'Joined',
