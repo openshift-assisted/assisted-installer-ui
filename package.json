@@ -85,7 +85,7 @@
     "microbundle-crl": "^0.13.10",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.0.4",
-    "react-scripts": "^3.4.1",
+    "react-scripts": "^4.0.3",
     "redux-devtools-extension": "^2.13.8",
     "sw2dts": "^2.6.3",
     "typescript": "^3.8.3"
