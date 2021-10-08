@@ -9,7 +9,7 @@
   "source": "src/index.ts",
   "types": "dist/src/index.d.ts",
   "engines": {
-    "node": ">=10"
+    "node": ">=12.16"
   },
   "scripts": {
     "clean": "rm -rf dist/*",
