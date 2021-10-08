@@ -113,7 +113,7 @@ export const getAgentStatus = (
   let state: AgentStatus = agent.status?.debugInfo?.state || 'insufficient';
 
   const conditions = getFailingResourceConditions(agent, REQUIRED_AGENT_CONDITION_TYPES);
-  let validationsInfo = agent.status?.hostValidationInfo || {};
+  let validationsInfo = agent.status?.hostValidationInfo;
   if (conditions?.length) {
     validationsInfo = {
       infrastructure: conditions.map(
@@ -128,8 +128,13 @@ export const getAgentStatus = (
   if (!excludeDiscovered && !agent.spec.approved) {
     // TODO(mlibra): Add icon
     state = 'Discovered';
-  } else if (state !== 'binding' && validationsInfo?.infrastructure) {
+  } else if (
+    state !== 'binding' &&
+    validationsInfo?.infrastructure &&
+    /* state === disconnected for this condition already, so let's keep it */
+    !validationsInfo.infrastructure.find((c) => c.id.toLowerCase() === 'connected')
+  ) {
     state = 'insufficient';
   }
-  return [state, agent.status?.debugInfo?.stateInfo || '', validationsInfo];
+  return [state, agent.status?.debugInfo?.stateInfo || '', validationsInfo || {}];
 };
