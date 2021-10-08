@@ -6,6 +6,7 @@ const getVersion = (releaseImage = '') => {
   if (match && match[1]) {
     return match[1];
   }
+  return '';
 };
 
 // eslint-disable-next-line
