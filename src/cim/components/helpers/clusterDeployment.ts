@@ -121,6 +121,10 @@ export const getClusterApiUrl = (clusterDeployment?: ClusterDeploymentK8sResourc
   clusterDeployment?.status?.apiURL ||
   `https://api.${clusterDeployment?.spec?.clusterName}.${clusterDeployment?.spec?.baseDomain}`;
 
+export const getClusterApiUrl = (clusterDeployment: ClusterDeploymentK8sResource) =>
+  clusterDeployment?.status?.apiURL ||
+  `https://api.${clusterDeployment.spec?.clusterName}.${clusterDeployment.spec?.baseDomain}`;
+
 type ClusterPropertyKeys =
   | 'name'
   | 'openshiftVersion'
