@@ -51,6 +51,7 @@ export type ClusterDeploymentK8sResource = K8sResourceCommon & {
     installedTimestamp?: string;
     installStartedTimestamp: string;
     webConsoleURL?: string;
+    apiURL?: string;
     conditions?: StatusCondition<ClusterDeploymentStatusConditionType>[];
   };
 };
