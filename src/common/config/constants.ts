@@ -1,4 +1,4 @@
-import * as packageJson from '../../../package.json';
+import packageJson from '../../../package.json';
 
 import { ValidationsInfo, HostRole } from '../../common/types/hosts';
 import { Cluster, ClusterValidationId, DiskRole, Event, Host, HostValidationId } from '../api';

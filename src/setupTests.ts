@@ -3,3 +3,8 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom';
+import MockServer from './ocm/integration/mocks/MockServer';
+
+beforeAll(() => MockServer.listen());
+afterEach(() => MockServer.resetHandlers());
+afterAll(() => MockServer.close());
