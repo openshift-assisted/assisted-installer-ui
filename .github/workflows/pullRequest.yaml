@@ -4,21 +4,28 @@ on:
   pull_request:
     branches:
       - master
-      - wizard
+      - main
+      - dev
+      - hotfix/*
+      - integration
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      NODE_OPTIONS: '--max-old-space-size=8192'
     steps:
-      - name: Set NODE_OPTIONS env variable
-        run: echo "NODE_OPTIONS=--max-old-space-size=8192" >> $GITHUB_ENV
-      - name: Check out code
+      - name: Checkout
         uses: actions/checkout@v2
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.4.1
+        with:
+          node-version: '>=12.16'
+          cache: yarn
       - name: Install dependencies
-        uses: borales/actions-yarn@v2.0.0
-        with:
-          cmd: install
+        # --slient: Run yarn install without printing installation log.
+        # --non-interactive: disable interactive prompts, like when there’s an invalid version of a dependency.
+        # --pure-lockfile: doesn't generate a yarn.lock file.
+        run: yarn install --silen --non-interactive --frozen-lockfile
       - name: Build code (includes tests)
-        uses: borales/actions-yarn@v2.0.0
-        with:
-          cmd: build
+        run: yarn build
