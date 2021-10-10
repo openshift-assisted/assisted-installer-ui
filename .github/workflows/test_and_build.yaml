@@ -1,13 +1,21 @@
 name: Build on pull request to master or a feature branch
 
 on:
+  push:
+    branches:
+      - master
+      - main
+      - develop
+      - feature/*
+      - release/*
+      - hotfix/*
   pull_request:
     branches:
       - master
       - main
-      - dev
+      - develop
+      - release/*
       - hotfix/*
-      - integration
 
 jobs:
   build:
