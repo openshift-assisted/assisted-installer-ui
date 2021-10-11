@@ -24,7 +24,7 @@
     "test:aio": "run-s test:circular test:lint test:type-check test:ci",
     "test:type-check": "tsc --noEmit",
     "test:lint": "eslint --ext .js,.jsx,.ts,.tsx --color --max-warnings=0 ./src",
-    "test:ci": "yarn test --watchAll=false",
+    "test:ci": "yarn test --watchAll=false --ci --runInBand",
     "test:circular": "dpdm --exit-code circular:1 --warning false --tree false src/index.ts",
     "test": "react-scripts test --env=jsdom",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx --color --fix ./src",
