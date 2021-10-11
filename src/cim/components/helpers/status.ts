@@ -14,8 +14,10 @@ import { getFailingResourceConditions, REQUIRED_AGENT_CONDITION_TYPES } from './
 import { Validation, ValidationsInfo } from '../../../common/types/hosts';
 import { HostValidationId } from '../../../common/api/types';
 
-const conditionsByTypeReducer = <K>(
-  result: { K?: StatusCondition<string> },
+const conditionsByTypeReducer = <
+  K extends AgentClusterInstallStatusConditionType | AgentStatusConditionType,
+>(
+  result: { [k in K]?: StatusCondition<string> },
   condition: StatusCondition<string>,
 ) => ({
   ...result,

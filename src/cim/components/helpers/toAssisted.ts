@@ -15,59 +15,57 @@ export const getAIHosts = (
   infraEnv?: InfraEnvK8sResource,
 ) => {
   const bmhAgents: string[] = [];
-  const hosts = agents.map(
-    (agent): Host => {
-      const [status, statusInfo] = getAgentStatus(agent, true);
-      // TODO(mlibra) Remove that workaround once https://issues.redhat.com/browse/MGMT-7052 is fixed
-      const inventory: Inventory = _.cloneDeep(agent.status?.inventory || {});
-      inventory.interfaces?.forEach((intf) => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-        // @ts-ignore
-        intf.ipv4Addresses = _.cloneDeep(intf.ipV4Addresses);
-      });
+  const hosts = agents.map((agent): Host => {
+    const [status, statusInfo] = getAgentStatus(agent, true);
+    // TODO(mlibra) Remove that workaround once https://issues.redhat.com/browse/MGMT-7052 is fixed
+    const inventory: Inventory = _.cloneDeep(agent.status?.inventory || {});
+    inventory.interfaces?.forEach((intf) => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      intf.ipv4Addresses = _.cloneDeep(intf.ipV4Addresses);
+    });
 
-      if (agent.metadata?.labels?.[AGENT_BMH_HOSTNAME_LABEL_KEY]) {
-        bmhAgents.push(agent.metadata?.labels?.[AGENT_BMH_HOSTNAME_LABEL_KEY]);
-      }
+    if (agent.metadata?.labels?.[AGENT_BMH_HOSTNAME_LABEL_KEY]) {
+      bmhAgents.push(agent.metadata?.labels?.[AGENT_BMH_HOSTNAME_LABEL_KEY]);
+    }
 
-      const {
-        currentStage = 'Starting installation',
+    const {
+      currentStage = 'Starting installation',
+      progressInfo,
+      stageStartTime,
+      stageUpdateTime,
+    } = agent.status?.progress || {};
+    return {
+      kind: 'Host',
+      id: agent.metadata?.uid || '',
+      href: '',
+      status: status as Host['status'],
+      statusInfo,
+      role: getAgentRole(agent),
+      requestedHostname: agent.spec.hostname || inventory.hostname,
+      // validationsInfo: JSON.stringify(agent.status.hostValidationInfo),
+      createdAt: agent.metadata?.creationTimestamp,
+      validationsInfo: JSON.stringify({ hardware: [] }),
+      inventory: JSON.stringify(inventory),
+      progress: {
+        currentStage,
         progressInfo,
-        stageStartTime,
-        stageUpdateTime,
-      } = agent.status?.progress || {};
-      return {
-        kind: 'Host',
-        id: agent.metadata?.uid || '',
-        href: '',
-        status: status as Host['status'],
-        statusInfo,
-        role: getAgentRole(agent),
-        requestedHostname: agent.spec.hostname || inventory.hostname,
-        // validationsInfo: JSON.stringify(agent.status.hostValidationInfo),
-        createdAt: agent.metadata?.creationTimestamp,
-        validationsInfo: JSON.stringify({ hardware: [] }),
-        inventory: JSON.stringify(inventory),
-        progress: {
-          currentStage,
-          progressInfo,
-          stageStartedAt: stageStartTime,
-          stageUpdatedAt: stageUpdateTime,
-        },
-        progressStages: [
-          'Starting installation',
-          'Waiting for control plane',
-          'Installing',
-          'Writing image to disk',
-          'Rebooting',
-          'Waiting for ignition',
-          'Configuring',
-          'Joined',
-          'Done',
-        ],
-      };
-    },
-  );
+        stageStartedAt: stageStartTime,
+        stageUpdatedAt: stageUpdateTime,
+      },
+      progressStages: [
+        'Starting installation',
+        'Waiting for control plane',
+        'Installing',
+        'Writing image to disk',
+        'Rebooting',
+        'Waiting for ignition',
+        'Configuring',
+        'Joined',
+        'Done',
+      ],
+    };
+  });
 
   const restBmhs =
     infraEnv && bmhs

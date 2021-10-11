@@ -4,15 +4,15 @@ import { global_warning_color_100 as warningColor } from '@patternfly/react-toke
 import { getFailingAgentConditions } from '../helpers';
 import { AgentK8sResource } from '../../types';
 
-export type InfraEnvHostsTabAgentsWarning = {
+export type InfraEnvHostsTabAgentsWarningProps = {
   infraAgents: AgentK8sResource[];
 };
 
-const InfraEnvHostsTabAgentsWarning: React.FC<InfraEnvHostsTabAgentsWarning> = ({
+const InfraEnvHostsTabAgentsWarning: React.FC<InfraEnvHostsTabAgentsWarningProps> = ({
   infraAgents,
 }) => {
-  const faiingAgentConditions = getFailingAgentConditions(infraAgents);
-  const failingAgentNames = Object.getOwnPropertyNames(faiingAgentConditions);
+  const failingAgentConditions = getFailingAgentConditions(infraAgents);
+  const failingAgentNames = Object.getOwnPropertyNames(failingAgentConditions);
   if (!failingAgentNames.length) {
     return null;
   }

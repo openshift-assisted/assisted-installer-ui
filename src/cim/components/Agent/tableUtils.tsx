@@ -119,7 +119,7 @@ export const networkingStatusColumn = (
     return {
       title: <NetworkingStatus host={host} onEditHostname={editHostname} />,
       props: { 'data-testid': 'nic-status' },
-      sortableValue: status,
+      // sortableValue: status,
     };
   },
 });

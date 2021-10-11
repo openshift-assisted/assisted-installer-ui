@@ -70,9 +70,10 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
 
   const onStatusToggle: SelectProps['onToggle'] = () => setStatusExpanded(!isStatusExpanded);
   const onStatusSelect: SelectProps['onSelect'] = (event, value) => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    /* eslint-disable @typescript-eslint/ban-ts-comment */
     // @ts-ignore
     onSelect('status', event.target.checked, value as string);
+    /* eslint-enable @typescript-eslint/ban-ts-comment */
   };
 
   const onDeleteChip: ToolbarFilterProps['deleteChip'] = (type, id) => {

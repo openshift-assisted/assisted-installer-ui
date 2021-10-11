@@ -73,7 +73,7 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
         )}
       </>
     );
-  }, [openModal, cluster]);
+  }, [openModal, TryAgain, cluster]);
 
   React.useEffect(() => {
     if (!isVisible && day2Cluster) {
@@ -187,7 +187,16 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
 
       doItAsync();
     }
-  }, [cluster, openModal, pullSecret, day2Cluster, isVisible, normalizeClusterVersion]);
+  }, [
+    cluster,
+    openModal,
+    pullSecret,
+    day2Cluster,
+    isVisible,
+    normalizeClusterVersion,
+    TryAgain,
+    MissingApiUrl,
+  ]);
 
   React.useEffect(() => {
     if (day2Cluster) {
@@ -211,7 +220,7 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
       }, POLLING_INTERVAL);
       return () => clearTimeout(id);
     }
-  }, [day2Cluster]);
+  }, [TryAgain, day2Cluster]);
 
   if (error) {
     return (

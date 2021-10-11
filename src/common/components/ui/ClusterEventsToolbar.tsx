@@ -117,7 +117,7 @@ const ClusterEventsToolbar: React.FC<ClustersListToolbarProps> = ({
 
   const onHostToggle: SelectProps['onToggle'] = () => setHostExpanded(!isHostExpanded);
   const onHostSelect: SelectProps['onSelect'] = (event, value) => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const isChecked = event.target.checked;
 
@@ -164,9 +164,10 @@ const ClusterEventsToolbar: React.FC<ClustersListToolbarProps> = ({
 
   const onSeverityToggle: SelectProps['onToggle'] = () => setSeverityExpanded(!isSeverityExpanded);
   const onSeveritySelect: SelectProps['onSelect'] = (event, value) => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // eslint-disable @typescript-eslint/ban-ts-comment
     // @ts-ignore
     onSelect('severity', event.target.checked, value as string);
+    // eslint-enable @typescript-eslint/ban-ts-comment
   };
 
   const onFulltextChange: TextInputProps['onChange'] = (fulltext) => {
