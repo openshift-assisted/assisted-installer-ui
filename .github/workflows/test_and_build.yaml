@@ -36,7 +36,7 @@ jobs:
         # --pure-lockfile: doesn't generate a yarn.lock file.
         run: yarn install --silent --non-interactive --pure-lockfile
       - name: Check for cyclic dependencies
-        run: yarn test:cyclic
+        run: yarn test:circular
       - name: Perform typechecking
         run: yarn test:type-check
       - name: Lint
