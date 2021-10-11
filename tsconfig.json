@@ -35,6 +35,7 @@
   ],
   "exclude": [
     "./src/**/setupTests.ts",
+    "./src/**/integration",
     "./src/**/*.{test,spec}.{ts,tsx,js,jsx}",
   ]
 }
