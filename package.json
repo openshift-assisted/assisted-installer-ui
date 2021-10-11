@@ -4,24 +4,23 @@
   "description": "React component library for the Bare Metal Installer",
   "license": "Apache-2.0",
   "repository": "openshift-assisted/assisted-ui-lib",
-  "source": "./src/index.ts",
-  "exports": "./dist/index.modern.js",
   "main": "./dist/index.js",
   "module": "./dist/index.modern.js",
+  "source": "./src/index.ts",
   "types": "./dist/src/index.d.ts",
   "engines": {
     "node": ">=12.16"
   },
   "scripts": {
     "clean": "yarn rimraf dist/*",
-    "build:aio": "run-s clean test:aio",
-    "build": "microbundle build --jsx React.createElement --no-compress --format modern,cjs --css-modules false",
-    "start": "env-cmd -f .env.local microbundle watch --jsx React.createElement --no-compress --format modern --css-modules false",
+    "prebuild": "yarn clean",
+    "build": "microbundle build --jsx React.createElement --no-compress --no-css-modules --format modern,cjs",
+    "prestart": "yarn clean",
+    "start": "microbundle watch --jsx React.createElement --no-compress --no-css-modules --format modern",
     "start:assisted-ui": "env-cmd -f .env.local ./scripts/start-assisted-ui.sh",
     "start:uhc-portal": "./scripts/start-uhc-portal.sh",
     "sync-dist": "./scripts/sync-dist.sh",
     "prepare": "install-peers",
-    "test:aio": "run-s test:circular test:lint test:type-check test:ci",
     "test:type-check": "tsc --noEmit",
     "test:lint": "eslint --ext .js,.jsx,.ts,.tsx --color --max-warnings=0 ./src",
     "test:ci": "yarn test --watchAll=false --ci --runInBand",
@@ -126,7 +125,9 @@
     "yup": "^0.28.3"
   },
   "files": [
-    "dist"
+    "cim",
+    "ocm",
+    "common"
   ],
   "keywords": [
     "react",

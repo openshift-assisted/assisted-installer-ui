@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "dist",
+    "outDir": "./dist",
     "lib": [
       "dom",
       "dom.iterable",
@@ -12,6 +12,7 @@
     "jsx": "react",
     "sourceMap": true,
     "declaration": true,
+    "declarationDir": "./dist",
     "esModuleInterop": true,
     "noImplicitReturns": false,
     "noImplicitThis": true,
@@ -28,10 +29,10 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "noFallthroughCasesInSwitch": true,
+    "noFallthroughCasesInSwitch": true
   },
   "include": [
-    "src"
+    "./src/**/*"
   ],
   "exclude": [
     "./src/**/setupTests.ts",
