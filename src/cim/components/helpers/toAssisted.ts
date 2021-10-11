@@ -25,9 +25,9 @@ export const getAIHosts = (
         intf.ipv6Addresses = _.cloneDeep(intf.ipv6Addresses);
       });
 
-      if (agent.metadata?.labels?.[AGENT_BMH_HOSTNAME_LABEL_KEY]) {
-        bmhAgents.push(agent.metadata?.labels?.[AGENT_BMH_HOSTNAME_LABEL_KEY]);
-      }
+    if (agent.metadata?.labels?.[AGENT_BMH_HOSTNAME_LABEL_KEY]) {
+      bmhAgents.push(agent.metadata?.labels?.[AGENT_BMH_HOSTNAME_LABEL_KEY]);
+    }
 
       const agentProgress = getAgentProgress(agent);
       return {
