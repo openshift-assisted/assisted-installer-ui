@@ -169,6 +169,7 @@ const props = Object.freeze<ClusterEventsListProps>({
   ],
 });
 
+// TODO(jkilzi): Move this to the integration tests
 describe('<ClusterEventsList />', () => {
   it('Renders without crashing', () => {
     render(<ClusterEventsList {...props} />);
@@ -176,7 +177,7 @@ describe('<ClusterEventsList />', () => {
     expect(element).toBeInTheDocument();
   });
 
-  describe('Severity filter', () => {
+  xdescribe('Severity filter', () => {
     it("Given that more than one filter is selected, unchecking one item doesn't uncheck the rest", async () => {
       render(<ClusterEventsList {...props} />);
 
@@ -214,9 +215,8 @@ describe('<ClusterEventsList />', () => {
     });
   });
 
-  describe('Hosts filter', () => {
-    // TODO(jkilzi): Move this to the integration tests
-    xit("Given that 'cluster-level' events and 'deleted hosts' options are selected exclusively; selecting one of the hosts won't activate the 'select all' checkbox", async () => {
+  xdescribe('Hosts filter', () => {
+    it("Given that 'cluster-level' events and 'deleted hosts' options are selected exclusively; selecting one of the hosts won't activate the 'select all' checkbox", async () => {
       render(<ClusterEventsList {...props} />);
 
       // open the hosts filter menu

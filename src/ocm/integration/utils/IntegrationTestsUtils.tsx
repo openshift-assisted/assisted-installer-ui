@@ -1,7 +1,7 @@
 import type { PropsWithChildren, ReactElement } from 'react';
 import type { IntegrationTestsRenderOptions } from './types';
 import { rest } from 'msw';
-import React from 'react';
+import * as React from 'react';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 import { render } from '@testing-library/react';
@@ -39,17 +39,20 @@ const IntegrationTestsUtils = {
     });
   },
 
-  makeHandler(
-    method: 'post' | 'get' | 'patch' | 'delete',
-    path: string,
-    statusCode: number,
-    body?: unknown,
-  ) {
-    return rest[method](path, (req, res, ctx) => {
-      if (!body) {
-        return res(ctx.status(statusCode));
+  makeHandler(options: {
+    once?: boolean;
+    method: 'post' | 'put' | 'get' | 'patch' | 'delete' | 'options';
+    path: string;
+    statusCode: number;
+    body?: unknown;
+  }) {
+    const url = new URL(`${process.env.REACT_APP_API_ROOT}${options.path}`);
+    return rest[options.method](url.href, (req, res, ctx) => {
+      const resType = options.once ? res.once : res;
+      if (!options.body) {
+        return resType(ctx.status(options.statusCode));
       } else {
-        return res(ctx.status(statusCode), ctx.json(body));
+        return resType(ctx.status(options.statusCode), ctx.json(options.body));
       }
     });
   },
