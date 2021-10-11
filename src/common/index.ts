@@ -1,5 +1,4 @@
 import './styles.css';
-import './hacks';
 
 export * from './components';
 export * from './api';
