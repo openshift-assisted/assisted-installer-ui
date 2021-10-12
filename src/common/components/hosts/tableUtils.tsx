@@ -49,6 +49,9 @@ export const hostnameColumn = (
   return {
     header: {
       title: 'Hostname',
+      props: {
+        id: 'col-header-hostname', // ACM jest tests require id over testId
+      },
       transforms: [sortable],
       cellFormatters: [expandable],
       cellTransforms: [breakWord],
@@ -74,7 +77,13 @@ export const roleColumn = (
   onEditRole?: HostsTableActions['onEditRole'],
 ): TableRow<Host> => {
   return {
-    header: { title: 'Role', transforms: [sortable] },
+    header: {
+      title: 'Role',
+      props: {
+        id: 'col-header-role',
+      },
+      transforms: [sortable],
+    },
     cell: (host) => {
       const editRole = onEditRole ? (role?: string) => onEditRole(host, role) : undefined;
       const hostRole = getHostRole(host);
@@ -99,7 +108,13 @@ export const statusColumn = (
   onEditHostname?: HostsTableActions['onEditHost'],
 ): TableRow<Host> => {
   return {
-    header: { title: 'Status', transforms: [sortable] },
+    header: {
+      title: 'Status',
+      props: {
+        id: 'col-header-status',
+      },
+      transforms: [sortable],
+    },
     cell: (host) => {
       const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
       const editHostname = onEditHostname ? () => onEditHostname(host) : undefined;
@@ -123,7 +138,13 @@ export const hardwareStatusColumn = (
   onEditHostname?: HostsTableActions['onEditHost'],
 ): TableRow<Host> => {
   return {
-    header: { title: 'Status', transforms: [sortable] },
+    header: {
+      title: 'Status',
+      props: {
+        id: 'col-header-hwstatus',
+      },
+      transforms: [sortable],
+    },
     cell: (host) => {
       const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
       const editHostname = onEditHostname ? () => onEditHostname(host) : undefined;
@@ -143,7 +164,13 @@ export const hardwareStatusColumn = (
 };
 
 export const discoveredAtColumn: TableRow<Host> = {
-  header: { title: 'Discovered at', transforms: [sortable] },
+  header: {
+    title: 'Discovered at',
+    props: {
+      id: 'col-header-discoveredat',
+    },
+    transforms: [sortable],
+  },
   cell: (host) => {
     const { createdAt } = host;
     const dateTimeCell = getDateTimeCell(createdAt);
@@ -156,7 +183,13 @@ export const discoveredAtColumn: TableRow<Host> = {
 };
 
 export const cpuCoresColumn: TableRow<Host> = {
-  header: { title: 'CPU Cores', transforms: [sortable] },
+  header: {
+    title: 'CPU Cores',
+    props: {
+      id: 'col-header-cpucores',
+    },
+    transforms: [sortable],
+  },
   cell: (host) => {
     const { inventory: inventoryString = '' } = host;
     const inventory = stringToJSON<Inventory>(inventoryString) || {};
@@ -178,7 +211,13 @@ export const cpuCoresColumn: TableRow<Host> = {
 };
 
 export const memoryColumn: TableRow<Host> = {
-  header: { title: 'Memory', transforms: [sortable] },
+  header: {
+    title: 'Memory',
+    props: {
+      id: 'col-header-memory',
+    },
+    transforms: [sortable],
+  },
   cell: (host) => {
     const { inventory: inventoryString = '' } = host;
     const inventory = stringToJSON<Inventory>(inventoryString) || {};
@@ -198,7 +237,13 @@ export const memoryColumn: TableRow<Host> = {
 };
 
 export const disksColumn: TableRow<Host> = {
-  header: { title: 'Disk', transforms: [sortable] },
+  header: {
+    title: 'Disk',
+    props: {
+      id: 'col-header-disk',
+    },
+    transforms: [sortable],
+  },
   cell: (host) => {
     const { inventory: inventoryString = '' } = host;
     const inventory = stringToJSON<Inventory>(inventoryString) || {};
