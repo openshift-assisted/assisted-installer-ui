@@ -1,6 +1,7 @@
 import * as Yup from 'yup';
 import { Cluster, ManagedDomain } from '../../api';
 import { OpenshiftVersionOptionType } from '../../types';
+import { getSNOSupportLevel } from '../clusterConfiguration/utils';
 import {
   dnsNameValidationSchema,
   getDefaultOpenShiftVersion,
@@ -40,7 +41,11 @@ export const getClusterDetailsInitialValues = ({
   };
 };
 
-export const getClusterDetailsValidationSchema = (usedClusterNames: string[], cluster?: Cluster) =>
+export const getClusterDetailsValidationSchema = (
+  usedClusterNames: string[],
+  cluster?: Cluster,
+  ocpVersions?: OpenshiftVersionOptionType[],
+) =>
   Yup.lazy<{ baseDnsDomain: string }>((values) => {
     if (cluster?.pullSecretSet) {
       return Yup.object({
@@ -52,8 +57,15 @@ export const getClusterDetailsValidationSchema = (usedClusterNames: string[], cl
       name: nameValidationSchema(usedClusterNames, values.baseDnsDomain),
       pullSecret: pullSecretValidationSchema.required('Required.'),
       baseDnsDomain: dnsNameValidationSchema.required('Required'),
-      SNODisclaimer: Yup.boolean().when('highAvailabilityMode', {
-        is: 'None',
+      SNODisclaimer: Yup.boolean().when(['highAvailabilityMode', 'openshiftVersion'], {
+        // The disclaimer is required only if SNO is enabled and SNO feature is not fully supported in that version
+        is: (highAvailabilityMode, openshiftVersion) => {
+          const selectedVersion = (ocpVersions || []).find((v) => v.value === openshiftVersion);
+          return (
+            highAvailabilityMode === 'None' &&
+            getSNOSupportLevel(selectedVersion?.version) !== 'supported'
+          );
+        },
         then: Yup.bool().oneOf([true], 'Confirm the Single Node OpenShift disclaimer to continue.'),
       }),
     });
