@@ -84,8 +84,8 @@ export const getPresignedFileUrl = ({
     }${hostId ? `&host_id=${hostId}` : ''}`,
   );
 
-export const getClusterFileDownload = (clusterID: Cluster['id'], fileName: string): AxiosPromise =>
-  client.get(`/v1/clusters/${clusterID}/downloads/files?file_name=${fileName}`, {
+export const getClusterFileDownload = (clusterID: Cluster['id'], fileName: string) =>
+  client.get<Blob>(`/v1/clusters/${clusterID}/downloads/files?file_name=${fileName}`, {
     responseType: 'blob',
     headers: {
       Accept: 'application/octet-stream',
