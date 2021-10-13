@@ -9,7 +9,7 @@ import {
   AgentStatusCondition,
   AgentStatusConditionType,
 } from '../../types/k8s/agent';
-import { StatusCondition } from '../../types';
+import { StatusCondition, BareMetalHostK8sResource } from '../../types';
 import { getFailingResourceConditions, REQUIRED_AGENT_CONDITION_TYPES } from './conditions';
 import { Validation, ValidationsInfo } from '../../../common/types/hosts';
 import { HostValidationId } from '../../../common/api/types';
@@ -137,4 +137,12 @@ export const getAgentStatus = (
     state = 'insufficient';
   }
   return [state, agent.status?.debugInfo?.stateInfo || '', validationsInfo || {}];
+};
+
+export const getBMHStatus = (bmh: BareMetalHostK8sResource) => {
+  const state = bmh.status?.errorType || bmh.status?.provisioning?.state;
+  return {
+    title: state ? state.charAt(0).toUpperCase() + state.slice(1) : state,
+    message: bmh.status?.errorMessage,
+  };
 };

@@ -10,6 +10,7 @@ type ClusterInstallationErrorProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall?: AgentClusterInstallK8sResource;
   backendURL: string;
+  aiNamespace: string;
 };
 
 const getID = (suffix: string) => `cluster-install-error-${suffix}`;
@@ -18,6 +19,7 @@ const ClusterInstallationError: React.FC<ClusterInstallationErrorProps> = ({
   clusterDeployment,
   backendURL,
   agentClusterInstall,
+  aiNamespace,
 }) => {
   const openshiftVersion = clusterDeployment.status?.installVersion || '4.8';
   const [clusterStatus, statusInfo] = getClusterStatus(agentClusterInstall);
@@ -38,6 +40,7 @@ const ClusterInstallationError: React.FC<ClusterInstallationErrorProps> = ({
               Component={AlertActionLink}
               agentClusterInstall={agentClusterInstall}
               backendURL={backendURL}
+              aiNamespace={aiNamespace}
             />
             <AlertActionLink
               onClick={() => window.open(getBugzillaLink(openshiftVersion), '_blank')}

@@ -7,3 +7,4 @@ export * from './labels';
 export * from './agents';
 export * from './clusterDeployment';
 export * from './agentClusterInstall';
+export * from './clusterDeployment';
