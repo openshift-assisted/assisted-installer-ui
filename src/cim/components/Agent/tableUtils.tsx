@@ -18,7 +18,13 @@ export const discoveryTypeColumn = (
   agents: AgentK8sResource[],
   bareMetalHosts: BareMetalHostK8sResource[],
 ): TableRow<Host> => ({
-  header: { title: 'Discovery type', transforms: [sortable] },
+  header: {
+    title: 'Discovery type',
+    props: {
+      id: 'col-header-discovery-type',
+    },
+    transforms: [sortable],
+  },
   cell: (host) => {
     const agent = agents.find((a) => a.metadata?.uid === host.id);
     let discoveryType = 'Unknown';
@@ -54,7 +60,13 @@ export const infraEnvStatusColumn = ({
   onApprove,
 }: StatusColumnProps): TableRow<Host> => {
   return {
-    header: { title: 'Status', transforms: [sortable] },
+    header: {
+      title: 'Status',
+      props: {
+        id: 'col-header-infraenvstatus',
+      },
+      transforms: [sortable],
+    },
     cell: (host) => {
       const agent = agents.find((a) => a.metadata?.uid === host.id);
       const bmh = bareMetalHosts?.find((b) => b.metadata?.uid === host.id);
@@ -97,7 +109,13 @@ export const clusterColumn = (
   getClusterDeploymentLink: (cd: { name: string; namespace: string }) => string,
 ): TableRow<Host> => {
   return {
-    header: { title: 'Cluster', transforms: [sortable] },
+    header: {
+      title: 'Cluster',
+      props: {
+        id: 'col-header-cluster',
+      },
+      transforms: [sortable],
+    },
     cell: (host) => {
       const agent = agents.find((a) => a.metadata?.uid === host.id);
       let title: React.ReactNode = '--';
@@ -119,7 +137,13 @@ export const clusterColumn = (
 
 export const infraEnvColumn = (agents: AgentK8sResource[]): TableRow<Host> => {
   return {
-    header: { title: 'Infrastructure env', transforms: [sortable] },
+    header: {
+      title: 'Infrastructure env',
+      props: {
+        id: 'col-header-infraenv',
+      },
+      transforms: [sortable],
+    },
     cell: (host) => {
       const agent = agents.find((a) => a.metadata?.uid === host.id) as AgentK8sResource;
       const infraEnvName = agent.metadata?.labels?.[INFRAENV_AGENTINSTALL_LABEL_KEY] || 'N/A';
@@ -136,7 +160,13 @@ export const infraEnvColumn = (agents: AgentK8sResource[]): TableRow<Host> => {
 export const networkingStatusColumn = (
   onEditHostname?: HostsTableActions['onEditHost'],
 ): TableRow<Host> => ({
-  header: { title: 'Status', transforms: [sortable] },
+  header: {
+    title: 'Status',
+    props: {
+      id: 'col-header-networkingstatus',
+    },
+    transforms: [sortable],
+  },
   cell: (host) => {
     const editHostname = onEditHostname ? () => onEditHostname(host) : undefined;
     return {
