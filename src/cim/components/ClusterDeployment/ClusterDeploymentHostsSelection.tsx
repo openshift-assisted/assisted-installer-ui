@@ -49,8 +49,8 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
       <GridItem>
         <TextContent>
           {isSNOCluster
-            ? 'Exactly 1 host is required, capable of functioning both as control plane (master) and worker node.'
-            : 'At least 3 hosts are required, capable of functioning as control plane (master) nodes.'}
+            ? 'Exactly 1 host is required, capable of functioning both as control plane and worker node.'
+            : 'At least 3 hosts are required, capable of functioning as control plane nodes.'}
         </TextContent>
       </GridItem>
       {aiConfigMap && (

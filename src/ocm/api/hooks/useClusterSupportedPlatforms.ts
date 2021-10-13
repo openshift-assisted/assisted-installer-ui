@@ -3,7 +3,7 @@ import { client } from '../axiosClient';
 import { alertsSlice, PlatformType, POLLING_INTERVAL } from '../../../common';
 import { getErrorMessage, handleApiError } from '../utils';
 
-const fetcher = (url: string) => client.get(url).then((res) => res.data);
+const fetcher = (url: string) => client.get<PlatformType[]>(url).then((res) => res.data);
 
 const useClusterSupportedPlatforms = (clusterId: string) => {
   const { data, error } = useSWR<PlatformType[]>(
