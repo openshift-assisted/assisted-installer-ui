@@ -1,5 +1,5 @@
-import type { AxiosPromise, AxiosResponse } from 'axios';
-import type { InfraEnv, InfraEnvCreateParams, InfraEnvList, Cluster } from '../../common/api/types';
+import { AxiosPromise, AxiosResponse } from 'axios';
+import { InfraEnv, InfraEnvCreateParams, InfraEnvList, Cluster } from '../../common/api/types';
 import { client } from '../api/axiosClient';
 import InfraEnvIdsCacheService from './InfraEnvIdsCacheService';
 import ClusterService from './ClusterService';

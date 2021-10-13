@@ -1,4 +1,4 @@
-import type { AxiosPromise } from 'axios';
+import { AxiosPromise } from 'axios';
 import { Cluster } from '../../common';
 import { client } from '../api/axiosClient';
 

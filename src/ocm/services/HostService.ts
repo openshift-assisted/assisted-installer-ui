@@ -1,4 +1,4 @@
-import type { Cluster, Host, HostList, InfraEnv } from '../../common/api';
+import { Cluster, Host, HostList, InfraEnv } from '../../common/api';
 import { AxiosError, AxiosPromise } from 'axios';
 import { client } from '../api/axiosClient';
 import InfraEnvService from './InfraEnvService';
