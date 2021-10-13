@@ -20,7 +20,7 @@ import MinimalHWRequirements from '../Agent/MinimalHWRequirements';
 
 type EnvironmentDetailsProps = {
   infraEnv: InfraEnvK8sResource;
-  aiConfigMap: ConfigMapK8sResource;
+  aiConfigMap?: ConfigMapK8sResource;
 };
 
 const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({ infraEnv, aiConfigMap }) => (

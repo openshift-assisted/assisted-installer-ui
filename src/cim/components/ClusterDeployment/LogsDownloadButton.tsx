@@ -7,6 +7,7 @@ import { getLogsURL } from './helpers';
 type LogsDownloadButtonProps = {
   id: string;
   backendURL: string;
+  aiNamespace: string;
   Component?: React.FC;
   agentClusterInstall?: AgentClusterInstallK8sResource;
   variant?: ButtonVariant;
@@ -18,8 +19,9 @@ export const LogsDownloadButton: React.FC<LogsDownloadButtonProps> = ({
   agentClusterInstall,
   id,
   variant,
+  aiNamespace,
 }) => {
-  const logsURL = getLogsURL(backendURL, agentClusterInstall);
+  const logsURL = getLogsURL(backendURL, aiNamespace, agentClusterInstall);
 
   return (
     <Component

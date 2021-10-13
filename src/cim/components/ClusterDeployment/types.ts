@@ -73,7 +73,7 @@ export type ClusterDeploymentHostSelectionStepProps = {
   agents: AgentK8sResource[];
   onSaveHostsSelection: (values: ClusterDeploymentHostsSelectionValues) => Promise<string | void>;
   onClose: () => void;
-  aiConfigMap: ConfigMapK8sResource;
+  aiConfigMap?: ConfigMapK8sResource;
 };
 
 export type ClusterDeploymentWizardProps = {
@@ -89,7 +89,7 @@ export type ClusterDeploymentWizardProps = {
   clusterImages: ClusterImageSetK8sResource[];
   usedClusterNames: string[];
   onFinish: VoidFunction;
-  aiConfigMap: ConfigMapK8sResource;
+  aiConfigMap?: ConfigMapK8sResource;
 };
 
 export type FetchSecret = (name: string, namespace: string) => Promise<SecretK8sResource>;
@@ -99,5 +99,5 @@ export type ClusterDeploymentHostsSelectionProps = {
   agents: AgentK8sResource[];
   clusterDeployment: ClusterDeploymentK8sResource;
   onValuesChanged?: (values: ClusterDeploymentHostsSelectionValues) => void;
-  aiConfigMap: ConfigMapK8sResource;
+  aiConfigMap?: ConfigMapK8sResource;
 };
