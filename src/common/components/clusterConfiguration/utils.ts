@@ -2,6 +2,7 @@ import { Address4, Address6 } from 'ip-address';
 import { Cluster, ClusterDefaultConfig, Inventory, stringToJSON } from '../../api';
 import { NO_SUBNET_SET } from '../../config';
 import { HostDiscoveryValues, HostSubnets } from '../../types/clusters';
+import { OpenshiftVersionOptionType } from '../../types/versions';
 import { getHostname } from '../hosts/utils';
 
 export const getSubnet = (cidr: string): Address6 | Address4 | null => {
@@ -70,4 +71,14 @@ export const getHostDiscoveryInitialValues = (cluster: Cluster): HostDiscoveryVa
     useContainerNativeVirtualization: isOperatorEnabled('cnv'),
     usePlatformIntegration: cluster.platform?.type !== 'baremetal',
   };
+};
+
+// TODO(jtomasek): use getFeatureSupport('sno', selectedVersion.version) to get support level of SNO feature
+// for selected version once the API is available. This function will be obsolete then and can be removed.
+// https://issues.redhat.com/browse/MGMT-7787
+export const getSNOSupportLevel = (version: OpenshiftVersionOptionType['version'] = '') => {
+  if (version.startsWith('4.9')) {
+    return 'supported';
+  }
+  return 'dev-preview';
 };

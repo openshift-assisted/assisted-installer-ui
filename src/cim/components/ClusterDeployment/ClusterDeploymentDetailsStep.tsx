@@ -46,6 +46,7 @@ export const useDetailsFormik = ({
   defaultBaseDomain,
   pullSecret,
 }: UseDetailsFormikArgs): [ClusterDetailsValues, Lazy] => {
+  const ocpVersions = getOCPVersions(clusterImages);
   const cluster = React.useMemo(
     () =>
       clusterDeployment && agentClusterInstall
@@ -62,15 +63,15 @@ export const useDetailsFormik = ({
       getClusterDetailsInitialValues({
         managedDomains: [], // not supported
         cluster,
-        ocpVersions: getOCPVersions(clusterImages),
+        ocpVersions,
         baseDomain: defaultBaseDomain,
         pullSecret,
       }),
     [], // eslint-disable-line react-hooks/exhaustive-deps
   );
   const validationSchema = React.useMemo(
-    () => getClusterDetailsValidationSchema(usedClusterNames, cluster),
-    [usedClusterNames, cluster],
+    () => getClusterDetailsValidationSchema(usedClusterNames, cluster, ocpVersions),
+    [usedClusterNames, cluster, ocpVersions],
   );
 
   return [initialValues, validationSchema];

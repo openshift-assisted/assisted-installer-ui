@@ -14,15 +14,16 @@ export const getHumanizedTime = (dateTime?: string) => {
   return date.toLocaleTimeString();
 };
 
-export const isSNOSupportedVersionValue = (versionValue: string) => {
-  const parsed = parseFloat(versionValue);
+const isSNOSupportedVersionString = (version: OpenshiftVersionOptionType['version']) => {
+  let parsed = parseFloat(version);
   if (isNaN(parsed)) {
     // openshift-v4.8.0
-    return parseFloat(versionValue?.split('-v')?.[1]) >= SNO_SUPPORT_MIN_VERSION;
+    parsed = parseFloat(version?.split('-v')?.[1]);
   }
   return parsed >= SNO_SUPPORT_MIN_VERSION;
 };
 
 export const isSNOSupportedVersion = (version: OpenshiftVersionOptionType) => {
-  return isSNOSupportedVersionValue(version.version || version.value);
+  // NOTE(jtomasek): Note that the version.value format is different in OCM and ACM
+  return isSNOSupportedVersionString(version.version);
 };

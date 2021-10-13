@@ -22,4 +22,11 @@ export type BareMetalHostK8sResource = K8sResourceCommon & {
     externallyProvisioned?: boolean;
     description?: string;
   };
+  status?: {
+    provisioning?: {
+      state?: string;
+    };
+    errorMessage?: string;
+    errorType?: string;
+  };
 };
