@@ -6,4 +6,6 @@ import { getAssistedUiLibVersion } from './config';
 // Workaround for TS17016
 window['Fragment'] = React.Fragment;
 
-console.log('Assisted-ui-lib version: ', getAssistedUiLibVersion());
+if (process.env.NODE_ENV !== 'test') {
+  console.log('Assisted-ui-lib version: ', getAssistedUiLibVersion());
+}
