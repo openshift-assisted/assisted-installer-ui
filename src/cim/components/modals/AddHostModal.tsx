@@ -43,7 +43,7 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
     >
       {hasDHCP && (
         <ModalBoxBody>
-          <Flex justifyContent={{ default: 'justifyContentFlexStart' }}>
+          <Flex justifyContent={{ default: 'justifyContentSpaceBetween' }}>
             <FlexItem>
               <Radio
                 id="iso"
@@ -53,7 +53,7 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
                 onChange={setDiscoveryISO}
               />
             </FlexItem>
-            <FlexItem spacer={{ default: isBMPlatform ? 'spacerXl' : 'spacerMd' }} />
+            <FlexItem spacer={{ default: isBMPlatform ? 'spacerXl' : 'spacerSm' }} />
             <FlexItem>
               <Radio
                 id="bmc"

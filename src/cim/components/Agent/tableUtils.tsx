@@ -11,7 +11,8 @@ import { getAIHosts } from '../helpers';
 import { AGENT_BMH_HOSTNAME_LABEL_KEY, INFRAENV_AGENTINSTALL_LABEL_KEY } from '../common';
 import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
 import NetworkingStatus from '../status/NetworkingStatus';
-import { getAgentStatus } from '../helpers/status';
+import { getAgentStatus, getBMHStatus } from '../helpers/status';
+import { Button, Popover } from '@patternfly/react-core';
 
 export const discoveryTypeColumn = (
   agents: AgentK8sResource[],
@@ -47,12 +48,14 @@ export const discoveryTypeColumn = (
 
 type StatusColumnProps = {
   agents: AgentK8sResource[];
+  bareMetalHosts?: BareMetalHostK8sResource[];
   onEditHostname?: ClusterDeploymentHostsTablePropsActions['onEditHost'];
   onApprove?: ClusterDeploymentHostsTablePropsActions['onApprove'];
 };
 
 export const infraEnvStatusColumn = ({
   agents,
+  bareMetalHosts,
   onEditHostname,
   onApprove,
 }: StatusColumnProps): TableRow<Host> => {
@@ -66,16 +69,36 @@ export const infraEnvStatusColumn = ({
     },
     cell: (host) => {
       const agent = agents.find((a) => a.metadata?.uid === host.id);
+      const bmh = bareMetalHosts?.find((b) => b.metadata?.uid === host.id);
+      let bmhStatus;
       let title: React.ReactNode = '--';
       if (agent) {
         const editHostname = onEditHostname ? () => onEditHostname(agent) : undefined;
         title = <AgentStatus agent={agent} onApprove={onApprove} onEditHostname={editHostname} />;
+      } else if (bmh) {
+        bmhStatus = getBMHStatus(bmh);
+        title = bmhStatus.message ? (
+          <Popover
+            headerContent="Error"
+            bodyContent={bmhStatus.message}
+            minWidth="30rem"
+            maxWidth="50rem"
+            hideOnOutsideClick
+            zIndex={300}
+          >
+            <Button variant={'link'} isInline>
+              {bmhStatus.title}
+            </Button>
+          </Popover>
+        ) : (
+          bmhStatus.title
+        );
       }
 
       return {
         title,
         props: { 'data-testid': 'host-status' },
-        sortableValue: agent ? getAgentStatus(agent)[0] : '',
+        sortableValue: agent ? getAgentStatus(agent)[0] : bmhStatus?.title ? bmhStatus.title : '',
       };
     },
   };

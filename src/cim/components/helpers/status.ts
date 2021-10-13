@@ -9,7 +9,7 @@ import {
   AgentStatusCondition,
   AgentStatusConditionType,
 } from '../../types/k8s/agent';
-import { StatusCondition } from '../../types';
+import { StatusCondition, BareMetalHostK8sResource } from '../../types';
 import { getFailingResourceConditions, REQUIRED_AGENT_CONDITION_TYPES } from './conditions';
 import { Validation, ValidationsInfo } from '../../../common/types/hosts';
 import { HostValidationId } from '../../../common/api/types';
@@ -113,7 +113,7 @@ export const getAgentStatus = (
   let state: AgentStatus = agent.status?.debugInfo?.state || 'insufficient';
 
   const conditions = getFailingResourceConditions(agent, REQUIRED_AGENT_CONDITION_TYPES);
-  let validationsInfo = agent.status?.hostValidationInfo || {};
+  let validationsInfo = agent.status?.hostValidationInfo;
   if (conditions?.length) {
     validationsInfo = {
       infrastructure: conditions.map(
@@ -128,8 +128,21 @@ export const getAgentStatus = (
   if (!excludeDiscovered && !agent.spec.approved) {
     // TODO(mlibra): Add icon
     state = 'Discovered';
-  } else if (state !== 'binding' && validationsInfo?.infrastructure) {
+  } else if (
+    state !== 'binding' &&
+    validationsInfo?.infrastructure &&
+    /* state === disconnected for this condition already, so let's keep it */
+    !validationsInfo.infrastructure.find((c) => c.id.toLowerCase() === 'connected')
+  ) {
     state = 'insufficient';
   }
-  return [state, agent.status?.debugInfo?.stateInfo || '', validationsInfo];
+  return [state, agent.status?.debugInfo?.stateInfo || '', validationsInfo || {}];
+};
+
+export const getBMHStatus = (bmh: BareMetalHostK8sResource) => {
+  const state = bmh.status?.errorType || bmh.status?.provisioning?.state;
+  return {
+    title: state ? state.charAt(0).toUpperCase() + state.slice(1) : state,
+    message: bmh.status?.errorMessage,
+  };
 };

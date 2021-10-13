@@ -70,7 +70,11 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
   };
 
   const initialValues = getClusterDetailsInitialValues(props);
-  const validationSchema = getClusterDetailsValidationSchema(usedClusterNames, cluster);
+  const validationSchema = getClusterDetailsValidationSchema(
+    usedClusterNames,
+    cluster,
+    ocpVersions,
+  );
 
   return (
     <Formik
