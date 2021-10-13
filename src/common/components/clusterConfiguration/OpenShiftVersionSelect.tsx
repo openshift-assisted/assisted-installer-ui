@@ -22,23 +22,10 @@ const getOpenshiftVersionHelperText = (versions: OpenshiftVersionOptionType[]) =
     helperTextComponent = (
       <>
         <ExclamationTriangleIcon color={warningColor.value} size="sm" />
-        &nbsp;Please note that this version is not production ready.
-      </>
-    );
-  } else if (selectedVersion.value === '4.7') {
-    helperTextComponent = (
-      <>
-        <ExclamationTriangleIcon color={warningColor.value} size="sm" />
-        &nbsp;
-        {
-          "Full support for this version ends on August 27th 2021 and won't be available as an installation option afterwards."
-        }
-        &nbsp;
-        <OpenShiftLifeCycleDatesLink />
+        &nbsp;Please note that this version is not production ready. <OpenShiftLifeCycleDatesLink />
       </>
     );
   }
-
   return helperTextComponent;
 };
 
@@ -47,15 +34,17 @@ type OpenShiftVersionSelectProps = {
 };
 const OpenShiftVersionSelect: React.FC<OpenShiftVersionSelectProps> = ({ versions }) => {
   const {
-    values: { highAvailabilityMode },
+    values: { highAvailabilityMode, openshiftVersion },
     setFieldValue,
   } = useFormikContext<ClusterCreateParams>();
+
+  const selectedVersion = versions.find((v) => v.value === openshiftVersion) || versions[0];
   React.useEffect(() => {
-    if (highAvailabilityMode === 'None') {
+    if (highAvailabilityMode === 'None' && !isSNOSupportedVersion(selectedVersion)) {
       const firstSupportedVersionValue = versions.find(isSNOSupportedVersion)?.value;
       setFieldValue('openshiftVersion', firstSupportedVersionValue);
     }
-  }, [highAvailabilityMode, setFieldValue, versions]);
+  }, [highAvailabilityMode, selectedVersion, setFieldValue, versions]);
 
   const selectOptions = React.useMemo(
     () =>

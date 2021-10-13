@@ -20,7 +20,7 @@ type ACMClusterDeploymentHostsStepProps = {
   agentClusterInstall: AgentClusterInstallK8sResource;
   agents: AgentK8sResource[];
   error?: string;
-  aiConfigMap: ConfigMapK8sResource;
+  aiConfigMap?: ConfigMapK8sResource;
 };
 
 const ACMClusterDeploymentHostsStep: React.FC<ACMClusterDeploymentHostsStepProps> = ({
