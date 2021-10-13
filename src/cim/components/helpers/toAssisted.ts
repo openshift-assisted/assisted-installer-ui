@@ -7,7 +7,7 @@ import { getAgentStatus, getClusterStatus } from './status';
 import { getHostNetworks } from './network';
 import { BareMetalHostK8sResource, InfraEnvK8sResource } from '../../types';
 import { AGENT_BMH_HOSTNAME_LABEL_KEY, INFRAENV_AGENTINSTALL_LABEL_KEY } from '../common';
-import { getAgentRole } from './agents';
+import { getAgentProgress, getAgentProgressStages, getAgentRole } from './agents';
 
 export const getAIHosts = (
   agents: AgentK8sResource[],
@@ -30,12 +30,7 @@ export const getAIHosts = (
         bmhAgents.push(agent.metadata?.labels?.[AGENT_BMH_HOSTNAME_LABEL_KEY]);
       }
 
-      const {
-        currentStage = 'Starting installation',
-        progressInfo,
-        stageStartTime,
-        stageUpdateTime,
-      } = agent.status?.progress || {};
+      const agentProgress = getAgentProgress(agent);
       return {
         kind: 'Host',
         id: agent.metadata?.uid || '',
@@ -48,23 +43,14 @@ export const getAIHosts = (
         createdAt: agent.metadata?.creationTimestamp,
         validationsInfo: JSON.stringify({ hardware: [] }),
         inventory: JSON.stringify(inventory),
-        progress: {
-          currentStage,
-          progressInfo,
-          stageStartedAt: stageStartTime,
-          stageUpdatedAt: stageUpdateTime,
+        progress: agentProgress && {
+          currentStage: agentProgress.currentStage,
+          progressInfo: agentProgress.progressInfo,
+          stageStartedAt: agentProgress.stageStartTime,
+          stageUpdatedAt: agentProgress.stageUpdateTime,
         },
-        progressStages: [
-          'Starting installation',
-          'Waiting for control plane',
-          'Installing',
-          'Writing image to disk',
-          'Rebooting',
-          'Waiting for ignition',
-          'Configuring',
-          'Joined',
-          'Done',
-        ],
+        progressStages: getAgentProgressStages(agent),
+        bootstrap: agent.status?.bootstrap,
       };
     },
   );
