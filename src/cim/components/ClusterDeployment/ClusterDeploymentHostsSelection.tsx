@@ -53,9 +53,11 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
             : 'At least 3 hosts are required, capable of functioning as control plane (master) nodes.'}
         </TextContent>
       </GridItem>
-      <GridItem>
-        <MinimalHWRequirements aiConfigMap={aiConfigMap} isSNOCluster={isSNOCluster} />
-      </GridItem>
+      {aiConfigMap && (
+        <GridItem>
+          <MinimalHWRequirements aiConfigMap={aiConfigMap} isSNOCluster={isSNOCluster} />
+        </GridItem>
+      )}
 
       <GridItem>
         <Form>

@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { EventList } from '../../../common/api/types';
 import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-install';
 import { getClusterStatus } from '../helpers/status';
-import { k8sProxyURL } from '../helpers/proxy';
+import { getK8sProxyURL } from '../helpers/proxy';
 import { EventListFetchProps } from '../../../common';
 
 export const shouldShowClusterCredentials = (
@@ -56,29 +56,34 @@ export const formatEventsData = (rawData: any): EventList =>
 
 export const getLogsURL = (
   backendURL: string,
+  aiNamespace: string,
   agentClusterInstall?: AgentClusterInstallK8sResource,
 ) => {
   if (agentClusterInstall?.status?.debugInfo?.logsURL) {
     const logsURL = new URL(agentClusterInstall.status?.debugInfo?.logsURL);
-    return `${backendURL}${k8sProxyURL}${logsURL.pathname}${logsURL.search}`;
+    return `${backendURL}${getK8sProxyURL(aiNamespace)}${logsURL.pathname}${logsURL.search}`;
   }
   return null;
 };
 
 // events are downloaded using ACM's wrapped fetchGet(), so the backendUrl is missing here
-export const getEventsURL = (agentClusterInstall?: AgentClusterInstallK8sResource) => {
+const getEventsURL = (
+  aiNamespace: string,
+  agentClusterInstall?: AgentClusterInstallK8sResource,
+) => {
   if (agentClusterInstall?.status?.debugInfo?.eventsURL) {
     const eventsURL = new URL(agentClusterInstall.status?.debugInfo?.eventsURL);
-    return `${k8sProxyURL}${eventsURL.pathname}${eventsURL.search}`;
+    return `${getK8sProxyURL(aiNamespace)}${eventsURL.pathname}${eventsURL.search}`;
   }
   return null;
 };
 
 export const getOnFetchEventsHandler = (
   fetchEvents: (url: string) => Promise<string>,
+  aiNamespace: string,
   agentClusterInstall?: AgentClusterInstallK8sResource,
 ): EventListFetchProps['onFetchEvents'] => async (params, onSuccess, onError) => {
-  const eventsURL = getEventsURL(agentClusterInstall);
+  const eventsURL = getEventsURL(aiNamespace, agentClusterInstall);
   if (!eventsURL) {
     onError('Cannot determine events URL');
     return;
