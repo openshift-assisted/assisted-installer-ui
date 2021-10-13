@@ -13,27 +13,28 @@ import {
   ClusterDefaultConfig,
   PreflightHardwareRequirements,
   PlatformType,
-} from '../../common/api/types';
+} from '../../common';
+
 import { client, BASE_PATH } from './axiosClient';
 
-export const getClusters = (): AxiosPromise<Cluster[]> => client.get('/v2/clusters');
+export const getClusters = (): AxiosPromise<Cluster[]> => client.get('/v1/clusters');
 
 export const getClustersDefaultConfiguration = (): AxiosPromise<ClusterDefaultConfig> =>
-  client.get('/v2/clusters/default-config');
+  client.get('/v1/clusters/default-config');
 
-export const getCluster = (id: string): AxiosPromise<Cluster> => client.get(`/v2/clusters/${id}`);
+export const getCluster = (id: string): AxiosPromise<Cluster> => client.get(`/v1/clusters/${id}`);
 
 export const getClustersByOpenshiftId = (openshiftId: string): AxiosPromise<Cluster[]> =>
   client.get(`/v1/clusters?openshift_cluster_id=${openshiftId}`);
 
 export const postCluster = (params: ClusterCreateParams): AxiosPromise<Cluster> =>
-  client.post('/v2/clusters', params);
+  client.post('/v1/clusters', params);
 
 export const patchCluster = (id: string, params: ClusterUpdateParams): AxiosPromise<Cluster> =>
-  client.patch(`/v2/clusters/${id}`, params);
+  client.patch(`/v1/clusters/${id}`, params);
 
 export const deleteCluster = (id: string): AxiosPromise<void> =>
-  client.delete(`/v2/clusters/${id}`);
+  client.delete(`/v1/clusters/${id}`);
 
 export const getClusterHosts = (id: string): AxiosPromise<Host[]> =>
   client.get(`/v1/clusters/${id}/hosts`);
