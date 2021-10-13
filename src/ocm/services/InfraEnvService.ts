@@ -1,12 +1,12 @@
-import { AxiosPromise, AxiosResponse } from 'axios';
-import { InfraEnv, InfraEnvCreateParams, InfraEnvList, Cluster } from '../../common/api/types';
-import { client } from '../api/axiosClient';
+import { InfraEnv, InfraEnvCreateParams, Cluster } from '../../common';
+import { client } from '../api';
 import InfraEnvIdsCacheService from './InfraEnvIdsCacheService';
 import ClusterService from './ClusterService';
+import { AxiosResponse } from 'axios';
 
 const InfraEnvService = {
-  list(): AxiosPromise<InfraEnvList> {
-    return client.get('/v2/infra-envs/');
+  list() {
+    return client.get<InfraEnv[]>('/v2/infra-envs/');
   },
 
   async getInfraEnvId(clusterId: Cluster['id']): Promise<string> {
@@ -23,20 +23,20 @@ const InfraEnvService = {
     return infraEnvId;
   },
 
-  register(params: InfraEnvCreateParams): AxiosPromise<InfraEnv> {
-    return client.post('/v2/infra-envs', params);
+  register(params: InfraEnvCreateParams) {
+    return client.post<InfraEnvCreateParams, AxiosResponse<InfraEnv>>('/v2/infra-envs', params);
   },
 
-  deregister(infraEnvId: InfraEnv['id']): AxiosPromise<void> {
-    return client.delete(`/v2/infra-envs/${infraEnvId}`);
+  deregister(infraEnvId: InfraEnv['id']) {
+    return client.delete<void>(`/v2/infra-envs/${infraEnvId}`);
   },
 
-  async delete(clusterId: Cluster['id']): Promise<AxiosResponse<void>> {
+  async delete(clusterId: Cluster['id']) {
     const infraEnvId = await InfraEnvService.getInfraEnvId(clusterId);
     return InfraEnvService.deregister(infraEnvId);
   },
 
-  async fillCache(): Promise<void> {
+  async fillCache() {
     const result = await Promise.all([ClusterService.list(), InfraEnvService.list()]);
     const [responseFromClusterService, responseFromInfraEnvService] = result;
 

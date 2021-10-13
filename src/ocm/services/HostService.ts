@@ -1,14 +1,14 @@
-import { Cluster, Host, HostList, InfraEnv } from '../../common/api';
+import { Cluster, Host, InfraEnv } from '../../common';
 import { AxiosError, AxiosPromise } from 'axios';
-import { client } from '../api/axiosClient';
+import { client } from '../api';
 import InfraEnvService from './InfraEnvService';
 
 const HostService = {
-  list(infraEnvId: InfraEnv['id']): AxiosPromise<HostList> {
-    return client.get(`/v2/infra-envs/${infraEnvId}/hosts`);
+  list(infraEnvId: InfraEnv['id']) {
+    return client.get<Host[]>(`/v2/infra-envs/${infraEnvId}/hosts`);
   },
-  deregister(infraEnvId: InfraEnv['id'], hostId: Host['id']): AxiosPromise<void> {
-    return client.delete(`/v2/infra-envs/${infraEnvId}/hosts/${hostId}`);
+  deregister(infraEnvId: InfraEnv['id'], hostId: Host['id']) {
+    return client.delete<void>(`/v2/infra-envs/${infraEnvId}/hosts/${hostId}`);
   },
   async deleteAll(clusterId: Cluster['id']) {
     try {
@@ -23,9 +23,7 @@ const HostService = {
 
       return Promise.all(promises);
     } catch (e) {
-      // noinspection UnnecessaryLocalVariableJS
-      const error = e as AxiosError<Partial<{ reason: string; message: string }>>;
-      throw error;
+      throw e as AxiosError<Partial<{ reason: string; message: string }>>;
     }
   },
 };

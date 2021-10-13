@@ -1,14 +1,18 @@
-import { AxiosPromise } from 'axios';
-import { Cluster } from '../../common';
-import { client } from '../api/axiosClient';
+import { Cluster, ClusterCreateParams } from '../../common';
+import { client } from '../api';
+import { AxiosResponse } from 'axios';
 
 const ClusterService = {
-  list(): AxiosPromise<Cluster[]> {
-    return client.get('/v2/clusters');
+  list() {
+    return client.get<Cluster[]>('/v2/clusters');
   },
 
-  deregister(id: string): AxiosPromise<void> {
-    return client.delete(`/v2/clusters/${id}`);
+  deregister(id: string) {
+    return client.delete<void>(`/v2/clusters/${id}`);
+  },
+
+  register(params: ClusterCreateParams) {
+    return client.post<ClusterCreateParams, AxiosResponse<Cluster>>('/v2/clusters', params);
   },
 };
 
