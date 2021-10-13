@@ -45,6 +45,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTable> = ({
       discoveryTypeColumn(agents, bareMetalHosts),
       infraEnvStatusColumn({
         agents,
+        bareMetalHosts,
         onEditHostname: actions.onEditHost,
         onApprove: actions.onApprove,
       }),
