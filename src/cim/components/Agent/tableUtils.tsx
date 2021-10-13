@@ -11,13 +11,20 @@ import { getAIHosts } from '../helpers';
 import { AGENT_BMH_HOSTNAME_LABEL_KEY, INFRAENV_AGENTINSTALL_LABEL_KEY } from '../common';
 import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
 import NetworkingStatus from '../status/NetworkingStatus';
-import { getAgentStatus } from '../helpers/status';
+import { getAgentStatus, getBMHStatus } from '../helpers/status';
+import { Button, Popover } from '@patternfly/react-core';
 
 export const discoveryTypeColumn = (
   agents: AgentK8sResource[],
   bareMetalHosts: BareMetalHostK8sResource[],
 ): TableRow<Host> => ({
-  header: { title: 'Discovery type', transforms: [sortable] },
+  header: {
+    title: 'Discovery type',
+    props: {
+      id: 'col-header-discovery-type',
+    },
+    transforms: [sortable],
+  },
   cell: (host) => {
     const agent = agents.find((a) => a.metadata?.uid === host.id);
     let discoveryType = 'Unknown';
@@ -41,29 +48,57 @@ export const discoveryTypeColumn = (
 
 type StatusColumnProps = {
   agents: AgentK8sResource[];
+  bareMetalHosts?: BareMetalHostK8sResource[];
   onEditHostname?: ClusterDeploymentHostsTablePropsActions['onEditHost'];
   onApprove?: ClusterDeploymentHostsTablePropsActions['onApprove'];
 };
 
 export const infraEnvStatusColumn = ({
   agents,
+  bareMetalHosts,
   onEditHostname,
   onApprove,
 }: StatusColumnProps): TableRow<Host> => {
   return {
-    header: { title: 'Status', transforms: [sortable] },
+    header: {
+      title: 'Status',
+      props: {
+        id: 'col-header-infraenvstatus',
+      },
+      transforms: [sortable],
+    },
     cell: (host) => {
       const agent = agents.find((a) => a.metadata?.uid === host.id);
+      const bmh = bareMetalHosts?.find((b) => b.metadata?.uid === host.id);
+      let bmhStatus;
       let title: React.ReactNode = '--';
       if (agent) {
         const editHostname = onEditHostname ? () => onEditHostname(agent) : undefined;
         title = <AgentStatus agent={agent} onApprove={onApprove} onEditHostname={editHostname} />;
+      } else if (bmh) {
+        bmhStatus = getBMHStatus(bmh);
+        title = bmhStatus.message ? (
+          <Popover
+            headerContent="Error"
+            bodyContent={bmhStatus.message}
+            minWidth="30rem"
+            maxWidth="50rem"
+            hideOnOutsideClick
+            zIndex={300}
+          >
+            <Button variant={'link'} isInline>
+              {bmhStatus.title}
+            </Button>
+          </Popover>
+        ) : (
+          bmhStatus.title
+        );
       }
 
       return {
         title,
         props: { 'data-testid': 'host-status' },
-        sortableValue: agent ? getAgentStatus(agent)[0] : '',
+        sortableValue: agent ? getAgentStatus(agent)[0] : bmhStatus?.title ? bmhStatus.title : '',
       };
     },
   };
@@ -74,7 +109,13 @@ export const clusterColumn = (
   getClusterDeploymentLink: (cd: { name: string; namespace: string }) => string,
 ): TableRow<Host> => {
   return {
-    header: { title: 'Cluster', transforms: [sortable] },
+    header: {
+      title: 'Cluster',
+      props: {
+        id: 'col-header-cluster',
+      },
+      transforms: [sortable],
+    },
     cell: (host) => {
       const agent = agents.find((a) => a.metadata?.uid === host.id);
       let title: React.ReactNode = '--';
@@ -96,7 +137,13 @@ export const clusterColumn = (
 
 export const infraEnvColumn = (agents: AgentK8sResource[]): TableRow<Host> => {
   return {
-    header: { title: 'Infrastructure env', transforms: [sortable] },
+    header: {
+      title: 'Infrastructure env',
+      props: {
+        id: 'col-header-infraenv',
+      },
+      transforms: [sortable],
+    },
     cell: (host) => {
       const agent = agents.find((a) => a.metadata?.uid === host.id) as AgentK8sResource;
       const infraEnvName = agent.metadata?.labels?.[INFRAENV_AGENTINSTALL_LABEL_KEY] || 'N/A';
@@ -113,7 +160,13 @@ export const infraEnvColumn = (agents: AgentK8sResource[]): TableRow<Host> => {
 export const networkingStatusColumn = (
   onEditHostname?: HostsTableActions['onEditHost'],
 ): TableRow<Host> => ({
-  header: { title: 'Status', transforms: [sortable] },
+  header: {
+    title: 'Status',
+    props: {
+      id: 'col-header-networkingstatus',
+    },
+    transforms: [sortable],
+  },
   cell: (host) => {
     const editHostname = onEditHostname ? () => onEditHostname(host) : undefined;
     return {

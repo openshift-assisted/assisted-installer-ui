@@ -9,7 +9,7 @@
   "source": "src/index.ts",
   "types": "dist/src/index.d.ts",
   "engines": {
-    "node": ">=10"
+    "node": ">=12.16"
   },
   "scripts": {
     "clean": "rm -rf dist/*",
@@ -21,6 +21,7 @@
     "sync-to-ui": "./scripts/sync-dist.sh",
     "prepare": "install-peers",
     "test": "run-s test:circular test:lint",
+    "test:type-check": "tsc --noEmit",
     "test:lint": "eslint --ext .js,.jsx,.ts,.tsx --color --max-warnings=0 ./src",
     "test:unit": "cross-env CI=1 react-scripts test --env=jsdom",
     "test:circular": "dpdm --warning false --tree false src/index.ts | grep 'no circular dependency were found'",

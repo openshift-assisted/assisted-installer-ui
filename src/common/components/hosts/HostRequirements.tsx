@@ -34,7 +34,7 @@ const HostRequirements: React.FC<HostRequirementsProps> = ({
         {!isSNOCluster && (
           <>
             <ListItem>
-              Masters: At least {master?.cpuCores || 4} CPU cores, {masterRam} RAM,{' '}
+              Control plane nodes: At least {master?.cpuCores || 4} CPU cores, {masterRam} RAM,{' '}
               {master?.diskSizeGb || 120} GB filesystem for every supervisor.
             </ListItem>
             <ListItem>
