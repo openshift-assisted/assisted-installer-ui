@@ -77,7 +77,7 @@ export const infraEnvStatusColumn = ({
         title = <AgentStatus agent={agent} onApprove={onApprove} onEditHostname={editHostname} />;
       } else if (bmh) {
         bmhStatus = getBMHStatus(bmh);
-        if (bmhStatus.message) {
+        title = bmhStatus.message ? (
           <Popover
             headerContent="Error"
             bodyContent={bmhStatus.message}
@@ -89,10 +89,10 @@ export const infraEnvStatusColumn = ({
             <Button variant={'link'} isInline>
               {bmhStatus.title}
             </Button>
-          </Popover>;
-        } else {
-          title = bmhStatus.title;
-        }
+          </Popover>
+        ) : (
+          bmhStatus.title
+        );
       }
 
       return {
