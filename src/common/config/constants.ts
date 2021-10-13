@@ -37,7 +37,7 @@ export const HOST_ROLES: HostRole[] = [
   },
   {
     value: 'master',
-    label: 'Master',
+    label: 'Control plane node',
     description: 'Runs the control plane components of OpenShift, including the API server.',
   },
   {
@@ -224,7 +224,7 @@ export const CLUSTER_VALIDATION_LABELS: { [key in ClusterValidationId]: string }
   'ingress-vip-defined': 'Ingress VIP',
   'ingress-vip-valid': 'Ingress VIP validity',
   'all-hosts-are-ready-to-install': 'All hosts are ready to install',
-  'sufficient-masters-count': 'Masters count',
+  'sufficient-masters-count': 'Control plane nodes count',
   'dns-domain-defined': 'DNS domain',
   'pull-secret-set': 'Pull secret',
   'ntp-server-configured': 'NTP server',
