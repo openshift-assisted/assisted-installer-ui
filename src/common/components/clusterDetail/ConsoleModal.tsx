@@ -62,13 +62,12 @@ const getHostIPs = (cluster: Cluster): { [key: string]: string } => {
     if (host && host.requestedHostname) {
       const interfaces: Interface[] | undefined =
         stringToJSON<Inventory>(host.inventory)?.interfaces || undefined;
-      if (
-        interfaces &&
-        interfaces.length > 0 &&
-        interfaces[0].ipv4Addresses &&
-        interfaces[0].ipv4Addresses.length > 0
-      ) {
-        hostIPAddresses[host.requestedHostname] = interfaces[0].ipv4Addresses[0].split('/')[0];
+      if (interfaces && interfaces.length > 0) {
+        if (interfaces[0].ipv4Addresses && interfaces[0].ipv4Addresses.length > 0) {
+          hostIPAddresses[host.requestedHostname] = interfaces[0].ipv4Addresses[0].split('/')[0];
+        } else if (interfaces[0].ipv6Addresses && interfaces[0].ipv6Addresses.length > 0) {
+          hostIPAddresses[host.requestedHostname] = interfaces[0].ipv6Addresses[0].split('/')[0];
+        }
       }
     }
   });
