@@ -24,6 +24,9 @@ export const getAIHosts = (
         // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         // @ts-ignore
         intf.ipv4Addresses = _.cloneDeep(intf.ipV4Addresses);
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore
+        intf.ipv6Addresses = _.cloneDeep(intf.ipV6Addresses);
       });
 
       if (agent.metadata?.labels?.[AGENT_BMH_HOSTNAME_LABEL_KEY]) {
