@@ -259,6 +259,7 @@ export const useHostsTable = (cluster: Cluster) => {
   );
 
   return {
+    onDiskRole,
     onEditHost,
     actionChecks,
     onEditRole,
