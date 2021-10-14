@@ -99,8 +99,8 @@ export const getHostProgress = (host: Host) =>
 export const getHostProgressStageNumber = (host: Host) => {
   const stages = getHostProgressStages(host);
   const progress = getHostProgress(host);
-  // TODO(jkilzi): progress cannot be undefined! This condition seems to be redundant.
-  if (progress) {
+  // can be undefined in CIM
+  if (progress?.currentStage) {
     const currentStage = progress.currentStage;
     return stages.findIndex((s) => currentStage.match(s)) + 1;
   }
