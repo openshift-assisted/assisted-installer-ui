@@ -4,36 +4,30 @@ import { PageSectionVariants, PageSection } from '@patternfly/react-core';
 import { Cluster, ErrorState, LoadingState } from '../../common';
 import { routeBasePath } from '../config';
 import { NewClusterPage } from './clusters';
-import { getClusters, handleApiError } from '../api';
+import { useClustersList } from '../hooks';
 
-type SingleClusterProps = RouteComponentProps;
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'clusters/fetch':
+  }
+};
 
 const SingleCluster: React.FC<SingleClusterProps> = () => {
-  const [error, setError] = React.useState('');
-  const [clusters, setClusters] = React.useState<Cluster[]>();
+  const [internalClusters, dispatch] = React.useReducer(reducer);
+  const { error, loading, clusters } = useClustersList([]);
+  setInternalClusters(clusters || []);
 
-  const fetchClusters = React.useCallback(async () => {
-    try {
-      const { data } = await getClusters();
-      setClusters(data);
-    } catch (e) {
-      return handleApiError(e, () => setError('Failed to fetch cluster.'));
-    }
-  }, [setClusters]);
-
-  React.useEffect(() => {
-    fetchClusters();
-  }, [fetchClusters]);
+  const handleFetchData = React.useCallback(() => void dispatch('clusters/fetch'), []);
 
   if (error) {
     return (
       <PageSection variant={PageSectionVariants.light} isFilled>
-        <ErrorState title="Failed to fetch cluster." fetchData={fetchClusters} />
+        <ErrorState title="Failed to fetch cluster." fetchData={handleFetchData} />
       </PageSection>
     );
   }
 
-  if (!clusters) {
+  if (loading) {
     return (
       <PageSection variant={PageSectionVariants.light} isFilled>
         <LoadingState />
@@ -41,16 +35,16 @@ const SingleCluster: React.FC<SingleClusterProps> = () => {
     );
   }
 
-  if (clusters.length === 0) {
+  if (internalClusters?.length === 0) {
     return <NewClusterPage />;
-  }
-
-  if (clusters.length > 1) {
+  } else if (internalClusters?.length > 1) {
     // TODO(mlibra): What about Day2 cluster in single-cluster flow?
-    console.warn('More than one cluster found!', clusters);
+    console.warn('More than one cluster found!', internalClusters);
   }
 
-  return <Redirect to={`${routeBasePath}/clusters/${clusters[0].id}`} />;
+  return <Redirect to={`${routeBasePath}/clusters/${internalClusters[0].id}`} />;
 };
 
 export default SingleCluster;
+
+type SingleClusterProps = RouteComponentProps;

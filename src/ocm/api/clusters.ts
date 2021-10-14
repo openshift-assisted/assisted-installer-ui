@@ -13,17 +13,14 @@ import {
   ClusterDefaultConfig,
   PreflightHardwareRequirements,
   PlatformType,
-} from '../../common';
-
+} from '../../common/api/types';
 import { client, BASE_PATH } from './axiosClient';
 
 export const getClusters = (): AxiosPromise<Cluster[]> => client.get('/v1/clusters');
-
 export const getClustersDefaultConfiguration = (): AxiosPromise<ClusterDefaultConfig> =>
   client.get('/v1/clusters/default-config');
 
 export const getCluster = (id: string): AxiosPromise<Cluster> => client.get(`/v1/clusters/${id}`);
-
 export const getClustersByOpenshiftId = (openshiftId: string): AxiosPromise<Cluster[]> =>
   client.get(`/v1/clusters?openshift_cluster_id=${openshiftId}`);
 

@@ -26,9 +26,7 @@ import { fetchClustersAsync, deleteCluster } from '../../reducers/clusters/clust
 import { handleApiError, getErrorMessage } from '../../api/utils';
 import ClusterBreadcrumbs from './ClusterBreadcrumbs';
 import { routeBasePath } from '../../config';
-import HostService from '../../services/HostService';
-import ClusterService from '../../services/ClusterService';
-import InfraEnvService from '../../services/InfraEnvService';
+import { ClustersService } from '../../services';
 
 type ClustersProps = RouteComponentProps;
 
@@ -42,13 +40,10 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
     uiState.current = clustersUIState;
   }
   const dispatch = useDispatch();
-  const fetchClusters = React.useCallback(() => dispatch(fetchClustersAsync()), [dispatch]);
   const deleteClusterAsync = React.useCallback(
     async (clusterId) => {
       try {
-        await HostService.deleteAll(clusterId);
-        await ClusterService.deregister(clusterId);
-        await InfraEnvService.delete(clusterId);
+        await ClustersService.delete(clusterId);
         dispatch(deleteCluster(clusterId));
       } catch (e) {
         return handleApiError(e, () =>
@@ -62,6 +57,7 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
     [dispatch, addAlert],
   );
 
+  const fetchClusters = React.useCallback(() => dispatch(fetchClustersAsync()), [dispatch]);
   React.useEffect(() => {
     fetchClusters();
   }, [fetchClusters]);

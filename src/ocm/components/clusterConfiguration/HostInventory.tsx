@@ -21,7 +21,7 @@ import {
   CNVHostRequirementsContent,
 } from '../hosts/HostRequirementsContent';
 import ClusterWizardHeaderExtraActions from './ClusterWizardHeaderExtraActions';
-import useClusterSupportedPlatforms from '../../api/hooks/useClusterSupportedPlatforms';
+import { useClusterSupportedPlatforms } from '../../hooks';
 
 const OCSLabel: React.FC = () => (
   <>

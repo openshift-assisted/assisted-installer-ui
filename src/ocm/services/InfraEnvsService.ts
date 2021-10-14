@@ -1,18 +1,12 @@
-import { InfraEnv, InfraEnvCreateParams, Cluster } from '../../common';
-import { client } from '../api';
+import { InfraEnvCreateParams, Cluster } from '../../common';
+import { InfraEnvsAPI, ClustersAPI } from '../api';
 import InfraEnvIdsCacheService from './InfraEnvIdsCacheService';
-import ClusterService from './ClusterService';
-import { AxiosResponse } from 'axios';
 
-const InfraEnvService = {
-  list() {
-    return client.get<InfraEnv[]>('/v2/infra-envs/');
-  },
-
+const InfraEnvsService = {
   async getInfraEnvId(clusterId: Cluster['id']): Promise<string> {
     let infraEnvId = InfraEnvIdsCacheService.getItem(clusterId);
     if (!infraEnvId) {
-      await InfraEnvService.resetCache();
+      await InfraEnvsService.resetCache();
       infraEnvId = InfraEnvIdsCacheService.getItem(clusterId);
 
       if (!infraEnvId) {
@@ -23,21 +17,28 @@ const InfraEnvService = {
     return infraEnvId;
   },
 
-  register(params: InfraEnvCreateParams) {
-    return client.post<InfraEnvCreateParams, AxiosResponse<InfraEnv>>('/v2/infra-envs', params);
-  },
+  async create(params: InfraEnvCreateParams) {
+    if (!params.clusterId) {
+      throw new Error('Cannot create InfraEnv, clusterId is missing');
+    }
 
-  deregister(infraEnvId: InfraEnv['id']) {
-    return client.delete<void>(`/v2/infra-envs/${infraEnvId}`);
+    const { data: infraEnv } = await InfraEnvsAPI.register(params);
+
+    if (!infraEnv.id) {
+      throw new Error('API returned no ID for the underlying InfraEnv');
+    }
+
+    InfraEnvIdsCacheService.setItem(params.clusterId, infraEnv.id);
   },
 
   async delete(clusterId: Cluster['id']) {
-    const infraEnvId = await InfraEnvService.getInfraEnvId(clusterId);
-    return InfraEnvService.deregister(infraEnvId);
+    const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId);
+    InfraEnvIdsCacheService.removeItem(clusterId);
+    return InfraEnvsAPI.deregister(infraEnvId);
   },
 
   async fillCache() {
-    const result = await Promise.all([ClusterService.list(), InfraEnvService.list()]);
+    const result = await Promise.all([ClustersAPI.list(), InfraEnvsAPI.list()]);
     const [responseFromClusterService, responseFromInfraEnvService] = result;
 
     const availableInfraEnvs = responseFromInfraEnvService.data?.filter(({ clusterId }) =>
@@ -53,8 +54,8 @@ const InfraEnvService = {
 
   async resetCache() {
     InfraEnvIdsCacheService.clear();
-    await InfraEnvService.fillCache();
+    await InfraEnvsService.fillCache();
   },
 };
 
-export default InfraEnvService;
+export default InfraEnvsService;

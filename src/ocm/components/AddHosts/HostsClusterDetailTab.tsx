@@ -12,7 +12,7 @@ import {
 import { usePullSecretFetch } from '../fetching/pullSecret';
 import { AssistedUILibVersion } from '../ui';
 import { addHostsClusters } from '../../api/addHostsClusters';
-import { useOpenshiftVersions } from '../fetching/openshiftVersions';
+import { useOpenshiftVersions } from '../../hooks';
 import { getCluster, handleApiError } from '../../api';
 import AddHosts from './AddHosts';
 import { OcmClusterType } from './types';
