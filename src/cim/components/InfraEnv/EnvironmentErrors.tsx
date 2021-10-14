@@ -21,7 +21,7 @@ export const EnvironmentErrors: React.FC<EnvironmentErrorsProps> = ({ infraEnv }
           className="cim-resource-alerts"
           actionLinks={
             <a
-              href="https://github.com/openshift/assisted-service/blob/master/docs/operator.md"
+              href="https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/"
               target="_blank"
               rel="noopener noreferrer"
             >
