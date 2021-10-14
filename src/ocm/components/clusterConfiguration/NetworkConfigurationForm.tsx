@@ -47,6 +47,10 @@ const NetworkConfigurationForm: React.FC<{
     [], // just once, Formik does not reinitialize
   );
 
+  const initialTouched = React.useMemo(() => _.mapValues(initialValues, () => true), [
+    initialValues,
+  ]);
+
   const memoizedValidationSchema = React.useMemo(
     () => getNetworkConfigurationValidationSchema(initialValues, hostSubnets),
     [hostSubnets, initialValues],
@@ -120,7 +124,7 @@ const NetworkConfigurationForm: React.FC<{
       initialValues={initialValues}
       validationSchema={memoizedValidationSchema}
       onSubmit={handleSubmit}
-      initialTouched={_.mapValues(initialValues, () => true)}
+      initialTouched={initialTouched}
       validateOnMount
     >
       {({ isSubmitting, dirty, errors, touched }: FormikProps<NetworkConfigurationValues>) => {
