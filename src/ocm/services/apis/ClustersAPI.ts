@@ -1,4 +1,4 @@
-import { client } from '../../api/axiosClient';
+import { client } from '../../api';
 import { Cluster, ClusterCreateParams, ClusterUpdateParams } from '../../../common';
 import { AxiosResponse } from 'axios';
 
@@ -11,12 +11,12 @@ const ClustersAPI = {
     return client.get<Cluster[]>(`${ClustersAPI.getBaseURI()}`);
   },
 
-  get(id: string) {
-    return client.get<Cluster>(`${ClustersAPI.getBaseURI(id)}`);
+  get(clusterId: Cluster['id']) {
+    return client.get<Cluster>(`${ClustersAPI.getBaseURI(clusterId)}`);
   },
 
-  deregister(id: string) {
-    return client.delete<void>(`${ClustersAPI.getBaseURI(id)}`);
+  deregister(clusterId: Cluster['id']) {
+    return client.delete<void>(`${ClustersAPI.getBaseURI(clusterId)}`);
   },
 
   register(params: ClusterCreateParams) {
@@ -26,9 +26,9 @@ const ClustersAPI = {
     );
   },
 
-  update(id: string, params: ClusterUpdateParams) {
+  update(clusterId: Cluster['id'], params: ClusterUpdateParams) {
     return client.patch<ClusterUpdateParams, AxiosResponse<Cluster>>(
-      `${ClustersAPI.getBaseURI(id)}`,
+      `${ClustersAPI.getBaseURI(clusterId)}`,
       params,
     );
   },
