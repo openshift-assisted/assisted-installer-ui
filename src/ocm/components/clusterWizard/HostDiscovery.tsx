@@ -87,7 +87,7 @@ const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
       dispatch(updateCluster(data));
       actions.resetForm({ values: getHostDiscoveryInitialValues(data) });
     } catch (e) {
-      handleApiError<ClusterUpdateParams>(e, () =>
+      handleApiError(e, () =>
         addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),
       );
     }
