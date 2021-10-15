@@ -1,5 +1,5 @@
-import { Host, HostUpdateParams, InfraEnv } from '../../common';
-import { client } from './axiosClient';
+import { Host, HostUpdateParams, InfraEnv } from '../../../common';
+import { client } from '../../api/axiosClient';
 import { AxiosResponse } from 'axios';
 
 const HostsAPI = {

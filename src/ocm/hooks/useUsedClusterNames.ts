@@ -1,5 +1,6 @@
 import React from 'react';
-import { ClustersAPI, getErrorMessage, handleApiError } from '../api';
+import { getErrorMessage, handleApiError } from '../api';
+import { ClustersAPI } from '../services/apis';
 import { Cluster, useAlerts } from '../../common';
 
 export default function useUsedClusterNames(

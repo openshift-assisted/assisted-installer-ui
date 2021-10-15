@@ -1,5 +1,5 @@
-import { client } from './axiosClient';
-import { ManagedDomain } from '../../common';
+import { client } from '../../api/axiosClient';
+import { ManagedDomain } from '../../../common';
 
 const ManagedDomainsAPI = {
   getBaseURI() {

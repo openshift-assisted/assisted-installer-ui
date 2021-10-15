@@ -1,13 +1,15 @@
-import useSWR, { Fetcher } from 'swr';
-import { client, ClustersAPI, getErrorMessage, handleApiError } from '../api';
+import useSWR from 'swr';
+import { client, getErrorMessage, handleApiError } from '../api';
+import { ClustersAPI } from '../services/apis';
 import { PlatformType, POLLING_INTERVAL, useAlerts } from '../../common';
 import { AxiosError } from 'axios';
+import { APIErrorMixin } from '../api/types';
 
 const fetcher = (url: string) => client.get<PlatformType[]>(url).then((res) => res.data);
 
 export default function useClusterSupportedPlatforms(clusterId: string) {
   const { addAlert } = useAlerts();
-  const { data, error } = useSWR<PlatformType[], AxiosError>(
+  const { data, error } = useSWR<PlatformType[], AxiosError<APIErrorMixin>>(
     ClustersAPI.getBaseURI(clusterId),
     fetcher,
     {

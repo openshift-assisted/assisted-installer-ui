@@ -1,5 +1,5 @@
 import { ClusterCreateParams, ClusterUpdateParams } from '../../common';
-import { ClustersAPI, ManagedDomainsAPI } from '../api';
+import { ClustersAPI, ManagedDomainsAPI } from '../services/apis';
 import InfraEnvsService from './InfraEnvsService';
 
 const ClusterDetailsService = {

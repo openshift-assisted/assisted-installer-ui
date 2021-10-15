@@ -1,5 +1,5 @@
-import { client } from './axiosClient';
-import { InfraEnv, InfraEnvCreateParams } from '../../common';
+import { client } from '../../api/axiosClient';
+import { InfraEnv, InfraEnvCreateParams } from '../../../common';
 import { AxiosResponse } from 'axios';
 
 const InfraEnvsAPI = {

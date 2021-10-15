@@ -1,5 +1,5 @@
-import { client } from './axiosClient';
-import { Cluster, ClusterCreateParams, ClusterUpdateParams } from '../../common';
+import { client } from '../../api/axiosClient';
+import { Cluster, ClusterCreateParams, ClusterUpdateParams } from '../../../common';
 import { AxiosResponse } from 'axios';
 
 const ClustersAPI = {

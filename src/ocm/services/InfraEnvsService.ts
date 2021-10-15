@@ -1,5 +1,5 @@
 import { InfraEnvCreateParams, Cluster } from '../../common';
-import { InfraEnvsAPI, ClustersAPI } from '../api';
+import { InfraEnvsAPI, ClustersAPI } from '../services/apis';
 import InfraEnvIdsCacheService from './InfraEnvIdsCacheService';
 
 const InfraEnvsService = {

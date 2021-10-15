@@ -1,6 +1,7 @@
 import React from 'react';
 import { Cluster } from '../../common';
-import { ClustersAPI, handleApiError } from '../api';
+import { handleApiError } from '../api';
+import { ClustersAPI } from '../services/apis';
 
 export default function useClustersList(hookDeps?: React.DependencyList) {
   const [error, setError] = React.useState('');
@@ -16,6 +17,7 @@ export default function useClustersList(hookDeps?: React.DependencyList) {
     };
 
     void fetchClusters();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, hookDeps);
 
   return {

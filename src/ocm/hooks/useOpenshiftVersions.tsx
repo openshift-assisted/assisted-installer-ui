@@ -1,6 +1,7 @@
 import React from 'react';
 import { AddHostsClusterCreateParams, OpenshiftVersionOptionType } from '../../common';
-import { getErrorMessage, VersionsAPI, handleApiError } from '../api';
+import { getErrorMessage, handleApiError } from '../api';
+import { VersionsAPI } from '../services/apis';
 
 type useOpenshiftVersionsType = {
   versions: OpenshiftVersionOptionType[];

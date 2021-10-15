@@ -1,5 +1,5 @@
-import { client } from './axiosClient';
-import { ListVersions, OpenshiftVersions } from '../../common';
+import { client } from '../../api/axiosClient';
+import { ListVersions, OpenshiftVersions } from '../../../common';
 
 const VersionsAPI = {
   getComponentVersions() {

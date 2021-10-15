@@ -1,4 +1,4 @@
-import { ClustersAPI } from '../api';
+import { ClustersAPI } from '../services/apis';
 import HostsService from './HostsService';
 import InfraEnvsService from './InfraEnvsService';
 import { Cluster } from '../../common';

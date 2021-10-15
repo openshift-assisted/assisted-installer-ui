@@ -1,7 +1,7 @@
 import { Cluster } from '../../common';
 import { AxiosError, AxiosPromise } from 'axios';
 import InfraEnvsService from './InfraEnvsService';
-import { HostsAPI } from '../api';
+import { HostsAPI } from '../services/apis';
 
 const HostsService = {
   async deleteAll(clusterId: Cluster['id']) {
