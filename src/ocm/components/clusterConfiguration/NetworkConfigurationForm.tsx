@@ -113,7 +113,7 @@ const NetworkConfigurationForm: React.FC<{
       dispatch(updateCluster(data));
       actions.resetForm({ values: getNetworkInitialValues(data, defaultNetworkSettings) });
     } catch (e) {
-      handleApiError<ClusterUpdateParams>(e, () =>
+      handleApiError(e, () =>
         addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),
       );
     }
