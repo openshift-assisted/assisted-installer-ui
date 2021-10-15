@@ -31,7 +31,7 @@ const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({
           const { data } = await getPresignedFileUrl({ clusterId, fileName });
           saveAs(data.url);
         } catch (e) {
-          handleApiError<Presigned>(e, async (e) => {
+          handleApiError(e, async (e) => {
             addAlert({ title: 'Could not download kubeconfig', message: getErrorMessage(e) });
           });
         }

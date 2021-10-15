@@ -97,7 +97,7 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
         onSuccess(updatedCluster.imageInfo);
         dispatch(updateCluster(updatedCluster));
       } catch (error) {
-        handleApiError<ImageCreateParams>(error, () => {
+        handleApiError(error, () => {
           formikActions.setStatus({
             error: {
               title: 'Failed to download the discovery Image',

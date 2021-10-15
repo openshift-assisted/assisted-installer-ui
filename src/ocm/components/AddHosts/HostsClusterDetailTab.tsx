@@ -12,7 +12,7 @@ import {
 import { usePullSecretFetch } from '../fetching/pullSecret';
 import { AssistedUILibVersion } from '../ui';
 import { addHostsClusters } from '../../api/addHostsClusters';
-import { useOpenshiftVersions } from '../fetching/openshiftVersions';
+import { useOpenshiftVersions } from '../../hooks';
 import { getCluster, handleApiError } from '../../api';
 import AddHosts from './AddHosts';
 import { OcmClusterType } from './types';
@@ -173,7 +173,7 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
             // all set, we can refirect
             setDay2Cluster(data);
           } catch (e) {
-            handleApiError<AddHostsClusterCreateParams>(e);
+            handleApiError(e);
             setError(
               <>
                 Failed to create wrapping cluster for adding new hosts.
@@ -197,7 +197,7 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
             const { data } = await getCluster(day2Cluster.id);
             setDay2Cluster(data);
           } catch (e) {
-            handleApiError<AddHostsClusterCreateParams>(e);
+            handleApiError(e);
             setError(
               <>
                 Failed to reload cluster data.
@@ -207,7 +207,7 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
             );
           }
         };
-        doItAsync();
+        void doItAsync();
       }, POLLING_INTERVAL);
       return () => clearTimeout(id);
     }
