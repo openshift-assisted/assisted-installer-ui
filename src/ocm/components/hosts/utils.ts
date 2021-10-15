@@ -25,7 +25,7 @@ export const downloadHostInstallationLogs = async (
       });
       saveAs(data.url);
     } catch (e) {
-      handleApiError<Presigned>(e, async (e) => {
+      handleApiError(e, async (e) => {
         addAlert({ title: 'Could not download host logs.', message: getErrorMessage(e) });
       });
     }
@@ -49,6 +49,6 @@ export const onAdditionalNtpSourceAction = async (
     const { data } = await patchCluster(clusterId, values);
     dispatch(updateCluster(data));
   } catch (e) {
-    handleApiError<ClusterUpdateParams>(e, () => onError(getErrorMessage(e)));
+    handleApiError(e, () => onError(getErrorMessage(e)));
   }
 };
