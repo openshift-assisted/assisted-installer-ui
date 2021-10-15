@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import {
-  AlertsContext,
+  useAlerts,
   Cluster,
   ClusterUpdateParams,
   Disk,
@@ -49,7 +49,7 @@ import DeleteHostModal from './DeleteHostModal';
 import { onFetchEvents } from '../fetching/fetchEvents';
 
 export const useHostsTable = (cluster: Cluster) => {
-  const { addAlert } = React.useContext(AlertsContext);
+  const { addAlert } = useAlerts();
   const {
     eventsDialog,
     editHostDialog,
@@ -193,7 +193,7 @@ export const useHostsTable = (cluster: Cluster) => {
         }
       }
     };
-    reset(resetHostDialog.data?.hostId);
+    void reset(resetHostDialog.data?.hostId);
     resetHostDialog.close();
   }, [addAlert, cluster.id, dispatch, resetHostDialog]);
 

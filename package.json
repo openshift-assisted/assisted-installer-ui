@@ -126,7 +126,8 @@
     "is-in-subnet": "^3.1.0",
     "js-yaml": "^4.1.0",
     "prism-react-renderer": "^1.1.1",
-    "unique-names-generator": "^4.2.0"
+    "unique-names-generator": "^4.2.0",
+    "use-reducer-async": "^2.0.1"
   },
   "jest": {
     "transformIgnorePatterns": [

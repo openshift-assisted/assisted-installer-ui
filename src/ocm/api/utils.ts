@@ -1,10 +1,11 @@
 import { Severity } from '@sentry/browser';
 import Axios, { AxiosError } from 'axios';
 import { captureException } from '../sentry';
+import { APIErrorMixin } from './types';
 
-type OnError = <T>(arg0: AxiosError<T>) => void;
+type OnError = (arg0: AxiosError<APIErrorMixin>) => void;
 
-export const handleApiError = <T>(error: AxiosError<T>, onError?: OnError) => {
+export const handleApiError = (error: AxiosError<APIErrorMixin>, onError?: OnError) => {
   if (Axios.isCancel(error)) {
     captureException(error, 'Request canceled', Severity.Info);
   } else {
@@ -29,5 +30,5 @@ export const handleApiError = <T>(error: AxiosError<T>, onError?: OnError) => {
   }
 };
 
-export const getErrorMessage = (error: AxiosError<Partial<{ reason: string; message: string }>>) =>
-  error.response?.data?.reason || error.response?.data?.message || error.message;
+export const getErrorMessage = (error: AxiosError<APIErrorMixin>) =>
+  error.response?.data.message || error.response?.data.reason || error.message;
