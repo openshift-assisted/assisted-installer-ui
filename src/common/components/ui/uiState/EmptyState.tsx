@@ -25,7 +25,7 @@ const EmptyState: React.FC<Props> = ({
   primaryAction,
   secondaryActions,
 }) => (
-  <Bullseye>
+  <Bullseye data-testid="empty-state">
     <PFEmptyState>
       <EmptyStateIcon icon={icon} />
       <Title headingLevel="h2">{title}</Title>

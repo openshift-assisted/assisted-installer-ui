@@ -82,7 +82,7 @@ export const LabelField: React.FC<LabelFieldProps> = ({
             value: input,
             // eslint-disable-next-line
             onChange: (e: any) => setInput(e.target.value),
-            ['data-test']: 'tags-input',
+            'data-testid': 'tags-input',
           }}
         />
       </div>

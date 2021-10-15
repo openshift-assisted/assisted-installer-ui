@@ -65,7 +65,7 @@ const columns: TablePropsCellType[] = [
 const getStatusCell = (row: IRow) => row.cells?.[3] as HumanizedSortable | undefined;
 
 const ClusterRowWrapper = (props: RowWrapperProps) => {
-  /* eslint-disable @typescript-eslint/ban-ts-ignore */
+  /* eslint-disable @typescript-eslint/ban-ts-comment */
   return (
     <RowWrapper
       {...props}
@@ -75,7 +75,7 @@ const ClusterRowWrapper = (props: RowWrapperProps) => {
       id={`cluster-row-${props.row?.props?.name}`}
     />
   );
-  /* eslint-enable @typescript-eslint/ban-ts-ignore */
+  /* eslint-enable @typescript-eslint/ban-ts-comment */
 };
 
 const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) => {
@@ -138,11 +138,9 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
 
   const rowFilter = React.useCallback(
     (row: IRow) => {
-      const searchableProps: string[] = [
-        row.props.name,
-        row.props.id,
-        row.props.baseDnsDomain,
-      ].map((prop) => (prop || '').toLowerCase());
+      const searchableProps: string[] = [row.props.name, row.props.id, row.props.baseDnsDomain].map(
+        (prop) => (prop || '').toLowerCase(),
+      );
       if (
         searchString &&
         !searchableProps.find((prop) => prop.includes(searchString.toLowerCase()))

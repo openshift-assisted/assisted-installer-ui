@@ -1,4 +1,4 @@
-name: Build on pull request to master or a feature branch
+name: Test and build on pull-request or push to specific branches
 
 on:
   push:
@@ -18,7 +18,7 @@ on:
       - hotfix/*
 
 jobs:
-  build:
+  test_and_build:
     runs-on: ubuntu-latest
     env:
       NODE_OPTIONS: '--max-old-space-size=8192'
@@ -30,10 +30,18 @@ jobs:
         with:
           node-version: '>=12.16'
           cache: yarn
-      - name: Install dependencies
-        # --slient: Run yarn install without printing installation log.
+      - name: Installing dependencies
+        # --silent: Run yarn install without printing installation log.
         # --non-interactive: disable interactive prompts, like when there’s an invalid version of a dependency.
         # --pure-lockfile: doesn't generate a yarn.lock file.
         run: yarn install --silent --non-interactive --pure-lockfile
-      - name: Build code (includes tests)
+      - name: Checking for cyclic dependencies
+        run: yarn test:circular
+      - name: Typechecking
+        run: yarn test:type-check
+      - name: Linting
+        run: yarn test:lint
+      - name: Testing
+        run: yarn test:ci
+      - name: Building
         run: yarn build

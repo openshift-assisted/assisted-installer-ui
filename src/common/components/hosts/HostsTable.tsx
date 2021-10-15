@@ -70,7 +70,7 @@ const HostsTable: React.FC<HostsTableProps & WithTestID> = ({
   onSelect,
   selectedIDs,
 }) => {
-  const data = (hosts || []).filter((host) => !skipDisabled || host.status != 'disabled');
+  const data = (hosts || []).filter((host) => !skipDisabled || host.status !== 'disabled');
 
   return (
     <AITable<Host>

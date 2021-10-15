@@ -126,7 +126,7 @@ export const getHostRole = (host: Host): string =>
   }`;
 
 export const canDownloadHostLogs = (host: Host) =>
-  !!host.logsCollectedAt && host.logsCollectedAt != TIME_ZERO;
+  !!host.logsCollectedAt && host.logsCollectedAt !== TIME_ZERO;
 
 export const canDownloadClusterLogs = (cluster: Cluster) =>
   !!(cluster.hosts || []).find((host) => canDownloadHostLogs(host));

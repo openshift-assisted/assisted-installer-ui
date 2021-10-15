@@ -3,7 +3,7 @@
     <package-json value="$PROJECT_DIR$/package.json" />
     <command value="run" />
     <scripts>
-      <script value="start-assisted-ui" />
+      <script value="start:assisted-ui" />
     </scripts>
     <node-interpreter value="project" />
     <package-manager value="yarn" />

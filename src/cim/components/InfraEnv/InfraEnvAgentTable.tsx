@@ -17,7 +17,7 @@ import {
 } from '../../../common/components/hosts/tableUtils';
 import { DiscoveryTroubleshootingModal } from '../../../common';
 
-type InfraEnvAgentTable = ClusterDeploymentHostsTablePropsActions & {
+type InfraEnvAgentTableProps = ClusterDeploymentHostsTablePropsActions & {
   agents: AgentK8sResource[];
   bareMetalHosts: BareMetalHostK8sResource[];
   infraEnv: InfraEnvK8sResource;
@@ -25,7 +25,7 @@ type InfraEnvAgentTable = ClusterDeploymentHostsTablePropsActions & {
   className?: string;
 };
 
-const InfraEnvAgentTable: React.FC<InfraEnvAgentTable> = ({
+const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
   agents,
   className,
   getClusterDeploymentLink,

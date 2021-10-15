@@ -204,7 +204,10 @@ export const HostDetail: React.FC<HostDetailProps> = ({
 }) => {
   const { id, installationDiskId, inventory: inventoryString = '' } = host;
   const inventory = stringToJSON<Inventory>(inventoryString) || {};
-  const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
+  const validationsInfo = React.useMemo(
+    () => stringToJSON<ValidationsInfo>(host.validationsInfo) || {},
+    [host.validationsInfo],
+  );
   const rowInfo = getHostRowHardwareInfo(inventory);
   const disks = inventory.disks || [];
   const nics = inventory.interfaces || [];

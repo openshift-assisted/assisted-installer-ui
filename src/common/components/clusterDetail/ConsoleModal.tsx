@@ -58,7 +58,7 @@ const ModalExpandableSection: React.FC<ModalExpandableSectionProps> = (props) =>
 
 const getHostIPs = (cluster: Cluster): { [key: string]: string } => {
   const hostIPAddresses = {};
-  cluster.hosts?.map((host: Host) => {
+  cluster.hosts?.forEach((host: Host) => {
     if (host && host.requestedHostname) {
       const interfaces: Interface[] | undefined =
         stringToJSON<Inventory>(host.inventory)?.interfaces || undefined;

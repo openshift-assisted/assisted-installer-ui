@@ -5,3 +5,5 @@ export const store = configureStore({
   reducer: rootReducer,
   preloadedState: {},
 });
+
+export type AssistedInstallerUILibRootStore = typeof store;

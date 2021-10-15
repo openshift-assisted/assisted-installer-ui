@@ -1,5 +1,5 @@
 import React from 'react';
-import { Popover, Level, LevelItem } from '@patternfly/react-core';
+import { Popover, Level, LevelItem, Button } from '@patternfly/react-core';
 import { Cluster } from '../../api';
 import { getEnabledHostCount, getReadyHostCount, getTotalHostCount } from './utils';
 
@@ -39,11 +39,11 @@ const HostsCount: React.FC<HostsCountProps> = ({
     'enabledHostCount' in cluster ? getEnabledHostCount(cluster) : getTotalHostCount(cluster);
   return (
     <Popover headerContent="Hosts in the cluster" bodyContent={body}>
-      <a id={valueId}>
+      <Button variant={'link'} id={valueId}>
         {inParenthesis && '('}
         {summary}
         {inParenthesis && ')'}
-      </a>
+      </Button>
     </Popover>
   );
 };

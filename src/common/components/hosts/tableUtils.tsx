@@ -157,7 +157,7 @@ export const hardwareStatusColumn = (
           />
         ),
         props: { 'data-testid': 'host-hw-status' },
-        sortableValue: status,
+        // sortableValue: status,
       };
     },
   };
@@ -282,7 +282,7 @@ export const networkingStatusColumn = (
         />
       ),
       props: { 'data-testid': 'nic-status' },
-      sortableValue: status,
+      // sortableValue: status,
     };
   },
 });
@@ -359,95 +359,97 @@ export const macAddressColumn = (cluster: Cluster): TableRow<Host> => ({
   },
 });
 
-export const hostActionResolver = ({
-  onInstallHost,
-  canInstallHost,
-  onEditHost,
-  canEditHost,
-  onHostEnable,
-  canEnable,
-  onHostDisable,
-  canDisable,
-  onHostReset,
-  canReset,
-  onViewHostEvents,
-  onDownloadHostLogs,
-  canDownloadHostLogs,
-  onDeleteHost,
-  canDelete,
-  onEditBMH,
-  canEditBMH,
-}: HostsTableActions): ActionsResolver<Host> => (host) => {
-  const actions = [];
-  if (host) {
-    const { inventory: inventoryString = '' } = host;
-    const inventory = stringToJSON<Inventory>(inventoryString) || {};
-    const hostname = getHostname(host, inventory);
+export const hostActionResolver =
+  ({
+    onInstallHost,
+    canInstallHost,
+    onEditHost,
+    canEditHost,
+    onHostEnable,
+    canEnable,
+    onHostDisable,
+    canDisable,
+    onHostReset,
+    canReset,
+    onViewHostEvents,
+    onDownloadHostLogs,
+    canDownloadHostLogs,
+    onDeleteHost,
+    canDelete,
+    onEditBMH,
+    canEditBMH,
+  }: HostsTableActions): ActionsResolver<Host> =>
+  (host) => {
+    const actions = [];
+    if (host) {
+      const { inventory: inventoryString = '' } = host;
+      const inventory = stringToJSON<Inventory>(inventoryString) || {};
+      const hostname = getHostname(host, inventory);
 
-    if (onInstallHost && canInstallHost?.(host)) {
-      actions.push({
-        title: 'Install host',
-        id: `button-install-host-${hostname}`,
-        onClick: () => onInstallHost(host),
-      });
+      if (onInstallHost && canInstallHost?.(host)) {
+        actions.push({
+          title: 'Install host',
+          id: `button-install-host-${hostname}`,
+          onClick: () => onInstallHost(host),
+        });
+      }
+      if (onEditHost && canEditHost?.(host)) {
+        actions.push({
+          title: 'Edit host',
+          id: `button-edit-host-${hostname}`, // id is everchanging, not ideal for tests
+          onClick: () => onEditHost(host),
+        });
+      }
+      if (onHostEnable && canEnable?.(host)) {
+        actions.push({
+          title: 'Enable in cluster',
+          id: `button-enable-in-cluster-${hostname}`,
+          onClick: () => onHostEnable(host),
+        });
+      }
+      if (onHostDisable && canDisable?.(host)) {
+        actions.push({
+          title: 'Disable in cluster',
+          id: `button-disable-in-cluster-${hostname}`,
+          onClick: () => onHostDisable(host),
+        });
+      }
+      if (onHostReset && canReset?.(host)) {
+        actions.push({
+          title: 'Reset host',
+          id: `button-reset-host-${hostname}`,
+          onClick: () => onHostReset(host),
+        });
+      }
+      if (onViewHostEvents) {
+        actions.push({
+          title: 'View host events',
+          id: `button-view-host-events-${hostname}`,
+          onClick: () => onViewHostEvents(host),
+        });
+      }
+      if (onDownloadHostLogs && canDownloadHostLogs?.(host)) {
+        actions.push({
+          title: 'Download host logs',
+          id: `button-download-host-installation-logs-${hostname}`,
+          onClick: () => onDownloadHostLogs(host),
+        });
+      }
+      if (onDeleteHost && canDelete?.(host)) {
+        actions.push({
+          title: 'Delete host',
+          id: `button-delete-host-${hostname}`,
+          onClick: () => onDeleteHost(host),
+        });
+      }
+      if (onEditBMH && canEditBMH?.(host)) {
+        actions.push({
+          title: 'Edit BMC',
+          id: `button-edit-bmh-host-${hostname}`,
+          onClick: () => onEditBMH(host),
+        });
+      }
     }
-    if (onEditHost && canEditHost?.(host)) {
-      actions.push({
-        title: 'Edit host',
-        id: `button-edit-host-${hostname}`, // id is everchanging, not ideal for tests
-        onClick: () => onEditHost(host),
-      });
-    }
-    if (onHostEnable && canEnable?.(host)) {
-      actions.push({
-        title: 'Enable in cluster',
-        id: `button-enable-in-cluster-${hostname}`,
-        onClick: () => onHostEnable(host),
-      });
-    }
-    if (onHostDisable && canDisable?.(host)) {
-      actions.push({
-        title: 'Disable in cluster',
-        id: `button-disable-in-cluster-${hostname}`,
-        onClick: () => onHostDisable(host),
-      });
-    }
-    if (onHostReset && canReset?.(host)) {
-      actions.push({
-        title: 'Reset host',
-        id: `button-reset-host-${hostname}`,
-        onClick: () => onHostReset(host),
-      });
-    }
-    if (onViewHostEvents) {
-      actions.push({
-        title: 'View host events',
-        id: `button-view-host-events-${hostname}`,
-        onClick: () => onViewHostEvents(host),
-      });
-    }
-    if (onDownloadHostLogs && canDownloadHostLogs?.(host)) {
-      actions.push({
-        title: 'Download host logs',
-        id: `button-download-host-installation-logs-${hostname}`,
-        onClick: () => onDownloadHostLogs(host),
-      });
-    }
-    if (onDeleteHost && canDelete?.(host)) {
-      actions.push({
-        title: 'Delete host',
-        id: `button-delete-host-${hostname}`,
-        onClick: () => onDeleteHost(host),
-      });
-    }
-    if (onEditBMH && canEditBMH?.(host)) {
-      actions.push({
-        title: 'Edit BMC',
-        id: `button-edit-bmh-host-${hostname}`,
-        onClick: () => onEditBMH(host),
-      });
-    }
-  }
 
-  return actions;
-};
+    return actions;
+  };
