@@ -199,7 +199,7 @@ const HostStatusPopoverFooter: React.FC<{ host: Host }> = ({ host }) => {
 
   let footerText;
   if (host.status === 'installing-in-progress') {
-    if (progress?.stageUpdatedAt && progress.stageUpdatedAt != progress.stageStartedAt) {
+    if (progress?.stageUpdatedAt && progress.stageUpdatedAt !== progress.stageStartedAt) {
       footerText = `Step started at ${getHumanizedDateTime(
         progress.stageStartedAt,
       )}, updated ${hdate.relativeTime(progress.stageUpdatedAt)}`;

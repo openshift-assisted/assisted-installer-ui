@@ -50,7 +50,7 @@ const ErrorState: React.FC<Props> = ({
   );
 
   return (
-    <Bullseye>
+    <Bullseye data-testid="error-state">
       <EmptyState variant={variant}>
         <EmptyStateIcon icon={icon} color={iconColor} />
         <Title headingLevel="h2">{title}</Title>
