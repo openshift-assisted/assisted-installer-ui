@@ -1,7 +1,7 @@
 import React from 'react';
-import { AddHostsClusterCreateParams } from '../../../common';
-import { OpenshiftVersionOptionType } from '../../../common';
-import { getErrorMessage, getOpenshiftVersions, handleApiError } from '../../api';
+import { AddHostsClusterCreateParams, OpenshiftVersionOptionType } from '../../common';
+import { getErrorMessage, handleApiError } from '../api';
+import { VersionsAPI } from '../services/apis';
 
 type useOpenshiftVersionsType = {
   versions: OpenshiftVersionOptionType[];
@@ -10,21 +10,21 @@ type useOpenshiftVersionsType = {
   loading: boolean;
 };
 
-export const useOpenshiftVersions = (): useOpenshiftVersionsType => {
+export default function useOpenshiftVersions(): useOpenshiftVersionsType {
   const [versions, setVersions] = React.useState<OpenshiftVersionOptionType[]>();
   const [error, setError] = React.useState<useOpenshiftVersionsType['error']>();
 
   React.useEffect(() => {
     const doAsync = async () => {
       try {
-        const { data } = await getOpenshiftVersions();
+        const { data } = await VersionsAPI.getOpenshiftVersions();
         const versions: OpenshiftVersionOptionType[] = Object.keys(data)
           .sort()
           .map((key) => ({
             label: `OpenShift ${data[key].displayName || key}`,
             value: key,
             version: data[key].displayName,
-            default: !!data[key].default,
+            default: Boolean(data[key].default),
             supportLevel: data[key].supportLevel,
           }));
 
@@ -38,7 +38,7 @@ export const useOpenshiftVersions = (): useOpenshiftVersionsType => {
         });
       }
     };
-    doAsync();
+    void doAsync();
   }, [setVersions]);
 
   const normalizeClusterVersion = React.useCallback(
@@ -54,4 +54,4 @@ export const useOpenshiftVersions = (): useOpenshiftVersionsType => {
     versions: versions || [],
     normalizeClusterVersion,
   };
-};
+}
