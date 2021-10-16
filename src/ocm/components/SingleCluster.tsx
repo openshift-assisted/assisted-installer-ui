@@ -12,9 +12,9 @@ const SingleCluster: React.FC<SingleClusterProps> = () => {
   const retryFlag = React.useRef<{ state: boolean }>({ state: false });
   const { error, clusters } = useClustersList([retryFlag.current.state]);
 
-  const handleFetchData = () => {
+  const handleFetchData = React.useCallback(() => {
     retryFlag.current.state = !retryFlag.current.state;
-  };
+  }, []);
 
   if (error) {
     return (
