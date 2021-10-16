@@ -5,7 +5,7 @@ import { ClustersAPI } from '../services/apis';
 
 export default function useClustersList(hookDeps?: React.DependencyList) {
   const [error, setError] = React.useState('');
-  const [clusters, setClusters] = React.useState<Cluster[]>([]);
+  const [clusters, setClusters] = React.useState<Cluster[]>();
   React.useEffect(() => {
     const fetchClusters = async () => {
       try {
@@ -21,7 +21,6 @@ export default function useClustersList(hookDeps?: React.DependencyList) {
   }, hookDeps);
 
   return {
-    loading: !error && !clusters,
     error,
     clusters,
   };
