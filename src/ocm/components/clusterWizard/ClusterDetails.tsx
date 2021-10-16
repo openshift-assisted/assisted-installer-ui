@@ -39,7 +39,7 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster }) => {
     errorOCPVersions && addAlert(errorOCPVersions);
   }, [errorOCPVersions, addAlert]);
 
-  const moveNext = React.useCallback(() => setCurrentStepId('host-discovery'), []);
+  const moveNext = React.useCallback(() => setCurrentStepId('host-discovery'), [setCurrentStepId]);
 
   const handleClusterUpdate = React.useCallback(
     async (clusterId: Cluster['id'], values: ClusterUpdateParams) => {
