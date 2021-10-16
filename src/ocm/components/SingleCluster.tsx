@@ -1,23 +1,20 @@
 import React from 'react';
 import { Redirect, RouteComponentProps } from 'react-router-dom';
 import { PageSectionVariants, PageSection } from '@patternfly/react-core';
-import { Cluster, ErrorState, LoadingState } from '../../common';
+import { ErrorState, LoadingState } from '../../common';
 import { routeBasePath } from '../config';
 import { NewClusterPage } from './clusters';
 import { useClustersList } from '../hooks';
 
-const reducer = (state, action) => {
-  switch (action.type) {
-    case 'clusters/fetch':
-  }
-};
+type SingleClusterProps = RouteComponentProps;
 
 const SingleCluster: React.FC<SingleClusterProps> = () => {
-  const [internalClusters, dispatch] = React.useReducer(reducer);
-  const { error, loading, clusters } = useClustersList([]);
-  setInternalClusters(clusters || []);
+  const retryFlag = React.useRef<{ state: boolean }>({ state: false });
+  const { error, clusters } = useClustersList([retryFlag.current.state]);
 
-  const handleFetchData = React.useCallback(() => void dispatch('clusters/fetch'), []);
+  const handleFetchData = () => {
+    retryFlag.current.state = !retryFlag.current.state;
+  };
 
   if (error) {
     return (
@@ -27,7 +24,7 @@ const SingleCluster: React.FC<SingleClusterProps> = () => {
     );
   }
 
-  if (loading) {
+  if (!clusters) {
     return (
       <PageSection variant={PageSectionVariants.light} isFilled>
         <LoadingState />
@@ -35,16 +32,16 @@ const SingleCluster: React.FC<SingleClusterProps> = () => {
     );
   }
 
-  if (internalClusters?.length === 0) {
+  if (clusters.length === 0) {
     return <NewClusterPage />;
-  } else if (internalClusters?.length > 1) {
-    // TODO(mlibra): What about Day2 cluster in single-cluster flow?
-    console.warn('More than one cluster found!', internalClusters);
   }
 
-  return <Redirect to={`${routeBasePath}/clusters/${internalClusters[0].id}`} />;
+  if (clusters && clusters.length > 1) {
+    // TODO(mlibra): What about Day2 cluster in single-cluster flow?
+    console.warn('More than one cluster found!', clusters);
+  }
+
+  return <Redirect to={`${routeBasePath}/clusters/${clusters[0].id}`} />;
 };
 
 export default SingleCluster;
-
-type SingleClusterProps = RouteComponentProps;
