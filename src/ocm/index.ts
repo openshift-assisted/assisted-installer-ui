@@ -2,6 +2,7 @@ export * as Api from './api';
 export * as Store from './store';
 export * as Selectors from './selectors';
 export * as Config from './config';
+export * as Services from './services';
 
 // without namespace
 export * from './components';
