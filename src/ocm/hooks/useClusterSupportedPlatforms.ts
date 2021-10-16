@@ -10,7 +10,7 @@ const fetcher = (url: string) => client.get<PlatformType[]>(url).then((res) => r
 export default function useClusterSupportedPlatforms(clusterId: string) {
   const { addAlert } = useAlerts();
   const { data, error } = useSWR<PlatformType[], AxiosError<APIErrorMixin>>(
-    ClustersAPI.getBaseURI(clusterId),
+    `${ClustersAPI.getBaseURI(clusterId)}/supported-platforms`,
     fetcher,
     {
       refreshInterval: POLLING_INTERVAL,
@@ -31,7 +31,7 @@ export default function useClusterSupportedPlatforms(clusterId: string) {
   // if there is another platform type
   // besides 'baremetal', in the returned data.
   const isPlatformIntegrationSupported =
-    (data?.filter((platform) => platform !== 'baremetal') || [])?.length > 0;
+    !isLoading && (data?.filter((platform) => platform !== 'baremetal') || [])?.length > 0;
 
   return {
     isPlatformIntegrationSupported,
