@@ -7,12 +7,12 @@ Please note, the project's upstream has been renamed and moved from **mareklibra
 [https://github.com/openshift-assisted/assisted-ui-lib](https://github.com/openshift-assisted/assisted-ui-lib)
 in December 2020.
 
->
 
 [![NPM](https://img.shields.io/npm/v/openshift-assisted-ui-lib.svg)](https://www.npmjs.com/package/openshift-assisted-ui-lib)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 ## Install
+
 ```bash
 npm install --save openshift-assisted-ui-lib
 
@@ -22,22 +22,30 @@ yarn add openshift-assisted-ui-lib
 ```
 
 ## Develop
+
 One time action:
+
 ```bash
 sudo dnf install -y inotify-tools
 yarn install
 ```
 
 ### Scripts
-- **yarn start**: Watches for changes in the `/src` folder and bundles the files into `/dist` folder  
-- **yarn sync-to-ui**: Synchronizes `/dist` with the [assisted-ui](https://github.com/openshift-assisted/assisted-ui)
-application's `node_modules/openshift-assisted-ui-lib` folder.  
-- **yarn start-assisted-ui**: Runs the following 3 scripts in parallel: `yarn start`, `yarn sync-to-ui` and `yarn start` inside the [assisted-ui](https://github.com/openshift-assisted/assisted-ui) project.    
 
-Before using the **yarn start-assisted-ui** script, make sure this project and the `assisted-ui` (and optionally the `uhc-portal`) project are located in the same folder.  
+- **yarn start**: Watches for changes in the `/src` folder and bundles the files into `/dist` folder
+- **yarn sync-to-ui**: Synchronizes `/dist` with the
+  [assisted-ui](https://github.com/openshift-assisted/assisted-ui) application's
+  `node_modules/openshift-assisted-ui-lib` folder.
+- **yarn start-assisted-ui**: Runs the following 3 scripts in parallel: `yarn start`,
+  `yarn sync-to-ui` and `yarn start` inside the
+  [assisted-ui](https://github.com/openshift-assisted/assisted-ui) project.
+
+Before using the **yarn start-assisted-ui** script, make sure this project and the `assisted-ui`
+(and optionally the `uhc-portal`) project are located in the same folder.  
 Next, create a `.env.local` file at the root folder of this repository and include this variable:
+
 ```dotenv
-REACT_APP_API_URL=...ask the team
+REACT_APP_API_URL="...ask the team"
 ```
 
 ## Publish
