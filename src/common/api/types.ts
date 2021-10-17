@@ -22,7 +22,7 @@ export interface ApiVipConnectivityRequest {
    */
   url: string;
   /**
-   * Whether to verify if the API VIP belongs to one of the interfaces.
+   * Whether to verify if the API VIP belongs to one of the interfaces (DEPRECATED).
    */
   verifyCidr?: boolean;
 }
@@ -464,6 +464,10 @@ export interface ClusterHostRequirementsDetails {
    * Maximum packet loss allowed at L3 for role.
    */
   packetLossPercentage?: number; // double
+  /**
+   * Whether TPM module should be enabled in host's BIOS.
+   */
+  tpmEnabledInBios?: boolean;
 }
 export type ClusterHostRequirementsList = ClusterHostRequirements[];
 export type ClusterList = Cluster[];
@@ -911,7 +915,7 @@ export interface Event {
   /**
    * Unique identifier of the cluster this event relates to.
    */
-  clusterId: string; // uuid
+  clusterId?: string; // uuid
   /**
    * Unique identifier of the host this event relates to.
    */
@@ -934,6 +938,20 @@ export interface Event {
   props?: string;
 }
 export type EventList = Event[];
+export interface FeatureSupportLevel {
+  /**
+   * Version of the OpenShift cluster.
+   */
+  openshiftVersion?: string;
+  features?: {
+    /**
+     * The ID of the feature
+     */
+    featureId?: string;
+    supportLevel?: 'supported' | 'unsupported' | 'tech-preview' | 'dev-preview';
+  }[];
+}
+export type FeatureSupportLevels = FeatureSupportLevel[];
 export type FreeAddressesList = string /* ipv4 */[];
 export type FreeAddressesRequest = string /* ^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$ */[];
 export interface FreeNetworkAddresses {
@@ -993,6 +1011,7 @@ export interface Host {
     | 'insufficient'
     | 'disabled'
     | 'preparing-for-installation'
+    | 'preparing-failed'
     | 'preparing-successful'
     | 'pending-for-input'
     | 'installing'
@@ -1154,6 +1173,7 @@ export interface HostRegistrationResponse {
     | 'insufficient'
     | 'disabled'
     | 'preparing-for-installation'
+    | 'preparing-failed'
     | 'preparing-successful'
     | 'pending-for-input'
     | 'installing'
@@ -1383,15 +1403,15 @@ export interface InfraEnv {
   /**
    * Indicates the type of this object.
    */
-  kind?: 'InfraEnv';
+  kind: 'InfraEnv';
   /**
    * Unique identifier of the object.
    */
-  id?: string; // uuid
+  id: string; // uuid
   /**
    * Self link.
    */
-  href?: string;
+  href: string;
   /**
    * Version of the OpenShift cluster (used to infer the RHCOS version - temporary until generic logic implemented).
    */
@@ -1399,7 +1419,7 @@ export interface InfraEnv {
   /**
    * Name of the InfraEnv.
    */
-  name?: string;
+  name: string;
   userName?: string;
   orgId?: string;
   emailDomain?: string;
@@ -1420,7 +1440,7 @@ export interface InfraEnv {
    * static network configuration string in the format expected by discovery ignition generation.
    */
   staticNetworkConfig?: string;
-  type?: ImageType;
+  type: ImageType;
   /**
    * Json formatted string containing the user overrides for the initial ignition config.
    */
@@ -1438,8 +1458,8 @@ export interface InfraEnv {
   /**
    * The last time that this infraenv was updated.
    */
-  updatedAt?: string; // date-time
-  createdAt?: string; // date-time
+  updatedAt: string; // date-time
+  createdAt: string; // date-time
   expiresAt?: string; // date-time
   /**
    * The CPU architecture of the image (x86_64/arm64/etc).
@@ -1699,27 +1719,27 @@ export interface OpenshiftVersion {
   /**
    * Name of the version to be presented to the user.
    */
-  displayName: string;
+  displayName?: string;
   /**
    * The installation image of the OpenShift cluster.
    */
-  releaseImage: string;
+  releaseImage?: string;
   /**
    * OCP version from the release metadata.
    */
-  releaseVersion: string;
+  releaseVersion?: string;
   /**
    * The base RHCOS image used for the discovery iso.
    */
-  rhcosImage: string;
+  rhcosImage?: string;
   /**
    * The RHCOS rootfs url.
    */
-  rhcosRootfs: string;
+  rhcosRootfs?: string;
   /**
    * Build ID of the RHCOS image.
    */
-  rhcosVersion: string;
+  rhcosVersion?: string;
   /**
    * Level of support of the version.
    */
@@ -1728,6 +1748,10 @@ export interface OpenshiftVersion {
    * Indication that the version is the recommended one.
    */
   default?: boolean;
+  /**
+   * Available CPU architectures.
+   */
+  cpuArchitectures?: string[];
 }
 export interface OpenshiftVersions {
   [name: string]: OpenshiftVersion;
@@ -1885,6 +1909,14 @@ export interface ReleaseImage {
    * OCP version from the release metadata.
    */
   version: string;
+  /**
+   * Indication that the version is the recommended one.
+   */
+  default?: boolean;
+  /**
+   * Level of support of the version.
+   */
+  supportLevel?: 'beta' | 'production' | 'maintenance';
 }
 export type ReleaseImages = ReleaseImage[];
 export interface Route {
@@ -1971,6 +2003,10 @@ export interface SystemVendor {
   virtual?: boolean;
 }
 export interface Usage {
+  /**
+   * Unique idenftifier of the feature
+   */
+  id?: string;
   /**
    * name of the feature to track
    */
@@ -2088,6 +2124,12 @@ export interface V2ClusterUpdateParams {
    * Installation disks encryption mode and host roles to be applied.
    */
   diskEncryption?: DiskEncryption;
+}
+export interface V2Events {
+  clusterId?: string;
+  hostId?: string;
+  infraEnvId?: string;
+  categories?: string[];
 }
 export interface VersionedHostRequirements {
   /**

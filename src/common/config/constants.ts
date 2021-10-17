@@ -63,6 +63,7 @@ export const CLUSTER_STATUS_LABELS: { [key in Cluster['status']]: string } = {
 };
 
 export const HOST_STATUS_LABELS: { [key in Host['status']]: string } = {
+  'preparing-failed': 'Preparing step failed',
   unbinding: 'Unbinding',
   'disabled-unbound': 'Disabled',
   'disconnected-unbound': 'Disconnected',
@@ -77,7 +78,7 @@ export const HOST_STATUS_LABELS: { [key in Host['status']]: string } = {
   insufficient: 'Insufficient',
   disabled: 'Disabled',
   'preparing-for-installation': 'Preparing for installation',
-  'preparing-successful': 'Preparing installation successful',
+  'preparing-successful': 'Preparing step successful',
   installing: 'Starting installation',
   'installing-in-progress': 'Installing',
   'installing-pending-user-action': 'Pending user action',
@@ -103,6 +104,7 @@ export const CLUSTER_FIELD_LABELS: { [key in string]: string } = {
 };
 
 export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
+  'preparing-failed': 'Preparing step failed',
   unbinding: 'This host is being unbound from the cluster.',
   'disabled-unbound':
     'This host was manually disabled and can not be included in the cluster. Enable this host to make it available again.',
