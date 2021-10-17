@@ -3,9 +3,12 @@ import Axios, { AxiosError } from 'axios';
 import { captureException } from '../sentry';
 import { APIErrorMixin } from './types';
 
-type OnError = (arg0: AxiosError<APIErrorMixin>) => void;
+type OnError = (arg0: AxiosError<APIErrorMixin, APIErrorMixin>) => void;
 
-export const handleApiError = (error: AxiosError<APIErrorMixin>, onError?: OnError) => {
+export const handleApiError = (
+  error: AxiosError<APIErrorMixin, APIErrorMixin>,
+  onError?: OnError,
+) => {
   if (Axios.isCancel(error)) {
     captureException(error, 'Request canceled', Severity.Info);
   } else {
