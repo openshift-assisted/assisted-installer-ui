@@ -1,5 +1,5 @@
 import { saveAs } from 'file-saver';
-import { AlertsContextType, Cluster, ClusterUpdateParams, Host, Presigned } from '../../../common';
+import { AlertsContextType, Cluster, ClusterUpdateParams, Host } from '../../../common';
 
 import {
   getHostLogsDownloadUrl,

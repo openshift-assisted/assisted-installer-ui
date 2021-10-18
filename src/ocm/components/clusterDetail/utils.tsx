@@ -12,7 +12,6 @@ import {
   Host,
   HostRole,
   Inventory,
-  Presigned,
   stringToJSON,
   AlertsContextType,
 } from '../../../common';
