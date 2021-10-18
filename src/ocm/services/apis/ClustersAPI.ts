@@ -15,10 +15,6 @@ const ClustersAPI = {
     return `/v${APIVersionService.version}/clusters/${clusterId ? clusterId : ''}`;
   },
 
-  makeSupportedPlatformsBaseURI(clusterId: Cluster['id']) {
-    return `${ClustersAPI.makeBaseURI(clusterId)}/supported-platforms`;
-  },
-
   makeDownloadClusterCredentialsBaseURI(clusterId: Cluster['id']) {
     return `${ClustersAPI.makeBaseURI(clusterId)}/downloads/credentials`;
   },
