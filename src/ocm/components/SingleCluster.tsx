@@ -1,25 +1,36 @@
 import React from 'react';
 import { Redirect, RouteComponentProps } from 'react-router-dom';
 import { PageSectionVariants, PageSection } from '@patternfly/react-core';
-import { ErrorState, LoadingState } from '../../common';
+import { Cluster, ErrorState, LoadingState } from '../../common';
 import { routeBasePath } from '../config';
 import { NewClusterPage } from './clusters';
-import { useClustersList } from '../hooks';
+import { ClustersAPI } from '../services/apis';
+import { handleApiError } from '../api';
 
 type SingleClusterProps = RouteComponentProps;
 
 const SingleCluster: React.FC<SingleClusterProps> = () => {
-  const retryFlag = React.useRef<{ state: boolean }>({ state: false });
-  const { error, clusters } = useClustersList([retryFlag.current.state]);
+  const [error, setError] = React.useState('');
+  const [clusters, setClusters] = React.useState<Cluster[]>();
 
-  const handleFetchData = React.useCallback(() => {
-    retryFlag.current.state = !retryFlag.current.state;
-  }, []);
+  const fetchClusters = React.useCallback(async () => {
+    try {
+      const { data } = await ClustersAPI.list();
+      setClusters(data);
+      setError('');
+    } catch (e) {
+      return handleApiError(e, () => setError('Failed to fetch cluster.'));
+    }
+  }, [setClusters]);
+
+  React.useEffect(() => {
+    fetchClusters();
+  }, [fetchClusters]);
 
   if (error) {
     return (
       <PageSection variant={PageSectionVariants.light} isFilled>
-        <ErrorState title="Failed to fetch cluster." fetchData={handleFetchData} />
+        <ErrorState title="Failed to fetch cluster." fetchData={fetchClusters} />
       </PageSection>
     );
   }
@@ -36,7 +47,7 @@ const SingleCluster: React.FC<SingleClusterProps> = () => {
     return <NewClusterPage />;
   }
 
-  if (clusters && clusters.length > 1) {
+  if (clusters.length > 1) {
     // TODO(mlibra): What about Day2 cluster in single-cluster flow?
     console.warn('More than one cluster found!', clusters);
   }
