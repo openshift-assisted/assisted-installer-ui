@@ -1,34 +1,47 @@
 import { client } from '../../api';
-import { Cluster, ClusterCreateParams, ClusterUpdateParams } from '../../../common';
+import { Cluster, ClusterCreateParams, ClusterUpdateParams, PlatformType } from '../../../common';
 import { AxiosResponse } from 'axios';
+import APIVersionService from '../APIVersionService';
 
 const ClustersAPI = {
-  getBaseURI(clusterId?: Cluster['id']) {
-    return `/v2/clusters/${clusterId ? `/${clusterId}` : ''}`;
+  makeBaseURI(clusterId?: Cluster['id']) {
+    return `/v${APIVersionService.version}/clusters/${clusterId ? clusterId : ''}`;
+  },
+
+  makeSupportedPlatformsBaseURI(clusterId: Cluster['id']) {
+    return `${ClustersAPI.makeBaseURI(clusterId)}/supported-platforms`;
   },
 
   list() {
-    return client.get<Cluster[]>(`${ClustersAPI.getBaseURI()}`);
+    return client.get<Cluster[]>(`${ClustersAPI.makeBaseURI()}`);
   },
 
   get(clusterId: Cluster['id']) {
-    return client.get<Cluster>(`${ClustersAPI.getBaseURI(clusterId)}`);
+    return client.get<Cluster>(`${ClustersAPI.makeBaseURI(clusterId)}`);
+  },
+
+  getSupportedPlatforms(clusterId: Cluster['id']) {
+    return client.get<PlatformType[]>(`${ClustersAPI.makeBaseURI(clusterId)}/supported-platforms`);
+  },
+
+  getDefaultConfig() {
+    return `${ClustersAPI.makeBaseURI()}/default-config`;
   },
 
   deregister(clusterId: Cluster['id']) {
-    return client.delete<void>(`${ClustersAPI.getBaseURI(clusterId)}`);
+    return client.delete<void>(`${ClustersAPI.makeBaseURI(clusterId)}`);
   },
 
   register(params: ClusterCreateParams) {
     return client.post<ClusterCreateParams, AxiosResponse<Cluster>>(
-      `${ClustersAPI.getBaseURI()}`,
+      `${ClustersAPI.makeBaseURI()}`,
       params,
     );
   },
 
   update(clusterId: Cluster['id'], params: ClusterUpdateParams) {
     return client.patch<ClusterUpdateParams, AxiosResponse<Cluster>>(
-      `${ClustersAPI.getBaseURI(clusterId)}`,
+      `${ClustersAPI.makeBaseURI(clusterId)}`,
       params,
     );
   },
