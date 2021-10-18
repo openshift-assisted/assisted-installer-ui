@@ -19,6 +19,10 @@ const ClustersAPI = {
     return `${ClustersAPI.makeBaseURI(clusterId)}/downloads/credentials`;
   },
 
+  makeSupportedPlatformsBaseURI(clusterId: Cluster['id']) {
+    return `${ClustersAPI.makeBaseURI(clusterId)}/supported-platforms`;
+  },
+
   makeClusterActionsBaseURI(clusterId: string) {
     return `${ClustersAPI.makeBaseURI(clusterId)}/actions`;
   },
@@ -44,7 +48,7 @@ const ClustersAPI = {
   },
 
   getSupportedPlatforms(clusterId: Cluster['id']) {
-    return client.get<PlatformType[]>(`${ClustersAPI.makeBaseURI(clusterId)}/supported-platforms`);
+    return client.get<PlatformType[]>(`${ClustersAPI.makeSupportedPlatformsBaseURI(clusterId)}`);
   },
 
   getDefaultConfig() {
