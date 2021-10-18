@@ -13,10 +13,8 @@ import {
 } from '@patternfly/react-core';
 import Axios, { CancelTokenSource } from 'axios';
 import { Formik, FormikHelpers } from 'formik';
-import { createClusterDownloadsImage } from '../../api';
 import { handleApiError, getErrorMessage } from '../../api';
 import {
-  ImageCreateParams,
   Cluster,
   ClusterUpdateParams,
   httpProxyValidationSchema,
@@ -25,13 +23,18 @@ import {
   LoadingState,
   ProxyFields,
   UploadSSH,
+  InfraEnv,
+  InfraEnvUpdateParams,
+  ErrorState,
 } from '../../../common';
 import { updateCluster, forceReload } from '../../reducers/clusters';
 import { DiscoveryImageFormValues } from './types';
 import { usePullSecretFetch } from '../fetching/pullSecret';
 import DiscoveryImageTypeControlGroup from '../../../common/components/clusterConfiguration/DiscoveryImageTypeControlGroup';
-import { ClustersAPI } from '../../services/apis';
+import { ClustersAPI, InfraEnvsAPI } from '../../services/apis';
 import { useInfraEnvId } from '../../hooks';
+import useInfraEnv from '../../hooks/useInfraEnv';
+import { InfraEnvsService } from '../../services';
 
 const validationSchema = Yup.lazy<DiscoveryImageFormValues>((values) =>
   Yup.object<DiscoveryImageFormValues>().shape({
@@ -45,7 +48,7 @@ const validationSchema = Yup.lazy<DiscoveryImageFormValues>((values) =>
 type DiscoveryImageFormProps = {
   cluster: Cluster;
   onCancel: () => void;
-  onSuccess: (imageInfo: Cluster['imageInfo']) => void;
+  onSuccess: (imageInfo: InfraEnv['downloadUrl']) => void;
 };
 
 const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
@@ -53,7 +56,8 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
   onCancel,
   onSuccess,
 }) => {
-  const { infraEnvId, error } = useInfraEnvId(cluster.id); // TODO(jk): jg do something with infraEnvId...
+  const { infraEnv, infraEnvId, error, isLoadingInfraEnv } = useInfraEnv(cluster.id);
+
   const cancelSourceRef = React.useRef<CancelTokenSource>();
   const { sshPublicKey } = cluster.imageInfo;
   const dispatch = useDispatch();
@@ -83,21 +87,25 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
           pullSecret:
             cluster.kind === 'AddHostsCluster' && ocmPullSecret ? ocmPullSecret : undefined,
         };
-        // either update or remove proxy details
-        await ClustersAPI.update(cluster.id, proxyParams);
 
-        const imageCreateParams: ImageCreateParams = {
-          sshPublicKey: values.sshPublicKey,
-          imageType: values.imageType,
-        };
-        const { data: updatedCluster } = await createClusterDownloadsImage(
-          cluster.id,
-          imageCreateParams,
-          {
-            cancelToken: cancelSourceRef.current?.token,
-          },
-        );
-        onSuccess(updatedCluster.imageInfo);
+        const { data: updatedCluster } = await ClustersAPI.update(cluster.id, proxyParams);
+        if (infraEnvId) {
+          const infraEnvParams: InfraEnvUpdateParams = {
+            proxy: {
+              httpProxy: values.httpProxy,
+              httpsProxy: values.httpsProxy,
+              noProxy: values.noProxy,
+            },
+            sshAuthorizedKey: values.sshPublicKey,
+            pullSecret:
+              cluster.kind === 'AddHostsCluster' && ocmPullSecret ? ocmPullSecret : undefined,
+            staticNetworkConfig: values.staticNetworkConfig,
+            imageType: values.imageType,
+          };
+          await InfraEnvsAPI.patch(infraEnvId, infraEnvParams);
+        }
+
+        onSuccess(infraEnv?.downloadUrl);
         dispatch(updateCluster(updatedCluster));
       } catch (error) {
         handleApiError(error, () => {
@@ -118,60 +126,67 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
     httpsProxy: cluster.httpsProxy || '',
     noProxy: cluster.noProxy || '',
     enableProxy: !!(cluster.httpProxy || cluster.httpsProxy || cluster.noProxy),
-    imageType: cluster.imageInfo.type || 'full-iso',
+    imageType: infraEnv?.type || 'full-iso',
   };
 
-  return (
-    <Formik
-      initialValues={initialValues}
-      initialStatus={{ error: null }}
-      validationSchema={validationSchema}
-      onSubmit={handleSubmit}
-    >
-      {({ submitForm, isSubmitting, status, setStatus }) => {
-        return isSubmitting ? (
-          <LoadingState
-            content="Discovery image is being prepared, this might take a few seconds."
-            secondaryActions={[
-              <Button key="close" variant={ButtonVariant.secondary} onClick={handleCancel}>
-                Cancel
-              </Button>,
-            ]}
-          />
-        ) : (
-          <>
-            <ModalBoxBody>
-              <Form>
-                {status.error && (
-                  <Alert
-                    variant={AlertVariant.danger}
-                    title={status.error.title}
-                    actionClose={
-                      <AlertActionCloseButton onClose={() => setStatus({ error: null })} />
-                    }
-                    isInline
-                  >
-                    {status.error.message}
-                  </Alert>
-                )}
-                <DiscoveryImageTypeControlGroup />
-                <UploadSSH />
-                <ProxyFields />
-              </Form>
-            </ModalBoxBody>
-            <ModalBoxFooter>
-              <Button key="submit" onClick={submitForm}>
-                Generate Discovery ISO
-              </Button>
-              <Button key="cancel" variant="link" onClick={onCancel}>
-                Cancel
-              </Button>
-            </ModalBoxFooter>
-          </>
-        );
-      }}
-    </Formik>
-  );
+  if (isLoadingInfraEnv) {
+    return <LoadingState />;
+  } else if (error) {
+    //TODO: configure error state
+    return <ErrorState />;
+  } else {
+    return (
+      <Formik
+        initialValues={initialValues}
+        initialStatus={{ error: null }}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      >
+        {({ submitForm, isSubmitting, status, setStatus }) => {
+          return isSubmitting ? (
+            <LoadingState
+              content="Discovery image is being prepared, this might take a few seconds."
+              secondaryActions={[
+                <Button key="close" variant={ButtonVariant.secondary} onClick={handleCancel}>
+                  Cancel
+                </Button>,
+              ]}
+            />
+          ) : (
+            <>
+              <ModalBoxBody>
+                <Form>
+                  {status.error && (
+                    <Alert
+                      variant={AlertVariant.danger}
+                      title={status.error.title}
+                      actionClose={
+                        <AlertActionCloseButton onClose={() => setStatus({ error: null })} />
+                      }
+                      isInline
+                    >
+                      {status.error.message}
+                    </Alert>
+                  )}
+                  <DiscoveryImageTypeControlGroup />
+                  <UploadSSH />
+                  <ProxyFields />
+                </Form>
+              </ModalBoxBody>
+              <ModalBoxFooter>
+                <Button key="submit" onClick={submitForm}>
+                  Generate Discovery ISO
+                </Button>
+                <Button key="cancel" variant="link" onClick={onCancel}>
+                  Cancel
+                </Button>
+              </ModalBoxFooter>
+            </>
+          );
+        }}
+      </Formik>
+    );
+  }
 };
 
 export default DiscoveryImageForm;

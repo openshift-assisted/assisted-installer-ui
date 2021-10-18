@@ -1,5 +1,5 @@
 import { client } from '../../api';
-import { InfraEnv, InfraEnvCreateParams } from '../../../common';
+import { InfraEnv, InfraEnvCreateParams, InfraEnvUpdateParams } from '../../../common';
 import { AxiosResponse } from 'axios';
 import APIVersionService from '../APIVersionService';
 
@@ -10,6 +10,14 @@ const InfraEnvsAPI = {
 
   list() {
     return client.get<InfraEnv[]>(`${InfraEnvsAPI.makeBaseURI()}`);
+  },
+
+  get(infraEnvId: InfraEnv['id']) {
+    return client.get<InfraEnv>(`${InfraEnvsAPI.makeBaseURI(infraEnvId)}`);
+  },
+
+  patch(infraEnvId: InfraEnv['id'], params: InfraEnvUpdateParams) {
+    return client.patch<InfraEnv>(`${InfraEnvsAPI.makeBaseURI(infraEnvId)}`, params);
   },
 
   register(params: InfraEnvCreateParams) {
