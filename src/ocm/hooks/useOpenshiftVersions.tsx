@@ -1,7 +1,7 @@
 import React from 'react';
 import { AddHostsClusterCreateParams, OpenshiftVersionOptionType } from '../../common';
 import { getErrorMessage, handleApiError } from '../api';
-import { VersionsAPI } from '../services/apis';
+import { SupportedOpenshiftVersionsAPI } from '../services/apis';
 
 type useOpenshiftVersionsType = {
   versions: OpenshiftVersionOptionType[];
@@ -17,7 +17,7 @@ export default function useOpenshiftVersions(): useOpenshiftVersionsType {
   React.useEffect(() => {
     const doAsync = async () => {
       try {
-        const { data } = await VersionsAPI.getOpenshiftVersions();
+        const { data } = await SupportedOpenshiftVersionsAPI.list();
         const versions: OpenshiftVersionOptionType[] = Object.keys(data)
           .sort()
           .map((key) => ({
