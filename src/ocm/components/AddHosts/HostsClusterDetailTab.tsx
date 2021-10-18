@@ -1,7 +1,6 @@
 import React, { ReactNode } from 'react';
 import { Button, ButtonVariant, EmptyStateVariant } from '@patternfly/react-core';
 import {
-  AddHostsClusterCreateParams,
   Cluster,
   POLLING_INTERVAL,
   AddHostsContextProvider,
@@ -13,10 +12,11 @@ import { usePullSecretFetch } from '../fetching/pullSecret';
 import { AssistedUILibVersion } from '../ui';
 import { addHostsClusters } from '../../api/addHostsClusters';
 import { useOpenshiftVersions } from '../../hooks';
-import { getCluster, handleApiError } from '../../api';
+import { handleApiError } from '../../api';
 import AddHosts from './AddHosts';
 import { OcmClusterType } from './types';
 import { getOpenshiftClusterId } from './utils';
+import { ClustersAPI } from '../../services/apis';
 
 type OpenModalType = (modalName: string, cluster?: OcmClusterType) => void;
 
@@ -142,9 +142,9 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
         // try to find Day 2 cluster (can be missing)
         try {
           // The Day-2's cluster.id is always equal to the openshift_cluster_id, there is recently
-          // no way how to pass openshif_cluster_id other way than set it to the cluster.id (not even via API).
+          // no way how to pass openshift_cluster_id other way than set it to the cluster.id (not even via API).
           // There can not be >1 of Day 2 clusters. The Cluster.openshift_cluster_id is irrelevant to the Day 2 clusters.
-          const { data } = await getCluster(openshiftClusterId);
+          const { data } = await ClustersAPI.get(openshiftClusterId);
           setDay2Cluster(data);
           dayTwoClusterExists = true;
         } catch (e) {
@@ -164,6 +164,7 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
         if (!dayTwoClusterExists) {
           try {
             // Optionally create Day 2 cluster
+            // TODO(jkilzi): cannot move to v2 until https://issues.redhat.com/browse/MGMT-7915 is done
             const { data } = await addHostsClusters({
               id: openshiftClusterId, // used to both match OpenShift Cluster and as an assisted-installer ID
               name: `scale-up-${cluster.display_name || cluster.name || openshiftClusterId}`, // both cluster.name and cluster.display-name contain just UUID which fails AI validation (k8s naming conventions)
@@ -185,7 +186,7 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
         }
       };
 
-      doItAsync();
+      void doItAsync();
     }
   }, [cluster, openModal, pullSecret, day2Cluster, isVisible, normalizeClusterVersion]);
 
@@ -194,7 +195,7 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
       const id = setTimeout(() => {
         const doItAsync = async () => {
           try {
-            const { data } = await getCluster(day2Cluster.id);
+            const { data } = await ClustersAPI.get(day2Cluster.id);
             setDay2Cluster(data);
           } catch (e) {
             handleApiError(e);
