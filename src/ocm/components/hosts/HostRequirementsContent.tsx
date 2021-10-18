@@ -12,7 +12,8 @@ import {
   alertsSlice,
   HostRequirements,
 } from '../../../common';
-import { getClusterPreflightRequirements, getErrorMessage, handleApiError } from '../../api';
+import { getErrorMessage, handleApiError } from '../../api';
+import { ClustersAPI } from '../../services/apis';
 
 const { addAlert } = alertsSlice.actions;
 
@@ -30,7 +31,7 @@ const useClusterPreflightRequirements = (clusterId: Cluster['id']) => {
   React.useEffect(() => {
     const fetchFunc = async () => {
       try {
-        const { data } = await getClusterPreflightRequirements(clusterId);
+        const { data } = await ClustersAPI.getPreflightRequirements(clusterId);
         setPreflightRequirements(data);
       } catch (e) {
         setError(e);
