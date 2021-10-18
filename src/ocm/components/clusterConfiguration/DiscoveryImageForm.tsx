@@ -13,7 +13,7 @@ import {
 } from '@patternfly/react-core';
 import Axios, { CancelTokenSource } from 'axios';
 import { Formik, FormikHelpers } from 'formik';
-import { createClusterDownloadsImage, patchCluster } from '../../api';
+import { createClusterDownloadsImage } from '../../api';
 import { handleApiError, getErrorMessage } from '../../api';
 import {
   ImageCreateParams,
@@ -31,6 +31,7 @@ import { DiscoveryImageFormValues } from './types';
 import { usePullSecretFetch } from '../fetching/pullSecret';
 import DiscoveryImageTypeControlGroup from '../../../common/components/clusterConfiguration/DiscoveryImageTypeControlGroup';
 import { ClustersAPI } from '../../services/apis';
+import { useInfraEnvId } from '../../hooks';
 
 const validationSchema = Yup.lazy<DiscoveryImageFormValues>((values) =>
   Yup.object<DiscoveryImageFormValues>().shape({
@@ -52,6 +53,7 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
   onCancel,
   onSuccess,
 }) => {
+  const { infraEnvId, error } = useInfraEnvId(cluster.id); // TODO(jk): jg do something with infraEnvId...
   const cancelSourceRef = React.useRef<CancelTokenSource>();
   const { sshPublicKey } = cluster.imageInfo;
   const dispatch = useDispatch();
