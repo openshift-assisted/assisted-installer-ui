@@ -4,7 +4,7 @@ import { Button, ButtonVariant } from '@patternfly/react-core';
 import { getPresignedFileUrl, getClusterFileDownload } from '../../../ocm/api/clusters';
 import { canDownloadKubeconfig } from '../hosts/utils';
 import { useAlerts } from '../AlertsContextProvider';
-import { Cluster, Presigned } from '../../api/types';
+import { Cluster } from '../../api/types';
 import { ocmClient } from '../../../ocm/api/axiosClient';
 import { getErrorMessage, handleApiError } from '../../../ocm/api/utils';
 
