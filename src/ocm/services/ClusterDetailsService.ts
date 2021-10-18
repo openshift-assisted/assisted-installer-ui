@@ -22,7 +22,7 @@ const ClusterDetailsService = {
   },
 
   async getManagedDomains() {
-    const { data: domains } = await ManagedDomainsAPI.get();
+    const { data: domains } = await ManagedDomainsAPI.list();
     return domains;
   },
 };
