@@ -1,9 +1,9 @@
 import _ from 'lodash';
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { getCluster } from '../../api/clusters';
 import { Cluster, Host } from '../../../common';
 import { handleApiError } from '../../api/utils';
 import { ResourceUIState } from '../../../common';
+import { ClustersAPI } from '../../services/apis';
 
 export type RetrievalErrorType = {
   code: string;
@@ -24,7 +24,7 @@ export const fetchClusterAsync = createAsyncThunk<
   }
 >('currentCluster/fetchClusterAsync', async (clusterId, { rejectWithValue }) => {
   try {
-    const { data } = await getCluster(clusterId);
+    const { data } = await ClustersAPI.get(clusterId);
     return data;
   } catch (e) {
     return handleApiError(e, () => rejectWithValue(e.response.data));
