@@ -30,6 +30,7 @@ import { updateCluster, forceReload } from '../../reducers/clusters';
 import { DiscoveryImageFormValues } from './types';
 import { usePullSecretFetch } from '../fetching/pullSecret';
 import DiscoveryImageTypeControlGroup from '../../../common/components/clusterConfiguration/DiscoveryImageTypeControlGroup';
+import { ClustersAPI } from '../../services/apis';
 
 const validationSchema = Yup.lazy<DiscoveryImageFormValues>((values) =>
   Yup.object<DiscoveryImageFormValues>().shape({
@@ -81,7 +82,7 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
             cluster.kind === 'AddHostsCluster' && ocmPullSecret ? ocmPullSecret : undefined,
         };
         // either update or remove proxy details
-        await patchCluster(cluster.id, proxyParams);
+        await ClustersAPI.update(cluster.id, proxyParams);
 
         const imageCreateParams: ImageCreateParams = {
           sshPublicKey: values.sshPublicKey,
