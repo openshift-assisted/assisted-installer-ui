@@ -1,15 +1,17 @@
 import {
+  Cluster,
   ClusterUpdateParams,
   HostDiscoveryValues,
   MonitoredOperator,
   OPERATOR_NAME_CNV,
   OPERATOR_NAME_LSO,
   OPERATOR_NAME_OCS,
+  schedulableMastersAlwaysOn,
 } from '../../common';
 import { getOlmOperatorCreateParamsByName } from '../components/clusters/utils';
 
 const HostDiscoveryService = {
-  setPlatform(params: ClusterUpdateParams, usePlatformIntegration: boolean) {
+  setPlatform(params: ClusterUpdateParams, usePlatformIntegration: boolean): void {
     if (usePlatformIntegration) {
       params.platform = {
         type: 'vsphere',
@@ -26,7 +28,7 @@ const HostDiscoveryService = {
     params: ClusterUpdateParams,
     values: HostDiscoveryValues,
     monitoredOperators: MonitoredOperator[] = [],
-  ) {
+  ): void {
     const enabledOlmOperatorsByName = getOlmOperatorCreateParamsByName(monitoredOperators);
     const setOperator = (name: string, enabled: boolean) => {
       if (enabled) {
@@ -44,6 +46,20 @@ const HostDiscoveryService = {
     }
 
     params.olmOperators = Object.values(enabledOlmOperatorsByName);
+  },
+
+  setSchedulableMasters(
+    params: ClusterUpdateParams,
+    values: HostDiscoveryValues,
+    cluster: Cluster,
+  ): void {
+    if (!schedulableMastersAlwaysOn(cluster)) {
+      /*
+        backend shouldn't be updated with the schedulable masters when there are less than 5 hosts,
+        it'll mess up getting false for the default value when there are 5 hosts and up
+      */
+      params.schedulableMasters = values.schedulableMasters;
+    }
   },
 };
 
