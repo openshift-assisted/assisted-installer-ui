@@ -31,7 +31,7 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster }) => {
   const { addAlert, clearAlerts } = useAlerts();
   const history = useHistory();
   const dispatch = useDispatch();
-  const { usedClusterNames } = useUsedClusterNames(cluster?.id || '');
+  const { usedClusterNames } = useUsedClusterNames(cluster?.id || '', []);
   const pullSecret = usePullSecretFetch();
   const { error: errorOCPVersions, loading: loadingOCPVersions, versions } = useOpenshiftVersions();
 
