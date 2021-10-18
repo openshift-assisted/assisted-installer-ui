@@ -4,7 +4,7 @@ import APIVersionService from '../APIVersionService';
 
 const ComponentVersionsAPI = {
   makeBaseURI() {
-    return `/${APIVersionService.version}/component-versions`;
+    return `/v${APIVersionService.version}/component-versions`;
   },
 
   list() {
