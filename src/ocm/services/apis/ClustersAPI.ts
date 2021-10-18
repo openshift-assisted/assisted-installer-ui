@@ -1,5 +1,11 @@
 import { client } from '../../api';
-import { Cluster, ClusterCreateParams, ClusterUpdateParams, PlatformType } from '../../../common';
+import {
+  Cluster,
+  ClusterCreateParams,
+  ClusterDefaultConfig,
+  ClusterUpdateParams,
+  PlatformType,
+} from '../../../common';
 import { AxiosResponse } from 'axios';
 import APIVersionService from '../APIVersionService';
 
@@ -25,7 +31,7 @@ const ClustersAPI = {
   },
 
   getDefaultConfig() {
-    return `${ClustersAPI.makeBaseURI()}/default-config`;
+    return client.get<ClusterDefaultConfig>(`${ClustersAPI.makeBaseURI()}/default-config`);
   },
 
   deregister(clusterId: Cluster['id']) {
