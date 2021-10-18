@@ -1,5 +1,6 @@
 import { client } from '../../api';
 import {
+  AddHostsClusterCreateParams,
   Cluster,
   ClusterCreateParams,
   ClusterDefaultConfig,
@@ -16,6 +17,26 @@ const ClustersAPI = {
 
   makeSupportedPlatformsBaseURI(clusterId: Cluster['id']) {
     return `${ClustersAPI.makeBaseURI(clusterId)}/supported-platforms`;
+  },
+
+  makeDownloadClusterCredentialsBaseURI(clusterId: Cluster['id']) {
+    return `${ClustersAPI.makeBaseURI(clusterId)}/downloads/credentials`;
+  },
+
+  makeClusterActionsBaseURI(clusterId: string) {
+    return `${ClustersAPI.makeBaseURI(clusterId)}/actions`;
+  },
+
+  downloadClusterCredentials(clusterId: Cluster['id'], fileName: string) {
+    return client.get<Blob>(
+      `${this.makeDownloadClusterCredentialsBaseURI(clusterId)}?file_name=${fileName}`,
+      {
+        responseType: 'blob',
+        headers: {
+          Accept: 'application/octet-stream',
+        },
+      },
+    );
   },
 
   list() {
@@ -50,6 +71,22 @@ const ClustersAPI = {
       `${ClustersAPI.makeBaseURI(clusterId)}`,
       params,
     );
+  },
+
+  install(clusterId: Cluster['id']) {
+    return client.post<Cluster>(`${ClustersAPI.makeClusterActionsBaseURI(clusterId)}/install`);
+  },
+
+  cancel(clusterId: Cluster['id']) {
+    return client.post<Cluster>(`${ClustersAPI.makeClusterActionsBaseURI(clusterId)}/cancel`);
+  },
+
+  reset(clusterId: Cluster['id']) {
+    return client.post<Cluster>(`${ClustersAPI.makeClusterActionsBaseURI(clusterId)}/reset`);
+  },
+
+  registerAddHosts(params: AddHostsClusterCreateParams) {
+    return client.post<Cluster>(`${ClustersAPI.makeBaseURI()}/import`, params);
   },
 };
 
