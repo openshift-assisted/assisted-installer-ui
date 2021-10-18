@@ -6,7 +6,6 @@ import { Grid, GridItem, Text, TextContent } from '@patternfly/react-core';
 
 import {
   Cluster,
-  ClusterUpdateParams,
   FormikAutoSave,
   getFormikErrorFields,
   useAlerts,
