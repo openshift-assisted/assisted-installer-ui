@@ -6,6 +6,7 @@ import {
   ClusterDefaultConfig,
   ClusterUpdateParams,
   PlatformType,
+  PreflightHardwareRequirements,
 } from '../../../common';
 import { AxiosResponse } from 'axios';
 import APIVersionService from '../APIVersionService';
@@ -49,6 +50,12 @@ const ClustersAPI = {
 
   getSupportedPlatforms(clusterId: Cluster['id']) {
     return client.get<PlatformType[]>(`${ClustersAPI.makeSupportedPlatformsBaseURI(clusterId)}`);
+  },
+
+  getPreflightRequirements(clusterId: Cluster['id']) {
+    return client.get<PreflightHardwareRequirements>(
+      `${ClustersAPI.makeBaseURI(clusterId)}/preflight-requirements`,
+    );
   },
 
   getDefaultConfig() {
