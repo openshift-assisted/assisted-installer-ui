@@ -1,13 +1,14 @@
 import { client } from '../../api/axiosClient';
 import { ManagedDomain } from '../../../common';
+import APIVersionService from '../APIVersionService';
 
 const ManagedDomainsAPI = {
   getBaseURI() {
-    return '/v2/domains';
+    return `/v${APIVersionService.version}/domains`;
   },
 
-  get() {
-    return client.get<ManagedDomain[]>('/v2/domains');
+  list() {
+    return client.get<ManagedDomain[]>(ManagedDomainsAPI.getBaseURI());
   },
 };
 
