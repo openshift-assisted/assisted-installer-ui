@@ -17,7 +17,7 @@ const InfraEnvsAPI = {
   },
 
   patch(infraEnvId: InfraEnv['id'], params: InfraEnvUpdateParams) {
-    return client.patch<InfraEnv>(`${InfraEnvsAPI.makeBaseURI(infraEnvId)}`, params);
+    return client.patch<InfraEnvUpdateParams, AxiosResponse<InfraEnv>>(`${InfraEnvsAPI.makeBaseURI(infraEnvId)}`, params);
   },
 
   register(params: InfraEnvCreateParams) {
