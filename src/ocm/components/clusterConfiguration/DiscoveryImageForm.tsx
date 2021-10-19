@@ -56,7 +56,7 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
   onCancel,
   onSuccess,
 }) => {
-  const { infraEnv, infraEnvId, error, isLoadingInfraEnv } = useInfraEnv(cluster.id);
+  const { infraEnv, error, isLoading: isLoadingInfraEnv } = useInfraEnv(cluster.id);
 
   const cancelSourceRef = React.useRef<CancelTokenSource>();
   const { sshPublicKey } = cluster.imageInfo;
