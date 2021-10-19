@@ -89,7 +89,7 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
         };
 
         const { data: updatedCluster } = await ClustersAPI.update(cluster.id, proxyParams);
-        if (infraEnvId) {
+        if (infraEnv.id) {
           const infraEnvParams: InfraEnvUpdateParams = {
             proxy: {
               httpProxy: values.httpProxy,
