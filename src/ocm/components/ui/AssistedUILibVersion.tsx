@@ -1,12 +1,8 @@
-import React, { useEffect } from 'react';
-import { getAssistedUiLibVersion } from '../../../common';
-
-const version = getAssistedUiLibVersion();
+import React from 'react';
+import { useLogAssistedInstallerUILibVersion } from '../../../common';
 
 export const AssistedUILibVersion: React.FC = () => {
-  useEffect(() => {
-    console.log(`openshift-assisted-ui-lib v${version}`);
-  }, []);
+  const version = useLogAssistedInstallerUILibVersion();
 
   return (
     <div data-testid="assisted-ui-lib-version" hidden>
