@@ -10,6 +10,7 @@ import ClusterDeploymentHostsSelectionBasic from './ClusterDeploymentHostsSelect
 import ClusterDeploymentHostsSelectionAdvanced from './ClusterDeploymentHostsSelectionAdvanced';
 import { getAgentsForSelection, getIsSNOCluster } from '../helpers';
 import MinimalHWRequirements from '../Agent/MinimalHWRequirements';
+import NoAgentsAlert from '../Agent/NoAgentsAlert';
 
 const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionProps> = ({
   agentClusterInstall,
@@ -60,22 +61,26 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
       )}
 
       <GridItem>
-        <Form>
-          <SwitchField name="autoSelectHosts" label="Auto-select hosts" />
+        {availableAgents.length ? (
+          <Form>
+            <SwitchField name="autoSelectHosts" label="Auto-select hosts" />
 
-          {autoSelectHosts && (
-            <ClusterDeploymentHostsSelectionBasic
-              availableAgents={availableAgents}
-              isSNOCluster={isSNOCluster}
-            />
-          )}
+            {autoSelectHosts && (
+              <ClusterDeploymentHostsSelectionBasic
+                availableAgents={availableAgents}
+                isSNOCluster={isSNOCluster}
+              />
+            )}
 
-          {!autoSelectHosts && (
-            <ClusterDeploymentHostsSelectionAdvanced<ClusterDeploymentHostsSelectionValues>
-              availableAgents={availableAgents}
-            />
-          )}
-        </Form>
+            {!autoSelectHosts && (
+              <ClusterDeploymentHostsSelectionAdvanced<ClusterDeploymentHostsSelectionValues>
+                availableAgents={availableAgents}
+              />
+            )}
+          </Form>
+        ) : (
+          <NoAgentsAlert />
+        )}
       </GridItem>
     </Grid>
   );
