@@ -3,27 +3,35 @@ import type { IntegrationTestsRenderOptions } from './types';
 import { rest } from 'msw';
 import * as React from 'react';
 import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import { render } from '@testing-library/react';
 import { configureStore } from '@reduxjs/toolkit';
 import rootReducer from '../../store/rootReducer';
-import { AssistedInstallerUILibRootStore } from '../../store';
+
+const WINDOW_TITLE = 'OpenShift Assisted Installer';
 
 const makeStoreWithPreloadedState = (preloadedState = {}) =>
   configureStore({ reducer: rootReducer, preloadedState });
 
-const makeWrapperWithStore = (store: AssistedInstallerUILibRootStore) => {
-  const WrapperComponent = ({ children }: PropsWithChildren<{}>) => (
-    <Provider store={store}>
-      <MemoryRouter>{children}</MemoryRouter>
-    </Provider>
+const makeWithStoreWrapper = (store = makeStoreWithPreloadedState()) => {
+  const WithStoreWrapper = ({ children }: PropsWithChildren<{}>) => (
+    <Provider store={store}>{children}</Provider>
   );
 
-  return WrapperComponent;
+  return WithStoreWrapper;
+};
+
+const makeWithBrowserRouterWrapper = (context = {}, route = '/') => {
+  window.history.pushState(context, WINDOW_TITLE, route);
+  const WithBrowserRouterWrapper = ({ children }: PropsWithChildren<{}>) => (
+    <BrowserRouter>{children}</BrowserRouter>
+  );
+
+  return WithBrowserRouterWrapper;
 };
 
 const IntegrationTestsUtils = {
-  renderWithRedux(
+  render(
     ui: ReactElement,
     options: IntegrationTestsRenderOptions = {
       store: makeStoreWithPreloadedState(),
@@ -33,13 +41,23 @@ const IntegrationTestsUtils = {
       options.store = makeStoreWithPreloadedState(options.preloadedState);
     }
 
+    const WithStoreWrapper = makeWithStoreWrapper(options.store);
+    const WithBrowserRouterWrapper = makeWithBrowserRouterWrapper(
+      options.routeContext,
+      options.route,
+    );
+    const Wrapper = ({ children }: PropsWithChildren<{}>) => (
+      <WithStoreWrapper>
+        <WithBrowserRouterWrapper>{children}</WithBrowserRouterWrapper>
+      </WithStoreWrapper>
+    );
     return render(ui, {
-      wrapper: makeWrapperWithStore(options.store || makeStoreWithPreloadedState()),
+      wrapper: Wrapper,
       ...options,
     });
   },
 
-  makeHandler(options: {
+  makeServerHandler(options: {
     once?: boolean;
     method: 'post' | 'put' | 'get' | 'patch' | 'delete' | 'options';
     path: string;
