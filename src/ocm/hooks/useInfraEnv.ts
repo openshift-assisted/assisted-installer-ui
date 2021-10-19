@@ -30,5 +30,5 @@ export default function useInfraEnv(clusterId: Cluster['id']) {
     }
   }, [infraEnv, infraEnvId, infraEnvIdError]);
 
-  return { infraEnv, infraEnvId, error, isLoadingInfraEnv: !infraEnv && !error };
+  return { infraEnv, error, isLoading: !infraEnv && !error };
 }
