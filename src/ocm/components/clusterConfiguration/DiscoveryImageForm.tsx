@@ -102,7 +102,7 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
             staticNetworkConfig: values.staticNetworkConfig,
             imageType: values.imageType,
           };
-          await InfraEnvsAPI.patch(infraEnvId, infraEnvParams);
+          await InfraEnvsAPI.patch(infraEnv.id, infraEnvParams);
         }
 
         onSuccess(infraEnv?.downloadUrl);
