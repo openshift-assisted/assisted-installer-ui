@@ -3,7 +3,7 @@ import type { IntegrationTestsRenderOptions } from './types';
 import { rest } from 'msw';
 import * as React from 'react';
 import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router-dom';
+import { BrowserRouter, Route } from 'react-router-dom';
 import { render } from '@testing-library/react';
 import { configureStore } from '@reduxjs/toolkit';
 import rootReducer from '../../store/rootReducer';
@@ -13,15 +13,17 @@ const makeStoreWithPreloadedState = (preloadedState = {}) =>
   configureStore({ reducer: rootReducer, preloadedState });
 
 const makeWrapperWithStore = (store: AssistedInstallerUILibRootStore) => {
+  let testHistory, testLocation;
   const WrapperComponent = ({ children }: PropsWithChildren<{}>) => (
     <Provider store={store}>
-      <MemoryRouter>{children}</MemoryRouter>
+      <BrowserRouter>{children}</BrowserRouter>
     </Provider>
   );
 
   return WrapperComponent;
 };
 
+let renderWithRouter;
 const IntegrationTestsUtils = {
   renderWithRedux(
     ui: ReactElement,
@@ -33,8 +35,10 @@ const IntegrationTestsUtils = {
       options.store = makeStoreWithPreloadedState(options.preloadedState);
     }
 
+    const WrapperComponent = makeWrapperWithStore(options.store || makeStoreWithPreloadedState());
+    window.history.pushState({}, 'Test page', '/');
     return render(ui, {
-      wrapper: makeWrapperWithStore(options.store || makeStoreWithPreloadedState()),
+      wrapper: WrapperComponent,
       ...options,
     });
   },

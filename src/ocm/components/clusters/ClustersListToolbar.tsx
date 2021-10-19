@@ -95,9 +95,9 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
   };
 
   const statusPlaceholder = (
-    <>
+    <div data-testid="status filter">
       <FilterIcon /> Status
-    </>
+    </div>
   );
 
   return (
@@ -143,6 +143,7 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
                 key={label}
                 value={label}
                 inputId={`cluster-list-filter-status-${label}`}
+                data-testid={`cluster-list-filter-status-${label}`}
               />
             ))}
           </Select>
@@ -151,6 +152,7 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
           variant={ButtonVariant.primary}
           onClick={() => history.push(`${routeBasePath}/clusters/~new`)}
           id="button-create-new-cluster"
+          data-testid="button-create-new-cluster"
           data-ouia-id="button-create-new-cluster"
         >
           Create Cluster
@@ -162,9 +164,11 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
             onClick={() => fetchClusters()}
             isDisabled={clustersUIState === ResourceUIState.RELOADING}
           >
-            <Tooltip content="Refresh">
-              <SyncIcon />
-            </Tooltip>
+            <div data-testid="refresh">
+              <Tooltip content="Refresh">
+                <SyncIcon />
+              </Tooltip>
+            </div>
           </ToolbarButton>
         </ToolbarGroup>
       </ToolbarContent>

@@ -182,7 +182,7 @@ describe('<ClusterEventsList />', () => {
       render(<ClusterEventsList {...props} />);
 
       // open the severity filter menu
-      const severityFilter = screen.getByText(/Severity/i);
+      const severityFilter = screen.getByTestId(/Severity/i);
       userEvent.click(severityFilter);
 
       // check all the severity checkboxes

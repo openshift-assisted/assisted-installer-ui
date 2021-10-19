@@ -116,6 +116,7 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
       {
         title: 'Delete',
         id: `button-delete-${rowData.props.name}`,
+        //data-testid: `button-delete-${rowData.props.name}`,
         isDisabled:
           getClusterTableStatusCell(rowData).sortableValue === CLUSTER_STATUS_LABELS.installing,
         onClick: (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
