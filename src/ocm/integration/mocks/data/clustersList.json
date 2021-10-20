@@ -1,0 +1,440 @@
+[
+  {
+    "api_vip": "192.168.122.253",
+    "base_dns_domain": "redhat.com",
+    "cluster_network_cidr": "10.128.0.0/14",
+    "cluster_network_host_prefix": 23,
+    "connectivity_majority_groups": {
+      "192.168.122.0/24": [
+        "08b79a20-7b8e-4e0c-ba92-0fc8464c25ad",
+        "53c754e0-5005-48f3-9533-9653c32bf920",
+        "6abbaabe-81ac-4ce7-ae26-05d0ed65bb3a"
+      ],
+      "IPv4": [
+        "08b79a20-7b8e-4e0c-ba92-0fc8464c25ad",
+        "53c754e0-5005-48f3-9533-9653c32bf920",
+        "6abbaabe-81ac-4ce7-ae26-05d0ed65bb3a"
+      ],
+      "IPv6": [
+        "08b79a20-7b8e-4e0c-ba92-0fc8464c25ad",
+        "53c754e0-5005-48f3-9533-9653c32bf920",
+        "6abbaabe-81ac-4ce7-ae26-05d0ed65bb3a"
+      ]
+    },
+    "controller_logs_collected_at": "0001-01-01T00:00:00.000Z",
+    "controller_logs_started_at": "0001-01-01T00:00:00.000Z",
+    "created_at": "2021-08-26T10:57:35.388Z",
+    "email_domain": "Unknown",
+    "enabled_host_count": 3,
+    "feature_usage": {
+      "CNV": {
+        "name": "CNV"
+      },
+      "LSO": {
+        "name": "LSO"
+      },
+      "NetworkType": {
+        "data": {
+          "network_type": "OpenShiftSDN"
+        },
+        "name": "NetworkType"
+      },
+      "Requsted hostname": {
+        "data": {
+          "host_count": 1
+        },
+        "name": "Requsted hostname"
+      },
+      "VIP auto alloc.": {
+        "name": "VIP auto alloc."
+      }
+    },
+    "high_availability_mode": "Full",
+    "host_networks": null,
+    "hosts": [],
+    "href": "/api/assisted-install/v1/clusters/0f811fd0-0a08-45ad-8af0-c493561e3756",
+    "hyperthreading": "all",
+    "id": "0f811fd0-0a08-45ad-8af0-c493561e3756",
+    "image_info": {
+      "created_at": "0001-01-01T00:00:00.000Z",
+      "expires_at": "0001-01-01T00:00:00.000Z"
+    },
+    "ingress_vip": "192.168.122.207",
+    "install_completed_at": "2000-01-01T00:00:00.000Z",
+    "install_started_at": "2000-01-01T00:00:00.000Z",
+    "kind": "Cluster",
+    "machine_network_cidr": "192.168.122.0/24",
+    "monitored_operators": [
+      {
+        "cluster_id": "0f811fd0-0a08-45ad-8af0-c493561e3756",
+        "name": "console",
+        "operator_type": "builtin",
+        "status_updated_at": "0001-01-01T00:00:00.000Z",
+        "timeout_seconds": 3600
+      },
+      {
+        "cluster_id": "0f811fd0-0a08-45ad-8af0-c493561e3756",
+        "name": "lso",
+        "namespace": "openshift-local-storage",
+        "operator_type": "olm",
+        "status_updated_at": "0001-01-01T00:00:00.000Z",
+        "subscription_name": "local-storage-operator",
+        "timeout_seconds": 4200
+      },
+      {
+        "cluster_id": "0f811fd0-0a08-45ad-8af0-c493561e3756",
+        "name": "cnv",
+        "namespace": "openshift-cnv",
+        "operator_type": "olm",
+        "status_updated_at": "0001-01-01T00:00:00.000Z",
+        "subscription_name": "hco-operatorhub",
+        "timeout_seconds": 3600
+      }
+    ],
+    "name": "localhost",
+    "network_type": "OpenShiftSDN",
+    "ocp_release_image": "quay.io/openshift-release-dev/ocp-release:4.8.2-x86_64",
+    "openshift_version": "4.8.2",
+    "platform": {
+      "type": "baremetal",
+      "vsphere": {}
+    },
+    "progress": {},
+    "pull_secret_set": true,
+    "schedulable_masters": false,
+    "service_network_cidr": "172.30.0.0/16",
+    "ssh_public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDJulJXGIlHw3XPimjbqBxIxzDu+zq7cJL4mHr75J1as5scYy0rmYFanxM8zD6WGT9NAonHJpx2c7pjMJ/ePDC62sCdgtNP5WtmlzsdCf67v76903IZ7V4HAqqs+EW53AMik8DfuDLdxeY2ShFLNFSm+IRWw92O16MN82Cc9CaEyuoXeOyKmHBVYGzH1LDPxTs8kGdHoWWDn1ehS0DqPDPHBggDGE3ByyfMHLfiXtJDVNzzQHtGqBdYbg1TZ2svuaFxqH6W+18BuBdMMzQ+06jvHnruB9UrzqV/mnIDoH1YjD8DSNPgNqeojIU6AGhkPnLMn3/ljQqsdVoBFZvFT/P/4vfMRJqOJSwLLtsy8tPgw/XF9+AcE2BiQtFm1snIIEitroeLtGZ7v/35GR0GuOcX6OQUk6YRoe3wsULwlkVOF8nadpnJ1EmAUY+OX2oht8dLFxAvwHlrrqvq9W8XcuwjD1bIqtkEmVyfKlXnnjpHfZEXrDNbnv8ISuDYcGpEl+k= root@r640-u02.dev1.kni.lab.eng.bos.redhat.com",
+    "status": "insufficient",
+    "status_info": "Cluster is not ready for install",
+    "status_updated_at": "2021-09-02T17:15:02.947Z",
+    "total_host_count": 3,
+    "updated_at": "2021-10-04T07:50:05.125Z",
+    "user_managed_networking": false,
+    "user_name": "admin",
+    "validations_info": {
+      "configuration": [
+        {
+          "id": "pull-secret-set",
+          "status": "success",
+          "message": "The pull secret is set."
+        }
+      ],
+      "hosts-data": [
+        {
+          "id": "all-hosts-are-ready-to-install",
+          "status": "failure",
+          "message": "The cluster has hosts that are not ready to install."
+        },
+        {
+          "id": "sufficient-masters-count",
+          "status": "success",
+          "message": "The cluster has a sufficient number of master candidates."
+        }
+      ],
+      "network": [
+        {
+          "id": "api-vip-defined",
+          "status": "success",
+          "message": "The API virtual IP is defined."
+        },
+        {
+          "id": "api-vip-valid",
+          "status": "success",
+          "message": "api vip 192.168.122.253 belongs to the Machine CIDR and is not in use."
+        },
+        {
+          "id": "cluster-cidr-defined",
+          "status": "success",
+          "message": "The Cluster Network CIDR is defined."
+        },
+        {
+          "id": "dns-domain-defined",
+          "status": "success",
+          "message": "The base domain is defined."
+        },
+        {
+          "id": "ingress-vip-defined",
+          "status": "success",
+          "message": "The Ingress virtual IP is defined."
+        },
+        {
+          "id": "ingress-vip-valid",
+          "status": "success",
+          "message": "ingress vip 192.168.122.207 belongs to the Machine CIDR and is not in use."
+        },
+        {
+          "id": "machine-cidr-defined",
+          "status": "success",
+          "message": "The Machine Network CIDR is defined."
+        },
+        {
+          "id": "machine-cidr-equals-to-calculated-cidr",
+          "status": "success",
+          "message": "The Cluster Machine CIDR is equivalent to the calculated CIDR."
+        },
+        {
+          "id": "network-prefix-valid",
+          "status": "success",
+          "message": "The Cluster Network prefix is valid."
+        },
+        {
+          "id": "network-type-valid",
+          "status": "success",
+          "message": "The cluster has a valid network type"
+        },
+        {
+          "id": "no-cidrs-overlapping",
+          "status": "success",
+          "message": "No CIDRS are overlapping."
+        },
+        {
+          "id": "ntp-server-configured",
+          "status": "success",
+          "message": "No ntp problems found"
+        },
+        {
+          "id": "service-cidr-defined",
+          "status": "success",
+          "message": "The Service Network CIDR is defined."
+        }
+      ],
+      "operators": [
+        {
+          "id": "cnv-requirements-satisfied",
+          "status": "success",
+          "message": ""
+        },
+        {
+          "id": "lso-requirements-satisfied",
+          "status": "success",
+          "message": ""
+        },
+        {
+          "id": "ocs-requirements-satisfied",
+          "status": "success",
+          "message": "ocs is disabled"
+        }
+      ]
+    },
+    "vip_dhcp_allocation": true
+  },
+  {
+    "api_vip": "192.168.122.253",
+    "base_dns_domain": "redhat.com",
+    "cluster_network_cidr": "10.128.0.0/14",
+    "cluster_network_host_prefix": 23,
+    "connectivity_majority_groups": {
+      "192.168.122.0/24": [
+        "08b79a20-7b8e-4e0c-ba92-0fc8464c25ad",
+        "53c754e0-5005-48f3-9533-9653c32bf920",
+        "6abbaabe-81ac-4ce7-ae26-05d0ed65bb3a"
+      ],
+      "IPv4": [
+        "08b79a20-7b8e-4e0c-ba92-0fc8464c25ad",
+        "53c754e0-5005-48f3-9533-9653c32bf920",
+        "6abbaabe-81ac-4ce7-ae26-05d0ed65bb3a"
+      ],
+      "IPv6": [
+        "08b79a20-7b8e-4e0c-ba92-0fc8464c25ad",
+        "53c754e0-5005-48f3-9533-9653c32bf920",
+        "6abbaabe-81ac-4ce7-ae26-05d0ed65bb3a"
+      ]
+    },
+    "controller_logs_collected_at": "0001-01-01T00:00:00.000Z",
+    "controller_logs_started_at": "0001-01-01T00:00:00.000Z",
+    "created_at": "2021-08-26T10:57:35.388Z",
+    "email_domain": "Unknown",
+    "enabled_host_count": 3,
+    "feature_usage": {
+      "CNV": {
+        "name": "CNV"
+      },
+      "LSO": {
+        "name": "LSO"
+      },
+      "NetworkType": {
+        "data": {
+          "network_type": "OpenShiftSDN"
+        },
+        "name": "NetworkType"
+      },
+      "Requsted hostname": {
+        "data": {
+          "host_count": 1
+        },
+        "name": "Requsted hostname"
+      },
+      "VIP auto alloc.": {
+        "name": "VIP auto alloc."
+      }
+    },
+    "high_availability_mode": "Full",
+    "host_networks": null,
+    "hosts": [],
+    "href": "/api/assisted-install/v1/clusters/0f811fd0-0a08-45ad-8af0-c493561e3756",
+    "hyperthreading": "all",
+    "id": "0f811fd0-0a08-45ad-8af0-c493561e3757",
+    "image_info": {
+      "created_at": "0001-01-01T00:00:00.000Z",
+      "expires_at": "0001-01-01T00:00:00.000Z"
+    },
+    "ingress_vip": "192.168.122.207",
+    "install_completed_at": "2000-01-01T00:00:00.000Z",
+    "install_started_at": "2000-01-01T00:00:00.000Z",
+    "kind": "Cluster",
+    "machine_network_cidr": "192.168.122.0/24",
+    "monitored_operators": [
+      {
+        "cluster_id": "0f811fd0-0a08-45ad-8af0-c493561e3756",
+        "name": "console",
+        "operator_type": "builtin",
+        "status_updated_at": "0001-01-01T00:00:00.000Z",
+        "timeout_seconds": 3600
+      },
+      {
+        "cluster_id": "0f811fd0-0a08-45ad-8af0-c493561e3756",
+        "name": "lso",
+        "namespace": "openshift-local-storage",
+        "operator_type": "olm",
+        "status_updated_at": "0001-01-01T00:00:00.000Z",
+        "subscription_name": "local-storage-operator",
+        "timeout_seconds": 4200
+      },
+      {
+        "cluster_id": "0f811fd0-0a08-45ad-8af0-c493561e3756",
+        "name": "cnv",
+        "namespace": "openshift-cnv",
+        "operator_type": "olm",
+        "status_updated_at": "0001-01-01T00:00:00.000Z",
+        "subscription_name": "hco-operatorhub",
+        "timeout_seconds": 3600
+      }
+    ],
+    "name": "localhost",
+    "network_type": "OpenShiftSDN",
+    "ocp_release_image": "quay.io/openshift-release-dev/ocp-release:4.8.2-x86_64",
+    "openshift_version": "4.8.2",
+    "platform": {
+      "type": "baremetal",
+      "vsphere": {}
+    },
+    "progress": {},
+    "pull_secret_set": true,
+    "schedulable_masters": false,
+    "service_network_cidr": "172.30.0.0/16",
+    "ssh_public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDJulJXGIlHw3XPimjbqBxIxzDu+zq7cJL4mHr75J1as5scYy0rmYFanxM8zD6WGT9NAonHJpx2c7pjMJ/ePDC62sCdgtNP5WtmlzsdCf67v76903IZ7V4HAqqs+EW53AMik8DfuDLdxeY2ShFLNFSm+IRWw92O16MN82Cc9CaEyuoXeOyKmHBVYGzH1LDPxTs8kGdHoWWDn1ehS0DqPDPHBggDGE3ByyfMHLfiXtJDVNzzQHtGqBdYbg1TZ2svuaFxqH6W+18BuBdMMzQ+06jvHnruB9UrzqV/mnIDoH1YjD8DSNPgNqeojIU6AGhkPnLMn3/ljQqsdVoBFZvFT/P/4vfMRJqOJSwLLtsy8tPgw/XF9+AcE2BiQtFm1snIIEitroeLtGZ7v/35GR0GuOcX6OQUk6YRoe3wsULwlkVOF8nadpnJ1EmAUY+OX2oht8dLFxAvwHlrrqvq9W8XcuwjD1bIqtkEmVyfKlXnnjpHfZEXrDNbnv8ISuDYcGpEl+k= root@r640-u02.dev1.kni.lab.eng.bos.redhat.com",
+    "status": "insufficient",
+    "status_info": "Cluster is not ready for install",
+    "status_updated_at": "2021-09-02T17:15:02.947Z",
+    "total_host_count": 3,
+    "updated_at": "2021-10-04T07:50:05.125Z",
+    "user_managed_networking": false,
+    "user_name": "admin",
+    "validations_info": {
+      "configuration": [
+        {
+          "id": "pull-secret-set",
+          "status": "success",
+          "message": "The pull secret is set."
+        }
+      ],
+      "hosts-data": [
+        {
+          "id": "all-hosts-are-ready-to-install",
+          "status": "failure",
+          "message": "The cluster has hosts that are not ready to install."
+        },
+        {
+          "id": "sufficient-masters-count",
+          "status": "success",
+          "message": "The cluster has a sufficient number of master candidates."
+        }
+      ],
+      "network": [
+        {
+          "id": "api-vip-defined",
+          "status": "success",
+          "message": "The API virtual IP is defined."
+        },
+        {
+          "id": "api-vip-valid",
+          "status": "success",
+          "message": "api vip 192.168.122.253 belongs to the Machine CIDR and is not in use."
+        },
+        {
+          "id": "cluster-cidr-defined",
+          "status": "success",
+          "message": "The Cluster Network CIDR is defined."
+        },
+        {
+          "id": "dns-domain-defined",
+          "status": "success",
+          "message": "The base domain is defined."
+        },
+        {
+          "id": "ingress-vip-defined",
+          "status": "success",
+          "message": "The Ingress virtual IP is defined."
+        },
+        {
+          "id": "ingress-vip-valid",
+          "status": "success",
+          "message": "ingress vip 192.168.122.207 belongs to the Machine CIDR and is not in use."
+        },
+        {
+          "id": "machine-cidr-defined",
+          "status": "success",
+          "message": "The Machine Network CIDR is defined."
+        },
+        {
+          "id": "machine-cidr-equals-to-calculated-cidr",
+          "status": "success",
+          "message": "The Cluster Machine CIDR is equivalent to the calculated CIDR."
+        },
+        {
+          "id": "network-prefix-valid",
+          "status": "success",
+          "message": "The Cluster Network prefix is valid."
+        },
+        {
+          "id": "network-type-valid",
+          "status": "success",
+          "message": "The cluster has a valid network type"
+        },
+        {
+          "id": "no-cidrs-overlapping",
+          "status": "success",
+          "message": "No CIDRS are overlapping."
+        },
+        {
+          "id": "ntp-server-configured",
+          "status": "success",
+          "message": "No ntp problems found"
+        },
+        {
+          "id": "service-cidr-defined",
+          "status": "success",
+          "message": "The Service Network CIDR is defined."
+        }
+      ],
+      "operators": [
+        {
+          "id": "cnv-requirements-satisfied",
+          "status": "success",
+          "message": ""
+        },
+        {
+          "id": "lso-requirements-satisfied",
+          "status": "success",
+          "message": ""
+        },
+        {
+          "id": "ocs-requirements-satisfied",
+          "status": "success",
+          "message": "ocs is disabled"
+        }
+      ]
+    },
+    "vip_dhcp_allocation": true
+  }
+]
