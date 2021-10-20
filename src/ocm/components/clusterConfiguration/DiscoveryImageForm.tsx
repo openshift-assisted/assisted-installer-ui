@@ -16,7 +16,6 @@ import { Formik, FormikHelpers } from 'formik';
 import { handleApiError, getErrorMessage } from '../../api';
 import {
   Cluster,
-  ClusterUpdateParams,
   httpProxyValidationSchema,
   noProxyValidationSchema,
   sshPublicKeyValidationSchema,
@@ -24,17 +23,14 @@ import {
   ProxyFields,
   UploadSSH,
   InfraEnv,
-  InfraEnvUpdateParams,
   ErrorState,
 } from '../../../common';
 import { updateCluster, forceReload } from '../../reducers/clusters';
 import { DiscoveryImageFormValues } from './types';
 import { usePullSecretFetch } from '../fetching/pullSecret';
 import DiscoveryImageTypeControlGroup from '../../../common/components/clusterConfiguration/DiscoveryImageTypeControlGroup';
-import { ClustersAPI, InfraEnvsAPI } from '../../services/apis';
-import { useInfraEnvId } from '../../hooks';
 import useInfraEnv from '../../hooks/useInfraEnv';
-import { InfraEnvsService } from '../../services';
+import { DiscoveryImageFormService } from '../../services';
 
 const validationSchema = Yup.lazy<DiscoveryImageFormValues>((values) =>
   Yup.object<DiscoveryImageFormValues>().shape({
@@ -48,7 +44,7 @@ const validationSchema = Yup.lazy<DiscoveryImageFormValues>((values) =>
 type DiscoveryImageFormProps = {
   cluster: Cluster;
   onCancel: () => void;
-  onSuccess: (imageInfo: InfraEnv['downloadUrl']) => void;
+  onSuccess: (downloadUrl: InfraEnv['downloadUrl']) => void;
 };
 
 const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
@@ -56,7 +52,7 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
   onCancel,
   onSuccess,
 }) => {
-  const { infraEnv, error, isLoading: isLoadingInfraEnv } = useInfraEnv(cluster.id);
+  const { infraEnv, error: infraEnvError, isLoading: isLoadingInfraEnv } = useInfraEnv(cluster.id);
 
   const cancelSourceRef = React.useRef<CancelTokenSource>();
   const { sshPublicKey } = cluster.imageInfo;
@@ -77,34 +73,15 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
     values: DiscoveryImageFormValues,
     formikActions: FormikHelpers<DiscoveryImageFormValues>,
   ) => {
-    if (cluster.id) {
+    if (cluster.id && infraEnv?.id) {
       try {
-        const proxyParams: ClusterUpdateParams = {
-          httpProxy: values.httpProxy,
-          httpsProxy: values.httpsProxy,
-          noProxy: values.noProxy,
-          // TODO(mlibra): Does the user need to change pull-secret?
-          pullSecret:
-            cluster.kind === 'AddHostsCluster' && ocmPullSecret ? ocmPullSecret : undefined,
-        };
-
-        const { data: updatedCluster } = await ClustersAPI.update(cluster.id, proxyParams);
-        if (infraEnv?.id) {
-          const infraEnvParams: InfraEnvUpdateParams = {
-            proxy: {
-              httpProxy: values.httpProxy,
-              httpsProxy: values.httpsProxy,
-              noProxy: values.noProxy,
-            },
-            sshAuthorizedKey: values.sshPublicKey,
-            pullSecret:
-              cluster.kind === 'AddHostsCluster' && ocmPullSecret ? ocmPullSecret : undefined,
-            staticNetworkConfig: values.staticNetworkConfig,
-            imageType: values.imageType,
-          };
-          await InfraEnvsAPI.patch(infraEnv.id, infraEnvParams);
-        }
-
+        const updatedCluster = await DiscoveryImageFormService.update(
+          cluster.id,
+          infraEnv.id,
+          values,
+          cluster.kind,
+          ocmPullSecret,
+        );
         onSuccess(infraEnv?.downloadUrl);
         dispatch(updateCluster(updatedCluster));
       } catch (error) {
@@ -131,7 +108,7 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
 
   if (isLoadingInfraEnv) {
     return <LoadingState />;
-  } else if (error) {
+  } else if (infraEnvError) {
     //TODO: configure error state
     return <ErrorState />;
   } else {
