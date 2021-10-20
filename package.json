@@ -1,6 +1,6 @@
 {
   "name": "openshift-assisted-ui-lib",
-  "version": "1.5.39-2",
+  "version": "1.5.39-3-acm2.4",
   "description": "React component library for the Bare Metal Installer",
   "license": "Apache-2.0",
   "repository": "openshift-assisted/assisted-ui-lib",
