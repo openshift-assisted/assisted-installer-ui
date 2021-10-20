@@ -95,9 +95,9 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
   };
 
   const statusPlaceholder = (
-    <>
+    <span data-testid="status-filter-placeholder-text">
       <FilterIcon /> Status
-    </>
+    </span>
   );
 
   return (
@@ -158,6 +158,7 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
         {clustersUIState === ResourceUIState.RELOADING && <Spinner size="lg" />}
         <ToolbarGroup alignment={{ lg: 'alignRight' }}>
           <ToolbarButton
+            data-testid="clusters-list-refresh-button"
             variant={ButtonVariant.plain}
             onClick={() => fetchClusters()}
             isDisabled={clustersUIState === ResourceUIState.RELOADING}
