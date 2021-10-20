@@ -5,7 +5,7 @@ import {
   InfraEnv,
 } from '../../common/api/types';
 import { ClustersAPI, InfraEnvsAPI } from './apis';
-import { DiscoveryImageFormValues } from '../components';
+import { DiscoveryImageFormValues } from '../components/clusterConfiguration/types';
 
 const DiscoveryImageFormService = {
   async update(
