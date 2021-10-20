@@ -30,6 +30,13 @@ const makeWithBrowserRouterWrapper = (context = {}, route = '/') => {
   return WithBrowserRouterWrapper;
 };
 
+const makeAppContainer = (element = 'div') => {
+  const container = document.createElement(element);
+  container.setAttribute('role', 'main');
+
+  return container;
+};
+
 const IntegrationTestsUtils = {
   render(
     ui: ReactElement,
@@ -51,7 +58,11 @@ const IntegrationTestsUtils = {
         <WithBrowserRouterWrapper>{children}</WithBrowserRouterWrapper>
       </WithStoreWrapper>
     );
+
+    const main = document.createElement('main');
+    main.setAttribute('role', 'main');
     return render(ui, {
+      container: document.body.appendChild(makeAppContainer()),
       wrapper: Wrapper,
       ...options,
     });
