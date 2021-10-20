@@ -27,7 +27,7 @@ import {
 } from '../../../common';
 import { updateCluster, forceReload } from '../../reducers/clusters';
 import { DiscoveryImageFormValues } from './types';
-import { usePullSecretFetch } from '../fetching/pullSecret';
+import { usePullSecret } from '../../hooks';
 import DiscoveryImageTypeControlGroup from '../../../common/components/clusterConfiguration/DiscoveryImageTypeControlGroup';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { DiscoveryImageFormService } from '../../services';
