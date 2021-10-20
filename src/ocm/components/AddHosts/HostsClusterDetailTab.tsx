@@ -8,7 +8,7 @@ import {
   ErrorState,
   LoadingState,
 } from '../../../common';
-import { usePullSecretFetch } from '../fetching/pullSecret';
+import { usePullSecret } from '../../hooks';
 import { AssistedUILibVersion } from '../ui';
 import { addHostsClusters } from '../../api/addHostsClusters';
 import { useOpenshiftVersions } from '../../hooks';
@@ -33,7 +33,7 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
 }) => {
   const [error, setError] = React.useState<ReactNode>();
   const [day2Cluster, setDay2Cluster] = React.useState<Cluster | null>();
-  const pullSecret = usePullSecretFetch();
+  const pullSecret = usePullSecret();
   const { normalizeClusterVersion } = useOpenshiftVersions();
 
   const TryAgain = React.useCallback(
