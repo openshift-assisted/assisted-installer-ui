@@ -10,7 +10,7 @@ import {
   LoadingState,
   ClusterWizardStep,
 } from '../../../common';
-import { usePullSecretFetch } from '../fetching/pullSecret';
+import { usePullSecret } from '../../hooks';
 import { getErrorMessage, handleApiError } from '../../api';
 import { updateCluster } from '../../reducers/clusters';
 import ClusterWizardContext from './ClusterWizardContext';
@@ -32,7 +32,7 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster }) => {
   const history = useHistory();
   const dispatch = useDispatch();
   const { usedClusterNames } = useUsedClusterNames(cluster?.id || '', []);
-  const pullSecret = usePullSecretFetch();
+  const pullSecret = usePullSecret();
   const { error: errorOCPVersions, loading: loadingOCPVersions, versions } = useOpenshiftVersions();
 
   React.useEffect(() => {
