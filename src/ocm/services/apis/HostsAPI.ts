@@ -5,7 +5,7 @@ import InfraEnvsAPI from './InfraEnvsAPI';
 
 const HostsAPI = {
   makeBaseURI(infraEnvId: InfraEnv['id'], hostId?: Host['id']) {
-    return `${InfraEnvsAPI.makeBaseURI(infraEnvId)}/hosts${hostId ? hostId : ''}`;
+    return `${InfraEnvsAPI.makeBaseURI(infraEnvId)}/hosts/${hostId ? hostId : ''}`;
   },
 
   list(infraEnvId: InfraEnv['id']) {
