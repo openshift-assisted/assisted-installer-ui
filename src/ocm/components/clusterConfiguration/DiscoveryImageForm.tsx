@@ -55,9 +55,12 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
   const { infraEnv, error: infraEnvError, isLoading: isLoadingInfraEnv } = useInfraEnv(cluster.id);
 
   const cancelSourceRef = React.useRef<CancelTokenSource>();
-  const { sshPublicKey } = cluster.imageInfo;
   const dispatch = useDispatch();
-  const ocmPullSecret = usePullSecretFetch();
+  const ocmPullSecret = usePullSecret();
+
+  const initialValues: DiscoveryImageFormValues = DiscoveryImageFormService.getInitialValues(
+    infraEnv,
+  );
 
   React.useEffect(() => {
     cancelSourceRef.current = Axios.CancelToken.source();
@@ -95,15 +98,6 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
         });
       }
     }
-  };
-
-  const initialValues: DiscoveryImageFormValues = {
-    sshPublicKey: sshPublicKey || '',
-    httpProxy: cluster.httpProxy || '',
-    httpsProxy: cluster.httpsProxy || '',
-    noProxy: cluster.noProxy || '',
-    enableProxy: !!(cluster.httpProxy || cluster.httpsProxy || cluster.noProxy),
-    imageType: infraEnv?.type || 'full-iso',
   };
 
   if (isLoadingInfraEnv) {

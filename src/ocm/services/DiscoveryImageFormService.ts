@@ -24,23 +24,39 @@ const DiscoveryImageFormService = {
       sshPublicKey: formValues.sshPublicKey,
     };
 
+    const infraEnvParams: InfraEnvUpdateParams = {
+      proxy: {
+        httpProxy: formValues.httpProxy,
+        httpsProxy: formValues.httpsProxy,
+        noProxy: formValues.noProxy,
+      },
+      sshAuthorizedKey: formValues.sshPublicKey,
+      pullSecret: clusterKind === 'AddHostsCluster' && ocmPullSecret ? ocmPullSecret : undefined,
+      staticNetworkConfig: formValues.staticNetworkConfig,
+      imageType: formValues.imageType,
+    };
+
     const { data: updatedCluster } = await ClustersAPI.update(clusterId, proxyParams);
-    if (infraEnvId) {
-      const infraEnvParams: InfraEnvUpdateParams = {
-        proxy: {
-          httpProxy: formValues.httpProxy,
-          httpsProxy: formValues.httpsProxy,
-          noProxy: formValues.noProxy,
-        },
-        sshAuthorizedKey: formValues.sshPublicKey,
-        pullSecret: clusterKind === 'AddHostsCluster' && ocmPullSecret ? ocmPullSecret : undefined,
-        staticNetworkConfig: formValues.staticNetworkConfig,
-        imageType: formValues.imageType,
-      };
-      await InfraEnvsAPI.update(infraEnvId, infraEnvParams);
-    }
+    await InfraEnvsAPI.update(infraEnvId, infraEnvParams);
 
     return updatedCluster;
+  },
+
+  getInitialValues(infraEnv?: InfraEnv) {
+    const initialValues: DiscoveryImageFormValues = {
+      sshPublicKey: infraEnv?.sshAuthorizedKey || '',
+      httpProxy: infraEnv?.proxy?.httpProxy || '',
+      httpsProxy: infraEnv?.proxy?.httpsProxy || '',
+      noProxy: infraEnv?.proxy?.noProxy || '',
+      enableProxy: !!(
+        infraEnv?.proxy?.httpProxy ||
+        infraEnv?.proxy?.httpsProxy ||
+        infraEnv?.proxy?.noProxy
+      ),
+      imageType: infraEnv?.type || 'full-iso',
+    };
+
+    return initialValues;
   },
 };
 
