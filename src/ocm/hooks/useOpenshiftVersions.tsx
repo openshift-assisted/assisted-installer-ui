@@ -3,43 +3,44 @@ import { AddHostsClusterCreateParams, OpenshiftVersionOptionType } from '../../c
 import { getErrorMessage, handleApiError } from '../api';
 import { SupportedOpenshiftVersionsAPI } from '../services/apis';
 
-type useOpenshiftVersionsType = {
+type UseOpenshiftVersionsType = {
   versions: OpenshiftVersionOptionType[];
   normalizeClusterVersion: (version?: string) => AddHostsClusterCreateParams['openshiftVersion'];
   error?: { title: string; message: string };
   loading: boolean;
 };
 
-export default function useOpenshiftVersions(): useOpenshiftVersionsType {
+export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
   const [versions, setVersions] = React.useState<OpenshiftVersionOptionType[]>();
-  const [error, setError] = React.useState<useOpenshiftVersionsType['error']>();
+  const [error, setError] = React.useState<UseOpenshiftVersionsType['error']>();
+
+  const doAsync = React.useCallback(async () => {
+    try {
+      const { data } = await SupportedOpenshiftVersionsAPI.list();
+      const versions: OpenshiftVersionOptionType[] = Object.keys(data)
+        .sort()
+        .map((key) => ({
+          label: `OpenShift ${data[key].displayName || key}`,
+          value: key,
+          version: data[key].displayName,
+          default: Boolean(data[key].default),
+          supportLevel: data[key].supportLevel,
+        }));
+
+      setVersions(versions);
+    } catch (e) {
+      return handleApiError(e, (e) => {
+        setError({
+          title: 'Failed to retrieve list of supported OpenShift versions.',
+          message: getErrorMessage(e),
+        });
+      });
+    }
+  }, []);
 
   React.useEffect(() => {
-    const doAsync = async () => {
-      try {
-        const { data } = await SupportedOpenshiftVersionsAPI.list();
-        const versions: OpenshiftVersionOptionType[] = Object.keys(data)
-          .sort()
-          .map((key) => ({
-            label: `OpenShift ${data[key].displayName || key}`,
-            value: key,
-            version: data[key].displayName,
-            default: Boolean(data[key].default),
-            supportLevel: data[key].supportLevel,
-          }));
-
-        setVersions(versions);
-      } catch (e) {
-        return handleApiError(e, (e) => {
-          setError({
-            title: 'Failed to retrieve list of supported OpenShift versions.',
-            message: getErrorMessage(e),
-          });
-        });
-      }
-    };
     void doAsync();
-  }, [setVersions]);
+  }, [doAsync, setVersions]);
 
   const normalizeClusterVersion = React.useCallback(
     (version = ''): string =>
