@@ -56,8 +56,8 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
 
   const cancelSourceRef = React.useRef<CancelTokenSource>();
   const dispatch = useDispatch();
-  const ocmPullSecret = usePullSecret();
-
+  const pullSecret = usePullSecret();
+  const ocmPullSecret = cluster.kind === 'AddHostsCluster' && pullSecret ? pullSecret : undefined;
   const initialValues: DiscoveryImageFormValues = DiscoveryImageFormService.getInitialValues(
     infraEnv,
   );

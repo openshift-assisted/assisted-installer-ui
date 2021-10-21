@@ -31,7 +31,7 @@ const DiscoveryImageFormService = {
         noProxy: formValues.noProxy,
       },
       sshAuthorizedKey: formValues.sshPublicKey,
-      pullSecret: clusterKind === 'AddHostsCluster' && ocmPullSecret ? ocmPullSecret : undefined,
+      pullSecret: ocmPullSecret,
       staticNetworkConfig: formValues.staticNetworkConfig,
       imageType: formValues.imageType,
     };
