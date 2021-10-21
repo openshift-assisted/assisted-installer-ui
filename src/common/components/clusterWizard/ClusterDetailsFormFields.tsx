@@ -20,9 +20,7 @@ export type ClusterDetailsFormFieldsProps = {
   isBaseDnsDomainDisabled?: boolean;
   defaultPullSecret?: string;
   isOcm: boolean;
-
   extensionAfter?: { [key: string]: React.ReactElement };
-
   managedDomains?: ManagedDomain[];
   versions: OpenshiftVersionOptionType[];
   toggleRedHatDnsService?: (checked: boolean) => void;
