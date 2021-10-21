@@ -6,7 +6,7 @@ export default function usePullSecret() {
   const [pullSecret, setPullSecret] = React.useState<string>('');
   const { addAlert } = useAlerts();
 
-  const getPullSecret = async () => {
+  const getPullSecret = React.useCallback(async () => {
     try {
       if (ocmClient) {
         const response = await ocmClient.post('/api/accounts_mgmt/v1/access_token');
@@ -20,7 +20,7 @@ export default function usePullSecret() {
         addAlert({ title: 'Failed to retrieve pull secret', message: getErrorMessage(e) });
       });
     }
-  };
+  }, [addAlert]);
 
   React.useEffect(() => {
     if (!pullSecret) {

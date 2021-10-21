@@ -27,11 +27,11 @@ type ClusterDetailsProps = {
 
 const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster }) => {
   const { setCurrentStepId } = React.useContext(ClusterWizardContext);
-  const managedDomains = useManagedDomains([]);
+  const managedDomains = useManagedDomains();
   const { addAlert, clearAlerts } = useAlerts();
   const history = useHistory();
   const dispatch = useDispatch();
-  const { usedClusterNames } = useUsedClusterNames(cluster?.id || '', []);
+  const { usedClusterNames } = useUsedClusterNames(cluster?.id || '');
   const pullSecret = usePullSecret();
   const { error: errorOCPVersions, loading: loadingOCPVersions, versions } = useOpenshiftVersions();
 
