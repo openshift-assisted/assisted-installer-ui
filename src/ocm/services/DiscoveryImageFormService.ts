@@ -20,7 +20,7 @@ const DiscoveryImageFormService = {
       httpsProxy: formValues.httpsProxy,
       noProxy: formValues.noProxy,
       // TODO(mlibra): Does the user need to change pull-secret?
-      pullSecret: clusterKind === 'AddHostsCluster' && ocmPullSecret ? ocmPullSecret : undefined,
+      pullSecret: ocmPullSecret,
       sshPublicKey: formValues.sshPublicKey,
     };
 
