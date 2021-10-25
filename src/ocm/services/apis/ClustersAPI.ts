@@ -6,6 +6,7 @@ import {
   ClusterDefaultConfig,
   ClusterUpdateParams,
   getPresignedFileUrlProps,
+  Host,
   PlatformType,
   PreflightHardwareRequirements,
   Presigned,
@@ -113,6 +114,27 @@ const ClustersAPI = {
 
   registerAddHosts(params: AddHostsClusterCreateParams) {
     return client.post<Cluster>(`${ClustersAPI.makeBaseURI()}/import`, params);
+  },
+
+  downloadClusterLogs(clusterId: Cluster['id']) {
+    return client.get<Blob>(`${ClustersAPI.makeBaseURI(clusterId)}/logs?logs_type=all`, {
+      responseType: 'blob',
+      headers: {
+        Accept: 'application/octet-stream',
+      },
+    });
+  },
+
+  downloadHostLogs(hostId: Host['id'], clusterId?: Cluster['id']) {
+    return client.get<Blob>(
+      `${ClustersAPI.makeBaseURI(clusterId)}/logs?logs_type=host&host_id=${hostId}`,
+      {
+        responseType: 'blob',
+        headers: {
+          Accept: 'application/octet-stream',
+        },
+      },
+    );
   },
 };
 

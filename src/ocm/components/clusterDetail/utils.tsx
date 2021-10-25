@@ -1,6 +1,6 @@
 import { saveAs } from 'file-saver';
 import { get } from 'lodash';
-import { ocmClient, handleApiError, getErrorMessage, getClusterLogsDownloadUrl } from '../../api';
+import { ocmClient, handleApiError, getErrorMessage } from '../../api';
 import {
   Cluster,
   Host,
@@ -33,7 +33,10 @@ export const downloadClusterInstallationLogs = async (
       });
     }
   } else {
-    saveAs(getClusterLogsDownloadUrl(clusterId));
+    const response = await ClustersAPI.downloadClusterLogs(clusterId);
+    const contentHeader = response.headers.contentDisposition;
+    const name = contentHeader?.match(/filename="(.+)"/)?.[1];
+    saveAs(response.data, name);
   }
 };
 

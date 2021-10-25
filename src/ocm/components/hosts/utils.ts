@@ -1,14 +1,7 @@
 import { saveAs } from 'file-saver';
 import { AlertsContextType, Cluster, ClusterUpdateParams, Host } from '../../../common';
 
-import {
-  getHostLogsDownloadUrl,
-  ocmClient,
-  handleApiError,
-  getErrorMessage,
-  getPresignedFileUrl,
-  patchCluster,
-} from '../../api';
+import { ocmClient, handleApiError, getErrorMessage } from '../../api';
 import { updateCluster } from '../../reducers/clusters';
 import ClustersAPI from '../../services/apis/ClustersAPI';
 
@@ -31,7 +24,10 @@ export const downloadHostInstallationLogs = async (
       });
     }
   } else {
-    saveAs(getHostLogsDownloadUrl(host.id, host.clusterId));
+    const response = await ClustersAPI.downloadHostLogs(host.id, host.clusterId);
+    const contentHeader = response.headers.contentDisposition;
+    const name = contentHeader?.match(/filename="(.+)"/)?.[1];
+    saveAs(response.data, name);
   }
 };
 
@@ -47,7 +43,7 @@ export const onAdditionalNtpSourceAction = async (
       additionalNtpSource,
     };
 
-    const { data } = await patchCluster(clusterId, values);
+    const { data } = await ClustersAPI.update(clusterId, values);
     dispatch(updateCluster(data));
   } catch (e) {
     handleApiError(e, () => onError(getErrorMessage(e)));
