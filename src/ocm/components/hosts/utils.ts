@@ -10,6 +10,7 @@ import {
   patchCluster,
 } from '../../api';
 import { updateCluster } from '../../reducers/clusters';
+import ClustersAPI from '../../services/apis/ClustersAPI';
 
 export const downloadHostInstallationLogs = async (
   addAlert: AlertsContextType['addAlert'],
@@ -17,7 +18,7 @@ export const downloadHostInstallationLogs = async (
 ) => {
   if (ocmClient) {
     try {
-      const { data } = await getPresignedFileUrl({
+      const { data } = await ClustersAPI.getPresignedForClusterCredentials({
         clusterId: host.clusterId || 'UNKNOWN_CLUSTER',
         fileName: 'logs',
         hostId: host.id,

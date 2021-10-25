@@ -5,8 +5,10 @@ import {
   ClusterCreateParams,
   ClusterDefaultConfig,
   ClusterUpdateParams,
+  getPresignedFileUrlProps,
   PlatformType,
   PreflightHardwareRequirements,
+  Presigned,
 } from '../../../common';
 import { AxiosResponse } from 'axios';
 import APIVersionService from '../APIVersionService';
@@ -18,6 +20,10 @@ const ClustersAPI = {
 
   makeDownloadClusterCredentialsBaseURI(clusterId: Cluster['id']) {
     return `${ClustersAPI.makeBaseURI(clusterId)}/downloads/credentials`;
+  },
+
+  makeDownloadPresignedBaseURI(clusterId: Cluster['id']) {
+    return `${ClustersAPI.makeBaseURI(clusterId)}/downloads/credentials-presigned`;
   },
 
   makeSupportedPlatformsBaseURI(clusterId: Cluster['id']) {
@@ -37,6 +43,19 @@ const ClustersAPI = {
           Accept: 'application/octet-stream',
         },
       },
+    );
+  },
+
+  getPresignedForClusterCredentials({
+    clusterId,
+    fileName,
+    hostId,
+    logsType,
+  }: getPresignedFileUrlProps) {
+    return client.get<Presigned>(
+      `${this.makeDownloadPresignedBaseURI(clusterId)}?file_name=${fileName}${
+        logsType ? `&logs_type=${logsType}` : ''
+      }${hostId ? `&host_id=${hostId}` : ''}`,
     );
   },
 

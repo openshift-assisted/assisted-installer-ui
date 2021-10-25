@@ -1,12 +1,12 @@
 import React from 'react';
 import { saveAs } from 'file-saver';
 import { Button, ButtonVariant } from '@patternfly/react-core';
-import { getPresignedFileUrl, getClusterFileDownload } from '../../../ocm/api/clusters';
 import { canDownloadKubeconfig } from '../hosts/utils';
 import { useAlerts } from '../AlertsContextProvider';
 import { Cluster } from '../../api/types';
 import { ocmClient } from '../../../ocm/api/axiosClient';
 import { getErrorMessage, handleApiError } from '../../../ocm/api/utils';
+import { ClustersAPI } from '../../../ocm/services/apis';
 
 type KubeconfigDownloadProps = {
   clusterId: Cluster['id'];
@@ -28,8 +28,11 @@ const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({
       const fileName = status === 'installed' ? 'kubeconfig' : 'kubeconfig-noingress';
       if (ocmClient) {
         try {
-          const { data } = await getPresignedFileUrl({ clusterId, fileName });
-          saveAs(data.url);
+          const { data } = await ClustersAPI.getPresignedForClusterCredentials({
+            clusterId,
+            fileName,
+          });
+          saveAs(data.url, fileName);
         } catch (e) {
           handleApiError(e, async (e) => {
             addAlert({ title: 'Could not download kubeconfig', message: getErrorMessage(e) });
@@ -37,10 +40,8 @@ const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({
         }
       } else {
         try {
-          const response = await getClusterFileDownload(clusterId, fileName);
-          const contentHeader = response.headers.contentDisposition;
-          const name = contentHeader?.match(/filename="(.+)"/)?.[1];
-          saveAs(response.data, name);
+          const response = await ClustersAPI.downloadClusterCredentials(clusterId, fileName);
+          saveAs(response.data, fileName);
         } catch (e) {
           handleApiError(e, async (e) => {
             addAlert({ title: 'Could not download kubeconfig', message: getErrorMessage(e) });

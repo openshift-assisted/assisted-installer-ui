@@ -1,12 +1,6 @@
 import { saveAs } from 'file-saver';
 import { get } from 'lodash';
-import {
-  ocmClient,
-  getPresignedFileUrl,
-  handleApiError,
-  getErrorMessage,
-  getClusterLogsDownloadUrl,
-} from '../../api';
+import { ocmClient, handleApiError, getErrorMessage, getClusterLogsDownloadUrl } from '../../api';
 import {
   Cluster,
   Host,
@@ -15,6 +9,7 @@ import {
   stringToJSON,
   AlertsContextType,
 } from '../../../common';
+import { ClustersAPI } from '../../services/apis';
 
 export const downloadClusterInstallationLogs = async (
   addAlert: AlertsContextType['addAlert'],
@@ -22,7 +17,7 @@ export const downloadClusterInstallationLogs = async (
 ) => {
   if (ocmClient) {
     try {
-      const { data } = await getPresignedFileUrl({
+      const { data } = await ClustersAPI.getPresignedForClusterCredentials({
         clusterId,
         fileName: 'logs',
         hostId: undefined,
