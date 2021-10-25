@@ -1,9 +1,17 @@
 import React from 'react';
-import { Button, Modal, ButtonVariant, ModalVariant, ModalBoxBody } from '@patternfly/react-core';
+import {
+  Button,
+  Modal,
+  ButtonVariant,
+  ModalVariant,
+  ModalBoxBody,
+  Alert,
+} from '@patternfly/react-core';
 import { ToolbarButton } from './Toolbar';
 import { Cluster, Event } from '../../api';
 import { EventListFetchProps, EventsEntityKind } from '../../types';
 import { EventListFetch } from '../fetching/EventListFetch';
+import ExternalLink from './ExternalLink';
 
 import './EventsModal.css';
 
@@ -15,6 +23,7 @@ type EventsModalButtonProps = React.ComponentProps<typeof Button> & {
   cluster: Cluster;
   entityKind: EventsEntityKind;
   title: string;
+  eventsRoute?: string;
 };
 
 export const EventsModalButton: React.FC<EventsModalButtonProps> = ({
@@ -26,6 +35,7 @@ export const EventsModalButton: React.FC<EventsModalButtonProps> = ({
   entityKind,
   children,
   title,
+  eventsRoute,
   ...props
 }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -44,6 +54,7 @@ export const EventsModalButton: React.FC<EventsModalButtonProps> = ({
         cluster={cluster}
         entityKind={entityKind}
         onFetchEvents={onFetchEvents}
+        eventsRoute={eventsRoute}
       />
     </>
   );
@@ -57,6 +68,7 @@ type EventsModalProps = {
   onClose: () => void;
   isOpen: boolean;
   title: string;
+  eventsRoute?: string;
 };
 
 export const EventsModal: React.FC<EventsModalProps> = ({
@@ -67,6 +79,7 @@ export const EventsModal: React.FC<EventsModalProps> = ({
   onClose,
   isOpen,
   title,
+  eventsRoute,
 }) => {
   return (
     <Modal
@@ -84,13 +97,20 @@ export const EventsModal: React.FC<EventsModalProps> = ({
       className="events-modal"
     >
       <ModalBoxBody className="events-modal__body">
-        <EventListFetch
-          hostId={hostId}
-          cluster={cluster}
-          entityKind={entityKind}
-          onFetchEvents={onFetchEvents}
-          className="events-modal__event-list"
-        />
+        {eventsRoute ? (
+          <Alert variant="warning" isInline title="Could not load events">
+            Could not load events from the standard location. You can check the events in the&nbsp;
+            <ExternalLink href={eventsRoute}>raw format</ExternalLink>.
+          </Alert>
+        ) : (
+          <EventListFetch
+            hostId={hostId}
+            cluster={cluster}
+            entityKind={entityKind}
+            onFetchEvents={onFetchEvents}
+            className="events-modal__event-list"
+          />
+        )}
       </ModalBoxBody>
     </Modal>
   );
