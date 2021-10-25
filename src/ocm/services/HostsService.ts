@@ -47,6 +47,14 @@ const HostsService = {
   ) {
     return HostsService.update(clusterId, hostId, { hostName: newHostName });
   },
+
+  updateRole(
+    clusterId: Cluster['id'],
+    hostId: Host['id'],
+    newHostRole: HostUpdateParams['hostRole'],
+  ) {
+    return HostsService.update(clusterId, hostId, { hostRole: newHostRole });
+  },
 };
 
 export default HostsService;

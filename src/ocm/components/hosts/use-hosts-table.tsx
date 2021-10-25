@@ -9,9 +9,9 @@ import {
   DiskRole,
   EventsModal,
   Host,
-  HostRoleUpdateParams,
   Inventory,
   stringToJSON,
+  HostUpdateParams,
 } from '../../../common';
 import {
   AdditionalNTPSourcesDialog,
@@ -219,12 +219,14 @@ export const useHostsTable = (cluster: Cluster) => {
   }, [addAlert, cluster.id, dispatch, deleteHostDialog]);
 
   const onEditRole = React.useCallback(
-    async ({ id, clusterId }: Host, role?: string) => {
-      const params: ClusterUpdateParams = {};
-      params.hostsRoles = [{ id, role: role as HostRoleUpdateParams }];
+    async ({ id, clusterId }: Host, role: HostUpdateParams['hostRole']) => {
       try {
-        const { data } = await patchCluster(clusterId as string, params);
-        dispatch(updateCluster(data));
+        if (!clusterId) {
+          // noinspection ExceptionCaughtLocallyJS
+          throw new Error(`Failed to edit role in host: ${id}.\nMissing cluster_id`);
+        }
+        const { data } = await HostsService.updateRole(clusterId, id, role);
+        dispatch(updateHost(data));
       } catch (e) {
         handleApiError(e, () =>
           addAlert({ title: 'Failed to set role', message: getErrorMessage(e) }),
