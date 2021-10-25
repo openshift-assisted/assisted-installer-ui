@@ -6,7 +6,7 @@ import { useAlerts } from '../AlertsContextProvider';
 import { Cluster } from '../../api/types';
 import { ocmClient } from '../../../ocm/api/axiosClient';
 import { getErrorMessage, handleApiError } from '../../../ocm/api/utils';
-import { ClustersAPI } from '../../../ocm/services/apis';
+import ClustersAPI from '../../../ocm/services/apis/ClustersAPI';
 
 type KubeconfigDownloadProps = {
   clusterId: Cluster['id'];
