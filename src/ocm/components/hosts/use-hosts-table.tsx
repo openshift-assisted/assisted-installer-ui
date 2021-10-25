@@ -47,6 +47,7 @@ import { hostActionResolver } from '../../../common/components/hosts/tableUtils'
 import ResetHostModal from './ResetHostModal';
 import DeleteHostModal from './DeleteHostModal';
 import { onFetchEvents } from '../fetching/fetchEvents';
+import { HostsService } from '../../services';
 
 export const useHostsTable = (cluster: Cluster) => {
   const { addAlert } = useAlerts();
@@ -328,17 +329,12 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
         onClose={editHostDialog.close}
         isOpen={editHostDialog.isOpen}
         onSave={async (values: EditHostFormValues) => {
-          const params: ClusterUpdateParams = {
-            hostsNames: [
-              {
-                id: values.hostId,
-                hostname: values.hostname,
-              },
-            ],
-          };
-
-          const { data } = await patchCluster(cluster.id, params);
-          dispatch(updateCluster(data));
+          const { data } = await HostsService.updateHostName(
+            cluster.id,
+            values.hostId,
+            values.hostname,
+          );
+          dispatch(updateHost(data));
           editHostDialog.close();
         }}
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
