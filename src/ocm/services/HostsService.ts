@@ -4,6 +4,10 @@ import InfraEnvsService from './InfraEnvsService';
 import { HostsAPI } from '../services/apis';
 
 const HostsService = {
+  /**
+   * Deletes all the hosts in the given cluster
+   * @param clusterId
+   */
   async deleteAll(clusterId: Cluster['id']) {
     try {
       const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId);
@@ -19,6 +23,16 @@ const HostsService = {
     } catch (e) {
       throw e as AxiosError<Partial<{ reason: string; message: string }>>;
     }
+  },
+
+  /**
+   * Retrieves all the hosts that are bound to the given cluster
+   * @param clusterId
+   */
+  async listHostsBoundToCluster(clusterId: Cluster['id']) {
+    const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId);
+    const { data: hosts } = await HostsAPI.list(infraEnvId);
+    return hosts.filter((host) => host.clusterId === clusterId);
   },
 };
 
