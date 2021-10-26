@@ -33,6 +33,7 @@ export type HostDiscoveryValues = ClusterUpdateParams & {
   useContainerNativeVirtualization: boolean;
   usePlatformIntegration: boolean;
 };
+
 /* TODO: verify that this is really not needed
 export type ClusterDetailsValues = ClusterUpdateParams & {
   SNODisclaimer: boolean;
