@@ -139,9 +139,14 @@ const getFinalizingStatusIcon = (cluster: Cluster) => {
 type FinalizingProgressProps = {
   cluster: Cluster;
   onFetchEvents: EventListFetchProps['onFetchEvents'];
+  fallbackEventsURL?: string;
 };
 
-const FinalizingProgress: React.FC<FinalizingProgressProps> = ({ cluster, onFetchEvents }) => {
+const FinalizingProgress: React.FC<FinalizingProgressProps> = ({
+  cluster,
+  onFetchEvents,
+  fallbackEventsURL,
+}) => {
   const { status } = cluster;
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const closeModal = () => setIsModalOpen(false);
@@ -155,6 +160,7 @@ const FinalizingProgress: React.FC<FinalizingProgressProps> = ({ cluster, onFetc
         cluster={cluster}
         entityKind="cluster"
         onFetchEvents={onFetchEvents}
+        fallbackEventsURL={fallbackEventsURL}
       />
       <Flex className="pf-u-mr-3xl">
         <FlexItem>{getFinalizingStatusIcon(cluster)}</FlexItem>
@@ -195,6 +201,7 @@ type ClusterProgressProps = {
   minimizedView?: boolean;
   onFetchEvents: EventListFetchProps['onFetchEvents'];
   totalPercentage: number;
+  fallbackEventsURL?: string;
 };
 
 const ClusterProgress = ({
@@ -202,6 +209,7 @@ const ClusterProgress = ({
   minimizedView = false,
   totalPercentage,
   onFetchEvents,
+  fallbackEventsURL,
 }: ClusterProgressProps) => {
   const { status, monitoredOperators = [] } = cluster;
 
@@ -250,7 +258,11 @@ const ClusterProgress = ({
           </RenderIf>
 
           <FlexItem>
-            <FinalizingProgress cluster={cluster} onFetchEvents={onFetchEvents} />
+            <FinalizingProgress
+              cluster={cluster}
+              onFetchEvents={onFetchEvents}
+              fallbackEventsURL={fallbackEventsURL}
+            />
           </FlexItem>
 
           <RenderIf condition={olmOperators.length > 0}>

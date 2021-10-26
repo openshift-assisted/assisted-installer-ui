@@ -54,18 +54,6 @@ export const shouldShowClusterInstallationError = (
 export const formatEventsData = (rawData: any): EventList =>
   rawData.map((event: any) => _.mapKeys(event, (value, key) => _.camelCase(key)));
 
-export const getLogsURL = (
-  backendURL: string,
-  aiNamespace: string,
-  agentClusterInstall?: AgentClusterInstallK8sResource,
-) => {
-  if (agentClusterInstall?.status?.debugInfo?.logsURL) {
-    const logsURL = new URL(agentClusterInstall.status?.debugInfo?.logsURL);
-    return `${backendURL}${getK8sProxyURL(aiNamespace)}${logsURL.pathname}${logsURL.search}`;
-  }
-  return null;
-};
-
 // events are downloaded using ACM's wrapped fetchGet(), so the backendUrl is missing here
 const getEventsURL = (
   aiNamespace: string,
