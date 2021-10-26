@@ -1,17 +1,13 @@
 import React from 'react';
-import {
-  Button,
-  Modal,
-  ButtonVariant,
-  ModalVariant,
-  ModalBoxBody,
-  Alert,
-} from '@patternfly/react-core';
+import { Button, Modal, ButtonVariant, ModalVariant, ModalBoxBody } from '@patternfly/react-core';
+import { ExclamationTriangleIcon } from '@patternfly/react-icons';
+import { global_warning_color_100 as globalWarningColor100 } from '@patternfly/react-tokens';
 import { ToolbarButton } from './Toolbar';
 import { Cluster, Event } from '../../api';
 import { EventListFetchProps, EventsEntityKind } from '../../types';
 import { EventListFetch } from '../fetching/EventListFetch';
 import ExternalLink from './ExternalLink';
+import ErrorState from './uiState/ErrorState';
 
 import './EventsModal.css';
 
@@ -98,10 +94,18 @@ export const EventsModal: React.FC<EventsModalProps> = ({
     >
       <ModalBoxBody className="events-modal__body">
         {eventsRoute ? (
-          <Alert variant="warning" isInline title="Could not load events">
-            Could not load events from the standard location. You can check the events in the&nbsp;
-            <ExternalLink href={eventsRoute}>raw format</ExternalLink>.
-          </Alert>
+          <ErrorState
+            title="Could not load events"
+            content={
+              <>
+                Could not load events from the standard location. You can check the events in
+                the&nbsp;
+                <ExternalLink href={eventsRoute}>raw format</ExternalLink>.
+              </>
+            }
+            icon={ExclamationTriangleIcon}
+            iconColor={globalWarningColor100.value}
+          />
         ) : (
           <EventListFetch
             hostId={hostId}
