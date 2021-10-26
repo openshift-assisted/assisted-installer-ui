@@ -1,5 +1,5 @@
 import { IRow } from '@patternfly/react-table';
-import { ClusterUpdateParams, ClusterValidationId, LogsType } from '../api/types';
+import { ClusterUpdateParams, ClusterValidationId } from '../api/types';
 import { Validation as HostValidation } from './hosts';
 
 export type Validation = Omit<HostValidation, 'id'> & {
@@ -32,13 +32,6 @@ export type HostDiscoveryValues = ClusterUpdateParams & {
   useExtraDisksForLocalStorage: boolean;
   useContainerNativeVirtualization: boolean;
   usePlatformIntegration: boolean;
-};
-
-export type getPresignedFileUrlProps = {
-  clusterId: string;
-  fileName: 'logs' | 'kubeconfig' | 'kubeconfig-noingress';
-  hostId?: string;
-  logsType?: LogsType;
 };
 
 /* TODO: verify that this is really not needed

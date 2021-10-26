@@ -16,8 +16,8 @@ export const downloadClusterInstallationLogs = async (
   addAlert: AlertsContextType['addAlert'],
   clusterId: string,
 ) => {
-  if (ocmClient) {
-    try {
+  try {
+    if (ocmClient) {
       const { data } = await ClustersAPI.getPresignedForClusterCredentials({
         clusterId,
         fileName: 'logs',
@@ -25,16 +25,17 @@ export const downloadClusterInstallationLogs = async (
         logsType: 'all',
       });
       saveAs(data.url);
-    } catch (e) {
-      handleApiError(e, async (e) => {
-        addAlert({
-          title: 'Could not download cluster installation logs.',
-          message: getErrorMessage(e),
-        });
-      });
+    } else {
+      const { data, fileName } = await ClustersService.downloadLogs(clusterId);
+      saveAs(data, fileName);
     }
-  } else {
-    ClustersService.saveLogs(clusterId);
+  } catch (e) {
+    handleApiError(e, async (e) => {
+      addAlert({
+        title: 'Could not download cluster installation logs.',
+        message: getErrorMessage(e),
+      });
+    });
   }
 };
 

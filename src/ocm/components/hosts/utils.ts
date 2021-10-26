@@ -10,8 +10,8 @@ export const downloadHostInstallationLogs = async (
   addAlert: AlertsContextType['addAlert'],
   host: Host,
 ) => {
-  if (ocmClient) {
-    try {
+  try {
+    if (ocmClient) {
       const { data } = await ClustersAPI.getPresignedForClusterCredentials({
         clusterId: host.clusterId || 'UNKNOWN_CLUSTER',
         fileName: 'logs',
@@ -19,13 +19,17 @@ export const downloadHostInstallationLogs = async (
         logsType: 'host',
       });
       saveAs(data.url);
-    } catch (e) {
-      handleApiError(e, async (e) => {
-        addAlert({ title: 'Could not download host logs.', message: getErrorMessage(e) });
-      });
+    } else {
+      if (!host.clusterId) {
+        throw new Error(`Cannot download logs for host ${host.id}. ClusterId undefined.`);
+      }
+      const { data, fileName } = await ClustersService.downloadLogs(host.clusterId, host.id);
+      saveAs(data, fileName);
     }
-  } else {
-    ClustersService.saveLogs(host.clusterId, host.id);
+  } catch (e) {
+    handleApiError(e, async (e) => {
+      addAlert({ title: 'Could not download host logs.', message: getErrorMessage(e) });
+    });
   }
 };
 

@@ -5,14 +5,14 @@ import {
   ClusterCreateParams,
   ClusterDefaultConfig,
   ClusterUpdateParams,
-  getPresignedFileUrlProps,
   Host,
   PlatformType,
   PreflightHardwareRequirements,
   Presigned,
-} from '../../../common';
+} from '../../../common/api/types';
 import { AxiosResponse } from 'axios';
 import APIVersionService from '../APIVersionService';
+import { GetPresignedForClusterCredentialsOptions } from './types';
 
 const ClustersAPI = {
   makeBaseURI(clusterId?: Cluster['id']) {
@@ -37,7 +37,7 @@ const ClustersAPI = {
 
   downloadClusterCredentials(clusterId: Cluster['id'], fileName: string) {
     return client.get<Blob>(
-      `${this.makeDownloadClusterCredentialsBaseURI(clusterId)}?file_name=${fileName}`,
+      `${ClustersAPI.makeDownloadClusterCredentialsBaseURI(clusterId)}?file_name=${fileName}`,
       {
         responseType: 'blob',
         headers: {
@@ -52,11 +52,12 @@ const ClustersAPI = {
     fileName,
     hostId,
     logsType,
-  }: getPresignedFileUrlProps) {
+  }: GetPresignedForClusterCredentialsOptions) {
+    const queryParams = `${logsType ? `&logs_type=${logsType}` : ''}${
+      hostId ? `&host_id=${hostId}` : ''
+    }`;
     return client.get<Presigned>(
-      `${this.makeDownloadPresignedBaseURI(clusterId)}?file_name=${fileName}${
-        logsType ? `&logs_type=${logsType}` : ''
-      }${hostId ? `&host_id=${hostId}` : ''}`,
+      `${ClustersAPI.makeDownloadPresignedBaseURI(clusterId)}?file_name=${fileName}${queryParams}`,
     );
   },
 
