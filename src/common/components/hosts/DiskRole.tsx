@@ -57,6 +57,14 @@ const DiskRoleDropdown: React.FC<DiskRoleDropdownProps> = ({
   const [isOpen, setOpen] = React.useState(false);
   const [isDisabled, setDisabled] = React.useState(false);
 
+  const isMountedRef = React.useRef(false);
+  React.useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
   const dropdownItems = [
     <DropdownItem
       key="install"
@@ -74,14 +82,20 @@ const DiskRoleDropdown: React.FC<DiskRoleDropdownProps> = ({
     (event?: React.SyntheticEvent<HTMLDivElement>) => {
       const asyncFunc = async () => {
         if (event?.currentTarget.id) {
-          setDisabled(true);
+          if (isMountedRef.current) {
+            setDisabled(true);
+          }
           await onDiskRole(host.id, disk.id, event.currentTarget.id as DiskRoleValue);
-          setDisabled(false);
+          if (isMountedRef.current) {
+            setDisabled(false);
+          }
         }
         // TODO(mlibra): Improve for the case onDiskRole === undefined
-        setOpen(false);
+        if (isMountedRef.current) {
+          setOpen(false);
+        }
       };
-      asyncFunc();
+      void asyncFunc();
     },
     [setOpen, disk.id, host.id, onDiskRole],
   );
@@ -90,7 +104,11 @@ const DiskRoleDropdown: React.FC<DiskRoleDropdownProps> = ({
   const toggle = React.useMemo(
     () => (
       <DropdownToggle
-        onToggle={(val) => setOpen(val)}
+        onToggle={(val) => {
+          if (isMountedRef.current) {
+            setOpen(val);
+          }
+        }}
         toggleIndicator={CaretDownIcon}
         isDisabled={isDisabled}
         className="pf-c-button pf-m-link pf-m-inline"
