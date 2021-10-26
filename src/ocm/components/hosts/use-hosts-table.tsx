@@ -3,9 +3,7 @@ import { useDispatch } from 'react-redux';
 import {
   useAlerts,
   Cluster,
-  ClusterUpdateParams,
   Disk,
-  DiskConfigParams,
   DiskRole,
   EventsModal,
   Host,
