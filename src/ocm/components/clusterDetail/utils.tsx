@@ -1,12 +1,6 @@
 import { saveAs } from 'file-saver';
 import { get } from 'lodash';
-import {
-  ocmClient,
-  getPresignedFileUrl,
-  handleApiError,
-  getErrorMessage,
-  getClusterLogsDownloadUrl,
-} from '../../api';
+import { ocmClient, handleApiError, getErrorMessage } from '../../api';
 import {
   Cluster,
   Host,
@@ -15,30 +9,33 @@ import {
   stringToJSON,
   AlertsContextType,
 } from '../../../common';
+import { ClustersAPI } from '../../services/apis';
+import { ClustersService } from '../../services';
 
 export const downloadClusterInstallationLogs = async (
   addAlert: AlertsContextType['addAlert'],
   clusterId: string,
 ) => {
-  if (ocmClient) {
-    try {
-      const { data } = await getPresignedFileUrl({
+  try {
+    if (ocmClient) {
+      const { data } = await ClustersAPI.getPresignedForClusterCredentials({
         clusterId,
         fileName: 'logs',
         hostId: undefined,
         logsType: 'all',
       });
       saveAs(data.url);
-    } catch (e) {
-      handleApiError(e, async (e) => {
-        addAlert({
-          title: 'Could not download cluster installation logs.',
-          message: getErrorMessage(e),
-        });
-      });
+    } else {
+      const { data, fileName } = await ClustersService.downloadLogs(clusterId);
+      saveAs(data, fileName);
     }
-  } else {
-    saveAs(getClusterLogsDownloadUrl(clusterId));
+  } catch (e) {
+    handleApiError(e, async (e) => {
+      addAlert({
+        title: 'Could not download cluster installation logs.',
+        message: getErrorMessage(e),
+      });
+    });
   }
 };
 
