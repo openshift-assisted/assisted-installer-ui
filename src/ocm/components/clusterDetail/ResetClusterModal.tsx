@@ -11,12 +11,12 @@ import {
 import { ExclamationTriangleIcon } from '@patternfly/react-icons';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens';
 
-import { postResetCluster } from '../../api/clusters';
 import { getErrorMessage, handleApiError } from '../../api/utils';
 import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
 import { calculateCollectedLogsCount } from '../clusters/utils';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
 import { ErrorState, LoadingState } from '../../../common';
+import { ClustersAPI } from '../../services/apis';
 
 const ResetClusterModal: React.FC = () => {
   const dispatch = useDispatch();
@@ -40,7 +40,7 @@ const ResetClusterModal: React.FC = () => {
     setIsSubmitting(true);
     try {
       setError(null);
-      const { data } = await postResetCluster(cluster.id);
+      const { data } = await ClustersAPI.reset(cluster.id);
       dispatch(updateCluster(data));
       onClose();
     } catch (e) {
