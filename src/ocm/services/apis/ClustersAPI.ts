@@ -1,15 +1,18 @@
-import { client } from '../../api';
+import { client } from '../../api/axiosClient';
 import {
   AddHostsClusterCreateParams,
   Cluster,
   ClusterCreateParams,
   ClusterDefaultConfig,
   ClusterUpdateParams,
+  Host,
   PlatformType,
   PreflightHardwareRequirements,
-} from '../../../common';
+  Presigned,
+} from '../../../common/api/types';
 import { AxiosResponse } from 'axios';
 import APIVersionService from '../APIVersionService';
+import { GetPresignedForClusterCredentialsOptions } from './types';
 
 const ClustersAPI = {
   makeBaseURI(clusterId?: Cluster['id']) {
@@ -18,6 +21,10 @@ const ClustersAPI = {
 
   makeDownloadClusterCredentialsBaseURI(clusterId: Cluster['id']) {
     return `${ClustersAPI.makeBaseURI(clusterId)}/downloads/credentials`;
+  },
+
+  makeDownloadPresignedBaseURI(clusterId: Cluster['id']) {
+    return `${ClustersAPI.makeBaseURI(clusterId)}/downloads/credentials-presigned`;
   },
 
   makeSupportedPlatformsBaseURI(clusterId: Cluster['id']) {
@@ -30,13 +37,27 @@ const ClustersAPI = {
 
   downloadClusterCredentials(clusterId: Cluster['id'], fileName: string) {
     return client.get<Blob>(
-      `${this.makeDownloadClusterCredentialsBaseURI(clusterId)}?file_name=${fileName}`,
+      `${ClustersAPI.makeDownloadClusterCredentialsBaseURI(clusterId)}?file_name=${fileName}`,
       {
         responseType: 'blob',
         headers: {
           Accept: 'application/octet-stream',
         },
       },
+    );
+  },
+
+  getPresignedForClusterCredentials({
+    clusterId,
+    fileName,
+    hostId,
+    logsType,
+  }: GetPresignedForClusterCredentialsOptions) {
+    const queryParams = `${logsType ? `&logs_type=${logsType}` : ''}${
+      hostId ? `&host_id=${hostId}` : ''
+    }`;
+    return client.get<Presigned>(
+      `${ClustersAPI.makeDownloadPresignedBaseURI(clusterId)}?file_name=${fileName}${queryParams}`,
     );
   },
 
@@ -94,6 +115,16 @@ const ClustersAPI = {
 
   registerAddHosts(params: AddHostsClusterCreateParams) {
     return client.post<Cluster>(`${ClustersAPI.makeBaseURI()}/import`, params);
+  },
+
+  downloadLogs(clusterId: Cluster['id'], hostId?: Host['id']) {
+    const queryParams = `logs_type=${!hostId ? 'all' : `host&host_id=${hostId}`}`;
+    return client.get<Blob>(`${ClustersAPI.makeBaseURI(clusterId)}/logs?${queryParams}`, {
+      responseType: 'blob',
+      headers: {
+        Accept: 'application/octet-stream',
+      },
+    });
   },
 };
 
