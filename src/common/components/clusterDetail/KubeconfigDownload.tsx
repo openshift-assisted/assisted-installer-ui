@@ -26,27 +26,21 @@ const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({
   const download = React.useCallback(
     async (clusterId: Cluster['id'], status: Cluster['status']) => {
       const fileName = status === 'installed' ? 'kubeconfig' : 'kubeconfig-noingress';
-      if (ocmClient) {
-        try {
+      try {
+        if (ocmClient) {
           const { data } = await ClustersAPI.getPresignedForClusterCredentials({
             clusterId,
             fileName,
           });
           saveAs(data.url, fileName);
-        } catch (e) {
-          handleApiError(e, async (e) => {
-            addAlert({ title: 'Could not download kubeconfig', message: getErrorMessage(e) });
-          });
-        }
-      } else {
-        try {
+        } else {
           const response = await ClustersAPI.downloadClusterCredentials(clusterId, fileName);
           saveAs(response.data, fileName);
-        } catch (e) {
-          handleApiError(e, async (e) => {
-            addAlert({ title: 'Could not download kubeconfig', message: getErrorMessage(e) });
-          });
         }
+      } catch (e) {
+        handleApiError(e, async (e) => {
+          addAlert({ title: 'Could not download kubeconfig', message: getErrorMessage(e) });
+        });
       }
     },
     [addAlert],
