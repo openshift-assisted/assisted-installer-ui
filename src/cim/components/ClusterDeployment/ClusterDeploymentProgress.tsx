@@ -31,7 +31,7 @@ type ClusterDeploymentProgressProps = {
   agentClusterInstall: AgentClusterInstallK8sResource;
   agents: AgentK8sResource[];
   onFetchEvents: EventListFetchProps['onFetchEvents'];
-  eventsRoute?: string;
+  fallbackEventsURL?: string;
 };
 
 const ClusterDeploymentProgress = ({
@@ -39,7 +39,7 @@ const ClusterDeploymentProgress = ({
   agentClusterInstall,
   agents,
   onFetchEvents,
-  eventsRoute,
+  fallbackEventsURL,
 }: ClusterDeploymentProgressProps) => {
   const agentsProgressPercent = React.useMemo(() => getAgentsProgressPercent(agents), [agents]);
 
@@ -49,7 +49,7 @@ const ClusterDeploymentProgress = ({
       totalPercentage={agentsProgressPercent}
       cluster={cluster}
       onFetchEvents={onFetchEvents}
-      eventsRoute={eventsRoute}
+      fallbackEventsURL={fallbackEventsURL}
     />
   );
 };
