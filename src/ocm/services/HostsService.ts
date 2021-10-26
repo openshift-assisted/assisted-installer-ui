@@ -1,4 +1,4 @@
-import { Cluster } from '../../common';
+import { Cluster, Disk, DiskRole, Host, HostUpdateParams } from '../../common';
 import { AxiosError, AxiosPromise } from 'axios';
 import InfraEnvsService from './InfraEnvsService';
 import { HostsAPI } from '../services/apis';
@@ -33,6 +33,38 @@ const HostsService = {
     const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId);
     const { data: hosts } = await HostsAPI.list(infraEnvId);
     return hosts.filter((host) => host.clusterId === clusterId);
+  },
+
+  async update(clusterId: Cluster['id'], hostId: Host['id'], params: HostUpdateParams) {
+    const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId);
+    return HostsAPI.update(infraEnvId, hostId, params);
+  },
+
+  updateHostName(
+    clusterId: Cluster['id'],
+    hostId: Host['id'],
+    newHostName: HostUpdateParams['hostName'],
+  ) {
+    return HostsService.update(clusterId, hostId, { hostName: newHostName });
+  },
+
+  updateRole(
+    clusterId: Cluster['id'],
+    hostId: Host['id'],
+    newHostRole: HostUpdateParams['hostRole'],
+  ) {
+    return HostsService.update(clusterId, hostId, { hostRole: newHostRole });
+  },
+
+  updateDiskRole(
+    clusterId: Cluster['id'],
+    hostId: Host['id'],
+    diskId: Required<Disk>['id'],
+    newDiskRole: DiskRole,
+  ) {
+    return HostsService.update(clusterId, hostId, {
+      disksSelectedConfig: [{ id: diskId, role: newDiskRole }],
+    });
   },
 };
 

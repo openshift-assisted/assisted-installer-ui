@@ -1,5 +1,5 @@
 import React from 'react';
-import { Host } from '../../api';
+import { Host, HostUpdateParams } from '../../api';
 import { HOST_ROLES } from '../../config';
 import { SimpleDropdown } from '../ui';
 import { getHostRole } from './utils';
@@ -7,7 +7,7 @@ import { getHostRole } from './utils';
 type RoleDropdownProps = {
   host: Host;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onEditRole: (role?: string) => Promise<any>;
+  onEditRole: (role: HostUpdateParams['hostRole']) => Promise<any>;
 };
 
 const RoleDropdown: React.FC<RoleDropdownProps> = ({ host, onEditRole }) => {
@@ -16,7 +16,7 @@ const RoleDropdown: React.FC<RoleDropdownProps> = ({ host, onEditRole }) => {
   const setRole = async (role?: string) => {
     setDisabled(true);
     try {
-      await onEditRole(role);
+      await onEditRole(role as HostUpdateParams['hostRole']);
     } finally {
       setDisabled(false);
     }
