@@ -220,7 +220,7 @@ export const useHostsTable = (cluster: Cluster) => {
       try {
         if (!clusterId) {
           // noinspection ExceptionCaughtLocallyJS
-          throw new Error(`Failed to edit role in host: ${id}.\nMissing cluster_id`);
+          throw new Error(`Failed to edit role in host: ${id}.\nMissing clusterId`);
         }
         const { data } = await HostsService.updateRole(clusterId, id, role);
         dispatch(updateHost(data));
