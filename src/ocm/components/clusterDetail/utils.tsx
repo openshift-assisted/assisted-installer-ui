@@ -10,6 +10,7 @@ import {
   AlertsContextType,
 } from '../../../common';
 import { ClustersAPI } from '../../services/apis';
+import { ClustersService } from '../../services';
 
 export const downloadClusterInstallationLogs = async (
   addAlert: AlertsContextType['addAlert'],
@@ -33,10 +34,7 @@ export const downloadClusterInstallationLogs = async (
       });
     }
   } else {
-    const response = await ClustersAPI.downloadClusterLogs(clusterId);
-    const contentHeader = response.headers.contentDisposition;
-    const name = contentHeader?.match(/filename="(.+)"/)?.[1];
-    saveAs(response.data, name);
+    ClustersService.saveLogs(clusterId);
   }
 };
 

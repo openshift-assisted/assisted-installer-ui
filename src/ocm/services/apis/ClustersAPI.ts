@@ -116,25 +116,14 @@ const ClustersAPI = {
     return client.post<Cluster>(`${ClustersAPI.makeBaseURI()}/import`, params);
   },
 
-  downloadClusterLogs(clusterId: Cluster['id']) {
-    return client.get<Blob>(`${ClustersAPI.makeBaseURI(clusterId)}/logs?logs_type=all`, {
+  downloadLogs(clusterId: Cluster['id'], hostId?: Host['id']) {
+    const queryParams = `logs_type=${!hostId ? 'all' : `host&host_id=${hostId}`}`;
+    return client.get<Blob>(`${ClustersAPI.makeBaseURI(clusterId)}/logs?${queryParams}`, {
       responseType: 'blob',
       headers: {
         Accept: 'application/octet-stream',
       },
     });
-  },
-
-  downloadHostLogs(hostId: Host['id'], clusterId?: Cluster['id']) {
-    return client.get<Blob>(
-      `${ClustersAPI.makeBaseURI(clusterId)}/logs?logs_type=host&host_id=${hostId}`,
-      {
-        responseType: 'blob',
-        headers: {
-          Accept: 'application/octet-stream',
-        },
-      },
-    );
   },
 };
 

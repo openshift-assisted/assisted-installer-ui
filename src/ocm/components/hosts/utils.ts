@@ -3,6 +3,7 @@ import { AlertsContextType, Cluster, ClusterUpdateParams, Host } from '../../../
 
 import { ocmClient, handleApiError, getErrorMessage } from '../../api';
 import { updateCluster } from '../../reducers/clusters';
+import { ClustersService } from '../../services';
 import ClustersAPI from '../../services/apis/ClustersAPI';
 
 export const downloadHostInstallationLogs = async (
@@ -24,10 +25,7 @@ export const downloadHostInstallationLogs = async (
       });
     }
   } else {
-    const response = await ClustersAPI.downloadHostLogs(host.id, host.clusterId);
-    const contentHeader = response.headers.contentDisposition;
-    const name = contentHeader?.match(/filename="(.+)"/)?.[1];
-    saveAs(response.data, name);
+    ClustersService.saveLogs(host.clusterId, host.id);
   }
 };
 
