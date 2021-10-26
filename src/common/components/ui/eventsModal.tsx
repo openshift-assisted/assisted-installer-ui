@@ -19,7 +19,7 @@ type EventsModalButtonProps = React.ComponentProps<typeof Button> & {
   cluster: Cluster;
   entityKind: EventsEntityKind;
   title: string;
-  eventsRoute?: string;
+  fallbackEventsURL?: string;
 };
 
 export const EventsModalButton: React.FC<EventsModalButtonProps> = ({
@@ -31,7 +31,7 @@ export const EventsModalButton: React.FC<EventsModalButtonProps> = ({
   entityKind,
   children,
   title,
-  eventsRoute,
+  fallbackEventsURL,
   ...props
 }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -50,7 +50,7 @@ export const EventsModalButton: React.FC<EventsModalButtonProps> = ({
         cluster={cluster}
         entityKind={entityKind}
         onFetchEvents={onFetchEvents}
-        eventsRoute={eventsRoute}
+        fallbackEventsURL={fallbackEventsURL}
       />
     </>
   );
@@ -64,7 +64,7 @@ type EventsModalProps = {
   onClose: () => void;
   isOpen: boolean;
   title: string;
-  eventsRoute?: string;
+  fallbackEventsURL?: string;
 };
 
 export const EventsModal: React.FC<EventsModalProps> = ({
@@ -75,7 +75,7 @@ export const EventsModal: React.FC<EventsModalProps> = ({
   onClose,
   isOpen,
   title,
-  eventsRoute,
+  fallbackEventsURL,
 }) => {
   return (
     <Modal
@@ -93,14 +93,14 @@ export const EventsModal: React.FC<EventsModalProps> = ({
       className="events-modal"
     >
       <ModalBoxBody className="events-modal__body">
-        {eventsRoute ? (
+        {fallbackEventsURL ? (
           <ErrorState
             title="Could not load events"
             content={
               <>
                 Could not load events from the standard location. You can check the events in
                 the&nbsp;
-                <ExternalLink href={eventsRoute}>raw format</ExternalLink>.
+                <ExternalLink href={fallbackEventsURL}>raw format</ExternalLink>.
               </>
             }
             icon={ExclamationTriangleIcon}

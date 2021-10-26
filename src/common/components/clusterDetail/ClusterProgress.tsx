@@ -139,13 +139,13 @@ const getFinalizingStatusIcon = (cluster: Cluster) => {
 type FinalizingProgressProps = {
   cluster: Cluster;
   onFetchEvents: EventListFetchProps['onFetchEvents'];
-  eventsRoute?: string;
+  fallbackEventsURL?: string;
 };
 
 const FinalizingProgress: React.FC<FinalizingProgressProps> = ({
   cluster,
   onFetchEvents,
-  eventsRoute,
+  fallbackEventsURL,
 }) => {
   const { status } = cluster;
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -160,7 +160,7 @@ const FinalizingProgress: React.FC<FinalizingProgressProps> = ({
         cluster={cluster}
         entityKind="cluster"
         onFetchEvents={onFetchEvents}
-        eventsRoute={eventsRoute}
+        fallbackEventsURL={fallbackEventsURL}
       />
       <Flex className="pf-u-mr-3xl">
         <FlexItem>{getFinalizingStatusIcon(cluster)}</FlexItem>
@@ -201,7 +201,7 @@ type ClusterProgressProps = {
   minimizedView?: boolean;
   onFetchEvents: EventListFetchProps['onFetchEvents'];
   totalPercentage: number;
-  eventsRoute?: string;
+  fallbackEventsURL?: string;
 };
 
 const ClusterProgress = ({
@@ -209,7 +209,7 @@ const ClusterProgress = ({
   minimizedView = false,
   totalPercentage,
   onFetchEvents,
-  eventsRoute,
+  fallbackEventsURL,
 }: ClusterProgressProps) => {
   const { status, monitoredOperators = [] } = cluster;
 
@@ -261,7 +261,7 @@ const ClusterProgress = ({
             <FinalizingProgress
               cluster={cluster}
               onFetchEvents={onFetchEvents}
-              eventsRoute={eventsRoute}
+              fallbackEventsURL={fallbackEventsURL}
             />
           </FlexItem>
 
