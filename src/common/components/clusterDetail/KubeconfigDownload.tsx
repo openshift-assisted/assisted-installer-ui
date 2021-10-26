@@ -32,7 +32,7 @@ const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({
             clusterId,
             fileName,
           });
-          saveAs(data.url, fileName);
+          saveAs(data.url);
         } else {
           const response = await ClustersAPI.downloadClusterCredentials(clusterId, fileName);
           saveAs(response.data, fileName);
