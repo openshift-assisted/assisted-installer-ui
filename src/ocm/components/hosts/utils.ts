@@ -21,7 +21,9 @@ export const downloadHostInstallationLogs = async (
       saveAs(data.url);
     } else {
       if (!host.clusterId) {
-        throw new Error(`Cannot download logs for host ${host.id}. Missing clusterId field value in host.`);
+        throw new Error(
+          `Cannot download logs for host ${host.id}. Missing clusterId field value in host.`,
+        );
       }
       const { data, fileName } = await ClustersService.downloadLogs(host.clusterId, host.id);
       saveAs(data, fileName);
