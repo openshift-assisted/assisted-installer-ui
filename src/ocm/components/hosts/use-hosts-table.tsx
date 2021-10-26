@@ -24,7 +24,6 @@ import {
   getErrorMessage,
   handleApiError,
   installHost,
-  patchCluster,
   resetClusterHost,
 } from '../../api';
 import { forceReload, updateCluster, updateHost } from '../../reducers/clusters';
@@ -142,14 +141,14 @@ export const useHostsTable = (cluster: Cluster) => {
 
   const onDiskRole = React.useCallback(
     async (hostId: Host['id'], diskId: Disk['id'], role: DiskRole) => {
-      const params: ClusterUpdateParams = {};
-      params.disksSelectedConfig = [
-        { id: hostId, disksConfig: [{ id: diskId, role } as DiskConfigParams] },
-      ];
-
       try {
-        const { data } = await patchCluster(cluster.id, params);
-        dispatch(updateCluster(data));
+        if (!diskId) {
+          // noinspection ExceptionCaughtLocallyJS
+          throw new Error(`Cannot update disk role in host ${hostId}\nMissing diskId`);
+        }
+
+        const { data } = await HostsService.updateDiskRole(cluster.id, hostId, diskId, role);
+        dispatch(updateHost(data));
       } catch (e) {
         handleApiError(e, () =>
           addAlert({ title: 'Failed to set disk role', message: getErrorMessage(e) }),
