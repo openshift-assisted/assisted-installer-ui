@@ -4,3 +4,4 @@ export { default as ComponentVersionsAPI } from './ComponentVersionsAPI';
 export { default as ClustersAPI } from './ClustersAPI';
 export { default as HostsAPI } from './HostsAPI';
 export { default as InfraEnvsAPI } from './InfraEnvsAPI';
+export { default as EventsAPI } from './EventsAPI';
