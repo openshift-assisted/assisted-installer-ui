@@ -3,6 +3,7 @@ import { Cluster, ClusterDefaultConfig } from '../../api';
 import { HostSubnets, NetworkConfigurationValues } from '../../types/clusters';
 import {
   hostPrefixValidationSchema,
+  hostSubnetValidationSchema,
   ipBlockValidationSchema,
   sshPublicKeyValidationSchema,
   vipValidationSchema,
@@ -49,5 +50,6 @@ export const getNetworkConfigurationValidationSchema = (
       apiVip: vipValidationSchema(hostSubnets, values, initialValues.apiVip),
       ingressVip: vipValidationSchema(hostSubnets, values, initialValues.ingressVip),
       sshPublicKey: sshPublicKeyValidationSchema,
+      hostSubnet: hostSubnetValidationSchema,
     }),
   );
