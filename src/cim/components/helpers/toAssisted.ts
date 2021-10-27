@@ -21,8 +21,12 @@ export const getAIHosts = (
       // TODO(mlibra) Remove that workaround once https://issues.redhat.com/browse/MGMT-7052 is fixed
       const inventory: Inventory = _.cloneDeep(agent.status?.inventory || {});
       inventory.interfaces?.forEach((intf) => {
-        intf.ipv4Addresses = _.cloneDeep(intf.ipv4Addresses);
-        intf.ipv6Addresses = _.cloneDeep(intf.ipv6Addresses);
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore
+        intf.ipv4Addresses = _.cloneDeep(intf.ipV4Addresses);
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore
+        intf.ipv6Addresses = _.cloneDeep(intf.ipV6Addresses);
       });
 
       if (agent.metadata?.labels?.[AGENT_BMH_HOSTNAME_LABEL_KEY]) {
