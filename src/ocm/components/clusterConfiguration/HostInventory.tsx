@@ -10,6 +10,9 @@ import {
   ClusterWizardStepHeader,
   DiscoveryTroubleshootingModal,
   SwitchField,
+  schedulableMastersAlwaysOn,
+  HostDiscoveryValues,
+  getSchedulableMasters,
 } from '../../../common';
 import HostsDiscoveryTable from '../hosts/HostsDiscoveryTable';
 import DiscoveryInstructions from './DiscoveryInstructions';
@@ -22,6 +25,7 @@ import {
 } from '../hosts/HostRequirementsContent';
 import ClusterWizardHeaderExtraActions from './ClusterWizardHeaderExtraActions';
 import useClusterSupportedPlatforms from '../../api/hooks/useClusterSupportedPlatforms';
+import { useFormikContext } from 'formik';
 
 const OCSLabel: React.FC = () => (
   <>
@@ -85,6 +89,23 @@ const PlatformIntegrationLabel: React.FC<{ isTooltipHidden: boolean }> = ({
   </>
 );
 
+const SchedulableMastersLabel: React.FC<{ isTooltipHidden: boolean }> = ({
+  isTooltipHidden = false,
+}) => (
+  <>
+    <Tooltip
+      hidden={isTooltipHidden}
+      content={'This toggle will be "On" and not editable when less than 5 hosts were discovered'}
+    >
+      <span>Run workloads on control plane nodes</span>
+    </Tooltip>{' '}
+    <PopoverIcon
+      variant={'plain'}
+      bodyContent={<p>Enables your control plane nodes to be used for running applications.</p>}
+    />
+  </>
+);
+
 const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const [isDiscoveryHintModalOpen, setDiscoveryHintModalOpen] = React.useState(false);
   const { isPlatformIntegrationSupported } = useClusterSupportedPlatforms(cluster.id);
@@ -94,7 +115,12 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const isOpenshiftClusterStorageEnabled = useFeature('ASSISTED_INSTALLER_OCS_FEATURE');
   const isContainerNativeVirtualizationEnabled = useFeature('ASSISTED_INSTALLER_CNV_FEATURE');
   const isSNO = isSingleNodeCluster(cluster);
-
+  const isSchedulableMastersEnabled = !schedulableMastersAlwaysOn(cluster);
+  const { setFieldValue } = useFormikContext<HostDiscoveryValues>();
+  React.useEffect(() => {
+    //update schedulable masters field to allign with changing number of hosts
+    setFieldValue('schedulableMasters', getSchedulableMasters(cluster));
+  }, [cluster, setFieldValue]);
   return (
     <Stack hasGutter>
       <StackItem>
@@ -140,6 +166,13 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
             label={<PlatformIntegrationLabel isTooltipHidden={isPlatformIntegrationSupported} />}
           />
         )}
+      </StackItem>
+      <StackItem>
+        <SwitchField
+          isDisabled={!isSchedulableMastersEnabled}
+          name={'schedulableMasters'}
+          label={<SchedulableMastersLabel isTooltipHidden={isSchedulableMastersEnabled} />}
+        />
       </StackItem>
       <StackItem>
         <TextContent>

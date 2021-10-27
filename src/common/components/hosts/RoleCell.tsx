@@ -11,6 +11,10 @@ export type RoleCellProps = {
 };
 
 const RoleCell: React.FC<RoleCellProps> = ({ host, role, readonly = false, onEditRole }) =>
-  !readonly && onEditRole ? <RoleDropdown host={host} onEditRole={onEditRole} /> : <>{role}</>;
+  !readonly && onEditRole ? (
+    <RoleDropdown host={host} onEditRole={onEditRole} current={role} />
+  ) : (
+    <>{role}</>
+  );
 
 export default RoleCell;

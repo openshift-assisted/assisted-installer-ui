@@ -13,6 +13,7 @@ import {
   useAlerts,
   getHostDiscoveryInitialValues,
   MonitoredOperator,
+  schedulableMastersAlwaysOn,
 } from '../../../common';
 import { HostDiscoveryValues } from '../../../common/types/clusters';
 import HostInventory from '../clusterConfiguration/HostInventory';
@@ -62,6 +63,20 @@ const setOLMOperators = (
   params.olmOperators = Object.values(enabledOlmOperatorsByName);
 };
 
+const setSchedulableMasters = (
+  params: ClusterUpdateParams,
+  values: HostDiscoveryValues,
+  cluster: Cluster,
+): void => {
+  if (!schedulableMastersAlwaysOn(cluster)) {
+    /*
+      backend shouldn't be updated with the schedulable masters when there are less than 5 hosts, 
+      it'll mess up getting false for the default value when there are 5 hosts and up
+    */
+    params.schedulableMasters = values.schedulableMasters;
+  }
+};
+
 const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const dispatch = useDispatch();
   const { setCurrentStepId } = React.useContext(ClusterWizardContext);
@@ -81,6 +96,7 @@ const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
     const params: ClusterUpdateParams = {};
     setPlatform(params, values.usePlatformIntegration);
     setOLMOperators(params, values, cluster.monitoredOperators);
+    setSchedulableMasters(params, values, cluster);
 
     try {
       const { data } = await patchCluster(cluster.id, params);

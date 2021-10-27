@@ -1,18 +1,18 @@
 import React from 'react';
+import { HOST_ROLES } from '../../config/constants';
 import { Host } from '../../api';
-import { HOST_ROLES } from '../../config';
 import { SimpleDropdown } from '../ui';
-import { getHostRole } from './utils';
+import { useStateSafely } from '../../hooks';
 
 type RoleDropdownProps = {
   host: Host;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onEditRole: (role?: string) => Promise<any>;
+  current: string;
 };
 
-const RoleDropdown: React.FC<RoleDropdownProps> = ({ host, onEditRole }) => {
-  const [isDisabled, setDisabled] = React.useState(false);
-
+const RoleDropdown: React.FC<RoleDropdownProps> = ({ host, onEditRole, current }) => {
+  const [isDisabled, setDisabled] = useStateSafely(false);
   const setRole = async (role?: string) => {
     setDisabled(true);
     try {
@@ -25,7 +25,7 @@ const RoleDropdown: React.FC<RoleDropdownProps> = ({ host, onEditRole }) => {
   return (
     <SimpleDropdown
       defaultValue={HOST_ROLES[0].value}
-      current={getHostRole(host)}
+      current={current}
       items={HOST_ROLES}
       setValue={setRole}
       isDisabled={isDisabled}
