@@ -3,7 +3,7 @@ import { Cluster, ClusterDefaultConfig, Inventory, stringToJSON } from '../../ap
 import { NO_SUBNET_SET } from '../../config';
 import { HostDiscoveryValues, HostSubnets } from '../../types/clusters';
 import { OpenshiftVersionOptionType } from '../../types/versions';
-import { getHostname } from '../hosts/utils';
+import { getHostname, getSchedulableMasters } from '../hosts/utils';
 
 export const getSubnet = (cidr: string): Address6 | Address4 | null => {
   if (Address4.isValid(cidr)) {
@@ -70,6 +70,7 @@ export const getHostDiscoveryInitialValues = (cluster: Cluster): HostDiscoveryVa
     useExtraDisksForLocalStorage: isOperatorEnabled('ocs'),
     useContainerNativeVirtualization: isOperatorEnabled('cnv'),
     usePlatformIntegration: cluster.platform?.type !== 'baremetal',
+    schedulableMasters: getSchedulableMasters(cluster),
   };
 };
 
