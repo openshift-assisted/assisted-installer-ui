@@ -5,7 +5,6 @@ import {
   ClusterCreateParams,
   ClusterDefaultConfig,
   ClusterUpdateParams,
-  EventList,
   Host,
   PlatformType,
   PreflightHardwareRequirements,
@@ -126,10 +125,6 @@ const ClustersAPI = {
         Accept: 'application/octet-stream',
       },
     });
-  },
-
-  events(clusterId: Cluster['id']) {
-    return client.get<EventList>(`/v${APIVersionService.version}/events?cluster_id=${clusterId}`);
   },
 };
 

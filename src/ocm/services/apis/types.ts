@@ -6,3 +6,10 @@ export type GetPresignedForClusterCredentialsOptions = {
   hostId?: string;
   logsType?: LogsType;
 };
+
+export type EventAPIListOptions = {
+  clusterId?: string;
+  hostId?: string;
+  infraEnvId?: string;
+  categories?: string[];
+};

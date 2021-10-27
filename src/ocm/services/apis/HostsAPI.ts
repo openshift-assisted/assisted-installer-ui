@@ -27,10 +27,6 @@ const HostsAPI = {
   deregister(infraEnvId: InfraEnv['id'], hostId: Host['id']) {
     return client.delete<void>(`${HostsAPI.makeBaseURI(infraEnvId, hostId)}`);
   },
-
-  events(hostId: Host['id']) {
-    return client.get<EventList>(`/v${APIVersionService.version}/events?host_id=${hostId}`);
-  },
 };
 
 export default HostsAPI;

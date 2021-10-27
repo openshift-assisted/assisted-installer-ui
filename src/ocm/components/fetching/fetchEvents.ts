@@ -1,6 +1,13 @@
 import { EventListFetchProps } from '../../../common';
 import { handleApiError } from '../../api';
-import { ClustersAPI, HostsAPI } from '../../services/apis';
+import { EventsAPI } from '../../services/apis';
+
+interface EventAPIListOptions {
+  clusterId?: string;
+  hostId?: string;
+  infraEnvId?: string;
+  categories?: string[];
+}
 
 export const onFetchEvents: EventListFetchProps['onFetchEvents'] = async (
   props,
@@ -8,13 +15,9 @@ export const onFetchEvents: EventListFetchProps['onFetchEvents'] = async (
   onError,
 ) => {
   try {
-    if (props.hostId) {
-      const { data } = await HostsAPI.events(props.hostId);
-      onSuccess(data);
-    } else {
-      const { data } = await ClustersAPI.events(props.clusterId);
-      onSuccess(data);
-    }
+    const options: EventAPIListOptions = props;
+    const { data } = await EventsAPI.list(options);
+    onSuccess(data);
   } catch (error) {
     handleApiError(error, () => {
       onError('Failed to load events');

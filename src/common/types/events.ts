@@ -1,3 +1,4 @@
+import { EventAPIListOptions } from '../../ocm/services/apis/types';
 import { Cluster, Event, EventList, Host } from '../api';
 
 export type EventsEntityKind = 'cluster' | 'host';
@@ -16,15 +17,16 @@ export type EventFetchProps = {
   cluster: Cluster;
 };
 
-export type EventListFetchProps = EventFetchProps & {
-  entityKind: EventsEntityKind;
-  onFetchEvents: (
-    params: {
-      clusterId: Cluster['id'];
-      hostId?: Host['id'];
-    },
-    onSuccess: (data: EventList) => void,
-    onError: (message: string) => void,
-  ) => Promise<void>;
-  className?: string;
-};
+export type EventListFetchProps = EventFetchProps &
+  EventAPIListOptions & {
+    entityKind: EventsEntityKind;
+    onFetchEvents: (
+      params: {
+        clusterId: Cluster['id'];
+        hostId?: Host['id'];
+      },
+      onSuccess: (data: EventList) => void,
+      onError: (message: string) => void,
+    ) => Promise<void>;
+    className?: string;
+  };
