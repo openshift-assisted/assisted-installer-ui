@@ -16,7 +16,7 @@ export const EventListFetch: React.FC<EventListFetchProps> = ({ onFetchEvents, .
   const { cluster, hostId, entityKind, className } = props;
 
   useEffect(() => {
-    let timer: NodeJS.Timeout;
+    let timer: ReturnType<typeof setTimeout>;
 
     onFetchEvents(
       {
