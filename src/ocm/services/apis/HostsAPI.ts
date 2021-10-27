@@ -1,7 +1,8 @@
-import { Host, HostUpdateParams, InfraEnv } from '../../../common';
+import { EventList, Host, HostUpdateParams, InfraEnv } from '../../../common';
 import { client } from '../../api';
 import { AxiosResponse } from 'axios';
 import InfraEnvsAPI from './InfraEnvsAPI';
+import APIVersionService from '../APIVersionService';
 
 const HostsAPI = {
   makeBaseURI(infraEnvId: InfraEnv['id'], hostId?: Host['id']) {
@@ -25,6 +26,10 @@ const HostsAPI = {
 
   deregister(infraEnvId: InfraEnv['id'], hostId: Host['id']) {
     return client.delete<void>(`${HostsAPI.makeBaseURI(infraEnvId, hostId)}`);
+  },
+
+  events(hostId: Host['id']) {
+    return client.get<EventList>(`/v${APIVersionService.version}/events?host_id=${hostId}`);
   },
 };
 
