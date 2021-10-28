@@ -1,8 +1,7 @@
-import { EventList, Host, HostUpdateParams, InfraEnv } from '../../../common';
+import { Host, HostUpdateParams, InfraEnv } from '../../../common';
 import { client } from '../../api';
 import { AxiosResponse } from 'axios';
 import InfraEnvsAPI from './InfraEnvsAPI';
-import APIVersionService from '../APIVersionService';
 
 const HostsAPI = {
   makeBaseURI(infraEnvId: InfraEnv['id'], hostId?: Host['id']) {
