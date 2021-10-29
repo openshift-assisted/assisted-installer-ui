@@ -21,7 +21,7 @@ type InfraEnvAgentTable = ClusterDeploymentHostsTablePropsActions & {
   agents: AgentK8sResource[];
   bareMetalHosts: BareMetalHostK8sResource[];
   infraEnv: InfraEnvK8sResource;
-  getClusterDeploymentLink: (cd: { name: string; namespace: string }) => string;
+  getClusterDeploymentLink: (cd: { name: string; namespace: string }) => string | React.ReactNode;
   className?: string;
 };
 

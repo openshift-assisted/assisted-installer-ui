@@ -20,7 +20,7 @@ import {
 import ClusterDeploymentCredentials from './ClusterDeploymentCredentials';
 import { shouldShowClusterCredentials, shouldShowClusterInstallationProgress } from './helpers';
 import { EventsModalButton } from '../../../common/components/ui/eventsModal';
-import AgentTable from '../Agent/AgentTable';
+import AgentTable, { AgentTableProps } from '../Agent/AgentTable';
 import { FetchSecret } from './types';
 import { getClusterProperties, getConsoleUrl } from '../helpers/clusterDeployment';
 import ClusterDeploymentKubeconfigDownload from './ClusterDeploymentKubeconfigDownload';
@@ -30,6 +30,7 @@ type ClusterDeploymentDetailsProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall: AgentClusterInstallK8sResource;
   agents: AgentK8sResource[];
+  getInfraEnvLink: AgentTableProps['getInfraEnvLink'];
   fetchSecret: FetchSecret;
   agentTableClassName?: string;
   onFetchEvents: EventListFetchProps['onFetchEvents'];
@@ -39,6 +40,7 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
   clusterDeployment,
   agentClusterInstall,
   agents,
+  getInfraEnvLink,
   fetchSecret,
   agentTableClassName,
   onFetchEvents,
@@ -130,7 +132,11 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
           </CardHeader>
           <CardExpandableContent>
             <CardBody>
-              <AgentTable agents={clusterAgents} className={agentTableClassName} />
+              <AgentTable
+                agents={clusterAgents}
+                className={agentTableClassName}
+                getInfraEnvLink={getInfraEnvLink}
+              />
             </CardBody>
           </CardExpandableContent>
         </Card>
