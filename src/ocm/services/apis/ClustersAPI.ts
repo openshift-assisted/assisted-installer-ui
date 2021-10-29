@@ -19,25 +19,33 @@ const ClustersAPI = {
     return `/v${APIVersionService.version}/clusters/${clusterId ? clusterId : ''}`;
   },
 
-  makeDownloadClusterCredentialsBaseURI(clusterId: Cluster['id']) {
-    return `${ClustersAPI.makeBaseURI(clusterId)}/downloads/credentials`;
+  makeDownloadsBaseURI(clusterId: Cluster['id']) {
+    return `${ClustersAPI.makeBaseURI(clusterId)}/downloads`;
   },
 
-  makeDownloadPresignedBaseURI(clusterId: Cluster['id']) {
-    return `${ClustersAPI.makeBaseURI(clusterId)}/downloads/credentials-presigned`;
+  makeLogsBaseURI(clusterId: Cluster['id']) {
+    return `${ClustersAPI.makeBaseURI(clusterId)}/logs`;
+  },
+
+  makeDownloadsCredentialsBaseURI(clusterId: Cluster['id']) {
+    return `${ClustersAPI.makeDownloadsBaseURI(clusterId)}/credentials`;
+  },
+
+  makeDownloadsCredentialsPresignedBaseURI(clusterId: Cluster['id']) {
+    return `${ClustersAPI.makeDownloadsBaseURI(clusterId)}/credentials-presigned`;
   },
 
   makeSupportedPlatformsBaseURI(clusterId: Cluster['id']) {
     return `${ClustersAPI.makeBaseURI(clusterId)}/supported-platforms`;
   },
 
-  makeClusterActionsBaseURI(clusterId: string) {
+  makeActionsBaseURI(clusterId: string) {
     return `${ClustersAPI.makeBaseURI(clusterId)}/actions`;
   },
 
   downloadClusterCredentials(clusterId: Cluster['id'], fileName: string) {
     return client.get<Blob>(
-      `${ClustersAPI.makeDownloadClusterCredentialsBaseURI(clusterId)}?file_name=${fileName}`,
+      `${ClustersAPI.makeDownloadsCredentialsBaseURI(clusterId)}?file_name=${fileName}`,
       {
         responseType: 'blob',
         headers: {
@@ -57,7 +65,9 @@ const ClustersAPI = {
       hostId ? `&host_id=${hostId}` : ''
     }`;
     return client.get<Presigned>(
-      `${ClustersAPI.makeDownloadPresignedBaseURI(clusterId)}?file_name=${fileName}${queryParams}`,
+      `${ClustersAPI.makeDownloadsCredentialsPresignedBaseURI(
+        clusterId,
+      )}?file_name=${fileName}${queryParams}`,
     );
   },
 
@@ -102,15 +112,21 @@ const ClustersAPI = {
   },
 
   install(clusterId: Cluster['id']) {
-    return client.post<Cluster>(`${ClustersAPI.makeClusterActionsBaseURI(clusterId)}/install`);
+    return client.post<never, AxiosResponse<Cluster>>(
+      `${ClustersAPI.makeActionsBaseURI(clusterId)}/install`,
+    );
   },
 
   cancel(clusterId: Cluster['id']) {
-    return client.post<Cluster>(`${ClustersAPI.makeClusterActionsBaseURI(clusterId)}/cancel`);
+    return client.post<never, AxiosResponse<Cluster>>(
+      `${ClustersAPI.makeActionsBaseURI(clusterId)}/cancel`,
+    );
   },
 
   reset(clusterId: Cluster['id']) {
-    return client.post<Cluster>(`${ClustersAPI.makeClusterActionsBaseURI(clusterId)}/reset`);
+    return client.post<never, AxiosResponse<Cluster>>(
+      `${ClustersAPI.makeActionsBaseURI(clusterId)}/reset`,
+    );
   },
 
   registerAddHosts(params: AddHostsClusterCreateParams) {
@@ -119,7 +135,7 @@ const ClustersAPI = {
 
   downloadLogs(clusterId: Cluster['id'], hostId?: Host['id']) {
     const queryParams = `logs_type=${!hostId ? 'all' : `host&host_id=${hostId}`}`;
-    return client.get<Blob>(`${ClustersAPI.makeBaseURI(clusterId)}/logs?${queryParams}`, {
+    return client.get<Blob>(`${ClustersAPI.makeLogsBaseURI(clusterId)}?${queryParams}`, {
       responseType: 'blob',
       headers: {
         Accept: 'application/octet-stream',
