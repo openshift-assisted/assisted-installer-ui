@@ -66,6 +66,16 @@ const HostsService = {
       disksSelectedConfig: [{ id: diskId, role: newDiskRole }],
     });
   },
+
+  async delete(clusterId: Cluster['id'], hostId: Host['id']) {
+    const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId);
+    return HostsAPI.deregister(infraEnvId, hostId);
+  },
+
+  async reset(clusterId: Cluster['id'], hostId: Host['id']) {
+    const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId);
+    return HostsAPI.reset(infraEnvId, hostId);
+  },
 };
 
 export default HostsService;

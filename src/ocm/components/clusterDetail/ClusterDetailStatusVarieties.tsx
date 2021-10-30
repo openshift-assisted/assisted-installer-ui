@@ -12,7 +12,7 @@ import ClusterInstallationError from './ClusterInstallationError';
 import FailedHostsWarning from './FailedHostsWarning';
 import FailedOperatorsWarning from './FailedOperatorsWarning';
 import { getClusterDetailId } from './utils';
-import { getClusterCredentials } from '../../api';
+import { ClustersAPI } from '../../services/apis';
 
 type ClusterStatusVarieties = {
   credentials?: Credentials;
@@ -39,7 +39,7 @@ export const useClusterStatusVarieties = (cluster: Cluster): ClusterStatusVariet
     const fetch = async () => {
       setCredentialsError(undefined);
       try {
-        const response = await getClusterCredentials(cluster.id);
+        const response = await ClustersAPI.getCredentials(cluster.id);
         setCredentials(response.data);
       } catch (err) {
         setCredentialsError(err);

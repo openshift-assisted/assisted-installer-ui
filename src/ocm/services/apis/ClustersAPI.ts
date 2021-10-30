@@ -5,6 +5,7 @@ import {
   ClusterCreateParams,
   ClusterDefaultConfig,
   ClusterUpdateParams,
+  Credentials,
   Host,
   PlatformType,
   PreflightHardwareRequirements,
@@ -141,6 +142,10 @@ const ClustersAPI = {
         Accept: 'application/octet-stream',
       },
     });
+  },
+
+  getCredentials(clusterId: Cluster['id']) {
+    return client.get<Credentials>(`${ClustersAPI.makeBaseURI(clusterId)}/credentials`);
   },
 };
 
