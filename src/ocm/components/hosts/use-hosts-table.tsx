@@ -15,14 +15,8 @@ import {
   AdditionalNTPSourcesDialog,
   AdditionalNTPSourcesFormProps,
 } from '../../../common/components/hosts/AdditionalNTPSourcesDialog';
-import {
-  disableClusterHost,
-  enableClusterHost,
-  getErrorMessage,
-  handleApiError,
-  installHost,
-} from '../../api';
-import { forceReload, updateCluster, updateHost } from '../../reducers/clusters';
+import { getErrorMessage, handleApiError, installHost } from '../../api';
+import { forceReload, updateHost } from '../../reducers/clusters';
 import { useModalDialogsContext } from './ModalDialogsContext';
 import { downloadHostInstallationLogs, onAdditionalNtpSourceAction } from './utils';
 import {
@@ -65,17 +59,6 @@ export const useHostsTable = (cluster: Cluster) => {
           hostname: (host?.requestedHostname || inventory?.hostname) as string,
         });
       },
-      onHostEnable: async (host: Host) => {
-        const hostId = host.id;
-        try {
-          const { data } = await enableClusterHost(cluster.id, hostId);
-          dispatch(updateCluster(data));
-        } catch (e) {
-          handleApiError(e, () =>
-            addAlert({ title: `Failed to enable host ${hostId}`, message: getErrorMessage(e) }),
-          );
-        }
-      },
       onInstallHost: async (host: Host) => {
         const hostId = host.id;
         try {
@@ -84,17 +67,6 @@ export const useHostsTable = (cluster: Cluster) => {
         } catch (e) {
           handleApiError(e, () =>
             addAlert({ title: `Failed to enable host ${hostId}`, message: getErrorMessage(e) }),
-          );
-        }
-      },
-      onHostDisable: async (host: Host) => {
-        const hostId = host.id;
-        try {
-          const { data } = await disableClusterHost(cluster.id, hostId);
-          dispatch(updateCluster(data));
-        } catch (e) {
-          handleApiError(e, () =>
-            addAlert({ title: `Failed to disable host ${hostId}`, message: getErrorMessage(e) }),
           );
         }
       },
