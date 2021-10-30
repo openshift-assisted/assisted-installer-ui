@@ -23,10 +23,11 @@ import { canNextNetwork } from '../clusterWizard/wizardTransition';
 import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
 import ClusterWizardFooter from '../clusterWizard/ClusterWizardFooter';
 import ClusterWizardNavigation from '../clusterWizard/ClusterWizardNavigation';
-import { getErrorMessage, handleApiError, patchCluster } from '../../api';
+import { getErrorMessage, handleApiError } from '../../api';
 import ClusterWizardHeaderExtraActions from './ClusterWizardHeaderExtraActions';
 import { useDefaultConfiguration } from './ClusterDefaultConfigurationContext';
 import NetworkConfigurationTable from './NetworkConfigurationTable';
+import { ClustersAPI } from '../../services/apis';
 
 const NetworkConfigurationForm: React.FC<{
   cluster: Cluster;
@@ -108,7 +109,7 @@ const NetworkConfigurationForm: React.FC<{
         }
       }
 
-      const { data } = await patchCluster(cluster.id, params);
+      const { data } = await ClustersAPI.update(cluster.id, params);
       dispatch(updateCluster(data));
       actions.resetForm({ values: getNetworkInitialValues(data, defaultNetworkSettings) });
     } catch (e) {
