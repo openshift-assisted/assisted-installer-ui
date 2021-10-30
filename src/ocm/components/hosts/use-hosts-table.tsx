@@ -16,13 +16,11 @@ import {
   AdditionalNTPSourcesFormProps,
 } from '../../../common/components/hosts/AdditionalNTPSourcesDialog';
 import {
-  deleteClusterHost,
   disableClusterHost,
   enableClusterHost,
   getErrorMessage,
   handleApiError,
   installHost,
-  resetClusterHost,
 } from '../../api';
 import { forceReload, updateCluster, updateHost } from '../../reducers/clusters';
 import { useModalDialogsContext } from './ModalDialogsContext';
@@ -179,7 +177,7 @@ export const useHostsTable = (cluster: Cluster) => {
     const reset = async (hostId: string | undefined) => {
       if (hostId) {
         try {
-          const { data } = await resetClusterHost(cluster.id, hostId);
+          const { data } = await HostsService.reset(cluster.id, hostId);
           dispatch(updateHost(data));
         } catch (e) {
           return handleApiError(e, () =>
@@ -199,7 +197,7 @@ export const useHostsTable = (cluster: Cluster) => {
     const deleteHost = async (hostId: string | undefined) => {
       if (hostId) {
         try {
-          await deleteClusterHost(cluster.id, hostId);
+          await HostsService.delete(cluster.id, hostId);
           dispatch(forceReload());
         } catch (e) {
           return handleApiError(e, () =>
@@ -211,7 +209,7 @@ export const useHostsTable = (cluster: Cluster) => {
         }
       }
     };
-    deleteHost(deleteHostDialog.data?.hostId);
+    void deleteHost(deleteHostDialog.data?.hostId);
     deleteHostDialog.close();
   }, [addAlert, cluster.id, dispatch, deleteHostDialog]);
 
