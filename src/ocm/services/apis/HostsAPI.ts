@@ -8,6 +8,10 @@ const HostsAPI = {
     return `${InfraEnvsAPI.makeBaseURI(infraEnvId)}/hosts/${hostId ? hostId : ''}`;
   },
 
+  makeActionsBaseURI(infraEnvId: InfraEnv['id'], hostId: Host['id']) {
+    return `${HostsAPI.makeBaseURI(infraEnvId, hostId)}/actions`;
+  },
+
   list(infraEnvId: InfraEnv['id']) {
     return client.get<Host[]>(`${HostsAPI.makeBaseURI(infraEnvId)}`);
   },
@@ -25,6 +29,12 @@ const HostsAPI = {
 
   deregister(infraEnvId: InfraEnv['id'], hostId: Host['id']) {
     return client.delete<void>(`${HostsAPI.makeBaseURI(infraEnvId, hostId)}`);
+  },
+
+  reset(infraEnvId: InfraEnv['id'], hostId: Host['id']) {
+    return client.post<Host, AxiosResponse<Host, never>, never>(
+      `${HostsAPI.makeActionsBaseURI(infraEnvId, hostId)}/reset`,
+    );
   },
 };
 
