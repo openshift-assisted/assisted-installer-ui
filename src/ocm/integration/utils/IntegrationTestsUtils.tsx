@@ -37,6 +37,8 @@ const makeAppContainer = (element = 'div') => {
   return container;
 };
 
+export type HTTPmethod = 'get' | 'post' | 'put' | 'delete' | 'options';
+
 const IntegrationTestsUtils = {
   render(
     ui: ReactElement,
@@ -70,7 +72,7 @@ const IntegrationTestsUtils = {
 
   makeServerHandler(options: {
     once?: boolean;
-    method: 'post' | 'put' | 'get' | 'patch' | 'delete' | 'options';
+    method: HTTPmethod;
     path: string;
     statusCode: number;
     body?: unknown;
