@@ -15,11 +15,12 @@ import ClusterWizardFooter from '../clusterWizard/ClusterWizardFooter';
 import ClusterWizardNavigation from '../clusterWizard/ClusterWizardNavigation';
 import ReviewCluster from './ReviewCluster';
 import ClusterWizardHeaderExtraActions from './ClusterWizardHeaderExtraActions';
+import { useStateSafely } from '../../../common/hooks';
 
 const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const { addAlert } = useAlerts();
   const { setCurrentStepId } = React.useContext(ClusterWizardContext);
-  const [isStartingInstallation, setIsStartingInstallation] = React.useState(false);
+  const [isStartingInstallation, setIsStartingInstallation] = useStateSafely(false);
   const dispatch = useDispatch();
 
   const handleClusterInstall = async () => {

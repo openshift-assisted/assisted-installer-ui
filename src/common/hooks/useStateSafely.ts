@@ -1,7 +1,6 @@
-import type { Dispatch, SetStateAction } from 'react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
 
-export default function useStateSafely<S>(initialState: S): [S, Dispatch<SetStateAction<S>>] {
+export const useStateSafely = <S>(initialState: S): [S, Dispatch<SetStateAction<S>>] => {
   const mountedRef = useRef(false);
   useEffect(() => {
     mountedRef.current = true;
@@ -18,4 +17,6 @@ export default function useStateSafely<S>(initialState: S): [S, Dispatch<SetStat
   }, []);
 
   return [state, setStateSafely];
-}
+};
+
+export default useStateSafely;
