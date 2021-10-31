@@ -1,4 +1,4 @@
-import { Cluster, ImageInfo } from '../../../../common/api/types';
+import { Cluster } from '../../../../common/api/types';
 import MockImageInfoGenerator from './MockImageInfoGenerator';
 import faker from 'faker';
 
