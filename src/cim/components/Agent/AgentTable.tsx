@@ -3,7 +3,12 @@ import { AgentK8sResource } from '../../types';
 import { ClusterDeploymentHostsTablePropsActions } from '../ClusterDeployment/types';
 import DefaultEmptyState from '../../../common/components/ui/uiState/EmptyState';
 import { ConnectedIcon } from '@patternfly/react-icons';
-import { infraEnvColumn, infraEnvStatusColumn, useAgentsTable } from './tableUtils';
+import {
+  getInfraEnvLinkType,
+  infraEnvColumn,
+  infraEnvStatusColumn,
+  useAgentsTable,
+} from './tableUtils';
 import {
   cpuCoresColumn,
   disksColumn,
@@ -26,9 +31,15 @@ export const AgentTableEmptyState = () => (
 export type AgentTableProps = ClusterDeploymentHostsTablePropsActions & {
   agents: AgentK8sResource[];
   className?: string;
+  getInfraEnvLink?: getInfraEnvLinkType;
 };
 
-const AgentTable: React.FC<AgentTableProps> = ({ agents, className, ...actions }) => {
+const AgentTable: React.FC<AgentTableProps> = ({
+  agents,
+  className,
+  getInfraEnvLink,
+  ...actions
+}) => {
   const [hosts, hostActions, actionResolver] = useAgentsTable(actions, { agents });
   const content = React.useMemo(
     () => [
@@ -39,12 +50,12 @@ const AgentTable: React.FC<AgentTableProps> = ({ agents, className, ...actions }
         onEditHostname: actions.onEditHost,
         onApprove: actions.onApprove,
       }),
-      infraEnvColumn(agents),
+      infraEnvColumn(agents, getInfraEnvLink),
       cpuCoresColumn,
       memoryColumn,
       disksColumn,
     ],
-    [agents, hostActions, actions],
+    [agents, hostActions, actions, getInfraEnvLink],
   );
   return (
     <HostsTable
