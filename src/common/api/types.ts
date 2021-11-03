@@ -1723,7 +1723,7 @@ export interface OpenshiftVersion {
   /**
    * Level of support of the version.
    */
-  supportLevel: 'beta' | 'production' | 'custom';
+  supportLevel: 'beta' | 'production' | 'custom' | 'maintenance';
   /**
    * Indication that the version is the recommended one.
    */
