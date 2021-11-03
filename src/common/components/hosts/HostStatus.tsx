@@ -137,8 +137,8 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({
         <Text>
           This host was successfully installed.
           <br />
-          To finish adding it to the cluster, approve its request to join in the Nodes section of
-          the OpenShift console. It might take a few minutes till the node request gets available.
+          To finish adding it to the cluster, approve its request to join. Note that it may take a
+          few minutes for the join request to appear in the Nodes section.
         </Text>
       </TextContent>
     );
