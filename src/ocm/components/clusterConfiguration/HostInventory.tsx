@@ -9,13 +9,13 @@ import {
   isSingleNodeCluster,
   ClusterWizardStepHeader,
   DiscoveryTroubleshootingModal,
+  DiscoveryInstructions,
   SwitchField,
   schedulableMastersAlwaysOn,
   HostDiscoveryValues,
   getSchedulableMasters,
 } from '../../../common';
 import HostsDiscoveryTable from '../hosts/HostsDiscoveryTable';
-import DiscoveryInstructions from './DiscoveryInstructions';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
 import InformationAndAlerts from './InformationAndAlerts';
 import {

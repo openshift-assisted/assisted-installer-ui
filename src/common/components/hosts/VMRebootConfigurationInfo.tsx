@@ -8,7 +8,7 @@ import {
   TextVariants,
 } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons';
-import { Host, stringToJSON, Inventory, PrismCode } from '../../../common';
+import { PrismCode } from '../../../common/components/ui';
 
 const Hint = () => (
   <TextContent>
@@ -33,26 +33,15 @@ const Hint = () => (
   </TextContent>
 );
 
-const VMRebootConfigurationInfo: React.FC<{ hosts: Host[] }> = ({ hosts }) => {
-  const isVM = React.useMemo(
-    () =>
-      !!hosts.find((host) => {
-        const inventory = stringToJSON<Inventory>(host.inventory || '') || {};
-        return inventory.systemVendor?.virtual;
-      }),
-    [hosts],
-  );
-
-  return isVM ? (
-    <Text component="p">
-      <Popover bodyContent={<Hint />} minWidth="35rem">
-        <Button variant={ButtonVariant.link} isInline>
-          <InfoCircleIcon size="sm" />
-          &nbsp;Check your VM reboot configuration
-        </Button>
-      </Popover>
-    </Text>
-  ) : null;
-};
+const VMRebootConfigurationInfo: React.FC = () => (
+  <Text component="p">
+    <Popover bodyContent={<Hint />} minWidth="35rem">
+      <Button variant={ButtonVariant.link} isInline>
+        <InfoCircleIcon size="sm" />
+        &nbsp;Check your VM reboot configuration
+      </Button>
+    </Popover>
+  </Text>
+);
 
 export default VMRebootConfigurationInfo;

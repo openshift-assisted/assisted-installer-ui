@@ -1,5 +1,13 @@
 import { saveAs } from 'file-saver';
-import { AlertsContextType, Cluster, ClusterUpdateParams, Host, Presigned } from '../../../common';
+import {
+  AlertsContextType,
+  Cluster,
+  ClusterUpdateParams,
+  Host,
+  Presigned,
+  stringToJSON,
+  Inventory,
+} from '../../../common';
 
 import {
   getHostLogsDownloadUrl,
@@ -52,3 +60,9 @@ export const onAdditionalNtpSourceAction = async (
     handleApiError<ClusterUpdateParams>(e, () => onError(getErrorMessage(e)));
   }
 };
+
+export const isAHostVM = (hosts: Host[]) =>
+  !!hosts.find((host) => {
+    const inventory = stringToJSON<Inventory>(host.inventory || '') || {};
+    return inventory.systemVendor?.virtual;
+  });

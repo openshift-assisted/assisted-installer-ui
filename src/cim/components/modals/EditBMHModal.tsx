@@ -5,7 +5,7 @@ import { BMCForm } from '../Agent';
 import { NMStateK8sResource, SecretK8sResource, BareMetalHostK8sResource } from '../../types';
 import { LoadingState } from '../../../common';
 
-type EditBMHModalProps = Pick<BMCFormProps, 'onClose' | 'infraEnv' | 'bmh'> & {
+export type EditBMHModalProps = Pick<BMCFormProps, 'onClose' | 'infraEnv' | 'bmh'> & {
   isOpen: boolean;
   onEdit: (resources: {
     bmh?: BareMetalHostK8sResource;

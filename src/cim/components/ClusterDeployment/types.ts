@@ -4,11 +4,16 @@ import {
   AgentK8sResource,
   ClusterDeploymentK8sResource,
   AgentClusterInstallK8sResource,
+  InfraEnvK8sResource,
   SecretK8sResource,
   ConfigMapK8sResource,
 } from '../../types';
 import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
 import { ClusterImageSetK8sResource } from '../../types/k8s/cluster-image-set';
+import { InfraEnvAgentTableProps } from '../InfraEnv/InfraEnvAgentTable';
+import { EditAgentModalProps } from '../modals/EditAgentModal';
+import { EditBMHModalProps } from '../modals/EditBMHModal';
+import { AddHostModalProps } from '../modals/types';
 
 export type ClusterDeploymentHostsTablePropsActions = {
   canEditHost?: (agent: AgentK8sResource) => boolean;
@@ -44,6 +49,10 @@ export type ClusterDeploymentHostsSelectionValues = {
   selectedHostIds: string[];
   autoSelectedHostIds: string[];
 };
+export type ClusterDeploymentHostsDiscoveryValues = {
+  /* TODO(mlibra): CNV, OCS */
+};
+
 export type ScaleUpFormValues = Omit<ClusterDeploymentHostsSelectionValues, 'useMastersAsWorkers'>;
 
 export type ClusterDeploymentDetailsStepProps = ClusterDeploymentDetailsProps & {
@@ -67,37 +76,71 @@ export type AgentSelectorChangeProps = {
   autoSelect: boolean;
 };
 
-export type ClusterDeploymentHostSelectionStepProps = {
-  clusterDeployment: ClusterDeploymentK8sResource;
-  agentClusterInstall: AgentClusterInstallK8sResource;
-  agents: AgentK8sResource[];
+export type ClusterDeploymentHostSelectionStepProps = Omit<
+  ClusterDeploymentHostsSelectionProps,
+  'onValuesChanged'
+> & {
   onSaveHostsSelection: (values: ClusterDeploymentHostsSelectionValues) => Promise<string | void>;
   onClose: () => void;
-  aiConfigMap?: ConfigMapK8sResource;
+};
+
+export type ClusterDeploymentHostsDiscoveryStepProps = Omit<
+  ClusterDeploymentHostsDiscoveryProps,
+  'onValuesChanged'
+> & {
+  onSaveHostsDiscovery: (values: ClusterDeploymentHostsDiscoveryValues) => Promise<string | void>;
+  onClose: () => void;
 };
 
 export type ClusterDeploymentWizardProps = {
   className?: string;
+
   onClose: () => void;
   onSaveDetails: ClusterDeploymentDetailsStepProps['onSaveDetails'];
   onSaveNetworking: ClusterDeploymentDetailsNetworkingProps['onSaveNetworking'];
   onSaveHostsSelection: ClusterDeploymentHostSelectionStepProps['onSaveHostsSelection'];
+  onSaveHostsDiscovery: ClusterDeploymentHostsDiscoveryStepProps['onSaveHostsDiscovery'];
+  onFinish: VoidFunction;
+
   hostActions: ClusterDeploymentHostsTablePropsActions;
+  clusterImages: ClusterImageSetK8sResource[];
+  usedClusterNames: string[];
+
   clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall: AgentClusterInstallK8sResource;
   agents: AgentK8sResource[];
-  clusterImages: ClusterImageSetK8sResource[];
-  usedClusterNames: string[];
-  onFinish: VoidFunction;
   aiConfigMap?: ConfigMapK8sResource;
 };
 
 export type FetchSecret = (name: string, namespace: string) => Promise<SecretK8sResource>;
 
 export type ClusterDeploymentHostsSelectionProps = {
+  onValuesChanged?: (values: ClusterDeploymentHostsSelectionValues) => void;
+  clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall: AgentClusterInstallK8sResource;
   agents: AgentK8sResource[];
-  clusterDeployment: ClusterDeploymentK8sResource;
-  onValuesChanged?: (values: ClusterDeploymentHostsSelectionValues) => void;
   aiConfigMap?: ConfigMapK8sResource;
+};
+
+export type ClusterDeploymentHostsDiscoveryProps = {
+  // clusterDeployment: ClusterDeploymentK8sResource;
+  agentClusterInstall: AgentClusterInstallK8sResource;
+  agents: AgentK8sResource[];
+  bareMetalHosts: BareMetalHostK8sResource[];
+  aiConfigMap?: ConfigMapK8sResource;
+  infraEnv: InfraEnvK8sResource;
+
+  usedHostnames: EditAgentModalProps['usedHostnames'];
+  onValuesChanged?: (values: ClusterDeploymentHostsDiscoveryValues) => void;
+  onCreateBMH: AddHostModalProps['onCreate'];
+  onApproveAgent: InfraEnvAgentTableProps['onApprove'];
+  onDeleteHost: InfraEnvAgentTableProps['onDeleteHost'];
+  canDeleteAgent: InfraEnvAgentTableProps['canDelete'];
+  onSaveAgent: EditAgentModalProps['onSave'];
+  onSaveBMH: EditBMHModalProps['onEdit'];
+  onFormSaveError: EditAgentModalProps['onFormSaveError'];
+  fetchSecret: EditBMHModalProps['fetchSecret'];
+  fetchNMState: EditBMHModalProps['fetchNMState'];
+  isBMPlatform: AddHostModalProps['isBMPlatform'];
+  getClusterDeploymentLink: InfraEnvAgentTableProps['getClusterDeploymentLink'];
 };

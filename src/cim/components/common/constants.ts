@@ -10,3 +10,5 @@ export const AGENT_NOLOCATION_VALUE = 'NOLOCATION';
 export const INFRAENV_AGENTINSTALL_LABEL_KEY = 'infraenvs.agent-install.openshift.io';
 
 export const AGENT_BMH_HOSTNAME_LABEL_KEY = 'agent-install.openshift.io/bmh';
+
+export const INFRAENV_GENERATED_AI_FLOW = 'agentBareMetal-generated-infraenv-ai-flow'; // mind ai-template.hbs in ACM when changed here

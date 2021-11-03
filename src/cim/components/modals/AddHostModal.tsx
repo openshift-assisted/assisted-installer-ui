@@ -1,13 +1,8 @@
 import * as React from 'react';
 import { Flex, FlexItem, Modal, ModalBoxBody, ModalVariant, Radio } from '@patternfly/react-core';
 import { DownloadIso, PopoverIcon } from '../../../common';
-import { BMCFormProps } from '../Agent/types';
 import { BMCForm } from '../Agent';
-
-type AddHostModalProps = Pick<BMCFormProps, 'onClose' | 'onCreate' | 'infraEnv'> & {
-  isOpen: boolean;
-  isBMPlatform: boolean;
-};
+import { AddHostModalProps } from './types';
 
 // TODO(mlibra): This limitation needs to be updated once https://github.com/openshift/enhancements/pull/871 lands.
 const BmOnBmOnlyPopoverIcon = () => (

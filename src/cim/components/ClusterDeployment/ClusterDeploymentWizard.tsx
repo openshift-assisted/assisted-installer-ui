@@ -33,6 +33,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
 
     switch (stepId) {
       case 'hosts-selection':
+        // TODO(mlibra): Add ClusterDeploymentHostDiscoveryStep for dynamic-cim (ACM instantiates via temptifly)
         return agentClusterInstall?.metadata?.name ? (
           <ClusterDeploymentHostSelectionStep
             clusterDeployment={clusterDeployment}
