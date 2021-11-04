@@ -12,12 +12,11 @@ import {
   Presigned,
 } from '../../../common/api/types';
 import { AxiosResponse } from 'axios';
-import APIVersionService from '../APIVersionService';
-import { GetPresignedOptions } from './types';
+import { ClustersAPIGetPresignedOptions } from './types';
 
 const ClustersAPI = {
   makeBaseURI(clusterId?: Cluster['id']) {
-    return `/v${APIVersionService.version}/clusters/${clusterId ? clusterId : ''}`;
+    return `/v2/clusters/${clusterId ? clusterId : ''}`;
   },
 
   makeDownloadsBaseURI(clusterId: Cluster['id']) {
@@ -65,7 +64,7 @@ const ClustersAPI = {
     fileName,
     hostId,
     logsType,
-  }: GetPresignedOptions) {
+  }: ClustersAPIGetPresignedOptions) {
     const queryParams = `${logsType ? `&logs_type=${logsType}` : ''}${
       hostId ? `&host_id=${hostId}` : ''
     }`;
@@ -76,7 +75,12 @@ const ClustersAPI = {
     );
   },
 
-  GetPresignedForClusterFiles({ clusterId, fileName, hostId, logsType }: GetPresignedOptions) {
+  getPresignedForClusterFiles({
+    clusterId,
+    fileName,
+    hostId,
+    logsType,
+  }: ClustersAPIGetPresignedOptions) {
     const queryParams = `${logsType ? `&logs_type=${logsType}` : ''}${
       hostId ? `&host_id=${hostId}` : ''
     }`;
