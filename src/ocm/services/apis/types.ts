@@ -1,6 +1,6 @@
 import { LogsType } from '../../../common/api/types';
 
-export type GetPresignedForClusterCredentialsOptions = {
+export type GetPresignedOptions = {
   clusterId: string;
   fileName: 'logs' | 'kubeconfig' | 'kubeconfig-noingress';
   hostId?: string;

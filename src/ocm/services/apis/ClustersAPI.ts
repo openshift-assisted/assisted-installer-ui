@@ -13,7 +13,7 @@ import {
 } from '../../../common/api/types';
 import { AxiosResponse } from 'axios';
 import APIVersionService from '../APIVersionService';
-import { GetPresignedForClusterCredentialsOptions } from './types';
+import { GetPresignedOptions } from './types';
 
 const ClustersAPI = {
   makeBaseURI(clusterId?: Cluster['id']) {
@@ -34,6 +34,10 @@ const ClustersAPI = {
 
   makeDownloadsCredentialsPresignedBaseURI(clusterId: Cluster['id']) {
     return `${ClustersAPI.makeDownloadsBaseURI(clusterId)}/credentials-presigned`;
+  },
+
+  makeDownloadsFilesPresignedBaseURI(clusterId: Cluster['id']) {
+    return `${ClustersAPI.makeDownloadsBaseURI(clusterId)}/files-presigned`;
   },
 
   makeSupportedPlatformsBaseURI(clusterId: Cluster['id']) {
@@ -61,12 +65,23 @@ const ClustersAPI = {
     fileName,
     hostId,
     logsType,
-  }: GetPresignedForClusterCredentialsOptions) {
+  }: GetPresignedOptions) {
     const queryParams = `${logsType ? `&logs_type=${logsType}` : ''}${
       hostId ? `&host_id=${hostId}` : ''
     }`;
     return client.get<Presigned>(
       `${ClustersAPI.makeDownloadsCredentialsPresignedBaseURI(
+        clusterId,
+      )}?file_name=${fileName}${queryParams}`,
+    );
+  },
+
+  GetPresignedForClusterFiles({ clusterId, fileName, hostId, logsType }: GetPresignedOptions) {
+    const queryParams = `${logsType ? `&logs_type=${logsType}` : ''}${
+      hostId ? `&host_id=${hostId}` : ''
+    }`;
+    return client.get<Presigned>(
+      `${ClustersAPI.makeDownloadsFilesPresignedBaseURI(
         clusterId,
       )}?file_name=${fileName}${queryParams}`,
     );
