@@ -1,10 +1,13 @@
 import { EventList } from '../../../common';
 import { client } from '../../api';
-import APIVersionService from '../APIVersionService';
-import { EventAPIListOptions } from './types';
+import { EventsAPIListOptions } from './types';
 
 const EventsAPI = {
-  list(options: EventAPIListOptions) {
+  makeBaseURI() {
+    return '/v2/events';
+  },
+
+  list(options: EventsAPIListOptions) {
     let queryParams = '?';
 
     queryParams += options.clusterId ? `cluster_id=${options.clusterId}&` : '';
@@ -18,7 +21,7 @@ const EventsAPI = {
     }
     queryParams = queryParams.slice(0, -1);
 
-    return client.get<EventList>(`/v${APIVersionService.version}/events${queryParams}`);
+    return client.get<EventList>(`${EventsAPI.makeBaseURI()}${queryParams}`);
   },
 };
 

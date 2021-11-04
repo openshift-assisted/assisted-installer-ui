@@ -1,10 +1,9 @@
 import { client } from '../../api';
 import { ListVersions } from '../../../common';
-import APIVersionService from '../APIVersionService';
 
 const ComponentVersionsAPI = {
   makeBaseURI() {
-    return `/v${APIVersionService.version}/component-versions`;
+    return `/v2/component-versions`;
   },
 
   list() {

@@ -1,13 +1,13 @@
 import { LogsType } from '../../../common/api/types';
 
-export type GetPresignedOptions = {
+export type ClustersAPIGetPresignedOptions = {
   clusterId: string;
   fileName: 'logs' | 'kubeconfig' | 'kubeconfig-noingress';
   hostId?: string;
   logsType?: LogsType;
 };
 
-export type EventAPIListOptions = {
+export type EventsAPIListOptions = {
   clusterId?: string;
   hostId?: string;
   infraEnvId?: string;
