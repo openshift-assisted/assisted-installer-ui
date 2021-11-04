@@ -3,6 +3,7 @@ import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core';
 import { CaretDownIcon } from '@patternfly/react-icons';
 import { Disk, DiskRole as DiskRoleValue, Host } from '../../api';
 import { DISK_ROLE_LABELS } from '../../config';
+import { useStateSafely } from '../../hooks';
 
 const getCurrentDiskRoleLabel = (disk: Disk, installationDiskId: Host['installationDiskId']) =>
   disk.id === installationDiskId ? DISK_ROLE_LABELS.install : DISK_ROLE_LABELS.none;
@@ -54,8 +55,8 @@ const DiskRoleDropdown: React.FC<DiskRoleDropdownProps> = ({
   installationDiskId,
   onDiskRole,
 }) => {
-  const [isOpen, setOpen] = React.useState(false);
-  const [isDisabled, setDisabled] = React.useState(false);
+  const [isOpen, setOpen] = useStateSafely(false);
+  const [isDisabled, setDisabled] = useStateSafely(false);
 
   const dropdownItems = [
     <DropdownItem
@@ -83,7 +84,7 @@ const DiskRoleDropdown: React.FC<DiskRoleDropdownProps> = ({
       };
       asyncFunc();
     },
-    [setOpen, disk.id, host.id, onDiskRole],
+    [setOpen, setDisabled, onDiskRole, host.id, disk.id],
   );
 
   const currentRoleLabel = getCurrentDiskRoleLabel(disk, installationDiskId);
