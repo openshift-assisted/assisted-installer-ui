@@ -1,11 +1,10 @@
 import { client } from '../../api';
 import { InfraEnv, InfraEnvCreateParams, InfraEnvUpdateParams } from '../../../common';
 import { AxiosResponse } from 'axios';
-import APIVersionService from '../APIVersionService';
 
 const InfraEnvsAPI = {
   makeBaseURI(infraEnvId?: InfraEnv['id']) {
-    return `/v${APIVersionService.version}/infra-envs/${infraEnvId ? infraEnvId : ''}`;
+    return `/v2/infra-envs/${infraEnvId ? infraEnvId : ''}`;
   },
 
   list() {

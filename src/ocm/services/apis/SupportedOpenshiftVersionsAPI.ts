@@ -1,14 +1,13 @@
 import { client } from '../../api/axiosClient';
 import { OpenshiftVersion } from '../../../common';
-import APIVersionService from '../APIVersionService';
 
 const SupportedOpenshiftVersionsAPI = {
-  getBaseURI() {
-    return `/v${APIVersionService.version}/openshift-versions`;
+  makeBaseURI() {
+    return `/v2/openshift-versions`;
   },
 
   list() {
-    return client.get<OpenshiftVersion>(`${SupportedOpenshiftVersionsAPI.getBaseURI()}`);
+    return client.get<OpenshiftVersion>(`${SupportedOpenshiftVersionsAPI.makeBaseURI()}`);
   },
 };
 
