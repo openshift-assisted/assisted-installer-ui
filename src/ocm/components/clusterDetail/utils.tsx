@@ -18,8 +18,8 @@ export const downloadClusterInstallationLogs = async (
 ) => {
   try {
     if (ocmClient) {
-      const { data } = await ClustersAPI.getPresignedForClusterCredentials({
-        clusterId,
+      const { data } = await ClustersAPI.GetPresignedForClusterFiles({
+        clusterId: clusterId,
         fileName: 'logs',
         hostId: undefined,
         logsType: 'all',
