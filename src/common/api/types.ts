@@ -1399,6 +1399,24 @@ export interface ImageInfo {
   type?: ImageType;
 }
 export type ImageType = 'full-iso' | 'minimal-iso';
+export interface ImportClusterParams {
+  /**
+   * OpenShift cluster name.
+   */
+  name: string;
+  /**
+   * The domain name used to reach the OpenShift cluster API.
+   */
+  apiVipDnsname: string;
+  /**
+   * Version of the OpenShift cluster.
+   */
+  openshiftVersion: string;
+  /**
+   * The id of the OCP cluster, that hosts will be added to
+   */
+  openshiftClusterId: string; // uuid
+}
 export interface InfraEnv {
   /**
    * Indicates the type of this object.
