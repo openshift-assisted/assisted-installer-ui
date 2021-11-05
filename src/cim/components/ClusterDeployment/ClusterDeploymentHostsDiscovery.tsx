@@ -83,7 +83,6 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
           Add host
         </Button>
       </GridItem>
-      <GridItem>TODO: CNV, SNO checkboxes</GridItem>
 
       <GridItem>
         <TextContent>
@@ -102,6 +101,7 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
 
       <GridItem>
         <InfraEnvAgentTable
+          hideClusterColumn={true}
           agents={agents}
           bareMetalHosts={bareMetalHosts}
           infraEnv={infraEnv}
@@ -129,17 +129,6 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
           agent={editAgent}
           onSave={onSaveAgent}
         />
-        {/*
-        <HostsTable
-          hosts={hosts}
-          content={content}
-          actionResolver={actionResolver}
-          className="agents-table"
-          {...actions}
-        >
-          <EmptyState title="No hosts found" content="No host matches provided labels/locations" />
-        </HostsTable>
-        */}
       </GridItem>
       <DiscoveryTroubleshootingModal
         isOpen={isDiscoveryHintModalOpen}
