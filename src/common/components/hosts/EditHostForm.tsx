@@ -31,7 +31,7 @@ export type EditHostFormProps = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSave: (values: EditHostFormValues) => Promise<any>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onFormSaveError: (e: any) => void;
+  onFormSaveError?: (e: any) => void | string;
 };
 
 const validationSchema = (initialValues: EditHostFormValues, usedHostnames: string[] = []) =>
@@ -78,11 +78,10 @@ const EditHostForm: React.FC<EditHostFormProps> = ({
           await onSave(values);
           onCancel();
         } catch (e) {
-          const message = onFormSaveError(e);
+          const message = (onFormSaveError && onFormSaveError(e)) || 'Host update failed.';
           formikActions.setStatus({
             error: {
               title: 'Failed to update host',
-              message,
             },
           });
         }

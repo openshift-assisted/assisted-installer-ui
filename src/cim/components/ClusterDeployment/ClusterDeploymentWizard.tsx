@@ -1,11 +1,15 @@
 import * as React from 'react';
-import { ClusterDeploymentWizardProps, ClusterDeploymentWizardStepsType } from './types';
+import classNames from 'classnames';
+
+import { AlertsContextProvider, LoadingState } from '../../../common';
+
 import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
 import ClusterDeploymentDetailsStep from './ClusterDeploymentDetailsStep';
 import ClusterDeploymentNetworkingStep from './ClusterDeploymentNetworkingStep';
-import { AlertsContextProvider, LoadingState } from '../../../common';
 import ClusterDeploymentHostSelectionStep from './ClusterDeploymentHostSelectionStep';
-import classNames from 'classnames';
+import { isCIMFlow, isAgentOfAIFlow, getAgentsHostsNames } from './helpers';
+import { ClusterDeploymentWizardProps, ClusterDeploymentWizardStepsType } from './types';
+import ClusterDeploymentHostsDiscoveryStep from './ClusterDeploymentHostsDiscoveryStep';
 
 const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   className,
@@ -13,18 +17,37 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   onSaveNetworking,
   onSaveHostsSelection,
   onClose,
+  onFinish,
+  onApproveAgent,
+  onDeleteHost,
+  canDeleteAgent,
+  onSaveAgent,
+  onSaveBMH,
   hostActions,
+  usedClusterNames,
+  isBMPlatform,
+  getClusterDeploymentLink,
+  fetchSecret,
+  fetchNMState,
   clusterDeployment,
   agentClusterInstall,
   agents,
   clusterImages,
-  usedClusterNames,
-  onFinish,
   aiConfigMap,
+  infraEnv,
 }) => {
   const [currentStepId, setCurrentStepId] = React.useState<ClusterDeploymentWizardStepsType>(
     'cluster-details',
   );
+  const cdName = clusterDeployment?.metadata?.name;
+  const cdNamespace = clusterDeployment?.metadata?.namespace;
+
+  const aiFlowFilteredAgents = React.useMemo(
+    () => agents.filter((a) => isAgentOfAIFlow(a, cdName, cdNamespace)),
+    [agents, cdName, cdNamespace],
+  );
+
+  const usedHostnames = React.useMemo(() => getAgentsHostsNames(agents), [agents]);
 
   const renderCurrentStep = React.useCallback(() => {
     const stepId: ClusterDeploymentWizardStepsType = !clusterDeployment
@@ -33,19 +56,48 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
 
     switch (stepId) {
       case 'hosts-selection':
-        // TODO(mlibra): Add ClusterDeploymentHostDiscoveryStep for dynamic-cim (ACM instantiates via temptifly)
-        return agentClusterInstall?.metadata?.name ? (
-          <ClusterDeploymentHostSelectionStep
-            clusterDeployment={clusterDeployment}
-            agentClusterInstall={agentClusterInstall}
-            onClose={onClose}
-            onSaveHostsSelection={onSaveHostsSelection}
-            agents={agents}
-            aiConfigMap={aiConfigMap}
-          />
-        ) : (
-          <LoadingState />
-        );
+        if (agentClusterInstall?.metadata?.name) {
+          if (isCIMFlow(clusterDeployment)) {
+            return (
+              <ClusterDeploymentHostSelectionStep
+                clusterDeployment={clusterDeployment}
+                agentClusterInstall={agentClusterInstall}
+                onClose={onClose}
+                onSaveHostsSelection={onSaveHostsSelection}
+                agents={agents}
+                aiConfigMap={aiConfigMap}
+              />
+            );
+          } else {
+            if (infraEnv) {
+              return (
+                <ClusterDeploymentHostsDiscoveryStep
+                  agentClusterInstall={agentClusterInstall}
+                  agents={aiFlowFilteredAgents}
+                  bareMetalHosts={[] /* TODO(mlibra) */}
+                  aiConfigMap={aiConfigMap}
+                  infraEnv={infraEnv}
+                  usedHostnames={usedHostnames}
+                  onApproveAgent={onApproveAgent}
+                  onDeleteHost={onDeleteHost}
+                  canDeleteAgent={canDeleteAgent}
+                  onSaveAgent={onSaveAgent}
+                  onSaveBMH={onSaveBMH}
+                  fetchSecret={fetchSecret}
+                  fetchNMState={fetchNMState}
+                  getClusterDeploymentLink={getClusterDeploymentLink}
+                  onClose={onClose}
+                  isBMPlatform={isBMPlatform}
+                  // onCreateBMH={undefined /* So far no Day 2 */}
+                  // onSaveHostsDiscovery={undefined}
+                  // onFormSaveError={setErrorHandler}
+                />
+              );
+            }
+            // fall-through to LoadingState
+          }
+        }
+        return <LoadingState />;
       case 'networking':
         return (
           <ClusterDeploymentNetworkingStep

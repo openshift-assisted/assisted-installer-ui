@@ -14,15 +14,7 @@ import {
   ClusterDeploymentHostsDiscoveryProps,
   ClusterDeploymentHostsDiscoveryValues,
 } from './types';
-// import {
-//   cpuCoresColumn,
-//   disksColumn,
-//   hostnameColumn,
-//   memoryColumn,
-// } from '../../../common/components/hosts/tableUtils';
-// import { useAgentsTable } from '../Agent/tableUtils';
 import { InfraEnvAgentTable } from '../InfraEnv';
-// import EmptyState from '../../../common/components/ui/uiState/EmptyState';
 import { AddHostModal, EditBMHModal, EditAgentModal } from '../modals';
 import { AgentK8sResource, BareMetalHostK8sResource } from '../../types';
 
@@ -59,18 +51,6 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
 
   const isSNOCluster = getIsSNOCluster(agentClusterInstall);
 
-  console.log('--- ClusterDeploymentHostsDiscovery agents: ', agents);
-
-  /*  const [hosts, actions, actionResolver] = useAgentsTable({}, { agents });
-  const content = [
-    hostnameColumn(),
-    // infraEnvColumn(agents),
-    // TODO(mlibra): use Discovered At?
-    cpuCoresColumn,
-    memoryColumn,
-    disksColumn,
-  ];
-*/
   return (
     <Grid hasGutter>
       <GridItem>
@@ -78,11 +58,13 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
           <DiscoveryInstructions isSingleNodeCluster={isSNOCluster} />
         </TextContent>
       </GridItem>
-      <GridItem>
-        <Button variant={ButtonVariant.primary} onClick={() => setISOModalOpen(true)}>
-          Add host
-        </Button>
-      </GridItem>
+      {!!onCreateBMH && (
+        <GridItem>
+          <Button variant={ButtonVariant.primary} onClick={() => setISOModalOpen(true)}>
+            Add host
+          </Button>
+        </GridItem>
+      )}
 
       <GridItem>
         <TextContent>
@@ -134,13 +116,15 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
         isOpen={isDiscoveryHintModalOpen}
         setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
       />
-      <AddHostModal
-        infraEnv={infraEnv}
-        isOpen={isoModalOpen}
-        isBMPlatform={isBMPlatform}
-        onClose={() => setISOModalOpen(false)}
-        onCreate={onCreateBMH}
-      />
+      {!!onCreateBMH && (
+        <AddHostModal
+          infraEnv={infraEnv}
+          isOpen={isoModalOpen}
+          isBMPlatform={!!isBMPlatform}
+          onClose={() => setISOModalOpen(false)}
+          onCreate={onCreateBMH}
+        />
+      )}
     </Grid>
   );
 };

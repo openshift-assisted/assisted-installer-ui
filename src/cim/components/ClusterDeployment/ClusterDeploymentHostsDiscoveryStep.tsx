@@ -95,7 +95,9 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
   const next = () => setCurrentStepId('networking');
   const handleSubmit = async (values: ClusterDeploymentHostsDiscoveryValues) => {
     try {
-      await onSaveHostsDiscovery(values);
+      if (onSaveHostsDiscovery) {
+        await onSaveHostsDiscovery(values);
+      }
       next();
     } catch (error) {
       addAlert({

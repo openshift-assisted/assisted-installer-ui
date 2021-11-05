@@ -88,18 +88,29 @@ export type ClusterDeploymentHostsDiscoveryStepProps = Omit<
   ClusterDeploymentHostsDiscoveryProps,
   'onValuesChanged'
 > & {
-  onSaveHostsDiscovery: (values: ClusterDeploymentHostsDiscoveryValues) => Promise<string | void>;
+  onSaveHostsDiscovery?: (values: ClusterDeploymentHostsDiscoveryValues) => Promise<string | void>;
   onClose: () => void;
 };
 
-export type ClusterDeploymentWizardProps = {
+export type ClusterDeploymentWizardProps = Pick<
+  ClusterDeploymentHostsDiscoveryStepProps,
+  | 'onSaveHostsDiscovery'
+  | 'onApproveAgent'
+  | 'onDeleteHost'
+  | 'canDeleteAgent'
+  | 'onSaveAgent'
+  | 'onSaveBMH'
+  | 'getClusterDeploymentLink'
+  | 'fetchSecret'
+  | 'fetchNMState'
+  | 'isBMPlatform'
+> & {
   className?: string;
 
   onClose: () => void;
   onSaveDetails: ClusterDeploymentDetailsStepProps['onSaveDetails'];
   onSaveNetworking: ClusterDeploymentDetailsNetworkingProps['onSaveNetworking'];
   onSaveHostsSelection: ClusterDeploymentHostSelectionStepProps['onSaveHostsSelection'];
-  onSaveHostsDiscovery: ClusterDeploymentHostsDiscoveryStepProps['onSaveHostsDiscovery'];
   onFinish: VoidFunction;
 
   hostActions: ClusterDeploymentHostsTablePropsActions;
@@ -110,6 +121,7 @@ export type ClusterDeploymentWizardProps = {
   agentClusterInstall: AgentClusterInstallK8sResource;
   agents: AgentK8sResource[];
   aiConfigMap?: ConfigMapK8sResource;
+  infraEnv?: InfraEnvK8sResource;
 };
 
 export type FetchSecret = (name: string, namespace: string) => Promise<SecretK8sResource>;
@@ -132,13 +144,13 @@ export type ClusterDeploymentHostsDiscoveryProps = {
 
   usedHostnames: EditAgentModalProps['usedHostnames'];
   onValuesChanged?: (values: ClusterDeploymentHostsDiscoveryValues) => void;
-  onCreateBMH: AddHostModalProps['onCreate'];
+  onCreateBMH?: AddHostModalProps['onCreate'];
   onApproveAgent: InfraEnvAgentTableProps['onApprove'];
   onDeleteHost: InfraEnvAgentTableProps['onDeleteHost'];
   canDeleteAgent: InfraEnvAgentTableProps['canDelete'];
   onSaveAgent: EditAgentModalProps['onSave'];
   onSaveBMH: EditBMHModalProps['onEdit'];
-  onFormSaveError: EditAgentModalProps['onFormSaveError'];
+  onFormSaveError?: EditAgentModalProps['onFormSaveError'];
   fetchSecret: EditBMHModalProps['fetchSecret'];
   fetchNMState: EditBMHModalProps['fetchNMState'];
   isBMPlatform: AddHostModalProps['isBMPlatform'];
