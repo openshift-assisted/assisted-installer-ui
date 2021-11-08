@@ -7,6 +7,7 @@ import {
   ClusterUpdateParams,
   Credentials,
   Host,
+  ImportClusterParams,
   PlatformType,
   PreflightHardwareRequirements,
   Presigned,
@@ -151,6 +152,10 @@ const ClustersAPI = {
 
   registerAddHosts(params: AddHostsClusterCreateParams) {
     return client.post<Cluster>(`${ClustersAPI.makeBaseURI()}/import`, params);
+  },
+
+  registerAddHostsCluster(params: ImportClusterParams) {
+    return client.post<never, AxiosResponse<Cluster>>(`/v2/clusters/import`, params);
   },
 
   downloadLogs(clusterId: Cluster['id'], hostId?: Host['id']) {
