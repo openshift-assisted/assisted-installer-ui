@@ -7,6 +7,7 @@ import { getFieldId } from './utils';
 import HelperText from './HelperText';
 import { CheckboxFieldProps } from './types';
 import { isSNOSupportedVersion } from '../utils';
+import { FeatureSupportLevelBadge } from '../FeatureSupportLevelBadge';
 
 type SingleNodeCheckboxProps = CheckboxFieldProps & { versions: OpenshiftVersionOptionType[] };
 
@@ -31,7 +32,12 @@ const SingleNodeCheckbox: React.FC<SingleNodeCheckboxProps> = ({
         {...field}
         {...props}
         id={fieldId}
-        label="Install single node OpenShift (SNO)"
+        label={
+          <>
+            Install single node OpenShift (SNO)
+            <FeatureSupportLevelBadge featureId="SNO"></FeatureSupportLevelBadge>
+          </>
+        }
         aria-describedby={`${fieldId}-helper`}
         description={
           <HelperText fieldId={fieldId}>

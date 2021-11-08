@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useFormikContext } from 'formik';
-import { Checkbox } from '@patternfly/react-core';
+import { Alert, AlertVariant, Checkbox } from '@patternfly/react-core';
 import AdvancedNetworkFields from './AdvancedNetworkFields';
 import { NetworkConfigurationValues } from '../../../common/types/clusters';
 import {
@@ -15,11 +15,23 @@ import { ClusterDefaultConfig } from '../../api';
 import { isSingleNodeCluster } from '../clusters';
 import { NO_SUBNET_SET } from '../../config';
 import { isAdvNetworkConf } from './utils';
+import { FeatureSupportLevelContext } from '../../contexts';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   defaultNetworkSettings: ClusterDefaultConfig;
   hideManagedNetworking?: boolean;
 };
+
+const vmsAlert = (
+  <Alert
+    title="Your cluster will be subject to support limitations"
+    variant={AlertVariant.info}
+    isInline={true}
+  >
+    Some or all of your discovered hosts are virtual machines, so selecting the cluster-managed
+    networking option will limit your installed cluster's support.
+  </Alert>
+);
 
 const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   cluster,
@@ -29,6 +41,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   hideManagedNetworking,
   children,
 }) => {
+  const supportLevelData = React.useContext(FeatureSupportLevelContext);
   const { setFieldValue, values, touched, validateField } = useFormikContext<
     NetworkConfigurationValues
   >();
@@ -85,6 +98,16 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
       </RenderIf>
 
       {children}
+
+      <RenderIf
+        condition={
+          !isUserManagedNetworking &&
+          supportLevelData.getClusterSupportLevel('CLUSTER_MANAGED_NETWORKING_WITH_VMS') ===
+            'unsupported'
+        }
+      >
+        {vmsAlert}
+      </RenderIf>
 
       <RenderIf condition={!(isMultiNodeCluster && isUserManagedNetworking)}>
         <AvailableSubnetsControl

@@ -13,7 +13,7 @@ import ClusterBreadcrumbs from './ClusterBreadcrumbs';
 import { ClusterDefaultConfigurationProvider } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
 import NewClusterWizard from '../clusterWizard/NewClusterWizard';
 import { routeBasePath } from '../../config';
-
+import { FeatureSupportLevelProvider } from '../../contexts';
 const loadingUI = (
   <PageSection variant={PageSectionVariants.light} isFilled>
     <LoadingState />
@@ -41,15 +41,17 @@ const NewClusterPage: React.FC = () => {
   return (
     <AlertsContextProvider>
       <ClusterDefaultConfigurationProvider loadingUI={loadingUI} errorUI={errorUI}>
-        <ClusterBreadcrumbs clusterName="New cluster" />
-        <PageSection variant={PageSectionVariants.light}>
-          <TextContent>
-            <Text component="h1">Install OpenShift with the Assisted Installer</Text>
-          </TextContent>
-        </PageSection>
-        <PageSection variant={PageSectionVariants.light} isFilled>
-          <NewClusterWizard />
-        </PageSection>
+        <FeatureSupportLevelProvider loadingUi={loadingUI}>
+          <ClusterBreadcrumbs clusterName="New cluster" />
+          <PageSection variant={PageSectionVariants.light}>
+            <TextContent>
+              <Text component="h1">Install OpenShift with the Assisted Installer</Text>
+            </TextContent>
+          </PageSection>
+          <PageSection variant={PageSectionVariants.light} isFilled>
+            <NewClusterWizard />
+          </PageSection>
+        </FeatureSupportLevelProvider>
       </ClusterDefaultConfigurationProvider>
     </AlertsContextProvider>
   );

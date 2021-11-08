@@ -6,6 +6,7 @@ import { OPENSHIFT_LIFE_CYCLE_DATES_LINK } from '../../config';
 import { ClusterCreateParams } from '../../api';
 import { OpenshiftVersionOptionType } from '../../types';
 import { isSNOSupportedVersion, SelectField } from '../ui';
+import { FeatureSupportLevelContext } from '../../contexts';
 
 const OpenShiftLifeCycleDatesLink = () => (
   <a href={OPENSHIFT_LIFE_CYCLE_DATES_LINK} target="_blank" rel="noopener noreferrer">
@@ -37,7 +38,7 @@ const OpenShiftVersionSelect: React.FC<OpenShiftVersionSelectProps> = ({ version
     values: { highAvailabilityMode, openshiftVersion },
     setFieldValue,
   } = useFormikContext<ClusterCreateParams>();
-
+  const supportLevelData = React.useContext(FeatureSupportLevelContext);
   const selectedVersion = versions.find((v) => v.value === openshiftVersion) || versions[0];
   React.useEffect(() => {
     if (highAvailabilityMode === 'None' && !isSNOSupportedVersion(selectedVersion)) {
@@ -45,7 +46,10 @@ const OpenShiftVersionSelect: React.FC<OpenShiftVersionSelectProps> = ({ version
       setFieldValue('openshiftVersion', firstSupportedVersionValue);
     }
   }, [highAvailabilityMode, selectedVersion, setFieldValue, versions]);
-
+  React.useEffect(() => {
+    supportLevelData.openshiftVersion = openshiftVersion;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openshiftVersion]);
   const selectOptions = React.useMemo(
     () =>
       versions
