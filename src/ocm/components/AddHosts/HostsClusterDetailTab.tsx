@@ -10,13 +10,13 @@ import {
 } from '../../../common';
 import { usePullSecret } from '../../hooks';
 import { AssistedUILibVersion } from '../ui';
-import { addHostsClusters } from '../../api/addHostsClusters';
 import { useOpenshiftVersions } from '../../hooks';
 import { handleApiError } from '../../api';
 import AddHosts from './AddHosts';
 import { OcmClusterType } from './types';
 import { getOpenshiftClusterId } from './utils';
 import { ClustersAPI } from '../../services/apis';
+import { InfraEnvsService } from '../../services';
 
 type OpenModalType = (modalName: string, cluster?: OcmClusterType) => void;
 
@@ -165,11 +165,19 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
           try {
             // Optionally create Day 2 cluster
             // TODO(jkilzi): cannot move to v2 until https://issues.redhat.com/browse/MGMT-7915 is done
-            const { data } = await addHostsClusters({
-              id: openshiftClusterId, // used to both match OpenShift Cluster and as an assisted-installer ID
+            const { data } = await ClustersAPI.registerAddHostsCluster({
+              openshiftClusterId, // used to both match OpenShift Cluster and as an assisted-installer ID
               name: `scale-up-${cluster.display_name || cluster.name || openshiftClusterId}`, // both cluster.name and cluster.display-name contain just UUID which fails AI validation (k8s naming conventions)
               openshiftVersion,
               apiVipDnsname,
+            });
+
+            await InfraEnvsService.create({
+              name: `${data.name}_infra-env`,
+              pullSecret,
+              clusterId: data.id,
+              // TODO(jkilzi): MGMT-7709 will deprecate the openshiftVersion field, remove the line below once it happens.
+              openshiftVersion,
             });
             // all set, we can refirect
             setDay2Cluster(data);
