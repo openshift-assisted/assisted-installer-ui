@@ -51,7 +51,7 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({
 
   const content = React.useMemo(
     () => [
-      hostnameColumn(onEditHost),
+      hostnameColumn(onEditHost, undefined, !actionChecks.canEditHostname()),
       roleColumn(actionChecks.canEditRole, onEditRole),
       hardwareStatusColumn(onEditHost),
       discoveredAtColumn,
