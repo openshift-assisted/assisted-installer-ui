@@ -7,6 +7,4 @@ export type ClusterDetailsValues = {
 
   SNODisclaimer: boolean;
   useRedHatDnsService: boolean;
-
-  sshPublicKey?: string;
 };

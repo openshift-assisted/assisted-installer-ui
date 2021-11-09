@@ -1,7 +1,7 @@
 import React from 'react';
 import { Stack, StackItem } from '@patternfly/react-core';
 import { HelpIcon } from '@patternfly/react-icons';
-import { PopoverIcon, RadioField } from '../../../common';
+import { PopoverIcon, RadioField } from '../ui';
 
 const GROUP_NAME = 'imageType';
 

@@ -33,6 +33,7 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
   canDeleteAgent,
   onSaveAgent,
   onSaveBMH,
+  onSaveISOParams,
   onFormSaveError,
   fetchSecret,
   fetchNMState,
@@ -116,15 +117,17 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
         isOpen={isDiscoveryHintModalOpen}
         setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
       />
-      {!!onCreateBMH && (
-        <AddHostModal
-          infraEnv={infraEnv}
-          isOpen={isoModalOpen}
-          isBMPlatform={!!isBMPlatform}
-          onClose={() => setISOModalOpen(false)}
-          onCreate={onCreateBMH}
-        />
-      )}
+      {!!onCreateBMH &&
+      isoModalOpen /* Do not use isOpen props to re-initialize when re-opening */ && (
+          <AddHostModal
+            infraEnv={infraEnv}
+            isBMPlatform={!!isBMPlatform}
+            isOpen={isoModalOpen}
+            onClose={() => setISOModalOpen(false)}
+            onCreateBMH={onCreateBMH}
+            onSaveISOParams={onSaveISOParams}
+          />
+        )}
     </Grid>
   );
 };

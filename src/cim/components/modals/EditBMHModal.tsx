@@ -1,20 +1,9 @@
 import * as React from 'react';
 import { Modal, ModalVariant } from '@patternfly/react-core';
-import { BMCFormProps } from '../Agent/types';
 import { BMCForm } from '../Agent';
-import { NMStateK8sResource, SecretK8sResource, BareMetalHostK8sResource } from '../../types';
+import { NMStateK8sResource, SecretK8sResource } from '../../types';
 import { LoadingState } from '../../../common';
-
-export type EditBMHModalProps = Pick<BMCFormProps, 'onClose' | 'infraEnv' | 'bmh'> & {
-  isOpen: boolean;
-  onEdit: (resources: {
-    bmh?: BareMetalHostK8sResource;
-    secret?: SecretK8sResource;
-    nmState?: NMStateK8sResource;
-  }) => BMCFormProps['onCreate'];
-  fetchNMState: (namespace: string, name: string) => Promise<NMStateK8sResource>;
-  fetchSecret: (namespace: string, bmhName: string) => Promise<SecretK8sResource>;
-};
+import { EditBMHModalProps } from './types';
 
 const EditBMHModal: React.FC<EditBMHModalProps> = ({
   isOpen,
@@ -78,7 +67,7 @@ const EditBMHModal: React.FC<EditBMHModalProps> = ({
       ) : (
         <BMCForm
           isEdit
-          onCreate={onEdit({ bmh, secret, nmState })}
+          onCreateBMH={onEdit({ bmh, secret, nmState })}
           onClose={onClose}
           hasDHCP={hasDHCP}
           infraEnv={infraEnv}

@@ -39,7 +39,6 @@ export const getClusterDetailsInitialValues = ({
     SNODisclaimer: highAvailabilityMode === 'None',
     useRedHatDnsService:
       !!baseDnsDomain && managedDomains.map((d) => d.domain).includes(baseDnsDomain),
-    sshPublicKey: '',
   };
 };
 
@@ -70,8 +69,5 @@ export const getClusterDetailsValidationSchema = (
         },
         then: Yup.bool().oneOf([true], 'Confirm the Single Node OpenShift disclaimer to continue.'),
       }),
-      sshPublicKey: sshPublicKeyValidationSchema.required(
-        'An SSH key is required to debug hosts as they register.',
-      ) /* The sshPublicKey is used in the AI flow of ACM, injected via ACM control's "extensionAfter" */,
     });
   });

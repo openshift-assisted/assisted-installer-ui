@@ -13,3 +13,4 @@ export { default as ClusterSshKeyFields } from './ClusterSshKeyFields';
 export * from './utils';
 export * from './networkConfigurationValidation';
 export * from './DiscoveryTroubleshootingModal';
+export * from './DiscoveryImageConfigForm';

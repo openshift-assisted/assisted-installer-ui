@@ -1,7 +1,5 @@
 import * as React from 'react';
-import { AgentK8sResource, BareMetalHostK8sResource, InfraEnvK8sResource } from '../../types';
 import { Host } from '../../../common/api/types';
-import { ClusterDeploymentHostsTablePropsActions } from '../ClusterDeployment/types';
 import {
   discoveryTypeColumn,
   infraEnvStatusColumn,
@@ -18,15 +16,7 @@ import {
 } from '../../../common/components/hosts/tableUtils';
 import { DiscoveryTroubleshootingModal } from '../../../common';
 import { TableRow } from '../../../common/components/hosts/AITable';
-
-export type InfraEnvAgentTableProps = ClusterDeploymentHostsTablePropsActions & {
-  agents: AgentK8sResource[];
-  bareMetalHosts: BareMetalHostK8sResource[];
-  infraEnv: InfraEnvK8sResource;
-  getClusterDeploymentLink: (cd: { name: string; namespace: string }) => string | React.ReactNode;
-  className?: string;
-  hideClusterColumn?: boolean;
-};
+import { InfraEnvAgentTableProps } from '../ClusterDeployment';
 
 const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
   agents,

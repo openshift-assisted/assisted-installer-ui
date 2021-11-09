@@ -10,10 +10,8 @@ import {
 } from '../../types';
 import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
 import { ClusterImageSetK8sResource } from '../../types/k8s/cluster-image-set';
-import { InfraEnvAgentTableProps } from '../InfraEnv/InfraEnvAgentTable';
 import { EditAgentModalProps } from '../modals/EditAgentModal';
-import { EditBMHModalProps } from '../modals/EditBMHModal';
-import { AddHostModalProps } from '../modals/types';
+import { AddHostModalProps, EditBMHModalProps } from '../modals/types';
 
 export type ClusterDeploymentHostsTablePropsActions = {
   canEditHost?: (agent: AgentK8sResource) => boolean;
@@ -100,6 +98,7 @@ export type ClusterDeploymentWizardProps = Pick<
   | 'canDeleteAgent'
   | 'onSaveAgent'
   | 'onSaveBMH'
+  | 'onSaveISOParams'
   | 'getClusterDeploymentLink'
   | 'fetchSecret'
   | 'fetchNMState'
@@ -134,6 +133,15 @@ export type ClusterDeploymentHostsSelectionProps = {
   aiConfigMap?: ConfigMapK8sResource;
 };
 
+export type InfraEnvAgentTableProps = ClusterDeploymentHostsTablePropsActions & {
+  agents: AgentK8sResource[];
+  bareMetalHosts: BareMetalHostK8sResource[];
+  infraEnv: InfraEnvK8sResource;
+  getClusterDeploymentLink: (cd: { name: string; namespace: string }) => string | React.ReactNode;
+  className?: string;
+  hideClusterColumn?: boolean;
+};
+
 export type ClusterDeploymentHostsDiscoveryProps = {
   // clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall: AgentClusterInstallK8sResource;
@@ -144,12 +152,13 @@ export type ClusterDeploymentHostsDiscoveryProps = {
 
   usedHostnames: EditAgentModalProps['usedHostnames'];
   onValuesChanged?: (values: ClusterDeploymentHostsDiscoveryValues) => void;
-  onCreateBMH?: AddHostModalProps['onCreate'];
+  onCreateBMH?: AddHostModalProps['onCreateBMH'];
   onApproveAgent: InfraEnvAgentTableProps['onApprove'];
   onDeleteHost: InfraEnvAgentTableProps['onDeleteHost'];
   canDeleteAgent: InfraEnvAgentTableProps['canDelete'];
   onSaveAgent: EditAgentModalProps['onSave'];
   onSaveBMH: EditBMHModalProps['onEdit'];
+  onSaveISOParams: AddHostModalProps['onSaveISOParams'];
   onFormSaveError?: EditAgentModalProps['onFormSaveError'];
   fetchSecret: EditBMHModalProps['fetchSecret'];
   fetchNMState: EditBMHModalProps['fetchNMState'];
