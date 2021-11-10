@@ -97,6 +97,6 @@ export const isAgentOfAIFlow = (agent: AgentK8sResource, cdName?: string, cdName
   agent.metadata?.labels?.[INFRAENV_GENERATED_AI_FLOW] === `${cdNamespace}-${cdName}`;
 
 export const getAgentsHostsNames = (agents: AgentK8sResource[]): string[] => {
-  const raw: (string | undefined)[] = agents.map((agent) => agent.status?.inventory?.hostname);
-  return raw.filter(Boolean) as string[];
+  const raw: (string | undefined)[] = agents.map((agent) => agent.spec?.hostname);
+  return _.uniq(raw.filter(Boolean)) as string[];
 };

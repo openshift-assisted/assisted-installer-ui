@@ -127,19 +127,32 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
         );
     }
   }, [
-    currentStepId,
     clusterDeployment,
+    currentStepId,
     agentClusterInstall,
     agents,
-    clusterImages,
-    usedClusterNames,
-    onSaveDetails,
     onSaveNetworking,
-    onSaveHostsSelection,
     onClose,
     hostActions,
     onFinish,
+    clusterImages,
+    usedClusterNames,
+    onSaveDetails,
+    onSaveHostsSelection,
     aiConfigMap,
+    infraEnv,
+    aiFlowFilteredAgents,
+    usedHostnames,
+    onApproveAgent,
+    onDeleteHost,
+    canDeleteAgent,
+    onSaveAgent,
+    onSaveBMH,
+    fetchSecret,
+    fetchNMState,
+    getClusterDeploymentLink,
+    isBMPlatform,
+    onSaveISOParams,
   ]);
 
   return (

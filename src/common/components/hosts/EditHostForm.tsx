@@ -82,6 +82,7 @@ const EditHostForm: React.FC<EditHostFormProps> = ({
           formikActions.setStatus({
             error: {
               title: 'Failed to update host',
+              message,
             },
           });
         }
