@@ -15,7 +15,7 @@ import {
   AdditionalNTPSourcesDialog,
   AdditionalNTPSourcesFormProps,
 } from '../../../common/components/hosts/AdditionalNTPSourcesDialog';
-import { getErrorMessage, handleApiError, installHost } from '../../api';
+import { getErrorMessage, handleApiError } from '../../api';
 import { forceReload, updateHost } from '../../reducers/clusters';
 import { useModalDialogsContext } from './ModalDialogsContext';
 import { downloadHostInstallationLogs, onAdditionalNtpSourceAction } from './utils';
@@ -61,7 +61,7 @@ export const useHostsTable = (cluster: Cluster) => {
       onInstallHost: async (host: Host) => {
         const hostId = host.id;
         try {
-          const { data } = await installHost(cluster.id, hostId);
+          const { data } = await HostsService.install(cluster.id, hostId);
           dispatch(updateHost(data));
         } catch (e) {
           handleApiError(e, () =>
