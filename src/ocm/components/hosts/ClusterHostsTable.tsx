@@ -36,7 +36,7 @@ const ClusterHostsTable: React.FC<ClusterHostsTableProps> = ({
 
   const content = React.useMemo(
     () => [
-      hostnameColumn(onEditHost, undefined, !actionChecks.canEditHostname()),
+      hostnameColumn(onEditHost, undefined, actionChecks.canEditHostname),
       roleColumn(actionChecks.canEditRole, onEditRole),
       statusColumn(AdditionalNTPSourcesDialogToggle, onEditHost),
       discoveredAtColumn,

@@ -53,20 +53,11 @@ const Hostname: React.FC<HostnameProps> = ({
     </Flex>
   );
 
-  return onEditHostname ? (
+  return !readonly && onEditHostname ? (
     isValid ? (
-      !readonly ? (
-        <Button
-          variant={ButtonVariant.link}
-          isInline
-          onClick={onEditHostname}
-          className={className}
-        >
-          {body}
-        </Button>
-      ) : (
-        body
-      )
+      <Button variant={ButtonVariant.link} isInline onClick={onEditHostname} className={className}>
+        {body}
+      </Button>
     ) : (
       <Popover
         headerContent={
