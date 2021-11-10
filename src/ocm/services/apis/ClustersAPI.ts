@@ -1,6 +1,5 @@
 import { client } from '../../api/axiosClient';
 import {
-  AddHostsClusterCreateParams,
   Cluster,
   ClusterCreateParams,
   ClusterDefaultConfig,
@@ -119,33 +118,33 @@ const ClustersAPI = {
   },
 
   register(params: ClusterCreateParams) {
-    return client.post<ClusterCreateParams, AxiosResponse<Cluster>>(
+    return client.post<Cluster, AxiosResponse<Cluster>, ClusterCreateParams>(
       `${ClustersAPI.makeBaseURI()}`,
       params,
     );
   },
 
   update(clusterId: Cluster['id'], params: ClusterUpdateParams) {
-    return client.patch<ClusterUpdateParams, AxiosResponse<Cluster>>(
+    return client.patch<Cluster, AxiosResponse<Cluster>, ClusterUpdateParams>(
       `${ClustersAPI.makeBaseURI(clusterId)}`,
       params,
     );
   },
 
   install(clusterId: Cluster['id']) {
-    return client.post<never, AxiosResponse<Cluster>>(
+    return client.post<Cluster, AxiosResponse<Cluster>, never>(
       `${ClustersAPI.makeActionsBaseURI(clusterId)}/install`,
     );
   },
 
   cancel(clusterId: Cluster['id']) {
-    return client.post<never, AxiosResponse<Cluster>>(
+    return client.post<Cluster, AxiosResponse<Cluster>, never>(
       `${ClustersAPI.makeActionsBaseURI(clusterId)}/cancel`,
     );
   },
 
   reset(clusterId: Cluster['id']) {
-    return client.post<never, AxiosResponse<Cluster>>(
+    return client.post<Cluster, AxiosResponse<Cluster>, never>(
       `${ClustersAPI.makeActionsBaseURI(clusterId)}/reset`,
     );
   },
