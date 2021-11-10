@@ -49,7 +49,11 @@ const OpenShiftVersionSelect: React.FC<OpenShiftVersionSelectProps> = ({ version
   const selectOptions = React.useMemo(
     () =>
       versions
-        .filter((version) => highAvailabilityMode !== 'None' || isSNOSupportedVersion(version))
+        .filter(
+          (version) =>
+            version.supportLevel !== 'maintenance' &&
+            (highAvailabilityMode !== 'None' || isSNOSupportedVersion(version)),
+        )
         .map((version) => ({
           label: version.label,
           value: version.value,

@@ -12,7 +12,7 @@ import {
 } from '../../../common/components/hosts/tableUtils';
 import { ActionsResolver } from '../../../common/components/hosts/AITable';
 import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
-import { HostsTableActions } from '../hosts';
+import { getSchedulableMasters, HostsTableActions } from '../hosts';
 import { Cluster } from '../../api';
 import HostsTable from '../hosts/HostsTable';
 
@@ -44,7 +44,7 @@ const NetworkConfigurationTable: React.FC<NetworkConfigurationTableProps> = ({
   const content = React.useMemo(
     () => [
       hostnameColumn(onEditHost),
-      roleColumn(canEditRole, onEditRole),
+      roleColumn(canEditRole, onEditRole, getSchedulableMasters(cluster)),
       networkingStatusColumn(onEditHost),
       activeNICColumn(cluster),
       ipv4Column(cluster),
