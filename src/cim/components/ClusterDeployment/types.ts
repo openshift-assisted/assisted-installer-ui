@@ -93,7 +93,6 @@ export type ClusterDeploymentHostsDiscoveryStepProps = Omit<
 export type ClusterDeploymentWizardProps = Pick<
   ClusterDeploymentHostsDiscoveryStepProps,
   | 'onSaveHostsDiscovery'
-  | 'onApproveAgent'
   | 'onDeleteHost'
   | 'canDeleteAgent'
   | 'onSaveAgent'
@@ -110,6 +109,7 @@ export type ClusterDeploymentWizardProps = Pick<
   onSaveDetails: ClusterDeploymentDetailsStepProps['onSaveDetails'];
   onSaveNetworking: ClusterDeploymentDetailsNetworkingProps['onSaveNetworking'];
   onSaveHostsSelection: ClusterDeploymentHostSelectionStepProps['onSaveHostsSelection'];
+  onApproveAgent: InfraEnvAgentTableProps['onApprove'];
   onFinish: VoidFunction;
 
   hostActions: ClusterDeploymentHostsTablePropsActions;
@@ -153,7 +153,6 @@ export type ClusterDeploymentHostsDiscoveryProps = {
   usedHostnames: EditAgentModalProps['usedHostnames'];
   onValuesChanged?: (values: ClusterDeploymentHostsDiscoveryValues) => void;
   onCreateBMH?: AddHostModalProps['onCreateBMH'];
-  onApproveAgent: InfraEnvAgentTableProps['onApprove'];
   onDeleteHost: InfraEnvAgentTableProps['onDeleteHost'];
   canDeleteAgent: InfraEnvAgentTableProps['canDelete'];
   onSaveAgent: EditAgentModalProps['onSave'];

@@ -28,7 +28,6 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
   usedHostnames,
   onValuesChanged,
   onCreateBMH,
-  onApproveAgent,
   onDeleteHost,
   canDeleteAgent,
   onSaveAgent,
@@ -90,7 +89,6 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
           infraEnv={infraEnv}
           getClusterDeploymentLink={getClusterDeploymentLink}
           onEditHost={setEditAgent}
-          onApprove={onApproveAgent}
           canDelete={canDeleteAgent}
           onDeleteHost={onDeleteHost}
           onEditBMH={setEditBMH}
