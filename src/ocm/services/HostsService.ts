@@ -1,4 +1,4 @@
-import { Cluster, Disk, DiskRole, Host, HostUpdateParams } from '../../common';
+import { canInstallHost, Cluster, Disk, DiskRole, Host, HostUpdateParams } from '../../common';
 import { AxiosError, AxiosPromise } from 'axios';
 import InfraEnvsService from './InfraEnvsService';
 import { HostsAPI } from '../services/apis';
@@ -75,6 +75,29 @@ const HostsService = {
   async reset(clusterId: Cluster['id'], hostId: Host['id']) {
     const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId);
     return HostsAPI.reset(infraEnvId, hostId);
+  },
+
+  async install(clusterId: Cluster['id'], hostId: Host['id']) {
+    const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId);
+    return HostsAPI.installHost(infraEnvId, hostId);
+  },
+
+  async installAll(cluster: Cluster) {
+    try {
+      const infraEnvId = await InfraEnvsService.getInfraEnvId(cluster.id);
+      const { data: hosts } = await HostsAPI.list(infraEnvId);
+      const promises: AxiosPromise<Host>[] = [];
+
+      for (const host of hosts) {
+        if (canInstallHost(cluster, host.status)) {
+          promises.push(HostsAPI.installHost(infraEnvId, host.id));
+        }
+      }
+
+      return Promise.all(promises);
+    } catch (e) {
+      throw e as AxiosError<Partial<{ reason: string; message: string }>>;
+    }
   },
 };
 

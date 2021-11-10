@@ -36,6 +36,12 @@ const HostsAPI = {
       `${HostsAPI.makeActionsBaseURI(infraEnvId, hostId)}/reset`,
     );
   },
+
+  installHost(infraEnvId: InfraEnv['id'], hostId: Host['id']) {
+    return client.post<never, AxiosResponse<Host>>(
+      `${HostsAPI.makeActionsBaseURI(infraEnvId, hostId)}/install`,
+    );
+  },
 };
 
 export default HostsAPI;
