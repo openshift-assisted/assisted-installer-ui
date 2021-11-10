@@ -18,7 +18,6 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   onSaveHostsSelection,
   onClose,
   onFinish,
-  onApproveAgent,
   onDeleteHost,
   canDeleteAgent,
   onSaveAgent,
@@ -79,7 +78,6 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
                   aiConfigMap={aiConfigMap}
                   infraEnv={infraEnv}
                   usedHostnames={usedHostnames}
-                  onApproveAgent={onApproveAgent}
                   onDeleteHost={onDeleteHost}
                   canDeleteAgent={canDeleteAgent}
                   onSaveAgent={onSaveAgent}
@@ -143,7 +141,6 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
     infraEnv,
     aiFlowFilteredAgents,
     usedHostnames,
-    onApproveAgent,
     onDeleteHost,
     canDeleteAgent,
     onSaveAgent,

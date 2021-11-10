@@ -16,34 +16,15 @@ import ClusterDeploymentHostsDiscovery from './ClusterDeploymentHostsDiscovery';
 
 type UseHostsDiscoveryFormikArgs = {
   agents: AgentK8sResource[];
-  // clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall: AgentClusterInstallK8sResource;
 };
 
 const getInitialValues = ({
   agentClusterInstall,
-  // clusterDeployment,
   agents,
 }: UseHostsDiscoveryFormikArgs): ClusterDeploymentHostsDiscoveryValues => {
   agentClusterInstall;
-  // clusterDeployment;
   agents;
-  // const isSNOCluster = getIsSNOCluster(agentClusterInstall);
-  // const cdName = clusterDeployment?.metadata?.name;
-  // const cdNamespace = clusterDeployment?.metadata?.namespace;
-
-  // const agentSelector = getAgentSelectorFieldsFromAnnotations(
-  //   clusterDeployment?.metadata?.annotations,
-  // );
-
-  // const selectedIds = agents
-  //   .filter(
-  //     (agent) =>
-  //       agent.spec?.clusterDeploymentName?.name === cdName &&
-  //       agent.spec?.clusterDeploymentName?.namespace === cdNamespace,
-  //   )
-  //   .map((agent) => agent.metadata?.uid as string);
-  // const autoSelectHosts = agentSelector.autoSelect;
 
   return {
     /* TODO(mlibra): CNS, OCS */
@@ -58,7 +39,6 @@ const getValidationSchema = () => {
 
 export const useHostsDiscoveryFormik = ({
   agents,
-  // clusterDeployment,
   agentClusterInstall,
 }: UseHostsDiscoveryFormikArgs): [ClusterDeploymentHostsDiscoveryValues, Yup.Lazy] => {
   const initialValues = React.useMemo(
@@ -74,7 +54,6 @@ export const useHostsDiscoveryFormik = ({
 const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscoveryStepProps> = ({
   onClose,
   onSaveHostsDiscovery,
-  // clusterDeployment,
   agentClusterInstall,
   agents,
   ...restProps
@@ -84,7 +63,6 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
 
   const [initialValues, validationSchema] = useHostsDiscoveryFormik({
     agents,
-    // clusterDeployment,
     agentClusterInstall,
   });
 
@@ -138,7 +116,6 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
               </GridItem>
               <GridItem>
                 <ClusterDeploymentHostsDiscovery
-                  // clusterDeployment={clusterDeployment}
                   agentClusterInstall={agentClusterInstall}
                   agents={agents}
                   {...restProps}
