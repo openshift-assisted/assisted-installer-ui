@@ -7,7 +7,6 @@ import {
   getDefaultOpenShiftVersion,
   nameValidationSchema,
   pullSecretValidationSchema,
-  sshPublicKeyValidationSchema,
 } from '../ui';
 import { ClusterDetailsValues } from './types';
 

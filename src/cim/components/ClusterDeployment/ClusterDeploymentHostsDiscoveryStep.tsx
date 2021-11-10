@@ -3,11 +3,7 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 import { Grid, GridItem } from '@patternfly/react-core';
 import { ClusterWizardStepHeader, getFormikErrorFields, useAlerts } from '../../../common';
-import {
-  AgentClusterInstallK8sResource,
-  AgentK8sResource,
-  ClusterDeploymentK8sResource,
-} from '../../types';
+import { AgentClusterInstallK8sResource, AgentK8sResource } from '../../types';
 import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
 import ClusterDeploymentWizardFooter from './ClusterDeploymentWizardFooter';
 import ClusterDeploymentWizardNavigation from './ClusterDeploymentWizardNavigation';

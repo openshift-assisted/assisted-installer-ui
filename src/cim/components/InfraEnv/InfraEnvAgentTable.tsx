@@ -16,7 +16,7 @@ import {
 } from '../../../common/components/hosts/tableUtils';
 import { DiscoveryTroubleshootingModal } from '../../../common';
 import { TableRow } from '../../../common/components/hosts/AITable';
-import { InfraEnvAgentTableProps } from '../ClusterDeployment';
+import { InfraEnvAgentTableProps } from '../ClusterDeployment/types';
 
 const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
   agents,
