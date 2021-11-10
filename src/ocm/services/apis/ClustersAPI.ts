@@ -150,12 +150,11 @@ const ClustersAPI = {
     );
   },
 
-  registerAddHosts(params: AddHostsClusterCreateParams) {
-    return client.post<Cluster>(`${ClustersAPI.makeBaseURI()}/import`, params);
-  },
-
-  registerAddHostsCluster(params: ImportClusterParams) {
-    return client.post<never, AxiosResponse<Cluster>>(`/v2/clusters/import`, params);
+  registerAddHosts(params: ImportClusterParams) {
+    return client.post<Cluster, AxiosResponse<Cluster>, ImportClusterParams>(
+      `${ClustersAPI.makeBaseURI()}/import`,
+      params,
+    );
   },
 
   downloadLogs(clusterId: Cluster['id'], hostId?: Host['id']) {

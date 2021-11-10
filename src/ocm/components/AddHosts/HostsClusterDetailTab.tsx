@@ -165,7 +165,7 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
           try {
             // Optionally create Day 2 cluster
             // TODO(jkilzi): cannot move to v2 until https://issues.redhat.com/browse/MGMT-7915 is done
-            const { data } = await ClustersAPI.registerAddHostsCluster({
+            const { data } = await ClustersAPI.registerAddHosts({
               openshiftClusterId, // used to both match OpenShift Cluster and as an assisted-installer ID
               name: `scale-up-${cluster.display_name || cluster.name || openshiftClusterId}`, // both cluster.name and cluster.display-name contain just UUID which fails AI validation (k8s naming conventions)
               openshiftVersion,
