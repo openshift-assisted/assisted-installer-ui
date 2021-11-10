@@ -16,14 +16,14 @@ const InfraEnvsAPI = {
   },
 
   update(infraEnvId: InfraEnv['id'], params: InfraEnvUpdateParams) {
-    return client.patch<InfraEnvUpdateParams, AxiosResponse<InfraEnv>>(
+    return client.patch<InfraEnv, AxiosResponse<InfraEnv>, InfraEnvUpdateParams>(
       `${InfraEnvsAPI.makeBaseURI(infraEnvId)}`,
       params,
     );
   },
 
   register(params: InfraEnvCreateParams) {
-    return client.post<InfraEnvCreateParams, AxiosResponse<InfraEnv>>(
+    return client.post<InfraEnv, AxiosResponse<InfraEnv>, InfraEnvCreateParams>(
       `${InfraEnvsAPI.makeBaseURI()}`,
       params,
     );

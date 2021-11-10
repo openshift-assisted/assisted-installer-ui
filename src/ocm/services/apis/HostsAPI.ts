@@ -21,7 +21,7 @@ const HostsAPI = {
   },
 
   update(infraEnvId: InfraEnv['id'], hostId: Host['id'], params: HostUpdateParams) {
-    return client.patch<HostUpdateParams, AxiosResponse<Host>>(
+    return client.patch<Host, AxiosResponse<Host>, HostUpdateParams>(
       `${HostsAPI.makeBaseURI(infraEnvId, hostId)}`,
       params,
     );
@@ -32,13 +32,13 @@ const HostsAPI = {
   },
 
   reset(infraEnvId: InfraEnv['id'], hostId: Host['id']) {
-    return client.post<Host, AxiosResponse<Host, never>, never>(
+    return client.post<Host, AxiosResponse<Host>, never>(
       `${HostsAPI.makeActionsBaseURI(infraEnvId, hostId)}/reset`,
     );
   },
 
   installHost(infraEnvId: InfraEnv['id'], hostId: Host['id']) {
-    return client.post<never, AxiosResponse<Host>>(
+    return client.post<Host, AxiosResponse<Host>, never>(
       `${HostsAPI.makeActionsBaseURI(infraEnvId, hostId)}/install`,
     );
   },
