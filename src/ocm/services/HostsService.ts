@@ -2,6 +2,7 @@ import { canInstallHost, Cluster, Disk, DiskRole, Host, HostUpdateParams } from 
 import { AxiosError, AxiosPromise } from 'axios';
 import InfraEnvsService from './InfraEnvsService';
 import { HostsAPI } from '../services/apis';
+import { APIErrorMixin } from '../api/types';
 
 const HostsService = {
   /**
@@ -21,7 +22,7 @@ const HostsService = {
 
       return Promise.all(promises);
     } catch (e) {
-      throw e as AxiosError<Partial<{ reason: string; message: string }>>;
+      throw e as AxiosError<APIErrorMixin>;
     }
   },
 
@@ -96,7 +97,7 @@ const HostsService = {
 
       return Promise.all(promises);
     } catch (e) {
-      throw e as AxiosError<Partial<{ reason: string; message: string }>>;
+      throw e as AxiosError<APIErrorMixin>;
     }
   },
 };
