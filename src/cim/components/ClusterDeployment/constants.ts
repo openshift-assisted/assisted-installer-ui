@@ -17,6 +17,7 @@ export const wizardStepNames: {
 } = {
   'cluster-details': 'Cluster details',
   'hosts-selection': 'Cluster hosts',
+  'hosts-discovery': 'Cluster hosts',
   networking: 'Installation details',
 };
 

@@ -7,7 +7,7 @@ import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
 import ClusterDeploymentDetailsStep from './ClusterDeploymentDetailsStep';
 import ClusterDeploymentNetworkingStep from './ClusterDeploymentNetworkingStep';
 import ClusterDeploymentHostSelectionStep from './ClusterDeploymentHostSelectionStep';
-import { isCIMFlow, getAgentsHostsNames } from './helpers';
+import { getAgentsHostsNames } from './helpers';
 import { ClusterDeploymentWizardProps, ClusterDeploymentWizardStepsType } from './types';
 import ClusterDeploymentHostsDiscoveryStep from './ClusterDeploymentHostsDiscoveryStep';
 
@@ -49,46 +49,44 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
     switch (stepId) {
       case 'hosts-selection':
         if (agentClusterInstall?.metadata?.name) {
-          if (isCIMFlow(clusterDeployment)) {
-            return (
-              <ClusterDeploymentHostSelectionStep
-                clusterDeployment={clusterDeployment}
-                agentClusterInstall={agentClusterInstall}
-                onClose={onClose}
-                onSaveHostsSelection={onSaveHostsSelection}
-                agents={agents}
-                aiConfigMap={aiConfigMap}
-              />
-            );
-          } else {
-            if (infraEnv) {
-              return (
-                <ClusterDeploymentHostsDiscoveryStep
-                  clusterDeployment={clusterDeployment}
-                  agentClusterInstall={agentClusterInstall}
-                  agents={agents}
-                  bareMetalHosts={[] /* TODO(mlibra) */}
-                  aiConfigMap={aiConfigMap}
-                  infraEnv={infraEnv}
-                  usedHostnames={usedHostnames}
-                  onDeleteHost={onDeleteHost}
-                  canDeleteAgent={canDeleteAgent}
-                  onSaveAgent={onSaveAgent}
-                  onSaveBMH={onSaveBMH}
-                  fetchSecret={fetchSecret}
-                  fetchNMState={fetchNMState}
-                  getClusterDeploymentLink={getClusterDeploymentLink}
-                  onClose={onClose}
-                  isBMPlatform={isBMPlatform}
-                  onSaveISOParams={onSaveISOParams}
-                  // onCreateBMH={undefined /* So far no Day 2 */}
-                  // onSaveHostsDiscovery={undefined}
-                  // onFormSaveError={setErrorHandler}
-                />
-              );
-            }
-            // fall-through to LoadingState
-          }
+          return (
+            <ClusterDeploymentHostSelectionStep
+              clusterDeployment={clusterDeployment}
+              agentClusterInstall={agentClusterInstall}
+              onClose={onClose}
+              onSaveHostsSelection={onSaveHostsSelection}
+              agents={agents}
+              aiConfigMap={aiConfigMap}
+            />
+          );
+        }
+        return <LoadingState />;
+      case 'hosts-discovery':
+        if (infraEnv && agentClusterInstall?.metadata?.name) {
+          return (
+            <ClusterDeploymentHostsDiscoveryStep
+              clusterDeployment={clusterDeployment}
+              agentClusterInstall={agentClusterInstall}
+              agents={agents}
+              bareMetalHosts={[] /* TODO(mlibra) */}
+              aiConfigMap={aiConfigMap}
+              infraEnv={infraEnv}
+              usedHostnames={usedHostnames}
+              onDeleteHost={onDeleteHost}
+              canDeleteAgent={canDeleteAgent}
+              onSaveAgent={onSaveAgent}
+              onSaveBMH={onSaveBMH}
+              fetchSecret={fetchSecret}
+              fetchNMState={fetchNMState}
+              getClusterDeploymentLink={getClusterDeploymentLink}
+              onClose={onClose}
+              isBMPlatform={isBMPlatform}
+              onSaveISOParams={onSaveISOParams}
+              // onCreateBMH={undefined /* So far no Day 2 */}
+              // onSaveHostsDiscovery={undefined}
+              // onFormSaveError={setErrorHandler}
+            />
+          );
         }
         return <LoadingState />;
       case 'networking':
@@ -146,7 +144,9 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
 
   return (
     <AlertsContextProvider>
-      <ClusterDeploymentWizardContext.Provider value={{ currentStepId, setCurrentStepId }}>
+      <ClusterDeploymentWizardContext.Provider
+        value={{ currentStepId, setCurrentStepId, clusterDeployment }}
+      >
         <div className={classNames('pf-c-wizard', className)}>{renderCurrentStep()}</div>
       </ClusterDeploymentWizardContext.Provider>
     </AlertsContextProvider>

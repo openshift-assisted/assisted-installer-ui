@@ -25,7 +25,11 @@ export type ClusterDeploymentHostsTablePropsActions = {
   onEditBMH?: (bmh: BareMetalHostK8sResource) => void;
 };
 
-export type ClusterDeploymentWizardStepsType = 'cluster-details' | 'hosts-selection' | 'networking';
+export type ClusterDeploymentWizardStepsType =
+  | 'cluster-details'
+  | 'hosts-selection'
+  | 'hosts-discovery'
+  | 'networking';
 
 export type ClusterDeploymentDetailsProps = {
   clusterImages: ClusterImageSetK8sResource[];
