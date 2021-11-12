@@ -13,6 +13,7 @@ import {
   ClusterDeploymentHostsDiscoveryValues,
 } from './types';
 import ClusterDeploymentHostsDiscovery from './ClusterDeploymentHostsDiscovery';
+import { isAgentOfCluster } from './helpers';
 
 type UseHostsDiscoveryFormikArgs = {
   agents: AgentK8sResource[];
@@ -54,15 +55,24 @@ export const useHostsDiscoveryFormik = ({
 const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscoveryStepProps> = ({
   onClose,
   onSaveHostsDiscovery,
+  clusterDeployment,
   agentClusterInstall,
-  agents,
+  agents: allAgents,
   ...restProps
 }) => {
   const { addAlert } = useAlerts();
   const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
 
+  const cdName = clusterDeployment?.metadata?.name;
+  const cdNamespace = clusterDeployment?.metadata?.namespace;
+
+  const clusterAgents = React.useMemo(
+    () => allAgents.filter((a) => isAgentOfCluster(a, cdName, cdNamespace)),
+    [allAgents, cdName, cdNamespace],
+  );
+
   const [initialValues, validationSchema] = useHostsDiscoveryFormik({
-    agents,
+    agents: clusterAgents,
     agentClusterInstall,
   });
 
@@ -117,7 +127,7 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
               <GridItem>
                 <ClusterDeploymentHostsDiscovery
                   agentClusterInstall={agentClusterInstall}
-                  agents={agents}
+                  agents={clusterAgents}
                   {...restProps}
                 />
               </GridItem>

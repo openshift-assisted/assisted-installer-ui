@@ -86,6 +86,8 @@ export type ClusterDeploymentHostsDiscoveryStepProps = Omit<
   ClusterDeploymentHostsDiscoveryProps,
   'onValuesChanged'
 > & {
+  clusterDeployment: ClusterDeploymentK8sResource;
+
   onSaveHostsDiscovery?: (values: ClusterDeploymentHostsDiscoveryValues) => Promise<string | void>;
   onClose: () => void;
 };
@@ -143,7 +145,6 @@ export type InfraEnvAgentTableProps = ClusterDeploymentHostsTablePropsActions & 
 };
 
 export type ClusterDeploymentHostsDiscoveryProps = {
-  // clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall: AgentClusterInstallK8sResource;
   agents: AgentK8sResource[];
   bareMetalHosts: BareMetalHostK8sResource[];

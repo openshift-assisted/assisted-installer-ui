@@ -7,7 +7,7 @@ import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
 import ClusterDeploymentDetailsStep from './ClusterDeploymentDetailsStep';
 import ClusterDeploymentNetworkingStep from './ClusterDeploymentNetworkingStep';
 import ClusterDeploymentHostSelectionStep from './ClusterDeploymentHostSelectionStep';
-import { isCIMFlow, isAgentOfAIFlow, getAgentsHostsNames } from './helpers';
+import { isCIMFlow, getAgentsHostsNames } from './helpers';
 import { ClusterDeploymentWizardProps, ClusterDeploymentWizardStepsType } from './types';
 import ClusterDeploymentHostsDiscoveryStep from './ClusterDeploymentHostsDiscoveryStep';
 
@@ -39,14 +39,6 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   const [currentStepId, setCurrentStepId] = React.useState<ClusterDeploymentWizardStepsType>(
     'cluster-details',
   );
-  const cdName = clusterDeployment?.metadata?.name;
-  const cdNamespace = clusterDeployment?.metadata?.namespace;
-
-  const aiFlowFilteredAgents = React.useMemo(
-    () => agents.filter((a) => isAgentOfAIFlow(a, cdName, cdNamespace)),
-    [agents, cdName, cdNamespace],
-  );
-
   const usedHostnames = React.useMemo(() => getAgentsHostsNames(agents), [agents]);
 
   const renderCurrentStep = React.useCallback(() => {
@@ -72,8 +64,9 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
             if (infraEnv) {
               return (
                 <ClusterDeploymentHostsDiscoveryStep
+                  clusterDeployment={clusterDeployment}
                   agentClusterInstall={agentClusterInstall}
-                  agents={aiFlowFilteredAgents}
+                  agents={agents}
                   bareMetalHosts={[] /* TODO(mlibra) */}
                   aiConfigMap={aiConfigMap}
                   infraEnv={infraEnv}
@@ -139,7 +132,6 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
     onSaveHostsSelection,
     aiConfigMap,
     infraEnv,
-    aiFlowFilteredAgents,
     usedHostnames,
     onDeleteHost,
     canDeleteAgent,

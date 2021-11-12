@@ -92,9 +92,9 @@ export const isCIMFlow = (clusterDeployment?: ClusterDeploymentK8sResource) =>
     INFRAENV_GENERATED_AI_FLOW
   ];
 
-/* That label is added to the InfraEnv along creating ClusterDeployment, specific for the AI flow */
-export const isAgentOfAIFlow = (agent: AgentK8sResource, cdName?: string, cdNamespace?: string) =>
-  agent.metadata?.labels?.[INFRAENV_GENERATED_AI_FLOW] === `${cdNamespace}-${cdName}`;
+export const isAgentOfCluster = (agent: AgentK8sResource, cdName?: string, cdNamespace?: string) =>
+  agent.spec?.clusterDeploymentName?.name === cdName &&
+  agent.spec?.clusterDeploymentName?.namespace === cdNamespace;
 
 export const getAgentsHostsNames = (agents: AgentK8sResource[]): string[] => {
   const raw: (string | undefined)[] = agents.map((agent) => agent.spec?.hostname);
