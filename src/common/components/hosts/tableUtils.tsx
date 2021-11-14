@@ -82,6 +82,7 @@ export const hostnameColumn = (
 export const roleColumn = (
   canEditRole?: HostsTableActions['canEditRole'],
   onEditRole?: HostsTableActions['onEditRole'],
+  schedulableMasters?: boolean,
 ): TableRow<Host> => {
   return {
     header: {
@@ -93,7 +94,7 @@ export const roleColumn = (
     },
     cell: (host) => {
       const editRole = onEditRole ? (role?: string) => onEditRole(host, role) : undefined;
-      const hostRole = getHostRole(host);
+      const hostRole = getHostRole(host, schedulableMasters);
       return {
         title: (
           <RoleCell

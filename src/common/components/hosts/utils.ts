@@ -123,10 +123,16 @@ export const canHostnameBeChanged = (hostStatus: Host['status']) =>
     'pending-for-input',
   ].includes(hostStatus);
 
-export const getHostRole = (host: Host): string =>
-  `${HOST_ROLES.find((role) => role.value === host.role)?.label || HOST_ROLES[0].label}${
-    host.bootstrap ? ' (bootstrap)' : ''
+export const getHostRole = (host: Host, schedulableMasters?: boolean): string => {
+  let roleLabel: string;
+  roleLabel = `${
+    HOST_ROLES.find((role) => role.value === host.role)?.label || HOST_ROLES[0].label
   }`;
+  if (schedulableMasters && host.role === 'master') {
+    roleLabel = 'Control Plane, Worker';
+  }
+  return roleLabel;
+};
 
 export const canDownloadHostLogs = (host: Host) =>
   !!host.logsCollectedAt && host.logsCollectedAt != TIME_ZERO;
@@ -164,3 +170,14 @@ export const fileSize: typeof filesize = (...args) =>
     .call(null, ...args)
     .toUpperCase()
     .replace(/I/, 'i');
+
+export const schedulableMastersAlwaysOn = (cluster: Cluster) => {
+  return cluster.hosts ? cluster.hosts.length < 5 : true;
+};
+
+export const getSchedulableMasters = (cluster: Cluster): boolean => {
+  if (schedulableMastersAlwaysOn(cluster)) {
+    return true;
+  }
+  return !!cluster.schedulableMasters;
+};
