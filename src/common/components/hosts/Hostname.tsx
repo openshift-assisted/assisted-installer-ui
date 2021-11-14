@@ -14,6 +14,7 @@ type HostnameProps = {
   inventory?: Inventory;
   title?: string;
   hosts?: Host[];
+  readonly?: boolean;
 };
 
 const Hostname: React.FC<HostnameProps> = ({
@@ -23,6 +24,7 @@ const Hostname: React.FC<HostnameProps> = ({
   title,
   className,
   hosts,
+  readonly = false,
 }) => {
   const hostname = title || getHostname(host, inventory) || DASH;
   const isHostnameChangeRequested = !title && host.requestedHostname !== inventory.hostname;
@@ -51,7 +53,7 @@ const Hostname: React.FC<HostnameProps> = ({
     </Flex>
   );
 
-  return onEditHostname ? (
+  return !readonly && onEditHostname ? (
     isValid ? (
       <Button variant={ButtonVariant.link} isInline onClick={onEditHostname} className={className}>
         {body}

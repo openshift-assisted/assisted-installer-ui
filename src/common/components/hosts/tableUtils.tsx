@@ -45,6 +45,7 @@ export const getSelectedNic = (nics: Interface[], currentSubnet: Address4 | Addr
 export const hostnameColumn = (
   onEditHostname?: HostsTableActions['onEditHost'],
   hosts?: Host[],
+  canEditHostname?: HostsTableActions['canEditHostname'],
 ): TableRow<Host> => {
   return {
     header: {
@@ -63,7 +64,13 @@ export const hostnameColumn = (
       const computedHostname = getHostname(host, inventory);
       return {
         title: (
-          <Hostname host={host} inventory={inventory} onEditHostname={editHostname} hosts={hosts} />
+          <Hostname
+            host={host}
+            inventory={inventory}
+            onEditHostname={editHostname}
+            hosts={hosts}
+            readonly={canEditHostname ? !canEditHostname() : false}
+          />
         ),
         props: { 'data-testid': 'host-name' },
         sortableValue: computedHostname || '',
