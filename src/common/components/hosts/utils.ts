@@ -81,6 +81,9 @@ export const canEditHost = (clusterStatus: Cluster['status'], status: Host['stat
     'pending-for-input',
   ].includes(status);
 
+export const canEditHostname = (clusterStatus: Cluster['status']) =>
+  ['insufficient', 'adding-hosts', 'ready'].includes(clusterStatus);
+
 export const canEditDisks = canEditHost;
 
 export const canDownloadKubeconfig = (clusterStatus: Cluster['status']) =>
