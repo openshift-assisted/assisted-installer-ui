@@ -36,7 +36,7 @@ const ClusterHostsTable: React.FC<ClusterHostsTableProps> = ({
 
   const content = React.useMemo(
     () => [
-      hostnameColumn(onEditHost),
+      hostnameColumn(onEditHost, undefined, actionChecks.canEditHostname),
       roleColumn(actionChecks.canEditRole, onEditRole, getSchedulableMasters(cluster)),
       statusColumn(AdditionalNTPSourcesDialogToggle, onEditHost),
       discoveredAtColumn,
@@ -45,7 +45,7 @@ const ClusterHostsTable: React.FC<ClusterHostsTableProps> = ({
       disksColumn,
       countColumn(cluster),
     ],
-    [onEditHost, onEditRole, actionChecks.canEditRole, cluster],
+    [onEditHost, actionChecks, onEditRole, cluster],
   );
 
   return (

@@ -38,6 +38,7 @@ import {
   canDisable as canDisableUtil,
   canDelete as canDeleteUtil,
   canEditHost as canEditHostUtil,
+  canEditHostname as canEditHostnameUtil,
   canDownloadHostLogs,
   canReset as canResetUtil,
   EditHostModal,
@@ -173,6 +174,7 @@ export const useHostsTable = (cluster: Cluster) => {
       canDelete: (host: Host) => canDeleteUtil(cluster.status, host.status),
       canEditHost: (host: Host) => canEditHostUtil(cluster.status, host.status),
       canReset: (host: Host) => canResetUtil(cluster.status, host.status),
+      canEditHostname: () => canEditHostnameUtil(cluster.status),
     }),
     [cluster],
   );
