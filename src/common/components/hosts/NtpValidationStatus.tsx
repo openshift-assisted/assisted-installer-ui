@@ -10,7 +10,7 @@ const getLabel = (validationStatus?: Validation['status']) => {
     case 'success':
       return 'Synced';
     default:
-      return 'Pending';
+      return 'Not available';
   }
 };
 
