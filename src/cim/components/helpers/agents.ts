@@ -7,7 +7,6 @@ const AGENT_FOR_SELECTION_STATUSES: AgentStatus[] = [
   'known',
   'known-unbound',
   'insufficient',
-  'insufficient-unbound',
   'pending-for-input',
 ];
 
