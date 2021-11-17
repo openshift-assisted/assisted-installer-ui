@@ -120,14 +120,13 @@ export const canHostnameBeChanged = (hostStatus: Host['status']) =>
   ].includes(hostStatus);
 
 export const getHostRole = (host: Host, schedulableMasters?: boolean): string => {
-  let roleLabel: string;
-  roleLabel = `${
+  let roleLabel = `${
     HOST_ROLES.find((role) => role.value === host.role)?.label || HOST_ROLES[0].label
   }`;
   if (schedulableMasters && host.role === 'master') {
-    roleLabel = 'Control Plane, Worker';
+    roleLabel = 'Control plane node, Worker';
   }
-  return roleLabel;
+  return `${roleLabel}${host.bootstrap ? ' (bootstrap)' : ''}`;
 };
 
 export const canDownloadHostLogs = (host: Host) =>
