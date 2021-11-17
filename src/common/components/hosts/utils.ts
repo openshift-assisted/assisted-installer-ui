@@ -130,9 +130,10 @@ export const getHostRole = (host: Host, schedulableMasters?: boolean): string =>
 };
 
 export const canDownloadHostLogs = (host: Host) =>
-  !!host.logsCollectedAt && host.logsCollectedAt != TIME_ZERO;
+  !!host.logsCollectedAt && host.logsCollectedAt !== TIME_ZERO;
 
 export const canDownloadClusterLogs = (cluster: Cluster) =>
+  cluster.controllerLogsCollectedAt !== TIME_ZERO ||
   !!(cluster.hosts || []).find((host) => canDownloadHostLogs(host));
 
 export const getReadyHostCount = (cluster: Cluster) => cluster.readyHostCount || 0;
