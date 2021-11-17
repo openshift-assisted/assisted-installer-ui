@@ -97,17 +97,13 @@ export const canInstallHost = (cluster: Cluster, hostStatus: Host['status']) =>
 export const getHostProgressStages = (host: Host) => host.progressStages || [];
 
 export const getHostProgress = (host: Host) =>
-  host.progress || { currentStage: 'Preparing installation', progressInfo: undefined };
+  host.progress || { currentStage: 'Starting installation', progressInfo: undefined };
 
 export const getHostProgressStageNumber = (host: Host) => {
   const stages = getHostProgressStages(host);
   const progress = getHostProgress(host);
-  // can be undefined in CIM
-  if (progress?.currentStage) {
-    const currentStage = progress.currentStage;
-    return stages.findIndex((s) => currentStage.match(s)) + 1;
-  }
-  return 0;
+
+  return Math.round(((progress?.installationPercentage || 0) / 100) * stages.length);
 };
 
 export const canHostnameBeChanged = (hostStatus: Host['status']) =>
