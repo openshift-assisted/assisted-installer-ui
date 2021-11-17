@@ -97,17 +97,13 @@ export const canInstallHost = (cluster: Cluster, hostStatus: Host['status']) =>
 export const getHostProgressStages = (host: Host) => host.progressStages || [];
 
 export const getHostProgress = (host: Host) =>
-  host.progress || { currentStage: 'Preparing installation', progressInfo: undefined };
+  host.progress || { currentStage: 'Starting installation', progressInfo: undefined };
 
 export const getHostProgressStageNumber = (host: Host) => {
   const stages = getHostProgressStages(host);
   const progress = getHostProgress(host);
-  // can be undefined in CIM
-  if (progress?.currentStage) {
-    const currentStage = progress.currentStage;
-    return stages.findIndex((s) => currentStage.match(s)) + 1;
-  }
-  return 0;
+
+  return Math.round(((progress?.installationPercentage || 0) / 100) * stages.length);
 };
 
 export const canHostnameBeChanged = (hostStatus: Host['status']) =>
@@ -124,14 +120,13 @@ export const canHostnameBeChanged = (hostStatus: Host['status']) =>
   ].includes(hostStatus);
 
 export const getHostRole = (host: Host, schedulableMasters?: boolean): string => {
-  let roleLabel: string;
-  roleLabel = `${
+  let roleLabel = `${
     HOST_ROLES.find((role) => role.value === host.role)?.label || HOST_ROLES[0].label
   }`;
   if (schedulableMasters && host.role === 'master') {
-    roleLabel = 'Control Plane, Worker';
+    roleLabel = 'Control plane node, Worker';
   }
-  return roleLabel;
+  return `${roleLabel}${host.bootstrap ? ' (bootstrap)' : ''}`;
 };
 
 export const canDownloadHostLogs = (host: Host) =>
