@@ -10,7 +10,7 @@ import {
 import { InfoCircleIcon } from '@patternfly/react-icons';
 import { Host, stringToJSON, Inventory, PrismCode } from '../../../common';
 
-const Hint = () => (
+const HintOnReboot = () => (
   <TextContent>
     <Text component={TextVariants.p}>
       Your libvirt virtual machines should be configured to restart automatically after a reboot.
@@ -26,6 +26,17 @@ const Hint = () => (
   </TextContent>
 );
 
+const HintVirtInstall = () => (
+  <TextContent>
+    <Text component={TextVariants.p}>When using virt-install, please run:</Text>
+    <PrismCode code="virt-install --wait -1 <rest of the command>" />
+    <Text component={TextVariants.p}>
+      Otherwise, machines will not be able to reboot in the middle of installation, and will stay
+      shut down.
+    </Text>
+  </TextContent>
+);
+
 const VMRebootConfigurationInfo: React.FC<{ hosts: Host[] }> = ({ hosts }) => {
   const isVM = React.useMemo(
     () =>
@@ -38,10 +49,17 @@ const VMRebootConfigurationInfo: React.FC<{ hosts: Host[] }> = ({ hosts }) => {
 
   return isVM ? (
     <Text component="p">
-      <Popover bodyContent={<Hint />} minWidth="30rem">
+      <Popover bodyContent={<HintOnReboot />} minWidth="30rem">
         <Button variant={ButtonVariant.link} isInline>
           <InfoCircleIcon size="sm" />
           &nbsp;Check your VM reboot configuration
+        </Button>
+      </Popover>
+      &ensp;
+      <Popover bodyContent={<HintVirtInstall />} minWidth="35rem">
+        <Button variant={ButtonVariant.link} isInline>
+          <InfoCircleIcon size="sm" />
+          &nbsp;Using virt-install? Please read this!
         </Button>
       </Popover>
     </Text>
