@@ -45,11 +45,11 @@
     "test:circular": "dpdm --exit-code circular:1 --warning false --tree false src/index.ts",
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx --color",
     "lint:fix": "yarn lint --fix",
-    "format": "prettier --write '**/*.{js,jsx,ts,tsx,json,md,scss,yaml,yml}'",
+    "format": "prettier --write '**/*.{json,md,scss,yaml,yml}'",
     "update-api": "curl https://raw.githubusercontent.com/openshift/assisted-service/master/swagger.yaml > src/common/api/swagger.yaml",
     "postupdate-api": "yarn swagger",
     "swagger": "sw2dts -w -o src/common/api/types.ts src/common/api/swagger.yaml",
-    "postswagger": "sed -i -r 's/([a-z1-9]+)_([a-z])/\\1\\U\\2/g' src/common/api/types.ts && yarn format"
+    "postswagger": "sed -i -r 's/([a-z1-9]+)_([a-z])/\\1\\U\\2/g' src/common/api/types.ts && yarn lint:fix"
   },
   "dependencies": {
     "axios-case-converter": "^0.8.1",
