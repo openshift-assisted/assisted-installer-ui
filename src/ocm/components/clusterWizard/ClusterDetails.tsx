@@ -79,10 +79,10 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster }) => {
 
   const { error: errorOCPVersions, loading: loadingOCPVersions, versions } = useOpenshiftVersions();
 
-  React.useEffect(() => errorOCPVersions && addAlert(errorOCPVersions), [
-    errorOCPVersions,
-    addAlert,
-  ]);
+  React.useEffect(
+    () => errorOCPVersions && addAlert(errorOCPVersions),
+    [errorOCPVersions, addAlert],
+  );
 
   const moveNext = () => setCurrentStepId('host-discovery');
 

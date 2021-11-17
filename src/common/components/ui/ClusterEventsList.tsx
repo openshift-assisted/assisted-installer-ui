@@ -39,11 +39,10 @@ const ClusterEventsList: React.FC<ClusterEventsListProps> = ({ events, cluster, 
     getInitialClusterEventsFilters(cluster),
   );
 
-  const filteredEvents = React.useMemo(() => filterEvents(filters, events, cluster.hosts), [
-    filters,
-    events,
-    cluster.hosts,
-  ]);
+  const filteredEvents = React.useMemo(
+    () => filterEvents(filters, events, cluster.hosts),
+    [filters, events, cluster.hosts],
+  );
 
   return (
     <>

@@ -72,13 +72,8 @@ const ClusterDetailStatusVarieties: React.FC<{
   cluster: Cluster;
   clusterVarieties: ClusterStatusVarieties;
 }> = ({ cluster, clusterVarieties }) => {
-  const {
-    credentials,
-    credentialsError,
-    failedOlmOperators,
-    consoleOperator,
-    fetchCredentials,
-  } = clusterVarieties;
+  const { credentials, credentialsError, failedOlmOperators, consoleOperator, fetchCredentials } =
+    clusterVarieties;
 
   const showClusterCredentials =
     consoleOperator?.status === 'available' || (!consoleOperator && cluster.status === 'installed'); // Retain backwards compatibility with clusters which don't have monitored clusters

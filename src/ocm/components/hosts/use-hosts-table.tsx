@@ -51,12 +51,8 @@ import { onFetchEvents } from '../fetching/fetchEvents';
 
 export const useHostsTable = (cluster: Cluster) => {
   const { addAlert } = React.useContext(AlertsContext);
-  const {
-    eventsDialog,
-    editHostDialog,
-    deleteHostDialog,
-    resetHostDialog,
-  } = useModalDialogsContext();
+  const { eventsDialog, editHostDialog, deleteHostDialog, resetHostDialog } =
+    useModalDialogsContext();
   const dispatch = useDispatch();
 
   const hostActions = React.useMemo(
@@ -159,10 +155,13 @@ export const useHostsTable = (cluster: Cluster) => {
     [dispatch, addAlert, cluster.id],
   );
 
-  const onAdditionalNtpSource: AdditionalNTPSourcesFormProps['onAdditionalNtpSource'] = React.useMemo(
-    () => async (...args) => await onAdditionalNtpSourceAction(dispatch, cluster.id, ...args),
-    [cluster.id, dispatch],
-  );
+  const onAdditionalNtpSource: AdditionalNTPSourcesFormProps['onAdditionalNtpSource'] =
+    React.useMemo(
+      () =>
+        async (...args) =>
+          await onAdditionalNtpSourceAction(dispatch, cluster.id, ...args),
+      [cluster.id, dispatch],
+    );
 
   const actionChecks = React.useMemo(
     () => ({

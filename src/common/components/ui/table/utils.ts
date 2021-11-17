@@ -26,24 +26,26 @@ export const getColSpanRow = (content: React.ReactNode, columnCount: number): IR
   },
 ];
 
-export const rowSorter = (sortBy: ISortBy, getCell: getCellType) => (a: IRow, b: IRow): number => {
-  const coefficient = sortBy.direction === SortByDirection.asc ? 1 : -1;
-  const cellA = getCell(a, sortBy.index);
-  const cellB = getCell(b, sortBy.index);
+export const rowSorter =
+  (sortBy: ISortBy, getCell: getCellType) =>
+  (a: IRow, b: IRow): number => {
+    const coefficient = sortBy.direction === SortByDirection.asc ? 1 : -1;
+    const cellA = getCell(a, sortBy.index);
+    const cellB = getCell(b, sortBy.index);
 
-  let valA = typeof cellA === 'string' ? cellA : cellA?.sortableValue;
-  let valB = typeof cellB === 'string' ? cellB : cellB?.sortableValue;
+    let valA = typeof cellA === 'string' ? cellA : cellA?.sortableValue;
+    let valB = typeof cellB === 'string' ? cellB : cellB?.sortableValue;
 
-  if (typeof valA === 'string' || typeof valB === 'string') {
-    valA = (valA || '') as string; // handle undefined
-    return valA.localeCompare(valB as string) * coefficient;
-  }
+    if (typeof valA === 'string' || typeof valB === 'string') {
+      valA = (valA || '') as string; // handle undefined
+      return valA.localeCompare(valB as string) * coefficient;
+    }
 
-  // numeric (like timestamp or memory)
-  valA = valA || 0; // handle undefined
-  valB = valB || 0;
-  return (valA - valB) * coefficient;
-};
+    // numeric (like timestamp or memory)
+    valA = valA || 0; // handle undefined
+    valB = valB || 0;
+    return (valA - valB) * coefficient;
+  };
 
 /** Converts string into a sentence by capitalizing first letter and appending with . */
 export const toSentence = (s: string) =>

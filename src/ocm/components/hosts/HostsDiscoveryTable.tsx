@@ -19,17 +19,18 @@ import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogTogg
 import { onDiskRoleType } from '../../../common/components/hosts/DiskRole';
 import { getSchedulableMasters } from '../../../common';
 
-const getExpandComponent = (onDiskRole: onDiskRoleType, canEditDisks: (host: Host) => boolean) => ({
-  obj: host,
-}: ExpandComponentProps<Host>) => (
-  <HostDetail
-    key={host.id}
-    host={host}
-    onDiskRole={onDiskRole}
-    canEditDisks={canEditDisks}
-    AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
-  />
-);
+const getExpandComponent =
+  (onDiskRole: onDiskRoleType, canEditDisks: (host: Host) => boolean) =>
+  ({ obj: host }: ExpandComponentProps<Host>) =>
+    (
+      <HostDetail
+        key={host.id}
+        host={host}
+        onDiskRole={onDiskRole}
+        canEditDisks={canEditDisks}
+        AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
+      />
+    );
 
 type HostsDiscoveryTableProps = {
   cluster: Cluster;
@@ -41,14 +42,8 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({
   cluster,
   setDiscoveryHintModalOpen,
 }) => {
-  const {
-    onEditHost,
-    actionChecks,
-    onEditRole,
-    onDiskRole,
-    actionResolver,
-    ...modalProps
-  } = useHostsTable(cluster);
+  const { onEditHost, actionChecks, onEditRole, onDiskRole, actionResolver, ...modalProps } =
+    useHostsTable(cluster);
 
   const content = React.useMemo(
     () => [

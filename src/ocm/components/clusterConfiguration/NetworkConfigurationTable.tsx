@@ -10,9 +10,8 @@ const NetworkConfigurationTable: React.FC<ClusterHostsTableProps> = ({
   setDiscoveryHintModalOpen,
   skipDisabled,
 }) => {
-  const { onEditHost, actionChecks, onEditRole, actionResolver, ...modalProps } = useHostsTable(
-    cluster,
-  );
+  const { onEditHost, actionChecks, onEditRole, actionResolver, ...modalProps } =
+    useHostsTable(cluster);
 
   return (
     <>

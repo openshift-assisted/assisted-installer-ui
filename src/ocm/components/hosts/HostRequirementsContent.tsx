@@ -22,9 +22,8 @@ export type PreflightHWRequirementsContentComponent = React.FC<{
 }>;
 
 const useClusterPreflightRequirements = (clusterId: Cluster['id']) => {
-  const [preflightRequirements, setPreflightRequirements] = React.useState<
-    PreflightHardwareRequirements
-  >();
+  const [preflightRequirements, setPreflightRequirements] =
+    React.useState<PreflightHardwareRequirements>();
   const [error, setError] = React.useState();
 
   React.useEffect(() => {

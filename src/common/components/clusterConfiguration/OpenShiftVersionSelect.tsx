@@ -13,21 +13,21 @@ const OpenShiftLifeCycleDatesLink = () => (
   </a>
 );
 
-const getOpenshiftVersionHelperText = (versions: OpenshiftVersionOptionType[]) => (
-  selectedVersionValue: string,
-) => {
-  let helperTextComponent = null;
-  const selectedVersion = versions.find((version) => version.value === selectedVersionValue);
-  if (selectedVersion?.supportLevel !== 'production') {
-    helperTextComponent = (
-      <>
-        <ExclamationTriangleIcon color={warningColor.value} size="sm" />
-        &nbsp;Please note that this version is not production ready. <OpenShiftLifeCycleDatesLink />
-      </>
-    );
-  }
-  return helperTextComponent;
-};
+const getOpenshiftVersionHelperText =
+  (versions: OpenshiftVersionOptionType[]) => (selectedVersionValue: string) => {
+    let helperTextComponent = null;
+    const selectedVersion = versions.find((version) => version.value === selectedVersionValue);
+    if (selectedVersion?.supportLevel !== 'production') {
+      helperTextComponent = (
+        <>
+          <ExclamationTriangleIcon color={warningColor.value} size="sm" />
+          &nbsp;Please note that this version is not production ready.{' '}
+          <OpenShiftLifeCycleDatesLink />
+        </>
+      );
+    }
+    return helperTextComponent;
+  };
 
 type OpenShiftVersionSelectProps = {
   versions: OpenshiftVersionOptionType[];

@@ -17,9 +17,8 @@ type AgentsSelectionTableProps = {
 };
 
 const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({ matchingAgents }) => {
-  const [selectedHostIdsField, , { setValue: setSelectedHostIdsValue }] = useField<
-    ClusterDeploymentHostsSelectionValues['selectedHostIds']
-  >('selectedHostIds');
+  const [selectedHostIdsField, , { setValue: setSelectedHostIdsValue }] =
+    useField<ClusterDeploymentHostsSelectionValues['selectedHostIds']>('selectedHostIds');
 
   React.useEffect(() => {
     const allIds = matchingAgents.map((a) => a.metadata?.uid);

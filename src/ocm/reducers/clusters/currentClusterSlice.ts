@@ -82,11 +82,6 @@ export const currentClusterSlice = createSlice({
   },
 });
 
-export const {
-  updateCluster,
-  updateHost,
-  cleanCluster,
-  forceReload,
-  cancelForceReload,
-} = currentClusterSlice.actions;
+export const { updateCluster, updateHost, cleanCluster, forceReload, cancelForceReload } =
+  currentClusterSlice.actions;
 export default currentClusterSlice.reducer;

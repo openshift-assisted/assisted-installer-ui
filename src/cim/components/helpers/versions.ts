@@ -31,19 +31,17 @@ export const getOCPVersions = (
 ): OpenshiftVersionOptionType[] => {
   const versions = clusterImageSets
     .filter((clusterImageSet) => clusterImageSet.metadata?.labels?.visible !== 'false')
-    .map(
-      (clusterImageSet): OpenshiftVersionOptionType => {
-        const version = getVersion(clusterImageSet.spec?.releaseImage);
-        return {
-          label: version ? `OpenShift ${version}` : (clusterImageSet.metadata?.name as string),
-          version,
-          value: clusterImageSet.metadata?.name as string,
-          default: false,
-          // (rawagner) ACM does not have the warning so changing to 'production'
-          supportLevel: 'production', // getSupportLevelFromChannel(clusterImageSet.metadata?.labels?.channel),
-        };
-      },
-    )
+    .map((clusterImageSet): OpenshiftVersionOptionType => {
+      const version = getVersion(clusterImageSet.spec?.releaseImage);
+      return {
+        label: version ? `OpenShift ${version}` : (clusterImageSet.metadata?.name as string),
+        version,
+        value: clusterImageSet.metadata?.name as string,
+        default: false,
+        // (rawagner) ACM does not have the warning so changing to 'production'
+        supportLevel: 'production', // getSupportLevelFromChannel(clusterImageSet.metadata?.labels?.channel),
+      };
+    })
     .sort(
       (versionA, versionB) => /* descending */ -1 * versionA.label.localeCompare(versionB.label),
     );

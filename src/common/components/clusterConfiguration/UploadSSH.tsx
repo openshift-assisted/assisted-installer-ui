@@ -17,7 +17,10 @@ const UploadSSH: React.FC = () => {
       dropzoneProps={{
         accept: '.pub',
         maxSize: 2048,
-        onDropRejected: ({ setError }) => () => setError('File not supported.'),
+        onDropRejected:
+          ({ setError }) =>
+          () =>
+            setError('File not supported.'),
       }}
     />
   );

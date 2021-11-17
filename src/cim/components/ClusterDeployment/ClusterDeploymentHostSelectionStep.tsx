@@ -103,9 +103,10 @@ export const useHostsSelectionFormik = ({
     [], // eslint-disable-line react-hooks/exhaustive-deps
   );
 
-  const validationSchema = React.useMemo(() => getValidationSchema(agentClusterInstall), [
-    agentClusterInstall,
-  ]);
+  const validationSchema = React.useMemo(
+    () => getValidationSchema(agentClusterInstall),
+    [agentClusterInstall],
+  );
 
   return [initialValues, validationSchema];
 };

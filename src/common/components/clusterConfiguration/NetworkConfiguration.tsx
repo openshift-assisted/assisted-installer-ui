@@ -29,9 +29,8 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   hideManagedNetworking,
   children,
 }) => {
-  const { setFieldValue, values, touched, validateField } = useFormikContext<
-    NetworkConfigurationValues
-  >();
+  const { setFieldValue, values, touched, validateField } =
+    useFormikContext<NetworkConfigurationValues>();
   const [isAdvanced, setAdvanced] = React.useState(
     isAdvNetworkConf(cluster, defaultNetworkSettings),
   );

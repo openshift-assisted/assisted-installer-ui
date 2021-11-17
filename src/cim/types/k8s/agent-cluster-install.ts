@@ -10,9 +10,8 @@ export type AgentClusterInstallStatusConditionType =
   | 'Failed'
   | 'Stopped';
 
-export type AgentClusterInstallStatusCondition = StatusCondition<
-  AgentClusterInstallStatusConditionType
->;
+export type AgentClusterInstallStatusCondition =
+  StatusCondition<AgentClusterInstallStatusConditionType>;
 
 export type AgentClusterInstallK8sResource = K8sResourceCommon & {
   spec?: {

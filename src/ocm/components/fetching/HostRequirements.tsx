@@ -22,9 +22,10 @@ const HostRequirementsModal: React.FC<HostRequirementsModalProps> = ({
   ContentComponent,
   clusterId,
 }) => {
-  const onClose = React.useCallback(() => setHostRequirementsOpen(false), [
-    setHostRequirementsOpen,
-  ]);
+  const onClose = React.useCallback(
+    () => setHostRequirementsOpen(false),
+    [setHostRequirementsOpen],
+  );
 
   return (
     <Modal

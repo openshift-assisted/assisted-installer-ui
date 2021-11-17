@@ -128,12 +128,11 @@ export const wizardStepsValidationsMap: WizardStepsValidationMap = {
   review: reviewStepValidationsMap,
 };
 
-export const allClusterWizardSoftValidationIds: WizardStepValidationMap['softValidationIds'] = Object.keys(
-  wizardStepsValidationsMap,
-).reduce(
-  (prev, curr) => [...prev, ...wizardStepsValidationsMap[curr].softValidationIds],
-  [] as WizardStepValidationMap['softValidationIds'],
-);
+export const allClusterWizardSoftValidationIds: WizardStepValidationMap['softValidationIds'] =
+  Object.keys(wizardStepsValidationsMap).reduce(
+    (prev, curr) => [...prev, ...wizardStepsValidationsMap[curr].softValidationIds],
+    [] as WizardStepValidationMap['softValidationIds'],
+  );
 
 export const getFailingClusterWizardSoftValidationIds = (
   wizardHostStepValidationsInfo: ValidationsInfo,
@@ -311,9 +310,8 @@ export const findValidationFixStep = ({
   const keys = _.keys(wizardStepsValidationsMap) as ClusterWizardStepsType[];
   return keys.find((key) => {
     // find first matching validation-map name
-    const { cluster: clusterValidationMap, host: hostValidationMap } = wizardStepsValidationsMap[
-      key
-    ];
+    const { cluster: clusterValidationMap, host: hostValidationMap } =
+      wizardStepsValidationsMap[key];
     return (
       clusterValidationMap.validationIds.includes(id as ClusterValidationId) ||
       hostValidationMap.validationIds.includes(id as HostValidationId) ||

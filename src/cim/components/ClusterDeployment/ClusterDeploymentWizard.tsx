@@ -22,9 +22,8 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   onFinish,
   aiConfigMap,
 }) => {
-  const [currentStepId, setCurrentStepId] = React.useState<ClusterDeploymentWizardStepsType>(
-    'cluster-details',
-  );
+  const [currentStepId, setCurrentStepId] =
+    React.useState<ClusterDeploymentWizardStepsType>('cluster-details');
 
   const renderCurrentStep = React.useCallback(() => {
     const stepId: ClusterDeploymentWizardStepsType = !clusterDeployment

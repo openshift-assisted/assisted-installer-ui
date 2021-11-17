@@ -15,44 +15,42 @@ export const getAIHosts = (
   infraEnv?: InfraEnvK8sResource,
 ) => {
   const bmhAgents: string[] = [];
-  const hosts = agents.map(
-    (agent): Host => {
-      const [status, statusInfo] = getAgentStatus(agent, true);
-      // TODO(mlibra) Remove that workaround once https://issues.redhat.com/browse/MGMT-7052 is fixed
-      const inventory: Inventory = _.cloneDeep(agent.status?.inventory || {});
-      inventory.interfaces?.forEach((intf) => {
-        intf.ipv4Addresses = _.cloneDeep(intf.ipv4Addresses);
-        intf.ipv6Addresses = _.cloneDeep(intf.ipv6Addresses);
-      });
+  const hosts = agents.map((agent): Host => {
+    const [status, statusInfo] = getAgentStatus(agent, true);
+    // TODO(mlibra) Remove that workaround once https://issues.redhat.com/browse/MGMT-7052 is fixed
+    const inventory: Inventory = _.cloneDeep(agent.status?.inventory || {});
+    inventory.interfaces?.forEach((intf) => {
+      intf.ipv4Addresses = _.cloneDeep(intf.ipv4Addresses);
+      intf.ipv6Addresses = _.cloneDeep(intf.ipv6Addresses);
+    });
 
-      if (agent.metadata?.labels?.[AGENT_BMH_HOSTNAME_LABEL_KEY]) {
-        bmhAgents.push(agent.metadata?.labels?.[AGENT_BMH_HOSTNAME_LABEL_KEY]);
-      }
+    if (agent.metadata?.labels?.[AGENT_BMH_HOSTNAME_LABEL_KEY]) {
+      bmhAgents.push(agent.metadata?.labels?.[AGENT_BMH_HOSTNAME_LABEL_KEY]);
+    }
 
-      const agentProgress = getAgentProgress(agent);
-      return {
-        kind: 'Host',
-        id: agent.metadata?.uid || '',
-        href: '',
-        status: status as Host['status'],
-        statusInfo,
-        role: getAgentRole(agent),
-        requestedHostname: agent.spec.hostname || inventory.hostname,
-        // validationsInfo: JSON.stringify(agent.status.hostValidationInfo),
-        createdAt: agent.metadata?.creationTimestamp,
-        validationsInfo: JSON.stringify({ hardware: [] }),
-        inventory: JSON.stringify(inventory),
-        progress: agentProgress && {
-          currentStage: agentProgress.currentStage,
-          progressInfo: agentProgress.progressInfo,
-          stageStartedAt: agentProgress.stageStartTime,
-          stageUpdatedAt: agentProgress.stageUpdateTime,
-        },
-        progressStages: getAgentProgressStages(agent),
-        bootstrap: agent.status?.bootstrap,
-      };
-    },
-  );
+    const agentProgress = getAgentProgress(agent);
+    return {
+      kind: 'Host',
+      id: agent.metadata?.uid || '',
+      href: '',
+      status: status as Host['status'],
+      statusInfo,
+      role: getAgentRole(agent),
+      requestedHostname: agent.spec.hostname || inventory.hostname,
+      // validationsInfo: JSON.stringify(agent.status.hostValidationInfo),
+      createdAt: agent.metadata?.creationTimestamp,
+      validationsInfo: JSON.stringify({ hardware: [] }),
+      inventory: JSON.stringify(inventory),
+      progress: agentProgress && {
+        currentStage: agentProgress.currentStage,
+        progressInfo: agentProgress.progressInfo,
+        stageStartedAt: agentProgress.stageStartTime,
+        stageUpdatedAt: agentProgress.stageUpdateTime,
+      },
+      progressStages: getAgentProgressStages(agent),
+      bootstrap: agent.status?.bootstrap,
+    };
+  });
 
   const restBmhs =
     infraEnv && bmhs

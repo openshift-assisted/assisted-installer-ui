@@ -935,7 +935,8 @@ export interface Event {
 }
 export type EventList = Event[];
 export type FreeAddressesList = string /* ipv4 */[];
-export type FreeAddressesRequest = string /* ^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$ */[];
+export type FreeAddressesRequest =
+  string /* ^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$ */[];
 export interface FreeNetworkAddresses {
   network?: string; // ^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$
   freeAddresses?: string /* ipv4 */[];
