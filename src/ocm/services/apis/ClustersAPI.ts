@@ -151,7 +151,7 @@ const ClustersAPI = {
 
   registerAddHosts(params: ImportClusterParams) {
     return client.post<Cluster, AxiosResponse<Cluster>, ImportClusterParams>(
-      `${ClustersAPI.makeBaseURI()}/import`,
+      `${ClustersAPI.makeBaseURI()}import`,
       params,
     );
   },
