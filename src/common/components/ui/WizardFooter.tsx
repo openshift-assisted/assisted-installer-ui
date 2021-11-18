@@ -10,7 +10,6 @@ import {
   ToolbarContent,
   ToolbarItem,
 } from '@patternfly/react-core';
-import { useTranslation } from 'react-i18next';
 import { ToolbarButton } from './Toolbar';
 
 export type WizardFooterGenericProps = {
@@ -43,8 +42,7 @@ export const WizardFooter: React.FC<WizardFooterProps> = ({
   submittingText,
   nextButtonText,
 }) => {
-  const { t } = useTranslation();
-  submittingText = submittingText || t('Saving changes...');
+  submittingText = submittingText || 'Saving changes...';
   return (
     <Stack hasGutter>
       {alerts && <StackItem>{alerts}</StackItem>}
@@ -60,7 +58,7 @@ export const WizardFooter: React.FC<WizardFooterProps> = ({
                 onClick={onNext}
                 isDisabled={isNextDisabled}
               >
-                {nextButtonText || t('Next')}
+                {nextButtonText || 'Next'}
               </ToolbarButton>
             )}
             {onBack && (
@@ -70,7 +68,7 @@ export const WizardFooter: React.FC<WizardFooterProps> = ({
                 onClick={onBack}
                 isDisabled={isBackDisabled}
               >
-                {t('Back')}
+                {'Back'}
               </ToolbarButton>
             )}
             <ToolbarButton
@@ -79,7 +77,7 @@ export const WizardFooter: React.FC<WizardFooterProps> = ({
               onClick={onCancel}
               isDisabled={false}
             >
-              {t('Cancel')}
+              {'Cancel'}
             </ToolbarButton>
             {isSubmitting && (
               <ToolbarItem>
