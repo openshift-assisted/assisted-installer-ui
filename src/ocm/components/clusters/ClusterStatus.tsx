@@ -11,7 +11,6 @@ import {
   CheckCircleIcon,
   InProgressIcon,
   BanIcon,
-  IconSize,
 } from '@patternfly/react-icons';
 import { Cluster, CLUSTER_STATUS_LABELS, WithTestID } from '../../../common';
 
@@ -26,29 +25,24 @@ type ClusterStatusIconProps = {
 };
 
 export const ClusterStatusIcon: React.FC<ClusterStatusIconProps> = ({ status, ...extraProps }) => {
-  const iconProps = {
-    size: IconSize.sm,
-    ...extraProps,
-  };
-
   switch (status) {
     case 'cancelled':
-      return <BanIcon {...iconProps} />;
+      return <BanIcon size={'sm'} {...extraProps} />;
     case 'insufficient':
     case 'pending-for-input':
     case 'ready':
-      return <FileAltIcon {...iconProps} />;
+      return <FileAltIcon size={'sm'} {...extraProps} />;
     case 'error':
-      return <ExclamationCircleIcon color={dangerColor.value} {...iconProps} />;
+      return <ExclamationCircleIcon color={dangerColor.value} size={'sm'} {...extraProps} />;
     case 'installed':
-      return <CheckCircleIcon color={okColor.value} {...iconProps} />;
+      return <CheckCircleIcon color={okColor.value} size={'sm'} {...extraProps} />;
     case 'installing-pending-user-action':
-      return <ExclamationTriangleIcon color={warningColor.value} {...iconProps} />;
+      return <ExclamationTriangleIcon color={warningColor.value} size={'sm'} {...extraProps} />;
     case 'preparing-for-installation':
     case 'installing':
     case 'finalizing':
     case 'adding-hosts':
-      return <InProgressIcon {...iconProps} />;
+      return <InProgressIcon size={'sm'} {...extraProps} />;
     default:
       return <></>;
   }
