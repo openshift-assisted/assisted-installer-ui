@@ -6,9 +6,10 @@ import { Alert, AlertVariant } from '@patternfly/react-core';
 
 export type EnvironmentErrorsProps = {
   infraEnv: InfraEnvK8sResource;
+  docVersion: string;
 };
 
-export const EnvironmentErrors: React.FC<EnvironmentErrorsProps> = ({ infraEnv }) => {
+export const EnvironmentErrors: React.FC<EnvironmentErrorsProps> = ({ infraEnv, docVersion }) => {
   const infraEnvAlerts = getFailingResourceConditions(infraEnv, undefined /* For ALL */);
 
   return (
@@ -21,7 +22,7 @@ export const EnvironmentErrors: React.FC<EnvironmentErrorsProps> = ({ infraEnv }
           className="cim-resource-alerts"
           actionLinks={
             <a
-              href="https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/"
+              href={`https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/${docVersion}/html-single/clusters/index#infra-env-prerequisites`}
               target="_blank"
               rel="noopener noreferrer"
             >
