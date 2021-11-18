@@ -106,11 +106,14 @@ export const getAgentStatusFromConditions = (agent: AgentK8sResource): [Host['st
 
 export type AgentStatus = Host['status'] | 'Discovered';
 
+const getInsufficientState = (agent: AgentK8sResource) =>
+  agent?.spec?.clusterDeploymentName ? 'insufficient' : 'insufficient-unbound';
+
 export const getAgentStatus = (
   agent: AgentK8sResource,
   excludeDiscovered = false,
 ): [AgentStatus, Host['statusInfo'], ValidationsInfo] => {
-  let state: AgentStatus = agent.status?.debugInfo?.state || 'insufficient';
+  let state: AgentStatus = agent.status?.debugInfo?.state || getInsufficientState(agent);
 
   const conditions = getFailingResourceConditions(agent, REQUIRED_AGENT_CONDITION_TYPES);
   let validationsInfo = agent.status?.hostValidationInfo;
@@ -134,7 +137,7 @@ export const getAgentStatus = (
     /* state === disconnected for this condition already, so let's keep it */
     !validationsInfo.infrastructure.find((c) => c.id.toLowerCase() === 'connected')
   ) {
-    state = 'insufficient';
+    state = getInsufficientState(agent);
   }
   return [state, agent.status?.debugInfo?.stateInfo || '', validationsInfo || {}];
 };
