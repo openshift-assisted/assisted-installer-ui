@@ -1,3 +1,4 @@
+/*
 import * as React from 'react';
 import i18n from 'i18next';
 import { initReactI18next, I18nextProvider } from 'react-i18next';
@@ -73,3 +74,4 @@ const I18N: React.FC<I18NProps> = ({ preferredLang = DEFAULT_LANG, children }) =
   );
 };
 export default I18N;
+*/

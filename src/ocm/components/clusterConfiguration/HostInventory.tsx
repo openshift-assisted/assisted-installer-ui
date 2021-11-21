@@ -118,9 +118,9 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const isSchedulableMastersEnabled = !schedulableMastersAlwaysOn(cluster);
   const { setFieldValue } = useFormikContext<HostDiscoveryValues>();
   React.useEffect(() => {
-    //update schedulable masters field to allign with changing number of hosts
     setFieldValue('schedulableMasters', getSchedulableMasters(cluster));
-  }, [cluster, setFieldValue]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSchedulableMastersEnabled]); //just when changes from disabled to enabled, shouldn't respond to continous polling otherwise
   return (
     <Stack hasGutter>
       <StackItem>

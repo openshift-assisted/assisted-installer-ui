@@ -3,7 +3,6 @@ import {
   Cluster,
   ClusterCreateParams,
   ClusterDefaultConfig,
-  ClusterList,
   ClusterUpdateParams,
   Credentials,
   Host,
@@ -172,7 +171,7 @@ const ClustersAPI = {
   },
 
   listByOpenshiftId(openshiftId: Cluster['openshiftClusterId']) {
-    return client.get<ClusterList>(
+    return client.get<Cluster[]>(
       `${ClustersAPI.makeBaseURI()}?openshift_cluster_id=${openshiftId}`,
     );
   },

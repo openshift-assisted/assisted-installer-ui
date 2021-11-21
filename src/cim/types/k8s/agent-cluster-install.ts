@@ -50,6 +50,7 @@ export type AgentClusterInstallK8sResource = K8sResourceCommon & {
         cidr: string;
       }[];
     };
+    holdInstallation: boolean;
   };
   status?: {
     connectivityMajorityGroups?: string;
