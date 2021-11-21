@@ -141,12 +141,13 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
         let dayTwoClusterExists = false;
         // try to find Day 2 cluster (can be missing)
         try {
-          // The Day-2's cluster.id is always equal to the openshift_cluster_id, there is recently
-          // no way how to pass openshift_cluster_id other way than set it to the cluster.id (not even via API).
-          // There can not be >1 of Day 2 clusters. The Cluster.openshift_cluster_id is irrelevant to the Day 2 clusters.
-          const { data } = await ClustersAPI.get(openshiftClusterId);
-          setDay2Cluster(data);
-          dayTwoClusterExists = true;
+          const { data: clusters } = await ClustersAPI.listByOpenshiftId(openshiftClusterId);
+          const day2Clusters = clusters.filter((cluster) => cluster.kind === 'AddHostsCluster');
+          if (day2Clusters.length !== 0) {
+            const { data } = await ClustersAPI.get(day2Clusters[0].id);
+            setDay2Cluster(data);
+            dayTwoClusterExists = true;
+          }
         } catch (e) {
           if (Number(e?.response?.status) !== 404) {
             handleApiError(e);

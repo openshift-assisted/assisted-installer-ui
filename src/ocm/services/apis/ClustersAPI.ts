@@ -169,6 +169,12 @@ const ClustersAPI = {
   getCredentials(clusterId: Cluster['id']) {
     return client.get<Credentials>(`${ClustersAPI.makeBaseURI(clusterId)}/credentials`);
   },
+
+  listByOpenshiftId(openshiftId: Cluster['openshiftClusterId']) {
+    return client.get<Cluster[]>(
+      `${ClustersAPI.makeBaseURI()}?openshift_cluster_id=${openshiftId}`,
+    );
+  },
 };
 
 export default ClustersAPI;
