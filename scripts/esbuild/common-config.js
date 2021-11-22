@@ -3,7 +3,7 @@ const { dtsPlugin } = require('esbuild-plugin-d.ts');
 const pkg = require('../../package.json');
 
 module.exports = {
-  entryPoints: ['src/index.ts'],
+  entryPoints: ['src/index.ts', 'src/cim/index.ts', 'src/ocm/index.ts'],
   // don't bundle dependences and peerDependencies https://github.com/evanw/esbuild/issues/727#issuecomment-771743582
   external: [...Object.keys(pkg.dependencies), ...Object.keys(pkg.peerDependencies || {})],
   bundle: true,
