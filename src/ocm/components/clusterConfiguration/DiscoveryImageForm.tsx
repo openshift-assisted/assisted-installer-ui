@@ -31,6 +31,7 @@ import { usePullSecret } from '../../hooks';
 import DiscoveryImageTypeControlGroup from '../../../common/components/clusterConfiguration/DiscoveryImageTypeControlGroup';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { DiscoveryImageFormService } from '../../services';
+import { InfraEnvsAPI } from '../../services/apis';
 
 const validationSchema = Yup.lazy<DiscoveryImageFormValues>((values) =>
   Yup.object<DiscoveryImageFormValues>().shape({
@@ -85,7 +86,8 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
           cluster.kind,
           ocmPullSecret,
         );
-        onSuccess(infraEnv?.downloadUrl);
+        const { data } = await InfraEnvsAPI.imageUrl(infraEnv.id);
+        onSuccess(data.url);
         dispatch(updateCluster(updatedCluster));
       } catch (error) {
         handleApiError(error, () => {
