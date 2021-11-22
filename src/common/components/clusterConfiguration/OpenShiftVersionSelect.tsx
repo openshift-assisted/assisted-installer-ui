@@ -12,7 +12,7 @@ const OpenShiftLifeCycleDatesLink = () => (
 );
 
 const lastSupportedVersions = ['4.7'];
-const lastSupportDate = 'August 27th 2021';
+const lastSupportDate = 'August 24, 2022';
 
 const getOpenshiftVersionHelperText = (versions: OpenshiftVersionOptionType[]) => (
   selectedVersionValue: string,
