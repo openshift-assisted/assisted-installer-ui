@@ -5,6 +5,22 @@
   "license": "Apache-2.0",
   "repository": "openshift-assisted/assisted-ui-lib",
   "main": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./index.css": "./dist/index.css",
+    "./cim": "./dist/cim/index.js",
+    "./ocm": "./dist/ocm/index.js"
+  },
+  "typesVersions": {
+    "*": {
+      "cim": [
+        "./dist/src/cim/index.d.ts"
+      ],
+      "ocm": [
+        "./dist/src/ocm/index.d.ts"
+      ]
+    }
+  },
   "module": "dist/index.js",
   "source": "src/index.ts",
   "types": "dist/src/index.d.ts",
