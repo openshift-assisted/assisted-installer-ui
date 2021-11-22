@@ -29,7 +29,11 @@ const ClusterSshKeyFields: React.FC<ClusterSshKeyFieldsProps> = ({
   imageSshKey,
 }) => {
   const [shareSshKey, setShareSshKey] = React.useState(false);
-  const { values, setFieldValue } = useFormikContext<NetworkConfigurationValues>();
+  const { values, setFieldValue, errors, touched } = useFormikContext<
+    Pick<NetworkConfigurationValues, 'sshPublicKey'>
+  >();
+
+  const errorMsg = errors.sshPublicKey;
 
   const handleSshKeyBlur = () => {
     if (values.sshPublicKey) {
@@ -52,7 +56,12 @@ const ClusterSshKeyFields: React.FC<ClusterSshKeyFieldsProps> = ({
   const fieldId = getFieldId('shareDiscoverySshKey', 'checkbox');
   return (
     <>
-      <FormGroup fieldId={fieldId} label={label}>
+      <FormGroup
+        fieldId={fieldId}
+        label={label}
+        helperTextInvalid={errorMsg}
+        validated={touched && errorMsg ? 'error' : 'default'}
+      >
         <RenderIf condition={Boolean(imageSshKey)}>
           <Checkbox
             name="shareDiscoverySshKey"

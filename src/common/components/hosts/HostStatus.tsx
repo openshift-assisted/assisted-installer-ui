@@ -24,6 +24,7 @@ import {
   PendingIcon,
   AddCircleOIcon,
   UnknownIcon,
+  LinkIcon,
 } from '@patternfly/react-icons';
 import { PopoverProps } from '@patternfly/react-core/dist/js/components/Popover/Popover';
 import hdate from 'human-date';
@@ -48,6 +49,7 @@ import { HostStatusProps } from './types';
 const getStatusIcon = (status: Host['status'] | 'Discovered' | 'Bound') => {
   let icon = null;
   switch (status) {
+    case 'Discovered':
     case 'discovering':
     case 'discovering-unbound':
       icon = <ConnectedIcon />;
@@ -87,6 +89,10 @@ const getStatusIcon = (status: Host['status'] | 'Discovered' | 'Bound') => {
       break;
     case 'added-to-existing-cluster':
       icon = <AddCircleOIcon />;
+      break;
+    case 'Bound':
+    case 'binding':
+      icon = <LinkIcon />;
       break;
     default:
       icon = <UnknownIcon />;

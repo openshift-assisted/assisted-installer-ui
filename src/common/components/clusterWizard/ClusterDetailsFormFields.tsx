@@ -114,6 +114,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
       )}
       {extensionAfter?.['openshiftVersion'] && extensionAfter['openshiftVersion']}
       {canEditPullSecret && <PullSecret isOcm={isOcm} defaultPullSecret={defaultPullSecret} />}
+      {extensionAfter?.['pullSecret'] && extensionAfter['pullSecret']}
     </Form>
   );
 };

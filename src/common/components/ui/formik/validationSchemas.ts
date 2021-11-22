@@ -270,12 +270,16 @@ export const hostnameValidationSchema = Yup.string()
   });
 
 export const uniqueHostnameValidationSchema = (origHostname: string, usedHostnames: string[]) =>
-  Yup.string().test('unique-hostname-validation', 'Hostname must be unique.', (value) => {
-    if (!value || value === origHostname) {
-      return true;
-    }
-    return !usedHostnames.find((h) => h === value);
-  });
+  Yup.string().test(
+    'unique-hostname-validation',
+    'Hostname "${value}" has already been used, must be unique.',
+    (value) => {
+      if (!value || value === origHostname) {
+        return true;
+      }
+      return !usedHostnames.find((h) => h === value);
+    },
+  );
 
 const httpProxyValidationMessage = 'Provide a valid HTTP URL.';
 export const httpProxyValidationSchema = (

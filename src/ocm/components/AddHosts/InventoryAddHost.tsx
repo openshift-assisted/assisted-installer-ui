@@ -3,10 +3,10 @@ import { Text, TextContent, Button } from '@patternfly/react-core';
 import ClusterHostsTable from '../hosts/ClusterHostsTable';
 import { DiscoveryImageModalButton } from '../clusterConfiguration/discoveryImageModal';
 import InformationAndAlerts from '../clusterConfiguration/InformationAndAlerts';
-import DiscoveryInstructions from '../clusterConfiguration/DiscoveryInstructions';
 import { AddHostRequirementsContent } from '../hosts/HostRequirementsContent';
 import {
   AddHostsContext,
+  DiscoveryInstructions,
   DiscoveryTroubleshootingModal,
   isSingleNodeCluster,
 } from '../../../common';
