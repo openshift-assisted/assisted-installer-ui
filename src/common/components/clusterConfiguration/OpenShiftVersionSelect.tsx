@@ -11,6 +11,9 @@ const OpenShiftLifeCycleDatesLink = () => (
   </a>
 );
 
+const lastSupportedVersions = ['4.7'];
+const lastSupportDate = 'August 27th 2021';
+
 const getOpenshiftVersionHelperText = (versions: OpenshiftVersionOptionType[]) => (
   selectedVersionValue: string,
 ) => {
@@ -21,6 +24,16 @@ const getOpenshiftVersionHelperText = (versions: OpenshiftVersionOptionType[]) =
       <>
         <ExclamationTriangleIcon color={warningColor.value} size="sm" />
         &nbsp;Please note that this version is not production ready. <OpenShiftLifeCycleDatesLink />
+      </>
+    );
+  } else if (lastSupportedVersions.find((version) => version === selectedVersionValue)) {
+    helperTextComponent = (
+      <>
+        <ExclamationTriangleIcon color={warningColor.value} size="sm" />
+        &nbsp;
+        {`Full support for this version ends on ${lastSupportDate} and won't be available as an installation option afterwards.`}
+        &nbsp;
+        <OpenShiftLifeCycleDatesLink />
       </>
     );
   }
