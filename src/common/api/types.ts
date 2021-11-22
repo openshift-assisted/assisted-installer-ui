@@ -1521,6 +1521,16 @@ export interface InfraEnvCreateParams {
    */
   cpuArchitecture?: string;
 }
+export interface InfraEnvImageUrl {
+  /**
+   * Pre-signed URL for downloading the infra-env discovery image.
+   */
+  url?: string;
+  /**
+   * Expiration time for the URL token.
+   */
+  expiresAt?: string; // date-time
+}
 export type InfraEnvList = InfraEnv[];
 export interface InfraEnvUpdateParams {
   proxy?: Proxy;
