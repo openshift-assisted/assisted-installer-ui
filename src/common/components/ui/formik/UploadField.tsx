@@ -4,6 +4,7 @@ import { FormGroup, FileUpload } from '@patternfly/react-core';
 import { UploadFieldProps } from './types';
 import { getFieldId } from './utils';
 import HelperText from './HelperText';
+import { trimSshPublicKey } from '.';
 
 const UploadField: React.FC<UploadFieldProps> = ({
   label,
@@ -71,7 +72,7 @@ const UploadField: React.FC<UploadFieldProps> = ({
         onChange={(value, filename) => {
           setFilename(filename);
           helpers.setTouched(true);
-          helpers.setValue(value);
+          typeof value === 'string' && helpers.setValue(trimSshPublicKey(value));
         }}
         onBlur={(e) => {
           field.onBlur(e);
