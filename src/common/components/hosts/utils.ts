@@ -82,7 +82,7 @@ export const canEditHost = (clusterStatus: Cluster['status'], status: Host['stat
   ].includes(status);
 
 export const canEditHostname = (clusterStatus: Cluster['status']) =>
-  ['insufficient', 'adding-hosts', 'ready'].includes(clusterStatus);
+  ['insufficient', 'adding-hosts', 'ready', 'pending-for-input'].includes(clusterStatus);
 
 export const canEditDisks = canEditHost;
 
