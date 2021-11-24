@@ -8,3 +8,4 @@ export { default as HostsCount } from './HostsCount';
 export { default as HostStatus } from './HostStatus';
 export { default as EditHostModal } from './EditHostModal';
 export { default as HostRequirements } from './HostRequirements';
+export { default as VMRebootConfigurationInfo } from './VMRebootConfigurationInfo';

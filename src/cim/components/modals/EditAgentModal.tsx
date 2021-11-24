@@ -4,7 +4,7 @@ import { EditHostFormProps } from '../../../common/components/hosts/EditHostForm
 import { AgentK8sResource } from '../../types';
 import { getAIHosts } from '../helpers/toAssisted';
 
-type EditAgentModalProps = {
+export type EditAgentModalProps = {
   agent: AgentK8sResource | undefined;
   isOpen: boolean;
   usedHostnames: string[] | undefined;

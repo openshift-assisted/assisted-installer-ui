@@ -25,6 +25,7 @@ import {
 } from '../../types';
 import ClusterDeploymentDetailsForm from './ClusterDeploymentDetailsForm';
 import { ClusterImageSetK8sResource } from '../../types/k8s/cluster-image-set';
+import { isCIMFlow } from './helpers';
 
 type UseDetailsFormikArgs = {
   clusterImages: ClusterImageSetK8sResource[];
@@ -97,7 +98,10 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
     usedClusterNames,
   });
 
-  const next = () => setCurrentStepId('hosts-selection');
+  const next = () =>
+    isCIMFlow(clusterDeployment)
+      ? setCurrentStepId('hosts-selection')
+      : setCurrentStepId('hosts-discovery');
 
   const handleSubmit = async (values: ClusterDeploymentDetailsValues) => {
     try {
