@@ -8,82 +8,95 @@ import {
 import FeatureSupportLevelDataInterface from '../../common/contexts/FeatureSupportLevelDataInterface';
 
 class FeatureSupportLevelData implements FeatureSupportLevelDataInterface {
-  private clusterSupportLevels: SupportLevelMap = {};
-  private versionSupportLevels: SupportLevelMap = {};
-  private clusterFeatureIds: FeatureId[] = [];
-  private _isFullySupported: boolean | undefined;
+  private _clusterUsedFeatureSupportLevels: SupportLevelMap = {};
+  private _isClusterFullySupported: boolean | undefined;
+  private normalizedVersion: string | undefined;
+  private featureSupportLevels: {
+    version?: SupportLevelMap;
+  } = {};
+
   constructor(
-    private globalFeatureSupportLevels: FeatureSupportLevels,
-    private _openshiftVersion?: string,
+    featureSupportLevels?: FeatureSupportLevels,
+    private openshiftVersion?: string,
     clusterFeatureUsage?: string,
   ) {
-    if (clusterFeatureUsage) {
-      this.initClusterFeatureIds(JSON.parse(clusterFeatureUsage) as ClusterFeatureUsage);
+    if (featureSupportLevels) {
+      this.deserialize(featureSupportLevels, clusterFeatureUsage);
     }
-    this.update();
-  }
-
-  public set openshiftVersion(openshiftVersion: string | undefined) {
-    if (openshiftVersion !== this._openshiftVersion) {
-      this._openshiftVersion = openshiftVersion;
-      this.update();
-    }
-  }
-
-  public get openshiftVersion(): string | undefined {
-    return this._openshiftVersion;
   }
 
   public get isFullySupported() {
-    return this._isFullySupported;
+    return this._isClusterFullySupported;
   }
 
-  public get clusterSupportLevelMap(): SupportLevelMap {
-    return this.clusterSupportLevels;
+  public get clusterUsedFeatureSupportLevels() {
+    return this._clusterUsedFeatureSupportLevels;
   }
 
-  getVersionSupportLevel(featureId: FeatureId): SupportLevel | undefined {
-    return this.versionSupportLevels[featureId];
-  }
-
-  getClusterSupportLevel(featureId: FeatureId): SupportLevel | undefined {
-    return this.clusterSupportLevels[featureId];
-  }
-
-  private initClusterFeatureIds(clusterFeatureUsage: ClusterFeatureUsage): void {
-    this.clusterFeatureIds = Object.values(clusterFeatureUsage).map((item) => item.id);
-  }
-
-  private update(): void {
-    this.updateVersionSupportLevels();
-    this.updateClusterSupportLevels();
-  }
-
-  private updateVersionSupportLevels(): void {
-    const versionSupportLevels = this.globalFeatureSupportLevels.find((item) => {
-      if (!item.openshiftVersion) {
-        return false;
+  getFeatureSupportLevel(
+    featureId: FeatureId,
+    openshiftVersion?: string,
+  ): SupportLevel | undefined {
+    if (openshiftVersion) {
+      const normalizedVersion = this.getNormalizedVersion(openshiftVersion);
+      if (!normalizedVersion) {
+        console.warn(`No feature support level information on version ${openshiftVersion}`);
+        return undefined;
       }
-      return this._openshiftVersion?.startsWith(item.openshiftVersion);
-    })?.features;
-    if (!versionSupportLevels) {
+      return this.featureSupportLevels[normalizedVersion][featureId];
+    }
+    if (!this.normalizedVersion) {
+      return undefined;
+    }
+    return this.featureSupportLevels[this.normalizedVersion][featureId];
+  }
+
+  private getNormalizedVersion(version: string) {
+    return Object.keys(this.featureSupportLevels).find((normalizedVersion) =>
+      version.startsWith(normalizedVersion),
+    );
+  }
+
+  private deserialize(
+    featureSupportLevels: FeatureSupportLevels,
+    clusterFeatureUsage?: string,
+  ): void {
+    this.initFeatureSupportLevels(featureSupportLevels);
+    this.initClusterUsedFeatureSupplortLevels(clusterFeatureUsage);
+  }
+
+  private initFeatureSupportLevels(featureSupportLevels: FeatureSupportLevels) {
+    for (const { openshiftVersion, features } of featureSupportLevels) {
+      if (!openshiftVersion || !features) {
+        continue;
+      }
+      this.featureSupportLevels[openshiftVersion] = {};
+      for (const { featureId, supportLevel } of features) {
+        if (!featureId || !supportLevel) {
+          return;
+        }
+        this.featureSupportLevels[openshiftVersion][featureId] = supportLevel;
+      }
+    }
+  }
+
+  private initClusterUsedFeatureSupplortLevels(featureUsage: string | undefined) {
+    if (!this.openshiftVersion || !featureUsage) {
       return;
     }
-    for (const featureSupportLevel of versionSupportLevels) {
-      if (!featureSupportLevel.featureId) {
-        return;
-      }
-      this.versionSupportLevels[featureSupportLevel.featureId] = featureSupportLevel.supportLevel;
+    this.normalizedVersion = this.getNormalizedVersion(this.openshiftVersion);
+    if (!this.normalizedVersion) {
+      console.warn(`No feature support level information on version ${this.normalizedVersion}`);
+      return;
     }
-  }
-
-  private updateClusterSupportLevels(): void {
-    for (const featureId of this.clusterFeatureIds) {
-      if (featureId in this.versionSupportLevels) {
-        this.clusterSupportLevels[featureId] = this.versionSupportLevels[featureId];
-      }
+    const clusterFeatureUsageObj: ClusterFeatureUsage = JSON.parse(featureUsage);
+    const usedFeatureIds: string[] = Object.values(clusterFeatureUsageObj).map((item) => item.id);
+    for (const featureId of usedFeatureIds) {
+      this._clusterUsedFeatureSupportLevels[featureId] = this.featureSupportLevels[
+        this.normalizedVersion
+      ][featureId];
     }
-    this._isFullySupported = Object.keys(this.clusterSupportLevels).length === 0;
+    this._isClusterFullySupported = Object.keys(this._clusterUsedFeatureSupportLevels).length === 0;
   }
 }
 

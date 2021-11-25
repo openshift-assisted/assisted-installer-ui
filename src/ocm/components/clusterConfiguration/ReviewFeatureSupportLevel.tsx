@@ -93,7 +93,7 @@ const FullySupportedCluster = () => (
 
 export const ReviewFeatureSupportLevel: React.FC = () => {
   const supportLevelData = React.useContext(FeatureSupportLevelContext);
-  const supportLevelMap = supportLevelData.clusterSupportLevelMap;
+  const supportLevelMap = supportLevelData.clusterUsedFeatureSupportLevels;
   if (supportLevelMap === undefined) {
     return null;
   }

@@ -1,10 +1,8 @@
 import { FeatureId, SupportLevel, SupportLevelMap } from '../types';
 
 interface FeatureSupportLevelDataInterface {
-  getVersionSupportLevel(featureId: FeatureId): SupportLevel | undefined;
-  getClusterSupportLevel(featureId: FeatureId): SupportLevel | undefined;
-  clusterSupportLevelMap: SupportLevelMap | undefined;
-  openshiftVersion: string | undefined;
+  getFeatureSupportLevel(featureId: FeatureId, openshiftVersion?: string): SupportLevel | undefined;
+  clusterUsedFeatureSupportLevels: SupportLevelMap;
   isFullySupported: boolean | undefined;
 }
 

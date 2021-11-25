@@ -9,7 +9,6 @@ import {
   useAlerts,
   LoadingState,
   ClusterWizardStep,
-  getDefaultOpenShiftVersion,
 } from '../../../common';
 import { usePullSecretFetch } from '../fetching/pullSecret';
 import { getClusters, patchCluster, postCluster } from '../../api/clusters';
@@ -23,7 +22,6 @@ import { useOpenshiftVersions } from '../fetching/openshiftVersions';
 import ClusterDetailsForm from './ClusterDetailsForm';
 import ClusterWizardNavigation from './ClusterWizardNavigation';
 import { routeBasePath } from '../../config/routeBaseBath';
-import { FeatureSupportLevelContext } from '../../../common/contexts';
 
 type ClusterDetailsProps = {
   cluster?: Cluster;
@@ -34,7 +32,6 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster }) => {
   const [managedDomains, setManagedDomains] = React.useState<ManagedDomain[]>();
   const [usedClusterNames, setUsedClusterNames] = React.useState<string[]>();
   const { addAlert, clearAlerts } = useAlerts();
-  const supportLevelData = React.useContext(FeatureSupportLevelContext);
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -81,16 +78,6 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster }) => {
   const pullSecret = usePullSecretFetch();
 
   const { error: errorOCPVersions, loading: loadingOCPVersions, versions } = useOpenshiftVersions();
-
-  React.useEffect(() => {
-    if (!supportLevelData.openshiftVersion) {
-      //Needed for a new cluster
-      //TODO(brotman): initialize openshiftversion in FeatureSupportLevelDataProvider in NewClusterPage,
-      //requires openshift versions to be accessible globally
-      supportLevelData.openshiftVersion = getDefaultOpenShiftVersion(versions);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [versions]);
 
   React.useEffect(() => errorOCPVersions && addAlert(errorOCPVersions), [
     errorOCPVersions,
@@ -141,8 +128,8 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster }) => {
       </ClusterWizardStep>
     );
   }
-
   const navigation = <ClusterWizardNavigation cluster={cluster} />;
+
   return (
     <ClusterDetailsForm
       cluster={cluster}

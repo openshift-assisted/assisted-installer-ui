@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useField } from 'formik';
+import { useField, useFormikContext } from 'formik';
 import { Checkbox } from '@patternfly/react-core';
 import { useFeature } from '../../../features';
 import { OpenshiftVersionOptionType } from '../../../types';
@@ -8,6 +8,7 @@ import HelperText from './HelperText';
 import { CheckboxFieldProps } from './types';
 import { isSNOSupportedVersion } from '../utils';
 import { FeatureSupportLevelBadge } from '../FeatureSupportLevelBadge';
+import { ClusterCreateParams } from '../../../api/types';
 
 type SingleNodeCheckboxProps = CheckboxFieldProps & { versions: OpenshiftVersionOptionType[] };
 
@@ -17,6 +18,9 @@ const SingleNodeCheckbox: React.FC<SingleNodeCheckboxProps> = ({
   idPostfix,
   ...props
 }) => {
+  const {
+    values: { openshiftVersion },
+  } = useFormikContext<ClusterCreateParams>();
   const isSingleNodeOpenshiftEnabled = useFeature('ASSISTED_INSTALLER_SNO_FEATURE');
   const [field, meta, helpers] = useField<'None' | 'Full'>({ name: props.name, validate });
   const fieldId = getFieldId(props.name, 'input', idPostfix);
@@ -35,7 +39,10 @@ const SingleNodeCheckbox: React.FC<SingleNodeCheckboxProps> = ({
         label={
           <>
             Install single node OpenShift (SNO)
-            <FeatureSupportLevelBadge featureId="SNO"></FeatureSupportLevelBadge>
+            <FeatureSupportLevelBadge
+              featureId="SNO"
+              openshiftVersion={openshiftVersion}
+            ></FeatureSupportLevelBadge>
           </>
         }
         aria-describedby={`${fieldId}-helper`}

@@ -102,8 +102,9 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
       <RenderIf
         condition={
           !isUserManagedNetworking &&
-          supportLevelData.getClusterSupportLevel('CLUSTER_MANAGED_NETWORKING_WITH_VMS') ===
-            'unsupported'
+          supportLevelData.clusterUsedFeatureSupportLevels[
+            'CLUSTER_MANAGED_NETWORKING_WITH_VMS'
+          ] === 'unsupported'
         }
       >
         {vmsAlert}

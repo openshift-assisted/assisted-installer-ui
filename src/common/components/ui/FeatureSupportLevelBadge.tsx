@@ -13,6 +13,7 @@ import {
 
 export type SupportLevelBadgeProps = {
   featureId: FeatureId;
+  openshiftVersion?: string;
 } & DeveloperPreviewProps;
 
 const popoverTexts = {
@@ -24,12 +25,16 @@ const popoverTexts = {
 
 export const FeatureSupportLevelBadge: React.FC<SupportLevelBadgeProps> = ({
   featureId,
+  openshiftVersion,
   className = 'pf-u-ml-md',
   position = PreviewBadgePosition.inline,
   ...props
 }) => {
   const supportLevelData = React.useContext(FeatureSupportLevelContext);
-  const supportLevel: SupportLevel | undefined = supportLevelData.getVersionSupportLevel(featureId);
+  const supportLevel: SupportLevel | undefined = supportLevelData.getFeatureSupportLevel(
+    featureId,
+    openshiftVersion,
+  );
   if (!isPreviewSupportLevel(supportLevel)) {
     return null;
   }
