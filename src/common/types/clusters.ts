@@ -6,7 +6,12 @@ export type Validation = Omit<HostValidation, 'id'> & {
   id: ClusterValidationId;
 };
 
-export type ValidationGroup = 'configuration' | 'hostsData' | 'network' | 'operators';
+export type ValidationGroup =
+  | 'configuration'
+  | 'hostsData'
+  | 'hosts-data'
+  | 'network'
+  | 'operators';
 
 export type ValidationsInfo = {
   [key in ValidationGroup]?: Validation[];

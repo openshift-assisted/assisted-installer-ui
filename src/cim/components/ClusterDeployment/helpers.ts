@@ -8,6 +8,16 @@ import { EventListFetchProps } from '../../../common';
 import { ClusterDeploymentK8sResource, AgentK8sResource } from '../../types';
 import { INFRAENV_GENERATED_AI_FLOW } from '../common/constants';
 
+export const shouldShowClusterDeploymentValidationOverview = (
+  agentClusterInstall?: AgentClusterInstallK8sResource,
+) => {
+  const [clusterStatus] = getClusterStatus(agentClusterInstall);
+  return (
+    agentClusterInstall?.status?.validationsInfo &&
+    ['ready', 'insufficient', 'pending-for-input'].includes(clusterStatus)
+  );
+};
+
 export const shouldShowClusterCredentials = (
   agentClusterInstall: AgentClusterInstallK8sResource,
 ) => {
