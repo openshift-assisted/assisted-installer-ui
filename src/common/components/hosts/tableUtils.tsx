@@ -17,6 +17,7 @@ import { HostsTableActions } from './types';
 import HostStatus from './HostStatus';
 import RoleCell from './RoleCell';
 import { getHostname, getHostRole } from './utils';
+import { selectMachineNetworkCIDR } from '../../../ocm/selectors/clusterSelectors';
 
 export const getSelectedNic = (nics: Interface[], currentSubnet: Address4 | Address6) => {
   return nics.find((nic) => {
@@ -303,7 +304,8 @@ export const activeNICColumn = (cluster: Cluster): TableRow<Host> => ({
     const inventory = stringToJSON<Inventory>(inventoryString) || {};
     const nics = inventory.interfaces || [];
 
-    const currentSubnet = cluster.machineNetworkCidr ? getSubnet(cluster.machineNetworkCidr) : null;
+    const machineNetworkCidr = selectMachineNetworkCIDR(cluster);
+    const currentSubnet = machineNetworkCidr ? getSubnet(machineNetworkCidr) : null;
     const selectedNic = currentSubnet ? getSelectedNic(nics, currentSubnet) : null;
     return {
       title: selectedNic?.name || DASH,
@@ -321,7 +323,8 @@ export const ipv4Column = (cluster: Cluster): TableRow<Host> => ({
     const inventory = stringToJSON<Inventory>(inventoryString) || {};
     const nics = inventory.interfaces || [];
 
-    const currentSubnet = cluster.machineNetworkCidr ? getSubnet(cluster.machineNetworkCidr) : null;
+    const machineNetworkCidr = selectMachineNetworkCIDR(cluster);
+    const currentSubnet = machineNetworkCidr ? getSubnet(machineNetworkCidr) : null;
     const selectedNic = currentSubnet ? getSelectedNic(nics, currentSubnet) : null;
     return {
       title: (selectedNic?.ipv4Addresses || []).join(', ') || DASH,
@@ -339,7 +342,8 @@ export const ipv6Column = (cluster: Cluster): TableRow<Host> => ({
     const inventory = stringToJSON<Inventory>(inventoryString) || {};
     const nics = inventory.interfaces || [];
 
-    const currentSubnet = cluster.machineNetworkCidr ? getSubnet(cluster.machineNetworkCidr) : null;
+    const machineNetworkCidr = selectMachineNetworkCIDR(cluster);
+    const currentSubnet = machineNetworkCidr ? getSubnet(machineNetworkCidr) : null;
     const selectedNic = currentSubnet ? getSelectedNic(nics, currentSubnet) : null;
     return {
       title: (selectedNic?.ipv6Addresses || []).join(', ') || DASH,
@@ -357,7 +361,8 @@ export const macAddressColumn = (cluster: Cluster): TableRow<Host> => ({
     const inventory = stringToJSON<Inventory>(inventoryString) || {};
     const nics = inventory.interfaces || [];
 
-    const currentSubnet = cluster.machineNetworkCidr ? getSubnet(cluster.machineNetworkCidr) : null;
+    const machineNetworkCidr = selectMachineNetworkCIDR(cluster);
+    const currentSubnet = machineNetworkCidr ? getSubnet(machineNetworkCidr) : null;
     const selectedNic = currentSubnet ? getSelectedNic(nics, currentSubnet) : null;
     return {
       title: selectedNic?.macAddress || DASH,

@@ -18,6 +18,7 @@ import { ClusterValidations, HostsValidations } from './ReviewValidations';
 import { VSPHERE_CONFIG_LINK } from '../../../common';
 
 import './ReviewCluster.css';
+import { selectClusterNetworkCIDR } from '../../selectors/clusterSelectors';
 
 const ReviewHostsInventory: React.FC<{ hosts?: Host[] }> = ({ hosts = [] }) => {
   const rows = React.useMemo(() => {
@@ -87,7 +88,7 @@ const ReviewCluster: React.FC<{ cluster: Cluster }> = ({ cluster }) => (
   <DetailList>
     <DetailItem title="Cluster address" value={`${cluster.name}.${cluster.baseDnsDomain}`} />
     <DetailItem title="OpenShift version" value={cluster.openshiftVersion} />
-    <DetailItem title="Management network CIDR" value={cluster.clusterNetworkCidr} />
+    <DetailItem title="Management network CIDR" value={selectClusterNetworkCIDR(cluster)} />
     <DetailItem title="Cluster summary" value={<ReviewHostsInventory hosts={cluster.hosts} />} />
     <DetailItem
       title="Cluster validations"
