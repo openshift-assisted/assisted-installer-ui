@@ -1,6 +1,11 @@
 import React from 'react';
 import { GridItem, TextContent, Text } from '@patternfly/react-core';
 import { Cluster, isSingleNodeCluster, DetailList, DetailItem } from '../../../common';
+import {
+  selectClusterNetworkCIDR,
+  selectClusterNetworkHostPrefix,
+  selectServiceNetworkCIDR,
+} from '../../selectors/clusterSelectors';
 
 type ClusterPropertiesProps = {
   cluster: Cluster;
@@ -51,9 +56,12 @@ const ClusterProperties: React.FC<ClusterPropertiesProps> = ({ cluster }) => (
     <GridItem md={6}>
       <DetailList>
         <DetailItem title="UUID" value={cluster.id} />
-        <DetailItem title="Cluster network CIDR" value={cluster.clusterNetworkCidr} />
-        <DetailItem title="Cluster network host prefix" value={cluster.clusterNetworkHostPrefix} />
-        <DetailItem title="Service network CIDR" value={cluster.serviceNetworkCidr} />
+        <DetailItem title="Cluster network CIDR" value={selectClusterNetworkCIDR(cluster)} />
+        <DetailItem
+          title="Cluster network host prefix"
+          value={selectClusterNetworkHostPrefix(cluster)}
+        />
+        <DetailItem title="Service network CIDR" value={selectServiceNetworkCIDR(cluster)} />
         <DetailItem
           title="Network management type"
           value={getManagementType(cluster.userManagedNetworking)}
