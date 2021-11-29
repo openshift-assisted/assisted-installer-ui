@@ -29,6 +29,7 @@ import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
 import { useClusterPolling, useFetchCluster } from './clusterPolling';
 import { DiscoveryImageModal } from '../clusterConfiguration/discoveryImageModal';
 import { isSingleClusterMode, routeBasePath } from '../../config';
+import { FeatureSupportLevelProvider } from '../featureSupportLevels';
 
 type MatchParams = {
   clusterId: string;
@@ -38,7 +39,6 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
   const { clusterId } = match.params;
   const fetchCluster = useFetchCluster(clusterId);
   const { cluster, uiState, errorDetail } = useClusterPolling(clusterId);
-
   const errorStateActions = [];
   if (!isSingleClusterMode()) {
     errorStateActions.push(
@@ -51,7 +51,6 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
       </Button>,
     );
   }
-
   const getContent = (cluster: Cluster) => {
     if (cluster.status === 'adding-hosts') {
       return (
@@ -145,10 +144,12 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
       <AlertsContextProvider>
         <ModalDialogsContextProvider>
           <ClusterDefaultConfigurationProvider loadingUI={loadingUI} errorUI={errorUI}>
-            {getContent(cluster)}
-            <CancelInstallationModal />
-            <ResetClusterModal />
-            <DiscoveryImageModal />
+            <FeatureSupportLevelProvider loadingUi={loadingUI}>
+              {getContent(cluster)}
+              <CancelInstallationModal />
+              <ResetClusterModal />
+              <DiscoveryImageModal />
+            </FeatureSupportLevelProvider>
           </ClusterDefaultConfigurationProvider>
         </ModalDialogsContextProvider>
       </AlertsContextProvider>
