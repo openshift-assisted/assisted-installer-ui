@@ -22,7 +22,7 @@ export interface ApiVipConnectivityRequest {
    */
   url: string;
   /**
-   * Whether to verify if the API VIP belongs to one of the interfaces.
+   * Whether to verify if the API VIP belongs to one of the interfaces (DEPRECATED).
    */
   verifyCidr?: boolean;
 }
@@ -42,7 +42,7 @@ export interface AssistedServiceIsoCreateParams {
    */
   sshPublicKey?: string;
   /**
-   * The pull secret obtained from Red Hat OpenShift Cluster Manager at cloud.redhat.com/openshift/install/pull-secret.
+   * The pull secret obtained from Red Hat OpenShift Cluster Manager at console.redhat.com/openshift/install/pull-secret.
    */
   pullSecret?: string;
 }
@@ -300,6 +300,10 @@ export interface Cluster {
    * The CPU architecture of the image (x86_64/arm64/etc).
    */
   cpuArchitecture?: string;
+  /**
+   * Explicit ignition endpoint overrides the default ignition endpoint.
+   */
+  ignitionEndpoint?: IgnitionEndpoint;
 }
 export interface ClusterCreateParams {
   /**
@@ -341,7 +345,7 @@ export interface ClusterCreateParams {
    */
   ingressVip?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))$
   /**
-   * The pull secret obtained from Red Hat OpenShift Cluster Manager at cloud.redhat.com/openshift/install/pull-secret.
+   * The pull secret obtained from Red Hat OpenShift Cluster Manager at console.redhat.com/openshift/install/pull-secret.
    */
   pullSecret: string;
   /**
@@ -413,6 +417,10 @@ export interface ClusterCreateParams {
    * Installation disks encryption mode and host roles to be applied.
    */
   diskEncryption?: DiskEncryption;
+  /**
+   * Explicit ignition endpoint overrides the default ignition endpoint.
+   */
+  ignitionEndpoint?: IgnitionEndpoint;
 }
 export interface ClusterDefaultConfig {
   clusterNetworkCidr?: string; // ^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)[\/]([1-9]|[1-2][0-9]|3[0-2]?)$
@@ -464,6 +472,10 @@ export interface ClusterHostRequirementsDetails {
    * Maximum packet loss allowed at L3 for role.
    */
   packetLossPercentage?: number; // double
+  /**
+   * Whether TPM module should be enabled in host's BIOS.
+   */
+  tpmEnabledInBios?: boolean;
 }
 export type ClusterHostRequirementsList = ClusterHostRequirements[];
 export type ClusterList = Cluster[];
@@ -529,7 +541,7 @@ export interface ClusterUpdateParams {
    */
   machineNetworkCidr?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$
   /**
-   * The pull secret obtained from Red Hat OpenShift Cluster Manager at cloud.redhat.com/openshift/install/pull-secret.
+   * The pull secret obtained from Red Hat OpenShift Cluster Manager at console.redhat.com/openshift/install/pull-secret.
    */
   pullSecret?: string;
   /**
@@ -624,6 +636,10 @@ export interface ClusterUpdateParams {
    * Installation disks encryption mode and host roles to be applied.
    */
   diskEncryption?: DiskEncryption;
+  /**
+   * Explicit ignition endpoint overrides the default ignition endpoint.
+   */
+  ignitionEndpoint?: IgnitionEndpoint;
 }
 export type ClusterValidationId =
   | 'machine-cidr-defined'
@@ -911,13 +927,13 @@ export interface Event {
   /**
    * Unique identifier of the cluster this event relates to.
    */
-  clusterId: string; // uuid
+  clusterId?: string; // uuid
   /**
    * Unique identifier of the host this event relates to.
    */
   hostId?: string; // uuid
   /**
-   * Unique identifier of the infra env this event relates to.
+   * Unique identifier of the infra-env this event relates to.
    */
   infraEnvId?: string; // uuid
   severity: 'info' | 'warning' | 'error' | 'critical';
@@ -934,6 +950,36 @@ export interface Event {
   props?: string;
 }
 export type EventList = Event[];
+export interface FeatureSupportLevel {
+  /**
+   * Version of the OpenShift cluster.
+   */
+  openshiftVersion?: string;
+  features?: {
+    /**
+     * The ID of the feature
+     */
+    featureId?:
+      | 'ADDITIONAL_NTP_SOURCE'
+      | 'REQUESTED_HOSTNAME'
+      | 'PROXY'
+      | 'SNO'
+      | 'DAY2_HOSTS'
+      | 'VIP_AUTO_ALLOC'
+      | 'DISK_SELECTION'
+      | 'OVN_NETWORK_TYPE'
+      | 'SDN_NETWORK_TYPE'
+      | 'PLATFORM_SELECTION'
+      | 'SCHEDULABLE_MASTERS'
+      | 'AUTO_ASSIGN_ROLE'
+      | 'CUSTOM_MANIFEST'
+      | 'DISK_ENCRYPTION'
+      | 'CLUSTER_MANAGED_NETWORKING_WITH_VMS'
+      | 'ARM64_ARCHITECTURE';
+    supportLevel?: 'supported' | 'unsupported' | 'tech-preview' | 'dev-preview';
+  }[];
+}
+export type FeatureSupportLevels = FeatureSupportLevel[];
 export type FreeAddressesList = string /* ipv4 */[];
 export type FreeAddressesRequest = string /* ^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$ */[];
 export interface FreeNetworkAddresses {
@@ -983,7 +1029,7 @@ export interface Host {
    */
   clusterId?: string; // uuid
   /**
-   * The InfraEnv that this host is associated with.
+   * The infra-env that this host is associated with.
    */
   infraEnvId?: string; // uuid
   status:
@@ -993,6 +1039,7 @@ export interface Host {
     | 'insufficient'
     | 'disabled'
     | 'preparing-for-installation'
+    | 'preparing-failed'
     | 'preparing-successful'
     | 'pending-for-input'
     | 'installing'
@@ -1006,6 +1053,7 @@ export interface Host {
     | 'cancelled'
     | 'binding'
     | 'unbinding'
+    | 'unbinding-pending-user-action'
     | 'known-unbound'
     | 'disconnected-unbound'
     | 'insufficient-unbound'
@@ -1094,6 +1142,10 @@ export interface Host {
    * The domain name resolution result.
    */
   domainNameResolutions?: string;
+  /**
+   * A string which will be used as Authorization Bearer token to fetch the ignition from ignitionEndpointUrl.
+   */
+  ignitionEndpointToken?: string;
 }
 export interface HostCreateParams {
   hostId: string; // uuid
@@ -1108,12 +1160,12 @@ export interface HostNetwork {
   hostIds?: string /* uuid */[];
 }
 export interface HostProgress {
-  currentStage: HostStage;
+  currentStage?: HostStage;
   progressInfo?: string;
 }
 export interface HostProgressInfo {
   installationPercentage?: number;
-  currentStage: HostStage;
+  currentStage?: HostStage;
   progressInfo?: string;
   /**
    * Time at which the current progress stage started.
@@ -1144,7 +1196,7 @@ export interface HostRegistrationResponse {
    */
   clusterId?: string; // uuid
   /**
-   * The InfraEnv that this host is associated with.
+   * The infra-env that this host is associated with.
    */
   infraEnvId?: string; // uuid
   status:
@@ -1154,6 +1206,7 @@ export interface HostRegistrationResponse {
     | 'insufficient'
     | 'disabled'
     | 'preparing-for-installation'
+    | 'preparing-failed'
     | 'preparing-successful'
     | 'pending-for-input'
     | 'installing'
@@ -1167,6 +1220,7 @@ export interface HostRegistrationResponse {
     | 'cancelled'
     | 'binding'
     | 'unbinding'
+    | 'unbinding-pending-user-action'
     | 'known-unbound'
     | 'disconnected-unbound'
     | 'insufficient-unbound'
@@ -1255,6 +1309,10 @@ export interface HostRegistrationResponse {
    * The domain name resolution result.
    */
   domainNameResolutions?: string;
+  /**
+   * A string which will be used as Authorization Bearer token to fetch the ignition from ignitionEndpointUrl.
+   */
+  ignitionEndpointToken?: string;
   /**
    * Command for starting the next step runner
    */
@@ -1317,6 +1375,10 @@ export interface HostUpdateParams {
   hostName?: string;
   disksSelectedConfig?: DiskConfigParams[];
   machineConfigPoolName?: string;
+  /**
+   * A string which will be used as Authorization Bearer token to fetch the ignition from ignitionEndpointUrl.
+   */
+  ignitionEndpointToken?: string;
 }
 export type HostValidationId =
   | 'connected'
@@ -1348,6 +1410,19 @@ export type HostValidationId =
   | 'compatible-with-cluster-platform'
   | 'dns-wildcard-not-configured'
   | 'disk-encryption-requirements-satisfied';
+/**
+ * Explicit ignition endpoint overrides the default ignition endpoint.
+ */
+export interface IgnitionEndpoint {
+  /**
+   * The URL for the ignition endpoint.
+   */
+  url?: string;
+  /**
+   * A CA certficate to be used when contacting the URL via https.
+   */
+  caCertificate?: string;
+}
 export interface ImageCreateParams {
   /**
    * SSH public key for debugging the installation.
@@ -1379,27 +1454,45 @@ export interface ImageInfo {
   type?: ImageType;
 }
 export type ImageType = 'full-iso' | 'minimal-iso';
+export interface ImportClusterParams {
+  /**
+   * OpenShift cluster name.
+   */
+  name: string;
+  /**
+   * The domain name used to reach the OpenShift cluster API.
+   */
+  apiVipDnsname: string;
+  /**
+   * Version of the OpenShift cluster.
+   */
+  openshiftVersion: string;
+  /**
+   * The id of the OCP cluster, that hosts will be added to
+   */
+  openshiftClusterId: string; // uuid
+}
 export interface InfraEnv {
   /**
    * Indicates the type of this object.
    */
-  kind?: 'InfraEnv';
+  kind: 'InfraEnv';
   /**
    * Unique identifier of the object.
    */
-  id?: string; // uuid
+  id: string; // uuid
   /**
    * Self link.
    */
-  href?: string;
+  href: string;
   /**
    * Version of the OpenShift cluster (used to infer the RHCOS version - temporary until generic logic implemented).
    */
   openshiftVersion?: string;
   /**
-   * Name of the InfraEnv.
+   * Name of the infra-env.
    */
-  name?: string;
+  name: string;
   userName?: string;
   orgId?: string;
   emailDomain?: string;
@@ -1420,7 +1513,7 @@ export interface InfraEnv {
    * static network configuration string in the format expected by discovery ignition generation.
    */
   staticNetworkConfig?: string;
-  type?: ImageType;
+  type: ImageType;
   /**
    * Json formatted string containing the user overrides for the initial ignition config.
    */
@@ -1436,10 +1529,10 @@ export interface InfraEnv {
    */
   generatorVersion?: string;
   /**
-   * The last time that this infraenv was updated.
+   * The last time that this infra-env was updated.
    */
-  updatedAt?: string; // date-time
-  createdAt?: string; // date-time
+  updatedAt: string; // date-time
+  createdAt: string; // date-time
   expiresAt?: string; // date-time
   /**
    * The CPU architecture of the image (x86_64/arm64/etc).
@@ -1448,7 +1541,7 @@ export interface InfraEnv {
 }
 export interface InfraEnvCreateParams {
   /**
-   * Name of the InfraEnv.
+   * Name of the infra-env.
    */
   name: string;
   proxy?: Proxy;
@@ -1461,7 +1554,7 @@ export interface InfraEnvCreateParams {
    */
   sshAuthorizedKey?: string;
   /**
-   * The pull secret obtained from Red Hat OpenShift Cluster Manager at cloud.redhat.com/openshift/install/pull-secret.
+   * The pull secret obtained from Red Hat OpenShift Cluster Manager at console.redhat.com/openshift/install/pull-secret.
    */
   pullSecret: string;
   staticNetworkConfig?: HostStaticNetworkConfig[];
@@ -1483,6 +1576,16 @@ export interface InfraEnvCreateParams {
    */
   cpuArchitecture?: string;
 }
+export interface InfraEnvImageUrl {
+  /**
+   * Pre-signed URL for downloading the infra-env discovery image.
+   */
+  url?: string;
+  /**
+   * Expiration time for the URL token.
+   */
+  expiresAt?: string; // date-time
+}
 export type InfraEnvList = InfraEnv[];
 export interface InfraEnvUpdateParams {
   proxy?: Proxy;
@@ -1495,7 +1598,7 @@ export interface InfraEnvUpdateParams {
    */
   sshAuthorizedKey?: string;
   /**
-   * The pull secret obtained from Red Hat OpenShift Cluster Manager at cloud.redhat.com/openshift/install/pull-secret.
+   * The pull secret obtained from Red Hat OpenShift Cluster Manager at console.redhat.com/openshift/install/pull-secret.
    */
   pullSecret?: string;
   staticNetworkConfig?: HostStaticNetworkConfig[];
@@ -1699,27 +1802,27 @@ export interface OpenshiftVersion {
   /**
    * Name of the version to be presented to the user.
    */
-  displayName: string;
+  displayName?: string;
   /**
    * The installation image of the OpenShift cluster.
    */
-  releaseImage: string;
+  releaseImage?: string;
   /**
    * OCP version from the release metadata.
    */
-  releaseVersion: string;
+  releaseVersion?: string;
   /**
    * The base RHCOS image used for the discovery iso.
    */
-  rhcosImage: string;
+  rhcosImage?: string;
   /**
    * The RHCOS rootfs url.
    */
-  rhcosRootfs: string;
+  rhcosRootfs?: string;
   /**
    * Build ID of the RHCOS image.
    */
-  rhcosVersion: string;
+  rhcosVersion?: string;
   /**
    * Level of support of the version.
    */
@@ -1728,6 +1831,10 @@ export interface OpenshiftVersion {
    * Indication that the version is the recommended one.
    */
   default?: boolean;
+  /**
+   * Available CPU architectures.
+   */
+  cpuArchitectures?: string[];
 }
 export interface OpenshiftVersions {
   [name: string]: OpenshiftVersion;
@@ -1830,13 +1937,55 @@ export interface OsImage {
 }
 export type OsImages = OsImage[];
 /**
+ * oVirt platform-specific configuration upon which to perform the installation.
+ */
+export interface OvirtPlatform {
+  /**
+   * The oVirt's engine fully qualified domain name.
+   */
+  fqdn?: string;
+  /**
+   * The user name to use to connect to the oVirt instance.
+   */
+  username?: string;
+  /**
+   * The password for the oVirt user name.
+   */
+  password?: string; // password
+  /**
+   * Verify oVirt engine certificate.
+   */
+  insecure?: boolean;
+  /**
+   * The CA Bundle of the oVirt's engine certificate.
+   */
+  caBundle?: string;
+  /**
+   * The oVirt cluster ID.
+   */
+  clusterId?: string; // uuid
+  /**
+   * The oVirt storage domain ID.
+   */
+  storageDomainId?: string; // uuid
+  /**
+   * The oVirt network the VMs will be attached to.
+   */
+  networkName?: string;
+  /**
+   * The oVirt VNIC profile ID.
+   */
+  vnicProfileId?: string; // uuid
+}
+/**
  * The configuration for the specific platform upon which to perform the installation.
  */
 export interface Platform {
   type: PlatformType;
   vsphere?: VspherePlatform;
+  ovirt?: OvirtPlatform;
 }
-export type PlatformType = 'baremetal' | 'vsphere' | 'none';
+export type PlatformType = 'baremetal' | 'vsphere' | 'ovirt' | 'none';
 export interface PreflightHardwareRequirements {
   /**
    * Preflight operators hardware requirements
@@ -1885,6 +2034,14 @@ export interface ReleaseImage {
    * OCP version from the release metadata.
    */
   version: string;
+  /**
+   * Indication that the version is the recommended one.
+   */
+  default?: boolean;
+  /**
+   * Level of support of the version.
+   */
+  supportLevel?: 'beta' | 'production' | 'maintenance';
 }
 export type ReleaseImages = ReleaseImage[];
 export interface Route {
@@ -1972,6 +2129,10 @@ export interface SystemVendor {
 }
 export interface Usage {
   /**
+   * Unique idenftifier of the feature
+   */
+  id?: string;
+  /**
    * name of the feature to track
    */
   name?: string;
@@ -2021,7 +2182,7 @@ export interface V2ClusterUpdateParams {
    */
   machineNetworkCidr?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$
   /**
-   * The pull secret obtained from Red Hat OpenShift Cluster Manager at cloud.redhat.com/openshift/install/pull-secret.
+   * The pull secret obtained from Red Hat OpenShift Cluster Manager at console.redhat.com/openshift/install/pull-secret.
    */
   pullSecret?: string;
   /**
@@ -2088,6 +2249,16 @@ export interface V2ClusterUpdateParams {
    * Installation disks encryption mode and host roles to be applied.
    */
   diskEncryption?: DiskEncryption;
+  /**
+   * Explicit ignition endpoint overrides the default ignition endpoint.
+   */
+  ignitionEndpoint?: IgnitionEndpoint;
+}
+export interface V2Events {
+  clusterId?: string;
+  hostId?: string;
+  infraEnvId?: string;
+  categories?: string[];
 }
 export interface VersionedHostRequirements {
   /**

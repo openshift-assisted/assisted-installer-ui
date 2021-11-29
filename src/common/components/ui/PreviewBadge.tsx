@@ -7,7 +7,7 @@ export enum PreviewBadgePosition {
   inlineRight,
 }
 
-type DeveloperPreviewProps = {
+export type DeveloperPreviewProps = {
   position?: PreviewBadgePosition;
   className?: string;
 };
@@ -27,7 +27,12 @@ const PreviewBadge: React.FC<
   }
 
   return (
-    <Label className={clsName} color={color}>
+    <Label
+      className={clsName}
+      color={color}
+      onClick={(e) => e.preventDefault()}
+      style={{ cursor: 'pointer' }}
+    >
       {text}
     </Label>
   );
