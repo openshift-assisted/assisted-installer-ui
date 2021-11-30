@@ -21,7 +21,7 @@ const ExpandComponent: React.FC<ExpandComponentProps<Host>> = ({ obj }) => {
     <HostDetail
       host={obj}
       AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
-      showNTP={false}
+      hideNTPStatus
     />
   );
 };
