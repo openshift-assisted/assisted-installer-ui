@@ -29,7 +29,7 @@ type HostDetailProps = {
   onDiskRole?: onDiskRoleType;
   host: Host;
   AdditionalNTPSourcesDialogToggleComponent: ValidationInfoActionProps['AdditionalNTPSourcesDialogToggleComponent'];
-  showNTP?: boolean;
+  hideNTPStatus?: boolean;
 };
 
 type SectionTitleProps = {
@@ -202,7 +202,7 @@ export const HostDetail: React.FC<HostDetailProps> = ({
   onDiskRole,
   host,
   AdditionalNTPSourcesDialogToggleComponent,
-  showNTP = true,
+  hideNTPStatus = false,
 }) => {
   const { id, installationDiskId, inventory: inventoryString = '' } = host;
   const inventory = stringToJSON<Inventory>(inventoryString) || {};
@@ -228,11 +228,6 @@ export const HostDetail: React.FC<HostDetailProps> = ({
     ),
     [AdditionalNTPSourcesDialogToggleComponent, validationsInfo],
   );
-
-  let NTPdetail;
-  if (showNTP) {
-    NTPdetail = <DetailItem testId={'ntp-status'} title="NTP status" value={ntpValidationStatus} />;
-  }
 
   return (
     <Grid hasGutter>
@@ -288,7 +283,12 @@ export const HostDetail: React.FC<HostDetailProps> = ({
             value={inventory.boot?.pxeInterface}
           />
         )}
-        {NTPdetail}
+        <DetailItem
+          isHidden={hideNTPStatus}
+          testId={'ntp-status'}
+          title="NTP status"
+          value={ntpValidationStatus}
+        />
       </SectionColumn>
       <SectionTitle
         testId={'disks-section'}
