@@ -24,7 +24,7 @@ import {
   CNVHostRequirementsContent,
 } from '../hosts/HostRequirementsContent';
 import ClusterWizardHeaderExtraActions from './ClusterWizardHeaderExtraActions';
-import useClusterSupportedPlatforms from '../../api/hooks/useClusterSupportedPlatforms';
+import { useClusterSupportedPlatforms } from '../../hooks';
 import { useFormikContext } from 'formik';
 
 const OCSLabel: React.FC = () => (

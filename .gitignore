@@ -16,6 +16,8 @@ docs
 .gitattributes
 .DS_Store
 .env
+.env.local
+.env.*.local
 
 npm-debug.log*
 yarn-debug.log*

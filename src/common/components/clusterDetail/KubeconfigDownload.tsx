@@ -1,12 +1,12 @@
 import React from 'react';
 import { saveAs } from 'file-saver';
 import { Button, ButtonVariant } from '@patternfly/react-core';
-import { getPresignedFileUrl, getClusterFileDownload } from '../../../ocm/api/clusters';
 import { canDownloadKubeconfig } from '../hosts/utils';
 import { useAlerts } from '../AlertsContextProvider';
-import { Cluster, Presigned } from '../../api/types';
+import { Cluster } from '../../api/types';
 import { ocmClient } from '../../../ocm/api/axiosClient';
 import { getErrorMessage, handleApiError } from '../../../ocm/api/utils';
+import ClustersAPI from '../../../ocm/services/apis/ClustersAPI';
 
 type KubeconfigDownloadProps = {
   clusterId: Cluster['id'];
@@ -26,26 +26,21 @@ const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({
   const download = React.useCallback(
     async (clusterId: Cluster['id'], status: Cluster['status']) => {
       const fileName = status === 'installed' ? 'kubeconfig' : 'kubeconfig-noingress';
-      if (ocmClient) {
-        try {
-          const { data } = await getPresignedFileUrl({ clusterId, fileName });
+      try {
+        if (ocmClient) {
+          const { data } = await ClustersAPI.getPresignedForClusterCredentials({
+            clusterId,
+            fileName,
+          });
           saveAs(data.url);
-        } catch (e) {
-          handleApiError<Presigned>(e, async (e) => {
-            addAlert({ title: 'Could not download kubeconfig', message: getErrorMessage(e) });
-          });
+        } else {
+          const response = await ClustersAPI.downloadClusterCredentials(clusterId, fileName);
+          saveAs(response.data, fileName);
         }
-      } else {
-        try {
-          const response = await getClusterFileDownload(clusterId, fileName);
-          const contentHeader = response.headers.contentDisposition;
-          const name = contentHeader?.match(/filename="(.+)"/)?.[1];
-          saveAs(response.data, name);
-        } catch (e) {
-          handleApiError(e, async (e) => {
-            addAlert({ title: 'Could not download kubeconfig', message: getErrorMessage(e) });
-          });
-        }
+      } catch (e) {
+        handleApiError(e, async (e) => {
+          addAlert({ title: 'Could not download kubeconfig', message: getErrorMessage(e) });
+        });
       }
     },
     [addAlert],

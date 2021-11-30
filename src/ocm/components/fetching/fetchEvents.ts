@@ -1,5 +1,6 @@
 import { EventListFetchProps } from '../../../common';
-import { getEvents, handleApiError } from '../../api';
+import { handleApiError } from '../../api';
+import { EventsAPI } from '../../services/apis';
 
 export const onFetchEvents: EventListFetchProps['onFetchEvents'] = async (
   props,
@@ -7,7 +8,7 @@ export const onFetchEvents: EventListFetchProps['onFetchEvents'] = async (
   onError,
 ) => {
   try {
-    const { data } = await getEvents(props.clusterId, props.hostId);
+    const { data } = await EventsAPI.list(props);
     onSuccess(data);
   } catch (error) {
     handleApiError(error, () => {

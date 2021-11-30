@@ -40,7 +40,6 @@ type DiscoveryImageConfigFormProps = Proxy & {
     formikActions: FormikHelpers<DiscoveryImageFormValues>,
   ) => Promise<void>;
   hideDiscoveryImageType?: boolean;
-
   sshPublicKey?: string;
   imageType?: ImageType;
 };
