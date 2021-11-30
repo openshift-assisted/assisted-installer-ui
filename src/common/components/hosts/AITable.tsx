@@ -42,6 +42,7 @@ export type TableRow<R> = {
 export type ActionsResolver<R> = (obj: R) => (IAction | ISeparator)[];
 export type ExpandComponentProps<R> = {
   obj: R;
+  showNTP?: boolean;
 };
 
 type HostsTable<R> = {
