@@ -1,5 +1,6 @@
 import useSWR from 'swr';
 import React, { PropsWithChildren } from 'react';
+import * as Sentry from '@sentry/browser';
 import {
   FeatureSupportLevelsMap,
   FeatureIdToSupportLevel,
@@ -11,6 +12,7 @@ import { FeatureSupportLevelContext } from '../../../common/components/featureSu
 import { FeatureSupportLevelData } from '../../../common/components/featureSupportLevels/FeatureSupportLevelContext';
 import { handleApiError } from '../../api';
 import { FeatureSupportLevelsAPI } from '../../services/api';
+import { captureException } from '../../sentry';
 
 export type SupportLevelProviderProps = PropsWithChildren<{
   clusterFeatureUsage?: string;
@@ -37,7 +39,7 @@ const getFeatureSupportLevelsMap = (
     }
     return featureSupportLevelsMap;
   } catch (err) {
-    console.error(`Failed to parse feature support levels ${err}`);
+    captureException(err, 'Failed to parse feature support levels', Sentry.Severity.Warning);
     return {};
   }
 };
