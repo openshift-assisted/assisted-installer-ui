@@ -6,76 +6,20 @@ import {
   ClusterUpdateParams,
   getFormikErrorFields,
   FormikAutoSave,
-  OPERATOR_NAME_CNV,
-  OPERATOR_NAME_LSO,
-  OPERATOR_NAME_OCS,
   ClusterWizardStep,
   useAlerts,
   getHostDiscoveryInitialValues,
-  MonitoredOperator,
-  schedulableMastersAlwaysOn,
 } from '../../../common';
 import { HostDiscoveryValues } from '../../../common/types/clusters';
 import HostInventory from '../clusterConfiguration/HostInventory';
 import ClusterWizardContext from './ClusterWizardContext';
 import { canNextHostDiscovery } from './wizardTransition';
 import { getErrorMessage, handleApiError } from '../../api/utils';
-import { patchCluster } from '../../api/clusters';
 import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
-import { getOlmOperatorCreateParamsByName } from '../clusters/utils';
 import ClusterWizardFooter from './ClusterWizardFooter';
 import ClusterWizardNavigation from './ClusterWizardNavigation';
-
-const setPlatform = (params: ClusterUpdateParams, usePlatformIntegration: boolean) => {
-  if (usePlatformIntegration) {
-    params.platform = {
-      type: 'vsphere',
-      vsphere: {},
-    };
-  } else {
-    params.platform = {
-      type: 'baremetal',
-    };
-  }
-};
-
-const setOLMOperators = (
-  params: ClusterUpdateParams,
-  values: HostDiscoveryValues,
-  monitoredOperators: MonitoredOperator[] = [],
-) => {
-  const enabledOlmOperatorsByName = getOlmOperatorCreateParamsByName(monitoredOperators);
-  const setOperator = (name: string, enabled: boolean) => {
-    if (enabled) {
-      enabledOlmOperatorsByName[name] = { name };
-    } else {
-      delete enabledOlmOperatorsByName[name];
-    }
-  };
-
-  setOperator(OPERATOR_NAME_CNV, values.useContainerNativeVirtualization);
-  setOperator(OPERATOR_NAME_OCS, values.useExtraDisksForLocalStorage);
-  // TODO(jtomasek): remove following once enabling OCS is moved into a separate storage step and LSO option is exposed to the user
-  if (!values.useExtraDisksForLocalStorage && !values.useContainerNativeVirtualization) {
-    setOperator(OPERATOR_NAME_LSO, false);
-  }
-
-  params.olmOperators = Object.values(enabledOlmOperatorsByName);
-};
-
-const setSchedulableMasters = (
-  params: ClusterUpdateParams,
-  values: HostDiscoveryValues,
-  cluster: Cluster,
-): void => {
-  if (!schedulableMastersAlwaysOn(cluster)) {
-    /*
-      backend shouldn't be updated with the schedulable masters when there are less than 5 hosts, 
-      it'll mess up getting false for the default value when there are 5 hosts and up
-    */
-    params.schedulableMasters = values.schedulableMasters;
-  }
-};
+import { ClustersAPI } from '../../services/apis';
+import HostDiscoveryService from '../../services/HostDiscoveryService';
 
 const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const dispatch = useDispatch();
@@ -94,16 +38,16 @@ const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
     clearAlerts();
 
     const params: ClusterUpdateParams = {};
-    setPlatform(params, values.usePlatformIntegration);
-    setOLMOperators(params, values, cluster.monitoredOperators);
-    setSchedulableMasters(params, values, cluster);
+    HostDiscoveryService.setPlatform(params, values.usePlatformIntegration);
+    HostDiscoveryService.setOLMOperators(params, values, cluster.monitoredOperators);
+    HostDiscoveryService.setSchedulableMasters(params, values, cluster);
 
     try {
-      const { data } = await patchCluster(cluster.id, params);
+      const { data } = await ClustersAPI.update(cluster.id, params);
       dispatch(updateCluster(data));
       actions.resetForm({ values: getHostDiscoveryInitialValues(data) });
     } catch (e) {
-      handleApiError<ClusterUpdateParams>(e, () =>
+      handleApiError(e, () =>
         addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),
       );
     }

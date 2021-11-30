@@ -9,12 +9,13 @@ import {
   ClusterWizardStep,
 } from '../../../common';
 import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
-import { getErrorMessage, handleApiError, postInstallCluster } from '../../api';
+import { getErrorMessage, handleApiError } from '../../api';
 import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
 import ClusterWizardFooter from '../clusterWizard/ClusterWizardFooter';
 import ClusterWizardNavigation from '../clusterWizard/ClusterWizardNavigation';
 import ReviewCluster from './ReviewCluster';
 import ClusterWizardHeaderExtraActions from './ClusterWizardHeaderExtraActions';
+import { ClustersAPI } from '../../services/apis';
 import { useStateSafely } from '../../../common/hooks';
 
 const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
@@ -26,7 +27,7 @@ const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const handleClusterInstall = async () => {
     setIsStartingInstallation(true);
     try {
-      const { data } = await postInstallCluster(cluster.id);
+      const { data } = await ClustersAPI.install(cluster.id);
       dispatch(updateCluster(data));
       setIsStartingInstallation(false);
       // If successful, backend changes cluster state which leads to unmounting the Wizard

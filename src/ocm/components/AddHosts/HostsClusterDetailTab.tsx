@@ -1,7 +1,6 @@
 import React, { ReactNode } from 'react';
 import { Button, ButtonVariant, EmptyStateVariant } from '@patternfly/react-core';
 import {
-  AddHostsClusterCreateParams,
   Cluster,
   POLLING_INTERVAL,
   AddHostsContextProvider,
@@ -9,14 +8,15 @@ import {
   ErrorState,
   LoadingState,
 } from '../../../common';
-import { usePullSecretFetch } from '../fetching/pullSecret';
+import { usePullSecret } from '../../hooks';
 import { AssistedUILibVersion } from '../ui';
-import { addHostsClusters } from '../../api/addHostsClusters';
-import { useOpenshiftVersions } from '../fetching/openshiftVersions';
-import { getCluster, handleApiError } from '../../api';
+import { useOpenshiftVersions } from '../../hooks';
+import { handleApiError } from '../../api';
 import AddHosts from './AddHosts';
 import { OcmClusterType } from './types';
 import { getOpenshiftClusterId } from './utils';
+import { ClustersAPI } from '../../services/apis';
+import { InfraEnvsService } from '../../services';
 
 type OpenModalType = (modalName: string, cluster?: OcmClusterType) => void;
 
@@ -33,7 +33,7 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
 }) => {
   const [error, setError] = React.useState<ReactNode>();
   const [day2Cluster, setDay2Cluster] = React.useState<Cluster | null>();
-  const pullSecret = usePullSecretFetch();
+  const pullSecret = usePullSecret();
   const { normalizeClusterVersion } = useOpenshiftVersions();
 
   const TryAgain = React.useCallback(
@@ -141,12 +141,13 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
         let dayTwoClusterExists = false;
         // try to find Day 2 cluster (can be missing)
         try {
-          // The Day-2's cluster.id is always equal to the openshift_cluster_id, there is recently
-          // no way how to pass openshif_cluster_id other way than set it to the cluster.id (not even via API).
-          // There can not be >1 of Day 2 clusters. The Cluster.openshift_cluster_id is irrelevant to the Day 2 clusters.
-          const { data } = await getCluster(openshiftClusterId);
-          setDay2Cluster(data);
-          dayTwoClusterExists = true;
+          const { data: clusters } = await ClustersAPI.listByOpenshiftId(openshiftClusterId);
+          const day2Clusters = clusters.filter((cluster) => cluster.kind === 'AddHostsCluster');
+          if (day2Clusters.length !== 0) {
+            const { data } = await ClustersAPI.get(day2Clusters[0].id);
+            setDay2Cluster(data);
+            dayTwoClusterExists = true;
+          }
         } catch (e) {
           if (Number(e?.response?.status) !== 404) {
             handleApiError(e);
@@ -164,16 +165,25 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
         if (!dayTwoClusterExists) {
           try {
             // Optionally create Day 2 cluster
-            const { data } = await addHostsClusters({
-              id: openshiftClusterId, // used to both match OpenShift Cluster and as an assisted-installer ID
+            // TODO(jkilzi): cannot move to v2 until https://issues.redhat.com/browse/MGMT-7915 is done
+            const { data } = await ClustersAPI.registerAddHosts({
+              openshiftClusterId, // used to both match OpenShift Cluster and as an assisted-installer ID
               name: `scale-up-${cluster.display_name || cluster.name || openshiftClusterId}`, // both cluster.name and cluster.display-name contain just UUID which fails AI validation (k8s naming conventions)
               openshiftVersion,
               apiVipDnsname,
             });
+
+            await InfraEnvsService.create({
+              name: `${data.name}_infra-env`,
+              pullSecret,
+              clusterId: data.id,
+              // TODO(jkilzi): MGMT-7709 will deprecate the openshiftVersion field, remove the line below once it happens.
+              openshiftVersion,
+            });
             // all set, we can refirect
             setDay2Cluster(data);
           } catch (e) {
-            handleApiError<AddHostsClusterCreateParams>(e);
+            handleApiError(e);
             setError(
               <>
                 Failed to create wrapping cluster for adding new hosts.
@@ -185,7 +195,7 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
         }
       };
 
-      doItAsync();
+      void doItAsync();
     }
   }, [cluster, openModal, pullSecret, day2Cluster, isVisible, normalizeClusterVersion]);
 
@@ -194,10 +204,10 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
       const id = setTimeout(() => {
         const doItAsync = async () => {
           try {
-            const { data } = await getCluster(day2Cluster.id);
+            const { data } = await ClustersAPI.get(day2Cluster.id);
             setDay2Cluster(data);
           } catch (e) {
-            handleApiError<AddHostsClusterCreateParams>(e);
+            handleApiError(e);
             setError(
               <>
                 Failed to reload cluster data.
@@ -207,7 +217,7 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
             );
           }
         };
-        doItAsync();
+        void doItAsync();
       }, POLLING_INTERVAL);
       return () => clearTimeout(id);
     }

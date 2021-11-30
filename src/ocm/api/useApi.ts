@@ -1,6 +1,6 @@
 import React from 'react';
 import { AxiosPromise } from 'axios';
-import { ResourceUIState } from '../../common';
+import { ResourceUIState } from '../../common/types';
 import { captureException } from '../sentry';
 
 type ApiCall<P, T> = (params: P) => AxiosPromise<T>;

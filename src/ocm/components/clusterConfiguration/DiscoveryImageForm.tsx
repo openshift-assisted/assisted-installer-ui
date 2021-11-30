@@ -2,22 +2,22 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import Axios, { CancelTokenSource } from 'axios';
 import { FormikHelpers } from 'formik';
-import { createClusterDownloadsImage, patchCluster } from '../../api';
 import { handleApiError, getErrorMessage } from '../../api';
 import {
-  ImageCreateParams,
   Cluster,
-  ClusterUpdateParams,
   DiscoveryImageConfigForm,
   DiscoveryImageFormValues,
+  InfraEnv,
 } from '../../../common';
 import { updateCluster, forceReload } from '../../reducers/clusters';
-import { usePullSecretFetch } from '../fetching/pullSecret';
+import { usePullSecret } from '../../hooks';
+import useInfraEnv from '../../hooks/useInfraEnv';
+import { DiscoveryImageFormService } from '../../services';
 
 type DiscoveryImageFormProps = {
   cluster: Cluster;
   onCancel: () => void;
-  onSuccess: (imageInfo: Cluster['imageInfo']) => void;
+  onSuccess: (downloadUrl: InfraEnv['downloadUrl']) => void;
 };
 
 const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
@@ -25,9 +25,10 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
   onCancel,
   onSuccess,
 }) => {
+  const { infraEnv } = useInfraEnv(cluster.id);
   const cancelSourceRef = React.useRef<CancelTokenSource>();
   const dispatch = useDispatch();
-  const ocmPullSecret = usePullSecretFetch();
+  const ocmPullSecret = usePullSecret();
 
   React.useEffect(() => {
     cancelSourceRef.current = Axios.CancelToken.source();
@@ -40,37 +41,22 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
   };
 
   const handleSubmit = async (
-    values: DiscoveryImageFormValues,
+    formValues: DiscoveryImageFormValues,
     formikActions: FormikHelpers<DiscoveryImageFormValues>,
   ) => {
-    if (cluster.id) {
+    if (cluster.id && infraEnv?.id) {
       try {
-        const proxyParams: ClusterUpdateParams = {
-          httpProxy: values.httpProxy,
-          httpsProxy: values.httpsProxy,
-          noProxy: values.noProxy,
-          // TODO(mlibra): Does the user need to change pull-secret?
-          pullSecret:
-            cluster.kind === 'AddHostsCluster' && ocmPullSecret ? ocmPullSecret : undefined,
-        };
-        // either update or remove proxy details
-        await patchCluster(cluster.id, proxyParams);
-
-        const imageCreateParams: ImageCreateParams = {
-          sshPublicKey: values.sshPublicKey,
-          imageType: values.imageType,
-        };
-        const { data: updatedCluster } = await createClusterDownloadsImage(
+        const updatedCluster = await DiscoveryImageFormService.update(
           cluster.id,
-          imageCreateParams,
-          {
-            cancelToken: cancelSourceRef.current?.token,
-          },
+          infraEnv.id,
+          cluster.kind,
+          formValues,
+          ocmPullSecret,
         );
-        onSuccess(updatedCluster.imageInfo);
+        onSuccess(infraEnv?.downloadUrl);
         dispatch(updateCluster(updatedCluster));
       } catch (error) {
-        handleApiError<ImageCreateParams>(error, () => {
+        handleApiError(error, () => {
           formikActions.setStatus({
             error: {
               title: 'Failed to download the discovery Image',
@@ -86,11 +72,11 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
     <DiscoveryImageConfigForm
       onCancel={handleCancel}
       handleSubmit={handleSubmit}
-      sshPublicKey={cluster.imageInfo.sshPublicKey}
-      imageType={cluster.imageInfo.type}
-      httpProxy={cluster.httpProxy}
-      httpsProxy={cluster.httpsProxy}
-      noProxy={cluster.noProxy}
+      sshPublicKey={infraEnv?.sshAuthorizedKey}
+      httpProxy={infraEnv?.proxy?.httpProxy}
+      httpsProxy={infraEnv?.proxy?.httpsProxy}
+      noProxy={infraEnv?.proxy?.noProxy}
+      imageType={infraEnv?.type}
     />
   );
 };
