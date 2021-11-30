@@ -4,11 +4,16 @@ import {
   getFailingClusterWizardSoftValidationIds,
   getWizardStepHostStatus,
   getWizardStepHostValidationsInfo,
+  wizardStepsValidationsMap,
 } from '../clusterWizard/wizardTransition';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
 
 const NetworkingStatus: React.FC<HostNetworkingStatusComponentProps> = (props) => {
-  const networkingStatus = getWizardStepHostStatus(props.host, 'networking');
+  const networkingStatus = getWizardStepHostStatus(
+    'networking',
+    wizardStepsValidationsMap,
+    props.host,
+  );
   const validationsInfo = getWizardStepHostValidationsInfo(props.validationsInfo, 'networking');
   const sublabel = getFailingClusterWizardSoftValidationIds(validationsInfo, 'networking').length
     ? 'Some validations failed'

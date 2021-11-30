@@ -7,14 +7,15 @@ import {
   stringToJSON,
 } from '../../../common';
 import {
+  ClusterWizardStepStatusDeterminationObject,
   ValidationGroup as ClusterValidationGroup,
   ValidationsInfo as ClusterValidationsInfo,
 } from '../../../common/types/clusters';
 import {
+  ClusterWizardStepHostStatusDeterminationObject,
   Validation,
   ValidationGroup as HostValidationGroup,
   ValidationsInfo as HostValidationsInfo,
-  ValidationsInfo,
 } from '../../../common/types/hosts';
 
 export type ClusterWizardStepsType = 'cluster-details' | 'host-discovery' | 'networking' | 'review';
@@ -136,7 +137,7 @@ export const allClusterWizardSoftValidationIds: WizardStepValidationMap['softVal
 );
 
 export const getFailingClusterWizardSoftValidationIds = (
-  wizardHostStepValidationsInfo: ValidationsInfo,
+  wizardHostStepValidationsInfo: HostValidationsInfo,
   wizardStepId: ClusterWizardStepsType,
 ) => {
   const failingValidationIds = Object.keys(wizardHostStepValidationsInfo)
@@ -233,13 +234,18 @@ export const getWizardStepHostValidationsInfo = (
 };
 
 export const getWizardStepHostStatus = (
-  host: Host,
   wizardStepId: ClusterWizardStepsType,
+  wizardStepsValidationsMap: WizardStepsValidationMap,
+  host: ClusterWizardStepHostStatusDeterminationObject,
 ): Host['status'] => {
   const { status } = host;
   if (['insufficient', 'pending-for-input'].includes(status)) {
     const { softValidationIds } = wizardStepsValidationsMap[wizardStepId];
-    const validationsInfo = stringToJSON<HostValidationsInfo>(host.validationsInfo) || {};
+    // NOTE(jtomasek): REST API validationsInfo is string, K8s validationsInfo is ClusterValidationsInfo object
+    const validationsInfo =
+      (typeof host.validationsInfo === 'string'
+        ? stringToJSON<HostValidationsInfo>(host.validationsInfo)
+        : host.validationsInfo) || {};
     const { groups, validationIds } = wizardStepsValidationsMap[wizardStepId].host;
     return checkHostValidationGroups(validationsInfo, groups, softValidationIds) &&
       checkHostValidations(validationsInfo, validationIds)
@@ -275,19 +281,27 @@ export const getWizardStepClusterValidationsInfo = (
 };
 
 export const getWizardStepClusterStatus = (
-  cluster: Cluster,
   wizardStepId: ClusterWizardStepsType,
+  wizardStepsValidationsMap: WizardStepsValidationMap,
+  cluster: ClusterWizardStepStatusDeterminationObject,
+  clusterHosts: ClusterWizardStepHostStatusDeterminationObject[] = [],
 ): Cluster['status'] => {
   const { status } = cluster;
   if (['insufficient', 'pending-for-input'].includes(status)) {
-    const validationsInfo = stringToJSON<ClusterValidationsInfo>(cluster.validationsInfo) || {};
+    // NOTE(jtomasek): REST API validationsInfo is string, K8s validationsInfo is ClusterValidationsInfo object
+    const validationsInfo =
+      (typeof cluster.validationsInfo === 'string'
+        ? stringToJSON<ClusterValidationsInfo>(cluster.validationsInfo)
+        : cluster.validationsInfo) || {};
     const { groups, validationIds } = wizardStepsValidationsMap[wizardStepId].cluster;
     const { softValidationIds } = wizardStepsValidationsMap[wizardStepId];
     const { allowedStatuses } = wizardStepsValidationsMap[wizardStepId].host;
-    const allHostsReady = (cluster?.hosts || []).every(
+    const allHostsReady = clusterHosts.every(
       (host) =>
         allowedStatuses.length === 0 ||
-        allowedStatuses.includes(getWizardStepHostStatus(host, wizardStepId)),
+        allowedStatuses.includes(
+          getWizardStepHostStatus(wizardStepId, wizardStepsValidationsMap, host),
+        ),
     );
     return allHostsReady &&
       checkClusterValidationGroups(validationsInfo, groups, softValidationIds) &&
@@ -328,10 +342,21 @@ We are colocating all these canNext* functions for easier maintenance.
 However transitions among steps should be independent on each other.
 */
 export const canNextClusterDetails = ({ cluster }: TransitionProps): boolean =>
-  getWizardStepClusterStatus(cluster, 'cluster-details') === 'ready';
+  getWizardStepClusterStatus(
+    'cluster-details',
+    wizardStepsValidationsMap,
+    cluster,
+    cluster.hosts,
+  ) === 'ready';
 
 export const canNextHostDiscovery = ({ cluster }: TransitionProps): boolean =>
-  getWizardStepClusterStatus(cluster, 'host-discovery') === 'ready';
+  getWizardStepClusterStatus(
+    'host-discovery',
+    wizardStepsValidationsMap,
+    cluster,
+    cluster.hosts,
+  ) === 'ready';
 
 export const canNextNetwork = ({ cluster }: TransitionProps): boolean =>
-  getWizardStepClusterStatus(cluster, 'networking') === 'ready';
+  getWizardStepClusterStatus('networking', wizardStepsValidationsMap, cluster, cluster.hosts) ===
+  'ready';

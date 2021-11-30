@@ -134,6 +134,7 @@ export const getAICluster = ({
     hosts: getAIHosts(agents),
     installStartedAt: clusterDeployment.status?.installStartedTimestamp,
     installCompletedAt: clusterDeployment.status?.installedTimestamp,
+    validationsInfo: JSON.stringify(agentClusterInstall?.status?.validationsInfo || {}),
   };
   /*
   aiCluster.agentSelectorMasterLabels =

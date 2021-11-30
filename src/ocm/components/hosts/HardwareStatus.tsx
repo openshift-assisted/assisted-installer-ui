@@ -5,6 +5,7 @@ import {
   getFailingClusterWizardSoftValidationIds,
   getWizardStepHostStatus,
   getWizardStepHostValidationsInfo,
+  wizardStepsValidationsMap,
 } from '../clusterWizard/wizardTransition';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
 
@@ -15,7 +16,11 @@ type HardwareStatusProps = {
 };
 
 const HardwareStatus: React.FC<HardwareStatusProps> = (props) => {
-  const hardwareStatus = getWizardStepHostStatus(props.host, 'host-discovery');
+  const hardwareStatus = getWizardStepHostStatus(
+    'host-discovery',
+    wizardStepsValidationsMap,
+    props.host,
+  );
   const validationsInfo = getWizardStepHostValidationsInfo(props.validationsInfo, 'host-discovery');
   const sublabel = getFailingClusterWizardSoftValidationIds(validationsInfo, 'host-discovery')
     .length

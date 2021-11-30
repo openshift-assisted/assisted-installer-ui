@@ -14,6 +14,7 @@ import { Validation, ValidationsInfo } from '../../../common/types/clusters';
 import {
   getWizardStepClusterStatus,
   getWizardStepClusterValidationsInfo,
+  wizardStepsValidationsMap,
 } from '../clusterWizard/wizardTransition';
 import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
 
@@ -37,7 +38,9 @@ const ClusterAlerts = ({ cluster }: { cluster: Cluster }) => {
     };
   }, [cluster.validationsInfo, currentStepId]);
 
-  const isClusterReady = getWizardStepClusterStatus(cluster, currentStepId) === 'ready';
+  const isClusterReady =
+    getWizardStepClusterStatus(currentStepId, wizardStepsValidationsMap, cluster, cluster.hosts) ===
+    'ready';
 
   return (
     <>
