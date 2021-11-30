@@ -16,10 +16,10 @@ export type FeatureSupportLevelsMap = {
 };
 
 export type ClusterFeatureUsage = {
-  name: {
+  [key: string]: {
     id: FeatureId;
-    data: Record<string, string>;
     name: string;
+    data?: { [key: string]: unknown };
   };
 };
 
