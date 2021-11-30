@@ -8,7 +8,8 @@ import {
   Cluster,
   DASH,
   getDateTimeCell,
-  getReadyHostCount,
+  getEnabledHostCount,
+  getTotalHostCount,
   HostsCount,
   HumanizedSortable,
   ResourceUIState,
@@ -62,7 +63,8 @@ const clusterToClusterTableRow = (cluster: Cluster): IRow => {
       {
         title: <HostsCount cluster={cluster} />,
         props: { 'data-testid': `cluster-hosts-count-${name}` },
-        sortableValue: getReadyHostCount(cluster),
+        sortableValue:
+          'enabledHostCount' in cluster ? getEnabledHostCount(cluster) : getTotalHostCount(cluster),
       } as HumanizedSortable,
       {
         title: dateTimeCell.title,
