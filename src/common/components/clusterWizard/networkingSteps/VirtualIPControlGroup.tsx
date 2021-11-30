@@ -5,6 +5,7 @@ import { Cluster, stringToJSON } from '../../../api';
 import { HostSubnets, NetworkConfigurationValues, ValidationsInfo } from '../../../types/clusters';
 import { CheckboxField, FormikStaticField, InputField } from '../../ui';
 import { NO_SUBNET_SET } from '../../../config';
+import { FeatureSupportLevelBadge } from '../../featureSupportLevels';
 interface VipStaticValueProps {
   vipName: string;
   cluster: Cluster;
@@ -107,7 +108,18 @@ export const VirtualIPControlGroup = ({
   return (
     <>
       {!isVipDhcpAllocationDisabled && (
-        <CheckboxField label="Allocate virtual IPs via DHCP server" name="vipDhcpAllocation" />
+        <CheckboxField
+          label={
+            <>
+              Allocate virtual IPs via DHCP server
+              <FeatureSupportLevelBadge
+                featureId="VIP_AUTO_ALLOC"
+                openshiftVersion={cluster.openshiftVersion}
+              ></FeatureSupportLevelBadge>
+            </>
+          }
+          name="vipDhcpAllocation"
+        />
       )}
       {values.vipDhcpAllocation ? (
         <>
