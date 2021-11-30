@@ -4,7 +4,7 @@ import { Cluster } from '../../common/api/types';
 export const selectMachineNetworkCIDR = ({
   machineNetworks,
   machineNetworkCidr,
-}: Partial<Cluster>) => _.head(machineNetworks)?.cidr ?? machineNetworkCidr;
+}: Partial<Cluster>) => machineNetworkCidr ?? _.head(machineNetworks)?.cidr;
 export const selectClusterNetworkCIDR = ({
   clusterNetworks,
   clusterNetworkCidr,
