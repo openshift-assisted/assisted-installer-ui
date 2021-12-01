@@ -9,13 +9,15 @@ import {
   List,
   ListItem,
 } from '@patternfly/react-core';
-import { Cluster, stringToJSON, CLUSTER_FIELD_LABELS } from '../../../common';
-import { Validation, ValidationsInfo } from '../../../common/types/clusters';
 import {
-  getWizardStepClusterStatus,
+  Cluster,
+  stringToJSON,
+  CLUSTER_FIELD_LABELS,
   getWizardStepClusterValidationsInfo,
-  wizardStepsValidationsMap,
-} from '../clusterWizard/wizardTransition';
+  getWizardStepClusterStatus,
+} from '../../../common';
+import { Validation, ValidationsInfo } from '../../../common/types/clusters';
+import { wizardStepsValidationsMap } from '../clusterWizard/wizardTransition';
 import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
 
 const ClusterAlerts = ({ cluster }: { cluster: Cluster }) => {
@@ -26,6 +28,7 @@ const ClusterAlerts = ({ cluster }: { cluster: Cluster }) => {
     const reducedValidationsInfo = getWizardStepClusterValidationsInfo(
       validationsInfo,
       currentStepId,
+      wizardStepsValidationsMap,
     );
     const flattenedValues = _.values(reducedValidationsInfo).flat() as Validation[];
     return {

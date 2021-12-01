@@ -1,22 +1,10 @@
-import _ from 'lodash';
 import {
   Cluster,
-  ClusterValidationId,
-  Host,
-  HostValidationId,
-  stringToJSON,
+  getAllClusterWizardSoftValidationIds,
+  getWizardStepClusterStatus,
+  WizardStepsValidationMap,
+  WizardStepValidationMap,
 } from '../../../common';
-import {
-  ClusterWizardStepStatusDeterminationObject,
-  ValidationGroup as ClusterValidationGroup,
-  ValidationsInfo as ClusterValidationsInfo,
-} from '../../../common/types/clusters';
-import {
-  ClusterWizardStepHostStatusDeterminationObject,
-  Validation,
-  ValidationGroup as HostValidationGroup,
-  ValidationsInfo as HostValidationsInfo,
-} from '../../../common/types/hosts';
 
 export type ClusterWizardStepsType = 'cluster-details' | 'host-discovery' | 'networking' | 'review';
 export type ClusterWizardFlowStateType = Cluster['status'] | 'new';
@@ -37,23 +25,6 @@ export const getClusterWizardFirstStep = (
 };
 
 type TransitionProps = { cluster: Cluster };
-
-type WizardStepValidationMap = {
-  cluster: {
-    groups: ClusterValidationGroup[];
-    validationIds: ClusterValidationId[];
-  };
-  host: {
-    allowedStatuses: Host['status'][];
-    groups: HostValidationGroup[];
-    validationIds: HostValidationId[];
-  };
-  softValidationIds: (HostValidationId | ClusterValidationId)[];
-};
-
-type WizardStepsValidationMap = {
-  [key in ClusterWizardStepsType]: WizardStepValidationMap;
-};
 
 const clusterDetailsStepValidationsMap: WizardStepValidationMap = {
   cluster: {
@@ -122,220 +93,16 @@ const reviewStepValidationsMap: WizardStepValidationMap = {
   softValidationIds: [],
 };
 
-export const wizardStepsValidationsMap: WizardStepsValidationMap = {
+export const wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType> = {
   'cluster-details': clusterDetailsStepValidationsMap,
   'host-discovery': hostDiscoveryStepValidationsMap,
   networking: networkingStepValidationsMap,
   review: reviewStepValidationsMap,
 };
 
-export const allClusterWizardSoftValidationIds: WizardStepValidationMap['softValidationIds'] = Object.keys(
+export const allClusterWizardSoftValidationIds = getAllClusterWizardSoftValidationIds(
   wizardStepsValidationsMap,
-).reduce(
-  (prev, curr) => [...prev, ...wizardStepsValidationsMap[curr].softValidationIds],
-  [] as WizardStepValidationMap['softValidationIds'],
 );
-
-export const getFailingClusterWizardSoftValidationIds = (
-  wizardHostStepValidationsInfo: HostValidationsInfo,
-  wizardStepId: ClusterWizardStepsType,
-) => {
-  const failingValidationIds = Object.keys(wizardHostStepValidationsInfo)
-    .reduce((curr, group) => {
-      const failingValidations = wizardHostStepValidationsInfo[group].filter(
-        (validation: Validation) => validation.status === 'failure',
-      );
-      return [...curr, ...failingValidations];
-    }, [] as Validation[])
-    .map((validation) => validation.id);
-  return failingValidationIds.filter((id) =>
-    wizardStepsValidationsMap[wizardStepId].softValidationIds.includes(id),
-  );
-};
-
-export const checkClusterValidations = (
-  clusterValidationsInfo: ClusterValidationsInfo,
-  requiredIds: ClusterValidationId[],
-): boolean => {
-  const requiredValidations = _.values(clusterValidationsInfo)
-    .flat()
-    .filter((v) => v && requiredIds.includes(v.id));
-  return (
-    requiredValidations.length === requiredIds.length &&
-    requiredValidations.every((v) => v?.status === 'disabled' || v?.status === 'success')
-  );
-};
-
-export const checkClusterValidationGroups = (
-  clusterValidationsInfo: ClusterValidationsInfo,
-  groups: ClusterValidationGroup[],
-  softValidationIds: WizardStepValidationMap['softValidationIds'],
-) =>
-  groups.every((group) =>
-    clusterValidationsInfo[group]?.every(
-      (validation) =>
-        validation.status === 'disabled' ||
-        validation.status === 'success' ||
-        softValidationIds.includes(validation.id),
-    ),
-  );
-
-export const checkHostValidations = (
-  hostValidationsInfo: HostValidationsInfo,
-  requiredIds: HostValidationId[],
-): boolean => {
-  const requiredValidations = _.values(hostValidationsInfo)
-    .flat()
-    .filter((v) => v && requiredIds.includes(v.id));
-
-  return (
-    requiredValidations.length === requiredIds.length &&
-    requiredValidations.every((v) => v?.status === 'disabled' || v?.status === 'success')
-  );
-};
-
-export const checkHostValidationGroups = (
-  hostValidationsInfo: HostValidationsInfo,
-  groups: HostValidationGroup[],
-  softValidationIds: WizardStepValidationMap['softValidationIds'],
-) =>
-  groups.every((group) =>
-    hostValidationsInfo[group]?.every(
-      (validation) =>
-        validation.status === 'disabled' ||
-        validation.status === 'success' ||
-        softValidationIds.includes(validation.id),
-    ),
-  );
-
-export const getWizardStepHostValidationsInfo = (
-  validationsInfo: HostValidationsInfo,
-  wizardStepId: ClusterWizardStepsType,
-): HostValidationsInfo => {
-  const { groups, validationIds } = wizardStepsValidationsMap[wizardStepId].host;
-  return _.reduce(
-    validationsInfo,
-    (result, groupValidations, groupName) => {
-      if (groups.includes(groupName as HostValidationGroup)) {
-        result[groupName] = groupValidations;
-        return result;
-      }
-      const selectedValidations = (groupValidations || []).filter((validation) =>
-        validationIds.includes(validation.id),
-      );
-      if (selectedValidations.length) {
-        result[groupName] = selectedValidations;
-        return result;
-      }
-      return result;
-    },
-    {},
-  );
-};
-
-export const getWizardStepHostStatus = (
-  wizardStepId: ClusterWizardStepsType,
-  wizardStepsValidationsMap: WizardStepsValidationMap,
-  host: ClusterWizardStepHostStatusDeterminationObject,
-): Host['status'] => {
-  const { status } = host;
-  if (['insufficient', 'pending-for-input'].includes(status)) {
-    const { softValidationIds } = wizardStepsValidationsMap[wizardStepId];
-    // NOTE(jtomasek): REST API validationsInfo is string, K8s validationsInfo is ClusterValidationsInfo object
-    const validationsInfo =
-      (typeof host.validationsInfo === 'string'
-        ? stringToJSON<HostValidationsInfo>(host.validationsInfo)
-        : host.validationsInfo) || {};
-    const { groups, validationIds } = wizardStepsValidationsMap[wizardStepId].host;
-    return checkHostValidationGroups(validationsInfo, groups, softValidationIds) &&
-      checkHostValidations(validationsInfo, validationIds)
-      ? 'known'
-      : status;
-  }
-  return status;
-};
-
-export const getWizardStepClusterValidationsInfo = (
-  validationsInfo: ClusterValidationsInfo,
-  wizardStepId: ClusterWizardStepsType,
-): ClusterValidationsInfo => {
-  const { groups, validationIds } = wizardStepsValidationsMap[wizardStepId].cluster;
-  return _.reduce(
-    validationsInfo,
-    (result, groupValidations, groupName) => {
-      if (groups.includes(groupName as ClusterValidationGroup)) {
-        result[groupName] = groupValidations;
-        return result;
-      }
-      const selectedValidations = (groupValidations || []).filter((validation) =>
-        validationIds.includes(validation.id),
-      );
-      if (selectedValidations.length) {
-        result[groupName] = selectedValidations;
-        return result;
-      }
-      return result;
-    },
-    {},
-  );
-};
-
-export const getWizardStepClusterStatus = (
-  wizardStepId: ClusterWizardStepsType,
-  wizardStepsValidationsMap: WizardStepsValidationMap,
-  cluster: ClusterWizardStepStatusDeterminationObject,
-  clusterHosts: ClusterWizardStepHostStatusDeterminationObject[] = [],
-): Cluster['status'] => {
-  const { status } = cluster;
-  if (['insufficient', 'pending-for-input'].includes(status)) {
-    // NOTE(jtomasek): REST API validationsInfo is string, K8s validationsInfo is ClusterValidationsInfo object
-    const validationsInfo =
-      (typeof cluster.validationsInfo === 'string'
-        ? stringToJSON<ClusterValidationsInfo>(cluster.validationsInfo)
-        : cluster.validationsInfo) || {};
-    const { groups, validationIds } = wizardStepsValidationsMap[wizardStepId].cluster;
-    const { softValidationIds } = wizardStepsValidationsMap[wizardStepId];
-    const { allowedStatuses } = wizardStepsValidationsMap[wizardStepId].host;
-    const allHostsReady = clusterHosts.every(
-      (host) =>
-        allowedStatuses.length === 0 ||
-        allowedStatuses.includes(
-          getWizardStepHostStatus(wizardStepId, wizardStepsValidationsMap, host),
-        ),
-    );
-    return allHostsReady &&
-      checkClusterValidationGroups(validationsInfo, groups, softValidationIds) &&
-      checkClusterValidations(validationsInfo, validationIds)
-      ? 'ready'
-      : status;
-  }
-  return status;
-};
-
-export const findValidationFixStep = ({
-  id,
-  hostGroup,
-  clusterGroup,
-}: {
-  // validation IDs are unique
-  id: ClusterValidationId | HostValidationId;
-  hostGroup?: HostValidationGroup;
-  clusterGroup?: ClusterValidationGroup;
-}): ClusterWizardStepsType | undefined => {
-  const keys = _.keys(wizardStepsValidationsMap) as ClusterWizardStepsType[];
-  return keys.find((key) => {
-    // find first matching validation-map name
-    const { cluster: clusterValidationMap, host: hostValidationMap } = wizardStepsValidationsMap[
-      key
-    ];
-    return (
-      clusterValidationMap.validationIds.includes(id as ClusterValidationId) ||
-      hostValidationMap.validationIds.includes(id as HostValidationId) ||
-      (clusterGroup && clusterValidationMap.groups.includes(clusterGroup)) ||
-      (hostGroup && hostValidationMap.groups.includes(hostGroup))
-    );
-  });
-};
 
 /*
 We are colocating all these canNext* functions for easier maintenance.
