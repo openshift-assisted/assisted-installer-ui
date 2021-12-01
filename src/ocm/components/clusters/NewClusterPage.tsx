@@ -8,7 +8,12 @@ import {
   ButtonVariant,
   PageSection,
 } from '@patternfly/react-core';
-import { AlertsContextProvider, ErrorState, LoadingState } from '../../../common';
+import {
+  AlertsContextProvider,
+  ErrorState,
+  LoadingState,
+  TechnologyPreview,
+} from '../../../common';
 import ClusterBreadcrumbs from './ClusterBreadcrumbs';
 import { ClusterDefaultConfigurationProvider } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
 import NewClusterWizard from '../clusterWizard/NewClusterWizard';
@@ -45,7 +50,10 @@ const NewClusterPage: React.FC = () => {
           <ClusterBreadcrumbs clusterName="New cluster" />
           <PageSection variant={PageSectionVariants.light}>
             <TextContent>
-              <Text component="h1">Install OpenShift with the Assisted Installer</Text>
+              <Text component="h1" className="pf-u-display-inline">
+                Install OpenShift with the Assisted Installer
+              </Text>
+              <TechnologyPreview />
             </TextContent>
           </PageSection>
           <PageSection variant={PageSectionVariants.light} isFilled>

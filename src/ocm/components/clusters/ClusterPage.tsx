@@ -15,7 +15,6 @@ import {
   LoadingState,
   AlertsContextProvider,
   AddHostsContextProvider,
-  PreviewBadgePosition,
   TechnologyPreview,
 } from '../../../common';
 import ClusterDetail from '../clusterDetail/ClusterDetail';
@@ -91,7 +90,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
               <Text component="h1" className="pf-u-display-inline">
                 Install OpenShift with the Assisted Installer
               </Text>
-              <TechnologyPreview className="pf-u-ml-md" position={PreviewBadgePosition.inline} />
+              <TechnologyPreview />
             </TextContent>
           </PageSection>
           <PageSection variant={PageSectionVariants.light}>
