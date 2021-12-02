@@ -26,12 +26,12 @@ export type WizardStepValidationMap = {
   softValidationIds: (HostValidationId | ClusterValidationId)[];
 };
 
-export type WizardStepsValidationMap<ClusterWizardStepsType extends string> = {
-  [key in ClusterWizardStepsType]: WizardStepValidationMap;
+export type WizardStepsValidationMap = {
+  [key in string]: WizardStepValidationMap;
 };
 
 export const getAllClusterWizardSoftValidationIds = <ClusterWizardStepsType extends string>(
-  wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType>,
+  wizardStepsValidationsMap: WizardStepsValidationMap,
 ): WizardStepValidationMap['softValidationIds'] =>
   Object.keys(wizardStepsValidationsMap).reduce(
     (prev, curr) => [...prev, ...wizardStepsValidationsMap[curr].softValidationIds],
@@ -41,7 +41,7 @@ export const getAllClusterWizardSoftValidationIds = <ClusterWizardStepsType exte
 export const getFailingClusterWizardSoftValidationIds = <ClusterWizardStepsType extends string>(
   wizardHostStepValidationsInfo: HostValidationsInfo,
   wizardStepId: ClusterWizardStepsType,
-  wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType>,
+  wizardStepsValidationsMap: WizardStepsValidationMap,
 ) => {
   const failingValidationIds = Object.keys(wizardHostStepValidationsInfo)
     .reduce((curr, group) => {
@@ -67,7 +67,7 @@ export const findValidationFixStep = <ClusterWizardStepsType extends string>(
     hostGroup?: HostValidationGroup;
     clusterGroup?: ClusterValidationGroup;
   },
-  wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType>,
+  wizardStepsValidationsMap: WizardStepsValidationMap,
 ): ClusterWizardStepsType | undefined => {
   const keys = _.keys(wizardStepsValidationsMap) as ClusterWizardStepsType[];
   return keys.find((key) => {
@@ -142,7 +142,7 @@ export const checkHostValidationGroups = (
 export const getWizardStepHostValidationsInfo = <ClusterWizardStepsType extends string>(
   validationsInfo: HostValidationsInfo,
   wizardStepId: ClusterWizardStepsType,
-  wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType>,
+  wizardStepsValidationsMap: WizardStepsValidationMap,
 ): HostValidationsInfo => {
   const { groups, validationIds } = wizardStepsValidationsMap[wizardStepId].host;
   return _.reduce(
@@ -167,7 +167,7 @@ export const getWizardStepHostValidationsInfo = <ClusterWizardStepsType extends 
 
 export const getWizardStepHostStatus = <ClusterWizardStepsType extends string>(
   wizardStepId: ClusterWizardStepsType,
-  wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType>,
+  wizardStepsValidationsMap: WizardStepsValidationMap,
   host: ClusterWizardStepHostStatusDeterminationObject,
 ): Host['status'] => {
   const { status } = host;
@@ -190,7 +190,7 @@ export const getWizardStepHostStatus = <ClusterWizardStepsType extends string>(
 export const getWizardStepClusterValidationsInfo = <ClusterWizardStepsType extends string>(
   validationsInfo: ClusterValidationsInfo,
   wizardStepId: ClusterWizardStepsType,
-  wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType>,
+  wizardStepsValidationsMap: WizardStepsValidationMap,
 ): ClusterValidationsInfo => {
   const { groups, validationIds } = wizardStepsValidationsMap[wizardStepId].cluster;
   return _.reduce(
@@ -215,7 +215,7 @@ export const getWizardStepClusterValidationsInfo = <ClusterWizardStepsType exten
 
 export const getWizardStepClusterStatus = <ClusterWizardStepsType extends string>(
   wizardStepId: ClusterWizardStepsType,
-  wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType>,
+  wizardStepsValidationsMap: WizardStepsValidationMap,
   cluster: ClusterWizardStepStatusDeterminationObject,
   clusterHosts: ClusterWizardStepHostStatusDeterminationObject[] = [],
 ): Cluster['status'] => {

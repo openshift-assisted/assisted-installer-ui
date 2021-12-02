@@ -160,7 +160,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   return (
     <AlertsContextProvider>
       <ClusterDeploymentWizardContext.Provider
-        value={{ currentStepId, setCurrentStepId, clusterDeployment }}
+        value={{ currentStepId, setCurrentStepId, clusterDeployment, agentClusterInstall, agents }}
       >
         <div className={classNames('pf-c-wizard', className)}>{renderCurrentStep()}</div>
       </ClusterDeploymentWizardContext.Provider>
