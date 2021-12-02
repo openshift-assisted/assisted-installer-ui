@@ -18,7 +18,7 @@ export default function useInfraEnvId(clusterId: Cluster['id']) {
 
   React.useEffect(() => {
     if (!infraEnvId) {
-      void findInfraEnvId();
+      findInfraEnvId();
     }
   }, [clusterId, findInfraEnvId, infraEnvId]);
 

@@ -25,7 +25,7 @@ export default function useInfraEnv(clusterId: Cluster['id']) {
       setError(infraEnvIdError);
     } else {
       if (!infraEnv) {
-        void getInfraEnv();
+        getInfraEnv();
       }
     }
   }, [getInfraEnv, infraEnv, infraEnvId, infraEnvIdError]);

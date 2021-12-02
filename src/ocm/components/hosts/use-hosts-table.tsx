@@ -163,7 +163,7 @@ export const useHostsTable = (cluster: Cluster) => {
         }
       }
     };
-    void reset(resetHostDialog.data?.hostId);
+    reset(resetHostDialog.data?.hostId);
     resetHostDialog.close();
   }, [addAlert, cluster.id, dispatch, resetHostDialog]);
 
@@ -183,7 +183,7 @@ export const useHostsTable = (cluster: Cluster) => {
         }
       }
     };
-    void deleteHost(deleteHostDialog.data?.hostId);
+    deleteHost(deleteHostDialog.data?.hostId);
     deleteHostDialog.close();
   }, [addAlert, cluster.id, dispatch, deleteHostDialog]);
 
