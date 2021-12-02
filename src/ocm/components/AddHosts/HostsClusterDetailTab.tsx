@@ -195,7 +195,7 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
         }
       };
 
-      void doItAsync();
+      doItAsync();
     }
   }, [cluster, openModal, pullSecret, day2Cluster, isVisible, normalizeClusterVersion]);
 
@@ -217,7 +217,7 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
             );
           }
         };
-        void doItAsync();
+        doItAsync();
       }, POLLING_INTERVAL);
       return () => clearTimeout(id);
     }

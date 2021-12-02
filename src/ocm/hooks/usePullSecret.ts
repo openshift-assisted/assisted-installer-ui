@@ -24,7 +24,7 @@ export default function usePullSecret() {
 
   React.useEffect(() => {
     if (!pullSecret) {
-      void getPullSecret();
+      getPullSecret();
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 

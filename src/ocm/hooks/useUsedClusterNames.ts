@@ -26,7 +26,7 @@ export default function useUsedClusterNames(clusterId: Cluster['id']) {
   }, [addAlert, clusterId]);
 
   React.useEffect(() => {
-    void fetcher();
+    fetcher();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

@@ -21,7 +21,7 @@ export default function useManagedDomains() {
 
   React.useEffect(() => {
     if (!managedDomains) {
-      void fetchManagedDomains();
+      fetchManagedDomains();
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
