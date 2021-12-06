@@ -4,6 +4,12 @@ import {
   WizardStepValidationMap,
 } from '../../../common';
 
+export type ClusterWizardStepsType =
+  | 'cluster-details'
+  | 'hosts-selection'
+  | 'hosts-discovery'
+  | 'networking';
+
 const clusterDetailsStepValidationsMap: WizardStepValidationMap = {
   cluster: {
     groups: [],
@@ -58,38 +64,25 @@ const networkingStepValidationsMap: WizardStepValidationMap = {
   softValidationIds: ['ntp-synced', 'container-images-available'],
 };
 
-const reviewStepValidationsMap: WizardStepValidationMap = {
-  cluster: {
-    groups: [],
-    validationIds: ['all-hosts-are-ready-to-install'],
-  },
-  host: {
-    allowedStatuses: ['known', 'disabled'],
-    groups: [],
-    validationIds: [],
-  },
-  softValidationIds: [],
-};
+// const reviewStepValidationsMap: WizardStepValidationMap = {
+//   cluster: {
+//     groups: [],
+//     validationIds: ['all-hosts-are-ready-to-install'],
+//   },
+//   host: {
+//     allowedStatuses: ['known', 'disabled'],
+//     groups: [],
+//     validationIds: [],
+//   },
+//   softValidationIds: [],
+// };
 
-const allValidationsStepMap: WizardStepValidationMap = {
-  cluster: {
-    groups: ['configuration', 'hostsData', 'hosts-data', 'network', 'operators'],
-    validationIds: [],
-  },
-  host: {
-    allowedStatuses: ['known', 'disabled'],
-    groups: ['hardware', 'network', 'operators', 'infrastructure'],
-    validationIds: [],
-  },
-  softValidationIds: [],
-};
-
-export const wizardStepsValidationsMap: WizardStepsValidationMap = {
+export const wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType> = {
   'cluster-details': clusterDetailsStepValidationsMap,
   'hosts-discovery': hostDiscoveryStepValidationsMap,
-  'hosts-selection': allValidationsStepMap,
+  'hosts-selection': hostDiscoveryStepValidationsMap,
   networking: networkingStepValidationsMap,
-  review: reviewStepValidationsMap,
+  // review: reviewStepValidationsMap,
 };
 
 export const allClusterWizardSoftValidationIds = getAllClusterWizardSoftValidationIds(

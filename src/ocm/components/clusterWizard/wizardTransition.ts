@@ -93,7 +93,7 @@ const reviewStepValidationsMap: WizardStepValidationMap = {
   softValidationIds: [],
 };
 
-export const wizardStepsValidationsMap: WizardStepsValidationMap = {
+export const wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType> = {
   'cluster-details': clusterDetailsStepValidationsMap,
   'host-discovery': hostDiscoveryStepValidationsMap,
   networking: networkingStepValidationsMap,

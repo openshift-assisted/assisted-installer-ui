@@ -10,21 +10,21 @@ import {
   getWizardStepClusterValidationsInfo,
 } from './validationsInfoUtils';
 
-type ClusterWizardStepValidationsAlertProps = {
-  currentStepId: string;
+type ClusterWizardStepValidationsAlertProps<ClusterWizardStepsType extends string> = {
+  currentStepId: ClusterWizardStepsType;
   validationsInfo?: ValidationsInfo;
   clusterStatus: Cluster['status'];
   hosts: ClusterWizardStepHostStatusDeterminationObject[];
-  wizardStepsValidationsMap: WizardStepsValidationMap;
+  wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType>;
 };
 
-const ClusterWizardStepValidationsAlert = ({
+const ClusterWizardStepValidationsAlert = <ClusterWizardStepsType extends string>({
   currentStepId,
   clusterStatus,
   validationsInfo,
   hosts,
   wizardStepsValidationsMap,
-}: ClusterWizardStepValidationsAlertProps) => {
+}: ClusterWizardStepValidationsAlertProps<ClusterWizardStepsType>) => {
   const { failedClusterValidations } = React.useMemo(() => {
     const reducedValidationsInfo = getWizardStepClusterValidationsInfo(
       validationsInfo || {},
