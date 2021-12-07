@@ -1,4 +1,4 @@
-import { Cluster, Host } from '../../api';
+import { Cluster, Host, HostUpdateParams } from '../../api';
 import { ValidationsInfo } from '../../types/hosts';
 import { HostsNotShowingLinkProps } from '../clusterConfiguration';
 import { onDiskRoleType } from './DiskRole';
@@ -34,7 +34,7 @@ export type HostsTableActions = {
   canDownloadHostLogs?: (host: Host) => boolean;
   canDelete?: (host: Host) => boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onEditRole?: (host: Host, role?: string) => Promise<any>;
+  onEditRole?: (host: Host, role: HostUpdateParams['hostRole']) => Promise<any>;
   canEditRole?: (host: Host) => boolean;
   onEditBMH?: (host: Host) => void;
   canEditBMH?: (host: Host) => boolean;

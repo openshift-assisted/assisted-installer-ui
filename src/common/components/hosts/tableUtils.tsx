@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Address4, Address6 } from 'ip-address';
 import HardwareStatus from '../../../ocm/components/hosts/HardwareStatus';
 import NetworkingStatus from '../../../ocm/components/hosts/NetworkingStatus';
-import { Cluster, Host, Interface, Inventory, stringToJSON } from '../../api';
+import { Cluster, Host, HostUpdateParams, Interface, Inventory, stringToJSON } from '../../api';
 import { ValidationsInfo } from '../../types/hosts';
 import { getSubnet } from '../clusterConfiguration';
 import { DASH } from '../constants';
@@ -94,7 +94,9 @@ export const roleColumn = (
       transforms: [sortable],
     },
     cell: (host) => {
-      const editRole = onEditRole ? (role?: string) => onEditRole(host, role) : undefined;
+      const editRole = onEditRole
+        ? (role: HostUpdateParams['hostRole']) => onEditRole(host, role)
+        : undefined;
       const hostRole = getHostRole(host, schedulableMasters);
       return {
         title: (
@@ -247,7 +249,7 @@ export const memoryColumn: TableRow<Host> = {
 
 export const disksColumn: TableRow<Host> = {
   header: {
-    title: 'Disk',
+    title: 'Total storage',
     props: {
       id: 'col-header-disk',
     },

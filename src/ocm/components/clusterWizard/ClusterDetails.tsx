@@ -1,27 +1,25 @@
 import React from 'react';
 import _ from 'lodash';
 import { useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import {
   Cluster,
   ClusterCreateParams,
   ClusterUpdateParams,
-  ManagedDomain,
   useAlerts,
   LoadingState,
   ClusterWizardStep,
 } from '../../../common';
-import { usePullSecretFetch } from '../fetching/pullSecret';
-import { getClusters, patchCluster, postCluster } from '../../api/clusters';
-import { getErrorMessage, handleApiError } from '../../api/utils';
-import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
-import { useDispatch } from 'react-redux';
+import { usePullSecret } from '../../hooks';
+import { getErrorMessage, handleApiError } from '../../api';
+import { updateCluster } from '../../reducers/clusters';
 import ClusterWizardContext from './ClusterWizardContext';
-import { getManagedDomains } from '../../api/domains';
 import { canNextClusterDetails, ClusterWizardFlowStateType } from './wizardTransition';
-import { useOpenshiftVersions } from '../fetching/openshiftVersions';
+import { useOpenshiftVersions, useManagedDomains, useUsedClusterNames } from '../../hooks';
 import ClusterDetailsForm from './ClusterDetailsForm';
 import ClusterWizardNavigation from './ClusterWizardNavigation';
-import { routeBasePath } from '../../config/routeBaseBath';
+import { routeBasePath } from '../../config';
+import { ClusterDetailsService } from '../../services';
 
 type ClusterDetailsProps = {
   cluster?: Cluster;
@@ -29,97 +27,60 @@ type ClusterDetailsProps = {
 
 const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster }) => {
   const { setCurrentStepId } = React.useContext(ClusterWizardContext);
-  const [managedDomains, setManagedDomains] = React.useState<ManagedDomain[]>();
-  const [usedClusterNames, setUsedClusterNames] = React.useState<string[]>();
+  const managedDomains = useManagedDomains();
   const { addAlert, clearAlerts } = useAlerts();
   const history = useHistory();
   const dispatch = useDispatch();
-
-  React.useEffect(() => {
-    const fetchManagedDomains = async () => {
-      try {
-        const { data } = await getManagedDomains();
-        setManagedDomains(data);
-      } catch (e) {
-        setManagedDomains([]);
-        handleApiError(e, () =>
-          addAlert({ title: 'Failed to retrieve managed domains', message: getErrorMessage(e) }),
-        );
-      }
-    };
-    fetchManagedDomains();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  React.useEffect(
-    () => {
-      const fetcher = async () => {
-        try {
-          const { data: clusters } = await getClusters();
-          const names = clusters
-            .filter((c) => !cluster || c.id !== cluster.id)
-            .map((c) => `${c.name}.${c.baseDnsDomain}`);
-          setUsedClusterNames(names);
-        } catch (e) {
-          setUsedClusterNames([]);
-          handleApiError(e, () =>
-            addAlert({
-              title: 'Failed to retrieve names of existing clusters.',
-              message: getErrorMessage(e),
-            }),
-          );
-        }
-      };
-      fetcher();
-    },
-    // just once
-    [], // eslint-disable-line react-hooks/exhaustive-deps
-  );
-
-  const pullSecret = usePullSecretFetch();
-
+  const { usedClusterNames } = useUsedClusterNames(cluster?.id || '');
+  const pullSecret = usePullSecret();
   const { error: errorOCPVersions, loading: loadingOCPVersions, versions } = useOpenshiftVersions();
 
-  React.useEffect(() => errorOCPVersions && addAlert(errorOCPVersions), [
-    errorOCPVersions,
-    addAlert,
-  ]);
+  React.useEffect(() => {
+    errorOCPVersions && addAlert(errorOCPVersions);
+  }, [errorOCPVersions, addAlert]);
 
-  const moveNext = () => setCurrentStepId('host-discovery');
+  const moveNext = React.useCallback(() => setCurrentStepId('host-discovery'), [setCurrentStepId]);
 
-  const handleClusterUpdate = async (clusterId: Cluster['id'], values: ClusterUpdateParams) => {
-    clearAlerts();
-    const params: ClusterUpdateParams = _.omit(values, [
-      'highAvailabilityMode',
-      'pullSecret',
-      'openshiftVersion',
-    ]);
+  const handleClusterUpdate = React.useCallback(
+    async (clusterId: Cluster['id'], values: ClusterUpdateParams) => {
+      clearAlerts();
+      const params: ClusterUpdateParams = _.omit(values, [
+        'highAvailabilityMode',
+        'pullSecret',
+        'openshiftVersion',
+      ]);
 
-    try {
-      const { data } = await patchCluster(clusterId, params);
-      dispatch(updateCluster(data));
+      try {
+        const cluster = await ClusterDetailsService.update(clusterId, params);
+        dispatch(updateCluster(cluster));
 
-      canNextClusterDetails({ cluster: data }) && moveNext();
-    } catch (e) {
-      handleApiError<ClusterUpdateParams>(e, () =>
-        addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),
-      );
-    }
-  };
+        canNextClusterDetails({ cluster }) && moveNext();
+      } catch (e) {
+        handleApiError(e, () =>
+          addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),
+        );
+      }
+    },
+    [addAlert, clearAlerts, dispatch, moveNext],
+  );
 
-  const handleClusterCreate = async (params: ClusterCreateParams) => {
-    clearAlerts();
+  const handleClusterCreate = React.useCallback(
+    async (params: ClusterCreateParams) => {
+      clearAlerts();
 
-    try {
-      const { data } = await postCluster(params);
-      const locationState: ClusterWizardFlowStateType = 'new';
-      // TODO(mlibra): figure out subscription ID and navigate to ${routeBasePath}/../details/s/${subscriptionId} instead
-      history.push(`${routeBasePath}/clusters/${data.id}`, locationState);
-    } catch (e) {
-      handleApiError<ClusterCreateParams>(e, () =>
-        addAlert({ title: 'Failed to create new cluster', message: getErrorMessage(e) }),
-      );
-    }
-  };
+      try {
+        const cluster = await ClusterDetailsService.create(params);
+        const locationState: ClusterWizardFlowStateType = 'new';
+        // TODO(mlibra): figure out subscription ID and navigate to ${routeBasePath}/../details/s/${subscriptionId} instead
+        history.push(`${routeBasePath}/clusters/${cluster.id}`, locationState);
+      } catch (e) {
+        handleApiError(e, () =>
+          addAlert({ title: 'Failed to create new cluster', message: getErrorMessage(e) }),
+        );
+      }
+    },
+    [addAlert, clearAlerts, history],
+  );
 
   if (pullSecret === undefined || !managedDomains || loadingOCPVersions || !usedClusterNames) {
     return (

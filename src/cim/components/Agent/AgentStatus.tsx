@@ -1,4 +1,4 @@
-import { Button, Popover, Stack, StackItem } from '@patternfly/react-core';
+import { Button, Popover } from '@patternfly/react-core';
 import * as React from 'react';
 import { getHostname, HostStatus } from '../../../common';
 import { AgentK8sResource } from '../../types';
@@ -25,41 +25,36 @@ const AgentStatus: React.FC<AgentStatusProps> = ({ agent, onApprove, onEditHostn
   const [status, , validationsInfo] = getAgentStatus(agent);
 
   return (
-    <Stack>
-      <StackItem>
-        <HostStatus
-          host={host}
-          onEditHostname={editHostname}
-          validationsInfo={validationsInfo}
-          statusOverride={status}
-        />
-      </StackItem>
+    <HostStatus
+      host={host}
+      onEditHostname={editHostname}
+      validationsInfo={validationsInfo}
+      statusOverride={status}
+    >
       {pendingApproval && onApprove && (
-        <StackItem>
-          <Popover
-            aria-label="Approve host popover"
-            minWidth="30rem"
-            maxWidth="50rem"
-            headerContent={<div>Approve host to join infrastructure environment</div>}
-            bodyContent={
-              <>
-                {hostname && <div>Hostname: {hostname}</div>}
-                {macAddress && <div>MAC address: {macAddress}</div>}
-              </>
-            }
-            footerContent={
-              <Button variant="link" onClick={() => onApprove(agent)} isInline>
-                Approve host
-              </Button>
-            }
-          >
-            <Button variant="link" isInline className="pf-u-font-size-xs">
+        <Popover
+          aria-label="Approve host popover"
+          minWidth="30rem"
+          maxWidth="50rem"
+          headerContent={<div>Approve host to join infrastructure environment</div>}
+          bodyContent={
+            <>
+              {hostname && <div>Hostname: {hostname}</div>}
+              {macAddress && <div>MAC address: {macAddress}</div>}
+            </>
+          }
+          footerContent={
+            <Button variant="link" onClick={() => onApprove(agent)} isInline>
               Approve host
             </Button>
-          </Popover>
-        </StackItem>
+          }
+        >
+          <Button variant="link" isInline className="pf-u-font-size-xs">
+            Approve host
+          </Button>
+        </Popover>
       )}
-    </Stack>
+    </HostStatus>
   );
 };
 

@@ -1,6 +1,6 @@
 {
   "name": "openshift-assisted-ui-lib",
-  "version": "1.5.45",
+  "version": "2.0.0",
   "description": "React component library for the Bare Metal Installer",
   "license": "Apache-2.0",
   "repository": "openshift-assisted/assisted-ui-lib",
@@ -140,7 +140,6 @@
     "filesize.js": "^2.0.0",
     "formik": "2.2.6",
     "fuse.js": "^6.4.6",
-    "http-proxy-middleware": "^1.0.3",
     "human-date": "^1.4.0",
     "humanize-plus": "^1.8.2",
     "ip-address": "^7.1.0",

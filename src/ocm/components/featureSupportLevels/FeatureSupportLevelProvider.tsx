@@ -11,7 +11,7 @@ import {
 import { FeatureSupportLevelContext } from '../../../common/components/featureSupportLevels';
 import { FeatureSupportLevelData } from '../../../common/components/featureSupportLevels/FeatureSupportLevelContext';
 import { handleApiError } from '../../api';
-import { FeatureSupportLevelsAPI } from '../../services/api';
+import { FeatureSupportLevelsAPI } from '../../services/apis';
 import { captureException } from '../../sentry';
 
 export type SupportLevelProviderProps = PropsWithChildren<{
