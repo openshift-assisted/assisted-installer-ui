@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import _ from 'lodash';
 import { EventList } from '../../../common/api/types';
-import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-install';
+import { AgentClusterInstallK8sResource, InfraEnvK8sResource } from '../../types/k8s';
 import { getClusterStatus } from '../helpers/status';
 import { getK8sProxyURL } from '../helpers/proxy';
 import { EventListFetchProps } from '../../../common';
 import { ClusterDeploymentK8sResource, AgentK8sResource } from '../../types';
-import { INFRAENV_GENERATED_AI_FLOW } from '../common/constants';
+import { INFRAENV_GENERATED_AI_FLOW, INFRAENV_AGENTINSTALL_LABEL_KEY } from '../common/constants';
 
 export const shouldShowClusterDeploymentValidationOverview = (
   agentClusterInstall?: AgentClusterInstallK8sResource,
@@ -101,6 +101,10 @@ export const isCIMFlow = (clusterDeployment?: ClusterDeploymentK8sResource) =>
   !clusterDeployment?.spec?.platform?.agentBareMetal?.agentSelector?.matchLabels?.[
     INFRAENV_GENERATED_AI_FLOW
   ];
+
+export const isAgentOfInfraEnv = (infraEnv: InfraEnvK8sResource, agent: AgentK8sResource) =>
+  agent.metadata?.labels?.[INFRAENV_AGENTINSTALL_LABEL_KEY] === infraEnv.metadata?.name &&
+  agent.metadata?.namespace === infraEnv.metadata?.namespace;
 
 export const isAgentOfCluster = (agent: AgentK8sResource, cdName?: string, cdNamespace?: string) =>
   agent.spec?.clusterDeploymentName?.name === cdName &&
