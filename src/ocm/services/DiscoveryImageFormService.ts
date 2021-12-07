@@ -20,7 +20,7 @@ const DiscoveryImageFormService = {
       httpsProxy: formValues.httpsProxy,
       noProxy: formValues.noProxy,
       // TODO(mlibra): Does the user need to change pull-secret?
-      pullSecret: ocmPullSecret,
+      pullSecret: ocmPullSecret || undefined,
       sshPublicKey: formValues.sshPublicKey,
     };
 
@@ -31,7 +31,7 @@ const DiscoveryImageFormService = {
         noProxy: formValues.noProxy,
       },
       sshAuthorizedKey: formValues.sshPublicKey,
-      pullSecret: ocmPullSecret,
+      pullSecret: ocmPullSecret || undefined,
       staticNetworkConfig: formValues.staticNetworkConfig,
       imageType: formValues.imageType,
     };
