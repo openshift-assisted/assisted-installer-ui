@@ -21,6 +21,9 @@ export const FEEDBACK_FORM_LINK =
 
 export const TECH_SUPPORT_LEVEL_LINK = 'https://access.redhat.com/support/offerings/techpreview';
 
+export const FIREWALL_DOCUMENTATION_LINK =
+  'https://docs.openshift.com/container-platform/4.8/installing/installing_bare_metal_ipi/ipi-install-installation-workflow.html#ipi-install-setting-proxy-settings-within-install-config_ipi-install-configuration-files';
+
 export const getOcpConsoleNodesPage = (ocpConsoleUrl: string) =>
   `${ocpConsoleUrl}/k8s/cluster/nodes`;
 
