@@ -92,7 +92,7 @@ export type ClusterDeploymentHostsDiscoveryStepProps = Omit<
 > & {
   clusterDeployment: ClusterDeploymentK8sResource;
 
-  onSaveHostsDiscovery?: (values: ClusterDeploymentHostsDiscoveryValues) => Promise<string | void>;
+  onSaveHostsDiscovery: (values: ClusterDeploymentHostsDiscoveryValues) => Promise<string | void>;
   onClose: () => void;
 };
 
@@ -104,6 +104,7 @@ export type ClusterDeploymentWizardProps = Pick<
   | 'onSaveAgent'
   | 'onSaveBMH'
   | 'onSaveISOParams'
+  | 'onCreateBMH'
   | 'getClusterDeploymentLink'
   | 'fetchSecret'
   | 'fetchNMState'

@@ -76,13 +76,10 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
     agentClusterInstall,
   });
 
-  const next = () => setCurrentStepId('networking');
   const handleSubmit = async (values: ClusterDeploymentHostsDiscoveryValues) => {
     try {
-      if (onSaveHostsDiscovery) {
-        await onSaveHostsDiscovery(values);
-      }
-      next();
+      await onSaveHostsDiscovery(values);
+      setCurrentStepId('networking');
     } catch (error) {
       addAlert({
         title: 'Failed to save host discovery selections.',
@@ -97,21 +94,13 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
-      {({ submitForm, isSubmitting, isValid, isValidating, dirty, errors, touched }) => {
-        const handleOnNext = () => {
-          if (dirty) {
-            submitForm();
-          } else {
-            next();
-          }
-        };
-
+      {({ submitForm, isSubmitting, isValid, isValidating, errors, touched }) => {
         const footer = (
           <ClusterDeploymentWizardFooter
             errorFields={getFormikErrorFields(errors, touched)}
             isSubmitting={isSubmitting}
             isNextDisabled={!isValid || isValidating || isSubmitting}
-            onNext={handleOnNext}
+            onNext={submitForm}
             onBack={() => setCurrentStepId('cluster-details')}
             onCancel={onClose}
           />

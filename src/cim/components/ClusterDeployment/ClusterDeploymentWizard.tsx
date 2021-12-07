@@ -23,6 +23,8 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   onSaveAgent,
   onSaveBMH,
   onSaveISOParams,
+  onSaveHostsDiscovery,
+  onCreateBMH,
   hostActions,
   usedClusterNames,
   isBMPlatform,
@@ -82,8 +84,8 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
               onClose={onClose}
               isBMPlatform={isBMPlatform}
               onSaveISOParams={onSaveISOParams}
-              // onCreateBMH={undefined /* So far no Day 2 */}
-              // onSaveHostsDiscovery={undefined}
+              onSaveHostsDiscovery={onSaveHostsDiscovery}
+              onCreateBMH={onCreateBMH}
               // onFormSaveError={setErrorHandler}
             />
           );
@@ -128,6 +130,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
     usedClusterNames,
     onSaveDetails,
     onSaveHostsSelection,
+    onSaveHostsDiscovery,
     aiConfigMap,
     infraEnv,
     usedHostnames,
@@ -135,6 +138,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
     canDeleteAgent,
     onSaveAgent,
     onSaveBMH,
+    onCreateBMH,
     fetchSecret,
     fetchNMState,
     getClusterDeploymentLink,
