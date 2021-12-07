@@ -106,7 +106,7 @@ export const infraEnvStatusColumn = ({
 
 export const clusterColumn = (
   agents: AgentK8sResource[],
-  getClusterDeploymentLink: (cd: { name: string; namespace: string }) => string,
+  getClusterDeploymentLink: (cd: { name: string; namespace: string }) => string | React.ReactNode,
 ): TableRow<Host> => {
   return {
     header: {
@@ -119,12 +119,15 @@ export const clusterColumn = (
     cell: (host) => {
       const agent = agents.find((a) => a.metadata?.uid === host.id);
       let title: React.ReactNode = '--';
+
       if (agent?.spec?.clusterDeploymentName) {
-        title = (
-          <Link to={getClusterDeploymentLink(agent.spec.clusterDeploymentName)}>
-            {agent.spec.clusterDeploymentName.name}
-          </Link>
-        );
+        const cdLink = getClusterDeploymentLink(agent.spec.clusterDeploymentName);
+        title =
+          typeof cdLink === 'string' ? (
+            <Link to={cdLink}>{agent.spec.clusterDeploymentName.name}</Link>
+          ) : (
+            cdLink
+          );
       }
       return {
         title,
@@ -135,7 +138,18 @@ export const clusterColumn = (
   };
 };
 
-export const infraEnvColumn = (agents: AgentK8sResource[]): TableRow<Host> => {
+export type getInfraEnvLinkType = ({
+  name,
+  namespace,
+}: {
+  name: string;
+  namespace: string;
+}) => string | React.ReactNode;
+
+export const infraEnvColumn = (
+  agents: AgentK8sResource[],
+  getInfraEnvLink?: getInfraEnvLinkType,
+): TableRow<Host> => {
   return {
     header: {
       title: 'Infrastructure env',
@@ -146,10 +160,15 @@ export const infraEnvColumn = (agents: AgentK8sResource[]): TableRow<Host> => {
     },
     cell: (host) => {
       const agent = agents.find((a) => a.metadata?.uid === host.id) as AgentK8sResource;
-      const infraEnvName = agent.metadata?.labels?.[INFRAENV_AGENTINSTALL_LABEL_KEY] || 'N/A';
+      const infraEnvName = agent.metadata?.labels?.[INFRAENV_AGENTINSTALL_LABEL_KEY];
+
+      let title: React.ReactNode = infraEnvName || 'N/A';
+      if (infraEnvName && getInfraEnvLink) {
+        title = getInfraEnvLink({ name: infraEnvName, namespace: agent.metadata?.namespace || '' });
+      }
 
       return {
-        title: infraEnvName,
+        title,
         props: { 'data-testid': 'infra-env' },
         sortableValue: infraEnvName,
       };

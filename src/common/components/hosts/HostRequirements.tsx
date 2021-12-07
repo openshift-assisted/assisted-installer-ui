@@ -35,11 +35,11 @@ const HostRequirements: React.FC<HostRequirementsProps> = ({
           <>
             <ListItem>
               Control plane nodes: At least {master?.cpuCores || 4} CPU cores, {masterRam} RAM,{' '}
-              {master?.diskSizeGb || 120} GB filesystem for every supervisor.
+              {master?.diskSizeGb || 120} GB disk size for every supervisor.
             </ListItem>
             <ListItem>
               Workers: At least {worker?.cpuCores || 2} CPU cores, {workerRam} RAM,{' '}
-              {worker?.diskSizeGb || 120} GB filesystem for each worker
+              {worker?.diskSizeGb || 120} GB disk size for each worker
             </ListItem>
           </>
         )}
@@ -47,7 +47,7 @@ const HostRequirements: React.FC<HostRequirementsProps> = ({
           <>
             <ListItem>
               SNO: One host is required with at least {sno?.cpuCores || 4} CPU cores, {snoRam} of
-              RAM, and {sno?.diskSizeGb || 120} GB of filesystem storage.
+              RAM, and {sno?.diskSizeGb || 120} GB of disk size storage.
             </ListItem>
           </>
         )}

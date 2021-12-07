@@ -43,7 +43,7 @@ const ClusterAlerts = ({ cluster }: { cluster: Cluster }) => {
     <>
       {!cluster.validationsInfo && (
         <Alert variant={AlertVariant.info} title="Cluster validations are initializing" isInline>
-          Please hold on till backgroud checks are started.
+          Please hold on till background checks are started.
         </Alert>
       )}
       {!isClusterReady && (

@@ -3,7 +3,12 @@ import { Cluster, ClusterDefaultConfig, Inventory, stringToJSON } from '../../ap
 import { NO_SUBNET_SET } from '../../config';
 import { HostDiscoveryValues, HostSubnets } from '../../types/clusters';
 import { OpenshiftVersionOptionType } from '../../types/versions';
-import { getHostname } from '../hosts/utils';
+import { getHostname, getSchedulableMasters } from '../hosts/utils';
+import {
+  selectClusterNetworkCIDR,
+  selectClusterNetworkHostPrefix,
+  selectServiceNetworkCIDR,
+} from '../../../ocm/selectors/clusterSelectors';
 
 export const getSubnet = (cidr: string): Address6 | Address4 | null => {
   if (Address4.isValid(cidr)) {
@@ -57,9 +62,9 @@ export const getSubnetFromMachineNetworkCidr = (machineNetworkCidr?: string) => 
 };
 
 export const isAdvNetworkConf = (cluster: Cluster, defaultNetworkSettings: ClusterDefaultConfig) =>
-  cluster.clusterNetworkCidr !== defaultNetworkSettings.clusterNetworkCidr ||
-  cluster.clusterNetworkHostPrefix !== defaultNetworkSettings.clusterNetworkHostPrefix ||
-  cluster.serviceNetworkCidr !== defaultNetworkSettings.serviceNetworkCidr ||
+  selectClusterNetworkCIDR(cluster) !== defaultNetworkSettings.clusterNetworkCidr ||
+  selectClusterNetworkHostPrefix(cluster) !== defaultNetworkSettings.clusterNetworkHostPrefix ||
+  selectServiceNetworkCIDR(cluster) !== defaultNetworkSettings.serviceNetworkCidr ||
   (Boolean(cluster.networkType) && cluster.networkType !== 'OpenShiftSDN');
 
 export const getHostDiscoveryInitialValues = (cluster: Cluster): HostDiscoveryValues => {
@@ -70,6 +75,7 @@ export const getHostDiscoveryInitialValues = (cluster: Cluster): HostDiscoveryVa
     useExtraDisksForLocalStorage: isOperatorEnabled('ocs'),
     useContainerNativeVirtualization: isOperatorEnabled('cnv'),
     usePlatformIntegration: cluster.platform?.type !== 'baremetal',
+    schedulableMasters: getSchedulableMasters(cluster),
   };
 };
 

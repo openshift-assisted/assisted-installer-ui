@@ -16,7 +16,13 @@ import { RenderIf } from '../../../common/components/ui/';
 import { getSimpleHardwareInfo } from '../../../common/components/hosts/hardwareInfo';
 import { ClusterValidations, HostsValidations } from './ReviewValidations';
 import { VSPHERE_CONFIG_LINK } from '../../../common';
-
+import { selectClusterNetworkCIDR } from '../../selectors/clusterSelectors';
+import { FeatureSupportLevelContext } from '../../../common/components/featureSupportLevels';
+import {
+  ReviewClusterFeatureSupportLevels,
+  getClusterUsedFeaturesSupportLevels,
+  isFullySupported,
+} from '../featureSupportLevels';
 import './ReviewCluster.css';
 
 const ReviewHostsInventory: React.FC<{ hosts?: Host[] }> = ({ hosts = [] }) => {
@@ -82,22 +88,50 @@ const PlatformIntegrationNote: React.FC<{}> = () => {
     </p>
   );
 };
+const getFeatureSupportLevelTitle = (fullySupported: boolean): string => {
+  const supportLevel: string = fullySupported ? 'Full' : 'Limited';
+  return `Cluster support level: ${supportLevel}`;
+};
 
-const ReviewCluster: React.FC<{ cluster: Cluster }> = ({ cluster }) => (
-  <DetailList>
-    <DetailItem title="Cluster address" value={`${cluster.name}.${cluster.baseDnsDomain}`} />
-    <DetailItem title="OpenShift version" value={cluster.openshiftVersion} />
-    <DetailItem title="Management network CIDR" value={cluster.clusterNetworkCidr} />
-    <DetailItem title="Cluster summary" value={<ReviewHostsInventory hosts={cluster.hosts} />} />
-    <DetailItem
-      title="Cluster validations"
-      value={<ClusterValidations validationsInfo={cluster.validationsInfo} />}
-    />
-    <DetailItem title="Host validations" value={<HostsValidations hosts={cluster.hosts} />} />
-    <RenderIf condition={cluster.platform?.type !== 'baremetal'}>
-      <DetailItem title="Platform integration" value={<PlatformIntegrationNote />} />
-    </RenderIf>
-  </DetailList>
-);
+const ReviewCluster: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
+  const featureSupportLevelData = React.useContext(FeatureSupportLevelContext);
+
+  const clusterFeatureSupportLevels = React.useMemo(() => {
+    return getClusterUsedFeaturesSupportLevels(cluster, featureSupportLevelData);
+  }, [cluster, featureSupportLevelData]);
+
+  const fullySupported: boolean = React.useMemo<boolean>(() => {
+    if (!clusterFeatureSupportLevels) {
+      return false;
+    }
+    return isFullySupported(clusterFeatureSupportLevels);
+  }, [clusterFeatureSupportLevels]);
+  return (
+    <DetailList>
+      <DetailItem title="Cluster address" value={`${cluster.name}.${cluster.baseDnsDomain}`} />
+      <DetailItem title="OpenShift version" value={cluster.openshiftVersion} />
+      <DetailItem title="Management network CIDR" value={selectClusterNetworkCIDR(cluster)} />
+      <DetailItem title="Cluster summary" value={<ReviewHostsInventory hosts={cluster.hosts} />} />
+      <DetailItem
+        title="Cluster validations"
+        value={<ClusterValidations validationsInfo={cluster.validationsInfo} />}
+      />
+      <DetailItem title="Host validations" value={<HostsValidations hosts={cluster.hosts} />} />
+      <RenderIf condition={cluster.platform?.type !== 'baremetal'}>
+        <DetailItem title="Platform integration" value={<PlatformIntegrationNote />} />
+      </RenderIf>
+      <RenderIf condition={!!clusterFeatureSupportLevels}>
+        <DetailItem
+          title={getFeatureSupportLevelTitle(fullySupported)}
+          value={
+            <ReviewClusterFeatureSupportLevels
+              clusterFeatureSupportLevels={clusterFeatureSupportLevels}
+            />
+          }
+        />
+      </RenderIf>
+    </DetailList>
+  );
+};
 
 export default ReviewCluster;

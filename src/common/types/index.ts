@@ -14,3 +14,4 @@ export * from './versions';
 export * from './proxyFields';
 export * from './events';
 export * from './clusters';
+export * from './featureSupportLevel';

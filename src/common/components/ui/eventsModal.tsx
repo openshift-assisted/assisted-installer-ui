@@ -1,9 +1,13 @@
 import React from 'react';
 import { Button, Modal, ButtonVariant, ModalVariant, ModalBoxBody } from '@patternfly/react-core';
+import { ExclamationTriangleIcon } from '@patternfly/react-icons';
+import { global_warning_color_100 as globalWarningColor100 } from '@patternfly/react-tokens';
 import { ToolbarButton } from './Toolbar';
 import { Cluster, Event } from '../../api';
 import { EventListFetchProps, EventsEntityKind } from '../../types';
 import { EventListFetch } from '../fetching/EventListFetch';
+import ExternalLink from './ExternalLink';
+import ErrorState from './uiState/ErrorState';
 
 import './EventsModal.css';
 
@@ -15,6 +19,7 @@ type EventsModalButtonProps = React.ComponentProps<typeof Button> & {
   cluster: Cluster;
   entityKind: EventsEntityKind;
   title: string;
+  fallbackEventsURL?: string;
 };
 
 export const EventsModalButton: React.FC<EventsModalButtonProps> = ({
@@ -26,6 +31,7 @@ export const EventsModalButton: React.FC<EventsModalButtonProps> = ({
   entityKind,
   children,
   title,
+  fallbackEventsURL,
   ...props
 }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -44,6 +50,7 @@ export const EventsModalButton: React.FC<EventsModalButtonProps> = ({
         cluster={cluster}
         entityKind={entityKind}
         onFetchEvents={onFetchEvents}
+        fallbackEventsURL={fallbackEventsURL}
       />
     </>
   );
@@ -57,6 +64,7 @@ type EventsModalProps = {
   onClose: () => void;
   isOpen: boolean;
   title: string;
+  fallbackEventsURL?: string;
 };
 
 export const EventsModal: React.FC<EventsModalProps> = ({
@@ -67,6 +75,7 @@ export const EventsModal: React.FC<EventsModalProps> = ({
   onClose,
   isOpen,
   title,
+  fallbackEventsURL,
 }) => {
   return (
     <Modal
@@ -84,13 +93,28 @@ export const EventsModal: React.FC<EventsModalProps> = ({
       className="events-modal"
     >
       <ModalBoxBody className="events-modal__body">
-        <EventListFetch
-          hostId={hostId}
-          cluster={cluster}
-          entityKind={entityKind}
-          onFetchEvents={onFetchEvents}
-          className="events-modal__event-list"
-        />
+        {fallbackEventsURL ? (
+          <ErrorState
+            title="Could not load events"
+            content={
+              <>
+                Could not load events from the standard location. You can check the events in
+                the&nbsp;
+                <ExternalLink href={fallbackEventsURL}>raw format</ExternalLink>.
+              </>
+            }
+            icon={ExclamationTriangleIcon}
+            iconColor={globalWarningColor100.value}
+          />
+        ) : (
+          <EventListFetch
+            hostId={hostId}
+            cluster={cluster}
+            entityKind={entityKind}
+            onFetchEvents={onFetchEvents}
+            className="events-modal__event-list"
+          />
+        )}
       </ModalBoxBody>
     </Modal>
   );

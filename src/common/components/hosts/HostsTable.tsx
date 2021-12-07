@@ -71,6 +71,7 @@ const HostsTable: React.FC<HostsTableProps & WithTestID> = ({
   selectedIDs,
 }) => {
   const data = (hosts || []).filter((host) => !skipDisabled || host.status != 'disabled');
+  data.sort((a, b) => (a.id < b.id ? -1 : 1));
 
   return (
     <AITable<Host>

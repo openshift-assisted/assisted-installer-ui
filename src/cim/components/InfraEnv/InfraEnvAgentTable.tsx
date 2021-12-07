@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { AgentK8sResource, BareMetalHostK8sResource, InfraEnvK8sResource } from '../../types';
-import { ClusterDeploymentHostsTablePropsActions } from '../ClusterDeployment/types';
+import { Host } from '../../../common/api/types';
 import {
   discoveryTypeColumn,
   infraEnvStatusColumn,
@@ -16,21 +15,16 @@ import {
   memoryColumn,
 } from '../../../common/components/hosts/tableUtils';
 import { DiscoveryTroubleshootingModal } from '../../../common';
+import { TableRow } from '../../../common/components/hosts/AITable';
+import { InfraEnvAgentTableProps } from '../ClusterDeployment/types';
 
-type InfraEnvAgentTable = ClusterDeploymentHostsTablePropsActions & {
-  agents: AgentK8sResource[];
-  bareMetalHosts: BareMetalHostK8sResource[];
-  infraEnv: InfraEnvK8sResource;
-  getClusterDeploymentLink: (cd: { name: string; namespace: string }) => string;
-  className?: string;
-};
-
-const InfraEnvAgentTable: React.FC<InfraEnvAgentTable> = ({
+const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
   agents,
   className,
   getClusterDeploymentLink,
   bareMetalHosts,
   infraEnv,
+  hideClusterColumn,
   ...actions
 }) => {
   const [isDiscoveryHintModalOpen, setDiscoveryHintModalOpen] = React.useState(false);
@@ -40,22 +34,23 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTable> = ({
     infraEnv,
   });
   const content = React.useMemo(
-    () => [
-      hostnameColumn(hostActions.onEditHost),
-      discoveryTypeColumn(agents, bareMetalHosts),
-      infraEnvStatusColumn({
-        agents,
-        bareMetalHosts,
-        onEditHostname: actions.onEditHost,
-        onApprove: actions.onApprove,
-      }),
-      clusterColumn(agents, getClusterDeploymentLink),
-      discoveredAtColumn,
-      cpuCoresColumn,
-      memoryColumn,
-      disksColumn,
-    ],
-    [agents, actions, getClusterDeploymentLink, hostActions, bareMetalHosts],
+    () =>
+      [
+        hostnameColumn(hostActions.onEditHost),
+        discoveryTypeColumn(agents, bareMetalHosts),
+        infraEnvStatusColumn({
+          agents,
+          bareMetalHosts,
+          onEditHostname: actions.onEditHost,
+          onApprove: actions.onApprove,
+        }),
+        (!hideClusterColumn && clusterColumn(agents, getClusterDeploymentLink)) as TableRow<Host>,
+        discoveredAtColumn,
+        cpuCoresColumn,
+        memoryColumn,
+        disksColumn,
+      ].filter(Boolean),
+    [agents, actions, getClusterDeploymentLink, hostActions, bareMetalHosts, hideClusterColumn],
   );
   return (
     <>

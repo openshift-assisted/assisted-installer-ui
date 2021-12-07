@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ClusterHostsTableProps, Host } from '../../../common';
+import { ClusterHostsTableProps, getSchedulableMasters, Host } from '../../../common';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
 import {
   discoveredAtColumn,
@@ -21,6 +21,7 @@ const ExpandComponent: React.FC<ExpandComponentProps<Host>> = ({ obj }) => {
     <HostDetail
       host={obj}
       AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
+      hideNTPStatus
     />
   );
 };
@@ -36,8 +37,8 @@ const ClusterHostsTable: React.FC<ClusterHostsTableProps> = ({
 
   const content = React.useMemo(
     () => [
-      hostnameColumn(onEditHost),
-      roleColumn(actionChecks.canEditRole, onEditRole),
+      hostnameColumn(onEditHost, undefined, actionChecks.canEditHostname),
+      roleColumn(actionChecks.canEditRole, onEditRole, getSchedulableMasters(cluster)),
       statusColumn(AdditionalNTPSourcesDialogToggle, onEditHost),
       discoveredAtColumn,
       cpuCoresColumn,
@@ -45,7 +46,7 @@ const ClusterHostsTable: React.FC<ClusterHostsTableProps> = ({
       disksColumn,
       countColumn(cluster),
     ],
-    [onEditHost, onEditRole, actionChecks.canEditRole, cluster],
+    [onEditHost, actionChecks, onEditRole, cluster],
   );
 
   return (

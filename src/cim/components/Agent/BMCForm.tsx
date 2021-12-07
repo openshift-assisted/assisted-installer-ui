@@ -171,7 +171,7 @@ const getInitValues = (
 };
 
 const BMCForm: React.FC<BMCFormProps> = ({
-  onCreate,
+  onCreateBMH,
   onClose,
   hasDHCP,
   infraEnv,
@@ -186,7 +186,7 @@ const BMCForm: React.FC<BMCFormProps> = ({
     try {
       setError(undefined);
       const nmState = hasDHCP ? undefined : getNMState(values, infraEnv);
-      await onCreate(values, nmState);
+      await onCreateBMH(values, nmState);
       onClose();
     } catch (e) {
       setError(e.message);

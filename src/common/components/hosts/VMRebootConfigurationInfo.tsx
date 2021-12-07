@@ -8,7 +8,7 @@ import {
   TextVariants,
 } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons';
-import { Host, stringToJSON, Inventory, PrismCode } from '../../../common';
+import { PrismCode } from '../../../common/components/ui';
 
 const Hint = () => (
   <TextContent>
@@ -23,29 +23,25 @@ const Hint = () => (
       If not, please start your VMs with the following configuration:
     </Text>
     <PrismCode code="--events on_reboot=restart" />
+    <Text component={TextVariants.p}>
+      When using <code>virt-install</code>, please run:
+    </Text>
+    <PrismCode code="virt-install --wait -1 <rest of the command>" />
+    <Text component={TextVariants.p}>
+      Otherwise, the VMs will not be able to reboot during the installation process.
+    </Text>
   </TextContent>
 );
 
-const VMRebootConfigurationInfo: React.FC<{ hosts: Host[] }> = ({ hosts }) => {
-  const isVM = React.useMemo(
-    () =>
-      !!hosts.find((host) => {
-        const inventory = stringToJSON<Inventory>(host.inventory || '') || {};
-        return inventory.systemVendor?.virtual;
-      }),
-    [hosts],
-  );
-
-  return isVM ? (
-    <Text component="p">
-      <Popover bodyContent={<Hint />} minWidth="30rem">
-        <Button variant={ButtonVariant.link} isInline>
-          <InfoCircleIcon size="sm" />
-          &nbsp;Check your VM reboot configuration
-        </Button>
-      </Popover>
-    </Text>
-  ) : null;
-};
+const VMRebootConfigurationInfo: React.FC = () => (
+  <Text component="p">
+    <Popover bodyContent={<Hint />} minWidth="35rem">
+      <Button variant={ButtonVariant.link} isInline>
+        <InfoCircleIcon size="sm" />
+        &nbsp;Check your VM reboot configuration
+      </Button>
+    </Popover>
+  </Text>
+);
 
 export default VMRebootConfigurationInfo;

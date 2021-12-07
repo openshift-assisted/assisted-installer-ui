@@ -1,33 +1,22 @@
 import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import {
-  AlertsContext,
+  useAlerts,
   Cluster,
-  ClusterUpdateParams,
   Disk,
-  DiskConfigParams,
   DiskRole,
   EventsModal,
   Host,
-  HostRoleUpdateParams,
   Inventory,
   stringToJSON,
+  HostUpdateParams,
 } from '../../../common';
 import {
   AdditionalNTPSourcesDialog,
   AdditionalNTPSourcesFormProps,
 } from '../../../common/components/hosts/AdditionalNTPSourcesDialog';
-import {
-  deleteClusterHost,
-  disableClusterHost,
-  enableClusterHost,
-  getErrorMessage,
-  handleApiError,
-  installHost,
-  patchCluster,
-  resetClusterHost,
-} from '../../api';
-import { forceReload, updateCluster, updateHost } from '../../reducers/clusters';
+import { getErrorMessage, handleApiError } from '../../api';
+import { forceReload, updateHost } from '../../reducers/clusters';
 import { useModalDialogsContext } from './ModalDialogsContext';
 import { downloadHostInstallationLogs, onAdditionalNtpSourceAction } from './utils';
 import {
@@ -38,6 +27,7 @@ import {
   canDisable as canDisableUtil,
   canDelete as canDeleteUtil,
   canEditHost as canEditHostUtil,
+  canEditHostname as canEditHostnameUtil,
   canDownloadHostLogs,
   canReset as canResetUtil,
   EditHostModal,
@@ -47,9 +37,10 @@ import { hostActionResolver } from '../../../common/components/hosts/tableUtils'
 import ResetHostModal from './ResetHostModal';
 import DeleteHostModal from './DeleteHostModal';
 import { onFetchEvents } from '../fetching/fetchEvents';
+import { HostsService } from '../../services';
 
 export const useHostsTable = (cluster: Cluster) => {
-  const { addAlert } = React.useContext(AlertsContext);
+  const { addAlert } = useAlerts();
   const {
     eventsDialog,
     editHostDialog,
@@ -68,36 +59,14 @@ export const useHostsTable = (cluster: Cluster) => {
           hostname: (host?.requestedHostname || inventory?.hostname) as string,
         });
       },
-      onHostEnable: async (host: Host) => {
-        const hostId = host.id;
-        try {
-          const { data } = await enableClusterHost(cluster.id, hostId);
-          dispatch(updateCluster(data));
-        } catch (e) {
-          handleApiError(e, () =>
-            addAlert({ title: `Failed to enable host ${hostId}`, message: getErrorMessage(e) }),
-          );
-        }
-      },
       onInstallHost: async (host: Host) => {
         const hostId = host.id;
         try {
-          const { data } = await installHost(cluster.id, hostId);
+          const { data } = await HostsService.install(cluster.id, hostId);
           dispatch(updateHost(data));
         } catch (e) {
           handleApiError(e, () =>
             addAlert({ title: `Failed to enable host ${hostId}`, message: getErrorMessage(e) }),
-          );
-        }
-      },
-      onHostDisable: async (host: Host) => {
-        const hostId = host.id;
-        try {
-          const { data } = await disableClusterHost(cluster.id, hostId);
-          dispatch(updateCluster(data));
-        } catch (e) {
-          handleApiError(e, () =>
-            addAlert({ title: `Failed to disable host ${hostId}`, message: getErrorMessage(e) }),
           );
         }
       },
@@ -141,14 +110,14 @@ export const useHostsTable = (cluster: Cluster) => {
 
   const onDiskRole = React.useCallback(
     async (hostId: Host['id'], diskId: Disk['id'], role: DiskRole) => {
-      const params: ClusterUpdateParams = {};
-      params.disksSelectedConfig = [
-        { id: hostId, disksConfig: [{ id: diskId, role } as DiskConfigParams] },
-      ];
-
       try {
-        const { data } = await patchCluster(cluster.id, params);
-        dispatch(updateCluster(data));
+        if (!diskId) {
+          // noinspection ExceptionCaughtLocallyJS
+          throw new Error(`Cannot update disk role in host ${hostId}\nMissing diskId`);
+        }
+
+        const { data } = await HostsService.updateDiskRole(cluster.id, hostId, diskId, role);
+        dispatch(updateHost(data));
       } catch (e) {
         handleApiError(e, () =>
           addAlert({ title: 'Failed to set disk role', message: getErrorMessage(e) }),
@@ -173,6 +142,7 @@ export const useHostsTable = (cluster: Cluster) => {
       canDelete: (host: Host) => canDeleteUtil(cluster.status, host.status),
       canEditHost: (host: Host) => canEditHostUtil(cluster.status, host.status),
       canReset: (host: Host) => canResetUtil(cluster.status, host.status),
+      canEditHostname: () => canEditHostnameUtil(cluster.status),
     }),
     [cluster],
   );
@@ -181,7 +151,7 @@ export const useHostsTable = (cluster: Cluster) => {
     const reset = async (hostId: string | undefined) => {
       if (hostId) {
         try {
-          const { data } = await resetClusterHost(cluster.id, hostId);
+          const { data } = await HostsService.reset(cluster.id, hostId);
           dispatch(updateHost(data));
         } catch (e) {
           return handleApiError(e, () =>
@@ -201,7 +171,7 @@ export const useHostsTable = (cluster: Cluster) => {
     const deleteHost = async (hostId: string | undefined) => {
       if (hostId) {
         try {
-          await deleteClusterHost(cluster.id, hostId);
+          await HostsService.delete(cluster.id, hostId);
           dispatch(forceReload());
         } catch (e) {
           return handleApiError(e, () =>
@@ -218,12 +188,14 @@ export const useHostsTable = (cluster: Cluster) => {
   }, [addAlert, cluster.id, dispatch, deleteHostDialog]);
 
   const onEditRole = React.useCallback(
-    async ({ id, clusterId }: Host, role?: string) => {
-      const params: ClusterUpdateParams = {};
-      params.hostsRoles = [{ id, role: role as HostRoleUpdateParams }];
+    async ({ id, clusterId }: Host, role: HostUpdateParams['hostRole']) => {
       try {
-        const { data } = await patchCluster(clusterId as string, params);
-        dispatch(updateCluster(data));
+        if (!clusterId) {
+          // noinspection ExceptionCaughtLocallyJS
+          throw new Error(`Failed to edit role in host: ${id}.\nMissing cluster_id`);
+        }
+        const { data } = await HostsService.updateRole(clusterId, id, role);
+        dispatch(updateHost(data));
       } catch (e) {
         handleApiError(e, () =>
           addAlert({ title: 'Failed to set role', message: getErrorMessage(e) }),
@@ -328,17 +300,12 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
         onClose={editHostDialog.close}
         isOpen={editHostDialog.isOpen}
         onSave={async (values: EditHostFormValues) => {
-          const params: ClusterUpdateParams = {
-            hostsNames: [
-              {
-                id: values.hostId,
-                hostname: values.hostname,
-              },
-            ],
-          };
-
-          const { data } = await patchCluster(cluster.id, params);
-          dispatch(updateCluster(data));
+          const { data } = await HostsService.updateHostName(
+            cluster.id,
+            values.hostId,
+            values.hostname,
+          );
+          dispatch(updateHost(data));
           editHostDialog.close();
         }}
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

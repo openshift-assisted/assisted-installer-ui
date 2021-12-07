@@ -29,6 +29,7 @@ type HostDetailProps = {
   onDiskRole?: onDiskRoleType;
   host: Host;
   AdditionalNTPSourcesDialogToggleComponent: ValidationInfoActionProps['AdditionalNTPSourcesDialogToggleComponent'];
+  hideNTPStatus?: boolean;
 };
 
 type SectionTitleProps = {
@@ -201,6 +202,7 @@ export const HostDetail: React.FC<HostDetailProps> = ({
   onDiskRole,
   host,
   AdditionalNTPSourcesDialogToggleComponent,
+  hideNTPStatus = false,
 }) => {
   const { id, installationDiskId, inventory: inventoryString = '' } = host;
   const inventory = stringToJSON<Inventory>(inventoryString) || {};
@@ -281,9 +283,13 @@ export const HostDetail: React.FC<HostDetailProps> = ({
             value={inventory.boot?.pxeInterface}
           />
         )}
-        <DetailItem testId={'ntp-status'} title="NTP status" value={ntpValidationStatus} />
+        <DetailItem
+          isHidden={hideNTPStatus}
+          testId={'ntp-status'}
+          title="NTP status"
+          value={ntpValidationStatus}
+        />
       </SectionColumn>
-
       <SectionTitle
         testId={'disks-section'}
         title={`${disks.length} Disk${disks.length === 1 ? '' : 's'}`}

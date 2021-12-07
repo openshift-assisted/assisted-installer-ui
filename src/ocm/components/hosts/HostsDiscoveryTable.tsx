@@ -1,6 +1,6 @@
 import React from 'react';
-import { HostsNotShowingLinkProps } from '../../../common/components/clusterConfiguration/DiscoveryTroubleshootingModal';
-import { Cluster, Host } from '../../../common/api/types';
+import { HostsNotShowingLinkProps } from '../../../common';
+import { Cluster, Host } from '../../../common';
 import { HostsTableModals, useHostsTable } from './use-hosts-table';
 import {
   countColumn,
@@ -17,6 +17,7 @@ import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
 import { ExpandComponentProps } from '../../../common/components/hosts/AITable';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
 import { onDiskRoleType } from '../../../common/components/hosts/DiskRole';
+import { getSchedulableMasters } from '../../../common';
 
 const getExpandComponent = (onDiskRole: onDiskRoleType, canEditDisks: (host: Host) => boolean) => ({
   obj: host,
@@ -51,8 +52,8 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({
 
   const content = React.useMemo(
     () => [
-      hostnameColumn(onEditHost),
-      roleColumn(actionChecks.canEditRole, onEditRole),
+      hostnameColumn(onEditHost, undefined, actionChecks.canEditHostname),
+      roleColumn(actionChecks.canEditRole, onEditRole, getSchedulableMasters(cluster)),
       hardwareStatusColumn(onEditHost),
       discoveredAtColumn,
       cpuCoresColumn,
@@ -60,7 +61,7 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({
       disksColumn,
       countColumn(cluster),
     ],
-    [onEditHost, onEditRole, actionChecks.canEditRole, cluster],
+    [onEditHost, actionChecks.canEditHostname, actionChecks.canEditRole, onEditRole, cluster],
   );
 
   return (

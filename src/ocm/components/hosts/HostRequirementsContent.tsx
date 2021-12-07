@@ -12,7 +12,8 @@ import {
   alertsSlice,
   HostRequirements,
 } from '../../../common';
-import { getClusterPreflightRequirements, getErrorMessage, handleApiError } from '../../api';
+import { getErrorMessage, handleApiError } from '../../api';
+import { ClustersAPI } from '../../services/apis';
 
 const { addAlert } = alertsSlice.actions;
 
@@ -30,7 +31,7 @@ const useClusterPreflightRequirements = (clusterId: Cluster['id']) => {
   React.useEffect(() => {
     const fetchFunc = async () => {
       try {
-        const { data } = await getClusterPreflightRequirements(clusterId);
+        const { data } = await ClustersAPI.getPreflightRequirements(clusterId);
         setPreflightRequirements(data);
       } catch (e) {
         setError(e);
@@ -73,7 +74,7 @@ export const AddHostRequirementsContent: PreflightHWRequirementsContentComponent
     <TextContent>
       <Text component="p">
         Worker hosts must have at least {worker?.cpuCores || 2} CPU cores, {workerRam} of RAM, and{' '}
-        {worker?.diskSizeGb || 120} GB of filesystem storage.
+        {worker?.diskSizeGb || 120} GB of disk size storage.
       </Text>
     </TextContent>
   );
@@ -116,7 +117,7 @@ export const SingleHostRequirementsContent: PreflightHWRequirementsContentCompon
     <TextContent>
       <Text component="p">
         One host is required with at least {master?.cpuCores || 4} CPU cores, {masterRam} of RAM,
-        and {master?.diskSizeGb || 120} GB of filesystem storage.
+        and {master?.diskSizeGb || 120} GB of disk size storage.
       </Text>
     </TextContent>
   );
