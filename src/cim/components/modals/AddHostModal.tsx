@@ -29,12 +29,13 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
   isOpen,
   onClose,
   infraEnv,
+  agentClusterInstall,
   onCreateBMH,
   onSaveISOParams,
   isBMPlatform,
 }) => {
   const hasDHCP = infraEnv.metadata?.labels?.networkType !== 'static';
-  const sshPublicKey = infraEnv.spec?.sshAuthorizedKey;
+  const sshPublicKey = infraEnv.spec?.sshAuthorizedKey || agentClusterInstall?.spec?.sshPublicKey;
   const { httpProxy, httpsProxy, noProxy } = infraEnv.spec?.proxy || {};
 
   const areIsoDataAvailable = !!sshPublicKey || !!httpProxy || !!httpsProxy || !!noProxy;

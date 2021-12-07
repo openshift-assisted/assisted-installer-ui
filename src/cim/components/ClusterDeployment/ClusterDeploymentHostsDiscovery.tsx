@@ -119,6 +119,7 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
       isoModalOpen /* Do not use isOpen props to re-initialize when re-opening */ && (
           <AddHostModal
             infraEnv={infraEnv}
+            agentClusterInstall={agentClusterInstall}
             isBMPlatform={!!isBMPlatform}
             isOpen={isoModalOpen}
             onClose={() => setISOModalOpen(false)}
