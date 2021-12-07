@@ -9,20 +9,28 @@ import {
 } from '../ui';
 
 import { getSubnetFromMachineNetworkCidr } from './utils';
+import {
+  selectClusterNetworkCIDR,
+  selectClusterNetworkHostPrefix,
+  selectMachineNetworkCIDR,
+  selectServiceNetworkCIDR,
+} from '../../../ocm/selectors/clusterSelectors';
 
 export const getNetworkInitialValues = (
   cluster: Cluster,
   defaultNetworkSettings: ClusterDefaultConfig,
 ): NetworkConfigurationValues => {
   return {
-    clusterNetworkCidr: cluster.clusterNetworkCidr || defaultNetworkSettings.clusterNetworkCidr,
+    clusterNetworkCidr:
+      selectClusterNetworkCIDR(cluster) || defaultNetworkSettings.clusterNetworkCidr,
     clusterNetworkHostPrefix:
-      cluster.clusterNetworkHostPrefix || defaultNetworkSettings.clusterNetworkHostPrefix,
-    serviceNetworkCidr: cluster.serviceNetworkCidr || defaultNetworkSettings.serviceNetworkCidr,
+      selectClusterNetworkHostPrefix(cluster) || defaultNetworkSettings.clusterNetworkHostPrefix,
+    serviceNetworkCidr:
+      selectServiceNetworkCIDR(cluster) || defaultNetworkSettings.serviceNetworkCidr,
     apiVip: cluster.apiVip || '',
     ingressVip: cluster.ingressVip || '',
     sshPublicKey: cluster.sshPublicKey || '',
-    hostSubnet: getSubnetFromMachineNetworkCidr(cluster.machineNetworkCidr),
+    hostSubnet: getSubnetFromMachineNetworkCidr(selectMachineNetworkCIDR(cluster)),
     vipDhcpAllocation: cluster.vipDhcpAllocation,
     managedNetworkingType: cluster.userManagedNetworking ? 'userManaged' : 'clusterManaged',
     networkType: cluster.networkType || 'OpenShiftSDN',

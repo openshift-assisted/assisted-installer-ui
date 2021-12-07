@@ -32,7 +32,9 @@ export type HostDiscoveryValues = ClusterUpdateParams & {
   useExtraDisksForLocalStorage: boolean;
   useContainerNativeVirtualization: boolean;
   usePlatformIntegration: boolean;
+  schedulableMasters: boolean;
 };
+
 /* TODO: verify that this is really not needed
 export type ClusterDetailsValues = ClusterUpdateParams & {
   SNODisclaimer: boolean;

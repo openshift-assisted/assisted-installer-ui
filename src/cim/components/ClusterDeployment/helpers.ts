@@ -5,6 +5,8 @@ import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-in
 import { getClusterStatus } from '../helpers/status';
 import { getK8sProxyURL } from '../helpers/proxy';
 import { EventListFetchProps } from '../../../common';
+import { ClusterDeploymentK8sResource, AgentK8sResource } from '../../types';
+import { INFRAENV_GENERATED_AI_FLOW } from '../common/constants';
 
 export const shouldShowClusterCredentials = (
   agentClusterInstall: AgentClusterInstallK8sResource,
@@ -83,4 +85,18 @@ export const getOnFetchEventsHandler = (
   } catch (e) {
     onError(e.message);
   }
+};
+
+export const isCIMFlow = (clusterDeployment?: ClusterDeploymentK8sResource) =>
+  !clusterDeployment?.spec?.platform?.agentBareMetal?.agentSelector?.matchLabels?.[
+    INFRAENV_GENERATED_AI_FLOW
+  ];
+
+export const isAgentOfCluster = (agent: AgentK8sResource, cdName?: string, cdNamespace?: string) =>
+  agent.spec?.clusterDeploymentName?.name === cdName &&
+  agent.spec?.clusterDeploymentName?.namespace === cdNamespace;
+
+export const getAgentsHostsNames = (agents: AgentK8sResource[]): string[] => {
+  const raw: (string | undefined)[] = agents.map((agent) => agent.spec?.hostname);
+  return _.uniq(raw.filter(Boolean)) as string[];
 };

@@ -1,14 +1,14 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { getClusters } from '../../api/clusters';
 import { Cluster } from '../../../common';
 import { handleApiError } from '../../api/utils';
 import { ResourceUIState } from '../../../common';
+import { ClustersAPI } from '../../services/apis';
 
 export const fetchClustersAsync = createAsyncThunk<Cluster[] | void>(
   'clusters/fetchClustersAsync',
   async () => {
     try {
-      const { data } = await getClusters();
+      const { data } = await ClustersAPI.list();
       return data.filter((cluster) => cluster.kind === 'Cluster');
     } catch (e) {
       return handleApiError(e, () => Promise.reject('Failed to fetch clusters.'));

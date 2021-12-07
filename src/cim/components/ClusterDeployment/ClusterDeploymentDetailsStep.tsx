@@ -2,7 +2,6 @@ import React from 'react';
 import { Formik } from 'formik';
 import { Lazy } from 'yup';
 import { Grid, GridItem } from '@patternfly/react-core';
-import { useTranslation } from 'react-i18next';
 
 import {
   useAlerts,
@@ -26,6 +25,7 @@ import {
 } from '../../types';
 import ClusterDeploymentDetailsForm from './ClusterDeploymentDetailsForm';
 import { ClusterImageSetK8sResource } from '../../types/k8s/cluster-image-set';
+import { isCIMFlow } from './helpers';
 
 type UseDetailsFormikArgs = {
   clusterImages: ClusterImageSetK8sResource[];
@@ -87,7 +87,6 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
   onClose,
   pullSecret,
 }) => {
-  const { t } = useTranslation();
   const { addAlert } = useAlerts();
   const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
 
@@ -99,7 +98,10 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
     usedClusterNames,
   });
 
-  const next = () => setCurrentStepId('hosts-selection');
+  const next = () =>
+    isCIMFlow(clusterDeployment)
+      ? setCurrentStepId('hosts-selection')
+      : setCurrentStepId('hosts-discovery');
 
   const handleSubmit = async (values: ClusterDeploymentDetailsValues) => {
     try {
@@ -143,7 +145,7 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
           <ClusterDeploymentWizardStep navigation={navigation} footer={footer}>
             <Grid hasGutter>
               <GridItem>
-                <ClusterWizardStepHeader>{t('Cluster Details')}</ClusterWizardStepHeader>
+                <ClusterWizardStepHeader>Cluster Details</ClusterWizardStepHeader>
               </GridItem>
               <GridItem span={12} lg={10} xl={9} xl2={7}>
                 <ClusterDeploymentDetailsForm

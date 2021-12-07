@@ -4,7 +4,8 @@ import { PageSectionVariants, PageSection } from '@patternfly/react-core';
 import { Cluster, ErrorState, LoadingState } from '../../common';
 import { routeBasePath } from '../config';
 import { NewClusterPage } from './clusters';
-import { getClusters, handleApiError } from '../api';
+import { ClustersAPI } from '../services/apis';
+import { handleApiError } from '../api';
 
 type SingleClusterProps = RouteComponentProps;
 
@@ -14,8 +15,9 @@ const SingleCluster: React.FC<SingleClusterProps> = () => {
 
   const fetchClusters = React.useCallback(async () => {
     try {
-      const { data } = await getClusters();
+      const { data } = await ClustersAPI.list();
       setClusters(data);
+      setError('');
     } catch (e) {
       return handleApiError(e, () => setError('Failed to fetch cluster.'));
     }

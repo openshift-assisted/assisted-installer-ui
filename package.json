@@ -1,21 +1,39 @@
 {
   "name": "openshift-assisted-ui-lib",
-  "version": "1.5.40",
+  "version": "2.0.0",
   "description": "React component library for the Bare Metal Installer",
   "license": "Apache-2.0",
   "repository": "openshift-assisted/assisted-ui-lib",
   "main": "dist/index.js",
-  "module": "dist/index.modern.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./index.css": "./dist/index.css",
+    "./cim": "./dist/cim/index.js",
+    "./ocm": "./dist/ocm/index.js"
+  },
+  "typesVersions": {
+    "*": {
+      "cim": [
+        "./dist/src/cim/index.d.ts"
+      ],
+      "ocm": [
+        "./dist/src/ocm/index.d.ts"
+      ]
+    }
+  },
+  "module": "dist/index.js",
   "source": "src/index.ts",
   "types": "dist/src/index.d.ts",
   "engines": {
     "node": ">=12.16"
   },
   "scripts": {
-    "clean": "rm -rf dist/*",
+    "clean": "rimraf dist",
+    "esbuild:prod": "node ./scripts/esbuild/prod.js",
+    "esbuild:dev": "node ./scripts/esbuild/dev.js",
     "prebuild": "run-s clean test",
-    "build": "microbundle-crl --no-compress --format modern,cjs --css-modules false",
-    "start": "microbundle-crl watch --no-compress --format modern,cjs --css-modules false",
+    "build": "run-s clean esbuild:prod",
+    "start": "run-s clean esbuild:dev",
     "start-assisted-ui": "env-cmd ./scripts/start-assisted-ui.sh",
     "start-uhc-portal": "./scripts/start-uhc-portal.sh",
     "sync-to-ui": "./scripts/sync-dist.sh",
@@ -24,7 +42,7 @@
     "test:type-check": "tsc --noEmit",
     "test:lint": "eslint --ext .js,.jsx,.ts,.tsx --color --max-warnings=0 ./src",
     "test:unit": "cross-env CI=1 react-scripts test --env=jsdom",
-    "test:circular": "dpdm --warning false --tree false src/index.ts | grep 'no circular dependency were found'",
+    "test:circular": "dpdm --warning false --tree false --exit-code circular:1 src/index.ts",
     "test:watch": "react-scripts test --env=jsdom",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx --color --fix ./src",
     "prettier": "prettier --write '**/*.{js,jsx,ts,tsx,json,md,scss,yaml,yml}'",
@@ -37,6 +55,7 @@
     "@patternfly/react-code-editor": "^4.2.92",
     "@patternfly/react-core": "^4.135.0",
     "@patternfly/react-icons": "^4.11.0",
+    "@patternfly/react-styles": "^4.12.5",
     "@patternfly/react-table": "^4.29.0",
     "@patternfly/react-tokens": "^4.12.0",
     "@reduxjs/toolkit": "^1.5",
@@ -60,6 +79,7 @@
     "yup": "^0.28.3"
   },
   "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.16.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
@@ -83,8 +103,10 @@
     "concurrently": "^5.3.0",
     "console-sdk-ai-lib": "0.0.1",
     "cross-env": "^7.0.2",
-    "dpdm": "^3.4.3",
+    "dpdm": "^3.8.0",
     "env-cmd": "^10.1.0",
+    "esbuild": "^0.13.9",
+    "esbuild-plugin-d.ts": "^1.0.6",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.1",
     "eslint-plugin-cypress": "^2.10.3",
@@ -92,11 +114,11 @@
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-hooks": "^2.5.0",
     "install-peers-cli": "^2.2.0",
-    "microbundle-crl": "^0.13.10",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.0.4",
     "react-scripts": "^3.4.1",
     "redux-devtools-extension": "^2.13.8",
+    "rimraf": "^3.0.2",
     "sw2dts": "^2.6.3",
     "typescript": "^3.8.3"
   },
@@ -118,7 +140,6 @@
     "filesize.js": "^2.0.0",
     "formik": "2.2.6",
     "fuse.js": "^6.4.6",
-    "http-proxy-middleware": "^1.0.3",
     "human-date": "^1.4.0",
     "humanize-plus": "^1.8.2",
     "ip-address": "^7.1.0",
@@ -135,6 +156,15 @@
     "moduleNameMapper": {
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
       "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js"
+    }
+  },
+  "babel": {
+    "env": {
+      "test": {
+        "plugins": [
+          "@babel/plugin-transform-modules-commonjs"
+        ]
+      }
     }
   }
 }

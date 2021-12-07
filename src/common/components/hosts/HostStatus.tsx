@@ -7,6 +7,8 @@ import {
   FlexItem,
   Flex,
   ButtonProps,
+  Stack,
+  StackItem,
 } from '@patternfly/react-core';
 import {
   global_danger_color_100 as dangerColor,
@@ -24,6 +26,7 @@ import {
   PendingIcon,
   AddCircleOIcon,
   UnknownIcon,
+  LinkIcon,
 } from '@patternfly/react-icons';
 import { PopoverProps } from '@patternfly/react-core/dist/js/components/Popover/Popover';
 import hdate from 'human-date';
@@ -48,6 +51,7 @@ import { HostStatusProps } from './types';
 const getStatusIcon = (status: Host['status'] | 'Discovered' | 'Bound') => {
   let icon = null;
   switch (status) {
+    case 'Discovered':
     case 'discovering':
     case 'discovering-unbound':
       icon = <ConnectedIcon />;
@@ -83,10 +87,15 @@ const getStatusIcon = (status: Host['status'] | 'Discovered' | 'Bound') => {
     case 'installing':
     case 'installing-in-progress':
     case 'resetting':
+    case 'unbinding':
       icon = <InProgressIcon />;
       break;
     case 'added-to-existing-cluster':
       icon = <AddCircleOIcon />;
+      break;
+    case 'Bound':
+    case 'binding':
+      icon = <LinkIcon />;
       break;
     default:
       icon = <UnknownIcon />;
@@ -137,8 +146,8 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({
         <Text>
           This host was successfully installed.
           <br />
-          To finish adding it to the cluster, approve its request to join in the Nodes section of
-          the OpenShift console. It might take a few minutes till the node request gets available.
+          To finish adding it to the cluster, approve its join request inside OpenShift Console's
+          Nodes section. Note that it may take a few minutes for the join request to appear.
         </Text>
       </TextContent>
     );
@@ -249,6 +258,7 @@ const HostStatus: React.FC<HostStatusProps> = ({
   sublabel,
   onEditHostname,
   AdditionalNTPSourcesDialogToggleComponent,
+  children,
 }) => {
   const [keepOnOutsideClick, onValidationActionToggle] = React.useState(false);
   const status = statusOverride || host.status || '';
@@ -288,7 +298,12 @@ const HostStatus: React.FC<HostStatusProps> = ({
             {titleWithProgress}
           </WithHostStatusPopover>
         ) : (
-          <FlexItem className={'pf-u-mb-0'}>{titleWithProgress}</FlexItem>
+          <FlexItem className={'pf-u-mb-0'}>
+            <Stack>
+              <StackItem>{titleWithProgress}</StackItem>
+              {children && <StackItem>{children}</StackItem>}
+            </Stack>
+          </FlexItem>
         )}
         <RenderIf condition={Boolean(sublabel)}>
           <FlexItem

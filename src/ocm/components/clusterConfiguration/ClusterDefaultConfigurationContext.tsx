@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { PropsWithChildren, useContext, useEffect } from 'react';
-import { getClustersDefaultConfiguration } from '../../api/clusters';
 import { ClusterDefaultConfig } from '../../../common';
+import { ClustersAPI } from '../../services/apis';
 
 type State<T> = { status: 'idle' | 'loading' | 'succeeded' | 'failed'; data: T };
 type Actions<T> = { type: 'request' } | { type: 'failure' | 'success'; data: T };
@@ -43,7 +43,7 @@ export const ClusterDefaultConfigurationProvider = ({
     const fetchAndSetDefaultConfiguration = async () => {
       try {
         if (mounted) dispatch({ type: 'request' });
-        const { data } = await getClustersDefaultConfiguration();
+        const { data } = await ClustersAPI.getDefaultConfig();
         if (mounted) dispatch({ type: 'success', data });
       } catch {
         if (mounted) dispatch({ type: 'failure', data: {} });

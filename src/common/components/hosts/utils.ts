@@ -81,6 +81,9 @@ export const canEditHost = (clusterStatus: Cluster['status'], status: Host['stat
     'pending-for-input',
   ].includes(status);
 
+export const canEditHostname = (clusterStatus: Cluster['status']) =>
+  ['insufficient', 'adding-hosts', 'ready', 'pending-for-input'].includes(clusterStatus);
+
 export const canEditDisks = canEditHost;
 
 export const canDownloadKubeconfig = (clusterStatus: Cluster['status']) =>
@@ -94,17 +97,13 @@ export const canInstallHost = (cluster: Cluster, hostStatus: Host['status']) =>
 export const getHostProgressStages = (host: Host) => host.progressStages || [];
 
 export const getHostProgress = (host: Host) =>
-  host.progress || { currentStage: 'Preparing installation', progressInfo: undefined };
+  host.progress || { currentStage: 'Starting installation', progressInfo: undefined };
 
 export const getHostProgressStageNumber = (host: Host) => {
   const stages = getHostProgressStages(host);
   const progress = getHostProgress(host);
-  // can be undefined in CIM
-  if (progress?.currentStage) {
-    const currentStage = progress.currentStage;
-    return stages.findIndex((s) => currentStage.match(s)) + 1;
-  }
-  return 0;
+
+  return Math.round(((progress?.installationPercentage || 0) / 100) * stages.length);
 };
 
 export const canHostnameBeChanged = (hostStatus: Host['status']) =>
@@ -120,15 +119,21 @@ export const canHostnameBeChanged = (hostStatus: Host['status']) =>
     'pending-for-input',
   ].includes(hostStatus);
 
-export const getHostRole = (host: Host): string =>
-  `${HOST_ROLES.find((role) => role.value === host.role)?.label || HOST_ROLES[0].label}${
-    host.bootstrap ? ' (bootstrap)' : ''
+export const getHostRole = (host: Host, schedulableMasters?: boolean): string => {
+  let roleLabel = `${
+    HOST_ROLES.find((role) => role.value === host.role)?.label || HOST_ROLES[0].label
   }`;
+  if (schedulableMasters && host.role === 'master') {
+    roleLabel = 'Control plane node, Worker';
+  }
+  return `${roleLabel}${host.bootstrap ? ' (bootstrap)' : ''}`;
+};
 
 export const canDownloadHostLogs = (host: Host) =>
-  !!host.logsCollectedAt && host.logsCollectedAt != TIME_ZERO;
+  !!host.logsCollectedAt && host.logsCollectedAt !== TIME_ZERO;
 
 export const canDownloadClusterLogs = (cluster: Cluster) =>
+  cluster.controllerLogsCollectedAt !== TIME_ZERO ||
   !!(cluster.hosts || []).find((host) => canDownloadHostLogs(host));
 
 export const getReadyHostCount = (cluster: Cluster) => cluster.readyHostCount || 0;
@@ -161,3 +166,14 @@ export const fileSize: typeof filesize = (...args) =>
     .call(null, ...args)
     .toUpperCase()
     .replace(/I/, 'i');
+
+export const schedulableMastersAlwaysOn = (cluster: Cluster) => {
+  return cluster.hosts ? cluster.hosts.length < 5 : true;
+};
+
+export const getSchedulableMasters = (cluster: Cluster): boolean => {
+  if (schedulableMastersAlwaysOn(cluster)) {
+    return true;
+  }
+  return !!cluster.schedulableMasters;
+};

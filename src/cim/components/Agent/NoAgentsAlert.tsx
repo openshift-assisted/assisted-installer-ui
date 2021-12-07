@@ -8,7 +8,8 @@ const NoAgentsAlert = () => (
     <br />
     <List component={ListComponent.ol}>
       <ListItem>
-        Add hosts to an <Link to="/multicloud/infra-environments">infrastructure environment</Link>
+        Add hosts to an{' '}
+        <Link to="/multicloud/infrastructure/environments">infrastructure environment</Link>
       </ListItem>
       <ListItem>
         Continue configuration by editing this cluster and utilize the newly added hosts

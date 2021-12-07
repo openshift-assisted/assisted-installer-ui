@@ -20,9 +20,7 @@ export type ClusterDetailsFormFieldsProps = {
   isBaseDnsDomainDisabled?: boolean;
   defaultPullSecret?: string;
   isOcm: boolean;
-
   extensionAfter?: { [key: string]: React.ReactElement };
-
   managedDomains?: ManagedDomain[];
   versions: OpenshiftVersionOptionType[];
   toggleRedHatDnsService?: (checked: boolean) => void;
@@ -116,6 +114,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
       )}
       {extensionAfter?.['openshiftVersion'] && extensionAfter['openshiftVersion']}
       {canEditPullSecret && <PullSecret isOcm={isOcm} defaultPullSecret={defaultPullSecret} />}
+      {extensionAfter?.['pullSecret'] && extensionAfter['pullSecret']}
     </Form>
   );
 };

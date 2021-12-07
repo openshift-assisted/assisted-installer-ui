@@ -1,9 +1,11 @@
 import React from 'react';
+import { ClusterDeploymentK8sResource } from '../../types';
 import { ClusterDeploymentWizardStepsType } from './types';
 
 type ClusterDeploymentWizardContextType = {
   currentStepId: ClusterDeploymentWizardStepsType;
   setCurrentStepId: (stepId: ClusterDeploymentWizardStepsType) => void;
+  clusterDeployment?: ClusterDeploymentK8sResource;
 };
 
 const ClusterDeploymentWizardContext = React.createContext<ClusterDeploymentWizardContextType>({

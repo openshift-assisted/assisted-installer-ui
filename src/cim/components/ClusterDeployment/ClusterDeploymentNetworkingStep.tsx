@@ -27,6 +27,7 @@ import { getAICluster } from '../helpers';
 import ClusterDeploymentNetworkingForm, {
   defaultNetworkSettings,
 } from './ClusterDeploymentNetworkingForm';
+import { isCIMFlow } from './helpers';
 
 type UseNetworkingFormikArgs = {
   clusterDeployment: ClusterDeploymentK8sResource;
@@ -103,6 +104,11 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
     }
   };
 
+  const onBack = () =>
+    isCIMFlow(clusterDeployment)
+      ? setCurrentStepId('hosts-selection')
+      : setCurrentStepId('hosts-discovery');
+
   return (
     <Formik
       initialValues={initialValues}
@@ -124,7 +130,7 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
             isSubmitting={isSubmitting}
             isNextDisabled={!isValid || isValidating || isSubmitting}
             onNext={handleOnNext}
-            onBack={() => setCurrentStepId('hosts-selection')}
+            onBack={onBack}
             onCancel={onClose}
             nextButtonText="Save and install"
           />
