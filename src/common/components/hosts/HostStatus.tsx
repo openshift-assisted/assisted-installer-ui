@@ -7,6 +7,8 @@ import {
   FlexItem,
   Flex,
   ButtonProps,
+  Stack,
+  StackItem,
 } from '@patternfly/react-core';
 import {
   global_danger_color_100 as dangerColor,
@@ -85,6 +87,7 @@ const getStatusIcon = (status: Host['status'] | 'Discovered' | 'Bound') => {
     case 'installing':
     case 'installing-in-progress':
     case 'resetting':
+    case 'unbinding':
       icon = <InProgressIcon />;
       break;
     case 'added-to-existing-cluster':
@@ -255,6 +258,7 @@ const HostStatus: React.FC<HostStatusProps> = ({
   sublabel,
   onEditHostname,
   AdditionalNTPSourcesDialogToggleComponent,
+  children,
 }) => {
   const [keepOnOutsideClick, onValidationActionToggle] = React.useState(false);
   const status = statusOverride || host.status || '';
@@ -294,7 +298,12 @@ const HostStatus: React.FC<HostStatusProps> = ({
             {titleWithProgress}
           </WithHostStatusPopover>
         ) : (
-          <FlexItem className={'pf-u-mb-0'}>{titleWithProgress}</FlexItem>
+          <FlexItem className={'pf-u-mb-0'}>
+            <Stack>
+              <StackItem>{titleWithProgress}</StackItem>
+              {children && <StackItem>{children}</StackItem>}
+            </Stack>
+          </FlexItem>
         )}
         <RenderIf condition={Boolean(sublabel)}>
           <FlexItem
