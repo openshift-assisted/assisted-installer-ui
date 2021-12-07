@@ -12,3 +12,6 @@ export const INFRAENV_AGENTINSTALL_LABEL_KEY = 'infraenvs.agent-install.openshif
 export const AGENT_BMH_HOSTNAME_LABEL_KEY = 'agent-install.openshift.io/bmh';
 
 export const INFRAENV_GENERATED_AI_FLOW = 'agentBareMetal-generated-infraenv-ai-flow'; // mind ai-template.hbs in ACM when changed here
+
+export const getInfraEnvDocs = (docVersion: string) =>
+  `https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/${docVersion}/html-single/clusters/index#infra-env-prerequisites`;

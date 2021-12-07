@@ -1,12 +1,17 @@
 import { DiscoveryImageFormValues } from '../../../common';
 import { BMCFormProps } from '../Agent/types';
-import { BareMetalHostK8sResource, NMStateK8sResource } from '../../types/k8s';
+import {
+  BareMetalHostK8sResource,
+  NMStateK8sResource,
+  AgentClusterInstallK8sResource,
+} from '../../types/k8s';
 import { SecretK8sResource } from '../../types/fromOCP';
 
 export type AddHostModalProps = Pick<BMCFormProps, 'onClose' | 'onCreateBMH' | 'infraEnv'> & {
   isOpen: boolean;
   isBMPlatform: boolean;
   onSaveISOParams: (values: DiscoveryImageFormValues) => Promise<void>;
+  agentClusterInstall?: AgentClusterInstallK8sResource;
 };
 
 export type EditBMHModalProps = Pick<BMCFormProps, 'onClose' | 'infraEnv' | 'bmh'> & {
