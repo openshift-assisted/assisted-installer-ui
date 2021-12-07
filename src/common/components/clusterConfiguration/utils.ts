@@ -1,7 +1,13 @@
 import { Address4, Address6 } from 'ip-address';
 import { Cluster, ClusterDefaultConfig, Inventory, stringToJSON } from '../../api';
 import { NO_SUBNET_SET } from '../../config';
-import { HostDiscoveryValues, HostSubnets } from '../../types/clusters';
+import {
+  HostDiscoveryValues,
+  HostSubnets,
+  Validation,
+  ValidationGroup,
+  ValidationsInfo,
+} from '../../types/clusters';
 import { OpenshiftVersionOptionType } from '../../types/versions';
 import { getHostname, getSchedulableMasters } from '../hosts/utils';
 import {
@@ -88,3 +94,28 @@ export const getSNOSupportLevel = (version: OpenshiftVersionOptionType['version'
   }
   return 'dev-preview';
 };
+
+export function filterValidationsInfoByGroup(
+  validationsInfo: ValidationsInfo,
+  selectedGroups: ValidationGroup[] = ['configuration', 'hosts-data', 'network', 'operators'],
+): ValidationsInfo {
+  const result = {};
+  (Object.keys(validationsInfo) as ValidationGroup[]).forEach((groupKey) => {
+    if (selectedGroups.includes(groupKey)) result[groupKey] = validationsInfo[groupKey];
+  });
+  return result;
+}
+
+export function filterValidationsInfoByStatus(
+  validationsInfo: ValidationsInfo,
+  selectedStatuses: Validation['status'][] = ['failure', 'pending', 'error'],
+): ValidationsInfo {
+  const result = {};
+  Object.entries(validationsInfo).forEach(([group, validations]) => {
+    const filteredValidations = validations.filter((validation) =>
+      selectedStatuses.includes(validation.status),
+    );
+    if (filteredValidations.length) result[group] = filteredValidations;
+  });
+  return result;
+}

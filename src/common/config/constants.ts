@@ -2,6 +2,7 @@ import * as packageJson from '../../../package.json';
 
 import { ValidationsInfo, HostRole } from '../../common/types/hosts';
 import { Cluster, ClusterValidationId, DiskRole, Event, Host, HostValidationId } from '../api';
+import { ValidationGroup as ClusterValidationGroup } from '../types/clusters';
 
 export const OPENSHIFT_LIFE_CYCLE_DATES_LINK =
   'https://access.redhat.com/support/policy/updates/openshift#dates';
@@ -240,6 +241,14 @@ export const CLUSTER_VALIDATION_LABELS: { [key in ClusterValidationId]: string }
   'lso-requirements-satisfied': 'LSO requirements',
   'ocs-requirements-satisfied': 'OCS requirements',
   'cnv-requirements-satisfied': 'CNV requirements',
+};
+
+export const CLUSTER_VALIDATION_GROUP_LABELS: { [key in ClusterValidationGroup]: string } = {
+  configuration: 'General configuration',
+  hostsData: 'Hosts',
+  'hosts-data': 'Hosts',
+  network: 'Networking',
+  operators: 'Operators',
 };
 
 export const CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4 = {

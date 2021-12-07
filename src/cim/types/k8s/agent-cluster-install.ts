@@ -1,5 +1,6 @@
 import { K8sResourceCommon } from 'console-sdk-ai-lib';
 import { Cluster } from '../../../common';
+import { ValidationsInfo } from '../../../common/types/clusters';
 import { StatusCondition } from './shared';
 
 export type AgentClusterInstallStatusConditionType =
@@ -61,5 +62,6 @@ export type AgentClusterInstallK8sResource = K8sResourceCommon & {
       state: Cluster['status'];
       stateInfo: Cluster['statusInfo'];
     };
+    validationsInfo?: ValidationsInfo;
   };
 };

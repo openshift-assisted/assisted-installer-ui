@@ -1,9 +1,9 @@
 export * from './types';
 export * from './helpers';
 export * from './AdditionalNTPSourcesDialogToggle';
-export * from './ClusterErrors';
 export * from './LogsDownloadButton';
 
+export { default as ClusterDeploymentValidationsOverview } from './ClusterDeploymentValidationsOverview';
 export { default as ClusterDeploymentDetails } from './ClusterDeploymentDetails';
 export { default as ClusterDeploymentProgress } from './ClusterDeploymentProgress';
 export { default as ClusterDeploymentCredentials } from './ClusterDeploymentCredentials';
