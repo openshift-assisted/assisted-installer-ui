@@ -249,7 +249,7 @@ export const memoryColumn: TableRow<Host> = {
 
 export const disksColumn: TableRow<Host> = {
   header: {
-    title: 'Disk',
+    title: 'Total storage',
     props: {
       id: 'col-header-disk',
     },
