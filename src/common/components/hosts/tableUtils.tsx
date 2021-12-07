@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Address4, Address6 } from 'ip-address';
 import HardwareStatus from '../../../ocm/components/hosts/HardwareStatus';
 import NetworkingStatus from '../../../ocm/components/hosts/NetworkingStatus';
-import { Cluster, Host, Interface, Inventory, stringToJSON } from '../../api';
+import { Cluster, Host, HostUpdateParams, Interface, Inventory, stringToJSON } from '../../api';
 import { ValidationsInfo } from '../../types/hosts';
 import { getSubnet } from '../clusterConfiguration';
 import { DASH } from '../constants';
@@ -17,6 +17,7 @@ import { HostsTableActions } from './types';
 import HostStatus from './HostStatus';
 import RoleCell from './RoleCell';
 import { getHostname, getHostRole } from './utils';
+import { selectMachineNetworkCIDR } from '../../../ocm/selectors/clusterSelectors';
 
 export const getSelectedNic = (nics: Interface[], currentSubnet: Address4 | Address6) => {
   return nics.find((nic) => {
@@ -93,7 +94,9 @@ export const roleColumn = (
       transforms: [sortable],
     },
     cell: (host) => {
-      const editRole = onEditRole ? (role?: string) => onEditRole(host, role) : undefined;
+      const editRole = onEditRole
+        ? (role: HostUpdateParams['hostRole']) => onEditRole(host, role)
+        : undefined;
       const hostRole = getHostRole(host, schedulableMasters);
       return {
         title: (
@@ -246,7 +249,7 @@ export const memoryColumn: TableRow<Host> = {
 
 export const disksColumn: TableRow<Host> = {
   header: {
-    title: 'Disk',
+    title: 'Total storage',
     props: {
       id: 'col-header-disk',
     },
@@ -303,7 +306,8 @@ export const activeNICColumn = (cluster: Cluster): TableRow<Host> => ({
     const inventory = stringToJSON<Inventory>(inventoryString) || {};
     const nics = inventory.interfaces || [];
 
-    const currentSubnet = cluster.machineNetworkCidr ? getSubnet(cluster.machineNetworkCidr) : null;
+    const machineNetworkCidr = selectMachineNetworkCIDR(cluster);
+    const currentSubnet = machineNetworkCidr ? getSubnet(machineNetworkCidr) : null;
     const selectedNic = currentSubnet ? getSelectedNic(nics, currentSubnet) : null;
     return {
       title: selectedNic?.name || DASH,
@@ -321,7 +325,8 @@ export const ipv4Column = (cluster: Cluster): TableRow<Host> => ({
     const inventory = stringToJSON<Inventory>(inventoryString) || {};
     const nics = inventory.interfaces || [];
 
-    const currentSubnet = cluster.machineNetworkCidr ? getSubnet(cluster.machineNetworkCidr) : null;
+    const machineNetworkCidr = selectMachineNetworkCIDR(cluster);
+    const currentSubnet = machineNetworkCidr ? getSubnet(machineNetworkCidr) : null;
     const selectedNic = currentSubnet ? getSelectedNic(nics, currentSubnet) : null;
     return {
       title: (selectedNic?.ipv4Addresses || []).join(', ') || DASH,
@@ -339,7 +344,8 @@ export const ipv6Column = (cluster: Cluster): TableRow<Host> => ({
     const inventory = stringToJSON<Inventory>(inventoryString) || {};
     const nics = inventory.interfaces || [];
 
-    const currentSubnet = cluster.machineNetworkCidr ? getSubnet(cluster.machineNetworkCidr) : null;
+    const machineNetworkCidr = selectMachineNetworkCIDR(cluster);
+    const currentSubnet = machineNetworkCidr ? getSubnet(machineNetworkCidr) : null;
     const selectedNic = currentSubnet ? getSelectedNic(nics, currentSubnet) : null;
     return {
       title: (selectedNic?.ipv6Addresses || []).join(', ') || DASH,
@@ -357,7 +363,8 @@ export const macAddressColumn = (cluster: Cluster): TableRow<Host> => ({
     const inventory = stringToJSON<Inventory>(inventoryString) || {};
     const nics = inventory.interfaces || [];
 
-    const currentSubnet = cluster.machineNetworkCidr ? getSubnet(cluster.machineNetworkCidr) : null;
+    const machineNetworkCidr = selectMachineNetworkCIDR(cluster);
+    const currentSubnet = machineNetworkCidr ? getSubnet(machineNetworkCidr) : null;
     const selectedNic = currentSubnet ? getSelectedNic(nics, currentSubnet) : null;
     return {
       title: selectedNic?.macAddress || DASH,

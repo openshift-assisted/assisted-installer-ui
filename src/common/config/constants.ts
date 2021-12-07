@@ -20,6 +20,11 @@ export const getBugzillaLink = (version = '') =>
 export const FEEDBACK_FORM_LINK =
   'https://docs.google.com/forms/d/e/1FAIpQLSfg9M8wRW4m_HkWeAl6KpB5dTcMu8iI3iJ29GlLfZpF2hnjng/viewform';
 
+export const TECH_SUPPORT_LEVEL_LINK = 'https://access.redhat.com/support/offerings/techpreview';
+
+export const FIREWALL_DOCUMENTATION_LINK =
+  'https://docs.openshift.com/container-platform/4.8/installing/installing_bare_metal_ipi/ipi-install-installation-workflow.html#ipi-install-setting-proxy-settings-within-install-config_ipi-install-configuration-files';
+
 export const getOcpConsoleNodesPage = (ocpConsoleUrl: string) =>
   `${ocpConsoleUrl}/k8s/cluster/nodes`;
 
@@ -64,6 +69,8 @@ export const CLUSTER_STATUS_LABELS: { [key in Cluster['status']]: string } = {
 };
 
 export const HOST_STATUS_LABELS: { [key in Host['status']]: string } = {
+  'unbinding-pending-user-action': 'Unbinding, pending user action',
+  'preparing-failed': 'Preparing step failed',
   unbinding: 'Unbinding',
   'disabled-unbound': 'Disabled',
   'disconnected-unbound': 'Disconnected',
@@ -78,7 +85,7 @@ export const HOST_STATUS_LABELS: { [key in Host['status']]: string } = {
   insufficient: 'Insufficient',
   disabled: 'Disabled',
   'preparing-for-installation': 'Preparing for installation',
-  'preparing-successful': 'Preparing installation successful',
+  'preparing-successful': 'Preparing step successful',
   installing: 'Starting installation',
   'installing-in-progress': 'Installing',
   'installing-pending-user-action': 'Pending user action',
@@ -104,6 +111,8 @@ export const CLUSTER_FIELD_LABELS: { [key in string]: string } = {
 };
 
 export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
+  'unbinding-pending-user-action': 'Unbinding, pending user action',
+  'preparing-failed': 'Preparing step failed',
   unbinding: 'This host is being unbound from the cluster.',
   'disabled-unbound':
     'This host was manually disabled and can not be included in the cluster. Enable this host to make it available again.',

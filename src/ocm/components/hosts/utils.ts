@@ -4,41 +4,41 @@ import {
   Cluster,
   ClusterUpdateParams,
   Host,
-  Presigned,
   stringToJSON,
   Inventory,
 } from '../../../common';
 
-import {
-  getHostLogsDownloadUrl,
-  ocmClient,
-  handleApiError,
-  getErrorMessage,
-  getPresignedFileUrl,
-  patchCluster,
-} from '../../api';
+import { ocmClient, handleApiError, getErrorMessage } from '../../api';
 import { updateCluster } from '../../reducers/clusters';
+import { ClustersService } from '../../services';
+import ClustersAPI from '../../services/apis/ClustersAPI';
 
 export const downloadHostInstallationLogs = async (
   addAlert: AlertsContextType['addAlert'],
   host: Host,
 ) => {
-  if (ocmClient) {
-    try {
-      const { data } = await getPresignedFileUrl({
-        clusterId: host.clusterId || 'UNKNOWN_CLUSTER',
+  try {
+    if (!host.clusterId) {
+      throw new Error(
+        `Cannot download logs for host ${host.id}. Missing clusterId field value in host.`,
+      );
+    }
+    if (ocmClient) {
+      const { data } = await ClustersAPI.getPresignedForClusterFiles({
+        clusterId: host.clusterId,
         fileName: 'logs',
         hostId: host.id,
         logsType: 'host',
       });
       saveAs(data.url);
-    } catch (e) {
-      handleApiError<Presigned>(e, async (e) => {
-        addAlert({ title: 'Could not download host logs.', message: getErrorMessage(e) });
-      });
+    } else {
+      const { data, fileName } = await ClustersService.downloadLogs(host.clusterId, host.id);
+      saveAs(data, fileName);
     }
-  } else {
-    saveAs(getHostLogsDownloadUrl(host.id, host.clusterId));
+  } catch (e) {
+    handleApiError(e, async (e) => {
+      addAlert({ title: 'Could not download host logs.', message: getErrorMessage(e) });
+    });
   }
 };
 
@@ -54,10 +54,10 @@ export const onAdditionalNtpSourceAction = async (
       additionalNtpSource,
     };
 
-    const { data } = await patchCluster(clusterId, values);
+    const { data } = await ClustersAPI.update(clusterId, values);
     dispatch(updateCluster(data));
   } catch (e) {
-    handleApiError<ClusterUpdateParams>(e, () => onError(getErrorMessage(e)));
+    handleApiError(e, () => onError(getErrorMessage(e)));
   }
 };
 

@@ -9,8 +9,8 @@ import {
 } from '@patternfly/react-core';
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { getErrorMessage, handleApiError, installHosts } from '../../api';
-import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
+import { getErrorMessage, handleApiError } from '../../api';
+import { updateHost } from '../../reducers/clusters/currentClusterSlice';
 import { DiscoveryImageModal } from '../clusterConfiguration/discoveryImageModal';
 import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
 import {
@@ -24,6 +24,7 @@ import {
 } from '../../../common';
 import InventoryAddHosts from './InventoryAddHost';
 import { onFetchEvents } from '../fetching/fetchEvents';
+import { HostsService } from '../../services';
 
 const { addAlert } = alertsSlice.actions;
 
@@ -39,8 +40,9 @@ const AddHosts: React.FC = () => {
   const handleHostsInstall = async () => {
     setSubmitting(true);
     try {
-      const { data } = await installHosts(cluster.id);
-      dispatch(updateCluster(data));
+      const data = await HostsService.installAll(cluster);
+      const hosts = data.map((d) => d.data);
+      hosts.forEach((host) => dispatch(updateHost(host)));
     } catch (e) {
       handleApiError(e, () =>
         addAlert({

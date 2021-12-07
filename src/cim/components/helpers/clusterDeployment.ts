@@ -10,6 +10,7 @@ import {
   AGENT_AUTO_SELECT_ANNOTATION_KEY,
   AGENT_SELECTOR,
 } from '../common';
+import { getClusterStatus } from './status';
 
 export type ClusterDeploymentParams = {
   name: string;
@@ -113,13 +114,26 @@ export const getClusterDeploymentResource = ({
   };
 };
 
-export const getConsoleUrl = (clusterDeployment?: ClusterDeploymentK8sResource) =>
-  clusterDeployment?.status?.webConsoleURL ||
-  `https://console-openshift-console.apps.${clusterDeployment?.spec?.clusterName}.${clusterDeployment?.spec?.baseDomain}`;
+// Temporary workaround until https://issues.redhat.com/browse/HIVE-1666
+const WORKAROUND_COMPUTEDURLS_CLUSTER_STATUS = ['adding-hosts', 'installed', 'finalizing'];
 
-export const getClusterApiUrl = (clusterDeployment?: ClusterDeploymentK8sResource) =>
+export const getConsoleUrl = (
+  clusterDeployment?: ClusterDeploymentK8sResource,
+  agentClusterInstall?: AgentClusterInstallK8sResource,
+) =>
+  clusterDeployment?.status?.webConsoleURL ||
+  (WORKAROUND_COMPUTEDURLS_CLUSTER_STATUS.includes(getClusterStatus(agentClusterInstall)[0])
+    ? `https://console-openshift-console.apps.${clusterDeployment?.spec?.clusterName}.${clusterDeployment?.spec?.baseDomain}`
+    : undefined);
+
+export const getClusterApiUrl = (
+  clusterDeployment?: ClusterDeploymentK8sResource,
+  agentClusterInstall?: AgentClusterInstallK8sResource,
+) =>
   clusterDeployment?.status?.apiURL ||
-  `https://api.${clusterDeployment?.spec?.clusterName}.${clusterDeployment?.spec?.baseDomain}`;
+  (WORKAROUND_COMPUTEDURLS_CLUSTER_STATUS.includes(getClusterStatus(agentClusterInstall)[0])
+    ? `https://api.${clusterDeployment?.spec?.clusterName}.${clusterDeployment?.spec?.baseDomain}`
+    : undefined);
 
 type ClusterPropertyKeys =
   | 'name'
