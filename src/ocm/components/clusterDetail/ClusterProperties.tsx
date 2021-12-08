@@ -29,6 +29,24 @@ const getManagementType = (clusterManagementType: boolean | undefined): string =
   return managementType;
 };
 
+const getDiskEncryptionType = (diskEncryption: string | undefined): string => {
+  let diskEncryptionType = '-';
+  switch (diskEncryption) {
+    case 'all':
+      diskEncryptionType = 'Enabled on control plane nodes & workers';
+      break;
+    case 'masters':
+      diskEncryptionType = 'Enabled on control plane nodes';
+      break;
+    case 'workers':
+      diskEncryptionType = 'Enabled on workers';
+      break;
+    case 'none':
+      diskEncryptionType = 'Disabled';
+  }
+  return diskEncryptionType;
+};
+
 const ClusterProperties: React.FC<ClusterPropertiesProps> = ({ cluster }) => (
   <>
     <GridItem>
@@ -50,6 +68,10 @@ const ClusterProperties: React.FC<ClusterPropertiesProps> = ({ cluster }) => (
           title="Ingress virtual IP"
           value={cluster.ingressVip}
           isHidden={isSingleNodeCluster(cluster)}
+        />
+        <DetailItem
+          title="Disk encryption"
+          value={getDiskEncryptionType(cluster.diskEncryption?.enableOn)}
         />
       </DetailList>
     </GridItem>
