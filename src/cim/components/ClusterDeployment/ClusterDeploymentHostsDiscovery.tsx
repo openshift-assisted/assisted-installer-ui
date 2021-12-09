@@ -31,6 +31,7 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
   onDeleteHost,
   canDeleteAgent,
   onSaveAgent,
+  canEditHost,
   onSaveBMH,
   onSaveISOParams,
   onFormSaveError,
@@ -89,6 +90,7 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
           infraEnv={infraEnv}
           getClusterDeploymentLink={getClusterDeploymentLink}
           onEditHost={setEditAgent}
+          canEditHost={canEditHost}
           canDelete={canDeleteAgent}
           onDeleteHost={onDeleteHost}
           onEditBMH={setEditBMH}
