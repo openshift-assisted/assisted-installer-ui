@@ -53,7 +53,7 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
   return (
     <Modal
       aria-label="Add host dialog"
-      title="Add Host"
+      title="Add host"
       isOpen={isOpen}
       onClose={onClose}
       variant={ModalVariant.small}
