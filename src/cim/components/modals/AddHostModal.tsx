@@ -1,27 +1,17 @@
 import * as React from 'react';
 import { FormikHelpers } from 'formik';
-import { Flex, FlexItem, Modal, ModalBoxBody, ModalVariant, Radio } from '@patternfly/react-core';
 import {
-  DownloadIso,
-  PopoverIcon,
-  DiscoveryImageConfigForm,
-  DiscoveryImageFormValues,
-} from '../../../common';
+  Flex,
+  FlexItem,
+  Modal,
+  ModalBoxBody,
+  ModalVariant,
+  Radio,
+  Tooltip,
+} from '@patternfly/react-core';
+import { DownloadIso, DiscoveryImageConfigForm, DiscoveryImageFormValues } from '../../../common';
 import { BMCForm } from '../Agent';
 import { AddHostModalProps } from './types';
-
-// TODO(mlibra): This limitation needs to be updated once https://github.com/openshift/enhancements/pull/871 lands.
-const BmOnBmOnlyPopoverIcon = () => (
-  <PopoverIcon
-    noVerticalAlign
-    bodyContent={
-      <>
-        The Advanced Cluster Manager can manage bare metal hosts when deployed on bare metal
-        platform only.
-      </>
-    }
-  />
-);
 
 type AddHostModalStepType = 'bmc' | 'iso-config' | 'iso-download';
 
@@ -84,20 +74,21 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
             </FlexItem>
             <FlexItem spacer={{ default: isBMPlatform ? 'spacerXl' : 'spacerSm' }} />
             <FlexItem>
-              <Radio
-                id="bmc"
-                name="type"
-                label="Baseboard Management Controller (BMC)"
-                isChecked={!dialogType}
-                onChange={(checked) => setDialogType(checked ? 'bmc' : 'iso-config')}
-                isDisabled={!isBMPlatform}
-              />
+              <Tooltip
+                hidden={isBMPlatform}
+                // TODO(mlibra): This limitation needs to be updated once https://github.com/openshift/enhancements/pull/871 lands.
+                content="The Advanced Cluster Manager can manage bare metal hosts when deployed on bare metal platform only."
+              >
+                <Radio
+                  id="bmc"
+                  name="type"
+                  label="Baseboard Management Controller (BMC)"
+                  isChecked={!dialogType}
+                  onChange={(checked) => setDialogType(checked ? 'bmc' : 'iso-config')}
+                  isDisabled={!isBMPlatform}
+                />
+              </Tooltip>
             </FlexItem>
-            {!isBMPlatform && (
-              <FlexItem>
-                <BmOnBmOnlyPopoverIcon />
-              </FlexItem>
-            )}
           </Flex>
         </ModalBoxBody>
       )}
