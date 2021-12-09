@@ -2,6 +2,7 @@ export * from './types';
 export * from './helpers';
 export * from './AdditionalNTPSourcesDialogToggle';
 export * from './LogsDownloadButton';
+export * from './wizardTransition';
 
 export { default as ClusterDeploymentValidationsOverview } from './ClusterDeploymentValidationsOverview';
 export { default as ClusterDeploymentDetails } from './ClusterDeploymentDetails';

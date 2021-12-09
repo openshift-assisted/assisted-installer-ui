@@ -24,7 +24,7 @@ export type AgentK8sResource = K8sResourceCommon & {
   };
   status?: {
     conditions?: AgentStatusCondition[];
-    hostValidationInfo: ValidationsInfo;
+    validationsInfo: ValidationsInfo;
     inventory: Inventory;
     progress: {
       currentStage: HostStage;

@@ -110,6 +110,16 @@ export const useHostsSelectionFormik = ({
   return [initialValues, validationSchema];
 };
 
+const getSelectedAgents = (
+  agents: AgentK8sResource[],
+  values: ClusterDeploymentHostsSelectionValues,
+) => {
+  const selectedHostIds = values.autoSelectHosts
+    ? values.autoSelectedHostIds
+    : values.selectedHostIds;
+  return agents.filter((agent) => selectedHostIds.includes(agent.metadata?.uid || ''));
+};
+
 const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectionStepProps> = ({
   clusterDeployment,
   agentClusterInstall,
@@ -146,7 +156,7 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
-      {({ submitForm, isSubmitting, isValid, isValidating, dirty, errors, touched }) => {
+      {({ submitForm, isSubmitting, isValid, isValidating, dirty, errors, touched, values }) => {
         const handleOnNext = () => {
           if (dirty) {
             submitForm();
@@ -155,8 +165,12 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
           }
         };
 
+        const selectedAgents = getSelectedAgents(agents, values);
+
         const footer = (
           <ClusterDeploymentWizardFooter
+            agentClusterInstall={agentClusterInstall}
+            agents={selectedAgents}
             errorFields={getFormikErrorFields(errors, touched)}
             isSubmitting={isSubmitting}
             isNextDisabled={!isValid || isValidating || isSubmitting}
