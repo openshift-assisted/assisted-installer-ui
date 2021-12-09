@@ -9,6 +9,7 @@ export * from '../common/types';
 export * from '../common/features';
 
 export * from '../common/components/ui';
+export * from '../common/components/AlertsContextProvider';
 export * from '../common/components/hosts';
 export * from '../common/components/clusterWizard/types';
 export * from '../common/components/clusterDetail';
