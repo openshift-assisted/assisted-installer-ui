@@ -102,6 +102,7 @@ export type ClusterDeploymentWizardProps = Pick<
   | 'onDeleteHost'
   | 'canDeleteAgent'
   | 'onSaveAgent'
+  | 'canEditHost'
   | 'onSaveBMH'
   | 'onSaveISOParams'
   | 'onCreateBMH'
@@ -162,6 +163,7 @@ export type ClusterDeploymentHostsDiscoveryProps = {
   onDeleteHost: InfraEnvAgentTableProps['onDeleteHost'];
   canDeleteAgent: InfraEnvAgentTableProps['canDelete'];
   onSaveAgent: EditAgentModalProps['onSave'];
+  canEditHost: InfraEnvAgentTableProps['canEditHost'];
   onSaveBMH: EditBMHModalProps['onEdit'];
   onSaveISOParams: AddHostModalProps['onSaveISOParams'];
   onFormSaveError?: EditAgentModalProps['onFormSaveError'];
