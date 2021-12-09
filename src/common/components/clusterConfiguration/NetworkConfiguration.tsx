@@ -66,6 +66,25 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
 
   const isMultiNodeCluster = !isSingleNodeCluster(cluster);
   const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';
+  const hostSubnetsCount = hostSubnets.length;
+  const firstSubnet = hostSubnets[0]?.subnet;
+
+  // Set hostSubnet to first one whenever available
+  useEffect(() => {
+    if (
+      values.hostSubnet === NO_SUBNET_SET &&
+      values.managedNetworkingType === 'clusterManaged' &&
+      hostSubnetsCount
+    ) {
+      setFieldValue('hostSubnet', firstSubnet);
+    }
+  }, [
+    firstSubnet,
+    hostSubnetsCount,
+    values.hostSubnet,
+    setFieldValue,
+    values.managedNetworkingType,
+  ]);
 
   useEffect(() => {
     if (isUserManagedNetworking) {
