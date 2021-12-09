@@ -97,6 +97,8 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
       {({ submitForm, isSubmitting, isValid, isValidating, errors, touched }) => {
         const footer = (
           <ClusterDeploymentWizardFooter
+            agentClusterInstall={agentClusterInstall}
+            agents={clusterAgents}
             errorFields={getFormikErrorFields(errors, touched)}
             isSubmitting={isSubmitting}
             isNextDisabled={!isValid || isValidating || isSubmitting}

@@ -1,12 +1,16 @@
 import * as React from 'react';
-import { Host, HostStatus, stringToJSON } from '../../../common';
-import { HostStatusProps } from '../../../common/components/hosts/types';
-import { ValidationsInfo } from '../../../common/types/hosts';
 import {
   getFailingClusterWizardSoftValidationIds,
   getWizardStepHostStatus,
   getWizardStepHostValidationsInfo,
-} from '../../../ocm/components/clusterWizard/wizardTransition';
+  Host,
+  HostStatus,
+  stringToJSON,
+} from '../../../common';
+import { HostStatusProps } from '../../../common/components/hosts/types';
+import { ValidationsInfo } from '../../../common/types/hosts';
+// TODO(jtomasek): replace the map with a CIM dedicated one
+import { wizardStepsValidationsMap } from '../../../ocm/components/clusterWizard/wizardTransition';
 import { AdditionalNTPSourcesDialogToggle } from '../../../ocm/components/hosts/AdditionaNTPSourceDialogToggle';
 
 type HostNetworkingStatusComponentProps = {
@@ -19,9 +23,17 @@ const NetworkingStatus: React.FC<HostNetworkingStatusComponentProps> = ({
   onEditHostname,
 }) => {
   const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
-  const networkingStatus = getWizardStepHostStatus(host, 'networking');
-  const netValidationsInfo = getWizardStepHostValidationsInfo(validationsInfo, 'networking');
-  const sublabel = getFailingClusterWizardSoftValidationIds(validationsInfo, 'networking').length
+  const networkingStatus = getWizardStepHostStatus('networking', wizardStepsValidationsMap, host);
+  const netValidationsInfo = getWizardStepHostValidationsInfo(
+    validationsInfo,
+    'networking',
+    wizardStepsValidationsMap,
+  );
+  const sublabel = getFailingClusterWizardSoftValidationIds(
+    validationsInfo,
+    'networking',
+    wizardStepsValidationsMap,
+  ).length
     ? 'Some validations failed'
     : undefined;
 

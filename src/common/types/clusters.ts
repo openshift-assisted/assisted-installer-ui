@@ -1,5 +1,5 @@
 import { IRow } from '@patternfly/react-table';
-import { ClusterUpdateParams, ClusterValidationId } from '../api/types';
+import { Cluster, ClusterUpdateParams, ClusterValidationId } from '../api/types';
 import { Validation as HostValidation } from './hosts';
 
 export type Validation = Omit<HostValidation, 'id'> & {
@@ -15,6 +15,11 @@ export type ValidationGroup =
 
 export type ValidationsInfo = {
   [key in ValidationGroup]?: Validation[];
+};
+
+export type ClusterWizardStepStatusDeterminationObject = {
+  status: Cluster['status'];
+  validationsInfo?: Cluster['validationsInfo'] | ValidationsInfo;
 };
 
 export type ClusterTableRows = IRow[];

@@ -1,11 +1,13 @@
 import React from 'react';
-import { Host, HostStatus } from '../../../common';
-import { ValidationsInfo } from '../../../common/types/hosts';
 import {
   getFailingClusterWizardSoftValidationIds,
   getWizardStepHostStatus,
   getWizardStepHostValidationsInfo,
-} from '../clusterWizard/wizardTransition';
+  Host,
+  HostStatus,
+} from '../../../common';
+import { ValidationsInfo } from '../../../common/types/hosts';
+import { wizardStepsValidationsMap } from '../clusterWizard/wizardTransition';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
 
 type HardwareStatusProps = {
@@ -15,10 +17,21 @@ type HardwareStatusProps = {
 };
 
 const HardwareStatus: React.FC<HardwareStatusProps> = (props) => {
-  const hardwareStatus = getWizardStepHostStatus(props.host, 'host-discovery');
-  const validationsInfo = getWizardStepHostValidationsInfo(props.validationsInfo, 'host-discovery');
-  const sublabel = getFailingClusterWizardSoftValidationIds(validationsInfo, 'host-discovery')
-    .length
+  const hardwareStatus = getWizardStepHostStatus(
+    'host-discovery',
+    wizardStepsValidationsMap,
+    props.host,
+  );
+  const validationsInfo = getWizardStepHostValidationsInfo(
+    props.validationsInfo,
+    'host-discovery',
+    wizardStepsValidationsMap,
+  );
+  const sublabel = getFailingClusterWizardSoftValidationIds(
+    validationsInfo,
+    'host-discovery',
+    wizardStepsValidationsMap,
+  ).length
     ? 'Some validations failed'
     : undefined;
 

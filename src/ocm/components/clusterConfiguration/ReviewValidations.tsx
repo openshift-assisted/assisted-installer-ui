@@ -25,7 +25,7 @@ import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
 import {
   allClusterWizardSoftValidationIds,
   ClusterWizardStepsType,
-  findValidationFixStep,
+  wizardStepsValidationsMap,
 } from '../clusterWizard/wizardTransition';
 import {
   Cluster,
@@ -34,6 +34,7 @@ import {
   CLUSTER_VALIDATION_LABELS,
   HOST_VALIDATION_LABELS,
   getEnabledHosts,
+  findValidationFixStep,
 } from '../../../common';
 import { wizardStepNames } from '../clusterWizard/constants';
 
@@ -72,7 +73,10 @@ const FailingValidation: React.FC<{
   } check failed. `;
 
   let fix;
-  const step = findValidationFixStep({ id: validation.id, clusterGroup, hostGroup });
+  const step = findValidationFixStep<ClusterWizardStepsType>(
+    { validationId: validation.id, clusterGroup, hostGroup },
+    wizardStepsValidationsMap,
+  );
   if (step === 'review') {
     // no sooner step, so the user can not do anything about it ...
     fix = 'Please wait till all validations are finished.';

@@ -132,6 +132,7 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
 
         const footer = (
           <ClusterDeploymentWizardFooter
+            agentClusterInstall={agentClusterInstall}
             errorFields={getFormikErrorFields(errors, touched)}
             isSubmitting={isSubmitting}
             isNextDisabled={!isValid || isValidating || isSubmitting}
