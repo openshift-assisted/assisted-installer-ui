@@ -1,4 +1,4 @@
-import { HostRoleUpdateParams, HostValidationId } from '../api/types';
+import { Host, HostRoleUpdateParams, HostValidationId } from '../api/types';
 
 export type Validation = {
   id: HostValidationId;
@@ -11,6 +11,11 @@ export type ValidationGroup = 'hardware' | 'network' | 'operators' | 'infrastruc
 
 export type ValidationsInfo = {
   [key in ValidationGroup]?: Validation[];
+};
+
+export type ClusterWizardStepHostStatusDeterminationObject = {
+  status: Host['status'];
+  validationsInfo?: Host['validationsInfo'] | ValidationsInfo;
 };
 
 export type HostRole = {

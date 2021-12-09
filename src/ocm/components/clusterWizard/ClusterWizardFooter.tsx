@@ -1,14 +1,53 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
+import { Alert, AlertGroup, AlertVariant } from '@patternfly/react-core';
 import {
   Cluster,
   WizardFooter,
   WizardFooterGenericProps,
   Alerts,
   useAlerts,
+  stringToJSON,
+  CLUSTER_FIELD_LABELS,
 } from '../../../common';
-import ClusterValidationSection from '../clusterConfiguration/ClusterValidationSection';
 import { routeBasePath } from '../../config/routeBaseBath';
+import { ValidationsInfo } from '../../../common/types/clusters';
+import { wizardStepsValidationsMap } from '../clusterWizard/wizardTransition';
+import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
+import ClusterWizardStepValidationsAlert from '../../../common/components/clusterWizard/ClusterWizardStepValidationsAlert';
+
+type ClusterValidationSectionProps = {
+  cluster?: Cluster;
+  errorFields?: string[];
+};
+
+const ValidationSection = ({ cluster, errorFields = [] }: ClusterValidationSectionProps) => {
+  const { currentStepId } = React.useContext(ClusterWizardContext);
+  const validationsInfo = stringToJSON<ValidationsInfo>(cluster?.validationsInfo);
+  return (
+    <AlertGroup>
+      {!!errorFields.length && (
+        <Alert
+          variant={AlertVariant.danger}
+          title="Provided cluster configuration is not valid"
+          isInline
+        >
+          The following fields are not valid:{' '}
+          {errorFields.map((field: string) => CLUSTER_FIELD_LABELS[field]).join(', ')}.
+        </Alert>
+      )}
+      {cluster && (
+        <ClusterWizardStepValidationsAlert
+          currentStepId={currentStepId}
+          clusterStatus={cluster.status}
+          hosts={cluster?.hosts || []}
+          validationsInfo={validationsInfo}
+          wizardStepsValidationsMap={wizardStepsValidationsMap}
+        />
+      )}
+    </AlertGroup>
+  );
+};
 
 type ClusterWizardFooterProps = WizardFooterGenericProps & {
   cluster?: Cluster;
@@ -32,7 +71,7 @@ const ClusterWizardFooter = ({
   ]);
 
   const alertsSection = alerts.length ? <Alerts /> : undefined;
-  const errorsSection = <ClusterValidationSection cluster={cluster} errorFields={errorFields} />;
+  const errorsSection = <ValidationSection cluster={cluster} errorFields={errorFields} />;
 
   return (
     <WizardFooter

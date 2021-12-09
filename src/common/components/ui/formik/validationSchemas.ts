@@ -149,6 +149,11 @@ const stringToIPAddress = (value: string): Address4 | Address6 | null => {
   return ip;
 };
 
+export const hostSubnetValidationSchema = Yup.string().when(['managedNetworkingType'], {
+  is: 'clusterManaged',
+  then: Yup.string().notOneOf([NO_SUBNET_SET], 'Host subnet must be selected.'),
+});
+
 export const vipValidationSchema = (
   hostSubnets: HostSubnets,
   values: NetworkConfigurationValues,

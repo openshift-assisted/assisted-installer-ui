@@ -1,30 +1,14 @@
 import {
-  Cluster,
   getAllClusterWizardSoftValidationIds,
-  getWizardStepClusterStatus,
   WizardStepsValidationMap,
   WizardStepValidationMap,
 } from '../../../common';
 
-export type ClusterWizardStepsType = 'cluster-details' | 'host-discovery' | 'networking' | 'review';
-export type ClusterWizardFlowStateType = Cluster['status'] | 'new';
-
-export const getClusterWizardFirstStep = (
-  state?: ClusterWizardFlowStateType,
-): ClusterWizardStepsType => {
-  switch (state) {
-    case 'ready':
-      return 'review';
-    case 'pending-for-input':
-    case 'adding-hosts':
-    case 'insufficient':
-      return 'host-discovery';
-    default:
-      return 'cluster-details';
-  }
-};
-
-type TransitionProps = { cluster: Cluster };
+export type ClusterWizardStepsType =
+  | 'cluster-details'
+  | 'hosts-selection'
+  | 'hosts-discovery'
+  | 'networking';
 
 const clusterDetailsStepValidationsMap: WizardStepValidationMap = {
   cluster: {
@@ -80,50 +64,27 @@ const networkingStepValidationsMap: WizardStepValidationMap = {
   softValidationIds: ['ntp-synced', 'container-images-available'],
 };
 
-const reviewStepValidationsMap: WizardStepValidationMap = {
-  cluster: {
-    groups: [],
-    validationIds: ['all-hosts-are-ready-to-install'],
-  },
-  host: {
-    allowedStatuses: ['known', 'disabled'],
-    groups: [],
-    validationIds: [],
-  },
-  softValidationIds: [],
-};
+// const reviewStepValidationsMap: WizardStepValidationMap = {
+//   cluster: {
+//     groups: [],
+//     validationIds: ['all-hosts-are-ready-to-install'],
+//   },
+//   host: {
+//     allowedStatuses: ['known', 'disabled'],
+//     groups: [],
+//     validationIds: [],
+//   },
+//   softValidationIds: [],
+// };
 
 export const wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType> = {
   'cluster-details': clusterDetailsStepValidationsMap,
-  'host-discovery': hostDiscoveryStepValidationsMap,
+  'hosts-discovery': hostDiscoveryStepValidationsMap,
+  'hosts-selection': hostDiscoveryStepValidationsMap,
   networking: networkingStepValidationsMap,
-  review: reviewStepValidationsMap,
+  // review: reviewStepValidationsMap,
 };
 
 export const allClusterWizardSoftValidationIds = getAllClusterWizardSoftValidationIds(
   wizardStepsValidationsMap,
 );
-
-/*
-We are colocating all these canNext* functions for easier maintenance.
-However transitions among steps should be independent on each other.
-*/
-export const canNextClusterDetails = ({ cluster }: TransitionProps): boolean =>
-  getWizardStepClusterStatus(
-    'cluster-details',
-    wizardStepsValidationsMap,
-    cluster,
-    cluster.hosts,
-  ) === 'ready';
-
-export const canNextHostDiscovery = ({ cluster }: TransitionProps): boolean =>
-  getWizardStepClusterStatus(
-    'host-discovery',
-    wizardStepsValidationsMap,
-    cluster,
-    cluster.hosts,
-  ) === 'ready';
-
-export const canNextNetwork = ({ cluster }: TransitionProps): boolean =>
-  getWizardStepClusterStatus('networking', wizardStepsValidationsMap, cluster, cluster.hosts) ===
-  'ready';

@@ -27,7 +27,7 @@ import { getAICluster } from '../helpers';
 import ClusterDeploymentNetworkingForm, {
   defaultNetworkSettings,
 } from './ClusterDeploymentNetworkingForm';
-import { isCIMFlow } from './helpers';
+import { isAgentOfCluster, isCIMFlow } from './helpers';
 
 type UseNetworkingFormikArgs = {
   clusterDeployment: ClusterDeploymentK8sResource;
@@ -75,16 +75,18 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
   const { addAlert } = useAlerts();
   const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
 
-  const matchingAgents = agents.filter(
-    (a) =>
-      a.spec.clusterDeploymentName?.name === clusterDeployment.metadata?.name &&
-      a.spec.clusterDeploymentName?.namespace === clusterDeployment.metadata?.namespace,
+  const cdName = clusterDeployment?.metadata?.name;
+  const cdNamespace = clusterDeployment?.metadata?.namespace;
+
+  const clusterAgents = React.useMemo(
+    () => agents.filter((a) => isAgentOfCluster(a, cdName, cdNamespace)),
+    [agents, cdName, cdNamespace],
   );
 
   const [initialValues, validationSchema] = useNetworkingFormik({
     clusterDeployment,
     agentClusterInstall,
-    agents: matchingAgents,
+    agents: clusterAgents,
   });
 
   const next = () => {
@@ -115,22 +117,16 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
-      {({ submitForm, isSubmitting, isValid, isValidating, dirty, errors, touched }) => {
-        const handleOnNext = () => {
-          if (dirty) {
-            submitForm();
-          } else {
-            next();
-          }
-        };
-
+      {({ submitForm, isSubmitting, isValid, isValidating, errors, touched }) => {
         const footer = (
           <ClusterDeploymentWizardFooter
+            agentClusterInstall={agentClusterInstall}
+            agents={clusterAgents}
             errorFields={getFormikErrorFields(errors, touched)}
             isSubmitting={isSubmitting}
             isNextDisabled={!isValid || isValidating || isSubmitting}
-            onNext={handleOnNext}
             onBack={onBack}
+            onNext={submitForm}
             onCancel={onClose}
             nextButtonText="Save and install"
           />
@@ -147,7 +143,7 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
                 <ClusterDeploymentNetworkingForm
                   clusterDeployment={clusterDeployment}
                   agentClusterInstall={agentClusterInstall}
-                  agents={matchingAgents}
+                  agents={clusterAgents}
                   {...rest}
                 />
               </GridItem>
