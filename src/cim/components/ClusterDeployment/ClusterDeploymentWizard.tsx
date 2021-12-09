@@ -21,6 +21,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   onDeleteHost,
   canDeleteAgent,
   onSaveAgent,
+  canEditHost,
   onSaveBMH,
   onSaveISOParams,
   onSaveHostsDiscovery,
@@ -85,6 +86,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
               onDeleteHost={onDeleteHost}
               canDeleteAgent={canDeleteAgent}
               onSaveAgent={onSaveAgent}
+              canEditHost={canEditHost}
               onSaveBMH={onSaveBMH}
               fetchSecret={fetchSecret}
               fetchNMState={fetchNMState}
@@ -145,6 +147,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
     onDeleteHost,
     canDeleteAgent,
     onSaveAgent,
+    canEditHost,
     onSaveBMH,
     onCreateBMH,
     fetchSecret,
