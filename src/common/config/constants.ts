@@ -298,7 +298,8 @@ export const SNO_SUPPORT_MIN_VERSION = 4.8;
 // The API uses free-form string for operator names, so let's gueard at least using constants
 export const OPERATOR_NAME_CNV = 'cnv';
 export const OPERATOR_NAME_LSO = 'lso';
-export const OPERATOR_NAME_OCS = 'ocs';
+export const OPERATOR_NAME_OCS = 'ocs'; // TODO(jkilzi): Remove once OCS is replaced by ODF
+export const OPERATOR_NAME_ODF = 'odf';
 export const OPERATOR_NAME_CVO = 'cvo';
 export const OPERATOR_NAME_CONSOLE = 'console';
 
@@ -306,7 +307,8 @@ export const OPERATOR_LABELS = {
   [OPERATOR_NAME_CONSOLE]: 'OpenShift Console',
   [OPERATOR_NAME_CVO]: 'OpenShift Cluster Version Operator',
   [OPERATOR_NAME_LSO]: 'OpenShift Local Storage',
-  [OPERATOR_NAME_OCS]: 'OpenShift Container Storage',
+  [OPERATOR_NAME_OCS]: 'OpenShift Container Storage', // TODO(jkilzi): Remove once OCS is replaced by ODF
+  [OPERATOR_NAME_ODF]: 'OpenShift Data Foundation',
   [OPERATOR_NAME_CNV]: 'OpenShift Virtualization',
 };
 

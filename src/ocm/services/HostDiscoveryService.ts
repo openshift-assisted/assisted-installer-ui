@@ -6,6 +6,7 @@ import {
   OPERATOR_NAME_CNV,
   OPERATOR_NAME_LSO,
   OPERATOR_NAME_OCS,
+  OPERATOR_NAME_ODF,
   schedulableMastersAlwaysOn,
 } from '../../common';
 import { getOlmOperatorCreateParamsByName } from '../components/clusters/utils';
@@ -39,7 +40,11 @@ const HostDiscoveryService = {
     };
 
     setOperator(OPERATOR_NAME_CNV, values.useContainerNativeVirtualization);
-    setOperator(OPERATOR_NAME_OCS, values.useExtraDisksForLocalStorage);
+    // TODO(jkilzi): remove traces of OCS once it's fully deprecated/renamed to ODF
+    setOperator(
+      OPERATOR_NAME_ODF in enabledOlmOperatorsByName ? OPERATOR_NAME_ODF : OPERATOR_NAME_OCS,
+      values.useExtraDisksForLocalStorage,
+    );
     // TODO(jtomasek): remove following once enabling OCS is moved into a separate storage step and LSO option is exposed to the user
     if (!values.useExtraDisksForLocalStorage && !values.useContainerNativeVirtualization) {
       setOperator(OPERATOR_NAME_LSO, false);
