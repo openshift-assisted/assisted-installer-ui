@@ -9,7 +9,7 @@ type DownloadIsoModalProps = DownloadISOProps & {
 const DownloadIsoModal: React.FC<DownloadIsoModalProps> = ({ isOpen, ...props }) => (
   <Modal
     aria-label="Download host discovery ISO dialog"
-    title="Add Host"
+    title="Add host"
     isOpen={isOpen}
     onClose={props.onClose}
     variant={ModalVariant.small}
