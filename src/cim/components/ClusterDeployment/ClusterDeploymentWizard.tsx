@@ -7,7 +7,7 @@ import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
 import ClusterDeploymentDetailsStep from './ClusterDeploymentDetailsStep';
 import ClusterDeploymentNetworkingStep from './ClusterDeploymentNetworkingStep';
 import ClusterDeploymentHostSelectionStep from './ClusterDeploymentHostSelectionStep';
-import { getAgentsHostsNames } from './helpers';
+import { getAgentsHostsNames, isAgentOfCluster } from './helpers';
 import { ClusterDeploymentWizardProps, ClusterDeploymentWizardStepsType } from './types';
 import ClusterDeploymentHostsDiscoveryStep from './ClusterDeploymentHostsDiscoveryStep';
 
@@ -42,7 +42,15 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   const [currentStepId, setCurrentStepId] = React.useState<ClusterDeploymentWizardStepsType>(
     'cluster-details',
   );
-  const usedHostnames = React.useMemo(() => getAgentsHostsNames(agents), [agents]);
+
+  const cdName = clusterDeployment.metadata?.name;
+  const cdNamespace = clusterDeployment.metadata?.namespace;
+
+  const clusterAgents = React.useMemo(
+    () => agents.filter((a) => isAgentOfCluster(a, cdName, cdNamespace)),
+    [agents, cdName, cdNamespace],
+  );
+  const usedHostnames = React.useMemo(() => getAgentsHostsNames(clusterAgents), [clusterAgents]);
 
   const renderCurrentStep = React.useCallback(() => {
     const stepId: ClusterDeploymentWizardStepsType = !clusterDeployment
