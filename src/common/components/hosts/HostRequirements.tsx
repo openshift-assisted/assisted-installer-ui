@@ -52,7 +52,7 @@ const HostRequirements: React.FC<HostRequirementsProps> = ({
           </>
         )}
         <ListItem>
-          Also note that each hosts' disk write speed should meet the minimum requirements to run
+          Also note that each host's disk write speed should meet the minimum requirements to run
           OpenShift.{' '}
           <ExternalLink href={'https://access.redhat.com/solutions/4885641'}>
             Learn more
