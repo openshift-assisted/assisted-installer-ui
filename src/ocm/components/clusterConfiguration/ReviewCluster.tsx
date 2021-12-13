@@ -128,6 +128,7 @@ const ReviewCluster: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
               clusterFeatureSupportLevels={clusterFeatureSupportLevels}
             />
           }
+          testId="review-support-level"
         />
       </RenderIf>
     </DetailList>

@@ -28,6 +28,7 @@ const vmsAlert = (
     title="Your cluster will be subject to support limitations"
     variant={AlertVariant.info}
     isInline={true}
+    data-testid="networking-vms-alert"
   >
     Some or all of your discovered hosts are virtual machines, so selecting the cluster-managed
     networking option will limit your installed cluster's support.

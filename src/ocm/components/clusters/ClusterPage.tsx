@@ -90,7 +90,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
               <Text component="h1" className="pf-u-display-inline">
                 Install OpenShift with the Assisted Installer
               </Text>
-              <TechnologyPreview />
+              <TechnologyPreview testId="assisted-installer-support-level" />
             </TextContent>
           </PageSection>
           <PageSection variant={PageSectionVariants.light}>

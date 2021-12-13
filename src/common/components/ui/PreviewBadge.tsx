@@ -3,6 +3,14 @@ import { Label, Popover } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons';
 import { TECH_SUPPORT_LEVEL_LINK } from '../../config/constants';
 import ExternalLink from './ExternalLink';
+import { WithTestID } from '../../types';
+
+export type DeveloperPreviewProps = {
+  position?: PreviewBadgePosition;
+  className?: string;
+} & WithTestID;
+
+export type TechnologyPreviewProps = DeveloperPreviewProps;
 
 export enum PreviewBadgePosition {
   default,
@@ -10,9 +18,7 @@ export enum PreviewBadgePosition {
   inlineRight,
 }
 
-type PreviewBadgeProps = {
-  position?: PreviewBadgePosition;
-  className?: string;
+type PreviewBadgeProps = DeveloperPreviewProps & {
   text: string;
   externalLink?: string;
   popoverText: string;
@@ -24,6 +30,7 @@ const PreviewBadge: React.FC<PreviewBadgeProps> = ({
   text,
   popoverText,
   externalLink,
+  testId,
 }) => {
   let clsName = className;
   switch (position) {
@@ -53,16 +60,13 @@ const PreviewBadge: React.FC<PreviewBadgeProps> = ({
         onClick={(e) => e.preventDefault()}
         icon={<InfoCircleIcon color="var(--pf-c-label__content--Color)" />}
         className={clsName}
+        data-testid={`${testId}`}
       >
         {text}
       </Label>
     </Popover>
   );
 };
-
-export type DeveloperPreviewProps = Pick<PreviewBadgeProps, 'className' | 'position'>;
-
-export type TechnologyPreviewProps = DeveloperPreviewProps;
 
 const popoverTexts = {
   'tech-preview': `Technology preview features provide early access to upcoming product innovations, 
