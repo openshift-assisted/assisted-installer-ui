@@ -392,6 +392,8 @@ export const hostActionResolver = ({
   canDelete,
   onEditBMH,
   canEditBMH,
+  canUnbindHost,
+  onUnbindHost,
 }: HostsTableActions): ActionsResolver<Host> => (host) => {
   const actions = [];
   if (host) {
@@ -460,6 +462,13 @@ export const hostActionResolver = ({
         title: 'Edit BMC',
         id: `button-edit-bmh-host-${hostname}`,
         onClick: () => onEditBMH(host),
+      });
+    }
+    if (onUnbindHost && canUnbindHost?.(host)) {
+      actions.push({
+        title: 'Unbind host',
+        id: `button-unbind-host-${hostname}`,
+        onClick: () => onUnbindHost(host),
       });
     }
   }

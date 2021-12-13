@@ -23,6 +23,8 @@ export type ClusterDeploymentHostsTablePropsActions = {
   onApprove?: (agent: AgentK8sResource) => void;
   onSelect?: (agent: AgentK8sResource, selected: boolean) => void;
   onEditBMH?: (bmh: BareMetalHostK8sResource) => void;
+  canUnbindHost?: (agent: AgentK8sResource) => boolean;
+  onUnbindHost?: (agent: AgentK8sResource) => void;
 };
 
 export type ClusterDeploymentWizardStepsType =
@@ -90,7 +92,7 @@ export type ClusterDeploymentHostsDiscoveryStepProps = Omit<
   ClusterDeploymentHostsDiscoveryProps,
   'onValuesChanged'
 > & {
-  clusterDeployment: ClusterDeploymentK8sResource;
+  // clusterDeployment: ClusterDeploymentK8sResource;
 
   onSaveHostsDiscovery: (values: ClusterDeploymentHostsDiscoveryValues) => Promise<string | void>;
   onClose: () => void;

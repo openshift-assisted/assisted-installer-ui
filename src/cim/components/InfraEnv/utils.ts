@@ -48,6 +48,7 @@ export const getAgentClusterInstall = ({
       namespace,
     },
     spec: {
+      holdInstallation: true,
       clusterDeploymentRef: clusterDeploymentName
         ? {
             name: clusterDeploymentName,

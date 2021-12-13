@@ -116,7 +116,7 @@ export const getAgentStatus = (
   let state: AgentStatus = agent.status?.debugInfo?.state || getInsufficientState(agent);
 
   const conditions = getFailingResourceConditions(agent, REQUIRED_AGENT_CONDITION_TYPES);
-  let validationsInfo = agent.status?.hostValidationInfo;
+  let validationsInfo = agent.status?.validationsInfo;
   if (conditions?.length) {
     validationsInfo = {
       infrastructure: conditions.map(
