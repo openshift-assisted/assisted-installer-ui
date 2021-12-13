@@ -15,7 +15,7 @@ import { ClusterDefaultConfig } from '../../api';
 import { isSingleNodeCluster } from '../clusters';
 import { NO_SUBNET_SET } from '../../config';
 import { isAdvNetworkConf } from './utils';
-import { getClusterUsedFeaturesSupportLevels } from '../../../ocm/components/featureSupportLevels/utils';
+import { getLimitedFeatureSupportLevels } from '../../../ocm/components/featureSupportLevels/utils';
 import { FeatureSupportLevelContext } from '../featureSupportLevels';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
@@ -47,7 +47,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
     NetworkConfigurationValues
   >();
   const clusterFeatureSupportLevels = React.useMemo(() => {
-    return getClusterUsedFeaturesSupportLevels(cluster, featureSupportLevelData);
+    return getLimitedFeatureSupportLevels(cluster, featureSupportLevelData);
   }, [cluster, featureSupportLevelData]);
   const [isAdvanced, setAdvanced] = React.useState(
     isAdvNetworkConf(cluster, defaultNetworkSettings),

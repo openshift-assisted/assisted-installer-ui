@@ -1,11 +1,11 @@
-import { ClusterFeatureUsage, FeatureIdToSupportLevel } from '../../../common/types';
+import { ClusterFeatureUsage, FeatureId, FeatureIdToSupportLevel } from '../../../common/types';
 import { Cluster } from '../../../common/api/types';
 import { FeatureSupportLevelData } from '../../../common/components/featureSupportLevels/FeatureSupportLevelContext';
 import { captureException } from '../../sentry';
 import * as Sentry from '@sentry/browser';
 import { stringToJSON } from '../../../common/api/utils';
 
-export const getClusterUsedFeaturesSupportLevels = (
+export const getLimitedFeatureSupportLevels = (
   cluster: Cluster,
   featureSupportLevelData: FeatureSupportLevelData,
 ): FeatureIdToSupportLevel | undefined => {
@@ -21,7 +21,9 @@ export const getClusterUsedFeaturesSupportLevels = (
     if (featureUsage === undefined) {
       throw 'Error parsing cluster feature_usage field';
     }
-    const usedFeatureIds: string[] = Object.values(featureUsage).map((item) => item.id);
+    const usedFeatureIds: FeatureId[] = Object.values(featureUsage).map(
+      (item) => item.id,
+    ) as FeatureId[];
     const versionSupportLevelsMap = featureSupportLevelData.getVersionSupportLevelsMap(
       cluster.openshiftVersion,
     );
@@ -30,6 +32,14 @@ export const getClusterUsedFeaturesSupportLevels = (
     }
     for (const featureId of usedFeatureIds) {
       if (featureId in versionSupportLevelsMap) {
+        const supportLevel = versionSupportLevelsMap[featureId];
+        if (supportLevel === 'supported') {
+          continue;
+        }
+        if (supportLevel === 'unsupported' && featureId !== 'CLUSTER_MANAGED_NETWORKING_WITH_VMS') {
+          //since the UI doesn't address unsupported features that aren't CLUSTER_MANAGED_NETWORKING_WITH_VMS they should be ignored
+          continue;
+        }
         ret[featureId] = versionSupportLevelsMap[featureId];
       }
     }
