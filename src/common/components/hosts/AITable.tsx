@@ -21,12 +21,10 @@ import classnames from 'classnames';
 import xor from 'lodash/xor';
 import { getColSpanRow, rowSorter } from '../ui/table/utils';
 import { WithTestID } from '../../types';
-
 import './HostsTable.css';
 import { usePagination } from './usePagination';
-
+// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 const rowKey = ({ rowData }: ExtraParamsType) => rowData?.key;
-
 type TableMemoProps = {
   rows: TableProps['rows'];
   cells: TableProps['cells'];
@@ -38,19 +36,16 @@ type TableMemoProps = {
   // eslint-disable-next-line
   actionResolver?: ActionsResolver<any>;
 };
-
 const TableMemo: React.FC<WithTestID & TableMemoProps> = React.memo(
   ({ rows, cells, onCollapse, className, sortBy, onSort, rowWrapper, testId, actionResolver }) => {
     const tableActionResolver = React.useCallback(
       (rowData) => actionResolver?.(rowData.obj) as (IAction | ISeparator)[],
       [actionResolver],
     );
-
     // new prop for @patternfly/react-table 4.67.7 which is used in ACM, but not in OCM
     const newProps = {
       canCollapseAll: false,
     };
-
     return (
       <Table
         rows={rows}
@@ -72,9 +67,7 @@ const TableMemo: React.FC<WithTestID & TableMemoProps> = React.memo(
     );
   },
 );
-
 TableMemo.displayName = 'tableMemo';
-
 const getMainIndex = (hasOnSelect: boolean, hasExpandComponent: boolean) => {
   if (hasOnSelect && hasExpandComponent) {
     return 2;
@@ -84,21 +77,18 @@ const getMainIndex = (hasOnSelect: boolean, hasExpandComponent: boolean) => {
   }
   return 0;
 };
-
 type OpenRows = {
   [id: string]: boolean;
 };
-
 const HostsTableRowWrapper = (props: RowWrapperProps) => (
+  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
   <RowWrapper {...props} data-testid={`host-row-${props.rowProps?.rowIndex}`} />
 );
-
 export type TableRow<R> = {
   header: ICell | string;
   // eslint-disable-next-line
   cell?: (obj: R) => { title: React.ReactNode; props: any; sortableValue?: string | number };
 };
-
 export type ActionsResolver<R> = (obj: R) => (IAction | ISeparator)[];
 export type ExpandComponentProps<R> = {
   obj: R;
@@ -116,7 +106,6 @@ type SelectCheckboxProps = {
   onSelect: (isChecked: boolean) => void;
   id: string;
 };
-
 const SelectCheckbox: React.FC<SelectCheckboxProps> = ({ onSelect, id }) => {
   const { selectedIDs } = React.useContext(SelectionProvider);
   const isChecked = selectedIDs?.includes(id);
@@ -151,8 +140,8 @@ export type AITableProps<R> = ReturnType<typeof usePagination> & {
   className?: string;
   actionResolver?: ActionsResolver<R>;
   canSelectAll?: boolean;
+  isStorageTable?: boolean;
 };
-
 // eslint-disable-next-line
 const AITable = <R extends any>({
   data,
@@ -189,7 +178,6 @@ const AITable = <R extends any>({
       }
     }
   }, [data, setSelectedIDs, selectedIDs, getDataId]);
-
   const [openRows, setOpenRows] = React.useState<OpenRows>({});
   const [sortBy, setSortBy] = React.useState<ISortBy>({
     index: getMainIndex(!!onSelect, !!ExpandComponent),
@@ -270,6 +258,7 @@ const AITable = <R extends any>({
             cells: [
               {
                 // do not render unnecessarily to improve performance
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 title: row.isOpen ? <ExpandComponent obj={row.obj} /> : undefined,
               },
             ],
@@ -282,16 +271,15 @@ const AITable = <R extends any>({
     }
     return rows;
   }, [contentWithAdditions, ExpandComponent, getDataId, data, openRows, sortBy, page, perPage]);
-
   const rows = React.useMemo(() => {
     if (hostRows.length) {
       return hostRows;
     }
     return getColSpanRow(children, columns.length);
   }, [hostRows, columns, children]);
-
   const onCollapse = React.useCallback(
     (_event, rowKey) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       const id = hostRows[rowKey].id;
       if (id) {
         setOpenRows(Object.assign({}, openRows, { [id]: !openRows[id] }));
@@ -299,7 +287,6 @@ const AITable = <R extends any>({
     },
     [hostRows, openRows],
   );
-
   const onSort: OnSort = React.useCallback((_event, index, direction) => {
     setOpenRows({}); // collapse all
     setSortBy({
@@ -307,7 +294,6 @@ const AITable = <R extends any>({
       direction,
     });
   }, []);
-
   return (
     <>
       <SelectionProvider.Provider
@@ -342,5 +328,4 @@ const AITable = <R extends any>({
     </>
   );
 };
-
 export default AITable;

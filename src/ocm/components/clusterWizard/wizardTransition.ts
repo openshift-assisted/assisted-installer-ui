@@ -13,6 +13,7 @@ export type ClusterWizardStepsType =
   | 'static-ip-network-wide-configurations'
   | 'static-ip-host-configurations'
   | 'host-discovery'
+  | 'storage'
   | 'networking'
   | 'review';
 export type ClusterWizardFlowStateType = Cluster['status'] | 'new';
@@ -91,6 +92,20 @@ const hostDiscoveryStepValidationsMap: WizardStepValidationMap = {
   softValidationIds: [],
 };
 
+const storageStepValidationsMap: WizardStepValidationMap = {
+  //TODO: edit validation map for storage when information from BE (i.e node labeling) will be available
+  cluster: {
+    groups: [],
+    validationIds: ['sufficient-masters-count'],
+  },
+  host: {
+    allowedStatuses: ['known', 'disabled'],
+    groups: ['hardware'],
+    validationIds: ['connected', 'media-connected'],
+  },
+  softValidationIds: [],
+};
+
 const networkingStepValidationsMap: WizardStepValidationMap = {
   cluster: {
     groups: ['network'],
@@ -128,6 +143,8 @@ export const wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardSt
   'static-ip-network-wide-configurations': staticIpValidationsMap,
   'static-ip-host-configurations': staticIpValidationsMap,
   'host-discovery': hostDiscoveryStepValidationsMap,
+  storage: storageStepValidationsMap,
+  //TODO: edit validation map for storage when information from BE (i.e node labeling) will be available
   networking: networkingStepValidationsMap,
   review: reviewStepValidationsMap,
 };
@@ -154,6 +171,10 @@ export const canNextHostDiscovery = ({ cluster }: TransitionProps): boolean =>
     cluster,
     cluster.hosts,
   ) === 'ready';
+
+export const canNextStorage = ({ cluster }: TransitionProps): boolean =>
+  getWizardStepClusterStatus('storage', wizardStepsValidationsMap, cluster, cluster.hosts) ===
+  'ready';
 
 export const canNextNetwork = ({ cluster }: TransitionProps): boolean =>
   getWizardStepClusterStatus('networking', wizardStepsValidationsMap, cluster, cluster.hosts) ===

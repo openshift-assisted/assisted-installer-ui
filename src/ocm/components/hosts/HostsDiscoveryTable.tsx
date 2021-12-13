@@ -101,6 +101,7 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({ cluster }) =>
   const content = React.useMemo(
     () => [
       hostnameColumn(t, onEditHost, undefined, actionChecks.canEditHostname),
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-call
       roleColumn(t, actionChecks.canEditRole, onEditRole, selectSchedulableMasters(cluster)),
       hardwareStatusColumn(onEditHost),
       discoveredAtColumn,

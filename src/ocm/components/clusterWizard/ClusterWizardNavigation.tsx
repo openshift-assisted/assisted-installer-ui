@@ -23,6 +23,7 @@ const isStepValid = (stepId: ClusterWizardStepsType, cluster?: Cluster): boolean
     case 'static-ip-host-configurations':
     case 'static-ip-network-wide-configurations':
       return canNextClusterDetails({ cluster });
+    case 'storage':
     case 'host-discovery':
       return canNextHostDiscovery({ cluster });
     case 'networking':

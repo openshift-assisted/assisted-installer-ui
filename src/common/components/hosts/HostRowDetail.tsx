@@ -12,7 +12,7 @@ import {
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
 
 import { DetailItem, DetailList, DetailListProps } from '../ui';
-import { Disk, Host, Interface, stringToJSON } from '../../api';
+import { Host, Interface, stringToJSON } from '../../api';
 import { ValidationsInfo } from '../../types/hosts';
 import { WithTestID } from '../../types';
 import { DASH } from '../constants';
@@ -20,9 +20,8 @@ import { getInventory } from '../hosts/utils';
 
 import { getHostRowHardwareInfo } from './hardwareInfo';
 import NtpValidationStatus from './NtpValidationStatus';
-import DiskLimitations from './DiskLimitations';
-import DiskRole, { onDiskRoleType } from './DiskRole';
-import { getHardwareTypeText, fileSize } from './utils';
+import { onDiskRoleType } from './DiskRole';
+import { getHardwareTypeText } from './utils';
 import { ValidationInfoActionProps } from './HostValidationGroups';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
@@ -40,14 +39,6 @@ type SectionTitleProps = {
 
 type SectionColumnProps = {
   children: DetailListProps['children'];
-};
-
-type DisksTableProps = {
-  canEditDisks?: (host: Host) => boolean;
-  onDiskRole?: onDiskRoleType;
-  host: Host;
-  disks: Disk[];
-  installationDiskId?: string;
 };
 
 type NicsTableProps = {
@@ -69,80 +60,6 @@ const SectionColumn: React.FC<SectionColumnProps> = ({ children }) => (
     <DetailList>{children}</DetailList>
   </GridItem>
 );
-
-const diskColumns = [
-  { title: 'Name' },
-  { title: 'Role' },
-  { title: 'Limitations' },
-  { title: 'Drive type' },
-  { title: 'Size' },
-  { title: 'Serial' },
-  // { title: 'Vendor' }, TODO(mlibra): search HW database for humanized values
-  { title: 'Model' },
-  { title: 'WWN' },
-];
-
-const diskRowKey = ({ rowData }: ExtraParamsType) => rowData?.key;
-
-const DisksTableRowWrapper = (props: RowWrapperProps) => (
-  <RowWrapper {...props} data-testid={`disk-row:${props.row?.key}`} />
-);
-
-const DisksTable: React.FC<DisksTableProps & WithTestID> = ({
-  canEditDisks,
-  host,
-  disks,
-  installationDiskId,
-  testId,
-  onDiskRole,
-}) => {
-  const isEditable = !!canEditDisks?.(host);
-  const rows: IRow[] = [...disks]
-    .sort((diskA, diskB) => diskA.name?.localeCompare(diskB.name || '') || 0)
-    .map((disk) => ({
-      cells: [
-        {
-          title: disk.bootable ? `${disk.name} (bootable)` : disk.name,
-          props: { 'data-testid': 'disk-name' },
-        },
-        {
-          title: (
-            <DiskRole
-              host={host}
-              disk={disk}
-              installationDiskId={installationDiskId}
-              isEditable={isEditable}
-              onDiskRole={onDiskRole}
-            />
-          ),
-          props: { 'data-testid': 'disk-role' },
-        },
-        { title: <DiskLimitations disk={disk} />, props: { 'data-testid': 'disk-limitations' } },
-        { title: disk.driveType, props: { 'data-testid': 'drive-type' } },
-        { title: fileSize(disk.sizeBytes || 0, 2, 'si'), props: { 'data-testid': 'disk-size' } },
-        { title: disk.serial, props: { 'data-testid': 'disk-serial' } },
-        // disk.vendor, TODO(mlibra): search HW database for humanized values
-        { title: disk.model, props: { 'data-testid': 'disk-model' } },
-        { title: disk.wwn, props: { 'data-testid': 'disk-wwn' } },
-      ],
-      key: disk.path,
-    }));
-
-  return (
-    <Table
-      data-testid={testId}
-      rows={rows}
-      cells={diskColumns}
-      variant={TableVariant.compact}
-      aria-label="Host's disks table"
-      borders={false}
-      rowWrapper={DisksTableRowWrapper}
-    >
-      <TableHeader />
-      <TableBody rowKey={diskRowKey} />
-    </Table>
-  );
-};
 
 const nicsColumns = [
   { title: 'Name' },
@@ -200,21 +117,18 @@ const NicsTable: React.FC<NicsTableProps & WithTestID> = ({ interfaces, testId }
 };
 
 export const HostDetail: React.FC<HostDetailProps> = ({
-  canEditDisks,
-  onDiskRole,
   host,
   AdditionalNTPSourcesDialogToggleComponent,
   hideNTPStatus = false,
 }) => {
   const { t } = useTranslation();
-  const { id, installationDiskId, validationsInfo: hostValidationsInfo } = host;
+  const { id, validationsInfo: hostValidationsInfo } = host;
   const inventory = getInventory(host);
   const validationsInfo = React.useMemo(
     () => stringToJSON<ValidationsInfo>(hostValidationsInfo) || {},
     [hostValidationsInfo],
   );
   const rowInfo = getHostRowHardwareInfo(inventory);
-  const disks = inventory.disks || [];
   const nics = inventory.interfaces || [];
 
   let bmcAddress = inventory.bmcAddress;
@@ -296,21 +210,6 @@ export const HostDetail: React.FC<HostDetailProps> = ({
           value={ntpValidationStatus}
         />
       </SectionColumn>
-      <SectionTitle
-        testId={'disks-section'}
-        title={`${disks.length} Disk${disks.length === 1 ? '' : 's'}`}
-      />
-      <GridItem>
-        <DisksTable
-          testId={'disks-table'}
-          canEditDisks={canEditDisks}
-          host={host}
-          disks={disks}
-          installationDiskId={installationDiskId}
-          onDiskRole={onDiskRole}
-        />
-      </GridItem>
-
       <SectionTitle
         testId={'nics-section'}
         title={`${nics.length} NIC${nics.length === 1 ? '' : 's'}`}
