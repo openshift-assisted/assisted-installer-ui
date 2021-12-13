@@ -128,6 +128,8 @@ export const wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardSt
   'static-ip-network-wide-configurations': staticIpValidationsMap,
   'static-ip-host-configurations': staticIpValidationsMap,
   'host-discovery': hostDiscoveryStepValidationsMap,
+  storage: clusterDetailsStepValidationsMap,
+  //TODO: map for storage
   networking: networkingStepValidationsMap,
   review: reviewStepValidationsMap,
 };

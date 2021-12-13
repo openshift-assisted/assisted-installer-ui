@@ -21,6 +21,8 @@ const ClusterWizard = ({ cluster, infraEnv, updateInfraEnv }: ClusterWizardProps
     switch (currentStepId) {
       case 'host-discovery':
         return <HostDiscovery cluster={cluster} />;
+      case 'storage':
+        return <Storage cluster={cluster} />;
       case 'networking':
         return <NetworkConfigurationPage cluster={cluster} />;
       case 'review':
