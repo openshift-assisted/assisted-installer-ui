@@ -279,3 +279,6 @@ export const OPERATOR_LABELS = {
   [OPERATOR_NAME_OCS]: 'OpenShift Container Storage',
   [OPERATOR_NAME_CNV]: 'OpenShift Virtualization',
 };
+
+export const OCP_STATIC_IP_DOC =
+  'https://docs.openshift.com/container-platform/latest/scalability_and_performance/ztp-deploying-disconnected.html#ztp-configuring-a-static-ip_ztp-deploying-disconnected';
