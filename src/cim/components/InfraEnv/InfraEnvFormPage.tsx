@@ -18,6 +18,7 @@ import {
   TitleSizes,
 } from '@patternfly/react-core';
 import { Formik, FormikProps, useFormikContext } from 'formik';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 
 import {
   httpProxyValidationSchema,
@@ -31,6 +32,7 @@ import {
   RadioField,
   PopoverIcon,
   pullSecretValidationSchema,
+  OCP_STATIC_IP_DOC,
 } from '../../../common';
 
 import './infra-env.css';
@@ -95,10 +97,9 @@ const initialValues: EnvironmentStepFormValues = {
 
 type InfraEnvFormProps = {
   onValuesChanged?: (values: EnvironmentStepFormValues) => void;
-  isBMPlatform: boolean;
 };
 
-const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged, isBMPlatform }) => {
+const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged }) => {
   const { values } = useFormikContext<EnvironmentStepFormValues>();
   React.useEffect(() => onValuesChanged?.(values), [onValuesChanged, values]);
   return (
@@ -126,13 +127,6 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged, isBMPlatfo
                     This will determine for the infrastructure environment which kind of hosts would
                     be able to be added. If the hosts that you want to add are using DHCP server,
                     select this option, else, select the static IP.
-                    {!isBMPlatform && (
-                      // TODO(mlibra): This limitation needs to be updated once https://github.com/openshift/enhancements/pull/871 lands.
-                      <>
-                        <br />
-                        Static IPs are only supported on bare metal platforms.
-                      </>
-                    )}
                   </>
                 }
               />
@@ -140,7 +134,12 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged, isBMPlatfo
           >
             <Flex justifyContent={{ default: 'justifyContentFlexStart' }}>
               <FlexItem>
-                <RadioField name="networkType" id="dhcp" value="dhcp" label="Use DHCP server" />
+                <RadioField
+                  name="networkType"
+                  id="dhcp"
+                  value="dhcp"
+                  label="I use only DHCP server"
+                />
               </FlexItem>
               <FlexItem spacer={{ default: 'spacer4xl' }} />
               <FlexItem>
@@ -148,8 +147,32 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged, isBMPlatfo
                   name="networkType"
                   id="static-ip"
                   value="static"
-                  label="Use static IP"
-                  isDisabled={!isBMPlatform}
+                  label={
+                    <>
+                      Some or all of my hosts use static network configuration&nbsp;
+                      <PopoverIcon
+                        noVerticalAlign
+                        bodyContent={
+                          <Stack hasGutter>
+                            <StackItem>
+                              Define a static IP manually, by creating your own NMStateConfig.
+                            </StackItem>
+                            <StackItem>
+                              <Button
+                                variant="link"
+                                icon={<ExternalLinkAltIcon />}
+                                iconPosition="right"
+                                isInline
+                                onClick={() => window.open(OCP_STATIC_IP_DOC, '_blank', 'noopener')}
+                              >
+                                View documentation
+                              </Button>
+                            </StackItem>
+                          </Stack>
+                        }
+                      />
+                    </>
+                  }
                 />
               </FlexItem>
             </Flex>

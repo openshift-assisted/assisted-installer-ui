@@ -8,7 +8,10 @@ import {
   ModalBoxFooter,
   AlertVariant,
   Alert,
+  Stack,
+  StackItem,
 } from '@patternfly/react-core';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { Formik, FormikHelpers } from 'formik';
 import { ImageCreateParams, ImageType, Proxy } from '../../api';
 import {
@@ -21,6 +24,7 @@ import { ProxyFieldsType } from '../../types';
 import ProxyFields from './ProxyFields';
 import UploadSSH from './UploadSSH';
 import DiscoveryImageTypeControlGroup from './DiscoveryImageTypeControlGroup';
+import { OCP_STATIC_IP_DOC } from '../../config/constants';
 
 export type DiscoveryImageFormValues = ImageCreateParams & ProxyFieldsType;
 
@@ -39,6 +43,7 @@ type DiscoveryImageConfigFormProps = Proxy & {
     values: DiscoveryImageFormValues,
     formikActions: FormikHelpers<DiscoveryImageFormValues>,
   ) => Promise<void>;
+  hasDHCP: boolean;
   hideDiscoveryImageType?: boolean;
   sshPublicKey?: string;
   imageType?: ImageType;
@@ -53,6 +58,7 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
   noProxy,
   imageType,
   hideDiscoveryImageType,
+  hasDHCP,
 }) => {
   const initialValues: DiscoveryImageFormValues = {
     sshPublicKey: sshPublicKey || '',
@@ -83,16 +89,39 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
         ) : (
           <>
             <ModalBoxBody>
-              <Form>
-                {status?.error && (
-                  <Alert variant={AlertVariant.danger} title={status.error.title} isInline>
-                    {status.error.message}
-                  </Alert>
+              <Stack hasGutter>
+                {!hasDHCP && (
+                  <StackItem>
+                    <Alert
+                      title="If you want to use Static IP, follow the steps in the documentation."
+                      isInline
+                      variant="info"
+                    >
+                      <Button
+                        variant="link"
+                        icon={<ExternalLinkAltIcon />}
+                        iconPosition="right"
+                        isInline
+                        onClick={() => window.open(OCP_STATIC_IP_DOC, '_blank', 'noopener')}
+                      >
+                        View documentation
+                      </Button>
+                    </Alert>
+                  </StackItem>
                 )}
-                {!hideDiscoveryImageType && <DiscoveryImageTypeControlGroup />}
-                <UploadSSH />
-                <ProxyFields />
-              </Form>
+                <StackItem>
+                  <Form>
+                    {status?.error && (
+                      <Alert variant={AlertVariant.danger} title={status.error.title} isInline>
+                        {status.error.message}
+                      </Alert>
+                    )}
+                    {!hideDiscoveryImageType && <DiscoveryImageTypeControlGroup />}
+                    <UploadSSH />
+                    <ProxyFields />
+                  </Form>
+                </StackItem>
+              </Stack>
             </ModalBoxBody>
             <ModalBoxFooter>
               <Button key="submit" onClick={submitForm}>
