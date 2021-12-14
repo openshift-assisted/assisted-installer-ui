@@ -22,7 +22,12 @@ const FeatureSupportLevelBadge: React.FC<SupportLevelBadgeProps> = ({
   if (!isPreviewSupportLevel(supportLevel)) {
     return null;
   }
-  return supportLevel === 'tech-preview' ? <TechnologyPreview /> : <DeveloperPreview />;
+  const testId = `${featureId}-support-level`;
+  return supportLevel === 'tech-preview' ? (
+    <TechnologyPreview testId={testId} />
+  ) : (
+    <DeveloperPreview testId={testId} />
+  );
 };
 
 export default FeatureSupportLevelBadge;
