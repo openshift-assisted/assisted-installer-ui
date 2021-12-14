@@ -30,7 +30,7 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
 
   const areIsoDataAvailable = !!sshPublicKey || !!httpProxy || !!httpsProxy || !!noProxy;
   const [dialogType, setDialogType] = React.useState<AddHostModalStepType>(
-    hasDHCP ? (areIsoDataAvailable ? 'iso-download' : 'iso-config') : 'bmc',
+    areIsoDataAvailable ? 'iso-download' : 'iso-config',
   );
 
   const handleIsoConfigSubmit = async (
@@ -60,38 +60,36 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
       hasNoBodyWrapper
       id="add-host-modal"
     >
-      {hasDHCP && (
-        <ModalBoxBody>
-          <Flex justifyContent={{ default: 'justifyContentSpaceBetween' }}>
-            <FlexItem>
+      <ModalBoxBody>
+        <Flex justifyContent={{ default: 'justifyContentSpaceBetween' }}>
+          <FlexItem>
+            <Radio
+              id="iso"
+              name="type"
+              label="Discovery ISO"
+              isChecked={dialogType !== 'bmc'}
+              onChange={(checked) => setDialogType(checked ? 'iso-config' : 'bmc')}
+            />
+          </FlexItem>
+          <FlexItem spacer={{ default: isBMPlatform ? 'spacerXl' : 'spacerSm' }} />
+          <FlexItem>
+            <Tooltip
+              hidden={isBMPlatform}
+              // TODO(mlibra): This limitation needs to be updated once https://github.com/openshift/enhancements/pull/871 lands.
+              content="The Advanced Cluster Manager can manage bare metal hosts when deployed on bare metal platform only."
+            >
               <Radio
-                id="iso"
+                id="bmc"
                 name="type"
-                label="Discovery ISO"
-                isChecked={dialogType !== 'bmc'}
-                onChange={(checked) => setDialogType(checked ? 'iso-config' : 'bmc')}
+                label="Baseboard Management Controller (BMC)"
+                isChecked={!dialogType}
+                onChange={(checked) => setDialogType(checked ? 'bmc' : 'iso-config')}
+                isDisabled={!isBMPlatform}
               />
-            </FlexItem>
-            <FlexItem spacer={{ default: isBMPlatform ? 'spacerXl' : 'spacerSm' }} />
-            <FlexItem>
-              <Tooltip
-                hidden={isBMPlatform}
-                // TODO(mlibra): This limitation needs to be updated once https://github.com/openshift/enhancements/pull/871 lands.
-                content="The Advanced Cluster Manager can manage bare metal hosts when deployed on bare metal platform only."
-              >
-                <Radio
-                  id="bmc"
-                  name="type"
-                  label="Baseboard Management Controller (BMC)"
-                  isChecked={!dialogType}
-                  onChange={(checked) => setDialogType(checked ? 'bmc' : 'iso-config')}
-                  isDisabled={!isBMPlatform}
-                />
-              </Tooltip>
-            </FlexItem>
-          </Flex>
-        </ModalBoxBody>
-      )}
+            </Tooltip>
+          </FlexItem>
+        </Flex>
+      </ModalBoxBody>
       {dialogType === 'iso-config' && (
         <DiscoveryImageConfigForm
           onCancel={onClose}
@@ -102,6 +100,7 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
           httpProxy={httpProxy}
           httpsProxy={httpsProxy}
           noProxy={noProxy}
+          hasDHCP={hasDHCP}
         />
       )}
       {dialogType === 'iso-download' && (
