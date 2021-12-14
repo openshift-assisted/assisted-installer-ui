@@ -72,7 +72,7 @@ const AddHosts: React.FC = () => {
                 variant={ButtonVariant.primary}
                 name="install"
                 onClick={handleHostsInstall}
-                isDisabled={getReadyHostCount(cluster) <= 0 || isSubmitting}
+                isDisabled={isSubmitting || getReadyHostCount(cluster) <= 0}
               >
                 Install ready hosts
               </ToolbarButton>
