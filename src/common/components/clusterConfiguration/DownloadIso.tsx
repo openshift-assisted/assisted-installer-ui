@@ -12,13 +12,17 @@ import {
   Title,
   ModalBoxBody,
   ModalBoxFooter,
+  Stack,
+  StackItem,
 } from '@patternfly/react-core';
 import { global_success_color_100 as successColor } from '@patternfly/react-tokens';
 import { CheckCircleIcon } from '@patternfly/react-icons';
 import { DetailItem, DetailList } from '../ui';
 import DiscoveryInstructions from './DiscoveryInstructions';
+import { StaticIPInfo } from './DiscoveryImageConfigForm';
 
 export type DownloadISOProps = {
+  hasDHCP?: boolean;
   fileName?: string;
   downloadUrl?: string;
   onClose: () => void;
@@ -30,45 +34,61 @@ const DownloadIso: React.FC<DownloadISOProps> = ({
   downloadUrl,
   onClose,
   onReset,
+  hasDHCP,
 }) => {
   const wgetCommand = `wget -O ${fileName} '${downloadUrl}'`;
 
   return (
     <>
       <ModalBoxBody>
-        <EmptyState variant={EmptyStateVariant.small}>
-          <EmptyStateIcon icon={CheckCircleIcon} color={successColor.value} />
-          <Title headingLevel="h4" size="lg">
-            Discovery ISO is ready to download
-          </Title>
-        </EmptyState>
-        <DiscoveryInstructions />
-        <DetailList>
-          <DetailItem
-            title="Discovery ISO URL"
-            value={
-              <ClipboardCopy isReadOnly onCopy={(event) => clipboardCopyFunc(event, downloadUrl)}>
-                {downloadUrl}
-              </ClipboardCopy>
-            }
-          />
-          <DetailItem
-            title="Command to download the ISO:"
-            value={
-              <ClipboardCopy isReadOnly onCopy={(event) => clipboardCopyFunc(event, wgetCommand)}>
-                {wgetCommand}
-              </ClipboardCopy>
-            }
-          />
-        </DetailList>
-        <Alert
-          variant="info"
-          isInline
-          title={
-            'Never share your downloaded ISO with anyone else. ' +
-            'Forwarding it could put your credentials and personal data at risk.'
-          }
-        />
+        <Stack hasGutter>
+          {!hasDHCP && (
+            <StackItem>
+              <StaticIPInfo />
+            </StackItem>
+          )}
+          <StackItem>
+            <EmptyState variant={EmptyStateVariant.small}>
+              <EmptyStateIcon icon={CheckCircleIcon} color={successColor.value} />
+              <Title headingLevel="h4" size="lg">
+                Discovery ISO is ready to download
+              </Title>
+            </EmptyState>
+            <DiscoveryInstructions />
+            <DetailList>
+              <DetailItem
+                title="Discovery ISO URL"
+                value={
+                  <ClipboardCopy
+                    isReadOnly
+                    onCopy={(event) => clipboardCopyFunc(event, downloadUrl)}
+                  >
+                    {downloadUrl}
+                  </ClipboardCopy>
+                }
+              />
+              <DetailItem
+                title="Command to download the ISO:"
+                value={
+                  <ClipboardCopy
+                    isReadOnly
+                    onCopy={(event) => clipboardCopyFunc(event, wgetCommand)}
+                  >
+                    {wgetCommand}
+                  </ClipboardCopy>
+                }
+              />
+            </DetailList>
+            <Alert
+              variant="info"
+              isInline
+              title={
+                'Never share your downloaded ISO with anyone else. ' +
+                'Forwarding it could put your credentials and personal data at risk.'
+              }
+            />
+          </StackItem>
+        </Stack>
       </ModalBoxBody>
       <ModalBoxFooter>
         <Button

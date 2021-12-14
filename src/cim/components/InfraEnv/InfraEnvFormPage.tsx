@@ -155,7 +155,8 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged }) => {
                         bodyContent={
                           <Stack hasGutter>
                             <StackItem>
-                              Define a static IP manually, by creating your own NMStateConfig.
+                              To use static network configuration, follow the steps listed in the
+                              documentation.
                             </StackItem>
                             <StackItem>
                               <Button

@@ -4,7 +4,7 @@ import {
   Flex,
   FlexItem,
   Modal,
-  ModalBoxBody,
+  ModalBoxHeader,
   ModalVariant,
   Radio,
   Tooltip,
@@ -30,9 +30,8 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
   const { httpProxy, httpsProxy, noProxy } = infraEnv.spec?.proxy || {};
 
   const areIsoDataAvailable = !!sshPublicKey || !!httpProxy || !!httpsProxy || !!noProxy;
-  const [dialogType, setDialogType] = React.useState<AddHostModalStepType>(
-    areIsoDataAvailable ? 'iso-download' : 'iso-config',
-  );
+  const isoDialog = areIsoDataAvailable ? 'iso-download' : 'iso-config';
+  const [dialogType, setDialogType] = React.useState<AddHostModalStepType>(isoDialog);
 
   const handleIsoConfigSubmit = async (
     values: DiscoveryImageFormValues,
@@ -61,7 +60,7 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
       hasNoBodyWrapper
       id="add-host-modal"
     >
-      <ModalBoxBody>
+      <ModalBoxHeader>
         <Flex justifyContent={{ default: 'justifyContentSpaceBetween' }}>
           <FlexItem>
             <Radio
@@ -69,7 +68,7 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
               name="type"
               label="Discovery ISO"
               isChecked={dialogType !== 'bmc'}
-              onChange={(checked) => setDialogType(checked ? 'iso-config' : 'bmc')}
+              onChange={(checked) => setDialogType(checked ? isoDialog : 'bmc')}
             />
           </FlexItem>
           <FlexItem spacer={{ default: isBMPlatform ? 'spacerXl' : 'spacerSm' }} />
@@ -83,14 +82,14 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
                 id="bmc"
                 name="type"
                 label="Baseboard Management Controller (BMC)"
-                isChecked={!dialogType}
-                onChange={(checked) => setDialogType(checked ? 'bmc' : 'iso-config')}
+                isChecked={dialogType === 'bmc'}
+                onChange={(checked) => setDialogType(checked ? 'bmc' : isoDialog)}
                 isDisabled={!isBMPlatform}
               />
             </Tooltip>
           </FlexItem>
         </Flex>
-      </ModalBoxBody>
+      </ModalBoxHeader>
       {dialogType === 'iso-config' && (
         <DiscoveryImageConfigForm
           onCancel={onClose}
@@ -109,6 +108,7 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
           onClose={onClose}
           downloadUrl={infraEnv?.status?.isoDownloadURL}
           onReset={() => setDialogType('iso-config')}
+          hasDHCP={hasDHCP}
         />
       )}
       {dialogType === 'bmc' && (
