@@ -20,7 +20,7 @@ import { selectClusterNetworkCIDR } from '../../selectors/clusterSelectors';
 import { FeatureSupportLevelContext } from '../../../common/components/featureSupportLevels';
 import {
   ReviewClusterFeatureSupportLevels,
-  getClusterUsedFeaturesSupportLevels,
+  getLimitedFeatureSupportLevels,
   isFullySupported,
 } from '../featureSupportLevels';
 import './ReviewCluster.css';
@@ -97,7 +97,7 @@ const ReviewCluster: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const featureSupportLevelData = React.useContext(FeatureSupportLevelContext);
 
   const clusterFeatureSupportLevels = React.useMemo(() => {
-    return getClusterUsedFeaturesSupportLevels(cluster, featureSupportLevelData);
+    return getLimitedFeatureSupportLevels(cluster, featureSupportLevelData);
   }, [cluster, featureSupportLevelData]);
 
   const fullySupported: boolean = React.useMemo<boolean>(() => {
