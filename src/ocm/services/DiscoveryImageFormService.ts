@@ -37,9 +37,9 @@ const DiscoveryImageFormService = {
     };
 
     const { data: updatedCluster } = await ClustersAPI.update(clusterId, proxyParams);
-    await InfraEnvsAPI.update(infraEnvId, infraEnvParams);
+    const { data: updatedInfraEnv } = await InfraEnvsAPI.update(infraEnvId, infraEnvParams);
 
-    return updatedCluster;
+    return { updatedCluster, updatedInfraEnv };
   },
 };
 
