@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Flex, FlexItem, Modal, ModalBoxBody, ModalVariant, Radio } from '@patternfly/react-core';
+import { Flex, FlexItem, Modal, ModalBoxHeader, ModalVariant, Radio } from '@patternfly/react-core';
 import { DownloadIso, PopoverIcon } from '../../../common';
 import { BMCFormProps } from '../Agent/types';
 import { BMCForm } from '../Agent';
@@ -30,7 +30,7 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
   isBMPlatform,
 }) => {
   const hasDHCP = infraEnv.metadata?.labels?.networkType !== 'static';
-  const [isDiscoveryISO, setDiscoveryISO] = React.useState(hasDHCP);
+  const [isDiscoveryISO, setDiscoveryISO] = React.useState(true);
   return (
     <Modal
       aria-label="Add host dialog"
@@ -41,39 +41,41 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
       hasNoBodyWrapper
       id="add-host-modal"
     >
-      {hasDHCP && (
-        <ModalBoxBody>
-          <Flex justifyContent={{ default: 'justifyContentSpaceBetween' }}>
+      <ModalBoxHeader>
+        <Flex justifyContent={{ default: 'justifyContentSpaceBetween' }}>
+          <FlexItem>
+            <Radio
+              id="iso"
+              name="type"
+              label="Discovery ISO"
+              isChecked={isDiscoveryISO}
+              onChange={setDiscoveryISO}
+            />
+          </FlexItem>
+          <FlexItem spacer={{ default: isBMPlatform ? 'spacerXl' : 'spacerSm' }} />
+          <FlexItem>
+            <Radio
+              id="bmc"
+              name="type"
+              label="Baseboard Management Controller (BMC)"
+              isChecked={!isDiscoveryISO}
+              onChange={(checked) => setDiscoveryISO(!checked)}
+              isDisabled={!isBMPlatform}
+            />
+          </FlexItem>
+          {!isBMPlatform && (
             <FlexItem>
-              <Radio
-                id="iso"
-                name="type"
-                label="Discovery ISO"
-                isChecked={isDiscoveryISO}
-                onChange={setDiscoveryISO}
-              />
+              <BmOnBmOnlyPopoverIcon />
             </FlexItem>
-            <FlexItem spacer={{ default: isBMPlatform ? 'spacerXl' : 'spacerSm' }} />
-            <FlexItem>
-              <Radio
-                id="bmc"
-                name="type"
-                label="Baseboard Management Controller (BMC)"
-                isChecked={!isDiscoveryISO}
-                onChange={(checked) => setDiscoveryISO(!checked)}
-                isDisabled={!isBMPlatform}
-              />
-            </FlexItem>
-            {!isBMPlatform && (
-              <FlexItem>
-                <BmOnBmOnlyPopoverIcon />
-              </FlexItem>
-            )}
-          </Flex>
-        </ModalBoxBody>
-      )}
+          )}
+        </Flex>
+      </ModalBoxHeader>
       {isDiscoveryISO ? (
-        <DownloadIso onClose={onClose} downloadUrl={infraEnv?.status?.isoDownloadURL} />
+        <DownloadIso
+          onClose={onClose}
+          downloadUrl={infraEnv?.status?.isoDownloadURL}
+          hasDHCP={hasDHCP}
+        />
       ) : (
         <BMCForm onCreate={onCreate} onClose={onClose} hasDHCP={hasDHCP} infraEnv={infraEnv} />
       )}
