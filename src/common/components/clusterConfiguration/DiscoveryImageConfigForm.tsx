@@ -43,7 +43,7 @@ type DiscoveryImageConfigFormProps = Proxy & {
     values: DiscoveryImageFormValues,
     formikActions: FormikHelpers<DiscoveryImageFormValues>,
   ) => Promise<void>;
-  hasDHCP: boolean;
+  hasDHCP?: boolean;
   hideDiscoveryImageType?: boolean;
   sshPublicKey?: string;
   imageType?: ImageType;
@@ -90,7 +90,7 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
           <>
             <ModalBoxBody>
               <Stack hasGutter>
-                {!hasDHCP && (
+                {hasDHCP === false && (
                   <StackItem>
                     <Alert
                       title="If you want to use Static IP, follow the steps in the documentation."
