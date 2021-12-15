@@ -13,6 +13,7 @@ import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
 import NetworkingStatus from '../status/NetworkingStatus';
 import { getAgentStatus, getBMHStatus } from '../helpers/status';
 import { Button, Popover } from '@patternfly/react-core';
+import HardwareStatus from '../status/HardwareStatus';
 
 export const discoveryTypeColumn = (
   agents: AgentK8sResource[],
@@ -191,6 +192,23 @@ export const networkingStatusColumn = (
     return {
       title: <NetworkingStatus host={host} onEditHostname={editHostname} />,
       props: { 'data-testid': 'nic-status' },
+      sortableValue: status,
+    };
+  },
+});
+
+export const hardwareStatusColumn = (): TableRow<Host> => ({
+  header: {
+    title: 'Status',
+    props: {
+      id: 'col-header-hardwarestatus',
+    },
+    transforms: [sortable],
+  },
+  cell: (host) => {
+    return {
+      title: <HardwareStatus host={host} />,
+      props: { 'data-testid': 'hardware-status' },
       sortableValue: status,
     };
   },

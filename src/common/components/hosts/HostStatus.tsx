@@ -119,13 +119,14 @@ const withProgress = (
 };
 
 type HostStatusPopoverContentProps = ValidationInfoActionProps & {
+  statusOverride?: Host['status'] | 'Discovered';
   validationsInfo: ValidationsInfo;
 };
 
 const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({ ...props }) => {
-  const { host } = props;
+  const { host, statusOverride } = props;
   const { status, statusInfo } = host;
-  const statusDetails = HOST_STATUS_DETAILS[status];
+  const statusDetails = HOST_STATUS_DETAILS[statusOverride || status];
 
   if (status === 'added-to-existing-cluster') {
     return (
