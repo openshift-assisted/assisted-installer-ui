@@ -42,9 +42,8 @@ export const getAIHosts = (
         statusInfo,
         role: getAgentRole(agent),
         requestedHostname: agent.spec.hostname || inventory.hostname,
-        // validationsInfo: JSON.stringify(agent.status.hostValidationInfo),
         createdAt: agent.metadata?.creationTimestamp,
-        validationsInfo: JSON.stringify({ hardware: [] }),
+        validationsInfo: JSON.stringify(agent.status?.validationsInfo || {}),
         inventory: JSON.stringify(inventory),
         progress: agentProgress && {
           currentStage: agentProgress.currentStage,

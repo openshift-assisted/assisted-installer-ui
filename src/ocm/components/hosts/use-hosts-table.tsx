@@ -316,7 +316,7 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
         }}
       />
       <AdditionalNTPSourcesDialog
-        cluster={cluster}
+        additionalNtpSource={cluster.additionalNtpSource}
         isOpen={additionalNTPSourcesDialog.isOpen}
         onClose={additionalNTPSourcesDialog.close}
         onAdditionalNtpSource={onAdditionalNtpSource}
