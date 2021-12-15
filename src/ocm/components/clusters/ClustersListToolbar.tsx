@@ -25,6 +25,7 @@ import { ResourceUIState } from '../../../common';
 import { selectClustersUIState } from '../../selectors/clusters';
 import { fetchClustersAsync } from '../../reducers/clusters/clustersSlice';
 import { routeBasePath } from '../../config';
+import _ from 'lodash';
 
 export type ClusterFiltersType = {
   [key: string]: string[]; // value from CLUSTER_STATUS_LABELS
@@ -37,7 +38,9 @@ type ClustersListToolbarProps = {
   setFilters: (filters: ClusterFiltersType) => void;
 };
 
-const clusterStatusLabelUniqueValues = Array.from(new Set(Object.values(CLUSTER_STATUS_LABELS)));
+const clusterStatusFilterLabels = Array.from(
+  new Set(Object.values(_.omit(CLUSTER_STATUS_LABELS, 'adding-hosts'))),
+);
 
 const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
   searchString,
@@ -137,7 +140,7 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
             placeholderText={statusPlaceholder}
             toggleId="cluster-list-filter-status"
           >
-            {clusterStatusLabelUniqueValues.map((label) => (
+            {clusterStatusFilterLabels.map((label) => (
               <SelectOption
                 key={label}
                 value={label}
