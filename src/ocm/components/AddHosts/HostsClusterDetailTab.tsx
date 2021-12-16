@@ -16,7 +16,7 @@ import AddHosts from './AddHosts';
 import { OcmClusterType } from './types';
 import { getOpenshiftClusterId } from './utils';
 import { ClustersAPI } from '../../services/apis';
-import { InfraEnvsService } from '../../services';
+import Day2ClusterService from '../../services/Day2ClusterService';
 
 type OpenModalType = (modalName: string, cluster?: OcmClusterType) => void;
 
@@ -138,60 +138,25 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
       }
 
       const doItAsync = async () => {
-        let dayTwoClusterExists = false;
-        // try to find Day 2 cluster (can be missing)
         try {
-          const { data: clusters } = await ClustersAPI.listByOpenshiftId(openshiftClusterId);
-          const day2Clusters = clusters.filter((cluster) => cluster.kind === 'AddHostsCluster');
-          if (day2Clusters.length !== 0) {
-            const { data } = await ClustersAPI.get(day2Clusters[0].id);
-            setDay2Cluster(data);
-            dayTwoClusterExists = true;
-          }
+          const day2Cluster = await Day2ClusterService.fetchCluster(
+            cluster,
+            openshiftVersion,
+            pullSecret,
+          );
+          setDay2Cluster(day2Cluster);
         } catch (e) {
-          if (Number(e?.response?.status) !== 404) {
-            handleApiError(e);
-            setError(
-              <>
-                Failed to read cluster details.
-                <br />
-                Check your connection and <TryAgain />.
-              </>,
-            );
-            return;
-          }
-        }
-
-        if (!dayTwoClusterExists) {
-          try {
-            // Optionally create Day 2 cluster
-            // TODO(jkilzi): cannot move to v2 until https://issues.redhat.com/browse/MGMT-7915 is done
-            const { data } = await ClustersAPI.registerAddHosts({
-              openshiftClusterId, // used to both match OpenShift Cluster and as an assisted-installer ID
-              name: `scale-up-${cluster.display_name || cluster.name || openshiftClusterId}`, // both cluster.name and cluster.display-name contain just UUID which fails AI validation (k8s naming conventions)
-              openshiftVersion,
-              apiVipDnsname,
-            });
-
-            await InfraEnvsService.create({
-              name: `${data.name}_infra-env`,
-              pullSecret,
-              clusterId: data.id,
-              // TODO(jkilzi): MGMT-7709 will deprecate the openshiftVersion field, remove the line below once it happens.
-              openshiftVersion,
-            });
-            // all set, we can refirect
-            setDay2Cluster(data);
-          } catch (e) {
-            handleApiError(e);
-            setError(
-              <>
-                Failed to create wrapping cluster for adding new hosts.
-                <br />
-                Check your connection and <TryAgain />.
-              </>,
-            );
-          }
+          handleApiError(e);
+          setError(
+            <>
+              {e.request._url.includes('/import')
+                ? 'Failed to create wrapping cluster for adding new hosts.'
+                : 'Failed to fetch cluster for adding new hosts.'}
+              <br />
+              Check your connection and <TryAgain />.
+            </>,
+          );
+          return;
         }
       };
 
