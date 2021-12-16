@@ -68,6 +68,7 @@ export type ClusterDeploymentDetailsNetworkingProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall: AgentClusterInstallK8sResource;
   agents: AgentK8sResource[];
+  aiConfigMap: ConfigMapK8sResource | undefined;
   onSaveNetworking: (values: ClusterDeploymentNetworkingValues) => Promise<string | void>;
   onClose: () => void;
   hostActions: ClusterDeploymentHostsTablePropsActions;

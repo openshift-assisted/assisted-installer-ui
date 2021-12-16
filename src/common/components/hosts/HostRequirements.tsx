@@ -12,14 +12,14 @@ type HWRequirements = {
 const parseRAM = (req?: HWRequirements) =>
   fileSize((req?.ramMib || 16 * 1024) * 1024 * 1024, 2, 'iec');
 
-export type HostRequirementsProps = {
+export type HostRequirementsListProps = {
   master?: HWRequirements;
   worker?: HWRequirements;
   sno?: HWRequirements;
   isSNOCluster?: boolean;
 };
 
-const HostRequirements: React.FC<HostRequirementsProps> = ({
+export const HostRequirementsList: React.FC<HostRequirementsListProps> = ({
   master,
   worker,
   sno,
@@ -29,38 +29,40 @@ const HostRequirements: React.FC<HostRequirementsProps> = ({
   const workerRam = parseRAM(worker);
   const snoRam = parseRAM(sno);
   return (
-    <TextContent>
-      <List>
-        {!isSNOCluster && (
-          <>
-            <ListItem>
-              Control plane nodes: At least {master?.cpuCores || 4} CPU cores, {masterRam} RAM,{' '}
-              {master?.diskSizeGb || 120} GB disk size for every supervisor.
-            </ListItem>
-            <ListItem>
-              Workers: At least {worker?.cpuCores || 2} CPU cores, {workerRam} RAM,{' '}
-              {worker?.diskSizeGb || 120} GB disk size for each worker
-            </ListItem>
-          </>
-        )}
-        {(isSNOCluster === true || isSNOCluster === undefined) && (
-          <>
-            <ListItem>
-              SNO: One host is required with at least {sno?.cpuCores || 4} CPU cores, {snoRam} of
-              RAM, and {sno?.diskSizeGb || 120} GB of disk size storage.
-            </ListItem>
-          </>
-        )}
-        <ListItem>
-          Also note that each host's disk write speed should meet the minimum requirements to run
-          OpenShift.{' '}
-          <ExternalLink href={'https://access.redhat.com/solutions/4885641'}>
-            Learn more
-          </ExternalLink>
-        </ListItem>
-      </List>
-    </TextContent>
+    <List>
+      {!isSNOCluster && (
+        <>
+          <ListItem>
+            Control plane nodes: At least {master?.cpuCores || 4} CPU cores, {masterRam} RAM,{' '}
+            {master?.diskSizeGb || 120} GB disk size for every supervisor.
+          </ListItem>
+          <ListItem>
+            Workers: At least {worker?.cpuCores || 2} CPU cores, {workerRam} RAM,{' '}
+            {worker?.diskSizeGb || 120} GB disk size for each worker
+          </ListItem>
+        </>
+      )}
+      {(isSNOCluster === true || isSNOCluster === undefined) && (
+        <>
+          <ListItem>
+            SNO: One host is required with at least {sno?.cpuCores || 4} CPU cores, {snoRam} of RAM,
+            and {sno?.diskSizeGb || 120} GB of disk size storage.
+          </ListItem>
+        </>
+      )}
+      <ListItem>
+        Also note that each host's disk write speed should meet the minimum requirements to run
+        OpenShift.{' '}
+        <ExternalLink href={'https://access.redhat.com/solutions/4885641'}>Learn more</ExternalLink>
+      </ListItem>
+    </List>
   );
 };
+
+const HostRequirements: React.FC<HostRequirementsListProps> = (props) => (
+  <TextContent>
+    <HostRequirementsList {...props} />
+  </TextContent>
+);
 
 export default HostRequirements;

@@ -16,9 +16,8 @@ import { global_palette_green_500 as okColor } from '@patternfly/react-tokens/di
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
 
 import { LabelValue } from '../../../common';
-import { InfraEnvK8sResource, ConfigMapK8sResource, SecretK8sResource } from '../../types';
+import { InfraEnvK8sResource, SecretK8sResource } from '../../types';
 import { AGENT_LOCATION_LABEL_KEY } from '../common';
-import MinimalHWRequirements from '../Agent/MinimalHWRequirements';
 import EditPullSecretModal, { EditPullSecretModalProps } from '../modals/EditPullSecretModal';
 import EditSSHKeyModal, { EditSSHKeyModalProps } from '../modals/EditSSHKeyModal';
 import EditNtpSourcesModal, { EditNtpSourcesModalProps } from '../modals/EditNtpSourcesModal';
@@ -56,12 +55,10 @@ type EnvironmentDetailsProps = {
   onEditNtpSources: EditNtpSourcesModalProps['onSubmit'];
   hasAgents: boolean;
   hasBMHs: boolean;
-  aiConfigMap?: ConfigMapK8sResource;
 };
 
 const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({
   infraEnv,
-  aiConfigMap,
   fetchSecret,
   onEditPullSecret,
   onEditSSHKey,
@@ -179,13 +176,6 @@ const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({
                 </>
               </DescriptionListDescription>
             </DescriptionListGroup>
-            {aiConfigMap && (
-              <DescriptionListGroup>
-                <DescriptionListDescription>
-                  <MinimalHWRequirements aiConfigMap={aiConfigMap} />
-                </DescriptionListDescription>
-              </DescriptionListGroup>
-            )}
           </DescriptionList>
         </GridItem>
       </Grid>

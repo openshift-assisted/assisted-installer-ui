@@ -6,6 +6,7 @@ import {
   AgentClusterInstallK8sResource,
   AgentK8sResource,
   ClusterDeploymentK8sResource,
+  ConfigMapK8sResource,
 } from '../../types';
 import ClusterDeploymentNetworkingForm from './ClusterDeploymentNetworkingForm';
 import { useNetworkingFormik } from './ClusterDeploymentNetworkingStep';
@@ -21,6 +22,7 @@ type ACMClusterDeploymentNetworkingStepProps = {
   agents: AgentK8sResource[];
   onValuesChanged: (values: ClusterDeploymentNetworkingValues) => void;
   hostActions: ClusterDeploymentHostsTablePropsActions;
+  aiConfigMap: ConfigMapK8sResource | undefined;
 };
 
 const ACMClusterDeploymentNetworkingStep: React.FC<ACMClusterDeploymentNetworkingStepProps> = ({
@@ -36,6 +38,7 @@ const ACMClusterDeploymentNetworkingStep: React.FC<ACMClusterDeploymentNetworkin
     agentClusterInstall,
     agents,
   });
+
   return (
     <Formik
       initialValues={initialValues}
