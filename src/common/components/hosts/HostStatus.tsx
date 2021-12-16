@@ -48,10 +48,10 @@ import { toSentence } from '../ui/table/utils';
 import { RenderIf } from '../ui';
 import { HostStatusProps } from './types';
 
-const getStatusIcon = (status: Host['status'] | 'Discovered') => {
+const getStatusIcon = (status: Host['status'] | 'discovered') => {
   let icon = null;
   switch (status) {
-    case 'Discovered':
+    case 'discovered':
     case 'discovering':
     case 'discovering-unbound':
       icon = <ConnectedIcon />;
@@ -120,7 +120,7 @@ const withProgress = (
 };
 
 type HostStatusPopoverContentProps = ValidationInfoActionProps & {
-  statusOverride?: Host['status'] | 'Discovered';
+  statusOverride?: Host['status'] | 'discovered';
   validationsInfo: ValidationsInfo;
 };
 
@@ -286,7 +286,7 @@ const HostStatus: React.FC<HostStatusProps> = ({
       {icon && <FlexItem>{icon}</FlexItem>}
 
       <Flex direction={{ default: 'column' }} spaceItems={{ default: 'spaceItemsXs' }}>
-        {!sublabel && status !== 'Discovered' ? (
+        {!sublabel && status !== 'discovered' ? (
           <WithHostStatusPopover
             hideOnOutsideClick={!keepOnOutsideClick}
             host={host}

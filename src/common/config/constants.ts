@@ -68,7 +68,7 @@ export const CLUSTER_STATUS_LABELS: { [key in Cluster['status']]: string } = {
   'adding-hosts': 'Adding hosts',
 };
 
-export const HOST_STATUS_LABELS: { [key in Host['status']]: string } = {
+export const HOST_STATUS_LABELS: { [key in Host['status'] | 'discovered']: string } = {
   'unbinding-pending-user-action': 'Removing from cluster',
   'preparing-failed': 'Preparing step failed',
   unbinding: 'Removing from cluster',
@@ -79,6 +79,7 @@ export const HOST_STATUS_LABELS: { [key in Host['status']]: string } = {
   'known-unbound': 'Ready',
   binding: 'Binding',
   discovering: 'Discovering',
+  discovered: 'Discovered',
   'pending-for-input': 'Pending input',
   known: 'Ready',
   disconnected: 'Disconnected',
@@ -110,7 +111,7 @@ export const CLUSTER_FIELD_LABELS: { [key in string]: string } = {
   SNODisclaimer: 'Single Node OpenShift disclaimer',
 };
 
-export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
+export const HOST_STATUS_DETAILS: { [key in Host['status'] | 'discovered']: string } = {
   'unbinding-pending-user-action':
     'This host is being removed from the cluster. To finish, reboot the host with the infrastructure environment ISO.',
   'preparing-failed': 'Preparing step failed',
@@ -128,6 +129,7 @@ export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
   binding: 'This host is being added to the cluster.',
   discovering:
     'This host is transmitting its hardware and networking information to the installer. Please wait while this information is received.',
+  discovered: 'The host has been discovered and needs to be approved to before further use.',
   'pending-for-input': '',
   known:
     'This host meets the minimum hardware and networking requirements and will be included in the cluster.',
