@@ -9,6 +9,7 @@ const AGENT_FOR_SELECTION_STATUSES: AgentStatus[] = [
   'known-unbound',
   'insufficient',
   'pending-for-input',
+  'binding',
 ];
 
 export const hostToAgent = (agents: AgentK8sResource[] = [], host: Host) =>
