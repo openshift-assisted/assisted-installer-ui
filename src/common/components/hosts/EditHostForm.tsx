@@ -17,7 +17,8 @@ import {
   hostnameValidationSchema,
   InputField,
   StaticTextField,
-  uniqueHostnameValidationSchema,
+  HOSTNAME_VALIDATION_MESSAGES,
+  getRichTextValidation,
 } from '../ui';
 import { canHostnameBeChanged } from './utils';
 import GridGap from '../ui/GridGap';
@@ -36,12 +37,7 @@ export type EditHostFormProps = {
 
 const validationSchema = (initialValues: EditHostFormValues, usedHostnames: string[] = []) =>
   Yup.object().shape({
-    hostname: hostnameValidationSchema.concat(
-      uniqueHostnameValidationSchema(initialValues.hostname, usedHostnames).notOneOf(
-        ['localhost', 'localhost.localdomain'],
-        'Hostname ${value} is not allowed.',
-      ),
-    ),
+    hostname: hostnameValidationSchema(initialValues.hostname, usedHostnames),
   });
 
 const EditHostForm: React.FC<EditHostFormProps> = ({
@@ -67,7 +63,7 @@ const EditHostForm: React.FC<EditHostFormProps> = ({
     <Formik
       initialValues={initialValues}
       initialStatus={{ error: null }}
-      validationSchema={validationSchema(initialValues, usedHostnames)}
+      validate={getRichTextValidation(validationSchema(initialValues, usedHostnames))}
       onSubmit={async (values, formikActions) => {
         if (values.hostname === initialValues.hostname) {
           // no change to save
@@ -104,16 +100,21 @@ const EditHostForm: React.FC<EditHostFormProps> = ({
                   {status.error.message}
                 </Alert>
               )}
-              <StaticTextField name="discoveredHostname" label="Discovered Hostname">
+              <Alert
+                variant={AlertVariant.info}
+                title="This name will replace the original discovered hostname."
+                isInline
+              />
+              <StaticTextField name="discoveredHostname" label="Discovered hostname">
                 {hostname || ''}
               </StaticTextField>
               <InputField
-                label="Requested Hostname"
+                label="New hostname"
                 name="hostname"
                 ref={hostnameInputRef}
-                helperText="This name will replace the original discovered hostname after installation."
                 isRequired
                 isDisabled={!canHostnameBeChanged(host.status)}
+                richValidationMessages={HOSTNAME_VALIDATION_MESSAGES}
               />
             </GridGap>
           </ModalBoxBody>
@@ -123,7 +124,7 @@ const EditHostForm: React.FC<EditHostFormProps> = ({
               type={ButtonType.submit}
               isDisabled={isSubmitting || !isValid || !dirty}
             >
-              Save
+              Save hostname
             </Button>
             <Button key="cancel" variant={ButtonVariant.link} onClick={onCancel}>
               Cancel

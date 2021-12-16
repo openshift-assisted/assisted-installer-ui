@@ -19,13 +19,7 @@ import {
 import { Formik, FormikProps, FormikConfig, FieldArray, useField } from 'formik';
 import * as Yup from 'yup';
 import { InfraEnvK8sResource, SecretK8sResource } from '../../types';
-import {
-  hostnameValidationSchema,
-  InputField,
-  macAddressValidationSchema,
-  CodeField,
-  getFieldId,
-} from '../../../common';
+import { InputField, macAddressValidationSchema, CodeField, getFieldId } from '../../../common';
 import { Language } from '@patternfly/react-code-editor';
 import { MinusCircleIcon, PlusCircleIcon } from '@patternfly/react-icons';
 import { AddBmcValues, BMCFormProps } from './types';
@@ -119,7 +113,7 @@ const getNMState = (values: AddBmcValues, infraEnv: InfraEnvK8sResource): NMStat
 
 const getValidationSchema = (hasDHCP: boolean) =>
   Yup.object({
-    hostname: hostnameValidationSchema.required(),
+    hostname: Yup.string().required(),
     bmcAddress: Yup.string().required(),
     username: Yup.string().required(),
     password: Yup.string().required(),

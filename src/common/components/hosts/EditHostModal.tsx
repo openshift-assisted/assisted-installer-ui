@@ -26,8 +26,8 @@ const EditHostModal: React.FC<EditHostModalProps> = ({
 }) =>
   host && inventory ? (
     <Modal
-      aria-label="Edit host dialog"
-      title="Edit Host"
+      aria-label="Change hostname dialog"
+      title="Change hostname"
       isOpen={isOpen}
       onClose={onClose}
       variant={ModalVariant.small}
