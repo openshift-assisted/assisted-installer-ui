@@ -69,7 +69,7 @@ export const CLUSTER_STATUS_LABELS: { [key in Cluster['status']]: string } = {
 };
 
 export const HOST_STATUS_LABELS: { [key in Host['status']]: string } = {
-  'unbinding-pending-user-action': 'Unbinding, pending user action',
+  'unbinding-pending-user-action': 'Unbinding',
   'preparing-failed': 'Preparing step failed',
   unbinding: 'Unbinding',
   'disabled-unbound': 'Disabled',
@@ -111,7 +111,8 @@ export const CLUSTER_FIELD_LABELS: { [key in string]: string } = {
 };
 
 export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
-  'unbinding-pending-user-action': 'Unbinding, pending user action',
+  'unbinding-pending-user-action':
+    'This host is being removed from the cluster. To finish, reboot the host with the infrastructure environment ISO.',
   'preparing-failed': 'Preparing step failed',
   unbinding: 'This host is being unbound from the cluster.',
   'disabled-unbound':

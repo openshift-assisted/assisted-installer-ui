@@ -128,17 +128,17 @@ export const getAgentStatus = (
       ),
     };
   }
+
   if (!excludeDiscovered && !agent.spec.approved) {
-    // TODO(mlibra): Add icon
     state = 'Discovered';
   } else if (
-    state !== 'binding' &&
+    !['binding', 'unbinding-pending-user-action'].includes(state) &&
     validationsInfo?.infrastructure &&
-    /* state === disconnected for this condition already, so let's keep it */
     !validationsInfo.infrastructure.find((c) => c.id.toLowerCase() === 'connected')
   ) {
     state = getInsufficientState(agent);
   }
+
   return [state, agent.status?.debugInfo?.stateInfo || '', validationsInfo || {}];
 };
 
