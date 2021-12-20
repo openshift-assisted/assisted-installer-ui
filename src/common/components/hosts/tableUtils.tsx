@@ -374,6 +374,22 @@ export const macAddressColumn = (cluster: Cluster): TableRow<Host> => ({
   },
 });
 
+const ActionTitle: React.FC<{ disabled: boolean; description?: string; title: string }> = ({
+  title,
+  description,
+  disabled,
+}) => (
+  <>
+    {title}
+    {disabled && (
+      <>
+        <br />
+        {description}
+      </>
+    )}
+  </>
+);
+
 export const hostActionResolver = ({
   onInstallHost,
   canInstallHost,
@@ -464,11 +480,23 @@ export const hostActionResolver = ({
         onClick: () => onEditBMH(host),
       });
     }
-    if (onUnbindHost && canUnbindHost?.(host)) {
+
+    if (canUnbindHost) {
+      // skip at all if the callback is not provided
+      const canUnbindHostResult = canUnbindHost(host);
+      const isDisabled = !canUnbindHostResult?.[0];
+
       actions.push({
-        title: 'Unbind host',
+        title: (
+          <ActionTitle
+            disabled={isDisabled}
+            description={canUnbindHostResult?.[1]}
+            title="Unbind host"
+          />
+        ),
         id: `button-unbind-host-${hostname}`,
-        onClick: () => onUnbindHost(host),
+        onClick: () => !isDisabled && onUnbindHost && onUnbindHost(host),
+        disabled: isDisabled,
       });
     }
   }
