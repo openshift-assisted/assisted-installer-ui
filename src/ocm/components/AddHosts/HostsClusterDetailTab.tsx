@@ -15,7 +15,6 @@ import { handleApiError } from '../../api';
 import AddHosts from './AddHosts';
 import { OcmClusterType } from './types';
 import { getOpenshiftClusterId } from './utils';
-import { ClustersAPI } from '../../services/apis';
 import Day2ClusterService from '../../services/Day2ClusterService';
 
 type OpenModalType = (modalName: string, cluster?: OcmClusterType) => void;
@@ -164,29 +163,33 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
     }
   }, [cluster, openModal, pullSecret, day2Cluster, isVisible, normalizeClusterVersion]);
 
-  React.useEffect(() => {
+  const resetCluster = React.useCallback(async () => {
     if (day2Cluster) {
-      const id = setTimeout(() => {
-        const doItAsync = async () => {
-          try {
-            const { data } = await ClustersAPI.get(day2Cluster.id);
-            setDay2Cluster(data);
-          } catch (e) {
-            handleApiError(e);
-            setError(
-              <>
-                Failed to reload cluster data.
-                <br />
-                Check your connection and <TryAgain />.
-              </>,
-            );
-          }
-        };
-        doItAsync();
-      }, POLLING_INTERVAL);
-      return () => clearTimeout(id);
+      try {
+        const cluster = await Day2ClusterService.fetchClusterById(day2Cluster.id);
+        setDay2Cluster(cluster);
+      } catch (e) {
+        handleApiError(e);
+        setError(
+          <>
+            Failed to reload cluster data.
+            <br />
+            Check your connection and <TryAgain />.
+          </>,
+        );
+      }
     }
   }, [day2Cluster]);
+
+  React.useEffect(() => {
+    const id = setTimeout(() => {
+      const doItAsync = async () => {
+        resetCluster();
+      };
+      doItAsync();
+    }, POLLING_INTERVAL);
+    return () => clearTimeout(id);
+  }, [resetCluster]);
 
   if (error) {
     return (
@@ -203,7 +206,11 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
   }
 
   return (
-    <AddHostsContextProvider cluster={day2Cluster} ocpConsoleUrl={cluster?.console?.url}>
+    <AddHostsContextProvider
+      cluster={day2Cluster}
+      resetCluster={resetCluster}
+      ocpConsoleUrl={cluster?.console?.url}
+    >
       <AddHosts />
     </AddHostsContextProvider>
   );

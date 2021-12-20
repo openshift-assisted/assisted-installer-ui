@@ -8,9 +8,7 @@ import {
   ToolbarContent,
 } from '@patternfly/react-core';
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import { getErrorMessage, handleApiError } from '../../api';
-import { updateHost } from '../../reducers/clusters/currentClusterSlice';
 import { DiscoveryImageModal } from '../clusterConfiguration/discoveryImageModal';
 import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
 import {
@@ -29,20 +27,18 @@ import { HostsService } from '../../services';
 const { addAlert } = alertsSlice.actions;
 
 const AddHosts: React.FC = () => {
-  const { cluster } = React.useContext(AddHostsContext);
-  const dispatch = useDispatch();
+  const { cluster, resetCluster } = React.useContext(AddHostsContext);
   const [isSubmitting, setSubmitting] = React.useState(false);
 
-  if (!cluster) {
+  if (!cluster || !resetCluster) {
     return null;
   }
 
   const handleHostsInstall = async () => {
     setSubmitting(true);
     try {
-      const data = await HostsService.installAll(cluster);
-      const hosts = data.map((d) => d.data);
-      hosts.forEach((host) => dispatch(updateHost(host)));
+      await HostsService.installAll(cluster);
+      resetCluster();
     } catch (e) {
       handleApiError(e, () =>
         addAlert({
@@ -51,7 +47,9 @@ const AddHosts: React.FC = () => {
         }),
       );
     } finally {
-      setSubmitting(false);
+      setTimeout(() => {
+        setSubmitting(false);
+      }, 10000);
     }
   };
 
@@ -72,7 +70,7 @@ const AddHosts: React.FC = () => {
                 variant={ButtonVariant.primary}
                 name="install"
                 onClick={handleHostsInstall}
-                isDisabled={getReadyHostCount(cluster) <= 0 || isSubmitting}
+                isDisabled={isSubmitting || getReadyHostCount(cluster) <= 0}
               >
                 Install ready hosts
               </ToolbarButton>
