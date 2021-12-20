@@ -1,6 +1,6 @@
 import React from 'react';
 import { FeatureId, SupportLevel, isPreviewSupportLevel } from '../../types';
-import { TechnologyPreview, DeveloperPreview } from '../ui/PreviewBadge';
+import { TechnologyPreview } from '../ui/PreviewBadge';
 import FeatureSupportLevelContext from './FeatureSupportLevelContext';
 
 export type SupportLevelBadgeProps = {
@@ -23,11 +23,7 @@ const FeatureSupportLevelBadge: React.FC<SupportLevelBadgeProps> = ({
     return null;
   }
   const testId = `${featureId}-support-level`;
-  return supportLevel === 'tech-preview' ? (
-    <TechnologyPreview testId={testId} />
-  ) : (
-    <DeveloperPreview testId={testId} />
-  );
+  return <TechnologyPreview testId={testId} />;
 };
 
 export default FeatureSupportLevelBadge;
