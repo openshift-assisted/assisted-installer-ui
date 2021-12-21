@@ -38,6 +38,13 @@ export const getClusterDetailsInitialValues = ({
     SNODisclaimer: highAvailabilityMode === 'None',
     useRedHatDnsService:
       !!baseDnsDomain && managedDomains.map((d) => d.domain).includes(baseDnsDomain),
+    enableDiskEncryptionOnMasters: ['all', 'masters'].includes(
+      cluster?.diskEncryption?.enableOn ?? 'none',
+    ),
+    enableDiskEncryptionOnWorkers: ['all', 'workers'].includes(
+      cluster?.diskEncryption?.enableOn ?? 'none',
+    ),
+    diskEncryptionMode: cluster?.diskEncryption?.mode ?? 'tpmv2',
   };
 };
 

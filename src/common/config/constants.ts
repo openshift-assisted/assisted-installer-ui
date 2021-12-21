@@ -25,6 +25,9 @@ export const TECH_SUPPORT_LEVEL_LINK = 'https://access.redhat.com/support/offeri
 export const FIREWALL_DOCUMENTATION_LINK =
   'https://docs.openshift.com/container-platform/4.8/installing/installing_bare_metal_ipi/ipi-install-installation-workflow.html#ipi-install-setting-proxy-settings-within-install-config_ipi-install-configuration-files';
 
+export const ENCRYPTING_DISK_DURING_INSTALLATION =
+  'https://docs.openshift.com/container-platform/4.7/installing/install_config/installing-customizing.html#installation-special-config-encrypt-disk_installing-customizing';
+
 export const getOcpConsoleNodesPage = (ocpConsoleUrl: string) =>
   `${ocpConsoleUrl}/k8s/cluster/nodes`;
 
