@@ -491,7 +491,7 @@ export const hostActionResolver = ({
           <ActionTitle
             disabled={isDisabled}
             description={canUnbindHostResult?.[1]}
-            title="Unbind host"
+            title="Remove from the cluster"
           />
         ),
         id: `button-unbind-host-${hostname}`,

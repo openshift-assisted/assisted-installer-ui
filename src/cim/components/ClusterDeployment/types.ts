@@ -23,7 +23,7 @@ export type ClusterDeploymentHostsTablePropsActions = {
   onApprove?: (agent: AgentK8sResource) => void;
   onSelect?: (agent: AgentK8sResource, selected: boolean) => void;
   onEditBMH?: (bmh: BareMetalHostK8sResource) => void;
-  canUnbindHost?: (agent: AgentK8sResource) => [enabled: boolean, reason: string];
+  canUnbindHost?: (agent: AgentK8sResource) => [/* enabled */ boolean, /* reason */ string];
   onUnbindHost?: (agent: AgentK8sResource) => void;
 };
 
