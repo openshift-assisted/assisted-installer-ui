@@ -3,7 +3,7 @@ import {
   checkClusterValidations,
   checkHostValidationGroups,
   checkHostValidations,
-} from './wizardTransition';
+} from '../../../common/components/clusterWizard/validationsInfoUtils';
 
 describe('wizardTransitions module tests', () => {
   describe('checkHostValidationGroups', () => {
