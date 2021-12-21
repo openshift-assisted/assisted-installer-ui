@@ -263,7 +263,7 @@ export interface Cluster {
   /**
    * swagger:ignore
    */
-  deletedAt?: any;
+  deletedAt?: unknown;
   /**
    * Indicate if the networking is managed by the user.
    */
@@ -1133,7 +1133,7 @@ export interface Host {
   /**
    * swagger:ignore
    */
-  deletedAt?: any;
+  deletedAt?: unknown;
   /**
    * Json formatted string containing the user overrides for the host's pointer ignition
    * example:
@@ -1300,7 +1300,7 @@ export interface HostRegistrationResponse {
   /**
    * swagger:ignore
    */
-  deletedAt?: any;
+  deletedAt?: unknown;
   /**
    * Json formatted string containing the user overrides for the host's pointer ignition
    * example:
