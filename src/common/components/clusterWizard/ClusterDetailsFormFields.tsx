@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Form } from '@patternfly/react-core';
+import { Alert, AlertVariant, FlexItem, Form } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 
 import { SNOControlGroup } from '../clusterConfiguration';
@@ -9,7 +9,8 @@ import { PullSecret } from '../clusters';
 import { ManagedDomain } from '../../api';
 import { OpenshiftVersionOptionType } from '../../types';
 import { CheckboxField, InputField, SelectField } from '../ui';
-
+import DiskEncryptionControlGroup from '../../../ocm/components/clusterWizard/DiskEncryptionStep';
+import { Cluster, schedulableMastersAlwaysOn } from '../../../common';
 import { ClusterDetailsValues } from './types';
 
 export type ClusterDetailsFormFieldsProps = {
@@ -23,6 +24,7 @@ export type ClusterDetailsFormFieldsProps = {
   managedDomains?: ManagedDomain[];
   versions: OpenshiftVersionOptionType[];
   toggleRedHatDnsService?: (checked: boolean) => void;
+  cluster: Cluster | undefined;
 };
 
 const BaseDnsHelperText: React.FC<{ name?: string; baseDnsDomain?: string }> = ({
@@ -49,6 +51,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
   forceOpenshiftVersion,
   extensionAfter,
   isOcm, // TODO(mlibra): make it optional, false by default
+  cluster,
 }) => {
   const { values } = useFormikContext<ClusterDetailsValues>();
   const { name, baseDnsDomain, highAvailabilityMode, useRedHatDnsService } = values;
@@ -109,6 +112,23 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
       {extensionAfter?.['openshiftVersion'] && extensionAfter['openshiftVersion']}
       {canEditPullSecret && <PullSecret isOcm={isOcm} defaultPullSecret={defaultPullSecret} />}
       {extensionAfter?.['pullSecret'] && extensionAfter['pullSecret']}
+      <DiskEncryptionControlGroup
+        enableDiskEncryptionOnWorkers={values.enableDiskEncryptionOnWorkers}
+        enableDiskEncryptionOnMasters={values.enableDiskEncryptionOnMasters}
+        diskEncryptionMode={values.diskEncryptionMode}
+        isSchedulableMastersEnabled={cluster ? !schedulableMastersAlwaysOn(cluster) : false}
+      />
+      {values.enableDiskEncryptionOnMasters && (
+        <Alert
+          variant={AlertVariant.warning}
+          isInline
+          title={
+            <FlexItem>
+              Enable TPM v2 encryption in the BIOS of each host is selected to use this encryption.
+            </FlexItem>
+          }
+        />
+      )}
     </Form>
   );
 };

@@ -12,6 +12,7 @@ import {
   getClusterDetailsInitialValues,
   getClusterDetailsValidationSchema,
   ClusterDetailsFormFields,
+  DiskEncryption,
 } from '../../../common';
 import { Grid, GridItem } from '@patternfly/react-core';
 import { canNextClusterDetails } from './wizardTransition';
@@ -50,6 +51,13 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
 
   const featureSupportLevels = React.useContext(FeatureSupportLevelContext);
   const handleSubmit = async (values: ClusterDetailsValues) => {
+    values.diskEncryption = {
+      mode: values.diskEncryptionMode,
+      enableOn: diskEncryptionEnableOn(
+        values.enableDiskEncryptionOnMasters,
+        values.enableDiskEncryptionOnWorkers,
+      ),
+    };
     const params: ClusterCreateParams = _.omit(values, ['useRedHatDnsService', 'SNODisclaimer']);
     if (cluster) {
       await handleClusterUpdate(cluster.id, params);
