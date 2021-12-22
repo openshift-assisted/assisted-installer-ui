@@ -5,12 +5,10 @@ import { TECH_SUPPORT_LEVEL_LINK } from '../../config/constants';
 import ExternalLink from './ExternalLink';
 import { WithTestID } from '../../types';
 
-export type DeveloperPreviewProps = {
+export type TechnologyPreviewProps = {
   position?: PreviewBadgePosition;
   className?: string;
 } & WithTestID;
-
-export type TechnologyPreviewProps = DeveloperPreviewProps;
 
 export enum PreviewBadgePosition {
   default,
@@ -18,7 +16,7 @@ export enum PreviewBadgePosition {
   inlineRight,
 }
 
-type PreviewBadgeProps = DeveloperPreviewProps & {
+type PreviewBadgeProps = TechnologyPreviewProps & {
   text: string;
   externalLink?: string;
   popoverText: string;
@@ -68,21 +66,13 @@ const PreviewBadge: React.FC<PreviewBadgeProps> = ({
   );
 };
 
-const popoverTexts = {
-  'tech-preview': `Technology preview features provide early access to upcoming product innovations, 
-  enabling you to test functionality and provide feedback during the development process.`,
-  'dev-preview': `Developer Preview features provide early access to upcoming innovations and contain 
-  a functional set of features that Red Hat is encouraging customers to use and provide feedback on.`,
-};
-
-export const DeveloperPreview: React.FC<DeveloperPreviewProps> = (props) => (
-  <PreviewBadge text="Developer Preview" popoverText={popoverTexts['dev-preview']} {...props} />
-);
+const popoverText = `Technology preview features provide early access to upcoming product innovations, 
+  enabling you to test functionality and provide feedback during the development process.`;
 
 export const TechnologyPreview: React.FC<TechnologyPreviewProps> = (props) => (
   <PreviewBadge
     text="Technology Preview"
-    popoverText={popoverTexts['tech-preview']}
+    popoverText={popoverText}
     externalLink={TECH_SUPPORT_LEVEL_LINK}
     {...props}
   />
