@@ -4,9 +4,10 @@ import { EventList } from '../../../common/api/types';
 import { AgentClusterInstallK8sResource, InfraEnvK8sResource } from '../../types/k8s';
 import { getClusterStatus } from '../helpers/status';
 import { getK8sProxyURL } from '../helpers/proxy';
+import { getInfraEnvNameOfAgent } from '../helpers/agents';
 import { EventListFetchProps } from '../../../common';
 import { ClusterDeploymentK8sResource, AgentK8sResource } from '../../types';
-import { INFRAENV_GENERATED_AI_FLOW, INFRAENV_AGENTINSTALL_LABEL_KEY } from '../common/constants';
+import { INFRAENV_GENERATED_AI_FLOW } from '../common/constants';
 
 export const shouldShowClusterDeploymentValidationOverview = (
   agentClusterInstall?: AgentClusterInstallK8sResource,
@@ -38,6 +39,16 @@ export const shouldShowClusterInstallationProgress = (
     'error',
     'cancelled',
     'adding-hosts',
+  ].includes(clusterStatus);
+};
+
+export const isInstallationInProgress = (agentClusterInstall: AgentClusterInstallK8sResource) => {
+  const [clusterStatus] = getClusterStatus(agentClusterInstall);
+  return [
+    'preparing-for-installation',
+    'installing',
+    'finalizing',
+    'installing-pending-user-action',
   ].includes(clusterStatus);
 };
 
@@ -103,7 +114,7 @@ export const isCIMFlow = (clusterDeployment?: ClusterDeploymentK8sResource) =>
   ];
 
 export const isAgentOfInfraEnv = (infraEnv?: InfraEnvK8sResource, agent?: AgentK8sResource) =>
-  agent?.metadata?.labels?.[INFRAENV_AGENTINSTALL_LABEL_KEY] === infraEnv?.metadata?.name &&
+  getInfraEnvNameOfAgent(agent) === infraEnv?.metadata?.name &&
   agent?.metadata?.namespace === infraEnv?.metadata?.namespace;
 
 export const isAgentOfCluster = (agent: AgentK8sResource, cdName?: string, cdNamespace?: string) =>

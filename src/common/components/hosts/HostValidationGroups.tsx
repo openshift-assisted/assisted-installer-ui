@@ -111,16 +111,16 @@ export const HostValidationGroups: React.FC<HostValidationGroupsProps> = ({
         );
 
         const getValidationGroupState = () => {
-          if (pendingValidations.length) {
-            return (
-              <>
-                Pending input <PendingIcon />
-              </>
-            );
-          } else if (failedValidations.length) {
+          if (failedValidations.length) {
             return (
               <>
                 Failed <ExclamationTriangleIcon color={warningColor.value} />
+              </>
+            );
+          } else if (pendingValidations.length) {
+            return (
+              <>
+                Pending input <PendingIcon />
               </>
             );
           }

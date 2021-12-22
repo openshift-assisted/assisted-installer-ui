@@ -9,45 +9,40 @@ import {
 } from '../../../common';
 import { HostStatusProps } from '../../../common/components/hosts/types';
 import { ValidationsInfo } from '../../../common/types/hosts';
-import { AdditionalNTPSourcesDialogToggle } from '../ClusterDeployment/AdditionalNTPSourcesDialogToggle';
 import { wizardStepsValidationsMap } from '../ClusterDeployment/wizardTransition';
 
-type HostNetworkingStatusComponentProps = {
+type HostHardwareStatusComponentProps = {
   host: Host;
   onEditHostname?: () => void;
 };
 
-const NetworkingStatus: React.FC<HostNetworkingStatusComponentProps> = ({
-  host,
-  onEditHostname,
-}) => {
+const HardwareStatus: React.FC<HostHardwareStatusComponentProps> = ({ host, onEditHostname }) => {
   const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
-  const networkingStatus = getWizardStepHostStatus('networking', wizardStepsValidationsMap, host);
-  const netValidationsInfo = getWizardStepHostValidationsInfo(
+  const status = getWizardStepHostStatus('hosts-selection', wizardStepsValidationsMap, host);
+  const hardwareValidationsInfo = getWizardStepHostValidationsInfo(
     validationsInfo,
-    'networking',
+    'hosts-selection',
     wizardStepsValidationsMap,
   );
   const sublabel = areOnlySoftValidationsFailing(
     validationsInfo,
-    'networking',
+    'hosts-selection',
     wizardStepsValidationsMap,
   )
     ? 'Some validations failed'
     : undefined;
 
-  const statusOverride: HostStatusProps['statusOverride'] = networkingStatus;
+  const statusOverride: HostStatusProps['statusOverride'] = status;
 
   return (
     <HostStatus
       host={host}
       onEditHostname={onEditHostname}
       statusOverride={statusOverride}
-      validationsInfo={netValidationsInfo}
+      validationsInfo={hardwareValidationsInfo}
       sublabel={sublabel}
-      AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
     />
   );
 };
 
-export default NetworkingStatus;
+export default HardwareStatus;
