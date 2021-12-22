@@ -9,7 +9,7 @@ import {
 } from '../../../common/components/hosts/tableUtils';
 import { AgentK8sResource } from '../../types/k8s/agent';
 import { ClusterDeploymentHostsSelectionValues } from '../ClusterDeployment/types';
-import { infraEnvColumn, useAgentsTable } from './tableUtils';
+import { hardwareStatusColumn, infraEnvColumn, useAgentsTable } from './tableUtils';
 import DefaultEmptyState from '../../../common/components/ui/uiState/EmptyState';
 
 type AgentsSelectionTableProps = {
@@ -44,6 +44,7 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({ matchingAge
     () => [
       hostnameColumn(),
       infraEnvColumn(matchingAgents),
+      hardwareStatusColumn(),
       cpuCoresColumn,
       memoryColumn,
       disksColumn,

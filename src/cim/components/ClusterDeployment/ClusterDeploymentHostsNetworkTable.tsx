@@ -40,11 +40,6 @@ const ClusterDeploymentHostsNetworkTable: React.FC<ClusterDeploymentHostsNetwork
     actionResolver,
   ] = useAgentsTable(hostActions, { agents });
 
-  const AdditionalNTPSourcesDialogToggleWithCluster = React.useCallback<React.FC>(
-    () => <AdditionalNTPSourcesDialogToggle cluster={cluster} />,
-    [cluster],
-  );
-
   const isSNOCluster = getIsSNOCluster(agentClusterInstall);
   const content = React.useMemo(
     () =>
@@ -73,7 +68,7 @@ const ClusterDeploymentHostsNetworkTable: React.FC<ClusterDeploymentHostsNetwork
         return (
           <HostDetail
             host={obj}
-            AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleWithCluster}
+            AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
           />
         );
       }}
