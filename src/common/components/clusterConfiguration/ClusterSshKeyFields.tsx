@@ -28,7 +28,10 @@ const ClusterSshKeyFields: React.FC<ClusterSshKeyFieldsProps> = ({
   clusterSshKey,
   imageSshKey,
 }) => {
-  const [shareSshKey, setShareSshKey] = React.useState(false);
+  //shareSshKey shouldn't response to changes. imageSshKey stays the same, there's a loading state while it's requested
+  //clusterSshKey updating causes the textarea to disappear when the user clears it to edit it
+  const defaultShareSshKey = !!imageSshKey && (clusterSshKey === imageSshKey || !clusterSshKey);
+  const [shareSshKey, setShareSshKey] = React.useState(defaultShareSshKey);
   const { values, setFieldValue, errors, touched } = useFormikContext<
     Pick<NetworkConfigurationValues, 'sshPublicKey'>
   >();
@@ -40,12 +43,6 @@ const ClusterSshKeyFields: React.FC<ClusterSshKeyFieldsProps> = ({
       setFieldValue('sshPublicKey', trimSshPublicKey(values.sshPublicKey));
     }
   };
-
-  React.useEffect(() => {
-    if (imageSshKey && (clusterSshKey === imageSshKey || !clusterSshKey)) {
-      setShareSshKey(true);
-    }
-  }, [imageSshKey, clusterSshKey]);
 
   React.useEffect(() => {
     if (shareSshKey) {
