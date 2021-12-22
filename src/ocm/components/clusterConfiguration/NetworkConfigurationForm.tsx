@@ -141,7 +141,7 @@ const NetworkConfigurationForm: React.FC<{
   };
 
   if (isLoading) {
-    return <LoadingState></LoadingState>;
+    return <LoadingState />;
   }
 
   return (
