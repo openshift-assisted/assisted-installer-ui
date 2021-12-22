@@ -19,6 +19,7 @@ export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
       const { data } = await SupportedOpenshiftVersionsAPI.list();
       const versions: OpenshiftVersionOptionType[] = Object.keys(data)
         .sort()
+        .reverse()
         .map((key) => ({
           label: `OpenShift ${data[key].displayName || key}`,
           value: key,
