@@ -111,7 +111,7 @@ export function filterValidationsInfoByStatus(
   selectedStatuses: Validation['status'][] = ['failure', 'pending', 'error'],
 ): ValidationsInfo {
   const result = {};
-  Object.entries(validationsInfo).forEach(([group, validations]) => {
+  Object.entries(validationsInfo).forEach(([group, validations = []]) => {
     const filteredValidations = validations.filter((validation) =>
       selectedStatuses.includes(validation.status),
     );
