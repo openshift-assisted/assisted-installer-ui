@@ -75,7 +75,7 @@ const NetworkConfigurationForm: React.FC<{
     }
     //shouldn't respond to cluster polling. shouldn't respond to alerts changes so remove alert wouldn't trigger adding it back
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [infraEnvError, addAlert]);
+  }, [infraEnvError]);
 
   const handleSubmit: FormikConfig<NetworkConfigurationValues>['onSubmit'] = async (
     values,
