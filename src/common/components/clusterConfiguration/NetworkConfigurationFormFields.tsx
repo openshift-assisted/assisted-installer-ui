@@ -3,8 +3,11 @@ import { Form } from '@patternfly/react-core';
 import { TextContent, Text } from '@patternfly/react-core';
 import NetworkConfiguration, { NetworkConfigurationProps } from './NetworkConfiguration';
 import ClusterSshKeyFields from './ClusterSshKeyFields';
+import { InfraEnv } from '../../api/types';
 
-type NetworkConfigurationFormFieldsProps = NetworkConfigurationProps;
+type NetworkConfigurationFormFieldsProps = NetworkConfigurationProps & {
+  infraEnv: InfraEnv | undefined;
+};
 
 const NetworkConfigurationFormFields: React.FC<NetworkConfigurationFormFieldsProps> = ({
   ...props
@@ -18,7 +21,7 @@ const NetworkConfigurationFormFields: React.FC<NetworkConfigurationFormFieldsPro
       </TextContent>
       <ClusterSshKeyFields
         clusterSshKey={cluster.sshPublicKey}
-        imageSshKey={cluster.imageInfo.sshPublicKey}
+        imageSshKey={props.infraEnv?.sshAuthorizedKey}
       />
     </Form>
   );

@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  getFailingClusterWizardSoftValidationIds,
+  areOnlySoftValidationsFailing,
   getWizardStepHostStatus,
   getWizardStepHostValidationsInfo,
   HostNetworkingStatusComponentProps,
@@ -20,11 +20,11 @@ const NetworkingStatus: React.FC<HostNetworkingStatusComponentProps> = (props) =
     'networking',
     wizardStepsValidationsMap,
   );
-  const sublabel = getFailingClusterWizardSoftValidationIds(
+  const sublabel = areOnlySoftValidationsFailing(
     validationsInfo,
     'networking',
     wizardStepsValidationsMap,
-  ).length
+  )
     ? 'Some validations failed'
     : undefined;
 
