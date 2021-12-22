@@ -30,32 +30,6 @@ export type WizardStepsValidationMap<T extends string> = {
   [key in T]: WizardStepValidationMap;
 };
 
-export const getAllClusterWizardSoftValidationIds = <ClusterWizardStepsType extends string>(
-  wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType>,
-): WizardStepValidationMap['softValidationIds'] =>
-  Object.keys(wizardStepsValidationsMap).reduce(
-    (prev, curr) => [...prev, ...wizardStepsValidationsMap[curr].softValidationIds],
-    [] as WizardStepValidationMap['softValidationIds'],
-  );
-
-export const getFailingClusterWizardSoftValidationIds = <ClusterWizardStepsType extends string>(
-  wizardHostStepValidationsInfo: HostValidationsInfo,
-  wizardStepId: ClusterWizardStepsType,
-  wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType>,
-) => {
-  const failingValidationIds = Object.keys(wizardHostStepValidationsInfo)
-    .reduce((curr, group) => {
-      const failingValidations = wizardHostStepValidationsInfo[group].filter(
-        (validation: Validation) => validation.status === 'failure',
-      );
-      return [...curr, ...failingValidations];
-    }, [] as Validation[])
-    .map((validation) => validation.id);
-  return failingValidationIds.filter((id) =>
-    wizardStepsValidationsMap[wizardStepId].softValidationIds.includes(id),
-  );
-};
-
 export const findValidationFixStep = <ClusterWizardStepsType extends string>(
   {
     validationId,
@@ -243,4 +217,44 @@ export const getWizardStepClusterStatus = <ClusterWizardStepsType extends string
       : status;
   }
   return status;
+};
+
+export const getAllClusterWizardSoftValidationIds = <ClusterWizardStepsType extends string>(
+  wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType>,
+): WizardStepValidationMap['softValidationIds'] =>
+  Object.keys(wizardStepsValidationsMap).reduce(
+    (prev, curr) => [...prev, ...wizardStepsValidationsMap[curr].softValidationIds],
+    [] as WizardStepValidationMap['softValidationIds'],
+  );
+
+export const getFailingClusterWizardStepHostValidations = <ClusterWizardStepsType extends string>(
+  wizardHostStepValidationsInfo: HostValidationsInfo,
+) =>
+  Object.keys(wizardHostStepValidationsInfo).reduce((curr, group) => {
+    const failingValidations = wizardHostStepValidationsInfo[group].filter(
+      (validation: Validation) => validation.status === 'failure',
+    );
+    return [...curr, ...failingValidations];
+  }, [] as Validation[]);
+
+export const areOnlySoftValidationsFailing = <ClusterWizardStepsType extends string>(
+  validationsInfo: HostValidationsInfo,
+  wizardStepId: ClusterWizardStepsType,
+  wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType>,
+) => {
+  const stepValidationsInfo = getWizardStepHostValidationsInfo(
+    validationsInfo,
+    wizardStepId,
+    wizardStepsValidationsMap,
+  );
+  const failingValidationIds = getFailingClusterWizardStepHostValidations(stepValidationsInfo).map(
+    (validation) => validation.id,
+  );
+  if (!failingValidationIds.length) return false;
+  for (const id of failingValidationIds) {
+    if (!wizardStepsValidationsMap[wizardStepId].softValidationIds.includes(id)) {
+      return false;
+    }
+  }
+  return true;
 };

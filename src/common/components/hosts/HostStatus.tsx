@@ -48,7 +48,7 @@ import { toSentence } from '../ui/table/utils';
 import { RenderIf } from '../ui';
 import { HostStatusProps } from './types';
 
-const getStatusIcon = (status: Host['status'] | 'Discovered' | 'Bound') => {
+const getStatusIcon = (status: Host['status'] | 'Discovered') => {
   let icon = null;
   switch (status) {
     case 'Discovered':
@@ -93,7 +93,6 @@ const getStatusIcon = (status: Host['status'] | 'Discovered' | 'Bound') => {
     case 'added-to-existing-cluster':
       icon = <AddCircleOIcon />;
       break;
-    case 'Bound':
     case 'binding':
       icon = <LinkIcon />;
       break;
@@ -120,25 +119,14 @@ const withProgress = (
 };
 
 type HostStatusPopoverContentProps = ValidationInfoActionProps & {
+  statusOverride?: Host['status'] | 'Discovered';
   validationsInfo: ValidationsInfo;
-  statusOverride: HostStatusProps['statusOverride'];
 };
 
-const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({
-  statusOverride,
-  ...props
-}) => {
-  if (statusOverride === 'Bound') {
-    return (
-      <TextContent>
-        <Text>This host is bound to the cluster.</Text>
-      </TextContent>
-    );
-  }
-
-  const { host } = props;
+const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({ ...props }) => {
+  const { host, statusOverride } = props;
   const { status, statusInfo } = host;
-  const statusDetails = HOST_STATUS_DETAILS[status];
+  const statusDetails = HOST_STATUS_DETAILS[statusOverride || status];
 
   if (status === 'added-to-existing-cluster') {
     return (
@@ -281,10 +269,10 @@ const HostStatus: React.FC<HostStatusProps> = ({
   const titleWithProgress = withProgress(title, stageNumber, stages.length, status);
 
   return (
-    <Flex alignItems={{ default: 'alignItemsCenter' }}>
-      {icon && <FlexItem className={'pf-u-mr-xs'}>{icon}</FlexItem>}
+    <Flex alignItems={{ default: 'alignItemsCenter' }} spaceItems={{ default: 'spaceItemsXs' }}>
+      {icon && <FlexItem>{icon}</FlexItem>}
 
-      <Flex direction={{ default: 'column' }}>
+      <Flex direction={{ default: 'column' }} spaceItems={{ default: 'spaceItemsXs' }}>
         {!sublabel && status !== 'Discovered' ? (
           <WithHostStatusPopover
             hideOnOutsideClick={!keepOnOutsideClick}
@@ -298,7 +286,7 @@ const HostStatus: React.FC<HostStatusProps> = ({
             {titleWithProgress}
           </WithHostStatusPopover>
         ) : (
-          <FlexItem className={'pf-u-mb-0'}>
+          <FlexItem>
             <Stack>
               <StackItem>{titleWithProgress}</StackItem>
               {children && <StackItem>{children}</StackItem>}
