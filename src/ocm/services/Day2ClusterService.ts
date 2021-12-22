@@ -9,7 +9,7 @@ const Day2ClusterService = {
   },
 
   async fetchCluster(ocmCluster: OcmClusterType, openshiftVersion: string, pullSecret: string) {
-    const openshiftClusterId = this.getOpenshiftClusterId(ocmCluster);
+    const openshiftClusterId = Day2ClusterService.getOpenshiftClusterId(ocmCluster);
 
     if (!openshiftClusterId) {
       // error?
