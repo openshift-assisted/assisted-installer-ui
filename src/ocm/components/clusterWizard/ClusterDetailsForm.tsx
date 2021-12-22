@@ -106,6 +106,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
                   isSNOGroupDisabled={!!cluster}
                   defaultPullSecret={pullSecret}
                   isOcm={!!ocmClient}
+                  managedDomains={managedDomains}
                 />
               </GridItem>
             </Grid>
