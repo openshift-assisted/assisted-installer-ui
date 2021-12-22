@@ -88,6 +88,7 @@ const getStatusIcon = (status: Host['status'] | 'Discovered') => {
     case 'installing-in-progress':
     case 'resetting':
     case 'unbinding':
+    case 'unbinding-pending-user-action':
       icon = <InProgressIcon />;
       break;
     case 'added-to-existing-cluster':
@@ -167,6 +168,15 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({ ...
       <TextContent>
         <Text>{statusDetails}</Text>
         <HostProgress host={host} />
+      </TextContent>
+    );
+  }
+
+  if (['unbinding-pending-user-action'].includes(status)) {
+    // No additional error messages shown
+    return (
+      <TextContent>
+        <Text>{statusDetails}</Text>
       </TextContent>
     );
   }
@@ -262,7 +272,10 @@ const HostStatus: React.FC<HostStatusProps> = ({
 
   sublabel =
     sublabel ||
-    (['installing-pending-user-action', 'disconnected'].includes(status) && 'Action required') ||
+    (['installing-pending-user-action', 'disconnected', 'unbinding-pending-user-action'].includes(
+      status,
+    ) &&
+      'Action required') ||
     (status === 'added-to-existing-cluster' && 'Finish in console') ||
     undefined;
 

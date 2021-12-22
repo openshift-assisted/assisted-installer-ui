@@ -8,3 +8,4 @@ export * from './agents';
 export * from './clusterDeployment';
 export * from './agentClusterInstall';
 export * from './clusterDeployment';
+export * from './infraEnv';

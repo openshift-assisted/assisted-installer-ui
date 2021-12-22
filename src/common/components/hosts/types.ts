@@ -40,6 +40,8 @@ export type HostsTableActions = {
   canEditBMH?: (host: Host) => boolean;
   onSelect?: (host: Host, selected: boolean) => void;
   canEditHostname?: () => boolean;
+  canUnbindHost?: (host: Host) => [/* enabled */ boolean, /* reason */ string];
+  onUnbindHost?: (host: Host) => void;
 };
 
 export type HostNetworkingStatusComponentProps = {
