@@ -1,12 +1,15 @@
 import { InfraEnvsService } from '.';
 import { Cluster } from '../../common/api/types';
 import { OcmClusterType } from '../components/AddHosts/types';
-import { getOpenshiftClusterId } from '../components/AddHosts/utils';
 import { ClustersAPI, HostsAPI } from './apis';
 
 const Day2ClusterService = {
+  getOpenshiftClusterId(ocmCluster?: OcmClusterType) {
+    return ocmCluster && ocmCluster.external_id;
+  },
+
   async fetchCluster(ocmCluster: OcmClusterType, openshiftVersion: string, pullSecret: string) {
-    const openshiftClusterId = getOpenshiftClusterId(ocmCluster);
+    const openshiftClusterId = Day2ClusterService.getOpenshiftClusterId(ocmCluster);
 
     if (!openshiftClusterId) {
       // error?
