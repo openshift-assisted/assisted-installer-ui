@@ -80,7 +80,7 @@ const ClusterProperties: React.FC<ClusterPropertiesProps> = ({ cluster }) => (
         />
         <DetailItem
           title="Disk encryption"
-          value={getDiskEncryptionType(cluster.diskEncryption?.enableOn)}
+          value={getDiskEncryptionEnabledOnStatus(cluster.diskEncryption?.enableOn)}
           isHidden={cluster.diskEncryption?.enableOn === 'none'}
         />
       </DetailList>
