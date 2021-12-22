@@ -35,7 +35,7 @@ const getManagementType = (clusterManagementType: boolean | undefined): string =
   return managementType;
 };
 
-const getDiskEncryptionType = (diskEncryption: DiskEncryption['enableOn']) => {
+const getDiskEncryptionEnabledOnStatus = (diskEncryption: DiskEncryption['enableOn']) => {
   let diskEncryptionType = null;
   switch (diskEncryption) {
     case 'all':
