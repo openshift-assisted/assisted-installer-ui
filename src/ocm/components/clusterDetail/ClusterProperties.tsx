@@ -43,13 +43,13 @@ const ClusterProperties: React.FC<ClusterPropertiesProps> = ({ cluster }) => (
         <DetailItem
           title="API virtual IP"
           value={cluster.apiVip}
-          isHidden={isSingleNodeCluster(cluster)}
+          isHidden={isSingleNodeCluster(cluster) && cluster.userManagedNetworking}
         />
 
         <DetailItem
           title="Ingress virtual IP"
           value={cluster.ingressVip}
-          isHidden={isSingleNodeCluster(cluster)}
+          isHidden={isSingleNodeCluster(cluster) && cluster.userManagedNetworking}
         />
       </DetailList>
     </GridItem>
