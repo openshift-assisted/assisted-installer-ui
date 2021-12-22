@@ -69,9 +69,9 @@ export const CLUSTER_STATUS_LABELS: { [key in Cluster['status']]: string } = {
 };
 
 export const HOST_STATUS_LABELS: { [key in Host['status']]: string } = {
-  'unbinding-pending-user-action': 'Unbinding, pending user action',
+  'unbinding-pending-user-action': 'Removing from cluster',
   'preparing-failed': 'Preparing step failed',
-  unbinding: 'Unbinding',
+  unbinding: 'Removing from cluster',
   'disabled-unbound': 'Disabled',
   'disconnected-unbound': 'Disconnected',
   'discovering-unbound': 'Discovering',
@@ -111,11 +111,12 @@ export const CLUSTER_FIELD_LABELS: { [key in string]: string } = {
 };
 
 export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
-  'unbinding-pending-user-action': 'Unbinding, pending user action',
+  'unbinding-pending-user-action':
+    'This host is being removed from the cluster. To finish, reboot the host with the infrastructure environment ISO.',
   'preparing-failed': 'Preparing step failed',
-  unbinding: 'This host is being unbound from the cluster.',
+  unbinding: 'This host is being removed from the cluster.',
   'disabled-unbound':
-    'This host was manually disabled and can not be included in the cluster. Enable this host to make it available again.',
+    'This host was manually removed from a cluster and can not be included in another one. Enable this host to make it available again.',
   'disconnected-unbound':
     'This host has lost its connection to the installer and can not be included in the cluster unless connectivity is restored.',
   'discovering-unbound':
@@ -124,7 +125,7 @@ export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
     'This host does not meet the minimum hardware or networking requirements and can not be included in the cluster.',
   'known-unbound':
     'This host meets the minimum hardware and networking requirements and can be included in the cluster.',
-  binding: 'This host is being bound to the cluster.',
+  binding: 'This host is being added to the cluster.',
   discovering:
     'This host is transmitting its hardware and networking information to the installer. Please wait while this information is received.',
   'pending-for-input': '',
@@ -174,7 +175,7 @@ export const HOST_VALIDATION_LABELS: { [key in HostValidationId]: string } = {
   connected: 'Connected',
   'machine-cidr-defined': 'Machine CIDR',
   'belongs-to-machine-cidr': 'Belongs to machine CIDR',
-  'api-vip-connected': 'API VIP connected',
+  'ignition-downloadable': 'Ignition file downloadable',
   'belongs-to-majority-group': 'Belongs to majority connected group',
   'valid-platform-network-settings': 'Platform network settings',
   'ntp-synced': 'NTP synchronization',
@@ -206,7 +207,7 @@ export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string 
   connected: '',
   'machine-cidr-defined': '',
   'belongs-to-machine-cidr': '',
-  'api-vip-connected': '',
+  'ignition-downloadable': '',
   'belongs-to-majority-group': '',
   'valid-platform-network-settings': '',
   'ntp-synced': "Please manually fix host's NTP configuration or provide additional NTP sources.",

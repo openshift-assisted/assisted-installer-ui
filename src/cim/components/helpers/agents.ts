@@ -1,13 +1,15 @@
 import { AgentStatus } from './status';
 import { Host, HostStage } from '../../../common/api/types';
-import { AgentK8sResource } from '../../types';
+import { AgentK8sResource, BareMetalHostK8sResource } from '../../types';
 import { getAgentStatus } from './status';
+import { INFRAENV_AGENTINSTALL_LABEL_KEY } from '../common';
 
 const AGENT_FOR_SELECTION_STATUSES: AgentStatus[] = [
   'known',
   'known-unbound',
   'insufficient',
   'pending-for-input',
+  'binding',
 ];
 
 export const hostToAgent = (agents: AgentK8sResource[] = [], host: Host) =>
@@ -69,3 +71,9 @@ export const getAgentProgressStages = (agent: AgentK8sResource): HostStage[] => 
 };
 
 export const getAgentProgress = (agent: AgentK8sResource) => agent.status?.progress;
+
+export const getInfraEnvNameOfAgent = (resource?: AgentK8sResource | BareMetalHostK8sResource) =>
+  resource?.metadata?.labels?.[INFRAENV_AGENTINSTALL_LABEL_KEY];
+
+export const getClusterNameOfAgent = (agent?: AgentK8sResource) =>
+  agent?.spec?.clusterDeploymentName?.name;

@@ -13,7 +13,7 @@ import {
   ClusterDeploymentHostsDiscoveryValues,
 } from './types';
 import ClusterDeploymentHostsDiscovery from './ClusterDeploymentHostsDiscovery';
-import { isAgentOfCluster } from './helpers';
+import { isAgentOfInfraEnv } from './helpers';
 
 type UseHostsDiscoveryFormikArgs = {
   agents: AgentK8sResource[];
@@ -55,24 +55,21 @@ export const useHostsDiscoveryFormik = ({
 const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscoveryStepProps> = ({
   onClose,
   onSaveHostsDiscovery,
-  clusterDeployment,
   agentClusterInstall,
   agents: allAgents,
+  infraEnv,
   ...restProps
 }) => {
   const { addAlert } = useAlerts();
   const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
 
-  const cdName = clusterDeployment?.metadata?.name;
-  const cdNamespace = clusterDeployment?.metadata?.namespace;
-
-  const clusterAgents = React.useMemo(
-    () => allAgents.filter((a) => isAgentOfCluster(a, cdName, cdNamespace)),
-    [allAgents, cdName, cdNamespace],
+  const infraEnvAgents = React.useMemo(
+    () => allAgents.filter((a) => isAgentOfInfraEnv(infraEnv, a)),
+    [allAgents, infraEnv],
   );
 
   const [initialValues, validationSchema] = useHostsDiscoveryFormik({
-    agents: clusterAgents,
+    agents: infraEnvAgents,
     agentClusterInstall,
   });
 
@@ -98,7 +95,7 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
         const footer = (
           <ClusterDeploymentWizardFooter
             agentClusterInstall={agentClusterInstall}
-            agents={clusterAgents}
+            agents={infraEnvAgents}
             errorFields={getFormikErrorFields(errors, touched)}
             isSubmitting={isSubmitting}
             isNextDisabled={!isValid || isValidating || isSubmitting}
@@ -118,7 +115,8 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
               <GridItem>
                 <ClusterDeploymentHostsDiscovery
                   agentClusterInstall={agentClusterInstall}
-                  agents={clusterAgents}
+                  agents={infraEnvAgents}
+                  infraEnv={infraEnv}
                   {...restProps}
                 />
               </GridItem>

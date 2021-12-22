@@ -7,12 +7,13 @@ import AgentStatus from './AgentStatus';
 import { ActionsResolver, TableRow } from '../../../common/components/hosts/AITable';
 import { ClusterDeploymentHostsTablePropsActions } from '../ClusterDeployment/types';
 import { hostActionResolver } from '../../../common/components/hosts/tableUtils';
-import { getAIHosts } from '../helpers';
-import { AGENT_BMH_HOSTNAME_LABEL_KEY, INFRAENV_AGENTINSTALL_LABEL_KEY } from '../common';
+import { getAIHosts, getInfraEnvNameOfAgent } from '../helpers';
+import { AGENT_BMH_HOSTNAME_LABEL_KEY } from '../common';
 import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
 import NetworkingStatus from '../status/NetworkingStatus';
 import { getAgentStatus, getBMHStatus } from '../helpers/status';
 import { Button, Popover } from '@patternfly/react-core';
+import HardwareStatus from '../status/HardwareStatus';
 
 export const discoveryTypeColumn = (
   agents: AgentK8sResource[],
@@ -160,7 +161,7 @@ export const infraEnvColumn = (
     },
     cell: (host) => {
       const agent = agents.find((a) => a.metadata?.uid === host.id) as AgentK8sResource;
-      const infraEnvName = agent.metadata?.labels?.[INFRAENV_AGENTINSTALL_LABEL_KEY];
+      const infraEnvName = getInfraEnvNameOfAgent(agent);
 
       let title: React.ReactNode = infraEnvName || 'N/A';
       if (infraEnvName && getInfraEnvLink) {
@@ -196,6 +197,23 @@ export const networkingStatusColumn = (
   },
 });
 
+export const hardwareStatusColumn = (): TableRow<Host> => ({
+  header: {
+    title: 'Status',
+    props: {
+      id: 'col-header-hardwarestatus',
+    },
+    transforms: [sortable],
+  },
+  cell: (host) => {
+    return {
+      title: <HardwareStatus host={host} />,
+      props: { 'data-testid': 'hardware-status' },
+      sortableValue: status,
+    };
+  },
+});
+
 type AgentsTableResources = {
   agents: AgentK8sResource[];
   bmhs?: BareMetalHostK8sResource[];
@@ -212,6 +230,8 @@ export const useAgentsTable = (
     canEditRole,
     onSelect,
     onEditBMH,
+    onUnbindHost,
+    canUnbindHost,
   }: ClusterDeploymentHostsTablePropsActions,
   { agents, bmhs, infraEnv }: AgentsTableResources,
 ): [Host[], HostsTableActions, ActionsResolver<Host>] => {
@@ -272,6 +292,19 @@ export const useAgentsTable = (
             }
           : undefined,
         canEditBMH: (host: Host) => !!bmhs?.find((h) => h.metadata?.uid === host.id),
+        onUnbindHost: onUnbindHost
+          ? (host: Host) => {
+              const agent = agents.find((a) => a.metadata?.uid === host.id) as AgentK8sResource;
+              // const bmh = bmhs?.find((a) => a.metadata?.uid === host.id);
+              return onUnbindHost(agent);
+            }
+          : undefined,
+        canUnbindHost: canUnbindHost
+          ? (host: Host) => {
+              const agent = agents.find((a) => a.metadata?.uid === host.id);
+              return agent ? canUnbindHost(agent) : ['false'];
+            }
+          : undefined,
       },
     ],
     [
@@ -284,6 +317,8 @@ export const useAgentsTable = (
       agents,
       onSelect,
       onEditBMH,
+      onUnbindHost,
+      canUnbindHost,
       bmhs,
       infraEnv,
     ],

@@ -2,12 +2,14 @@ import * as React from 'react';
 import classNames from 'classnames';
 
 import { AlertsContextProvider, LoadingState } from '../../../common';
+import { isAIFlowInfraEnv } from '../helpers';
+import { InfraEnvK8sResource } from '../../types';
 
 import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
 import ClusterDeploymentDetailsStep from './ClusterDeploymentDetailsStep';
 import ClusterDeploymentNetworkingStep from './ClusterDeploymentNetworkingStep';
 import ClusterDeploymentHostSelectionStep from './ClusterDeploymentHostSelectionStep';
-import { getAgentsHostsNames, isAgentOfCluster } from './helpers';
+import { getAgentsHostsNames, isAgentOfCluster, isAgentOfInfraEnv } from './helpers';
 import { ClusterDeploymentWizardProps, ClusterDeploymentWizardStepsType } from './types';
 import ClusterDeploymentHostsDiscoveryStep from './ClusterDeploymentHostsDiscoveryStep';
 
@@ -43,12 +45,18 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
     'cluster-details',
   );
 
+  const isAIFlow = isAIFlowInfraEnv(infraEnv);
+
   const cdName = clusterDeployment.metadata?.name;
   const cdNamespace = clusterDeployment.metadata?.namespace;
 
   const clusterAgents = React.useMemo(
-    () => agents.filter((a) => isAgentOfCluster(a, cdName, cdNamespace)),
-    [agents, cdName, cdNamespace],
+    () =>
+      agents.filter(
+        (a) =>
+          (isAIFlow && isAgentOfInfraEnv(infraEnv, a)) || isAgentOfCluster(a, cdName, cdNamespace),
+      ),
+    [isAIFlow, infraEnv, agents, cdName, cdNamespace],
   );
   const usedHostnames = React.useMemo(() => getAgentsHostsNames(clusterAgents), [clusterAgents]);
 
@@ -73,15 +81,17 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
         }
         return <LoadingState />;
       case 'hosts-discovery':
-        if (infraEnv && agentClusterInstall?.metadata?.name) {
+        if (isAIFlow) {
           return (
             <ClusterDeploymentHostsDiscoveryStep
-              clusterDeployment={clusterDeployment}
+              // clusterDeployment={clusterDeployment}
               agentClusterInstall={agentClusterInstall}
               agents={agents}
               bareMetalHosts={[] /* TODO(mlibra) */}
               aiConfigMap={aiConfigMap}
-              infraEnv={infraEnv}
+              infraEnv={
+                infraEnv as InfraEnvK8sResource /* Must be available since isAIFlow === true */
+              }
               usedHostnames={usedHostnames}
               onDeleteHost={onDeleteHost}
               canDeleteAgent={canDeleteAgent}
@@ -154,13 +164,18 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
     fetchNMState,
     getClusterDeploymentLink,
     isBMPlatform,
+    isAIFlow,
     onSaveISOParams,
   ]);
 
   return (
     <AlertsContextProvider>
       <ClusterDeploymentWizardContext.Provider
-        value={{ currentStepId, setCurrentStepId, clusterDeployment, agentClusterInstall, agents }}
+        value={{
+          currentStepId,
+          setCurrentStepId,
+          clusterDeployment /* Hotfix: agentClusterInstall, agents */,
+        }}
       >
         <div className={classNames('pf-c-wizard', className)}>{renderCurrentStep()}</div>
       </ClusterDeploymentWizardContext.Provider>
