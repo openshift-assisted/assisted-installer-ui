@@ -1,6 +1,12 @@
 import React from 'react';
 import { GridItem, TextContent, Text } from '@patternfly/react-core';
-import { Cluster, isSingleNodeCluster, DetailList, DetailItem } from '../../../common';
+import {
+  Cluster,
+  isSingleNodeCluster,
+  DetailList,
+  DetailItem,
+  DiskEncryption,
+} from '../../../common';
 import {
   selectClusterNetworkCIDR,
   selectClusterNetworkHostPrefix,
@@ -29,20 +35,24 @@ const getManagementType = (clusterManagementType: boolean | undefined): string =
   return managementType;
 };
 
-const getDiskEncryptionType = (diskEncryption: string | undefined): string => {
-  let diskEncryptionType = '-';
+const getDiskEncryptionType = (diskEncryption: DiskEncryption['enableOn']) => {
+  let diskEncryptionType = null;
   switch (diskEncryption) {
     case 'all':
-      diskEncryptionType = 'Enabled on control plane nodes & workers';
+      diskEncryptionType = (
+        <>
+          Enabled on control plane nodes
+          <br />
+          Enabled on workers
+        </>
+      );
       break;
     case 'masters':
-      diskEncryptionType = 'Enabled on control plane nodes';
+      diskEncryptionType = <>Enabled on control plane nodes</>;
       break;
     case 'workers':
-      diskEncryptionType = 'Enabled on workers';
+      diskEncryptionType = <>Enabled on workers</>;
       break;
-    case 'none':
-      diskEncryptionType = 'Disabled';
   }
   return diskEncryptionType;
 };
@@ -63,7 +73,6 @@ const ClusterProperties: React.FC<ClusterPropertiesProps> = ({ cluster }) => (
           value={cluster.apiVip}
           isHidden={isSingleNodeCluster(cluster)}
         />
-
         <DetailItem
           title="Ingress virtual IP"
           value={cluster.ingressVip}
@@ -72,6 +81,7 @@ const ClusterProperties: React.FC<ClusterPropertiesProps> = ({ cluster }) => (
         <DetailItem
           title="Disk encryption"
           value={getDiskEncryptionType(cluster.diskEncryption?.enableOn)}
+          isHidden={cluster.diskEncryption?.enableOn === 'none'}
         />
       </DetailList>
     </GridItem>
