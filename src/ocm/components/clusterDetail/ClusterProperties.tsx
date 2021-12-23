@@ -6,6 +6,7 @@ import {
   selectClusterNetworkHostPrefix,
   selectServiceNetworkCIDR,
 } from '../../selectors/clusterSelectors';
+import { ClusterFeatureSupportLevelsDetailItem } from '../featureSupportLevels';
 
 type ClusterPropertiesProps = {
   cluster: Cluster;
@@ -60,6 +61,7 @@ const ClusterProperties: React.FC<ClusterPropertiesProps> = ({ cluster }) => (
     </GridItem>
     <GridItem md={6}>
       <DetailList>
+        <DetailItem title="Cluster ID" value={cluster.id} />
         <DetailItem title="OpenShift version" value={cluster.openshiftVersion} />
         <DetailItem title="Base DNS domain" value={cluster.baseDnsDomain} />
         <DetailItem title="API virtual IP" value={cluster.apiVip} isHidden={!cluster.apiVip} />
@@ -69,15 +71,14 @@ const ClusterProperties: React.FC<ClusterPropertiesProps> = ({ cluster }) => (
           isHidden={!cluster.ingressVip}
         />
         <DetailItem
-          title="Disk encryption"
-          value={getDiskEncryptionEnabledOnStatus(cluster.diskEncryption?.enableOn)}
-          isHidden={cluster.diskEncryption?.enableOn === 'none'}
+          title="Network management type"
+          value={getManagementType(cluster.userManagedNetworking)}
         />
+        <DetailItem title="Networking Type" value={getNetworkType(cluster.networkType)} />
       </DetailList>
     </GridItem>
     <GridItem md={6}>
       <DetailList>
-        <DetailItem title="UUID" value={cluster.id} />
         <DetailItem title="Cluster network CIDR" value={selectClusterNetworkCIDR(cluster)} />
         <DetailItem
           title="Cluster network host prefix"
@@ -85,10 +86,11 @@ const ClusterProperties: React.FC<ClusterPropertiesProps> = ({ cluster }) => (
         />
         <DetailItem title="Service network CIDR" value={selectServiceNetworkCIDR(cluster)} />
         <DetailItem
-          title="Network management type"
-          value={getManagementType(cluster.userManagedNetworking)}
+          title="Disk encryption"
+          value={getDiskEncryptionEnabledOnStatus(cluster.diskEncryption?.enableOn)}
+          isHidden={cluster.diskEncryption?.enableOn === 'none'}
         />
-        <DetailItem title="Networking Type" value={getNetworkType(cluster.networkType)} />
+        <ClusterFeatureSupportLevelsDetailItem cluster={cluster} />
       </DetailList>
     </GridItem>
   </>
