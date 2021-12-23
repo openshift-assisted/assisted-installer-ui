@@ -5,9 +5,15 @@ import { Cluster, Host } from '../../common';
 
 const ClustersService = {
   async delete(clusterId: Cluster['id']) {
-    await HostsService.deleteAll(clusterId);
-    await ClustersAPI.deregister(clusterId);
-    await InfraEnvsService.delete(clusterId);
+    const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId);
+
+    if (infraEnvId === clusterId) {
+      await ClustersAPI.deregister(clusterId);
+    } else {
+      await HostsService.deleteAll(clusterId);
+      await ClustersAPI.deregister(clusterId);
+      await InfraEnvsService.delete(clusterId);
+    }
   },
 
   async downloadLogs(clusterId: Cluster['id'], hostId?: Host['id']) {
