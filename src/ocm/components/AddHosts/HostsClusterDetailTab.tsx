@@ -14,8 +14,8 @@ import { useOpenshiftVersions } from '../../hooks';
 import { handleApiError } from '../../api';
 import AddHosts from './AddHosts';
 import { OcmClusterType } from './types';
-import { getOpenshiftClusterId } from './utils';
 import Day2ClusterService from '../../services/Day2ClusterService';
+import { useStateSafely } from '../../../common/hooks';
 
 type OpenModalType = (modalName: string, cluster?: OcmClusterType) => void;
 
@@ -31,7 +31,7 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
   openModal,
 }) => {
   const [error, setError] = React.useState<ReactNode>();
-  const [day2Cluster, setDay2Cluster] = React.useState<Cluster | null>();
+  const [day2Cluster, setDay2Cluster] = useStateSafely<Cluster | null | undefined>(undefined);
   const pullSecret = usePullSecret();
   const { normalizeClusterVersion } = useOpenshiftVersions();
 
@@ -79,7 +79,7 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
       // the tab is not visible, stop polling
       setDay2Cluster(undefined);
     }
-    const openshiftClusterId = getOpenshiftClusterId(cluster);
+    const openshiftClusterId = Day2ClusterService.getOpenshiftClusterId(cluster);
 
     if (isVisible && day2Cluster === undefined && cluster && openshiftClusterId && pullSecret) {
       // ensure exclusive run
@@ -161,7 +161,15 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
 
       doItAsync();
     }
-  }, [cluster, openModal, pullSecret, day2Cluster, isVisible, normalizeClusterVersion]);
+  }, [
+    cluster,
+    openModal,
+    pullSecret,
+    day2Cluster,
+    setDay2Cluster,
+    isVisible,
+    normalizeClusterVersion,
+  ]);
 
   const resetCluster = React.useCallback(async () => {
     if (day2Cluster) {
@@ -179,7 +187,7 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
         );
       }
     }
-  }, [day2Cluster]);
+  }, [day2Cluster, setDay2Cluster]);
 
   React.useEffect(() => {
     const id = setTimeout(() => {
