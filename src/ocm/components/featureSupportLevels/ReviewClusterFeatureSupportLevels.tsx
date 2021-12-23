@@ -10,7 +10,10 @@ import {
 } from '../../../common/types';
 import { TECH_SUPPORT_LEVEL_LINK } from '../../../common/config/constants';
 import ExternalLink from '../../../common/components/ui/ExternalLink';
-import { isFullySupported } from './utils';
+import { Cluster } from '../../../common/api/types';
+import { FeatureSupportLevelContext } from '../../../common/components/featureSupportLevels';
+import { DetailItem } from '../../../common';
+import { getLimitedFeatureSupportLevels, isFullySupported } from './utils';
 
 export type SupportLevelSummary = {
   unsupportedVms: boolean;
@@ -73,7 +76,7 @@ type LimitedSupportedClusterProps = {
   clusterFeatureSupportLevels: FeatureIdToSupportLevel;
 };
 
-const LimitedSupportedCluster: React.FC<LimitedSupportedClusterProps> = ({
+export const LimitedSupportedCluster: React.FC<LimitedSupportedClusterProps> = ({
   clusterFeatureSupportLevels,
 }) => (
   <TextContent>
@@ -90,29 +93,48 @@ const LimitedSupportedCluster: React.FC<LimitedSupportedClusterProps> = ({
   </TextContent>
 );
 
-const FullySupportedCluster: React.FC = () => (
+export const FullySupportedCluster: React.FC = () => (
   <>
     <CheckCircleIcon color={okColor.value} />
     &nbsp;Your installed cluster will be fully supported
   </>
 );
 
-export type ReviewClusterFeatureSupportLevelsProps = {
-  clusterFeatureSupportLevels: FeatureIdToSupportLevel | undefined;
+export const getFeatureSupportLevelTitle = (fullySupported: boolean): string => {
+  const supportLevel: string = fullySupported ? 'Full' : 'Limited';
+  return `Cluster support level: ${supportLevel}`;
 };
 
-const ReviewClusterFeatureSupportLevels: React.FC<ReviewClusterFeatureSupportLevelsProps> = ({
-  clusterFeatureSupportLevels,
+export const ClusterFeatureSupportLevelsDetailItem: React.FC<{ cluster: Cluster }> = ({
+  cluster,
 }) => {
-  if (!clusterFeatureSupportLevels) {
-    return null;
+  const featureSupportLevelData = React.useContext(FeatureSupportLevelContext);
+
+  const clusterFeatureSupportLevels = React.useMemo(() => {
+    return getLimitedFeatureSupportLevels(cluster, featureSupportLevelData);
+  }, [cluster, featureSupportLevelData]);
+
+  const fullySupported: boolean = React.useMemo<boolean>(() => {
+    if (!clusterFeatureSupportLevels) {
+      return false;
+    }
+    return isFullySupported(clusterFeatureSupportLevels);
+  }, [clusterFeatureSupportLevels]);
+  if (clusterFeatureSupportLevels) {
+    return (
+      <DetailItem
+        title={getFeatureSupportLevelTitle(fullySupported)}
+        value={
+          fullySupported ? (
+            <FullySupportedCluster />
+          ) : (
+            <LimitedSupportedCluster clusterFeatureSupportLevels={clusterFeatureSupportLevels} />
+          )
+        }
+      />
+    );
   }
-  const fullySupported = isFullySupported(clusterFeatureSupportLevels);
-  return fullySupported ? (
-    <FullySupportedCluster />
-  ) : (
-    <LimitedSupportedCluster clusterFeatureSupportLevels={clusterFeatureSupportLevels} />
-  );
+  return null;
 };
 
-export default ReviewClusterFeatureSupportLevels;
+export default ClusterFeatureSupportLevelsDetailItem;

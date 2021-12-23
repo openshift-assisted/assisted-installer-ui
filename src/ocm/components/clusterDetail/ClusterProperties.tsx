@@ -6,6 +6,7 @@ import {
   selectClusterNetworkHostPrefix,
   selectServiceNetworkCIDR,
 } from '../../selectors/clusterSelectors';
+import { FeatureSupportLevelsDetailItem } from '../featureSupportLevels';
 
 type ClusterPropertiesProps = {
   cluster: Cluster;
@@ -38,6 +39,7 @@ const ClusterProperties: React.FC<ClusterPropertiesProps> = ({ cluster }) => (
     </GridItem>
     <GridItem md={6}>
       <DetailList>
+        <DetailItem title="Cluster ID" value={cluster.id} />
         <DetailItem title="OpenShift version" value={cluster.openshiftVersion} />
         <DetailItem title="Base DNS domain" value={cluster.baseDnsDomain} />
         <DetailItem
@@ -51,11 +53,15 @@ const ClusterProperties: React.FC<ClusterPropertiesProps> = ({ cluster }) => (
           value={cluster.ingressVip}
           isHidden={isSingleNodeCluster(cluster)}
         />
+        <DetailItem
+          title="Network management type"
+          value={getManagementType(cluster.userManagedNetworking)}
+        />
+        <DetailItem title="Networking Type" value={getNetworkType(cluster.networkType)} />
       </DetailList>
     </GridItem>
     <GridItem md={6}>
       <DetailList>
-        <DetailItem title="UUID" value={cluster.id} />
         <DetailItem title="Cluster network CIDR" value={selectClusterNetworkCIDR(cluster)} />
         <DetailItem
           title="Cluster network host prefix"
@@ -67,6 +73,7 @@ const ClusterProperties: React.FC<ClusterPropertiesProps> = ({ cluster }) => (
           value={getManagementType(cluster.userManagedNetworking)}
         />
         <DetailItem title="Networking Type" value={getNetworkType(cluster.networkType)} />
+        <FeatureSupportLevelsDetailItem cluster={cluster} />
       </DetailList>
     </GridItem>
   </>

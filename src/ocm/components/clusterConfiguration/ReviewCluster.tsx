@@ -17,13 +17,9 @@ import { getSimpleHardwareInfo } from '../../../common/components/hosts/hardware
 import { ClusterValidations, HostsValidations } from './ReviewValidations';
 import { VSPHERE_CONFIG_LINK } from '../../../common';
 import { selectClusterNetworkCIDR } from '../../selectors/clusterSelectors';
-import { FeatureSupportLevelContext } from '../../../common/components/featureSupportLevels';
-import {
-  ReviewClusterFeatureSupportLevels,
-  getLimitedFeatureSupportLevels,
-  isFullySupported,
-} from '../featureSupportLevels';
+
 import './ReviewCluster.css';
+import ReviewClusterFeatureSupportLevelsDetailItem from '../featureSupportLevels/ReviewClusterFeatureSupportLevels';
 
 const ReviewHostsInventory: React.FC<{ hosts?: Host[] }> = ({ hosts = [] }) => {
   const rows = React.useMemo(() => {
@@ -88,24 +84,8 @@ const PlatformIntegrationNote: React.FC<{}> = () => {
     </p>
   );
 };
-const getFeatureSupportLevelTitle = (fullySupported: boolean): string => {
-  const supportLevel: string = fullySupported ? 'Full' : 'Limited';
-  return `Cluster support level: ${supportLevel}`;
-};
 
 const ReviewCluster: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
-  const featureSupportLevelData = React.useContext(FeatureSupportLevelContext);
-
-  const clusterFeatureSupportLevels = React.useMemo(() => {
-    return getLimitedFeatureSupportLevels(cluster, featureSupportLevelData);
-  }, [cluster, featureSupportLevelData]);
-
-  const fullySupported: boolean = React.useMemo<boolean>(() => {
-    if (!clusterFeatureSupportLevels) {
-      return false;
-    }
-    return isFullySupported(clusterFeatureSupportLevels);
-  }, [clusterFeatureSupportLevels]);
   return (
     <DetailList>
       <DetailItem title="Cluster address" value={`${cluster.name}.${cluster.baseDnsDomain}`} />
@@ -120,17 +100,7 @@ const ReviewCluster: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
       <RenderIf condition={cluster.platform?.type !== 'baremetal'}>
         <DetailItem title="Platform integration" value={<PlatformIntegrationNote />} />
       </RenderIf>
-      <RenderIf condition={!!clusterFeatureSupportLevels}>
-        <DetailItem
-          title={getFeatureSupportLevelTitle(fullySupported)}
-          value={
-            <ReviewClusterFeatureSupportLevels
-              clusterFeatureSupportLevels={clusterFeatureSupportLevels}
-            />
-          }
-          testId="review-support-level"
-        />
-      </RenderIf>
+      <ReviewClusterFeatureSupportLevelsDetailItem cluster={cluster} />
     </DetailList>
   );
 };
