@@ -10,7 +10,9 @@ const getVersion = (releaseImage = '') => {
 };
 
 // eslint-disable-next-line
-const getSupportLevelFromChannel = (channel?: string): OpenshiftVersion['supportLevel'] | 'custom' => {
+const getSupportLevelFromChannel = (
+  channel?: string,
+): OpenshiftVersion['supportLevel'] | 'custom' => {
   if (!channel) {
     return 'maintenance';
   }
