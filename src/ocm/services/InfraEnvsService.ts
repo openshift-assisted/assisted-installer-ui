@@ -1,16 +1,19 @@
 import { InfraEnvCreateParams, Cluster } from '../../common';
-import { InfraEnvsAPI, ClustersAPI } from './apis';
+import { InfraEnvsAPI } from './apis';
 import InfraEnvIdsCacheService from './InfraEnvIdsCacheService';
 
 const InfraEnvsService = {
   async getInfraEnvId(clusterId: Cluster['id']): Promise<string> {
     let infraEnvId = InfraEnvIdsCacheService.getItem(clusterId);
     if (!infraEnvId) {
-      await InfraEnvsService.resetCache();
-      infraEnvId = InfraEnvIdsCacheService.getItem(clusterId);
-
-      if (!infraEnvId) {
-        throw Error(`No InfraEnv could be found for clusterId: ${clusterId}`);
+      const { data: infraEnvs } = await InfraEnvsAPI.list(clusterId);
+      if (infraEnvs.length !== 0) {
+        const [infraEnv] = infraEnvs;
+        InfraEnvIdsCacheService.setItem(clusterId, infraEnv.id);
+        infraEnvId = infraEnv.id;
+      } else {
+        InfraEnvIdsCacheService.removeItem(clusterId);
+        throw new Error(`No InfraEnv could be found for clusterId: ${clusterId}`);
       }
     }
 
@@ -35,26 +38,6 @@ const InfraEnvsService = {
     const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId);
     InfraEnvIdsCacheService.removeItem(clusterId);
     return InfraEnvsAPI.deregister(infraEnvId);
-  },
-
-  async fillCache() {
-    const result = await Promise.all([ClustersAPI.list(), InfraEnvsAPI.list()]);
-    const [responseFromClusterService, responseFromInfraEnvService] = result;
-
-    const availableInfraEnvs = responseFromInfraEnvService.data?.filter(({ clusterId }) =>
-      responseFromClusterService.data?.some(({ id }) => id === clusterId),
-    );
-
-    for (const { id: infraEnvId, clusterId } of availableInfraEnvs) {
-      if (infraEnvId && clusterId) {
-        InfraEnvIdsCacheService.setItem(clusterId, infraEnvId);
-      }
-    }
-  },
-
-  async resetCache() {
-    InfraEnvIdsCacheService.clear();
-    await InfraEnvsService.fillCache();
   },
 };
 
