@@ -7,8 +7,13 @@ const InfraEnvsAPI = {
     return `/v2/infra-envs/${infraEnvId ? infraEnvId : ''}`;
   },
 
-  list() {
-    return client.get<InfraEnv[]>(`${InfraEnvsAPI.makeBaseURI()}`);
+  /**
+   * Retrieves the list of infra-envs.
+   * @param clusterId If provided, returns only infra-envs which directly reference the given clusterId.
+   */
+  list(clusterId = '') {
+    const query = clusterId && `?${new URLSearchParams({ ['cluster_id']: clusterId })}`;
+    return client.get<InfraEnv[]>(`${InfraEnvsAPI.makeBaseURI()}${query}`);
   },
 
   get(infraEnvId: InfraEnv['id']) {
