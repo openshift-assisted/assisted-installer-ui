@@ -29,25 +29,40 @@ const getFeatureReviewText = (featureId: FeatureId): string => {
   }
 };
 
-const getPreviewSupportLevelTitle = () => {
+const getPreviewSupportLevelTitle = (supportLevel: PreviewSupportLevel) => {
+  if (supportLevel === 'dev-preview') {
+    return 'Developer Preview Features';
+  }
   return <ExternalLink href={TECH_SUPPORT_LEVEL_LINK}>Technology Preview Features</ExternalLink>;
 };
 
 const getPreviewFeatureList = (supportLevelMap: FeatureIdToSupportLevel) => {
-  const previewFeatureIds: FeatureId[] = [];
+  const previewSupportLevels: { [key in PreviewSupportLevel]: FeatureId[] } = {
+    'tech-preview': [],
+    'dev-preview': [],
+  };
   for (const [featureId, supportLevel] of Object.entries(supportLevelMap)) {
     if (!isPreviewSupportLevel(supportLevel)) {
       continue;
     }
-    previewFeatureIds.push(featureId as FeatureId);
+    previewSupportLevels[supportLevel].push(featureId as FeatureId);
   }
-  const featureList = previewFeatureIds.map((featureId: FeatureId) => (
+  let supportLevel: PreviewSupportLevel;
+  //Show only one preview support level list, first priority to developer preview features
+  if (previewSupportLevels['dev-preview'].length) {
+    supportLevel = 'dev-preview';
+  } else if (previewSupportLevels['tech-preview'].length) {
+    supportLevel = 'tech-preview';
+  } else {
+    return null;
+  }
+  const featureList = previewSupportLevels[supportLevel].map((featureId: FeatureId) => (
     <TextListItem key={featureId}>{getFeatureReviewText(featureId)}</TextListItem>
   ));
   return (
     <>
       <TextListItem>
-        {getPreviewSupportLevelTitle()}
+        {getPreviewSupportLevelTitle(supportLevel)}
         <TextList>{featureList}</TextList>
       </TextListItem>
     </>
