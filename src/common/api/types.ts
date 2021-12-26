@@ -39,6 +39,10 @@ export interface ApiVipConnectivityResponse {
    * API VIP connectivity check result.
    */
   isSuccess?: boolean;
+  /**
+   * Ignition fetched from the specified API VIP
+   */
+  ignition?: string;
 }
 export interface AssistedServiceIsoCreateParams {
   /**
@@ -855,6 +859,8 @@ export interface DiskEncryption {
   mode?: 'tpmv2' | 'tang';
   /**
    * JSON-formatted string containing additional information regarding tang's configuration
+   * example:
+   * [{"url":"http://tang.example.com:7500","thumbprint":"PLjNyRdGw03zlRoGjQYMahSZGu9"}, {"url":"http://tang.example.com:7501","thumbprint":"PLjNyRdGw03zlRoGjQYMahSZGu8"}]
    */
   tangServers?: string;
 }
@@ -1427,7 +1433,7 @@ export interface IgnitionEndpoint {
    */
   url?: string;
   /**
-   * A CA certficate to be used when contacting the URL via https.
+   * base64 encoded CA certficate to be used when contacting the URL via https.
    */
   caCertificate?: string;
 }
@@ -2267,6 +2273,9 @@ export interface V2Events {
   hostId?: string;
   infraEnvId?: string;
   categories?: string[];
+}
+export interface V2InfraEnvs {
+  clusterId?: string;
 }
 export interface VersionedHostRequirements {
   /**
