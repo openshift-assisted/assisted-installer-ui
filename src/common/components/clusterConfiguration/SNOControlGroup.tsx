@@ -4,7 +4,7 @@ import { ClusterDetailsValues } from '../../../common/components/clusterWizard/t
 import { SingleNodeCheckbox } from '../ui';
 import { OpenshiftVersionOptionType } from '../../types';
 import SNODisclaimer from './SNODisclaimer';
-import { getSNOSupportLevel } from './utils';
+import { FeatureSupportLevelContext } from '../featureSupportLevels';
 
 type SNOControlGroupProps = {
   isDisabled?: boolean;
@@ -14,12 +14,14 @@ type SNOControlGroupProps = {
 
 const SNOControlGroup = ({ versions, highAvailabilityMode, isDisabled }: SNOControlGroupProps) => {
   const { values } = useFormikContext<ClusterDetailsValues>();
+  const featureSupportLevels = React.useContext(FeatureSupportLevelContext);
   const selectedVersion = versions.find((version) => version.value === values.openshiftVersion);
-
   // TODO(jtomasek): use getFeatureSupport('sno', selectedVersion.version) to get support level of SNO feature
   // for selected version once the API is available
   // https://issues.redhat.com/browse/MGMT-7787
-  const snoSupportLevel = getSNOSupportLevel(selectedVersion?.version);
+  const snoSupportLevel = selectedVersion
+    ? featureSupportLevels.getFeatureSupportLevel(selectedVersion.value, 'SNO')
+    : undefined;
 
   return (
     <>

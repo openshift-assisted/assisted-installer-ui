@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 import { Cluster, ManagedDomain } from '../../api';
 import { OpenshiftVersionOptionType } from '../../types';
-import { getSNOSupportLevel } from '../clusterConfiguration/utils';
+import { FeatureSupportLevelData } from '../featureSupportLevels/FeatureSupportLevelContext';
 import {
   dnsNameValidationSchema,
   getDefaultOpenShiftVersion,
@@ -43,6 +43,7 @@ export const getClusterDetailsInitialValues = ({
 
 export const getClusterDetailsValidationSchema = (
   usedClusterNames: string[],
+  featureSupportLevels: FeatureSupportLevelData,
   cluster?: Cluster,
   ocpVersions?: OpenshiftVersionOptionType[],
 ) =>
@@ -63,7 +64,9 @@ export const getClusterDetailsValidationSchema = (
           const selectedVersion = (ocpVersions || []).find((v) => v.value === openshiftVersion);
           return (
             highAvailabilityMode === 'None' &&
-            getSNOSupportLevel(selectedVersion?.version) !== 'supported'
+            selectedVersion &&
+            featureSupportLevels.getFeatureSupportLevel(selectedVersion.value, 'SNO') ===
+              'dev-preview'
           );
         },
         then: Yup.bool().oneOf([true], 'Confirm the Single Node OpenShift disclaimer to continue.'),

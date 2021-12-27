@@ -1,6 +1,6 @@
-import { SNO_SUPPORT_MIN_VERSION } from '../../config';
 import { OpenshiftVersionOptionType } from '../../types';
 import { DASH } from '../constants';
+import { FeatureSupportLevelData } from '../featureSupportLevels/FeatureSupportLevelContext';
 
 export const getHumanizedDateTime = (dateTime?: string) => {
   if (!dateTime) return DASH;
@@ -14,16 +14,9 @@ export const getHumanizedTime = (dateTime?: string) => {
   return date.toLocaleTimeString();
 };
 
-const isSNOSupportedVersionString = (version: OpenshiftVersionOptionType['version']) => {
-  let parsed = parseFloat(version);
-  if (isNaN(parsed)) {
-    // openshift-v4.8.0
-    parsed = parseFloat(version?.split('-v')?.[1]);
-  }
-  return parsed >= SNO_SUPPORT_MIN_VERSION;
-};
-
-export const isSNOSupportedVersion = (version: OpenshiftVersionOptionType) => {
-  // NOTE(jtomasek): Note that the version.value format is different in OCM and ACM
-  return isSNOSupportedVersionString(version.version);
+export const isSNOSupportedVersion = (
+  featureSupportlevels: FeatureSupportLevelData,
+  version: OpenshiftVersionOptionType,
+) => {
+  return featureSupportlevels.getFeatureSupportLevel(version.value, 'SNO') !== 'unsupported';
 };

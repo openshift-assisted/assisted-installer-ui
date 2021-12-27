@@ -7,7 +7,7 @@ import { getFieldId } from './utils';
 import HelperText from './HelperText';
 import { CheckboxFieldProps } from './types';
 import { isSNOSupportedVersion } from '../utils';
-import { FeatureSupportLevelBadge } from '../../featureSupportLevels';
+import { FeatureSupportLevelBadge, FeatureSupportLevelContext } from '../../featureSupportLevels';
 import { ClusterCreateParams } from '../../../api/types';
 
 type SingleNodeCheckboxProps = CheckboxFieldProps & { versions: OpenshiftVersionOptionType[] };
@@ -23,12 +23,15 @@ const SingleNodeCheckbox: React.FC<SingleNodeCheckboxProps> = ({
   } = useFormikContext<ClusterCreateParams>();
   const isSingleNodeOpenshiftEnabled = useFeature('ASSISTED_INSTALLER_SNO_FEATURE');
   const [field, meta, helpers] = useField<'None' | 'Full'>({ name: props.name, validate });
+  const featureSupportLevels = React.useContext(FeatureSupportLevelContext);
   const fieldId = getFieldId(props.name, 'input', idPostfix);
 
   const { value } = meta;
   const { setValue } = helpers;
 
-  const isSupportedVersionAvailable = !!versions.find(isSNOSupportedVersion);
+  const isSupportedVersionAvailable = !!versions.find((version) =>
+    isSNOSupportedVersion(featureSupportLevels, version),
+  );
 
   if (isSingleNodeOpenshiftEnabled && isSupportedVersionAvailable) {
     return (
