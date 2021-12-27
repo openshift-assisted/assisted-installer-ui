@@ -10,7 +10,8 @@ export const OPENSHIFT_NETWORKING_DOCS_LINK =
   'https://docs.openshift.com/container-platform/4.7/installing/installing_bare_metal/installing-bare-metal.html#installation-network-user-infra_installing-bare-metal';
 export const CLUSTER_MANAGER_SITE_LINK = 'https://cloud.redhat.com/openshift/install/pull-secret';
 export const PULL_SECRET_INFO_LINK = CLUSTER_MANAGER_SITE_LINK;
-
+export const ODF_REQUIREMENTS_LINK =
+  'https://access.redhat.com/documentation/en-us/red_hat_openshift_data_foundation/4.9/html/planning_your_deployment/infrastructure-requirements_rhodf#resource-requirements_rhodf';
 export const VSPHERE_CONFIG_LINK = 'https://access.redhat.com/solutions/6677901';
 
 export const getBugzillaLink = (version = '') =>

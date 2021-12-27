@@ -1,28 +1,31 @@
 import React from 'react';
-import { CheckboxField, getFieldId } from '../../../common';
+import { CheckboxField, getFieldId, PopoverIcon, ODF_REQUIREMENTS_LINK } from '../../../common';
 import { useFeatureSupportLevel } from '../../../common/components/featureSupportLevels';
 import { FormGroup, Tooltip } from '@patternfly/react-core';
+import { ExternalLinkAltIcon, HelpIcon } from '@patternfly/react-icons';
 
-const OCSLabel: React.FC = () => (
+const ODFLabel: React.FC = () => (
   <>
-    Install OpenShift Container Storage
-    {/* TODO(mlibra): List of OCS requierements is stabilizing now - https://issues.redhat.com/browse/MGMT-4220 )
+    Install OpenShift Data Foundation{' '}
     <PopoverIcon
       component={'a'}
       variant={'plain'}
       IconComponent={HelpIcon}
-      minWidth="50rem"
       headerContent="Additional Requirements"
-      bodyContent={<>FOO BAR </>}/>
-    */}
+      bodyContent={
+        <a href={ODF_REQUIREMENTS_LINK} target="_blank" rel="noopener noreferrer">
+          Learn more about the requirements for OpenShift Data Foundation <ExternalLinkAltIcon />.
+        </a>
+      }
+    />
   </>
 );
 
-export type OcsCheckboxProps = {
+export type ODFCheckboxProps = {
   openshiftVersion?: string;
 };
 
-export const OcsCheckbox: React.FC<OcsCheckboxProps> = ({ openshiftVersion }) => {
+export const ODFCheckbox: React.FC<ODFCheckboxProps> = ({ openshiftVersion }) => {
   const { getFeatureDisabledReason } = useFeatureSupportLevel();
   const name = 'useExtraDisksForLocalStorage';
   const fieldId = getFieldId(name, 'input');
@@ -34,7 +37,7 @@ export const OcsCheckbox: React.FC<OcsCheckboxProps> = ({ openshiftVersion }) =>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
         <CheckboxField
           name={name}
-          label={<OCSLabel />}
+          label={<ODFLabel />}
           isDisabled={!!disabledReason}
           helperText="Persistent software-defined storage for hybrid applications."
         />
