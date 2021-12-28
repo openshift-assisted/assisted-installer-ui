@@ -1,0 +1,58 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+    {
+      "type": "npm",
+      "script": "sync-to-ui",
+      "label": "npm: sync-to-ui",
+      "detail": "./scripts/sync-dist.sh",
+      "isBackground": true
+    },
+    {
+      "type": "npm",
+      "script": "start",
+      "label": "npm: start",
+      "detail": "run-s clean esbuild:dev",
+      "isBackground": true
+    },
+    {
+      "type": "npm",
+      "path": "../assisted-ui/package.json",
+      "script": "start",
+      "label": "npm: start:assisted-ui",
+      "detail": "Runs npm start in the assisted-ui project",
+      "isBackground": true
+    },
+    {
+      "type": "npm",
+      "path": "../uhc-portal/package.json",
+      "script": "start",
+      "label": "npm: start:uhc-portal",
+      "detail": "Runs npm start in the uhc-portal project",
+      "isBackground": true
+    },
+    {
+      "type": "npm",
+      "script": "yarn echo 'start:assisted-ui:aio'",
+      "label": "start:assisted-ui:aio",
+      "detail": "Runs the uhc-portal in dev-mode",
+      "dependsOn": [
+        "npm: sync-to-ui",
+        "npm: start",
+        "npm: start:assisted-ui"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "type": "npm",
+      "script": "yarn echo 'start:uhc-portal:aio'",
+      "label": "start:uhc-portal:aio",
+      "detail": "Runs the uhc-portal in dev-mode",
+      "dependsOn": [
+        "npm: sync-to-ui",
+        "npm: start",
+        "npm: start:uhc-portal"
+      ]
+    }
+  ]
+}
