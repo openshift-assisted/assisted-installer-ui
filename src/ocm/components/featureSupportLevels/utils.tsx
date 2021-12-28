@@ -53,7 +53,3 @@ export const getLimitedFeatureSupportLevels = (
     return undefined;
   }
 };
-
-export const isFullySupported = (clusterFeatureSupportLevels: FeatureIdToSupportLevel): boolean => {
-  return Object.keys(clusterFeatureSupportLevels).length === 0;
-};
