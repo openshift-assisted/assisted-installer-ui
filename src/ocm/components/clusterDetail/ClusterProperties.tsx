@@ -76,7 +76,7 @@ const ClusterProperties: React.FC<ClusterPropertiesProps> = ({ cluster }) => (
         <DetailItem
           title="Ingress virtual IP"
           value={cluster.ingressVip}
-          isHidden={isSingleNodeCluster(cluster) && cluster.userManagedNetworking}
+          isHidden={!cluster.ingressVip}
         />
         <DetailItem
           title="Disk encryption"
