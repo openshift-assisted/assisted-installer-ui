@@ -1,12 +1,6 @@
 import React from 'react';
 import { GridItem, TextContent, Text } from '@patternfly/react-core';
-import {
-  Cluster,
-  isSingleNodeCluster,
-  DetailList,
-  DetailItem,
-  DiskEncryption,
-} from '../../../common';
+import { Cluster, DetailList, DetailItem, DiskEncryption } from '../../../common';
 import {
   selectClusterNetworkCIDR,
   selectClusterNetworkHostPrefix,
@@ -68,11 +62,7 @@ const ClusterProperties: React.FC<ClusterPropertiesProps> = ({ cluster }) => (
       <DetailList>
         <DetailItem title="OpenShift version" value={cluster.openshiftVersion} />
         <DetailItem title="Base DNS domain" value={cluster.baseDnsDomain} />
-        <DetailItem
-          title="API virtual IP"
-          value={cluster.apiVip}
-          isHidden={!cluster.apiVip}
-        />
+        <DetailItem title="API virtual IP" value={cluster.apiVip} isHidden={!cluster.apiVip} />
         <DetailItem
           title="Ingress virtual IP"
           value={cluster.ingressVip}
