@@ -15,6 +15,7 @@ import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
 import { useHostsTable, HostsTableModals } from './use-hosts-table';
 import HostsTable, { HostsTableEmptyState } from '../../../common/components/hosts/HostsTable';
 import { ExpandComponentProps } from '../../../common/components/hosts/AITable';
+import { UpdateDay2ApiVipDialogToggle } from './UpdateDay2ApiVipDialogToggle';
 
 const ExpandComponent: React.FC<ExpandComponentProps<Host>> = ({ obj }) => {
   return (
@@ -39,7 +40,7 @@ const ClusterHostsTable: React.FC<ClusterHostsTableProps> = ({
     () => [
       hostnameColumn(onEditHost, undefined, actionChecks.canEditHostname),
       roleColumn(actionChecks.canEditRole, onEditRole, getSchedulableMasters(cluster)),
-      statusColumn(AdditionalNTPSourcesDialogToggle, onEditHost),
+      statusColumn(AdditionalNTPSourcesDialogToggle, onEditHost, UpdateDay2ApiVipDialogToggle),
       discoveredAtColumn,
       cpuCoresColumn,
       memoryColumn,
