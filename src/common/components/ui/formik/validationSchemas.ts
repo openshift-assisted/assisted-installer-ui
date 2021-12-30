@@ -394,3 +394,14 @@ export const ntpSourceValidationSchema = Yup.string().test(
     return trimCommaSeparatedList(value).split(',').every(isIPorDN);
   },
 );
+
+export const day2ApiVipValidationSchema = Yup.string().test(
+  'day2-api-vip',
+  'Provide a valid DNS name or IP Address',
+  (value: string) => {
+    if (!value) {
+      return true;
+    }
+    return isIPorDN(value);
+  },
+);

@@ -47,6 +47,7 @@ import OcpConsoleNodesSectionLink from './OcpConsoleNodesSectionLink';
 import { toSentence } from '../ui/table/utils';
 import { RenderIf } from '../ui';
 import { HostStatusProps } from './types';
+import { UpdateDay2ApiVipPropsType } from './HostValidationGroups';
 
 const getStatusIcon = (status: Host['status'] | 'discovered') => {
   let icon = null;
@@ -224,6 +225,7 @@ const HostStatusPopoverFooter: React.FC<{ host: Host }> = ({ host }) => {
 
 const WithHostStatusPopover = (
   props: AdditionNtpSourcePropsType &
+    UpdateDay2ApiVipPropsType &
     PropsWithChildren<{
       hideOnOutsideClick: PopoverProps['hideOnOutsideClick'];
       host: Host;
@@ -256,6 +258,7 @@ const HostStatus: React.FC<HostStatusProps> = ({
   sublabel,
   onEditHostname,
   AdditionalNTPSourcesDialogToggleComponent,
+  UpdateDay2ApiVipDialogToggleComponent,
   children,
 }) => {
   const [keepOnOutsideClick, onValidationActionToggle] = React.useState(false);
@@ -295,6 +298,7 @@ const HostStatus: React.FC<HostStatusProps> = ({
             title={title}
             validationsInfo={validationsInfo}
             statusOverride={status}
+            UpdateDay2ApiVipDialogToggleComponent={UpdateDay2ApiVipDialogToggleComponent}
           >
             {titleWithProgress}
           </WithHostStatusPopover>
@@ -315,11 +319,11 @@ const HostStatus: React.FC<HostStatusProps> = ({
               hideOnOutsideClick={!keepOnOutsideClick}
               host={host}
               onEditHostname={toggleHostname}
-              // onAdditionalNtpSource={onAdditionalNtpSource}
               AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
               title={title}
               validationsInfo={validationsInfo}
               statusOverride={status}
+              UpdateDay2ApiVipDialogToggleComponent={UpdateDay2ApiVipDialogToggleComponent}
             >
               {sublabel}
             </WithHostStatusPopover>

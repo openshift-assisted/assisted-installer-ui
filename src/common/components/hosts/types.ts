@@ -2,7 +2,7 @@ import { Cluster, Host, HostUpdateParams } from '../../api';
 import { ValidationsInfo } from '../../types/hosts';
 import { HostsNotShowingLinkProps } from '../clusterConfiguration';
 import { onDiskRoleType } from './DiskRole';
-import { AdditionNtpSourcePropsType } from './HostValidationGroups';
+import { AdditionNtpSourcePropsType, UpdateDay2ApiVipPropsType } from './HostValidationGroups';
 
 export type ClusterHostsTableProps = {
   cluster: Cluster;
@@ -50,10 +50,11 @@ export type HostNetworkingStatusComponentProps = {
   onEditHostname?: () => void;
 };
 
-export type HostStatusProps = AdditionNtpSourcePropsType & {
-  host: Host;
-  validationsInfo: ValidationsInfo;
-  onEditHostname?: () => void;
-  statusOverride?: Host['status'] | 'discovered';
-  sublabel?: string;
-};
+export type HostStatusProps = AdditionNtpSourcePropsType &
+  UpdateDay2ApiVipPropsType & {
+    host: Host;
+    validationsInfo: ValidationsInfo;
+    onEditHostname?: () => void;
+    statusOverride?: Host['status'] | 'Discovered';
+    sublabel?: string;
+  };
