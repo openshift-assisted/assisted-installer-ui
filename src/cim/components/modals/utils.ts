@@ -57,3 +57,15 @@ export const getBareMetalHost = (
     automatedCleaningMode: 'disabled',
   },
 });
+
+export const getWarningMessage = (hasAgents: boolean, hasBMHs: boolean) => {
+  if (hasBMHs && hasAgents) {
+    return 'The resource you are changing is already in use by hosts in the infrastructure environment. A change will require booting the hosts with a new discovery ISO file. Hosts will be rebooted automatically after the change is applied if using BMC.';
+  } else if (hasBMHs) {
+    return 'The resource you are changing is already in use by hosts in the infrastructure environment. The hosts will be rebooted automatically after the change is applied.';
+  } else if (hasAgents) {
+    return 'The resource you are changing is already in use by hosts in the infrastructure environment. A change will require booting the hosts with a new discovery ISO file.';
+  } else {
+    return 'A change will require booting hosts with a new discovery ISO file.';
+  }
+};
