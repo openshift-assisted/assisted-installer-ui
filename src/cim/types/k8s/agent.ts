@@ -28,7 +28,9 @@ export type AgentK8sResource = K8sResourceCommon & {
     inventory: Inventory;
     progress: {
       currentStage: HostStage;
+      installationPercentage: number;
       progressInfo: string;
+      progressStages: HostStage[];
       stageStartTime: string;
       stageUpdateTime: string;
     };
