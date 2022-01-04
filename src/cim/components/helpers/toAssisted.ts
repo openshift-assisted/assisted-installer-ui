@@ -7,12 +7,7 @@ import { getAgentStatus, getClusterStatus } from './status';
 import { getHostNetworks } from './network';
 import { BareMetalHostK8sResource, InfraEnvK8sResource } from '../../types';
 import { AGENT_BMH_HOSTNAME_LABEL_KEY } from '../common';
-import {
-  getAgentProgress,
-  getAgentProgressStages,
-  getAgentRole,
-  getInfraEnvNameOfAgent,
-} from './agents';
+import { getAgentProgress, getAgentRole, getInfraEnvNameOfAgent } from './agents';
 
 export const getAIHosts = (
   agents: AgentK8sResource[],
@@ -52,11 +47,12 @@ export const getAIHosts = (
         inventory: JSON.stringify(inventory),
         progress: agentProgress && {
           currentStage: agentProgress.currentStage,
+          installationPercentage: agentProgress.installationPercentage,
           progressInfo: agentProgress.progressInfo,
           stageStartedAt: agentProgress.stageStartTime,
           stageUpdatedAt: agentProgress.stageUpdateTime,
         },
-        progressStages: getAgentProgressStages(agent),
+        progressStages: agentProgress?.progressStages,
         bootstrap: agent.status?.bootstrap,
       };
     },
