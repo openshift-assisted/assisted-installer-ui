@@ -8,7 +8,6 @@ import {
   AddHostsContext,
   DiscoveryInstructions,
   DiscoveryTroubleshootingModal,
-  isSingleNodeCluster,
 } from '../../../common';
 
 const InventoryAddHosts: React.FC = () => {
@@ -22,7 +21,7 @@ const InventoryAddHosts: React.FC = () => {
   return (
     <>
       <TextContent>
-        <DiscoveryInstructions isSingleNodeCluster={isSingleNodeCluster(cluster)} />
+        <DiscoveryInstructions showAllInstructions />
         <Text component="p">
           <DiscoveryImageModalButton
             ButtonComponent={Button}
