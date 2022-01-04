@@ -1,12 +1,10 @@
+import Day2ClusterService from '../../services/Day2ClusterService';
 import { OcmClusterType } from './types';
-
-export const getOpenshiftClusterId = (ocmCluster?: OcmClusterType) =>
-  ocmCluster && ocmCluster.external_id;
 
 export const canAddHost = ({ cluster }: { cluster: OcmClusterType }) => {
   let isAllowed = false;
 
-  if (getOpenshiftClusterId(cluster)) {
+  if (Day2ClusterService.getOpenshiftClusterId(cluster)) {
     // Collision of "ready" states for AI and Telemetry
     // Show the tab only if telemetry reports "ready", not the AI
     if (

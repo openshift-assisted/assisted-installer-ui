@@ -3,7 +3,7 @@ import { getErrorMessage, handleApiError, ocmClient } from '../api';
 import { useAlerts } from '../../common';
 
 export default function usePullSecret() {
-  const [pullSecret, setPullSecret] = React.useState<string>('');
+  const [pullSecret, setPullSecret] = React.useState<string>();
   const { addAlert } = useAlerts();
 
   const getPullSecret = React.useCallback(async () => {

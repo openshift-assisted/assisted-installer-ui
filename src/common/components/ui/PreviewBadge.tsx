@@ -71,8 +71,8 @@ const PreviewBadge: React.FC<PreviewBadgeProps> = ({
 const popoverTexts = {
   'tech-preview': `Technology preview features provide early access to upcoming product innovations, 
   enabling you to test functionality and provide feedback during the development process.`,
-  'dev-preview': `Developer Preview features provide early access to upcoming innovations and contain 
-  a functional set of features that Red Hat is encouraging customers to use and provide feedback on.`,
+  'dev-preview': `Developer preview features are not intended to be used in production environments. 
+  The clusters deployed with the developer preview features are considered to be development clusters and are not supported through the Red Hat Customer Portal case management system.`,
 };
 
 export const DeveloperPreview: React.FC<DeveloperPreviewProps> = (props) => (

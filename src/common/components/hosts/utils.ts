@@ -97,7 +97,13 @@ export const canInstallHost = (cluster: Cluster, hostStatus: Host['status']) =>
 export const getHostProgressStages = (host: Host) => host.progressStages || [];
 
 export const getHostProgress = (host: Host) =>
-  host.progress || { currentStage: 'Starting installation', progressInfo: undefined };
+  host.progress?.currentStage
+    ? host.progress
+    : {
+        currentStage: 'Starting installation',
+        progressInfo: undefined,
+        installationPercentage: undefined,
+      };
 
 export const getHostProgressStageNumber = (host: Host) => {
   const stages = getHostProgressStages(host);

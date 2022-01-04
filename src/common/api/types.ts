@@ -25,12 +25,24 @@ export interface ApiVipConnectivityRequest {
    * Whether to verify if the API VIP belongs to one of the interfaces (DEPRECATED).
    */
   verifyCidr?: boolean;
+  /**
+   * A CA certficate to be used when contacting the URL via https.
+   */
+  caCertificate?: string;
+  /**
+   * A string which will be used as Authorization Bearer token to fetch the ignition from ignitionEndpointUrl.
+   */
+  ignitionEndpointToken?: string;
 }
 export interface ApiVipConnectivityResponse {
   /**
    * API VIP connectivity check result.
    */
   isSuccess?: boolean;
+  /**
+   * Ignition fetched from the specified API VIP
+   */
+  ignition?: string;
 }
 export interface AssistedServiceIsoCreateParams {
   /**
@@ -253,9 +265,9 @@ export interface Cluster {
    */
   connectivityMajorityGroups?: string;
   /**
-   * The time that the cluster was deleted.
+   * swagger:ignore
    */
-  deletedAt?: string; // date-time
+  deletedAt?: unknown;
   /**
    * Indicate if the networking is managed by the user.
    */
@@ -847,6 +859,8 @@ export interface DiskEncryption {
   mode?: 'tpmv2' | 'tang';
   /**
    * JSON-formatted string containing additional information regarding tang's configuration
+   * example:
+   * [{"url":"http://tang.example.com:7500","thumbprint":"PLjNyRdGw03zlRoGjQYMahSZGu9"}, {"url":"http://tang.example.com:7501","thumbprint":"PLjNyRdGw03zlRoGjQYMahSZGu8"}]
    */
   tangServers?: string;
 }
@@ -1123,9 +1137,9 @@ export interface Host {
   requestedHostname?: string;
   userName?: string;
   /**
-   * The time that the host was deleted.
+   * swagger:ignore
    */
-  deletedAt?: string; // date-time
+  deletedAt?: unknown;
   /**
    * Json formatted string containing the user overrides for the host's pointer ignition
    * example:
@@ -1143,9 +1157,9 @@ export interface Host {
    */
   domainNameResolutions?: string;
   /**
-   * A string which will be used as Authorization Bearer token to fetch the ignition from ignitionEndpointUrl.
+   * True if the token to fetch the ignition from ignitionEndpointUrl is set.
    */
-  ignitionEndpointToken?: string;
+  ignitionEndpointTokenSet?: boolean;
 }
 export interface HostCreateParams {
   hostId: string; // uuid
@@ -1290,9 +1304,9 @@ export interface HostRegistrationResponse {
   requestedHostname?: string;
   userName?: string;
   /**
-   * The time that the host was deleted.
+   * swagger:ignore
    */
-  deletedAt?: string; // date-time
+  deletedAt?: unknown;
   /**
    * Json formatted string containing the user overrides for the host's pointer ignition
    * example:
@@ -1310,9 +1324,9 @@ export interface HostRegistrationResponse {
    */
   domainNameResolutions?: string;
   /**
-   * A string which will be used as Authorization Bearer token to fetch the ignition from ignitionEndpointUrl.
+   * True if the token to fetch the ignition from ignitionEndpointUrl is set.
    */
-  ignitionEndpointToken?: string;
+  ignitionEndpointTokenSet?: boolean;
   /**
    * Command for starting the next step runner
    */
@@ -1392,7 +1406,7 @@ export type HostValidationId =
   | 'hostname-unique'
   | 'hostname-valid'
   | 'belongs-to-machine-cidr'
-  | 'api-vip-connected'
+  | 'ignition-downloadable'
   | 'belongs-to-majority-group'
   | 'valid-platform-network-settings'
   | 'ntp-synced'
@@ -1419,7 +1433,7 @@ export interface IgnitionEndpoint {
    */
   url?: string;
   /**
-   * A CA certficate to be used when contacting the URL via https.
+   * base64 encoded CA certficate to be used when contacting the URL via https.
    */
   caCertificate?: string;
 }
@@ -2259,6 +2273,9 @@ export interface V2Events {
   hostId?: string;
   infraEnvId?: string;
   categories?: string[];
+}
+export interface V2InfraEnvs {
+  clusterId?: string;
 }
 export interface VersionedHostRequirements {
   /**
