@@ -426,7 +426,7 @@ export const hostActionResolver = ({
     }
     if (onEditHost && canEditHost?.(host)) {
       actions.push({
-        title: 'Edit host',
+        title: 'Change hostname',
         id: `button-edit-host-${hostname}`, // id is everchanging, not ideal for tests
         onClick: () => onEditHost(host),
       });
