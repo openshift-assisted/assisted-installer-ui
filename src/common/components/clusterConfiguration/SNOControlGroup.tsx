@@ -16,9 +16,6 @@ const SNOControlGroup = ({ versions, highAvailabilityMode, isDisabled }: SNOCont
   const { values } = useFormikContext<ClusterDetailsValues>();
   const featureSupportLevels = React.useContext(FeatureSupportLevelContext);
   const selectedVersion = versions.find((version) => version.value === values.openshiftVersion);
-  // TODO(jtomasek): use getFeatureSupport('sno', selectedVersion.version) to get support level of SNO feature
-  // for selected version once the API is available
-  // https://issues.redhat.com/browse/MGMT-7787
   const snoSupportLevel = selectedVersion
     ? featureSupportLevels.getFeatureSupportLevel(selectedVersion.value, 'SNO')
     : undefined;
