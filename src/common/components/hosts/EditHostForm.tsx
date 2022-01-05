@@ -53,7 +53,10 @@ const EditHostForm: React.FC<EditHostFormProps> = ({
   onFormSaveError,
 }) => {
   const hostnameInputRef = React.useRef<HTMLInputElement>();
-  React.useEffect(() => hostnameInputRef.current?.focus(), []);
+  React.useEffect(() => {
+    hostnameInputRef.current?.focus();
+    hostnameInputRef.current?.select();
+  }, []);
 
   const { requestedHostname } = host;
   const { hostname } = inventory;

@@ -104,7 +104,7 @@ export const getAgentStatusFromConditions = (agent: AgentK8sResource): [Host['st
   return ['insufficient', 'Unexpected Agent conditions.'];
 };
 
-export type AgentStatus = Host['status'] | 'Discovered';
+export type AgentStatus = Host['status'] | 'discovered';
 
 const getInsufficientState = (agent: AgentK8sResource) =>
   agent?.spec?.clusterDeploymentName?.name ? 'insufficient' : 'insufficient-unbound';
@@ -130,7 +130,7 @@ export const getAgentStatus = (
   }
 
   if (!excludeDiscovered && !agent.spec.approved) {
-    state = 'Discovered';
+    state = 'discovered';
   } else if (
     !['binding', 'unbinding-pending-user-action'].includes(state) &&
     validationsInfo?.infrastructure &&
