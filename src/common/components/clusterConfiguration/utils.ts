@@ -8,7 +8,6 @@ import {
   ValidationGroup,
   ValidationsInfo,
 } from '../../types/clusters';
-import { OpenshiftVersionOptionType } from '../../types/versions';
 import { getHostname, getSchedulableMasters } from '../hosts/utils';
 import {
   selectClusterNetworkCIDR,
@@ -83,16 +82,6 @@ export const getHostDiscoveryInitialValues = (cluster: Cluster): HostDiscoveryVa
     usePlatformIntegration: cluster.platform?.type !== 'baremetal',
     schedulableMasters: getSchedulableMasters(cluster),
   };
-};
-
-// TODO(jtomasek): use getFeatureSupport('sno', selectedVersion.version) to get support level of SNO feature
-// for selected version once the API is available. This function will be obsolete then and can be removed.
-// https://issues.redhat.com/browse/MGMT-7787
-export const getSNOSupportLevel = (version: OpenshiftVersionOptionType['version'] = '') => {
-  if (version.startsWith('4.9')) {
-    return 'supported';
-  }
-  return 'dev-preview';
 };
 
 export function filterValidationsInfoByGroup(

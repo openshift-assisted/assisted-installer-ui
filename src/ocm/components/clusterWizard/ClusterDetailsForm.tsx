@@ -19,6 +19,7 @@ import { OpenshiftVersionOptionType, getFormikErrorFields } from '../../../commo
 import ClusterWizardFooter from './ClusterWizardFooter';
 import ClusterWizardHeaderExtraActions from '../clusterConfiguration/ClusterWizardHeaderExtraActions';
 import { ocmClient } from '../../api';
+import { FeatureSupportLevelContext } from '../../../common/components/featureSupportLevels';
 
 type ClusterDetailsFormProps = {
   cluster?: Cluster;
@@ -47,6 +48,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
     navigation,
   } = props;
 
+  const featureSupportLevels = React.useContext(FeatureSupportLevelContext);
   const handleSubmit = async (values: ClusterDetailsValues) => {
     const params: ClusterCreateParams = _.omit(values, ['useRedHatDnsService', 'SNODisclaimer']);
     if (cluster) {
@@ -72,6 +74,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
   const initialValues = getClusterDetailsInitialValues(props);
   const validationSchema = getClusterDetailsValidationSchema(
     usedClusterNames,
+    featureSupportLevels,
     cluster,
     ocpVersions,
   );

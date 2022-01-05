@@ -26,7 +26,7 @@ export const DiscoveryImageModalButton: React.FC<DiscoveryImageModalButtonProps>
         onClick={() => open({ cluster })}
         id={`${idPrefix}-button-download-discovery-iso`}
       >
-        Generate Discovery ISO
+        Add hosts
       </ButtonComponent>
     </>
   );
@@ -44,8 +44,8 @@ export const DiscoveryImageModal: React.FC = () => {
 
   return (
     <Modal
-      aria-label="Generate Discovery ISO dialog"
-      title="Generate Discovery ISO"
+      aria-label="Add hosts dialog"
+      title="Add hosts"
       isOpen={isOpen}
       onClose={close}
       variant={ModalVariant.small}
