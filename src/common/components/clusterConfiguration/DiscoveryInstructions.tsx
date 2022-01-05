@@ -9,9 +9,7 @@ const DiscoveryInstructions = ({
   <TextContent>
     <Text component="h3">Adding hosts instructions</Text>
     <TextList component="ol" type={OrderType.number} style={{ marginLeft: 0 }}>
-      <TextListItem hidden={!showAllInstructions}>
-        Click the Generate Discovery ISO button.
-      </TextListItem>
+      <TextListItem hidden={!showAllInstructions}>Click the Add hosts button.</TextListItem>
       <TextListItem hidden={!showAllInstructions}>
         Configure the SSH key and proxy settings after the modal appears (optional).
       </TextListItem>
