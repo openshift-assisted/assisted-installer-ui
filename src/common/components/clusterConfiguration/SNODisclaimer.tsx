@@ -1,16 +1,17 @@
 import React from 'react';
 import { Alert, AlertVariant, List, ListItem, Stack, StackItem } from '@patternfly/react-core';
 import { CheckboxField } from '../ui';
+import { SupportLevel } from '../../types';
 
 type SNODisclaimerProps = {
   isDisabled?: boolean;
-  snoSupportLevel?: string;
+  snoSupportLevel?: SupportLevel;
 };
 const SNODisclaimer = ({
   isDisabled = false,
   snoSupportLevel = 'supported',
 }: SNODisclaimerProps) => {
-  const isUnsupported = snoSupportLevel !== 'supported';
+  const isUnsupported = snoSupportLevel === 'dev-preview';
   const generalSNOFacts = (
     <>
       <ListItem>

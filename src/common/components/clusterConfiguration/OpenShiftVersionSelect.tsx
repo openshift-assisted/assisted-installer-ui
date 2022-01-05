@@ -6,6 +6,7 @@ import { OPENSHIFT_LIFE_CYCLE_DATES_LINK } from '../../config';
 import { ClusterCreateParams } from '../../api';
 import { OpenshiftVersionOptionType } from '../../types';
 import { isSNOSupportedVersion, SelectField } from '../ui';
+import FeatureSupportLevelContext from '../featureSupportLevels/FeatureSupportLevelContext';
 
 const OpenShiftLifeCycleDatesLink = () => (
   <a href={OPENSHIFT_LIFE_CYCLE_DATES_LINK} target="_blank" rel="noopener noreferrer">
@@ -37,14 +38,19 @@ const OpenShiftVersionSelect: React.FC<OpenShiftVersionSelectProps> = ({ version
     values: { highAvailabilityMode, openshiftVersion },
     setFieldValue,
   } = useFormikContext<ClusterCreateParams>();
-
+  const featureSupportLevels = React.useContext(FeatureSupportLevelContext);
   const selectedVersion = versions.find((v) => v.value === openshiftVersion) || versions[0];
   React.useEffect(() => {
-    if (highAvailabilityMode === 'None' && !isSNOSupportedVersion(selectedVersion)) {
-      const firstSupportedVersionValue = versions.find(isSNOSupportedVersion)?.value;
+    if (
+      highAvailabilityMode === 'None' &&
+      !isSNOSupportedVersion(featureSupportLevels, selectedVersion)
+    ) {
+      const firstSupportedVersionValue = versions.find((version) => {
+        isSNOSupportedVersion(featureSupportLevels, version);
+      })?.value;
       setFieldValue('openshiftVersion', firstSupportedVersionValue);
     }
-  }, [highAvailabilityMode, selectedVersion, setFieldValue, versions]);
+  }, [highAvailabilityMode, selectedVersion, setFieldValue, versions, featureSupportLevels]);
 
   const selectOptions = React.useMemo(
     () =>
@@ -52,13 +58,14 @@ const OpenShiftVersionSelect: React.FC<OpenShiftVersionSelectProps> = ({ version
         .filter(
           (version) =>
             version.supportLevel !== 'maintenance' &&
-            (highAvailabilityMode !== 'None' || isSNOSupportedVersion(version)),
+            (highAvailabilityMode !== 'None' ||
+              isSNOSupportedVersion(featureSupportLevels, version)),
         )
         .map((version) => ({
           label: version.label,
           value: version.value,
         })),
-    [versions, highAvailabilityMode],
+    [versions, highAvailabilityMode, featureSupportLevels],
   );
 
   return (
