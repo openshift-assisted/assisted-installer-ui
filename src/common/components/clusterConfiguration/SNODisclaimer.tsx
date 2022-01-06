@@ -5,13 +5,14 @@ import { SupportLevel } from '../../types';
 
 type SNODisclaimerProps = {
   isDisabled?: boolean;
-  snoSupportLevel?: SupportLevel;
+  snoSupportLevel: SupportLevel;
 };
-const SNODisclaimer = ({
-  isDisabled = false,
-  snoSupportLevel = 'supported',
-}: SNODisclaimerProps) => {
-  const isUnsupported = snoSupportLevel === 'dev-preview';
+const SNODisclaimer = ({ isDisabled = false, snoSupportLevel }: SNODisclaimerProps) => {
+  if (!['dev-preview', 'supported'].includes(snoSupportLevel)) {
+    //if tech preview or unsupported there's no definition which warning to show
+    return null;
+  }
+  const isDevPreview = snoSupportLevel === 'dev-preview';
   const generalSNOFacts = (
     <>
       <ListItem>
@@ -32,7 +33,7 @@ const SNODisclaimer = ({
 
   return (
     <Alert
-      variant={isUnsupported ? AlertVariant.warning : AlertVariant.info}
+      variant={isDevPreview ? AlertVariant.warning : AlertVariant.info}
       title="Limitations for using Single Node OpenShift"
       isInline
     >
@@ -40,10 +41,10 @@ const SNODisclaimer = ({
         <StackItem>
           <List>
             {generalSNOFacts}
-            {isUnsupported && unsupportedWarnings}
+            {isDevPreview && unsupportedWarnings}
           </List>
         </StackItem>
-        {isUnsupported && (
+        {isDevPreview && (
           <StackItem>
             <CheckboxField
               name="SNODisclaimer"
