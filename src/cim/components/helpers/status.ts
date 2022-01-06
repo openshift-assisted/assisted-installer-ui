@@ -10,9 +10,7 @@ import {
   AgentStatusConditionType,
 } from '../../types/k8s/agent';
 import { StatusCondition, BareMetalHostK8sResource } from '../../types';
-import { getFailingResourceConditions, REQUIRED_AGENT_CONDITION_TYPES } from './conditions';
-import { Validation, ValidationsInfo } from '../../../common/types/hosts';
-import { HostValidationId } from '../../../common/api/types';
+import { ValidationsInfo } from '../../../common/types/hosts';
 
 const conditionsByTypeReducer = <K>(
   result: { K?: StatusCondition<string> },
@@ -114,31 +112,10 @@ export const getAgentStatus = (
   excludeDiscovered = false,
 ): [AgentStatus, Host['statusInfo'], ValidationsInfo] => {
   let state: AgentStatus = agent.status?.debugInfo?.state || getInsufficientState(agent);
-
-  const conditions = getFailingResourceConditions(agent, REQUIRED_AGENT_CONDITION_TYPES);
-  let validationsInfo = agent.status?.validationsInfo;
-  if (conditions?.length) {
-    validationsInfo = {
-      infrastructure: conditions.map(
-        (c): Validation => ({
-          id: c.type as HostValidationId /* Hack: the ID is used for displaying only */,
-          status: 'failure',
-          message: c.message,
-        }),
-      ),
-    };
-  }
-
+  const validationsInfo = agent.status?.validationsInfo;
   if (!excludeDiscovered && !agent.spec.approved) {
     state = 'discovered';
-  } else if (
-    !['binding', 'unbinding-pending-user-action'].includes(state) &&
-    validationsInfo?.infrastructure &&
-    !validationsInfo.infrastructure.find((c) => c.id.toLowerCase() === 'connected')
-  ) {
-    state = getInsufficientState(agent);
   }
-
   return [state, agent.status?.debugInfo?.stateInfo || '', validationsInfo || {}];
 };
 
