@@ -106,7 +106,6 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
                   versions={ocpVersions}
                   canEditPullSecret={!cluster?.pullSecretSet}
                   forceOpenshiftVersion={cluster?.openshiftVersion}
-                  isSNOGroupDisabled={!!cluster}
                   defaultPullSecret={pullSecret}
                   isOcm={!!ocmClient}
                   managedDomains={managedDomains}
