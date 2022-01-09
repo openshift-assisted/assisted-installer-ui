@@ -15,7 +15,6 @@ import { ClusterDetailsValues } from './types';
 export type ClusterDetailsFormFieldsProps = {
   canEditPullSecret: boolean;
   forceOpenshiftVersion?: string;
-  isSNOGroupDisabled?: boolean;
   isNameDisabled?: boolean;
   isBaseDnsDomainDisabled?: boolean;
   defaultPullSecret?: string;
@@ -43,7 +42,6 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
   managedDomains = [],
   toggleRedHatDnsService,
   canEditPullSecret,
-  isSNOGroupDisabled,
   isNameDisabled,
   isBaseDnsDomainDisabled,
   versions,
@@ -100,11 +98,6 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
           isRequired
         />
       )}
-      <SNOControlGroup
-        isDisabled={isSNOGroupDisabled}
-        versions={versions}
-        highAvailabilityMode={highAvailabilityMode}
-      />
       {forceOpenshiftVersion ? (
         <StaticTextField name="openshiftVersion" label="OpenShift version" isRequired>
           OpenShift {forceOpenshiftVersion}
@@ -112,6 +105,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
       ) : (
         <OpenShiftVersionSelect versions={versions} />
       )}
+      <SNOControlGroup versions={versions} highAvailabilityMode={highAvailabilityMode} />
       {extensionAfter?.['openshiftVersion'] && extensionAfter['openshiftVersion']}
       {canEditPullSecret && <PullSecret isOcm={isOcm} defaultPullSecret={defaultPullSecret} />}
       {extensionAfter?.['pullSecret'] && extensionAfter['pullSecret']}
