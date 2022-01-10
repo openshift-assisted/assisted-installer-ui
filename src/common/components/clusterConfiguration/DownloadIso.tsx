@@ -60,15 +60,6 @@ const DownloadIso: React.FC<DownloadISOProps> = ({
               </ClipboardCopy>
             }
           />
-          <DetailItem
-            title="Boot instructions"
-            value={
-              <>
-                Use a bootable device (local disk, USB drive, etc.) or network booting (PXE) to boot
-                each host <b>once</b> from the Discovery ISO.
-              </>
-            }
-          />
         </DetailList>
         <Alert
           variant="info"
