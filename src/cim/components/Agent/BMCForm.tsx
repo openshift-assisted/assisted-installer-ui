@@ -19,13 +19,22 @@ import {
 import { Formik, FormikProps, FormikConfig, FieldArray, useField } from 'formik';
 import * as Yup from 'yup';
 import { InfraEnvK8sResource, SecretK8sResource } from '../../types';
-import { InputField, macAddressValidationSchema, CodeField, getFieldId } from '../../../common';
+import {
+  InputField,
+  macAddressValidationSchema,
+  CodeField,
+  getFieldId,
+  hostnameValidationSchema,
+  getRichTextValidation,
+  RichInputField,
+  HOSTNAME_VALIDATION_MESSAGES,
+} from '../../../common';
 import { Language } from '@patternfly/react-code-editor';
 import { MinusCircleIcon, PlusCircleIcon } from '@patternfly/react-icons';
 import { AddBmcValues, BMCFormProps } from './types';
 import { NMStateK8sResource } from '../../types/k8s/nm-state';
 import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
-import { AGENT_BMH_HOSTNAME_LABEL_KEY } from '../common';
+import { AGENT_BMH_HOSTNAME_LABEL_KEY, BMH_HOSTNAME_ANNOTATION } from '../common';
 
 const MacMapping = () => {
   const [field, { touched, error }] = useField<{ macAddress: string; name: string }[]>({
@@ -111,9 +120,10 @@ const getNMState = (values: AddBmcValues, infraEnv: InfraEnvK8sResource): NMStat
   return nmState;
 };
 
-const getValidationSchema = (hasDHCP: boolean) =>
+const getValidationSchema = (hasDHCP: boolean, usedHostnames: string[], origHostname: string) =>
   Yup.object({
-    hostname: Yup.string().required(),
+    name: Yup.string().required(),
+    hostname: hostnameValidationSchema(origHostname, usedHostnames),
     bmcAddress: Yup.string().required(),
     username: Yup.string().required(),
     password: Yup.string().required(),
@@ -130,6 +140,7 @@ const getValidationSchema = (hasDHCP: boolean) =>
   });
 
 const emptyValues: AddBmcValues = {
+  name: '',
   hostname: '',
   bmcAddress: '',
   username: '',
@@ -149,7 +160,8 @@ const getInitValues = (
 ): AddBmcValues => {
   if (isEdit) {
     return {
-      hostname: bmh?.metadata?.name || '',
+      name: bmh?.metadata?.name || '',
+      hostname: bmh?.metadata?.annotations?.[BMH_HOSTNAME_ANNOTATION] || '',
       bmcAddress: bmh?.spec?.bmc?.address || '',
       username: secret?.data?.username ? atob(secret.data.username) : '',
       password: secret?.data?.password ? atob(secret.data.password) : '',
@@ -173,6 +185,7 @@ const BMCForm: React.FC<BMCFormProps> = ({
   nmState,
   secret,
   isEdit,
+  usedHostnames,
 }) => {
   const [error, setError] = React.useState();
 
@@ -187,12 +200,16 @@ const BMCForm: React.FC<BMCFormProps> = ({
     }
   };
 
-  const validationSchema = React.useMemo(() => getValidationSchema(hasDHCP), [hasDHCP]);
+  const { initValues, validationSchema } = React.useMemo(() => {
+    const initValues = getInitValues(bmh, nmState, secret, isEdit);
+    const validationSchema = getValidationSchema(hasDHCP, usedHostnames, initValues.hostname);
+    return { initValues, validationSchema };
+  }, [hasDHCP, usedHostnames, bmh, nmState, secret, isEdit]);
   return (
     <Formik
-      initialValues={getInitValues(bmh, nmState, secret, isEdit)}
+      initialValues={initValues}
       isInitialValid={false}
-      validationSchema={validationSchema}
+      validate={getRichTextValidation(validationSchema)}
       onSubmit={handleSubmit}
     >
       {({ isSubmitting, isValid, submitForm }: FormikProps<AddBmcValues>) => {
@@ -201,11 +218,18 @@ const BMCForm: React.FC<BMCFormProps> = ({
             <ModalBoxBody>
               <Form id="add-bmc-form">
                 <InputField
-                  label="Host name"
-                  name="hostname"
+                  label="Name"
+                  name="name"
                   placeholder="Enter the name for the Host"
                   isRequired
                   isDisabled={isEdit}
+                />
+                <RichInputField
+                  label="Hostname"
+                  name="hostname"
+                  placeholder="Enter the hostname for the Host"
+                  richValidationMessages={HOSTNAME_VALIDATION_MESSAGES}
+                  isRequired
                 />
                 <InputField
                   label="Baseboard Management Controller Address"

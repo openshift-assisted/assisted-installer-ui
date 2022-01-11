@@ -13,6 +13,7 @@ const EditBMHModal: React.FC<EditBMHModalProps> = ({
   bmh,
   fetchNMState,
   fetchSecret,
+  usedHostnames,
 }) => {
   const [nmState, setNMState] = React.useState<NMStateK8sResource>();
   const [secret, setSecret] = React.useState<SecretK8sResource>();
@@ -74,6 +75,7 @@ const EditBMHModal: React.FC<EditBMHModalProps> = ({
           bmh={bmh}
           secret={secret}
           nmState={nmState}
+          usedHostnames={usedHostnames}
         />
       )}
     </Modal>

@@ -103,6 +103,7 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
           onEdit={onSaveBMH}
           fetchSecret={fetchSecret}
           fetchNMState={fetchNMState}
+          usedHostnames={usedHostnames || []}
         />
         <EditAgentModal
           isOpen={!!editAgent}

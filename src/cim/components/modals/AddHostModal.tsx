@@ -23,6 +23,7 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
   onCreateBMH,
   onSaveISOParams,
   isBMPlatform,
+  usedHostnames,
 }) => {
   const hasDHCP = infraEnv.metadata?.labels?.networkType !== 'static';
   const sshPublicKey = infraEnv.spec?.sshAuthorizedKey || agentClusterInstall?.spec?.sshPublicKey;
@@ -116,6 +117,7 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
           onClose={onClose}
           hasDHCP={hasDHCP}
           infraEnv={infraEnv}
+          usedHostnames={usedHostnames}
         />
       )}
     </Modal>
