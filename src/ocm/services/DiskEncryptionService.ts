@@ -21,14 +21,9 @@ const DiskEncryptionService = {
         values.enableDiskEncryptionOnWorkers,
       ),
       tangServers:
-        values.diskEncryptionTangServers.length >= 1
+        values.diskEncryptionMode == 'tang'
           ? JSON.stringify(values.diskEncryptionTangServers)
-          : JSON.stringify([
-              {
-                url: '',
-                thumbprint: '',
-              },
-            ]),
+          : undefined,
     };
   },
 };

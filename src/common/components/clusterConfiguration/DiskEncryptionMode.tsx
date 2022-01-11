@@ -3,7 +3,7 @@ import { ENCRYPTING_DISK_DURING_INSTALLATION } from '../../config/constants';
 import PopoverIcon from '../ui/PopoverIcon';
 import { InputField, RadioField } from '../ui/formik';
 import { ExternalLinkAltIcon, HelpIcon } from '@patternfly/react-icons';
-import { FieldArray, Form, Formik, ArrayHelpers, Field, useField, useFormikContext } from 'formik';
+import { FieldArray, useFormikContext } from 'formik';
 import {
   Button,
   ButtonVariant,
@@ -15,23 +15,12 @@ import {
   TextVariants,
   TextInputTypes,
   TextContent,
-  SplitItem,
-  Split,
   Tooltip,
 } from '@patternfly/react-core';
 import { PlusCircleIcon, MinusCircleIcon } from '@patternfly/react-icons';
 import { DiskEncryption } from '../../api';
 import { ClusterDetailsValues } from '../clusterWizard';
 import './tangServers.css';
-
-export const TangServers = {
-  tangServersFields: [
-    {
-      url: '',
-      thumbprint: '',
-    },
-  ],
-};
 
 export interface DiskEncryptionControlGroupProps {
   enableDiskEncryptionOnWorkers: boolean;
@@ -136,18 +125,18 @@ export const TangServersFields: React.FC<{ isDisabled?: boolean }> = ({ isDisabl
                 </>
               ))}
           </StackItem>
-          {!isDisabled &&
-          <StackItem>
-            <Button
-              variant={ButtonVariant.link}
-              onClick={() => push({ url: '', thumbprint: '' })}
-              isInline
-            >
-              <PlusCircleIcon size="sm" hidden={isDisabled} />
-              &nbsp;Add another Tang server
-            </Button>
-          </StackItem>
-          }
+          {!isDisabled && (
+            <StackItem>
+              <Button
+                variant={ButtonVariant.link}
+                onClick={() => push({ url: '', thumbprint: '' })}
+                isInline
+              >
+                <PlusCircleIcon size="sm" hidden={isDisabled} />
+                &nbsp;Add another Tang server
+              </Button>
+            </StackItem>
+          )}
         </Stack>
       )}
     </FieldArray>

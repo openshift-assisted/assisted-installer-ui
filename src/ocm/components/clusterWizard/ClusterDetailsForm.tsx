@@ -12,7 +12,6 @@ import {
   getClusterDetailsInitialValues,
   getClusterDetailsValidationSchema,
   ClusterDetailsFormFields,
-  useAlerts,
 } from '../../../common';
 import { Grid, GridItem } from '@patternfly/react-core';
 import { canNextClusterDetails } from './wizardTransition';
@@ -21,6 +20,7 @@ import ClusterWizardFooter from './ClusterWizardFooter';
 import ClusterWizardHeaderExtraActions from '../clusterConfiguration/ClusterWizardHeaderExtraActions';
 import { ocmClient } from '../../api';
 import { FeatureSupportLevelContext } from '../../../common/components/featureSupportLevels';
+import { ClusterDetailsService } from '../../services';
 
 type ClusterDetailsFormProps = {
   cluster?: Cluster;
@@ -110,7 +110,6 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
                   defaultPullSecret={pullSecret}
                   isOcm={!!ocmClient}
                   managedDomains={managedDomains}
-                  cluster={cluster}
                 />
               </GridItem>
             </Grid>
