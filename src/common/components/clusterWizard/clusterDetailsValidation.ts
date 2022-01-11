@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { Cluster, ManagedDomain } from '../../api';
+import { Cluster, DiskEncryption, ManagedDomain } from '../../api';
 import { OpenshiftVersionOptionType } from '../../types';
 import { FeatureSupportLevelData } from '../featureSupportLevels/FeatureSupportLevelContext';
 import {
@@ -66,20 +66,40 @@ export const getClusterDetailsInitialValues = ({
     ),
     diskEncryptionMode: cluster?.diskEncryption?.mode ?? 'tpmv2',
     diskEncryptionTangServers: cluster?.diskEncryption?.tangServers
-      ? JSON.parse(cluster.diskEncryption.tangServers)
+      ? parseTangServers(cluster.diskEncryption.tangServers)
       : emptyTangServers(),
   };
 };
-const validationParmas = (usedClusterNames: string[], values: { baseDnsDomain: string }) => {
+const validationParmas = (
+  usedClusterNames: string[],
+  values: { baseDnsDomain: string; diskEncryptionMode: DiskEncryption['mode'] },
+) => {
   return {
     name: nameValidationSchema(usedClusterNames, values.baseDnsDomain),
     baseDnsDomain: dnsNameValidationSchema.required('Required'),
+    diskEncryptionMode: Yup.mixed<DiskEncryption['mode']>().oneOf(['tpmv2', 'tang', undefined]),
     diskEncryptionTangServers: Yup.array().of(
-      Yup.object().shape({
-        url: Yup.string().url('Tang Server Url must be a valid URL').required('Required.'),
-        thumbprint: Yup.string().required('Required.'),
+      Yup.object().when('diskEncryptionMode', {
+        is: (diskEncryptionMode) => diskEncryptionMode == 'tang',
+        then: {
+          url: Yup.string().url('Tang Server Url must be a valid URL').required('Required.'),
+          thumbprint: Yup.string().required('Required.'),
+        },
       }),
     ),
+  };
+};
+
+const validationParmas2 = (values: {
+  baseDnsDomain: string;
+  diskEncryptionMode: DiskEncryption['mode'];
+}) => {
+  return {
+    diskEncryptionMode: Yup.mixed<DiskEncryption['mode']>().oneOf(['tpmv2', 'tang', undefined]),
+    diskEncryptionTangServers: Yup.object().shape({
+      url: Yup.string().url('Tang Server Url must be a valid URL').required('Required.'),
+      thumbprint: Yup.string().required('Required.'),
+    }),
   };
 };
 
@@ -91,9 +111,14 @@ export const getClusterDetailsValidationSchema = (
 ) =>
   Yup.lazy<{ baseDnsDomain: string }>((values) => {
     if (cluster?.pullSecretSet) {
-      return Yup.object(validationParmas(usedClusterNames, values));
+      return Yup.object({
+        name: nameValidationSchema(usedClusterNames, values.baseDnsDomain),
+        baseDnsDomain: dnsNameValidationSchema.required('Required'),
+      });
     }
     return Yup.object({
+      name: nameValidationSchema(usedClusterNames, values.baseDnsDomain),
+      baseDnsDomain: dnsNameValidationSchema.required('Required'),
       pullSecret: pullSecretValidationSchema.required('Required.'),
       SNODisclaimer: Yup.boolean().when(['highAvailabilityMode', 'openshiftVersion'], {
         // The disclaimer is required only if SNO is enabled and SNO feature is not fully supported in that version
@@ -108,5 +133,16 @@ export const getClusterDetailsValidationSchema = (
         },
         then: Yup.bool().oneOf([true], 'Confirm the Single Node OpenShift disclaimer to continue.'),
       }),
-    }).concat(Yup.object(validationParmas(usedClusterNames, values)));
+      diskEncryptionTangServers: Yup.array().when('diskEncryptionMode', {
+        is: (diskEncryptionMode) => {
+          return diskEncryptionMode == 'tang';
+        },
+        then: Yup.array().of(
+          Yup.object().shape({
+            url: Yup.string().url('Tang Server Url must be a valid URL').required('Required.'),
+            thumbprint: Yup.string().required('Required.'),
+          }),
+        ),
+      }),
+    });
   });

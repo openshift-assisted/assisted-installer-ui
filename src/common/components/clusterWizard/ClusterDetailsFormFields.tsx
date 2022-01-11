@@ -10,7 +10,6 @@ import { ManagedDomain } from '../../api';
 import { OpenshiftVersionOptionType } from '../../types';
 import { CheckboxField, InputField, SelectField } from '../ui/formik';
 import DiskEncryptionControlGroup from '../clusterConfiguration/DiskEncryptionFields';
-import { Cluster, schedulableMastersAlwaysOn } from '../../../common';
 import { ClusterDetailsValues } from './types';
 
 export type ClusterDetailsFormFieldsProps = {
@@ -24,7 +23,6 @@ export type ClusterDetailsFormFieldsProps = {
   managedDomains?: ManagedDomain[];
   versions: OpenshiftVersionOptionType[];
   toggleRedHatDnsService?: (checked: boolean) => void;
-  cluster?: Cluster | undefined;
 };
 
 const BaseDnsHelperText: React.FC<{ name?: string; baseDnsDomain?: string }> = ({
@@ -51,7 +49,6 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
   forceOpenshiftVersion,
   extensionAfter,
   isOcm, // TODO(mlibra): make it optional, false by default
-  cluster,
 }) => {
   const { values } = useFormikContext<ClusterDetailsValues>();
   const { name, baseDnsDomain, highAvailabilityMode, useRedHatDnsService } = values;
