@@ -36,6 +36,7 @@ type ModalDialogsDataTypes = {
   resetClusterDialog: ResetClusterProps;
   cancelInstallationDialog: CancelInstallationProps;
   discoveryImageDialog: DiscoveryImageDialogProps;
+  UpdateDay2ApiVipDialog: void;
 };
 
 type DialogId =
@@ -46,7 +47,8 @@ type DialogId =
   | 'additionalNTPSourcesDialog'
   | 'resetClusterDialog'
   | 'cancelInstallationDialog'
-  | 'discoveryImageDialog';
+  | 'discoveryImageDialog'
+  | 'UpdateDay2ApiVipDialog';
 
 export type ModalDialogsContextType = {
   [key in DialogId]: {
@@ -66,6 +68,7 @@ const dialogIds: DialogId[] = [
   'resetClusterDialog',
   'cancelInstallationDialog',
   'discoveryImageDialog',
+  'UpdateDay2ApiVipDialog',
 ];
 
 const ModalDialogsContext = React.createContext<ModalDialogsContextType | undefined>(undefined);

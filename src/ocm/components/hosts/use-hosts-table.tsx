@@ -17,7 +17,7 @@ import {
   AdditionalNTPSourcesFormProps,
 } from '../../../common/components/hosts/AdditionalNTPSourcesDialog';
 import { getErrorMessage, handleApiError } from '../../api';
-import { forceReload, updateHost } from '../../reducers/clusters';
+import { forceReload, updateCluster, updateHost } from '../../reducers/clusters';
 import { useModalDialogsContext } from './ModalDialogsContext';
 import { downloadHostInstallationLogs, onAdditionalNtpSourceAction } from './utils';
 import {
@@ -39,6 +39,9 @@ import ResetHostModal from './ResetHostModal';
 import DeleteHostModal from './DeleteHostModal';
 import { onFetchEvents } from '../fetching/fetchEvents';
 import { HostsService } from '../../services';
+import UpdateDay2ApiVipModal from './UpdateDay2ApiVipModal';
+import { UpdateDay2ApiVipFormProps } from './UpdateDay2ApiVipForm';
+import { ClustersAPI } from '../../services/apis';
 
 export const useHostsTable = (cluster: Cluster) => {
   const { addAlert } = useAlerts();
@@ -128,6 +131,20 @@ export const useHostsTable = (cluster: Cluster) => {
       }
     },
     [dispatch, resetCluster, addAlert, cluster.id],
+  );
+
+  const onUpdateDay2ApiVip: UpdateDay2ApiVipFormProps['onUpdateDay2ApiVip'] = React.useCallback(
+    async (apiVip: string, onError: (message: string) => void) => {
+      try {
+        const { data } = await ClustersAPI.update(cluster.id, {
+          apiVipDnsName: apiVip,
+        });
+        dispatch(updateCluster(data));
+      } catch (e) {
+        handleApiError(e, () => onError(getErrorMessage(e)));
+      }
+    },
+    [cluster.id, dispatch],
   );
 
   const onAdditionalNtpSource: AdditionalNTPSourcesFormProps['onAdditionalNtpSource'] = React.useMemo(
@@ -242,6 +259,7 @@ export const useHostsTable = (cluster: Cluster) => {
     onReset,
     onDelete,
     onAdditionalNtpSource,
+    onUpdateDay2ApiVip,
   };
 };
 
@@ -253,6 +271,7 @@ type HostsTableModalsProps = {
     additionalNtpSource: string,
     onError: (message: string) => void,
   ) => Promise<void>;
+  onUpdateDay2ApiVip: UpdateDay2ApiVipFormProps['onUpdateDay2ApiVip'];
 };
 
 export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
@@ -260,6 +279,7 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
   onDelete,
   onReset,
   onAdditionalNtpSource,
+  onUpdateDay2ApiVip,
 }) => {
   const dispatch = useDispatch();
   const { resetCluster } = React.useContext(AddHostsContext);
@@ -270,6 +290,7 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
     deleteHostDialog,
     resetHostDialog,
     additionalNTPSourcesDialog,
+    UpdateDay2ApiVipDialog,
   } = useModalDialogsContext();
   return (
     <>
@@ -325,6 +346,12 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
         isOpen={additionalNTPSourcesDialog.isOpen}
         onClose={additionalNTPSourcesDialog.close}
         onAdditionalNtpSource={onAdditionalNtpSource}
+      />
+      <UpdateDay2ApiVipModal
+        isOpen={UpdateDay2ApiVipDialog.isOpen}
+        onClose={UpdateDay2ApiVipDialog.close}
+        onUpdateDay2ApiVip={onUpdateDay2ApiVip}
+        currentApiVip={cluster.apiVipDnsName}
       />
     </>
   );

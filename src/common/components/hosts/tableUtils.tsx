@@ -117,6 +117,7 @@ export const roleColumn = (
 export const statusColumn = (
   AdditionalNTPSourcesDialogToggleComponent: React.FC,
   onEditHostname?: HostsTableActions['onEditHost'],
+  UpdateDay2ApiVipDialogToggleComponent?: React.FC,
 ): TableRow<Host> => {
   return {
     header: {
@@ -136,6 +137,7 @@ export const statusColumn = (
             onEditHostname={editHostname}
             validationsInfo={validationsInfo}
             AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
+            UpdateDay2ApiVipDialogToggleComponent={UpdateDay2ApiVipDialogToggleComponent}
           />
         ),
         props: { 'data-testid': 'host-status' },

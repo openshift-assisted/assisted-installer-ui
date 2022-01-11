@@ -1423,7 +1423,8 @@ export type HostValidationId =
   | 'apps-domain-name-resolved-correctly'
   | 'compatible-with-cluster-platform'
   | 'dns-wildcard-not-configured'
-  | 'disk-encryption-requirements-satisfied';
+  | 'disk-encryption-requirements-satisfied'
+  | 'api-vip-connected';
 /**
  * Explicit ignition endpoint overrides the default ignition endpoint.
  */
