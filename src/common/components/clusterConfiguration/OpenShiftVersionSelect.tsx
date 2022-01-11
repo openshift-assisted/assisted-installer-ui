@@ -1,12 +1,9 @@
 import React from 'react';
-import { useFormikContext } from 'formik';
 import { ExclamationTriangleIcon, ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens';
 import { OPENSHIFT_LIFE_CYCLE_DATES_LINK } from '../../config';
-import { ClusterCreateParams } from '../../api';
 import { OpenshiftVersionOptionType } from '../../types';
-import { isSNOSupportedVersion, SelectField } from '../ui';
-import FeatureSupportLevelContext from '../featureSupportLevels/FeatureSupportLevelContext';
+import { SelectField } from '../ui';
 
 const OpenShiftLifeCycleDatesLink = () => (
   <a href={OPENSHIFT_LIFE_CYCLE_DATES_LINK} target="_blank" rel="noopener noreferrer">
@@ -34,38 +31,13 @@ type OpenShiftVersionSelectProps = {
   versions: OpenshiftVersionOptionType[];
 };
 const OpenShiftVersionSelect: React.FC<OpenShiftVersionSelectProps> = ({ versions }) => {
-  const {
-    values: { highAvailabilityMode, openshiftVersion },
-    setFieldValue,
-  } = useFormikContext<ClusterCreateParams>();
-  const featureSupportLevels = React.useContext(FeatureSupportLevelContext);
-  const selectedVersion = versions.find((v) => v.value === openshiftVersion) || versions[0];
-  React.useEffect(() => {
-    if (
-      highAvailabilityMode === 'None' &&
-      !isSNOSupportedVersion(featureSupportLevels, selectedVersion)
-    ) {
-      const firstSupportedVersionValue = versions.find((version) => {
-        isSNOSupportedVersion(featureSupportLevels, version);
-      })?.value;
-      setFieldValue('openshiftVersion', firstSupportedVersionValue);
-    }
-  }, [highAvailabilityMode, selectedVersion, setFieldValue, versions, featureSupportLevels]);
-
   const selectOptions = React.useMemo(
     () =>
-      versions
-        .filter(
-          (version) =>
-            version.supportLevel !== 'maintenance' &&
-            (highAvailabilityMode !== 'None' ||
-              isSNOSupportedVersion(featureSupportLevels, version)),
-        )
-        .map((version) => ({
-          label: version.label,
-          value: version.value,
-        })),
-    [versions, highAvailabilityMode, featureSupportLevels],
+      versions.map((version) => ({
+        label: version.label,
+        value: version.value,
+      })),
+    [versions],
   );
 
   return (
