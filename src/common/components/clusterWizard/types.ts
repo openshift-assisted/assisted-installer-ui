@@ -11,5 +11,6 @@ export type ClusterDetailsValues = {
   enableDiskEncryptionOnMasters: boolean;
   enableDiskEncryptionOnWorkers: boolean;
   diskEncryptionMode: DiskEncryption['mode'];
+  diskEncryptionTangServers: { url: string; thumbprint: string }[];
   diskEncryption?: DiskEncryption;
 };

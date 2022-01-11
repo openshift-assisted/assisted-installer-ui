@@ -1,6 +1,8 @@
-import { ClusterCreateParams, ClusterUpdateParams } from '../../common';
+import { ClusterCreateParams, ClusterDetailsValues, ClusterUpdateParams } from '../../common';
 import { ClustersAPI, ManagedDomainsAPI } from '../services/apis';
 import InfraEnvsService from './InfraEnvsService';
+import _ from 'lodash';
+import { DiskEncryptionService } from './index';
 
 const ClusterDetailsService = {
   async create(params: ClusterCreateParams) {
@@ -24,6 +26,18 @@ const ClusterDetailsService = {
   async getManagedDomains() {
     const { data: domains } = await ManagedDomainsAPI.list();
     return domains;
+  },
+
+  getClusterCreateParams(values: ClusterDetailsValues): ClusterCreateParams {
+    const params: ClusterCreateParams = _.omit(values, [
+      'useRedHatDnsService',
+      'SNODisclaimer',
+      'enableDiskEncryptionOnMasters',
+      'enableDiskEncryptionOnWorkers',
+      'diskEncryptionMode',
+    ]);
+    params.diskEncryption = DiskEncryptionService.getDiskEncryptionParams(values);
+    return params;
   },
 };
 

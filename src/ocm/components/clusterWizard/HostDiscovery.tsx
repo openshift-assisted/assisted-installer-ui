@@ -19,7 +19,7 @@ import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
 import ClusterWizardFooter from './ClusterWizardFooter';
 import ClusterWizardNavigation from './ClusterWizardNavigation';
 import { ClustersAPI } from '../../services/apis';
-import HostDiscoveryService from '../../services/HostDiscoveryService';
+import { HostDiscoveryService } from '../../services';
 
 const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const dispatch = useDispatch();

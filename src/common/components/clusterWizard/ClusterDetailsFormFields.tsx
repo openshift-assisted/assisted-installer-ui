@@ -8,8 +8,8 @@ import OpenShiftVersionSelect from '../clusterConfiguration/OpenShiftVersionSele
 import { PullSecret } from '../clusters';
 import { ManagedDomain } from '../../api';
 import { OpenshiftVersionOptionType } from '../../types';
-import { CheckboxField, InputField, SelectField } from '../ui';
-import DiskEncryptionControlGroup from '../../../ocm/components/clusterWizard/DiskEncryptionStep';
+import { CheckboxField, InputField, SelectField } from '../ui/formik';
+import DiskEncryptionControlGroup from '../clusterConfiguration/DiskEncryptionFields';
 import { Cluster, schedulableMastersAlwaysOn } from '../../../common';
 import { ClusterDetailsValues } from './types';
 
@@ -24,7 +24,7 @@ export type ClusterDetailsFormFieldsProps = {
   managedDomains?: ManagedDomain[];
   versions: OpenshiftVersionOptionType[];
   toggleRedHatDnsService?: (checked: boolean) => void;
-  cluster: Cluster | undefined;
+  cluster?: Cluster | undefined;
 };
 
 const BaseDnsHelperText: React.FC<{ name?: string; baseDnsDomain?: string }> = ({
@@ -59,6 +59,8 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
   React.useEffect(() => {
     nameInputRef.current?.focus();
   }, []);
+  const atListOneDiskEncryptionEnableOn =
+    values.enableDiskEncryptionOnMasters || values.enableDiskEncryptionOnWorkers;
 
   // TODO(mlibra): Disable fields based on props passed from the caller context. In CIM, the name or domain can not be edited.
   return (
@@ -116,15 +118,27 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
         enableDiskEncryptionOnWorkers={values.enableDiskEncryptionOnWorkers}
         enableDiskEncryptionOnMasters={values.enableDiskEncryptionOnMasters}
         diskEncryptionMode={values.diskEncryptionMode}
-        isSchedulableMastersEnabled={cluster ? !schedulableMastersAlwaysOn(cluster) : false}
+        isDisabled={isSNOGroupDisabled}
       />
-      {values.enableDiskEncryptionOnMasters && (
+      {atListOneDiskEncryptionEnableOn && values.diskEncryptionMode == 'tpmv2' && (
         <Alert
           variant={AlertVariant.warning}
           isInline
           title={
             <FlexItem>
-              Enable TPM v2 encryption in the BIOS of each host is selected to use this encryption.
+              To use this encryption, enable TPMv2 encryption in the BIOS of each host selected.
+            </FlexItem>
+          }
+        />
+      )}
+      {atListOneDiskEncryptionEnableOn && values.diskEncryptionMode == 'tang' && (
+        <Alert
+          variant={AlertVariant.warning}
+          isInline
+          title={
+            <FlexItem>
+              The use of Tang encryption mode to encrypt your disks is only supported for bare metal
+              or vSphere installations on user-provisioned infrastructure.
             </FlexItem>
           }
         />

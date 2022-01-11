@@ -12,7 +12,7 @@ import {
   getClusterDetailsInitialValues,
   getClusterDetailsValidationSchema,
   ClusterDetailsFormFields,
-  DiskEncryption,
+  useAlerts,
 } from '../../../common';
 import { Grid, GridItem } from '@patternfly/react-core';
 import { canNextClusterDetails } from './wizardTransition';
@@ -51,14 +51,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
 
   const featureSupportLevels = React.useContext(FeatureSupportLevelContext);
   const handleSubmit = async (values: ClusterDetailsValues) => {
-    values.diskEncryption = {
-      mode: values.diskEncryptionMode,
-      enableOn: diskEncryptionEnableOn(
-        values.enableDiskEncryptionOnMasters,
-        values.enableDiskEncryptionOnWorkers,
-      ),
-    };
-    const params: ClusterCreateParams = _.omit(values, ['useRedHatDnsService', 'SNODisclaimer']);
+    const params = ClusterDetailsService.getClusterCreateParams(values);
     if (cluster) {
       await handleClusterUpdate(cluster.id, params);
     } else {
@@ -117,6 +110,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
                   defaultPullSecret={pullSecret}
                   isOcm={!!ocmClient}
                   managedDomains={managedDomains}
+                  cluster={cluster}
                 />
               </GridItem>
             </Grid>
