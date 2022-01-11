@@ -236,7 +236,7 @@ export const useAgentsTable = (
   { agents, bmhs, infraEnv }: AgentsTableResources,
 ): [Host[], HostsTableActions, ActionsResolver<Host>] => {
   const [hosts, actions] = React.useMemo(
-    () => [
+    (): [Host[], HostsTableActions] => [
       getAIHosts(agents, bmhs, infraEnv),
       {
         onEditHost: onEditHost
@@ -302,7 +302,7 @@ export const useAgentsTable = (
         canUnbindHost: canUnbindHost
           ? (host: Host) => {
               const agent = agents.find((a) => a.metadata?.uid === host.id);
-              return agent ? canUnbindHost(agent) : ['false'];
+              return agent ? canUnbindHost(agent) : [false, '' /* Only agent can be unbound */];
             }
           : undefined,
       },
