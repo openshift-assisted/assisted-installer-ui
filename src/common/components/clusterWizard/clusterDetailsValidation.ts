@@ -29,6 +29,26 @@ export const getClusterDetailsInitialValues = ({
     baseDnsDomain = baseDomain || '',
     openshiftVersion = getDefaultOpenShiftVersion(ocpVersions),
   } = cluster || {};
+
+  const emptyTangServers = () => {
+    return [
+      {
+        url: '',
+        thumbprint: '',
+      },
+    ];
+  };
+
+  const parseTangServers = (tangServersString: string) => {
+    let parsedTangServers = emptyTangServers();
+    try {
+      parsedTangServers = JSON.parse(tangServersString);
+    } catch (e) {
+      console.warn('Tang Servers can not be parsed');
+    }
+    return parsedTangServers;
+  };
+
   return {
     name,
     highAvailabilityMode,
@@ -45,6 +65,21 @@ export const getClusterDetailsInitialValues = ({
       cluster?.diskEncryption?.enableOn ?? 'none',
     ),
     diskEncryptionMode: cluster?.diskEncryption?.mode ?? 'tpmv2',
+    diskEncryptionTangServers: cluster?.diskEncryption?.tangServers
+      ? JSON.parse(cluster.diskEncryption.tangServers)
+      : emptyTangServers(),
+  };
+};
+const validationParmas = (usedClusterNames: string[], values: { baseDnsDomain: string }) => {
+  return {
+    name: nameValidationSchema(usedClusterNames, values.baseDnsDomain),
+    baseDnsDomain: dnsNameValidationSchema.required('Required'),
+    diskEncryptionTangServers: Yup.array().of(
+      Yup.object().shape({
+        url: Yup.string().url('Tang Server Url must be a valid URL').required('Required.'),
+        thumbprint: Yup.string().required('Required.'),
+      }),
+    ),
   };
 };
 
@@ -56,15 +91,10 @@ export const getClusterDetailsValidationSchema = (
 ) =>
   Yup.lazy<{ baseDnsDomain: string }>((values) => {
     if (cluster?.pullSecretSet) {
-      return Yup.object({
-        name: nameValidationSchema(usedClusterNames, values.baseDnsDomain),
-        baseDnsDomain: dnsNameValidationSchema.required('Required'),
-      });
+      return Yup.object(validationParmas(usedClusterNames, values));
     }
     return Yup.object({
-      name: nameValidationSchema(usedClusterNames, values.baseDnsDomain),
       pullSecret: pullSecretValidationSchema.required('Required.'),
-      baseDnsDomain: dnsNameValidationSchema.required('Required'),
       SNODisclaimer: Yup.boolean().when(['highAvailabilityMode', 'openshiftVersion'], {
         // The disclaimer is required only if SNO is enabled and SNO feature is not fully supported in that version
         is: (highAvailabilityMode, openshiftVersion) => {
@@ -78,5 +108,5 @@ export const getClusterDetailsValidationSchema = (
         },
         then: Yup.bool().oneOf([true], 'Confirm the Single Node OpenShift disclaimer to continue.'),
       }),
-    });
+    }).concat(Yup.object(validationParmas(usedClusterNames, values)));
   });
