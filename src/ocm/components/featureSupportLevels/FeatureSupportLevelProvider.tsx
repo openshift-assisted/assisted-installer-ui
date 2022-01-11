@@ -18,6 +18,7 @@ export type SupportLevelProviderProps = PropsWithChildren<{
   clusterFeatureUsage?: string;
   openshiftVersion?: string;
   loadingUi: React.ReactNode;
+  clusterExists?: boolean;
 }>;
 
 const getFeatureSupportLevelsMap = (
@@ -54,6 +55,7 @@ const normalizeVersion = (
 };
 
 export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = ({
+  clusterExists = false,
   children,
   loadingUi,
 }) => {
@@ -92,12 +94,46 @@ export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = 
     [getVersionSupportLevelsMap],
   );
 
+  const isFeatureSupported = React.useCallback(
+    (version, featureId) => getFeatureSupportLevel(version, featureId) !== 'unsupported',
+    [getFeatureSupportLevel],
+  );
+
+  const getFeatureDisabledReason = React.useCallback(
+    (version, featureId) => {
+      if (featureId === 'SNO') {
+        if (clusterExists) {
+          return 'This option is not editable after the draft cluster is created';
+        }
+        if (!isFeatureSupported(version, featureId)) {
+          return 'Single-Node OpenShift is not supported in this OpenShift version';
+        }
+      }
+      return undefined;
+    },
+    [clusterExists, isFeatureSupported],
+  );
+
+  const isFeatureDisabled = React.useCallback(
+    (version, featureId) => !!getFeatureDisabledReason(version, featureId),
+    [getFeatureDisabledReason],
+  );
+
   const providerValue = React.useMemo<FeatureSupportLevelData>(() => {
     return {
       getVersionSupportLevelsMap: getVersionSupportLevelsMap,
       getFeatureSupportLevel: getFeatureSupportLevel,
+      isFeatureDisabled: isFeatureDisabled,
+      getFeatureDisabledReason: getFeatureDisabledReason,
+      isFeatureSupported: isFeatureSupported,
     };
-  }, [getVersionSupportLevelsMap, getFeatureSupportLevel]);
+  }, [
+    getVersionSupportLevelsMap,
+    getFeatureSupportLevel,
+    isFeatureDisabled,
+    getFeatureDisabledReason,
+    isFeatureSupported,
+  ]);
 
   React.useEffect(() => {
     if (error) {
