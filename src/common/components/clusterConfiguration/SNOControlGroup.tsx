@@ -7,11 +7,12 @@ import SNODisclaimer from './SNODisclaimer';
 import { FeatureSupportLevelContext } from '../featureSupportLevels';
 
 type SNOControlGroupProps = {
+  isDisabled?: boolean;
   versions: OpenshiftVersionOptionType[];
   highAvailabilityMode: ClusterDetailsValues['highAvailabilityMode'];
 };
 
-const SNOControlGroup = ({ versions, highAvailabilityMode }: SNOControlGroupProps) => {
+const SNOControlGroup = ({ versions, highAvailabilityMode, isDisabled }: SNOControlGroupProps) => {
   const { values } = useFormikContext<ClusterDetailsValues>();
   const featureSupportLevels = React.useContext(FeatureSupportLevelContext);
   const [snoSupportLevel, setSnoSupportLevel] = React.useState<SupportLevel>();
@@ -25,7 +26,6 @@ const SNOControlGroup = ({ versions, highAvailabilityMode }: SNOControlGroupProp
       setSnoSupportLevel(supportLevel);
     }
   }, [values.openshiftVersion, setSnoSupportLevel, featureSupportLevels]);
-
   return (
     <>
       <SingleNodeCheckbox name="highAvailabilityMode" versions={versions} isDisabled={isDisabled} />
