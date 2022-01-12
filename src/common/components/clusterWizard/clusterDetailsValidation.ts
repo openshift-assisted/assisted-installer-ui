@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { Cluster, DiskEncryption, ManagedDomain } from '../../api';
+import { Cluster, ManagedDomain } from '../../api';
 import { OpenshiftVersionOptionType } from '../../types';
 import { FeatureSupportLevelData } from '../featureSupportLevels/FeatureSupportLevelContext';
 import {
@@ -68,38 +68,6 @@ export const getClusterDetailsInitialValues = ({
     diskEncryptionTangServers: cluster?.diskEncryption?.tangServers
       ? parseTangServers(cluster.diskEncryption.tangServers)
       : emptyTangServers(),
-  };
-};
-const validationParmas = (
-  usedClusterNames: string[],
-  values: { baseDnsDomain: string; diskEncryptionMode: DiskEncryption['mode'] },
-) => {
-  return {
-    name: nameValidationSchema(usedClusterNames, values.baseDnsDomain),
-    baseDnsDomain: dnsNameValidationSchema.required('Required'),
-    diskEncryptionMode: Yup.mixed<DiskEncryption['mode']>().oneOf(['tpmv2', 'tang', undefined]),
-    diskEncryptionTangServers: Yup.array().of(
-      Yup.object().when('diskEncryptionMode', {
-        is: (diskEncryptionMode) => diskEncryptionMode == 'tang',
-        then: {
-          url: Yup.string().url('Tang Server Url must be a valid URL').required('Required.'),
-          thumbprint: Yup.string().required('Required.'),
-        },
-      }),
-    ),
-  };
-};
-
-const validationParmas2 = (values: {
-  baseDnsDomain: string;
-  diskEncryptionMode: DiskEncryption['mode'];
-}) => {
-  return {
-    diskEncryptionMode: Yup.mixed<DiskEncryption['mode']>().oneOf(['tpmv2', 'tang', undefined]),
-    diskEncryptionTangServers: Yup.object().shape({
-      url: Yup.string().url('Tang Server Url must be a valid URL').required('Required.'),
-      thumbprint: Yup.string().required('Required.'),
-    }),
   };
 };
 

@@ -39,7 +39,7 @@ const DiskEncryptionModeTPMv2: React.FC = () => {
         component={'a'}
         variant={'plain'}
         IconComponent={HelpIcon}
-        minWidth="30rem"
+        minWidth="22rem"
         bodyContent={
           <p>
             TPM v2 stores passphrases in a secure cryptoprocessor contained within as server. &nbsp;
@@ -61,10 +61,10 @@ const DiskEncryptionModeTang: React.FC = () => {
         component={'a'}
         variant={'plain'}
         IconComponent={HelpIcon}
-        minWidth="30rem"
+        minWidth="25rem"
         bodyContent={
           <p>
-            TPM v2 stores passphrases in a secure cryptoprocessor contained within as server. &nbsp;
+            Tang server component that enable network-bound disk encryption (NBDE). &nbsp;
             <a href={ENCRYPTING_DISK_DURING_INSTALLATION} target="_blank" rel="noopener noreferrer">
               {'Learn more'} <ExternalLinkAltIcon />
             </a>
