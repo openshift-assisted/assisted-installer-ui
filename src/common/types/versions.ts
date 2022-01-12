@@ -1,4 +1,4 @@
-import { ClusterCreateParams, OpenshiftVersion } from '../api/types';
+import { ClusterCreateParams, CpuArchitecture, OpenshiftVersion } from '../api/types';
 
 export type OpenshiftVersionOptionType = {
   label: string;
@@ -7,4 +7,5 @@ export type OpenshiftVersionOptionType = {
   version: string;
   default: boolean;
   supportLevel: OpenshiftVersion['supportLevel'];
+  cpuArchitectures?: CpuArchitecture[];
 };

@@ -8,8 +8,6 @@ import {
   ManagedDomain,
   ClusterWizardStep,
   ClusterWizardStepHeader,
-  ClusterDetailsValues,
-  getClusterDetailsInitialValues,
   getClusterDetailsValidationSchema,
   ClusterDetailsFormFields,
 } from '../../../common';
@@ -21,6 +19,9 @@ import ClusterWizardHeaderExtraActions from '../clusterConfiguration/ClusterWiza
 import { ocmClient } from '../../api';
 import { FeatureSupportLevelContext } from '../../../common/components/featureSupportLevels';
 import { ClusterDetailsService } from '../../services';
+import { OcmClusterDetailsValues } from '../../api/types';
+import { getOcmClusterDetailsInitialValues } from '../clusterConfiguration/utils';
+import ArmCheckbox from '../clusterConfiguration/ArmCheckbox';
 
 type ClusterDetailsFormProps = {
   cluster?: Cluster;
@@ -50,14 +51,17 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
   } = props;
 
   const featureSupportLevels = React.useContext(FeatureSupportLevelContext);
-  const handleSubmit = async (values: ClusterDetailsValues) => {
-    const params = ClusterDetailsService.getClusterCreateParams(values);
-    if (cluster) {
-      await handleClusterUpdate(cluster.id, params);
-    } else {
-      await handleClusterCreate(params);
-    }
-  };
+  const handleSubmit = React.useCallback(
+    async (values: OcmClusterDetailsValues) => {
+      const params = ClusterDetailsService.getClusterCreateParams(values);
+      if (cluster) {
+        await handleClusterUpdate(cluster.id, params);
+      } else {
+        await handleClusterCreate(params);
+      }
+    },
+    [cluster, handleClusterCreate, handleClusterUpdate],
+  );
 
   const handleOnNext = (
     dirty: boolean,
@@ -72,7 +76,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
     return fn;
   };
 
-  const initialValues = getClusterDetailsInitialValues(props);
+  const initialValues = getOcmClusterDetailsInitialValues(props);
   const validationSchema = getClusterDetailsValidationSchema(
     usedClusterNames,
     featureSupportLevels,
@@ -111,6 +115,9 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
                   isOcm={!!ocmClient}
                   managedDomains={managedDomains}
                   isPullSecretSet={cluster?.pullSecretSet ? cluster.pullSecretSet : false}
+                  extensionAfter={{
+                    openshiftVersion: <ArmCheckbox versions={ocpVersions} />,
+                  }}
                 />
               </GridItem>
             </Grid>
