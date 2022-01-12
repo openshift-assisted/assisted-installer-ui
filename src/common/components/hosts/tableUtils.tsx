@@ -486,20 +486,23 @@ export const hostActionResolver = ({
     if (canUnbindHost) {
       // skip at all if the callback is not provided
       const canUnbindHostResult = canUnbindHost(host);
-      const isDisabled = !canUnbindHostResult?.[0];
+      const isEnabled = canUnbindHostResult?.[0];
+      const disabledReason = canUnbindHostResult?.[1];
 
-      actions.push({
-        title: (
-          <ActionTitle
-            disabled={isDisabled}
-            description={canUnbindHostResult?.[1]}
-            title="Remove from the cluster"
-          />
-        ),
-        id: `button-unbind-host-${hostname}`,
-        onClick: () => !isDisabled && onUnbindHost && onUnbindHost(host),
-        disabled: isDisabled,
-      });
+      if (isEnabled || disabledReason) {
+        actions.push({
+          title: (
+            <ActionTitle
+              disabled={!isEnabled}
+              description={disabledReason}
+              title="Remove from the cluster"
+            />
+          ),
+          id: `button-unbind-host-${hostname}`,
+          onClick: () => isEnabled && onUnbindHost && onUnbindHost(host),
+          disabled: !isEnabled,
+        });
+      }
     }
   }
 
