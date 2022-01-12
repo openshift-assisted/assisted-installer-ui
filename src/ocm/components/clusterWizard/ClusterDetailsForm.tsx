@@ -110,6 +110,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
                   defaultPullSecret={pullSecret}
                   isOcm={!!ocmClient}
                   managedDomains={managedDomains}
+                  isPullSecretSet={cluster?.pullSecretSet ? cluster.pullSecretSet : false}
                 />
               </GridItem>
             </Grid>

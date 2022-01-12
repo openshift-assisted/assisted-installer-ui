@@ -23,6 +23,7 @@ export type ClusterDetailsFormFieldsProps = {
   managedDomains?: ManagedDomain[];
   versions: OpenshiftVersionOptionType[];
   toggleRedHatDnsService?: (checked: boolean) => void;
+  isPullSecretSet: boolean;
 };
 
 const BaseDnsHelperText: React.FC<{ name?: string; baseDnsDomain?: string }> = ({
@@ -49,6 +50,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
   forceOpenshiftVersion,
   extensionAfter,
   isOcm, // TODO(mlibra): make it optional, false by default
+  isPullSecretSet,
 }) => {
   const { values } = useFormikContext<ClusterDetailsValues>();
   const { name, baseDnsDomain, highAvailabilityMode, useRedHatDnsService } = values;
@@ -115,7 +117,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
         enableDiskEncryptionOnWorkers={values.enableDiskEncryptionOnWorkers}
         enableDiskEncryptionOnMasters={values.enableDiskEncryptionOnMasters}
         diskEncryptionMode={values.diskEncryptionMode}
-        isDisabled={isSNOGroupDisabled}
+        isDisabled={isPullSecretSet}
       />
       {atListOneDiskEncryptionEnableOn && values.diskEncryptionMode == 'tpmv2' && (
         <Alert
