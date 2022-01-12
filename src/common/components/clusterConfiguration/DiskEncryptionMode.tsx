@@ -19,7 +19,7 @@ import {
 } from '@patternfly/react-core';
 import { PlusCircleIcon, MinusCircleIcon } from '@patternfly/react-icons';
 import { DiskEncryption } from '../../api';
-import { ClusterDetailsValues } from '../clusterWizard';
+import { ClusterDetailsValues } from '../clusterWizard/types';
 import './tangServers.css';
 
 export interface DiskEncryptionControlGroupProps {
@@ -28,6 +28,8 @@ export interface DiskEncryptionControlGroupProps {
   diskEncryptionMode: DiskEncryption['mode'];
   isDisabled?: boolean;
 }
+
+const REMOVE_TANG_SERVER_SHOWN_TIMER = 1500;
 
 const DiskEncryptionModeTPMv2: React.FC = () => {
   return (
@@ -86,7 +88,7 @@ export const TangServersFields: React.FC<{ isDisabled?: boolean }> = ({ isDisabl
                 <>
                   <Tooltip
                     hidden={index == 0 || isDisabled}
-                    exitDelay={1500}
+                    exitDelay={REMOVE_TANG_SERVER_SHOWN_TIMER}
                     flipBehavior={['right', 'bottom']}
                     distance={1}
                     className="tooltip-tang-servers"

@@ -2,7 +2,7 @@ import { ClusterCreateParams, ClusterDetailsValues, ClusterUpdateParams } from '
 import { ClustersAPI, ManagedDomainsAPI } from '../services/apis';
 import InfraEnvsService from './InfraEnvsService';
 import _ from 'lodash';
-import { DiskEncryptionService } from './index';
+import DiskEncryptionService from './DiskEncryptionService';
 
 const ClusterDetailsService = {
   async create(params: ClusterCreateParams) {
