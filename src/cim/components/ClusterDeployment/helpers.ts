@@ -44,6 +44,15 @@ export const shouldShowClusterInstallationProgress = (
 
 export const isInstallationInProgress = (agentClusterInstall: AgentClusterInstallK8sResource) => {
   const [clusterStatus] = getClusterStatus(agentClusterInstall);
+
+  if (
+    !agentClusterInstall?.spec?.holdInstallation &&
+    ['insufficient', 'ready'].includes(clusterStatus)
+  ) {
+    // special initial state
+    return true;
+  }
+
   return [
     'preparing-for-installation',
     'installing',

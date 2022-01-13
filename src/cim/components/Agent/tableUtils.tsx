@@ -302,7 +302,7 @@ export const useAgentsTable = (
         canUnbindHost: canUnbindHost
           ? (host: Host) => {
               const agent = agents.find((a) => a.metadata?.uid === host.id);
-              return agent ? canUnbindHost(agent) : [false, '' /* Only agent can be unbound */];
+              return canUnbindHost(agent);
             }
           : undefined,
       },

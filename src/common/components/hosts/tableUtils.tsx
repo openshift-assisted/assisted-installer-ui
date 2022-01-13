@@ -485,10 +485,7 @@ export const hostActionResolver = ({
 
     if (canUnbindHost) {
       // skip at all if the callback is not provided
-      const canUnbindHostResult = canUnbindHost(host);
-      const isEnabled = canUnbindHostResult?.[0];
-      const disabledReason = canUnbindHostResult?.[1];
-
+      const [isEnabled, disabledReason] = canUnbindHost(host);
       if (isEnabled || disabledReason) {
         actions.push({
           title: (
