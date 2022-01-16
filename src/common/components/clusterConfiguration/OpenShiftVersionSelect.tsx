@@ -33,10 +33,12 @@ type OpenShiftVersionSelectProps = {
 const OpenShiftVersionSelect: React.FC<OpenShiftVersionSelectProps> = ({ versions }) => {
   const selectOptions = React.useMemo(
     () =>
-      versions.map((version) => ({
-        label: version.label,
-        value: version.value,
-      })),
+      versions
+        .filter((version) => version.supportLevel !== 'maintenance')
+        .map((version) => ({
+          label: version.label,
+          value: version.value,
+        })),
     [versions],
   );
 
