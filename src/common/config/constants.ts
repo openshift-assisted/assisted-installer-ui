@@ -28,6 +28,8 @@ export const FIREWALL_DOCUMENTATION_LINK =
 export const getOcpConsoleNodesPage = (ocpConsoleUrl: string) =>
   `${ocpConsoleUrl}/k8s/cluster/nodes`;
 
+export const REDHAT_CONSOLE_OPENSHIFT = 'console.redhat.com/openshift';
+
 // TODO(mlibra): Retrieve branding dynamically, if needed, i.e. via injecting to the "window" object
 export const getProductBrandingCode = () => 'redhat';
 
