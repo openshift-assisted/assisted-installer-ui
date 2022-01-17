@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, TextContent, Button, Stack, StackItem, Tooltip } from '@patternfly/react-core';
+import { Text, TextContent, Button, Stack, StackItem } from '@patternfly/react-core';
 import { HelpIcon } from '@patternfly/react-icons';
 import {
   Cluster,
@@ -63,18 +63,9 @@ const CNVLabel: React.FC<{ clusterId: Cluster['id']; isSingleNode?: boolean }> =
   );
 };
 
-const PlatformIntegrationLabel: React.FC<{ isTooltipHidden: boolean }> = ({
-  isTooltipHidden = false,
-}) => (
+const PlatformIntegrationLabel: React.FC = () => (
   <>
-    <Tooltip
-      hidden={isTooltipHidden}
-      content={
-        'Platform integration is applicable only when all discovered hosts are from the same platform'
-      }
-    >
-      <span>Integrate with platform</span>
-    </Tooltip>{' '}
+    <span>Integrate with platform</span>{' '}
     <PopoverIcon
       variant={'plain'}
       bodyContent={
@@ -89,22 +80,20 @@ const PlatformIntegrationLabel: React.FC<{ isTooltipHidden: boolean }> = ({
   </>
 );
 
-const SchedulableMastersLabel: React.FC<{ isTooltipHidden: boolean }> = ({
-  isTooltipHidden = false,
-}) => (
+const SchedulableMastersLabel: React.FC = () => (
   <>
-    <Tooltip
-      hidden={isTooltipHidden}
-      content={'This toggle will be "On" and not editable when less than 5 hosts were discovered'}
-    >
-      <span>Run workloads on control plane nodes</span>
-    </Tooltip>{' '}
+    <span>Run workloads on control plane nodes</span>{' '}
     <PopoverIcon
       variant={'plain'}
       bodyContent={<p>Enables your control plane nodes to be used for running applications.</p>}
     />
   </>
 );
+
+const platformIntegrationTooltip =
+  'Platform integration is applicable only when all discovered hosts are from the same platform';
+const schedulableMastersTooltip =
+  'This toggle will be "On" and not editable when less than 5 hosts were discovered';
 
 const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const [isDiscoveryHintModalOpen, setDiscoveryHintModalOpen] = React.useState(false);
@@ -163,17 +152,25 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
       <StackItem>
         {isPlatformIntegrationFeatureEnabled && (
           <SwitchField
+            tooltipProps={{
+              hidden: isPlatformIntegrationSupported,
+              content: platformIntegrationTooltip,
+            }}
             isDisabled={!isPlatformIntegrationSupported && cluster?.platform?.type === 'baremetal'}
             name={'usePlatformIntegration'}
-            label={<PlatformIntegrationLabel isTooltipHidden={isPlatformIntegrationSupported} />}
+            label={<PlatformIntegrationLabel />}
           />
         )}
       </StackItem>
       <StackItem>
         <SwitchField
+          tooltipProps={{
+            hidden: isSchedulableMastersEnabled,
+            content: schedulableMastersTooltip,
+          }}
           isDisabled={!isSchedulableMastersEnabled}
           name={'schedulableMasters'}
-          label={<SchedulableMastersLabel isTooltipHidden={isSchedulableMastersEnabled} />}
+          label={<SchedulableMastersLabel />}
         />
       </StackItem>
       <StackItem>
