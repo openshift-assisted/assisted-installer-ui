@@ -19,6 +19,7 @@ import {
   useAlerts,
   RenderIf,
   KubeconfigDownload,
+  REDHAT_CONSOLE_OPENSHIFT,
 } from '../../../common';
 import ClusterHostsTable from '../hosts/ClusterHostsTable';
 import ClusterToolbar from '../clusters/ClusterToolbar';
@@ -40,6 +41,17 @@ import { VSPHERE_CONFIG_LINK } from '../../../common/config/constants';
 type ClusterDetailProps = {
   cluster: Cluster;
 };
+
+// const linkToConsole: React.FC = () => (
+//   <>
+//     <>
+//       Add new hosts using the Discovery ISO you can find under your cluster\'s "Add hosts” tab on{' '}
+//     </>
+//     <a href={REDHAT_CONSOLE_OPENSHIFT} target="_blank" rel="noopener noreferrer">
+//       {'console.red.hat.com/openshift'}
+//     </a>
+//   </>
+// );
 
 const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
   const { addAlert } = useAlerts();
@@ -84,6 +96,23 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
               }
             />
           </RenderIf>
+          <RenderIf condition={cluster.status == 'installed'}>
+            <Alert
+              variant="info"
+              isInline
+              title={
+                <p>
+                  Add new hosts using the Discovery ISO you can find under your cluster's "Add
+                  hosts” tab on{' '}
+                  <a href={REDHAT_CONSOLE_OPENSHIFT} target="_blank" rel="noopener noreferrer">
+                    console.redhat.com/openshift <i className="fas fa-external-link-alt" />
+                  </a>
+                  .
+                </p>
+              }
+            />
+          </RenderIf>
+
           <RenderIf condition={cluster.platform?.type !== 'baremetal'}>
             <Alert
               variant="warning"
