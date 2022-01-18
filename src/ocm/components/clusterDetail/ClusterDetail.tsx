@@ -85,7 +85,9 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
               }
             />
           </RenderIf>
-          <RenderIf condition={cluster.status == 'installed'}>
+          <RenderIf
+            condition={cluster.status === 'installed' && cluster.highAvailabilityMode === 'Full'}
+          >
             <Alert
               variant="info"
               isInline
