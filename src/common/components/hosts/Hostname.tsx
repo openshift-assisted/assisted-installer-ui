@@ -27,7 +27,6 @@ const Hostname: React.FC<HostnameProps> = ({
   readonly = false,
 }) => {
   const hostname = title || getHostname(host, inventory) || DASH;
-  const isHostnameChangeRequested = !title && host.requestedHostname !== inventory.hostname;
 
   const isNotLocalhost = hostname !== 'localhost';
   const isUnique = hosts
@@ -46,10 +45,7 @@ const Hostname: React.FC<HostnameProps> = ({
           <ExclamationTriangleIcon color={warningColor.value} />
         </FlexItem>
       )}
-      <FlexItem>
-        {hostname}
-        {isHostnameChangeRequested && ' *'}
-      </FlexItem>
+      <FlexItem>{hostname}</FlexItem>
     </Flex>
   );
 
