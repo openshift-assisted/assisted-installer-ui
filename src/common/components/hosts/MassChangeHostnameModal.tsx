@@ -1,7 +1,5 @@
 import * as React from 'react';
 import {
-  Alert,
-  AlertVariant,
   Button,
   ButtonType,
   ButtonVariant,
@@ -11,8 +9,6 @@ import {
   Modal,
   ModalBoxBody,
   ModalBoxFooter,
-  Progress,
-  ProgressMeasureLocation,
   Split,
   SplitItem,
   Stack,
@@ -26,6 +22,7 @@ import {
   getRichTextValidation,
   hostnameValidationSchema,
   HOSTNAME_VALIDATION_MESSAGES,
+  ModalProgress,
 } from '../ui';
 import { Host, Inventory, stringToJSON } from '../../api';
 
@@ -137,9 +134,9 @@ const MassChangeHostnameForm: React.FC<MassChangeHostnameFormProps> = ({
         <ModalBoxBody>
           <Stack hasGutter>
             <StackItem>
-              <div>To rename hostnames use custom template:</div>
+              <div>Rename hostnames using the custom template:</div>
               <div>
-                use <b>{`{{nnn}}`}</b> for 001
+                <b>{`{{n}}`}</b> to add a number.
               </div>
             </StackItem>
             <StackItem>
@@ -150,7 +147,7 @@ const MassChangeHostnameForm: React.FC<MassChangeHostnameFormProps> = ({
                 richValidationMessages={HOSTNAME_VALIDATION_MESSAGES}
               />
               <HelperText>
-                <HelperTextItem variant="indeterminate">{`For example: host-{{nnn}}`}</HelperTextItem>
+                <HelperTextItem variant="indeterminate">{`For example: host-{{n}}`}</HelperTextItem>
               </HelperText>
             </StackItem>
             <StackItem>
@@ -179,22 +176,12 @@ const MassChangeHostnameForm: React.FC<MassChangeHostnameFormProps> = ({
                 </SplitItem>
               </Split>
             </StackItem>
-            {status?.error && (
-              <StackItem>
-                <Alert variant={AlertVariant.danger} title={status.error.title} isInline>
-                  {status.error.message}
-                </Alert>
-              </StackItem>
-            )}
-            {isSubmitting && (
-              <StackItem>
-                <Progress
-                  value={(100 * (patchingHost + 1)) / selectedHosts.length}
-                  measureLocation={ProgressMeasureLocation.outside}
-                  aria-label="Patching progress"
-                />
-              </StackItem>
-            )}
+            <StackItem>
+              <ModalProgress
+                error={status?.error}
+                progress={isSubmitting ? (100 * (patchingHost + 1)) / selectedHosts.length : null}
+              />
+            </StackItem>
           </Stack>
         </ModalBoxBody>
         <ModalBoxFooter>
@@ -210,7 +197,7 @@ const MassChangeHostnameForm: React.FC<MassChangeHostnameFormProps> = ({
   );
 };
 
-type MassChangeHostnameModalProps = {
+export type MassChangeHostnameModalProps = {
   hosts: Host[];
   selectedHostIDs: string[];
   isOpen: boolean;

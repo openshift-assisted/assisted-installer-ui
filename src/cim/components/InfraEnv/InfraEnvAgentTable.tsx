@@ -30,18 +30,26 @@ import { TableRow } from '../../../common/components/hosts/AITable';
 import { InfraEnvAgentTableProps } from '../ClusterDeployment/types';
 import MassApproveAgentModal from '../modals/MassApproveAgentModal';
 import { ActionItemsContext } from '../../../common/components/hosts/HostToolbar';
+import { AgentK8sResource } from '../../types';
+import { MassChangeHostnameModalProps } from '../../../common/components/hosts/MassChangeHostnameModal';
 
 type MassApproveActionProps = {
   onApprove: VoidFunction;
+  selectedAgents: AgentK8sResource[];
 };
 
-const MassApproveAction: React.FC<MassApproveActionProps> = ({ onApprove }) => {
+const MassApproveAction: React.FC<MassApproveActionProps> = ({ onApprove, selectedAgents }) => {
   const isDisabled = React.useContext(ActionItemsContext);
+
+  let disabledDescription = isDisabled ? 'Select one or more hosts to approve' : undefined;
+  if (selectedAgents.every((a) => a.spec.approved)) {
+    disabledDescription = 'All selected hosts are already approved';
+  }
   return (
     <DropdownItem
       onClick={onApprove}
-      isDisabled={isDisabled}
-      description={isDisabled ? 'Select one or more hosts to approve' : undefined}
+      isDisabled={!!disabledDescription}
+      description={disabledDescription}
     >
       Approve
     </DropdownItem>
@@ -86,7 +94,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
           agents,
           bareMetalHosts,
           onEditHostname: actions.onEditHost,
-          onApprove: actions.onApprove,
+          onApprove,
         }),
         (!hideClusterColumn && clusterColumn(agents, getClusterDeploymentLink)) as TableRow<Host>,
         discoveredAtColumn,
@@ -94,10 +102,49 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
         memoryColumn,
         disksColumn,
       ].filter(Boolean),
-    [agents, actions, getClusterDeploymentLink, hostActions, bareMetalHosts, hideClusterColumn],
+    [
+      agents,
+      actions,
+      getClusterDeploymentLink,
+      hostActions,
+      bareMetalHosts,
+      hideClusterColumn,
+      onApprove,
+    ],
   );
 
   const hostIDs = hosts.map((h) => h.id);
+  const selectedAgents = agents.filter((a) => selectedHostIDs.includes(a.metadata?.uid || ''));
+
+  const massActions = [
+    <ChangeHostnameAction
+      key="hostname"
+      onChangeHostname={() => setMassChangeHostOpen(!isMassChangeHostOpen)}
+    />,
+  ];
+  if (onApprove) {
+    massActions.push(
+      <MassApproveAction
+        key="approve"
+        onApprove={() => setMassApproveOpen(!isMassApproveOpen)}
+        selectedAgents={selectedAgents}
+      />,
+    );
+  }
+
+  const onAgentChangeHostname: MassChangeHostnameModalProps['onChangeHostname'] = async (
+    host,
+    hostname,
+  ) => {
+    const agent = agents.find((a) => a.metadata?.uid === host.id);
+    if (agent) {
+      return onChangeHostname(agent, hostname);
+    } else {
+      const bmh = bareMetalHosts.find((bmh) => bmh.metadata?.uid === host.id);
+      return bmh ? onChangeBMHHostname(bmh, hostname) : noop;
+    }
+  };
+
   return (
     <>
       <HostToolbar
@@ -105,16 +152,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
         selectedHostIDs={selectedHostIDs}
         onSelectNone={() => setSelectedHostIDs([])}
         onSelectAll={() => setSelectedHostIDs(hostIDs)}
-        actionItems={[
-          <ChangeHostnameAction
-            key="hostname"
-            onChangeHostname={() => setMassChangeHostOpen(!isMassChangeHostOpen)}
-          />,
-          <MassApproveAction
-            key="approve"
-            onApprove={() => setMassApproveOpen(!isMassApproveOpen)}
-          />,
-        ]}
+        actionItems={massActions}
       />
       <HostsTable
         hosts={hosts}
@@ -136,23 +174,17 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
         isOpen={isMassChangeHostOpen}
         hosts={hosts}
         selectedHostIDs={selectedHostIDs}
-        onChangeHostname={async (host, hostname) => {
-          const agent = agents.find((a) => a.metadata?.uid === host.id);
-          if (agent) {
-            return onChangeHostname(agent, hostname);
-          } else {
-            const bmh = bareMetalHosts.find((bmh) => bmh.metadata?.uid === host.id);
-            return bmh ? onChangeBMHHostname(bmh, hostname) : noop;
-          }
-        }}
+        onChangeHostname={onAgentChangeHostname}
         onClose={() => setMassChangeHostOpen(false)}
       />
-      <MassApproveAgentModal
-        isOpen={isMassApproveOpen}
-        agents={agents.filter((a) => selectedHostIDs.includes(a.metadata?.uid || ''))}
-        onApprove={onApprove}
-        onClose={() => setMassApproveOpen(false)}
-      />
+      {onApprove && (
+        <MassApproveAgentModal
+          isOpen={isMassApproveOpen}
+          agents={selectedAgents}
+          onApprove={onApprove}
+          onClose={() => setMassApproveOpen(false)}
+        />
+      )}
     </>
   );
 };

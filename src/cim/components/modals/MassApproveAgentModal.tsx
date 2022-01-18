@@ -6,8 +6,6 @@ import {
   Modal,
   ModalBoxBody,
   ModalBoxFooter,
-  Progress,
-  ProgressMeasureLocation,
   Stack,
   StackItem,
 } from '@patternfly/react-core';
@@ -16,7 +14,7 @@ import { getAIHosts } from '../helpers';
 import { AgentK8sResource } from '../../types';
 import HostsTable from '../../../common/components/hosts/HostsTable';
 import { TableRow } from '../../../common/components/hosts/AITable';
-import { Host, HOST_STATUS_LABELS } from '../../../common';
+import { Host, HOST_STATUS_LABELS, ModalProgress } from '../../../common';
 import { getStatusIcon } from '../../../common/components/hosts/HostStatus';
 
 type ApproveTableRowProps = {
@@ -93,24 +91,27 @@ const MassApproveAgentModal: React.FC<MassApproveAgentModalProps> = ({
   isOpen,
   onClose,
 }) => {
-  const [approving, setApproving] = React.useState<number | null>(null);
-  const [error, setError] = React.useState();
+  const [progress, setProgress] = React.useState<number | null>(null);
+  const [error, setError] = React.useState<{ title: string; message: string }>();
   const onClick = async () => {
     setError(undefined);
     let i = 0;
     try {
       for (const agent of agents) {
         if (!agent.spec.approved) {
-          setApproving(i);
+          setProgress((100 * (i + 1)) / agents.length);
           await onApprove(agent);
         }
         i++;
       }
-      setApproving(null);
+      setProgress(null);
       onClose();
     } catch (err) {
-      setError(err?.message || 'An error occured while approving agents');
-      setApproving(null);
+      setError({
+        title: 'Failed to update host',
+        message: err?.message || 'An error occured while approving agents',
+      });
+      setProgress(null);
     }
   };
   const { content, hosts } = React.useMemo(
@@ -141,27 +142,16 @@ const MassApproveAgentModal: React.FC<MassApproveAgentModalProps> = ({
               <div>No hosts selected</div>
             </HostsTable>
           </StackItem>
-          {error && (
-            <StackItem>
-              <Alert variant="default" title={error} />
-            </StackItem>
-          )}
-          {approving !== null && (
-            <StackItem>
-              <Progress
-                value={(100 * (approving + 1)) / agents.length}
-                measureLocation={ProgressMeasureLocation.outside}
-                aria-label="Patching progress"
-              />
-            </StackItem>
-          )}
+          <StackItem>
+            <ModalProgress error={error} progress={progress} />
+          </StackItem>
         </Stack>
       </ModalBoxBody>
       <ModalBoxFooter>
-        <Button onClick={onClick} isDisabled={approving !== null}>
+        <Button onClick={onClick} isDisabled={progress !== null}>
           Approve all hosts
         </Button>
-        <Button onClick={onClose} variant={ButtonVariant.secondary} isDisabled={approving !== null}>
+        <Button onClick={onClose} variant={ButtonVariant.secondary} isDisabled={progress !== null}>
           Cancel
         </Button>
       </ModalBoxFooter>

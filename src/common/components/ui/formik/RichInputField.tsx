@@ -29,6 +29,22 @@ import HelperText from './HelperText';
 
 import './RichInputField.css';
 
+const getHelperTextVariant = (
+  validationMessage: string,
+  value: RichValidationProps['value'],
+  errors: RichValidationProps['error'],
+): {
+  variant: HelperTextItemProps['variant'];
+  icon?: HelperTextItemProps['icon'];
+} => {
+  if (!value) {
+    return { variant: 'indeterminate' };
+  } else if (errors?.includes(validationMessage)) {
+    return { variant: 'error', icon: <TimesIcon /> };
+  }
+  return { variant: 'success', icon: <CheckIcon /> };
+};
+
 type RichValidationProps = {
   // eslint-disable-next-line
   value: any;
@@ -44,14 +60,7 @@ export const RichValidation: React.FC<RichValidationProps> = ({
   return (
     <PFHelperText component="ul" className="rich-input__rules">
       {Object.keys(richValidationMessages).map((key) => {
-        const variant: {
-          variant: HelperTextItemProps['variant'];
-          icon?: HelperTextItemProps['icon'];
-        } = !value
-          ? { variant: 'indeterminate' }
-          : error?.includes(richValidationMessages[key])
-          ? { variant: 'error', icon: <TimesIcon /> }
-          : { variant: 'success', icon: <CheckIcon /> };
+        const variant = getHelperTextVariant(richValidationMessages[key], value, error);
         return (
           <HelperTextItem key={key} isDynamic component="li" {...variant}>
             {richValidationMessages[key]}

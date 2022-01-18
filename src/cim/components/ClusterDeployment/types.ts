@@ -155,7 +155,7 @@ export type InfraEnvAgentTableProps = ClusterDeploymentHostsTablePropsActions & 
     bmh: BareMetalHostK8sResource,
     hostname: string,
   ) => Promise<BareMetalHostK8sResource>;
-  onApprove: (agents: AgentK8sResource) => Promise<AgentK8sResource>;
+  onApprove?: (agents: AgentK8sResource) => Promise<AgentK8sResource>;
 };
 
 export type ClusterDeploymentHostsDiscoveryProps = {
@@ -179,4 +179,5 @@ export type ClusterDeploymentHostsDiscoveryProps = {
   fetchNMState: EditBMHModalProps['fetchNMState'];
   isBMPlatform: AddHostModalProps['isBMPlatform'];
   getClusterDeploymentLink: InfraEnvAgentTableProps['getClusterDeploymentLink'];
+  onChangeBMHHostname: InfraEnvAgentTableProps['onChangeBMHHostname'];
 };
