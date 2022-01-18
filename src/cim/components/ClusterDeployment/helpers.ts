@@ -126,8 +126,8 @@ export const isAgentOfCluster = (agent: AgentK8sResource, cdName?: string, cdNam
   agent.spec?.clusterDeploymentName?.namespace === cdNamespace;
 
 export const getAgentsHostsNames = (
-  agents: AgentK8sResource[],
-  bmhs: BareMetalHostK8sResource[],
+  agents: AgentK8sResource[] = [],
+  bmhs: BareMetalHostK8sResource[] = [],
 ): string[] => {
   const raw: (string | undefined)[] = agents.map((agent) => agent.spec?.hostname);
   bmhs.forEach((bmh) => {
