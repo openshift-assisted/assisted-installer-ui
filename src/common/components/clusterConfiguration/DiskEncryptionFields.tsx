@@ -9,8 +9,6 @@ const DiskEncryptionControlGroup: React.FC<DiskEncryptionControlGroupProps> = ({
   diskEncryptionMode,
   isDisabled,
 }) => {
-  const enableOnBoth = enableDiskEncryptionOnWorkers && enableDiskEncryptionOnMasters;
-
   return (
     <Stack hasGutter>
       <StackItem>
@@ -20,7 +18,7 @@ const DiskEncryptionControlGroup: React.FC<DiskEncryptionControlGroupProps> = ({
           isDisabled={isDisabled}
         />
       </StackItem>
-      {enableDiskEncryptionOnMasters && !enableOnBoth && (
+      {enableDiskEncryptionOnMasters && !enableDiskEncryptionOnWorkers && (
         <StackItem>
           <DiskEncryptionMode
             diskEncryptionMode={diskEncryptionMode}
@@ -37,7 +35,7 @@ const DiskEncryptionControlGroup: React.FC<DiskEncryptionControlGroupProps> = ({
           label="Enable encryption of installation disks workers"
         />
       </StackItem>
-      {(enableDiskEncryptionOnWorkers || enableOnBoth) && (
+      {enableDiskEncryptionOnWorkers && (
         <StackItem>
           <DiskEncryptionMode
             diskEncryptionMode={diskEncryptionMode}
