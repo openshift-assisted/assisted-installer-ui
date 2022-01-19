@@ -19,6 +19,7 @@ import {
   useAlerts,
   RenderIf,
   KubeconfigDownload,
+  REDHAT_CONSOLE_OPENSHIFT,
 } from '../../../common';
 import ClusterHostsTable from '../hosts/ClusterHostsTable';
 import ClusterToolbar from '../clusters/ClusterToolbar';
@@ -36,6 +37,8 @@ import ClusterProgress from '../../../common/components/clusterDetail/ClusterPro
 import { EventsModalButton } from '../../../common/components/ui/eventsModal';
 import { onFetchEvents } from '../fetching/fetchEvents';
 import { VSPHERE_CONFIG_LINK } from '../../../common/config/constants';
+import { isSNO } from '../../selectors';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 
 type ClusterDetailProps = {
   cluster: Cluster;
@@ -84,6 +87,23 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
               }
             />
           </RenderIf>
+          <RenderIf condition={cluster.status === 'installed' && !isSNO(cluster)}>
+            <Alert
+              variant="info"
+              isInline
+              title={
+                <p>
+                  Add new hosts by generating a new Discovery ISO under your cluster's "Add hosts”
+                  tab on{' '}
+                  <a href={REDHAT_CONSOLE_OPENSHIFT} target="_blank" rel="noopener noreferrer">
+                    console.redhat.com/openshift <ExternalLinkAltIcon />
+                  </a>
+                  .
+                </p>
+              }
+            />
+          </RenderIf>
+
           <RenderIf condition={cluster.platform?.type !== 'baremetal'}>
             <Alert
               variant="warning"

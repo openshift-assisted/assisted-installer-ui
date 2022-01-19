@@ -17,3 +17,5 @@ export const selectServiceNetworkCIDR = ({
   serviceNetworks,
   serviceNetworkCidr,
 }: Partial<Cluster>) => _.head(serviceNetworks)?.cidr ?? serviceNetworkCidr;
+export const isSNO = ({ highAvailabilityMode }: Partial<Cluster>) =>
+  highAvailabilityMode === 'None';
