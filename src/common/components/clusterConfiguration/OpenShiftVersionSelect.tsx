@@ -4,6 +4,7 @@ import { global_warning_color_100 as warningColor } from '@patternfly/react-toke
 import { OPENSHIFT_LIFE_CYCLE_DATES_LINK } from '../../config';
 import { OpenshiftVersionOptionType } from '../../types';
 import { SelectField } from '../ui';
+import openshiftVersionData from './openshiftVersionsData.json';
 
 const OpenShiftLifeCycleDatesLink = () => (
   <a href={OPENSHIFT_LIFE_CYCLE_DATES_LINK} target="_blank" rel="noopener noreferrer">
@@ -11,8 +12,22 @@ const OpenShiftLifeCycleDatesLink = () => (
   </a>
 );
 
-const lastSupportedVersions = ['4.7'];
-const lastSupportDate = 'August 24, 2022';
+const diffInDaysBetweenDates = (versionDateString: string): number => {
+  const versionDate = new Date(versionDateString);
+  const today = Date.now();
+  const msInOneDay = 60 * 60 * 24 * 1000;
+  const utcVersion = Date.UTC(
+    versionDate.getFullYear(),
+    versionDate.getMonth(),
+    versionDate.getDate(),
+  );
+  return Math.floor((utcVersion - today) / msInOneDay);
+};
+
+const isSelectedVersionInDataFile = (selectedVersionValue: string): boolean => {
+  if (selectedVersionValue in openshiftVersionData['versions']) return true;
+  return false;
+};
 
 const getOpenshiftVersionHelperText = (versions: OpenshiftVersionOptionType[]) => (
   selectedVersionValue: string,
@@ -26,13 +41,15 @@ const getOpenshiftVersionHelperText = (versions: OpenshiftVersionOptionType[]) =
         &nbsp;Please note that this version is not production ready. <OpenShiftLifeCycleDatesLink />
       </>
     );
-  } else if (lastSupportedVersions.find((version) => version === selectedVersionValue)) {
+  } else if (
+    isSelectedVersionInDataFile(selectedVersionValue) &&
+    diffInDaysBetweenDates(openshiftVersionData['versions'][selectedVersionValue]) <= 30
+  ) {
     helperTextComponent = (
       <>
         <ExclamationTriangleIcon color={warningColor.value} size="sm" />
         &nbsp;
-        {`Full support for this version ends on ${lastSupportDate} and won't be available as an installation option afterwards.`}
-        &nbsp;
+        {`Full support for this version ends on ${openshiftVersionData['versions'][selectedVersionValue]} and won't be available as an installation option afterwards. `}
         <OpenShiftLifeCycleDatesLink />
       </>
     );
