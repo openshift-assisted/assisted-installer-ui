@@ -41,7 +41,7 @@ const DiskEncryptionModeTPMv2: React.FC = () => {
 const DiskEncryptionModeTang: React.FC = () => {
   return (
     <>
-      TANG{' '}
+      Tang{' '}
       <PopoverIcon
         component={'a'}
         variant={'plain'}
