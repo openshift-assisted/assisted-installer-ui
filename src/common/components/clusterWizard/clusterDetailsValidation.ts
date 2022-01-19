@@ -64,7 +64,6 @@ export const getClusterDetailsInitialValues = ({
     enableDiskEncryptionOnWorkers: ['all', 'workers'].includes(
       cluster?.diskEncryption?.enableOn ?? 'none',
     ),
-    enableDiskEncryptionSNO: ['all'].includes(cluster?.diskEncryption?.enableOn ?? 'none'),
     diskEncryptionMode: cluster?.diskEncryption?.mode ?? 'tpmv2',
     diskEncryptionTangServers: cluster?.diskEncryption?.tangServers
       ? parseTangServers(cluster.diskEncryption.tangServers)
