@@ -83,23 +83,24 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
             />
           </GridItem>
           <ClusterDetailStatusVarieties cluster={cluster} clusterVarieties={clusterVarieties} />
-          <GridItem>
-            <KubeconfigDownload
-              status={cluster.status}
-              clusterId={cluster.id}
-              id={getClusterDetailId('button-download-kubeconfig')}
-              disable={dateDifference <= 0}
-            />
-          </GridItem>
+          <RenderIf condition={dateDifference > 0}>
+            <GridItem>
+              <KubeconfigDownload
+                status={cluster.status}
+                clusterId={cluster.id}
+                id={getClusterDetailId('button-download-kubeconfig')}
+              />
+            </GridItem>
+          </RenderIf>
           <RenderIf condition={typeof inactiveDeletionHours === 'number'}>
             <Alert
               variant="info"
               isInline
               title={
-                dateDifference <= 0
-                  ? `The kubeconfig file has been automatically deleted ${inactiveDeletionDays} days after installation.`
-                  : `Download and save your kubeconfig file in a safe place. This file will be automatically ` +
+                dateDifference > 0
+                  ? `Download and save your kubeconfig file in a safe place. This file will be automatically ` +
                     `deleted from Assisted Installer's service in ${dateDifference} days.`
+                  : `The kubeconfig file was deleted because more than ${inactiveDeletionDays} days passed since this cluster was installed.`
               }
             />
           </RenderIf>
