@@ -9,8 +9,9 @@ import { PullSecret } from '../clusters';
 import { ManagedDomain } from '../../api';
 import { OpenshiftVersionOptionType } from '../../types';
 import { CheckboxField, InputField, SelectField } from '../ui/formik';
-import DiskEncryptionControlGroup from '../clusterConfiguration/DiskEncryptionFields';
+import DiskEncryptionControlGroup from '../clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
 import { ClusterDetailsValues } from './types';
+import { isSNO } from '../../../ocm/selectors/clusterSelectors';
 
 export type ClusterDetailsFormFieldsProps = {
   canEditPullSecret: boolean;
@@ -114,10 +115,9 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
       {canEditPullSecret && <PullSecret isOcm={isOcm} defaultPullSecret={defaultPullSecret} />}
       {extensionAfter?.['pullSecret'] && extensionAfter['pullSecret']}
       <DiskEncryptionControlGroup
-        enableDiskEncryptionOnWorkers={values.enableDiskEncryptionOnWorkers}
-        enableDiskEncryptionOnMasters={values.enableDiskEncryptionOnMasters}
-        diskEncryptionMode={values.diskEncryptionMode}
+        values={values}
         isDisabled={isPullSecretSet}
+        isSNO={isSNO({ highAvailabilityMode })}
       />
       {atListOneDiskEncryptionEnableOn && values.diskEncryptionMode == 'tpmv2' && (
         <Alert

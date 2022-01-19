@@ -35,6 +35,8 @@ const ClusterDetailsService = {
       'enableDiskEncryptionOnMasters',
       'enableDiskEncryptionOnWorkers',
       'diskEncryptionMode',
+      'diskEncryption',
+      'diskEncryptionTangServers',
     ]);
     params.diskEncryption = DiskEncryptionService.getDiskEncryptionParams(values);
     return params;
