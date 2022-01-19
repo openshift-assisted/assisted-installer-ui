@@ -16,10 +16,15 @@ const DiskEncryptionService = {
   getDiskEncryptionParams(values: ClusterDetailsValues): ClusterCreateParams['diskEncryption'] {
     return {
       mode: values.diskEncryptionMode,
-      enableOn: DiskEncryptionService.diskEncryptionEnableOn(
-        values.enableDiskEncryptionOnMasters,
-        values.enableDiskEncryptionOnWorkers,
-      ),
+      enableOn:
+        values.highAvailabilityMode === 'None'
+          ? values.enableDiskEncryptionOnMasters
+            ? 'all'
+            : 'none'
+          : DiskEncryptionService.diskEncryptionEnableOn(
+              values.enableDiskEncryptionOnMasters,
+              values.enableDiskEncryptionOnWorkers,
+            ),
       tangServers:
         values.diskEncryptionMode == 'tang'
           ? JSON.stringify(values.diskEncryptionTangServers)
