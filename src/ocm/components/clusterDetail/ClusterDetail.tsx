@@ -36,13 +36,26 @@ import { useDefaultConfiguration } from '../clusterConfiguration/ClusterDefaultC
 import ClusterProgress from '../../../common/components/clusterDetail/ClusterProgress';
 import { EventsModalButton } from '../../../common/components/ui/eventsModal';
 import { onFetchEvents } from '../fetching/fetchEvents';
-import { VSPHERE_CONFIG_LINK } from '../../../common/config/constants';
+import { MS_PER_DAY, TIME_ZERO, VSPHERE_CONFIG_LINK } from '../../../common/config/constants';
 import { isSNO } from '../../selectors';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 
 type ClusterDetailProps = {
   cluster: Cluster;
 };
+
+function calculateDateDifference(inactiveDeletionDays: number, completedAt?: string) {
+  if (completedAt && completedAt !== TIME_ZERO) {
+    const installedAt = new Date(completedAt);
+    const today = new Date();
+
+    return (
+      inactiveDeletionDays - Math.floor((today.valueOf() - installedAt.valueOf()) / MS_PER_DAY)
+    );
+  } else {
+    return inactiveDeletionDays;
+  }
+}
 
 const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
   const { addAlert } = useAlerts();
@@ -51,6 +64,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
   const { credentials, credentialsError } = clusterVarieties;
   const { inactiveDeletionHours } = useDefaultConfiguration(['inactiveDeletionHours']);
   const inactiveDeletionDays = Math.round((inactiveDeletionHours || 0) / 24);
+  const dateDifference = calculateDateDifference(inactiveDeletionDays, cluster.installCompletedAt);
 
   return (
     <Stack hasGutter>
@@ -74,6 +88,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
               status={cluster.status}
               clusterId={cluster.id}
               id={getClusterDetailId('button-download-kubeconfig')}
+              disable={dateDifference <= 0}
             />
           </GridItem>
           <RenderIf condition={typeof inactiveDeletionHours === 'number'}>
@@ -81,9 +96,10 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
               variant="info"
               isInline
               title={
-                'Download and save your kubeconfig file in a safe place. This file will be ' +
-                "automatically deleted from Assisted Installer's service " +
-                `${inactiveDeletionDays > 0 ? `in ${inactiveDeletionDays} days.` : 'today'}`
+                dateDifference <= 0
+                  ? `The kubeconfig file has been automatically deleted ${inactiveDeletionDays} days after installation.`
+                  : `Download and save your kubeconfig file in a safe place. This file will be automatically ` +
+                    `deleted from Assisted Installer's service in ${dateDifference} days.`
               }
             />
           </RenderIf>
