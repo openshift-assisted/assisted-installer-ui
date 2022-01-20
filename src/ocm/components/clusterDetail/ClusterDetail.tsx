@@ -100,7 +100,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
                 dateDifference > 0
                   ? `Download and save your kubeconfig file in a safe place. This file will be automatically ` +
                     `deleted from Assisted Installer's service in ${dateDifference} days.`
-                  : `The kubeconfig file was deleted because more than ${inactiveDeletionDays} days passed since this cluster was installed.`
+                  : `Kubeconfig file was automatically deleted ${inactiveDeletionDays} days after installation.`
               }
             />
           </RenderIf>
