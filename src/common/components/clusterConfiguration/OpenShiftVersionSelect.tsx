@@ -5,24 +5,13 @@ import { OPENSHIFT_LIFE_CYCLE_DATES_LINK } from '../../config';
 import { OpenshiftVersionOptionType } from '../../types';
 import { SelectField } from '../ui';
 import openshiftVersionData from './openshiftVersionsData.json';
+import { DiffInDaysBetweenDates } from '../../sevices/DateAndTime';
 
 const OpenShiftLifeCycleDatesLink = () => (
   <a href={OPENSHIFT_LIFE_CYCLE_DATES_LINK} target="_blank" rel="noopener noreferrer">
     {'Learn more'} <ExternalLinkAltIcon />
   </a>
 );
-
-const diffInDaysBetweenDates = (versionDateString: string): number => {
-  const versionDate = new Date(versionDateString);
-  const today = Date.now();
-  const msInOneDay = 60 * 60 * 24 * 1000;
-  const utcVersion = Date.UTC(
-    versionDate.getFullYear(),
-    versionDate.getMonth(),
-    versionDate.getDate(),
-  );
-  return Math.floor((utcVersion - today) / msInOneDay);
-};
 
 const isSelectedVersionInDataFile = (selectedVersionValue: string): boolean => {
   if (selectedVersionValue in openshiftVersionData['versions']) return true;
@@ -43,13 +32,13 @@ const getOpenshiftVersionHelperText = (versions: OpenshiftVersionOptionType[]) =
     );
   } else if (
     isSelectedVersionInDataFile(selectedVersionValue) &&
-    diffInDaysBetweenDates(openshiftVersionData['versions'][selectedVersionValue]) <= 30
+    DiffInDaysBetweenDates(openshiftVersionData['versions'][selectedVersionValue]) <= 30
   ) {
     helperTextComponent = (
       <>
         <ExclamationTriangleIcon color={warningColor.value} size="sm" />
         &nbsp;
-        {`Full support for this version ends on ${openshiftVersionData['versions'][selectedVersionValue]} and won't be available as an installation option afterwards. `}
+        {`Full support for this version ends on ${openshiftVersionData['versions'][selectedVersionValue]} and won't be available as an installation option afterwards.`}
         <OpenShiftLifeCycleDatesLink />
       </>
     );
