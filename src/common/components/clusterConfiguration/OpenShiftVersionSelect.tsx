@@ -5,18 +5,13 @@ import { OPENSHIFT_LIFE_CYCLE_DATES_LINK } from '../../config';
 import { OpenshiftVersionOptionType } from '../../types';
 import { SelectField } from '../ui';
 import openshiftVersionData from './openshiftVersionsData.json';
-import { DiffInDaysBetweenDates } from '../../sevices/DateAndTime';
+import { diffInDaysBetweenDates } from '../../sevices/DateAndTime';
 
 const OpenShiftLifeCycleDatesLink = () => (
   <a href={OPENSHIFT_LIFE_CYCLE_DATES_LINK} target="_blank" rel="noopener noreferrer">
     {'Learn more'} <ExternalLinkAltIcon />
   </a>
 );
-
-const isSelectedVersionInDataFile = (selectedVersionValue: string): boolean => {
-  if (selectedVersionValue in openshiftVersionData['versions']) return true;
-  return false;
-};
 
 const getOpenshiftVersionHelperText = (versions: OpenshiftVersionOptionType[]) => (
   selectedVersionValue: string,
@@ -31,8 +26,8 @@ const getOpenshiftVersionHelperText = (versions: OpenshiftVersionOptionType[]) =
       </>
     );
   } else if (
-    isSelectedVersionInDataFile(selectedVersionValue) &&
-    DiffInDaysBetweenDates(openshiftVersionData['versions'][selectedVersionValue]) <= 30
+    selectedVersionValue in openshiftVersionData['versions'] &&
+    diffInDaysBetweenDates(openshiftVersionData['versions'][selectedVersionValue]) <= 30
   ) {
     helperTextComponent = (
       <>
