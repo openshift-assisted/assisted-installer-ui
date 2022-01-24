@@ -4,7 +4,7 @@ import { global_warning_color_100 as warningColor } from '@patternfly/react-toke
 import { OPENSHIFT_LIFE_CYCLE_DATES_LINK } from '../../config';
 import { OpenshiftVersionOptionType } from '../../types';
 import { SelectField } from '../ui';
-import openshiftVersionData from './openshiftVersionsData.json';
+import openshiftVersionData from '../../../ocm/data/openshiftVersionsData.json';
 import { diffInDaysBetweenDates } from '../../sevices/DateAndTime';
 
 const OpenShiftLifeCycleDatesLink = () => (
