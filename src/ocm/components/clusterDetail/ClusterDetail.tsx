@@ -39,7 +39,7 @@ import { onFetchEvents } from '../fetching/fetchEvents';
 import { TIME_ZERO, VSPHERE_CONFIG_LINK } from '../../../common/config/constants';
 import { isSNO } from '../../selectors';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
-import { DiffInDaysBetweenDates } from '../../../common/sevices/DateAndTime';
+import { diffInDaysBetweenDates } from '../../../common/sevices/DateAndTime';
 
 type ClusterDetailProps = {
   cluster: Cluster;
@@ -47,7 +47,7 @@ type ClusterDetailProps = {
 
 function calculateDateDifference(inactiveDeletionDays: number, completedAt?: string) {
   if (completedAt && completedAt !== TIME_ZERO) {
-    return inactiveDeletionDays - DiffInDaysBetweenDates(completedAt);
+    return inactiveDeletionDays - diffInDaysBetweenDates(completedAt);
   } else {
     return inactiveDeletionDays;
   }
