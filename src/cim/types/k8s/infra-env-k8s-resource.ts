@@ -21,6 +21,7 @@ export type InfraEnvK8sResource = K8sResourceCommon & {
       noProxy: string;
     };
     nmStateConfigLabelSelector?: Selector;
+    additionalNTPSources?: string[];
   };
   status?: {
     agentLabelSelector?: Selector;
