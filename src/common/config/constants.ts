@@ -279,6 +279,8 @@ export const EVENT_SEVERITIES: Event['severity'][] = ['info', 'warning', 'error'
 
 export const TIME_ZERO = '0001-01-01T00:00:00.000Z';
 
+export const MS_PER_DAY = 1000 * 60 * 60 * 24;
+
 export const NO_SUBNET_SET = 'NO_SUBNET_SET';
 
 export const PREFIX_MAX_RESTRICTION = {

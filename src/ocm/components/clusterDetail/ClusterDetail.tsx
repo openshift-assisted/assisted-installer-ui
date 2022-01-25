@@ -36,13 +36,22 @@ import { useDefaultConfiguration } from '../clusterConfiguration/ClusterDefaultC
 import ClusterProgress from '../../../common/components/clusterDetail/ClusterProgress';
 import { EventsModalButton } from '../../../common/components/ui/eventsModal';
 import { onFetchEvents } from '../fetching/fetchEvents';
-import { VSPHERE_CONFIG_LINK } from '../../../common/config/constants';
+import { TIME_ZERO, VSPHERE_CONFIG_LINK } from '../../../common/config/constants';
 import { isSNO } from '../../selectors';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
+import { diffInDaysBetweenDates } from '../../../common/sevices/DateAndTime';
 
 type ClusterDetailProps = {
   cluster: Cluster;
 };
+
+function calculateDateDifference(inactiveDeletionDays: number, completedAt?: string) {
+  if (completedAt && completedAt !== TIME_ZERO) {
+    return inactiveDeletionDays - diffInDaysBetweenDates(completedAt);
+  } else {
+    return inactiveDeletionDays;
+  }
+}
 
 const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
   const { addAlert } = useAlerts();
@@ -51,6 +60,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
   const { credentials, credentialsError } = clusterVarieties;
   const { inactiveDeletionHours } = useDefaultConfiguration(['inactiveDeletionHours']);
   const inactiveDeletionDays = Math.round((inactiveDeletionHours || 0) / 24);
+  const dateDifference = calculateDateDifference(inactiveDeletionDays, cluster.installCompletedAt);
 
   return (
     <Stack hasGutter>
@@ -69,21 +79,24 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
             />
           </GridItem>
           <ClusterDetailStatusVarieties cluster={cluster} clusterVarieties={clusterVarieties} />
-          <GridItem>
-            <KubeconfigDownload
-              status={cluster.status}
-              clusterId={cluster.id}
-              id={getClusterDetailId('button-download-kubeconfig')}
-            />
-          </GridItem>
+          <RenderIf condition={dateDifference > 0}>
+            <GridItem>
+              <KubeconfigDownload
+                status={cluster.status}
+                clusterId={cluster.id}
+                id={getClusterDetailId('button-download-kubeconfig')}
+              />
+            </GridItem>
+          </RenderIf>
           <RenderIf condition={typeof inactiveDeletionHours === 'number'}>
             <Alert
               variant="info"
               isInline
               title={
-                'Download and save your kubeconfig file in a safe place. This file will be ' +
-                "automatically deleted from Assisted Installer's service " +
-                `${inactiveDeletionDays > 0 ? `in ${inactiveDeletionDays} days.` : 'today'}`
+                dateDifference > 0
+                  ? `Download and save your kubeconfig file in a safe place. This file will be automatically ` +
+                    `deleted from Assisted Installer's service in ${dateDifference} days.`
+                  : `Kubeconfig file was automatically deleted ${inactiveDeletionDays} days after installation.`
               }
             />
           </RenderIf>
