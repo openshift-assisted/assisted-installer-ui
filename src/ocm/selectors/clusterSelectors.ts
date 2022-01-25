@@ -1,5 +1,5 @@
 import _ from 'lodash/fp';
-import { Cluster } from '../../common/api/types';
+import { Cluster, CpuArchitecture } from '../../common/api/types';
 
 export const selectMachineNetworkCIDR = ({
   machineNetworks,
@@ -19,3 +19,5 @@ export const selectServiceNetworkCIDR = ({
 }: Partial<Cluster>) => _.head(serviceNetworks)?.cidr ?? serviceNetworkCidr;
 export const isSNO = ({ highAvailabilityMode }: Partial<Cluster>) =>
   highAvailabilityMode === 'None';
+export const isArmArchitecture = ({ cpuArchitecture }: Partial<Cluster>) =>
+  cpuArchitecture === CpuArchitecture.ARM;

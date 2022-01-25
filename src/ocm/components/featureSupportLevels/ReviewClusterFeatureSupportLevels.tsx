@@ -27,6 +27,8 @@ const getFeatureReviewText = (featureId: FeatureId): string => {
       return 'Install single node OpenShift (SNO)';
     case 'VIP_AUTO_ALLOC':
       return 'Allocate virtual IPs via DHCP server';
+    case 'ARM64_ARCHITECTURE':
+      return 'Use ARM architecture for the cluster';
     default:
       return featureId;
   }
@@ -128,6 +130,7 @@ export const ClusterFeatureSupportLevelsDetailItem: React.FC<{ cluster: Cluster 
             <LimitedSupportedCluster clusterFeatureSupportLevels={clusterFeatureSupportLevels} />
           )
         }
+        testId="feature-support-levels"
       />
     );
   }

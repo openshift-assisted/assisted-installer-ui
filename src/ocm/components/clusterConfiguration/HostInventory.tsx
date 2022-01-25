@@ -1,10 +1,8 @@
 import React from 'react';
 import { Text, TextContent, Button, Stack, StackItem } from '@patternfly/react-core';
-import { HelpIcon } from '@patternfly/react-icons';
 import {
   Cluster,
   PopoverIcon,
-  CheckboxField,
   useFeature,
   isSingleNodeCluster,
   ClusterWizardStepHeader,
@@ -21,47 +19,12 @@ import InformationAndAlerts from './InformationAndAlerts';
 import {
   HostRequirementsContent,
   SingleHostRequirementsContent,
-  CNVHostRequirementsContent,
 } from '../hosts/HostRequirementsContent';
 import ClusterWizardHeaderExtraActions from './ClusterWizardHeaderExtraActions';
 import { useClusterSupportedPlatforms } from '../../hooks';
 import { useFormikContext } from 'formik';
-
-const OCSLabel: React.FC = () => (
-  <>
-    Install OpenShift Container Storage
-    {/* TODO(mlibra): List of OCS requierements is stabilizing now - https://issues.redhat.com/browse/MGMT-4220 )
-    <PopoverIcon
-      component={'a'}
-      variant={'plain'}
-      IconComponent={HelpIcon}
-      minWidth="50rem"
-      headerContent="Additional Requirements"
-      bodyContent={<>FOO BAR </>}/>
-    */}
-  </>
-);
-
-const CNVLabel: React.FC<{ clusterId: Cluster['id']; isSingleNode?: boolean }> = ({
-  clusterId,
-  isSingleNode,
-}) => {
-  return (
-    <>
-      Install OpenShift Virtualization{' '}
-      <PopoverIcon
-        component={'a'}
-        variant={'plain'}
-        IconComponent={HelpIcon}
-        minWidth="50rem"
-        headerContent="Additional Requirements"
-        bodyContent={
-          <CNVHostRequirementsContent clusterId={clusterId} isSingleNode={isSingleNode} />
-        }
-      />
-    </>
-  );
-};
+import { OcsCheckbox } from './OcsCheckbox';
+import { CnvCheckbox } from './CnvCheckbox';
 
 const PlatformIntegrationLabel: React.FC = () => (
   <>
@@ -131,26 +94,22 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
           </Text>
         </TextContent>
       </StackItem>
-      <StackItem>
-        {isContainerNativeVirtualizationEnabled && (
-          <CheckboxField
-            name="useContainerNativeVirtualization"
-            label={<CNVLabel clusterId={cluster.id} isSingleNode={isSNO} />}
-            helperText="Run virtual machines along containers."
+      {isContainerNativeVirtualizationEnabled && (
+        <StackItem>
+          <CnvCheckbox
+            clusterId={cluster.id}
+            isSNO={isSNO}
+            openshiftVersion={cluster.openshiftVersion}
           />
-        )}
-      </StackItem>
-      <StackItem>
-        {isOpenshiftClusterStorageEnabled && !isSNO && (
-          <CheckboxField
-            name="useExtraDisksForLocalStorage"
-            label={<OCSLabel />}
-            helperText="Persistent software-defined storage for hybrid applications."
-          />
-        )}
-      </StackItem>
-      <StackItem>
-        {isPlatformIntegrationFeatureEnabled && (
+        </StackItem>
+      )}
+      {isOpenshiftClusterStorageEnabled && !isSNO && (
+        <StackItem>
+          <OcsCheckbox openshiftVersion={cluster.openshiftVersion} />
+        </StackItem>
+      )}
+      {isPlatformIntegrationFeatureEnabled && (
+        <StackItem>
           <SwitchField
             tooltipProps={{
               hidden: isPlatformIntegrationSupported,
@@ -160,8 +119,8 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
             name={'usePlatformIntegration'}
             label={<PlatformIntegrationLabel />}
           />
-        )}
-      </StackItem>
+        </StackItem>
+      )}
       <StackItem>
         <SwitchField
           tooltipProps={{
