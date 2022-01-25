@@ -11,9 +11,11 @@ import {
 import { TECH_SUPPORT_LEVEL_LINK } from '../../../common/config/constants';
 import ExternalLink from '../../../common/components/ui/ExternalLink';
 import { Cluster } from '../../../common/api/types';
-import { FeatureSupportLevelContext } from '../../../common/components/featureSupportLevels';
+import {
+  FeatureSupportLevelContext,
+  getLimitedFeatureSupportLevels,
+} from '../../../common/components/featureSupportLevels';
 import { DetailItem } from '../../../common';
-import { getLimitedFeatureSupportLevels } from './utils';
 
 export type SupportLevelSummary = {
   unsupportedVms: boolean;

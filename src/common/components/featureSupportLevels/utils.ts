@@ -1,12 +1,8 @@
-import { ClusterFeatureUsage, FeatureId, FeatureIdToSupportLevel } from '../../../common/types';
-import { Cluster } from '../../../common/api/types';
-import { FeatureSupportLevelData } from '../../../common/components/featureSupportLevels/FeatureSupportLevelContext';
-import { captureException } from '../../sentry';
-import * as Sentry from '@sentry/browser';
-import { stringToJSON } from '../../../common/api/utils';
+import { Cluster } from '../../api/types';
+import { stringToJSON } from '../../api/utils';
+import { ClusterFeatureUsage, FeatureId, FeatureIdToSupportLevel } from '../../types';
+import { FeatureSupportLevelData } from './FeatureSupportLevelContext';
 
-// TODO: move to common since networkConfiguration is dependant on it.
-// will be able to implement it once there's a common error handler
 export const getLimitedFeatureSupportLevels = (
   cluster: Cluster,
   featureSupportLevelData: FeatureSupportLevelData,
@@ -47,11 +43,7 @@ export const getLimitedFeatureSupportLevels = (
     }
     return ret;
   } catch (err) {
-    captureException(
-      err,
-      `Failed to get cluster ${cluster.id} feature support levels`,
-      Sentry.Severity.Warning,
-    );
+    console.error(`Failed to get cluster ${cluster.id} feature support levels`);
     return undefined;
   }
 };
