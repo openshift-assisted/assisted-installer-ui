@@ -39,3 +39,8 @@ export type EditPullSecretFormikValues = {
   pullSecret: string | undefined;
   createSecret: boolean;
 };
+
+export type EditNtpSourcesFormikValues = {
+  enableNtpSources: string;
+  additionalNtpSources: string;
+};
