@@ -9,7 +9,7 @@ import {
 } from '../../types';
 import { getAICluster, getIsSNOCluster } from '../helpers';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionalNTPSourcesDialogToggle';
-import { networkingStatusColumn, useAgentsTable } from '../Agent/tableUtils';
+import { agentStatusColumn, useAgentsTable } from '../Agent/tableUtils';
 import HostsTable from '../../../common/components/hosts/HostsTable';
 import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
 import {
@@ -28,7 +28,10 @@ type ClusterDeploymentHostsNetworkTableProps = {
 
 const ClusterDeploymentHostsNetworkTable: React.FC<ClusterDeploymentHostsNetworkTableProps> = React.memo(
   ({ clusterDeployment, agentClusterInstall, agents, hostActions }) => {
-    const cluster = getAICluster({ clusterDeployment, agentClusterInstall, agents });
+    const cluster = React.useMemo(
+      () => getAICluster({ clusterDeployment, agentClusterInstall, agents }),
+      [clusterDeployment, agentClusterInstall, agents],
+    );
     const [hosts, { onEditHost, canEditRole, onEditRole }, actionResolver] = useAgentsTable(
       { agents },
       hostActions,
@@ -40,16 +43,33 @@ const ClusterDeploymentHostsNetworkTable: React.FC<ClusterDeploymentHostsNetwork
         isSNOCluster
           ? [
               hostnameColumn(onEditHost, hosts),
-              networkingStatusColumn(onEditHost),
+              agentStatusColumn({
+                agents,
+                onEditHostname: hostActions.onEditHost,
+                wizardStepId: 'networking',
+              }),
               activeNICColumn(cluster),
             ]
           : [
               hostnameColumn(onEditHost, hosts),
               roleColumn(canEditRole, onEditRole),
-              networkingStatusColumn(onEditHost),
+              agentStatusColumn({
+                agents,
+                onEditHostname: hostActions.onEditHost,
+                wizardStepId: 'networking',
+              }),
               activeNICColumn(cluster),
             ],
-      [onEditHost, onEditRole, canEditRole, cluster, isSNOCluster, hosts],
+      [
+        canEditRole,
+        onEditRole,
+        isSNOCluster,
+        onEditHost,
+        hosts,
+        agents,
+        hostActions.onEditHost,
+        cluster,
+      ],
     );
 
     return (

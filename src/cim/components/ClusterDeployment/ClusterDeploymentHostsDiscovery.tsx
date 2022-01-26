@@ -14,9 +14,9 @@ import {
   ClusterDeploymentHostsDiscoveryProps,
   ClusterDeploymentHostsDiscoveryValues,
 } from './types';
-import { InfraEnvAgentTable } from '../InfraEnv';
 import { AddHostModal, EditBMHModal, EditAgentModal } from '../modals';
 import { AgentK8sResource, BareMetalHostK8sResource } from '../../types';
+import ClusterDeploymentHostDiscoveryTable from './ClusterDeploymentHostDiscoveryTable';
 
 const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryProps> = ({
   // clusterDeployment,
@@ -32,13 +32,15 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
   canDeleteAgent,
   onSaveAgent,
   canEditHost,
+  canEditRole,
+  onEditRole,
   onSaveBMH,
   onSaveISOParams,
   onFormSaveError,
   fetchSecret,
   fetchNMState,
-  getClusterDeploymentLink,
   onChangeBMHHostname,
+  onApproveAgent,
 }) => {
   const [isDiscoveryHintModalOpen, setDiscoveryHintModalOpen] = React.useState(false);
   const { values } = useFormikContext<ClusterDeploymentHostsDiscoveryValues>();
@@ -83,19 +85,20 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
       </GridItem>
 
       <GridItem>
-        <InfraEnvAgentTable
-          hideClusterColumn={true}
+        <ClusterDeploymentHostDiscoveryTable
           agents={agents}
           bareMetalHosts={bareMetalHosts}
           infraEnv={infraEnv}
-          getClusterDeploymentLink={getClusterDeploymentLink}
           onEditHost={setEditAgent}
           canEditHost={canEditHost}
+          onEditRole={onEditRole}
+          canEditRole={canEditRole}
           canDelete={canDeleteAgent}
           onDeleteHost={onDeleteHost}
           onEditBMH={setEditBMH}
           onChangeHostname={onSaveAgent}
           onChangeBMHHostname={onChangeBMHHostname}
+          onApprove={onApproveAgent}
         />
         <EditBMHModal
           infraEnv={infraEnv}

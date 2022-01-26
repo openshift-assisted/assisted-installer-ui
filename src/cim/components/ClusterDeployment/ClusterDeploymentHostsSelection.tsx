@@ -16,13 +16,10 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
   agentClusterInstall,
   clusterDeployment,
   agents,
-  onValuesChanged,
   aiConfigMap,
+  hostActions,
 }) => {
   const { values } = useFormikContext<ClusterDeploymentHostsSelectionValues>();
-
-  React.useEffect(() => onValuesChanged?.(values), [values, onValuesChanged]);
-
   const { autoSelectHosts } = values;
   const isSNOCluster = getIsSNOCluster(agentClusterInstall);
 
@@ -74,7 +71,9 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
 
             {!autoSelectHosts && (
               <ClusterDeploymentHostsSelectionAdvanced<ClusterDeploymentHostsSelectionValues>
+                clusterDeployment={clusterDeployment}
                 availableAgents={availableAgents}
+                hostActions={hostActions}
               />
             )}
           </Form>

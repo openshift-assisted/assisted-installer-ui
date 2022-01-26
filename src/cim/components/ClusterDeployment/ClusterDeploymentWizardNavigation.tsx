@@ -17,25 +17,25 @@ const ClusterDeploymentWizardNavigation: React.FC<{
 
   return (
     <WizardNav>
+      <WizardNavItem key="installation-type" content="Installation type" step={0} isDisabled />
       <WizardNavItem
         key="cluster-details"
         content={wizardStepNames['cluster-details']}
         isCurrent={currentStepId === 'cluster-details'}
-        isValid={() => true /* TOOD(mlibra) */}
+        // isValid={ () => !cluster || canNextHostDiscovery({ cluster }) }
         isDisabled={false}
-        step={0}
+        step={1}
         onNavItemClick={() => setCurrentStepId('cluster-details')}
       />
+      <WizardNavItem key="automation" content="Automation" step={2} isDisabled />
       {isCIMFlow(clusterDeployment) ? (
         <WizardNavItem
           key="hosts-selection"
           content={wizardStepNames['hosts-selection']}
           isDisabled={!wizardSteps.slice(1).includes(currentStepId)}
-          isValid={
-            () => true /* TODO(mlibra)*/ /* () => !cluster || canNextHostDiscovery({ cluster })*/
-          }
+          // isValid={ () => !cluster || canNextHostDiscovery({ cluster }) }
           isCurrent={currentStepId === 'hosts-selection'}
-          step={1}
+          step={2}
           onNavItemClick={() => setCurrentStepId('hosts-selection')}
         />
       ) : (
@@ -43,11 +43,9 @@ const ClusterDeploymentWizardNavigation: React.FC<{
           key="hosts-discovery"
           content={wizardStepNames['hosts-discovery']}
           isDisabled={!wizardSteps.slice(1).includes(currentStepId)}
-          isValid={
-            () => true /* TODO(mlibra)*/ /* () => !cluster || canNextHostDiscovery({ cluster })*/
-          }
+          // isValid={ () => !cluster || canNextHostDiscovery({ cluster }) }
           isCurrent={currentStepId === 'hosts-discovery'}
-          step={1}
+          step={2}
           onNavItemClick={() => setCurrentStepId('hosts-discovery')}
         />
       )}
@@ -55,13 +53,12 @@ const ClusterDeploymentWizardNavigation: React.FC<{
         key="networking"
         content={wizardStepNames['networking']}
         isDisabled={!wizardSteps.slice(2).includes(currentStepId)}
-        isValid={
-          () => true /* TODO(mlibra)*/ /* () => !cluster || canNextHostDiscovery({ cluster })*/
-        }
+        // isValid={ () => !cluster || canNextHostDiscovery({ cluster }) }
         isCurrent={currentStepId === 'networking'}
-        step={2}
+        step={3}
         onNavItemClick={() => setCurrentStepId('networking')}
       />
+      {/* <WizardNavItem key="review" content="Review" step={4} isDisabled /> */}
     </WizardNav>
   );
 };

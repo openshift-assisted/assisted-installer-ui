@@ -6,7 +6,7 @@ import { ConnectedIcon } from '@patternfly/react-icons';
 import {
   getInfraEnvLinkType,
   infraEnvColumn,
-  infraEnvStatusColumn,
+  agentStatusColumn,
   useAgentsTable,
 } from './tableUtils';
 import {
@@ -45,7 +45,7 @@ const AgentTable: React.FC<AgentTableProps> = ({
     () => [
       hostnameColumn(hostActions.onEditHost),
       roleColumn(hostActions.canEditRole, hostActions.onEditRole),
-      infraEnvStatusColumn({
+      agentStatusColumn({
         agents,
         onEditHostname: actions.onEditHost,
         onApprove: actions.onApprove,

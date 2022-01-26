@@ -11,6 +11,8 @@ import {
   Checkbox,
   Split,
   SplitItem,
+  Stack,
+  StackItem,
 } from '@patternfly/react-core';
 import {
   ClusterDefaultConfig,
@@ -21,14 +23,12 @@ import {
   ProxyFields,
   ProxyInputFields,
 } from '../../../common';
-import { HostSubnets } from '../../../common/types';
 import ClusterDeploymentHostsNetworkTable from './ClusterDeploymentHostsNetworkTable';
-import { getAgentStatus, getAICluster } from '../helpers';
+import { getAICluster } from '../helpers';
 import {
   AgentClusterInstallK8sResource,
   AgentK8sResource,
   ClusterDeploymentK8sResource,
-  ConfigMapK8sResource,
   InfraEnvK8sResource,
 } from '../../types';
 import {
@@ -36,8 +36,6 @@ import {
   ClusterDeploymentNetworkingValues,
 } from './types';
 import { useFormikContext } from 'formik';
-import MinimalHWRequirements from '../Agent/MinimalHWRequirements';
-import { getIsSNOCluster } from '../helpers';
 
 // TODO(mlibra): So far a constant. Should be queried from somewhere.
 export const defaultNetworkSettings: ClusterDefaultConfig = CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4;
@@ -48,7 +46,6 @@ type ClusterDeploymentNetworkingFormProps = {
   agents: AgentK8sResource[];
   onValuesChanged?: (values: ClusterDeploymentNetworkingValues) => void;
   hostActions: ClusterDeploymentHostsTablePropsActions;
-  aiConfigMap: ConfigMapK8sResource | undefined;
   infraEnvWithProxy: InfraEnvK8sResource | undefined;
   sameProxies: boolean;
   infraEnvsError: string | undefined;
@@ -60,7 +57,6 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
   agentClusterInstall,
   agents,
   onValuesChanged,
-  aiConfigMap,
   infraEnvWithProxy,
   sameProxies,
   infraEnvsError,
@@ -81,28 +77,8 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
     agents,
   });
 
-  let hostSubnets: HostSubnets = [];
+  const hostSubnets = React.useMemo(() => getHostSubnets(cluster), [cluster]);
 
-  const bindingAgents: AgentK8sResource[] = [];
-  const discoveringAgents: AgentK8sResource[] = [];
-
-  agents.forEach((a) => {
-    const [status] = getAgentStatus(a);
-    if (status === 'binding') {
-      bindingAgents.push(a);
-    }
-    if (status === 'discovering') {
-      // will happen once the agent is bound
-      discoveringAgents.push(a);
-    }
-  });
-
-  if (bindingAgents.length === 0 && discoveringAgents.length === 0) {
-    // Assumption: Agents already passed one of the AGENT_FOR_SELECTION_STATUSES states to get here
-    hostSubnets = getHostSubnets(cluster);
-  }
-
-  const isSNOCluster = getIsSNOCluster(agentClusterInstall);
   React.useEffect(() => {
     if (!!infraEnvWithProxy && !touched.enableProxy) {
       setFieldTouched('enableProxy', true);
@@ -144,61 +120,53 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
       );
     }
   }
-
   return (
     <Form>
-      <NetworkConfiguration
-        cluster={cluster}
-        hostSubnets={hostSubnets}
-        isVipDhcpAllocationDisabled={isVipDhcpAllocationDisabled}
-        defaultNetworkSettings={defaultNetworkSettings}
-        hideManagedNetworking
-      >
-        <Grid hasGutter>
-          {!!bindingAgents.length && (
-            <GridItem>
-              <Alert
-                variant="info"
-                isInline
-                title={`${bindingAgents.length} ${
-                  bindingAgents.length === 1 ? 'host is' : 'hosts are'
-                } binding. Please wait until they are available to continue configuring. It may take several seconds.`}
+      <Stack hasGutter>
+        <StackItem>
+          <Grid hasGutter>
+            <GridItem span={12} lg={10} xl={9} xl2={7}>
+              <NetworkConfiguration
+                cluster={cluster}
+                hostSubnets={hostSubnets}
+                isVipDhcpAllocationDisabled={isVipDhcpAllocationDisabled}
+                defaultNetworkSettings={defaultNetworkSettings}
+                hideManagedNetworking
               />
             </GridItem>
-          )}
-          {aiConfigMap && (
-            <GridItem>
-              <MinimalHWRequirements aiConfigMap={aiConfigMap} isSNOCluster={isSNOCluster} />
-            </GridItem>
-          )}
-          <GridItem>
-            <TextContent>
-              <Text component="h2">Host inventory</Text>
-            </TextContent>
-          </GridItem>
-          <GridItem>
-            <ClusterDeploymentHostsNetworkTable
-              clusterDeployment={clusterDeployment}
-              agentClusterInstall={agentClusterInstall}
-              agents={agents}
-              {...rest}
-            />
-          </GridItem>
-        </Grid>
-      </NetworkConfiguration>
-      {infraEnvsError ? (
-        <Alert title={infraEnvsError} variant="danger" isInline />
-      ) : infraEnvsLoading ? (
-        <Split hasGutter>
-          <SplitItem>
-            <Spinner isSVG size="md" />
-          </SplitItem>
-          <SplitItem>Loading proxy configuration</SplitItem>
-        </Split>
-      ) : (
-        proxyConfig
-      )}
-      <SecurityFields clusterSshKey={cluster.sshPublicKey} />
+          </Grid>
+        </StackItem>
+        {infraEnvsError ? (
+          <StackItem>
+            <Alert title={infraEnvsError} variant="danger" isInline />
+          </StackItem>
+        ) : infraEnvsLoading ? (
+          <StackItem>
+            <Split hasGutter>
+              <SplitItem>
+                <Spinner isSVG size="md" />
+              </SplitItem>
+              <SplitItem>Loading proxy configuration</SplitItem>
+            </Split>
+          </StackItem>
+        ) : (
+          <StackItem>{proxyConfig}</StackItem>
+        )}
+        <StackItem>
+          <SecurityFields clusterSshKey={cluster.sshPublicKey} />
+        </StackItem>
+        <StackItem>
+          <TextContent>
+            <Text component="h2">Host inventory</Text>
+          </TextContent>
+          <ClusterDeploymentHostsNetworkTable
+            clusterDeployment={clusterDeployment}
+            agentClusterInstall={agentClusterInstall}
+            agents={agents}
+            {...rest}
+          />
+        </StackItem>
+      </Stack>
     </Form>
   );
 };

@@ -251,7 +251,6 @@ export const activeNICColumn = (cluster: Cluster): TableRow<Host> => ({
   cell: (host) => {
     const inventory = getInventory(host);
     const nics = inventory.interfaces || [];
-
     const machineNetworkCidr = selectMachineNetworkCIDR(cluster);
     const currentSubnet = machineNetworkCidr ? getSubnet(machineNetworkCidr) : null;
     const selectedNic = currentSubnet ? getSelectedNic(nics, currentSubnet) : null;

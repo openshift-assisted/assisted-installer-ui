@@ -3,14 +3,24 @@ import {
   AgentClusterInstallStatusCondition,
   AgentClusterInstallStatusConditionType,
 } from '../../types/k8s/agent-cluster-install';
-import { Cluster, Host } from '../../../common';
+import { Cluster, Host } from '../../../common/api/types';
 import {
   AgentK8sResource,
   AgentStatusCondition,
   AgentStatusConditionType,
 } from '../../types/k8s/agent';
-import { StatusCondition, BareMetalHostK8sResource } from '../../types';
+import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
+import { StatusCondition } from '../../types/k8s/shared';
 import { ValidationsInfo } from '../../../common/types/hosts';
+import {
+  areOnlySoftValidationsFailing,
+  getWizardStepHostStatus,
+  getWizardStepHostValidationsInfo,
+} from '../../../common/components/clusterWizard/validationsInfoUtils';
+import {
+  ClusterWizardStepsType,
+  wizardStepsValidationsMap,
+} from '../ClusterDeployment/wizardTransition';
 
 const conditionsByTypeReducer = <K>(
   result: { K?: StatusCondition<string> },
@@ -110,13 +120,51 @@ const getInsufficientState = (agent: AgentK8sResource) =>
 export const getAgentStatus = (
   agent: AgentK8sResource,
   excludeDiscovered = false,
-): [AgentStatus, Host['statusInfo'], ValidationsInfo] => {
-  let state: AgentStatus = agent.status?.debugInfo?.state || getInsufficientState(agent);
-  const validationsInfo = agent.status?.validationsInfo;
+): { status: AgentStatus; validationsInfo: ValidationsInfo; sublabel?: string } => {
+  let status: AgentStatus = agent.status?.debugInfo?.state || getInsufficientState(agent);
+  const validationsInfo = agent.status?.validationsInfo || {};
   if (!excludeDiscovered && !agent.spec.approved) {
-    state = 'discovered';
+    status = 'discovered';
   }
-  return [state, agent.status?.debugInfo?.stateInfo || '', validationsInfo || {}];
+  // TODO(jtomasek): Implement this
+  // const sublabel = areOnlyClusterSoftValidationsFailing(agentStatus.validationsInfo)
+  //   ? 'Some validations failed'
+  //   : undefined;
+  return { status, validationsInfo, sublabel: undefined };
+};
+
+export const getWizardStepAgentStatus = (
+  agent: AgentK8sResource,
+  wizardStepId: ClusterWizardStepsType,
+  excludeDiscovered = false,
+): { status: AgentStatus; validationsInfo: ValidationsInfo; sublabel?: string } => {
+  const agentStatus = getAgentStatus(agent, excludeDiscovered);
+  if (agentStatus.status === 'discovered') {
+    return agentStatus;
+  }
+
+  const status = getWizardStepHostStatus(wizardStepId, wizardStepsValidationsMap, {
+    status: agentStatus.status,
+    validationsInfo: agentStatus.validationsInfo,
+  });
+  const validationsInfo = getWizardStepHostValidationsInfo(
+    agentStatus.validationsInfo,
+    wizardStepId,
+    wizardStepsValidationsMap,
+  );
+  const sublabel = areOnlySoftValidationsFailing(
+    agentStatus.validationsInfo,
+    wizardStepId,
+    wizardStepsValidationsMap,
+  )
+    ? 'Some validations failed'
+    : undefined;
+
+  return {
+    status,
+    validationsInfo,
+    sublabel,
+  };
 };
 
 export const getBMHStatus = (bmh: BareMetalHostK8sResource) => {

@@ -1,12 +1,12 @@
 import _ from 'lodash';
 import { AgentK8sResource } from '../../types/k8s/agent';
-import { Cluster, Host, Inventory } from '../../../common';
+import { Cluster, Host, Inventory } from '../../../common/api/types';
 import { ClusterDeploymentK8sResource } from '../../types/k8s/cluster-deployment';
 import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-install';
 import { getAgentStatus, getClusterStatus } from './status';
 import { getHostNetworks } from './network';
 import { BareMetalHostK8sResource, InfraEnvK8sResource } from '../../types';
-import { AGENT_BMH_HOSTNAME_LABEL_KEY, BMH_HOSTNAME_ANNOTATION } from '../common';
+import { AGENT_BMH_HOSTNAME_LABEL_KEY, BMH_HOSTNAME_ANNOTATION } from '../common/constants';
 import { getAgentProgress, getAgentRole, getInfraEnvNameOfAgent } from './agents';
 
 export const getAIHosts = (
@@ -17,7 +17,8 @@ export const getAIHosts = (
   const bmhAgents: string[] = [];
   const hosts = agents.map(
     (agent): Host => {
-      const [status, statusInfo] = getAgentStatus(agent, true);
+      const { status } = getAgentStatus(agent, true);
+      const statusInfo = agent.status?.debugInfo?.stateInfo || '';
       // TODO(mlibra) Remove that workaround once https://issues.redhat.com/browse/MGMT-7052 is fixed
       const inventory: Inventory = _.cloneDeep(agent.status?.inventory || {});
       inventory.interfaces?.forEach((intf) => {

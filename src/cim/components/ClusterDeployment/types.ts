@@ -10,8 +10,18 @@ import {
 } from '../../types';
 import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
 import { ClusterImageSetK8sResource } from '../../types/k8s/cluster-image-set';
-import { EditAgentModalProps } from '../modals/EditAgentModal';
 import { AddHostModalProps, EditBMHModalProps } from '../modals/types';
+
+export type EditAgentModalProps = {
+  agent: AgentK8sResource | undefined;
+  isOpen: boolean;
+  usedHostnames: string[] | undefined;
+  onClose: () => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onSave: (agent: AgentK8sResource, hostname: string) => Promise<any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onFormSaveError?: (e: any) => void | string;
+};
 
 export type ClusterDeploymentHostsTablePropsActions = {
   canEditHost?: (agent: AgentK8sResource) => boolean;
@@ -69,7 +79,6 @@ export type ClusterDeploymentDetailsNetworkingProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall: AgentClusterInstallK8sResource;
   agents: AgentK8sResource[];
-  aiConfigMap: ConfigMapK8sResource | undefined;
   onSaveNetworking: (values: ClusterDeploymentNetworkingValues) => Promise<string | void>;
   onClose: () => void;
   hostActions: ClusterDeploymentHostsTablePropsActions;
@@ -89,14 +98,13 @@ export type ClusterDeploymentHostSelectionStepProps = Omit<
 > & {
   onSaveHostsSelection: (values: ClusterDeploymentHostsSelectionValues) => Promise<string | void>;
   onClose: () => void;
+  hostActions?: ClusterDeploymentHostsTablePropsActions;
 };
 
 export type ClusterDeploymentHostsDiscoveryStepProps = Omit<
   ClusterDeploymentHostsDiscoveryProps,
   'onValuesChanged'
 > & {
-  // clusterDeployment: ClusterDeploymentK8sResource;
-
   onSaveHostsDiscovery: (values: ClusterDeploymentHostsDiscoveryValues) => Promise<string | void>;
   onClose: () => void;
 };
@@ -134,16 +142,17 @@ export type ClusterDeploymentWizardProps = Pick<
   aiConfigMap?: ConfigMapK8sResource;
   infraEnv?: InfraEnvK8sResource;
   fetchInfraEnv: (name: string, namespace: string) => Promise<InfraEnvK8sResource>;
+  initialStep?: ClusterDeploymentWizardStepsType;
 };
 
 export type FetchSecret = (name: string, namespace: string) => Promise<SecretK8sResource>;
 
 export type ClusterDeploymentHostsSelectionProps = {
-  onValuesChanged?: (values: ClusterDeploymentHostsSelectionValues) => void;
   clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall: AgentClusterInstallK8sResource;
   agents: AgentK8sResource[];
   aiConfigMap?: ConfigMapK8sResource;
+  hostActions?: ClusterDeploymentHostsTablePropsActions;
 };
 
 export type InfraEnvAgentTableProps = ClusterDeploymentHostsTablePropsActions & {
@@ -152,7 +161,6 @@ export type InfraEnvAgentTableProps = ClusterDeploymentHostsTablePropsActions & 
   infraEnv: InfraEnvK8sResource;
   getClusterDeploymentLink: (cd: { name: string; namespace: string }) => string | React.ReactNode;
   className?: string;
-  hideClusterColumn?: boolean;
   onChangeHostname: (agent: AgentK8sResource, hostname: string) => Promise<AgentK8sResource>;
   onChangeBMHHostname: (
     bmh: BareMetalHostK8sResource,
@@ -176,6 +184,8 @@ export type ClusterDeploymentHostsDiscoveryProps = {
   canDeleteAgent: InfraEnvAgentTableProps['canDelete'];
   onSaveAgent: EditAgentModalProps['onSave'];
   canEditHost: InfraEnvAgentTableProps['canEditHost'];
+  canEditRole: InfraEnvAgentTableProps['canEditRole'];
+  onEditRole: InfraEnvAgentTableProps['onEditRole'];
   onSaveBMH: EditBMHModalProps['onEdit'];
   onSaveISOParams: AddHostModalProps['onSaveISOParams'];
   onFormSaveError?: EditAgentModalProps['onFormSaveError'];
@@ -183,4 +193,5 @@ export type ClusterDeploymentHostsDiscoveryProps = {
   fetchNMState: EditBMHModalProps['fetchNMState'];
   getClusterDeploymentLink: InfraEnvAgentTableProps['getClusterDeploymentLink'];
   onChangeBMHHostname: InfraEnvAgentTableProps['onChangeBMHHostname'];
+  onApproveAgent: InfraEnvAgentTableProps['onApprove'];
 };
