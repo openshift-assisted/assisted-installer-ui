@@ -4,7 +4,7 @@ import { FeatureSupportLevel } from '../api/types';
 type ArrayElementType<TWhere> = TWhere extends (infer U)[] ? (U extends object ? U : never) : never;
 
 type Features = Required<ArrayElementType<FeatureSupportLevel['features']>>;
-export type FeatureId = Features['featureId'];
+export type FeatureId = Features['featureId'] | 'ODF' | 'CNV' | 'NETWORK_TYPE_SELECTION';
 export type SupportLevel = Features['supportLevel'];
 
 export type FeatureIdToSupportLevel = {

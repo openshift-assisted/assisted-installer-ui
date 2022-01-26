@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Form } from '@patternfly/react-core';
+import { Alert, AlertVariant, FlexItem, Form } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 
 import { SNOControlGroup } from '../clusterConfiguration';
@@ -8,9 +8,10 @@ import OpenShiftVersionSelect from '../clusterConfiguration/OpenShiftVersionSele
 import { PullSecret } from '../clusters';
 import { ManagedDomain } from '../../api';
 import { OpenshiftVersionOptionType } from '../../types';
-import { CheckboxField, InputField, SelectField } from '../ui';
-
+import { CheckboxField, InputField, SelectField } from '../ui/formik';
+import DiskEncryptionControlGroup from '../clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
 import { ClusterDetailsValues } from './types';
+import { isSNO } from '../../../ocm/selectors/clusterSelectors';
 
 export type ClusterDetailsFormFieldsProps = {
   canEditPullSecret: boolean;
@@ -23,6 +24,7 @@ export type ClusterDetailsFormFieldsProps = {
   managedDomains?: ManagedDomain[];
   versions: OpenshiftVersionOptionType[];
   toggleRedHatDnsService?: (checked: boolean) => void;
+  isPullSecretSet: boolean;
 };
 
 const BaseDnsHelperText: React.FC<{ name?: string; baseDnsDomain?: string }> = ({
@@ -49,6 +51,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
   forceOpenshiftVersion,
   extensionAfter,
   isOcm, // TODO(mlibra): make it optional, false by default
+  isPullSecretSet,
 }) => {
   const { values } = useFormikContext<ClusterDetailsValues>();
   const { name, baseDnsDomain, highAvailabilityMode, useRedHatDnsService } = values;
@@ -56,6 +59,8 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
   React.useEffect(() => {
     nameInputRef.current?.focus();
   }, []);
+  const atListOneDiskEncryptionEnableOn =
+    values.enableDiskEncryptionOnMasters || values.enableDiskEncryptionOnWorkers;
 
   // TODO(mlibra): Disable fields based on props passed from the caller context. In CIM, the name or domain can not be edited.
   return (
@@ -109,6 +114,34 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
       {extensionAfter?.['openshiftVersion'] && extensionAfter['openshiftVersion']}
       {canEditPullSecret && <PullSecret isOcm={isOcm} defaultPullSecret={defaultPullSecret} />}
       {extensionAfter?.['pullSecret'] && extensionAfter['pullSecret']}
+      <DiskEncryptionControlGroup
+        values={values}
+        isDisabled={isPullSecretSet}
+        isSNO={isSNO({ highAvailabilityMode })}
+      />
+      {atListOneDiskEncryptionEnableOn && values.diskEncryptionMode == 'tpmv2' && (
+        <Alert
+          variant={AlertVariant.warning}
+          isInline
+          title={
+            <FlexItem>
+              To use this encryption, enable TPMv2 encryption in the BIOS of each host selected.
+            </FlexItem>
+          }
+        />
+      )}
+      {atListOneDiskEncryptionEnableOn && values.diskEncryptionMode == 'tang' && (
+        <Alert
+          variant={AlertVariant.warning}
+          isInline
+          title={
+            <FlexItem>
+              The use of Tang encryption mode to encrypt your disks is only supported for bare metal
+              or vSphere installations on user-provisioned infrastructure.
+            </FlexItem>
+          }
+        />
+      )}
     </Form>
   );
 };

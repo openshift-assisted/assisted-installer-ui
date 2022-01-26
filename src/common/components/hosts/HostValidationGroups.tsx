@@ -160,6 +160,7 @@ const ValidationGroupAlerts: React.FC<ValidationGroupAlertProps> = ({
         variant={variant}
         onEditHostname={onEditHostname}
         host={host}
+        key="hostname-alert"
       />,
     );
   }
@@ -168,6 +169,7 @@ const ValidationGroupAlerts: React.FC<ValidationGroupAlertProps> = ({
       <ApiVipConnectivityAlert
         UpdateDay2ApiVipDialogToggleComponent={UpdateDay2ApiVipDialogToggleComponent}
         variant={variant}
+        key="api-vip-connected-alert"
       />,
     );
   }
@@ -177,12 +179,18 @@ const ValidationGroupAlerts: React.FC<ValidationGroupAlertProps> = ({
         AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
         validation={validationsWithActions['ntp-synced']}
         variant={variant}
+        key="ntp-sync-alert"
       />,
     );
   }
   if (validationsWithoutActions.length > 0) {
     alerts.push(
-      <ValidationsAlert validations={validationsWithoutActions} variant={variant} title={title} />,
+      <ValidationsAlert
+        validations={validationsWithoutActions}
+        variant={variant}
+        title={title}
+        key="insufficient-alert"
+      />,
     );
   }
   return <AlertGroup>{alerts}</AlertGroup>;

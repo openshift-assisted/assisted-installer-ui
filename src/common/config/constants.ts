@@ -25,8 +25,13 @@ export const TECH_SUPPORT_LEVEL_LINK = 'https://access.redhat.com/support/offeri
 export const FIREWALL_DOCUMENTATION_LINK =
   'https://docs.openshift.com/container-platform/4.8/installing/installing_bare_metal_ipi/ipi-install-installation-workflow.html#ipi-install-setting-proxy-settings-within-install-config_ipi-install-configuration-files';
 
+export const ENCRYPTING_DISK_DURING_INSTALLATION =
+  'https://docs.openshift.com/container-platform/4.7/installing/install_config/installing-customizing.html#installation-special-config-encrypt-disk_installing-customizing';
+
 export const getOcpConsoleNodesPage = (ocpConsoleUrl: string) =>
   `${ocpConsoleUrl}/k8s/cluster/nodes`;
+
+export const REDHAT_CONSOLE_OPENSHIFT = 'console.redhat.com/openshift';
 
 // TODO(mlibra): Retrieve branding dynamically, if needed, i.e. via injecting to the "window" object
 export const getProductBrandingCode = () => 'redhat';
@@ -273,6 +278,8 @@ export const getAssistedUiLibVersion = () => packageJson.version;
 export const EVENT_SEVERITIES: Event['severity'][] = ['info', 'warning', 'error', 'critical'];
 
 export const TIME_ZERO = '0001-01-01T00:00:00.000Z';
+
+export const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
 export const NO_SUBNET_SET = 'NO_SUBNET_SET';
 
