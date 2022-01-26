@@ -39,6 +39,7 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
   fetchNMState,
   isBMPlatform,
   getClusterDeploymentLink,
+  onChangeBMHHostname,
 }) => {
   const [isDiscoveryHintModalOpen, setDiscoveryHintModalOpen] = React.useState(false);
   const { values } = useFormikContext<ClusterDeploymentHostsDiscoveryValues>();
@@ -94,6 +95,8 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
           canDelete={canDeleteAgent}
           onDeleteHost={onDeleteHost}
           onEditBMH={setEditBMH}
+          onChangeHostname={onSaveAgent}
+          onChangeBMHHostname={onChangeBMHHostname}
         />
         <EditBMHModal
           infraEnv={infraEnv}
@@ -103,6 +106,7 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
           onEdit={onSaveBMH}
           fetchSecret={fetchSecret}
           fetchNMState={fetchNMState}
+          usedHostnames={usedHostnames || []}
         />
         <EditAgentModal
           isOpen={!!editAgent}
@@ -127,6 +131,7 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
             onClose={() => setISOModalOpen(false)}
             onCreateBMH={onCreateBMH}
             onSaveISOParams={onSaveISOParams}
+            usedHostnames={usedHostnames || []}
           />
         )}
     </Grid>

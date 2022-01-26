@@ -24,18 +24,17 @@ const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({
   const { addAlert } = useAlerts();
 
   const download = React.useCallback(
-    async (clusterId: Cluster['id'], status: Cluster['status']) => {
-      const fileName = status === 'installed' ? 'kubeconfig' : 'kubeconfig-noingress';
+    async (clusterId: Cluster['id']) => {
       try {
         if (ocmClient) {
           const { data } = await ClustersAPI.getPresignedForClusterCredentials({
             clusterId,
-            fileName,
+            fileName: 'kubeconfig',
           });
           saveAs(data.url);
         } else {
-          const response = await ClustersAPI.downloadClusterCredentials(clusterId, fileName);
-          saveAs(response.data, fileName);
+          const response = await ClustersAPI.downloadClusterCredentials(clusterId, 'kubeconfig');
+          saveAs(response.data, 'kubeconfig');
         }
       } catch (e) {
         handleApiError(e, async (e) => {
@@ -49,7 +48,7 @@ const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({
   return (
     <Button
       variant={ButtonVariant.secondary}
-      onClick={handleDownload || (() => download(clusterId, status))}
+      onClick={handleDownload || (() => download(clusterId))}
       isDisabled={!canDownloadKubeconfig(status)}
       id={id}
       data-testid={id}

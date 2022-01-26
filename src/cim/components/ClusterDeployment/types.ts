@@ -20,7 +20,7 @@ export type ClusterDeploymentHostsTablePropsActions = {
   onEditRole?: (agent: AgentK8sResource, role: string | undefined) => Promise<AgentK8sResource>;
   canDelete?: (agent?: AgentK8sResource, bmh?: BareMetalHostK8sResource) => boolean;
   onDeleteHost?: (agent?: AgentK8sResource, bmh?: BareMetalHostK8sResource) => void;
-  onApprove?: (agent: AgentK8sResource) => void;
+  onApprove?: (agent: AgentK8sResource) => Promise<AgentK8sResource>;
   onSelect?: (agent: AgentK8sResource, selected: boolean) => void;
   onEditBMH?: (bmh: BareMetalHostK8sResource) => void;
   canUnbindHost?: (agent?: AgentK8sResource) => [/* enabled */ boolean, /* reason */ string];
@@ -150,6 +150,12 @@ export type InfraEnvAgentTableProps = ClusterDeploymentHostsTablePropsActions & 
   getClusterDeploymentLink: (cd: { name: string; namespace: string }) => string | React.ReactNode;
   className?: string;
   hideClusterColumn?: boolean;
+  onChangeHostname: (agent: AgentK8sResource, hostname: string) => Promise<AgentK8sResource>;
+  onChangeBMHHostname: (
+    bmh: BareMetalHostK8sResource,
+    hostname: string,
+  ) => Promise<BareMetalHostK8sResource>;
+  onApprove?: (agents: AgentK8sResource) => Promise<AgentK8sResource>;
 };
 
 export type ClusterDeploymentHostsDiscoveryProps = {
@@ -173,4 +179,5 @@ export type ClusterDeploymentHostsDiscoveryProps = {
   fetchNMState: EditBMHModalProps['fetchNMState'];
   isBMPlatform: AddHostModalProps['isBMPlatform'];
   getClusterDeploymentLink: InfraEnvAgentTableProps['getClusterDeploymentLink'];
+  onChangeBMHHostname: InfraEnvAgentTableProps['onChangeBMHHostname'];
 };

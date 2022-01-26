@@ -6,7 +6,7 @@ import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-in
 import { getAgentStatus, getClusterStatus } from './status';
 import { getHostNetworks } from './network';
 import { BareMetalHostK8sResource, InfraEnvK8sResource } from '../../types';
-import { AGENT_BMH_HOSTNAME_LABEL_KEY } from '../common';
+import { AGENT_BMH_HOSTNAME_LABEL_KEY, BMH_HOSTNAME_ANNOTATION } from '../common';
 import { getAgentProgress, getAgentRole, getInfraEnvNameOfAgent } from './agents';
 
 export const getAIHosts = (
@@ -70,7 +70,7 @@ export const getAIHosts = (
           )
           .map((h) => {
             const hostInventory: Inventory = {
-              hostname: h.metadata?.name,
+              hostname: h.metadata?.annotations?.[BMH_HOSTNAME_ANNOTATION] || h.metadata?.name,
               bmcAddress: h.spec?.bmc?.address,
               systemVendor: {
                 virtual: false,
@@ -85,7 +85,8 @@ export const getAIHosts = (
               status: 'known',
               statusInfo: '',
               inventory: JSON.stringify(hostInventory),
-              requestedHostname: h.metadata?.name,
+              requestedHostname:
+                h.metadata?.annotations?.[BMH_HOSTNAME_ANNOTATION] || h.metadata?.name,
               role: undefined,
               createdAt: h.metadata?.creationTimestamp,
             };

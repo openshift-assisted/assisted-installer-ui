@@ -50,10 +50,11 @@ type HostsTableProps = {
   hosts: Host[];
   skipDisabled?: boolean;
   content: TableRow<Host>[];
-  actionResolver: ActionsResolver<Host>;
+  actionResolver?: ActionsResolver<Host>;
   children: React.ReactNode;
   onSelect?: (obj: Host, isSelected: boolean) => void;
   selectedIDs?: string[];
+  setSelectedHostIDs?: (selectedHosts: string[]) => void;
   ExpandComponent?: React.ComponentType<ExpandComponentProps<Host>>;
   className?: string;
 };
@@ -64,11 +65,12 @@ const HostsTable: React.FC<HostsTableProps & WithTestID> = ({
   children,
   content,
   actionResolver,
-  ExpandComponent = DefaultExpandComponent,
+  ExpandComponent,
   className,
   testId,
   onSelect,
   selectedIDs,
+  setSelectedHostIDs,
 }) => {
   const data = (hosts || []).filter((host) => !skipDisabled || host.status != 'disabled');
   data.sort((a, b) => (a.id < b.id ? -1 : 1));
@@ -84,6 +86,7 @@ const HostsTable: React.FC<HostsTableProps & WithTestID> = ({
       testId={testId}
       onSelect={onSelect}
       selectedIDs={selectedIDs}
+      setSelectedIDs={setSelectedHostIDs}
     >
       {children}
     </AITable>

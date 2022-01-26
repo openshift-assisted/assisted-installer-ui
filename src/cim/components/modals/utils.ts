@@ -1,5 +1,5 @@
 import { InfraEnvK8sResource, SecretK8sResource } from '../../types';
-import { INFRAENV_AGENTINSTALL_LABEL_KEY } from '../common';
+import { INFRAENV_AGENTINSTALL_LABEL_KEY, BMH_HOSTNAME_ANNOTATION } from '../common';
 
 export const getBareMetalHostCredentialsSecret = (
   values: {
@@ -24,6 +24,7 @@ export const getBareMetalHostCredentialsSecret = (
 
 export const getBareMetalHost = (
   values: {
+    name: string;
     hostname: string;
     bmcAddress: string;
     disableCertificateVerification: boolean;
@@ -36,13 +37,14 @@ export const getBareMetalHost = (
   apiVersion: 'metal3.io/v1alpha1',
   kind: 'BareMetalHost',
   metadata: {
-    name: values.hostname,
+    name: values.name,
     namespace: infraEnv.metadata?.namespace,
     labels: {
       [INFRAENV_AGENTINSTALL_LABEL_KEY]: infraEnv.metadata?.name,
     },
     annotations: {
       'inspect.metal3.io': 'disabled',
+      [BMH_HOSTNAME_ANNOTATION]: values.hostname,
     },
   },
   spec: {
@@ -57,3 +59,15 @@ export const getBareMetalHost = (
     automatedCleaningMode: 'disabled',
   },
 });
+
+export const getWarningMessage = (hasAgents: boolean, hasBMHs: boolean) => {
+  if (hasBMHs && hasAgents) {
+    return 'The resource you are changing is already in use by hosts in the infrastructure environment. A change will require booting the hosts with a new discovery ISO file. Hosts will be rebooted automatically after the change is applied if using BMC.';
+  } else if (hasBMHs) {
+    return 'The resource you are changing is already in use by hosts in the infrastructure environment. The hosts will be rebooted automatically after the change is applied.';
+  } else if (hasAgents) {
+    return 'The resource you are changing is already in use by hosts in the infrastructure environment. A change will require booting the hosts with a new discovery ISO file.';
+  } else {
+    return 'A change will require booting hosts with a new discovery ISO file.';
+  }
+};

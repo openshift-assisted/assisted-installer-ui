@@ -1,5 +1,6 @@
 import { Severity } from '@sentry/browser';
 import Axios, { AxiosError } from 'axios';
+import _ from 'lodash';
 import { captureException } from '../sentry';
 import { APIErrorMixin } from './types';
 
@@ -12,21 +13,26 @@ export const handleApiError = (
   if (Axios.isCancel(error)) {
     captureException(error, 'Request canceled', Severity.Info);
   } else {
-    let message = `Error config: ${JSON.stringify(error.config, null, 2)}\n`;
+    let message = `URL: ${JSON.stringify(error.config.url, null, 1)}\n`;
+    message += `Method: ${JSON.stringify(error.config.method, null, 1)}\n`;
     if (error.response) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
-      message += `Response data: ${JSON.stringify(error.response.data, null, 2)}\n`;
-      message += `Response status: ${error.response.status}\n`;
-      message += `Response headers: ${JSON.stringify(error.response.headers, null, 2)}`;
+      message += `Status: ${error.response.status}\n`;
+      message += `Response: ${JSON.stringify(
+        _.pick(error.response.data, ['code', 'message', 'reason']),
+        null,
+        1,
+      )}\n`;
     } else if (error.request) {
       // The request was made but no response was received
       // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
       // http.ClientRequest in node.js
-      message += `Request: ${JSON.stringify(error.request, null, 2)}`;
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      message += `Error: ${JSON.stringify(error.message, null, 2)}`;
+      message += `Status Code: ${JSON.stringify(
+        error.request.__sentry_xhr__.status_code,
+        null,
+        1,
+      )}`;
     }
     captureException(error, message);
     if (onError) return onError(error);

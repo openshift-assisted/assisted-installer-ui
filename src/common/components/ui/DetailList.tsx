@@ -1,4 +1,4 @@
-import React, { ReactChild } from 'react';
+import React, { ReactChild, ReactNode } from 'react';
 import {
   TextContent,
   TextList,
@@ -19,7 +19,7 @@ export type DetailListProps = {
 };
 
 export type DetailItemProps = {
-  title: string;
+  title: string | ReactNode;
   value?:
     | {
         title: string;

@@ -64,7 +64,7 @@ export const selectedLabelsOnly = (labelPairs: string[], allowedKeys: string[]) 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getRichTextValidation = <T extends object>(schema: Yup.ObjectSchema<T>) => async (
   values: T,
-) => {
+): Promise<{ [key: string]: string[] } | undefined> => {
   try {
     await schema.validate(values, {
       abortEarly: false,

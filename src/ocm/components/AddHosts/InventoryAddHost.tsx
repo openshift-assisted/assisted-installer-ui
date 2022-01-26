@@ -1,5 +1,13 @@
 import React from 'react';
-import { Text, TextContent, Button } from '@patternfly/react-core';
+import {
+  Text,
+  TextContent,
+  Button,
+  Alert,
+  AlertVariant,
+  Stack,
+  StackItem,
+} from '@patternfly/react-core';
 import ClusterHostsTable from '../hosts/ClusterHostsTable';
 import { DiscoveryImageModalButton } from '../clusterConfiguration/discoveryImageModal';
 import InformationAndAlerts from '../clusterConfiguration/InformationAndAlerts';
@@ -9,6 +17,16 @@ import {
   DiscoveryInstructions,
   DiscoveryTroubleshootingModal,
 } from '../../../common';
+import { isArmArchitecture } from '../../selectors';
+
+const armArchAlert = (
+  <Alert
+    title="Only hosts that have arm64 cpu architecture can be added to this cluster."
+    variant={AlertVariant.info}
+    data-testid="arm-architecture-alert"
+    isInline
+  />
+);
 
 const InventoryAddHosts: React.FC = () => {
   const { cluster } = React.useContext(AddHostsContext);
@@ -19,28 +37,38 @@ const InventoryAddHosts: React.FC = () => {
   }
 
   return (
-    <>
-      <TextContent>
-        <DiscoveryInstructions showAllInstructions />
-        <Text component="p">
-          <DiscoveryImageModalButton
-            ButtonComponent={Button}
+    <Stack hasGutter>
+      <StackItem>
+        <TextContent>
+          <DiscoveryInstructions showAllInstructions />
+          <Text component="p">
+            <DiscoveryImageModalButton
+              ButtonComponent={Button}
+              cluster={cluster}
+              idPrefix="bare-metal-inventory-add-host"
+            />
+          </Text>
+          <InformationAndAlerts
             cluster={cluster}
-            idPrefix="bare-metal-inventory-add-host"
+            HostRequirementsContent={AddHostRequirementsContent}
+            setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
           />
-        </Text>
-        <InformationAndAlerts
+        </TextContent>
+      </StackItem>
+      {isArmArchitecture(cluster) && <StackItem>{armArchAlert}</StackItem>}
+      <StackItem>
+        <ClusterHostsTable
           cluster={cluster}
-          HostRequirementsContent={AddHostRequirementsContent}
           setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
         />
-      </TextContent>
-      <ClusterHostsTable cluster={cluster} setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
-      <DiscoveryTroubleshootingModal
-        isOpen={isDiscoveryHintModalOpen}
-        setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
-      />
-    </>
+      </StackItem>
+      <StackItem>
+        <DiscoveryTroubleshootingModal
+          isOpen={isDiscoveryHintModalOpen}
+          setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
+        />
+      </StackItem>
+    </Stack>
   );
 };
 

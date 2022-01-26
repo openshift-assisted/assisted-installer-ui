@@ -88,17 +88,47 @@ const PlatformIntegrationNote: React.FC<{}> = () => {
 const ReviewCluster: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   return (
     <DetailList>
-      <DetailItem title="Cluster address" value={`${cluster.name}.${cluster.baseDnsDomain}`} />
-      <DetailItem title="OpenShift version" value={cluster.openshiftVersion} />
-      <DetailItem title="Management network CIDR" value={selectClusterNetworkCIDR(cluster)} />
-      <DetailItem title="Cluster summary" value={<ReviewHostsInventory hosts={cluster.hosts} />} />
+      <DetailItem
+        title="Cluster address"
+        value={`${cluster.name}.${cluster.baseDnsDomain}`}
+        testId="cluster-address"
+      />
+      <DetailItem
+        title="OpenShift version"
+        value={cluster.openshiftVersion}
+        testId="openshift-version"
+      />
+      <DetailItem
+        title="CPU architecture"
+        value={cluster.cpuArchitecture}
+        testId="cpu-architecture"
+      />
+      <DetailItem
+        title="Management network CIDR"
+        value={selectClusterNetworkCIDR(cluster)}
+        testId="network-cidr"
+      />
+      <DetailItem
+        title="Cluster summary"
+        testId="cluster-summary"
+        value={<ReviewHostsInventory hosts={cluster.hosts} />}
+      />
       <DetailItem
         title="Cluster validations"
         value={<ClusterValidations validationsInfo={cluster.validationsInfo} />}
+        testId="cluster-validations"
       />
-      <DetailItem title="Host validations" value={<HostsValidations hosts={cluster.hosts} />} />
+      <DetailItem
+        title="Host validations"
+        value={<HostsValidations hosts={cluster.hosts} />}
+        testId="host-validations"
+      />
       <RenderIf condition={cluster.platform?.type !== 'baremetal'}>
-        <DetailItem title="Platform integration" value={<PlatformIntegrationNote />} />
+        <DetailItem
+          title="Platform integration"
+          value={<PlatformIntegrationNote />}
+          testId="platform-integration"
+        />
       </RenderIf>
       <ClusterFeatureSupportLevelsDetailItem cluster={cluster} />
     </DetailList>

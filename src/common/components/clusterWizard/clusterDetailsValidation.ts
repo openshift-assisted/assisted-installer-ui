@@ -29,6 +29,26 @@ export const getClusterDetailsInitialValues = ({
     baseDnsDomain = baseDomain || '',
     openshiftVersion = getDefaultOpenShiftVersion(ocpVersions),
   } = cluster || {};
+
+  const emptyTangServers = () => {
+    return [
+      {
+        url: '',
+        thumbprint: '',
+      },
+    ];
+  };
+
+  const parseTangServers = (tangServersString: string) => {
+    let parsedTangServers = emptyTangServers();
+    try {
+      parsedTangServers = JSON.parse(tangServersString);
+    } catch (e) {
+      console.warn('Tang Servers can not be parsed');
+    }
+    return parsedTangServers;
+  };
+
   return {
     name,
     highAvailabilityMode,
@@ -38,6 +58,17 @@ export const getClusterDetailsInitialValues = ({
     SNODisclaimer: highAvailabilityMode === 'None',
     useRedHatDnsService:
       !!baseDnsDomain && managedDomains.map((d) => d.domain).includes(baseDnsDomain),
+    enableDiskEncryptionOnMasters: ['all', 'masters'].includes(
+      cluster?.diskEncryption?.enableOn ?? 'none',
+    ),
+    enableDiskEncryptionOnWorkers: ['all', 'workers'].includes(
+      cluster?.diskEncryption?.enableOn ?? 'none',
+    ),
+    diskEncryptionMode: cluster?.diskEncryption?.mode ?? 'tpmv2',
+    diskEncryptionTangServers: cluster?.diskEncryption?.tangServers
+      ? parseTangServers(cluster.diskEncryption.tangServers)
+      : emptyTangServers(),
+    diskEncryption: cluster?.diskEncryption ?? {},
   };
 };
 
@@ -56,8 +87,8 @@ export const getClusterDetailsValidationSchema = (
     }
     return Yup.object({
       name: nameValidationSchema(usedClusterNames, values.baseDnsDomain),
-      pullSecret: pullSecretValidationSchema.required('Required.'),
       baseDnsDomain: dnsNameValidationSchema.required('Required'),
+      pullSecret: pullSecretValidationSchema.required('Required.'),
       SNODisclaimer: Yup.boolean().when(['highAvailabilityMode', 'openshiftVersion'], {
         // The disclaimer is required only if SNO is enabled and SNO feature is not fully supported in that version
         is: (highAvailabilityMode, openshiftVersion) => {
@@ -70,6 +101,17 @@ export const getClusterDetailsValidationSchema = (
           );
         },
         then: Yup.bool().oneOf([true], 'Confirm the Single Node OpenShift disclaimer to continue.'),
+      }),
+      diskEncryptionTangServers: Yup.array().when('diskEncryptionMode', {
+        is: (diskEncryptionMode) => {
+          return diskEncryptionMode == 'tang';
+        },
+        then: Yup.array().of(
+          Yup.object().shape({
+            url: Yup.string().url('Tang Server Url must be a valid URL').required('Required.'),
+            thumbprint: Yup.string().required('Required.'),
+          }),
+        ),
       }),
     });
   });

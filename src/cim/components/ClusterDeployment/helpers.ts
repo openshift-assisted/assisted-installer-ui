@@ -1,13 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import _ from 'lodash';
 import { EventList } from '../../../common/api/types';
-import { AgentClusterInstallK8sResource, InfraEnvK8sResource } from '../../types/k8s';
+import {
+  AgentClusterInstallK8sResource,
+  InfraEnvK8sResource,
+  BareMetalHostK8sResource,
+} from '../../types/k8s';
 import { getClusterStatus } from '../helpers/status';
 import { getK8sProxyURL } from '../helpers/proxy';
 import { getInfraEnvNameOfAgent } from '../helpers/agents';
 import { EventListFetchProps } from '../../../common';
 import { ClusterDeploymentK8sResource, AgentK8sResource } from '../../types';
-import { INFRAENV_GENERATED_AI_FLOW } from '../common/constants';
+import { INFRAENV_GENERATED_AI_FLOW, BMH_HOSTNAME_ANNOTATION } from '../common/constants';
 
 export const shouldShowClusterDeploymentValidationOverview = (
   agentClusterInstall?: AgentClusterInstallK8sResource,
@@ -130,7 +134,16 @@ export const isAgentOfCluster = (agent: AgentK8sResource, cdName?: string, cdNam
   agent.spec?.clusterDeploymentName?.name === cdName &&
   agent.spec?.clusterDeploymentName?.namespace === cdNamespace;
 
-export const getAgentsHostsNames = (agents: AgentK8sResource[]): string[] => {
+export const getAgentsHostsNames = (
+  agents: AgentK8sResource[] = [],
+  bmhs: BareMetalHostK8sResource[] = [],
+): string[] => {
   const raw: (string | undefined)[] = agents.map((agent) => agent.spec?.hostname);
+  bmhs.forEach((bmh) => {
+    const hostname = bmh.metadata?.annotations?.[BMH_HOSTNAME_ANNOTATION];
+    if (hostname) {
+      raw.push(hostname);
+    }
+  });
   return _.uniq(raw.filter(Boolean)) as string[];
 };

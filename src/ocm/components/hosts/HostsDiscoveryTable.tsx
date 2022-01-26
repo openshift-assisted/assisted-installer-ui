@@ -1,6 +1,12 @@
 import React from 'react';
-import { HostsNotShowingLinkProps } from '../../../common';
-import { Cluster, Host } from '../../../common';
+import {
+  ChangeHostnameAction,
+  HostsNotShowingLinkProps,
+  HostToolbar,
+  getSchedulableMasters,
+  Cluster,
+  Host,
+} from '../../../common';
 import { HostsTableModals, useHostsTable } from './use-hosts-table';
 import {
   countColumn,
@@ -17,7 +23,7 @@ import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
 import { ExpandComponentProps } from '../../../common/components/hosts/AITable';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
 import { onDiskRoleType } from '../../../common/components/hosts/DiskRole';
-import { getSchedulableMasters } from '../../../common';
+import { Stack, StackItem } from '@patternfly/react-core';
 
 const getExpandComponent = (onDiskRole: onDiskRoleType, canEditDisks: (host: Host) => boolean) => ({
   obj: host,
@@ -47,6 +53,10 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({
     onEditRole,
     onDiskRole,
     actionResolver,
+    onSelect,
+    selectedHostIDs,
+    setSelectedHostIDs,
+    onMassChangeHostname,
     ...modalProps
   } = useHostsTable(cluster);
 
@@ -64,17 +74,37 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({
     [onEditHost, actionChecks.canEditHostname, actionChecks.canEditRole, onEditRole, cluster],
   );
 
+  const hostIDs = cluster.hosts?.map((h) => h.id) || [];
+
   return (
     <>
-      <HostsTable
-        testId="hosts-discovery-table"
-        hosts={cluster.hosts || []}
-        content={content}
-        actionResolver={actionResolver}
-        ExpandComponent={getExpandComponent(onDiskRole, actionChecks.canEditDisks)}
-      >
-        <HostsTableEmptyState setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
-      </HostsTable>
+      <Stack hasGutter>
+        <StackItem>
+          <HostToolbar
+            selectedHostIDs={selectedHostIDs}
+            hostIDs={hostIDs}
+            onSelectAll={() => setSelectedHostIDs(hostIDs)}
+            onSelectNone={() => setSelectedHostIDs([])}
+            actionItems={[
+              <ChangeHostnameAction key="hostname" onChangeHostname={onMassChangeHostname} />,
+            ]}
+          />
+        </StackItem>
+        <StackItem>
+          <HostsTable
+            testId="hosts-discovery-table"
+            hosts={cluster.hosts || []}
+            content={content}
+            actionResolver={actionResolver}
+            ExpandComponent={getExpandComponent(onDiskRole, actionChecks.canEditDisks)}
+            onSelect={onSelect}
+            selectedIDs={selectedHostIDs}
+            setSelectedHostIDs={setSelectedHostIDs}
+          >
+            <HostsTableEmptyState setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
+          </HostsTable>
+        </StackItem>
+      </Stack>
       <HostsTableModals cluster={cluster} {...modalProps} />
     </>
   );
