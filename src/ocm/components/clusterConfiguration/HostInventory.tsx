@@ -1,10 +1,8 @@
 import React from 'react';
-import { Text, TextContent, Button, Stack, StackItem, Tooltip } from '@patternfly/react-core';
-import { HelpIcon } from '@patternfly/react-icons';
+import { Text, TextContent, Button, Stack, StackItem } from '@patternfly/react-core';
 import {
   Cluster,
   PopoverIcon,
-  CheckboxField,
   useFeature,
   isSingleNodeCluster,
   ClusterWizardStepHeader,
@@ -21,60 +19,16 @@ import InformationAndAlerts from './InformationAndAlerts';
 import {
   HostRequirementsContent,
   SingleHostRequirementsContent,
-  CNVHostRequirementsContent,
 } from '../hosts/HostRequirementsContent';
 import ClusterWizardHeaderExtraActions from './ClusterWizardHeaderExtraActions';
 import { useClusterSupportedPlatforms } from '../../hooks';
 import { useFormikContext } from 'formik';
+import { OcsCheckbox } from './OcsCheckbox';
+import { CnvCheckbox } from './CnvCheckbox';
 
-const OCSLabel: React.FC = () => (
+const PlatformIntegrationLabel: React.FC = () => (
   <>
-    Install OpenShift Container Storage
-    {/* TODO(mlibra): List of OCS requierements is stabilizing now - https://issues.redhat.com/browse/MGMT-4220 )
-    <PopoverIcon
-      component={'a'}
-      variant={'plain'}
-      IconComponent={HelpIcon}
-      minWidth="50rem"
-      headerContent="Additional Requirements"
-      bodyContent={<>FOO BAR </>}/>
-    */}
-  </>
-);
-
-const CNVLabel: React.FC<{ clusterId: Cluster['id']; isSingleNode?: boolean }> = ({
-  clusterId,
-  isSingleNode,
-}) => {
-  return (
-    <>
-      Install OpenShift Virtualization{' '}
-      <PopoverIcon
-        component={'a'}
-        variant={'plain'}
-        IconComponent={HelpIcon}
-        minWidth="50rem"
-        headerContent="Additional Requirements"
-        bodyContent={
-          <CNVHostRequirementsContent clusterId={clusterId} isSingleNode={isSingleNode} />
-        }
-      />
-    </>
-  );
-};
-
-const PlatformIntegrationLabel: React.FC<{ isTooltipHidden: boolean }> = ({
-  isTooltipHidden = false,
-}) => (
-  <>
-    <Tooltip
-      hidden={isTooltipHidden}
-      content={
-        'Platform integration is applicable only when all discovered hosts are from the same platform'
-      }
-    >
-      <span>Integrate with platform</span>
-    </Tooltip>{' '}
+    <span>Integrate with platform</span>{' '}
     <PopoverIcon
       variant={'plain'}
       bodyContent={
@@ -89,22 +43,20 @@ const PlatformIntegrationLabel: React.FC<{ isTooltipHidden: boolean }> = ({
   </>
 );
 
-const SchedulableMastersLabel: React.FC<{ isTooltipHidden: boolean }> = ({
-  isTooltipHidden = false,
-}) => (
+const SchedulableMastersLabel: React.FC = () => (
   <>
-    <Tooltip
-      hidden={isTooltipHidden}
-      content={'This toggle will be "On" and not editable when less than 5 hosts were discovered'}
-    >
-      <span>Run workloads on control plane nodes</span>
-    </Tooltip>{' '}
+    <span>Run workloads on control plane nodes</span>{' '}
     <PopoverIcon
       variant={'plain'}
       bodyContent={<p>Enables your control plane nodes to be used for running applications.</p>}
     />
   </>
 );
+
+const platformIntegrationTooltip =
+  'Platform integration is applicable only when all discovered hosts are from the same platform';
+const schedulableMastersTooltip =
+  'This toggle will be "On" and not editable when less than 5 hosts were discovered';
 
 const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const [isDiscoveryHintModalOpen, setDiscoveryHintModalOpen] = React.useState(false);
@@ -129,8 +81,10 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         </ClusterWizardStepHeader>
       </StackItem>
       <StackItem>
+        <DiscoveryInstructions showAllInstructions />
+      </StackItem>
+      <StackItem>
         <TextContent>
-          <DiscoveryInstructions isSingleNodeCluster={isSNO} />
           <Text component="p">
             <DiscoveryImageModalButton
               ButtonComponent={Button}
@@ -140,38 +94,42 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
           </Text>
         </TextContent>
       </StackItem>
-      <StackItem>
-        {isContainerNativeVirtualizationEnabled && (
-          <CheckboxField
-            name="useContainerNativeVirtualization"
-            label={<CNVLabel clusterId={cluster.id} isSingleNode={isSNO} />}
-            helperText="Run virtual machines along containers."
+      {isContainerNativeVirtualizationEnabled && (
+        <StackItem>
+          <CnvCheckbox
+            clusterId={cluster.id}
+            isSNO={isSNO}
+            openshiftVersion={cluster.openshiftVersion}
           />
-        )}
-      </StackItem>
-      <StackItem>
-        {isOpenshiftClusterStorageEnabled && !isSNO && (
-          <CheckboxField
-            name="useExtraDisksForLocalStorage"
-            label={<OCSLabel />}
-            helperText="Persistent software-defined storage for hybrid applications."
-          />
-        )}
-      </StackItem>
-      <StackItem>
-        {isPlatformIntegrationFeatureEnabled && (
+        </StackItem>
+      )}
+      {isOpenshiftClusterStorageEnabled && !isSNO && (
+        <StackItem>
+          <OcsCheckbox openshiftVersion={cluster.openshiftVersion} />
+        </StackItem>
+      )}
+      {isPlatformIntegrationFeatureEnabled && (
+        <StackItem>
           <SwitchField
+            tooltipProps={{
+              hidden: isPlatformIntegrationSupported,
+              content: platformIntegrationTooltip,
+            }}
             isDisabled={!isPlatformIntegrationSupported && cluster?.platform?.type === 'baremetal'}
             name={'usePlatformIntegration'}
-            label={<PlatformIntegrationLabel isTooltipHidden={isPlatformIntegrationSupported} />}
+            label={<PlatformIntegrationLabel />}
           />
-        )}
-      </StackItem>
+        </StackItem>
+      )}
       <StackItem>
         <SwitchField
+          tooltipProps={{
+            hidden: isSchedulableMastersEnabled,
+            content: schedulableMastersTooltip,
+          }}
           isDisabled={!isSchedulableMastersEnabled}
           name={'schedulableMasters'}
-          label={<SchedulableMastersLabel isTooltipHidden={isSchedulableMastersEnabled} />}
+          label={<SchedulableMastersLabel />}
         />
       </StackItem>
       <StackItem>

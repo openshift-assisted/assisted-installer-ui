@@ -8,7 +8,6 @@ import {
   ValidationGroup,
   ValidationsInfo,
 } from '../../types/clusters';
-import { OpenshiftVersionOptionType } from '../../types/versions';
 import { getHostname, getSchedulableMasters } from '../hosts/utils';
 import {
   selectClusterNetworkCIDR,
@@ -85,16 +84,6 @@ export const getHostDiscoveryInitialValues = (cluster: Cluster): HostDiscoveryVa
   };
 };
 
-// TODO(jtomasek): use getFeatureSupport('sno', selectedVersion.version) to get support level of SNO feature
-// for selected version once the API is available. This function will be obsolete then and can be removed.
-// https://issues.redhat.com/browse/MGMT-7787
-export const getSNOSupportLevel = (version: OpenshiftVersionOptionType['version'] = '') => {
-  if (version.startsWith('4.9')) {
-    return 'supported';
-  }
-  return 'dev-preview';
-};
-
 export function filterValidationsInfoByGroup(
   validationsInfo: ValidationsInfo,
   selectedGroups: ValidationGroup[] = ['configuration', 'hosts-data', 'network', 'operators'],
@@ -111,7 +100,7 @@ export function filterValidationsInfoByStatus(
   selectedStatuses: Validation['status'][] = ['failure', 'pending', 'error'],
 ): ValidationsInfo {
   const result = {};
-  Object.entries(validationsInfo).forEach(([group, validations]) => {
+  Object.entries(validationsInfo).forEach(([group, validations = []]) => {
     const filteredValidations = validations.filter((validation) =>
       selectedStatuses.includes(validation.status),
     );

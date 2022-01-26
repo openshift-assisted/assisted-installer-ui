@@ -56,7 +56,7 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
     <Grid hasGutter>
       <GridItem>
         <TextContent>
-          <DiscoveryInstructions isSingleNodeCluster={isSNOCluster} />
+          <DiscoveryInstructions showAllInstructions />
         </TextContent>
       </GridItem>
       {!!onCreateBMH && (

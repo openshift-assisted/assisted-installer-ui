@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {
-  getFailingClusterWizardSoftValidationIds,
+  areOnlySoftValidationsFailing,
   getWizardStepHostStatus,
   getWizardStepHostValidationsInfo,
   Host,
@@ -9,9 +9,8 @@ import {
 } from '../../../common';
 import { HostStatusProps } from '../../../common/components/hosts/types';
 import { ValidationsInfo } from '../../../common/types/hosts';
-// TODO(jtomasek): replace the map with a CIM dedicated one
-import { wizardStepsValidationsMap } from '../../../ocm/components/clusterWizard/wizardTransition';
-import { AdditionalNTPSourcesDialogToggle } from '../../../ocm/components/hosts/AdditionaNTPSourceDialogToggle';
+import { AdditionalNTPSourcesDialogToggle } from '../ClusterDeployment/AdditionalNTPSourcesDialogToggle';
+import { wizardStepsValidationsMap } from '../ClusterDeployment/wizardTransition';
 
 type HostNetworkingStatusComponentProps = {
   host: Host;
@@ -29,18 +28,15 @@ const NetworkingStatus: React.FC<HostNetworkingStatusComponentProps> = ({
     'networking',
     wizardStepsValidationsMap,
   );
-  const sublabel = getFailingClusterWizardSoftValidationIds(
+  const sublabel = areOnlySoftValidationsFailing(
     validationsInfo,
     'networking',
     wizardStepsValidationsMap,
-  ).length
+  )
     ? 'Some validations failed'
     : undefined;
 
-  let statusOverride: HostStatusProps['statusOverride'] = networkingStatus;
-  if (networkingStatus === 'pending-for-input' || networkingStatus === 'insufficient') {
-    statusOverride = 'Bound';
-  }
+  const statusOverride: HostStatusProps['statusOverride'] = networkingStatus;
 
   return (
     <HostStatus

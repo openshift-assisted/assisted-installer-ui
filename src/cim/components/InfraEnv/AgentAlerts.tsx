@@ -1,6 +1,7 @@
 import { Alert, AlertVariant } from '@patternfly/react-core';
 import * as React from 'react';
-import { INFRAENV_AGENTINSTALL_LABEL_KEY, getInfraEnvDocs } from '../common/constants';
+import { getInfraEnvDocs } from '../common/constants';
+import { getInfraEnvNameOfAgent } from '../helpers';
 import { BareMetalHostK8sResource, InfraEnvK8sResource } from '../../types';
 
 type AgentAlertsProps = {
@@ -15,7 +16,7 @@ const AgentAlerts: React.FC<AgentAlertsProps> = ({ infraEnv, bareMetalHosts, doc
     bareMetalHosts?.filter(
       (h) =>
         h.metadata?.namespace === infraEnv.metadata?.namespace &&
-        h.metadata?.labels?.[INFRAENV_AGENTINSTALL_LABEL_KEY] === infraEnv.metadata?.name,
+        getInfraEnvNameOfAgent(h) === infraEnv.metadata?.name,
     );
 
   return infraBMHs?.some((bmh) => !bmh.status) ? (

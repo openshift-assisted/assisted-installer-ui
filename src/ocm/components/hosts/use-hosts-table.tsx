@@ -10,13 +10,14 @@ import {
   Inventory,
   stringToJSON,
   HostUpdateParams,
+  AddHostsContext,
 } from '../../../common';
 import {
   AdditionalNTPSourcesDialog,
   AdditionalNTPSourcesFormProps,
 } from '../../../common/components/hosts/AdditionalNTPSourcesDialog';
 import { getErrorMessage, handleApiError } from '../../api';
-import { forceReload, updateHost } from '../../reducers/clusters';
+import { forceReload, updateCluster, updateHost } from '../../reducers/clusters';
 import { useModalDialogsContext } from './ModalDialogsContext';
 import { downloadHostInstallationLogs, onAdditionalNtpSourceAction } from './utils';
 import {
@@ -38,6 +39,9 @@ import ResetHostModal from './ResetHostModal';
 import DeleteHostModal from './DeleteHostModal';
 import { onFetchEvents } from '../fetching/fetchEvents';
 import { HostsService } from '../../services';
+import UpdateDay2ApiVipModal from './UpdateDay2ApiVipModal';
+import { UpdateDay2ApiVipFormProps } from './UpdateDay2ApiVipForm';
+import { ClustersAPI } from '../../services/apis';
 
 export const useHostsTable = (cluster: Cluster) => {
   const { addAlert } = useAlerts();
@@ -47,6 +51,8 @@ export const useHostsTable = (cluster: Cluster) => {
     deleteHostDialog,
     resetHostDialog,
   } = useModalDialogsContext();
+  const { resetCluster } = React.useContext(AddHostsContext);
+
   const dispatch = useDispatch();
 
   const hostActions = React.useMemo(
@@ -63,7 +69,7 @@ export const useHostsTable = (cluster: Cluster) => {
         const hostId = host.id;
         try {
           const { data } = await HostsService.install(cluster.id, hostId);
-          dispatch(updateHost(data));
+          resetCluster ? resetCluster() : dispatch(updateHost(data));
         } catch (e) {
           handleApiError(e, () =>
             addAlert({ title: `Failed to enable host ${hostId}`, message: getErrorMessage(e) }),
@@ -71,7 +77,7 @@ export const useHostsTable = (cluster: Cluster) => {
         }
       },
     }),
-    [cluster.id, dispatch, addAlert, deleteHostDialog],
+    [cluster.id, dispatch, resetCluster, addAlert, deleteHostDialog],
   );
 
   const onViewHostEvents = React.useCallback(
@@ -117,14 +123,28 @@ export const useHostsTable = (cluster: Cluster) => {
         }
 
         const { data } = await HostsService.updateDiskRole(cluster.id, hostId, diskId, role);
-        dispatch(updateHost(data));
+        resetCluster ? resetCluster() : dispatch(updateHost(data));
       } catch (e) {
         handleApiError(e, () =>
           addAlert({ title: 'Failed to set disk role', message: getErrorMessage(e) }),
         );
       }
     },
-    [dispatch, addAlert, cluster.id],
+    [dispatch, resetCluster, addAlert, cluster.id],
+  );
+
+  const onUpdateDay2ApiVip: UpdateDay2ApiVipFormProps['onUpdateDay2ApiVip'] = React.useCallback(
+    async (apiVip: string, onError: (message: string) => void) => {
+      try {
+        const { data } = await ClustersAPI.update(cluster.id, {
+          apiVipDnsName: apiVip,
+        });
+        dispatch(updateCluster(data));
+      } catch (e) {
+        handleApiError(e, () => onError(getErrorMessage(e)));
+      }
+    },
+    [cluster.id, dispatch],
   );
 
   const onAdditionalNtpSource: AdditionalNTPSourcesFormProps['onAdditionalNtpSource'] = React.useMemo(
@@ -152,7 +172,7 @@ export const useHostsTable = (cluster: Cluster) => {
       if (hostId) {
         try {
           const { data } = await HostsService.reset(cluster.id, hostId);
-          dispatch(updateHost(data));
+          resetCluster ? resetCluster() : dispatch(updateHost(data));
         } catch (e) {
           return handleApiError(e, () =>
             addAlert({
@@ -165,14 +185,14 @@ export const useHostsTable = (cluster: Cluster) => {
     };
     reset(resetHostDialog.data?.hostId);
     resetHostDialog.close();
-  }, [addAlert, cluster.id, dispatch, resetHostDialog]);
+  }, [addAlert, cluster.id, dispatch, resetCluster, resetHostDialog]);
 
   const onDelete = React.useCallback(() => {
     const deleteHost = async (hostId: string | undefined) => {
       if (hostId) {
         try {
           await HostsService.delete(cluster.id, hostId);
-          dispatch(forceReload());
+          resetCluster ? resetCluster() : dispatch(forceReload());
         } catch (e) {
           return handleApiError(e, () =>
             addAlert({
@@ -185,7 +205,7 @@ export const useHostsTable = (cluster: Cluster) => {
     };
     deleteHost(deleteHostDialog.data?.hostId);
     deleteHostDialog.close();
-  }, [addAlert, cluster.id, dispatch, deleteHostDialog]);
+  }, [addAlert, cluster.id, dispatch, resetCluster, deleteHostDialog]);
 
   const onEditRole = React.useCallback(
     async ({ id, clusterId }: Host, role: HostUpdateParams['hostRole']) => {
@@ -195,14 +215,14 @@ export const useHostsTable = (cluster: Cluster) => {
           throw new Error(`Failed to edit role in host: ${id}.\nMissing cluster_id`);
         }
         const { data } = await HostsService.updateRole(clusterId, id, role);
-        dispatch(updateHost(data));
+        resetCluster ? resetCluster() : dispatch(updateHost(data));
       } catch (e) {
         handleApiError(e, () =>
           addAlert({ title: 'Failed to set role', message: getErrorMessage(e) }),
         );
       }
     },
-    [addAlert, dispatch],
+    [addAlert, dispatch, resetCluster],
   );
 
   const actionResolver = React.useMemo(
@@ -239,6 +259,7 @@ export const useHostsTable = (cluster: Cluster) => {
     onReset,
     onDelete,
     onAdditionalNtpSource,
+    onUpdateDay2ApiVip,
   };
 };
 
@@ -250,6 +271,7 @@ type HostsTableModalsProps = {
     additionalNtpSource: string,
     onError: (message: string) => void,
   ) => Promise<void>;
+  onUpdateDay2ApiVip: UpdateDay2ApiVipFormProps['onUpdateDay2ApiVip'];
 };
 
 export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
@@ -257,14 +279,18 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
   onDelete,
   onReset,
   onAdditionalNtpSource,
+  onUpdateDay2ApiVip,
 }) => {
   const dispatch = useDispatch();
+  const { resetCluster } = React.useContext(AddHostsContext);
+
   const {
     eventsDialog,
     editHostDialog,
     deleteHostDialog,
     resetHostDialog,
     additionalNTPSourcesDialog,
+    UpdateDay2ApiVipDialog,
   } = useModalDialogsContext();
   return (
     <>
@@ -305,7 +331,7 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
             values.hostId,
             values.hostname,
           );
-          dispatch(updateHost(data));
+          resetCluster ? resetCluster() : dispatch(updateHost(data));
           editHostDialog.close();
         }}
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -316,10 +342,16 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
         }}
       />
       <AdditionalNTPSourcesDialog
-        cluster={cluster}
+        additionalNtpSource={cluster.additionalNtpSource}
         isOpen={additionalNTPSourcesDialog.isOpen}
         onClose={additionalNTPSourcesDialog.close}
         onAdditionalNtpSource={onAdditionalNtpSource}
+      />
+      <UpdateDay2ApiVipModal
+        isOpen={UpdateDay2ApiVipDialog.isOpen}
+        onClose={UpdateDay2ApiVipDialog.close}
+        onUpdateDay2ApiVip={onUpdateDay2ApiVip}
+        currentApiVip={cluster.apiVipDnsName}
       />
     </>
   );

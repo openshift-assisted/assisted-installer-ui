@@ -11,13 +11,16 @@ const HostsService = {
    */
   async deleteAll(clusterId: Cluster['id']) {
     try {
-      const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId);
-      const response = await HostsAPI.list(infraEnvId);
-      const hostIds = response.data?.map((host) => host.id);
       const promises: AxiosPromise<void>[] = [];
+      const hosts = await HostsService.listHostsBoundToCluster(clusterId);
+      const hostDeleteParams = hosts.map<[string, string]>(({ infraEnvId, id }) => [
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        infraEnvId!,
+        id,
+      ]);
 
-      for (const hostId of hostIds) {
-        promises.push(HostsAPI.deregister(infraEnvId, hostId));
+      for (const hostDeleteParam of hostDeleteParams) {
+        promises.push(HostsAPI.deregister(...hostDeleteParam));
       }
 
       return Promise.all(promises);
@@ -85,9 +88,9 @@ const HostsService = {
 
   async installAll(cluster: Cluster) {
     try {
-      const infraEnvId = await InfraEnvsService.getInfraEnvId(cluster.id);
-      const { data: hosts } = await HostsAPI.list(infraEnvId);
       const promises: AxiosPromise<Host>[] = [];
+      const infraEnvId = await InfraEnvsService.getInfraEnvId(cluster.id);
+      const hosts = await HostsService.listHostsBoundToCluster(cluster.id);
 
       for (const host of hosts) {
         if (canInstallHost(cluster, host.status)) {

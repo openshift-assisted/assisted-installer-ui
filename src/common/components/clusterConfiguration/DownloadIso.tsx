@@ -16,6 +16,7 @@ import {
 import { global_success_color_100 as successColor } from '@patternfly/react-tokens';
 import { CheckCircleIcon } from '@patternfly/react-icons';
 import { DetailItem, DetailList } from '../ui';
+import DiscoveryInstructions from './DiscoveryInstructions';
 
 export type DownloadISOProps = {
   fileName?: string;
@@ -41,6 +42,7 @@ const DownloadIso: React.FC<DownloadISOProps> = ({
             Discovery ISO is ready to download
           </Title>
         </EmptyState>
+        <DiscoveryInstructions />
         <DetailList>
           <DetailItem
             title="Discovery ISO URL"
@@ -56,15 +58,6 @@ const DownloadIso: React.FC<DownloadISOProps> = ({
               <ClipboardCopy isReadOnly onCopy={(event) => clipboardCopyFunc(event, wgetCommand)}>
                 {wgetCommand}
               </ClipboardCopy>
-            }
-          />
-          <DetailItem
-            title="Boot instructions"
-            value={
-              <>
-                Use a bootable device (local disk, USB drive, etc.) or network booting (PXE) to boot
-                each host <b>once</b> from the Discovery ISO.
-              </>
             }
           />
         </DetailList>

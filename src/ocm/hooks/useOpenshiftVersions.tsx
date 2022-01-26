@@ -1,5 +1,9 @@
 import React from 'react';
-import { AddHostsClusterCreateParams, OpenshiftVersionOptionType } from '../../common';
+import {
+  AddHostsClusterCreateParams,
+  CpuArchitecture,
+  OpenshiftVersionOptionType,
+} from '../../common';
 import { getErrorMessage, handleApiError } from '../api';
 import { SupportedOpenshiftVersionsAPI } from '../services/apis';
 
@@ -19,12 +23,14 @@ export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
       const { data } = await SupportedOpenshiftVersionsAPI.list();
       const versions: OpenshiftVersionOptionType[] = Object.keys(data)
         .sort()
+        .reverse()
         .map((key) => ({
           label: `OpenShift ${data[key].displayName || key}`,
           value: key,
           version: data[key].displayName,
           default: Boolean(data[key].default),
           supportLevel: data[key].supportLevel,
+          cpuArchitectures: data[key].cpuArchitectures as CpuArchitecture[],
         }));
 
       setVersions(versions);

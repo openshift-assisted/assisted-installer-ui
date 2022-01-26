@@ -7,17 +7,21 @@ import {
   FeatureId,
   SupportLevel,
   FeatureSupportLevels,
+  Cluster,
 } from '../../../common';
 import { FeatureSupportLevelContext } from '../../../common/components/featureSupportLevels';
 import { FeatureSupportLevelData } from '../../../common/components/featureSupportLevels/FeatureSupportLevelContext';
 import { handleApiError } from '../../api';
 import { FeatureSupportLevelsAPI } from '../../services/apis';
 import { captureException } from '../../sentry';
+import { useOpenshiftVersions } from '../../hooks';
+import { getFeatureDisabledReason, isFeatureSupported } from './featureStateUtils';
 
 export type SupportLevelProviderProps = PropsWithChildren<{
   clusterFeatureUsage?: string;
   openshiftVersion?: string;
   loadingUi: React.ReactNode;
+  cluster?: Cluster;
 }>;
 
 const getFeatureSupportLevelsMap = (
@@ -43,27 +47,23 @@ const getFeatureSupportLevelsMap = (
     return {};
   }
 };
-
-//TODO(brotman): share code with normalizeVersion function in src/ocm/components/fetching/openshiftVersions.tsx
-const normalizeVersion = (
-  supportLevelData: FeatureSupportLevelsMap,
-  version: string,
-): string | undefined => {
-  const versions = Object.keys(supportLevelData);
-  return versions.find((normalized) => version.startsWith(normalized));
-};
-
 export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = ({
+  cluster,
   children,
   loadingUi,
 }) => {
+  const {
+    loading: loadingOCPVersions,
+    versions: versionOptions,
+    normalizeClusterVersion,
+  } = useOpenshiftVersions();
   const fetcher = () => FeatureSupportLevelsAPI.list().then((res) => res.data);
   const { data: featureSupportLevels, error } = useSWR<FeatureSupportLevels>(
     FeatureSupportLevelsAPI.makeBaseURI(),
     fetcher,
     { errorRetryCount: 0, revalidateOnFocus: false },
   );
-  const isLoading = !featureSupportLevels && !error;
+  const isLoading = (!featureSupportLevels && !error) || loadingOCPVersions;
 
   const supportLevelData: FeatureSupportLevelsMap = React.useMemo<FeatureSupportLevelsMap>(() => {
     if (!featureSupportLevels || error) {
@@ -73,31 +73,70 @@ export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = 
   }, [error, featureSupportLevels]);
 
   const getVersionSupportLevelsMap = React.useCallback(
-    (version: string): FeatureIdToSupportLevel | undefined => {
-      const normalized = normalizeVersion(supportLevelData, version);
+    (versionName: string): FeatureIdToSupportLevel | undefined => {
+      const normalized = normalizeClusterVersion(versionName);
       if (!normalized) {
         return undefined;
       }
       return supportLevelData[normalized];
     },
-    [supportLevelData],
+    [supportLevelData, normalizeClusterVersion],
   );
 
   const getFeatureSupportLevel = React.useCallback(
-    (version: string, featureId: FeatureId): SupportLevel | undefined => {
-      const versionSupportLevelData = getVersionSupportLevelsMap(version);
+    (versionName: string, featureId: FeatureId): SupportLevel | undefined => {
+      const versionSupportLevelData = getVersionSupportLevelsMap(versionName);
       return versionSupportLevelData ? versionSupportLevelData[featureId] : undefined;
       // eslint-disable-next-line react-hooks/exhaustive-deps
     },
     [getVersionSupportLevelsMap],
   );
 
+  const isFeatureSupportedCallback = React.useCallback(
+    (versionName: string, featureId: FeatureId) => {
+      const normalizedVersion = normalizeClusterVersion(versionName);
+      const supportLevel = getFeatureSupportLevel(versionName, featureId);
+      return isFeatureSupported(normalizedVersion, featureId, supportLevel, versionOptions);
+    },
+    [getFeatureSupportLevel, normalizeClusterVersion, versionOptions],
+  );
+
+  //TODO(brotman): move to separate context FeatureStateContext
+  const getDisabledReasonCallback = React.useCallback(
+    (versionName: string, featureId: FeatureId) => {
+      const normalizedVersion = normalizeClusterVersion(versionName);
+      const isSupported = isFeatureSupportedCallback(versionName, featureId);
+      return getFeatureDisabledReason(
+        featureId,
+        cluster,
+        normalizedVersion,
+        versionOptions,
+        isSupported,
+      );
+    },
+    [isFeatureSupportedCallback, normalizeClusterVersion, versionOptions, cluster],
+  );
+
+  const isFeatureDisabled = React.useCallback(
+    (version, featureId: FeatureId) => !!getDisabledReasonCallback(version, featureId),
+    [getDisabledReasonCallback],
+  );
+
   const providerValue = React.useMemo<FeatureSupportLevelData>(() => {
     return {
       getVersionSupportLevelsMap: getVersionSupportLevelsMap,
       getFeatureSupportLevel: getFeatureSupportLevel,
+      isFeatureDisabled: isFeatureDisabled,
+      getFeatureDisabledReason: getDisabledReasonCallback,
+      isFeatureSupported: isFeatureSupportedCallback,
     };
-  }, [getVersionSupportLevelsMap, getFeatureSupportLevel]);
+  }, [
+    getVersionSupportLevelsMap,
+    getFeatureSupportLevel,
+    isFeatureDisabled,
+    getDisabledReasonCallback,
+    isFeatureSupportedCallback,
+  ]);
 
   React.useEffect(() => {
     if (error) {

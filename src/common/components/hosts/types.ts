@@ -2,7 +2,7 @@ import { Cluster, Host, HostUpdateParams } from '../../api';
 import { ValidationsInfo } from '../../types/hosts';
 import { HostsNotShowingLinkProps } from '../clusterConfiguration';
 import { onDiskRoleType } from './DiskRole';
-import { AdditionNtpSourcePropsType } from './HostValidationGroups';
+import { AdditionNtpSourcePropsType, UpdateDay2ApiVipPropsType } from './HostValidationGroups';
 
 export type ClusterHostsTableProps = {
   cluster: Cluster;
@@ -40,6 +40,8 @@ export type HostsTableActions = {
   canEditBMH?: (host: Host) => boolean;
   onSelect?: (host: Host, selected: boolean) => void;
   canEditHostname?: () => boolean;
+  canUnbindHost?: (host: Host) => [/* enabled */ boolean, /* reason */ string];
+  onUnbindHost?: (host: Host) => void;
 };
 
 export type HostNetworkingStatusComponentProps = {
@@ -48,10 +50,11 @@ export type HostNetworkingStatusComponentProps = {
   onEditHostname?: () => void;
 };
 
-export type HostStatusProps = AdditionNtpSourcePropsType & {
-  host: Host;
-  validationsInfo: ValidationsInfo;
-  onEditHostname?: () => void;
-  statusOverride?: Host['status'] | 'Discovered' | 'Bound';
-  sublabel?: string;
-};
+export type HostStatusProps = AdditionNtpSourcePropsType &
+  UpdateDay2ApiVipPropsType & {
+    host: Host;
+    validationsInfo: ValidationsInfo;
+    onEditHostname?: () => void;
+    statusOverride?: Host['status'] | 'Discovered';
+    sublabel?: string;
+  };

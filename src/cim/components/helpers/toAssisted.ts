@@ -6,8 +6,8 @@ import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-in
 import { getAgentStatus, getClusterStatus } from './status';
 import { getHostNetworks } from './network';
 import { BareMetalHostK8sResource, InfraEnvK8sResource } from '../../types';
-import { AGENT_BMH_HOSTNAME_LABEL_KEY, INFRAENV_AGENTINSTALL_LABEL_KEY } from '../common';
-import { getAgentProgress, getAgentProgressStages, getAgentRole } from './agents';
+import { AGENT_BMH_HOSTNAME_LABEL_KEY } from '../common';
+import { getAgentProgress, getAgentRole, getInfraEnvNameOfAgent } from './agents';
 
 export const getAIHosts = (
   agents: AgentK8sResource[],
@@ -42,17 +42,17 @@ export const getAIHosts = (
         statusInfo,
         role: getAgentRole(agent),
         requestedHostname: agent.spec.hostname || inventory.hostname,
-        // validationsInfo: JSON.stringify(agent.status.hostValidationInfo),
         createdAt: agent.metadata?.creationTimestamp,
-        validationsInfo: JSON.stringify({ hardware: [] }),
+        validationsInfo: JSON.stringify(agent.status?.validationsInfo || {}),
         inventory: JSON.stringify(inventory),
         progress: agentProgress && {
           currentStage: agentProgress.currentStage,
+          installationPercentage: agentProgress.installationPercentage,
           progressInfo: agentProgress.progressInfo,
           stageStartedAt: agentProgress.stageStartTime,
           stageUpdatedAt: agentProgress.stageUpdateTime,
         },
-        progressStages: getAgentProgressStages(agent),
+        progressStages: agentProgress?.progressStages,
         bootstrap: agent.status?.bootstrap,
       };
     },
@@ -63,7 +63,7 @@ export const getAIHosts = (
       ? bmhs
           ?.filter((h) =>
             h.metadata?.namespace === infraEnv.metadata?.namespace &&
-            h.metadata?.labels?.[INFRAENV_AGENTINSTALL_LABEL_KEY] === infraEnv.metadata?.name &&
+            getInfraEnvNameOfAgent(h) === infraEnv.metadata?.name &&
             h.metadata?.name
               ? !bmhAgents.includes(h.metadata.name)
               : true,

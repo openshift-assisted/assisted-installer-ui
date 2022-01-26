@@ -143,7 +143,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
       <AlertsContextProvider>
         <ModalDialogsContextProvider>
           <ClusterDefaultConfigurationProvider loadingUI={loadingUI} errorUI={errorUI}>
-            <FeatureSupportLevelProvider loadingUi={loadingUI}>
+            <FeatureSupportLevelProvider loadingUi={loadingUI} cluster={cluster}>
               {getContent(cluster)}
               <CancelInstallationModal />
               <ResetClusterModal />

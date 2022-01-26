@@ -47,11 +47,12 @@ import OcpConsoleNodesSectionLink from './OcpConsoleNodesSectionLink';
 import { toSentence } from '../ui/table/utils';
 import { RenderIf } from '../ui';
 import { HostStatusProps } from './types';
+import { UpdateDay2ApiVipPropsType } from './HostValidationGroups';
 
-const getStatusIcon = (status: Host['status'] | 'Discovered' | 'Bound') => {
+const getStatusIcon = (status: Host['status'] | 'discovered') => {
   let icon = null;
   switch (status) {
-    case 'Discovered':
+    case 'discovered':
     case 'discovering':
     case 'discovering-unbound':
       icon = <ConnectedIcon />;
@@ -88,12 +89,12 @@ const getStatusIcon = (status: Host['status'] | 'Discovered' | 'Bound') => {
     case 'installing-in-progress':
     case 'resetting':
     case 'unbinding':
+    case 'unbinding-pending-user-action':
       icon = <InProgressIcon />;
       break;
     case 'added-to-existing-cluster':
       icon = <AddCircleOIcon />;
       break;
-    case 'Bound':
     case 'binding':
       icon = <LinkIcon />;
       break;
@@ -120,25 +121,14 @@ const withProgress = (
 };
 
 type HostStatusPopoverContentProps = ValidationInfoActionProps & {
+  statusOverride?: Host['status'] | 'discovered';
   validationsInfo: ValidationsInfo;
-  statusOverride: HostStatusProps['statusOverride'];
 };
 
-const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({
-  statusOverride,
-  ...props
-}) => {
-  if (statusOverride === 'Bound') {
-    return (
-      <TextContent>
-        <Text>This host is bound to the cluster.</Text>
-      </TextContent>
-    );
-  }
-
-  const { host } = props;
+const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({ ...props }) => {
+  const { host, statusOverride } = props;
   const { status, statusInfo } = host;
-  const statusDetails = HOST_STATUS_DETAILS[status];
+  const statusDetails = HOST_STATUS_DETAILS[statusOverride || status];
 
   if (status === 'added-to-existing-cluster') {
     return (
@@ -179,6 +169,15 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({
       <TextContent>
         <Text>{statusDetails}</Text>
         <HostProgress host={host} />
+      </TextContent>
+    );
+  }
+
+  if (['unbinding-pending-user-action'].includes(status)) {
+    // No additional error messages shown
+    return (
+      <TextContent>
+        <Text>{statusDetails}</Text>
       </TextContent>
     );
   }
@@ -226,6 +225,7 @@ const HostStatusPopoverFooter: React.FC<{ host: Host }> = ({ host }) => {
 
 const WithHostStatusPopover = (
   props: AdditionNtpSourcePropsType &
+    UpdateDay2ApiVipPropsType &
     PropsWithChildren<{
       hideOnOutsideClick: PopoverProps['hideOnOutsideClick'];
       host: Host;
@@ -258,6 +258,7 @@ const HostStatus: React.FC<HostStatusProps> = ({
   sublabel,
   onEditHostname,
   AdditionalNTPSourcesDialogToggleComponent,
+  UpdateDay2ApiVipDialogToggleComponent,
   children,
 }) => {
   const [keepOnOutsideClick, onValidationActionToggle] = React.useState(false);
@@ -274,18 +275,21 @@ const HostStatus: React.FC<HostStatusProps> = ({
 
   sublabel =
     sublabel ||
-    (['installing-pending-user-action', 'disconnected'].includes(status) && 'Action required') ||
+    (['installing-pending-user-action', 'disconnected', 'unbinding-pending-user-action'].includes(
+      status,
+    ) &&
+      'Action required') ||
     (status === 'added-to-existing-cluster' && 'Finish in console') ||
     undefined;
 
   const titleWithProgress = withProgress(title, stageNumber, stages.length, status);
 
   return (
-    <Flex alignItems={{ default: 'alignItemsCenter' }}>
-      {icon && <FlexItem className={'pf-u-mr-xs'}>{icon}</FlexItem>}
+    <Flex alignItems={{ default: 'alignItemsCenter' }} spaceItems={{ default: 'spaceItemsXs' }}>
+      {icon && <FlexItem>{icon}</FlexItem>}
 
-      <Flex direction={{ default: 'column' }}>
-        {!sublabel && status !== 'Discovered' ? (
+      <Flex direction={{ default: 'column' }} spaceItems={{ default: 'spaceItemsXs' }}>
+        {!sublabel && status !== 'discovered' ? (
           <WithHostStatusPopover
             hideOnOutsideClick={!keepOnOutsideClick}
             host={host}
@@ -294,11 +298,12 @@ const HostStatus: React.FC<HostStatusProps> = ({
             title={title}
             validationsInfo={validationsInfo}
             statusOverride={status}
+            UpdateDay2ApiVipDialogToggleComponent={UpdateDay2ApiVipDialogToggleComponent}
           >
             {titleWithProgress}
           </WithHostStatusPopover>
         ) : (
-          <FlexItem className={'pf-u-mb-0'}>
+          <FlexItem>
             <Stack>
               <StackItem>{titleWithProgress}</StackItem>
               {children && <StackItem>{children}</StackItem>}
@@ -314,11 +319,11 @@ const HostStatus: React.FC<HostStatusProps> = ({
               hideOnOutsideClick={!keepOnOutsideClick}
               host={host}
               onEditHostname={toggleHostname}
-              // onAdditionalNtpSource={onAdditionalNtpSource}
               AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
               title={title}
               validationsInfo={validationsInfo}
               statusOverride={status}
+              UpdateDay2ApiVipDialogToggleComponent={UpdateDay2ApiVipDialogToggleComponent}
             >
               {sublabel}
             </WithHostStatusPopover>

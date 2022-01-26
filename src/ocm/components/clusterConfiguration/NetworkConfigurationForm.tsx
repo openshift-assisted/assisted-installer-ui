@@ -16,6 +16,7 @@ import {
   getNetworkInitialValues,
   getHostSubnets,
   isSingleNodeCluster,
+  LoadingState,
 } from '../../../common';
 import { HostSubnet, NetworkConfigurationValues } from '../../../common/types/clusters';
 import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
@@ -28,16 +29,19 @@ import ClusterWizardHeaderExtraActions from './ClusterWizardHeaderExtraActions';
 import { useDefaultConfiguration } from './ClusterDefaultConfigurationContext';
 import NetworkConfigurationTable from './NetworkConfigurationTable';
 import { ClustersAPI } from '../../services/apis';
+import useInfraEnv from '../../hooks/useInfraEnv';
+import { captureException } from '../../sentry';
 
 const NetworkConfigurationForm: React.FC<{
   cluster: Cluster;
 }> = ({ cluster }) => {
+  const { infraEnv, error: infraEnvError, isLoading } = useInfraEnv(cluster.id);
   const defaultNetworkSettings = useDefaultConfiguration([
     'clusterNetworkCidr',
     'serviceNetworkCidr',
     'clusterNetworkHostPrefix',
   ]);
-  const { addAlert, clearAlerts } = useAlerts();
+  const { addAlert, clearAlerts, alerts } = useAlerts();
   const { setCurrentStepId } = React.useContext(ClusterWizardContext);
   const dispatch = useDispatch();
   const hostSubnets = React.useMemo(() => getHostSubnets(cluster), [cluster]);
@@ -55,6 +59,23 @@ const NetworkConfigurationForm: React.FC<{
     () => getNetworkConfigurationValidationSchema(initialValues, hostSubnets),
     [hostSubnets, initialValues],
   );
+
+  React.useEffect(() => {
+    if (infraEnvError) {
+      const title = `Failed to retrieve infra env (clusterId: ${cluster.id})`;
+      //TODO(brotman) add handling of existing errors to alerts context
+      if (alerts.find((alert) => alert.title === title)) {
+        return;
+      }
+      captureException(infraEnvError, title);
+      addAlert({
+        title,
+        message: infraEnvError.message,
+      });
+    }
+    //shouldn't respond to cluster polling. shouldn't respond to alerts changes so remove alert wouldn't trigger adding it back
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [infraEnvError]);
 
   const handleSubmit: FormikConfig<NetworkConfigurationValues>['onSubmit'] = async (
     values,
@@ -119,6 +140,10 @@ const NetworkConfigurationForm: React.FC<{
     }
   };
 
+  if (isLoading) {
+    return <LoadingState />;
+  }
+
   return (
     <Formik
       initialValues={initialValues}
@@ -144,6 +169,7 @@ const NetworkConfigurationForm: React.FC<{
                   cluster={cluster}
                   hostSubnets={hostSubnets}
                   defaultNetworkSettings={defaultNetworkSettings}
+                  infraEnv={infraEnv}
                 />
               </GridItem>
               <GridItem>

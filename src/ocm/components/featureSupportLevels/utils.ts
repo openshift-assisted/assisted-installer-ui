@@ -5,6 +5,8 @@ import { captureException } from '../../sentry';
 import * as Sentry from '@sentry/browser';
 import { stringToJSON } from '../../../common/api/utils';
 
+// TODO: move to common since networkConfiguration is dependant on it.
+// will be able to implement it once there's a common error handler
 export const getLimitedFeatureSupportLevels = (
   cluster: Cluster,
   featureSupportLevelData: FeatureSupportLevelData,
@@ -52,8 +54,4 @@ export const getLimitedFeatureSupportLevels = (
     );
     return undefined;
   }
-};
-
-export const isFullySupported = (clusterFeatureSupportLevels: FeatureIdToSupportLevel): boolean => {
-  return Object.keys(clusterFeatureSupportLevels).length === 0;
 };

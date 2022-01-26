@@ -21,7 +21,7 @@ import {
 } from '../../../common';
 
 export type AdditionalNTPSourcesFormProps = {
-  cluster: Cluster;
+  additionalNtpSource: Cluster['additionalNtpSource'];
   onClose: () => void;
   onAdditionalNtpSource: (
     additionalNtpSource: string,
@@ -30,12 +30,12 @@ export type AdditionalNTPSourcesFormProps = {
 };
 
 const AdditionalNTPSourcesForm: React.FC<AdditionalNTPSourcesFormProps> = ({
-  cluster,
+  additionalNtpSource,
   onClose,
   onAdditionalNtpSource,
 }) => {
   const initialValues: ClusterUpdateParams = {
-    additionalNtpSource: cluster.additionalNtpSource || '',
+    additionalNtpSource: additionalNtpSource || '',
   };
 
   const validationSchema = Yup.object().shape({
@@ -140,7 +140,7 @@ type AdditionalNTPSourcesDialogProps = AdditionalNTPSourcesFormProps & {
 };
 
 export const AdditionalNTPSourcesDialog: React.FC<AdditionalNTPSourcesDialogProps> = ({
-  cluster,
+  additionalNtpSource,
   isOpen,
   onClose,
   onAdditionalNtpSource,
@@ -154,7 +154,7 @@ export const AdditionalNTPSourcesDialog: React.FC<AdditionalNTPSourcesDialogProp
     hasNoBodyWrapper
   >
     <AdditionalNTPSourcesForm
-      cluster={cluster}
+      additionalNtpSource={additionalNtpSource}
       onClose={onClose}
       onAdditionalNtpSource={onAdditionalNtpSource}
     />

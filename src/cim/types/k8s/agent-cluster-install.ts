@@ -56,6 +56,9 @@ export type AgentClusterInstallK8sResource = K8sResourceCommon & {
   status?: {
     connectivityMajorityGroups?: string;
     conditions?: AgentClusterInstallStatusCondition[];
+    progress: {
+      totalPercentage: number;
+    };
     debugInfo?: {
       eventsURL: string;
       logsURL: string;

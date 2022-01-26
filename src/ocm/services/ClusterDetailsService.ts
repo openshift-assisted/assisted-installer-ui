@@ -1,6 +1,10 @@
 import { ClusterCreateParams, ClusterUpdateParams } from '../../common';
 import { ClustersAPI, ManagedDomainsAPI } from '../services/apis';
 import InfraEnvsService from './InfraEnvsService';
+import _ from 'lodash';
+import DiskEncryptionService from './DiskEncryptionService';
+import { OcmClusterDetailsValues } from '../api/types';
+import { isArmArchitecture } from '../selectors/clusterSelectors';
 
 const ClusterDetailsService = {
   async create(params: ClusterCreateParams) {
@@ -11,6 +15,7 @@ const ClusterDetailsService = {
       clusterId: cluster.id,
       // TODO(jkilzi): MGMT-7709 will deprecate the openshiftVersion field, remove the line below once it happens.
       openshiftVersion: params.openshiftVersion,
+      cpuArchitecture: params.cpuArchitecture,
     });
 
     return cluster;
@@ -24,6 +29,23 @@ const ClusterDetailsService = {
   async getManagedDomains() {
     const { data: domains } = await ManagedDomainsAPI.list();
     return domains;
+  },
+
+  getClusterCreateParams(values: OcmClusterDetailsValues): ClusterCreateParams {
+    const params: ClusterCreateParams = _.omit(values, [
+      'useRedHatDnsService',
+      'SNODisclaimer',
+      'enableDiskEncryptionOnMasters',
+      'enableDiskEncryptionOnWorkers',
+      'diskEncryptionMode',
+      'diskEncryption',
+      'diskEncryptionTangServers',
+    ]);
+    params.diskEncryption = DiskEncryptionService.getDiskEncryptionParams(values);
+    if (isArmArchitecture({ cpuArchitecture: params.cpuArchitecture })) {
+      params.userManagedNetworking = true;
+    }
+    return params;
   },
 };
 

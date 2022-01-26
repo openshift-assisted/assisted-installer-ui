@@ -25,8 +25,13 @@ export const TECH_SUPPORT_LEVEL_LINK = 'https://access.redhat.com/support/offeri
 export const FIREWALL_DOCUMENTATION_LINK =
   'https://docs.openshift.com/container-platform/4.8/installing/installing_bare_metal_ipi/ipi-install-installation-workflow.html#ipi-install-setting-proxy-settings-within-install-config_ipi-install-configuration-files';
 
+export const ENCRYPTING_DISK_DURING_INSTALLATION =
+  'https://docs.openshift.com/container-platform/4.7/installing/install_config/installing-customizing.html#installation-special-config-encrypt-disk_installing-customizing';
+
 export const getOcpConsoleNodesPage = (ocpConsoleUrl: string) =>
   `${ocpConsoleUrl}/k8s/cluster/nodes`;
+
+export const REDHAT_CONSOLE_OPENSHIFT = 'console.redhat.com/openshift';
 
 // TODO(mlibra): Retrieve branding dynamically, if needed, i.e. via injecting to the "window" object
 export const getProductBrandingCode = () => 'redhat';
@@ -68,10 +73,10 @@ export const CLUSTER_STATUS_LABELS: { [key in Cluster['status']]: string } = {
   'adding-hosts': 'Adding hosts',
 };
 
-export const HOST_STATUS_LABELS: { [key in Host['status']]: string } = {
-  'unbinding-pending-user-action': 'Unbinding, pending user action',
+export const HOST_STATUS_LABELS: { [key in Host['status'] | 'discovered']: string } = {
+  'unbinding-pending-user-action': 'Removing from cluster',
   'preparing-failed': 'Preparing step failed',
-  unbinding: 'Unbinding',
+  unbinding: 'Removing from cluster',
   'disabled-unbound': 'Disabled',
   'disconnected-unbound': 'Disconnected',
   'discovering-unbound': 'Discovering',
@@ -79,6 +84,7 @@ export const HOST_STATUS_LABELS: { [key in Host['status']]: string } = {
   'known-unbound': 'Ready',
   binding: 'Binding',
   discovering: 'Discovering',
+  discovered: 'Discovered',
   'pending-for-input': 'Pending input',
   known: 'Ready',
   disconnected: 'Disconnected',
@@ -110,12 +116,13 @@ export const CLUSTER_FIELD_LABELS: { [key in string]: string } = {
   SNODisclaimer: 'Single Node OpenShift disclaimer',
 };
 
-export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
-  'unbinding-pending-user-action': 'Unbinding, pending user action',
+export const HOST_STATUS_DETAILS: { [key in Host['status'] | 'discovered']: string } = {
+  'unbinding-pending-user-action':
+    'This host is being removed from the cluster. To finish, reboot the host with the infrastructure environment ISO.',
   'preparing-failed': 'Preparing step failed',
-  unbinding: 'This host is being unbound from the cluster.',
+  unbinding: 'This host is being removed from the cluster.',
   'disabled-unbound':
-    'This host was manually disabled and can not be included in the cluster. Enable this host to make it available again.',
+    'This host was manually removed from a cluster and can not be included in another one. Enable this host to make it available again.',
   'disconnected-unbound':
     'This host has lost its connection to the installer and can not be included in the cluster unless connectivity is restored.',
   'discovering-unbound':
@@ -124,9 +131,10 @@ export const HOST_STATUS_DETAILS: { [key in Host['status']]: string } = {
     'This host does not meet the minimum hardware or networking requirements and can not be included in the cluster.',
   'known-unbound':
     'This host meets the minimum hardware and networking requirements and can be included in the cluster.',
-  binding: 'This host is being bound to the cluster.',
+  binding: 'This host is being added to the cluster.',
   discovering:
     'This host is transmitting its hardware and networking information to the installer. Please wait while this information is received.',
+  discovered: 'The host has been discovered and needs to be approved to before further use.',
   'pending-for-input': '',
   known:
     'This host meets the minimum hardware and networking requirements and will be included in the cluster.',
@@ -174,7 +182,7 @@ export const HOST_VALIDATION_LABELS: { [key in HostValidationId]: string } = {
   connected: 'Connected',
   'machine-cidr-defined': 'Machine CIDR',
   'belongs-to-machine-cidr': 'Belongs to machine CIDR',
-  'api-vip-connected': 'API VIP connected',
+  'ignition-downloadable': 'Ignition file downloadable',
   'belongs-to-majority-group': 'Belongs to majority connected group',
   'valid-platform-network-settings': 'Platform network settings',
   'ntp-synced': 'NTP synchronization',
@@ -187,6 +195,7 @@ export const HOST_VALIDATION_LABELS: { [key in HostValidationId]: string } = {
   'api-int-domain-name-resolved-correctly': 'API internal domain name resolution',
   'apps-domain-name-resolved-correctly': 'Application ingress domain name resolution',
   'dns-wildcard-not-configured': 'DNS wildcard not configured',
+  'api-vip-connected': 'API VIP connectivity failure',
 };
 
 export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string } = {
@@ -206,7 +215,7 @@ export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string 
   connected: '',
   'machine-cidr-defined': '',
   'belongs-to-machine-cidr': '',
-  'api-vip-connected': '',
+  'ignition-downloadable': '',
   'belongs-to-majority-group': '',
   'valid-platform-network-settings': '',
   'ntp-synced': "Please manually fix host's NTP configuration or provide additional NTP sources.",
@@ -219,6 +228,7 @@ export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string 
   'api-int-domain-name-resolved-correctly': '',
   'apps-domain-name-resolved-correctly': '',
   'dns-wildcard-not-configured': '',
+  'api-vip-connected': '',
 };
 
 export const CLUSTER_VALIDATION_LABELS: { [key in ClusterValidationId]: string } = {
@@ -268,6 +278,8 @@ export const getAssistedUiLibVersion = () => packageJson.version;
 export const EVENT_SEVERITIES: Event['severity'][] = ['info', 'warning', 'error', 'critical'];
 
 export const TIME_ZERO = '0001-01-01T00:00:00.000Z';
+
+export const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
 export const NO_SUBNET_SET = 'NO_SUBNET_SET';
 

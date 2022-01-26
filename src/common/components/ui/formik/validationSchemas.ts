@@ -13,7 +13,7 @@ const SSH_PUBLIC_KEY_REGEX = /^(ssh-rsa|ssh-ed25519|ecdsa-[-a-z0-9]*) AAAA[0-9A-
 // Future bug-fixer: Beer on me! (mlibra)
 const IP_ADDRESS_REGEX = /^(((([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5]))|([0-9a-f]{1,4}:){7,7}[0-9a-f]{1,4}|([0-9a-f]{1,4}:){1,7}:|([0-9a-f]{1,4}:){1,6}:[0-9a-f]{1,4}|([0-9a-f]{1,4}:){1,5}(:[0-9a-f]{1,4}){1,2}|([0-9a-f]{1,4}:){1,4}(:[0-9a-f]{1,4}){1,3}|([0-9a-f]{1,4}:){1,3}(:[0-9a-f]{1,4}){1,4}|([0-9a-f]{1,4}:){1,2}(:[0-9a-f]{1,4}){1,5}|[0-9a-f]{1,4}:((:[0-9a-f]{1,4}){1,6})|:((:[0-9a-f]{1,4}){1,7}|:)|fe80:(:[0-9a-f]{0,4}){0,4}%[0-9a-z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$/;
 const DNS_NAME_REGEX = /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/;
-const HOSTNAME_REGEX = /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9-]*[A-Za-z0-9])$/;
+const HOSTNAME_CHARS_REGEX = /^[a-zA-Z0-9-]*$/;
 const IP_V4_ZERO = '0.0.0.0';
 const IP_V6_ZERO = '0000:0000:0000:0000:0000:0000:0000:0000';
 const MAC_REGEX = /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})|([0-9a-fA-F]{4}\\.[0-9a-fA-F]{4}\\.[0-9a-fA-F]{4})$”/;
@@ -267,24 +267,44 @@ export const hostPrefixValidationSchema = ({
   return Yup.number().required(requiredText);
 };
 
-export const hostnameValidationSchema = Yup.string()
-  .max(63, 'The hostname can not be longer than 63 characters.')
-  .matches(HOSTNAME_REGEX, {
-    message: 'Value "${value}" is not valid hostname.',
-    excludeEmptyString: true,
-  });
+export enum HOSTNAME_VALIDATION_MESSAGES {
+  NOT_UNIQUE = 'Must be unique',
+  INVALID_LENGTH = 'Must be at least 5 and no more than 63 characters',
+  INVALID_VALUE = 'Use letters, digits from 0 to 9 or hyphen (-)',
+  INVALID_START_END = 'Cannot start or end with a hyphen (-)',
+  LOCALHOST_ERR = 'Cannot be the word "localhost"',
+}
 
-export const uniqueHostnameValidationSchema = (origHostname: string, usedHostnames: string[]) =>
-  Yup.string().test(
-    'unique-hostname-validation',
-    'Hostname "${value}" has already been used, must be unique.',
-    (value) => {
-      if (!value || value === origHostname) {
-        return true;
-      }
-      return !usedHostnames.find((h) => h === value);
-    },
-  );
+export const hostnameValidationSchema = (origHostname: string, usedHostnames: string[]) =>
+  Yup.string()
+    .min(5, HOSTNAME_VALIDATION_MESSAGES.INVALID_LENGTH)
+    .max(63, HOSTNAME_VALIDATION_MESSAGES.INVALID_LENGTH)
+    .test(
+      HOSTNAME_VALIDATION_MESSAGES.INVALID_START_END,
+      HOSTNAME_VALIDATION_MESSAGES.INVALID_START_END,
+      (value) => {
+        const trimmed = value?.trim();
+        if (!trimmed) {
+          return true;
+        }
+        return trimmed[0] !== '-' && trimmed[trimmed.length - 1] !== '-';
+      },
+    )
+    .matches(HOSTNAME_CHARS_REGEX, {
+      message: HOSTNAME_VALIDATION_MESSAGES.INVALID_VALUE,
+      excludeEmptyString: true,
+    })
+    .notOneOf(['localhost', 'localhost.localdomain'], HOSTNAME_VALIDATION_MESSAGES.LOCALHOST_ERR)
+    .test(
+      HOSTNAME_VALIDATION_MESSAGES.NOT_UNIQUE,
+      HOSTNAME_VALIDATION_MESSAGES.NOT_UNIQUE,
+      (value) => {
+        if (!value || value === origHostname) {
+          return true;
+        }
+        return !usedHostnames.find((h) => h === value);
+      },
+    );
 
 const httpProxyValidationMessage = 'Provide a valid HTTP URL.';
 export const httpProxyValidationSchema = (
@@ -372,5 +392,16 @@ export const ntpSourceValidationSchema = Yup.string().test(
       return true;
     }
     return trimCommaSeparatedList(value).split(',').every(isIPorDN);
+  },
+);
+
+export const day2ApiVipValidationSchema = Yup.string().test(
+  'day2-api-vip',
+  'Provide a valid DNS name or IP Address',
+  (value: string) => {
+    if (!value) {
+      return true;
+    }
+    return isIPorDN(value);
   },
 );

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useField } from 'formik';
-import { FormGroup, Switch } from '@patternfly/react-core';
+import { FormGroup, Switch, Tooltip } from '@patternfly/react-core';
 import { getFieldId } from './utils';
 import { SwitchFieldProps } from './types';
 import HelperText from './HelperText';
@@ -14,6 +14,7 @@ const SwitchField: React.FC<SwitchFieldProps> = ({
   getHelperText,
   idPostfix,
   labelIcon,
+  tooltipProps,
   ...props
 }) => {
   const [field, { touched, error }] = useField(props.name);
@@ -21,6 +22,22 @@ const SwitchField: React.FC<SwitchFieldProps> = ({
   const isValid = !(touched && error);
   const errorMessage = !isValid ? error : '';
   const hText = getHelperText ? getHelperText(field.value) : helperText;
+
+  const switchFields = {
+    ...field,
+    id: fieldId,
+    label: label,
+    isDisabled: props.isDisabled,
+    isChecked: field.value,
+    onChange: (checked: boolean, event: React.FormEvent<HTMLInputElement>) => {
+      if (onChangeCustomOverride) {
+        onChangeCustomOverride(checked, event);
+      } else {
+        field.onChange(event);
+        onChange && onChange(checked, event);
+      }
+    },
+  };
   return (
     <FormGroup
       fieldId={fieldId}
@@ -32,21 +49,13 @@ const SwitchField: React.FC<SwitchFieldProps> = ({
       isRequired={isRequired}
       labelIcon={labelIcon}
     >
-      <Switch
-        {...field}
-        id={fieldId}
-        label={label}
-        isDisabled={props.isDisabled}
-        isChecked={field.value}
-        onChange={(checked, event) => {
-          if (onChangeCustomOverride) {
-            onChangeCustomOverride(checked, event);
-          } else {
-            field.onChange(event);
-            onChange && onChange(checked, event);
-          }
-        }}
-      />
+      {tooltipProps ? (
+        <Tooltip {...tooltipProps}>
+          <Switch {...switchFields} />
+        </Tooltip>
+      ) : (
+        <Switch {...switchFields} />
+      )}
     </FormGroup>
   );
 };
