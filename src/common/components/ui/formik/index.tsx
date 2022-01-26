@@ -13,6 +13,7 @@ export { default as RadioField } from './RadioField';
 export { default as SingleNodeCheckbox } from './SingleNodeCheckbox';
 export { default as NumberInputField } from './NumberInputField';
 export { default as CodeField } from './CodeField';
+export { default as RichInputField } from './RichInputField';
 
 export * from './utils';
 export * from './PullSecretField';

@@ -21,3 +21,4 @@ export { default as GridGap } from './GridGap';
 export { default as EventsList } from './EventsList';
 export { default as ClusterEventsList } from './ClusterEventsList';
 export { default as ClusterEventsToolbar } from './ClusterEventsToolbar';
+export { default as ModalProgress } from './ModalProgress';

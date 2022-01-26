@@ -27,6 +27,11 @@ type DiscoveryImageDialogProps = {
   cluster: Cluster;
 };
 
+type MassUpdateHostnameDialogProps = {
+  cluster: Cluster;
+  hostIDs: string[];
+};
+
 type ModalDialogsDataTypes = {
   eventsDialog: HostIdAndHostname;
   editHostDialog: EditHostProps;
@@ -37,6 +42,7 @@ type ModalDialogsDataTypes = {
   cancelInstallationDialog: CancelInstallationProps;
   discoveryImageDialog: DiscoveryImageDialogProps;
   UpdateDay2ApiVipDialog: void;
+  massUpdateHostnameDialog: MassUpdateHostnameDialogProps;
 };
 
 type DialogId =
@@ -48,7 +54,8 @@ type DialogId =
   | 'resetClusterDialog'
   | 'cancelInstallationDialog'
   | 'discoveryImageDialog'
-  | 'UpdateDay2ApiVipDialog';
+  | 'UpdateDay2ApiVipDialog'
+  | 'massUpdateHostnameDialog';
 
 export type ModalDialogsContextType = {
   [key in DialogId]: {
@@ -69,6 +76,7 @@ const dialogIds: DialogId[] = [
   'cancelInstallationDialog',
   'discoveryImageDialog',
   'UpdateDay2ApiVipDialog',
+  'massUpdateHostnameDialog',
 ];
 
 const ModalDialogsContext = React.createContext<ModalDialogsContextType | undefined>(undefined);

@@ -11,6 +11,7 @@ import {
   stringToJSON,
   HostUpdateParams,
   AddHostsContext,
+  MassChangeHostnameModal,
 } from '../../../common';
 import {
   AdditionalNTPSourcesDialog,
@@ -50,6 +51,7 @@ export const useHostsTable = (cluster: Cluster) => {
     editHostDialog,
     deleteHostDialog,
     resetHostDialog,
+    massUpdateHostnameDialog,
   } = useModalDialogsContext();
   const { resetCluster } = React.useContext(AddHostsContext);
 
@@ -250,6 +252,22 @@ export const useHostsTable = (cluster: Cluster) => {
     ],
   );
 
+  const [selectedHostIDs, setSelectedHostIDs] = React.useState<string[]>([]);
+  const onSelect = React.useCallback(
+    (obj: Host, isSelected: boolean) => {
+      if (isSelected) {
+        setSelectedHostIDs([...selectedHostIDs, obj.id]);
+      } else {
+        setSelectedHostIDs(selectedHostIDs.filter((sh) => sh !== obj.id));
+      }
+    },
+    [selectedHostIDs],
+  );
+  const onMassChangeHostname = React.useCallback(
+    () => massUpdateHostnameDialog.open({ hostIDs: selectedHostIDs, cluster }),
+    [selectedHostIDs, cluster, massUpdateHostnameDialog],
+  );
+
   return {
     onDiskRole,
     onEditHost,
@@ -260,6 +278,10 @@ export const useHostsTable = (cluster: Cluster) => {
     onDelete,
     onAdditionalNtpSource,
     onUpdateDay2ApiVip,
+    onSelect,
+    selectedHostIDs,
+    setSelectedHostIDs,
+    onMassChangeHostname,
   };
 };
 
@@ -291,6 +313,7 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
     resetHostDialog,
     additionalNTPSourcesDialog,
     UpdateDay2ApiVipDialog,
+    massUpdateHostnameDialog,
   } = useModalDialogsContext();
   return (
     <>
@@ -352,6 +375,15 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
         onClose={UpdateDay2ApiVipDialog.close}
         onUpdateDay2ApiVip={onUpdateDay2ApiVip}
         currentApiVip={cluster.apiVipDnsName}
+      />
+      <MassChangeHostnameModal
+        isOpen={massUpdateHostnameDialog.isOpen}
+        onClose={massUpdateHostnameDialog.close}
+        hosts={massUpdateHostnameDialog.data?.cluster?.hosts || []}
+        selectedHostIDs={massUpdateHostnameDialog.data?.hostIDs || []}
+        onChangeHostname={(host, hostname) =>
+          HostsService.updateHostName(cluster.id, host.id, hostname)
+        }
       />
     </>
   );
