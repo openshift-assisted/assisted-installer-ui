@@ -11,11 +11,12 @@ import {
   Alert,
   AlertActionCloseButton,
 } from '@patternfly/react-core';
+
 import { Formik } from 'formik';
 import { Host, Inventory } from '../../api';
 import {
   hostnameValidationSchema,
-  InputField,
+  RichInputField,
   StaticTextField,
   HOSTNAME_VALIDATION_MESSAGES,
   getRichTextValidation,
@@ -111,7 +112,7 @@ const EditHostForm: React.FC<EditHostFormProps> = ({
               <StaticTextField name="discoveredHostname" label="Discovered hostname">
                 {hostname || ''}
               </StaticTextField>
-              <InputField
+              <RichInputField
                 label="New hostname"
                 name="hostname"
                 ref={hostnameInputRef}

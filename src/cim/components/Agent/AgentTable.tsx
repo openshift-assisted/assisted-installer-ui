@@ -16,7 +16,7 @@ import {
   memoryColumn,
   roleColumn,
 } from '../../../common/components/hosts/tableUtils';
-import HostsTable from '../../../common/components/hosts/HostsTable';
+import HostsTable, { DefaultExpandComponent } from '../../../common/components/hosts/HostsTable';
 
 export const getAgentId = (agent: AgentK8sResource) => agent.metadata?.uid as string;
 
@@ -63,6 +63,7 @@ const AgentTable: React.FC<AgentTableProps> = ({
       content={content}
       actionResolver={actionResolver}
       className={className}
+      ExpandComponent={DefaultExpandComponent}
     >
       <AgentTableEmptyState />
     </HostsTable>

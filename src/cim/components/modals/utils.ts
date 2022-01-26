@@ -1,5 +1,5 @@
 import { InfraEnvK8sResource, SecretK8sResource } from '../../types';
-import { INFRAENV_AGENTINSTALL_LABEL_KEY } from '../common';
+import { INFRAENV_AGENTINSTALL_LABEL_KEY, BMH_HOSTNAME_ANNOTATION } from '../common';
 
 export const getBareMetalHostCredentialsSecret = (
   values: {
@@ -24,6 +24,7 @@ export const getBareMetalHostCredentialsSecret = (
 
 export const getBareMetalHost = (
   values: {
+    name: string;
     hostname: string;
     bmcAddress: string;
     disableCertificateVerification: boolean;
@@ -36,13 +37,14 @@ export const getBareMetalHost = (
   apiVersion: 'metal3.io/v1alpha1',
   kind: 'BareMetalHost',
   metadata: {
-    name: values.hostname,
+    name: values.name,
     namespace: infraEnv.metadata?.namespace,
     labels: {
       [INFRAENV_AGENTINSTALL_LABEL_KEY]: infraEnv.metadata?.name,
     },
     annotations: {
       'inspect.metal3.io': 'disabled',
+      [BMH_HOSTNAME_ANNOTATION]: values.hostname,
     },
   },
   spec: {

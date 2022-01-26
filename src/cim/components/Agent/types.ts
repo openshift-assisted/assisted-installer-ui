@@ -3,6 +3,7 @@ import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
 import { NMStateK8sResource } from '../../types/k8s/nm-state';
 
 export type AddBmcValues = {
+  name: string;
   hostname: string;
   bmcAddress: string;
   username: string;
@@ -20,6 +21,7 @@ export type BMCFormProps = {
   onCreateBMH: (values: AddBmcValues, nmState?: NMStateK8sResource) => Promise<any>;
   hasDHCP: boolean;
   infraEnv: InfraEnvK8sResource;
+  usedHostnames: string[];
   bmh?: BareMetalHostK8sResource;
   nmState?: NMStateK8sResource;
   secret?: SecretK8sResource;
