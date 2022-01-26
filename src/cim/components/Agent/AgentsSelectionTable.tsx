@@ -1,6 +1,6 @@
 import React from 'react';
 import { useField } from 'formik';
-import HostsTable from '../../../common/components/hosts/HostsTable';
+import HostsTable, { DefaultExpandComponent } from '../../../common/components/hosts/HostsTable';
 import {
   cpuCoresColumn,
   disksColumn,
@@ -59,6 +59,7 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({ matchingAge
       selectedIDs={selectedHostIdsField.value}
       actionResolver={actionResolver}
       className="agents-table"
+      ExpandComponent={DefaultExpandComponent}
       {...actions}
     >
       <DefaultEmptyState

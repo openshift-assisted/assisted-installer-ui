@@ -267,13 +267,13 @@ export const hostPrefixValidationSchema = ({
   return Yup.number().required(requiredText);
 };
 
-export enum HOSTNAME_VALIDATION_MESSAGES {
-  NOT_UNIQUE = 'Must be unique',
-  INVALID_LENGTH = 'Must be at least 5 and no more than 63 characters',
-  INVALID_VALUE = 'Use letters, digits from 0 to 9 or hyphen (-)',
-  INVALID_START_END = 'Cannot start or end with a hyphen (-)',
-  LOCALHOST_ERR = 'Cannot be the word "localhost"',
-}
+export const HOSTNAME_VALIDATION_MESSAGES = {
+  INVALID_LENGTH: '5-63 characters',
+  NOT_UNIQUE: 'Must be unique',
+  INVALID_VALUE: 'Use letters, digits from 0 to 9 or hyphen (-)',
+  INVALID_START_END: 'Cannot start or end with a hyphen (-)',
+  LOCALHOST_ERR: 'Cannot be the word "localhost"',
+};
 
 export const hostnameValidationSchema = (origHostname: string, usedHostnames: string[]) =>
   Yup.string()
