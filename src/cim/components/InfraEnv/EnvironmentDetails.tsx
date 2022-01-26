@@ -21,12 +21,39 @@ import { AGENT_LOCATION_LABEL_KEY } from '../common';
 import MinimalHWRequirements from '../Agent/MinimalHWRequirements';
 import EditPullSecretModal, { EditPullSecretModalProps } from '../modals/EditPullSecretModal';
 import EditSSHKeyModal, { EditSSHKeyModalProps } from '../modals/EditSSHKeyModal';
+import EditNtpSourcesModal, { EditNtpSourcesModalProps } from '../modals/EditNtpSourcesModal';
+
+type EditItemProps = {
+  title: string;
+  onEdit: VoidFunction;
+  isLoading?: boolean;
+  isWarning?: boolean;
+};
+
+const EditItem: React.FC<EditItemProps> = ({ title, onEdit, isLoading, isWarning }) => {
+  let icon = <CheckCircleIcon color={okColor.value} />;
+  if (isLoading) {
+    icon = <Spinner isSVG size="md" />;
+  } else if (isWarning) {
+    icon = <ExclamationTriangleIcon color={warningColor.value} />;
+  }
+  return (
+    <div>
+      {icon}
+      &nbsp;{title}&nbsp;
+      <Button variant="plain" onClick={onEdit}>
+        <PencilAltIcon />
+      </Button>
+    </div>
+  );
+};
 
 type EnvironmentDetailsProps = {
   infraEnv: InfraEnvK8sResource;
   fetchSecret: (namespace: string, name: string) => Promise<SecretK8sResource>;
   onEditPullSecret: EditPullSecretModalProps['onSubmit'];
   onEditSSHKey: EditSSHKeyModalProps['onSubmit'];
+  onEditNtpSources: EditNtpSourcesModalProps['onSubmit'];
   hasAgents: boolean;
   hasBMHs: boolean;
   aiConfigMap?: ConfigMapK8sResource;
@@ -38,11 +65,13 @@ const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({
   fetchSecret,
   onEditPullSecret,
   onEditSSHKey,
+  onEditNtpSources,
   hasAgents,
   hasBMHs,
 }) => {
   const [editPullSecret, setEditPullSecret] = React.useState(false);
   const [editSSHKey, setEditSSHKey] = React.useState(false);
+  const [editNtpSources, setEditNtpSources] = React.useState(false);
   const [pullSecret, setPullSecret] = React.useState<SecretK8sResource>();
   const [pullSecretError, setPullSecretError] = React.useState<string>();
   const [pullSecretLoading, setPullSecretLoading] = React.useState(true);
@@ -135,38 +164,18 @@ const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({
               <DescriptionListTerm>Secret and keys</DescriptionListTerm>
               <DescriptionListDescription>
                 <>
-                  <div>
-                    {pullSecretLoading ? (
-                      <Spinner isSVG size="md" />
-                    ) : pullSecret ? (
-                      <CheckCircleIcon color={okColor.value} />
-                    ) : (
-                      <ExclamationTriangleIcon color={warningColor.value} />
-                    )}
-                    &nbsp;Pull secret&nbsp;
-                    <Button
-                      variant="plain"
-                      aria-label="Edit pull secret"
-                      onClick={() => setEditPullSecret(true)}
-                    >
-                      <PencilAltIcon />
-                    </Button>
-                  </div>
-                  <div>
-                    {infraEnv.spec?.sshAuthorizedKey ? (
-                      <CheckCircleIcon color={okColor.value} />
-                    ) : (
-                      <ExclamationTriangleIcon color={warningColor.value} />
-                    )}
-                    &nbsp;SSH public key&nbsp;
-                    <Button
-                      variant="plain"
-                      aria-label="Edit pull secret"
-                      onClick={() => setEditSSHKey(true)}
-                    >
-                      <PencilAltIcon onClick={() => setEditSSHKey(true)} />
-                    </Button>
-                  </div>
+                  <EditItem
+                    title="Pull secret"
+                    onEdit={() => setEditPullSecret(true)}
+                    isLoading={pullSecretLoading}
+                    isWarning={!pullSecret}
+                  />
+                  <EditItem
+                    title="SSH public key"
+                    onEdit={() => setEditSSHKey(true)}
+                    isWarning={!infraEnv.spec?.sshAuthorizedKey}
+                  />
+                  <EditItem title="NTP sources" onEdit={() => setEditNtpSources(true)} />
                 </>
               </DescriptionListDescription>
             </DescriptionListGroup>
@@ -198,6 +207,12 @@ const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({
         onSubmit={onEditSSHKey}
         hasAgents={hasAgents}
         hasBMHs={hasBMHs}
+      />
+      <EditNtpSourcesModal
+        isOpen={editNtpSources}
+        onClose={() => setEditNtpSources(false)}
+        infraEnv={infraEnv}
+        onSubmit={onEditNtpSources}
       />
     </>
   );
