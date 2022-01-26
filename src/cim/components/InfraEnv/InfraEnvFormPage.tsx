@@ -33,6 +33,8 @@ import {
   PopoverIcon,
   pullSecretValidationSchema,
   OCP_STATIC_IP_DOC,
+  CheckboxField,
+  AdditionalNTPSourcesField,
 } from '../../../common';
 
 import './infra-env.css';
@@ -48,6 +50,8 @@ export type EnvironmentStepFormValues = {
   enableProxy: boolean;
   labels: string[];
   networkType: 'dhcp' | 'static';
+  enableNtpSources: boolean;
+  additionalNtpSources: string;
 };
 
 const validationSchema = (usedNames: string[]) =>
@@ -93,6 +97,8 @@ const initialValues: EnvironmentStepFormValues = {
   enableProxy: false,
   labels: [],
   networkType: 'dhcp',
+  enableNtpSources: false,
+  additionalNtpSources: '',
 };
 
 type InfraEnvFormProps = {
@@ -189,6 +195,22 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged }) => {
           <PullSecretField isOcm={false} />
           <UploadSSH />
           <ProxyFields />
+          <CheckboxField
+            label="Add your own NTP (Network Time Protocol) sources"
+            name="enableNtpSources"
+            helperText={
+              <p>
+                Configure your own NTP sources to synchronize the time between the hosts that will
+                be added to this infrastructure environment.
+              </p>
+            }
+          />
+          {values.enableNtpSources && (
+            <AdditionalNTPSourcesField
+              name="additionalNtpSources"
+              helperText="A comma separated list of IP or domain names of the NTP pools or servers."
+            />
+          )}
         </Form>
       </StackItem>
     </Stack>

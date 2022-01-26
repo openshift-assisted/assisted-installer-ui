@@ -16,6 +16,7 @@ const RadioField: React.FC<Optional<RadioProps, 'id'>> = (props) => {
       {...field}
       id={fieldId}
       label={props.label}
+      description={props.description}
       isChecked={!!field.checked}
       isDisabled={props.isDisabled}
       onChange={(checked, e) => {

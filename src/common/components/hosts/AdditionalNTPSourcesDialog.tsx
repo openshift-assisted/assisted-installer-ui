@@ -15,9 +15,8 @@ import {
 import {
   Cluster,
   ClusterUpdateParams,
-  TextAreaField,
-  trimCommaSeparatedList,
   ntpSourceValidationSchema,
+  AdditionalNTPSourcesField,
 } from '../../../common';
 
 export type AdditionalNTPSourcesFormProps = {
@@ -68,27 +67,7 @@ const AdditionalNTPSourcesForm: React.FC<AdditionalNTPSourcesFormProps> = ({
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
-      {({
-        submitForm,
-        status,
-        setStatus,
-        setFieldValue,
-        setFieldTouched,
-        isSubmitting,
-        isValid,
-        dirty,
-        values,
-      }) => {
-        const formatAdditionalNtpSource = () => {
-          if (values.additionalNtpSource) {
-            setFieldValue(
-              'additionalNtpSource',
-              trimCommaSeparatedList(values.additionalNtpSource),
-            );
-            setFieldTouched('additionalNtpSource');
-          }
-        };
-
+      {({ submitForm, status, setStatus, isSubmitting, isValid, dirty }) => {
         return (
           <>
             <ModalBoxBody>
@@ -105,12 +84,10 @@ const AdditionalNTPSourcesForm: React.FC<AdditionalNTPSourcesFormProps> = ({
                     {status.error.message}
                   </Alert>
                 )}
-                <TextAreaField
+                <AdditionalNTPSourcesField
                   name="additionalNtpSource"
                   label="Additional NTP Sources"
                   helperText="A comma separated list of IP or domain names of the NTP pools or servers. Additional NTP sources are added to all hosts to ensure all hosts clocks are synchronized with a valid NTP server. It may take a few minutes for the new NTP sources to sync."
-                  onBlur={formatAdditionalNtpSource}
-                  spellCheck={false}
                   isRequired
                 />
               </Form>
