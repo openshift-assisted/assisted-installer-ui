@@ -2336,3 +2336,8 @@ export interface VspherePlatform {
    */
   folder?: string;
 }
+
+export enum CpuArchitecture {
+  x86 = 'x86_64',
+  ARM = 'arm64',
+}

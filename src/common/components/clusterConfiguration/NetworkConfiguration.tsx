@@ -15,7 +15,7 @@ import { ClusterDefaultConfig } from '../../api';
 import { isSingleNodeCluster } from '../clusters';
 import { NO_SUBNET_SET } from '../../config';
 import { isAdvNetworkConf } from './utils';
-import { getLimitedFeatureSupportLevels } from '../../../ocm/components/featureSupportLevels/utils';
+import { getLimitedFeatureSupportLevels } from '../../../ocm/components/featureSupportLevels/utils'; //TODO(brotman): move OCM dependency to common
 import { FeatureSupportLevelContext } from '../featureSupportLevels';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
@@ -112,10 +112,19 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
     values.vipDhcpAllocation,
     validateField,
   ]);
-
   return (
     <>
-      {!hideManagedNetworking && <ManagedNetworkingControlGroup disabled={!isMultiNodeCluster} />}
+      {!hideManagedNetworking && (
+        <ManagedNetworkingControlGroup
+          disabled={
+            !!cluster.openshiftVersion &&
+            featureSupportLevelData.isFeatureDisabled(
+              cluster.openshiftVersion,
+              'NETWORK_TYPE_SELECTION',
+            )
+          }
+        />
+      )}
 
       <RenderIf condition={isUserManagedNetworking}>
         <UserManagedNetworkingTextContent shouldDisplayLoadBalancersBullet={isMultiNodeCluster} />

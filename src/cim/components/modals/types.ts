@@ -30,3 +30,12 @@ export type EditBMHModalProps = Pick<
   fetchNMState: (namespace: string, name: string) => Promise<NMStateK8sResource>;
   fetchSecret: (namespace: string, bmhName: string) => Promise<SecretK8sResource>;
 };
+
+export type EditSSHKeyFormikValues = {
+  sshPublicKey: string;
+};
+
+export type EditPullSecretFormikValues = {
+  pullSecret: string | undefined;
+  createSecret: boolean;
+};
