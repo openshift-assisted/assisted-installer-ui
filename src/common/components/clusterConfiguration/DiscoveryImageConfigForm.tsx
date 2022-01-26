@@ -26,6 +26,24 @@ import UploadSSH from './UploadSSH';
 import DiscoveryImageTypeControlGroup from './DiscoveryImageTypeControlGroup';
 import { OCP_STATIC_IP_DOC } from '../../config/constants';
 
+export const StaticIPInfo: React.FC = () => (
+  <Alert
+    title="To use static network configuration, follow the steps listed in the documentation."
+    isInline
+    variant="info"
+  >
+    <Button
+      variant="link"
+      icon={<ExternalLinkAltIcon />}
+      iconPosition="right"
+      isInline
+      onClick={() => window.open(OCP_STATIC_IP_DOC, '_blank', 'noopener')}
+    >
+      View documentation
+    </Button>
+  </Alert>
+);
+
 export type DiscoveryImageFormValues = ImageCreateParams & ProxyFieldsType;
 
 const validationSchema = Yup.lazy<DiscoveryImageFormValues>((values) =>
@@ -92,21 +110,7 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
               <Stack hasGutter>
                 {hasDHCP === false && (
                   <StackItem>
-                    <Alert
-                      title="If you want to use Static IP, follow the steps in the documentation."
-                      isInline
-                      variant="info"
-                    >
-                      <Button
-                        variant="link"
-                        icon={<ExternalLinkAltIcon />}
-                        iconPosition="right"
-                        isInline
-                        onClick={() => window.open(OCP_STATIC_IP_DOC, '_blank', 'noopener')}
-                      >
-                        View documentation
-                      </Button>
-                    </Alert>
+                    <StaticIPInfo />
                   </StackItem>
                 )}
                 <StackItem>
