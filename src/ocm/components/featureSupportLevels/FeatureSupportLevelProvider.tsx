@@ -9,8 +9,10 @@ import {
   FeatureSupportLevels,
   Cluster,
 } from '../../../common';
-import { FeatureSupportLevelContext } from '../../../common/components/featureSupportLevels';
-import { FeatureSupportLevelData } from '../../../common/components/featureSupportLevels/FeatureSupportLevelContext';
+import {
+  FeatureSupportLevelContextProvider,
+  FeatureSupportLevelData,
+} from '../../../common/components/featureSupportLevels';
 import { handleApiError } from '../../api';
 import { FeatureSupportLevelsAPI } from '../../services/apis';
 import { captureException } from '../../sentry';
@@ -145,9 +147,9 @@ export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = 
   }, [error]);
 
   return (
-    <FeatureSupportLevelContext.Provider value={providerValue}>
+    <FeatureSupportLevelContextProvider value={providerValue}>
       {isLoading ? loadingUi : children}
-    </FeatureSupportLevelContext.Provider>
+    </FeatureSupportLevelContextProvider>
   );
 };
 

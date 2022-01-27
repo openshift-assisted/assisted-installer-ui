@@ -4,7 +4,7 @@ import { ClusterDetailsValues } from '../../../common/components/clusterWizard/t
 import { SingleNodeCheckbox } from '../ui';
 import { OpenshiftVersionOptionType } from '../../types';
 import SNODisclaimer from './SNODisclaimer';
-import { FeatureSupportLevelContext } from '../featureSupportLevels';
+import { useFeatureSupportLevel } from '../featureSupportLevels';
 
 type SNOControlGroupProps = {
   versions: OpenshiftVersionOptionType[];
@@ -13,11 +13,10 @@ type SNOControlGroupProps = {
 
 const SNOControlGroup = ({ versions, highAvailabilityMode }: SNOControlGroupProps) => {
   const { values } = useFormikContext<ClusterDetailsValues>();
-  const { isFeatureDisabled, getFeatureSupportLevel } = React.useContext(
-    FeatureSupportLevelContext,
-  );
+  const { isFeatureDisabled, getFeatureSupportLevel } = useFeatureSupportLevel();
   const snoSupportLevel = getFeatureSupportLevel(values.openshiftVersion, 'SNO');
   const isDisabled = isFeatureDisabled(values.openshiftVersion, 'SNO');
+
   return (
     <>
       <SingleNodeCheckbox name="highAvailabilityMode" versions={versions} isDisabled={isDisabled} />

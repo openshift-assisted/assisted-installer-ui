@@ -8,3 +8,4 @@ export * from './AlertsContextProvider';
 export * from './hosts';
 export * from './fetching';
 export * from './AddHosts';
+export * from './featureSupportLevels';

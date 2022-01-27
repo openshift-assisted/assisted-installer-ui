@@ -17,7 +17,7 @@ import { OpenshiftVersionOptionType, getFormikErrorFields } from '../../../commo
 import ClusterWizardFooter from './ClusterWizardFooter';
 import ClusterWizardHeaderExtraActions from '../clusterConfiguration/ClusterWizardHeaderExtraActions';
 import { ocmClient } from '../../api';
-import { FeatureSupportLevelContext } from '../../../common/components/featureSupportLevels';
+import { useFeatureSupportLevel } from '../../../common/components/featureSupportLevels';
 import { ClusterDetailsService } from '../../services';
 import { OcmClusterDetailsValues } from '../../api/types';
 import { getOcmClusterDetailsInitialValues } from '../clusterConfiguration/utils';
@@ -50,7 +50,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
     navigation,
   } = props;
 
-  const featureSupportLevels = React.useContext(FeatureSupportLevelContext);
+  const featureSupportLevels = useFeatureSupportLevel();
   const handleSubmit = React.useCallback(
     async (values: OcmClusterDetailsValues) => {
       const params = ClusterDetailsService.getClusterCreateParams(values);

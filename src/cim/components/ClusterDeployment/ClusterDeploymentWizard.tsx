@@ -12,6 +12,7 @@ import ClusterDeploymentHostSelectionStep from './ClusterDeploymentHostSelection
 import { getAgentsHostsNames, isAgentOfCluster, isAgentOfInfraEnv } from './helpers';
 import { ClusterDeploymentWizardProps, ClusterDeploymentWizardStepsType } from './types';
 import ClusterDeploymentHostsDiscoveryStep from './ClusterDeploymentHostsDiscoveryStep';
+import { ACMFeatureSupportLevelProvider } from '../featureSupportLevels';
 
 const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   className,
@@ -106,6 +107,10 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
               onSaveISOParams={onSaveISOParams}
               onSaveHostsDiscovery={onSaveHostsDiscovery}
               onCreateBMH={onCreateBMH}
+              onChangeBMHHostname={(bmh, hostname) => {
+                console.log('onChangeBMHHostname is not implemented: ', hostname);
+                return Promise.resolve(bmh);
+              }}
               // onFormSaveError={setErrorHandler}
             />
           );
@@ -170,15 +175,17 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
 
   return (
     <AlertsContextProvider>
-      <ClusterDeploymentWizardContext.Provider
-        value={{
-          currentStepId,
-          setCurrentStepId,
-          clusterDeployment /* Hotfix: agentClusterInstall, agents */,
-        }}
-      >
-        <div className={classNames('pf-c-wizard', className)}>{renderCurrentStep()}</div>
-      </ClusterDeploymentWizardContext.Provider>
+      <ACMFeatureSupportLevelProvider clusterImages={clusterImages} isEditClusterFlow={true}>
+        <ClusterDeploymentWizardContext.Provider
+          value={{
+            currentStepId,
+            setCurrentStepId,
+            clusterDeployment /* Hotfix: agentClusterInstall, agents */,
+          }}
+        >
+          <div className={classNames('pf-c-wizard', className)}>{renderCurrentStep()}</div>
+        </ClusterDeploymentWizardContext.Provider>
+      </ACMFeatureSupportLevelProvider>
     </AlertsContextProvider>
   );
 };

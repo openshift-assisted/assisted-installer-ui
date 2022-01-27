@@ -12,7 +12,7 @@ export type FeatureIdToSupportLevel = {
 };
 
 export type FeatureSupportLevelsMap = {
-  version?: FeatureIdToSupportLevel;
+  [id in string /* means OCP normalized version */]: FeatureIdToSupportLevel;
 };
 
 export type ClusterFeatureUsage = {
