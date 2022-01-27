@@ -6,7 +6,7 @@ import { OpenshiftVersionOptionType } from '../../../types';
 import { getFieldId } from './utils';
 import HelperText from './HelperText';
 import { CheckboxFieldProps } from './types';
-import { FeatureSupportLevelBadge, FeatureSupportLevelContext } from '../../featureSupportLevels';
+import { FeatureSupportLevelBadge, useFeatureSupportLevel } from '../../featureSupportLevels';
 import { ClusterCreateParams } from '../../../api/types';
 
 type SingleNodeCheckboxProps = CheckboxFieldProps & { versions: OpenshiftVersionOptionType[] };
@@ -22,9 +22,7 @@ const SingleNodeCheckbox: React.FC<SingleNodeCheckboxProps> = ({
   } = useFormikContext<ClusterCreateParams>();
   const isSingleNodeOpenshiftEnabled = useFeature('ASSISTED_INSTALLER_SNO_FEATURE');
   const [field, meta, helpers] = useField<'None' | 'Full'>({ name: props.name, validate });
-  const { getFeatureDisabledReason, isFeatureSupported } = React.useContext(
-    FeatureSupportLevelContext,
-  );
+  const { getFeatureDisabledReason, isFeatureSupported } = useFeatureSupportLevel();
   const prevVersionRef = React.useRef(openshiftVersion);
   const fieldId = getFieldId(props.name, 'input', idPostfix);
 

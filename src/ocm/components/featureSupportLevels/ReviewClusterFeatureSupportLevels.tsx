@@ -11,7 +11,7 @@ import {
 import { TECH_SUPPORT_LEVEL_LINK } from '../../../common/config/constants';
 import ExternalLink from '../../../common/components/ui/ExternalLink';
 import { Cluster } from '../../../common/api/types';
-import { FeatureSupportLevelContext } from '../../../common/components/featureSupportLevels';
+import { useFeatureSupportLevel } from '../../../common/components/featureSupportLevels';
 import { DetailItem } from '../../../common';
 import { getLimitedFeatureSupportLevels } from './utils';
 
@@ -110,7 +110,7 @@ export const getFeatureSupportLevelTitle = (fullySupported: boolean): string => 
 export const ClusterFeatureSupportLevelsDetailItem: React.FC<{ cluster: Cluster }> = ({
   cluster,
 }) => {
-  const featureSupportLevelData = React.useContext(FeatureSupportLevelContext);
+  const featureSupportLevelData = useFeatureSupportLevel();
 
   const clusterFeatureSupportLevels = React.useMemo(() => {
     return getLimitedFeatureSupportLevels(cluster, featureSupportLevelData);

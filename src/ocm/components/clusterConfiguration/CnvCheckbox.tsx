@@ -1,6 +1,6 @@
 import React from 'react';
 import { CheckboxField, Cluster, getFieldId, PopoverIcon } from '../../../common';
-import { FeatureSupportLevelContext } from '../../../common/components/featureSupportLevels';
+import { useFeatureSupportLevel } from '../../../common/components/featureSupportLevels';
 import { FormGroup, Tooltip } from '@patternfly/react-core';
 import { CNVHostRequirementsContent } from '../hosts/HostRequirementsContent';
 import { HelpIcon } from '@patternfly/react-icons';
@@ -33,7 +33,7 @@ export type CnvCheckboxProps = {
 };
 
 export const CnvCheckbox: React.FC<CnvCheckboxProps> = ({ openshiftVersion, isSNO, clusterId }) => {
-  const { getFeatureDisabledReason } = React.useContext(FeatureSupportLevelContext);
+  const { getFeatureDisabledReason } = useFeatureSupportLevel();
   const name = 'useContainerNativeVirtualization';
   const fieldId = getFieldId(name, 'input');
   const disabledReason = openshiftVersion

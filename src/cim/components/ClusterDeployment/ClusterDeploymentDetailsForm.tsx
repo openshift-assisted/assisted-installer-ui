@@ -37,7 +37,8 @@ const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> 
       toggleRedHatDnsService={toggleRedHatDnsService}
       versions={ocpVersions}
       canEditPullSecret={!clusterDeployment}
-      isSNOGroupDisabled={!!clusterDeployment /* truish for create flow only */}
+      isPullSecretSet={!!clusterDeployment?.spec?.pullSecretRef?.name}
+      // isSNOGroupDisabled={!!clusterDeployment /* truish for create flow only */}
       isNameDisabled={isEditFlow}
       isBaseDnsDomainDisabled={isEditFlow}
       forceOpenshiftVersion={agentClusterInstall?.spec?.imageSetRef?.name}

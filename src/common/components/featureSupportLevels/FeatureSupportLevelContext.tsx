@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
 import { FeatureId, FeatureIdToSupportLevel, SupportLevel } from '../../types';
 
@@ -10,7 +9,8 @@ export type FeatureSupportLevelData = {
   isFeatureSupported(version: string, featureId: FeatureId): boolean;
 };
 
-export const FeatureSupportLevelContext = React.createContext<FeatureSupportLevelData>({
+/* TO be deleted.
+{
   getVersionSupportLevelsMap: (_version: string): FeatureIdToSupportLevel | undefined => {
     return undefined;
   },
@@ -20,6 +20,28 @@ export const FeatureSupportLevelContext = React.createContext<FeatureSupportLeve
   isFeatureDisabled: (version: string, featureId: FeatureId): boolean => true,
   getFeatureDisabledReason: (version: string, featureId: FeatureId): string | undefined =>
     undefined,
-});
+}
+*/
 
-export default FeatureSupportLevelContext;
+const FeatureSupportLevelContext = React.createContext<FeatureSupportLevelData | null>(null);
+
+export const FeatureSupportLevelContextProvider: React.FC<{
+  children: React.ReactNode;
+  value: FeatureSupportLevelData;
+}> = ({ value, children }) => {
+  return (
+    <FeatureSupportLevelContext.Provider value={value}>
+      {children}
+    </FeatureSupportLevelContext.Provider>
+  );
+};
+
+export const useFeatureSupportLevel = () => {
+  const context = React.useContext(FeatureSupportLevelContext);
+  if (!context) {
+    throw new Error(
+      'useFeatureSupportLevel must be used within FeatureSupportLevelContextProvider.',
+    );
+  }
+  return context;
+};

@@ -1,6 +1,6 @@
 import React from 'react';
 import { CheckboxField, getFieldId } from '../../../common';
-import { FeatureSupportLevelContext } from '../../../common/components/featureSupportLevels';
+import { useFeatureSupportLevel } from '../../../common/components/featureSupportLevels';
 import { FormGroup, Tooltip } from '@patternfly/react-core';
 
 const OCSLabel: React.FC = () => (
@@ -23,7 +23,7 @@ export type OcsCheckboxProps = {
 };
 
 export const OcsCheckbox: React.FC<OcsCheckboxProps> = ({ openshiftVersion }) => {
-  const { getFeatureDisabledReason } = React.useContext(FeatureSupportLevelContext);
+  const { getFeatureDisabledReason } = useFeatureSupportLevel();
   const name = 'useExtraDisksForLocalStorage';
   const fieldId = getFieldId(name, 'input');
   const disabledReason = openshiftVersion

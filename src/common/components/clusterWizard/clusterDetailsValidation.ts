@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 import { Cluster, ManagedDomain } from '../../api';
 import { OpenshiftVersionOptionType } from '../../types';
-import { FeatureSupportLevelData } from '../featureSupportLevels/FeatureSupportLevelContext';
+import { FeatureSupportLevelData } from '../featureSupportLevels';
 import {
   dnsNameValidationSchema,
   getDefaultOpenShiftVersion,
