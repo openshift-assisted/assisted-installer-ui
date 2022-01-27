@@ -36,7 +36,7 @@ import { useDefaultConfiguration } from '../clusterConfiguration/ClusterDefaultC
 import ClusterProgress from '../../../common/components/clusterDetail/ClusterProgress';
 import { EventsModalButton } from '../../../common/components/ui/eventsModal';
 import { onFetchEvents } from '../fetching/fetchEvents';
-import { TIME_ZERO, VSPHERE_CONFIG_LINK } from '../../../common/config/constants';
+import { INSTALL_TIME_ZERO, VSPHERE_CONFIG_LINK } from '../../../common/config/constants';
 import { isSNO } from '../../selectors';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { diffInDaysBetweenDates } from '../../../common/sevices/DateAndTime';
@@ -46,7 +46,7 @@ type ClusterDetailProps = {
 };
 
 function calculateDateDifference(inactiveDeletionDays: number, completedAt?: string) {
-  if (completedAt && completedAt !== TIME_ZERO) {
+  if (completedAt && completedAt !== INSTALL_TIME_ZERO) {
     return inactiveDeletionDays - diffInDaysBetweenDates(completedAt);
   } else {
     return inactiveDeletionDays;
