@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useField } from 'formik';
 
 import { trimSshPublicKey, UploadField } from '../ui';
-import { SshPublicKeyHelperText } from './ClusterSshKeyFields';
+import { SshPublicKeyHelperText } from './SecurityFields';
 
 const UploadSSH: React.FC = () => {
   const [{ name, value }, , { setValue }] = useField('sshPublicKey');

@@ -1,30 +1,20 @@
 import React from 'react';
-import { Form } from '@patternfly/react-core';
-import { TextContent, Text } from '@patternfly/react-core';
+import { Grid } from '@patternfly/react-core';
 import NetworkConfiguration, { NetworkConfigurationProps } from './NetworkConfiguration';
-import ClusterSshKeyFields from './ClusterSshKeyFields';
+import SecurityFields from './SecurityFields';
 import { InfraEnv } from '../../api/types';
 
 type NetworkConfigurationFormFieldsProps = NetworkConfigurationProps & {
   infraEnv?: InfraEnv;
 };
 
-const NetworkConfigurationFormFields: React.FC<NetworkConfigurationFormFieldsProps> = ({
-  ...props
-}) => {
-  const { cluster } = props;
-  return (
-    <Form>
-      <NetworkConfiguration {...props} />
-      <TextContent>
-        <Text component="h2">Security</Text>
-      </TextContent>
-      <ClusterSshKeyFields
-        clusterSshKey={cluster.sshPublicKey}
-        imageSshKey={props.infraEnv?.sshAuthorizedKey}
-      />
-    </Form>
-  );
-};
-
+const NetworkConfigurationFormFields: React.FC<NetworkConfigurationFormFieldsProps> = (props) => (
+  <Grid hasGutter>
+    <NetworkConfiguration {...props} />
+    <SecurityFields
+      clusterSshKey={props.cluster.sshPublicKey}
+      imageSshKey={props.infraEnv?.sshAuthorizedKey}
+    />
+  </Grid>
+);
 export default NetworkConfigurationFormFields;

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Formik } from 'formik';
 import { Grid, GridItem } from '@patternfly/react-core';
-import { Lazy } from 'yup';
 
 import { getFormikErrorFields, useAlerts, ClusterWizardStepHeader } from '../../../common';
 
@@ -12,56 +11,10 @@ import {
 import ClusterDeploymentWizardFooter from './ClusterDeploymentWizardFooter';
 import ClusterDeploymentWizardNavigation from './ClusterDeploymentWizardNavigation';
 import ClusterDeploymentWizardStep from './ClusterDeploymentWizardStep';
-import { getHostSubnets } from '../../../common/components/clusterConfiguration/utils';
-import {
-  getNetworkConfigurationValidationSchema,
-  getNetworkInitialValues,
-} from '../../../common/components/clusterConfiguration';
-import {
-  AgentClusterInstallK8sResource,
-  AgentK8sResource,
-  ClusterDeploymentK8sResource,
-} from '../../types';
 import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
-import { getAICluster } from '../helpers';
-import ClusterDeploymentNetworkingForm, {
-  defaultNetworkSettings,
-} from './ClusterDeploymentNetworkingForm';
+import ClusterDeploymentNetworkingForm from './ClusterDeploymentNetworkingForm';
 import { isAgentOfCluster, isCIMFlow } from './helpers';
-
-type UseNetworkingFormikArgs = {
-  clusterDeployment: ClusterDeploymentK8sResource;
-  agentClusterInstall: AgentClusterInstallK8sResource;
-  agents: AgentK8sResource[];
-};
-
-export const useNetworkingFormik = ({
-  clusterDeployment,
-  agentClusterInstall,
-  agents,
-}: UseNetworkingFormikArgs): [ClusterDeploymentNetworkingValues, Lazy] => {
-  const initialValues = React.useMemo(
-    () => {
-      const cluster = getAICluster({
-        clusterDeployment,
-        agentClusterInstall,
-        agents,
-      });
-      return getNetworkInitialValues(cluster, defaultNetworkSettings);
-    },
-    [], // eslint-disable-line react-hooks/exhaustive-deps
-  );
-  const validationSchema = React.useMemo(() => {
-    const cluster = getAICluster({
-      clusterDeployment,
-      agentClusterInstall,
-      agents,
-    });
-    const hostSubnets = getHostSubnets(cluster);
-    return getNetworkConfigurationValidationSchema(initialValues, hostSubnets);
-  }, [initialValues, clusterDeployment, agentClusterInstall, agents]);
-  return [initialValues, validationSchema];
-};
+import { useNetworkingFormik } from './use-networking-formik';
 
 const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworkingProps> = ({
   clusterDeployment,
@@ -71,6 +24,7 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
   onSaveNetworking,
   onClose,
   onFinish,
+  fetchInfraEnv,
   ...rest
 }) => {
   const { addAlert } = useAlerts();
@@ -84,10 +38,18 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
     [agents, cdName, cdNamespace],
   );
 
-  const [initialValues, validationSchema] = useNetworkingFormik({
+  const {
+    initialValues,
+    validationSchema,
+    sameProxies,
+    infraEnvsError,
+    infraEnvWithProxy,
+    infraEnvsLoading,
+  } = useNetworkingFormik({
     clusterDeployment,
     agentClusterInstall,
     agents: clusterAgents,
+    fetchInfraEnv,
   });
 
   const next = () => {
@@ -118,7 +80,7 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
-      {({ submitForm, isSubmitting, isValid, isValidating, errors, touched }) => {
+      {({ submitForm, isSubmitting, isValid, isValidating, errors, touched, values }) => {
         const footer = (
           <ClusterDeploymentWizardFooter
             agentClusterInstall={agentClusterInstall}
@@ -130,6 +92,11 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
             onNext={submitForm}
             onCancel={onClose}
             nextButtonText="Save and install"
+            requireProxy={
+              !!infraEnvWithProxy &&
+              !sameProxies &&
+              (values.httpProxy === undefined || !!values.httpsProxy === undefined)
+            }
           />
         );
         const navigation = <ClusterDeploymentWizardNavigation />;
@@ -146,6 +113,10 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
                   agentClusterInstall={agentClusterInstall}
                   agents={clusterAgents}
                   aiConfigMap={aiConfigMap}
+                  sameProxies={sameProxies}
+                  infraEnvsError={infraEnvsError}
+                  infraEnvWithProxy={infraEnvWithProxy}
+                  infraEnvsLoading={infraEnvsLoading}
                   {...rest}
                 />
               </GridItem>
