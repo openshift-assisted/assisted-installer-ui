@@ -24,7 +24,7 @@ const ClusterDeploymentProgress = ({
   const cluster = getAICluster({ clusterDeployment, agentClusterInstall, agents });
   return (
     <ClusterProgress
-      totalPercentage={agentClusterInstall.status?.progress.totalPercentage || 0}
+      totalPercentage={agentClusterInstall.status?.progress?.totalPercentage || 0}
       cluster={cluster}
       onFetchEvents={onFetchEvents}
       fallbackEventsURL={fallbackEventsURL}
