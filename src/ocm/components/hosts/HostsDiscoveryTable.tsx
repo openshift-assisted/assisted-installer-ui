@@ -6,6 +6,7 @@ import {
   getSchedulableMasters,
   Cluster,
   Host,
+  isSingleNodeCluster,
 } from '../../../common';
 import { HostsTableModals, useHostsTable } from './use-hosts-table';
 import {
@@ -24,6 +25,9 @@ import { ExpandComponentProps } from '../../../common/components/hosts/AITable';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
 import { onDiskRoleType } from '../../../common/components/hosts/DiskRole';
 import { Stack, StackItem } from '@patternfly/react-core';
+import { HostsService } from '../../services';
+import { updateHost } from '../../reducers/clusters';
+import { useDispatch } from 'react-redux';
 
 const getExpandComponent = (onDiskRole: onDiskRoleType, canEditDisks: (host: Host) => boolean) => ({
   obj: host,
@@ -60,10 +64,17 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({
     ...modalProps
   } = useHostsTable(cluster);
 
+  const dispatch = useDispatch();
+
   const content = React.useMemo(
     () => [
       hostnameColumn(onEditHost, undefined, actionChecks.canEditHostname),
-      roleColumn(actionChecks.canEditRole, onEditRole, getSchedulableMasters(cluster)),
+      roleColumn(
+        actionChecks.canEditRole,
+        onEditRole,
+        getSchedulableMasters(cluster),
+        !isSingleNodeCluster(cluster),
+      ),
       hardwareStatusColumn(onEditHost),
       discoveredAtColumn,
       cpuCoresColumn,
@@ -73,6 +84,20 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({
     ],
     [onEditHost, actionChecks.canEditHostname, actionChecks.canEditRole, onEditRole, cluster],
   );
+
+  React.useEffect(() => {
+    const forceRole = async () => {
+      cluster.hosts?.forEach(async (host) => {
+        if (host.role !== 'master') {
+          const { data } = await HostsService.updateRole(cluster.id, host.id, 'master');
+          dispatch(updateHost(data));
+        }
+      });
+    };
+    if (cluster.hosts && cluster.hosts?.length <= 3) {
+      forceRole();
+    }
+  }, [dispatch, cluster.id, cluster.hosts]);
 
   const hostIDs = cluster.hosts?.map((h) => h.id) || [];
 
