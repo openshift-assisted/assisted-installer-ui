@@ -6,7 +6,7 @@ import ClusterSshKeyFields from './ClusterSshKeyFields';
 import { InfraEnv } from '../../api/types';
 
 type NetworkConfigurationFormFieldsProps = NetworkConfigurationProps & {
-  infraEnv: InfraEnv | undefined;
+  infraEnv?: InfraEnv;
 };
 
 const NetworkConfigurationFormFields: React.FC<NetworkConfigurationFormFieldsProps> = ({
