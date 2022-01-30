@@ -48,14 +48,14 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
   ) => {
     if (cluster.id && infraEnv?.id) {
       try {
-        const { updatedCluster, updatedInfraEnv } = await DiscoveryImageFormService.update(
+        const { updatedCluster, downloadUrl } = await DiscoveryImageFormService.update(
           cluster.id,
           infraEnv.id,
           cluster.kind,
           formValues,
           ocmPullSecret,
         );
-        onSuccess(updatedInfraEnv?.downloadUrl);
+        onSuccess(downloadUrl);
         dispatch(updateCluster(updatedCluster));
       } catch (error) {
         handleApiError(error, () => {

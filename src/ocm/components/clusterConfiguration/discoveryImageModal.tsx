@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, Button, ButtonVariant, ModalVariant } from '@patternfly/react-core';
-import { Cluster, InfraEnv, ToolbarButton } from '../../../common';
+import { Cluster, InfraEnv, InfraEnvImageUrl, ToolbarButton } from '../../../common';
 import DiscoveryImageForm from './DiscoveryImageForm';
 import DiscoveryImageSummary from './DiscoveryImageSummary';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
@@ -42,12 +42,18 @@ export const DiscoveryImageModal: React.FC = () => {
     return null;
   }
 
+  const onReset = () => setdownloadUrl(undefined);
+  const onClose = () => {
+    onReset();
+    close();
+  };
+
   return (
     <Modal
       aria-label="Add hosts dialog"
       title="Add hosts"
       isOpen={isOpen}
-      onClose={close}
+      onClose={onClose}
       variant={ModalVariant.small}
       hasNoBodyWrapper
       id="generate-discovery-iso-modal"
@@ -56,14 +62,14 @@ export const DiscoveryImageModal: React.FC = () => {
         <DiscoveryImageSummary
           cluster={cluster}
           downloadUrl={downloadUrl}
-          onClose={close}
-          onReset={() => setdownloadUrl(undefined)}
+          onClose={onClose}
+          onReset={onReset}
         />
       ) : (
         <DiscoveryImageForm
           cluster={cluster}
-          onCancel={close}
-          onSuccess={(downloadUrl: InfraEnv['downloadUrl']) => setdownloadUrl(downloadUrl)}
+          onCancel={onClose}
+          onSuccess={(downloadUrl: InfraEnvImageUrl['url']) => setdownloadUrl(downloadUrl)}
         />
       )}
     </Modal>
