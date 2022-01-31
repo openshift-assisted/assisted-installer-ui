@@ -13,7 +13,8 @@ import ExternalLink from '../../../common/components/ui/ExternalLink';
 import { Cluster } from '../../../common/api/types';
 import { useFeatureSupportLevel } from '../../../common/components/featureSupportLevels';
 import { DetailItem } from '../../../common';
-import { getLimitedFeatureSupportLevels } from './utils';
+import { getLimitedFeatureSupportLevels } from '../../../common/components/featureSupportLevels/utils';
+import { captureException } from '../../sentry';
 
 export type SupportLevelSummary = {
   unsupportedVms: boolean;
@@ -113,7 +114,7 @@ export const ClusterFeatureSupportLevelsDetailItem: React.FC<{ cluster: Cluster 
   const featureSupportLevelData = useFeatureSupportLevel();
 
   const clusterFeatureSupportLevels = React.useMemo(() => {
-    return getLimitedFeatureSupportLevels(cluster, featureSupportLevelData);
+    return getLimitedFeatureSupportLevels(cluster, featureSupportLevelData, captureException);
   }, [cluster, featureSupportLevelData]);
 
   const fullySupported: boolean = React.useMemo<boolean>(() => {
