@@ -37,7 +37,7 @@ const getOdfDisabledReason = (cluster: Cluster | undefined) => {
     return undefined;
   }
   if (isArmArchitecture(cluster)) {
-    return 'OpenShift Virtualization is not supported for ARM architecture';
+    return 'OpenShift Container Storage is not supported for ARM architecture';
   }
   return undefined;
 };
@@ -47,7 +47,7 @@ const getCnvDisabledReason = (cluster: Cluster | undefined) => {
     return undefined;
   }
   if (isArmArchitecture(cluster)) {
-    return 'OpenShift Container Storage is not supported for ARM architecture';
+    return 'OpenShift Virtualization is not supported for ARM architecture';
   }
   return undefined;
 };
