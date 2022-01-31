@@ -8,7 +8,6 @@ import {
   DiscoveryImageConfigForm,
   DiscoveryImageFormValues,
   ErrorState,
-  InfraEnv,
   LoadingState,
 } from '../../../common';
 import { updateCluster, forceReload } from '../../reducers/clusters';
@@ -19,7 +18,7 @@ import { DiscoveryImageFormService } from '../../services';
 type DiscoveryImageFormProps = {
   cluster: Cluster;
   onCancel: () => void;
-  onSuccess: (downloadUrl: InfraEnv['downloadUrl']) => void;
+  onSuccess: () => void;
 };
 
 const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
@@ -48,14 +47,14 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
   ) => {
     if (cluster.id && infraEnv?.id) {
       try {
-        const { updatedCluster, updatedInfraEnv } = await DiscoveryImageFormService.update(
+        const { updatedCluster } = await DiscoveryImageFormService.update(
           cluster.id,
           infraEnv.id,
           cluster.kind,
           formValues,
           ocmPullSecret,
         );
-        onSuccess(updatedInfraEnv?.downloadUrl);
+        onSuccess();
         dispatch(updateCluster(updatedCluster));
       } catch (error) {
         handleApiError(error, () => {
