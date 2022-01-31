@@ -278,7 +278,6 @@ export const getAssistedUiLibVersion = () => packageJson.version;
 export const EVENT_SEVERITIES: Event['severity'][] = ['info', 'warning', 'error', 'critical'];
 
 export const TIME_ZERO = '0001-01-01T00:00:00.000Z';
-export const INSTALL_TIME_ZERO = '2000-01-01T00:00:00.000Z';
 
 export const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
