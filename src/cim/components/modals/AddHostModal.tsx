@@ -1,14 +1,6 @@
 import * as React from 'react';
 import { FormikHelpers } from 'formik';
-import {
-  Flex,
-  FlexItem,
-  Modal,
-  ModalBoxHeader,
-  ModalVariant,
-  Radio,
-  Tooltip,
-} from '@patternfly/react-core';
+import { Flex, FlexItem, Modal, ModalBoxHeader, ModalVariant, Radio } from '@patternfly/react-core';
 import { DownloadIso, DiscoveryImageConfigForm, DiscoveryImageFormValues } from '../../../common';
 import { BMCForm } from '../Agent';
 import { AddHostModalProps } from './types';
@@ -22,7 +14,6 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
   agentClusterInstall,
   onCreateBMH,
   onSaveISOParams,
-  isBMPlatform,
   usedHostnames,
 }) => {
   const hasDHCP = infraEnv.metadata?.labels?.networkType !== 'static';
@@ -71,22 +62,15 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
               onChange={(checked) => setDialogType(checked ? isoDialog : 'bmc')}
             />
           </FlexItem>
-          <FlexItem spacer={{ default: isBMPlatform ? 'spacerXl' : 'spacerSm' }} />
+          <FlexItem spacer={{ default: 'spacerXl' }} />
           <FlexItem>
-            <Tooltip
-              hidden={isBMPlatform}
-              // TODO(mlibra): This limitation needs to be updated once https://github.com/openshift/enhancements/pull/871 lands.
-              content="The Advanced Cluster Manager can manage bare metal hosts when deployed on bare metal platform only."
-            >
-              <Radio
-                id="bmc"
-                name="type"
-                label="Baseboard Management Controller (BMC)"
-                isChecked={dialogType === 'bmc'}
-                onChange={(checked) => setDialogType(checked ? 'bmc' : isoDialog)}
-                isDisabled={!isBMPlatform}
-              />
-            </Tooltip>
+            <Radio
+              id="bmc"
+              name="type"
+              label="Baseboard Management Controller (BMC)"
+              isChecked={dialogType === 'bmc'}
+              onChange={(checked) => setDialogType(checked ? 'bmc' : isoDialog)}
+            />
           </FlexItem>
         </Flex>
       </ModalBoxHeader>

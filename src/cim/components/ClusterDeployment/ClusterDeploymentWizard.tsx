@@ -31,7 +31,6 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   onCreateBMH,
   hostActions,
   usedClusterNames,
-  isBMPlatform,
   getClusterDeploymentLink,
   fetchSecret,
   fetchNMState,
@@ -103,7 +102,6 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
               fetchNMState={fetchNMState}
               getClusterDeploymentLink={getClusterDeploymentLink}
               onClose={onClose}
-              isBMPlatform={isBMPlatform}
               onSaveISOParams={onSaveISOParams}
               onSaveHostsDiscovery={onSaveHostsDiscovery}
               onCreateBMH={onCreateBMH}
@@ -168,7 +166,6 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
     fetchSecret,
     fetchNMState,
     getClusterDeploymentLink,
-    isBMPlatform,
     isAIFlow,
     onSaveISOParams,
   ]);

@@ -219,7 +219,6 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged }) => {
 
 type InfraEnvFormPageProps = InfraEnvFormProps & {
   usedNames: string[];
-  isBMPlatform: boolean;
   // eslint-disable-next-line
   onSubmit?: (values: EnvironmentStepFormValues) => Promise<any>;
   onFinish?: (values: EnvironmentStepFormValues) => void;
@@ -228,7 +227,6 @@ type InfraEnvFormPageProps = InfraEnvFormProps & {
 
 export const InfraEnvFormPage: React.FC<InfraEnvFormPageProps> = ({
   usedNames,
-  isBMPlatform,
   onSubmit,
   onClose,
   onFinish,
@@ -260,12 +258,12 @@ export const InfraEnvFormPage: React.FC<InfraEnvFormPageProps> = ({
                   </Title>
                 </GridItem>
                 <GridItem>
-                  <InfraEnvForm onValuesChanged={onValuesChanged} isBMPlatform={isBMPlatform} />
+                  <InfraEnvForm onValuesChanged={onValuesChanged} />
                 </GridItem>
               </Grid>
             ) : (
               <div className="infra-env__form">
-                <InfraEnvForm onValuesChanged={onValuesChanged} isBMPlatform={isBMPlatform} />
+                <InfraEnvForm onValuesChanged={onValuesChanged} />
               </div>
             )}
           </StackItem>
