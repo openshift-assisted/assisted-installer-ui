@@ -96,27 +96,19 @@ export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = 
 
   const isFeatureSupportedCallback = React.useCallback(
     (versionName: string, featureId: FeatureId) => {
-      const normalizedVersion = normalizeClusterVersion(versionName);
       const supportLevel = getFeatureSupportLevel(versionName, featureId);
-      return isFeatureSupported(normalizedVersion, featureId, supportLevel, versionOptions);
+      return isFeatureSupported(versionName, featureId, supportLevel, versionOptions);
     },
-    [getFeatureSupportLevel, normalizeClusterVersion, versionOptions],
+    [getFeatureSupportLevel, versionOptions],
   );
 
   //TODO(brotman): move to separate context FeatureStateContext
   const getDisabledReasonCallback = React.useCallback(
     (versionName: string, featureId: FeatureId) => {
-      const normalizedVersion = normalizeClusterVersion(versionName);
       const isSupported = isFeatureSupportedCallback(versionName, featureId);
-      return getFeatureDisabledReason(
-        featureId,
-        cluster,
-        normalizedVersion,
-        versionOptions,
-        isSupported,
-      );
+      return getFeatureDisabledReason(featureId, cluster, versionName, versionOptions, isSupported);
     },
-    [isFeatureSupportedCallback, normalizeClusterVersion, versionOptions, cluster],
+    [isFeatureSupportedCallback, versionOptions, cluster],
   );
 
   const isFeatureDisabled = React.useCallback(

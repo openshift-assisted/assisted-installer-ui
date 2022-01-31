@@ -25,12 +25,12 @@ export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
         .sort()
         .reverse()
         .map((key) => ({
-          label: `OpenShift ${data[key].displayName || key}`,
+          label: `OpenShift ${data[key].display_name || key}`,
           value: key,
-          version: data[key].displayName,
+          version: data[key].display_name,
           default: Boolean(data[key].default),
-          supportLevel: data[key].supportLevel,
-          cpuArchitectures: data[key].cpuArchitectures as CpuArchitecture[],
+          supportLevel: data[key].support_level,
+          cpuArchitectures: data[key].cpu_architectures as CpuArchitecture[],
         }));
 
       setVersions(versions);
@@ -48,12 +48,13 @@ export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
     doAsync();
   }, [doAsync, setVersions]);
 
-  const normalizeClusterVersion = React.useCallback(
-    (version = ''): string =>
-      versions?.map((obj) => obj.value).find((normalized) => version.startsWith(normalized)) ||
-      version,
-    [versions],
-  );
+  const normalizeClusterVersion = React.useCallback((version = '') => {
+    if (!version) {
+      return '';
+    }
+    const [major, minor] = version.split('.');
+    return `${major}.${minor}`;
+  }, []);
 
   return {
     error,

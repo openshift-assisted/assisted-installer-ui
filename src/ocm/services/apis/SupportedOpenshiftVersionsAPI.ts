@@ -1,4 +1,4 @@
-import { client } from '../../api/axiosClient';
+import { noCoverterClient } from '../../api/axiosClient';
 import { OpenshiftVersion } from '../../../common';
 
 const SupportedOpenshiftVersionsAPI = {
@@ -7,7 +7,8 @@ const SupportedOpenshiftVersionsAPI = {
   },
 
   list() {
-    return client.get<OpenshiftVersion>(`${SupportedOpenshiftVersionsAPI.makeBaseURI()}`);
+    //use client without camel case converter, since openshift verion keys can contain hyphens
+    return noCoverterClient.get<OpenshiftVersion>(`${SupportedOpenshiftVersionsAPI.makeBaseURI()}`);
   },
 };
 
