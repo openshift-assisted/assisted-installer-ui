@@ -15,17 +15,21 @@ const axiosCaseConverterOptions = {
   },
 };
 
-const getDefaultClient = () => {
+const getDefaultClient = (applyCase = true) => {
   const client = axios.create();
   client.interceptors.request.use((cfg) => ({
     ...cfg,
     url: `${process.env.REACT_APP_API_ROOT}${cfg.url}`,
   }));
-  return applyCaseMiddleware(client, axiosCaseConverterOptions);
+  if (applyCase) {
+    return applyCaseMiddleware(client, axiosCaseConverterOptions);
+  }
+  return client;
 };
 
 let client: AxiosInstance = getDefaultClient();
 let ocmClient: AxiosInstance | null;
+let noCoverterClient = getDefaultClient(false);
 
 const aiInterceptor = (client: AxiosInstance) => {
   client.interceptors.request.use((cfg) => ({
@@ -41,6 +45,7 @@ export const setAuthInterceptor = (authInterceptor: (client: AxiosInstance) => A
     aiInterceptor(authInterceptor(axios.create())),
     axiosCaseConverterOptions,
   );
+  noCoverterClient = aiInterceptor(authInterceptor(axios.create()));
 };
 
-export { client, ocmClient };
+export { client, ocmClient, noCoverterClient };
