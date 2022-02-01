@@ -1,5 +1,5 @@
 import React from 'react';
-import ClusterCredentials from '../../../common/components/clusterDetail/ClusterCredentials';
+import { ClusterCredentials, Credentials } from '../../../common';
 import { AgentK8sResource } from '../../types/k8s/agent';
 import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-install';
 import { ClusterDeploymentK8sResource } from '../../types/k8s/cluster-deployment';
@@ -10,7 +10,7 @@ type ClusterDeploymentCredentialsProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall: AgentClusterInstallK8sResource;
   agents: AgentK8sResource[];
-  consoleUrl: string;
+  consoleUrl?: string;
   fetchSecret: FetchSecret;
 };
 
@@ -21,7 +21,7 @@ const ClusterDeploymentCredentials = ({
   consoleUrl,
   fetchSecret,
 }: ClusterDeploymentCredentialsProps) => {
-  const [credentials, setCredentials] = React.useState({});
+  const [credentials, setCredentials] = React.useState<Credentials | undefined>();
   const [isError, setIsError] = React.useState(false);
 
   const cluster = getAICluster({ clusterDeployment, agentClusterInstall, agents });
@@ -38,6 +38,7 @@ const ClusterDeploymentCredentials = ({
           setCredentials({
             username: atob(secret?.data?.username || ''),
             password: atob(secret?.data?.password || ''),
+            consoleUrl,
           });
         } catch (e) {
           setIsError(true);
@@ -47,15 +48,9 @@ const ClusterDeploymentCredentials = ({
     };
 
     fetchCredentials();
-  }, [adminPasswordSecretRefName, namespace, fetchSecret]);
+  }, [adminPasswordSecretRefName, namespace, fetchSecret, consoleUrl]);
 
-  return (
-    <ClusterCredentials
-      cluster={cluster}
-      credentials={{ ...credentials, consoleUrl }}
-      error={isError}
-    />
-  );
+  return <ClusterCredentials cluster={cluster} credentials={credentials} error={isError} />;
 };
 
 export default ClusterDeploymentCredentials;
