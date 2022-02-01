@@ -48,9 +48,9 @@ export const canReset = (clusterStatus: Cluster['status'], status: Host['status'
   ['adding-hosts'].includes(clusterStatus) &&
   ['error', 'installing-pending-user-action'].includes(status);
 
-export const canEditRole = (cluster: Cluster, hostStatus: Host['status']) =>
+export const canEditRole = (cluster: Cluster, hostStatus: Host['status']): boolean =>
   !isSingleNodeCluster(cluster) &&
-  cluster.totalHostCount &&
+  !!cluster.totalHostCount &&
   cluster.totalHostCount > 3 &&
   ['pending-for-input', 'insufficient', 'ready'].includes(cluster.status) &&
   [
