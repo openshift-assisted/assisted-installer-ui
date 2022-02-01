@@ -85,7 +85,10 @@ const withTemplate = (
     ...values,
     hostname: newHostnames[0],
   });
-  if (newHostnames.some((h) => usedHostnames.includes(h))) {
+  if (
+    newHostnames.some((h) => usedHostnames.includes(h)) ||
+    new Set(newHostnames).size !== newHostnames.length
+  ) {
     validationResult = {
       ...(validationResult || {}),
       hostname: (validationResult?.hostname || []).concat(HOSTNAME_VALIDATION_MESSAGES.NOT_UNIQUE),
