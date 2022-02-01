@@ -6,7 +6,7 @@ import {
   getSchedulableMasters,
   Cluster,
   Host,
-  isSingleNodeCluster,
+  useAlerts,
 } from '../../../common';
 import { HostsTableModals, useHostsTable } from './use-hosts-table';
 import {
@@ -28,6 +28,8 @@ import { Stack, StackItem } from '@patternfly/react-core';
 import { HostsService } from '../../services';
 import { updateHost } from '../../reducers/clusters';
 import { useDispatch } from 'react-redux';
+import { isSNO } from '../../selectors/clusterSelectors';
+import { getErrorMessage, handleApiError } from '../../api/utils';
 
 const getExpandComponent = (onDiskRole: onDiskRoleType, canEditDisks: (host: Host) => boolean) => ({
   obj: host,
@@ -65,6 +67,7 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({
   } = useHostsTable(cluster);
 
   const dispatch = useDispatch();
+  const { alerts, addAlert, removeAlert } = useAlerts();
 
   const content = React.useMemo(
     () => [
@@ -73,7 +76,7 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({
         actionChecks.canEditRole,
         onEditRole,
         getSchedulableMasters(cluster),
-        !isSingleNodeCluster(cluster),
+        !isSNO(cluster),
       ),
       hardwareStatusColumn(onEditHost),
       discoveredAtColumn,
@@ -87,17 +90,32 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({
 
   React.useEffect(() => {
     const forceRole = async () => {
-      cluster.hosts?.forEach(async (host) => {
-        if (host.role !== 'master') {
-          const { data } = await HostsService.updateRole(cluster.id, host.id, 'master');
-          dispatch(updateHost(data));
+      if (cluster.hosts && cluster.hosts.length <= 3) {
+        try {
+          const promises = [];
+          for (const host of cluster.hosts) {
+            if (host.role !== 'master') {
+              promises.push(HostsService.updateRole(cluster.id, host.id, 'master'));
+            }
+          }
+          const data = (await Promise.all(promises)).map((promise) => promise.data);
+          data.forEach((host) => dispatch(updateHost(host)));
+
+          alerts
+            .filter((alert) => alert.title == 'Failed to set role')
+            .forEach((a) => removeAlert(a.key));
+        } catch (error) {
+          handleApiError(error, () => {
+            if (!alerts.map((alert) => alert.message).includes(getErrorMessage(error))) {
+              addAlert({ title: 'Failed to set role', message: getErrorMessage(error) });
+            }
+          });
         }
-      });
+      }
     };
-    if (cluster.hosts && cluster.hosts?.length <= 3) {
-      forceRole();
-    }
-  }, [dispatch, cluster.id, cluster.hosts]);
+
+    forceRole();
+  }, [dispatch, cluster.id, cluster.hosts, alerts, addAlert, removeAlert]);
 
   const hostIDs = cluster.hosts?.map((h) => h.id) || [];
 
