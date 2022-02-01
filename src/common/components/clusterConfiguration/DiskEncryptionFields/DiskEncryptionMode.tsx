@@ -92,7 +92,7 @@ export const DiskEncryptionMode: React.FC<DiskEncryptionModeProps> = ({
           </FlexItem>
         </Flex>
       </StackItem>
-      {diskEncryptionMode == 'tang' && (
+      {diskEncryptionMode === 'tang' && (
         <Stack>
           &nbsp;
           <StackItem>
