@@ -20,7 +20,7 @@ export default function useInfraEnvImageUrl(clusterId: Cluster['id']) {
         data: { url },
       } = await InfraEnvsAPI.getImageUrl(infraEnvId);
       if (!url) {
-        throw 'Get Image Url API returned an empty url';
+        throw 'Failed to retrieve the image URL, the API returned an invalid URL';
       }
       setImageUrl(url);
     } catch (e) {
