@@ -1,5 +1,10 @@
 import { client } from '../../api';
-import { InfraEnv, InfraEnvCreateParams, InfraEnvUpdateParams } from '../../../common';
+import {
+  InfraEnv,
+  InfraEnvCreateParams,
+  InfraEnvImageUrl,
+  InfraEnvUpdateParams,
+} from '../../../common';
 import { AxiosResponse } from 'axios';
 
 const InfraEnvsAPI = {
@@ -36,6 +41,12 @@ const InfraEnvsAPI = {
 
   deregister(infraEnvId: InfraEnv['id']) {
     return client.delete<void>(`${InfraEnvsAPI.makeBaseURI(infraEnvId)}`);
+  },
+
+  getImageUrl(infraEnvId: InfraEnv['id']) {
+    return client.get<InfraEnvImageUrl>(
+      `${InfraEnvsAPI.makeBaseURI(infraEnvId)}/downloads/image-url`,
+    );
   },
 };
 
