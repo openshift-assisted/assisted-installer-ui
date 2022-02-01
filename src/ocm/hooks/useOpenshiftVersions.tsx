@@ -14,6 +14,12 @@ type UseOpenshiftVersionsType = {
   loading: boolean;
 };
 
+const sortVersions = (versions: string[]) => {
+  return versions
+    .sort((version1, version2) => version1.localeCompare(version2, undefined, { numeric: true }))
+    .reverse();
+};
+
 export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
   const [versions, setVersions] = React.useState<OpenshiftVersionOptionType[]>();
   const [error, setError] = React.useState<UseOpenshiftVersionsType['error']>();
@@ -21,17 +27,15 @@ export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
   const doAsync = React.useCallback(async () => {
     try {
       const { data } = await SupportedOpenshiftVersionsAPI.list();
-      const versions: OpenshiftVersionOptionType[] = Object.keys(data)
-        .sort()
-        .reverse()
-        .map((key) => ({
-          label: `OpenShift ${data[key].display_name || key}`,
-          value: key,
-          version: data[key].display_name,
-          default: Boolean(data[key].default),
-          supportLevel: data[key].support_level,
-          cpuArchitectures: data[key].cpu_architectures as CpuArchitecture[],
-        }));
+      const sortedVersionNames = sortVersions(Object.keys(data));
+      const versions: OpenshiftVersionOptionType[] = sortedVersionNames.map((key) => ({
+        label: `OpenShift ${data[key].display_name || key}`,
+        value: key,
+        version: data[key].display_name,
+        default: Boolean(data[key].default),
+        supportLevel: data[key].support_level,
+        cpuArchitectures: data[key].cpu_architectures as CpuArchitecture[],
+      }));
 
       setVersions(versions);
     } catch (e) {
