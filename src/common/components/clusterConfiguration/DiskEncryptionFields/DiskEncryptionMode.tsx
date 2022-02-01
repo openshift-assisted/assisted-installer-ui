@@ -65,8 +65,6 @@ export interface DiskEncryptionModeProps extends DiskEncryptionValues {
 }
 
 export const DiskEncryptionMode: React.FC<DiskEncryptionModeProps> = ({
-  enableDiskEncryptionOnMasters,
-  enableDiskEncryptionOnWorkers,
   diskEncryptionMode,
   isDisabled,
 }) => {
@@ -94,19 +92,18 @@ export const DiskEncryptionMode: React.FC<DiskEncryptionModeProps> = ({
           </FlexItem>
         </Flex>
       </StackItem>
-      {(enableDiskEncryptionOnMasters || enableDiskEncryptionOnWorkers) &&
-        diskEncryptionMode == 'tang' && (
-          <Stack>
-            &nbsp;
-            <StackItem>
-              <TextContent>
-                <Text component={TextVariants.h6}>Tang servers</Text>
-              </TextContent>
-            </StackItem>
-            &nbsp;
-            <TangServers isDisabled={isDisabled} />
-          </Stack>
-        )}
+      {diskEncryptionMode == 'tang' && (
+        <Stack>
+          &nbsp;
+          <StackItem>
+            <TextContent>
+              <Text component={TextVariants.h6}>Tang servers</Text>
+            </TextContent>
+          </StackItem>
+          &nbsp;
+          <TangServers isDisabled={isDisabled} />
+        </Stack>
+      )}
     </Stack>
   );
 };
