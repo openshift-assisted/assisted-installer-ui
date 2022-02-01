@@ -19,6 +19,7 @@ import { DiscoveryImageModal } from '../clusterConfiguration/discoveryImageModal
 import ClusterInstallationProgressCard from './ClusterInstallationProgressCard';
 import CancelInstallationModal from './CancelInstallationModal';
 import ResetClusterModal from './ResetClusterModal';
+import { FeatureSupportLevelProvider } from '../featureSupportLevels';
 
 type AssistedInstallerDetailCardProps = {
   aiClusterId: string;
@@ -125,7 +126,9 @@ const AssistedInstallerDetailCard: React.FC<AssistedInstallerDetailCardProps> = 
             loadingUI={<LoadingCard />}
             errorUI={<LoadingDefaultConfigFailedCard />}
           >
-            {content}
+            <FeatureSupportLevelProvider loadingUi={<LoadingCard />} cluster={cluster}>
+              {content}
+            </FeatureSupportLevelProvider>
             <CancelInstallationModal />
             <ResetClusterModal />
             <DiscoveryImageModal />
