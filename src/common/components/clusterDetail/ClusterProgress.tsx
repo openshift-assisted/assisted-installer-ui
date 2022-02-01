@@ -6,6 +6,8 @@ import {
   ProgressMeasureLocation,
   Flex,
   FlexItem,
+  Stack,
+  StackItem,
   Popover,
   Button,
   ButtonVariant,
@@ -98,22 +100,29 @@ const HostProgress: React.FC<HostProgressProps> = ({ hosts, hostRole }) => {
     hostRole === 'master' ? `${hostCountText('control plane node')}` : `${hostCountText('worker')}`;
 
   return (
-    <Flex className="pf-u-mr-3xl">
-      <FlexItem>{icon}</FlexItem>
-      <FlexItem>{text}</FlexItem>
-    </Flex>
+    <Stack className="pf-u-mr-3xl">
+      <StackItem>{icon}</StackItem>
+      <StackItem>{text}</StackItem>
+      <StackItem>3/3 control plane nodes installed</StackItem>
+    </Stack>
   );
 };
 
-const getFinalizingStatusIcon = (cluster: Cluster) => {
-  let statusIcon;
-  const { monitoredOperators = [] } = cluster;
+const areAllBuiltInOperatorsAvailable = (
+  monitoredOperators: Cluster['monitoredOperators'] = [],
+) => {
   const areAllBuiltInOperatorsAvailable = monitoredOperators.length
     ? monitoredOperators
         .filter((op) => op.operatorType === 'builtin')
         .every((op) => op.status === 'available')
     : false;
-  if (areAllBuiltInOperatorsAvailable) {
+
+  return areAllBuiltInOperatorsAvailable;
+};
+
+const getFinalizingStatusIcon = (cluster: Cluster) => {
+  let statusIcon;
+  if (areAllBuiltInOperatorsAvailable(cluster.monitoredOperators)) {
     statusIcon = <CheckCircleIcon color={okColor.value} />;
   } else {
     switch (cluster.status) {
@@ -162,9 +171,9 @@ const FinalizingProgress: React.FC<FinalizingProgressProps> = ({
         onFetchEvents={onFetchEvents}
         fallbackEventsURL={fallbackEventsURL}
       />
-      <Flex className="pf-u-mr-3xl">
-        <FlexItem>{getFinalizingStatusIcon(cluster)}</FlexItem>
-        <FlexItem>
+      <Stack className="pf-u-mr-3xl">
+        <StackItem>{getFinalizingStatusIcon(cluster)}</StackItem>
+        <StackItem>
           {status === 'finalizing' ? (
             <Popover
               zIndex={300} // set the zIndex below Cluster Events Modal
@@ -190,8 +199,9 @@ const FinalizingProgress: React.FC<FinalizingProgressProps> = ({
           ) : (
             'Initialization'
           )}
-        </FlexItem>
-      </Flex>
+        </StackItem>
+        <StackItem>${cluster.status}</StackItem>
+      </Stack>
     </>
   );
 };
@@ -264,6 +274,7 @@ const ClusterProgress = ({
               fallbackEventsURL={fallbackEventsURL}
             />
           </FlexItem>
+          <FlexItem>Danielle</FlexItem>
 
           <RenderIf condition={olmOperators.length > 0}>
             <FlexItem>
