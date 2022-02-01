@@ -1,5 +1,13 @@
 import React from 'react';
-import { Text, TextContent, Button, Stack, StackItem } from '@patternfly/react-core';
+import {
+  Text,
+  TextContent,
+  Button,
+  Stack,
+  StackItem,
+  List,
+  ListItem,
+} from '@patternfly/react-core';
 import {
   Cluster,
   PopoverIcon,
@@ -30,13 +38,22 @@ const PlatformIntegrationLabel: React.FC = () => (
   <>
     <span>Integrate with platform</span>{' '}
     <PopoverIcon
+      minWidth="30rem"
       variant={'plain'}
       bodyContent={
         <p>
           Enable platform integration to access your platform's features directly in OpenShift.
           <br />
-          <strong>Note:</strong> You will need to modify your platform configuration after cluster
-          installation is completed.
+          <strong>Additional Requirements:</strong>
+          <List>
+            <ListItem>
+              You will need to modify your platform configuration after cluster installation is
+              completed
+            </ListItem>
+            <ListItem>
+              A network connectivity is required between vSphere and the installed OCP cluster
+            </ListItem>
+          </List>
         </p>
       }
     />

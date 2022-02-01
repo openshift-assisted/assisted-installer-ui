@@ -50,6 +50,8 @@ export const canReset = (clusterStatus: Cluster['status'], status: Host['status'
 
 export const canEditRole = (cluster: Cluster, hostStatus: Host['status']) =>
   !isSingleNodeCluster(cluster) &&
+  cluster.totalHostCount &&
+  cluster.totalHostCount > 3 &&
   ['pending-for-input', 'insufficient', 'ready'].includes(cluster.status) &&
   [
     'discovering',
