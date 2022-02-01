@@ -234,6 +234,7 @@ const WithHostStatusPopover = (
       validationsInfo: ValidationsInfo;
       isSmall?: ButtonProps['isSmall'];
       statusOverride: HostStatusProps['statusOverride'];
+      zIndex?: number;
     }>,
 ) => (
   <Popover
@@ -243,7 +244,7 @@ const WithHostStatusPopover = (
     minWidth="30rem"
     maxWidth="50rem"
     hideOnOutsideClick={props.hideOnOutsideClick}
-    zIndex={300}
+    zIndex={props.zIndex || 300}
   >
     <Button variant={'link'} isInline isSmall={props.isSmall}>
       {props.children}
@@ -260,6 +261,7 @@ const HostStatus: React.FC<HostStatusProps> = ({
   AdditionalNTPSourcesDialogToggleComponent,
   UpdateDay2ApiVipDialogToggleComponent,
   children,
+  zIndex,
 }) => {
   const [keepOnOutsideClick, onValidationActionToggle] = React.useState(false);
   const status = statusOverride || host.status || '';
@@ -299,6 +301,7 @@ const HostStatus: React.FC<HostStatusProps> = ({
             validationsInfo={validationsInfo}
             statusOverride={status}
             UpdateDay2ApiVipDialogToggleComponent={UpdateDay2ApiVipDialogToggleComponent}
+            zIndex={zIndex}
           >
             {titleWithProgress}
           </WithHostStatusPopover>
@@ -324,6 +327,7 @@ const HostStatus: React.FC<HostStatusProps> = ({
               validationsInfo={validationsInfo}
               statusOverride={status}
               UpdateDay2ApiVipDialogToggleComponent={UpdateDay2ApiVipDialogToggleComponent}
+              zIndex={zIndex}
             >
               {sublabel}
             </WithHostStatusPopover>

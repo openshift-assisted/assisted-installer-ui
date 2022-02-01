@@ -1,4 +1,4 @@
-import { isSNO } from '../../selectors';
+import { isSNO } from '../../../common';
 import Day2ClusterService from '../../services/Day2ClusterService';
 import { OcmClusterType } from './types';
 

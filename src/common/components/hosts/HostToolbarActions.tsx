@@ -18,3 +18,20 @@ export const ChangeHostnameAction: React.FC<ChangeHostnameActionProps> = ({ onCh
     </DropdownItem>
   );
 };
+
+type DeleteHostActionProps = {
+  onDeleteHost: VoidFunction;
+};
+
+export const DeleteHostAction: React.FC<DeleteHostActionProps> = ({ onDeleteHost }) => {
+  const isDisabled = React.useContext(ActionItemsContext);
+  return (
+    <DropdownItem
+      onClick={onDeleteHost}
+      isDisabled={isDisabled}
+      description={isDisabled ? 'Select one or more hosts to delete' : undefined}
+    >
+      Delete
+    </DropdownItem>
+  );
+};
