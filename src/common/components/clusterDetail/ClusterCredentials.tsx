@@ -26,44 +26,52 @@ const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
     credentialsBody = <ErrorState title="Failed to fetch cluster credentials." fetchData={retry} />;
   } else if (!credentials) {
     credentialsBody = <LoadingState />;
+  } else if (!credentials.username && !credentials.consoleUrl) {
+    return <>N/A</>;
   } else {
     credentialsBody = (
       <DetailList>
-        <DetailItem
-          title="Web Console URL"
-          value={
-            <>
-              <Button
-                variant="link"
-                icon={<ExternalLinkAltIcon />}
-                iconPosition="right"
-                isInline
-                onClick={() => window.open(credentials.consoleUrl, '_blank', 'noopener')}
-                data-testid={`${idPrefix}-link-console-url`}
-              >
-                {credentials.consoleUrl}
-              </Button>
-              <br />
-              <TroubleshootingOpenshiftConsoleButton
-                consoleUrl={credentials.consoleUrl}
-                cluster={cluster}
-                idPrefix={idPrefix}
-              />
-            </>
-          }
-        />
-        <DetailItem title="Username" value={credentials.username} />
-        <DetailItem
-          title="Password"
-          value={
-            <ClipboardCopy
-              isReadOnly
-              onCopy={(event) => clipboardCopyFunc(event, credentials.password)}
-            >
-              &bull;&bull;&bull;&bull;&bull;
-            </ClipboardCopy>
-          }
-        />
+        {credentials.consoleUrl && (
+          <DetailItem
+            title="Web Console URL"
+            value={
+              <>
+                <Button
+                  variant="link"
+                  icon={<ExternalLinkAltIcon />}
+                  iconPosition="right"
+                  isInline
+                  onClick={() => window.open(credentials.consoleUrl, '_blank', 'noopener')}
+                  data-testid={`${idPrefix}-link-console-url`}
+                >
+                  {credentials.consoleUrl}
+                </Button>
+                <br />
+                <TroubleshootingOpenshiftConsoleButton
+                  consoleUrl={credentials.consoleUrl}
+                  cluster={cluster}
+                  idPrefix={idPrefix}
+                />
+              </>
+            }
+          />
+        )}
+        {credentials.username && (
+          <>
+            <DetailItem title="Username" value={credentials.username} />
+            <DetailItem
+              title="Password"
+              value={
+                <ClipboardCopy
+                  isReadOnly
+                  onCopy={(event) => clipboardCopyFunc(event, credentials.password)}
+                >
+                  &bull;&bull;&bull;&bull;&bull;
+                </ClipboardCopy>
+              }
+            />
+          </>
+        )}
       </DetailList>
     );
   }

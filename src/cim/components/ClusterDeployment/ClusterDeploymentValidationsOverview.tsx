@@ -79,11 +79,13 @@ const ClusterDeploymentValidationsOverview = ({
             <DescriptionListGroup key={group}>
               <DescriptionListTerm>{CLUSTER_VALIDATION_GROUP_LABELS[group]}</DescriptionListTerm>
               <DescriptionListDescription>
-                <List>
-                  {validations.map((validation) => (
-                    <ListItem key={validation.id}>{validation.message}</ListItem>
-                  ))}
-                </List>
+                {validations && (
+                  <List>
+                    {validations.map((validation) => (
+                      <ListItem key={validation.id}>{validation.message}</ListItem>
+                    ))}
+                  </List>
+                )}
               </DescriptionListDescription>
             </DescriptionListGroup>
           );

@@ -55,6 +55,6 @@ export type HostStatusProps = AdditionNtpSourcePropsType &
     host: Host;
     validationsInfo: ValidationsInfo;
     onEditHostname?: () => void;
-    statusOverride?: Host['status'] | 'Discovered';
+    statusOverride?: Host['status'] | 'discovered';
     sublabel?: string;
   };
