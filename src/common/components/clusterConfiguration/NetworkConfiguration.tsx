@@ -15,8 +15,8 @@ import { ClusterDefaultConfig } from '../../api';
 import { isSingleNodeCluster } from '../clusters';
 import { NO_SUBNET_SET } from '../../config';
 import { isAdvNetworkConf } from './utils';
-import { getLimitedFeatureSupportLevels } from '../../../ocm/components/featureSupportLevels/utils'; //TODO(brotman): move OCM dependency to common
 import { useFeatureSupportLevel } from '../featureSupportLevels';
+import { getLimitedFeatureSupportLevels } from '../featureSupportLevels/utils';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   defaultNetworkSettings: ClusterDefaultConfig;
