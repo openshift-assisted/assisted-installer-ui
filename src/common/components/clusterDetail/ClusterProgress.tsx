@@ -200,7 +200,7 @@ const FinalizingProgress: React.FC<FinalizingProgressProps> = ({
             'Initialization'
           )}
         </StackItem>
-        <StackItem>${cluster.status}</StackItem>
+        <StackItem>{cluster.status}</StackItem>
       </Stack>
     </>
   );
@@ -230,7 +230,10 @@ const ClusterProgress = ({
   return (
     <>
       <DetailList>
-        <Flex direction={{ default: minimizedView ? 'row' : 'column' }}>
+        <Flex
+          direction={{ default: minimizedView ? 'row' : 'column' }}
+          justifyContent={{ default: 'justifyContentSpaceBetween' }}
+        >
           <FlexItem>
             <DetailItem
               title="Started on"
@@ -261,7 +264,7 @@ const ClusterProgress = ({
             <HostProgress hosts={enabledHosts} hostRole="master" />
           </FlexItem>
 
-          <RenderIf condition={isWorkersPresent}>
+          <RenderIf condition={!isWorkersPresent}>
             <FlexItem>
               <HostProgress hosts={enabledHosts} hostRole="worker" />
             </FlexItem>
@@ -274,11 +277,17 @@ const ClusterProgress = ({
               fallbackEventsURL={fallbackEventsURL}
             />
           </FlexItem>
-          <FlexItem>Danielle</FlexItem>
-
-          <RenderIf condition={olmOperators.length > 0}>
+          <RenderIf condition={olmOperators.length <= 0}>
             <FlexItem>
-              <OperatorsProgressItem operators={olmOperators} />
+              <Stack>
+                <StackItem>
+                  <PendingIcon />
+                </StackItem>
+                <StackItem>
+                  <OperatorsProgressItem operators={olmOperators} />
+                </StackItem>
+                <StackItem>Pending - 3 operators</StackItem>
+              </Stack>
             </FlexItem>
           </RenderIf>
         </Flex>
