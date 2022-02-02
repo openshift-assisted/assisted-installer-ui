@@ -84,6 +84,7 @@ export const roleColumn = (
   canEditRole?: HostsTableActions['canEditRole'],
   onEditRole?: HostsTableActions['onEditRole'],
   schedulableMasters?: boolean,
+  displayTooltip?: boolean,
 ): TableRow<Host> => {
   return {
     header: {
@@ -105,6 +106,7 @@ export const roleColumn = (
             readonly={!canEditRole?.(host)}
             role={hostRole}
             onEditRole={editRole}
+            displayTooltip={displayTooltip}
           />
         ),
         props: { 'data-testid': 'host-role' },

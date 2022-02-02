@@ -65,6 +65,7 @@ const EditHostForm: React.FC<EditHostFormProps> = ({
 
   return (
     <Formik
+      validateOnMount
       initialValues={initialValues}
       initialStatus={{ error: null }}
       validate={getRichTextValidation(validationSchema(initialValues, usedHostnames))}

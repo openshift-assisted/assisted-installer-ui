@@ -1,5 +1,10 @@
 import * as React from 'react';
-import { TextInputTypes, FormSelectOptionProps, SelectOptionProps } from '@patternfly/react-core';
+import {
+  TextInputTypes,
+  FormSelectOptionProps,
+  SelectOptionProps,
+  TooltipProps,
+} from '@patternfly/react-core';
 import { FieldValidator, FieldHelperProps } from 'formik';
 import { DropzoneProps, DropFileEventHandler } from 'react-dropzone';
 import { CodeEditorProps } from '@patternfly/react-code-editor';
@@ -47,6 +52,7 @@ export interface SwitchFieldProps extends FieldProps {
   // called in addition to the default internal onChange handler
   onChange?: (checked: boolean, event: React.FormEvent<HTMLInputElement>) => void;
   getHelperText?: (value: string) => string | undefined;
+  tooltipProps?: TooltipProps;
 }
 
 export interface InputFieldProps extends FieldProps {
