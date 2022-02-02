@@ -30,7 +30,15 @@ export const getAIHosts = (
       });
 
       if (agent.metadata?.labels?.[AGENT_BMH_HOSTNAME_LABEL_KEY]) {
-        bmhAgents.push(agent.metadata?.labels?.[AGENT_BMH_HOSTNAME_LABEL_KEY]);
+        const bmhName = agent.metadata?.labels?.[AGENT_BMH_HOSTNAME_LABEL_KEY];
+        bmhAgents.push(bmhName);
+        const bmh = bmhs?.find(
+          (h) =>
+            h.metadata?.name === bmhName && h.metadata?.namespace === agent.metadata?.namespace,
+        );
+        if (bmh?.spec?.bmc?.address) {
+          inventory.bmcAddress = bmh.spec.bmc.address;
+        }
       }
 
       const agentProgress = getAgentProgress(agent);
