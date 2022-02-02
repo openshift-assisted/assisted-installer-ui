@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react';
+import React from 'react';
 import {
   Popover,
   Button,
@@ -10,30 +10,11 @@ import {
   Stack,
   StackItem,
 } from '@patternfly/react-core';
-import {
-  global_danger_color_100 as dangerColor,
-  global_warning_color_100 as warningColor,
-  global_success_color_100 as okColor,
-} from '@patternfly/react-tokens';
-import {
-  ExclamationCircleIcon,
-  CheckCircleIcon,
-  ExclamationTriangleIcon,
-  InProgressIcon,
-  DisconnectedIcon,
-  ConnectedIcon,
-  BanIcon,
-  PendingIcon,
-  AddCircleOIcon,
-  UnknownIcon,
-  LinkIcon,
-} from '@patternfly/react-icons';
 import { PopoverProps } from '@patternfly/react-core/dist/js/components/Popover/Popover';
 import hdate from 'human-date';
 
 import { Host } from '../../api';
 import { ValidationsInfo } from '../../types/hosts';
-import { HOST_STATUS_DETAILS, HOST_STATUS_LABELS } from '../../config';
 import { getHumanizedDateTime } from '../ui';
 
 import HostProgress from './HostProgress';
@@ -45,90 +26,27 @@ import {
 } from './HostValidationGroups';
 import OcpConsoleNodesSectionLink from './OcpConsoleNodesSectionLink';
 import { toSentence } from '../ui/table/utils';
-import { RenderIf } from '../ui';
 import { HostStatusProps } from './types';
 import { UpdateDay2ApiVipPropsType } from './HostValidationGroups';
+import { UnknownIcon } from '@patternfly/react-icons';
 
-export const getStatusIcon = (status: Host['status'] | 'discovered') => {
-  let icon = null;
-  switch (status) {
-    case 'discovered':
-    case 'discovering':
-    case 'discovering-unbound':
-      icon = <ConnectedIcon />;
-      break;
-    case 'pending-for-input':
-      icon = <PendingIcon />;
-      break;
-    case 'disconnected':
-    case 'disconnected-unbound':
-      icon = <DisconnectedIcon />;
-      break;
-    case 'cancelled':
-    case 'disabled':
-    case 'disabled-unbound':
-      icon = <BanIcon />;
-      break;
-    case 'error':
-      icon = <ExclamationCircleIcon color={dangerColor.value} />;
-      break;
-    case 'resetting-pending-user-action':
-    case 'insufficient':
-    case 'insufficient-unbound':
-    case 'installing-pending-user-action':
-      icon = <ExclamationTriangleIcon color={warningColor.value} />;
-      break;
-    case 'known':
-    case 'known-unbound':
-    case 'installed':
-      icon = <CheckCircleIcon color={okColor.value} />;
-      break;
-    case 'preparing-for-installation':
-    case 'preparing-successful':
-    case 'installing':
-    case 'installing-in-progress':
-    case 'resetting':
-    case 'unbinding':
-    case 'unbinding-pending-user-action':
-      icon = <InProgressIcon />;
-      break;
-    case 'added-to-existing-cluster':
-      icon = <AddCircleOIcon />;
-      break;
-    case 'binding':
-      icon = <LinkIcon />;
-      break;
-    default:
-      icon = <UnknownIcon />;
-  }
-
-  return icon;
-};
-
-const withProgress = (
-  title: string,
-  currentStage: number,
-  totalStages: number,
-  status: HostStatusProps['statusOverride'] | Host['status'],
-) => {
-  const shouldAppendProgress = [
-    'installing',
-    'installing-in-progress',
-    'error',
-    'cancelled',
-  ].includes(status || '');
-  return shouldAppendProgress ? `${title} ${currentStage}/${totalStages}` : title;
+const getTitleWithProgress = (host: Host, status: HostStatusProps['status']) => {
+  const stages = getHostProgressStages(host);
+  const stageNumber = getHostProgressStageNumber(host);
+  return status.withProgress ? `${status.title} ${stageNumber}/${stages.length}` : status.title;
 };
 
 type HostStatusPopoverContentProps = ValidationInfoActionProps & {
-  statusOverride?: Host['status'] | 'discovered';
+  details?: string;
   validationsInfo: ValidationsInfo;
 };
 
-const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({ ...props }) => {
-  const { host, statusOverride } = props;
+const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({
+  details,
+  ...props
+}) => {
+  const { host } = props;
   const { status, statusInfo } = host;
-  const statusDetails = HOST_STATUS_DETAILS[statusOverride || status];
 
   if (status === 'added-to-existing-cluster') {
     return (
@@ -155,7 +73,7 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({ ...
     return (
       <TextContent>
         <Text>
-          {statusDetails}
+          {details}
           <br />
           {toSentence(statusInfo)}
         </Text>
@@ -167,7 +85,7 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({ ...
   if (['installed'].includes(status)) {
     return (
       <TextContent>
-        <Text>{statusDetails}</Text>
+        <Text>{details}</Text>
         <HostProgress host={host} />
       </TextContent>
     );
@@ -185,16 +103,16 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({ ...
     // No additional error messages shown
     return (
       <TextContent>
-        <Text>{statusDetails}</Text>
+        <Text>{details}</Text>
       </TextContent>
     );
   }
 
   return (
     <>
-      {statusDetails && (
+      {details && (
         <TextContent>
-          <Text>{statusDetails}</Text>
+          <Text>{details}</Text>
         </TextContent>
       )}
       <HostValidationGroups {...props} />
@@ -231,20 +149,19 @@ const HostStatusPopoverFooter: React.FC<{ host: Host }> = ({ host }) => {
   return <>{!!footerText && <small>{footerText}</small>}</>;
 };
 
-const WithHostStatusPopover = (
-  props: AdditionNtpSourcePropsType &
-    UpdateDay2ApiVipPropsType &
-    PropsWithChildren<{
-      hideOnOutsideClick: PopoverProps['hideOnOutsideClick'];
-      host: Host;
-      onEditHostname: HostStatusPopoverContentProps['onEditHostname'];
-      title: string;
-      validationsInfo: ValidationsInfo;
-      isSmall?: ButtonProps['isSmall'];
-      statusOverride: HostStatusProps['statusOverride'];
-      zIndex?: number;
-    }>,
-) => (
+type WithHostStatusPopoverProps = AdditionNtpSourcePropsType &
+  UpdateDay2ApiVipPropsType & {
+    hideOnOutsideClick: PopoverProps['hideOnOutsideClick'];
+    host: Host;
+    onEditHostname: HostStatusPopoverContentProps['onEditHostname'];
+    title: string;
+    validationsInfo: ValidationsInfo;
+    isSmall?: ButtonProps['isSmall'];
+    details?: string;
+    zIndex?: number;
+  };
+
+const WithHostStatusPopover: React.FC<WithHostStatusPopoverProps> = (props) => (
   <Popover
     headerContent={<div>{props.title}</div>}
     bodyContent={<HostStatusPopoverContent {...props} />}
@@ -263,8 +180,7 @@ const WithHostStatusPopover = (
 const HostStatus: React.FC<HostStatusProps> = ({
   host,
   validationsInfo,
-  statusOverride,
-  sublabel,
+  status,
   onEditHostname,
   AdditionalNTPSourcesDialogToggleComponent,
   UpdateDay2ApiVipDialogToggleComponent,
@@ -272,47 +188,34 @@ const HostStatus: React.FC<HostStatusProps> = ({
   zIndex,
 }) => {
   const [keepOnOutsideClick, onValidationActionToggle] = React.useState(false);
-  const status = statusOverride || host.status || '';
-  const title = HOST_STATUS_LABELS[status] || status;
-  const icon = getStatusIcon(status);
-  const stages = getHostProgressStages(host);
-  const stageNumber = getHostProgressStageNumber(host);
 
   const toggleHostname = React.useCallback(() => {
     onValidationActionToggle(!keepOnOutsideClick);
     onEditHostname?.();
   }, [keepOnOutsideClick, onEditHostname]);
 
-  sublabel =
-    sublabel ||
-    (['installing-pending-user-action', 'disconnected', 'unbinding-pending-user-action'].includes(
-      status,
-    ) &&
-      'Action required') ||
-    (status === 'added-to-existing-cluster' && 'Finish in console') ||
-    undefined;
+  const { title, icon, sublabel, details, noPopover } = status;
+  const titleWithProgress = getTitleWithProgress(host, status);
 
-  const titleWithProgress = withProgress(title, stageNumber, stages.length, status);
+  const popoverProps: WithHostStatusPopoverProps = {
+    hideOnOutsideClick: !keepOnOutsideClick,
+    host,
+    onEditHostname: toggleHostname,
+    AdditionalNTPSourcesDialogToggleComponent,
+    title,
+    validationsInfo,
+    details,
+    UpdateDay2ApiVipDialogToggleComponent,
+    zIndex,
+  };
 
   return (
     <Flex alignItems={{ default: 'alignItemsCenter' }} spaceItems={{ default: 'spaceItemsXs' }}>
-      {icon && <FlexItem>{icon}</FlexItem>}
+      {<FlexItem>{icon || <UnknownIcon />}</FlexItem>}
 
       <Flex direction={{ default: 'column' }} spaceItems={{ default: 'spaceItemsXs' }}>
-        {!sublabel && status !== 'discovered' ? (
-          <WithHostStatusPopover
-            hideOnOutsideClick={!keepOnOutsideClick}
-            host={host}
-            onEditHostname={toggleHostname}
-            AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
-            title={title}
-            validationsInfo={validationsInfo}
-            statusOverride={status}
-            UpdateDay2ApiVipDialogToggleComponent={UpdateDay2ApiVipDialogToggleComponent}
-            zIndex={zIndex}
-          >
-            {titleWithProgress}
-          </WithHostStatusPopover>
+        {!sublabel && !noPopover ? (
+          <WithHostStatusPopover {...popoverProps}>{titleWithProgress}</WithHostStatusPopover>
         ) : (
           <FlexItem>
             <Stack>
@@ -321,26 +224,14 @@ const HostStatus: React.FC<HostStatusProps> = ({
             </Stack>
           </FlexItem>
         )}
-        <RenderIf condition={Boolean(sublabel)}>
+        {sublabel && (
           <FlexItem
-            className={'pf-u-font-size-xs'}
+            className="pf-u-font-size-xs"
             style={{ marginTop: 'calc(-1 * var(--pf-l-flex--spacer--xs))' }}
           >
-            <WithHostStatusPopover
-              hideOnOutsideClick={!keepOnOutsideClick}
-              host={host}
-              onEditHostname={toggleHostname}
-              AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
-              title={title}
-              validationsInfo={validationsInfo}
-              statusOverride={status}
-              UpdateDay2ApiVipDialogToggleComponent={UpdateDay2ApiVipDialogToggleComponent}
-              zIndex={zIndex}
-            >
-              {sublabel}
-            </WithHostStatusPopover>
+            <WithHostStatusPopover {...popoverProps}>{sublabel}</WithHostStatusPopover>
           </FlexItem>
-        </RenderIf>
+        )}
       </Flex>
     </Flex>
   );

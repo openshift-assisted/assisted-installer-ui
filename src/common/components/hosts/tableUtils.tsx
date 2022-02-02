@@ -16,6 +16,7 @@ import HostStatus from './HostStatus';
 import RoleCell from './RoleCell';
 import { getHostname, getHostRole, getInventory } from './utils';
 import { selectMachineNetworkCIDR } from '../../selectors/clusterSelectors';
+import { hostStatus } from './status';
 
 export const getSelectedNic = (nics: Interface[], currentSubnet: Address4 | Address6) => {
   return nics.find((nic) => {
@@ -133,6 +134,7 @@ export const statusColumn = (
         title: (
           <HostStatus
             host={host}
+            status={hostStatus[host.status]}
             onEditHostname={editHostname}
             validationsInfo={validationsInfo}
             AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}

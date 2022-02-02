@@ -12,6 +12,7 @@ import {
   roleColumn,
 } from '../../../common/components/hosts/tableUtils';
 import HostsTable, { DefaultExpandComponent } from '../../../common/components/hosts/HostsTable';
+import { usePagination } from '../../../common/components/hosts/usePagination';
 
 export const getAgentId = (agent: AgentK8sResource) => agent.metadata?.uid as string;
 
@@ -46,6 +47,8 @@ const AgentTable: React.FC<AgentTableProps> = ({ agents, className, ...actions }
     ],
     [agents, hostActions, actions],
   );
+
+  const paginationProps = usePagination(agents.length);
   return (
     <HostsTable
       hosts={hosts}
@@ -53,6 +56,7 @@ const AgentTable: React.FC<AgentTableProps> = ({ agents, className, ...actions }
       actionResolver={actionResolver}
       className={className}
       ExpandComponent={DefaultExpandComponent}
+      {...paginationProps}
     >
       <AgentTableEmptyState />
     </HostsTable>

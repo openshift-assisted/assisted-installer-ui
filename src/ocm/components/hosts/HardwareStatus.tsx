@@ -4,6 +4,7 @@ import {
   getWizardStepHostStatus,
   getWizardStepHostValidationsInfo,
   Host,
+  hostStatus,
   HostStatus,
 } from '../../../common';
 import { ValidationsInfo } from '../../../common/types/hosts';
@@ -22,12 +23,13 @@ const HardwareStatus: React.FC<HardwareStatusProps> = (props) => {
     wizardStepsValidationsMap,
     props.host,
   );
+  const status = hostStatus[hardwareStatus];
   const validationsInfo = getWizardStepHostValidationsInfo(
     props.validationsInfo,
     'host-discovery',
     wizardStepsValidationsMap,
   );
-  const sublabel = areOnlySoftValidationsFailing(
+  status.sublabel = areOnlySoftValidationsFailing(
     validationsInfo,
     'host-discovery',
     wizardStepsValidationsMap,
@@ -38,9 +40,8 @@ const HardwareStatus: React.FC<HardwareStatusProps> = (props) => {
   return (
     <HostStatus
       {...props}
-      statusOverride={hardwareStatus}
+      status={status}
       validationsInfo={validationsInfo}
-      sublabel={sublabel}
       AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
     />
   );

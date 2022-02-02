@@ -1,3 +1,4 @@
+import React from 'react';
 import { Cluster, Host, HostUpdateParams } from '../../api';
 import { ValidationsInfo } from '../../types/hosts';
 import { HostsNotShowingLinkProps } from '../clusterConfiguration';
@@ -50,12 +51,26 @@ export type HostNetworkingStatusComponentProps = {
   onEditHostname?: () => void;
 };
 
+export type HostStatusDef = {
+  key: string;
+  title: string;
+  category: string;
+  icon?: React.ReactNode;
+  sublabel?: string;
+  details?: string;
+  noPopover?: boolean;
+  withProgress?: boolean;
+};
+
+export type HostStatus<S extends string> = {
+  [key in S]: HostStatusDef;
+};
+
 export type HostStatusProps = AdditionNtpSourcePropsType &
   UpdateDay2ApiVipPropsType & {
     host: Host;
     validationsInfo: ValidationsInfo;
     onEditHostname?: () => void;
-    statusOverride?: Host['status'] | 'discovered';
-    sublabel?: string;
+    status: HostStatusDef;
     zIndex?: number;
   };

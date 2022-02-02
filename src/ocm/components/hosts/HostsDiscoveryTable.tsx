@@ -10,6 +10,7 @@ import {
   stringToJSON,
   isSNO,
   DeleteHostAction,
+  TableToolbar,
 } from '../../../common';
 import { HostsTableModals, useHostsTable } from './use-hosts-table';
 import {
@@ -33,6 +34,8 @@ import { getErrorMessage, handleApiError } from '../../api/utils';
 import { sortable } from '@patternfly/react-table';
 import { ValidationsInfo } from '../../../common/types/hosts';
 import HardwareStatus from './HardwareStatus';
+import { Stack, StackItem } from '@patternfly/react-core';
+import { usePagination } from '../../../common/components/hosts/usePagination';
 
 export const hardwareStatusColumn = (
   onEditHostname?: HostsTableActions['onEditHost'],
@@ -150,24 +153,42 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({
     forceRole();
   }, [dispatch, cluster.id, cluster.hosts, alerts, addAlert, removeAlert]);
 
+  const hosts = cluster.hosts || [];
+  const paginationProps = usePagination(hosts.length);
+  const itemIDs = hosts.map((h) => h.id);
+
   return (
     <>
-      <HostsTable
-        testId="hosts-discovery-table"
-        hosts={cluster.hosts || []}
-        content={content}
-        actionResolver={actionResolver}
-        ExpandComponent={getExpandComponent(onDiskRole, actionChecks.canEditDisks)}
-        onSelect={onSelect}
-        selectedIDs={selectedHostIDs}
-        setSelectedHostIDs={setSelectedHostIDs}
-        toolbarActions={[
-          <ChangeHostnameAction key="hostname" onChangeHostname={onMassChangeHostname} />,
-          <DeleteHostAction key="delete" onDeleteHost={onMassDeleteHost} />,
-        ]}
-      >
-        <HostsTableEmptyState setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
-      </HostsTable>
+      <Stack hasGutter>
+        <StackItem>
+          <TableToolbar
+            selectedIDs={selectedHostIDs || []}
+            itemIDs={itemIDs}
+            onSelectAll={() => setSelectedHostIDs?.(itemIDs)}
+            onSelectNone={() => setSelectedHostIDs?.([])}
+            actions={[
+              <ChangeHostnameAction key="hostname" onChangeHostname={onMassChangeHostname} />,
+              <DeleteHostAction key="delete" onDeleteHost={onMassDeleteHost} />,
+            ]}
+            {...paginationProps}
+          />
+        </StackItem>
+        <StackItem>
+          <HostsTable
+            testId="hosts-discovery-table"
+            hosts={cluster.hosts || []}
+            content={content}
+            actionResolver={actionResolver}
+            ExpandComponent={getExpandComponent(onDiskRole, actionChecks.canEditDisks)}
+            onSelect={onSelect}
+            selectedIDs={selectedHostIDs}
+            setSelectedHostIDs={setSelectedHostIDs}
+            {...paginationProps}
+          >
+            <HostsTableEmptyState setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
+          </HostsTable>
+        </StackItem>
+      </Stack>
       <HostsTableModals cluster={cluster} {...modalProps} />
     </>
   );

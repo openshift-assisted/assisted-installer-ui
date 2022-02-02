@@ -18,6 +18,7 @@ import { AGENT_BMH_HOSTNAME_LABEL_KEY } from '../common/constants';
 import AgentStatus from '../Agent/AgentStatus';
 import BMHStatus from '../Agent/BMHStatus';
 import { getBMHStatus, getAgentStatus } from '../helpers';
+import { usePagination } from '../../../common/components/hosts/usePagination';
 const hostnameColumn = (agents: AgentK8sResource[]): TableRow<Host> => {
   return {
     header: {
@@ -99,7 +100,11 @@ const statusColumn = (
     return {
       title,
       props: { 'data-testid': 'host-status' },
-      sortableValue: agent ? getAgentStatus(agent)[0] : bmhStatus?.title ? bmhStatus.title : '',
+      sortableValue: agent
+        ? getAgentStatus(agent).status.title
+        : bmhStatus?.title
+        ? bmhStatus.title
+        : '',
     };
   },
 });
@@ -144,10 +149,11 @@ const MassDeleteAgentModal: React.FC<MassDeleteAgentModalProps> = ({
   };
 
   const content = React.useMemo(() => tableContent(agents, bmhs), [agents, bmhs]);
+  const paginationProps = usePagination(hosts.length);
 
   return (
     <CommonMassDeleteHostModal hosts={hosts} isOpen={isOpen} onClose={onClose} onDelete={onClick}>
-      <HostsTable hosts={hosts} content={content}>
+      <HostsTable hosts={hosts} content={content} {...paginationProps}>
         <div>No hosts selected</div>
       </HostsTable>
     </CommonMassDeleteHostModal>

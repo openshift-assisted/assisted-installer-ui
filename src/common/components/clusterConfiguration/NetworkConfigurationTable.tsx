@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { sortable } from '@patternfly/react-table';
-import { Host } from '../../../common';
+import { Host } from '../../api';
 import {
   hostnameColumn,
   roleColumn,
@@ -9,9 +9,10 @@ import {
   ipv4Column,
   ipv6Column,
   macAddressColumn,
-} from '../../../common/components/hosts/tableUtils';
-import { ActionsResolver, TableRow } from '../../../common/components/hosts/AITable';
-import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
+} from '../hosts/tableUtils';
+import { ActionsResolver, TableRow } from '..//hosts/AITable';
+import { usePagination } from '../hosts/usePagination';
+import { HostDetail } from '..//hosts/HostRowDetail';
 import { getSchedulableMasters, HostsTableActions } from '../hosts';
 import { Cluster, stringToJSON } from '../../api';
 import HostsTable from '../hosts/HostsTable';
@@ -78,10 +79,14 @@ const NetworkConfigurationTable: React.FC<NetworkConfigurationTableProps> = ({
     [onEditHost, onEditRole, canEditRole, cluster],
   );
 
+  const hosts = cluster.hosts || [];
+
+  const paginationProps = usePagination(hosts.length);
+
   return (
     <HostsTable
       testId="networking-host-table"
-      hosts={cluster.hosts || []}
+      hosts={hosts}
       skipDisabled={skipDisabled}
       ExpandComponent={({ obj }) => {
         return (
@@ -95,6 +100,7 @@ const NetworkConfigurationTable: React.FC<NetworkConfigurationTableProps> = ({
       actionResolver={actionResolver}
       onSelect={onSelect}
       selectedIDs={selectedIDs}
+      {...paginationProps}
     >
       {children}
     </HostsTable>

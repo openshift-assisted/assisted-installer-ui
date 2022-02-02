@@ -20,7 +20,7 @@ export const hostToAgent = (agents: AgentK8sResource[] = [], host: Host) =>
 export const getAgentsForSelection = (agents: AgentK8sResource[]) =>
   agents.filter((agent) => {
     const { status } = getAgentStatus(agent);
-    return AGENT_FOR_SELECTION_STATUSES.includes(status);
+    return AGENT_FOR_SELECTION_STATUSES.includes(status.key as AgentStatus);
   });
 
 export const getAgentRole = (agent: AgentK8sResource) => agent.spec.role || agent.status?.role;

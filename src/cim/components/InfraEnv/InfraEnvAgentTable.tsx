@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Button, Stack, StackItem } from '@patternfly/react-core';
 import { noop } from 'lodash';
 
 import { Host } from '../../../common/api/types';
@@ -7,6 +8,7 @@ import {
   agentStatusColumn,
   clusterColumn,
   useAgentsTable,
+  useAgentsFilter,
 } from '../Agent/tableUtils';
 import HostsTable, {
   DefaultExpandComponent,
@@ -24,12 +26,31 @@ import {
   ChangeHostnameAction,
   MassChangeHostnameModal,
   DeleteHostAction,
+  EmptyState,
 } from '../../../common';
 import { TableRow } from '../../../common/components/hosts/AITable';
 import { InfraEnvAgentTableProps } from '../ClusterDeployment/types';
 import { MassApproveAgentModal, MassDeleteAgentModal } from '../modals';
 import { MassChangeHostnameModalProps } from '../../../common/components/hosts/MassChangeHostnameModal';
 import MassApproveAction from '../modals/MassApproveAction';
+import { usePagination } from '../../../common/components/hosts/usePagination';
+import InfraTableToolbar from './InfraTableToolbar';
+
+type NoFilterMatchStateProps = {
+  onClearFilters: VoidFunction;
+};
+
+const NoFilterMatchState: React.FC<NoFilterMatchStateProps> = ({ onClearFilters }) => (
+  <EmptyState
+    title="No results found"
+    content="No results match the filter criteria. Clear filters to show results."
+    secondaryActions={[
+      <Button key="clear-filters" variant="link" onClick={onClearFilters}>
+        Clear all filters
+      </Button>,
+    ]}
+  />
+);
 
 const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
   agents,
@@ -59,7 +80,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
     }
   }, []);
 
-  const [hosts, hostActions, actionResolver] = useAgentsTable(
+  const [allHosts, hostActions, actionResolver] = useAgentsTable(
     {
       agents,
       bmhs: bareMetalHosts,
@@ -67,6 +88,16 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
     },
     actions,
   );
+
+  const {
+    statusCount,
+    hostnameFilter,
+    setHostnameFilter,
+    setStatusFilter,
+    statusFilter,
+    filteredHosts: hosts,
+  } = useAgentsFilter({ agents, bmhs: bareMetalHosts, hosts: allHosts });
+
   const content = React.useMemo(
     () =>
       [
@@ -136,21 +167,50 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
     }
   };
 
+  const paginationProps = usePagination(hosts.length);
+
   return (
     <>
-      <HostsTable
-        hosts={hosts}
-        content={content}
-        actionResolver={actionResolver}
-        className={className}
-        selectedIDs={selectedHostIDs}
-        setSelectedHostIDs={setSelectedHostIDs}
-        onSelect={onSelect}
-        ExpandComponent={DefaultExpandComponent}
-        toolbarActions={massActions}
-      >
-        <HostsTableEmptyState setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
-      </HostsTable>
+      <Stack hasGutter>
+        <StackItem>
+          <InfraTableToolbar
+            hosts={hosts}
+            setSelectedHostIDs={setSelectedHostIDs}
+            massActions={massActions}
+            statusCount={statusCount}
+            hostnameFilter={hostnameFilter}
+            statusFilter={statusFilter}
+            setStatusFilter={setStatusFilter}
+            selectedHostIDs={selectedHostIDs}
+            setHostnameFilter={setHostnameFilter}
+            {...paginationProps}
+          />
+        </StackItem>
+        <StackItem>
+          <HostsTable
+            hosts={hosts}
+            content={content}
+            actionResolver={actionResolver}
+            className={className}
+            selectedIDs={selectedHostIDs}
+            setSelectedHostIDs={setSelectedHostIDs}
+            onSelect={onSelect}
+            ExpandComponent={DefaultExpandComponent}
+            {...paginationProps}
+          >
+            {allHosts.length !== hosts.length ? (
+              <NoFilterMatchState
+                onClearFilters={() => {
+                  setHostnameFilter(undefined);
+                  setStatusFilter([]);
+                }}
+              />
+            ) : (
+              <HostsTableEmptyState setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
+            )}
+          </HostsTable>
+        </StackItem>
+      </Stack>
       {isDiscoveryHintModalOpen && (
         <DiscoveryTroubleshootingModal
           isOpen={isDiscoveryHintModalOpen}

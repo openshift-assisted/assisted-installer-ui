@@ -1,9 +1,10 @@
 import filesize from 'filesize.js';
+import Fuse from 'fuse.js';
 import { Host, Cluster, Inventory } from '../../api/types';
 import { HOST_ROLES, TIME_ZERO } from '../../config';
 import { DASH } from '../constants';
 import { isSingleNodeCluster } from '../clusters/utils';
-import { stringToJSON } from '../../api/utils';
+import { stringToJSON } from '../../api';
 
 export const canEnable = (clusterStatus: Cluster['status'], status: Host['status']) =>
   ['pending-for-input', 'insufficient', 'ready', 'adding-hosts'].includes(clusterStatus) &&
@@ -190,4 +191,25 @@ export const getSchedulableMasters = (cluster: Cluster): boolean => {
 export const getInventory = (host: Host) => {
   const { inventory: inventoryString = '' } = host;
   return stringToJSON<Inventory>(inventoryString) || {};
+};
+
+export const filterByHostname = (hosts: Host[], hostnameFilter: string | undefined) => {
+  if (!hostnameFilter) {
+    return hosts;
+  }
+  const hostsWithHostname = hosts.map((host) => {
+    const { inventory: inventoryString = '' } = host;
+    const inventory = stringToJSON<Inventory>(inventoryString) || {};
+    const hostname = getHostname(host, inventory);
+    return {
+      hostname,
+      host,
+    };
+  });
+
+  const fuse = new Fuse(hostsWithHostname, {
+    ignoreLocation: true,
+    keys: ['hostname'],
+  });
+  return fuse.search(hostnameFilter).map(({ item }) => item.host);
 };

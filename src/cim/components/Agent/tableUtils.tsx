@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { sortable } from '@patternfly/react-table';
 import { Link } from 'react-router-dom';
+
 import { Host, HostsTableActions } from '../../../common';
 import { AgentK8sResource, InfraEnvK8sResource } from '../../types';
 import AgentStatus from './AgentStatus';
@@ -15,6 +16,8 @@ import { AGENT_BMH_HOSTNAME_LABEL_KEY } from '../common';
 import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
 import BMHStatus from './BMHStatus';
 import { getAgentStatus, getBMHStatus, getWizardStepAgentStatus } from '../helpers/status';
+import { filterByHostname } from '../../../common/components/hosts/utils';
+import { agentStatus } from '../helpers/agentStatus';
 
 export const discoveryTypeColumn = (
   agents: AgentK8sResource[],
@@ -96,8 +99,8 @@ export const agentStatusColumn = ({
         props: { 'data-testid': 'host-status' },
         sortableValue: agent
           ? wizardStepId
-            ? getWizardStepAgentStatus(agent, wizardStepId).status
-            : getAgentStatus(agent).status
+            ? getWizardStepAgentStatus(agent, wizardStepId).status.title
+            : getAgentStatus(agent).status.title
           : bmhStatus?.title
           ? bmhStatus.title
           : '',
@@ -282,4 +285,88 @@ export const useAgentsTable = (
   );
   const actionResolver = React.useMemo(() => hostActionResolver(actions), [actions]);
   return [hosts, actions, actionResolver];
+};
+
+const filterByStatus = (
+  hosts: Host[],
+  agents: AgentK8sResource[],
+  bareMetalHosts: BareMetalHostK8sResource[],
+  statusFilter: string[],
+) => {
+  if (!statusFilter?.length) {
+    return hosts;
+  }
+  const statusKeys = Object.keys(agentStatus).filter((k) =>
+    statusFilter.includes(agentStatus[k].title),
+  );
+  return hosts.filter((h) => {
+    const agent = agents.find((a) => a.metadata?.uid === h.id);
+    if (!agent) {
+      const bmh = bareMetalHosts.find((bmh) => bmh.metadata?.uid === h.id);
+      if (!bmh) {
+        return false;
+      }
+      const bmhStatus = getBMHStatus(bmh);
+      if (bmhStatus.error) {
+        return statusKeys.includes('bmh-error');
+      }
+      return bmhStatus.state ? statusKeys.includes(bmhStatus.state) : false;
+    }
+    const { status } = getAgentStatus(agent);
+    return statusKeys.includes(status.key);
+  });
+};
+
+export const filterHosts = (
+  hosts: Host[],
+  agents: AgentK8sResource[],
+  bareMetalHosts: BareMetalHostK8sResource[],
+  hostnameFilter: string | undefined,
+  statusFilter: string[],
+) => {
+  const byHostname = filterByHostname(hosts, hostnameFilter);
+  const byStatus = filterByStatus(byHostname, agents, bareMetalHosts, statusFilter);
+
+  return byStatus;
+};
+
+type UseAgentsFilterArgs = {
+  agents: AgentK8sResource[];
+  bmhs: BareMetalHostK8sResource[];
+  hosts: Host[];
+};
+
+export const useAgentsFilter = ({ agents, bmhs, hosts }: UseAgentsFilterArgs) => {
+  const [hostnameFilter, setHostnameFilter] = React.useState<string>();
+  const [statusFilter, setStatusFilter] = React.useState<string[]>([]);
+  const statusCount = Object.keys(agentStatus).reduce((acc, curr) => {
+    acc[agentStatus[curr].title] = 0;
+    return acc;
+  }, {});
+  hosts.forEach((host) => {
+    const agent = agents.find((a) => a.metadata?.uid === host.id);
+    const bmh = bmhs.find((bmh) => bmh.metadata?.uid === host.id);
+    if (agent) {
+      const { status } = getAgentStatus(agent);
+      statusCount[status.title]++;
+    } else if (bmh) {
+      const { error, state } = getBMHStatus(bmh);
+      if (error) {
+        statusCount['bmh-error']++;
+      } else if (state) {
+        statusCount[agentStatus[state].title]++;
+      }
+    }
+  });
+
+  const filteredHosts = filterHosts(hosts, agents, bmhs, hostnameFilter, statusFilter);
+
+  return {
+    statusCount,
+    hostnameFilter,
+    setHostnameFilter,
+    statusFilter,
+    setStatusFilter,
+    filteredHosts,
+  };
 };

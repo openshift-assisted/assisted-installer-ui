@@ -33,7 +33,7 @@ const AgentStatus: React.FC<AgentStatusProps> = ({
 
   const hostname = getHostname(host, agent.status?.inventory || {});
 
-  const { status, validationsInfo, sublabel } = wizardStepId
+  const status = wizardStepId
     ? getWizardStepAgentStatus(agent, wizardStepId)
     : getAgentStatus(agent);
 
@@ -41,11 +41,9 @@ const AgentStatus: React.FC<AgentStatusProps> = ({
     <HostStatus
       host={host}
       onEditHostname={editHostname}
-      validationsInfo={validationsInfo}
-      statusOverride={status}
       zIndex={zIndex}
-      sublabel={sublabel}
       AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
+      {...status}
     >
       {pendingApproval && onApprove && (
         <Popover

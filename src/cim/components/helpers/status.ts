@@ -21,6 +21,8 @@ import {
   ClusterWizardStepsType,
   wizardStepsValidationsMap,
 } from '../ClusterDeployment/wizardTransition';
+import { HostStatusDef } from '../../../common';
+import { agentStatus } from './agentStatus';
 
 const conditionsByTypeReducer = <K>(
   result: { K?: StatusCondition<string> },
@@ -120,40 +122,44 @@ const getInsufficientState = (agent: AgentK8sResource) =>
 export const getAgentStatus = (
   agent: AgentK8sResource,
   excludeDiscovered = false,
-): { status: AgentStatus; validationsInfo: ValidationsInfo; sublabel?: string } => {
-  let status: AgentStatus = agent.status?.debugInfo?.state || getInsufficientState(agent);
+): { status: HostStatusDef; validationsInfo: ValidationsInfo } => {
+  let status: HostStatusDef =
+    agentStatus[agent.status?.debugInfo?.state || getInsufficientState(agent)];
   const validationsInfo = agent.status?.validationsInfo || {};
   if (!excludeDiscovered && !agent.spec.approved) {
-    status = 'discovered';
+    status = agentStatus.discovered;
   }
   // TODO(jtomasek): Implement this
   // const sublabel = areOnlyClusterSoftValidationsFailing(agentStatus.validationsInfo)
   //   ? 'Some validations failed'
   //   : undefined;
-  return { status, validationsInfo, sublabel: undefined };
+  return { status, validationsInfo };
 };
 
 export const getWizardStepAgentStatus = (
   agent: AgentK8sResource,
   wizardStepId: ClusterWizardStepsType,
   excludeDiscovered = false,
-): { status: AgentStatus; validationsInfo: ValidationsInfo; sublabel?: string } => {
-  const agentStatus = getAgentStatus(agent, excludeDiscovered);
-  if (agentStatus.status === 'discovered') {
-    return agentStatus;
+): { status: HostStatusDef; validationsInfo: ValidationsInfo } => {
+  const aStatus = getAgentStatus(agent, excludeDiscovered);
+  if (aStatus.status === agentStatus.discovered) {
+    return aStatus;
   }
 
-  const status = getWizardStepHostStatus(wizardStepId, wizardStepsValidationsMap, {
-    status: agentStatus.status,
-    validationsInfo: agentStatus.validationsInfo,
-  });
+  const status =
+    agentStatus[
+      getWizardStepHostStatus(wizardStepId, wizardStepsValidationsMap, {
+        status: aStatus.status.key as Host['status'],
+        validationsInfo: aStatus.validationsInfo,
+      })
+    ];
   const validationsInfo = getWizardStepHostValidationsInfo(
-    agentStatus.validationsInfo,
+    aStatus.validationsInfo,
     wizardStepId,
     wizardStepsValidationsMap,
   );
-  const sublabel = areOnlySoftValidationsFailing(
-    agentStatus.validationsInfo,
+  status.sublabel = areOnlySoftValidationsFailing(
+    aStatus.validationsInfo,
     wizardStepId,
     wizardStepsValidationsMap,
   )
@@ -163,13 +169,14 @@ export const getWizardStepAgentStatus = (
   return {
     status,
     validationsInfo,
-    sublabel,
   };
 };
 
 export const getBMHStatus = (bmh: BareMetalHostK8sResource) => {
   const state = bmh.status?.errorType || bmh.status?.provisioning?.state;
   return {
+    state: bmh.status?.provisioning?.state,
+    error: bmh.status?.errorType,
     title: state ? state.charAt(0).toUpperCase() + state.slice(1) : state,
     message: bmh.status?.errorMessage,
   };

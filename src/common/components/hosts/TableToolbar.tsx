@@ -1,7 +1,5 @@
 import * as React from 'react';
 import {
-  ActionList,
-  ActionListItem,
   Dropdown,
   DropdownItem,
   DropdownToggle,
@@ -12,9 +10,15 @@ import {
   PerPageOptions,
   Split,
   SplitItem,
+  Toolbar,
+  ToolbarContent,
+  ToolbarItem,
+  ToolbarProps,
   Tooltip,
 } from '@patternfly/react-core';
 import { CaretDownIcon } from '@patternfly/react-icons';
+
+import './TableToolbar.css';
 
 type TableToolbarProps = {
   itemIDs: string[];
@@ -28,6 +32,7 @@ type TableToolbarProps = {
   page: number;
   onSetPage: OnSetPage;
   perPageOptions: PerPageOptions[];
+  clearAllFilters?: ToolbarProps['clearAllFilters'];
 };
 
 const TableToolbar: React.FC<TableToolbarProps> = ({
@@ -37,6 +42,8 @@ const TableToolbar: React.FC<TableToolbarProps> = ({
   onSelectNone,
   actions,
   showPagination,
+  clearAllFilters,
+  children,
   ...paginationProps
 }) => {
   const [actionsOpen, setActionsOpen] = React.useState(false);
@@ -74,45 +81,48 @@ const TableToolbar: React.FC<TableToolbarProps> = ({
   return (
     <Split hasGutter>
       <SplitItem isFilled>
-        <ActionList>
-          <ActionListItem>
-            <Dropdown
-              onSelect={onSelectToggle}
-              toggle={
-                <DropdownToggle
-                  splitButtonItems={[
-                    <DropdownToggleCheckbox
-                      id="select-checkbox"
-                      key="select-checkbox"
-                      aria-label="Select all"
-                      onChange={(checked) => (checked ? onSelectAll() : onSelectNone())}
-                      isChecked={isChecked}
-                    >
-                      {selectedIDs.length} selected
-                    </DropdownToggleCheckbox>,
-                  ]}
-                  onToggle={onSelectToggle}
-                />
-              }
-              isOpen={selectOpen}
-              dropdownItems={[
-                <DropdownItem key="select-all" onClick={onSelectAll}>
-                  Select all
-                </DropdownItem>,
-                <DropdownItem key="select-none" onClick={onSelectNone}>
-                  Select none
-                </DropdownItem>,
-              ]}
-            />
-          </ActionListItem>
-          <ActionListItem>
-            {isDisabled ? (
-              <Tooltip content="Select one or more hosts">{actionsDropdown}</Tooltip>
-            ) : (
-              actionsDropdown
-            )}
-          </ActionListItem>
-        </ActionList>
+        <Toolbar className="table-toolbar" clearAllFilters={clearAllFilters}>
+          <ToolbarContent className="table-toolbar__content">
+            <ToolbarItem>
+              <Dropdown
+                onSelect={onSelectToggle}
+                toggle={
+                  <DropdownToggle
+                    splitButtonItems={[
+                      <DropdownToggleCheckbox
+                        id="select-checkbox"
+                        key="select-checkbox"
+                        aria-label="Select all"
+                        onChange={(checked) => (checked ? onSelectAll() : onSelectNone())}
+                        isChecked={isChecked}
+                      >
+                        {selectedIDs.length} selected
+                      </DropdownToggleCheckbox>,
+                    ]}
+                    onToggle={onSelectToggle}
+                  />
+                }
+                isOpen={selectOpen}
+                dropdownItems={[
+                  <DropdownItem key="select-all" onClick={onSelectAll}>
+                    Select all
+                  </DropdownItem>,
+                  <DropdownItem key="select-none" onClick={onSelectNone}>
+                    Select none
+                  </DropdownItem>,
+                ]}
+              />
+            </ToolbarItem>
+            {children}
+            <ToolbarItem>
+              {isDisabled ? (
+                <Tooltip content="Select one or more hosts">{actionsDropdown}</Tooltip>
+              ) : (
+                actionsDropdown
+              )}
+            </ToolbarItem>
+          </ToolbarContent>
+        </Toolbar>
       </SplitItem>
       {showPagination && (
         <SplitItem>
