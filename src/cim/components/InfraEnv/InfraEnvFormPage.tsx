@@ -35,6 +35,10 @@ import {
   OCP_STATIC_IP_DOC,
   CheckboxField,
   AdditionalNTPSourcesField,
+  richNameValidationSchema,
+  getRichTextValidation,
+  NAME_VALIDATION_MESSAGES,
+  RichInputField,
 } from '../../../common';
 
 import './infra-env.css';
@@ -57,13 +61,7 @@ export type EnvironmentStepFormValues = {
 const validationSchema = (usedNames: string[]) =>
   Yup.lazy<EnvironmentStepFormValues>((values) =>
     Yup.object<EnvironmentStepFormValues>().shape({
-      name: Yup.string()
-        .required('Name is a required field.')
-        .test(
-          'duplicate-name',
-          'Infrastructure environment with the same name already exists!',
-          (value: string) => !usedNames.find((n) => n === value),
-        ),
+      name: richNameValidationSchema(usedNames),
       location: Yup.string().required('Location is a required field.'),
       pullSecret: pullSecretValidationSchema.required('Pull secret is a required field.'),
       sshPublicKey: sshPublicKeyValidationSchema.required(
@@ -116,11 +114,12 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged }) => {
       </StackItem>
       <StackItem>
         <Form>
-          <InputField
+          <RichInputField
             label="Name"
             name="name"
-            placeholder="Enter infrastructure environment name"
             isRequired
+            richValidationMessages={NAME_VALIDATION_MESSAGES}
+            placeholder="Enter infrastructure environment name"
           />
           <FormGroup
             fieldId="network-type"
@@ -237,7 +236,7 @@ export const InfraEnvFormPage: React.FC<InfraEnvFormPageProps> = ({
     <Formik
       initialValues={initialValues}
       initialStatus={{ error: null }}
-      validationSchema={validationSchema(usedNames)}
+      validate={getRichTextValidation(validationSchema(usedNames))}
       onSubmit={async (values: EnvironmentStepFormValues) => {
         try {
           await onSubmit?.(values);
