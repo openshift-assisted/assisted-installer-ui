@@ -4,17 +4,18 @@ import { OcmClusterType } from './types';
 
 export const canAddHost = ({ cluster }: { cluster: OcmClusterType }) => {
   if (Day2ClusterService.getOpenshiftClusterId(cluster)) {
-    if (
-      cluster.aiCluster &&
-      cluster.aiCluster.status === 'installed' &&
-      !isSNO(cluster.aiCluster)
-    ) {
-      return true;
-    } else if (
-      (cluster.state === 'ready' && cluster.product?.id == 'OCP-AssistedInstaller') ||
-      cluster.cloud_provider?.id === 'baremetal'
-    ) {
-      return true;
+    if (cluster.aiCluster) {
+      if (!isSNO(cluster.aiCluster)) {
+        return cluster.aiCluster.status === 'installed';
+      }
+    } else {
+      return (
+        cluster.state === 'ready' &&
+        cluster.product?.id === 'OCP-AssistedInstall' &&
+        cluster.cloud_provider?.id === 'baremetal' &&
+        cluster.metrics?.nodes?.total &&
+        cluster.metrics?.nodes?.total > 1
+      );
     }
   }
 
