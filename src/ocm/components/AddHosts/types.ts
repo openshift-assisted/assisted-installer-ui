@@ -37,5 +37,14 @@ export type OcmClusterType = {
     url: string;
   };
 
+  metrics?: {
+    nodes?: {
+      compute?: number;
+      infra?: number;
+      master?: number;
+      total?: number;
+    };
+  };
+
   aiCluster?: Cluster;
 };
