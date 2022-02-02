@@ -38,7 +38,7 @@
     "start-uhc-portal": "./scripts/start-uhc-portal.sh",
     "sync-to-ui": "./scripts/sync-dist.sh",
     "prepare": "install-peers",
-    "test": "run-s test:circular test:lint",
+    "test": "run-s test:circular test:lint test:type-check",
     "test:type-check": "tsc --noEmit",
     "test:lint": "eslint --ext .js,.jsx,.ts,.tsx --color --max-warnings=0 ./src",
     "test:unit": "cross-env CI=1 react-scripts test --env=jsdom",

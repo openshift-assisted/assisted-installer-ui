@@ -54,11 +54,7 @@ export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = 
   children,
   loadingUi,
 }) => {
-  const {
-    loading: loadingOCPVersions,
-    versions: versionOptions,
-    normalizeClusterVersion,
-  } = useOpenshiftVersions();
+  const { loading: loadingOCPVersions, versions: versionOptions } = useOpenshiftVersions();
   const fetcher = () => FeatureSupportLevelsAPI.list().then((res) => res.data);
   const { data: featureSupportLevels, error } = useSWR<FeatureSupportLevels>(
     FeatureSupportLevelsAPI.makeBaseURI(),
@@ -76,13 +72,13 @@ export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = 
 
   const getVersionSupportLevelsMap = React.useCallback(
     (versionName: string): FeatureIdToSupportLevel | undefined => {
-      const normalized = normalizeClusterVersion(versionName);
-      if (!normalized) {
+      const versionKey = Object.keys(supportLevelData).find((key) => versionName.startsWith(key));
+      if (!versionKey) {
         return undefined;
       }
-      return supportLevelData[normalized];
+      return supportLevelData[versionKey];
     },
-    [supportLevelData, normalizeClusterVersion],
+    [supportLevelData],
   );
 
   const getFeatureSupportLevel = React.useCallback(
@@ -96,27 +92,19 @@ export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = 
 
   const isFeatureSupportedCallback = React.useCallback(
     (versionName: string, featureId: FeatureId) => {
-      const normalizedVersion = normalizeClusterVersion(versionName);
       const supportLevel = getFeatureSupportLevel(versionName, featureId);
-      return isFeatureSupported(normalizedVersion, featureId, supportLevel, versionOptions);
+      return isFeatureSupported(versionName, featureId, supportLevel, versionOptions);
     },
-    [getFeatureSupportLevel, normalizeClusterVersion, versionOptions],
+    [getFeatureSupportLevel, versionOptions],
   );
 
   //TODO(brotman): move to separate context FeatureStateContext
   const getDisabledReasonCallback = React.useCallback(
     (versionName: string, featureId: FeatureId) => {
-      const normalizedVersion = normalizeClusterVersion(versionName);
       const isSupported = isFeatureSupportedCallback(versionName, featureId);
-      return getFeatureDisabledReason(
-        featureId,
-        cluster,
-        normalizedVersion,
-        versionOptions,
-        isSupported,
-      );
+      return getFeatureDisabledReason(featureId, cluster, versionName, versionOptions, isSupported);
     },
-    [isFeatureSupportedCallback, normalizeClusterVersion, versionOptions, cluster],
+    [isFeatureSupportedCallback, versionOptions, cluster],
   );
 
   const isFeatureDisabled = React.useCallback(
