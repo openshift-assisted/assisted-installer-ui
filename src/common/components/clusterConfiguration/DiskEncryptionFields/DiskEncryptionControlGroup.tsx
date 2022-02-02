@@ -38,18 +38,15 @@ const DiskEncryptionControlGroup: React.FC<DiskEncryptionControlGroupProps> = ({
           <SwitchField
             name="enableDiskEncryptionOnWorkers"
             isDisabled={isDisabled}
-            label="Enable encryption of installation disks workers"
+            label="Enable encryption of installation disks on workers"
           />
         </StackItem>
       </RenderIf>
-      <RenderIf condition={enableDiskEncryptionOnMasters || enableDiskEncryptionOnWorkers}>
+      <RenderIf
+        condition={enableDiskEncryptionOnMasters || (enableDiskEncryptionOnWorkers && !isSNO)}
+      >
         <StackItem>
-          <DiskEncryptionMode
-            diskEncryptionMode={diskEncryptionMode}
-            enableDiskEncryptionOnMasters={enableDiskEncryptionOnMasters}
-            enableDiskEncryptionOnWorkers={enableDiskEncryptionOnWorkers}
-            isDisabled={isDisabled}
-          />
+          <DiskEncryptionMode diskEncryptionMode={diskEncryptionMode} isDisabled={isDisabled} />
         </StackItem>
       </RenderIf>
     </Stack>
