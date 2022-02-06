@@ -6,7 +6,6 @@ import {
   getSchedulableMasters,
   Cluster,
   Host,
-  useAlerts,
 } from '../../../common';
 import { HostsTableModals, useHostsTable } from './use-hosts-table';
 import {
@@ -25,11 +24,6 @@ import { ExpandComponentProps } from '../../../common/components/hosts/AITable';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
 import { onDiskRoleType } from '../../../common/components/hosts/DiskRole';
 import { Stack, StackItem } from '@patternfly/react-core';
-import { HostsService } from '../../services';
-import { updateHost } from '../../reducers/clusters';
-import { useDispatch } from 'react-redux';
-import { isSNO } from '../../selectors/clusterSelectors';
-import { getErrorMessage, handleApiError } from '../../api/utils';
 
 const getExpandComponent = (onDiskRole: onDiskRoleType, canEditDisks: (host: Host) => boolean) => ({
   obj: host,
@@ -66,18 +60,10 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({
     ...modalProps
   } = useHostsTable(cluster);
 
-  const dispatch = useDispatch();
-  const { alerts, addAlert, removeAlert } = useAlerts();
-
   const content = React.useMemo(
     () => [
       hostnameColumn(onEditHost, undefined, actionChecks.canEditHostname),
-      roleColumn(
-        actionChecks.canEditRole,
-        onEditRole,
-        getSchedulableMasters(cluster),
-        !isSNO(cluster),
-      ),
+      roleColumn(actionChecks.canEditRole, onEditRole, getSchedulableMasters(cluster)),
       hardwareStatusColumn(onEditHost),
       discoveredAtColumn,
       cpuCoresColumn,
@@ -87,35 +73,6 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({
     ],
     [onEditHost, actionChecks.canEditHostname, actionChecks.canEditRole, onEditRole, cluster],
   );
-
-  React.useEffect(() => {
-    const forceRole = async () => {
-      if (cluster.hosts && cluster.hosts.length <= 3) {
-        try {
-          const promises = [];
-          for (const host of cluster.hosts) {
-            if (host.role !== 'master') {
-              promises.push(HostsService.updateRole(cluster.id, host.id, 'master'));
-            }
-          }
-          const data = (await Promise.all(promises)).map((promise) => promise.data);
-          data.forEach((host) => dispatch(updateHost(host)));
-
-          alerts
-            .filter((alert) => alert.title == 'Failed to set role')
-            .forEach((a) => removeAlert(a.key));
-        } catch (error) {
-          handleApiError(error, () => {
-            if (!alerts.map((alert) => alert.message).includes(getErrorMessage(error))) {
-              addAlert({ title: 'Failed to set role', message: getErrorMessage(error) });
-            }
-          });
-        }
-      }
-    };
-
-    forceRole();
-  }, [dispatch, cluster.id, cluster.hosts, alerts, addAlert, removeAlert]);
 
   const hostIDs = cluster.hosts?.map((h) => h.id) || [];
 

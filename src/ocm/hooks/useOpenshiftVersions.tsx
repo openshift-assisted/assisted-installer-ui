@@ -14,9 +14,11 @@ type UseOpenshiftVersionsType = {
   loading: boolean;
 };
 
-const sortVersions = (versions: string[]) => {
+const sortVersions = (versions: OpenshiftVersionOptionType[]) => {
   return versions
-    .sort((version1, version2) => version1.localeCompare(version2, undefined, { numeric: true }))
+    .sort((version1, version2) =>
+      version1.label.localeCompare(version2.label, undefined, { numeric: true }),
+    )
     .reverse();
 };
 
@@ -27,8 +29,7 @@ export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
   const doAsync = React.useCallback(async () => {
     try {
       const { data } = await SupportedOpenshiftVersionsAPI.list();
-      const sortedVersionNames = sortVersions(Object.keys(data));
-      const versions: OpenshiftVersionOptionType[] = sortedVersionNames.map((key) => ({
+      const versions: OpenshiftVersionOptionType[] = Object.keys(data).map((key) => ({
         label: `OpenShift ${data[key].displayName || key}`,
         value: key,
         version: data[key].displayName,
@@ -36,8 +37,7 @@ export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
         supportLevel: data[key].supportLevel,
         cpuArchitectures: data[key].cpuArchitectures as CpuArchitecture[],
       }));
-
-      setVersions(versions);
+      setVersions(sortVersions(versions));
     } catch (e) {
       return handleApiError(e, (e) => {
         setError({
