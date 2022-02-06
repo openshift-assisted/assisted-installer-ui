@@ -7,7 +7,7 @@ const SupportedOpenshiftVersionsAPI = {
   },
 
   list() {
-    return client.get<OpenshiftVersion>(`${SupportedOpenshiftVersionsAPI.makeBaseURI()}`);
+    return client.get<OpenshiftVersion[]>(`${SupportedOpenshiftVersionsAPI.makeBaseURI()}`);
   },
 };
 
