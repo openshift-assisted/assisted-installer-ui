@@ -113,7 +113,7 @@ export const CLUSTER_FIELD_LABELS: { [key in string]: string } = {
   pullSecret: 'Pull secret',
   sshPublicKey: 'SSH public key',
   SNODisclaimer: 'Single Node OpenShift disclaimer',
-  diskEncryptionTangServers: 'Tang servers URL or thumbprint',
+  diskEncryptionTangServers: "Tang servers' URLs or thumbprints",
 };
 
 export const HOST_STATUS_DETAILS: { [key in Host['status'] | 'discovered']: string } = {
