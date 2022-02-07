@@ -1,6 +1,7 @@
 import _ from 'lodash/fp';
 import { Cluster, CpuArchitecture } from '../../common/api/types';
-import { stringToJSON, ValidationsInfo } from '../../common';
+import { stringToJSON } from '../../common/api/utils';
+import { ValidationsInfo } from '../../common/types';
 
 export const selectMachineNetworkCIDR = ({
   machineNetworks,

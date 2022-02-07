@@ -7,15 +7,13 @@ import {
   WizardFooterGenericProps,
   Alerts,
   useAlerts,
-  stringToJSON,
   CLUSTER_FIELD_LABELS,
 } from '../../../common';
 import { routeBasePath } from '../../config/routeBaseBath';
-import { ValidationsInfo } from '../../../common/types/clusters';
 import { wizardStepsValidationsMap } from '../clusterWizard/wizardTransition';
 import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
 import ClusterWizardStepValidationsAlert from '../../../common/components/clusterWizard/ClusterWizardStepValidationsAlert';
-import { selectClusterValidationsInfo } from '../../selectors';
+import { selectClusterValidationsInfo } from '../../selectors/clusterSelectors';
 
 type ClusterValidationSectionProps = {
   cluster?: Cluster;
