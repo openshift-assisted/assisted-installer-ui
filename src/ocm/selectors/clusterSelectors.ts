@@ -1,5 +1,7 @@
 import _ from 'lodash/fp';
 import { Cluster, CpuArchitecture } from '../../common/api/types';
+import { stringToJSON } from '../../common/api/utils';
+import { ValidationsInfo } from '../../common/types';
 
 export const selectMachineNetworkCIDR = ({
   machineNetworks,
@@ -21,3 +23,6 @@ export const isSNO = ({ highAvailabilityMode }: Partial<Cluster>) =>
   highAvailabilityMode === 'None';
 export const isArmArchitecture = ({ cpuArchitecture }: Partial<Cluster>) =>
   cpuArchitecture === CpuArchitecture.ARM;
+export const selectClusterValidationsInfo = ({ validationsInfo }: Partial<Cluster>) => {
+  return stringToJSON<ValidationsInfo>(validationsInfo);
+};
