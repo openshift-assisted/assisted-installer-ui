@@ -15,6 +15,7 @@ import { ValidationsInfo } from '../../../common/types/clusters';
 import { wizardStepsValidationsMap } from '../clusterWizard/wizardTransition';
 import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
 import ClusterWizardStepValidationsAlert from '../../../common/components/clusterWizard/ClusterWizardStepValidationsAlert';
+import { selectClusterValidationsInfo } from '../../selectors';
 
 type ClusterValidationSectionProps = {
   cluster?: Cluster;
@@ -23,7 +24,7 @@ type ClusterValidationSectionProps = {
 
 const ValidationSection = ({ cluster, errorFields = [] }: ClusterValidationSectionProps) => {
   const { currentStepId } = React.useContext(ClusterWizardContext);
-  const validationsInfo = stringToJSON<ValidationsInfo>(cluster?.validationsInfo);
+  const validationsInfo = cluster && selectClusterValidationsInfo(cluster);
   return (
     <AlertGroup>
       {!!errorFields.length && (
