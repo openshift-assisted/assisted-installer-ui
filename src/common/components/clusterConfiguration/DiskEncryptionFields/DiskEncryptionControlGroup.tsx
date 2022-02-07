@@ -40,9 +40,8 @@ const DiskEncryptionControlGroup: React.FC<DiskEncryptionControlGroupProps> = ({
   ]);
 
   React.useEffect(() => {
-    setFieldValue('enableDiskEncryptionOnWorkers', false);
-    if (!isSNO) {
-      setFieldValue('enableDiskEncryptionOnMasters', false);
+    if (isSNO) {
+      setFieldValue('enableDiskEncryptionOnWorkers', false);
     }
   }, [isSNO, setFieldValue]);
 
