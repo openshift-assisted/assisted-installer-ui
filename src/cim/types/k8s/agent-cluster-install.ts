@@ -66,5 +66,8 @@ export type AgentClusterInstallK8sResource = K8sResourceCommon & {
       stateInfo: Cluster['statusInfo'];
     };
     validationsInfo?: ValidationsInfo;
+    machineNetwork?: {
+      cidr: string;
+    }[];
   };
 };

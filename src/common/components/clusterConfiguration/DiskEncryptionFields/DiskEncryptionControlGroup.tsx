@@ -4,6 +4,8 @@ import SwitchField from '../../ui/formik/SwitchField';
 import { DiskEncryptionMode } from './DiskEncryptionMode';
 import { RenderIf } from '../../ui';
 import { DiskEncryptionValues } from './DiskEncryptionValues';
+import { useFormikContext } from 'formik';
+import { ClusterDetailsValues } from '../../clusterWizard/types';
 
 export interface DiskEncryptionControlGroupProps {
   values: DiskEncryptionValues;
@@ -22,6 +24,27 @@ const DiskEncryptionControlGroup: React.FC<DiskEncryptionControlGroupProps> = ({
     diskEncryptionMode,
   } = values;
 
+  const { setFieldValue, setFieldTouched } = useFormikContext<ClusterDetailsValues>();
+
+  React.useEffect(() => {
+    if (!enableDiskEncryptionOnWorkers && !enableDiskEncryptionOnMasters) {
+      setFieldValue('diskEncryptionMode', 'tpmv2');
+      setFieldTouched('diskEncryptionTangServers', false, false);
+      setFieldValue('diskEncryptionTangServers', [{}], false);
+    }
+  }, [
+    enableDiskEncryptionOnMasters,
+    enableDiskEncryptionOnWorkers,
+    setFieldTouched,
+    setFieldValue,
+  ]);
+
+  React.useEffect(() => {
+    if (isSNO) {
+      setFieldValue('enableDiskEncryptionOnWorkers', false);
+    }
+  }, [isSNO, setFieldValue]);
+
   return (
     <Stack hasGutter>
       <StackItem>
@@ -38,18 +61,15 @@ const DiskEncryptionControlGroup: React.FC<DiskEncryptionControlGroupProps> = ({
           <SwitchField
             name="enableDiskEncryptionOnWorkers"
             isDisabled={isDisabled}
-            label="Enable encryption of installation disks workers"
+            label="Enable encryption of installation disks on workers"
           />
         </StackItem>
       </RenderIf>
-      <RenderIf condition={enableDiskEncryptionOnMasters || enableDiskEncryptionOnWorkers}>
+      <RenderIf
+        condition={enableDiskEncryptionOnMasters || (enableDiskEncryptionOnWorkers && !isSNO)}
+      >
         <StackItem>
-          <DiskEncryptionMode
-            diskEncryptionMode={diskEncryptionMode}
-            enableDiskEncryptionOnMasters={enableDiskEncryptionOnMasters}
-            enableDiskEncryptionOnWorkers={enableDiskEncryptionOnWorkers}
-            isDisabled={isDisabled}
-          />
+          <DiskEncryptionMode diskEncryptionMode={diskEncryptionMode} isDisabled={isDisabled} />
         </StackItem>
       </RenderIf>
     </Stack>
