@@ -1,4 +1,4 @@
-import { Button, Popover, Stack, StackItem } from '@patternfly/react-core';
+import { Button, Popover } from '@patternfly/react-core';
 import * as React from 'react';
 import { getHostname, HostStatus } from '../../../common';
 import { AgentK8sResource } from '../../types';
@@ -19,6 +19,7 @@ const AgentStatus: React.FC<AgentStatusProps> = ({ agent, onApprove, onEditHostn
   const editHostname = onEditHostname ? () => onEditHostname(agent) : undefined;
   const pendingApproval = !agent.spec.approved;
 
+  const macAddress = agent.status?.inventory?.interfaces?.[0]?.macAddress;
   const hostname = getHostname(host, agent.status?.inventory || {});
 
   const [status, , validationsInfo] = getAgentStatus(agent);
@@ -37,14 +38,10 @@ const AgentStatus: React.FC<AgentStatusProps> = ({ agent, onApprove, onEditHostn
           maxWidth="50rem"
           headerContent={<div>Approve host to join infrastructure environment</div>}
           bodyContent={
-            <Stack hasGutter>
-              <StackItem>
-                Approve host to add it to the infrastructure environment.
-                <br />
-                Make sure that you expect and recognize the host before approving.
-              </StackItem>
-              <StackItem>{hostname && <>Hostname: {hostname}</>}</StackItem>
-            </Stack>
+            <>
+              {hostname && <div>Hostname: {hostname}</div>}
+              {macAddress && <div>MAC address: {macAddress}</div>}
+            </>
           }
           footerContent={
             <Button variant="link" onClick={() => onApprove(agent)} isInline>
