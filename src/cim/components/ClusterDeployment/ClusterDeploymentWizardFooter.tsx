@@ -47,7 +47,7 @@ const ValidationSection = ({
           title="Provided cluster configuration is not valid"
           isInline
         >
-          The following fields are not valid:{' '}
+          The following fields are invalid or missing:{' '}
           {errorFields
             .map((field: string) => CLUSTER_DEPLOYMENT_FIELD_LABELS[field] || field)
             .join(', ')}

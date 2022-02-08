@@ -125,7 +125,8 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
           isInline
           title={
             <FlexItem>
-              To use this encryption, enable TPMv2 encryption in the BIOS of each host selected.
+              To use this encryption method, enable TPMv2 encryption in the BIOS of each selected
+              host.
             </FlexItem>
           }
         />

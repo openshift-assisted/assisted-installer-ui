@@ -137,7 +137,9 @@ export const getAICluster = ({
       agentClusterInstall?.spec?.networking?.clusterNetwork?.[0]?.hostPrefix,
     clusterNetworkCidr: agentClusterInstall?.spec?.networking?.clusterNetwork?.[0]?.cidr,
     serviceNetworkCidr: agentClusterInstall?.spec?.networking?.serviceNetwork?.[0],
-    machineNetworkCidr: agentClusterInstall?.spec?.networking?.machineNetwork?.[0]?.cidr,
+    machineNetworkCidr:
+      agentClusterInstall?.status?.machineNetwork?.[0]?.cidr ||
+      agentClusterInstall?.spec?.networking?.machineNetwork?.[0]?.cidr,
     monitoredOperators: [],
     vipDhcpAllocation: false,
     userManagedNetworking:

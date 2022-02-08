@@ -5,12 +5,12 @@ import { camelCase } from 'camel-case';
 // conforms basePath in swagger.json
 export const BASE_PATH = '/api/assisted-install';
 
-// Prevent axios converter to change object keys from '4.7' to '4_7'
+// Prevent axios converter to change object keys from '4.7-fc2' to '4_7Fc2'
 const axiosCaseConverterOptions = {
   caseFunctions: {
     camel: (input: string) =>
       camelCase(input, {
-        stripRegexp: /[^A-Z0-9.]+/gi,
+        stripRegexp: /[^A-Z0-9.-]+/gi,
       }),
   },
 };

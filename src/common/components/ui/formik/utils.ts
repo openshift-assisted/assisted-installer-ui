@@ -62,9 +62,9 @@ export const selectedLabelsOnly = (labelPairs: string[], allowedKeys: string[]) 
   labelPairs.filter((pair) => allowedKeys.includes(pair.split('=')[0]));
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const getRichTextValidation = <T extends object>(schema: Yup.ObjectSchema<T>) => async (
-  values: T,
-): Promise<{ [key: string]: string[] } | undefined> => {
+export const getRichTextValidation = <T extends object>(
+  schema: Yup.ObjectSchema<T> | Yup.Lazy,
+) => async (values: T): Promise<{ [key: string]: string[] } | undefined> => {
   try {
     await schema.validate(values, {
       abortEarly: false,
