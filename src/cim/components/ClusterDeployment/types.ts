@@ -111,7 +111,6 @@ export type ClusterDeploymentWizardProps = Pick<
   | 'getClusterDeploymentLink'
   | 'fetchSecret'
   | 'fetchNMState'
-  | 'isBMPlatform'
 > & {
   className?: string;
 
@@ -177,7 +176,6 @@ export type ClusterDeploymentHostsDiscoveryProps = {
   onFormSaveError?: EditAgentModalProps['onFormSaveError'];
   fetchSecret: EditBMHModalProps['fetchSecret'];
   fetchNMState: EditBMHModalProps['fetchNMState'];
-  isBMPlatform: AddHostModalProps['isBMPlatform'];
   getClusterDeploymentLink: InfraEnvAgentTableProps['getClusterDeploymentLink'];
   onChangeBMHHostname: InfraEnvAgentTableProps['onChangeBMHHostname'];
 };
