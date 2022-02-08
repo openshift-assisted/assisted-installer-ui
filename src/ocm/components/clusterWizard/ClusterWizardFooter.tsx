@@ -7,14 +7,13 @@ import {
   WizardFooterGenericProps,
   Alerts,
   useAlerts,
-  stringToJSON,
   CLUSTER_FIELD_LABELS,
 } from '../../../common';
 import { routeBasePath } from '../../config/routeBaseBath';
-import { ValidationsInfo } from '../../../common/types/clusters';
 import { wizardStepsValidationsMap } from '../clusterWizard/wizardTransition';
 import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
 import ClusterWizardStepValidationsAlert from '../../../common/components/clusterWizard/ClusterWizardStepValidationsAlert';
+import { selectClusterValidationsInfo } from '../../selectors/clusterSelectors';
 
 type ClusterValidationSectionProps = {
   cluster?: Cluster;
@@ -23,7 +22,7 @@ type ClusterValidationSectionProps = {
 
 const ValidationSection = ({ cluster, errorFields = [] }: ClusterValidationSectionProps) => {
   const { currentStepId } = React.useContext(ClusterWizardContext);
-  const validationsInfo = stringToJSON<ValidationsInfo>(cluster?.validationsInfo);
+  const validationsInfo = cluster && selectClusterValidationsInfo(cluster);
   return (
     <AlertGroup>
       {!!errorFields.length && (
@@ -32,7 +31,7 @@ const ValidationSection = ({ cluster, errorFields = [] }: ClusterValidationSecti
           title="Provided cluster configuration is not valid"
           isInline
         >
-          The following fields are not valid:{' '}
+          The following fields are invalid or missing:{' '}
           {errorFields.map((field: string) => CLUSTER_FIELD_LABELS[field]).join(', ')}.
         </Alert>
       )}

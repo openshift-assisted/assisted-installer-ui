@@ -10,6 +10,30 @@ import {
 } from '../ui';
 import { ClusterDetailsValues } from './types';
 
+const emptyTangServers = () => {
+  return [
+    {
+      url: '',
+      thumbprint: '',
+    },
+  ];
+};
+
+const parseTangServers = (tangServersString?: string) => {
+  if (!tangServersString) {
+    return emptyTangServers();
+  }
+
+  let parsedTangServers = emptyTangServers();
+  try {
+    parsedTangServers = JSON.parse(tangServersString);
+  } catch (e) {
+    console.warn('Tang Servers can not be parsed');
+  }
+
+  return parsedTangServers;
+};
+
 export const getClusterDetailsInitialValues = ({
   cluster,
   pullSecret,
@@ -30,25 +54,6 @@ export const getClusterDetailsInitialValues = ({
     openshiftVersion = getDefaultOpenShiftVersion(ocpVersions),
   } = cluster || {};
 
-  const emptyTangServers = () => {
-    return [
-      {
-        url: '',
-        thumbprint: '',
-      },
-    ];
-  };
-
-  const parseTangServers = (tangServersString: string) => {
-    let parsedTangServers = emptyTangServers();
-    try {
-      parsedTangServers = JSON.parse(tangServersString);
-    } catch (e) {
-      console.warn('Tang Servers can not be parsed');
-    }
-    return parsedTangServers;
-  };
-
   return {
     name,
     highAvailabilityMode,
@@ -65,9 +70,7 @@ export const getClusterDetailsInitialValues = ({
       cluster?.diskEncryption?.enableOn ?? 'none',
     ),
     diskEncryptionMode: cluster?.diskEncryption?.mode ?? 'tpmv2',
-    diskEncryptionTangServers: cluster?.diskEncryption?.tangServers
-      ? parseTangServers(cluster.diskEncryption.tangServers)
-      : emptyTangServers(),
+    diskEncryptionTangServers: parseTangServers(cluster?.diskEncryption?.tangServers),
     diskEncryption: cluster?.diskEncryption ?? {},
   };
 };
@@ -108,7 +111,7 @@ export const getClusterDetailsValidationSchema = (
         },
         then: Yup.array().of(
           Yup.object().shape({
-            url: Yup.string().url('Tang Server Url must be a valid URL').required('Required.'),
+            url: Yup.string().url('Tang Server URL must be a valid URL').required('Required.'),
             thumbprint: Yup.string().required('Required.'),
           }),
         ),

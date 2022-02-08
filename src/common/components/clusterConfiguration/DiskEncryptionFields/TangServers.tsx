@@ -20,52 +20,51 @@ export const TangServers: React.FC<{ isDisabled?: boolean }> = ({ isDisabled = f
   return (
     <FieldArray name="diskEncryptionTangServers">
       {({ remove, push }) => (
-        <Stack>
-          <StackItem>
-            {values.diskEncryptionTangServers.length > 0 &&
-              values.diskEncryptionTangServers.map((tang, index) => (
-                <>
-                  <Tooltip
-                    hidden={index == 0 || isDisabled}
-                    exitDelay={REMOVE_TANG_SERVER_SHOWN_TIMER}
-                    flipBehavior={['right', 'bottom']}
-                    distance={1}
-                    className="tooltip-tang-servers"
-                    position="right-start"
-                    content={
-                      <Button
-                        variant={ButtonVariant.link}
-                        onClick={() => {
-                          remove(index);
-                        }}
-                      >
-                        <MinusCircleIcon size="sm" />
-                      </Button>
-                    }
-                  >
-                    <div>
-                      <InputField
-                        type={TextInputTypes.url}
-                        name={`diskEncryptionTangServers.${index}.url`}
-                        placeholder="http//tang.srv"
-                        label="Server URL"
-                        isRequired
-                        isDisabled={isDisabled}
-                      />
-                      &thinsp;
-                      <InputField
-                        type={TextInputTypes.text}
-                        name={`diskEncryptionTangServers.${index}.thumbprint`}
-                        label="Server Thumbprint"
-                        isRequired
-                        isDisabled={isDisabled}
-                      />
-                    </div>
-                  </Tooltip>{' '}
-                  &nbsp;
-                </>
-              ))}
-          </StackItem>
+        <Stack hasGutter>
+          {values.diskEncryptionTangServers.length > 0 &&
+            values.diskEncryptionTangServers.map((tang, index) => (
+              <StackItem key={index}>
+                <Tooltip
+                  key={index}
+                  hidden={index == 0 || isDisabled}
+                  exitDelay={REMOVE_TANG_SERVER_SHOWN_TIMER}
+                  flipBehavior={['right', 'bottom']}
+                  distance={1}
+                  className="tooltip-tang-servers"
+                  position="right-start"
+                  content={
+                    <Button
+                      variant={ButtonVariant.link}
+                      onClick={() => {
+                        remove(index);
+                      }}
+                    >
+                      <MinusCircleIcon size="sm" />
+                    </Button>
+                  }
+                >
+                  <div>
+                    <InputField
+                      type={TextInputTypes.url}
+                      name={`diskEncryptionTangServers.${index}.url`}
+                      placeholder="http//tang.srv"
+                      label="Server URL"
+                      isRequired
+                      isDisabled={isDisabled}
+                    />
+                    &thinsp;
+                    <InputField
+                      type={TextInputTypes.text}
+                      name={`diskEncryptionTangServers.${index}.thumbprint`}
+                      label="Server Thumbprint"
+                      isRequired
+                      isDisabled={isDisabled}
+                    />
+                  </div>
+                </Tooltip>{' '}
+              </StackItem>
+            ))}
+
           {!isDisabled && (
             <StackItem>
               <Button
