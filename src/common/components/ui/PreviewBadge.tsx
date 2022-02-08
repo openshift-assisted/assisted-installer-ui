@@ -78,6 +78,7 @@ const popoverTexts = {
 export const DeveloperPreview: React.FC<DeveloperPreviewProps> = (props) => (
   <PreviewBadge text="Developer Preview" popoverText={popoverTexts['dev-preview']} {...props} />
 );
+DeveloperPreview.displayName = 'DeveloperPreview';
 
 export const TechnologyPreview: React.FC<TechnologyPreviewProps> = (props) => (
   <PreviewBadge
@@ -87,3 +88,4 @@ export const TechnologyPreview: React.FC<TechnologyPreviewProps> = (props) => (
     {...props}
   />
 );
+TechnologyPreview.displayName = 'TechnologyPreview';

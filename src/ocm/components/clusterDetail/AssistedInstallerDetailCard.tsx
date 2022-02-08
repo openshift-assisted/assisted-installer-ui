@@ -10,6 +10,7 @@ import {
   FeatureGateContextProvider,
   ErrorState,
   LoadingState,
+  FeatureListType,
 } from '../../../common';
 import { useClusterPolling, useFetchCluster } from '../clusters/clusterPolling';
 import ClusterWizard from '../clusterWizard/ClusterWizard';
@@ -19,9 +20,11 @@ import { DiscoveryImageModal } from '../clusterConfiguration/discoveryImageModal
 import ClusterInstallationProgressCard from './ClusterInstallationProgressCard';
 import CancelInstallationModal from './CancelInstallationModal';
 import ResetClusterModal from './ResetClusterModal';
+import { FeatureSupportLevelProvider } from '../featureSupportLevels';
 
 type AssistedInstallerDetailCardProps = {
   aiClusterId: string;
+  allEnabledFeatures: FeatureListType;
 };
 
 const errorStateActions: React.ReactNode[] = [];
@@ -85,6 +88,7 @@ const LoadingDefaultConfigFailedCard: React.FC = () => (
 
 const AssistedInstallerDetailCard: React.FC<AssistedInstallerDetailCardProps> = ({
   aiClusterId,
+  allEnabledFeatures,
 }) => {
   const fetchCluster = useFetchCluster(aiClusterId);
   const { cluster, uiState } = useClusterPolling(aiClusterId);
@@ -112,20 +116,16 @@ const AssistedInstallerDetailCard: React.FC<AssistedInstallerDetailCardProps> = 
   }
 
   return (
-    <FeatureGateContextProvider
-      features={
-        {
-          /* TODO(mlibra): pass features from OCM */
-        }
-      }
-    >
+    <FeatureGateContextProvider features={allEnabledFeatures}>
       <AlertsContextProvider>
         <ModalDialogsContextProvider>
           <ClusterDefaultConfigurationProvider
             loadingUI={<LoadingCard />}
             errorUI={<LoadingDefaultConfigFailedCard />}
           >
-            {content}
+            <FeatureSupportLevelProvider loadingUi={<LoadingCard />} cluster={cluster}>
+              {content}
+            </FeatureSupportLevelProvider>
             <CancelInstallationModal />
             <ResetClusterModal />
             <DiscoveryImageModal />

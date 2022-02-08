@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { sortable } from '@patternfly/react-table';
 import { Link } from 'react-router-dom';
-import { Host, HostsTableActions } from '../../../common';
+import { Host, HostsTableActions, HostStatus } from '../../../common';
 import { AgentK8sResource, InfraEnvK8sResource } from '../../types';
 import AgentStatus from './AgentStatus';
 import { ActionsResolver, TableRow } from '../../../common/components/hosts/AITable';
@@ -13,7 +13,7 @@ import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
 import NetworkingStatus from '../status/NetworkingStatus';
 import { getAgentStatus, getBMHStatus } from '../helpers/status';
 import { Button, Popover } from '@patternfly/react-core';
-import HardwareStatus from '../status/HardwareStatus';
+import { getHardwareStatus, getNetworkStatus } from '../status/utils';
 
 export const discoveryTypeColumn = (
   agents: AgentK8sResource[],
@@ -189,10 +189,11 @@ export const networkingStatusColumn = (
   },
   cell: (host) => {
     const editHostname = onEditHostname ? () => onEditHostname(host) : undefined;
+    const networkStatus = getNetworkStatus(host);
     return {
-      title: <NetworkingStatus host={host} onEditHostname={editHostname} />,
+      title: <NetworkingStatus host={host} onEditHostname={editHostname} {...networkStatus} />,
       props: { 'data-testid': 'nic-status' },
-      sortableValue: status,
+      sortableValue: networkStatus.statusOverride,
     };
   },
 });
@@ -206,10 +207,11 @@ export const hardwareStatusColumn = (): TableRow<Host> => ({
     transforms: [sortable],
   },
   cell: (host) => {
+    const hardwareStatus = getHardwareStatus(host);
     return {
-      title: <HardwareStatus host={host} />,
+      title: <HostStatus host={host} {...hardwareStatus} />,
       props: { 'data-testid': 'hardware-status' },
-      sortableValue: status,
+      sortableValue: hardwareStatus.statusOverride,
     };
   },
 });
