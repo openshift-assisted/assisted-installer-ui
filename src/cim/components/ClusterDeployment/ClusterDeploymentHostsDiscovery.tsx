@@ -37,7 +37,6 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
   onFormSaveError,
   fetchSecret,
   fetchNMState,
-  isBMPlatform,
   getClusterDeploymentLink,
   onChangeBMHHostname,
 }) => {
@@ -126,7 +125,6 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
           <AddHostModal
             infraEnv={infraEnv}
             agentClusterInstall={agentClusterInstall}
-            isBMPlatform={!!isBMPlatform}
             isOpen={isoModalOpen}
             onClose={() => setISOModalOpen(false)}
             onCreateBMH={onCreateBMH}

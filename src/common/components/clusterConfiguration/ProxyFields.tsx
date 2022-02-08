@@ -2,7 +2,6 @@ import React from 'react';
 import { useFormikContext } from 'formik';
 import { InputField, CheckboxField, trimCommaSeparatedList } from '../ui';
 import { ProxyFieldsType } from '../../types';
-import { FIREWALL_DOCUMENTATION_LINK } from '../../config';
 
 const ProxyFields: React.FC = () => {
   const { setFieldValue, values, initialValues } = useFormikContext<ProxyFieldsType>();
@@ -35,10 +34,7 @@ const ProxyFields: React.FC = () => {
         helperText={
           <p>
             If hosts are behind a firewall that requires the use of a proxy, provide additional
-            information about the proxy.&nbsp;
-            <a href={FIREWALL_DOCUMENTATION_LINK} target="_blank" rel="noopener noreferrer">
-              Learn how to configure your firewall <i className="fas fa-external-link-alt"></i>
-            </a>
+            information about the proxy.
           </p>
         }
         onChange={(value: boolean) => resetProxy(value)}
