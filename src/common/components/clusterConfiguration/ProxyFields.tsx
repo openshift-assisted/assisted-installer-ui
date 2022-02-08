@@ -2,7 +2,6 @@ import React from 'react';
 import { useFormikContext } from 'formik';
 import { InputField, CheckboxField, trimCommaSeparatedList } from '../ui';
 import { ProxyFieldsType } from '../../types';
-import { FIREWALL_DOCUMENTATION_LINK } from '../../config';
 
 const ProxyFields: React.FC = () => {
   const { setFieldValue, values, initialValues } = useFormikContext<ProxyFieldsType>();
