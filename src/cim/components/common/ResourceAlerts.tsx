@@ -21,7 +21,12 @@ export const SingleResourceAlerts: React.FC<{
   }
 
   return (
-    <Alert title={title} variant={AlertVariant.danger} isInline className="cim-resource-alerts">
+    <Alert
+      title={title}
+      variant={AlertVariant.danger}
+      isInline
+      className="cim-resource-alerts cim-resource-alerts--noul"
+    >
       <TextContent>
         <TextList component={TextListVariants.ul}>
           {conditions.map((c) => {

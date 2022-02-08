@@ -3,10 +3,10 @@ import { InfoCircleIcon } from '@patternfly/react-icons';
 import * as React from 'react';
 import { ConfigMapK8sResource } from '../../types';
 import HostRequirements, {
-  HostRequirementsProps,
+  HostRequirementsListProps,
 } from '../../../common/components/hosts/HostRequirements';
 
-const getHWRequirements = (aiConfigMap: ConfigMapK8sResource): HostRequirementsProps => {
+export const getHWRequirements = (aiConfigMap: ConfigMapK8sResource): HostRequirementsListProps => {
   let hwRequirements;
   try {
     hwRequirements = JSON.parse(aiConfigMap.data?.HW_VALIDATOR_REQUIREMENTS || '[]')?.find(

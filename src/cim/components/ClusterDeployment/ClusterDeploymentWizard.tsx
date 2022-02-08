@@ -120,6 +120,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
             clusterDeployment={clusterDeployment}
             agentClusterInstall={agentClusterInstall}
             agents={agents}
+            aiConfigMap={aiConfigMap}
             onSaveNetworking={onSaveNetworking}
             onClose={onClose}
             hostActions={hostActions}

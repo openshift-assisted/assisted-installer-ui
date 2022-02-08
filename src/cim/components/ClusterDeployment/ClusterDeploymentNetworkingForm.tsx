@@ -13,12 +13,15 @@ import {
   AgentClusterInstallK8sResource,
   AgentK8sResource,
   ClusterDeploymentK8sResource,
+  ConfigMapK8sResource,
 } from '../../types';
 import {
   ClusterDeploymentHostsTablePropsActions,
   ClusterDeploymentNetworkingValues,
 } from './types';
 import { useFormikContext } from 'formik';
+import MinimalHWRequirements from '../Agent/MinimalHWRequirements';
+import { getIsSNOCluster } from '../helpers';
 
 // TODO(mlibra): So far a constant. Should be queried from somewhere.
 export const defaultNetworkSettings: ClusterDefaultConfig = CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4;
@@ -29,6 +32,7 @@ type ClusterDeploymentNetworkingFormProps = {
   agents: AgentK8sResource[];
   onValuesChanged?: (values: ClusterDeploymentNetworkingValues) => void;
   hostActions: ClusterDeploymentHostsTablePropsActions;
+  aiConfigMap: ConfigMapK8sResource | undefined;
 };
 
 const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormProps> = ({
@@ -36,6 +40,7 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
   agentClusterInstall,
   agents,
   onValuesChanged,
+  aiConfigMap,
   ...rest
 }) => {
   const { values } = useFormikContext<ClusterDeploymentNetworkingValues>();
@@ -69,6 +74,8 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
     hostSubnets = getHostSubnets(cluster);
   }
 
+  const isSNOCluster = getIsSNOCluster(agentClusterInstall);
+
   return (
     <NetworkConfigurationFormFields
       cluster={cluster}
@@ -87,6 +94,11 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
                 bindingAgents.length === 1 ? 'host is' : 'hosts are'
               } binding. Please wait until they are available to continue configuring. It may take several seconds.`}
             />
+          </GridItem>
+        )}
+        {aiConfigMap && (
+          <GridItem>
+            <MinimalHWRequirements aiConfigMap={aiConfigMap} isSNOCluster={isSNOCluster} />
           </GridItem>
         )}
         <GridItem>

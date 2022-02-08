@@ -67,6 +67,7 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
   clusterDeployment,
   agentClusterInstall,
   agents,
+  aiConfigMap,
   onSaveNetworking,
   onClose,
   onFinish,
@@ -144,6 +145,7 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
                   clusterDeployment={clusterDeployment}
                   agentClusterInstall={agentClusterInstall}
                   agents={clusterAgents}
+                  aiConfigMap={aiConfigMap}
                   {...rest}
                 />
               </GridItem>
