@@ -14,7 +14,6 @@ import HostsTable from '../../../common/components/hosts/HostsTable';
 import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
 import {
   activeNICColumn,
-  countColumn,
   hostnameColumn,
   roleColumn,
 } from '../../../common/components/hosts/tableUtils';
@@ -48,14 +47,12 @@ const ClusterDeploymentHostsNetworkTable: React.FC<ClusterDeploymentHostsNetwork
             hostnameColumn(onEditHost, hosts),
             networkingStatusColumn(onEditHost),
             activeNICColumn(cluster),
-            countColumn(cluster),
           ]
         : [
             hostnameColumn(onEditHost, hosts),
             roleColumn(canEditRole, onEditRole),
             networkingStatusColumn(onEditHost),
             activeNICColumn(cluster),
-            countColumn(cluster),
           ],
     [onEditHost, onEditRole, canEditRole, cluster, isSNOCluster, hosts],
   );
