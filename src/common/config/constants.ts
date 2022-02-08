@@ -21,9 +21,6 @@ export const FEEDBACK_FORM_LINK =
 
 export const TECH_SUPPORT_LEVEL_LINK = 'https://access.redhat.com/support/offerings/techpreview';
 
-export const FIREWALL_DOCUMENTATION_LINK =
-  'https://docs.openshift.com/container-platform/4.8/installing/installing_bare_metal_ipi/ipi-install-installation-workflow.html#ipi-install-setting-proxy-settings-within-install-config_ipi-install-configuration-files';
-
 export const ENCRYPTING_DISK_DURING_INSTALLATION =
   'https://docs.openshift.com/container-platform/4.7/installing/install_config/installing-customizing.html#installation-special-config-encrypt-disk_installing-customizing';
 
@@ -298,7 +295,8 @@ export const SNO_SUPPORT_MIN_VERSION = 4.8;
 // The API uses free-form string for operator names, so let's gueard at least using constants
 export const OPERATOR_NAME_CNV = 'cnv';
 export const OPERATOR_NAME_LSO = 'lso';
-export const OPERATOR_NAME_OCS = 'ocs';
+export const OPERATOR_NAME_OCS = 'ocs'; // TODO(jkilzi): Remove once OCS is replaced by ODF
+export const OPERATOR_NAME_ODF = 'odf';
 export const OPERATOR_NAME_CVO = 'cvo';
 export const OPERATOR_NAME_CONSOLE = 'console';
 
@@ -306,7 +304,8 @@ export const OPERATOR_LABELS = {
   [OPERATOR_NAME_CONSOLE]: 'OpenShift Console',
   [OPERATOR_NAME_CVO]: 'OpenShift Cluster Version Operator',
   [OPERATOR_NAME_LSO]: 'OpenShift Local Storage',
-  [OPERATOR_NAME_OCS]: 'OpenShift Container Storage',
+  [OPERATOR_NAME_OCS]: 'OpenShift Container Storage', // TODO(jkilzi): Remove once OCS is replaced by ODF
+  [OPERATOR_NAME_ODF]: 'OpenShift Data Foundation',
   [OPERATOR_NAME_CNV]: 'OpenShift Virtualization',
 };
 

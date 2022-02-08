@@ -74,10 +74,10 @@ export const isAdvNetworkConf = (cluster: Cluster, defaultNetworkSettings: Clust
 
 export const getHostDiscoveryInitialValues = (cluster: Cluster): HostDiscoveryValues => {
   const monitoredOperators = cluster.monitoredOperators || [];
-  const isOperatorEnabled = (name: string) =>
-    !!monitoredOperators.find((operator) => operator.name === name);
+  const isOperatorEnabled = (name: RegExp | string) =>
+    !!monitoredOperators.find((operator) => operator.name?.match(name));
   return {
-    useExtraDisksForLocalStorage: isOperatorEnabled('ocs'),
+    useExtraDisksForLocalStorage: isOperatorEnabled(/ocs|odf/),
     useContainerNativeVirtualization: isOperatorEnabled('cnv'),
     usePlatformIntegration: cluster.platform?.type !== 'baremetal',
     schedulableMasters: getSchedulableMasters(cluster),
