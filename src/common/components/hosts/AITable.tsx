@@ -23,6 +23,16 @@ import { WithTestID } from '../../types';
 
 import './HostsTable.css';
 
+const getMainIndex = (hasOnSelect: boolean, hasExpandComponent: boolean) => {
+  if (hasOnSelect && hasExpandComponent) {
+    return 2;
+  }
+  if (hasOnSelect || hasExpandComponent) {
+    return 1;
+  }
+  return 0;
+};
+
 type OpenRows = {
   [id: string]: boolean;
 };
@@ -88,7 +98,7 @@ const AITable = <R extends any>({
 
   const [openRows, setOpenRows] = React.useState<OpenRows>({});
   const [sortBy, setSortBy] = React.useState<ISortBy>({
-    index: ExpandComponent ? 1 : 0, // Hostname-column
+    index: getMainIndex(!!onSelect, !!ExpandComponent),
     direction: SortByDirection.asc,
   });
 

@@ -8,12 +8,13 @@ import { NO_SUBNET_SET } from '../../../config/constants';
 import { ProxyFieldsType } from '../../../types';
 import { trimCommaSeparatedList, trimSshPublicKey } from './utils';
 
+const ALPHANUMBERIC_REGEX = /^[a-zA-Z0-9]+$/;
 const CLUSTER_NAME_REGEX = /^[a-z]([-a-z0-9]*[a-z0-9])?$/;
 const SSH_PUBLIC_KEY_REGEX = /^(ssh-rsa|ssh-ed25519|ecdsa-[-a-z0-9]*) AAAA[0-9A-Za-z+/]+[=]{0,3}( .+)?$/;
 // Future bug-fixer: Beer on me! (mlibra)
 const IP_ADDRESS_REGEX = /^(((([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5]))|([0-9a-f]{1,4}:){7,7}[0-9a-f]{1,4}|([0-9a-f]{1,4}:){1,7}:|([0-9a-f]{1,4}:){1,6}:[0-9a-f]{1,4}|([0-9a-f]{1,4}:){1,5}(:[0-9a-f]{1,4}){1,2}|([0-9a-f]{1,4}:){1,4}(:[0-9a-f]{1,4}){1,3}|([0-9a-f]{1,4}:){1,3}(:[0-9a-f]{1,4}){1,4}|([0-9a-f]{1,4}:){1,2}(:[0-9a-f]{1,4}){1,5}|[0-9a-f]{1,4}:((:[0-9a-f]{1,4}){1,6})|:((:[0-9a-f]{1,4}){1,7}|:)|fe80:(:[0-9a-f]{0,4}){0,4}%[0-9a-z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$/;
 const DNS_NAME_REGEX = /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/;
-const HOSTNAME_CHARS_REGEX = /^[a-zA-Z0-9-]*$/;
+const NAME_CHARS_REGEX = /^[a-zA-Z0-9-.]*$/;
 const IP_V4_ZERO = '0.0.0.0';
 const IP_V6_ZERO = '0000:0000:0000:0000:0000:0000:0000:0000';
 const MAC_REGEX = /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})|([0-9a-fA-F]{4}\\.[0-9a-fA-F]{4}\\.[0-9a-fA-F]{4})$”/;
@@ -267,44 +268,54 @@ export const hostPrefixValidationSchema = ({
   return Yup.number().required(requiredText);
 };
 
-export const HOSTNAME_VALIDATION_MESSAGES = {
-  INVALID_LENGTH: '5-63 characters',
+export const NAME_VALIDATION_MESSAGES = {
+  INVALID_LENGTH: '1-253 characters',
   NOT_UNIQUE: 'Must be unique',
-  INVALID_VALUE: 'Use letters, digits from 0 to 9 or hyphen (-)',
-  INVALID_START_END: 'Cannot start or end with a hyphen (-)',
+  INVALID_VALUE: 'Use alphanumberic characters, dot (.) or hyphen (-)',
+  INVALID_START_END: 'Must start and end with an alphanumeric character',
+};
+
+export const HOSTNAME_VALIDATION_MESSAGES = {
+  ...NAME_VALIDATION_MESSAGES,
   LOCALHOST_ERR: 'Cannot be the word "localhost"',
 };
 
-export const hostnameValidationSchema = (origHostname: string, usedHostnames: string[]) =>
+export const richNameValidationSchema = (usedNames: string[], origName?: string) =>
   Yup.string()
-    .min(5, HOSTNAME_VALIDATION_MESSAGES.INVALID_LENGTH)
-    .max(63, HOSTNAME_VALIDATION_MESSAGES.INVALID_LENGTH)
+    .min(1, NAME_VALIDATION_MESSAGES.INVALID_LENGTH)
+    .max(253, NAME_VALIDATION_MESSAGES.INVALID_LENGTH)
     .test(
-      HOSTNAME_VALIDATION_MESSAGES.INVALID_START_END,
-      HOSTNAME_VALIDATION_MESSAGES.INVALID_START_END,
+      NAME_VALIDATION_MESSAGES.INVALID_START_END,
+      NAME_VALIDATION_MESSAGES.INVALID_START_END,
       (value) => {
-        const trimmed = value?.trim();
+        const trimmed: string = value?.trim();
         if (!trimmed) {
           return true;
         }
-        return trimmed[0] !== '-' && trimmed[trimmed.length - 1] !== '-';
+        return (
+          !!trimmed[0].match(ALPHANUMBERIC_REGEX) &&
+          (trimmed[trimmed.length - 1]
+            ? !!trimmed[trimmed.length - 1].match(ALPHANUMBERIC_REGEX)
+            : true)
+        );
       },
     )
-    .matches(HOSTNAME_CHARS_REGEX, {
-      message: HOSTNAME_VALIDATION_MESSAGES.INVALID_VALUE,
+    .matches(NAME_CHARS_REGEX, {
+      message: NAME_VALIDATION_MESSAGES.INVALID_VALUE,
       excludeEmptyString: true,
     })
-    .notOneOf(['localhost', 'localhost.localdomain'], HOSTNAME_VALIDATION_MESSAGES.LOCALHOST_ERR)
-    .test(
-      HOSTNAME_VALIDATION_MESSAGES.NOT_UNIQUE,
-      HOSTNAME_VALIDATION_MESSAGES.NOT_UNIQUE,
-      (value) => {
-        if (!value || value === origHostname) {
-          return true;
-        }
-        return !usedHostnames.find((h) => h === value);
-      },
-    );
+    .test(NAME_VALIDATION_MESSAGES.NOT_UNIQUE, NAME_VALIDATION_MESSAGES.NOT_UNIQUE, (value) => {
+      if (!value || value === origName) {
+        return true;
+      }
+      return !usedNames.find((n) => n === value);
+    });
+
+export const hostnameValidationSchema = (origHostname: string, usedHostnames: string[]) =>
+  nameValidationSchema(usedHostnames, origHostname).notOneOf(
+    ['localhost', 'localhost.localdomain'],
+    HOSTNAME_VALIDATION_MESSAGES.LOCALHOST_ERR,
+  );
 
 const httpProxyValidationMessage = 'Provide a valid HTTP URL.';
 export const httpProxyValidationSchema = (

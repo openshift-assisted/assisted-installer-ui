@@ -10,6 +10,7 @@ import {
   getClusterDetailsValidationSchema,
   ClusterWizardStepHeader,
   ClusterDetailsValues,
+  useFeatureSupportLevel,
 } from '../../../common';
 
 import { ClusterDeploymentDetailsStepProps, ClusterDeploymentDetailsValues } from './types';
@@ -46,6 +47,7 @@ export const useDetailsFormik = ({
   defaultBaseDomain,
   pullSecret,
 }: UseDetailsFormikArgs): [ClusterDetailsValues, Lazy] => {
+  const featureSupportLevels = useFeatureSupportLevel();
   const ocpVersions = getOCPVersions(clusterImages);
   const cluster = React.useMemo(
     () =>
@@ -70,8 +72,14 @@ export const useDetailsFormik = ({
     [], // eslint-disable-line react-hooks/exhaustive-deps
   );
   const validationSchema = React.useMemo(
-    () => getClusterDetailsValidationSchema(usedClusterNames, cluster, ocpVersions),
-    [usedClusterNames, cluster, ocpVersions],
+    () =>
+      getClusterDetailsValidationSchema(
+        usedClusterNames,
+        featureSupportLevels,
+        cluster,
+        ocpVersions,
+      ),
+    [usedClusterNames, cluster, ocpVersions, featureSupportLevels],
   );
 
   return [initialValues, validationSchema];
@@ -110,7 +118,7 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
     } catch (error) {
       addAlert({
         title: 'Failed to save ClusterDeployment',
-        message: error,
+        message: error as string,
       });
     }
   };

@@ -34,6 +34,7 @@ const getOpenshiftVersionHelperText = (versions: OpenshiftVersionOptionType[]) =
         <ExclamationTriangleIcon color={warningColor.value} size="sm" />
         &nbsp;
         {`Full support for this version ends on ${openshiftVersionData['versions'][selectedVersionValue]} and won't be available as an installation option afterwards.`}
+        &nbsp;
         <OpenShiftLifeCycleDatesLink />
       </>
     );

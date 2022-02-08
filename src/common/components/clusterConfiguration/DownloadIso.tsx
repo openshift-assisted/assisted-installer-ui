@@ -42,7 +42,7 @@ const DownloadIso: React.FC<DownloadISOProps> = ({
     <>
       <ModalBoxBody>
         <Stack hasGutter>
-          {!hasDHCP && (
+          {hasDHCP === false && (
             <StackItem>
               <StaticIPInfo />
             </StackItem>

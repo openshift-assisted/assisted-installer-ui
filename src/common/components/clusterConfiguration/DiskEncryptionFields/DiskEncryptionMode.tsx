@@ -14,7 +14,7 @@ import {
 } from '@patternfly/react-core';
 import { TangServers } from './TangServers';
 import '../tangServers.css';
-import { DiskEncryptionValues } from './DiskEncryptionValues';
+import { DiskEncryption } from '../../../api/types';
 
 const DiskEncryptionModeTPMv2: React.FC = () => {
   return (
@@ -60,13 +60,12 @@ const DiskEncryptionModeTang: React.FC = () => {
   );
 };
 
-export interface DiskEncryptionModeProps extends DiskEncryptionValues {
+export interface DiskEncryptionModeProps {
   isDisabled?: boolean;
+  diskEncryptionMode: DiskEncryption['mode'];
 }
 
 export const DiskEncryptionMode: React.FC<DiskEncryptionModeProps> = ({
-  enableDiskEncryptionOnMasters,
-  enableDiskEncryptionOnWorkers,
   diskEncryptionMode,
   isDisabled,
 }) => {
@@ -94,19 +93,18 @@ export const DiskEncryptionMode: React.FC<DiskEncryptionModeProps> = ({
           </FlexItem>
         </Flex>
       </StackItem>
-      {(enableDiskEncryptionOnMasters || enableDiskEncryptionOnWorkers) &&
-        diskEncryptionMode == 'tang' && (
-          <Stack>
-            &nbsp;
-            <StackItem>
-              <TextContent>
-                <Text component={TextVariants.h6}>Tang servers</Text>
-              </TextContent>
-            </StackItem>
-            &nbsp;
-            <TangServers isDisabled={isDisabled} />
-          </Stack>
-        )}
+      {diskEncryptionMode === 'tang' && (
+        <Stack>
+          &nbsp;
+          <StackItem>
+            <TextContent>
+              <Text component={TextVariants.h6}>Tang servers</Text>
+            </TextContent>
+          </StackItem>
+          &nbsp;
+          <TangServers isDisabled={isDisabled} />
+        </Stack>
+      )}
     </Stack>
   );
 };
