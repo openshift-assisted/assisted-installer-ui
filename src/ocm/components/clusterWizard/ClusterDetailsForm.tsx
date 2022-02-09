@@ -80,7 +80,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
   const validationSchema = getClusterDetailsValidationSchema(
     usedClusterNames,
     featureSupportLevels,
-    cluster,
+    cluster?.pullSecretSet,
     ocpVersions,
   );
 
