@@ -34,7 +34,11 @@ const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({
           saveAs(data.url);
         } else {
           const response = await ClustersAPI.downloadClusterCredentials(clusterId, 'kubeconfig');
-          saveAs(response.data, 'kubeconfig');
+
+          const fileNameMatch = response.headers['content-disposition'].match(/filename=".*"/);
+          const fileName = fileNameMatch ? fileNameMatch[0].slice(10, -1) : '';
+
+          saveAs(response.data, fileName);
         }
       } catch (e) {
         handleApiError(e, async (e) => {
