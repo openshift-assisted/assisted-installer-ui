@@ -7,12 +7,19 @@ import { Cluster } from '../../api/types';
 import { ocmClient } from '../../../ocm/api/axiosClient';
 import { getErrorMessage, handleApiError } from '../../../ocm/api/utils';
 import ClustersAPI from '../../../ocm/services/apis/ClustersAPI';
+import { AxiosResponseHeaders } from 'axios';
 
 type KubeconfigDownloadProps = {
   clusterId: Cluster['id'];
   status: Cluster['status'];
   id?: string;
   handleDownload?: () => void;
+};
+
+const getKubeconfigFileName = (headers: AxiosResponseHeaders) => {
+  const fileNameMatch =
+    headers['content-disposition'] && headers['content-disposition'].match(/filename=".*"/);
+  return fileNameMatch ? fileNameMatch[0].slice(10, -1) : 'kubeconfig';
 };
 
 const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({
@@ -34,9 +41,7 @@ const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({
           saveAs(data.url);
         } else {
           const response = await ClustersAPI.downloadClusterCredentials(clusterId, 'kubeconfig');
-
-          const fileNameMatch = response.headers['content-disposition'].match(/filename=".*"/);
-          const fileName = fileNameMatch ? fileNameMatch[0].slice(10, -1) : '';
+          const fileName = getKubeconfigFileName(response.headers);
 
           saveAs(response.data, fileName);
         }
