@@ -13,9 +13,6 @@ export const PULL_SECRET_INFO_LINK = CLUSTER_MANAGER_SITE_LINK;
 
 export const VSPHERE_CONFIG_LINK = 'https://access.redhat.com/solutions/6677901';
 
-export const VSPHERE_DOCUMENTATION_LINK =
-  'https://docs.openshift.com/container-platform/4.9/installing/installing_vsphere/installing-vsphere.html';
-
 export const getBugzillaLink = (version = '') =>
   `https://bugzilla.redhat.com/enter_bug.cgi?product=OpenShift%20Container%20Platform&Component=OpenShift%20Container%20Platform&component=assisted-installer&version=${version}`;
 

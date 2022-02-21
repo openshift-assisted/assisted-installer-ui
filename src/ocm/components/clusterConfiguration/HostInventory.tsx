@@ -12,7 +12,6 @@ import {
   schedulableMastersAlwaysOn,
   HostDiscoveryValues,
   getSchedulableMasters,
-  VSPHERE_DOCUMENTATION_LINK,
 } from '../../../common';
 import HostsDiscoveryTable from '../hosts/HostsDiscoveryTable';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
@@ -39,10 +38,6 @@ const PlatformIntegrationLabel: React.FC = () => (
           storage directly inside OpenShift. In order to complete the integration, you'll need to
           set vSphere configuration after cluster installation is complete. A network connection is
           required between vSphere and the installed OCP cluster.
-          <br />
-          <a href={VSPHERE_DOCUMENTATION_LINK} target="_blank" rel="noopener noreferrer">
-            Learn more about installing a cluster on vSphere.
-          </a>
         </p>
       }
     />
