@@ -78,11 +78,11 @@ export const getClusterDetailsInitialValues = ({
 export const getClusterDetailsValidationSchema = (
   usedClusterNames: string[],
   featureSupportLevels: FeatureSupportLevelData,
-  cluster?: Cluster,
+  pullSecretSet?: boolean,
   ocpVersions?: OpenshiftVersionOptionType[],
 ) =>
   Yup.lazy<{ baseDnsDomain: string }>((values) => {
-    if (cluster?.pullSecretSet) {
+    if (pullSecretSet) {
       return Yup.object({
         name: nameValidationSchema(usedClusterNames, values.baseDnsDomain),
         baseDnsDomain: dnsNameValidationSchema.required('Required'),
