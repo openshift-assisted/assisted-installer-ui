@@ -60,7 +60,7 @@ const SchedulableMastersLabel: React.FC = () => (
 );
 
 const platformIntegrationTooltip =
-  'Platform integration is applicable only when all discovered hosts are from the same platform';
+  'vSphere integration is applicable only when all discovered hosts are vSphere originated';
 const schedulableMastersTooltip =
   'This toggle will be "On" and not editable when less than 5 hosts were discovered';
 
