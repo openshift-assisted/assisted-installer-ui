@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  Text,
-  TextContent,
-  Button,
-  Stack,
-  StackItem,
-  List,
-  ListItem,
-} from '@patternfly/react-core';
+import { Text, TextContent, Button, Stack, StackItem } from '@patternfly/react-core';
 import {
   Cluster,
   PopoverIcon,
@@ -20,6 +12,7 @@ import {
   schedulableMastersAlwaysOn,
   HostDiscoveryValues,
   getSchedulableMasters,
+  VSPHERE_DOCUMENTATION_LINK,
 } from '../../../common';
 import HostsDiscoveryTable from '../hosts/HostsDiscoveryTable';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
@@ -36,24 +29,20 @@ import { CnvCheckbox } from './CnvCheckbox';
 
 const PlatformIntegrationLabel: React.FC = () => (
   <>
-    <span>Integrate with platform</span>{' '}
+    <span>Integrate with vSphere</span>{' '}
     <PopoverIcon
       minWidth="30rem"
       variant={'plain'}
       bodyContent={
         <p>
-          Enable platform integration to access your platform's features directly in OpenShift.
+          Enable vSphere integration to access features like node auto-scaling and persistent
+          storage directly inside OpenShift. In order to complete the integration, you'll need to
+          set vSphere configuration after cluster installation is complete. A network connection is
+          required between vSphere and the installed OCP cluster.
           <br />
-          <strong>Additional Requirements:</strong>
-          <List>
-            <ListItem>
-              You will need to modify your platform configuration after cluster installation is
-              completed
-            </ListItem>
-            <ListItem>
-              A network connectivity is required between vSphere and the installed OCP cluster
-            </ListItem>
-          </List>
+          <a href={VSPHERE_DOCUMENTATION_LINK} target="_blank" rel="noopener noreferrer">
+            Learn more about installing a cluster on vSphere.
+          </a>
         </p>
       }
     />
