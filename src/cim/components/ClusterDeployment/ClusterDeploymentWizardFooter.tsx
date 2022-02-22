@@ -18,12 +18,14 @@ type ValidationSectionProps = {
   agentClusterInstall?: AgentClusterInstallK8sResource;
   agents: AgentK8sResource[];
   errorFields?: string[];
+  requireProxy?: boolean;
 };
 
 const ValidationSection = ({
   errorFields = [],
   agents,
   agentClusterInstall,
+  requireProxy,
 }: ValidationSectionProps) => {
   const { currentStepId } = React.useContext(ClusterDeploymentWizardContext);
   const clusterStatus = agentClusterInstall?.status?.debugInfo?.state;
@@ -54,6 +56,11 @@ const ValidationSection = ({
           .
         </Alert>
       )}
+      {requireProxy && (
+        <Alert variant={AlertVariant.warning} title="Cluster proxy is required" isInline>
+          At least one of the HTTP or HTTPS proxy URLs is required.
+        </Alert>
+      )}
       {clusterStatus && (
         <ClusterWizardStepValidationsAlert
           currentStepId={currentStepId}
@@ -71,12 +78,14 @@ type ClusterDeploymentWizardFooterProps = WizardFooterGenericProps & {
   agentClusterInstall?: AgentClusterInstallK8sResource;
   agents?: AgentK8sResource[];
   errorFields?: string[];
+  requireProxy?: boolean;
 };
 
 const ClusterDeploymentWizardFooter = ({
   agentClusterInstall,
   agents = [],
   errorFields,
+  requireProxy,
   ...rest
 }: ClusterDeploymentWizardFooterProps) => {
   const { alerts } = useAlerts();
@@ -86,6 +95,7 @@ const ClusterDeploymentWizardFooter = ({
       agents={agents}
       agentClusterInstall={agentClusterInstall}
       errorFields={errorFields}
+      requireProxy={requireProxy}
     />
   );
 

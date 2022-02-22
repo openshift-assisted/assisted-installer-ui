@@ -105,6 +105,7 @@ export interface TextAreaSecretProps extends TextAreaFieldProps {
 }
 
 export interface CheckboxFieldProps extends FieldProps {
+  body?: React.ReactNode;
   onChange?: (value: boolean, event: React.FormEvent<HTMLInputElement>) => void;
 }
 

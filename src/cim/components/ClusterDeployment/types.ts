@@ -74,6 +74,7 @@ export type ClusterDeploymentDetailsNetworkingProps = {
   onClose: () => void;
   hostActions: ClusterDeploymentHostsTablePropsActions;
   onFinish: VoidFunction;
+  fetchInfraEnv: (name: string, namespace: string) => Promise<InfraEnvK8sResource>;
 };
 
 export type AgentSelectorChangeProps = {
@@ -132,6 +133,7 @@ export type ClusterDeploymentWizardProps = Pick<
   agents: AgentK8sResource[];
   aiConfigMap?: ConfigMapK8sResource;
   infraEnv?: InfraEnvK8sResource;
+  fetchInfraEnv: (name: string, namespace: string) => Promise<InfraEnvK8sResource>;
 };
 
 export type FetchSecret = (name: string, namespace: string) => Promise<SecretK8sResource>;

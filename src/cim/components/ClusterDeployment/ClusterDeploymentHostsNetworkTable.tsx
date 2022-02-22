@@ -26,58 +26,55 @@ type ClusterDeploymentHostsNetworkTableProps = {
   hostActions: ClusterDeploymentHostsTablePropsActions;
 } & WithTestID;
 
-const ClusterDeploymentHostsNetworkTable: React.FC<ClusterDeploymentHostsNetworkTableProps> = ({
-  clusterDeployment,
-  agentClusterInstall,
-  agents,
-  hostActions,
-}) => {
-  const cluster = getAICluster({ clusterDeployment, agentClusterInstall, agents });
-  const [hosts, { onEditHost, canEditRole, onEditRole }, actionResolver] = useAgentsTable(
-    { agents },
-    hostActions,
-  );
+const ClusterDeploymentHostsNetworkTable: React.FC<ClusterDeploymentHostsNetworkTableProps> = React.memo(
+  ({ clusterDeployment, agentClusterInstall, agents, hostActions }) => {
+    const cluster = getAICluster({ clusterDeployment, agentClusterInstall, agents });
+    const [hosts, { onEditHost, canEditRole, onEditRole }, actionResolver] = useAgentsTable(
+      { agents },
+      hostActions,
+    );
 
-  const isSNOCluster = getIsSNOCluster(agentClusterInstall);
-  const content = React.useMemo(
-    () =>
-      isSNOCluster
-        ? [
-            hostnameColumn(onEditHost, hosts),
-            networkingStatusColumn(onEditHost),
-            activeNICColumn(cluster),
-          ]
-        : [
-            hostnameColumn(onEditHost, hosts),
-            roleColumn(canEditRole, onEditRole),
-            networkingStatusColumn(onEditHost),
-            activeNICColumn(cluster),
-          ],
-    [onEditHost, onEditRole, canEditRole, cluster, isSNOCluster, hosts],
-  );
+    const isSNOCluster = getIsSNOCluster(agentClusterInstall);
+    const content = React.useMemo(
+      () =>
+        isSNOCluster
+          ? [
+              hostnameColumn(onEditHost, hosts),
+              networkingStatusColumn(onEditHost),
+              activeNICColumn(cluster),
+            ]
+          : [
+              hostnameColumn(onEditHost, hosts),
+              roleColumn(canEditRole, onEditRole),
+              networkingStatusColumn(onEditHost),
+              activeNICColumn(cluster),
+            ],
+      [onEditHost, onEditRole, canEditRole, cluster, isSNOCluster, hosts],
+    );
 
-  return (
-    <HostsTable
-      testId="networking-host-table"
-      hosts={hosts}
-      ExpandComponent={({ obj }) => {
-        return (
-          <HostDetail
-            host={obj}
-            AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
-          />
-        );
-      }}
-      content={content}
-      actionResolver={actionResolver}
-    >
-      <EmptyState
-        icon={ConnectedIcon}
-        title="Waiting for hosts..."
-        content="Hosts may take a few minutes to appear here after booting."
-      />
-    </HostsTable>
-  );
-};
+    return (
+      <HostsTable
+        testId="networking-host-table"
+        hosts={hosts}
+        ExpandComponent={({ obj }) => {
+          return (
+            <HostDetail
+              host={obj}
+              AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
+            />
+          );
+        }}
+        content={content}
+        actionResolver={actionResolver}
+      >
+        <EmptyState
+          icon={ConnectedIcon}
+          title="Waiting for hosts..."
+          content="Hosts may take a few minutes to appear here after booting."
+        />
+      </HostsTable>
+    );
+  },
+);
 
 export default ClusterDeploymentHostsNetworkTable;
