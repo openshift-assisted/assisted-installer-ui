@@ -15,7 +15,7 @@ import {
   selectClusterNetworkHostPrefix,
   selectMachineNetworkCIDR,
   selectServiceNetworkCIDR,
-} from '../../../ocm/selectors/clusterSelectors';
+} from '../../selectors/clusterSelectors';
 
 export const getNetworkInitialValues = (
   cluster: Cluster,
@@ -35,6 +35,8 @@ export const getNetworkInitialValues = (
     vipDhcpAllocation: cluster.vipDhcpAllocation,
     managedNetworkingType: cluster.userManagedNetworking ? 'userManaged' : 'clusterManaged',
     networkType: cluster.networkType || 'OpenShiftSDN',
+    enableProxy: false,
+    editProxy: false,
   };
 };
 

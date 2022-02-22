@@ -37,7 +37,7 @@ import ClusterProgress from '../../../common/components/clusterDetail/ClusterPro
 import { EventsModalButton } from '../../../common/components/ui/eventsModal';
 import { onFetchEvents } from '../fetching/fetchEvents';
 import { TIME_ZERO, VSPHERE_CONFIG_LINK } from '../../../common/config/constants';
-import { isSNO } from '../../selectors';
+import { isSNO } from '../../../common/selectors/clusterSelectors';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { diffInDaysBetweenDates } from '../../../common/sevices/DateAndTime';
 

@@ -1,9 +1,7 @@
 import { breakWord, expandable, sortable } from '@patternfly/react-table';
 import * as React from 'react';
 import { Address4, Address6 } from 'ip-address';
-import HardwareStatus from '../../../ocm/components/hosts/HardwareStatus';
-import NetworkingStatus from '../../../ocm/components/hosts/NetworkingStatus';
-import { Cluster, Host, HostUpdateParams, Interface, Inventory, stringToJSON } from '../../api';
+import { Cluster, Host, HostUpdateParams, Interface, stringToJSON } from '../../api';
 import { ValidationsInfo } from '../../types/hosts';
 import { getSubnet } from '../clusterConfiguration';
 import { DASH } from '../constants';
@@ -16,8 +14,8 @@ import HostsCount from './HostsCount';
 import { HostsTableActions } from './types';
 import HostStatus from './HostStatus';
 import RoleCell from './RoleCell';
-import { getHostname, getHostRole } from './utils';
-import { selectMachineNetworkCIDR } from '../../../ocm/selectors/clusterSelectors';
+import { getHostname, getHostRole, getInventory } from './utils';
+import { selectMachineNetworkCIDR } from '../../selectors/clusterSelectors';
 
 export const getSelectedNic = (nics: Interface[], currentSubnet: Address4 | Address6) => {
   return nics.find((nic) => {
@@ -59,8 +57,7 @@ export const hostnameColumn = (
       cellTransforms: [breakWord],
     },
     cell: (host) => {
-      const { inventory: inventoryString = '' } = host;
-      const inventory = stringToJSON<Inventory>(inventoryString) || {};
+      const inventory = getInventory(host);
       const editHostname = onEditHostname ? () => onEditHostname(host) : undefined;
       const computedHostname = getHostname(host, inventory);
       return {
@@ -117,7 +114,7 @@ export const roleColumn = (
 };
 
 export const statusColumn = (
-  AdditionalNTPSourcesDialogToggleComponent: React.FC,
+  AdditionalNTPSourcesDialogToggleComponent?: React.FC,
   onEditHostname?: HostsTableActions['onEditHost'],
   UpdateDay2ApiVipDialogToggleComponent?: React.FC,
 ): TableRow<Host> => {
@@ -144,35 +141,6 @@ export const statusColumn = (
         ),
         props: { 'data-testid': 'host-status' },
         sortableValue: host.status,
-      };
-    },
-  };
-};
-
-export const hardwareStatusColumn = (
-  onEditHostname?: HostsTableActions['onEditHost'],
-): TableRow<Host> => {
-  return {
-    header: {
-      title: 'Status',
-      props: {
-        id: 'col-header-hwstatus',
-      },
-      transforms: [sortable],
-    },
-    cell: (host) => {
-      const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
-      const editHostname = onEditHostname ? () => onEditHostname(host) : undefined;
-      return {
-        title: (
-          <HardwareStatus
-            host={host}
-            onEditHostname={editHostname}
-            validationsInfo={validationsInfo}
-          />
-        ),
-        props: { 'data-testid': 'host-hw-status' },
-        sortableValue: status,
       };
     },
   };
@@ -206,8 +174,7 @@ export const cpuCoresColumn: TableRow<Host> = {
     transforms: [sortable],
   },
   cell: (host) => {
-    const { inventory: inventoryString = '' } = host;
-    const inventory = stringToJSON<Inventory>(inventoryString) || {};
+    const inventory = getInventory(host);
     const { cores } = getHostRowHardwareInfo(inventory);
     const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
     const cpuCoresValidation = validationsInfo?.hardware?.find(
@@ -234,8 +201,7 @@ export const memoryColumn: TableRow<Host> = {
     transforms: [sortable],
   },
   cell: (host) => {
-    const { inventory: inventoryString = '' } = host;
-    const inventory = stringToJSON<Inventory>(inventoryString) || {};
+    const inventory = getInventory(host);
     const { memory } = getHostRowHardwareInfo(inventory);
     const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
     const memoryValidation = validationsInfo?.hardware?.find((v) => v.id === 'has-memory-for-role');
@@ -260,8 +226,7 @@ export const disksColumn: TableRow<Host> = {
     transforms: [sortable],
   },
   cell: (host) => {
-    const { inventory: inventoryString = '' } = host;
-    const inventory = stringToJSON<Inventory>(inventoryString) || {};
+    const inventory = getInventory(host);
     const { disk } = getHostRowHardwareInfo(inventory);
     const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
     const diskValidation = validationsInfo?.hardware?.find((v) => v.id === 'has-min-valid-disks');
@@ -281,33 +246,10 @@ export const countColumn = (cluster: Cluster): TableRow<Host> => ({
   header: { title: <HostsCount cluster={cluster} inParenthesis /> },
 });
 
-export const networkingStatusColumn = (
-  onEditHostname?: HostsTableActions['onEditHost'],
-): TableRow<Host> => ({
-  header: { title: 'Status', transforms: [sortable] },
-  cell: (host) => {
-    const editHostname = onEditHostname ? () => onEditHostname(host) : undefined;
-    const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
-    return {
-      title: (
-        <NetworkingStatus
-          host={host}
-          onEditHostname={editHostname}
-          validationsInfo={validationsInfo}
-        />
-      ),
-      props: { 'data-testid': 'nic-status' },
-      sortableValue: status,
-    };
-  },
-});
-
 export const activeNICColumn = (cluster: Cluster): TableRow<Host> => ({
   header: { title: 'Active NIC', transforms: [sortable] },
   cell: (host) => {
-    const { inventory: inventoryString = '' } = host;
-
-    const inventory = stringToJSON<Inventory>(inventoryString) || {};
+    const inventory = getInventory(host);
     const nics = inventory.interfaces || [];
 
     const machineNetworkCidr = selectMachineNetworkCIDR(cluster);
@@ -324,9 +266,7 @@ export const activeNICColumn = (cluster: Cluster): TableRow<Host> => ({
 export const ipv4Column = (cluster: Cluster): TableRow<Host> => ({
   header: { title: 'IPv4 address', transforms: [sortable] },
   cell: (host) => {
-    const { inventory: inventoryString = '' } = host;
-
-    const inventory = stringToJSON<Inventory>(inventoryString) || {};
+    const inventory = getInventory(host);
     const nics = inventory.interfaces || [];
 
     const machineNetworkCidr = selectMachineNetworkCIDR(cluster);
@@ -343,9 +283,7 @@ export const ipv4Column = (cluster: Cluster): TableRow<Host> => ({
 export const ipv6Column = (cluster: Cluster): TableRow<Host> => ({
   header: { title: 'IPv6 address', transforms: [sortable] },
   cell: (host) => {
-    const { inventory: inventoryString = '' } = host;
-
-    const inventory = stringToJSON<Inventory>(inventoryString) || {};
+    const inventory = getInventory(host);
     const nics = inventory.interfaces || [];
 
     const machineNetworkCidr = selectMachineNetworkCIDR(cluster);
@@ -362,9 +300,7 @@ export const ipv6Column = (cluster: Cluster): TableRow<Host> => ({
 export const macAddressColumn = (cluster: Cluster): TableRow<Host> => ({
   header: { title: 'MAC address', transforms: [sortable] },
   cell: (host) => {
-    const { inventory: inventoryString = '' } = host;
-
-    const inventory = stringToJSON<Inventory>(inventoryString) || {};
+    const inventory = getInventory(host);
     const nics = inventory.interfaces || [];
 
     const machineNetworkCidr = selectMachineNetworkCIDR(cluster);
@@ -417,8 +353,7 @@ export const hostActionResolver = ({
 }: HostsTableActions): ActionsResolver<Host> => (host) => {
   const actions = [];
   if (host) {
-    const { inventory: inventoryString = '' } = host;
-    const inventory = stringToJSON<Inventory>(inventoryString) || {};
+    const inventory = getInventory(host);
     const hostname = getHostname(host, inventory);
 
     if (onInstallHost && canInstallHost?.(host)) {

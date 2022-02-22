@@ -4,17 +4,17 @@ import {
   HostsNotShowingLink,
   HostsNotShowingLinkProps,
 } from '../clusterConfiguration/DiscoveryTroubleshootingModal';
-import { Host } from '../../../common';
+import { Host } from '../../api';
 import AITable, {
   ActionsResolver,
   ExpandComponentProps,
   TableRow,
 } from '../../../common/components/hosts/AITable';
 import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
-import { AdditionalNTPSourcesDialogToggle } from '../../../ocm/components/hosts/AdditionaNTPSourceDialogToggle';
-import { getHostId } from '../../../ocm/components/hosts/use-hosts-table';
 import { WithTestID } from '../../types';
 import EmptyState from '../ui/uiState/EmptyState';
+
+const getHostId = (host: Host) => host.id;
 
 type HostsTableEmptyStateProps = {
   setDiscoveryHintModalOpen?: HostsNotShowingLinkProps['setDiscoveryHintModalOpen'];
@@ -39,11 +39,7 @@ export const HostsTableEmptyState: React.FC<HostsTableEmptyStateProps> = ({
 );
 
 export const DefaultExpandComponent: React.FC<ExpandComponentProps<Host>> = ({ obj }) => (
-  <HostDetail
-    key={obj.id}
-    host={obj}
-    AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
-  />
+  <HostDetail key={obj.id} host={obj} />
 );
 
 type HostsTableProps = {
