@@ -36,6 +36,8 @@ export type NetworkConfigurationValues = ClusterUpdateParams & {
   hostSubnet?: string;
   useRedHatDnsService?: boolean;
   managedNetworkingType: 'userManaged' | 'clusterManaged';
+  enableProxy: boolean;
+  editProxy: boolean;
 };
 
 export type HostDiscoveryValues = ClusterUpdateParams & {

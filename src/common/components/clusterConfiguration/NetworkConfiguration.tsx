@@ -10,7 +10,6 @@ import {
   VirtualIPControlGroup,
   VirtualIPControlGroupProps,
 } from '../clusterWizard/networkingSteps';
-import { RenderIf } from '../ui/RenderIf';
 import { ClusterDefaultConfig } from '../../api';
 import { isSingleNodeCluster } from '../clusters';
 import { NO_SUBNET_SET } from '../../config';
@@ -126,38 +125,33 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
         />
       )}
 
-      <RenderIf condition={isUserManagedNetworking}>
+      {isUserManagedNetworking && (
         <UserManagedNetworkingTextContent shouldDisplayLoadBalancersBullet={isMultiNodeCluster} />
-      </RenderIf>
+      )}
 
       {children}
 
-      <RenderIf
-        condition={
-          !isUserManagedNetworking &&
-          !!clusterFeatureSupportLevels &&
-          clusterFeatureSupportLevels['CLUSTER_MANAGED_NETWORKING_WITH_VMS'] === 'unsupported'
-        }
-      >
-        {vmsAlert}
-      </RenderIf>
+      {!isUserManagedNetworking &&
+        !!clusterFeatureSupportLevels &&
+        clusterFeatureSupportLevels['CLUSTER_MANAGED_NETWORKING_WITH_VMS'] === 'unsupported' &&
+        vmsAlert}
 
-      <RenderIf condition={!(isMultiNodeCluster && isUserManagedNetworking)}>
+      {!(isMultiNodeCluster && isUserManagedNetworking) && (
         <AvailableSubnetsControl
           hostSubnets={hostSubnets}
           hosts={cluster.hosts || []}
           isRequired={!isUserManagedNetworking}
           isMultiNodeCluster={isMultiNodeCluster}
         />
-      </RenderIf>
+      )}
 
-      <RenderIf condition={!isUserManagedNetworking}>
+      {!isUserManagedNetworking && (
         <VirtualIPControlGroup
           cluster={cluster}
           hostSubnets={hostSubnets}
           isVipDhcpAllocationDisabled={isVipDhcpAllocationDisabled}
         />
-      </RenderIf>
+      )}
 
       <Checkbox
         id="useAdvancedNetworking"
@@ -165,10 +159,8 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
         description="Configure advanced networking properties (e.g. CIDR ranges)."
         isChecked={isAdvanced}
         onChange={toggleAdvConfiguration}
+        body={isAdvanced && <AdvancedNetworkFields />}
       />
-      <RenderIf condition={isAdvanced}>
-        <AdvancedNetworkFields />
-      </RenderIf>
     </>
   );
 };
