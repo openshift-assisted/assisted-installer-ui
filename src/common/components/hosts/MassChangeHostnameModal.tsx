@@ -34,24 +34,11 @@ const getHostname = (host: Host) => {
   return getHostnameUtils(host, inventory) || '';
 };
 
-const getHostnameTemplateAndCount = (values: EditHostFormValues) => {
-  const numberTemplate = values.hostname.match(/{{n+}}/) || [];
-  const numberCount = numberTemplate[0]?.match(/n/g)?.length || 0;
-  return { numberTemplate, numberCount };
-};
-
-const templateToHostname = (
-  index: number,
-  values: EditHostFormValues,
-  numberTemplate: RegExpMatchArray,
-  numberCount: number,
-) => values.hostname.replace(numberTemplate[0], `${index + 1}`.padStart(numberCount, '0'));
+const templateToHostname = (index: number, values: EditHostFormValues) =>
+  values.hostname.replace(/{{n+}}/g, `${index + 1}`);
 
 const getNewHostnames = (values: EditHostFormValues, selectedHosts: Host[]) => {
-  const { numberTemplate, numberCount } = getHostnameTemplateAndCount(values);
-  return selectedHosts.map((h, index) =>
-    templateToHostname(index, values, numberTemplate, numberCount),
-  );
+  return selectedHosts.map((h, index) => templateToHostname(index, values));
 };
 
 type EditHostFormValues = {
@@ -234,13 +221,11 @@ const MassChangeHostnameModal: React.FC<MassChangeHostnameModalProps> = ({
         initialStatus={{ error: null }}
         validate={withTemplate(selectedHosts, hosts, validationSchema(initialValues, []))}
         onSubmit={async (values, formikActions) => {
-          const { numberTemplate, numberCount } = getHostnameTemplateAndCount(values);
-
           let i = 0;
           try {
             for (const agent of selectedHosts) {
               setPatchingHost(i);
-              const newHostname = templateToHostname(i, values, numberTemplate, numberCount);
+              const newHostname = templateToHostname(i, values);
               await onChangeHostname(agent, newHostname);
               i++;
             }
