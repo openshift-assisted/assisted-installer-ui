@@ -21,7 +21,7 @@ import {
   HostSubnets,
   InfraEnv,
 } from '../../../common';
-import { HostSubnet, NetworkConfigurationValues } from '../../../common/types/clusters';
+import { NetworkConfigurationValues } from '../../../common/types/clusters';
 import { updateClusterBase } from '../../reducers/clusters/currentClusterSlice';
 import { canNextNetwork } from '../clusterWizard/wizardTransition';
 import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
@@ -103,11 +103,28 @@ const NetworkConfigurationPage: React.FC<{
     'serviceNetworkCidr',
     'clusterNetworkHostPrefix',
   ]);
+
+  const defaultNetworkValues: Partial<NetworkConfigurationValues> = {
+    serviceNetworks: [
+      {
+        cidr: defaultNetworkSettings.serviceNetworkCidr,
+        clusterId: cluster.id,
+      },
+    ],
+    clusterNetworks: [
+      {
+        cidr: defaultNetworkSettings.clusterNetworkCidr,
+        hostPrefix: defaultNetworkSettings.clusterNetworkHostPrefix,
+        clusterId: cluster.id,
+      },
+    ],
+  };
+
   const { addAlert, clearAlerts, alerts } = useAlerts();
   const dispatch = useDispatch();
   const hostSubnets = React.useMemo(() => getHostSubnets(cluster), [cluster]);
   const initialValues = React.useMemo(
-    () => getNetworkInitialValues(cluster, defaultNetworkSettings),
+    () => getNetworkInitialValues(cluster, defaultNetworkValues),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [], // just once, Formik does not reinitialize
   );
@@ -152,24 +169,8 @@ const NetworkConfigurationPage: React.FC<{
       };
 
       params.userManagedNetworking = isUserManagedNetworking;
-      params.clusterNetworks = [
-        {
-          cidr: values.clusterNetworkCidr,
-          hostPrefix: values.clusterNetworkHostPrefix,
-        },
-      ];
-      params.serviceNetworks = [
-        {
-          cidr: values.serviceNetworkCidr,
-        },
-      ];
-      params.machineNetworks = [
-        {
-          cidr: hostSubnets.find((hn: HostSubnet) => hn.subnet === values.hostSubnet)?.subnet,
-        },
-      ];
 
-      if (isUserManagedNetworking) {
+      if (params.userManagedNetworking) {
         delete params.apiVip;
         delete params.ingressVip;
         if (isMultiNodeCluster) {
@@ -180,7 +181,7 @@ const NetworkConfigurationPage: React.FC<{
         if (values.vipDhcpAllocation) {
           delete params.apiVip;
           delete params.ingressVip;
-        } else {
+        } else if (values.stackType === 'singleStack') {
           delete params.machineNetworks;
         }
       }

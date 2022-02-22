@@ -1,7 +1,13 @@
 import React from 'react';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens';
-import { Cluster, DetailList, DetailItem, ReviewHostsInventory } from '../../../common';
+import {
+  Cluster,
+  DetailList,
+  DetailItem,
+  ReviewHostsInventory,
+  isSingleStack,
+} from '../../../common';
 import { RenderIf } from '../../../common/components/ui/';
 import { VSPHERE_CONFIG_LINK, ClusterValidations, HostsValidations } from '../../../common';
 import { selectClusterNetworkCIDR } from '../../../common/selectors/clusterSelectors';
@@ -46,6 +52,14 @@ const ReviewCluster: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         title="OpenShift version"
         value={cluster.openshiftVersion}
         testId="openshift-version"
+      />
+      <DetailItem
+        title={'Stack type'}
+        value={
+          isSingleStack(cluster.machineNetworks, cluster.clusterNetworks, cluster.serviceNetworks)
+            ? 'Single-stack'
+            : 'Dual-stack'
+        }
       />
       <DetailItem
         title="CPU architecture"

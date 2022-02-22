@@ -7,6 +7,7 @@ import { NetworkConfigurationValues, HostSubnets } from '../../../types/clusters
 import { NO_SUBNET_SET } from '../../../config/constants';
 import { ProxyFieldsType } from '../../../types';
 import { trimCommaSeparatedList, trimSshPublicKey } from './utils';
+import { ClusterNetwork, MachineNetwork, ServiceNetwork } from '../../../api/types';
 
 const ALPHANUMBERIC_REGEX = /^[a-zA-Z0-9]+$/;
 const CLUSTER_NAME_REGEX = /^[a-z]([-a-z0-9]*[a-z0-9])?$/;
@@ -115,7 +116,7 @@ export const macAddressValidationSchema = Yup.string().matches(MAC_REGEX, {
 
 export const vipRangeValidationSchema = (
   hostSubnets: HostSubnets,
-  { hostSubnet }: NetworkConfigurationValues,
+  { machineNetworks }: NetworkConfigurationValues,
 ) =>
   Yup.string().test('vip-validation', 'IP Address is outside of selected subnet', function (value) {
     if (!value) {
@@ -126,10 +127,18 @@ export const vipRangeValidationSchema = (
     } catch (err) {
       return this.createError({ message: err.message });
     }
-    const foundHostSubnet = hostSubnets.find((hn) => hn.subnet === hostSubnet);
-    if (foundHostSubnet?.subnet) {
-      // Workaround for bug in CIM backend. hostIDs are empty
-      return foundHostSubnet.hostIDs.length ? isInSubnet(value, foundHostSubnet.subnet) : true;
+    const foundHostSubnets = hostSubnets.filter((hn) =>
+      machineNetworks?.map((network) => network.cidr).includes(hn.subnet),
+    );
+    for (const hostSubnet of foundHostSubnets) {
+      if (hostSubnet?.subnet) {
+        // Workaround for bug in CIM backend. hostIDs are empty
+        if (!hostSubnet.hostIDs.length) {
+          return true;
+        } else if (isInSubnet(value, hostSubnet.subnet)) {
+          return true;
+        }
+      }
     }
     return false;
   });
@@ -248,13 +257,11 @@ export const dnsNameValidationSchema = Yup.string()
     message: 'Value "${value}" is not valid DNS name. Example: basedomain.example.com', // eslint-disable-line no-template-curly-in-string
   });
 
-export const hostPrefixValidationSchema = ({
-  clusterNetworkCidr,
-}: Partial<NetworkConfigurationValues>) => {
+export const hostPrefixValidationSchema = ({ cidr }: Partial<ClusterNetwork>) => {
   const requiredText = 'The host prefix is required.';
   const minMaxText =
     'The host prefix is a number between 1 and 32 for IPv4 and between 8 and 128 for IPv6.';
-  const netBlock = (clusterNetworkCidr || '').split('/')[1];
+  const netBlock = (cidr || '').split('/')[1];
   if (!netBlock) {
     return Yup.number().required(requiredText).min(1, minMaxText).max(32, minMaxText);
   }
@@ -269,11 +276,11 @@ export const hostPrefixValidationSchema = ({
   const errorMsgIPv4 = `${errorMsgPrefix} (${netBlockNumber}) and 25.`;
   const errorMsgIPv6 = `${errorMsgPrefix} (8) and 128.`;
 
-  if (Address6.isValid(clusterNetworkCidr || '')) {
+  if (Address6.isValid(cidr || '')) {
     return Yup.number().required(requiredText).min(8, errorMsgIPv6).max(128, errorMsgIPv6);
   }
 
-  if (Address4.isValid(clusterNetworkCidr || '')) {
+  if (Address4.isValid(cidr || '')) {
     return Yup.number()
       .required(requiredText)
       .min(netBlockNumber, errorMsgIPv4)
@@ -458,3 +465,65 @@ export const locationValidationSchema = Yup.string()
     message: LOCATION_VALIDATION_MESSAGES.INVALID_VALUE,
     excludeEmptyString: true,
   });
+
+export const uniqueSubnetValidationSchema = (field: string) =>
+  Yup.array().test(
+    `${field.toLowerCase()}-network-unique`,
+    `${field} network subnets must be unique.`,
+    (values) => {
+      const cidrs = values.map(
+        (subnet: MachineNetwork | ClusterNetwork | ServiceNetwork) => subnet.cidr,
+      );
+      return values.every(
+        (subnet: MachineNetwork | ClusterNetwork | ServiceNetwork) =>
+          cidrs.filter(
+            (cidr: (MachineNetwork | ClusterNetwork | ServiceNetwork)['cidr']) =>
+              cidr === subnet.cidr,
+          ).length == 1,
+      );
+    },
+  );
+
+export const machineNetworksValidationSchema = Yup.array().of(
+  Yup.object({ cidr: ipBlockValidationSchema, clusterId: Yup.string() }),
+);
+
+export const clusterNetworksValidationSchema = Yup.array().of(
+  Yup.lazy((values: ClusterNetwork) =>
+    Yup.object({
+      cidr: ipBlockValidationSchema,
+      hostPrefix: hostPrefixValidationSchema(values),
+      clusterId: Yup.string(),
+    }),
+  ),
+);
+
+export const serviceNetworkValidationSchema = Yup.array().of(
+  Yup.object({
+    cidr: ipBlockValidationSchema,
+    clusterId: Yup.string(),
+  }),
+);
+
+export const dualStackValidationSchema = (field: string) =>
+  Yup.array()
+    .max(2, `Maximum number of ${field} subnets in dual stack is 2.`)
+    .test(
+      'dual-stack-ipv4',
+      'First network has to be IPv4 subnet.',
+      (values) => values[0].cidr && Address4.isValid(values[0].cidr),
+    )
+    .test(
+      'dual-stack-ipv6',
+      'Second network has to be IPv6 subnet.',
+      (values) => values[1].cidr && Address6.isValid(values[1].cidr),
+    );
+
+export const singleStackValidationSchema = (field: string) =>
+  Yup.array().test(
+    'single-stack',
+    `All ${field} must be IPv4 or IPv6 subnets.`,
+    (values: MachineNetwork[]) =>
+      values.every((v) => v.cidr && Address4.isValid(v.cidr)) ||
+      values.every((v) => v.cidr && Address6.isValid(v.cidr)),
+  );

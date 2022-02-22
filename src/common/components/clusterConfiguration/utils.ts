@@ -1,19 +1,15 @@
 import { Address4, Address6 } from 'ip-address';
-import { Cluster, ClusterDefaultConfig, Inventory, stringToJSON } from '../../api';
+import { Cluster, ClusterNetwork, Inventory, ServiceNetwork, stringToJSON } from '../../api';
 import { NO_SUBNET_SET } from '../../config';
 import {
   HostDiscoveryValues,
   HostSubnets,
+  NetworkConfigurationValues,
   Validation,
   ValidationGroup,
   ValidationsInfo,
 } from '../../types/clusters';
 import { getHostname, getSchedulableMasters } from '../hosts/utils';
-import {
-  selectClusterNetworkCIDR,
-  selectClusterNetworkHostPrefix,
-  selectServiceNetworkCIDR,
-} from '../../selectors/clusterSelectors';
 
 export const getSubnet = (cidr: string): Address6 | Address4 | null => {
   if (Address4.isValid(cidr)) {
@@ -66,15 +62,34 @@ export const getSubnetFromMachineNetworkCidr = (machineNetworkCidr?: string) => 
   return subnet?.address;
 };
 
+const serviceNetworksEqual = (array1: ServiceNetwork[], array2: ServiceNetwork[]) =>
+  array1.length === array2.length &&
+  array1.every((network) => array2.map((elem) => elem.cidr).includes(network.cidr));
+
+const clusterNetworksEqual = (array1: ClusterNetwork[], array2: ClusterNetwork[]) =>
+  array1.length === array2.length &&
+  array1.every((clusterNetwork) =>
+    array2.find(
+      (network) =>
+        network.cidr === clusterNetwork.cidr && network.hostPrefix === clusterNetwork.hostPrefix,
+    ),
+  );
+
 export const isAdvNetworkConf = (
   cluster: Cluster,
-  defaultNetworkSettings: ClusterDefaultConfig,
+  defaultNetworkValues: Partial<NetworkConfigurationValues>,
   defaultNetworkType: string,
-) =>
-  selectClusterNetworkCIDR(cluster) !== defaultNetworkSettings.clusterNetworkCidr ||
-  selectClusterNetworkHostPrefix(cluster) !== defaultNetworkSettings.clusterNetworkHostPrefix ||
-  selectServiceNetworkCIDR(cluster) !== defaultNetworkSettings.serviceNetworkCidr ||
-  (Boolean(cluster.networkType) && cluster.networkType !== defaultNetworkType);
+) => {
+  return !(
+    Boolean(cluster.networkType) &&
+    cluster.networkType === defaultNetworkType &&
+    serviceNetworksEqual(
+      cluster.serviceNetworks || [],
+      defaultNetworkValues.serviceNetworks || [],
+    ) &&
+    clusterNetworksEqual(cluster.clusterNetworks || [], defaultNetworkValues.clusterNetworks || [])
+  );
+};
 
 export const getHostDiscoveryInitialValues = (cluster: Cluster): HostDiscoveryValues => {
   const monitoredOperators = cluster.monitoredOperators || [];

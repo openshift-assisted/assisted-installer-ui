@@ -34,9 +34,12 @@ export type NetworkConfigurationValues = Pick<
   | 'sshPublicKey'
   | 'vipDhcpAllocation'
   | 'networkType'
+  | 'machineNetworks'
+  | 'clusterNetworks'
+  | 'serviceNetworks'
 > & {
-  hostSubnet: string;
   managedNetworkingType: 'userManaged' | 'clusterManaged';
+  stackType?: 'singleStack' | 'dualStack';
 };
 export type HostDiscoveryValues = V2ClusterUpdateParams & {
   useExtraDisksForLocalStorage: boolean;

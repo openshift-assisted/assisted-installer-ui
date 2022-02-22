@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useFormikContext } from 'formik';
-import { Spinner, Alert, AlertVariant } from '@patternfly/react-core';
+import { Spinner, Alert, AlertVariant, Tooltip } from '@patternfly/react-core';
 import { Cluster, stringToJSON } from '../../../api';
 import { HostSubnets, NetworkConfigurationValues, ValidationsInfo } from '../../../types/clusters';
 import { CheckboxField, FormikStaticField, InputField } from '../../ui';
@@ -85,7 +85,7 @@ export const VirtualIPControlGroup = ({
   hostSubnets,
   isVipDhcpAllocationDisabled,
 }: VirtualIPControlGroupProps) => {
-  const { values } = useFormikContext<NetworkConfigurationValues>();
+  const { values, setFieldValue } = useFormikContext<NetworkConfigurationValues>();
 
   const apiVipHelperText = `Provide an endpoint for users, both human and machine, to interact with and configure the platform. If needed, contact your IT manager for more information. ${getVipHelperSuffix(
     cluster.apiVip,
@@ -105,13 +105,28 @@ export const VirtualIPControlGroup = ({
     cluster.validationsInfo,
   ]);
 
+  const enableAllocation = useMemo(() => values.networkType === 'OpenShiftSDN', [values]);
+
+  useEffect(() => {
+    if (!enableAllocation) {
+      setFieldValue('vipDhcpAllocation', false);
+    }
+  }, [enableAllocation, setFieldValue]);
+
   return (
     <>
       {!isVipDhcpAllocationDisabled && (
         <CheckboxField
           label={
             <>
-              Allocate IPs via DHCP server
+              <Tooltip
+                hidden={enableAllocation}
+                content={
+                  "A cluster with OVN networking type cannot use 'allocate virtual IPs via DHCP server'"
+                }
+              >
+                <span>Allocate IPs via DHCP server</span>
+              </Tooltip>
               <FeatureSupportLevelBadge
                 featureId="VIP_AUTO_ALLOC"
                 openshiftVersion={cluster.openshiftVersion}
@@ -119,6 +134,7 @@ export const VirtualIPControlGroup = ({
             </>
           }
           name="vipDhcpAllocation"
+          isDisabled={!enableAllocation}
         />
       )}
       {values.vipDhcpAllocation ? (
@@ -159,14 +175,22 @@ export const VirtualIPControlGroup = ({
             name="apiVip"
             helperText={apiVipHelperText}
             isRequired
-            isDisabled={!hostSubnets.length || values.hostSubnet === NO_SUBNET_SET}
+            isDisabled={
+              !hostSubnets.length ||
+              !values.machineNetworks?.length ||
+              values.machineNetworks[0].cidr === NO_SUBNET_SET
+            }
           />
           <InputField
             name="ingressVip"
             label="Ingress IP"
             helperText={ingressVipHelperText}
             isRequired
-            isDisabled={!hostSubnets.length || values.hostSubnet === NO_SUBNET_SET}
+            isDisabled={
+              !hostSubnets.length ||
+              !values.machineNetworks?.length ||
+              values.machineNetworks[0].cidr === NO_SUBNET_SET
+            }
           />
         </>
       )}
