@@ -20,18 +20,17 @@ import * as Yup from 'yup';
 import {
   RichInputField,
   getRichTextValidation,
-  hostnameValidationSchema,
+  richNameValidationSchema,
   HOSTNAME_VALIDATION_MESSAGES,
   ModalProgress,
 } from '../ui';
-import { Host, Inventory, stringToJSON } from '../../api';
+import { Host } from '../../api';
+import { getHostname as getHostnameUtils, getInventory } from './utils';
 
 import './MassChangeHostnameModal.css';
-import { getHostname as getHostnameUtils } from './utils';
 
 const getHostname = (host: Host) => {
-  const { inventory: inventoryString = '' } = host;
-  const inventory = stringToJSON<Inventory>(inventoryString) || {};
+  const inventory = getInventory(host);
   return getHostnameUtils(host, inventory) || '';
 };
 
@@ -65,7 +64,7 @@ const initialValues = {
 
 const validationSchema = (initialValues: EditHostFormValues, usedHostnames: string[]) =>
   Yup.object().shape({
-    hostname: hostnameValidationSchema(initialValues.hostname, usedHostnames),
+    hostname: richNameValidationSchema(usedHostnames, initialValues.hostname),
   });
 
 const withTemplate = (

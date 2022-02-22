@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  Text,
-  TextContent,
-  Button,
-  Stack,
-  StackItem,
-  List,
-  ListItem,
-} from '@patternfly/react-core';
+import { Text, TextContent, Button, Stack, StackItem } from '@patternfly/react-core';
 import {
   Cluster,
   PopoverIcon,
@@ -36,24 +28,16 @@ import { CnvCheckbox } from './CnvCheckbox';
 
 const PlatformIntegrationLabel: React.FC = () => (
   <>
-    <span>Integrate with platform</span>{' '}
+    <span>Integrate with vSphere</span>{' '}
     <PopoverIcon
       minWidth="30rem"
       variant={'plain'}
       bodyContent={
         <p>
-          Enable platform integration to access your platform's features directly in OpenShift.
-          <br />
-          <strong>Additional Requirements:</strong>
-          <List>
-            <ListItem>
-              You will need to modify your platform configuration after cluster installation is
-              completed
-            </ListItem>
-            <ListItem>
-              A network connectivity is required between vSphere and the installed OCP cluster
-            </ListItem>
-          </List>
+          Enable vSphere integration to access features like node auto-scaling and persistent
+          storage directly inside OpenShift. In order to complete the integration, you'll need to
+          set vSphere configuration after cluster installation is complete. A network connection is
+          required between vSphere and the installed OCP cluster.
         </p>
       }
     />
@@ -71,7 +55,7 @@ const SchedulableMastersLabel: React.FC = () => (
 );
 
 const platformIntegrationTooltip =
-  'Platform integration is applicable only when all discovered hosts are from the same platform';
+  'vSphere integration is applicable only when all discovered hosts are vSphere originated';
 const schedulableMastersTooltip =
   'This toggle will be "On" and not editable when less than 5 hosts were discovered';
 

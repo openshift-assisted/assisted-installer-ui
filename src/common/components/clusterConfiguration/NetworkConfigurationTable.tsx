@@ -1,20 +1,43 @@
 import * as React from 'react';
+import { sortable } from '@patternfly/react-table';
 import { Host } from '../../../common';
 import {
   hostnameColumn,
   roleColumn,
   countColumn,
-  networkingStatusColumn,
   activeNICColumn,
   ipv4Column,
   ipv6Column,
   macAddressColumn,
 } from '../../../common/components/hosts/tableUtils';
-import { ActionsResolver } from '../../../common/components/hosts/AITable';
+import { ActionsResolver, TableRow } from '../../../common/components/hosts/AITable';
 import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
 import { getSchedulableMasters, HostsTableActions } from '../hosts';
-import { Cluster } from '../../api';
+import { Cluster, stringToJSON } from '../../api';
 import HostsTable from '../hosts/HostsTable';
+import { ValidationsInfo } from '../../types/hosts';
+import NetworkingStatus from '../../../ocm/components/hosts/NetworkingStatus';
+
+export const networkingStatusColumn = (
+  onEditHostname?: HostsTableActions['onEditHost'],
+): TableRow<Host> => ({
+  header: { title: 'Status', transforms: [sortable] },
+  cell: (host) => {
+    const editHostname = onEditHostname ? () => onEditHostname(host) : undefined;
+    const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
+    return {
+      title: (
+        <NetworkingStatus
+          host={host}
+          onEditHostname={editHostname}
+          validationsInfo={validationsInfo}
+        />
+      ),
+      props: { 'data-testid': 'nic-status' },
+      sortableValue: status,
+    };
+  },
+});
 
 type NetworkConfigurationTableProps = {
   cluster: Cluster;

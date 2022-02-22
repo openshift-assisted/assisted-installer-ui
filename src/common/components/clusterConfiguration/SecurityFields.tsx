@@ -19,15 +19,12 @@ export const SshPublicKeyHelperText: React.FC<{
 
 const label = 'Host SSH Public Key for troubleshooting after installation';
 
-interface ClusterSshKeyFieldsProps {
+interface SecurityFieldsFieldsProps {
   clusterSshKey: Cluster['sshPublicKey'];
-  imageSshKey: Cluster['imageInfo']['sshPublicKey'];
+  imageSshKey?: Cluster['imageInfo']['sshPublicKey'];
 }
 
-const ClusterSshKeyFields: React.FC<ClusterSshKeyFieldsProps> = ({
-  clusterSshKey,
-  imageSshKey,
-}) => {
+const SecurityFields: React.FC<SecurityFieldsFieldsProps> = ({ clusterSshKey, imageSshKey }) => {
   //shareSshKey shouldn't response to changes. imageSshKey stays the same, there's a loading state while it's requested
   //clusterSshKey updating causes the textarea to disappear when the user clears it to edit it
   const defaultShareSshKey = !!imageSshKey && (clusterSshKey === imageSshKey || !clusterSshKey);
@@ -81,4 +78,4 @@ const ClusterSshKeyFields: React.FC<ClusterSshKeyFieldsProps> = ({
   );
 };
 
-export default ClusterSshKeyFields;
+export default SecurityFields;

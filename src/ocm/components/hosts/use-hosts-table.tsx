@@ -7,11 +7,10 @@ import {
   DiskRole,
   EventsModal,
   Host,
-  Inventory,
-  stringToJSON,
   HostUpdateParams,
   AddHostsContext,
   MassChangeHostnameModal,
+  getInventory,
 } from '../../../common';
 import {
   AdditionalNTPSourcesDialog,
@@ -60,8 +59,7 @@ export const useHostsTable = (cluster: Cluster) => {
   const hostActions = React.useMemo(
     () => ({
       onDeleteHost: (host: Host) => {
-        const { inventory: inventoryString = '' } = host;
-        const inventory = stringToJSON<Inventory>(inventoryString) || {};
+        const inventory = getInventory(host);
         deleteHostDialog.open({
           hostId: host.id,
           hostname: (host?.requestedHostname || inventory?.hostname) as string,
@@ -84,8 +82,8 @@ export const useHostsTable = (cluster: Cluster) => {
 
   const onViewHostEvents = React.useCallback(
     (host: Host) => {
-      const { id, requestedHostname, inventory: inventoryString = '' } = host;
-      const inventory = stringToJSON<Inventory>(inventoryString) || {};
+      const { id, requestedHostname } = host;
+      const inventory = getInventory(host);
       const hostname = requestedHostname || inventory?.hostname || id;
       eventsDialog.open({ hostId: id, hostname });
     },
@@ -94,8 +92,7 @@ export const useHostsTable = (cluster: Cluster) => {
 
   const onEditHost = React.useCallback(
     (host: Host) => {
-      const { inventory: inventoryString = '' } = host;
-      const inventory = stringToJSON<Inventory>(inventoryString) || {};
+      const inventory = getInventory(host);
       editHostDialog.open({ host, inventory });
     },
     [editHostDialog],
@@ -103,8 +100,7 @@ export const useHostsTable = (cluster: Cluster) => {
 
   const onHostReset = React.useCallback(
     (host: Host) => {
-      const { inventory: inventoryString = '' } = host;
-      const inventory = stringToJSON<Inventory>(inventoryString) || {};
+      const inventory = getInventory(host);
       const hostname = host?.requestedHostname || inventory?.hostname || '';
       resetHostDialog.open({ hostId: host.id, hostname });
     },
@@ -388,5 +384,3 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
     </>
   );
 };
-
-export const getHostId = (host: Host) => host.id;
