@@ -13,7 +13,7 @@ import {
   selectClusterNetworkCIDR,
   selectClusterNetworkHostPrefix,
   selectServiceNetworkCIDR,
-} from '../../../ocm/selectors/clusterSelectors';
+} from '../../selectors/clusterSelectors';
 
 export const getSubnet = (cidr: string): Address6 | Address4 | null => {
   if (Address4.isValid(cidr)) {

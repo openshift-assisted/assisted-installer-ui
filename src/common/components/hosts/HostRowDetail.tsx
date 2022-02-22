@@ -12,10 +12,11 @@ import {
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
 
 import { DetailItem, DetailList, DetailListProps } from '../ui';
-import { Disk, Host, Interface, Inventory, stringToJSON } from '../../api';
+import { Disk, Host, Interface, stringToJSON } from '../../api';
 import { ValidationsInfo } from '../../types/hosts';
 import { WithTestID } from '../../types';
 import { DASH } from '../constants';
+import { getInventory } from '../hosts/utils';
 
 import { getHostRowHardwareInfo } from './hardwareInfo';
 import NtpValidationStatus from './NtpValidationStatus';
@@ -28,7 +29,7 @@ type HostDetailProps = {
   canEditDisks?: (host: Host) => boolean;
   onDiskRole?: onDiskRoleType;
   host: Host;
-  AdditionalNTPSourcesDialogToggleComponent: ValidationInfoActionProps['AdditionalNTPSourcesDialogToggleComponent'];
+  AdditionalNTPSourcesDialogToggleComponent?: ValidationInfoActionProps['AdditionalNTPSourcesDialogToggleComponent'];
   hideNTPStatus?: boolean;
 };
 
@@ -204,8 +205,8 @@ export const HostDetail: React.FC<HostDetailProps> = ({
   AdditionalNTPSourcesDialogToggleComponent,
   hideNTPStatus = false,
 }) => {
-  const { id, installationDiskId, inventory: inventoryString = '' } = host;
-  const inventory = stringToJSON<Inventory>(inventoryString) || {};
+  const { id, installationDiskId } = host;
+  const inventory = getInventory(host);
   const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
   const rowInfo = getHostRowHardwareInfo(inventory);
   const disks = inventory.disks || [];

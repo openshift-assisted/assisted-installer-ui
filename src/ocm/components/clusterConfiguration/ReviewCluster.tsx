@@ -16,7 +16,7 @@ import { RenderIf } from '../../../common/components/ui/';
 import { getSimpleHardwareInfo } from '../../../common/components/hosts/hardwareInfo';
 import { ClusterValidations, HostsValidations } from './ReviewValidations';
 import { VSPHERE_CONFIG_LINK } from '../../../common';
-import { selectClusterNetworkCIDR } from '../../selectors/clusterSelectors';
+import { selectClusterNetworkCIDR } from '../../../common/selectors/clusterSelectors';
 
 import './ReviewCluster.css';
 import { ClusterFeatureSupportLevelsDetailItem } from '../featureSupportLevels';

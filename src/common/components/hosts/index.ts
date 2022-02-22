@@ -10,5 +10,5 @@ export { default as EditHostModal } from './EditHostModal';
 export { default as HostRequirements, HostRequirementsList } from './HostRequirements';
 export { default as VMRebootConfigurationInfo } from './VMRebootConfigurationInfo';
 export { default as HostToolbar } from './HostToolbar';
-export { ChangeHostnameAction } from './HostToolbarActions';
+export { ChangeHostnameAction, DeleteHostAction } from './HostToolbarActions';
 export { default as MassChangeHostnameModal } from './MassChangeHostnameModal';

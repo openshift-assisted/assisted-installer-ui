@@ -16,8 +16,8 @@ import {
   AddHostsContext,
   DiscoveryInstructions,
   DiscoveryTroubleshootingModal,
+  isArmArchitecture,
 } from '../../../common';
-import { isArmArchitecture } from '../../selectors';
 
 const armArchAlert = (
   <Alert

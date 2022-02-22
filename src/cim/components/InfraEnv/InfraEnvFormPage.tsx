@@ -203,13 +203,17 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged }) => {
                 be added to this infrastructure environment.
               </p>
             }
+            body={
+              values.enableNtpSources && (
+                <Grid hasGutter>
+                  <AdditionalNTPSourcesField
+                    name="additionalNtpSources"
+                    helperText="A comma separated list of IP or domain names of the NTP pools or servers."
+                  />
+                </Grid>
+              )
+            }
           />
-          {values.enableNtpSources && (
-            <AdditionalNTPSourcesField
-              name="additionalNtpSources"
-              helperText="A comma separated list of IP or domain names of the NTP pools or servers."
-            />
-          )}
         </Form>
       </StackItem>
     </Stack>

@@ -40,7 +40,7 @@ const AgentTable: React.FC<AgentTableProps> = ({
   getInfraEnvLink,
   ...actions
 }) => {
-  const [hosts, hostActions, actionResolver] = useAgentsTable(actions, { agents });
+  const [hosts, hostActions, actionResolver] = useAgentsTable({ agents }, actions);
   const content = React.useMemo(
     () => [
       hostnameColumn(hostActions.onEditHost),

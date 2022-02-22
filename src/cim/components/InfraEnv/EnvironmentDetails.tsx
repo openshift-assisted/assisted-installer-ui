@@ -135,27 +135,29 @@ const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({
         </GridItem>
         <GridItem span={6}>
           <DescriptionList>
-            {infraEnv.spec?.proxy && (
-              <>
-                <DescriptionListGroup>
-                  <DescriptionListTerm>HTTP Proxy URL</DescriptionListTerm>
-                  <DescriptionListDescription>
-                    {infraEnv.spec.proxy.httpProxy}
-                  </DescriptionListDescription>
-                </DescriptionListGroup>
-                <DescriptionListGroup>
-                  <DescriptionListTerm>HTTPS Proxy URL</DescriptionListTerm>
-                  <DescriptionListDescription>
-                    {infraEnv.spec.proxy.httpsProxy}
-                  </DescriptionListDescription>
-                </DescriptionListGroup>
-                <DescriptionListGroup>
-                  <DescriptionListTerm>No proxy domains</DescriptionListTerm>
-                  <DescriptionListDescription>
-                    {infraEnv.spec.proxy.noProxy}
-                  </DescriptionListDescription>
-                </DescriptionListGroup>
-              </>
+            {infraEnv.spec?.proxy?.httpProxy && (
+              <DescriptionListGroup>
+                <DescriptionListTerm>HTTP Proxy URL</DescriptionListTerm>
+                <DescriptionListDescription>
+                  {infraEnv.spec.proxy.httpProxy}
+                </DescriptionListDescription>
+              </DescriptionListGroup>
+            )}
+            {infraEnv.spec?.proxy?.httpsProxy && (
+              <DescriptionListGroup>
+                <DescriptionListTerm>HTTPS Proxy URL</DescriptionListTerm>
+                <DescriptionListDescription>
+                  {infraEnv.spec.proxy.httpsProxy}
+                </DescriptionListDescription>
+              </DescriptionListGroup>
+            )}
+            {infraEnv.spec?.proxy?.noProxy && (
+              <DescriptionListGroup>
+                <DescriptionListTerm>No proxy domains</DescriptionListTerm>
+                <DescriptionListDescription>
+                  {infraEnv.spec.proxy.noProxy}
+                </DescriptionListDescription>
+              </DescriptionListGroup>
             )}
             <DescriptionListGroup>
               <DescriptionListTerm>Secret and keys</DescriptionListTerm>

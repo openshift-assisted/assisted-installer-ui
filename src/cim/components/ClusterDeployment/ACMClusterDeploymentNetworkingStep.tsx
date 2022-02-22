@@ -7,9 +7,10 @@ import {
   AgentK8sResource,
   ClusterDeploymentK8sResource,
   ConfigMapK8sResource,
+  InfraEnvK8sResource,
 } from '../../types';
 import ClusterDeploymentNetworkingForm from './ClusterDeploymentNetworkingForm';
-import { useNetworkingFormik } from './ClusterDeploymentNetworkingStep';
+import { useNetworkingFormik } from './use-networking-formik';
 import {
   ClusterDeploymentHostsTablePropsActions,
   ClusterDeploymentNetworkingValues,
@@ -23,6 +24,7 @@ type ACMClusterDeploymentNetworkingStepProps = {
   onValuesChanged: (values: ClusterDeploymentNetworkingValues) => void;
   hostActions: ClusterDeploymentHostsTablePropsActions;
   aiConfigMap: ConfigMapK8sResource | undefined;
+  fetchInfraEnv: (name: string, namespace: string) => Promise<InfraEnvK8sResource>;
 };
 
 const ACMClusterDeploymentNetworkingStep: React.FC<ACMClusterDeploymentNetworkingStepProps> = ({
@@ -31,12 +33,21 @@ const ACMClusterDeploymentNetworkingStep: React.FC<ACMClusterDeploymentNetworkin
   agents,
   formRef,
   onValuesChanged,
+  fetchInfraEnv,
   ...rest
 }) => {
-  const [initialValues, validationSchema] = useNetworkingFormik({
+  const {
+    initialValues,
+    validationSchema,
+    infraEnvsError,
+    infraEnvWithProxy,
+    sameProxies,
+    infraEnvsLoading,
+  } = useNetworkingFormik({
     clusterDeployment,
     agentClusterInstall,
     agents,
+    fetchInfraEnv,
   });
 
   return (
@@ -51,6 +62,10 @@ const ACMClusterDeploymentNetworkingStep: React.FC<ACMClusterDeploymentNetworkin
         agentClusterInstall={agentClusterInstall}
         agents={agents}
         onValuesChanged={onValuesChanged}
+        infraEnvWithProxy={infraEnvWithProxy}
+        infraEnvsError={infraEnvsError}
+        sameProxies={sameProxies}
+        infraEnvsLoading={infraEnvsLoading}
         {...rest}
       />
     </Formik>

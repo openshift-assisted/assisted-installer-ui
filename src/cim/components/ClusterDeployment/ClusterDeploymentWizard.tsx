@@ -40,6 +40,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   clusterImages,
   aiConfigMap,
   infraEnv,
+  fetchInfraEnv,
 }) => {
   const [currentStepId, setCurrentStepId] = React.useState<ClusterDeploymentWizardStepsType>(
     'cluster-details',
@@ -60,7 +61,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   );
   const usedHostnames = React.useMemo(() => getAgentsHostsNames(clusterAgents), [clusterAgents]);
 
-  const renderCurrentStep = React.useCallback(() => {
+  const renderCurrentStep = () => {
     const stepId: ClusterDeploymentWizardStepsType = !clusterDeployment
       ? 'cluster-details'
       : currentStepId;
@@ -125,6 +126,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
             onClose={onClose}
             hostActions={hostActions}
             onFinish={onFinish}
+            fetchInfraEnv={fetchInfraEnv}
           />
         );
       case 'cluster-details':
@@ -141,35 +143,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
           />
         );
     }
-  }, [
-    clusterDeployment,
-    currentStepId,
-    agentClusterInstall,
-    agents,
-    onSaveNetworking,
-    onClose,
-    hostActions,
-    onFinish,
-    clusterImages,
-    usedClusterNames,
-    onSaveDetails,
-    onSaveHostsSelection,
-    onSaveHostsDiscovery,
-    aiConfigMap,
-    infraEnv,
-    usedHostnames,
-    onDeleteHost,
-    canDeleteAgent,
-    onSaveAgent,
-    canEditHost,
-    onSaveBMH,
-    onCreateBMH,
-    fetchSecret,
-    fetchNMState,
-    getClusterDeploymentLink,
-    isAIFlow,
-    onSaveISOParams,
-  ]);
+  };
 
   return (
     <AlertsContextProvider>

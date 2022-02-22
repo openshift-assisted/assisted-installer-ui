@@ -24,7 +24,7 @@ import {
   macAddressValidationSchema,
   CodeField,
   getFieldId,
-  hostnameValidationSchema,
+  richNameValidationSchema,
   getRichTextValidation,
   RichInputField,
   HOSTNAME_VALIDATION_MESSAGES,
@@ -123,7 +123,7 @@ const getNMState = (values: AddBmcValues, infraEnv: InfraEnvK8sResource): NMStat
 const getValidationSchema = (hasDHCP: boolean, usedHostnames: string[], origHostname: string) =>
   Yup.object({
     name: Yup.string().required(),
-    hostname: hostnameValidationSchema(origHostname, usedHostnames),
+    hostname: richNameValidationSchema(usedHostnames, origHostname),
     bmcAddress: Yup.string().required(),
     username: Yup.string().required(),
     password: Yup.string().required(),

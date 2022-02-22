@@ -13,7 +13,7 @@ import {
   FeatureSupportLevelBadge,
   useFeatureSupportLevel,
 } from '../../../common/components/featureSupportLevels';
-import { isArmArchitecture } from '../../selectors';
+import { isArmArchitecture } from '../../../common/selectors/clusterSelectors';
 
 const getLabel = (openshiftVersion: string) => {
   return (
