@@ -1,4 +1,5 @@
 import React from 'react';
+import { Stack, StackItem } from '@patternfly/react-core';
 import {
   ChangeHostnameAction,
   HostsNotShowingLinkProps,
@@ -7,6 +8,9 @@ import {
   Cluster,
   Host,
   useAlerts,
+  HostsTableActions,
+  stringToJSON,
+  isSNO,
 } from '../../../common';
 import { HostsTableModals, useHostsTable } from './use-hosts-table';
 import {
@@ -14,22 +18,51 @@ import {
   cpuCoresColumn,
   discoveredAtColumn,
   disksColumn,
-  hardwareStatusColumn,
   hostnameColumn,
   memoryColumn,
   roleColumn,
 } from '../../../common/components/hosts/tableUtils';
 import HostsTable, { HostsTableEmptyState } from '../../../common/components/hosts/HostsTable';
 import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
-import { ExpandComponentProps } from '../../../common/components/hosts/AITable';
+import { ExpandComponentProps, TableRow } from '../../../common/components/hosts/AITable';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
 import { onDiskRoleType } from '../../../common/components/hosts/DiskRole';
-import { Stack, StackItem } from '@patternfly/react-core';
 import { HostsService } from '../../services';
 import { updateHost } from '../../reducers/clusters';
 import { useDispatch } from 'react-redux';
-import { isSNO } from '../../selectors/clusterSelectors';
 import { getErrorMessage, handleApiError } from '../../api/utils';
+import { sortable } from '@patternfly/react-table';
+import { ValidationsInfo } from '../../../common/types/hosts';
+import HardwareStatus from './HardwareStatus';
+
+export const hardwareStatusColumn = (
+  onEditHostname?: HostsTableActions['onEditHost'],
+): TableRow<Host> => {
+  return {
+    header: {
+      title: 'Status',
+      props: {
+        id: 'col-header-hwstatus',
+      },
+      transforms: [sortable],
+    },
+    cell: (host) => {
+      const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
+      const editHostname = onEditHostname ? () => onEditHostname(host) : undefined;
+      return {
+        title: (
+          <HardwareStatus
+            host={host}
+            onEditHostname={editHostname}
+            validationsInfo={validationsInfo}
+          />
+        ),
+        props: { 'data-testid': 'host-hw-status' },
+        sortableValue: status,
+      };
+    },
+  };
+};
 
 const getExpandComponent = (onDiskRole: onDiskRoleType, canEditDisks: (host: Host) => boolean) => ({
   obj: host,

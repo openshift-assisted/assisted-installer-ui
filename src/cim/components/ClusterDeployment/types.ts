@@ -19,7 +19,8 @@ export type ClusterDeploymentHostsTablePropsActions = {
   canEditRole?: (agent: AgentK8sResource) => boolean;
   onEditRole?: (agent: AgentK8sResource, role: string | undefined) => Promise<AgentK8sResource>;
   canDelete?: (agent?: AgentK8sResource, bmh?: BareMetalHostK8sResource) => boolean;
-  onDeleteHost?: (agent?: AgentK8sResource, bmh?: BareMetalHostK8sResource) => void;
+  // eslint-disable-next-line
+  onDeleteHost?: (agent?: AgentK8sResource, bmh?: BareMetalHostK8sResource) => Promise<any>;
   onApprove?: (agent: AgentK8sResource) => Promise<AgentK8sResource>;
   onSelect?: (agent: AgentK8sResource, selected: boolean) => void;
   onEditBMH?: (bmh: BareMetalHostK8sResource) => void;
@@ -155,7 +156,8 @@ export type InfraEnvAgentTableProps = ClusterDeploymentHostsTablePropsActions & 
     bmh: BareMetalHostK8sResource,
     hostname: string,
   ) => Promise<BareMetalHostK8sResource>;
-  onApprove?: (agents: AgentK8sResource) => Promise<AgentK8sResource>;
+  // eslint-disable-next-line
+  onMassDeleteHost?: (agent?: AgentK8sResource, bmh?: BareMetalHostK8sResource) => Promise<any>;
 };
 
 export type ClusterDeploymentHostsDiscoveryProps = {

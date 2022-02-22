@@ -33,11 +33,10 @@ const ClusterDeploymentHostsNetworkTable: React.FC<ClusterDeploymentHostsNetwork
   hostActions,
 }) => {
   const cluster = getAICluster({ clusterDeployment, agentClusterInstall, agents });
-  const [
-    hosts,
-    { onEditHost, canEditRole, onEditRole },
-    actionResolver,
-  ] = useAgentsTable(hostActions, { agents });
+  const [hosts, { onEditHost, canEditRole, onEditRole }, actionResolver] = useAgentsTable(
+    { agents },
+    hostActions,
+  );
 
   const isSNOCluster = getIsSNOCluster(agentClusterInstall);
   const content = React.useMemo(

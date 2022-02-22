@@ -8,12 +8,12 @@ import {
   Alerts,
   useAlerts,
   CLUSTER_FIELD_LABELS,
+  selectClusterValidationsInfo,
 } from '../../../common';
 import { routeBasePath } from '../../config/routeBaseBath';
 import { wizardStepsValidationsMap } from '../clusterWizard/wizardTransition';
 import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
 import ClusterWizardStepValidationsAlert from '../../../common/components/clusterWizard/ClusterWizardStepValidationsAlert';
-import { selectClusterValidationsInfo } from '../../selectors/clusterSelectors';
 
 type ClusterValidationSectionProps = {
   cluster?: Cluster;

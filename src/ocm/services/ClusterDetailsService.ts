@@ -4,7 +4,7 @@ import InfraEnvsService from './InfraEnvsService';
 import _ from 'lodash';
 import DiskEncryptionService from './DiskEncryptionService';
 import { OcmClusterDetailsValues } from '../api/types';
-import { isArmArchitecture } from '../selectors/clusterSelectors';
+import { isArmArchitecture } from '../../common/selectors/clusterSelectors';
 
 const ClusterDetailsService = {
   async create(params: ClusterCreateParams) {

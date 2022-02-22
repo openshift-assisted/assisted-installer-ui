@@ -15,7 +15,7 @@ import {
   selectClusterNetworkHostPrefix,
   selectMachineNetworkCIDR,
   selectServiceNetworkCIDR,
-} from '../../../ocm/selectors/clusterSelectors';
+} from '../../selectors/clusterSelectors';
 
 export const getNetworkInitialValues = (
   cluster: Cluster,
