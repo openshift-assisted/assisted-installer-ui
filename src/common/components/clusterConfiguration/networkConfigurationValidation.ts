@@ -1,64 +1,51 @@
 import * as Yup from 'yup';
-import { Cluster, ClusterDefaultConfig } from '../../api';
+import { Cluster, ClusterNetwork, MachineNetwork, ServiceNetwork } from '../../api';
 import { HostSubnets, NetworkConfigurationValues } from '../../types/clusters';
 import {
-  hostPrefixValidationSchema,
-  hostSubnetValidationSchema,
-  ipBlockValidationSchema,
   sshPublicKeyValidationSchema,
   vipValidationSchema,
+  machineNetworksValidationSchema,
+  clusterNetworksValidationSchema,
+  serviceNetworkValidationSchema,
+  dualStackValidationSchema,
+  singleStackValidationSchema,
+  uniqueSubnetValidationSchema,
 } from '../ui';
 
-import { getSubnetFromMachineNetworkCidr, getHostSubnets } from './utils';
-import {
-  getDefaultNetworkType,
-  isSNO,
-  isSubnetInIPv6,
-  selectClusterNetworkCIDR,
-  selectClusterNetworkHostPrefix,
-  selectMachineNetworkCIDR,
-  selectServiceNetworkCIDR,
-} from '../../selectors/clusterSelectors';
-import { NO_SUBNET_SET } from '../../config';
+import { getDefaultNetworkType, isSNO, isSubnetInIPv6 } from '../../selectors/clusterSelectors';
+import { Address4, Address6 } from 'ip-address';
 
-const getInitHostSubnet = (
-  cluster: Cluster,
-  managedNetworkingType: 'userManaged' | 'clusterManaged',
-) => {
-  if (!isSNO(cluster) && managedNetworkingType === 'userManaged') {
-    return NO_SUBNET_SET;
-  }
-  const machineNetworkCIDR = selectMachineNetworkCIDR(cluster);
-  if (machineNetworkCIDR) {
-    return getSubnetFromMachineNetworkCidr(machineNetworkCIDR);
-  }
-  if (managedNetworkingType === 'clusterManaged') {
-    return getHostSubnets(cluster)?.[0]?.subnet;
-  }
-};
+export const isSingleStack = (
+  machineNetworks?: MachineNetwork[],
+  clusterNetworks?: ClusterNetwork[],
+  serviceNetworks?: ServiceNetwork[],
+) =>
+  (machineNetworks?.every((network) => network.cidr && Address4.isValid(network.cidr)) ||
+    machineNetworks?.every((network) => network.cidr && Address6.isValid(network.cidr))) &&
+  (clusterNetworks?.every((network) => network.cidr && Address4.isValid(network.cidr)) ||
+    clusterNetworks?.every((network) => network.cidr && Address6.isValid(network.cidr))) &&
+  (serviceNetworks?.every((network) => network.cidr && Address4.isValid(network.cidr)) ||
+    serviceNetworks?.every((network) => network.cidr && Address6.isValid(network.cidr)));
 
 export const getNetworkInitialValues = (
   cluster: Cluster,
-  defaultNetworkSettings: ClusterDefaultConfig,
+  defaultNetworkValues: Partial<NetworkConfigurationValues>,
 ): NetworkConfigurationValues => {
   const managedNetworkingType = cluster.userManagedNetworking ? 'userManaged' : 'clusterManaged';
   const isIPv6 = isSubnetInIPv6(cluster);
   const isSNOCluster = isSNO(cluster);
 
   return {
-    clusterNetworkCidr:
-      selectClusterNetworkCIDR(cluster) || defaultNetworkSettings.clusterNetworkCidr,
-    clusterNetworkHostPrefix:
-      selectClusterNetworkHostPrefix(cluster) || defaultNetworkSettings.clusterNetworkHostPrefix,
-    serviceNetworkCidr:
-      selectServiceNetworkCIDR(cluster) || defaultNetworkSettings.serviceNetworkCidr,
     apiVip: cluster.apiVip || '',
     ingressVip: cluster.ingressVip || '',
     sshPublicKey: cluster.sshPublicKey || '',
-    hostSubnet: getInitHostSubnet(cluster, managedNetworkingType) || NO_SUBNET_SET,
     vipDhcpAllocation: cluster.vipDhcpAllocation,
     managedNetworkingType,
     networkType: cluster.networkType || getDefaultNetworkType(isSNOCluster, isIPv6),
+    machineNetworks: cluster.machineNetworks,
+    clusterNetworks: cluster.clusterNetworks || defaultNetworkValues.clusterNetworks,
+    serviceNetworks: cluster.serviceNetworks || defaultNetworkValues.serviceNetworks,
+    stackType: isIPv6 ? 'dualStack' : 'singleStack',
   };
 };
 
@@ -68,12 +55,41 @@ export const getNetworkConfigurationValidationSchema = (
 ) =>
   Yup.lazy<NetworkConfigurationValues>((values) =>
     Yup.object<NetworkConfigurationValues>().shape({
-      clusterNetworkHostPrefix: hostPrefixValidationSchema(values),
-      clusterNetworkCidr: ipBlockValidationSchema,
-      serviceNetworkCidr: ipBlockValidationSchema,
       apiVip: vipValidationSchema(hostSubnets, values, initialValues.apiVip),
       ingressVip: vipValidationSchema(hostSubnets, values, initialValues.ingressVip),
       sshPublicKey: sshPublicKeyValidationSchema,
-      hostSubnet: hostSubnetValidationSchema,
+      machineNetworks:
+        values.managedNetworkingType === 'userManaged'
+          ? Yup.array()
+          : machineNetworksValidationSchema.when('stackType', {
+              is: 'singleStack',
+              then: singleStackValidationSchema('machine networks').concat(
+                uniqueSubnetValidationSchema('Machine'),
+              ),
+              otherwise:
+                values.machineNetworks &&
+                values.machineNetworks?.length >= 2 &&
+                dualStackValidationSchema('machine networks'),
+            }),
+      clusterNetworks: clusterNetworksValidationSchema.when('stackType', {
+        is: 'singleStack',
+        then: singleStackValidationSchema('cluster network').concat(
+          uniqueSubnetValidationSchema('Cluster'),
+        ),
+        otherwise:
+          values.clusterNetworks &&
+          values.clusterNetworks?.length >= 2 &&
+          dualStackValidationSchema('cluster network'),
+      }),
+      serviceNetworks: serviceNetworkValidationSchema.when('stackType', {
+        is: 'singleStack',
+        then: singleStackValidationSchema('service networks').concat(
+          uniqueSubnetValidationSchema('Service'),
+        ),
+        otherwise:
+          values.serviceNetworks &&
+          values.serviceNetworks?.length >= 2 &&
+          dualStackValidationSchema('service network'),
+      }),
     }),
   );

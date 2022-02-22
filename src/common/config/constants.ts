@@ -88,6 +88,9 @@ export const CLUSTER_FIELD_LABELS: { [key in string]: string } = {
   httpProxy: 'HTTP proxy',
   httpsProxy: 'HTTPS proxy',
   noProxy: 'No proxy',
+  machineNetworks: 'Machine networks',
+  clusterNetworks: 'Cluster networks',
+  serviceNetworks: 'Service networks',
 };
 
 export const HOST_VALIDATION_GROUP_LABELS: { [key in keyof ValidationsInfo]: string } = {

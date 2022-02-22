@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { Modal, Button, ModalVariant, ButtonProps } from '@patternfly/react-core';
+import { Modal, Button, ModalVariant, ButtonProps, ModalProps } from '@patternfly/react-core';
 
 type ConfirmationModalProps = {
   title: string;
+  titleIconVariant?: ModalProps['titleIconVariant'];
   content: React.ReactNode;
   confirmationButtonVariant?: ButtonProps['variant'];
   confirmationButtonText?: string;
@@ -12,6 +13,7 @@ type ConfirmationModalProps = {
 
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   title,
+  titleIconVariant,
   content,
   confirmationButtonText = 'Yes',
   confirmationButtonVariant = 'danger',
@@ -20,6 +22,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 }) => (
   <Modal
     title={title}
+    titleIconVariant={titleIconVariant}
     isOpen={true}
     onClose={onClose}
     variant={ModalVariant.small}
