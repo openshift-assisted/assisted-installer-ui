@@ -11,7 +11,7 @@ import { OpenshiftVersionOptionType } from '../../types';
 import { CheckboxField, InputField, SelectField } from '../ui/formik';
 import DiskEncryptionControlGroup from '../clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
 import { ClusterDetailsValues } from './types';
-import { isSNO } from '../../../ocm/selectors/clusterSelectors';
+import { isSNO } from '../../selectors/clusterSelectors';
 
 export type ClusterDetailsFormFieldsProps = {
   canEditPullSecret: boolean;

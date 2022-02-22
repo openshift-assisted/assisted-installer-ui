@@ -15,7 +15,7 @@ import {
 import { Formik } from 'formik';
 import { Host, Inventory } from '../../api';
 import {
-  hostnameValidationSchema,
+  richNameValidationSchema,
   RichInputField,
   StaticTextField,
   HOSTNAME_VALIDATION_MESSAGES,
@@ -38,7 +38,7 @@ export type EditHostFormProps = {
 
 const validationSchema = (initialValues: EditHostFormValues, usedHostnames: string[] = []) =>
   Yup.object().shape({
-    hostname: hostnameValidationSchema(initialValues.hostname, usedHostnames),
+    hostname: richNameValidationSchema(usedHostnames, initialValues.hostname),
   });
 
 const EditHostForm: React.FC<EditHostFormProps> = ({

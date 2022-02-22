@@ -23,7 +23,7 @@ import {
   PendingIcon,
 } from '@patternfly/react-icons';
 import { Cluster, Host, HostRole } from '../../api';
-import { getEnabledHosts } from '../hosts';
+import { getEnabledHosts } from '../hosts/utils';
 import { DetailItem, DetailList, getHumanizedDateTime, RenderIf } from '../ui';
 import { CLUSTER_STATUS_LABELS } from '../../config';
 import OperatorsProgressItem from './OperatorsProgressItem';

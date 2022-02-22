@@ -5,7 +5,7 @@ import {
   selectClusterNetworkCIDR,
   selectClusterNetworkHostPrefix,
   selectServiceNetworkCIDR,
-} from '../../selectors/clusterSelectors';
+} from '../../../common/selectors/clusterSelectors';
 import { ClusterFeatureSupportLevelsDetailItem } from '../featureSupportLevels';
 
 const getCpuArchTitle = () => (

@@ -8,13 +8,14 @@ import { getAgentStatus } from '../helpers/status';
 
 import '@patternfly/react-styles/css/utilities/Text/text.css';
 
-type AgentStatusProps = {
+export type AgentStatusProps = {
   agent: AgentK8sResource;
-  onApprove: ClusterDeploymentHostsTablePropsActions['onApprove'];
-  onEditHostname: ClusterDeploymentHostsTablePropsActions['onEditHost'];
+  onApprove?: ClusterDeploymentHostsTablePropsActions['onApprove'];
+  onEditHostname?: ClusterDeploymentHostsTablePropsActions['onEditHost'];
+  zIndex?: number;
 };
 
-const AgentStatus: React.FC<AgentStatusProps> = ({ agent, onApprove, onEditHostname }) => {
+const AgentStatus: React.FC<AgentStatusProps> = ({ agent, onApprove, onEditHostname, zIndex }) => {
   const [host] = getAIHosts([agent]);
   const editHostname = onEditHostname ? () => onEditHostname(agent) : undefined;
   const pendingApproval = !agent.spec.approved;
@@ -29,6 +30,7 @@ const AgentStatus: React.FC<AgentStatusProps> = ({ agent, onApprove, onEditHostn
       onEditHostname={editHostname}
       validationsInfo={validationsInfo}
       statusOverride={status}
+      zIndex={zIndex}
     >
       {pendingApproval && onApprove && (
         <Popover

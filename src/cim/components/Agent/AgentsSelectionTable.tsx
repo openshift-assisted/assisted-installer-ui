@@ -39,7 +39,7 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({ matchingAge
     }
   };
 
-  const [hosts, actions, actionResolver] = useAgentsTable({ onSelect }, { agents: matchingAgents });
+  const [hosts, actions, actionResolver] = useAgentsTable({ agents: matchingAgents }, { onSelect });
   const content = React.useMemo(
     () => [
       hostnameColumn(),

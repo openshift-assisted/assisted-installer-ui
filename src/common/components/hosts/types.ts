@@ -57,4 +57,5 @@ export type HostStatusProps = AdditionNtpSourcePropsType &
     onEditHostname?: () => void;
     statusOverride?: Host['status'] | 'discovered';
     sublabel?: string;
+    zIndex?: number;
   };

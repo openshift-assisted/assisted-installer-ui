@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from 'react';
-import { TextInputTypes } from '@patternfly/react-core';
+import { Grid, TextInputTypes } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
-import { InputField, RenderIf } from '../../components/ui';
+import { InputField } from '../../components/ui';
 import { NetworkConfigurationValues } from '../../types/clusters';
 import { Address6 } from 'ip-address';
 import { PREFIX_MAX_RESTRICTION } from '../../config/constants';
@@ -41,7 +41,7 @@ const AdvancedNetworkFields: React.FC<{}> = () => {
   }, [isIPv6, setFieldValue, isNetworkTypeSelectionEnabled]);
 
   return (
-    <>
+    <Grid hasGutter>
       <InputField
         name="clusterNetworkCidr"
         label="Cluster network CIDR"
@@ -64,10 +64,8 @@ const AdvancedNetworkFields: React.FC<{}> = () => {
         helperText="The IP address pool to use for service IP addresses. You can enter only one IP address pool. If you need to access the services from an external network, configure load balancers and routers to manage the traffic."
         isRequired
       />
-      <RenderIf condition={isNetworkTypeSelectionEnabled}>
-        <NetworkTypeControlGroup isIPv6={isIPv6} />
-      </RenderIf>
-    </>
+      {isNetworkTypeSelectionEnabled && <NetworkTypeControlGroup isIPv6={isIPv6} />}
+    </Grid>
   );
 };
 

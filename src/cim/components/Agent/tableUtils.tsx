@@ -12,8 +12,8 @@ import { AGENT_BMH_HOSTNAME_LABEL_KEY } from '../common';
 import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
 import NetworkingStatus from '../status/NetworkingStatus';
 import { getAgentStatus, getBMHStatus } from '../helpers/status';
-import { Button, Popover } from '@patternfly/react-core';
 import { getHardwareStatus, getNetworkStatus } from '../status/utils';
+import BMHStatus from './BMHStatus';
 
 export const discoveryTypeColumn = (
   agents: AgentK8sResource[],
@@ -78,22 +78,7 @@ export const infraEnvStatusColumn = ({
         title = <AgentStatus agent={agent} onApprove={onApprove} onEditHostname={editHostname} />;
       } else if (bmh) {
         bmhStatus = getBMHStatus(bmh);
-        title = bmhStatus.message ? (
-          <Popover
-            headerContent="Error"
-            bodyContent={bmhStatus.message}
-            minWidth="30rem"
-            maxWidth="50rem"
-            hideOnOutsideClick
-            zIndex={300}
-          >
-            <Button variant={'link'} isInline>
-              {bmhStatus.title}
-            </Button>
-          </Popover>
-        ) : (
-          bmhStatus.title
-        );
+        title = <BMHStatus bmhStatus={bmhStatus} />;
       }
 
       return {
@@ -223,7 +208,10 @@ type AgentsTableResources = {
 };
 
 export const useAgentsTable = (
-  {
+  { agents, bmhs, infraEnv }: AgentsTableResources,
+  tableActions?: ClusterDeploymentHostsTablePropsActions,
+): [Host[], HostsTableActions, ActionsResolver<Host>] => {
+  const {
     onEditHost,
     canEditHost,
     onDeleteHost,
@@ -234,9 +222,7 @@ export const useAgentsTable = (
     onEditBMH,
     onUnbindHost,
     canUnbindHost,
-  }: ClusterDeploymentHostsTablePropsActions,
-  { agents, bmhs, infraEnv }: AgentsTableResources,
-): [Host[], HostsTableActions, ActionsResolver<Host>] => {
+  } = tableActions || {};
   const [hosts, actions] = React.useMemo(
     (): [Host[], HostsTableActions] => [
       getAIHosts(agents, bmhs, infraEnv),

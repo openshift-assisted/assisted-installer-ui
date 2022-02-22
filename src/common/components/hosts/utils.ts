@@ -3,6 +3,7 @@ import { Host, Cluster, Inventory } from '../../api/types';
 import { HOST_ROLES, TIME_ZERO } from '../../config';
 import { DASH } from '../constants';
 import { isSingleNodeCluster } from '../clusters/utils';
+import { stringToJSON } from '../../api/utils';
 
 export const canEnable = (clusterStatus: Cluster['status'], status: Host['status']) =>
   ['pending-for-input', 'insufficient', 'ready', 'adding-hosts'].includes(clusterStatus) &&
@@ -184,4 +185,9 @@ export const getSchedulableMasters = (cluster: Cluster): boolean => {
     return true;
   }
   return !!cluster.schedulableMasters;
+};
+
+export const getInventory = (host: Host) => {
+  const { inventory: inventoryString = '' } = host;
+  return stringToJSON<Inventory>(inventoryString) || {};
 };

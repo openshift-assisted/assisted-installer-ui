@@ -1,6 +1,6 @@
 import { FeatureId, OpenshiftVersionOptionType, SupportLevel } from '../../../common/types';
 import { Cluster, CpuArchitecture } from '../../../common/api/types';
-import { isArmArchitecture, isSNO } from '../../selectors';
+import { isArmArchitecture, isSNO } from '../../../common/selectors/clusterSelectors';
 
 const isArmSupported = (versionName: string, versionOptions: OpenshiftVersionOptionType[]) => {
   const versionOption = versionOptions.find((option) => option.value === versionName);
