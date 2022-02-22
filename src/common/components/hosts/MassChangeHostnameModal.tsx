@@ -20,7 +20,7 @@ import * as Yup from 'yup';
 import {
   RichInputField,
   getRichTextValidation,
-  hostnameValidationSchema,
+  richNameValidationSchema,
   HOSTNAME_VALIDATION_MESSAGES,
   ModalProgress,
 } from '../ui';
@@ -64,7 +64,7 @@ const initialValues = {
 
 const validationSchema = (initialValues: EditHostFormValues, usedHostnames: string[]) =>
   Yup.object().shape({
-    hostname: hostnameValidationSchema(initialValues.hostname, usedHostnames),
+    hostname: richNameValidationSchema(usedHostnames, initialValues.hostname),
   });
 
 const withTemplate = (
