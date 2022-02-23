@@ -3,12 +3,7 @@ import { DropdownItem } from '@patternfly/react-core';
 import { noop } from 'lodash';
 
 import { Host } from '../../../common/api/types';
-import {
-  discoveryTypeColumn,
-  agentStatusColumn,
-  clusterColumn,
-  useAgentsTable,
-} from '../Agent/tableUtils';
+import { discoveryTypeColumn, agentStatusColumn, useAgentsTable } from '../Agent/tableUtils';
 import HostsTable, {
   DefaultExpandComponent,
   HostsTableEmptyState,
@@ -19,19 +14,18 @@ import {
   disksColumn,
   hostnameColumn,
   memoryColumn,
+  roleColumn,
 } from '../../../common/components/hosts/tableUtils';
 import {
   DiscoveryTroubleshootingModal,
   HostToolbar,
   ChangeHostnameAction,
   MassChangeHostnameModal,
-  DeleteHostAction,
 } from '../../../common';
-import { TableRow } from '../../../common/components/hosts/AITable';
-import { InfraEnvAgentTableProps } from '../ClusterDeployment/types';
-import { MassApproveAgentModal, MassDeleteHostModal } from '../modals';
+import { ClusterDeploymentHostsTablePropsActions } from '../ClusterDeployment/types';
+import MassApproveAgentModal from '../modals/MassApproveAgentModal';
 import { ActionItemsContext } from '../../../common/components/hosts/HostToolbar';
-import { AgentK8sResource } from '../../types';
+import { AgentK8sResource, BareMetalHostK8sResource, InfraEnvK8sResource } from '../../types';
 import { MassChangeHostnameModalProps } from '../../../common/components/hosts/MassChangeHostnameModal';
 
 type MassApproveActionProps = {
@@ -57,21 +51,34 @@ const MassApproveAction: React.FC<MassApproveActionProps> = ({ onApprove, select
   );
 };
 
-const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
+export type ClusterDeploymentHostDiscoveryTableProps = ClusterDeploymentHostsTablePropsActions & {
+  agents: AgentK8sResource[];
+  bareMetalHosts: BareMetalHostK8sResource[];
+  infraEnv: InfraEnvK8sResource;
+  className?: string;
+  onChangeHostname: (agent: AgentK8sResource, hostname: string) => Promise<AgentK8sResource>;
+  onChangeBMHHostname: (
+    bmh: BareMetalHostK8sResource,
+    hostname: string,
+  ) => Promise<BareMetalHostK8sResource>;
+  onApprove?: (agents: AgentK8sResource) => Promise<AgentK8sResource>;
+};
+
+const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscoveryTableProps> = ({
   agents,
   className,
-  getClusterDeploymentLink,
   bareMetalHosts,
   infraEnv,
+  onApprove,
   onChangeHostname,
   onChangeBMHHostname,
-  onMassDeleteHost,
-  ...actions
+  onEditHost,
+  canEditRole,
+  onEditRole,
 }) => {
   const [isDiscoveryHintModalOpen, setDiscoveryHintModalOpen] = React.useState(false);
   const [isMassChangeHostOpen, setMassChangeHostOpen] = React.useState(false);
   const [isMassApproveOpen, setMassApproveOpen] = React.useState(false);
-  const [isMassDeleteOpen, setMassDeleteOpen] = React.useState(false);
   const [selectedHostIDs, setSelectedHostIDs] = React.useState<string[]>([]);
   const onSelect = (host: Host, isSelected: boolean) => {
     if (isSelected) {
@@ -87,7 +94,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
       bmhs: bareMetalHosts,
       infraEnv,
     },
-    actions,
+    { onEditHost, canEditRole, onEditRole },
   );
   const content = React.useMemo(
     () =>
@@ -97,47 +104,37 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
         agentStatusColumn({
           agents,
           bareMetalHosts,
-          onEditHostname: actions.onEditHost,
-          onApprove: actions.onApprove,
+          onEditHostname: onEditHost,
+          onApprove,
+          wizardStepId: 'hosts-discovery',
         }),
-        clusterColumn(agents, getClusterDeploymentLink) as TableRow<Host>,
+        roleColumn(hostActions.canEditRole, hostActions.onEditRole),
         discoveredAtColumn,
         cpuCoresColumn,
         memoryColumn,
         disksColumn,
       ].filter(Boolean),
-    [agents, actions, getClusterDeploymentLink, hostActions, bareMetalHosts],
+    [agents, hostActions, bareMetalHosts, onApprove, onEditHost],
   );
 
   const hostIDs = hosts.map((h) => h.id);
   const selectedAgents = agents.filter((a) => selectedHostIDs.includes(a.metadata?.uid || ''));
-  const selectedBMHs = bareMetalHosts.filter((bmh) =>
-    selectedHostIDs.includes(bmh.metadata?.uid || ''),
-  );
 
   const massActions = [
     <ChangeHostnameAction
       key="hostname"
       onChangeHostname={() => setMassChangeHostOpen(!isMassChangeHostOpen)}
     />,
-    ...(actions.onApprove
-      ? [
-          <MassApproveAction
-            key="approve"
-            onApprove={() => setMassApproveOpen(!isMassApproveOpen)}
-            selectedAgents={selectedAgents}
-          />,
-        ]
-      : []),
-    ...(onMassDeleteHost
-      ? [
-          <DeleteHostAction
-            key="delete"
-            onDeleteHost={() => setMassDeleteOpen(!isMassDeleteOpen)}
-          />,
-        ]
-      : []),
   ];
+  if (onApprove) {
+    massActions.push(
+      <MassApproveAction
+        key="approve"
+        onApprove={() => setMassApproveOpen(!isMassApproveOpen)}
+        selectedAgents={selectedAgents}
+      />,
+    );
+  }
 
   const onAgentChangeHostname: MassChangeHostnameModalProps['onChangeHostname'] = async (
     host,
@@ -184,20 +181,11 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
         onChangeHostname={onAgentChangeHostname}
         onClose={() => setMassChangeHostOpen(false)}
       />
-      {onMassDeleteHost && (
-        <MassDeleteHostModal
-          isOpen={isMassDeleteOpen}
-          agents={selectedAgents}
-          bmhs={selectedBMHs}
-          onDelete={onMassDeleteHost}
-          onClose={() => setMassDeleteOpen(false)}
-        />
-      )}
-      {actions.onApprove && (
+      {onApprove && (
         <MassApproveAgentModal
           isOpen={isMassApproveOpen}
           agents={selectedAgents}
-          onApprove={actions.onApprove}
+          onApprove={onApprove}
           onClose={() => setMassApproveOpen(false)}
         />
       )}
@@ -205,4 +193,4 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
   );
 };
 
-export default InfraEnvAgentTable;
+export default ClusterDeploymentHostDiscoveryTable;

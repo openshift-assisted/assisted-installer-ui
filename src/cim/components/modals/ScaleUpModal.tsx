@@ -114,7 +114,7 @@ const ScaleUpModal = ({
               <ModalBoxBody>
                 <Stack hasGutter>
                   <StackItem>
-                    <ScaleUpForm agents={agents} />
+                    <ScaleUpForm agents={agents} clusterDeployment={clusterDeployment} />
                   </StackItem>
                   {error && (
                     <StackItem>

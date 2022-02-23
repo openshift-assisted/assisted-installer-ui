@@ -1,8 +1,13 @@
 import {
   getAllClusterWizardSoftValidationIds,
+  getWizardStepClusterStatus,
   WizardStepsValidationMap,
   WizardStepValidationMap,
-} from '../../../common';
+} from '../../../common/components/clusterWizard/validationsInfoUtils';
+import { ClusterWizardStepHostStatusDeterminationObject } from '../../../common/types/hosts';
+import { AgentK8sResource } from '../../types/k8s/agent';
+import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-install';
+import { ClusterDeploymentWizardStepsType } from './types';
 
 export type ClusterWizardStepsType =
   | 'cluster-details'
@@ -34,7 +39,7 @@ const hostDiscoveryStepValidationsMap: WizardStepValidationMap = {
     ],
   },
   host: {
-    allowedStatuses: ['known', 'disabled'],
+    allowedStatuses: ['known', 'known-unbound', 'disabled'],
     groups: ['hardware'],
     validationIds: [
       'connected',
@@ -88,3 +93,45 @@ export const wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardSt
 export const allClusterWizardSoftValidationIds = getAllClusterWizardSoftValidationIds(
   wizardStepsValidationsMap,
 );
+
+const canNextFromClusterDeploymentWizardStep = (
+  agentClusterInstall: AgentClusterInstallK8sResource,
+  agents: AgentK8sResource[],
+  wizardStepId: ClusterDeploymentWizardStepsType,
+) => {
+  const clusterStatus = agentClusterInstall?.status?.debugInfo?.state;
+  const validationsInfo = agentClusterInstall?.status?.validationsInfo;
+  const hosts = agents.reduce<ClusterWizardStepHostStatusDeterminationObject[]>((result, agent) => {
+    const status = agent.status?.debugInfo?.state;
+    if (status) {
+      result.push({ status, validationsInfo: agent.status?.validationsInfo });
+    }
+    return result;
+  }, []);
+  if (!clusterStatus) {
+    return false;
+  }
+  return (
+    getWizardStepClusterStatus(
+      wizardStepId,
+      wizardStepsValidationsMap,
+      { status: clusterStatus, validationsInfo: validationsInfo || {} },
+      hosts,
+    ) === 'ready'
+  );
+};
+
+export const canNextFromHostSelectionStep = (
+  agentClusterInstall: AgentClusterInstallK8sResource,
+  agents: AgentK8sResource[],
+) => canNextFromClusterDeploymentWizardStep(agentClusterInstall, agents, 'hosts-selection');
+
+export const canNextFromHostDiscoveryStep = (
+  agentClusterInstall: AgentClusterInstallK8sResource,
+  agents: AgentK8sResource[],
+) => canNextFromClusterDeploymentWizardStep(agentClusterInstall, agents, 'hosts-discovery');
+
+export const canNextFromNetworkingStep = (
+  agentClusterInstall: AgentClusterInstallK8sResource,
+  agents: AgentK8sResource[],
+) => canNextFromClusterDeploymentWizardStep(agentClusterInstall, agents, 'networking');

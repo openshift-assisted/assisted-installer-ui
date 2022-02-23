@@ -1,19 +1,20 @@
 import * as React from 'react';
 import { sortable } from '@patternfly/react-table';
 import { Link } from 'react-router-dom';
-import { Host, HostsTableActions, HostStatus } from '../../../common';
+import { Host, HostsTableActions } from '../../../common';
 import { AgentK8sResource, InfraEnvK8sResource } from '../../types';
 import AgentStatus from './AgentStatus';
 import { ActionsResolver, TableRow } from '../../../common/components/hosts/AITable';
-import { ClusterDeploymentHostsTablePropsActions } from '../ClusterDeployment/types';
+import {
+  ClusterDeploymentHostsTablePropsActions,
+  ClusterDeploymentWizardStepsType,
+} from '../ClusterDeployment/types';
 import { hostActionResolver } from '../../../common/components/hosts/tableUtils';
 import { getAIHosts, getInfraEnvNameOfAgent } from '../helpers';
 import { AGENT_BMH_HOSTNAME_LABEL_KEY } from '../common';
 import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
-import NetworkingStatus from '../status/NetworkingStatus';
-import { getAgentStatus, getBMHStatus } from '../helpers/status';
-import { getHardwareStatus, getNetworkStatus } from '../status/utils';
 import BMHStatus from './BMHStatus';
+import { getAgentStatus, getBMHStatus, getWizardStepAgentStatus } from '../helpers/status';
 
 export const discoveryTypeColumn = (
   agents: AgentK8sResource[],
@@ -47,19 +48,21 @@ export const discoveryTypeColumn = (
   },
 });
 
-type StatusColumnProps = {
+type AgentStatusColumnProps = {
   agents: AgentK8sResource[];
   bareMetalHosts?: BareMetalHostK8sResource[];
   onEditHostname?: ClusterDeploymentHostsTablePropsActions['onEditHost'];
   onApprove?: ClusterDeploymentHostsTablePropsActions['onApprove'];
+  wizardStepId?: ClusterDeploymentWizardStepsType;
 };
 
-export const infraEnvStatusColumn = ({
+export const agentStatusColumn = ({
   agents,
   bareMetalHosts,
   onEditHostname,
   onApprove,
-}: StatusColumnProps): TableRow<Host> => {
+  wizardStepId,
+}: AgentStatusColumnProps): TableRow<Host> => {
   return {
     header: {
       title: 'Status',
@@ -75,7 +78,14 @@ export const infraEnvStatusColumn = ({
       let title: React.ReactNode = '--';
       if (agent) {
         const editHostname = onEditHostname ? () => onEditHostname(agent) : undefined;
-        title = <AgentStatus agent={agent} onApprove={onApprove} onEditHostname={editHostname} />;
+        title = (
+          <AgentStatus
+            agent={agent}
+            onApprove={onApprove}
+            onEditHostname={editHostname}
+            wizardStepId={wizardStepId}
+          />
+        );
       } else if (bmh) {
         bmhStatus = getBMHStatus(bmh);
         title = <BMHStatus bmhStatus={bmhStatus} />;
@@ -84,7 +94,13 @@ export const infraEnvStatusColumn = ({
       return {
         title,
         props: { 'data-testid': 'host-status' },
-        sortableValue: agent ? getAgentStatus(agent)[0] : bmhStatus?.title ? bmhStatus.title : '',
+        sortableValue: agent
+          ? wizardStepId
+            ? getWizardStepAgentStatus(agent, wizardStepId).status
+            : getAgentStatus(agent).status
+          : bmhStatus?.title
+          ? bmhStatus.title
+          : '',
       };
     },
   };
@@ -161,45 +177,6 @@ export const infraEnvColumn = (
     },
   };
 };
-
-export const networkingStatusColumn = (
-  onEditHostname?: HostsTableActions['onEditHost'],
-): TableRow<Host> => ({
-  header: {
-    title: 'Status',
-    props: {
-      id: 'col-header-networkingstatus',
-    },
-    transforms: [sortable],
-  },
-  cell: (host) => {
-    const editHostname = onEditHostname ? () => onEditHostname(host) : undefined;
-    const networkStatus = getNetworkStatus(host);
-    return {
-      title: <NetworkingStatus host={host} onEditHostname={editHostname} {...networkStatus} />,
-      props: { 'data-testid': 'nic-status' },
-      sortableValue: networkStatus.statusOverride,
-    };
-  },
-});
-
-export const hardwareStatusColumn = (): TableRow<Host> => ({
-  header: {
-    title: 'Status',
-    props: {
-      id: 'col-header-hardwarestatus',
-    },
-    transforms: [sortable],
-  },
-  cell: (host) => {
-    const hardwareStatus = getHardwareStatus(host);
-    return {
-      title: <HostStatus host={host} {...hardwareStatus} />,
-      props: { 'data-testid': 'hardware-status' },
-      sortableValue: hardwareStatus.statusOverride,
-    };
-  },
-});
 
 type AgentsTableResources = {
   agents: AgentK8sResource[];

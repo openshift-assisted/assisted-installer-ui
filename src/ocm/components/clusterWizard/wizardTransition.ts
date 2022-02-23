@@ -1,10 +1,10 @@
+import { Cluster } from '../../../common/api/types';
 import {
-  Cluster,
   getAllClusterWizardSoftValidationIds,
   getWizardStepClusterStatus,
   WizardStepsValidationMap,
   WizardStepValidationMap,
-} from '../../../common';
+} from '../../../common/components/clusterWizard/validationsInfoUtils';
 
 export type ClusterWizardStepsType = 'cluster-details' | 'host-discovery' | 'networking' | 'review';
 export type ClusterWizardFlowStateType = Cluster['status'] | 'new';

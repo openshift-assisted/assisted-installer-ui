@@ -12,7 +12,7 @@ type EditHostModalProps = {
   onClose: () => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSave: (values: EditHostFormValues) => Promise<any>;
-  onFormSaveError: EditHostFormProps['onFormSaveError'];
+  onFormSaveError?: EditHostFormProps['onFormSaveError'];
 };
 
 const EditHostModal: React.FC<EditHostModalProps> = ({

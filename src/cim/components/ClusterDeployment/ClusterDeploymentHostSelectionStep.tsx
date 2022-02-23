@@ -1,6 +1,7 @@
 import React from 'react';
 import * as Yup from 'yup';
-import { Formik } from 'formik';
+import { TestOptionsMessage } from 'yup';
+import { Formik, FormikHelpers } from 'formik';
 import { Grid, GridItem } from '@patternfly/react-core';
 import { ClusterWizardStepHeader, getFormikErrorFields, useAlerts } from '../../../common';
 import {
@@ -19,6 +20,7 @@ import {
 } from './types';
 import { hostCountValidationSchema } from './validationSchemas';
 import { getAgentSelectorFieldsFromAnnotations, getIsSNOCluster } from '../helpers';
+import { canNextFromHostSelectionStep } from './wizardTransition';
 
 const getInitialValues = ({
   agents,
@@ -63,13 +65,27 @@ const getInitialValues = ({
     useMastersAsWorkers: hostCount === 1 || hostCount === 3, // TODO: Recently not supported - https://issues.redhat.com/browse/MGMT-7677
     agentLabels: agentSelector?.labels || [],
     locations: agentSelector?.locations || [],
-    selectedHostIds: autoSelectHosts ? [] : selectedIds,
-    autoSelectedHostIds: autoSelectHosts ? selectedIds : [],
+    selectedHostIds: selectedIds,
+    autoSelectedHostIds: selectedIds,
   };
+};
+
+const getMinHostsCount = (selectedHostsCount: number) => {
+  if (selectedHostsCount === 0) {
+    return 0;
+  }
+  return selectedHostsCount === 4 ? 5 : 3;
 };
 
 const getValidationSchema = (agentClusterInstall: AgentClusterInstallK8sResource) => {
   const isSNOCluster = getIsSNOCluster(agentClusterInstall);
+  const getMinMessage: TestOptionsMessage<{ min: number }> = ({ min }) => {
+    const message = `Please select at least ${min} hosts for the cluster`;
+    if (min === 5) {
+      return message + ' or select just 3 hosts instead.';
+    }
+    return `${message}.`;
+  };
 
   return Yup.lazy<ClusterDeploymentHostsSelectionValues>((values) => {
     return Yup.object<ClusterDeploymentHostsSelectionValues>().shape({
@@ -81,8 +97,10 @@ const getValidationSchema = (agentClusterInstall: AgentClusterInstallK8sResource
       selectedHostIds: values.autoSelectHosts
         ? Yup.array<string>()
         : isSNOCluster
-        ? Yup.array<string>().min(1).max(1)
-        : Yup.array<string>().min(values.selectedHostIds.length === 4 ? 5 : 3),
+        ? Yup.array<string>()
+            .min(0, 'Please select one host for the cluster.')
+            .max(1, 'Please select one host for the cluster.') // TODO(jtomasek): replace this with Yup.array().length() after updating Yup
+        : Yup.array<string>().min(getMinHostsCount(values.selectedHostIds.length), getMinMessage),
     });
   });
 };
@@ -100,7 +118,7 @@ export const useHostsSelectionFormik = ({
 }: UseHostsSelectionFormikArgs): [ClusterDeploymentHostsSelectionValues, Yup.Lazy] => {
   const initialValues = React.useMemo(
     () => getInitialValues({ agents, clusterDeployment, agentClusterInstall }),
-    [], // eslint-disable-line react-hooks/exhaustive-deps
+    [agentClusterInstall, agents, clusterDeployment],
   );
 
   const validationSchema = React.useMemo(() => getValidationSchema(agentClusterInstall), [
@@ -127,6 +145,7 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
   onClose,
   onSaveHostsSelection,
   aiConfigMap,
+  hostActions,
 }) => {
   const { addAlert } = useAlerts();
   const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
@@ -138,10 +157,13 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
   });
 
   const next = () => setCurrentStepId('networking');
-  const handleSubmit = async (values: ClusterDeploymentHostsSelectionValues) => {
+  const handleSubmit = async (
+    values: ClusterDeploymentHostsSelectionValues,
+    formikHelpers: FormikHelpers<ClusterDeploymentHostsSelectionValues>,
+  ) => {
     try {
       await onSaveHostsSelection(values);
-      next();
+      formikHelpers.resetForm({ values });
     } catch (error) {
       addAlert({
         title: 'Failed to save host selection.',
@@ -155,17 +177,16 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
+      validateOnMount
+      enableReinitialize
     >
-      {({ submitForm, isSubmitting, isValid, isValidating, dirty, errors, touched, values }) => {
-        const handleOnNext = () => {
-          if (dirty) {
-            submitForm();
-          } else {
-            next();
-          }
-        };
-
+      {({ isSubmitting, isValid, isValidating, errors, touched, values }) => {
         const selectedAgents = getSelectedAgents(agents, values);
+        const isNextDisabled =
+          !isValid ||
+          isValidating ||
+          isSubmitting ||
+          !canNextFromHostSelectionStep(agentClusterInstall, selectedAgents);
 
         const footer = (
           <ClusterDeploymentWizardFooter
@@ -173,8 +194,8 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
             agents={selectedAgents}
             errorFields={getFormikErrorFields(errors, touched)}
             isSubmitting={isSubmitting}
-            isNextDisabled={!isValid || isValidating || isSubmitting}
-            onNext={handleOnNext}
+            isNextDisabled={isNextDisabled}
+            onNext={next}
             onBack={() => setCurrentStepId('cluster-details')}
             onCancel={onClose}
           />
@@ -193,6 +214,7 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
                   agents={agents}
                   clusterDeployment={clusterDeployment}
                   aiConfigMap={aiConfigMap}
+                  hostActions={hostActions}
                 />
               </GridItem>
             </Grid>

@@ -1,5 +1,13 @@
 import React from 'react';
-import { Grid, GridItem } from '@patternfly/react-core';
+import {
+  Button,
+  ButtonVariant,
+  Grid,
+  GridItem,
+  Toolbar,
+  ToolbarContent,
+  ToolbarItem,
+} from '@patternfly/react-core';
 import { CheckboxField, NumberInputField } from '../../../common';
 import { HOSTS_MAX_COUNT, HOSTS_MIN_COUNT } from './constants';
 import { useFormikContext } from 'formik';
@@ -19,7 +27,7 @@ const ClusterDeploymentHostsSelectionBasic: React.FC<ClusterDeploymentHostsSelec
   isSNOCluster,
   availableAgents,
 }) => {
-  const { setFieldValue } = useFormikContext<ClusterDeploymentHostsSelectionValues>();
+  const { setFieldValue, submitForm } = useFormikContext<ClusterDeploymentHostsSelectionValues>();
   const { matchingAgents, selectedAgents, hostCount } = useAgentsAutoSelection(availableAgents);
 
   React.useEffect(() => {
@@ -70,6 +78,16 @@ const ClusterDeploymentHostsSelectionBasic: React.FC<ClusterDeploymentHostsSelec
         selectedAgents={selectedAgents}
         targetHostCount={hostCount}
       />
+
+      <Toolbar data-testid="agent-selection-toolbar" inset={{ default: 'insetNone' }}>
+        <ToolbarContent>
+          <ToolbarItem>
+            <Button variant={ButtonVariant.secondary} onClick={submitForm} isSmall>
+              Bind hosts
+            </Button>
+          </ToolbarItem>
+        </ToolbarContent>
+      </Toolbar>
     </>
   );
 };

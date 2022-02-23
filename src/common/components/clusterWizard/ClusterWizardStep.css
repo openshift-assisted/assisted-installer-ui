@@ -6,9 +6,13 @@
   margin-left: var(--pf-global--spacer--sm);
 }
 
-.cluster-wizard-step__footer {
+.cluster-wizard .cluster-wizard-step__footer {
   display: block !important;
   z-index: 90 !important;
+}
+
+.cluster-deployment-wizard .cluster-wizard-step__footer {
+  display: block !important;
 }
 
 @media (min-width: 768px) {

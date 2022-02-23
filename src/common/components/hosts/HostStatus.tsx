@@ -173,7 +173,15 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({ ...
     );
   }
 
-  if (['unbinding-pending-user-action'].includes(status)) {
+  if (
+    [
+      'preparing-for-installation',
+      'preparing-successful',
+      'unbinding-pending-user-action',
+      'binding',
+      'unbinding',
+    ].includes(status)
+  ) {
     // No additional error messages shown
     return (
       <TextContent>

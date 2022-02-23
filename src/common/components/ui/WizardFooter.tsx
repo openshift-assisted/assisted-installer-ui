@@ -48,7 +48,7 @@ export const WizardFooter: React.FC<WizardFooterProps> = ({
       {alerts && <StackItem>{alerts}</StackItem>}
       {errors && <StackItem>{errors}</StackItem>}
       <StackItem>
-        <Toolbar data-testid="wizard-step-actions">
+        <Toolbar data-testid="wizard-step-actions" inset={{ default: 'insetNone' }}>
           <ToolbarContent>
             {leftExtraActions}
             {onNext && (
