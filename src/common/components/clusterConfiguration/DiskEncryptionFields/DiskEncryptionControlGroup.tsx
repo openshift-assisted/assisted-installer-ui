@@ -50,8 +50,8 @@ const DiskEncryptionControlGroup: React.FC<DiskEncryptionControlGroupProps> = ({
       <StackItem>
         <SwitchField
           name="enableDiskEncryptionOnMasters"
-          label={`Enable encryption of installation disks${
-            !isSNO ? ' on control plane nodes' : ''
+          label={`Enable encryption of installation disk${
+            !isSNO ? 's on control plane nodes' : ''
           }`}
           isDisabled={isDisabled}
         />
