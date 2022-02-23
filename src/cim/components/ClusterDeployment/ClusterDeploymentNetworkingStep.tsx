@@ -105,7 +105,7 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
               !sameProxies &&
               (values.httpProxy === undefined || !!values.httpsProxy === undefined)
             }
-            nextButtonText="Start installation"
+            nextButtonText="Install cluster"
           />
         );
         const navigation = <ClusterDeploymentWizardNavigation />;
