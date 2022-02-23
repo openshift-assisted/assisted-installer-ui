@@ -45,10 +45,16 @@ const DiskEncryptionControlGroup: React.FC<DiskEncryptionControlGroupProps> = ({
     }
   }, [isSNO, setFieldValue]);
 
+  const disableMessage = 'This option is not editable after the draft cluster is created';
+  const tooltipProps = {
+    hidden: !isDisabled,
+    content: disableMessage,
+  };
   return (
     <Stack hasGutter>
       <StackItem>
         <SwitchField
+          tooltipProps={tooltipProps}
           name="enableDiskEncryptionOnMasters"
           label={`Enable encryption of installation disk${
             !isSNO ? 's on control plane nodes' : ''
@@ -59,6 +65,7 @@ const DiskEncryptionControlGroup: React.FC<DiskEncryptionControlGroupProps> = ({
       <RenderIf condition={!isSNO}>
         <StackItem>
           <SwitchField
+            tooltipProps={tooltipProps}
             name="enableDiskEncryptionOnWorkers"
             isDisabled={isDisabled}
             label="Enable encryption of installation disks on workers"
