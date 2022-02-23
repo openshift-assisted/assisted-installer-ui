@@ -34,7 +34,7 @@ export const getNetworkInitialValues = (
     hostSubnet: getSubnetFromMachineNetworkCidr(selectMachineNetworkCIDR(cluster)),
     vipDhcpAllocation: cluster.vipDhcpAllocation,
     managedNetworkingType: cluster.userManagedNetworking ? 'userManaged' : 'clusterManaged',
-    networkType: cluster.networkType || 'OpenShiftSDN',
+    networkType: cluster.networkType || 'OVNKubernetes',
     enableProxy: false,
     editProxy: false,
   };
