@@ -1,5 +1,6 @@
 import { useFormikContext } from 'formik';
 import * as React from 'react';
+import { Alert, Stack, StackItem } from '@patternfly/react-core';
 import {
   ClusterDetailsFormFields,
   ClusterDetailsFormFieldsProps,
@@ -33,19 +34,32 @@ const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> 
   const ocpVersions = React.useMemo(() => getOCPVersions(clusterImages), [clusterImages]);
   const isEditFlow = !!clusterDeployment;
   return (
-    <ClusterDetailsFormFields
-      toggleRedHatDnsService={toggleRedHatDnsService}
-      versions={ocpVersions}
-      canEditPullSecret={!clusterDeployment}
-      isPullSecretSet={!!clusterDeployment?.spec?.pullSecretRef?.name}
-      // isSNOGroupDisabled={!!clusterDeployment /* truish for create flow only */}
-      isNameDisabled={isEditFlow}
-      isBaseDnsDomainDisabled={isEditFlow}
-      forceOpenshiftVersion={agentClusterInstall?.spec?.imageSetRef?.name}
-      isOcm={false}
-      defaultPullSecret={pullSecret}
-      extensionAfter={extensionAfter}
-    />
+    <Stack hasGutter>
+      {isEditFlow && (
+        <StackItem>
+          <Alert
+            isInline
+            variant="info"
+            title="This page cannot be edited once the cluster draft is created."
+          />
+        </StackItem>
+      )}
+      <StackItem>
+        <ClusterDetailsFormFields
+          toggleRedHatDnsService={toggleRedHatDnsService}
+          versions={ocpVersions}
+          canEditPullSecret={!clusterDeployment}
+          isPullSecretSet={!!clusterDeployment?.spec?.pullSecretRef?.name}
+          // isSNOGroupDisabled={!!clusterDeployment /* truish for create flow only */}
+          isNameDisabled={isEditFlow}
+          isBaseDnsDomainDisabled={isEditFlow}
+          forceOpenshiftVersion={agentClusterInstall?.spec?.imageSetRef?.name}
+          isOcm={false}
+          defaultPullSecret={pullSecret}
+          extensionAfter={extensionAfter}
+        />
+      </StackItem>
+    </Stack>
   );
 };
 
