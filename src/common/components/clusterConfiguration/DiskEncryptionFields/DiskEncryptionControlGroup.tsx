@@ -1,5 +1,5 @@
 import React from 'react';
-import { Stack, StackItem, Tooltip } from '@patternfly/react-core';
+import { Stack, StackItem } from '@patternfly/react-core';
 import SwitchField from '../../ui/formik/SwitchField';
 import { DiskEncryptionMode } from './DiskEncryptionMode';
 import { RenderIf } from '../../ui';
@@ -51,6 +51,10 @@ const DiskEncryptionControlGroup: React.FC<DiskEncryptionControlGroupProps> = ({
     <Stack hasGutter>
       <StackItem>
         <SwitchField
+          tooltipProps={{
+            hidden: !isDisabled,
+            content: disableMessage,
+          }}
           name="enableDiskEncryptionOnMasters"
           label={`Enable encryption of installation disk${
             !isSNO ? 's on control plane nodes' : ''
@@ -60,13 +64,15 @@ const DiskEncryptionControlGroup: React.FC<DiskEncryptionControlGroupProps> = ({
       </StackItem>
       <RenderIf condition={!isSNO}>
         <StackItem>
-          <Tooltip hidden={!isDisabled} content={disableMessage}>
-            <SwitchField
-              name="enableDiskEncryptionOnWorkers"
-              isDisabled={isDisabled}
-              label="Enable encryption of installation disks on workers"
-            />
-          </Tooltip>
+          <SwitchField
+            tooltipProps={{
+              hidden: !isDisabled,
+              content: disableMessage,
+            }}
+            name="enableDiskEncryptionOnWorkers"
+            isDisabled={isDisabled}
+            label="Enable encryption of installation disks on workers"
+          />
         </StackItem>
       </RenderIf>
       <RenderIf
