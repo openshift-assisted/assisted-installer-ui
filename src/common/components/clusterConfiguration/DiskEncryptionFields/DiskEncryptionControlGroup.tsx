@@ -46,7 +46,7 @@ const DiskEncryptionControlGroup: React.FC<DiskEncryptionControlGroupProps> = ({
   }, [isSNO, setFieldValue]);
 
   const disableMessage = 'This option is not editable after the draft cluster is created';
-  const tooltipProps={
+  const tooltipProps = {
     hidden: !isDisabled,
     content: disableMessage,
   };
