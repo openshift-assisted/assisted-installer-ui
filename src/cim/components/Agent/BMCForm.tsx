@@ -28,6 +28,7 @@ import {
   getRichTextValidation,
   RichInputField,
   HOSTNAME_VALIDATION_MESSAGES,
+  bmcAddressValidationSchema,
 } from '../../../common';
 import { Language } from '@patternfly/react-code-editor';
 import { MinusCircleIcon, PlusCircleIcon } from '@patternfly/react-icons';
@@ -124,7 +125,7 @@ const getValidationSchema = (hasDHCP: boolean, usedHostnames: string[], origHost
   Yup.object({
     name: Yup.string().required(),
     hostname: richNameValidationSchema(usedHostnames, origHostname),
-    bmcAddress: Yup.string().required(),
+    bmcAddress: bmcAddressValidationSchema.required(),
     username: Yup.string().required(),
     password: Yup.string().required(),
     bootMACAddress: macAddressValidationSchema,
