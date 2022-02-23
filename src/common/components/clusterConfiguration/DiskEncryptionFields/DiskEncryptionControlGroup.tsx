@@ -1,5 +1,5 @@
 import React from 'react';
-import { Stack, StackItem } from '@patternfly/react-core';
+import { Stack, StackItem, Tooltip } from '@patternfly/react-core';
 import SwitchField from '../../ui/formik/SwitchField';
 import { DiskEncryptionMode } from './DiskEncryptionMode';
 import { RenderIf } from '../../ui';
@@ -45,6 +45,8 @@ const DiskEncryptionControlGroup: React.FC<DiskEncryptionControlGroupProps> = ({
     }
   }, [isSNO, setFieldValue]);
 
+  const disableMessage = 'This option is not editable after the draft cluster is created';
+
   return (
     <Stack hasGutter>
       <StackItem>
@@ -58,11 +60,13 @@ const DiskEncryptionControlGroup: React.FC<DiskEncryptionControlGroupProps> = ({
       </StackItem>
       <RenderIf condition={!isSNO}>
         <StackItem>
-          <SwitchField
-            name="enableDiskEncryptionOnWorkers"
-            isDisabled={isDisabled}
-            label="Enable encryption of installation disks on workers"
-          />
+          <Tooltip hidden={!isDisabled} content={disableMessage}>
+            <SwitchField
+              name="enableDiskEncryptionOnWorkers"
+              isDisabled={isDisabled}
+              label="Enable encryption of installation disks on workers"
+            />
+          </Tooltip>
         </StackItem>
       </RenderIf>
       <RenderIf
