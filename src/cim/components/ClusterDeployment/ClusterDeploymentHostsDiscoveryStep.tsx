@@ -14,6 +14,7 @@ import {
 } from './types';
 import ClusterDeploymentHostsDiscovery from './ClusterDeploymentHostsDiscovery';
 import { isAgentOfInfraEnv } from './helpers';
+import { canNextFromHostDiscoveryStep } from './wizardTransition';
 
 type UseHostsDiscoveryFormikArgs = {
   agents: AgentK8sResource[];
@@ -92,13 +93,18 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
       onSubmit={handleSubmit}
     >
       {({ submitForm, isSubmitting, isValid, isValidating, errors, touched }) => {
+        const isNextDisabled =
+          !isValid ||
+          isValidating ||
+          isSubmitting ||
+          !canNextFromHostDiscoveryStep(agentClusterInstall, infraEnvAgents);
         const footer = (
           <ClusterDeploymentWizardFooter
             agentClusterInstall={agentClusterInstall}
             agents={infraEnvAgents}
             errorFields={getFormikErrorFields(errors, touched)}
             isSubmitting={isSubmitting}
-            isNextDisabled={!isValid || isValidating || isSubmitting}
+            isNextDisabled={isNextDisabled}
             onNext={submitForm}
             onBack={() => setCurrentStepId('cluster-details')}
             onCancel={onClose}

@@ -42,6 +42,7 @@ export const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
         toggleIndicator={CaretDownIcon}
         isDisabled={isDisabled}
         id={idPrefix ? `${idPrefix}-dropdown-toggle-items` : undefined}
+        className="pf-m-text" // TODO(jtomasek): replace this with 'isText' prop once we update the PF
       >
         {current || defaultValue}
       </DropdownToggle>

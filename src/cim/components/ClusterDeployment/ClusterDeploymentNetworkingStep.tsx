@@ -2,7 +2,12 @@ import React from 'react';
 import { Formik } from 'formik';
 import { Grid, GridItem } from '@patternfly/react-core';
 
-import { getFormikErrorFields, useAlerts, ClusterWizardStepHeader } from '../../../common';
+import {
+  getFormikErrorFields,
+  useAlerts,
+  ClusterWizardStepHeader,
+  FormikAutoSave,
+} from '../../../common';
 
 import {
   ClusterDeploymentDetailsNetworkingProps,
@@ -15,12 +20,12 @@ import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
 import ClusterDeploymentNetworkingForm from './ClusterDeploymentNetworkingForm';
 import { isAgentOfCluster, isCIMFlow } from './helpers';
 import { useNetworkingFormik } from './use-networking-formik';
+import { canNextFromNetworkingStep } from './wizardTransition';
 
 const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworkingProps> = ({
   clusterDeployment,
   agentClusterInstall,
   agents,
-  aiConfigMap,
   onSaveNetworking,
   onClose,
   onFinish,
@@ -60,11 +65,10 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
   const handleSubmit = async (values: ClusterDeploymentNetworkingValues) => {
     try {
       await onSaveNetworking(values);
-      next();
     } catch (error) {
       addAlert({
         title: 'Failed to save ClusterDeployment',
-        message: error,
+        message: error instanceof Error ? error.message : undefined,
       });
     }
   };
@@ -80,23 +84,28 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
-      {({ submitForm, isSubmitting, isValid, isValidating, errors, touched, values }) => {
+      {({ isSubmitting, isValid, isValidating, errors, touched, values }) => {
         const footer = (
           <ClusterDeploymentWizardFooter
             agentClusterInstall={agentClusterInstall}
             agents={clusterAgents}
             errorFields={getFormikErrorFields(errors, touched)}
             isSubmitting={isSubmitting}
-            isNextDisabled={!isValid || isValidating || isSubmitting}
+            isNextDisabled={
+              !isValid ||
+              isValidating ||
+              isSubmitting ||
+              !canNextFromNetworkingStep(agentClusterInstall, clusterAgents)
+            }
             onBack={onBack}
-            onNext={submitForm}
+            onNext={next}
             onCancel={onClose}
-            nextButtonText="Save and install"
             requireProxy={
               !!infraEnvWithProxy &&
               !sameProxies &&
               (values.httpProxy === undefined || !!values.httpsProxy === undefined)
             }
+            nextButtonText="Start installation"
           />
         );
         const navigation = <ClusterDeploymentWizardNavigation />;
@@ -107,12 +116,11 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
               <GridItem>
                 <ClusterWizardStepHeader>Networking</ClusterWizardStepHeader>
               </GridItem>
-              <GridItem span={12} lg={10} xl={9} xl2={7}>
+              <GridItem>
                 <ClusterDeploymentNetworkingForm
                   clusterDeployment={clusterDeployment}
                   agentClusterInstall={agentClusterInstall}
                   agents={clusterAgents}
-                  aiConfigMap={aiConfigMap}
                   sameProxies={sameProxies}
                   infraEnvsError={infraEnvsError}
                   infraEnvWithProxy={infraEnvWithProxy}
@@ -121,6 +129,7 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
                 />
               </GridItem>
             </Grid>
+            <FormikAutoSave />
           </ClusterDeploymentWizardStep>
         );
       }}

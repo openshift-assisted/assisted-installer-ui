@@ -41,9 +41,11 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   aiConfigMap,
   infraEnv,
   fetchInfraEnv,
+  initialStep,
+  onApproveAgent,
 }) => {
   const [currentStepId, setCurrentStepId] = React.useState<ClusterDeploymentWizardStepsType>(
-    'cluster-details',
+    initialStep || 'cluster-details',
   );
 
   const isAIFlow = isAIFlowInfraEnv(infraEnv);
@@ -77,6 +79,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
               onSaveHostsSelection={onSaveHostsSelection}
               agents={agents}
               aiConfigMap={aiConfigMap}
+              hostActions={hostActions}
             />
           );
         }
@@ -110,6 +113,9 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
                 console.log('onChangeBMHHostname is not implemented: ', hostname);
                 return Promise.resolve(bmh);
               }}
+              canEditRole={hostActions.canEditRole}
+              onEditRole={hostActions.onEditRole}
+              onApproveAgent={onApproveAgent}
               // onFormSaveError={setErrorHandler}
             />
           );
@@ -121,7 +127,6 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
             clusterDeployment={clusterDeployment}
             agentClusterInstall={agentClusterInstall}
             agents={agents}
-            aiConfigMap={aiConfigMap}
             onSaveNetworking={onSaveNetworking}
             onClose={onClose}
             hostActions={hostActions}

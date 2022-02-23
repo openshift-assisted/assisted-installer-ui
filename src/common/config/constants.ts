@@ -38,7 +38,7 @@ export const EVENTS_POLLING_INTERVAL = 10 * 1000;
 export const HOST_ROLES: HostRole[] = [
   {
     value: 'auto-assign',
-    label: 'Automatic',
+    label: 'Auto-assign',
     description:
       'A role will be chosen automatically based on detected hardware and network latency.',
   },
@@ -77,7 +77,7 @@ export const HOST_STATUS_LABELS: { [key in Host['status'] | 'discovered']: strin
   'disconnected-unbound': 'Disconnected',
   'discovering-unbound': 'Discovering',
   'insufficient-unbound': 'Insufficient',
-  'known-unbound': 'Ready',
+  'known-unbound': 'Available',
   binding: 'Binding',
   discovering: 'Discovering',
   discovered: 'Discovered',
@@ -111,6 +111,7 @@ export const CLUSTER_FIELD_LABELS: { [key in string]: string } = {
   sshPublicKey: 'SSH public key',
   SNODisclaimer: 'Single Node OpenShift disclaimer',
   diskEncryptionTangServers: "Tang servers' URLs or thumbprints",
+  selectedHostIds: 'Hosts selection',
 };
 
 export const HOST_STATUS_DETAILS: { [key in Host['status'] | 'discovered']: string } = {

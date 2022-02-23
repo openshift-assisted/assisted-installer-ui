@@ -2,27 +2,40 @@ import { Button, Popover, Stack, StackItem } from '@patternfly/react-core';
 import * as React from 'react';
 import { getHostname, HostStatus } from '../../../common';
 import { AgentK8sResource } from '../../types';
-import { ClusterDeploymentHostsTablePropsActions } from '../ClusterDeployment/types';
+import {
+  ClusterDeploymentHostsTablePropsActions,
+  ClusterDeploymentWizardStepsType,
+} from '../ClusterDeployment/types';
 import { getAIHosts } from '../helpers/toAssisted';
-import { getAgentStatus } from '../helpers/status';
+import { getAgentStatus, getWizardStepAgentStatus } from '../helpers/status';
 
 import '@patternfly/react-styles/css/utilities/Text/text.css';
+import { AdditionalNTPSourcesDialogToggle } from '../ClusterDeployment/AdditionalNTPSourcesDialogToggle';
 
 export type AgentStatusProps = {
   agent: AgentK8sResource;
   onApprove?: ClusterDeploymentHostsTablePropsActions['onApprove'];
   onEditHostname?: ClusterDeploymentHostsTablePropsActions['onEditHost'];
   zIndex?: number;
+  wizardStepId?: ClusterDeploymentWizardStepsType;
 };
 
-const AgentStatus: React.FC<AgentStatusProps> = ({ agent, onApprove, onEditHostname, zIndex }) => {
+const AgentStatus: React.FC<AgentStatusProps> = ({
+  agent,
+  onApprove,
+  onEditHostname,
+  zIndex,
+  wizardStepId,
+}) => {
   const [host] = getAIHosts([agent]);
   const editHostname = onEditHostname ? () => onEditHostname(agent) : undefined;
   const pendingApproval = !agent.spec.approved;
 
   const hostname = getHostname(host, agent.status?.inventory || {});
 
-  const [status, , validationsInfo] = getAgentStatus(agent);
+  const { status, validationsInfo, sublabel } = wizardStepId
+    ? getWizardStepAgentStatus(agent, wizardStepId)
+    : getAgentStatus(agent);
 
   return (
     <HostStatus
@@ -31,6 +44,8 @@ const AgentStatus: React.FC<AgentStatusProps> = ({ agent, onApprove, onEditHostn
       validationsInfo={validationsInfo}
       statusOverride={status}
       zIndex={zIndex}
+      sublabel={sublabel}
+      AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
     >
       {pendingApproval && onApprove && (
         <Popover
