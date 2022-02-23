@@ -5,6 +5,7 @@ import { PlatformType, POLLING_INTERVAL, useAlerts } from '../../common';
 import { AxiosError } from 'axios';
 import { APIErrorMixin } from '../api/types';
 import React from 'react';
+
 export default function useClusterSupportedPlatforms(clusterId: string) {
   const { addAlert, alerts } = useAlerts();
   const url = ClustersAPI.makeSupportedPlatformsBaseURI(clusterId);
@@ -18,9 +19,10 @@ export default function useClusterSupportedPlatforms(clusterId: string) {
   const isLoading = !error && !data;
   // Platform integration is supported
   // if there is another platform type
-  // besides 'baremetal', in the returned data.
+  // besides 'baremetal' or 'none', in the returned data.
   const isPlatformIntegrationSupported =
-    !isLoading && (data?.filter((platform) => platform !== 'baremetal') || [])?.length > 0;
+    !isLoading &&
+    (data?.filter((platform) => !['none', 'baremetal'].includes(platform)) || [])?.length > 0;
 
   React.useEffect(() => {
     if (error) {
