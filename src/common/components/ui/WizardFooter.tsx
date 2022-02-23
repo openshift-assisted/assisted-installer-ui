@@ -1,16 +1,15 @@
 import * as React from 'react';
 import {
+  ActionList,
+  ActionListItem,
+  Button,
   ButtonVariant,
   Spinner,
   Stack,
   StackItem,
   Text,
   TextVariants,
-  Toolbar,
-  ToolbarContent,
-  ToolbarItem,
 } from '@patternfly/react-core';
-import { ToolbarButton } from './Toolbar';
 
 export type WizardFooterGenericProps = {
   onNext?: () => void;
@@ -48,46 +47,50 @@ export const WizardFooter: React.FC<WizardFooterProps> = ({
       {alerts && <StackItem>{alerts}</StackItem>}
       {errors && <StackItem>{errors}</StackItem>}
       <StackItem>
-        <Toolbar data-testid="wizard-step-actions" inset={{ default: 'insetNone' }}>
-          <ToolbarContent>
-            {leftExtraActions}
-            {onNext && (
-              <ToolbarButton
+        <ActionList data-testid="wizard-step-actions">
+          {leftExtraActions}
+          {onNext && (
+            <ActionListItem>
+              <Button
                 variant={ButtonVariant.primary}
                 name="next"
                 onClick={onNext}
                 isDisabled={isNextDisabled}
               >
                 {nextButtonText || 'Next'}
-              </ToolbarButton>
-            )}
-            {onBack && (
-              <ToolbarButton
+              </Button>
+            </ActionListItem>
+          )}
+          {onBack && (
+            <ActionListItem>
+              <Button
                 variant={ButtonVariant.secondary}
                 name="back"
                 onClick={onBack}
                 isDisabled={isBackDisabled}
               >
                 {'Back'}
-              </ToolbarButton>
-            )}
-            <ToolbarButton
+              </Button>
+            </ActionListItem>
+          )}
+          <ActionListItem>
+            <Button
               variant={ButtonVariant.link}
               name="cancel"
               onClick={onCancel}
               isDisabled={false}
             >
               {'Cancel'}
-            </ToolbarButton>
-            {isSubmitting && (
-              <ToolbarItem>
-                <Text component={TextVariants.small}>
-                  <Spinner size="sm" /> {submittingText}
-                </Text>
-              </ToolbarItem>
-            )}
-          </ToolbarContent>
-        </Toolbar>
+            </Button>
+          </ActionListItem>
+          {isSubmitting && (
+            <ActionListItem>
+              <Text component={TextVariants.small}>
+                <Spinner size="sm" /> {submittingText}
+              </Text>
+            </ActionListItem>
+          )}
+        </ActionList>
       </StackItem>
     </Stack>
   );
