@@ -109,7 +109,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
                   Add new hosts by generating a new Discovery ISO under your cluster's "Add hosts”
                   tab on{' '}
                   <a href={REDHAT_CONSOLE_OPENSHIFT} target="_blank" rel="noopener noreferrer">
-                    console.redhat.com/openshift <ExternalLinkAltIcon />
+                    https://cloud.redhat.com/openshift <ExternalLinkAltIcon />
                   </a>
                   .
                 </p>
