@@ -27,7 +27,7 @@ export const ENCRYPTING_DISK_DURING_INSTALLATION =
 export const getOcpConsoleNodesPage = (ocpConsoleUrl: string) =>
   `${ocpConsoleUrl}/k8s/cluster/nodes`;
 
-export const REDHAT_CONSOLE_OPENSHIFT = 'console.redhat.com/openshift';
+export const REDHAT_CONSOLE_OPENSHIFT = 'https://console.redhat.com/openshift';
 
 // TODO(mlibra): Retrieve branding dynamically, if needed, i.e. via injecting to the "window" object
 export const getProductBrandingCode = () => 'redhat';
