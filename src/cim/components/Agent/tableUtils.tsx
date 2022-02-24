@@ -164,21 +164,16 @@ export const infraEnvColumn = (
       const agent = agents.find((a) => a.metadata?.uid === host.id) as AgentK8sResource;
       const infraEnvName = getInfraEnvNameOfAgent(agent);
 
-      let titleName: React.ReactNode = infraEnvName || 'N/A';
-      if (infraEnvName && getInfraEnvLink) {
-        titleName = getInfraEnvLink({
-          name: infraEnvName,
-          namespace: agent.metadata?.namespace || '',
-        });
+      let title: React.ReactNode = infraEnvName || 'N/A';
+      if (infraEnvName) {
+        title = (
+          <Link
+            to={`/multicloud/infrastructure/environments/details/${agent.metadata?.namespace}/${infraEnvName}/overview`}
+          >
+            {`${title}`}
+          </Link>
+        );
       }
-      let title = (
-        <Link
-          to={`/multicloud/infrastructure/environments/details/${agent.metadata?.namespace}/${infraEnvName}/overview`}
-        >
-          {`${titleName}`}
-        </Link>
-      );
-
       return {
         title,
         props: { 'data-testid': 'infra-env' },
