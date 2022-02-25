@@ -18,13 +18,12 @@ import {
 } from '../../../common/components/hosts/tableUtils';
 import {
   DiscoveryTroubleshootingModal,
-  HostToolbar,
   ChangeHostnameAction,
   MassChangeHostnameModal,
 } from '../../../common';
 import { ClusterDeploymentHostsTablePropsActions } from '../ClusterDeployment/types';
 import MassApproveAgentModal from '../modals/MassApproveAgentModal';
-import { ActionItemsContext } from '../../../common/components/hosts/HostToolbar';
+import { ActionItemsContext } from '../../../common/components/hosts/TableToolbar';
 import { AgentK8sResource, BareMetalHostK8sResource, InfraEnvK8sResource } from '../../types';
 import { MassChangeHostnameModalProps } from '../../../common/components/hosts/MassChangeHostnameModal';
 
@@ -117,7 +116,6 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
     [agents, hostActions, bareMetalHosts, onApprove, onEditHost],
   );
 
-  const hostIDs = hosts.map((h) => h.id);
   const selectedAgents = agents.filter((a) => selectedHostIDs.includes(a.metadata?.uid || ''));
 
   const massActions = [
@@ -151,13 +149,6 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
 
   return (
     <>
-      <HostToolbar
-        hostIDs={hostIDs}
-        selectedHostIDs={selectedHostIDs}
-        onSelectNone={() => setSelectedHostIDs([])}
-        onSelectAll={() => setSelectedHostIDs(hostIDs)}
-        actionItems={massActions}
-      />
       <HostsTable
         hosts={hosts}
         content={content}
@@ -167,6 +158,7 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
         setSelectedHostIDs={setSelectedHostIDs}
         onSelect={onSelect}
         ExpandComponent={DefaultExpandComponent}
+        toolbarActions={massActions}
       >
         <HostsTableEmptyState setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
       </HostsTable>
