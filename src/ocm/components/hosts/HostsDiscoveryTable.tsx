@@ -9,6 +9,7 @@ import {
   HostsTableActions,
   stringToJSON,
   isSNO,
+  DeleteHostAction,
 } from '../../../common';
 import { HostsTableModals, useHostsTable } from './use-hosts-table';
 import {
@@ -94,6 +95,7 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({
     selectedHostIDs,
     setSelectedHostIDs,
     onMassChangeHostname,
+    onMassDeleteHost,
     ...modalProps
   } = useHostsTable(cluster);
 
@@ -161,6 +163,7 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({
         setSelectedHostIDs={setSelectedHostIDs}
         toolbarActions={[
           <ChangeHostnameAction key="hostname" onChangeHostname={onMassChangeHostname} />,
+          <DeleteHostAction key="delete" onDeleteHost={onMassDeleteHost} />,
         ]}
       >
         <HostsTableEmptyState setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />

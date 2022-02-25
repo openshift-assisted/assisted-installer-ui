@@ -1,21 +1,15 @@
 import * as React from 'react';
-import {
-  Button,
-  ButtonVariant,
-  Flex,
-  FlexItem,
-  Modal,
-  ModalBoxBody,
-  ModalBoxFooter,
-  Popover,
-  Stack,
-  StackItem,
-} from '@patternfly/react-core';
+import { Button, Flex, FlexItem, Popover } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons';
 import { Link } from 'react-router-dom';
 import { sortable } from '@patternfly/react-table';
 import { global_palette_blue_300 as blueInfoColor } from '@patternfly/react-tokens/dist/js/global_palette_blue_300';
-import { Host, ModalProgress, getHostname, getInventory } from '../../../common';
+import {
+  Host,
+  getHostname,
+  getInventory,
+  MassDeleteHostModal as CommonMassDeleteHostModal,
+} from '../../../common';
 import { TableRow } from '../../../common/components/hosts/AITable';
 import HostsTable from '../../../common/components/hosts/HostsTable';
 import { AgentK8sResource, BareMetalHostK8sResource } from '../../types';
@@ -24,7 +18,6 @@ import { AGENT_BMH_HOSTNAME_LABEL_KEY } from '../common/constants';
 import AgentStatus from '../Agent/AgentStatus';
 import BMHStatus from '../Agent/BMHStatus';
 import { getBMHStatus, getAgentStatus } from '../helpers';
-
 const hostnameColumn = (agents: AgentK8sResource[]): TableRow<Host> => {
   return {
     header: {
@@ -116,7 +109,7 @@ const tableContent = (agents: AgentK8sResource[], bareMetalHosts: BareMetalHostK
   statusColumn(agents, bareMetalHosts),
 ];
 
-type MassDeleteHostModalProps = {
+type MassDeleteAgentModalProps = {
   isOpen: boolean;
   onClose: VoidFunction;
   agents: AgentK8sResource[];
@@ -125,7 +118,7 @@ type MassDeleteHostModalProps = {
   onDelete: (agent?: AgentK8sResource, bmh?: BareMetalHostK8sResource) => Promise<any>;
 };
 
-const MassDeleteHostModal: React.FC<MassDeleteHostModalProps> = ({
+const MassDeleteAgentModal: React.FC<MassDeleteAgentModalProps> = ({
   isOpen,
   onClose,
   onDelete,
@@ -133,79 +126,31 @@ const MassDeleteHostModal: React.FC<MassDeleteHostModalProps> = ({
   bmhs,
 }) => {
   const [hosts] = useAgentsTable({ agents, bmhs });
-  const [progress, setProgress] = React.useState<number | null>(null);
-  const [error, setError] = React.useState<{ title: string; message: string }>();
-  const onClick = async () => {
-    setError(undefined);
-    const i = 0;
-    try {
-      for (const host of hosts) {
-        setProgress((100 * (i + 1)) / hosts.length);
-        const agent = agents.find((a) => a.metadata?.uid === host.id);
-        const bmhLabel = agent?.metadata?.labels?.[AGENT_BMH_HOSTNAME_LABEL_KEY];
-        let bmh;
-        if (!agent) {
-          bmh = bmhs.find((bmh) => bmh.metadata?.uid === host.id);
-        } else if (bmhLabel) {
-          bmh = bmhs.find(
-            (bmh) =>
-              bmh?.metadata?.name === bmhLabel &&
-              agent.metadata?.namespace === bmh.metadata?.namespace,
-          );
-        }
-        if (!agent?.spec?.clusterDeploymentName?.name) {
-          await onDelete(agent, bmh);
-        }
-      }
-      setProgress(null);
-      onClose();
-    } catch (err) {
-      setError({
-        title: 'Failed to delete host',
-        message: err?.message || 'An error occured while deleting hosts',
-      });
-      setProgress(null);
+  const onClick = async (host: Host) => {
+    const agent = agents.find((a) => a.metadata?.uid === host.id);
+    const bmhLabel = agent?.metadata?.labels?.[AGENT_BMH_HOSTNAME_LABEL_KEY];
+    let bmh;
+    if (!agent) {
+      bmh = bmhs.find((bmh) => bmh.metadata?.uid === host.id);
+    } else if (bmhLabel) {
+      bmh = bmhs.find(
+        (bmh) =>
+          bmh?.metadata?.name === bmhLabel && agent.metadata?.namespace === bmh.metadata?.namespace,
+      );
+    }
+    if (!agent?.spec?.clusterDeploymentName?.name) {
+      return onDelete(agent, bmh);
     }
   };
 
   const content = React.useMemo(() => tableContent(agents, bmhs), [agents, bmhs]);
+
   return (
-    <Modal
-      aria-label="Delete hosts dialog"
-      title="Delete hosts"
-      isOpen={isOpen}
-      onClose={onClose}
-      hasNoBodyWrapper
-      id="mass-delete-modal"
-      variant="medium"
-      titleIconVariant="warning"
-    >
-      <ModalBoxBody>
-        <Stack hasGutter>
-          <StackItem>
-            You are deleting multiple resources. All resources listed below will be deleted if you
-            continue. This action cannot be undone.
-          </StackItem>
-          <StackItem>
-            <HostsTable hosts={hosts} content={content}>
-              <div>No hosts selected</div>
-            </HostsTable>
-          </StackItem>
-          <StackItem>
-            <ModalProgress error={error} progress={progress} />
-          </StackItem>
-        </Stack>
-      </ModalBoxBody>
-      <ModalBoxFooter>
-        <Button onClick={onClick} isDisabled={progress !== null} variant={ButtonVariant.danger}>
-          Delete hosts
-        </Button>
-        <Button onClick={onClose} variant={ButtonVariant.secondary} isDisabled={progress !== null}>
-          Cancel
-        </Button>
-      </ModalBoxFooter>
-    </Modal>
+    <CommonMassDeleteHostModal hosts={hosts} isOpen={isOpen} onClose={onClose} onDelete={onClick}>
+      <HostsTable hosts={hosts} content={content}>
+        <div>No hosts selected</div>
+      </HostsTable>
+    </CommonMassDeleteHostModal>
   );
 };
-
-export default MassDeleteHostModal;
+export default MassDeleteAgentModal;

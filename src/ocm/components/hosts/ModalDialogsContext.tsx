@@ -32,6 +32,12 @@ type MassUpdateHostnameDialogProps = {
   hostIDs: string[];
 };
 
+type MassDeleteHostDialogProps = {
+  hosts: Host[];
+  // eslint-disable-next-line
+  onDelete: (host: Host) => Promise<any>;
+};
+
 type ModalDialogsDataTypes = {
   eventsDialog: HostIdAndHostname;
   editHostDialog: EditHostProps;
@@ -43,6 +49,7 @@ type ModalDialogsDataTypes = {
   discoveryImageDialog: DiscoveryImageDialogProps;
   UpdateDay2ApiVipDialog: void;
   massUpdateHostnameDialog: MassUpdateHostnameDialogProps;
+  massDeleteHostDialog: MassDeleteHostDialogProps;
 };
 
 type DialogId =
@@ -55,7 +62,8 @@ type DialogId =
   | 'cancelInstallationDialog'
   | 'discoveryImageDialog'
   | 'UpdateDay2ApiVipDialog'
-  | 'massUpdateHostnameDialog';
+  | 'massUpdateHostnameDialog'
+  | 'massDeleteHostDialog';
 
 export type ModalDialogsContextType = {
   [key in DialogId]: {
@@ -77,6 +85,7 @@ const dialogIds: DialogId[] = [
   'discoveryImageDialog',
   'UpdateDay2ApiVipDialog',
   'massUpdateHostnameDialog',
+  'massDeleteHostDialog',
 ];
 
 const ModalDialogsContext = React.createContext<ModalDialogsContextType | undefined>(undefined);
