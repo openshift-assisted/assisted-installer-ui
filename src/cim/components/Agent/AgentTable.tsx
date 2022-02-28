@@ -50,7 +50,7 @@ const AgentTable: React.FC<AgentTableProps> = ({
         onEditHostname: actions.onEditHost,
         onApprove: actions.onApprove,
       }),
-      infraEnvColumn(agents, getInfraEnvLink),
+      infraEnvColumn(agents),
       cpuCoresColumn,
       memoryColumn,
       disksColumn,

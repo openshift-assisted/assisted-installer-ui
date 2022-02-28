@@ -148,10 +148,7 @@ export type getInfraEnvLinkType = ({
   namespace: string;
 }) => string | React.ReactNode;
 
-export const infraEnvColumn = (
-  agents: AgentK8sResource[],
-  getInfraEnvLink?: getInfraEnvLinkType,
-): TableRow<Host> => {
+export const infraEnvColumn = (agents: AgentK8sResource[]): TableRow<Host> => {
   return {
     header: {
       title: 'Infrastructure env',
