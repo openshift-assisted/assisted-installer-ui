@@ -163,7 +163,6 @@ export const infraEnvColumn = (
     cell: (host) => {
       const agent = agents.find((a) => a.metadata?.uid === host.id) as AgentK8sResource;
       const infraEnvName = getInfraEnvNameOfAgent(agent);
-
       let title: React.ReactNode = infraEnvName || 'N/A';
       if (infraEnvName) {
         title = (
