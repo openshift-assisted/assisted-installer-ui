@@ -20,7 +20,7 @@ import {
 import ClusterDeploymentCredentials from './ClusterDeploymentCredentials';
 import { shouldShowClusterCredentials, shouldShowClusterInstallationProgress } from './helpers';
 import { EventsModalButton } from '../../../common/components/ui/eventsModal';
-import AgentTable, { AgentTableProps } from '../Agent/AgentTable';
+import AgentTable from '../Agent/AgentTable';
 import { FetchSecret } from './types';
 import { getClusterProperties, getConsoleUrl } from '../helpers/clusterDeployment';
 import ClusterDeploymentKubeconfigDownload from './ClusterDeploymentKubeconfigDownload';
