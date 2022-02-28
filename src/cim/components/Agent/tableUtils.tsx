@@ -140,14 +140,6 @@ export const clusterColumn = (
   };
 };
 
-export type getInfraEnvLinkType = ({
-  name,
-  namespace,
-}: {
-  name: string;
-  namespace: string;
-}) => string | React.ReactNode;
-
 export const infraEnvColumn = (agents: AgentK8sResource[]): TableRow<Host> => {
   return {
     header: {
