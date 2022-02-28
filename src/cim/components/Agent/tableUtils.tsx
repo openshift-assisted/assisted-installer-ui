@@ -160,16 +160,15 @@ export const infraEnvColumn = (agents: AgentK8sResource[]): TableRow<Host> => {
     cell: (host) => {
       const agent = agents.find((a) => a.metadata?.uid === host.id) as AgentK8sResource;
       const infraEnvName = getInfraEnvNameOfAgent(agent);
-      let title: React.ReactNode = infraEnvName || 'N/A';
-      if (infraEnvName) {
-        title = (
-          <Link
-            to={`/multicloud/infrastructure/environments/details/${agent.metadata?.namespace}/${infraEnvName}/overview`}
-          >
-            {`${title}`}
-          </Link>
-        );
-      }
+      const title = infraEnvName ? (
+        <Link
+          to={`/multicloud/infrastructure/environments/details/${agent.metadata?.namespace}/${infraEnvName}/overview`}
+        >
+          {infraEnvName}
+        </Link>
+      ) : (
+        'N/A'
+      );
       return {
         title,
         props: { 'data-testid': 'infra-env' },
