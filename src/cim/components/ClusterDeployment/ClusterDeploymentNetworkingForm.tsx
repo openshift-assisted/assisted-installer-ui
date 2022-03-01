@@ -69,8 +69,6 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
   React.useEffect(() => onValuesChanged?.(values), [onValuesChanged, values]);
   const [editProxy, setEditProxy] = React.useState(false);
 
-  const isVipDhcpAllocationDisabled = true; // So far not supported
-
   const cluster = getAICluster({
     clusterDeployment,
     agentClusterInstall,
@@ -81,12 +79,12 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
 
   React.useEffect(() => {
     if (!!infraEnvWithProxy && !touched.enableProxy) {
-      setFieldTouched('enableProxy', true);
-      setFieldValue('enableProxy', true);
+      setFieldTouched('enableProxy', false);
+      setFieldValue('enableProxy', false, false);
       if (sameProxies) {
-        setFieldValue('httpProxy', infraEnvWithProxy.spec?.proxy?.httpProxy);
-        setFieldValue('httpsProxy', infraEnvWithProxy.spec?.proxy?.httpsProxy);
-        setFieldValue('noProxy', infraEnvWithProxy.spec?.proxy?.noProxy);
+        setFieldValue('httpProxy', infraEnvWithProxy.spec?.proxy?.httpProxy, false);
+        setFieldValue('httpsProxy', infraEnvWithProxy.spec?.proxy?.httpsProxy, false);
+        setFieldValue('noProxy', infraEnvWithProxy.spec?.proxy?.noProxy, false);
       }
     }
   }, [infraEnvWithProxy, sameProxies, setFieldValue, touched.enableProxy, setFieldTouched]);
@@ -129,7 +127,7 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
               <NetworkConfiguration
                 cluster={cluster}
                 hostSubnets={hostSubnets}
-                isVipDhcpAllocationDisabled={isVipDhcpAllocationDisabled}
+                isVipDhcpAllocationDisabled
                 defaultNetworkSettings={defaultNetworkSettings}
                 hideManagedNetworking
               />

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ConnectedIcon } from '@patternfly/react-icons';
-import { WithTestID, EmptyState } from '../../../common';
+import { WithTestID, EmptyState, Host } from '../../../common';
 import { ClusterDeploymentHostsTablePropsActions } from './types';
 import {
   AgentClusterInstallK8sResource,
@@ -17,6 +17,17 @@ import {
   hostnameColumn,
   roleColumn,
 } from '../../../common/components/hosts/tableUtils';
+
+type ExpandComponentProps = {
+  obj: Host;
+};
+
+const ExpandComponent: React.FC<ExpandComponentProps> = ({ obj }) => (
+  <HostDetail
+    host={obj}
+    AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
+  />
+);
 
 type ClusterDeploymentHostsNetworkTableProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
@@ -76,14 +87,7 @@ const ClusterDeploymentHostsNetworkTable: React.FC<ClusterDeploymentHostsNetwork
       <HostsTable
         testId="networking-host-table"
         hosts={hosts}
-        ExpandComponent={({ obj }) => {
-          return (
-            <HostDetail
-              host={obj}
-              AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
-            />
-          );
-        }}
+        ExpandComponent={ExpandComponent}
         content={content}
         actionResolver={actionResolver}
       >

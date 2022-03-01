@@ -2,11 +2,10 @@ import React from 'react';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import { Grid, GridItem } from '@patternfly/react-core';
-import { ClusterWizardStepHeader, getFormikErrorFields, useAlerts } from '../../../common';
+import { ClusterWizardStepHeader, useAlerts } from '../../../common';
 import { AgentClusterInstallK8sResource, AgentK8sResource } from '../../types';
 import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
 import ClusterDeploymentWizardFooter from './ClusterDeploymentWizardFooter';
-import ClusterDeploymentWizardNavigation from './ClusterDeploymentWizardNavigation';
 import ClusterDeploymentWizardStep from './ClusterDeploymentWizardStep';
 import {
   ClusterDeploymentHostsDiscoveryStepProps,
@@ -92,7 +91,7 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
-      {({ submitForm, isSubmitting, isValid, isValidating, errors, touched }) => {
+      {({ submitForm, isSubmitting, isValid, isValidating }) => {
         const isNextDisabled =
           !isValid ||
           isValidating ||
@@ -102,7 +101,6 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
           <ClusterDeploymentWizardFooter
             agentClusterInstall={agentClusterInstall}
             agents={infraEnvAgents}
-            errorFields={getFormikErrorFields(errors, touched)}
             isSubmitting={isSubmitting}
             isNextDisabled={isNextDisabled}
             onNext={submitForm}
@@ -110,10 +108,9 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
             onCancel={onClose}
           />
         );
-        const navigation = <ClusterDeploymentWizardNavigation />;
 
         return (
-          <ClusterDeploymentWizardStep navigation={navigation} footer={footer}>
+          <ClusterDeploymentWizardStep footer={footer}>
             <Grid hasGutter>
               <GridItem>
                 <ClusterWizardStepHeader>Cluster hosts</ClusterWizardStepHeader>

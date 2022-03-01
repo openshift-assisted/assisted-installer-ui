@@ -14,6 +14,7 @@ import {
   ICell,
   IAction,
   ISeparator,
+  TableProps,
 } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
 import { Checkbox } from '@patternfly/react-core';
@@ -22,6 +23,49 @@ import { getColSpanRow, rowSorter } from '../ui/table/utils';
 import { WithTestID } from '../../types';
 
 import './HostsTable.css';
+
+const rowKey = ({ rowData }: ExtraParamsType) => rowData?.key;
+
+type TableMemoProps = {
+  rows: TableProps['rows'];
+  cells: TableProps['cells'];
+  onCollapse: TableProps['onCollapse'];
+  className: TableProps['className'];
+  sortBy: TableProps['sortBy'];
+  onSort: TableProps['onSort'];
+  rowWrapper: TableProps['rowWrapper'];
+  // eslint-disable-next-line
+  actionResolver?: ActionsResolver<any>;
+};
+
+const TableMemo: React.FC<WithTestID & TableMemoProps> = React.memo(
+  ({ rows, cells, onCollapse, className, sortBy, onSort, rowWrapper, testId, actionResolver }) => {
+    const tableActionResolver = React.useCallback(
+      (rowData) => actionResolver?.(rowData.obj) as (IAction | ISeparator)[],
+      [actionResolver],
+    );
+    return (
+      <Table
+        rows={rows}
+        cells={cells}
+        onCollapse={onCollapse}
+        variant={TableVariant.compact}
+        aria-label="Hosts table"
+        className={classnames(className, 'hosts-table')}
+        sortBy={sortBy}
+        onSort={onSort}
+        rowWrapper={rowWrapper}
+        data-testid={testId}
+        actionResolver={actionResolver ? tableActionResolver : undefined}
+      >
+        <TableHeader />
+        <TableBody rowKey={rowKey} />
+      </Table>
+    );
+  },
+);
+
+TableMemo.displayName = 'tableMemo';
 
 const getMainIndex = (hasOnSelect: boolean, hasExpandComponent: boolean) => {
   if (hasOnSelect && hasExpandComponent) {
@@ -37,8 +81,6 @@ type OpenRows = {
   [id: string]: boolean;
 };
 
-const rowKey = ({ rowData }: ExtraParamsType) => rowData?.key;
-
 const HostsTableRowWrapper = (props: RowWrapperProps) => (
   <RowWrapper {...props} data-testid={`host-row-${props.rowProps?.rowIndex}`} />
 );
@@ -52,6 +94,21 @@ export type TableRow<R> = {
 export type ActionsResolver<R> = (obj: R) => (IAction | ISeparator)[];
 export type ExpandComponentProps<R> = {
   obj: R;
+};
+
+const SelectionProvider = React.createContext<string[] | undefined>(undefined);
+
+type SelectCheckboxProps = {
+  onSelect: (isChecked: boolean) => void;
+  id: string;
+};
+
+const SelectCheckbox: React.FC<SelectCheckboxProps> = ({ onSelect, id }) => {
+  const selectedIDs = React.useContext(SelectionProvider);
+  const isChecked = selectedIDs?.includes(id);
+  return (
+    <Checkbox id={`select-${id}`} onChange={() => onSelect(!isChecked)} isChecked={isChecked} />
+  );
 };
 
 type HostsTable<R> = {
@@ -102,77 +159,78 @@ const AITable = <R extends any>({
     direction: SortByDirection.asc,
   });
 
-  let contentWithAdditions: TableRow<R>[] = content;
-  if (onSelect) {
-    contentWithAdditions = [
-      {
-        header: {
-          title: '', // No readable title above a checkbox
-          cellFormatters: [],
-        },
-        cell: (obj) => {
-          const id = getDataId(obj);
-          const isChecked = selectedIDs?.includes(id);
-          const selectId = `select-${id}`;
-          return {
-            title: (
-              <Checkbox
-                id={selectId}
-                onChange={() => onSelect(obj, !isChecked)}
-                isChecked={isChecked}
-              />
-            ),
-            props: { 'data-testid': selectId },
-          };
-        },
-      },
-      ...content,
-    ];
-  }
-
-  const columns = contentWithAdditions.map((c) => c.header);
-  const hostRows = _.flatten(
-    (data || [])
-      .map((obj) => {
-        const id = getDataId(obj);
-        const cells = contentWithAdditions.filter((c) => !!c.cell).map((c) => c.cell?.(obj));
-        const rows = [
-          {
-            // visible row
-            isOpen: !!openRows[id],
-            cells,
-            key: `${id}-master`,
-            obj,
-            id,
+  const [contentWithAdditions, columns] = React.useMemo<[TableRow<R>[], (string | ICell)[]]>(() => {
+    let newContent = content;
+    if (onSelect) {
+      newContent = [
+        {
+          header: {
+            title: '', // No readable title above a checkbox
+            cellFormatters: [],
           },
-        ];
-        if (ExpandComponent) {
-          rows.push({
-            // expandable detail
-            // parent will be set after sorting
-            fullWidth: true,
-            cells: [
+          cell: (obj) => {
+            const id = getDataId(obj);
+            const selectId = `select-${id}`;
+            return {
+              title: <SelectCheckbox id={id} onSelect={(isChecked) => onSelect(obj, isChecked)} />,
+              props: { 'data-testid': selectId },
+            };
+          },
+        },
+        ...content,
+      ];
+    }
+    const columns = newContent.map((c) => c.header);
+    return [newContent, columns];
+  }, [content, onSelect, getDataId]);
+
+  const hostRows = React.useMemo(
+    () =>
+      _.flatten(
+        (data || [])
+          .map((obj) => {
+            const id = getDataId(obj);
+            const cells = contentWithAdditions.filter((c) => !!c.cell).map((c) => c.cell?.(obj));
+            const isOpen = !!openRows[id];
+            const rows: IRow[] = [
               {
-                title: <ExpandComponent obj={obj} />,
+                // visible row
+                isOpen,
+                cells,
+                key: `${id}-master`,
+                obj,
+                id,
               },
-            ],
-            key: `${id}-detail`,
-            // eslint-disable-next-line
-          } as any);
-        }
-        return rows;
-      })
-      .sort(
-        rowSorter(sortBy, (row: IRow, index = 1) =>
-          ExpandComponent ? row[0].cells[index - 1] : row[0].cells[index],
-        ),
-      )
-      .map((row: IRow, index: number) => {
-        if (ExpandComponent) {
-          row[1].parent = index * 2;
-        }
-        return row;
-      }),
+            ];
+            if (ExpandComponent) {
+              rows.push({
+                // expandable detail
+                // parent will be set after sorting
+                fullWidth: true,
+                cells: [
+                  {
+                    // do not render unnecessarily to improve performance
+                    title: isOpen ? <ExpandComponent obj={obj} /> : undefined,
+                  },
+                ],
+                key: `${id}-detail`,
+              });
+            }
+            return rows;
+          })
+          .sort(
+            rowSorter(sortBy, (row, index = 1) =>
+              ExpandComponent ? row[0].cells[index - 1] : row[0].cells[index],
+            ),
+          )
+          .map((row, index) => {
+            if (ExpandComponent) {
+              row[1].parent = index * 2;
+            }
+            return row;
+          }),
+      ),
+    [ExpandComponent, getDataId, data, openRows, contentWithAdditions, sortBy],
   );
 
   const rows = React.useMemo(() => {
@@ -192,39 +250,28 @@ const AITable = <R extends any>({
     [hostRows, openRows],
   );
 
-  const onSort: OnSort = React.useCallback(
-    (_event, index, direction) => {
-      setOpenRows({}); // collapse all
-      setSortBy({
-        index,
-        direction,
-      });
-    },
-    [setSortBy, setOpenRows],
-  );
-
-  const tableActionResolver = React.useCallback(
-    (rowData) => actionResolver?.(rowData.obj as R) as (IAction | ISeparator)[],
-    [actionResolver],
-  );
+  const onSort: OnSort = React.useCallback((_event, index, direction) => {
+    setOpenRows({}); // collapse all
+    setSortBy({
+      index,
+      direction,
+    });
+  }, []);
 
   return (
-    <Table
-      rows={rows}
-      cells={columns}
-      onCollapse={ExpandComponent ? onCollapse : undefined}
-      variant={TableVariant.compact}
-      aria-label="Hosts table"
-      className={classnames(className, 'hosts-table')}
-      sortBy={sortBy}
-      onSort={onSort}
-      rowWrapper={HostsTableRowWrapper}
-      data-testid={testId}
-      actionResolver={actionResolver ? tableActionResolver : undefined}
-    >
-      <TableHeader />
-      <TableBody rowKey={rowKey} />
-    </Table>
+    <SelectionProvider.Provider value={selectedIDs}>
+      <TableMemo
+        rows={rows}
+        cells={columns}
+        onCollapse={ExpandComponent ? onCollapse : undefined}
+        className={className}
+        sortBy={sortBy}
+        onSort={onSort}
+        rowWrapper={HostsTableRowWrapper}
+        data-testid={testId}
+        actionResolver={actionResolver}
+      />
+    </SelectionProvider.Provider>
   );
 };
 

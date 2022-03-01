@@ -14,7 +14,7 @@ type ScaleUpFormProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
 };
 
-const ScaleUpForm = ({ agents, clusterDeployment }: ScaleUpFormProps) => {
+const ScaleUpForm = ({ agents }: ScaleUpFormProps) => {
   const { values } = useFormikContext<ScaleUpFormValues>();
   const { autoSelectHosts } = values;
   const availableAgents = React.useMemo(
@@ -36,7 +36,7 @@ const ScaleUpForm = ({ agents, clusterDeployment }: ScaleUpFormProps) => {
 
       {!autoSelectHosts && (
         <ClusterDeploymentHostsSelectionAdvanced<ScaleUpFormValues>
-          clusterDeployment={clusterDeployment}
+          // clusterDeployment={clusterDeployment} TODO
           availableAgents={availableAgents}
         />
       )}
