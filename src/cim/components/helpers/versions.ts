@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { OpenshiftVersionOptionType, OpenshiftVersion } from '../../../common';
 import { ClusterImageSetK8sResource } from '../../types/k8s/cluster-image-set';
 
@@ -54,6 +55,6 @@ export const getOCPVersions = (
     // make sure that the pre-selected one is the first-one after sorting
     versions[0].default = true;
   }
-
-  return versions;
+  const deduped = _.uniqBy(versions, (v) => v.version);
+  return deduped;
 };
