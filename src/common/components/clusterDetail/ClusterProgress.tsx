@@ -55,7 +55,7 @@ const getInstallationStatus = (
   status: Cluster['status'],
   installCompletedAt: Cluster['installCompletedAt'],
 ) => {
-  if (status === 'installed') {
+  if (status === 'installed' || status === 'adding-hosts') {
     return `Installed on ${getHumanizedDateTime(installCompletedAt)}`;
   }
   if (status === 'error') {
