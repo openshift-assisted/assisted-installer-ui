@@ -12,7 +12,6 @@ import { Cluster, Host, Interface, Inventory } from '../../api/types';
 import { removeProtocolFromURL, stringToJSON } from '../../api/utils';
 import { ToolbarButton } from '../ui/Toolbar';
 import PrismCode from '../ui/PrismCode';
-import { isSingleNodeCluster } from '../clusters';
 
 type WebConsoleHintProps = {
   cluster: Cluster;
@@ -78,9 +77,7 @@ export const WebConsoleHint: React.FC<WebConsoleHintProps> = ({ cluster, console
   const [isDNSExpanded, setIsDNSExpanded] = React.useState(true);
   const handleToggle = () => setIsDNSExpanded(!isDNSExpanded);
   const hostIPs = React.useMemo(() => getHostIPs(cluster), [cluster]);
-  const [apiVip, ingressVip] = isSingleNodeCluster(cluster)
-    ? [Object.values(hostIPs || {})[0], Object.values(hostIPs || {})[0]]
-    : [cluster.apiVip, cluster.ingressVip];
+  const [apiVip, ingressVip] = [cluster.apiVip, cluster.ingressVip];
   const sortedHostIPs = Object.keys(hostIPs).sort();
   const etcHostsOptional = sortedHostIPs.map(
     (hostname: string) => `${hostIPs[hostname]}\t${hostname}`,
