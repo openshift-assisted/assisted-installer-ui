@@ -137,7 +137,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
 
       {children}
 
-      {!isUserManagedNetworking && isClusterManagedNetworkingWithVMsUnsupported && vmsAlert }
+      {!isUserManagedNetworking && isClusterManagedNetworkingWithVMsUnsupported && vmsAlert}
 
       {!(isMultiNodeCluster && isUserManagedNetworking) && (
         <AvailableSubnetsControl
