@@ -114,11 +114,14 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
       {extensionAfter?.['openshiftVersion'] && extensionAfter['openshiftVersion']}
       {canEditPullSecret && <PullSecret isOcm={isOcm} defaultPullSecret={defaultPullSecret} />}
       {extensionAfter?.['pullSecret'] && extensionAfter['pullSecret']}
-      <DiskEncryptionControlGroup
-        values={values}
-        isDisabled={isPullSecretSet}
-        isSNO={isSNO({ highAvailabilityMode })}
-      />
+      {isOcm && (
+        <DiskEncryptionControlGroup
+          values={values}
+          isDisabled={isPullSecretSet}
+          isSNO={isSNO({ highAvailabilityMode })}
+        />
+      )}
+
       {atListOneDiskEncryptionEnableOn && values.diskEncryptionMode == 'tpmv2' && (
         <Alert
           variant={AlertVariant.warning}
