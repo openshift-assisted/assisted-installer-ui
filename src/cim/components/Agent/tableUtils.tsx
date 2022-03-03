@@ -140,18 +140,7 @@ export const clusterColumn = (
   };
 };
 
-export type getInfraEnvLinkType = ({
-  name,
-  namespace,
-}: {
-  name: string;
-  namespace: string;
-}) => string | React.ReactNode;
-
-export const infraEnvColumn = (
-  agents: AgentK8sResource[],
-  getInfraEnvLink?: getInfraEnvLinkType,
-): TableRow<Host> => {
+export const infraEnvColumn = (agents: AgentK8sResource[]): TableRow<Host> => {
   return {
     header: {
       title: 'Infrastructure env',
@@ -163,12 +152,15 @@ export const infraEnvColumn = (
     cell: (host) => {
       const agent = agents.find((a) => a.metadata?.uid === host.id) as AgentK8sResource;
       const infraEnvName = getInfraEnvNameOfAgent(agent);
-
-      let title: React.ReactNode = infraEnvName || 'N/A';
-      if (infraEnvName && getInfraEnvLink) {
-        title = getInfraEnvLink({ name: infraEnvName, namespace: agent.metadata?.namespace || '' });
-      }
-
+      const title = infraEnvName ? (
+        <Link
+          to={`/multicloud/infrastructure/environments/details/${agent.metadata?.namespace}/${infraEnvName}/overview`}
+        >
+          {infraEnvName}
+        </Link>
+      ) : (
+        'N/A'
+      );
       return {
         title,
         props: { 'data-testid': 'infra-env' },

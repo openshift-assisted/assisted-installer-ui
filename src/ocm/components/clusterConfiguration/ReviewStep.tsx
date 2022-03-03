@@ -1,13 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { ButtonVariant, Grid, GridItem } from '@patternfly/react-core';
-import {
-  Cluster,
-  ToolbarButton,
-  ClusterWizardStepHeader,
-  useAlerts,
-  ClusterWizardStep,
-} from '../../../common';
+import { ActionListItem, Button, ButtonVariant, Grid, GridItem } from '@patternfly/react-core';
+import { Cluster, ClusterWizardStepHeader, useAlerts, ClusterWizardStep } from '../../../common';
 import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
 import { getErrorMessage, handleApiError } from '../../api';
 import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
@@ -50,14 +44,16 @@ const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
       isSubmitting={isStartingInstallation}
       submittingText="Starting installation..."
       additionalActions={
-        <ToolbarButton
-          variant={ButtonVariant.primary}
-          name="install"
-          onClick={handleClusterInstall}
-          isDisabled={isStartingInstallation || cluster.status !== 'ready'}
-        >
-          Install cluster
-        </ToolbarButton>
+        <ActionListItem>
+          <Button
+            variant={ButtonVariant.primary}
+            name="install"
+            onClick={handleClusterInstall}
+            isDisabled={isStartingInstallation || cluster.status !== 'ready'}
+          >
+            Install cluster
+          </Button>
+        </ActionListItem>
       }
     />
   );
