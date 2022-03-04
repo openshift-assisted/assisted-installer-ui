@@ -1,16 +1,6 @@
 import React from 'react';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens';
-import {
-  Cluster,
-  DetailList,
-  DetailItem,
-  ReviewHostsInventory,
-  isSingleStack,
-} from '../../../common';
-import { RenderIf } from '../../../common/components/ui/';
-import { VSPHERE_CONFIG_LINK, ClusterValidations, HostsValidations } from '../../../common';
-import { selectClusterNetworkCIDR } from '../../../common/selectors/clusterSelectors';
 import { ClusterFeatureSupportLevelsDetailItem } from '../featureSupportLevels';
 import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
 import {
@@ -18,9 +8,19 @@ import {
   ClusterWizardStepsType,
   wizardStepsValidationsMap,
 } from '../clusterWizard/wizardTransition';
-
-import './ReviewCluster.css';
+import {
+  Cluster,
+  DetailList,
+  DetailItem,
+  isSingleStack,
+  VSPHERE_CONFIG_LINK,
+  ReviewHostsInventory,
+  ClusterValidations,
+  HostsValidations,
+} from '../../../common';
+import { RenderIf } from '../../../common/components/ui/';
 import { wizardStepNames } from '../clusterWizard/constants';
+import './ReviewCluster.css';
 
 const PlatformIntegrationNote: React.FC<{}> = () => {
   return (
@@ -67,8 +67,17 @@ const ReviewCluster: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         testId="cpu-architecture"
       />
       <DetailItem
-        title="Management network CIDR"
-        value={selectClusterNetworkCIDR(cluster)}
+        title="Cluster network CIDR"
+        value={
+          <>
+            {cluster.machineNetworks?.map((network, index) => (
+              <span key={index}>
+                {network.cidr}
+                <br />
+              </span>
+            ))}
+          </>
+        }
         testId="network-cidr"
       />
       <DetailItem
