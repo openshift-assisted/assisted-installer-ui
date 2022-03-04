@@ -63,17 +63,13 @@ type UseNetworkingFormikArgs = {
   clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall: AgentClusterInstallK8sResource;
   agents: AgentK8sResource[];
-  fetchInfraEnv: (name: string, namespace: string) => Promise<InfraEnvK8sResource>;
 };
 
 export const useNetworkingFormik = ({
   clusterDeployment,
   agentClusterInstall,
   agents,
-  fetchInfraEnv,
 }: UseNetworkingFormikArgs) => {
-  const [infraEnvs, setInfraEnvs] = React.useState<InfraEnvK8sResource[]>();
-  const [infraEnvsError, setInfraEnvsError] = React.useState<string>();
   const initialValues = React.useMemo(
     () => {
       const cluster = getAICluster({
@@ -85,7 +81,6 @@ export const useNetworkingFormik = ({
     },
     [], // eslint-disable-line react-hooks/exhaustive-deps
   );
-  const { infraEnvWithProxy, sameProxies } = getInfraEnvProxy(infraEnvs || []);
   const validationSchema = React.useMemo(() => {
     const cluster = getAICluster({
       clusterDeployment,
@@ -95,6 +90,22 @@ export const useNetworkingFormik = ({
     const hostSubnets = getHostSubnets(cluster);
     return getNetworkConfigurationValidationSchema(initialValues, hostSubnets);
   }, [initialValues, clusterDeployment, agentClusterInstall, agents]);
+
+  return {
+    initialValues,
+    validationSchema,
+  };
+};
+
+type UseInfraEnvProxiesArgs = {
+  agents: AgentK8sResource[];
+  fetchInfraEnv: (name: string, namespace: string) => Promise<InfraEnvK8sResource>;
+};
+
+export const useInfraEnvProxies = ({ agents, fetchInfraEnv }: UseInfraEnvProxiesArgs) => {
+  const [infraEnvs, setInfraEnvs] = React.useState<InfraEnvK8sResource[]>();
+  const [infraEnvsError, setInfraEnvsError] = React.useState<string>();
+  const { infraEnvWithProxy, sameProxies } = getInfraEnvProxy(infraEnvs || []);
 
   const infraEnvsMetadata = agents
     .map((a) => ({
@@ -121,9 +132,8 @@ export const useNetworkingFormik = ({
 
     fetch();
   }, [memoInfraEnvs, fetchInfraEnv, setInfraEnvs, setInfraEnvsError]);
+
   return {
-    initialValues,
-    validationSchema,
     infraEnvWithProxy,
     sameProxies,
     infraEnvsError,

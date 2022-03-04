@@ -31,10 +31,7 @@ const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
     [], // just once, Formik does not reinitialize
   );
 
-  const handleSubmit: FormikConfig<HostDiscoveryValues>['onSubmit'] = async (
-    values: HostDiscoveryValues,
-    actions,
-  ) => {
+  const handleSubmit: FormikConfig<HostDiscoveryValues>['onSubmit'] = async (values, actions) => {
     clearAlerts();
 
     const params: ClusterUpdateParams = {};

@@ -113,6 +113,9 @@ export const CLUSTER_FIELD_LABELS: { [key in string]: string } = {
   SNODisclaimer: 'Single Node OpenShift disclaimer',
   diskEncryptionTangServers: "Tang servers' URLs or thumbprints",
   selectedHostIds: 'Hosts selection',
+  httpProxy: 'HTTP proxy',
+  httpsProxy: 'HTTPS proxy',
+  noProxy: 'No proxy',
 };
 
 export const HOST_STATUS_DETAILS: { [key in Host['status'] | 'discovered']: string } = {

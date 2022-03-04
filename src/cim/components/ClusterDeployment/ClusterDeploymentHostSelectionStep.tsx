@@ -1,9 +1,9 @@
 import React from 'react';
 import * as Yup from 'yup';
 import { TestOptionsMessage } from 'yup';
-import { Formik, FormikHelpers } from 'formik';
-import { Grid, GridItem } from '@patternfly/react-core';
-import { ClusterWizardStepHeader, getFormikErrorFields, useAlerts } from '../../../common';
+import { Formik, FormikConfig, useFormikContext } from 'formik';
+import { Alert, AlertVariant, Grid, GridItem } from '@patternfly/react-core';
+import { ClusterWizardStepHeader, useAlerts } from '../../../common';
 import {
   AgentClusterInstallK8sResource,
   AgentK8sResource,
@@ -11,7 +11,6 @@ import {
 } from '../../types';
 import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
 import ClusterDeploymentWizardFooter from './ClusterDeploymentWizardFooter';
-import ClusterDeploymentWizardNavigation from './ClusterDeploymentWizardNavigation';
 import ClusterDeploymentWizardStep from './ClusterDeploymentWizardStep';
 import ClusterDeploymentHostsSelection from './ClusterDeploymentHostsSelection';
 import {
@@ -19,7 +18,11 @@ import {
   ClusterDeploymentHostsSelectionValues,
 } from './types';
 import { hostCountValidationSchema } from './validationSchemas';
-import { getAgentSelectorFieldsFromAnnotations, getIsSNOCluster } from '../helpers';
+import {
+  getAgentSelectorFieldsFromAnnotations,
+  getIsSNOCluster,
+  getWizardStepAgentStatus,
+} from '../helpers';
 import { canNextFromHostSelectionStep } from './wizardTransition';
 
 const getInitialValues = ({
@@ -70,12 +73,7 @@ const getInitialValues = ({
   };
 };
 
-const getMinHostsCount = (selectedHostsCount: number) => {
-  if (selectedHostsCount === 0) {
-    return 0;
-  }
-  return selectedHostsCount === 4 ? 5 : 3;
-};
+const getMinHostsCount = (selectedHostsCount: number) => (selectedHostsCount === 4 ? 5 : 3);
 
 const getValidationSchema = (agentClusterInstall: AgentClusterInstallK8sResource) => {
   const isSNOCluster = getIsSNOCluster(agentClusterInstall);
@@ -138,17 +136,167 @@ const getSelectedAgents = (
   return agents.filter((agent) => selectedHostIds.includes(agent.metadata?.uid || ''));
 };
 
-const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectionStepProps> = ({
-  clusterDeployment,
-  agentClusterInstall,
+type HostSelectionFormProps = {
+  agents: ClusterDeploymentHostSelectionStepProps['agents'];
+  agentClusterInstall: ClusterDeploymentHostSelectionStepProps['agentClusterInstall'];
+  onClose: ClusterDeploymentHostSelectionStepProps['onClose'];
+  clusterDeployment: ClusterDeploymentHostSelectionStepProps['clusterDeployment'];
+  aiConfigMap?: ClusterDeploymentHostSelectionStepProps['aiConfigMap'];
+  hostActions?: ClusterDeploymentHostSelectionStepProps['hostActions'];
+};
+
+const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
   agents,
+  agentClusterInstall,
   onClose,
-  onSaveHostsSelection,
+  clusterDeployment,
   aiConfigMap,
-  hostActions,
+  hostActions: initHostActions,
+}) => {
+  const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
+  const [showClusterErrors, setShowClusterErrors] = React.useState(false);
+  const {
+    values,
+    isValid,
+    isValidating,
+    isSubmitting,
+    touched,
+    errors,
+    validateForm,
+    setTouched,
+    submitForm,
+    setSubmitting,
+  } = useFormikContext<ClusterDeploymentHostsSelectionValues>();
+  const [nextRequested, setNextRequested] = React.useState(false);
+  const [showFormErrors, setShowFormErrors] = React.useState(false);
+  const selectedAgents = getSelectedAgents(agents, values);
+
+  const hostActions = React.useMemo<HostSelectionFormProps['hostActions']>(() => {
+    const onEditRole = initHostActions?.onEditRole;
+    return {
+      ...initHostActions,
+      ...(onEditRole
+        ? {
+            onEditRole: async (agent, role) => {
+              setNextRequested(false);
+              setShowClusterErrors(false); //not sure we want to reset this ?
+              setSubmitting(true);
+              const response = await onEditRole(agent, role);
+              setSubmitting(false);
+              return response;
+            },
+          }
+        : {}),
+    };
+  }, [initHostActions, setSubmitting]);
+
+  const onNext = async () => {
+    if (!showFormErrors) {
+      setShowFormErrors(true);
+      const errors = await validateForm();
+      setTouched(
+        Object.keys(errors).reduce((acc, curr) => {
+          acc[curr] = true;
+          return acc;
+        }, {}),
+      );
+      if (Object.keys(errors).length) {
+        return;
+      }
+    }
+    await submitForm();
+    setNextRequested(true);
+  };
+
+  React.useEffect(() => {
+    setNextRequested(false);
+    setShowClusterErrors(false);
+  }, [values.selectedHostIds]);
+
+  React.useEffect(() => {
+    if (nextRequested) {
+      const agentStatuses = selectedAgents.map(
+        (agent) => getWizardStepAgentStatus(agent, 'hosts-selection').status,
+      );
+      if (
+        agentStatuses.some((status) =>
+          ['disconnected', 'disabled', 'error', 'insufficient', 'cancelled'].includes(status),
+        )
+      ) {
+        setNextRequested(false);
+      } else if (
+        selectedAgents.every(
+          (agent) => getWizardStepAgentStatus(agent, 'hosts-selection').status === 'known',
+        )
+      ) {
+        setShowClusterErrors(true);
+        if (canNextFromHostSelectionStep(agentClusterInstall, selectedAgents)) {
+          setCurrentStepId('networking');
+        }
+      }
+    }
+  }, [nextRequested, selectedAgents, agentClusterInstall, setCurrentStepId]);
+
+  let submittingText: string | undefined = undefined;
+  if (nextRequested && !showClusterErrors) {
+    submittingText = 'Binding hosts...';
+  } else if (isSubmitting) {
+    submittingText = 'Saving changes...';
+  }
+
+  const footer = (
+    <ClusterDeploymentWizardFooter
+      agentClusterInstall={agentClusterInstall}
+      agents={selectedAgents}
+      isSubmitting={!!submittingText}
+      submittingText={submittingText}
+      isNextDisabled={
+        nextRequested || isSubmitting || (showFormErrors ? !isValid || isValidating : false)
+      }
+      onNext={onNext}
+      onBack={() => setCurrentStepId('cluster-details')}
+      onCancel={onClose}
+      showClusterErrors={showClusterErrors}
+    >
+      {showFormErrors && errors.selectedHostIds && touched.selectedHostIds && (
+        <Alert
+          variant={AlertVariant.danger}
+          title="Provided cluster configuration is not valid"
+          isInline
+        >
+          {errors.selectedHostIds}
+        </Alert>
+      )}
+    </ClusterDeploymentWizardFooter>
+  );
+
+  return (
+    <ClusterDeploymentWizardStep footer={footer}>
+      <Grid hasGutter>
+        <GridItem>
+          <ClusterWizardStepHeader>Cluster hosts</ClusterWizardStepHeader>
+        </GridItem>
+        <GridItem>
+          <ClusterDeploymentHostsSelection
+            agentClusterInstall={agentClusterInstall}
+            agents={agents}
+            clusterDeployment={clusterDeployment}
+            aiConfigMap={aiConfigMap}
+            hostActions={hostActions}
+          />
+        </GridItem>
+      </Grid>
+    </ClusterDeploymentWizardStep>
+  );
+};
+
+const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectionStepProps> = ({
+  onSaveHostsSelection,
+  ...rest
 }) => {
   const { addAlert } = useAlerts();
-  const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
+
+  const { agents, clusterDeployment, agentClusterInstall } = rest;
 
   const [initialValues, validationSchema] = useHostsSelectionFormik({
     agents,
@@ -156,19 +304,19 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
     agentClusterInstall,
   });
 
-  const next = () => setCurrentStepId('networking');
-  const handleSubmit = async (
-    values: ClusterDeploymentHostsSelectionValues,
-    formikHelpers: FormikHelpers<ClusterDeploymentHostsSelectionValues>,
+  const handleSubmit: FormikConfig<ClusterDeploymentHostsSelectionValues>['onSubmit'] = async (
+    values,
+    { setSubmitting },
   ) => {
     try {
       await onSaveHostsSelection(values);
-      formikHelpers.resetForm({ values });
     } catch (error) {
       addAlert({
         title: 'Failed to save host selection.',
         message: error.message as string,
       });
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -177,50 +325,8 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
-      validateOnMount
-      enableReinitialize
     >
-      {({ isSubmitting, isValid, isValidating, errors, touched, values }) => {
-        const selectedAgents = getSelectedAgents(agents, values);
-        const isNextDisabled =
-          !isValid ||
-          isValidating ||
-          isSubmitting ||
-          !canNextFromHostSelectionStep(agentClusterInstall, selectedAgents);
-
-        const footer = (
-          <ClusterDeploymentWizardFooter
-            agentClusterInstall={agentClusterInstall}
-            agents={selectedAgents}
-            errorFields={getFormikErrorFields(errors, touched)}
-            isSubmitting={isSubmitting}
-            isNextDisabled={isNextDisabled}
-            onNext={next}
-            onBack={() => setCurrentStepId('cluster-details')}
-            onCancel={onClose}
-          />
-        );
-        const navigation = <ClusterDeploymentWizardNavigation />;
-
-        return (
-          <ClusterDeploymentWizardStep navigation={navigation} footer={footer}>
-            <Grid hasGutter>
-              <GridItem>
-                <ClusterWizardStepHeader>Cluster hosts</ClusterWizardStepHeader>
-              </GridItem>
-              <GridItem>
-                <ClusterDeploymentHostsSelection
-                  agentClusterInstall={agentClusterInstall}
-                  agents={agents}
-                  clusterDeployment={clusterDeployment}
-                  aiConfigMap={aiConfigMap}
-                  hostActions={hostActions}
-                />
-              </GridItem>
-            </Grid>
-          </ClusterDeploymentWizardStep>
-        );
-      }}
+      <HostSelectionForm {...rest} />
     </Formik>
   );
 };

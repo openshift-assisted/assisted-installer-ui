@@ -73,13 +73,17 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
   const [isMassApproveOpen, setMassApproveOpen] = React.useState(false);
   const [isMassDeleteOpen, setMassDeleteOpen] = React.useState(false);
   const [selectedHostIDs, setSelectedHostIDs] = React.useState<string[]>([]);
-  const onSelect = (host: Host, isSelected: boolean) => {
+
+  const selectedIDsRef = React.useRef(selectedHostIDs);
+  selectedIDsRef.current = selectedHostIDs;
+
+  const onSelect = React.useCallback((host: Host, isSelected: boolean) => {
     if (isSelected) {
-      setSelectedHostIDs([...selectedHostIDs, host.id]);
+      setSelectedHostIDs([...selectedIDsRef.current, host.id]);
     } else {
-      setSelectedHostIDs(selectedHostIDs.filter((sa) => sa !== host.id));
+      setSelectedHostIDs(selectedIDsRef.current.filter((sa) => sa !== host.id));
     }
-  };
+  }, []);
 
   const [hosts, hostActions, actionResolver] = useAgentsTable(
     {
@@ -106,7 +110,14 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
         memoryColumn,
         disksColumn,
       ].filter(Boolean),
-    [agents, actions, getClusterDeploymentLink, hostActions, bareMetalHosts],
+    [
+      agents,
+      actions.onEditHost,
+      actions.onApprove,
+      getClusterDeploymentLink,
+      hostActions,
+      bareMetalHosts,
+    ],
   );
 
   const hostIDs = hosts.map((h) => h.id);
@@ -173,18 +184,22 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
       >
         <HostsTableEmptyState setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
       </HostsTable>
-      <DiscoveryTroubleshootingModal
-        isOpen={isDiscoveryHintModalOpen}
-        setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
-      />
-      <MassChangeHostnameModal
-        isOpen={isMassChangeHostOpen}
-        hosts={hosts}
-        selectedHostIDs={selectedHostIDs}
-        onChangeHostname={onAgentChangeHostname}
-        onClose={() => setMassChangeHostOpen(false)}
-      />
-      {onMassDeleteHost && (
+      {isDiscoveryHintModalOpen && (
+        <DiscoveryTroubleshootingModal
+          isOpen={isDiscoveryHintModalOpen}
+          setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
+        />
+      )}
+      {isMassChangeHostOpen && (
+        <MassChangeHostnameModal
+          isOpen={isMassChangeHostOpen}
+          hosts={hosts}
+          selectedHostIDs={selectedHostIDs}
+          onChangeHostname={onAgentChangeHostname}
+          onClose={() => setMassChangeHostOpen(false)}
+        />
+      )}
+      {onMassDeleteHost && isMassDeleteOpen && (
         <MassDeleteHostModal
           isOpen={isMassDeleteOpen}
           agents={selectedAgents}
@@ -193,7 +208,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
           onClose={() => setMassDeleteOpen(false)}
         />
       )}
-      {actions.onApprove && (
+      {actions.onApprove && isMassApproveOpen && (
         <MassApproveAgentModal
           isOpen={isMassApproveOpen}
           agents={selectedAgents}

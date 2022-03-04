@@ -9,18 +9,33 @@ import {
   vipValidationSchema,
 } from '../ui';
 
-import { getSubnetFromMachineNetworkCidr } from './utils';
+import { getSubnetFromMachineNetworkCidr, getHostSubnets } from './utils';
 import {
   selectClusterNetworkCIDR,
   selectClusterNetworkHostPrefix,
   selectMachineNetworkCIDR,
   selectServiceNetworkCIDR,
 } from '../../selectors/clusterSelectors';
+import { NO_SUBNET_SET } from '../../config';
+
+const getInitHostSubnet = (
+  cluster: Cluster,
+  managedNetworkingType: 'userManaged' | 'clusterManaged',
+) => {
+  const machineNetworkCIDR = selectMachineNetworkCIDR(cluster);
+  if (machineNetworkCIDR) {
+    return getSubnetFromMachineNetworkCidr(machineNetworkCIDR);
+  }
+  if (managedNetworkingType === 'clusterManaged') {
+    return getHostSubnets(cluster)?.[0]?.subnet;
+  }
+};
 
 export const getNetworkInitialValues = (
   cluster: Cluster,
   defaultNetworkSettings: ClusterDefaultConfig,
 ): NetworkConfigurationValues => {
+  const managedNetworkingType = cluster.userManagedNetworking ? 'userManaged' : 'clusterManaged';
   return {
     clusterNetworkCidr:
       selectClusterNetworkCIDR(cluster) || defaultNetworkSettings.clusterNetworkCidr,
@@ -31,9 +46,9 @@ export const getNetworkInitialValues = (
     apiVip: cluster.apiVip || '',
     ingressVip: cluster.ingressVip || '',
     sshPublicKey: cluster.sshPublicKey || '',
-    hostSubnet: getSubnetFromMachineNetworkCidr(selectMachineNetworkCIDR(cluster)),
+    hostSubnet: getInitHostSubnet(cluster, managedNetworkingType) || NO_SUBNET_SET,
     vipDhcpAllocation: cluster.vipDhcpAllocation,
-    managedNetworkingType: cluster.userManagedNetworking ? 'userManaged' : 'clusterManaged',
+    managedNetworkingType,
     networkType: cluster.networkType || 'OVNKubernetes',
     enableProxy: false,
     editProxy: false,

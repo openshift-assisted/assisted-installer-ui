@@ -16,6 +16,8 @@ import {
 import { infraEnvColumn, agentStatusColumn, useAgentsTable } from './tableUtils';
 import DefaultEmptyState from '../../../common/components/ui/uiState/EmptyState';
 
+const canEditRole = () => true;
+
 type AgentsSelectionTableProps = ClusterDeploymentHostsTablePropsActions & {
   matchingAgents: AgentK8sResource[];
 };
@@ -24,40 +26,42 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
   matchingAgents,
   onEditRole,
 }) => {
-  const [
-    selectedHostIdsField,
-    ,
-    { setValue: setSelectedHostIdsValue, setTouched: setSelectedHostIdsTouched },
-  ] = useField<ClusterDeploymentHostsSelectionValues['selectedHostIds']>('selectedHostIds');
+  const [{ value: selectedIDs }, , { setValue, setTouched }] = useField<
+    ClusterDeploymentHostsSelectionValues['selectedHostIds']
+  >('selectedHostIds');
+
+  const idsRef = React.useRef(selectedIDs);
+  idsRef.current = selectedIDs;
+
+  // workaround for https://github.com/jaredpalmer/formik/issues/2268
+  // formik helpers are new a instance on every formik store update :(
+  const setValueRef = React.useRef(setValue);
+  setValueRef.current = setValue;
+  const setTouchedRef = React.useRef(setTouched);
+  setTouchedRef.current = setTouched;
+
+  const setFieldValue = React.useCallback(async (ids: string[]) => {
+    // eslint-disable-next-line
+    await (setValueRef.current as any)(ids, true);
+    setTouchedRef.current(true, false);
+  }, []);
 
   React.useEffect(() => {
     const allIds = matchingAgents.map((a) => a.metadata?.uid);
-    const presentIds = selectedHostIdsField.value.filter((id) => allIds.includes(id));
-    if (presentIds.length !== selectedHostIdsField.value.length) {
-      setSelectedHostIdsValue(presentIds);
-      setSelectedHostIdsTouched(true);
+    const presentIds = selectedIDs.filter((id) => allIds.includes(id));
+    if (presentIds.length !== selectedIDs.length) {
+      setFieldValue(presentIds);
     }
-  }, [
-    matchingAgents,
-    setSelectedHostIdsValue,
-    setSelectedHostIdsTouched,
-    selectedHostIdsField.value,
-  ]);
+  }, [matchingAgents, setFieldValue, selectedIDs]);
 
-  const onSelect = (agent: AgentK8sResource, selected: boolean) => {
-    if (selected) {
-      setSelectedHostIdsValue([...selectedHostIdsField.value, agent.metadata?.uid || '']);
-    } else {
-      setSelectedHostIdsValue(
-        selectedHostIdsField.value.filter((uid: string) => uid !== agent.metadata?.uid),
-      );
-    }
-    setSelectedHostIdsTouched(true);
-  };
-
-  const canEditRole = React.useCallback(
-    (agent: AgentK8sResource) => selectedHostIdsField.value.includes(agent.metadata?.uid || ''),
-    [selectedHostIdsField.value],
+  const onSelect = React.useCallback(
+    (agent: AgentK8sResource, selected: boolean) => {
+      const newIDs = selected
+        ? [...idsRef.current, agent.metadata?.uid || '']
+        : idsRef.current.filter((uid: string) => uid !== agent.metadata?.uid);
+      setFieldValue(newIDs);
+    },
+    [setFieldValue],
   );
 
   const [hosts, actions, actionResolver] = useAgentsTable(
@@ -84,7 +88,7 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
     <HostsTable
       hosts={hosts}
       content={content}
-      selectedIDs={selectedHostIdsField.value}
+      selectedIDs={selectedIDs}
       actionResolver={actionResolver}
       className="agents-table"
       ExpandComponent={DefaultExpandComponent}
