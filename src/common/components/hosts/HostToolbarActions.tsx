@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { DropdownItem } from '@patternfly/react-core';
-import { ActionItemsContext } from './HostToolbar';
+import { ActionItemsContext } from './TableToolbar';
 
 type ChangeHostnameActionProps = {
   onChangeHostname: VoidFunction;

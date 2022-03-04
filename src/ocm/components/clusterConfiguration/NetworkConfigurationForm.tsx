@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Formik, FormikConfig, FormikProps } from 'formik';
 import _ from 'lodash';
-import { Grid, GridItem, Text, TextContent } from '@patternfly/react-core';
+import { Form, Grid, GridItem, Text, TextContent } from '@patternfly/react-core';
 
 import {
   Cluster,
@@ -155,7 +155,7 @@ const NetworkConfigurationForm: React.FC<{
       {({ isSubmitting, dirty, errors, touched }: FormikProps<NetworkConfigurationValues>) => {
         const errorFields = getFormikErrorFields(errors, touched);
         const form = (
-          <>
+          <Form>
             <Grid hasGutter>
               <GridItem>
                 <ClusterWizardStepHeader
@@ -180,7 +180,7 @@ const NetworkConfigurationForm: React.FC<{
               </GridItem>
             </Grid>
             <FormikAutoSave />
-          </>
+          </Form>
         );
 
         const footer = (

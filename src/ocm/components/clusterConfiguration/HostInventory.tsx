@@ -23,7 +23,7 @@ import {
 import ClusterWizardHeaderExtraActions from './ClusterWizardHeaderExtraActions';
 import { useClusterSupportedPlatforms } from '../../hooks';
 import { useFormikContext } from 'formik';
-import { OcsCheckbox } from './OcsCheckbox';
+import { ODFCheckbox } from './ODFCheckbox';
 import { CnvCheckbox } from './CnvCheckbox';
 
 const PlatformIntegrationLabel: React.FC = () => (
@@ -106,7 +106,7 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
       )}
       {isOpenshiftClusterStorageEnabled && !isSNO && (
         <StackItem>
-          <OcsCheckbox openshiftVersion={cluster.openshiftVersion} />
+          <ODFCheckbox openshiftVersion={cluster.openshiftVersion} />
         </StackItem>
       )}
       {isPlatformIntegrationFeatureEnabled && (

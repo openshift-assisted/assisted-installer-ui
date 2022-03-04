@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useFormikContext } from 'formik';
-import { Alert, AlertVariant, Checkbox } from '@patternfly/react-core';
+import { Alert, AlertVariant, Checkbox, Grid } from '@patternfly/react-core';
 import AdvancedNetworkFields from './AdvancedNetworkFields';
 import { NetworkConfigurationValues } from '../../../common/types/clusters';
 import {
@@ -89,7 +89,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
       values.managedNetworkingType === 'clusterManaged' &&
       hostSubnetsCount
     ) {
-      setFieldValue('hostSubnet', firstSubnet);
+      setFieldValue('hostSubnet', firstSubnet, false);
     }
   }, [
     firstSubnet,
@@ -101,17 +101,17 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
 
   useEffect(() => {
     if (isUserManagedNetworking) {
-      const shouldValidate = true;
+      const shouldValidate = !!touched.hostSubnet;
 
       // We need to reset these fields' values in order to align with the values the server sends
       setFieldValue('vipDhcpAllocation', false);
-      setFieldValue('ingressVip', '', !shouldValidate);
-      setFieldValue('apiVip', '', !shouldValidate);
+      setFieldValue('ingressVip', '', shouldValidate);
+      setFieldValue('apiVip', '', shouldValidate);
       if (!touched.hostSubnet || isMultiNodeCluster) {
-        setFieldValue('hostSubnet', NO_SUBNET_SET, !shouldValidate);
+        setFieldValue('hostSubnet', NO_SUBNET_SET, shouldValidate);
       }
     } else {
-      if (!values.vipDhcpAllocation) {
+      if (!values.vipDhcpAllocation && touched.hostSubnet) {
         validateField('ingressVip');
         validateField('apiVip');
       }
@@ -126,7 +126,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   ]);
 
   return (
-    <>
+    <Grid hasGutter>
       {!hideManagedNetworking && (
         <ManagedNetworkingControlGroup disabled={isManagedNetworkTypeDisabled} />
       )}
@@ -137,7 +137,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
 
       {children}
 
-      {!isUserManagedNetworking && isClusterManagedNetworkingWithVMsUnsupported && { vmsAlert }}
+      {!isUserManagedNetworking && isClusterManagedNetworkingWithVMsUnsupported && vmsAlert}
 
       {!(isMultiNodeCluster && isUserManagedNetworking) && (
         <AvailableSubnetsControl
@@ -164,7 +164,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
         onChange={toggleAdvConfiguration}
         body={isAdvanced && <AdvancedNetworkFields isSNO={isSNO(cluster)} />}
       />
-    </>
+    </Grid>
   );
 };
 

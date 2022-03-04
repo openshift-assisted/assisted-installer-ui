@@ -18,7 +18,7 @@ const ClustersService = {
 
   async downloadLogs(clusterId: Cluster['id'], hostId?: Host['id']) {
     const { data, headers } = await ClustersAPI.downloadLogs(clusterId, hostId);
-    const contentHeader = headers.contentDisposition;
+    const contentHeader = headers['content-disposition'];
     const fileName = contentHeader?.match(/filename="(.+)"/)?.[1];
     return { data, fileName };
   },

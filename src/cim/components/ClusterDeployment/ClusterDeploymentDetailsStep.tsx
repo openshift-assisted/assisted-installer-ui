@@ -5,7 +5,6 @@ import { Grid, GridItem } from '@patternfly/react-core';
 
 import {
   useAlerts,
-  getFormikErrorFields,
   getClusterDetailsInitialValues,
   getClusterDetailsValidationSchema,
   ClusterWizardStepHeader,
@@ -16,7 +15,6 @@ import {
 import { ClusterDeploymentDetailsStepProps, ClusterDeploymentDetailsValues } from './types';
 import ClusterDeploymentWizardFooter from './ClusterDeploymentWizardFooter';
 import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
-import ClusterDeploymentWizardNavigation from './ClusterDeploymentWizardNavigation';
 import ClusterDeploymentWizardStep from './ClusterDeploymentWizardStep';
 import { getAICluster, getOCPVersions } from '../helpers';
 import {
@@ -124,7 +122,7 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
-      {({ submitForm, isSubmitting, isValid, isValidating, dirty, errors, touched }) => {
+      {({ submitForm, isSubmitting, isValid, isValidating, dirty }) => {
         const handleOnNext = () => {
           if (dirty) {
             submitForm();
@@ -136,17 +134,15 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
         const footer = (
           <ClusterDeploymentWizardFooter
             agentClusterInstall={agentClusterInstall}
-            errorFields={getFormikErrorFields(errors, touched)}
             isSubmitting={isSubmitting}
             isNextDisabled={!isValid || isValidating || isSubmitting}
             onNext={handleOnNext}
             onCancel={onClose}
           />
         );
-        const navigation = <ClusterDeploymentWizardNavigation />;
 
         return (
-          <ClusterDeploymentWizardStep navigation={navigation} footer={footer}>
+          <ClusterDeploymentWizardStep footer={footer}>
             <Grid hasGutter>
               <GridItem>
                 <ClusterWizardStepHeader>Cluster Details</ClusterWizardStepHeader>
