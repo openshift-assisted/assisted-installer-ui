@@ -12,10 +12,9 @@ import {
   PerPageOptions,
   Split,
   SplitItem,
+  Tooltip,
 } from '@patternfly/react-core';
 import { CaretDownIcon } from '@patternfly/react-icons';
-
-export const ActionItemsContext = React.createContext(false);
 
 type TableToolbarProps = {
   itemIDs: string[];
@@ -55,6 +54,23 @@ const TableToolbar: React.FC<TableToolbarProps> = ({
 
   const isDisabled = isChecked === false;
 
+  const actionsDropdown = (
+    <Dropdown
+      onSelect={onActionsToggle}
+      toggle={
+        <DropdownToggle
+          onToggle={onActionsToggle}
+          toggleIndicator={CaretDownIcon}
+          isDisabled={isDisabled}
+        >
+          Actions
+        </DropdownToggle>
+      }
+      isOpen={actionsOpen}
+      dropdownItems={actions}
+    />
+  );
+
   return (
     <Split hasGutter>
       <SplitItem isFilled>
@@ -89,26 +105,13 @@ const TableToolbar: React.FC<TableToolbarProps> = ({
               ]}
             />
           </ActionListItem>
-          {actions && (
-            <ActionListItem>
-              <ActionItemsContext.Provider value={isDisabled}>
-                <Dropdown
-                  onSelect={onActionsToggle}
-                  toggle={
-                    <DropdownToggle
-                      onToggle={onActionsToggle}
-                      toggleIndicator={CaretDownIcon}
-                      isPrimary
-                    >
-                      Actions
-                    </DropdownToggle>
-                  }
-                  isOpen={actionsOpen}
-                  dropdownItems={actions}
-                />
-              </ActionItemsContext.Provider>
-            </ActionListItem>
-          )}
+          <ActionListItem>
+            {isDisabled ? (
+              <Tooltip content="Select one or more hosts">{actionsDropdown}</Tooltip>
+            ) : (
+              actionsDropdown
+            )}
+          </ActionListItem>
         </ActionList>
       </SplitItem>
       {showPagination && (

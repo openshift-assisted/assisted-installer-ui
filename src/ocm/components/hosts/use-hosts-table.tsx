@@ -11,6 +11,7 @@ import {
   AddHostsContext,
   MassChangeHostnameModal,
   getInventory,
+  MassDeleteHostModal,
 } from '../../../common';
 import {
   AdditionalNTPSourcesDialog,
@@ -34,7 +35,12 @@ import {
   EditHostModal,
   EditHostFormValues,
 } from '../../../common/components/hosts';
-import { hostActionResolver } from '../../../common/components/hosts/tableUtils';
+import HostsTable from '../../../common/components/hosts/HostsTable';
+import {
+  hostActionResolver,
+  hostnameColumn,
+  statusColumn,
+} from '../../../common/components/hosts/tableUtils';
 import ResetHostModal from './ResetHostModal';
 import DeleteHostModal from './DeleteHostModal';
 import { onFetchEvents } from '../fetching/fetchEvents';
@@ -51,6 +57,7 @@ export const useHostsTable = (cluster: Cluster) => {
     deleteHostDialog,
     resetHostDialog,
     massUpdateHostnameDialog,
+    massDeleteHostDialog,
   } = useModalDialogsContext();
   const { resetCluster } = React.useContext(AddHostsContext);
 
@@ -264,6 +271,15 @@ export const useHostsTable = (cluster: Cluster) => {
     [selectedHostIDs, cluster, massUpdateHostnameDialog],
   );
 
+  const onMassDeleteHost = React.useCallback(
+    () =>
+      massDeleteHostDialog.open({
+        hosts: (cluster.hosts || []).filter((h) => selectedHostIDs.includes(h.id)),
+        onDelete: (host) => HostsService.delete(cluster.id, host.id),
+      }),
+    [cluster.hosts, cluster.id, selectedHostIDs, massDeleteHostDialog],
+  );
+
   return {
     onDiskRole,
     onEditHost,
@@ -278,6 +294,7 @@ export const useHostsTable = (cluster: Cluster) => {
     selectedHostIDs,
     setSelectedHostIDs,
     onMassChangeHostname,
+    onMassDeleteHost,
   };
 };
 
@@ -310,7 +327,10 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
     additionalNTPSourcesDialog,
     UpdateDay2ApiVipDialog,
     massUpdateHostnameDialog,
+    massDeleteHostDialog,
   } = useModalDialogsContext();
+
+  const content = React.useMemo(() => [hostnameColumn(), statusColumn()], []);
   return (
     <>
       <EventsModal
@@ -381,6 +401,16 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
           HostsService.updateHostName(cluster.id, host.id, hostname)
         }
       />
+      <MassDeleteHostModal
+        isOpen={massDeleteHostDialog.isOpen}
+        onClose={massDeleteHostDialog.close}
+        hosts={massDeleteHostDialog.data?.hosts || []}
+        onDelete={massDeleteHostDialog.data?.onDelete}
+      >
+        <HostsTable hosts={massDeleteHostDialog.data?.hosts || []} content={content}>
+          <div>No hosts selected</div>
+        </HostsTable>
+      </MassDeleteHostModal>
     </>
   );
 };
