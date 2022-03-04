@@ -53,6 +53,7 @@ type HostsTableProps = {
   setSelectedHostIDs?: (selectedHosts: string[]) => void;
   ExpandComponent?: React.ComponentType<ExpandComponentProps<Host>>;
   className?: string;
+  toolbarActions?: React.ReactNode[];
 };
 
 const HostsTable: React.FC<HostsTableProps & WithTestID> = ({
@@ -67,6 +68,7 @@ const HostsTable: React.FC<HostsTableProps & WithTestID> = ({
   onSelect,
   selectedIDs,
   setSelectedHostIDs,
+  toolbarActions,
 }) => {
   const data = React.useMemo(
     () => (hosts || []).filter((host) => !skipDisabled || host.status !== 'disabled'),
@@ -85,6 +87,7 @@ const HostsTable: React.FC<HostsTableProps & WithTestID> = ({
       onSelect={onSelect}
       selectedIDs={selectedIDs}
       setSelectedIDs={setSelectedHostIDs}
+      toolbarActions={toolbarActions}
     >
       {children}
     </AITable>

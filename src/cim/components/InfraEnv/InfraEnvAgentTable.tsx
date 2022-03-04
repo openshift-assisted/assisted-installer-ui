@@ -22,7 +22,6 @@ import {
 } from '../../../common/components/hosts/tableUtils';
 import {
   DiscoveryTroubleshootingModal,
-  HostToolbar,
   ChangeHostnameAction,
   MassChangeHostnameModal,
   DeleteHostAction,
@@ -30,7 +29,7 @@ import {
 import { TableRow } from '../../../common/components/hosts/AITable';
 import { InfraEnvAgentTableProps } from '../ClusterDeployment/types';
 import { MassApproveAgentModal, MassDeleteHostModal } from '../modals';
-import { ActionItemsContext } from '../../../common/components/hosts/HostToolbar';
+import { ActionItemsContext } from '../../../common/components/hosts/TableToolbar';
 import { AgentK8sResource } from '../../types';
 import { MassChangeHostnameModalProps } from '../../../common/components/hosts/MassChangeHostnameModal';
 
@@ -120,7 +119,6 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
     ],
   );
 
-  const hostIDs = hosts.map((h) => h.id);
   const selectedAgents = agents.filter((a) => selectedHostIDs.includes(a.metadata?.uid || ''));
   const selectedBMHs = bareMetalHosts.filter((bmh) =>
     selectedHostIDs.includes(bmh.metadata?.uid || ''),
@@ -165,13 +163,6 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
 
   return (
     <>
-      <HostToolbar
-        hostIDs={hostIDs}
-        selectedHostIDs={selectedHostIDs}
-        onSelectNone={() => setSelectedHostIDs([])}
-        onSelectAll={() => setSelectedHostIDs(hostIDs)}
-        actionItems={massActions}
-      />
       <HostsTable
         hosts={hosts}
         content={content}
@@ -181,6 +172,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
         setSelectedHostIDs={setSelectedHostIDs}
         onSelect={onSelect}
         ExpandComponent={DefaultExpandComponent}
+        toolbarActions={massActions}
       >
         <HostsTableEmptyState setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
       </HostsTable>

@@ -1,9 +1,7 @@
 import React from 'react';
-import { Stack, StackItem } from '@patternfly/react-core';
 import {
   ChangeHostnameAction,
   HostsNotShowingLinkProps,
-  HostToolbar,
   getSchedulableMasters,
   Cluster,
   Host,
@@ -150,37 +148,23 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({
     forceRole();
   }, [dispatch, cluster.id, cluster.hosts, alerts, addAlert, removeAlert]);
 
-  const hostIDs = cluster.hosts?.map((h) => h.id) || [];
-
   return (
     <>
-      <Stack hasGutter>
-        <StackItem>
-          <HostToolbar
-            selectedHostIDs={selectedHostIDs}
-            hostIDs={hostIDs}
-            onSelectAll={() => setSelectedHostIDs(hostIDs)}
-            onSelectNone={() => setSelectedHostIDs([])}
-            actionItems={[
-              <ChangeHostnameAction key="hostname" onChangeHostname={onMassChangeHostname} />,
-            ]}
-          />
-        </StackItem>
-        <StackItem>
-          <HostsTable
-            testId="hosts-discovery-table"
-            hosts={cluster.hosts || []}
-            content={content}
-            actionResolver={actionResolver}
-            ExpandComponent={getExpandComponent(onDiskRole, actionChecks.canEditDisks)}
-            onSelect={onSelect}
-            selectedIDs={selectedHostIDs}
-            setSelectedHostIDs={setSelectedHostIDs}
-          >
-            <HostsTableEmptyState setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
-          </HostsTable>
-        </StackItem>
-      </Stack>
+      <HostsTable
+        testId="hosts-discovery-table"
+        hosts={cluster.hosts || []}
+        content={content}
+        actionResolver={actionResolver}
+        ExpandComponent={getExpandComponent(onDiskRole, actionChecks.canEditDisks)}
+        onSelect={onSelect}
+        selectedIDs={selectedHostIDs}
+        setSelectedHostIDs={setSelectedHostIDs}
+        toolbarActions={[
+          <ChangeHostnameAction key="hostname" onChangeHostname={onMassChangeHostname} />,
+        ]}
+      >
+        <HostsTableEmptyState setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
+      </HostsTable>
       <HostsTableModals cluster={cluster} {...modalProps} />
     </>
   );
