@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { DropdownItem } from '@patternfly/react-core';
 import { noop } from 'lodash';
 
 import { Host } from '../../../common/api/types';
@@ -28,33 +27,9 @@ import {
 } from '../../../common';
 import { TableRow } from '../../../common/components/hosts/AITable';
 import { InfraEnvAgentTableProps } from '../ClusterDeployment/types';
-import { MassApproveAgentModal, MassDeleteHostModal } from '../modals';
-import { ActionItemsContext } from '../../../common/components/hosts/TableToolbar';
-import { AgentK8sResource } from '../../types';
+import { MassApproveAgentModal, MassDeleteAgentModal } from '../modals';
 import { MassChangeHostnameModalProps } from '../../../common/components/hosts/MassChangeHostnameModal';
-
-type MassApproveActionProps = {
-  onApprove: VoidFunction;
-  selectedAgents: AgentK8sResource[];
-};
-
-const MassApproveAction: React.FC<MassApproveActionProps> = ({ onApprove, selectedAgents }) => {
-  const isDisabled = React.useContext(ActionItemsContext);
-
-  let disabledDescription = isDisabled ? 'Select one or more hosts to approve' : undefined;
-  if (selectedAgents.every((a) => a.spec.approved)) {
-    disabledDescription = 'All selected hosts are already approved';
-  }
-  return (
-    <DropdownItem
-      onClick={onApprove}
-      isDisabled={!!disabledDescription}
-      description={disabledDescription}
-    >
-      Approve
-    </DropdownItem>
-  );
-};
+import MassApproveAction from '../modals/MassApproveAction';
 
 const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
   agents,
@@ -192,7 +167,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
         />
       )}
       {onMassDeleteHost && isMassDeleteOpen && (
-        <MassDeleteHostModal
+        <MassDeleteAgentModal
           isOpen={isMassDeleteOpen}
           agents={selectedAgents}
           bmhs={selectedBMHs}

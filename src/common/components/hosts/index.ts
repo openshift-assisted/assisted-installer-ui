@@ -12,3 +12,4 @@ export { default as VMRebootConfigurationInfo } from './VMRebootConfigurationInf
 export { default as TableToolbar } from './TableToolbar';
 export { ChangeHostnameAction, DeleteHostAction } from './HostToolbarActions';
 export { default as MassChangeHostnameModal } from './MassChangeHostnameModal';
+export { default as MassDeleteHostModal } from './MassDeleteHostModal';

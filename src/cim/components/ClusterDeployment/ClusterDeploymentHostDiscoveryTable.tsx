@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { DropdownItem } from '@patternfly/react-core';
 import { noop } from 'lodash';
 
 import { Host } from '../../../common/api/types';
@@ -23,32 +22,9 @@ import {
 } from '../../../common';
 import { ClusterDeploymentHostsTablePropsActions } from '../ClusterDeployment/types';
 import MassApproveAgentModal from '../modals/MassApproveAgentModal';
-import { ActionItemsContext } from '../../../common/components/hosts/TableToolbar';
 import { AgentK8sResource, BareMetalHostK8sResource, InfraEnvK8sResource } from '../../types';
 import { MassChangeHostnameModalProps } from '../../../common/components/hosts/MassChangeHostnameModal';
-
-type MassApproveActionProps = {
-  onApprove: VoidFunction;
-  selectedAgents: AgentK8sResource[];
-};
-
-const MassApproveAction: React.FC<MassApproveActionProps> = ({ onApprove, selectedAgents }) => {
-  const isDisabled = React.useContext(ActionItemsContext);
-
-  let disabledDescription = isDisabled ? 'Select one or more hosts to approve' : undefined;
-  if (selectedAgents.every((a) => a.spec.approved)) {
-    disabledDescription = 'All selected hosts are already approved';
-  }
-  return (
-    <DropdownItem
-      onClick={onApprove}
-      isDisabled={!!disabledDescription}
-      description={disabledDescription}
-    >
-      Approve
-    </DropdownItem>
-  );
-};
+import MassApproveAction from '../modals/MassApproveAction';
 
 export type ClusterDeploymentHostDiscoveryTableProps = ClusterDeploymentHostsTablePropsActions & {
   agents: AgentK8sResource[];
@@ -162,18 +138,22 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
       >
         <HostsTableEmptyState setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
       </HostsTable>
-      <DiscoveryTroubleshootingModal
-        isOpen={isDiscoveryHintModalOpen}
-        setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
-      />
-      <MassChangeHostnameModal
-        isOpen={isMassChangeHostOpen}
-        hosts={hosts}
-        selectedHostIDs={selectedHostIDs}
-        onChangeHostname={onAgentChangeHostname}
-        onClose={() => setMassChangeHostOpen(false)}
-      />
-      {onApprove && (
+      {isDiscoveryHintModalOpen && (
+        <DiscoveryTroubleshootingModal
+          isOpen={isDiscoveryHintModalOpen}
+          setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
+        />
+      )}
+      {isMassChangeHostOpen && (
+        <MassChangeHostnameModal
+          isOpen={isMassChangeHostOpen}
+          hosts={hosts}
+          selectedHostIDs={selectedHostIDs}
+          onChangeHostname={onAgentChangeHostname}
+          onClose={() => setMassChangeHostOpen(false)}
+        />
+      )}
+      {onApprove && isMassApproveOpen && (
         <MassApproveAgentModal
           isOpen={isMassApproveOpen}
           agents={selectedAgents}
