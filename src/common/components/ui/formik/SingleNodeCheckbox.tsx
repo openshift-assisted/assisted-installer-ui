@@ -58,7 +58,7 @@ const SingleNodeCheckbox: React.FC<SingleNodeCheckboxProps> = ({
             id={fieldId}
             label={
               <>
-                Install single node OpenShift (SNO)&nbsp;&nbsp;
+                Install single node OpenShift (SNO)&nbsp;
                 <FeatureSupportLevelBadge
                   featureId="SNO"
                   openshiftVersion={openshiftVersion}
