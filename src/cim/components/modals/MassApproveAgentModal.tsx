@@ -14,8 +14,9 @@ import { getAIHosts } from '../helpers';
 import { AgentK8sResource } from '../../types';
 import HostsTable from '../../../common/components/hosts/HostsTable';
 import { TableRow } from '../../../common/components/hosts/AITable';
-import { Host, HOST_STATUS_LABELS, ModalProgress } from '../../../common';
-import { getStatusIcon } from '../../../common/components/hosts/HostStatus';
+import { Host, ModalProgress } from '../../../common';
+import { agentStatus } from '../helpers/agentStatus';
+import { usePagination } from '../../../common/components/hosts/usePagination';
 
 type ApproveTableRowProps = {
   agent?: AgentK8sResource;
@@ -57,8 +58,8 @@ const statusColumn = (agents: AgentK8sResource[]): TableRow<Host> => {
     },
     cell: (host) => {
       const agent = agents.find((a) => a.metadata?.uid === host.id);
-      const status = agent?.spec.approved ? 'Already approved' : HOST_STATUS_LABELS['discovered'];
-      const icon = getStatusIcon('discovered');
+      const status = agent?.spec.approved ? 'Already approved' : agentStatus.discovered.title;
+      const icon = agentStatus.discovered.icon;
       return {
         title: (
           <ApproveTableRow agent={agent}>
@@ -118,6 +119,8 @@ const MassApproveAgentModal: React.FC<MassApproveAgentModalProps> = ({
     () => ({ content: [hostnameColumn(agents), statusColumn(agents)], hosts: getAIHosts(agents) }),
     [agents],
   );
+
+  const paginationProps = usePagination(hosts.length);
   return (
     <Modal
       aria-label="Approve hosts dialog"
@@ -138,7 +141,7 @@ const MassApproveAgentModal: React.FC<MassApproveAgentModalProps> = ({
             />
           </StackItem>
           <StackItem>
-            <HostsTable hosts={hosts} content={content}>
+            <HostsTable hosts={hosts} content={content} {...paginationProps}>
               <div>No hosts selected</div>
             </HostsTable>
           </StackItem>

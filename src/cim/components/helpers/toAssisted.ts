@@ -47,7 +47,7 @@ export const getAIHosts = (
         kind: 'Host',
         id: agent.metadata?.uid || '',
         href: '',
-        status: status as Host['status'],
+        status: status.key as Host['status'],
         statusInfo,
         role: getAgentRole(agent),
         requestedHostname: agent.spec.hostname || inventory.hostname,

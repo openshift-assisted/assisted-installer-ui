@@ -17,6 +17,7 @@ import {
   hostnameColumn,
   roleColumn,
 } from '../../../common/components/hosts/tableUtils';
+import { usePagination } from '../../../common/components/hosts/usePagination';
 
 type ExpandComponentProps = {
   obj: Host;
@@ -83,6 +84,8 @@ const ClusterDeploymentHostsNetworkTable: React.FC<ClusterDeploymentHostsNetwork
       ],
     );
 
+    const paginationProps = usePagination(hosts.length);
+
     return (
       <HostsTable
         testId="networking-host-table"
@@ -90,6 +93,7 @@ const ClusterDeploymentHostsNetworkTable: React.FC<ClusterDeploymentHostsNetwork
         ExpandComponent={ExpandComponent}
         content={content}
         actionResolver={actionResolver}
+        {...paginationProps}
       >
         <EmptyState
           icon={ConnectedIcon}

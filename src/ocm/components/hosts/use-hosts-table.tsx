@@ -48,6 +48,7 @@ import { HostsService } from '../../services';
 import UpdateDay2ApiVipModal from './UpdateDay2ApiVipModal';
 import { UpdateDay2ApiVipFormProps } from './UpdateDay2ApiVipForm';
 import { ClustersAPI } from '../../services/apis';
+import { usePagination } from '../../../common/components/hosts/usePagination';
 
 export const useHostsTable = (cluster: Cluster) => {
   const { addAlert } = useAlerts();
@@ -331,6 +332,7 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
   } = useModalDialogsContext();
 
   const content = React.useMemo(() => [hostnameColumn(), statusColumn()], []);
+  const paginationProps = usePagination(massDeleteHostDialog.data?.hosts?.length || 0);
   return (
     <>
       <EventsModal
@@ -407,7 +409,11 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
         hosts={massDeleteHostDialog.data?.hosts || []}
         onDelete={massDeleteHostDialog.data?.onDelete}
       >
-        <HostsTable hosts={massDeleteHostDialog.data?.hosts || []} content={content}>
+        <HostsTable
+          hosts={massDeleteHostDialog.data?.hosts || []}
+          content={content}
+          {...paginationProps}
+        >
           <div>No hosts selected</div>
         </HostsTable>
       </MassDeleteHostModal>

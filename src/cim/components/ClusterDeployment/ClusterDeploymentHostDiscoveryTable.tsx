@@ -19,12 +19,15 @@ import {
   DiscoveryTroubleshootingModal,
   ChangeHostnameAction,
   MassChangeHostnameModal,
+  TableToolbar,
 } from '../../../common';
 import { ClusterDeploymentHostsTablePropsActions } from '../ClusterDeployment/types';
 import MassApproveAgentModal from '../modals/MassApproveAgentModal';
 import { AgentK8sResource, BareMetalHostK8sResource, InfraEnvK8sResource } from '../../types';
 import { MassChangeHostnameModalProps } from '../../../common/components/hosts/MassChangeHostnameModal';
 import MassApproveAction from '../modals/MassApproveAction';
+import { usePagination } from '../../../common/components/hosts/usePagination';
+import { Stack, StackItem } from '@patternfly/react-core';
 
 export type ClusterDeploymentHostDiscoveryTableProps = ClusterDeploymentHostsTablePropsActions & {
   agents: AgentK8sResource[];
@@ -123,21 +126,38 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
     }
   };
 
+  const paginationProps = usePagination(hosts.length);
+  const itemIDs = hosts.map((h) => h.id);
+
   return (
     <>
-      <HostsTable
-        hosts={hosts}
-        content={content}
-        actionResolver={actionResolver}
-        className={className}
-        selectedIDs={selectedHostIDs}
-        setSelectedHostIDs={setSelectedHostIDs}
-        onSelect={onSelect}
-        ExpandComponent={DefaultExpandComponent}
-        toolbarActions={massActions}
-      >
-        <HostsTableEmptyState setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
-      </HostsTable>
+      <Stack hasGutter>
+        <StackItem>
+          <TableToolbar
+            selectedIDs={selectedHostIDs || []}
+            itemIDs={itemIDs}
+            onSelectAll={() => setSelectedHostIDs?.(itemIDs)}
+            onSelectNone={() => setSelectedHostIDs?.([])}
+            actions={massActions}
+            {...paginationProps}
+          />
+        </StackItem>
+        <StackItem>
+          <HostsTable
+            hosts={hosts}
+            content={content}
+            actionResolver={actionResolver}
+            className={className}
+            selectedIDs={selectedHostIDs}
+            setSelectedHostIDs={setSelectedHostIDs}
+            onSelect={onSelect}
+            ExpandComponent={DefaultExpandComponent}
+            {...paginationProps}
+          >
+            <HostsTableEmptyState setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
+          </HostsTable>
+        </StackItem>
+      </Stack>
       {isDiscoveryHintModalOpen && (
         <DiscoveryTroubleshootingModal
           isOpen={isDiscoveryHintModalOpen}

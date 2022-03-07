@@ -15,6 +15,7 @@ import {
 } from '../ClusterDeployment/types';
 import { infraEnvColumn, agentStatusColumn, useAgentsTable } from './tableUtils';
 import DefaultEmptyState from '../../../common/components/ui/uiState/EmptyState';
+import { usePagination } from '../../../common/components/hosts/usePagination';
 
 const canEditRole = () => true;
 
@@ -84,6 +85,8 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
     [matchingAgents, actions.canEditRole, actions.onEditRole],
   );
 
+  const paginationProps = usePagination(hosts.length);
+
   return (
     <HostsTable
       hosts={hosts}
@@ -93,6 +96,7 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
       className="agents-table"
       ExpandComponent={DefaultExpandComponent}
       {...actions}
+      {...paginationProps}
     >
       <DefaultEmptyState
         title="No hosts found"

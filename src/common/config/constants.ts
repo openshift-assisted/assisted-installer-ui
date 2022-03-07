@@ -1,7 +1,7 @@
 import * as packageJson from '../../../package.json';
 
 import { ValidationsInfo, HostRole } from '../../common/types/hosts';
-import { Cluster, ClusterValidationId, DiskRole, Event, Host, HostValidationId } from '../api';
+import { Cluster, ClusterValidationId, DiskRole, Event, HostValidationId } from '../api';
 import { ValidationGroup as ClusterValidationGroup } from '../types/clusters';
 
 export const OPENSHIFT_LIFE_CYCLE_DATES_LINK =
@@ -70,36 +70,6 @@ export const CLUSTER_STATUS_LABELS: { [key in Cluster['status']]: string } = {
   'adding-hosts': 'Adding hosts',
 };
 
-export const HOST_STATUS_LABELS: { [key in Host['status'] | 'discovered']: string } = {
-  'unbinding-pending-user-action': 'Removing from cluster',
-  'preparing-failed': 'Preparing step failed',
-  unbinding: 'Removing from cluster',
-  'disabled-unbound': 'Disabled',
-  'disconnected-unbound': 'Disconnected',
-  'discovering-unbound': 'Discovering',
-  'insufficient-unbound': 'Insufficient',
-  'known-unbound': 'Available',
-  binding: 'Binding',
-  discovering: 'Discovering',
-  discovered: 'Discovered',
-  'pending-for-input': 'Pending input',
-  known: 'Ready',
-  disconnected: 'Disconnected',
-  insufficient: 'Insufficient',
-  disabled: 'Disabled',
-  'preparing-for-installation': 'Preparing for installation',
-  'preparing-successful': 'Preparing step successful',
-  installing: 'Starting installation',
-  'installing-in-progress': 'Installing',
-  'installing-pending-user-action': 'Pending user action',
-  installed: 'Installed',
-  cancelled: 'Installation cancelled',
-  error: 'Error',
-  resetting: 'Resetting',
-  'resetting-pending-user-action': 'Reboot required',
-  'added-to-existing-cluster': 'Installed',
-};
-
 export const CLUSTER_FIELD_LABELS: { [key in string]: string } = {
   name: 'Cluster name',
   baseDnsDomain: 'Base domain',
@@ -116,48 +86,6 @@ export const CLUSTER_FIELD_LABELS: { [key in string]: string } = {
   httpProxy: 'HTTP proxy',
   httpsProxy: 'HTTPS proxy',
   noProxy: 'No proxy',
-};
-
-export const HOST_STATUS_DETAILS: { [key in Host['status'] | 'discovered']: string } = {
-  'unbinding-pending-user-action':
-    'This host is being removed from the cluster. To finish, reboot the host with the infrastructure environment ISO.',
-  'preparing-failed': 'Preparing step failed',
-  unbinding: 'This host is being removed from the cluster.',
-  'disabled-unbound':
-    'This host was manually removed from a cluster and can not be included in another one. Enable this host to make it available again.',
-  'disconnected-unbound':
-    'This host has lost its connection to the installer and can not be included in the cluster unless connectivity is restored.',
-  'discovering-unbound':
-    'This host is transmitting its hardware and networking information to the installer. Please wait while this information is received.',
-  'insufficient-unbound':
-    'This host does not meet the minimum hardware or networking requirements and can not be included in the cluster.',
-  'known-unbound':
-    'This host meets the minimum hardware and networking requirements and can be included in the cluster.',
-  binding: 'This host is being added to the cluster.',
-  discovering:
-    'This host is transmitting its hardware and networking information to the installer. Please wait while this information is received.',
-  discovered: 'The host has been discovered and needs to be approved to before further use.',
-  'pending-for-input': '',
-  known:
-    'This host meets the minimum hardware and networking requirements and will be included in the cluster.',
-  disconnected:
-    'This host has lost its connection to the installer and will not be included in the cluster unless connectivity is restored.',
-  insufficient:
-    'This host does not meet the minimum hardware or networking requirements and will not be included in the cluster.',
-  disabled:
-    'This host was manually disabled and will not be included in the cluster. Enable this host to include it again.',
-  'preparing-for-installation': '',
-  'preparing-successful': '',
-  installing: '', // not rendered
-  'installing-in-progress': '', // not rendered
-  'installing-pending-user-action': 'This host is pending user action',
-  installed: 'This host completed its installation successfully.',
-  cancelled: 'This host installation has been cancelled.',
-  error: 'This host failed its installation.',
-  resetting: 'This host is resetting the installation.',
-  'resetting-pending-user-action':
-    'Host already booted from disk during previous installation. To finish resetting the installation please boot the host into Discovery ISO.',
-  'added-to-existing-cluster': '', // special formatting
 };
 
 export const HOST_VALIDATION_GROUP_LABELS: { [key in keyof ValidationsInfo]: string } = {

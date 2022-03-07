@@ -16,22 +16,13 @@ import {
   TableProps,
 } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
-import {
-  Checkbox,
-  OnPerPageSelect,
-  OnSetPage,
-  Pagination,
-  PaginationVariant,
-  PerPageOptions,
-  Stack,
-  StackItem,
-} from '@patternfly/react-core';
+import { Checkbox, Pagination, PaginationVariant } from '@patternfly/react-core';
 import classnames from 'classnames';
 import { getColSpanRow, rowSorter } from '../ui/table/utils';
 import { WithTestID } from '../../types';
-import TableToolbar from './TableToolbar';
 
 import './HostsTable.css';
+import { usePagination } from './usePagination';
 
 const rowKey = ({ rowData }: ExtraParamsType) => rowData?.key;
 
@@ -83,17 +74,6 @@ const TableMemo: React.FC<WithTestID & TableMemoProps> = React.memo(
 
 TableMemo.displayName = 'tableMemo';
 
-const perPageOptions: PerPageOptions[] = [
-  {
-    title: '10',
-    value: 10,
-  },
-  {
-    title: '20',
-    value: 20,
-  },
-];
-
 const getMainIndex = (hasOnSelect: boolean, hasExpandComponent: boolean) => {
   if (hasOnSelect && hasExpandComponent) {
     return 2;
@@ -138,7 +118,7 @@ const SelectCheckbox: React.FC<SelectCheckboxProps> = ({ onSelect, id }) => {
   );
 };
 
-type HostsTable<R> = {
+export type AITableProps<R> = ReturnType<typeof usePagination> & {
   data: R[];
   content: TableRow<R>[];
   ExpandComponent?: React.ComponentType<ExpandComponentProps<R>>;
@@ -149,7 +129,6 @@ type HostsTable<R> = {
   setSelectedIDs?: (selectedIDs: string[]) => void;
   className?: string;
   actionResolver?: ActionsResolver<R>;
-  toolbarActions?: React.ReactNode[];
 };
 
 // eslint-disable-next-line
@@ -165,24 +144,13 @@ const AITable = <R extends any>({
   children,
   selectedIDs,
   setSelectedIDs,
-  toolbarActions,
-}: WithTestID & HostsTable<R>) => {
-  const [perPage, setPerPage] = React.useState(10);
-  const [page, setPage] = React.useState(1);
-
-  const { onSetPage, onPerPageSelect } = React.useMemo<{
-    onSetPage: OnSetPage;
-    onPerPageSelect: OnPerPageSelect;
-  }>(
-    () => ({
-      onSetPage: (evt, pageNumber) => setPage(pageNumber),
-      onPerPageSelect: (evt, perPage) => setPerPage(perPage),
-    }),
-    [],
-  );
-
-  const showPagination = data.length > 10;
-
+  perPage,
+  page,
+  onSetPage,
+  onPerPageSelect,
+  showPagination,
+  perPageOptions,
+}: WithTestID & AITableProps<R>) => {
   React.useEffect(() => {
     if (selectedIDs && setSelectedIDs) {
       const idsToRemove: string[] = [];
@@ -300,52 +268,33 @@ const AITable = <R extends any>({
     });
   }, []);
 
-  const paginationProps = {
-    perPage,
-    onPerPageSelect,
-    page,
-    onSetPage,
-    perPageOptions,
-  };
-
   return (
-    <Stack hasGutter>
-      <StackItem>
-        {onSelect && (
-          <TableToolbar
-            selectedIDs={selectedIDs || []}
-            itemIDs={itemIDs}
-            onSelectAll={() => setSelectedIDs?.(itemIDs)}
-            onSelectNone={() => setSelectedIDs?.([])}
-            actions={toolbarActions}
-            showPagination={showPagination}
-            {...paginationProps}
-          />
-        )}
-      </StackItem>
-      <StackItem>
-        <SelectionProvider.Provider value={selectedIDs}>
-          <TableMemo
-            rows={rows}
-            cells={columns}
-            onCollapse={ExpandComponent ? onCollapse : undefined}
-            className={className}
-            sortBy={sortBy}
-            onSort={onSort}
-            rowWrapper={HostsTableRowWrapper}
-            data-testid={testId}
-            actionResolver={actionResolver}
-          />
-        </SelectionProvider.Provider>
-        {showPagination && (
-          <Pagination
-            variant={PaginationVariant.bottom}
-            {...paginationProps}
-            itemCount={itemIDs.length}
-          />
-        )}
-      </StackItem>
-    </Stack>
+    <>
+      <SelectionProvider.Provider value={selectedIDs}>
+        <TableMemo
+          rows={rows}
+          cells={columns}
+          onCollapse={ExpandComponent ? onCollapse : undefined}
+          className={className}
+          sortBy={sortBy}
+          onSort={onSort}
+          rowWrapper={HostsTableRowWrapper}
+          data-testid={testId}
+          actionResolver={actionResolver}
+        />
+      </SelectionProvider.Provider>
+      {showPagination && (
+        <Pagination
+          variant={PaginationVariant.bottom}
+          itemCount={itemIDs.length}
+          perPage={perPage}
+          onPerPageSelect={onPerPageSelect}
+          page={page}
+          onSetPage={onSetPage}
+          perPageOptions={perPageOptions}
+        />
+      )}
+    </>
   );
 };
 

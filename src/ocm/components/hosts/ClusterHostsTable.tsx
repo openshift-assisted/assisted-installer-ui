@@ -12,6 +12,7 @@ import {
   countColumn,
 } from '../../../common/components/hosts/tableUtils';
 import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
+import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useHostsTable, HostsTableModals } from './use-hosts-table';
 import HostsTable, { HostsTableEmptyState } from '../../../common/components/hosts/HostsTable';
 import { ExpandComponentProps } from '../../../common/components/hosts/AITable';
@@ -50,14 +51,18 @@ const ClusterHostsTable: React.FC<ClusterHostsTableProps> = ({
     [onEditHost, actionChecks, onEditRole, cluster],
   );
 
+  const hosts = cluster.hosts || [];
+  const paginationProps = usePagination(hosts.length);
+
   return (
     <>
       <HostsTable
-        hosts={cluster.hosts || []}
+        hosts={hosts}
         skipDisabled={skipDisabled}
         ExpandComponent={ExpandComponent}
         content={content}
         actionResolver={actionResolver}
+        {...paginationProps}
       >
         <HostsTableEmptyState setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
       </HostsTable>

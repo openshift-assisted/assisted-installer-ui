@@ -6,13 +6,13 @@ import {
 } from '../clusterConfiguration/DiscoveryTroubleshootingModal';
 import { Host } from '../../api';
 import AITable, {
-  ActionsResolver,
   ExpandComponentProps,
-  TableRow,
+  AITableProps,
 } from '../../../common/components/hosts/AITable';
 import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
 import { WithTestID } from '../../types';
 import EmptyState from '../ui/uiState/EmptyState';
+import { usePagination } from './usePagination';
 
 const getHostId = (host: Host) => host.id;
 
@@ -42,56 +42,26 @@ export const DefaultExpandComponent: React.FC<ExpandComponentProps<Host>> = ({ o
   <HostDetail key={obj.id} host={obj} />
 );
 
-type HostsTableProps = {
+type HostsTableProps = ReturnType<typeof usePagination> & {
   hosts: Host[];
   skipDisabled?: boolean;
-  content: TableRow<Host>[];
-  actionResolver?: ActionsResolver<Host>;
+  content: AITableProps<Host>['content'];
+  actionResolver?: AITableProps<Host>['actionResolver'];
   children: React.ReactNode;
-  onSelect?: (obj: Host, isSelected: boolean) => void;
-  selectedIDs?: string[];
-  setSelectedHostIDs?: (selectedHosts: string[]) => void;
-  ExpandComponent?: React.ComponentType<ExpandComponentProps<Host>>;
-  className?: string;
-  toolbarActions?: React.ReactNode[];
+  onSelect?: AITableProps<Host>['onSelect'];
+  selectedIDs?: AITableProps<Host>['selectedIDs'];
+  setSelectedHostIDs?: AITableProps<Host>['setSelectedIDs'];
+  ExpandComponent?: AITableProps<Host>['ExpandComponent'];
+  className?: AITableProps<Host>['className'];
 };
 
-const HostsTable: React.FC<HostsTableProps & WithTestID> = ({
-  hosts,
-  skipDisabled,
-  children,
-  content,
-  actionResolver,
-  ExpandComponent,
-  className,
-  testId,
-  onSelect,
-  selectedIDs,
-  setSelectedHostIDs,
-  toolbarActions,
-}) => {
+const HostsTable: React.FC<HostsTableProps & WithTestID> = ({ hosts, skipDisabled, ...rest }) => {
   const data = React.useMemo(
     () => (hosts || []).filter((host) => !skipDisabled || host.status !== 'disabled'),
     [hosts, skipDisabled],
   );
 
-  return (
-    <AITable<Host>
-      getDataId={getHostId}
-      data={data}
-      ExpandComponent={ExpandComponent}
-      content={content}
-      actionResolver={actionResolver}
-      className={className}
-      testId={testId}
-      onSelect={onSelect}
-      selectedIDs={selectedIDs}
-      setSelectedIDs={setSelectedHostIDs}
-      toolbarActions={toolbarActions}
-    >
-      {children}
-    </AITable>
-  );
+  return <AITable<Host> getDataId={getHostId} data={data} {...rest} />;
 };
 
 export default HostsTable;
