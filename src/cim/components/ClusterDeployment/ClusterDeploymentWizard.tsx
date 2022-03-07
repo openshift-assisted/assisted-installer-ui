@@ -43,6 +43,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   fetchInfraEnv,
   initialStep,
   onApproveAgent,
+  isBMPlatform,
 }) => {
   const [currentStepId, setCurrentStepId] = React.useState<ClusterDeploymentWizardStepsType>(
     initialStep || 'cluster-details',
@@ -117,6 +118,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
               onEditRole={hostActions.onEditRole}
               onApproveAgent={onApproveAgent}
               // onFormSaveError={setErrorHandler}
+              isBMPlatform={isBMPlatform}
             />
           );
         }

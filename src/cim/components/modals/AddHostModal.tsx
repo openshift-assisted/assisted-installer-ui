@@ -1,6 +1,14 @@
 import * as React from 'react';
 import { FormikHelpers } from 'formik';
-import { Flex, FlexItem, Modal, ModalBoxHeader, ModalVariant, Radio } from '@patternfly/react-core';
+import {
+  Flex,
+  FlexItem,
+  Modal,
+  ModalBoxHeader,
+  ModalVariant,
+  Radio,
+  Tooltip,
+} from '@patternfly/react-core';
 import { DownloadIso, DiscoveryImageConfigForm, DiscoveryImageFormValues } from '../../../common';
 import { BMCForm } from '../Agent';
 import { AddHostModalProps } from './types';
@@ -15,6 +23,7 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
   onCreateBMH,
   onSaveISOParams,
   usedHostnames,
+  isBMPlatform,
 }) => {
   const hasDHCP = infraEnv.metadata?.labels?.networkType !== 'static';
   const sshPublicKey = infraEnv.spec?.sshAuthorizedKey || agentClusterInstall?.spec?.sshPublicKey;
@@ -62,15 +71,21 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
               onChange={(checked) => setDialogType(checked ? isoDialog : 'bmc')}
             />
           </FlexItem>
-          <FlexItem spacer={{ default: 'spacerXl' }} />
+          <FlexItem spacer={{ default: isBMPlatform ? 'spacerXl' : 'spacerSm' }} />
           <FlexItem>
-            <Radio
-              id="bmc"
-              name="type"
-              label="Baseboard Management Controller (BMC)"
-              isChecked={dialogType === 'bmc'}
-              onChange={(checked) => setDialogType(checked ? 'bmc' : isoDialog)}
-            />
+            <Tooltip
+              hidden={isBMPlatform}
+              content="The Advanced Cluster Manager can not manage bare metal hosts on this platform."
+            >
+              <Radio
+                id="bmc"
+                name="type"
+                label="Baseboard Management Controller (BMC)"
+                isChecked={dialogType === 'bmc'}
+                onChange={(checked) => setDialogType(checked ? 'bmc' : isoDialog)}
+                isDisabled={!isBMPlatform}
+              />
+            </Tooltip>
           </FlexItem>
         </Flex>
       </ModalBoxHeader>

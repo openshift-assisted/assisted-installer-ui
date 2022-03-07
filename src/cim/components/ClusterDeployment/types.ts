@@ -122,6 +122,7 @@ export type ClusterDeploymentWizardProps = Pick<
   | 'getClusterDeploymentLink'
   | 'fetchSecret'
   | 'fetchNMState'
+  | 'isBMPlatform'
 > & {
   className?: string;
 
@@ -168,6 +169,7 @@ export type InfraEnvAgentTableProps = ClusterDeploymentHostsTablePropsActions & 
   ) => Promise<BareMetalHostK8sResource>;
   // eslint-disable-next-line
   onMassDeleteHost?: (agent?: AgentK8sResource, bmh?: BareMetalHostK8sResource) => Promise<any>;
+  isBMPlatform: boolean;
 };
 
 export type ClusterDeploymentHostsDiscoveryProps = {
@@ -176,6 +178,7 @@ export type ClusterDeploymentHostsDiscoveryProps = {
   bareMetalHosts: BareMetalHostK8sResource[];
   aiConfigMap?: ConfigMapK8sResource;
   infraEnv: InfraEnvK8sResource;
+  isBMPlatform: boolean;
 
   usedHostnames: EditAgentModalProps['usedHostnames'];
   onValuesChanged?: (values: ClusterDeploymentHostsDiscoveryValues) => void;
