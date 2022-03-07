@@ -26,7 +26,6 @@ import { AgentK8sResource } from '../../types';
 type NetworkingFormProps = {
   clusterDeployment: ClusterDeploymentDetailsNetworkingProps['clusterDeployment'];
   agentClusterInstall: ClusterDeploymentDetailsNetworkingProps['agentClusterInstall'];
-  onFinish: ClusterDeploymentDetailsNetworkingProps['onFinish'];
   onClose: ClusterDeploymentDetailsNetworkingProps['onClose'];
   agents: AgentK8sResource[];
   fetchInfraEnv: ClusterDeploymentDetailsNetworkingProps['fetchInfraEnv'];
@@ -35,14 +34,15 @@ type NetworkingFormProps = {
 
 const NetworkingForm: React.FC<NetworkingFormProps> = ({
   clusterDeployment,
-  onFinish,
   agentClusterInstall,
   agents,
   onClose,
   fetchInfraEnv,
   hostActions,
 }) => {
-  const [showErrors, setShowErrors] = React.useState(false);
+  const [showFormErrors, setShowFormErrors] = React.useState(false);
+  const [showClusterErrors, setShowClusterErrors] = React.useState(false);
+  const [nextRequested, setNextRequested] = React.useState(false);
   const { infraEnvWithProxy, infraEnvsError, infraEnvsLoading, sameProxies } = useInfraEnvProxies({
     fetchInfraEnv,
     agents,
@@ -55,14 +55,11 @@ const NetworkingForm: React.FC<NetworkingFormProps> = ({
     setTouched,
     errors,
     touched,
+    values,
   } = useFormikContext<ClusterDeploymentNetworkingValues>();
   const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
 
   const canContinue = canNextFromNetworkingStep(agentClusterInstall, agents);
-
-  const isNextDisabled = showErrors
-    ? !isValid || isValidating || isSubmitting || !canContinue
-    : false;
 
   const onBack = () =>
     isCIMFlow(clusterDeployment)
@@ -70,7 +67,7 @@ const NetworkingForm: React.FC<NetworkingFormProps> = ({
       : setCurrentStepId('hosts-discovery');
 
   const onNext = async () => {
-    if (!showErrors) {
+    if (!showFormErrors) {
       const errors = await validateForm();
       setTouched(
         Object.keys(errors).reduce((acc, curr) => {
@@ -78,16 +75,27 @@ const NetworkingForm: React.FC<NetworkingFormProps> = ({
           return acc;
         }, {}),
       );
-      setShowErrors(true);
+      setShowFormErrors(true);
       if (Object.keys(errors).length) {
         return;
       }
     }
-
-    if (canContinue) {
-      onFinish();
-    }
+    setNextRequested(true);
   };
+
+  React.useEffect(() => {
+    setNextRequested(false);
+    setShowClusterErrors(false);
+  }, [values.apiVip, values.ingressVip]);
+
+  React.useEffect(() => {
+    if (nextRequested) {
+      setShowClusterErrors(true);
+      if (canContinue) {
+        setCurrentStepId('review');
+      }
+    }
+  }, [nextRequested, canContinue, setCurrentStepId]);
 
   const errorFields = getFormikErrorFields(errors, touched);
 
@@ -96,14 +104,16 @@ const NetworkingForm: React.FC<NetworkingFormProps> = ({
       agentClusterInstall={agentClusterInstall}
       agents={agents}
       isSubmitting={isSubmitting}
-      isNextDisabled={isNextDisabled}
-      showClusterErrors={!errorFields.length && showErrors}
+      isNextDisabled={
+        nextRequested || isSubmitting || (showFormErrors ? !isValid || isValidating : false)
+      }
+      showClusterErrors={!errorFields.length && showClusterErrors}
       onBack={onBack}
       onNext={onNext}
       onCancel={onClose}
-      nextButtonText="Install cluster"
+      nextButtonText="Next"
     >
-      {showErrors && !!errorFields.length && (
+      {showFormErrors && !!errorFields.length && (
         <Alert
           variant={AlertVariant.danger}
           title="Provided cluster configuration is not valid"

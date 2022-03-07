@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertGroup } from '@patternfly/react-core';
+import { Alert, AlertGroup } from '@patternfly/react-core';
 import {
   Alerts,
   WizardFooter,
@@ -40,7 +40,13 @@ const ValidationSection: React.FC<ValidationSectionProps> = ({
           hosts={hosts}
           validationsInfo={validationsInfo}
           wizardStepsValidationsMap={wizardStepsValidationsMap}
-        />
+        >
+          <Alert
+            variant="info"
+            isInline
+            title="Validations are running. If they take more than 2 minutes, please attend to the errors below."
+          />
+        </ClusterWizardStepValidationsAlert>
       )}
     </AlertGroup>
   );

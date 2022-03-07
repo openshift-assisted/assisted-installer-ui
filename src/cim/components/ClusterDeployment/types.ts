@@ -42,7 +42,8 @@ export type ClusterDeploymentWizardStepsType =
   | 'cluster-details'
   | 'hosts-selection'
   | 'hosts-discovery'
-  | 'networking';
+  | 'networking'
+  | 'review';
 
 export type ClusterDeploymentDetailsProps = {
   clusterImages: ClusterImageSetK8sResource[];
@@ -82,7 +83,6 @@ export type ClusterDeploymentDetailsNetworkingProps = {
   onSaveNetworking: (values: ClusterDeploymentNetworkingValues) => Promise<string | void>;
   onClose: () => void;
   hostActions: ClusterDeploymentHostsTablePropsActions;
-  onFinish: VoidFunction;
   fetchInfraEnv: (name: string, namespace: string) => Promise<InfraEnvK8sResource>;
 };
 
@@ -131,7 +131,7 @@ export type ClusterDeploymentWizardProps = Pick<
   onSaveNetworking: ClusterDeploymentDetailsNetworkingProps['onSaveNetworking'];
   onSaveHostsSelection: ClusterDeploymentHostSelectionStepProps['onSaveHostsSelection'];
   onApproveAgent: InfraEnvAgentTableProps['onApprove'];
-  onFinish: VoidFunction;
+  onFinish: () => Promise<AgentClusterInstallK8sResource>;
 
   hostActions: ClusterDeploymentHostsTablePropsActions;
   clusterImages: ClusterImageSetK8sResource[];

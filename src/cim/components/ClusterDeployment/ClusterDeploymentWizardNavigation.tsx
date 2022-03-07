@@ -58,7 +58,15 @@ const ClusterDeploymentWizardNavigation: React.FC<{
         step={3}
         onNavItemClick={() => setCurrentStepId('networking')}
       />
-      {/* <WizardNavItem key="review" content="Review" step={4} isDisabled /> */}
+      <WizardNavItem
+        key="review"
+        content={wizardStepNames['review']}
+        isDisabled={!wizardSteps.slice(3).includes(currentStepId)}
+        // isValid={ () => !cluster || canNextHostDiscovery({ cluster }) }
+        isCurrent={currentStepId === 'review'}
+        step={4}
+        onNavItemClick={() => setCurrentStepId('review')}
+      />
     </WizardNav>
   );
 };
