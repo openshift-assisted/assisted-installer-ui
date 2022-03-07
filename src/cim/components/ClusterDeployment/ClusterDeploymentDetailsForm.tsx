@@ -40,7 +40,7 @@ const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> 
           <Alert
             isInline
             variant="info"
-            title="This page cannot be edited once the cluster draft is created."
+            title="This option is not editable after the draft cluster was created."
           />
         </StackItem>
       )}
