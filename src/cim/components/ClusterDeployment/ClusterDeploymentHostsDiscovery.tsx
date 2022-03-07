@@ -41,6 +41,7 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
   fetchNMState,
   onChangeBMHHostname,
   onApproveAgent,
+  isBMPlatform,
 }) => {
   const [isDiscoveryHintModalOpen, setDiscoveryHintModalOpen] = React.useState(false);
   const { values } = useFormikContext<ClusterDeploymentHostsDiscoveryValues>();
@@ -133,6 +134,7 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
             onCreateBMH={onCreateBMH}
             onSaveISOParams={onSaveISOParams}
             usedHostnames={usedHostnames || []}
+            isBMPlatform={isBMPlatform}
           />
         )}
     </Grid>
