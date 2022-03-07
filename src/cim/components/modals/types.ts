@@ -12,6 +12,7 @@ export type AddHostModalProps = Pick<
   'onClose' | 'onCreateBMH' | 'infraEnv' | 'usedHostnames'
 > & {
   isOpen: boolean;
+  isBMPlatform: boolean;
   onSaveISOParams: (values: DiscoveryImageFormValues) => Promise<void>;
   agentClusterInstall?: AgentClusterInstallK8sResource;
 };
