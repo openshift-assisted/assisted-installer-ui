@@ -35,7 +35,7 @@
     "build": "run-s clean esbuild:prod",
     "start": "run-s clean esbuild:dev",
     "start-assisted-ui": "yarn --cwd ../assisted-ui start",
-    "start-uhc-portal": "yarn --cwd ../uhc-portal dev-server --env noproxy api-env=staging",
+    "start-uhc-portal": "yarn --cwd ../uhc-portal start",
     "sync-to-ui": "./scripts/sync-dist.sh",
     "prepare": "install-peers",
     "test": "run-s test:circular test:lint test:type-check",
