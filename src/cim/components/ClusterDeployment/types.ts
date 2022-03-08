@@ -1,3 +1,4 @@
+import { K8sResourceCommon } from 'console-sdk-ai-lib';
 import { ClusterDetailsValues } from '../../../common/components/clusterWizard/types';
 import { NetworkConfigurationValues } from '../../../common/types/clusters';
 import {
@@ -74,6 +75,7 @@ export type ScaleUpFormValues = Omit<ClusterDeploymentHostsSelectionValues, 'use
 export type ClusterDeploymentDetailsStepProps = ClusterDeploymentDetailsProps & {
   onSaveDetails: (values: ClusterDeploymentDetailsValues) => Promise<string | void>;
   onClose: () => void;
+  isPreviewOpen: boolean;
 };
 
 export type ClusterDeploymentDetailsNetworkingProps = {
@@ -84,6 +86,7 @@ export type ClusterDeploymentDetailsNetworkingProps = {
   onClose: () => void;
   hostActions: ClusterDeploymentHostsTablePropsActions;
   fetchInfraEnv: (name: string, namespace: string) => Promise<InfraEnvK8sResource>;
+  isPreviewOpen: boolean;
 };
 
 export type AgentSelectorChangeProps = {
@@ -144,6 +147,10 @@ export type ClusterDeploymentWizardProps = Pick<
   infraEnv?: InfraEnvK8sResource;
   fetchInfraEnv: (name: string, namespace: string) => Promise<InfraEnvK8sResource>;
   initialStep?: ClusterDeploymentWizardStepsType;
+  isPreviewOpen: boolean;
+  setPreviewOpen: (open: boolean) => void;
+  fetchManagedClusters: () => Promise<K8sResourceCommon[]>;
+  fetchKlusterletAddonConfig: () => Promise<K8sResourceCommon[]>;
 };
 
 export type FetchSecret = (name: string, namespace: string) => Promise<SecretK8sResource>;

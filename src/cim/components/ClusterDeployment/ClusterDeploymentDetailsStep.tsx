@@ -24,7 +24,7 @@ import {
 } from '../../types';
 import ClusterDeploymentDetailsForm from './ClusterDeploymentDetailsForm';
 import { ClusterImageSetK8sResource } from '../../types/k8s/cluster-image-set';
-import { isCIMFlow } from './helpers';
+import { isCIMFlow, getGridSpans } from './helpers';
 
 type UseDetailsFormikArgs = {
   clusterImages: ClusterImageSetK8sResource[];
@@ -87,6 +87,7 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
   onSaveDetails,
   onClose,
   pullSecret,
+  isPreviewOpen,
 }) => {
   const { addAlert } = useAlerts();
   const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
@@ -141,13 +142,15 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
           />
         );
 
+        const gridSpans = getGridSpans(isPreviewOpen);
+
         return (
           <ClusterDeploymentWizardStep footer={footer}>
             <Grid hasGutter>
               <GridItem>
                 <ClusterWizardStepHeader>Cluster Details</ClusterWizardStepHeader>
               </GridItem>
-              <GridItem span={12} lg={10} xl={9} xl2={7}>
+              <GridItem {...gridSpans}>
                 <ClusterDeploymentDetailsForm
                   agentClusterInstall={agentClusterInstall}
                   clusterDeployment={clusterDeployment}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { DropdownItem, DropdownToggle, Dropdown } from '@patternfly/react-core';
+import { DropdownItem, DropdownToggle, Dropdown, DropdownProps } from '@patternfly/react-core';
 import { CaretDownIcon } from '@patternfly/react-icons';
 import { HostRole } from '../../../common/types/hosts';
 
@@ -10,6 +10,7 @@ type SimpleDropdownProps = {
   setValue: (value?: string) => void;
   isDisabled: boolean;
   idPrefix?: string;
+  position?: DropdownProps['position'];
 };
 
 export const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
@@ -19,6 +20,7 @@ export const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
   setValue,
   isDisabled,
   idPrefix,
+  position,
 }) => {
   const [isOpen, setOpen] = React.useState(false);
   const dropdownItems = items.map(({ value, label, description }) => (
@@ -58,6 +60,7 @@ export const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
       isOpen={isOpen}
       isPlain
       id={idPrefix ? `${idPrefix}-dropdown-toggle` : undefined}
+      position={position}
     />
   );
 };
