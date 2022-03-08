@@ -32,7 +32,7 @@ yarn install
 ### Scripts
 
 - **yarn start**: Watches for changes in the `/src` folder and bundles the files into `/dist` folder
-- **yarn sync-to-ui**: Synchronizes `/dist` with the
+- **yarn sync-dist**: Synchronizes `/dist` with the
   [assisted-ui](https://github.com/openshift-assisted/assisted-ui) application's
   `node_modules/openshift-assisted-ui-lib` folder.
 - **yarn start:assisted-ui**: Runs the Assisted UI application
