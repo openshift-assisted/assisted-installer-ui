@@ -157,6 +157,7 @@ export const hostStatus: HostStatus<Host['status']> = {
     title: 'Installing',
     category: 'Installation related',
     icon: <InProgressIcon />,
+    withProgress: true,
   },
   'installing-pending-user-action': {
     key: 'installing-pending-user-action',
@@ -178,6 +179,7 @@ export const hostStatus: HostStatus<Host['status']> = {
     category: 'Installation related',
     icon: <BanIcon />,
     details: 'This host installation has been cancelled.',
+    withProgress: true,
   },
   error: {
     key: 'error',
@@ -185,6 +187,7 @@ export const hostStatus: HostStatus<Host['status']> = {
     category: 'Installation related',
     icon: <ExclamationCircleIcon color={dangerColor.value} />,
     details: 'This host failed its installation.',
+    withProgress: true,
   },
   resetting: {
     key: 'resetting',
