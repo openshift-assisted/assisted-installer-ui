@@ -16,7 +16,6 @@ import { NO_SUBNET_SET } from '../../config';
 import { isAdvNetworkConf } from './utils';
 import { useFeatureSupportLevel } from '../featureSupportLevels';
 import { getLimitedFeatureSupportLevels } from '../featureSupportLevels/utils';
-import { isSNO } from '../../selectors/clusterSelectors';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   defaultNetworkSettings: ClusterDefaultConfig;
@@ -69,18 +68,6 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';
   const hostSubnetsCount = hostSubnets.length;
   const firstSubnet = hostSubnets[0]?.subnet;
-  const isClusterManagedNetworkingWithVMsUnsupported = React.useMemo(
-    () =>
-      !!clusterFeatureSupportLevels &&
-      clusterFeatureSupportLevels['CLUSTER_MANAGED_NETWORKING_WITH_VMS'] === 'unsupported',
-    [clusterFeatureSupportLevels],
-  );
-  const isManagedNetworkTypeDisabled = React.useMemo(
-    () =>
-      !!cluster.openshiftVersion &&
-      featureSupportLevelData.isFeatureDisabled(cluster.openshiftVersion, 'NETWORK_TYPE_SELECTION'),
-    [cluster.openshiftVersion, featureSupportLevelData],
-  );
 
   // Set hostSubnet to first one whenever available
   useEffect(() => {
@@ -124,11 +111,18 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
     values.vipDhcpAllocation,
     validateField,
   ]);
-
   return (
     <>
       {!hideManagedNetworking && (
-        <ManagedNetworkingControlGroup disabled={isManagedNetworkTypeDisabled} />
+        <ManagedNetworkingControlGroup
+          disabled={
+            !!cluster.openshiftVersion &&
+            featureSupportLevelData.isFeatureDisabled(
+              cluster.openshiftVersion,
+              'NETWORK_TYPE_SELECTION',
+            )
+          }
+        />
       )}
 
       {isUserManagedNetworking && (
@@ -137,7 +131,10 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
 
       {children}
 
-      {!isUserManagedNetworking && isClusterManagedNetworkingWithVMsUnsupported && vmsAlert}
+      {!isUserManagedNetworking &&
+        !!clusterFeatureSupportLevels &&
+        clusterFeatureSupportLevels['CLUSTER_MANAGED_NETWORKING_WITH_VMS'] === 'unsupported' &&
+        vmsAlert}
 
       {!(isMultiNodeCluster && isUserManagedNetworking) && (
         <AvailableSubnetsControl
@@ -162,7 +159,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
         description="Configure advanced networking properties (e.g. CIDR ranges)."
         isChecked={isAdvanced}
         onChange={toggleAdvConfiguration}
-        body={isAdvanced && <AdvancedNetworkFields isSNO={isSNO(cluster)} />}
+        body={isAdvanced && <AdvancedNetworkFields />}
       />
     </>
   );
