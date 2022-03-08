@@ -19,7 +19,8 @@ export const shouldShowClusterDeploymentValidationOverview = (
   const [clusterStatus] = getClusterStatus(agentClusterInstall);
   return (
     agentClusterInstall?.status?.validationsInfo &&
-    ['ready', 'insufficient', 'pending-for-input'].includes(clusterStatus)
+    (['insufficient', 'pending-for-input'].includes(clusterStatus) ||
+      (clusterStatus === 'ready' && agentClusterInstall.spec?.holdInstallation))
   );
 };
 

@@ -13,6 +13,7 @@ export const wizardStepNames: {
   'hosts-selection': 'Cluster hosts',
   'hosts-discovery': 'Cluster hosts',
   networking: 'Cluster network',
+  review: 'Review and create',
 };
 
 // TODO(mlibra): what is the limit???

@@ -13,7 +13,8 @@ export type ClusterWizardStepsType =
   | 'cluster-details'
   | 'hosts-selection'
   | 'hosts-discovery'
-  | 'networking';
+  | 'networking'
+  | 'review';
 
 const clusterDetailsStepValidationsMap: WizardStepValidationMap = {
   cluster: {
@@ -69,25 +70,25 @@ const networkingStepValidationsMap: WizardStepValidationMap = {
   softValidationIds: ['ntp-synced', 'container-images-available'],
 };
 
-// const reviewStepValidationsMap: WizardStepValidationMap = {
-//   cluster: {
-//     groups: [],
-//     validationIds: ['all-hosts-are-ready-to-install'],
-//   },
-//   host: {
-//     allowedStatuses: ['known', 'disabled'],
-//     groups: [],
-//     validationIds: [],
-//   },
-//   softValidationIds: [],
-// };
+const reviewStepValidationsMap: WizardStepValidationMap = {
+  cluster: {
+    groups: [],
+    validationIds: ['all-hosts-are-ready-to-install'],
+  },
+  host: {
+    allowedStatuses: ['known', 'disabled'],
+    groups: [],
+    validationIds: [],
+  },
+  softValidationIds: [],
+};
 
 export const wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType> = {
   'cluster-details': clusterDetailsStepValidationsMap,
   'hosts-discovery': hostDiscoveryStepValidationsMap,
   'hosts-selection': hostDiscoveryStepValidationsMap,
   networking: networkingStepValidationsMap,
-  // review: reviewStepValidationsMap,
+  review: reviewStepValidationsMap,
 };
 
 export const allClusterWizardSoftValidationIds = getAllClusterWizardSoftValidationIds(
@@ -135,3 +136,8 @@ export const canNextFromNetworkingStep = (
   agentClusterInstall: AgentClusterInstallK8sResource,
   agents: AgentK8sResource[],
 ) => canNextFromClusterDeploymentWizardStep(agentClusterInstall, agents, 'networking');
+
+export const canNextFromReviewStep = (
+  agentClusterInstall: AgentClusterInstallK8sResource,
+  agents: AgentK8sResource[],
+) => canNextFromClusterDeploymentWizardStep(agentClusterInstall, agents, 'review');

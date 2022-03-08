@@ -15,28 +15,22 @@ import {
   ValidationsInfo as ClusterValidationsInfo,
   ValidationGroup as ClusterValidationGroup,
   Validation as ClusterValidation,
-} from '../../../common/types/clusters';
+} from '../../types/clusters';
 import {
   ValidationsInfo as HostValidationsInfo,
   ValidationGroup as HostValidationGroup,
   Validation as HostValidation,
-} from '../../../common/types/hosts';
-import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
+} from '../../types/hosts';
+import { stringToJSON } from '../../api';
+import { CLUSTER_VALIDATION_LABELS, HOST_VALIDATION_LABELS } from '../../config';
+import { getEnabledHosts } from '../hosts';
+import { findValidationFixStep } from './validationsInfoUtils';
 import {
-  allClusterWizardSoftValidationIds,
-  ClusterWizardStepsType,
-  wizardStepsValidationsMap,
-} from '../clusterWizard/wizardTransition';
-import {
-  Cluster,
-  Host,
-  stringToJSON,
-  CLUSTER_VALIDATION_LABELS,
-  HOST_VALIDATION_LABELS,
-  getEnabledHosts,
-  findValidationFixStep,
-} from '../../../common';
-import { wizardStepNames } from '../clusterWizard/constants';
+  HostsValidationsFC,
+  ClusterValidationsFC,
+  FailingValidationsFC,
+  ValidationActionLinkFC,
+} from './types';
 
 const AllValidationsPassed = () => (
   <>
@@ -51,21 +45,25 @@ const PendingValidations: React.FC<{ id: string; count: number }> = ({ id, count
   </div>
 );
 
-const ValidationActionLink: React.FC<{ step: ClusterWizardStepsType }> = ({ step }) => {
-  const { setCurrentStepId } = React.useContext(ClusterWizardContext);
-  return (
-    <Button variant={ButtonVariant.link} onClick={() => setCurrentStepId(step)} isInline>
-      {wizardStepNames[step]}
-    </Button>
-  );
-};
+const ValidationActionLink: ValidationActionLinkFC = ({
+  step,
+  setCurrentStepId,
+  wizardStepNames,
+}) => (
+  <Button variant={ButtonVariant.link} onClick={() => setCurrentStepId(step)} isInline>
+    {wizardStepNames[step]}
+  </Button>
+);
 
-const FailingValidation: React.FC<{
-  validation: HostValidation | ClusterValidation;
-  clusterGroup?: ClusterValidationGroup;
-  hostGroup?: HostValidationGroup;
-  severity?: 'danger' | 'warning';
-}> = ({ validation, clusterGroup, hostGroup, severity = 'danger' }) => {
+const FailingValidation: FailingValidationsFC = ({
+  validation,
+  clusterGroup,
+  hostGroup,
+  severity = 'danger',
+  setCurrentStepId,
+  wizardStepNames,
+  wizardStepsValidationsMap,
+}) => {
   const issue = `${
     HOST_VALIDATION_LABELS[validation.id] ||
     CLUSTER_VALIDATION_LABELS[validation.id] ||
@@ -73,7 +71,8 @@ const FailingValidation: React.FC<{
   } check failed. `;
 
   let fix;
-  const step = findValidationFixStep<ClusterWizardStepsType>(
+  // eslint-disable-next-line
+  const step = findValidationFixStep<any>(
     { validationId: validation.id, clusterGroup, hostGroup },
     wizardStepsValidationsMap,
   );
@@ -83,7 +82,13 @@ const FailingValidation: React.FC<{
   } else if (step) {
     fix = (
       <>
-        It can be fixed in the <ValidationActionLink step={step} /> step.
+        It can be fixed in the{' '}
+        <ValidationActionLink
+          step={step}
+          setCurrentStepId={setCurrentStepId}
+          wizardStepNames={wizardStepNames}
+        />{' '}
+        step.
       </>
     );
   } else {
@@ -110,8 +115,11 @@ const FailingValidation: React.FC<{
   );
 };
 
-export const ClusterValidations: React.FC<{ validationsInfo?: Cluster['validationsInfo'] }> = ({
+export const ClusterValidations: ClusterValidationsFC = ({
   validationsInfo: validationsInfoString = '',
+  setCurrentStepId,
+  wizardStepNames,
+  wizardStepsValidationsMap,
 }) => {
   const validationsInfo = stringToJSON<ClusterValidationsInfo>(validationsInfoString) || {};
   const failingValidations: React.ReactNode[] = [];
@@ -128,6 +136,9 @@ export const ClusterValidations: React.FC<{ validationsInfo?: Cluster['validatio
             key={validation.id}
             validation={validation}
             clusterGroup={group as ClusterValidationGroup}
+            setCurrentStepId={setCurrentStepId}
+            wizardStepNames={wizardStepNames}
+            wizardStepsValidationsMap={wizardStepsValidationsMap}
           />,
         );
       }
@@ -153,7 +164,13 @@ export const ClusterValidations: React.FC<{ validationsInfo?: Cluster['validatio
   return <>{failingValidations}</>;
 };
 
-export const HostsValidations: React.FC<{ hosts?: Host[] }> = ({ hosts = [] }) => {
+export const HostsValidations: HostsValidationsFC = ({
+  hosts = [],
+  setCurrentStepId,
+  wizardStepNames,
+  allClusterWizardSoftValidationIds,
+  wizardStepsValidationsMap,
+}) => {
   const failingValidations = {};
   getEnabledHosts(hosts).forEach((host) => {
     const validationsInfo = stringToJSON<HostValidationsInfo>(host.validationsInfo) || {};
@@ -169,6 +186,9 @@ export const HostsValidations: React.FC<{ hosts?: Host[] }> = ({ hosts = [] }) =
               validation={validation}
               hostGroup={group as HostValidationGroup}
               severity={severity}
+              setCurrentStepId={setCurrentStepId}
+              wizardStepNames={wizardStepNames}
+              wizardStepsValidationsMap={wizardStepsValidationsMap}
             />
           );
         }

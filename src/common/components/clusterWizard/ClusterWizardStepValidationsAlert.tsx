@@ -1,6 +1,14 @@
 import _ from 'lodash';
 import React from 'react';
-import { Alert, AlertVariant, Flex, FlexItem, List, ListItem } from '@patternfly/react-core';
+import {
+  Alert,
+  AlertGroup,
+  AlertVariant,
+  Flex,
+  FlexItem,
+  List,
+  ListItem,
+} from '@patternfly/react-core';
 import { WizardStepsValidationMap } from './validationsInfoUtils';
 import { Cluster } from '../../api/types';
 import { Validation, ValidationsInfo } from '../../types/clusters';
@@ -16,6 +24,7 @@ type ClusterWizardStepValidationsAlertProps<ClusterWizardStepsType extends strin
   clusterStatus: Cluster['status'];
   hosts: ClusterWizardStepHostStatusDeterminationObject[];
   wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType>;
+  children?: React.ReactNode;
 };
 
 const ClusterWizardStepValidationsAlert = <ClusterWizardStepsType extends string>({
@@ -24,6 +33,7 @@ const ClusterWizardStepValidationsAlert = <ClusterWizardStepsType extends string
   validationsInfo,
   hosts,
   wizardStepsValidationsMap,
+  children,
 }: ClusterWizardStepValidationsAlertProps<ClusterWizardStepsType>) => {
   const { failedClusterValidations } = React.useMemo(() => {
     const reducedValidationsInfo = getWizardStepClusterValidationsInfo(
@@ -53,25 +63,28 @@ const ClusterWizardStepValidationsAlert = <ClusterWizardStepsType extends string
   return (
     <>
       {!validationsInfo && (
-        <Alert variant={AlertVariant.info} title="Cluster validations are initializing" isInline>
+        <Alert variant={AlertVariant.info} title="Cluster validations are initializing." isInline>
           Please hold on till background checks are started.
         </Alert>
       )}
       {!isClusterReady && (
-        <Alert variant={AlertVariant.warning} title="Cluster is not ready yet" isInline>
-          {!!failedClusterValidations.length && (
-            <Flex spaceItems={{ default: 'spaceItemsSm' }} direction={{ default: 'column' }}>
-              <FlexItem>The following requirements must be met:</FlexItem>
-              <FlexItem>
-                <List>
-                  {failedClusterValidations.map((validation) => (
-                    <ListItem key={validation.id}>{validation.message}</ListItem>
-                  ))}
-                </List>
-              </FlexItem>
-            </Flex>
-          )}
-        </Alert>
+        <AlertGroup>
+          {children}
+          <Alert variant={AlertVariant.warning} title="Cluster is not ready yet." isInline>
+            {!!failedClusterValidations.length && (
+              <Flex spaceItems={{ default: 'spaceItemsSm' }} direction={{ default: 'column' }}>
+                <FlexItem>The following requirements must be met:</FlexItem>
+                <FlexItem>
+                  <List>
+                    {failedClusterValidations.map((validation) => (
+                      <ListItem key={validation.id}>{validation.message}</ListItem>
+                    ))}
+                  </List>
+                </FlexItem>
+              </Flex>
+            )}
+          </Alert>
+        </AlertGroup>
       )}
     </>
   );

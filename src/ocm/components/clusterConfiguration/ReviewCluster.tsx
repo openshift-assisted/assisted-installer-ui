@@ -1,77 +1,20 @@
 import React from 'react';
-import { Table, TableBody, TableVariant } from '@patternfly/react-table';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens';
-import {
-  Cluster,
-  Host,
-  Inventory,
-  stringToJSON,
-  fileSize,
-  getEnabledHosts,
-  DetailList,
-  DetailItem,
-} from '../../../common';
+import { Cluster, DetailList, DetailItem, ReviewHostsInventory } from '../../../common';
 import { RenderIf } from '../../../common/components/ui/';
-import { getSimpleHardwareInfo } from '../../../common/components/hosts/hardwareInfo';
-import { ClusterValidations, HostsValidations } from './ReviewValidations';
-import { VSPHERE_CONFIG_LINK } from '../../../common';
+import { VSPHERE_CONFIG_LINK, ClusterValidations, HostsValidations } from '../../../common';
 import { selectClusterNetworkCIDR } from '../../../common/selectors/clusterSelectors';
+import { ClusterFeatureSupportLevelsDetailItem } from '../featureSupportLevels';
+import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
+import {
+  allClusterWizardSoftValidationIds,
+  ClusterWizardStepsType,
+  wizardStepsValidationsMap,
+} from '../clusterWizard/wizardTransition';
 
 import './ReviewCluster.css';
-import { ClusterFeatureSupportLevelsDetailItem } from '../featureSupportLevels';
-
-const ReviewHostsInventory: React.FC<{ hosts?: Host[] }> = ({ hosts = [] }) => {
-  const rows = React.useMemo(() => {
-    const summary = getEnabledHosts(hosts).reduce(
-      (summary, host) => {
-        summary.count++;
-        const inventory = stringToJSON<Inventory>(host.inventory);
-        if (inventory) {
-          const hwInfo = getSimpleHardwareInfo(inventory);
-          summary.cores += hwInfo.cores;
-          summary.memory += hwInfo.memory;
-          summary.fs += hwInfo.disks;
-        }
-        return summary;
-      },
-      {
-        count: 0,
-        cores: 0,
-        memory: 0,
-        fs: 0,
-      },
-    );
-
-    return [
-      {
-        cells: ['Hosts', summary.count],
-      },
-      {
-        cells: ['Cores', summary.cores],
-      },
-      {
-        cells: ['Memory', fileSize(summary.memory, 2, 'iec')],
-      },
-      {
-        cells: ['Storage', fileSize(summary.fs, 2, 'si')],
-      },
-    ];
-  }, [hosts]);
-
-  return (
-    <Table
-      rows={rows}
-      cells={['', '']}
-      variant={TableVariant.compact}
-      borders={false}
-      aria-label="Cluster summary table"
-      className="review-hosts-table"
-    >
-      <TableBody />
-    </Table>
-  );
-};
+import { wizardStepNames } from '../clusterWizard/constants';
 
 const PlatformIntegrationNote: React.FC<{}> = () => {
   return (
@@ -86,6 +29,7 @@ const PlatformIntegrationNote: React.FC<{}> = () => {
 };
 
 const ReviewCluster: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
+  const { setCurrentStepId } = React.useContext(ClusterWizardContext);
   return (
     <DetailList>
       <DetailItem
@@ -115,12 +59,27 @@ const ReviewCluster: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
       />
       <DetailItem
         title="Cluster validations"
-        value={<ClusterValidations validationsInfo={cluster.validationsInfo} />}
+        value={
+          <ClusterValidations<ClusterWizardStepsType>
+            validationsInfo={cluster.validationsInfo}
+            setCurrentStepId={setCurrentStepId}
+            wizardStepNames={wizardStepNames}
+            wizardStepsValidationsMap={wizardStepsValidationsMap}
+          />
+        }
         testId="cluster-validations"
       />
       <DetailItem
         title="Host validations"
-        value={<HostsValidations hosts={cluster.hosts} />}
+        value={
+          <HostsValidations<ClusterWizardStepsType, typeof allClusterWizardSoftValidationIds>
+            hosts={cluster.hosts}
+            setCurrentStepId={setCurrentStepId}
+            wizardStepNames={wizardStepNames}
+            allClusterWizardSoftValidationIds={allClusterWizardSoftValidationIds}
+            wizardStepsValidationsMap={wizardStepsValidationsMap}
+          />
+        }
         testId="host-validations"
       />
       <RenderIf condition={cluster.platform?.type !== 'baremetal'}>
