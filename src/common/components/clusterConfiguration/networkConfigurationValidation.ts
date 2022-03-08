@@ -48,8 +48,8 @@ export const getNetworkInitialValues = (
     sshPublicKey: cluster.sshPublicKey || '',
     hostSubnet: getInitHostSubnet(cluster, managedNetworkingType) || NO_SUBNET_SET,
     vipDhcpAllocation: cluster.vipDhcpAllocation,
-    managedNetworkingType,
-    networkType: cluster.networkType || 'OVNKubernetes',
+    managedNetworkingType: cluster.userManagedNetworking ? 'userManaged' : 'clusterManaged',
+    networkType: cluster.networkType || 'OpenShiftSDN',
     enableProxy: false,
     editProxy: false,
   };
