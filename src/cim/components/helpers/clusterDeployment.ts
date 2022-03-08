@@ -64,8 +64,10 @@ export const getAnnotationsFromAgentSelector = (
 
   delete annotations[AGENT_AUTO_SELECT_ANNOTATION_KEY];
 
-  if (locations?.length) {
+  if (locations.length) {
     annotations[AGENT_LOCATION_LABEL_KEY] = locations.join(',');
+  } else {
+    delete annotations[AGENT_LOCATION_LABEL_KEY];
   }
 
   if (!autoSelectHosts) {
