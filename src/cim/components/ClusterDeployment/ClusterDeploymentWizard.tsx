@@ -13,6 +13,7 @@ import { getAgentsHostsNames, isAgentOfCluster, isAgentOfInfraEnv } from './help
 import { ClusterDeploymentWizardProps, ClusterDeploymentWizardStepsType } from './types';
 import ClusterDeploymentHostsDiscoveryStep from './ClusterDeploymentHostsDiscoveryStep';
 import { ACMFeatureSupportLevelProvider } from '../featureSupportLevels';
+import ClusterDeploymentReviewStep from './ClusterDeploymentReviewStep';
 
 const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   className,
@@ -132,8 +133,18 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
             onSaveNetworking={onSaveNetworking}
             onClose={onClose}
             hostActions={hostActions}
-            onFinish={onFinish}
             fetchInfraEnv={fetchInfraEnv}
+          />
+        );
+      case 'review':
+        return (
+          <ClusterDeploymentReviewStep
+            onFinish={onFinish}
+            clusterDeployment={clusterDeployment}
+            agentClusterInstall={agentClusterInstall}
+            agents={agents}
+            onClose={onClose}
+            clusterImages={clusterImages}
           />
         );
       case 'cluster-details':

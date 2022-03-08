@@ -1,6 +1,6 @@
 import _ from 'lodash';
+import { AgentClusterInstallK8sResource, ClusterImageSetK8sResource } from '../../types';
 import { OpenshiftVersionOptionType, OpenshiftVersion } from '../../../common';
-import { ClusterImageSetK8sResource } from '../../types/k8s/cluster-image-set';
 
 const getVersion = (releaseImage = '') => {
   const match = /.+:(.*)-/gm.exec(releaseImage);
@@ -57,4 +57,16 @@ export const getOCPVersions = (
   }
   const deduped = _.uniqBy(versions, (v) => v.version);
   return deduped;
+};
+
+export const getSelectedVersion = (
+  clusterImages: ClusterImageSetK8sResource[],
+  agentClusterInstall: AgentClusterInstallK8sResource,
+) => {
+  const selectedClusterImage = clusterImages.find(
+    (ci) => ci.metadata?.name === agentClusterInstall?.spec?.imageSetRef?.name,
+  );
+  return selectedClusterImage
+    ? getOCPVersions([selectedClusterImage])?.[0]?.label
+    : agentClusterInstall?.spec?.imageSetRef?.name;
 };
