@@ -32,16 +32,17 @@ yarn install
 ### Scripts
 
 - **yarn start**: Watches for changes in the `/src` folder and bundles the files into `/dist` folder
-- **yarn sync-to-ui**: Synchronizes `/dist` with the
+- **yarn sync-dist**: Synchronizes `/dist` with the
   [assisted-ui](https://github.com/openshift-assisted/assisted-ui) application's
   `node_modules/openshift-assisted-ui-lib` folder.
-- **yarn start-assisted-ui**: Runs the following 3 scripts in parallel: `yarn start`,
-  `yarn sync-to-ui` and `yarn start` inside the
+- **yarn start:assisted-ui**: Runs the Assisted UI application
   [assisted-ui](https://github.com/openshift-assisted/assisted-ui) project.
 
-Before using the **yarn start-assisted-ui** script, make sure this project and the `assisted-ui`
+In order to work with Assisted UI Lib and see changes in Assisted UI, run the 3 commands above sequentially.
+Before using the **yarn start:assisted-ui** script, make sure this project and the `assisted-ui`
 (and optionally the `uhc-portal`) project are located in the same folder.  
-Next, create a `.env.local` file at the root folder of this repository and include this variable:
+
+Next, create a `.env.development.local` file at the root folder of the `assisted-ui` repository and include this variable:
 
 ```dotenv
 REACT_APP_API_URL="...ask the team"
