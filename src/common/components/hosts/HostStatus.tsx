@@ -61,7 +61,7 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({
     );
   }
 
-  if (['installing', 'installing-in-progress'].includes(status)) {
+  if (['installing-in-progress'].includes(status)) {
     return (
       <TextContent>
         <HostProgress host={host} />
@@ -95,6 +95,7 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({
     [
       'preparing-for-installation',
       'preparing-successful',
+      'installing',
       'unbinding-pending-user-action',
       'binding',
       'unbinding',
