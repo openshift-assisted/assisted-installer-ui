@@ -10,9 +10,11 @@ import {
 } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons';
 import { PrismCode } from '../ui';
+import { getHostStr } from '../clusters/utils';
 
 export type HostsNotShowingLinkProps = {
   setDiscoveryHintModalOpen: (isOpen: boolean) => void;
+  isSNO?: boolean;
 };
 
 type DiscoveryTroubleshootingModalProps = {
@@ -22,10 +24,11 @@ type DiscoveryTroubleshootingModalProps = {
 
 export const HostsNotShowingLink: React.FC<HostsNotShowingLinkProps> = ({
   setDiscoveryHintModalOpen,
+  isSNO = false,
 }) => (
   <Button variant={ButtonVariant.link} onClick={() => setDiscoveryHintModalOpen(true)} isInline>
     <InfoCircleIcon size="sm" />
-    &nbsp;Hosts not showing up?
+    &nbsp;{getHostStr(isSNO, true)} not showing up?
   </Button>
 );
 

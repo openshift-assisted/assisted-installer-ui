@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ClusterHostsTableProps, getSchedulableMasters, Host } from '../../../common';
+import { ClusterHostsTableProps, getSchedulableMasters, Host, isSNO } from '../../../common';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
 import {
   discoveredAtColumn,
@@ -64,7 +64,10 @@ const ClusterHostsTable: React.FC<ClusterHostsTableProps> = ({
         actionResolver={actionResolver}
         {...paginationProps}
       >
-        <HostsTableEmptyState setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
+        <HostsTableEmptyState
+          isSNO={isSNO(cluster)}
+          setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
+        />
       </HostsTable>
       <HostsTableModals cluster={cluster} {...modalProps} />
     </>

@@ -11,11 +11,11 @@ import {
   VirtualIPControlGroupProps,
 } from '../clusterWizard/networkingSteps';
 import { ClusterDefaultConfig } from '../../api';
-import { isSingleNodeCluster } from '../clusters';
 import { NO_SUBNET_SET } from '../../config';
 import { isAdvNetworkConf } from './utils';
 import { useFeatureSupportLevel } from '../featureSupportLevels';
 import { getLimitedFeatureSupportLevels } from '../featureSupportLevels/utils';
+import { isSNO } from '../../selectors';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   defaultNetworkSettings: ClusterDefaultConfig;
@@ -64,7 +64,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
     }
   };
 
-  const isMultiNodeCluster = !isSingleNodeCluster(cluster);
+  const isMultiNodeCluster = !isSNO(cluster);
   const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';
   const hostSubnetsCount = hostSubnets.length;
   const firstSubnet = hostSubnets[0]?.subnet;

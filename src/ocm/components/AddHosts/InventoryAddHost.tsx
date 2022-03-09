@@ -17,6 +17,7 @@ import {
   DiscoveryInstructions,
   DiscoveryTroubleshootingModal,
   isArmArchitecture,
+  isSNO,
 } from '../../../common';
 
 const armArchAlert = (
@@ -36,11 +37,13 @@ const InventoryAddHosts: React.FC = () => {
     return null;
   }
 
+  const isSNOCluster = isSNO(cluster);
+
   return (
     <Stack hasGutter>
       <StackItem>
         <TextContent>
-          <DiscoveryInstructions showAllInstructions />
+          <DiscoveryInstructions isSNO={isSNOCluster} showAllInstructions />
           <Text component="p">
             <DiscoveryImageModalButton
               ButtonComponent={Button}

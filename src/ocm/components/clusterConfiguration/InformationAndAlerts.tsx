@@ -6,6 +6,7 @@ import {
   HostsNotShowingLinkProps,
   VMRebootConfigurationInfo,
   FormatDiskWarning,
+  isSNO,
 } from '../../../common';
 import { HostRequirementsLink, HostRequirementsLinkProps } from '../fetching/HostRequirements';
 import OCSDisksManualFormattingHint from '../hosts/OCSDisksManualFormattingHint';
@@ -18,13 +19,17 @@ const InformationAndAlerts: React.FC<{
   setDiscoveryHintModalOpen: HostsNotShowingLinkProps['setDiscoveryHintModalOpen'];
 }> = ({ cluster, HostRequirementsContent, setDiscoveryHintModalOpen }) => {
   const isVM = React.useMemo(() => isAHostVM(cluster.hosts || []), [cluster.hosts]);
+  const isSNOCluster = isSNO(cluster);
 
   return (
     <>
       <Text component="h3">Information and warnings</Text>
       <Text component="p">
         <HostRequirementsLink clusterId={cluster.id} ContentComponent={HostRequirementsContent} />
-        <HostsNotShowingLink setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
+        <HostsNotShowingLink
+          isSNO={isSNOCluster}
+          setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
+        />
       </Text>
       {isVM && <VMRebootConfigurationInfo />}
       {!isAddHostsCluster(cluster) && <OCSDisksManualFormattingHint />}

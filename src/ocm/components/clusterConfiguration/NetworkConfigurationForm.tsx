@@ -15,7 +15,7 @@ import {
   getNetworkConfigurationValidationSchema,
   getNetworkInitialValues,
   getHostSubnets,
-  isSingleNodeCluster,
+  isSNO,
   LoadingState,
 } from '../../../common';
 import { HostSubnet, NetworkConfigurationValues } from '../../../common/types/clusters';
@@ -85,7 +85,7 @@ const NetworkConfigurationForm: React.FC<{
 
     // update the cluster configuration
     try {
-      const isMultiNodeCluster = !isSingleNodeCluster(cluster);
+      const isMultiNodeCluster = !isSNO(cluster);
       const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';
       const params = _.omit(values, [
         'hostSubnet',

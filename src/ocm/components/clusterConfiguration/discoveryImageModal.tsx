@@ -1,9 +1,10 @@
 import React from 'react';
 import { Modal, Button, ButtonVariant, ModalVariant } from '@patternfly/react-core';
-import { Cluster, ToolbarButton } from '../../../common';
+import { Cluster, isSNO, ToolbarButton } from '../../../common';
 import DiscoveryImageForm from './DiscoveryImageForm';
 import DiscoveryImageSummary from './DiscoveryImageSummary';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
+import { getHostStr } from '../../../common/components/clusters/utils';
 
 type DiscoveryImageModalButtonProps = {
   ButtonComponent?: typeof Button | typeof ToolbarButton;
@@ -18,17 +19,16 @@ export const DiscoveryImageModalButton: React.FC<DiscoveryImageModalButtonProps>
 }) => {
   const { discoveryImageDialog } = useModalDialogsContext();
   const { open } = discoveryImageDialog;
+  const isSNOCluster = isSNO(cluster);
 
   return (
-    <>
-      <ButtonComponent
-        variant={ButtonVariant.secondary}
-        onClick={() => open({ cluster })}
-        id={`${idPrefix}-button-download-discovery-iso`}
-      >
-        Add hosts
-      </ButtonComponent>
-    </>
+    <ButtonComponent
+      variant={ButtonVariant.secondary}
+      onClick={() => open({ cluster })}
+      id={`${idPrefix}-button-download-discovery-iso`}
+    >
+      Add {getHostStr(isSNOCluster)}
+    </ButtonComponent>
   );
 };
 
@@ -43,10 +43,12 @@ export const DiscoveryImageModal: React.FC = () => {
     return null;
   }
 
+  const isSNOCluster = isSNO(cluster);
+
   return (
     <Modal
       aria-label="Add hosts dialog"
-      title="Add hosts"
+      title={`Add ${getHostStr(isSNOCluster)}`}
       isOpen={isOpen}
       onClose={close}
       variant={ModalVariant.small}

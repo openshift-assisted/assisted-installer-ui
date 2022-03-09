@@ -3,8 +3,8 @@ import Fuse from 'fuse.js';
 import { Host, Cluster, Inventory } from '../../api/types';
 import { HOST_ROLES, TIME_ZERO } from '../../config';
 import { DASH } from '../constants';
-import { isSingleNodeCluster } from '../clusters/utils';
 import { stringToJSON } from '../../api';
+import { isSNO } from '../../selectors';
 
 export const canEnable = (clusterStatus: Cluster['status'], status: Host['status']) =>
   ['pending-for-input', 'insufficient', 'ready', 'adding-hosts'].includes(clusterStatus) &&
@@ -51,7 +51,7 @@ export const canReset = (clusterStatus: Cluster['status'], status: Host['status'
   ['error', 'installing-pending-user-action'].includes(status);
 
 export const canEditRole = (cluster: Cluster, hostStatus: Host['status']): boolean =>
-  !isSingleNodeCluster(cluster) &&
+  !isSNO(cluster) &&
   !!cluster.totalHostCount &&
   cluster.totalHostCount > 3 &&
   ['pending-for-input', 'insufficient', 'ready'].includes(cluster.status) &&
