@@ -2,8 +2,8 @@ import React from 'react';
 import {
   Button,
   ButtonVariant,
-  Flex,
-  FlexItem,
+  Stack,
+  StackItem,
   List,
   ListItem,
   Popover,
@@ -19,7 +19,7 @@ import {
   global_success_color_100 as okColor,
 } from '@patternfly/react-tokens';
 import { pluralize } from 'humanize-plus';
-import { MonitoredOperatorsList, OperatorStatus } from '../../api';
+import { MonitoredOperatorsList, OperatorStatus } from '../../api/types';
 import { OPERATOR_LABELS } from '../../config';
 
 import './OperatorsProgressItem.css';
@@ -36,7 +36,7 @@ export function getAggregatedStatus(operators: MonitoredOperatorsList) {
 
 export const getOperatorCountString = (count: number) => `${count} ${pluralize(count, 'operator')}`;
 
-export function getLabel(operators: MonitoredOperatorsList) {
+export function getOperatorsLabel(operators: MonitoredOperatorsList) {
   const failedOperatorsCount = operators.filter((o) => o.status === 'failed').length;
   const status = getAggregatedStatus(operators);
   const operatorsCountString = getOperatorCountString(operators.length);
@@ -50,11 +50,11 @@ export function getLabel(operators: MonitoredOperatorsList) {
     case 'progressing':
       return `Installing ${operatorsCountString}`;
     default:
-      return `${operatorsCountString}`;
+      return `Pending - ${operatorsCountString}`;
   }
 }
 
-export function getIcon(status: OperatorStatus | 'pending') {
+export function getOperatorsIcon(status: OperatorStatus | 'pending') {
   switch (status) {
     case 'available':
       return <CheckCircleIcon color={okColor.value} />;
@@ -101,21 +101,22 @@ type OperatorsProgressItemProps = {
   operators: MonitoredOperatorsList;
 };
 
-const OperatorsProgressItem = ({ operators }: OperatorsProgressItemProps) => {
-  const icon = getIcon(getAggregatedStatus(operators));
-  const label = getLabel(operators);
+const OperatorsProgressItem: React.FC<OperatorsProgressItemProps> = ({ operators }) => {
+  const icon = getOperatorsIcon(getAggregatedStatus(operators));
+  const label = getOperatorsLabel(operators);
 
   return (
-    <Flex className="pf-u-mr-3xl">
-      <FlexItem>{icon}</FlexItem>
-      <FlexItem>
+    <Stack>
+      <StackItem>{icon}</StackItem>
+      <StackItem>
         <OperatorsPopover operators={operators}>
           <Button variant={ButtonVariant.link} isInline data-testid="operators-progress-item">
-            {label}
+            Operators
           </Button>
         </OperatorsPopover>
-      </FlexItem>
-    </Flex>
+      </StackItem>
+      <StackItem>{label}</StackItem>
+    </Stack>
   );
 };
 

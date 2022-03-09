@@ -72,8 +72,9 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
               <Text component="h2">Installation progress</Text>
             </TextContent>
           </GridItem>
-          <GridItem>
+          <GridItem span={7}>
             <ClusterProgress
+              consoleUrl={credentials?.consoleUrl}
               cluster={cluster}
               onFetchEvents={onFetchEvents}
               totalPercentage={cluster.progress?.totalPercentage || 0}

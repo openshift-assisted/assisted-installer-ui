@@ -1,39 +1,28 @@
 import React from 'react';
-import { pluralize } from 'humanize-plus';
 import {
-  Progress,
-  ProgressVariant,
-  ProgressMeasureLocation,
   Flex,
   FlexItem,
+  Progress,
+  ProgressMeasureLocation,
+  ProgressVariant,
   Stack,
   StackItem,
-  Popover,
-  Button,
-  ButtonVariant,
-  TextContent,
-  Text,
 } from '@patternfly/react-core';
-import {
-  global_danger_color_100 as dangerColor,
-  global_success_color_100 as okColor,
-} from '@patternfly/react-tokens';
-import {
-  ExclamationCircleIcon,
-  CheckCircleIcon,
-  InProgressIcon,
-  PendingIcon,
-} from '@patternfly/react-icons';
-import { Cluster, Host, HostRole } from '../../api';
+import { Cluster, Host, HostRole, MonitoredOperator } from '../../api/types';
 import { getEnabledHosts } from '../hosts/utils';
 import { DetailItem, DetailList, getHumanizedDateTime, RenderIf } from '../ui';
 import { CLUSTER_STATUS_LABELS } from '../../config';
 import OperatorsProgressItem from './OperatorsProgressItem';
-import { EventsModal } from '../ui/eventsModal';
 import { getOlmOperators } from './utils';
-
+import { ProgressBarTexts } from './ProgressBarTexts';
+import { FinalizingProgress, getFinalizingStatus } from './FinalizingProgress';
 import './ClusterProgress.css';
 import { EventListFetchProps } from '../../types';
+import {
+  HostInstallationWarning,
+  HostsInstallationFailed,
+  HostsInstallationSuccess,
+} from './ProgressBarAlerts';
 
 const getProgressVariant = (status: Cluster['status']) => {
   switch (status) {
@@ -70,148 +59,133 @@ const getInstallationStatus = (
   return CLUSTER_STATUS_LABELS[status] || status;
 };
 
-const getHostStatusIcon = (hosts: Host[]): React.ReactElement => {
-  if (hosts.some((host) => ['cancelled', 'error'].includes(host.status))) {
-    return <ExclamationCircleIcon color={dangerColor.value} />;
-  }
-
-  if (hosts.every((host) => host.status === 'installed')) {
-    return <CheckCircleIcon color={okColor.value} />;
-  }
-
-  return <InProgressIcon />;
-};
-
-type HostProgressProps = {
-  hosts: Host[];
-  hostRole: HostRole;
-};
-
-const HostProgress: React.FC<HostProgressProps> = ({ hosts, hostRole }) => {
-  const filteredHosts = hosts.filter((host) => host.role && hostRole === host.role);
-  const icon = getHostStatusIcon(filteredHosts);
-  const failedHostsCount = filteredHosts.filter((host) => host.status === 'error').length;
-  const hostCountText = (hostType: 'worker' | 'control plane node') =>
-    failedHostsCount === 0
-      ? `${filteredHosts.length} ${pluralize(filteredHosts.length, hostType)}`
-      : `${failedHostsCount}/${filteredHosts.length} ${pluralize(filteredHosts.length, hostType)}`;
-
-  const text =
-    hostRole === 'master' ? `${hostCountText('control plane node')}` : `${hostCountText('worker')}`;
-
-  return (
-    <Stack className="pf-u-mr-3xl">
-      <StackItem>{icon}</StackItem>
-      <StackItem>{text}</StackItem>
-      <StackItem>3/3 control plane nodes installed</StackItem>
-    </Stack>
-  );
-};
-
-const areAllBuiltInOperatorsAvailable = (
-  monitoredOperators: Cluster['monitoredOperators'] = [],
-) => {
-  const areAllBuiltInOperatorsAvailable = monitoredOperators.length
-    ? monitoredOperators
-        .filter((op) => op.operatorType === 'builtin')
-        .every((op) => op.status === 'available')
-    : false;
-
-  return areAllBuiltInOperatorsAvailable;
-};
-
-const getFinalizingStatusIcon = (cluster: Cluster) => {
-  let statusIcon;
-  if (areAllBuiltInOperatorsAvailable(cluster.monitoredOperators)) {
-    statusIcon = <CheckCircleIcon color={okColor.value} />;
-  } else {
-    switch (cluster.status) {
-      case 'finalizing':
-        statusIcon = <InProgressIcon />;
-        break;
-      case 'error':
-      case 'cancelled':
-        statusIcon = <ExclamationCircleIcon color={dangerColor.value} />;
-        break;
-      case 'installed':
-      case 'adding-hosts':
-        statusIcon = <CheckCircleIcon color={okColor.value} />;
-        break;
-      default:
-        statusIcon = <PendingIcon />;
-    }
-  }
-
-  return statusIcon;
-};
-
-type FinalizingProgressProps = {
-  cluster: Cluster;
-  onFetchEvents: EventListFetchProps['onFetchEvents'];
-  fallbackEventsURL?: string;
-};
-
-const FinalizingProgress: React.FC<FinalizingProgressProps> = ({
-  cluster,
-  onFetchEvents,
-  fallbackEventsURL,
-}) => {
-  const { status } = cluster;
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const closeModal = () => setIsModalOpen(false);
-  return (
-    <>
-      <EventsModal
-        title="Cluster Events"
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        hostId={undefined}
-        cluster={cluster}
-        entityKind="cluster"
-        onFetchEvents={onFetchEvents}
-        fallbackEventsURL={fallbackEventsURL}
-      />
-      <Stack className="pf-u-mr-3xl">
-        <StackItem>{getFinalizingStatusIcon(cluster)}</StackItem>
-        <StackItem>
-          {status === 'finalizing' ? (
-            <Popover
-              zIndex={300} // set the zIndex below Cluster Events Modal
-              headerContent={<>Initialization</>}
-              bodyContent={
-                <TextContent>
-                  <Text>
-                    This stage may take a while to finish. To view detailed information, click the
-                    events log link below.
-                  </Text>
-                </TextContent>
-              }
-              footerContent={
-                <Button variant={ButtonVariant.link} isInline onClick={() => setIsModalOpen(true)}>
-                  Open Events Log
-                </Button>
-              }
-            >
-              <Button variant={ButtonVariant.link} isInline>
-                Initialization
-              </Button>
-            </Popover>
-          ) : (
-            'Initialization'
-          )}
-        </StackItem>
-        <StackItem>{cluster.status}</StackItem>
-      </Stack>
-    </>
-  );
-};
-
 type ClusterProgressProps = {
   cluster: Cluster;
   minimizedView?: boolean;
   onFetchEvents: EventListFetchProps['onFetchEvents'];
   totalPercentage: number;
   fallbackEventsURL?: string;
+  consoleUrl?: string;
+};
+
+const hostsStatus = (hosts: Host[], hostRole: HostRole) => {
+  const totalHosts = hosts.filter((host) => host.role && host.role === hostRole);
+  const failedHosts = totalHosts.filter((host) => ['cancelled', 'error'].includes(host.status));
+  const pendingUserActionHosts = totalHosts.filter((host) =>
+    ['installing-pending-user-action'].includes(host.status),
+  );
+  return [totalHosts.length, failedHosts.length, pendingUserActionHosts.length];
+};
+
+const olmOperatorsStatus = (olmOperators: MonitoredOperator[]) => {
+  return olmOperators.filter((operator) => operator.status && operator.status === 'failed');
+};
+
+const clusterProgressAlerts = (
+  hosts: Host[],
+  cluster: Cluster,
+  olmOperators: MonitoredOperator[],
+  consoleUrl?: string,
+): React.ReactElement => {
+  const [totalMasters, failedMasters, pendingUserActionMasters] = hostsStatus(hosts, 'master');
+  const [totalWorkers, failedWorkers, pendingUserActionWorkers] = hostsStatus(hosts, 'worker');
+  const failedOperators = olmOperatorsStatus(olmOperators);
+  if (['error', 'cancelled'].includes(cluster.status)) {
+    return (
+      <Stack>
+        <RenderIf condition={getFinalizingStatus(cluster)[1] === 'failed'}>
+          <StackItem>
+            <HostsInstallationFailed
+              cluster={cluster}
+              totalHosts={totalMasters}
+              failedHosts={failedMasters}
+              initializationFailed
+              title={'Cluster initialization failed'}
+            />
+          </StackItem>
+        </RenderIf>
+        <RenderIf condition={totalWorkers - failedWorkers == 1}>
+          <StackItem>
+            <HostsInstallationFailed
+              cluster={cluster}
+              totalHosts={totalMasters}
+              failedHosts={failedMasters}
+              hostsType={'worker'}
+              initializationFailed={false}
+              title={'Critical number of workers were not installed'}
+            />
+          </StackItem>
+        </RenderIf>
+        <RenderIf condition={failedMasters > 0}>
+          <StackItem>
+            <HostsInstallationFailed
+              cluster={cluster}
+              totalHosts={totalMasters}
+              failedHosts={failedMasters}
+              hostsType={'master'}
+              initializationFailed={false}
+              title={'Control plane was not installed'}
+            />
+          </StackItem>
+        </RenderIf>
+      </Stack>
+    );
+  } else {
+    return (
+      <Stack>
+        <RenderIf condition={cluster.status === 'installed'}>
+          <HostsInstallationSuccess consoleUrl={consoleUrl} />
+        </RenderIf>
+        <RenderIf condition={failedWorkers > 0}>
+          <StackItem>
+            <HostInstallationWarning
+              cluster={cluster}
+              totalHosts={totalWorkers}
+              failedHosts={failedWorkers}
+              title={'Some workers were failed to installed'}
+              hostsType={'worker'}
+              message={'failed to install.'}
+            />
+          </StackItem>
+        </RenderIf>
+        <RenderIf condition={failedOperators.length > 0}>
+          <StackItem>
+            <HostInstallationWarning
+              cluster={cluster}
+              totalHosts={totalMasters}
+              failedHosts={failedMasters}
+              title={'Some operators were failed to installed'}
+              failedOperators={failedOperators}
+              message={'failed to install.'}
+            />
+          </StackItem>
+        </RenderIf>
+        <RenderIf condition={pendingUserActionMasters > 0}>
+          <StackItem>
+            <HostInstallationWarning
+              cluster={cluster}
+              totalHosts={totalMasters}
+              failedHosts={failedMasters}
+              title={'Some hosts are pending user action'}
+              failedOperators={failedOperators}
+              message={'are pending user action.'}
+            />
+          </StackItem>
+        </RenderIf>
+        <RenderIf condition={pendingUserActionWorkers > 0}>
+          <StackItem>
+            <HostInstallationWarning
+              cluster={cluster}
+              totalHosts={totalWorkers}
+              failedHosts={failedWorkers}
+              title={'Some hosts are pending user action'}
+              message={'are pending user action.'}
+            />
+          </StackItem>
+        </RenderIf>
+      </Stack>
+    );
+  }
 };
 
 const ClusterProgress = ({
@@ -220,9 +194,9 @@ const ClusterProgress = ({
   totalPercentage,
   onFetchEvents,
   fallbackEventsURL,
+  consoleUrl,
 }: ClusterProgressProps) => {
   const { status, monitoredOperators = [] } = cluster;
-
   const enabledHosts = getEnabledHosts(cluster.hosts);
   const isWorkersPresent = enabledHosts && enabledHosts.some((host) => host.role === 'worker');
   const olmOperators = getOlmOperators(monitoredOperators);
@@ -230,10 +204,7 @@ const ClusterProgress = ({
   return (
     <>
       <DetailList>
-        <Flex
-          direction={{ default: minimizedView ? 'row' : 'column' }}
-          justifyContent={{ default: 'justifyContentSpaceBetween' }}
-        >
+        <Flex direction={{ default: minimizedView ? 'row' : 'column' }}>
           <FlexItem>
             <DetailItem
               title="Started on"
@@ -259,38 +230,29 @@ const ClusterProgress = ({
           variant={getProgressVariant(status)}
           className="cluster-progress-bar"
         />
-        <Flex className="pf-u-mt-md" display={{ default: 'inlineFlex' }}>
-          <FlexItem>
-            <HostProgress hosts={enabledHosts} hostRole="master" />
+        <Flex className="pf-u-mt-md">
+          <FlexItem spacer={{ default: 'spacer4xl' }}>
+            <ProgressBarTexts hosts={enabledHosts} hostRole="master" />
           </FlexItem>
-
-          <RenderIf condition={!isWorkersPresent}>
-            <FlexItem>
-              <HostProgress hosts={enabledHosts} hostRole="worker" />
+          <RenderIf condition={isWorkersPresent}>
+            <FlexItem spacer={{ default: 'spacer4xl' }}>
+              <ProgressBarTexts hosts={enabledHosts} hostRole="worker" />
             </FlexItem>
           </RenderIf>
-
-          <FlexItem>
+          <FlexItem spacer={{ default: 'spacer4xl' }}>
             <FinalizingProgress
               cluster={cluster}
               onFetchEvents={onFetchEvents}
               fallbackEventsURL={fallbackEventsURL}
             />
           </FlexItem>
-          <RenderIf condition={olmOperators.length <= 0}>
+          <RenderIf condition={olmOperators.length > 0}>
             <FlexItem>
-              <Stack>
-                <StackItem>
-                  <PendingIcon />
-                </StackItem>
-                <StackItem>
-                  <OperatorsProgressItem operators={olmOperators} />
-                </StackItem>
-                <StackItem>Pending - 3 operators</StackItem>
-              </Stack>
+              <OperatorsProgressItem operators={olmOperators} />
             </FlexItem>
           </RenderIf>
         </Flex>
+        {clusterProgressAlerts(enabledHosts, cluster, olmOperators, consoleUrl)}
       </RenderIf>
     </>
   );
