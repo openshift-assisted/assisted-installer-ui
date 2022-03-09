@@ -5,15 +5,15 @@ import {
   Text,
   TextContent,
 } from '@patternfly/react-core';
-import { Cluster, MonitoredOperator } from '../../api/types';
-import { downloadClusterInstallationLogs } from '../../../ocm';
-import { canDownloadClusterLogs } from '../hosts';
+import { downloadClusterInstallationLogs } from '../../../ocm/components/clusterDetail/utils';
+import { RenderIf, toSentence } from '../../../common/components/ui';
+import { Cluster, MonitoredOperator } from '../../../common/api/types';
 import React from 'react';
-import { useAlerts } from '../AlertsContextProvider';
 import { pluralize } from 'humanize-plus';
-import { FEEDBACK_FORM_LINK, getBugzillaLink } from '../../config';
-import { RenderIf, toSentence } from '../ui';
 import { useModalDialogsContext } from '../../../ocm/components/hosts/ModalDialogsContext';
+import { canDownloadClusterLogs } from '../../../common/components/hosts';
+import { useAlerts } from '../../../common/components/AlertsContextProvider';
+import { getBugzillaLink } from '../../../common/config/constants';
 
 type installationProgressWarningProps = {
   cluster: Cluster;
@@ -177,10 +177,7 @@ export const HostsInstallationSuccess: React.FC<successInstallationProps> = ({ c
                 Open web console
               </AlertActionLink>
             </RenderIf>
-            <AlertActionLink
-              id="cluster-installation-feedback-button"
-              onClick={() => FEEDBACK_FORM_LINK}
-            >
+            <AlertActionLink id="cluster-installation-feedback-button">
               Send feedback
             </AlertActionLink>
           </>
