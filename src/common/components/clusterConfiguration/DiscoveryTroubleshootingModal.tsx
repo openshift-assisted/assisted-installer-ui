@@ -10,7 +10,7 @@ import {
 } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons';
 import { PrismCode } from '../ui';
-import { getHostStr } from '../clusters/utils';
+import { pluralize } from 'humanize-plus';
 
 export type HostsNotShowingLinkProps = {
   setDiscoveryHintModalOpen: (isOpen: boolean) => void;
@@ -28,7 +28,7 @@ export const HostsNotShowingLink: React.FC<HostsNotShowingLinkProps> = ({
 }) => (
   <Button variant={ButtonVariant.link} onClick={() => setDiscoveryHintModalOpen(true)} isInline>
     <InfoCircleIcon size="sm" />
-    &nbsp;{getHostStr(isSNO, true)} not showing up?
+    &nbsp;{pluralize(+isSNO, 'Host')} not showing up?
   </Button>
 );
 

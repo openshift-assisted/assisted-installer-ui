@@ -13,7 +13,7 @@ import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
 import { WithTestID } from '../../types';
 import EmptyState from '../ui/uiState/EmptyState';
 import { usePagination } from './usePagination';
-import { getHostStr } from '../clusters/utils';
+import { pluralize } from 'humanize-plus';
 
 const getHostId = (host: Host) => host.id;
 
@@ -28,7 +28,7 @@ export const HostsTableEmptyState: React.FC<HostsTableEmptyStateProps> = ({
 }) => (
   <EmptyState
     icon={ConnectedIcon}
-    title={`Waiting for ${getHostStr(isSNO)}...`}
+    title={`Waiting for ${pluralize(+isSNO, 'host')}...`}
     content="Hosts may take a few minutes to appear here after booting."
     secondaryActions={
       setDiscoveryHintModalOpen && [

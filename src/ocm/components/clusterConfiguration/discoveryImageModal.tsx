@@ -4,7 +4,7 @@ import { Cluster, isSNO, ToolbarButton } from '../../../common';
 import DiscoveryImageForm from './DiscoveryImageForm';
 import DiscoveryImageSummary from './DiscoveryImageSummary';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
-import { getHostStr } from '../../../common/components/clusters/utils';
+import { pluralize } from 'humanize-plus';
 
 type DiscoveryImageModalButtonProps = {
   ButtonComponent?: typeof Button | typeof ToolbarButton;
@@ -27,7 +27,7 @@ export const DiscoveryImageModalButton: React.FC<DiscoveryImageModalButtonProps>
       onClick={() => open({ cluster })}
       id={`${idPrefix}-button-download-discovery-iso`}
     >
-      Add {getHostStr(isSNOCluster)}
+      Add {pluralize(+isSNOCluster, 'host')}
     </ButtonComponent>
   );
 };
@@ -48,7 +48,7 @@ export const DiscoveryImageModal: React.FC = () => {
   return (
     <Modal
       aria-label="Add hosts dialog"
-      title={`Add ${getHostStr(isSNOCluster)}`}
+      title={`Add ${pluralize(+isSNOCluster, 'host')}`}
       isOpen={isOpen}
       onClose={close}
       variant={ModalVariant.small}
