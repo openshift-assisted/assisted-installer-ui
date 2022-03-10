@@ -36,7 +36,6 @@ const ScaleUpForm = ({ agents }: ScaleUpFormProps) => {
 
       {!autoSelectHosts && (
         <ClusterDeploymentHostsSelectionAdvanced<ScaleUpFormValues>
-          // clusterDeployment={clusterDeployment} TODO
           availableAgents={availableAgents}
         />
       )}
