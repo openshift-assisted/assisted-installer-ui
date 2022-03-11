@@ -36,6 +36,7 @@ import {
   ClusterDeploymentNetworkingValues,
 } from './types';
 import { useFormikContext } from 'formik';
+import { getGridSpans } from './helpers';
 
 // TODO(mlibra): So far a constant. Should be queried from somewhere.
 export const defaultNetworkSettings: ClusterDefaultConfig = CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4;
@@ -50,6 +51,7 @@ type ClusterDeploymentNetworkingFormProps = {
   sameProxies: boolean;
   infraEnvsError: string | undefined;
   infraEnvsLoading: boolean;
+  isPreviewOpen: boolean;
 };
 
 const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormProps> = ({
@@ -61,6 +63,7 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
   sameProxies,
   infraEnvsError,
   infraEnvsLoading,
+  isPreviewOpen,
   ...rest
 }) => {
   const { values, touched, setFieldValue, setFieldTouched } = useFormikContext<
@@ -118,12 +121,15 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
       );
     }
   }
+
+  const gridSpans = getGridSpans(isPreviewOpen);
+
   return (
     <Form>
       <Stack hasGutter>
         <StackItem>
           <Grid hasGutter>
-            <GridItem span={12} lg={10} xl={9} xl2={7}>
+            <GridItem {...gridSpans}>
               <NetworkConfiguration
                 cluster={cluster}
                 hostSubnets={hostSubnets}
@@ -134,22 +140,20 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
             </GridItem>
           </Grid>
         </StackItem>
-        {infraEnvsError ? (
-          <StackItem>
+        <StackItem>
+          {infraEnvsError ? (
             <Alert title={infraEnvsError} variant="danger" isInline />
-          </StackItem>
-        ) : infraEnvsLoading ? (
-          <StackItem>
+          ) : infraEnvsLoading ? (
             <Split hasGutter>
               <SplitItem>
                 <Spinner isSVG size="md" />
               </SplitItem>
               <SplitItem>Loading proxy configuration</SplitItem>
             </Split>
-          </StackItem>
-        ) : (
-          <StackItem>{proxyConfig}</StackItem>
-        )}
+          ) : (
+            proxyConfig
+          )}
+        </StackItem>
         <StackItem>
           <SecurityFields clusterSshKey={cluster.sshPublicKey} />
         </StackItem>

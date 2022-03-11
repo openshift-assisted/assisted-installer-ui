@@ -17,6 +17,7 @@ import RoleCell from './RoleCell';
 import { getHostname, getHostRole, getInventory } from './utils';
 import { selectMachineNetworkCIDR } from '../../selectors/clusterSelectors';
 import { hostStatus } from './status';
+import { DropdownProps } from '@patternfly/react-core';
 
 export const getSelectedNic = (nics: Interface[], currentSubnet: Address4 | Address6) => {
   return nics.find((nic) => {
@@ -83,6 +84,7 @@ export const roleColumn = (
   onEditRole?: HostsTableActions['onEditRole'],
   schedulableMasters?: boolean,
   displayTooltip?: boolean,
+  position?: DropdownProps['position'],
 ): TableRow<Host> => {
   return {
     header: {
@@ -105,6 +107,7 @@ export const roleColumn = (
             role={hostRole}
             onEditRole={editRole}
             displayTooltip={displayTooltip}
+            position={position}
           />
         ),
         props: { 'data-testid': 'host-role' },
@@ -150,7 +153,7 @@ export const statusColumn = (
 
 export const discoveredAtColumn: TableRow<Host> = {
   header: {
-    title: 'Discovered at',
+    title: 'Discovered on',
     props: {
       id: 'col-header-discoveredat',
     },

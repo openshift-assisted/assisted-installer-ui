@@ -12,6 +12,7 @@ import { getInfraEnvNameOfAgent } from '../helpers/agents';
 import { EventListFetchProps } from '../../../common';
 import { ClusterDeploymentK8sResource, AgentK8sResource } from '../../types';
 import { INFRAENV_GENERATED_AI_FLOW, BMH_HOSTNAME_ANNOTATION } from '../common/constants';
+import { gridSpans } from '@patternfly/react-core';
 
 export const shouldShowClusterDeploymentValidationOverview = (
   agentClusterInstall?: AgentClusterInstallK8sResource,
@@ -148,3 +149,22 @@ export const getAgentsHostsNames = (
   });
   return _.uniq(raw.filter(Boolean)) as string[];
 };
+
+export const getGridSpans = (
+  isPreviewOpen: boolean,
+): {
+  span: gridSpans;
+  lg?: gridSpans;
+  xl?: gridSpans;
+  xl2?: gridSpans;
+} =>
+  isPreviewOpen
+    ? {
+        span: 12,
+      }
+    : {
+        span: 12,
+        lg: 10,
+        xl: 9,
+        xl2: 7,
+      };

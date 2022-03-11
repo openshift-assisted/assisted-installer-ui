@@ -1,5 +1,6 @@
 import * as React from 'react';
 import classNames from 'classnames';
+import { Grid, GridItem } from '@patternfly/react-core';
 
 import { AlertsContextProvider, LoadingState } from '../../../common';
 import { isAIFlowInfraEnv } from '../helpers';
@@ -14,6 +15,7 @@ import { ClusterDeploymentWizardProps, ClusterDeploymentWizardStepsType } from '
 import ClusterDeploymentHostsDiscoveryStep from './ClusterDeploymentHostsDiscoveryStep';
 import { ACMFeatureSupportLevelProvider } from '../featureSupportLevels';
 import ClusterDeploymentReviewStep from './ClusterDeploymentReviewStep';
+import { YamlPreview, useYamlPreview } from '../YamlPreview';
 
 const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   className,
@@ -45,6 +47,10 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   initialStep,
   onApproveAgent,
   isBMPlatform,
+  isPreviewOpen,
+  setPreviewOpen,
+  fetchManagedClusters,
+  fetchKlusterletAddonConfig,
 }) => {
   const [currentStepId, setCurrentStepId] = React.useState<ClusterDeploymentWizardStepsType>(
     initialStep || 'cluster-details',
@@ -64,6 +70,14 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
     [isAIFlow, infraEnv, agents, cdName, cdNamespace],
   );
   const usedHostnames = React.useMemo(() => getAgentsHostsNames(clusterAgents), [clusterAgents]);
+
+  const { code, loadingResources } = useYamlPreview({
+    agentClusterInstall,
+    clusterDeployment,
+    fetchSecret,
+    fetchManagedClusters,
+    fetchKlusterletAddonConfig,
+  });
 
   const renderCurrentStep = () => {
     const stepId: ClusterDeploymentWizardStepsType = !clusterDeployment
@@ -134,6 +148,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
             onClose={onClose}
             hostActions={hostActions}
             fetchInfraEnv={fetchInfraEnv}
+            isPreviewOpen={isPreviewOpen}
           />
         );
       case 'review':
@@ -158,25 +173,37 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
             agents={agents}
             onSaveDetails={onSaveDetails}
             onClose={onClose}
+            isPreviewOpen={isPreviewOpen}
           />
         );
     }
   };
 
   return (
-    <AlertsContextProvider>
-      <ACMFeatureSupportLevelProvider clusterImages={clusterImages} isEditClusterFlow={true}>
-        <ClusterDeploymentWizardContext.Provider
-          value={{
-            currentStepId,
-            setCurrentStepId,
-            clusterDeployment /* Hotfix: agentClusterInstall, agents */,
-          }}
-        >
-          <div className={classNames('pf-c-wizard', className)}>{renderCurrentStep()}</div>
-        </ClusterDeploymentWizardContext.Provider>
-      </ACMFeatureSupportLevelProvider>
-    </AlertsContextProvider>
+    <Grid style={{ height: '100%' }}>
+      <GridItem span={isPreviewOpen ? 7 : 12}>
+        <AlertsContextProvider>
+          <ACMFeatureSupportLevelProvider clusterImages={clusterImages} isEditClusterFlow={true}>
+            <ClusterDeploymentWizardContext.Provider
+              value={{
+                currentStepId,
+                setCurrentStepId,
+                clusterDeployment /* Hotfix: agentClusterInstall, agents */,
+              }}
+            >
+              <div className={classNames('pf-c-wizard', className)}>{renderCurrentStep()}</div>
+            </ClusterDeploymentWizardContext.Provider>
+          </ACMFeatureSupportLevelProvider>
+        </AlertsContextProvider>
+      </GridItem>
+      {isPreviewOpen && (
+        <GridItem span={5}>
+          <YamlPreview code={code} setPreviewOpen={setPreviewOpen} loading={loadingResources}>
+            {`${clusterDeployment.metadata?.name} cluster`}
+          </YamlPreview>
+        </GridItem>
+      )}
+    </Grid>
   );
 };
 

@@ -1,4 +1,4 @@
-import { Tooltip } from '@patternfly/react-core';
+import { DropdownProps, Tooltip } from '@patternfly/react-core';
 import React from 'react';
 import { Host, HostUpdateParams } from '../../api';
 import RoleDropdown from './RoleDropdown';
@@ -10,6 +10,7 @@ export type RoleCellProps = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onEditRole?: (role: HostUpdateParams['hostRole']) => Promise<any>;
   displayTooltip?: boolean;
+  position?: DropdownProps['position'];
 };
 
 const RoleCell: React.FC<RoleCellProps> = ({
@@ -18,9 +19,10 @@ const RoleCell: React.FC<RoleCellProps> = ({
   readonly = false,
   onEditRole,
   displayTooltip,
+  position,
 }) =>
   !readonly && onEditRole ? (
-    <RoleDropdown host={host} onEditRole={onEditRole} current={role} />
+    <RoleDropdown host={host} onEditRole={onEditRole} current={role} position={position} />
   ) : displayTooltip ? (
     <Tooltip content={'To make the role editable, 4 or more hosts need to be discovered.'}>
       <span>{role}</span>
