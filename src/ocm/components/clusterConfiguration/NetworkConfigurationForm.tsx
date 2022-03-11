@@ -32,7 +32,6 @@ import { ClustersAPI } from '../../services/apis';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { captureException } from '../../sentry';
 
-
 const NetworkConfigurationForm: React.FC<{
   cluster: Cluster;
 }> = ({ cluster }) => {
@@ -140,7 +139,10 @@ const NetworkConfigurationForm: React.FC<{
       dispatch(updateCluster(data));
 
       actions.resetForm({
-        values: {...getNetworkInitialValues(data, defaultNetworkSettings), preferredVipDhcpAllocation: values.preferredVipDhcpAllocation }
+        values: {
+          ...getNetworkInitialValues(data, defaultNetworkSettings),
+          preferredVipDhcpAllocation: values.preferredVipDhcpAllocation,
+        },
       });
     } catch (e) {
       handleApiError(e, () =>

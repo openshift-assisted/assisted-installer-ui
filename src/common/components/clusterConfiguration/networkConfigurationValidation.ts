@@ -47,7 +47,6 @@ export const getNetworkInitialValues = (
     ingressVip: cluster.ingressVip || '',
     sshPublicKey: cluster.sshPublicKey || '',
     hostSubnet: getInitHostSubnet(cluster, managedNetworkingType) || NO_SUBNET_SET,
-    preferredVipDhcpAllocation: undefined,
     vipDhcpAllocation: cluster.vipDhcpAllocation,
     managedNetworkingType: cluster.userManagedNetworking ? 'userManaged' : 'clusterManaged',
     networkType: cluster.networkType || 'OpenShiftSDN',
