@@ -110,9 +110,9 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   useEffect(
     () => {
       const currentDhcpAllocation = values.vipDhcpAllocation || false;
-      if (values.preferVipDhcpAllocation !== undefined) {
-        setFieldValue('preferVipDhcpAllocation', currentDhcpAllocation);
-        updateNetworkConfig(values.preferVipDhcpAllocation);
+      if (values.preferredVipDhcpAllocation !== undefined) {
+        setFieldValue('preferredVipDhcpAllocation', currentDhcpAllocation);
+        updateNetworkConfig(values.preferredVipDhcpAllocation);
       } else {
         updateNetworkConfig(currentDhcpAllocation);
       }

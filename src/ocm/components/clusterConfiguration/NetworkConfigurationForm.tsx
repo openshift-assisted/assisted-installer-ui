@@ -32,6 +32,7 @@ import { ClustersAPI } from '../../services/apis';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { captureException } from '../../sentry';
 
+
 const NetworkConfigurationForm: React.FC<{
   cluster: Cluster;
 }> = ({ cluster }) => {
@@ -46,10 +47,10 @@ const NetworkConfigurationForm: React.FC<{
   const dispatch = useDispatch();
   const hostSubnets = React.useMemo(() => getHostSubnets(cluster), [cluster]);
 
-  const initialValues = React.useMemo(
+  const initialValues: NetworkConfigurationValues = React.useMemo(
     () => ({
       ...getNetworkInitialValues(cluster, defaultNetworkSettings),
-      preferVipDhcpAllocation: cluster.vipDhcpAllocation || false,
+      preferredVipDhcpAllocation: cluster.vipDhcpAllocation || false,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [], // just once, Formik does not reinitialize
@@ -99,7 +100,7 @@ const NetworkConfigurationForm: React.FC<{
         'serviceNetworkCidr',
         'clusterNetworkCidr',
         'clusterNetworkHostPrefix',
-        'preferDHCPContext',
+        'preferredVipDhcpAllocation',
       ]);
       params.userManagedNetworking = isUserManagedNetworking;
       params.clusterNetworks = [
@@ -139,10 +140,7 @@ const NetworkConfigurationForm: React.FC<{
       dispatch(updateCluster(data));
 
       actions.resetForm({
-        values: {
-          ...getNetworkInitialValues(data, defaultNetworkSettings),
-          preferVipDhcpAllocation: values.preferVipDhcpAllocation,
-        },
+        values: {...getNetworkInitialValues(data, defaultNetworkSettings), preferredVipDhcpAllocation: values.preferredVipDhcpAllocation }
       });
     } catch (e) {
       handleApiError(e, () =>
