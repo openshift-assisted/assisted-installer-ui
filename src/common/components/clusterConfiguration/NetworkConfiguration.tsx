@@ -86,7 +86,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
     values.managedNetworkingType,
   ]);
 
-  useEffect(() => {
+  const updateNetwork = (newDHCP: boolean) => {
     if (isUserManagedNetworking) {
       const shouldValidate = !!touched.hostSubnet;
 
@@ -98,19 +98,39 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
         setFieldValue('hostSubnet', NO_SUBNET_SET, shouldValidate);
       }
     } else {
-      if (!values.vipDhcpAllocation && touched.hostSubnet) {
+      setFieldValue('vipDhcpAllocation', newDHCP);
+
+      if (!newDHCP && touched.hostSubnet) {
         validateField('ingressVip');
         validateField('apiVip');
       }
     }
-  }, [
-    touched.hostSubnet,
-    isMultiNodeCluster,
-    isUserManagedNetworking,
-    setFieldValue,
-    values.vipDhcpAllocation,
-    validateField,
-  ]);
+  };
+
+  useEffect(
+    () => {
+      const currentDhcpAllocation = values.vipDhcpAllocation || false;
+      if (values.preferVipDhcpAllocation !== undefined) {
+        setFieldValue('preferVipDhcpAllocation', currentDhcpAllocation);
+        updateNetwork(values.preferVipDhcpAllocation);
+      } else {
+        updateNetwork(currentDhcpAllocation);
+      }
+    },
+    // To be able to remember previous dhcp allocation
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [touched.hostSubnet, isMultiNodeCluster, isUserManagedNetworking, setFieldValue, validateField],
+  );
+
+  useEffect(
+    () => {
+      updateNetwork(values.vipDhcpAllocation || false);
+    },
+    // To be able to remember previous dhcp allocation
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [values.vipDhcpAllocation],
+  );
+
   return (
     <Grid hasGutter>
       {!hideManagedNetworking && (

@@ -35,6 +35,7 @@ export type HostSubnets = HostSubnet[];
 export type NetworkConfigurationValues = ClusterUpdateParams & {
   hostSubnet?: string;
   useRedHatDnsService?: boolean;
+  preferVipDhcpAllocation: boolean;
   managedNetworkingType: 'userManaged' | 'clusterManaged';
   enableProxy: boolean;
   editProxy: boolean;
