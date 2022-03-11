@@ -86,7 +86,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
     values.managedNetworkingType,
   ]);
 
-  const updateNetwork = (newDHCP: boolean) => {
+  const updateNetworkConfig = (vipDhcpAllocation: boolean) => {
     if (isUserManagedNetworking) {
       const shouldValidate = !!touched.hostSubnet;
 
@@ -98,9 +98,9 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
         setFieldValue('hostSubnet', NO_SUBNET_SET, shouldValidate);
       }
     } else {
-      setFieldValue('vipDhcpAllocation', newDHCP);
+      setFieldValue('vipDhcpAllocation', vipDhcpAllocation);
 
-      if (!newDHCP && touched.hostSubnet) {
+      if (!vipDhcpAllocation && touched.hostSubnet) {
         validateField('ingressVip');
         validateField('apiVip');
       }
@@ -112,9 +112,9 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
       const currentDhcpAllocation = values.vipDhcpAllocation || false;
       if (values.preferVipDhcpAllocation !== undefined) {
         setFieldValue('preferVipDhcpAllocation', currentDhcpAllocation);
-        updateNetwork(values.preferVipDhcpAllocation);
+        updateNetworkConfig(values.preferVipDhcpAllocation);
       } else {
-        updateNetwork(currentDhcpAllocation);
+        updateNetworkConfig(currentDhcpAllocation);
       }
     },
     // To be able to remember previous dhcp allocation
@@ -124,7 +124,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
 
   useEffect(
     () => {
-      updateNetwork(values.vipDhcpAllocation || false);
+      updateNetworkConfig(values.vipDhcpAllocation || false);
     },
     // To be able to remember previous dhcp allocation
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -42,13 +42,10 @@ const NetworkConfigurationForm: React.FC<{
     'clusterNetworkHostPrefix',
   ]);
   const { addAlert, clearAlerts, alerts } = useAlerts();
-  const { setCurrentStepId } = React.useContext(
-    ClusterWizardContext,
-  );
+  const { setCurrentStepId } = React.useContext(ClusterWizardContext);
   const dispatch = useDispatch();
-  const hostSubnets = React.useMemo(() => getHostSubnets(cluster), [cluster]);  
+  const hostSubnets = React.useMemo(() => getHostSubnets(cluster), [cluster]);
 
-  // TODO put into the function
   const initialValues = React.useMemo(
     () => ({
       ...getNetworkInitialValues(cluster, defaultNetworkSettings),
@@ -94,7 +91,6 @@ const NetworkConfigurationForm: React.FC<{
     try {
       const isMultiNodeCluster = !isSingleNodeCluster(cluster);
       const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';
-      const shouldStorePreferredDHCP = values.preferVipDhcpAllocation !== cluster.vipDhcpAllocation;
       const params = _.omit(values, [
         'hostSubnet',
         'useRedHatDnsService',
@@ -142,11 +138,12 @@ const NetworkConfigurationForm: React.FC<{
       const { data } = await ClustersAPI.update(cluster.id, params);
       dispatch(updateCluster(data));
 
-      const newValues =  {
-        ...getNetworkInitialValues(data, defaultNetworkSettings),
-        preferVipDhcpAllocation: values.preferVipDhcpAllocation,
-      }
-      actions.resetForm({ values: newValues });
+      actions.resetForm({
+        values: {
+          ...getNetworkInitialValues(data, defaultNetworkSettings),
+          preferVipDhcpAllocation: values.preferVipDhcpAllocation,
+        },
+      });
     } catch (e) {
       handleApiError(e, () =>
         addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),
