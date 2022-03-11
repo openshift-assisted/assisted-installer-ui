@@ -67,6 +67,6 @@ export const getSelectedVersion = (
     (ci) => ci.metadata?.name === agentClusterInstall?.spec?.imageSetRef?.name,
   );
   return selectedClusterImage
-    ? getOCPVersions([selectedClusterImage])?.[0]?.label
+    ? getOCPVersions([selectedClusterImage])?.[0]?.version
     : agentClusterInstall?.spec?.imageSetRef?.name;
 };
