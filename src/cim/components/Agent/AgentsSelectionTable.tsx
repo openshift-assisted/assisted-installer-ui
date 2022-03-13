@@ -21,11 +21,13 @@ const canEditRole = () => true;
 
 type AgentsSelectionTableProps = ClusterDeploymentHostsTablePropsActions & {
   matchingAgents: AgentK8sResource[];
+  width?: number;
 };
 
 const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
   matchingAgents,
   onEditRole,
+  width,
 }) => {
   const [{ value: selectedIDs }, , { setValue, setTouched }] = useField<
     ClusterDeploymentHostsSelectionValues['selectedHostIds']
@@ -69,21 +71,27 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
     { agents: matchingAgents },
     { onSelect, onEditRole, canEditRole },
   );
-  const content = React.useMemo(
-    () => [
+
+  const addAll = width && width > 700;
+
+  const content = React.useMemo(() => {
+    return [
       hostnameColumn(),
-      infraEnvColumn(matchingAgents),
+      ...(addAll ? [infraEnvColumn(matchingAgents)] : []),
       agentStatusColumn({
         agents: matchingAgents,
         wizardStepId: 'hosts-selection',
       }),
-      roleColumn(actions.canEditRole, actions.onEditRole),
-      cpuCoresColumn,
-      memoryColumn,
-      disksColumn,
-    ],
-    [matchingAgents, actions.canEditRole, actions.onEditRole],
-  );
+      roleColumn(
+        actions.canEditRole,
+        actions.onEditRole,
+        undefined,
+        undefined,
+        addAll ? 'left' : 'right',
+      ),
+      ...(addAll ? [cpuCoresColumn, memoryColumn, disksColumn] : []),
+    ];
+  }, [matchingAgents, actions.canEditRole, actions.onEditRole, addAll]);
 
   const paginationProps = usePagination(hosts.length);
 

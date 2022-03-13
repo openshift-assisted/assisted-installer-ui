@@ -1,13 +1,15 @@
 import * as _ from 'lodash';
 import { useFormikContext } from 'formik';
 import React from 'react';
+import Measure from 'react-measure';
+import { Grid, GridItem } from '@patternfly/react-core';
+
 import { AgentK8sResource } from '../../types';
 import { AGENT_LOCATION_LABEL_KEY, AGENT_NOLOCATION_VALUE } from '../common';
 import LocationsSelector from './LocationsSelector';
 import { ClusterDeploymentHostsSelectionValues, ScaleUpFormValues } from './types';
 import LabelsSelector from './LabelsSelector';
 import AgentsSelectionTable from '../Agent/AgentsSelectionTable';
-import { Grid, GridItem } from '@patternfly/react-core';
 import { ClusterDeploymentHostsTablePropsActions } from './types';
 
 type ClusterDeploymentHostsSelectionAdvancedProps = {
@@ -54,11 +56,19 @@ const ClusterDeploymentHostsSelectionAdvanced = <T extends FormValues>({
         <GridItem>
           <LabelsSelector agents={matchingAgents} />
         </GridItem>
+
         <GridItem>
-          <AgentsSelectionTable
-            matchingAgents={matchingAgents}
-            onEditRole={hostActions?.onEditRole}
-          />
+          <Measure bounds>
+            {({ measureRef, contentRect }) => (
+              <div ref={measureRef}>
+                <AgentsSelectionTable
+                  matchingAgents={matchingAgents}
+                  onEditRole={hostActions?.onEditRole}
+                  width={contentRect.bounds?.width}
+                />
+              </div>
+            )}
+          </Measure>
         </GridItem>
       </Grid>
     </>

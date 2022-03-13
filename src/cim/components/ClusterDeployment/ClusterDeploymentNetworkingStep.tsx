@@ -30,6 +30,7 @@ type NetworkingFormProps = {
   agents: AgentK8sResource[];
   fetchInfraEnv: ClusterDeploymentDetailsNetworkingProps['fetchInfraEnv'];
   hostActions: ClusterDeploymentDetailsNetworkingProps['hostActions'];
+  isPreviewOpen: ClusterDeploymentDetailsNetworkingProps['isPreviewOpen'];
 };
 
 const NetworkingForm: React.FC<NetworkingFormProps> = ({
@@ -39,6 +40,7 @@ const NetworkingForm: React.FC<NetworkingFormProps> = ({
   onClose,
   fetchInfraEnv,
   hostActions,
+  isPreviewOpen,
 }) => {
   const [showFormErrors, setShowFormErrors] = React.useState(false);
   const [showClusterErrors, setShowClusterErrors] = React.useState(false);
@@ -142,6 +144,7 @@ const NetworkingForm: React.FC<NetworkingFormProps> = ({
             infraEnvWithProxy={infraEnvWithProxy}
             infraEnvsLoading={infraEnvsLoading}
             hostActions={hostActions}
+            isPreviewOpen={isPreviewOpen}
           />
         </GridItem>
       </Grid>

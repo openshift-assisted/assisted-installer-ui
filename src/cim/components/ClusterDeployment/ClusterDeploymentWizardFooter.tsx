@@ -44,7 +44,7 @@ const ValidationSection: React.FC<ValidationSectionProps> = ({
           <Alert
             variant="info"
             isInline
-            title="Validations are running. If they take more than 2 minutes, please attend to the errors below."
+            title="Validations are running. If they take more than 2 minutes, please attend to the alert below."
           />
         </ClusterWizardStepValidationsAlert>
       )}
