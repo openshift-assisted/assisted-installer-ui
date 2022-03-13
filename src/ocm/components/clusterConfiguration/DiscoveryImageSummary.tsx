@@ -1,5 +1,5 @@
 import React from 'react';
-import { Cluster, ErrorState, LoadingState } from '../../../common';
+import { Cluster, ErrorState, isSNO, LoadingState } from '../../../common';
 import DownloadIso from '../../../common/components/clusterConfiguration/DownloadIso';
 import useInfraEnvImageUrl from '../../hooks/useInfraEnvImageUrl';
 
@@ -17,10 +17,12 @@ const DiscoveryImageSummary: React.FC<DiscoveryImageSummaryProps> = ({ cluster, 
   if (isLoading) {
     return <LoadingState />;
   }
+
   return (
     <DownloadIso
       fileName={`discovery_image_${cluster.name}.iso`}
       downloadUrl={imageUrl}
+      isSNO={isSNO(cluster)}
       {...restProps}
     />
   );

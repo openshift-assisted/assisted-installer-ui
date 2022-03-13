@@ -185,7 +185,10 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({
             setSelectedHostIDs={setSelectedHostIDs}
             {...paginationProps}
           >
-            <HostsTableEmptyState setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
+            <HostsTableEmptyState
+              isSNO={isSNO(cluster)}
+              setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
+            />
           </HostsTable>
         </StackItem>
       </Stack>

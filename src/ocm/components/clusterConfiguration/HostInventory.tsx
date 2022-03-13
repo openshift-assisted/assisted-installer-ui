@@ -4,7 +4,7 @@ import {
   Cluster,
   PopoverIcon,
   useFeature,
-  isSingleNodeCluster,
+  isSNO,
   ClusterWizardStepHeader,
   DiscoveryTroubleshootingModal,
   DiscoveryInstructions,
@@ -67,7 +67,7 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   );
   const isOpenshiftClusterStorageEnabled = useFeature('ASSISTED_INSTALLER_OCS_FEATURE');
   const isContainerNativeVirtualizationEnabled = useFeature('ASSISTED_INSTALLER_CNV_FEATURE');
-  const isSNO = isSingleNodeCluster(cluster);
+  const isSNOCluster = isSNO(cluster);
   const isSchedulableMastersEnabled = !schedulableMastersAlwaysOn(cluster);
   const { setFieldValue } = useFormikContext<HostDiscoveryValues>();
   React.useEffect(() => {
@@ -82,7 +82,7 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         </ClusterWizardStepHeader>
       </StackItem>
       <StackItem>
-        <DiscoveryInstructions showAllInstructions />
+        <DiscoveryInstructions isSNO={isSNOCluster} showAllInstructions />
       </StackItem>
       <StackItem>
         <TextContent>
@@ -99,12 +99,12 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         <StackItem>
           <CnvCheckbox
             clusterId={cluster.id}
-            isSNO={isSNO}
+            isSNO={isSNOCluster}
             openshiftVersion={cluster.openshiftVersion}
           />
         </StackItem>
       )}
-      {isOpenshiftClusterStorageEnabled && !isSNO && (
+      {isOpenshiftClusterStorageEnabled && !isSNOCluster && (
         <StackItem>
           <ODFCheckbox openshiftVersion={cluster.openshiftVersion} />
         </StackItem>
@@ -138,7 +138,7 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
           <InformationAndAlerts
             cluster={cluster}
             HostRequirementsContent={
-              isSNO ? SingleHostRequirementsContent : HostRequirementsContent
+              isSNOCluster ? SingleHostRequirementsContent : HostRequirementsContent
             }
             setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
           />

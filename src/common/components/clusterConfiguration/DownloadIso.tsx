@@ -23,6 +23,7 @@ import { StaticIPInfo } from './DiscoveryImageConfigForm';
 
 export type DownloadISOProps = {
   hasDHCP?: boolean;
+  isSNO?: boolean;
   fileName?: string;
   downloadUrl?: string;
   onClose: () => void;
@@ -35,6 +36,7 @@ const DownloadIso: React.FC<DownloadISOProps> = ({
   onClose,
   onReset,
   hasDHCP,
+  isSNO = false,
 }) => {
   const wgetCommand = `wget -O ${fileName} '${downloadUrl}'`;
 
@@ -54,7 +56,7 @@ const DownloadIso: React.FC<DownloadISOProps> = ({
                 Discovery ISO is ready to download
               </Title>
             </EmptyState>
-            <DiscoveryInstructions />
+            <DiscoveryInstructions isSNO={isSNO} />
             <DetailList>
               <DetailItem
                 title="Discovery ISO URL"

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ClusterHostsTableProps } from '../../../common';
+import { ClusterHostsTableProps, isSNO } from '../../../common';
 import { AdditionalNTPSourcesDialogToggle } from '../hosts/AdditionaNTPSourceDialogToggle';
 import { useHostsTable, HostsTableModals } from '../hosts/use-hosts-table';
 import CommonNetworkConfigurationTable from '../../../common/components/clusterConfiguration/NetworkConfigurationTable';
@@ -25,7 +25,10 @@ const NetworkConfigurationTable: React.FC<ClusterHostsTableProps> = ({
         onEditRole={onEditRole}
         actionResolver={actionResolver}
       >
-        <HostsTableEmptyState setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
+        <HostsTableEmptyState
+          isSNO={isSNO(cluster)}
+          setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
+        />
       </CommonNetworkConfigurationTable>
       <HostsTableModals cluster={cluster} {...modalProps} />
     </>
