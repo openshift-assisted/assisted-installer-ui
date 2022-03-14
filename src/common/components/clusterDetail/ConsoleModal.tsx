@@ -8,8 +8,8 @@ import {
   ExpandableSection,
 } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons';
-import { Cluster, Host, Interface, Inventory } from '../../api/types';
-import { removeProtocolFromURL, stringToJSON } from '../../api/utils';
+import { Cluster } from '../../api/types';
+import { removeProtocolFromURL } from '../../api/utils';
 import { ToolbarButton } from '../ui/Toolbar';
 import PrismCode from '../ui/PrismCode';
 
@@ -35,7 +35,6 @@ type ModalExpandableSectionProps = {
   isExpanded: boolean;
   onToggle: () => void;
   requiredList: string[];
-  optionalList: string[];
 };
 
 const formatMultilineString = (multiLineList: string[]): string =>
@@ -44,44 +43,18 @@ const formatMultilineString = (multiLineList: string[]): string =>
     : '';
 
 const ModalExpandableSection: React.FC<ModalExpandableSectionProps> = (props) => {
-  const { requiredList, optionalList, ...otherProps } = props;
+  const { requiredList, ...otherProps } = props;
   return (
     <ExpandableSection {...otherProps}>
       <PrismCode code={formatMultilineString(requiredList)} language="markup" copiable />
-      <br />
-      <Text component="h6">Optional:</Text>
-      <PrismCode code={formatMultilineString(optionalList)} language="markup" copiable />
     </ExpandableSection>
   );
-};
-
-const getHostIPs = (cluster: Cluster): { [key: string]: string } => {
-  const hostIPAddresses = {};
-  cluster.hosts?.map((host: Host) => {
-    if (host && host.requestedHostname) {
-      const interfaces: Interface[] | undefined =
-        stringToJSON<Inventory>(host.inventory)?.interfaces || undefined;
-      if (interfaces && interfaces.length > 0) {
-        if (interfaces[0].ipv4Addresses && interfaces[0].ipv4Addresses.length > 0) {
-          hostIPAddresses[host.requestedHostname] = interfaces[0].ipv4Addresses[0].split('/')[0];
-        } else if (interfaces[0].ipv6Addresses && interfaces[0].ipv6Addresses.length > 0) {
-          hostIPAddresses[host.requestedHostname] = interfaces[0].ipv6Addresses[0].split('/')[0];
-        }
-      }
-    }
-  });
-  return hostIPAddresses;
 };
 
 export const WebConsoleHint: React.FC<WebConsoleHintProps> = ({ cluster, consoleUrl }) => {
   const [isDNSExpanded, setIsDNSExpanded] = React.useState(true);
   const handleToggle = () => setIsDNSExpanded(!isDNSExpanded);
-  const hostIPs = React.useMemo(() => getHostIPs(cluster), [cluster]);
   const [apiVip, ingressVip] = [cluster.apiVip, cluster.ingressVip];
-  const sortedHostIPs = Object.keys(hostIPs).sort();
-  const etcHostsOptional = sortedHostIPs.map(
-    (hostname: string) => `${hostIPs[hostname]}\t${hostname}`,
-  );
   const clusterUrl = `${cluster.name}.${cluster.baseDnsDomain}`;
   const appsUrl = `apps.${clusterUrl}`;
   const etcHosts = [
@@ -100,10 +73,6 @@ export const WebConsoleHint: React.FC<WebConsoleHintProps> = ({ cluster, console
     `*.${appsUrl}`.padEnd(paddingNum) + `A\t${ingressVip}`,
   ];
 
-  const aRecordsOptional = sortedHostIPs.map(
-    (hostname: string) => `${hostname}\tA\t${hostIPs[hostname]}`,
-  );
-
   return (
     <>
       <Text component="p">
@@ -116,7 +85,6 @@ export const WebConsoleHint: React.FC<WebConsoleHintProps> = ({ cluster, console
         isExpanded={isDNSExpanded}
         onToggle={handleToggle}
         requiredList={aRecords}
-        optionalList={aRecordsOptional}
       />
       <ModalExpandableSection
         toggleText="Option 2: Update your local /etc/hosts or /etc/resolv.conf files"
@@ -124,7 +92,6 @@ export const WebConsoleHint: React.FC<WebConsoleHintProps> = ({ cluster, console
         isExpanded={!isDNSExpanded}
         onToggle={handleToggle}
         requiredList={etcHosts}
-        optionalList={etcHostsOptional}
       />
     </>
   );
