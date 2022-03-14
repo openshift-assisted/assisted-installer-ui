@@ -40,7 +40,7 @@ import { onFetchEvents } from '../fetching/fetchEvents';
 import { TIME_ZERO, VSPHERE_CONFIG_LINK } from '../../../common/config/constants';
 import { isSNO } from '../../../common/selectors/clusterSelectors';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
-import { diffInDaysBetweenDates } from '../../../common/sevices/DateAndTime';
+import { diffInDaysBetweenDates } from '../../../common/services/DateAndTime';
 
 type ClusterDetailProps = {
   cluster: Cluster;

@@ -5,7 +5,7 @@ import { OPENSHIFT_LIFE_CYCLE_DATES_LINK } from '../../config';
 import { OpenshiftVersionOptionType } from '../../types';
 import { SelectField } from '../ui';
 import openshiftVersionData from '../../../ocm/data/openshiftVersionsData.json';
-import { diffInDaysBetweenDates } from '../../sevices/DateAndTime';
+import { diffInDaysBetweenDates } from '../../services/DateAndTime';
 
 const OpenShiftLifeCycleDatesLink = () => (
   <a href={OPENSHIFT_LIFE_CYCLE_DATES_LINK} target="_blank" rel="noopener noreferrer">

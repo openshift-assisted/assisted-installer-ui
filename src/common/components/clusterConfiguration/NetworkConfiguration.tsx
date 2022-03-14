@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useFormikContext } from 'formik';
+import _ from 'lodash';
 import { Alert, AlertVariant, Checkbox, Grid } from '@patternfly/react-core';
 import AdvancedNetworkFields from './AdvancedNetworkFields';
 import { NetworkConfigurationValues } from '../../../common/types/clusters';
@@ -10,6 +11,8 @@ import {
   VirtualIPControlGroup,
   VirtualIPControlGroupProps,
 } from '../clusterWizard/networkingSteps';
+import NetworkSettingsService from '../../services/NetworkSettingsService';
+
 import { ClusterDefaultConfig } from '../../api';
 import { NO_SUBNET_SET } from '../../config';
 import { isAdvNetworkConf } from './utils';
@@ -20,6 +23,7 @@ import { isSNO } from '../../selectors';
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   defaultNetworkSettings: ClusterDefaultConfig;
   hideManagedNetworking?: boolean;
+  persistDhcpSetting?: boolean;
 };
 
 const vmsAlert = (
@@ -39,6 +43,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   hostSubnets,
   isVipDhcpAllocationDisabled,
   defaultNetworkSettings,
+  persistDhcpSetting,
   hideManagedNetworking,
   children,
 }) => {
@@ -86,7 +91,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
     values.managedNetworkingType,
   ]);
 
-  useEffect(() => {
+  const updateNetworkConfig = () => {
     if (isUserManagedNetworking) {
       const shouldValidate = !!touched.hostSubnet;
 
@@ -103,14 +108,39 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
         validateField('apiVip');
       }
     }
-  }, [
+  };
+
+  useEffect(updateNetworkConfig, [
     touched.hostSubnet,
-    isMultiNodeCluster,
-    isUserManagedNetworking,
-    setFieldValue,
     values.vipDhcpAllocation,
+    persistDhcpSetting,
+    isMultiNodeCluster,
+    setFieldValue,
     validateField,
   ]);
+
+  useEffect(
+    () => {
+      if (persistDhcpSetting) {
+        if (isUserManagedNetworking) {
+          const dhcpConfig = _.pick(values, ['ingressVip', 'apiVip', 'vipDhcpAllocation']);
+          NetworkSettingsService.persistDhcpConfig(dhcpConfig);
+        } else {
+          const dhcpConfig = NetworkSettingsService.getPersistedDhcpConfig();
+          if (dhcpConfig) {
+            setFieldValue('vipDhcpAllocation', dhcpConfig.vipDhcpAllocation);
+            setFieldValue('ingressVip', dhcpConfig.ingressVip);
+            setFieldValue('apiVip', dhcpConfig.apiVip);
+          }
+        }
+      }
+      updateNetworkConfig();
+    },
+    // "isUserManagedNetworking" should handle the persistence of dhcp settings
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [isUserManagedNetworking, persistDhcpSetting, setFieldValue],
+  );
+
   return (
     <Grid hasGutter>
       {!hideManagedNetworking && (

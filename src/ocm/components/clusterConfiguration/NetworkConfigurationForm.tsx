@@ -168,6 +168,7 @@ const NetworkConfigurationForm: React.FC<{
                   cluster={cluster}
                   hostSubnets={hostSubnets}
                   defaultNetworkSettings={defaultNetworkSettings}
+                  persistDhcpSetting
                   infraEnv={infraEnv}
                 />
               </GridItem>
