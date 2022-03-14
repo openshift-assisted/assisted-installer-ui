@@ -1,11 +1,11 @@
 import React from 'react';
 import { ButtonVariant, FormGroup } from '@patternfly/react-core';
-import { getFieldId, PopoverIcon, RadioField } from '../../ui';
 import { useFormikContext } from 'formik';
-import { NetworkConfigurationValues } from '../../../types';
-import { Cluster } from '../../../api/types';
-import { NO_SUBNET_SET } from '../../../config/constants';
-import ConfirmationModal from '../../ui/ConfirmationModal';
+import { Cluster } from '../../../../common/api/types';
+import { NetworkConfigurationValues } from '../../../../common/types';
+import { NO_SUBNET_SET } from '../../../../common/config/constants';
+import { getFieldId } from '../../../../common/components/ui/formik/utils';
+import { ConfirmationModal, PopoverIcon, RadioField } from '../../../../common/components/ui';
 
 export const StackTypeControlGroup: React.FC<{ clusterId: Cluster['id'] }> = ({ clusterId }) => {
   const { setFieldValue, values, validateForm } = useFormikContext<NetworkConfigurationValues>();

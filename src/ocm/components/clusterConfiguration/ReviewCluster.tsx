@@ -12,7 +12,6 @@ import {
   Cluster,
   DetailList,
   DetailItem,
-  isSingleStack,
   VSPHERE_CONFIG_LINK,
   ReviewHostsInventory,
   ClusterValidations,
@@ -21,6 +20,7 @@ import {
 import { RenderIf } from '../../../common/components/ui/';
 import { wizardStepNames } from '../clusterWizard/constants';
 import './ReviewCluster.css';
+import { isSingleStack } from './networkConfiguration/networkConfigurationValidation';
 
 const PlatformIntegrationNote: React.FC<{}> = () => {
   return (
