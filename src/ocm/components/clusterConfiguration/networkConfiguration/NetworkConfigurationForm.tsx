@@ -3,52 +3,36 @@ import { useDispatch } from 'react-redux';
 import { Formik, FormikConfig, useFormikContext } from 'formik';
 import mapValues from 'lodash/mapValues';
 import { Form, Grid, GridItem, Text, TextContent } from '@patternfly/react-core';
-
 import {
   Cluster,
-  useFormikAutoSave,
-  getFormikErrorFields,
-  useAlerts,
   ClusterWizardStep,
   ClusterWizardStepHeader,
+  getFormikErrorFields,
   getHostSubnets,
-  isSNO,
-  LoadingState,
-  NetworkConfigurationValues,
-  V2ClusterUpdateParams,
-<<<<<<<< HEAD:src/ocm/components/clusterConfiguration/NetworkConfigurationPage.tsx
+  getNetworkInitialValues,
   HostSubnets,
   InfraEnv,
-} from '../../../common';
-import { NetworkConfigurationValues } from '../../../common/types/clusters';
-import { updateClusterBase } from '../../reducers/clusters/currentClusterSlice';
-import { canNextNetwork } from '../clusterWizard/wizardTransition';
-import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
-import ClusterWizardFooter from '../clusterWizard/ClusterWizardFooter';
-import ClusterWizardNavigation from '../clusterWizard/ClusterWizardNavigation';
-import { getErrorMessage, handleApiError } from '../../api';
-import ClusterWizardHeaderExtraActions from './ClusterWizardHeaderExtraActions';
-import { useDefaultConfiguration } from './ClusterDefaultConfigurationContext';
-========
+  isSNO,
+  LoadingState,
+  NetworkConfigurationFormFields,
+  NetworkConfigurationValues,
+  useAlerts,
+  useFormikAutoSave,
+  V2ClusterUpdateParams,
 } from '../../../../common';
-import { updateClusterBase } from '../../../reducers/clusters/currentClusterSlice';
-import { canNextNetwork } from '../../clusterWizard/wizardTransition';
+import { useDefaultConfiguration } from '../ClusterDefaultConfigurationContext';
 import ClusterWizardContext from '../../clusterWizard/ClusterWizardContext';
 import ClusterWizardFooter from '../../clusterWizard/ClusterWizardFooter';
+import { canNextNetwork } from '../../clusterWizard/wizardTransition';
 import ClusterWizardNavigation from '../../clusterWizard/ClusterWizardNavigation';
-import { getErrorMessage, handleApiError } from '../../../api';
 import ClusterWizardHeaderExtraActions from '../ClusterWizardHeaderExtraActions';
-import { useDefaultConfiguration } from '../ClusterDefaultConfigurationContext';
->>>>>>>> c3b47c73 (Move dual-stack changes to /ocm):src/ocm/components/clusterConfiguration/networkConfiguration/NetworkConfigurationForm.tsx
 import NetworkConfigurationTable from './NetworkConfigurationTable';
-import NetworkConfigurationFormFields from './NetworkConfigurationFormFields';
-import { captureException } from '../../../sentry';
-import {
-  getNetworkConfigurationValidationSchema,
-  getNetworkInitialValues,
-} from './networkConfigurationValidation';
 import useInfraEnv from '../../../hooks/useInfraEnv';
-import ClustersAPI from '../../../services/apis/ClustersAPI';
+import { getNetworkConfigurationValidationSchema } from './networkConfigurationValidation';
+import { captureException } from '../../../sentry';
+import { ClustersAPI } from '../../../services/apis';
+import { updateClusterBase } from '../../../reducers/clusters';
+import { getErrorMessage, handleApiError } from '../../../api';
 
 const NetworkConfigurationForm: React.FC<{
   cluster: Cluster;

@@ -257,11 +257,13 @@ export const dnsNameValidationSchema = Yup.string()
     message: 'Value "${value}" is not valid DNS name. Example: basedomain.example.com', // eslint-disable-line no-template-curly-in-string
   });
 
-export const hostPrefixValidationSchema = ({ cidr }: Partial<ClusterNetwork>) => {
+export const hostPrefixValidationSchema = ({
+  clusterNetworkCidr,
+}: Partial<NetworkConfigurationValues>) => {
   const requiredText = 'The host prefix is required.';
   const minMaxText =
     'The host prefix is a number between 1 and 32 for IPv4 and between 8 and 128 for IPv6.';
-  const netBlock = (cidr || '').split('/')[1];
+  const netBlock = (clusterNetworkCidr || '').split('/')[1];
   if (!netBlock) {
     return Yup.number().required(requiredText).min(1, minMaxText).max(32, minMaxText);
   }
@@ -276,11 +278,11 @@ export const hostPrefixValidationSchema = ({ cidr }: Partial<ClusterNetwork>) =>
   const errorMsgIPv4 = `${errorMsgPrefix} (${netBlockNumber}) and 25.`;
   const errorMsgIPv6 = `${errorMsgPrefix} (8) and 128.`;
 
-  if (Address6.isValid(cidr || '')) {
+  if (Address6.isValid(clusterNetworkCidr || '')) {
     return Yup.number().required(requiredText).min(8, errorMsgIPv6).max(128, errorMsgIPv6);
   }
 
-  if (Address4.isValid(cidr || '')) {
+  if (Address4.isValid(clusterNetworkCidr || '')) {
     return Yup.number()
       .required(requiredText)
       .min(netBlockNumber, errorMsgIPv4)
@@ -489,14 +491,14 @@ export const machineNetworksValidationSchema = Yup.array().of(
 );
 
 export const clusterNetworksValidationSchema = Yup.array().of(
-  Yup.lazy((values: ClusterNetwork) =>
-    Yup.object({
-      cidr: ipBlockValidationSchema,
-      hostPrefix: hostPrefixValidationSchema(values),
-      clusterId: Yup.string(),
-    }),
-  ),
-);
+         Yup.lazy((values: ClusterNetwork) =>
+           Yup.object({
+             cidr: ipBlockValidationSchema,
+             hostPrefix: hostPrefixValidationSchema({ clusterNetworkCidr: values.cidr }),
+             clusterId: Yup.string(),
+           }),
+         ),
+       );
 
 export const serviceNetworkValidationSchema = Yup.array().of(
   Yup.object({

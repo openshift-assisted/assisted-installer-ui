@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import { useFormikContext } from 'formik';
 import { Alert, AlertVariant, Checkbox, Grid } from '@patternfly/react-core';
 import AdvancedNetworkFields from './AdvancedNetworkFields';
@@ -9,7 +9,6 @@ import {
   UserManagedNetworkingTextContent,
   VirtualIPControlGroup,
   VirtualIPControlGroupProps,
-  StackTypeControlGroup,
 } from '../clusterWizard/networkingSteps';
 import { NETWORK_TYPE_OVN, NO_SUBNET_SET } from '../../config';
 import { isAdvNetworkConf } from './utils';
@@ -24,9 +23,10 @@ import {
 import { Address6, Address4 } from 'ip-address';
 import { Cluster } from '../../api';
 import { useFeature } from '../../features';
+import { ClusterDefaultConfig } from '../../api';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
-  defaultNetworkSettings: Partial<Cluster>;
+  defaultNetworkSettings: ClusterDefaultConfig;
   hideManagedNetworking?: boolean;
 };
 
@@ -51,20 +51,17 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   children,
 }) => {
   const featureSupportLevelData = useFeatureSupportLevel();
-  const { setFieldValue, values, validateField } = useFormikContext<NetworkConfigurationValues>();
+  const { setFieldValue, values, touched, validateField } = useFormikContext<
+    NetworkConfigurationValues
+  >();
 
   const clusterFeatureSupportLevels = React.useMemo(() => {
     return getLimitedFeatureSupportLevels(cluster, featureSupportLevelData);
   }, [cluster, featureSupportLevelData]);
 
-  const isNetworkTypeSelectionEnabled = useFeature(
-    'ASSISTED_INSTALLER_NETWORK_TYPE_SELECTION_FEATURE',
-  );
-
   const isMultiNodeCluster = !isSNO(cluster);
   const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';
   const isClusterCIDRIPv6 = Address6.isValid(values.clusterNetworkCidr || '');
-  const isDualStack = values.stackType === 'dualStack';
 
   const { isIPv6, defaultNetworkType, isSDNSelectable } = React.useMemo(() => {
     const isIPv6 = isSubnetInIPv6({
@@ -84,40 +81,60 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
     values.serviceNetworkCidr,
   ]);
 
-  const [isAdvanced, setAdvanced] = React.useState(
-    isAdvNetworkConf(cluster, defaultNetworkSettings, defaultNetworkType) || isDualStack,
-  );
+  const toggleAdvConfiguration = (checked: boolean) => {
+    setAdvanced(checked);
+
+    if (!checked) {
+      setFieldValue('clusterNetworkCidr', defaultNetworkSettings.clusterNetworkCidr);
+      setFieldValue('serviceNetworkCidr', defaultNetworkSettings.serviceNetworkCidr);
+      setFieldValue('clusterNetworkHostPrefix', defaultNetworkSettings.clusterNetworkHostPrefix);
+      setFieldValue('networkType', 'OpenShiftSDN');
+    }
+  };
+
+  const hostSubnetsCount = hostSubnets.length;
+  const firstSubnet = hostSubnets[0]?.subnet;
+
+  // Set hostSubnet to first one whenever available
+  useEffect(() => {
+    if (
+      values.hostSubnet === NO_SUBNET_SET &&
+      values.managedNetworkingType === 'clusterManaged' &&
+      hostSubnetsCount
+    ) {
+      setFieldValue('hostSubnet', firstSubnet, false);
+    }
+  }, [
+    firstSubnet,
+    hostSubnetsCount,
+    values.hostSubnet,
+    setFieldValue,
+    values.managedNetworkingType,
+  ]);
 
   useEffect(() => {
     if (isUserManagedNetworking) {
+      const shouldValidate = !!touched.hostSubnet;
+
       // We need to reset these fields' values in order to align with the values the server sends
       setFieldValue('vipDhcpAllocation', false);
-      setFieldValue('ingressVip', '', false);
-      setFieldValue('apiVip', '', false);
-
-      if (isMultiNodeCluster) {
-        setFieldValue(
-          'machineNetworks',
-          cluster.machineNetworks?.length
-            ? cluster.machineNetworks
-            : [{ cidr: NO_SUBNET_SET, clusterId: cluster.id }],
-          false,
-        );
+      setFieldValue('ingressVip', '', shouldValidate);
+      setFieldValue('apiVip', '', shouldValidate);
+      if (!touched.hostSubnet || isMultiNodeCluster) {
+        setFieldValue('hostSubnet', NO_SUBNET_SET, shouldValidate);
       }
     } else {
-      if (!values.vipDhcpAllocation) {
+      if (!values.vipDhcpAllocation && touched.hostSubnet) {
         validateField('ingressVip');
         validateField('apiVip');
       }
     }
   }, [
-    cluster.id,
-    cluster.machineNetworks,
-    values.vipDhcpAllocation,
     isMultiNodeCluster,
     isUserManagedNetworking,
     setFieldValue,
     validateField,
+    values.vipDhcpAllocation,
   ]);
 
   useEffect(() => {
@@ -129,40 +146,6 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
     // Skipping "cluster.networkType" as it's ultimately the value we are setting in the form
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isIPv6, isMultiNodeCluster, setFieldValue]);
-
-  const toggleAdvConfiguration = useCallback(
-    (checked: boolean) => {
-      setAdvanced(checked);
-
-      if (!checked) {
-        setFieldValue('clusterNetworks', defaultNetworkSettings.clusterNetworks, false);
-        setFieldValue('serviceNetworks', defaultNetworkSettings.serviceNetworks, false);
-        setFieldValue('networkType', 'OpenshiftSDN');
-      }
-    },
-    [setFieldValue, setAdvanced, defaultNetworkSettings],
-  );
-
-  useEffect(() => {
-    if (values.stackType === 'dualStack' && !isUserManagedNetworking) {
-      toggleAdvConfiguration(true);
-    }
-  }, [values.stackType, toggleAdvConfiguration, isUserManagedNetworking]);
-
-  const enableSDN = useMemo(
-    () =>
-      values.machineNetworks?.every((network) => network.cidr && Address4.isValid(network.cidr)) &&
-      values.clusterNetworks?.every((network) => network.cidr && Address4.isValid(network.cidr)) &&
-      values.serviceNetworks?.every((network) => network.cidr && Address4.isValid(network.cidr)),
-    [values],
-  );
-
-  useEffect(() => {
-    if (isNetworkTypeSelectionEnabled && !enableSDN) {
-      setFieldValue('vipDhcpAllocation', false);
-      setFieldValue('networkType', 'OVNKubernetes');
-    }
-  }, [isNetworkTypeSelectionEnabled, enableSDN, setFieldValue]);
 
   return (
     <Grid hasGutter>
@@ -190,12 +173,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
         vmsAlert}
 
       {!(isMultiNodeCluster && isUserManagedNetworking) && (
-        <StackTypeControlGroup clusterId={cluster.id} />
-      )}
-
-      {!(isMultiNodeCluster && isUserManagedNetworking) && (
         <AvailableSubnetsControl
-          clusterId={cluster.id}
           hostSubnets={hostSubnets}
           hosts={cluster.hosts || []}
           isRequired={!isUserManagedNetworking}

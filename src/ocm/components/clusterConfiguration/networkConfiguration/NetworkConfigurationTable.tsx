@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { ClusterHostsTableProps, isSNO } from '../../../common';
-import { AdditionalNTPSourcesDialogToggle } from '../hosts/AdditionaNTPSourceDialogToggle';
-import { useHostsTable, HostsTableModals } from '../hosts/use-hosts-table';
-import CommonNetworkConfigurationTable from '../../../common/components/clusterConfiguration/NetworkConfigurationTable';
-import { HostsTableEmptyState } from '../../../common/components/hosts/HostsTable';
+import { HostsTableEmptyState } from '../../../../common/components/hosts/HostsTable';
+import { ClusterHostsTableProps } from '../../../../common/components/hosts/types';
+import { isSNO } from '../../../../common/selectors/clusterSelectors';
+import { AdditionalNTPSourcesDialogToggle } from '../../hosts/AdditionaNTPSourceDialogToggle';
+import { HostsTableModals, useHostsTable } from '../../hosts/use-hosts-table';
+import CommonNetworkConfigurationTable from '../../../../common/components/clusterConfiguration/NetworkConfigurationTable';
 
 const NetworkConfigurationTable: React.FC<ClusterHostsTableProps> = ({
   cluster,
