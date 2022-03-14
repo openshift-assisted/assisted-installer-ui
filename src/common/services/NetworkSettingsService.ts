@@ -23,6 +23,9 @@ const NetworkSettingsService = {
   persistDhcpConfig(dhcpConfig: PersistDhcpConfig) {
     return localStorage.setItem(STORAGE_KEY, JSON.stringify(dhcpConfig));
   },
+  clearDhcpConfig() {
+    return localStorage.removeItem(STORAGE_KEY);
+  },
 };
 
 export default NetworkSettingsService;

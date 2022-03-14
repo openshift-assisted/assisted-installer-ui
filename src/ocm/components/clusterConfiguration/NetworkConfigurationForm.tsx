@@ -32,6 +32,7 @@ import NetworkConfigurationTable from './NetworkConfigurationTable';
 import { ClustersAPI } from '../../services/apis';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { captureException } from '../../sentry';
+import NetworkSettingsService from '../../../common/services/NetworkSettingsService';
 
 const NetworkConfigurationForm: React.FC<{
   cluster: Cluster;
@@ -75,6 +76,12 @@ const NetworkConfigurationForm: React.FC<{
     //shouldn't respond to cluster polling. shouldn't respond to alerts changes so remove alert wouldn't trigger adding it back
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [infraEnvError]);
+
+  React.useEffect(() => {
+    return () => {
+      NetworkSettingsService.clearDhcpConfig();
+    };
+  }, []);
 
   const handleSubmit: FormikConfig<NetworkConfigurationValues>['onSubmit'] = async (
     values,

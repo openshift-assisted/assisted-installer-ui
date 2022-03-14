@@ -121,17 +121,19 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
 
   useEffect(
     () => {
-      if (persistDhcpSetting) {
-        if (isUserManagedNetworking) {
-          const dhcpConfig = _.pick(values, ['ingressVip', 'apiVip', 'vipDhcpAllocation']);
-          NetworkSettingsService.persistDhcpConfig(dhcpConfig);
-        } else {
-          const dhcpConfig = NetworkSettingsService.getPersistedDhcpConfig();
-          if (dhcpConfig) {
-            setFieldValue('vipDhcpAllocation', dhcpConfig.vipDhcpAllocation);
-            setFieldValue('ingressVip', dhcpConfig.ingressVip);
-            setFieldValue('apiVip', dhcpConfig.apiVip);
-          }
+      const hasNetworkManagementChanged = cluster.userManagedNetworking !== isUserManagedNetworking;
+      if (!persistDhcpSetting || !hasNetworkManagementChanged) {
+        return;
+      }
+      if (isUserManagedNetworking) {
+        const dhcpConfig = _.pick(values, ['ingressVip', 'apiVip', 'vipDhcpAllocation']);
+        NetworkSettingsService.persistDhcpConfig(dhcpConfig);
+      } else {
+        const dhcpConfig = NetworkSettingsService.getPersistedDhcpConfig();
+        if (dhcpConfig) {
+          setFieldValue('vipDhcpAllocation', dhcpConfig.vipDhcpAllocation);
+          setFieldValue('ingressVip', dhcpConfig.ingressVip);
+          setFieldValue('apiVip', dhcpConfig.apiVip);
         }
       }
       updateNetworkConfig();
