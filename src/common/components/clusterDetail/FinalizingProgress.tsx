@@ -19,6 +19,7 @@ import {
 } from '@patternfly/react-icons';
 import { global_success_color_100 as okColor } from '@patternfly/react-tokens/dist/esm/global_success_color_100';
 import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens/dist/esm/global_danger_color_100';
+import BorderedIcon from '../ui/BorderedIcon/BorderedIcon';
 
 type FinalizingProgressProps = {
   cluster: Cluster;
@@ -54,7 +55,11 @@ export const getFinalizingStatus = (cluster: Cluster) => {
         break;
       case 'installed':
       case 'adding-hosts':
-        statusIcon = <CheckCircleIcon color={okColor.value} />;
+        statusIcon = (
+          <BorderedIcon>
+            <CheckCircleIcon color={okColor.value} />
+          </BorderedIcon>
+        );
         initializationStatus = 'completed';
         break;
       default:
