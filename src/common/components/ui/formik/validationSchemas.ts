@@ -491,14 +491,14 @@ export const machineNetworksValidationSchema = Yup.array().of(
 );
 
 export const clusterNetworksValidationSchema = Yup.array().of(
-         Yup.lazy((values: ClusterNetwork) =>
-           Yup.object({
-             cidr: ipBlockValidationSchema,
-             hostPrefix: hostPrefixValidationSchema({ clusterNetworkCidr: values.cidr }),
-             clusterId: Yup.string(),
-           }),
-         ),
-       );
+  Yup.lazy((values: ClusterNetwork) =>
+    Yup.object({
+      cidr: ipBlockValidationSchema,
+      hostPrefix: hostPrefixValidationSchema({ clusterNetworkCidr: values.cidr }),
+      clusterId: Yup.string(),
+    }),
+  ),
+);
 
 export const serviceNetworkValidationSchema = Yup.array().of(
   Yup.object({

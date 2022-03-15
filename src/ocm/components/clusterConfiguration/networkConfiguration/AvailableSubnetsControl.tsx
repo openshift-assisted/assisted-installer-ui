@@ -13,7 +13,7 @@ import { MinusCircleIcon, PlusCircleIcon } from '@patternfly/react-icons';
 import { Cluster, Host } from '../../../../common/api/types';
 import { HostSubnets, NetworkConfigurationValues } from '../../../../common/types';
 import { NO_SUBNET_SET } from '../../../../common/config/constants';
-import { PopoverIcon, SelectField } from '../../../../common/components/ui';
+import { SelectField } from '../../../../common/components/ui';
 
 const REMOVE_BUTTON_EXIT_DELAY = 1500;
 
@@ -34,9 +34,18 @@ export const AvailableSubnetsControl = ({
 
   useEffect(() => {
     if (values.machineNetworks && values.machineNetworks?.length < 1) {
-      setFieldValue('machineNetworks', [{ cidr: NO_SUBNET_SET, clusterId: clusterId }], true);
+      setFieldValue(
+        'machineNetworks',
+        [
+          {
+            cidr: hostSubnets.length >= 1 ? hostSubnets[0].subnet : NO_SUBNET_SET,
+            clusterId: clusterId,
+          },
+        ],
+        true,
+      );
     }
-  }, [clusterId, setFieldValue, values.machineNetworks]);
+  }, [clusterId, setFieldValue, hostSubnets, values.machineNetworks]);
 
   return (
     <FormGroup
@@ -44,7 +53,6 @@ export const AvailableSubnetsControl = ({
       labelInfo={values.stackType === 'dualStack' && 'Primary'}
       fieldId="machine-networks"
       isRequired
-      labelIcon={<PopoverIcon variant={'plain'} bodyContent={'?'} />}
     >
       <FieldArray name="machineNetworks">
         {({ push, remove }) => (

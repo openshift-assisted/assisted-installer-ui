@@ -95,7 +95,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
       if (!checked) {
         setFieldValue('clusterNetworks', defaultNetworkSettings.clusterNetworks, false);
         setFieldValue('serviceNetworks', defaultNetworkSettings.serviceNetworks, false);
-        setFieldValue('networkType', 'OpenshiftSDN');
+        setFieldValue('networkType', 'OpenShiftSDN');
       }
     },
     [setFieldValue, setAdvanced, defaultNetworkSettings],
@@ -147,11 +147,9 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
         clusterFeatureSupportLevels['CLUSTER_MANAGED_NETWORKING_WITH_VMS'] === 'unsupported' &&
         vmsAlert}
 
-      {!(isMultiNodeCluster && isUserManagedNetworking) && (
-        <StackTypeControlGroup clusterId={cluster.id} />
-      )}
+      {!isUserManagedNetworking && <StackTypeControlGroup clusterId={cluster.id} />}
 
-      {!(isMultiNodeCluster && isUserManagedNetworking) && (
+      {!isUserManagedNetworking && (
         <AvailableSubnetsControl
           clusterId={cluster.id}
           hostSubnets={hostSubnets}

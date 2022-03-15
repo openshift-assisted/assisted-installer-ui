@@ -12,7 +12,6 @@ export const StackTypeControlGroup: React.FC<{ clusterId: Cluster['id'] }> = ({ 
   const [openConfirmModal, setConfirmModal] = React.useState(false);
 
   const setSingleStack = () => {
-    setFieldValue('stackType', 'singleStack');
     setFieldValue('networkType', 'OpenShiftSDN');
     setFieldValue('vipDhcpAllocation', true);
 
@@ -30,7 +29,6 @@ export const StackTypeControlGroup: React.FC<{ clusterId: Cluster['id'] }> = ({ 
   };
 
   const setDualStack = () => {
-    setFieldValue('stackType', 'dualStack');
     setFieldValue('networkType', 'OVNKubernetes');
     setFieldValue('vipDhcpAllocation', false);
 
@@ -57,8 +55,9 @@ export const StackTypeControlGroup: React.FC<{ clusterId: Cluster['id'] }> = ({ 
     }
   };
 
-  const setStackType = () => {
-    if (values.stackType === 'singleStack') {
+  const setStackType = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFieldValue('stackType', e.target.value);
+    if (e.target.value === 'dualStack') {
       setDualStack();
     } else if (
       (values.machineNetworks && values.machineNetworks[1].cidr !== 'NO_SUBNET_SET') ||
