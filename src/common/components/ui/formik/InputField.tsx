@@ -6,7 +6,7 @@ import { getFieldId } from './utils';
 import HelperText from './HelperText';
 
 const InputField: React.FC<
-  InputFieldProps & { inputError?: string; description?: React.ReactNode }
+  InputFieldProps & { inputError?: string; description?: React.ReactNode; labelInfo?: string }
 > = React.forwardRef(
   (
     {
@@ -21,6 +21,7 @@ const InputField: React.FC<
       noDefaultOnChange,
       inputError,
       description,
+      labelInfo,
       ...props
     },
     ref: React.Ref<HTMLInputElement>,
@@ -44,6 +45,7 @@ const InputField: React.FC<
         validated={isValid ? 'default' : 'error'}
         isRequired={isRequired}
         labelIcon={labelIcon}
+        labelInfo={labelInfo}
       >
         {description && (
           <HelperText fieldId={fieldId}>

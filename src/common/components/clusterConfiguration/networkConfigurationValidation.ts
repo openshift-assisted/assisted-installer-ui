@@ -46,7 +46,7 @@ export const getNetworkConfigurationValidationSchema = (
 ) =>
   Yup.lazy<NetworkConfigurationValues>((values) =>
     Yup.object<NetworkConfigurationValues>().shape({
-      clusterNetworkHostPrefix: hostPrefixValidationSchema({ cidr: values.clusterNetworkCidr }),
+      clusterNetworkHostPrefix: hostPrefixValidationSchema(values),
       clusterNetworkCidr: ipBlockValidationSchema,
       serviceNetworkCidr: ipBlockValidationSchema,
       apiVip: vipValidationSchema(hostSubnets, values, initialValues.apiVip),
