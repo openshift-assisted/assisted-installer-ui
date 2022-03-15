@@ -7,13 +7,8 @@ import {
   ProgressVariant,
 } from '@patternfly/react-core';
 import { Cluster } from '../../api/types';
-import { getEnabledHosts } from '../hosts/utils';
 import { DetailItem, DetailList, getHumanizedDateTime, RenderIf } from '../ui';
 import { CLUSTER_STATUS_LABELS } from '../../config';
-import OperatorsProgressItem from './OperatorsProgressItem';
-import { getOlmOperators } from './utils';
-import { ProgressBarTexts } from './ProgressBarTexts';
-import { FinalizingProgress } from './FinalizingProgress';
 import './ClusterProgress.css';
 import { EventListFetchProps } from '../../types';
 
@@ -52,11 +47,11 @@ const getInstallationStatus = (
   return CLUSTER_STATUS_LABELS[status] || status;
 };
 
-type ClusterProgressProps = {
+export type ClusterProgressProps = {
   cluster: Cluster;
   minimizedView?: boolean;
   onFetchEvents: EventListFetchProps['onFetchEvents'];
-  totalPercentage: number;
+  totalPercentage?: number;
   fallbackEventsURL?: string;
 };
 
@@ -64,13 +59,8 @@ const ClusterProgress = ({
   cluster,
   minimizedView = false,
   totalPercentage,
-  onFetchEvents,
-  fallbackEventsURL,
 }: ClusterProgressProps) => {
-  const { status, monitoredOperators = [] } = cluster;
-  const enabledHosts = getEnabledHosts(cluster.hosts);
-  const isWorkersPresent = enabledHosts && enabledHosts.some((host) => host.role === 'worker');
-  const olmOperators = getOlmOperators(monitoredOperators);
+  const { status } = cluster;
 
   return (
     <>
@@ -101,28 +91,6 @@ const ClusterProgress = ({
           variant={getProgressVariant(status)}
           className="cluster-progress-bar"
         />
-        <Flex className="pf-u-mt-md">
-          <FlexItem spacer={{ default: 'spacer4xl' }}>
-            <ProgressBarTexts hosts={enabledHosts} hostRole="master" />
-          </FlexItem>
-          <RenderIf condition={isWorkersPresent}>
-            <FlexItem spacer={{ default: 'spacer4xl' }}>
-              <ProgressBarTexts hosts={enabledHosts} hostRole="worker" />
-            </FlexItem>
-          </RenderIf>
-          <FlexItem spacer={{ default: 'spacer4xl' }}>
-            <FinalizingProgress
-              cluster={cluster}
-              onFetchEvents={onFetchEvents}
-              fallbackEventsURL={fallbackEventsURL}
-            />
-          </FlexItem>
-          <RenderIf condition={olmOperators.length > 0}>
-            <FlexItem>
-              <OperatorsProgressItem operators={olmOperators} />
-            </FlexItem>
-          </RenderIf>
-        </Flex>
       </RenderIf>
     </>
   );

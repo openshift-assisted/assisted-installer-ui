@@ -5,6 +5,7 @@ import { CheckCircleIcon, ExclamationCircleIcon, InProgressIcon } from '@pattern
 import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens/dist/esm/global_danger_color_100';
 import { Stack, StackItem } from '@patternfly/react-core';
 import { global_success_color_100 as okColor } from '@patternfly/react-tokens/dist/esm/global_success_color_100';
+import BorderedIcon from '../ui/BorderedIcon/BorderedIcon';
 
 type HostProgressProps = {
   hosts: Host[];
@@ -16,11 +17,17 @@ export const ProgressBarTexts: React.FC<HostProgressProps> = ({ hosts, hostRole 
   const failedHostsCount = filteredHosts.filter((host) => host.status === 'error').length;
   const hostCountText = (hostRole: HostRole) =>
     failedHostsCount === 0
-      ? `${filteredHosts.length} ${pluralize(filteredHosts.length, hostRole)}`
-      : `${failedHostsCount}/${filteredHosts.length} ${pluralize(filteredHosts.length, hostRole)}`;
+      ? `${filteredHosts.length} ${pluralize(
+          filteredHosts.length,
+          hostRole === 'master' ? 'control plane' : 'worker',
+        )}`
+      : `${failedHostsCount}/${filteredHosts.length} ${pluralize(
+          filteredHosts.length,
+          hostRole === 'master' ? 'control plane' : 'worker',
+        )}`;
   const getHostName = (hostRole: HostRole): React.ReactElement => {
     if (hostRole == 'master') {
-      return <StackItem> Control Plane</StackItem>;
+      return <StackItem>Control Plane</StackItem>;
     }
     return <StackItem> Workers</StackItem>;
   };
@@ -28,12 +35,16 @@ export const ProgressBarTexts: React.FC<HostProgressProps> = ({ hosts, hostRole 
   if (filteredHosts.some((host) => ['cancelled', 'error'].includes(host.status))) {
     return (
       <>
-        <Stack>
+        <Stack hasGutter>
           <StackItem>
-            <ExclamationCircleIcon color={dangerColor.value} />
+            <BorderedIcon>
+              <ExclamationCircleIcon color={dangerColor.value} />
+            </BorderedIcon>
           </StackItem>
-          {getHostName(hostRole)}
-          <StackItem> {hostCountText(hostRole)} failed</StackItem>
+          <StackItem>
+            {getHostName(hostRole)}
+            {hostCountText(hostRole)} failed
+          </StackItem>
         </Stack>
       </>
     );
@@ -42,12 +53,16 @@ export const ProgressBarTexts: React.FC<HostProgressProps> = ({ hosts, hostRole 
   if (filteredHosts.every((host) => host.status === 'installed')) {
     return (
       <>
-        <Stack>
+        <Stack hasGutter>
           <StackItem>
-            <CheckCircleIcon color={okColor.value} />
+            <BorderedIcon>
+              <CheckCircleIcon color={okColor.value} />
+            </BorderedIcon>
           </StackItem>
-          {getHostName(hostRole)}
-          <StackItem> {hostCountText(hostRole)} installed</StackItem>
+          <StackItem>
+            {getHostName(hostRole)}
+            {hostCountText(hostRole)} installed
+          </StackItem>
         </Stack>
       </>
     );
@@ -55,12 +70,16 @@ export const ProgressBarTexts: React.FC<HostProgressProps> = ({ hosts, hostRole 
 
   return (
     <>
-      <Stack>
+      <Stack hasGutter>
         <StackItem>
-          <InProgressIcon />
+          <BorderedIcon>
+            <InProgressIcon />
+          </BorderedIcon>
         </StackItem>
-        {getHostName(hostRole)}
-        <StackItem> Installing {hostCountText(hostRole)}</StackItem>
+        <StackItem>
+          {getHostName(hostRole)}
+          Installing {hostCountText(hostRole)}
+        </StackItem>
       </Stack>
     </>
   );

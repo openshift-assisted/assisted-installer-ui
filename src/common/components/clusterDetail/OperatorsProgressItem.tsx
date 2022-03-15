@@ -21,6 +21,7 @@ import {
 import { pluralize } from 'humanize-plus';
 import { MonitoredOperatorsList, OperatorStatus } from '../../api/types';
 import { OPERATOR_LABELS } from '../../config';
+import BorderedIcon from '../ui/BorderedIcon/BorderedIcon';
 
 import './OperatorsProgressItem.css';
 
@@ -83,7 +84,7 @@ const OperatorsPopover: React.FC<OperatorsPopoverProps> = ({ operators, children
             const name = operator.name && OPERATOR_LABELS[operator.name];
             return (
               <ListItem key={operator.name} title={operator.statusInfo}>
-                {name} {status}
+                {name} {status}.
               </ListItem>
             );
           })}
@@ -106,8 +107,10 @@ const OperatorsProgressItem: React.FC<OperatorsProgressItemProps> = ({ operators
   const label = getOperatorsLabel(operators);
 
   return (
-    <Stack>
-      <StackItem>{icon}</StackItem>
+    <Stack hasGutter>
+      <StackItem>
+        <BorderedIcon>{icon}</BorderedIcon>
+      </StackItem>
       <StackItem>
         <OperatorsPopover operators={operators}>
           <Button variant={ButtonVariant.link} isInline data-testid="operators-progress-item">
@@ -115,7 +118,7 @@ const OperatorsProgressItem: React.FC<OperatorsProgressItemProps> = ({ operators
           </Button>
         </OperatorsPopover>
       </StackItem>
-      <StackItem>{label}</StackItem>
+      {label}
     </Stack>
   );
 };

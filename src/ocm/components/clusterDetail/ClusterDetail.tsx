@@ -37,6 +37,7 @@ import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
 import { canAbortInstallation } from '../clusters/utils';
 import { useDefaultConfiguration } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
 import ClusterProgress from '../../../common/components/clusterDetail/ClusterProgress';
+import ClusterProgressItems from '../../../common/components/clusterDetail/ClusterProgressItems';
 import { EventsModalButton } from '../../../common/components/ui/eventsModal';
 import { onFetchEvents } from '../fetching/fetchEvents';
 import { TIME_ZERO, VSPHERE_CONFIG_LINK } from '../../../common/config/constants';
@@ -76,14 +77,18 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
               <Text component="h2">Installation progress</Text>
             </TextContent>
           </GridItem>
-          <GridItem span={7}>
+          <GridItem span={6}>
             <ClusterProgress
               cluster={cluster}
               onFetchEvents={onFetchEvents}
               totalPercentage={cluster.progress?.totalPercentage || 0}
             />
           </GridItem>
-          <GridItem span={7}>
+          <GridItem span={6}></GridItem>
+          <GridItem span={8}>
+            <ClusterProgressItems cluster={cluster} onFetchEvents={onFetchEvents} />
+          </GridItem>
+          <GridItem span={6}>
             {getClusterProgressAlerts(
               getEnabledHosts(cluster.hosts),
               cluster,

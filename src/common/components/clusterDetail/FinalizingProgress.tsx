@@ -38,37 +38,33 @@ const areAllBuiltInOperatorsAvailable = (
 };
 
 export const getFinalizingStatus = (cluster: Cluster) => {
-  let statusIcon, initializationStatus;
+  let finalizingIcon, initializationStatus;
   if (areAllBuiltInOperatorsAvailable(cluster.monitoredOperators)) {
-    statusIcon = <CheckCircleIcon color={okColor.value} />;
+    finalizingIcon = <CheckCircleIcon color={okColor.value} />;
     initializationStatus = 'completed';
   } else {
     switch (cluster.status) {
       case 'finalizing':
-        statusIcon = <InProgressIcon />;
+        finalizingIcon = <InProgressIcon />;
         initializationStatus = 'finalizing';
         break;
       case 'error':
       case 'cancelled':
-        statusIcon = <ExclamationCircleIcon color={dangerColor.value} />;
+        finalizingIcon = <ExclamationCircleIcon color={dangerColor.value} />;
         initializationStatus = 'failed';
         break;
       case 'installed':
       case 'adding-hosts':
-        statusIcon = (
-          <BorderedIcon>
-            <CheckCircleIcon color={okColor.value} />
-          </BorderedIcon>
-        );
+        finalizingIcon = <CheckCircleIcon color={okColor.value} />;
         initializationStatus = 'completed';
         break;
       default:
-        statusIcon = <PendingIcon />;
+        finalizingIcon = <PendingIcon />;
         initializationStatus = 'pending';
     }
   }
 
-  return [statusIcon, initializationStatus];
+  return { finalizingIcon, initializationStatus };
 };
 
 export const FinalizingProgress: React.FC<FinalizingProgressProps> = ({
@@ -76,9 +72,8 @@ export const FinalizingProgress: React.FC<FinalizingProgressProps> = ({
   onFetchEvents,
   fallbackEventsURL,
 }) => {
-  const { status } = cluster;
   const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [finalizingIcon, initializationStatus] = getFinalizingStatus(cluster);
+  const { finalizingIcon, initializationStatus } = getFinalizingStatus(cluster);
   const closeModal = () => setIsModalOpen(false);
   return (
     <>
@@ -92,36 +87,44 @@ export const FinalizingProgress: React.FC<FinalizingProgressProps> = ({
         onFetchEvents={onFetchEvents}
         fallbackEventsURL={fallbackEventsURL}
       />
-      <Stack>
-        <StackItem>{finalizingIcon}</StackItem>
+      <Stack hasGutter>
         <StackItem>
-          {status === 'finalizing' ? (
-            <Popover
-              zIndex={300} // set the zIndex below Cluster Events Modal
-              headerContent={<>Initialization</>}
-              bodyContent={
-                <TextContent>
-                  <Text>
-                    This stage may take a while to finish. To view detailed information, click the
-                    events log link below.
-                  </Text>
-                </TextContent>
-              }
-              footerContent={
-                <Button variant={ButtonVariant.link} isInline onClick={() => setIsModalOpen(true)}>
-                  Open Events Log
-                </Button>
-              }
-            >
-              <Button variant={ButtonVariant.link} isInline>
-                Initialization
-              </Button>
-            </Popover>
-          ) : (
-            'Initialization'
-          )}
+          <BorderedIcon>{finalizingIcon}</BorderedIcon>
         </StackItem>
-        <StackItem>{initializationStatus}</StackItem>
+        <StackItem>
+          <>
+            {['finalizing', 'pending'].includes(initializationStatus) ? (
+              <Popover
+                zIndex={300} // set the zIndex below Cluster Events Modal
+                headerContent={<>Initialization</>}
+                bodyContent={
+                  <TextContent>
+                    <Text>
+                      This stage may take a while to finish. To view detailed information, click the
+                      events log link below.
+                    </Text>
+                  </TextContent>
+                }
+                footerContent={
+                  <Button
+                    variant={ButtonVariant.link}
+                    isInline
+                    onClick={() => setIsModalOpen(true)}
+                  >
+                    Open Events Log
+                  </Button>
+                }
+              >
+                <Button variant={ButtonVariant.link} isInline>
+                  Initialization
+                </Button>
+              </Popover>
+            ) : (
+              'Initialization'
+            )}
+          </>
+        </StackItem>
+        <>{initializationStatus}</>
       </Stack>
     </>
   );

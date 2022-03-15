@@ -1,10 +1,4 @@
-import {
-  Alert,
-  AlertActionCloseButton,
-  AlertActionLink,
-  Text,
-  TextContent,
-} from '@patternfly/react-core';
+import { Alert, AlertActionLink, Text, TextContent } from '@patternfly/react-core';
 import { downloadClusterInstallationLogs } from '../../../ocm/components/clusterDetail/utils';
 import { RenderIf, toSentence } from '../../../common/components/ui';
 import { Cluster, MonitoredOperator } from '../../../common/api/types';
@@ -13,17 +7,17 @@ import { pluralize } from 'humanize-plus';
 import { useModalDialogsContext } from '../../../ocm/components/hosts/ModalDialogsContext';
 import { canDownloadClusterLogs } from '../../../common/components/hosts';
 import { useAlerts } from '../../../common/components/AlertsContextProvider';
-import { getBugzillaLink } from '../../../common/config/constants';
+import { getBugzillaLink, OPERATOR_LABELS } from '../../../common/config/constants';
 
 type installationProgressWarningProps = {
   cluster: Cluster;
   totalHosts: number;
   failedHosts: number;
-  initializationFailed?: boolean;
   title?: string;
   hostsType?: string;
   failedOperators?: MonitoredOperator[];
   message?: string;
+  isCriticalNumberOfWorkersFailed?: boolean;
 };
 
 type successInstallationProps = {
@@ -33,11 +27,14 @@ type successInstallationProps = {
 const getFailedOperatorsNames = (failedOperators: MonitoredOperator[]): string => {
   let failedOperatorsNames = '';
   for (let i = 0; i < failedOperators.length; i++) {
+    const operatorName = failedOperators[i].name;
     if (i > 0) {
-      if (i == failedOperators.length) failedOperatorsNames += 'and ';
+      if (i == failedOperators.length - 1) failedOperatorsNames += ' and ';
       else failedOperatorsNames += ', ';
     }
-    failedOperatorsNames += `${failedOperators[i].name} operator`;
+    failedOperatorsNames += `${operatorName && OPERATOR_LABELS[operatorName]} (${
+      operatorName && operatorName.toUpperCase()
+    })`;
   }
   return failedOperatorsNames;
 };
@@ -60,7 +57,6 @@ export const HostInstallationWarning: React.FC<installationProgressWarningProps>
         isInline
         variant="warning"
         title={title}
-        actionClose={<AlertActionCloseButton onClose={() => alert('Clicked the close button')} />}
         actionLinks={
           <>
             <AlertActionLink
@@ -93,15 +89,34 @@ export const HostInstallationWarning: React.FC<installationProgressWarningProps>
 
 export const HostsInstallationFailed: React.FC<installationProgressWarningProps> = ({
   cluster,
-  initializationFailed,
   failedHosts,
   totalHosts,
-  hostsType,
-  title,
+  isCriticalNumberOfWorkersFailed,
 }) => {
   const { addAlert } = useAlerts();
   const { resetClusterDialog } = useModalDialogsContext();
   const getID = (suffix: string) => `cluster-install-error-${suffix}`;
+  let title, message;
+  if (cluster.highAvailabilityMode === 'None' || failedHosts > 0) {
+    title = 'Control plane was not installed';
+    message = `${failedHosts}/${totalHosts} control plane nodes failed to install. Please check the installation logs for more information.`;
+  } else if (isCriticalNumberOfWorkersFailed) {
+    title = 'Critical number of workers were not installed';
+    message =
+      'Only one worker was able to be installed. Please check the installation logs for more information.';
+  } else {
+    title = 'Initialization failed';
+    message = (
+      <TextContent>
+        <Text component="p">
+          {toSentence(cluster.statusInfo)}
+          <br />
+          Reset the installation process to return to the configuration and try again. Some hosts
+          may need to be re-registered by rebooting into the Discovery ISO.
+        </Text>
+      </TextContent>
+    );
+  }
 
   return (
     <>
@@ -110,11 +125,10 @@ export const HostsInstallationFailed: React.FC<installationProgressWarningProps>
         isInline
         variant="danger"
         title={title}
-        actionClose={<AlertActionCloseButton onClose={() => alert('Clicked the close button')} />}
         actionLinks={
           <>
             <AlertActionLink
-              id="cluster-reset-button-"
+              id="button-reset-cluster"
               onClick={() => resetClusterDialog.open({ cluster })}
             >
               Reset Cluster
@@ -135,24 +149,7 @@ export const HostsInstallationFailed: React.FC<installationProgressWarningProps>
           </>
         }
       >
-        <RenderIf condition={initializationFailed === false && hostsType === 'master'}>
-          {failedHosts}/{totalHosts} masters failed to install. Please check the installation logs
-          for more information.
-        </RenderIf>
-        <RenderIf condition={initializationFailed === false && hostsType === 'worker'}>
-          Only one worker was able to be installed. Please check the installation logs for for more
-          information.
-        </RenderIf>
-        <RenderIf condition={initializationFailed === true}>
-          <TextContent>
-            <Text component="p">
-              {toSentence(cluster.statusInfo)}
-              <br />
-              Reset the installation process to return to the configuration and try again. Some
-              hosts may need to be re-registered by rebooting into the Discovery ISO.
-            </Text>
-          </TextContent>
-        </RenderIf>
+        {message}
       </Alert>
     </>
   );
@@ -166,7 +163,6 @@ export const HostsInstallationSuccess: React.FC<successInstallationProps> = ({ c
         isInline
         variant="success"
         title={'Installation completed successfully'}
-        actionClose={<AlertActionCloseButton onClose={() => alert('Clicked the close button')} />}
         actionLinks={
           <>
             <RenderIf condition={typeof consoleUrl !== undefined}>
@@ -182,7 +178,9 @@ export const HostsInstallationSuccess: React.FC<successInstallationProps> = ({ c
             </AlertActionLink>
           </>
         }
-      />
+      >
+        {' '}
+      </Alert>
     </>
   );
 };

@@ -1,7 +1,6 @@
 import { Cluster, Host, HostRole, MonitoredOperator, RenderIf } from '../../../common';
 import React from 'react';
 import { Stack, StackItem } from '@patternfly/react-core';
-import { getFinalizingStatus } from '../../../common/components/clusterDetail/FinalizingProgress';
 import {
   HostsInstallationFailed,
   HostInstallationWarning,
@@ -33,41 +32,14 @@ export const getClusterProgressAlerts = (
   if (['error', 'cancelled'].includes(cluster.status)) {
     return (
       <Stack>
-        <RenderIf condition={getFinalizingStatus(cluster)[1] === 'failed'}>
-          <StackItem>
-            <HostsInstallationFailed
-              cluster={cluster}
-              totalHosts={totalMasters}
-              failedHosts={failedMasters}
-              initializationFailed
-              title={'Cluster initialization failed'}
-            />
-          </StackItem>
-        </RenderIf>
-        <RenderIf condition={totalWorkers - failedWorkers == 1}>
-          <StackItem>
-            <HostsInstallationFailed
-              cluster={cluster}
-              totalHosts={totalMasters}
-              failedHosts={failedMasters}
-              hostsType={'worker'}
-              initializationFailed={false}
-              title={'Critical number of workers were not installed'}
-            />
-          </StackItem>
-        </RenderIf>
-        <RenderIf condition={failedMasters > 0}>
-          <StackItem>
-            <HostsInstallationFailed
-              cluster={cluster}
-              totalHosts={totalMasters}
-              failedHosts={failedMasters}
-              hostsType={'master'}
-              initializationFailed={false}
-              title={'Control plane was not installed'}
-            />
-          </StackItem>
-        </RenderIf>
+        <StackItem>
+          <HostsInstallationFailed
+            cluster={cluster}
+            totalHosts={totalMasters}
+            failedHosts={failedMasters}
+            isCriticalNumberOfWorkersFailed={failedWorkers === 1}
+          />
+        </StackItem>
       </Stack>
     );
   } else {
@@ -82,7 +54,7 @@ export const getClusterProgressAlerts = (
               cluster={cluster}
               totalHosts={totalWorkers}
               failedHosts={failedWorkers}
-              title={'Some workers were failed to installed'}
+              title={'Some workers failed to install'}
               hostsType={'worker'}
               message={'failed to install.'}
             />
@@ -94,7 +66,7 @@ export const getClusterProgressAlerts = (
               cluster={cluster}
               totalHosts={totalMasters}
               failedHosts={failedMasters}
-              title={'Some operators were failed to installed'}
+              title={'Some operators failed to install'}
               failedOperators={failedOperators}
               message={'failed to install.'}
             />
