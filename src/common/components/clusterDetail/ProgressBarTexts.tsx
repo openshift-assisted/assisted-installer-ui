@@ -19,11 +19,11 @@ export const ProgressBarTexts: React.FC<HostProgressProps> = ({ hosts, hostRole 
     failedHostsCount === 0
       ? `${filteredHosts.length} ${pluralize(
           filteredHosts.length,
-          hostRole === 'master' ? 'control plane' : 'worker',
+          hostRole === 'master' ? 'control plane node' : 'worker',
         )}`
       : `${failedHostsCount}/${filteredHosts.length} ${pluralize(
           filteredHosts.length,
-          hostRole === 'master' ? 'control plane' : 'worker',
+          hostRole === 'master' ? 'control plane node' : 'worker',
         )}`;
   const getHostName = (hostRole: HostRole): React.ReactElement => {
     if (hostRole == 'master') {
