@@ -32,12 +32,15 @@ const getArmDisabledReason = (
   return undefined;
 };
 
-const getOdfDisabledReason = (cluster: Cluster | undefined) => {
+const getOdfDisabledReason = (cluster: Cluster | undefined, isSupported: boolean) => {
   if (!cluster) {
     return undefined;
   }
   if (isArmArchitecture(cluster)) {
     return 'OpenShift Data Foundation is not supported for ARM architecture';
+  }
+  if (!isSupported) {
+    return 'OpenShift Data Foundation is not supported in this OpenShift version';
   }
   return undefined;
 };
@@ -83,7 +86,7 @@ export const getFeatureDisabledReason = (
       return getCnvDisabledReason(cluster);
     }
     case 'ODF': {
-      return getOdfDisabledReason(cluster);
+      return getOdfDisabledReason(cluster, isSupported);
     }
     case 'NETWORK_TYPE_SELECTION': {
       return getNetworkTypeSelectionDisabledReason(cluster);
