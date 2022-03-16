@@ -32,7 +32,7 @@ const ClusterDeploymentKubeconfigDownload = ({
         if (!kubeconfig) throw new Error('Kubeconfig is empty.');
 
         const blob = new Blob([atob(kubeconfig)], { type: 'text/plain;charset=utf-8' });
-        saveAs(blob, 'kubeconfig.json');
+        saveAs(blob, 'kubeconfig.yaml');
       } catch (e) {
         console.error('Failed to fetch kubeconfig secret.', e);
       }
