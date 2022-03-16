@@ -1,5 +1,10 @@
-import { FeatureId, OpenshiftVersionOptionType, SupportLevel } from '../../../common/types';
-import { Cluster, CpuArchitecture } from '../../../common/api/types';
+import {
+  CpuArchitecture,
+  FeatureId,
+  OpenshiftVersionOptionType,
+  SupportLevel,
+} from '../../../common/types';
+import { Cluster } from '../../../common/api/types';
 import { isArmArchitecture, isSNO } from '../../../common/selectors/clusterSelectors';
 
 const isArmSupported = (versionName: string, versionOptions: OpenshiftVersionOptionType[]) => {
