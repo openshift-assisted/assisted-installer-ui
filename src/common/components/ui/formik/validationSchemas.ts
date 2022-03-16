@@ -21,7 +21,11 @@ const MAC_REGEX = /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})|([0-9a-fA-F]{4}\\.[0
 //Source of information: https://github.com/metal3-io/baremetal-operator/blob/main/docs/api.md#baremetalhost-spec
 const BMC_REGEX = /^((ipmi|ibmc(\+https?)?|idrac(\+https?)?|idrac-redfish(\+https?)?|idrac-virtualmedia(\+https?)?|irmc|redfish(\+https?)?|redfish-virtualmedia(\+https?)?|ilo4(\+https)?|ilo4-virtuallmedia(\+https)?|ilo5(\+https)?|ilo5-redfish(\+https)|ilo5-virtualmedia(\+https)|https?|ftp):(\/\/([a-z0-9\-._~%!$&'()*+,;=]+@)?([a-z0-9\-._~%]+|\[[a-f0-9:.]+\]|\[v[a-f0-9][a-z0-9\-._~%!$&'()*+,;=:]+\])(:[0-9]+)?(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?|(\/?[a-z0-9\-._~%!$&'()*+,;=:@]+(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?)?)|([a-z0-9\-._~%!$&'()*+,;=@]+(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?|(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)+\/?))(\?[a-z0-9\-._~%!$&'()*+,;=:@/?]*)?(#[a-z0-9\-._~%!$&'()*+,;=:@/?]*)?$/i;
 
-export const nameValidationSchema = (usedClusterNames: string[], baseDnsDomain = '') =>
+export const nameValidationSchema = (
+  usedClusterNames: string[],
+  baseDnsDomain = '',
+  validateUniqueName?: boolean,
+) =>
   Yup.string()
     .matches(CLUSTER_NAME_REGEX, {
       message:
@@ -36,6 +40,14 @@ export const nameValidationSchema = (usedClusterNames: string[], baseDnsDomain =
         const clusterFullName = `${value}.${baseDnsDomain}`;
         return !value || !usedClusterNames.includes(clusterFullName);
       }),
+      otherwise: Yup.string().test(
+        'is-name-unique',
+        'The name is already taken.',
+        (value: string) => {
+          // in CIM cluster name is ClusterDeployment CR name which must be unique
+          return validateUniqueName ? !value || !usedClusterNames.includes(value) : true;
+        },
+      ),
     });
 
 export const sshPublicKeyValidationSchema = Yup.string().test(
