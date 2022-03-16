@@ -1,5 +1,5 @@
 import {
-  ClusterUpdateParams,
+  V2ClusterUpdateParams,
   InfraEnvUpdateParams,
   Cluster,
   InfraEnv,
@@ -15,7 +15,7 @@ const DiscoveryImageFormService = {
     formValues: DiscoveryImageFormValues,
     ocmPullSecret?: string,
   ) {
-    const proxyParams: ClusterUpdateParams = {
+    const proxyParams: V2ClusterUpdateParams = {
       httpProxy: formValues.httpProxy,
       httpsProxy: formValues.httpsProxy,
       noProxy: formValues.noProxy,

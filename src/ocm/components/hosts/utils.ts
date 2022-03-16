@@ -2,7 +2,7 @@ import { saveAs } from 'file-saver';
 import {
   AlertsContextType,
   Cluster,
-  ClusterUpdateParams,
+  V2ClusterUpdateParams,
   Host,
   stringToJSON,
   Inventory,
@@ -50,7 +50,7 @@ export const onAdditionalNtpSourceAction = async (
   onError: (message: string) => void,
 ) => {
   try {
-    const values: ClusterUpdateParams = {
+    const values: V2ClusterUpdateParams = {
       additionalNtpSource,
     };
 

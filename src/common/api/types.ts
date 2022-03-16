@@ -1,21 +1,3 @@
-export interface AddHostsClusterCreateParams {
-  /**
-   * Unique identifier of the object.
-   */
-  id: string; // uuid
-  /**
-   * Name of the OpenShift cluster.
-   */
-  name: string;
-  /**
-   * api vip domain.
-   */
-  apiVipDnsname: string;
-  /**
-   * Version of the OpenShift cluster.
-   */
-  openshiftVersion: string;
-}
 export interface ApiVipConnectivityRequest {
   /**
    * URL address of the API.
@@ -36,27 +18,13 @@ export interface ApiVipConnectivityRequest {
 }
 export interface ApiVipConnectivityResponse {
   /**
-   * API VIP connectivity check result.
+   * Ignition downloadability check result.
    */
   isSuccess?: boolean;
   /**
    * Ignition fetched from the specified API VIP
    */
   ignition?: string;
-}
-export interface AssistedServiceIsoCreateParams {
-  /**
-   * Version of the OpenShift cluster.
-   */
-  openshiftVersion?: string;
-  /**
-   * SSH public key for debugging the installation.
-   */
-  sshPublicKey?: string;
-  /**
-   * The pull secret obtained from Red Hat OpenShift Cluster Manager at console.redhat.com/openshift/install/pull-secret.
-   */
-  pullSecret?: string;
 }
 export interface BindHostParams {
   clusterId: string; // uuid
@@ -514,145 +482,6 @@ export interface ClusterProgressInfo {
   installingStagePercentage?: number;
   finalizingStagePercentage?: number;
 }
-export interface ClusterUpdateParams {
-  /**
-   * OpenShift cluster name.
-   */
-  name?: string;
-  /**
-   * Base domain of the cluster. All DNS records must be sub-domains of this base and include the cluster name.
-   */
-  baseDnsDomain?: string;
-  /**
-   * IP address block from which Pod IPs are allocated. This block must not overlap with existing physical networks. These IP addresses are used for the Pod network, and if you need to access the Pods from an external network, configure load balancers and routers to manage the traffic.
-   */
-  clusterNetworkCidr?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$
-  platform?: Platform;
-  /**
-   * The subnet prefix length to assign to each individual node. For example, if clusterNetworkHostPrefix is set to 23, then each node is assigned a /23 subnet out of the given cidr (clusterNetworkCIDR), which allows for 510 (2^(32 - 23) - 2) pod IPs addresses. If you are required to provide access to nodes from an external network, configure load balancers and routers to manage the traffic.
-   */
-  clusterNetworkHostPrefix?: number;
-  /**
-   * The IP address pool to use for service IP addresses. You can enter only one IP address pool. If you need to access the services from an external network, configure load balancers and routers to manage the traffic.
-   */
-  serviceNetworkCidr?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$
-  /**
-   * The virtual IP used to reach the OpenShift cluster's API.
-   */
-  apiVip?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))?$
-  /**
-   * The virtual IP used for cluster ingress traffic.
-   */
-  ingressVip?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))?$
-  /**
-   * The domain name used to reach the OpenShift cluster API.
-   */
-  apiVipDnsName?: string;
-  /**
-   * A CIDR that all hosts belonging to the cluster should have an interfaces with IP address that belongs to this CIDR. The apiVip belongs to this CIDR.
-   */
-  machineNetworkCidr?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$
-  /**
-   * The pull secret obtained from Red Hat OpenShift Cluster Manager at console.redhat.com/openshift/install/pull-secret.
-   */
-  pullSecret?: string;
-  /**
-   * SSH public key for debugging OpenShift nodes.
-   */
-  sshPublicKey?: string;
-  /**
-   * Indicate if virtual IP DHCP allocation mode is enabled.
-   */
-  vipDhcpAllocation?: boolean;
-  /**
-   * A proxy URL to use for creating HTTP connections outside the cluster.
-   * http://\<username\>:\<pswd\>@\<ip\>:\<port\>
-   *
-   */
-  httpProxy?: string;
-  /**
-   * A proxy URL to use for creating HTTPS connections outside the cluster.
-   * http://\<username\>:\<pswd\>@\<ip\>:\<port\>
-   *
-   */
-  httpsProxy?: string;
-  /**
-   * An "*" or a comma-separated list of destination domain names, domains, IP addresses, or other network CIDRs to exclude from proxying.
-   */
-  noProxy?: string;
-  /**
-   * The desired role for hosts associated with the cluster.
-   */
-  hostsRoles?: {
-    id?: string; // uuid
-    role?: HostRoleUpdateParams;
-  }[];
-  /**
-   * The desired hostname for hosts associated with the cluster.
-   */
-  hostsNames?: {
-    id?: string; // uuid
-    hostname?: string;
-  }[];
-  disksSelectedConfig?: {
-    id?: string; // uuid
-    /**
-     * The desired disks parameters (such as the disk's role).
-     */
-    disksConfig?: DiskConfigParams[];
-  }[];
-  /**
-   * The desired machine config pool for hosts associated with the cluster.
-   */
-  hostsMachineConfigPoolNames?: {
-    id?: string; // uuid
-    machineConfigPoolName?: string;
-  }[];
-  /**
-   * Indicate if the networking is managed by the user.
-   */
-  userManagedNetworking?: boolean;
-  /**
-   * A comma-separated list of NTP sources (name or IP) going to be added to all the hosts.
-   */
-  additionalNtpSource?: string;
-  /**
-   * List of OLM operators to be installed.
-   */
-  olmOperators?: OperatorCreateParams[];
-  /**
-   * Enable/disable hyperthreading on master nodes, worker nodes, or all nodes.
-   */
-  hyperthreading?: 'masters' | 'workers' | 'all' | 'none';
-  /**
-   * The desired network type used.
-   */
-  networkType?: 'OpenShiftSDN' | 'OVNKubernetes';
-  /**
-   * Schedule workloads on masters
-   */
-  schedulableMasters?: boolean;
-  /**
-   * Cluster networks that are associated with this cluster.
-   */
-  clusterNetworks?: ClusterNetwork[];
-  /**
-   * Service networks that are associated with this cluster.
-   */
-  serviceNetworks?: ServiceNetwork[];
-  /**
-   * Machine networks that are associated with this cluster.
-   */
-  machineNetworks?: MachineNetwork[];
-  /**
-   * Installation disks encryption mode and host roles to be applied.
-   */
-  diskEncryption?: DiskEncryption;
-  /**
-   * Explicit ignition endpoint overrides the default ignition endpoint.
-   */
-  ignitionEndpoint?: IgnitionEndpoint;
-}
 export type ClusterValidationId =
   | 'machine-cidr-defined'
   | 'cluster-cidr-defined'
@@ -671,6 +500,7 @@ export type ClusterValidationId =
   | 'ntp-server-configured'
   | 'lso-requirements-satisfied'
   | 'ocs-requirements-satisfied'
+  | 'odf-requirements-satisfied'
   | 'cnv-requirements-satisfied'
   | 'network-type-valid';
 export interface CompletionParams {
@@ -938,6 +768,10 @@ export interface Error {
   reason: string;
 }
 export interface Event {
+  /**
+   * Event Name.
+   */
+  name?: string;
   /**
    * Unique identifier of the cluster this event relates to.
    */
@@ -1413,6 +1247,7 @@ export type HostValidationId =
   | 'container-images-available'
   | 'lso-requirements-satisfied'
   | 'ocs-requirements-satisfied'
+  | 'odf-requirements-satisfied'
   | 'sufficient-installation-disk-speed'
   | 'cnv-requirements-satisfied'
   | 'sufficient-network-latency-requirement-for-role'
@@ -1423,8 +1258,7 @@ export type HostValidationId =
   | 'apps-domain-name-resolved-correctly'
   | 'compatible-with-cluster-platform'
   | 'dns-wildcard-not-configured'
-  | 'disk-encryption-requirements-satisfied'
-  | 'api-vip-connected';
+  | 'disk-encryption-requirements-satisfied';
 /**
  * Explicit ignition endpoint overrides the default ignition endpoint.
  */
@@ -1481,7 +1315,7 @@ export interface ImportClusterParams {
   /**
    * Version of the OpenShift cluster.
    */
-  openshiftVersion: string;
+  openshiftVersion?: string;
   /**
    * The id of the OCP cluster, that hosts will be added to
    */
@@ -1585,7 +1419,7 @@ export interface InfraEnvCreateParams {
   /**
    * Version of the OpenShift cluster (used to infer the RHCOS version - temporary until generic logic implemented).
    */
-  openshiftVersion: string;
+  openshiftVersion?: string;
   /**
    * The CPU architecture of the image (x86_64/arm64/etc).
    */
@@ -1817,31 +1651,11 @@ export interface OpenshiftVersion {
   /**
    * Name of the version to be presented to the user.
    */
-  displayName?: string;
-  /**
-   * The installation image of the OpenShift cluster.
-   */
-  releaseImage?: string;
-  /**
-   * OCP version from the release metadata.
-   */
-  releaseVersion?: string;
-  /**
-   * The base RHCOS image used for the discovery iso.
-   */
-  rhcosImage?: string;
-  /**
-   * The RHCOS rootfs url.
-   */
-  rhcosRootfs?: string;
-  /**
-   * Build ID of the RHCOS image.
-   */
-  rhcosVersion?: string;
+  displayName: string;
   /**
    * Level of support of the version.
    */
-  supportLevel?: 'beta' | 'production' | 'maintenance';
+  supportLevel: 'beta' | 'production' | 'maintenance';
   /**
    * Indication that the version is the recommended one.
    */
@@ -1849,7 +1663,7 @@ export interface OpenshiftVersion {
   /**
    * Available CPU architectures.
    */
-  cpuArchitectures?: string[];
+  cpuArchitectures: string[];
 }
 export interface OpenshiftVersions {
   [name: string]: OpenshiftVersion;
@@ -1997,7 +1811,6 @@ export interface OvirtPlatform {
  */
 export interface Platform {
   type: PlatformType;
-  vsphere?: VspherePlatform;
   ovirt?: OvirtPlatform;
 }
 export type PlatformType = 'baremetal' | 'vsphere' | 'ovirt' | 'none';
@@ -2298,46 +2111,4 @@ export interface VersionedHostRequirements {
 }
 export interface Versions {
   [name: string]: string;
-}
-/**
- * Vsphere platform specific configuration upon which to perform the installation
- */
-export interface VspherePlatform {
-  /**
-   * The user name to use to connect to the vCenter instance with. This user must have at least the roles and privileges that are required for static or dynamic persistent volume provisioning in vSphere.
-   */
-  username?: string;
-  /**
-   * The password for the vCenter user name.
-   */
-  password?: string; // password
-  /**
-   * The name of the datacenter to use in the vCenter instance.
-   */
-  datacenter?: string;
-  /**
-   * The fully-qualified hostname or IP address of the vCenter server.
-   */
-  vCenter?: string;
-  /**
-   * The vCenter cluster to install the OpenShift Container Platform cluster in.
-   */
-  cluster?: string;
-  /**
-   * The name of the default datastore to use for provisioning volumes.
-   */
-  defaultDatastore?: string;
-  /**
-   * The network in the vCenter instance that contains the virtual IP addresses and DNS records that you configured.
-   */
-  network?: string;
-  /**
-   * Optional. The absolute path of an existing folder where the installation program creates the virtual machines. If you do not provide this value, the installation program creates a folder that is named with the infrastructure ID in the datacenter virtual machine folder.
-   */
-  folder?: string;
-}
-
-export enum CpuArchitecture {
-  x86 = 'x86_64',
-  ARM = 'arm64',
 }
