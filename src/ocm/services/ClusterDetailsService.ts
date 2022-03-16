@@ -1,4 +1,4 @@
-import { ClusterCreateParams, ClusterUpdateParams } from '../../common';
+import { ClusterCreateParams, V2ClusterUpdateParams } from '../../common';
 import { ClustersAPI, ManagedDomainsAPI } from '../services/apis';
 import InfraEnvsService from './InfraEnvsService';
 import _ from 'lodash';
@@ -21,7 +21,7 @@ const ClusterDetailsService = {
     return cluster;
   },
 
-  async update(clusterId: string, params: ClusterUpdateParams) {
+  async update(clusterId: string, params: V2ClusterUpdateParams) {
     const { data: cluster } = await ClustersAPI.update(clusterId, params);
     return cluster;
   },

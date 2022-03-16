@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import {
   Cluster,
   ClusterCreateParams,
-  ClusterUpdateParams,
+  V2ClusterUpdateParams,
   useAlerts,
   LoadingState,
   ClusterWizardStep,
@@ -42,9 +42,9 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster }) => {
   const moveNext = React.useCallback(() => setCurrentStepId('host-discovery'), [setCurrentStepId]);
 
   const handleClusterUpdate = React.useCallback(
-    async (clusterId: Cluster['id'], values: ClusterUpdateParams) => {
+    async (clusterId: Cluster['id'], values: V2ClusterUpdateParams) => {
       clearAlerts();
-      const params: ClusterUpdateParams = _.omit(values, [
+      const params: V2ClusterUpdateParams = _.omit(values, [
         'highAvailabilityMode',
         'pullSecret',
         'openshiftVersion',
