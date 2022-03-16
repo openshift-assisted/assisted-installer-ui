@@ -14,7 +14,7 @@ import { useDetailsFormik } from './ClusterDeploymentDetailsStep';
 
 type ACMClusterDeploymentDetailsStepProps = {
   clusterImages: ClusterImageSetK8sResource[];
-  onValuesChanged: (values: ClusterDetailsValues) => void;
+  onValuesChanged: (values: ClusterDetailsValues, initRender: boolean) => void;
   usedClusterNames: string[];
   formRef: Ref<FormikProps<ClusterDetailsValues>>;
   clusterDeployment?: ClusterDeploymentK8sResource;
