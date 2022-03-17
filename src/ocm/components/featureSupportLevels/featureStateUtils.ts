@@ -40,7 +40,7 @@ const getOdfDisabledReason = (cluster: Cluster | undefined, isSupported: boolean
     return 'OpenShift Data Foundation is not supported for ARM architecture';
   }
   if (!isSupported) {
-    return 'OpenShift Data Foundation is not supported in this OpenShift version';
+    return 'The installer cannot currently enable OpenShift Data Foundation with the selected OpenShift version,  but it can be enabled later through the OpenShift Console once the installation is complete.';
   }
   return undefined;
 };
