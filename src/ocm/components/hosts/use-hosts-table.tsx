@@ -333,7 +333,7 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
 
   const content = React.useMemo(() => [hostnameColumn(), statusColumn()], []);
   const paginationProps = usePagination(massDeleteHostDialog.data?.hosts?.length || 0);
-  
+
   return (
     <>
       {eventsDialog.isOpen && (
@@ -424,19 +424,19 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
       )}
       {massDeleteHostDialog.isOpen && (
         <MassDeleteHostModal
-        isOpen
-        onClose={massDeleteHostDialog.close}
-        hosts={massDeleteHostDialog.data?.hosts || []}
-        onDelete={massDeleteHostDialog.data?.onDelete}
-      >
-        <HostsTable
+          isOpen
+          onClose={massDeleteHostDialog.close}
           hosts={massDeleteHostDialog.data?.hosts || []}
-          content={content}
-          {...paginationProps}
+          onDelete={massDeleteHostDialog.data?.onDelete}
         >
-          <div>No hosts selected</div>
-        </HostsTable>
-      </MassDeleteHostModal>
+          <HostsTable
+            hosts={massDeleteHostDialog.data?.hosts || []}
+            content={content}
+            {...paginationProps}
+          >
+            <div>No hosts selected</div>
+          </HostsTable>
+        </MassDeleteHostModal>
       )}
     </>
   );

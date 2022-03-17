@@ -48,10 +48,10 @@ export const currentClusterSlice = createSlice({
     updateClusterBase: (state, action: PayloadAction<Cluster>) => {
       // Should not overwrite the hosts once they are created
       const originalHosts = state.data?.hosts || [];
-      return ({ ...state, data: { ...action.payload, hosts: originalHosts } });
+      return { ...state, data: { ...action.payload, hosts: originalHosts } };
     },
     updateCluster: (state, action: PayloadAction<Cluster>) => {
-      return ({ ...state, data: action.payload  });
+      return { ...state, data: action.payload };
     },
     updateHost: (state, action: PayloadAction<Host>) => {
       const hostIndex = _.findIndex(state.data?.hosts, (host) => host.id === action.payload.id);
