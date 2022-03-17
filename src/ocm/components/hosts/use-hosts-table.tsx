@@ -333,78 +333,98 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
 
   const content = React.useMemo(() => [hostnameColumn(), statusColumn()], []);
   const paginationProps = usePagination(massDeleteHostDialog.data?.hosts?.length || 0);
+  
   return (
     <>
-      <EventsModal
-        title={`Host Events${eventsDialog.isOpen ? `: ${eventsDialog.data?.hostname}` : ''}`}
-        entityKind="host"
-        cluster={cluster}
-        hostId={eventsDialog.data?.hostId}
-        onClose={eventsDialog.close}
-        isOpen={eventsDialog.isOpen}
-        onFetchEvents={onFetchEvents}
-      />
-      <ResetHostModal
-        hostname={resetHostDialog.data?.hostname}
-        onClose={resetHostDialog.close}
-        isOpen={resetHostDialog.isOpen}
-        onReset={onReset}
-      />
-      <DeleteHostModal
-        hostname={deleteHostDialog.data?.hostname}
-        onClose={deleteHostDialog.close}
-        isOpen={deleteHostDialog.isOpen}
-        onDelete={onDelete}
-      />
-      <EditHostModal
-        host={editHostDialog.data?.host}
-        inventory={editHostDialog.data?.inventory}
-        usedHostnames={
-          cluster?.hosts?.map((h: Host) => h.requestedHostname).filter((h) => h) as
-            | string[]
-            | undefined
-        }
-        onClose={editHostDialog.close}
-        isOpen={editHostDialog.isOpen}
-        onSave={async (values: EditHostFormValues) => {
-          const { data } = await HostsService.updateHostName(
-            cluster.id,
-            values.hostId,
-            values.hostname,
-          );
-          resetCluster ? resetCluster() : dispatch(updateHost(data));
-          editHostDialog.close();
-        }}
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        onFormSaveError={(e: any) => {
-          let message;
-          handleApiError(e, () => (message = getErrorMessage(e)));
-          return message;
-        }}
-      />
-      <AdditionalNTPSourcesDialog
-        additionalNtpSource={cluster.additionalNtpSource}
-        isOpen={additionalNTPSourcesDialog.isOpen}
-        onClose={additionalNTPSourcesDialog.close}
-        onAdditionalNtpSource={onAdditionalNtpSource}
-      />
-      <UpdateDay2ApiVipModal
-        isOpen={UpdateDay2ApiVipDialog.isOpen}
-        onClose={UpdateDay2ApiVipDialog.close}
-        onUpdateDay2ApiVip={onUpdateDay2ApiVip}
-        currentApiVip={cluster.apiVipDnsName}
-      />
-      <MassChangeHostnameModal
-        isOpen={massUpdateHostnameDialog.isOpen}
-        onClose={massUpdateHostnameDialog.close}
-        hosts={massUpdateHostnameDialog.data?.cluster?.hosts || []}
-        selectedHostIDs={massUpdateHostnameDialog.data?.hostIDs || []}
-        onChangeHostname={(host, hostname) =>
-          HostsService.updateHostName(cluster.id, host.id, hostname)
-        }
-      />
-      <MassDeleteHostModal
-        isOpen={massDeleteHostDialog.isOpen}
+      {eventsDialog.isOpen && (
+        <EventsModal
+          isOpen
+          title={`Host Events${eventsDialog.isOpen ? `: ${eventsDialog.data?.hostname}` : ''}`}
+          entityKind="host"
+          cluster={cluster}
+          hostId={eventsDialog.data?.hostId}
+          onClose={eventsDialog.close}
+          onFetchEvents={onFetchEvents}
+        />
+      )}
+      {resetHostDialog.isOpen && (
+        <ResetHostModal
+          isOpen
+          hostname={resetHostDialog.data?.hostname}
+          onClose={resetHostDialog.close}
+          onReset={onReset}
+        />
+      )}
+
+      {deleteHostDialog.isOpen && (
+        <DeleteHostModal
+          isOpen
+          hostname={deleteHostDialog.data?.hostname}
+          onClose={deleteHostDialog.close}
+          onDelete={onDelete}
+        />
+      )}
+
+      {editHostDialog.isOpen && (
+        <EditHostModal
+          isOpen
+          host={editHostDialog.data?.host}
+          inventory={editHostDialog.data?.inventory}
+          usedHostnames={
+            cluster?.hosts?.map((h: Host) => h.requestedHostname).filter((h) => h) as
+              | string[]
+              | undefined
+          }
+          onClose={editHostDialog.close}
+          onSave={async (values: EditHostFormValues) => {
+            const { data } = await HostsService.updateHostName(
+              cluster.id,
+              values.hostId,
+              values.hostname,
+            );
+            resetCluster ? resetCluster() : dispatch(updateHost(data));
+            editHostDialog.close();
+          }}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          onFormSaveError={(e: any) => {
+            let message;
+            handleApiError(e, () => (message = getErrorMessage(e)));
+            return message;
+          }}
+        />
+      )}
+
+      {additionalNTPSourcesDialog.isOpen && (
+        <AdditionalNTPSourcesDialog
+          isOpen
+          additionalNtpSource={cluster.additionalNtpSource}
+          onClose={additionalNTPSourcesDialog.close}
+          onAdditionalNtpSource={onAdditionalNtpSource}
+        />
+      )}
+
+      {UpdateDay2ApiVipDialog.isOpen && (
+        <UpdateDay2ApiVipModal
+          isOpen
+          onClose={UpdateDay2ApiVipDialog.close}
+          onUpdateDay2ApiVip={onUpdateDay2ApiVip}
+          currentApiVip={cluster.apiVipDnsName}
+        />
+      )}
+      {massUpdateHostnameDialog.isOpen && (
+        <MassChangeHostnameModal
+          isOpen
+          onClose={massUpdateHostnameDialog.close}
+          hosts={massUpdateHostnameDialog.data?.cluster?.hosts || []}
+          selectedHostIDs={massUpdateHostnameDialog.data?.hostIDs || []}
+          onChangeHostname={(host, hostname) =>
+            HostsService.updateHostName(cluster.id, host.id, hostname)
+          }
+        />
+      )}
+      {massDeleteHostDialog.isOpen && (
+        <MassDeleteHostModal
+        isOpen
         onClose={massDeleteHostDialog.close}
         hosts={massDeleteHostDialog.data?.hosts || []}
         onDelete={massDeleteHostDialog.data?.onDelete}
@@ -417,6 +437,7 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
           <div>No hosts selected</div>
         </HostsTable>
       </MassDeleteHostModal>
+      )}
     </>
   );
 };
