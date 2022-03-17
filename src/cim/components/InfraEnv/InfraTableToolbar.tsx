@@ -83,8 +83,7 @@ const InfraTableToolbar: React.FC<InfraTableToolbarProps> = ({
     <TableToolbar
       selectedIDs={selectedHostIDs || []}
       itemIDs={itemIDs}
-      onSelectAll={() => setSelectedHostIDs(itemIDs)}
-      onSelectNone={() => setSelectedHostIDs([])}
+      setSelectedIDs={setSelectedHostIDs}
       actions={massActions}
       clearAllFilters={() => setStatusFilter([])}
       {...paginationProps}

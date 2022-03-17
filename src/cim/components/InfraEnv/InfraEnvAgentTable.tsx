@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, Stack, StackItem } from '@patternfly/react-core';
+import { Button, DropdownItem, Stack, StackItem } from '@patternfly/react-core';
 import { noop } from 'lodash';
 
 import { Host } from '../../../common/api/types';
@@ -9,6 +9,8 @@ import {
   clusterColumn,
   useAgentsTable,
   useAgentsFilter,
+  agentHostnameColumn,
+  canEditBMH,
 } from '../Agent/tableUtils';
 import HostsTable, {
   DefaultExpandComponent,
@@ -18,17 +20,14 @@ import {
   cpuCoresColumn,
   discoveredAtColumn,
   disksColumn,
-  hostnameColumn,
   memoryColumn,
 } from '../../../common/components/hosts/tableUtils';
 import {
   DiscoveryTroubleshootingModal,
-  ChangeHostnameAction,
   MassChangeHostnameModal,
   DeleteHostAction,
   EmptyState,
 } from '../../../common';
-import { TableRow } from '../../../common/components/hosts/AITable';
 import { InfraEnvAgentTableProps } from '../ClusterDeployment/types';
 import { MassApproveAgentModal, MassDeleteAgentModal } from '../modals';
 import { MassChangeHostnameModalProps } from '../../../common/components/hosts/MassChangeHostnameModal';
@@ -101,7 +100,14 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
   const content = React.useMemo(
     () =>
       [
-        hostnameColumn(hostActions.onEditHost),
+        agentHostnameColumn(
+          hosts,
+          agents,
+          bareMetalHosts,
+          hostActions.onEditHost,
+          hostActions.canEditHostname,
+          hostActions.canEditBMH,
+        ),
         discoveryTypeColumn(agents, bareMetalHosts),
         agentStatusColumn({
           agents,
@@ -109,13 +115,14 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
           onEditHostname: actions.onEditHost,
           onApprove: actions.onApprove,
         }),
-        clusterColumn(agents, getClusterDeploymentLink) as TableRow<Host>,
+        clusterColumn(agents, getClusterDeploymentLink),
         discoveredAtColumn,
         cpuCoresColumn,
         memoryColumn,
         disksColumn,
       ].filter(Boolean),
     [
+      hosts,
       agents,
       actions.onEditHost,
       actions.onApprove,
@@ -130,11 +137,31 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
     selectedHostIDs.includes(bmh.metadata?.uid || ''),
   );
 
+  const canChangeHostname = (h: Host): string | undefined => {
+    const agent = agents.find((a) => a.metadata?.uid === h.id);
+    if (agent && actions.canEditHost) {
+      return actions.canEditHost(agent) ? undefined : 'Hostname cannot be changed anymore.';
+    }
+    const bmh = bareMetalHosts.find((bmh) => bmh.metadata?.uid === h.id);
+    if (bmh) {
+      return canEditBMH(bmh);
+    }
+    return undefined;
+  };
+
+  const canEditHostname =
+    selectedBMHs.every(canEditBMH) &&
+    selectedAgents.every((a) => (actions.canEditHost ? !actions.canEditHost(a) : undefined));
+
   const massActions = [
-    <ChangeHostnameAction
+    <DropdownItem
       key="hostname"
-      onChangeHostname={() => setMassChangeHostOpen(!isMassChangeHostOpen)}
-    />,
+      onClick={() => setMassChangeHostOpen(!isMassChangeHostOpen)}
+      isDisabled={canEditHostname}
+      description={canEditHostname ? 'Hostname cannot be changed for selected hosts.' : undefined}
+    >
+      Change hostname
+    </DropdownItem>,
     ...(actions.onApprove
       ? [
           <MassApproveAction
@@ -224,6 +251,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
           selectedHostIDs={selectedHostIDs}
           onChangeHostname={onAgentChangeHostname}
           onClose={() => setMassChangeHostOpen(false)}
+          canChangeHostName={canChangeHostname}
         />
       )}
       {onMassDeleteHost && isMassDeleteOpen && (
@@ -231,6 +259,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
           isOpen={isMassDeleteOpen}
           agents={selectedAgents}
           bmhs={selectedBMHs}
+          infraEnv={infraEnv}
           onDelete={onMassDeleteHost}
           onClose={() => setMassDeleteOpen(false)}
         />

@@ -164,8 +164,7 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({
           <TableToolbar
             selectedIDs={selectedHostIDs || []}
             itemIDs={itemIDs}
-            onSelectAll={() => setSelectedHostIDs?.(itemIDs)}
-            onSelectNone={() => setSelectedHostIDs?.([])}
+            setSelectedIDs={setSelectedHostIDs}
             actions={[
               <ChangeHostnameAction key="hostname" onChangeHostname={onMassChangeHostname} />,
               <DeleteHostAction key="delete" onDeleteHost={onMassDeleteHost} />,

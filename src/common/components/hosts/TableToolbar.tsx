@@ -23,8 +23,7 @@ import './TableToolbar.css';
 type TableToolbarProps = {
   itemIDs: string[];
   selectedIDs: string[];
-  onSelectAll: VoidFunction;
-  onSelectNone: VoidFunction;
+  setSelectedIDs: (selectedIDs: string[]) => void;
   actions?: React.ReactNode[];
   showPagination: boolean;
   perPage: number;
@@ -38,8 +37,7 @@ type TableToolbarProps = {
 const TableToolbar: React.FC<TableToolbarProps> = ({
   itemIDs,
   selectedIDs,
-  onSelectAll,
-  onSelectNone,
+  setSelectedIDs,
   actions,
   showPagination,
   clearAllFilters,
@@ -50,6 +48,12 @@ const TableToolbar: React.FC<TableToolbarProps> = ({
   const [selectOpen, setSelectOpen] = React.useState(false);
   const onSelectToggle = React.useCallback(() => setSelectOpen(!selectOpen), [selectOpen]);
   const onActionsToggle = React.useCallback(() => setActionsOpen(!actionsOpen), [actionsOpen]);
+
+  React.useEffect(() => {
+    if (!selectedIDs.every((id) => itemIDs.includes(id))) {
+      setSelectedIDs(selectedIDs.filter((id) => itemIDs.includes(id)));
+    }
+  }, [selectedIDs, itemIDs, setSelectedIDs]);
 
   let isChecked: boolean | null = false;
   if (selectedIDs.length) {
@@ -77,6 +81,9 @@ const TableToolbar: React.FC<TableToolbarProps> = ({
       dropdownItems={actions}
     />
   );
+
+  const onSelectAll = () => setSelectedIDs(itemIDs);
+  const onSelectNone = () => setSelectedIDs([]);
 
   return (
     <Split hasGutter>
