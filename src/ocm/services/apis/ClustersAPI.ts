@@ -3,7 +3,7 @@ import {
   Cluster,
   ClusterCreateParams,
   ClusterDefaultConfig,
-  ClusterUpdateParams,
+  V2ClusterUpdateParams,
   Credentials,
   Host,
   ImportClusterParams,
@@ -124,8 +124,8 @@ const ClustersAPI = {
     );
   },
 
-  update(clusterId: Cluster['id'], params: ClusterUpdateParams) {
-    return client.patch<Cluster, AxiosResponse<Cluster>, ClusterUpdateParams>(
+  update(clusterId: Cluster['id'], params: V2ClusterUpdateParams) {
+    return client.patch<Cluster, AxiosResponse<Cluster>, V2ClusterUpdateParams>(
       `${ClustersAPI.makeBaseURI(clusterId)}`,
       params,
     );

@@ -21,7 +21,12 @@ const PlatformIntegrationNote: React.FC<{}> = () => {
     <p>
       <ExclamationTriangleIcon color={warningColor.value} size="sm" /> You will need to modify your
       platform configuration after cluster installation is completed.{' '}
-      <a href={VSPHERE_CONFIG_LINK} target="_blank" rel="noopener noreferrer">
+      <a
+        href={VSPHERE_CONFIG_LINK}
+        target="_blank"
+        rel="noopener noreferrer"
+        data-ouia-component-id="vm-integration-kb-page"
+      >
         Learn more <i className="fas fa-external-link-alt" />
       </a>
     </p>

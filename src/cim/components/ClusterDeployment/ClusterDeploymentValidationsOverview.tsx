@@ -19,7 +19,7 @@ function getCardTitle(clusterStatus: Cluster['status']) {
   switch (clusterStatus) {
     case 'pending-for-input':
     case 'insufficient':
-      return 'The cluster is not ready for installation. Validations are failing.';
+      return 'The cluster is not ready for installation.';
     default:
       return 'Cluster configured and ready for installation.';
   }

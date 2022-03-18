@@ -38,11 +38,12 @@ yarn install
 - **yarn start:assisted-ui**: Runs the Assisted UI application
   [assisted-ui](https://github.com/openshift-assisted/assisted-ui) project.
 
-In order to work with Assisted UI Lib and see changes in Assisted UI, run the 3 commands above sequentially.
-Before using the **yarn start:assisted-ui** script, make sure this project and the `assisted-ui`
-(and optionally the `uhc-portal`) project are located in the same folder.  
+In order to work with Assisted UI Lib and see changes in Assisted UI, run the 3 commands above
+sequentially. Before using the **yarn start:assisted-ui** script, make sure this project and the
+`assisted-ui` (and optionally the `uhc-portal`) project are located in the same folder.
 
-Next, create a `.env.development.local` file at the root folder of the `assisted-ui` repository and include this variable:
+Next, create a `.env.development.local` file at the root folder of the `assisted-ui` repository and
+include this variable:
 
 ```dotenv
 REACT_APP_API_URL="...ask the team"
