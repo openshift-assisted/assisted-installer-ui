@@ -22,7 +22,6 @@ import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 
 import {
   httpProxyValidationSchema,
-  InputField,
   noProxyValidationSchema,
   PullSecretField,
   sshPublicKeyValidationSchema,
@@ -39,6 +38,8 @@ import {
   getRichTextValidation,
   NAME_VALIDATION_MESSAGES,
   RichInputField,
+  locationValidationSchema,
+  LOCATION_VALIDATION_MESSAGES,
 } from '../../../common';
 
 import './infra-env.css';
@@ -62,7 +63,7 @@ const validationSchema = (usedNames: string[]) =>
   Yup.lazy<EnvironmentStepFormValues>((values) =>
     Yup.object<EnvironmentStepFormValues>().shape({
       name: richNameValidationSchema(usedNames),
-      location: Yup.string().required('Location is a required field.'),
+      location: locationValidationSchema.required('Location is a required field.'),
       pullSecret: pullSecretValidationSchema.required('Pull secret is a required field.'),
       sshPublicKey: sshPublicKeyValidationSchema.required(
         'An SSH key is required to debug hosts as they register.',
@@ -183,12 +184,13 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged }) => {
               </FlexItem>
             </Flex>
           </FormGroup>
-          <InputField
+          <RichInputField
             label="Location"
             name="location"
+            isRequired
+            richValidationMessages={LOCATION_VALIDATION_MESSAGES}
             placeholder="Enter geographic location for the environment"
             helperText="Used to describe hosts' physical location. Helps for quicker host selection during cluster creation."
-            isRequired
           />
           <LabelField label="Labels" name="labels" />
           <PullSecretField isOcm={false} />

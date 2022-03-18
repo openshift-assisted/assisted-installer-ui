@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, AlertGroup } from '@patternfly/react-core';
+import { Alert, AlertGroup, AlertVariant } from '@patternfly/react-core';
 import {
   Alerts,
   WizardFooter,
@@ -57,6 +57,7 @@ type ClusterDeploymentWizardFooterProps = React.ComponentProps<typeof WizardFoot
     agentClusterInstall?: AgentClusterInstallK8sResource;
     agents?: AgentK8sResource[];
     showClusterErrors?: boolean;
+    onSyncError?: VoidFunction;
   };
 
 const ClusterDeploymentWizardFooter: React.FC<ClusterDeploymentWizardFooterProps> = ({
@@ -64,6 +65,8 @@ const ClusterDeploymentWizardFooter: React.FC<ClusterDeploymentWizardFooterProps
   agents = [],
   showClusterErrors,
   children,
+  onSyncError,
+  isNextDisabled,
   ...rest
 }) => {
   const { alerts } = useAlerts();
@@ -86,6 +89,16 @@ const ClusterDeploymentWizardFooter: React.FC<ClusterDeploymentWizardFooterProps
     [agents],
   );
 
+  const syncError = agentClusterInstall?.status?.conditions?.find(
+    (c) => c.type === 'SpecSynced' && c.status === 'False',
+  )?.message;
+
+  React.useEffect(() => {
+    if (syncError && onSyncError) {
+      onSyncError();
+    }
+  }, [syncError, onSyncError]);
+
   const alertsSection = alerts.length ? <Alerts /> : undefined;
   const errorsSection = (
     <ValidationSection
@@ -94,11 +107,23 @@ const ClusterDeploymentWizardFooter: React.FC<ClusterDeploymentWizardFooterProps
       validationsInfo={validationsInfo}
       hosts={hosts}
     >
+      {syncError && (
+        <Alert variant={AlertVariant.danger} title="An error occured" isInline>
+          {syncError}
+        </Alert>
+      )}
       {children}
     </ValidationSection>
   );
 
-  return <WizardFooter alerts={alertsSection} errors={errorsSection} {...rest} />;
+  return (
+    <WizardFooter
+      alerts={alertsSection}
+      errors={errorsSection}
+      isNextDisabled={isNextDisabled || !!syncError}
+      {...rest}
+    />
+  );
 };
 
 export default ClusterDeploymentWizardFooter;

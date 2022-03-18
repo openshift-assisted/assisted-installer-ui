@@ -20,6 +20,7 @@ import {
   RenderIf,
   KubeconfigDownload,
   REDHAT_CONSOLE_OPENSHIFT,
+  canDownloadKubeconfig,
 } from '../../../common';
 import ClusterHostsTable from '../hosts/ClusterHostsTable';
 import ClusterToolbar from '../clusters/ClusterToolbar';
@@ -79,7 +80,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
             />
           </GridItem>
           <ClusterDetailStatusVarieties cluster={cluster} clusterVarieties={clusterVarieties} />
-          <RenderIf condition={dateDifference > 0}>
+          <RenderIf condition={dateDifference > 0 && canDownloadKubeconfig(cluster.status)}>
             <GridItem>
               <KubeconfigDownload
                 status={cluster.status}
@@ -88,7 +89,11 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
               />
             </GridItem>
           </RenderIf>
-          <RenderIf condition={typeof inactiveDeletionHours === 'number'}>
+          <RenderIf
+            condition={
+              typeof inactiveDeletionHours === 'number' && canDownloadKubeconfig(cluster.status)
+            }
+          >
             <Alert
               variant="info"
               isInline

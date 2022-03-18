@@ -96,6 +96,7 @@ export const HOST_VALIDATION_GROUP_LABELS: { [key in keyof ValidationsInfo]: str
 };
 
 export const HOST_VALIDATION_LABELS: { [key in HostValidationId]: string } = {
+  'odf-requirements-satisfied': '',
   'disk-encryption-requirements-satisfied': 'Disk encryption requirements',
   'compatible-with-cluster-platform': '',
   'has-default-route': 'Default route to host',
@@ -125,10 +126,10 @@ export const HOST_VALIDATION_LABELS: { [key in HostValidationId]: string } = {
   'api-int-domain-name-resolved-correctly': 'API internal domain name resolution',
   'apps-domain-name-resolved-correctly': 'Application ingress domain name resolution',
   'dns-wildcard-not-configured': 'DNS wildcard not configured',
-  'api-vip-connected': 'API VIP connectivity failure',
 };
 
 export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string } = {
+  'odf-requirements-satisfied': '',
   'disk-encryption-requirements-satisfied': '',
   'compatible-with-cluster-platform': '',
   'has-default-route': '',
@@ -158,10 +159,10 @@ export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string 
   'api-int-domain-name-resolved-correctly': '',
   'apps-domain-name-resolved-correctly': '',
   'dns-wildcard-not-configured': '',
-  'api-vip-connected': '',
 };
 
 export const CLUSTER_VALIDATION_LABELS: { [key in ClusterValidationId]: string } = {
+  'odf-requirements-satisfied': '',
   'network-type-valid': 'Valid network type',
   'machine-cidr-defined': 'Machine CIDR',
   'cluster-cidr-defined': 'Cluster CIDR',

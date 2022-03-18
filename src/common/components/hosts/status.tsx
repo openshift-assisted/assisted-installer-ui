@@ -10,11 +10,13 @@ import {
   InProgressIcon,
   LinkIcon,
   PendingIcon,
+  PlusIcon,
 } from '@patternfly/react-icons';
 import {
   global_danger_color_100 as dangerColor,
   global_warning_color_100 as warningColor,
   global_success_color_100 as okColor,
+  chart_color_blue_300 as blueColor,
 } from '@patternfly/react-tokens';
 import { Host } from '../../api';
 import { HostStatus } from './types';
@@ -77,7 +79,7 @@ export const hostStatus: HostStatus<Host['status']> = {
     key: 'known-unbound',
     title: 'Available',
     category: 'Discovery related',
-    icon: <CheckCircleIcon color={okColor.value} />,
+    icon: <PlusIcon color={blueColor.value} />,
     details:
       'This host meets the minimum hardware and networking requirements and can be included in the cluster.',
   },

@@ -20,8 +20,13 @@ const IP_V6_ZERO = '0000:0000:0000:0000:0000:0000:0000:0000';
 const MAC_REGEX = /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})|([0-9a-fA-F]{4}\\.[0-9a-fA-F]{4}\\.[0-9a-fA-F]{4})$”/;
 //Source of information: https://github.com/metal3-io/baremetal-operator/blob/main/docs/api.md#baremetalhost-spec
 const BMC_REGEX = /^((ipmi|ibmc(\+https?)?|idrac(\+https?)?|idrac-redfish(\+https?)?|idrac-virtualmedia(\+https?)?|irmc|redfish(\+https?)?|redfish-virtualmedia(\+https?)?|ilo4(\+https)?|ilo4-virtuallmedia(\+https)?|ilo5(\+https)?|ilo5-redfish(\+https)|ilo5-virtualmedia(\+https)|https?|ftp):(\/\/([a-z0-9\-._~%!$&'()*+,;=]+@)?([a-z0-9\-._~%]+|\[[a-f0-9:.]+\]|\[v[a-f0-9][a-z0-9\-._~%!$&'()*+,;=:]+\])(:[0-9]+)?(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?|(\/?[a-z0-9\-._~%!$&'()*+,;=:@]+(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?)?)|([a-z0-9\-._~%!$&'()*+,;=@]+(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?|(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)+\/?))(\?[a-z0-9\-._~%!$&'()*+,;=:@/?]*)?(#[a-z0-9\-._~%!$&'()*+,;=:@/?]*)?$/i;
+const LOCATION_CHARS_REGEX = /^[a-zA-Z0-9-._]*$/;
 
-export const nameValidationSchema = (usedClusterNames: string[], baseDnsDomain = '') =>
+export const nameValidationSchema = (
+  usedClusterNames: string[],
+  baseDnsDomain = '',
+  validateUniqueName?: boolean,
+) =>
   Yup.string()
     .matches(CLUSTER_NAME_REGEX, {
       message:
@@ -36,6 +41,14 @@ export const nameValidationSchema = (usedClusterNames: string[], baseDnsDomain =
         const clusterFullName = `${value}.${baseDnsDomain}`;
         return !value || !usedClusterNames.includes(clusterFullName);
       }),
+      otherwise: Yup.string().test(
+        'is-name-unique',
+        'The name is already taken.',
+        (value: string) => {
+          // in CIM cluster name is ClusterDeployment CR name which must be unique
+          return validateUniqueName ? !value || !usedClusterNames.includes(value) : true;
+        },
+      ),
     });
 
 export const sshPublicKeyValidationSchema = Yup.string().test(
@@ -423,3 +436,33 @@ export const bmcAddressValidationSchema = Yup.string().matches(BMC_REGEX, {
   message: 'Value "${value}" is not valid BMC address.', // eslint-disable-line no-template-curly-in-string
   excludeEmptyString: true,
 });
+
+export const LOCATION_VALIDATION_MESSAGES = {
+  INVALID_LENGTH: '1-63 characters',
+  INVALID_VALUE: 'Use alphanumberic characters, dot (.), underscore (_) or hyphen (-)',
+  INVALID_START_END: 'Must start and end with an alphanumeric character',
+};
+
+export const locationValidationSchema = Yup.string()
+  .min(1, LOCATION_VALIDATION_MESSAGES.INVALID_LENGTH)
+  .max(63, LOCATION_VALIDATION_MESSAGES.INVALID_LENGTH)
+  .test(
+    LOCATION_VALIDATION_MESSAGES.INVALID_START_END,
+    LOCATION_VALIDATION_MESSAGES.INVALID_START_END,
+    (value) => {
+      const trimmed: string = value?.trim();
+      if (!trimmed) {
+        return true;
+      }
+      return (
+        !!trimmed[0].match(ALPHANUMBERIC_REGEX) &&
+        (trimmed[trimmed.length - 1]
+          ? !!trimmed[trimmed.length - 1].match(ALPHANUMBERIC_REGEX)
+          : true)
+      );
+    },
+  )
+  .matches(LOCATION_CHARS_REGEX, {
+    message: LOCATION_VALIDATION_MESSAGES.INVALID_VALUE,
+    excludeEmptyString: true,
+  });

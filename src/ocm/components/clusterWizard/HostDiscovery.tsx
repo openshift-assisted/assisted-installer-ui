@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { Formik, FormikConfig, FormikProps } from 'formik';
 import {
   Cluster,
-  ClusterUpdateParams,
+  V2ClusterUpdateParams,
   getFormikErrorFields,
   FormikAutoSave,
   ClusterWizardStep,
@@ -34,7 +34,7 @@ const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const handleSubmit: FormikConfig<HostDiscoveryValues>['onSubmit'] = async (values, actions) => {
     clearAlerts();
 
-    const params: ClusterUpdateParams = {};
+    const params: V2ClusterUpdateParams = {};
     HostDiscoveryService.setPlatform(params, values.usePlatformIntegration);
     HostDiscoveryService.setOLMOperators(params, values, cluster.monitoredOperators);
     HostDiscoveryService.setSchedulableMasters(params, values, cluster);
