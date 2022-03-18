@@ -80,16 +80,17 @@ export const getClusterDetailsValidationSchema = (
   featureSupportLevels: FeatureSupportLevelData,
   pullSecretSet?: boolean,
   ocpVersions?: OpenshiftVersionOptionType[],
+  validateUniqueName?: boolean,
 ) =>
   Yup.lazy<{ baseDnsDomain: string }>((values) => {
     if (pullSecretSet) {
       return Yup.object({
-        name: nameValidationSchema(usedClusterNames, values.baseDnsDomain),
+        name: nameValidationSchema(usedClusterNames, values.baseDnsDomain, validateUniqueName),
         baseDnsDomain: dnsNameValidationSchema.required('Required'),
       });
     }
     return Yup.object({
-      name: nameValidationSchema(usedClusterNames, values.baseDnsDomain),
+      name: nameValidationSchema(usedClusterNames, values.baseDnsDomain, validateUniqueName),
       baseDnsDomain: dnsNameValidationSchema.required('Required'),
       pullSecret: pullSecretValidationSchema.required('Required.'),
       SNODisclaimer: Yup.boolean().when(['highAvailabilityMode', 'openshiftVersion'], {
