@@ -14,7 +14,7 @@ import {
 } from '@patternfly/react-core';
 import {
   Cluster,
-  ClusterUpdateParams,
+  V2ClusterUpdateParams,
   ntpSourceValidationSchema,
   AdditionalNTPSourcesField,
 } from '../../../common';
@@ -33,7 +33,7 @@ const AdditionalNTPSourcesForm: React.FC<AdditionalNTPSourcesFormProps> = ({
   onClose,
   onAdditionalNtpSource,
 }) => {
-  const initialValues: ClusterUpdateParams = {
+  const initialValues: V2ClusterUpdateParams = {
     additionalNtpSource: additionalNtpSource || '',
   };
 
@@ -42,8 +42,8 @@ const AdditionalNTPSourcesForm: React.FC<AdditionalNTPSourcesFormProps> = ({
   });
 
   const handleSubmit = async (
-    values: ClusterUpdateParams,
-    formikHelpers: FormikHelpers<ClusterUpdateParams>,
+    values: V2ClusterUpdateParams,
+    formikHelpers: FormikHelpers<V2ClusterUpdateParams>,
   ) => {
     formikHelpers.setStatus({ error: null });
     if (onAdditionalNtpSource && values.additionalNtpSource) {

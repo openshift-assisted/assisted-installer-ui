@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { sortable } from '@patternfly/react-table';
+import { sortable, expandable, breakWord } from '@patternfly/react-table';
 import { Link } from 'react-router-dom';
 
-import { Host, HostsTableActions } from '../../../common';
+import { Host, HostsTableActions, getInventory, getHostname, Hostname } from '../../../common';
 import { AgentK8sResource, InfraEnvK8sResource } from '../../types';
 import AgentStatus from './AgentStatus';
 import { ActionsResolver, TableRow } from '../../../common/components/hosts/AITable';
@@ -17,7 +17,58 @@ import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
 import BMHStatus from './BMHStatus';
 import { getAgentStatus, getBMHStatus, getWizardStepAgentStatus } from '../helpers/status';
 import { filterByHostname } from '../../../common/components/hosts/utils';
-import { agentStatus } from '../helpers/agentStatus';
+import { agentStatus, bmhStatus } from '../helpers/agentStatus';
+import { noop } from 'lodash';
+
+export const agentHostnameColumn = (
+  hosts: Host[],
+  agents: AgentK8sResource[],
+  bareMetalHosts: BareMetalHostK8sResource[],
+  onEditHostname?: HostsTableActions['onEditHost'],
+  canEditHostname?: HostsTableActions['canEditHost'],
+  canEditBMH?: HostsTableActions['canEditBMH'],
+): TableRow<Host> => ({
+  header: {
+    title: 'Hostname',
+    props: {
+      id: 'col-header-hostname', // ACM jest tests require id over testId
+    },
+    transforms: [sortable],
+    cellFormatters: [expandable],
+    cellTransforms: [breakWord],
+  },
+  cell: (host) => {
+    const inventory = getInventory(host);
+    const editHostname = onEditHostname ? () => onEditHostname(host) : undefined;
+    const computedHostname = getHostname(host, inventory);
+
+    let readonly = true;
+
+    const agent = agents.find((a) => a.metadata?.uid === host.id);
+    if (agent) {
+      readonly = canEditHostname ? !canEditHostname(host) : false;
+    } else {
+      const bmh = bareMetalHosts.find((bmh) => bmh.metadata?.uid === host.id);
+      if (bmh && canEditBMH) {
+        readonly = !canEditBMH(host);
+      }
+    }
+
+    return {
+      title: (
+        <Hostname
+          host={host}
+          inventory={inventory}
+          onEditHostname={editHostname}
+          hosts={hosts}
+          readonly={readonly}
+        />
+      ),
+      props: { 'data-testid': 'host-name' },
+      sortableValue: computedHostname || '',
+    };
+  },
+});
 
 export const discoveryTypeColumn = (
   agents: AgentK8sResource[],
@@ -101,9 +152,7 @@ export const agentStatusColumn = ({
           ? wizardStepId
             ? getWizardStepAgentStatus(agent, wizardStepId).status.title
             : getAgentStatus(agent).status.title
-          : bmhStatus?.title
-          ? bmhStatus.title
-          : '',
+          : bmhStatus?.state.title || '',
       };
     },
   };
@@ -173,6 +222,16 @@ export const infraEnvColumn = (agents: AgentK8sResource[]): TableRow<Host> => {
   };
 };
 
+export const canEditBMH = (bmh: BareMetalHostK8sResource) =>
+  [
+    bmhStatus.provisioned.key,
+    bmhStatus.deprovisioning.key,
+    bmhStatus.pending.key,
+    bmhStatus.registering.key,
+  ].includes(getBMHStatus(bmh).state.key)
+    ? 'Bare metal host hostname cannot be changed once configured. Remove this host and discover it again if a change is needed.'
+    : undefined;
+
 type AgentsTableResources = {
   agents: AgentK8sResource[];
   bmhs?: BareMetalHostK8sResource[];
@@ -201,8 +260,15 @@ export const useAgentsTable = (
       {
         onEditHost: onEditHost
           ? (host: Host) => {
-              const agent = agents.find((a) => a.metadata?.uid === host.id) as AgentK8sResource;
-              return onEditHost(agent);
+              const agent = agents.find((a) => a.metadata?.uid === host.id);
+              if (agent) {
+                return onEditHost(agent);
+              }
+              const bmh = bmhs?.find((bmh) => bmh.metadata?.uid === host.id);
+              if (bmh && onEditBMH) {
+                return onEditBMH(bmh);
+              }
+              return noop;
             }
           : undefined,
         canEditHost: canEditHost
@@ -251,7 +317,13 @@ export const useAgentsTable = (
               return onEditBMH(bmh);
             }
           : undefined,
-        canEditBMH: (host: Host) => !!bmhs?.find((h) => h.metadata?.uid === host.id),
+        canEditBMH: (host: Host) => {
+          const bmh = bmhs?.find((h) => h.metadata?.uid === host.id);
+          if (!bmh) {
+            return false;
+          }
+          return !canEditBMH(bmh);
+        },
         onUnbindHost: onUnbindHost
           ? (host: Host) => {
               const agent = agents.find((a) => a.metadata?.uid === host.id) as AgentK8sResource;
@@ -307,10 +379,7 @@ const filterByStatus = (
         return false;
       }
       const bmhStatus = getBMHStatus(bmh);
-      if (bmhStatus.error) {
-        return statusKeys.includes('bmh-error');
-      }
-      return bmhStatus.state ? statusKeys.includes(bmhStatus.state) : false;
+      return statusKeys.includes(bmhStatus.state.key);
     }
     const { status } = getAgentStatus(agent);
     return statusKeys.includes(status.key);
@@ -350,12 +419,8 @@ export const useAgentsFilter = ({ agents, bmhs, hosts }: UseAgentsFilterArgs) =>
       const { status } = getAgentStatus(agent);
       statusCount[status.title]++;
     } else if (bmh) {
-      const { error, state } = getBMHStatus(bmh);
-      if (error) {
-        statusCount['bmh-error']++;
-      } else if (state) {
-        statusCount[agentStatus[state].title]++;
-      }
+      const { state } = getBMHStatus(bmh);
+      statusCount[state.title]++;
     }
   });
 

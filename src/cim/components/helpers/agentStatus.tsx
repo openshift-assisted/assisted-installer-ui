@@ -6,7 +6,7 @@ import { HostStatus } from '../../../common/components/hosts/types';
 export const bmhStatus: HostStatus<string> = {
   'bmh-error': {
     key: 'bmh-error',
-    title: 'Provisioning error',
+    title: 'Error',
     category: 'Bare Metal Host related',
   },
   registering: {
@@ -22,6 +22,21 @@ export const bmhStatus: HostStatus<string> = {
   provisioned: {
     key: 'provisioned',
     title: 'Provisioned',
+    category: 'Bare Metal Host related',
+  },
+  deprovisioning: {
+    key: 'deprovisioning',
+    title: 'Deprovisioning',
+    category: 'Bare Metal Host related',
+  },
+  inspecting: {
+    key: 'inspecting',
+    title: 'Inspecting',
+    category: 'Bare Metal Host related',
+  },
+  pending: {
+    key: 'pending',
+    title: 'Pending',
     category: 'Bare Metal Host related',
   },
 };

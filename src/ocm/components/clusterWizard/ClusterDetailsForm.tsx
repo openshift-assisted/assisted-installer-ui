@@ -4,7 +4,7 @@ import { Formik, FormikHelpers } from 'formik';
 import {
   Cluster,
   ClusterCreateParams,
-  ClusterUpdateParams,
+  V2ClusterUpdateParams,
   ManagedDomain,
   ClusterWizardStep,
   ClusterWizardStepHeader,
@@ -34,7 +34,7 @@ type ClusterDetailsFormProps = {
 
   moveNext: () => void;
   handleClusterCreate: (params: ClusterCreateParams) => Promise<void>;
-  handleClusterUpdate: (clusterId: Cluster['id'], params: ClusterUpdateParams) => Promise<void>;
+  handleClusterUpdate: (clusterId: Cluster['id'], params: V2ClusterUpdateParams) => Promise<void>;
 };
 
 const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {

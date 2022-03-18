@@ -135,7 +135,7 @@ const ValidationGroupAlerts: React.FC<ValidationGroupAlertProps> = ({
     ['hostname-unique']: undefined,
     ['hostname-valid']: undefined,
     ['ntp-synced']: undefined,
-    ['api-vip-connected']: undefined,
+    ['ignition-downloadable']: undefined,
   };
   const alerts = [];
   const validationsWithoutActions: Validation[] = [];

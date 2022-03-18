@@ -22,7 +22,7 @@ import {
   wizardStepsValidationsMap,
 } from '../ClusterDeployment/wizardTransition';
 import { HostStatusDef } from '../../../common';
-import { agentStatus } from './agentStatus';
+import { agentStatus, bmhStatus } from './agentStatus';
 
 const conditionsByTypeReducer = <K>(
   result: { K?: StatusCondition<string> },
@@ -173,11 +173,16 @@ export const getWizardStepAgentStatus = (
 };
 
 export const getBMHStatus = (bmh: BareMetalHostK8sResource) => {
-  const state = bmh.status?.errorType || bmh.status?.provisioning?.state;
+  let bmhState = bmhStatus.pending;
+
+  if (bmh.status?.errorType) {
+    bmhState = bmhStatus['bmh-error'];
+  } else if (bmh.status?.provisioning?.state) {
+    bmhState = bmhStatus[bmh.status?.provisioning?.state] || bmhStatus.pending;
+  }
+
   return {
-    state: bmh.status?.provisioning?.state,
-    error: bmh.status?.errorType,
-    title: state ? state.charAt(0).toUpperCase() + state.slice(1) : state,
-    message: bmh.status?.errorMessage,
+    state: bmhState,
+    errorMessage: bmh.status?.errorMessage,
   };
 };

@@ -136,8 +136,7 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
           <TableToolbar
             selectedIDs={selectedHostIDs || []}
             itemIDs={itemIDs}
-            onSelectAll={() => setSelectedHostIDs?.(itemIDs)}
-            onSelectNone={() => setSelectedHostIDs?.([])}
+            setSelectedIDs={setSelectedHostIDs}
             actions={massActions}
             {...paginationProps}
           />
