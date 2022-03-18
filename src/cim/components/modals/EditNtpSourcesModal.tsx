@@ -80,15 +80,22 @@ const EditNtpSourcesModal: React.FC<EditNtpSourcesModalProps> = ({
                       <RadioField
                         name="enableNtpSources"
                         value="additional"
-                        description="Configure your own NTP sources to sychronize the time between the hotsts that will be added to this infrastructure environment."
+                        description={
+                          <Stack hasGutter>
+                            <StackItem>
+                              Configure your own NTP sources to sychronize the time between the
+                              hotsts that will be added to this infrastructure environment.
+                            </StackItem>
+                            <StackItem>
+                              <AdditionalNTPSourcesField
+                                name="additionalNtpSources"
+                                isDisabled={values.enableNtpSources === 'auto'}
+                                helperText="A comma separated list of IP or domain names of the NTP pools or servers."
+                              />
+                            </StackItem>
+                          </Stack>
+                        }
                         label="Your own NTP (Network Time Protocol) sources"
-                      />
-                    </StackItem>
-                    <StackItem>
-                      <AdditionalNTPSourcesField
-                        name="additionalNtpSources"
-                        isDisabled={values.enableNtpSources === 'auto'}
-                        helperText="A comma separated list of IP or domain names of the NTP pools or servers."
                       />
                     </StackItem>
                     {error && (

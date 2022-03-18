@@ -1,5 +1,5 @@
-import { getClusterDetailsInitialValues } from '../../../common';
-import { Cluster, ManagedDomain, CpuArchitecture } from '../../../common/api/types';
+import { CpuArchitecture, getClusterDetailsInitialValues } from '../../../common';
+import { Cluster, ManagedDomain } from '../../../common/api/types';
 import { OpenshiftVersionOptionType } from '../../../common/types';
 import { OcmClusterDetailsValues } from '../../api/types';
 
