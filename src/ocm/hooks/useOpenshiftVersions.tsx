@@ -1,15 +1,11 @@
 import React from 'react';
-import {
-  AddHostsClusterCreateParams,
-  CpuArchitecture,
-  OpenshiftVersionOptionType,
-} from '../../common';
+import { CpuArchitecture, ImportClusterParams, OpenshiftVersionOptionType } from '../../common';
 import { getErrorMessage, handleApiError } from '../api';
 import { SupportedOpenshiftVersionsAPI } from '../services/apis';
 
 type UseOpenshiftVersionsType = {
   versions: OpenshiftVersionOptionType[];
-  normalizeClusterVersion: (version?: string) => AddHostsClusterCreateParams['openshiftVersion'];
+  normalizeClusterVersion: (version?: string) => ImportClusterParams['openshiftVersion'];
   error?: { title: string; message: string };
   loading: boolean;
 };

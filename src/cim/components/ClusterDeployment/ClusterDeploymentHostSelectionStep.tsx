@@ -244,6 +244,8 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
     submittingText = 'Saving changes...';
   }
 
+  const onSyncError = React.useCallback(() => setNextRequested(false), []);
+
   const footer = (
     <ClusterDeploymentWizardFooter
       agentClusterInstall={agentClusterInstall}
@@ -257,6 +259,7 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
       onBack={() => setCurrentStepId('cluster-details')}
       onCancel={onClose}
       showClusterErrors={showClusterErrors}
+      onSyncError={onSyncError}
     >
       {showFormErrors && errors.selectedHostIds && touched.selectedHostIds && (
         <Alert
