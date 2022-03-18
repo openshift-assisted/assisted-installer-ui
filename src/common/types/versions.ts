@@ -1,4 +1,5 @@
-import { ClusterCreateParams, CpuArchitecture, OpenshiftVersion } from '../api/types';
+import { ClusterCreateParams, OpenshiftVersion } from '../api/types';
+import { CpuArchitecture } from './clusters';
 
 export type OpenshiftVersionOptionType = {
   label: string;

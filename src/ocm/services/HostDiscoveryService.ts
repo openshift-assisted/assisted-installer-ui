@@ -1,6 +1,6 @@
 import {
   Cluster,
-  ClusterUpdateParams,
+  V2ClusterUpdateParams,
   HostDiscoveryValues,
   MonitoredOperator,
   OPERATOR_NAME_CNV,
@@ -12,11 +12,10 @@ import {
 import { getOlmOperatorCreateParamsByName } from '../components/clusters/utils';
 
 const HostDiscoveryService = {
-  setPlatform(params: ClusterUpdateParams, usePlatformIntegration: boolean): void {
+  setPlatform(params: V2ClusterUpdateParams, usePlatformIntegration: boolean): void {
     if (usePlatformIntegration) {
       params.platform = {
         type: 'vsphere',
-        vsphere: {},
       };
     } else {
       params.platform = {
@@ -26,7 +25,7 @@ const HostDiscoveryService = {
   },
 
   setOLMOperators(
-    params: ClusterUpdateParams,
+    params: V2ClusterUpdateParams,
     values: HostDiscoveryValues,
     monitoredOperators: MonitoredOperator[] = [],
   ): void {
@@ -54,7 +53,7 @@ const HostDiscoveryService = {
   },
 
   setSchedulableMasters(
-    params: ClusterUpdateParams,
+    params: V2ClusterUpdateParams,
     values: HostDiscoveryValues,
     cluster: Cluster,
   ): void {
