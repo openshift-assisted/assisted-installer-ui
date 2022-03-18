@@ -34,5 +34,5 @@ export default function useInfraEnvImageUrl(clusterId: Cluster['id']) {
     }
   }, [imageUrl, getImageUrl, infraEnvId, infraEnvIdError]);
 
-  return { imageUrl, error, isLoading: (!imageUrl || !infraEnvId) && !error };
+  return { imageUrl, infraEnvId, error, isLoading: (!imageUrl || !infraEnvId) && !error };
 }

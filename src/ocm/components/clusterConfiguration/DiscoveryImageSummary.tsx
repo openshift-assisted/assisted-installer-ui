@@ -10,7 +10,8 @@ type DiscoveryImageSummaryProps = {
 };
 
 const DiscoveryImageSummary: React.FC<DiscoveryImageSummaryProps> = ({ cluster, ...restProps }) => {
-  const { imageUrl, error, isLoading } = useInfraEnvImageUrl(cluster.id);
+  const { imageUrl, infraEnvId, error, isLoading } = useInfraEnvImageUrl(cluster.id);
+
   if (error) {
     return <ErrorState />;
   }
@@ -20,7 +21,7 @@ const DiscoveryImageSummary: React.FC<DiscoveryImageSummaryProps> = ({ cluster, 
 
   return (
     <DownloadIso
-      fileName={`discovery_image_${cluster.name}.iso`}
+      fileName={infraEnvId && `${infraEnvId}-discovery.iso`}
       downloadUrl={imageUrl}
       isSNO={isSNO(cluster)}
       {...restProps}
