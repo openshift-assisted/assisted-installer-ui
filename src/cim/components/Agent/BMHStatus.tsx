@@ -7,21 +7,21 @@ type BMHStatusProps = {
 };
 
 const BMHStatus: React.FC<BMHStatusProps> = ({ bmhStatus }) =>
-  bmhStatus.message ? (
+  bmhStatus.errorMessage ? (
     <Popover
       headerContent="Error"
-      bodyContent={bmhStatus.message}
+      bodyContent={bmhStatus.errorMessage}
       minWidth="30rem"
       maxWidth="50rem"
       hideOnOutsideClick
       zIndex={300}
     >
       <Button variant="link" isInline>
-        {bmhStatus.title}
+        {bmhStatus.state.title}
       </Button>
     </Popover>
   ) : (
-    <>{bmhStatus.title || '--'}</>
+    <>{bmhStatus.state.title}</>
   );
 
 export default BMHStatus;

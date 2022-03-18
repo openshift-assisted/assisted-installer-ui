@@ -89,8 +89,8 @@ export const getAIHosts = (
 
             const restBmh: Host = {
               id: h.metadata?.uid || '',
-              href: '',
-              kind: 'Host', // It's BMC
+              href: 'bmc', // It's BMC
+              kind: 'Host',
               status: 'known',
               statusInfo: '',
               inventory: JSON.stringify(hostInventory),

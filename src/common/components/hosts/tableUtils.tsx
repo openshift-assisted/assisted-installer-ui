@@ -416,9 +416,16 @@ export const hostActionResolver = ({
         onClick: () => onDeleteHost(host),
       });
     }
-    if (onEditBMH && canEditBMH?.(host)) {
+    if (onEditBMH && host.href === 'bmc') {
+      const disabled = !!canEditBMH?.(host);
       actions.push({
-        title: 'Edit BMC',
+        title: (
+          <ActionTitle
+            disabled={disabled}
+            description={disabled ? 'BMC cannot be changed anymore.' : undefined}
+            title="Edit BMC"
+          />
+        ),
         id: `button-edit-bmh-host-${hostname}`,
         onClick: () => onEditBMH(host),
       });

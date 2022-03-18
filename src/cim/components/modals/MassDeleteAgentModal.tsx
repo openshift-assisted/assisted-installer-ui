@@ -12,13 +12,14 @@ import {
 } from '../../../common';
 import { TableRow } from '../../../common/components/hosts/AITable';
 import HostsTable from '../../../common/components/hosts/HostsTable';
-import { AgentK8sResource, BareMetalHostK8sResource } from '../../types';
+import { AgentK8sResource, BareMetalHostK8sResource, InfraEnvK8sResource } from '../../types';
 import { useAgentsTable } from '../Agent/tableUtils';
 import { AGENT_BMH_HOSTNAME_LABEL_KEY } from '../common/constants';
 import AgentStatus from '../Agent/AgentStatus';
 import BMHStatus from '../Agent/BMHStatus';
 import { getBMHStatus, getAgentStatus } from '../helpers';
 import { usePagination } from '../../../common/components/hosts/usePagination';
+
 const hostnameColumn = (agents: AgentK8sResource[]): TableRow<Host> => {
   return {
     header: {
@@ -100,11 +101,7 @@ const statusColumn = (
     return {
       title,
       props: { 'data-testid': 'host-status' },
-      sortableValue: agent
-        ? getAgentStatus(agent).status.title
-        : bmhStatus?.title
-        ? bmhStatus.title
-        : '',
+      sortableValue: agent ? getAgentStatus(agent).status.title : bmhStatus?.state.title || '',
     };
   },
 });
@@ -121,6 +118,7 @@ type MassDeleteAgentModalProps = {
   bmhs: BareMetalHostK8sResource[];
   // eslint-disable-next-line
   onDelete: (agent?: AgentK8sResource, bmh?: BareMetalHostK8sResource) => Promise<any>;
+  infraEnv: InfraEnvK8sResource;
 };
 
 const MassDeleteAgentModal: React.FC<MassDeleteAgentModalProps> = ({
@@ -129,8 +127,9 @@ const MassDeleteAgentModal: React.FC<MassDeleteAgentModalProps> = ({
   onDelete,
   agents,
   bmhs,
+  infraEnv,
 }) => {
-  const [hosts] = useAgentsTable({ agents, bmhs });
+  const [hosts] = useAgentsTable({ agents, bmhs, infraEnv });
   const onClick = async (host: Host) => {
     const agent = agents.find((a) => a.metadata?.uid === host.id);
     const bmhLabel = agent?.metadata?.labels?.[AGENT_BMH_HOSTNAME_LABEL_KEY];
