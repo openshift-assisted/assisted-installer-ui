@@ -15,7 +15,7 @@ type ClusterDeploymentDetailsFormProps = {
   clusterDeployment?: ClusterDeploymentK8sResource;
   agentClusterInstall?: AgentClusterInstallK8sResource;
   toggleRedHatDnsService?: (checked: boolean) => void;
-  onValuesChanged?: (values: ClusterDetailsValues) => void;
+  onValuesChanged?: (values: ClusterDetailsValues, initRender: boolean) => void;
   pullSecret?: string;
   extensionAfter?: ClusterDetailsFormFieldsProps['extensionAfter'];
 };
@@ -30,7 +30,14 @@ const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> 
   extensionAfter,
 }) => {
   const { values } = useFormikContext<ClusterDetailsValues>();
-  React.useEffect(() => onValuesChanged?.(values), [onValuesChanged, values]);
+  const initRenderRef = React.useRef(true);
+  React.useEffect(() => onValuesChanged?.(values, initRenderRef.current), [
+    onValuesChanged,
+    values,
+  ]);
+  React.useEffect(() => {
+    initRenderRef.current = false;
+  }, []);
   const ocpVersions = React.useMemo(() => getOCPVersions(clusterImages), [clusterImages]);
   const forceOpenshiftVersion = agentClusterInstall
     ? getSelectedVersion(clusterImages, agentClusterInstall)

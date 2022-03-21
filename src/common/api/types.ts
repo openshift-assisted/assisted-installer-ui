@@ -570,6 +570,7 @@ export interface Cpu {
   flags?: string[];
   modelName?: string;
   architecture?: string;
+  clockMegahertz?: number;
 }
 export interface CreateManifestParams {
   /**

@@ -9,7 +9,7 @@ type MassApproveActionProps = {
 
 const MassApproveAction: React.FC<MassApproveActionProps> = ({ onApprove, selectedAgents }) => {
   const disabledDescription = selectedAgents.every((a) => a.spec.approved)
-    ? 'All selected hosts are already approved'
+    ? 'All selected hosts are already approved.'
     : undefined;
   return (
     <DropdownItem

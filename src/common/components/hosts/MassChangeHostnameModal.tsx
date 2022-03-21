@@ -9,6 +9,7 @@ import {
   Modal,
   ModalBoxBody,
   ModalBoxFooter,
+  Popover,
   Split,
   SplitItem,
   Stack,
@@ -16,6 +17,8 @@ import {
 } from '@patternfly/react-core';
 import { Formik, useFormikContext } from 'formik';
 import * as Yup from 'yup';
+import { global_palette_blue_300 as blueInfoColor } from '@patternfly/react-tokens/dist/js/global_palette_blue_300';
+import { InfoCircleIcon } from '@patternfly/react-icons';
 
 import {
   RichInputField,
@@ -37,8 +40,23 @@ const getHostname = (host: Host) => {
 const templateToHostname = (index: number, values: EditHostFormValues) =>
   values.hostname.replace(/{{n+}}/g, `${index + 1}`);
 
-const getNewHostnames = (values: EditHostFormValues, selectedHosts: Host[]) => {
-  return selectedHosts.map((h, index) => templateToHostname(index, values));
+const getNewHostnames = (
+  values: EditHostFormValues,
+  selectedHosts: Host[],
+  canChangeHostName?: (host: Host) => string | undefined,
+) => {
+  let index = 0;
+  return selectedHosts.map((h) => {
+    const reason = canChangeHostName?.(h);
+    const hostnameRes = {
+      newHostname: !reason ? templateToHostname(index, values) : undefined,
+      reason,
+    };
+    if (!reason) {
+      index++;
+    }
+    return hostnameRes;
+  });
 };
 
 type EditHostFormValues = {
@@ -51,15 +69,18 @@ const initialValues = {
 
 const validationSchema = (initialValues: EditHostFormValues, usedHostnames: string[]) =>
   Yup.object().shape({
-    hostname: richNameValidationSchema(usedHostnames, initialValues.hostname),
+    hostname: richNameValidationSchema(usedHostnames, initialValues.hostname).required(),
   });
 
 const withTemplate = (
   selectedHosts: Host[],
   hosts: Host[],
   schema: ReturnType<typeof validationSchema>,
+  canChangeHostName?: (host: Host) => string | undefined,
 ) => async (values: EditHostFormValues) => {
-  const newHostnames = getNewHostnames(values, selectedHosts);
+  const newHostnames = getNewHostnames(values, selectedHosts, canChangeHostName)
+    .filter((h) => !h.reason)
+    .map(({ newHostname }) => newHostname);
 
   const usedHostnames = hosts.reduce<string[]>((acc, host) => {
     if (!selectedHosts.find((a) => a.id === host.id)) {
@@ -69,10 +90,10 @@ const withTemplate = (
   }, []);
   let validationResult = await getRichTextValidation(schema)({
     ...values,
-    hostname: newHostnames[0],
+    hostname: newHostnames[0] || '',
   });
   if (
-    newHostnames.some((h) => usedHostnames.includes(h)) ||
+    newHostnames.some((newHostname) => usedHostnames.includes(newHostname || '')) ||
     new Set(newHostnames).size !== newHostnames.length
   ) {
     validationResult = {
@@ -88,6 +109,7 @@ type MassChangeHostnameFormProps = {
   isOpen: boolean;
   onClose: VoidFunction;
   patchingHost: number;
+  canChangeHostName?: (host: Host) => string | undefined;
 };
 
 const MassChangeHostnameForm: React.FC<MassChangeHostnameFormProps> = ({
@@ -95,6 +117,7 @@ const MassChangeHostnameForm: React.FC<MassChangeHostnameFormProps> = ({
   isOpen,
   patchingHost,
   onClose,
+  canChangeHostName,
 }) => {
   const { values, handleSubmit, isSubmitting, status, isValid } = useFormikContext<
     EditHostFormValues
@@ -115,7 +138,7 @@ const MassChangeHostnameForm: React.FC<MassChangeHostnameFormProps> = ({
 
   const selectedHosts = ref.current;
 
-  const newHostnames = getNewHostnames(values, selectedHosts);
+  const newHostnames = getNewHostnames(values, selectedHosts, canChangeHostName);
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -157,11 +180,30 @@ const MassChangeHostnameForm: React.FC<MassChangeHostnameFormProps> = ({
                   ))}
                 </SplitItem>
                 <SplitItem isFilled>
-                  {selectedHosts.map((h, index) => (
-                    <div key={h.id || index}>
-                      {newHostnames[index] || 'New hostname will appear here...'}
-                    </div>
-                  ))}
+                  {selectedHosts.map((h, index) => {
+                    const { newHostname, reason } = newHostnames[index];
+                    return (
+                      <div key={h.id}>
+                        {reason ? (
+                          <Popover
+                            aria-label="Cannot change hostname popover"
+                            headerContent={<div>Hostname cannot be changed</div>}
+                            bodyContent={<div>{reason}</div>}
+                          >
+                            <Button
+                              variant="link"
+                              icon={<InfoCircleIcon color={blueInfoColor.value} />}
+                              isInline
+                            >
+                              Not changeable
+                            </Button>
+                          </Popover>
+                        ) : (
+                          newHostname || 'New hostname will appear here...'
+                        )}
+                      </div>
+                    );
+                  })}
                 </SplitItem>
               </Split>
             </StackItem>
@@ -193,6 +235,7 @@ export type MassChangeHostnameModalProps = {
   onClose: VoidFunction;
   // eslint-disable-next-line
   onChangeHostname: (host: Host, hostname: string) => Promise<any>;
+  canChangeHostName?: (host: Host) => string | undefined;
 };
 
 const MassChangeHostnameModal: React.FC<MassChangeHostnameModalProps> = ({
@@ -201,6 +244,7 @@ const MassChangeHostnameModal: React.FC<MassChangeHostnameModalProps> = ({
   selectedHostIDs,
   hosts,
   onChangeHostname,
+  canChangeHostName,
 }) => {
   const [patchingHost, setPatchingHost] = React.useState<number>(0);
 
@@ -218,8 +262,12 @@ const MassChangeHostnameModal: React.FC<MassChangeHostnameModalProps> = ({
     >
       <Formik
         initialValues={initialValues}
-        initialStatus={{ error: null }}
-        validate={withTemplate(selectedHosts, hosts, validationSchema(initialValues, []))}
+        validate={withTemplate(
+          selectedHosts,
+          hosts,
+          validationSchema(initialValues, []),
+          canChangeHostName,
+        )}
         onSubmit={async (values, formikActions) => {
           let i = 0;
           try {
@@ -245,6 +293,7 @@ const MassChangeHostnameModal: React.FC<MassChangeHostnameModalProps> = ({
           selectedHosts={selectedHosts}
           patchingHost={patchingHost}
           onClose={onClose}
+          canChangeHostName={canChangeHostName}
         />
       </Formik>
     </Modal>

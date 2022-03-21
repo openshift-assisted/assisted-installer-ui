@@ -82,8 +82,7 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
 
   React.useEffect(() => {
     if (!!infraEnvWithProxy && !touched.enableProxy) {
-      setFieldTouched('enableProxy', false);
-      setFieldValue('enableProxy', false, false);
+      setFieldValue('enableProxy', true, false);
       if (sameProxies) {
         setFieldValue('httpProxy', infraEnvWithProxy.spec?.proxy?.httpProxy, false);
         setFieldValue('httpsProxy', infraEnvWithProxy.spec?.proxy?.httpsProxy, false);

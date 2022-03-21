@@ -99,6 +99,8 @@ const NetworkingForm: React.FC<NetworkingFormProps> = ({
     }
   }, [nextRequested, canContinue, setCurrentStepId]);
 
+  const onSyncError = React.useCallback(() => setNextRequested(false), []);
+
   const errorFields = getFormikErrorFields(errors, touched);
 
   const footer = (
@@ -114,6 +116,7 @@ const NetworkingForm: React.FC<NetworkingFormProps> = ({
       onNext={onNext}
       onCancel={onClose}
       nextButtonText="Next"
+      onSyncError={onSyncError}
     >
       {showFormErrors && !!errorFields.length && (
         <Alert

@@ -26,7 +26,7 @@ export const getDiskCapacity = (inventory: Inventory): number =>
     .reduce((diskSize: number, disk: Disk) => diskSize + (disk.sizeBytes || 0), 0) || 0;
 
 export const getHumanizedCpuClockSpeed = (inventory: Inventory) =>
-  Humanize.formatNumber(inventory.cpu?.frequency || 0);
+  Humanize.formatNumber(inventory.cpu?.frequency || inventory.cpu?.clockMegahertz || 0);
 
 export const getSimpleHardwareInfo = (inventory: Inventory): SimpleHardwareInfo => ({
   cores: inventory.cpu?.count || 0,
