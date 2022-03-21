@@ -1,20 +1,12 @@
 import React from 'react';
 import { FieldArray, useFormikContext } from 'formik';
 import { ClusterDetailsValues } from '../../clusterWizard/types';
-import {
-  Button,
-  ButtonVariant,
-  Stack,
-  StackItem,
-  TextInputTypes,
-  Tooltip,
-} from '@patternfly/react-core';
-import { MinusCircleIcon, PlusCircleIcon } from '@patternfly/react-icons';
+import { Button, Stack, StackItem, TextInputTypes } from '@patternfly/react-core';
+import { PlusCircleIcon } from '@patternfly/react-icons';
 import { InputField } from '../../ui';
+import { RemovableField } from '../../ui/formik';
 
 export const TangServers: React.FC<{ isDisabled?: boolean }> = ({ isDisabled = false }) => {
-  const REMOVE_TANG_SERVER_SHOWN_TIMER = 1500;
-
   const { values } = useFormikContext<ClusterDetailsValues>();
 
   return (
@@ -24,24 +16,10 @@ export const TangServers: React.FC<{ isDisabled?: boolean }> = ({ isDisabled = f
           {values.diskEncryptionTangServers.length > 0 &&
             values.diskEncryptionTangServers.map((tang, index) => (
               <StackItem key={index}>
-                <Tooltip
-                  key={index}
-                  hidden={index === 0 || isDisabled}
-                  exitDelay={REMOVE_TANG_SERVER_SHOWN_TIMER}
-                  flipBehavior={['right', 'bottom']}
-                  distance={1}
-                  className="tooltip-tang-servers"
-                  position="right-start"
-                  content={
-                    <Button
-                      variant={ButtonVariant.link}
-                      onClick={() => {
-                        remove(index);
-                      }}
-                    >
-                      <MinusCircleIcon size="sm" />
-                    </Button>
-                  }
+                <RemovableField
+                  index={index}
+                  showRemoveButton={index === 0 || isDisabled}
+                  remove={remove}
                 >
                   <div>
                     <InputField
@@ -61,7 +39,7 @@ export const TangServers: React.FC<{ isDisabled?: boolean }> = ({ isDisabled = f
                       isDisabled={isDisabled}
                     />
                   </div>
-                </Tooltip>{' '}
+                </RemovableField>{' '}
               </StackItem>
             ))}
 

@@ -13,7 +13,6 @@ import {
   TextContent,
 } from '@patternfly/react-core';
 import { TangServers } from './TangServers';
-import '../tangServers.css';
 import { DiskEncryption } from '../../../api/types';
 
 const DiskEncryptionModeTPMv2: React.FC = () => {
