@@ -7,6 +7,7 @@ import {
   StackItem,
   List,
   ListItem,
+  Title,
 } from '@patternfly/react-core';
 import {
   Cluster,
@@ -33,31 +34,29 @@ import { useClusterSupportedPlatforms } from '../../hooks';
 import { useFormikContext } from 'formik';
 import { ODFCheckbox } from './ODFCheckbox';
 import { CnvCheckbox } from './CnvCheckbox';
-import './HostInventory.css';
 
 const PlatformIntegrationLabel: React.FC = () => (
   <>
     <span>Integrate with vSphere</span>{' '}
     <PopoverIcon
-      minWidth="30rem"
       variant={'plain'}
       bodyContent={
-        <div>
-          <TextContent>
-            <p>
-              Enable vSphere integration to access features like node auto-scaling and persistent
-              storage directly inside OpenShift. You'll need to set vSphere configuration after
-              cluster installation is complete.
-            </p>
-            <Text component="h6">Requirements</Text>
-            <List>
-              <ListItem className="pf-c-content">
-                A network connection between vSphere and the installed OCP cluster
-              </ListItem>
-              <ListItem>Set disk.enableUUID to true inside vSphere</ListItem>{' '}
-            </List>
-          </TextContent>
-        </div>
+        <>
+          Enable vSphere integration to access features like node auto-scaling and persistent
+          storage directly inside OpenShift. You'll need to set vSphere configuration after cluster
+          installation is complete.
+        </>
+      }
+      footerContent={
+        <>
+          <Title headingLevel="h6">Requirements</Title>
+          <List>
+            <ListItem>A network connection between vSphere and the installed OCP cluster</ListItem>
+            <ListItem>
+              Set <code>disk.enableUUID</code> to <code>true</code> inside vSphere
+            </ListItem>
+          </List>
+        </>
       }
     />
   </>
