@@ -1,10 +1,9 @@
 import React from 'react';
 import { FieldArray, useFormikContext } from 'formik';
 import { ClusterDetailsValues } from '../../clusterWizard/types';
-import { Button, Stack, StackItem, TextInputTypes } from '@patternfly/react-core';
-import { PlusCircleIcon } from '@patternfly/react-icons';
+import { Stack, StackItem, TextInputTypes } from '@patternfly/react-core';
 import { InputField } from '../../ui';
-import { RemovableField } from '../../ui/formik';
+import { AddButton, RemovableField } from '../../ui/formik';
 
 export const TangServers: React.FC<{ isDisabled?: boolean }> = ({ isDisabled = false }) => {
   const { values } = useFormikContext<ClusterDetailsValues>();
@@ -45,14 +44,9 @@ export const TangServers: React.FC<{ isDisabled?: boolean }> = ({ isDisabled = f
 
           {!isDisabled && (
             <StackItem>
-              <Button
-                variant={ButtonVariant.link}
-                onClick={() => push({ url: '', thumbprint: '' })}
-                isInline
-              >
-                <PlusCircleIcon size="sm" hidden={isDisabled} />
-                &nbsp;Add another Tang server
-              </Button>
+              <AddButton add={push} addValue={{ url: '', thumbprint: '' }} isInline>
+                Add another Tang server
+              </AddButton>
             </StackItem>
           )}
         </Stack>

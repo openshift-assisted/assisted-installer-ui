@@ -2,13 +2,11 @@ import React from 'react';
 import {
   Alert,
   AlertVariant,
-  Button,
   FormGroup,
   StackItem,
   TextInputTypes,
   Grid,
 } from '@patternfly/react-core';
-import { PlusCircleIcon } from '@patternfly/react-icons';
 import { Address6 } from 'ip-address';
 import { FieldArray, useFormikContext } from 'formik';
 import { Cluster } from '../../../../common/api/types';
@@ -17,7 +15,7 @@ import { useFeature } from '../../../../common/features';
 import { InputField } from '../../../../common/components/ui';
 import { PREFIX_MAX_RESTRICTION } from '../../../../common/config/constants';
 import { NetworkTypeControlGroup } from './NetworkTypeControlGroup';
-import { RemovableField } from '../../../../common/components/ui/formik';
+import { AddButton, RemovableField } from '../../../../common/components/ui/formik';
 
 const AdvancedNetworkFields: React.FC<{ clusterId: Cluster['id']; enableSDN?: boolean }> = ({
   clusterId,
@@ -102,15 +100,9 @@ const AdvancedNetworkFields: React.FC<{ clusterId: Cluster['id']; enableSDN?: bo
 
             {values.stackType === 'singleStack' && (
               <StackItem>
-                <Button
-                  variant="link"
-                  icon={<PlusCircleIcon />}
-                  onClick={() => {
-                    push({ cidr: '', hostPrefix: '', clusterId: clusterId });
-                  }}
-                >
+                <AddButton add={push} addValue={{ cidr: '', hostPrefix: '', clusterId: clusterId }}>
                   Add
-                </Button>
+                </AddButton>
               </StackItem>
             )}
           </FormGroup>
@@ -147,15 +139,9 @@ const AdvancedNetworkFields: React.FC<{ clusterId: Cluster['id']; enableSDN?: bo
             ))}
             {values.stackType === 'singleStack' && (
               <StackItem>
-                <Button
-                  variant="link"
-                  icon={<PlusCircleIcon />}
-                  onClick={() => {
-                    push({ cidr: '', clusterId: clusterId });
-                  }}
-                >
+                <AddButton add={push} addValue={{ cidr: '', clusterId: clusterId }}>
                   Add
-                </Button>
+                </AddButton>
               </StackItem>
             )}
           </FormGroup>
