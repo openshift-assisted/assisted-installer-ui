@@ -7,9 +7,8 @@ import {
   StackItem,
   TextInputTypes,
   Grid,
-  Tooltip,
 } from '@patternfly/react-core';
-import { MinusCircleIcon, PlusCircleIcon } from '@patternfly/react-icons';
+import { PlusCircleIcon } from '@patternfly/react-icons';
 import { Address6 } from 'ip-address';
 import { FieldArray, useFormikContext } from 'formik';
 import { Cluster } from '../../../../common/api/types';
@@ -18,9 +17,7 @@ import { useFeature } from '../../../../common/features';
 import { InputField } from '../../../../common/components/ui';
 import { PREFIX_MAX_RESTRICTION } from '../../../../common/config/constants';
 import { NetworkTypeControlGroup } from './NetworkTypeControlGroup';
-import './AdvancedNetworkFields.css';
-
-const REMOVE_BUTTON_EXIT_DELAY = 1500;
+import { RemovableField } from '../../../../common/components/ui/formik';
 
 const AdvancedNetworkFields: React.FC<{ clusterId: Cluster['id']; enableSDN?: boolean }> = ({
   clusterId,
@@ -65,18 +62,10 @@ const AdvancedNetworkFields: React.FC<{ clusterId: Cluster['id']; enableSDN?: bo
             {values.clusterNetworks?.map((_, index) => {
               return (
                 <StackItem key={index} className={'network-field-group'}>
-                  <Tooltip
+                  <RemovableField
                     hidden={index === 0 || (index === 1 && values.stackType === 'dualStack')}
-                    exitDelay={REMOVE_BUTTON_EXIT_DELAY}
-                    className={'remove-button--tooltip'}
-                    flipBehavior={['right', 'bottom']}
-                    distance={1}
-                    position="right-start"
-                    content={
-                      <Button variant="plain" onClick={() => remove(index)}>
-                        <MinusCircleIcon />
-                      </Button>
-                    }
+                    index={index}
+                    remove={remove}
                   >
                     <>
                       <InputField
@@ -106,7 +95,7 @@ const AdvancedNetworkFields: React.FC<{ clusterId: Cluster['id']; enableSDN?: bo
                         isRequired
                       />
                     </>
-                  </Tooltip>
+                  </RemovableField>
                 </StackItem>
               );
             })}
@@ -140,18 +129,11 @@ const AdvancedNetworkFields: React.FC<{ clusterId: Cluster['id']; enableSDN?: bo
           >
             {values.serviceNetworks?.map((_, index) => (
               <StackItem key={index} className={'network-field-group'}>
-                <Tooltip
+                <RemovableField
                   hidden={index === 0 || (index === 1 && values.stackType === 'dualStack')}
-                  exitDelay={REMOVE_BUTTON_EXIT_DELAY}
                   className={'remove-button--tooltip'}
-                  flipBehavior={['right', 'bottom']}
-                  distance={1}
-                  position="right-start"
-                  content={
-                    <Button variant="plain" onClick={() => remove(index)}>
-                      <MinusCircleIcon />
-                    </Button>
-                  }
+                  index={index}
+                  remove={remove}
                 >
                   <InputField
                     name={`serviceNetworks.${index}.cidr`}
@@ -160,7 +142,7 @@ const AdvancedNetworkFields: React.FC<{ clusterId: Cluster['id']; enableSDN?: bo
                     isRequired
                     labelInfo={index == 0 && values.stackType == 'dualStack' ? 'Primary' : ''}
                   />
-                </Tooltip>
+                </RemovableField>
               </StackItem>
             ))}
             {values.stackType === 'singleStack' && (

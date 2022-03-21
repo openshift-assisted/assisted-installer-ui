@@ -1,21 +1,12 @@
 import React, { useEffect } from 'react';
-import {
-  Alert,
-  AlertVariant,
-  Button,
-  FormGroup,
-  Stack,
-  StackItem,
-  Tooltip,
-} from '@patternfly/react-core';
+import { Alert, AlertVariant, Button, FormGroup, Stack, StackItem } from '@patternfly/react-core';
 import { FieldArray, useFormikContext } from 'formik';
-import { MinusCircleIcon, PlusCircleIcon } from '@patternfly/react-icons';
+import { PlusCircleIcon } from '@patternfly/react-icons';
 import { Cluster, Host } from '../../../../common/api/types';
 import { HostSubnets, NetworkConfigurationValues } from '../../../../common/types';
 import { NO_SUBNET_SET } from '../../../../common/config/constants';
 import { SelectField } from '../../../../common/components/ui';
-
-const REMOVE_BUTTON_EXIT_DELAY = 1500;
+import { RemovableField } from '../../../../common/components/ui/formik';
 
 export interface AvailableSubnetsControlProps {
   clusterId: Cluster['id'];
@@ -60,19 +51,13 @@ export const AvailableSubnetsControl = ({
             {values.machineNetworks?.map((machineNetwork, index) => {
               return (
                 <StackItem key={index}>
-                  <Tooltip
-                    hidden={index === 0 || (index === 1 && values.stackType === 'dualStack')}
-                    exitDelay={REMOVE_BUTTON_EXIT_DELAY}
-                    className={'remove-button--tooltip remove-button--tooltip--Padding-none'}
-                    flipBehavior={['right', 'bottom']}
-                    distance={1}
-                    position="right-start"
-                    style={{ paddingTop: '0' }}
-                    content={
-                      <Button variant="plain" onClick={() => remove(index)}>
-                        <MinusCircleIcon />
-                      </Button>
+                  <RemovableField
+                    index={index}
+                    remove={remove}
+                    showRemoveButton={
+                      index === 0 || (index === 1 && values.stackType === 'dualStack')
                     }
+                    className={'remove-button--tooltip--Padding-none'}
                   >
                     <SelectField
                       name={`machineNetworks.${index}.cidr`}
@@ -103,7 +88,7 @@ export const AvailableSubnetsControl = ({
                       isDisabled={!hostSubnets.length}
                       isRequired={isRequired}
                     />
-                  </Tooltip>
+                  </RemovableField>
                 </StackItem>
               );
             })}

@@ -15,6 +15,7 @@ export { default as NumberInputField } from './NumberInputField';
 export { default as CodeField } from './CodeField';
 export { default as RichInputField } from './RichInputField';
 export { default as AdditionalNTPSourcesField } from './AdditionalNTPSourcesField';
+export { default as RemovableField } from './RemovableField';
 
 export * from './utils';
 export * from './PullSecretField';
