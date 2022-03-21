@@ -16,7 +16,6 @@ const CNVLabel: React.FC<{ clusterId: Cluster['id']; isSingleNode?: boolean }> =
         component={'a'}
         variant={'plain'}
         IconComponent={HelpIcon}
-        minWidth="50rem"
         headerContent="Additional Requirements"
         bodyContent={
           <CNVHostRequirementsContent clusterId={clusterId} isSingleNode={isSingleNode} />
