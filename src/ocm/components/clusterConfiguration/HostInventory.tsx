@@ -1,5 +1,13 @@
 import React from 'react';
-import { Text, TextContent, Button, Stack, StackItem } from '@patternfly/react-core';
+import {
+  Text,
+  TextContent,
+  Button,
+  Stack,
+  StackItem,
+  List,
+  ListItem,
+} from '@patternfly/react-core';
 import {
   Cluster,
   PopoverIcon,
@@ -25,6 +33,7 @@ import { useClusterSupportedPlatforms } from '../../hooks';
 import { useFormikContext } from 'formik';
 import { ODFCheckbox } from './ODFCheckbox';
 import { CnvCheckbox } from './CnvCheckbox';
+import './HostInventory.css';
 
 const PlatformIntegrationLabel: React.FC = () => (
   <>
@@ -33,12 +42,22 @@ const PlatformIntegrationLabel: React.FC = () => (
       minWidth="30rem"
       variant={'plain'}
       bodyContent={
-        <p>
-          Enable vSphere integration to access features like node auto-scaling and persistent
-          storage directly inside OpenShift. In order to complete the integration, you'll need to
-          set vSphere configuration after cluster installation is complete. A network connection is
-          required between vSphere and the installed OCP cluster.
-        </p>
+        <div>
+          <TextContent>
+            <p>
+              Enable vSphere integration to access features like node auto-scaling and persistent
+              storage directly inside OpenShift. You'll need to set vSphere configuration after
+              cluster installation is complete.
+            </p>
+            <Text component="h6">Requirements</Text>
+            <List>
+              <ListItem className="pf-c-content">
+                A network connection between vSphere and the installed OCP cluster
+              </ListItem>
+              <ListItem>Set disk.enableUUID to true inside vSphere</ListItem>{' '}
+            </List>
+          </TextContent>
+        </div>
       }
     />
   </>
