@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react';
-import { Alert, AlertVariant, Button, FormGroup, Stack, StackItem } from '@patternfly/react-core';
+import { Alert, AlertVariant, FormGroup, Stack, StackItem } from '@patternfly/react-core';
 import { FieldArray, useFormikContext } from 'formik';
-import { PlusCircleIcon } from '@patternfly/react-icons';
 import { Cluster, Host } from '../../../../common/api/types';
 import { HostSubnets, NetworkConfigurationValues } from '../../../../common/types';
 import { NO_SUBNET_SET } from '../../../../common/config/constants';
 import { SelectField } from '../../../../common/components/ui';
-import { RemovableField } from '../../../../common/components/ui/formik';
+import { AddButton, RemovableField } from '../../../../common/components/ui/formik';
 
 export interface AvailableSubnetsControlProps {
   clusterId: Cluster['id'];
@@ -95,15 +94,9 @@ export const AvailableSubnetsControl = ({
 
             {values.stackType === 'singleStack' && (
               <StackItem>
-                <Button
-                  variant="link"
-                  icon={<PlusCircleIcon />}
-                  onClick={() => {
-                    push({ cidr: NO_SUBNET_SET, clusterId: clusterId });
-                  }}
-                >
+                <AddButton add={push} addValue={{ cidr: NO_SUBNET_SET, clusterId: clusterId }}>
                   Add
-                </Button>
+                </AddButton>
               </StackItem>
             )}
           </Stack>
