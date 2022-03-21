@@ -83,19 +83,24 @@ const NetworkConfigurationTable: React.FC<NetworkConfigurationTableProps> = ({
 
   const paginationProps = usePagination(hosts.length);
 
+  const ExpandComponent = React.useCallback(
+    ({ obj }) => {
+      return (
+        <HostDetail
+          host={obj}
+          AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
+        />
+      );
+    },
+    [AdditionalNTPSourcesDialogToggleComponent],
+  );
+
   return (
     <HostsTable
       testId="networking-host-table"
       hosts={hosts}
       skipDisabled={skipDisabled}
-      ExpandComponent={({ obj }) => {
-        return (
-          <HostDetail
-            host={obj}
-            AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
-          />
-        );
-      }}
+      ExpandComponent={ExpandComponent}
       content={content}
       actionResolver={actionResolver}
       onSelect={onSelect}
