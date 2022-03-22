@@ -34,7 +34,7 @@ const hostDiscoveryStepValidationsMap: WizardStepValidationMap = {
     groups: [],
     validationIds: [
       'sufficient-masters-count',
-      'ocs-requirements-satisfied',
+      'odf-requirements-satisfied',
       'lso-requirements-satisfied',
       'cnv-requirements-satisfied',
     ],
@@ -44,7 +44,7 @@ const hostDiscoveryStepValidationsMap: WizardStepValidationMap = {
     groups: ['hardware'],
     validationIds: [
       'connected',
-      'ocs-requirements-satisfied',
+      'odf-requirements-satisfied',
       'lso-requirements-satisfied',
       'cnv-requirements-satisfied',
     ],
