@@ -1,48 +1,42 @@
 import * as Yup from 'yup';
-import { Address4, Address6 } from 'ip-address';
 import {
+  allSubnetsIPv4,
   Cluster,
-  ClusterNetwork,
   clusterNetworksValidationSchema,
   dualStackValidationSchema,
+  getDefaultNetworkType,
   HostSubnets,
-  MachineNetwork,
+  isSingleStack,
+  isSNO,
   machineNetworksValidationSchema,
   NetworkConfigurationValues,
-  ServiceNetwork,
   serviceNetworkValidationSchema,
   singleStackValidationSchema,
   sshPublicKeyValidationSchema,
-  uniqueSubnetValidationSchema,
   vipValidationSchema,
 } from '../../../../common';
-
-export const isSingleStack = (
-  machineNetworks?: MachineNetwork[],
-  clusterNetworks?: ClusterNetwork[],
-  serviceNetworks?: ServiceNetwork[],
-) =>
-  (machineNetworks?.every((network) => network.cidr && Address4.isValid(network.cidr)) ||
-    machineNetworks?.every((network) => network.cidr && Address6.isValid(network.cidr))) &&
-  (clusterNetworks?.every((network) => network.cidr && Address4.isValid(network.cidr)) ||
-    clusterNetworks?.every((network) => network.cidr && Address6.isValid(network.cidr))) &&
-  (serviceNetworks?.every((network) => network.cidr && Address4.isValid(network.cidr)) ||
-    serviceNetworks?.every((network) => network.cidr && Address6.isValid(network.cidr)));
 
 export const getNetworkInitialValues = (
   cluster: Cluster,
   defaultNetworkValues: Partial<NetworkConfigurationValues>,
 ): NetworkConfigurationValues => {
+  const isSNOCluster = isSNO(cluster);
+  const usesIPv6 = !(
+    allSubnetsIPv4(cluster.machineNetworks) &&
+    allSubnetsIPv4(cluster.clusterNetworks) &&
+    allSubnetsIPv4(cluster.serviceNetworks)
+  );
+
   return {
     apiVip: cluster.apiVip || '',
     ingressVip: cluster.ingressVip || '',
     sshPublicKey: cluster.sshPublicKey || '',
     vipDhcpAllocation: cluster.vipDhcpAllocation,
     managedNetworkingType: cluster.userManagedNetworking ? 'userManaged' : 'clusterManaged',
-    networkType: cluster.networkType || 'OpenShiftSDN',
+    networkType: cluster.networkType || getDefaultNetworkType(isSNOCluster, usesIPv6),
     enableProxy: false,
     editProxy: false,
-    machineNetworks: cluster.machineNetworks,
+    machineNetworks: cluster.machineNetworks || [],
     clusterNetworks: cluster.clusterNetworks || defaultNetworkValues.clusterNetworks,
     serviceNetworks: cluster.serviceNetworks || defaultNetworkValues.serviceNetworks,
     stackType: isSingleStack(
@@ -69,8 +63,9 @@ export const getNetworkConfigurationValidationSchema = (
           ? Yup.array()
           : machineNetworksValidationSchema.when('stackType', {
               is: 'singleStack',
-              then: singleStackValidationSchema('machine networks').concat(
-                uniqueSubnetValidationSchema('Machine'),
+              then: singleStackValidationSchema(
+                values.clusterNetworks || [],
+                values.serviceNetworks || [],
               ),
               otherwise:
                 values.machineNetworks &&
@@ -79,8 +74,9 @@ export const getNetworkConfigurationValidationSchema = (
             }),
       clusterNetworks: clusterNetworksValidationSchema.when('stackType', {
         is: 'singleStack',
-        then: singleStackValidationSchema('cluster network').concat(
-          uniqueSubnetValidationSchema('Cluster'),
+        then: singleStackValidationSchema(
+          values.machineNetworks || [],
+          values.serviceNetworks || [],
         ),
         otherwise:
           values.clusterNetworks &&
@@ -89,8 +85,9 @@ export const getNetworkConfigurationValidationSchema = (
       }),
       serviceNetworks: serviceNetworkValidationSchema.when('stackType', {
         is: 'singleStack',
-        then: singleStackValidationSchema('service networks').concat(
-          uniqueSubnetValidationSchema('Service'),
+        then: singleStackValidationSchema(
+          values.machineNetworks || [],
+          values.clusterNetworks || [],
         ),
         otherwise:
           values.serviceNetworks &&

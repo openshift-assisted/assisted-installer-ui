@@ -17,10 +17,9 @@ import {
   ClusterValidations,
   HostsValidations,
 } from '../../../common';
-import { RenderIf } from '../../../common/components/ui/';
+import { isSingleStack, RenderIf } from '../../../common/components/ui/';
 import { wizardStepNames } from '../clusterWizard/constants';
 import './ReviewCluster.css';
-import { isSingleStack } from './networkConfiguration/networkConfigurationValidation';
 
 const PlatformIntegrationNote: React.FC<{}> = () => {
   return (

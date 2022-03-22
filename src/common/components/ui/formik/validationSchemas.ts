@@ -8,6 +8,7 @@ import { NO_SUBNET_SET } from '../../../config/constants';
 import { ProxyFieldsType } from '../../../types';
 import { trimCommaSeparatedList, trimSshPublicKey } from './utils';
 import { ClusterNetwork, MachineNetwork, ServiceNetwork } from '../../../api/types';
+import { allSubnetsIPv4, allSubnetsIPv6 } from '../../../selectors';
 
 const ALPHANUMBERIC_REGEX = /^[a-zA-Z0-9]+$/;
 const CLUSTER_NAME_REGEX = /^[a-z]([-a-z0-9]*[a-z0-9])?$/;
@@ -468,24 +469,6 @@ export const locationValidationSchema = Yup.string()
     excludeEmptyString: true,
   });
 
-export const uniqueSubnetValidationSchema = (field: string) =>
-  Yup.array().test(
-    `${field.toLowerCase()}-network-unique`,
-    `${field} network subnets must be unique.`,
-    (values) => {
-      const cidrs = values.map(
-        (subnet: MachineNetwork | ClusterNetwork | ServiceNetwork) => subnet.cidr,
-      );
-      return values.every(
-        (subnet: MachineNetwork | ClusterNetwork | ServiceNetwork) =>
-          cidrs.filter(
-            (cidr: (MachineNetwork | ClusterNetwork | ServiceNetwork)['cidr']) =>
-              cidr === subnet.cidr,
-          ).length == 1,
-      );
-    },
-  );
-
 export const machineNetworksValidationSchema = Yup.array().of(
   Yup.object({ cidr: ipBlockValidationSchema, clusterId: Yup.string() }),
 );
@@ -521,11 +504,23 @@ export const dualStackValidationSchema = (field: string) =>
       (values) => values[1].cidr && Address6.isValid(values[1].cidr),
     );
 
-export const singleStackValidationSchema = (field: string) =>
+export const isSingleStack = (
+  networks1?: (MachineNetwork | ClusterNetwork | ServiceNetwork)[],
+  networks2?: (MachineNetwork | ClusterNetwork | ServiceNetwork)[],
+  networks3?: (MachineNetwork | ClusterNetwork | ServiceNetwork)[],
+) =>
+  !!(
+    (allSubnetsIPv4(networks1) && allSubnetsIPv4(networks2) && allSubnetsIPv4(networks3)) ||
+    (allSubnetsIPv6(networks1) && allSubnetsIPv6(networks1) && allSubnetsIPv6(networks1))
+  );
+
+export const singleStackValidationSchema = (
+  networks1: (MachineNetwork | ClusterNetwork | ServiceNetwork)[],
+  networks2: (MachineNetwork | ClusterNetwork | ServiceNetwork)[],
+) =>
   Yup.array().test(
     'single-stack',
-    `All ${field} must be IPv4 or IPv6 subnets.`,
-    (values: MachineNetwork[]) =>
-      values.every((v) => v.cidr && Address4.isValid(v.cidr)) ||
-      values.every((v) => v.cidr && Address6.isValid(v.cidr)),
+    `All network subnets must be either IPv4 or IPv6.`,
+    (values: (MachineNetwork | ClusterNetwork | ServiceNetwork)[]) =>
+      isSingleStack(values, networks1, networks2),
   );

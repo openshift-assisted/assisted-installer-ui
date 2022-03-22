@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useFormikContext } from 'formik';
-import { Alert, AlertVariant, Checkbox, Grid } from '@patternfly/react-core';
+import { Alert, AlertVariant, Checkbox, Grid, Tooltip } from '@patternfly/react-core';
 import { VirtualIPControlGroup, VirtualIPControlGroupProps } from './VirtualIPControlGroup';
 import { Cluster } from '../../../../common/api/types';
 import { useFeatureSupportLevel } from '../../../../common/components/featureSupportLevels';
@@ -8,8 +8,11 @@ import { NetworkConfigurationValues } from '../../../../common/types';
 import { getLimitedFeatureSupportLevels } from '../../../../common/components/featureSupportLevels/utils';
 import { useFeature } from '../../../../common/features';
 import { isAdvNetworkConf } from '../../../../common/components/clusterConfiguration';
-import { isSNO } from '../../../../common/selectors';
-import { Address4 } from 'ip-address';
+import {
+  canSelectNetworkTypeSDN,
+  getDefaultNetworkType,
+  isSNO,
+} from '../../../../common/selectors';
 import {
   ManagedNetworkingControlGroup,
   UserManagedNetworkingTextContent,
@@ -17,6 +20,7 @@ import {
 import { StackTypeControlGroup } from './StackTypeControl';
 import { AvailableSubnetsControl } from './AvailableSubnetsControl';
 import AdvancedNetworkFields from './AdvancedNetworkFields';
+import { allSubnetsIPv4, NETWORK_TYPE_OVN } from '../../../../common';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   defaultNetworkSettings: Partial<Cluster>;
@@ -44,9 +48,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   children,
 }) => {
   const featureSupportLevelData = useFeatureSupportLevel();
-  const { setFieldValue, values, touched, validateField } = useFormikContext<
-    NetworkConfigurationValues
-  >();
+  const { setFieldValue, values, validateField } = useFormikContext<NetworkConfigurationValues>();
 
   const clusterFeatureSupportLevels = React.useMemo(() => {
     return getLimitedFeatureSupportLevels(cluster, featureSupportLevelData);
@@ -55,13 +57,27 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   const isNetworkTypeSelectionEnabled = useFeature(
     'ASSISTED_INSTALLER_NETWORK_TYPE_SELECTION_FEATURE',
   );
-
-  const [isAdvanced, setAdvanced] = React.useState(
-    isAdvNetworkConf(cluster, defaultNetworkSettings) || values.stackType === 'dualStack',
-  );
-
   const isMultiNodeCluster = !isSNO(cluster);
   const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';
+  const isDualStack = values.stackType === 'dualStack';
+
+  const { usesIPv6, defaultNetworkType, isSDNSelectable } = React.useMemo(() => {
+    const usesIPv6 = !(
+      allSubnetsIPv4(values.machineNetworks) &&
+      allSubnetsIPv4(values.clusterNetworks) &&
+      allSubnetsIPv4(values.serviceNetworks)
+    );
+    return {
+      usesIPv6,
+      defaultNetworkType: getDefaultNetworkType(!isMultiNodeCluster, usesIPv6),
+      isSDNSelectable: canSelectNetworkTypeSDN(!isMultiNodeCluster, usesIPv6),
+    };
+  }, [values.clusterNetworks, values.machineNetworks, values.serviceNetworks, isMultiNodeCluster]);
+
+  const [isAdvanced, setAdvanced] = React.useState(
+    isAdvNetworkConf(cluster, defaultNetworkSettings, defaultNetworkType) ||
+      values.stackType === 'dualStack',
+  );
 
   useEffect(() => {
     if (isUserManagedNetworking) {
@@ -70,11 +86,11 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
       setFieldValue('ingressVip', '', false);
       setFieldValue('apiVip', '', false);
 
-      if (!touched.machineNetworks || isMultiNodeCluster) {
+      if (isMultiNodeCluster) {
         setFieldValue('machineNetworks', [], false);
       }
     } else {
-      if (!values.vipDhcpAllocation && touched.machineNetworks) {
+      if (!values.vipDhcpAllocation) {
         validateField('ingressVip');
         validateField('apiVip');
       }
@@ -83,7 +99,6 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
     isMultiNodeCluster,
     isUserManagedNetworking,
     values.vipDhcpAllocation,
-    touched.machineNetworks,
     setFieldValue,
     validateField,
   ]);
@@ -95,43 +110,46 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
       if (!checked) {
         setFieldValue('clusterNetworks', defaultNetworkSettings.clusterNetworks, false);
         setFieldValue('serviceNetworks', defaultNetworkSettings.serviceNetworks, false);
-        setFieldValue('networkType', 'OpenShiftSDN');
+        setFieldValue('networkType', getDefaultNetworkType(!isMultiNodeCluster, usesIPv6));
       }
     },
-    [setFieldValue, setAdvanced, defaultNetworkSettings],
+    [
+      setFieldValue,
+      defaultNetworkSettings.clusterNetworks,
+      defaultNetworkSettings.serviceNetworks,
+      isMultiNodeCluster,
+      usesIPv6,
+    ],
   );
 
   useEffect(() => {
-    if (values.stackType === 'dualStack' && !isUserManagedNetworking) {
+    if (isDualStack && !isUserManagedNetworking) {
       toggleAdvConfiguration(true);
     }
-  }, [values.stackType, toggleAdvConfiguration, isUserManagedNetworking]);
-
-  const enableSDN = useMemo(
-    () =>
-      values.machineNetworks?.every((network) => network.cidr && Address4.isValid(network.cidr)) &&
-      values.clusterNetworks?.every((network) => network.cidr && Address4.isValid(network.cidr)) &&
-      values.serviceNetworks?.every((network) => network.cidr && Address4.isValid(network.cidr)),
-    [values],
-  );
+  }, [toggleAdvConfiguration, isUserManagedNetworking, isDualStack]);
 
   useEffect(() => {
-    if (isNetworkTypeSelectionEnabled && !enableSDN) {
+    if (isNetworkTypeSelectionEnabled && !isSDNSelectable) {
       setFieldValue('vipDhcpAllocation', false);
-      setFieldValue('networkType', 'OVNKubernetes');
+      setFieldValue('networkType', NETWORK_TYPE_OVN);
+      toggleAdvConfiguration(true);
     }
-  }, [isNetworkTypeSelectionEnabled, enableSDN, setFieldValue]);
+  }, [isNetworkTypeSelectionEnabled, isSDNSelectable, setFieldValue, toggleAdvConfiguration]);
 
   return (
     <Grid hasGutter>
       {!hideManagedNetworking && (
         <ManagedNetworkingControlGroup
           disabled={
-            !!cluster.openshiftVersion &&
-            featureSupportLevelData.isFeatureDisabled(
-              cluster.openshiftVersion,
-              'NETWORK_TYPE_SELECTION',
-            )
+            isDualStack ||
+            (!!cluster.openshiftVersion &&
+              featureSupportLevelData.isFeatureDisabled(
+                cluster.openshiftVersion,
+                'NETWORK_TYPE_SELECTION',
+              ))
+          }
+          tooltip={
+            isDualStack ? 'User-Managed networking is not supported with dual-stack' : undefined
           }
         />
       )}
@@ -149,7 +167,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
 
       {!isUserManagedNetworking && <StackTypeControlGroup clusterId={cluster.id} />}
 
-      {!isUserManagedNetworking && (
+      {!(isUserManagedNetworking && isMultiNodeCluster) && (
         <AvailableSubnetsControl
           clusterId={cluster.id}
           hostSubnets={hostSubnets}
@@ -167,15 +185,22 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
         />
       )}
 
-      <Checkbox
-        id="useAdvancedNetworking"
-        label="Use advanced networking"
-        description="Configure advanced networking properties (e.g. CIDR ranges)."
-        isChecked={isAdvanced}
-        onChange={toggleAdvConfiguration}
-      />
+      <Tooltip
+        content={'Advanced networking properties must be configured in dual-stack'}
+        hidden={values.stackType === 'singleStack'}
+        position={'top-start'}
+      >
+        <Checkbox
+          id="useAdvancedNetworking"
+          label="Use advanced networking"
+          description="Configure advanced networking properties (e.g. CIDR ranges)."
+          isChecked={isAdvanced}
+          onChange={toggleAdvConfiguration}
+          isDisabled={values.stackType === 'dualStack'}
+        />
+      </Tooltip>
 
-      {isAdvanced && <AdvancedNetworkFields clusterId={cluster.id} enableSDN={enableSDN} />}
+      {isAdvanced && <AdvancedNetworkFields isSDNSelectable={isSDNSelectable} />}
     </Grid>
   );
 };

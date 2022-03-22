@@ -19,7 +19,7 @@ export const NetworkTypeControlGroup: React.FC<NetworkTypeControlGroupProps> = (
           <Tooltip
             hidden={isSDNSelectable}
             content={
-              'Software-Defined Networking (SDN) cannot be selected with SNO clusters or when IPv6 is detected.'
+              'Software-Defined Networking (SDN) cannot be selected for SNO clusters or when IPv6 is detected.'
             }
           >
             <RadioField

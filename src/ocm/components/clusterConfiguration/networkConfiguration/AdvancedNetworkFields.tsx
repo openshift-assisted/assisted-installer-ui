@@ -9,18 +9,17 @@ import {
 } from '@patternfly/react-core';
 import { Address6 } from 'ip-address';
 import { FieldArray, useFormikContext } from 'formik';
-import { Cluster } from '../../../../common/api/types';
 import { NetworkConfigurationValues } from '../../../../common/types';
 import { useFeature } from '../../../../common/features';
 import { InputField } from '../../../../common/components/ui';
 import { PREFIX_MAX_RESTRICTION } from '../../../../common/config/constants';
-import { NetworkTypeControlGroup } from './NetworkTypeControlGroup';
-import { AddButton, RemovableField } from '../../../../common/components/ui/formik';
+import { NetworkTypeControlGroup } from '../../../../common/components/clusterWizard/networkingSteps/NetworkTypeControlGroup';
 
-const AdvancedNetworkFields: React.FC<{ clusterId: Cluster['id']; enableSDN?: boolean }> = ({
-  clusterId,
-  enableSDN = true,
-}) => {
+type AdvancedNetworkFieldsProps = {
+  isSDNSelectable: boolean;
+};
+
+const AdvancedNetworkFields: React.FC<AdvancedNetworkFieldsProps> = ({ isSDNSelectable }) => {
   const { setFieldValue, values, errors } = useFormikContext<NetworkConfigurationValues>();
 
   const isNetworkTypeSelectionEnabled = useFeature(
@@ -52,7 +51,7 @@ const AdvancedNetworkFields: React.FC<{ clusterId: Cluster['id']; enableSDN?: bo
   return (
     <Grid hasGutter>
       <FieldArray name="clusterNetworks">
-        {({ push, remove }) => (
+        {() => (
           <FormGroup
             fieldId="clusterNetworks"
             labelInfo={values.stackType === 'dualStack' && 'Primary'}
@@ -60,99 +59,71 @@ const AdvancedNetworkFields: React.FC<{ clusterId: Cluster['id']; enableSDN?: bo
             {values.clusterNetworks?.map((_, index) => {
               return (
                 <StackItem key={index} className={'network-field-group'}>
-                  <RemovableField
-                    hidden={index === 0 || (index === 1 && values.stackType === 'dualStack')}
-                    index={index}
-                    remove={remove}
-                  >
-                    <>
-                      <InputField
-                        name={`clusterNetworks.${index}.cidr`}
-                        label="Cluster network CIDR"
-                        helperText="IP address block from which Pod IPs are allocated. This block must not overlap with existing physical networks. These IP addresses are used for the Pod network, and if you need to access the Pods from an external network, configure load balancers and routers to manage the traffic."
-                        isRequired
-                        labelInfo={index == 0 && values.stackType == 'dualStack' ? 'Primary' : ''}
-                      />
-                      <InputField
-                        name={`clusterNetworks.${index}.hostPrefix`}
-                        label="Cluster network host prefix"
-                        type={TextInputTypes.number}
-                        min={clusterNetworkCidrPrefix(index)}
-                        max={
-                          isSubnetIPv6(index)
-                            ? PREFIX_MAX_RESTRICTION.IPv6
-                            : PREFIX_MAX_RESTRICTION.IPv4
-                        }
-                        onBlur={(e) =>
-                          formatClusterNetworkHostPrefix(
-                            e as React.ChangeEvent<HTMLInputElement>,
-                            index,
-                          )
-                        }
-                        helperText={clusterNetworkHostPrefixHelperText(index)}
-                        isRequired
-                      />
-                    </>
-                  </RemovableField>
+                  <InputField
+                    name={`clusterNetworks.${index}.cidr`}
+                    label="Cluster network CIDR"
+                    helperText="IP address block from which Pod IPs are allocated. This block must not overlap with existing physical networks. These IP addresses are used for the Pod network, and if you need to access the Pods from an external network, configure load balancers and routers to manage the traffic."
+                    isRequired
+                    labelInfo={index == 0 && values.stackType == 'dualStack' ? 'Primary' : ''}
+                  />
+                  <InputField
+                    name={`clusterNetworks.${index}.hostPrefix`}
+                    label="Cluster network host prefix"
+                    type={TextInputTypes.number}
+                    min={clusterNetworkCidrPrefix(index)}
+                    max={
+                      isSubnetIPv6(index)
+                        ? PREFIX_MAX_RESTRICTION.IPv6
+                        : PREFIX_MAX_RESTRICTION.IPv4
+                    }
+                    onBlur={(e) =>
+                      formatClusterNetworkHostPrefix(
+                        e as React.ChangeEvent<HTMLInputElement>,
+                        index,
+                      )
+                    }
+                    helperText={clusterNetworkHostPrefixHelperText(index)}
+                    isRequired
+                  />
                 </StackItem>
               );
             })}
-
-            {values.stackType === 'singleStack' && (
-              <StackItem>
-                <AddButton add={push} addValue={{ cidr: '', hostPrefix: '', clusterId: clusterId }}>
-                  Add
-                </AddButton>
-              </StackItem>
-            )}
           </FormGroup>
         )}
       </FieldArray>
 
       {typeof errors.clusterNetworks === 'string' && (
-        <Alert variant={AlertVariant.info} title={errors.clusterNetworks} isInline />
+        <Alert variant={AlertVariant.warning} title={errors.clusterNetworks} isInline />
       )}
 
       <FieldArray name="serviceNetworks">
-        {({ push, remove }) => (
+        {() => (
           <FormGroup
             fieldId="serviceNetworks"
             labelInfo={values.stackType === 'dualStack' && 'Primary'}
           >
             {values.serviceNetworks?.map((_, index) => (
               <StackItem key={index} className={'network-field-group'}>
-                <RemovableField
-                  hidden={index === 0 || (index === 1 && values.stackType === 'dualStack')}
-                  className={'remove-button--tooltip'}
-                  index={index}
-                  remove={remove}
-                >
-                  <InputField
-                    name={`serviceNetworks.${index}.cidr`}
-                    label="Service network CIDR"
-                    helperText="The IP address pool to use for service IP addresses. You can enter only one IP address pool. If you need to access the services from an external network, configure load balancers and routers to manage the traffic."
-                    isRequired
-                    labelInfo={index == 0 && values.stackType == 'dualStack' ? 'Primary' : ''}
-                  />
-                </RemovableField>
+                <InputField
+                  name={`serviceNetworks.${index}.cidr`}
+                  label="Service network CIDR"
+                  helperText="The IP address pool to use for service IP addresses. You can enter only one IP address pool. If you need to access the services from an external network, configure load balancers and routers to manage the traffic."
+                  isRequired
+                  labelInfo={index == 0 && values.stackType == 'dualStack' ? 'Primary' : ''}
+                />
               </StackItem>
             ))}
-            {values.stackType === 'singleStack' && (
-              <StackItem>
-                <AddButton add={push} addValue={{ cidr: '', clusterId: clusterId }}>
-                  Add
-                </AddButton>
-              </StackItem>
-            )}
           </FormGroup>
         )}
       </FieldArray>
 
       {typeof errors.serviceNetworks === 'string' && (
-        <Alert variant={AlertVariant.info} title={errors.serviceNetworks} isInline />
+        <Alert variant={AlertVariant.warning} title={errors.serviceNetworks} isInline />
       )}
 
-      {isNetworkTypeSelectionEnabled && <NetworkTypeControlGroup enableSDN={enableSDN} />}
+      {isNetworkTypeSelectionEnabled && (
+        <NetworkTypeControlGroup isSDNSelectable={isSDNSelectable} />
+      )}
     </Grid>
   );
 };

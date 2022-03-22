@@ -36,9 +36,7 @@ type ClusterPropertiesProps = {
   externalMode?: boolean;
 };
 
-const getNetworkType = (
-  clusterNetworkType: 'OpenShiftSDN' | 'OVNKubernetes' | undefined,
-): string => {
+const getNetworkType = (clusterNetworkType: Cluster['networkType']): string => {
   let networkType: string;
   clusterNetworkType === NETWORK_TYPE_SDN
     ? (networkType = 'Software-Defined Networking (SDN)')

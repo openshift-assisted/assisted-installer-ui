@@ -5,7 +5,6 @@ import { Cluster, Host } from '../../../../common/api/types';
 import { HostSubnets, NetworkConfigurationValues } from '../../../../common/types';
 import { NO_SUBNET_SET } from '../../../../common/config/constants';
 import { SelectField } from '../../../../common/components/ui';
-import { AddButton, RemovableField } from '../../../../common/components/ui/formik';
 
 export interface AvailableSubnetsControlProps {
   clusterId: Cluster['id'];
@@ -45,66 +44,49 @@ export const AvailableSubnetsControl = ({
       isRequired
     >
       <FieldArray name="machineNetworks">
-        {({ push, remove }) => (
+        {() => (
           <Stack>
             {values.machineNetworks?.map((machineNetwork, index) => {
               return (
                 <StackItem key={index}>
-                  <RemovableField
-                    index={index}
-                    remove={remove}
-                    showRemoveButton={
-                      index === 0 || (index === 1 && values.stackType === 'dualStack')
+                  <SelectField
+                    name={`machineNetworks.${index}.cidr`}
+                    options={
+                      hostSubnets.length
+                        ? [
+                            {
+                              label: `Please select a subnet. (${hostSubnets.length} available)`,
+                              value: NO_SUBNET_SET,
+                              isDisabled: true,
+                              id: 'form-input-hostSubnet-field-option-no-subnet',
+                            },
+                            ...hostSubnets
+                              .sort((subA, subB) => subA.humanized.localeCompare(subB.humanized))
+                              .map((hn, index) => ({
+                                label: hn.humanized,
+                                value: hn.subnet,
+                                id: `form-input-hostSubnet-field-option-${index}`,
+                              })),
+                          ]
+                        : [
+                            {
+                              label: 'No subnets are currently available',
+                              value: NO_SUBNET_SET,
+                            },
+                          ]
                     }
-                    className={'remove-button--tooltip--Padding-none'}
-                  >
-                    <SelectField
-                      name={`machineNetworks.${index}.cidr`}
-                      options={
-                        hostSubnets.length
-                          ? [
-                              {
-                                label: `Please select a subnet. (${hostSubnets.length} available)`,
-                                value: NO_SUBNET_SET,
-                                isDisabled: true,
-                                id: 'form-input-hostSubnet-field-option-no-subnet',
-                              },
-                              ...hostSubnets
-                                .sort((subA, subB) => subA.humanized.localeCompare(subB.humanized))
-                                .map((hn, index) => ({
-                                  label: hn.humanized,
-                                  value: hn.subnet,
-                                  id: `form-input-hostSubnet-field-option-${index}`,
-                                })),
-                            ]
-                          : [
-                              {
-                                label: 'No subnets are currently available',
-                                value: NO_SUBNET_SET,
-                              },
-                            ]
-                      }
-                      isDisabled={!hostSubnets.length}
-                      isRequired={isRequired}
-                    />
-                  </RemovableField>
+                    isDisabled={!hostSubnets.length}
+                    isRequired={isRequired}
+                  />
                 </StackItem>
               );
             })}
-
-            {values.stackType === 'singleStack' && (
-              <StackItem>
-                <AddButton add={push} addValue={{ cidr: NO_SUBNET_SET, clusterId: clusterId }}>
-                  Add
-                </AddButton>
-              </StackItem>
-            )}
           </Stack>
         )}
       </FieldArray>
 
       {typeof errors.machineNetworks === 'string' && (
-        <Alert variant={AlertVariant.info} title={errors.machineNetworks} isInline />
+        <Alert variant={AlertVariant.warning} title={errors.machineNetworks} isInline />
       )}
     </FormGroup>
   );

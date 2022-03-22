@@ -165,9 +165,11 @@ const NetworkConfigurationPage: React.FC<{
         sshPublicKey: values.sshPublicKey,
         vipDhcpAllocation: values.vipDhcpAllocation,
         networkType: values.networkType,
+        machineNetworks: values.machineNetworks,
+        clusterNetworks: values.clusterNetworks,
+        serviceNetworks: values.serviceNetworks,
+        userManagedNetworking: isUserManagedNetworking,
       };
-
-      params.userManagedNetworking = isUserManagedNetworking;
 
       if (params.userManagedNetworking) {
         delete params.apiVip;
