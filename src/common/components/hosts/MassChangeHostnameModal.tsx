@@ -31,6 +31,7 @@ import { Host } from '../../api';
 import { getHostname as getHostnameUtils, getInventory } from './utils';
 
 import './MassChangeHostnameModal.css';
+import { ActionCheck } from './types';
 
 const getHostname = (host: Host) => {
   const inventory = getInventory(host);
@@ -43,16 +44,16 @@ const templateToHostname = (index: number, values: EditHostFormValues) =>
 const getNewHostnames = (
   values: EditHostFormValues,
   selectedHosts: Host[],
-  canChangeHostName?: (host: Host) => string | undefined,
+  canChangeHostname: (host: Host) => ActionCheck,
 ) => {
   let index = 0;
   return selectedHosts.map((h) => {
-    const reason = canChangeHostName?.(h);
+    const [changeEnabled, reason] = canChangeHostname(h);
     const hostnameRes = {
-      newHostname: !reason ? templateToHostname(index, values) : undefined,
-      reason,
+      newHostname: changeEnabled ? templateToHostname(index, values) : undefined,
+      reason: changeEnabled ? undefined : reason,
     };
-    if (!reason) {
+    if (changeEnabled) {
       index++;
     }
     return hostnameRes;
@@ -76,9 +77,9 @@ const withTemplate = (
   selectedHosts: Host[],
   hosts: Host[],
   schema: ReturnType<typeof validationSchema>,
-  canChangeHostName?: (host: Host) => string | undefined,
+  canChangeHostname: (host: Host) => ActionCheck,
 ) => async (values: EditHostFormValues) => {
-  const newHostnames = getNewHostnames(values, selectedHosts, canChangeHostName)
+  const newHostnames = getNewHostnames(values, selectedHosts, canChangeHostname)
     .filter((h) => !h.reason)
     .map(({ newHostname }) => newHostname);
 
@@ -109,7 +110,7 @@ type MassChangeHostnameFormProps = {
   isOpen: boolean;
   onClose: VoidFunction;
   patchingHost: number;
-  canChangeHostName?: (host: Host) => string | undefined;
+  canChangeHostname: (host: Host) => ActionCheck;
 };
 
 const MassChangeHostnameForm: React.FC<MassChangeHostnameFormProps> = ({
@@ -117,7 +118,7 @@ const MassChangeHostnameForm: React.FC<MassChangeHostnameFormProps> = ({
   isOpen,
   patchingHost,
   onClose,
-  canChangeHostName,
+  canChangeHostname,
 }) => {
   const { values, handleSubmit, isSubmitting, status, isValid } = useFormikContext<
     EditHostFormValues
@@ -138,7 +139,7 @@ const MassChangeHostnameForm: React.FC<MassChangeHostnameFormProps> = ({
 
   const selectedHosts = ref.current;
 
-  const newHostnames = getNewHostnames(values, selectedHosts, canChangeHostName);
+  const newHostnames = getNewHostnames(values, selectedHosts, canChangeHostname);
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -235,7 +236,7 @@ export type MassChangeHostnameModalProps = {
   onClose: VoidFunction;
   // eslint-disable-next-line
   onChangeHostname: (host: Host, hostname: string) => Promise<any>;
-  canChangeHostName?: (host: Host) => string | undefined;
+  canChangeHostname: (host: Host) => ActionCheck;
 };
 
 const MassChangeHostnameModal: React.FC<MassChangeHostnameModalProps> = ({
@@ -244,7 +245,7 @@ const MassChangeHostnameModal: React.FC<MassChangeHostnameModalProps> = ({
   selectedHostIDs,
   hosts,
   onChangeHostname,
-  canChangeHostName,
+  canChangeHostname,
 }) => {
   const [patchingHost, setPatchingHost] = React.useState<number>(0);
 
@@ -266,7 +267,7 @@ const MassChangeHostnameModal: React.FC<MassChangeHostnameModalProps> = ({
           selectedHosts,
           hosts,
           validationSchema(initialValues, []),
-          canChangeHostName,
+          canChangeHostname,
         )}
         onSubmit={async (values, formikActions) => {
           let i = 0;
@@ -293,7 +294,7 @@ const MassChangeHostnameModal: React.FC<MassChangeHostnameModalProps> = ({
           selectedHosts={selectedHosts}
           patchingHost={patchingHost}
           onClose={onClose}
-          canChangeHostName={canChangeHostName}
+          canChangeHostname={canChangeHostname}
         />
       </Formik>
     </Modal>

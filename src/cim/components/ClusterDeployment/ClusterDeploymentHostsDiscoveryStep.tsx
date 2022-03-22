@@ -38,20 +38,6 @@ const getValidationSchema = () => {
   });
 };
 
-export const useHostsDiscoveryFormik = ({
-  agents,
-  agentClusterInstall,
-}: UseHostsDiscoveryFormikArgs): [ClusterDeploymentHostsDiscoveryValues, Yup.Lazy] => {
-  const initialValues = React.useMemo(
-    () => getInitialValues({ agents, agentClusterInstall }),
-    [], // eslint-disable-line react-hooks/exhaustive-deps
-  );
-
-  const validationSchema = React.useMemo(() => getValidationSchema(), []);
-
-  return [initialValues, validationSchema];
-};
-
 const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscoveryStepProps> = ({
   onClose,
   onSaveHostsDiscovery,
@@ -68,10 +54,13 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
     [allAgents, infraEnv],
   );
 
-  const [initialValues, validationSchema] = useHostsDiscoveryFormik({
-    agents: infraEnvAgents,
-    agentClusterInstall,
-  });
+  const [initialValues, validationSchema] = React.useMemo(
+    () => [
+      getInitialValues({ agents: infraEnvAgents, agentClusterInstall }),
+      getValidationSchema(),
+    ],
+    [], // eslint-disable-line react-hooks/exhaustive-deps
+  );
 
   const handleSubmit = async (values: ClusterDeploymentHostsDiscoveryValues) => {
     try {

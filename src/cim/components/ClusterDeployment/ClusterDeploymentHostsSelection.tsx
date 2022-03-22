@@ -17,7 +17,7 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
   clusterDeployment,
   agents,
   aiConfigMap,
-  hostActions,
+  onEditRole,
 }) => {
   const { values } = useFormikContext<ClusterDeploymentHostsSelectionValues>();
   const { autoSelectHosts } = values;
@@ -67,7 +67,7 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
             {!autoSelectHosts && (
               <ClusterDeploymentHostsSelectionAdvanced<ClusterDeploymentHostsSelectionValues>
                 availableAgents={availableAgents}
-                hostActions={hostActions}
+                onEditRole={onEditRole}
               />
             )}
           </Form>

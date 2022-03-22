@@ -16,6 +16,7 @@ import ClusterDeploymentHostsSelection from './ClusterDeploymentHostsSelection';
 import {
   ClusterDeploymentHostSelectionStepProps,
   ClusterDeploymentHostsSelectionValues,
+  AgentTableActions,
 } from './types';
 import { hostCountValidationSchema } from './validationSchemas';
 import {
@@ -142,7 +143,7 @@ type HostSelectionFormProps = {
   onClose: ClusterDeploymentHostSelectionStepProps['onClose'];
   clusterDeployment: ClusterDeploymentHostSelectionStepProps['clusterDeployment'];
   aiConfigMap?: ClusterDeploymentHostSelectionStepProps['aiConfigMap'];
-  hostActions?: ClusterDeploymentHostSelectionStepProps['hostActions'];
+  onEditRole: AgentTableActions['onEditRole'];
 };
 
 const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
@@ -151,7 +152,7 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
   onClose,
   clusterDeployment,
   aiConfigMap,
-  hostActions: initHostActions,
+  onEditRole: onEditRoleInit,
 }) => {
   const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
   const [showClusterErrors, setShowClusterErrors] = React.useState(false);
@@ -171,24 +172,17 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
   const [showFormErrors, setShowFormErrors] = React.useState(false);
   const selectedAgents = getSelectedAgents(agents, values);
 
-  const hostActions = React.useMemo<HostSelectionFormProps['hostActions']>(() => {
-    const onEditRole = initHostActions?.onEditRole;
-    return {
-      ...initHostActions,
-      ...(onEditRole
-        ? {
-            onEditRole: async (agent, role) => {
-              setNextRequested(false);
-              setShowClusterErrors(false); //not sure we want to reset this ?
-              setSubmitting(true);
-              const response = await onEditRole(agent, role);
-              setSubmitting(false);
-              return response;
-            },
-          }
-        : {}),
-    };
-  }, [initHostActions, setSubmitting]);
+  const onEditRole = React.useCallback(
+    async (agent, role) => {
+      setNextRequested(false);
+      setShowClusterErrors(false);
+      setSubmitting(true);
+      const response = await onEditRoleInit?.(agent, role);
+      setSubmitting(false);
+      return response;
+    },
+    [onEditRoleInit, setSubmitting],
+  );
 
   const onNext = async () => {
     if (!showFormErrors) {
@@ -285,7 +279,7 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
             agents={agents}
             clusterDeployment={clusterDeployment}
             aiConfigMap={aiConfigMap}
-            hostActions={hostActions}
+            onEditRole={onEditRole}
           />
         </GridItem>
       </Grid>

@@ -7,14 +7,14 @@ import ClusterDeploymentHostsSelectionAdvanced from './ClusterDeploymentHostsSel
 import { ScaleUpFormValues } from './types';
 import SwitchField from '../../../common/components/ui/formik/SwitchField';
 import ClusterScaleUpAutoHostsSelection from './ClusterScaleUpAutoHostsSelection';
-import { ClusterDeploymentK8sResource } from '../../types/k8s/cluster-deployment';
+import { AgentTableActions } from '../ClusterDeployment/types';
 
 type ScaleUpFormProps = {
   agents: AgentK8sResource[];
-  clusterDeployment: ClusterDeploymentK8sResource;
+  onEditHost: AgentTableActions['onEditHost'];
 };
 
-const ScaleUpForm = ({ agents }: ScaleUpFormProps) => {
+const ScaleUpForm: React.FC<ScaleUpFormProps> = ({ agents, onEditHost }) => {
   const { values } = useFormikContext<ScaleUpFormValues>();
   const { autoSelectHosts } = values;
   const availableAgents = React.useMemo(
@@ -37,6 +37,7 @@ const ScaleUpForm = ({ agents }: ScaleUpFormProps) => {
       {!autoSelectHosts && (
         <ClusterDeploymentHostsSelectionAdvanced<ScaleUpFormValues>
           availableAgents={availableAgents}
+          onEditHost={onEditHost}
         />
       )}
     </Form>
