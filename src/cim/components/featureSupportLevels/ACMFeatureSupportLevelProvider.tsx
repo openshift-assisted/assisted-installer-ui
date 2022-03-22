@@ -1,6 +1,4 @@
 import React, { PropsWithChildren } from 'react';
-
-import { getOCPVersions } from '../helpers';
 import {
   FeatureSupportLevelsMap,
   FeatureIdToSupportLevel,
@@ -10,46 +8,67 @@ import {
   FeatureSupportLevelData,
 } from '../../../common';
 import { ClusterImageSetK8sResource } from '../../types';
+import { featureSupportLevelsACM } from '../../config/constants';
+import { getFeatureDisabledReason, isFeatureSupported } from './featureStateUtils';
+import { getVersionFromReleaseImage } from '../helpers';
 
 export type ACMFeatureSupportLevelProvider = PropsWithChildren<{
   clusterImages: ClusterImageSetK8sResource[];
   isEditClusterFlow?: boolean;
 }>;
+const getFeatureSupportLevelsMap = (): FeatureSupportLevelsMap => {
+  try {
+    const featureSupportLevelsMap: FeatureSupportLevelsMap = {};
+    featureSupportLevelsACM.supportLevels.forEach((feature) => {
+      const featureIdParams = {};
+      const featureProps = feature.features;
+      featureProps.forEach((ops: { featureId: string | number; supportLevel: string }) => {
+        featureIdParams[ops.featureId] = ops.supportLevel;
+      });
+      featureSupportLevelsMap[feature.openshiftVersion] = featureIdParams;
+    });
+    return featureSupportLevelsMap;
+  } catch (err) {
+    console.error(err);
+    return {};
+  }
+};
 
 export const ACMFeatureSupportLevelProvider: React.FC<ACMFeatureSupportLevelProvider> = ({
   children,
   clusterImages,
   isEditClusterFlow,
 }) => {
-  const ocpVersions = React.useMemo(() => getOCPVersions(clusterImages), [clusterImages]);
-
   const supportLevelData: FeatureSupportLevelsMap = React.useMemo<FeatureSupportLevelsMap>(() => {
-    const featureSupportLevelsMap: FeatureSupportLevelsMap = {};
+    return getFeatureSupportLevelsMap();
+  }, []);
 
-    ocpVersions.forEach((version) => {
-      // TODO(mlibra): get this dynamically
-      const featureIdToSupportLevel: FeatureIdToSupportLevel = {
-        REQUESTED_HOSTNAME: 'supported',
-        SNO: 'tech-preview',
-        CNV: 'supported',
-        NETWORK_TYPE_SELECTION: 'tech-preview',
-      };
-      featureSupportLevelsMap[version.version] = featureIdToSupportLevel;
-    });
-    return featureSupportLevelsMap;
-  }, [ocpVersions]);
+  const getMajorMinorVersion = (version = '') => {
+    const match = /[0-9].[0-9][0-9]?/g.exec(version);
+    return match?.[0] || '';
+  };
+
+  const getNormalizedVersion = React.useCallback(
+    (versionName: string) => {
+      const clusterImage = clusterImages.filter(
+        (clusterImageSet) => clusterImageSet.metadata?.name == versionName,
+      );
+      const version = getVersionFromReleaseImage(clusterImage[0].spec?.releaseImage);
+      return getMajorMinorVersion(version);
+    },
+    [clusterImages],
+  );
 
   const getVersionSupportLevelsMap: FeatureSupportLevelData['getVersionSupportLevelsMap'] = React.useCallback(
     (versionName: string): FeatureIdToSupportLevel | undefined => {
-      const version = ocpVersions.find((v) => v.value == versionName);
-      const normalized = version?.version;
+      const normalized = getNormalizedVersion(versionName);
       return normalized
         ? supportLevelData[normalized]
         : {
             /* empty FeatureIdToSupportLevel */
           };
     },
-    [supportLevelData, ocpVersions],
+    [supportLevelData, getNormalizedVersion],
   );
 
   // TODO(mlibra): Following callbacks can be reused with the OCM flow, just based on providing an application-specific map
@@ -61,14 +80,21 @@ export const ACMFeatureSupportLevelProvider: React.FC<ACMFeatureSupportLevelProv
     [getVersionSupportLevelsMap],
   );
 
-  const isFeatureSupportedCallback: FeatureSupportLevelData['isFeatureSupported'] = React.useCallback(
-    () => true,
-    [],
+  const isFeatureSupportedCallback = React.useCallback(
+    (versionName: string, featureId: FeatureId) => {
+      const supportLevel = getFeatureSupportLevel(versionName, featureId);
+      return isFeatureSupported(supportLevel);
+    },
+    [getFeatureSupportLevel],
   );
 
-  const getDisabledReasonCallback: FeatureSupportLevelData['getFeatureDisabledReason'] = React.useCallback(() => {
-    return undefined; // we have recently everything enabled in the ACM
-  }, []);
+  const getDisabledReasonCallback = React.useCallback(
+    (versionName: string, featureId: FeatureId) => {
+      const isSupported = isFeatureSupportedCallback(versionName, featureId);
+      return getFeatureDisabledReason(featureId, undefined, isSupported);
+    },
+    [isFeatureSupportedCallback],
+  );
 
   const isFeatureDisabled: FeatureSupportLevelData['isFeatureDisabled'] = React.useCallback(
     (_version: string, featureId: FeatureId) => {
