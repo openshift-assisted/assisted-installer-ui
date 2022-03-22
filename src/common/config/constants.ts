@@ -96,7 +96,7 @@ export const HOST_VALIDATION_GROUP_LABELS: { [key in keyof ValidationsInfo]: str
 };
 
 export const HOST_VALIDATION_LABELS: { [key in HostValidationId]: string } = {
-  'odf-requirements-satisfied': '',
+  'odf-requirements-satisfied': 'ODF requirements',
   'disk-encryption-requirements-satisfied': 'Disk encryption requirements',
   'compatible-with-cluster-platform': '',
   'has-default-route': 'Default route to host',
@@ -162,7 +162,7 @@ export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string 
 };
 
 export const CLUSTER_VALIDATION_LABELS: { [key in ClusterValidationId]: string } = {
-  'odf-requirements-satisfied': '',
+  'odf-requirements-satisfied': 'ODF requirements',
   'network-type-valid': 'Valid network type',
   'machine-cidr-defined': 'Machine CIDR',
   'cluster-cidr-defined': 'Cluster CIDR',
