@@ -10,6 +10,7 @@ import {
   VirtualIPControlGroup,
   VirtualIPControlGroupProps,
 } from '../clusterWizard/networkingSteps';
+import { ClusterDefaultConfig } from '../../api';
 import { NETWORK_TYPE_OVN, NO_SUBNET_SET } from '../../config';
 import { isAdvNetworkConf } from './utils';
 import { useFeatureSupportLevel } from '../featureSupportLevels';
@@ -20,10 +21,7 @@ import {
   isSNO,
   isSubnetInIPv6,
 } from '../../selectors';
-import { Address6, Address4 } from 'ip-address';
-import { Cluster } from '../../api';
-import { useFeature } from '../../features';
-import { ClusterDefaultConfig } from '../../api';
+import { Address6 } from 'ip-address';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   defaultNetworkSettings: ClusterDefaultConfig;
@@ -54,15 +52,12 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   const { setFieldValue, values, touched, validateField } = useFormikContext<
     NetworkConfigurationValues
   >();
-
   const clusterFeatureSupportLevels = React.useMemo(() => {
     return getLimitedFeatureSupportLevels(cluster, featureSupportLevelData);
   }, [cluster, featureSupportLevelData]);
 
   const isMultiNodeCluster = !isSNO(cluster);
-  const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';
   const isClusterCIDRIPv6 = Address6.isValid(values.clusterNetworkCidr || '');
-
   const { isIPv6, defaultNetworkType, isSDNSelectable } = React.useMemo(() => {
     const isIPv6 = isSubnetInIPv6({
       machineNetworkCidr: cluster.machineNetworkCidr,
@@ -81,6 +76,10 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
     values.serviceNetworkCidr,
   ]);
 
+  const [isAdvanced, setAdvanced] = React.useState(
+    isAdvNetworkConf(cluster, defaultNetworkSettings, defaultNetworkType),
+  );
+
   const toggleAdvConfiguration = (checked: boolean) => {
     setAdvanced(checked);
 
@@ -88,54 +87,20 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
       setFieldValue('clusterNetworkCidr', defaultNetworkSettings.clusterNetworkCidr);
       setFieldValue('serviceNetworkCidr', defaultNetworkSettings.serviceNetworkCidr);
       setFieldValue('clusterNetworkHostPrefix', defaultNetworkSettings.clusterNetworkHostPrefix);
-      setFieldValue('networkType', 'OpenShiftSDN');
+      setFieldValue('networkType', defaultNetworkType);
     }
   };
 
-  const hostSubnetsCount = hostSubnets.length;
+  const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';
   const firstSubnet = hostSubnets[0]?.subnet;
 
-  // Set hostSubnet to first one whenever available
   useEffect(() => {
-    if (
-      values.hostSubnet === NO_SUBNET_SET &&
-      values.managedNetworkingType === 'clusterManaged' &&
-      hostSubnetsCount
-    ) {
+    if (isUserManagedNetworking && isMultiNodeCluster) {
+      values.hostSubnet !== NO_SUBNET_SET && setFieldValue('hostSubnet', NO_SUBNET_SET, false);
+    } else if (values.hostSubnet === NO_SUBNET_SET && firstSubnet) {
       setFieldValue('hostSubnet', firstSubnet, false);
     }
-  }, [
-    firstSubnet,
-    hostSubnetsCount,
-    values.hostSubnet,
-    setFieldValue,
-    values.managedNetworkingType,
-  ]);
-
-  useEffect(() => {
-    if (isUserManagedNetworking) {
-      const shouldValidate = !!touched.hostSubnet;
-
-      // We need to reset these fields' values in order to align with the values the server sends
-      setFieldValue('vipDhcpAllocation', false);
-      setFieldValue('ingressVip', '', shouldValidate);
-      setFieldValue('apiVip', '', shouldValidate);
-      if (!touched.hostSubnet || isMultiNodeCluster) {
-        setFieldValue('hostSubnet', NO_SUBNET_SET, shouldValidate);
-      }
-    } else {
-      if (!values.vipDhcpAllocation && touched.hostSubnet) {
-        validateField('ingressVip');
-        validateField('apiVip');
-      }
-    }
-  }, [
-    isMultiNodeCluster,
-    isUserManagedNetworking,
-    setFieldValue,
-    validateField,
-    values.vipDhcpAllocation,
-  ]);
+  }, [isUserManagedNetworking, isMultiNodeCluster, values.hostSubnet, setFieldValue, firstSubnet]);
 
   useEffect(() => {
     if (!cluster.networkType) {
@@ -147,6 +112,28 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isIPv6, isMultiNodeCluster, setFieldValue]);
 
+  useEffect(() => {
+    if (isUserManagedNetworking) {
+      const shouldValidate = !!touched.hostSubnet;
+
+      // We need to reset these fields' values in order to align with the values the server sends
+      setFieldValue('vipDhcpAllocation', false);
+      setFieldValue('ingressVip', '', shouldValidate);
+      setFieldValue('apiVip', '', shouldValidate);
+    } else {
+      if (!values.vipDhcpAllocation && touched.hostSubnet) {
+        validateField('ingressVip');
+        validateField('apiVip');
+      }
+    }
+  }, [
+    touched.hostSubnet,
+    isMultiNodeCluster,
+    isUserManagedNetworking,
+    setFieldValue,
+    values.vipDhcpAllocation,
+    validateField,
+  ]);
   return (
     <Grid hasGutter>
       {!hideManagedNetworking && (
@@ -195,15 +182,15 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
         description="Configure advanced networking properties (e.g. CIDR ranges)."
         isChecked={isAdvanced}
         onChange={toggleAdvConfiguration}
+        body={
+          isAdvanced && (
+            <AdvancedNetworkFields
+              isSDNSelectable={isSDNSelectable}
+              isClusterCIDRIPv6={isClusterCIDRIPv6}
+            />
+          )
+        }
       />
-
-      {isAdvanced && (
-        <AdvancedNetworkFields
-          isSDNSelectable={isSDNSelectable}
-          isClusterCIDRIPv6={isClusterCIDRIPv6}
-          clusterId={cluster.id}
-        />
-      )}
     </Grid>
   );
 };

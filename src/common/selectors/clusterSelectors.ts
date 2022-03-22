@@ -1,9 +1,9 @@
 import head from 'lodash/fp/head';
 import { stringToJSON } from '../api/utils';
 import { CpuArchitecture, ValidationsInfo } from '../types';
-import { Cluster } from '../api/types';
+import { Cluster, ClusterNetwork, MachineNetwork, ServiceNetwork } from '../api/types';
 import { NETWORK_TYPE_OVN, NETWORK_TYPE_SDN } from '../config';
-import { Address6 } from 'ip-address';
+import { Address4, Address6 } from 'ip-address';
 
 export const selectMachineNetworkCIDR = ({
   machineNetworks,
@@ -44,4 +44,16 @@ export const isSubnetInIPv6 = ({
     Address6.isValid(machineNetworkCidr || '') ||
     Address6.isValid(serviceNetworkCidr || '')
   );
+};
+
+export const allSubnetsIPv4 = (
+  networks: (MachineNetwork | ClusterNetwork | ServiceNetwork)[] | undefined,
+) => {
+  return networks?.every((network) => network.cidr && Address4.isValid(network.cidr));
+};
+
+export const allSubnetsIPv6 = (
+  networks: (MachineNetwork | ClusterNetwork | ServiceNetwork)[] | undefined,
+) => {
+  return networks?.every((network) => network.cidr && Address6.isValid(network.cidr));
 };

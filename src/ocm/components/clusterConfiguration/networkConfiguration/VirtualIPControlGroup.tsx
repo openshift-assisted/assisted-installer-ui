@@ -6,7 +6,7 @@ import { stringToJSON } from '../../../../common/api/utils';
 import { HostSubnets, NetworkConfigurationValues, ValidationsInfo } from '../../../../common/types';
 import { CheckboxField, FormikStaticField, InputField } from '../../../../common/components/ui';
 import { FeatureSupportLevelBadge } from '../../../../common/components';
-import { NO_SUBNET_SET } from '../../../../common/config/constants';
+import { NETWORK_TYPE_SDN, NO_SUBNET_SET } from '../../../../common/config/constants';
 
 interface VipStaticValueProps {
   vipName: string;
@@ -107,7 +107,7 @@ export const VirtualIPControlGroup = ({
     cluster.validationsInfo,
   ]);
 
-  const enableAllocation = useMemo(() => values.networkType === 'OpenShiftSDN', [values]);
+  const enableAllocation = useMemo(() => values.networkType === NETWORK_TYPE_SDN, [values]);
 
   useEffect(() => {
     if (!enableAllocation) {

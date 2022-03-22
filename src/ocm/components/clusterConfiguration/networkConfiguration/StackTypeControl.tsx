@@ -3,7 +3,11 @@ import { ButtonVariant, FormGroup } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 import { Cluster } from '../../../../common/api/types';
 import { NetworkConfigurationValues } from '../../../../common/types';
-import { NO_SUBNET_SET } from '../../../../common/config/constants';
+import {
+  NETWORK_TYPE_OVN,
+  NETWORK_TYPE_SDN,
+  NO_SUBNET_SET,
+} from '../../../../common/config/constants';
 import { getFieldId } from '../../../../common/components/ui/formik/utils';
 import { ConfirmationModal, PopoverIcon, RadioField } from '../../../../common/components/ui';
 
@@ -12,7 +16,7 @@ export const StackTypeControlGroup: React.FC<{ clusterId: Cluster['id'] }> = ({ 
   const [openConfirmModal, setConfirmModal] = React.useState(false);
 
   const setSingleStack = () => {
-    setFieldValue('networkType', 'OpenShiftSDN');
+    setFieldValue('networkType', NETWORK_TYPE_SDN);
     setFieldValue('vipDhcpAllocation', true);
 
     if (values.machineNetworks && values.machineNetworks?.length >= 2) {
@@ -29,7 +33,7 @@ export const StackTypeControlGroup: React.FC<{ clusterId: Cluster['id'] }> = ({ 
   };
 
   const setDualStack = () => {
-    setFieldValue('networkType', 'OVNKubernetes');
+    setFieldValue('networkType', NETWORK_TYPE_OVN);
     setFieldValue('vipDhcpAllocation', false);
 
     if (values.machineNetworks && values.machineNetworks?.length < 2) {
