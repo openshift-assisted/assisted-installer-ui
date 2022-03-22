@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { AgentClusterInstallK8sResource, ClusterImageSetK8sResource } from '../../types';
 import { OpenshiftVersionOptionType, OpenshiftVersion } from '../../../common';
 
-const getVersion = (releaseImage = '') => {
+export const getVersionFromReleaseImage = (releaseImage = '') => {
   const match = /.+:(.*)-/gm.exec(releaseImage);
   if (match && match[1]) {
     return match[1];
@@ -36,7 +36,7 @@ export const getOCPVersions = (
     .filter((clusterImageSet) => clusterImageSet.metadata?.labels?.visible !== 'false')
     .map(
       (clusterImageSet): OpenshiftVersionOptionType => {
-        const version = getVersion(clusterImageSet.spec?.releaseImage);
+        const version = getVersionFromReleaseImage(clusterImageSet.spec?.releaseImage);
         return {
           label: version ? `OpenShift ${version}` : (clusterImageSet.metadata?.name as string),
           version,
