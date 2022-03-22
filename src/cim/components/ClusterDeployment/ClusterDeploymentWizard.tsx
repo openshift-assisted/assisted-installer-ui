@@ -24,10 +24,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   onSaveHostsSelection,
   onClose,
   onFinish,
-  onDeleteHost,
-  canDeleteAgent,
   onSaveAgent,
-  canEditHost,
   onSaveBMH,
   onSaveISOParams,
   onSaveHostsDiscovery,
@@ -95,7 +92,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
               onSaveHostsSelection={onSaveHostsSelection}
               agents={agents}
               aiConfigMap={aiConfigMap}
-              hostActions={hostActions}
+              onEditRole={hostActions.onEditRole}
             />
           );
         }
@@ -104,7 +101,6 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
         if (isAIFlow) {
           return (
             <ClusterDeploymentHostsDiscoveryStep
-              // clusterDeployment={clusterDeployment}
               agentClusterInstall={agentClusterInstall}
               agents={agents}
               bareMetalHosts={[] /* TODO(mlibra) */}
@@ -113,10 +109,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
                 infraEnv as InfraEnvK8sResource /* Must be available since isAIFlow === true */
               }
               usedHostnames={usedHostnames}
-              onDeleteHost={onDeleteHost}
-              canDeleteAgent={canDeleteAgent}
               onSaveAgent={onSaveAgent}
-              canEditHost={canEditHost}
               onSaveBMH={onSaveBMH}
               fetchSecret={fetchSecret}
               fetchNMState={fetchNMState}
@@ -129,11 +122,10 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
                 console.log('onChangeBMHHostname is not implemented: ', hostname);
                 return Promise.resolve(bmh);
               }}
-              canEditRole={hostActions.canEditRole}
               onEditRole={hostActions.onEditRole}
               onApproveAgent={onApproveAgent}
-              // onFormSaveError={setErrorHandler}
               isBMPlatform={isBMPlatform}
+              onDeleteHost={hostActions.onDeleteHost}
             />
           );
         }
@@ -146,7 +138,8 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
             agents={agents}
             onSaveNetworking={onSaveNetworking}
             onClose={onClose}
-            hostActions={hostActions}
+            onEditHost={hostActions.onEditHost}
+            onEditRole={hostActions.onEditRole}
             fetchInfraEnv={fetchInfraEnv}
             isPreviewOpen={isPreviewOpen}
           />

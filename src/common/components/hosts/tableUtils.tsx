@@ -367,12 +367,26 @@ export const hostActionResolver = ({
         onClick: () => onInstallHost(host),
       });
     }
-    if (onEditHost && canEditHost?.(host)) {
-      actions.push({
-        title: 'Change hostname',
-        id: `button-edit-host-${hostname}`, // id is everchanging, not ideal for tests
-        onClick: () => onEditHost(host),
-      });
+    if (onEditHost) {
+      if (canEditHost) {
+        const canEdit = canEditHost(host);
+        if (typeof canEdit == 'boolean') {
+          canEdit &&
+            actions.push({
+              title: 'Change hostname',
+              id: `button-edit-host-${hostname}`, // id is everchanging, not ideal for tests
+              onClick: () => onEditHost(host),
+            });
+        } else {
+          const [enabled, reason] = canEdit;
+          actions.push({
+            title: <ActionTitle disabled={!enabled} description={reason} title="Change hostname" />,
+            id: `button-edit-host-${hostname}`, // id is everchanging, not ideal for tests
+            onClick: () => onEditHost(host),
+            disabled: !enabled,
+          });
+        }
+      }
     }
     if (onHostEnable && canEnable?.(host)) {
       actions.push({
@@ -409,45 +423,49 @@ export const hostActionResolver = ({
         onClick: () => onDownloadHostLogs(host),
       });
     }
-    if (onDeleteHost && canDelete?.(host)) {
-      actions.push({
-        title: 'Delete host',
-        id: `button-delete-host-${hostname}`,
-        onClick: () => onDeleteHost(host),
-      });
+    if (onDeleteHost) {
+      if (canDelete) {
+        const canDeleteHost = canDelete(host);
+        if (typeof canDeleteHost == 'boolean') {
+          canDeleteHost &&
+            actions.push({
+              title: 'Delete host',
+              id: `button-delete-host-${hostname}`,
+              onClick: () => onDeleteHost(host),
+            });
+        } else {
+          const [enabled, reason] = canDeleteHost;
+          actions.push({
+            title: <ActionTitle disabled={!enabled} description={reason} title="Delete host" />,
+            id: `button-delete-host-${hostname}`,
+            onClick: () => onDeleteHost(host),
+            disabled: !enabled,
+          });
+        }
+      }
     }
     if (onEditBMH && host.href === 'bmc') {
-      const disabled = !!canEditBMH?.(host);
-      actions.push({
-        title: (
-          <ActionTitle
-            disabled={disabled}
-            description={disabled ? 'BMC cannot be changed anymore.' : undefined}
-            title="Edit BMC"
-          />
-        ),
-        id: `button-edit-bmh-host-${hostname}`,
-        onClick: () => onEditBMH(host),
-      });
-    }
-
-    if (canUnbindHost) {
-      // skip at all if the callback is not provided
-      const [isEnabled, disabledReason] = canUnbindHost(host);
-      if (isEnabled || disabledReason) {
+      if (canEditBMH) {
+        const [enabled, reason] = canEditBMH(host);
         actions.push({
-          title: (
-            <ActionTitle
-              disabled={!isEnabled}
-              description={disabledReason}
-              title="Remove from the cluster"
-            />
-          ),
-          id: `button-unbind-host-${hostname}`,
-          onClick: () => isEnabled && onUnbindHost && onUnbindHost(host),
-          disabled: !isEnabled,
+          title: <ActionTitle disabled={!enabled} description={reason} title="Edit BMC" />,
+          id: `button-edit-bmh-host-${hostname}`,
+          onClick: () => onEditBMH(host),
+          disabled: !enabled,
         });
       }
+    }
+
+    if (onUnbindHost && canUnbindHost) {
+      const [enabled, reason] = canUnbindHost(host);
+      actions.push({
+        title: (
+          <ActionTitle disabled={!enabled} description={reason} title="Remove from the cluster" />
+        ),
+        id: `button-unbind-host-${hostname}`,
+        onClick: () => onUnbindHost(host),
+        disabled: !enabled,
+      });
     }
   }
 

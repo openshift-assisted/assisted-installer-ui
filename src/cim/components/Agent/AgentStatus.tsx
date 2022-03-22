@@ -2,10 +2,7 @@ import { Button, Popover, Stack, StackItem } from '@patternfly/react-core';
 import * as React from 'react';
 import { getHostname, HostStatus } from '../../../common';
 import { AgentK8sResource } from '../../types';
-import {
-  ClusterDeploymentHostsTablePropsActions,
-  ClusterDeploymentWizardStepsType,
-} from '../ClusterDeployment/types';
+import { AgentTableActions, ClusterDeploymentWizardStepsType } from '../ClusterDeployment/types';
 import { getAIHosts } from '../helpers/toAssisted';
 import { getAgentStatus, getWizardStepAgentStatus } from '../helpers/status';
 
@@ -14,8 +11,8 @@ import { AdditionalNTPSourcesDialogToggle } from '../ClusterDeployment/Additiona
 
 export type AgentStatusProps = {
   agent: AgentK8sResource;
-  onApprove?: ClusterDeploymentHostsTablePropsActions['onApprove'];
-  onEditHostname?: ClusterDeploymentHostsTablePropsActions['onEditHost'];
+  onApprove?: AgentTableActions['onApprove'];
+  onEditHostname?: AgentTableActions['onEditHost'];
   zIndex?: number;
   wizardStepId?: ClusterDeploymentWizardStepsType;
 };

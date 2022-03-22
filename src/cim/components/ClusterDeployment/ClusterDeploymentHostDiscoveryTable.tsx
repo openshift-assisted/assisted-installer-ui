@@ -2,7 +2,12 @@ import * as React from 'react';
 import { noop } from 'lodash';
 
 import { Host } from '../../../common/api/types';
-import { discoveryTypeColumn, agentStatusColumn, useAgentsTable } from '../Agent/tableUtils';
+import {
+  discoveryTypeColumn,
+  agentStatusColumn,
+  useAgentsTable,
+  canChangeHostname,
+} from '../Agent/tableUtils';
 import HostsTable, {
   DefaultExpandComponent,
   HostsTableEmptyState,
@@ -21,38 +26,25 @@ import {
   MassChangeHostnameModal,
   TableToolbar,
 } from '../../../common';
-import { ClusterDeploymentHostsTablePropsActions } from '../ClusterDeployment/types';
+import { ClusterDeploymentHostDiscoveryTableProps } from '../ClusterDeployment/types';
 import MassApproveAgentModal from '../modals/MassApproveAgentModal';
-import { AgentK8sResource, BareMetalHostK8sResource, InfraEnvK8sResource } from '../../types';
 import { MassChangeHostnameModalProps } from '../../../common/components/hosts/MassChangeHostnameModal';
 import MassApproveAction from '../modals/MassApproveAction';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { Stack, StackItem } from '@patternfly/react-core';
 
-export type ClusterDeploymentHostDiscoveryTableProps = ClusterDeploymentHostsTablePropsActions & {
-  agents: AgentK8sResource[];
-  bareMetalHosts: BareMetalHostK8sResource[];
-  infraEnv: InfraEnvK8sResource;
-  className?: string;
-  onChangeHostname: (agent: AgentK8sResource, hostname: string) => Promise<AgentK8sResource>;
-  onChangeBMHHostname: (
-    bmh: BareMetalHostK8sResource,
-    hostname: string,
-  ) => Promise<BareMetalHostK8sResource>;
-  onApprove?: (agents: AgentK8sResource) => Promise<AgentK8sResource>;
-};
-
 const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscoveryTableProps> = ({
   agents,
-  className,
   bareMetalHosts,
   infraEnv,
   onApprove,
   onChangeHostname,
   onChangeBMHHostname,
-  onEditHost,
-  canEditRole,
   onEditRole,
+  onEditHost,
+  onEditBMH,
+  onDeleteHost,
+  width,
 }) => {
   const [isDiscoveryHintModalOpen, setDiscoveryHintModalOpen] = React.useState(false);
   const [isMassChangeHostOpen, setMassChangeHostOpen] = React.useState(false);
@@ -72,27 +64,26 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
       bmhs: bareMetalHosts,
       infraEnv,
     },
-    { onEditHost, canEditRole, onEditRole },
+    { onEditHost, onEditRole, onEditBMH, onDeleteHost },
   );
+
+  const addAll = width && width > 700;
+
   const content = React.useMemo(
-    () =>
-      [
-        hostnameColumn(hostActions.onEditHost),
-        discoveryTypeColumn(agents, bareMetalHosts),
-        agentStatusColumn({
-          agents,
-          bareMetalHosts,
-          onEditHostname: onEditHost,
-          onApprove,
-          wizardStepId: 'hosts-discovery',
-        }),
-        roleColumn(hostActions.canEditRole, hostActions.onEditRole),
-        discoveredAtColumn,
-        cpuCoresColumn,
-        memoryColumn,
-        disksColumn,
-      ].filter(Boolean),
-    [agents, hostActions, bareMetalHosts, onApprove, onEditHost],
+    () => [
+      hostnameColumn(hostActions.onEditHost),
+      ...(addAll ? [discoveryTypeColumn(agents, bareMetalHosts)] : []),
+      agentStatusColumn({
+        agents,
+        bareMetalHosts,
+        onEditHostname: onEditHost,
+        onApprove,
+        wizardStepId: 'hosts-discovery',
+      }),
+      roleColumn(hostActions.canEditRole, hostActions.onEditRole),
+      ...(addAll ? [discoveredAtColumn, cpuCoresColumn, memoryColumn, disksColumn] : []),
+    ],
+    [agents, hostActions, bareMetalHosts, onApprove, onEditHost, addAll],
   );
 
   const selectedAgents = agents.filter((a) => selectedHostIDs.includes(a.metadata?.uid || ''));
@@ -102,16 +93,12 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
       key="hostname"
       onChangeHostname={() => setMassChangeHostOpen(!isMassChangeHostOpen)}
     />,
+    <MassApproveAction
+      key="approve"
+      onApprove={() => setMassApproveOpen(!isMassApproveOpen)}
+      selectedAgents={selectedAgents}
+    />,
   ];
-  if (onApprove) {
-    massActions.push(
-      <MassApproveAction
-        key="approve"
-        onApprove={() => setMassApproveOpen(!isMassApproveOpen)}
-        selectedAgents={selectedAgents}
-      />,
-    );
-  }
 
   const onAgentChangeHostname: MassChangeHostnameModalProps['onChangeHostname'] = async (
     host,
@@ -146,7 +133,6 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
             hosts={hosts}
             content={content}
             actionResolver={actionResolver}
-            className={className}
             selectedIDs={selectedHostIDs}
             setSelectedHostIDs={setSelectedHostIDs}
             onSelect={onSelect}
@@ -170,9 +156,10 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
           selectedHostIDs={selectedHostIDs}
           onChangeHostname={onAgentChangeHostname}
           onClose={() => setMassChangeHostOpen(false)}
+          canChangeHostname={canChangeHostname(agents, bareMetalHosts)}
         />
       )}
-      {onApprove && isMassApproveOpen && (
+      {isMassApproveOpen && (
         <MassApproveAgentModal
           isOpen={isMassApproveOpen}
           agents={selectedAgents}

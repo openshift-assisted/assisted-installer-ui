@@ -11,6 +11,8 @@ import {
   useAgentsFilter,
   agentHostnameColumn,
   canEditBMH,
+  canEditAgent,
+  canChangeHostname,
 } from '../Agent/tableUtils';
 import HostsTable, {
   DefaultExpandComponent,
@@ -53,14 +55,18 @@ const NoFilterMatchState: React.FC<NoFilterMatchStateProps> = ({ onClearFilters 
 
 const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
   agents,
-  className,
   getClusterDeploymentLink,
   bareMetalHosts,
   infraEnv,
   onChangeHostname,
   onChangeBMHHostname,
   onMassDeleteHost,
-  ...actions
+  agentClusterInstalls,
+  onApprove,
+  onDeleteHost,
+  onEditBMH,
+  onEditHost,
+  onUnbindHost,
 }) => {
   const [isDiscoveryHintModalOpen, setDiscoveryHintModalOpen] = React.useState(false);
   const [isMassChangeHostOpen, setMassChangeHostOpen] = React.useState(false);
@@ -84,8 +90,15 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
       agents,
       bmhs: bareMetalHosts,
       infraEnv,
+      agentClusterInstalls,
     },
-    actions,
+    {
+      onApprove,
+      onDeleteHost,
+      onEditBMH,
+      onEditHost,
+      onUnbindHost,
+    },
   );
 
   const {
@@ -112,8 +125,8 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
         agentStatusColumn({
           agents,
           bareMetalHosts,
-          onEditHostname: actions.onEditHost,
-          onApprove: actions.onApprove,
+          onEditHostname: onEditHost,
+          onApprove: onApprove,
         }),
         clusterColumn(agents, getClusterDeploymentLink),
         discoveredAtColumn,
@@ -121,15 +134,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
         memoryColumn,
         disksColumn,
       ].filter(Boolean),
-    [
-      hosts,
-      agents,
-      actions.onEditHost,
-      actions.onApprove,
-      getClusterDeploymentLink,
-      hostActions,
-      bareMetalHosts,
-    ],
+    [hosts, agents, onEditHost, onApprove, getClusterDeploymentLink, hostActions, bareMetalHosts],
   );
 
   const selectedAgents = agents.filter((a) => selectedHostIDs.includes(a.metadata?.uid || ''));
@@ -137,48 +142,25 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
     selectedHostIDs.includes(bmh.metadata?.uid || ''),
   );
 
-  const canChangeHostname = (h: Host): string | undefined => {
-    const agent = agents.find((a) => a.metadata?.uid === h.id);
-    if (agent && actions.canEditHost) {
-      return actions.canEditHost(agent) ? undefined : 'Hostname cannot be changed anymore.';
-    }
-    const bmh = bareMetalHosts.find((bmh) => bmh.metadata?.uid === h.id);
-    if (bmh) {
-      return canEditBMH(bmh);
-    }
-    return undefined;
-  };
-
   const canEditHostname =
-    selectedBMHs.every(canEditBMH) &&
-    selectedAgents.every((a) => (actions.canEditHost ? !actions.canEditHost(a) : undefined));
+    selectedBMHs.some((bmh) => canEditBMH(bmh)[0]) ||
+    selectedAgents.some((a) => canEditAgent(a)[0]);
 
   const massActions = [
     <DropdownItem
       key="hostname"
       onClick={() => setMassChangeHostOpen(!isMassChangeHostOpen)}
-      isDisabled={canEditHostname}
-      description={canEditHostname ? 'Hostname cannot be changed for selected hosts.' : undefined}
+      isDisabled={!canEditHostname}
+      description={canEditHostname ? undefined : 'Hostname cannot be changed for selected hosts.'}
     >
       Change hostname
     </DropdownItem>,
-    ...(actions.onApprove
-      ? [
-          <MassApproveAction
-            key="approve"
-            onApprove={() => setMassApproveOpen(!isMassApproveOpen)}
-            selectedAgents={selectedAgents}
-          />,
-        ]
-      : []),
-    ...(onMassDeleteHost
-      ? [
-          <DeleteHostAction
-            key="delete"
-            onDeleteHost={() => setMassDeleteOpen(!isMassDeleteOpen)}
-          />,
-        ]
-      : []),
+    <MassApproveAction
+      key="approve"
+      onApprove={() => setMassApproveOpen(!isMassApproveOpen)}
+      selectedAgents={selectedAgents}
+    />,
+    <DeleteHostAction key="delete" onDeleteHost={() => setMassDeleteOpen(!isMassDeleteOpen)} />,
   ];
 
   const onAgentChangeHostname: MassChangeHostnameModalProps['onChangeHostname'] = async (
@@ -218,7 +200,6 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
             hosts={hosts}
             content={content}
             actionResolver={actionResolver}
-            className={className}
             selectedIDs={selectedHostIDs}
             setSelectedHostIDs={setSelectedHostIDs}
             onSelect={onSelect}
@@ -251,10 +232,10 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
           selectedHostIDs={selectedHostIDs}
           onChangeHostname={onAgentChangeHostname}
           onClose={() => setMassChangeHostOpen(false)}
-          canChangeHostName={canChangeHostname}
+          canChangeHostname={canChangeHostname(agents, bareMetalHosts)}
         />
       )}
-      {onMassDeleteHost && isMassDeleteOpen && (
+      {isMassDeleteOpen && (
         <MassDeleteAgentModal
           isOpen={isMassDeleteOpen}
           agents={selectedAgents}
@@ -264,11 +245,11 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
           onClose={() => setMassDeleteOpen(false)}
         />
       )}
-      {actions.onApprove && isMassApproveOpen && (
+      {isMassApproveOpen && (
         <MassApproveAgentModal
           isOpen={isMassApproveOpen}
           agents={selectedAgents}
-          onApprove={actions.onApprove}
+          onApprove={onApprove}
           onClose={() => setMassApproveOpen(false)}
         />
       )}

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ConnectedIcon } from '@patternfly/react-icons';
-import { WithTestID, EmptyState, Host } from '../../../common';
-import { ClusterDeploymentHostsTablePropsActions } from './types';
+import { EmptyState, Host } from '../../../common';
+import { AgentTableActions } from './types';
 import {
   AgentClusterInstallK8sResource,
   AgentK8sResource,
@@ -30,23 +30,27 @@ const ExpandComponent: React.FC<ExpandComponentProps> = ({ obj }) => (
   />
 );
 
-type ClusterDeploymentHostsNetworkTableProps = {
+type ClusterDeploymentHostsNetworkTableProps = Pick<
+  AgentTableActions,
+  'onEditHost' | 'onEditRole'
+> & {
   clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall: AgentClusterInstallK8sResource;
   agents: AgentK8sResource[];
-  skipDisabled?: boolean;
-  hostActions: ClusterDeploymentHostsTablePropsActions;
-} & WithTestID;
+};
 
 const ClusterDeploymentHostsNetworkTable: React.FC<ClusterDeploymentHostsNetworkTableProps> = React.memo(
-  ({ clusterDeployment, agentClusterInstall, agents, hostActions }) => {
+  ({ clusterDeployment, agentClusterInstall, agents, onEditHost, onEditRole }) => {
     const cluster = React.useMemo(
       () => getAICluster({ clusterDeployment, agentClusterInstall, agents }),
       [clusterDeployment, agentClusterInstall, agents],
     );
-    const [hosts, { onEditHost, canEditRole, onEditRole }, actionResolver] = useAgentsTable(
+    const [hosts, hostActions, actionResolver] = useAgentsTable(
       { agents },
-      hostActions,
+      {
+        onEditHost,
+        onEditRole,
+      },
     );
 
     const isSNOCluster = getIsSNOCluster(agentClusterInstall);
@@ -54,34 +58,25 @@ const ClusterDeploymentHostsNetworkTable: React.FC<ClusterDeploymentHostsNetwork
       () =>
         isSNOCluster
           ? [
-              hostnameColumn(onEditHost, hosts),
+              hostnameColumn(hostActions.onEditHost, hosts),
               agentStatusColumn({
                 agents,
-                onEditHostname: hostActions.onEditHost,
+                onEditHostname: onEditHost,
                 wizardStepId: 'networking',
               }),
               activeNICColumn(cluster),
             ]
           : [
-              hostnameColumn(onEditHost, hosts),
-              roleColumn(canEditRole, onEditRole),
+              hostnameColumn(hostActions.onEditHost, hosts),
+              roleColumn(hostActions.canEditRole, hostActions.onEditRole),
               agentStatusColumn({
                 agents,
-                onEditHostname: hostActions.onEditHost,
+                onEditHostname: onEditHost,
                 wizardStepId: 'networking',
               }),
               activeNICColumn(cluster),
             ],
-      [
-        canEditRole,
-        onEditRole,
-        isSNOCluster,
-        onEditHost,
-        hosts,
-        agents,
-        hostActions.onEditHost,
-        cluster,
-      ],
+      [isSNOCluster, onEditHost, hosts, agents, hostActions, cluster],
     );
 
     const paginationProps = usePagination(hosts.length);

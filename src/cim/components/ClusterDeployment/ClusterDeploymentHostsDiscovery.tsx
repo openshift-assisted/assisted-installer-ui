@@ -1,6 +1,6 @@
 import React from 'react';
-import { useFormikContext } from 'formik';
 import { Grid, GridItem, TextContent, Text, Button, ButtonVariant } from '@patternfly/react-core';
+import Measure from 'react-measure';
 import {
   DiscoveryInstructions,
   DiscoveryTroubleshootingModal,
@@ -10,29 +10,20 @@ import {
 } from '../../../common';
 import { getIsSNOCluster } from '../helpers';
 import MinimalHWRequirements from '../Agent/MinimalHWRequirements';
-import {
-  ClusterDeploymentHostsDiscoveryProps,
-  ClusterDeploymentHostsDiscoveryValues,
-} from './types';
+import { ClusterDeploymentHostsDiscoveryProps } from './types';
 import { AddHostModal, EditBMHModal, EditAgentModal } from '../modals';
 import { AgentK8sResource, BareMetalHostK8sResource } from '../../types';
 import ClusterDeploymentHostDiscoveryTable from './ClusterDeploymentHostDiscoveryTable';
 
 const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryProps> = ({
-  // clusterDeployment,
   agentClusterInstall,
   agents,
   bareMetalHosts,
   aiConfigMap,
   infraEnv,
   usedHostnames,
-  onValuesChanged,
   onCreateBMH,
-  onDeleteHost,
-  canDeleteAgent,
   onSaveAgent,
-  canEditHost,
-  canEditRole,
   onEditRole,
   onSaveBMH,
   onSaveISOParams,
@@ -41,17 +32,15 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
   fetchNMState,
   onChangeBMHHostname,
   onApproveAgent,
+  onDeleteHost,
   isBMPlatform,
 }) => {
   const [isDiscoveryHintModalOpen, setDiscoveryHintModalOpen] = React.useState(false);
-  const { values } = useFormikContext<ClusterDeploymentHostsDiscoveryValues>();
   const [isoModalOpen, setISOModalOpen] = React.useState(false);
   const [editBMH, setEditBMH] = React.useState<BareMetalHostK8sResource>();
   const [editAgent, setEditAgent] = React.useState<AgentK8sResource | undefined>();
 
   const isVM = true; // TODO(mlibra): calculate from agent's inventory
-
-  React.useEffect(() => onValuesChanged?.(values), [values, onValuesChanged]);
 
   const isSNOCluster = getIsSNOCluster(agentClusterInstall);
 
@@ -86,21 +75,25 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
       </GridItem>
 
       <GridItem>
-        <ClusterDeploymentHostDiscoveryTable
-          agents={agents}
-          bareMetalHosts={bareMetalHosts}
-          infraEnv={infraEnv}
-          onEditHost={setEditAgent}
-          canEditHost={canEditHost}
-          onEditRole={onEditRole}
-          canEditRole={canEditRole}
-          canDelete={canDeleteAgent}
-          onDeleteHost={onDeleteHost}
-          onEditBMH={setEditBMH}
-          onChangeHostname={onSaveAgent}
-          onChangeBMHHostname={onChangeBMHHostname}
-          onApprove={onApproveAgent}
-        />
+        <Measure bounds>
+          {({ measureRef, contentRect }) => (
+            <div ref={measureRef}>
+              <ClusterDeploymentHostDiscoveryTable
+                agents={agents}
+                bareMetalHosts={bareMetalHosts}
+                infraEnv={infraEnv}
+                onEditHost={setEditAgent}
+                onEditRole={onEditRole}
+                onEditBMH={setEditBMH}
+                onChangeHostname={onSaveAgent}
+                onChangeBMHHostname={onChangeBMHHostname}
+                onApprove={onApproveAgent}
+                width={contentRect.bounds?.width}
+                onDeleteHost={onDeleteHost}
+              />
+            </div>
+          )}
+        </Measure>
         <EditBMHModal
           infraEnv={infraEnv}
           bmh={editBMH}

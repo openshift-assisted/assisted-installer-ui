@@ -20,7 +20,7 @@ import {
 import ClusterDeploymentCredentials from './ClusterDeploymentCredentials';
 import { shouldShowClusterCredentials, shouldShowClusterInstallationProgress } from './helpers';
 import { EventsModalButton } from '../../../common/components/ui/eventsModal';
-import AgentTable from '../Agent/AgentTable';
+import ClusterDeploymentDetailsTable from './ClusterDeploymentDetailsTable';
 import { FetchSecret } from './types';
 import { getClusterProperties, getConsoleUrl } from '../helpers/clusterDeployment';
 import ClusterDeploymentKubeconfigDownload from './ClusterDeploymentKubeconfigDownload';
@@ -31,7 +31,6 @@ type ClusterDeploymentDetailsProps = {
   agentClusterInstall: AgentClusterInstallK8sResource;
   agents: AgentK8sResource[];
   fetchSecret: FetchSecret;
-  agentTableClassName?: string;
   onFetchEvents: EventListFetchProps['onFetchEvents'];
 };
 
@@ -40,7 +39,6 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
   agentClusterInstall,
   agents,
   fetchSecret,
-  agentTableClassName,
   onFetchEvents,
 }) => {
   const [progressCardExpanded, setProgressCardExpanded] = React.useState(true);
@@ -130,7 +128,10 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
           </CardHeader>
           <CardExpandableContent>
             <CardBody>
-              <AgentTable agents={clusterAgents} className={agentTableClassName} />
+              <ClusterDeploymentDetailsTable
+                agents={clusterAgents}
+                agentClusterInstall={agentClusterInstall}
+              />
             </CardBody>
           </CardExpandableContent>
         </Card>
