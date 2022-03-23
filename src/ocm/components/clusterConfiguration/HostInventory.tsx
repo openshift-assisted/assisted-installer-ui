@@ -122,7 +122,7 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
           />
         </StackItem>
       )}
-      {isOpenshiftClusterStorageEnabled && !isSNOCluster && (
+      {isOpenshiftClusterStorageEnabled && (
         <StackItem>
           <ODFCheckbox openshiftVersion={cluster.openshiftVersion} />
         </StackItem>
