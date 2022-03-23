@@ -19,7 +19,7 @@ import {
   LoadingState,
 } from '../../../common';
 import { HostSubnet, NetworkConfigurationValues } from '../../../common/types/clusters';
-import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
+import { updateClusterBase } from '../../reducers/clusters/currentClusterSlice';
 import { canNextNetwork } from '../clusterWizard/wizardTransition';
 import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
 import ClusterWizardFooter from '../clusterWizard/ClusterWizardFooter';
@@ -131,7 +131,7 @@ const NetworkConfigurationForm: React.FC<{
       }
 
       const { data } = await ClustersAPI.update(cluster.id, params);
-      dispatch(updateCluster(data));
+      dispatch(updateClusterBase(data));
       actions.resetForm({ values: getNetworkInitialValues(data, defaultNetworkSettings) });
     } catch (e) {
       handleApiError(e, () =>
