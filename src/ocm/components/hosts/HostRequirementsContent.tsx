@@ -144,7 +144,7 @@ export const CNVHostRequirementsContent: PreflightHWRequirementsContentComponent
   const masterRequirements = cnvRequirements?.requirements?.master?.quantitative;
 
   return (
-    <TextContent>
+    <>
       <List>
         <ListItem>
           Enabled CPU virtualization support in BIOS (Intel-VT / AMD-V) on all nodes
@@ -172,6 +172,6 @@ export const CNVHostRequirementsContent: PreflightHWRequirementsContentComponent
           storage service
         </ListItem>
       </List>
-    </TextContent>
+    </>
   );
 };

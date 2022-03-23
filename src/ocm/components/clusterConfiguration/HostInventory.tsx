@@ -1,5 +1,14 @@
 import React from 'react';
-import { Text, TextContent, Button, Stack, StackItem } from '@patternfly/react-core';
+import {
+  Text,
+  TextContent,
+  Button,
+  Stack,
+  StackItem,
+  List,
+  ListItem,
+  Title,
+} from '@patternfly/react-core';
 import {
   Cluster,
   PopoverIcon,
@@ -30,15 +39,24 @@ const PlatformIntegrationLabel: React.FC = () => (
   <>
     <span>Integrate with vSphere</span>{' '}
     <PopoverIcon
-      minWidth="30rem"
       variant={'plain'}
       bodyContent={
-        <p>
+        <>
           Enable vSphere integration to access features like node auto-scaling and persistent
-          storage directly inside OpenShift. In order to complete the integration, you'll need to
-          set vSphere configuration after cluster installation is complete. A network connection is
-          required between vSphere and the installed OCP cluster.
-        </p>
+          storage directly inside OpenShift. You'll need to set vSphere configuration after cluster
+          installation is complete.
+        </>
+      }
+      footerContent={
+        <>
+          <Title headingLevel="h6">Requirements</Title>
+          <List>
+            <ListItem>A network connection between vSphere and the installed OCP cluster</ListItem>
+            <ListItem>
+              Set <code>disk.enableUUID</code> to <code>true</code> inside vSphere
+            </ListItem>
+          </List>
+        </>
       }
     />
   </>
