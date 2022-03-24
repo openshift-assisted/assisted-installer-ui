@@ -9,6 +9,7 @@ on:
       - feature/*
       - release/*
       - hotfix/*
+      - CIM-*
   pull_request:
     branches:
       - master
@@ -16,6 +17,7 @@ on:
       - develop
       - release/*
       - hotfix/*
+      - CIM-*
 
 jobs:
   build:
