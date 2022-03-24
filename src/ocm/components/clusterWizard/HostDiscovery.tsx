@@ -54,13 +54,14 @@ const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
     <Formik initialValues={initialValues} onSubmit={handleSubmit}>
       {({ isSubmitting, dirty, errors, touched }: FormikProps<HostDiscoveryValues>) => {
         const errorFields = getFormikErrorFields(errors, touched);
+        const isNextDisabled = dirty || !canNextHostDiscovery({ cluster });
 
         const footer = (
           <ClusterWizardFooter
             cluster={cluster}
             errorFields={errorFields}
             isSubmitting={isSubmitting}
-            isNextDisabled={dirty || !canNextHostDiscovery({ cluster })}
+            isNextDisabled={isNextDisabled}
             onNext={() => setCurrentStepId('networking')}
             onBack={() => setCurrentStepId('cluster-details')}
           />
