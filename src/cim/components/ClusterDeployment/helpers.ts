@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import _ from 'lodash';
+import mapKeys from 'lodash/mapKeys';
+import camelCase from 'lodash/camelCase';
+import uniq from 'lodash/uniq';
 import { EventList } from '../../../common/api/types';
 import {
   AgentClusterInstallK8sResource,
@@ -90,7 +92,7 @@ export const shouldShowClusterInstallationError = (
 };
 
 export const formatEventsData = (rawData: any): EventList =>
-  rawData.map((event: any) => _.mapKeys(event, (value, key) => _.camelCase(key)));
+  rawData.map((event: any) => mapKeys(event, (value, key) => camelCase(key)));
 
 // events are downloaded using ACM's wrapped fetchGet(), so the backendUrl is missing here
 const getEventsURL = (
@@ -147,7 +149,7 @@ export const getAgentsHostsNames = (
       raw.push(hostname);
     }
   });
-  return _.uniq(raw.filter(Boolean)) as string[];
+  return uniq(raw.filter(Boolean)) as string[];
 };
 
 export const getGridSpans = (

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { noop } from 'lodash';
+import noop from 'lodash/noop';
 
 import { Host } from '../../../common/api/types';
 import { discoveryTypeColumn, agentStatusColumn, useAgentsTable } from '../Agent/tableUtils';

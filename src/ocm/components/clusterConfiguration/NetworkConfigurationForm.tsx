@@ -1,7 +1,8 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Formik, FormikConfig, FormikProps } from 'formik';
-import _ from 'lodash';
+import mapValues from 'lodash/mapValues';
+import omit from 'lodash/omit';
 import { Form, Grid, GridItem, Text, TextContent } from '@patternfly/react-core';
 
 import {
@@ -51,9 +52,7 @@ const NetworkConfigurationForm: React.FC<{
     [], // just once, Formik does not reinitialize
   );
 
-  const initialTouched = React.useMemo(() => _.mapValues(initialValues, () => true), [
-    initialValues,
-  ]);
+  const initialTouched = React.useMemo(() => mapValues(initialValues, () => true), [initialValues]);
 
   const memoizedValidationSchema = React.useMemo(
     () => getNetworkConfigurationValidationSchema(initialValues, hostSubnets),
@@ -87,7 +86,7 @@ const NetworkConfigurationForm: React.FC<{
     try {
       const isMultiNodeCluster = !isSNO(cluster);
       const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';
-      const params = _.omit(values, [
+      const params = omit(values, [
         'hostSubnet',
         'useRedHatDnsService',
         'managedNetworkingType',

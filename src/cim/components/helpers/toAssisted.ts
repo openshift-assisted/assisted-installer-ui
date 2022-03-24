@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import cloneDeep from 'lodash/cloneDeep';
 import { AgentK8sResource } from '../../types/k8s/agent';
 import { Cluster, Host, Inventory } from '../../../common/api/types';
 import { ClusterDeploymentK8sResource } from '../../types/k8s/cluster-deployment';
@@ -20,14 +20,14 @@ export const getAIHosts = (
       const { status } = getAgentStatus(agent, true);
       const statusInfo = agent.status?.debugInfo?.stateInfo || '';
       // TODO(mlibra) Remove that workaround once https://issues.redhat.com/browse/MGMT-7052 is fixed
-      const inventory: Inventory = _.cloneDeep(agent.status?.inventory || {});
+      const inventory: Inventory = cloneDeep(agent.status?.inventory || {});
       inventory.interfaces?.forEach((intf) => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         // @ts-ignore
-        intf.ipv4Addresses = _.cloneDeep(intf.ipV4Addresses);
+        intf.ipv4Addresses = cloneDeep(intf.ipV4Addresses);
         // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         // @ts-ignore
-        intf.ipv6Addresses = _.cloneDeep(intf.ipV6Addresses);
+        intf.ipv6Addresses = cloneDeep(intf.ipV6Addresses);
       });
 
       if (agent.metadata?.labels?.[AGENT_BMH_HOSTNAME_LABEL_KEY]) {

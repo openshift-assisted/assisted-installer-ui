@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import cloneDeep from 'lodash/cloneDeep';
 import * as React from 'react';
 import * as yaml from 'js-yaml';
 import { K8sResourceCommon } from 'console-sdk-ai-lib';
@@ -20,7 +20,7 @@ const resourceToString = (resource: K8sResourceCommon | undefined) => {
   if (!resource) {
     return undefined;
   }
-  const resourceClone = _.cloneDeep(resource);
+  const resourceClone = cloneDeep(resource);
   // eslint-disable-next-line
   delete (resourceClone as any).status;
   resourceClone.metadata = {

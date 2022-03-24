@@ -18,7 +18,7 @@ import BMHStatus from './BMHStatus';
 import { getAgentStatus, getBMHStatus, getWizardStepAgentStatus } from '../helpers/status';
 import { filterByHostname } from '../../../common/components/hosts/utils';
 import { agentStatus, bmhStatus } from '../helpers/agentStatus';
-import { noop } from 'lodash';
+import noop from 'lodash/noop';
 
 export const agentHostnameColumn = (
   hosts: Host[],

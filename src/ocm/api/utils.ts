@@ -1,6 +1,6 @@
 import { Severity } from '@sentry/browser';
 import Axios, { AxiosError } from 'axios';
-import _ from 'lodash';
+import pick from 'lodash/pick';
 import { captureException } from '../sentry';
 import { APIErrorMixin } from './types';
 
@@ -20,7 +20,7 @@ export const handleApiError = (
       // that falls out of the range of 2xx
       message += `Status: ${error.response.status}\n`;
       message += `Response: ${JSON.stringify(
-        _.pick(error.response.data, ['code', 'message', 'reason']),
+        pick(error.response.data, ['code', 'message', 'reason']),
         null,
         1,
       )}\n`;

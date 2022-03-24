@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import uniqBy from 'lodash/uniqBy';
 import { AgentClusterInstallK8sResource, ClusterImageSetK8sResource } from '../../types';
 import { OpenshiftVersionOptionType, OpenshiftVersion } from '../../../common';
 
@@ -55,7 +55,7 @@ export const getOCPVersions = (
     // make sure that the pre-selected one is the first-one after sorting
     versions[0].default = true;
   }
-  const deduped = _.uniqBy(versions, (v) => v.version);
+  const deduped = uniqBy(versions, (v) => v.version);
   return deduped;
 };
 

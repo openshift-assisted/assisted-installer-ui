@@ -1,5 +1,5 @@
 import { Formik, FormikProps } from 'formik';
-import { noop } from 'lodash';
+import noop from 'lodash/noop';
 import * as React from 'react';
 import { Ref } from 'react';
 import { ClusterDetailsFormFieldsProps, ClusterDetailsValues } from '../../../common';

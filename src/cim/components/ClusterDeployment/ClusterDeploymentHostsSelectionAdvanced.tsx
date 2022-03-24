@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import isMatch from 'lodash/isMatch';
 import { useFormikContext } from 'formik';
 import React from 'react';
 import Measure from 'react-measure';
@@ -40,7 +40,7 @@ const ClusterDeploymentHostsSelectionAdvanced = <T extends FormValues>({
             )
           : true;
         const matchesLabels = agent.metadata?.labels
-          ? _.isMatch(agent.metadata?.labels, labels)
+          ? isMatch(agent.metadata?.labels, labels)
           : true;
         return matchesLocation && matchesLabels;
       }),

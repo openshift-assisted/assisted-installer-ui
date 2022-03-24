@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import camelCase from 'lodash/camelCase';
 
 export const stringToJSON = <T>(jsonString: string | undefined): T | undefined => {
   let jsObject: T | undefined;
@@ -6,7 +6,7 @@ export const stringToJSON = <T>(jsonString: string | undefined): T | undefined =
     try {
       const camelCased = jsonString.replace(
         /"([\w-]+)":/g,
-        (_match, offset) => `"${_.camelCase(offset)}":`,
+        (_match, offset) => `"${camelCase(offset)}":`,
       );
       jsObject = JSON.parse(camelCased) as T;
     } catch (e) {
