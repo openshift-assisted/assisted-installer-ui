@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Button, DropdownItem, Stack, StackItem } from '@patternfly/react-core';
-import { noop } from 'lodash';
+import noop from 'lodash/noop';
 
 import { Host } from '../../../common/api/types';
 import {
