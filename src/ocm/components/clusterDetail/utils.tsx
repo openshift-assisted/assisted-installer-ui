@@ -1,5 +1,5 @@
 import { saveAs } from 'file-saver';
-import { get } from 'lodash';
+import get from 'lodash/get';
 import { ocmClient, handleApiError, getErrorMessage } from '../../api';
 import {
   Cluster,

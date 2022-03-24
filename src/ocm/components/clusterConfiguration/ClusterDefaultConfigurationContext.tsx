@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import pick from 'lodash/pick';
 import React, { PropsWithChildren, useContext, useEffect } from 'react';
 import { ClusterDefaultConfig } from '../../../common';
 import { ClustersAPI } from '../../services/apis';
@@ -88,5 +88,5 @@ export const ClusterDefaultConfigurationProvider = ({
 
 export const useDefaultConfiguration = (keys: Array<keyof ClusterDefaultConfig>) => {
   // TODO(mlibra): There is no more the need to pick just selected values here, we can pass all the retrieved data
-  return _.pick(useContext(ClusterDefaultConfigurationContext), keys);
+  return pick(useContext(ClusterDefaultConfigurationContext), keys);
 };

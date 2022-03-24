@@ -1,5 +1,5 @@
 import React from 'react';
-import _ from 'lodash';
+import isUndefined from 'lodash/isUndefined';
 import { Formik, FormikHelpers } from 'formik';
 import {
   Cluster,
@@ -69,7 +69,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
     cluster?: Cluster,
   ): (() => Promise<void> | void) => {
     let fn: () => Promise<void> | void = submitForm;
-    if (!dirty && !_.isUndefined(cluster) && canNextClusterDetails({ cluster })) {
+    if (!dirty && !isUndefined(cluster) && canNextClusterDetails({ cluster })) {
       fn = moveNext;
     }
 
