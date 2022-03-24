@@ -4,24 +4,18 @@ import _ from 'lodash';
 import { useFormikContext } from 'formik';
 
 const FormikAutoSave: React.FC<{ debounce?: number }> = ({ debounce = 1000 }) => {
-  const { values, isSubmitting, submitForm, touched } = useFormikContext();
+  const { values, dirty, isSubmitting, submitForm } = useFormikContext();
   const prevValuesRef = React.useRef(values);
   const commitRef = React.useRef(_.debounce(submitForm, debounce));
 
   React.useEffect(() => {
-    if (
-      !shallowEqual(prevValuesRef.current, values) &&
-      // in the past we used `dirty` prop instead of `touched`.
-      // But it seems to be buggy as `dirty` is true even if `touched` is empty.
-      Object.keys(touched).length &&
-      !isSubmitting
-    ) {
+    if (!shallowEqual(prevValuesRef.current, values) && dirty && !isSubmitting) {
       commitRef.current();
     }
     if (!isSubmitting) {
       prevValuesRef.current = values;
     }
-  }, [values, isSubmitting, touched]);
+  }, [values, dirty, isSubmitting]);
 
   React.useEffect(() => {
     const commit = commitRef.current;
