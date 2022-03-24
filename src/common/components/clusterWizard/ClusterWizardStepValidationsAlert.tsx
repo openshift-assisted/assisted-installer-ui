@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import lodashValues from 'lodash/values';
 import React from 'react';
 import {
   Alert,
@@ -41,7 +41,7 @@ const ClusterWizardStepValidationsAlert = <ClusterWizardStepsType extends string
       currentStepId,
       wizardStepsValidationsMap,
     );
-    const flattenedValues = _.values(reducedValidationsInfo).flat() as Validation[];
+    const flattenedValues = lodashValues(reducedValidationsInfo).flat() as Validation[];
     return {
       pendingClusterValidations: flattenedValues.filter(
         (validation) => validation.status === 'pending',

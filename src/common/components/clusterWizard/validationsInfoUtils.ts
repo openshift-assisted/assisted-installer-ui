@@ -1,4 +1,7 @@
-import _ from 'lodash';
+import lodashValues from 'lodash/values';
+import lodashKeys from 'lodash/keys';
+import reduce from 'lodash/reduce';
+
 import { Cluster, ClusterValidationId, Host, HostValidationId } from '../../api/types';
 import {
   ClusterWizardStepStatusDeterminationObject,
@@ -43,7 +46,7 @@ export const findValidationFixStep = <ClusterWizardStepsType extends string>(
   },
   wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType>,
 ): ClusterWizardStepsType | undefined => {
-  const keys = _.keys(wizardStepsValidationsMap) as ClusterWizardStepsType[];
+  const keys = lodashKeys(wizardStepsValidationsMap) as ClusterWizardStepsType[];
   return keys.find((key) => {
     // find first matching validation-map name
     const { cluster: clusterValidationMap, host: hostValidationMap } = wizardStepsValidationsMap[
@@ -62,7 +65,7 @@ export const checkClusterValidations = (
   clusterValidationsInfo: ClusterValidationsInfo,
   requiredIds: ClusterValidationId[],
 ): boolean => {
-  const requiredValidations = _.values(clusterValidationsInfo)
+  const requiredValidations = lodashValues(clusterValidationsInfo)
     .flat()
     .filter((v) => v && requiredIds.includes(v.id));
   return (
@@ -89,7 +92,7 @@ export const checkHostValidations = (
   hostValidationsInfo: HostValidationsInfo,
   requiredIds: HostValidationId[],
 ): boolean => {
-  const requiredValidations = _.values(hostValidationsInfo)
+  const requiredValidations = lodashValues(hostValidationsInfo)
     .flat()
     .filter((v) => v && requiredIds.includes(v.id));
 
@@ -119,7 +122,7 @@ export const getWizardStepHostValidationsInfo = <ClusterWizardStepsType extends 
   wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType>,
 ): HostValidationsInfo => {
   const { groups, validationIds } = wizardStepsValidationsMap[wizardStepId].host;
-  return _.reduce(
+  return reduce(
     validationsInfo,
     (result, groupValidations, groupName) => {
       if (groups.includes(groupName as HostValidationGroup)) {
@@ -167,7 +170,7 @@ export const getWizardStepClusterValidationsInfo = <ClusterWizardStepsType exten
   wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType>,
 ): ClusterValidationsInfo => {
   const { groups, validationIds } = wizardStepsValidationsMap[wizardStepId].cluster;
-  return _.reduce(
+  return reduce(
     validationsInfo,
     (result, groupValidations, groupName) => {
       if (groups.includes(groupName as ClusterValidationGroup)) {
