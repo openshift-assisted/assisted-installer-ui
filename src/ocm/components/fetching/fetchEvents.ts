@@ -15,12 +15,7 @@ export const onFetchEvents: EventListFetchProps['onFetchEvents'] = async (
       const infraEnvId = await InfraEnvsService.getInfraEnvId(props.clusterId);
       const { data } = await EventsAPI.list({ infraEnvId: infraEnvId });
 
-      eventList.push(
-        ...data.filter(
-          (event) =>
-            !eventList.find((e) => e.eventTime + e.message === event.eventTime + e.message),
-        ),
-      );
+      eventList.push(...data.filter((event) => event.name === 'image_info_updated'));
     }
 
     onSuccess(eventList);
