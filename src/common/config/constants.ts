@@ -30,6 +30,8 @@ export const getOcpConsoleNodesPage = (ocpConsoleUrl: string) =>
 
 export const REDHAT_CONSOLE_OPENSHIFT = 'https://console.redhat.com/openshift';
 
+export const SSH_GENERATION_DOC_LINK = 'https://www.redhat.com/sysadmin/configure-ssh-keygen';
+
 // TODO(mlibra): Retrieve branding dynamically, if needed, i.e. via injecting to the "window" object
 export const getProductBrandingCode = () => 'redhat';
 

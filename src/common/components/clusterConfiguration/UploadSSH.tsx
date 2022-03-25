@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useField } from 'formik';
 
-import { trimSshPublicKey, UploadField } from '../ui';
+import { PopoverIcon, trimSshPublicKey, UploadField } from '../ui';
 import { SshPublicKeyHelperText } from './SecurityFields';
 
 const UploadSSH: React.FC = () => {
@@ -9,7 +9,15 @@ const UploadSSH: React.FC = () => {
 
   return (
     <UploadField
-      label="SSH public key"
+      label={
+        <>
+          {'SSH public key'}
+          <PopoverIcon
+            variant="plain"
+            bodyContent="Provide an SSH key to receive debugging information during installation"
+          />
+        </>
+      }
       name={name}
       helperText={<SshPublicKeyHelperText />}
       idPostfix="discovery"
