@@ -75,7 +75,7 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
           <FlexItem>
             <Tooltip
               hidden={isBMPlatform}
-              content="The Advanced Cluster Manager can not manage bare metal hosts on this platform."
+              content="To enable the host’s baseboard management controller (BMC) on the hub cluster,deploy the hub cluster on vSphere, BareMetal, OpenStack, or platform-agnostic (none type)."
             >
               <Radio
                 id="bmc"
