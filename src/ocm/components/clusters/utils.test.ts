@@ -1,6 +1,6 @@
 import type { Cluster, Host } from '../../../common';
 import { calculateCollectedLogsCount, filterHostsByLogStates } from './utils';
-import { uniqueId } from 'lodash';
+import uniqueId from 'lodash/uniqueId';
 
 const hostTemplate: Host = {
   id: '',

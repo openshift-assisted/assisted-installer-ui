@@ -1,5 +1,5 @@
 import React from 'react';
-import _ from 'lodash';
+import omit from 'lodash/omit';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import {
@@ -44,7 +44,7 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster }) => {
   const handleClusterUpdate = React.useCallback(
     async (clusterId: Cluster['id'], values: V2ClusterUpdateParams) => {
       clearAlerts();
-      const params: V2ClusterUpdateParams = _.omit(values, [
+      const params: V2ClusterUpdateParams = omit(values, [
         'highAvailabilityMode',
         'pullSecret',
         'openshiftVersion',

@@ -1,7 +1,7 @@
 import { ClusterCreateParams, V2ClusterUpdateParams } from '../../common';
 import { ClustersAPI, ManagedDomainsAPI } from '../services/apis';
 import InfraEnvsService from './InfraEnvsService';
-import _ from 'lodash';
+import omit from 'lodash/omit';
 import DiskEncryptionService from './DiskEncryptionService';
 import { OcmClusterDetailsValues } from '../api/types';
 import { isArmArchitecture } from '../../common/selectors/clusterSelectors';
@@ -32,7 +32,7 @@ const ClusterDetailsService = {
   },
 
   getClusterCreateParams(values: OcmClusterDetailsValues): ClusterCreateParams {
-    const params: ClusterCreateParams = _.omit(values, [
+    const params: ClusterCreateParams = omit(values, [
       'useRedHatDnsService',
       'SNODisclaimer',
       'enableDiskEncryptionOnMasters',

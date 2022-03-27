@@ -1,4 +1,5 @@
-import _ from 'lodash';
+import findIndex from 'lodash/findIndex';
+import set from 'lodash/set';
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { Cluster, Host } from '../../../common';
 import { handleApiError } from '../../api/utils';
@@ -54,10 +55,10 @@ export const currentClusterSlice = createSlice({
       return { ...state, data: action.payload };
     },
     updateHost: (state, action: PayloadAction<Host>) => {
-      const hostIndex = _.findIndex(state.data?.hosts, (host) => host.id === action.payload.id);
+      const hostIndex = findIndex(state.data?.hosts, (host) => host.id === action.payload.id);
 
       if (hostIndex >= 0) {
-        _.set(state, `data.hosts[${hostIndex}]`, action.payload);
+        set(state, `data.hosts[${hostIndex}]`, action.payload);
       }
       return state;
     },
