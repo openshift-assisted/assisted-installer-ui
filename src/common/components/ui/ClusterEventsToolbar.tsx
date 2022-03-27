@@ -1,5 +1,5 @@
 import React from 'react';
-import _ from 'lodash';
+import capitalize from 'lodash/capitalize';
 import {
   Toolbar,
   ToolbarItem,
@@ -250,7 +250,7 @@ const ClusterEventsToolbar: React.FC<ClustersListToolbarProps> = ({
           chips={filters.severity.map(
             (severity): ToolbarChip => ({
               key: severity,
-              node: _.capitalize(severity),
+              node: capitalize(severity),
             }),
           )}
           deleteChip={onDeleteChip}
@@ -272,7 +272,7 @@ const ClusterEventsToolbar: React.FC<ClustersListToolbarProps> = ({
                 key={severity}
                 value={severity}
               >
-                {_.capitalize(severity)} <Badge isRead>{getEventsCount(severity, events)}</Badge>
+                {capitalize(severity)} <Badge isRead>{getEventsCount(severity, events)}</Badge>
               </SelectOption>
             ))}
           </Select>
