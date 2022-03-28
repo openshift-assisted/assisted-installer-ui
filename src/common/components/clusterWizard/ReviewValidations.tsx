@@ -1,5 +1,5 @@
 import React from 'react';
-import _ from 'lodash';
+import lodashValues from 'lodash/values';
 import { Button, ButtonVariant } from '@patternfly/react-core';
 import {
   CheckCircleIcon,
@@ -198,7 +198,7 @@ export const HostsValidations: HostsValidationsFC = ({
     });
   });
 
-  const array = _.values(failingValidations);
+  const array = lodashValues(failingValidations);
   if (array.length === 0) {
     return <AllValidationsPassed />;
   }

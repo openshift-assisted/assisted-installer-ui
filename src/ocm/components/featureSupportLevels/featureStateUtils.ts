@@ -37,7 +37,7 @@ const getArmDisabledReason = (
   return undefined;
 };
 
-const getOdfDisabledReason = (cluster: Cluster | undefined) => {
+const getOdfDisabledReason = (cluster: Cluster | undefined, isSupported: boolean) => {
   if (!cluster) {
     return undefined;
   }
@@ -49,6 +49,9 @@ const getOdfDisabledReason = (cluster: Cluster | undefined) => {
   }
   if (isSNO(cluster)) {
     return 'OpenShift Data Foundation is not available when deploying a Single Node OpenShift.';
+  }
+  if (!isSupported) {
+    return 'The installer cannot currently enable OpenShift Data Foundation with the selected OpenShift version,  but it can be enabled later through the OpenShift Console once the installation is complete.';
   }
   return undefined;
 };
@@ -100,7 +103,7 @@ export const getFeatureDisabledReason = (
       return getCnvDisabledReason(cluster);
     }
     case 'ODF': {
-      return getOdfDisabledReason(cluster);
+      return getOdfDisabledReason(cluster, isSupported);
     }
     case 'NETWORK_TYPE_SELECTION': {
       return getNetworkTypeSelectionDisabledReason(cluster);
