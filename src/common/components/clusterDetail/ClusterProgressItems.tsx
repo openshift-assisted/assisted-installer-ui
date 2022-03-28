@@ -6,14 +6,23 @@ import { ProgressBarTexts } from './ProgressBarTexts';
 import { FinalizingProgress } from './FinalizingProgress';
 import OperatorsProgressItem from './OperatorsProgressItem';
 import React from 'react';
-import { ClusterProgressProps } from './ClusterProgress';
+import { Cluster } from '../../api';
+import { EventListFetchProps } from '../../types';
+
+type ClusterProgressItemsProps = {
+  cluster: Cluster;
+  minimizedView?: boolean;
+  onFetchEvents: EventListFetchProps['onFetchEvents'];
+  totalPercentage?: number;
+  fallbackEventsURL?: string;
+};
 
 const ClusterProgressItems = ({
   cluster,
   minimizedView = false,
   onFetchEvents,
   fallbackEventsURL,
-}: ClusterProgressProps) => {
+}: ClusterProgressItemsProps) => {
   const { monitoredOperators = [] } = cluster;
   const enabledHosts = getEnabledHosts(cluster.hosts);
   const isWorkersPresent = enabledHosts && enabledHosts.some((host) => host.role === 'worker');

@@ -10,7 +10,6 @@ import { Cluster } from '../../api/types';
 import { DetailItem, DetailList, getHumanizedDateTime, RenderIf } from '../ui';
 import { CLUSTER_STATUS_LABELS } from '../../config';
 import './ClusterProgress.css';
-import { EventListFetchProps } from '../../types';
 
 const getProgressVariant = (status: Cluster['status']) => {
   switch (status) {
@@ -47,12 +46,10 @@ const getInstallationStatus = (
   return CLUSTER_STATUS_LABELS[status] || status;
 };
 
-export type ClusterProgressProps = {
+type ClusterProgressProps = {
   cluster: Cluster;
   minimizedView?: boolean;
-  onFetchEvents: EventListFetchProps['onFetchEvents'];
   totalPercentage?: number;
-  fallbackEventsURL?: string;
 };
 
 const ClusterProgress = ({

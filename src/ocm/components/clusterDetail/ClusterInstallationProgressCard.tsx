@@ -15,7 +15,6 @@ import { ClusterStatusIcon } from '../clusters/ClusterStatus';
 import ClusterDetailStatusVarieties, {
   useClusterStatusVarieties,
 } from './ClusterDetailStatusVarieties';
-import { onFetchEvents } from '../fetching/fetchEvents';
 
 const ClusterInstallationProgressCard: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const [isCardExpanded, setIsCardExpanded] = React.useState(cluster.status !== 'installed');
@@ -45,7 +44,6 @@ const ClusterInstallationProgressCard: React.FC<{ cluster: Cluster }> = ({ clust
         <ClusterProgress
           cluster={cluster}
           minimizedView={!isCardExpanded}
-          onFetchEvents={onFetchEvents}
           totalPercentage={cluster.progress?.totalPercentage || 0}
         />
         <ClusterDetailsButtonGroup cluster={cluster} />
