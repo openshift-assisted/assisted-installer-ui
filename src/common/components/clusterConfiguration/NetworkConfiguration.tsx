@@ -95,7 +95,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
       setFieldValue('ingressVip', '', shouldValidate);
       setFieldValue('apiVip', '', shouldValidate);
       if (!touched.hostSubnet || isMultiNodeCluster) {
-        setFieldValue('hostSubnet', NO_SUBNET_SET, shouldValidate);
+        setFieldValue('hostSubnet', firstSubnet, shouldValidate);
       }
     } else {
       if (!values.vipDhcpAllocation && touched.hostSubnet) {
@@ -104,6 +104,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
       }
     }
   }, [
+    firstSubnet,
     touched.hostSubnet,
     isMultiNodeCluster,
     isUserManagedNetworking,
