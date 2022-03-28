@@ -45,11 +45,6 @@ const getNetworkType = (
   return networkType;
 };
 
-const getAPITitle = (apiName: string, isUserManagementType: boolean | undefined) => {
-  const virtualLabel = isUserManagementType ? '' : ' Virtual';
-  return `${apiName}${virtualLabel} IP`;
-};
-
 const getManagementType = (isUserManagementType: boolean | undefined): string => {
   let managementType: string;
   isUserManagementType
@@ -106,13 +101,13 @@ const ClusterProperties: React.FC<ClusterPropertiesProps> = ({ cluster }) => (
           testId="cpu-architecture"
         />
         <DetailItem
-          title={getAPITitle('API', cluster.userManagedNetworking)}
+          title="API IP"
           value={cluster.apiVip}
           isHidden={!cluster.apiVip}
           testId="api-vip"
         />
         <DetailItem
-          title={getAPITitle('Ingress', cluster.userManagedNetworking)}
+          title="Ingress IP"
           value={cluster.ingressVip}
           isHidden={!cluster.ingressVip}
           testId="ingress-vip"

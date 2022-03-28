@@ -108,12 +108,7 @@ const ApiVipConnectivityAlert: React.FC<
 > = ({ UpdateDay2ApiVipDialogToggleComponent, variant }) => {
   const actionLinks = [<UpdateDay2ApiVipDialogToggleComponent key="update-api-vip" />];
   return (
-    <Alert
-      title="API Virtual IP connectivity failure"
-      variant={variant}
-      actionLinks={actionLinks}
-      isInline
-    >
+    <Alert title="API IP connectivity failure" variant={variant} actionLinks={actionLinks} isInline>
       To continue installation, configure your DNS or alternatively
     </Alert>
   );
