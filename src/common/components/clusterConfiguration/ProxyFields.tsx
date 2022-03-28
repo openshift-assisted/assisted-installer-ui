@@ -1,7 +1,7 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
 import { Grid } from '@patternfly/react-core';
-import { InputField, CheckboxField, trimCommaSeparatedList } from '../ui';
+import { InputField, CheckboxField, trimCommaSeparatedList, PopoverIcon } from '../ui';
 import { ProxyFieldsType } from '../../types';
 
 export const ProxyInputFields = () => {
@@ -14,34 +14,65 @@ export const ProxyInputFields = () => {
   return (
     <Grid hasGutter>
       <InputField
-        label="HTTP Proxy URL"
+        label={
+          <>
+            {'HTTP proxy URL'}
+            <PopoverIcon
+              variant={'plain'}
+              bodyContent={
+                'The HTTP proxy URL that agents should use to access the discovery service.'
+              }
+            />
+          </>
+        }
         name="httpProxy"
         placeholder="http://<user>:<password>@<ipaddr>:<port>"
         helperText={
           <div>
-            HTTP proxy URL that agents should use to access the discovery service. The URL scheme{' '}
-            <b>must be http</b>.
+            URL must start with <b>http</b>.
           </div>
         }
       />
       <InputField
-        label="HTTPS Proxy URL"
+        label={
+          <>
+            {'HTTPS proxy URL'}
+            <PopoverIcon
+              variant={'plain'}
+              bodyContent={
+                "Specify the HTTPS proxy that agents should use to access the discovery service. If you don't provide a value, your HTTP proxy URL will be used by default for both HTTP and HTTPS connections."
+              }
+            />
+          </>
+        }
         name="httpsProxy"
         placeholder="http://<user>:<password>@<ipaddr>:<port>"
         helperText={
           <div>
-            HTTPS proxy URL that agents should use to access the discovery service. If the value is
-            not specified, the HTTP Proxy URL is used as default for both http and https
-            connections. The URL scheme <b>must be http</b>, the <i>https</i> is currently not
-            supported.
+            URL must start with <b>http</b> (https schemes are not currently supported).
           </div>
         }
       />
       <InputField
-        label="No Proxy domains"
+        label={
+          <>
+            {'NO_PROXY domains'}
+            <PopoverIcon
+              variant={'plain'}
+              bodyContent={
+                'Exclude destination domain names, IP addresses, or other network CIDRs from proxying by adding them to this comma-separated list.'
+              }
+            />
+          </>
+        }
         name="noProxy"
         placeholder="one.domain.com,second.domain.com"
-        helperText="A comma-separated list of destination domain names, domains, IP addresses or other network CIDRs to exclude proxying. Preface a domain with . to include all subdomains of that domain. Use * to bypass proxy for all destinations."
+        helperText={
+          <div>
+            Use a comma to separate each listed domain. Preface a domain with <b>.</b> to include
+            its subdomains. Use <b>*</b> to bypass the proxy for all destinations.
+          </div>
+        }
         onBlur={onNoProxyBlur}
       />
     </Grid>

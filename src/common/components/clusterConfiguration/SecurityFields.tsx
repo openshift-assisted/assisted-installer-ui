@@ -3,17 +3,17 @@ import { useFormikContext } from 'formik';
 import { Checkbox, FormGroup } from '@patternfly/react-core';
 
 import { RenderIf } from '../ui/RenderIf';
-import { getFieldId, HelperText, TextAreaField, trimSshPublicKey } from '../ui';
+import { ExternalLink, getFieldId, HelperText, TextAreaField, trimSshPublicKey } from '../ui';
 import { Cluster } from '../../api';
 import { NetworkConfigurationValues } from '../../types/clusters';
+import { SSH_GENERATION_DOC_LINK } from '../../config';
 
 export const SshPublicKeyHelperText: React.FC<{
   fieldId?: string;
 }> = ({ fieldId = 'sshPublicKey' }) => (
   <HelperText fieldId={fieldId}>
-    SSH key used to debug OpenShift nodes. Generate a new key using <em>ssh-keygen</em> command and
-    upload or paste the resulting public key here (by default it is content of the{' '}
-    <em>~/.ssh/id_rsa.pub</em> file).
+    Paste the content of a public ssh key you want to use to connect to the hosts into this field.{' '}
+    <ExternalLink href={SSH_GENERATION_DOC_LINK}>Learn more</ExternalLink>
   </HelperText>
 );
 
