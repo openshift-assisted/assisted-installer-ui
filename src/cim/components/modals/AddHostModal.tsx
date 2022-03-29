@@ -10,7 +10,7 @@ import {
   Tooltip,
 } from '@patternfly/react-core';
 import { DownloadIso, DiscoveryImageConfigForm, DiscoveryImageFormValues } from '../../../common';
-import { BMCForm } from '../Agent';
+import BMCForm from '../Agent/BMCForm';
 import { AddHostModalProps } from './types';
 
 type AddHostModalStepType = 'bmc' | 'iso-config' | 'iso-download';

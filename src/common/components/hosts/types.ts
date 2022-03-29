@@ -16,6 +16,8 @@ export type EditHostFormValues = {
   hostname: string; // requested change
 };
 
+export type ActionCheck = [/* enabled */ boolean, /* reason */ string | undefined];
+
 export type HostsTableActions = {
   onDeleteHost?: (host: Host) => void;
   onHostEnable?: (host: Host) => void;
@@ -28,20 +30,20 @@ export type HostsTableActions = {
   canInstallHost?: (host: Host) => boolean;
   canEditDisks?: (host: Host) => boolean;
   onDiskRole?: onDiskRoleType;
-  canEditHost?: (host: Host) => boolean;
+  canEditHost?: (host: Host) => boolean | ActionCheck;
   canEnable?: (host: Host) => boolean;
   canDisable?: (host: Host) => boolean;
   canReset?: (host: Host) => boolean;
   canDownloadHostLogs?: (host: Host) => boolean;
-  canDelete?: (host: Host) => boolean;
+  canDelete?: (host: Host) => boolean | ActionCheck;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onEditRole?: (host: Host, role: HostUpdateParams['hostRole']) => Promise<any>;
   canEditRole?: (host: Host) => boolean;
   onEditBMH?: (host: Host) => void;
-  canEditBMH?: (host: Host) => boolean;
+  canEditBMH?: (host: Host) => ActionCheck;
   onSelect?: (host: Host, selected: boolean) => void;
   canEditHostname?: () => boolean;
-  canUnbindHost?: (host: Host) => [/* enabled */ boolean, /* reason */ string];
+  canUnbindHost?: (host: Host) => ActionCheck;
   onUnbindHost?: (host: Host) => void;
 };
 
@@ -54,7 +56,7 @@ export type HostNetworkingStatusComponentProps = {
 export type HostStatusDef = {
   key: string;
   title: string;
-  category: string;
+  category: 'Installation related' | 'Discovery related' | 'Bare Metal Host related';
   icon?: React.ReactNode;
   sublabel?: string;
   details?: string;

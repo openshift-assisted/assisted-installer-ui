@@ -420,6 +420,7 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
           onChangeHostname={(host, hostname) =>
             HostsService.updateHostName(cluster.id, host.id, hostname)
           }
+          canChangeHostname={() => [true, undefined]}
         />
       )}
       {massDeleteHostDialog.isOpen && (
