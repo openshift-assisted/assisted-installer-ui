@@ -88,7 +88,7 @@ const EditSSHKeyModal: React.FC<EditSSHKeyModalProps> = ({
             </ModalBoxBody>
             <ModalBoxFooter>
               <Button onClick={submitForm} isDisabled={isSubmitting || !isValid}>
-                Save SSH public key
+                Save
               </Button>
               <Button onClick={onClose} variant={ButtonVariant.secondary}>
                 Cancel

@@ -108,7 +108,7 @@ const EditNtpSourcesModal: React.FC<EditNtpSourcesModalProps> = ({
               </ModalBoxBody>
               <ModalBoxFooter>
                 <Button onClick={submitForm} isDisabled={isSubmitting || !isValid}>
-                  Save NTP sources
+                  Save
                 </Button>
                 <Button onClick={onClose} variant={ButtonVariant.secondary}>
                   Cancel
