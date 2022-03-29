@@ -94,9 +94,6 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         </ClusterWizardStepHeader>
       </StackItem>
       <StackItem>
-        <DiscoveryInstructions isSNO={isSNOCluster} showAllInstructions />
-      </StackItem>
-      <StackItem>
         <TextContent>
           <Text component="p">
             <DiscoveryImageModalButton
@@ -157,7 +154,15 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         </TextContent>
       </StackItem>
       <StackItem>
-        <HostsDiscoveryTable cluster={cluster} />
+        <TextContent>
+          <Text component="h3">Host Inventory</Text>
+        </TextContent>
+      </StackItem>
+      <StackItem>
+        <HostsDiscoveryTable
+          cluster={cluster}
+          setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
+        />
       </StackItem>
     </Stack>
   );
