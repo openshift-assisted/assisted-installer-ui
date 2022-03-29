@@ -45,6 +45,7 @@ const ClusterDetailsService = {
     if (isArmArchitecture({ cpuArchitecture: params.cpuArchitecture })) {
       params.userManagedNetworking = true;
     }
+    params.networkType = 'OVNKubernetes';
     return params;
   },
 };
