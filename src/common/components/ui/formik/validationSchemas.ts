@@ -13,6 +13,7 @@ import { allSubnetsIPv4 } from '../../../selectors';
 const ALPHANUMBERIC_REGEX = /^[a-zA-Z0-9]+$/;
 const NAME_START_END_REGEX = /^[a-z0-9](.*[a-z0-9])?$/;
 const NAME_CHARS_REGEX = /^[a-z0-9-.]*$/;
+const CLUSTER_NAME_REGEX = /^[a-z0-9](.*[a-z0-9])?$/;
 const SSH_PUBLIC_KEY_REGEX = /^(ssh-rsa|ssh-ed25519|ecdsa-[-a-z0-9]*) AAAA[0-9A-Za-z+/]+[=]{0,3}( .+)?$/;
 const DNS_NAME_REGEX = /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/;
 const PROXY_DNS_REGEX = /^([a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62}){1}(\.[a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62})*[._]?$/;
@@ -23,29 +24,47 @@ const MAC_REGEX = /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})|([0-9a-fA-F]{4}\\.[0
 const BMC_REGEX = /^((ipmi|ibmc(\+https?)?|idrac(\+https?)?|idrac-redfish(\+https?)?|idrac-virtualmedia(\+https?)?|irmc|redfish(\+https?)?|redfish-virtualmedia(\+https?)?|ilo4(\+https)?|ilo4-virtuallmedia(\+https)?|ilo5(\+https)?|ilo5-redfish(\+https)|ilo5-virtualmedia(\+https)|https?|ftp):(\/\/([a-z0-9\-._~%!$&'()*+,;=]+@)?([a-z0-9\-._~%]+|\[[a-f0-9:.]+\]|\[v[a-f0-9][a-z0-9\-._~%!$&'()*+,;=:]+\])(:[0-9]+)?(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?|(\/?[a-z0-9\-._~%!$&'()*+,;=:@]+(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?)?)|([a-z0-9\-._~%!$&'()*+,;=@]+(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?|(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)+\/?))(\?[a-z0-9\-._~%!$&'()*+,;=:@/?]*)?(#[a-z0-9\-._~%!$&'()*+,;=:@/?]*)?$/i;
 const LOCATION_CHARS_REGEX = /^[a-zA-Z0-9-._]*$/;
 
+export const CLUSTER_NAME_VALIDATION_MESSAGES = {
+  INVALID_LENGTH: '1-54 characters',
+  INVALID_VALUE: 'Use alphanumberic characters, or hyphen (-)',
+  INVALID_START_END: 'Start and end with a letter or number.',
+};
+
+export const UNIQUE_CLUSTER_NAME_VALIDATION_MESSAGES = {
+  ...CLUSTER_NAME_VALIDATION_MESSAGES,
+  NOT_UNIQUE: 'Must be unique',
+};
+
 export const nameValidationSchema = (
   usedClusterNames: string[],
   baseDnsDomain = '',
   validateUniqueName?: boolean,
 ) =>
   Yup.string()
-    .matches(NAME_START_END_REGEX, {
-      message:
-        'Name must consist of lower-case letters, numbers and hyphens. It must start and end with a letter or number.',
+    .required('Required')
+    .matches(NAME_CHARS_REGEX, {
+      message: CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_VALUE,
       excludeEmptyString: true,
     })
-    .min(2, 'Must contain at least 2 characters.')
-    .max(54, 'Cannot be longer than 54 characters.')
-    .required('Required')
+    .matches(CLUSTER_NAME_REGEX, {
+      message: CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_START_END,
+      excludeEmptyString: true,
+    })
+    .min(1, CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_LENGTH)
+    .max(54, CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_LENGTH)
     .when('useRedHatDnsService', {
       is: true,
-      then: Yup.string().test('is-name-unique', 'The name is already taken.', (value: string) => {
-        const clusterFullName = `${value}.${baseDnsDomain}`;
-        return !value || !usedClusterNames.includes(clusterFullName);
-      }),
+      then: Yup.string().test(
+        'is-name-unique',
+        UNIQUE_CLUSTER_NAME_VALIDATION_MESSAGES.NOT_UNIQUE,
+        (value: string) => {
+          const clusterFullName = `${value}.${baseDnsDomain}`;
+          return !value || !usedClusterNames.includes(clusterFullName);
+        },
+      ),
       otherwise: Yup.string().test(
         'is-name-unique',
-        'The name is already taken.',
+        UNIQUE_CLUSTER_NAME_VALIDATION_MESSAGES.NOT_UNIQUE,
         (value: string) => {
           // in CIM cluster name is ClusterDeployment CR name which must be unique
           return validateUniqueName ? !value || !usedClusterNames.includes(value) : true;
