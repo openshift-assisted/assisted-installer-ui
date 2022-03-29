@@ -8,7 +8,7 @@ import { PREFIX_MAX_RESTRICTION } from '../../config/constants';
 import { NetworkTypeControlGroup } from '../clusterWizard/networkingSteps/NetworkTypeControlGroup';
 import { useFeature } from '../../features';
 
-const AdvancedNetworkFields: React.FC<{}> = () => {
+const AdvancedNetworkFields: React.FC<{ isSNO: boolean }> = ({ isSNO }) => {
   const isNetworkTypeSelectionEnabled = useFeature(
     'ASSISTED_INSTALLER_NETWORK_TYPE_SELECTION_FEATURE',
   );
@@ -64,7 +64,7 @@ const AdvancedNetworkFields: React.FC<{}> = () => {
         helperText="The IP address pool to use for service IP addresses. You can enter only one IP address pool. If you need to access the services from an external network, configure load balancers and routers to manage the traffic."
         isRequired
       />
-      {isNetworkTypeSelectionEnabled && <NetworkTypeControlGroup isIPv6={isIPv6} />}
+      {isNetworkTypeSelectionEnabled && <NetworkTypeControlGroup isSNO={isSNO} isIPv6={isIPv6} />}
     </Grid>
   );
 };

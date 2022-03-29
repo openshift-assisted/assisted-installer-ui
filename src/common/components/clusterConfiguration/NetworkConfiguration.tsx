@@ -146,7 +146,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
         description="Configure advanced networking properties (e.g. CIDR ranges)."
         isChecked={isAdvanced}
         onChange={toggleAdvConfiguration}
-        body={isAdvanced && <AdvancedNetworkFields />}
+        body={isAdvanced && <AdvancedNetworkFields isSNO={!isMultiNodeCluster} />}
       />
     </Grid>
   );
