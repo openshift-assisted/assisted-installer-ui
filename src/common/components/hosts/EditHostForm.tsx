@@ -129,7 +129,7 @@ const EditHostForm: React.FC<EditHostFormProps> = ({
               type={ButtonType.submit}
               isDisabled={isSubmitting || !isValid || !dirty}
             >
-              Save hostname
+              Change
             </Button>
             <Button key="cancel" variant={ButtonVariant.link} onClick={onCancel}>
               Cancel
