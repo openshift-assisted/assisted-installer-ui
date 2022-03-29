@@ -88,7 +88,7 @@ const EditPullSecretForm: React.FC<EditPullSecretFormProps> = ({
           onClick={submitForm}
           isDisabled={pullSecretLoading || !!pullSecretError || isSubmitting || !isValid}
         >
-          Save pull secret
+          Save
         </Button>
         <Button onClick={onClose} variant={ButtonVariant.secondary}>
           Cancel
