@@ -140,7 +140,9 @@ export const getAgentsHostsNames = (
   agents: AgentK8sResource[] = [],
   bmhs: BareMetalHostK8sResource[] = [],
 ): string[] => {
-  const raw: (string | undefined)[] = agents.map((agent) => agent.spec?.hostname);
+  const raw: (string | undefined)[] = agents.map(
+    (agent) => agent.spec?.hostname || agent.status?.inventory?.hostname,
+  );
   bmhs.forEach((bmh) => {
     const hostname = bmh.metadata?.annotations?.[BMH_HOSTNAME_ANNOTATION];
     if (hostname) {

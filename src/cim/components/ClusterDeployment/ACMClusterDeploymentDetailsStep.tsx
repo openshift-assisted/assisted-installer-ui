@@ -1,4 +1,4 @@
-import { Formik, FormikProps } from 'formik';
+import { Formik, FormikProps, useFormikContext } from 'formik';
 import { noop } from 'lodash';
 import * as React from 'react';
 import { Ref } from 'react';
@@ -12,17 +12,46 @@ import { ClusterImageSetK8sResource } from '../../types/k8s/cluster-image-set';
 import ClusterDeploymentDetailsForm from './ClusterDeploymentDetailsForm';
 import { useDetailsFormik } from './ClusterDeploymentDetailsStep';
 
-type ACMClusterDeploymentDetailsStepProps = {
+type DetailsFormBodyProps = {
   clusterImages: ClusterImageSetK8sResource[];
   onValuesChanged: (values: ClusterDetailsValues, initRender: boolean) => void;
-  usedClusterNames: string[];
-  formRef: Ref<FormikProps<ClusterDetailsValues>>;
   clusterDeployment?: ClusterDeploymentK8sResource;
   agentClusterInstall?: AgentClusterInstallK8sResource;
   agents?: AgentK8sResource[];
   defaultBaseDomain?: string;
   pullSecret?: string;
   extensionAfter: ClusterDetailsFormFieldsProps['extensionAfter'];
+};
+
+const DetailsFormBody: React.FC<DetailsFormBodyProps> = ({
+  onValuesChanged,
+  clusterDeployment,
+  agentClusterInstall,
+  clusterImages,
+  pullSecret,
+  extensionAfter,
+}) => {
+  const { values } = useFormikContext<ClusterDetailsValues>();
+  const initRenderRef = React.useRef(true);
+  React.useEffect(() => onValuesChanged(values, initRenderRef.current), [onValuesChanged, values]);
+  React.useEffect(() => {
+    initRenderRef.current = false;
+  }, []);
+
+  return (
+    <ClusterDeploymentDetailsForm
+      clusterDeployment={clusterDeployment}
+      agentClusterInstall={agentClusterInstall}
+      clusterImages={clusterImages}
+      pullSecret={pullSecret}
+      extensionAfter={extensionAfter}
+    />
+  );
+};
+
+type ACMClusterDeploymentDetailsStepProps = DetailsFormBodyProps & {
+  usedClusterNames: string[];
+  formRef: Ref<FormikProps<ClusterDetailsValues>>;
 };
 
 const ACMClusterDeploymentDetailsStep: React.FC<ACMClusterDeploymentDetailsStepProps> = ({
@@ -53,7 +82,7 @@ const ACMClusterDeploymentDetailsStep: React.FC<ACMClusterDeploymentDetailsStepP
       innerRef={formRef}
       onSubmit={noop}
     >
-      <ClusterDeploymentDetailsForm
+      <DetailsFormBody
         clusterDeployment={clusterDeployment}
         agentClusterInstall={agentClusterInstall}
         onValuesChanged={onValuesChanged}

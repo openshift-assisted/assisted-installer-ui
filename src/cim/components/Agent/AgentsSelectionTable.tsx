@@ -4,30 +4,35 @@ import HostsTable, { DefaultExpandComponent } from '../../../common/components/h
 import {
   cpuCoresColumn,
   disksColumn,
-  hostnameColumn,
   memoryColumn,
   roleColumn,
 } from '../../../common/components/hosts/tableUtils';
 import { AgentK8sResource } from '../../types/k8s/agent';
 import {
   ClusterDeploymentHostsSelectionValues,
-  ClusterDeploymentHostsTablePropsActions,
+  AgentTableActions,
 } from '../ClusterDeployment/types';
-import { infraEnvColumn, agentStatusColumn, useAgentsTable } from './tableUtils';
+import {
+  infraEnvColumn,
+  agentStatusColumn,
+  useAgentsTable,
+  agentHostnameColumn,
+} from './tableUtils';
 import DefaultEmptyState from '../../../common/components/ui/uiState/EmptyState';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 
-const canEditRole = () => true;
-
-type AgentsSelectionTableProps = ClusterDeploymentHostsTablePropsActions & {
+type AgentsSelectionTableProps = {
   matchingAgents: AgentK8sResource[];
   width?: number;
+  onEditRole?: AgentTableActions['onEditRole'];
+  onEditHost?: AgentTableActions['onEditHost'];
 };
 
 const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
   matchingAgents,
   onEditRole,
   width,
+  onEditHost,
 }) => {
   const [{ value: selectedIDs }, , { setValue, setTouched }] = useField<
     ClusterDeploymentHostsSelectionValues['selectedHostIds']
@@ -69,14 +74,14 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
 
   const [hosts, actions, actionResolver] = useAgentsTable(
     { agents: matchingAgents },
-    { onSelect, onEditRole, canEditRole },
+    { onSelect, onEditRole, onEditHost },
   );
 
   const addAll = width && width > 700;
 
   const content = React.useMemo(() => {
     return [
-      hostnameColumn(),
+      agentHostnameColumn(hosts, matchingAgents, [], actions.onEditHost, actions.canEditHostname),
       ...(addAll ? [infraEnvColumn(matchingAgents)] : []),
       agentStatusColumn({
         agents: matchingAgents,
@@ -91,7 +96,15 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
       ),
       ...(addAll ? [cpuCoresColumn, memoryColumn, disksColumn] : []),
     ];
-  }, [matchingAgents, actions.canEditRole, actions.onEditRole, addAll]);
+  }, [
+    matchingAgents,
+    actions.canEditRole,
+    actions.onEditRole,
+    addAll,
+    hosts,
+    actions.onEditHost,
+    actions.canEditHostname,
+  ]);
 
   const paginationProps = usePagination(hosts.length);
 
@@ -101,7 +114,6 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
       content={content}
       selectedIDs={selectedIDs}
       actionResolver={actionResolver}
-      className="agents-table"
       ExpandComponent={DefaultExpandComponent}
       {...actions}
       {...paginationProps}

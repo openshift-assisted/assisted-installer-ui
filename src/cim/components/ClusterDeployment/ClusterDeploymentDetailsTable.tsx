@@ -1,9 +1,8 @@
 import * as React from 'react';
 import { AgentClusterInstallK8sResource, AgentK8sResource } from '../../types';
-import { AgentTableActions } from '../ClusterDeployment/types';
 import DefaultEmptyState from '../../../common/components/ui/uiState/EmptyState';
 import { ConnectedIcon } from '@patternfly/react-icons';
-import { infraEnvColumn, agentStatusColumn, useAgentsTable } from './tableUtils';
+import { infraEnvColumn, agentStatusColumn, useAgentsTable } from '../Agent/tableUtils';
 import {
   cpuCoresColumn,
   disksColumn,
@@ -24,28 +23,20 @@ export const AgentTableEmptyState = () => (
   />
 );
 
-export type AgentTableProps = Pick<AgentTableActions, 'onUnbindHost'> & {
+export type ClusterDeploymentDetailsTableProps = {
   agents: AgentK8sResource[];
   agentClusterInstall: AgentClusterInstallK8sResource;
-  className?: string;
 };
 
-const AgentTable: React.FC<AgentTableProps> = ({
+const ClusterDeploymentDetailsTable: React.FC<ClusterDeploymentDetailsTableProps> = ({
   agents,
   agentClusterInstall,
-  className,
-  onUnbindHost,
 }) => {
   const agentClusterInstalls = React.useMemo(() => [agentClusterInstall], [agentClusterInstall]);
-  const [hosts, hostActions, actionResolver] = useAgentsTable(
-    { agents, agentClusterInstalls },
-    {
-      onUnbindHost,
-    },
-  );
+  const [hosts, , actionResolver] = useAgentsTable({ agents, agentClusterInstalls });
   const content = React.useMemo(
     () => [
-      hostnameColumn(hostActions.onEditHost),
+      hostnameColumn(),
       roleColumn(),
       agentStatusColumn({
         agents,
@@ -55,7 +46,7 @@ const AgentTable: React.FC<AgentTableProps> = ({
       memoryColumn,
       disksColumn,
     ],
-    [agents, hostActions],
+    [agents],
   );
 
   const paginationProps = usePagination(agents.length);
@@ -64,7 +55,6 @@ const AgentTable: React.FC<AgentTableProps> = ({
       hosts={hosts}
       content={content}
       actionResolver={actionResolver}
-      className={className}
       ExpandComponent={DefaultExpandComponent}
       {...paginationProps}
     >
@@ -73,4 +63,4 @@ const AgentTable: React.FC<AgentTableProps> = ({
   );
 };
 
-export default AgentTable;
+export default ClusterDeploymentDetailsTable;

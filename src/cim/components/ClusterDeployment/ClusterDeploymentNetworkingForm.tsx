@@ -31,10 +31,7 @@ import {
   ClusterDeploymentK8sResource,
   InfraEnvK8sResource,
 } from '../../types';
-import {
-  ClusterDeploymentHostsTablePropsActions,
-  ClusterDeploymentNetworkingValues,
-} from './types';
+import { AgentTableActions, ClusterDeploymentNetworkingValues } from './types';
 import { useFormikContext } from 'formik';
 import { getGridSpans } from './helpers';
 
@@ -46,12 +43,13 @@ type ClusterDeploymentNetworkingFormProps = {
   agentClusterInstall: AgentClusterInstallK8sResource;
   agents: AgentK8sResource[];
   onValuesChanged?: (values: ClusterDeploymentNetworkingValues) => void;
-  hostActions: ClusterDeploymentHostsTablePropsActions;
   infraEnvWithProxy: InfraEnvK8sResource | undefined;
   sameProxies: boolean;
   infraEnvsError: string | undefined;
   infraEnvsLoading: boolean;
   isPreviewOpen: boolean;
+  onEditHost: AgentTableActions['onEditHost'];
+  onEditRole: AgentTableActions['onEditRole'];
 };
 
 const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormProps> = ({
@@ -64,7 +62,8 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
   infraEnvsError,
   infraEnvsLoading,
   isPreviewOpen,
-  ...rest
+  onEditHost,
+  onEditRole,
 }) => {
   const { values, touched, setFieldValue, setFieldTouched } = useFormikContext<
     ClusterDeploymentNetworkingValues
@@ -164,7 +163,8 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
             clusterDeployment={clusterDeployment}
             agentClusterInstall={agentClusterInstall}
             agents={agents}
-            {...rest}
+            onEditHost={onEditHost}
+            onEditRole={onEditRole}
           />
         </StackItem>
       </Stack>

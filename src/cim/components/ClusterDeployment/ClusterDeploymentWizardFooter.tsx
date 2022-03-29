@@ -62,7 +62,7 @@ type ClusterDeploymentWizardFooterProps = React.ComponentProps<typeof WizardFoot
 
 const ClusterDeploymentWizardFooter: React.FC<ClusterDeploymentWizardFooterProps> = ({
   agentClusterInstall,
-  agents = [],
+  agents,
   showClusterErrors,
   children,
   onSyncError,
@@ -79,7 +79,7 @@ const ClusterDeploymentWizardFooter: React.FC<ClusterDeploymentWizardFooterProps
     : undefined;
   const hosts = React.useMemo(
     () =>
-      agents.reduce<ClusterWizardStepHostStatusDeterminationObject[]>((result, agent) => {
+      (agents || []).reduce<ClusterWizardStepHostStatusDeterminationObject[]>((result, agent) => {
         const status = agent.status?.debugInfo?.state;
         if (status) {
           result.push({ status, validationsInfo: agent.status?.validationsInfo });

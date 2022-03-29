@@ -12,6 +12,7 @@ import {
 
 import {
   ClusterDeploymentDetailsNetworkingProps,
+  AgentTableActions,
   ClusterDeploymentNetworkingValues,
 } from './types';
 import ClusterDeploymentWizardFooter from './ClusterDeploymentWizardFooter';
@@ -29,7 +30,8 @@ type NetworkingFormProps = {
   onClose: ClusterDeploymentDetailsNetworkingProps['onClose'];
   agents: AgentK8sResource[];
   fetchInfraEnv: ClusterDeploymentDetailsNetworkingProps['fetchInfraEnv'];
-  hostActions: ClusterDeploymentDetailsNetworkingProps['hostActions'];
+  onEditHost: AgentTableActions['onEditHost'];
+  onEditRole: AgentTableActions['onEditRole'];
   isPreviewOpen: ClusterDeploymentDetailsNetworkingProps['isPreviewOpen'];
 };
 
@@ -39,7 +41,8 @@ const NetworkingForm: React.FC<NetworkingFormProps> = ({
   agents,
   onClose,
   fetchInfraEnv,
-  hostActions,
+  onEditHost,
+  onEditRole,
   isPreviewOpen,
 }) => {
   const [showFormErrors, setShowFormErrors] = React.useState(false);
@@ -146,7 +149,8 @@ const NetworkingForm: React.FC<NetworkingFormProps> = ({
             infraEnvsError={infraEnvsError}
             infraEnvWithProxy={infraEnvWithProxy}
             infraEnvsLoading={infraEnvsLoading}
-            hostActions={hostActions}
+            onEditHost={onEditHost}
+            onEditRole={onEditRole}
             isPreviewOpen={isPreviewOpen}
           />
         </GridItem>

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Modal, ModalVariant } from '@patternfly/react-core';
-import { BMCForm } from '../Agent';
+import BMCForm from '../Agent/BMCForm';
 import { NMStateK8sResource, SecretK8sResource } from '../../types';
 import { LoadingState } from '../../../common';
 import { EditBMHModalProps } from './types';
