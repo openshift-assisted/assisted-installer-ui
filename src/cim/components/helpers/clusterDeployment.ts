@@ -175,11 +175,11 @@ export const getClusterProperties = (
     value: clusterDeployment.spec?.baseDomain,
   },
   apiVip: {
-    key: 'API Virtual IP',
+    key: 'API IP',
     value: agentClusterInstall?.spec?.apiVIP,
   },
   ingressVip: {
-    key: 'Ingress Virtual IP',
+    key: 'Ingress IP',
     value: agentClusterInstall?.spec?.ingressVIP,
   },
   clusterNetworkCidr: {
