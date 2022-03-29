@@ -1,1 +1,1 @@
-export * from './AssistedUILibVersion';
+export { default as RedirectToCluster } from './RedirectToCluster';

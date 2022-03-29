@@ -7,9 +7,9 @@ import {
   AlertsContextProvider,
   ErrorState,
   LoadingState,
+  AssistedUILibVersion,
 } from '../../../common';
 import { usePullSecret } from '../../hooks';
-import { AssistedUILibVersion } from '../ui';
 import { useOpenshiftVersions } from '../../hooks';
 import { handleApiError } from '../../api';
 import AddHosts from './AddHosts';

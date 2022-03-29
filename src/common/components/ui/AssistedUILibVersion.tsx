@@ -1,7 +1,7 @@
 import React from 'react';
-import { getAssistedUiLibVersion } from '../../../common';
+import { getAssistedUiLibVersion } from '../../config';
 
-export const AssistedUILibVersion: React.FC = ({ children }) => (
+const AssistedUILibVersion: React.FC = ({ children }) => (
   <>
     {children}
     <div data-testid="assisted-ui-lib-version" hidden>
@@ -9,3 +9,5 @@ export const AssistedUILibVersion: React.FC = ({ children }) => (
     </div>
   </>
 );
+
+export default AssistedUILibVersion;

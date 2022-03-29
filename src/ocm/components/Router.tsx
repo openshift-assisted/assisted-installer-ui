@@ -3,10 +3,9 @@ import { Provider } from 'react-redux';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { Clusters, ClusterPage, NewClusterPage } from './clusters';
 import { store } from '../store';
-import { FeatureGateContextProvider, FeatureListType } from '../../common';
+import { FeatureGateContextProvider, FeatureListType, AssistedUILibVersion } from '../../common';
 import { isSingleClusterMode, routeBasePath } from '../config';
 import SingleCluster from './SingleCluster';
-import { AssistedUILibVersion } from './ui';
 
 export const AssistedUiRouter: React.FC<{ allEnabledFeatures: FeatureListType }> = ({
   allEnabledFeatures,

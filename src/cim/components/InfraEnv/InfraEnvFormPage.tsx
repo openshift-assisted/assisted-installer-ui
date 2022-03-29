@@ -40,6 +40,7 @@ import {
   RichInputField,
   locationValidationSchema,
   LOCATION_VALIDATION_MESSAGES,
+  AssistedUILibVersion,
 } from '../../../common';
 
 import './infra-env.css';
@@ -239,69 +240,72 @@ export const InfraEnvFormPage: React.FC<InfraEnvFormPageProps> = ({
 }) => {
   const [error, setError] = React.useState<string | undefined>();
   return (
-    <Formik
-      initialValues={initialValues}
-      initialStatus={{ error: null }}
-      validate={getRichTextValidation(validationSchema(usedNames))}
-      onSubmit={async (values: EnvironmentStepFormValues) => {
-        try {
-          await onSubmit?.(values);
-          onFinish?.(values);
-        } catch (e) {
-          setError(e?.message ?? 'An error occured');
-        }
-      }}
-    >
-      {({ isValid, isSubmitting, submitForm }: FormikProps<EnvironmentStepFormValues>) => (
-        <Stack hasGutter>
-          <StackItem>
-            {onSubmit && onClose ? (
-              <Grid hasGutter span={8}>
-                <GridItem>
-                  <Title headingLevel="h1" size={TitleSizes.xl}>
-                    Configure environment
-                  </Title>
-                </GridItem>
-                <GridItem>
+    <>
+      <AssistedUILibVersion />
+      <Formik
+        initialValues={initialValues}
+        initialStatus={{ error: null }}
+        validate={getRichTextValidation(validationSchema(usedNames))}
+        onSubmit={async (values: EnvironmentStepFormValues) => {
+          try {
+            await onSubmit?.(values);
+            onFinish?.(values);
+          } catch (e) {
+            setError(e?.message ?? 'An error occured');
+          }
+        }}
+      >
+        {({ isValid, isSubmitting, submitForm }: FormikProps<EnvironmentStepFormValues>) => (
+          <Stack hasGutter>
+            <StackItem>
+              {onSubmit && onClose ? (
+                <Grid hasGutter span={8}>
+                  <GridItem>
+                    <Title headingLevel="h1" size={TitleSizes.xl}>
+                      Configure environment
+                    </Title>
+                  </GridItem>
+                  <GridItem>
+                    <InfraEnvForm onValuesChanged={onValuesChanged} />
+                  </GridItem>
+                </Grid>
+              ) : (
+                <div className="infra-env__form">
                   <InfraEnvForm onValuesChanged={onValuesChanged} />
-                </GridItem>
-              </Grid>
-            ) : (
-              <div className="infra-env__form">
-                <InfraEnvForm onValuesChanged={onValuesChanged} />
-              </div>
-            )}
-          </StackItem>
-          {error && (
-            <StackItem>
-              <Alert
-                variant={AlertVariant.danger}
-                actionClose={<AlertActionCloseButton onClose={() => setError(undefined)} />}
-                title="Error creating InfraEnv"
-              >
-                {error}
-              </Alert>
+                </div>
+              )}
             </StackItem>
-          )}
-          {onSubmit && onClose && (
-            <StackItem>
-              <>
-                <Button
-                  variant="primary"
-                  type="submit"
-                  isDisabled={!isValid || isSubmitting}
-                  onClick={submitForm}
+            {error && (
+              <StackItem>
+                <Alert
+                  variant={AlertVariant.danger}
+                  actionClose={<AlertActionCloseButton onClose={() => setError(undefined)} />}
+                  title="Error creating InfraEnv"
                 >
-                  Create {isSubmitting && <Spinner isSVG size="md" />}
-                </Button>
-                <Button variant="link" onClick={onClose} isDisabled={isSubmitting}>
-                  Cancel
-                </Button>
-              </>
-            </StackItem>
-          )}
-        </Stack>
-      )}
-    </Formik>
+                  {error}
+                </Alert>
+              </StackItem>
+            )}
+            {onSubmit && onClose && (
+              <StackItem>
+                <>
+                  <Button
+                    variant="primary"
+                    type="submit"
+                    isDisabled={!isValid || isSubmitting}
+                    onClick={submitForm}
+                  >
+                    Create {isSubmitting && <Spinner isSVG size="md" />}
+                  </Button>
+                  <Button variant="link" onClick={onClose} isDisabled={isSubmitting}>
+                    Cancel
+                  </Button>
+                </>
+              </StackItem>
+            )}
+          </Stack>
+        )}
+      </Formik>
+    </>
   );
 };
