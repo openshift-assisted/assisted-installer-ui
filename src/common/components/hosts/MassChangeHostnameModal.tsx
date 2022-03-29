@@ -218,7 +218,7 @@ const MassChangeHostnameForm: React.FC<MassChangeHostnameFormProps> = ({
         </ModalBoxBody>
         <ModalBoxFooter>
           <Button key="submit" type={ButtonType.submit} isDisabled={isSubmitting || !isValid}>
-            Change hostnames
+            Change
           </Button>
           <Button onClick={onClose} variant={ButtonVariant.secondary} isDisabled={isSubmitting}>
             Cancel
