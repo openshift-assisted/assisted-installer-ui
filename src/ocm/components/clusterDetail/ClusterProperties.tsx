@@ -1,6 +1,13 @@
 import React from 'react';
 import { GridItem, TextContent, Text } from '@patternfly/react-core';
-import { Cluster, DetailList, DetailItem, DiskEncryption, PopoverIcon, NETWORK_TYPE_OVN, NETWORK_TYPE_SDN } from '../../../common';
+import {
+  Cluster,
+  DetailList,
+  DetailItem,
+  DiskEncryption,
+  PopoverIcon,
+  NETWORK_TYPE_SDN,
+} from '../../../common';
 
 import {
   selectClusterNetworkCIDR,
@@ -27,7 +34,6 @@ const getCpuArchTitle = () => (
 type ClusterPropertiesProps = {
   cluster: Cluster;
 };
-
 
 const getNetworkType = (
   clusterNetworkType: 'OpenShiftSDN' | 'OVNKubernetes' | undefined,

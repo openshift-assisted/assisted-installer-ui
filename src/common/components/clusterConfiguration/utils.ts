@@ -66,7 +66,6 @@ export const getSubnetFromMachineNetworkCidr = (machineNetworkCidr?: string) => 
   return subnet?.address;
 };
 
-
 export const isAdvNetworkConf = (cluster: Cluster, defaultNetworkSettings: ClusterDefaultConfig) =>
   selectClusterNetworkCIDR(cluster) !== defaultNetworkSettings.clusterNetworkCidr ||
   selectClusterNetworkHostPrefix(cluster) !== defaultNetworkSettings.clusterNetworkHostPrefix ||

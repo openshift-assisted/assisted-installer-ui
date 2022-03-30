@@ -11,7 +11,11 @@ import {
   VirtualIPControlGroupProps,
 } from '../clusterWizard/networkingSteps';
 import { ClusterDefaultConfig } from '../../api';
-import { DEFAULT_NETWORK_TYPE, NETWORK_TYPE_OVN, NETWORK_TYPE_SDN, NO_SUBNET_SET } from '../../config';
+import {
+  DEFAULT_NETWORK_TYPE,
+  NETWORK_TYPE_OVN,
+  NO_SUBNET_SET,
+} from '../../config';
 import { isAdvNetworkConf } from './utils';
 import { useFeatureSupportLevel } from '../featureSupportLevels';
 import { getLimitedFeatureSupportLevels } from '../featureSupportLevels/utils';
@@ -161,7 +165,15 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
         description="Configure advanced networking properties (e.g. CIDR ranges)."
         isChecked={isAdvanced}
         onChange={toggleAdvConfiguration}
-        body={isAdvanced && <AdvancedNetworkFields isSNO={!isMultiNodeCluster} isIPv6={isIPv6} isClusterCIDRIPv6={isClusterCIDRIPv6} />}
+        body={
+          isAdvanced && (
+            <AdvancedNetworkFields
+              isSNO={!isMultiNodeCluster}
+              isIPv6={isIPv6}
+              isClusterCIDRIPv6={isClusterCIDRIPv6}
+            />
+          )
+        }
       />
     </Grid>
   );

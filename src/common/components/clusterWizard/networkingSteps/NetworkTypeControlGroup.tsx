@@ -14,7 +14,6 @@ export const NetworkTypeControlGroup: React.FC<NetworkTypeControlGroupProps> = (
   isIPv6 = false,
   isSNO = false,
 }) => {
-  const GROUP_NAME = 'networkType';
   const isSDNSelectable = !(isSNO || isIPv6);
 
   return (
