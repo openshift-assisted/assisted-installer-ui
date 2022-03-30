@@ -16,6 +16,7 @@ import { isAdvNetworkConf } from './utils';
 import { useFeatureSupportLevel } from '../featureSupportLevels';
 import { getLimitedFeatureSupportLevels } from '../featureSupportLevels/utils';
 import { isSNO } from '../../selectors';
+import { Address6 } from 'ip-address';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   defaultNetworkSettings: ClusterDefaultConfig;
@@ -52,21 +53,27 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   const [isAdvanced, setAdvanced] = React.useState(
     isAdvNetworkConf(cluster, defaultNetworkSettings),
   );
+  const isMultiNodeCluster = !isSNO(cluster);
+  const isClusterCIDRIPv6 = Address6.isValid(values.clusterNetworkCidr || '');
+  const isIPv6 = React.useMemo(
+    () =>
+      isClusterCIDRIPv6 ||
+      Address6.isValid(values.machineNetworkCidr || '') ||
+      Address6.isValid(values.serviceNetworkCidr || ''),
+    [isClusterCIDRIPv6, values.machineNetworkCidr, values.serviceNetworkCidr],
+  );
 
   const toggleAdvConfiguration = (checked: boolean) => {
     setAdvanced(checked);
 
-    if (checked) {
-      setFieldValue('networkType', NETWORK_TYPE_SDN);
-    } else {
+    if (!checked) {
       setFieldValue('clusterNetworkCidr', defaultNetworkSettings.clusterNetworkCidr);
       setFieldValue('serviceNetworkCidr', defaultNetworkSettings.serviceNetworkCidr);
       setFieldValue('clusterNetworkHostPrefix', defaultNetworkSettings.clusterNetworkHostPrefix);
-      setFieldValue('networkType', NETWORK_TYPE_OVN); // This is the default option
+      setFieldValue('networkType', DEFAULT_NETWORK_TYPE);
     }
   };
 
-  const isMultiNodeCluster = !isSNO(cluster);
   const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';
   const firstSubnet = hostSubnets[0]?.subnet;
 
@@ -77,6 +84,12 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
       setFieldValue('hostSubnet', firstSubnet, false);
     }
   }, [isUserManagedNetworking, isMultiNodeCluster, values.hostSubnet, setFieldValue, firstSubnet]);
+
+  useEffect(() => {
+    if (isIPv6) {
+      setFieldValue('networkType', NETWORK_TYPE_OVN);
+    }
+  }, [isIPv6, setFieldValue]);
 
   useEffect(() => {
     if (isUserManagedNetworking) {
@@ -148,7 +161,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
         description="Configure advanced networking properties (e.g. CIDR ranges)."
         isChecked={isAdvanced}
         onChange={toggleAdvConfiguration}
-        body={isAdvanced && <AdvancedNetworkFields isSNO={!isMultiNodeCluster} />}
+        body={isAdvanced && <AdvancedNetworkFields isSNO={!isMultiNodeCluster} isIPv6={isIPv6} isClusterCIDRIPv6={isClusterCIDRIPv6} />}
       />
     </Grid>
   );

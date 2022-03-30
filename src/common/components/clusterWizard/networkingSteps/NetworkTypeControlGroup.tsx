@@ -1,5 +1,5 @@
 import React from 'react';
-import { Split, SplitItem, FormGroup } from '@patternfly/react-core';
+import { Split, SplitItem, Tooltip, FormGroup } from '@patternfly/react-core';
 import { RadioField } from '../../ui/formik';
 import { PopoverIcon } from '../../../components/ui';
 import { NETWORK_TYPE_OVN, NETWORK_TYPE_SDN } from '../../../config';
@@ -14,10 +14,8 @@ export const NetworkTypeControlGroup: React.FC<NetworkTypeControlGroupProps> = (
   isIPv6 = false,
   isSNO = false,
 }) => {
+  const GROUP_NAME = 'networkType';
   const isSDNSelectable = !(isSNO || isIPv6);
-  const SDNIconContent = `The classic bullet-proof networking type.${
-    isSDNSelectable ? '' : ' Not available in SNO clusters or clusters using IPv6'
-  }`;
 
   return (
     <FormGroup fieldId={GROUP_NAME} label="Network type">
@@ -42,18 +40,28 @@ export const NetworkTypeControlGroup: React.FC<NetworkTypeControlGroupProps> = (
         </SplitItem>
         <SplitItem />
         <SplitItem>
-          <RadioField
-            id={GROUP_NAME}
-            name={GROUP_NAME}
-            isDisabled={!isSDNSelectable}
-            value={NETWORK_TYPE_SDN}
-            label={
-              <>
-                Software-Defined Networking (SDN){' '}
-                <PopoverIcon variant={'plain'} bodyContent={SDNIconContent} />
-              </>
+          <Tooltip
+            hidden={isSDNSelectable}
+            content={
+              'Software-Defined Networking (SDN) can be selected only in non-SNO clusters when IPv4 is detected.'
             }
-          />
+          >
+            <RadioField
+              id={GROUP_NAME}
+              name={GROUP_NAME}
+              isDisabled={!isSDNSelectable}
+              value={NETWORK_TYPE_SDN}
+              label={
+                <>
+                  Software-Defined Networking (SDN){' '}
+                  <PopoverIcon
+                    variant={'plain'}
+                    bodyContent={'The classic bullet-proof networking type'}
+                  />
+                </>
+              }
+            />
+          </Tooltip>
         </SplitItem>
       </Split>
     </FormGroup>
