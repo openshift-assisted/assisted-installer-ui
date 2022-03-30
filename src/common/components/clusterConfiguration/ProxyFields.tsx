@@ -4,6 +4,8 @@ import { Grid } from '@patternfly/react-core';
 import { InputField, CheckboxField, trimCommaSeparatedList } from '../ui';
 import { ProxyFieldsType } from '../../types';
 
+import './ProxyFields.css';
+
 export const ProxyInputFields = () => {
   const { setFieldValue, values } = useFormikContext<ProxyFieldsType>();
   const onNoProxyBlur = () => {
@@ -68,6 +70,7 @@ const ProxyFields: React.FC = () => {
       <CheckboxField
         label="Configure cluster-wide proxy settings"
         name="enableProxy"
+        className="ai-proxy-fields"
         helperText={
           <p>
             If hosts are behind a firewall that requires the use of a proxy, provide additional
