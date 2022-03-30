@@ -8,14 +8,12 @@ import { NetworkTypeControlGroup } from '../clusterWizard/networkingSteps/Networ
 import { useFeature } from '../../features';
 
 type AdvancedNetworkFieldsProps = {
-  isSNO: boolean;
-  isIPv6: boolean;
+  isSDNSelectable: boolean;
   isClusterCIDRIPv6: boolean;
 };
 
 const AdvancedNetworkFields: React.FC<AdvancedNetworkFieldsProps> = ({
-  isSNO,
-  isIPv6,
+  isSDNSelectable,
   isClusterCIDRIPv6,
 }) => {
   const isNetworkTypeSelectionEnabled = useFeature(
@@ -58,7 +56,9 @@ const AdvancedNetworkFields: React.FC<AdvancedNetworkFieldsProps> = ({
         helperText="The IP address pool to use for service IP addresses. You can enter only one IP address pool. If you need to access the services from an external network, configure load balancers and routers to manage the traffic."
         isRequired
       />
-      {isNetworkTypeSelectionEnabled && <NetworkTypeControlGroup isSNO={isSNO} isIPv6={isIPv6} />}
+      {isNetworkTypeSelectionEnabled && (
+        <NetworkTypeControlGroup isSDNSelectable={isSDNSelectable} />
+      )}
     </Grid>
   );
 };

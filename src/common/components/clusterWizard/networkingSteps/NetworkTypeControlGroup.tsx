@@ -6,16 +6,12 @@ import { NETWORK_TYPE_OVN, NETWORK_TYPE_SDN } from '../../../config';
 
 const GROUP_NAME = 'networkType';
 export interface NetworkTypeControlGroupProps {
-  isIPv6: boolean;
-  isSNO: boolean;
+  isSDNSelectable: boolean;
 }
 
 export const NetworkTypeControlGroup: React.FC<NetworkTypeControlGroupProps> = ({
-  isIPv6 = false,
-  isSNO = false,
+  isSDNSelectable,
 }) => {
-  const isSDNSelectable = !(isSNO || isIPv6);
-
   return (
     <FormGroup fieldId={GROUP_NAME} label="Network type">
       <Split hasGutter>

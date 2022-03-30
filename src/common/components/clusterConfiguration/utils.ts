@@ -1,6 +1,6 @@
 import { Address4, Address6 } from 'ip-address';
 import { Cluster, ClusterDefaultConfig, Inventory, stringToJSON } from '../../api';
-import { DEFAULT_NETWORK_TYPE, NO_SUBNET_SET } from '../../config';
+import { NETWORK_TYPE_OVN, NO_SUBNET_SET } from '../../config';
 import {
   HostDiscoveryValues,
   HostSubnets,
@@ -70,7 +70,7 @@ export const isAdvNetworkConf = (cluster: Cluster, defaultNetworkSettings: Clust
   selectClusterNetworkCIDR(cluster) !== defaultNetworkSettings.clusterNetworkCidr ||
   selectClusterNetworkHostPrefix(cluster) !== defaultNetworkSettings.clusterNetworkHostPrefix ||
   selectServiceNetworkCIDR(cluster) !== defaultNetworkSettings.serviceNetworkCidr ||
-  (Boolean(cluster.networkType) && cluster.networkType !== DEFAULT_NETWORK_TYPE);
+  (Boolean(cluster.networkType) && cluster.networkType !== NETWORK_TYPE_OVN);
 
 export const getHostDiscoveryInitialValues = (cluster: Cluster): HostDiscoveryValues => {
   const monitoredOperators = cluster.monitoredOperators || [];
