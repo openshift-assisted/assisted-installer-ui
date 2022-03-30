@@ -356,6 +356,16 @@ export const httpProxyValidationSchema = (
       }
     });
 
+const isNotEmpty = (value: string) => {
+  if (!value) {
+    return true;
+  }
+  if (value !== '') {
+    return true;
+  }
+  return false;
+};
+
 export const noProxyValidationSchema = Yup.string().test(
   'no-proxy-validation',
   'Provide comma-separated list of domains excluded from proxy.',
@@ -368,32 +378,7 @@ export const noProxyValidationSchema = Yup.string().test(
     // A comma-separated list of destination domain names, domains, IP addresses or other network CIDRs
     // to exclude proxying. Preface a domain with . to include all subdomains of that domain.
     // Use * to bypass proxy for all destinations."
-    return trimCommaSeparatedList(value)
-      .split(',')
-      .every((item) => {
-        if (item === '*') {
-          return true;
-        }
-
-        let domain = item;
-        if (item.charAt(0) === '.') {
-          domain = item.substr(1);
-        }
-
-        if (domain.match(DNS_NAME_REGEX)) {
-          return true;
-        }
-
-        if (Address4.isValid(item)) {
-          return true;
-        }
-
-        if (Address6.isValid(item)) {
-          return true;
-        }
-
-        return false;
-      });
+    return trimCommaSeparatedList(value).split(',').every(isNotEmpty);
   },
 );
 
