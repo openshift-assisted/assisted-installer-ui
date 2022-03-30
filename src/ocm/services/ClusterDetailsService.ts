@@ -1,4 +1,4 @@
-import { ClusterCreateParams, V2ClusterUpdateParams } from '../../common';
+import { ClusterCreateParams, DEFAULT_NETWORK_TYPE, NETWORK_TYPE_OVN, V2ClusterUpdateParams } from '../../common';
 import { ClustersAPI, ManagedDomainsAPI } from '../services/apis';
 import InfraEnvsService from './InfraEnvsService';
 import omit from 'lodash/omit';
@@ -45,7 +45,7 @@ const ClusterDetailsService = {
     if (isArmArchitecture({ cpuArchitecture: params.cpuArchitecture })) {
       params.userManagedNetworking = true;
     }
-    params.networkType = 'OVNKubernetes';
+    params.networkType = DEFAULT_NETWORK_TYPE;
     return params;
   },
 };

@@ -11,7 +11,7 @@ import {
   VirtualIPControlGroupProps,
 } from '../clusterWizard/networkingSteps';
 import { ClusterDefaultConfig } from '../../api';
-import { NO_SUBNET_SET } from '../../config';
+import { DEFAULT_NETWORK_TYPE, NETWORK_TYPE_OVN, NETWORK_TYPE_SDN, NO_SUBNET_SET } from '../../config';
 import { isAdvNetworkConf } from './utils';
 import { useFeatureSupportLevel } from '../featureSupportLevels';
 import { getLimitedFeatureSupportLevels } from '../featureSupportLevels/utils';
@@ -56,11 +56,13 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   const toggleAdvConfiguration = (checked: boolean) => {
     setAdvanced(checked);
 
-    if (!checked) {
+    if (checked) {
+      setFieldValue('networkType', NETWORK_TYPE_SDN);
+    } else {
       setFieldValue('clusterNetworkCidr', defaultNetworkSettings.clusterNetworkCidr);
       setFieldValue('serviceNetworkCidr', defaultNetworkSettings.serviceNetworkCidr);
       setFieldValue('clusterNetworkHostPrefix', defaultNetworkSettings.clusterNetworkHostPrefix);
-      setFieldValue('networkType', 'OpenShiftSDN');
+      setFieldValue('networkType', NETWORK_TYPE_OVN); // This is the default option
     }
   };
 

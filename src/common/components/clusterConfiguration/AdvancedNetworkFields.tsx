@@ -4,7 +4,7 @@ import { useFormikContext } from 'formik';
 import { InputField } from '../../components/ui';
 import { NetworkConfigurationValues } from '../../types/clusters';
 import { Address6 } from 'ip-address';
-import { PREFIX_MAX_RESTRICTION } from '../../config/constants';
+import { NETWORK_TYPE_OVN, PREFIX_MAX_RESTRICTION } from '../../config/constants';
 import { NetworkTypeControlGroup } from '../clusterWizard/networkingSteps/NetworkTypeControlGroup';
 import { useFeature } from '../../features';
 
@@ -36,7 +36,7 @@ const AdvancedNetworkFields: React.FC<{ isSNO: boolean }> = ({ isSNO }) => {
 
   useEffect(() => {
     if (isNetworkTypeSelectionEnabled && isIPv6) {
-      setFieldValue('networkType', 'OVNKubernetes');
+      setFieldValue('networkType', NETWORK_TYPE_OVN);
     }
   }, [isIPv6, setFieldValue, isNetworkTypeSelectionEnabled]);
 

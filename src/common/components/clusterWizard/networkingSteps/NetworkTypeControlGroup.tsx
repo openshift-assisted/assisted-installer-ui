@@ -2,6 +2,7 @@ import React from 'react';
 import { Split, SplitItem, FormGroup } from '@patternfly/react-core';
 import { RadioField } from '../../ui/formik';
 import { PopoverIcon } from '../../../components/ui';
+import { NETWORK_TYPE_OVN, NETWORK_TYPE_SDN } from '../../../config';
 
 const GROUP_NAME = 'networkType';
 export interface NetworkTypeControlGroupProps {
@@ -25,7 +26,7 @@ export const NetworkTypeControlGroup: React.FC<NetworkTypeControlGroupProps> = (
           <RadioField
             id={GROUP_NAME}
             name={GROUP_NAME}
-            value={'OVNKubernetes'}
+            value={NETWORK_TYPE_OVN}
             label={
               <>
                 Open Virtual Networking (OVN){' '}
@@ -45,7 +46,7 @@ export const NetworkTypeControlGroup: React.FC<NetworkTypeControlGroupProps> = (
             id={GROUP_NAME}
             name={GROUP_NAME}
             isDisabled={!isSDNSelectable}
-            value={'OpenShiftSDN'}
+            value={NETWORK_TYPE_SDN}
             label={
               <>
                 Software-Defined Networking (SDN){' '}

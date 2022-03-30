@@ -16,7 +16,7 @@ import {
   selectMachineNetworkCIDR,
   selectServiceNetworkCIDR,
 } from '../../selectors/clusterSelectors';
-import { NO_SUBNET_SET } from '../../config';
+import { DEFAULT_NETWORK_TYPE, NO_SUBNET_SET } from '../../config';
 
 const getInitHostSubnet = (
   cluster: Cluster,
@@ -49,7 +49,7 @@ export const getNetworkInitialValues = (
     hostSubnet: getInitHostSubnet(cluster, managedNetworkingType) || NO_SUBNET_SET,
     vipDhcpAllocation: cluster.vipDhcpAllocation,
     managedNetworkingType: cluster.userManagedNetworking ? 'userManaged' : 'clusterManaged',
-    networkType: cluster.networkType || 'OpenShiftSDN',
+    networkType: cluster.networkType || DEFAULT_NETWORK_TYPE,
     enableProxy: false,
     editProxy: false,
   };

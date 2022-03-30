@@ -1,6 +1,7 @@
 import React from 'react';
 import { GridItem, TextContent, Text } from '@patternfly/react-core';
-import { Cluster, DetailList, DetailItem, DiskEncryption, PopoverIcon } from '../../../common';
+import { Cluster, DetailList, DetailItem, DiskEncryption, PopoverIcon, NETWORK_TYPE_OVN, NETWORK_TYPE_SDN } from '../../../common';
+
 import {
   selectClusterNetworkCIDR,
   selectClusterNetworkHostPrefix,
@@ -27,11 +28,12 @@ type ClusterPropertiesProps = {
   cluster: Cluster;
 };
 
+
 const getNetworkType = (
   clusterNetworkType: 'OpenShiftSDN' | 'OVNKubernetes' | undefined,
 ): string => {
   let networkType: string;
-  clusterNetworkType == 'OpenShiftSDN'
+  clusterNetworkType === NETWORK_TYPE_SDN
     ? (networkType = 'Software-Defined Networking (SDN)')
     : (networkType = 'Open Virtual Network (OVN)');
   return networkType;
