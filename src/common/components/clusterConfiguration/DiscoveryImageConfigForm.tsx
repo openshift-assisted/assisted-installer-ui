@@ -115,6 +115,13 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
           <>
             <ModalBoxBody>
               <Stack hasGutter>
+                <StackItem>
+                  <Alert
+                    variant={AlertVariant.info}
+                    isInline
+                    title={'Generate a Discovery ISO in order to add hosts to the cluster.'}
+                  />
+                </StackItem>
                 {hasDHCP === false && (
                   <StackItem>
                     <StaticIPInfo />

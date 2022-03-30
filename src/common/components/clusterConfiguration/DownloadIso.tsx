@@ -14,6 +14,7 @@ import {
   ModalBoxFooter,
   Stack,
   StackItem,
+  AlertVariant,
 } from '@patternfly/react-core';
 import { global_success_color_100 as successColor } from '@patternfly/react-tokens';
 import { CheckCircleIcon } from '@patternfly/react-icons';
@@ -45,6 +46,23 @@ const DownloadIso: React.FC<DownloadISOProps> = ({
     <>
       <ModalBoxBody>
         <Stack hasGutter>
+          <StackItem>
+            <Alert isInline variant="success" title={'Discovery ISO is ready for download'}>
+              <>
+                &nbsp;
+                <DiscoveryInstructions isSNO={isSNO} />
+              </>
+            </Alert>
+          </StackItem>
+          <StackItem>
+            <Alert
+              variant={AlertVariant.info}
+              isInline
+              title={
+                'Never share your downloaded ISO with anyone else. Forwarding it could put your credentials and personal data at risk.'
+              }
+            />
+          </StackItem>
           {hasDHCP === false && (
             <StackItem>
               <StaticIPInfo />
@@ -57,7 +75,6 @@ const DownloadIso: React.FC<DownloadISOProps> = ({
                 {t('ai:Discovery ISO is ready to download')}
               </Title>
             </EmptyState>
-            <DiscoveryInstructions isSNO={isSNO} />
             <DetailList>
               <DetailItem
                 title={t('ai:Discovery ISO URL')}
