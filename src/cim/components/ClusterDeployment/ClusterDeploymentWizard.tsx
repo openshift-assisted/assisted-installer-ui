@@ -101,6 +101,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
         if (isAIFlow) {
           return (
             <ClusterDeploymentHostsDiscoveryStep
+              clusterDeployment={clusterDeployment}
               agentClusterInstall={agentClusterInstall}
               agents={agents}
               bareMetalHosts={[] /* TODO(mlibra) */}
