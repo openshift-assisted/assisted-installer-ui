@@ -100,8 +100,11 @@ export type ClusterDeploymentHostSelectionStepProps = ClusterDeploymentHostsSele
   onClose: () => void;
 };
 
-export type ClusterDeploymentHostsDiscoveryStepProps = ClusterDeploymentHostsDiscoveryProps & {
-  onSaveHostsDiscovery: (values: ClusterDeploymentHostsDiscoveryValues) => Promise<string | void>;
+export type ClusterDeploymentHostsDiscoveryStepProps = Omit<
+  ClusterDeploymentHostsDiscoveryProps,
+  'usedHostnames'
+> & {
+  onSaveHostsDiscovery: () => Promise<void>;
   onClose: () => void;
 };
 
