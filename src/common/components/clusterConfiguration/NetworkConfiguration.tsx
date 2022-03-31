@@ -55,9 +55,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   const clusterFeatureSupportLevels = React.useMemo(() => {
     return getLimitedFeatureSupportLevels(cluster, featureSupportLevelData);
   }, [cluster, featureSupportLevelData]);
-  const [isAdvanced, setAdvanced] = React.useState(
-    isAdvNetworkConf(cluster, defaultNetworkSettings),
-  );
+
   const isMultiNodeCluster = !isSNO(cluster);
   const isClusterCIDRIPv6 = Address6.isValid(values.clusterNetworkCidr || '');
   const isIPv6 = React.useMemo(
@@ -69,6 +67,10 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
       }),
     [values.clusterNetworkCidr, values.machineNetworkCidr, values.serviceNetworkCidr],
   );
+  const defaultNetworkType = getDefaultNetworkType(!isMultiNodeCluster, isIPv6);
+  const [isAdvanced, setAdvanced] = React.useState(
+    isAdvNetworkConf(cluster, defaultNetworkSettings, defaultNetworkType),
+  );
   const isSDNSelectable = canSelectNetworkTypeSDN(!isMultiNodeCluster, isIPv6);
 
   const toggleAdvConfiguration = (checked: boolean) => {
@@ -78,7 +80,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
       setFieldValue('clusterNetworkCidr', defaultNetworkSettings.clusterNetworkCidr);
       setFieldValue('serviceNetworkCidr', defaultNetworkSettings.serviceNetworkCidr);
       setFieldValue('clusterNetworkHostPrefix', defaultNetworkSettings.clusterNetworkHostPrefix);
-      setFieldValue('networkType', getDefaultNetworkType(!isMultiNodeCluster, isIPv6));
+      setFieldValue('networkType', defaultNetworkType);
     }
   };
 

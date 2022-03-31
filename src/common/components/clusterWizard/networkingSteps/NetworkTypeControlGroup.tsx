@@ -16,25 +16,6 @@ export const NetworkTypeControlGroup: React.FC<NetworkTypeControlGroupProps> = (
     <FormGroup fieldId={GROUP_NAME} label="Network type">
       <Split hasGutter>
         <SplitItem>
-          <RadioField
-            id={GROUP_NAME}
-            name={GROUP_NAME}
-            value={NETWORK_TYPE_OVN}
-            label={
-              <>
-                Open Virtual Networking (OVN){' '}
-                <PopoverIcon
-                  variant={'plain'}
-                  bodyContent={
-                    "The next generation networking type, select this when you're using new features and telco features"
-                  }
-                />
-              </>
-            }
-          />
-        </SplitItem>
-        <SplitItem />
-        <SplitItem>
           <Tooltip
             hidden={isSDNSelectable}
             content={
@@ -57,6 +38,25 @@ export const NetworkTypeControlGroup: React.FC<NetworkTypeControlGroupProps> = (
               }
             />
           </Tooltip>
+        </SplitItem>
+        <SplitItem />
+        <SplitItem>
+          <RadioField
+            id={GROUP_NAME}
+            name={GROUP_NAME}
+            value={NETWORK_TYPE_OVN}
+            label={
+              <>
+                Open Virtual Networking (OVN){' '}
+                <PopoverIcon
+                  variant={'plain'}
+                  bodyContent={
+                    "The next generation networking type, select this when you're using new features and telco features"
+                  }
+                />
+              </>
+            }
+          />
         </SplitItem>
       </Split>
     </FormGroup>
