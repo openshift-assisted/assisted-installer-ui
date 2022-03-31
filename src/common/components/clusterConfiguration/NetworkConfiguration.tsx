@@ -58,20 +58,27 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
 
   const isMultiNodeCluster = !isSNO(cluster);
   const isClusterCIDRIPv6 = Address6.isValid(values.clusterNetworkCidr || '');
-  const isIPv6 = React.useMemo(
-    () =>
-      isSubnetInIPv6({
-        machineNetworkCidr: values.machineNetworkCidr,
-        clusterNetworkCidr: values.clusterNetworkCidr,
-        serviceNetworkCidr: values.serviceNetworkCidr,
-      }),
-    [values.clusterNetworkCidr, values.machineNetworkCidr, values.serviceNetworkCidr],
-  );
-  const defaultNetworkType = getDefaultNetworkType(!isMultiNodeCluster, isIPv6);
+  const { isIPv6, defaultNetworkType, isSDNSelectable } = React.useMemo(() => {
+    const isIPv6 = isSubnetInIPv6({
+      machineNetworkCidr: values.machineNetworkCidr,
+      clusterNetworkCidr: values.clusterNetworkCidr,
+      serviceNetworkCidr: values.serviceNetworkCidr,
+    });
+    return {
+      isIPv6,
+      defaultNetworkType: getDefaultNetworkType(!isMultiNodeCluster, isIPv6),
+      isSDNSelectable: canSelectNetworkTypeSDN(!isMultiNodeCluster, isIPv6),
+    };
+  }, [
+    isMultiNodeCluster,
+    values.clusterNetworkCidr,
+    values.machineNetworkCidr,
+    values.serviceNetworkCidr,
+  ]);
+
   const [isAdvanced, setAdvanced] = React.useState(
     isAdvNetworkConf(cluster, defaultNetworkSettings, defaultNetworkType),
   );
-  const isSDNSelectable = canSelectNetworkTypeSDN(!isMultiNodeCluster, isIPv6);
 
   const toggleAdvConfiguration = (checked: boolean) => {
     setAdvanced(checked);
