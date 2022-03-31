@@ -64,7 +64,8 @@ export type ClusterDeploymentHostsSelectionValues = {
   autoSelectedHostIds: string[];
 };
 export type ClusterDeploymentHostsDiscoveryValues = {
-  /* TODO(mlibra): CNV, OCS */
+  useMastersAsWorkers: boolean;
+  selectedHostIds: string[];
 };
 
 export type ScaleUpFormValues = Omit<ClusterDeploymentHostsSelectionValues, 'useMastersAsWorkers'>;
@@ -186,6 +187,7 @@ export type ClusterDeploymentHostDiscoveryTableProps = Pick<
 };
 
 export type ClusterDeploymentHostsDiscoveryProps = {
+  clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall: AgentClusterInstallK8sResource;
   agents: AgentK8sResource[];
   bareMetalHosts: BareMetalHostK8sResource[];
