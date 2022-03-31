@@ -18,6 +18,8 @@ import { ClusterDeploymentK8sResource } from '../../types/k8s/cluster-deployment
 import ScaleUpForm from '../ClusterDeployment/ScaleUpForm';
 import { getAgentSelectorFieldsFromAnnotations } from '../helpers/clusterDeployment';
 import { ScaleUpFormValues } from '../ClusterDeployment/types';
+import EditAgentModal from './EditAgentModal';
+import { getAgentsHostsNames } from '../ClusterDeployment/helpers';
 
 const getAgentsToAdd = (
   selectedHostIds: ScaleUpFormValues['selectedHostIds'] | ScaleUpFormValues['autoSelectedHostIds'],
@@ -49,15 +51,18 @@ type ScaleUpModalProps = {
   addHostsToCluster: (agentsToAdd: AgentK8sResource[]) => Promise<void>;
   clusterDeployment: ClusterDeploymentK8sResource;
   agents: AgentK8sResource[];
+  onChangeHostname: (agent: AgentK8sResource, hostname: string) => Promise<AgentK8sResource>;
 };
 
-const ScaleUpModal = ({
+const ScaleUpModal: React.FC<ScaleUpModalProps> = ({
   isOpen,
   onClose,
   addHostsToCluster,
   clusterDeployment,
   agents,
-}: ScaleUpModalProps) => {
+  onChangeHostname,
+}) => {
+  const [editAgent, setEditAgent] = React.useState<AgentK8sResource | undefined>();
   const [error, setError] = React.useState<string | undefined>();
 
   const getInitialValues = (): ScaleUpFormValues => {
@@ -93,56 +98,75 @@ const ScaleUpModal = ({
     }
   };
 
+  const clusterAgents = agents.filter(
+    (a) =>
+      a.spec.clusterDeploymentName?.name === clusterDeployment.metadata?.name &&
+      a.spec.clusterDeploymentName?.namespace === clusterDeployment.metadata?.namespace,
+  );
+
   return (
-    <Modal
-      aria-label="Add worker host dialog"
-      title="Add worker hosts"
-      isOpen={isOpen}
-      onClose={onClose}
-      hasNoBodyWrapper
-      id="scale-up-modal"
-    >
-      <Formik
-        initialValues={getInitialValues()}
-        validationSchema={validationSchema}
-        onSubmit={handleSubmit}
-        validateOnMount
+    <>
+      <Modal
+        aria-label="Add worker host dialog"
+        title="Add worker hosts"
+        isOpen={isOpen}
+        onClose={onClose}
+        hasNoBodyWrapper
+        id="scale-up-modal"
       >
-        {({ isSubmitting, isValid, submitForm }: FormikProps<ScaleUpFormValues>) => {
-          return (
-            <>
-              <ModalBoxBody>
-                <Stack hasGutter>
-                  <StackItem>
-                    <ScaleUpForm agents={agents} clusterDeployment={clusterDeployment} />
-                  </StackItem>
-                  {error && (
+        <Formik
+          initialValues={getInitialValues()}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+          validateOnMount
+        >
+          {({ isSubmitting, isValid, submitForm }: FormikProps<ScaleUpFormValues>) => {
+            return (
+              <>
+                <ModalBoxBody>
+                  <Stack hasGutter>
                     <StackItem>
-                      <Alert
-                        title="Failed to add hosts to the cluster"
-                        variant={AlertVariant.danger}
-                        actionClose={<AlertActionCloseButton onClose={() => setError(undefined)} />}
-                        isInline
-                      >
-                        {error}
-                      </Alert>
+                      <ScaleUpForm agents={agents} onEditHost={setEditAgent} />
                     </StackItem>
-                  )}
-                </Stack>
-              </ModalBoxBody>
-              <ModalBoxFooter>
-                <Button onClick={submitForm} isDisabled={isSubmitting || !isValid}>
-                  Submit
-                </Button>
-                <Button onClick={onClose} variant={ButtonVariant.secondary}>
-                  Cancel
-                </Button>
-              </ModalBoxFooter>
-            </>
-          );
-        }}
-      </Formik>
-    </Modal>
+                    {error && (
+                      <StackItem>
+                        <Alert
+                          title="Failed to add hosts to the cluster"
+                          variant={AlertVariant.danger}
+                          actionClose={
+                            <AlertActionCloseButton onClose={() => setError(undefined)} />
+                          }
+                          isInline
+                        >
+                          {error}
+                        </Alert>
+                      </StackItem>
+                    )}
+                  </Stack>
+                </ModalBoxBody>
+                <ModalBoxFooter>
+                  <Button onClick={submitForm} isDisabled={isSubmitting || !isValid}>
+                    Submit
+                  </Button>
+                  <Button onClick={onClose} variant={ButtonVariant.secondary}>
+                    Cancel
+                  </Button>
+                </ModalBoxFooter>
+              </>
+            );
+          }}
+        </Formik>
+      </Modal>
+      {editAgent && (
+        <EditAgentModal
+          agent={editAgent}
+          isOpen
+          onClose={() => setEditAgent(undefined)}
+          onSave={onChangeHostname}
+          usedHostnames={getAgentsHostsNames(clusterAgents)}
+        />
+      )}
+    </>
   );
 };
 

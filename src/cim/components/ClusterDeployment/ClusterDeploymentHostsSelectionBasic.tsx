@@ -12,7 +12,7 @@ import { useAgentsAutoSelection } from '../Agent/AgentsSelectionUtils';
 
 type ClusterDeploymentHostsSelectionBasicProps = {
   availableAgents: AgentK8sResource[];
-  isSNOCluster?: boolean;
+  isSNOCluster: boolean;
 };
 
 const ClusterDeploymentHostsSelectionBasic: React.FC<ClusterDeploymentHostsSelectionBasicProps> = ({

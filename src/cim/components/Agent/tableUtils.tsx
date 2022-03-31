@@ -2,16 +2,21 @@ import * as React from 'react';
 import { sortable, expandable, breakWord } from '@patternfly/react-table';
 import { Link } from 'react-router-dom';
 
-import { Host, HostsTableActions, getInventory, getHostname, Hostname } from '../../../common';
-import { AgentK8sResource, InfraEnvK8sResource } from '../../types';
+import {
+  Host,
+  HostsTableActions,
+  getInventory,
+  getHostname,
+  Hostname,
+  ActionCheck,
+} from '../../../common';
+import { AgentClusterInstallK8sResource, AgentK8sResource, InfraEnvK8sResource } from '../../types';
 import AgentStatus from './AgentStatus';
 import { ActionsResolver, TableRow } from '../../../common/components/hosts/AITable';
-import {
-  ClusterDeploymentHostsTablePropsActions,
-  ClusterDeploymentWizardStepsType,
-} from '../ClusterDeployment/types';
+import { AgentTableActions, ClusterDeploymentWizardStepsType } from '../ClusterDeployment/types';
 import { hostActionResolver } from '../../../common/components/hosts/tableUtils';
-import { getAIHosts, getInfraEnvNameOfAgent } from '../helpers';
+import { getAgentClusterInstallOfAgent, getAIHosts, getInfraEnvNameOfAgent } from '../helpers';
+import { isInstallationInProgress } from '../ClusterDeployment/helpers';
 import { AGENT_BMH_HOSTNAME_LABEL_KEY } from '../common';
 import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
 import BMHStatus from './BMHStatus';
@@ -105,8 +110,8 @@ export const discoveryTypeColumn = (
 type AgentStatusColumnProps = {
   agents: AgentK8sResource[];
   bareMetalHosts?: BareMetalHostK8sResource[];
-  onEditHostname?: ClusterDeploymentHostsTablePropsActions['onEditHost'];
-  onApprove?: ClusterDeploymentHostsTablePropsActions['onApprove'];
+  onEditHostname?: AgentTableActions['onEditHost'];
+  onApprove?: AgentTableActions['onApprove'];
   wizardStepId?: ClusterDeploymentWizardStepsType;
 };
 
@@ -222,38 +227,110 @@ export const infraEnvColumn = (agents: AgentK8sResource[]): TableRow<Host> => {
   };
 };
 
-export const canEditBMH = (bmh: BareMetalHostK8sResource) =>
-  [
+export const canEditBMH = (bmh: BareMetalHostK8sResource): ActionCheck => {
+  const canEdit = [
     bmhStatus.provisioned.key,
     bmhStatus.deprovisioning.key,
     bmhStatus.pending.key,
     bmhStatus.registering.key,
-  ].includes(getBMHStatus(bmh).state.key)
-    ? 'Bare metal host hostname cannot be changed once configured. Remove this host and discover it again if a change is needed.'
-    : undefined;
+  ].includes(getBMHStatus(bmh).state.key);
+  return [
+    canEdit,
+    canEdit
+      ? undefined
+      : 'Bare metal host cannot be edited. Remove this host and add it again if a change is needed.',
+  ];
+};
+
+export const canEditAgent = (agent: AgentK8sResource): ActionCheck => {
+  const enabled = getAgentStatus(agent).status.category !== 'Installation related';
+  return [
+    enabled,
+    enabled
+      ? undefined
+      : 'Hostname cannot be edited while host is either installed or being installed.',
+  ];
+};
+
+export const canChangeHostname = (
+  agents: AgentK8sResource[],
+  bareMetalHosts: BareMetalHostK8sResource[],
+): ((h: Host) => ActionCheck) => (h: Host) => {
+  const agent = agents.find((a) => a.metadata?.uid === h.id);
+  if (agent) {
+    return canEditAgent(agent);
+  }
+  const bmh = bareMetalHosts.find((bmh) => bmh.metadata?.uid === h.id);
+  if (bmh) {
+    return canEditBMH(bmh);
+  }
+  return [true, undefined];
+};
+
+export const canUnbindAgent = (
+  agentClusterInstalls: AgentClusterInstallK8sResource[] | undefined,
+  agent: AgentK8sResource,
+): ActionCheck => {
+  if (!agent?.spec.clusterDeploymentName?.name) {
+    return [false, 'The agent is not bound to a cluster.'];
+  }
+
+  const { status } = getAgentStatus(agent);
+  if (
+    [
+      'preparing-for-installation',
+      'installing',
+      'installing-in-progress',
+      'installing-pending-user-action',
+      'resetting-pending-user-action',
+    ].includes(status.key)
+  ) {
+    return [false, 'It is not possible to remove a host which is being installed.'];
+  }
+
+  if (
+    ['installed', 'error', 'cancelled'].includes(status.key) &&
+    (agent.status?.role === 'master' || agent.status?.role === 'bootstrap')
+  ) {
+    return [false, 'It is not possible to remove control plane node from an installed cluster.'];
+  }
+
+  if (agentClusterInstalls) {
+    const agentClusterInstall = getAgentClusterInstallOfAgent(agentClusterInstalls, agent);
+
+    if (agentClusterInstall) {
+      if (isInstallationInProgress(agentClusterInstall)) {
+        return [false, 'It is not possible to remove a node from a cluster during installation.'];
+      }
+    }
+  }
+
+  return [true, undefined];
+};
+
+const canDeleteAgent = (agent: AgentK8sResource): ActionCheck => {
+  const enabled = getAgentStatus(agent).status.category !== 'Installation related';
+  return [
+    enabled,
+    enabled
+      ? undefined
+      : 'Host cannot be deleted while host is either installed or being installed.',
+  ];
+};
 
 type AgentsTableResources = {
   agents: AgentK8sResource[];
   bmhs?: BareMetalHostK8sResource[];
   infraEnv?: InfraEnvK8sResource;
+  agentClusterInstalls?: AgentClusterInstallK8sResource[];
 };
 
 export const useAgentsTable = (
-  { agents, bmhs, infraEnv }: AgentsTableResources,
-  tableActions?: ClusterDeploymentHostsTablePropsActions,
+  { agents, bmhs, infraEnv, agentClusterInstalls }: AgentsTableResources,
+  tableActions?: Partial<AgentTableActions>,
 ): [Host[], HostsTableActions, ActionsResolver<Host>] => {
-  const {
-    onEditHost,
-    canEditHost,
-    onDeleteHost,
-    canDelete,
-    onEditRole,
-    canEditRole,
-    onSelect,
-    onEditBMH,
-    onUnbindHost,
-    canUnbindHost,
-  } = tableActions || {};
+  const { onEditHost, onDeleteHost, onEditRole, onSelect, onEditBMH, onUnbindHost } =
+    tableActions || {};
   const [hosts, actions] = React.useMemo(
     (): [Host[], HostsTableActions] => [
       getAIHosts(agents, bmhs, infraEnv),
@@ -271,12 +348,13 @@ export const useAgentsTable = (
               return noop;
             }
           : undefined,
-        canEditHost: canEditHost
-          ? (host: Host) => {
-              const agent = agents.find((a) => a.metadata?.uid === host.id);
-              return agent ? canEditHost(agent) : false;
-            }
-          : undefined,
+        canEditHost: (host: Host) => {
+          const agent = agents.find((a) => a.metadata?.uid === host.id);
+          if (!agent) {
+            return false;
+          }
+          return canEditAgent(agent);
+        },
         onDeleteHost: onDeleteHost
           ? (host: Host) => {
               const agent = agents.find((a) => a.metadata?.uid === host.id);
@@ -284,75 +362,74 @@ export const useAgentsTable = (
               return onDeleteHost(agent, bmh);
             }
           : undefined,
-        canDelete: canDelete
-          ? (host: Host) => {
-              const agent = agents.find((a) => a.metadata?.uid === host.id);
-              const bmh = bmhs?.find((a) => a.metadata?.uid === host.id);
-              return canDelete(agent, bmh);
-            }
-          : undefined,
+        canDelete: (host: Host) => {
+          const agent = agents.find((a) => a.metadata?.uid === host.id);
+          const bmh = bmhs?.find((a) => a.metadata?.uid === host.id);
+
+          if (agent) {
+            return canDeleteAgent(agent);
+          } else if (bmh) {
+            return [true, undefined];
+          }
+
+          return [false, 'Host not found'];
+        },
         onEditRole: onEditRole
           ? (host: Host, role: string | undefined) => {
-              const agent = agents.find((a) => a.metadata?.uid === host.id) as AgentK8sResource;
-              return onEditRole(agent, role);
-            }
-          : undefined,
-        canEditRole: canEditRole
-          ? (host: Host) => {
               const agent = agents.find((a) => a.metadata?.uid === host.id);
-              return agent ? canEditRole(agent) : false;
+              return agent ? onEditRole(agent, role) : Promise.resolve(agent);
             }
           : undefined,
+        canEditRole: () => !!onEditRole,
         onSelect: onSelect
           ? (host: Host, selected: boolean) => {
-              const agent = agents.find((a) => a.metadata?.uid === host.id) as AgentK8sResource;
-              return onSelect(agent, selected);
+              const agent = agents.find((a) => a.metadata?.uid === host.id);
+              return agent ? onSelect(agent, selected) : noop;
             }
           : undefined,
         onEditBMH: onEditBMH
           ? (host: Host) => {
-              const bmh = bmhs?.find(
-                (h) => h.metadata?.uid === host.id,
-              ) as BareMetalHostK8sResource;
-              return onEditBMH(bmh);
+              const bmh = bmhs?.find((h) => h.metadata?.uid === host.id);
+              return bmh ? onEditBMH(bmh) : noop;
             }
           : undefined,
         canEditBMH: (host: Host) => {
           const bmh = bmhs?.find((h) => h.metadata?.uid === host.id);
           if (!bmh) {
-            return false;
+            return [false, 'Bare metal host not found'];
           }
-          return !canEditBMH(bmh);
+          return canEditBMH(bmh);
         },
         onUnbindHost: onUnbindHost
           ? (host: Host) => {
-              const agent = agents.find((a) => a.metadata?.uid === host.id) as AgentK8sResource;
-              // const bmh = bmhs?.find((a) => a.metadata?.uid === host.id);
-              return onUnbindHost(agent);
-            }
-          : undefined,
-        canUnbindHost: canUnbindHost
-          ? (host: Host) => {
               const agent = agents.find((a) => a.metadata?.uid === host.id);
-              return canUnbindHost(agent);
+              return agent ? onUnbindHost(agent) : noop;
             }
           : undefined,
+        canUnbindHost: (host: Host) => {
+          const agent = agents.find((a) => a.metadata?.uid === host.id);
+          if (agent) {
+            return canUnbindAgent(agentClusterInstalls, agent);
+          }
+          const bmh = bmhs?.find((bmh) => bmh.metadata?.uid === host.id);
+          if (bmh) {
+            return [false, 'Bare metal host cannot be removed from cluster.'];
+          }
+          return [false, 'Host not found'];
+        },
       },
     ],
     [
       onEditHost,
-      canEditHost,
       onDeleteHost,
-      canDelete,
       onEditRole,
-      canEditRole,
       agents,
       onSelect,
       onEditBMH,
       onUnbindHost,
-      canUnbindHost,
       bmhs,
       infraEnv,
+      agentClusterInstalls,
     ],
   );
   const actionResolver = React.useMemo(() => hostActionResolver(actions), [actions]);
