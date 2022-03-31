@@ -66,11 +66,15 @@ export const getSubnetFromMachineNetworkCidr = (machineNetworkCidr?: string) => 
   return subnet?.address;
 };
 
-export const isAdvNetworkConf = (cluster: Cluster, defaultNetworkSettings: ClusterDefaultConfig) =>
+export const isAdvNetworkConf = (
+  cluster: Cluster,
+  defaultNetworkSettings: ClusterDefaultConfig,
+  defaultNetworkType: string,
+) =>
   selectClusterNetworkCIDR(cluster) !== defaultNetworkSettings.clusterNetworkCidr ||
   selectClusterNetworkHostPrefix(cluster) !== defaultNetworkSettings.clusterNetworkHostPrefix ||
   selectServiceNetworkCIDR(cluster) !== defaultNetworkSettings.serviceNetworkCidr ||
-  (Boolean(cluster.networkType) && cluster.networkType !== 'OpenShiftSDN');
+  (Boolean(cluster.networkType) && cluster.networkType !== defaultNetworkType);
 
 export const getHostDiscoveryInitialValues = (cluster: Cluster): HostDiscoveryValues => {
   const monitoredOperators = cluster.monitoredOperators || [];
