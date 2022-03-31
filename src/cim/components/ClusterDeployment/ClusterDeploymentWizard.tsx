@@ -10,7 +10,6 @@ import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
 import ClusterDeploymentDetailsStep from './ClusterDeploymentDetailsStep';
 import ClusterDeploymentNetworkingStep from './ClusterDeploymentNetworkingStep';
 import ClusterDeploymentHostSelectionStep from './ClusterDeploymentHostSelectionStep';
-import { getAgentsHostsNames, isAgentOfCluster, isAgentOfInfraEnv } from './helpers';
 import { ClusterDeploymentWizardProps, ClusterDeploymentWizardStepsType } from './types';
 import ClusterDeploymentHostsDiscoveryStep from './ClusterDeploymentHostsDiscoveryStep';
 import { ACMFeatureSupportLevelProvider } from '../featureSupportLevels';
@@ -55,19 +54,6 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
 
   const isAIFlow = isAIFlowInfraEnv(infraEnv);
 
-  const cdName = clusterDeployment.metadata?.name;
-  const cdNamespace = clusterDeployment.metadata?.namespace;
-
-  const clusterAgents = React.useMemo(
-    () =>
-      agents.filter(
-        (a) =>
-          (isAIFlow && isAgentOfInfraEnv(infraEnv, a)) || isAgentOfCluster(a, cdName, cdNamespace),
-      ),
-    [isAIFlow, infraEnv, agents, cdName, cdNamespace],
-  );
-  const usedHostnames = React.useMemo(() => getAgentsHostsNames(clusterAgents), [clusterAgents]);
-
   const { code, loadingResources } = useYamlPreview({
     agentClusterInstall,
     clusterDeployment,
@@ -109,7 +95,6 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
               infraEnv={
                 infraEnv as InfraEnvK8sResource /* Must be available since isAIFlow === true */
               }
-              usedHostnames={usedHostnames}
               onSaveAgent={onSaveAgent}
               onSaveBMH={onSaveBMH}
               fetchSecret={fetchSecret}
