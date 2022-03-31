@@ -93,9 +93,12 @@ const RichInputField: React.FC<RichInputFieldPropsProps> = React.forwardRef(
     ref: React.Ref<HTMLInputElement>,
   ) => {
     const [popoverOpen, setPopoverOpen] = React.useState(false);
-    const [field, { error, value }] = useField({ name: props.name, validate });
+    const [field, { error, value, touched }, { setTouched }] = useField({
+      name: props.name,
+      validate,
+    });
     const fieldId = getFieldId(props.name, 'input', idPostfix);
-    const isValid = !error?.length;
+    const isValid = !touched || !error?.length;
     return (
       <FormGroup
         fieldId={fieldId}
@@ -124,6 +127,7 @@ const RichInputField: React.FC<RichInputFieldPropsProps> = React.forwardRef(
             onChange={(value, event) => {
               !popoverOpen && setPopoverOpen(true);
               !noDefaultOnChange && field.onChange(event);
+              setTouched(true);
               onChange && onChange(event);
             }}
             className="rich-input__text"

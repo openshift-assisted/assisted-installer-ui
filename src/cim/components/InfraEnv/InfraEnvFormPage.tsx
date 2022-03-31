@@ -65,9 +65,7 @@ const validationSchema = (usedNames: string[]) =>
       name: richNameValidationSchema(usedNames),
       location: locationValidationSchema.required('Location is a required field.'),
       pullSecret: pullSecretValidationSchema.required('Pull secret is a required field.'),
-      sshPublicKey: sshPublicKeyValidationSchema.required(
-        'An SSH key is required to debug hosts as they register.',
-      ),
+      sshPublicKey: sshPublicKeyValidationSchema,
       httpProxy: httpProxyValidationSchema(values, 'httpsProxy'),
       httpsProxy: httpProxyValidationSchema(values, 'httpProxy'), // share the schema, httpS is currently not supported
       noProxy: noProxyValidationSchema,
@@ -228,6 +226,7 @@ type InfraEnvFormPageProps = InfraEnvFormProps & {
   onSubmit?: (values: EnvironmentStepFormValues) => Promise<any>;
   onFinish?: (values: EnvironmentStepFormValues) => void;
   onClose?: VoidFunction;
+  formRef: React.Ref<FormikProps<EnvironmentStepFormValues>>;
 };
 
 export const InfraEnvFormPage: React.FC<InfraEnvFormPageProps> = ({
@@ -236,6 +235,7 @@ export const InfraEnvFormPage: React.FC<InfraEnvFormPageProps> = ({
   onClose,
   onFinish,
   onValuesChanged,
+  formRef,
 }) => {
   const [error, setError] = React.useState<string | undefined>();
   return (
@@ -251,6 +251,7 @@ export const InfraEnvFormPage: React.FC<InfraEnvFormPageProps> = ({
           setError(e?.message ?? 'An error occured');
         }
       }}
+      innerRef={formRef}
     >
       {({ isValid, isSubmitting, submitForm }: FormikProps<EnvironmentStepFormValues>) => (
         <Stack hasGutter>
