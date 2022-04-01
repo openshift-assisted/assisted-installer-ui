@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { noop } from 'lodash';
+import { Stack, StackItem } from '@patternfly/react-core';
 
 import { Host } from '../../../common/api/types';
 import {
@@ -31,9 +32,6 @@ import MassApproveAgentModal from '../modals/MassApproveAgentModal';
 import { MassChangeHostnameModalProps } from '../../../common/components/hosts/MassChangeHostnameModal';
 import MassApproveAction from '../modals/MassApproveAction';
 import { usePagination } from '../../../common/components/hosts/usePagination';
-import { Stack, StackItem } from '@patternfly/react-core';
-import { useFormikContext } from 'formik';
-import { ClusterDeploymentHostsDiscoveryValues } from './types';
 
 const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscoveryTableProps> = ({
   agents,
@@ -51,20 +49,13 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
   const [isDiscoveryHintModalOpen, setDiscoveryHintModalOpen] = React.useState(false);
   const [isMassChangeHostOpen, setMassChangeHostOpen] = React.useState(false);
   const [isMassApproveOpen, setMassApproveOpen] = React.useState(false);
-  const { setFieldValue, values } = useFormikContext<ClusterDeploymentHostsDiscoveryValues>();
-
-  const setSelectedHostIDs = (ids: string[]) => {
-    setFieldValue('selectedHostIds', ids);
-  };
+  const [selectedHostIDs, setSelectedHostIDs] = React.useState<string[]>([]);
 
   const onSelect = (host: Host, isSelected: boolean) => {
     if (isSelected) {
-      setFieldValue('selectedHostIds', [...values.selectedHostIds, host.id]);
+      setSelectedHostIDs([...selectedHostIDs, host.id]);
     } else {
-      setFieldValue(
-        'selectedHostIds',
-        values.selectedHostIds.filter((sa) => sa !== host.id),
-      );
+      setSelectedHostIDs(selectedHostIDs.filter((sa) => sa !== host.id));
     }
   };
 
@@ -96,9 +87,7 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
     [agents, hostActions, bareMetalHosts, onApprove, onEditHost, addAll],
   );
 
-  const selectedAgents = agents.filter((a) =>
-    values.selectedHostIds.includes(a.metadata?.uid || ''),
-  );
+  const selectedAgents = agents.filter((a) => selectedHostIDs.includes(a.metadata?.uid || ''));
 
   const massActions = [
     <ChangeHostnameAction
@@ -133,7 +122,7 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
       <Stack hasGutter>
         <StackItem>
           <TableToolbar
-            selectedIDs={values.selectedHostIds || []}
+            selectedIDs={selectedHostIDs}
             itemIDs={itemIDs}
             setSelectedIDs={setSelectedHostIDs}
             actions={massActions}
@@ -145,7 +134,7 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
             hosts={hosts}
             content={content}
             actionResolver={actionResolver}
-            selectedIDs={values.selectedHostIds}
+            selectedIDs={selectedHostIDs}
             setSelectedHostIDs={setSelectedHostIDs}
             onSelect={onSelect}
             ExpandComponent={DefaultExpandComponent}
@@ -165,7 +154,7 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
         <MassChangeHostnameModal
           isOpen={isMassChangeHostOpen}
           hosts={hosts}
-          selectedHostIDs={values.selectedHostIds}
+          selectedHostIDs={selectedHostIDs}
           onChangeHostname={onAgentChangeHostname}
           onClose={() => setMassChangeHostOpen(false)}
           canChangeHostname={canChangeHostname(agents, bareMetalHosts)}
