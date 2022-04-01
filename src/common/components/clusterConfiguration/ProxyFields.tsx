@@ -58,7 +58,7 @@ export const ProxyInputFields = () => {
       <InputField
         label={
           <>
-            {'NO_PROXY domains'}
+            {'No proxy domains'}
             <PopoverIcon
               variant={'plain'}
               bodyContent={
