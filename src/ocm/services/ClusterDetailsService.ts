@@ -4,7 +4,11 @@ import InfraEnvsService from './InfraEnvsService';
 import omit from 'lodash/omit';
 import DiskEncryptionService from './DiskEncryptionService';
 import { OcmClusterDetailsValues } from '../api/types';
-import { isArmArchitecture } from '../../common/selectors/clusterSelectors';
+import {
+  getDefaultNetworkType,
+  isArmArchitecture,
+  isSNO,
+} from '../../common/selectors/clusterSelectors';
 
 const ClusterDetailsService = {
   async create(params: ClusterCreateParams) {
@@ -32,6 +36,7 @@ const ClusterDetailsService = {
   },
 
   getClusterCreateParams(values: OcmClusterDetailsValues): ClusterCreateParams {
+    const isSNOCluster = isSNO(values);
     const params: ClusterCreateParams = omit(values, [
       'useRedHatDnsService',
       'SNODisclaimer',
@@ -45,6 +50,7 @@ const ClusterDetailsService = {
     if (isArmArchitecture({ cpuArchitecture: params.cpuArchitecture })) {
       params.userManagedNetworking = true;
     }
+    params.networkType = getDefaultNetworkType(isSNOCluster);
     return params;
   },
 };

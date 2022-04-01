@@ -11,11 +11,17 @@ import {
   VirtualIPControlGroupProps,
 } from '../clusterWizard/networkingSteps';
 import { ClusterDefaultConfig } from '../../api';
-import { NO_SUBNET_SET } from '../../config';
+import { NETWORK_TYPE_OVN, NO_SUBNET_SET } from '../../config';
 import { isAdvNetworkConf } from './utils';
 import { useFeatureSupportLevel } from '../featureSupportLevels';
 import { getLimitedFeatureSupportLevels } from '../featureSupportLevels/utils';
-import { isSNO } from '../../selectors';
+import {
+  canSelectNetworkTypeSDN,
+  getDefaultNetworkType,
+  isSNO,
+  isSubnetInIPv6,
+} from '../../selectors';
+import { Address6 } from 'ip-address';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   defaultNetworkSettings: ClusterDefaultConfig;
@@ -49,8 +55,29 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   const clusterFeatureSupportLevels = React.useMemo(() => {
     return getLimitedFeatureSupportLevels(cluster, featureSupportLevelData);
   }, [cluster, featureSupportLevelData]);
+
+  const isMultiNodeCluster = !isSNO(cluster);
+  const isClusterCIDRIPv6 = Address6.isValid(values.clusterNetworkCidr || '');
+  const { isIPv6, defaultNetworkType, isSDNSelectable } = React.useMemo(() => {
+    const isIPv6 = isSubnetInIPv6({
+      machineNetworkCidr: values.machineNetworkCidr,
+      clusterNetworkCidr: values.clusterNetworkCidr,
+      serviceNetworkCidr: values.serviceNetworkCidr,
+    });
+    return {
+      isIPv6,
+      defaultNetworkType: getDefaultNetworkType(!isMultiNodeCluster, isIPv6),
+      isSDNSelectable: canSelectNetworkTypeSDN(!isMultiNodeCluster, isIPv6),
+    };
+  }, [
+    isMultiNodeCluster,
+    values.clusterNetworkCidr,
+    values.machineNetworkCidr,
+    values.serviceNetworkCidr,
+  ]);
+
   const [isAdvanced, setAdvanced] = React.useState(
-    isAdvNetworkConf(cluster, defaultNetworkSettings),
+    isAdvNetworkConf(cluster, defaultNetworkSettings, defaultNetworkType),
   );
 
   const toggleAdvConfiguration = (checked: boolean) => {
@@ -60,11 +87,10 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
       setFieldValue('clusterNetworkCidr', defaultNetworkSettings.clusterNetworkCidr);
       setFieldValue('serviceNetworkCidr', defaultNetworkSettings.serviceNetworkCidr);
       setFieldValue('clusterNetworkHostPrefix', defaultNetworkSettings.clusterNetworkHostPrefix);
-      setFieldValue('networkType', 'OpenShiftSDN');
+      setFieldValue('networkType', defaultNetworkType);
     }
   };
 
-  const isMultiNodeCluster = !isSNO(cluster);
   const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';
   const firstSubnet = hostSubnets[0]?.subnet;
 
@@ -75,6 +101,16 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
       setFieldValue('hostSubnet', firstSubnet, false);
     }
   }, [isUserManagedNetworking, isMultiNodeCluster, values.hostSubnet, setFieldValue, firstSubnet]);
+
+  useEffect(() => {
+    if (!cluster.networkType) {
+      setFieldValue('networkType', getDefaultNetworkType(!isMultiNodeCluster, isIPv6));
+    } else if (!isSDNSelectable) {
+      setFieldValue('networkType', NETWORK_TYPE_OVN);
+    }
+    // Skipping "cluster.networkType" as it's ultimately the value we are setting in the form
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isIPv6, isMultiNodeCluster, setFieldValue]);
 
   useEffect(() => {
     if (isUserManagedNetworking) {
@@ -146,7 +182,14 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
         description="Configure advanced networking properties (e.g. CIDR ranges)."
         isChecked={isAdvanced}
         onChange={toggleAdvConfiguration}
-        body={isAdvanced && <AdvancedNetworkFields />}
+        body={
+          isAdvanced && (
+            <AdvancedNetworkFields
+              isSDNSelectable={isSDNSelectable}
+              isClusterCIDRIPv6={isClusterCIDRIPv6}
+            />
+          )
+        }
       />
     </Grid>
   );

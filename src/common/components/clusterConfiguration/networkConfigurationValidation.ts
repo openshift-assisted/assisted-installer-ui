@@ -11,6 +11,9 @@ import {
 
 import { getSubnetFromMachineNetworkCidr, getHostSubnets } from './utils';
 import {
+  getDefaultNetworkType,
+  isSNO,
+  isSubnetInIPv6,
   selectClusterNetworkCIDR,
   selectClusterNetworkHostPrefix,
   selectMachineNetworkCIDR,
@@ -36,6 +39,9 @@ export const getNetworkInitialValues = (
   defaultNetworkSettings: ClusterDefaultConfig,
 ): NetworkConfigurationValues => {
   const managedNetworkingType = cluster.userManagedNetworking ? 'userManaged' : 'clusterManaged';
+  const isIPv6 = isSubnetInIPv6(cluster);
+  const isSNOCluster = isSNO(cluster);
+
   return {
     clusterNetworkCidr:
       selectClusterNetworkCIDR(cluster) || defaultNetworkSettings.clusterNetworkCidr,
@@ -49,7 +55,7 @@ export const getNetworkInitialValues = (
     hostSubnet: getInitHostSubnet(cluster, managedNetworkingType) || NO_SUBNET_SET,
     vipDhcpAllocation: cluster.vipDhcpAllocation,
     managedNetworkingType: cluster.userManagedNetworking ? 'userManaged' : 'clusterManaged',
-    networkType: cluster.networkType || 'OpenShiftSDN',
+    networkType: cluster.networkType || getDefaultNetworkType(isSNOCluster, isIPv6),
     enableProxy: false,
     editProxy: false,
   };

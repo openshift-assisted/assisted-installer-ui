@@ -2,31 +2,31 @@ import React from 'react';
 import { Split, SplitItem, Tooltip, FormGroup } from '@patternfly/react-core';
 import { RadioField } from '../../ui/formik';
 import { PopoverIcon } from '../../../components/ui';
+import { NETWORK_TYPE_OVN, NETWORK_TYPE_SDN } from '../../../config';
 
+const GROUP_NAME = 'networkType';
 export interface NetworkTypeControlGroupProps {
-  isIPv6: boolean;
+  isSDNSelectable: boolean;
 }
 
 export const NetworkTypeControlGroup: React.FC<NetworkTypeControlGroupProps> = ({
-  isIPv6 = false,
+  isSDNSelectable,
 }) => {
-  const GROUP_NAME = 'networkType';
-
   return (
     <FormGroup fieldId={GROUP_NAME} label="Network type">
       <Split hasGutter>
         <SplitItem>
           <Tooltip
-            hidden={!isIPv6}
+            hidden={isSDNSelectable}
             content={
-              'Software-Defined Networking (SDN) can be selected only when IPv4 is detected.'
+              'Software-Defined Networking (SDN) can be selected only in non-SNO clusters when IPv4 is detected.'
             }
           >
             <RadioField
               id={GROUP_NAME}
               name={GROUP_NAME}
-              isDisabled={isIPv6}
-              value={'OpenShiftSDN'}
+              isDisabled={!isSDNSelectable}
+              value={NETWORK_TYPE_SDN}
               label={
                 <>
                   Software-Defined Networking (SDN){' '}
@@ -44,7 +44,7 @@ export const NetworkTypeControlGroup: React.FC<NetworkTypeControlGroupProps> = (
           <RadioField
             id={GROUP_NAME}
             name={GROUP_NAME}
-            value={'OVNKubernetes'}
+            value={NETWORK_TYPE_OVN}
             label={
               <>
                 Open Virtual Networking (OVN){' '}

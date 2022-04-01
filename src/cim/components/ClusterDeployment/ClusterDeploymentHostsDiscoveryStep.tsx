@@ -1,122 +1,176 @@
 import React from 'react';
-import * as Yup from 'yup';
-import { Formik } from 'formik';
-import { Grid, GridItem } from '@patternfly/react-core';
-import { ClusterWizardStepHeader, useAlerts } from '../../../common';
-import { AgentClusterInstallK8sResource, AgentK8sResource } from '../../types';
+import * as _ from 'lodash';
+import { Grid, GridItem, Alert, AlertVariant, List, ListItem } from '@patternfly/react-core';
+
+import { ClusterWizardStepHeader } from '../../../common';
 import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
 import ClusterDeploymentWizardFooter from './ClusterDeploymentWizardFooter';
 import ClusterDeploymentWizardStep from './ClusterDeploymentWizardStep';
-import {
-  ClusterDeploymentHostsDiscoveryStepProps,
-  ClusterDeploymentHostsDiscoveryValues,
-} from './types';
+import { ClusterDeploymentHostsDiscoveryStepProps } from './types';
 import ClusterDeploymentHostsDiscovery from './ClusterDeploymentHostsDiscovery';
-import { isAgentOfInfraEnv } from './helpers';
+import { getAgentsHostsNames, isAgentOfInfraEnv } from './helpers';
+import { getIsSNOCluster, getWizardStepAgentStatus } from '../helpers';
 import { canNextFromHostDiscoveryStep } from './wizardTransition';
 
-type UseHostsDiscoveryFormikArgs = {
-  agents: AgentK8sResource[];
-  agentClusterInstall: AgentClusterInstallK8sResource;
-};
-
-const getInitialValues = ({
-  agentClusterInstall,
-  agents,
-}: UseHostsDiscoveryFormikArgs): ClusterDeploymentHostsDiscoveryValues => {
-  agentClusterInstall;
-  agents;
-
-  return {
-    /* TODO(mlibra): CNS, OCS */
-  };
-};
-
-const getValidationSchema = () => {
-  return Yup.object<ClusterDeploymentHostsDiscoveryValues>().shape({
-    /* TODO(mlibra): CNS, OCS */
-  });
-};
-
 const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscoveryStepProps> = ({
-  onClose,
-  onSaveHostsDiscovery,
   agentClusterInstall,
   agents: allAgents,
   infraEnv,
-  ...restProps
+  clusterDeployment,
+  bareMetalHosts,
+  onCreateBMH,
+  onSaveAgent,
+  onEditRole,
+  onSaveBMH,
+  onSaveISOParams,
+  onFormSaveError,
+  fetchSecret,
+  fetchNMState,
+  onChangeBMHHostname,
+  onApproveAgent,
+  onDeleteHost,
+  getClusterDeploymentLink,
+  isBMPlatform,
+  onSaveHostsDiscovery,
+  onClose,
+  ...rest
 }) => {
-  const { addAlert } = useAlerts();
   const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
-
+  const [showClusterErrors, setShowClusterErrors] = React.useState(false);
+  const [nextRequested, setNextRequested] = React.useState(false);
+  const [showFormErrors, setShowFormErrors] = React.useState(false);
   const infraEnvAgents = React.useMemo(
     () => allAgents.filter((a) => isAgentOfInfraEnv(infraEnv, a)),
     [allAgents, infraEnv],
   );
+  const usedHostnames = React.useMemo(() => getAgentsHostsNames(infraEnvAgents), [infraEnvAgents]);
 
-  const [initialValues, validationSchema] = React.useMemo(
-    () => [
-      getInitialValues({ agents: infraEnvAgents, agentClusterInstall }),
-      getValidationSchema(),
-    ],
-    [], // eslint-disable-line react-hooks/exhaustive-deps
-  );
+  const errors = [];
 
-  const handleSubmit = async (values: ClusterDeploymentHostsDiscoveryValues) => {
-    try {
-      await onSaveHostsDiscovery(values);
-      setCurrentStepId('networking');
-    } catch (error) {
-      addAlert({
-        title: 'Failed to save host discovery selections.',
-        message: error.message as string,
-      });
+  if (getIsSNOCluster(agentClusterInstall)) {
+    infraEnvAgents.length > 1 &&
+      errors.push('Single node cluster cannot contain more than 1 host.');
+  } else {
+    (infraEnvAgents.length === 4 || infraEnvAgents.length < 3) &&
+      errors.push('Cluster must have 3 or 5 and more hosts.');
+  }
+
+  if (infraEnvAgents.some((a) => !a.spec.approved)) {
+    errors.push('All hosts must be approved.');
+  }
+
+  if (usedHostnames.some((h) => h === 'localhost')) {
+    errors.push('Hostname localhost is forbidden.');
+  }
+
+  if (_.uniq(usedHostnames).length !== usedHostnames.length) {
+    errors.push('Hostnames must be unique.');
+  }
+
+  const agentsNotHealthy = infraEnvAgents
+    .map((agent) => getWizardStepAgentStatus(agent, 'hosts-discovery').status.key)
+    .some((status) =>
+      ['disconnected', 'disabled', 'error', 'insufficient', 'cancelled'].includes(status),
+    );
+
+  if (agentsNotHealthy) {
+    errors.push('Some hosts are not ready.');
+  }
+
+  const onNext = async () => {
+    if (!showFormErrors) {
+      setShowFormErrors(true);
+      if (errors.length) {
+        return;
+      }
     }
+    await onSaveHostsDiscovery();
+    setNextRequested(true);
   };
 
-  return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      onSubmit={handleSubmit}
+  React.useEffect(() => {
+    setNextRequested(false);
+    setShowClusterErrors(false);
+  }, [infraEnvAgents.length]);
+
+  React.useEffect(() => {
+    if (nextRequested) {
+      if (agentsNotHealthy) {
+        setNextRequested(false);
+      } else {
+        setShowClusterErrors(true);
+        if (canNextFromHostDiscoveryStep(agentClusterInstall, infraEnvAgents)) {
+          setCurrentStepId('networking');
+        }
+      }
+    }
+  }, [nextRequested, infraEnvAgents, agentClusterInstall, setCurrentStepId, agentsNotHealthy]);
+
+  const submittingText = nextRequested && !showClusterErrors ? 'Saving changes...' : undefined;
+
+  const onSyncError = React.useCallback(() => setNextRequested(false), []);
+
+  const footer = (
+    <ClusterDeploymentWizardFooter
+      agentClusterInstall={agentClusterInstall}
+      agents={infraEnvAgents}
+      isSubmitting={!!submittingText}
+      submittingText={submittingText}
+      isNextDisabled={nextRequested || (showFormErrors ? !!errors.length : false)}
+      onNext={onNext}
+      onBack={() => setCurrentStepId('cluster-details')}
+      showClusterErrors={showClusterErrors}
+      onSyncError={onSyncError}
+      onCancel={onClose}
     >
-      {({ submitForm, isSubmitting, isValid, isValidating }) => {
-        const isNextDisabled =
-          !isValid ||
-          isValidating ||
-          isSubmitting ||
-          !canNextFromHostDiscoveryStep(agentClusterInstall, infraEnvAgents);
-        const footer = (
-          <ClusterDeploymentWizardFooter
+      {showFormErrors && !!errors.length && (
+        <Alert
+          variant={AlertVariant.danger}
+          title="Provided cluster configuration is not valid"
+          isInline
+        >
+          <List>
+            {errors.map((error) => (
+              <ListItem key={error}>{error}</ListItem>
+            ))}
+          </List>
+        </Alert>
+      )}
+    </ClusterDeploymentWizardFooter>
+  );
+
+  return (
+    <ClusterDeploymentWizardStep footer={footer}>
+      <Grid hasGutter>
+        <GridItem>
+          <ClusterWizardStepHeader>Cluster hosts</ClusterWizardStepHeader>
+        </GridItem>
+        <GridItem>
+          <ClusterDeploymentHostsDiscovery
             agentClusterInstall={agentClusterInstall}
             agents={infraEnvAgents}
-            isSubmitting={isSubmitting}
-            isNextDisabled={isNextDisabled}
-            onNext={submitForm}
-            onBack={() => setCurrentStepId('cluster-details')}
-            onCancel={onClose}
+            infraEnv={infraEnv}
+            bareMetalHosts={bareMetalHosts}
+            usedHostnames={usedHostnames}
+            clusterDeployment={clusterDeployment}
+            onCreateBMH={onCreateBMH}
+            onSaveAgent={onSaveAgent}
+            onEditRole={onEditRole}
+            onSaveBMH={onSaveBMH}
+            onSaveISOParams={onSaveISOParams}
+            onFormSaveError={onFormSaveError}
+            fetchSecret={fetchSecret}
+            fetchNMState={fetchNMState}
+            onChangeBMHHostname={onChangeBMHHostname}
+            onApproveAgent={onApproveAgent}
+            onDeleteHost={onDeleteHost}
+            getClusterDeploymentLink={getClusterDeploymentLink}
+            isBMPlatform={isBMPlatform}
+            {...rest}
           />
-        );
-
-        return (
-          <ClusterDeploymentWizardStep footer={footer}>
-            <Grid hasGutter>
-              <GridItem>
-                <ClusterWizardStepHeader>Cluster hosts</ClusterWizardStepHeader>
-              </GridItem>
-              <GridItem>
-                <ClusterDeploymentHostsDiscovery
-                  agentClusterInstall={agentClusterInstall}
-                  agents={infraEnvAgents}
-                  infraEnv={infraEnv}
-                  {...restProps}
-                />
-              </GridItem>
-            </Grid>
-          </ClusterDeploymentWizardStep>
-        );
-      }}
-    </Formik>
+        </GridItem>
+      </Grid>
+    </ClusterDeploymentWizardStep>
   );
 };
 

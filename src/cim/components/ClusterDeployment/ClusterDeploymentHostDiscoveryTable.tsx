@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { noop } from 'lodash';
+import { Stack, StackItem } from '@patternfly/react-core';
 
 import { Host } from '../../../common/api/types';
 import {
@@ -31,7 +32,6 @@ import MassApproveAgentModal from '../modals/MassApproveAgentModal';
 import { MassChangeHostnameModalProps } from '../../../common/components/hosts/MassChangeHostnameModal';
 import MassApproveAction from '../modals/MassApproveAction';
 import { usePagination } from '../../../common/components/hosts/usePagination';
-import { Stack, StackItem } from '@patternfly/react-core';
 
 const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscoveryTableProps> = ({
   agents,
@@ -50,6 +50,7 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
   const [isMassChangeHostOpen, setMassChangeHostOpen] = React.useState(false);
   const [isMassApproveOpen, setMassApproveOpen] = React.useState(false);
   const [selectedHostIDs, setSelectedHostIDs] = React.useState<string[]>([]);
+
   const onSelect = (host: Host, isSelected: boolean) => {
     if (isSelected) {
       setSelectedHostIDs([...selectedHostIDs, host.id]);
@@ -121,7 +122,7 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
       <Stack hasGutter>
         <StackItem>
           <TableToolbar
-            selectedIDs={selectedHostIDs || []}
+            selectedIDs={selectedHostIDs}
             itemIDs={itemIDs}
             setSelectedIDs={setSelectedHostIDs}
             actions={massActions}
