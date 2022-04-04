@@ -1,6 +1,5 @@
 import * as Yup from 'yup';
 import {
-  allSubnetsIPv4,
   Cluster,
   clusterNetworksValidationSchema,
   dualStackValidationSchema,
@@ -13,6 +12,7 @@ import {
   serviceNetworkValidationSchema,
   singleStackValidationSchema,
   sshPublicKeyValidationSchema,
+  usesIPv6,
   vipValidationSchema,
 } from '../../../../common';
 
@@ -21,11 +21,7 @@ export const getNetworkInitialValues = (
   defaultNetworkValues: Partial<NetworkConfigurationValues>,
 ): NetworkConfigurationValues => {
   const isSNOCluster = isSNO(cluster);
-  const usesIPv6 = !(
-    allSubnetsIPv4(cluster.machineNetworks) &&
-    allSubnetsIPv4(cluster.clusterNetworks) &&
-    allSubnetsIPv4(cluster.serviceNetworks)
-  );
+  const clusterUsesIPv6 = usesIPv6(cluster);
 
   return {
     apiVip: cluster.apiVip || '',
@@ -33,7 +29,7 @@ export const getNetworkInitialValues = (
     sshPublicKey: cluster.sshPublicKey || '',
     vipDhcpAllocation: cluster.vipDhcpAllocation,
     managedNetworkingType: cluster.userManagedNetworking ? 'userManaged' : 'clusterManaged',
-    networkType: cluster.networkType || getDefaultNetworkType(isSNOCluster, usesIPv6),
+    networkType: cluster.networkType || getDefaultNetworkType(isSNOCluster, clusterUsesIPv6),
     enableProxy: false,
     editProxy: false,
     machineNetworks: cluster.machineNetworks || [],

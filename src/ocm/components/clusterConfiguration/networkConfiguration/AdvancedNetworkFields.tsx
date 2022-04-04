@@ -19,12 +19,26 @@ type AdvancedNetworkFieldsProps = {
   isSDNSelectable: boolean;
 };
 
+const IPv4PrefixHelperText =
+  'The subnet prefix length to assign to each individual node. For example, if Cluster Network Host Prefix is set to 23, then each node is assigned a /23 subnet out of the given cidr (clusterNetworkCIDR), which allows for 510 (2^(32 - 23) - 2) pod IPs addresses. If you are required to provide access to nodes from an external network, configure load balancers and routers to manage the traffic.';
+
+const IPv6PrefixHelperText =
+  'The subnet prefix length to assign to each individual node. For example, if Cluster Network Host Prefix is set to 116, then each node is assigned a /116 subnet out of the given cidr (clusterNetworkCIDR), which allows for 4,094 (2^(128 - 116) - 2) pod IPs addresses. If you are required to provide access to nodes from an external network, configure load balancers and routers to manage the traffic.';
+
+const clusterCidrHelperText =
+  'IP address block from which Pod IPs are allocated. This block must not overlap with existing physical networks. These IP addresses are used for the Pod network, and if you need to access the Pods from an external network, configure load balancers and routers to manage the traffic.';
+
+const serviceCidrHelperText =
+  'The IP address pool to use for service IP addresses. You can enter only one IP address pool. If you need to access the services from an external network, configure load balancers and routers to manage the traffic.';
+
 const AdvancedNetworkFields: React.FC<AdvancedNetworkFieldsProps> = ({ isSDNSelectable }) => {
   const { setFieldValue, values, errors } = useFormikContext<NetworkConfigurationValues>();
 
   const isNetworkTypeSelectionEnabled = useFeature(
     'ASSISTED_INSTALLER_NETWORK_TYPE_SELECTION_FEATURE',
   );
+
+  const isDualStack = values.stackType === 'dualStack';
 
   const clusterNetworkCidrPrefix = (index: number) =>
     parseInt(
@@ -40,13 +54,20 @@ const AdvancedNetworkFields: React.FC<AdvancedNetworkFieldsProps> = ({ isSDNSele
     }
   };
 
-  const isSubnetIPv6 = (index: number) =>
-    Address6.isValid((values.clusterNetworks && values.clusterNetworks[index].cidr) || '');
+  const isSubnetIPv6 = (index: number) => {
+    if (isDualStack) {
+      return Boolean(index);
+    } else {
+      return (
+        values.clusterNetworks &&
+        values.clusterNetworks.length > index &&
+        Address6.isValid(values.clusterNetworks[index].cidr || '')
+      );
+    }
+  };
 
   const clusterNetworkHostPrefixHelperText = (index: number) =>
-    isSubnetIPv6(index)
-      ? 'The subnet prefix length to assign to each individual node. For example, if Cluster Network Host Prefix is set to 116, then each node is assigned a /116 subnet out of the given cidr (clusterNetworkCIDR), which allows for 4,094 (2^(128 - 116) - 2) pod IPs addresses. If you are required to provide access to nodes from an external network, configure load balancers and routers to manage the traffic.'
-      : 'The subnet prefix length to assign to each individual node. For example, if Cluster Network Host Prefix is set to 23, then each node is assigned a /23 subnet out of the given cidr (clusterNetworkCIDR), which allows for 510 (2^(32 - 23) - 2) pod IPs addresses. If you are required to provide access to nodes from an external network, configure load balancers and routers to manage the traffic.';
+    isSubnetIPv6(index) ? IPv6PrefixHelperText : IPv4PrefixHelperText;
 
   return (
     <Grid hasGutter>
@@ -62,7 +83,7 @@ const AdvancedNetworkFields: React.FC<AdvancedNetworkFieldsProps> = ({ isSDNSele
                   <InputField
                     name={`clusterNetworks.${index}.cidr`}
                     label="Cluster network CIDR"
-                    helperText="IP address block from which Pod IPs are allocated. This block must not overlap with existing physical networks. These IP addresses are used for the Pod network, and if you need to access the Pods from an external network, configure load balancers and routers to manage the traffic."
+                    helperText={clusterCidrHelperText}
                     isRequired
                     labelInfo={index == 0 && values.stackType == 'dualStack' ? 'Primary' : ''}
                   />
@@ -107,7 +128,7 @@ const AdvancedNetworkFields: React.FC<AdvancedNetworkFieldsProps> = ({ isSDNSele
                 <InputField
                   name={`serviceNetworks.${index}.cidr`}
                   label="Service network CIDR"
-                  helperText="The IP address pool to use for service IP addresses. You can enter only one IP address pool. If you need to access the services from an external network, configure load balancers and routers to manage the traffic."
+                  helperText={serviceCidrHelperText}
                   isRequired
                   labelInfo={index == 0 && values.stackType == 'dualStack' ? 'Primary' : ''}
                 />
