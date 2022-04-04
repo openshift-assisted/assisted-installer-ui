@@ -53,7 +53,10 @@ export type ClusterDeploymentDetailsProps = {
 };
 
 export type ClusterDeploymentDetailsValues = ClusterDetailsValues;
-export type ClusterDeploymentNetworkingValues = NetworkConfigurationValues;
+export type ClusterDeploymentNetworkingValues = NetworkConfigurationValues & {
+  enableProxy: boolean;
+  editProxy: boolean;
+};
 export type ClusterDeploymentHostsSelectionValues = {
   autoSelectHosts: boolean;
   hostCount: number;
