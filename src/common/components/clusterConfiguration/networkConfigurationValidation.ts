@@ -25,6 +25,9 @@ const getInitHostSubnet = (
   cluster: Cluster,
   managedNetworkingType: 'userManaged' | 'clusterManaged',
 ) => {
+  if (!isSNO(cluster) && managedNetworkingType === 'userManaged') {
+    return NO_SUBNET_SET;
+  }
   const machineNetworkCIDR = selectMachineNetworkCIDR(cluster);
   if (machineNetworkCIDR) {
     return getSubnetFromMachineNetworkCidr(machineNetworkCIDR);
