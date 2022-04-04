@@ -40,6 +40,7 @@ import {
   RichInputField,
   locationValidationSchema,
   LOCATION_VALIDATION_MESSAGES,
+  ntpSourceValidationSchema,
 } from '../../../common';
 
 import './infra-env.css';
@@ -80,6 +81,7 @@ const validationSchema = (usedNames: string[]) =>
               return parts.length === 2;
             }),
         ),
+      additionalNtpSources: ntpSourceValidationSchema,
     }),
   );
 
