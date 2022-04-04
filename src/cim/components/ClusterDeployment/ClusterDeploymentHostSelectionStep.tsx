@@ -208,6 +208,12 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
   }, [values.selectedHostIds]);
 
   React.useEffect(() => {
+    setNextRequested(false);
+    setShowClusterErrors(false);
+    setShowFormErrors(false);
+  }, [values.autoSelectHosts]);
+
+  React.useEffect(() => {
     if (nextRequested) {
       const agentStatuses = selectedAgents.map(
         (agent) => getWizardStepAgentStatus(agent, 'hosts-selection').status.key,
