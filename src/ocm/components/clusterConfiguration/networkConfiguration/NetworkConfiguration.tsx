@@ -12,6 +12,7 @@ import {
   canSelectNetworkTypeSDN,
   getDefaultNetworkType,
   isSNO,
+  usesIPv6,
 } from '../../../../common/selectors';
 import {
   ManagedNetworkingControlGroup,
@@ -20,7 +21,7 @@ import {
 import { StackTypeControlGroup } from './StackTypeControl';
 import { AvailableSubnetsControl } from './AvailableSubnetsControl';
 import AdvancedNetworkFields from './AdvancedNetworkFields';
-import { allSubnetsIPv4, NETWORK_TYPE_OVN } from '../../../../common';
+import { NETWORK_TYPE_OVN } from '../../../../common';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   defaultNetworkSettings: Partial<Cluster>;
@@ -61,18 +62,14 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';
   const isDualStack = values.stackType === 'dualStack';
 
-  const { usesIPv6, defaultNetworkType, isSDNSelectable } = React.useMemo(() => {
-    const usesIPv6 = !(
-      allSubnetsIPv4(values.machineNetworks) &&
-      allSubnetsIPv4(values.clusterNetworks) &&
-      allSubnetsIPv4(values.serviceNetworks)
-    );
+  const { clusterUsesIPv6, defaultNetworkType, isSDNSelectable } = React.useMemo(() => {
+    const clusterUsesIPv6 = usesIPv6(values);
     return {
-      usesIPv6,
-      defaultNetworkType: getDefaultNetworkType(!isMultiNodeCluster, usesIPv6),
-      isSDNSelectable: canSelectNetworkTypeSDN(!isMultiNodeCluster, usesIPv6),
+      clusterUsesIPv6,
+      defaultNetworkType: getDefaultNetworkType(!isMultiNodeCluster, clusterUsesIPv6),
+      isSDNSelectable: canSelectNetworkTypeSDN(!isMultiNodeCluster, clusterUsesIPv6),
     };
-  }, [values.clusterNetworks, values.machineNetworks, values.serviceNetworks, isMultiNodeCluster]);
+  }, [values, isMultiNodeCluster]);
 
   const [isAdvanced, setAdvanced] = React.useState(
     isAdvNetworkConf(cluster, defaultNetworkSettings, defaultNetworkType) ||
@@ -110,7 +107,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
       if (!checked) {
         setFieldValue('clusterNetworks', defaultNetworkSettings.clusterNetworks, false);
         setFieldValue('serviceNetworks', defaultNetworkSettings.serviceNetworks, false);
-        setFieldValue('networkType', getDefaultNetworkType(!isMultiNodeCluster, usesIPv6));
+        setFieldValue('networkType', getDefaultNetworkType(!isMultiNodeCluster, clusterUsesIPv6));
       }
     },
     [
@@ -118,7 +115,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
       defaultNetworkSettings.clusterNetworks,
       defaultNetworkSettings.serviceNetworks,
       isMultiNodeCluster,
-      usesIPv6,
+      clusterUsesIPv6,
     ],
   );
 
