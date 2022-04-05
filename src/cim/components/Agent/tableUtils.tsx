@@ -229,7 +229,6 @@ export const infraEnvColumn = (agents: AgentK8sResource[]): TableRow<Host> => {
 
 export const canEditBMH = (bmh: BareMetalHostK8sResource): ActionCheck => {
   const canEdit = [
-    bmhStatus.provisioned.key,
     bmhStatus.deprovisioning.key,
     bmhStatus.pending.key,
     bmhStatus.registering.key,

@@ -14,6 +14,7 @@ const SSH_PUBLIC_KEY_REGEX = /^(ssh-rsa|ssh-ed25519|ecdsa-[-a-z0-9]*) AAAA[0-9A-
 // Future bug-fixer: Beer on me! (mlibra)
 const IP_ADDRESS_REGEX = /^(((([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5]))|([0-9a-f]{1,4}:){7,7}[0-9a-f]{1,4}|([0-9a-f]{1,4}:){1,7}:|([0-9a-f]{1,4}:){1,6}:[0-9a-f]{1,4}|([0-9a-f]{1,4}:){1,5}(:[0-9a-f]{1,4}){1,2}|([0-9a-f]{1,4}:){1,4}(:[0-9a-f]{1,4}){1,3}|([0-9a-f]{1,4}:){1,3}(:[0-9a-f]{1,4}){1,4}|([0-9a-f]{1,4}:){1,2}(:[0-9a-f]{1,4}){1,5}|[0-9a-f]{1,4}:((:[0-9a-f]{1,4}){1,6})|:((:[0-9a-f]{1,4}){1,7}|:)|fe80:(:[0-9a-f]{0,4}){0,4}%[0-9a-z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$/;
 const DNS_NAME_REGEX = /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/;
+const PROXY_DNS_REGEX = /^([a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62}){1}(\.[a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62})*[._]?$/;
 const NAME_CHARS_REGEX = /^[a-zA-Z0-9-.]*$/;
 const IP_V4_ZERO = '0.0.0.0';
 const IP_V6_ZERO = '0000:0000:0000:0000:0000:0000:0000:0000';
@@ -366,6 +367,19 @@ const isNotEmpty = (value: string) => {
   return false;
 };
 
+const isIPorDN = (value: string, dnsRegex = DNS_NAME_REGEX) => {
+  if (!value) {
+    return true;
+  }
+  if (value.match(dnsRegex)) {
+    return true;
+  }
+  if (value.match(IP_ADDRESS_REGEX)) {
+    return true;
+  }
+  return false;
+};
+
 export const noProxyValidationSchema = Yup.string().test(
   'no-proxy-validation',
   'Provide comma-separated list of domains excluded from proxy.',
@@ -378,22 +392,10 @@ export const noProxyValidationSchema = Yup.string().test(
     // A comma-separated list of destination domain names, domains, IP addresses or other network CIDRs
     // to exclude proxying. Preface a domain with . to include all subdomains of that domain.
     // Use * to bypass proxy for all destinations."
-    return trimCommaSeparatedList(value).split(',').every(isNotEmpty);
+    const noProxyList = trimCommaSeparatedList(value).split(',');
+    return noProxyList.every(isNotEmpty) && noProxyList.every((p) => isIPorDN(p, PROXY_DNS_REGEX));
   },
 );
-
-const isIPorDN = (value: string) => {
-  if (!value) {
-    return true;
-  }
-  if (value.match(DNS_NAME_REGEX)) {
-    return true;
-  }
-  if (value.match(IP_ADDRESS_REGEX)) {
-    return true;
-  }
-  return false;
-};
 
 export const ntpSourceValidationSchema = Yup.string().test(
   'ntp-source-validation',
@@ -402,7 +404,9 @@ export const ntpSourceValidationSchema = Yup.string().test(
     if (!value) {
       return true;
     }
-    return trimCommaSeparatedList(value).split(',').every(isIPorDN);
+    return trimCommaSeparatedList(value)
+      .split(',')
+      .every((v) => isIPorDN(v));
   },
 );
 
