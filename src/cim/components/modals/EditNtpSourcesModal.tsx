@@ -84,7 +84,7 @@ const EditNtpSourcesModal: React.FC<EditNtpSourcesModalProps> = ({
                           <Stack hasGutter>
                             <StackItem>
                               Configure your own NTP sources to sychronize the time between the
-                              hotsts that will be added to this infrastructure environment.
+                              hosts that will be added to this infrastructure environment.
                             </StackItem>
                             <StackItem>
                               <AdditionalNTPSourcesField
