@@ -11,12 +11,13 @@ import {
   useAlerts,
   ClusterWizardStep,
   ClusterWizardStepHeader,
+  NetworkConfigurationFormFields,
+  getNetworkConfigurationValidationSchema,
+  getNetworkInitialValues,
   getHostSubnets,
   isSNO,
   LoadingState,
-  NetworkConfigurationValues,
   V2ClusterUpdateParams,
-<<<<<<<< HEAD:src/ocm/components/clusterConfiguration/NetworkConfigurationPage.tsx
   HostSubnets,
   InfraEnv,
 } from '../../../common';
@@ -29,26 +30,10 @@ import ClusterWizardNavigation from '../clusterWizard/ClusterWizardNavigation';
 import { getErrorMessage, handleApiError } from '../../api';
 import ClusterWizardHeaderExtraActions from './ClusterWizardHeaderExtraActions';
 import { useDefaultConfiguration } from './ClusterDefaultConfigurationContext';
-========
-} from '../../../../common';
-import { updateClusterBase } from '../../../reducers/clusters/currentClusterSlice';
-import { canNextNetwork } from '../../clusterWizard/wizardTransition';
-import ClusterWizardContext from '../../clusterWizard/ClusterWizardContext';
-import ClusterWizardFooter from '../../clusterWizard/ClusterWizardFooter';
-import ClusterWizardNavigation from '../../clusterWizard/ClusterWizardNavigation';
-import { getErrorMessage, handleApiError } from '../../../api';
-import ClusterWizardHeaderExtraActions from '../ClusterWizardHeaderExtraActions';
-import { useDefaultConfiguration } from '../ClusterDefaultConfigurationContext';
->>>>>>>> c3b47c73 (Move dual-stack changes to /ocm):src/ocm/components/clusterConfiguration/networkConfiguration/NetworkConfigurationForm.tsx
-import NetworkConfigurationTable from './NetworkConfigurationTable';
-import NetworkConfigurationFormFields from './NetworkConfigurationFormFields';
-import { captureException } from '../../../sentry';
-import {
-  getNetworkConfigurationValidationSchema,
-  getNetworkInitialValues,
-} from './networkConfigurationValidation';
-import useInfraEnv from '../../../hooks/useInfraEnv';
-import ClustersAPI from '../../../services/apis/ClustersAPI';
+import { ClustersAPI } from '../../services/apis';
+import useInfraEnv from '../../hooks/useInfraEnv';
+import { captureException } from '../../sentry';
+import NetworkConfigurationTable from './networkConfiguration/NetworkConfigurationTable';
 
 const NetworkConfigurationForm: React.FC<{
   cluster: Cluster;

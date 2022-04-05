@@ -4,6 +4,8 @@ import { useFormikContext } from 'formik';
 import { Cluster } from '../../../../common/api/types';
 import { NetworkConfigurationValues } from '../../../../common/types';
 import {
+  DUAL_STACK,
+  IPV4_STACK,
   NETWORK_TYPE_OVN,
   NETWORK_TYPE_SDN,
   NO_SUBNET_SET,
@@ -61,7 +63,7 @@ export const StackTypeControlGroup: React.FC<{ clusterId: Cluster['id'] }> = ({ 
 
   const setStackType = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFieldValue('stackType', e.target.value);
-    if (e.target.value === 'dualStack') {
+    if (e.target.value === DUAL_STACK) {
       setDualStack();
     } else if (
       (values.machineNetworks && values.machineNetworks[1].cidr !== 'NO_SUBNET_SET') ||
@@ -85,26 +87,28 @@ export const StackTypeControlGroup: React.FC<{ clusterId: Cluster['id'] }> = ({ 
       >
         <RadioField
           name={'stackType'}
-          value={'singleStack'}
+          value={IPV4_STACK}
           label={
             <>
-              {'Single-stack'}
+              {'IPv4'}
               <PopoverIcon
+                noVerticalAlign
                 variant="plain"
-                bodyContent="Select single stack when your hosts are using either IPV4 or IPV6."
+                bodyContent="Select this when your hosts are using only IPv4."
               />
             </>
           }
         />
         <RadioField
           name={'stackType'}
-          value={'dualStack'}
+          value={DUAL_STACK}
           label={
             <>
               {'Dual-stack'}
               <PopoverIcon
+                noVerticalAlign
                 variant="plain"
-                bodyContent="Select dual stack when your hosts are using IPV4 together with IPV6."
+                bodyContent="Select dual-stack when your hosts are using IPV4 together with IPV6."
               />
             </>
           }

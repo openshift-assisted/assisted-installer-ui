@@ -31,6 +31,7 @@ export const NetworkTypeControlGroup: React.FC<NetworkTypeControlGroupProps> = (
                 <>
                   Software-Defined Networking (SDN){' '}
                   <PopoverIcon
+                    noVerticalAlign
                     variant={'plain'}
                     bodyContent={'The classic bullet-proof networking type'}
                   />
@@ -49,6 +50,7 @@ export const NetworkTypeControlGroup: React.FC<NetworkTypeControlGroupProps> = (
               <>
                 Open Virtual Networking (OVN){' '}
                 <PopoverIcon
+                  noVerticalAlign
                   variant={'plain'}
                   bodyContent={
                     "The next generation networking type, select this when you're using new features and telco features"

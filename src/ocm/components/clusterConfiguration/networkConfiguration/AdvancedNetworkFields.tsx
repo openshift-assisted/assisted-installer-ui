@@ -7,12 +7,11 @@ import {
   TextInputTypes,
   Grid,
 } from '@patternfly/react-core';
-import { Address6 } from 'ip-address';
 import { FieldArray, useFormikContext } from 'formik';
 import { NetworkConfigurationValues } from '../../../../common/types';
 import { useFeature } from '../../../../common/features';
 import { InputField } from '../../../../common/components/ui';
-import { PREFIX_MAX_RESTRICTION } from '../../../../common/config/constants';
+import { DUAL_STACK, PREFIX_MAX_RESTRICTION } from '../../../../common/config/constants';
 import { NetworkTypeControlGroup } from '../../../../common/components/clusterWizard/networkingSteps/NetworkTypeControlGroup';
 
 type AdvancedNetworkFieldsProps = {
@@ -38,7 +37,7 @@ const AdvancedNetworkFields: React.FC<AdvancedNetworkFieldsProps> = ({ isSDNSele
     'ASSISTED_INSTALLER_NETWORK_TYPE_SELECTION_FEATURE',
   );
 
-  const isDualStack = values.stackType === 'dualStack';
+  const isDualStack = values.stackType === DUAL_STACK;
 
   const clusterNetworkCidrPrefix = (index: number) =>
     parseInt(
@@ -58,11 +57,7 @@ const AdvancedNetworkFields: React.FC<AdvancedNetworkFieldsProps> = ({ isSDNSele
     if (isDualStack) {
       return Boolean(index);
     } else {
-      return (
-        values.clusterNetworks &&
-        values.clusterNetworks.length > index &&
-        Address6.isValid(values.clusterNetworks[index].cidr || '')
-      );
+      return false;
     }
   };
 
@@ -73,10 +68,7 @@ const AdvancedNetworkFields: React.FC<AdvancedNetworkFieldsProps> = ({ isSDNSele
     <Grid hasGutter>
       <FieldArray name="clusterNetworks">
         {() => (
-          <FormGroup
-            fieldId="clusterNetworks"
-            labelInfo={values.stackType === 'dualStack' && 'Primary'}
-          >
+          <FormGroup fieldId="clusterNetworks" labelInfo={isDualStack && 'Primary'}>
             {values.clusterNetworks?.map((_, index) => {
               return (
                 <StackItem key={index} className={'network-field-group'}>
@@ -85,7 +77,7 @@ const AdvancedNetworkFields: React.FC<AdvancedNetworkFieldsProps> = ({ isSDNSele
                     label="Cluster network CIDR"
                     helperText={clusterCidrHelperText}
                     isRequired
-                    labelInfo={index == 0 && values.stackType == 'dualStack' ? 'Primary' : ''}
+                    labelInfo={index == 0 && values.stackType == DUAL_STACK ? 'Primary' : ''}
                   />
                   <InputField
                     name={`clusterNetworks.${index}.hostPrefix`}
@@ -119,10 +111,7 @@ const AdvancedNetworkFields: React.FC<AdvancedNetworkFieldsProps> = ({ isSDNSele
 
       <FieldArray name="serviceNetworks">
         {() => (
-          <FormGroup
-            fieldId="serviceNetworks"
-            labelInfo={values.stackType === 'dualStack' && 'Primary'}
-          >
+          <FormGroup fieldId="serviceNetworks" labelInfo={isDualStack && 'Primary'}>
             {values.serviceNetworks?.map((_, index) => (
               <StackItem key={index} className={'network-field-group'}>
                 <InputField
@@ -130,7 +119,7 @@ const AdvancedNetworkFields: React.FC<AdvancedNetworkFieldsProps> = ({ isSDNSele
                   label="Service network CIDR"
                   helperText={serviceCidrHelperText}
                   isRequired
-                  labelInfo={index == 0 && values.stackType == 'dualStack' ? 'Primary' : ''}
+                  labelInfo={index == 0 && isDualStack ? 'Primary' : ''}
                 />
               </StackItem>
             ))}

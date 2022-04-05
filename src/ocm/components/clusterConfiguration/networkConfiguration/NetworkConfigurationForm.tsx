@@ -19,6 +19,7 @@ import {
   useAlerts,
   useFormikAutoSave,
   V2ClusterUpdateParams,
+  IPV4_STACK,
 } from '../../../../common';
 import { useDefaultConfiguration } from '../ClusterDefaultConfigurationContext';
 import ClusterWizardContext from '../../clusterWizard/ClusterWizardContext';
@@ -152,7 +153,10 @@ const NetworkConfigurationPage: React.FC<{
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [infraEnvError]);
 
-  const handleSubmit: FormikConfig<NetworkConfigurationValues>['onSubmit'] = async (values) => {
+  const handleSubmit: FormikConfig<NetworkConfigurationValues>['onSubmit'] = async (
+    values,
+    actions,
+  ) => {
     clearAlerts();
     // update the cluster configuration
     try {
@@ -182,12 +186,13 @@ const NetworkConfigurationPage: React.FC<{
         if (values.vipDhcpAllocation) {
           delete params.apiVip;
           delete params.ingressVip;
-        } else if (values.stackType === 'singleStack') {
+        } else if (values.stackType === IPV4_STACK) {
           delete params.machineNetworks;
         }
       }
 
       const { data } = await ClustersAPI.update(cluster.id, params);
+      actions.resetForm({ values: getNetworkInitialValues(data, defaultNetworkValues) });
       dispatch(updateClusterBase(data));
     } catch (e) {
       handleApiError(e, () =>

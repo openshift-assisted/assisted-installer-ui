@@ -9,12 +9,33 @@ import {
   vipValidationSchema,
 } from '../ui';
 
-import { getDefaultNetworkType, isSNO, isSubnetInIPv6 } from '../../selectors/clusterSelectors';
+import { getSubnetFromMachineNetworkCidr, getHostSubnets } from './utils';
 import {
+  getDefaultNetworkType,
+  isSNO,
+  isSubnetInIPv6,
   selectClusterNetworkCIDR,
   selectClusterNetworkHostPrefix,
+  selectMachineNetworkCIDR,
   selectServiceNetworkCIDR,
 } from '../../selectors/clusterSelectors';
+import { NO_SUBNET_SET } from '../../config';
+
+const getInitHostSubnet = (
+  cluster: Cluster,
+  managedNetworkingType: 'userManaged' | 'clusterManaged',
+) => {
+  if (!isSNO(cluster) && managedNetworkingType === 'userManaged') {
+    return NO_SUBNET_SET;
+  }
+  const machineNetworkCIDR = selectMachineNetworkCIDR(cluster);
+  if (machineNetworkCIDR) {
+    return getSubnetFromMachineNetworkCidr(machineNetworkCIDR);
+  }
+  if (managedNetworkingType === 'clusterManaged') {
+    return getHostSubnets(cluster)?.[0]?.subnet;
+  }
+};
 
 export const getNetworkInitialValues = (
   cluster: Cluster,
@@ -34,6 +55,7 @@ export const getNetworkInitialValues = (
     apiVip: cluster.apiVip || '',
     ingressVip: cluster.ingressVip || '',
     sshPublicKey: cluster.sshPublicKey || '',
+    hostSubnet: getInitHostSubnet(cluster, managedNetworkingType) || NO_SUBNET_SET,
     vipDhcpAllocation: cluster.vipDhcpAllocation,
     managedNetworkingType,
     networkType: cluster.networkType || getDefaultNetworkType(isSNOCluster, isIPv6),

@@ -49,22 +49,14 @@ export const isSubnetInIPv6 = ({
 export const allSubnetsIPv4 = (
   networks: (MachineNetwork | ClusterNetwork | ServiceNetwork)[] | undefined,
 ) => {
-  return networks?.every((network) => network.cidr && Address4.isValid(network.cidr));
+  return Boolean(networks?.every((network) => network.cidr && Address4.isValid(network.cidr)));
 };
 
-export const allSubnetsIPv6 = (
-  networks: (MachineNetwork | ClusterNetwork | ServiceNetwork)[] | undefined,
-) => {
-  return networks?.every((network) => network.cidr && Address6.isValid(network.cidr));
-};
-
-export const usesIPv6 = ({
+export const isIPv4 = ({
   machineNetworks,
   clusterNetworks,
   serviceNetworks,
 }: Cluster | NetworkConfigurationValues) =>
-  !(
-    allSubnetsIPv4(machineNetworks) &&
-    allSubnetsIPv4(clusterNetworks) &&
-    allSubnetsIPv4(serviceNetworks)
-  );
+  allSubnetsIPv4(machineNetworks) &&
+  allSubnetsIPv4(clusterNetworks) &&
+  allSubnetsIPv4(serviceNetworks);

@@ -8,7 +8,7 @@ import { NO_SUBNET_SET } from '../../../config/constants';
 import { ProxyFieldsType } from '../../../types';
 import { trimCommaSeparatedList, trimSshPublicKey } from './utils';
 import { ClusterNetwork, MachineNetwork, ServiceNetwork } from '../../../api/types';
-import { allSubnetsIPv4, allSubnetsIPv6 } from '../../../selectors';
+import { allSubnetsIPv4 } from '../../../selectors';
 
 const ALPHANUMBERIC_REGEX = /^[a-zA-Z0-9]+$/;
 const CLUSTER_NAME_REGEX = /^[a-z]([-a-z0-9]*[a-z0-9])?$/;
@@ -504,23 +504,8 @@ export const dualStackValidationSchema = (field: string) =>
       (values) => values[1].cidr && Address6.isValid(values[1].cidr),
     );
 
-export const isSingleStack = (
-  networks1?: (MachineNetwork | ClusterNetwork | ServiceNetwork)[],
-  networks2?: (MachineNetwork | ClusterNetwork | ServiceNetwork)[],
-  networks3?: (MachineNetwork | ClusterNetwork | ServiceNetwork)[],
-) =>
-  !!(
-    (allSubnetsIPv4(networks1) && allSubnetsIPv4(networks2) && allSubnetsIPv4(networks3)) ||
-    (allSubnetsIPv6(networks1) && allSubnetsIPv6(networks1) && allSubnetsIPv6(networks1))
-  );
-
-export const singleStackValidationSchema = (
-  networks1: (MachineNetwork | ClusterNetwork | ServiceNetwork)[],
-  networks2: (MachineNetwork | ClusterNetwork | ServiceNetwork)[],
-) =>
-  Yup.array().test(
-    'single-stack',
-    `All network subnets must be either IPv4 or IPv6.`,
-    (values: (MachineNetwork | ClusterNetwork | ServiceNetwork)[]) =>
-      isSingleStack(values, networks1, networks2),
-  );
+export const IPv4ValidationSchema = Yup.array().test(
+  'single-stack',
+  `All network subnets must IPv4.`,
+  (values: (MachineNetwork | ClusterNetwork | ServiceNetwork)[]) => allSubnetsIPv4(values),
+);

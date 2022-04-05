@@ -5,15 +5,16 @@ import {
   dualStackValidationSchema,
   getDefaultNetworkType,
   HostSubnets,
-  isSingleStack,
+  isIPv4,
   isSNO,
   machineNetworksValidationSchema,
   NetworkConfigurationValues,
   serviceNetworkValidationSchema,
-  singleStackValidationSchema,
+  IPv4ValidationSchema,
   sshPublicKeyValidationSchema,
-  usesIPv6,
   vipValidationSchema,
+  IPV4_STACK,
+  DUAL_STACK,
 } from '../../../../common';
 
 export const getNetworkInitialValues = (
@@ -21,7 +22,7 @@ export const getNetworkInitialValues = (
   defaultNetworkValues: Partial<NetworkConfigurationValues>,
 ): NetworkConfigurationValues => {
   const isSNOCluster = isSNO(cluster);
-  const clusterUsesIPv6 = usesIPv6(cluster);
+  const usesIPv6 = !isIPv4(cluster);
 
   return {
     apiVip: cluster.apiVip || '',
@@ -29,19 +30,11 @@ export const getNetworkInitialValues = (
     sshPublicKey: cluster.sshPublicKey || '',
     vipDhcpAllocation: cluster.vipDhcpAllocation,
     managedNetworkingType: cluster.userManagedNetworking ? 'userManaged' : 'clusterManaged',
-    networkType: cluster.networkType || getDefaultNetworkType(isSNOCluster, clusterUsesIPv6),
-    enableProxy: false,
-    editProxy: false,
+    networkType: cluster.networkType || getDefaultNetworkType(isSNOCluster, usesIPv6),
     machineNetworks: cluster.machineNetworks || [],
     clusterNetworks: cluster.clusterNetworks || defaultNetworkValues.clusterNetworks,
     serviceNetworks: cluster.serviceNetworks || defaultNetworkValues.serviceNetworks,
-    stackType: isSingleStack(
-      cluster.machineNetworks || [],
-      cluster.clusterNetworks || defaultNetworkValues.clusterNetworks,
-      cluster.serviceNetworks || defaultNetworkValues.serviceNetworks,
-    )
-      ? 'singleStack'
-      : 'dualStack',
+    stackType: usesIPv6 ? DUAL_STACK : IPV4_STACK,
   };
 };
 
@@ -58,33 +51,24 @@ export const getNetworkConfigurationValidationSchema = (
         values.managedNetworkingType === 'userManaged'
           ? Yup.array()
           : machineNetworksValidationSchema.when('stackType', {
-              is: 'singleStack',
-              then: singleStackValidationSchema(
-                values.clusterNetworks || [],
-                values.serviceNetworks || [],
-              ),
+              is: IPV4_STACK,
+              then: IPv4ValidationSchema,
               otherwise:
                 values.machineNetworks &&
                 values.machineNetworks?.length >= 2 &&
                 dualStackValidationSchema('machine networks'),
             }),
       clusterNetworks: clusterNetworksValidationSchema.when('stackType', {
-        is: 'singleStack',
-        then: singleStackValidationSchema(
-          values.machineNetworks || [],
-          values.serviceNetworks || [],
-        ),
+        is: IPV4_STACK,
+        then: IPv4ValidationSchema,
         otherwise:
           values.clusterNetworks &&
           values.clusterNetworks?.length >= 2 &&
           dualStackValidationSchema('cluster network'),
       }),
       serviceNetworks: serviceNetworkValidationSchema.when('stackType', {
-        is: 'singleStack',
-        then: singleStackValidationSchema(
-          values.machineNetworks || [],
-          values.clusterNetworks || [],
-        ),
+        is: IPV4_STACK,
+        then: IPv4ValidationSchema,
         otherwise:
           values.serviceNetworks &&
           values.serviceNetworks?.length >= 2 &&
