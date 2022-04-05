@@ -2,7 +2,6 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Formik, FormikConfig, FormikProps } from 'formik';
 import mapValues from 'lodash/mapValues';
-import omit from 'lodash/omit';
 import { Form, Grid, GridItem, Text, TextContent } from '@patternfly/react-core';
 
 import {
@@ -18,6 +17,7 @@ import {
   getHostSubnets,
   isSNO,
   LoadingState,
+  V2ClusterUpdateParams,
 } from '../../../common';
 import { HostSubnet, NetworkConfigurationValues } from '../../../common/types/clusters';
 import { updateClusterBase } from '../../reducers/clusters/currentClusterSlice';
@@ -76,25 +76,22 @@ const NetworkConfigurationForm: React.FC<{
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [infraEnvError]);
 
-  const handleSubmit: FormikConfig<NetworkConfigurationValues>['onSubmit'] = async (
-    values,
-    actions,
-  ) => {
+  const handleSubmit: FormikConfig<NetworkConfigurationValues>['onSubmit'] = async (values) => {
     clearAlerts();
 
     // update the cluster configuration
     try {
       const isMultiNodeCluster = !isSNO(cluster);
       const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';
-      const params = omit(values, [
-        'hostSubnet',
-        'useRedHatDnsService',
-        'managedNetworkingType',
-        'machineNetworkCidr',
-        'serviceNetworkCidr',
-        'clusterNetworkCidr',
-        'clusterNetworkHostPrefix',
-      ]);
+
+      const params: V2ClusterUpdateParams = {
+        apiVip: values.apiVip,
+        ingressVip: values.ingressVip,
+        sshPublicKey: values.sshPublicKey,
+        vipDhcpAllocation: values.vipDhcpAllocation,
+        networkType: values.networkType,
+      };
+
       params.userManagedNetworking = isUserManagedNetworking;
       params.clusterNetworks = [
         {
@@ -131,7 +128,6 @@ const NetworkConfigurationForm: React.FC<{
 
       const { data } = await ClustersAPI.update(cluster.id, params);
       dispatch(updateClusterBase(data));
-      actions.resetForm({ values: getNetworkInitialValues(data, defaultNetworkSettings) });
     } catch (e) {
       handleApiError(e, () =>
         addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),

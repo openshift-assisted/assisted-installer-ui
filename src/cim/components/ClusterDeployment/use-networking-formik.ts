@@ -14,7 +14,6 @@ import { getAICluster } from '../helpers';
 import { defaultNetworkSettings } from './ClusterDeploymentNetworkingForm';
 import { useDeepCompareMemoize } from '../../../common/hooks';
 import {
-  NetworkConfigurationValues,
   HostSubnets,
   hostPrefixValidationSchema,
   ipBlockValidationSchema,
@@ -24,6 +23,7 @@ import {
   httpProxyValidationSchema,
   noProxyValidationSchema,
 } from '../../../common';
+import { ClusterDeploymentNetworkingValues } from './types';
 
 const getInfraEnvProxy = (infraEnvs: InfraEnvK8sResource[]) => {
   const infraEnvWithProxy = infraEnvs.find(
@@ -41,11 +41,11 @@ const getInfraEnvProxy = (infraEnvs: InfraEnvK8sResource[]) => {
 };
 
 const getNetworkConfigurationValidationSchema = (
-  initialValues: NetworkConfigurationValues,
+  initialValues: ClusterDeploymentNetworkingValues,
   hostSubnets: HostSubnets,
 ) =>
-  Yup.lazy<NetworkConfigurationValues>((values) =>
-    Yup.object<NetworkConfigurationValues>().shape({
+  Yup.lazy<ClusterDeploymentNetworkingValues>((values) =>
+    Yup.object<ClusterDeploymentNetworkingValues>().shape({
       clusterNetworkHostPrefix: hostPrefixValidationSchema(values),
       clusterNetworkCidr: ipBlockValidationSchema,
       serviceNetworkCidr: ipBlockValidationSchema,
@@ -77,7 +77,11 @@ export const useNetworkingFormik = ({
         agentClusterInstall,
         agents,
       });
-      return getNetworkInitialValues(cluster, defaultNetworkSettings);
+      return {
+        ...getNetworkInitialValues(cluster, defaultNetworkSettings),
+        enableProxy: false,
+        editProxy: false,
+      };
     },
     [], // eslint-disable-line react-hooks/exhaustive-deps
   );

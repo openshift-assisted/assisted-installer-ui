@@ -57,10 +57,8 @@ export const getNetworkInitialValues = (
     sshPublicKey: cluster.sshPublicKey || '',
     hostSubnet: getInitHostSubnet(cluster, managedNetworkingType) || NO_SUBNET_SET,
     vipDhcpAllocation: cluster.vipDhcpAllocation,
-    managedNetworkingType: cluster.userManagedNetworking ? 'userManaged' : 'clusterManaged',
+    managedNetworkingType,
     networkType: cluster.networkType || getDefaultNetworkType(isSNOCluster, isIPv6),
-    enableProxy: false,
-    editProxy: false,
   };
 };
 

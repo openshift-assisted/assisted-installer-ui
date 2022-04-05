@@ -24,12 +24,19 @@ export type HostSubnet = {
   humanized: string;
 };
 export type HostSubnets = HostSubnet[];
-export type NetworkConfigurationValues = V2ClusterUpdateParams & {
-  hostSubnet?: string;
-  useRedHatDnsService?: boolean;
+export type NetworkConfigurationValues = Pick<
+  V2ClusterUpdateParams,
+  | 'clusterNetworkCidr'
+  | 'clusterNetworkHostPrefix'
+  | 'serviceNetworkCidr'
+  | 'apiVip'
+  | 'ingressVip'
+  | 'sshPublicKey'
+  | 'vipDhcpAllocation'
+  | 'networkType'
+> & {
+  hostSubnet: string;
   managedNetworkingType: 'userManaged' | 'clusterManaged';
-  enableProxy: boolean;
-  editProxy: boolean;
 };
 export type HostDiscoveryValues = V2ClusterUpdateParams & {
   useExtraDisksForLocalStorage: boolean;
