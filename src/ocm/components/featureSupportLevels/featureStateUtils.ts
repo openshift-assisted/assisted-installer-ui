@@ -60,14 +60,8 @@ const getCnvDisabledReason = (cluster: Cluster | undefined) => {
   if (!cluster) {
     return undefined;
   }
-  if (isArmArchitecture(cluster) && isSNO(cluster)) {
-    return 'OpenShift Virtualization is not available when using Single Node OpenShift or ARM CPU architecture.';
-  }
   if (isArmArchitecture(cluster)) {
     return 'OpenShift Virtualization is not available when ARM CPU architecture is selected.';
-  }
-  if (isSNO(cluster)) {
-    return 'OpenShift Virtualization is not available when deploying a Single Node OpenShift.';
   }
   return undefined;
 };

@@ -138,12 +138,7 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged }) => {
           >
             <Flex justifyContent={{ default: 'justifyContentFlexStart' }}>
               <FlexItem>
-                <RadioField
-                  name="networkType"
-                  id="dhcp"
-                  value="dhcp"
-                  label="I use only DHCP server"
-                />
+                <RadioField name="networkType" id="dhcp" value="dhcp" label="DHCP only" />
               </FlexItem>
               <FlexItem spacer={{ default: 'spacer4xl' }} />
               <FlexItem>
@@ -153,7 +148,7 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged }) => {
                   value="static"
                   label={
                     <>
-                      Some or all of my hosts use static network configuration&nbsp;
+                      At least 1 host uses static IP&nbsp;
                       <PopoverIcon
                         noVerticalAlign
                         bodyContent={
