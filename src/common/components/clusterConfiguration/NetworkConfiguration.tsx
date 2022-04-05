@@ -60,7 +60,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   const isClusterCIDRIPv6 = Address6.isValid(values.clusterNetworkCidr || '');
   const { isIPv6, defaultNetworkType, isSDNSelectable } = React.useMemo(() => {
     const isIPv6 = isSubnetInIPv6({
-      machineNetworkCidr: values.machineNetworkCidr,
+      machineNetworkCidr: cluster.machineNetworkCidr,
       clusterNetworkCidr: values.clusterNetworkCidr,
       serviceNetworkCidr: values.serviceNetworkCidr,
     });
@@ -72,7 +72,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   }, [
     isMultiNodeCluster,
     values.clusterNetworkCidr,
-    values.machineNetworkCidr,
+    cluster.machineNetworkCidr,
     values.serviceNetworkCidr,
   ]);
 
