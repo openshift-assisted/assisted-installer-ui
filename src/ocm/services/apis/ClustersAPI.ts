@@ -175,6 +175,12 @@ const ClustersAPI = {
       `${ClustersAPI.makeBaseURI()}?openshift_cluster_id=${openshiftId}`,
     );
   },
+
+  listBySubscriptionIds(subscriptionIds: Cluster['amsSubscriptionId'][]) {
+    return client.get<Cluster[]>(
+      `${ClustersAPI.makeBaseURI()}?ams_subscription_ids=${subscriptionIds.toString()}`,
+    );
+  },
 };
 
 export default ClustersAPI;
