@@ -9,6 +9,13 @@ import { ProxyFieldsType } from '../../../types';
 import { trimCommaSeparatedList, trimSshPublicKey } from './utils';
 import { ClusterNetwork, MachineNetwork, ServiceNetwork } from '../../../api/types';
 import { allSubnetsIPv4 } from '../../../selectors';
+import {
+  CLUSTER_NAME_VALIDATION_MESSAGES,
+  HOSTNAME_VALIDATION_MESSAGES,
+  LOCATION_VALIDATION_MESSAGES,
+  NAME_VALIDATION_MESSAGES,
+  UNIQUE_CLUSTER_NAME_VALIDATION_MESSAGES,
+} from './constants';
 
 const ALPHANUMBERIC_REGEX = /^[a-zA-Z0-9]+$/;
 const NAME_START_END_REGEX = /^[a-z0-9](.*[a-z0-9])?$/;
@@ -27,17 +34,6 @@ const MAC_REGEX = /^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$/;
 const BMC_REGEX =
   /^((ipmi|ibmc(\+https?)?|idrac(\+https?)?|idrac-redfish(\+https?)?|idrac-virtualmedia(\+https?)?|irmc|redfish(\+https?)?|redfish-virtualmedia(\+https?)?|ilo4(\+https)?|ilo4-virtuallmedia(\+https)?|ilo5(\+https)?|ilo5-redfish(\+https)|ilo5-virtualmedia(\+https)|https?|ftp):(\/\/([a-z0-9\-._~%!$&'()*+,;=]+@)?([a-z0-9\-._~%]+|\[[a-f0-9:.]+\]|\[v[a-f0-9][a-z0-9\-._~%!$&'()*+,;=:]+\])(:[0-9]+)?(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?|(\/?[a-z0-9\-._~%!$&'()*+,;=:@]+(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?)?)|([a-z0-9\-._~%!$&'()*+,;=@]+(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?|(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)+\/?))(\?[a-z0-9\-._~%!$&'()*+,;=:@/?]*)?(#[a-z0-9\-._~%!$&'()*+,;=:@/?]*)?$/i;
 const LOCATION_CHARS_REGEX = /^[a-zA-Z0-9-._]*$/;
-
-export const CLUSTER_NAME_VALIDATION_MESSAGES = {
-  INVALID_LENGTH: '1-54 characters',
-  INVALID_VALUE: 'Use alphanumberic characters, or hyphen (-)',
-  INVALID_START_END: 'Start and end with a letter or number.',
-};
-
-export const UNIQUE_CLUSTER_NAME_VALIDATION_MESSAGES = {
-  ...CLUSTER_NAME_VALIDATION_MESSAGES,
-  NOT_UNIQUE: 'Must be unique',
-};
 
 export const nameValidationSchema = (
   usedClusterNames: string[],
@@ -321,18 +317,6 @@ export const hostPrefixValidationSchema = ({
   return Yup.number().required(requiredText);
 };
 
-export const NAME_VALIDATION_MESSAGES = {
-  INVALID_LENGTH: '1-253 characters',
-  NOT_UNIQUE: 'Must be unique',
-  INVALID_VALUE: 'Use lowercase alphanumberic characters, dot (.) or hyphen (-)',
-  INVALID_START_END: 'Must start and end with an lowercase alphanumeric character',
-};
-
-export const HOSTNAME_VALIDATION_MESSAGES = {
-  ...NAME_VALIDATION_MESSAGES,
-  LOCALHOST_ERR: 'Cannot be the word "localhost" or "localhost.localdomain"',
-};
-
 export const richNameValidationSchema = (usedNames: string[], origName?: string) =>
   Yup.string()
     .min(1, NAME_VALIDATION_MESSAGES.INVALID_LENGTH)
@@ -461,12 +445,6 @@ export const bmcAddressValidationSchema = Yup.string().matches(BMC_REGEX, {
   message: 'Value "${value}" is not valid BMC address.', // eslint-disable-line no-template-curly-in-string
   excludeEmptyString: true,
 });
-
-export const LOCATION_VALIDATION_MESSAGES = {
-  INVALID_LENGTH: '1-63 characters',
-  INVALID_VALUE: 'Use alphanumberic characters, dot (.), underscore (_) or hyphen (-)',
-  INVALID_START_END: 'Must start and end with an alphanumeric character',
-};
 
 export const locationValidationSchema = Yup.string()
   .min(1, LOCATION_VALIDATION_MESSAGES.INVALID_LENGTH)
