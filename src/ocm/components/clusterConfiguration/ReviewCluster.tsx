@@ -16,8 +16,9 @@ import {
   ReviewHostsInventory,
   ClusterValidations,
   HostsValidations,
+  isIPv4,
 } from '../../../common';
-import { isSingleStack, RenderIf } from '../../../common/components/ui/';
+import { RenderIf } from '../../../common/components/ui/';
 import { wizardStepNames } from '../clusterWizard/constants';
 import './ReviewCluster.css';
 
@@ -52,14 +53,7 @@ const ReviewCluster: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         value={cluster.openshiftVersion}
         testId="openshift-version"
       />
-      <DetailItem
-        title={'Stack type'}
-        value={
-          isSingleStack(cluster.machineNetworks, cluster.clusterNetworks, cluster.serviceNetworks)
-            ? 'Single-stack'
-            : 'Dual-stack'
-        }
-      />
+      <DetailItem title={'Stack type'} value={isIPv4(cluster) ? 'IPv4' : 'Dual-stack'} />
       <DetailItem
         title="CPU architecture"
         value={cluster.cpuArchitecture}

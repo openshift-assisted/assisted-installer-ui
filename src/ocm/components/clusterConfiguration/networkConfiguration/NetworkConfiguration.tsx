@@ -12,7 +12,6 @@ import {
   canSelectNetworkTypeSDN,
   getDefaultNetworkType,
   isSNO,
-  usesIPv6,
 } from '../../../../common/selectors';
 import {
   ManagedNetworkingControlGroup,
@@ -21,7 +20,7 @@ import {
 import { StackTypeControlGroup } from './StackTypeControl';
 import { AvailableSubnetsControl } from './AvailableSubnetsControl';
 import AdvancedNetworkFields from './AdvancedNetworkFields';
-import { NETWORK_TYPE_OVN } from '../../../../common';
+import { DUAL_STACK, NETWORK_TYPE_OVN } from '../../../../common';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   defaultNetworkSettings: Partial<Cluster>;
@@ -60,20 +59,17 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   );
   const isMultiNodeCluster = !isSNO(cluster);
   const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';
-  const isDualStack = values.stackType === 'dualStack';
+  const isDualStack = values.stackType === DUAL_STACK;
 
-  const { clusterUsesIPv6, defaultNetworkType, isSDNSelectable } = React.useMemo(() => {
-    const clusterUsesIPv6 = usesIPv6(values);
+  const { defaultNetworkType, isSDNSelectable } = React.useMemo(() => {
     return {
-      clusterUsesIPv6,
-      defaultNetworkType: getDefaultNetworkType(!isMultiNodeCluster, clusterUsesIPv6),
-      isSDNSelectable: canSelectNetworkTypeSDN(!isMultiNodeCluster, clusterUsesIPv6),
+      defaultNetworkType: getDefaultNetworkType(!isMultiNodeCluster, isDualStack),
+      isSDNSelectable: canSelectNetworkTypeSDN(!isMultiNodeCluster, isDualStack),
     };
-  }, [values, isMultiNodeCluster]);
+  }, [isMultiNodeCluster, isDualStack]);
 
   const [isAdvanced, setAdvanced] = React.useState(
-    isAdvNetworkConf(cluster, defaultNetworkSettings, defaultNetworkType) ||
-      values.stackType === 'dualStack',
+    isAdvNetworkConf(cluster, defaultNetworkSettings, defaultNetworkType) || isDualStack,
   );
 
   useEffect(() => {
@@ -105,9 +101,9 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
       setAdvanced(checked);
 
       if (!checked) {
-        setFieldValue('clusterNetworks', defaultNetworkSettings.clusterNetworks, false);
-        setFieldValue('serviceNetworks', defaultNetworkSettings.serviceNetworks, false);
-        setFieldValue('networkType', getDefaultNetworkType(!isMultiNodeCluster, clusterUsesIPv6));
+        setFieldValue('clusterNetworks', defaultNetworkSettings.clusterNetworks, true);
+        setFieldValue('serviceNetworks', defaultNetworkSettings.serviceNetworks, true);
+        setFieldValue('networkType', getDefaultNetworkType(!isMultiNodeCluster, isDualStack));
       }
     },
     [
@@ -115,7 +111,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
       defaultNetworkSettings.clusterNetworks,
       defaultNetworkSettings.serviceNetworks,
       isMultiNodeCluster,
-      clusterUsesIPv6,
+      isDualStack,
     ],
   );
 
@@ -184,7 +180,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
 
       <Tooltip
         content={'Advanced networking properties must be configured in dual-stack'}
-        hidden={values.stackType === 'singleStack'}
+        hidden={!isDualStack}
         position={'top-start'}
       >
         <Checkbox
@@ -193,7 +189,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
           description="Configure advanced networking properties (e.g. CIDR ranges)."
           isChecked={isAdvanced}
           onChange={toggleAdvConfiguration}
-          isDisabled={values.stackType === 'dualStack'}
+          isDisabled={isDualStack}
         />
       </Tooltip>
 

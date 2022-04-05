@@ -3,7 +3,7 @@ import { Alert, AlertVariant, FormGroup, Stack, StackItem } from '@patternfly/re
 import { FieldArray, useFormikContext } from 'formik';
 import { Cluster, Host } from '../../../../common/api/types';
 import { HostSubnets, NetworkConfigurationValues } from '../../../../common/types';
-import { NO_SUBNET_SET } from '../../../../common/config/constants';
+import { DUAL_STACK, NO_SUBNET_SET } from '../../../../common/config/constants';
 import { SelectField } from '../../../../common/components/ui';
 
 export interface AvailableSubnetsControlProps {
@@ -39,7 +39,7 @@ export const AvailableSubnetsControl = ({
   return (
     <FormGroup
       label="Machine network"
-      labelInfo={values.stackType === 'dualStack' && 'Primary'}
+      labelInfo={values.stackType === DUAL_STACK && 'Primary'}
       fieldId="machine-networks"
       isRequired
     >

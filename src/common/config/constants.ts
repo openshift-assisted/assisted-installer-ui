@@ -222,6 +222,9 @@ export const NO_SUBNET_SET = 'NO_SUBNET_SET';
 export const NETWORK_TYPE_OVN = 'OVNKubernetes';
 export const NETWORK_TYPE_SDN = 'OpenShiftSDN';
 
+export const IPV4_STACK = 'singleStack';
+export const DUAL_STACK = 'dualStack';
+
 export const PREFIX_MAX_RESTRICTION = {
   IPv6: 128,
   IPv4: 25,
