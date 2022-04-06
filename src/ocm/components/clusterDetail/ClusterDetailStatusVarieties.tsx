@@ -9,6 +9,7 @@ import {
 } from '../../../common';
 import { getClusterDetailId } from './utils';
 import { ClustersAPI } from '../../services/apis';
+import ClusterDetailStatusMessages from './ClusterDetailStatusMessages';
 
 type ClusterStatusVarieties = {
   credentials?: Credentials;
@@ -84,6 +85,7 @@ const ClusterDetailStatusVarieties: React.FC<{
           idPrefix={getClusterDetailId('cluster-creds')}
         />
       )}
+      <ClusterDetailStatusMessages cluster={cluster} />
     </>
   );
 };
