@@ -1,12 +1,12 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { Formik, FormikConfig, FormikProps } from 'formik';
+import { Formik, FormikConfig, useFormikContext } from 'formik';
 import mapValues from 'lodash/mapValues';
 import { Form, Grid, GridItem, Text, TextContent } from '@patternfly/react-core';
 
 import {
   Cluster,
-  FormikAutoSave,
+  useFormikAutoSave,
   getFormikErrorFields,
   useAlerts,
   ClusterWizardStep,
@@ -18,6 +18,8 @@ import {
   isSNO,
   LoadingState,
   V2ClusterUpdateParams,
+  HostSubnets,
+  InfraEnv,
 } from '../../../common';
 import { HostSubnet, NetworkConfigurationValues } from '../../../common/types/clusters';
 import { updateClusterBase } from '../../reducers/clusters/currentClusterSlice';
@@ -35,6 +37,65 @@ import { captureException } from '../../sentry';
 
 const NetworkConfigurationForm: React.FC<{
   cluster: Cluster;
+  hostSubnets: HostSubnets;
+  defaultNetworkSettings: ReturnType<typeof useDefaultConfiguration>;
+  infraEnv?: InfraEnv;
+}> = ({ cluster, hostSubnets, defaultNetworkSettings, infraEnv }) => {
+  const { alerts } = useAlerts();
+  const { setCurrentStepId } = React.useContext(ClusterWizardContext);
+  const { errors, touched, isSubmitting, isValid } = useFormikContext<NetworkConfigurationValues>();
+  const isAutoSaveRunning = useFormikAutoSave();
+  const errorFields = getFormikErrorFields(errors, touched);
+
+  const footer = (
+    <ClusterWizardFooter
+      cluster={cluster}
+      errorFields={errorFields}
+      isSubmitting={isSubmitting}
+      isNextDisabled={
+        isSubmitting ||
+        isAutoSaveRunning ||
+        !canNextNetwork({ cluster }) ||
+        !!alerts.length ||
+        !isValid
+      }
+      onNext={() => setCurrentStepId('review')}
+      onBack={() => setCurrentStepId('host-discovery')}
+    />
+  );
+  return (
+    <ClusterWizardStep navigation={<ClusterWizardNavigation cluster={cluster} />} footer={footer}>
+      <Form>
+        <Grid hasGutter>
+          <GridItem>
+            <ClusterWizardStepHeader
+              extraItems={<ClusterWizardHeaderExtraActions cluster={cluster} />}
+            >
+              Networking
+            </ClusterWizardStepHeader>
+          </GridItem>
+          <GridItem span={12} lg={10} xl={9} xl2={7}>
+            <NetworkConfigurationFormFields
+              cluster={cluster}
+              hostSubnets={hostSubnets}
+              defaultNetworkSettings={defaultNetworkSettings}
+              infraEnv={infraEnv}
+            />
+          </GridItem>
+          <GridItem>
+            <TextContent>
+              <Text component="h2">Host inventory</Text>
+            </TextContent>
+            <NetworkConfigurationTable cluster={cluster} />
+          </GridItem>
+        </Grid>
+      </Form>
+    </ClusterWizardStep>
+  );
+};
+
+const NetworkConfigurationPage: React.FC<{
+  cluster: Cluster;
 }> = ({ cluster }) => {
   const { infraEnv, error: infraEnvError, isLoading } = useInfraEnv(cluster.id);
   const defaultNetworkSettings = useDefaultConfiguration([
@@ -43,7 +104,6 @@ const NetworkConfigurationForm: React.FC<{
     'clusterNetworkHostPrefix',
   ]);
   const { addAlert, clearAlerts, alerts } = useAlerts();
-  const { setCurrentStepId } = React.useContext(ClusterWizardContext);
   const dispatch = useDispatch();
   const hostSubnets = React.useMemo(() => getHostSubnets(cluster), [cluster]);
   const initialValues = React.useMemo(
@@ -78,7 +138,6 @@ const NetworkConfigurationForm: React.FC<{
 
   const handleSubmit: FormikConfig<NetworkConfigurationValues>['onSubmit'] = async (values) => {
     clearAlerts();
-
     // update the cluster configuration
     try {
       const isMultiNodeCluster = !isSNO(cluster);
@@ -147,58 +206,14 @@ const NetworkConfigurationForm: React.FC<{
       initialTouched={initialTouched}
       validateOnMount
     >
-      {({ isSubmitting, dirty, errors, touched }: FormikProps<NetworkConfigurationValues>) => {
-        const errorFields = getFormikErrorFields(errors, touched);
-        const form = (
-          <Form>
-            <Grid hasGutter>
-              <GridItem>
-                <ClusterWizardStepHeader
-                  extraItems={<ClusterWizardHeaderExtraActions cluster={cluster} />}
-                >
-                  Networking
-                </ClusterWizardStepHeader>
-              </GridItem>
-              <GridItem span={12} lg={10} xl={9} xl2={7}>
-                <NetworkConfigurationFormFields
-                  cluster={cluster}
-                  hostSubnets={hostSubnets}
-                  defaultNetworkSettings={defaultNetworkSettings}
-                  infraEnv={infraEnv}
-                />
-              </GridItem>
-              <GridItem>
-                <TextContent>
-                  <Text component="h2">Host inventory</Text>
-                </TextContent>
-                <NetworkConfigurationTable cluster={cluster} />
-              </GridItem>
-            </Grid>
-            <FormikAutoSave />
-          </Form>
-        );
-
-        const footer = (
-          <ClusterWizardFooter
-            cluster={cluster}
-            errorFields={errorFields}
-            isSubmitting={isSubmitting}
-            isNextDisabled={dirty || !canNextNetwork({ cluster })}
-            onNext={() => setCurrentStepId('review')}
-            onBack={() => setCurrentStepId('host-discovery')}
-          />
-        );
-        return (
-          <ClusterWizardStep
-            navigation={<ClusterWizardNavigation cluster={cluster} />}
-            footer={footer}
-          >
-            {form}
-          </ClusterWizardStep>
-        );
-      }}
+      <NetworkConfigurationForm
+        cluster={cluster}
+        hostSubnets={hostSubnets}
+        defaultNetworkSettings={defaultNetworkSettings}
+        infraEnv={infraEnv}
+      />
     </Formik>
   );
 };
 
-export default NetworkConfigurationForm;
+export default NetworkConfigurationPage;
