@@ -7,7 +7,7 @@ type UseFormikAutoSave = (debounce?: number) => boolean;
 
 export const useFormikAutoSave: UseFormikAutoSave = (debounce = 1000) => {
   const [autoSaveIDs, setAutoSaveIDs] = React.useState<number[]>([]);
-  const { values, dirty, isSubmitting, submitForm } = useFormikContext();
+  const { values, isSubmitting, submitForm } = useFormikContext();
   const prevValuesRef = React.useRef(values);
   const commitRef = React.useRef(
     debouncer(async (autoSaveID: number) => {
@@ -17,7 +17,7 @@ export const useFormikAutoSave: UseFormikAutoSave = (debounce = 1000) => {
   );
 
   React.useEffect(() => {
-    if (!shallowEqual(prevValuesRef.current, values) && dirty && !isSubmitting) {
+    if (!shallowEqual(prevValuesRef.current, values) && !isSubmitting) {
       const autoSaveID = Date.now();
       setAutoSaveIDs((ids) => {
         ids.push(autoSaveID);
@@ -28,7 +28,7 @@ export const useFormikAutoSave: UseFormikAutoSave = (debounce = 1000) => {
     if (!isSubmitting) {
       prevValuesRef.current = values;
     }
-  }, [values, dirty, isSubmitting, setAutoSaveIDs]);
+  }, [values, isSubmitting, setAutoSaveIDs]);
 
   React.useEffect(() => {
     const commit = commitRef.current;
@@ -38,10 +38,25 @@ export const useFormikAutoSave: UseFormikAutoSave = (debounce = 1000) => {
   return !!autoSaveIDs.length;
 };
 
-const FormikAutoSave: React.FC<{
-  debounce?: number;
-}> = ({ debounce }) => {
-  useFormikAutoSave(debounce);
+const FormikAutoSave: React.FC<{ debounce?: number }> = ({ debounce = 1000 }) => {
+  const { values, dirty, isSubmitting, submitForm } = useFormikContext();
+  const prevValuesRef = React.useRef(values);
+  const commitRef = React.useRef(debouncer(submitForm, debounce));
+
+  React.useEffect(() => {
+    if (!shallowEqual(prevValuesRef.current, values) && dirty && !isSubmitting) {
+      commitRef.current();
+    }
+    if (!isSubmitting) {
+      prevValuesRef.current = values;
+    }
+  }, [values, dirty, isSubmitting]);
+
+  React.useEffect(() => {
+    const commit = commitRef.current;
+    return () => commit.cancel();
+  }, []);
+
   return null;
 };
 

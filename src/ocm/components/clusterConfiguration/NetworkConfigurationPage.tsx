@@ -41,8 +41,9 @@ const NetworkConfigurationForm: React.FC<{
   defaultNetworkSettings: ReturnType<typeof useDefaultConfiguration>;
   infraEnv?: InfraEnv;
 }> = ({ cluster, hostSubnets, defaultNetworkSettings, infraEnv }) => {
+  const { alerts } = useAlerts();
   const { setCurrentStepId } = React.useContext(ClusterWizardContext);
-  const { errors, touched, isSubmitting } = useFormikContext<NetworkConfigurationValues>();
+  const { errors, touched, isSubmitting, isValid } = useFormikContext<NetworkConfigurationValues>();
   const isAutoSaveRunning = useFormikAutoSave();
   const errorFields = getFormikErrorFields(errors, touched);
 
@@ -51,7 +52,13 @@ const NetworkConfigurationForm: React.FC<{
       cluster={cluster}
       errorFields={errorFields}
       isSubmitting={isSubmitting}
-      isNextDisabled={isSubmitting || isAutoSaveRunning || !canNextNetwork({ cluster })}
+      isNextDisabled={
+        isSubmitting ||
+        isAutoSaveRunning ||
+        !canNextNetwork({ cluster }) ||
+        !!alerts.length ||
+        !isValid
+      }
       onNext={() => setCurrentStepId('review')}
       onBack={() => setCurrentStepId('host-discovery')}
     />
