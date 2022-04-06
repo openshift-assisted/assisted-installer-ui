@@ -1,14 +1,14 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { Formik, FormikConfig, useFormikContext } from 'formik';
+import { Formik, FormikConfig, FormikProps } from 'formik';
 import {
   Cluster,
   V2ClusterUpdateParams,
   getFormikErrorFields,
+  FormikAutoSave,
   ClusterWizardStep,
   useAlerts,
   getHostDiscoveryInitialValues,
-  useFormikAutoSave,
 } from '../../../common';
 import { HostDiscoveryValues } from '../../../common/types/clusters';
 import HostInventory from '../clusterConfiguration/HostInventory';
@@ -21,39 +21,9 @@ import ClusterWizardNavigation from './ClusterWizardNavigation';
 import { ClustersAPI } from '../../services/apis';
 import { HostDiscoveryService } from '../../services';
 
-const HostDiscoveryForm: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
-  const { alerts } = useAlerts();
-  const { errors, touched, isSubmitting, isValid } = useFormikContext<HostDiscoveryValues>();
-  const { setCurrentStepId } = React.useContext(ClusterWizardContext);
-  const isAutoSaveRunning = useFormikAutoSave();
-  const errorFields = getFormikErrorFields(errors, touched);
-  const isNextDisabled =
-    !canNextHostDiscovery({ cluster }) ||
-    isAutoSaveRunning ||
-    !isValid ||
-    !!alerts.length ||
-    isSubmitting;
-
-  const footer = (
-    <ClusterWizardFooter
-      cluster={cluster}
-      errorFields={errorFields}
-      isSubmitting={isSubmitting}
-      isNextDisabled={isNextDisabled}
-      onNext={() => setCurrentStepId('networking')}
-      onBack={() => setCurrentStepId('cluster-details')}
-    />
-  );
-
-  return (
-    <ClusterWizardStep navigation={<ClusterWizardNavigation cluster={cluster} />} footer={footer}>
-      <HostInventory cluster={cluster} />
-    </ClusterWizardStep>
-  );
-};
-
 const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const dispatch = useDispatch();
+  const { setCurrentStepId } = React.useContext(ClusterWizardContext);
   const { addAlert, clearAlerts } = useAlerts();
   const initialValues = React.useMemo(
     () => getHostDiscoveryInitialValues(cluster),
@@ -61,7 +31,7 @@ const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
     [], // just once, Formik does not reinitialize
   );
 
-  const handleSubmit: FormikConfig<HostDiscoveryValues>['onSubmit'] = async (values) => {
+  const handleSubmit: FormikConfig<HostDiscoveryValues>['onSubmit'] = async (values, actions) => {
     clearAlerts();
 
     const params: V2ClusterUpdateParams = {};
@@ -72,6 +42,7 @@ const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
     try {
       const { data } = await ClustersAPI.update(cluster.id, params);
       dispatch(updateCluster(data));
+      actions.resetForm({ values: getHostDiscoveryInitialValues(data) });
     } catch (e) {
       handleApiError(e, () =>
         addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),
@@ -81,7 +52,31 @@ const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
 
   return (
     <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-      <HostDiscoveryForm cluster={cluster} />
+      {({ isSubmitting, dirty, errors, touched }: FormikProps<HostDiscoveryValues>) => {
+        const errorFields = getFormikErrorFields(errors, touched);
+        const isNextDisabled = dirty || !canNextHostDiscovery({ cluster });
+
+        const footer = (
+          <ClusterWizardFooter
+            cluster={cluster}
+            errorFields={errorFields}
+            isSubmitting={isSubmitting}
+            isNextDisabled={isNextDisabled}
+            onNext={() => setCurrentStepId('networking')}
+            onBack={() => setCurrentStepId('cluster-details')}
+          />
+        );
+
+        return (
+          <ClusterWizardStep
+            navigation={<ClusterWizardNavigation cluster={cluster} />}
+            footer={footer}
+          >
+            <HostInventory cluster={cluster} />
+            <FormikAutoSave />
+          </ClusterWizardStep>
+        );
+      }}
     </Formik>
   );
 };

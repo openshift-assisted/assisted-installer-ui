@@ -1,6 +1,6 @@
 import React from 'react';
 import { Cluster } from '../../../common';
-import NetworkConfigurationPage from '../clusterConfiguration/NetworkConfigurationPage';
+import NetworkConfigurationForm from '../clusterConfiguration/NetworkConfigurationForm';
 import ReviewStep from '../clusterConfiguration/ReviewStep';
 import ClusterWizardContext from './ClusterWizardContext';
 import { ClusterWizardStepsType, getClusterWizardFirstStep } from './wizardTransition';
@@ -21,7 +21,7 @@ const ClusterWizard: React.FC<ClusterWizardProps> = ({ cluster }) => {
       case 'host-discovery':
         return <HostDiscovery cluster={cluster} />;
       case 'networking':
-        return <NetworkConfigurationPage cluster={cluster} />;
+        return <NetworkConfigurationForm cluster={cluster} />;
       case 'review':
         return <ReviewStep cluster={cluster} />;
       case 'cluster-details':
