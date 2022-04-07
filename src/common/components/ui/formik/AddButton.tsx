@@ -1,30 +1,19 @@
 import { Button, ButtonProps, ButtonVariant } from '@patternfly/react-core';
 import { PlusCircleIcon } from '@patternfly/react-icons';
-import { FieldArrayRenderProps } from 'formik';
 import React from 'react';
 
 interface AddButtonProps {
-  add: FieldArrayRenderProps['push'];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  addValue: any;
+  onAdd: VoidFunction;
 }
 
 const AddButton: React.FC<AddButtonProps & ButtonProps> = ({
-  add,
-  addValue,
+  onAdd,
   variant = ButtonVariant.link,
   children,
   ...props
 }) => {
   return (
-    <Button
-      icon={<PlusCircleIcon />}
-      onClick={() => {
-        add(addValue);
-      }}
-      variant={variant}
-      {...props}
-    >
+    <Button icon={<PlusCircleIcon />} onClick={onAdd} variant={variant} {...props}>
       {children}
     </Button>
   );

@@ -49,7 +49,7 @@ export const isSubnetInIPv6 = ({
 export const allSubnetsIPv4 = (
   networks: (MachineNetwork | ClusterNetwork | ServiceNetwork)[] | undefined,
 ) => {
-  return Boolean(networks?.every((network) => network.cidr && Address4.isValid(network.cidr)));
+  return !!networks?.every((network) => network.cidr && Address4.isValid(network.cidr));
 };
 
 export const isIPv4 = ({

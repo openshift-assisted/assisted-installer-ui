@@ -59,20 +59,22 @@ const ReviewCluster: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         value={cluster.cpuArchitecture}
         testId="cpu-architecture"
       />
-      <DetailItem
-        title="Cluster network CIDR"
-        value={
-          <>
-            {cluster.machineNetworks?.map((network, index) => (
-              <span key={index}>
-                {network.cidr}
-                <br />
-              </span>
-            ))}
-          </>
-        }
-        testId="network-cidr"
-      />
+      {cluster.machineNetworks?.length && (
+        <DetailItem
+          title="Cluster network CIDR"
+          value={
+            <>
+              {cluster.clusterNetworks?.map((network) => (
+                <span key={network.cidr}>
+                  {network.cidr}
+                  <br />
+                </span>
+              ))}
+            </>
+          }
+          testId="network-cidr"
+        />
+      )}
       <DetailItem
         title="Cluster summary"
         testId="cluster-summary"

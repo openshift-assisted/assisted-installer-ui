@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Alert, AlertVariant, FormGroup, Stack, StackItem } from '@patternfly/react-core';
 import { FieldArray, useFormikContext } from 'formik';
-import { Cluster, Host } from '../../../../common/api/types';
+import { Cluster } from '../../../../common/api/types';
 import { HostSubnets, NetworkConfigurationValues } from '../../../../common/types';
 import { DUAL_STACK, NO_SUBNET_SET } from '../../../../common/config/constants';
 import { SelectField } from '../../../../common/components/ui';
@@ -9,9 +9,7 @@ import { SelectField } from '../../../../common/components/ui';
 export interface AvailableSubnetsControlProps {
   clusterId: Cluster['id'];
   hostSubnets: HostSubnets;
-  hosts: Host[];
   isRequired: boolean;
-  isMultiNodeCluster: boolean;
 }
 
 export const AvailableSubnetsControl = ({

@@ -128,9 +128,9 @@ export const vipRangeValidationSchema = (
     } catch (err) {
       return this.createError({ message: err.message });
     }
-    const foundHostSubnets = hostSubnets.filter((hn) =>
-      machineNetworks?.map((network) => network.cidr).includes(hn.subnet),
-    );
+
+    const cidrs = machineNetworks?.map((network) => network.cidr);
+    const foundHostSubnets = hostSubnets.filter((hn) => cidrs?.includes(hn.subnet));
     for (const hostSubnet of foundHostSubnets) {
       if (hostSubnet?.subnet) {
         // Workaround for bug in CIM backend. hostIDs are empty

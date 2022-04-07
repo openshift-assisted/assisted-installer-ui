@@ -1,24 +1,21 @@
 import React from 'react';
 import { Button, ButtonVariant, Tooltip, TooltipProps } from '@patternfly/react-core';
 import { MinusCircleIcon } from '@patternfly/react-icons';
-import { FieldArrayRenderProps } from 'formik';
 import './RemovableField.css';
+import classnames from 'classnames';
 
 interface RemovableFieldProps {
-  index: number;
-  remove: FieldArrayRenderProps['remove'];
+  onRemove: VoidFunction;
   showRemoveButton?: boolean;
-  buttonVariant?: ButtonVariant;
 }
 
 const REMOVE_BUTTON_EXIT_DELAY = 1500;
 
-const RemovableField: React.FC<RemovableFieldProps & Partial<TooltipProps>> = ({
-  remove,
+const RemovableField: React.FC<RemovableFieldProps & Omit<TooltipProps, 'content'>> = ({
+  onRemove,
   showRemoveButton = true,
   children,
   className,
-  index,
   ...props
 }) => {
   return (
@@ -29,11 +26,11 @@ const RemovableField: React.FC<RemovableFieldProps & Partial<TooltipProps>> = ({
       position="right-start"
       distance={1}
       content={
-        <Button variant={ButtonVariant.plain} onClick={() => remove(index)}>
+        <Button variant={ButtonVariant.plain} onClick={onRemove}>
           <MinusCircleIcon size="sm" />
         </Button>
       }
-      className={'remove-button--tooltip ' + className}
+      className={classnames('remove-button--tooltip ', className)}
       {...props}
     >
       {children}

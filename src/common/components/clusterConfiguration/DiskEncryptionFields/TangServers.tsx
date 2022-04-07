@@ -16,9 +16,8 @@ export const TangServers: React.FC<{ isDisabled?: boolean }> = ({ isDisabled = f
             values.diskEncryptionTangServers.map((tang, index) => (
               <StackItem key={index}>
                 <RemovableField
-                  index={index}
                   showRemoveButton={index === 0 || isDisabled}
-                  remove={remove}
+                  onRemove={() => remove(index)}
                 >
                   <div>
                     <InputField
@@ -44,7 +43,7 @@ export const TangServers: React.FC<{ isDisabled?: boolean }> = ({ isDisabled = f
 
           {!isDisabled && (
             <StackItem>
-              <AddButton add={push} addValue={{ url: '', thumbprint: '' }} isInline>
+              <AddButton onAdd={() => push({ url: '', thumbprint: '' })} isInline>
                 Add another Tang server
               </AddButton>
             </StackItem>

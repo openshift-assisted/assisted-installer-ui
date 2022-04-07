@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React from 'react';
 import { useFormikContext } from 'formik';
 import { Spinner, Alert, AlertVariant, Tooltip } from '@patternfly/react-core';
 import { Cluster } from '../../../../common/api/types';
@@ -107,9 +107,9 @@ export const VirtualIPControlGroup = ({
     cluster.validationsInfo,
   ]);
 
-  const enableAllocation = useMemo(() => values.networkType === NETWORK_TYPE_SDN, [values]);
+  const enableAllocation = values.networkType === NETWORK_TYPE_SDN;
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!enableAllocation) {
       setFieldValue('vipDhcpAllocation', false);
     }
