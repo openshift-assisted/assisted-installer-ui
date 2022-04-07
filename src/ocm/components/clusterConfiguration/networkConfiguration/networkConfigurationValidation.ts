@@ -19,7 +19,7 @@ import {
 
 export const getNetworkInitialValues = (
   cluster: Cluster,
-  defaultNetworkValues: Partial<NetworkConfigurationValues>,
+  defaultNetworkValues: Pick<NetworkConfigurationValues, 'serviceNetworks' | 'clusterNetworks'>,
 ): NetworkConfigurationValues => {
   const isSNOCluster = isSNO(cluster);
   const usesIPv6 = !isIPv4(cluster);

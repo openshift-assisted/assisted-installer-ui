@@ -1,10 +1,21 @@
 import { Address4, Address6 } from 'ip-address';
-import { Cluster, ClusterNetwork, Inventory, ServiceNetwork, stringToJSON } from '../../api';
+import {
+  Cluster,
+  ClusterDefaultConfig,
+  ClusterNetwork,
+  Inventory,
+  ServiceNetwork,
+  stringToJSON,
+} from '../../api';
 import { NO_SUBNET_SET } from '../../config';
+import {
+  selectClusterNetworkCIDR,
+  selectClusterNetworkHostPrefix,
+  selectServiceNetworkCIDR,
+} from '../../selectors';
 import {
   HostDiscoveryValues,
   HostSubnets,
-  NetworkConfigurationValues,
   Validation,
   ValidationGroup,
   ValidationsInfo,
@@ -62,11 +73,12 @@ export const getSubnetFromMachineNetworkCidr = (machineNetworkCidr?: string) => 
   return subnet?.address;
 };
 
-const serviceNetworksEqual = (array1: ServiceNetwork[], array2: ServiceNetwork[]) =>
-  array1.length === array2.length &&
-  array1.every((network) => array2.map((elem) => elem.cidr).includes(network.cidr));
+export const serviceNetworksEqual = (array1: ServiceNetwork[], array2: ServiceNetwork[]) => {
+  const cidrs = array2.map((elem) => elem.cidr);
+  return array1.length === array2.length && array1.every((network) => cidrs.includes(network.cidr));
+};
 
-const clusterNetworksEqual = (array1: ClusterNetwork[], array2: ClusterNetwork[]) =>
+export const clusterNetworksEqual = (array1: ClusterNetwork[], array2: ClusterNetwork[]) =>
   array1.length === array2.length &&
   array1.every((clusterNetwork) =>
     array2.find(
@@ -77,19 +89,13 @@ const clusterNetworksEqual = (array1: ClusterNetwork[], array2: ClusterNetwork[]
 
 export const isAdvNetworkConf = (
   cluster: Cluster,
-  defaultNetworkValues: Partial<NetworkConfigurationValues>,
+  defaultNetworkSettings: ClusterDefaultConfig,
   defaultNetworkType: string,
-) => {
-  return !(
-    Boolean(cluster.networkType) &&
-    cluster.networkType === defaultNetworkType &&
-    serviceNetworksEqual(
-      cluster.serviceNetworks || [],
-      defaultNetworkValues.serviceNetworks || [],
-    ) &&
-    clusterNetworksEqual(cluster.clusterNetworks || [], defaultNetworkValues.clusterNetworks || [])
-  );
-};
+) =>
+  selectClusterNetworkCIDR(cluster) !== defaultNetworkSettings.clusterNetworkCidr ||
+  selectClusterNetworkHostPrefix(cluster) !== defaultNetworkSettings.clusterNetworkHostPrefix ||
+  selectServiceNetworkCIDR(cluster) !== defaultNetworkSettings.serviceNetworkCidr ||
+  (Boolean(cluster.networkType) && cluster.networkType !== defaultNetworkType);
 
 export const getHostDiscoveryInitialValues = (cluster: Cluster): HostDiscoveryValues => {
   const monitoredOperators = cluster.monitoredOperators || [];

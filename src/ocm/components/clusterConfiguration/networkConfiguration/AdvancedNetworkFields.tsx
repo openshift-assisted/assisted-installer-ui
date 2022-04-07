@@ -53,13 +53,7 @@ const AdvancedNetworkFields: React.FC<AdvancedNetworkFieldsProps> = ({ isSDNSele
     }
   };
 
-  const isSubnetIPv6 = (index: number) => {
-    if (isDualStack) {
-      return Boolean(index);
-    } else {
-      return false;
-    }
-  };
+  const isSubnetIPv6 = (index: number) => (isDualStack ? !!index : false);
 
   const clusterNetworkHostPrefixHelperText = (index: number) =>
     isSubnetIPv6(index) ? IPv6PrefixHelperText : IPv4PrefixHelperText;

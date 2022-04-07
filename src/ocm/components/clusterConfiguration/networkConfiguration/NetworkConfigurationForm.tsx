@@ -40,7 +40,7 @@ import NetworkConfigurationFormFields from './NetworkConfigurationFormFields';
 const NetworkConfigurationForm: React.FC<{
   cluster: Cluster;
   hostSubnets: HostSubnets;
-  defaultNetworkSettings: ReturnType<typeof useDefaultConfiguration>;
+  defaultNetworkSettings: Pick<NetworkConfigurationValues, 'serviceNetworks' | 'clusterNetworks'>;
   infraEnv?: InfraEnv;
 }> = ({ cluster, hostSubnets, defaultNetworkSettings, infraEnv }) => {
   const { alerts } = useAlerts();
@@ -106,7 +106,10 @@ const NetworkConfigurationPage: React.FC<{
     'clusterNetworkHostPrefix',
   ]);
 
-  const defaultNetworkValues: Partial<NetworkConfigurationValues> = {
+  const defaultNetworkValues: Pick<
+    NetworkConfigurationValues,
+    'serviceNetworks' | 'clusterNetworks'
+  > = {
     serviceNetworks: [
       {
         cidr: defaultNetworkSettings.serviceNetworkCidr,
@@ -214,7 +217,7 @@ const NetworkConfigurationPage: React.FC<{
       <NetworkConfigurationForm
         cluster={cluster}
         hostSubnets={hostSubnets}
-        defaultNetworkSettings={defaultNetworkSettings}
+        defaultNetworkSettings={defaultNetworkValues}
         infraEnv={infraEnv}
       />
     </Formik>

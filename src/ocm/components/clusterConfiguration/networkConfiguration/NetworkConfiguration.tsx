@@ -7,7 +7,6 @@ import { useFeatureSupportLevel } from '../../../../common/components/featureSup
 import { NetworkConfigurationValues } from '../../../../common/types';
 import { getLimitedFeatureSupportLevels } from '../../../../common/components/featureSupportLevels/utils';
 import { useFeature } from '../../../../common/features';
-import { isAdvNetworkConf } from '../../../../common/components/clusterConfiguration';
 import {
   canSelectNetworkTypeSDN,
   getDefaultNetworkType,
@@ -20,7 +19,12 @@ import {
 import { StackTypeControlGroup } from './StackTypeControl';
 import { AvailableSubnetsControl } from './AvailableSubnetsControl';
 import AdvancedNetworkFields from './AdvancedNetworkFields';
-import { DUAL_STACK, NETWORK_TYPE_OVN } from '../../../../common';
+import {
+  clusterNetworksEqual,
+  DUAL_STACK,
+  NETWORK_TYPE_OVN,
+  serviceNetworksEqual,
+} from '../../../../common';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   defaultNetworkSettings: Partial<Cluster>;
@@ -38,6 +42,21 @@ const vmsAlert = (
     networking option will limit your installed cluster's support.
   </Alert>
 );
+
+const isAdvNetworkConf = (
+  cluster: Cluster,
+  defaultNetworkValues: Pick<NetworkConfigurationValues, 'serviceNetworks' | 'clusterNetworks'>,
+  defaultNetworkType: string,
+) =>
+  !(
+    !!cluster.networkType &&
+    cluster.networkType === defaultNetworkType &&
+    serviceNetworksEqual(
+      cluster.serviceNetworks || [],
+      defaultNetworkValues.serviceNetworks || [],
+    ) &&
+    clusterNetworksEqual(cluster.clusterNetworks || [], defaultNetworkValues.clusterNetworks || [])
+  );
 
 const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   cluster,
@@ -164,9 +183,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
         <AvailableSubnetsControl
           clusterId={cluster.id}
           hostSubnets={hostSubnets}
-          hosts={cluster.hosts || []}
           isRequired={!isUserManagedNetworking}
-          isMultiNodeCluster={isMultiNodeCluster}
         />
       )}
 
