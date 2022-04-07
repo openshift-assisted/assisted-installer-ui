@@ -9,13 +9,11 @@ import {
   ClusterWizardStepHeader,
   getFormikErrorFields,
   getHostSubnets,
-  getNetworkInitialValues,
+  NetworkConfigurationValues,
   HostSubnets,
   InfraEnv,
   isSNO,
   LoadingState,
-  NetworkConfigurationFormFields,
-  NetworkConfigurationValues,
   useAlerts,
   useFormikAutoSave,
   V2ClusterUpdateParams,
@@ -29,11 +27,15 @@ import ClusterWizardNavigation from '../../clusterWizard/ClusterWizardNavigation
 import ClusterWizardHeaderExtraActions from '../ClusterWizardHeaderExtraActions';
 import NetworkConfigurationTable from './NetworkConfigurationTable';
 import useInfraEnv from '../../../hooks/useInfraEnv';
-import { getNetworkConfigurationValidationSchema } from './networkConfigurationValidation';
+import {
+  getNetworkConfigurationValidationSchema,
+  getNetworkInitialValues,
+} from './networkConfigurationValidation';
 import { captureException } from '../../../sentry';
 import { ClustersAPI } from '../../../services/apis';
 import { updateClusterBase } from '../../../reducers/clusters';
 import { getErrorMessage, handleApiError } from '../../../api';
+import NetworkConfigurationFormFields from './NetworkConfigurationFormFields';
 
 const NetworkConfigurationForm: React.FC<{
   cluster: Cluster;
@@ -153,10 +155,7 @@ const NetworkConfigurationPage: React.FC<{
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [infraEnvError]);
 
-  const handleSubmit: FormikConfig<NetworkConfigurationValues>['onSubmit'] = async (
-    values,
-    actions,
-  ) => {
+  const handleSubmit: FormikConfig<NetworkConfigurationValues>['onSubmit'] = async (values) => {
     clearAlerts();
     // update the cluster configuration
     try {
@@ -192,7 +191,6 @@ const NetworkConfigurationPage: React.FC<{
       }
 
       const { data } = await ClustersAPI.update(cluster.id, params);
-      actions.resetForm({ values: getNetworkInitialValues(data, defaultNetworkValues) });
       dispatch(updateClusterBase(data));
     } catch (e) {
       handleApiError(e, () =>
