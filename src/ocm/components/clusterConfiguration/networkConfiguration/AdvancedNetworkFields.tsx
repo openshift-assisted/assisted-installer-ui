@@ -71,7 +71,7 @@ const AdvancedNetworkFields: React.FC<AdvancedNetworkFieldsProps> = ({ isSDNSele
                     label="Cluster network CIDR"
                     helperText={clusterCidrHelperText}
                     isRequired
-                    labelInfo={index == 0 && values.stackType == DUAL_STACK ? 'Primary' : ''}
+                    labelInfo={index === 0 && isDualStack ? 'Primary' : ''}
                   />
                   <InputField
                     name={`clusterNetworks.${index}.hostPrefix`}
@@ -113,7 +113,7 @@ const AdvancedNetworkFields: React.FC<AdvancedNetworkFieldsProps> = ({ isSDNSele
                   label="Service network CIDR"
                   helperText={serviceCidrHelperText}
                   isRequired
-                  labelInfo={index == 0 && isDualStack ? 'Primary' : ''}
+                  labelInfo={index === 0 && isDualStack ? 'Primary' : ''}
                 />
               </StackItem>
             ))}
