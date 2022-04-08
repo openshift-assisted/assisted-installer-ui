@@ -30,7 +30,7 @@ const RemovableField: React.FC<RemovableFieldProps & Omit<TooltipProps, 'content
           <MinusCircleIcon size="sm" />
         </Button>
       }
-      className={classnames('remove-button--tooltip ', className)}
+      className={classnames('ai-remove-button__tooltip ', className)}
       {...props}
     >
       {children}
