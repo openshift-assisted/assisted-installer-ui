@@ -138,7 +138,7 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({
           data.forEach((host) => dispatch(updateHost(host)));
 
           alerts
-            .filter((alert) => alert.title == 'Failed to set role')
+            .filter((alert) => alert.title === 'Failed to set role')
             .forEach((a) => removeAlert(a.key));
         } catch (error) {
           handleApiError(error, () => {

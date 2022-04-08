@@ -122,7 +122,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
         />
       )}
 
-      {atListOneDiskEncryptionEnableOn && values.diskEncryptionMode == 'tpmv2' && (
+      {atListOneDiskEncryptionEnableOn && values.diskEncryptionMode === 'tpmv2' && (
         <Alert
           variant={AlertVariant.warning}
           isInline
@@ -134,7 +134,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
           }
         />
       )}
-      {atListOneDiskEncryptionEnableOn && values.diskEncryptionMode == 'tang' && (
+      {atListOneDiskEncryptionEnableOn && values.diskEncryptionMode === 'tang' && (
         <Alert
           variant={AlertVariant.warning}
           isInline
