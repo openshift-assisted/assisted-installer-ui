@@ -370,7 +370,7 @@ export const hostActionResolver = ({
     if (onEditHost) {
       if (canEditHost) {
         const canEdit = canEditHost(host);
-        if (typeof canEdit == 'boolean') {
+        if (typeof canEdit === 'boolean') {
           canEdit &&
             actions.push({
               title: 'Change hostname',
@@ -426,7 +426,7 @@ export const hostActionResolver = ({
     if (onDeleteHost) {
       if (canDelete) {
         const canDeleteHost = canDelete(host);
-        if (typeof canDeleteHost == 'boolean') {
+        if (typeof canDeleteHost === 'boolean') {
           canDeleteHost &&
             actions.push({
               title: 'Delete host',

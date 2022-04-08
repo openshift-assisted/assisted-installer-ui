@@ -27,6 +27,7 @@
     "prettier/react"
   ],
   "rules": {
+    "eqeqeq": [2, "always"],
     "indent": "off",
     "react/no-unescaped-entities": ["error", { "forbid": [">", "}"] }],
     "@typescript-eslint/explicit-member-accessibility": "off",

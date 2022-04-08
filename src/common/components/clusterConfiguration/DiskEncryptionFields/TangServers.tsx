@@ -26,7 +26,7 @@ export const TangServers: React.FC<{ isDisabled?: boolean }> = ({ isDisabled = f
               <StackItem key={index}>
                 <Tooltip
                   key={index}
-                  hidden={index == 0 || isDisabled}
+                  hidden={index === 0 || isDisabled}
                   exitDelay={REMOVE_TANG_SERVER_SHOWN_TIMER}
                   flipBehavior={['right', 'bottom']}
                   distance={1}

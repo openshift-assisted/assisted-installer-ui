@@ -108,7 +108,7 @@ export const getClusterDetailsValidationSchema = (
       }),
       diskEncryptionTangServers: Yup.array().when('diskEncryptionMode', {
         is: (diskEncryptionMode) => {
-          return diskEncryptionMode == 'tang';
+          return diskEncryptionMode === 'tang';
         },
         then: Yup.array().of(
           Yup.object().shape({
