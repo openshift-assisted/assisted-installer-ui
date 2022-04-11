@@ -29,7 +29,7 @@ const getFailedOperatorsNames = (failedOperators: MonitoredOperator[]): string =
   for (let i = 0; i < failedOperators.length; i++) {
     const operatorName = failedOperators[i].name;
     if (i > 0) {
-      if (i == failedOperators.length - 1) failedOperatorsNames += ' and ';
+      if (i === failedOperators.length - 1) failedOperatorsNames += ' and ';
       else failedOperatorsNames += ', ';
     }
     failedOperatorsNames += `${operatorName && OPERATOR_LABELS[operatorName]} (${
@@ -69,7 +69,7 @@ export const HostInstallationWarning: React.FC<installationProgressWarningProps>
           </>
         }
       >
-        <RenderIf condition={failedHosts != 0}>
+        <RenderIf condition={failedHosts !== 0}>
           <p>
             {failedHosts}/{totalHosts} {pluralize(totalHosts, hostsType)} {message} Due to this, the
             cluster will be degraded. Please check the installation log for more information.

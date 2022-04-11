@@ -123,8 +123,10 @@ export const FinalizingProgress: React.FC<FinalizingProgressProps> = ({
               'Initialization'
             )}
           </>
+          <TextContent>
+            <small>{initializationStatus}</small>
+          </TextContent>
         </StackItem>
-        <>{initializationStatus}</>
       </Stack>
     </>
   );

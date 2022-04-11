@@ -3,7 +3,7 @@ import React from 'react';
 import { pluralize } from 'humanize-plus';
 import { CheckCircleIcon, ExclamationCircleIcon, InProgressIcon } from '@patternfly/react-icons';
 import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens/dist/esm/global_danger_color_100';
-import { Stack, StackItem } from '@patternfly/react-core';
+import { Stack, StackItem, TextContent } from '@patternfly/react-core';
 import { global_success_color_100 as okColor } from '@patternfly/react-tokens/dist/esm/global_success_color_100';
 import BorderedIcon from '../ui/BorderedIcon/BorderedIcon';
 
@@ -25,11 +25,11 @@ export const ProgressBarTexts: React.FC<HostProgressProps> = ({ hosts, hostRole 
           filteredHosts.length,
           hostRole === 'master' ? 'control plane node' : 'worker',
         )}`;
-  const getHostName = (hostRole: HostRole): React.ReactElement => {
-    if (hostRole == 'master') {
-      return <StackItem>Control Plane</StackItem>;
+  const getHostName = (hostRole: HostRole): string => {
+    if (hostRole === 'master') {
+      return 'Control Plane';
     }
-    return <StackItem> Workers</StackItem>;
+    return 'Workers';
   };
 
   if (filteredHosts.some((host) => ['cancelled', 'error'].includes(host.status))) {
@@ -42,8 +42,11 @@ export const ProgressBarTexts: React.FC<HostProgressProps> = ({ hosts, hostRole 
             </BorderedIcon>
           </StackItem>
           <StackItem>
-            {getHostName(hostRole)}
-            {hostCountText(hostRole)} failed
+            <TextContent>
+              {getHostName(hostRole)}
+              <br />
+              <small>{hostCountText(hostRole)} failed</small>
+            </TextContent>
           </StackItem>
         </Stack>
       </>
@@ -60,8 +63,11 @@ export const ProgressBarTexts: React.FC<HostProgressProps> = ({ hosts, hostRole 
             </BorderedIcon>
           </StackItem>
           <StackItem>
-            {getHostName(hostRole)}
-            {hostCountText(hostRole)} installed
+            <TextContent>
+              {getHostName(hostRole)}
+              <br />
+              <small>{hostCountText(hostRole)} installed</small>
+            </TextContent>
           </StackItem>
         </Stack>
       </>
@@ -77,8 +83,11 @@ export const ProgressBarTexts: React.FC<HostProgressProps> = ({ hosts, hostRole 
           </BorderedIcon>
         </StackItem>
         <StackItem>
-          {getHostName(hostRole)}
-          Installing {hostCountText(hostRole)}
+          <TextContent>
+            {getHostName(hostRole)}
+            <br />
+            <small>Installing {hostCountText(hostRole)}</small>
+          </TextContent>
         </StackItem>
       </Stack>
     </>

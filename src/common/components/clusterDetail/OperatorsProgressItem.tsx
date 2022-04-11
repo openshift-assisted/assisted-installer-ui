@@ -7,6 +7,7 @@ import {
   List,
   ListItem,
   Popover,
+  TextContent,
 } from '@patternfly/react-core';
 import {
   CheckCircleIcon,
@@ -117,8 +118,10 @@ const OperatorsProgressItem: React.FC<OperatorsProgressItemProps> = ({ operators
             Operators
           </Button>
         </OperatorsPopover>
+        <TextContent>
+          <small>{label}</small>
+        </TextContent>
       </StackItem>
-      {label}
     </Stack>
   );
 };
