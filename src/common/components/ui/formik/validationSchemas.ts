@@ -11,8 +11,6 @@ import { trimCommaSeparatedList, trimSshPublicKey } from './utils';
 const ALPHANUMBERIC_REGEX = /^[a-zA-Z0-9]+$/;
 const CLUSTER_NAME_REGEX = /^[a-z]([-a-z0-9]*[a-z0-9])?$/;
 const SSH_PUBLIC_KEY_REGEX = /^(ssh-rsa|ssh-ed25519|ecdsa-[-a-z0-9]*) AAAA[0-9A-Za-z+/]+[=]{0,3}( .+)?$/;
-// Future bug-fixer: Beer on me! (mlibra)
-const IP_ADDRESS_REGEX = /^(((([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5]))|([0-9a-f]{1,4}:){7,7}[0-9a-f]{1,4}|([0-9a-f]{1,4}:){1,7}:|([0-9a-f]{1,4}:){1,6}:[0-9a-f]{1,4}|([0-9a-f]{1,4}:){1,5}(:[0-9a-f]{1,4}){1,2}|([0-9a-f]{1,4}:){1,4}(:[0-9a-f]{1,4}){1,3}|([0-9a-f]{1,4}:){1,3}(:[0-9a-f]{1,4}){1,4}|([0-9a-f]{1,4}:){1,2}(:[0-9a-f]{1,4}){1,5}|[0-9a-f]{1,4}:((:[0-9a-f]{1,4}){1,6})|:((:[0-9a-f]{1,4}){1,7}|:)|fe80:(:[0-9a-f]{0,4}){0,4}%[0-9a-z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$/;
 const DNS_NAME_REGEX = /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/;
 const PROXY_DNS_REGEX = /^([a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62}){1}(\.[a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62})*[._]?$/;
 const NAME_CHARS_REGEX = /^[a-zA-Z0-9-.]*$/;
@@ -104,10 +102,11 @@ export const pullSecretValidationSchema = Yup.string()
     },
   );
 
-export const ipValidationSchema = Yup.string().matches(IP_ADDRESS_REGEX, {
-  message: 'Value "${value}" is not valid IP address.', // eslint-disable-line no-template-curly-in-string
-  excludeEmptyString: true,
-});
+export const ipValidationSchema = Yup.string().test(
+  'ip-validation',
+  'Not a valid IP address',
+  (value) => Address4.isValid(value) || Address6.isValid(value),
+);
 
 export const macAddressValidationSchema = Yup.string().matches(MAC_REGEX, {
   message: 'Value "${value}" is not valid MAC address.', // eslint-disable-line no-template-curly-in-string
@@ -374,15 +373,17 @@ const isIPorDN = (value: string, dnsRegex = DNS_NAME_REGEX) => {
   if (value.match(dnsRegex)) {
     return true;
   }
-  if (value.match(IP_ADDRESS_REGEX)) {
-    return true;
+  try {
+    ipValidationSchema.validateSync(value);
+  } catch (err) {
+    return false;
   }
-  return false;
+  return true;
 };
 
 export const noProxyValidationSchema = Yup.string().test(
   'no-proxy-validation',
-  'Provide comma-separated list of domains excluded from proxy.',
+  'Provide a comma separated list of valid DNS names or IP addresses.',
   (value: string) => {
     if (!value) {
       return true;
