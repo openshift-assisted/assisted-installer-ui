@@ -7,7 +7,5 @@ export const UpdateDay2ApiVipDialogToggle: React.FC = () => {
     UpdateDay2ApiVipDialog: { open },
   } = useModalDialogsContext();
 
-  return (
-    <AlertActionLink onClick={() => open()}>Update cluster with API Virtual IP</AlertActionLink>
-  );
+  return <AlertActionLink onClick={() => open()}>Update cluster with API IP</AlertActionLink>;
 };

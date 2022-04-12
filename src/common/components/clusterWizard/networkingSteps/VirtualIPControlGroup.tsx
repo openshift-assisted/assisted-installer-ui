@@ -111,7 +111,7 @@ export const VirtualIPControlGroup = ({
         <CheckboxField
           label={
             <>
-              Allocate virtual IPs via DHCP server
+              Allocate IPs via DHCP server
               <FeatureSupportLevelBadge
                 featureId="VIP_AUTO_ALLOC"
                 openshiftVersion={cluster.openshiftVersion}
@@ -124,7 +124,7 @@ export const VirtualIPControlGroup = ({
       {values.vipDhcpAllocation ? (
         <>
           <FormikStaticField
-            label="API Virtual IP"
+            label="API IP"
             name="apiVip"
             helperText={apiVipHelperText}
             value={cluster.apiVip || ''}
@@ -138,7 +138,7 @@ export const VirtualIPControlGroup = ({
             />
           </FormikStaticField>
           <FormikStaticField
-            label="Ingress Virtual IP"
+            label="Ingress IP"
             name="ingressVip"
             helperText={ingressVipHelperText}
             value={cluster.ingressVip || ''}
@@ -155,7 +155,7 @@ export const VirtualIPControlGroup = ({
       ) : (
         <>
           <InputField
-            label="API Virtual IP"
+            label="API IP"
             name="apiVip"
             helperText={apiVipHelperText}
             isRequired
@@ -163,7 +163,7 @@ export const VirtualIPControlGroup = ({
           />
           <InputField
             name="ingressVip"
-            label="Ingress Virtual IP"
+            label="Ingress IP"
             helperText={ingressVipHelperText}
             isRequired
             isDisabled={!hostSubnets.length || values.hostSubnet === NO_SUBNET_SET}

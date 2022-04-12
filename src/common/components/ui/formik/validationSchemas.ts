@@ -137,7 +137,7 @@ export const vipRangeValidationSchema = (
 const vipUniqueValidationSchema = ({ ingressVip, apiVip }: NetworkConfigurationValues) =>
   Yup.string().test(
     'vip-uniqueness-validation',
-    'The Ingress and API Virtual IP addresses cannot be the same.',
+    'The Ingress and API IP addresses cannot be the same.',
     (value) => {
       if (!value) {
         return true;

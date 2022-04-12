@@ -45,9 +45,9 @@ const getNetworkType = (
   return networkType;
 };
 
-const getManagementType = (clusterManagementType: boolean | undefined): string => {
+const getManagementType = (isUserManagementType: boolean | undefined): string => {
   let managementType: string;
-  clusterManagementType
+  isUserManagementType
     ? (managementType = 'User-Managed Networking')
     : (managementType = 'Cluster-managed networking');
   return managementType;
@@ -101,13 +101,13 @@ const ClusterProperties: React.FC<ClusterPropertiesProps> = ({ cluster }) => (
           testId="cpu-architecture"
         />
         <DetailItem
-          title="API virtual IP"
+          title="API IP"
           value={cluster.apiVip}
           isHidden={!cluster.apiVip}
           testId="api-vip"
         />
         <DetailItem
-          title="Ingress virtual IP"
+          title="Ingress IP"
           value={cluster.ingressVip}
           isHidden={!cluster.ingressVip}
           testId="ingress-vip"
