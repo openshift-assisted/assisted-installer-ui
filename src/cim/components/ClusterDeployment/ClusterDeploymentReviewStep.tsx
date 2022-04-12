@@ -111,13 +111,9 @@ const ClusterDeploymentReviewStep: React.FC<ClusterDeploymentReviewStepProps> = 
               value={openShiftVersion}
               testId="openshift-version"
             />
+            <DetailItem title="API IP" value={agentClusterInstall.spec?.apiVIP} testId="api-vip" />
             <DetailItem
-              title="API Virtual IP"
-              value={agentClusterInstall.spec?.apiVIP}
-              testId="api-vip"
-            />
-            <DetailItem
-              title="Ingress Virtual IP"
+              title="Ingress IP"
               value={agentClusterInstall.spec?.ingressVIP}
               testId="ingress-vip"
             />
