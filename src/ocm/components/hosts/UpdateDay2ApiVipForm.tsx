@@ -56,7 +56,7 @@ const UpdateDay2ApiVipForm: React.FC<UpdateDay2ApiVipFormProps> = ({
           const onError = (message: string) =>
             formikHelpers.setStatus({
               error: {
-                title: 'Failed to update Api Vip',
+                title: 'Failed to update API IP',
                 message,
               },
             });
@@ -81,7 +81,7 @@ const UpdateDay2ApiVipForm: React.FC<UpdateDay2ApiVipFormProps> = ({
                   {status.error.message}
                 </Alert>
               )}
-              <InputField label="API VIP" name="apiVip" ref={apiVipInputRef} isRequired />
+              <InputField label="API IP" name="apiVip" ref={apiVipInputRef} isRequired />
             </GridGap>
           </ModalBoxBody>
           <ModalBoxFooter>

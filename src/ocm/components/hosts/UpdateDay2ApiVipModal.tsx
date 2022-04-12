@@ -8,8 +8,8 @@ type UpdateDay2ApiVipModalProps = {
 
 const UpdateDay2ApiVipModal: React.FC<UpdateDay2ApiVipModalProps> = ({ isOpen, ...props }) => (
   <Modal
-    aria-label="Update API Vip Dialog"
-    title="Update API Vip"
+    aria-label="Update API IP Dialog"
+    title="Update API IP"
     isOpen={isOpen}
     variant={ModalVariant.small}
     hasNoBodyWrapper
