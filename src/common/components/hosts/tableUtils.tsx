@@ -383,7 +383,7 @@ export const hostActionResolver = ({
             title: <ActionTitle disabled={!enabled} description={reason} title="Change hostname" />,
             id: `button-edit-host-${hostname}`, // id is everchanging, not ideal for tests
             onClick: () => onEditHost(host),
-            disabled: !enabled,
+            isDisabled: !enabled,
           });
         }
       }
@@ -439,7 +439,7 @@ export const hostActionResolver = ({
             title: <ActionTitle disabled={!enabled} description={reason} title="Delete host" />,
             id: `button-delete-host-${hostname}`,
             onClick: () => onDeleteHost(host),
-            disabled: !enabled,
+            isDisabled: !enabled,
           });
         }
       }
@@ -451,7 +451,7 @@ export const hostActionResolver = ({
           title: <ActionTitle disabled={!enabled} description={reason} title="Edit BMC" />,
           id: `button-edit-bmh-host-${hostname}`,
           onClick: () => onEditBMH(host),
-          disabled: !enabled,
+          isDisabled: !enabled,
         });
       }
     }
@@ -464,7 +464,7 @@ export const hostActionResolver = ({
         ),
         id: `button-unbind-host-${hostname}`,
         onClick: () => onUnbindHost(host),
-        disabled: !enabled,
+        isDisabled: !enabled,
       });
     }
   }

@@ -11,7 +11,6 @@ import {
   Alert,
 } from '@patternfly/react-core';
 import {
-  Cluster,
   ToolbarButton,
   ToolbarSecondaryGroup,
   Alerts,
@@ -21,7 +20,10 @@ import {
   KubeconfigDownload,
   REDHAT_CONSOLE_OPENSHIFT,
   canDownloadKubeconfig,
+  getEnabledHosts,
+  getOlmOperators,
 } from '../../../common';
+import { Cluster } from '../../../common/api/types';
 import ClusterHostsTable from '../hosts/ClusterHostsTable';
 import ClusterToolbar from '../clusters/ClusterToolbar';
 import { downloadClusterInstallationLogs, getClusterDetailId } from './utils';
@@ -35,12 +37,14 @@ import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
 import { canAbortInstallation } from '../clusters/utils';
 import { useDefaultConfiguration } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
 import ClusterProgress from '../../../common/components/clusterDetail/ClusterProgress';
+import ClusterProgressItems from '../../../common/components/clusterDetail/ClusterProgressItems';
 import { EventsModalButton } from '../../../common/components/ui/eventsModal';
 import { onFetchEvents } from '../fetching/fetchEvents';
 import { TIME_ZERO, VSPHERE_CONFIG_LINK } from '../../../common/config/constants';
 import { isSNO } from '../../../common/selectors/clusterSelectors';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { diffInDaysBetweenDates } from '../../../common/sevices/DateAndTime';
+import { getClusterProgressAlerts } from './getProgressBarAlerts';
 
 type ClusterDetailProps = {
   cluster: Cluster;
@@ -62,6 +66,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
   const { inactiveDeletionHours } = useDefaultConfiguration(['inactiveDeletionHours']);
   const inactiveDeletionDays = Math.round((inactiveDeletionHours || 0) / 24);
   const dateDifference = calculateDateDifference(inactiveDeletionDays, cluster.installCompletedAt);
+  const { monitoredOperators = [] } = cluster;
 
   return (
     <Stack hasGutter>
@@ -72,12 +77,23 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
               <Text component="h2">Installation progress</Text>
             </TextContent>
           </GridItem>
-          <GridItem>
+          <GridItem span={6}>
             <ClusterProgress
               cluster={cluster}
-              onFetchEvents={onFetchEvents}
               totalPercentage={cluster.progress?.totalPercentage || 0}
             />
+          </GridItem>
+          <GridItem span={6}></GridItem>
+          <GridItem span={8}>
+            <ClusterProgressItems cluster={cluster} onFetchEvents={onFetchEvents} />
+          </GridItem>
+          <GridItem span={6}>
+            {getClusterProgressAlerts(
+              getEnabledHosts(cluster.hosts),
+              cluster,
+              getOlmOperators(monitoredOperators),
+              credentials?.consoleUrl,
+            )}
           </GridItem>
           <ClusterDetailStatusVarieties cluster={cluster} clusterVarieties={clusterVarieties} />
           <RenderIf condition={dateDifference > 0 && canDownloadKubeconfig(cluster.status)}>

@@ -1,5 +1,4 @@
 import React from 'react';
-import { GridItem } from '@patternfly/react-core';
 import {
   Cluster,
   Credentials,
@@ -8,9 +7,6 @@ import {
   MonitoredOperatorsList,
   ClusterCredentials,
 } from '../../../common';
-import ClusterInstallationError from './ClusterInstallationError';
-import FailedHostsWarning from './FailedHostsWarning';
-import FailedOperatorsWarning from './FailedOperatorsWarning';
 import { getClusterDetailId } from './utils';
 import { ClustersAPI } from '../../services/apis';
 
@@ -72,31 +68,13 @@ const ClusterDetailStatusVarieties: React.FC<{
   cluster: Cluster;
   clusterVarieties: ClusterStatusVarieties;
 }> = ({ cluster, clusterVarieties }) => {
-  const {
-    credentials,
-    credentialsError,
-    failedOlmOperators,
-    consoleOperator,
-    fetchCredentials,
-  } = clusterVarieties;
+  const { credentials, credentialsError, consoleOperator, fetchCredentials } = clusterVarieties;
 
   const showClusterCredentials =
     consoleOperator?.status === 'available' || (!consoleOperator && cluster.status === 'installed'); // Retain backwards compatibility with clusters which don't have monitored clusters
 
   return (
     <>
-      {['installed', 'installing', 'installing-pending-user-action', 'finalizing'].includes(
-        cluster.status,
-      ) && <FailedHostsWarning cluster={cluster} />}
-      {!!failedOlmOperators.length && (
-        <GridItem>
-          <FailedOperatorsWarning failedOperators={failedOlmOperators} />
-        </GridItem>
-      )}
-      {cluster.status === 'error' && <ClusterInstallationError cluster={cluster} />}
-      {cluster.status === 'cancelled' && (
-        <ClusterInstallationError title="Cluster installation was cancelled" cluster={cluster} />
-      )}
       {showClusterCredentials && (
         <ClusterCredentials
           cluster={cluster}

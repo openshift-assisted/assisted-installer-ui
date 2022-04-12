@@ -1,5 +1,5 @@
 import { MonitoredOperator, OperatorStatus } from '../../../common';
-import { getAggregatedStatus, getLabel } from './OperatorsProgressItem';
+import { getAggregatedStatus, getOperatorsLabel } from './OperatorsProgressItem';
 
 const generateOperatorMock = (name: string, status?: OperatorStatus): MonitoredOperator => ({
   operatorType: 'olm',
@@ -53,11 +53,11 @@ describe('OperatorsProgressItem', () => {
         generateOperatorMock('bbb', 'available'),
         generateOperatorMock('ccc'),
       ];
-      expect(getLabel(operators)).toEqual('1/3 operators failed');
+      expect(getOperatorsLabel(operators)).toEqual('1/3 operators failed');
     });
     it('should reflect failed operators count if there is one operator and it fails', () => {
       const operators = [generateOperatorMock('aaa', 'failed')];
-      expect(getLabel(operators)).toEqual('1 operator failed');
+      expect(getOperatorsLabel(operators)).toEqual('1 operator failed');
     });
     it('should reflect that operators are installing if there are progressing operators and no failed ones', () => {
       const operators = [
@@ -66,7 +66,7 @@ describe('OperatorsProgressItem', () => {
         generateOperatorMock('bbb', 'available'),
         generateOperatorMock('ccc'),
       ];
-      expect(getLabel(operators)).toEqual('Installing 4 operators');
+      expect(getOperatorsLabel(operators)).toEqual('Installing 4 operators');
     });
     it('should inform that operators will be installed if all operators are without status', () => {
       const operators = [
@@ -75,7 +75,7 @@ describe('OperatorsProgressItem', () => {
         generateOperatorMock('bbb'),
         generateOperatorMock('ccc'),
       ];
-      expect(getLabel(operators)).toEqual('4 operators');
+      expect(getOperatorsLabel(operators)).toEqual('4 operators');
     });
   });
 });
