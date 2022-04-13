@@ -1,6 +1,13 @@
 import React from 'react';
-import { ExclamationTriangleIcon, ExternalLinkAltIcon } from '@patternfly/react-icons';
-import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens';
+import {
+  ExclamationCircleIcon,
+  ExclamationTriangleIcon,
+  ExternalLinkAltIcon,
+} from '@patternfly/react-icons';
+import {
+  global_warning_color_100 as warningColor,
+  global_danger_color_100 as dangerColor,
+} from '@patternfly/react-tokens';
 import { OPENSHIFT_LIFE_CYCLE_DATES_LINK } from '../../config';
 import { OpenshiftVersionOptionType } from '../../types';
 import { SelectField } from '../ui';
@@ -16,6 +23,14 @@ const OpenShiftLifeCycleDatesLink = () => (
 const getOpenshiftVersionHelperText = (versions: OpenshiftVersionOptionType[]) => (
   selectedVersionValue: string,
 ) => {
+  if (!versions.length) {
+    return (
+      <>
+        <ExclamationCircleIcon color={dangerColor.value} size="sm" />
+        &nbsp; No release image is available.
+      </>
+    );
+  }
   let helperTextComponent = null;
   const selectedVersion = versions.find((version) => version.value === selectedVersionValue);
   if (selectedVersion?.supportLevel !== 'production') {

@@ -53,7 +53,7 @@ export const ACMFeatureSupportLevelProvider: React.FC<ACMFeatureSupportLevelProv
       const clusterImage = clusterImages.filter(
         (clusterImageSet) => clusterImageSet.metadata?.name === versionName,
       );
-      const version = getVersionFromReleaseImage(clusterImage[0].spec?.releaseImage);
+      const version = getVersionFromReleaseImage(clusterImage[0]?.spec?.releaseImage);
       return getMajorMinorVersion(version);
     },
     [clusterImages],
