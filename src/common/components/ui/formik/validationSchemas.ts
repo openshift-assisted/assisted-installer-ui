@@ -137,7 +137,7 @@ export const vipRangeValidationSchema = (
 const vipUniqueValidationSchema = ({ ingressVip, apiVip }: NetworkConfigurationValues) =>
   Yup.string().test(
     'vip-uniqueness-validation',
-    'The Ingress and API Virtual IP addresses cannot be the same.',
+    'The Ingress and API IP addresses cannot be the same.',
     (value) => {
       if (!value) {
         return true;
@@ -385,7 +385,7 @@ export const noProxyValidationSchema = Yup.string().test(
   'no-proxy-validation',
   'Provide a comma separated list of valid DNS names or IP addresses.',
   (value: string) => {
-    if (!value) {
+    if (!value || value === '*') {
       return true;
     }
 
@@ -393,7 +393,9 @@ export const noProxyValidationSchema = Yup.string().test(
     // A comma-separated list of destination domain names, domains, IP addresses or other network CIDRs
     // to exclude proxying. Preface a domain with . to include all subdomains of that domain.
     // Use * to bypass proxy for all destinations."
-    const noProxyList = trimCommaSeparatedList(value).split(',');
+    const noProxyList = trimCommaSeparatedList(value)
+      .split(',')
+      .map((p) => (p.charAt(0) === '.' ? p.substring(1) : p));
     return noProxyList.every(isNotEmpty) && noProxyList.every((p) => isIPorDN(p, PROXY_DNS_REGEX));
   },
 );

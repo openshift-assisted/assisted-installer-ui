@@ -33,6 +33,7 @@ const getCpuArchTitle = () => (
 
 type ClusterPropertiesProps = {
   cluster: Cluster;
+  externalMode?: boolean;
 };
 
 const getNetworkType = (
@@ -45,9 +46,9 @@ const getNetworkType = (
   return networkType;
 };
 
-const getManagementType = (clusterManagementType: boolean | undefined): string => {
+const getManagementType = (isUserManagementType: boolean | undefined): string => {
   let managementType: string;
-  clusterManagementType
+  isUserManagementType
     ? (managementType = 'User-Managed Networking')
     : (managementType = 'Cluster-managed networking');
   return managementType;
@@ -75,39 +76,39 @@ const getDiskEncryptionEnabledOnStatus = (diskEncryption: DiskEncryption['enable
   return diskEncryptionType;
 };
 
-const ClusterProperties: React.FC<ClusterPropertiesProps> = ({ cluster }) => (
+const ClusterProperties: React.FC<ClusterPropertiesProps> = ({ cluster, externalMode = false }) => (
   <>
-    <GridItem>
-      <TextContent>
-        <Text component="h2">Cluster Details</Text>
-      </TextContent>
-    </GridItem>
+    {!externalMode && (
+      <GridItem>
+        <TextContent>
+          <Text component="h2">Cluster Details</Text>
+        </TextContent>
+      </GridItem>
+    )}
     <GridItem md={6} data-testid="cluster-details">
       <DetailList>
-        <DetailItem title="Cluster ID" value={cluster.id} testId="cluster-id" />
-        <DetailItem
-          title="OpenShift version"
-          value={cluster.openshiftVersion}
-          testId="openshift-version"
-        />
-        <DetailItem
-          title="Base DNS domain"
-          value={cluster.baseDnsDomain}
-          testId="base-dns-domain"
-        />
+        {externalMode ? undefined : (
+          <DetailItem
+            title="OpenShift version"
+            value={cluster.openshiftVersion}
+            testId="openshift-version"
+          />
+        )}
+
+        <DetailItem title="Base domain" value={cluster.baseDnsDomain} testId="base-dns-domain" />
         <DetailItem
           title={getCpuArchTitle()}
           value={cluster.cpuArchitecture}
           testId="cpu-architecture"
         />
         <DetailItem
-          title="API virtual IP"
+          title="API IP"
           value={cluster.apiVip}
           isHidden={!cluster.apiVip}
           testId="api-vip"
         />
         <DetailItem
-          title="Ingress virtual IP"
+          title="Ingress IP"
           value={cluster.ingressVip}
           isHidden={!cluster.ingressVip}
           testId="ingress-vip"
