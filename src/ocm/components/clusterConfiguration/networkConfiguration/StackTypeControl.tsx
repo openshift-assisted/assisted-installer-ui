@@ -18,6 +18,7 @@ export const StackTypeControlGroup: React.FC<{ clusterId: Cluster['id'] }> = ({ 
   const [openConfirmModal, setConfirmModal] = React.useState(false);
 
   const setSingleStack = () => {
+    setFieldValue('stackType', IPV4_STACK);
     setFieldValue('networkType', NETWORK_TYPE_SDN);
     setFieldValue('vipDhcpAllocation', true);
 
@@ -35,6 +36,7 @@ export const StackTypeControlGroup: React.FC<{ clusterId: Cluster['id'] }> = ({ 
   };
 
   const setDualStack = () => {
+    setFieldValue('stackType', DUAL_STACK);
     setFieldValue('networkType', NETWORK_TYPE_OVN);
     setFieldValue('vipDhcpAllocation', false);
 
@@ -62,7 +64,6 @@ export const StackTypeControlGroup: React.FC<{ clusterId: Cluster['id'] }> = ({ 
   };
 
   const setStackType = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFieldValue('stackType', e.target.value);
     if (e.target.value === DUAL_STACK) {
       setDualStack();
     } else if (
@@ -125,7 +126,10 @@ export const StackTypeControlGroup: React.FC<{ clusterId: Cluster['id'] }> = ({ 
               <p>All data and configuration done for 'Dual-stack' will be lost.</p>
             </>
           }
-          onClose={() => setConfirmModal(false)}
+          onClose={() => {
+            setConfirmModal(false);
+            setDualStack();
+          }}
           onConfirm={() => {
             setConfirmModal(false);
             setSingleStack();
