@@ -1,6 +1,6 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
-import { Spinner, Alert, AlertVariant, Tooltip } from '@patternfly/react-core';
+import { Spinner, Alert, AlertVariant } from '@patternfly/react-core';
 import { Cluster, stringToJSON } from '../../../api';
 import { HostSubnets, NetworkConfigurationValues, ValidationsInfo } from '../../../types/clusters';
 import { CheckboxField, FormikStaticField, InputField } from '../../ui';
@@ -78,14 +78,12 @@ export type VirtualIPControlGroupProps = {
   cluster: Cluster;
   hostSubnets: HostSubnets;
   isVipDhcpAllocationDisabled?: boolean;
-  enableAllocation: boolean;
 };
 
 export const VirtualIPControlGroup = ({
   cluster,
   hostSubnets,
   isVipDhcpAllocationDisabled,
-  enableAllocation,
 }: VirtualIPControlGroupProps) => {
   const { values } = useFormikContext<NetworkConfigurationValues>();
 
@@ -113,14 +111,7 @@ export const VirtualIPControlGroup = ({
         <CheckboxField
           label={
             <>
-              <Tooltip
-                hidden={enableAllocation}
-                content={
-                  "A cluster with OVN networking type cannot use 'allocate virtual IPs via DHCP server'"
-                }
-              >
-                <span>Allocate IPs via DHCP server</span>
-              </Tooltip>
+              Allocate IPs via DHCP server
               <FeatureSupportLevelBadge
                 featureId="VIP_AUTO_ALLOC"
                 openshiftVersion={cluster.openshiftVersion}
@@ -168,22 +159,14 @@ export const VirtualIPControlGroup = ({
             name="apiVip"
             helperText={apiVipHelperText}
             isRequired
-            isDisabled={
-              !hostSubnets.length ||
-              !values.machineNetworks?.length ||
-              values.machineNetworks[0].cidr === NO_SUBNET_SET
-            }
+            isDisabled={!hostSubnets.length || values.hostSubnet === NO_SUBNET_SET}
           />
           <InputField
             name="ingressVip"
             label="Ingress IP"
             helperText={ingressVipHelperText}
             isRequired
-            isDisabled={
-              !hostSubnets.length ||
-              !values.machineNetworks?.length ||
-              values.machineNetworks[0].cidr === NO_SUBNET_SET
-            }
+            isDisabled={!hostSubnets.length || values.hostSubnet === NO_SUBNET_SET}
           />
         </>
       )}

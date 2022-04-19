@@ -124,10 +124,10 @@ export const VirtualIPControlGroup = ({
               <Tooltip
                 hidden={enableAllocation}
                 content={
-                  "A cluster with OVN networking type cannot use 'allocate virtual IPs via DHCP server'"
+                  "A cluster with OVN networking type cannot use 'allocate IPs via DHCP server'"
                 }
               >
-                <span>Allocate virtual IPs via DHCP server</span>
+                <span>Allocate IPs via DHCP server</span>
               </Tooltip>
               <FeatureSupportLevelBadge
                 featureId="VIP_AUTO_ALLOC"
@@ -142,7 +142,7 @@ export const VirtualIPControlGroup = ({
       {values.vipDhcpAllocation ? (
         <>
           <FormikStaticField
-            label="API Virtual IP"
+            label="API IP"
             name="apiVip"
             helperText={apiVipHelperText}
             value={cluster.apiVip || ''}
@@ -156,7 +156,7 @@ export const VirtualIPControlGroup = ({
             />
           </FormikStaticField>
           <FormikStaticField
-            label="Ingress Virtual IP"
+            label="Ingress IP"
             name="ingressVip"
             helperText={ingressVipHelperText}
             value={cluster.ingressVip || ''}
@@ -173,7 +173,7 @@ export const VirtualIPControlGroup = ({
       ) : (
         <>
           <InputField
-            label="API Virtual IP"
+            label="API IP"
             name="apiVip"
             helperText={apiVipHelperText}
             isRequired
@@ -181,7 +181,7 @@ export const VirtualIPControlGroup = ({
           />
           <InputField
             name="ingressVip"
-            label="Ingress Virtual IP"
+            label="Ingress IP"
             helperText={ingressVipHelperText}
             isRequired
             isDisabled={!hostSubnets.length || values.hostSubnet === NO_SUBNET_SET}
