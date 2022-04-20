@@ -1,6 +1,13 @@
 import React from 'react';
 import { Text } from '@patternfly/react-core';
-import { Cluster, VMRebootConfigurationInfo, FormatDiskWarning, isSNO } from '../../../common';
+import {
+  Cluster,
+  HostsNotShowingLink,
+  HostsNotShowingLinkProps,
+  VMRebootConfigurationInfo,
+  isSNO,
+} from '../../../common';
+import { HostRequirementsLink, HostRequirementsLinkProps } from '../fetching/HostRequirements';
 import OCSDisksManualFormattingHint from '../hosts/OCSDisksManualFormattingHint';
 import { isAddHostsCluster } from '../clusters/utils';
 import { isAHostVM } from '../hosts/utils';
@@ -33,7 +40,6 @@ const InformationAndAlerts: React.FC<{
       </Text>
       {isVM && <VMRebootConfigurationInfo />}
       {!isAddHostsCluster(cluster) && <OCSDisksManualFormattingHint />}
-      <FormatDiskWarning />
     </>
   );
 };

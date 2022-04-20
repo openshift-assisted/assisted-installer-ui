@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  Modal,
-  Button,
-  ButtonVariant,
-  ModalVariant,
-  AlertVariant,
-  Alert,
-} from '@patternfly/react-core';
+import { Modal, Button, ButtonVariant, ModalVariant } from '@patternfly/react-core';
 import { Cluster, isSNO, ToolbarButton } from '../../../common';
 import DiscoveryImageForm from './DiscoveryImageForm';
 import DiscoveryImageSummary from './DiscoveryImageSummary';
