@@ -40,6 +40,8 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster, infraEnv }) =>
     errorOCPVersions && addAlert(errorOCPVersions);
   }, [errorOCPVersions, addAlert]);
 
+  const moveNext = React.useCallback(() => setCurrentStepId('operators'), [setCurrentStepId]);
+
   const handleClusterUpdate = React.useCallback(
     async (clusterId: Cluster['id'], values: V2ClusterUpdateParams) => {
       clearAlerts();
