@@ -51,6 +51,10 @@ export type HostDiscoveryValues = V2ClusterUpdateParams & {
 export type StorageValues = V2ClusterUpdateParams & {
   nodeLabeling: string;
 };
+export type OperatorsValues = V2ClusterUpdateParams & {
+  useExtraDisksForLocalStorage: boolean;
+  useContainerNativeVirtualization: boolean;
+};
 export enum CpuArchitecture {
   x86 = 'x86_64',
   ARM = 'arm64',

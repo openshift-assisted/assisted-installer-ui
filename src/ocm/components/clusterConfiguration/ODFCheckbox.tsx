@@ -1,5 +1,11 @@
 import React from 'react';
-import { CheckboxField, getFieldId, PopoverIcon, ODF_REQUIREMENTS_LINK } from '../../../common';
+import {
+  CheckboxField,
+  getFieldId,
+  PopoverIcon,
+  ODF_REQUIREMENTS_LINK,
+  ODF_LINK,
+} from '../../../common';
 import { useFeatureSupportLevel } from '../../../common/components/featureSupportLevels';
 import { FormGroup, Tooltip } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
@@ -23,6 +29,17 @@ export type ODFCheckboxProps = {
   openshiftVersion?: string;
 };
 
+const ODFHelperText: React.FC = () => {
+  return (
+    <>
+      Persistent software-defined storage for hybrid applications.{' '}
+      <a href={ODF_LINK} target="_blank" rel="noopener noreferrer">
+        {'Learn more'} <ExternalLinkAltIcon />
+      </a>
+    </>
+  );
+};
+
 export const ODFCheckbox: React.FC<ODFCheckboxProps> = ({ openshiftVersion }) => {
   const featureSupportLevelContext = useFeatureSupportLevel();
   const name = 'useExtraDisksForLocalStorage';
@@ -37,7 +54,7 @@ export const ODFCheckbox: React.FC<ODFCheckboxProps> = ({ openshiftVersion }) =>
           name={name}
           label={<ODFLabel />}
           isDisabled={!!disabledReason}
-          helperText="Persistent software-defined storage for hybrid applications."
+          helperText={<ODFHelperText />}
         />
       </Tooltip>
     </FormGroup>

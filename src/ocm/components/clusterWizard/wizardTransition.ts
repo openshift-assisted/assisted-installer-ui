@@ -34,7 +34,7 @@ export const getClusterWizardFirstStep = (
     case 'pending-for-input':
     case 'adding-hosts':
     case 'insufficient':
-      return 'host-discovery';
+      return 'operators';
     default:
       return 'cluster-details';
   }
@@ -105,6 +105,19 @@ const storageStepValidationsMap: WizardStepValidationMap = {
   softValidationIds: [],
 };
 
+const operatorsStepValidationsMap: WizardStepValidationMap = {
+  cluster: {
+    groups: [],
+    validationIds: [],
+  },
+  host: {
+    allowedStatuses: [],
+    groups: [],
+    validationIds: [],
+  },
+  softValidationIds: [],
+};
+
 const networkingStepValidationsMap: WizardStepValidationMap = {
   cluster: {
     groups: ['network'],
@@ -161,7 +174,6 @@ export const canNextClusterDetails = ({ cluster }: TransitionProps): boolean =>
     cluster,
     cluster.hosts,
   ) === 'ready';
-
 export const canNextHostDiscovery = ({ cluster }: TransitionProps): boolean =>
   getWizardStepClusterStatus(
     'host-discovery',
@@ -172,6 +184,10 @@ export const canNextHostDiscovery = ({ cluster }: TransitionProps): boolean =>
 
 export const canNextStorage = ({ cluster }: TransitionProps): boolean =>
   getWizardStepClusterStatus('storage', wizardStepsValidationsMap, cluster, cluster.hosts) ===
+  'ready';
+
+export const canNextOperators = ({ cluster }: TransitionProps): boolean =>
+  getWizardStepClusterStatus('operators', wizardStepsValidationsMap, cluster, cluster.hosts) ===
   'ready';
 
 export const canNextNetwork = ({ cluster }: TransitionProps): boolean =>
