@@ -98,7 +98,10 @@ export type AgentSelectorChangeProps = {
   autoSelect: boolean;
 };
 
-export type ClusterDeploymentHostSelectionStepProps = ClusterDeploymentHostsSelectionProps & {
+export type ClusterDeploymentHostSelectionStepProps = Omit<
+  ClusterDeploymentHostsSelectionProps,
+  'onHostSelect' | 'onAutoSelectChange'
+> & {
   onSaveHostsSelection: (values: ClusterDeploymentHostsSelectionValues) => Promise<string | void>;
   onClose: () => void;
 };
@@ -155,6 +158,8 @@ export type ClusterDeploymentHostsSelectionProps = {
   agents: AgentK8sResource[];
   aiConfigMap?: ConfigMapK8sResource;
   onEditRole: AgentTableActions['onEditRole'];
+  onAutoSelectChange: VoidFunction;
+  onHostSelect: VoidFunction;
 };
 
 export type InfraEnvAgentTableProps = Pick<

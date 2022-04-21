@@ -184,6 +184,17 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
     [onEditRoleInit, setSubmitting],
   );
 
+  const onAutoSelectChange = React.useCallback(() => {
+    setNextRequested(false);
+    setShowClusterErrors(false);
+    setShowFormErrors(false);
+  }, []);
+
+  const onHostSelect = React.useCallback(() => {
+    setNextRequested(false);
+    setShowClusterErrors(false);
+  }, []);
+
   const onNext = async () => {
     if (!showFormErrors) {
       setShowFormErrors(true);
@@ -198,23 +209,12 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
         return;
       }
     }
-    await submitForm();
+    submitForm();
     setNextRequested(true);
   };
 
   React.useEffect(() => {
-    setNextRequested(false);
-    setShowClusterErrors(false);
-  }, [values.selectedHostIds]);
-
-  React.useEffect(() => {
-    setNextRequested(false);
-    setShowClusterErrors(false);
-    setShowFormErrors(false);
-  }, [values.autoSelectHosts]);
-
-  React.useEffect(() => {
-    if (nextRequested) {
+    if (nextRequested && !isSubmitting) {
       const agentStatuses = selectedAgents.map(
         (agent) => getWizardStepAgentStatus(agent, 'hosts-selection').status.key,
       );
@@ -225,6 +225,7 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
       ) {
         setNextRequested(false);
       } else if (
+        !!selectedAgents.length &&
         selectedAgents.every(
           (agent) => getWizardStepAgentStatus(agent, 'hosts-selection').status.key === 'known',
         )
@@ -235,13 +236,14 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
         }
       }
     }
-  }, [nextRequested, selectedAgents, agentClusterInstall, setCurrentStepId]);
+  }, [nextRequested, selectedAgents, agentClusterInstall, setCurrentStepId, isSubmitting]);
 
   let submittingText: string | undefined = undefined;
-  if (nextRequested && !showClusterErrors) {
-    submittingText = 'Binding hosts...';
-  } else if (isSubmitting) {
+
+  if (isSubmitting) {
     submittingText = 'Saving changes...';
+  } else if (nextRequested && !showClusterErrors) {
+    submittingText = 'Binding hosts...';
   }
 
   const onSyncError = React.useCallback(() => setNextRequested(false), []);
@@ -286,6 +288,8 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
             clusterDeployment={clusterDeployment}
             aiConfigMap={aiConfigMap}
             onEditRole={onEditRole}
+            onAutoSelectChange={onAutoSelectChange}
+            onHostSelect={onHostSelect}
           />
         </GridItem>
       </Grid>
