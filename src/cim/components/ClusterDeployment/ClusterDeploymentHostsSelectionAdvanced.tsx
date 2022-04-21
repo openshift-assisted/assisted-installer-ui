@@ -16,6 +16,7 @@ type ClusterDeploymentHostsSelectionAdvancedProps = {
   availableAgents: AgentK8sResource[];
   onEditRole?: AgentTableActions['onEditRole'];
   onEditHost?: AgentTableActions['onEditHost'];
+  onHostSelect?: VoidFunction;
 };
 
 type FormValues = ClusterDeploymentHostsSelectionValues | ScaleUpFormValues;
@@ -24,6 +25,7 @@ const ClusterDeploymentHostsSelectionAdvanced = <T extends FormValues>({
   availableAgents,
   onEditRole,
   onEditHost,
+  onHostSelect,
 }: ClusterDeploymentHostsSelectionAdvancedProps) => {
   const { values } = useFormikContext<T>();
   const { locations, agentLabels } = values;
@@ -68,6 +70,7 @@ const ClusterDeploymentHostsSelectionAdvanced = <T extends FormValues>({
                   onEditRole={onEditRole}
                   width={contentRect.bounds?.width}
                   onEditHost={onEditHost}
+                  onHostSelect={onHostSelect}
                 />
               </div>
             )}
