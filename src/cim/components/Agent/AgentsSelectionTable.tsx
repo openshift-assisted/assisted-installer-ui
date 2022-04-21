@@ -26,6 +26,7 @@ type AgentsSelectionTableProps = {
   width?: number;
   onEditRole?: AgentTableActions['onEditRole'];
   onEditHost?: AgentTableActions['onEditHost'];
+  onHostSelect?: VoidFunction;
 };
 
 const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
@@ -33,6 +34,7 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
   onEditRole,
   width,
   onEditHost,
+  onHostSelect,
 }) => {
   const [{ value: selectedIDs }, , { setValue, setTouched }] = useField<
     ClusterDeploymentHostsSelectionValues['selectedHostIds']
@@ -68,8 +70,9 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
         ? [...idsRef.current, agent.metadata?.uid || '']
         : idsRef.current.filter((uid: string) => uid !== agent.metadata?.uid);
       setFieldValue(newIDs);
+      onHostSelect?.();
     },
-    [setFieldValue],
+    [setFieldValue, onHostSelect],
   );
 
   const [hosts, actions, actionResolver] = useAgentsTable(

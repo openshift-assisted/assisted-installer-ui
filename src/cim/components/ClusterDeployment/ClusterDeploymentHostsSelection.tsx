@@ -18,6 +18,8 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
   agents,
   aiConfigMap,
   onEditRole,
+  onAutoSelectChange,
+  onHostSelect,
 }) => {
   const { values } = useFormikContext<ClusterDeploymentHostsSelectionValues>();
   const { autoSelectHosts } = values;
@@ -55,7 +57,11 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
       <GridItem>
         {availableAgents.length ? (
           <Form>
-            <SwitchField name="autoSelectHosts" label="Auto-select hosts" />
+            <SwitchField
+              name="autoSelectHosts"
+              label="Auto-select hosts"
+              onChange={onAutoSelectChange}
+            />
 
             {autoSelectHosts && (
               <ClusterDeploymentHostsSelectionBasic
@@ -68,6 +74,7 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
               <ClusterDeploymentHostsSelectionAdvanced<ClusterDeploymentHostsSelectionValues>
                 availableAgents={availableAgents}
                 onEditRole={onEditRole}
+                onHostSelect={onHostSelect}
               />
             )}
           </Form>
