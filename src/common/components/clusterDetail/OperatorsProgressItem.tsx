@@ -81,7 +81,7 @@ const OperatorsPopover: React.FC<OperatorsPopoverProps> = ({ operators, children
       bodyContent={
         <List className="operators-progress-item__operators-list">
           {operators.map((operator) => {
-            let status = operator.status ?? 'pending'; // will fallback to 'pending' when operator.status is null or undefined
+            let status = operator.status ?? 'pending';
             if (operator.status === 'available') {
               status = 'installed';
             }
