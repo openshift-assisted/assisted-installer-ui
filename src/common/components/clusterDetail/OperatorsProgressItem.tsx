@@ -79,7 +79,10 @@ const OperatorsPopover: React.FC<OperatorsPopoverProps> = ({ operators, children
       bodyContent={
         <List className="operators-progress-item__operators-list">
           {operators.map((operator) => {
-            const status = operator.status || 'pending';
+            let status = operator.status ?? 'pending';
+            if (operator.status === 'available') {
+              status = 'installed';
+            }
             const name = operator.name && OPERATOR_LABELS[operator.name];
             return (
               <ListItem key={operator.name} title={operator.statusInfo}>
