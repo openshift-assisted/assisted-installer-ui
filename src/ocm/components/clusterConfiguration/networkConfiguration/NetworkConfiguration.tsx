@@ -8,6 +8,7 @@ import { NetworkConfigurationValues } from '../../../../common/types';
 import { getLimitedFeatureSupportLevels } from '../../../../common/components/featureSupportLevels/utils';
 import { useFeature } from '../../../../common/features';
 import {
+  allHostSubnetsIPv4,
   canSelectNetworkTypeSDN,
   getDefaultNetworkType,
   isSNO,
@@ -79,6 +80,10 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   const isMultiNodeCluster = !isSNO(cluster);
   const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';
   const isDualStack = values.stackType === DUAL_STACK;
+
+  const isDualStackSelectable = React.useMemo(() => !allHostSubnetsIPv4(hostSubnets), [
+    hostSubnets,
+  ]);
 
   const { defaultNetworkType, isSDNSelectable } = React.useMemo(() => {
     return {
@@ -177,7 +182,12 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
         clusterFeatureSupportLevels['CLUSTER_MANAGED_NETWORKING_WITH_VMS'] === 'unsupported' &&
         vmsAlert}
 
-      {!isUserManagedNetworking && <StackTypeControlGroup clusterId={cluster.id} />}
+      {!isUserManagedNetworking && (
+        <StackTypeControlGroup
+          clusterId={cluster.id}
+          isDualStackSelectable={isDualStackSelectable}
+        />
+      )}
 
       {!(isUserManagedNetworking && isMultiNodeCluster) && (
         <AvailableSubnetsControl
