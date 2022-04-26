@@ -32,13 +32,13 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   usedClusterNames,
   getClusterDeploymentLink,
   fetchSecret,
-  fetchNMState,
   clusterDeployment,
   agentClusterInstall,
   agents,
   clusterImages,
   aiConfigMap,
   infraEnv,
+  infraNMStates,
   fetchInfraEnv,
   initialStep,
   onApproveAgent,
@@ -95,10 +95,10 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
               infraEnv={
                 infraEnv as InfraEnvK8sResource /* Must be available since isAIFlow === true */
               }
+              infraNMStates={infraNMStates}
               onSaveAgent={onSaveAgent}
               onSaveBMH={onSaveBMH}
               fetchSecret={fetchSecret}
-              fetchNMState={fetchNMState}
               getClusterDeploymentLink={getClusterDeploymentLink}
               onClose={onClose}
               onSaveISOParams={onSaveISOParams}

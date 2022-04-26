@@ -17,7 +17,7 @@ import { AgentTableActions, ClusterDeploymentWizardStepsType } from '../ClusterD
 import { hostActionResolver } from '../../../common/components/hosts/tableUtils';
 import { getAgentClusterInstallOfAgent, getAIHosts, getInfraEnvNameOfAgent } from '../helpers';
 import { isInstallationInProgress } from '../ClusterDeployment/helpers';
-import { AGENT_BMH_HOSTNAME_LABEL_KEY } from '../common';
+import { AGENT_BMH_NAME_LABEL_KEY } from '../common';
 import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
 import BMHStatus from './BMHStatus';
 import { getAgentStatus, getBMHStatus, getWizardStepAgentStatus } from '../helpers/status';
@@ -90,7 +90,7 @@ export const discoveryTypeColumn = (
     const agent = agents.find((a) => a.metadata?.uid === host.id);
     let discoveryType = 'Unknown';
     if (agent) {
-      discoveryType = agent?.metadata?.labels?.hasOwnProperty(AGENT_BMH_HOSTNAME_LABEL_KEY)
+      discoveryType = agent?.metadata?.labels?.hasOwnProperty(AGENT_BMH_NAME_LABEL_KEY)
         ? 'BMC'
         : 'Discovery ISO';
     } else {
