@@ -12,8 +12,10 @@ const DiscoveryInstructions = ({
   isSNO = false,
 }: DiscoveryInstructionsProps) => (
   <TextContent>
-    <Text component="h5">Adding hosts instructions</Text>
-    <TextList component="ol" type={OrderType.number} style={{ marginLeft: 0 }}>
+    <Text component="h5">
+      <b>Adding hosts instructions</b>
+    </Text>
+    <TextList component={TextListVariants.ol}>
       <TextListItem hidden={!showAllInstructions}>
         Click the Add {pluralize(+isSNO, 'host')} button.
       </TextListItem>
@@ -21,13 +23,15 @@ const DiscoveryInstructions = ({
         Configure the SSH key and proxy settings after the modal appears (optional).
       </TextListItem>
       <TextListItem>
-        Download the Discovery ISO and save it on a bootable device (local disk, USB drive, etc.).
+        Download the Discovery ISO and use it to boot your hosts (e.g. download onto a USB drive,
+        attach it to virtual media, etc.)
       </TextListItem>
       <TextListItem>
-        Set {pluralize(+isSNO, 'the host', 'each host')} to boot <b>only one time</b> from this
-        device.
+        Set {pluralize(+isSNO, 'the host', 'each host')} to boot only one time from this device.
       </TextListItem>
-      <TextListItem>Discovered hosts will appear in the table.</TextListItem>
+      <TextListItem>
+        Booted hosts should appear in the Host inventory table (this might take a few minutes).
+      </TextListItem>
     </TextList>
   </TextContent>
 );

@@ -3,7 +3,7 @@ import { useFormikContext } from 'formik';
 import { Checkbox, FormGroup } from '@patternfly/react-core';
 
 import { RenderIf } from '../ui/RenderIf';
-import { ExternalLink, getFieldId, HelperText, TextAreaField, trimSshPublicKey } from '../ui';
+import { getFieldId, HelperText, TextAreaField, trimSshPublicKey } from '../ui';
 import { Cluster } from '../../api';
 import { NetworkConfigurationValues } from '../../types/clusters';
 import { SSH_GENERATION_DOC_LINK } from '../../config';

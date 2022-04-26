@@ -2,7 +2,6 @@ import React from 'react';
 import * as Yup from 'yup';
 import {
   Button,
-  ButtonVariant,
   Form,
   ModalBoxBody,
   ModalBoxFooter,
@@ -18,7 +17,6 @@ import {
   httpProxyValidationSchema,
   noProxyValidationSchema,
   sshPublicKeyValidationSchema,
-  LoadingState,
 } from '../../../common/components/ui';
 import { ProxyFieldsType } from '../../types';
 import ProxyFields from './ProxyFields';

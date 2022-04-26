@@ -8,7 +8,6 @@ import {
   DiscoveryImageConfigForm,
   DiscoveryImageFormValues,
   ErrorState,
-  LoadingState,
 } from '../../../common';
 import { updateCluster, forceReload } from '../../reducers/clusters';
 import { usePullSecret } from '../../hooks';
@@ -26,7 +25,7 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
   onCancel,
   onSuccess,
 }) => {
-  const { infraEnv, error: infraEnvError, isLoading } = useInfraEnv(cluster.id);
+  const { infraEnv, error: infraEnvError } = useInfraEnv(cluster.id);
   const cancelSourceRef = React.useRef<CancelTokenSource>();
   const dispatch = useDispatch();
   const ocmPullSecret = usePullSecret();
@@ -69,9 +68,7 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
     }
   };
 
-  if (isLoading) {
-    return <LoadingState></LoadingState>;
-  } else if (infraEnvError) {
+  if (infraEnvError) {
     return <ErrorState></ErrorState>;
   }
 
