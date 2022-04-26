@@ -16,6 +16,7 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
   agentClusterInstall,
   agents: allAgents,
   infraEnv,
+  infraNMStates,
   clusterDeployment,
   bareMetalHosts,
   onCreateBMH,
@@ -25,7 +26,6 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
   onSaveISOParams,
   onFormSaveError,
   fetchSecret,
-  fetchNMState,
   onChangeBMHHostname,
   onApproveAgent,
   onDeleteHost,
@@ -150,6 +150,7 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
             agentClusterInstall={agentClusterInstall}
             agents={infraEnvAgents}
             infraEnv={infraEnv}
+            infraNMStates={infraNMStates}
             bareMetalHosts={bareMetalHosts}
             usedHostnames={usedHostnames}
             clusterDeployment={clusterDeployment}
@@ -160,7 +161,6 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
             onSaveISOParams={onSaveISOParams}
             onFormSaveError={onFormSaveError}
             fetchSecret={fetchSecret}
-            fetchNMState={fetchNMState}
             onChangeBMHHostname={onChangeBMHHostname}
             onApproveAgent={onApproveAgent}
             onDeleteHost={onDeleteHost}

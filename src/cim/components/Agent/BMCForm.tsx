@@ -35,7 +35,11 @@ import { MinusCircleIcon, PlusCircleIcon } from '@patternfly/react-icons';
 import { AddBmcValues, BMCFormProps } from './types';
 import { NMStateK8sResource } from '../../types/k8s/nm-state';
 import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
-import { AGENT_BMH_HOSTNAME_LABEL_KEY, BMH_HOSTNAME_ANNOTATION } from '../common';
+import {
+  AGENT_BMH_NAME_LABEL_KEY,
+  BMH_HOSTNAME_ANNOTATION,
+  INFRAENV_AGENTINSTALL_LABEL_KEY,
+} from '../common';
 
 const MacMapping = () => {
   const [field, { touched, error }] = useField<{ macAddress: string; name: string }[]>({
@@ -107,7 +111,8 @@ const getNMState = (values: AddBmcValues, infraEnv: InfraEnvK8sResource): NMStat
       generateName: `${infraEnv.metadata?.name}-`,
       namespace: infraEnv.metadata?.namespace,
       labels: {
-        [AGENT_BMH_HOSTNAME_LABEL_KEY]: values.hostname,
+        [AGENT_BMH_NAME_LABEL_KEY]: values.name,
+        [INFRAENV_AGENTINSTALL_LABEL_KEY]: infraEnv?.metadata?.name || '',
       },
     },
     spec: {
