@@ -6,7 +6,7 @@ import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-in
 import { getAgentStatus, getClusterStatus } from './status';
 import { getHostNetworks } from './network';
 import { BareMetalHostK8sResource, InfraEnvK8sResource } from '../../types';
-import { AGENT_BMH_HOSTNAME_LABEL_KEY, BMH_HOSTNAME_ANNOTATION } from '../common/constants';
+import { AGENT_BMH_NAME_LABEL_KEY, BMH_HOSTNAME_ANNOTATION } from '../common/constants';
 import { getAgentProgress, getAgentRole, getInfraEnvNameOfAgent } from './agents';
 
 export const getAIHosts = (
@@ -30,8 +30,8 @@ export const getAIHosts = (
         intf.ipv6Addresses = _.cloneDeep(intf.ipV6Addresses);
       });
 
-      if (agent.metadata?.labels?.[AGENT_BMH_HOSTNAME_LABEL_KEY]) {
-        const bmhName = agent.metadata?.labels?.[AGENT_BMH_HOSTNAME_LABEL_KEY];
+      if (agent.metadata?.labels?.[AGENT_BMH_NAME_LABEL_KEY]) {
+        const bmhName = agent.metadata?.labels?.[AGENT_BMH_NAME_LABEL_KEY];
         bmhAgents.push(bmhName);
         const bmh = bmhs?.find(
           (h) =>

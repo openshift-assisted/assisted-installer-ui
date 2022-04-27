@@ -58,6 +58,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
   getClusterDeploymentLink,
   bareMetalHosts,
   infraEnv,
+  nmStates,
   onChangeHostname,
   onChangeBMHHostname,
   onMassDeleteHost,
@@ -241,6 +242,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
           agents={selectedAgents}
           bmhs={selectedBMHs}
           infraEnv={infraEnv}
+          nmStates={nmStates}
           onDelete={onMassDeleteHost}
           onClose={() => setMassDeleteOpen(false)}
         />
