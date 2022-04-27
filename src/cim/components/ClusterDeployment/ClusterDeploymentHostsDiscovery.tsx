@@ -21,6 +21,7 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
   bareMetalHosts,
   aiConfigMap,
   infraEnv,
+  infraNMStates,
   usedHostnames,
   onCreateBMH,
   onSaveAgent,
@@ -29,7 +30,6 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
   onSaveISOParams,
   onFormSaveError,
   fetchSecret,
-  fetchNMState,
   onChangeBMHHostname,
   onApproveAgent,
   onDeleteHost,
@@ -97,11 +97,11 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
         <EditBMHModal
           infraEnv={infraEnv}
           bmh={editBMH}
+          nmStates={infraNMStates}
           isOpen={!!editBMH}
           onClose={() => setEditBMH(undefined)}
           onEdit={onSaveBMH}
           fetchSecret={fetchSecret}
-          fetchNMState={fetchNMState}
           usedHostnames={usedHostnames || []}
         />
         <EditAgentModal

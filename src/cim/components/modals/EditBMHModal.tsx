@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { Modal, ModalVariant } from '@patternfly/react-core';
 import BMCForm from '../Agent/BMCForm';
-import { NMStateK8sResource, SecretK8sResource } from '../../types';
+import { SecretK8sResource } from '../../types';
 import { LoadingState } from '../../../common';
 import { EditBMHModalProps } from './types';
+import { AGENT_BMH_NAME_LABEL_KEY } from '../common/constants';
 
 const EditBMHModal: React.FC<EditBMHModalProps> = ({
   isOpen,
@@ -11,11 +12,10 @@ const EditBMHModal: React.FC<EditBMHModalProps> = ({
   onEdit,
   infraEnv,
   bmh,
-  fetchNMState,
+  nmStates,
   fetchSecret,
   usedHostnames,
 }) => {
-  const [nmState, setNMState] = React.useState<NMStateK8sResource>();
   const [secret, setSecret] = React.useState<SecretK8sResource>();
   const [isLoading, setLoading] = React.useState(true);
   const hasDHCP = infraEnv.metadata?.labels?.networkType !== 'static';
@@ -24,18 +24,13 @@ const EditBMHModal: React.FC<EditBMHModalProps> = ({
   const bmhNamespace = bmh?.metadata?.namespace;
   const bmhSecret = bmh?.spec?.bmc?.credentialsName;
 
+  const nmState = nmStates.find(
+    (nm) => nm.metadata?.labels?.[AGENT_BMH_NAME_LABEL_KEY] === bmhName,
+  );
+
   React.useEffect(() => {
-    setNMState(undefined);
     setSecret(undefined);
     const getResources = async () => {
-      if (bmhName && bmhNamespace && !hasDHCP) {
-        try {
-          const nmStateResult = await fetchNMState(bmhNamespace, bmhName);
-          setNMState(nmStateResult);
-        } catch (err) {
-          console.error('Could not get nm state', err);
-        }
-      }
       if (bmhSecret && bmhNamespace) {
         try {
           const secretResult = await fetchSecret(bmhNamespace, bmhSecret);
@@ -52,7 +47,7 @@ const EditBMHModal: React.FC<EditBMHModalProps> = ({
       setLoading(true);
       getResources();
     }
-  }, [bmhName, bmhNamespace, fetchNMState, fetchSecret, bmhSecret, hasDHCP]);
+  }, [bmhName, bmhNamespace, fetchSecret, bmhSecret, hasDHCP]);
   return (
     <Modal
       aria-label="Edit BMH dialog"

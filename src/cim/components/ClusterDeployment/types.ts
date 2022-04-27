@@ -8,6 +8,7 @@ import {
   InfraEnvK8sResource,
   SecretK8sResource,
   ConfigMapK8sResource,
+  NMStateK8sResource,
 } from '../../types';
 import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
 import { ClusterImageSetK8sResource } from '../../types/k8s/cluster-image-set';
@@ -133,6 +134,7 @@ export type ClusterDeploymentWizardProps = {
   agents: AgentK8sResource[];
   aiConfigMap?: ConfigMapK8sResource;
   infraEnv?: InfraEnvK8sResource;
+  infraNMStates: NMStateK8sResource[];
   fetchInfraEnv: (name: string, namespace: string) => Promise<InfraEnvK8sResource>;
   initialStep?: ClusterDeploymentWizardStepsType;
   isPreviewOpen: boolean;
@@ -147,7 +149,6 @@ export type ClusterDeploymentWizardProps = {
   onCreateBMH?: AddHostModalProps['onCreateBMH'];
   getClusterDeploymentLink: InfraEnvAgentTableProps['getClusterDeploymentLink'];
   fetchSecret: EditBMHModalProps['fetchSecret'];
-  fetchNMState: EditBMHModalProps['fetchNMState'];
 };
 
 export type FetchSecret = (name: string, namespace: string) => Promise<SecretK8sResource>;
@@ -169,6 +170,7 @@ export type InfraEnvAgentTableProps = Pick<
   agents: AgentK8sResource[];
   bareMetalHosts: BareMetalHostK8sResource[];
   infraEnv: InfraEnvK8sResource;
+  nmStates: NMStateK8sResource[];
   getClusterDeploymentLink: (cd: { name: string; namespace: string }) => string | React.ReactNode;
   onChangeHostname: (agent: AgentK8sResource, hostname: string) => Promise<AgentK8sResource>;
   onChangeBMHHostname: (
@@ -204,6 +206,7 @@ export type ClusterDeploymentHostsDiscoveryProps = {
   bareMetalHosts: BareMetalHostK8sResource[];
   aiConfigMap?: ConfigMapK8sResource;
   infraEnv: InfraEnvK8sResource;
+  infraNMStates: NMStateK8sResource[];
   isBMPlatform: boolean;
 
   usedHostnames: EditAgentModalProps['usedHostnames'];
@@ -214,7 +217,6 @@ export type ClusterDeploymentHostsDiscoveryProps = {
   onSaveISOParams: AddHostModalProps['onSaveISOParams'];
   onFormSaveError?: EditAgentModalProps['onFormSaveError'];
   fetchSecret: EditBMHModalProps['fetchSecret'];
-  fetchNMState: EditBMHModalProps['fetchNMState'];
   getClusterDeploymentLink: InfraEnvAgentTableProps['getClusterDeploymentLink'];
   onChangeBMHHostname: InfraEnvAgentTableProps['onChangeBMHHostname'];
   onApproveAgent: InfraEnvAgentTableProps['onApprove'];

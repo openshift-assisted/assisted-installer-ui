@@ -27,7 +27,7 @@ export type EditBMHModalProps = Pick<
     secret?: SecretK8sResource;
     nmState?: NMStateK8sResource;
   }) => BMCFormProps['onCreateBMH'];
-  fetchNMState: (namespace: string, name: string) => Promise<NMStateK8sResource>;
+  nmStates: NMStateK8sResource[];
   fetchSecret: (namespace: string, bmhName: string) => Promise<SecretK8sResource>;
 };
 
