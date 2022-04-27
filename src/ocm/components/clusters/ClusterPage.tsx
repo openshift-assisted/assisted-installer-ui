@@ -15,7 +15,6 @@ import {
   LoadingState,
   AlertsContextProvider,
   AddHostsContextProvider,
-  TechnologyPreview,
 } from '../../../common';
 import ClusterDetail from '../clusterDetail/ClusterDetail';
 import CancelInstallationModal from '../clusterDetail/CancelInstallationModal';
@@ -90,7 +89,6 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
               <Text component="h1" className="pf-u-display-inline">
                 Install OpenShift with the Assisted Installer
               </Text>
-              <TechnologyPreview testId="assisted-installer-support-level" />
             </TextContent>
           </PageSection>
           <PageSection variant={PageSectionVariants.light}>
