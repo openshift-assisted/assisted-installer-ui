@@ -9,7 +9,7 @@ import {
   ImportClusterParams,
   PlatformType,
   PreflightHardwareRequirements,
-  Presigned,
+  PresignedUrl,
 } from '../../../common/api/types';
 import { AxiosResponse } from 'axios';
 import { ClustersAPIGetPresignedOptions } from './types';
@@ -68,7 +68,7 @@ const ClustersAPI = {
     const queryParams = `${logsType ? `&logs_type=${logsType}` : ''}${
       hostId ? `&host_id=${hostId}` : ''
     }`;
-    return client.get<Presigned>(
+    return client.get<PresignedUrl>(
       `${ClustersAPI.makeDownloadsCredentialsPresignedBaseURI(
         clusterId,
       )}?file_name=${fileName}${queryParams}`,
@@ -84,7 +84,7 @@ const ClustersAPI = {
     const queryParams = `${logsType ? `&logs_type=${logsType}` : ''}${
       hostId ? `&host_id=${hostId}` : ''
     }`;
-    return client.get<Presigned>(
+    return client.get<PresignedUrl>(
       `${ClustersAPI.makeDownloadsFilesPresignedBaseURI(
         clusterId,
       )}?file_name=${fileName}${queryParams}`,
