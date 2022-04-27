@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { ActionListItem, Button, ButtonVariant, Grid, GridItem } from '@patternfly/react-core';
 import { Cluster, ClusterWizardStepHeader, useAlerts, ClusterWizardStep } from '../../../common';
-import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
+import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
 import { getErrorMessage, handleApiError } from '../../api';
 import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
 import ClusterWizardFooter from '../clusterWizard/ClusterWizardFooter';
@@ -14,7 +14,7 @@ import { useStateSafely } from '../../../common/hooks';
 
 const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const { addAlert } = useAlerts();
-  const { setCurrentStepId } = React.useContext(ClusterWizardContext);
+  const { moveBack } = useClusterWizardContext();
   const [isStartingInstallation, setIsStartingInstallation] = useStateSafely(false);
   const dispatch = useDispatch();
 
@@ -40,7 +40,7 @@ const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const footer = (
     <ClusterWizardFooter
       cluster={cluster}
-      onBack={() => setCurrentStepId('networking')}
+      onBack={moveBack}
       isSubmitting={isStartingInstallation}
       submittingText="Starting installation..."
       additionalActions={

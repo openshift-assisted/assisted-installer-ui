@@ -21,3 +21,7 @@
     overflow: inherit !important;
   }
 }
+
+.cluster-wizard  {
+  --pf-c-wizard__nav--Width: 20rem;
+}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useInfraEnvId } from '.';
-import { Cluster, InfraEnv } from '../../common';
+import { Cluster, InfraEnv, InfraEnvUpdateParams } from '../../common';
 import { APIErrorMixin } from '../api/types';
 import { InfraEnvsAPI } from '../services/apis';
 
@@ -20,6 +20,18 @@ export default function useInfraEnv(clusterId: Cluster['id']) {
     }
   }, [infraEnvId]);
 
+  const updateInfraEnv = React.useCallback(
+    async (infraEnvUpdateParams: InfraEnvUpdateParams) => {
+      if (!infraEnvId) {
+        throw 'updateInfraEnv should not be called before infra env was loaded';
+      }
+      const { data } = await InfraEnvsAPI.update(infraEnvId, infraEnvUpdateParams);
+      setInfraEnv(data);
+      return data;
+    },
+    [infraEnvId],
+  );
+
   React.useEffect(() => {
     if (infraEnvIdError) {
       setError(infraEnvIdError);
@@ -30,5 +42,5 @@ export default function useInfraEnv(clusterId: Cluster['id']) {
     }
   }, [getInfraEnv, infraEnv, infraEnvId, infraEnvIdError]);
 
-  return { infraEnv, error, isLoading: !infraEnv && !error };
+  return { infraEnv, error, isLoading: !infraEnv && !error, updateInfraEnv };
 }

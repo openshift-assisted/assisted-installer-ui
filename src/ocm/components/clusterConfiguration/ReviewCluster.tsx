@@ -2,7 +2,7 @@ import React from 'react';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens';
 import { ClusterFeatureSupportLevelsDetailItem } from '../featureSupportLevels';
-import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
+import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
 import {
   allClusterWizardSoftValidationIds,
   ClusterWizardStepsType,
@@ -40,7 +40,7 @@ const PlatformIntegrationNote = () => {
 };
 
 const ReviewCluster: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
-  const { setCurrentStepId } = React.useContext(ClusterWizardContext);
+  const { setCurrentStepId } = useClusterWizardContext();
   return (
     <DetailList>
       <DetailItem

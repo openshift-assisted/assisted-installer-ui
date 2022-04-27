@@ -14,7 +14,7 @@ import { Cluster } from '../../../common/api/types';
 import { useFeatureSupportLevel } from '../../../common/components/featureSupportLevels';
 import { DetailItem } from '../../../common';
 import { getLimitedFeatureSupportLevels } from '../../../common/components/featureSupportLevels/utils';
-import { captureException } from '../../sentry';
+import { useErrorHandler } from '../../../common/errorHandling/ErrorHandlerContext';
 
 export type SupportLevelSummary = {
   unsupportedVms: boolean;
@@ -111,11 +111,12 @@ export const getFeatureSupportLevelTitle = (fullySupported: boolean): string => 
 export const ClusterFeatureSupportLevelsDetailItem: React.FC<{ cluster: Cluster }> = ({
   cluster,
 }) => {
+  const errorHandler = useErrorHandler();
   const featureSupportLevelData = useFeatureSupportLevel();
 
   const clusterFeatureSupportLevels = React.useMemo(() => {
-    return getLimitedFeatureSupportLevels(cluster, featureSupportLevelData, captureException);
-  }, [cluster, featureSupportLevelData]);
+    return getLimitedFeatureSupportLevels(cluster, featureSupportLevelData, errorHandler);
+  }, [cluster, featureSupportLevelData, errorHandler]);
 
   const fullySupported: boolean = React.useMemo<boolean>(() => {
     return !!clusterFeatureSupportLevels && Object.keys(clusterFeatureSupportLevels).length === 0;

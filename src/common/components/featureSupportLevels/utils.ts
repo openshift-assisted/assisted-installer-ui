@@ -1,7 +1,7 @@
 // TODO: move to common since networkConfiguration is dependant on it.
 
 import { Cluster, stringToJSON } from '../../api';
-import { ErrorHandler } from '../../types/errorHandling';
+import { ErrorHandlerAPI } from '../../errorHandling/ErrorHandlerContext';
 import { ClusterFeatureUsage, FeatureId, FeatureIdToSupportLevel } from '../../types';
 import { FeatureSupportLevelData } from './FeatureSupportLevelContext';
 
@@ -9,7 +9,7 @@ import { FeatureSupportLevelData } from './FeatureSupportLevelContext';
 export const getLimitedFeatureSupportLevels = (
   cluster: Cluster,
   featureSupportLevelData: FeatureSupportLevelData,
-  errorHandler?: ErrorHandler,
+  errorHandler?: ErrorHandlerAPI,
 ): FeatureIdToSupportLevel | undefined => {
   try {
     if (!cluster.openshiftVersion) {
@@ -44,9 +44,12 @@ export const getLimitedFeatureSupportLevels = (
       }
     }
     return ret;
-  } catch (err) {
+  } catch (error) {
     if (errorHandler) {
-      errorHandler(err, `Failed to get cluster ${cluster.id} feature support levels`);
+      errorHandler.handleError({
+        error,
+        message: `Failed to get cluster ${cluster.id} feature support levels`,
+      });
     }
     return undefined;
   }

@@ -1,4 +1,3 @@
-import { ClusterDetailsValues } from '../../common/components/clusterWizard/types';
 import Axios, { AxiosError } from 'axios';
 import { Error as APIError, InfraError } from '../../common/api/types';
 
@@ -9,8 +8,4 @@ export const isApiError = (error: unknown): error is AxiosError<APIErrorMixin, A
     return false;
   }
   return typeof error.response?.data === 'object';
-};
-
-export type OcmClusterDetailsValues = ClusterDetailsValues & {
-  cpuArchitecture: string;
 };

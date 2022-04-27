@@ -1,9 +1,10 @@
 import React from 'react';
 import { useField } from 'formik';
-import { Radio, RadioProps } from '@patternfly/react-core';
+import { Radio } from '@patternfly/react-core';
 import { getFieldId } from './utils';
+import { RadioFieldProps } from './types';
 
-const RadioField: React.FC<Optional<RadioProps, 'id'>> = (props) => {
+const RadioField: React.FC<RadioFieldProps> = ({ callFormikOnChange = true, ...props }) => {
   const [field] = useField({
     name: props.name,
     value: props.value,
@@ -21,7 +22,7 @@ const RadioField: React.FC<Optional<RadioProps, 'id'>> = (props) => {
       isDisabled={props.isDisabled}
       onChange={(checked, e) => {
         props.onChange && props.onChange(checked, e);
-        field.onChange(e);
+        callFormikOnChange && field.onChange(e);
       }}
     />
   );

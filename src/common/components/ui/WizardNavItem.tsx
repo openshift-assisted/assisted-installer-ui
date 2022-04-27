@@ -1,17 +1,16 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { WizardNavItem, WizardNavItemProps } from '@patternfly/react-core';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens';
 
-const NavItem: React.FC<WizardNavItemProps & { isValid?: () => boolean }> = ({
-  isValid = () => true,
-  ...props
-}) => {
-  const { content, isDisabled, isCurrent } = props;
-
-  let validatedLinkName = content;
+export const getNavItemContent = (
+  content: ReactNode,
+  isValid: () => boolean,
+  isDisabled?: boolean,
+  isCurrent?: boolean,
+): ReactNode => {
   if (!isDisabled && !isCurrent && !isValid()) {
-    validatedLinkName = (
+    return (
       <>
         {content}
         <ExclamationCircleIcon
@@ -22,8 +21,21 @@ const NavItem: React.FC<WizardNavItemProps & { isValid?: () => boolean }> = ({
       </>
     );
   }
+  return content;
+};
 
-  return <WizardNavItem {...props} content={validatedLinkName} />;
+const NavItem: React.FC<WizardNavItemProps & { isValid?: () => boolean }> = ({
+  isValid = () => true,
+  ...props
+}) => {
+  const { content, isDisabled, isCurrent } = props;
+
+  return (
+    <WizardNavItem
+      {...props}
+      content={getNavItemContent(content, isValid, isDisabled, isCurrent)}
+    />
+  );
 };
 
 export default NavItem;

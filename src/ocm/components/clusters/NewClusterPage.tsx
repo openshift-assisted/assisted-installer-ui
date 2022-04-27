@@ -14,6 +14,8 @@ import { ClusterDefaultConfigurationProvider } from '../clusterConfiguration/Clu
 import NewClusterWizard from '../clusterWizard/NewClusterWizard';
 import { routeBasePath } from '../../config';
 import { FeatureSupportLevelProvider } from '../featureSupportLevels';
+import ClusterWizardContextProvider from '../clusterWizard/ClusterWizardContextProvider';
+import { OcmErrorHandlerContextProvider } from '../OcmErrorHandlerContextProvider';
 const loadingUI = (
   <PageSection variant={PageSectionVariants.light} isFilled>
     <LoadingState />
@@ -40,21 +42,25 @@ const errorUI = (
 const NewClusterPage: React.FC = () => {
   return (
     <AlertsContextProvider>
-      <ClusterDefaultConfigurationProvider loadingUI={loadingUI} errorUI={errorUI}>
-        <FeatureSupportLevelProvider loadingUi={loadingUI}>
-          <ClusterBreadcrumbs clusterName="New cluster" />
-          <PageSection variant={PageSectionVariants.light}>
-            <TextContent>
-              <Text component="h1" className="pf-u-display-inline">
-                Install OpenShift with the Assisted Installer
-              </Text>
-            </TextContent>
-          </PageSection>
-          <PageSection variant={PageSectionVariants.light} isFilled>
-            <NewClusterWizard />
-          </PageSection>
-        </FeatureSupportLevelProvider>
-      </ClusterDefaultConfigurationProvider>
+      <OcmErrorHandlerContextProvider>
+        <ClusterDefaultConfigurationProvider loadingUI={loadingUI} errorUI={errorUI}>
+          <FeatureSupportLevelProvider loadingUi={loadingUI}>
+            <ClusterBreadcrumbs clusterName="New cluster" />
+            <PageSection variant={PageSectionVariants.light}>
+              <TextContent>
+                <Text component="h1" className="pf-u-display-inline">
+                  Install OpenShift with the Assisted Installer
+                </Text>
+              </TextContent>
+            </PageSection>
+            <PageSection variant={PageSectionVariants.light} isFilled>
+              <ClusterWizardContextProvider>
+                <NewClusterWizard />
+              </ClusterWizardContextProvider>
+            </PageSection>
+          </FeatureSupportLevelProvider>
+        </ClusterDefaultConfigurationProvider>
+      </OcmErrorHandlerContextProvider>
     </AlertsContextProvider>
   );
 };

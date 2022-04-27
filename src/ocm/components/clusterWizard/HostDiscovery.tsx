@@ -12,7 +12,7 @@ import {
 } from '../../../common';
 import { HostDiscoveryValues } from '../../../common/types/clusters';
 import HostInventory from '../clusterConfiguration/HostInventory';
-import ClusterWizardContext from './ClusterWizardContext';
+import { useClusterWizardContext } from './ClusterWizardContext';
 import { canNextHostDiscovery } from './wizardTransition';
 import { getErrorMessage, handleApiError } from '../../api/utils';
 import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
@@ -24,7 +24,7 @@ import { HostDiscoveryService } from '../../services';
 const HostDiscoveryForm: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const { alerts } = useAlerts();
   const { errors, touched, isSubmitting, isValid } = useFormikContext<HostDiscoveryValues>();
-  const { setCurrentStepId } = React.useContext(ClusterWizardContext);
+  const { moveNext, moveBack } = useClusterWizardContext();
   const isAutoSaveRunning = useFormikAutoSave();
   const errorFields = getFormikErrorFields(errors, touched);
   const isNextDisabled =
@@ -40,8 +40,8 @@ const HostDiscoveryForm: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
       errorFields={errorFields}
       isSubmitting={isSubmitting}
       isNextDisabled={isNextDisabled}
-      onNext={() => setCurrentStepId('networking')}
-      onBack={() => setCurrentStepId('cluster-details')}
+      onNext={moveNext}
+      onBack={moveBack}
     />
   );
 

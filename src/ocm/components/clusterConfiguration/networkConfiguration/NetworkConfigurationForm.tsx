@@ -20,7 +20,7 @@ import {
   IPV4_STACK,
 } from '../../../../common';
 import { useDefaultConfiguration } from '../ClusterDefaultConfigurationContext';
-import ClusterWizardContext from '../../clusterWizard/ClusterWizardContext';
+import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContext';
 import ClusterWizardFooter from '../../clusterWizard/ClusterWizardFooter';
 import { canNextNetwork } from '../../clusterWizard/wizardTransition';
 import ClusterWizardNavigation from '../../clusterWizard/ClusterWizardNavigation';
@@ -44,7 +44,7 @@ const NetworkConfigurationForm: React.FC<{
   infraEnv?: InfraEnv;
 }> = ({ cluster, hostSubnets, defaultNetworkSettings, infraEnv }) => {
   const { alerts } = useAlerts();
-  const { setCurrentStepId } = React.useContext(ClusterWizardContext);
+  const { moveNext, moveBack } = useClusterWizardContext();
   const { errors, touched, isSubmitting, isValid } = useFormikContext<NetworkConfigurationValues>();
   const isAutoSaveRunning = useFormikAutoSave();
   const errorFields = getFormikErrorFields(errors, touched);
@@ -61,8 +61,8 @@ const NetworkConfigurationForm: React.FC<{
         !!alerts.length ||
         !isValid
       }
-      onNext={() => setCurrentStepId('review')}
-      onBack={() => setCurrentStepId('host-discovery')}
+      onNext={moveNext}
+      onBack={moveBack}
     />
   );
   return (

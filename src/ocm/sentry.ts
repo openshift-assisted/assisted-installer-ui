@@ -1,8 +1,8 @@
 import * as Sentry from '@sentry/browser';
-import { ErrorHandler, ErrorSeverity } from '../common/types/errorHandling';
+import { ErrorSeverity } from '../common/errorHandling/ErrorHandlerContext';
 import { ocmClient } from './api/axiosClient';
 
-export const captureException: ErrorHandler = (
+export const captureException = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   error: any,
   message?: string,
@@ -15,5 +15,17 @@ export const captureException: ErrorHandler = (
     severity === Sentry.Severity.Error
       ? console.error(message, error)
       : console.warn(message, error);
+  }
+};
+
+export const captureMessage = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  message: string,
+  severity: ErrorSeverity = 'error',
+) => {
+  if (ocmClient) {
+    Sentry.captureMessage(message, severity as Sentry.Severity);
+  } else {
+    severity === Sentry.Severity.Error ? console.error(message) : console.warn(message);
   }
 };
