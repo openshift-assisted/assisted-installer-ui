@@ -49,6 +49,10 @@ securityDefinitions:
     type: apiKey
     in: header
     name: Image-Token
+  imageURLAuth:
+    type: apiKey
+    in: query
+    name: image_token
 
 security:
   - userAuth: [admin, user]
@@ -127,6 +131,11 @@ paths:
           type: boolean
           allowEmptyValue: true
           default: false
+        - in: query
+          name: owner
+          description: If provided, returns only clusters that are owned by the specified user.
+          type: string
+          required: false
       responses:
         '200':
           description: Success.
@@ -181,6 +190,11 @@ paths:
           type: boolean
           required: false
           default: false
+        - in: query
+          name: exclude-hosts
+          description: If true, do not include hosts.
+          type: boolean
+          required: false
       responses:
         '200':
           description: Success.
@@ -303,6 +317,65 @@ paths:
           schema:
             $ref: '#/definitions/error'
 
+  /v2/clusters/{cluster_id}/hosts:
+    get:
+      tags:
+        - installer
+      description: Get a list of cluster hosts according to supplied filters.
+      operationId: ListClusterHosts
+      security:
+        - userAuth: [admin, read-only-admin, user]
+        - agentAuth: []
+      parameters:
+        - in: path
+          name: cluster_id
+          description: The cluster whose hosts should be retrieved.
+          type: string
+          format: uuid
+          required: true
+        - in: query
+          name: role
+          description: Role to request.
+          type: string
+          enum: ['master', 'worker', 'auto-assign']
+          required: false
+        - in: query
+          description: Hosts status to request.
+          name: status
+          type: string
+          required: false
+        - in: query
+          name: with-inventory
+          description: If true return the host's inventory.
+          type: boolean
+          required: false
+        - in: query
+          description: If true return the host's connectivity.
+          name: with-connectivity
+          type: boolean
+          required: false
+      responses:
+        '200':
+          description: Success.
+          schema:
+            $ref: '#/definitions/host-list'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+
   /v2/clusters/{cluster_id}/supported-platforms:
     get:
       tags:
@@ -406,6 +479,11 @@ paths:
           description: If provided, returns only infra-envs which directly reference this cluster.
           type: string
           format: uuid
+          required: false
+        - in: query
+          name: owner
+          description: If provided, returns only infra-envs that are owned by the specified user.
+          type: string
           required: false
       responses:
         '200':
@@ -604,7 +682,7 @@ paths:
         '200':
           description: Success.
           schema:
-            $ref: '#/definitions/infra-env-image-url'
+            $ref: '#/definitions/presigned-url'
         '400':
           description: Bad Request.
           schema:
@@ -1541,6 +1619,7 @@ paths:
         - agentAuth: []
         - urlAuth: []
         - imageAuth: []
+        - imageURLAuth: []
       description: Downloads the customized ignition file for this host
       operationId: v2DownloadInfraEnvFiles
       produces:
@@ -1585,6 +1664,59 @@ paths:
             $ref: '#/definitions/error'
         '409':
           description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '501':
+          description: Not implemented.
+          schema:
+            $ref: '#/definitions/error'
+        '503':
+          description: Unavailable.
+          schema:
+            $ref: '#/definitions/error'
+
+  /v2/infra-envs/{infra_env_id}/downloads/files-presigned:
+    get:
+      tags:
+        - installer
+      description: Creates a new pre-signed download URL for the infra-env.
+      operationId: GetInfraEnvPresignedFileURL
+      parameters:
+        - in: path
+          name: infra_env_id
+          description: The file's infra-env.
+          type: string
+          format: uuid
+          required: true
+        - in: query
+          name: file_name
+          description: The file to be downloaded.
+          type: string
+          enum: [discovery.ign, ipxe-script]
+          required: true
+      responses:
+        '200':
+          description: Success.
+          schema:
+            $ref: '#/definitions/presigned-url'
+        '401':
+          description: Unauthorized.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '403':
+          description: Forbidden.
+          schema:
+            $ref: '#/definitions/infra_error'
+        '404':
+          description: Error.
+          schema:
+            $ref: '#/definitions/error'
+        '405':
+          description: Method Not Allowed.
           schema:
             $ref: '#/definitions/error'
         '500':
@@ -1751,7 +1883,7 @@ paths:
         '200':
           description: Success.
           schema:
-            $ref: '#/definitions/presigned'
+            $ref: '#/definitions/presigned-url'
         '400':
           description: Error.
           schema:
@@ -2011,7 +2143,7 @@ paths:
         '200':
           description: Success.
           schema:
-            $ref: '#/definitions/presigned'
+            $ref: '#/definitions/presigned-url'
         '400':
           description: Error.
           schema:
@@ -2542,7 +2674,7 @@ paths:
         - installer
       security:
         - agentAuth: []
-      description: Agent API to mark a finalizing installation as complete.
+      description: Agent API to mark a finalizing installation as complete and progress to 100%.
       operationId: v2CompleteInstallation
       parameters:
         - in: path
@@ -3959,6 +4091,10 @@ definitions:
       ignition_endpoint_token_set:
         type: boolean
         description: True if the token to fetch the ignition from ignition_endpoint_url is set.
+      node_labels:
+        x-go-custom-tag: gorm:"type:text"
+        type: string
+        description: Json containing node's labels.
 
   installer-args-params:
     type: object
@@ -4002,13 +4138,15 @@ definitions:
       - inventory
       - install
       - free-network-addresses
-      - reset-installation
       - dhcp-lease-allocate
       - api-vip-connectivity-check
       - ntp-synchronizer
       - installation-disk-speed-check
       - container-image-availability
       - domain-resolution
+      - stop-installation
+      - logs-gather
+      - next-step-runner
 
   step:
     type: object
@@ -4049,10 +4187,12 @@ definitions:
       name:
         type: string
       mac:
+        format: mac
         type: string
       ip_addresses:
         type: array
         items:
+          pattern: '^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))$'
           type: string
 
   connectivity-check-host:
@@ -4134,6 +4274,10 @@ definitions:
           balancers and routers to manage the traffic.
         pattern: '^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$'
         default: '172.30.0.0/16'
+      api_vip:
+        type: string
+        pattern: '^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))?$'
+        description: The virtual IP used to reach the OpenShift cluster's API.
       ingress_vip:
         type: string
         pattern: '^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))$'
@@ -4261,6 +4405,12 @@ definitions:
         description:
           A string which will be used as Authorization Bearer token to fetch the ignition from
           ignition_endpoint_url.
+      node_labels:
+        type: array
+        description: Labels to be added to the corresponding node.
+        x-nullable: true
+        items:
+          $ref: '#/definitions/node-label-params'
 
   v2-cluster-update-params:
     type: object
@@ -4942,11 +5092,6 @@ definitions:
         items:
           $ref: '#/definitions/connectivity-remote-host'
 
-  discovery-ignition-params:
-    properties:
-      config:
-        type: string
-
   ingress-cert-params:
     type: string
 
@@ -5155,6 +5300,8 @@ definitions:
           to the by-path field otherwise
       drive_type:
         type: string
+      has_uuid:
+        type: boolean
       vendor:
         type: string
       name:
@@ -5421,6 +5568,7 @@ definitions:
             - domain_name
           properties:
             domain_name:
+              pattern: '^([a-zA-Z0-9]+(-[a-zA-Z0-9]+)*[.])+[a-zA-Z]{2,}$'
               description: 'The domain name that should be resolved'
               type: string
 
@@ -5515,6 +5663,19 @@ definitions:
       - 'none'
       - 'install'
 
+  node-label-params:
+    type: object
+    required:
+      - 'key'
+      - 'value'
+    properties:
+      key:
+        description: The key for the label's key-value pair.
+        type: string
+      value:
+        description: The value for the label's key-value pair.
+        type: string
+
   host-role-update-params:
     type: string
     enum:
@@ -5563,6 +5724,8 @@ definitions:
       - 'compatible-with-cluster-platform'
       - 'dns-wildcard-not-configured'
       - 'disk-encryption-requirements-satisfied'
+      - 'non-overlapping-subnets'
+      - 'vsphere-disk-uuid-enabled'
 
   dhcp_allocation_request:
     type: object
@@ -5610,6 +5773,139 @@ definitions:
         type: string
         description: Contents of last acquired lease for Ingress virtual IP.
 
+  next_step_cmd_request:
+    type: object
+    required:
+      - infra_env_id
+      - host_id
+      - agent_version
+    properties:
+      infra_env_id:
+        type: string
+        format: uuid
+        description: Infra env id
+      host_id:
+        type: string
+        format: uuid
+        description: Host id
+      agent_version:
+        pattern: '^(([a-zA-Z0-9\-\.]+)(:[0-9]+)?\/)?[a-z0-9\._\-\/@]+[?::a-zA-Z0-9_\-.]+$'
+        type: string
+        description: Agent image version
+
+  logs_gather_cmd_request:
+    type: object
+    required:
+      - cluster_id
+      - infra_env_id
+      - host_id
+      - bootstrap
+      - installer_gather
+    properties:
+      cluster_id:
+        type: string
+        format: uuid
+        description: Cluster id
+      infra_env_id:
+        type: string
+        format: uuid
+        description: Infra env id
+      host_id:
+        type: string
+        format: uuid
+        description: Host id
+      bootstrap:
+        type: boolean
+        description: Host is bootstrap or not
+      installer_gather:
+        type: boolean
+        description: Run installer gather logs
+        default: true
+      master_ips:
+        type: array
+        description: List of master ips
+        items:
+          type: string
+          description: Master ip.
+          pattern: '^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))$'
+
+  install_cmd_request:
+    type: object
+    required:
+      - cluster_id
+      - infra_env_id
+      - host_id
+      - role
+      - boot_device
+      - controller_image
+      - installer_image
+      - high_availability_mode
+    properties:
+      cluster_id:
+        type: string
+        format: uuid
+        description: Cluster id
+      infra_env_id:
+        type: string
+        format: uuid
+        description: Infra env id
+      host_id:
+        type: string
+        format: uuid
+        description: Host id
+      role:
+        $ref: '#/definitions/host-role'
+      boot_device:
+        type: string
+        description: Boot device to write image on
+      controller_image:
+        pattern: '^(([a-zA-Z0-9\-\.]+)(:[0-9]+)?\/)?[a-z0-9\._\-\/@]+[?::a-zA-Z0-9_\-.]+$'
+        type: string
+        description: Assisted installer controller image
+      installer_image:
+        pattern: '^(([a-zA-Z0-9\-\.]+)(:[0-9]+)?\/)?[a-z0-9\._\-\/@]+[?::a-zA-Z0-9_\-.]+$'
+        type: string
+        description: Assisted installer image
+      high_availability_mode:
+        type: string
+        enum: ['Full', 'None']
+        default: 'Full'
+        description: |
+          Guaranteed availability of the installed cluster. 'Full' installs a Highly-Available cluster
+          over multiple master nodes whereas 'None' installs a full cluster over one node.
+      proxy:
+        $ref: '#/definitions/proxy'
+      check_cvo:
+        type: boolean
+        description: Check CVO status if needed
+        default: true
+      disks_to_format:
+        type: array
+        description: List of disks to format
+        items:
+          type: string
+          description: Disk to format
+      must_gather_image:
+        type: string
+        description: Must-gather images to use
+      mco_image:
+        pattern: '^(([a-zA-Z0-9\-\.]+)(:[0-9]+)?\/)?[a-z0-9\._\-\/@]+[?::a-zA-Z0-9_\-.]+$'
+        type: string
+        description: Machine config operator image
+      openshift_version:
+        type: string
+        description: Version of the OpenShift cluster.
+      service_ips:
+        type: array
+        description: List of service ips
+        items:
+          type: string
+          description: Service ip.
+          pattern: '^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))$'
+      installer_args:
+        type: string
+        description: Core-os installer addtional args
+
   ntp_synchronization_request:
     type: object
     required:
@@ -5649,6 +5945,7 @@ definitions:
         type: array
         description: List of image names to be checked.
         items:
+          pattern: '^(([a-zA-Z0-9\-\.]+)(:[0-9]+)?\/)?[a-z0-9\._\-\/@]+[?::a-zA-Z0-9_\-.]+$'
           type: string
           description: A fully qualified image name (FQIN).
 
@@ -5696,14 +5993,6 @@ definitions:
       - variable
       - unreachable
 
-  presigned:
-    type: object
-    required:
-      - url
-    properties:
-      url:
-        type: string
-
   cluster-validation-id:
     type: string
     enum:
@@ -5711,6 +6000,7 @@ definitions:
       - 'cluster-cidr-defined'
       - 'service-cidr-defined'
       - 'no-cidrs-overlapping'
+      - 'networks-same-address-families'
       - 'network-prefix-valid'
       - 'machine-cidr-equals-to-calculated-cidr'
       - 'api-vip-defined'
@@ -6155,7 +6445,10 @@ definitions:
 
   cluster_network:
     type: object
-    description: IP address block for pod IP blocks.
+    description:
+      A network from which Pod IPs are allocated. This block must not overlap with existing physical
+      networks. These IP addresses are used for the Pod network, and if you need to access the Pods
+      from an external network, configure load balancers and routers to manage the traffic.
     properties:
       cluster_id:
         type: string
@@ -6168,14 +6461,17 @@ definitions:
       host_prefix:
         type: integer
         description:
-          The prefix size to allocate to each node from the CIDR. For example, 24 would allocate
-          2^8=256 adresses to each node.
+          The subnet prefix length to assign to each individual node. For example if is set to 23,
+          then each node is assigned a /23 subnet out of the given CIDR, which allows for 510 (2^(32
+          - 23) - 2) pod IPs addresses.
         minimum: 1
         maximum: 128
 
   machine_network:
     type: object
-    description: IP address block for node IP blocks.
+    description:
+      A network that all hosts belonging to the cluster should have an interface with IP address in.
+      The VIPs (if exist) belong to this network.
     properties:
       cluster_id:
         type: string
@@ -6184,7 +6480,7 @@ definitions:
         x-go-custom-tag: gorm:"primaryKey"
       cidr:
         $ref: '#/definitions/subnet'
-        description: The IP block address pool for machines within the cluster.
+        description: The IP block address pool.
 
   service_network:
     type: object
@@ -6193,7 +6489,9 @@ definitions:
       cluster_id:
         type: string
         format: uuid
-        description: The cluster that this network is associated with.
+        description:
+          A network to use for service IP addresses. If you need to access the services from an
+          external network, configure load balancers and routers to manage the traffic.
         x-go-custom-tag: gorm:"primaryKey"
       cidr:
         $ref: '#/definitions/subnet'
@@ -6207,8 +6505,10 @@ definitions:
         type: string
         format: uuid
 
-  infra-env-image-url:
+  presigned-url:
     type: object
+    required:
+      - url
     properties:
       url:
         type: string
