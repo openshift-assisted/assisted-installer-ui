@@ -20,6 +20,7 @@ import {
 import { global_success_color_100 as okColor } from '@patternfly/react-tokens/dist/esm/global_success_color_100';
 import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens/dist/esm/global_danger_color_100';
 import BorderedIcon from '../ui/BorderedIcon/BorderedIcon';
+import capitalize from 'lodash/capitalize';
 
 type FinalizingProgressProps = {
   cluster: Cluster;
@@ -124,7 +125,7 @@ export const FinalizingProgress: React.FC<FinalizingProgressProps> = ({
             )}
           </>
           <TextContent>
-            <small>{initializationStatus}</small>
+            <small>{capitalize(initializationStatus)}</small>
           </TextContent>
         </StackItem>
       </Stack>
