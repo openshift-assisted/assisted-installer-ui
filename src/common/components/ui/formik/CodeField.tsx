@@ -5,6 +5,7 @@ import { CodeFieldProps } from './types';
 import { getFieldId } from './utils';
 import HelperText from './HelperText';
 import { CodeEditor } from '@patternfly/react-code-editor';
+import useFieldErrorMsg from '../../../hooks/useFieldErrorMsg';
 
 const CodeField: React.FC<CodeFieldProps> = ({
   label,
@@ -17,10 +18,10 @@ const CodeField: React.FC<CodeFieldProps> = ({
   name,
   description,
 }) => {
-  const [field, { touched, error }, { setValue, setTouched }] = useField({ name, validate });
+  const [field, , { setValue, setTouched }] = useField({ name, validate });
   const fieldId = getFieldId(name, 'input', idPostfix);
-  const isValid = !(touched && error);
-  const errorMessage = !isValid ? error : '';
+  const errorMessage = useFieldErrorMsg({ name });
+  const isValid = !errorMessage;
   return (
     <FormGroup
       fieldId={fieldId}
@@ -46,7 +47,6 @@ const CodeField: React.FC<CodeFieldProps> = ({
         code={field.value}
         isUploadEnabled
         isDownloadEnabled
-        isCopyEnabled
         isLanguageLabelVisible
         height="400px"
         language={language}

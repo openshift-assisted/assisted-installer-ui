@@ -4,6 +4,7 @@ import { FormGroup, HelperTextItem, Split, SplitItem, TextInput } from '@pattern
 import { InputFieldProps } from './types';
 import { getFieldId } from './utils';
 import HelperText from './HelperText';
+import useFieldErrorMsg from '../../../hooks/useFieldErrorMsg';
 
 const InputField: React.FC<
   InputFieldProps & { inputError?: string; description?: React.ReactNode; labelInfo?: string }
@@ -26,10 +27,13 @@ const InputField: React.FC<
     },
     ref: React.Ref<HTMLInputElement>,
   ) => {
-    const [field, { touched, error }] = useField({ name: props.name, validate });
+    const [field] = useField({
+      name: props.name,
+      validate,
+    });
     const fieldId = getFieldId(props.name, 'input', idPostfix);
-    const isValid = inputError ? false : !(touched && error);
-    const errorMessage = (!isValid ? error : '') || inputError;
+    const errorMessage = useFieldErrorMsg({ name: props.name, inputError, validate });
+    const isValid = !errorMessage;
     return (
       <FormGroup
         fieldId={fieldId}
