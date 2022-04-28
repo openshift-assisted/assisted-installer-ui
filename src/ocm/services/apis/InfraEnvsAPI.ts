@@ -2,7 +2,7 @@ import { client } from '../../api';
 import {
   InfraEnv,
   InfraEnvCreateParams,
-  InfraEnvImageUrl,
+  PresignedUrl,
   InfraEnvUpdateParams,
 } from '../../../common';
 import { AxiosResponse } from 'axios';
@@ -44,9 +44,7 @@ const InfraEnvsAPI = {
   },
 
   getImageUrl(infraEnvId: InfraEnv['id']) {
-    return client.get<InfraEnvImageUrl>(
-      `${InfraEnvsAPI.makeBaseURI(infraEnvId)}/downloads/image-url`,
-    );
+    return client.get<PresignedUrl>(`${InfraEnvsAPI.makeBaseURI(infraEnvId)}/downloads/image-url`);
   },
 };
 

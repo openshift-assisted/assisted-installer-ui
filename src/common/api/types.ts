@@ -321,6 +321,10 @@ export interface ClusterCreateParams {
    */
   serviceNetworkCidr?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$
   /**
+   * The virtual IP used to reach the OpenShift cluster's API.
+   */
+  apiVip?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))?$
+  /**
    * The virtual IP used for cluster ingress traffic.
    */
   ingressVip?: string; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))$
@@ -460,7 +464,7 @@ export interface ClusterHostRequirementsDetails {
 export type ClusterHostRequirementsList = ClusterHostRequirements[];
 export type ClusterList = Cluster[];
 /**
- * IP address block for pod IP blocks.
+ * A network from which Pod IPs are allocated. This block must not overlap with existing physical networks. These IP addresses are used for the Pod network, and if you need to access the Pods from an external network, configure load balancers and routers to manage the traffic.
  */
 export interface ClusterNetwork {
   /**
@@ -472,7 +476,7 @@ export interface ClusterNetwork {
    */
   cidr?: Subnet; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$
   /**
-   * The prefix size to allocate to each node from the CIDR. For example, 24 would allocate 2^8=256 adresses to each node.
+   * The subnet prefix length to assign to each individual node. For example if is set to 23, then each node is assigned a /23 subnet out of the given CIDR, which allows for 510 (2^(32 - 23) - 2) pod IPs addresses.
    */
   hostPrefix?: number;
 }
@@ -487,6 +491,7 @@ export type ClusterValidationId =
   | 'cluster-cidr-defined'
   | 'service-cidr-defined'
   | 'no-cidrs-overlapping'
+  | 'networks-same-address-families'
   | 'network-prefix-valid'
   | 'machine-cidr-equals-to-calculated-cidr'
   | 'api-vip-defined'
@@ -513,8 +518,8 @@ export interface ConnectivityCheckHost {
 }
 export interface ConnectivityCheckNic {
   name?: string;
-  mac?: string;
-  ipAddresses?: string[];
+  mac?: string; // mac
+  ipAddresses?: string /* ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))$ */[];
 }
 export type ConnectivityCheckParams = ConnectivityCheckHost[];
 export interface ConnectivityRemoteHost {
@@ -552,7 +557,7 @@ export interface ContainerImageAvailabilityRequest {
   /**
    * List of image names to be checked.
    */
-  images: string[];
+  images: string /* ^(([a-zA-Z0-9\-\.]+)(:[0-9]+)?\/)?[a-z0-9\._\-\/@]+[?::a-zA-Z0-9_\-.]+$ */[];
 }
 export interface ContainerImageAvailabilityResponse {
   /**
@@ -570,7 +575,6 @@ export interface Cpu {
   flags?: string[];
   modelName?: string;
   architecture?: string;
-  clockMegahertz?: number;
 }
 export interface CreateManifestParams {
   /**
@@ -631,15 +635,13 @@ export interface DhcpAllocationResponse {
    */
   ingressVipLease?: string;
 }
-export interface DiscoveryIgnitionParams {
-  config?: string;
-}
 export interface Disk {
   /**
    * Determine the disk's unique identifier which is the by-id field if it exists and fallback to the by-path field otherwise
    */
   id?: string;
   driveType?: string;
+  hasUuid?: boolean;
   vendor?: string;
   name?: string;
   path?: string;
@@ -727,7 +729,7 @@ export interface DomainResolutionRequest {
     /**
      * The domain name that should be resolved
      */
-    domainName: string;
+    domainName: string; // ^([a-zA-Z0-9]+(-[a-zA-Z0-9]+)*[.])+[a-zA-Z]{2,}$
   }[];
 }
 export interface DomainResolutionResponse {
@@ -995,6 +997,10 @@ export interface Host {
    * True if the token to fetch the ignition from ignitionEndpointUrl is set.
    */
   ignitionEndpointTokenSet?: boolean;
+  /**
+   * Json containing node's labels.
+   */
+  nodeLabels?: string;
 }
 export interface HostCreateParams {
   hostId: string; // uuid
@@ -1163,6 +1169,10 @@ export interface HostRegistrationResponse {
    */
   ignitionEndpointTokenSet?: boolean;
   /**
+   * Json containing node's labels.
+   */
+  nodeLabels?: string;
+  /**
    * Command for starting the next step runner
    */
   nextStepRunnerCommand?: {
@@ -1228,6 +1238,10 @@ export interface HostUpdateParams {
    * A string which will be used as Authorization Bearer token to fetch the ignition from ignitionEndpointUrl.
    */
   ignitionEndpointToken?: string;
+  /**
+   * Labels to be added to the corresponding node.
+   */
+  nodeLabels?: NodeLabelParams[];
 }
 export type HostValidationId =
   | 'connected'
@@ -1259,7 +1273,9 @@ export type HostValidationId =
   | 'apps-domain-name-resolved-correctly'
   | 'compatible-with-cluster-platform'
   | 'dns-wildcard-not-configured'
-  | 'disk-encryption-requirements-satisfied';
+  | 'disk-encryption-requirements-satisfied'
+  | 'non-overlapping-subnets'
+  | 'vsphere-disk-uuid-enabled';
 /**
  * Explicit ignition endpoint overrides the default ignition endpoint.
  */
@@ -1426,16 +1442,6 @@ export interface InfraEnvCreateParams {
    */
   cpuArchitecture?: string;
 }
-export interface InfraEnvImageUrl {
-  /**
-   * Pre-signed URL for downloading the infra-env discovery image.
-   */
-  url?: string;
-  /**
-   * Expiration time for the URL token.
-   */
-  expiresAt?: string; // date-time
-}
 export type InfraEnvList = InfraEnv[];
 export interface InfraEnvUpdateParams {
   proxy?: Proxy;
@@ -1469,6 +1475,68 @@ export interface InfraError {
   message: string;
 }
 export type IngressCertParams = string;
+export interface InstallCmdRequest {
+  /**
+   * Cluster id
+   */
+  clusterId: string; // uuid
+  /**
+   * Infra env id
+   */
+  infraEnvId: string; // uuid
+  /**
+   * Host id
+   */
+  hostId: string; // uuid
+  role: HostRole;
+  /**
+   * Boot device to write image on
+   */
+  bootDevice: string;
+  /**
+   * Assisted installer controller image
+   */
+  controllerImage: string; // ^(([a-zA-Z0-9\-\.]+)(:[0-9]+)?\/)?[a-z0-9\._\-\/@]+[?::a-zA-Z0-9_\-.]+$
+  /**
+   * Assisted installer image
+   */
+  installerImage: string; // ^(([a-zA-Z0-9\-\.]+)(:[0-9]+)?\/)?[a-z0-9\._\-\/@]+[?::a-zA-Z0-9_\-.]+$
+  /**
+   * Guaranteed availability of the installed cluster. 'Full' installs a Highly-Available cluster
+   * over multiple master nodes whereas 'None' installs a full cluster over one node.
+   *
+   */
+  highAvailabilityMode: 'Full' | 'None';
+  proxy?: Proxy;
+  /**
+   * Check CVO status if needed
+   */
+  checkCvo?: boolean;
+  /**
+   * List of disks to format
+   */
+  disksToFormat?: string[];
+  /**
+   * Must-gather images to use
+   */
+  mustGatherImage?: string;
+  /**
+   * Machine config operator image
+   */
+  mcoImage?: string; // ^(([a-zA-Z0-9\-\.]+)(:[0-9]+)?\/)?[a-z0-9\._\-\/@]+[?::a-zA-Z0-9_\-.]+$
+  /**
+   * Version of the OpenShift cluster.
+   */
+  openshiftVersion?: string;
+  /**
+   * List of service ips
+   */
+  serviceIps?: string /* ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))$ */[];
+  /**
+   * Core-os installer addtional args
+   */
+  installerArgs?: string;
+}
 export interface InstallerArgsParams {
   /**
    * List of additional arguments passed to coreos-installer
@@ -1538,6 +1606,32 @@ export interface ListVersions {
   versions?: Versions;
   releaseTag?: string;
 }
+export interface LogsGatherCmdRequest {
+  /**
+   * Cluster id
+   */
+  clusterId: string; // uuid
+  /**
+   * Infra env id
+   */
+  infraEnvId: string; // uuid
+  /**
+   * Host id
+   */
+  hostId: string; // uuid
+  /**
+   * Host is bootstrap or not
+   */
+  bootstrap: boolean;
+  /**
+   * Run installer gather logs
+   */
+  installerGather: boolean;
+  /**
+   * List of master ips
+   */
+  masterIps?: string /* ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3})|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,}))$ */[];
+}
 export interface LogsProgressParams {
   /**
    * The state of collecting logs.
@@ -1557,7 +1651,7 @@ export type MacInterfaceMap = {
   logicalNicName?: string;
 }[];
 /**
- * IP address block for node IP blocks.
+ * A network that all hosts belonging to the cluster should have an interface with IP address in. The VIPs (if exist) belong to this network.
  */
 export interface MachineNetwork {
   /**
@@ -1565,7 +1659,7 @@ export interface MachineNetwork {
    */
   clusterId?: string; // uuid
   /**
-   * The IP block address pool for machines within the cluster.
+   * The IP block address pool.
    */
   cidr?: Subnet; // ^(?:(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/(?:(?:[0-9])|(?:[1-2][0-9])|(?:3[0-2])))|(?:(?:[0-9a-fA-F]*:[0-9a-fA-F]*){2,})/(?:(?:[0-9])|(?:[1-9][0-9])|(?:1[0-1][0-9])|(?:12[0-8])))$
 }
@@ -1629,6 +1723,30 @@ export interface MonitoredOperator {
   statusUpdatedAt?: string; // date-time
 }
 export type MonitoredOperatorsList = MonitoredOperator[];
+export interface NextStepCmdRequest {
+  /**
+   * Infra env id
+   */
+  infraEnvId: string; // uuid
+  /**
+   * Host id
+   */
+  hostId: string; // uuid
+  /**
+   * Agent image version
+   */
+  agentVersion: string; // ^(([a-zA-Z0-9\-\.]+)(:[0-9]+)?\/)?[a-z0-9\._\-\/@]+[?::a-zA-Z0-9_\-.]+$
+}
+export interface NodeLabelParams {
+  /**
+   * The key for the label's key-value pair.
+   */
+  key: string;
+  /**
+   * The value for the label's key-value pair.
+   */
+  value: string;
+}
 export interface NtpSource {
   /**
    * NTP source name or IP.
@@ -1825,8 +1943,15 @@ export interface PreflightHardwareRequirements {
    */
   ocp?: HostTypeHardwareRequirementsWrapper;
 }
-export interface Presigned {
+export interface PresignedUrl {
+  /**
+   * Pre-signed URL for downloading the infra-env discovery image.
+   */
   url: string;
+  /**
+   * Expiration time for the URL token.
+   */
+  expiresAt?: string; // date-time
 }
 export interface Proxy {
   /**
@@ -1896,7 +2021,7 @@ export interface Route {
  */
 export interface ServiceNetwork {
   /**
-   * The cluster that this network is associated with.
+   * A network to use for service IP addresses. If you need to access the services from an external network, configure load balancers and routers to manage the traffic.
    */
   clusterId?: string; // uuid
   /**
@@ -1930,13 +2055,15 @@ export type StepType =
   | 'inventory'
   | 'install'
   | 'free-network-addresses'
-  | 'reset-installation'
   | 'dhcp-lease-allocate'
   | 'api-vip-connectivity-check'
   | 'ntp-synchronizer'
   | 'installation-disk-speed-check'
   | 'container-image-availability'
-  | 'domain-resolution';
+  | 'domain-resolution'
+  | 'stop-installation'
+  | 'logs-gather'
+  | 'next-step-runner';
 export interface Steps {
   nextInstructionSeconds?: number;
   /**
@@ -2091,6 +2218,7 @@ export interface V2Events {
 }
 export interface V2InfraEnvs {
   clusterId?: string;
+  owner?: string;
 }
 export interface VersionedHostRequirements {
   /**
