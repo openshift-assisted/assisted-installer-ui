@@ -131,6 +131,8 @@ export const HOST_VALIDATION_LABELS: { [key in HostValidationId]: string } = {
   'api-int-domain-name-resolved-correctly': 'API internal domain name resolution',
   'apps-domain-name-resolved-correctly': 'Application ingress domain name resolution',
   'dns-wildcard-not-configured': 'DNS wildcard not configured',
+  'non-overlapping-subnets': 'Non overlapping subnets',
+  'vsphere-disk-uuid-enabled': 'Vsphere disk uuidenabled',
 };
 
 export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string } = {
@@ -164,6 +166,8 @@ export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string 
   'api-int-domain-name-resolved-correctly': '',
   'apps-domain-name-resolved-correctly': '',
   'dns-wildcard-not-configured': '',
+  'non-overlapping-subnets': '',
+  'vsphere-disk-uuid-enabled': '',
 };
 
 export const CLUSTER_VALIDATION_LABELS: { [key in ClusterValidationId]: string } = {
@@ -173,6 +177,7 @@ export const CLUSTER_VALIDATION_LABELS: { [key in ClusterValidationId]: string }
   'cluster-cidr-defined': 'Cluster CIDR',
   'service-cidr-defined': 'Service CIDR',
   'no-cidrs-overlapping': 'No overlapping CIDR',
+  'networks-same-address-families': 'Networks same address families',
   'network-prefix-valid': 'Valid network prefix',
   'machine-cidr-equals-to-calculated-cidr': 'Machine CIDR conforms expected',
   'api-vip-defined': 'API IP',
