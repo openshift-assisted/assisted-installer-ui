@@ -13,7 +13,7 @@ const useFieldErrorMsg = ({ name, inputError, validate }: Props): string | undef
     for none empty values - always show the error if there is one
   */
   const [field, { error }] = useField({
-    name: name,
+    name,
     validate,
   });
   const [hadValue, setHadValue] = React.useState<boolean>(false);
