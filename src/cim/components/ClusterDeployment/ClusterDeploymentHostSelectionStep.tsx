@@ -97,7 +97,7 @@ const getValidationSchema = (agentClusterInstall: AgentClusterInstallK8sResource
         ? Yup.array<string>()
         : isSNOCluster
         ? Yup.array<string>()
-            .min(0, 'Please select one host for the cluster.')
+            .min(1, 'Please select one host for the cluster.')
             .max(1, 'Please select one host for the cluster.') // TODO(jtomasek): replace this with Yup.array().length() after updating Yup
         : Yup.array<string>().min(getMinHostsCount(values.selectedHostIds.length), getMinMessage),
     });
