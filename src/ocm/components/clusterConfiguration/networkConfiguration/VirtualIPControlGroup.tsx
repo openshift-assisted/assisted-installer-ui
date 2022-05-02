@@ -7,6 +7,7 @@ import { HostSubnets, NetworkConfigurationValues, ValidationsInfo } from '../../
 import { CheckboxField, FormikStaticField, InputField } from '../../../../common/components/ui';
 import { FeatureSupportLevelBadge } from '../../../../common/components';
 import { NETWORK_TYPE_SDN, NO_SUBNET_SET } from '../../../../common/config/constants';
+import { selectMachineNetworkCIDR } from '../../../../common';
 
 interface VipStaticValueProps {
   vipName: string;
@@ -15,7 +16,8 @@ interface VipStaticValueProps {
 }
 
 const VipStaticValue = ({ vipName, cluster, validationErrorMessage }: VipStaticValueProps) => {
-  const { vipDhcpAllocation, machineNetworkCidr } = cluster;
+  const { vipDhcpAllocation } = cluster;
+  const machineNetworkCidr = selectMachineNetworkCIDR(cluster);
 
   if (vipDhcpAllocation && cluster[vipName]) {
     return cluster[vipName];
