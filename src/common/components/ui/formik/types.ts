@@ -74,7 +74,7 @@ export interface NumberInputFieldProps extends FieldProps {
   plusBtnAriaLabel?: string;
   unit?: string;
   formatValue?: (newValue: number) => number;
-  onChange?: (event: React.FormEvent<HTMLInputElement>) => void;
+  onChange?: (value: number) => void;
   onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
   validate?: FieldValidator;
 }

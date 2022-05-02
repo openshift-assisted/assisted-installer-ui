@@ -554,6 +554,19 @@ cidr-regex@^3.1.1:
   dependencies:
     ip-regex "^4.1.0"
 
+cidr-tools@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/cidr-tools/-/cidr-tools-4.3.0.tgz#e99dd323a99b9b1149e6ad52bd0ed89357796cf7"
+  integrity sha512-Conidfn8svry8txRhW63SkaRMYJWJSvCT5kRCovIzlD0A3wzaV3gVFNxmAFJo5rxx3KHeYnJxCe7bUKFr1wxHA==
+  dependencies:
+    ip-address "^8.1.0"
+    ip-cidr "^3.0.4"
+    ipv6-normalize "^1.0.1"
+    is-cidr "^4.0.2"
+    is-ip "^3.1.0"
+    jsbn "^1.1.0"
+    string-natural-compare "^3.0.1"
+
 classnames@*, classnames@^2.3.1:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.3.1.tgz#dfcfa3891e306ec1dad105d0e88f4417b8535e8e"
@@ -1675,10 +1688,31 @@ ip-address@^7.1.0:
     jsbn "1.1.0"
     sprintf-js "1.1.2"
 
-ip-regex@^4.1.0:
+ip-address@^8.1.0:
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/ip-address/-/ip-address-8.1.0.tgz#1fe9b4509b51ff7d2fbbef4d3d26994d9915a459"
+  integrity sha512-Wz91gZKpNKoXtqvY8ScarKYwhXoK4r/b5QuT+uywe/azv0/nUCo7Bh0IRRI7F9DHR06kJNWtzMGLIbXavngbKA==
+  dependencies:
+    jsbn "1.1.0"
+    sprintf-js "1.1.2"
+
+ip-cidr@^3.0.4:
+  version "3.0.7"
+  resolved "https://registry.yarnpkg.com/ip-cidr/-/ip-cidr-3.0.7.tgz#22708dd4f2d3f6397c0fb7d647b44e3c565937e9"
+  integrity sha512-0cBBICDnmmpAdULMbMVdi4f0mSG+VWY/QBPL/OIIjuom14x7Y63VhpS/uSAOycasXOeGXah5y0eu//PDU51aNw==
+  dependencies:
+    ip-address "^7.1.0"
+    jsbn "^1.1.0"
+
+ip-regex@^4.0.0, ip-regex@^4.1.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/ip-regex/-/ip-regex-4.3.0.tgz#687275ab0f57fa76978ff8f4dddc8a23d5990db5"
   integrity sha512-B9ZWJxHHOHUhUjCPrMpLD4xEq35bUTClHM1S6CBU5ixQnkZmwipwgc96vAd7AAGM9TGHvJR+Uss+/Ak6UphK+Q==
+
+ipv6-normalize@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/ipv6-normalize/-/ipv6-normalize-1.0.1.tgz#1b3258290d365fa83239e89907dde4592e7620a8"
+  integrity sha1-GzJYKQ02X6gyOeiZB93kWS52IKg=
 
 is-arrayish@^0.2.1:
   version "0.2.1"
@@ -1759,6 +1793,13 @@ is-interactive@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/is-interactive/-/is-interactive-1.0.0.tgz#cea6e6ae5c870a7b0a0004070b7b587e0252912e"
   integrity sha512-2HvIEKRoqS62guEC+qBjpvRubdX910WCMuJTZ+I9yvqKU2/12eSL549HMwtabb4oupdj2sMP50k+XJfB/8JE6w==
+
+is-ip@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/is-ip/-/is-ip-3.1.0.tgz#2ae5ddfafaf05cb8008a62093cf29734f657c5d8"
+  integrity sha512-35vd5necO7IitFPjd/YBeqwWnyDWbuLH9ZXQdMfDA8TEo7pv5X8yfrvVO3xbJbLUlERCMvf6X0hTUamQxCYJ9Q==
+  dependencies:
+    ip-regex "^4.0.0"
 
 is-negative-zero@^2.0.2:
   version "2.0.2"
@@ -1858,7 +1899,7 @@ js-yaml@^4.1.0:
   dependencies:
     argparse "^2.0.1"
 
-jsbn@1.1.0:
+jsbn@1.1.0, jsbn@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/jsbn/-/jsbn-1.1.0.tgz#b01307cb29b618a1ed26ec79e911f803c4da0040"
   integrity sha1-sBMHyym2GKHtJux56RH4A8TaAEA=
@@ -2628,6 +2669,11 @@ sprintf-js@~1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
   integrity sha1-BOaSb2YolTVPPdAVIDYzuFcpfiw=
+
+string-natural-compare@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/string-natural-compare/-/string-natural-compare-3.0.1.tgz#7a42d58474454963759e8e8b7ae63d71c1e7fdf4"
+  integrity sha512-n3sPwynL1nwKi3WJ6AIsClwBMa0zTi54fn2oLU6ndfTSIO05xaznjSf15PcBZU6FNWbmN5Q6cxT4V5hGvB4taw==
 
 string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3:
   version "4.2.3"

@@ -27,7 +27,7 @@ export type ClusterDetailsFormFieldsProps = {
   isPullSecretSet: boolean;
 };
 
-const BaseDnsHelperText: React.FC<{ name?: string; baseDnsDomain?: string }> = ({
+export const BaseDnsHelperText: React.FC<{ name?: string; baseDnsDomain?: string }> = ({
   name,
   baseDnsDomain,
 }) => (

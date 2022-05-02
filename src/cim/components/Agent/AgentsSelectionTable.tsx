@@ -20,6 +20,7 @@ import {
 } from './tableUtils';
 import DefaultEmptyState from '../../../common/components/ui/uiState/EmptyState';
 import { usePagination } from '../../../common/components/hosts/usePagination';
+import { useFormikHelpers } from '../../../common/hooks/useFormikHelpers';
 
 type AgentsSelectionTableProps = {
   matchingAgents: AgentK8sResource[];
@@ -36,30 +37,28 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
   onEditHost,
   onHostSelect,
 }) => {
-  const [{ value: selectedIDs }, , { setValue, setTouched }] =
+  const [{ value: selectedIDs }] =
     useField<ClusterDeploymentHostsSelectionValues['selectedHostIds']>('selectedHostIds');
 
   const idsRef = React.useRef(selectedIDs);
   idsRef.current = selectedIDs;
 
-  // workaround for https://github.com/jaredpalmer/formik/issues/2268
-  // formik helpers are new a instance on every formik store update :(
-  const setValueRef = React.useRef(setValue);
-  setValueRef.current = setValue;
-  const setTouchedRef = React.useRef(setTouched);
-  setTouchedRef.current = setTouched;
+  const { setValue, setTouched } =
+    useFormikHelpers<ClusterDeploymentHostsSelectionValues['selectedHostIds']>('selectedHostIds');
 
-  const setFieldValue = React.useCallback(async (ids: string[]) => {
-    // eslint-disable-next-line
-    await (setValueRef.current as any)(ids, true);
-    setTouchedRef.current(true, false);
-  }, []);
+  const setFieldValue = React.useCallback(
+    async (ids: string[]) => {
+      await setValue(ids, true);
+      setTouched(true, false);
+    },
+    [setValue, setTouched],
+  );
 
   React.useEffect(() => {
     const allIds = matchingAgents.map((a) => a.metadata?.uid);
     const presentIds = selectedIDs.filter((id) => allIds.includes(id));
     if (presentIds.length !== selectedIDs.length) {
-      setFieldValue(presentIds);
+      void setFieldValue(presentIds);
     }
   }, [matchingAgents, setFieldValue, selectedIDs]);
 
@@ -68,7 +67,7 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
       const newIDs = selected
         ? [...idsRef.current, agent.metadata?.uid || '']
         : idsRef.current.filter((uid: string) => uid !== agent.metadata?.uid);
-      setFieldValue(newIDs);
+      void setFieldValue(newIDs);
       onHostSelect?.();
     },
     [setFieldValue, onHostSelect],
