@@ -8,6 +8,8 @@ import {
   List,
   ListItem,
   Title,
+  Split,
+  SplitItem,
 } from '@patternfly/react-core';
 import {
   Cluster,
@@ -21,6 +23,7 @@ import {
   schedulableMastersAlwaysOn,
   HostDiscoveryValues,
   getSchedulableMasters,
+  TechnologyPreview,
 } from '../../../common';
 import HostsDiscoveryTable from '../hosts/HostsDiscoveryTable';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
@@ -129,15 +132,24 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
       )}
       {isPlatformIntegrationFeatureEnabled && (
         <StackItem>
-          <SwitchField
-            tooltipProps={{
-              hidden: isPlatformIntegrationSupported,
-              content: platformIntegrationTooltip,
-            }}
-            isDisabled={!isPlatformIntegrationSupported && cluster?.platform?.type === 'baremetal'}
-            name={'usePlatformIntegration'}
-            label={<PlatformIntegrationLabel />}
-          />
+          <Split hasGutter>
+            <SplitItem>
+              <SwitchField
+                tooltipProps={{
+                  hidden: isPlatformIntegrationSupported,
+                  content: platformIntegrationTooltip,
+                }}
+                isDisabled={
+                  !isPlatformIntegrationSupported && cluster?.platform?.type === 'baremetal'
+                }
+                name={'usePlatformIntegration'}
+                label={<PlatformIntegrationLabel />}
+              />
+            </SplitItem>
+            <SplitItem>
+              <TechnologyPreview />
+            </SplitItem>
+          </Split>
         </StackItem>
       )}
       <StackItem>
