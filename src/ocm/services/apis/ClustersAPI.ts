@@ -156,6 +156,12 @@ const ClustersAPI = {
     );
   },
 
+  addHosts(clusterId: Cluster['id']) {
+    return client.post<Cluster, AxiosResponse<Cluster>, never>(
+      `${ClustersAPI.makeActionsBaseURI(clusterId)}/allow-add-workers`,
+    );
+  },
+
   downloadLogs(clusterId: Cluster['id'], hostId?: Host['id']) {
     const queryParams = `logs_type=${!hostId ? 'all' : `host&host_id=${hostId}`}`;
     return client.get<Blob>(`${ClustersAPI.makeLogsBaseURI(clusterId)}?${queryParams}`, {

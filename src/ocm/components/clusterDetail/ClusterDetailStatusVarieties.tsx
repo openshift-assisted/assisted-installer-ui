@@ -21,20 +21,23 @@ type ClusterStatusVarieties = {
   fetchCredentials: () => void;
 };
 
-export const useClusterStatusVarieties = (cluster: Cluster): ClusterStatusVarieties => {
+export const useClusterStatusVarieties = (cluster?: Cluster): ClusterStatusVarieties => {
   const [credentials, setCredentials] = React.useState<Credentials>();
   const [credentialsError, setCredentialsError] = React.useState();
 
-  const olmOperators = getOlmOperators(cluster.monitoredOperators);
+  const olmOperators = getOlmOperators(cluster?.monitoredOperators);
   const failedOlmOperators = olmOperators.filter((o) => o.status === 'failed');
   const consoleOperator = React.useMemo(
-    () => cluster.monitoredOperators?.find((o) => o.name === 'console'),
-    [cluster.monitoredOperators],
+    () => cluster?.monitoredOperators?.find((o) => o.name === 'console'),
+    [cluster],
   );
 
   const fetchCredentials = React.useCallback(() => {
     const fetch = async () => {
       setCredentialsError(undefined);
+      if (!cluster) {
+        return;
+      }
       try {
         const response = await ClustersAPI.getCredentials(cluster.id);
         setCredentials(response.data);
@@ -43,17 +46,17 @@ export const useClusterStatusVarieties = (cluster: Cluster): ClusterStatusVariet
       }
     };
     fetch();
-  }, [cluster.id]);
+  }, [cluster]);
 
   const consoleOperatorStatus = consoleOperator?.status;
   React.useEffect(() => {
     if (
-      (!consoleOperatorStatus && cluster.status === 'installed') || // Retain backwards compatibility with clusters which don't have monitored clusters
+      (!consoleOperatorStatus && cluster?.status === 'installed') || // Retain backwards compatibility with clusters which don't have monitored clusters
       consoleOperatorStatus === 'available'
     ) {
       fetchCredentials();
     }
-  }, [cluster.status, consoleOperatorStatus, fetchCredentials]);
+  }, [cluster, consoleOperatorStatus, fetchCredentials]);
 
   return {
     credentials,
