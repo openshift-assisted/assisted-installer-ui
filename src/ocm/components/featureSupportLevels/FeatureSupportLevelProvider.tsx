@@ -72,10 +72,14 @@ export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = 
 
   const getVersionSupportLevelsMap = React.useCallback(
     (versionName: string): FeatureIdToSupportLevel | undefined => {
-      const versionKey = Object.keys(supportLevelData).find((key) => versionName.startsWith(key));
+      const versionKey = Object.keys(supportLevelData).find((key) => {
+        const versionNameMatch = new RegExp(`^${key}(\\..*)?$`); // For version 4.10 match 4.10, 4.10.3, not 4.1, 4.1.5
+        return versionNameMatch.test(versionName);
+      });
       if (!versionKey) {
         return undefined;
       }
+
       return supportLevelData[versionKey];
     },
     [supportLevelData],
