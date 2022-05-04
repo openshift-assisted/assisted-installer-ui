@@ -1,6 +1,6 @@
 import React from 'react';
 import { useField } from 'formik';
-import HostsTable, { DefaultExpandComponent } from '../../../common/components/hosts/HostsTable';
+import HostsTable from '../../../common/components/hosts/HostsTable';
 import {
   cpuCoresColumn,
   disksColumn,
@@ -21,6 +21,11 @@ import {
 import DefaultEmptyState from '../../../common/components/ui/uiState/EmptyState';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useFormikHelpers } from '../../../common/hooks/useFormikHelpers';
+import { onDiskRoleType } from '../../../common/components/hosts/DiskRole';
+import { Host } from '../../../common';
+import { Cluster } from '../../../common/api';
+import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
+import { onDiskRole as onDiskRoleUtil } from '../../components/helpers/agents';
 
 type AgentsSelectionTableProps = {
   matchingAgents: AgentK8sResource[];
@@ -28,6 +33,9 @@ type AgentsSelectionTableProps = {
   onEditRole?: AgentTableActions['onEditRole'];
   onEditHost?: AgentTableActions['onEditHost'];
   onHostSelect?: VoidFunction;
+  canEditDisks?: (host: Host) => boolean;
+  onDiskRole?: onDiskRoleType;
+  cluster?: Cluster;
 };
 
 const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
@@ -103,13 +111,32 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
 
   const paginationProps = usePagination(hosts.length);
 
+  type ExpandComponentProps = {
+    obj: Host;
+  };
+
+  const actionChecks = React.useMemo(
+    () => ({
+      //canEditHostname: () => canEditHostnameUtil(cluster.status),
+      onDiskRole: (hostId: string, diskId?: string) => {
+        const host = hosts.find((host) => host.id === hostId);
+        return onDiskRoleUtil(host, diskId);
+      },
+    }),
+    [actions.onDiskRole],
+  );
+
+  const ExpandComponent: React.FC<ExpandComponentProps> = ({ obj }) => (
+    <HostDetail host={obj} onDiskRole={actionChecks.onDiskRole} canEditDisks={() => true} />
+  );
+
   return (
     <HostsTable
       hosts={hosts}
       content={content}
       selectedIDs={selectedIDs}
       actionResolver={actionResolver}
-      ExpandComponent={DefaultExpandComponent}
+      ExpandComponent={ExpandComponent}
       {...actions}
       {...paginationProps}
     >

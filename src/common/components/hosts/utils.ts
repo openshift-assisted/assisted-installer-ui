@@ -54,20 +54,22 @@ export const canReset = (clusterStatus: Cluster['status'], status: Host['status'
 export const canEditRole = (cluster: Cluster): boolean => !isSNO(cluster);
 
 export const canEditHost = (clusterStatus: Cluster['status'], status: Host['status']) =>
-  ['pending-for-input', 'insufficient', 'ready'].includes(clusterStatus) &&
-  [
-    'discovering',
-    'discovering-unbound',
-    'known',
-    'known-unbound',
-    'disconnected',
-    'disconnected-unbound',
-    'disabled',
-    'disabled-unbound',
-    'insufficient',
-    'insufficient-unbound',
-    'pending-for-input',
-  ].includes(status);
+  clusterStatus
+    ? ['pending-for-input', 'insufficient', 'ready'].includes(clusterStatus) &&
+      [
+        'discovering',
+        'discovering-unbound',
+        'known',
+        'known-unbound',
+        'disconnected',
+        'disconnected-unbound',
+        'disabled',
+        'disabled-unbound',
+        'insufficient',
+        'insufficient-unbound',
+        'pending-for-input',
+      ].includes(status)
+    : false;
 
 export const canEditHostname = (clusterStatus: Cluster['status']) =>
   ['insufficient', 'adding-hosts', 'ready', 'pending-for-input'].includes(clusterStatus);

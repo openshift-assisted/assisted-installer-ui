@@ -32,3 +32,10 @@ export const getInfraEnvNameOfAgent = (resource?: AgentK8sResource | BareMetalHo
 
 export const getClusterNameOfAgent = (agent?: AgentK8sResource) =>
   agent?.spec?.clusterDeploymentName?.name;
+
+export const onDiskRole = (host: Host | undefined, diskId?: string) => {
+  if (host) {
+    const agent = hostToAgent([], host);
+    agent.spec.installation_disk_id = diskId ? diskId : '';
+  }
+};

@@ -61,6 +61,7 @@ export const getAIHosts = (
       },
       progressStages: agentProgress?.progressStages,
       bootstrap: agent.status?.bootstrap,
+      installationDiskId: agent.spec.installation_disk_id,
     };
   });
 

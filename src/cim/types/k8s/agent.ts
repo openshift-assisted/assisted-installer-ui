@@ -21,6 +21,7 @@ export type AgentK8sResource = K8sResourceCommon & {
     };
     role: HostRole;
     hostname: string;
+    installation_disk_id: string;
   };
   status?: {
     conditions?: AgentStatusCondition[];
