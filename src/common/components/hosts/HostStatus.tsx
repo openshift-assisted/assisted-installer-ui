@@ -215,7 +215,7 @@ const HostStatus: React.FC<HostStatusProps> = ({
       {<FlexItem>{icon || <UnknownIcon />}</FlexItem>}
 
       <Flex direction={{ default: 'column' }} spaceItems={{ default: 'spaceItemsXs' }}>
-        {!sublabel && !noPopover ? (
+        {host.progress?.currentStage && !sublabel && !noPopover ? (
           <WithHostStatusPopover {...popoverProps}>{titleWithProgress}</WithHostStatusPopover>
         ) : (
           <FlexItem>
