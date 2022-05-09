@@ -9,7 +9,7 @@ import { ProxyFieldsType } from '../../../types';
 import { trimCommaSeparatedList, trimSshPublicKey } from './utils';
 
 const ALPHANUMBERIC_REGEX = /^[a-zA-Z0-9]+$/;
-const CLUSTER_NAME_REGEX = /^[a-z]([-a-z0-9]*[a-z0-9])?$/;
+const CLUSTER_NAME_REGEX = /^[a-z0-9]([-a-z0-9]*[a-z0-9])?$/;
 const SSH_PUBLIC_KEY_REGEX = /^(ssh-rsa|ssh-ed25519|ecdsa-[-a-z0-9]*) AAAA[0-9A-Za-z+/]+[=]{0,3}( .+)?$/;
 const DNS_NAME_REGEX = /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/;
 const PROXY_DNS_REGEX = /^([a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62}){1}(\.[a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62})*[._]?$/;
@@ -29,9 +29,10 @@ export const nameValidationSchema = (
   Yup.string()
     .matches(CLUSTER_NAME_REGEX, {
       message:
-        'Name must consist of lower-case letters, numbers and hyphens. It must start with a letter and end with a letter or number.',
+        'Name must consist of lower-case letters, numbers and hyphens. It must start and end with a letter or number.',
       excludeEmptyString: true,
     })
+    .min(2, 'Must contain at least 2 characters.')
     .max(54, 'Cannot be longer than 54 characters.')
     .required('Required')
     .when('useRedHatDnsService', {
