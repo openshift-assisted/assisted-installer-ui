@@ -1,5 +1,10 @@
 import { ProtocolVersion } from './dataTypes';
 
+export enum NmstateInterfaceType {
+  ETHERNET = 'ethernet',
+  VLAN = 'vlan',
+}
+
 export type NmstateAddress = {
   ip: string;
   'prefix-length': number;
@@ -17,7 +22,7 @@ export type NmstateProtocolConfigs = {
 
 export type NmstateEthernetInterface = {
   name: string;
-  type: 'ethernet';
+  type: NmstateInterfaceType.ETHERNET;
   state: string;
 } & NmstateProtocolConfigs;
 
@@ -40,7 +45,7 @@ export type NmstateDns = {
 
 export type NmstateVlanInterface = {
   name: string;
-  type: 'vlan';
+  type: NmstateInterfaceType.VLAN;
   state: string;
   vlan: {
     'base-iface': string;
@@ -53,13 +58,13 @@ export type NmstateInterface = NmstateEthernetInterface | NmstateVlanInterface;
 export const isVlanInterface = (
   nmStateInterface: NmstateVlanInterface | NmstateEthernetInterface,
 ): nmStateInterface is NmstateVlanInterface => {
-  return nmStateInterface.type === 'vlan';
+  return nmStateInterface.type === NmstateInterfaceType.VLAN;
 };
 
 export const isEthernetInterface = (
   nmStateInterface: NmstateVlanInterface | NmstateEthernetInterface,
 ): nmStateInterface is NmstateEthernetInterface => {
-  return nmStateInterface.type === 'ethernet';
+  return nmStateInterface.type === NmstateInterfaceType.ETHERNET;
 };
 
 export type Nmstate = {

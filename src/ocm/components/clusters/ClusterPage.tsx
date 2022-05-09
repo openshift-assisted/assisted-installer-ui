@@ -31,7 +31,7 @@ import { isSingleClusterMode, routeBasePath } from '../../config';
 import { FeatureSupportLevelProvider } from '../featureSupportLevels';
 import ClusterWizardContextProvider from '../clusterWizard/ClusterWizardContextProvider';
 import useInfraEnv from '../../hooks/useInfraEnv';
-import { OcmErrorHandlerContextProvider } from '../OcmErrorHandlerContextProvider';
+import { SentryErrorMonitorContextProvider } from '../SentryErrorMonitorContextProvider';
 
 type MatchParams = {
   clusterId: string;
@@ -163,7 +163,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
   if (cluster && infraEnv) {
     return (
       <AlertsContextProvider>
-        <OcmErrorHandlerContextProvider>
+        <SentryErrorMonitorContextProvider>
           <ModalDialogsContextProvider>
             <ClusterDefaultConfigurationProvider loadingUI={loadingUI} errorUI={errorUI}>
               <FeatureSupportLevelProvider loadingUi={loadingUI} cluster={cluster}>
@@ -174,7 +174,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
               </FeatureSupportLevelProvider>
             </ClusterDefaultConfigurationProvider>
           </ModalDialogsContextProvider>
-        </OcmErrorHandlerContextProvider>
+        </SentryErrorMonitorContextProvider>
       </AlertsContextProvider>
     );
   }

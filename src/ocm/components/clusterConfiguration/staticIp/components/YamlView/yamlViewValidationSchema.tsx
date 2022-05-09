@@ -1,39 +1,66 @@
 import * as Yup from 'yup';
 import {
+  ArrayElementType,
   HostStaticNetworkConfig,
   macAddressValidationSchema,
   MacInterfaceMap,
 } from '../../../../../../common';
 import { YamlViewValues } from '../../data/dataTypes';
-import filter from 'lodash/filter';
+import {
+  getUniqueValidationSchema,
+  UniqueStringArrayExtractor,
+} from '../../commonValidationSchemas';
 
-const uniqueMessage = 'must be unique';
 const requiredMsg = 'A value is required';
 const networkYamlValidationSchema = Yup.string().required(requiredMsg);
 
-const testUnique = (value: string, values: object[], field: string): boolean => {
-  if (!value) {
-    return true;
+const getAllMacAddresses: UniqueStringArrayExtractor<YamlViewValues> = (
+  values: YamlViewValues,
+): string[] => {
+  const allMacAddresses: string[] = [];
+  for (const host of values.hosts) {
+    if (!host.macInterfaceMap) {
+      continue;
+    }
+    for (const mapItem of host.macInterfaceMap) {
+      if (mapItem.macAddress) {
+        allMacAddresses.push(mapItem.macAddress);
+      }
+    }
   }
-  return filter(values, { [field]: value }).length === 1;
+  return allMacAddresses;
 };
 
-const macInterfaceMapValidationSchema = Yup.lazy<MacInterfaceMap>((macInterfaceMap) => {
-  return Yup.array<MacInterfaceMap>().of(
-    Yup.object().shape({
-      macAddress: macAddressValidationSchema
-        .required(requiredMsg)
-        .test('macAddress', uniqueMessage, (value) =>
-          testUnique(value, macInterfaceMap, 'macAddress'),
-        ),
-      logicalNicName: Yup.string()
-        .required(requiredMsg)
-        .test('logicalNicName', uniqueMessage, (value) =>
-          testUnique(value, macInterfaceMap, 'logicalNicName'),
-        ),
-    }),
+const getInterfaceNamesInCurrentHost: UniqueStringArrayExtractor<YamlViewValues> = (
+  values: YamlViewValues,
+  context: Yup.TestContext,
+) => {
+  const currentMacInterfaceObject: ArrayElementType<MacInterfaceMap> = (context.parent as unknown) as ArrayElementType<
+    MacInterfaceMap
+  >;
+  const currentHost = values.hosts.find(
+    (currentHost) =>
+      currentHost.macInterfaceMap &&
+      currentHost.macInterfaceMap.indexOf(currentMacInterfaceObject) > -1,
   );
-});
+  if (!currentHost || !currentHost.macInterfaceMap) {
+    return undefined;
+  }
+  return currentHost.macInterfaceMap.map((currentItem) => {
+    return currentItem.logicalNicName ? currentItem.logicalNicName : '';
+  });
+};
+
+const macInterfaceMapValidationSchema = Yup.array<MacInterfaceMap>().of(
+  Yup.object().shape({
+    macAddress: macAddressValidationSchema
+      .required(requiredMsg)
+      .concat(getUniqueValidationSchema(getAllMacAddresses)),
+    logicalNicName: Yup.string()
+      .required(requiredMsg)
+      .concat(getUniqueValidationSchema(getInterfaceNamesInCurrentHost)),
+  }),
+);
 
 export const yamlViewValidationSchema = Yup.object().shape<YamlViewValues>({
   hosts: Yup.array<HostStaticNetworkConfig>().of(

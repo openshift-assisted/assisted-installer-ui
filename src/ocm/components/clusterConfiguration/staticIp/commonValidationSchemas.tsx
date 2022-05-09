@@ -2,13 +2,35 @@ import { Address4, Address6 } from 'ip-address';
 import { isInSubnet } from 'is-in-subnet';
 import * as Yup from 'yup';
 
-export const getIpAddressValidationSchema = (
-  fieldName: string,
-  protocolVersion: 'ipv4' | 'ipv6',
+export type UniqueStringArrayExtractor<FormValues> = (
+  values: FormValues,
+  context: Yup.TestContext,
+  value: string,
+) => string[] | undefined;
+
+export const getUniqueValidationSchema = <FormValues,>(
+  uniqueStringArrayExtractor: UniqueStringArrayExtractor<FormValues>,
 ) => {
+  return Yup.string().test('unique', 'Value must be unique', function (value: string) {
+    if (!this.options.context || !('values' in this.options.context)) {
+      return this.createError({
+        message: 'Unexpected error: Yup test context should contain form values',
+      });
+    }
+    const values = uniqueStringArrayExtractor(this.options.context['values'], this, value);
+    if (!values) {
+      return this.createError({
+        message: 'Unexpected error: Failed to get values to test uniqueness',
+      });
+    }
+    return values.filter((currentValue) => currentValue === value).length === 1;
+  });
+};
+
+export const getIpAddressValidationSchema = (protocolVersion: 'ipv4' | 'ipv6') => {
   const protocolVersionLabel = protocolVersion === 'ipv4' ? 'IPv4' : 'IPv6';
   return Yup.string().test(
-    fieldName,
+    protocolVersion,
     `Value \${value} is not a valid ${protocolVersionLabel} address`,
     function (value) {
       if (!value) {
@@ -39,7 +61,7 @@ export const getIpAddressInSubnetValidationSchema = (
       if (!value) {
         return true;
       }
-      const ipValidationSchema = getIpAddressValidationSchema('gateway', protocolVersion);
+      const ipValidationSchema = getIpAddressValidationSchema(protocolVersion);
       try {
         ipValidationSchema.validateSync(value);
       } catch (err) {

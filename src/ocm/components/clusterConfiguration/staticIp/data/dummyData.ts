@@ -1,12 +1,15 @@
 import { HostStaticNetworkConfig, MacInterfaceMap } from '../../../../../common';
 import { ProtocolVersion } from './dataTypes';
-import { NmstateEthernetInterface } from './nmstateTypes';
+import { NmstateEthernetInterface, NmstateInterfaceType } from './nmstateTypes';
 import { FORM_VIEW_PREFIX, getNmstateProtocolConfig, toYamlWithComments } from './nmstateYaml';
 
 const DUMMY_MAC = '01:23:45:67:89:AB';
-const DUMMY_NIC_PREFIX = 'DUMMY_';
-export const getDummyNicName = (protocolVersion: ProtocolVersion) =>
-  `${DUMMY_NIC_PREFIX}_${protocolVersion}`;
+const DUMMY_NIC_PREFIX = 'DUMMY';
+
+export const getDummyNicName = (protocolVersion: ProtocolVersion) => {
+  const protocolNumber = protocolVersion === 'ipv4' ? 4 : 6;
+  return `${DUMMY_NIC_PREFIX}${protocolNumber}`;
+};
 
 export const DUMMY_NMSTATE_ADDRESSES = {
   ipv4: {
@@ -23,7 +26,7 @@ export const getDummyInterfaces = (): NmstateEthernetInterface[] => {
   return [
     {
       name: getDummyNicName('ipv4'),
-      type: 'ethernet',
+      type: NmstateInterfaceType.ETHERNET,
       state: 'up',
       ipv4: getNmstateProtocolConfig(
         DUMMY_NMSTATE_ADDRESSES.ipv4.ip,

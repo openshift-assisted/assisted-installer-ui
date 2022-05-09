@@ -1,9 +1,9 @@
-import React, { ReactNode } from 'react';
+import React, { PropsWithChildren, ReactNode } from 'react';
 import { WizardNavItem, WizardNavItemProps } from '@patternfly/react-core';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens';
 
-export const getNavItemContent = (
+const getNavItemContent = (
   content: ReactNode,
   isValid: () => boolean,
   isDisabled?: boolean,
@@ -24,17 +24,17 @@ export const getNavItemContent = (
   return content;
 };
 
-const NavItem: React.FC<WizardNavItemProps & { isValid?: () => boolean }> = ({
+const NavItem: React.FC<PropsWithChildren<WizardNavItemProps & { isValid?: () => boolean }>> = ({
   isValid = () => true,
+  children,
   ...props
 }) => {
   const { content, isDisabled, isCurrent } = props;
 
   return (
-    <WizardNavItem
-      {...props}
-      content={getNavItemContent(content, isValid, isDisabled, isCurrent)}
-    />
+    <WizardNavItem {...props} content={getNavItemContent(content, isValid, isDisabled, isCurrent)}>
+      {children}
+    </WizardNavItem>
   );
 };
 

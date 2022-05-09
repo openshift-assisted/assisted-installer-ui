@@ -8,6 +8,7 @@ import {
   StaticIpProps,
 } from '../clusterConfiguration/staticIp/components/propTypes';
 import { StaticIpPage } from '../clusterConfiguration/staticIp/components/StaticIpPage';
+import { WithErrorBoundry } from '../../../common/components/ErrorHandling/WithErrorBoundary';
 
 const getInitialFormStateProps = () => {
   return {
@@ -52,7 +53,9 @@ const StaticIp: React.FC<StaticIpProps & { cluster: Cluster }> = ({
 
   return (
     <ClusterWizardStep navigation={<ClusterWizardNavigation cluster={cluster} />} footer={footer}>
-      <StaticIpPage {...{ infraEnv, updateInfraEnv, onFormStateChange }} />
+      <WithErrorBoundry title="Failed to load Static IP step">
+        <StaticIpPage {...{ infraEnv, updateInfraEnv, onFormStateChange }} />
+      </WithErrorBoundry>
     </ClusterWizardStep>
   );
 };

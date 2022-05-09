@@ -7,7 +7,6 @@ import { getStaticIpInfo } from '../data/fromInfraEnv';
 import { StaticIpFormState, StaticIpPageProps, StaticIpViewProps } from './propTypes';
 import { YamlView } from './YamlView/YamlView';
 import { useClusterWizardContext } from '../../../clusterWizard/ClusterWizardContext';
-import { useErrorHandler } from '../../../../../common/errorHandling/ErrorHandlerContext';
 import { FormViewHosts } from './FormViewHosts/FormViewHosts';
 import { FormViewNetworkWide } from './FormViewNetworkWide/FormViewNetworkWide';
 import './staticIp.css';
@@ -30,7 +29,6 @@ export const StaticIpPage: React.FC<StaticIpPageProps> = ({
     return getStaticIpInfo(infraEnv);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const { handleErrorMessage } = useErrorHandler();
   const { currentStepId, onUpdateStaticIpView } = useClusterWizardContext();
   const [confirmOnChangeView, setConfirmOnChangeView] = React.useState<boolean>(false);
   const [viewChanged, setViewChanged] = React.useState<boolean>(false);
@@ -63,10 +61,7 @@ export const StaticIpPage: React.FC<StaticIpPageProps> = ({
       case 'static-ip-network-wide-configurations':
         return <FormViewNetworkWide {...viewProps} />;
       default:
-        handleErrorMessage({
-          message: `Unexpected wizard step id ${currentStepId} when entering static ip page`, //move to useeffect
-        });
-        return null;
+        throw `Unexpected wizard step id ${currentStepId} when entering static ip page`;
     }
   };
 

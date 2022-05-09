@@ -4,7 +4,6 @@ import {
   TextVariants,
   FormSelectOptionProps,
   Grid,
-  GridItem,
   FormGroup,
   TextInputTypes,
   Alert,
@@ -39,6 +38,7 @@ import {
 } from '../../data/dataTypes';
 import { getMachineNetworkCidr } from '../../data/machineNetwork';
 import '../staticIp.css';
+import useFieldErrorMsg from '../../../../../../common/hooks/useFieldErrorMsg';
 const hostsConfiguredAlert = (
   <Alert
     variant={AlertVariant.warning}
@@ -52,14 +52,19 @@ const MachineNetwork: React.FC<{ fieldName: string; protocolVersion: ProtocolVer
   fieldName,
   protocolVersion,
 }) => {
-  const [{ value }, { error }] = useField<Cidr>(fieldName);
+  const [{ value }] = useField<Cidr>(fieldName);
+  const ipFieldName = `${fieldName}.ip`;
+  const prefixLengthFieldName = `${fieldName}.prefixLength`;
+  const ipErrorMessage = useFieldErrorMsg({ name: ipFieldName });
+  const prefixLengthErrorMessage = useFieldErrorMsg({ name: prefixLengthFieldName });
+  const errorMessage = ipErrorMessage || prefixLengthErrorMessage;
   const machineNetworkHelptext = React.useMemo(() => {
-    if (error) {
+    if (errorMessage) {
       return '';
     }
     const cidr = getMachineNetworkCidr(value);
     return getHumanizedSubnetRange(getAddressObject(cidr, protocolVersion));
-  }, [value, protocolVersion, error]);
+  }, [value, protocolVersion, errorMessage]);
   return (
     <FormGroup
       labelIcon={
@@ -68,23 +73,28 @@ const MachineNetwork: React.FC<{ fieldName: string; protocolVersion: ProtocolVer
       label="Machine Network"
       fieldId={getFieldId(`${fieldName}`, 'input')}
       isRequired
+      helperTextInvalid={errorMessage}
+      validated={errorMessage ? 'error' : 'default'}
+      helperText={machineNetworkHelptext}
+      className="machine-network"
     >
       <Flex>
-        <FlexItem flex={{ default: 'flex_2' }} spacer={{ default: 'spacerSm' }}>
+        <FlexItem spacer={{ default: 'spacerSm' }}>
           <InputField
             name={`${fieldName}.ip`}
             isRequired={true}
             data-testid={`${protocolVersion}-machine-network-ip`}
-            helperText={machineNetworkHelptext}
+            showErrorMessage={false}
           />
         </FlexItem>
         <FlexItem spacer={{ default: 'spacerSm' }}>{'/'}</FlexItem>
-        <FlexItem flex={{ default: 'flex_1' }}>
+        <FlexItem>
           <InputField
             name={`${fieldName}.prefixLength`}
             isRequired={true}
             data-testid={`${protocolVersion}-machine-network-prefix-length`}
             type={TextInputTypes.number}
+            showErrorMessage={false}
           />
         </FlexItem>
       </Flex>
@@ -98,12 +108,7 @@ const IpConfigFields: React.FC<{
 }> = ({ protocolVersion, fieldName }) => {
   return (
     <Grid hasGutter>
-      <GridItem span={6}>
-        <MachineNetwork
-          fieldName={`${fieldName}.machineNetwork`}
-          protocolVersion={protocolVersion}
-        />
-      </GridItem>
+      <MachineNetwork fieldName={`${fieldName}.machineNetwork`} protocolVersion={protocolVersion} />
       <InputField
         isRequired
         label="Default gateway"
@@ -164,7 +169,7 @@ export const ProtocolTypeSelect: React.FC = () => {
   );
 };
 export const FormViewNetworkWideFields: React.FC<{ hosts: FormViewHost[] }> = ({ hosts }) => {
-  const { values } = useFormikContext<FormViewNetworkWideValues>();
+  const { values, setFieldValue } = useFormikContext<FormViewNetworkWideValues>();
   return (
     <>
       <TextContent>
@@ -190,6 +195,7 @@ export const FormViewNetworkWideFields: React.FC<{ hosts: FormViewHost[] }> = ({
         }
         name="useVlan"
         data-testid="use-vlan"
+        onChange={() => setFieldValue('vlanId', '')}
       />
 
       {values.useVlan && (

@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { WizardNav, WizardNavItem } from '@patternfly/react-core';
+import { WizardNav } from '@patternfly/react-core';
 import { Cluster } from '../../../common';
 import {
   canNextClusterDetails,
@@ -10,7 +10,7 @@ import {
 } from './wizardTransition';
 import { useClusterWizardContext } from './ClusterWizardContext';
 import { staticIpFormViewSubSteps, wizardStepNames } from './constants';
-import { getNavItemContent } from '../../../common/components/ui/WizardNavItem';
+import WizardNavItem from '../../../common/components/ui/WizardNavItem';
 
 const isStepValid = (stepId: ClusterWizardStepsType, cluster?: Cluster): boolean => {
   if (!cluster) {
@@ -35,20 +35,24 @@ const isStepValid = (stepId: ClusterWizardStepsType, cluster?: Cluster): boolean
 const ClusterWizardNavigation: React.FC<{ cluster?: Cluster }> = ({ cluster }) => {
   const { currentStepId, setCurrentStepId, wizardStepIds } = useClusterWizardContext();
 
+  const isStepIdxAfterCurrent = (idx: number) => {
+    return !wizardStepIds.slice(idx).includes(currentStepId);
+  };
+
+  const isStepDisabled = (idx: number, stepId: ClusterWizardStepsType) => {
+    return stepId === 'cluster-details' ? false : isStepIdxAfterCurrent(idx);
+  };
+
   const getNavItem = (idx: number, stepId: ClusterWizardStepsType): ReactNode => {
-    const isCurrent = currentStepId === stepId;
-    const content = wizardStepNames[stepId];
-    const isDisabled =
-      stepId === 'cluster-details' ? false : !wizardStepIds.slice(idx).includes(currentStepId);
-    const isValid = () => isStepValid(stepId, cluster);
     return (
       <WizardNavItem
         step={idx}
         key={stepId}
-        content={getNavItemContent(content, isValid, isDisabled, isCurrent)}
+        content={wizardStepNames[stepId]}
         onNavItemClick={() => setCurrentStepId(stepId)}
-        isCurrent={isCurrent}
-        isDisabled={isDisabled}
+        isCurrent={currentStepId === stepId}
+        isDisabled={isStepDisabled(idx, stepId)}
+        isValid={() => isStepValid(stepId, cluster)}
       />
     );
   };
@@ -56,12 +60,12 @@ const ClusterWizardNavigation: React.FC<{ cluster?: Cluster }> = ({ cluster }) =
   const getStaticIpFormViewNavItem = (idx: number): ReactNode => {
     return (
       <WizardNavItem
-        step={20}
+        step={idx}
         isExpandable={true}
         content="Static network configurations"
         key="static-network-configuration-form-view"
         isCurrent={isStaticIpStep(currentStepId)}
-        isDisabled={!wizardStepIds.slice(idx).includes(currentStepId)}
+        isDisabled={isStepIdxAfterCurrent(idx)}
       >
         <WizardNav returnList>
           {staticIpFormViewSubSteps.map((stepId, subIdx) => {
@@ -82,6 +86,7 @@ const ClusterWizardNavigation: React.FC<{ cluster?: Cluster }> = ({ cluster }) =
         i += 1;
       } else {
         navItems.push(getStaticIpFormViewNavItem(i));
+        //skip iteration on form view sub steps
         i += 2;
       }
     }

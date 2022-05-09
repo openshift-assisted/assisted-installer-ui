@@ -1,13 +1,14 @@
 import { Form } from '@patternfly/react-core';
-import { Formik, FormikConfig, useFormikContext } from 'formik';
+import { Formik, FormikConfig, useFormikContext, yupToFormErrors } from 'formik';
 import isEqual from 'lodash/isEqual';
 import React, { PropsWithChildren } from 'react';
-import { ErrorState, useAlerts } from '../../../../../common';
+import { useAlerts } from '../../../../../common';
 import { useFormikAutoSave } from '../../../../../common/components/ui/formik/FormikAutoSave';
-import { useErrorHandler } from '../../../../../common/errorHandling/ErrorHandlerContext';
+import { useErrorMonitor } from '../../../../../common/components/ErrorHandling/ErrorMonitorContext';
+import { getErrorMessage } from '../../../../api';
 import { StaticIpFormProps } from './propTypes';
 
-const AutosaveWithParentUpdate = <StaticIpFormValues,>({
+const AutosaveWithParentUpdate = <StaticIpFormValues extends object>({
   onFormStateChange,
   getEmptyValues,
 }: {
@@ -28,7 +29,7 @@ const AutosaveWithParentUpdate = <StaticIpFormValues,>({
   return null;
 };
 
-export const StaticIpForm = <StaticIpFormValues,>({
+export const StaticIpForm = <StaticIpFormValues extends object>({
   infraEnv,
   updateInfraEnv,
   getInitialValues,
@@ -39,30 +40,18 @@ export const StaticIpForm = <StaticIpFormValues,>({
   children,
   showEmptyValues,
 }: PropsWithChildren<StaticIpFormProps<StaticIpFormValues>>) => {
-  const { clearAlerts } = useAlerts();
-  const { handleError, handleApiError } = useErrorHandler();
+  const { clearAlerts, addAlert } = useAlerts();
+  const { captureException } = useErrorMonitor();
   const [initialValues, setInitialValues] = React.useState<StaticIpFormValues | undefined>();
-  const [errorMsg, setErrorMsg] = React.useState<string>();
   React.useEffect(() => {
-    try {
-      if (showEmptyValues) {
-        //after view changed the formik should be rendered with empty values
-        setInitialValues(getEmptyValues());
-      } else {
-        setInitialValues(getInitialValues(infraEnv));
-      }
-    } catch (error) {
-      const msg = `Failed to get initial values from infra env ${infraEnv.id}`;
-      handleError({
-        error: error,
-        message: msg,
-        showAlert: false,
-      });
-      setErrorMsg(msg);
-      return undefined;
+    if (showEmptyValues) {
+      //after view changed the formik should be rendered with empty values
+      setInitialValues(getEmptyValues());
+    } else {
+      setInitialValues(getInitialValues(infraEnv));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [handleError]);
+  }, []);
 
   const handleSubmit: FormikConfig<StaticIpFormValues>['onSubmit'] = async (values) => {
     clearAlerts();
@@ -72,20 +61,26 @@ export const StaticIpForm = <StaticIpFormValues,>({
         staticNetworkConfig: staticNetworkConfig,
       });
     } catch (error) {
-      handleApiError({ error });
+      captureException(error);
+      addAlert({ title: getErrorMessage(error) });
     }
   };
-  if (errorMsg) {
-    return <ErrorState title="Parsing error" content={errorMsg} />;
-  }
   if (!initialValues) {
     return null;
   }
+  const validate = (values: StaticIpFormValues) => {
+    try {
+      validationSchema.validateSync(values, { abortEarly: false, context: { values: values } });
+      return {};
+    } catch (error) {
+      return yupToFormErrors(error);
+    }
+  };
   return (
     <Formik
       initialValues={initialValues}
       onSubmit={handleSubmit}
-      validationSchema={validationSchema}
+      validate={validate}
       validateOnMount
       enableReinitialize
     >

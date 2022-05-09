@@ -110,8 +110,8 @@ const SingleHost = <HostFieldType,>({
       </Flex>
 
       {isExpanded && (
-        <ExpandableSection isDetached key={hostIdx} isExpanded={isExpanded}>
-          {isExpanded && <ExpandedHostComponent fieldName={hostFieldName} hostIdx={hostIdx} />}
+        <ExpandableSection isDetached key={hostIdx} isExpanded={true}>
+          <ExpandedHostComponent fieldName={hostFieldName} hostIdx={hostIdx} />
         </ExpandableSection>
       )}
       {!isExpanded && <CollapsedHostComponent fieldName={hostFieldName} hostIdx={hostIdx} />}
@@ -170,10 +170,6 @@ const Hosts = <HostFieldType,>({
     push(newHostData);
   };
 
-  const onRemoveHost = (hostIdx: number) => {
-    setHostIdxToRemove(hostIdx);
-  };
-
   return (
     <>
       {field.value.map((data, hostIdx) => {
@@ -188,7 +184,7 @@ const Hosts = <HostFieldType,>({
               hostIdx={hostIdx}
               onToggleExpand={onToggleExpand}
               isExpanded={expandedHosts[hostIdx]}
-              onRemove={() => onRemoveHost(hostIdx)}
+              onRemove={() => setHostIdxToRemove(hostIdx)}
               fieldName={fieldName}
               emptyHostData={emptyHostData}
               enableRemoveHost={field.value.length > 1}

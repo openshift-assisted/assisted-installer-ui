@@ -1,7 +1,5 @@
 import { FeatureSupportLevel } from '../api/types';
-
-//extract array element type
-type ArrayElementType<TWhere> = TWhere extends (infer U)[] ? (U extends object ? U : never) : never;
+import { ArrayElementType } from './typescriptExtensions';
 
 type Features = Required<ArrayElementType<FeatureSupportLevel['features']>>;
 export type FeatureId = Features['featureId'] | 'ODF' | 'CNV' | 'NETWORK_TYPE_SELECTION';

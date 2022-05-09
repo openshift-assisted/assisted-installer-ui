@@ -10,8 +10,7 @@ import { defaultWizardSteps, staticIpFormViewSubSteps } from './constants';
 import { Cluster, InfraEnv } from '../../../common/api';
 import { StaticIpView } from '../clusterConfiguration/staticIp/data/dataTypes';
 import { getStaticIpInfo } from '../clusterConfiguration/staticIp/data/fromInfraEnv';
-import { useErrorHandler } from '../../../common/errorHandling/ErrorHandlerContext';
-import { isEqual } from 'lodash';
+import isEqual from 'lodash/isEqual';
 
 const getWizardStepIds = (staticIpView?: StaticIpView): ClusterWizardStepsType[] => {
   const stepIds: ClusterWizardStepsType[] = [...defaultWizardSteps];
@@ -29,7 +28,6 @@ const ClusterWizardContextProvider: React.FC<PropsWithChildren<{
 }>> = ({ children, cluster, infraEnv }) => {
   const [currentStepId, setCurrentStepId] = React.useState<ClusterWizardStepsType>();
   const [wizardStepIds, setWizardStepIds] = React.useState<ClusterWizardStepsType[]>();
-  const { handleErrorMessage } = useErrorHandler();
   React.useEffect(() => {
     const staticIpInfo = infraEnv ? getStaticIpInfo(infraEnv) : undefined;
     const firstStep = getClusterWizardFirstStep(staticIpInfo, cluster?.status);
@@ -50,10 +48,7 @@ const ClusterWizardContextProvider: React.FC<PropsWithChildren<{
       }
       const staticIpInfo = infraEnv ? getStaticIpInfo(infraEnv) : undefined;
       if (!staticIpInfo) {
-        handleErrorMessage({
-          message: `Wizard step is currently ${currentStepId}, but no static ip info is defined`,
-        });
-        return;
+        throw `Wizard step is currently ${currentStepId}, but no static ip info is defined`;
       }
       //if static ip view change wasn't persisted, moving back should set the wizard steps according to the persisted view
       const newStepIds = getWizardStepIds(staticIpInfo.view);
@@ -97,7 +92,7 @@ const ClusterWizardContextProvider: React.FC<PropsWithChildren<{
       currentStepId,
       setCurrentStepId,
     };
-  }, [wizardStepIds, currentStepId, infraEnv, handleErrorMessage]);
+  }, [wizardStepIds, currentStepId, infraEnv]);
   if (!contextValue) {
     return null;
   }

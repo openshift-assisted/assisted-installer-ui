@@ -22,7 +22,7 @@ import CancelInstallationModal from './CancelInstallationModal';
 import ResetClusterModal from './ResetClusterModal';
 import { FeatureSupportLevelProvider } from '../featureSupportLevels';
 import useInfraEnv from '../../hooks/useInfraEnv';
-import { OcmErrorHandlerContextProvider } from '../OcmErrorHandlerContextProvider';
+import { SentryErrorMonitorContextProvider } from '../SentryErrorMonitorContextProvider';
 
 type AssistedInstallerDetailCardProps = {
   aiClusterId: string;
@@ -127,7 +127,7 @@ const AssistedInstallerDetailCard: React.FC<AssistedInstallerDetailCardProps> = 
   return (
     <FeatureGateContextProvider features={allEnabledFeatures}>
       <AlertsContextProvider>
-        <OcmErrorHandlerContextProvider>
+        <SentryErrorMonitorContextProvider>
           <ModalDialogsContextProvider>
             <ClusterDefaultConfigurationProvider
               loadingUI={<LoadingCard />}
@@ -141,7 +141,7 @@ const AssistedInstallerDetailCard: React.FC<AssistedInstallerDetailCardProps> = 
               <DiscoveryImageModal />
             </ClusterDefaultConfigurationProvider>
           </ModalDialogsContextProvider>
-        </OcmErrorHandlerContextProvider>
+        </SentryErrorMonitorContextProvider>
       </AlertsContextProvider>
     </FeatureGateContextProvider>
   );

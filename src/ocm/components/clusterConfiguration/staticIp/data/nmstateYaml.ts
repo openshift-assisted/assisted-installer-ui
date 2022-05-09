@@ -3,6 +3,7 @@ import {
   Nmstate,
   NmstateDns,
   NmstateEthernetInterface,
+  NmstateInterfaceType,
   NmstateProtocolConfig,
   NmstateProtocolConfigs,
   NmstateRoutesConfig,
@@ -103,7 +104,7 @@ export const getDnsSection = (
 export const getVlanInterface = (nicName: string, vlanId: number): NmstateVlanInterface => {
   return {
     name: `${nicName}.${vlanId}`,
-    type: 'vlan',
+    type: NmstateInterfaceType.VLAN,
     state: 'up',
     vlan: { 'base-iface': nicName, id: vlanId },
   };
@@ -115,7 +116,7 @@ export const getEthernetInterface = (
 ): NmstateEthernetInterface => {
   return {
     name: nicName,
-    type: 'ethernet',
+    type: NmstateInterfaceType.ETHERNET,
     state: 'up',
     ...protocolConfigs,
   };

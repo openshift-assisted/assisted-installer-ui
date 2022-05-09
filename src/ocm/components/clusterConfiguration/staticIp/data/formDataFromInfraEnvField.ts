@@ -37,6 +37,15 @@ type ParsedFormViewYaml = {
   nmstate: Nmstate;
 };
 
+const findFirstRealEthernetInterface = (
+  interfaces: NmstateInterface[],
+): NmstateEthernetInterface | undefined => {
+  return (interfaces.find(
+    (currentInterface) =>
+      isEthernetInterface(currentInterface) && !isDummyInterface(currentInterface.name),
+  ) as unknown) as NmstateEthernetInterface | undefined;
+};
+
 const parseYaml = (yaml: string): ParsedFormViewYaml => {
   const lines = yaml.split('\n');
   const lastCommentIdx = findLastIndex(lines, (line) => line.startsWith(YAML_COMMENT_CHAR));
@@ -122,12 +131,7 @@ const getFormViewHost = (
     throw `Static network config is missing mac address`;
   }
   const { nmstate } = parseYaml(infraEnvHost.networkYaml);
-  let ethernetInterface: NmstateEthernetInterface | null = null;
-  for (const nmstateInterface of nmstate.interfaces) {
-    if (isEthernetInterface(nmstateInterface) && !isDummyInterface(nmstateInterface.name)) {
-      ethernetInterface = nmstateInterface;
-    }
-  }
+  const ethernetInterface = findFirstRealEthernetInterface(nmstate.interfaces);
   if (!ethernetInterface) {
     //handle case 2
     return null;

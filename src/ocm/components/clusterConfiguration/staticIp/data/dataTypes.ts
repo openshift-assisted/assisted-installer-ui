@@ -39,17 +39,17 @@ export type StaticIpInfo = {
   formViewProtocolType: StaticProtocolType | null;
 };
 
-export type YamlViewValues = {
+export interface YamlViewValues {
   hosts: HostStaticNetworkConfig[];
-};
+}
 
-export type FormViewHostsValues = {
+export interface FormViewHostsValues {
   hosts: FormViewHost[];
-};
+}
 
-export type FormViewNetworkWideValues = {
+export interface FormViewNetworkWideValues {
   protocolType: StaticProtocolType;
   useVlan: boolean;
   vlanId: number | '';
   ipConfigs: IpConfigs;
-};
+}

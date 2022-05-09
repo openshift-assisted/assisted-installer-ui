@@ -34,9 +34,9 @@ const REAL_NIC_NAME = 'eth0';
 
 const getPrefixLength = (
   networkWide: FormViewNetworkWideValues,
-  protocolVerion: ProtocolVersion,
+  protocolVersion: ProtocolVersion,
 ): number => {
-  const machineNetwork = networkWide.ipConfigs[protocolVerion].machineNetwork;
+  const machineNetwork = networkWide.ipConfigs[protocolVersion].machineNetwork;
   if (machineNetwork.prefixLength === '') {
     throw 'Machine network prefix length not configured';
   }

@@ -15,7 +15,7 @@ import NewClusterWizard from '../clusterWizard/NewClusterWizard';
 import { routeBasePath } from '../../config';
 import { FeatureSupportLevelProvider } from '../featureSupportLevels';
 import ClusterWizardContextProvider from '../clusterWizard/ClusterWizardContextProvider';
-import { OcmErrorHandlerContextProvider } from '../OcmErrorHandlerContextProvider';
+import { SentryErrorMonitorContextProvider } from '../SentryErrorMonitorContextProvider';
 const loadingUI = (
   <PageSection variant={PageSectionVariants.light} isFilled>
     <LoadingState />
@@ -42,7 +42,7 @@ const errorUI = (
 const NewClusterPage: React.FC = () => {
   return (
     <AlertsContextProvider>
-      <OcmErrorHandlerContextProvider>
+      <SentryErrorMonitorContextProvider>
         <ClusterDefaultConfigurationProvider loadingUI={loadingUI} errorUI={errorUI}>
           <FeatureSupportLevelProvider loadingUi={loadingUI}>
             <ClusterBreadcrumbs clusterName="New cluster" />
@@ -60,7 +60,7 @@ const NewClusterPage: React.FC = () => {
             </PageSection>
           </FeatureSupportLevelProvider>
         </ClusterDefaultConfigurationProvider>
-      </OcmErrorHandlerContextProvider>
+      </SentryErrorMonitorContextProvider>
     </AlertsContextProvider>
   );
 };

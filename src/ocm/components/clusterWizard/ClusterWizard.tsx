@@ -7,6 +7,7 @@ import ClusterDetails from './ClusterDetails';
 import HostDiscovery from './HostDiscovery';
 import StaticIp from './StaticIp';
 import classNames from 'classnames';
+import { WithErrorBoundry } from '../../../common/components/ErrorHandling/WithErrorBoundary';
 type ClusterWizardProps = {
   cluster: Cluster;
   infraEnv: InfraEnv;
@@ -36,7 +37,11 @@ const ClusterWizard: React.FC<ClusterWizardProps> = ({ cluster, infraEnv, update
   if (!currentStepId) {
     return <LoadingState />;
   }
-  return <div className={classNames('pf-c-wizard', 'cluster-wizard')}>{renderCurrentStep()}</div>;
+  return (
+    <WithErrorBoundry>
+      <div className={classNames('pf-c-wizard', 'cluster-wizard')}>{renderCurrentStep()}</div>
+    </WithErrorBoundry>
+  );
 };
 
 export default ClusterWizard;

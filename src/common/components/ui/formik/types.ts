@@ -64,6 +64,7 @@ export interface InputFieldProps extends FieldProps {
   onChange?: (event: React.FormEvent<HTMLInputElement>) => void;
   onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
   validate?: FieldValidator;
+  showErrorMessage?: boolean;
 }
 
 export interface NumberInputFieldProps extends FieldProps {

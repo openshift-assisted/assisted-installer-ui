@@ -84,7 +84,8 @@
     "js-yaml": "^4.1.0",
     "prism-react-renderer": "^1.1.1",
     "react-measure": "^2.5.2",
-    "unique-names-generator": "^4.2.0"
+    "unique-names-generator": "^4.2.0",
+    "react-error-boundary": "^3.1.4"
   },
   "devDependencies": {
     "@types/classnames": "^2.3.1",

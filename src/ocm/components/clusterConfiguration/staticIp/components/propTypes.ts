@@ -24,7 +24,7 @@ export type StaticIpViewProps = StaticIpPageProps & {
   showEmptyValues: boolean;
 };
 
-export type StaticIpFormProps<StaticIpViewValues> = StaticIpViewProps & {
+export type StaticIpFormProps<StaticIpViewValues extends object> = StaticIpViewProps & {
   showEmptyValues: boolean;
   getInitialValues(infraEnv: InfraEnv): StaticIpViewValues;
   getUpdateParams(currentInfraEnv: InfraEnv, values: StaticIpViewValues): HostStaticNetworkConfig[];

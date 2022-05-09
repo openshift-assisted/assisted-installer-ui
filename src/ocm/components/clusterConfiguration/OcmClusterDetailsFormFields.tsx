@@ -22,7 +22,6 @@ import DiskEncryptionControlGroup from '../../../common/components/clusterConfig
 export type ClusterDetailsFormFieldsProps = {
   canEditPullSecret: boolean;
   forceOpenshiftVersion?: string;
-  isNameDisabled?: boolean;
   isBaseDnsDomainDisabled?: boolean;
   defaultPullSecret?: string;
   isOcm: boolean;
@@ -50,7 +49,6 @@ export const OcmClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps
   managedDomains = [],
   toggleRedHatDnsService,
   canEditPullSecret,
-  isNameDisabled,
   isBaseDnsDomainDisabled,
   versions,
   defaultPullSecret,
@@ -76,7 +74,6 @@ export const OcmClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps
         label="Cluster name"
         name="name"
         placeholder={isOcm ? '' : 'Enter cluster name'}
-        isDisabled={isNameDisabled}
         isRequired
       />
       {!!managedDomains.length && toggleRedHatDnsService && (
