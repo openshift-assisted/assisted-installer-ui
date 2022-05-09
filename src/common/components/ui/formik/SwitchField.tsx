@@ -29,6 +29,7 @@ const SwitchField: React.FC<SwitchFieldProps> = ({
     label: label,
     isDisabled: props.isDisabled,
     isChecked: field.value,
+    hasCheckIcon: true,
     onChange: (checked: boolean, event: React.FormEvent<HTMLInputElement>) => {
       if (onChangeCustomOverride) {
         onChangeCustomOverride(checked, event);
