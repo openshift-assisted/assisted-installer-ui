@@ -51,7 +51,11 @@ const ClusterInstallationProgressCard: React.FC<{ cluster: Cluster }> = ({ clust
       <CardExpandableContent>
         <CardBody>
           <Grid hasGutter>
-            <ClusterDetailStatusVarieties cluster={cluster} clusterVarieties={clusterVarieties} />
+            <ClusterDetailStatusVarieties
+              cluster={cluster}
+              clusterVarieties={clusterVarieties}
+              showAddHostsInfo={false}
+            />
             <GridItem>
               <ClusterHostsTable cluster={cluster} skipDisabled />
             </GridItem>
