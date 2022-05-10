@@ -45,6 +45,7 @@ export type HostsTableActions = {
   canEditHostname?: () => boolean;
   canUnbindHost?: (host: Host) => ActionCheck;
   onUnbindHost?: (host: Host) => void;
+  onExcludedODF?: (hostId: Host['id'], nodeLabels: HostUpdateParams['nodeLabels']) => Promise<any>;
 };
 
 export type HostNetworkingStatusComponentProps = {

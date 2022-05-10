@@ -140,6 +140,20 @@ export const useHostsTable = (cluster: Cluster) => {
     [dispatch, resetCluster, addAlert, cluster.id],
   );
 
+  const onExcludedODF = React.useCallback(
+    async (hostId: Host['id'], nodeLabels: HostUpdateParams['nodeLabels']) => {
+      try {
+        const { data } = await HostsService.updateHostODF(cluster.id, hostId, nodeLabels);
+        resetCluster ? resetCluster() : dispatch(updateHost(data));
+      } catch (e) {
+        handleApiError(e, () =>
+          addAlert({ title: 'Failed to update ODF status', message: getErrorMessage(e) }),
+        );
+      }
+    },
+    [dispatch, resetCluster, addAlert, cluster.id],
+  );
+
   const onUpdateDay2ApiVip: UpdateDay2ApiVipFormProps['onUpdateDay2ApiVip'] = React.useCallback(
     async (apiVip: string, onError: (message: string) => void) => {
       try {
@@ -241,6 +255,7 @@ export const useHostsTable = (cluster: Cluster) => {
         ...actionChecks,
         onEditRole,
         onDiskRole,
+        onExcludedODF,
         onEditHost,
         onHostReset,
         onDownloadHostLogs,
@@ -256,6 +271,7 @@ export const useHostsTable = (cluster: Cluster) => {
       onEditHost,
       onHostReset,
       onDownloadHostLogs,
+      onExcludedODF,
       onViewHostEvents,
     ],
   );

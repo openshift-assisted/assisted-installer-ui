@@ -41,7 +41,7 @@ export const CnvCheckbox: React.FC<CnvCheckboxProps> = ({ openshiftVersion, isSN
         <CheckboxField
           name={name}
           label={<CNVLabel clusterId={clusterId} isSingleNode={isSNO} />}
-          helperText="Run virtual machines along containers."
+          helperText="Run virtual machines along containers on one platform."
           isDisabled={!!disabledReason}
         />
       </Tooltip>

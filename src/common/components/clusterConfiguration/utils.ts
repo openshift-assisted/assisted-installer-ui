@@ -19,6 +19,7 @@ import {
 import {
   HostDiscoveryValues,
   HostSubnets,
+  StorageValues,
   Validation,
   ValidationGroup,
   ValidationsInfo,
@@ -155,6 +156,15 @@ export const getHostDiscoveryInitialValues = (cluster: Cluster): HostDiscoveryVa
     useContainerNativeVirtualization: isOperatorEnabled('cnv'),
     usePlatformIntegration: cluster.platform?.type !== 'baremetal',
     schedulableMasters: selectSchedulableMasters(cluster),
+  };
+};
+
+export const getStorageInitialValues = (cluster: Cluster): StorageValues => {
+  const monitoredOperators = cluster.monitoredOperators || [];
+  const isOperatorEnabled = (name: RegExp | string) =>
+    !!monitoredOperators.find((operator) => operator.name?.match(name));
+  return {
+    nodeLabeling: None,
   };
 };
 
