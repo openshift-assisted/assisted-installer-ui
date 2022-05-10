@@ -50,7 +50,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
   const clusterVarieties = useClusterStatusVarieties(cluster);
   const { credentials, credentialsError } = clusterVarieties;
   const { monitoredOperators = [] } = cluster;
-  const canAddHosts = !ocmClient && !isSNO(cluster) && cluster.status === 'installed';
+  const canAddHosts = !isSNO(cluster) && cluster.status === 'installed' && !ocmClient;
 
   return (
     <Stack hasGutter>

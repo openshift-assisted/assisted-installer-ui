@@ -156,7 +156,7 @@ const ClustersAPI = {
     );
   },
 
-  addHosts(clusterId: Cluster['id']) {
+  allowAddHosts(clusterId: Cluster['id']) {
     return client.post<Cluster, AxiosResponse<Cluster>, never>(
       `${ClustersAPI.makeActionsBaseURI(clusterId)}/allow-add-workers`,
     );
