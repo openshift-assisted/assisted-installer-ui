@@ -14,15 +14,22 @@ import { VSPHERE_CONFIG_LINK } from '../../../common/config/constants';
 import { isSNO } from '../../../common/selectors/clusterSelectors';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { calculateClusterDateDiff } from '../../../common/sevices/DateAndTime';
+import { isSingleClusterMode } from '../../config';
 
 type ClusterDetailStatusMessagesProps = {
   cluster: Cluster;
+  showAddHostsInfo?: boolean;
 };
 
-const ClusterDetailStatusMessages: React.FC<ClusterDetailStatusMessagesProps> = ({ cluster }) => {
+const ClusterDetailStatusMessages: React.FC<ClusterDetailStatusMessagesProps> = ({
+  cluster,
+  showAddHostsInfo = true,
+}) => {
   const { inactiveDeletionHours } = useDefaultConfiguration(['inactiveDeletionHours']);
   const inactiveDeletionDays = Math.round((inactiveDeletionHours || 0) / 24);
   const dateDifference = calculateClusterDateDiff(inactiveDeletionDays, cluster.installCompletedAt);
+  const showAddHostsAlert =
+    showAddHostsInfo && !isSingleClusterMode() && cluster.status === 'installed' && !isSNO(cluster);
 
   return (
     <>
@@ -51,7 +58,7 @@ const ClusterDetailStatusMessages: React.FC<ClusterDetailStatusMessagesProps> = 
           }
         />
       </RenderIf>
-      <RenderIf condition={cluster.status === 'installed' && !isSNO(cluster)}>
+      <RenderIf condition={showAddHostsAlert}>
         <Alert
           variant="info"
           isInline

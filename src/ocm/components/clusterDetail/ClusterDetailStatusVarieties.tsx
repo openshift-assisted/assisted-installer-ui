@@ -68,7 +68,8 @@ export const useClusterStatusVarieties = (cluster: Cluster): ClusterStatusVariet
 const ClusterDetailStatusVarieties: React.FC<{
   cluster: Cluster;
   clusterVarieties: ClusterStatusVarieties;
-}> = ({ cluster, clusterVarieties }) => {
+  showAddHostsInfo?: boolean;
+}> = ({ cluster, clusterVarieties, showAddHostsInfo = true }) => {
   const { credentials, credentialsError, consoleOperator, fetchCredentials } = clusterVarieties;
 
   const showClusterCredentials =
@@ -85,7 +86,7 @@ const ClusterDetailStatusVarieties: React.FC<{
           idPrefix={getClusterDetailId('cluster-creds')}
         />
       )}
-      <ClusterDetailStatusMessages cluster={cluster} />
+      <ClusterDetailStatusMessages cluster={cluster} showAddHostsInfo={showAddHostsInfo} />
     </>
   );
 };
