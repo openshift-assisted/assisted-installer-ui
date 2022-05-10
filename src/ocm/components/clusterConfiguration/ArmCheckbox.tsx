@@ -43,11 +43,8 @@ const ArmCheckbox: React.FC<ArmCheckboxProps> = ({ versions }) => {
     values: { openshiftVersion },
   } = useFormikContext<ClusterCreateParams>();
   const [{ name, value }, , { setValue }] = useField<CpuArchitecture>('cpuArchitecture');
-  const {
-    getFeatureDisabledReason,
-    isFeatureDisabled,
-    isFeatureSupported,
-  } = useFeatureSupportLevel();
+  const { getFeatureDisabledReason, isFeatureDisabled, isFeatureSupported } =
+    useFeatureSupportLevel();
   const isSupportedVersionAvailable = !!versions.find((version) =>
     isFeatureSupported(version.value, 'ARM64_ARCHITECTURE'),
   );

@@ -39,8 +39,9 @@ type ClusterDeploymentHostsNetworkTableProps = Pick<
   agents: AgentK8sResource[];
 };
 
-const ClusterDeploymentHostsNetworkTable: React.FC<ClusterDeploymentHostsNetworkTableProps> = React.memo(
-  ({ clusterDeployment, agentClusterInstall, agents, onEditHost, onEditRole }) => {
+const ClusterDeploymentHostsNetworkTable: React.FC<ClusterDeploymentHostsNetworkTableProps> =
+  // eslint-disable-next-line react/display-name
+  React.memo(({ clusterDeployment, agentClusterInstall, agents, onEditHost, onEditRole }) => {
     const cluster = React.useMemo(
       () => getAICluster({ clusterDeployment, agentClusterInstall, agents }),
       [clusterDeployment, agentClusterInstall, agents],
@@ -97,7 +98,6 @@ const ClusterDeploymentHostsNetworkTable: React.FC<ClusterDeploymentHostsNetwork
         />
       </HostsTable>
     );
-  },
-);
+  });
 
 export default ClusterDeploymentHostsNetworkTable;

@@ -22,7 +22,7 @@ import { RenderIf } from '../../../common/components/ui/';
 import { wizardStepNames } from '../clusterWizard/constants';
 import './ReviewCluster.css';
 
-const PlatformIntegrationNote: React.FC<{}> = () => {
+const PlatformIntegrationNote = () => {
   return (
     <p>
       <ExclamationTriangleIcon color={warningColor.value} size="sm" /> You will need to modify your

@@ -8,6 +8,7 @@ import useFieldErrorMsg from '../../../hooks/useFieldErrorMsg';
 
 const InputField: React.FC<
   InputFieldProps & { inputError?: string; description?: React.ReactNode; labelInfo?: string }
+  // eslint-disable-next-line react/display-name
 > = React.forwardRef(
   (
     {

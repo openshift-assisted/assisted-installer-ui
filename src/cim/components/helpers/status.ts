@@ -24,6 +24,7 @@ import {
 import { HostStatusDef } from '../../../common';
 import { agentStatus, bmhStatus } from './agentStatus';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const conditionsByTypeReducer = <K>(
   result: { K?: StatusCondition<string> },
   condition: StatusCondition<string>,

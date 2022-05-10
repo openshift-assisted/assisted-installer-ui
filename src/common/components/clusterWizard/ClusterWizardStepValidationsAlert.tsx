@@ -11,8 +11,8 @@ import {
 } from '@patternfly/react-core';
 import { WizardStepsValidationMap } from './validationsInfoUtils';
 import { Cluster } from '../../api/types';
-import { Validation, ValidationsInfo } from '../../types/clusters';
-import { ClusterWizardStepHostStatusDeterminationObject } from '../../types/hosts';
+import { ValidationsInfo } from '../../types/clusters';
+import { ClusterWizardStepHostStatusDeterminationObject, Validation } from '../../types/hosts';
 import {
   getWizardStepClusterStatus,
   getWizardStepClusterValidationsInfo,
@@ -41,13 +41,13 @@ const ClusterWizardStepValidationsAlert = <ClusterWizardStepsType extends string
       currentStepId,
       wizardStepsValidationsMap,
     );
-    const flattenedValues = lodashValues(reducedValidationsInfo).flat() as Validation[];
+    const flattenedValues = lodashValues(reducedValidationsInfo).flat();
     return {
       pendingClusterValidations: flattenedValues.filter(
-        (validation) => validation.status === 'pending',
+        (validation) => validation?.status === 'pending',
       ),
       failedClusterValidations: flattenedValues.filter(
-        (validation) => validation.status === 'failure',
+        (validation) => validation?.status === 'failure',
       ),
     };
   }, [validationsInfo, currentStepId, wizardStepsValidationsMap]);
@@ -76,9 +76,11 @@ const ClusterWizardStepValidationsAlert = <ClusterWizardStepsType extends string
                 <FlexItem>The following requirements must be met:</FlexItem>
                 <FlexItem>
                   <List>
-                    {failedClusterValidations.map((validation) => (
-                      <ListItem key={validation.id}>{validation.message}</ListItem>
-                    ))}
+                    {(failedClusterValidations.filter(Boolean) as Validation[]).map(
+                      (validation) => (
+                        <ListItem key={validation.id}>{validation.message}</ListItem>
+                      ),
+                    )}
                   </List>
                 </FlexItem>
               </Flex>

@@ -39,7 +39,8 @@ const AddHosts: React.FC = () => {
     try {
       await HostsService.installAll(cluster);
       resetCluster();
-    } catch (e) {
+    } catch (err) {
+      const e = err as Parameters<typeof handleApiError>[0];
       handleApiError(e, () =>
         addAlert({
           title: 'Failed to start hosts installation.',

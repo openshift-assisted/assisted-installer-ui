@@ -31,9 +31,10 @@ const SingleNodeCheckbox: React.FC<SingleNodeCheckboxProps> = ({
   const isSupportedVersionAvailable = !!versions.find((version) =>
     isFeatureSupported(version.value, 'SNO'),
   );
-  const onChanged = React.useCallback((checked: boolean) => setValue(checked ? 'None' : 'Full'), [
-    setValue,
-  ]);
+  const onChanged = React.useCallback(
+    (checked: boolean) => setValue(checked ? 'None' : 'Full'),
+    [setValue],
+  );
 
   const disabledReason = getFeatureDisabledReason(openshiftVersion, 'SNO');
 

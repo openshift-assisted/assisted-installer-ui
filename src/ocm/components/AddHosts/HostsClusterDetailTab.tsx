@@ -72,6 +72,7 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
         )}
       </>
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openModal, cluster]);
 
   React.useEffect(() => {
@@ -144,7 +145,8 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
             pullSecret,
           );
           setDay2Cluster(day2Cluster);
-        } catch (e) {
+        } catch (err) {
+          const e = err as Parameters<typeof handleApiError>[0];
           handleApiError(e);
           setError(
             <>
@@ -161,6 +163,7 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
 
       doItAsync();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     cluster,
     openModal,
@@ -176,7 +179,8 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
       try {
         const cluster = await Day2ClusterService.fetchClusterById(day2Cluster.id);
         setDay2Cluster(cluster);
-      } catch (e) {
+      } catch (err) {
+        const e = err as Parameters<typeof handleApiError>[0];
         handleApiError(e);
         setError(
           <>
@@ -187,6 +191,7 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
         );
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [day2Cluster, setDay2Cluster]);
 
   React.useEffect(() => {

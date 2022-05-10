@@ -11,9 +11,8 @@ export type AgentClusterInstallStatusConditionType =
   | 'Failed'
   | 'Stopped';
 
-export type AgentClusterInstallStatusCondition = StatusCondition<
-  AgentClusterInstallStatusConditionType
->;
+export type AgentClusterInstallStatusCondition =
+  StatusCondition<AgentClusterInstallStatusConditionType>;
 
 export type AgentClusterInstallK8sResource = K8sResourceCommon & {
   spec?: {
@@ -22,6 +21,7 @@ export type AgentClusterInstallK8sResource = K8sResourceCommon & {
           name: string;
           namespace: string;
         }
+      // eslint-disable-next-line @typescript-eslint/ban-types
       | {};
     clusterMetadata?: {
       adminKubeconfigSecretRef?: {

@@ -91,9 +91,8 @@ export const wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardSt
   review: reviewStepValidationsMap,
 };
 
-export const allClusterWizardSoftValidationIds = getAllClusterWizardSoftValidationIds(
-  wizardStepsValidationsMap,
-);
+export const allClusterWizardSoftValidationIds =
+  getAllClusterWizardSoftValidationIds(wizardStepsValidationsMap);
 
 const canNextFromClusterDeploymentWizardStep = (
   agentClusterInstall: AgentClusterInstallK8sResource,

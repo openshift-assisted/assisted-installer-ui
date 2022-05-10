@@ -73,37 +73,41 @@ const validationSchema = (initialValues: EditHostFormValues, usedHostnames: stri
     hostname: richNameValidationSchema(usedHostnames, initialValues.hostname).required(),
   });
 
-const withTemplate = (
-  selectedHosts: Host[],
-  hosts: Host[],
-  schema: ReturnType<typeof validationSchema>,
-  canChangeHostname: (host: Host) => ActionCheck,
-) => async (values: EditHostFormValues) => {
-  const newHostnames = getNewHostnames(values, selectedHosts, canChangeHostname)
-    .filter((h) => !h.reason)
-    .map(({ newHostname }) => newHostname);
+const withTemplate =
+  (
+    selectedHosts: Host[],
+    hosts: Host[],
+    schema: ReturnType<typeof validationSchema>,
+    canChangeHostname: (host: Host) => ActionCheck,
+  ) =>
+  async (values: EditHostFormValues) => {
+    const newHostnames = getNewHostnames(values, selectedHosts, canChangeHostname)
+      .filter((h) => !h.reason)
+      .map(({ newHostname }) => newHostname);
 
-  const usedHostnames = hosts.reduce<string[]>((acc, host) => {
-    if (!selectedHosts.find((a) => a.id === host.id)) {
-      acc.push(getHostname(host));
+    const usedHostnames = hosts.reduce<string[]>((acc, host) => {
+      if (!selectedHosts.find((a) => a.id === host.id)) {
+        acc.push(getHostname(host));
+      }
+      return acc;
+    }, []);
+    let validationResult = await getRichTextValidation(schema)({
+      ...values,
+      hostname: newHostnames[0] || '',
+    });
+    if (
+      newHostnames.some((newHostname) => usedHostnames.includes(newHostname || '')) ||
+      new Set(newHostnames).size !== newHostnames.length
+    ) {
+      validationResult = {
+        ...(validationResult || {}),
+        hostname: (validationResult?.hostname || []).concat(
+          HOSTNAME_VALIDATION_MESSAGES.NOT_UNIQUE,
+        ),
+      };
     }
-    return acc;
-  }, []);
-  let validationResult = await getRichTextValidation(schema)({
-    ...values,
-    hostname: newHostnames[0] || '',
-  });
-  if (
-    newHostnames.some((newHostname) => usedHostnames.includes(newHostname || '')) ||
-    new Set(newHostnames).size !== newHostnames.length
-  ) {
-    validationResult = {
-      ...(validationResult || {}),
-      hostname: (validationResult?.hostname || []).concat(HOSTNAME_VALIDATION_MESSAGES.NOT_UNIQUE),
-    };
-  }
-  return validationResult;
-};
+    return validationResult;
+  };
 
 type MassChangeHostnameFormProps = {
   selectedHosts: Host[];
@@ -120,9 +124,8 @@ const MassChangeHostnameForm: React.FC<MassChangeHostnameFormProps> = ({
   onClose,
   canChangeHostname,
 }) => {
-  const { values, handleSubmit, isSubmitting, status, isValid } = useFormikContext<
-    EditHostFormValues
-  >();
+  const { values, handleSubmit, isSubmitting, status, isValid } =
+    useFormikContext<EditHostFormValues>();
 
   const hostnameInputRef = React.useRef<HTMLInputElement>();
   const ref = React.useRef<Host[]>(initHosts);

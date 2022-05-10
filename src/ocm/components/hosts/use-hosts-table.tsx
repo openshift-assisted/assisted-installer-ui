@@ -153,10 +153,13 @@ export const useHostsTable = (cluster: Cluster) => {
     [cluster.id, dispatch],
   );
 
-  const onAdditionalNtpSource: AdditionalNTPSourcesFormProps['onAdditionalNtpSource'] = React.useMemo(
-    () => async (...args) => await onAdditionalNtpSourceAction(dispatch, cluster.id, ...args),
-    [cluster.id, dispatch],
-  );
+  const onAdditionalNtpSource: AdditionalNTPSourcesFormProps['onAdditionalNtpSource'] =
+    React.useMemo(
+      () =>
+        async (...args) =>
+          await onAdditionalNtpSourceAction(dispatch, cluster.id, ...args),
+      [cluster.id, dispatch],
+    );
 
   const actionChecks = React.useMemo(
     () => ({
