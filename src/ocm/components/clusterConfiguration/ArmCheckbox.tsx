@@ -20,6 +20,7 @@ const getLabel = (openshiftVersion: string) => {
     <>
       Use arm64 CPU architecture{' '}
       <PopoverIcon
+        noVerticalAlign
         bodyContent={
           <p>
             Check this option if you want to use the arm64 CPU architecture instead of the default
