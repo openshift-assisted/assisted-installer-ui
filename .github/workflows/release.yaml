@@ -38,14 +38,21 @@ jobs:
       # In order to align the new tag with the commit that bumps the version in the package.json
       # we must first push the tag (github.ref_name) and then update the remote branch.
       # Attempting to remove the tag first, invalidates the release and puts it on a draft state.
-      - name: Bumping the package version
+      - name: Updating the version in package.json
         run: |
           yarn version --new-version ${{ env.pkg_version }} --no-git-tag-version
           git add package.json
           git commit -m 'Version ${{ github.ref_name }}'
           git tag -f -a ${{ github.ref_name }} -m '${{ github.ref_name }}'
           git push origin ${{ github.ref_name }} --force
-          git push origin ${{ github.event.release.target_commitish }} --force
+          
+      - name: Pushing updated package.json to ${{ github.event.release.target_commitish }}
+        uses: CasperWA/push-protected@v2
+        with:
+          token: ${{ secrets.PUSH_TO_PROTECTED_BRANCH }}
+          branch: ${{ github.event.release.target_commitish }}
+          force: true
+          unprotect_reviews: true
 
       - name: Building
         run: yarn build
