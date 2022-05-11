@@ -34,7 +34,7 @@ export const HostRequirementsList: React.FC<HostRequirementsListProps> = ({
         <>
           <ListItem>
             Control plane nodes: At least {master?.cpuCores || 4} CPU cores, {masterRam} RAM,{' '}
-            {master?.diskSizeGb || 120} GB disk size for every supervisor.
+            {master?.diskSizeGb || 120} GB disk size for every control plane node.
           </ListItem>
           <ListItem>
             Workers: At least {worker?.cpuCores || 2} CPU cores, {workerRam} RAM,{' '}
