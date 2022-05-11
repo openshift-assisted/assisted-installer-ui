@@ -43,7 +43,7 @@ jobs:
           yarn version --new-version ${{ env.pkg_version }} --no-git-tag-version
           git add package.json
           git commit -m 'Version ${{ github.ref_name }}'
-          git tag -f -a ${{ github.ref_name }} -m '${{ github.event.release.body }}'
+          git tag -f -a ${{ github.ref_name }} -m '${{ github.ref_name }}'
           git push origin ${{ github.ref_name }} --force
           git push origin ${{ github.event.release.target_commitish }} --force
 
