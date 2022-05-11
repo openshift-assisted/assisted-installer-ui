@@ -68,14 +68,16 @@ const AdvancedNetworkFields: React.FC<AdvancedNetworkFieldsProps> = ({ isSDNSele
                 <StackItem key={index} className={'network-field-group'}>
                   <InputField
                     name={`clusterNetworks.${index}.cidr`}
-                    label="Cluster network CIDR"
+                    label={`Cluster network CIDR (${isDualStack && index === 0 ? 'IPv4' : 'IPv6'})`}
                     helperText={clusterCidrHelperText}
                     isRequired
                     labelInfo={index === 0 && isDualStack ? 'Primary' : ''}
                   />
                   <InputField
                     name={`clusterNetworks.${index}.hostPrefix`}
-                    label="Cluster network host prefix"
+                    label={`Cluster network host prefix (${
+                      isDualStack && index === 0 ? 'IPv4' : 'IPv6'
+                    })`}
                     type={TextInputTypes.number}
                     min={clusterNetworkCidrPrefix(index)}
                     max={
@@ -110,7 +112,7 @@ const AdvancedNetworkFields: React.FC<AdvancedNetworkFieldsProps> = ({ isSDNSele
               <StackItem key={index} className={'network-field-group'}>
                 <InputField
                   name={`serviceNetworks.${index}.cidr`}
-                  label="Service network CIDR"
+                  label={`Service network CIDR (${isDualStack && index === 0 ? 'IPv4' : 'IPv6'})`}
                   helperText={serviceCidrHelperText}
                   isRequired
                   labelInfo={index === 0 && isDualStack ? 'Primary' : ''}

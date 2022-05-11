@@ -6,8 +6,8 @@ import { Cluster } from '../../../../common/api/types';
 import { useFeatureSupportLevel } from '../../../../common/components/featureSupportLevels';
 import { NetworkConfigurationValues } from '../../../../common/types';
 import { getLimitedFeatureSupportLevels } from '../../../../common/components/featureSupportLevels/utils';
-import { useFeature } from '../../../../common/features';
 import {
+  allHostSubnetsIPv4,
   canSelectNetworkTypeSDN,
   getDefaultNetworkType,
   isSNO,
@@ -19,12 +19,7 @@ import {
 import { StackTypeControlGroup } from './StackTypeControl';
 import { AvailableSubnetsControl } from './AvailableSubnetsControl';
 import AdvancedNetworkFields from './AdvancedNetworkFields';
-import {
-  clusterNetworksEqual,
-  DUAL_STACK,
-  NETWORK_TYPE_OVN,
-  serviceNetworksEqual,
-} from '../../../../common';
+import { clusterNetworksEqual, DUAL_STACK, serviceNetworksEqual } from '../../../../common';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   defaultNetworkSettings: Partial<Cluster>;
@@ -72,13 +67,13 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   const clusterFeatureSupportLevels = React.useMemo(() => {
     return getLimitedFeatureSupportLevels(cluster, featureSupportLevelData);
   }, [cluster, featureSupportLevelData]);
-
-  const isNetworkTypeSelectionEnabled = useFeature(
-    'ASSISTED_INSTALLER_NETWORK_TYPE_SELECTION_FEATURE',
-  );
   const isMultiNodeCluster = !isSNO(cluster);
   const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';
   const isDualStack = values.stackType === DUAL_STACK;
+
+  const isDualStackSelectable = React.useMemo(() => !allHostSubnetsIPv4(hostSubnets), [
+    hostSubnets,
+  ]);
 
   const { defaultNetworkType, isSDNSelectable } = React.useMemo(() => {
     return {
@@ -139,15 +134,6 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
       toggleAdvConfiguration(true);
     }
   }, [toggleAdvConfiguration, isUserManagedNetworking, isDualStack]);
-
-  useEffect(() => {
-    if (isNetworkTypeSelectionEnabled && !isSDNSelectable) {
-      setFieldValue('vipDhcpAllocation', false);
-      setFieldValue('networkType', NETWORK_TYPE_OVN);
-      toggleAdvConfiguration(true);
-    }
-  }, [isNetworkTypeSelectionEnabled, isSDNSelectable, setFieldValue, toggleAdvConfiguration]);
-
   return (
     <Grid hasGutter>
       {!hideManagedNetworking && (
@@ -177,7 +163,12 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
         clusterFeatureSupportLevels['CLUSTER_MANAGED_NETWORKING_WITH_VMS'] === 'unsupported' &&
         vmsAlert}
 
-      {!isUserManagedNetworking && <StackTypeControlGroup clusterId={cluster.id} />}
+      {!isUserManagedNetworking && (
+        <StackTypeControlGroup
+          clusterId={cluster.id}
+          isDualStackSelectable={isDualStackSelectable}
+        />
+      )}
 
       {!(isUserManagedNetworking && isMultiNodeCluster) && (
         <AvailableSubnetsControl

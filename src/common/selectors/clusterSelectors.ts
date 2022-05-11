@@ -1,6 +1,11 @@
 import head from 'lodash/fp/head';
 import { stringToJSON } from '../api/utils';
-import { CpuArchitecture, NetworkConfigurationValues, ValidationsInfo } from '../types';
+import {
+  CpuArchitecture,
+  HostSubnets,
+  NetworkConfigurationValues,
+  ValidationsInfo,
+} from '../types';
 import { Cluster, ClusterNetwork, MachineNetwork, ServiceNetwork } from '../api/types';
 import { NETWORK_TYPE_OVN, NETWORK_TYPE_SDN } from '../config';
 import { Address4, Address6 } from 'ip-address';
@@ -51,6 +56,9 @@ export const allSubnetsIPv4 = (
 ) => {
   return !!networks?.every((network) => network.cidr && Address4.isValid(network.cidr));
 };
+
+export const allHostSubnetsIPv4 = (subnets: HostSubnets) =>
+  subnets.every((subnet) => Address4.isValid(subnet.subnet));
 
 export const isIPv4 = ({
   machineNetworks,
