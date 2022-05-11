@@ -160,7 +160,7 @@ export const CNVHostRequirementsContent: PreflightHWRequirementsContentComponent
           </ListItem>
         </RenderIf>
         <ListItem>
-          Each supervisor node requires an additional {masterRequirements?.ramMib || 150} MiB of
+          Each control plane node requires an additional {masterRequirements?.ramMib || 150} MiB of
           memory {masterRequirements?.diskSizeGb ? ',' : ' and'} {masterRequirements?.cpuCores || 4}{' '}
           CPUs
           {masterRequirements?.diskSizeGb
