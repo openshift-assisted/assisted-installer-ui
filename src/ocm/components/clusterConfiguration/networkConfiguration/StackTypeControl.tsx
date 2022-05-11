@@ -1,5 +1,5 @@
 import React from 'react';
-import { ButtonVariant, FormGroup } from '@patternfly/react-core';
+import { ButtonVariant, FormGroup, Tooltip } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 import { Cluster } from '../../../../common/api/types';
 import { NetworkConfigurationValues } from '../../../../common/types';
@@ -13,11 +13,14 @@ import {
 import { getFieldId } from '../../../../common/components/ui/formik/utils';
 import { ConfirmationModal, PopoverIcon, RadioField } from '../../../../common/components/ui';
 
-export const StackTypeControlGroup: React.FC<{ clusterId: Cluster['id'] }> = ({ clusterId }) => {
+export const StackTypeControlGroup: React.FC<{
+  clusterId: Cluster['id'];
+  isDualStackSelectable: boolean;
+}> = ({ clusterId, isDualStackSelectable }) => {
   const { setFieldValue, values, validateForm } = useFormikContext<NetworkConfigurationValues>();
   const [openConfirmModal, setConfirmModal] = React.useState(false);
 
-  const setSingleStack = () => {
+  const setSingleStack = React.useCallback(() => {
     setFieldValue('stackType', IPV4_STACK);
     setFieldValue('networkType', NETWORK_TYPE_SDN);
     setFieldValue('vipDhcpAllocation', true);
@@ -33,7 +36,13 @@ export const StackTypeControlGroup: React.FC<{ clusterId: Cluster['id'] }> = ({ 
     }
 
     validateForm();
-  };
+  }, [
+    setFieldValue,
+    validateForm,
+    values.clusterNetworks,
+    values.machineNetworks,
+    values.serviceNetworks,
+  ]);
 
   const setDualStack = () => {
     setFieldValue('stackType', DUAL_STACK);
@@ -78,64 +87,78 @@ export const StackTypeControlGroup: React.FC<{ clusterId: Cluster['id'] }> = ({ 
     }
   };
 
+  React.useEffect(() => {
+    if (!isDualStackSelectable && values.stackType === DUAL_STACK) {
+      setSingleStack();
+    }
+  }, [isDualStackSelectable, setSingleStack, values.stackType]);
+
   return (
-    <>
-      <FormGroup
-        label="Networking stack type"
-        fieldId={getFieldId('stackType', 'radio')}
-        isInline
-        onChange={setStackType}
-      >
-        <RadioField
-          name={'stackType'}
-          value={IPV4_STACK}
-          label={
-            <>
-              {'IPv4'}
-              <PopoverIcon
-                noVerticalAlign
-                variant="plain"
-                bodyContent="Select this when your hosts are using only IPv4."
-              />
-            </>
-          }
-        />
-        <RadioField
-          name={'stackType'}
-          value={DUAL_STACK}
-          label={
-            <>
-              {'Dual-stack'}
-              <PopoverIcon
-                noVerticalAlign
-                variant="plain"
-                bodyContent="Select dual-stack when your hosts are using IPV4 together with IPV6."
-              />
-            </>
-          }
-        />
-      </FormGroup>
-      {openConfirmModal && (
-        <ConfirmationModal
-          title={'Change stack type?'}
-          titleIconVariant={'warning'}
-          confirmationButtonText={'Change'}
-          confirmationButtonVariant={ButtonVariant.primary}
-          content={
-            <>
-              <p>All data and configuration done for 'Dual-stack' will be lost.</p>
-            </>
-          }
-          onClose={() => {
-            setConfirmModal(false);
-            setDualStack();
-          }}
-          onConfirm={() => {
-            setConfirmModal(false);
-            setSingleStack();
-          }}
-        />
-      )}
-    </>
+    <Tooltip
+      content={'Dual-stack is only available when your hosts are using IPV4 together with IPV6.'}
+      hidden={isDualStackSelectable}
+      position={'top-start'}
+    >
+      <>
+        <FormGroup
+          label="Networking stack type"
+          fieldId={getFieldId('stackType', 'radio')}
+          isInline
+          onChange={setStackType}
+        >
+          <RadioField
+            name={'stackType'}
+            value={IPV4_STACK}
+            isDisabled={!isDualStackSelectable}
+            label={
+              <>
+                {'IPv4'}
+                <PopoverIcon
+                  noVerticalAlign
+                  variant="plain"
+                  bodyContent="Select this when your hosts are using only IPv4."
+                />
+              </>
+            }
+          />
+          <RadioField
+            name={'stackType'}
+            value={DUAL_STACK}
+            isDisabled={!isDualStackSelectable}
+            label={
+              <>
+                {'Dual-stack'}
+                <PopoverIcon
+                  noVerticalAlign
+                  variant="plain"
+                  bodyContent="Select dual-stack when your hosts are using IPV4 together with IPV6."
+                />
+              </>
+            }
+          />
+        </FormGroup>
+        {openConfirmModal && (
+          <ConfirmationModal
+            title={'Change stack type?'}
+            titleIconVariant={'warning'}
+            confirmationButtonText={'Change'}
+            confirmationButtonVariant={ButtonVariant.primary}
+            content={
+              <>
+                <p>All data and configuration done for 'Dual-stack' will be lost.</p>
+              </>
+            }
+            onClose={() => {
+              setConfirmModal(false);
+              setDualStack();
+            }}
+            onConfirm={() => {
+              setConfirmModal(false);
+              setSingleStack();
+            }}
+          />
+        )}
+      </>
+    </Tooltip>
   );
 };

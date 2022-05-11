@@ -5,6 +5,7 @@ import { Cluster } from '../../../../common/api/types';
 import { HostSubnets, NetworkConfigurationValues } from '../../../../common/types';
 import { DUAL_STACK, NO_SUBNET_SET } from '../../../../common/config/constants';
 import { SelectField } from '../../../../common/components/ui';
+import { Address4, Address6 } from 'ip-address';
 
 export interface AvailableSubnetsControlProps {
   clusterId: Cluster['id'];
@@ -18,6 +19,10 @@ export const AvailableSubnetsControl = ({
   isRequired = false,
 }: AvailableSubnetsControlProps) => {
   const { values, errors, setFieldValue } = useFormikContext<NetworkConfigurationValues>();
+  const isDualStack = values.stackType === DUAL_STACK;
+
+  const IPv4Subnets = hostSubnets.filter((subnet) => Address4.isValid(subnet.subnet));
+  const IPv6Subnets = hostSubnets.filter((subnet) => Address6.isValid(subnet.subnet));
 
   useEffect(() => {
     if (values.machineNetworks && values.machineNetworks?.length < 1) {
@@ -32,12 +37,12 @@ export const AvailableSubnetsControl = ({
         true,
       );
     }
-  }, [clusterId, setFieldValue, hostSubnets, values.machineNetworks]);
+  }, [clusterId, hostSubnets, setFieldValue, values.machineNetworks]);
 
   return (
     <FormGroup
       label="Machine network"
-      labelInfo={values.stackType === DUAL_STACK && 'Primary'}
+      labelInfo={isDualStack && 'Primary'}
       fieldId="machine-networks"
       isRequired
     >
@@ -50,7 +55,7 @@ export const AvailableSubnetsControl = ({
                   <SelectField
                     name={`machineNetworks.${index}.cidr`}
                     options={
-                      hostSubnets.length
+                      (isDualStack && index === 1 ? IPv6Subnets.length : IPv4Subnets.length)
                         ? [
                             {
                               label: `Please select a subnet. (${hostSubnets.length} available)`,
@@ -58,7 +63,7 @@ export const AvailableSubnetsControl = ({
                               isDisabled: true,
                               id: 'form-input-hostSubnet-field-option-no-subnet',
                             },
-                            ...hostSubnets
+                            ...(isDualStack && index === 1 ? IPv6Subnets : IPv4Subnets)
                               .sort((subA, subB) => subA.humanized.localeCompare(subB.humanized))
                               .map((hn, index) => ({
                                 label: hn.humanized,
