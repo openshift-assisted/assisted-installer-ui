@@ -7,14 +7,14 @@ import ClusterDetails from './ClusterDetails';
 import HostDiscovery from './HostDiscovery';
 import StaticIp from './StaticIp';
 import classNames from 'classnames';
-import { WithErrorBoundry } from '../../../common/components/ErrorHandling/WithErrorBoundary';
+import { WithErrorBoundary } from '../../../common/components/ErrorHandling/WithErrorBoundary';
 type ClusterWizardProps = {
   cluster: Cluster;
   infraEnv: InfraEnv;
   updateInfraEnv: (infraEnvUpdateParams: InfraEnvUpdateParams) => Promise<InfraEnv>;
 };
 
-const ClusterWizard: React.FC<ClusterWizardProps> = ({ cluster, infraEnv, updateInfraEnv }) => {
+const ClusterWizard = ({ cluster, infraEnv, updateInfraEnv }: ClusterWizardProps) => {
   const { currentStepId } = useClusterWizardContext();
 
   const renderCurrentStep = React.useCallback(() => {
@@ -38,9 +38,9 @@ const ClusterWizard: React.FC<ClusterWizardProps> = ({ cluster, infraEnv, update
     return <LoadingState />;
   }
   return (
-    <WithErrorBoundry>
+    <WithErrorBoundary>
       <div className={classNames('pf-c-wizard', 'cluster-wizard')}>{renderCurrentStep()}</div>
-    </WithErrorBoundry>
+    </WithErrorBoundary>
   );
 };
 

@@ -14,7 +14,7 @@ import { Cluster } from '../../../common/api/types';
 import { useFeatureSupportLevel } from '../../../common/components/featureSupportLevels';
 import { DetailItem } from '../../../common';
 import { getLimitedFeatureSupportLevels } from '../../../common/components/featureSupportLevels/utils';
-import { WithErrorBoundry } from '../../../common/components/ErrorHandling/WithErrorBoundary';
+import { WithErrorBoundary } from '../../../common/components/ErrorHandling/WithErrorBoundary';
 
 export type SupportLevelSummary = {
   unsupportedVms: boolean;
@@ -142,8 +142,8 @@ const Item = ({ cluster }: ItemProps) => {
 };
 
 const ClusterFeatureSupportLevelsDetailItem = ({ ...props }: ItemProps) => (
-  <WithErrorBoundry title="Failed to load feature support levels review">
+  <WithErrorBoundary title="Failed to load feature support levels review">
     <Item {...props}></Item>
-  </WithErrorBoundry>
+  </WithErrorBoundary>
 );
 export default ClusterFeatureSupportLevelsDetailItem;

@@ -24,11 +24,8 @@ const getNavItemContent = (
   return content;
 };
 
-const NavItem: React.FC<PropsWithChildren<WizardNavItemProps & { isValid?: () => boolean }>> = ({
-  isValid = () => true,
-  children,
-  ...props
-}) => {
+type NavItemProps = PropsWithChildren<WizardNavItemProps & { isValid?: () => boolean }>;
+const NavItem = ({ isValid = () => true, children, ...props }: NavItemProps) => {
   const { content, isDisabled, isCurrent } = props;
 
   return (

@@ -4,7 +4,7 @@ import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import { ErrorState } from '../ui';
 import { useErrorMonitor } from './ErrorMonitorContext';
 
-const getErrorFallbackComponent = ({ title }: WithErrorBoundryProps) => {
+const getErrorFallbackComponent = ({ title }: WithErrorBoundaryProps) => {
   const FallbackComponent = ({ resetErrorBoundary }: FallbackProps) => {
     const content = 'There was an internal error';
     const primaryAction = [
@@ -22,14 +22,14 @@ const getErrorFallbackComponent = ({ title }: WithErrorBoundryProps) => {
   return FallbackComponent;
 };
 
-export type WithErrorBoundryProps = {
+export type WithErrorBoundaryProps = {
   title?: string;
 };
 
-export const WithErrorBoundry = ({
+export const WithErrorBoundary = ({
   children,
   ...props
-}: PropsWithChildren<WithErrorBoundryProps>) => {
+}: PropsWithChildren<WithErrorBoundaryProps>) => {
   const { captureException } = useErrorMonitor();
   const errorHandler = (error: Error) => {
     captureException(error, props.title);

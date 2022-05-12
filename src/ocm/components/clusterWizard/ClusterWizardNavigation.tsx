@@ -32,7 +32,7 @@ const isStepValid = (stepId: ClusterWizardStepsType, cluster?: Cluster): boolean
   }
 };
 
-const ClusterWizardNavigation: React.FC<{ cluster?: Cluster }> = ({ cluster }) => {
+const ClusterWizardNavigation = ({ cluster }: { cluster?: Cluster }) => {
   const { currentStepId, setCurrentStepId, wizardStepIds } = useClusterWizardContext();
 
   const isStepIdxAfterCurrent = (idx: number) => {
