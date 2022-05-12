@@ -63,6 +63,12 @@ New version of the package will be published to
 [npmjs.com](https://www.npmjs.com/package/openshift-assisted-ui-lib) and a new PR with version
 change will be created automatically by a GitHub action.
 
+## Updating the API types
+
+The types used by Assisted Installer UI are defined in `src/common/api/types.ts` and generated automatically by running `yarn update-api`.
+If the generator changes certain types from `unknown` to `any`, there will be warnings, which are not allowed.
+For now, you need to manually revert these changes.
+
 ## Troubleshooting
 
 ### Increasing the amount of inotify watchers

@@ -973,6 +973,7 @@ export interface Host {
   discoveryAgentVersion?: string;
   requestedHostname?: string;
   userName?: string;
+  mediaStatus?: 'connected' | 'disconnected';
   /**
    * swagger:ignore
    */
@@ -1144,6 +1145,7 @@ export interface HostRegistrationResponse {
   discoveryAgentVersion?: string;
   requestedHostname?: string;
   userName?: string;
+  mediaStatus?: 'connected' | 'disconnected';
   /**
    * swagger:ignore
    */
@@ -1245,6 +1247,7 @@ export interface HostUpdateParams {
 }
 export type HostValidationId =
   | 'connected'
+  | 'media-connected'
   | 'has-inventory'
   | 'has-min-cpu-cores'
   | 'has-min-valid-disks'
@@ -1506,7 +1509,7 @@ export interface InstallCmdRequest {
    * over multiple master nodes whereas 'None' installs a full cluster over one node.
    *
    */
-  highAvailabilityMode: 'Full' | 'None';
+  highAvailabilityMode?: 'Full' | 'None';
   proxy?: Proxy;
   /**
    * Check CVO status if needed
@@ -2039,7 +2042,6 @@ export type SourceState =
 export interface Step {
   stepType?: StepType;
   stepId?: string;
-  command?: string;
   args?: string[];
 }
 export interface StepReply {
