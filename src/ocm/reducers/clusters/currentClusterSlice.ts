@@ -31,7 +31,7 @@ export const fetchClusterAsync = createAsyncThunk<
     Object.assign(cluster.hosts, hosts);
     return cluster;
   } catch (e) {
-    return handleApiError(e, () => rejectWithValue(e.response.data));
+    handleApiError(e, () => rejectWithValue(e.response.data));
   }
 });
 

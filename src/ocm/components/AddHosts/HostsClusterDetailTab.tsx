@@ -145,8 +145,7 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
             pullSecret,
           );
           setDay2Cluster(day2Cluster);
-        } catch (err) {
-          const e = err as Parameters<typeof handleApiError>[0];
+        } catch (e) {
           handleApiError(e);
           setError(
             <>
@@ -179,8 +178,7 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
       try {
         const cluster = await Day2ClusterService.fetchClusterById(day2Cluster.id);
         setDay2Cluster(cluster);
-      } catch (err) {
-        const e = err as Parameters<typeof handleApiError>[0];
+      } catch (e) {
         handleApiError(e);
         setError(
           <>

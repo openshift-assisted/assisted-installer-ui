@@ -36,9 +36,8 @@ export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
         cpuArchitectures: data[key].cpuArchitectures as CpuArchitecture[],
       }));
       setVersions(sortVersions(versions));
-    } catch (err) {
-      const e = err as Parameters<typeof handleApiError>[0];
-      return handleApiError(e, (e) => {
+    } catch (e) {
+      handleApiError(e, (e) => {
         setError({
           title: 'Failed to retrieve list of supported OpenShift versions.',
           message: getErrorMessage(e),

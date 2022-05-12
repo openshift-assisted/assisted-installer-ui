@@ -19,7 +19,7 @@ const SingleCluster: React.FC<SingleClusterProps> = () => {
       setClusters(data);
       setError('');
     } catch (e) {
-      return handleApiError(e, () => setError('Failed to fetch cluster.'));
+      handleApiError(e, () => setError('Failed to fetch cluster.'));
     }
   }, [setClusters]);
 
