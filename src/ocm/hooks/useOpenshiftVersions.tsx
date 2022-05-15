@@ -25,14 +25,16 @@ export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
   const doAsync = React.useCallback(async () => {
     try {
       const { data } = await SupportedOpenshiftVersionsAPI.list();
-      const versions: OpenshiftVersionOptionType[] = Object.keys(data).map((key) => ({
-        label: `OpenShift ${data[key].displayName || key}`,
-        value: key,
-        version: data[key].displayName,
-        default: Boolean(data[key].default),
-        supportLevel: data[key].supportLevel,
-        cpuArchitectures: data[key].cpuArchitectures as CpuArchitecture[],
-      }));
+      const versions: OpenshiftVersionOptionType[] = Object.entries(data).map(
+        ([key, versionData]) => ({
+          label: `OpenShift ${versionData.displayName}`,
+          value: key,
+          version: versionData.displayName,
+          default: Boolean(versionData.default),
+          supportLevel: versionData.supportLevel,
+          cpuArchitectures: versionData.cpuArchitectures as CpuArchitecture[],
+        }),
+      );
       setVersions(sortVersions(versions));
     } catch (e) {
       return handleApiError(e, (e) => {
