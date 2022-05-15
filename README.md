@@ -20,54 +20,62 @@ or
 yarn add openshift-assisted-ui-lib
 ```
 
-## Develop
+## Development
 
-One time action:
+### Prerequisites
 
-```bash
-sudo dnf install -y inotify-tools
-yarn install
-```
+This project depends on the following package
 
-### Scripts
+- ```bash
+  sudo dnf install -y inotify-tools
+  ```
 
-- **yarn start**: Watches for changes in the `/src` folder and bundles the files into `/dist` folder
-- **yarn sync-dist**: Synchronizes `/dist` with the
-  [assisted-ui](https://github.com/openshift-assisted/assisted-ui) application's
-  `node_modules/openshift-assisted-ui-lib` folder.
-- **yarn start:assisted-ui**: Runs the Assisted UI application
-  [assisted-ui](https://github.com/openshift-assisted/assisted-ui) project.
+### Instructions
 
-In order to work with Assisted UI Lib and see changes in Assisted UI, run the 3 commands above
-sequentially. Before using the **yarn start:assisted-ui** script, make sure this project and the
-`assisted-ui` (and optionally the `uhc-portal`) project are located in the same folder.
+You can use the following steps in order to set up your dev environment.
 
-Next, create a `.env.development.local` file at the root folder of the `assisted-ui` repository and
-include this variable:
-
-```dotenv
-REACT_APP_API_URL="...ask the team"
-```
+1. Create a parent directory, e.g. `~/Projects`.
+2. Create your own fork of this repo and `git clone` it.
+   - ```bash
+     cd ~/Projects
+     git clone https://github.com/openshift-assisted/assisted-ui-lib.git
+     ```
+3. Install the project dependencies:
+   - ```bash
+     yarn --cwd=./assisted-ui-lib/ install
+     ```
+4. Fork and clone these projects too, they act as the main app:
+   - [assisted-ui](https://github.com/openshift-assisted/assisted-ui) (a light-weight stand-alone
+     app consuming this project),
+   - [uhc-portal](https://gitlab.cee.redhat.com/service/uhc-portal.git) (the full OCM app, GitLab
+     access needed).
+5. These scripts start the project in watch mode:
+   - ```bash
+     # Watches for changes in the `/src` folder and bundles the files into `/dist` folder
+     yarn start
+     # Synchronizes `/dist` with `node_modules/openshift-assisted-ui-lib/` folder in .
+     yarn sync-dist
+     ```
+6. This project uses the `assisted-ui` project to ease the development experience outside OCM (aka
+   `uhc-portal`), follow the instructions in those projects in order to access the app's UI.
 
 ## Publish
 
-To publish the Node.js package, simply create a new tag in format `v[VERSION]`.
+To publish a new version of the package to
+[npmjs.com](https://www.npmjs.com/package/openshift-assisted-ui-lib)
 
-To do so, preferably
-[draft a new release](https://github.com/openshift-assisted/assisted-ui-lib/releases/new) with:
-
-- tag: `v[VERSION]`, example: `v1.2.3`
-- title: `v[VERSION]`, example: `v1.2.3`
-
-New version of the package will be published to
-[npmjs.com](https://www.npmjs.com/package/openshift-assisted-ui-lib) and a new PR with version
-change will be created automatically by a GitHub action.
+1. Create a new branch from `master` in this repo, called `release/v<some-semver-string>`.
+2. [Draft a new release through GitHub's interface](https://github.com/openshift-assisted/assisted-ui-lib/releases/new).
+3. Fill the form with the following details:
+   1. Tag: `v<some-semver-string>`
+   2. Target branch: `release/v<some-semver-string>` (same as in step 2 above).
+   3. Title: `v<some-semver-string>`
+   4. Description: Generate the release notes automatically (or edit the field manually)
 
 ## Updating the API types
 
-The types used by Assisted Installer UI are defined in `src/common/api/types.ts` and generated automatically by running `yarn update-api`.
-If the generator changes certain types from `unknown` to `any`, there will be warnings, which are not allowed.
-For now, you need to manually revert these changes.
+The types used by Assisted Installer UI are defined in `src/common/api/types.ts` and they are
+generated automatically by running `yarn update-api`.
 
 ## Troubleshooting
 
