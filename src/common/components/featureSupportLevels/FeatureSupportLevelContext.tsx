@@ -9,20 +9,6 @@ export type FeatureSupportLevelData = {
   isFeatureSupported(version: string, featureId: FeatureId): boolean;
 };
 
-/* TO be deleted.
-{
-  getVersionSupportLevelsMap: (_version: string): FeatureIdToSupportLevel | undefined => {
-    return undefined;
-  },
-  getFeatureSupportLevel: (_version: string, _featureId: FeatureId): SupportLevel | undefined =>
-    undefined,
-  isFeatureSupported: (version: string, featureId: FeatureId): boolean => true,
-  isFeatureDisabled: (version: string, featureId: FeatureId): boolean => true,
-  getFeatureDisabledReason: (version: string, featureId: FeatureId): string | undefined =>
-    undefined,
-}
-*/
-
 const FeatureSupportLevelContext = React.createContext<FeatureSupportLevelData | null>(null);
 
 export const FeatureSupportLevelContextProvider: React.FC<{

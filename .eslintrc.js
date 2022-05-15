@@ -19,12 +19,14 @@ module.exports = {
       version: 'detect',
     },
   },
-  plugins: ['@typescript-eslint', 'react', 'react-hooks'],
-  extends: ['eslint:recommended', 'plugin:react/recommended', 'plugin:prettier/recommended'],
+  plugins: ['@typescript-eslint'],
+  extends: ['eslint:recommended', 'plugin:prettier/recommended'],
   overrides: [
     {
       files: ['src/**/*.ts', 'src/**/*.tsx'],
+      plugins: ['@typescript-eslint', 'react', 'react-hooks'],
       extends: [
+        'plugin:react/recommended',
         'plugin:@typescript-eslint/recommended',
         'plugin:@typescript-eslint/recommended-requiring-type-checking',
       ],
@@ -35,24 +37,36 @@ module.exports = {
       rules: {
         eqeqeq: ['error', 'always'],
         indent: 'off',
-        'react/no-unescaped-entities': ['error', { forbid: ['>', '}'] }],
-        '@typescript-eslint/explicit-member-accessibility': 'warn',
-        '@typescript-eslint/explicit-function-return-type': 'warn',
-        '@typescript-eslint/restrict-template-expressions': 'warn',
+        '@typescript-eslint/ban-types': [
+          'error',
+          {
+            types: {
+              '{}': {
+                message: 'Use Record<string, unknown> instead',
+                fixWith: 'Record<string, unknown>',
+              },
+            },
+          },
+        ],
+        '@typescript-eslint/no-explicit-any': [
+          'warn',
+          {
+            fixToUnknown: true,
+          },
+        ],
+        '@typescript-eslint/no-floating-promises': 'warn',
         '@typescript-eslint/no-misused-promises': 'warn',
-        '@typescript-eslint/no-unused-vars': 'error',
         '@typescript-eslint/no-unsafe-call': 'warn',
         '@typescript-eslint/no-unsafe-argument': 'warn',
         '@typescript-eslint/no-unsafe-assignment': 'warn',
-        '@typescript-eslint/require-await': 'warn',
-        '@typescript-eslint/ban-ts-comment': 'warn',
-        '@typescript-eslint/restrict-plus-operands': 'warn',
-        '@typescript-eslint/unbound-method': 'warn',
         '@typescript-eslint/no-unsafe-member-access': 'warn',
-        '@typescript-eslint/no-floating-promises': 'warn',
         '@typescript-eslint/no-unsafe-return': 'warn',
+        '@typescript-eslint/require-await': 'warn',
+        '@typescript-eslint/restrict-plus-operands': 'warn',
+        '@typescript-eslint/restrict-template-expressions': 'warn',
         'react-hooks/rules-of-hooks': 'error',
         'react-hooks/exhaustive-deps': 'warn',
+        'react/no-unescaped-entities': ['error', { forbid: ['>', '}'] }],
         'react/prop-types': 'off',
       },
     },

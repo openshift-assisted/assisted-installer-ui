@@ -2099,8 +2099,7 @@ export interface Usage {
    * additional properties of the feature
    */
   data?: {
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    [name: string]: {};
+    [name: string]: Record<string, unknown>;
   };
 }
 export interface V2ClusterUpdateParams {

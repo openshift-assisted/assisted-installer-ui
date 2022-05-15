@@ -206,7 +206,6 @@ const BMCForm: React.FC<BMCFormProps> = ({
       await onCreateBMH(values, nmState);
       onClose();
     } catch (e) {
-      // @ts-ignore
       setError(e.message);
     }
   };

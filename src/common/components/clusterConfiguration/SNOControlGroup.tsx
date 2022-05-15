@@ -13,9 +13,12 @@ type SNOControlGroupProps = {
 
 const SNOControlGroup = ({ versions, highAvailabilityMode }: SNOControlGroupProps) => {
   const { values } = useFormikContext<ClusterDetailsValues>();
-  const { isFeatureDisabled, getFeatureSupportLevel } = useFeatureSupportLevel();
-  const snoSupportLevel = getFeatureSupportLevel(values.openshiftVersion, 'SNO');
-  const isDisabled = isFeatureDisabled(values.openshiftVersion, 'SNO');
+  const featureSupportLevelContext = useFeatureSupportLevel();
+  const snoSupportLevel = featureSupportLevelContext.getFeatureSupportLevel(
+    values.openshiftVersion,
+    'SNO',
+  );
+  const isDisabled = featureSupportLevelContext.isFeatureDisabled(values.openshiftVersion, 'SNO');
 
   return (
     <>
