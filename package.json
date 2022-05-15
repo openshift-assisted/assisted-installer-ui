@@ -29,25 +29,18 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "esbuild:prod": "node ./scripts/esbuild/prod.js",
-    "esbuild:dev": "node ./scripts/esbuild/dev.js",
     "prebuild": "run-s clean test",
-    "build": "run-s clean esbuild:prod",
-    "start": "run-s clean esbuild:dev",
-    "start:assisted-ui": "yarn --cwd ../assisted-ui start",
-    "start:uhc-portal": "yarn --cwd ../uhc-portal start",
+    "build": "node ./scripts/esbuild/prod.js",
+    "start": "yarn clean && node ./scripts/esbuild/dev.js",
     "sync-dist": "./scripts/sync-dist.sh",
     "prepare": "install-peers",
-    "test": "run-s test:circular lint",
-    "test:circular": "dpdm --warning false --tree false --exit-code circular:1 src/index.ts",
+    "test": "run-s test:circular lint format:check",
+    "test:circular": "dpdm --warning false --tree false --exit-code circular:1 ./src/index.ts",
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx --color",
-    "format": "yarn run lint --fix",
-    "prettier": "prettier --write '**/*.{js,jsx,ts,tsx,json,md,scss,yaml,yml}'",
-    "type-check": "tsc --noEmit",
-    "update-api": "curl https://raw.githubusercontent.com/openshift/assisted-service/master/swagger.yaml > src/common/api/swagger.yaml",
-    "postupdate-api": "yarn swagger",
-    "swagger": "sw2dts -w -o src/common/api/types.ts src/common/api/swagger.yaml",
-    "postswagger": "sed -i -r 's/([a-z1-9]+)_([a-z])/\\1\\U\\2/g' src/common/api/types.ts && yarn prettier"
+    "lint:fix": "yarn run lint --fix",
+    "format": "prettier --write '**/*.{json,md,scss,yaml,yml}'",
+    "format:check": "prettier --check '**/*.{json,md,scss,yaml,yml}'",
+    "update-api": "./scripts/update-api.sh ./src/common/api/swagger.yaml ./src/common/api/types.ts"
   },
   "peerDependencies": {
     "@patternfly/react-code-editor": "^4.47.2",
@@ -75,6 +68,23 @@
     "swr": ">=0.5.6 <2",
     "uuid": "^8.1.0",
     "yup": "^0.28.3"
+  },
+  "dependencies": {
+    "axios-case-converter": "^0.8.1",
+    "classnames": "^2.3.1",
+    "file-saver": "^2.0.2",
+    "filesize.js": "^2.0.0",
+    "formik": "2.2.6",
+    "fuse.js": "^6.4.6",
+    "human-date": "^1.4.0",
+    "humanize-plus": "^1.8.2",
+    "ip-address": "^7.1.0",
+    "is-cidr": "^4.0.2",
+    "is-in-subnet": "^3.1.0",
+    "js-yaml": "^4.1.0",
+    "prism-react-renderer": "^1.1.1",
+    "react-measure": "^2.5.2",
+    "unique-names-generator": "^4.2.0"
   },
   "devDependencies": {
     "@types/classnames": "^2.3.1",
@@ -125,23 +135,6 @@
     "assisted-ui-lib",
     "library"
   ],
-  "dependencies": {
-    "axios-case-converter": "^0.8.1",
-    "classnames": "^2.3.1",
-    "file-saver": "^2.0.2",
-    "filesize.js": "^2.0.0",
-    "formik": "2.2.6",
-    "fuse.js": "^6.4.6",
-    "human-date": "^1.4.0",
-    "humanize-plus": "^1.8.2",
-    "ip-address": "^7.1.0",
-    "is-cidr": "^4.0.2",
-    "is-in-subnet": "^3.1.0",
-    "js-yaml": "^4.1.0",
-    "prism-react-renderer": "^1.1.1",
-    "react-measure": "^2.5.2",
-    "unique-names-generator": "^4.2.0"
-  },
   "resolutions": {
     "@types/react": "17.0.30"
   }
