@@ -66,17 +66,19 @@ export const hardwareStatusColumn = (
   };
 };
 
-const getExpandComponent = (onDiskRole: onDiskRoleType, canEditDisks: (host: Host) => boolean) => ({
-  obj: host,
-}: ExpandComponentProps<Host>) => (
-  <HostDetail
-    key={host.id}
-    host={host}
-    onDiskRole={onDiskRole}
-    canEditDisks={canEditDisks}
-    AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
-  />
-);
+const getExpandComponent =
+  (onDiskRole: onDiskRoleType, canEditDisks: (host: Host) => boolean) =>
+  // eslint-disable-next-line react/display-name
+  ({ obj: host }: ExpandComponentProps<Host>) =>
+    (
+      <HostDetail
+        key={host.id}
+        host={host}
+        onDiskRole={onDiskRole}
+        canEditDisks={canEditDisks}
+        AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
+      />
+    );
 
 type HostsDiscoveryTableProps = {
   cluster: Cluster;
@@ -140,7 +142,8 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({
           alerts
             .filter((alert) => alert.title === 'Failed to set role')
             .forEach((a) => removeAlert(a.key));
-        } catch (error) {
+        } catch (e) {
+          const error = e as Parameters<typeof handleApiError>[0];
           handleApiError(error, () => {
             if (!alerts.map((alert) => alert.message).includes(getErrorMessage(error))) {
               addAlert({ title: 'Failed to set role', message: getErrorMessage(error) });

@@ -65,9 +65,8 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
   onEditHost,
   onEditRole,
 }) => {
-  const { values, touched, setFieldValue, setFieldTouched } = useFormikContext<
-    ClusterDeploymentNetworkingValues
-  >();
+  const { values, touched, setFieldValue, setFieldTouched } =
+    useFormikContext<ClusterDeploymentNetworkingValues>();
   React.useEffect(() => onValuesChanged?.(values), [onValuesChanged, values]);
   const [editProxy, setEditProxy] = React.useState(false);
 

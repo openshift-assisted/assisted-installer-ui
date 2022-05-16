@@ -20,42 +20,43 @@ const OpenShiftLifeCycleDatesLink = () => (
   </a>
 );
 
-const getOpenshiftVersionHelperText = (versions: OpenshiftVersionOptionType[]) => (
-  selectedVersionValue: string,
-) => {
-  if (!versions.length) {
-    return (
-      <>
-        <ExclamationCircleIcon color={dangerColor.value} size="sm" />
-        &nbsp; No release image is available.
-      </>
-    );
-  }
-  let helperTextComponent = null;
-  const selectedVersion = versions.find((version) => version.value === selectedVersionValue);
-  if (selectedVersion?.supportLevel !== 'production') {
-    helperTextComponent = (
-      <>
-        <ExclamationTriangleIcon color={warningColor.value} size="sm" />
-        &nbsp;Please note that this version is not production ready. <OpenShiftLifeCycleDatesLink />
-      </>
-    );
-  } else if (
-    selectedVersionValue in openshiftVersionData['versions'] &&
-    diffInDaysBetweenDates(openshiftVersionData['versions'][selectedVersionValue]) <= 30
-  ) {
-    helperTextComponent = (
-      <>
-        <ExclamationTriangleIcon color={warningColor.value} size="sm" />
-        &nbsp;
-        {`Full support for this version ends on ${openshiftVersionData['versions'][selectedVersionValue]} and won't be available as an installation option afterwards.`}
-        &nbsp;
-        <OpenShiftLifeCycleDatesLink />
-      </>
-    );
-  }
-  return helperTextComponent;
-};
+const getOpenshiftVersionHelperText =
+  // eslint-disable-next-line react/display-name
+  (versions: OpenshiftVersionOptionType[]) => (selectedVersionValue: string) => {
+    if (!versions.length) {
+      return (
+        <>
+          <ExclamationCircleIcon color={dangerColor.value} size="sm" />
+          &nbsp; No release image is available.
+        </>
+      );
+    }
+    let helperTextComponent = null;
+    const selectedVersion = versions.find((version) => version.value === selectedVersionValue);
+    if (selectedVersion?.supportLevel !== 'production') {
+      helperTextComponent = (
+        <>
+          <ExclamationTriangleIcon color={warningColor.value} size="sm" />
+          &nbsp;Please note that this version is not production ready.{' '}
+          <OpenShiftLifeCycleDatesLink />
+        </>
+      );
+    } else if (
+      selectedVersionValue in openshiftVersionData['versions'] &&
+      diffInDaysBetweenDates(openshiftVersionData['versions'][selectedVersionValue]) <= 30
+    ) {
+      helperTextComponent = (
+        <>
+          <ExclamationTriangleIcon color={warningColor.value} size="sm" />
+          &nbsp;
+          {`Full support for this version ends on ${openshiftVersionData['versions'][selectedVersionValue]} and won't be available as an installation option afterwards.`}
+          &nbsp;
+          <OpenShiftLifeCycleDatesLink />
+        </>
+      );
+    }
+    return helperTextComponent;
+  };
 
 type OpenShiftVersionSelectProps = {
   versions: OpenshiftVersionOptionType[];

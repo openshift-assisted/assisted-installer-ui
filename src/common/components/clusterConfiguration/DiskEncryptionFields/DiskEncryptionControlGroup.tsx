@@ -18,11 +18,8 @@ const DiskEncryptionControlGroup: React.FC<DiskEncryptionControlGroupProps> = ({
   isSNO = false,
   isDisabled,
 }) => {
-  const {
-    enableDiskEncryptionOnMasters,
-    enableDiskEncryptionOnWorkers,
-    diskEncryptionMode,
-  } = values;
+  const { enableDiskEncryptionOnMasters, enableDiskEncryptionOnWorkers, diskEncryptionMode } =
+    values;
 
   const { setFieldValue, setFieldTouched } = useFormikContext<ClusterDetailsValues>();
 

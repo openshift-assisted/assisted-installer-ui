@@ -5,6 +5,7 @@ import { NumberInputFieldProps } from './types';
 import { getFieldId } from './utils';
 import HelperText from './HelperText';
 
+// eslint-disable-next-line react/display-name
 const NumberInputField: React.FC<NumberInputFieldProps> = React.forwardRef(
   (
     {

@@ -46,7 +46,7 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
         await ClustersService.delete(clusterId);
         dispatch(deleteCluster(clusterId));
       } catch (e) {
-        return handleApiError(e, () =>
+        handleApiError(e, () =>
           addAlert({
             title: 'Cluster could not be deleted',
             message: getErrorMessage(e),

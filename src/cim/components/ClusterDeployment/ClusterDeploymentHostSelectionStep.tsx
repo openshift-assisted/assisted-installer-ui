@@ -120,9 +120,10 @@ export const useHostsSelectionFormik = ({
     [agentClusterInstall, agents, clusterDeployment],
   );
 
-  const validationSchema = React.useMemo(() => getValidationSchema(agentClusterInstall), [
-    agentClusterInstall,
-  ]);
+  const validationSchema = React.useMemo(
+    () => getValidationSchema(agentClusterInstall),
+    [agentClusterInstall],
+  );
 
   return [initialValues, validationSchema];
 };

@@ -13,7 +13,7 @@ type ClusterWizardProps = {
 
 const ClusterWizard: React.FC<ClusterWizardProps> = ({ cluster }) => {
   const [currentStepId, setCurrentStepId] = React.useState<ClusterWizardStepsType>(() =>
-    getClusterWizardFirstStep(cluster.status as Cluster['status']),
+    getClusterWizardFirstStep(cluster.status),
   );
 
   const renderCurrentStep = React.useCallback(() => {

@@ -23,9 +23,7 @@ export const getLimitedFeatureSupportLevels = (
     if (featureUsage === undefined) {
       throw 'Error parsing cluster feature_usage field';
     }
-    const usedFeatureIds: FeatureId[] = Object.values(featureUsage).map(
-      (item) => item.id,
-    ) as FeatureId[];
+    const usedFeatureIds: FeatureId[] = Object.values(featureUsage).map((item) => item.id);
     const versionSupportLevelsMap = featureSupportLevelData.getVersionSupportLevelsMap(
       cluster.openshiftVersion,
     );

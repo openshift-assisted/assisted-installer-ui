@@ -65,9 +65,10 @@ const ClusterWizardFooter = ({
   const { alerts } = useAlerts();
   const history = useHistory();
 
-  const handleCancel = React.useCallback(() => history.push(`${routeBasePath}/clusters/`), [
-    history,
-  ]);
+  const handleCancel = React.useCallback(
+    () => history.push(`${routeBasePath}/clusters/`),
+    [history],
+  );
 
   const alertsSection = alerts.length ? <Alerts /> : undefined;
   const errorsSection = <ValidationSection cluster={cluster} errorFields={errorFields} />;

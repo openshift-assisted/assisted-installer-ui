@@ -153,10 +153,13 @@ export const useHostsTable = (cluster: Cluster) => {
     [cluster.id, dispatch],
   );
 
-  const onAdditionalNtpSource: AdditionalNTPSourcesFormProps['onAdditionalNtpSource'] = React.useMemo(
-    () => async (...args) => await onAdditionalNtpSourceAction(dispatch, cluster.id, ...args),
-    [cluster.id, dispatch],
-  );
+  const onAdditionalNtpSource: AdditionalNTPSourcesFormProps['onAdditionalNtpSource'] =
+    React.useMemo(
+      () =>
+        async (...args) =>
+          await onAdditionalNtpSourceAction(dispatch, cluster.id, ...args),
+      [cluster.id, dispatch],
+    );
 
   const actionChecks = React.useMemo(
     () => ({
@@ -180,7 +183,7 @@ export const useHostsTable = (cluster: Cluster) => {
           const { data } = await HostsService.reset(cluster.id, hostId);
           resetCluster ? resetCluster() : dispatch(updateHost(data));
         } catch (e) {
-          return handleApiError(e, () =>
+          handleApiError(e, () =>
             addAlert({
               title: `Failed to reset host ${hostId}`,
               message: getErrorMessage(e),
@@ -200,7 +203,7 @@ export const useHostsTable = (cluster: Cluster) => {
           await HostsService.delete(cluster.id, hostId);
           resetCluster ? resetCluster() : dispatch(forceReload());
         } catch (e) {
-          return handleApiError(e, () =>
+          handleApiError(e, () =>
             addAlert({
               title: `Failed to delete host ${hostId}`,
               message: getErrorMessage(e),

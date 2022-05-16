@@ -26,11 +26,11 @@ export type ODFCheckboxProps = {
 };
 
 export const ODFCheckbox: React.FC<ODFCheckboxProps> = ({ openshiftVersion }) => {
-  const { getFeatureDisabledReason } = useFeatureSupportLevel();
+  const featureSupportLevelContext = useFeatureSupportLevel();
   const name = 'useExtraDisksForLocalStorage';
   const fieldId = getFieldId(name, 'input');
   const disabledReason = openshiftVersion
-    ? getFeatureDisabledReason(openshiftVersion, 'ODF')
+    ? featureSupportLevelContext.getFeatureDisabledReason(openshiftVersion, 'ODF')
     : undefined;
   return (
     <FormGroup isInline fieldId={fieldId}>

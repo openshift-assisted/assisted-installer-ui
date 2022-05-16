@@ -48,9 +48,11 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
 
     // selected just now
     const selectionValue =
-      (selection as {
-        /* TypeScript hack, debug hint: created as part of "selections" array below */ value?: string;
-      }).value || selection;
+      (
+        selection as {
+          /* TypeScript hack, debug hint: created as part of "selections" array below */ value?: string;
+        }
+      ).value || selection;
 
     let newValue;
     if (selected.includes(selectionValue)) {
@@ -119,9 +121,9 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
             return children;
           }
           const results = fuse.search<MultiSelectOption>(val).map((result) => result.item.id);
-          return (React.Children.toArray(children) as React.ReactElement<
-            SelectOptionProps
-          >[]).filter(({ props }) => results.includes(props.id as string));
+          return (
+            React.Children.toArray(children) as React.ReactElement<SelectOptionProps>[]
+          ).filter(({ props }) => results.includes(props.id as string));
         }}
       >
         {children}

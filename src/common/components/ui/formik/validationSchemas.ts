@@ -12,15 +12,19 @@ import { allSubnetsIPv4 } from '../../../selectors';
 
 const ALPHANUMBERIC_REGEX = /^[a-zA-Z0-9]+$/;
 const CLUSTER_NAME_REGEX = /^[a-z0-9]([-a-z0-9]*[a-z0-9])?$/;
-const SSH_PUBLIC_KEY_REGEX = /^(ssh-rsa|ssh-ed25519|ecdsa-[-a-z0-9]*) AAAA[0-9A-Za-z+/]+[=]{0,3}( .+)?$/;
+const SSH_PUBLIC_KEY_REGEX =
+  /^(ssh-rsa|ssh-ed25519|ecdsa-[-a-z0-9]*) AAAA[0-9A-Za-z+/]+[=]{0,3}( .+)?$/;
 const DNS_NAME_REGEX = /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/;
-const PROXY_DNS_REGEX = /^([a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62}){1}(\.[a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62})*[._]?$/;
+const PROXY_DNS_REGEX =
+  /^([a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62}){1}(\.[a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62})*[._]?$/;
 const NAME_CHARS_REGEX = /^[a-zA-Z0-9-.]*$/;
 const IP_V4_ZERO = '0.0.0.0';
 const IP_V6_ZERO = '0000:0000:0000:0000:0000:0000:0000:0000';
-const MAC_REGEX = /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})|([0-9a-fA-F]{4}\\.[0-9a-fA-F]{4}\\.[0-9a-fA-F]{4})$”/;
+const MAC_REGEX =
+  /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})|([0-9a-fA-F]{4}\\.[0-9a-fA-F]{4}\\.[0-9a-fA-F]{4})$”/;
 //Source of information: https://github.com/metal3-io/baremetal-operator/blob/main/docs/api.md#baremetalhost-spec
-const BMC_REGEX = /^((ipmi|ibmc(\+https?)?|idrac(\+https?)?|idrac-redfish(\+https?)?|idrac-virtualmedia(\+https?)?|irmc|redfish(\+https?)?|redfish-virtualmedia(\+https?)?|ilo4(\+https)?|ilo4-virtuallmedia(\+https)?|ilo5(\+https)?|ilo5-redfish(\+https)|ilo5-virtualmedia(\+https)|https?|ftp):(\/\/([a-z0-9\-._~%!$&'()*+,;=]+@)?([a-z0-9\-._~%]+|\[[a-f0-9:.]+\]|\[v[a-f0-9][a-z0-9\-._~%!$&'()*+,;=:]+\])(:[0-9]+)?(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?|(\/?[a-z0-9\-._~%!$&'()*+,;=:@]+(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?)?)|([a-z0-9\-._~%!$&'()*+,;=@]+(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?|(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)+\/?))(\?[a-z0-9\-._~%!$&'()*+,;=:@/?]*)?(#[a-z0-9\-._~%!$&'()*+,;=:@/?]*)?$/i;
+const BMC_REGEX =
+  /^((ipmi|ibmc(\+https?)?|idrac(\+https?)?|idrac-redfish(\+https?)?|idrac-virtualmedia(\+https?)?|irmc|redfish(\+https?)?|redfish-virtualmedia(\+https?)?|ilo4(\+https)?|ilo4-virtuallmedia(\+https)?|ilo5(\+https)?|ilo5-redfish(\+https)|ilo5-virtualmedia(\+https)|https?|ftp):(\/\/([a-z0-9\-._~%!$&'()*+,;=]+@)?([a-z0-9\-._~%]+|\[[a-f0-9:.]+\]|\[v[a-f0-9][a-z0-9\-._~%!$&'()*+,;=:]+\])(:[0-9]+)?(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?|(\/?[a-z0-9\-._~%!$&'()*+,;=:@]+(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?)?)|([a-z0-9\-._~%!$&'()*+,;=@]+(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?|(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)+\/?))(\?[a-z0-9\-._~%!$&'()*+,;=:@/?]*)?(#[a-z0-9\-._~%!$&'()*+,;=:@/?]*)?$/i;
 const LOCATION_CHARS_REGEX = /^[a-zA-Z0-9-._]*$/;
 
 export const nameValidationSchema = (
@@ -108,6 +112,7 @@ export const pullSecretValidationSchema = Yup.string()
 export const ipValidationSchema = Yup.string().test(
   'ip-validation',
   'Not a valid IP address',
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   (value) => Address4.isValid(value) || Address6.isValid(value),
 );
 
@@ -127,6 +132,9 @@ export const vipRangeValidationSchema = (
     try {
       ipValidationSchema.validateSync(value);
     } catch (err) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       return this.createError({ message: err.message });
     }
 

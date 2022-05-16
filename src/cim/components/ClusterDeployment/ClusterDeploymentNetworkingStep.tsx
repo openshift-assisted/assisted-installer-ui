@@ -52,16 +52,8 @@ const NetworkingForm: React.FC<NetworkingFormProps> = ({
     fetchInfraEnv,
     agents,
   });
-  const {
-    isValid,
-    isValidating,
-    isSubmitting,
-    validateForm,
-    setTouched,
-    errors,
-    touched,
-    values,
-  } = useFormikContext<ClusterDeploymentNetworkingValues>();
+  const { isValid, isValidating, isSubmitting, validateForm, setTouched, errors, touched, values } =
+    useFormikContext<ClusterDeploymentNetworkingValues>();
   const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
 
   const canContinue = canNextFromNetworkingStep(agentClusterInstall, agents);

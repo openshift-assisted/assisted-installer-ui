@@ -118,7 +118,7 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
         setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
       />
       {!!onCreateBMH &&
-      isoModalOpen /* Do not use isOpen props to re-initialize when re-opening */ && (
+        isoModalOpen /* Do not use isOpen props to re-initialize when re-opening */ && (
           <AddHostModal
             infraEnv={infraEnv}
             agentClusterInstall={agentClusterInstall}

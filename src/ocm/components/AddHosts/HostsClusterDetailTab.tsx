@@ -72,6 +72,7 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
         )}
       </>
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openModal, cluster]);
 
   React.useEffect(() => {
@@ -161,6 +162,7 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
 
       doItAsync();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     cluster,
     openModal,
@@ -187,6 +189,7 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
         );
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [day2Cluster, setDay2Cluster]);
 
   React.useEffect(() => {

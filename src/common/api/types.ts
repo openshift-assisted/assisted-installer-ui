@@ -832,7 +832,8 @@ export interface FeatureSupportLevel {
 }
 export type FeatureSupportLevels = FeatureSupportLevel[];
 export type FreeAddressesList = string /* ipv4 */[];
-export type FreeAddressesRequest = string /* ^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$ */[];
+export type FreeAddressesRequest =
+  string /* ^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$ */[];
 export interface FreeNetworkAddresses {
   network?: string; // ^([0-9]{1,3}\.){3}[0-9]{1,3}\/[0-9]|[1-2][0-9]|3[0-2]?$
   freeAddresses?: string /* ipv4 */[];
@@ -2098,7 +2099,7 @@ export interface Usage {
    * additional properties of the feature
    */
   data?: {
-    [name: string]: {};
+    [name: string]: Record<string, unknown>;
   };
 }
 export interface V2ClusterUpdateParams {

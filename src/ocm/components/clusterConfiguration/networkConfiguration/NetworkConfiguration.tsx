@@ -71,9 +71,10 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';
   const isDualStack = values.stackType === DUAL_STACK;
 
-  const isDualStackSelectable = React.useMemo(() => !allHostSubnetsIPv4(hostSubnets), [
-    hostSubnets,
-  ]);
+  const isDualStackSelectable = React.useMemo(
+    () => !allHostSubnetsIPv4(hostSubnets),
+    [hostSubnets],
+  );
 
   const { defaultNetworkType, isSDNSelectable } = React.useMemo(() => {
     return {
