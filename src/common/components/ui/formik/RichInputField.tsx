@@ -76,6 +76,7 @@ type RichInputFieldPropsProps = BaseInputProps & {
   placeholder?: string;
 };
 
+// eslint-disable-next-line react/display-name
 const RichInputField: React.FC<RichInputFieldPropsProps> = React.forwardRef(
   (
     {
@@ -143,7 +144,7 @@ const RichInputField: React.FC<RichInputFieldPropsProps> = React.forwardRef(
               <RichValidation
                 value={value}
                 error={error}
-                richValidationMessages={richValidationMessages as {}}
+                richValidationMessages={richValidationMessages as Record<string, string>}
               />
             }
           >

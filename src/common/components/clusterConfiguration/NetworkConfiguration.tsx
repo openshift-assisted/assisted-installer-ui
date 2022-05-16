@@ -49,9 +49,8 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   children,
 }) => {
   const featureSupportLevelData = useFeatureSupportLevel();
-  const { setFieldValue, values, touched, validateField } = useFormikContext<
-    NetworkConfigurationValues
-  >();
+  const { setFieldValue, values, touched, validateField } =
+    useFormikContext<NetworkConfigurationValues>();
   const clusterFeatureSupportLevels = React.useMemo(() => {
     return getLimitedFeatureSupportLevels(cluster, featureSupportLevelData);
   }, [cluster, featureSupportLevelData]);

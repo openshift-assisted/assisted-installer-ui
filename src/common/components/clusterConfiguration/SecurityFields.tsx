@@ -29,9 +29,8 @@ const SecurityFields: React.FC<SecurityFieldsFieldsProps> = ({ clusterSshKey, im
   //clusterSshKey updating causes the textarea to disappear when the user clears it to edit it
   const defaultShareSshKey = !!imageSshKey && (clusterSshKey === imageSshKey || !clusterSshKey);
   const [shareSshKey, setShareSshKey] = React.useState(defaultShareSshKey);
-  const { values, setFieldValue, errors, touched } = useFormikContext<
-    Pick<NetworkConfigurationValues, 'sshPublicKey'>
-  >();
+  const { values, setFieldValue, errors, touched } =
+    useFormikContext<Pick<NetworkConfigurationValues, 'sshPublicKey'>>();
 
   const errorMsg = errors.sshPublicKey;
 

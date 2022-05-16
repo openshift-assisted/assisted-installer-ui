@@ -105,9 +105,10 @@ export const VirtualIPControlGroup = ({
   const {
     'api-vip-defined': apiVipFailedValidationMessage,
     'ingress-vip-defined': ingressVipFailedValidationMessage,
-  } = React.useMemo(() => getVipValidationsById(cluster.validationsInfo), [
-    cluster.validationsInfo,
-  ]);
+  } = React.useMemo(
+    () => getVipValidationsById(cluster.validationsInfo),
+    [cluster.validationsInfo],
+  );
 
   const enableAllocation = values.networkType === NETWORK_TYPE_SDN;
 

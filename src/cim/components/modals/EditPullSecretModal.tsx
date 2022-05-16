@@ -40,9 +40,8 @@ const EditPullSecretForm: React.FC<EditPullSecretFormProps> = ({
   hasAgents,
   hasBMHs,
 }) => {
-  const { isSubmitting, isValid, submitForm, setFieldValue } = useFormikContext<
-    EditPullSecretFormikValues
-  >();
+  const { isSubmitting, isValid, submitForm, setFieldValue } =
+    useFormikContext<EditPullSecretFormikValues>();
 
   React.useEffect(() => {
     if (!pullSecretLoading && !pullSecretError) {

@@ -49,9 +49,8 @@ export const findValidationFixStep = <ClusterWizardStepsType extends string>(
   const keys = lodashKeys(wizardStepsValidationsMap) as ClusterWizardStepsType[];
   return keys.find((key) => {
     // find first matching validation-map name
-    const { cluster: clusterValidationMap, host: hostValidationMap } = wizardStepsValidationsMap[
-      key
-    ];
+    const { cluster: clusterValidationMap, host: hostValidationMap } =
+      wizardStepsValidationsMap[key];
     return (
       clusterValidationMap.validationIds.includes(validationId as ClusterValidationId) ||
       hostValidationMap.validationIds.includes(validationId as HostValidationId) ||
@@ -230,6 +229,7 @@ export const getAllClusterWizardSoftValidationIds = <ClusterWizardStepsType exte
     [] as WizardStepValidationMap['softValidationIds'],
   );
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getFailingClusterWizardStepHostValidations = <ClusterWizardStepsType extends string>(
   wizardHostStepValidationsInfo: HostValidationsInfo,
 ) =>

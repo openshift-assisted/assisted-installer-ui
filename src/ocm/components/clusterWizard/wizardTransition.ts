@@ -100,9 +100,8 @@ export const wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardSt
   review: reviewStepValidationsMap,
 };
 
-export const allClusterWizardSoftValidationIds = getAllClusterWizardSoftValidationIds(
-  wizardStepsValidationsMap,
-);
+export const allClusterWizardSoftValidationIds =
+  getAllClusterWizardSoftValidationIds(wizardStepsValidationsMap);
 
 /*
 We are colocating all these canNext* functions for easier maintenance.

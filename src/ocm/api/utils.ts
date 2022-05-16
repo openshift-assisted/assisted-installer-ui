@@ -1,18 +1,16 @@
 import { Severity } from '@sentry/browser';
-import Axios, { AxiosError } from 'axios';
+import Axios from 'axios';
 import pick from 'lodash/pick';
 import { captureException } from '../sentry';
-import { APIErrorMixin } from './types';
+import { isApiError } from './types';
+import isString from 'lodash/isString';
 
-type OnError = (arg0: AxiosError<APIErrorMixin, APIErrorMixin>) => void;
+type OnError = (arg0: unknown) => void;
 
-export const handleApiError = (
-  error: AxiosError<APIErrorMixin, APIErrorMixin>,
-  onError?: OnError,
-) => {
+export const handleApiError = (error: unknown, onError?: OnError): void => {
   if (Axios.isCancel(error)) {
     captureException(error, 'Request canceled', Severity.Info);
-  } else {
+  } else if (isApiError(error)) {
     let message = `URL: ${JSON.stringify(error.config.url, null, 1)}\n`;
     message += `Method: ${JSON.stringify(error.config.method, null, 1)}\n`;
     if (error.response) {
@@ -35,9 +33,18 @@ export const handleApiError = (
       )}`;
     }
     captureException(error, message);
-    if (onError) return onError(error);
+  } else {
+    captureException(error);
   }
+  if (onError) onError(error);
 };
 
-export const getErrorMessage = (error: AxiosError<APIErrorMixin>) =>
-  error.response?.data.message || error.response?.data.reason || error.message;
+export const getErrorMessage = (error: unknown): string => {
+  if (isApiError(error)) {
+    return error.response?.data?.message || error.response?.data.reason || error.message;
+  }
+  if (isString(error)) {
+    return error;
+  }
+  return 'Unexpected error';
+};

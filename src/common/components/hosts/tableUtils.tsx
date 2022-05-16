@@ -334,140 +334,144 @@ const ActionTitle: React.FC<{ disabled: boolean; description?: string; title: st
   </>
 );
 
-export const hostActionResolver = ({
-  onInstallHost,
-  canInstallHost,
-  onEditHost,
-  canEditHost,
-  onHostEnable,
-  canEnable,
-  onHostDisable,
-  canDisable,
-  onHostReset,
-  canReset,
-  onViewHostEvents,
-  onDownloadHostLogs,
-  canDownloadHostLogs,
-  onDeleteHost,
-  canDelete,
-  onEditBMH,
-  canEditBMH,
-  canUnbindHost,
-  onUnbindHost,
-}: HostsTableActions): ActionsResolver<Host> => (host) => {
-  const actions = [];
-  if (host) {
-    const inventory = getInventory(host);
-    const hostname = getHostname(host, inventory);
+export const hostActionResolver =
+  ({
+    onInstallHost,
+    canInstallHost,
+    onEditHost,
+    canEditHost,
+    onHostEnable,
+    canEnable,
+    onHostDisable,
+    canDisable,
+    onHostReset,
+    canReset,
+    onViewHostEvents,
+    onDownloadHostLogs,
+    canDownloadHostLogs,
+    onDeleteHost,
+    canDelete,
+    onEditBMH,
+    canEditBMH,
+    canUnbindHost,
+    onUnbindHost,
+  }: HostsTableActions): ActionsResolver<Host> =>
+  (host) => {
+    const actions = [];
+    if (host) {
+      const inventory = getInventory(host);
+      const hostname = getHostname(host, inventory);
 
-    if (onInstallHost && canInstallHost?.(host)) {
-      actions.push({
-        title: 'Install host',
-        id: `button-install-host-${hostname}`,
-        onClick: () => onInstallHost(host),
-      });
-    }
-    if (onEditHost) {
-      if (canEditHost) {
-        const canEdit = canEditHost(host);
-        if (typeof canEdit === 'boolean') {
-          canEdit &&
+      if (onInstallHost && canInstallHost?.(host)) {
+        actions.push({
+          title: 'Install host',
+          id: `button-install-host-${hostname}`,
+          onClick: () => onInstallHost(host),
+        });
+      }
+      if (onEditHost) {
+        if (canEditHost) {
+          const canEdit = canEditHost(host);
+          if (typeof canEdit === 'boolean') {
+            canEdit &&
+              actions.push({
+                title: 'Change hostname',
+                id: `button-edit-host-${hostname}`, // id is everchanging, not ideal for tests
+                onClick: () => onEditHost(host),
+              });
+          } else {
+            const [enabled, reason] = canEdit;
             actions.push({
-              title: 'Change hostname',
+              title: (
+                <ActionTitle disabled={!enabled} description={reason} title="Change hostname" />
+              ),
               id: `button-edit-host-${hostname}`, // id is everchanging, not ideal for tests
               onClick: () => onEditHost(host),
+              isDisabled: !enabled,
             });
-        } else {
-          const [enabled, reason] = canEdit;
-          actions.push({
-            title: <ActionTitle disabled={!enabled} description={reason} title="Change hostname" />,
-            id: `button-edit-host-${hostname}`, // id is everchanging, not ideal for tests
-            onClick: () => onEditHost(host),
-            isDisabled: !enabled,
-          });
+          }
         }
       }
-    }
-    if (onHostEnable && canEnable?.(host)) {
-      actions.push({
-        title: 'Enable in cluster',
-        id: `button-enable-in-cluster-${hostname}`,
-        onClick: () => onHostEnable(host),
-      });
-    }
-    if (onHostDisable && canDisable?.(host)) {
-      actions.push({
-        title: 'Disable in cluster',
-        id: `button-disable-in-cluster-${hostname}`,
-        onClick: () => onHostDisable(host),
-      });
-    }
-    if (onHostReset && canReset?.(host)) {
-      actions.push({
-        title: 'Reset host',
-        id: `button-reset-host-${hostname}`,
-        onClick: () => onHostReset(host),
-      });
-    }
-    if (onViewHostEvents) {
-      actions.push({
-        title: 'View host events',
-        id: `button-view-host-events-${hostname}`,
-        onClick: () => onViewHostEvents(host),
-      });
-    }
-    if (onDownloadHostLogs && canDownloadHostLogs?.(host)) {
-      actions.push({
-        title: 'Download host logs',
-        id: `button-download-host-installation-logs-${hostname}`,
-        onClick: () => onDownloadHostLogs(host),
-      });
-    }
-    if (onDeleteHost) {
-      if (canDelete) {
-        const canDeleteHost = canDelete(host);
-        if (typeof canDeleteHost === 'boolean') {
-          canDeleteHost &&
+      if (onHostEnable && canEnable?.(host)) {
+        actions.push({
+          title: 'Enable in cluster',
+          id: `button-enable-in-cluster-${hostname}`,
+          onClick: () => onHostEnable(host),
+        });
+      }
+      if (onHostDisable && canDisable?.(host)) {
+        actions.push({
+          title: 'Disable in cluster',
+          id: `button-disable-in-cluster-${hostname}`,
+          onClick: () => onHostDisable(host),
+        });
+      }
+      if (onHostReset && canReset?.(host)) {
+        actions.push({
+          title: 'Reset host',
+          id: `button-reset-host-${hostname}`,
+          onClick: () => onHostReset(host),
+        });
+      }
+      if (onViewHostEvents) {
+        actions.push({
+          title: 'View host events',
+          id: `button-view-host-events-${hostname}`,
+          onClick: () => onViewHostEvents(host),
+        });
+      }
+      if (onDownloadHostLogs && canDownloadHostLogs?.(host)) {
+        actions.push({
+          title: 'Download host logs',
+          id: `button-download-host-installation-logs-${hostname}`,
+          onClick: () => onDownloadHostLogs(host),
+        });
+      }
+      if (onDeleteHost) {
+        if (canDelete) {
+          const canDeleteHost = canDelete(host);
+          if (typeof canDeleteHost === 'boolean') {
+            canDeleteHost &&
+              actions.push({
+                title: 'Delete host',
+                id: `button-delete-host-${hostname}`,
+                onClick: () => onDeleteHost(host),
+              });
+          } else {
+            const [enabled, reason] = canDeleteHost;
             actions.push({
-              title: 'Delete host',
+              title: <ActionTitle disabled={!enabled} description={reason} title="Delete host" />,
               id: `button-delete-host-${hostname}`,
               onClick: () => onDeleteHost(host),
+              isDisabled: !enabled,
             });
-        } else {
-          const [enabled, reason] = canDeleteHost;
+          }
+        }
+      }
+      if (onEditBMH && host.href === 'bmc') {
+        if (canEditBMH) {
+          const [enabled, reason] = canEditBMH(host);
           actions.push({
-            title: <ActionTitle disabled={!enabled} description={reason} title="Delete host" />,
-            id: `button-delete-host-${hostname}`,
-            onClick: () => onDeleteHost(host),
+            title: <ActionTitle disabled={!enabled} description={reason} title="Edit BMC" />,
+            id: `button-edit-bmh-host-${hostname}`,
+            onClick: () => onEditBMH(host),
             isDisabled: !enabled,
           });
         }
       }
-    }
-    if (onEditBMH && host.href === 'bmc') {
-      if (canEditBMH) {
-        const [enabled, reason] = canEditBMH(host);
+
+      if (onUnbindHost && canUnbindHost) {
+        const [enabled, reason] = canUnbindHost(host);
         actions.push({
-          title: <ActionTitle disabled={!enabled} description={reason} title="Edit BMC" />,
-          id: `button-edit-bmh-host-${hostname}`,
-          onClick: () => onEditBMH(host),
+          title: (
+            <ActionTitle disabled={!enabled} description={reason} title="Remove from the cluster" />
+          ),
+          id: `button-unbind-host-${hostname}`,
+          onClick: () => onUnbindHost(host),
           isDisabled: !enabled,
         });
       }
     }
 
-    if (onUnbindHost && canUnbindHost) {
-      const [enabled, reason] = canUnbindHost(host);
-      actions.push({
-        title: (
-          <ActionTitle disabled={!enabled} description={reason} title="Remove from the cluster" />
-        ),
-        id: `button-unbind-host-${hostname}`,
-        onClick: () => onUnbindHost(host),
-        isDisabled: !enabled,
-      });
-    }
-  }
-
-  return actions;
-};
+    return actions;
+  };

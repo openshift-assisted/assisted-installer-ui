@@ -36,9 +36,8 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
   onEditHost,
   onHostSelect,
 }) => {
-  const [{ value: selectedIDs }, , { setValue, setTouched }] = useField<
-    ClusterDeploymentHostsSelectionValues['selectedHostIds']
-  >('selectedHostIds');
+  const [{ value: selectedIDs }, , { setValue, setTouched }] =
+    useField<ClusterDeploymentHostsSelectionValues['selectedHostIds']>('selectedHostIds');
 
   const idsRef = React.useRef(selectedIDs);
   idsRef.current = selectedIDs;

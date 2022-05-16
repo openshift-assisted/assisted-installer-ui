@@ -22,31 +22,35 @@ const SingleNodeCheckbox: React.FC<SingleNodeCheckboxProps> = ({
   } = useFormikContext<ClusterCreateParams>();
   const isSingleNodeOpenshiftEnabled = useFeature('ASSISTED_INSTALLER_SNO_FEATURE');
   const [field, meta, helpers] = useField<'None' | 'Full'>({ name: props.name, validate });
-  const { getFeatureDisabledReason, isFeatureSupported } = useFeatureSupportLevel();
+  const featureSupportLevelContext = useFeatureSupportLevel();
   const prevVersionRef = React.useRef(openshiftVersion);
   const fieldId = getFieldId(props.name, 'input', idPostfix);
 
   const { value } = meta;
   const { setValue } = helpers;
   const isSupportedVersionAvailable = !!versions.find((version) =>
-    isFeatureSupported(version.value, 'SNO'),
+    featureSupportLevelContext.isFeatureSupported(version.value, 'SNO'),
   );
-  const onChanged = React.useCallback((checked: boolean) => setValue(checked ? 'None' : 'Full'), [
-    setValue,
-  ]);
+  const onChanged = React.useCallback(
+    (checked: boolean) => setValue(checked ? 'None' : 'Full'),
+    [setValue],
+  );
 
-  const disabledReason = getFeatureDisabledReason(openshiftVersion, 'SNO');
+  const disabledReason = featureSupportLevelContext.getFeatureDisabledReason(
+    openshiftVersion,
+    'SNO',
+  );
 
   React.useEffect(() => {
     if (
       prevVersionRef.current !== openshiftVersion &&
-      !isFeatureSupported(openshiftVersion, 'SNO')
+      !featureSupportLevelContext.isFeatureSupported(openshiftVersion, 'SNO')
     ) {
       //invoke updating SNO value only if the version changed to not be in danger of touching existing clusters
       onChanged(false);
     }
     prevVersionRef.current = openshiftVersion;
-  }, [openshiftVersion, onChanged, isFeatureSupported]);
+  }, [openshiftVersion, onChanged, featureSupportLevelContext]);
 
   if (isSingleNodeOpenshiftEnabled && isSupportedVersionAvailable) {
     return (

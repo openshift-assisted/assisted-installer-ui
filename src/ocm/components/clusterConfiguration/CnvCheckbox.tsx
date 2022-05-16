@@ -32,11 +32,11 @@ export type CnvCheckboxProps = {
 };
 
 export const CnvCheckbox: React.FC<CnvCheckboxProps> = ({ openshiftVersion, isSNO, clusterId }) => {
-  const { getFeatureDisabledReason } = useFeatureSupportLevel();
+  const featureSupportLevelContext = useFeatureSupportLevel();
   const name = 'useContainerNativeVirtualization';
   const fieldId = getFieldId(name, 'input');
   const disabledReason = openshiftVersion
-    ? getFeatureDisabledReason(openshiftVersion, 'CNV')
+    ? featureSupportLevelContext.getFeatureDisabledReason(openshiftVersion, 'CNV')
     : undefined;
   return (
     <FormGroup isInline fieldId={fieldId}>

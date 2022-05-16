@@ -36,9 +36,10 @@ export const DiscoveryTroubleshootingModal: React.FC<DiscoveryTroubleshootingMod
   setDiscoveryHintModalOpen,
   isOpen,
 }) => {
-  const onClose = React.useCallback(() => setDiscoveryHintModalOpen(false), [
-    setDiscoveryHintModalOpen,
-  ]);
+  const onClose = React.useCallback(
+    () => setDiscoveryHintModalOpen(false),
+    [setDiscoveryHintModalOpen],
+  );
   return (
     <Modal
       title="Troubleshooting Host Discovery Issues"

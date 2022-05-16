@@ -205,9 +205,12 @@ export const HostDetail: React.FC<HostDetailProps> = ({
   AdditionalNTPSourcesDialogToggleComponent,
   hideNTPStatus = false,
 }) => {
-  const { id, installationDiskId } = host;
+  const { id, installationDiskId, validationsInfo: hostValidationsInfo } = host;
   const inventory = getInventory(host);
-  const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
+  const validationsInfo = React.useMemo(
+    () => stringToJSON<ValidationsInfo>(hostValidationsInfo) || {},
+    [hostValidationsInfo],
+  );
   const rowInfo = getHostRowHardwareInfo(inventory);
   const disks = inventory.disks || [];
   const nics = inventory.interfaces || [];

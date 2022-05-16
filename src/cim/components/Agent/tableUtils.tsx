@@ -90,6 +90,7 @@ export const discoveryTypeColumn = (
     const agent = agents.find((a) => a.metadata?.uid === host.id);
     let discoveryType = 'Unknown';
     if (agent) {
+      // eslint-disable-next-line no-prototype-builtins
       discoveryType = agent?.metadata?.labels?.hasOwnProperty(AGENT_BMH_NAME_LABEL_KEY)
         ? 'BMC'
         : 'Discovery ISO';
@@ -251,20 +252,22 @@ export const canEditAgent = (agent: AgentK8sResource): ActionCheck => {
   ];
 };
 
-export const canChangeHostname = (
-  agents: AgentK8sResource[],
-  bareMetalHosts: BareMetalHostK8sResource[],
-): ((h: Host) => ActionCheck) => (h: Host) => {
-  const agent = agents.find((a) => a.metadata?.uid === h.id);
-  if (agent) {
-    return canEditAgent(agent);
-  }
-  const bmh = bareMetalHosts.find((bmh) => bmh.metadata?.uid === h.id);
-  if (bmh) {
-    return canEditBMH(bmh);
-  }
-  return [true, undefined];
-};
+export const canChangeHostname =
+  (
+    agents: AgentK8sResource[],
+    bareMetalHosts: BareMetalHostK8sResource[],
+  ): ((h: Host) => ActionCheck) =>
+  (h: Host) => {
+    const agent = agents.find((a) => a.metadata?.uid === h.id);
+    if (agent) {
+      return canEditAgent(agent);
+    }
+    const bmh = bareMetalHosts.find((bmh) => bmh.metadata?.uid === h.id);
+    if (bmh) {
+      return canEditBMH(bmh);
+    }
+    return [true, undefined];
+  };
 
 export const canUnbindAgent = (
   agentClusterInstalls: AgentClusterInstallK8sResource[] | undefined,

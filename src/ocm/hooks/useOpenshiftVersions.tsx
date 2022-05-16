@@ -28,14 +28,16 @@ export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
       const versions: OpenshiftVersionOptionType[] = Object.keys(data).map((key) => ({
         label: `OpenShift ${data[key].displayName || key}`,
         value: key,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         version: data[key].displayName,
         default: Boolean(data[key].default),
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         supportLevel: data[key].supportLevel,
         cpuArchitectures: data[key].cpuArchitectures as CpuArchitecture[],
       }));
       setVersions(sortVersions(versions));
     } catch (e) {
-      return handleApiError(e, (e) => {
+      handleApiError(e, (e) => {
         setError({
           title: 'Failed to retrieve list of supported OpenShift versions.',
           message: getErrorMessage(e),

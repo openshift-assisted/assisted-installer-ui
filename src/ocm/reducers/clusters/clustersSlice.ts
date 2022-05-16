@@ -11,7 +11,7 @@ export const fetchClustersAsync = createAsyncThunk<Cluster[] | void>(
       const { data } = await ClustersAPI.list();
       return data.filter((cluster) => cluster.kind === 'Cluster');
     } catch (e) {
-      return handleApiError(e, () => Promise.reject('Failed to fetch clusters.'));
+      handleApiError(e, () => Promise.reject('Failed to fetch clusters.'));
     }
   },
 );

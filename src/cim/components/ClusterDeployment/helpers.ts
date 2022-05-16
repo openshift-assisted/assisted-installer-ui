@@ -104,24 +104,26 @@ const getEventsURL = (
   return null;
 };
 
-export const getOnFetchEventsHandler = (
-  fetchEvents: (url: string) => Promise<string>,
-  aiNamespace: string,
-  agentClusterInstall?: AgentClusterInstallK8sResource,
-): EventListFetchProps['onFetchEvents'] => async (params, onSuccess, onError) => {
-  const eventsURL = getEventsURL(aiNamespace, agentClusterInstall);
-  if (!eventsURL) {
-    onError('Cannot determine events URL');
-    return;
-  }
-  try {
-    const result = await fetchEvents(eventsURL);
-    const data = formatEventsData(result);
-    onSuccess(data);
-  } catch (e) {
-    onError(e.message);
-  }
-};
+export const getOnFetchEventsHandler =
+  (
+    fetchEvents: (url: string) => Promise<string>,
+    aiNamespace: string,
+    agentClusterInstall?: AgentClusterInstallK8sResource,
+  ): EventListFetchProps['onFetchEvents'] =>
+  async (params, onSuccess, onError) => {
+    const eventsURL = getEventsURL(aiNamespace, agentClusterInstall);
+    if (!eventsURL) {
+      onError('Cannot determine events URL');
+      return;
+    }
+    try {
+      const result = await fetchEvents(eventsURL);
+      const data = formatEventsData(result);
+      onSuccess(data);
+    } catch (e) {
+      onError(e.message);
+    }
+  };
 
 export const isCIMFlow = (clusterDeployment?: ClusterDeploymentK8sResource) =>
   !clusterDeployment?.spec?.platform?.agentBareMetal?.agentSelector?.matchLabels?.[

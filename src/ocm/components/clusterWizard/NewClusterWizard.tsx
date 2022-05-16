@@ -4,9 +4,8 @@ import { ClusterWizardStepsType } from './wizardTransition';
 import ClusterDetails from './ClusterDetails';
 
 const NewClusterWizard: React.FC = () => {
-  const [currentStepId, setCurrentStepId] = React.useState<ClusterWizardStepsType>(
-    'cluster-details',
-  );
+  const [currentStepId, setCurrentStepId] =
+    React.useState<ClusterWizardStepsType>('cluster-details');
 
   const renderCurrentStep = React.useCallback(() => {
     switch (currentStepId) {

@@ -43,13 +43,9 @@ const ArmCheckbox: React.FC<ArmCheckboxProps> = ({ versions }) => {
     values: { openshiftVersion },
   } = useFormikContext<ClusterCreateParams>();
   const [{ name, value }, , { setValue }] = useField<CpuArchitecture>('cpuArchitecture');
-  const {
-    getFeatureDisabledReason,
-    isFeatureDisabled,
-    isFeatureSupported,
-  } = useFeatureSupportLevel();
+  const featureSupportLevelContext = useFeatureSupportLevel();
   const isSupportedVersionAvailable = !!versions.find((version) =>
-    isFeatureSupported(version.value, 'ARM64_ARCHITECTURE'),
+    featureSupportLevelContext.isFeatureSupported(version.value, 'ARM64_ARCHITECTURE'),
   );
   const prevVersionRef = React.useRef(openshiftVersion);
   const fieldId = getFieldId(name, 'input');
@@ -61,24 +57,30 @@ const ArmCheckbox: React.FC<ArmCheckboxProps> = ({ versions }) => {
   React.useEffect(() => {
     if (
       prevVersionRef.current !== openshiftVersion &&
-      !isFeatureSupported(openshiftVersion, 'ARM64_ARCHITECTURE')
+      !featureSupportLevelContext.isFeatureSupported(openshiftVersion, 'ARM64_ARCHITECTURE')
     ) {
       //invoke updating cpu architecture value only if the version changed to not be in danger of touching existing clusters
       onChanged(false);
     }
     prevVersionRef.current = openshiftVersion;
-  }, [openshiftVersion, onChanged, isFeatureSupported]);
+  }, [openshiftVersion, onChanged, featureSupportLevelContext]);
   if (!isSupportedVersionAvailable) {
     return null;
   }
-  const disabledReason = getFeatureDisabledReason(openshiftVersion, 'ARM64_ARCHITECTURE');
+  const disabledReason = featureSupportLevelContext.getFeatureDisabledReason(
+    openshiftVersion,
+    'ARM64_ARCHITECTURE',
+  );
   return (
     <FormGroup isInline fieldId={fieldId}>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
         <Checkbox
           id={fieldId}
           name={name}
-          isDisabled={isFeatureDisabled(openshiftVersion, 'ARM64_ARCHITECTURE')}
+          isDisabled={featureSupportLevelContext.isFeatureDisabled(
+            openshiftVersion,
+            'ARM64_ARCHITECTURE',
+          )}
           label={getLabel(openshiftVersion)}
           aria-describedby={`${fieldId}-helper`}
           description={

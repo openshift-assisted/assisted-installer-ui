@@ -59,26 +59,28 @@ export const ACMFeatureSupportLevelProvider: React.FC<ACMFeatureSupportLevelProv
     [clusterImages],
   );
 
-  const getVersionSupportLevelsMap: FeatureSupportLevelData['getVersionSupportLevelsMap'] = React.useCallback(
-    (versionName: string): FeatureIdToSupportLevel | undefined => {
-      const normalized = getNormalizedVersion(versionName);
-      return normalized
-        ? supportLevelData[normalized]
-        : {
-            /* empty FeatureIdToSupportLevel */
-          };
-    },
-    [supportLevelData, getNormalizedVersion],
-  );
+  const getVersionSupportLevelsMap: FeatureSupportLevelData['getVersionSupportLevelsMap'] =
+    React.useCallback(
+      (versionName: string): FeatureIdToSupportLevel | undefined => {
+        const normalized = getNormalizedVersion(versionName);
+        return normalized
+          ? supportLevelData[normalized]
+          : {
+              /* empty FeatureIdToSupportLevel */
+            };
+      },
+      [supportLevelData, getNormalizedVersion],
+    );
 
   // TODO(mlibra): Following callbacks can be reused with the OCM flow, just based on providing an application-specific map
-  const getFeatureSupportLevel: FeatureSupportLevelData['getFeatureSupportLevel'] = React.useCallback(
-    (versionName: string, featureId: FeatureId): SupportLevel | undefined => {
-      const versionSupportLevelData = getVersionSupportLevelsMap(versionName);
-      return versionSupportLevelData ? versionSupportLevelData[featureId] : undefined;
-    },
-    [getVersionSupportLevelsMap],
-  );
+  const getFeatureSupportLevel: FeatureSupportLevelData['getFeatureSupportLevel'] =
+    React.useCallback(
+      (versionName: string, featureId: FeatureId): SupportLevel | undefined => {
+        const versionSupportLevelData = getVersionSupportLevelsMap(versionName);
+        return versionSupportLevelData ? versionSupportLevelData[featureId] : undefined;
+      },
+      [getVersionSupportLevelsMap],
+    );
 
   const isFeatureSupportedCallback = React.useCallback(
     (versionName: string, featureId: FeatureId) => {
