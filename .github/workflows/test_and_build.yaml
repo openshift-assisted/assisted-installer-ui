@@ -1,4 +1,4 @@
-name: Build on pull request to master or a feature branch
+name: Test and build
 
 on:
   push:
