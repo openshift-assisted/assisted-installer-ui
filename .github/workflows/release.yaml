@@ -6,7 +6,7 @@ on:
 env:
   NODE_OPTIONS: --max-old-space-size=8192
 jobs:
-  build:
+  build_and_release:
     name: Build and publish
     runs-on: ubuntu-latest
     steps:
