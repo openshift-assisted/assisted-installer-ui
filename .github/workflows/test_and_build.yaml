@@ -20,7 +20,7 @@ on:
       - CIM-*
 
 jobs:
-  build:
+  test_and_build:
     name: Test and build
     runs-on: ubuntu-latest
     env:
