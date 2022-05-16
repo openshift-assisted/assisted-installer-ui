@@ -1,4 +1,4 @@
-name: Build on pull request to master or a feature branch
+name: Test and build on push or pull request to specific branches
 
 on:
   push:
@@ -6,21 +6,19 @@ on:
       - master
       - main
       - develop
-      - feature/*
-      - release/*
-      - hotfix/*
+      - releases/*
       - CIM-*
   pull_request:
     branches:
       - master
       - main
       - develop
-      - release/*
-      - hotfix/*
+      - releases/*
       - CIM-*
 
 jobs:
-  build:
+  main:
+    name: Test and build
     runs-on: ubuntu-latest
     env:
       NODE_OPTIONS: '--max-old-space-size=8192'
