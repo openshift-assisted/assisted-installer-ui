@@ -5,34 +5,42 @@ module.exports = {
     browser: true,
     node: true,
   },
-  parser: '@typescript-eslint/parser',
   parserOptions: {
-    comment: true,
-    ecmaFeatures: {
-      jsx: true,
-    },
-    ecmaVersion: 2017,
-    sourceType: 'module',
+    // Must be aligned with our esbuild settings ('esnext')
+    // Consumers of this library are in charge of transpiling it to es5
+    ecmaVersion: 'latest',
   },
-  settings: {
-    react: {
-      version: 'detect',
-    },
-  },
-  plugins: ['@typescript-eslint'],
   extends: ['eslint:recommended', 'plugin:prettier/recommended'],
   overrides: [
     {
-      files: ['src/**/*.ts', 'src/**/*.tsx'],
+      files: ['*.js'],
+      env: {
+        es6: true,
+        node: true,
+      },
+    },
+    {
+      files: ['*.ts', '*.tsx'],
       plugins: ['@typescript-eslint', 'react', 'react-hooks'],
       extends: [
         'plugin:react/recommended',
         'plugin:@typescript-eslint/recommended',
         'plugin:@typescript-eslint/recommended-requiring-type-checking',
       ],
+      parser: '@typescript-eslint/parser',
       parserOptions: {
         tsconfigRootDir: __dirname,
         project: ['./tsconfig.json'],
+        comment: true,
+        ecmaFeatures: {
+          jsx: true,
+        },
+        sourceType: 'module',
+      },
+      settings: {
+        react: {
+          version: 'detect',
+        },
       },
       rules: {
         eqeqeq: ['error', 'always'],
@@ -71,5 +79,7 @@ module.exports = {
       },
     },
   ],
+  // node_modules and dot-files/folders are always ignored
+  // (src: https://eslint.org/docs/user-guide/configuring/ignoring-code#the-eslintignore-file)
   ignorePatterns: ['dist/*'],
 };
