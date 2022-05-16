@@ -159,12 +159,12 @@ const ValidationGroupAlerts: React.FC<ValidationGroupAlertProps> = ({
       />,
     );
   }
-  if (validationsWithActions['api-vip-connected'] && UpdateDay2ApiVipDialogToggleComponent) {
+  if (validationsWithActions['ignition-downloadable'] && UpdateDay2ApiVipDialogToggleComponent) {
     alerts.push(
       <ApiVipConnectivityAlert
         UpdateDay2ApiVipDialogToggleComponent={UpdateDay2ApiVipDialogToggleComponent}
         variant={variant}
-        key="api-vip-connected-alert"
+        key="ignition-downloadable-alert"
       />,
     );
   }
