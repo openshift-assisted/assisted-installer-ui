@@ -18,6 +18,10 @@ type AdvancedNetworkFieldsProps = {
   isSDNSelectable: boolean;
 };
 
+const getNextworkLabelSuffix = (index: number, isDualStack: boolean) => {
+  return isDualStack ? `(${index === 0 ? 'IPv4' : 'IPv6'})` : '';
+};
+
 const IPv4PrefixHelperText =
   'The subnet prefix length to assign to each individual node. For example, if Cluster Network Host Prefix is set to 23, then each node is assigned a /23 subnet out of the given cidr (clusterNetworkCIDR), which allows for 510 (2^(32 - 23) - 2) pod IPs addresses. If you are required to provide access to nodes from an external network, configure load balancers and routers to manage the traffic.';
 
@@ -64,20 +68,19 @@ const AdvancedNetworkFields: React.FC<AdvancedNetworkFieldsProps> = ({ isSDNSele
         {() => (
           <FormGroup fieldId="clusterNetworks" labelInfo={isDualStack && 'Primary'}>
             {values.clusterNetworks?.map((_, index) => {
+              const networkSuffix = getNextworkLabelSuffix(index, isDualStack);
               return (
                 <StackItem key={index} className={'network-field-group'}>
                   <InputField
                     name={`clusterNetworks.${index}.cidr`}
-                    label={`Cluster network CIDR (${isDualStack && index === 0 ? 'IPv4' : 'IPv6'})`}
+                    label={`Cluster network CIDR${networkSuffix}`}
                     helperText={clusterCidrHelperText}
                     isRequired
                     labelInfo={index === 0 && isDualStack ? 'Primary' : ''}
                   />
                   <InputField
                     name={`clusterNetworks.${index}.hostPrefix`}
-                    label={`Cluster network host prefix (${
-                      isDualStack && index === 0 ? 'IPv4' : 'IPv6'
-                    })`}
+                    label={`Cluster network host prefix${networkSuffix}`}
                     type={TextInputTypes.number}
                     min={clusterNetworkCidrPrefix(index)}
                     max={
@@ -112,7 +115,7 @@ const AdvancedNetworkFields: React.FC<AdvancedNetworkFieldsProps> = ({ isSDNSele
               <StackItem key={index} className={'network-field-group'}>
                 <InputField
                   name={`serviceNetworks.${index}.cidr`}
-                  label={`Service network CIDR (${isDualStack && index === 0 ? 'IPv4' : 'IPv6'})`}
+                  label={`Service network CIDR${getNextworkLabelSuffix(index, isDualStack)}`}
                   helperText={serviceCidrHelperText}
                   isRequired
                   labelInfo={index === 0 && isDualStack ? 'Primary' : ''}
