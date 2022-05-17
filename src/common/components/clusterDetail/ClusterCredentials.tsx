@@ -1,5 +1,10 @@
 import React from 'react';
-import { GridItem, Button, ClipboardCopy, clipboardCopyFunc, StackItem } from "@patternfly/react-core";
+import {
+  GridItem,
+  ClipboardCopy,
+  clipboardCopyFunc,
+  StackItem,
+} from '@patternfly/react-core';
 import { Credentials, Cluster } from '../../api/types';
 import { LoadingState, ErrorState } from '../../components/ui/uiState';
 import { DetailList, DetailItem } from '../../components/ui/DetailList';
@@ -32,11 +37,11 @@ const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
       <DetailList>
         {credentials.consoleUrl && (
           <StackItem>
-                <TroubleshootingOpenshiftConsoleButton
-                  consoleUrl={credentials.consoleUrl}
-                  cluster={cluster}
-                  idPrefix={idPrefix}
-                />
+            <TroubleshootingOpenshiftConsoleButton
+              consoleUrl={credentials.consoleUrl}
+              cluster={cluster}
+              idPrefix={idPrefix}
+            />
           </StackItem>
         )}
         &nbsp;
