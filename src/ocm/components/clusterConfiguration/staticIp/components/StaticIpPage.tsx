@@ -29,11 +29,11 @@ export const StaticIpPage: React.FC<StaticIpPageProps> = ({
     return getStaticIpInfo(infraEnv);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const { currentStepId, onUpdateStaticIpView } = useClusterWizardContext();
+  const clusterWizardContext = useClusterWizardContext();
   const [confirmOnChangeView, setConfirmOnChangeView] = React.useState<boolean>(false);
   const [viewChanged, setViewChanged] = React.useState<boolean>(false);
   const onChangeView = React.useCallback((view: StaticIpView) => {
-    onUpdateStaticIpView(view);
+    clusterWizardContext.onUpdateStaticIpView(view);
     setViewChanged(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -53,7 +53,7 @@ export const StaticIpPage: React.FC<StaticIpPageProps> = ({
   };
 
   const getContent = () => {
-    switch (currentStepId) {
+    switch (clusterWizardContext.currentStepId) {
       case 'static-ip-yaml-view':
         return <YamlView {...viewProps} />;
       case 'static-ip-host-configurations':
@@ -61,7 +61,7 @@ export const StaticIpPage: React.FC<StaticIpPageProps> = ({
       case 'static-ip-network-wide-configurations':
         return <FormViewNetworkWide {...viewProps} />;
       default:
-        throw `Unexpected wizard step id ${currentStepId} when entering static ip page`;
+        throw `Unexpected wizard step id ${clusterWizardContext.currentStepId} when entering static ip page`;
     }
   };
 

@@ -22,10 +22,12 @@ const getWizardStepIds = (staticIpView?: StaticIpView): ClusterWizardStepsType[]
   return stepIds;
 };
 
-const ClusterWizardContextProvider: React.FC<PropsWithChildren<{
-  cluster?: Cluster;
-  infraEnv?: InfraEnv;
-}>> = ({ children, cluster, infraEnv }) => {
+const ClusterWizardContextProvider: React.FC<
+  PropsWithChildren<{
+    cluster?: Cluster;
+    infraEnv?: InfraEnv;
+  }>
+> = ({ children, cluster, infraEnv }) => {
   const [currentStepId, setCurrentStepId] = React.useState<ClusterWizardStepsType>();
   const [wizardStepIds, setWizardStepIds] = React.useState<ClusterWizardStepsType[]>();
   React.useEffect(() => {
@@ -36,7 +38,6 @@ const ClusterWizardContextProvider: React.FC<PropsWithChildren<{
     setWizardStepIds(firstStepIds);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   const contextValue = React.useMemo<ClusterWizardContextType | null>(() => {
     if (!wizardStepIds || !currentStepId) {
       return null;

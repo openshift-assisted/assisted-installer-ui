@@ -40,10 +40,10 @@ type ParsedFormViewYaml = {
 const findFirstRealEthernetInterface = (
   interfaces: NmstateInterface[],
 ): NmstateEthernetInterface | undefined => {
-  return (interfaces.find(
+  return interfaces.find(
     (currentInterface) =>
       isEthernetInterface(currentInterface) && !isDummyInterface(currentInterface.name),
-  ) as unknown) as NmstateEthernetInterface | undefined;
+  ) as unknown as NmstateEthernetInterface | undefined;
 };
 
 const parseYaml = (yaml: string): ParsedFormViewYaml => {

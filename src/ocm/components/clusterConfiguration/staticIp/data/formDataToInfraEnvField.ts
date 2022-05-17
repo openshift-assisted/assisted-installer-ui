@@ -63,7 +63,7 @@ const getNmstateObject = (
       nicName = REAL_NIC_NAME;
       realProtocolConfigs[protocolVersion] = getNmstateProtocolConfig(
         hostIp,
-        getPrefixLength(networkWide, protocolVersion as ProtocolVersion),
+        getPrefixLength(networkWide, protocolVersion),
       );
     } else {
       //this happens when a host was particall configured, or not configured at all
@@ -73,15 +73,11 @@ const getNmstateObject = (
           DUMMY_NMSTATE_ADDRESSES[protocolVersion].prefixLength,
         ),
       };
-      nicName = getDummyNicName(protocolVersion as ProtocolVersion);
+      nicName = getDummyNicName(protocolVersion);
       interfaces.push(getEthernetInterface(nicName, protocolConfigs));
     }
     routeConfigs.push(
-      getRouteConfig(
-        protocolVersion as ProtocolVersion,
-        networkWide.ipConfigs[protocolVersion].gateway,
-        nicName,
-      ),
+      getRouteConfig(protocolVersion, networkWide.ipConfigs[protocolVersion].gateway, nicName),
     );
   }
   if (Object.keys(realProtocolConfigs).length > 0) {

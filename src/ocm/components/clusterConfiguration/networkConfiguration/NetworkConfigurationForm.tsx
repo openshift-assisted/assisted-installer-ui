@@ -44,7 +44,7 @@ const NetworkConfigurationForm: React.FC<{
   infraEnv?: InfraEnv;
 }> = ({ cluster, hostSubnets, defaultNetworkSettings, infraEnv }) => {
   const { alerts } = useAlerts();
-  const { moveNext, moveBack } = useClusterWizardContext();
+  const clusterWizardContext = useClusterWizardContext();
   const { errors, touched, isSubmitting, isValid } = useFormikContext<NetworkConfigurationValues>();
   const isAutoSaveRunning = useFormikAutoSave();
   const errorFields = getFormikErrorFields(errors, touched);
@@ -61,8 +61,8 @@ const NetworkConfigurationForm: React.FC<{
         !!alerts.length ||
         !isValid
       }
-      onNext={moveNext}
-      onBack={moveBack}
+      onNext={() => clusterWizardContext.moveNext()}
+      onBack={() => clusterWizardContext.moveBack()}
     />
   );
   return (

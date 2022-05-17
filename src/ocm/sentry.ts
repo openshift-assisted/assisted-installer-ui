@@ -8,7 +8,7 @@ export const captureException = (
   severity: Sentry.Severity = Sentry.Severity.Error,
 ) => {
   if (ocmClient) {
-    message && Sentry.captureMessage(message, severity as Sentry.Severity);
+    message && Sentry.captureMessage(message, severity);
     Sentry.captureException(error);
   } else {
     severity === Sentry.Severity.Error

@@ -33,10 +33,12 @@ const isStepValid = (stepId: ClusterWizardStepsType, cluster?: Cluster): boolean
 };
 
 const ClusterWizardNavigation = ({ cluster }: { cluster?: Cluster }) => {
-  const { currentStepId, setCurrentStepId, wizardStepIds } = useClusterWizardContext();
+  const clusterWizardContext = useClusterWizardContext();
 
   const isStepIdxAfterCurrent = (idx: number) => {
-    return !wizardStepIds.slice(idx).includes(currentStepId);
+    return !clusterWizardContext.wizardStepIds
+      .slice(idx)
+      .includes(clusterWizardContext.currentStepId);
   };
 
   const isStepDisabled = (idx: number, stepId: ClusterWizardStepsType) => {
@@ -49,8 +51,8 @@ const ClusterWizardNavigation = ({ cluster }: { cluster?: Cluster }) => {
         step={idx}
         key={stepId}
         content={wizardStepNames[stepId]}
-        onNavItemClick={() => setCurrentStepId(stepId)}
-        isCurrent={currentStepId === stepId}
+        onNavItemClick={() => clusterWizardContext.setCurrentStepId(stepId)}
+        isCurrent={clusterWizardContext.currentStepId === stepId}
         isDisabled={isStepDisabled(idx, stepId)}
         isValid={() => isStepValid(stepId, cluster)}
       />
@@ -64,7 +66,7 @@ const ClusterWizardNavigation = ({ cluster }: { cluster?: Cluster }) => {
         isExpandable={true}
         content="Static network configurations"
         key="static-network-configuration-form-view"
-        isCurrent={isStaticIpStep(currentStepId)}
+        isCurrent={isStaticIpStep(clusterWizardContext.currentStepId)}
         isDisabled={isStepIdxAfterCurrent(idx)}
       >
         <WizardNav returnList>
@@ -79,8 +81,8 @@ const ClusterWizardNavigation = ({ cluster }: { cluster?: Cluster }) => {
   const getWizardNavItems = (): ReactNode[] => {
     const navItems: ReactNode[] = [];
     let i = 0;
-    while (i < wizardStepIds.length) {
-      const stepId = wizardStepIds[i];
+    while (i < clusterWizardContext.wizardStepIds.length) {
+      const stepId = clusterWizardContext.wizardStepIds[i];
       if (stepId !== 'static-ip-network-wide-configurations') {
         navItems.push(getNavItem(i, stepId));
         i += 1;

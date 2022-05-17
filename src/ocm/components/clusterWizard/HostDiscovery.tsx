@@ -24,7 +24,7 @@ import { HostDiscoveryService } from '../../services';
 const HostDiscoveryForm: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const { alerts } = useAlerts();
   const { errors, touched, isSubmitting, isValid } = useFormikContext<HostDiscoveryValues>();
-  const { moveNext, moveBack } = useClusterWizardContext();
+  const clusterWizardContext = useClusterWizardContext();
   const isAutoSaveRunning = useFormikAutoSave();
   const errorFields = getFormikErrorFields(errors, touched);
   const isNextDisabled =
@@ -40,8 +40,8 @@ const HostDiscoveryForm: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
       errorFields={errorFields}
       isSubmitting={isSubmitting}
       isNextDisabled={isNextDisabled}
-      onNext={moveNext}
-      onBack={moveBack}
+      onNext={() => clusterWizardContext.moveNext()}
+      onBack={() => clusterWizardContext.moveBack()}
     />
   );
 

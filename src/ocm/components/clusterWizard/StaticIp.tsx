@@ -25,7 +25,7 @@ const StaticIp: React.FC<StaticIpProps & { cluster: Cluster }> = ({
   infraEnv,
   updateInfraEnv,
 }) => {
-  const { moveBack, moveNext } = useClusterWizardContext();
+  const clusterWizardContext = useClusterWizardContext();
   const { alerts } = useAlerts();
   const [formState, setFormStateProps] = React.useState<StaticIpFormState>(
     getInitialFormStateProps(),
@@ -45,8 +45,8 @@ const StaticIp: React.FC<StaticIpProps & { cluster: Cluster }> = ({
       alertContent={null}
       errorFields={errorFields}
       isSubmitting={formState.isSubmitting}
-      onNext={moveNext}
-      onBack={moveBack}
+      onNext={() => clusterWizardContext.moveNext()}
+      onBack={() => clusterWizardContext.moveBack()}
       isNextDisabled={isNextDisabled}
     />
   );

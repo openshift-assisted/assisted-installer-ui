@@ -35,9 +35,8 @@ const getInterfaceNamesInCurrentHost: UniqueStringArrayExtractor<YamlViewValues>
   values: YamlViewValues,
   context: Yup.TestContext,
 ) => {
-  const currentMacInterfaceObject: ArrayElementType<MacInterfaceMap> = (context.parent as unknown) as ArrayElementType<
-    MacInterfaceMap
-  >;
+  const currentMacInterfaceObject: ArrayElementType<MacInterfaceMap> =
+    context.parent as unknown as ArrayElementType<MacInterfaceMap>;
   const currentHost = values.hosts.find(
     (currentHost) =>
       currentHost.macInterfaceMap &&

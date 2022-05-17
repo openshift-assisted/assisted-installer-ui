@@ -28,7 +28,7 @@ type ClusterDetailsProps = {
 };
 
 const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster, infraEnv }) => {
-  const { moveNext } = useClusterWizardContext();
+  const clusterWizardContext = useClusterWizardContext();
   const managedDomains = useManagedDomains();
   const { addAlert, clearAlerts } = useAlerts();
   const history = useHistory();
@@ -51,14 +51,14 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster, infraEnv }) =>
       try {
         const cluster = await ClusterDetailsService.update(clusterId, params);
         dispatch(updateCluster(cluster));
-        canNextClusterDetails({ cluster }) && moveNext();
+        canNextClusterDetails({ cluster }) && clusterWizardContext.moveNext();
       } catch (e) {
         handleApiError(e, () =>
           addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),
         );
       }
     },
-    [addAlert, clearAlerts, dispatch, moveNext],
+    [addAlert, clearAlerts, dispatch, clusterWizardContext],
   );
 
   const handleClusterCreate = React.useCallback(
@@ -94,7 +94,7 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster, infraEnv }) =>
       managedDomains={managedDomains}
       ocpVersions={versions}
       usedClusterNames={usedClusterNames}
-      moveNext={moveNext}
+      moveNext={() => clusterWizardContext.moveNext()}
       handleClusterUpdate={handleClusterUpdate}
       handleClusterCreate={handleClusterCreate}
       navigation={navigation}

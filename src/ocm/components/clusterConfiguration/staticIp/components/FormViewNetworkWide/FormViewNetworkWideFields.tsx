@@ -144,9 +144,8 @@ const protocolVersionOptions: FormSelectOptionProps[] = [
 
 export const ProtocolTypeSelect: React.FC = () => {
   const selectFieldName = 'protocolType';
-  const [{ value: protocolType }, , { setValue: setProtocolType }] = useField<StaticProtocolType>(
-    selectFieldName,
-  );
+  const [{ value: protocolType }, , { setValue: setProtocolType }] =
+    useField<StaticProtocolType>(selectFieldName);
   const [, , { setValue: setIpv6 }] = useField<IpConfig>(`ipConfigs.ipv6`);
   const onChange = (e: React.FormEvent<HTMLSelectElement>) => {
     const newProtocolType = e.currentTarget.value as types.StaticProtocolType;

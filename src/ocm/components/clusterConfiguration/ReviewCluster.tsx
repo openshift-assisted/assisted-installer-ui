@@ -40,7 +40,7 @@ const PlatformIntegrationNote = () => {
 };
 
 const ReviewCluster: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
-  const { setCurrentStepId } = useClusterWizardContext();
+  const clusterWizardContext = useClusterWizardContext();
   return (
     <DetailList>
       <DetailItem
@@ -85,7 +85,7 @@ const ReviewCluster: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         value={
           <ClusterValidations<ClusterWizardStepsType>
             validationsInfo={cluster.validationsInfo}
-            setCurrentStepId={setCurrentStepId}
+            setCurrentStepId={(stepId) => clusterWizardContext.setCurrentStepId(stepId)}
             wizardStepNames={wizardStepNames}
             wizardStepsValidationsMap={wizardStepsValidationsMap}
           />
@@ -97,7 +97,7 @@ const ReviewCluster: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         value={
           <HostsValidations<ClusterWizardStepsType, typeof allClusterWizardSoftValidationIds>
             hosts={cluster.hosts}
-            setCurrentStepId={setCurrentStepId}
+            setCurrentStepId={(stepId) => clusterWizardContext.setCurrentStepId(stepId)}
             wizardStepNames={wizardStepNames}
             allClusterWizardSoftValidationIds={allClusterWizardSoftValidationIds}
             wizardStepsValidationsMap={wizardStepsValidationsMap}

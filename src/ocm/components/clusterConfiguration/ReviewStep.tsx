@@ -14,7 +14,7 @@ import { useStateSafely } from '../../../common/hooks';
 
 const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const { addAlert } = useAlerts();
-  const { moveBack } = useClusterWizardContext();
+  const clusterWizardContext = useClusterWizardContext();
   const [isStartingInstallation, setIsStartingInstallation] = useStateSafely(false);
   const dispatch = useDispatch();
 
@@ -40,7 +40,7 @@ const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const footer = (
     <ClusterWizardFooter
       cluster={cluster}
-      onBack={moveBack}
+      onBack={() => clusterWizardContext.moveBack()}
       isSubmitting={isStartingInstallation}
       submittingText="Starting installation..."
       additionalActions={
