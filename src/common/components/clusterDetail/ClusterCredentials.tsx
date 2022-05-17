@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  GridItem,
-  ClipboardCopy,
-  clipboardCopyFunc,
-  StackItem,
-} from '@patternfly/react-core';
+import { GridItem, ClipboardCopy, clipboardCopyFunc, StackItem } from '@patternfly/react-core';
 import { Credentials, Cluster } from '../../api/types';
 import { LoadingState, ErrorState } from '../../components/ui/uiState';
 import { DetailList, DetailItem } from '../../components/ui/DetailList';
