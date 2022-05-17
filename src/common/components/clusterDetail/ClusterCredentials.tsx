@@ -1,6 +1,5 @@
 import React from 'react';
-import { GridItem, Button, ClipboardCopy, clipboardCopyFunc } from '@patternfly/react-core';
-import { ExternalLinkAltIcon } from '@patternfly/react-icons';
+import { GridItem, ClipboardCopy, clipboardCopyFunc, StackItem } from '@patternfly/react-core';
 import { Credentials, Cluster } from '../../api/types';
 import { LoadingState, ErrorState } from '../../components/ui/uiState';
 import { DetailList, DetailItem } from '../../components/ui/DetailList';
@@ -32,30 +31,15 @@ const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
     credentialsBody = (
       <DetailList>
         {credentials.consoleUrl && (
-          <DetailItem
-            title="Web Console URL"
-            value={
-              <>
-                <Button
-                  variant="link"
-                  icon={<ExternalLinkAltIcon />}
-                  iconPosition="right"
-                  isInline
-                  onClick={() => window.open(credentials.consoleUrl, '_blank', 'noopener')}
-                  data-testid={`${idPrefix}-link-console-url`}
-                >
-                  {credentials.consoleUrl}
-                </Button>
-                <br />
-                <TroubleshootingOpenshiftConsoleButton
-                  consoleUrl={credentials.consoleUrl}
-                  cluster={cluster}
-                  idPrefix={idPrefix}
-                />
-              </>
-            }
-          />
+          <StackItem>
+            <TroubleshootingOpenshiftConsoleButton
+              consoleUrl={credentials.consoleUrl}
+              cluster={cluster}
+              idPrefix={idPrefix}
+            />
+          </StackItem>
         )}
+        &nbsp;
         {credentials.username && (
           <>
             <DetailItem title="Username" value={credentials.username} />
