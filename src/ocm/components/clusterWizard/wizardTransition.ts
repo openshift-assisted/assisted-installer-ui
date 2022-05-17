@@ -54,6 +54,7 @@ const hostDiscoveryStepValidationsMap: WizardStepValidationMap = {
     groups: ['hardware'],
     validationIds: [
       'connected',
+      'media-connected',
       'odf-requirements-satisfied',
       'lso-requirements-satisfied',
       'cnv-requirements-satisfied',

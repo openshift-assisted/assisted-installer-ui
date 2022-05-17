@@ -1,42 +1,33 @@
-name: Test and build
+name: Test and build on push or pull request to specific branches
 
 on:
   push:
     branches:
       - master
-      - main
-      - develop
-      - feature/*
-      - release/*
-      - hotfix/*
+      - releases/*
       - CIM-*
   pull_request:
     branches:
       - master
-      - main
-      - develop
-      - release/*
-      - hotfix/*
+      - releases/*
       - CIM-*
 
 jobs:
-  test_and_build:
+  main:
     name: Test and build
     runs-on: ubuntu-latest
     env:
       NODE_OPTIONS: '--max-old-space-size=8192'
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup Node.js environment
-        uses: actions/setup-node@v2.4.1
+        uses: actions/setup-node@v3
         with:
-          node-version: '>=12.16'
           cache: yarn
+          node-version: '>=12.16'
       - name: Install dependencies
-        # --slient: Run yarn install without printing installation log.
-        # --non-interactive: disable interactive prompts, like when there’s an invalid version of a dependency.
-        # --pure-lockfile: doesn't generate a yarn.lock file.
-        run: yarn install --silent --non-interactive --pure-lockfile
+        # --frozen-lockfile: doesn't generate a yarn.lock file, fails if an upate is needed.
+        run: yarn install --frozen-lockfile
       - name: Build code (includes tests)
         run: yarn build

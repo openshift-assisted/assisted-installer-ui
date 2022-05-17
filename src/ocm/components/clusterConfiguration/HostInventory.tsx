@@ -23,7 +23,6 @@ import {
   schedulableMastersAlwaysOn,
   HostDiscoveryValues,
   getSchedulableMasters,
-  TechnologyPreview,
 } from '../../../common';
 import HostsDiscoveryTable from '../hosts/HostsDiscoveryTable';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
@@ -145,9 +144,6 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
                 name={'usePlatformIntegration'}
                 label={<PlatformIntegrationLabel />}
               />
-            </SplitItem>
-            <SplitItem>
-              <TechnologyPreview />
             </SplitItem>
           </Split>
         </StackItem>
