@@ -1,5 +1,5 @@
 import React from 'react';
-import * as _ from 'lodash';
+import flatten from 'lodash/flatten';
 import { MultiSelectField } from '../../../common';
 import { AgentK8sResource } from '../../types';
 import { MultiSelectOption } from '../../../common/components/ui/formik/types';
@@ -8,7 +8,7 @@ import { AGENT_LOCATION_LABEL_KEY, INFRAENV_AGENTINSTALL_LABEL_KEY } from '../co
 const LabelsSelector: React.FC<{ agents: AgentK8sResource[] }> = ({ agents }) => {
   const agentLabelOptions = Array.from(
     new Set(
-      _.flatten(
+      flatten(
         agents.map((agent) =>
           Object.keys(agent.metadata?.labels || {})
             .filter((k) => ![INFRAENV_AGENTINSTALL_LABEL_KEY, AGENT_LOCATION_LABEL_KEY].includes(k))
