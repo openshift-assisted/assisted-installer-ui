@@ -1,7 +1,7 @@
 export const CLUSTER_NAME_VALIDATION_MESSAGES = {
   INVALID_LENGTH: '1-54 characters',
-  INVALID_VALUE: 'Use alphanumberic characters, or hyphen (-)',
-  INVALID_START_END: 'Start and end with a letter or a number.',
+  INVALID_VALUE: 'Use lowercase alphanumberic characters, or hyphen (-)',
+  INVALID_START_END: 'Start and end with a lowercase letter or a number.',
 };
 
 export const UNIQUE_CLUSTER_NAME_VALIDATION_MESSAGES = {

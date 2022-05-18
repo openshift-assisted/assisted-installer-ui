@@ -20,6 +20,7 @@ import {
 const ALPHANUMBERIC_REGEX = /^[a-zA-Z0-9]+$/;
 const NAME_START_END_REGEX = /^[a-z0-9](.*[a-z0-9])?$/;
 const NAME_CHARS_REGEX = /^[a-z0-9-.]*$/;
+const CLUSTER_NAME_CHARS_REGEX = /^[a-z0-9-]*$/;
 const CLUSTER_NAME_REGEX = /^[a-z0-9](.*[a-z0-9])?$/;
 const SSH_PUBLIC_KEY_REGEX =
   /^(ssh-rsa|ssh-ed25519|ecdsa-[-a-z0-9]*) AAAA[0-9A-Za-z+/]+[=]{0,3}( .+)?$/;
@@ -42,7 +43,7 @@ export const nameValidationSchema = (
 ) =>
   Yup.string()
     .required('Required')
-    .matches(NAME_CHARS_REGEX, {
+    .matches(CLUSTER_NAME_CHARS_REGEX, {
       message: CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_VALUE,
       excludeEmptyString: true,
     })
