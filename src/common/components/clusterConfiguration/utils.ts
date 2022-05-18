@@ -32,13 +32,20 @@ export const getSubnet = (cidr: string): Address6 | Address4 | null => {
   }
 };
 
-const getHumanizedSubnet = (subnet: Address6 | Address4 | null) => {
+export const getHumanizedSubnetRange = (subnet: Address6 | Address4 | null) => {
   if (subnet) {
     const subnetStart = subnet.startAddress().correctForm();
     const subnetEnd = subnet.endAddress().correctForm();
-    return `${subnet.address} (${subnetStart} - ${subnetEnd})`;
+    return `(${subnetStart} - ${subnetEnd})`;
   }
 
+  return '';
+};
+
+const getHumanizedSubnet = (subnet: Address6 | Address4 | null) => {
+  if (subnet) {
+    return `${subnet.address} ${getHumanizedSubnetRange(subnet)}`;
+  }
   return '';
 };
 

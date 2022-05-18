@@ -1,15 +1,14 @@
 import * as Sentry from '@sentry/browser';
-import { ErrorHandler, ErrorSeverity } from '../common/types/errorHandling';
 import { ocmClient } from './api/axiosClient';
 
-export const captureException: ErrorHandler = (
+export const captureException = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   error: any,
   message?: string,
-  severity: ErrorSeverity = 'error',
+  severity: Sentry.Severity = Sentry.Severity.Error,
 ) => {
   if (ocmClient) {
-    message && Sentry.captureMessage(message, severity as Sentry.Severity);
+    message && Sentry.captureMessage(message, severity);
     Sentry.captureException(error);
   } else {
     severity === Sentry.Severity.Error
