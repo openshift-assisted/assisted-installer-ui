@@ -56,6 +56,7 @@ You can use the following steps in order to set up your dev environment.
      ```
 6. To test the changes in assisted-ui-lib in consuming application, use Yalc to publish and link the
    package ([see docs for details](https://github.com/wclr/yalc)):
+
    - Install Yalc:
      ```
      yarn global add yalc
@@ -75,6 +76,7 @@ You can use the following steps in order to set up your dev environment.
 
      Note that this setup needs to be done only once, running `yarn start` script automatically
      publishes the package on every change.
+
 7. This project uses the `assisted-ui` project to ease the development experience outside OCM (aka
    `uhc-portal`), follow the instructions in those projects in order to access the app's UI.
 
