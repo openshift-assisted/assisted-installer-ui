@@ -2,7 +2,7 @@ import React from 'react';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens';
 import { ClusterFeatureSupportLevelsDetailItem } from '../featureSupportLevels';
-import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
+import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
 import {
   allClusterWizardSoftValidationIds,
   ClusterWizardStepsType,
@@ -40,7 +40,7 @@ const PlatformIntegrationNote = () => {
 };
 
 const ReviewCluster: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
-  const { setCurrentStepId } = React.useContext(ClusterWizardContext);
+  const clusterWizardContext = useClusterWizardContext();
   return (
     <DetailList>
       <DetailItem
@@ -85,7 +85,7 @@ const ReviewCluster: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         value={
           <ClusterValidations<ClusterWizardStepsType>
             validationsInfo={cluster.validationsInfo}
-            setCurrentStepId={setCurrentStepId}
+            setCurrentStepId={(stepId) => clusterWizardContext.setCurrentStepId(stepId)}
             wizardStepNames={wizardStepNames}
             wizardStepsValidationsMap={wizardStepsValidationsMap}
           />
@@ -97,7 +97,7 @@ const ReviewCluster: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         value={
           <HostsValidations<ClusterWizardStepsType, typeof allClusterWizardSoftValidationIds>
             hosts={cluster.hosts}
-            setCurrentStepId={setCurrentStepId}
+            setCurrentStepId={(stepId) => clusterWizardContext.setCurrentStepId(stepId)}
             wizardStepNames={wizardStepNames}
             allClusterWizardSoftValidationIds={allClusterWizardSoftValidationIds}
             wizardStepsValidationsMap={wizardStepsValidationsMap}

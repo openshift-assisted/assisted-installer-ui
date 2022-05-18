@@ -1,0 +1,29 @@
+.pf-c-form.pf-m-horizontal .static-config-type-label .pf-c-form__group-label {
+  padding-top: unset;
+}
+
+.pf-c-form.pf-m-horizontal .static-config-type-label .pf-c-form__label {
+  vertical-align: text-top;
+}
+
+.vlan-id {
+  margin-left: var(--pf-global--spacer--md)
+}
+
+.mac-ip-mapping .pf-c-form__label-text {
+  color: var(--pf-global--Color--200);
+  font-size: var(--pf-global--FontSize--md);
+  font-weight: unset;
+}
+
+.machine-network .pf-l-flex > div:nth-child(1) {
+  flex: 0 0 24rem;
+}
+
+.machine-network .pf-l-flex > div:nth-child(3) {
+  flex: 0 0 6rem;
+}
+
+.machine-network .pf-c-form__helper-text.pf-m-error {
+  margin-top: unset;
+}
