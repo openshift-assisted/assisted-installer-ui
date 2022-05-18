@@ -9,7 +9,7 @@ import {
   ClusterWizardStep,
   ClusterWizardStepHeader,
   getClusterDetailsValidationSchema,
-  ClusterDetailsFormFields,
+  InfraEnv,
 } from '../../../common';
 import { Grid, GridItem } from '@patternfly/react-core';
 import { canNextClusterDetails } from './wizardTransition';
@@ -19,12 +19,13 @@ import ClusterWizardHeaderExtraActions from '../clusterConfiguration/ClusterWiza
 import { ocmClient } from '../../api';
 import { useFeatureSupportLevel } from '../../../common/components/featureSupportLevels';
 import { ClusterDetailsService } from '../../services';
-import { OcmClusterDetailsValues } from '../../api/types';
-import { getOcmClusterDetailsInitialValues } from '../clusterConfiguration/utils';
-import ArmCheckbox from '../clusterConfiguration/ArmCheckbox';
+
+import { OcmClusterDetailsValues } from '../../services/types';
+import { OcmClusterDetailsFormFields } from '../clusterConfiguration/OcmClusterDetailsFormFields';
 
 type ClusterDetailsFormProps = {
   cluster?: Cluster;
+  infraEnv?: InfraEnv;
   pullSecret: string;
   managedDomains: ManagedDomain[];
   ocpVersions: OpenshiftVersionOptionType[];
@@ -40,6 +41,7 @@ type ClusterDetailsFormProps = {
 const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
   const {
     cluster,
+    infraEnv,
     pullSecret,
     managedDomains,
     ocpVersions,
@@ -76,7 +78,18 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
     return fn;
   };
 
-  const initialValues = getOcmClusterDetailsInitialValues(props);
+  const initialValues = React.useMemo(
+    () =>
+      ClusterDetailsService.getClusterDetailsInitialValues({
+        infraEnv,
+        cluster,
+        pullSecret,
+        managedDomains,
+        ocpVersions,
+      }),
+    [cluster, pullSecret, managedDomains, ocpVersions, infraEnv],
+  );
+
   const validationSchema = getClusterDetailsValidationSchema(
     usedClusterNames,
     featureSupportLevels,
@@ -106,7 +119,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
                 </ClusterWizardStepHeader>
               </GridItem>
               <GridItem span={12} lg={10} xl={9} xl2={7}>
-                <ClusterDetailsFormFields
+                <OcmClusterDetailsFormFields
                   toggleRedHatDnsService={toggleRedHatDnsService}
                   versions={ocpVersions}
                   canEditPullSecret={!cluster?.pullSecretSet}
@@ -115,9 +128,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
                   isOcm={!!ocmClient}
                   managedDomains={managedDomains}
                   isPullSecretSet={cluster?.pullSecretSet ? cluster.pullSecretSet : false}
-                  extensionAfter={{
-                    openshiftVersion: <ArmCheckbox versions={ocpVersions} />,
-                  }}
+                  clusterExists={!!cluster}
                 />
               </GridItem>
             </Grid>

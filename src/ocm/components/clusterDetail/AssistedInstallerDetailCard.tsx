@@ -21,6 +21,8 @@ import ClusterInstallationProgressCard from './ClusterInstallationProgressCard';
 import CancelInstallationModal from './CancelInstallationModal';
 import ResetClusterModal from './ResetClusterModal';
 import { FeatureSupportLevelProvider } from '../featureSupportLevels';
+import useInfraEnv from '../../hooks/useInfraEnv';
+import { SentryErrorMonitorContextProvider } from '../SentryErrorMonitorContextProvider';
 
 type AssistedInstallerDetailCardProps = {
   aiClusterId: string;
@@ -92,14 +94,19 @@ const AssistedInstallerDetailCard: React.FC<AssistedInstallerDetailCardProps> = 
 }) => {
   const fetchCluster = useFetchCluster(aiClusterId);
   const { cluster, uiState } = useClusterPolling(aiClusterId);
-
-  if (uiState === ResourceUIState.LOADING) {
+  const {
+    infraEnv,
+    isLoading: infraEnvLoading,
+    error: infraEnvError,
+    updateInfraEnv,
+  } = useInfraEnv(aiClusterId);
+  if (uiState === ResourceUIState.LOADING || infraEnvLoading) {
     return <LoadingCard />;
-  } else if (uiState === ResourceUIState.ERROR) {
+  } else if (uiState === ResourceUIState.ERROR || infraEnvError) {
     return <ClusterLoadFailed fetchCluster={fetchCluster} />;
   }
 
-  if (!cluster) {
+  if (!cluster || !infraEnv) {
     return null;
   }
 
@@ -110,7 +117,9 @@ const AssistedInstallerDetailCard: React.FC<AssistedInstallerDetailCardProps> = 
 
   let content;
   if (['insufficient', 'ready', 'pending-for-input'].includes(cluster.status)) {
-    content = <ClusterWizard cluster={cluster} />;
+    content = (
+      <ClusterWizard cluster={cluster} infraEnv={infraEnv} updateInfraEnv={updateInfraEnv} />
+    );
   } else {
     content = <ClusterInstallationProgressCard cluster={cluster} />;
   }
@@ -118,19 +127,21 @@ const AssistedInstallerDetailCard: React.FC<AssistedInstallerDetailCardProps> = 
   return (
     <FeatureGateContextProvider features={allEnabledFeatures}>
       <AlertsContextProvider>
-        <ModalDialogsContextProvider>
-          <ClusterDefaultConfigurationProvider
-            loadingUI={<LoadingCard />}
-            errorUI={<LoadingDefaultConfigFailedCard />}
-          >
-            <FeatureSupportLevelProvider loadingUi={<LoadingCard />} cluster={cluster}>
-              {content}
-            </FeatureSupportLevelProvider>
-            <CancelInstallationModal />
-            <ResetClusterModal />
-            <DiscoveryImageModal />
-          </ClusterDefaultConfigurationProvider>
-        </ModalDialogsContextProvider>
+        <SentryErrorMonitorContextProvider>
+          <ModalDialogsContextProvider>
+            <ClusterDefaultConfigurationProvider
+              loadingUI={<LoadingCard />}
+              errorUI={<LoadingDefaultConfigFailedCard />}
+            >
+              <FeatureSupportLevelProvider loadingUi={<LoadingCard />} cluster={cluster}>
+                {content}
+              </FeatureSupportLevelProvider>
+              <CancelInstallationModal />
+              <ResetClusterModal />
+              <DiscoveryImageModal />
+            </ClusterDefaultConfigurationProvider>
+          </ModalDialogsContextProvider>
+        </SentryErrorMonitorContextProvider>
       </AlertsContextProvider>
     </FeatureGateContextProvider>
   );
