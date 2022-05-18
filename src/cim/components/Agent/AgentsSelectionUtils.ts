@@ -1,6 +1,6 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
-import * as _ from 'lodash';
+import isEqual from 'lodash/isEqual';
 import { AgentK8sResource } from '../../types/k8s/agent';
 import {
   ClusterDeploymentHostsSelectionValues,
@@ -28,7 +28,7 @@ export const useAgentsAutoSelection = <FormValues extends AllowedFormValues>(
 
   React.useEffect(() => {
     const ids = matchingAgents.map((a) => a.metadata?.uid).splice(0, hostCount);
-    if (!_.isEqual(ids, autoSelectedHostIds)) {
+    if (!isEqual(ids, autoSelectedHostIds)) {
       setTimeout(() => setFieldValue('autoSelectedHostIds', ids, true));
     }
   }, [matchingAgents, setFieldValue, autoSelectedHostIds, hostCount]);
