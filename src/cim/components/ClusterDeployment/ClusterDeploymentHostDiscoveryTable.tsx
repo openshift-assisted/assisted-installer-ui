@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { noop } from 'lodash';
+import noop from 'lodash/noop';
 import { Stack, StackItem } from '@patternfly/react-core';
-
 import { Host } from '../../../common/api/types';
 import {
   discoveryTypeColumn,
