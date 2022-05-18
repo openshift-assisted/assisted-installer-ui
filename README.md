@@ -49,14 +49,35 @@ You can use the following steps in order to set up your dev environment.
      app consuming this project),
    - [uhc-portal](https://gitlab.cee.redhat.com/service/uhc-portal.git) (the full OCM app, GitLab
      access needed).
-5. These scripts start the project in watch mode:
+5. Start the project in watch mode:
    - ```bash
-     # Watches for changes in the `/src` folder and bundles the files into `/dist` folder
+     # Watches for changes in the `/src` folder, bundles the files into `/dist` folder and automatically publishes the package locally using Yalc
      yarn start
-     # Synchronizes `/dist` with `node_modules/openshift-assisted-ui-lib/` folder in .
-     yarn sync-dist
      ```
-6. This project uses the `assisted-ui` project to ease the development experience outside OCM (aka
+6. To test the changes in assisted-ui-lib in consuming application, use Yalc to publish and link the
+   package ([see docs for details](https://github.com/wclr/yalc)):
+
+   - Install Yalc:
+     ```
+     yarn global add yalc
+     ```
+   - Publish the package locally with
+     ```
+     yalc publish
+     ```
+     (run from assisted-ui-lib directory)
+   - Add the package to consuming app with
+
+     ```
+     yalc link openshift-assisted-ui-lib
+     ```
+
+     (in consuming app directory e.g. assisted-ui)
+
+     Note that this setup needs to be done only once, running `yarn start` script automatically
+     publishes the package on every change.
+
+7. This project uses the `assisted-ui` project to ease the development experience outside OCM (aka
    `uhc-portal`), follow the instructions in those projects in order to access the app's UI.
 
 ## Publish
