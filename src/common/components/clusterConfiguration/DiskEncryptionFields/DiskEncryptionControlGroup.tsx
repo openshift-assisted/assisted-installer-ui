@@ -1,4 +1,5 @@
 import React from 'react';
+import isEqual from 'lodash/isEqual';
 import { Stack, StackItem } from '@patternfly/react-core';
 import SwitchField from '../../ui/formik/SwitchField';
 import { DiskEncryptionMode } from './DiskEncryptionMode';
@@ -6,6 +7,19 @@ import { RenderIf } from '../../ui';
 import { DiskEncryptionValues } from './DiskEncryptionValues';
 import { useFormikContext } from 'formik';
 import { ClusterDetailsValues } from '../../clusterWizard/types';
+
+const hasFilledTangServers = (tangServers: any[]): boolean => {
+  const emptyServer = [
+    {
+      url: '',
+      thumbprint: '',
+    },
+  ];
+  if (!tangServers || tangServers.length === 0) {
+    return false;
+  }
+  return tangServers.every((server) => !isEqual(server, emptyServer) && !isEqual(server, {}));
+};
 
 export interface DiskEncryptionControlGroupProps {
   values: DiskEncryptionValues;
@@ -22,19 +36,26 @@ const DiskEncryptionControlGroup: React.FC<DiskEncryptionControlGroupProps> = ({
     enableDiskEncryptionOnMasters,
     enableDiskEncryptionOnWorkers,
     diskEncryptionMode,
+    diskEncryptionTangServers,
   } = values;
 
   const { setFieldValue, setFieldTouched } = useFormikContext<ClusterDetailsValues>();
 
   React.useEffect(() => {
     if (!enableDiskEncryptionOnWorkers && !enableDiskEncryptionOnMasters) {
-      setFieldValue('diskEncryptionMode', 'tpmv2');
-      setFieldTouched('diskEncryptionTangServers', false, false);
-      setFieldValue('diskEncryptionTangServers', [{}], false);
+      if (diskEncryptionMode !== 'tpmv2') {
+        setFieldValue('diskEncryptionMode', 'tpmv2');
+      }
+      if (hasFilledTangServers(diskEncryptionTangServers)) {
+        setFieldTouched('diskEncryptionTangServers', false, false);
+        setFieldValue('diskEncryptionTangServers', [{}], false);
+      }
     }
   }, [
     enableDiskEncryptionOnMasters,
     enableDiskEncryptionOnWorkers,
+    diskEncryptionMode,
+    diskEncryptionTangServers,
     setFieldTouched,
     setFieldValue,
   ]);
