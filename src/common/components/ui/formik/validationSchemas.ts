@@ -11,11 +11,11 @@ import { ClusterNetwork, MachineNetwork, ServiceNetwork } from '../../../api/typ
 import { allSubnetsIPv4 } from '../../../selectors';
 
 const ALPHANUMBERIC_REGEX = /^[a-zA-Z0-9]+$/;
-const CLUSTER_NAME_REGEX = /^[a-z0-9]([-a-z0-9]*[a-z0-9])?$/;
+const NAME_START_END_REGEX = /^[a-z0-9](.*[a-z0-9])?$/;
+const NAME_CHARS_REGEX = /^[a-z0-9-.]*$/;
 const SSH_PUBLIC_KEY_REGEX = /^(ssh-rsa|ssh-ed25519|ecdsa-[-a-z0-9]*) AAAA[0-9A-Za-z+/]+[=]{0,3}( .+)?$/;
 const DNS_NAME_REGEX = /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/;
 const PROXY_DNS_REGEX = /^([a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62}){1}(\.[a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62})*[._]?$/;
-const NAME_CHARS_REGEX = /^[a-zA-Z0-9-.]*$/;
 const IP_V4_ZERO = '0.0.0.0';
 const IP_V6_ZERO = '0000:0000:0000:0000:0000:0000:0000:0000';
 const MAC_REGEX = /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})|([0-9a-fA-F]{4}\\.[0-9a-fA-F]{4}\\.[0-9a-fA-F]{4})$”/;
@@ -29,7 +29,7 @@ export const nameValidationSchema = (
   validateUniqueName?: boolean,
 ) =>
   Yup.string()
-    .matches(CLUSTER_NAME_REGEX, {
+    .matches(NAME_START_END_REGEX, {
       message:
         'Name must consist of lower-case letters, numbers and hyphens. It must start and end with a letter or number.',
       excludeEmptyString: true,
@@ -297,13 +297,13 @@ export const hostPrefixValidationSchema = ({
 export const NAME_VALIDATION_MESSAGES = {
   INVALID_LENGTH: '1-253 characters',
   NOT_UNIQUE: 'Must be unique',
-  INVALID_VALUE: 'Use alphanumberic characters, dot (.) or hyphen (-)',
-  INVALID_START_END: 'Must start and end with an alphanumeric character',
+  INVALID_VALUE: 'Use lowercase alphanumberic characters, dot (.) or hyphen (-)',
+  INVALID_START_END: 'Must start and end with an lowercase alphanumeric character',
 };
 
 export const HOSTNAME_VALIDATION_MESSAGES = {
   ...NAME_VALIDATION_MESSAGES,
-  LOCALHOST_ERR: 'Cannot be the word "localhost"',
+  LOCALHOST_ERR: 'Cannot be the word "localhost" or "localhost.localdomain"',
 };
 
 export const richNameValidationSchema = (usedNames: string[], origName?: string) =>
@@ -319,9 +319,9 @@ export const richNameValidationSchema = (usedNames: string[], origName?: string)
           return true;
         }
         return (
-          !!trimmed[0].match(ALPHANUMBERIC_REGEX) &&
+          !!trimmed[0].match(NAME_START_END_REGEX) &&
           (trimmed[trimmed.length - 1]
-            ? !!trimmed[trimmed.length - 1].match(ALPHANUMBERIC_REGEX)
+            ? !!trimmed[trimmed.length - 1].match(NAME_START_END_REGEX)
             : true)
         );
       },
@@ -335,13 +335,8 @@ export const richNameValidationSchema = (usedNames: string[], origName?: string)
         return true;
       }
       return !usedNames.find((n) => n === value);
-    });
-
-export const hostnameValidationSchema = (origHostname: string, usedHostnames: string[]) =>
-  nameValidationSchema(usedHostnames, origHostname).notOneOf(
-    ['localhost', 'localhost.localdomain'],
-    HOSTNAME_VALIDATION_MESSAGES.LOCALHOST_ERR,
-  );
+    })
+    .notOneOf(['localhost', 'localhost.localdomain'], HOSTNAME_VALIDATION_MESSAGES.LOCALHOST_ERR);
 
 const httpProxyValidationMessage = 'Provide a valid HTTP URL.';
 export const httpProxyValidationSchema = (
