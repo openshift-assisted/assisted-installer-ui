@@ -30,8 +30,10 @@
   "scripts": {
     "clean": "rimraf dist",
     "prebuild": "run-s clean test",
-    "build": "node ./scripts/esbuild/prod.js",
-    "start": "yarn clean && node ./scripts/esbuild/dev.js",
+    "esbuild:prod": "node ./scripts/esbuild/prod.js",
+    "esbuild:dev": "node ./scripts/esbuild/dev.js",
+    "build": "run-s clean esbuild:prod",
+    "start": "run-s clean esbuild:dev",
     "sync-dist": "./scripts/sync-dist.sh",
     "prepare": "install-peers",
     "test": "run-s test:circular lint format:check",
