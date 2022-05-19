@@ -83,6 +83,7 @@ const hostDiscoveryStepValidationsMap: WizardStepValidationMap = {
     validationIds: [
       'connected',
       'media-connected',
+      'ignition-downloadable',
       'odf-requirements-satisfied',
       'lso-requirements-satisfied',
       'cnv-requirements-satisfied',
