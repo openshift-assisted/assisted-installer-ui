@@ -4,21 +4,26 @@ import { Stack, StackItem } from '@patternfly/react-core';
 import SwitchField from '../../ui/formik/SwitchField';
 import { DiskEncryptionMode } from './DiskEncryptionMode';
 import { RenderIf } from '../../ui';
-import { DiskEncryptionValues } from './DiskEncryptionValues';
+import { DiskEncryptionValues, TangServer } from './DiskEncryptionValues';
 import { useFormikContext } from 'formik';
 import { ClusterDetailsValues } from '../../clusterWizard/types';
 
-const hasFilledTangServers = (tangServers: any[]): boolean => {
+const hasFilledTangServers = (tangServers: TangServer[]): boolean => {
+  if (!tangServers || tangServers.length === 0) {
+    return false;
+  }
+
   const emptyServer = [
     {
       url: '',
       thumbprint: '',
     },
   ];
-  if (!tangServers || tangServers.length === 0) {
-    return false;
-  }
-  return tangServers.every((server) => !isEqual(server, emptyServer) && !isEqual(server, {}));
+  return (
+    tangServers.find(
+      (server: typeof tangServers[number]) => !isEqual(server, emptyServer) && !isEqual(server, {}),
+    ) !== undefined
+  );
 };
 
 export interface DiskEncryptionControlGroupProps {
