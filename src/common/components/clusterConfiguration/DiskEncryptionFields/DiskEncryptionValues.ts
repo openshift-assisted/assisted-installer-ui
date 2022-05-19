@@ -4,4 +4,5 @@ export interface DiskEncryptionValues {
   enableDiskEncryptionOnMasters: boolean;
   enableDiskEncryptionOnWorkers: boolean;
   diskEncryptionMode: DiskEncryption['mode'];
+  diskEncryptionTangServers: any;
 }
