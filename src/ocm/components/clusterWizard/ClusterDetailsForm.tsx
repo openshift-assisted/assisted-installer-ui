@@ -70,12 +70,10 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
     submitForm: FormikHelpers<unknown>['submitForm'],
     cluster?: Cluster,
   ): (() => Promise<void> | void) => {
-    let fn: () => Promise<void> | void = submitForm;
     if (!dirty && !isUndefined(cluster) && canNextClusterDetails({ cluster })) {
-      fn = moveNext;
+      return moveNext;
     }
-
-    return fn;
+    return submitForm;
   };
 
   const initialValues = React.useMemo(
