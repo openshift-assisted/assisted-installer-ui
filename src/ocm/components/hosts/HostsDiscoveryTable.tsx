@@ -102,9 +102,6 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({
     ...modalProps
   } = useHostsTable(cluster);
 
-  const dispatch = useDispatch();
-  const { alerts, addAlert, removeAlert } = useAlerts();
-
   const content = React.useMemo(
     () => [
       hostnameColumn(onEditHost, undefined, actionChecks.canEditHostname),
