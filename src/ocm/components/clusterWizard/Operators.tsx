@@ -8,7 +8,9 @@ import {
   getFormikErrorFields,
   useFormikAutoSave,
 } from '../../../common';
-import ClusterWizardContext, { useClusterWizardContext } from "../clusterWizard/ClusterWizardContext";
+import ClusterWizardContext, {
+  useClusterWizardContext,
+} from '../clusterWizard/ClusterWizardContext';
 import ClusterWizardFooter from '../clusterWizard/ClusterWizardFooter';
 import { OperatorsStep } from './OperatorsStep';
 import ClusterWizardNavigation from '../clusterWizard/ClusterWizardNavigation';

@@ -68,7 +68,7 @@ const clusterDetailsStepValidationsMap: WizardStepValidationMap = {
   softValidationIds: [],
 };
 
-const operatorsStepValidationsMap: WizardStepValidationMap = {
+const hostDiscoveryStepValidationsMap: WizardStepValidationMap = {
   cluster: {
     groups: [],
     validationIds: [
@@ -91,20 +91,15 @@ const operatorsStepValidationsMap: WizardStepValidationMap = {
   softValidationIds: [],
 };
 
-const hostDiscoveryStepValidationsMap: WizardStepValidationMap = {
+const operatorsStepValidationsMap: WizardStepValidationMap = {
   cluster: {
     groups: [],
-    validationIds: [
-      'sufficient-masters-count',
-    ],
+    validationIds: [],
   },
   host: {
-    allowedStatuses: ['known', 'disabled'],
-    groups: ['hardware'],
-    validationIds: [
-      'connected',
-      'media-connected',
-    ],
+    allowedStatuses: [],
+    groups: [],
+    validationIds: [],
   },
   softValidationIds: [],
 };
@@ -145,7 +140,7 @@ export const wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardSt
   'static-ip-yaml-view': staticIpValidationsMap,
   'static-ip-network-wide-configurations': staticIpValidationsMap,
   'static-ip-host-configurations': staticIpValidationsMap,
-  'operators': operatorsStepValidationsMap,
+  operators: operatorsStepValidationsMap,
   'host-discovery': hostDiscoveryStepValidationsMap,
   networking: networkingStepValidationsMap,
   review: reviewStepValidationsMap,
