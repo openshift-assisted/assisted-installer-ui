@@ -71,7 +71,6 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
               getEnabledHosts(cluster.hosts),
               cluster,
               getOlmOperators(monitoredOperators),
-              credentials?.consoleUrl,
             )}
           </GridItem>
           <ClusterDetailStatusVarieties cluster={cluster} clusterVarieties={clusterVarieties} />

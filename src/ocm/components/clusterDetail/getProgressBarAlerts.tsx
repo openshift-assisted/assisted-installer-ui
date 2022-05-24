@@ -24,7 +24,6 @@ export const getClusterProgressAlerts = (
   hosts: Host[],
   cluster: Cluster,
   olmOperators: MonitoredOperator[],
-  consoleUrl?: string,
 ): React.ReactElement => {
   const [totalMasters, failedMasters, pendingUserActionMasters] = hostsStatus(hosts, 'master');
   const [totalWorkers, failedWorkers, pendingUserActionWorkers] = hostsStatus(hosts, 'worker');
@@ -46,7 +45,7 @@ export const getClusterProgressAlerts = (
     return (
       <Stack>
         <RenderIf condition={cluster.status === 'installed'}>
-          <HostsInstallationSuccess consoleUrl={consoleUrl} />
+          <HostsInstallationSuccess />
         </RenderIf>
         <RenderIf condition={failedWorkers > 0}>
           <StackItem>
