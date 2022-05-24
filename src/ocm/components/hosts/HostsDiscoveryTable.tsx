@@ -11,7 +11,7 @@ import {
   isSNO,
   DeleteHostAction,
   TableToolbar,
-} from '../../../common';
+} from "../../../common";
 import { HostsTableModals, useHostsTable } from './use-hosts-table';
 import {
   countColumn,
@@ -27,10 +27,7 @@ import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
 import { ExpandComponentProps, TableRow } from '../../../common/components/hosts/AITable';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
 import { onDiskRoleType } from '../../../common/components/hosts/DiskRole';
-import { HostsService } from '../../services';
-import { updateHost } from '../../reducers/clusters';
 import { useDispatch } from 'react-redux';
-import { getErrorMessage, handleApiError } from '../../api/utils';
 import { sortable } from '@patternfly/react-table';
 import { ValidationsInfo } from '../../../common/types/hosts';
 import HardwareStatus from './HardwareStatus';
@@ -120,35 +117,6 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({
     ],
     [onEditHost, actionChecks.canEditHostname, actionChecks.canEditRole, onEditRole, cluster],
   );
-
-  React.useEffect(() => {
-    const forceRole = async () => {
-      if (cluster.hosts && cluster.hosts.length <= 3) {
-        try {
-          const promises = [];
-          for (const host of cluster.hosts) {
-            if (host.role !== 'master') {
-              promises.push(HostsService.updateRole(cluster.id, host.id, 'master'));
-            }
-          }
-          const data = (await Promise.all(promises)).map((promise) => promise.data);
-          data.forEach((host) => dispatch(updateHost(host)));
-
-          alerts
-            .filter((alert) => alert.title === 'Failed to set role')
-            .forEach((a) => removeAlert(a.key));
-        } catch (error) {
-          handleApiError(error, () => {
-            if (!alerts.map((alert) => alert.message).includes(getErrorMessage(error))) {
-              addAlert({ title: 'Failed to set role', message: getErrorMessage(error) });
-            }
-          });
-        }
-      }
-    };
-
-    forceRole();
-  }, [dispatch, cluster.id, cluster.hosts, alerts, addAlert, removeAlert]);
 
   const hosts = cluster.hosts || [];
   const paginationProps = usePagination(hosts.length);
