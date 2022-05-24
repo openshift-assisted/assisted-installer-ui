@@ -8,7 +8,7 @@ import {
   getFormikErrorFields,
   useFormikAutoSave,
 } from '../../../common';
-import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
+import ClusterWizardContext, { useClusterWizardContext } from "../clusterWizard/ClusterWizardContext";
 import ClusterWizardFooter from '../clusterWizard/ClusterWizardFooter';
 import { OperatorsStep } from './OperatorsStep';
 import ClusterWizardNavigation from '../clusterWizard/ClusterWizardNavigation';
@@ -33,7 +33,7 @@ export const getOperatorsInitialValues = (cluster: Cluster): OperatorsValues => 
 const OperatorsForm: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const { alerts } = useAlerts();
   const { errors, touched, isSubmitting, isValid } = useFormikContext<OperatorsValues>();
-  const { setCurrentStepId } = React.useContext(ClusterWizardContext);
+  const clusterWizardContext = useClusterWizardContext();
   const errorFields = getFormikErrorFields(errors, touched);
   const isAutoSaveRunning = useFormikAutoSave();
   const isNextDisabled =
@@ -49,8 +49,8 @@ const OperatorsForm: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
       errorFields={errorFields}
       isSubmitting={isSubmitting}
       isNextDisabled={isNextDisabled}
-      onBack={() => setCurrentStepId('cluster-details')}
-      onNext={() => setCurrentStepId('host-discovery')}
+      onNext={() => clusterWizardContext.moveNext()}
+      onBack={() => clusterWizardContext.moveBack()}
     />
   );
 

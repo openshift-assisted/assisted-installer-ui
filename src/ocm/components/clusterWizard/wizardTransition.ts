@@ -12,6 +12,7 @@ export type ClusterWizardStepsType =
   | 'static-ip-yaml-view'
   | 'static-ip-network-wide-configurations'
   | 'static-ip-host-configurations'
+  | 'operators'
   | 'host-discovery'
   | 'storage'
   | 'networking'
@@ -72,7 +73,6 @@ const hostDiscoveryStepValidationsMap: WizardStepValidationMap = {
   cluster: {
     groups: [],
     validationIds: [
-      'sufficient-masters-count',
       'odf-requirements-satisfied',
       'lso-requirements-satisfied',
       'cnv-requirements-satisfied',
@@ -154,6 +154,7 @@ export const wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardSt
   'static-ip-yaml-view': staticIpValidationsMap,
   'static-ip-network-wide-configurations': staticIpValidationsMap,
   'static-ip-host-configurations': staticIpValidationsMap,
+  operators: operatorsStepValidationsMap,
   'host-discovery': hostDiscoveryStepValidationsMap,
   storage: storageStepValidationsMap,
   networking: networkingStepValidationsMap,
@@ -174,6 +175,7 @@ export const canNextClusterDetails = ({ cluster }: TransitionProps): boolean =>
     cluster,
     cluster.hosts,
   ) === 'ready';
+
 export const canNextHostDiscovery = ({ cluster }: TransitionProps): boolean =>
   getWizardStepClusterStatus(
     'host-discovery',

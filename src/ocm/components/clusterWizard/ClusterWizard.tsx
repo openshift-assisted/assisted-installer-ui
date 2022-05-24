@@ -9,6 +9,7 @@ import Storage from './Storage';
 import StaticIp from './StaticIp';
 import classNames from 'classnames';
 import { WithErrorBoundary } from '../../../common/components/ErrorHandling/WithErrorBoundary';
+import Operators from "./Operators";
 type ClusterWizardProps = {
   cluster: Cluster;
   infraEnv: InfraEnv;
