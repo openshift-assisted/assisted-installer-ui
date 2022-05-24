@@ -1,0 +1,8 @@
+{
+  "version": "v1",
+  "packages": {
+    "openshift-assisted-ui-lib": {
+      "signature": "6ea22744ede185d337b0b570a3b07845"
+    }
+  }
+}

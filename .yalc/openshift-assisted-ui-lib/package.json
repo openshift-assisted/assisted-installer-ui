@@ -1,0 +1,104 @@
+{
+  "name": "openshift-assisted-ui-lib",
+  "version": "2.4.0",
+  "description": "React component library for the Bare Metal Installer",
+  "license": "Apache-2.0",
+  "repository": "openshift-assisted/assisted-ui-lib",
+  "main": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./index.css": "./dist/index.css",
+    "./cim": "./dist/cim/index.js",
+    "./ocm": "./dist/ocm/index.js"
+  },
+  "typesVersions": {
+    "*": {
+      "cim": [
+        "./dist/src/cim/index.d.ts"
+      ],
+      "ocm": [
+        "./dist/src/ocm/index.d.ts"
+      ]
+    }
+  },
+  "module": "dist/index.js",
+  "source": "src/index.ts",
+  "types": "dist/src/index.d.ts",
+  "engines": {
+    "node": ">=12.16"
+  },
+  "scripts": {
+    "clean": "rimraf dist",
+    "prebuild": "run-s clean test",
+    "build": "node ./scripts/esbuild/prod.js",
+    "start": "yarn clean && node ./scripts/esbuild/dev.js",
+    "sync-dist": "./scripts/sync-dist.sh",
+    "test": "run-s test:circular lint format:check",
+    "test:circular": "dpdm --warning false --tree false --exit-code circular:1 ./src/index.ts",
+    "lint": "eslint . --color",
+    "lint:fix": "yarn run lint --fix",
+    "format": "prettier --write '**/*.{json,md,scss,yaml,yml}'",
+    "format:check": "prettier --check '**/*.{json,md,scss,yaml,yml}'",
+    "update-api": "./scripts/update-api.sh ./src/common/api/swagger.yaml ./src/common/api/types.ts"
+  },
+  "peerDependencies": {
+    "@patternfly/react-code-editor": "^4.47.2",
+    "@patternfly/react-core": "^4.206.2",
+    "@patternfly/react-icons": "^4.57.2",
+    "@patternfly/react-styles": "^4.56.2",
+    "@patternfly/react-table": "^4.75.2",
+    "@patternfly/react-tokens": "^4.58.2",
+    "@reduxjs/toolkit": "^1.5",
+    "@sentry/browser": "^5.9 || ^6.0",
+    "axios": ">=0.19.2 <1.0.0",
+    "i18next": "^20.4.0 || ^21.0",
+    "i18next-browser-languagedetector": "^6.1.2",
+    "lodash": "^4.17.15",
+    "react": "^16.14.0 || ^17.0",
+    "react-dom": "^16.13.1 || ^17.0",
+    "react-i18next": "^11.11.4",
+    "react-monaco-editor": "^0.43.0",
+    "react-redux": "^7.2.0",
+    "react-router-dom": "^5.1.2",
+    "react-tagsinput": "3.19.x",
+    "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0",
+    "reselect": "^4.0.0",
+    "swr": ">=0.5.6 <2",
+    "uuid": "^8.1.0",
+    "yup": "^0.28.3"
+  },
+  "dependencies": {
+    "axios-case-converter": "^0.8.1",
+    "classnames": "^2.3.1",
+    "file-saver": "^2.0.2",
+    "filesize.js": "^2.0.0",
+    "formik": "2.2.6",
+    "fuse.js": "^6.4.6",
+    "human-date": "^1.4.0",
+    "humanize-plus": "^1.8.2",
+    "ip-address": "^7.1.0",
+    "is-cidr": "^4.0.2",
+    "is-in-subnet": "^3.1.0",
+    "js-yaml": "^4.1.0",
+    "prism-react-renderer": "^1.1.1",
+    "react-error-boundary": "^3.1.4",
+    "react-measure": "^2.5.2",
+    "unique-names-generator": "^4.2.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "react",
+    "facet-lib",
+    "openshift",
+    "assisted-ui",
+    "assisted-ui-lib",
+    "library"
+  ],
+  "resolutions": {
+    "@types/react": "17.0.30"
+  },
+  "yalcSig": "6ea22744ede185d337b0b570a3b07845"
+}

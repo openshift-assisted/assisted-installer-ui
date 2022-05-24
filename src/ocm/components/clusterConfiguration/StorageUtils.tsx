@@ -4,10 +4,10 @@ import {
   getHostRole,
   getInventory,
   Host,
-  hostStatus,
+  hostStatus, MonitoredOperator, OPERATOR_NAME_ODF,
   RoleCell,
-  stringToJSON,
-} from '../../../common';
+  stringToJSON
+} from "../../../common";
 import { TableRow } from './StorageAITable';
 import { getHostRowHardwareInfo } from '../../../common/components/hosts/hardwareInfo';
 import { ValidationsInfo } from '../../../common/types/hosts';
@@ -15,12 +15,12 @@ import HostPropertyValidationPopover from '../../../common/components/hosts/Host
 import { Flex, FlexItem, Stack, StackItem } from '@patternfly/react-core';
 import { UnknownIcon } from '@patternfly/react-icons';
 
-export const ODFUsageStatus = (host: Host): string => {
-  if (host.nodeLabels) {
-    console.log(host.nodeLabels);
-    return host.nodeLabels.toString();
+
+export const ODFUsageStatus = (host: Host, isCompact?: boolean): string => {
+  if (!isCompact && host.role === 'master') {
+    return 'Excluded for ODF';
   }
-  return '';
+  return 'Use ODF';
 };
 
 export const roleColumn = (schedulableMasters?: boolean): TableRow<Host> => {
@@ -64,7 +64,7 @@ export const numberOfDisks = (): TableRow<Host> => {
   };
 };
 
-export const ODFUsage = (): TableRow<Host> => {
+export const ODFUsage = (isCompact?: boolean): TableRow<Host> => {
   return {
     header: {
       title: 'ODF Usage',
@@ -77,7 +77,7 @@ export const ODFUsage = (): TableRow<Host> => {
       const inventory = getInventory(host);
       const disks = inventory.disks || [];
       return {
-        title: <> {ODFUsageStatus(host)} </>,
+        title: <> {ODFUsageStatus(host, isCompact)} </>,
         props: { 'data-testid': 'use-odf' },
         sortableValue: disks.length,
       };

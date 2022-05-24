@@ -160,12 +160,10 @@ export const getHostDiscoveryInitialValues = (cluster: Cluster): HostDiscoveryVa
 };
 
 export const getStorageInitialValues = (cluster: Cluster): StorageValues => {
-  const monitoredOperators = cluster.monitoredOperators || [];
-  const isOperatorEnabled = (name: RegExp | string) =>
-    !!monitoredOperators.find((operator) => operator.name?.match(name));
+  //DOTO (dchason): add initial values to node labeling
   return {
-    nodeLabeling: None,
-  };
+    nodeLabeling: '',
+  }
 };
 
 export function filterValidationsInfoByGroup(

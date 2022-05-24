@@ -5,6 +5,7 @@ import ReviewStep from '../clusterConfiguration/ReviewStep';
 import { useClusterWizardContext } from './ClusterWizardContext';
 import ClusterDetails from './ClusterDetails';
 import HostDiscovery from './HostDiscovery';
+import Storage from './Storage'
 import StaticIp from './StaticIp';
 import classNames from 'classnames';
 import { WithErrorBoundary } from '../../../common/components/ErrorHandling/WithErrorBoundary';

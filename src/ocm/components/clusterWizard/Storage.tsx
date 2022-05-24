@@ -1,5 +1,5 @@
 import React from 'react';
-import { StorageStep } from './StorageStep';
+import { StorageStep } from '../clusterConfiguration/StorageStep';
 import { Formik, FormikConfig, FormikProps } from 'formik';
 import {
   Cluster,
@@ -7,20 +7,20 @@ import {
   FormikAutoSave,
   ClusterWizardStep,
   useAlerts,
-  getHostDiscoveryInitialValues,
-} from '../../../common';
+  getHostDiscoveryInitialValues, getStorageInitialValues
+} from "../../../common";
 import { StorageValues } from '../../../common/types/clusters';
-import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
-import ClusterWizardFooter from '../clusterWizard/ClusterWizardFooter';
-
-import ClusterWizardNavigation from '../clusterWizard/ClusterWizardNavigation';
+import ClusterWizardContext from './ClusterWizardContext';
+import ClusterWizardFooter from './ClusterWizardFooter';
+import { useClusterWizardContext } from './ClusterWizardContext';
+import ClusterWizardNavigation from './ClusterWizardNavigation';
 
 const Storage: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   //const dispatch = useDispatch();
-  const { setCurrentStepId } = React.useContext(ClusterWizardContext);
+  const clusterWizardContext = useClusterWizardContext();
   const { clearAlerts } = useAlerts();
   const initialValues = React.useMemo(
-    () => getHostDiscoveryInitialValues(cluster),
+    () => getStorageInitialValues(cluster),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [], // just once, Formik does not reinitialize
   );
@@ -40,8 +40,8 @@ const Storage: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
             errorFields={errorFields}
             isSubmitting={isSubmitting}
             //isNextDisabled={dirty || !canNextHostDiscovery({ cluster })}
-            onNext={() => setCurrentStepId('networking')}
-            onBack={() => setCurrentStepId('host-discovery')}
+            onNext={() => clusterWizardContext.moveNext()}
+            onBack={() => clusterWizardContext.moveBack()}
           />
         );
 
