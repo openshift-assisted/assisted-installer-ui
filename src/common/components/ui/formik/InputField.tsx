@@ -24,6 +24,7 @@ const InputField: React.FC<
       inputError,
       description,
       labelInfo,
+      showErrorMessage = true,
       ...props
     },
     ref: React.Ref<HTMLInputElement>,
@@ -46,7 +47,7 @@ const InputField: React.FC<
             <HelperText fieldId={fieldId}>{helperText}</HelperText>
           )
         }
-        helperTextInvalid={errorMessage}
+        helperTextInvalid={showErrorMessage ? errorMessage : undefined}
         validated={isValid ? 'default' : 'error'}
         isRequired={isRequired}
         labelIcon={labelIcon}

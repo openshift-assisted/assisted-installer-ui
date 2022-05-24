@@ -1,5 +1,5 @@
 import React from 'react';
-import * as _ from 'lodash';
+import uniq from 'lodash/uniq';
 import { Grid, GridItem, Alert, AlertVariant, List, ListItem } from '@patternfly/react-core';
 
 import { ClusterWizardStepHeader } from '../../../common';
@@ -63,7 +63,7 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
     errors.push('Hostname localhost is forbidden.');
   }
 
-  if (_.uniq(usedHostnames).length !== usedHostnames.length) {
+  if (uniq(usedHostnames).length !== usedHostnames.length) {
     errors.push('Hostnames must be unique.');
   }
 

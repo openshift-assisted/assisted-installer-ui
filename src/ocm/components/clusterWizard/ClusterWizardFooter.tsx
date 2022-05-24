@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Alert, AlertGroup, AlertVariant } from '@patternfly/react-core';
 import {
@@ -12,27 +12,35 @@ import {
 } from '../../../common';
 import { routeBasePath } from '../../config/routeBaseBath';
 import { wizardStepsValidationsMap } from '../clusterWizard/wizardTransition';
-import ClusterWizardContext from '../clusterWizard/ClusterWizardContext';
+import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
 import ClusterWizardStepValidationsAlert from '../../../common/components/clusterWizard/ClusterWizardStepValidationsAlert';
 
 type ClusterValidationSectionProps = {
   cluster?: Cluster;
   errorFields?: string[];
+  alertTitle?: string;
+  alertContent?: string | null;
 };
 
-const ValidationSection = ({ cluster, errorFields = [] }: ClusterValidationSectionProps) => {
-  const { currentStepId } = React.useContext(ClusterWizardContext);
+const defaultAlertTitle = 'Provided cluster configuration is not valid';
+const ValidationSection = ({
+  cluster,
+  errorFields = [],
+  alertTitle,
+  alertContent,
+}: ClusterValidationSectionProps) => {
+  const { currentStepId } = useClusterWizardContext();
   const validationsInfo = cluster && selectClusterValidationsInfo(cluster);
+  let _alertContent = alertContent;
+  if (_alertContent === undefined) {
+    _alertContent = `The following fields are invalid or missing: 
+    ${errorFields.map((field: string) => CLUSTER_FIELD_LABELS[field] || field).join(', ')}.`;
+  }
   return (
     <AlertGroup>
       {!!errorFields.length && (
-        <Alert
-          variant={AlertVariant.danger}
-          title="Provided cluster configuration is not valid"
-          isInline
-        >
-          The following fields are invalid or missing:{' '}
-          {errorFields.map((field: string) => CLUSTER_FIELD_LABELS[field]).join(', ')}.
+        <Alert variant={AlertVariant.danger} title={alertTitle || defaultAlertTitle} isInline>
+          {_alertContent}
         </Alert>
       )}
       {cluster && (
@@ -52,13 +60,16 @@ type ClusterWizardFooterProps = WizardFooterGenericProps & {
   cluster?: Cluster;
   additionalActions?: React.ReactNode;
   errorFields?: string[];
+  alertTitle?: string;
+  alertContent?: string | null;
 };
 
 const ClusterWizardFooter = ({
   cluster,
   additionalActions,
   errorFields,
-
+  alertTitle,
+  alertContent,
   onCancel,
   ...rest
 }: ClusterWizardFooterProps) => {
@@ -71,7 +82,15 @@ const ClusterWizardFooter = ({
   );
 
   const alertsSection = alerts.length ? <Alerts /> : undefined;
-  const errorsSection = <ValidationSection cluster={cluster} errorFields={errorFields} />;
+
+  const errorsSection = (
+    <ValidationSection
+      cluster={cluster}
+      errorFields={errorFields}
+      alertTitle={alertTitle}
+      alertContent={alertContent}
+    />
+  );
 
   return (
     <WizardFooter

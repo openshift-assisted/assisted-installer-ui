@@ -83,6 +83,7 @@
     "is-in-subnet": "^3.1.0",
     "js-yaml": "^4.1.0",
     "prism-react-renderer": "^1.1.1",
+    "react-error-boundary": "^3.1.4",
     "react-measure": "^2.5.2",
     "unique-names-generator": "^4.2.0"
   },
@@ -122,7 +123,8 @@
     "redux-devtools-extension": "^2.13.8",
     "rimraf": "^3.0.2",
     "sw2dts": "^2.6.3",
-    "typescript": "^3.9.0"
+    "typescript": "^3.9.0",
+    "yalc": "^1.0.0-pre.53"
   },
   "files": [
     "dist"

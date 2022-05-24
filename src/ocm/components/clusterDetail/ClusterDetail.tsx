@@ -70,7 +70,6 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
               getEnabledHosts(cluster.hosts),
               cluster,
               getOlmOperators(monitoredOperators),
-              credentials?.consoleUrl,
             )}
           </GridItem>
           <GridItem span={6}></GridItem>

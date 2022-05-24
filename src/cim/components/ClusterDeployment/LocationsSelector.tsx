@@ -1,5 +1,5 @@
 import React from 'react';
-import * as _ from 'lodash';
+import countBy from 'lodash/countBy';
 import { MultiSelectField, PopoverIcon } from '../../../common';
 import { AGENT_LOCATION_LABEL_KEY, AGENT_NOLOCATION_VALUE } from '../common';
 import { AgentK8sResource } from '../../types';
@@ -30,7 +30,7 @@ const getNumOfHosts = (size: number) => {
 };
 
 const LocationsSelector: React.FC<{ agents: AgentK8sResource[] }> = ({ agents }) => {
-  const locations = _.countBy(
+  const locations = countBy(
     agents,
     ({ metadata }) => metadata?.labels?.[AGENT_LOCATION_LABEL_KEY] || AGENT_NOLOCATION_VALUE,
   );

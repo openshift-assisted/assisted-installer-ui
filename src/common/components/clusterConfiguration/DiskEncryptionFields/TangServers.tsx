@@ -16,7 +16,7 @@ export const TangServers: React.FC<{ isDisabled?: boolean }> = ({ isDisabled = f
             values.diskEncryptionTangServers.map((tang, index) => (
               <StackItem key={index}>
                 <RemovableField
-                  showRemoveButton={index === 0 || isDisabled}
+                  hideRemoveButton={index === 0 || isDisabled}
                   onRemove={() => remove(index)}
                 >
                   <div>

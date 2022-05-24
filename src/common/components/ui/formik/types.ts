@@ -4,6 +4,7 @@ import {
   FormSelectOptionProps,
   SelectOptionProps,
   TooltipProps,
+  RadioProps,
 } from '@patternfly/react-core';
 import { FieldValidator, FieldHelperProps } from 'formik';
 import { DropzoneProps, DropFileEventHandler } from 'react-dropzone';
@@ -28,6 +29,7 @@ export interface FieldProps {
   min?: number;
   max?: number;
   idPostfix?: string;
+  callFormikOnChange?: boolean;
 }
 
 export interface SelectFieldProps extends FieldProps {
@@ -62,6 +64,7 @@ export interface InputFieldProps extends FieldProps {
   onChange?: (event: React.FormEvent<HTMLInputElement>) => void;
   onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
   validate?: FieldValidator;
+  showErrorMessage?: boolean;
 }
 
 export interface NumberInputFieldProps extends FieldProps {
@@ -126,3 +129,5 @@ export interface CodeFieldProps extends FieldProps {
   language: CodeEditorProps['language'];
   description?: React.ReactNode;
 }
+
+export type RadioFieldProps = Optional<RadioProps, 'id'> & { callFormikOnChange?: boolean };

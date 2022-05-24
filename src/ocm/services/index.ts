@@ -5,4 +5,5 @@ export { default as HostDiscoveryService } from './HostDiscoveryService';
 export { default as InfraEnvsService } from './InfraEnvsService';
 export { default as DiscoveryImageFormService } from './DiscoveryImageFormService';
 export { default as DiskEncryptionService } from './DiskEncryptionService';
+export * from './types';
 export * as APIs from './apis';
