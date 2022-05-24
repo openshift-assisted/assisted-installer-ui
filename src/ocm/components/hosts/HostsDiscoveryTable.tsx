@@ -5,13 +5,12 @@ import {
   getSchedulableMasters,
   Cluster,
   Host,
-  useAlerts,
   HostsTableActions,
   stringToJSON,
   isSNO,
   DeleteHostAction,
   TableToolbar,
-} from "../../../common";
+} from '../../../common';
 import { HostsTableModals, useHostsTable } from './use-hosts-table';
 import {
   countColumn,
@@ -27,7 +26,6 @@ import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
 import { ExpandComponentProps, TableRow } from '../../../common/components/hosts/AITable';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
 import { onDiskRoleType } from '../../../common/components/hosts/DiskRole';
-import { useDispatch } from 'react-redux';
 import { sortable } from '@patternfly/react-table';
 import { ValidationsInfo } from '../../../common/types/hosts';
 import HardwareStatus from './HardwareStatus';
