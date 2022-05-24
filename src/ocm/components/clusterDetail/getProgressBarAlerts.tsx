@@ -46,7 +46,7 @@ export const getClusterProgressAlerts = (
     return (
       <Stack>
         <RenderIf condition={cluster.status === 'installed'}>
-          <HostsInstallationSuccess consoleUrl={consoleUrl} />
+          <HostsInstallationSuccess />
         </RenderIf>
         <RenderIf condition={failedWorkers > 0}>
           <StackItem>
