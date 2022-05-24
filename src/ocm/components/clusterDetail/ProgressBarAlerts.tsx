@@ -155,30 +155,11 @@ export const HostsInstallationFailed: React.FC<installationProgressWarningProps>
   );
 };
 
-export const HostsInstallationSuccess: React.FC<successInstallationProps> = ({ consoleUrl }) => {
+export const HostsInstallationSuccess: React.FC<successInstallationProps> = () => {
   return (
     <>
       &nbsp;
-      <Alert
-        isInline
-        variant="success"
-        title={'Installation completed successfully'}
-        actionLinks={
-          <>
-            <RenderIf condition={typeof consoleUrl !== undefined}>
-              <AlertActionLink
-                id="cluster-installation-logs-button"
-                onClick={() => window.open(consoleUrl, '_blank', 'noopener')}
-              >
-                Open web console
-              </AlertActionLink>
-            </RenderIf>
-            <AlertActionLink id="cluster-installation-feedback-button">
-              Send feedback
-            </AlertActionLink>
-          </>
-        }
-      >
+      <Alert isInline variant="success" title={'Installation completed successfully'}>
         {' '}
       </Alert>
     </>
