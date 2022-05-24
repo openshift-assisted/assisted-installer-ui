@@ -24,7 +24,6 @@ export const getClusterProgressAlerts = (
   hosts: Host[],
   cluster: Cluster,
   olmOperators: MonitoredOperator[],
-  consoleUrl?: string,
 ): React.ReactElement => {
   const [totalMasters, failedMasters, pendingUserActionMasters] = hostsStatus(hosts, 'master');
   const [totalWorkers, failedWorkers, pendingUserActionWorkers] = hostsStatus(hosts, 'worker');
