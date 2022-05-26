@@ -8,6 +8,7 @@ import {
   ValidationGroup as HostValidationGroup,
   Validation as HostValidation,
 } from '../../types/hosts';
+import { TangServer } from '../clusterConfiguration/DiskEncryptionFields/DiskEncryptionValues';
 import { WizardStepsValidationMap } from './validationsInfoUtils';
 
 export type ClusterDetailsValues = {
@@ -21,7 +22,7 @@ export type ClusterDetailsValues = {
   enableDiskEncryptionOnMasters: boolean;
   enableDiskEncryptionOnWorkers: boolean;
   diskEncryptionMode: DiskEncryption['mode'];
-  diskEncryptionTangServers: { url: string; thumbprint: string }[];
+  diskEncryptionTangServers: TangServer[];
   diskEncryption: DiskEncryption;
 };
 

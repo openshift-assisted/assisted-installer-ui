@@ -19,7 +19,7 @@ type AdvancedNetworkFieldsProps = {
 };
 
 const getNextworkLabelSuffix = (index: number, isDualStack: boolean) => {
-  return isDualStack ? `(${index === 0 ? 'IPv4' : 'IPv6'})` : '';
+  return isDualStack ? ` (${index === 0 ? 'IPv4' : 'IPv6'})` : '';
 };
 
 const IPv4PrefixHelperText =
