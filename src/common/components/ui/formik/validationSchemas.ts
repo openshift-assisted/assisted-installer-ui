@@ -9,10 +9,19 @@ import { ProxyFieldsType } from '../../../types';
 import { trimCommaSeparatedList, trimSshPublicKey } from './utils';
 import { ClusterNetwork, MachineNetwork, ServiceNetwork } from '../../../api/types';
 import { allSubnetsIPv4 } from '../../../selectors';
+import {
+  CLUSTER_NAME_VALIDATION_MESSAGES,
+  HOSTNAME_VALIDATION_MESSAGES,
+  LOCATION_VALIDATION_MESSAGES,
+  NAME_VALIDATION_MESSAGES,
+  UNIQUE_CLUSTER_NAME_VALIDATION_MESSAGES,
+} from './constants';
 
 const ALPHANUMBERIC_REGEX = /^[a-zA-Z0-9]+$/;
 const NAME_START_END_REGEX = /^[a-z0-9](.*[a-z0-9])?$/;
 const NAME_CHARS_REGEX = /^[a-z0-9-.]*$/;
+const CLUSTER_NAME_CHARS_REGEX = /^[a-z0-9-]*$/;
+const CLUSTER_NAME_REGEX = /^[a-z0-9](.*[a-z0-9])?$/;
 const SSH_PUBLIC_KEY_REGEX =
   /^(ssh-rsa|ssh-ed25519|ecdsa-[-a-z0-9]*) AAAA[0-9A-Za-z+/]+[=]{0,3}( .+)?$/;
 const DNS_NAME_REGEX = /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/;
@@ -33,23 +42,30 @@ export const nameValidationSchema = (
   validateUniqueName?: boolean,
 ) =>
   Yup.string()
-    .matches(NAME_START_END_REGEX, {
-      message:
-        'Name must consist of lower-case letters, numbers and hyphens. It must start and end with a letter or number.',
+    .required('Required')
+    .matches(CLUSTER_NAME_CHARS_REGEX, {
+      message: CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_VALUE,
       excludeEmptyString: true,
     })
-    .min(2, 'Must contain at least 2 characters.')
-    .max(54, 'Cannot be longer than 54 characters.')
-    .required('Required')
+    .matches(CLUSTER_NAME_REGEX, {
+      message: CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_START_END,
+      excludeEmptyString: true,
+    })
+    .min(1, CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_LENGTH)
+    .max(54, CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_LENGTH)
     .when('useRedHatDnsService', {
       is: true,
-      then: Yup.string().test('is-name-unique', 'The name is already taken.', (value: string) => {
-        const clusterFullName = `${value}.${baseDnsDomain}`;
-        return !value || !usedClusterNames.includes(clusterFullName);
-      }),
+      then: Yup.string().test(
+        'is-name-unique',
+        UNIQUE_CLUSTER_NAME_VALIDATION_MESSAGES.NOT_UNIQUE,
+        (value: string) => {
+          const clusterFullName = `${value}.${baseDnsDomain}`;
+          return !value || !usedClusterNames.includes(clusterFullName);
+        },
+      ),
       otherwise: Yup.string().test(
         'is-name-unique',
-        'The name is already taken.',
+        UNIQUE_CLUSTER_NAME_VALIDATION_MESSAGES.NOT_UNIQUE,
         (value: string) => {
           // in CIM cluster name is ClusterDeployment CR name which must be unique
           return validateUniqueName ? !value || !usedClusterNames.includes(value) : true;
@@ -302,18 +318,6 @@ export const hostPrefixValidationSchema = ({
   return Yup.number().required(requiredText);
 };
 
-export const NAME_VALIDATION_MESSAGES = {
-  INVALID_LENGTH: '1-253 characters',
-  NOT_UNIQUE: 'Must be unique',
-  INVALID_VALUE: 'Use lowercase alphanumberic characters, dot (.) or hyphen (-)',
-  INVALID_START_END: 'Must start and end with an lowercase alphanumeric character',
-};
-
-export const HOSTNAME_VALIDATION_MESSAGES = {
-  ...NAME_VALIDATION_MESSAGES,
-  LOCALHOST_ERR: 'Cannot be the word "localhost" or "localhost.localdomain"',
-};
-
 export const richNameValidationSchema = (usedNames: string[], origName?: string) =>
   Yup.string()
     .min(1, NAME_VALIDATION_MESSAGES.INVALID_LENGTH)
@@ -442,12 +446,6 @@ export const bmcAddressValidationSchema = Yup.string().matches(BMC_REGEX, {
   message: 'Value "${value}" is not valid BMC address.', // eslint-disable-line no-template-curly-in-string
   excludeEmptyString: true,
 });
-
-export const LOCATION_VALIDATION_MESSAGES = {
-  INVALID_LENGTH: '1-63 characters',
-  INVALID_VALUE: 'Use alphanumberic characters, dot (.), underscore (_) or hyphen (-)',
-  INVALID_START_END: 'Must start and end with an alphanumeric character',
-};
 
 export const locationValidationSchema = Yup.string()
   .min(1, LOCATION_VALIDATION_MESSAGES.INVALID_LENGTH)

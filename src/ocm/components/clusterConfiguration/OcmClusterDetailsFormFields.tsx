@@ -7,15 +7,18 @@ import { HostsNetworkConfigurationControlGroup } from './HostsNetworkConfigurati
 import {
   CheckboxField,
   ClusterDetailsValues,
+  CLUSTER_NAME_VALIDATION_MESSAGES,
   InputField,
   isSNO,
   ManagedDomain,
   OpenshiftVersionOptionType,
   OpenShiftVersionSelect,
   PullSecret,
+  RichInputField,
   SelectField,
   SNOControlGroup,
   StaticTextField,
+  UNIQUE_CLUSTER_NAME_VALIDATION_MESSAGES,
 } from '../../../common';
 import DiskEncryptionControlGroup from '../../../common/components/clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
 
@@ -69,12 +72,17 @@ export const OcmClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps
   // TODO(mlibra): Disable fields based on props passed from the caller context. In CIM, the name or domain can not be edited.
   return (
     <Form id="wizard-cluster-details__form">
-      <InputField
+      <RichInputField
         ref={nameInputRef}
         label="Cluster name"
         name="name"
         placeholder={isOcm ? '' : 'Enter cluster name'}
         isRequired
+        richValidationMessages={
+          values.useRedHatDnsService || isOcm
+            ? UNIQUE_CLUSTER_NAME_VALIDATION_MESSAGES
+            : CLUSTER_NAME_VALIDATION_MESSAGES
+        }
       />
       {!!managedDomains.length && toggleRedHatDnsService && (
         <CheckboxField
