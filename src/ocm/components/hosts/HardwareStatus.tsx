@@ -10,7 +10,6 @@ import {
 import { ValidationsInfo } from '../../../common/types/hosts';
 import { wizardStepsValidationsMap } from '../clusterWizard/wizardTransition';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
-import { UpdateDay2ApiVipDialogToggle } from './UpdateDay2ApiVipDialogToggle';
 
 type HardwareStatusProps = {
   host: Host;
@@ -44,7 +43,6 @@ const HardwareStatus: React.FC<HardwareStatusProps> = (props) => {
       status={status}
       validationsInfo={validationsInfo}
       AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
-      UpdateDay2ApiVipDialogToggleComponent={UpdateDay2ApiVipDialogToggle}
     />
   );
 };
