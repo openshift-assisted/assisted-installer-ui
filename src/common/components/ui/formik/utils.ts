@@ -79,3 +79,11 @@ export const getRichTextValidation =
       );
     }
   };
+
+export const getFormikArrayItemFieldName = (arrayFieldName: string, idx: number) => {
+  return `${arrayFieldName}[${idx}]`;
+};
+
+export const getFormikObjectItemFieldName = (objectFieldName: string, idx: number) => {
+  return `${objectFieldName}.${idx}`;
+};

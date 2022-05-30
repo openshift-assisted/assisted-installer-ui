@@ -14,7 +14,7 @@ import { Cluster } from '../../../common/api/types';
 import { useFeatureSupportLevel } from '../../../common/components/featureSupportLevels';
 import { DetailItem } from '../../../common';
 import { getLimitedFeatureSupportLevels } from '../../../common/components/featureSupportLevels/utils';
-import { captureException } from '../../sentry';
+import { WithErrorBoundary } from '../../../common/components/ErrorHandling/WithErrorBoundary';
 
 export type SupportLevelSummary = {
   unsupportedVms: boolean;
@@ -108,18 +108,21 @@ export const getFeatureSupportLevelTitle = (fullySupported: boolean): string => 
   return `Cluster support level: ${supportLevel}`;
 };
 
-export const ClusterFeatureSupportLevelsDetailItem: React.FC<{ cluster: Cluster }> = ({
-  cluster,
-}) => {
-  const featureSupportLevelData = useFeatureSupportLevel();
+type ItemProps = { cluster: Cluster };
 
-  const clusterFeatureSupportLevels = React.useMemo(() => {
-    return getLimitedFeatureSupportLevels(cluster, featureSupportLevelData, captureException);
-  }, [cluster, featureSupportLevelData]);
+const Item = ({ cluster }: ItemProps) => {
+  const featureSupportLevelData = useFeatureSupportLevel();
+  const clusterFeatureSupportLevels = React.useMemo(
+    () => getLimitedFeatureSupportLevels(cluster, featureSupportLevelData),
+    [cluster, featureSupportLevelData],
+  );
 
   const fullySupported: boolean = React.useMemo<boolean>(() => {
     return !!clusterFeatureSupportLevels && Object.keys(clusterFeatureSupportLevels).length === 0;
   }, [clusterFeatureSupportLevels]);
+  if (!clusterFeatureSupportLevels) {
+    return null;
+  }
   if (clusterFeatureSupportLevels) {
     return (
       <DetailItem
@@ -138,4 +141,9 @@ export const ClusterFeatureSupportLevelsDetailItem: React.FC<{ cluster: Cluster 
   return null;
 };
 
+const ClusterFeatureSupportLevelsDetailItem = ({ ...props }: ItemProps) => (
+  <WithErrorBoundary title="Failed to load feature support levels review">
+    <Item {...props}></Item>
+  </WithErrorBoundary>
+);
 export default ClusterFeatureSupportLevelsDetailItem;

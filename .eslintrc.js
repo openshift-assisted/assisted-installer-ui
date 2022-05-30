@@ -56,6 +56,13 @@ module.exports = {
             },
           },
         ],
+        'no-restricted-imports': [
+          'error',
+          {
+            name: 'lodash',
+            message: 'Please use lodash/module instead.',
+          },
+        ],
         '@typescript-eslint/no-explicit-any': [
           'warn',
           {

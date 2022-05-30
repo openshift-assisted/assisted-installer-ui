@@ -1,20 +1,21 @@
 import React from 'react';
-import { Cluster } from '../../../common';
+import { Cluster, InfraEnv, InfraEnvUpdateParams, LoadingState } from '../../../common';
 import NetworkConfigurationPage from '../clusterConfiguration/networkConfiguration/NetworkConfigurationForm';
 import ReviewStep from '../clusterConfiguration/ReviewStep';
-import ClusterWizardContext from './ClusterWizardContext';
-import { ClusterWizardStepsType, getClusterWizardFirstStep } from './wizardTransition';
+import { useClusterWizardContext } from './ClusterWizardContext';
 import ClusterDetails from './ClusterDetails';
 import HostDiscovery from './HostDiscovery';
-
+import StaticIp from './StaticIp';
+import classNames from 'classnames';
+import { WithErrorBoundary } from '../../../common/components/ErrorHandling/WithErrorBoundary';
 type ClusterWizardProps = {
   cluster: Cluster;
+  infraEnv: InfraEnv;
+  updateInfraEnv: (infraEnvUpdateParams: InfraEnvUpdateParams) => Promise<InfraEnv>;
 };
 
-const ClusterWizard: React.FC<ClusterWizardProps> = ({ cluster }) => {
-  const [currentStepId, setCurrentStepId] = React.useState<ClusterWizardStepsType>(() =>
-    getClusterWizardFirstStep(cluster.status),
-  );
+const ClusterWizard = ({ cluster, infraEnv, updateInfraEnv }: ClusterWizardProps) => {
+  const { currentStepId } = useClusterWizardContext();
 
   const renderCurrentStep = React.useCallback(() => {
     switch (currentStepId) {
@@ -24,18 +25,22 @@ const ClusterWizard: React.FC<ClusterWizardProps> = ({ cluster }) => {
         return <NetworkConfigurationPage cluster={cluster} />;
       case 'review':
         return <ReviewStep cluster={cluster} />;
+      case 'static-ip-host-configurations':
+      case 'static-ip-network-wide-configurations':
+      case 'static-ip-yaml-view':
+        return <StaticIp cluster={cluster} infraEnv={infraEnv} updateInfraEnv={updateInfraEnv} />;
       case 'cluster-details':
       default:
-        return <ClusterDetails cluster={cluster} />;
+        return <ClusterDetails cluster={cluster} infraEnv={infraEnv} />;
     }
-  }, [currentStepId, cluster]);
-
+  }, [currentStepId, cluster, infraEnv, updateInfraEnv]);
+  if (!currentStepId) {
+    return <LoadingState />;
+  }
   return (
-    <>
-      <ClusterWizardContext.Provider value={{ currentStepId, setCurrentStepId }}>
-        <div className="pf-c-wizard cluster-wizard">{renderCurrentStep()}</div>
-      </ClusterWizardContext.Provider>
-    </>
+    <WithErrorBoundary>
+      <div className={classNames('pf-c-wizard', 'cluster-wizard')}>{renderCurrentStep()}</div>
+    </WithErrorBoundary>
   );
 };
 

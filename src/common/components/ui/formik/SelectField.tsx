@@ -17,6 +17,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
   getHelperText,
   idPostfix,
   labelIcon,
+  callFormikOnChange = true,
   ...props
 }) => {
   const [field, { touched, error }] = useField(props.name);
@@ -44,7 +45,8 @@ const SelectField: React.FC<SelectFieldProps> = ({
         isRequired={isRequired}
         aria-describedby={`${fieldId}-helper`}
         onChange={(value, event) => {
-          field.onChange(event);
+          //customHandleChange enables calling formik change handler explicitly, useful for example to have the previous value
+          callFormikOnChange && field.onChange(event);
           onChange && onChange(event);
         }}
       >
