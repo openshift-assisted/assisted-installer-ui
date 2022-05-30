@@ -10,6 +10,7 @@ import {
   ClusterWizardStepHeader,
   getClusterDetailsValidationSchema,
   ClusterDetailsFormFields,
+  getRichTextValidation,
 } from '../../../common';
 import { Grid, GridItem } from '@patternfly/react-core';
 import { canNextClusterDetails } from './wizardTransition';
@@ -85,7 +86,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={validationSchema}
+      validate={getRichTextValidation(validationSchema)}
       onSubmit={handleSubmit}
     >
       {({ submitForm, isSubmitting, isValid, dirty, setFieldValue, errors, touched }) => {
