@@ -100,12 +100,7 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({
   const content = React.useMemo(
     () => [
       hostnameColumn(onEditHost, undefined, actionChecks.canEditHostname),
-      roleColumn(
-        actionChecks.canEditRole,
-        onEditRole,
-        getSchedulableMasters(cluster),
-        !isSNO(cluster),
-      ),
+      roleColumn(actionChecks.canEditRole, onEditRole, getSchedulableMasters(cluster)),
       hardwareStatusColumn(onEditHost),
       discoveredAtColumn,
       cpuCoresColumn,

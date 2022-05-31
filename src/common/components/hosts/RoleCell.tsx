@@ -1,4 +1,4 @@
-import { DropdownProps, Tooltip } from '@patternfly/react-core';
+import { DropdownProps } from '@patternfly/react-core';
 import React from 'react';
 import { Host, HostUpdateParams } from '../../api';
 import RoleDropdown from './RoleDropdown';
@@ -18,15 +18,10 @@ const RoleCell: React.FC<RoleCellProps> = ({
   role,
   readonly = false,
   onEditRole,
-  displayTooltip,
   position,
 }) =>
   !readonly && onEditRole ? (
     <RoleDropdown host={host} onEditRole={onEditRole} current={role} position={position} />
-  ) : displayTooltip ? (
-    <Tooltip content={'The role will be editable when the host status is valid.'}>
-      <span>{role}</span>
-    </Tooltip>
   ) : (
     <span>{role}</span>
   );
