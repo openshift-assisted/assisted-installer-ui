@@ -51,23 +51,7 @@ export const canReset = (clusterStatus: Cluster['status'], status: Host['status'
   ['error', 'installing-pending-user-action'].includes(status);
 
 export const canEditRole = (cluster: Cluster, hostStatus: Host['status']): boolean =>
-  !isSNO(cluster) &&
-  !!cluster.totalHostCount &&
-  cluster.totalHostCount > 3 &&
-  ['pending-for-input', 'insufficient', 'ready'].includes(cluster.status) &&
-  [
-    'discovering',
-    'discovering-unbound',
-    'known',
-    'known-unbound',
-    'disconnected',
-    'disconnected-unbound',
-    'disabled',
-    'disabled-unbound',
-    'insufficient',
-    'insufficient-unbound',
-    'pending-for-input',
-  ].includes(hostStatus);
+  !isSNO(cluster) && canEditHost(cluster.status, hostStatus);
 
 export const canEditHost = (clusterStatus: Cluster['status'], status: Host['status']) =>
   ['pending-for-input', 'insufficient', 'ready'].includes(clusterStatus) &&
