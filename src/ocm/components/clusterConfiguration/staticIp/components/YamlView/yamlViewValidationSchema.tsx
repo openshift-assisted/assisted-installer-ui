@@ -57,7 +57,8 @@ const macInterfaceMapValidationSchema = Yup.array<MacInterfaceMap>().of(
       .concat(getUniqueValidationSchema(getAllMacAddresses)),
     logicalNicName: Yup.string()
       .required(requiredMsg)
-      .concat(getUniqueValidationSchema(getInterfaceNamesInCurrentHost)),
+      .concat(getUniqueValidationSchema(getInterfaceNamesInCurrentHost))
+      .max(15, 'Interface name must be 15 characters at most.'),
   }),
 );
 
