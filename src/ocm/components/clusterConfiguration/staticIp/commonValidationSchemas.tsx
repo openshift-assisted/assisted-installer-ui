@@ -2,6 +2,16 @@ import { Address4, Address6 } from 'ip-address';
 import { isInSubnet } from 'is-in-subnet';
 import * as Yup from 'yup';
 
+const LOCAL_HOST_IP = {
+  ipv4: '127.0.0.0',
+  ipv6: '::1',
+};
+
+const CATCH_ALL_IP = {
+  ipv4: '0.0.0.0',
+  ipv6: '0000::',
+};
+
 export type UniqueStringArrayExtractor<FormValues> = (
   values: FormValues,
   context: Yup.TestContext,
@@ -47,6 +57,20 @@ export const getIpAddressValidationSchema = (protocolVersion: 'ipv4' | 'ipv6') =
       }
       return true;
     },
+  );
+};
+
+export const isNotLocalHostIPAddress = () => {
+  return Yup.string().notOneOf(
+    [LOCAL_HOST_IP.ipv4, LOCAL_HOST_IP.ipv6],
+    'Provided IP address is not a correct address for an interface',
+  );
+};
+
+export const isNotCatchAllIPAddress = () => {
+  return Yup.string().notOneOf(
+    [CATCH_ALL_IP.ipv4, CATCH_ALL_IP.ipv6],
+    'Provided IP address is not a correct address for an interface',
   );
 };
 
