@@ -98,11 +98,12 @@ export const roleColumn = (
         ? (role: HostUpdateParams['hostRole']) => onEditRole(host, role)
         : undefined;
       const hostRole = getHostRole(host, schedulableMasters);
+      const isRoleEditable = canEditRole?.();
       return {
         title: (
           <RoleCell
             host={host}
-            readonly={!canEditRole?.(host)}
+            readonly={!isRoleEditable}
             role={hostRole}
             onEditRole={editRole}
             position={position}
