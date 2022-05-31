@@ -24,7 +24,7 @@ const RoleCell: React.FC<RoleCellProps> = ({
   !readonly && onEditRole ? (
     <RoleDropdown host={host} onEditRole={onEditRole} current={role} position={position} />
   ) : displayTooltip ? (
-    <Tooltip content={'To make the role editable, 4 or more hosts need to be discovered.'}>
+    <Tooltip content={'The role will be editable when the host status is valid.'}>
       <span>{role}</span>
     </Tooltip>
   ) : (
