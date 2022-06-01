@@ -23,6 +23,7 @@ import ResetClusterModal from './ResetClusterModal';
 import { FeatureSupportLevelProvider } from '../featureSupportLevels';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { SentryErrorMonitorContextProvider } from '../SentryErrorMonitorContextProvider';
+import ClusterWizardContextProvider from '../clusterWizard/ClusterWizardContextProvider';
 
 type AssistedInstallerDetailCardProps = {
   aiClusterId: string;
@@ -118,7 +119,9 @@ const AssistedInstallerDetailCard: React.FC<AssistedInstallerDetailCardProps> = 
   let content;
   if (['insufficient', 'ready', 'pending-for-input'].includes(cluster.status)) {
     content = (
-      <ClusterWizard cluster={cluster} infraEnv={infraEnv} updateInfraEnv={updateInfraEnv} />
+      <ClusterWizardContextProvider cluster={cluster} infraEnv={infraEnv}>
+        <ClusterWizard cluster={cluster} infraEnv={infraEnv} updateInfraEnv={updateInfraEnv} />
+      </ClusterWizardContextProvider>
     );
   } else {
     content = <ClusterInstallationProgressCard cluster={cluster} />;
