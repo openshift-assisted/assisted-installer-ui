@@ -86,7 +86,7 @@ export const isNotLocalHostIPAddress = (protocolVersion: 'ipv4' | 'ipv6') => {
           }
         }
       } catch (e) {
-        return false;
+        return true;
       }
       return true;
     },
@@ -112,7 +112,7 @@ export const isNotCatchAllIPAddress = (protocolVersion: 'ipv4' | 'ipv6') => {
           }
         }
       } catch (e) {
-        return false;
+        return true;
       }
       return true;
     },
