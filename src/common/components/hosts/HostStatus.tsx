@@ -7,8 +7,6 @@ import {
   FlexItem,
   Flex,
   ButtonProps,
-  Stack,
-  StackItem,
 } from '@patternfly/react-core';
 import { PopoverProps } from '@patternfly/react-core/dist/js/components/Popover/Popover';
 import hdate from 'human-date';
@@ -215,16 +213,12 @@ const HostStatus: React.FC<HostStatusProps> = ({
       {<FlexItem>{icon || <UnknownIcon />}</FlexItem>}
 
       <Flex direction={{ default: 'column' }} spaceItems={{ default: 'spaceItemsXs' }}>
-        {host.progress?.currentStage && !sublabel && !noPopover ? (
+        {!children && !sublabel && !noPopover ? (
           <WithHostStatusPopover {...popoverProps}>{titleWithProgress}</WithHostStatusPopover>
         ) : (
-          <FlexItem>
-            <Stack>
-              <StackItem>{titleWithProgress}</StackItem>
-              {children && <StackItem>{children}</StackItem>}
-            </Stack>
-          </FlexItem>
+          <FlexItem>{titleWithProgress}</FlexItem>
         )}
+        {children && <FlexItem>{children}</FlexItem>}
         {sublabel && (
           <FlexItem
             className="pf-u-font-size-xs"
