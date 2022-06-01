@@ -58,7 +58,8 @@ const macInterfaceMapValidationSchema = Yup.array<MacInterfaceMap>().of(
     logicalNicName: Yup.string()
       .required(requiredMsg)
       .concat(getUniqueValidationSchema(getInterfaceNamesInCurrentHost))
-      .max(15, 'Interface name must be 15 characters at most.'),
+      .max(15, 'Interface name must be 15 characters at most.')
+      .matches(/^\S+$/, 'Interface name can not contain spaces.'),
   }),
 );
 
