@@ -76,17 +76,30 @@ export const getClusterDetailsInitialValues = ({
   };
 };
 
-export const getClusterDetailsValidationSchema = (
-  usedClusterNames: string[],
-  featureSupportLevels: FeatureSupportLevelData,
-  pullSecretSet?: boolean,
-  ocpVersions?: OpenshiftVersionOptionType[],
-  validateUniqueName?: boolean,
-) =>
+export const getClusterDetailsValidationSchema = ({
+  usedClusterNames,
+  featureSupportLevels,
+  pullSecretSet,
+  ocpVersions,
+  validateUniqueName,
+  isOcm,
+}: {
+  usedClusterNames: string[];
+  featureSupportLevels: FeatureSupportLevelData;
+  pullSecretSet?: boolean;
+  ocpVersions?: OpenshiftVersionOptionType[];
+  validateUniqueName?: boolean;
+  isOcm?: boolean;
+}) =>
   Yup.lazy<{ baseDnsDomain: string }>((values) => {
     if (pullSecretSet) {
       return Yup.object({
-        name: nameValidationSchema(usedClusterNames, values.baseDnsDomain, validateUniqueName),
+        name: nameValidationSchema(
+          usedClusterNames,
+          values.baseDnsDomain,
+          validateUniqueName,
+          isOcm,
+        ),
         baseDnsDomain: dnsNameValidationSchema.required('Required'),
       });
     }

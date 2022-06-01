@@ -71,13 +71,13 @@ export const useDetailsFormik = ({
   );
   const validationSchema = React.useMemo(
     () =>
-      getClusterDetailsValidationSchema(
+      getClusterDetailsValidationSchema({
         usedClusterNames,
         featureSupportLevels,
-        true,
+        pullSecretSet: true,
         ocpVersions,
-        true,
-      ),
+        validateUniqueName: true,
+      }),
     [usedClusterNames, ocpVersions, featureSupportLevels],
   );
 

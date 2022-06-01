@@ -89,12 +89,13 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
     [cluster, pullSecret, managedDomains, ocpVersions, infraEnv],
   );
 
-  const validationSchema = getClusterDetailsValidationSchema(
+  const validationSchema = getClusterDetailsValidationSchema({
     usedClusterNames,
     featureSupportLevels,
-    cluster?.pullSecretSet,
+    pullSecretSet: cluster?.pullSecretSet,
     ocpVersions,
-  );
+    isOcm: true,
+  });
 
   return (
     <Formik

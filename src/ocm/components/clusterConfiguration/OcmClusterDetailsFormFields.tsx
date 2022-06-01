@@ -7,7 +7,6 @@ import { HostsNetworkConfigurationControlGroup } from './HostsNetworkConfigurati
 import {
   CheckboxField,
   ClusterDetailsValues,
-  CLUSTER_NAME_VALIDATION_MESSAGES,
   InputField,
   isSNO,
   ManagedDomain,
@@ -18,7 +17,8 @@ import {
   SelectField,
   SNOControlGroup,
   StaticTextField,
-  UNIQUE_CLUSTER_NAME_VALIDATION_MESSAGES,
+  OCM_CLUSTER_NAME_VALIDATION_MESSAGES,
+  UNIQUE_OCM_CLUSTER_NAME_VALIDATION_MESSAGES,
 } from '../../../common';
 import DiskEncryptionControlGroup from '../../../common/components/clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
 
@@ -79,9 +79,9 @@ export const OcmClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps
         placeholder={isOcm ? '' : 'Enter cluster name'}
         isRequired
         richValidationMessages={
-          values.useRedHatDnsService || isOcm
-            ? UNIQUE_CLUSTER_NAME_VALIDATION_MESSAGES
-            : CLUSTER_NAME_VALIDATION_MESSAGES
+          useRedHatDnsService
+            ? UNIQUE_OCM_CLUSTER_NAME_VALIDATION_MESSAGES
+            : OCM_CLUSTER_NAME_VALIDATION_MESSAGES
         }
       />
       {!!managedDomains.length && toggleRedHatDnsService && (

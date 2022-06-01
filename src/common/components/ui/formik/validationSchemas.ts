@@ -14,7 +14,6 @@ import {
   HOSTNAME_VALIDATION_MESSAGES,
   LOCATION_VALIDATION_MESSAGES,
   NAME_VALIDATION_MESSAGES,
-  UNIQUE_CLUSTER_NAME_VALIDATION_MESSAGES,
 } from './constants';
 
 const ALPHANUMBERIC_REGEX = /^[a-zA-Z0-9]+$/;
@@ -40,6 +39,7 @@ export const nameValidationSchema = (
   usedClusterNames: string[],
   baseDnsDomain = '',
   validateUniqueName?: boolean,
+  isOcm = false,
 ) =>
   Yup.string()
     .required('Required')
@@ -51,13 +51,23 @@ export const nameValidationSchema = (
       message: CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_START_END,
       excludeEmptyString: true,
     })
-    .min(1, CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_LENGTH)
-    .max(54, CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_LENGTH)
+    .min(
+      isOcm ? 1 : 2,
+      isOcm
+        ? CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_LENGTH_OCM
+        : CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_LENGTH_ACM,
+    )
+    .max(
+      54,
+      isOcm
+        ? CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_LENGTH_OCM
+        : CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_LENGTH_ACM,
+    )
     .when('useRedHatDnsService', {
       is: true,
       then: Yup.string().test(
         'is-name-unique',
-        UNIQUE_CLUSTER_NAME_VALIDATION_MESSAGES.NOT_UNIQUE,
+        CLUSTER_NAME_VALIDATION_MESSAGES.NOT_UNIQUE,
         (value: string) => {
           const clusterFullName = `${value}.${baseDnsDomain}`;
           return !value || !usedClusterNames.includes(clusterFullName);
@@ -65,7 +75,7 @@ export const nameValidationSchema = (
       ),
       otherwise: Yup.string().test(
         'is-name-unique',
-        UNIQUE_CLUSTER_NAME_VALIDATION_MESSAGES.NOT_UNIQUE,
+        CLUSTER_NAME_VALIDATION_MESSAGES.NOT_UNIQUE,
         (value: string) => {
           // in CIM cluster name is ClusterDeployment CR name which must be unique
           return validateUniqueName ? !value || !usedClusterNames.includes(value) : true;
