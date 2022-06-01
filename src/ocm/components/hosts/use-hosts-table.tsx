@@ -160,7 +160,7 @@ export const useHostsTable = (cluster: Cluster) => {
 
   const actionChecks = React.useMemo(
     () => ({
-      canEditRole: (host: Host) => canEditRoleUtil(cluster, host.status),
+      canEditRole: () => canEditRoleUtil(cluster),
       canInstallHost: (host: Host) => canInstallHostUtil(cluster, host.status),
       canEditDisks: (host: Host) => canEditDisksUtil(cluster.status, host.status),
       canEnable: (host: Host) => canEnableUtil(cluster.status, host.status),

@@ -90,13 +90,7 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
         agents: matchingAgents,
         wizardStepId: 'hosts-selection',
       }),
-      roleColumn(
-        actions.canEditRole,
-        actions.onEditRole,
-        undefined,
-        undefined,
-        addAll ? 'left' : 'right',
-      ),
+      roleColumn(actions.canEditRole, actions.onEditRole, undefined, addAll ? 'left' : 'right'),
       ...(addAll ? [cpuCoresColumn, memoryColumn, disksColumn] : []),
     ];
   }, [
