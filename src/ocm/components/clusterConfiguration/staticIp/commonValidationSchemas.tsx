@@ -60,17 +60,62 @@ export const getIpAddressValidationSchema = (protocolVersion: 'ipv4' | 'ipv6') =
   );
 };
 
-export const isNotLocalHostIPAddress = () => {
-  return Yup.string().notOneOf(
-    [LOCAL_HOST_IP.ipv4, LOCAL_HOST_IP.ipv6],
-    'Provided IP address is not a correct address for an interface',
+export const compareIPV6Addresses = (address1: Address6, address2: Address6) => {
+  if (JSON.stringify(address1.toByteArray()) === JSON.stringify(address2.toByteArray())) {
+    return true;
+  }
+  return false;
+};
+
+export const isNotLocalHostIPAddress = (protocolVersion: 'ipv4' | 'ipv6') => {
+  return Yup.string().test(
+    'is-local-host',
+    `Provided IP address is not a correct address for an interface.`,
+    function (value) {
+      if (!value) {
+        return true;
+      }
+      try {
+        if (protocolVersion === 'ipv6') {
+          if (compareIPV6Addresses(new Address6(LOCAL_HOST_IP.ipv6), new Address6(value))) {
+            return false;
+          }
+        } else {
+          if (value === LOCAL_HOST_IP.ipv4) {
+            return false;
+          }
+        }
+      } catch (e) {
+        return false;
+      }
+      return true;
+    },
   );
 };
 
-export const isNotCatchAllIPAddress = () => {
-  return Yup.string().notOneOf(
-    [CATCH_ALL_IP.ipv4, CATCH_ALL_IP.ipv6],
-    'Provided IP address is not a correct address for an interface',
+export const isNotCatchAllIPAddress = (protocolVersion: 'ipv4' | 'ipv6') => {
+  return Yup.string().test(
+    'is-catch-all',
+    `Provided IP address is not a correct address for an interface.`,
+    function (value) {
+      if (!value) {
+        return true;
+      }
+      try {
+        if (protocolVersion === 'ipv6') {
+          if (compareIPV6Addresses(new Address6(CATCH_ALL_IP.ipv6), new Address6(value))) {
+            return false;
+          }
+        } else {
+          if (value === CATCH_ALL_IP.ipv4) {
+            return false;
+          }
+        }
+      } catch (e) {
+        return false;
+      }
+      return true;
+    },
   );
 };
 

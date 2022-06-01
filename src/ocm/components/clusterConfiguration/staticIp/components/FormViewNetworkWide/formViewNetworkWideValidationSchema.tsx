@@ -50,8 +50,8 @@ const getMachineNetworkValidationSchema = (protocolVersion: ProtocolVersion) =>
 const getIPValidationSchema = (protocolVersion: ProtocolVersion) => {
   return getIpAddressValidationSchema(protocolVersion)
     .required(REQUIRED_MESSAGE)
-    .concat(isNotLocalHostIPAddress())
-    .concat(isNotCatchAllIPAddress());
+    .concat(isNotLocalHostIPAddress(protocolVersion))
+    .concat(isNotCatchAllIPAddress(protocolVersion));
 };
 
 const getAddressDataValidationSchema = (protocolVersion: ProtocolVersion, ipConfig: IpConfig) => {
