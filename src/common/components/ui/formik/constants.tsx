@@ -14,6 +14,7 @@ export const NAME_VALIDATION_MESSAGES = {
   NOT_UNIQUE: 'Must be unique',
   INVALID_VALUE: 'Use lowercase alphanumberic characters, dot (.) or hyphen (-)',
   INVALID_START_END: 'Must start and end with an lowercase alphanumeric character',
+  INVALID_FORMAT: 'Number of characters between dots (.) must be 1-63',
 };
 
 export const HOSTNAME_VALIDATION_MESSAGES = {
