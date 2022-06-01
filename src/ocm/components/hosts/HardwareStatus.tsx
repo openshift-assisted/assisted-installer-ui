@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  areOnlySoftValidationsFailing,
+  areOnlySoftValidationsOfWizardStepFailing,
   getWizardStepHostStatus,
   getWizardStepHostValidationsInfo,
   Host,
@@ -29,7 +29,7 @@ const HardwareStatus: React.FC<HardwareStatusProps> = (props) => {
     'host-discovery',
     wizardStepsValidationsMap,
   );
-  status.sublabel = areOnlySoftValidationsFailing(
+  const sublabel = areOnlySoftValidationsOfWizardStepFailing(
     validationsInfo,
     'host-discovery',
     wizardStepsValidationsMap,
@@ -40,7 +40,7 @@ const HardwareStatus: React.FC<HardwareStatusProps> = (props) => {
   return (
     <HostStatus
       {...props}
-      status={status}
+      status={{ ...status, sublabel }}
       validationsInfo={validationsInfo}
       AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
     />

@@ -5,6 +5,7 @@ import { HOST_ROLES, TIME_ZERO } from '../../config';
 import { DASH } from '../constants';
 import { stringToJSON } from '../../api';
 import { isSNO } from '../../selectors';
+import { Validation, ValidationsInfo as HostValidationsInfo } from '../../types/hosts';
 
 export const canEnable = (clusterStatus: Cluster['status'], status: Host['status']) =>
   ['pending-for-input', 'insufficient', 'ready', 'adding-hosts'].includes(clusterStatus) &&
@@ -212,4 +213,25 @@ export const filterByHostname = (hosts: Host[], hostnameFilter: string | undefin
     keys: ['hostname'],
   });
   return fuse.search(hostnameFilter).map(({ item }) => item.host);
+};
+
+export const getFailingHostValidations = (validationsInfo: HostValidationsInfo) =>
+  Object.keys(validationsInfo).reduce((curr, group) => {
+    const failingValidations: Validation[] = (validationsInfo[group] as Validation[]).filter(
+      (validation: Validation) => validation.status === 'failure',
+    );
+    return [...curr, ...failingValidations];
+  }, [] as Validation[]);
+
+export const areOnlySoftValidationsFailing = (validationsInfo: HostValidationsInfo) => {
+  const failingValidationIds = getFailingHostValidations(validationsInfo).map(
+    (validation) => validation.id,
+  );
+  if (!failingValidationIds.length) return false;
+  for (const id of failingValidationIds) {
+    if (!['ntp-synced', 'container-images-available'].includes(id)) {
+      return false;
+    }
+  }
+  return true;
 };
