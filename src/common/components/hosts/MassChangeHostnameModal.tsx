@@ -266,6 +266,7 @@ const MassChangeHostnameModal: React.FC<MassChangeHostnameModalProps> = ({
     >
       <Formik
         initialValues={initialValues}
+        validateOnMount
         validate={withTemplate(
           selectedHosts,
           hosts,
