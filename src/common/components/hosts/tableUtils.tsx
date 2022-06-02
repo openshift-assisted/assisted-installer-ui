@@ -83,7 +83,6 @@ export const roleColumn = (
   canEditRole?: HostsTableActions['canEditRole'],
   onEditRole?: HostsTableActions['onEditRole'],
   schedulableMasters?: boolean,
-  displayTooltip?: boolean,
   position?: DropdownProps['position'],
 ): TableRow<Host> => {
   return {
@@ -99,14 +98,14 @@ export const roleColumn = (
         ? (role: HostUpdateParams['hostRole']) => onEditRole(host, role)
         : undefined;
       const hostRole = getHostRole(host, schedulableMasters);
+      const isRoleEditable = canEditRole?.();
       return {
         title: (
           <RoleCell
             host={host}
-            readonly={!canEditRole?.(host)}
+            readonly={!isRoleEditable}
             role={hostRole}
             onEditRole={editRole}
-            displayTooltip={displayTooltip}
             position={position}
           />
         ),
