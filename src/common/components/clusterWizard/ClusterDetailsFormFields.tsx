@@ -13,8 +13,7 @@ import {
   InputField,
   RichInputField,
   SelectField,
-  CLUSTER_NAME_VALIDATION_MESSAGES,
-  UNIQUE_CLUSTER_NAME_VALIDATION_MESSAGES,
+  ACM_CLUSTER_NAME_VALIDATION_MESSAGES,
 } from '../ui/formik';
 import DiskEncryptionControlGroup from '../clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
 import { ClusterDetailsValues } from './types';
@@ -78,11 +77,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
         name="name"
         placeholder={isOcm ? '' : 'Enter cluster name'}
         isDisabled={isNameDisabled}
-        richValidationMessages={
-          values.useRedHatDnsService || isOcm
-            ? UNIQUE_CLUSTER_NAME_VALIDATION_MESSAGES
-            : CLUSTER_NAME_VALIDATION_MESSAGES
-        }
+        richValidationMessages={ACM_CLUSTER_NAME_VALIDATION_MESSAGES}
         isRequired
       />
       {extensionAfter?.['name'] && extensionAfter['name']}
