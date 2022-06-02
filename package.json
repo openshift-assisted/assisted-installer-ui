@@ -124,8 +124,7 @@
     "redux-devtools-extension": "^2.13.8",
     "rimraf": "^3.0.2",
     "sw2dts": "^2.6.3",
-    "typescript": "^3.9.0",
-    "yalc": "^1.0.0-pre.53"
+    "typescript": "^3.9.0"
   },
   "files": [
     "dist"
