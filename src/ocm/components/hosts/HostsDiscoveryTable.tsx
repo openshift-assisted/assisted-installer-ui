@@ -5,7 +5,6 @@ import {
   getSchedulableMasters,
   Cluster,
   Host,
-  useAlerts,
   HostsTableActions,
   stringToJSON,
   isSNO,
@@ -27,7 +26,6 @@ import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
 import { ExpandComponentProps, TableRow } from '../../../common/components/hosts/AITable';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
 import { onDiskRoleType } from '../../../common/components/hosts/DiskRole';
-import { useDispatch } from 'react-redux';
 import { sortable } from '@patternfly/react-table';
 import { ValidationsInfo } from '../../../common/types/hosts';
 import HardwareStatus from './HardwareStatus';
@@ -104,12 +102,7 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({
   const content = React.useMemo(
     () => [
       hostnameColumn(onEditHost, undefined, actionChecks.canEditHostname),
-      roleColumn(
-        actionChecks.canEditRole,
-        onEditRole,
-        getSchedulableMasters(cluster),
-        !isSNO(cluster),
-      ),
+      roleColumn(actionChecks.canEditRole, onEditRole, getSchedulableMasters(cluster)),
       hardwareStatusColumn(onEditHost),
       discoveredAtColumn,
       cpuCoresColumn,
