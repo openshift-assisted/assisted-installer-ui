@@ -29,6 +29,7 @@ const PROXY_DNS_REGEX =
 const IP_V4_ZERO = '0.0.0.0';
 const IP_V6_ZERO = '0000:0000:0000:0000:0000:0000:0000:0000';
 const MAC_REGEX = /^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$/;
+const HOST_NAME_REGEX = /^[^.]{1,63}(?:[.][^.]{1,63})*$/;
 
 //Source of information: https://github.com/metal3-io/baremetal-operator/blob/main/docs/api.md#baremetalhost-spec
 const BMC_REGEX =
@@ -348,6 +349,7 @@ export const richNameValidationSchema = (usedNames: string[], origName?: string)
         );
       },
     )
+    .matches(HOST_NAME_REGEX, NAME_VALIDATION_MESSAGES.INVALID_FORMAT)
     .matches(NAME_CHARS_REGEX, {
       message: NAME_VALIDATION_MESSAGES.INVALID_VALUE,
       excludeEmptyString: true,
