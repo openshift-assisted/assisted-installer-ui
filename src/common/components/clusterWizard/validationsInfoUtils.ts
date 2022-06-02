@@ -240,7 +240,7 @@ export const getFailingClusterWizardStepHostValidations = <ClusterWizardStepsTyp
     return [...curr, ...failingValidations];
   }, [] as Validation[]);
 
-export const areOnlySoftValidationsFailing = <ClusterWizardStepsType extends string>(
+export const areOnlySoftValidationsOfWizardStepFailing = <ClusterWizardStepsType extends string>(
   validationsInfo: HostValidationsInfo,
   wizardStepId: ClusterWizardStepsType,
   wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType>,
