@@ -32,6 +32,7 @@ export type ClusterDetailsFormFieldsProps = {
   versions: OpenshiftVersionOptionType[];
   toggleRedHatDnsService?: (checked: boolean) => void;
   isPullSecretSet: boolean;
+  hideDiskEncriptionControls?: boolean;
 };
 
 const BaseDnsHelperText: React.FC<{ name?: string; baseDnsDomain?: string }> = ({
@@ -59,6 +60,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
   extensionAfter,
   isOcm, // TODO(mlibra): make it optional, false by default
   isPullSecretSet,
+  hideDiskEncriptionControls,
 }) => {
   const { values } = useFormikContext<ClusterDetailsValues>();
   const { name, baseDnsDomain, highAvailabilityMode, useRedHatDnsService } = values;
@@ -126,7 +128,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
       {extensionAfter?.['openshiftVersion'] && extensionAfter['openshiftVersion']}
       {canEditPullSecret && <PullSecret isOcm={isOcm} defaultPullSecret={defaultPullSecret} />}
       {extensionAfter?.['pullSecret'] && extensionAfter['pullSecret']}
-      {isOcm && (
+      {!hideDiskEncriptionControls && (
         <DiskEncryptionControlGroup
           values={values}
           isDisabled={isPullSecretSet}

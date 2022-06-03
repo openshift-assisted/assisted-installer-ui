@@ -47,6 +47,7 @@ const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> 
           isOcm={false}
           defaultPullSecret={pullSecret}
           extensionAfter={extensionAfter}
+          hideDiskEncriptionControls
         />
       </StackItem>
     </Stack>
