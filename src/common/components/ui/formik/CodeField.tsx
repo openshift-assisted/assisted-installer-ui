@@ -18,6 +18,7 @@ const CodeField: React.FC<CodeFieldProps> = ({
   language,
   name,
   description,
+  isDisabled,
 }) => {
   const [field, , { setValue, setTouched }] = useField({ name, validate });
   const fieldId = getFieldId(name, 'input', idPostfix);
@@ -74,9 +75,10 @@ const CodeField: React.FC<CodeFieldProps> = ({
         )}
         <CodeEditor
           code={field.value}
-          isUploadEnabled
           isDownloadEnabled
           isCopyEnabled
+          isUploadEnabled={!isDisabled}
+          isReadOnly={isDisabled}
           isLanguageLabelVisible
           height="400px"
           language={language}

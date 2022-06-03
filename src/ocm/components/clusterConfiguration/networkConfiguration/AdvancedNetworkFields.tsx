@@ -13,6 +13,7 @@ import { useFeature } from '../../../../common/features';
 import { InputField } from '../../../../common/components/ui';
 import { DUAL_STACK, PREFIX_MAX_RESTRICTION } from '../../../../common/config/constants';
 import { NetworkTypeControlGroup } from '../../../../common/components/clusterWizard/networkingSteps/NetworkTypeControlGroup';
+import useClusterPermissions from '../../../hooks/useClusterPermissions';
 
 type AdvancedNetworkFieldsProps = {
   isSDNSelectable: boolean;
@@ -36,6 +37,7 @@ const serviceCidrHelperText =
 
 const AdvancedNetworkFields: React.FC<AdvancedNetworkFieldsProps> = ({ isSDNSelectable }) => {
   const { setFieldValue, values, errors } = useFormikContext<NetworkConfigurationValues>();
+  const { isViewerMode } = useClusterPermissions();
 
   const isNetworkTypeSelectionEnabled = useFeature(
     'ASSISTED_INSTALLER_NETWORK_TYPE_SELECTION_FEATURE',
@@ -52,7 +54,7 @@ const AdvancedNetworkFields: React.FC<AdvancedNetworkFieldsProps> = ({ isSDNSele
     e: React.ChangeEvent<HTMLInputElement>,
     index: number,
   ) => {
-    if (isNaN(parseInt(e.target.value))) {
+    if (!isViewerMode && isNaN(parseInt(e.target.value))) {
       setFieldValue(`clusterNetworks.${index}.hostPrefix`, clusterNetworkCidrPrefix(index));
     }
   };
@@ -74,13 +76,15 @@ const AdvancedNetworkFields: React.FC<AdvancedNetworkFieldsProps> = ({ isSDNSele
                   <InputField
                     name={`clusterNetworks.${index}.cidr`}
                     label={`Cluster network CIDR${networkSuffix}`}
-                    helperText={clusterCidrHelperText}
                     isRequired
+                    helperText={clusterCidrHelperText}
                     labelInfo={index === 0 && isDualStack ? 'Primary' : ''}
+                    isDisabled={isViewerMode}
                   />
                   <InputField
                     name={`clusterNetworks.${index}.hostPrefix`}
                     label={`Cluster network host prefix${networkSuffix}`}
+                    isRequired
                     type={TextInputTypes.number}
                     min={clusterNetworkCidrPrefix(index)}
                     max={
@@ -95,7 +99,7 @@ const AdvancedNetworkFields: React.FC<AdvancedNetworkFieldsProps> = ({ isSDNSele
                       )
                     }
                     helperText={clusterNetworkHostPrefixHelperText(index)}
-                    isRequired
+                    isDisabled={isViewerMode}
                   />
                 </StackItem>
               );
@@ -119,6 +123,7 @@ const AdvancedNetworkFields: React.FC<AdvancedNetworkFieldsProps> = ({ isSDNSele
                   helperText={serviceCidrHelperText}
                   isRequired
                   labelInfo={index === 0 && isDualStack ? 'Primary' : ''}
+                  isDisabled={isViewerMode}
                 />
               </StackItem>
             ))}
@@ -131,7 +136,7 @@ const AdvancedNetworkFields: React.FC<AdvancedNetworkFieldsProps> = ({ isSDNSele
       )}
 
       {isNetworkTypeSelectionEnabled && (
-        <NetworkTypeControlGroup isSDNSelectable={isSDNSelectable} />
+        <NetworkTypeControlGroup isDisabled={isViewerMode} isSDNSelectable={isSDNSelectable} />
       )}
     </Grid>
   );

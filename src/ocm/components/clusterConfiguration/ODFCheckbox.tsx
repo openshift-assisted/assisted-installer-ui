@@ -4,7 +4,7 @@ import { useFeatureSupportLevel } from '../../../common/components/featureSuppor
 import { FormGroup, Tooltip } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 
-const ODFLabel: React.FC = () => (
+const ODFLabel = () => (
   <>
     Install OpenShift Data Foundation{' '}
     <PopoverIcon
@@ -21,9 +21,10 @@ const ODFLabel: React.FC = () => (
 
 export type ODFCheckboxProps = {
   openshiftVersion?: string;
+  isDisabled: boolean;
 };
 
-export const ODFCheckbox: React.FC<ODFCheckboxProps> = ({ openshiftVersion }) => {
+export const ODFCheckbox = ({ openshiftVersion, isDisabled }: ODFCheckboxProps) => {
   const featureSupportLevelContext = useFeatureSupportLevel();
   const name = 'useExtraDisksForLocalStorage';
   const fieldId = getFieldId(name, 'input');
@@ -36,7 +37,7 @@ export const ODFCheckbox: React.FC<ODFCheckboxProps> = ({ openshiftVersion }) =>
         <CheckboxField
           name={name}
           label={<ODFLabel />}
-          isDisabled={!!disabledReason}
+          isDisabled={isDisabled || !!disabledReason}
           helperText="Persistent software-defined storage for hybrid applications."
         />
       </Tooltip>

@@ -25,6 +25,7 @@ import {
 import { StackTypeControlGroup } from './StackTypeControl';
 import { AvailableSubnetsControl } from './AvailableSubnetsControl';
 import AdvancedNetworkFields from './AdvancedNetworkFields';
+import useClusterPermissions from '../../../hooks/useClusterPermissions';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   hostSubnets: HostSubnets;
@@ -129,7 +130,8 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   const isMultiNodeCluster = !isSNOCluster;
   const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';
   const isDualStack = values.stackType === DUAL_STACK;
-
+  const { isViewerMode } = useClusterPermissions();
+  const shouldUpdateAdvConf = !isViewerMode && isDualStack && !isUserManagedNetworking;
   const isDualStackSelectable = React.useMemo(() => canBeDualStack(hostSubnets), [hostSubnets]);
 
   const { defaultNetworkType, isSDNSelectable } = React.useMemo(() => {
@@ -201,10 +203,10 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   );
 
   React.useEffect(() => {
-    if (isDualStack && !isUserManagedNetworking) {
+    if (shouldUpdateAdvConf) {
       toggleAdvConfiguration(true);
     }
-  }, [toggleAdvConfiguration, isUserManagedNetworking, isDualStack]);
+  }, [shouldUpdateAdvConf, toggleAdvConfiguration]);
 
   const { isNetworkManagementDisabled, networkManagementDisabledReason } = React.useMemo(
     () =>
@@ -221,7 +223,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
     <Grid hasGutter>
       {!hideManagedNetworking && (
         <ManagedNetworkingControlGroup
-          disabled={isNetworkManagementDisabled}
+          disabled={isViewerMode || isNetworkManagementDisabled}
           tooltip={networkManagementDisabledReason}
         />
       )}
@@ -257,7 +259,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
       {!isUserManagedNetworking && (
         <VirtualIPControlGroup
           cluster={cluster}
-          isVipDhcpAllocationDisabled={isVipDhcpAllocationDisabled}
+          isVipDhcpAllocationDisabled={isViewerMode || isVipDhcpAllocationDisabled}
         />
       )}
 
@@ -272,7 +274,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
           description="Configure advanced networking properties (e.g. CIDR ranges)."
           isChecked={isAdvanced}
           onChange={toggleAdvConfiguration}
-          isDisabled={isDualStack}
+          isDisabled={isViewerMode || isDualStack}
         />
       </Tooltip>
 

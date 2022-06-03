@@ -25,13 +25,21 @@ const AddMapping: React.FC<{
   );
 };
 
-const MacMappingItem: React.FC<{
+const MacMappingItem = ({
+  fieldName,
+  onRemove,
+  mapIdx,
+  enableRemove,
+  hostIdx,
+  isDisabled,
+}: {
   fieldName: string;
   onRemove: () => void;
   mapIdx: number;
   hostIdx: number;
   enableRemove: boolean;
-}> = ({ fieldName, onRemove, mapIdx, enableRemove, hostIdx }) => {
+  isDisabled: boolean;
+}) => {
   return (
     <RemovableField hideRemoveButton={!enableRemove} onRemove={onRemove}>
       <Grid hasGutter>
@@ -39,6 +47,7 @@ const MacMappingItem: React.FC<{
           <InputField
             label="MAC address"
             isRequired
+            isDisabled={isDisabled}
             name={`${fieldName}.macAddress`}
             data-testid={`mac-address-${hostIdx}-${mapIdx}`}
           ></InputField>
@@ -47,6 +56,7 @@ const MacMappingItem: React.FC<{
           <InputField
             label="Interface name"
             isRequired
+            isDisabled={isDisabled}
             name={`${fieldName}.logicalNicName`}
             data-testid={`interface-name-${hostIdx}-${mapIdx}`}
           ></InputField>
@@ -56,11 +66,17 @@ const MacMappingItem: React.FC<{
   );
 };
 
-export const MacIpMapping: React.FC<{
+export const MacIpMapping = ({
+  fieldName,
+  macInterfaceMap,
+  hostIdx,
+  isDisabled,
+}: {
   fieldName: string;
   macInterfaceMap: MacInterfaceMap;
   hostIdx: number;
-}> = ({ fieldName, macInterfaceMap, hostIdx }) => {
+  isDisabled: boolean;
+}) => {
   return (
     <Grid className="mac-ip-mapping">
       <GridItem span={6}>
@@ -69,18 +85,19 @@ export const MacIpMapping: React.FC<{
           validateOnChange={false}
           render={({ push, remove }) => (
             <Grid hasGutter>
-              {macInterfaceMap.map((value, idx) => (
+              {macInterfaceMap.map((_, idx) => (
                 <MacMappingItem
                   key={getFormikArrayItemFieldName(fieldName, idx)}
                   fieldName={getFormikArrayItemFieldName(fieldName, idx)}
+                  isDisabled={isDisabled}
                   onRemove={() => remove(idx)}
                   mapIdx={idx}
-                  enableRemove={idx > 0}
+                  enableRemove={!isDisabled && idx > 0}
                   hostIdx={hostIdx}
                 />
               ))}
 
-              <AddMapping onPush={push} />
+              {!isDisabled && <AddMapping onPush={push} />}
             </Grid>
           )}
         ></FieldArray>

@@ -4,9 +4,12 @@ import { useFeatureSupportLevel } from '../../../common/components/featureSuppor
 import { FormGroup, Tooltip } from '@patternfly/react-core';
 import CNVHostRequirementsContent from '../hosts/CNVHostRequirementsContent';
 
-const CNVLabel: React.FC<{ clusterId: Cluster['id']; isSingleNode?: boolean }> = ({
+const CNVLabel = ({
   clusterId,
   isSingleNode,
+}: {
+  clusterId: Cluster['id'];
+  isSingleNode?: boolean;
 }) => {
   return (
     <>
@@ -23,12 +26,18 @@ const CNVLabel: React.FC<{ clusterId: Cluster['id']; isSingleNode?: boolean }> =
 };
 
 export type CnvCheckboxProps = {
+  clusterId: string;
   openshiftVersion?: string;
   isSNO: boolean;
-  clusterId: string;
+  isDisabled: boolean;
 };
 
-export const CnvCheckbox: React.FC<CnvCheckboxProps> = ({ openshiftVersion, isSNO, clusterId }) => {
+export const CnvCheckbox = ({
+  clusterId,
+  openshiftVersion,
+  isSNO,
+  isDisabled,
+}: CnvCheckboxProps) => {
   const featureSupportLevelContext = useFeatureSupportLevel();
   const name = 'useContainerNativeVirtualization';
   const fieldId = getFieldId(name, 'input');
@@ -42,7 +51,7 @@ export const CnvCheckbox: React.FC<CnvCheckboxProps> = ({ openshiftVersion, isSN
           name={name}
           label={<CNVLabel clusterId={clusterId} isSingleNode={isSNO} />}
           helperText="Run virtual machines along containers."
-          isDisabled={!!disabledReason}
+          isDisabled={isDisabled || !!disabledReason}
         />
       </Tooltip>
     </FormGroup>

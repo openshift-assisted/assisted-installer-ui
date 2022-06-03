@@ -3,6 +3,7 @@ import { ButtonVariant, Form, FormGroup, Radio } from '@patternfly/react-core';
 import { getFieldId } from '../../../../../common';
 import { StaticIpView } from '../data/dataTypes';
 import ConfirmationModal from '../../../../../common/components/ui/ConfirmationModal';
+import useClusterPermissions from '../../../../hooks/useClusterPermissions';
 
 export type StaticIpViewRadioGroupProps = {
   initialView: StaticIpView;
@@ -16,6 +17,7 @@ const StaticIpViewRadioGroup: React.FC<StaticIpViewRadioGroupProps> = ({
   onChangeView,
 }) => {
   const GROUP_NAME = 'select-static-ip-view';
+  const { isViewerMode } = useClusterPermissions();
   const [confirmView, setConfirmView] = React.useState<StaticIpView>();
   const [view, setView] = React.useState<StaticIpView>(initialView);
   const handleChange = (_checked: boolean, event: React.FormEvent<HTMLInputElement>) => {
@@ -58,6 +60,7 @@ const StaticIpViewRadioGroup: React.FC<StaticIpViewRadioGroupProps> = ({
             id="select-form-view"
             value={StaticIpView.FORM}
             isChecked={view === StaticIpView.FORM}
+            isDisabled={isViewerMode}
             onChange={handleChange}
           />
           <Radio
@@ -66,8 +69,9 @@ const StaticIpViewRadioGroup: React.FC<StaticIpViewRadioGroupProps> = ({
             data-testid="select-yaml-view"
             id="select-yaml-view"
             value={StaticIpView.YAML}
-            onChange={handleChange}
             isChecked={view === StaticIpView.YAML}
+            isDisabled={isViewerMode}
+            onChange={handleChange}
           />
         </FormGroup>
       </Form>

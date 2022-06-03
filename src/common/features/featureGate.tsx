@@ -11,6 +11,11 @@ export type FeatureListType = {
   [key in AssistedInstallerFeatureType]?: boolean;
 };
 
+export type AssistedInstallerPermissionTypes = 'canEdit';
+export type AssistedInstallerPermissionTypesListType = {
+  [key in AssistedInstallerPermissionTypes]: boolean;
+};
+
 // Hardcoded for ACM
 export const ACM_ENABLED_FEATURES: FeatureListType = {
   ASSISTED_INSTALLER_SNO_FEATURE: true,

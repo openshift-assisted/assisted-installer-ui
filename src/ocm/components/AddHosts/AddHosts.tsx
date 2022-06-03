@@ -30,13 +30,15 @@ import { HostsService } from '../../services';
 import ClusterDetailStatusVarieties, {
   useClusterStatusVarieties,
 } from '../clusterDetail/ClusterDetailStatusVarieties';
+import useClusterPermissions from '../../hooks/useClusterPermissions';
 
 const { addAlert } = alertsSlice.actions;
 
-const AddHosts: React.FC = () => {
+const AddHosts = () => {
   const { cluster, resetCluster } = React.useContext(AddHostsContext);
   const [isSubmitting, setSubmitting] = React.useState(false);
   const clusterVarieties = useClusterStatusVarieties(cluster);
+  const { isViewerMode } = useClusterPermissions();
 
   if (!cluster || !resetCluster) {
     return null;
@@ -93,7 +95,7 @@ const AddHosts: React.FC = () => {
                 variant={ButtonVariant.primary}
                 name="install"
                 onClick={handleHostsInstall}
-                isDisabled={isSubmitting || getReadyHostCount(cluster) <= 0}
+                isDisabled={isViewerMode || isSubmitting || getReadyHostCount(cluster) <= 0}
               >
                 Install ready hosts
               </ToolbarButton>

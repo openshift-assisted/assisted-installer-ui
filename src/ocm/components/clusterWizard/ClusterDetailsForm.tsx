@@ -1,5 +1,6 @@
 import React from 'react';
 import isUndefined from 'lodash/isUndefined';
+import { useLocation } from 'react-router-dom';
 import { Formik, FormikHelpers } from 'formik';
 import {
   Cluster,
@@ -22,7 +23,7 @@ import { useFeatureSupportLevel } from '../../../common/components/featureSuppor
 import { ClusterDetailsService } from '../../services';
 import { OcmClusterDetailsValues } from '../../services/types';
 import { OcmClusterDetailsFormFields } from '../clusterConfiguration/OcmClusterDetailsFormFields';
-import { useLocation } from 'react-router-dom';
+import useClusterPermissions from '../../hooks/useClusterPermissions';
 
 type ClusterDetailsFormProps = {
   cluster?: Cluster;
@@ -31,9 +32,7 @@ type ClusterDetailsFormProps = {
   managedDomains: ManagedDomain[];
   ocpVersions: OpenshiftVersionOptionType[];
   usedClusterNames: string[];
-
   navigation: React.ReactNode;
-
   moveNext: () => void;
   handleClusterCreate: (params: ClusterCreateParams) => Promise<void>;
   handleClusterUpdate: (clusterId: Cluster['id'], params: V2ClusterUpdateParams) => Promise<void>;
@@ -54,6 +53,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
   } = props;
 
   const { search } = useLocation();
+  const { isViewerMode } = useClusterPermissions();
   const featureSupportLevels = useFeatureSupportLevel();
   const handleSubmit = React.useCallback(
     async (values: OcmClusterDetailsValues) => {
@@ -72,7 +72,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
     submitForm: FormikHelpers<unknown>['submitForm'],
     cluster?: Cluster,
   ): (() => Promise<void> | void) => {
-    if (!dirty && !isUndefined(cluster) && canNextClusterDetails({ cluster })) {
+    if (isViewerMode || (!dirty && !isUndefined(cluster) && canNextClusterDetails({ cluster }))) {
       return moveNext;
     }
     return submitForm;
@@ -124,30 +124,26 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
                 <OcmClusterDetailsFormFields
                   toggleRedHatDnsService={toggleRedHatDnsService}
                   versions={ocpVersions}
-                  canEditPullSecret={!cluster?.pullSecretSet}
                   forceOpenshiftVersion={cluster?.openshiftVersion}
+                  isPullSecretSet={!!cluster?.pullSecretSet}
                   defaultPullSecret={pullSecret}
                   isOcm={!!ocmClient}
                   managedDomains={managedDomains}
-                  isPullSecretSet={cluster?.pullSecretSet ? cluster.pullSecretSet : false}
                   clusterExists={!!cluster}
                 />
               </GridItem>
             </Grid>
           </>
         );
+
+        const canMoveToNext =
+          !isSubmitting && isValid && (dirty || (cluster && canNextClusterDetails({ cluster })));
         const footer = (
           <ClusterWizardFooter
             cluster={cluster}
             errorFields={errorFields}
             isSubmitting={isSubmitting}
-            isNextDisabled={
-              !(
-                !isSubmitting &&
-                isValid &&
-                (dirty || (cluster && canNextClusterDetails({ cluster })))
-              )
-            }
+            isNextDisabled={!(isViewerMode || canMoveToNext)}
             onNext={handleOnNext(dirty, submitForm, cluster)}
           />
         );

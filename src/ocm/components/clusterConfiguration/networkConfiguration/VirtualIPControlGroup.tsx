@@ -8,6 +8,7 @@ import { CheckboxField, FormikStaticField, InputField } from '../../../../common
 import { FeatureSupportLevelBadge } from '../../../../common/components';
 import { NETWORK_TYPE_SDN } from '../../../../common/config/constants';
 import { selectMachineNetworkCIDR } from '../../../../common';
+import useClusterPermissions from '../../../hooks/useClusterPermissions';
 
 interface VipStaticValueProps {
   vipName: string;
@@ -88,6 +89,7 @@ export const VirtualIPControlGroup = ({
   isVipDhcpAllocationDisabled,
 }: VirtualIPControlGroupProps) => {
   const { values, setFieldValue } = useFormikContext<NetworkConfigurationValues>();
+  const { isViewerMode } = useClusterPermissions();
 
   const apiVipHelperText = `Provide an endpoint for users, both human and machine, to interact with and configure the platform. If needed, contact your IT manager for more information. ${getVipHelperSuffix(
     cluster.apiVip,
@@ -111,7 +113,7 @@ export const VirtualIPControlGroup = ({
   const enableAllocation = values.networkType === NETWORK_TYPE_SDN;
 
   React.useEffect(() => {
-    if (!enableAllocation) {
+    if (!isViewerMode && !enableAllocation) {
       setFieldValue('vipDhcpAllocation', false);
     }
   }, [enableAllocation, setFieldValue]);
@@ -137,7 +139,7 @@ export const VirtualIPControlGroup = ({
             </>
           }
           name="vipDhcpAllocation"
-          isDisabled={!enableAllocation}
+          isDisabled={isViewerMode || !enableAllocation}
         />
       )}
       {values.vipDhcpAllocation ? (
@@ -173,12 +175,14 @@ export const VirtualIPControlGroup = ({
         </>
       ) : (
         <>
-          <InputField label="API IP" name="apiVip" helperText={apiVipHelperText} isRequired />
+          <InputField label="API IP" name="apiVip" helperText={apiVipHelperText} isRequired isDisabled={isViewerMode}/>
+
           <InputField
             name="ingressVip"
             label="Ingress IP"
             helperText={ingressVipHelperText}
             isRequired
+            isDisabled={isViewerMode}
           />
         </>
       )}

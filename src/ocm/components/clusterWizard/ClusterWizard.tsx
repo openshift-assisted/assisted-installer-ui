@@ -1,5 +1,11 @@
 import React from 'react';
-import { Cluster, InfraEnv, InfraEnvUpdateParams, LoadingState } from '../../../common';
+import {
+  AssistedInstallerPermissionTypesListType,
+  Cluster,
+  InfraEnv,
+  InfraEnvUpdateParams,
+  LoadingState,
+} from '../../../common';
 import NetworkConfigurationPage from '../clusterConfiguration/networkConfiguration/NetworkConfigurationForm';
 import ReviewStep from '../clusterConfiguration/ReviewStep';
 import { useClusterWizardContext } from './ClusterWizardContext';
@@ -8,6 +14,7 @@ import HostDiscovery from './HostDiscovery';
 import StaticIp from './StaticIp';
 import classNames from 'classnames';
 import { WithErrorBoundary } from '../../../common/components/ErrorHandling/WithErrorBoundary';
+
 type ClusterWizardProps = {
   cluster: Cluster;
   infraEnv: InfraEnv;

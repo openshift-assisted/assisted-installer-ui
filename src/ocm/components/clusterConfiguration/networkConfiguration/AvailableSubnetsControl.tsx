@@ -2,51 +2,53 @@ import React, { useEffect } from 'react';
 import { Alert, AlertVariant, FormGroup, Stack, StackItem } from '@patternfly/react-core';
 import { FieldArray, useFormikContext, FormikHelpers } from 'formik';
 import { Cluster, MachineNetwork } from '../../../../common/api/types';
-import { HostSubnet, HostSubnets, NetworkConfigurationValues } from '../../../../common/types';
+import { HostSubnet, NetworkConfigurationValues } from '../../../../common/types';
 import { DUAL_STACK, NO_SUBNET_SET } from '../../../../common/config/constants';
 import { SelectField } from '../../../../common/components/ui';
 import { Address4, Address6 } from 'ip-address';
+import useClusterPermissions from '../../../hooks/useClusterPermissions';
+
+const subnetSort = (subA: HostSubnet, subB: HostSubnet) =>
+  subA.humanized.localeCompare(subB.humanized);
 
 const toFormSelectOptions = (subnets: HostSubnet[]) => {
-  return subnets
-    .sort((subA, subB) => subA.humanized.localeCompare(subB.humanized))
-    .map((hn, index) => ({
-      label: hn.humanized,
-      value: hn.subnet,
-      isDisabled: false,
-      id: `form-input-hostSubnet-field-option-${index}`,
-    }));
+  return subnets.map((hn, index) => ({
+    label: hn.humanized,
+    value: hn.subnet,
+    isDisabled: false,
+    id: `form-input-hostSubnet-field-option-${index}`,
+  }));
 };
 
-const makeNoSubnetSelectedOption = (hostSubnets: HostSubnet[]) => ({
-  label: `Please select a subnet. (${hostSubnets.length} available)`,
+const makeNoSubnetSelectedOption = (availableSubnets: number) => ({
+  label: `Please select a subnet. (${availableSubnets} available)`,
   value: NO_SUBNET_SET,
   isDisabled: true,
   id: 'form-input-hostSubnet-field-option-no-subnet-selected',
 });
 
-const makeNoSubnetAvailableOption = () => ({
+const noSubnetAvailableOption = {
   label: 'No subnets are currently available',
   value: NO_SUBNET_SET,
   id: 'form-input-hostSubnet-field-option-no-subnet-available',
-});
+};
 
 const useAutoSelectSingleAvailableSubnet = (
-  hasNoMachineNetworks: boolean,
+  autoSelectNetwork: boolean,
   setFieldValue: FormikHelpers<NetworkConfigurationValues>['setFieldValue'],
   cidr: MachineNetwork['cidr'],
   clusterId: string,
 ) => {
   useEffect(() => {
-    if (hasNoMachineNetworks) {
+    if (autoSelectNetwork) {
       setFieldValue('machineNetworks', [{ cidr, clusterId }], true);
     }
-  }, [hasNoMachineNetworks, cidr, clusterId, setFieldValue]);
+  }, [autoSelectNetwork, cidr, clusterId, setFieldValue]);
 };
 
 export interface AvailableSubnetsControlProps {
   clusterId: Cluster['id'];
-  hostSubnets: HostSubnets;
+  hostSubnets: HostSubnet[];
   isRequired: boolean;
 }
 
@@ -56,14 +58,31 @@ export const AvailableSubnetsControl = ({
   isRequired = false,
 }: AvailableSubnetsControlProps) => {
   const { values, errors, setFieldValue } = useFormikContext<NetworkConfigurationValues>();
+  const { isViewerMode } = useClusterPermissions();
   const isDualStack = values.stackType === DUAL_STACK;
 
-  const IPv4Subnets = hostSubnets.filter((subnet) => Address4.isValid(subnet.subnet));
-  const IPv6Subnets = hostSubnets.filter((subnet) => Address6.isValid(subnet.subnet));
+  const IPv4Subnets = hostSubnets
+    .filter((subnet) => Address4.isValid(subnet.subnet))
+    .sort(subnetSort);
+  const IPv6Subnets = hostSubnets
+    .filter((subnet) => Address6.isValid(subnet.subnet))
+    .sort(subnetSort);
 
-  const hasNoMachineNetworks = (values.machineNetworks ?? []).length === 0;
   const cidr = IPv4Subnets.length >= 1 ? IPv4Subnets[0].subnet : NO_SUBNET_SET;
-  useAutoSelectSingleAvailableSubnet(hasNoMachineNetworks, setFieldValue, cidr, clusterId);
+  const hasEmptySelection = (values.machineNetworks ?? []).length === 0;
+  const autoSelectNetwork = !isViewerMode && hasEmptySelection;
+  useAutoSelectSingleAvailableSubnet(autoSelectNetwork, setFieldValue, cidr, clusterId);
+
+  const buildOptions = React.useMemo(
+    () => (machineSubnets: HostSubnet[]) => {
+      return machineSubnets.length === 0
+        ? [noSubnetAvailableOption]
+        : [makeNoSubnetSelectedOption(machineSubnets.length)].concat(
+            toFormSelectOptions(machineSubnets),
+          );
+    },
+    [hostSubnets],
+  );
 
   return (
     <FormGroup
@@ -77,17 +96,13 @@ export const AvailableSubnetsControl = ({
           <Stack>
             {isDualStack ? (
               values.machineNetworks?.map((_machineNetwork, index) => {
+                const machineSubnets = index === 1 ? IPv6Subnets : IPv4Subnets;
                 return (
                   <StackItem key={index}>
                     <SelectField
                       name={`machineNetworks.${index}.cidr`}
-                      options={
-                        (index === 1 ? IPv6Subnets.length > 0 : IPv4Subnets.length > 0)
-                          ? [
-                              makeNoSubnetSelectedOption(index === 1 ? IPv6Subnets : IPv4Subnets),
-                            ].concat(toFormSelectOptions(index === 1 ? IPv6Subnets : IPv4Subnets))
-                          : [makeNoSubnetAvailableOption()]
-                      }
+                      options={buildOptions(machineSubnets)}
+                      isDisabled={isViewerMode}
                       isRequired={isRequired}
                     />
                   </StackItem>
@@ -96,15 +111,10 @@ export const AvailableSubnetsControl = ({
             ) : (
               <StackItem>
                 <SelectField
-                  isRequired={isRequired}
                   name={`machineNetworks.0.cidr`}
-                  options={
-                    IPv4Subnets.length === 0
-                      ? [makeNoSubnetAvailableOption()]
-                      : [makeNoSubnetSelectedOption(IPv4Subnets)].concat(
-                          toFormSelectOptions(IPv4Subnets),
-                        )
-                  }
+                  options={buildOptions(IPv4Subnets)}
+                  isDisabled={isViewerMode}
+                  isRequired={isRequired}
                 />
               </StackItem>
             )}

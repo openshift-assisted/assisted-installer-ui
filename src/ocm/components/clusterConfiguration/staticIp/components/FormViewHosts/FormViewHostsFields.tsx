@@ -7,15 +7,17 @@ import HostSummary from '../CollapsedHost';
 import { FormViewHost, StaticProtocolType } from '../../data/dataTypes';
 import { getProtocolVersionLabel, getShownProtocolVersions } from '../../data/protocolVersion';
 import { getEmptyFormViewHost } from '../../data/emptyData';
+import useClusterPermissions from '../../../../../hooks/useClusterPermissions';
 
-const getExpandedHostComponent = (protocolType: StaticProtocolType) => {
-  const Component: React.FC<HostComponentProps> = ({ fieldName, hostIdx }) => {
+const getExpandedHostComponent = (protocolType: StaticProtocolType, isDisabled: boolean) => {
+  const Component = ({ fieldName, hostIdx }: HostComponentProps) => {
     return (
       <Grid hasGutter>
         <InputField
           name={`${fieldName}.macAddress`}
           label="MAC Address"
           isRequired
+          isDisabled={isDisabled}
           data-testid={`mac-address-${hostIdx}`}
         />
         {getShownProtocolVersions(protocolType).map((protocolVersion) => (
@@ -26,7 +28,8 @@ const getExpandedHostComponent = (protocolType: StaticProtocolType) => {
           >
             <InputField
               name={`${fieldName}.ips.${protocolVersion}`}
-              isRequired={true}
+              isRequired
+              isDisabled={isDisabled}
               data-testid={`${protocolVersion}-address-${hostIdx}`}
             />{' '}
           </FormGroup>
@@ -38,7 +41,7 @@ const getExpandedHostComponent = (protocolType: StaticProtocolType) => {
 };
 
 const getCollapsedHostComponent = (protocolType: StaticProtocolType) => {
-  const Component: React.FC<HostComponentProps> = ({ fieldName, hostIdx }) => {
+  const Component = ({ fieldName, hostIdx }: HostComponentProps) => {
     const [{ value }, { error }] = useField<FormViewHost>({
       name: fieldName,
     });
@@ -64,8 +67,9 @@ export const FormViewHostsFields: React.FC<{ protocolType: StaticProtocolType }>
   protocolType,
 }) => {
   const emptyHost = getEmptyFormViewHost();
+  const { isViewerMode } = useClusterPermissions();
   const CollapsedHostComponent = getCollapsedHostComponent(protocolType);
-  const ExpandedHostComponent = getExpandedHostComponent(protocolType);
+  const ExpandedHostComponent = getExpandedHostComponent(protocolType, isViewerMode);
   return (
     <StaticIpHostsArray<FormViewHost>
       CollapsedHostComponent={CollapsedHostComponent}

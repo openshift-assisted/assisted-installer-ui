@@ -1,6 +1,5 @@
 import React from 'react';
 import { Text, TextContent, TextVariants, Alert, AlertVariant, Grid } from '@patternfly/react-core';
-
 import { StaticIpInfo, StaticIpView } from '../data/dataTypes';
 import StaticIpViewRadioGroup from './StaticIpViewRadioGroup';
 import { getStaticIpInfo } from '../data/fromInfraEnv';
@@ -10,6 +9,7 @@ import { useClusterWizardContext } from '../../../clusterWizard/ClusterWizardCon
 import { FormViewHosts } from './FormViewHosts/FormViewHosts';
 import { FormViewNetworkWide } from './FormViewNetworkWide/FormViewNetworkWide';
 import './staticIp.css';
+
 const isoRegenerationAlert = (
   <Alert
     variant={AlertVariant.warning}

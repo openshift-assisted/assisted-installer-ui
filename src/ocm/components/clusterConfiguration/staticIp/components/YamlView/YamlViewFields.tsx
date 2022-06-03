@@ -7,6 +7,7 @@ import StaticIpHostsArray, { HostComponentProps } from '../StaticIpHostsArray';
 import HostSummary from '../CollapsedHost';
 import { MacIpMapping } from './MacIpMapping';
 import { getEmptyYamlHost } from '../../data/emptyData';
+import useClusterPermissions from '../../../../../hooks/useClusterPermissions';
 
 const CollapsedHost: React.FC<HostComponentProps> = ({ fieldName, hostIdx }) => {
   const mapFieldName = `${fieldName}.macInterfaceMap`;
@@ -35,7 +36,8 @@ const CollapsedHost: React.FC<HostComponentProps> = ({ fieldName, hostIdx }) => 
   );
 };
 
-const ExpandedHost: React.FC<HostComponentProps> = ({ fieldName, hostIdx }) => {
+const ExpandedHost = ({ fieldName, hostIdx }: HostComponentProps) => {
+  const { isViewerMode } = useClusterPermissions();
   const mapFieldName = `${fieldName}.macInterfaceMap`;
   const [mapField] = useField<HostStaticNetworkConfig['macInterfaceMap']>({
     name: mapFieldName,
@@ -48,6 +50,7 @@ const ExpandedHost: React.FC<HostComponentProps> = ({ fieldName, hostIdx }) => {
           language={Language.yaml}
           name={`${fieldName}.networkYaml`}
           data-testid={`yaml-${hostIdx}`}
+          isDisabled={isViewerMode}
         />
       </FormGroup>
       <FormGroup
@@ -58,6 +61,7 @@ const ExpandedHost: React.FC<HostComponentProps> = ({ fieldName, hostIdx }) => {
           fieldName={mapFieldName}
           macInterfaceMap={macInterfaceMap}
           hostIdx={hostIdx}
+          isDisabled={isViewerMode}
         />
       </FormGroup>
     </>

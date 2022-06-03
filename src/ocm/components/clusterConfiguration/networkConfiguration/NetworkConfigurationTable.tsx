@@ -5,14 +5,18 @@ import { isSNO } from '../../../../common/selectors/clusterSelectors';
 import { AdditionalNTPSourcesDialogToggle } from '../../hosts/AdditionaNTPSourceDialogToggle';
 import { HostsTableModals, useHostsTable } from '../../hosts/use-hosts-table';
 import CommonNetworkConfigurationTable from '../../../../common/components/clusterConfiguration/NetworkConfigurationTable';
+import useClusterPermissions from '../../../hooks/useClusterPermissions';
 
-const NetworkConfigurationTable: React.FC<ClusterHostsTableProps> = ({
+const NetworkConfigurationTable = ({
   cluster,
   setDiscoveryHintModalOpen,
   skipDisabled,
-}) => {
-  const { onEditHost, actionChecks, onEditRole, actionResolver, ...modalProps } =
-    useHostsTable(cluster);
+}: ClusterHostsTableProps) => {
+  const { isViewerMode } = useClusterPermissions();
+  const { onEditHost, actionChecks, onEditRole, actionResolver, ...modalProps } = useHostsTable(
+    cluster,
+    isViewerMode,
+  );
 
   return (
     <>

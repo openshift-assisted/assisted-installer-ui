@@ -77,10 +77,10 @@ const getExpandComponent =
 
 type HostsDiscoveryTableProps = {
   cluster: Cluster;
-  skipDisabled?: boolean;
+  isDisabled: boolean;
 };
 
-const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({ cluster }) => {
+const HostsDiscoveryTable = ({ cluster, isDisabled }: HostsDiscoveryTableProps) => {
   const {
     onEditHost,
     actionChecks,
@@ -93,7 +93,7 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({ cluster }) =>
     onMassChangeHostname,
     onMassDeleteHost,
     ...modalProps
-  } = useHostsTable(cluster);
+  } = useHostsTable(cluster, isDisabled);
 
   const isSNOCluster = isSNO(cluster);
   const content = React.useMemo(
@@ -113,11 +113,12 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({ cluster }) =>
   const hosts = cluster.hosts || [];
   const paginationProps = usePagination(hosts.length);
   const itemIDs = hosts.map((h) => h.id);
+  const showBulkActions = !isDisabled && !isSNOCluster;
 
   return (
     <>
       <Stack hasGutter>
-        {!isSNOCluster && (
+        {showBulkActions && (
           <StackItem>
             <TableToolbar
               selectedIDs={selectedHostIDs || []}
@@ -138,7 +139,7 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({ cluster }) =>
             content={content}
             actionResolver={actionResolver}
             ExpandComponent={getExpandComponent(onDiskRole, actionChecks.canEditDisks)}
-            onSelect={isSNOCluster ? undefined : onSelect}
+            onSelect={showBulkActions ? undefined : onSelect}
             selectedIDs={selectedHostIDs}
             setSelectedIDs={setSelectedHostIDs}
             {...paginationProps}

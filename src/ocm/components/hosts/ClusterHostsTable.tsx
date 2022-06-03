@@ -18,6 +18,7 @@ import HostsTable from '../../../common/components/hosts/HostsTable';
 import { ExpandComponentProps } from '../../../common/components/hosts/AITable';
 import { UpdateDay2ApiVipDialogToggle } from './UpdateDay2ApiVipDialogToggle';
 import HostsTableEmptyState from '../hosts/HostsTableEmptyState';
+import useClusterPermissions from '../../hooks/useClusterPermissions';
 
 const ExpandComponent: React.FC<ExpandComponentProps<Host>> = ({ obj }) => {
   return (
@@ -34,9 +35,12 @@ export interface ClusterHostsTableProps {
   skipDisabled?: boolean;
 }
 
-const ClusterHostsTable: React.FC<ClusterHostsTableProps> = ({ cluster, skipDisabled }) => {
-  const { onEditHost, actionChecks, onEditRole, actionResolver, ...modalProps } =
-    useHostsTable(cluster);
+const ClusterHostsTable = ({ cluster, skipDisabled }: ClusterHostsTableProps) => {
+  const { isViewerMode } = useClusterPermissions();
+  const { onEditHost, actionChecks, onEditRole, actionResolver, ...modalProps } = useHostsTable(
+    cluster,
+    isViewerMode,
+  );
 
   const content = React.useMemo(
     () => [

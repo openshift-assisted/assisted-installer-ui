@@ -39,6 +39,7 @@ import {
 import { getMachineNetworkCidr } from '../../data/machineNetwork';
 import '../staticIp.css';
 import useFieldErrorMsg from '../../../../../../common/hooks/useFieldErrorMsg';
+import useClusterPermissions from '../../../../../hooks/useClusterPermissions';
 const hostsConfiguredAlert = (
   <Alert
     variant={AlertVariant.warning}
@@ -48,9 +49,14 @@ const hostsConfiguredAlert = (
   ></Alert>
 );
 
-const MachineNetwork: React.FC<{ fieldName: string; protocolVersion: ProtocolVersion }> = ({
+const MachineNetwork = ({
   fieldName,
   protocolVersion,
+  isDisabled,
+}: {
+  fieldName: string;
+  protocolVersion: ProtocolVersion;
+  isDisabled: boolean;
 }) => {
   const [{ value }] = useField<Cidr>(fieldName);
   const ipFieldName = `${fieldName}.ip`;
@@ -85,6 +91,7 @@ const MachineNetwork: React.FC<{ fieldName: string; protocolVersion: ProtocolVer
             isRequired={true}
             data-testid={`${protocolVersion}-machine-network-ip`}
             showErrorMessage={false}
+            isDisabled={isDisabled}
           />
         </FlexItem>
         <FlexItem spacer={{ default: 'spacerSm' }}>{'/'}</FlexItem>
@@ -95,6 +102,7 @@ const MachineNetwork: React.FC<{ fieldName: string; protocolVersion: ProtocolVer
             data-testid={`${protocolVersion}-machine-network-prefix-length`}
             type={TextInputTypes.number}
             showErrorMessage={false}
+            isDisabled={isDisabled}
           />
         </FlexItem>
       </Flex>
@@ -102,13 +110,22 @@ const MachineNetwork: React.FC<{ fieldName: string; protocolVersion: ProtocolVer
   );
 };
 
-const IpConfigFields: React.FC<{
+const IpConfigFields = ({
+  protocolVersion,
+  fieldName,
+  isDisabled,
+}: {
   fieldName: string;
   protocolVersion: ProtocolVersion;
-}> = ({ protocolVersion, fieldName }) => {
+  isDisabled: boolean;
+}) => {
   return (
     <Grid hasGutter>
-      <MachineNetwork fieldName={`${fieldName}.machineNetwork`} protocolVersion={protocolVersion} />
+      <MachineNetwork
+        fieldName={`${fieldName}.machineNetwork`}
+        protocolVersion={protocolVersion}
+        isDisabled={isDisabled}
+      />
       <InputField
         isRequired
         label="Default gateway"
@@ -120,12 +137,14 @@ const IpConfigFields: React.FC<{
         }
         name={`${fieldName}.gateway`}
         data-testid={`${protocolVersion}-gateway`}
+        isDisabled={isDisabled}
       />
       <InputField
         isRequired
         label="DNS"
         name={`${fieldName}.dns`}
         data-testid={`${protocolVersion}-dns`}
+        isDisabled={isDisabled}
       />
     </Grid>
   );
@@ -142,7 +161,7 @@ const protocolVersionOptions: FormSelectOptionProps[] = [
   },
 ];
 
-export const ProtocolTypeSelect: React.FC = () => {
+export const ProtocolTypeSelect = ({ isDisabled }: { isDisabled: boolean }) => {
   const selectFieldName = 'protocolType';
   const [{ value: protocolType }, , { setValue: setProtocolType }] =
     useField<StaticProtocolType>(selectFieldName);
@@ -164,11 +183,13 @@ export const ProtocolTypeSelect: React.FC = () => {
       callFormikOnChange={false}
       onChange={onChange}
       data-testid="select-protocol-version"
+      isDisabled={isDisabled}
     />
   );
 };
 export const FormViewNetworkWideFields: React.FC<{ hosts: FormViewHost[] }> = ({ hosts }) => {
   const { values, setFieldValue } = useFormikContext<FormViewNetworkWideValues>();
+  const { isViewerMode } = useClusterPermissions();
   return (
     <>
       <TextContent>
@@ -180,7 +201,7 @@ export const FormViewNetworkWideFields: React.FC<{ hosts: FormViewHost[] }> = ({
 
       {hosts.length > 0 && hostsConfiguredAlert}
 
-      <ProtocolTypeSelect />
+      <ProtocolTypeSelect isDisabled={isViewerMode} />
 
       <CheckboxField
         label={
@@ -195,6 +216,7 @@ export const FormViewNetworkWideFields: React.FC<{ hosts: FormViewHost[] }> = ({
         name="useVlan"
         data-testid="use-vlan"
         onChange={() => setFieldValue('vlanId', '')}
+        isDisabled={isViewerMode}
       />
 
       {values.useVlan && (
@@ -205,6 +227,7 @@ export const FormViewNetworkWideFields: React.FC<{ hosts: FormViewHost[] }> = ({
             isRequired
             data-testid="vlan-id"
             type={TextInputTypes.number}
+            isDisabled={isViewerMode}
           />
         </div>
       )}
@@ -217,6 +240,7 @@ export const FormViewNetworkWideFields: React.FC<{ hosts: FormViewHost[] }> = ({
           <IpConfigFields
             fieldName={`ipConfigs.${protocolVersion}`}
             protocolVersion={protocolVersion}
+            isDisabled={isViewerMode}
           ></IpConfigFields>
         </FormGroup>
       ))}

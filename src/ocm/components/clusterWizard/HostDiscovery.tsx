@@ -20,6 +20,7 @@ import ClusterWizardFooter from './ClusterWizardFooter';
 import ClusterWizardNavigation from './ClusterWizardNavigation';
 import { ClustersAPI } from '../../services/apis';
 import { HostDiscoveryService } from '../../services';
+import useClusterPermissions from '../../hooks/useClusterPermissions';
 
 const HostDiscoveryForm: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const { alerts } = useAlerts();
@@ -27,19 +28,21 @@ const HostDiscoveryForm: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const clusterWizardContext = useClusterWizardContext();
   const isAutoSaveRunning = useFormikAutoSave();
   const errorFields = getFormikErrorFields(errors, touched);
+  const { isViewerMode } = useClusterPermissions();
+
   const isNextDisabled =
-    !canNextHostDiscovery({ cluster }) ||
-    isAutoSaveRunning ||
     !isValid ||
     !!alerts.length ||
-    isSubmitting;
+    isAutoSaveRunning ||
+    isSubmitting ||
+    !canNextHostDiscovery({ cluster });
 
   const footer = (
     <ClusterWizardFooter
       cluster={cluster}
       errorFields={errorFields}
       isSubmitting={isSubmitting}
-      isNextDisabled={isNextDisabled}
+      isNextDisabled={!isViewerMode && isNextDisabled}
       onNext={() => clusterWizardContext.moveNext()}
       onBack={() => clusterWizardContext.moveBack()}
     />
@@ -55,13 +58,14 @@ const HostDiscoveryForm: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
 const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const dispatch = useDispatch();
   const { addAlert, clearAlerts } = useAlerts();
+  const { isViewerMode } = useClusterPermissions();
   const initialValues = React.useMemo(
     () => getHostDiscoveryInitialValues(cluster),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [], // just once, Formik does not reinitialize
   );
 
-  const handleSubmit: FormikConfig<HostDiscoveryValues>['onSubmit'] = async (values) => {
+  const onSubmit: FormikConfig<HostDiscoveryValues>['onSubmit'] = async (values) => {
     clearAlerts();
 
     const params: V2ClusterUpdateParams = {};
@@ -79,6 +83,7 @@ const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
     }
   };
 
+  const handleSubmit = isViewerMode ? () => Promise.resolve() : onSubmit;
   return (
     <Formik initialValues={initialValues} onSubmit={handleSubmit}>
       <HostDiscoveryForm cluster={cluster} />

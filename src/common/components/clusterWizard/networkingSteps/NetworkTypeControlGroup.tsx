@@ -6,12 +6,14 @@ import { NETWORK_TYPE_OVN, NETWORK_TYPE_SDN } from '../../../config';
 
 const GROUP_NAME = 'networkType';
 export interface NetworkTypeControlGroupProps {
+  isDisabled?: boolean;
   isSDNSelectable: boolean;
 }
 
-export const NetworkTypeControlGroup: React.FC<NetworkTypeControlGroupProps> = ({
+export const NetworkTypeControlGroup = ({
+  isDisabled = false,
   isSDNSelectable,
-}) => {
+}: NetworkTypeControlGroupProps) => {
   return (
     <FormGroup fieldId={GROUP_NAME} label="Network type">
       <Split hasGutter>
@@ -25,7 +27,7 @@ export const NetworkTypeControlGroup: React.FC<NetworkTypeControlGroupProps> = (
             <RadioField
               id={GROUP_NAME}
               name={GROUP_NAME}
-              isDisabled={!isSDNSelectable}
+              isDisabled={isDisabled || !isSDNSelectable}
               value={NETWORK_TYPE_SDN}
               label={
                 <>
@@ -44,6 +46,7 @@ export const NetworkTypeControlGroup: React.FC<NetworkTypeControlGroupProps> = (
           <RadioField
             id={GROUP_NAME}
             name={GROUP_NAME}
+            isDisabled={isDisabled}
             value={NETWORK_TYPE_OVN}
             label={
               <>

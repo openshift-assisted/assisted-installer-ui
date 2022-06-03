@@ -16,7 +16,7 @@ import ClusterDetailStatusVarieties, {
   useClusterStatusVarieties,
 } from './ClusterDetailStatusVarieties';
 
-const ClusterInstallationProgressCard: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
+const ClusterInstallationProgressCard = ({ cluster }: { cluster: Cluster }) => {
   const [isCardExpanded, setIsCardExpanded] = React.useState(cluster.status !== 'installed');
   const clusterVarieties = useClusterStatusVarieties(cluster);
 

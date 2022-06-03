@@ -10,6 +10,7 @@ import {
   Title,
   Split,
   SplitItem,
+  ButtonProps,
 } from '@patternfly/react-core';
 import {
   Cluster,
@@ -31,6 +32,7 @@ import { useClusterSupportedPlatforms } from '../../hooks';
 import { useFormikContext } from 'formik';
 import { ODFCheckbox } from './ODFCheckbox';
 import { CnvCheckbox } from './CnvCheckbox';
+import useClusterPermissions from '../../hooks/useClusterPermissions';
 
 const PlatformIntegrationLabel: React.FC = () => (
   <>
@@ -81,6 +83,7 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const isContainerNativeVirtualizationEnabled = useFeature('ASSISTED_INSTALLER_CNV_FEATURE');
   const isSNOCluster = isSNO(cluster);
   const isSchedulableMastersEnabled = !schedulableMastersAlwaysOn(cluster);
+  const { isViewerMode } = useClusterPermissions();
   const { setFieldValue } = useFormikContext<HostDiscoveryValues>();
   React.useEffect(() => {
     setFieldValue('schedulableMasters', getSchedulableMasters(cluster));
@@ -100,7 +103,9 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         <TextContent>
           <Text component="p">
             <DiscoveryImageModalButton
-              ButtonComponent={Button}
+              ButtonComponent={(props: ButtonProps) => (
+                <Button {...props} isDisabled={isViewerMode} />
+              )}
               cluster={cluster}
               idPrefix="host-inventory"
             />
@@ -111,14 +116,15 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         <StackItem>
           <CnvCheckbox
             clusterId={cluster.id}
-            isSNO={isSNOCluster}
             openshiftVersion={cluster.openshiftVersion}
+            isSNO={isSNOCluster}
+            isDisabled={isViewerMode}
           />
         </StackItem>
       )}
       {isOpenshiftClusterStorageEnabled && (
         <StackItem>
-          <ODFCheckbox openshiftVersion={cluster.openshiftVersion} />
+          <ODFCheckbox openshiftVersion={cluster.openshiftVersion} isDisabled={isViewerMode} />
         </StackItem>
       )}
       {isPlatformIntegrationFeatureEnabled && (
@@ -131,7 +137,8 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
                   content: platformIntegrationTooltip,
                 }}
                 isDisabled={
-                  !isPlatformIntegrationSupported && cluster?.platform?.type === 'baremetal'
+                  isViewerMode ||
+                  (!isPlatformIntegrationSupported && cluster?.platform?.type === 'baremetal')
                 }
                 name={'usePlatformIntegration'}
                 label={<PlatformIntegrationLabel />}
@@ -146,7 +153,7 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
             hidden: isSchedulableMastersEnabled,
             content: schedulableMastersTooltip,
           }}
-          isDisabled={!isSchedulableMastersEnabled}
+          isDisabled={isViewerMode || !isSchedulableMastersEnabled}
           name={'schedulableMasters'}
           label={<SchedulableMastersLabel />}
         />
@@ -157,7 +164,7 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         </TextContent>
       </StackItem>
       <StackItem>
-        <HostsDiscoveryTable cluster={cluster} />
+        <HostsDiscoveryTable cluster={cluster} isDisabled={isViewerMode} />
       </StackItem>
     </Stack>
   );
