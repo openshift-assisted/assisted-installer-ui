@@ -21,7 +21,7 @@ import {
 import { Host } from '../../api';
 import { HostStatus } from './types';
 
-export const hostStatus: HostStatus<Host['status']> = {
+export const hostStatus: HostStatus<Host['status']> = Object.freeze({
   'unbinding-pending-user-action': {
     key: 'unbinding-pending-user-action',
     title: 'Removing from cluster',
@@ -212,4 +212,4 @@ export const hostStatus: HostStatus<Host['status']> = {
     category: 'Installation related',
     icon: <AddCircleOIcon />,
   },
-};
+});

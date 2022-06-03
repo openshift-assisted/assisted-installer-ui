@@ -1,6 +1,7 @@
 import * as Yup from 'yup';
 import { Cluster, ManagedDomain } from '../../api';
 import { OpenshiftVersionOptionType } from '../../types';
+import { TangServer } from '../clusterConfiguration/DiskEncryptionFields/DiskEncryptionValues';
 import { FeatureSupportLevelData } from '../featureSupportLevels';
 import {
   dnsNameValidationSchema,
@@ -10,7 +11,7 @@ import {
 } from '../ui';
 import { ClusterDetailsValues } from './types';
 
-const emptyTangServers = () => {
+const emptyTangServers = (): TangServer[] => {
   return [
     {
       url: '',
@@ -19,7 +20,7 @@ const emptyTangServers = () => {
   ];
 };
 
-const parseTangServers = (tangServersString?: string) => {
+export const parseTangServers = (tangServersString?: string): TangServer[] => {
   if (!tangServersString) {
     return emptyTangServers();
   }
@@ -75,17 +76,30 @@ export const getClusterDetailsInitialValues = ({
   };
 };
 
-export const getClusterDetailsValidationSchema = (
-  usedClusterNames: string[],
-  featureSupportLevels: FeatureSupportLevelData,
-  pullSecretSet?: boolean,
-  ocpVersions?: OpenshiftVersionOptionType[],
-  validateUniqueName?: boolean,
-) =>
+export const getClusterDetailsValidationSchema = ({
+  usedClusterNames,
+  featureSupportLevels,
+  pullSecretSet,
+  ocpVersions,
+  validateUniqueName,
+  isOcm,
+}: {
+  usedClusterNames: string[];
+  featureSupportLevels: FeatureSupportLevelData;
+  pullSecretSet?: boolean;
+  ocpVersions?: OpenshiftVersionOptionType[];
+  validateUniqueName?: boolean;
+  isOcm?: boolean;
+}) =>
   Yup.lazy<{ baseDnsDomain: string }>((values) => {
     if (pullSecretSet) {
       return Yup.object({
-        name: nameValidationSchema(usedClusterNames, values.baseDnsDomain, validateUniqueName),
+        name: nameValidationSchema(
+          usedClusterNames,
+          values.baseDnsDomain,
+          validateUniqueName,
+          isOcm,
+        ),
         baseDnsDomain: dnsNameValidationSchema.required('Required'),
       });
     }

@@ -43,36 +43,38 @@ const ClusterWizardContextProvider: React.FC<
       return null;
     }
 
-    const onBackFromStaticIp = (nextStepId: ClusterWizardStepsType) => {
-      if (nextStepId !== 'cluster-details') {
-        return;
-      }
+    const handleMoveFromStaticIp = () => {
+      //if static ip view change wasn't persisted, moving from static ip step should change the wizard steps to match the view in the infra env
       const staticIpInfo = infraEnv ? getStaticIpInfo(infraEnv) : undefined;
       if (!staticIpInfo) {
         throw `Wizard step is currently ${currentStepId}, but no static ip info is defined`;
       }
-      //if static ip view change wasn't persisted, moving back should set the wizard steps according to the persisted view
       const newStepIds = getWizardStepIds(staticIpInfo.view);
       if (!isEqual(newStepIds, wizardStepIds)) {
         setWizardStepIds(newStepIds);
       }
     };
 
+    const onSetCurrentStepId = (stepId: ClusterWizardStepsType) => {
+      if (isStaticIpStep(currentStepId) && !isStaticIpStep(stepId)) {
+        handleMoveFromStaticIp();
+      }
+      setCurrentStepId(stepId);
+    };
+
     return {
       moveBack(): void {
         const currentStepIdx = wizardStepIds.indexOf(currentStepId);
         let nextStepId = wizardStepIds[currentStepIdx - 1];
-        if (isStaticIpStep(currentStepId)) {
-          onBackFromStaticIp(nextStepId);
-        } else if (nextStepId === 'static-ip-host-configurations') {
+        if (nextStepId === 'static-ip-host-configurations') {
           //when moving back to static ip form view, it should go to network wide configurations
           nextStepId = 'static-ip-network-wide-configurations';
         }
-        setCurrentStepId(nextStepId);
+        onSetCurrentStepId(nextStepId);
       },
       moveNext(): void {
         const currentStepIdx = wizardStepIds.indexOf(currentStepId);
-        setCurrentStepId(wizardStepIds[currentStepIdx + 1]);
+        onSetCurrentStepId(wizardStepIds[currentStepIdx + 1]);
       },
       onUpdateStaticIpView(view: StaticIpView): void {
         setWizardStepIds(getWizardStepIds(view));
@@ -91,7 +93,7 @@ const ClusterWizardContextProvider: React.FC<
       },
       wizardStepIds,
       currentStepId,
-      setCurrentStepId,
+      setCurrentStepId: onSetCurrentStepId,
     };
   }, [wizardStepIds, currentStepId, infraEnv]);
   if (!contextValue) {

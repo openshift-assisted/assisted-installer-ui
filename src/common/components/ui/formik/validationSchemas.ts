@@ -9,18 +9,27 @@ import { ProxyFieldsType } from '../../../types';
 import { trimCommaSeparatedList, trimSshPublicKey } from './utils';
 import { ClusterNetwork, MachineNetwork, ServiceNetwork } from '../../../api/types';
 import { allSubnetsIPv4 } from '../../../selectors';
+import {
+  CLUSTER_NAME_VALIDATION_MESSAGES,
+  HOSTNAME_VALIDATION_MESSAGES,
+  LOCATION_VALIDATION_MESSAGES,
+  NAME_VALIDATION_MESSAGES,
+} from './constants';
 
 const ALPHANUMBERIC_REGEX = /^[a-zA-Z0-9]+$/;
-const CLUSTER_NAME_REGEX = /^[a-z0-9]([-a-z0-9]*[a-z0-9])?$/;
+const NAME_START_END_REGEX = /^[a-z0-9](.*[a-z0-9])?$/;
+const NAME_CHARS_REGEX = /^[a-z0-9-.]*$/;
+const CLUSTER_NAME_CHARS_REGEX = /^[a-z0-9-]*$/;
+const CLUSTER_NAME_REGEX = /^[a-z0-9](.*[a-z0-9])?$/;
 const SSH_PUBLIC_KEY_REGEX =
   /^(ssh-rsa|ssh-ed25519|ecdsa-[-a-z0-9]*) AAAA[0-9A-Za-z+/]+[=]{0,3}( .+)?$/;
 const DNS_NAME_REGEX = /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/;
 const PROXY_DNS_REGEX =
   /^([a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62}){1}(\.[a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62})*[._]?$/;
-const NAME_CHARS_REGEX = /^[a-zA-Z0-9-.]*$/;
 const IP_V4_ZERO = '0.0.0.0';
 const IP_V6_ZERO = '0000:0000:0000:0000:0000:0000:0000:0000';
 const MAC_REGEX = /^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$/;
+const HOST_NAME_REGEX = /^[^.]{1,63}(?:[.][^.]{1,63})*$/;
 
 //Source of information: https://github.com/metal3-io/baremetal-operator/blob/main/docs/api.md#baremetalhost-spec
 const BMC_REGEX =
@@ -31,25 +40,43 @@ export const nameValidationSchema = (
   usedClusterNames: string[],
   baseDnsDomain = '',
   validateUniqueName?: boolean,
+  isOcm = false,
 ) =>
   Yup.string()
-    .matches(CLUSTER_NAME_REGEX, {
-      message:
-        'Name must consist of lower-case letters, numbers and hyphens. It must start and end with a letter or number.',
+    .required('Required')
+    .matches(CLUSTER_NAME_CHARS_REGEX, {
+      message: CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_VALUE,
       excludeEmptyString: true,
     })
-    .min(2, 'Must contain at least 2 characters.')
-    .max(54, 'Cannot be longer than 54 characters.')
-    .required('Required')
+    .matches(CLUSTER_NAME_REGEX, {
+      message: CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_START_END,
+      excludeEmptyString: true,
+    })
+    .min(
+      isOcm ? 1 : 2,
+      isOcm
+        ? CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_LENGTH_OCM
+        : CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_LENGTH_ACM,
+    )
+    .max(
+      54,
+      isOcm
+        ? CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_LENGTH_OCM
+        : CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_LENGTH_ACM,
+    )
     .when('useRedHatDnsService', {
       is: true,
-      then: Yup.string().test('is-name-unique', 'The name is already taken.', (value: string) => {
-        const clusterFullName = `${value}.${baseDnsDomain}`;
-        return !value || !usedClusterNames.includes(clusterFullName);
-      }),
+      then: Yup.string().test(
+        'is-name-unique',
+        CLUSTER_NAME_VALIDATION_MESSAGES.NOT_UNIQUE,
+        (value: string) => {
+          const clusterFullName = `${value}.${baseDnsDomain}`;
+          return !value || !usedClusterNames.includes(clusterFullName);
+        },
+      ),
       otherwise: Yup.string().test(
         'is-name-unique',
-        'The name is already taken.',
+        CLUSTER_NAME_VALIDATION_MESSAGES.NOT_UNIQUE,
         (value: string) => {
           // in CIM cluster name is ClusterDeployment CR name which must be unique
           return validateUniqueName ? !value || !usedClusterNames.includes(value) : true;
@@ -302,18 +329,6 @@ export const hostPrefixValidationSchema = ({
   return Yup.number().required(requiredText);
 };
 
-export const NAME_VALIDATION_MESSAGES = {
-  INVALID_LENGTH: '1-253 characters',
-  NOT_UNIQUE: 'Must be unique',
-  INVALID_VALUE: 'Use alphanumberic characters, dot (.) or hyphen (-)',
-  INVALID_START_END: 'Must start and end with an alphanumeric character',
-};
-
-export const HOSTNAME_VALIDATION_MESSAGES = {
-  ...NAME_VALIDATION_MESSAGES,
-  LOCALHOST_ERR: 'Cannot be the word "localhost"',
-};
-
 export const richNameValidationSchema = (usedNames: string[], origName?: string) =>
   Yup.string()
     .min(1, NAME_VALIDATION_MESSAGES.INVALID_LENGTH)
@@ -327,13 +342,14 @@ export const richNameValidationSchema = (usedNames: string[], origName?: string)
           return true;
         }
         return (
-          !!trimmed[0].match(ALPHANUMBERIC_REGEX) &&
+          !!trimmed[0].match(NAME_START_END_REGEX) &&
           (trimmed[trimmed.length - 1]
-            ? !!trimmed[trimmed.length - 1].match(ALPHANUMBERIC_REGEX)
+            ? !!trimmed[trimmed.length - 1].match(NAME_START_END_REGEX)
             : true)
         );
       },
     )
+    .matches(HOST_NAME_REGEX, NAME_VALIDATION_MESSAGES.INVALID_FORMAT)
     .matches(NAME_CHARS_REGEX, {
       message: NAME_VALIDATION_MESSAGES.INVALID_VALUE,
       excludeEmptyString: true,
@@ -343,13 +359,8 @@ export const richNameValidationSchema = (usedNames: string[], origName?: string)
         return true;
       }
       return !usedNames.find((n) => n === value);
-    });
-
-export const hostnameValidationSchema = (origHostname: string, usedHostnames: string[]) =>
-  nameValidationSchema(usedHostnames, origHostname).notOneOf(
-    ['localhost', 'localhost.localdomain'],
-    HOSTNAME_VALIDATION_MESSAGES.LOCALHOST_ERR,
-  );
+    })
+    .notOneOf(['localhost', 'localhost.localdomain'], HOSTNAME_VALIDATION_MESSAGES.LOCALHOST_ERR);
 
 const httpProxyValidationMessage = 'Provide a valid HTTP URL.';
 export const httpProxyValidationSchema = (
@@ -447,12 +458,6 @@ export const bmcAddressValidationSchema = Yup.string().matches(BMC_REGEX, {
   message: 'Value "${value}" is not valid BMC address.', // eslint-disable-line no-template-curly-in-string
   excludeEmptyString: true,
 });
-
-export const LOCATION_VALIDATION_MESSAGES = {
-  INVALID_LENGTH: '1-63 characters',
-  INVALID_VALUE: 'Use alphanumberic characters, dot (.), underscore (_) or hyphen (-)',
-  INVALID_START_END: 'Must start and end with an alphanumeric character',
-};
 
 export const locationValidationSchema = Yup.string()
   .min(1, LOCATION_VALIDATION_MESSAGES.INVALID_LENGTH)

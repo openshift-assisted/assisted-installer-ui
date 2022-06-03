@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  areOnlySoftValidationsFailing,
+  areOnlySoftValidationsOfWizardStepFailing,
   getWizardStepHostStatus,
   getWizardStepHostValidationsInfo,
   HostNetworkingStatusComponentProps,
@@ -22,7 +22,7 @@ const NetworkingStatus: React.FC<HostNetworkingStatusComponentProps> = (props) =
     'networking',
     wizardStepsValidationsMap,
   );
-  status.sublabel = areOnlySoftValidationsFailing(
+  const sublabel = areOnlySoftValidationsOfWizardStepFailing(
     validationsInfo,
     'networking',
     wizardStepsValidationsMap,
@@ -33,7 +33,7 @@ const NetworkingStatus: React.FC<HostNetworkingStatusComponentProps> = (props) =
   return (
     <HostStatus
       {...props}
-      status={status}
+      status={{ ...status, sublabel }}
       validationsInfo={validationsInfo}
       AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
     />

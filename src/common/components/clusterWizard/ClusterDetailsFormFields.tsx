@@ -8,7 +8,13 @@ import OpenShiftVersionSelect from '../clusterConfiguration/OpenShiftVersionSele
 import { PullSecret } from '../clusters';
 import { ManagedDomain } from '../../api';
 import { OpenshiftVersionOptionType } from '../../types';
-import { CheckboxField, InputField, SelectField } from '../ui/formik';
+import {
+  CheckboxField,
+  InputField,
+  RichInputField,
+  SelectField,
+  ACM_CLUSTER_NAME_VALIDATION_MESSAGES,
+} from '../ui/formik';
 import DiskEncryptionControlGroup from '../clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
 import { ClusterDetailsValues } from './types';
 import { isSNO } from '../../selectors/clusterSelectors';
@@ -65,12 +71,13 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
   // TODO(mlibra): Disable fields based on props passed from the caller context. In CIM, the name or domain can not be edited.
   return (
     <Form id="wizard-cluster-details__form">
-      <InputField
+      <RichInputField
         ref={nameInputRef}
         label="Cluster name"
         name="name"
         placeholder={isOcm ? '' : 'Enter cluster name'}
         isDisabled={isNameDisabled}
+        richValidationMessages={ACM_CLUSTER_NAME_VALIDATION_MESSAGES}
         isRequired
       />
       {extensionAfter?.['name'] && extensionAfter['name']}

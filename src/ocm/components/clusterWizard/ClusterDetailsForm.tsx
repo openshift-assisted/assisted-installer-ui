@@ -10,6 +10,7 @@ import {
   ClusterWizardStepHeader,
   getClusterDetailsValidationSchema,
   InfraEnv,
+  getRichTextValidation,
 } from '../../../common';
 import { Grid, GridItem } from '@patternfly/react-core';
 import { canNextClusterDetails } from './wizardTransition';
@@ -70,12 +71,10 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
     submitForm: FormikHelpers<unknown>['submitForm'],
     cluster?: Cluster,
   ): (() => Promise<void> | void) => {
-    let fn: () => Promise<void> | void = submitForm;
     if (!dirty && !isUndefined(cluster) && canNextClusterDetails({ cluster })) {
-      fn = moveNext;
+      return moveNext;
     }
-
-    return fn;
+    return submitForm;
   };
 
   const initialValues = React.useMemo(
@@ -90,17 +89,18 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
     [cluster, pullSecret, managedDomains, ocpVersions, infraEnv],
   );
 
-  const validationSchema = getClusterDetailsValidationSchema(
+  const validationSchema = getClusterDetailsValidationSchema({
     usedClusterNames,
     featureSupportLevels,
-    cluster?.pullSecretSet,
+    pullSecretSet: cluster?.pullSecretSet,
     ocpVersions,
-  );
+    isOcm: true,
+  });
 
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={validationSchema}
+      validate={getRichTextValidation(validationSchema)}
       onSubmit={handleSubmit}
     >
       {({ submitForm, isSubmitting, isValid, dirty, setFieldValue, errors, touched }) => {
