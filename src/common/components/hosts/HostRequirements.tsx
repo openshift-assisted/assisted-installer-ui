@@ -42,14 +42,12 @@ export const HostRequirementsList: React.FC<HostRequirementsListProps> = ({
           </ListItem>
         </>
       )}
-      {(isSNOCluster === true || isSNOCluster === undefined) && (
-        <>
-          <ListItem>
-            SNO: One host is required with at least {sno?.cpuCores || 4} CPU cores, {snoRam} of RAM,
-            and {sno?.diskSizeGb || 120} GB of disk size storage.
-          </ListItem>
-        </>
-      )}
+      <>
+        <ListItem>
+          SNO: One host is required with at least {sno?.cpuCores || 4} CPU cores, {snoRam} of RAM,
+          and {sno?.diskSizeGb || 100} GB of disk size storage.
+        </ListItem>
+      </>
       <ListItem>
         Also note that each host's disk write speed should meet the minimum requirements to run
         OpenShift.{' '}
