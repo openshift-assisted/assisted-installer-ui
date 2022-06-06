@@ -46,18 +46,22 @@ export const DefaultExpandComponent: React.FC<ExpandComponentProps<Host>> = ({ o
   <HostDetail key={obj.id} host={obj} />
 );
 
-type HostsTableProps = ReturnType<typeof usePagination> & {
-  hosts: Host[];
-  skipDisabled?: boolean;
-  content: AITableProps<Host>['content'];
-  actionResolver?: AITableProps<Host>['actionResolver'];
-  children: React.ReactNode;
-  onSelect?: AITableProps<Host>['onSelect'];
-  selectedIDs?: AITableProps<Host>['selectedIDs'];
-  setSelectedHostIDs?: AITableProps<Host>['setSelectedIDs'];
-  ExpandComponent?: AITableProps<Host>['ExpandComponent'];
-  className?: AITableProps<Host>['className'];
-};
+type HostsTableProps = ReturnType<typeof usePagination> &
+  Pick<
+    AITableProps<Host>,
+    | 'content'
+    | 'actionResolver'
+    | 'onSelect'
+    | 'selectedIDs'
+    | 'setSelectedIDs'
+    | 'ExpandComponent'
+    | 'className'
+    | 'canSelectAll'
+  > & {
+    hosts: Host[];
+    skipDisabled?: boolean;
+    children: React.ReactNode;
+  };
 
 const HostsTable: React.FC<HostsTableProps & WithTestID> = ({ hosts, skipDisabled, ...rest }) => {
   const data = React.useMemo(

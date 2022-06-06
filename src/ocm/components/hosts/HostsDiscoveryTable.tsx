@@ -141,7 +141,7 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({
             ExpandComponent={getExpandComponent(onDiskRole, actionChecks.canEditDisks)}
             onSelect={onSelect}
             selectedIDs={selectedHostIDs}
-            setSelectedHostIDs={setSelectedHostIDs}
+            setSelectedIDs={setSelectedHostIDs}
             {...paginationProps}
           >
             <HostsTableEmptyState
