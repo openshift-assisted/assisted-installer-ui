@@ -12,7 +12,6 @@ export const canAddHost = ({ cluster }: { cluster: OcmClusterType }) => {
       return (
         cluster.state === 'ready' &&
         cluster.product?.id === 'OCP-AssistedInstall' &&
-        cluster.cloud_provider?.id === 'baremetal' &&
         cluster.metrics?.nodes?.total &&
         cluster.metrics?.nodes?.total > 1
       );
