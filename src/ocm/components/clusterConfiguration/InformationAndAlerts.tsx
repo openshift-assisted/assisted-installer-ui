@@ -1,23 +1,16 @@
 import React from 'react';
 import { Text } from '@patternfly/react-core';
-import {
-  Cluster,
-  HostsNotShowingLink,
-  HostsNotShowingLinkProps,
-  VMRebootConfigurationInfo,
-  FormatDiskWarning,
-  isSNO,
-} from '../../../common';
-import { HostRequirementsLink, HostRequirementsLinkProps } from '../fetching/HostRequirements';
+import { Cluster, VMRebootConfigurationInfo, FormatDiskWarning, isSNO } from '../../../common';
 import OCSDisksManualFormattingHint from '../hosts/OCSDisksManualFormattingHint';
 import { isAddHostsCluster } from '../clusters/utils';
 import { isAHostVM } from '../hosts/utils';
+import InfoLinkWithModal from '../ui/InfoLinkWithModal';
+import HostRequirementsContent from '../hosts/HostRequirementsContent';
+import HostsDiscoveryTroubleshootingInfoLinkWithModal from '../hosts/HostsDiscoveryTroubleshootingInfoLinkWithModal';
 
 const InformationAndAlerts: React.FC<{
   cluster: Cluster;
-  HostRequirementsContent: HostRequirementsLinkProps['ContentComponent'];
-  setDiscoveryHintModalOpen: HostsNotShowingLinkProps['setDiscoveryHintModalOpen'];
-}> = ({ cluster, HostRequirementsContent, setDiscoveryHintModalOpen }) => {
+}> = ({ cluster }) => {
   const isVM = React.useMemo(() => isAHostVM(cluster.hosts || []), [cluster.hosts]);
   const isSNOCluster = isSNO(cluster);
 
@@ -25,11 +18,18 @@ const InformationAndAlerts: React.FC<{
     <>
       <Text component="h3">Information and warnings</Text>
       <Text component="p">
-        <HostRequirementsLink clusterId={cluster.id} ContentComponent={HostRequirementsContent} />
-        <HostsNotShowingLink
-          isSNO={isSNOCluster}
-          setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
-        />
+        <InfoLinkWithModal
+          linkText={'Minimum hardware requirements'}
+          modalTitle={'Minimum hardware requirements'}
+        >
+          <HostRequirementsContent
+            clusterId={cluster.id}
+            isSingleNode={isSNOCluster}
+            isAddingHosts={isAddHostsCluster(cluster)}
+          />
+        </InfoLinkWithModal>
+        &nbsp;
+        <HostsDiscoveryTroubleshootingInfoLinkWithModal isSingleNode={isSNOCluster} />
       </Text>
       {isVM && <VMRebootConfigurationInfo />}
       {!isAddHostsCluster(cluster) && <OCSDisksManualFormattingHint />}
