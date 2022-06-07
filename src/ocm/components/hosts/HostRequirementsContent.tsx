@@ -52,7 +52,7 @@ const HostRequirementsContent = ({
     content = (
       <TextContent>
         <Text component="p">
-          {`One host is required with at least ${contentForControlPlaneNodes}`}.
+          {`One host is required with at least ${contentForControlPlaneNodes}`}
         </Text>
       </TextContent>
     );
