@@ -17,7 +17,6 @@ import {
   useFeature,
   isSNO,
   ClusterWizardStepHeader,
-  DiscoveryTroubleshootingModal,
   DiscoveryInstructions,
   SwitchField,
   schedulableMastersAlwaysOn,
@@ -27,10 +26,6 @@ import {
 import HostsDiscoveryTable from '../hosts/HostsDiscoveryTable';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
 import InformationAndAlerts from './InformationAndAlerts';
-import {
-  HostRequirementsContent,
-  SingleHostRequirementsContent,
-} from '../hosts/HostRequirementsContent';
 import ClusterWizardHeaderExtraActions from './ClusterWizardHeaderExtraActions';
 import { useClusterSupportedPlatforms } from '../../hooks';
 import { useFormikContext } from 'formik';
@@ -80,7 +75,6 @@ const schedulableMastersTooltip =
   'This toggle will be "On" and not editable when less than 5 hosts were discovered';
 
 const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
-  const [isDiscoveryHintModalOpen, setDiscoveryHintModalOpen] = React.useState(false);
   const { isPlatformIntegrationSupported } = useClusterSupportedPlatforms(cluster.id);
   const isPlatformIntegrationFeatureEnabled = useFeature(
     'ASSISTED_INSTALLER_PLATFORM_INTEGRATION_FEATURE',
@@ -161,25 +155,12 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
       </StackItem>
       <StackItem>
         <TextContent>
-          <InformationAndAlerts
-            cluster={cluster}
-            HostRequirementsContent={
-              isSNOCluster ? SingleHostRequirementsContent : HostRequirementsContent
-            }
-            setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
-          />
+          <InformationAndAlerts cluster={cluster} />
         </TextContent>
       </StackItem>
       <StackItem>
-        <HostsDiscoveryTable
-          cluster={cluster}
-          setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
-        />
+        <HostsDiscoveryTable cluster={cluster} />
       </StackItem>
-      <DiscoveryTroubleshootingModal
-        isOpen={isDiscoveryHintModalOpen}
-        setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
-      />
     </Stack>
   );
 };
