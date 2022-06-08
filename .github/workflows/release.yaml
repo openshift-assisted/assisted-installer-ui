@@ -12,11 +12,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
+          token: ${{ secrets.PUSH_TO_PROTECTED_BRANCH }}
           fetch-depth: 0
 
       - name: Configuring git
         run: |
-          git config user.name github-actions
+          git config user.name ${{ github.actor }}
           git config user.email github-actions@github.com
 
       # expected format of the new git tag: v1.2.3
@@ -47,12 +48,8 @@ jobs:
           git push origin ${{ github.ref_name }} --force
 
       - name: Pushing updated package.json to ${{ github.event.release.target_commitish }}
-        uses: CasperWA/push-protected@v2
-        with:
-          token: ${{ secrets.PUSH_TO_PROTECTED_BRANCH }}
-          branch: ${{ github.event.release.target_commitish }}
-          force: true
-          unprotect_reviews: true
+        run: |
+          git push origin ${{ github.event.release.target_commitish }} --force
 
       - name: Building
         run: yarn build
