@@ -175,7 +175,13 @@ export const VirtualIPControlGroup = ({
         </>
       ) : (
         <>
-          <InputField label="API IP" name="apiVip" helperText={apiVipHelperText} isRequired isDisabled={isViewerMode}/>
+          <InputField
+            label="API IP"
+            name="apiVip"
+            helperText={apiVipHelperText}
+            isRequired
+            isDisabled={isViewerMode}
+          />
 
           <InputField
             name="ingressVip"

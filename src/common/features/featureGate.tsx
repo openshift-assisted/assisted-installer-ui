@@ -11,7 +11,11 @@ export type FeatureListType = {
   [key in AssistedInstallerFeatureType]?: boolean;
 };
 
-export type AssistedInstallerPermissionTypes = 'canEdit';
+export type AssistedInstallerOCMPermissionTypes = 'canEdit';
+export type AssistedInstallerOCMPermissionTypesListType = {
+  [key in AssistedInstallerOCMPermissionTypes]: boolean;
+};
+export type AssistedInstallerPermissionTypes = 'isViewerMode';
 export type AssistedInstallerPermissionTypesListType = {
   [key in AssistedInstallerPermissionTypes]: boolean;
 };

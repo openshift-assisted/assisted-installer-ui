@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  AssistedInstallerPermissionTypesListType,
-  Cluster,
-  InfraEnv,
-  InfraEnvUpdateParams,
-  LoadingState,
-} from '../../../common';
+import { Cluster, InfraEnv, InfraEnvUpdateParams, LoadingState } from '../../../common';
 import NetworkConfigurationPage from '../clusterConfiguration/networkConfiguration/NetworkConfigurationForm';
 import ReviewStep from '../clusterConfiguration/ReviewStep';
 import { useClusterWizardContext } from './ClusterWizardContext';

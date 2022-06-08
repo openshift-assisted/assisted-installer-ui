@@ -81,7 +81,7 @@ export const AvailableSubnetsControl = ({
             toFormSelectOptions(machineSubnets),
           );
     },
-    [hostSubnets],
+    [],
   );
 
   return (

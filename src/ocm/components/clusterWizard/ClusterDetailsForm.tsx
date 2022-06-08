@@ -38,7 +38,7 @@ type ClusterDetailsFormProps = {
   handleClusterUpdate: (clusterId: Cluster['id'], params: V2ClusterUpdateParams) => Promise<void>;
 };
 
-const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
+const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
   const {
     cluster,
     infraEnv,
@@ -53,7 +53,9 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
   } = props;
 
   const { search } = useLocation();
-  const { isViewerMode } = useClusterPermissions();
+  // Allow creation of new clusters on Standalone UI configured with isViewerMode
+  const { isViewerMode: realViewerMode } = useClusterPermissions();
+  const isViewerMode = !!cluster && realViewerMode;
   const featureSupportLevels = useFeatureSupportLevel();
   const handleSubmit = React.useCallback(
     async (values: OcmClusterDetailsValues) => {

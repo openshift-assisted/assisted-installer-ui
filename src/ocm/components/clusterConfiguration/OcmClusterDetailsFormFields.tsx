@@ -60,7 +60,8 @@ export const OcmClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps
   clusterExists,
 }) => {
   const { values } = useFormikContext<ClusterDetailsValues>();
-  const { isViewerMode } = useClusterPermissions();
+  const { isViewerMode: realViewerMode } = useClusterPermissions();
+  const isViewerMode = clusterExists && realViewerMode;
   const { name, baseDnsDomain, highAvailabilityMode, useRedHatDnsService } = values;
   const nameInputRef = React.useRef<HTMLInputElement>();
   React.useEffect(() => {

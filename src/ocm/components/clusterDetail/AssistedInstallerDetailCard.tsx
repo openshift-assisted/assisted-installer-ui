@@ -11,7 +11,7 @@ import {
   ErrorState,
   LoadingState,
   FeatureListType,
-  AssistedInstallerPermissionTypesListType,
+  AssistedInstallerOCMPermissionTypesListType,
 } from '../../../common';
 import { useClusterPolling, useFetchCluster } from '../clusters/clusterPolling';
 import ClusterWizard from '../clusterWizard/ClusterWizard';
@@ -25,12 +25,11 @@ import { FeatureSupportLevelProvider } from '../featureSupportLevels';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { SentryErrorMonitorContextProvider } from '../SentryErrorMonitorContextProvider';
 import ClusterWizardContextProvider from '../clusterWizard/ClusterWizardContextProvider';
-import useClusterPermissions from '../../hooks/useClusterPermissions';
 
 type AssistedInstallerDetailCardProps = {
   aiClusterId: string;
   allEnabledFeatures: FeatureListType;
-  permissions?: AssistedInstallerPermissionTypesListType;
+  permissions?: AssistedInstallerOCMPermissionTypesListType;
 };
 
 const errorStateActions: React.ReactNode[] = [];

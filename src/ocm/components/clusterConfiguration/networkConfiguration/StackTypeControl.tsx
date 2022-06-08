@@ -55,7 +55,8 @@ export const StackTypeControlGroup = ({
   const IPv6Subnets = hostSubnets.filter((subnet) => Address6.isValid(subnet.subnet));
   const cidrIPv6 = IPv6Subnets.length >= 1 ? IPv6Subnets[0].subnet : NO_SUBNET_SET;
   const { isViewerMode } = useClusterPermissions();
-  const shouldSetSingleStack = !isViewerMode && !isDualStackSelectable && values.stackType === DUAL_STACK;
+  const shouldSetSingleStack =
+    !isViewerMode && !isDualStackSelectable && values.stackType === DUAL_STACK;
 
   const setSingleStack = React.useCallback(() => {
     setFieldValue('stackType', IPV4_STACK);

@@ -1,7 +1,7 @@
 import findIndex from 'lodash/findIndex';
 import set from 'lodash/set';
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { Cluster, Host } from '../../../common';
+import { AssistedInstallerPermissionTypesListType, Cluster, Host } from '../../../common';
 import { handleApiError } from '../../api/utils';
 import { ResourceUIState } from '../../../common';
 import { ClustersAPI } from '../../services/apis';
@@ -16,6 +16,7 @@ type CurrentClusterStateSlice = {
   data?: Cluster;
   uiState: ResourceUIState;
   isReloadScheduled: number;
+  permissions: AssistedInstallerPermissionTypesListType;
   errorDetail?: RetrievalErrorType;
 };
 
@@ -41,6 +42,7 @@ export const fetchClusterAsync = createAsyncThunk<
 const initialState: CurrentClusterStateSlice = {
   data: undefined,
   uiState: ResourceUIState.LOADING,
+  permissions: { isViewerMode: false },
   errorDetail: undefined,
   isReloadScheduled: 0,
 };
@@ -74,6 +76,13 @@ export const currentClusterSlice = createSlice({
       ...state,
       isReloadScheduled: 0,
     }),
+    updateClusterPermissions: (
+      state,
+      action: PayloadAction<AssistedInstallerPermissionTypesListType>,
+    ) => ({
+      ...state,
+      permissions: action.payload,
+    }),
   },
   extraReducers: (builder) => {
     builder
@@ -104,5 +113,6 @@ export const {
   cleanCluster,
   forceReload,
   cancelForceReload,
+  updateClusterPermissions,
 } = currentClusterSlice.actions;
 export default currentClusterSlice.reducer;
