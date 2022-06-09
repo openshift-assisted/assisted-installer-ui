@@ -67,7 +67,8 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   const clusterFeatureSupportLevels = React.useMemo(() => {
     return getLimitedFeatureSupportLevels(cluster, featureSupportLevelData);
   }, [cluster, featureSupportLevelData]);
-  const isMultiNodeCluster = !isSNO(cluster);
+  const isSNOCluster = isSNO(cluster);
+  const isMultiNodeCluster = !isSNOCluster;
   const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';
   const isDualStack = values.stackType === DUAL_STACK;
 
@@ -78,10 +79,10 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
 
   const { defaultNetworkType, isSDNSelectable } = React.useMemo(() => {
     return {
-      defaultNetworkType: getDefaultNetworkType(!isMultiNodeCluster, isDualStack),
-      isSDNSelectable: canSelectNetworkTypeSDN(!isMultiNodeCluster, isDualStack),
+      defaultNetworkType: getDefaultNetworkType(isSNOCluster, isDualStack),
+      isSDNSelectable: canSelectNetworkTypeSDN(isSNOCluster, isDualStack),
     };
-  }, [isMultiNodeCluster, isDualStack]);
+  }, [isSNOCluster, isDualStack]);
 
   const [isAdvanced, setAdvanced] = React.useState(
     isAdvNetworkConf(cluster, defaultNetworkSettings, defaultNetworkType) || isDualStack,
@@ -118,14 +119,14 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
       if (!checked) {
         setFieldValue('clusterNetworks', defaultNetworkSettings.clusterNetworks, true);
         setFieldValue('serviceNetworks', defaultNetworkSettings.serviceNetworks, true);
-        setFieldValue('networkType', getDefaultNetworkType(!isMultiNodeCluster, isDualStack));
+        setFieldValue('networkType', getDefaultNetworkType(isSNOCluster, isDualStack));
       }
     },
     [
       setFieldValue,
       defaultNetworkSettings.clusterNetworks,
       defaultNetworkSettings.serviceNetworks,
-      isMultiNodeCluster,
+      isSNOCluster,
       isDualStack,
     ],
   );
@@ -164,10 +165,11 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
         clusterFeatureSupportLevels['CLUSTER_MANAGED_NETWORKING_WITH_VMS'] === 'unsupported' &&
         vmsAlert}
 
-      {!isUserManagedNetworking && (
+      {(isSNOCluster || !isUserManagedNetworking) && (
         <StackTypeControlGroup
           clusterId={cluster.id}
           isDualStackSelectable={isDualStackSelectable}
+          isSNO={isSNOCluster}
         />
       )}
 
