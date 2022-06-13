@@ -23,6 +23,7 @@ import { ClusterDetailsService } from '../../services';
 
 import { OcmClusterDetailsValues } from '../../services/types';
 import { OcmClusterDetailsFormFields } from '../clusterConfiguration/OcmClusterDetailsFormFields';
+import { useLocation } from 'react-router-dom';
 
 type ClusterDetailsFormProps = {
   cluster?: Cluster;
@@ -66,6 +67,11 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
     [cluster, handleClusterCreate, handleClusterUpdate],
   );
 
+  const { search } = useLocation();
+  const params = new URLSearchParams(search);
+  const isArm = params.get('useArm') === 'true';
+  console.log('params', params);
+
   const handleOnNext = (
     dirty: boolean,
     submitForm: FormikHelpers<unknown>['submitForm'],
@@ -85,6 +91,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
         pullSecret,
         managedDomains,
         ocpVersions,
+        isArm,
       }),
     [cluster, pullSecret, managedDomains, ocpVersions, infraEnv],
   );

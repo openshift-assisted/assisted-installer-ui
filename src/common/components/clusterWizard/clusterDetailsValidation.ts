@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import { Cluster, ManagedDomain } from '../../api';
-import { OpenshiftVersionOptionType } from '../../types';
+import { CpuArchitecture, OpenshiftVersionOptionType } from '../../types';
 import { TangServer } from '../clusterConfiguration/DiskEncryptionFields/DiskEncryptionValues';
 import { FeatureSupportLevelData } from '../featureSupportLevels';
 import {
@@ -10,6 +10,8 @@ import {
   pullSecretValidationSchema,
 } from '../ui';
 import { ClusterDetailsValues } from './types';
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const emptyTangServers = (): TangServer[] => {
   return [
@@ -54,6 +56,10 @@ export const getClusterDetailsInitialValues = ({
     baseDnsDomain = baseDomain || '',
     openshiftVersion = getDefaultOpenShiftVersion(ocpVersions),
   } = cluster || {};
+
+  // const params = new URLSearchParams(window.location.search);
+  // if (params.has('arm') && params.get('arm') === 'new') {
+  // }
 
   return {
     name,
