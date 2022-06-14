@@ -138,6 +138,7 @@ export type AITableProps<R> = ReturnType<typeof usePagination> & {
   className?: string;
   actionResolver?: ActionsResolver<R>;
   canSelectAll?: boolean;
+  isStorageTable?: boolean;
 };
 // eslint-disable-next-line
 const AITable = <R extends any>({
@@ -159,6 +160,7 @@ const AITable = <R extends any>({
   showPagination,
   perPageOptions,
   canSelectAll,
+  isStorageTable,
 }: WithTestID & AITableProps<R>) => {
   const itemIDs = React.useMemo(() => data.map(getDataId), [data, getDataId]);
   React.useEffect(() => {

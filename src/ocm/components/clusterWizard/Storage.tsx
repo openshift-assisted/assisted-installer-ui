@@ -7,8 +7,9 @@ import {
   FormikAutoSave,
   ClusterWizardStep,
   useAlerts,
-  getHostDiscoveryInitialValues, getStorageInitialValues
-} from "../../../common";
+  getHostDiscoveryInitialValues,
+  getStorageInitialValues,
+} from '../../../common';
 import { StorageValues } from '../../../common/types/clusters';
 import ClusterWizardContext from './ClusterWizardContext';
 import ClusterWizardFooter from './ClusterWizardFooter';

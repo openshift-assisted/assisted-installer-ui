@@ -28,6 +28,7 @@ import { countColumn, hostnameColumn } from '../../../common/components/hosts/ta
 
 const getExpandComponent =
   (onDiskRole: onDiskRoleType, canEditDisks: (host: Host) => boolean) =>
+  // eslint-disable-next-line react/display-name
   ({ obj: host }: ExpandComponentProps<Host>) =>
     (
       <StorageDetail
@@ -63,8 +64,7 @@ const StorageStepTable: React.FC<StorageTableProps> = ({ cluster, setDiscoveryHi
       (operator) => operator.name && operator.name === OPERATOR_NAME_ODF,
     );
 
-  const isCompact = cluster.hosts &&
-    cluster.hosts.length <=3;
+  const isCompact = cluster.hosts && cluster.hosts.length <= 3;
 
   const content = React.useMemo(
     () =>
@@ -74,10 +74,11 @@ const StorageStepTable: React.FC<StorageTableProps> = ({ cluster, setDiscoveryHi
         hardwareStatusColumn(),
         totalStorageColumn,
         numberOfDisks(),
-      ].concat(isODFUsage ? [ODFUsage(isCompact)].concat(countColumn(cluster)) : [countColumn(cluster)]),
+      ].concat(
+        isODFUsage ? [ODFUsage(isCompact)].concat(countColumn(cluster)) : [countColumn(cluster)],
+      ),
     [onEditHost, actionChecks.canEditHostname, cluster],
   );
-
 
   const hosts = cluster.hosts || [];
   const paginationProps = usePagination(hosts.length);

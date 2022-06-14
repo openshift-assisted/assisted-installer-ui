@@ -4,17 +4,18 @@ import {
   getHostRole,
   getInventory,
   Host,
-  hostStatus, MonitoredOperator, OPERATOR_NAME_ODF,
+  hostStatus,
+  MonitoredOperator,
+  OPERATOR_NAME_ODF,
   RoleCell,
-  stringToJSON
-} from "../../../common";
+  stringToJSON,
+} from '../../../common';
 import { TableRow } from './StorageAITable';
 import { getHostRowHardwareInfo } from '../../../common/components/hosts/hardwareInfo';
 import { ValidationsInfo } from '../../../common/types/hosts';
 import HostPropertyValidationPopover from '../../../common/components/hosts/HostPropertyValidationPopover';
 import { Flex, FlexItem, Stack, StackItem } from '@patternfly/react-core';
 import { UnknownIcon } from '@patternfly/react-icons';
-
 
 export const ODFUsageStatus = (host: Host, isCompact?: boolean): string => {
   if (!isCompact && host.role === 'master') {

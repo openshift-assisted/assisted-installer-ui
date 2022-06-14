@@ -163,7 +163,7 @@ export const getStorageInitialValues = (cluster: Cluster): StorageValues => {
   //DOTO (dchason): add initial values to node labeling
   return {
     nodeLabeling: '',
-  }
+  };
 };
 
 export function filterValidationsInfoByGroup(

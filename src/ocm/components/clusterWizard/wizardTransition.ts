@@ -144,7 +144,7 @@ export const wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardSt
   'static-ip-host-configurations': staticIpValidationsMap,
   'host-discovery': hostDiscoveryStepValidationsMap,
   storage: storageStepValidationsMap,
-//TODO: edit validation map for storage when information from BE (i.e node labeling) will be available
+  //TODO: edit validation map for storage when information from BE (i.e node labeling) will be available
   networking: networkingStepValidationsMap,
   review: reviewStepValidationsMap,
 };
@@ -173,12 +173,8 @@ export const canNextHostDiscovery = ({ cluster }: TransitionProps): boolean =>
   ) === 'ready';
 
 export const canNextStorage = ({ cluster }: TransitionProps): boolean =>
-  getWizardStepClusterStatus(
-    'storage',
-    wizardStepsValidationsMap,
-    cluster,
-    cluster.hosts,
-  ) === 'ready';
+  getWizardStepClusterStatus('storage', wizardStepsValidationsMap, cluster, cluster.hosts) ===
+  'ready';
 
 export const canNextNetwork = ({ cluster }: TransitionProps): boolean =>
   getWizardStepClusterStatus('networking', wizardStepsValidationsMap, cluster, cluster.hosts) ===
