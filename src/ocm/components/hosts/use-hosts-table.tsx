@@ -270,10 +270,13 @@ export const useHostsTable = (cluster: Cluster) => {
     },
     [selectedHostIDs],
   );
-  const onMassChangeHostname = React.useCallback(
-    () => massUpdateHostnameDialog.open({ hostIDs: selectedHostIDs, cluster }),
-    [selectedHostIDs, cluster, massUpdateHostnameDialog],
-  );
+  const onMassChangeHostname = React.useCallback(() => {
+    if (selectedHostIDs.length === 1) {
+      const host = cluster.hosts?.find((host) => host.id === selectedHostIDs[0]);
+      return host && onEditHost(host);
+    }
+    return massUpdateHostnameDialog.open({ hostIDs: selectedHostIDs, cluster });
+  }, [selectedHostIDs, massUpdateHostnameDialog, cluster, onEditHost]);
 
   const onMassDeleteHost = React.useCallback(
     () =>
