@@ -467,7 +467,7 @@ export const locationValidationSchema = Yup.string()
   });
 
 export const machineNetworksValidationSchema = Yup.array().of(
-  Yup.object({ cidr: ipBlockValidationSchema, clusterId: Yup.string() }),
+  Yup.object({ cidr: hostSubnetValidationSchema, clusterId: Yup.string() }),
 );
 
 export const clusterNetworksValidationSchema = Yup.array().of(
