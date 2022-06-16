@@ -112,7 +112,7 @@
     "dpdm": "^3.8.0",
     "env-cmd": "^10.1.0",
     "esbuild": "^0.13.9",
-    "esbuild-plugin-d.ts": "^1.0.6",
+    "esbuild-plugin-d.ts": "1.0.6",
     "eslint": "^8.15.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
