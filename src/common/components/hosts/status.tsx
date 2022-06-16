@@ -56,8 +56,7 @@ export const hostStatus: HostStatus<Host['status']> = {
     title: 'Disconnected',
     category: 'Discovery related',
     icon: <DisconnectedIcon />,
-    details:
-      'This host has lost its connection to the installer and can not be included in the cluster unless connectivity is restored.',
+    details: 'Ensure the host is running, responsive, and is able to contact the installer.',
   },
   'discovering-unbound': {
     key: 'discovering-unbound',
