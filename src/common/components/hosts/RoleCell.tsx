@@ -11,17 +11,25 @@ export type RoleCellProps = {
   onEditRole?: (role: HostUpdateParams['hostRole']) => Promise<any>;
   displayTooltip?: boolean;
   position?: DropdownProps['position'];
+  schedulableMasters: boolean;
 };
 
-const RoleCell: React.FC<RoleCellProps> = ({
+const RoleCell = ({
   host,
   role,
   readonly = false,
+  schedulableMasters,
   onEditRole,
   position,
-}) =>
+}: RoleCellProps) =>
   !readonly && onEditRole ? (
-    <RoleDropdown host={host} onEditRole={onEditRole} current={role} position={position} />
+    <RoleDropdown
+      schedulableMasters={schedulableMasters}
+      host={host}
+      onEditRole={onEditRole}
+      current={role}
+      position={position}
+    />
   ) : (
     <span>{role}</span>
   );

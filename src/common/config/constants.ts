@@ -1,6 +1,6 @@
 import * as packageJson from '../../../package.json';
 
-import { ValidationsInfo, HostRole } from '../../common/types/hosts';
+import { ValidationsInfo, HostRoleItem } from '../../common/types/hosts';
 import { Cluster, ClusterValidationId, DiskRole, Event, HostValidationId } from '../api';
 import { ValidationGroup as ClusterValidationGroup } from '../types/clusters';
 
@@ -38,23 +38,26 @@ export const getProductBrandingCode = () => 'redhat';
 export const POLLING_INTERVAL = 10 * 1000;
 export const EVENTS_POLLING_INTERVAL = 10 * 1000;
 
-export const HOST_ROLES: HostRole[] = [
-  {
-    value: 'auto-assign',
-    label: 'Auto-assign',
-    description:
-      'A role will be chosen automatically based on detected hardware and network latency.',
-  },
+export const HOST_ROLES: HostRoleItem[] = [
   {
     value: 'master',
     label: 'Control plane node',
-    description: 'Runs the control plane components of OpenShift, including the API server.',
+    description: 'Runs the container orchestration layer (like API server, Scheduler etc).',
+    schedulable_policy: 'off',
+  },
+  {
+    value: 'master',
+    label: 'Control plane, worker',
+    description:
+      'Runs the container orchestration layer (like API server, Scheduler etc), and also runs the application workloads',
+    schedulable_policy: 'on',
   },
   {
     value: 'worker',
     label: 'Worker',
     description:
       'Runs application workloads. Connect at least 5 hosts to enable dedicated workers.',
+    schedulable_policy: 'any',
   },
 ];
 

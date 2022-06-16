@@ -18,8 +18,9 @@ export type ClusterWizardStepHostStatusDeterminationObject = {
   validationsInfo?: Host['validationsInfo'] | ValidationsInfo;
 };
 
-export type HostRole = {
+export type HostRoleItem = {
   value: HostRoleUpdateParams;
   label: string;
   description: string;
+  schedulable_policy: 'on' | 'off' | 'any';
 };

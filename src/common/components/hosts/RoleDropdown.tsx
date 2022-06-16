@@ -4,6 +4,7 @@ import { Host, HostUpdateParams } from '../../api';
 import { SimpleDropdown } from '../ui';
 import { useStateSafely } from '../../hooks';
 import { DropdownProps } from '@patternfly/react-core';
+import { HostRoleItem } from '../../types/hosts';
 
 type RoleDropdownProps = {
   host: Host;
@@ -11,9 +12,16 @@ type RoleDropdownProps = {
   onEditRole: (role: HostUpdateParams['hostRole']) => Promise<any>;
   current: string;
   position?: DropdownProps['position'];
+  schedulableMasters: boolean;
 };
 
-const RoleDropdown: React.FC<RoleDropdownProps> = ({ host, onEditRole, current, position }) => {
+const RoleDropdown = ({
+  host,
+  schedulableMasters,
+  onEditRole,
+  current,
+  position,
+}: RoleDropdownProps) => {
   const [isDisabled, setDisabled] = useStateSafely(false);
   const setRole = async (role?: string) => {
     setDisabled(true);
@@ -24,11 +32,21 @@ const RoleDropdown: React.FC<RoleDropdownProps> = ({ host, onEditRole, current, 
     }
   };
 
+  const roles: HostRoleItem[] = React.useMemo<HostRoleItem[]>(() => {
+    return HOST_ROLES.filter((hostRole) => {
+      if (schedulableMasters) {
+        return ['on', 'any'].includes(hostRole.schedulable_policy);
+      } else {
+        return ['off', 'any'].includes(hostRole.schedulable_policy);
+      }
+    });
+  }, [schedulableMasters]);
+
   return (
     <SimpleDropdown
-      defaultValue={HOST_ROLES[0].value}
+      items={roles}
+      defaultValue={roles[0].value}
       current={current}
-      items={HOST_ROLES}
       setValue={setRole}
       isDisabled={isDisabled}
       idPrefix={`role-${host.requestedHostname}`}

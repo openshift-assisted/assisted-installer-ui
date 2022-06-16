@@ -113,14 +113,26 @@ export const canHostnameBeChanged = (hostStatus: Host['status']) =>
     'pending-for-input',
   ].includes(hostStatus);
 
-export const getHostRole = (host: Host, schedulableMasters?: boolean): string => {
-  let roleLabel = `${
-    HOST_ROLES.find((role) => role.value === host.role)?.label || HOST_ROLES[0].label
-  }`;
-  if (schedulableMasters && host.role === 'master') {
-    roleLabel = 'Control plane node, Worker';
+export const getHostRoleLabel = (host: Host, schedulableMasters?: boolean): string => {
+  // suggestedRole can be "master", "worker" or "auto-assign"
+  const effectiveRole = host.role === 'auto-assign' ? host.suggestedRole : host.role;
+  let item = HOST_ROLES.find((hostRole) => {
+    if (hostRole.value !== effectiveRole) {
+      return false;
+    }
+    if (schedulableMasters) {
+      return ['on', 'any'].includes(hostRole.schedulable_policy);
+    } else {
+      return ['off', 'any'].includes(hostRole.schedulable_policy);
+    }
+  });
+
+  if (!item) {
+    // role / suggested_role should always be set, but we can get here if we receive unexepected values from BE.
+    // eg. "auto-assign" right after discovery, "bootstrap" after a cluster started installing
+    item = HOST_ROLES[0];
   }
-  return `${roleLabel}${host.bootstrap ? ' (bootstrap)' : ''}`;
+  return `${item.label}${host.bootstrap ? ' (bootstrap)' : ''}`;
 };
 
 export const canDownloadHostLogs = (host: Host) =>

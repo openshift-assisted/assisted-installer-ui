@@ -14,7 +14,12 @@ import HostsCount from './HostsCount';
 import { HostsTableActions } from './types';
 import HostStatus from './HostStatus';
 import RoleCell from './RoleCell';
-import { areOnlySoftValidationsFailing, getHostname, getHostRole, getInventory } from './utils';
+import {
+  areOnlySoftValidationsFailing,
+  getHostname,
+  getHostRoleLabel,
+  getInventory,
+} from './utils';
 import { selectMachineNetworkCIDR } from '../../selectors/clusterSelectors';
 import { hostStatus } from './status';
 import { DropdownProps } from '@patternfly/react-core';
@@ -97,20 +102,21 @@ export const roleColumn = (
       const editRole = onEditRole
         ? (role: HostUpdateParams['hostRole']) => onEditRole(host, role)
         : undefined;
-      const hostRole = getHostRole(host, schedulableMasters);
+      const roleLabel = getHostRoleLabel(host, schedulableMasters);
       const isRoleEditable = canEditRole?.();
       return {
         title: (
           <RoleCell
             host={host}
             readonly={!isRoleEditable}
-            role={hostRole}
+            role={roleLabel}
+            schedulableMasters={schedulableMasters || false}
             onEditRole={editRole}
             position={position}
           />
         ),
         props: { 'data-testid': 'host-role' },
-        sortableValue: hostRole,
+        sortableValue: roleLabel,
       };
     },
   };
