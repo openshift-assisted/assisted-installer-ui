@@ -61,10 +61,7 @@ export const getIpAddressValidationSchema = (protocolVersion: 'ipv4' | 'ipv6') =
 };
 
 export const compareIPV6Addresses = (address1: Address6, address2: Address6) => {
-  if (JSON.stringify(address1.toByteArray()) === JSON.stringify(address2.toByteArray())) {
-    return true;
-  }
-  return false;
+  return JSON.stringify(address1.toByteArray()) === JSON.stringify(address2.toByteArray());
 };
 
 export const isNotLocalHostIPAddress = (protocolVersion: 'ipv4' | 'ipv6') => {
