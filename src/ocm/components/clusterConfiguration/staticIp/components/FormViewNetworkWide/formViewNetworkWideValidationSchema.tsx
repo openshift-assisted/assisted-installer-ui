@@ -7,6 +7,8 @@ import { getMachineNetworkCidr } from '../../data/machineNetwork';
 import {
   getIpAddressInSubnetValidationSchema,
   getIpAddressValidationSchema,
+  isNotLocalHostIPAddress,
+  isNotCatchAllIPAddress,
 } from '../../commonValidationSchemas';
 const REQUIRED_MESSAGE = 'A value is required';
 
@@ -33,7 +35,7 @@ export const getInMachineNetworkValidationSchema = (
 
 const getMachineNetworkValidationSchema = (protocolVersion: ProtocolVersion) =>
   Yup.object<Cidr>().shape({
-    ip: getIpAddressValidationSchema(protocolVersion).required(REQUIRED_MESSAGE),
+    ip: getIPValidationSchema(protocolVersion),
     prefixLength: Yup.number()
       .required('Prefix length is required')
       .min(1, `Prefix length must be more than or equal to 1`)
@@ -45,13 +47,20 @@ const getMachineNetworkValidationSchema = (protocolVersion: ProtocolVersion) =>
       .transform(transformNumber) as Yup.NumberSchema, //add casting to not get typescript error caused by nullable
   });
 
+const getIPValidationSchema = (protocolVersion: ProtocolVersion) => {
+  return getIpAddressValidationSchema(protocolVersion)
+    .required(REQUIRED_MESSAGE)
+    .concat(isNotLocalHostIPAddress(protocolVersion))
+    .concat(isNotCatchAllIPAddress(protocolVersion));
+};
+
 const getAddressDataValidationSchema = (protocolVersion: ProtocolVersion, ipConfig: IpConfig) => {
   return Yup.object().shape<IpConfig>({
-    dns: getIpAddressValidationSchema(protocolVersion).required(REQUIRED_MESSAGE),
+    dns: getIPValidationSchema(protocolVersion),
     machineNetwork: getMachineNetworkValidationSchema(protocolVersion),
-    gateway: Yup.string()
-      .required(REQUIRED_MESSAGE)
-      .concat(getInMachineNetworkValidationSchema(protocolVersion, ipConfig.machineNetwork)),
+    gateway: getIPValidationSchema(protocolVersion).concat(
+      getInMachineNetworkValidationSchema(protocolVersion, ipConfig.machineNetwork),
+    ),
   });
 };
 
