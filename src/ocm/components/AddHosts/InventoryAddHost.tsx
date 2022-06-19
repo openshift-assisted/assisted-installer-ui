@@ -11,14 +11,7 @@ import {
 import ClusterHostsTable from '../hosts/ClusterHostsTable';
 import { DiscoveryImageModalButton } from '../clusterConfiguration/discoveryImageModal';
 import InformationAndAlerts from '../clusterConfiguration/InformationAndAlerts';
-import { AddHostRequirementsContent } from '../hosts/HostRequirementsContent';
-import {
-  AddHostsContext,
-  DiscoveryInstructions,
-  DiscoveryTroubleshootingModal,
-  isArmArchitecture,
-  isSNO,
-} from '../../../common';
+import { AddHostsContext, DiscoveryInstructions, isArmArchitecture, isSNO } from '../../../common';
 
 const armArchAlert = (
   <Alert
@@ -31,7 +24,6 @@ const armArchAlert = (
 
 const InventoryAddHosts: React.FC = () => {
   const { cluster } = React.useContext(AddHostsContext);
-  const [isDiscoveryHintModalOpen, setDiscoveryHintModalOpen] = React.useState(false);
 
   if (!cluster) {
     return null;
@@ -51,25 +43,12 @@ const InventoryAddHosts: React.FC = () => {
               idPrefix="bare-metal-inventory-add-host"
             />
           </Text>
-          <InformationAndAlerts
-            cluster={cluster}
-            HostRequirementsContent={AddHostRequirementsContent}
-            setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
-          />
+          <InformationAndAlerts cluster={cluster} />
         </TextContent>
       </StackItem>
       {isArmArchitecture(cluster) && <StackItem>{armArchAlert}</StackItem>}
       <StackItem>
-        <ClusterHostsTable
-          cluster={cluster}
-          setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
-        />
-      </StackItem>
-      <StackItem>
-        <DiscoveryTroubleshootingModal
-          isOpen={isDiscoveryHintModalOpen}
-          setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
-        />
+        <ClusterHostsTable cluster={cluster} />
       </StackItem>
     </Stack>
   );

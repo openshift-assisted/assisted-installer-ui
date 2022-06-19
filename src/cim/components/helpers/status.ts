@@ -13,7 +13,7 @@ import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
 import { StatusCondition } from '../../types/k8s/shared';
 import { ValidationsInfo } from '../../../common/types/hosts';
 import {
-  areOnlySoftValidationsFailing,
+  areOnlySoftValidationsOfWizardStepFailing,
   getWizardStepHostStatus,
   getWizardStepHostValidationsInfo,
 } from '../../../common/components/clusterWizard/validationsInfoUtils';
@@ -159,7 +159,7 @@ export const getWizardStepAgentStatus = (
     wizardStepId,
     wizardStepsValidationsMap,
   );
-  status.sublabel = areOnlySoftValidationsFailing(
+  status.sublabel = areOnlySoftValidationsOfWizardStepFailing(
     aStatus.validationsInfo,
     wizardStepId,
     wizardStepsValidationsMap,

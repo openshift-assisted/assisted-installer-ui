@@ -200,10 +200,10 @@ export const HostValidationGroups: React.FC<HostValidationGroupsProps> = ({
       {Object.keys(validationsInfo).map((groupName: string) => {
         const groupLabel = HOST_VALIDATION_GROUP_LABELS[groupName];
 
-        const pendingValidations = validationsInfo[groupName].filter(
+        const pendingValidations = (validationsInfo[groupName] as Validation[]).filter(
           (v: Validation) => v.status === 'pending',
         );
-        const failedValidations = validationsInfo[groupName].filter(
+        const failedValidations = (validationsInfo[groupName] as Validation[]).filter(
           (v: Validation) => v.status === 'failure' || v.status === 'error',
         );
 

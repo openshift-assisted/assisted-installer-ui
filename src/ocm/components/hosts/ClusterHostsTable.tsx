@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ClusterHostsTableProps, getSchedulableMasters, Host, isSNO } from '../../../common';
+import { Cluster, getSchedulableMasters, Host, isSNO } from '../../../common';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
 import {
   discoveredAtColumn,
@@ -14,9 +14,10 @@ import {
 import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useHostsTable, HostsTableModals } from './use-hosts-table';
-import HostsTable, { HostsTableEmptyState } from '../../../common/components/hosts/HostsTable';
+import HostsTable from '../../../common/components/hosts/HostsTable';
 import { ExpandComponentProps } from '../../../common/components/hosts/AITable';
 import { UpdateDay2ApiVipDialogToggle } from './UpdateDay2ApiVipDialogToggle';
+import HostsTableEmptyState from '../hosts/HostsTableEmptyState';
 
 const ExpandComponent: React.FC<ExpandComponentProps<Host>> = ({ obj }) => {
   return (
@@ -28,11 +29,12 @@ const ExpandComponent: React.FC<ExpandComponentProps<Host>> = ({ obj }) => {
   );
 };
 
-const ClusterHostsTable: React.FC<ClusterHostsTableProps> = ({
-  cluster,
-  setDiscoveryHintModalOpen,
-  skipDisabled,
-}) => {
+export interface ClusterHostsTableProps {
+  cluster: Cluster;
+  skipDisabled?: boolean;
+}
+
+const ClusterHostsTable: React.FC<ClusterHostsTableProps> = ({ cluster, skipDisabled }) => {
   const { onEditHost, actionChecks, onEditRole, actionResolver, ...modalProps } =
     useHostsTable(cluster);
 
@@ -63,10 +65,7 @@ const ClusterHostsTable: React.FC<ClusterHostsTableProps> = ({
         actionResolver={actionResolver}
         {...paginationProps}
       >
-        <HostsTableEmptyState
-          isSNO={isSNO(cluster)}
-          setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
-        />
+        <HostsTableEmptyState isSingleNode={isSNO(cluster)} />
       </HostsTable>
       <HostsTableModals cluster={cluster} {...modalProps} />
     </>

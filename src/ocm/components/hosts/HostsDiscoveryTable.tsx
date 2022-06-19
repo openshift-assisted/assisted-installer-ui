@@ -1,11 +1,9 @@
 import React from 'react';
 import {
   ChangeHostnameAction,
-  HostsNotShowingLinkProps,
   getSchedulableMasters,
   Cluster,
   Host,
-  useAlerts,
   HostsTableActions,
   stringToJSON,
   isSNO,
@@ -22,17 +20,17 @@ import {
   memoryColumn,
   roleColumn,
 } from '../../../common/components/hosts/tableUtils';
-import HostsTable, { HostsTableEmptyState } from '../../../common/components/hosts/HostsTable';
+import HostsTable from '../../../common/components/hosts/HostsTable';
 import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
 import { ExpandComponentProps, TableRow } from '../../../common/components/hosts/AITable';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
 import { onDiskRoleType } from '../../../common/components/hosts/DiskRole';
-import { useDispatch } from 'react-redux';
 import { sortable } from '@patternfly/react-table';
 import { ValidationsInfo } from '../../../common/types/hosts';
 import HardwareStatus from './HardwareStatus';
 import { Stack, StackItem } from '@patternfly/react-core';
 import { usePagination } from '../../../common/components/hosts/usePagination';
+import HostsTableEmptyState from '../hosts/HostsTableEmptyState';
 
 export const hardwareStatusColumn = (
   onEditHostname?: HostsTableActions['onEditHost'],
@@ -80,13 +78,9 @@ const getExpandComponent =
 type HostsDiscoveryTableProps = {
   cluster: Cluster;
   skipDisabled?: boolean;
-  setDiscoveryHintModalOpen?: HostsNotShowingLinkProps['setDiscoveryHintModalOpen'];
 };
 
-const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({
-  cluster,
-  setDiscoveryHintModalOpen,
-}) => {
+const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({ cluster }) => {
   const {
     onEditHost,
     actionChecks,
@@ -101,15 +95,11 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({
     ...modalProps
   } = useHostsTable(cluster);
 
+  const isSNOCluster = isSNO(cluster);
   const content = React.useMemo(
     () => [
       hostnameColumn(onEditHost, undefined, actionChecks.canEditHostname),
-      roleColumn(
-        actionChecks.canEditRole,
-        onEditRole,
-        getSchedulableMasters(cluster),
-        !isSNO(cluster),
-      ),
+      roleColumn(actionChecks.canEditRole, onEditRole, getSchedulableMasters(cluster)),
       hardwareStatusColumn(onEditHost),
       discoveredAtColumn,
       cpuCoresColumn,
@@ -148,13 +138,10 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({
             ExpandComponent={getExpandComponent(onDiskRole, actionChecks.canEditDisks)}
             onSelect={onSelect}
             selectedIDs={selectedHostIDs}
-            setSelectedHostIDs={setSelectedHostIDs}
+            setSelectedIDs={setSelectedHostIDs}
             {...paginationProps}
           >
-            <HostsTableEmptyState
-              isSNO={isSNO(cluster)}
-              setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
-            />
+            <HostsTableEmptyState isSingleNode={isSNOCluster} />
           </HostsTable>
         </StackItem>
       </Stack>

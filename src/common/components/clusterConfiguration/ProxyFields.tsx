@@ -102,12 +102,7 @@ const ProxyFields: React.FC = () => {
         label="Configure cluster-wide proxy settings"
         name="enableProxy"
         className="ai-proxy-fields"
-        helperText={
-          <p>
-            If hosts are behind a firewall that requires the use of a proxy, provide additional
-            information about the proxy.
-          </p>
-        }
+        helperText="If hosts are behind a firewall that requires the use of a proxy, provide additional information about the proxy."
         onChange={(value: boolean) => resetProxy(value)}
         body={values.enableProxy && <ProxyInputFields />}
       />

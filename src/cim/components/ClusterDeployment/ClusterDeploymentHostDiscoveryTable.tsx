@@ -134,7 +134,7 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
             content={content}
             actionResolver={actionResolver}
             selectedIDs={selectedHostIDs}
-            setSelectedHostIDs={setSelectedHostIDs}
+            setSelectedIDs={setSelectedHostIDs}
             onSelect={onSelect}
             ExpandComponent={DefaultExpandComponent}
             {...paginationProps}
