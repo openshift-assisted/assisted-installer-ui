@@ -19,6 +19,7 @@ const NumberInputField: React.FC<NumberInputFieldProps> = React.forwardRef(
       maxValue,
       children,
       formatValue,
+      onChange,
       ...props
     },
     ref: React.Ref<HTMLInputElement>,
@@ -31,7 +32,9 @@ const NumberInputField: React.FC<NumberInputFieldProps> = React.forwardRef(
     const doChange = (value: number) => {
       let newValue = value < minValue ? minValue : value;
       newValue = maxValue && newValue > maxValue ? maxValue : newValue;
-      setValue(formatValue ? formatValue(newValue) : newValue);
+      newValue = formatValue ? formatValue(newValue) : newValue;
+      setValue(newValue);
+      onChange?.(newValue);
     };
 
     const onPlus: NumberInputProps['onPlus'] = () => {

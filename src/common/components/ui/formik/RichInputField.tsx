@@ -128,7 +128,7 @@ const RichInputField: React.FC<RichInputFieldPropsProps> = React.forwardRef(
             onChange={(value, event) => {
               !popoverOpen && setPopoverOpen(true);
               !noDefaultOnChange && field.onChange(event);
-              setTouched(true);
+              setTouched(true, false);
               onChange && onChange(event);
             }}
             className="rich-input__text"

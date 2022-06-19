@@ -4,7 +4,11 @@ import { useField } from 'formik';
 import { PopoverIcon, trimSshPublicKey, UploadField } from '../ui';
 import { SshPublicKeyHelperText } from './SecurityFields';
 
-const UploadSSH: React.FC = () => {
+type UploadSSHProps = {
+  isRequired?: boolean;
+};
+
+const UploadSSH: React.FC<UploadSSHProps> = ({ isRequired }) => {
   const [{ name, value }, , { setValue }] = useField('sshPublicKey');
 
   return (
@@ -31,6 +35,7 @@ const UploadSSH: React.FC = () => {
             setError('File not supported.'),
       }}
       transformValue={trimSshPublicKey}
+      isRequired={isRequired}
     />
   );
 };

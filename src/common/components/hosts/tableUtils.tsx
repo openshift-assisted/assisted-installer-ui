@@ -2,7 +2,7 @@ import { breakWord, expandable, sortable } from '@patternfly/react-table';
 import * as React from 'react';
 import { Address4, Address6 } from 'ip-address';
 import { Cluster, Host, HostUpdateParams, Interface, stringToJSON } from '../../api';
-import { ValidationsInfo } from '../../types/hosts';
+import { ValidationsInfo as HostValidationsInfo } from '../../types/hosts';
 import { getSubnet } from '../clusterConfiguration';
 import { DASH } from '../constants';
 import { getDateTimeCell } from '../ui';
@@ -14,7 +14,7 @@ import HostsCount from './HostsCount';
 import { HostsTableActions } from './types';
 import HostStatus from './HostStatus';
 import RoleCell from './RoleCell';
-import { getHostname, getHostRole, getInventory } from './utils';
+import { areOnlySoftValidationsFailing, getHostname, getHostRole, getInventory } from './utils';
 import { selectMachineNetworkCIDR } from '../../selectors/clusterSelectors';
 import { hostStatus } from './status';
 import { DropdownProps } from '@patternfly/react-core';
@@ -83,7 +83,6 @@ export const roleColumn = (
   canEditRole?: HostsTableActions['canEditRole'],
   onEditRole?: HostsTableActions['onEditRole'],
   schedulableMasters?: boolean,
-  displayTooltip?: boolean,
   position?: DropdownProps['position'],
 ): TableRow<Host> => {
   return {
@@ -99,14 +98,14 @@ export const roleColumn = (
         ? (role: HostUpdateParams['hostRole']) => onEditRole(host, role)
         : undefined;
       const hostRole = getHostRole(host, schedulableMasters);
+      const isRoleEditable = canEditRole?.();
       return {
         title: (
           <RoleCell
             host={host}
-            readonly={!canEditRole?.(host)}
+            readonly={!isRoleEditable}
             role={hostRole}
             onEditRole={editRole}
-            displayTooltip={displayTooltip}
             position={position}
           />
         ),
@@ -131,13 +130,18 @@ export const statusColumn = (
       transforms: [sortable],
     },
     cell: (host) => {
-      const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
+      const validationsInfo = stringToJSON<HostValidationsInfo>(host.validationsInfo) || {};
       const editHostname = onEditHostname ? () => onEditHostname(host) : undefined;
+      const sublabel =
+        areOnlySoftValidationsFailing(validationsInfo) &&
+        ['known', 'known-unbound'].includes(host.status)
+          ? 'Some validations failed'
+          : undefined;
       return {
         title: (
           <HostStatus
             host={host}
-            status={hostStatus[host.status]}
+            status={{ ...hostStatus[host.status], sublabel }}
             onEditHostname={editHostname}
             validationsInfo={validationsInfo}
             AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
@@ -181,7 +185,7 @@ export const cpuCoresColumn: TableRow<Host> = {
   cell: (host) => {
     const inventory = getInventory(host);
     const { cores } = getHostRowHardwareInfo(inventory);
-    const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
+    const validationsInfo = stringToJSON<HostValidationsInfo>(host.validationsInfo) || {};
     const cpuCoresValidation = validationsInfo?.hardware?.find(
       (v) => v.id === 'has-cpu-cores-for-role',
     );
@@ -208,7 +212,7 @@ export const memoryColumn: TableRow<Host> = {
   cell: (host) => {
     const inventory = getInventory(host);
     const { memory } = getHostRowHardwareInfo(inventory);
-    const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
+    const validationsInfo = stringToJSON<HostValidationsInfo>(host.validationsInfo) || {};
     const memoryValidation = validationsInfo?.hardware?.find((v) => v.id === 'has-memory-for-role');
     return {
       title: (
@@ -233,7 +237,7 @@ export const disksColumn: TableRow<Host> = {
   cell: (host) => {
     const inventory = getInventory(host);
     const { disk } = getHostRowHardwareInfo(inventory);
-    const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
+    const validationsInfo = stringToJSON<HostValidationsInfo>(host.validationsInfo) || {};
     const diskValidation = validationsInfo?.hardware?.find((v) => v.id === 'has-min-valid-disks');
     return {
       title: (

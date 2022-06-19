@@ -2,6 +2,16 @@ import { Address4, Address6 } from 'ip-address';
 import { isInSubnet } from 'is-in-subnet';
 import * as Yup from 'yup';
 
+const LOCAL_HOST_IP = {
+  ipv4: '127.0.0.0',
+  ipv6: '::1',
+};
+
+const CATCH_ALL_IP = {
+  ipv4: '0.0.0.0',
+  ipv6: '0000::',
+};
+
 export type UniqueStringArrayExtractor<FormValues> = (
   values: FormValues,
   context: Yup.TestContext,
@@ -44,6 +54,62 @@ export const getIpAddressValidationSchema = (protocolVersion: 'ipv4' | 'ipv6') =
         }
       } catch (e) {
         return false;
+      }
+      return true;
+    },
+  );
+};
+
+export const compareIPV6Addresses = (address1: Address6, address2: Address6) => {
+  return JSON.stringify(address1.toByteArray()) === JSON.stringify(address2.toByteArray());
+};
+
+export const isNotLocalHostIPAddress = (protocolVersion: 'ipv4' | 'ipv6') => {
+  return Yup.string().test(
+    'is-local-host',
+    `Provided IP address is not a correct address for an interface.`,
+    function (value) {
+      if (!value) {
+        return true;
+      }
+      try {
+        if (protocolVersion === 'ipv6') {
+          if (compareIPV6Addresses(new Address6(LOCAL_HOST_IP.ipv6), new Address6(value))) {
+            return false;
+          }
+        } else {
+          if (value === LOCAL_HOST_IP.ipv4) {
+            return false;
+          }
+        }
+      } catch (e) {
+        return true;
+      }
+      return true;
+    },
+  );
+};
+
+export const isNotCatchAllIPAddress = (protocolVersion: 'ipv4' | 'ipv6') => {
+  return Yup.string().test(
+    'is-catch-all',
+    `Provided IP address is not a correct address for an interface.`,
+    function (value) {
+      if (!value) {
+        return true;
+      }
+      try {
+        if (protocolVersion === 'ipv6') {
+          if (compareIPV6Addresses(new Address6(CATCH_ALL_IP.ipv6), new Address6(value))) {
+            return false;
+          }
+        } else {
+          if (value === CATCH_ALL_IP.ipv4) {
+            return false;
+          }
+        }
+      } catch (e) {
+        return true;
       }
       return true;
     },

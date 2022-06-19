@@ -18,6 +18,7 @@ import {
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
 import { Checkbox, Pagination, PaginationVariant } from '@patternfly/react-core';
 import classnames from 'classnames';
+import xor from 'lodash/xor';
 import { getColSpanRow, rowSorter } from '../ui/table/utils';
 import { WithTestID } from '../../types';
 
@@ -103,7 +104,13 @@ export type ExpandComponentProps<R> = {
   obj: R;
 };
 
-const SelectionProvider = React.createContext<string[] | undefined>(undefined);
+const SelectionProvider = React.createContext<{
+  selectedIDs: string[] | undefined;
+  allIDs: string[];
+}>({
+  selectedIDs: [],
+  allIDs: [],
+});
 
 type SelectCheckboxProps = {
   onSelect: (isChecked: boolean) => void;
@@ -111,10 +118,24 @@ type SelectCheckboxProps = {
 };
 
 const SelectCheckbox: React.FC<SelectCheckboxProps> = ({ onSelect, id }) => {
-  const selectedIDs = React.useContext(SelectionProvider);
+  const { selectedIDs } = React.useContext(SelectionProvider);
   const isChecked = selectedIDs?.includes(id);
   return (
     <Checkbox id={`select-${id}`} onChange={() => onSelect(!isChecked)} isChecked={isChecked} />
+  );
+};
+
+type SelectAllCheckboxProps = {
+  onSelect: (isChecked: boolean) => void;
+};
+
+const SelectAllCheckbox: React.FC<SelectAllCheckboxProps> = ({ onSelect }) => {
+  const { allIDs, selectedIDs } = React.useContext(SelectionProvider);
+  const isChecked = xor(allIDs, selectedIDs).length === 0;
+  return allIDs.length ? (
+    <Checkbox id="select-all" onChange={() => onSelect(!isChecked)} isChecked={isChecked} />
+  ) : (
+    <div />
   );
 };
 
@@ -129,6 +150,7 @@ export type AITableProps<R> = ReturnType<typeof usePagination> & {
   setSelectedIDs?: (selectedIDs: string[]) => void;
   className?: string;
   actionResolver?: ActionsResolver<R>;
+  canSelectAll?: boolean;
 };
 
 // eslint-disable-next-line
@@ -150,7 +172,9 @@ const AITable = <R extends any>({
   onPerPageSelect,
   showPagination,
   perPageOptions,
+  canSelectAll,
 }: WithTestID & AITableProps<R>) => {
+  const itemIDs = React.useMemo(() => data.map(getDataId), [data, getDataId]);
   React.useEffect(() => {
     if (selectedIDs && setSelectedIDs) {
       const idsToRemove: string[] = [];
@@ -172,14 +196,30 @@ const AITable = <R extends any>({
     direction: SortByDirection.asc,
   });
 
+  const dataRef = React.useRef(data);
+  if (dataRef.current !== data) {
+    dataRef.current = data;
+  }
+  const onSelectAll = React.useCallback(
+    (isChecked: boolean) => {
+      setSelectedIDs?.(isChecked ? dataRef.current.map(getDataId) : []);
+    },
+    [setSelectedIDs, getDataId],
+  );
+
   const [contentWithAdditions, columns] = React.useMemo<[TableRow<R>[], (string | ICell)[]]>(() => {
     let newContent = content;
     if (onSelect) {
       newContent = [
         {
           header: {
-            title: '', // No readable title above a checkbox
+            title: canSelectAll ? <SelectAllCheckbox onSelect={onSelectAll} /> : '',
             cellFormatters: [],
+            props: {
+              style: {
+                width: '30px',
+              },
+            },
           },
           cell: (obj) => {
             const id = getDataId(obj);
@@ -195,9 +235,9 @@ const AITable = <R extends any>({
     }
     const columns = newContent.map((c) => c.header);
     return [newContent, columns];
-  }, [content, onSelect, getDataId]);
+  }, [content, onSelect, getDataId, onSelectAll, canSelectAll]);
 
-  const [hostRows, itemIDs] = React.useMemo(() => {
+  const hostRows = React.useMemo(() => {
     let rows = (data || [])
       .map<IRow>((obj) => {
         const id = getDataId(obj);
@@ -240,7 +280,7 @@ const AITable = <R extends any>({
         return allRows;
       }, [] as IRow[]);
     }
-    return [rows, data.map(getDataId)];
+    return rows;
   }, [contentWithAdditions, ExpandComponent, getDataId, data, openRows, sortBy, page, perPage]);
 
   const rows = React.useMemo(() => {
@@ -270,7 +310,12 @@ const AITable = <R extends any>({
 
   return (
     <>
-      <SelectionProvider.Provider value={selectedIDs}>
+      <SelectionProvider.Provider
+        value={{
+          selectedIDs,
+          allIDs: itemIDs,
+        }}
+      >
         <TableMemo
           rows={rows}
           cells={columns}
