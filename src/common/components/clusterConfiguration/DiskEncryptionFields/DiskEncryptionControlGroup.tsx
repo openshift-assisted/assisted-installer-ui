@@ -13,12 +13,10 @@ const hasFilledTangServers = (tangServers: TangServer[]): boolean => {
     return false;
   }
 
-  const emptyServer = [
-    {
-      url: '',
-      thumbprint: '',
-    },
-  ];
+  const emptyServer = {
+    url: '',
+    thumbprint: '',
+  };
   return (
     tangServers.find(
       (server: typeof tangServers[number]) => !isEqual(server, emptyServer) && !isEqual(server, {}),

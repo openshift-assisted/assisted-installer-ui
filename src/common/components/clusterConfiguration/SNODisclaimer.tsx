@@ -18,7 +18,7 @@ const SNODisclaimer = ({ isDisabled = false, snoSupportLevel }: SNODisclaimerPro
       <ListItem>
         Installing SNO will result in a non-highly available OpenShift deployment.
       </ListItem>
-      <ListItem>Adding additional machines to your cluster is currently out of scope.</ListItem>
+      <ListItem>Adding additional machines to your cluster is currently not supported.</ListItem>
     </>
   );
   const unsupportedWarnings = (

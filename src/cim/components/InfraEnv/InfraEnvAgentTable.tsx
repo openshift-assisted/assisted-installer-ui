@@ -202,7 +202,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
             content={content}
             actionResolver={actionResolver}
             selectedIDs={selectedHostIDs}
-            setSelectedHostIDs={setSelectedHostIDs}
+            setSelectedIDs={setSelectedHostIDs}
             onSelect={onSelect}
             ExpandComponent={DefaultExpandComponent}
             {...paginationProps}

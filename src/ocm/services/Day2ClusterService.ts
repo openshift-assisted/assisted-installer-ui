@@ -8,7 +8,7 @@ const Day2ClusterService = {
     return ocmCluster && ocmCluster.external_id;
   },
 
-  async fetchCluster(ocmCluster: OcmClusterType, openshiftVersion: string, pullSecret: string) {
+  async fetchCluster(ocmCluster: OcmClusterType, pullSecret: string) {
     const openshiftClusterId = Day2ClusterService.getOpenshiftClusterId(ocmCluster);
 
     if (!openshiftClusterId) {
@@ -36,13 +36,12 @@ const Day2ClusterService = {
 
     if (day2Clusters.length !== 0) {
       const { data } = await ClustersAPI.get(day2Clusters[0].id);
-      data.hosts = await this.fetchHosts(data.id);
+      data.hosts = await Day2ClusterService.fetchHosts(data.id);
       return data;
     } else {
-      return this.createCluster(
+      return Day2ClusterService.createCluster(
         openshiftClusterId,
         ocmCluster.display_name || ocmCluster.name || openshiftClusterId,
-        openshiftVersion,
         apiVipDnsname,
         pullSecret,
       );
@@ -51,21 +50,19 @@ const Day2ClusterService = {
 
   async fetchClusterById(clusterId: Cluster['id']) {
     const { data } = await ClustersAPI.get(clusterId);
-    data.hosts = await this.fetchHosts(data.id);
+    data.hosts = await Day2ClusterService.fetchHosts(data.id);
     return data;
   },
 
   async createCluster(
     openshiftClusterId: OcmClusterType['external_id'],
     clusterName: string,
-    openshiftVersion: string,
     apiVipDnsname: string,
     pullSecret: string,
   ) {
     const { data } = await ClustersAPI.registerAddHosts({
       openshiftClusterId, // used to both match OpenShift Cluster and as an assisted-installer ID
       name: `scale-up-${clusterName}`, // both cluster.name and cluster.display-name contain just UUID which fails AI validation (k8s naming conventions)
-      openshiftVersion,
       apiVipDnsname,
     });
 
@@ -73,11 +70,9 @@ const Day2ClusterService = {
       name: `${data.name}_infra-env`,
       pullSecret,
       clusterId: data.id,
-      // TODO(jkilzi): MGMT-7709 will deprecate the openshiftVersion field, remove the line below once it happens.
-      openshiftVersion,
     });
 
-    data.hosts = await this.fetchHosts(data.id);
+    data.hosts = await Day2ClusterService.fetchHosts(data.id);
     return data;
   },
 

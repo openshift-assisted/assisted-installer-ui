@@ -5,13 +5,25 @@ import { AgentK8sResource } from '../../types';
 import { MultiSelectOption } from '../../../common/components/ui/formik/types';
 import { AGENT_LOCATION_LABEL_KEY, INFRAENV_AGENTINSTALL_LABEL_KEY } from '../common';
 
-const LabelsSelector: React.FC<{ agents: AgentK8sResource[] }> = ({ agents }) => {
+export const infraEnvLabelKeys = [INFRAENV_AGENTINSTALL_LABEL_KEY, AGENT_LOCATION_LABEL_KEY];
+
+type LabelsSelectorProps = {
+  agents: AgentK8sResource[];
+  labelKeysFilter?: string[];
+  name?: string;
+};
+
+const LabelsSelector: React.FC<LabelsSelectorProps> = ({
+  agents,
+  labelKeysFilter,
+  name = 'agentLabels',
+}) => {
   const agentLabelOptions = Array.from(
     new Set(
       flatten(
         agents.map((agent) =>
           Object.keys(agent.metadata?.labels || {})
-            .filter((k) => ![INFRAENV_AGENTINSTALL_LABEL_KEY, AGENT_LOCATION_LABEL_KEY].includes(k))
+            .filter((k) => !(labelKeysFilter || infraEnvLabelKeys).includes(k))
             .map((k) => `${k}=${agent.metadata?.labels?.[k]}`),
         ),
       ),
@@ -27,7 +39,7 @@ const LabelsSelector: React.FC<{ agents: AgentK8sResource[] }> = ({ agents }) =>
   return (
     <MultiSelectField
       idPostfix="agentLabels"
-      name="agentLabels"
+      name={name}
       label="Labels matching hosts"
       placeholderText="app=frontend"
       helperText="Provide as many labels as you can to narrow the list to relevant hosts only."

@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  areOnlySoftValidationsFailing,
+  areOnlySoftValidationsOfWizardStepFailing,
   getWizardStepHostStatus,
   getWizardStepHostValidationsInfo,
   Host,
@@ -10,7 +10,6 @@ import {
 import { ValidationsInfo } from '../../../common/types/hosts';
 import { wizardStepsValidationsMap } from '../clusterWizard/wizardTransition';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
-import { UpdateDay2ApiVipDialogToggle } from './UpdateDay2ApiVipDialogToggle';
 
 type HardwareStatusProps = {
   host: Host;
@@ -30,7 +29,7 @@ const HardwareStatus: React.FC<HardwareStatusProps> = (props) => {
     'host-discovery',
     wizardStepsValidationsMap,
   );
-  status.sublabel = areOnlySoftValidationsFailing(
+  const sublabel = areOnlySoftValidationsOfWizardStepFailing(
     validationsInfo,
     'host-discovery',
     wizardStepsValidationsMap,
@@ -41,10 +40,9 @@ const HardwareStatus: React.FC<HardwareStatusProps> = (props) => {
   return (
     <HostStatus
       {...props}
-      status={status}
+      status={{ ...status, sublabel }}
       validationsInfo={validationsInfo}
       AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
-      UpdateDay2ApiVipDialogToggleComponent={UpdateDay2ApiVipDialogToggle}
     />
   );
 };
