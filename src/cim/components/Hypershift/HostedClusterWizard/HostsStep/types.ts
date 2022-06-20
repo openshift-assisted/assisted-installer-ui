@@ -7,7 +7,7 @@ export type NodePoolFormValue = {
   count: number;
   agentLabels: string[];
   autoSelectedAgentIDs: string[];
-  autoSelectHosts: boolean;
+  manualHostSelect: boolean;
   selectedAgentIDs: string[];
   releaseImage: string;
 };

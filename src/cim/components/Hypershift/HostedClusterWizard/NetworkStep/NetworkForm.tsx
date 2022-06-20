@@ -6,7 +6,7 @@ import xor from 'lodash/xor';
 import { Form, Grid, GridItem } from '@patternfly/react-core';
 import {
   CheckboxField,
-  getHumanizedSubnetRange,
+  getHumanizedSubnet,
   getSubnet,
   InputField,
   Interface,
@@ -60,7 +60,7 @@ const NetworkForm: React.FC<NetworkFormProps> = ({ agents, onValuesChanged }) =>
   const cidrOptions = availableCIDRs.map((cidr) => {
     return {
       value: cidr,
-      label: getHumanizedSubnetRange(getSubnet(cidr)),
+      label: getHumanizedSubnet(getSubnet(cidr)),
     };
   });
 

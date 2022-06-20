@@ -2,7 +2,7 @@ import * as React from 'react';
 import { FieldArray, useFormikContext } from 'formik';
 import { SelectField } from '../../../../../common';
 import { useTemptiflySync } from '../../hooks/useTemptiflySync';
-import { HostsFormValues, HostsFormProps } from './types';
+import { HostsFormValues, HostsFormProps, NodePoolFormValue } from './types';
 import { Button, Form, Grid, GridItem } from '@patternfly/react-core';
 import NodePoolForm from './NodePoolForm';
 import { PlusCircleIcon } from '@patternfly/react-icons';
@@ -17,10 +17,17 @@ const HostsForm: React.FC<HostsFormProps> = ({
   const { values } = useFormikContext<HostsFormValues>();
   useTemptiflySync({ values, onValuesChanged });
 
-  const infraEnvOptions = infraEnvs.map((ie) => ({
-    label: ie.metadata?.name || '',
-    value: ie.metadata?.namespace || '',
-  }));
+  const infraEnvOptions = infraEnvs.length
+    ? infraEnvs.map((ie) => ({
+        label: ie.metadata?.namespace || '',
+        value: ie.metadata?.namespace || '',
+      }))
+    : [
+        {
+          label: 'No namespace with hosts is available',
+          value: 'NOT_AVAILABLE',
+        },
+      ];
 
   return (
     <Grid hasGutter>
@@ -29,10 +36,11 @@ const HostsForm: React.FC<HostsFormProps> = ({
           <Grid hasGutter>
             <GridItem>
               <SelectField
-                label="Infrastructure environment"
+                label="Hosts namespace"
                 name="agentNamespace"
                 options={infraEnvOptions}
                 isRequired
+                isDisabled={!infraEnvOptions.length}
               />
             </GridItem>
             <FieldArray name="nodePools">
@@ -55,18 +63,18 @@ const HostsForm: React.FC<HostsFormProps> = ({
                       iconPosition="right"
                       onClick={() =>
                         push({
-                          name: `${clusterName}-${values.nodePools.length + 1}`,
+                          name: `nodepool-${clusterName}-${values.nodePools.length + 1}`,
                           count: 1,
                           autoSelectedAgentIDs: [],
-                          autoSelectHosts: true,
+                          manualHostSelect: false,
                           selectedAgentIDs: [],
                           agentLabels: [],
                           releaseImage: initReleaseImage,
                           clusterName,
-                        })
+                        } as NodePoolFormValue)
                       }
                     >
-                      Add node pool
+                      Add Nodepool
                     </Button>
                   </GridItem>
                 </>

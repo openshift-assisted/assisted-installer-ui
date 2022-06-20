@@ -4,8 +4,9 @@ import { Formik } from 'formik';
 import noop from 'lodash/noop';
 import HostsForm from './HostsForm';
 import { HostsStepProps, HostsFormValues, NodePoolFormValue } from './types';
-import { Alert, AlertVariant, Stack, StackItem } from '@patternfly/react-core';
-import { ExternalLink } from '../../../../../common';
+import { Stack, StackItem } from '@patternfly/react-core';
+import { getAgentsForSelection } from '../../../helpers';
+import { INFRAENV_AGENTINSTALL_LABEL_KEY } from '../../../common';
 
 const validationSchema = Yup.object<HostsFormValues>().shape({
   agentNamespace: Yup.string().required(),
@@ -13,16 +14,17 @@ const validationSchema = Yup.object<HostsFormValues>().shape({
     Yup.lazy<NodePoolFormValue>((nodePool) =>
       Yup.object()
         .shape({
+          agentNamespace: Yup.string().notOneOf(['NOT_AVAILABLE']),
           name: Yup.string().required(),
           clusterName: Yup.string().required(),
           count: Yup.number().min(1),
-          autoSelectedAgentIDs: nodePool.autoSelectHosts
-            ? Yup.array<string>().min(nodePool.count)
-            : Yup.array<string>(),
-          selectedAgentIDs: nodePool.autoSelectHosts
+          autoSelectedAgentIDs: nodePool.manualHostSelect
             ? Yup.array<string>()
-            : Yup.array<string>().min(1, 'Please select al least one host for the cluster.'),
-          autoSelectHosts: Yup.boolean(),
+            : Yup.array<string>().min(nodePool.count),
+          selectedAgentIDs: nodePool.manualHostSelect
+            ? Yup.array<string>().min(1, 'Please select al least one host for the cluster.')
+            : Yup.array<string>(),
+          manualHostSelect: Yup.boolean(),
           agentLabels: Yup.array().of(Yup.string()),
           releaseImage: Yup.string().required(),
         })
@@ -40,57 +42,55 @@ const HostsStep: React.FC<HostsStepProps> = ({
   initInfraEnv,
   initNodePools,
   initReleaseImage,
-}) => (
-  <Stack hasGutter>
-    <StackItem>
-      Define the control plane location and quantity of worker nodes and node pools to create for
-      your cluster. Additional worker nodes and node pools can be added after the cluster is
-      created.
-    </StackItem>
-    <StackItem>
-      <Alert
-        isInline
-        isPlain
-        title="Control plane location"
-        variant={AlertVariant.info}
-        actionLinks={<ExternalLink href="https://www.google.com">Learn more</ExternalLink>}
-      >
-        Currently, <b>local-cluster</b> will be selected as the hosting service cluster in order to
-        run OpenShift in a hyperscale manner with many control planes hosted on a central hosting
-        service cluster.
-      </Alert>
-    </StackItem>
-    <StackItem>
-      <Formik<HostsFormValues>
-        initialValues={{
-          agentNamespace: initInfraEnv || infraEnvs[0].metadata?.namespace || '',
-          nodePools: initNodePools || [
-            {
-              name: `${clusterName}-1`,
-              count: 1,
-              autoSelectedAgentIDs: [],
-              autoSelectHosts: true,
-              selectedAgentIDs: [],
-              agentLabels: [],
-              releaseImage: initReleaseImage,
-              clusterName,
-            },
-          ],
-        }}
-        validationSchema={validationSchema}
-        innerRef={formRef}
-        onSubmit={noop}
-      >
-        <HostsForm
-          onValuesChanged={onValuesChanged}
-          infraEnvs={infraEnvs}
-          agents={agents}
-          clusterName={clusterName}
-          initReleaseImage={initReleaseImage}
-        />
-      </Formik>
-    </StackItem>
-  </Stack>
-);
+}) => {
+  const availableAgents = getAgentsForSelection(agents);
+
+  const infraEnvsWithAgents = infraEnvs.filter((ie) =>
+    availableAgents.some(
+      (a) =>
+        a.metadata?.labels?.[INFRAENV_AGENTINSTALL_LABEL_KEY] === ie.metadata?.name &&
+        a.metadata?.namespace === ie.metadata?.namespace &&
+        !a.spec.clusterDeploymentName,
+    ),
+  );
+  return (
+    <Stack hasGutter>
+      <StackItem>
+        Define the quantity of worker nodes and nodepools to create for your cluster. Additional
+        worker nodes and nodepools can be added after the cluster is created.
+      </StackItem>
+      <StackItem>
+        <Formik<HostsFormValues>
+          initialValues={{
+            agentNamespace: initInfraEnv || infraEnvsWithAgents[0]?.metadata?.namespace || '',
+            nodePools: initNodePools || [
+              {
+                name: `nodepool-${clusterName}-1`,
+                count: 1,
+                autoSelectedAgentIDs: [],
+                manualHostSelect: false,
+                selectedAgentIDs: [],
+                agentLabels: [],
+                releaseImage: initReleaseImage,
+                clusterName,
+              },
+            ],
+          }}
+          validationSchema={validationSchema}
+          innerRef={formRef}
+          onSubmit={noop}
+        >
+          <HostsForm
+            onValuesChanged={onValuesChanged}
+            infraEnvs={infraEnvsWithAgents}
+            agents={agents}
+            clusterName={clusterName}
+            initReleaseImage={initReleaseImage}
+          />
+        </Formik>
+      </StackItem>
+    </Stack>
+  );
+};
 
 export default HostsStep;
