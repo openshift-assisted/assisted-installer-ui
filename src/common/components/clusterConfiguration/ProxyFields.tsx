@@ -1,7 +1,7 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
 import { Grid } from '@patternfly/react-core';
-import { InputField, CheckboxField, trimCommaSeparatedList } from '../ui';
+import { InputField, CheckboxField, trimCommaSeparatedList, PopoverIcon } from '../ui';
 import { ProxyFieldsType } from '../../types';
 
 import './ProxyFields.css';
@@ -16,7 +16,16 @@ export const ProxyInputFields = () => {
   return (
     <Grid hasGutter>
       <InputField
-        label="HTTP Proxy URL"
+        label={
+          <>
+            {'HTTP proxy URL'}
+            <PopoverIcon
+              bodyContent={
+                'The HTTP proxy URL that agents should use to access the discovery service.'
+              }
+            />
+          </>
+        }
         name="httpProxy"
         placeholder="http://<user>:<password>@<ipaddr>:<port>"
         helperText={
@@ -27,7 +36,16 @@ export const ProxyInputFields = () => {
         }
       />
       <InputField
-        label="HTTPS Proxy URL"
+        label={
+          <>
+            {'HTTPS proxy URL'}
+            <PopoverIcon
+              bodyContent={
+                "Specify the HTTPS proxy that agents should use to access the discovery service. If you don't provide a value, your HTTP proxy URL will be used by default for both HTTP and HTTPS connections."
+              }
+            />
+          </>
+        }
         name="httpsProxy"
         placeholder="http://<user>:<password>@<ipaddr>:<port>"
         helperText={
@@ -40,7 +58,16 @@ export const ProxyInputFields = () => {
         }
       />
       <InputField
-        label="No Proxy domains"
+        label={
+          <>
+            {'No proxy domains'}
+            <PopoverIcon
+              bodyContent={
+                'Exclude destination domain names, IP addresses, or other network CIDRs from proxying by adding them to this comma-separated list.'
+              }
+            />
+          </>
+        }
         name="noProxy"
         placeholder="one.domain.com,second.domain.com"
         helperText="A comma-separated list of destination domain names, domains, IP addresses or other network CIDRs to exclude proxying. Preface a domain with . to include all subdomains of that domain. Use * to bypass proxy for all destinations."
