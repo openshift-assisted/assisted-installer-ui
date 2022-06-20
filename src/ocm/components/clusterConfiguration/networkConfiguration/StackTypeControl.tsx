@@ -6,7 +6,7 @@ import { NetworkConfigurationValues } from '../../../../common/types';
 import { DUAL_STACK, IPV4_STACK, NO_SUBNET_SET } from '../../../../common/config/constants';
 import { getFieldId } from '../../../../common/components/ui/formik/utils';
 import { ConfirmationModal, PopoverIcon, RadioField } from '../../../../common/components/ui';
-import { getDefaultNetworkType, isSNO } from '../../../../common';
+import { getDefaultNetworkType } from '../../../../common';
 
 export const StackTypeControlGroup = ({
   clusterId,
