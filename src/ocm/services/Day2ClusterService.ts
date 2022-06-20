@@ -36,10 +36,10 @@ const Day2ClusterService = {
 
     if (day2Clusters.length !== 0) {
       const { data } = await ClustersAPI.get(day2Clusters[0].id);
-      data.hosts = await this.fetchHosts(data.id);
+      data.hosts = await Day2ClusterService.fetchHosts(data.id);
       return data;
     } else {
-      return this.createCluster(
+      return Day2ClusterService.createCluster(
         openshiftClusterId,
         ocmCluster.display_name || ocmCluster.name || openshiftClusterId,
         apiVipDnsname,
@@ -50,7 +50,7 @@ const Day2ClusterService = {
 
   async fetchClusterById(clusterId: Cluster['id']) {
     const { data } = await ClustersAPI.get(clusterId);
-    data.hosts = await this.fetchHosts(data.id);
+    data.hosts = await Day2ClusterService.fetchHosts(data.id);
     return data;
   },
 
@@ -72,7 +72,7 @@ const Day2ClusterService = {
       clusterId: data.id,
     });
 
-    data.hosts = await this.fetchHosts(data.id);
+    data.hosts = await Day2ClusterService.fetchHosts(data.id);
     return data;
   },
 
