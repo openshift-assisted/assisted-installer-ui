@@ -10,6 +10,7 @@ import {
 import { getClusterDetailId } from './utils';
 import { ClustersAPI } from '../../services/apis';
 import ClusterDetailStatusMessages from './ClusterDetailStatusMessages';
+import { Grid } from '@patternfly/react-core';
 
 type ClusterStatusVarieties = {
   credentials?: Credentials;
@@ -83,7 +84,7 @@ const ClusterDetailStatusVarieties: React.FC<{
     consoleOperator?.status === 'available' || (!consoleOperator && cluster.status === 'installed'); // Retain backwards compatibility with clusters which don't have monitored clusters
 
   return (
-    <>
+    <Grid hasGutter>
       {showClusterCredentials && (
         <ClusterCredentials
           cluster={cluster}
@@ -94,7 +95,7 @@ const ClusterDetailStatusVarieties: React.FC<{
         />
       )}
       <ClusterDetailStatusMessages cluster={cluster} showAddHostsInfo={showAddHostsInfo} />
-    </>
+    </Grid>
   );
 };
 
