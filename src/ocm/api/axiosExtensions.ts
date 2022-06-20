@@ -1,12 +1,23 @@
 import { AxiosError } from 'axios';
-import { Error as APIError, InfraError } from '../../common/api/types';
 
-type APIErrorMixin = InfraError & APIError;
+function isNonNullObject(val: unknown): val is object {
+  return typeof val === 'object' && val !== null;
+}
 
-export type AIAxiosErrorType = AxiosError<APIErrorMixin, APIErrorMixin>;
+// Still, as of June 18, 2022, Typescript cannot use the 'in' keyword or 'hasOwnProperty' method as a type guard
+// See: https://github.com/microsoft/TypeScript/issues/21732
+function hasProp<T extends object, K extends PropertyKey>(
+  obj: T,
+  prop: K,
+): obj is T & Record<K, unknown> {
+  return prop in obj;
+}
 
 // Implementation from Axios.isAxiosError v0.29.2, which is not available in OCM's version 0.17.x
-export const isAxiosError = (error: unknown): error is AIAxiosErrorType => {
-  const axiosError = error as AIAxiosErrorType;
-  return axiosError !== null && typeof axiosError === 'object' && axiosError.isAxiosError === true;
-};
+export function isAxiosError<T = unknown, D = unknown>(
+  payload: unknown,
+): payload is AxiosError<T, D> {
+  return (
+    isNonNullObject(payload) && hasProp(payload, 'isAxiosError') && payload.isAxiosError === true
+  );
+}

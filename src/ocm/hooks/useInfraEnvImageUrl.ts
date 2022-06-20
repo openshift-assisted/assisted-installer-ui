@@ -24,7 +24,7 @@ export default function useInfraEnvImageUrl(clusterId: Cluster['id']) {
       }
       setImageUrl(url);
     } catch (e) {
-      setError(e);
+      setError(e as errorType);
     }
   }, [infraEnvId]);
 
