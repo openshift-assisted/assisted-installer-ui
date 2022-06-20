@@ -62,8 +62,8 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
               totalPercentage={cluster.progress?.totalPercentage || 0}
             />
           </GridItem>
-          <GridItem span={6}></GridItem>
-          <GridItem span={8}>
+          <GridItem span={6} rowSpan={4}></GridItem>
+          <GridItem span={6}>
             <ClusterProgressItems cluster={cluster} onFetchEvents={onFetchEvents} />
           </GridItem>
           <GridItem span={6}>
@@ -73,7 +73,9 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
               getOlmOperators(monitoredOperators),
             )}
           </GridItem>
-          <ClusterDetailStatusVarieties cluster={cluster} clusterVarieties={clusterVarieties} />
+          <GridItem span={6}>
+            <ClusterDetailStatusVarieties cluster={cluster} clusterVarieties={clusterVarieties} />
+          </GridItem>
           <GridItem>
             <TextContent>
               <Text component="h2">Host Inventory</Text>
