@@ -1,8 +1,14 @@
 import {
   Button,
+  Divider,
   ExpandableSectionToggle,
+  Flex,
+  FlexItem,
   Grid,
   GridItem,
+  Label,
+  Level,
+  LevelItem,
   Split,
   SplitItem,
   Stack,
@@ -11,23 +17,22 @@ import {
 import * as React from 'react';
 import isEqual from 'lodash/isEqual';
 import { TrashIcon } from '@patternfly/react-icons';
-import { InputField, NumberInputField, SwitchField } from '../../../../../common';
+import { CheckboxField, NumberInputField, PencilEditField } from '../../../../../common';
 import { AgentK8sResource, InfraEnvK8sResource } from '../../../../types';
-import AgentsSelectionHostCountAlerts from '../../../Agent/AgentsSelectionHostCountAlerts';
-import AgentsSelectionHostCountLabelIcon from '../../../Agent/AgentsSelectionHostCountLabelIcon';
-import LabelsSelector, { infraEnvLabelKeys } from '../../../ClusterDeployment/LabelsSelector';
+import { LabelSelectorGroup } from '../../../ClusterDeployment/LabelsSelector';
 import HostsAdvancedSelection from './HostsAdvancedSelection';
-import { isAgentOfInfraEnv } from '../../../ClusterDeployment';
+import { getTotalCompute, isAgentOfInfraEnv } from '../../../ClusterDeployment';
 import { HostsFormValues } from './types';
 import { useFormikContext } from 'formik';
 import { getAgentsForSelection } from '../../../helpers';
-import { AGENT_TO_HOSTED_CLUSTER } from '../constants';
+import { AGENT_TO_NODE_POOL_NAME, AGENT_TO_NODE_POOL_NS } from '../constants';
 import { useDeepCompareMemoize } from '../../../../../common/hooks';
 
 import './NodePoolForm.css';
 import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
+import AgentsSelectionHostCountLabelIcon from '../../../Agent/AgentsSelectionHostCountLabelIcon';
 
-const agentLabelKeysFilter = [...infraEnvLabelKeys, AGENT_TO_HOSTED_CLUSTER];
+export const agentLabelKeysFilter: string[] = [AGENT_TO_NODE_POOL_NAME, AGENT_TO_NODE_POOL_NS];
 
 type NodePoolFormProps = {
   infraEnvs: InfraEnvK8sResource[];
@@ -44,7 +49,7 @@ const NodePoolForm: React.FC<NodePoolFormProps> = ({ infraEnvs, agents, index, o
     return agents.filter((agent) => isAgentOfInfraEnv(infraEnv, agent));
   }, [infraEnvs, agents, values.agentNamespace]);
 
-  const { agentLabels, autoSelectHosts, autoSelectedAgentIDs } = values.nodePools[index];
+  const { agentLabels, manualHostSelect, autoSelectedAgentIDs } = values.nodePools[index];
 
   const matchingAgents = React.useMemo(
     () =>
@@ -75,7 +80,7 @@ const NodePoolForm: React.FC<NodePoolFormProps> = ({ infraEnvs, agents, index, o
   const reservedAgentIDs = useDeepCompareMemoize(
     values.nodePools.slice(0, index).reduce<string[]>((acc, nodePool) => {
       acc.push(
-        ...(nodePool.autoSelectHosts ? nodePool.autoSelectedAgentIDs : nodePool.selectedAgentIDs),
+        ...(nodePool.manualHostSelect ? nodePool.selectedAgentIDs : nodePool.autoSelectedAgentIDs),
       );
       return acc;
     }, []),
@@ -90,7 +95,7 @@ const NodePoolForm: React.FC<NodePoolFormProps> = ({ infraEnvs, agents, index, o
     const availableAgentIDs = availableAgents.map((a) => a.metadata?.uid || '');
     const ids = availableAgents.slice(0, values.nodePools[index].count).map((a) => a.metadata?.uid);
     if (
-      values.nodePools[index].autoSelectHosts &&
+      !values.nodePools[index].manualHostSelect &&
       values.nodePools[index].autoSelectedAgentIDs.length === 0 &&
       ids.length !== 0
     ) {
@@ -114,79 +119,96 @@ const NodePoolForm: React.FC<NodePoolFormProps> = ({ infraEnvs, agents, index, o
     }
   }, [availableAgents, autoSelectedAgents, setFieldValue, index, values.nodePools]);
   const { t } = useTranslation();
+
+  const selectedAgents = values.nodePools[index].manualHostSelect
+    ? agents.filter((a) => values.nodePools[index].selectedAgentIDs.includes(a.metadata?.uid || ''))
+    : autoSelectedAgents;
+
   return (
     <Stack hasGutter>
       <StackItem>
-        <Split hasGutter>
-          <SplitItem isFilled>
-            <ExpandableSectionToggle
-              className="ai-node-pool__expandable-button"
-              isExpanded={isExpanded}
-              onToggle={setExpanded}
-            >{`Node pool ${index + 1}`}</ExpandableSectionToggle>
-          </SplitItem>
+        <Level hasGutter>
+          <LevelItem>
+            <Flex
+              alignItems={{ default: 'alignItemsCenter' }}
+              spaceItems={{ default: 'spaceItemsMd' }}
+              flexWrap={{ default: 'wrap' }}
+            >
+              <FlexItem>
+                <Split className="ai-node-pool__header">
+                  <SplitItem>
+                    <ExpandableSectionToggle
+                      className="ai-node-pool__expandable-button"
+                      isExpanded={isExpanded}
+                      onToggle={setExpanded}
+                    />
+                  </SplitItem>
+                  <SplitItem>
+                    <PencilEditField name={`nodePools.${index}.name`} isRequired />
+                  </SplitItem>
+                </Split>
+              </FlexItem>
+              {!isExpanded && (
+                <>
+                  <FlexItem>
+                    <Divider isVertical />
+                  </FlexItem>
+                  <FlexItem>
+                    <Label color="green">{`${selectedAgents.length} Hosts: ${getTotalCompute(
+                      selectedAgents,
+                    )}`}</Label>
+                  </FlexItem>
+                  <FlexItem>
+                    <Label variant="outline">{`${values.nodePools[index].agentLabels.length} filtering labels`}</Label>
+                  </FlexItem>
+                </>
+              )}
+            </Flex>
+          </LevelItem>
           {index !== 0 && (
-            <SplitItem>
+            <LevelItem>
               <Button variant="link" icon={<TrashIcon />} onClick={onRemove} />
-            </SplitItem>
+            </LevelItem>
           )}
-        </Split>
+        </Level>
       </StackItem>
       {isExpanded && (
         <StackItem className="ai-node-pool__section">
           <Grid hasGutter>
             <GridItem>
-              <InputField
-                name={`nodePools.${index}.name`}
-                isRequired
-                label={t('ai:Node pool name')}
-              />
-            </GridItem>
-            <GridItem>
-              <LabelsSelector
+              <LabelSelectorGroup
                 agents={infraEnvAgents}
                 labelKeysFilter={agentLabelKeysFilter}
                 name={`nodePools.${index}.agentLabels`}
               />
             </GridItem>
             <GridItem>
-              <SwitchField
-                name={`nodePools.${index}.autoSelectHosts`}
-                label={t('ai:Auto-select hosts')}
+              <CheckboxField
+                name={`nodePools.${index}.manualHostSelect`}
+                label="Manual host selection"
               />
             </GridItem>
-            {autoSelectHosts ? (
-              <>
-                <GridItem>
-                  <NumberInputField
-                    label={t('ai:Number of workers')}
-                    labelIcon={<AgentsSelectionHostCountLabelIcon />}
-                    idPostfix="count"
-                    name={`nodePools.${index}.count`}
-                    isRequired
-                    minValue={1}
-                    onChange={(value) => {
-                      setFieldValue(
-                        `nodePools.${index}.autoSelectedAgentIDs`,
-                        availableAgents.slice(0, value).map((a) => a.metadata?.uid),
-                      );
-                    }}
-                  />
-                </GridItem>
-                <GridItem>
-                  <AgentsSelectionHostCountAlerts
-                    matchingAgentsCount={availableAgents.length}
-                    selectedAgents={autoSelectedAgents}
-                    targetHostCount={values.nodePools[index].count}
-                  />
-                </GridItem>
-              </>
+            {!manualHostSelect ? (
+              <GridItem>
+                <NumberInputField
+                  label="Number of hosts"
+                  labelIcon={<AgentsSelectionHostCountLabelIcon />}
+                  idPostfix="count"
+                  name={`nodePools.${index}.count`}
+                  isRequired
+                  minValue={1}
+                  maxValue={availableAgents.length}
+                  onChange={(value) => {
+                    setFieldValue(
+                      `nodePools.${index}.autoSelectedAgentIDs`,
+                      availableAgents.slice(0, value).map((a) => a.metadata?.uid),
+                    );
+                  }}
+                  helperText={`Maximum availability ${availableAgents.length}`}
+                />
+              </GridItem>
             ) : (
-              <HostsAdvancedSelection
-                infraEnvAgents={infraEnvAgents}
-                agents={availableAgents}
-                index={index}
-              />
+              <HostsAdvancedSelection agents={availableAgents} index={index} />
             )}
           </Grid>
         </StackItem>

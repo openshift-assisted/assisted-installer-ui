@@ -17,8 +17,20 @@ const AGENT_FOR_SELECTION_STATUSES: AgentStatus[] = [
 export const hostToAgent = (agents: AgentK8sResource[] = [], host: Host) =>
   agents.find((a) => a.metadata?.uid === host.id) as AgentK8sResource;
 
-export const getAgentsForSelection = (agents: AgentK8sResource[]) =>
+export const getAgentsForSelection = (
+  agents: AgentK8sResource[],
+  cdName?: string,
+  cdNamespace?: string,
+) =>
   agents.filter((agent) => {
+    if (
+      cdName &&
+      cdNamespace &&
+      agent.spec.clusterDeploymentName?.name === cdName &&
+      agent.spec.clusterDeploymentName?.namespace === cdNamespace
+    ) {
+      return true;
+    }
     const { status } = getAgentStatus(agent);
     return AGENT_FOR_SELECTION_STATUSES.includes(status.key as AgentStatus);
   });

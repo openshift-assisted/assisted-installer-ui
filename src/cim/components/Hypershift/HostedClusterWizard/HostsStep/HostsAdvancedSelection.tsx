@@ -1,40 +1,18 @@
-import { useFormikContext } from 'formik';
 import * as React from 'react';
-import HostsTable, {
-  DefaultExpandComponent,
-} from '../../../../../common/components/hosts/HostsTable';
-import {
-  cpuCoresColumn,
-  disksColumn,
-  hostnameColumn,
-  memoryColumn,
-} from '../../../../../common/components/hosts/tableUtils';
-import { usePagination } from '../../../../../common/components/hosts/usePagination';
 import { AgentK8sResource } from '../../../../types';
-import { useAgentsTable } from '../../../Agent/tableUtils';
 import { HostsFormValues } from './types';
-import DefaultEmptyState from '../../../../../common/components/ui/uiState/EmptyState';
 import { useFormikHelpers } from '../../../../../common/hooks/useFormikHelpers';
 import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
+import HostsSelectionTable from '../../HostsSelectionTable/HostsSelectionTable';
 
 type HostsAdvancedSelectionProps = {
   agents: AgentK8sResource[];
-  infraEnvAgents: AgentK8sResource[];
   index: number;
 };
 
-const HostsAdvancedSelection: React.FC<HostsAdvancedSelectionProps> = ({
-  agents,
-  infraEnvAgents,
-  index,
-}) => {
-  const { values } = useFormikContext<HostsFormValues>();
-
-  const { setValue: setNodePoolsValue } =
+const HostsAdvancedSelection: React.FC<HostsAdvancedSelectionProps> = ({ agents, index }) => {
+  const { setValue: setNodePoolsValue, valueRef: nodePoolsRef } =
     useFormikHelpers<HostsFormValues['nodePools']>('nodePools');
-
-  const nodePoolsRef = React.useRef(values.nodePools);
-  nodePoolsRef.current = values.nodePools;
 
   const onSelect = React.useCallback(
     (agent: AgentK8sResource, selected: boolean) => {
@@ -47,7 +25,7 @@ const HostsAdvancedSelection: React.FC<HostsAdvancedSelectionProps> = ({
       newNodePools[index].selectedAgentIDs = newIDs;
       void setNodePoolsValue(newNodePools);
     },
-    [setNodePoolsValue, index],
+    [setNodePoolsValue, index, nodePoolsRef],
   );
 
   const setSelectedIDs = React.useCallback(
@@ -56,7 +34,7 @@ const HostsAdvancedSelection: React.FC<HostsAdvancedSelectionProps> = ({
       newNodePools[index].selectedAgentIDs = ids;
       void setNodePoolsValue(newNodePools);
     },
-    [setNodePoolsValue, index],
+    [setNodePoolsValue, index, nodePoolsRef],
   );
 
   const [hosts, actions] = useAgentsTable({ agents }, { onSelect });
@@ -69,11 +47,10 @@ const HostsAdvancedSelection: React.FC<HostsAdvancedSelectionProps> = ({
   const paginationProps = usePagination(hosts.length);
 
   return (
-    <HostsTable
-      hosts={hosts}
-      content={content}
-      selectedIDs={values.nodePools[index].selectedAgentIDs}
-      ExpandComponent={DefaultExpandComponent}
+    <HostsSelectionTable
+      agents={agents}
+      onSelect={onSelect}
+      selectedIDs={nodePoolsRef.current[index].selectedAgentIDs}
       setSelectedIDs={setSelectedIDs}
       canSelectAll
       {...actions}
