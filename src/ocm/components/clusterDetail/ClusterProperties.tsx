@@ -12,7 +12,6 @@ const getCpuArchTitle = () => (
   <>
     {'CPU architecture '}
     <PopoverIcon
-      variant="plain"
       bodyContent={
         <p>
           The generated ISO is specific to the cluster’s CPU architecture. Only hosts with the same
