@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useField, useFormikContext } from 'formik';
+import { useField } from 'formik';
 import { FormGroup, HelperTextItem } from '@patternfly/react-core';
 import { CodeFieldProps } from './types';
 import { getFieldId } from './utils';
