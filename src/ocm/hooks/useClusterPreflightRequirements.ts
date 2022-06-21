@@ -27,7 +27,7 @@ const useClusterPreflightRequirements = (clusterId: Cluster['id']) => {
         );
       }
     };
-    fetchFunc();
+    void fetchFunc();
   }, [setPreflightRequirements, setError, clusterId]);
 
   return {

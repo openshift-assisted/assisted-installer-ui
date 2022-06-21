@@ -35,7 +35,7 @@ export const StackTypeControlGroup = ({
       setFieldValue('serviceNetworks', values.serviceNetworks.slice(0, 1));
     }
 
-    validateForm();
+    void validateForm();
   }, [
     setFieldValue,
     validateForm,

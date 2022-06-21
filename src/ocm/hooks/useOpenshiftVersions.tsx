@@ -47,7 +47,7 @@ export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
   }, []);
 
   React.useEffect(() => {
-    doAsync();
+    void doAsync();
   }, [doAsync, setVersions]);
 
   const normalizeClusterVersion = React.useCallback(

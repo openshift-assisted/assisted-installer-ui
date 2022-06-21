@@ -69,7 +69,6 @@ module.exports = {
             fixToUnknown: true,
           },
         ],
-        '@typescript-eslint/no-floating-promises': 'warn',
         '@typescript-eslint/no-misused-promises': 'warn',
         '@typescript-eslint/no-unsafe-call': 'warn',
         '@typescript-eslint/no-unsafe-argument': 'warn',

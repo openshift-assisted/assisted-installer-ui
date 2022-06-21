@@ -24,7 +24,7 @@ const SingleCluster: React.FC<SingleClusterProps> = () => {
   }, [setClusters]);
 
   React.useEffect(() => {
-    fetchClusters();
+    void fetchClusters();
   }, [fetchClusters]);
 
   if (error) {

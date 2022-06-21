@@ -49,7 +49,7 @@ export const ClusterDefaultConfigurationProvider = ({
         if (mounted) dispatch({ type: 'failure', data: {} });
       }
     };
-    fetchAndSetDefaultConfiguration();
+    void fetchAndSetDefaultConfiguration();
 
     return () => {
       mounted = false;

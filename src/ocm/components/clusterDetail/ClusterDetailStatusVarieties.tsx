@@ -50,7 +50,7 @@ export const useClusterStatusVarieties = (cluster?: Cluster): ClusterStatusVarie
         setCredentialsError(err);
       }
     };
-    fetch();
+    void fetch();
   }, [clusterId]);
 
   const consoleOperatorStatus = consoleOperator?.status;
