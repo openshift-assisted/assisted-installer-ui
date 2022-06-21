@@ -30,7 +30,7 @@ export const downloadClusterInstallationLogs = async (
       saveAs(data, fileName);
     }
   } catch (e) {
-    handleApiError(e, async (e) => {
+    handleApiError(e, (e) => {
       addAlert({
         title: 'Could not download cluster installation logs.',
         message: getApiErrorMessage(e),
