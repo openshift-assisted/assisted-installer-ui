@@ -17,6 +17,7 @@ import {
   useAlerts,
   getEnabledHosts,
   getOlmOperators,
+  isSNO,
 } from '../../../common';
 import { Cluster } from '../../../common/api/types';
 import ClusterHostsTable from '../hosts/ClusterHostsTable';
@@ -35,6 +36,9 @@ import ClusterProgressItems from '../../../common/components/clusterDetail/Clust
 import { EventsModalButton } from '../../../common/components/ui/eventsModal';
 import { onFetchEvents } from '../fetching/fetchEvents';
 import { getClusterProgressAlerts } from './getProgressBarAlerts';
+import { ClustersAPI } from '../../services/apis';
+import { updateCluster } from '../../reducers/clusters';
+import { handleApiError, ocmClient } from '../../api';
 
 type ClusterDetailProps = {
   cluster: Cluster;
@@ -46,6 +50,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
   const clusterVarieties = useClusterStatusVarieties(cluster);
   const { credentials, credentialsError } = clusterVarieties;
   const { monitoredOperators = [] } = cluster;
+  const canAddHosts = !isSNO(cluster) && cluster.status === 'installed' && !ocmClient;
 
   return (
     <Stack hasGutter>
@@ -114,6 +119,25 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
               consoleUrl={credentials?.consoleUrl}
               id={getClusterDetailId('button-launch-console')}
             />
+          )}
+          {canAddHosts && (
+            <ToolbarButton
+              variant={ButtonVariant.primary}
+              component={(props) => (
+                <Link to={`${routeBasePath}/clusters/${cluster.id}`} {...props} />
+              )}
+              id={getClusterDetailId('button-add-hosts')}
+              onClick={async () => {
+                try {
+                  const { data } = await ClustersAPI.allowAddHosts(cluster.id);
+                  updateCluster(data);
+                } catch (e) {
+                  handleApiError(e);
+                }
+              }}
+            >
+              Add hosts
+            </ToolbarButton>
           )}
           {!isSingleClusterMode() && (
             <ToolbarButton

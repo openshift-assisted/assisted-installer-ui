@@ -2,7 +2,11 @@ import {
   ButtonVariant,
   Card,
   CardBody,
+  CardFooter,
   CardTitle,
+  Grid,
+  Stack,
+  StackItem,
   Title,
   Toolbar,
   ToolbarContent,
@@ -23,12 +27,16 @@ import {
 import InventoryAddHosts from './InventoryAddHost';
 import { onFetchEvents } from '../fetching/fetchEvents';
 import { HostsService } from '../../services';
+import ClusterDetailStatusVarieties, {
+  useClusterStatusVarieties,
+} from '../clusterDetail/ClusterDetailStatusVarieties';
 
 const { addAlert } = alertsSlice.actions;
 
 const AddHosts: React.FC = () => {
   const { cluster, resetCluster } = React.useContext(AddHostsContext);
   const [isSubmitting, setSubmitting] = React.useState(false);
+  const clusterVarieties = useClusterStatusVarieties(cluster);
 
   if (!cluster || !resetCluster) {
     return null;
@@ -62,7 +70,22 @@ const AddHosts: React.FC = () => {
           </Title>
         </CardTitle>
         <CardBody>
-          <InventoryAddHosts />
+          <Stack hasGutter>
+            <StackItem>
+              <Grid hasGutter>
+                <ClusterDetailStatusVarieties
+                  cluster={cluster}
+                  clusterVarieties={clusterVarieties}
+                />
+              </Grid>
+            </StackItem>
+            <StackItem>
+              <InventoryAddHosts />
+            </StackItem>
+          </Stack>
+        </CardBody>
+
+        <CardFooter>
           <Alerts />
           <Toolbar id="cluster-toolbar">
             <ToolbarContent>
@@ -89,7 +112,7 @@ const AddHosts: React.FC = () => {
               </ToolbarSecondaryGroup>
             </ToolbarContent>
           </Toolbar>
-        </CardBody>
+        </CardFooter>
       </Card>
       <DiscoveryImageModal />
     </ModalDialogsContextProvider>

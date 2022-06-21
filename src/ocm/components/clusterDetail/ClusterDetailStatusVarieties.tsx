@@ -22,39 +22,46 @@ type ClusterStatusVarieties = {
   fetchCredentials: () => void;
 };
 
-export const useClusterStatusVarieties = (cluster: Cluster): ClusterStatusVarieties => {
+export const useClusterStatusVarieties = (cluster?: Cluster): ClusterStatusVarieties => {
   const [credentials, setCredentials] = React.useState<Credentials>();
   const [credentialsError, setCredentialsError] = React.useState();
 
-  const olmOperators = getOlmOperators(cluster.monitoredOperators);
+  const clusterId = cluster?.id;
+  const clusterStatus = cluster?.status;
+  const clusterMonitoredOperators = cluster?.monitoredOperators;
+
+  const olmOperators = getOlmOperators(cluster?.monitoredOperators);
   const failedOlmOperators = olmOperators.filter((o) => o.status === 'failed');
   const consoleOperator = React.useMemo(
-    () => cluster.monitoredOperators?.find((o) => o.name === 'console'),
-    [cluster.monitoredOperators],
+    () => clusterMonitoredOperators?.find((o) => o.name === 'console'),
+    [clusterMonitoredOperators],
   );
 
   const fetchCredentials = React.useCallback(() => {
     const fetch = async () => {
       setCredentialsError(undefined);
+      if (!clusterId) {
+        return;
+      }
       try {
-        const response = await ClustersAPI.getCredentials(cluster.id);
+        const response = await ClustersAPI.getCredentials(clusterId);
         setCredentials(response.data);
       } catch (err) {
         setCredentialsError(err);
       }
     };
     fetch();
-  }, [cluster.id]);
+  }, [clusterId]);
 
   const consoleOperatorStatus = consoleOperator?.status;
   React.useEffect(() => {
     if (
-      (!consoleOperatorStatus && cluster.status === 'installed') || // Retain backwards compatibility with clusters which don't have monitored clusters
+      (!consoleOperatorStatus && clusterStatus === 'installed') || // Retain backwards compatibility with clusters which don't have monitored clusters
       consoleOperatorStatus === 'available'
     ) {
       fetchCredentials();
     }
-  }, [cluster.status, consoleOperatorStatus, fetchCredentials]);
+  }, [clusterStatus, consoleOperatorStatus, fetchCredentials]);
 
   return {
     credentials,
