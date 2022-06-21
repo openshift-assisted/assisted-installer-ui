@@ -70,11 +70,8 @@ const getNetworkTypeSelectionDisabledReason = (cluster: Cluster | undefined) => 
   if (!cluster) {
     return undefined;
   }
-  if (isArmArchitecture(cluster)) {
-    return 'Network type selection is not supported for ARM architecture';
-  }
   if (isSNO(cluster)) {
-    return 'Network type selection is not supported for Single-Node OpenShift';
+    return 'Network management selection is not supported for Single-Node OpenShift';
   }
   return undefined;
 };
@@ -101,6 +98,9 @@ export const getFeatureDisabledReason = (
     }
     case 'NETWORK_TYPE_SELECTION': {
       return getNetworkTypeSelectionDisabledReason(cluster);
+    }
+    case 'ARM64_ARCHITECTURE_WITH_CLUSTER_MANAGED_NETWORKING': {
+      return 'Network management selection is not supported for ARM architecture with this version of OpenShift.';
     }
     default: {
       return undefined;

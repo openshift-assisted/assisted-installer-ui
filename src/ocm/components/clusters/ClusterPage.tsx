@@ -32,6 +32,7 @@ import { FeatureSupportLevelProvider } from '../featureSupportLevels';
 import ClusterWizardContextProvider from '../clusterWizard/ClusterWizardContextProvider';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { SentryErrorMonitorContextProvider } from '../SentryErrorMonitorContextProvider';
+import { forceReload } from '../../reducers/clusters';
 
 type MatchParams = {
   clusterId: string;
@@ -62,7 +63,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
   const getContent = (cluster: Cluster, infraEnv: InfraEnv) => {
     if (cluster.status === 'adding-hosts') {
       return (
-        <AddHostsContextProvider cluster={cluster}>
+        <AddHostsContextProvider cluster={cluster} resetCluster={forceReload}>
           <AddHosts />
         </AddHostsContextProvider>
       );
