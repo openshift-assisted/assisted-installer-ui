@@ -11,6 +11,7 @@ import { getClusterDetailId } from './utils';
 import { ClustersAPI } from '../../services/apis';
 import ClusterDetailStatusMessages from './ClusterDetailStatusMessages';
 import { Grid } from '@patternfly/react-core';
+import { APIErrorMixin } from '../../api/types';
 
 type ClusterStatusVarieties = {
   credentials?: Credentials;
@@ -22,9 +23,11 @@ type ClusterStatusVarieties = {
   fetchCredentials: () => void;
 };
 
+type ErrorType = APIErrorMixin & Error;
+
 export const useClusterStatusVarieties = (cluster?: Cluster): ClusterStatusVarieties => {
   const [credentials, setCredentials] = React.useState<Credentials>();
-  const [credentialsError, setCredentialsError] = React.useState();
+  const [credentialsError, setCredentialsError] = React.useState<ErrorType>();
 
   const clusterId = cluster?.id;
   const clusterStatus = cluster?.status;
@@ -47,7 +50,7 @@ export const useClusterStatusVarieties = (cluster?: Cluster): ClusterStatusVarie
         const response = await ClustersAPI.getCredentials(clusterId);
         setCredentials(response.data);
       } catch (err) {
-        setCredentialsError(err);
+        setCredentialsError(err as ErrorType);
       }
     };
     fetch();

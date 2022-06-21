@@ -72,6 +72,7 @@ const getClusterResources = (cluster: Cluster, resourcePath: string): number => 
     )
     .map((host) => stringToJSON<Inventory>(host.inventory) || {})
     .map((inventory) => get(inventory, resourcePath, 0))
+    // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
     .reduce((total, value) => total + value, 0);
 
   return result;

@@ -178,7 +178,7 @@ const ClustersAPI = {
 
   listByOpenshiftId(openshiftId: Cluster['openshiftClusterId']) {
     return client.get<Cluster[]>(
-      `${ClustersAPI.makeBaseURI()}?openshift_cluster_id=${openshiftId}`,
+      `${ClustersAPI.makeBaseURI()}?openshift_cluster_id=${openshiftId || ''}`,
     );
   },
 
