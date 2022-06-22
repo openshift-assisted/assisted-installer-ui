@@ -62,7 +62,7 @@ export const AvailableSubnetsControl = ({
   const IPv6Subnets = hostSubnets.filter((subnet) => Address6.isValid(subnet.subnet));
 
   const hasNoMachineNetworks = (values.machineNetworks ?? []).length === 0;
-  const cidr = hostSubnets.length >= 1 ? hostSubnets[0].subnet : NO_SUBNET_SET;
+  const cidr = IPv4Subnets.length >= 1 ? IPv4Subnets[0].subnet : NO_SUBNET_SET;
   useAutoSelectSingleAvailableSubnet(hasNoMachineNetworks, setFieldValue, cidr, clusterId);
 
   return (

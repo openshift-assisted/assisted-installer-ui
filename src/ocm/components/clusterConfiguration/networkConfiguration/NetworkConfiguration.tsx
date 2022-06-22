@@ -241,6 +241,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
           clusterId={cluster.id}
           isDualStackSelectable={isDualStackSelectable}
           isSNO={isSNOCluster}
+          hostSubnets={hostSubnets}
         />
       )}
 

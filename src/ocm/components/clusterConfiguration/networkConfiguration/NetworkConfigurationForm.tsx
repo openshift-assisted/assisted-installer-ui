@@ -19,6 +19,7 @@ import {
   V2ClusterUpdateParams,
   IPV4_STACK,
   SecurityFields,
+  ClusterDefaultConfig,
 } from '../../../../common';
 import { useDefaultConfiguration } from '../ClusterDefaultConfigurationContext';
 import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContext';
@@ -41,7 +42,13 @@ import { getApiErrorMessage, handleApiError } from '../../../api';
 const NetworkConfigurationForm: React.FC<{
   cluster: Cluster;
   hostSubnets: HostSubnets;
-  defaultNetworkSettings: Pick<NetworkConfigurationValues, 'serviceNetworks' | 'clusterNetworks'>;
+  defaultNetworkSettings: Pick<
+    ClusterDefaultConfig,
+    | 'clusterNetworksIpv4'
+    | 'clusterNetworksDualstack'
+    | 'serviceNetworksIpv4'
+    | 'serviceNetworksDualstack'
+  >;
   infraEnv?: InfraEnv;
 }> = ({ cluster, hostSubnets, defaultNetworkSettings, infraEnv }) => {
   const { alerts } = useAlerts();

@@ -2,23 +2,26 @@ import React from 'react';
 import { ButtonVariant, FormGroup, Tooltip } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 import { Cluster } from '../../../../common/api/types';
-import { NetworkConfigurationValues } from '../../../../common/types';
+import { HostSubnets, NetworkConfigurationValues } from '../../../../common/types';
 import { DUAL_STACK, IPV4_STACK, NO_SUBNET_SET } from '../../../../common/config/constants';
 import { getFieldId } from '../../../../common/components/ui/formik/utils';
 import { ConfirmationModal, PopoverIcon, RadioField } from '../../../../common/components/ui';
 import { getDefaultNetworkType } from '../../../../common';
 import { useDefaultConfiguration } from '../ClusterDefaultConfigurationContext';
+import { Address6 } from 'ip-address';
 
 type StackTypeControlGroupProps = {
   clusterId: Cluster['id'];
   isDualStackSelectable: boolean;
   isSNO: boolean;
+  hostSubnets: HostSubnets;
 };
 
 export const StackTypeControlGroup = ({
   clusterId,
   isSNO,
   isDualStackSelectable,
+  hostSubnets,
 }: StackTypeControlGroupProps) => {
   const { setFieldValue, values, validateForm } = useFormikContext<NetworkConfigurationValues>();
   const [openConfirmModal, setConfirmModal] = React.useState(false);
@@ -28,6 +31,9 @@ export const StackTypeControlGroup = ({
     'serviceNetworksDualstack',
     'serviceNetworksIpv4',
   ]);
+
+  const IPv6Subnets = hostSubnets.filter((subnet) => Address6.isValid(subnet.subnet));
+  const cidrIPv6 = IPv6Subnets.length >= 1 ? IPv6Subnets[0].subnet : NO_SUBNET_SET;
 
   const setSingleStack = React.useCallback(() => {
     setFieldValue('stackType', IPV4_STACK);
@@ -61,7 +67,7 @@ export const StackTypeControlGroup = ({
     if (values.machineNetworks && values.machineNetworks?.length < 2) {
       setFieldValue(
         'machineNetworks',
-        [...values.machineNetworks, { cidr: NO_SUBNET_SET, clusterId: clusterId }],
+        [...values.machineNetworks, { cidr: cidrIPv6, clusterId: clusterId }],
         false,
       );
     }
