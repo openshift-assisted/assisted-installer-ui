@@ -412,6 +412,10 @@ export interface ClusterDefaultConfig {
   inactiveDeletionHours?: number;
   serviceNetworkCidr?: string; // ^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)[\/]([1-9]|[1-2][0-9]|3[0-2]?)$
   ntpSource?: string;
+  clusterNetworksIpv4?: ClusterNetwork[];
+  clusterNetworksDualstack?: ClusterNetwork[];
+  serviceNetworksIpv4?: ServiceNetwork[];
+  serviceNetworksDualstack?: ServiceNetwork[];
 }
 export interface ClusterHostRequirements {
   /**

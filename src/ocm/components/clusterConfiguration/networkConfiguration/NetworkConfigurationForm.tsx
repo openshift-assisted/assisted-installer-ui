@@ -106,30 +106,12 @@ const NetworkConfigurationPage: React.FC<{
   cluster: Cluster;
 }> = ({ cluster }) => {
   const { infraEnv, error: infraEnvError, isLoading } = useInfraEnv(cluster.id);
-  const defaultNetworkSettings = useDefaultConfiguration([
-    'clusterNetworkCidr',
-    'serviceNetworkCidr',
-    'clusterNetworkHostPrefix',
+  const defaultNetworkValues = useDefaultConfiguration([
+    'clusterNetworksDualstack',
+    'clusterNetworksIpv4',
+    'serviceNetworksDualstack',
+    'serviceNetworksIpv4',
   ]);
-
-  const defaultNetworkValues: Pick<
-    NetworkConfigurationValues,
-    'serviceNetworks' | 'clusterNetworks'
-  > = {
-    serviceNetworks: [
-      {
-        cidr: defaultNetworkSettings.serviceNetworkCidr,
-        clusterId: cluster.id,
-      },
-    ],
-    clusterNetworks: [
-      {
-        cidr: defaultNetworkSettings.clusterNetworkCidr,
-        hostPrefix: defaultNetworkSettings.clusterNetworkHostPrefix,
-        clusterId: cluster.id,
-      },
-    ],
-  };
 
   const { addAlert, clearAlerts, alerts } = useAlerts();
   const dispatch = useDispatch();

@@ -7,18 +7,27 @@ import { DUAL_STACK, IPV4_STACK, NO_SUBNET_SET } from '../../../../common/config
 import { getFieldId } from '../../../../common/components/ui/formik/utils';
 import { ConfirmationModal, PopoverIcon, RadioField } from '../../../../common/components/ui';
 import { getDefaultNetworkType } from '../../../../common';
+import { useDefaultConfiguration } from '../ClusterDefaultConfigurationContext';
+
+type StackTypeControlGroupProps = {
+  clusterId: Cluster['id'];
+  isDualStackSelectable: boolean;
+  isSNO: boolean;
+};
 
 export const StackTypeControlGroup = ({
   clusterId,
   isSNO,
   isDualStackSelectable,
-}: {
-  clusterId: Cluster['id'];
-  isDualStackSelectable: boolean;
-  isSNO: boolean;
-}) => {
+}: StackTypeControlGroupProps) => {
   const { setFieldValue, values, validateForm } = useFormikContext<NetworkConfigurationValues>();
   const [openConfirmModal, setConfirmModal] = React.useState(false);
+  const defaultNetworkValues = useDefaultConfiguration([
+    'clusterNetworksDualstack',
+    'clusterNetworksIpv4',
+    'serviceNetworksDualstack',
+    'serviceNetworksIpv4',
+  ]);
 
   const setSingleStack = React.useCallback(() => {
     setFieldValue('stackType', IPV4_STACK);
@@ -59,14 +68,24 @@ export const StackTypeControlGroup = ({
     if (values.clusterNetworks && values.clusterNetworks?.length < 2) {
       setFieldValue(
         'clusterNetworks',
-        [...values.clusterNetworks, { cidr: '', hostPrefix: '', clusterId: clusterId }],
+        [
+          ...values.clusterNetworks,
+          defaultNetworkValues.clusterNetworksDualstack?.length
+            ? defaultNetworkValues.clusterNetworksDualstack[1]
+            : { cidr: '', hostPrefix: '', clusterId: clusterId },
+        ],
         false,
       );
     }
     if (values.serviceNetworks && values.serviceNetworks?.length < 2) {
       setFieldValue(
         'serviceNetworks',
-        [...values.serviceNetworks, { cidr: '', clusterId: clusterId }],
+        [
+          ...values.serviceNetworks,
+          defaultNetworkValues.serviceNetworksDualstack?.length
+            ? defaultNetworkValues.serviceNetworksDualstack[1]
+            : { cidr: '', clusterId: clusterId },
+        ],
         false,
       );
     }
