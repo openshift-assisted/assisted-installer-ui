@@ -42,14 +42,14 @@ export const HOST_ROLES: HostRoleItem[] = [
   {
     value: 'master',
     label: 'Control plane node',
-    description: 'Runs the container orchestration layer (like API server, Scheduler etc).',
+    description: 'Runs the container orchestration layer (such as API server, Scheduler, and more)',
     schedulable_policy: 'off',
   },
   {
     value: 'master',
     label: 'Control plane, worker',
     description:
-      'Runs the container orchestration layer (like API server, Scheduler etc), and also runs the application workloads',
+      'Runs the container orchestration layer (such as API server, Scheduler, and more), and also the application workloads',
     schedulable_policy: 'on',
   },
   {
