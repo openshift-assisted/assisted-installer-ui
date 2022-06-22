@@ -1,6 +1,6 @@
 import React from 'react';
 import { CpuArchitecture, ImportClusterParams, OpenshiftVersionOptionType } from '../../common';
-import { getErrorMessage, handleApiError } from '../api';
+import { getApiErrorMessage, handleApiError } from '../api';
 import { SupportedOpenshiftVersionsAPI } from '../services/apis';
 
 type UseOpenshiftVersionsType = {
@@ -40,7 +40,7 @@ export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
       handleApiError(e, (e) => {
         setError({
           title: 'Failed to retrieve list of supported OpenShift versions.',
-          message: getErrorMessage(e),
+          message: getApiErrorMessage(e),
         });
       });
     }

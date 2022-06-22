@@ -3,7 +3,7 @@ import { Cluster } from '../../api';
 
 export type AddHostsContextType = {
   cluster?: Cluster;
-  resetCluster?: () => void;
+  resetCluster?: () => Promise<void>;
   ocpConsoleUrl?: string;
 };
 
