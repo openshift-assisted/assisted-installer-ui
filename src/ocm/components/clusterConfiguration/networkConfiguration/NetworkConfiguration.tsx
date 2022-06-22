@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React from 'react';
 import { useFormikContext } from 'formik';
 import { Alert, AlertVariant, Checkbox, Grid, Tooltip } from '@patternfly/react-core';
 import { VirtualIPControlGroup, VirtualIPControlGroupProps } from './VirtualIPControlGroup';
@@ -7,7 +7,7 @@ import {
   FeatureSupportLevelData,
   useFeatureSupportLevel,
 } from '../../../../common/components/featureSupportLevels';
-import { CpuArchitecture, NetworkConfigurationValues } from '../../../../common/types';
+import { CpuArchitecture, HostSubnets, NetworkConfigurationValues } from '../../../../common/types';
 import { getLimitedFeatureSupportLevels } from '../../../../common/components/featureSupportLevels/utils';
 import { isSNO } from '../../../../common/selectors';
 import {
@@ -27,6 +27,7 @@ import { AvailableSubnetsControl } from './AvailableSubnetsControl';
 import AdvancedNetworkFields from './AdvancedNetworkFields';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
+  hostSubnets: HostSubnets;
   defaultNetworkSettings: Pick<
     ClusterDefaultConfig,
     | 'clusterNetworksIpv4'
@@ -142,7 +143,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
     isDualStack || isAdvNetworkConf(cluster, defaultNetworkSettings, defaultNetworkType),
   );
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (isUserManagedNetworking) {
       // We need to reset these fields' values in order to align with the values the server sends
       setFieldValue('vipDhcpAllocation', false);
@@ -166,7 +167,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
     validateField,
   ]);
 
-  const toggleAdvConfiguration = useCallback(
+  const toggleAdvConfiguration = React.useCallback(
     (checked: boolean) => {
       setAdvanced(checked);
 
@@ -199,7 +200,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
     ],
   );
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (isDualStack && !isUserManagedNetworking) {
       toggleAdvConfiguration(true);
     }
@@ -256,7 +257,6 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
       {!isUserManagedNetworking && (
         <VirtualIPControlGroup
           cluster={cluster}
-          hostSubnets={hostSubnets}
           isVipDhcpAllocationDisabled={isVipDhcpAllocationDisabled}
         />
       )}

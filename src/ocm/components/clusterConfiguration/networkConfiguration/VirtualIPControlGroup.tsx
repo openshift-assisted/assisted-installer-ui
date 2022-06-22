@@ -3,10 +3,10 @@ import { useFormikContext } from 'formik';
 import { Spinner, Alert, AlertVariant, Tooltip } from '@patternfly/react-core';
 import { Cluster } from '../../../../common/api/types';
 import { stringToJSON } from '../../../../common/api/utils';
-import { HostSubnets, NetworkConfigurationValues, ValidationsInfo } from '../../../../common/types';
+import { NetworkConfigurationValues, ValidationsInfo } from '../../../../common/types';
 import { CheckboxField, FormikStaticField, InputField } from '../../../../common/components/ui';
 import { FeatureSupportLevelBadge } from '../../../../common/components';
-import { NETWORK_TYPE_SDN, NO_SUBNET_SET } from '../../../../common/config/constants';
+import { NETWORK_TYPE_SDN } from '../../../../common/config/constants';
 import { selectMachineNetworkCIDR } from '../../../../common';
 
 interface VipStaticValueProps {
@@ -80,13 +80,11 @@ const getVipValidationsById = (
 
 export type VirtualIPControlGroupProps = {
   cluster: Cluster;
-  hostSubnets: HostSubnets;
   isVipDhcpAllocationDisabled?: boolean;
 };
 
 export const VirtualIPControlGroup = ({
   cluster,
-  hostSubnets,
   isVipDhcpAllocationDisabled,
 }: VirtualIPControlGroupProps) => {
   const { values, setFieldValue } = useFormikContext<NetworkConfigurationValues>();
@@ -175,19 +173,12 @@ export const VirtualIPControlGroup = ({
         </>
       ) : (
         <>
-          <InputField
-            label="API IP"
-            name="apiVip"
-            helperText={apiVipHelperText}
-            isRequired
-            isDisabled={!hostSubnets.length || values.hostSubnet === NO_SUBNET_SET}
-          />
+          <InputField label="API IP" name="apiVip" helperText={apiVipHelperText} isRequired />
           <InputField
             name="ingressVip"
             label="Ingress IP"
             helperText={ingressVipHelperText}
             isRequired
-            isDisabled={!hostSubnets.length || values.hostSubnet === NO_SUBNET_SET}
           />
         </>
       )}

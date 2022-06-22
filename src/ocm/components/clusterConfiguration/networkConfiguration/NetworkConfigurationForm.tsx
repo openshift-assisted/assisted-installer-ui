@@ -1,7 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Formik, FormikConfig, useFormikContext } from 'formik';
-import mapValues from 'lodash/mapValues';
 import { Form, Grid, GridItem, Text, TextContent } from '@patternfly/react-core';
 import {
   Cluster,
@@ -129,8 +128,6 @@ const NetworkConfigurationPage: React.FC<{
     [], // just once, Formik does not reinitialize
   );
 
-  const initialTouched = React.useMemo(() => mapValues(initialValues, () => true), [initialValues]);
-
   const memoizedValidationSchema = React.useMemo(
     () => getNetworkConfigurationValidationSchema(initialValues, hostSubnets),
     [hostSubnets, initialValues],
@@ -206,7 +203,6 @@ const NetworkConfigurationPage: React.FC<{
       initialValues={initialValues}
       validationSchema={memoizedValidationSchema}
       onSubmit={handleSubmit}
-      initialTouched={initialTouched}
       validateOnMount
     >
       <NetworkConfigurationForm

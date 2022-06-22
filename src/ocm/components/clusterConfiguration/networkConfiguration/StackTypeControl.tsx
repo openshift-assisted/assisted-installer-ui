@@ -52,6 +52,7 @@ export const StackTypeControlGroup = ({
 
     void validateForm();
   }, [
+    isSNO,
     setFieldValue,
     validateForm,
     values.clusterNetworks,
