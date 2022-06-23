@@ -28,12 +28,11 @@ export const useClusterStatusVarieties = (cluster?: Cluster): ClusterStatusVarie
 
   const clusterId = cluster?.id;
   const clusterStatus = cluster?.status;
-  const clusterMonitoredOperators = cluster?.monitoredOperators;
-
-  const olmOperators = getOlmOperators(cluster?.monitoredOperators);
+  const clusterMonitoredOperators = cluster?.monitoredOperators || [];
+  const olmOperators = getOlmOperators(clusterMonitoredOperators);
   const failedOlmOperators = olmOperators.filter((o) => o.status === 'failed');
   const consoleOperator = React.useMemo(
-    () => clusterMonitoredOperators?.find((o) => o.name === 'console'),
+    () => clusterMonitoredOperators.find((o) => o.name === 'console'),
     [clusterMonitoredOperators],
   );
 

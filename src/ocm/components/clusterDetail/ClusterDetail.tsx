@@ -49,7 +49,6 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
   const { resetClusterDialog, cancelInstallationDialog } = useModalDialogsContext();
   const clusterVarieties = useClusterStatusVarieties(cluster);
   const { credentials, credentialsError } = clusterVarieties;
-  const { monitoredOperators = [] } = cluster;
   const canAddHosts = !isSNO(cluster) && cluster.status === 'installed' && !ocmClient;
 
   return (
@@ -75,7 +74,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
             {getClusterProgressAlerts(
               getEnabledHosts(cluster.hosts),
               cluster,
-              getOlmOperators(monitoredOperators),
+              getOlmOperators(cluster.monitoredOperators),
             )}
           </GridItem>
           <GridItem span={6}>
