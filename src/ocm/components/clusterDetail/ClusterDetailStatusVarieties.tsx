@@ -11,23 +11,20 @@ import { getClusterDetailId } from './utils';
 import { ClustersAPI } from '../../services/apis';
 import ClusterDetailStatusMessages from './ClusterDetailStatusMessages';
 import { Grid } from '@patternfly/react-core';
-import { APIErrorMixin } from '../../api/types';
+import { getErrorMessage } from '../../api';
 
 type ClusterStatusVarieties = {
   credentials?: Credentials;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  credentialsError?: any;
+  credentialsError: string;
   olmOperators: MonitoredOperatorsList;
   failedOlmOperators: MonitoredOperatorsList;
   consoleOperator?: MonitoredOperator;
   fetchCredentials: () => void;
 };
 
-type ErrorType = APIErrorMixin & Error;
-
 export const useClusterStatusVarieties = (cluster?: Cluster): ClusterStatusVarieties => {
   const [credentials, setCredentials] = React.useState<Credentials>();
-  const [credentialsError, setCredentialsError] = React.useState<ErrorType>();
+  const [credentialsError, setCredentialsError] = React.useState('');
 
   const clusterId = cluster?.id;
   const clusterStatus = cluster?.status;
@@ -42,7 +39,7 @@ export const useClusterStatusVarieties = (cluster?: Cluster): ClusterStatusVarie
 
   const fetchCredentials = React.useCallback(() => {
     const fetch = async () => {
-      setCredentialsError(undefined);
+      setCredentialsError('');
       if (!clusterId) {
         return;
       }
@@ -50,7 +47,7 @@ export const useClusterStatusVarieties = (cluster?: Cluster): ClusterStatusVarie
         const response = await ClustersAPI.getCredentials(clusterId);
         setCredentials(response.data);
       } catch (err) {
-        setCredentialsError(err as ErrorType);
+        setCredentialsError(getErrorMessage(err));
       }
     };
     fetch();
