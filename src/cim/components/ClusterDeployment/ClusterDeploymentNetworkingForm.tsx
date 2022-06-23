@@ -19,10 +19,10 @@ import {
   CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4,
   getHostSubnets,
   SecurityFields,
-  NetworkConfiguration,
   ProxyFields,
   ProxyInputFields,
 } from '../../../common';
+import NetworkConfiguration from './NetworkConfiguration';
 import ClusterDeploymentHostsNetworkTable from './ClusterDeploymentHostsNetworkTable';
 import { getAICluster } from '../helpers';
 import {
