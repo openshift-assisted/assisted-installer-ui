@@ -23,10 +23,9 @@ const ClusterProgressItems = ({
   onFetchEvents,
   fallbackEventsURL,
 }: ClusterProgressItemsProps) => {
-  const { monitoredOperators = [] } = cluster;
   const enabledHosts = getEnabledHosts(cluster.hosts);
   const isWorkersPresent = enabledHosts && enabledHosts.some((host) => host.role === 'worker');
-  const olmOperators = getOlmOperators(monitoredOperators);
+  const olmOperators = getOlmOperators(cluster.monitoredOperators);
 
   return (
     <>

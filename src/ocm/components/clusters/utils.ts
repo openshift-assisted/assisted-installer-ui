@@ -25,14 +25,14 @@ export const getBuiltInOperators = (monitoredOperators: MonitoredOperatorsList =
   monitoredOperators.filter((operator: MonitoredOperator) => operator.operatorType === 'builtin');
 
 export const getOlmOperatorCreateParams = (
-  monitoredOperators: MonitoredOperatorsList = [],
+  monitoredOperators: MonitoredOperatorsList,
 ): OperatorCreateParams[] =>
   getOlmOperators(monitoredOperators).map((operator) => ({
     name: operator.name,
     properties: operator.properties,
   }));
 
-export const getOlmOperatorCreateParamsByName = (monitoredOperators: MonitoredOperatorsList = []) =>
+export const getOlmOperatorCreateParamsByName = (monitoredOperators: MonitoredOperatorsList) =>
   getOlmOperatorCreateParams(monitoredOperators).reduce(
     (result: { [key: string]: OperatorCreateParams }, operator) => {
       if (operator.name) {
