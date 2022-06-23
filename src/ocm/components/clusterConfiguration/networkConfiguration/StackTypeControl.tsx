@@ -1,7 +1,12 @@
 import React from 'react';
 import { ButtonVariant, FormGroup, Tooltip } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
-import { Cluster } from '../../../../common/api/types';
+import {
+  Cluster,
+  ClusterNetwork,
+  MachineNetwork,
+  ServiceNetwork,
+} from '../../../../common/api/types';
 import { HostSubnets, NetworkConfigurationValues } from '../../../../common/types';
 import { DUAL_STACK, IPV4_STACK, NO_SUBNET_SET } from '../../../../common/config/constants';
 import { getFieldId } from '../../../../common/components/ui/formik/utils';
@@ -16,6 +21,20 @@ type StackTypeControlGroupProps = {
   isSNO: boolean;
   hostSubnets: HostSubnets;
 };
+
+const hasDualStackConfigurationChanged = (
+  clusterNetworks: ClusterNetwork[],
+  serviceNetworks: ServiceNetwork[],
+  cidrIPv6: MachineNetwork['cidr'],
+  values: NetworkConfigurationValues,
+) =>
+  clusterNetworks &&
+  serviceNetworks &&
+  ((values.machineNetworks && values.machineNetworks[1].cidr !== cidrIPv6) ||
+    (values.clusterNetworks && values.clusterNetworks[1].cidr !== clusterNetworks[1].cidr) ||
+    (values.clusterNetworks &&
+      values.clusterNetworks[1].hostPrefix !== clusterNetworks[1].hostPrefix) ||
+    (values.serviceNetworks && values.serviceNetworks[1].cidr !== serviceNetworks[1].cidr));
 
 export const StackTypeControlGroup = ({
   clusterId,
@@ -102,10 +121,12 @@ export const StackTypeControlGroup = ({
     if (e.target.value === DUAL_STACK) {
       setDualStack();
     } else if (
-      (values.machineNetworks && values.machineNetworks[1].cidr !== 'NO_SUBNET_SET') ||
-      (values.clusterNetworks && values.clusterNetworks[1].cidr) ||
-      (values.clusterNetworks && values.clusterNetworks[1].hostPrefix) ||
-      (values.serviceNetworks && values.serviceNetworks[1].cidr)
+      hasDualStackConfigurationChanged(
+        defaultNetworkValues.clusterNetworksDualstack || [],
+        defaultNetworkValues.serviceNetworksDualstack || [],
+        cidrIPv6,
+        values,
+      )
     ) {
       setConfirmModal(true);
     } else {
