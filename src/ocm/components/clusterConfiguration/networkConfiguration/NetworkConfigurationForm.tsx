@@ -18,6 +18,7 @@ import {
   useFormikAutoSave,
   V2ClusterUpdateParams,
   IPV4_STACK,
+  SecurityFields,
 } from '../../../../common';
 import { useDefaultConfiguration } from '../ClusterDefaultConfigurationContext';
 import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContext';
@@ -31,11 +32,11 @@ import {
   getNetworkConfigurationValidationSchema,
   getNetworkInitialValues,
 } from './networkConfigurationValidation';
+import NetworkConfiguration from './NetworkConfiguration';
 import { captureException } from '../../../sentry';
 import { ClustersAPI } from '../../../services/apis';
 import { updateClusterBase } from '../../../reducers/clusters';
 import { getApiErrorMessage, handleApiError } from '../../../api';
-import NetworkConfigurationFormFields from './NetworkConfigurationFormFields';
 
 const NetworkConfigurationForm: React.FC<{
   cluster: Cluster;
@@ -77,12 +78,17 @@ const NetworkConfigurationForm: React.FC<{
             </ClusterWizardStepHeader>
           </GridItem>
           <GridItem span={12} lg={10} xl={9} xl2={7}>
-            <NetworkConfigurationFormFields
-              cluster={cluster}
-              hostSubnets={hostSubnets}
-              defaultNetworkSettings={defaultNetworkSettings}
-              infraEnv={infraEnv}
-            />
+            <Grid hasGutter>
+              <NetworkConfiguration
+                cluster={cluster}
+                hostSubnets={hostSubnets}
+                defaultNetworkSettings={defaultNetworkSettings}
+              />
+              <SecurityFields
+                clusterSshKey={cluster.sshPublicKey}
+                imageSshKey={infraEnv?.sshAuthorizedKey}
+              />
+            </Grid>
           </GridItem>
           <GridItem>
             <TextContent>
