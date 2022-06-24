@@ -1,11 +1,6 @@
 import head from 'lodash/fp/head';
 import { stringToJSON } from '../api/utils';
-import {
-  CpuArchitecture,
-  HostSubnets,
-  NetworkConfigurationValues,
-  ValidationsInfo,
-} from '../types';
+import { CpuArchitecture, HostSubnets, ValidationsInfo } from '../types';
 import { Cluster, ClusterNetwork, MachineNetwork, ServiceNetwork } from '../api/types';
 import { NETWORK_TYPE_OVN, NETWORK_TYPE_SDN } from '../config';
 import { Address4, Address6 } from 'ip-address';
@@ -75,17 +70,23 @@ export const allSubnetsIPv4 = (
   return !!networks?.every((network) => network.cidr && Address4.isValid(network.cidr));
 };
 
+export const hasIpv6Subnet = (
+  networks: (MachineNetwork | ClusterNetwork | ServiceNetwork)[] | undefined,
+) => {
+  return !!networks?.some((network) => network.cidr && Address6.isValid(network.cidr));
+};
+
 export const allHostSubnetsIPv4 = (subnets: HostSubnets) =>
   subnets.every((subnet) => Address4.isValid(subnet.subnet));
 
-export const isIPv4 = ({
-  machineNetworks,
-  clusterNetworks,
-  serviceNetworks,
-}: Cluster | NetworkConfigurationValues) =>
-  allSubnetsIPv4(machineNetworks) &&
-  allSubnetsIPv4(clusterNetworks) &&
-  allSubnetsIPv4(serviceNetworks);
+export const isDualStack = (cluster: Cluster) =>
+  hasIpv6Subnet(cluster.machineNetworks) &&
+  hasIpv6Subnet(cluster.clusterNetworks) &&
+  hasIpv6Subnet(cluster.serviceNetworks) &&
+  cluster.clusterNetworks &&
+  cluster.clusterNetworks.length > 1 &&
+  cluster.serviceNetworks &&
+  cluster.serviceNetworks.length > 1;
 
 export const selectIpv4Cidr = (subnets: MachineNetwork[] | ClusterNetwork[] | ServiceNetwork[]) =>
   head(subnets)?.cidr;
