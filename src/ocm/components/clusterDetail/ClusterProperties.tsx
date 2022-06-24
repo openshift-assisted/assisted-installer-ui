@@ -75,11 +75,11 @@ const getDiskEncryptionEnabledOnStatus = (diskEncryption: DiskEncryption['enable
   return diskEncryptionType;
 };
 
-const ClusterProperties: React.FC<ClusterPropertiesProps> = ({
+const ClusterProperties = ({
   cluster,
   isDualStack = false,
   externalMode = false,
-}) => (
+}: ClusterPropertiesProps) => (
   <>
     {!externalMode && (
       <GridItem>
