@@ -11,9 +11,10 @@ import {
 
 import {
   isIPv4,
-  selectClusterNetworkCIDR,
-  selectClusterNetworkHostPrefix,
-  selectServiceNetworkCIDR,
+  selectIpv4Cidr,
+  selectIpv6Cidr,
+  selectIpv4HostPrefix,
+  selectIpv6HostPrefix,
 } from '../../../common/selectors/clusterSelectors';
 import { ClusterFeatureSupportLevelsDetailItem } from '../featureSupportLevels';
 
@@ -135,37 +136,37 @@ const ClusterProperties: React.FC<ClusterPropertiesProps> = ({ cluster, external
         <DetailList>
           <DetailItem
             title="Cluster network CIDR (IPv4)"
-            value={selectClusterNetworkCIDR(cluster)}
+            value={selectIpv4Cidr(cluster.clusterNetworks || [])}
             testId="cluster-network-cidr-ipv4"
           />
           <DetailItem
             title="Cluster network host prefix (IPv4)"
-            value={selectClusterNetworkHostPrefix(cluster)}
+            value={selectIpv4HostPrefix(cluster.clusterNetworks || [])}
             testId="host-prefix-ipv4"
           />
           {isDualstack ? (
             <>
               <DetailItem
                 title="Cluster network CIDR (IPv6)"
-                value={cluster.clusterNetworks && cluster.clusterNetworks[1].cidr}
+                value={selectIpv6Cidr(cluster.clusterNetworks || [])}
                 testId="cluster-network-cidr-ipv6"
               />
               <DetailItem
                 title="Cluster network host prefix (IPv6)"
-                value={cluster.clusterNetworks && cluster.clusterNetworks[1].hostPrefix}
+                value={selectIpv6HostPrefix(cluster.clusterNetworks || [])}
                 testId="host-prefix-ipv6"
               />
             </>
           ) : undefined}
           <DetailItem
             title="Service network CIDR (IPv4)"
-            value={selectServiceNetworkCIDR(cluster)}
+            value={selectIpv4Cidr(cluster.serviceNetworks || [])}
             testId="service-network-cidr-ipv4"
           />
           {isDualstack ? (
             <DetailItem
               title="Service network CIDR (IPv6)"
-              value={cluster.serviceNetworks && cluster.serviceNetworks[1].cidr}
+              value={selectIpv6Cidr(cluster.serviceNetworks || [])}
               testId="service-network-cidr-ipv6"
             />
           ) : undefined}
