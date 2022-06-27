@@ -1,6 +1,6 @@
 import {
   Cluster,
-  getOlmOperators,
+  selectOlmOperators,
   LogsState,
   MonitoredOperator,
   MonitoredOperatorsList,
@@ -25,7 +25,7 @@ export const getBuiltInOperators = (monitoredOperators: MonitoredOperatorsList =
   monitoredOperators.filter((operator: MonitoredOperator) => operator.operatorType === 'builtin');
 
 export const getOlmOperatorCreateParams = (cluster?: Cluster): OperatorCreateParams[] =>
-  getOlmOperators(cluster).map((operator) => ({
+  selectOlmOperators(cluster).map((operator) => ({
     name: operator.name,
     properties: operator.properties,
   }));

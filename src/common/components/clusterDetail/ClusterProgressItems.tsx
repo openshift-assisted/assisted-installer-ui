@@ -7,7 +7,7 @@ import OperatorsProgressItem from './OperatorsProgressItem';
 import React from 'react';
 import { Cluster } from '../../api';
 import { EventListFetchProps } from '../../types';
-import { getOlmOperators } from '../../../common';
+import { selectOlmOperators } from '../../../common';
 
 type ClusterProgressItemsProps = {
   cluster: Cluster;
@@ -25,7 +25,7 @@ const ClusterProgressItems = ({
 }: ClusterProgressItemsProps) => {
   const enabledHosts = getEnabledHosts(cluster.hosts);
   const isWorkersPresent = enabledHosts && enabledHosts.some((host) => host.role === 'worker');
-  const olmOperators = getOlmOperators(cluster);
+  const olmOperators = selectOlmOperators(cluster);
 
   return (
     <>

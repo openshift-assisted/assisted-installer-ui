@@ -16,7 +16,7 @@ import {
   canDownloadClusterLogs,
   useAlerts,
   getEnabledHosts,
-  getOlmOperators,
+  selectOlmOperators,
   isSNO,
 } from '../../../common';
 import { Cluster } from '../../../common/api/types';
@@ -74,7 +74,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
             {getClusterProgressAlerts(
               getEnabledHosts(cluster.hosts),
               cluster,
-              getOlmOperators(cluster),
+              selectOlmOperators(cluster),
             )}
           </GridItem>
           <GridItem span={6}>
