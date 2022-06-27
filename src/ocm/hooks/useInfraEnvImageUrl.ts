@@ -1,15 +1,13 @@
 import React from 'react';
 import useInfraEnvId from './useInfraEnvId';
 import { Cluster, PresignedUrl } from '../../common';
-import { APIErrorMixin } from '../api/types';
 import { InfraEnvsAPI } from '../services/apis';
-
-type errorType = (APIErrorMixin & Error) | string;
+import { getErrorMessage } from '../../common/utils';
 
 export default function useInfraEnvImageUrl(clusterId: Cluster['id']) {
   const { infraEnvId, error: infraEnvIdError } = useInfraEnvId(clusterId);
   const [imageUrl, setImageUrl] = React.useState<PresignedUrl['url']>();
-  const [error, setError] = React.useState<errorType>();
+  const [error, setError] = React.useState('');
 
   const getImageUrl = React.useCallback(async () => {
     try {
@@ -24,7 +22,7 @@ export default function useInfraEnvImageUrl(clusterId: Cluster['id']) {
       }
       setImageUrl(url);
     } catch (e) {
-      setError(e as errorType);
+      setError(getErrorMessage(e));
     }
   }, [infraEnvId]);
 

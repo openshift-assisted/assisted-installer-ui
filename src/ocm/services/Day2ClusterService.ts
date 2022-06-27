@@ -67,7 +67,7 @@ const Day2ClusterService = {
     });
 
     await InfraEnvsService.create({
-      name: `${data.name}_infra-env`,
+      name: `${data.name || ''}_infra-env`,
       pullSecret,
       clusterId: data.id,
     });

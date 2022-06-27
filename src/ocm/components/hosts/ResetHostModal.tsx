@@ -28,7 +28,7 @@ const ResetHostModal: React.FC<ResetHostModalProps> = ({ isOpen, hostname, onClo
       </Button>,
     ]}
   >
-    Are you sure you want to reset host{` ${hostname}` || ''} ?
+    Are you sure you want to reset host{` ${hostname || ''}`} ?
   </Modal>
 );
 
