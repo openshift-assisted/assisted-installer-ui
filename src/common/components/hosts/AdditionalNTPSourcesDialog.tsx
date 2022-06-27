@@ -28,11 +28,11 @@ export type AdditionalNTPSourcesFormProps = {
   ) => Promise<void>;
 };
 
-const AdditionalNTPSourcesForm: React.FC<AdditionalNTPSourcesFormProps> = ({
+const AdditionalNTPSourcesForm = ({
   additionalNtpSource,
   onClose,
   onAdditionalNtpSource,
-}) => {
+}: AdditionalNTPSourcesFormProps) => {
   const initialValues: V2ClusterUpdateParams = {
     additionalNtpSource: additionalNtpSource || '',
   };
@@ -54,7 +54,7 @@ const AdditionalNTPSourcesForm: React.FC<AdditionalNTPSourcesFormProps> = ({
             message,
           },
         });
-      onAdditionalNtpSource(values.additionalNtpSource, onError);
+      void onAdditionalNtpSource(values.additionalNtpSource, onError);
     }
     onClose();
   };

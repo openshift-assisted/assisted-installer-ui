@@ -93,7 +93,7 @@ const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({
         setPullSecretLoading(false);
       }
     };
-    fetch();
+    void fetch();
   }, [namespace, pullSecretName, fetchSecret, editPullSecret]);
   return (
     <>

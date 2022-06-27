@@ -45,7 +45,7 @@ const EditBMHModal: React.FC<EditBMHModalProps> = ({
 
     if (bmhNamespace && bmhName) {
       setLoading(true);
-      getResources();
+      void getResources();
     }
   }, [bmhName, bmhNamespace, fetchSecret, bmhSecret, hasDHCP]);
   return (

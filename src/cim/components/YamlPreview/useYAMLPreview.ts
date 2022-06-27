@@ -83,7 +83,7 @@ export const useYamlPreview = ({
       setLoadingResources(false);
     };
 
-    fetch();
+    void fetch();
   }, [
     fetchSecret,
     cdNamespace,

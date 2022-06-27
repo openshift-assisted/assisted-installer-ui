@@ -30,7 +30,7 @@ export default function useInfraEnvImageUrl(clusterId: Cluster['id']) {
     if (infraEnvIdError) {
       setError(infraEnvIdError);
     } else if (!imageUrl) {
-      getImageUrl();
+      void getImageUrl();
     }
   }, [imageUrl, getImageUrl, infraEnvId, infraEnvIdError]);
 

@@ -22,7 +22,7 @@ const SingleCluster = () => {
   }, [setClusters]);
 
   React.useEffect(() => {
-    fetchClusters();
+    void fetchClusters();
   }, [fetchClusters]);
 
   if (error) {
