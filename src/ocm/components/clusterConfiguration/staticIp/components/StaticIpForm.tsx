@@ -5,7 +5,7 @@ import React, { PropsWithChildren } from 'react';
 import { useAlerts } from '../../../../../common';
 import { useFormikAutoSave } from '../../../../../common/components/ui/formik/FormikAutoSave';
 import { useErrorMonitor } from '../../../../../common/components/ErrorHandling/ErrorMonitorContext';
-import { getErrorMessage } from '../../../../api';
+import { getApiErrorMessage } from '../../../../api';
 import { StaticIpFormProps } from './propTypes';
 
 const AutosaveWithParentUpdate = <StaticIpFormValues extends object>({
@@ -62,7 +62,7 @@ export const StaticIpForm = <StaticIpFormValues extends object>({
       });
     } catch (error) {
       captureException(error);
-      addAlert({ title: getErrorMessage(error) });
+      addAlert({ title: getApiErrorMessage(error) });
     }
   };
   if (!initialValues) {

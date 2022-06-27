@@ -29,9 +29,10 @@ import {
 } from '../ui';
 import { Host } from '../../api';
 import { getHostname as getHostnameUtils, getInventory } from './utils';
+import { ActionCheck } from './types';
+import { getErrorMessage } from '../../utils';
 
 import './MassChangeHostnameModal.css';
-import { ActionCheck } from './types';
 
 const getHostname = (host: Host) => {
   const inventory = getInventory(host);
@@ -286,7 +287,7 @@ const MassChangeHostnameModal: React.FC<MassChangeHostnameModalProps> = ({
             formikActions.setStatus({
               error: {
                 title: 'Failed to update host',
-                message: e.message || 'Hostname update failed.',
+                message: getErrorMessage(e),
               },
             });
           }

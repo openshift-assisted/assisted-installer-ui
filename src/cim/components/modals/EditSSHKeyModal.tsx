@@ -17,6 +17,7 @@ import { InfraEnvK8sResource } from '../../types';
 import { UploadSSH, sshPublicKeyValidationSchema } from '../../../common';
 import { EditSSHKeyFormikValues } from './types';
 import { getWarningMessage } from './utils';
+import { getErrorMessage } from '../../../common/utils';
 
 const validationSchema = Yup.object({
   sshPublicKey: sshPublicKeyValidationSchema.required(
@@ -64,7 +65,7 @@ const EditSSHKeyModal: React.FC<EditSSHKeyModalProps> = ({
             await onSubmit(values, infraEnv);
             onClose();
           } catch (err) {
-            setError(err?.message || 'An error occured');
+            setError(getErrorMessage(err));
           }
         }}
         validateOnMount

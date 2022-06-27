@@ -44,6 +44,7 @@ import {
 } from '../../../common';
 
 import './infra-env.css';
+import { getErrorMessage } from '../../../common/utils';
 
 export type EnvironmentStepFormValues = {
   name: string;
@@ -245,7 +246,7 @@ export const InfraEnvFormPage: React.FC<InfraEnvFormPageProps> = ({
           await onSubmit?.(values);
           onFinish?.(values);
         } catch (e) {
-          setError(e?.message ?? 'An error occured');
+          setError(getErrorMessage(e));
         }
       }}
       innerRef={formRef}
