@@ -1,5 +1,4 @@
 import { getEnabledHosts } from '../hosts';
-import { getOlmOperators } from './utils';
 import { RenderIf } from '../ui';
 import { Grid, GridItem } from '@patternfly/react-core';
 import { ProgressBarTexts } from './ProgressBarTexts';
@@ -8,6 +7,7 @@ import OperatorsProgressItem from './OperatorsProgressItem';
 import React from 'react';
 import { Cluster } from '../../api';
 import { EventListFetchProps } from '../../types';
+import { selectOlmOperators } from '../../../common';
 
 type ClusterProgressItemsProps = {
   cluster: Cluster;
@@ -23,10 +23,9 @@ const ClusterProgressItems = ({
   onFetchEvents,
   fallbackEventsURL,
 }: ClusterProgressItemsProps) => {
-  const { monitoredOperators = [] } = cluster;
   const enabledHosts = getEnabledHosts(cluster.hosts);
   const isWorkersPresent = enabledHosts && enabledHosts.some((host) => host.role === 'worker');
-  const olmOperators = getOlmOperators(monitoredOperators);
+  const olmOperators = selectOlmOperators(cluster);
 
   return (
     <>

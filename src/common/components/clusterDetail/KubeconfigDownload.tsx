@@ -46,7 +46,7 @@ const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({
           saveAs(response.data, fileName);
         }
       } catch (e) {
-        handleApiError(e, async (e) => {
+        handleApiError(e, (e) => {
           addAlert({ title: 'Could not download kubeconfig', message: getApiErrorMessage(e) });
         });
       }

@@ -36,7 +36,7 @@ export const downloadHostInstallationLogs = async (
       saveAs(data, fileName);
     }
   } catch (e) {
-    handleApiError(e, async (e) => {
+    handleApiError(e, (e) => {
       addAlert({ title: 'Could not download host logs.', message: getApiErrorMessage(e) });
     });
   }

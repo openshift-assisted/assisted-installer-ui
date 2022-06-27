@@ -8,12 +8,7 @@ type DeleteHostModalProps = {
   onDelete: () => void;
 };
 
-const DeleteHostModal: React.FC<DeleteHostModalProps> = ({
-  isOpen,
-  hostname,
-  onClose,
-  onDelete,
-}) => (
+const DeleteHostModal = ({ isOpen, hostname, onClose, onDelete }: DeleteHostModalProps) => (
   <Modal
     title="Delete Host"
     isOpen={isOpen}
@@ -33,7 +28,7 @@ const DeleteHostModal: React.FC<DeleteHostModalProps> = ({
       </Button>,
     ]}
   >
-    Are you sure you want to delete host{` ${hostname}` || ''} ?
+    Are you sure you want to delete host{` ${hostname || ''}`} ?
   </Modal>
 );
 

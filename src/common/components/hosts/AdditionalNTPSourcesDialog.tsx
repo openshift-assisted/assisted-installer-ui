@@ -41,7 +41,7 @@ const AdditionalNTPSourcesForm = ({
     additionalNtpSource: ntpSourceValidationSchema.required(),
   });
 
-  const handleSubmit = async (
+  const handleSubmit = (
     values: V2ClusterUpdateParams,
     formikHelpers: FormikHelpers<V2ClusterUpdateParams>,
   ) => {

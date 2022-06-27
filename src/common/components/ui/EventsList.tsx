@@ -14,6 +14,7 @@ import { getHumanizedDateTime } from './utils';
 import { fitContent, noPadding } from './table';
 
 const getEventRowKey = ({ rowData }: ExtraParamsType) =>
+  // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
   rowData?.props?.event.sortableTime + rowData?.props?.event.message;
 
 const getLabelColor = (severity: Event['severity']) => {
