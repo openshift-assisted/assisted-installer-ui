@@ -1,18 +1,31 @@
 import {
   AssistedInstallerOCMPermissionTypesListType,
   AssistedInstallerPermissionTypesListType,
+  Cluster,
 } from '../../common';
 
 export const isSingleClusterMode = () => {
   return process.env.REACT_APP_BUILD_MODE === 'single-cluster';
 };
 
-export const getBasePermissions = (): AssistedInstallerPermissionTypesListType => {
+/* Used from e2e tests so we can mock the permissions */
+export type ExtendedCluster = Cluster & {
+  permissions: AssistedInstallerOCMPermissionTypesListType;
+};
+
+export const getBasePermissions = (
+  cluster?: ExtendedCluster,
+): AssistedInstallerPermissionTypesListType => {
+  if (cluster?.permissions) {
+    return { isViewerMode: !cluster.permissions.canEdit };
+  }
+
   const basePermissions = { isViewerMode: false };
   if (!process.env.REACT_APP_CLUSTER_PERMISSIONS) {
     return basePermissions;
   }
   const ocmPermissions = JSON.parse(process.env.REACT_APP_CLUSTER_PERMISSIONS);
+
   return {
     ...basePermissions,
     ...ocmPermissionsToAIPermissions(ocmPermissions),

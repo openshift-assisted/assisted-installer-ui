@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { AssistedInstallerOCMPermissionTypesListType } from '../../common';
-import { getBasePermissions, ocmPermissionsToAIPermissions } from '../config';
+import { AssistedInstallerOCMPermissionTypesListType, Cluster } from '../../common';
+import { ExtendedCluster, getBasePermissions, ocmPermissionsToAIPermissions } from '../config';
 import { updateClusterPermissions } from '../reducers/clusters';
 import { selectCurrentClusterState } from '../selectors';
 
@@ -9,8 +9,11 @@ export default function useClusterPermissions() {
 
   const { permissions } = useSelector(selectCurrentClusterState);
 
-  const updatePermissions = (ocmPermissions?: AssistedInstallerOCMPermissionTypesListType) => {
-    let newPermissions = getBasePermissions();
+  const updatePermissions = (
+    ocmPermissions?: AssistedInstallerOCMPermissionTypesListType,
+    cluster?: Cluster,
+  ) => {
+    let newPermissions = getBasePermissions(cluster as ExtendedCluster);
     if (ocmPermissions) {
       newPermissions = {
         ...newPermissions,

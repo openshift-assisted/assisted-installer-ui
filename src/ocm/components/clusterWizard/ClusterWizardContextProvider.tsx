@@ -41,7 +41,7 @@ const ClusterWizardContextProvider: React.FC<
     const firstStepIds = getWizardStepIds(staticIpInfo?.view);
     setCurrentStepId(firstStep);
     setWizardStepIds(firstStepIds);
-    setPermissions(permissions);
+    setPermissions(permissions, cluster);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const contextValue = React.useMemo<ClusterWizardContextType | null>(() => {

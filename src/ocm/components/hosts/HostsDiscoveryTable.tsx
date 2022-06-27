@@ -139,7 +139,7 @@ const HostsDiscoveryTable = ({ cluster, isDisabled }: HostsDiscoveryTableProps) 
             content={content}
             actionResolver={actionResolver}
             ExpandComponent={getExpandComponent(onDiskRole, actionChecks.canEditDisks)}
-            onSelect={showBulkActions ? undefined : onSelect}
+            onSelect={showBulkActions ? onSelect : undefined}
             selectedIDs={selectedHostIDs}
             setSelectedIDs={setSelectedHostIDs}
             {...paginationProps}
