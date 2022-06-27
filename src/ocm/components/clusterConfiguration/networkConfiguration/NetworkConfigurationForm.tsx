@@ -34,7 +34,7 @@ import {
 import { captureException } from '../../../sentry';
 import { ClustersAPI } from '../../../services/apis';
 import { updateClusterBase } from '../../../reducers/clusters';
-import { getErrorMessage, handleApiError } from '../../../api';
+import { getApiErrorMessage, handleApiError } from '../../../api';
 import NetworkConfigurationFormFields from './NetworkConfigurationFormFields';
 
 const NetworkConfigurationForm: React.FC<{
@@ -197,7 +197,7 @@ const NetworkConfigurationPage: React.FC<{
       dispatch(updateClusterBase(data));
     } catch (e) {
       handleApiError(e, () =>
-        addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),
+        addAlert({ title: 'Failed to update the cluster', message: getApiErrorMessage(e) }),
       );
     }
   };

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { dtsPlugin } = require('esbuild-plugin-d.ts');
 const pkg = require('../../package.json');
+const { copy } = require('esbuild-plugin-copy');
 
 module.exports = {
   entryPoints: ['src/index.ts', 'src/cim/index.ts', 'src/ocm/index.ts'],
@@ -11,5 +12,16 @@ module.exports = {
   outdir: 'dist',
   format: 'esm',
   target: ['esnext'],
-  plugins: [dtsPlugin()], // requires "noEmit": false in tsconfig.json to successfully emit types
+  plugins: [
+    copy({
+      assets: [
+        {
+          from: ['./locales/**/*'],
+          to: ['./locales'],
+          keepStructure: true,
+        },
+      ],
+    }),
+    dtsPlugin(), // requires "noEmit": false in tsconfig.json to successfully emit types
+  ],
 };

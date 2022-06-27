@@ -14,12 +14,13 @@ import {
   IActionsResolver,
   cellWidth,
   breakWord,
+  sortable,
 } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base/types';
 import { ClusterTableRows } from '../../../common/types/clusters';
 import DeleteClusterModal from './DeleteClusterModal';
 import { getClusterTableStatusCell } from '../../selectors/clusters';
-import { CLUSTER_STATUS_LABELS, sortable, rowSorter, HumanizedSortable } from '../../../common';
+import { CLUSTER_STATUS_LABELS, rowSorter, HumanizedSortable } from '../../../common';
 import ClustersListToolbar, { ClusterFiltersType } from './ClustersListToolbar';
 
 const rowKey = ({ rowData }: ExtraParamsType) => rowData?.props.id;
