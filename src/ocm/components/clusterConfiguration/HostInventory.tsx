@@ -36,7 +36,6 @@ const PlatformIntegrationLabel: React.FC = () => (
   <>
     <span>Integrate with vSphere</span>{' '}
     <PopoverIcon
-      variant={'plain'}
       bodyContent={
         <>
           Enable vSphere integration to access features like node auto-scaling and persistent
@@ -63,7 +62,6 @@ const SchedulableMastersLabel: React.FC = () => (
   <>
     <span>Run workloads on control plane nodes</span>{' '}
     <PopoverIcon
-      variant={'plain'}
       bodyContent={<p>Enables your control plane nodes to be used for running applications.</p>}
     />
   </>

@@ -1,5 +1,5 @@
 import useSWR from 'swr';
-import { getErrorMessage, handleApiError } from '../api';
+import { getApiErrorMessage, handleApiError } from '../api';
 import { ClustersAPI } from '../services/apis';
 import { PlatformType, POLLING_INTERVAL, useAlerts } from '../../common';
 import { AxiosError } from 'axios';
@@ -34,7 +34,7 @@ export default function useClusterSupportedPlatforms(clusterId: string) {
       handleApiError(error, () =>
         addAlert({
           title,
-          message: getErrorMessage(error),
+          message: getApiErrorMessage(error),
         }),
       );
     }

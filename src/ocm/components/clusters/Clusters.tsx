@@ -23,7 +23,7 @@ import {
 } from '../../../common';
 import ClustersTable from './ClustersTable';
 import { fetchClustersAsync, deleteCluster } from '../../reducers/clusters/clustersSlice';
-import { handleApiError, getErrorMessage } from '../../api/utils';
+import { handleApiError, getApiErrorMessage } from '../../api/utils';
 import ClusterBreadcrumbs from './ClusterBreadcrumbs';
 import { routeBasePath } from '../../config';
 import { ClustersService } from '../../services';
@@ -49,7 +49,7 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
         handleApiError(e, () =>
           addAlert({
             title: 'Cluster could not be deleted',
-            message: getErrorMessage(e),
+            message: getApiErrorMessage(e),
           }),
         );
       }

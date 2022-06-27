@@ -6,6 +6,7 @@ import { AgentK8sResource } from '../../types';
 import AgentsSelectionHostCountAlerts from '../Agent/AgentsSelectionHostCountAlerts';
 import AgentsSelectionHostCountLabelIcon from '../Agent/AgentsSelectionHostCountLabelIcon';
 import { useAgentsAutoSelection } from '../Agent/AgentsSelectionUtils';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type ClusterScaleUpAutoHostsSelectionProps = {
   availableAgents: AgentK8sResource[];
@@ -15,13 +16,14 @@ const ClusterScaleUpAutoHostsSelection: React.FC<ClusterScaleUpAutoHostsSelectio
   availableAgents,
 }) => {
   const { matchingAgents, selectedAgents, hostCount } = useAgentsAutoSelection(availableAgents);
+  const { t } = useTranslation();
 
   return (
     <>
       <Grid hasGutter>
         <GridItem span={12} lg={10} xl={9} xl2={7}>
           <NumberInputField
-            label="Number of hosts"
+            label={t('ai:Number of hosts')}
             labelIcon={<AgentsSelectionHostCountLabelIcon />}
             idPostfix="hostcount"
             name="hostCount"

@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { ActionListItem, Button, ButtonVariant, Grid, GridItem } from '@patternfly/react-core';
 import { Cluster, ClusterWizardStepHeader, useAlerts, ClusterWizardStep } from '../../../common';
 import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
-import { getErrorMessage, handleApiError } from '../../api';
+import { getApiErrorMessage, handleApiError } from '../../api';
 import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
 import ClusterWizardFooter from '../clusterWizard/ClusterWizardFooter';
 import ClusterWizardNavigation from '../clusterWizard/ClusterWizardNavigation';
@@ -30,7 +30,7 @@ const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
       handleApiError(e, () =>
         addAlert({
           title: 'Failed to start cluster installation',
-          message: getErrorMessage(e),
+          message: getApiErrorMessage(e),
         }),
       );
       setIsStartingInstallation(false);

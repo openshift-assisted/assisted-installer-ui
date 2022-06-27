@@ -15,6 +15,7 @@ import { Formik, FormikProps } from 'formik';
 import { InfraEnvK8sResource } from '../../types';
 import { RadioField, AdditionalNTPSourcesField } from '../../../common';
 import { EditNtpSourcesFormikValues } from './types';
+import { getErrorMessage } from '../../../common/utils';
 
 export type EditNtpSourcesModalProps = {
   onSubmit: (
@@ -32,7 +33,7 @@ const EditNtpSourcesModal: React.FC<EditNtpSourcesModalProps> = ({
   onSubmit,
   infraEnv,
 }) => {
-  const [error, setError] = React.useState();
+  const [error, setError] = React.useState<string>();
   return (
     <Modal
       aria-label="Edit Ntp sources dialog"
@@ -53,7 +54,7 @@ const EditNtpSourcesModal: React.FC<EditNtpSourcesModalProps> = ({
             await onSubmit(values, infraEnv);
             onClose();
           } catch (err) {
-            setError(err?.message || 'An error occured');
+            setError(getErrorMessage(err));
           }
         }}
         validateOnMount

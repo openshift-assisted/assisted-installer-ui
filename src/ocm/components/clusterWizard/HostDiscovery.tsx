@@ -14,7 +14,7 @@ import { HostDiscoveryValues } from '../../../common/types/clusters';
 import HostInventory from '../clusterConfiguration/HostInventory';
 import { useClusterWizardContext } from './ClusterWizardContext';
 import { canNextHostDiscovery } from './wizardTransition';
-import { getErrorMessage, handleApiError } from '../../api/utils';
+import { getApiErrorMessage, handleApiError } from '../../api/utils';
 import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
 import ClusterWizardFooter from './ClusterWizardFooter';
 import ClusterWizardNavigation from './ClusterWizardNavigation';
@@ -74,7 +74,7 @@ const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
       dispatch(updateCluster(data));
     } catch (e) {
       handleApiError(e, () =>
-        addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),
+        addAlert({ title: 'Failed to update the cluster', message: getApiErrorMessage(e) }),
       );
     }
   };

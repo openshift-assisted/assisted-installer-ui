@@ -12,7 +12,7 @@ import {
   ToolbarContent,
 } from '@patternfly/react-core';
 import React from 'react';
-import { getErrorMessage, handleApiError } from '../../api/utils';
+import { getApiErrorMessage, handleApiError } from '../../api/utils';
 import { DiscoveryImageModal } from '../clusterConfiguration/discoveryImageModal';
 import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
 import {
@@ -51,7 +51,7 @@ const AddHosts: React.FC = () => {
       handleApiError(e, () =>
         addAlert({
           title: 'Failed to start hosts installation.',
-          message: getErrorMessage(e),
+          message: getApiErrorMessage(e),
         }),
       );
     } finally {

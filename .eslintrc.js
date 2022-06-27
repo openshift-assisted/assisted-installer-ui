@@ -59,8 +59,17 @@ module.exports = {
         'no-restricted-imports': [
           'error',
           {
-            name: 'lodash',
-            message: 'Please use lodash/module instead.',
+            paths: [
+              {
+                name: 'lodash',
+                message: 'Please use lodash/module instead.',
+              },
+              {
+                name: 'react-i18next',
+                message:
+                  'Please use useTranslation from src/common/hooks/use-translation-wrapper.ts instead',
+              },
+            ],
           },
         ],
         '@typescript-eslint/no-explicit-any': [

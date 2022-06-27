@@ -17,7 +17,7 @@ import {
   AdditionalNTPSourcesDialog,
   AdditionalNTPSourcesFormProps,
 } from '../../../common/components/hosts/AdditionalNTPSourcesDialog';
-import { getErrorMessage, handleApiError } from '../../api';
+import { getApiErrorMessage, handleApiError } from '../../api';
 import { forceReload, updateCluster, updateHost } from '../../reducers/clusters';
 import { useModalDialogsContext } from './ModalDialogsContext';
 import { downloadHostInstallationLogs, onAdditionalNtpSourceAction } from './utils';
@@ -80,7 +80,7 @@ export const useHostsTable = (cluster: Cluster) => {
           resetCluster ? resetCluster() : dispatch(updateHost(data));
         } catch (e) {
           handleApiError(e, () =>
-            addAlert({ title: `Failed to enable host ${hostId}`, message: getErrorMessage(e) }),
+            addAlert({ title: `Failed to enable host ${hostId}`, message: getApiErrorMessage(e) }),
           );
         }
       },
@@ -132,7 +132,7 @@ export const useHostsTable = (cluster: Cluster) => {
         resetCluster ? resetCluster() : dispatch(updateHost(data));
       } catch (e) {
         handleApiError(e, () =>
-          addAlert({ title: 'Failed to set disk role', message: getErrorMessage(e) }),
+          addAlert({ title: 'Failed to set disk role', message: getApiErrorMessage(e) }),
         );
       }
     },
@@ -147,7 +147,7 @@ export const useHostsTable = (cluster: Cluster) => {
         });
         dispatch(updateCluster(data));
       } catch (e) {
-        handleApiError(e, () => onError(getErrorMessage(e)));
+        handleApiError(e, () => onError(getApiErrorMessage(e)));
       }
     },
     [cluster.id, dispatch],
@@ -186,7 +186,7 @@ export const useHostsTable = (cluster: Cluster) => {
           handleApiError(e, () =>
             addAlert({
               title: `Failed to reset host ${hostId}`,
-              message: getErrorMessage(e),
+              message: getApiErrorMessage(e),
             }),
           );
         }
@@ -206,7 +206,7 @@ export const useHostsTable = (cluster: Cluster) => {
           handleApiError(e, () =>
             addAlert({
               title: `Failed to delete host ${hostId}`,
-              message: getErrorMessage(e),
+              message: getApiErrorMessage(e),
             }),
           );
         }
@@ -227,7 +227,7 @@ export const useHostsTable = (cluster: Cluster) => {
         resetCluster ? resetCluster() : dispatch(updateHost(data));
       } catch (e) {
         handleApiError(e, () =>
-          addAlert({ title: 'Failed to set role', message: getErrorMessage(e) }),
+          addAlert({ title: 'Failed to set role', message: getApiErrorMessage(e) }),
         );
       }
     },
@@ -391,7 +391,7 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           onFormSaveError={(e: any) => {
             let message;
-            handleApiError(e, () => (message = getErrorMessage(e)));
+            handleApiError(e, () => (message = getApiErrorMessage(e)));
             return message;
           }}
         />

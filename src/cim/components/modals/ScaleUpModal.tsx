@@ -20,6 +20,7 @@ import { getAgentSelectorFieldsFromAnnotations } from '../helpers/clusterDeploym
 import { ScaleUpFormValues } from '../ClusterDeployment/types';
 import EditAgentModal from './EditAgentModal';
 import { getAgentsHostsNames } from '../ClusterDeployment/helpers';
+import { getErrorMessage } from '../../../common/utils';
 
 const getAgentsToAdd = (
   selectedHostIds: ScaleUpFormValues['selectedHostIds'] | ScaleUpFormValues['autoSelectedHostIds'],
@@ -94,7 +95,7 @@ const ScaleUpModal: React.FC<ScaleUpModalProps> = ({
       await addHostsToCluster(agentsToAdd);
       onClose();
     } catch (e) {
-      setError(e.message);
+      setError(getErrorMessage(e));
     }
   };
 
