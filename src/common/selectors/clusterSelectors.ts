@@ -69,7 +69,7 @@ export const isIPv4 = ({
   allSubnetsIPv4(clusterNetworks) &&
   allSubnetsIPv4(serviceNetworks);
 
-export const getOlmOperators = (cluster?: Cluster) => {
+export const getOlmOperators = (cluster?: Pick<Cluster, 'monitoredOperators'>) => {
   // monitoredOperators can sometimes be either undefined or also null, we must use the fallback
   const monitoredOperators = cluster?.monitoredOperators || [];
   return monitoredOperators.filter((operator) => operator.operatorType === 'olm');
