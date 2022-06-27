@@ -53,7 +53,11 @@ const ReviewCluster: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         value={cluster.openshiftVersion}
         testId="openshift-version"
       />
-      <DetailItem title={'Stack type'} value={isIPv4(cluster) ? 'IPv4' : 'Dual-stack'} />
+      <DetailItem
+        title={'Stack type'}
+        value={isIPv4(cluster) ? 'IPv4' : 'Dual-stack'}
+        testId="stack-type"
+      />
       <DetailItem
         title="CPU architecture"
         value={cluster.cpuArchitecture}

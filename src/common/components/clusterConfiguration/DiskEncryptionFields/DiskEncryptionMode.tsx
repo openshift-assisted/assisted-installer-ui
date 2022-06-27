@@ -2,7 +2,7 @@ import React from 'react';
 import { ENCRYPTING_DISK_DURING_INSTALLATION } from '../../../config/constants';
 import PopoverIcon from '../../ui/PopoverIcon';
 import { RadioField } from '../../ui/formik';
-import { ExternalLinkAltIcon, HelpIcon } from '@patternfly/react-icons';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import {
   Flex,
   FlexItem,
@@ -21,8 +21,6 @@ const DiskEncryptionModeTPMv2: React.FC = () => {
       TPM v2
       <PopoverIcon
         component={'a'}
-        variant={'plain'}
-        IconComponent={HelpIcon}
         minWidth="22rem"
         bodyContent={
           <p>
@@ -43,8 +41,6 @@ const DiskEncryptionModeTang: React.FC = () => {
       Tang{' '}
       <PopoverIcon
         component={'a'}
-        variant={'plain'}
-        IconComponent={HelpIcon}
         minWidth="25rem"
         bodyContent={
           <p>
