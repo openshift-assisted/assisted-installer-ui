@@ -9,12 +9,15 @@ import {
 } from '../../../../common/components/featureSupportLevels';
 import { CpuArchitecture, NetworkConfigurationValues } from '../../../../common/types';
 import { getLimitedFeatureSupportLevels } from '../../../../common/components/featureSupportLevels/utils';
+import { isSNO } from '../../../../common/selectors';
 import {
   canBeDualStack,
   canSelectNetworkTypeSDN,
   getDefaultNetworkType,
-  isSNO,
-} from '../../../../common/selectors';
+  clusterNetworksEqual,
+  DUAL_STACK,
+  serviceNetworksEqual,
+} from '../../../../common';
 import {
   ManagedNetworkingControlGroup,
   UserManagedNetworkingTextContent,
@@ -22,7 +25,6 @@ import {
 import { StackTypeControlGroup } from './StackTypeControl';
 import { AvailableSubnetsControl } from './AvailableSubnetsControl';
 import AdvancedNetworkFields from './AdvancedNetworkFields';
-import { clusterNetworksEqual, DUAL_STACK, serviceNetworksEqual } from '../../../../common';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   defaultNetworkSettings: Partial<Cluster>;

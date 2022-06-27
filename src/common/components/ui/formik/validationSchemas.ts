@@ -6,9 +6,8 @@ import isCIDR from 'is-cidr';
 import { NetworkConfigurationValues, HostSubnets } from '../../../types/clusters';
 import { NO_SUBNET_SET } from '../../../config/constants';
 import { ProxyFieldsType } from '../../../types';
-import { trimCommaSeparatedList, trimSshPublicKey } from './utils';
+import { allSubnetsIPv4, trimCommaSeparatedList, trimSshPublicKey } from './utils';
 import { ClusterNetwork, MachineNetwork, ServiceNetwork } from '../../../api/types';
-import { allSubnetsIPv4 } from '../../../selectors';
 import { getErrorMessage } from '../../../utils';
 import {
   CLUSTER_NAME_VALIDATION_MESSAGES,

@@ -1,6 +1,8 @@
 import { FormikErrors, FormikTouched } from 'formik';
 import * as Yup from 'yup';
 import { OpenshiftVersionOptionType } from '../../../types';
+import { ClusterNetwork, MachineNetwork, ServiceNetwork } from '../../../api';
+import { Address4 } from 'ip-address';
 
 export const getFieldId = (fieldName: string, fieldType: string, unique?: string) => {
   unique = unique ? `${unique}-` : '';
@@ -86,4 +88,10 @@ export const getFormikArrayItemFieldName = (arrayFieldName: string, idx: number)
 
 export const getFormikObjectItemFieldName = (objectFieldName: string, idx: number) => {
   return `${objectFieldName}.${idx}`;
+};
+
+export const allSubnetsIPv4 = (
+  networks: (MachineNetwork | ClusterNetwork | ServiceNetwork)[] | undefined,
+) => {
+  return !!networks?.every((network) => network.cidr && Address4.isValid(network.cidr));
 };

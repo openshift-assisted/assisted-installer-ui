@@ -12,15 +12,15 @@ import {
 } from '../clusterWizard/networkingSteps';
 import { ClusterDefaultConfig } from '../../api';
 import { NETWORK_TYPE_OVN, NO_SUBNET_SET } from '../../config';
-import { isAdvNetworkConf } from './utils';
-import { useFeatureSupportLevel } from '../featureSupportLevels';
-import { getLimitedFeatureSupportLevels } from '../featureSupportLevels/utils';
 import {
   canSelectNetworkTypeSDN,
   getDefaultNetworkType,
-  isSNO,
+  isAdvNetworkConf,
   isSubnetInIPv6,
-} from '../../selectors';
+} from './utils';
+import { useFeatureSupportLevel } from '../featureSupportLevels';
+import { getLimitedFeatureSupportLevels } from '../featureSupportLevels/utils';
+import { isSNO } from '../../selectors';
 import { Address6 } from 'ip-address';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {

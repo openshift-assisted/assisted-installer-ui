@@ -132,37 +132,37 @@ const ClusterProperties = ({
       <DetailList>
         <DetailItem
           title="Cluster network CIDR (IPv4)"
-          value={selectIpv4Cidr(cluster.clusterNetworks || [])}
+          value={selectIpv4Cidr(cluster, 'clusterNetworks')}
           testId="cluster-network-cidr-ipv4"
         />
         <DetailItem
           title="Cluster network host prefix (IPv4)"
-          value={selectIpv4HostPrefix(cluster.clusterNetworks || [])}
+          value={selectIpv4HostPrefix(cluster)}
           testId="host-prefix-ipv4"
         />
         {isDualStack ? (
           <>
             <DetailItem
               title="Cluster network CIDR (IPv6)"
-              value={selectIpv6Cidr(cluster.clusterNetworks || [])}
+              value={selectIpv6Cidr(cluster, 'clusterNetworks')}
               testId="cluster-network-cidr-ipv6"
             />
             <DetailItem
               title="Cluster network host prefix (IPv6)"
-              value={selectIpv6HostPrefix(cluster.clusterNetworks || [])}
+              value={selectIpv6HostPrefix(cluster)}
               testId="host-prefix-ipv6"
             />
           </>
         ) : undefined}
         <DetailItem
           title="Service network CIDR (IPv4)"
-          value={selectIpv4Cidr(cluster.serviceNetworks || [])}
+          value={selectIpv4Cidr(cluster, 'serviceNetworks')}
           testId="service-network-cidr-ipv4"
         />
         {isDualStack ? (
           <DetailItem
             title="Service network CIDR (IPv6)"
-            value={selectIpv6Cidr(cluster.serviceNetworks || [])}
+            value={selectIpv6Cidr(cluster, 'serviceNetworks')}
             testId="service-network-cidr-ipv6"
           />
         ) : undefined}

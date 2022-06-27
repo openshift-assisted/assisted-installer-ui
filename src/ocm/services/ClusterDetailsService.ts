@@ -6,16 +6,13 @@ import {
   InfraEnv,
   ManagedDomain,
   OpenshiftVersionOptionType,
+  getDefaultNetworkType,
 } from '../../common';
 import { ClustersAPI, ManagedDomainsAPI } from '../services/apis';
 import InfraEnvsService from './InfraEnvsService';
 import omit from 'lodash/omit';
 import DiskEncryptionService from './DiskEncryptionService';
-import {
-  getDefaultNetworkType,
-  isArmArchitecture,
-  isSNO,
-} from '../../common/selectors/clusterSelectors';
+import { isArmArchitecture, isSNO } from '../../common/selectors/clusterSelectors';
 import { CreateParams, HostsNetworkConfigurationType, OcmClusterDetailsValues } from './types';
 import { getDummyInfraEnvField } from '../components/clusterConfiguration/staticIp/data/dummyData';
 

@@ -1,29 +1,31 @@
 import head from 'lodash/fp/head';
 import { stringToJSON } from '../api/utils';
-import { CpuArchitecture, HostSubnets, ValidationsInfo } from '../types';
-import { Cluster, ClusterNetwork, MachineNetwork, ServiceNetwork } from '../api/types';
-import { NETWORK_TYPE_OVN, NETWORK_TYPE_SDN } from '../config';
-import { Address4, Address6 } from 'ip-address';
+import { CpuArchitecture, ValidationsInfo } from '../types';
+import { Cluster } from '../api/types';
 
 export const selectMachineNetworkCIDR = ({
   machineNetworks,
   machineNetworkCidr,
-}: Partial<Cluster>) => head(machineNetworks)?.cidr ?? machineNetworkCidr;
+}: Pick<Cluster, 'machineNetworks' | 'machineNetworkCidr'>) =>
+  head(machineNetworks)?.cidr ?? machineNetworkCidr;
 
 export const selectClusterNetworkCIDR = ({
   clusterNetworks,
   clusterNetworkCidr,
-}: Partial<Cluster>) => head(clusterNetworks)?.cidr ?? clusterNetworkCidr;
+}: Pick<Cluster, 'clusterNetworks' | 'clusterNetworkCidr'>) =>
+  head(clusterNetworks)?.cidr ?? clusterNetworkCidr;
 
 export const selectClusterNetworkHostPrefix = ({
   clusterNetworks,
   clusterNetworkHostPrefix,
-}: Partial<Cluster>) => head(clusterNetworks)?.hostPrefix ?? clusterNetworkHostPrefix;
+}: Pick<Cluster, 'clusterNetworks' | 'clusterNetworkHostPrefix'>) =>
+  head(clusterNetworks)?.hostPrefix ?? clusterNetworkHostPrefix;
 
 export const selectServiceNetworkCIDR = ({
   serviceNetworks,
   serviceNetworkCidr,
-}: Partial<Cluster>) => head(serviceNetworks)?.cidr ?? serviceNetworkCidr;
+}: Pick<Cluster, 'serviceNetworks' | 'serviceNetworkCidr'>) =>
+  head(serviceNetworks)?.cidr ?? serviceNetworkCidr;
 
 export const selectMonitoredOperators = (cluster?: Pick<Cluster, 'monitoredOperators'>) => {
   // monitoredOperators can sometimes be either undefined or also null, we must use the fallback
@@ -37,66 +39,53 @@ export const selectOlmOperators = (cluster?: Pick<Cluster, 'monitoredOperators'>
 export const isSNO = ({ highAvailabilityMode }: Partial<Cluster>) =>
   highAvailabilityMode === 'None';
 
-export const isArmArchitecture = ({ cpuArchitecture }: Partial<Cluster>) =>
-  cpuArchitecture === CpuArchitecture.ARM;
-
-export const selectClusterValidationsInfo = ({ validationsInfo }: Partial<Cluster>) => {
+export const selectClusterValidationsInfo = ({
+  validationsInfo,
+}: Pick<Cluster, 'validationsInfo'>) => {
   return stringToJSON<ValidationsInfo>(validationsInfo);
 };
 
-export const getDefaultNetworkType = (isSNO: boolean, isIPv6 = false) => {
-  return isSNO || isIPv6 ? NETWORK_TYPE_OVN : NETWORK_TYPE_SDN;
-};
-
-export const canSelectNetworkTypeSDN = (isSNO: boolean, isIPv6 = false) => {
-  return !(isSNO || isIPv6);
-};
-
-export const isSubnetInIPv6 = ({
-  clusterNetworkCidr,
-  machineNetworkCidr,
-  serviceNetworkCidr,
-}: Partial<Cluster>) => {
-  return (
-    Address6.isValid(clusterNetworkCidr || '') ||
-    Address6.isValid(machineNetworkCidr || '') ||
-    Address6.isValid(serviceNetworkCidr || '')
-  );
-};
-
-export const allSubnetsIPv4 = (
-  networks: (MachineNetwork | ClusterNetwork | ServiceNetwork)[] | undefined,
+export const selectIpv4Cidr = (
+  {
+    machineNetworks,
+    serviceNetworks,
+    clusterNetworks,
+  }: Pick<Cluster, 'machineNetworks' | 'clusterNetworks' | 'serviceNetworks'>,
+  key: 'machineNetworks' | 'serviceNetworks' | 'clusterNetworks',
 ) => {
-  return !!networks?.every((network) => network.cidr && Address4.isValid(network.cidr));
+  switch (key) {
+    case 'machineNetworks':
+      return head(machineNetworks)?.cidr;
+    case 'clusterNetworks':
+      return head(clusterNetworks)?.cidr;
+    case 'serviceNetworks':
+      return head(serviceNetworks)?.cidr;
+  }
 };
 
-const areNetworksDualStack = (
-  networks: (MachineNetwork | ClusterNetwork | ServiceNetwork)[] | undefined,
-) =>
-  networks &&
-  networks.length > 1 &&
-  Address4.isValid(networks[0].cidr || '') &&
-  Address6.isValid(networks[1].cidr || '');
+export const selectIpv6Cidr = (
+  {
+    machineNetworks,
+    serviceNetworks,
+    clusterNetworks,
+  }: Pick<Cluster, 'machineNetworks' | 'clusterNetworks' | 'serviceNetworks'>,
+  key: 'machineNetworks' | 'serviceNetworks' | 'clusterNetworks',
+) => {
+  switch (key) {
+    case 'machineNetworks':
+      return machineNetworks && machineNetworks[1].cidr;
+    case 'clusterNetworks':
+      return clusterNetworks && clusterNetworks[1].cidr;
+    case 'serviceNetworks':
+      return serviceNetworks && serviceNetworks[1].cidr;
+  }
+};
 
-export const isDualStack = ({
-  machineNetworks,
-  clusterNetworks,
-  serviceNetworks,
-}: Pick<Cluster, 'machineNetworks' | 'clusterNetworks' | 'serviceNetworks'>) =>
-  areNetworksDualStack(machineNetworks) &&
-  areNetworksDualStack(clusterNetworks) &&
-  areNetworksDualStack(serviceNetworks);
+export const selectIpv4HostPrefix = ({ clusterNetworks }: Pick<Cluster, 'clusterNetworks'>) =>
+  head(clusterNetworks)?.hostPrefix;
 
-export const canBeDualStack = (subnets: HostSubnets) =>
-  subnets.some((subnet) => Address4.isValid(subnet.subnet)) &&
-  subnets.some((subnet) => Address6.isValid(subnet.subnet));
+export const selectIpv6HostPrefix = ({ clusterNetworks }: Pick<Cluster, 'clusterNetworks'>) =>
+  clusterNetworks && clusterNetworks[1].hostPrefix;
 
-export const selectIpv4Cidr = (subnets: MachineNetwork[] | ClusterNetwork[] | ServiceNetwork[]) =>
-  head(subnets)?.cidr;
-
-export const selectIpv6Cidr = (subnets: MachineNetwork[] | ClusterNetwork[] | ServiceNetwork[]) =>
-  subnets[1].cidr;
-
-export const selectIpv4HostPrefix = (subnets: ClusterNetwork[]) => head(subnets)?.hostPrefix;
-
-export const selectIpv6HostPrefix = (subnets: ClusterNetwork[]) => subnets[1].hostPrefix;
+export const isArmArchitecture = ({ cpuArchitecture }: Pick<Cluster, 'cpuArchitecture'>) =>
+  cpuArchitecture === CpuArchitecture.ARM;
