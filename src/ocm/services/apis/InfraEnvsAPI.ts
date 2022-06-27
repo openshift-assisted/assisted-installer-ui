@@ -17,7 +17,7 @@ const InfraEnvsAPI = {
    * @param clusterId If provided, returns only infra-envs which directly reference the given clusterId.
    */
   list(clusterId = '') {
-    const query = clusterId && `?${new URLSearchParams({ ['cluster_id']: clusterId })}`;
+    const query = clusterId && `?${new URLSearchParams({ ['cluster_id']: clusterId }).toString()}`;
     return client.get<InfraEnv[]>(`${InfraEnvsAPI.makeBaseURI()}${query}`);
   },
 

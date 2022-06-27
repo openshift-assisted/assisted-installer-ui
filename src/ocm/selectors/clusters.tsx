@@ -31,7 +31,7 @@ export const selectClustersUIState = createSelector(
 );
 
 const clusterToClusterTableRow = (cluster: Cluster): IRow => {
-  const { id, name, openshiftVersion, baseDnsDomain, createdAt } = cluster;
+  const { id, name = '', openshiftVersion, baseDnsDomain, createdAt } = cluster;
   const dateTimeCell = getDateTimeCell(createdAt);
 
   return {
