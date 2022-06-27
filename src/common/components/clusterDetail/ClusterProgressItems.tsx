@@ -1,5 +1,4 @@
 import { getEnabledHosts } from '../hosts';
-import { getOlmOperators } from './utils';
 import { RenderIf } from '../ui';
 import { Grid, GridItem } from '@patternfly/react-core';
 import { ProgressBarTexts } from './ProgressBarTexts';
@@ -8,6 +7,7 @@ import OperatorsProgressItem from './OperatorsProgressItem';
 import React from 'react';
 import { Cluster } from '../../api';
 import { EventListFetchProps } from '../../types';
+import { getOlmOperators } from '../../../common';
 
 type ClusterProgressItemsProps = {
   cluster: Cluster;
