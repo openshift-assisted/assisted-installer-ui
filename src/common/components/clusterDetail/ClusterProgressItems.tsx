@@ -25,7 +25,7 @@ const ClusterProgressItems = ({
 }: ClusterProgressItemsProps) => {
   const enabledHosts = getEnabledHosts(cluster.hosts);
   const isWorkersPresent = enabledHosts && enabledHosts.some((host) => host.role === 'worker');
-  const olmOperators = getOlmOperators(cluster.monitoredOperators);
+  const olmOperators = getOlmOperators(cluster);
 
   return (
     <>

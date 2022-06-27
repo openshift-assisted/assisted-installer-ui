@@ -6,13 +6,7 @@ import {
   NetworkConfigurationValues,
   ValidationsInfo,
 } from '../types';
-import {
-  Cluster,
-  ClusterNetwork,
-  MachineNetwork,
-  MonitoredOperatorsList,
-  ServiceNetwork,
-} from '../api/types';
+import { Cluster, ClusterNetwork, MachineNetwork, ServiceNetwork } from '../api/types';
 import { NETWORK_TYPE_OVN, NETWORK_TYPE_SDN } from '../config';
 import { Address4, Address6 } from 'ip-address';
 
@@ -75,11 +69,8 @@ export const isIPv4 = ({
   allSubnetsIPv4(clusterNetworks) &&
   allSubnetsIPv4(serviceNetworks);
 
-export const getOlmOperators = (monitoredOperators: MonitoredOperatorsList | undefined) => {
-  /* The API type defines the data as either undefined or an array.
-       However, sometimes we receive "null" so setting a default value in this function would fail
-    */
-  return monitoredOperators
-    ? monitoredOperators.filter((operator) => operator.operatorType === 'olm')
-    : [];
+export const getOlmOperators = (cluster?: Cluster) => {
+  // monitoredOperators can sometimes be either undefined or also null, we must use the fallback
+  const monitoredOperators = cluster?.monitoredOperators || [];
+  return monitoredOperators.filter((operator) => operator.operatorType === 'olm');
 };
