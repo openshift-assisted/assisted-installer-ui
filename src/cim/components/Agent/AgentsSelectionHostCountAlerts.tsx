@@ -2,15 +2,18 @@ import React from 'react';
 import { Alert, AlertGroup, AlertVariant } from '@patternfly/react-core';
 import ShortCapacitySummary from '../ClusterDeployment/ShortCapacitySummary';
 import { AgentK8sResource } from '../../types';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { TFunction } from 'i18next';
 
-const getHostCountWarningText = (hostsSelected: number) => {
+const getHostCountWarningText = (hostsSelected: number, t: TFunction) => {
   switch (hostsSelected) {
     case 0:
-      return 'No host is selected.';
-    case 1:
-      return 'Only 1 host is selected.';
+      return t('ai:No host is selected.');
   }
-  return `Only ${hostsSelected} hosts are selected.`;
+  return t('ai:Only {{hostsSelected}} hosts are selected.', {
+    count: hostsSelected,
+    hostsSelected,
+  });
 };
 
 type AgentsSelectionHostCountAlertsProps = {
@@ -25,14 +28,17 @@ const AgentsSelectionHostCountAlerts = ({
   targetHostCount,
 }: AgentsSelectionHostCountAlertsProps) => {
   const selectedAgentsCount = selectedAgents.length;
+  const { t } = useTranslation();
+
   return (
     <AlertGroup>
       {selectedAgentsCount === targetHostCount && (
         <Alert
           variant={AlertVariant.success}
-          title={`${selectedAgentsCount} ${
-            selectedAgentsCount === 1 ? 'host' : 'hosts'
-          } selected out of ${matchingAgentsCount} matching.`}
+          title={t(
+            'ai:{{selectedAgentsCount}} host selected out of {{matchingAgentsCount}} matching.',
+            { count: selectedAgentsCount, selectedAgentsCount, matchingAgentsCount },
+          )}
           isInline
         >
           <ShortCapacitySummary selectedAgents={selectedAgents} />
@@ -41,7 +47,7 @@ const AgentsSelectionHostCountAlerts = ({
       {selectedAgentsCount < targetHostCount && (
         <Alert
           variant={AlertVariant.warning}
-          title={getHostCountWarningText(selectedAgentsCount)}
+          title={getHostCountWarningText(selectedAgentsCount, t)}
           isInline
         >
           <ShortCapacitySummary selectedAgents={selectedAgents} />

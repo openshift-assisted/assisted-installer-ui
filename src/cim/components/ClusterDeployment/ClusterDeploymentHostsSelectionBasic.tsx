@@ -9,6 +9,7 @@ import { AgentK8sResource } from '../../types';
 import AgentsSelectionHostCountAlerts from '../Agent/AgentsSelectionHostCountAlerts';
 import AgentsSelectionHostCountLabelIcon from '../Agent/AgentsSelectionHostCountLabelIcon';
 import { useAgentsAutoSelection } from '../Agent/AgentsSelectionUtils';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type ClusterDeploymentHostsSelectionBasicProps = {
   availableAgents: AgentK8sResource[];
@@ -21,6 +22,7 @@ const ClusterDeploymentHostsSelectionBasic: React.FC<ClusterDeploymentHostsSelec
 }) => {
   const { setFieldValue } = useFormikContext<ClusterDeploymentHostsSelectionValues>();
   const { matchingAgents, selectedAgents, hostCount } = useAgentsAutoSelection(availableAgents);
+  const { t } = useTranslation();
 
   React.useEffect(() => {
     if (hostCount === 3) {
@@ -33,7 +35,7 @@ const ClusterDeploymentHostsSelectionBasic: React.FC<ClusterDeploymentHostsSelec
       <Grid hasGutter>
         <GridItem>
           <NumberInputField
-            label="Number of hosts"
+            label={t('ai:Number of hosts')}
             labelIcon={<AgentsSelectionHostCountLabelIcon />}
             idPostfix="hostcount"
             name="hostCount"
@@ -55,7 +57,7 @@ const ClusterDeploymentHostsSelectionBasic: React.FC<ClusterDeploymentHostsSelec
           <CheckboxField
             idPostfix="mastersasworkers"
             name="useMastersAsWorkers"
-            label="Run workloads on control plane hosts"
+            label={t('ai:Run workloads on control plane hosts')}
             isDisabled={hostCount < 5}
           />
         </GridItem>

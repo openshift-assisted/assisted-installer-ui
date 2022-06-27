@@ -1,0 +1,11 @@
+{
+  "ai:{{selectedAgentsCount}} host selected out of {{matchingAgentsCount}} matching.": "{{selectedAgentsCount}} host selected out of {{matchingAgentsCount}} matching.",
+  "ai:{{selectedAgentsCount}} host selected out of {{matchingAgentsCount}} matching._plural": "{{selectedAgentsCount}} hosts selected out of {{matchingAgentsCount}} matching.",
+  "ai:Cancel": "Cancel",
+  "ai:Generate Discovery ISO": "Generate Discovery ISO",
+  "ai:No host is selected.": "No host is selected.",
+  "ai:Number of hosts": "Number of hosts",
+  "ai:Only {{hostsSelected}} hosts are selected.": "Only {{hostsSelected}} host are selected.",
+  "ai:Only {{hostsSelected}} hosts are selected._plural": "Only {{hostsSelected}} hosts are selected.",
+  "ai:Run workloads on control plane hosts": "Run workloads on control plane hosts"
+}
