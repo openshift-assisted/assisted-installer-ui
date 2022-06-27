@@ -23,7 +23,10 @@ const useFieldErrorMsg = ({ name, inputError, validate }: Props): string | undef
     }
   }, [field.value, setHadValue]);
   const showError = field.value || (!field.value && hadValue);
-  const errorMessage = (showError ? error : '') || inputError;
+  let errorMessage = (showError ? error : '') || inputError;
+  if (errorMessage) {
+    errorMessage = errorMessage.toString();
+  }
   return errorMessage;
 };
 
