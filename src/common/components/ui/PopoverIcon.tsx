@@ -15,7 +15,7 @@ type PopoverIconProps = PopoverProps & {
 
 const PopoverIcon: React.FC<PopoverIconProps> = ({
   component,
-  variant = 'link',
+  variant = 'plain',
   IconComponent = OutlinedQuestionCircleIcon,
   noVerticalAlign = false,
   buttonClassName,
