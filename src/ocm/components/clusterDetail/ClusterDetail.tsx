@@ -18,7 +18,6 @@ import {
   getEnabledHosts,
   selectOlmOperators,
   isSNO,
-  isDualStack,
 } from '../../../common';
 import { Cluster } from '../../../common/api/types';
 import ClusterHostsTable from '../hosts/ClusterHostsTable';
@@ -87,7 +86,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
             </TextContent>
             <ClusterHostsTable cluster={cluster} skipDisabled />
           </GridItem>
-          <ClusterProperties cluster={cluster} isDualStack={isDualStack(cluster)} />
+          <ClusterProperties cluster={cluster} />
         </Grid>
       </StackItem>
       <StackItem>

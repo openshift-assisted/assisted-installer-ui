@@ -7,6 +7,7 @@ import {
   DiskEncryption,
   PopoverIcon,
   NETWORK_TYPE_SDN,
+  isDualStack,
 } from '../../../common';
 
 import {
@@ -33,7 +34,6 @@ const getCpuArchTitle = () => (
 
 type ClusterPropertiesProps = {
   cluster: Cluster;
-  isDualStack?: boolean;
   externalMode?: boolean;
 };
 
@@ -75,106 +75,105 @@ const getDiskEncryptionEnabledOnStatus = (diskEncryption: DiskEncryption['enable
   return diskEncryptionType;
 };
 
-const ClusterProperties = ({
-  cluster,
-  isDualStack = false,
-  externalMode = false,
-}: ClusterPropertiesProps) => (
-  <>
-    {!externalMode && (
-      <GridItem>
-        <TextContent>
-          <Text component="h2">Cluster Details</Text>
-        </TextContent>
-      </GridItem>
-    )}
-    <GridItem md={6} data-testid="cluster-details">
-      <DetailList>
-        {externalMode ? undefined : (
-          <DetailItem
-            title="OpenShift version"
-            value={cluster.openshiftVersion}
-            testId="openshift-version"
-          />
-        )}
+const ClusterProperties = ({ cluster, externalMode = false }: ClusterPropertiesProps) => {
+  const isDualStackType = isDualStack(cluster);
+  return (
+    <>
+      {!externalMode && (
+        <GridItem>
+          <TextContent>
+            <Text component="h2">Cluster Details</Text>
+          </TextContent>
+        </GridItem>
+      )}
+      <GridItem md={6} data-testid="cluster-details">
+        <DetailList>
+          {externalMode ? undefined : (
+            <DetailItem
+              title="OpenShift version"
+              value={cluster.openshiftVersion}
+              testId="openshift-version"
+            />
+          )}
 
-        <DetailItem title="Base domain" value={cluster.baseDnsDomain} testId="base-dns-domain" />
-        <DetailItem
-          title={getCpuArchTitle()}
-          value={cluster.cpuArchitecture}
-          testId="cpu-architecture"
-        />
-        <DetailItem
-          title="API IP"
-          value={cluster.apiVip}
-          isHidden={!cluster.apiVip}
-          testId="api-vip"
-        />
-        <DetailItem
-          title="Ingress IP"
-          value={cluster.ingressVip}
-          isHidden={!cluster.ingressVip}
-          testId="ingress-vip"
-        />
-        <DetailItem
-          title="Network management type"
-          value={getManagementType(cluster.userManagedNetworking)}
-          testId="network-management-type"
-        />
-        <DetailItem
-          title="Networking Type"
-          value={getNetworkType(cluster.networkType)}
-          testId="networking-type"
-        />
-      </DetailList>
-    </GridItem>
-    <GridItem md={6}>
-      <DetailList>
-        <DetailItem
-          title="Cluster network CIDR (IPv4)"
-          value={selectIpv4Cidr(cluster, 'clusterNetworks')}
-          testId="cluster-network-cidr-ipv4"
-        />
-        <DetailItem
-          title="Cluster network host prefix (IPv4)"
-          value={selectIpv4HostPrefix(cluster)}
-          testId="host-prefix-ipv4"
-        />
-        {isDualStack ? (
-          <>
-            <DetailItem
-              title="Cluster network CIDR (IPv6)"
-              value={selectIpv6Cidr(cluster, 'clusterNetworks')}
-              testId="cluster-network-cidr-ipv6"
-            />
-            <DetailItem
-              title="Cluster network host prefix (IPv6)"
-              value={selectIpv6HostPrefix(cluster)}
-              testId="host-prefix-ipv6"
-            />
-          </>
-        ) : undefined}
-        <DetailItem
-          title="Service network CIDR (IPv4)"
-          value={selectIpv4Cidr(cluster, 'serviceNetworks')}
-          testId="service-network-cidr-ipv4"
-        />
-        {isDualStack ? (
+          <DetailItem title="Base domain" value={cluster.baseDnsDomain} testId="base-dns-domain" />
           <DetailItem
-            title="Service network CIDR (IPv6)"
-            value={selectIpv6Cidr(cluster, 'serviceNetworks')}
-            testId="service-network-cidr-ipv6"
+            title={getCpuArchTitle()}
+            value={cluster.cpuArchitecture}
+            testId="cpu-architecture"
           />
-        ) : undefined}
-        <DetailItem
-          title="Disk encryption"
-          value={getDiskEncryptionEnabledOnStatus(cluster.diskEncryption?.enableOn)}
-          isHidden={cluster.diskEncryption?.enableOn === 'none'}
-          testId="disk-encryption"
-        />
-        <ClusterFeatureSupportLevelsDetailItem cluster={cluster} />
-      </DetailList>
-    </GridItem>
-  </>
-);
+          <DetailItem
+            title="API IP"
+            value={cluster.apiVip}
+            isHidden={!cluster.apiVip}
+            testId="api-vip"
+          />
+          <DetailItem
+            title="Ingress IP"
+            value={cluster.ingressVip}
+            isHidden={!cluster.ingressVip}
+            testId="ingress-vip"
+          />
+          <DetailItem
+            title="Network management type"
+            value={getManagementType(cluster.userManagedNetworking)}
+            testId="network-management-type"
+          />
+          <DetailItem
+            title="Networking Type"
+            value={getNetworkType(cluster.networkType)}
+            testId="networking-type"
+          />
+        </DetailList>
+      </GridItem>
+      <GridItem md={6}>
+        <DetailList>
+          <DetailItem
+            title="Cluster network CIDR (IPv4)"
+            value={selectIpv4Cidr(cluster, 'clusterNetworks')}
+            testId="cluster-network-cidr-ipv4"
+          />
+          <DetailItem
+            title="Cluster network host prefix (IPv4)"
+            value={selectIpv4HostPrefix(cluster)}
+            testId="host-prefix-ipv4"
+          />
+          {isDualStackType ? (
+            <>
+              <DetailItem
+                title="Cluster network CIDR (IPv6)"
+                value={selectIpv6Cidr(cluster, 'clusterNetworks')}
+                testId="cluster-network-cidr-ipv6"
+              />
+              <DetailItem
+                title="Cluster network host prefix (IPv6)"
+                value={selectIpv6HostPrefix(cluster)}
+                testId="host-prefix-ipv6"
+              />
+            </>
+          ) : undefined}
+          <DetailItem
+            title="Service network CIDR (IPv4)"
+            value={selectIpv4Cidr(cluster, 'serviceNetworks')}
+            testId="service-network-cidr-ipv4"
+          />
+          {isDualStackType ? (
+            <DetailItem
+              title="Service network CIDR (IPv6)"
+              value={selectIpv6Cidr(cluster, 'serviceNetworks')}
+              testId="service-network-cidr-ipv6"
+            />
+          ) : undefined}
+          <DetailItem
+            title="Disk encryption"
+            value={getDiskEncryptionEnabledOnStatus(cluster.diskEncryption?.enableOn)}
+            isHidden={cluster.diskEncryption?.enableOn === 'none'}
+            testId="disk-encryption"
+          />
+          <ClusterFeatureSupportLevelsDetailItem cluster={cluster} />
+        </DetailList>
+      </GridItem>
+    </>
+  );
+};
 export default ClusterProperties;

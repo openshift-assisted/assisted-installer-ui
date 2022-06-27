@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import { store } from '../../store';
 import { useSelector } from 'react-redux';
 
-import { FeatureGateContextProvider, FeatureListType, isDualStack } from '../../../common';
+import { FeatureGateContextProvider, FeatureListType } from '../../../common';
 import { FeatureSupportLevelProvider } from '../featureSupportLevels';
 import ClusterProperties from './ClusterProperties';
 import { selectCurrentClusterState } from '../../selectors';
@@ -26,7 +26,7 @@ const AssistedInstallerExtraDetailCard: React.FC<AssistedInstallerExtraDetailCar
     <FeatureGateContextProvider features={allEnabledFeatures}>
       <FeatureSupportLevelProvider loadingUi={<div />} cluster={cluster}>
         <Grid className="pf-u-mt-md">
-          <ClusterProperties cluster={cluster} externalMode isDualStack={isDualStack(cluster)} />
+          <ClusterProperties cluster={cluster} externalMode />
         </Grid>
       </FeatureSupportLevelProvider>
     </FeatureGateContextProvider>
