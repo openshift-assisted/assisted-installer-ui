@@ -1,6 +1,6 @@
 export const CLUSTER_NAME_VALIDATION_MESSAGES = {
-  INVALID_LENGTH_OCM: '1-54 character',
-  INVALID_LENGTH_ACM: '2-54 character',
+  INVALID_LENGTH_OCM: '1-54 characters',
+  INVALID_LENGTH_ACM: '2-54 characters',
   INVALID_VALUE: 'Use lowercase alphanumberic characters, or hyphen (-)',
   INVALID_START_END: 'Start and end with a lowercase letter or a number.',
   NOT_UNIQUE: 'Must be unique',
