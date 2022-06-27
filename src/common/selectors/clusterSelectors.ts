@@ -70,23 +70,26 @@ export const allSubnetsIPv4 = (
   return !!networks?.every((network) => network.cidr && Address4.isValid(network.cidr));
 };
 
-export const hasIpv6Subnet = (
+const areNetworksDualStack = (
   networks: (MachineNetwork | ClusterNetwork | ServiceNetwork)[] | undefined,
-) => {
-  return !!networks?.some((network) => network.cidr && Address6.isValid(network.cidr));
-};
+) =>
+  networks &&
+  networks.length > 1 &&
+  Address4.isValid(networks[0].cidr || '') &&
+  Address6.isValid(networks[1].cidr || '');
 
-export const allHostSubnetsIPv4 = (subnets: HostSubnets) =>
-  subnets.every((subnet) => Address4.isValid(subnet.subnet));
+export const isDualStack = ({
+  machineNetworks,
+  clusterNetworks,
+  serviceNetworks,
+}: Pick<Cluster, 'machineNetworks' | 'clusterNetworks' | 'serviceNetworks'>) =>
+  areNetworksDualStack(machineNetworks) &&
+  areNetworksDualStack(clusterNetworks) &&
+  areNetworksDualStack(serviceNetworks);
 
-export const isDualStack = (cluster: Cluster) =>
-  hasIpv6Subnet(cluster.machineNetworks) &&
-  hasIpv6Subnet(cluster.clusterNetworks) &&
-  hasIpv6Subnet(cluster.serviceNetworks) &&
-  cluster.clusterNetworks &&
-  cluster.clusterNetworks.length > 1 &&
-  cluster.serviceNetworks &&
-  cluster.serviceNetworks.length > 1;
+export const canBeDualStack = (subnets: HostSubnets) =>
+  subnets.some((subnet) => Address4.isValid(subnet.subnet)) &&
+  subnets.some((subnet) => Address6.isValid(subnet.subnet));
 
 export const selectIpv4Cidr = (subnets: MachineNetwork[] | ClusterNetwork[] | ServiceNetwork[]) =>
   head(subnets)?.cidr;

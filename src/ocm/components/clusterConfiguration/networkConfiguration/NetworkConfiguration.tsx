@@ -10,7 +10,7 @@ import {
 import { CpuArchitecture, NetworkConfigurationValues } from '../../../../common/types';
 import { getLimitedFeatureSupportLevels } from '../../../../common/components/featureSupportLevels/utils';
 import {
-  allHostSubnetsIPv4,
+  canBeDualStack,
   canSelectNetworkTypeSDN,
   getDefaultNetworkType,
   isSNO,
@@ -118,10 +118,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';
   const isDualStack = values.stackType === DUAL_STACK;
 
-  const isDualStackSelectable = React.useMemo(
-    () => !allHostSubnetsIPv4(hostSubnets),
-    [hostSubnets],
-  );
+  const isDualStackSelectable = React.useMemo(() => canBeDualStack(hostSubnets), [hostSubnets]);
 
   const { defaultNetworkType, isSDNSelectable } = React.useMemo(() => {
     return {
