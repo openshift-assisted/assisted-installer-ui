@@ -2,7 +2,8 @@ import React from 'react';
 import {
   Cluster,
   Credentials,
-  getOlmOperators,
+  selectOlmOperators,
+  selectMonitoredOperators,
   MonitoredOperator,
   MonitoredOperatorsList,
   ClusterCredentials,
@@ -28,8 +29,8 @@ export const useClusterStatusVarieties = (cluster?: Cluster): ClusterStatusVarie
 
   const clusterId = cluster?.id;
   const clusterStatus = cluster?.status;
-  const clusterMonitoredOperators = cluster?.monitoredOperators || [];
-  const olmOperators = getOlmOperators(cluster);
+  const clusterMonitoredOperators = selectMonitoredOperators(cluster);
+  const olmOperators = selectOlmOperators(cluster);
   const failedOlmOperators = olmOperators.filter((o) => o.status === 'failed');
   const consoleOperator = React.useMemo(
     () => clusterMonitoredOperators.find((o) => o.name === 'console'),
