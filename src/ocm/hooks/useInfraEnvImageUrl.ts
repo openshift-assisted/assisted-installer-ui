@@ -2,7 +2,7 @@ import React from 'react';
 import useInfraEnvId from './useInfraEnvId';
 import { Cluster, PresignedUrl } from '../../common';
 import { InfraEnvsAPI } from '../services/apis';
-import { getErrorMessage } from '../api';
+import { getErrorMessage } from '../../common/utils';
 
 export default function useInfraEnvImageUrl(clusterId: Cluster['id']) {
   const { infraEnvId, error: infraEnvIdError } = useInfraEnvId(clusterId);

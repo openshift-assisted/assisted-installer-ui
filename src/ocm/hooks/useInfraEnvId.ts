@@ -1,6 +1,6 @@
 import React from 'react';
 import { Cluster, InfraEnv } from '../../common';
-import { getErrorMessage } from '../api';
+import { getErrorMessage } from '../../common/utils';
 import { InfraEnvsService } from '../services';
 
 export default function useInfraEnvId(clusterId: Cluster['id']) {

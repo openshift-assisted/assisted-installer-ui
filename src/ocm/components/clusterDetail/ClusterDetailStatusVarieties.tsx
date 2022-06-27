@@ -11,7 +11,7 @@ import { getClusterDetailId } from './utils';
 import { ClustersAPI } from '../../services/apis';
 import ClusterDetailStatusMessages from './ClusterDetailStatusMessages';
 import { Grid } from '@patternfly/react-core';
-import { getErrorMessage } from '../../api';
+import { getErrorMessage } from '../../../common/utils';
 
 type ClusterStatusVarieties = {
   credentials?: Credentials;
