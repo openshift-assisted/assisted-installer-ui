@@ -2,7 +2,7 @@ import React from 'react';
 import { CheckboxField, Cluster, getFieldId, CNV_LINK, PopoverIcon } from '../../../common';
 import { useFeatureSupportLevel } from '../../../common/components/featureSupportLevels';
 import { FormGroup, Tooltip } from '@patternfly/react-core';
-import { ExternalLinkAltIcon, HelpIcon } from '@patternfly/react-icons';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import CNVHostRequirementsContent from '../hosts/CNVHostRequirementsContent';
 
 const CNVLabel: React.FC<{ clusterId: Cluster['id']; isSingleNode?: boolean }> = ({
