@@ -92,19 +92,17 @@ export const getClusterDetailsValidationSchema = ({
   isOcm?: boolean;
 }) =>
   Yup.lazy<{ baseDnsDomain: string }>((values) => {
+    const validateName = () =>
+      nameValidationSchema(usedClusterNames, values.baseDnsDomain, validateUniqueName, isOcm);
+
     if (pullSecretSet) {
       return Yup.object({
-        name: nameValidationSchema(
-          usedClusterNames,
-          values.baseDnsDomain,
-          validateUniqueName,
-          isOcm,
-        ),
+        name: validateName(),
         baseDnsDomain: dnsNameValidationSchema.required('Required'),
       });
     }
     return Yup.object({
-      name: nameValidationSchema(usedClusterNames, values.baseDnsDomain, validateUniqueName),
+      name: validateName(),
       baseDnsDomain: dnsNameValidationSchema.required('Required'),
       pullSecret: pullSecretValidationSchema.required('Required.'),
       SNODisclaimer: Yup.boolean().when(['highAvailabilityMode', 'openshiftVersion'], {
