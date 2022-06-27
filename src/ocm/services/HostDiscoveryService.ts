@@ -2,7 +2,6 @@ import {
   Cluster,
   V2ClusterUpdateParams,
   HostDiscoveryValues,
-  MonitoredOperator,
   OPERATOR_NAME_CNV,
   OPERATOR_NAME_LSO,
   OPERATOR_NAME_OCS,
@@ -27,9 +26,9 @@ const HostDiscoveryService = {
   setOLMOperators(
     params: V2ClusterUpdateParams,
     values: HostDiscoveryValues,
-    monitoredOperators: MonitoredOperator[],
+    cluster: Cluster,
   ): void {
-    const enabledOlmOperatorsByName = getOlmOperatorCreateParamsByName(monitoredOperators || []);
+    const enabledOlmOperatorsByName = getOlmOperatorCreateParamsByName(cluster);
     const setOperator = (name: string, enabled: boolean) => {
       if (enabled) {
         enabledOlmOperatorsByName[name] = { name };

@@ -74,7 +74,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
             {getClusterProgressAlerts(
               getEnabledHosts(cluster.hosts),
               cluster,
-              getOlmOperators(cluster.monitoredOperators),
+              getOlmOperators(cluster),
             )}
           </GridItem>
           <GridItem span={6}>

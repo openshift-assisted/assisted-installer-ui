@@ -24,16 +24,14 @@ export const calculateCollectedLogsCount = (cluster: Cluster) => {
 export const getBuiltInOperators = (monitoredOperators: MonitoredOperatorsList = []) =>
   monitoredOperators.filter((operator: MonitoredOperator) => operator.operatorType === 'builtin');
 
-export const getOlmOperatorCreateParams = (
-  monitoredOperators: MonitoredOperatorsList,
-): OperatorCreateParams[] =>
-  getOlmOperators(monitoredOperators).map((operator) => ({
+export const getOlmOperatorCreateParams = (cluster?: Cluster): OperatorCreateParams[] =>
+  getOlmOperators(cluster).map((operator) => ({
     name: operator.name,
     properties: operator.properties,
   }));
 
-export const getOlmOperatorCreateParamsByName = (monitoredOperators: MonitoredOperatorsList) =>
-  getOlmOperatorCreateParams(monitoredOperators).reduce(
+export const getOlmOperatorCreateParamsByName = (cluster?: Cluster) =>
+  getOlmOperatorCreateParams(cluster).reduce(
     (result: { [key: string]: OperatorCreateParams }, operator) => {
       if (operator.name) {
         result[operator.name] = operator;
