@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import Axios, { CancelTokenSource } from 'axios';
 import { FormikHelpers } from 'formik';
-import { handleApiError, getErrorMessage } from '../../api';
+import { handleApiError, getApiErrorMessage } from '../../api';
 import {
   Cluster,
   DiscoveryImageConfigForm,
@@ -61,7 +61,7 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
           formikActions.setStatus({
             error: {
               title: 'Failed to download the discovery Image',
-              message: getErrorMessage(error),
+              message: getApiErrorMessage(error),
             },
           });
         });
