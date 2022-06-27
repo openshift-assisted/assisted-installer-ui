@@ -48,7 +48,6 @@ const SchedulableMastersLabel: React.FC = () => (
   <>
     <span>Run workloads on control plane nodes</span>{' '}
     <PopoverIcon
-      variant={'plain'}
       bodyContent={<p>Enables your control plane nodes to be used for running applications.</p>}
     />
   </>
