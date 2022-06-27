@@ -1,3 +1,5 @@
+import isString from 'lodash/isString';
+
 const MIN_OCP_VERSION = '4.11.0';
 
 export const canAddHostSNO = (ocpVersion: string, minVersion: string = MIN_OCP_VERSION) => {
@@ -9,4 +11,14 @@ export const canAddHostSNO = (ocpVersion: string, minVersion: string = MIN_OCP_V
     return ocpVersionParsed.every((v, i) => v >= minVersionParsed[i]);
   }
   return false;
+};
+
+export const getErrorMessage = (error: unknown) => {
+  if (error instanceof Error) {
+    return error.message;
+  }
+  if (isString(error)) {
+    return error;
+  }
+  return 'Unexpected error';
 };

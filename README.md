@@ -90,6 +90,10 @@ $ sudo sh -c "echo fs.inotify.max_user_watches=524288 >> /etc/sysctl.conf"
 $ sudo sysctl -p
 ```
 
+## i18n
+
+See [i18n](I18N.md) for information on our internationalization tools and guidelines
+
 ## License
 
 Apache-2.0

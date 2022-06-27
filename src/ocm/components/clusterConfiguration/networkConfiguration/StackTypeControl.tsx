@@ -115,7 +115,6 @@ export const StackTypeControlGroup = ({
                 {'IPv4'}
                 <PopoverIcon
                   noVerticalAlign
-                  variant="plain"
                   bodyContent="Select this when your hosts are using only IPv4."
                 />
               </>
@@ -130,7 +129,6 @@ export const StackTypeControlGroup = ({
                 {'Dual-stack'}
                 <PopoverIcon
                   noVerticalAlign
-                  variant="plain"
                   bodyContent="Select dual-stack when your hosts are using IPV4 together with IPV6."
                 />
               </>

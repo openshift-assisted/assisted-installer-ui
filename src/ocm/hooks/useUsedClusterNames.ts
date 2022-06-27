@@ -1,5 +1,5 @@
 import React from 'react';
-import { getErrorMessage, handleApiError } from '../api';
+import { getApiErrorMessage, handleApiError } from '../api';
 import { ClustersAPI } from '../services/apis';
 import { Cluster, useAlerts } from '../../common';
 
@@ -19,7 +19,7 @@ export default function useUsedClusterNames(clusterId: Cluster['id']) {
       handleApiError(e, () =>
         addAlert({
           title: 'Failed to retrieve names of existing clusters.',
-          message: getErrorMessage(e),
+          message: getApiErrorMessage(e),
         }),
       );
     }

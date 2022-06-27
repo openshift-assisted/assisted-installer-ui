@@ -5,7 +5,7 @@ import { canDownloadKubeconfig } from '../hosts/utils';
 import { useAlerts } from '../AlertsContextProvider';
 import { Cluster } from '../../api/types';
 import { ocmClient } from '../../../ocm/api/axiosClient';
-import { getErrorMessage, handleApiError } from '../../../ocm/api/utils';
+import { getApiErrorMessage, handleApiError } from '../../../ocm/api/utils';
 import ClustersAPI from '../../../ocm/services/apis/ClustersAPI';
 import { AxiosResponseHeaders } from 'axios';
 
@@ -47,7 +47,7 @@ const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({
         }
       } catch (e) {
         handleApiError(e, async (e) => {
-          addAlert({ title: 'Could not download kubeconfig', message: getErrorMessage(e) });
+          addAlert({ title: 'Could not download kubeconfig', message: getApiErrorMessage(e) });
         });
       }
     },

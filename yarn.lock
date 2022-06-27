@@ -900,6 +900,15 @@ esbuild-openbsd-64@0.13.15:
   resolved "https://registry.yarnpkg.com/esbuild-openbsd-64/-/esbuild-openbsd-64-0.13.15.tgz#b22c0e5806d3a1fbf0325872037f885306b05cd7"
   integrity sha512-wTfvtwYJYAFL1fSs8yHIdf5GEE4NkbtbXtjLWjM3Cw8mmQKqsg8kTiqJ9NJQe5NX/5Qlo7Xd9r1yKMMkHllp5g==
 
+esbuild-plugin-copy@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/esbuild-plugin-copy/-/esbuild-plugin-copy-1.3.0.tgz#7969a268d38682c4005594672de58745bf1fea00"
+  integrity sha512-LOx1xJOlAaCFMRtokHjsJfEkrosy3RDRa8SUHmn7loo0gwrouBQQwLAmOyMECshf7gSR1cPSRtAHu3KF/kQsyw==
+  dependencies:
+    chalk "^4.1.2"
+    fs-extra "^10.0.1"
+    globby "^11.0.3"
+
 esbuild-plugin-d.ts@1.0.6:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/esbuild-plugin-d.ts/-/esbuild-plugin-d.ts-1.0.6.tgz#3f767cf6225b4f0e2a624ae7f9081f6081305a27"

@@ -1,6 +1,6 @@
 import { saveAs } from 'file-saver';
 import get from 'lodash/get';
-import { ocmClient, handleApiError, getErrorMessage } from '../../api';
+import { ocmClient, handleApiError, getApiErrorMessage } from '../../api';
 import {
   Cluster,
   Host,
@@ -33,7 +33,7 @@ export const downloadClusterInstallationLogs = async (
     handleApiError(e, async (e) => {
       addAlert({
         title: 'Could not download cluster installation logs.',
-        message: getErrorMessage(e),
+        message: getApiErrorMessage(e),
       });
     });
   }

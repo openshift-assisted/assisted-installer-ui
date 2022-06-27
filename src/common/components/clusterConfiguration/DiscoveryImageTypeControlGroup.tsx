@@ -1,6 +1,5 @@
 import React from 'react';
 import { Stack, StackItem } from '@patternfly/react-core';
-import { HelpIcon } from '@patternfly/react-icons';
 import { PopoverIcon, RadioField } from '../ui';
 
 const GROUP_NAME = 'imageType';
@@ -14,13 +13,7 @@ const DiscoveryImageTypeControlGroupLabel = ({
 }) => (
   <>
     {text}
-    <PopoverIcon
-      component={'a'}
-      variant={'plain'}
-      IconComponent={HelpIcon}
-      bodyContent={popoverContent}
-      noVerticalAlign
-    />
+    <PopoverIcon component={'a'} bodyContent={popoverContent} noVerticalAlign />
   </>
 );
 
