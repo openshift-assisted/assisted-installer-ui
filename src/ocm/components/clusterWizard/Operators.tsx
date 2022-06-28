@@ -16,9 +16,10 @@ import { Formik, FormikConfig, useFormikContext } from 'formik';
 import { OperatorsService } from '../../services';
 import { ClustersAPI } from '../../services/apis';
 import { updateCluster } from '../../reducers/clusters';
-import { getErrorMessage, handleApiError } from '../../api';
+import { handleApiError } from '../../api';
 import { useDispatch } from 'react-redux';
 import { canNextOperators } from './wizardTransition';
+import { getErrorMessage } from '../../../common/utils';
 
 export const getOperatorsInitialValues = (cluster: Cluster): OperatorsValues => {
   const monitoredOperators = cluster.monitoredOperators || [];
