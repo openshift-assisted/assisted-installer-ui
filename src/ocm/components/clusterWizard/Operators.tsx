@@ -75,7 +75,7 @@ const Operators: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
     clearAlerts();
 
     const params: V2ClusterUpdateParams = {};
-    OperatorsService.setOLMOperators(params, values, cluster.monitoredOperators);
+    OperatorsService.setOLMOperators(params, values, cluster);
 
     try {
       const { data } = await ClustersAPI.update(cluster.id, params);
