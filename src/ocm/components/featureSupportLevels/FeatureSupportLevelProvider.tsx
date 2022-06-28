@@ -49,6 +49,35 @@ const getFeatureSupportLevelsMap = (
     return {};
   }
 };
+
+const getVersionSupportLevelsMap = (
+  versionName: string,
+  supportLevelData: FeatureSupportLevelsMap,
+): FeatureIdToSupportLevel | undefined => {
+  const versionKey = Object.keys(supportLevelData).find((key) => {
+    const versionNameMatch = new RegExp(`^${key}(\\..*)?$`); // For version 4.10 match 4.10, 4.10.3, not 4.1, 4.1.5
+    return versionNameMatch.test(versionName);
+  });
+  if (!versionKey) {
+    return undefined;
+  }
+
+  return supportLevelData[versionKey];
+};
+
+export const getFeatureSupported = (
+  openshiftVersion: string,
+  featureSupportLevels: FeatureSupportLevels,
+  featureId: FeatureId,
+) => {
+  const featureSupportLevelsMap = getFeatureSupportLevelsMap(featureSupportLevels);
+  const versionSupportLevels = getVersionSupportLevelsMap(
+    openshiftVersion,
+    featureSupportLevelsMap,
+  );
+  return versionSupportLevels && versionSupportLevels[featureId] !== 'unsupported';
+};
+
 export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = ({
   cluster,
   children,
@@ -70,28 +99,20 @@ export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = 
     return getFeatureSupportLevelsMap(featureSupportLevels);
   }, [error, featureSupportLevels]);
 
-  const getVersionSupportLevelsMap = React.useCallback(
+  const getVersionSupportLevelsMapCallback = React.useCallback(
     (versionName: string): FeatureIdToSupportLevel | undefined => {
-      const versionKey = Object.keys(supportLevelData).find((key) => {
-        const versionNameMatch = new RegExp(`^${key}(\\..*)?$`); // For version 4.10 match 4.10, 4.10.3, not 4.1, 4.1.5
-        return versionNameMatch.test(versionName);
-      });
-      if (!versionKey) {
-        return undefined;
-      }
-
-      return supportLevelData[versionKey];
+      return getVersionSupportLevelsMap(versionName, supportLevelData);
     },
     [supportLevelData],
   );
 
   const getFeatureSupportLevel = React.useCallback(
     (versionName: string, featureId: FeatureId): SupportLevel | undefined => {
-      const versionSupportLevelData = getVersionSupportLevelsMap(versionName);
+      const versionSupportLevelData = getVersionSupportLevelsMapCallback(versionName);
       return versionSupportLevelData ? versionSupportLevelData[featureId] : undefined;
       // eslint-disable-next-line react-hooks/exhaustive-deps
     },
-    [getVersionSupportLevelsMap],
+    [getVersionSupportLevelsMapCallback],
   );
 
   const isFeatureSupportedCallback = React.useCallback(
@@ -118,14 +139,14 @@ export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = 
 
   const providerValue = React.useMemo<FeatureSupportLevelData>(() => {
     return {
-      getVersionSupportLevelsMap: getVersionSupportLevelsMap,
+      getVersionSupportLevelsMap: getVersionSupportLevelsMapCallback,
       getFeatureSupportLevel: getFeatureSupportLevel,
       isFeatureDisabled: isFeatureDisabled,
       getFeatureDisabledReason: getDisabledReasonCallback,
       isFeatureSupported: isFeatureSupportedCallback,
     };
   }, [
-    getVersionSupportLevelsMap,
+    getVersionSupportLevelsMapCallback,
     getFeatureSupportLevel,
     isFeatureDisabled,
     getDisabledReasonCallback,
