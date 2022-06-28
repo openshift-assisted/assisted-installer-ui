@@ -42,7 +42,8 @@ const getNumOfHosts = (size: number, t: TFunction) => {
   } else if (size === 1) {
     return t('ai:(1 host available)');
   }
-  return t('ai:({{size}} hosts available)', { size: size });
+
+  return t('ai:({{size}} hosts available)', { size });
 };
 
 const LocationsSelector: React.FC<{ agents: AgentK8sResource[] }> = ({ agents }) => {

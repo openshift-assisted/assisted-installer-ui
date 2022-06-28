@@ -36,10 +36,12 @@ import { MassChangeHostnameModalProps } from '../../../common/components/hosts/M
 import MassApproveAction from '../modals/MassApproveAction';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import InfraTableToolbar from './InfraTableToolbar';
+import { TFunction } from 'i18next';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type NoFilterMatchStateProps = {
   onClearFilters: VoidFunction;
+  t: TFunction;
 };
 
 const NoFilterMatchState: React.FC<NoFilterMatchStateProps> = ({ onClearFilters }) => {
@@ -229,6 +231,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
                   setHostnameFilter(undefined);
                   setStatusFilter([]);
                 }}
+                t={t}
               />
             ) : (
               <HostsTableEmptyState setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />

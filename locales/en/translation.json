@@ -371,7 +371,6 @@
   "ai:Provide an endpoint for application traffic flowing in from outside the cluster. If needed, contact your IT manager for more information. {{vipHelperSufix}}": "Provide an endpoint for application traffic flowing in from outside the cluster. If needed, contact your IT manager for more information. {{vipHelperSufix}}",
   "ai:Provide an endpoint for users, both human and machine, to interact with and configure the platform. If needed, contact your IT manager for more information. {{vipHelperSufix}}": "Provide an endpoint for users, both human and machine, to interact with and configure the platform. If needed, contact your IT manager for more information. {{vipHelperSufix}}",
   "ai:Provide an SSH key to receive debugging information during installation": "Provide an SSH key to receive debugging information during installation",
-  "ai:Provide as many labels as you can to narrow the list to relevant hosts only.": "Provide as many labels as you can to narrow the list to relevant hosts only.",
   "ai:Provided cluster configuration is not valid": "Provided cluster configuration is not valid",
   "ai:Pull secret": "Pull secret",
   "ai:Pull secret is a required field.": "Pull secret is a required field.",
@@ -515,5 +514,6 @@
   "ai:You are deleting multiple resources. All resources listed below will be deleted if you continue. This action cannot be undone.": "You are deleting multiple resources. All resources listed below will be deleted if you continue. This action cannot be undone.",
   "ai:Your libvirt virtual machines should be configured to restart automatically after a reboot. You can check this by running:": "Your libvirt virtual machines should be configured to restart automatically after a reboot. You can check this by running:",
   "ai:Your own NTP (Network Time Protocol) sources": "Your own NTP (Network Time Protocol) sources",
-  "ai:Your Red Hat account's pull secret is used by default.": "Your Red Hat account's pull secret is used by default."
+  "ai:Your Red Hat account's pull secret is used by default.": "Your Red Hat account's pull secret is used by default.",
+  "Provide as many labels as you can to narrow the list to relevant hosts only.": "Provide as many labels as you can to narrow the list to relevant hosts only."
 }
