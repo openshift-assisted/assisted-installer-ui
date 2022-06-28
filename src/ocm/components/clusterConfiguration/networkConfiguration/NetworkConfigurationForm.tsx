@@ -151,7 +151,7 @@ const NetworkConfigurationPage: React.FC<{
       captureException(infraEnvError, title);
       addAlert({
         title,
-        message: infraEnvError.message,
+        message: infraEnvError,
       });
     }
     //shouldn't respond to cluster polling. shouldn't respond to alerts changes so remove alert wouldn't trigger adding it back
