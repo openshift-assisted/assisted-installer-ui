@@ -8,12 +8,12 @@ type Props = {
 };
 
 // With getRichTextValidation we can receive an array of strings so it needs to be converted to string
-const adaptErrorInvalidFormat = (error: undefined | string | string[]): string | undefined => {
+const adaptErrorInvalidFormat = (error: undefined | string []): string | undefined => {
   if (Array.isArray(error)) {
     return error.join('.');
   }
   return error;
-}
+};
 
 const useFieldErrorMsg = ({ name, inputError, validate }: Props): string | undefined => {
   /*
