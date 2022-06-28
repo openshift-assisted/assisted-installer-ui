@@ -1,13 +1,6 @@
 import React from 'react';
 import { Text } from '@patternfly/react-core';
-import {
-  Cluster,
-  HostsNotShowingLink,
-  HostsNotShowingLinkProps,
-  VMRebootConfigurationInfo,
-  isSNO,
-} from '../../../common';
-import { HostRequirementsLink, HostRequirementsLinkProps } from '../fetching/HostRequirements';
+import { Cluster, VMRebootConfigurationInfo, isSNO } from '../../../common';
 import OCSDisksManualFormattingHint from '../hosts/OCSDisksManualFormattingHint';
 import { isAddHostsCluster } from '../clusters/utils';
 import { isAHostVM } from '../hosts/utils';

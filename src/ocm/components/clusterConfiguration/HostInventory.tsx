@@ -17,7 +17,6 @@ import {
   useFeature,
   isSNO,
   ClusterWizardStepHeader,
-  DiscoveryInstructions,
   SwitchField,
   schedulableMastersAlwaysOn,
   HostDiscoveryValues,
@@ -159,10 +158,7 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         </TextContent>
       </StackItem>
       <StackItem>
-        <HostsDiscoveryTable
-          cluster={cluster}
-          setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
-        />
+        <HostsDiscoveryTable cluster={cluster} />
       </StackItem>
     </Stack>
   );

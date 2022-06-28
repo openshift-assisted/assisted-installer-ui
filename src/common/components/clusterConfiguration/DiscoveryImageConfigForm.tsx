@@ -9,6 +9,7 @@ import {
   Alert,
   Stack,
   StackItem,
+  ButtonVariant,
 } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { Formik, FormikHelpers } from 'formik';
@@ -24,6 +25,7 @@ import UploadSSH from './UploadSSH';
 import DiscoveryImageTypeControlGroup from './DiscoveryImageTypeControlGroup';
 import { OCP_STATIC_IP_DOC } from '../../config/constants';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { LoadingState } from '../ui';
 
 export const StaticIPInfo: React.FC = () => {
   const { t } = useTranslation();
