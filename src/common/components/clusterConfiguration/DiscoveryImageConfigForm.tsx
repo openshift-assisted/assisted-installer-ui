@@ -9,7 +9,6 @@ import {
   Alert,
   Stack,
   StackItem,
-  ButtonVariant,
 } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { Formik, FormikHelpers } from 'formik';
@@ -25,7 +24,6 @@ import UploadSSH from './UploadSSH';
 import DiscoveryImageTypeControlGroup from './DiscoveryImageTypeControlGroup';
 import { OCP_STATIC_IP_DOC } from '../../config/constants';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
-import { LoadingState } from '../ui';
 
 export const StaticIPInfo: React.FC = () => {
   const { t } = useTranslation();
@@ -102,16 +100,7 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
       onSubmit={handleSubmit}
     >
       {({ submitForm, isSubmitting, status }) => {
-        return isSubmitting ? (
-          <LoadingState
-            content={t('ai:Discovery image is being prepared, this might take a few seconds.')}
-            secondaryActions={[
-              <Button key="close" variant={ButtonVariant.secondary} onClick={onCancel}>
-                {t('ai:Cancel')}
-              </Button>,
-            ]}
-          />
-        ) : (
+        return (
           <>
             <ModalBoxBody>
               <Stack hasGutter>
@@ -142,9 +131,16 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
               </Stack>
             </ModalBoxBody>
             <ModalBoxFooter>
-              <Button key="submit" onClick={submitForm}>
-                {t('ai:Generate Discovery ISO')}
-              </Button>
+              {!isSubmitting && (
+                <Button key="submit" onClick={submitForm}>
+                  {t('ai:Generate Discovery ISO')}
+                </Button>
+              )}
+              {isSubmitting && (
+                <Button isLoading isDisabled>
+                  {t('Generating')}
+                </Button>
+              )}
               <Button key="cancel" variant="link" onClick={onCancel}>
                 {t('ai:Cancel')}
               </Button>
