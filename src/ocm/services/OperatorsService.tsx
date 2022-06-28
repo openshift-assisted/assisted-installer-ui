@@ -1,20 +1,20 @@
 import {
-  OperatorsValues,
-  MonitoredOperator,
   V2ClusterUpdateParams,
   OPERATOR_NAME_CNV,
   OPERATOR_NAME_ODF,
   OPERATOR_NAME_OCS,
   OPERATOR_NAME_LSO,
+  HostDiscoveryValues,
+  Cluster,
 } from '../../common';
 import { getOlmOperatorCreateParamsByName } from '../components/clusters/utils';
 const OperatorsService = {
   setOLMOperators(
     params: V2ClusterUpdateParams,
-    values: OperatorsValues,
-    monitoredOperators: MonitoredOperator[] = [],
+    values: HostDiscoveryValues,
+    cluster: Cluster,
   ): void {
-    const enabledOlmOperatorsByName = getOlmOperatorCreateParamsByName(monitoredOperators);
+    const enabledOlmOperatorsByName = getOlmOperatorCreateParamsByName(cluster);
     const setOperator = (name: string, enabled: boolean) => {
       if (enabled) {
         enabledOlmOperatorsByName[name] = { name };
@@ -22,6 +22,7 @@ const OperatorsService = {
         delete enabledOlmOperatorsByName[name];
       }
     };
+
     setOperator(OPERATOR_NAME_CNV, values.useContainerNativeVirtualization);
     // TODO(jkilzi): remove traces of OCS once it's fully deprecated/renamed to ODF
     setOperator(
@@ -32,6 +33,7 @@ const OperatorsService = {
     if (!values.useExtraDisksForLocalStorage && !values.useContainerNativeVirtualization) {
       setOperator(OPERATOR_NAME_LSO, false);
     }
+
     params.olmOperators = Object.values(enabledOlmOperatorsByName);
   },
 };
