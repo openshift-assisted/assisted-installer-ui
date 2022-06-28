@@ -12,7 +12,6 @@ import { NETWORK_TYPE_OVN, NETWORK_TYPE_SDN, NO_SUBNET_SET } from '../../config'
 import {
   selectClusterNetworkCIDR,
   selectClusterNetworkHostPrefix,
-  selectMonitoredOperators,
   selectServiceNetworkCIDR,
   selectSchedulableMasters,
 } from '../../selectors';
@@ -151,8 +150,6 @@ export const getHostDiscoveryInitialValues = (cluster: Cluster): HostDiscoveryVa
     !!monitoredOperators.find((operator) => operator.name?.match(name));
 
   return {
-    useExtraDisksForLocalStorage: isOperatorEnabled(/ocs|odf/),
-    useContainerNativeVirtualization: isOperatorEnabled('cnv'),
     usePlatformIntegration: cluster.platform?.type !== 'baremetal',
     schedulableMasters: selectSchedulableMasters(cluster),
   };

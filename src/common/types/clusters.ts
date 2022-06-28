@@ -43,8 +43,6 @@ export type NetworkConfigurationValues = Pick<
   stackType?: 'singleStack' | 'dualStack';
 };
 export type HostDiscoveryValues = V2ClusterUpdateParams & {
-  useExtraDisksForLocalStorage: boolean;
-  useContainerNativeVirtualization: boolean;
   usePlatformIntegration: boolean;
   schedulableMasters: boolean;
 };

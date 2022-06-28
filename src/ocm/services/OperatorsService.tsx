@@ -4,16 +4,12 @@ import {
   OPERATOR_NAME_ODF,
   OPERATOR_NAME_OCS,
   OPERATOR_NAME_LSO,
-  HostDiscoveryValues,
+  OperatorsValues,
   Cluster,
 } from '../../common';
 import { getOlmOperatorCreateParamsByName } from '../components/clusters/utils';
 const OperatorsService = {
-  setOLMOperators(
-    params: V2ClusterUpdateParams,
-    values: HostDiscoveryValues,
-    cluster: Cluster,
-  ): void {
+  setOLMOperators(params: V2ClusterUpdateParams, values: OperatorsValues, cluster: Cluster): void {
     const enabledOlmOperatorsByName = getOlmOperatorCreateParamsByName(cluster);
     const setOperator = (name: string, enabled: boolean) => {
       if (enabled) {
