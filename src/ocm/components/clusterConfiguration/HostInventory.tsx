@@ -78,8 +78,6 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
   const isPlatformIntegrationFeatureEnabled = useFeature(
     'ASSISTED_INSTALLER_PLATFORM_INTEGRATION_FEATURE',
   );
-  const isOpenshiftClusterStorageEnabled = useFeature('ASSISTED_INSTALLER_OCS_FEATURE');
-  const isContainerNativeVirtualizationEnabled = useFeature('ASSISTED_INSTALLER_CNV_FEATURE');
   const isSNOCluster = isSNO(cluster);
   const mastersMustRunWorkloads = selectMastersMustRunWorkloads(cluster);
   const { setFieldValue } = useFormikContext<HostDiscoveryValues>();
@@ -106,20 +104,6 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
           </Text>
         </TextContent>
       </StackItem>
-      {isContainerNativeVirtualizationEnabled && (
-        <StackItem>
-          <CnvCheckbox
-            clusterId={cluster.id}
-            isSNO={isSNOCluster}
-            openshiftVersion={cluster.openshiftVersion}
-          />
-        </StackItem>
-      )}
-      {isOpenshiftClusterStorageEnabled && (
-        <StackItem>
-          <ODFCheckbox openshiftVersion={cluster.openshiftVersion} />
-        </StackItem>
-      )}
       {isPlatformIntegrationFeatureEnabled && (
         <StackItem>
           <Split hasGutter>
