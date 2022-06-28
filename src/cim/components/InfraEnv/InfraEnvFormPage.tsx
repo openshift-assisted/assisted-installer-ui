@@ -46,6 +46,7 @@ import {
 
 import './infra-env.css';
 import { getErrorMessage } from '../../../common/utils';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 import { TFunction } from 'i18next';
 export type EnvironmentStepFormValues = {

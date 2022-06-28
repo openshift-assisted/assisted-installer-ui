@@ -90,7 +90,11 @@ const statusColumn = (
               }
               footerContent={
                 <Link to={`/multicloud/infrastructure/clusters/details/${clusterName}/`}>
+<<<<<<< HEAD
                   {t('ai:Go to cluster {{clusterName}}', { clusterName })}
+=======
+                  {t('Go to cluster {{clusterName}}', { clusterName: clusterName })}
+>>>>>>> 88fb55b9 (Extract strings for localization)
                 </Link>
               }
             >
