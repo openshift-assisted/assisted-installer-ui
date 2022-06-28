@@ -36,18 +36,21 @@ import { MassChangeHostnameModalProps } from '../../../common/components/hosts/M
 import MassApproveAction from '../modals/MassApproveAction';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import InfraTableToolbar from './InfraTableToolbar';
+import { TFunction } from 'i18next';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type NoFilterMatchStateProps = {
   onClearFilters: VoidFunction;
+  t: TFunction;
 };
 
-const NoFilterMatchState: React.FC<NoFilterMatchStateProps> = ({ onClearFilters }) => (
+const NoFilterMatchState: React.FC<NoFilterMatchStateProps> = ({ onClearFilters, t }) => (
   <EmptyState
-    title="No results found"
-    content="No results match the filter criteria. Clear filters to show results."
+    title={t('ai:No results found')}
+    content={t('ai:No results match the filter criteria. Clear filters to show results.')}
     secondaryActions={[
       <Button key="clear-filters" variant="link" onClick={onClearFilters}>
-        Clear all filters
+        {t('ai:Clear all filters')}
       </Button>,
     ]}
   />
@@ -146,13 +149,15 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
   const canEditHostname =
     selectedBMHs.some((bmh) => canEditBMH(bmh)[0]) ||
     selectedAgents.some((a) => canEditAgent(a)[0]);
-
+  const { t } = useTranslation();
   const massActions = [
     <DropdownItem
       key="hostname"
       onClick={() => setMassChangeHostOpen(!isMassChangeHostOpen)}
       isDisabled={!canEditHostname}
-      description={canEditHostname ? undefined : 'Hostname cannot be changed for selected hosts.'}
+      description={
+        canEditHostname ? undefined : t('ai:Hostname cannot be changed for selected hosts.')
+      }
     >
       Change hostname
     </DropdownItem>,
@@ -213,6 +218,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
                   setHostnameFilter(undefined);
                   setStatusFilter([]);
                 }}
+                t={t}
               />
             ) : (
               <HostsTableEmptyState setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />

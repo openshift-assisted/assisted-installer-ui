@@ -41,6 +41,7 @@ import {
   INFRAENV_AGENTINSTALL_LABEL_KEY,
 } from '../common';
 import { getErrorMessage } from '../../../common/utils';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 const MacMapping = () => {
   const [field, { touched, error }] = useField<{ macAddress: string; name: string }[]>({
@@ -50,10 +51,12 @@ const MacMapping = () => {
 
   const fieldId = getFieldId('macMapping', 'input');
   const isValid = !(touched && error);
+  const { t } = useTranslation();
+
   return (
     <FormGroup
       fieldId={fieldId}
-      label="Mac to interface name mapping"
+      label={t('ai:Mac to interface name mapping')}
       validated={isValid ? 'default' : 'error'}
     >
       <FieldArray
@@ -92,7 +95,7 @@ const MacMapping = () => {
                 variant="link"
                 isInline
               >
-                Add more
+                {t('ai:Add more')}
               </Button>
             </GridItem>
           </Grid>

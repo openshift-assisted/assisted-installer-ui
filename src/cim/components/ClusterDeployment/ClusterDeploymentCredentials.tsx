@@ -5,6 +5,7 @@ import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-in
 import { ClusterDeploymentK8sResource } from '../../types/k8s/cluster-deployment';
 import { getAICluster } from '../helpers/toAssisted';
 import { FetchSecret } from './types';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type ClusterDeploymentCredentialsProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
@@ -29,7 +30,7 @@ const ClusterDeploymentCredentials = ({
   const adminPasswordSecretRefName =
     agentClusterInstall.spec?.clusterMetadata?.adminPasswordSecretRef?.name;
   const namespace = clusterDeployment.metadata?.namespace;
-
+  const { t } = useTranslation();
   React.useEffect(() => {
     const fetchCredentials = async () => {
       if (adminPasswordSecretRefName && namespace) {
@@ -42,7 +43,7 @@ const ClusterDeploymentCredentials = ({
           });
         } catch (e) {
           setIsError(true);
-          console.error('Failed to fetch adminPasswordSecret secret.', e);
+          console.error(t('ai:Failed to fetch adminPasswordSecret secret.'), e);
         }
       }
     };

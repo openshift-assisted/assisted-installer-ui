@@ -7,6 +7,7 @@ import {
   OpenShiftVersionSelect,
   PullSecret,
 } from '../../../../../common';
+import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
 import { getOCPVersions } from '../../../helpers';
 import { useTemptiflySync } from '../../hooks/useTemptiflySync';
 import { DetailsFormProps, DetailsFormValues } from './types';
@@ -25,19 +26,19 @@ const DetailsForm: React.FC<DetailsFormProps> = ({
   }, []);
 
   const ocpVersions = React.useMemo(() => getOCPVersions(clusterImages), [clusterImages]);
-
+  const { t } = useTranslation();
   return (
     <Form>
       <InputField
         ref={nameInputRef}
-        label="Cluster name"
+        label={t('ai:Cluster name')}
         name="name"
-        placeholder="Enter cluster name"
+        placeholder={t('ai:Enter cluster name')}
         isRequired
       />
       {extensionAfter?.['name'] && extensionAfter['name']}
       <InputField
-        label="Base domain"
+        label={t('ai:Base domain')}
         name="baseDnsDomain"
         helperText={<BaseDnsHelperText name={values.name} baseDnsDomain={values.baseDnsDomain} />}
         placeholder="example.com"

@@ -14,6 +14,7 @@ import { ClusterDeploymentHostsDiscoveryProps } from './types';
 import { AddHostModal, EditBMHModal, EditAgentModal } from '../modals';
 import { AgentK8sResource, BareMetalHostK8sResource } from '../../types';
 import ClusterDeploymentHostDiscoveryTable from './ClusterDeploymentHostDiscoveryTable';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryProps> = ({
   agentClusterInstall,
@@ -43,6 +44,7 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
   const isVM = true; // TODO(mlibra): calculate from agent's inventory
 
   const isSNOCluster = getIsSNOCluster(agentClusterInstall);
+  const { t } = useTranslation();
 
   return (
     <Grid hasGutter>
@@ -54,14 +56,14 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
       {!!onCreateBMH && (
         <GridItem>
           <Button variant={ButtonVariant.primary} onClick={() => setISOModalOpen(true)}>
-            Add host
+            {t('ai:Add host')}
           </Button>
         </GridItem>
       )}
 
       <GridItem>
         <TextContent>
-          <Text component="h3">Information and warnings</Text>
+          <Text component="h3">{t('ai:Information and warnings')}</Text>
           <Text component="p">
             {aiConfigMap && (
               <MinimalHWRequirements aiConfigMap={aiConfigMap} isSNOCluster={isSNOCluster} />

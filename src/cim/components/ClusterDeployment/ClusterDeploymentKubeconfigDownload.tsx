@@ -5,17 +5,20 @@ import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-in
 import { ClusterDeploymentK8sResource } from '../../types/k8s/cluster-deployment';
 import { getClusterStatus } from '../helpers/status';
 import { FetchSecret } from './types';
+import { TFunction } from 'i18next';
 
 type ClusterDeploymentKubeconfigDownloadProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall: AgentClusterInstallK8sResource;
   fetchSecret: FetchSecret;
+  t: TFunction;
 };
 
 const ClusterDeploymentKubeconfigDownload = ({
   clusterDeployment,
   agentClusterInstall,
   fetchSecret,
+  t,
 }: ClusterDeploymentKubeconfigDownloadProps) => {
   const [clusterStatus] = getClusterStatus(agentClusterInstall);
 
@@ -23,13 +26,12 @@ const ClusterDeploymentKubeconfigDownload = ({
     const kubeconfigSecretName =
       agentClusterInstall.spec?.clusterMetadata?.adminKubeconfigSecretRef?.name;
     const kubeconfigSecretNamespace = clusterDeployment.metadata?.namespace;
-
     if (kubeconfigSecretName && kubeconfigSecretNamespace) {
       try {
         const kubeconfigSecret = await fetchSecret(kubeconfigSecretName, kubeconfigSecretNamespace);
         const kubeconfig = kubeconfigSecret.data?.kubeconfig;
 
-        if (!kubeconfig) throw new Error('Kubeconfig is empty.');
+        if (!kubeconfig) throw new Error(t('ai:Kubeconfig is empty.'));
 
         const blob = new Blob([atob(kubeconfig)], { type: 'text/plain;charset=utf-8' });
         saveAs(blob, 'kubeconfig.yaml');

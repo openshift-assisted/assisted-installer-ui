@@ -18,6 +18,7 @@ import { UploadSSH, sshPublicKeyValidationSchema } from '../../../common';
 import { EditSSHKeyFormikValues } from './types';
 import { getWarningMessage } from './utils';
 import { getErrorMessage } from '../../../common/utils';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 const validationSchema = Yup.object({
   sshPublicKey: sshPublicKeyValidationSchema.required(
@@ -44,11 +45,13 @@ const EditSSHKeyModal: React.FC<EditSSHKeyModalProps> = ({
   hasBMHs,
 }) => {
   const [error, setError] = React.useState<string | undefined>();
-  const warningMsg = getWarningMessage(hasAgents, hasBMHs);
+  const { t } = useTranslation();
+  const warningMsg = getWarningMessage(hasAgents, hasBMHs, t);
+
   return (
     <Modal
-      aria-label="Edit SSH public key dialog"
-      title="Edi SSH public key"
+      aria-label={t('ai:Edit SSH public key dialog')}
+      title={t('ai:Edit SSH public key')}
       isOpen={isOpen}
       onClose={onClose}
       variant={ModalVariant.small}
@@ -89,10 +92,10 @@ const EditSSHKeyModal: React.FC<EditSSHKeyModalProps> = ({
             </ModalBoxBody>
             <ModalBoxFooter>
               <Button onClick={submitForm} isDisabled={isSubmitting || !isValid}>
-                Save
+                {t('ai:Save')}
               </Button>
               <Button onClick={onClose} variant={ButtonVariant.secondary}>
-                Cancel
+                {t('ai:Cancel')}
               </Button>
             </ModalBoxFooter>
           </>

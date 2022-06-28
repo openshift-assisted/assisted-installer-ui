@@ -18,6 +18,7 @@ import {
   roleColumn,
 } from '../../../common/components/hosts/tableUtils';
 import { usePagination } from '../../../common/components/hosts/usePagination';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type ExpandComponentProps = {
   obj: Host;
@@ -81,7 +82,7 @@ const ClusterDeploymentHostsNetworkTable: React.FC<ClusterDeploymentHostsNetwork
     );
 
     const paginationProps = usePagination(hosts.length);
-
+    const { t } = useTranslation();
     return (
       <HostsTable
         testId="networking-host-table"
@@ -93,8 +94,8 @@ const ClusterDeploymentHostsNetworkTable: React.FC<ClusterDeploymentHostsNetwork
       >
         <EmptyState
           icon={ConnectedIcon}
-          title="Waiting for hosts..."
-          content="Hosts may take a few minutes to appear here after booting."
+          title={t('ai:Waiting for hosts...')}
+          content={t('ai:Hosts may take a few minutes to appear here after booting.')}
         />
       </HostsTable>
     );

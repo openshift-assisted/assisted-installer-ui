@@ -45,6 +45,7 @@ import {
 
 import './infra-env.css';
 import { getErrorMessage } from '../../../common/utils';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 export type EnvironmentStepFormValues = {
   name: string;
@@ -107,21 +108,23 @@ type InfraEnvFormProps = {
 
 const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged }) => {
   const { values } = useFormikContext<EnvironmentStepFormValues>();
+  const { t } = useTranslation();
   React.useEffect(() => onValuesChanged?.(values), [onValuesChanged, values]);
   return (
     <Stack hasGutter>
       <StackItem>
-        Infrastructure environments are used by clusters. Create an infrastructure environment to
-        add resources to your cluster.
+        {t(
+          'ai:Infrastructure environments are used by clusters. Create an infrastructure environment to add resources to your cluster.',
+        )}
       </StackItem>
       <StackItem>
         <Form>
           <RichInputField
-            label="Name"
+            label={t('ai:Name')}
             name="name"
             isRequired
             richValidationMessages={NAME_VALIDATION_MESSAGES}
-            placeholder="Enter infrastructure environment name"
+            placeholder={t('ai:Enter infrastructure environment name')}
           />
           <FormGroup
             fieldId="network-type"
@@ -131,9 +134,9 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged }) => {
                 noVerticalAlign
                 bodyContent={
                   <>
-                    This will determine for the infrastructure environment which kind of hosts would
-                    be able to be added. If the hosts that you want to add are using DHCP server,
-                    select this option, else, select the static IP.
+                    {t(
+                      'ai:This will determine for the infrastructure environment which kind of hosts would be able to be added. If the hosts that you want to add are using DHCP server, select this option, else, select the static IP.',
+                    )}
                   </>
                 }
               />
@@ -151,14 +154,15 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged }) => {
                   value="static"
                   label={
                     <>
-                      At least 1 host uses static IP&nbsp;
+                      {t('ai:At least 1 host uses static IP')}&nbsp;
                       <PopoverIcon
                         noVerticalAlign
                         bodyContent={
                           <Stack hasGutter>
                             <StackItem>
-                              To use static network configuration, follow the steps listed in the
-                              documentation.
+                              {t(
+                                'ai:To use static network configuration, follow the steps listed in the documentation.',
+                              )}
                             </StackItem>
                             <StackItem>
                               <Button
@@ -168,7 +172,7 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged }) => {
                                 isInline
                                 onClick={() => window.open(OCP_STATIC_IP_DOC, '_blank', 'noopener')}
                               >
-                                View documentation
+                                {t('ai:View documentation')}
                               </Button>
                             </StackItem>
                           </Stack>
@@ -181,24 +185,27 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged }) => {
             </Flex>
           </FormGroup>
           <RichInputField
-            label="Location"
+            label={t('ai:Location')}
             name="location"
             isRequired
             richValidationMessages={LOCATION_VALIDATION_MESSAGES}
-            placeholder="Enter geographic location for the environment"
-            helperText="Used to describe hosts' physical location. Helps for quicker host selection during cluster creation."
+            placeholder={t('ai:Enter geographic location for the environment')}
+            helperText={t(
+              "ai:Used to describe hosts' physical location. Helps for quicker host selection during cluster creation.",
+            )}
           />
-          <LabelField label="Labels" name="labels" />
+          <LabelField label={t('ai:Labels')} name="labels" />
           <PullSecretField isOcm={false} />
           <UploadSSH />
           <ProxyFields />
           <CheckboxField
-            label="Add your own NTP (Network Time Protocol) sources"
+            label={t('ai:Add your own NTP (Network Time Protocol) sources')}
             name="enableNtpSources"
             helperText={
               <p>
-                Configure your own NTP sources to synchronize the time between the hosts that will
-                be added to this infrastructure environment.
+                {t(
+                  'ai:Configure your own NTP sources to synchronize the time between the hosts that will be added to this infrastructure environment.',
+                )}
               </p>
             }
             body={
@@ -206,7 +213,9 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged }) => {
                 <Grid hasGutter>
                   <AdditionalNTPSourcesField
                     name="additionalNtpSources"
-                    helperText="A comma separated list of IP or domain names of the NTP pools or servers."
+                    helperText={t(
+                      'ai:A comma separated list of IP or domain names of the NTP pools or servers.',
+                    )}
                   />
                 </Grid>
               )
@@ -236,6 +245,7 @@ export const InfraEnvFormPage: React.FC<InfraEnvFormPageProps> = ({
   formRef,
 }) => {
   const [error, setError] = React.useState<string | undefined>();
+  const { t } = useTranslation();
   return (
     <Formik
       initialValues={initialValues}
@@ -258,7 +268,7 @@ export const InfraEnvFormPage: React.FC<InfraEnvFormPageProps> = ({
               <Grid hasGutter span={8}>
                 <GridItem>
                   <Title headingLevel="h1" size={TitleSizes.xl}>
-                    Configure environment
+                    {t('ai:Configure environment')}
                   </Title>
                 </GridItem>
                 <GridItem>
@@ -276,7 +286,7 @@ export const InfraEnvFormPage: React.FC<InfraEnvFormPageProps> = ({
               <Alert
                 variant={AlertVariant.danger}
                 actionClose={<AlertActionCloseButton onClose={() => setError(undefined)} />}
-                title="Error creating InfraEnv"
+                title={t('ai:Error creating InfraEnv')}
               >
                 {error}
               </Alert>
@@ -291,10 +301,10 @@ export const InfraEnvFormPage: React.FC<InfraEnvFormPageProps> = ({
                   isDisabled={!isValid || isSubmitting}
                   onClick={submitForm}
                 >
-                  Create {isSubmitting && <Spinner isSVG size="md" />}
+                  {t('ai:Create')} {isSubmitting && <Spinner isSVG size="md" />}
                 </Button>
                 <Button variant="link" onClick={onClose} isDisabled={isSubmitting}>
-                  Cancel
+                  {t('Cancel')}
                 </Button>
               </>
             </StackItem>

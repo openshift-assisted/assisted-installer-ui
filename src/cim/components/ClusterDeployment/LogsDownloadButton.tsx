@@ -2,6 +2,7 @@ import React from 'react';
 import { saveAs } from 'file-saver';
 import { Button, ButtonVariant } from '@patternfly/react-core';
 import { AgentClusterInstallK8sResource } from '../../types';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type LogsDownloadButtonProps = {
   id: string;
@@ -17,7 +18,7 @@ export const LogsDownloadButton: React.FC<LogsDownloadButtonProps> = ({
   variant,
 }) => {
   const logsURL = agentClusterInstall?.status?.debugInfo?.logsURL;
-
+  const { t } = useTranslation();
   return (
     <Component
       onClick={() => logsURL && saveAs(logsURL, 'logs.tar')}
@@ -25,7 +26,7 @@ export const LogsDownloadButton: React.FC<LogsDownloadButtonProps> = ({
       id={id}
       variant={variant}
     >
-      Download Installation Logs
+      {t('ai:Download Installation Logs')}
     </Component>
   );
 };

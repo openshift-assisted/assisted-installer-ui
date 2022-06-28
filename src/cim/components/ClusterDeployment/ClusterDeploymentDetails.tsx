@@ -25,6 +25,7 @@ import { FetchSecret } from './types';
 import { getClusterProperties, getConsoleUrl } from '../helpers/clusterDeployment';
 import ClusterDeploymentKubeconfigDownload from './ClusterDeploymentKubeconfigDownload';
 import { EventListFetchProps } from '../../../common';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type ClusterDeploymentDetailsProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
@@ -57,7 +58,7 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
     () => getClusterProperties(clusterDeployment, agentClusterInstall),
     [clusterDeployment, agentClusterInstall],
   );
-
+  const { t } = useTranslation();
   return (
     <Stack hasGutter>
       {shouldShowClusterInstallationProgress(agentClusterInstall) && (
@@ -72,7 +73,7 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
                 'aria-expanded': progressCardExpanded,
               }}
             >
-              <CardTitle id="titleId">Cluster installation process</CardTitle>
+              <CardTitle id="titleId">{t('ai:Cluster installation process')}</CardTitle>
             </CardHeader>
             <CardExpandableContent>
               <CardBody>
@@ -93,6 +94,7 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
                       clusterDeployment={clusterDeployment}
                       agentClusterInstall={agentClusterInstall}
                       fetchSecret={fetchSecret}
+                      t={t}
                     />{' '}
                     <EventsModalButton
                       id="cluster-events-button"
@@ -104,7 +106,7 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
                       onFetchEvents={onFetchEvents}
                       ButtonComponent={Button}
                     >
-                      View Cluster Events
+                      {t('ai:View Cluster Events')}
                     </EventsModalButton>
                   </StackItem>
                 </Stack>
@@ -124,7 +126,7 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
               'aria-expanded': inventoryCardExpanded,
             }}
           >
-            <CardTitle id="titleId">Hosts inventory</CardTitle>
+            <CardTitle id="titleId">{t('ai:Hosts inventory')}</CardTitle>
           </CardHeader>
           <CardExpandableContent>
             <CardBody>
@@ -147,7 +149,7 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
               'aria-expanded': detailsCardExpanded,
             }}
           >
-            <CardTitle id="titleId">Details</CardTitle>
+            <CardTitle id="titleId">{t('ai:Details')}</CardTitle>
           </CardHeader>
           <CardExpandableContent>
             <CardBody>

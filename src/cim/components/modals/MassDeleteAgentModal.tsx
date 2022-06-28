@@ -24,11 +24,13 @@ import AgentStatus from '../Agent/AgentStatus';
 import BMHStatus from '../Agent/BMHStatus';
 import { getBMHStatus, getAgentStatus } from '../helpers';
 import { usePagination } from '../../../common/components/hosts/usePagination';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { TFunction } from 'i18next';
 
-const hostnameColumn = (agents: AgentK8sResource[]): TableRow<Host> => {
+const hostnameColumn = (agents: AgentK8sResource[], t: TFunction): TableRow<Host> => {
   return {
     header: {
-      title: 'Hostname',
+      title: t('ai:Hostname'),
       props: {
         id: 'col-header-hostname', // ACM jest tests require id over testId
       },
@@ -53,9 +55,10 @@ const hostnameColumn = (agents: AgentK8sResource[]): TableRow<Host> => {
 const statusColumn = (
   agents: AgentK8sResource[],
   bmhs: BareMetalHostK8sResource[],
+  t: TFunction,
 ): TableRow<Host> => ({
   header: {
-    title: 'Status',
+    title: t('ai:Status'),
     props: {
       id: 'col-header-status',
     },
@@ -75,22 +78,23 @@ const statusColumn = (
           </FlexItem>
           <FlexItem align={{ default: 'alignRight' }}>
             <Popover
-              aria-label="Cluster popover"
-              headerContent={<div>Cannot be deleted</div>}
+              aria-label={t('ai:Cluster popover')}
+              headerContent={t('<div>Cannot be deleted</div>')}
               bodyContent={
                 <div>
-                  Hosts that are bound to a cluster cannot be deleted. Remove the host from the
-                  cluster and try again.
+                  {t(
+                    'Hosts that are bound to a cluster cannot be deleted. Remove the host from the cluster and try again.',
+                  )}
                 </div>
               }
               footerContent={
-                <Link
-                  to={`/multicloud/infrastructure/clusters/details/${clusterName}/`}
-                >{`Go to cluster ${clusterName}`}</Link>
+                <Link to={`/multicloud/infrastructure/clusters/details/${clusterName}/`}>
+                  {t('Go to cluster {{clusterName}}', { clusterName: clusterName })}
+                </Link>
               }
             >
               <Button variant="link" icon={<InfoCircleIcon color={blueInfoColor.value} />}>
-                Cannot be deleted
+                {t('ai:Cannot be deleted')}
               </Button>
             </Popover>
           </FlexItem>
@@ -111,10 +115,11 @@ const statusColumn = (
   },
 });
 
-const tableContent = (agents: AgentK8sResource[], bareMetalHosts: BareMetalHostK8sResource[]) => [
-  hostnameColumn(agents),
-  statusColumn(agents, bareMetalHosts),
-];
+const tableContent = (
+  agents: AgentK8sResource[],
+  bareMetalHosts: BareMetalHostK8sResource[],
+  t: TFunction,
+) => [hostnameColumn(agents, t), statusColumn(agents, bareMetalHosts, t)];
 
 type MassDeleteAgentModalProps = {
   isOpen: boolean;
@@ -157,14 +162,14 @@ const MassDeleteAgentModal: React.FC<MassDeleteAgentModalProps> = ({
       return onDelete(agent, bmh, nmStates);
     }
   };
-
-  const content = React.useMemo(() => tableContent(agents, bmhs), [agents, bmhs]);
+  const { t } = useTranslation();
+  const content = React.useMemo(() => tableContent(agents, bmhs, t), [agents, bmhs, t]);
   const paginationProps = usePagination(hosts.length);
 
   return (
     <CommonMassDeleteHostModal hosts={hosts} isOpen={isOpen} onClose={onClose} onDelete={onClick}>
       <HostsTable hosts={hosts} content={content} {...paginationProps}>
-        <div>No hosts selected</div>
+        <div>{t('ai:No hosts selected')}</div>
       </HostsTable>
     </CommonMassDeleteHostModal>
   );

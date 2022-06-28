@@ -11,6 +11,7 @@ import ClusterDeploymentHostsDiscovery from './ClusterDeploymentHostsDiscovery';
 import { getAgentsHostsNames, isAgentOfInfraEnv } from './helpers';
 import { getIsSNOCluster, getWizardStepAgentStatus } from '../helpers';
 import { canNextFromHostDiscoveryStep } from './wizardTransition';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscoveryStepProps> = ({
   agentClusterInstall,
@@ -35,6 +36,7 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
   onClose,
   ...rest
 }) => {
+  const { t } = useTranslation();
   const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
   const [showClusterErrors, setShowClusterErrors] = React.useState(false);
   const [nextRequested, setNextRequested] = React.useState(false);
@@ -49,22 +51,22 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
 
   if (getIsSNOCluster(agentClusterInstall)) {
     infraEnvAgents.length > 1 &&
-      errors.push('Single node cluster cannot contain more than 1 host.');
+      errors.push(t('ai:Single node cluster cannot contain more than 1 host.'));
   } else {
     (infraEnvAgents.length === 4 || infraEnvAgents.length < 3) &&
-      errors.push('Cluster must have 3 or 5 and more hosts.');
+      errors.push(t('ai:Cluster must have 3 or 5 and more hosts.'));
   }
 
   if (infraEnvAgents.some((a) => !a.spec.approved)) {
-    errors.push('All hosts must be approved.');
+    errors.push(t('ai:All hosts must be approved.'));
   }
 
   if (usedHostnames.some((h) => h === 'localhost')) {
-    errors.push('Hostname localhost is forbidden.');
+    errors.push(t('ai:Hostname localhost is forbidden.'));
   }
 
   if (uniq(usedHostnames).length !== usedHostnames.length) {
-    errors.push('Hostnames must be unique.');
+    errors.push(t('ai:Hostnames must be unique.'));
   }
 
   const agentsNotHealthy = infraEnvAgents
@@ -74,7 +76,7 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
     );
 
   if (agentsNotHealthy) {
-    errors.push('Some hosts are not ready.');
+    errors.push(t('ai:Some hosts are not ready.'));
   }
 
   const onNext = async () => {
@@ -106,7 +108,8 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
     }
   }, [nextRequested, infraEnvAgents, agentClusterInstall, setCurrentStepId, agentsNotHealthy]);
 
-  const submittingText = nextRequested && !showClusterErrors ? 'Saving changes...' : undefined;
+  const submittingText =
+    nextRequested && !showClusterErrors ? t('ai:Saving changes...') : undefined;
 
   const onSyncError = React.useCallback(() => setNextRequested(false), []);
 
@@ -126,7 +129,7 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
       {showFormErrors && !!errors.length && (
         <Alert
           variant={AlertVariant.danger}
-          title="Provided cluster configuration is not valid"
+          title={t('ai:Provided cluster configuration is not valid')}
           isInline
         >
           <List>
@@ -143,7 +146,7 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
     <ClusterDeploymentWizardStep footer={footer}>
       <Grid hasGutter>
         <GridItem>
-          <ClusterWizardStepHeader>Cluster hosts</ClusterWizardStepHeader>
+          <ClusterWizardStepHeader>{t('ai:Cluster hosts')}</ClusterWizardStepHeader>
         </GridItem>
         <GridItem>
           <ClusterDeploymentHostsDiscovery

@@ -13,16 +13,20 @@ import {
 } from '../../../common/components/hosts/tableUtils';
 import HostsTable, { DefaultExpandComponent } from '../../../common/components/hosts/HostsTable';
 import { usePagination } from '../../../common/components/hosts/usePagination';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 export const getAgentId = (agent: AgentK8sResource) => agent.metadata?.uid as string;
 
-export const AgentTableEmptyState = () => (
-  <DefaultEmptyState
-    icon={ConnectedIcon}
-    title="Waiting for hosts..."
-    content="Hosts may take a few minutes to appear here after booting."
-  />
-);
+export const AgentTableEmptyState = () => {
+  const { t } = useTranslation();
+  return (
+    <DefaultEmptyState
+      icon={ConnectedIcon}
+      title={t('ai:Waiting for hosts...')}
+      content={t('ai:Hosts may take a few minutes to appear here after booting.')}
+    />
+  );
+};
 
 export type AgentTableProps = Pick<AgentTableActions, 'onUnbindHost'> & {
   agents: AgentK8sResource[];

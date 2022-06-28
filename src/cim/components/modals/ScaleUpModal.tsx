@@ -21,6 +21,7 @@ import { ScaleUpFormValues } from '../ClusterDeployment/types';
 import EditAgentModal from './EditAgentModal';
 import { getAgentsHostsNames } from '../ClusterDeployment/helpers';
 import { getErrorMessage } from '../../../common/utils';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 const getAgentsToAdd = (
   selectedHostIds: ScaleUpFormValues['selectedHostIds'] | ScaleUpFormValues['autoSelectedHostIds'],
@@ -104,12 +105,12 @@ const ScaleUpModal: React.FC<ScaleUpModalProps> = ({
       a.spec.clusterDeploymentName?.name === clusterDeployment.metadata?.name &&
       a.spec.clusterDeploymentName?.namespace === clusterDeployment.metadata?.namespace,
   );
-
+  const { t } = useTranslation();
   return (
     <>
       <Modal
-        aria-label="Add worker host dialog"
-        title="Add worker hosts"
+        aria-label={t('ai:Add worker host dialog')}
+        title={t('ai:Add worker hosts')}
         isOpen={isOpen}
         onClose={onClose}
         hasNoBodyWrapper
@@ -132,7 +133,7 @@ const ScaleUpModal: React.FC<ScaleUpModalProps> = ({
                     {error && (
                       <StackItem>
                         <Alert
-                          title="Failed to add hosts to the cluster"
+                          title={t('ai:Failed to add hosts to the cluster')}
                           variant={AlertVariant.danger}
                           actionClose={
                             <AlertActionCloseButton onClose={() => setError(undefined)} />
@@ -147,10 +148,10 @@ const ScaleUpModal: React.FC<ScaleUpModalProps> = ({
                 </ModalBoxBody>
                 <ModalBoxFooter>
                   <Button onClick={submitForm} isDisabled={isSubmitting || !isValid}>
-                    Submit
+                    {t('ai:Submit')}
                   </Button>
                   <Button onClick={onClose} variant={ButtonVariant.secondary}>
-                    Cancel
+                    {t('ai:Cancel')}
                   </Button>
                 </ModalBoxFooter>
               </>

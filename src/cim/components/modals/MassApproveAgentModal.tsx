@@ -18,6 +18,8 @@ import { Host, ModalProgress } from '../../../common';
 import { agentStatus } from '../helpers/agentStatus';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { getErrorMessage } from '../../../common/utils';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { TFunction } from 'i18next';
 
 type ApproveTableRowProps = {
   agent?: AgentK8sResource;
@@ -27,10 +29,10 @@ const ApproveTableRow: React.FC<ApproveTableRowProps> = ({ agent, children }) =>
   <div className={agent?.spec.approved ? 'pf-u-color-200' : undefined}>{children}</div>
 );
 
-const hostnameColumn = (agents: AgentK8sResource[]): TableRow<Host> => {
+const hostnameColumn = (agents: AgentK8sResource[], t: TFunction): TableRow<Host> => {
   return {
     header: {
-      title: 'Hostname',
+      title: t('ai:Hostname'),
       props: {
         id: 'col-header-hostname', // ACM jest tests require id over testId
       },
@@ -48,10 +50,10 @@ const hostnameColumn = (agents: AgentK8sResource[]): TableRow<Host> => {
   };
 };
 
-const statusColumn = (agents: AgentK8sResource[]): TableRow<Host> => {
+const statusColumn = (agents: AgentK8sResource[], t: TFunction): TableRow<Host> => {
   return {
     header: {
-      title: 'Status',
+      title: t('ai:Status'),
       props: {
         id: 'col-header-status', // ACM jest tests require id over testId
       },
@@ -59,7 +61,7 @@ const statusColumn = (agents: AgentK8sResource[]): TableRow<Host> => {
     },
     cell: (host) => {
       const agent = agents.find((a) => a.metadata?.uid === host.id);
-      const status = agent?.spec.approved ? 'Already approved' : agentStatus.discovered.title;
+      const status = agent?.spec.approved ? t('ai:Already approved') : agentStatus.discovered.title;
       const icon = agentStatus.discovered.icon;
       return {
         title: (
@@ -95,6 +97,7 @@ const MassApproveAgentModal: React.FC<MassApproveAgentModalProps> = ({
 }) => {
   const [progress, setProgress] = React.useState<number | null>(null);
   const [error, setError] = React.useState<{ title: string; message: string }>();
+  const { t } = useTranslation();
   const onClick = async () => {
     setError(undefined);
     let i = 0;
@@ -110,22 +113,25 @@ const MassApproveAgentModal: React.FC<MassApproveAgentModalProps> = ({
       onClose();
     } catch (err) {
       setError({
-        title: 'An error occured while approving agents',
+        title: t('ai:An error occured while approving agents'),
         message: getErrorMessage(err),
       });
       setProgress(null);
     }
   };
   const { content, hosts } = React.useMemo(
-    () => ({ content: [hostnameColumn(agents), statusColumn(agents)], hosts: getAIHosts(agents) }),
+    () => ({
+      content: [hostnameColumn(agents, t), statusColumn(agents, t)],
+      hosts: getAIHosts(agents),
+    }),
     [agents],
   );
 
   const paginationProps = usePagination(hosts.length);
   return (
     <Modal
-      aria-label="Approve hosts dialog"
-      title="Approve hosts to join infrastructure environment"
+      aria-label={t('ai:Approve hosts dialog')}
+      title={t('ai:Approve hosts to join infrastructure environment')}
       isOpen={isOpen}
       onClose={onClose}
       hasNoBodyWrapper
@@ -138,12 +144,14 @@ const MassApproveAgentModal: React.FC<MassApproveAgentModalProps> = ({
             <Alert
               isInline
               variant="info"
-              title="You are approving multiple hosts. All hosts listed below will be approved to join the infrastructure environment if you continue. Make sure that you expect and recognize the hosts before approving."
+              title={t(
+                'ai:You are approving multiple hosts. All hosts listed below will be approved to join the infrastructure environment if you continue. Make sure that you expect and recognize the hosts before approving.',
+              )}
             />
           </StackItem>
           <StackItem>
             <HostsTable hosts={hosts} content={content} {...paginationProps}>
-              <div>No hosts selected</div>
+              <div>{t('ai:No hosts selected')}</div>
             </HostsTable>
           </StackItem>
           <StackItem>
@@ -153,10 +161,10 @@ const MassApproveAgentModal: React.FC<MassApproveAgentModalProps> = ({
       </ModalBoxBody>
       <ModalBoxFooter>
         <Button onClick={onClick} isDisabled={progress !== null}>
-          Approve all hosts
+          {t('ai:Approve all hosts')}
         </Button>
         <Button onClick={onClose} variant={ButtonVariant.secondary} isDisabled={progress !== null}>
-          Cancel
+          {t('ai:Cancel')}
         </Button>
       </ModalBoxFooter>
     </Modal>

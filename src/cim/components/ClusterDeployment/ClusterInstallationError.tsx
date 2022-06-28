@@ -5,6 +5,7 @@ import { getBugzillaLink } from '../../../common/config';
 import { AgentClusterInstallK8sResource, ClusterDeploymentK8sResource } from '../../types';
 import { getClusterStatus } from '../helpers';
 import { LogsDownloadButton } from './LogsDownloadButton';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type ClusterInstallationErrorProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
@@ -19,10 +20,11 @@ const ClusterInstallationError: React.FC<ClusterInstallationErrorProps> = ({
 }) => {
   const openshiftVersion = clusterDeployment.status?.installVersion || '4.8';
   const [clusterStatus, statusInfo] = getClusterStatus(agentClusterInstall);
+  const { t } = useTranslation();
   const title =
     clusterStatus === 'cancelled'
-      ? 'Cluster installation was cancelled'
-      : 'Cluster installation failed';
+      ? t('ai:Cluster installation was cancelled')
+      : t('ai:Cluster installation failed');
 
   return (
     <GridItem>
@@ -40,7 +42,7 @@ const ClusterInstallationError: React.FC<ClusterInstallationErrorProps> = ({
               onClick={() => window.open(getBugzillaLink(openshiftVersion), '_blank')}
               id={getID('button-report-bug')}
             >
-              Report a bug
+              {t('ai:Report a bug')}
             </AlertActionLink>
           </>
         }

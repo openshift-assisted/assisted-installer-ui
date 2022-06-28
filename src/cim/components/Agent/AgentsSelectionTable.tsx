@@ -21,6 +21,7 @@ import {
 import DefaultEmptyState from '../../../common/components/ui/uiState/EmptyState';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useFormikHelpers } from '../../../common/hooks/useFormikHelpers';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type AgentsSelectionTableProps = {
   matchingAgents: AgentK8sResource[];
@@ -102,7 +103,7 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
   ]);
 
   const paginationProps = usePagination(hosts.length);
-
+  const { t } = useTranslation();
   return (
     <HostsTable
       hosts={hosts}
@@ -114,8 +115,8 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
       {...paginationProps}
     >
       <DefaultEmptyState
-        title="No hosts found"
-        content="No host matches provided labels/locations"
+        title={t('ai:No hosts found')}
+        content={t('ai:No host matches provided labels/locations')}
       />
     </HostsTable>
   );

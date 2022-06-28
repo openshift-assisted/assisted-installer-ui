@@ -7,6 +7,7 @@ import { RenderIf } from '../../ui';
 import { DiskEncryptionValues, TangServer } from './DiskEncryptionValues';
 import { useFormikContext } from 'formik';
 import { ClusterDetailsValues } from '../../clusterWizard/types';
+import { useTranslation } from '../../../hooks/use-translation-wrapper';
 
 const hasFilledTangServers = (tangServers: TangServer[]): boolean => {
   if (!tangServers || tangServers.length === 0) {
@@ -68,8 +69,8 @@ const DiskEncryptionControlGroup: React.FC<DiskEncryptionControlGroupProps> = ({
       setFieldValue('enableDiskEncryptionOnWorkers', false);
     }
   }, [isSNO, setFieldValue]);
-
-  const disableMessage = 'This option is not editable after the draft cluster is created';
+  const { t } = useTranslation();
+  const disableMessage = t('ai:This option is not editable after the draft cluster is created');
   const tooltipProps = {
     hidden: !isDisabled,
     content: disableMessage,
@@ -92,7 +93,7 @@ const DiskEncryptionControlGroup: React.FC<DiskEncryptionControlGroupProps> = ({
             tooltipProps={tooltipProps}
             name="enableDiskEncryptionOnWorkers"
             isDisabled={isDisabled}
-            label="Enable encryption of installation disks on workers"
+            label={t('ai:Enable encryption of installation disks on workers')}
           />
         </StackItem>
       </RenderIf>
