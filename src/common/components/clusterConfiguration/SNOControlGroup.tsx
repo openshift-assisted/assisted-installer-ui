@@ -18,13 +18,21 @@ const SNOControlGroup = ({ versions, highAvailabilityMode }: SNOControlGroupProp
     values.openshiftVersion,
     'SNO',
   );
+  const snoExpansion = featureSupportLevelContext.isFeatureSupported(
+    values.openshiftVersion,
+    'SINGLE_NODE_EXPANSION',
+  );
   const isDisabled = featureSupportLevelContext.isFeatureDisabled(values.openshiftVersion, 'SNO');
 
   return (
     <>
       <SingleNodeCheckbox name="highAvailabilityMode" versions={versions} isDisabled={isDisabled} />
       {highAvailabilityMode === 'None' && snoSupportLevel && (
-        <SNODisclaimer isDisabled={isDisabled} snoSupportLevel={snoSupportLevel} />
+        <SNODisclaimer
+          isDisabled={isDisabled}
+          snoSupportLevel={snoSupportLevel}
+          snoExpansionSupported={snoExpansion}
+        />
       )}
     </>
   );
