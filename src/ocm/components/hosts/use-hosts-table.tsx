@@ -77,7 +77,7 @@ export const useHostsTable = (cluster: Cluster) => {
         const hostId = host.id;
         try {
           const { data } = await HostsService.install(cluster.id, hostId);
-          resetCluster ? resetCluster() : dispatch(updateHost(data));
+          resetCluster ? void resetCluster() : dispatch(updateHost(data));
         } catch (e) {
           handleApiError(e, () =>
             addAlert({ title: `Failed to enable host ${hostId}`, message: getApiErrorMessage(e) }),
@@ -129,7 +129,7 @@ export const useHostsTable = (cluster: Cluster) => {
         }
 
         const { data } = await HostsService.updateDiskRole(cluster.id, hostId, diskId, role);
-        resetCluster ? resetCluster() : dispatch(updateHost(data));
+        resetCluster ? void resetCluster() : dispatch(updateHost(data));
       } catch (e) {
         handleApiError(e, () =>
           addAlert({ title: 'Failed to set disk role', message: getApiErrorMessage(e) }),
@@ -181,7 +181,7 @@ export const useHostsTable = (cluster: Cluster) => {
       if (hostId) {
         try {
           const { data } = await HostsService.reset(cluster.id, hostId);
-          resetCluster ? resetCluster() : dispatch(updateHost(data));
+          resetCluster ? void resetCluster() : dispatch(updateHost(data));
         } catch (e) {
           handleApiError(e, () =>
             addAlert({
@@ -192,7 +192,7 @@ export const useHostsTable = (cluster: Cluster) => {
         }
       }
     };
-    reset(resetHostDialog.data?.hostId);
+    void reset(resetHostDialog.data?.hostId);
     resetHostDialog.close();
   }, [addAlert, cluster.id, dispatch, resetCluster, resetHostDialog]);
 
@@ -201,7 +201,7 @@ export const useHostsTable = (cluster: Cluster) => {
       if (hostId) {
         try {
           await HostsService.delete(cluster.id, hostId);
-          resetCluster ? resetCluster() : dispatch(forceReload());
+          resetCluster ? void resetCluster() : dispatch(forceReload());
         } catch (e) {
           handleApiError(e, () =>
             addAlert({
@@ -212,7 +212,7 @@ export const useHostsTable = (cluster: Cluster) => {
         }
       }
     };
-    deleteHost(deleteHostDialog.data?.hostId);
+    void deleteHost(deleteHostDialog.data?.hostId);
     deleteHostDialog.close();
   }, [addAlert, cluster.id, dispatch, resetCluster, deleteHostDialog]);
 
@@ -224,7 +224,7 @@ export const useHostsTable = (cluster: Cluster) => {
           throw new Error(`Failed to edit role in host: ${id}.\nMissing cluster_id`);
         }
         const { data } = await HostsService.updateRole(clusterId, id, role);
-        resetCluster ? resetCluster() : dispatch(updateHost(data));
+        resetCluster ? void resetCluster() : dispatch(updateHost(data));
       } catch (e) {
         handleApiError(e, () =>
           addAlert({ title: 'Failed to set role', message: getApiErrorMessage(e) }),
@@ -385,7 +385,7 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
               values.hostId,
               values.hostname,
             );
-            resetCluster ? resetCluster() : dispatch(updateHost(data));
+            resetCluster ? void resetCluster() : dispatch(updateHost(data));
             editHostDialog.close();
           }}
           // eslint-disable-next-line @typescript-eslint/no-explicit-any

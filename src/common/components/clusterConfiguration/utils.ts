@@ -11,6 +11,7 @@ import { NO_SUBNET_SET } from '../../config';
 import {
   selectClusterNetworkCIDR,
   selectClusterNetworkHostPrefix,
+  selectMonitoredOperators,
   selectServiceNetworkCIDR,
 } from '../../selectors';
 import {
@@ -105,7 +106,7 @@ export const isAdvNetworkConf = (
   (Boolean(cluster.networkType) && cluster.networkType !== defaultNetworkType);
 
 export const getHostDiscoveryInitialValues = (cluster: Cluster): HostDiscoveryValues => {
-  const monitoredOperators = cluster.monitoredOperators || [];
+  const monitoredOperators = selectMonitoredOperators(cluster);
   const isOperatorEnabled = (name: RegExp | string) =>
     !!monitoredOperators.find((operator) => operator.name?.match(name));
   return {

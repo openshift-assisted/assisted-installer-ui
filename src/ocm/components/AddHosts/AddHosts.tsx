@@ -46,7 +46,7 @@ const AddHosts: React.FC = () => {
     setSubmitting(true);
     try {
       await HostsService.installAll(cluster);
-      resetCluster();
+      void resetCluster();
     } catch (e) {
       handleApiError(e, () =>
         addAlert({

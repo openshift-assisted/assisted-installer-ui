@@ -210,7 +210,7 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
         return;
       }
     }
-    submitForm();
+    void submitForm();
     setNextRequested(true);
   };
 

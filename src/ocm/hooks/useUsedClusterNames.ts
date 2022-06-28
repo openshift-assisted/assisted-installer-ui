@@ -12,7 +12,7 @@ export default function useUsedClusterNames(clusterId: Cluster['id']) {
       const { data: clusters } = await ClustersAPI.list();
       const names = clusters
         .filter((c) => c.id !== clusterId)
-        .map((c) => `${c.name}.${c.baseDnsDomain}`);
+        .map((c) => `${c.name || ''}.${c.baseDnsDomain || ''}`);
       setUsedClusterNames(names);
     } catch (e) {
       setUsedClusterNames([]);
@@ -26,7 +26,7 @@ export default function useUsedClusterNames(clusterId: Cluster['id']) {
   }, [addAlert, clusterId]);
 
   React.useEffect(() => {
-    fetcher();
+    void fetcher();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
