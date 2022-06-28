@@ -2,16 +2,17 @@ import React from 'react';
 import { Alert, AlertVariant, List, ListItem, Stack, StackItem } from '@patternfly/react-core';
 import { CheckboxField } from '../ui';
 import { SupportLevel } from '../../types';
-import { useFormikContext } from 'formik';
-import { canAddHostSNO } from '../../utils';
-import { ClusterDetailsValues } from '../clusterWizard/types';
 
 type SNODisclaimerProps = {
-  isDisabled?: boolean;
   snoSupportLevel: SupportLevel;
+  isDisabled?: boolean;
+  snoExpansionSupported?: boolean;
 };
-const SNODisclaimer = ({ isDisabled = false, snoSupportLevel }: SNODisclaimerProps) => {
-  const { values } = useFormikContext<ClusterDetailsValues>();
+const SNODisclaimer = ({
+  snoSupportLevel,
+  isDisabled = false,
+  snoExpansionSupported = false,
+}: SNODisclaimerProps) => {
   if (!['dev-preview', 'supported'].includes(snoSupportLevel)) {
     //if tech preview or unsupported there's no definition which warning to show
     return null;
@@ -22,7 +23,7 @@ const SNODisclaimer = ({ isDisabled = false, snoSupportLevel }: SNODisclaimerPro
       <ListItem>
         Installing SNO will result in a non-highly available OpenShift deployment.
       </ListItem>
-      {!canAddHostSNO(values.openshiftVersion) && (
+      {!snoExpansionSupported && (
         <ListItem>Adding additional machines to your cluster is currently not supported.</ListItem>
       )}
     </>
