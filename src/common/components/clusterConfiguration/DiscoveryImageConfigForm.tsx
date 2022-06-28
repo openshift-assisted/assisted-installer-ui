@@ -85,7 +85,7 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
     httpsProxy: httpsProxy || '',
     noProxy: noProxy || '',
     enableProxy: !!(httpProxy || httpsProxy || noProxy),
-    imageType: imageType || 'full-iso',
+    imageType: imageType || 'minimal-iso',
   };
   const { t } = useTranslation();
 
