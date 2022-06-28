@@ -34,7 +34,7 @@ export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
         const versionItem = data[key] as OpenshiftVersion;
         const version = versionItem.displayName;
         return {
-          label: `OpenShift ${version || key}`,
+          label: `OpenShift ${version}`,
           value: key,
           version,
           default: Boolean(versionItem.default),
