@@ -1,18 +1,17 @@
-import { Host, HostRole } from '../../api/types';
 import React from 'react';
+import { Host, HostRole } from '../../api/types';
 import { pluralize } from 'humanize-plus';
 import { CheckCircleIcon, ExclamationCircleIcon, InProgressIcon } from '@patternfly/react-icons';
 import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens/dist/esm/global_danger_color_100';
-import { Stack, StackItem, TextContent } from '@patternfly/react-core';
 import { global_success_color_100 as okColor } from '@patternfly/react-tokens/dist/esm/global_success_color_100';
-import BorderedIcon from '../ui/BorderedIcon/BorderedIcon';
+import ClusterProgressItem from './ClusterProgressItem';
 
 type HostProgressProps = {
   hosts: Host[];
   hostRole: HostRole;
 };
 
-export const ProgressBarTexts: React.FC<HostProgressProps> = ({ hosts, hostRole }) => {
+export const ProgressBarTexts = ({ hosts, hostRole }: HostProgressProps) => {
   const filteredHosts = hosts.filter((host) => host.role && hostRole === host.role);
   const failedHostsCount = filteredHosts.filter((host) => host.status === 'error').length;
   const hostCountText = (hostRole: HostRole) =>
@@ -25,6 +24,7 @@ export const ProgressBarTexts: React.FC<HostProgressProps> = ({ hosts, hostRole 
           filteredHosts.length,
           hostRole === 'master' ? 'control plane node' : 'worker',
         )}`;
+
   const getHostName = (hostRole: HostRole): string => {
     if (hostRole === 'master') {
       return 'Control Plane';
@@ -34,62 +34,35 @@ export const ProgressBarTexts: React.FC<HostProgressProps> = ({ hosts, hostRole 
 
   if (filteredHosts.some((host) => ['cancelled', 'error'].includes(host.status))) {
     return (
-      <>
-        <Stack hasGutter>
-          <StackItem>
-            <BorderedIcon>
-              <ExclamationCircleIcon color={dangerColor.value} />
-            </BorderedIcon>
-          </StackItem>
-          <StackItem>
-            <TextContent>
-              {getHostName(hostRole)}
-              <br />
-              <small>{hostCountText(hostRole)} failed</small>
-            </TextContent>
-          </StackItem>
-        </Stack>
-      </>
+      <ClusterProgressItem icon={<ExclamationCircleIcon color={dangerColor.value} />}>
+        <>
+          {getHostName(hostRole)}
+          <br />
+          <small>{hostCountText(hostRole)} failed</small>
+        </>
+      </ClusterProgressItem>
     );
   }
 
   if (filteredHosts.every((host) => host.status === 'installed')) {
     return (
-      <>
-        <Stack hasGutter>
-          <StackItem>
-            <BorderedIcon>
-              <CheckCircleIcon color={okColor.value} />
-            </BorderedIcon>
-          </StackItem>
-          <StackItem>
-            <TextContent>
-              {getHostName(hostRole)}
-              <br />
-              <small>{hostCountText(hostRole)} installed</small>
-            </TextContent>
-          </StackItem>
-        </Stack>
-      </>
+      <ClusterProgressItem icon={<CheckCircleIcon color={okColor.value} />}>
+        <>
+          {getHostName(hostRole)}
+          <br />
+          <small>{hostCountText(hostRole)} installed</small>
+        </>
+      </ClusterProgressItem>
     );
   }
 
   return (
-    <>
-      <Stack hasGutter>
-        <StackItem>
-          <BorderedIcon>
-            <InProgressIcon />
-          </BorderedIcon>
-        </StackItem>
-        <StackItem>
-          <TextContent>
-            {getHostName(hostRole)}
-            <br />
-            <small>Installing {hostCountText(hostRole)}</small>
-          </TextContent>
-        </StackItem>
-      </Stack>
-    </>
+    <ClusterProgressItem icon={<InProgressIcon />}>
+      <>
+        {getHostName(hostRole)}
+        <br />
+        <small>Installing {hostCountText(hostRole)}</small>
+      </>
+    </ClusterProgressItem>
   );
 };
