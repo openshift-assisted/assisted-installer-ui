@@ -82,7 +82,7 @@ const DiskRoleDropdown: React.FC<DiskRoleDropdownProps> = ({
         // TODO(mlibra): Improve for the case onDiskRole === undefined
         setOpen(false);
       };
-      asyncFunc();
+      void asyncFunc();
     },
     [setOpen, setDisabled, onDiskRole, host.id, disk.id],
   );

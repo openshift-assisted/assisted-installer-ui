@@ -2,7 +2,8 @@ import React from 'react';
 import {
   Cluster,
   Credentials,
-  getOlmOperators,
+  selectOlmOperators,
+  selectMonitoredOperators,
   MonitoredOperator,
   MonitoredOperatorsList,
   ClusterCredentials,
@@ -11,11 +12,11 @@ import { getClusterDetailId } from './utils';
 import { ClustersAPI } from '../../services/apis';
 import ClusterDetailStatusMessages from './ClusterDetailStatusMessages';
 import { Grid } from '@patternfly/react-core';
+import { getErrorMessage } from '../../../common/utils';
 
 type ClusterStatusVarieties = {
   credentials?: Credentials;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  credentialsError?: any;
+  credentialsError: string;
   olmOperators: MonitoredOperatorsList;
   failedOlmOperators: MonitoredOperatorsList;
   consoleOperator?: MonitoredOperator;
@@ -24,22 +25,21 @@ type ClusterStatusVarieties = {
 
 export const useClusterStatusVarieties = (cluster?: Cluster): ClusterStatusVarieties => {
   const [credentials, setCredentials] = React.useState<Credentials>();
-  const [credentialsError, setCredentialsError] = React.useState();
+  const [credentialsError, setCredentialsError] = React.useState('');
 
   const clusterId = cluster?.id;
   const clusterStatus = cluster?.status;
-  const clusterMonitoredOperators = cluster?.monitoredOperators;
-
-  const olmOperators = getOlmOperators(cluster?.monitoredOperators);
+  const clusterMonitoredOperators = selectMonitoredOperators(cluster);
+  const olmOperators = selectOlmOperators(cluster);
   const failedOlmOperators = olmOperators.filter((o) => o.status === 'failed');
   const consoleOperator = React.useMemo(
-    () => clusterMonitoredOperators?.find((o) => o.name === 'console'),
+    () => clusterMonitoredOperators.find((o) => o.name === 'console'),
     [clusterMonitoredOperators],
   );
 
   const fetchCredentials = React.useCallback(() => {
     const fetch = async () => {
-      setCredentialsError(undefined);
+      setCredentialsError('');
       if (!clusterId) {
         return;
       }
@@ -47,10 +47,10 @@ export const useClusterStatusVarieties = (cluster?: Cluster): ClusterStatusVarie
         const response = await ClustersAPI.getCredentials(clusterId);
         setCredentials(response.data);
       } catch (err) {
-        setCredentialsError(err);
+        setCredentialsError(getErrorMessage(err));
       }
     };
-    fetch();
+    void fetch();
   }, [clusterId]);
 
   const consoleOperatorStatus = consoleOperator?.status;

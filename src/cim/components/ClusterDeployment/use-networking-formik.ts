@@ -134,7 +134,7 @@ export const useInfraEnvProxies = ({ agents, fetchInfraEnv }: UseInfraEnvProxies
       }
     };
 
-    fetch();
+    void fetch();
   }, [memoInfraEnvs, fetchInfraEnv, setInfraEnvs, setInfraEnvsError]);
 
   return {

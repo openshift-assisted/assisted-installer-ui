@@ -59,8 +59,17 @@ module.exports = {
         'no-restricted-imports': [
           'error',
           {
-            name: 'lodash',
-            message: 'Please use lodash/module instead.',
+            paths: [
+              {
+                name: 'lodash',
+                message: 'Please use lodash/module instead.',
+              },
+              {
+                name: 'react-i18next',
+                message:
+                  'Please use useTranslation from src/common/hooks/use-translation-wrapper.ts instead',
+              },
+            ],
           },
         ],
         '@typescript-eslint/no-explicit-any': [
@@ -69,7 +78,6 @@ module.exports = {
             fixToUnknown: true,
           },
         ],
-        '@typescript-eslint/no-floating-promises': 'warn',
         '@typescript-eslint/no-misused-promises': 'warn',
         '@typescript-eslint/no-unsafe-call': 'warn',
         '@typescript-eslint/no-unsafe-argument': 'warn',
@@ -77,8 +85,6 @@ module.exports = {
         '@typescript-eslint/no-unsafe-member-access': 'warn',
         '@typescript-eslint/no-unsafe-return': 'warn',
         '@typescript-eslint/no-unused-vars': 'error',
-        '@typescript-eslint/require-await': 'warn',
-        '@typescript-eslint/restrict-plus-operands': 'warn',
         '@typescript-eslint/restrict-template-expressions': 'warn',
         'react-hooks/rules-of-hooks': 'error',
         'react-hooks/exhaustive-deps': 'warn',

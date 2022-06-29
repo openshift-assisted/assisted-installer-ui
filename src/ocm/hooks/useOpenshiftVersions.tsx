@@ -1,6 +1,11 @@
 import React from 'react';
-import { CpuArchitecture, ImportClusterParams, OpenshiftVersionOptionType } from '../../common';
-import { getErrorMessage, handleApiError } from '../api';
+import {
+  CpuArchitecture,
+  ImportClusterParams,
+  OpenshiftVersion,
+  OpenshiftVersionOptionType,
+} from '../../common';
+import { getApiErrorMessage, handleApiError } from '../api';
 import { SupportedOpenshiftVersionsAPI } from '../services/apis';
 
 type UseOpenshiftVersionsType = {
@@ -25,29 +30,31 @@ export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
   const doAsync = React.useCallback(async () => {
     try {
       const { data } = await SupportedOpenshiftVersionsAPI.list();
-      const versions: OpenshiftVersionOptionType[] = Object.keys(data).map((key) => ({
-        label: `OpenShift ${data[key].displayName || key}`,
-        value: key,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        version: data[key].displayName,
-        default: Boolean(data[key].default),
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        supportLevel: data[key].supportLevel,
-        cpuArchitectures: data[key].cpuArchitectures as CpuArchitecture[],
-      }));
+      const versions: OpenshiftVersionOptionType[] = Object.keys(data).map((key) => {
+        const versionItem = data[key] as OpenshiftVersion;
+        const version = versionItem.displayName;
+        return {
+          label: `OpenShift ${version}`,
+          value: key,
+          version,
+          default: Boolean(versionItem.default),
+          supportLevel: versionItem.supportLevel,
+          cpuArchitectures: versionItem.cpuArchitectures as CpuArchitecture[],
+        };
+      });
       setVersions(sortVersions(versions));
     } catch (e) {
       handleApiError(e, (e) => {
         setError({
           title: 'Failed to retrieve list of supported OpenShift versions.',
-          message: getErrorMessage(e),
+          message: getApiErrorMessage(e),
         });
       });
     }
   }, []);
 
   React.useEffect(() => {
-    doAsync();
+    void doAsync();
   }, [doAsync, setVersions]);
 
   const normalizeClusterVersion = React.useCallback(

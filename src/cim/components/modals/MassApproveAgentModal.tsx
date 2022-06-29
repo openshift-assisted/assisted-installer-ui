@@ -17,6 +17,7 @@ import { TableRow } from '../../../common/components/hosts/AITable';
 import { Host, ModalProgress } from '../../../common';
 import { agentStatus } from '../helpers/agentStatus';
 import { usePagination } from '../../../common/components/hosts/usePagination';
+import { getErrorMessage } from '../../../common/utils';
 
 type ApproveTableRowProps = {
   agent?: AgentK8sResource;
@@ -109,8 +110,8 @@ const MassApproveAgentModal: React.FC<MassApproveAgentModalProps> = ({
       onClose();
     } catch (err) {
       setError({
-        title: 'Failed to update host',
-        message: err?.message || 'An error occured while approving agents',
+        title: 'An error occured while approving agents',
+        message: getErrorMessage(err),
       });
       setProgress(null);
     }

@@ -132,7 +132,7 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
       {({ submitForm, isSubmitting, isValid, isValidating, dirty }) => {
         const handleOnNext = () => {
           if (dirty) {
-            submitForm();
+            void submitForm();
           } else {
             next();
           }
