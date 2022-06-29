@@ -36,7 +36,7 @@ export const NAME_VALIDATION_MESSAGES = {
 
 export const HOSTNAME_VALIDATION_MESSAGES = {
   ...NAME_VALIDATION_MESSAGES,
-  LOCALHOST_ERR: 'Cannot be the word "localhost" or "localhost.localdomain"',
+  LOCALHOST_ERR: 'Do not use forbidden words, for example: "localhost".',
 };
 
 export const LOCATION_VALIDATION_MESSAGES = {
