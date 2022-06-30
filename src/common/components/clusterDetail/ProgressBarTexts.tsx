@@ -12,45 +12,34 @@ type HostProgressProps = {
 };
 
 export const ProgressBarTexts = ({ hosts, hostRole }: HostProgressProps) => {
-  const filteredHosts = hosts.filter((host) => host.role && hostRole === host.role);
-  const failedHostsCount = filteredHosts.filter((host) => host.status === 'error').length;
-  const hostCountText = (hostRole: HostRole) =>
-    failedHostsCount === 0
-      ? `${filteredHosts.length} ${pluralize(
-          filteredHosts.length,
-          hostRole === 'master' ? 'control plane node' : 'worker',
-        )}`
-      : `${failedHostsCount}/${filteredHosts.length} ${pluralize(
-          filteredHosts.length,
-          hostRole === 'master' ? 'control plane node' : 'worker',
-        )}`;
+  const hostRoleText = pluralize(hosts.length, hostRole === 'master' ? 'Control Plane' : 'Worker');
+  const hostCountText = `${hosts.length} ${pluralize(
+    hosts.length,
+    hostRole === 'master' ? 'control plane node' : 'worker',
+  )}`;
 
-  const getHostName = (hostRole: HostRole): string => {
-    if (hostRole === 'master') {
-      return 'Control Plane';
-    }
-    return 'Workers';
-  };
-
-  if (filteredHosts.some((host) => ['cancelled', 'error'].includes(host.status))) {
+  if (hosts.some((host) => ['cancelled', 'error'].includes(host.status))) {
+    const failedHostsCount = hosts.filter((host) => host.status === 'error').length;
     return (
       <ClusterProgressItem icon={<ExclamationCircleIcon color={dangerColor.value} />}>
         <>
-          {getHostName(hostRole)}
+          {hostRoleText}
           <br />
-          <small>{hostCountText(hostRole)} failed</small>
+          <small>
+            {failedHostsCount}/{hostCountText} failed
+          </small>
         </>
       </ClusterProgressItem>
     );
   }
 
-  if (filteredHosts.every((host) => host.status === 'installed')) {
+  if (hosts.every((host) => host.status === 'installed')) {
     return (
       <ClusterProgressItem icon={<CheckCircleIcon color={okColor.value} />}>
         <>
-          {getHostName(hostRole)}
+          {hostRoleText}
           <br />
-          <small>{hostCountText(hostRole)} installed</small>
+          <small>{hostCountText} installed</small>
         </>
       </ClusterProgressItem>
     );
@@ -59,9 +48,9 @@ export const ProgressBarTexts = ({ hosts, hostRole }: HostProgressProps) => {
   return (
     <ClusterProgressItem icon={<InProgressIcon />}>
       <>
-        {getHostName(hostRole)}
+        {hostRoleText}
         <br />
-        <small>Installing {hostCountText(hostRole)}</small>
+        <small>Installing {hostCountText}</small>
       </>
     </ClusterProgressItem>
   );
