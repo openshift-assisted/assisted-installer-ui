@@ -1,6 +1,6 @@
 import { isSNO } from '../../../common';
-import { canAddHostSNO } from '../../../common/utils';
 import Day2ClusterService from '../../services/Day2ClusterService';
+import { getFeatureSupported } from '../featureSupportLevels/FeatureSupportLevelProvider';
 import { OcmClusterType } from './types';
 
 export const canAddHost = ({ cluster }: { cluster: OcmClusterType }) => {
@@ -9,7 +9,12 @@ export const canAddHost = ({ cluster }: { cluster: OcmClusterType }) => {
       if (isSNO(cluster.aiCluster)) {
         return (
           cluster.aiCluster.status === 'installed' &&
-          canAddHostSNO(cluster.aiCluster?.openshiftVersion || cluster.openshift_version)
+          cluster.aiCluster.openshiftVersion &&
+          getFeatureSupported(
+            cluster.aiCluster.openshiftVersion || '',
+            cluster.aiSupportLevels || [],
+            'SINGLE_NODE_EXPANSION',
+          )
         );
       } else {
         return cluster.aiCluster.status === 'installed';
@@ -19,7 +24,11 @@ export const canAddHost = ({ cluster }: { cluster: OcmClusterType }) => {
         cluster.state === 'ready' &&
         cluster.product?.id === 'OCP-AssistedInstall' &&
         ((cluster.metrics?.nodes?.total && cluster.metrics?.nodes?.total > 1) ||
-          canAddHostSNO(cluster.openshift_version))
+          getFeatureSupported(
+            cluster.openshift_version,
+            cluster.aiSupportLevels || [],
+            'SINGLE_NODE_EXPANSION',
+          ))
       );
     }
   }

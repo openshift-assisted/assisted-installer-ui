@@ -2517,7 +2517,7 @@ paths:
       parameters:
         - in: path
           name: cluster_id
-          description: The cluster to return preflight requrements for.
+          description: The cluster to return preflight requirements for.
           type: string
           format: uuid
           required: true
@@ -3645,6 +3645,7 @@ definitions:
                 - 'CLUSTER_MANAGED_NETWORKING_WITH_VMS'
                 - 'ARM64_ARCHITECTURE'
                 - 'ARM64_ARCHITECTURE_WITH_CLUSTER_MANAGED_NETWORKING'
+                - 'SINGLE_NODE_EXPANSION'
             support_level:
               type: string
               enum: [supported, unsupported, tech-preview, dev-preview]
