@@ -29,13 +29,14 @@ const DiscoveryImageTypeControlGroup = () => (
     <StackItem>
       <RadioField
         name={GROUP_NAME}
-        id={'full-iso'}
-        value={'full-iso'}
+        id={'minimal-iso'}
+        value={'minimal-iso'}
         label={
           <DiscoveryImageTypeControlGroupLabel
-            text={'Full image file: Provision with physical media'}
+            text={'Minimal image file: Provision with virtual media'}
             popoverContent={
-              'Recommended option. The generated discovery ISO will contain everything needed to boot.'
+              'Recommended option. The generated discovery ISO will be smaller, but will need to download additional data during boot. ' +
+              "This option is useful if ISO storage capacity is limited or if it's being served over a constrained network."
             }
           />
         }
@@ -44,15 +45,12 @@ const DiscoveryImageTypeControlGroup = () => (
     <StackItem>
       <RadioField
         name={GROUP_NAME}
-        id={'minimal-iso'}
-        value={'minimal-iso'}
+        id={'full-iso'}
+        value={'full-iso'}
         label={
           <DiscoveryImageTypeControlGroupLabel
-            text={'Minimal image file: Provision with virtual media'}
-            popoverContent={
-              'The generated discovery ISO will be smaller, but will need to download additional data during boot. ' +
-              "This option is useful if ISO storage capacity is limited or if it's being served over a constrained network."
-            }
+            text={'Full image file: Provision with physical media'}
+            popoverContent={'The generated discovery ISO will contain everything needed to boot.'}
           />
         }
       />
