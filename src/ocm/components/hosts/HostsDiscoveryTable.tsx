@@ -117,18 +117,20 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({ cluster }) =>
   return (
     <>
       <Stack hasGutter>
-        <StackItem>
-          <TableToolbar
-            selectedIDs={selectedHostIDs || []}
-            itemIDs={itemIDs}
-            setSelectedIDs={setSelectedHostIDs}
-            actions={[
-              <ChangeHostnameAction key="hostname" onChangeHostname={onMassChangeHostname} />,
-              <DeleteHostAction key="delete" onDeleteHost={onMassDeleteHost} />,
-            ]}
-            {...paginationProps}
-          />
-        </StackItem>
+        {!isSNOCluster && (
+          <StackItem>
+            <TableToolbar
+              selectedIDs={selectedHostIDs || []}
+              itemIDs={itemIDs}
+              setSelectedIDs={setSelectedHostIDs}
+              actions={[
+                <ChangeHostnameAction key="hostname" onChangeHostname={onMassChangeHostname} />,
+                <DeleteHostAction key="delete" onDeleteHost={onMassDeleteHost} />,
+              ]}
+              {...paginationProps}
+            />
+          </StackItem>
+        )}
         <StackItem>
           <HostsTable
             testId="hosts-discovery-table"
@@ -136,7 +138,7 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({ cluster }) =>
             content={content}
             actionResolver={actionResolver}
             ExpandComponent={getExpandComponent(onDiskRole, actionChecks.canEditDisks)}
-            onSelect={onSelect}
+            onSelect={isSNOCluster ? undefined : onSelect}
             selectedIDs={selectedHostIDs}
             setSelectedIDs={setSelectedHostIDs}
             {...paginationProps}

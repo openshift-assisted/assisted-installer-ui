@@ -9,6 +9,7 @@ import {
 import { FieldValidator, FieldHelperProps } from 'formik';
 import { DropzoneProps, DropFileEventHandler } from 'react-dropzone';
 import { CodeEditorProps } from '@patternfly/react-code-editor';
+import { Optional } from '../../../types/typescriptExtensions';
 
 export interface FieldProps {
   name: string;
