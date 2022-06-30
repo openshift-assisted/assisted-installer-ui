@@ -139,13 +139,10 @@ export const isSubnetInIPv6 = ({
   clusterNetworkCidr,
   machineNetworkCidr,
   serviceNetworkCidr,
-}: Partial<Cluster>) => {
-  return (
-    Address6.isValid(clusterNetworkCidr || '') ||
-    Address6.isValid(machineNetworkCidr || '') ||
-    Address6.isValid(serviceNetworkCidr || '')
-  );
-};
+}: Pick<Cluster, 'machineNetworks' | 'clusterNetworks' | 'serviceNetworks'>) =>
+  Address6.isValid(clusterNetworkCidr || '') ||
+  Address6.isValid(machineNetworkCidr || '') ||
+  Address6.isValid(serviceNetworkCidr || '');
 
 export const getHostDiscoveryInitialValues = (cluster: Cluster): HostDiscoveryValues => {
   const monitoredOperators = selectMonitoredOperators(cluster);
