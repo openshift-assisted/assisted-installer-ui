@@ -89,3 +89,27 @@ export const selectIpv6HostPrefix = ({ clusterNetworks }: Pick<Cluster, 'cluster
 
 export const isArmArchitecture = ({ cpuArchitecture }: Pick<Cluster, 'cpuArchitecture'>) =>
   cpuArchitecture === CpuArchitecture.ARM;
+
+const getOldSchedulableMastersAlwaysOn = (cluster: Cluster) => {
+  return cluster.hosts ? cluster.hosts.length < 5 : true;
+};
+
+export const selectMastersMustRunWorkloads = (
+  cluster: Pick<Cluster, 'schedulableMastersForcedTrue'>,
+): boolean => {
+  // TODO camador 2022-06-30 Remove the logic for old schedulableMasters logic after a few weeks
+  // as by then all clusters should have the new field "schedulableMastersForcedTrue"
+  if (cluster.schedulableMastersForcedTrue === undefined) {
+    return getOldSchedulableMastersAlwaysOn(cluster as Cluster);
+  }
+  return cluster.schedulableMastersForcedTrue;
+};
+
+export const selectSchedulableMasters = (
+  cluster: Pick<Cluster, 'schedulableMasters' | 'schedulableMastersForcedTrue'>,
+): boolean => {
+  if (selectMastersMustRunWorkloads(cluster)) {
+    return true;
+  }
+  return cluster.schedulableMasters || false;
+};

@@ -163,17 +163,6 @@ export const fileSize: typeof filesize = (...args) =>
     .toUpperCase()
     .replace(/I/, 'i');
 
-export const schedulableMastersAlwaysOn = (cluster: Cluster) => {
-  return cluster.hosts ? cluster.hosts.length < 5 : true;
-};
-
-export const getSchedulableMasters = (cluster: Cluster): boolean => {
-  if (schedulableMastersAlwaysOn(cluster)) {
-    return true;
-  }
-  return !!cluster.schedulableMasters;
-};
-
 export const getInventory = (host: Host) => {
   const { inventory: inventoryString = '' } = host;
   return stringToJSON<Inventory>(inventoryString) || {};

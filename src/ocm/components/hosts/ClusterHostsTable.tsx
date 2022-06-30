@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Cluster, getSchedulableMasters, Host, isSNO } from '../../../common';
+import { Cluster, selectSchedulableMasters, Host, isSNO } from '../../../common';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
 import {
   discoveredAtColumn,
@@ -42,8 +42,8 @@ const ClusterHostsTable: React.FC<ClusterHostsTableProps> = ({ cluster, skipDisa
   const content = React.useMemo(
     () => [
       hostnameColumn(t, onEditHost, undefined, actionChecks.canEditHostname),
-      roleColumn(t, actionChecks.canEditRole, onEditRole, getSchedulableMasters(cluster)),
-      statusColumn(AdditionalNTPSourcesDialogToggle, onEditHost, UpdateDay2ApiVipDialogToggle),
+      roleColumn(t, actionChecks.canEditRole, onEditRole, selectSchedulableMasters(cluster)),
+      statusColumn(t, AdditionalNTPSourcesDialogToggle, onEditHost, UpdateDay2ApiVipDialogToggle),
       discoveredAtColumn,
       cpuCoresColumn,
       memoryColumn,
