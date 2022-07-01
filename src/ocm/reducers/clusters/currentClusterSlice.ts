@@ -31,7 +31,7 @@ export const fetchClusterAsync = createAsyncThunk<
     const res = await ClustersAPI.get(clusterId);
     const { data: cluster } = res;
 
-    Object.assign(cluster, cluster.hosts, hosts);
+    Object.assign(cluster, { hosts: hosts });
     return cluster;
   } catch (e) {
     handleApiError(e, () => isApiError(e) && e.response?.data && rejectWithValue(e.response?.data));
