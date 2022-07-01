@@ -44,3 +44,11 @@ export type EditNtpSourcesFormikValues = {
   enableNtpSources: string;
   additionalNtpSources: string;
 };
+
+export type UploadActionModalProps = {
+  isOpen: boolean;
+  onClose: VoidFunction;
+  // eslint-disable-next-line
+  onCreateBmcByYaml: (yamlContent: unknown) => Promise<unknown>;
+  isEdit?: boolean;
+};
