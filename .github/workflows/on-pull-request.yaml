@@ -1,12 +1,13 @@
-name: Test and build on push or pull request to specific branches
+name: Test and build
 
 on:
-  push:
-    branches:
-      - master
-      - releases/*
-      - CIM-*
   pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+      - edited
     branches:
       - master
       - releases/*
@@ -14,20 +15,22 @@ on:
 
 jobs:
   main:
-    name: Test and build
     runs-on: ubuntu-latest
     env:
-      NODE_OPTIONS: '--max-old-space-size=8192'
+      NODE_OPTIONS: --max-old-space-size=8192
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
       - name: Setup Node.js environment
         uses: actions/setup-node@v3
         with:
           cache: yarn
-          node-version: '>=12.16'
+          node-version: '12'
+
       - name: Install dependencies
-        # --frozen-lockfile: doesn't generate a yarn.lock file, fails if an upate is needed.
+        # --frozen-lockfile: doesn't generate a yarn.lock file, fails if an update is needed.
         run: yarn install --frozen-lockfile
+
       - name: Build code (includes tests)
         run: yarn build
