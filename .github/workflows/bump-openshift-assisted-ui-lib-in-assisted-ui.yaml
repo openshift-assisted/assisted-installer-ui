@@ -1,0 +1,39 @@
+name: Bump openshift-assisted-ui-lib in assisted-ui
+
+on:
+  workflow_call:
+    inputs:
+      new-version:
+        type: string
+        required: true
+      assisted-ui-repo-url:
+        type: string
+        required: true
+      release-notes-url:
+        type: string
+        required: true
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out assisted-ui
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ inputs.assisted-ui-repo-url }}
+          ref: master
+          path: ./assisted-ui
+
+      - name: Upgrade openshift-assisted-ui-lib to ${{ inputs.new-version }}
+        run: yarn upgrade --exact openshift-assisted-ui-lib@${{ inputs.new-version }}
+
+      - name: Send a pull request to assisted-ui
+        env:
+          MESSAGE: Updates openshift-assisted-ui-lib to ${{ inputs.new-version }}
+        uses: peter-evans/create-pull-request@v4
+        with:
+          base: master
+          commit-message: ${{ env.MESSAGE }}
+          title: ${{ env.MESSAGE }}
+          body: >
+            [Release notes](${{ inputs.release-notes-url }})

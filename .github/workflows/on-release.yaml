@@ -1,0 +1,86 @@
+name: Publish to NPM
+
+on:
+  release:
+    types:
+      - published
+
+env:
+  NODE_OPTIONS: --max-old-space-size=8192
+
+jobs:
+  main:
+    env:
+      GH_REPO_OWNER: jkilzi
+    runs-on: ubuntu-latest
+    outputs:
+      assisted-ui-repo-url: ${{ env.GH_REPO_OWNER }}/assisted-ui
+      new-version: ${{ steps.new-version.outputs.new_version }}
+      release-notes-url: ${{ steps.new-version.outputs.release_notes_url }}
+    steps:
+      - name: Configuring git
+        run: |
+          git config user.name '${{ github.actor }}'
+          git config user.email 'github-actions@github.com'
+
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.PUSH_TO_PROTECTED_BRANCH }}
+          fetch-depth: 0
+
+      - name: Parse the next package version
+        id: new-version
+        # The expected format of the new git tag is vX.Y.Z
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const new_version = '${{ github.ref_name }}'.slice(1);
+            core.setOutput('new_version', new_version);
+            const base_rn_url = 'https://github.com/${{ GH_REPO_OWNER }}/assisted-ui-lib/releases/tag'
+            const rn_url = `${base_rn_url}/v${new_version}`;
+            core.setOutput('release_notes_url', rn_url);
+
+      - name: Check out the target branch
+        run: git checkout ${{ github.event.release.target_commitish }}
+
+      - uses: actions/setup-node@v3
+        with:
+          cache: yarn
+          node-version: '12'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Update the version in package.json
+        # In order to align the new tag with the commit that bumps the version in the package.json
+        # we must first push the tag (github.ref_name) and then update the remote branch.
+        # Attempting to remove the tag first, invalidates the release and puts it on a draft state.
+        run: |
+          yarn version --new-version ${{ steps.new-version.outputs.new_version }} --no-git-tag-version
+          git add package.json
+          git commit -m 'Version ${{ github.ref_name }}'
+          git tag -f -a ${{ github.ref_name }} -m '${{ github.ref_name }}'
+          git push origin ${{ github.ref_name }} --force
+
+      - name: Push updated package.json to ${{ github.event.release.target_commitish }}
+        # If the target branch is protected a privileged PAT needs to be configured at the checkout step.
+        run: git push origin ${{ github.event.release.target_commitish }} --force
+
+      - name: Build
+        run: node scripts/esbuild/prod.js
+
+      - name: Publish to NPM
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPMJS_PUBLISH_TOKEN }}
+        run: yarn publish --no-git-tag-version
+
+  send_pr:
+    needs: main
+    runs-on: ubuntu-latest
+    steps:
+      - uses: .github/workflows/bump-openshift-assisted-ui-lib-in-assisted-ui.yaml
+        with:
+          assisted-ui-repo-url: ${{ needs.main.outputs.assisted-ui-repo-url }}
+          new-version: ${{ needs.main.outputs.new-version }}
+          release-notes-url: ${{ needs.main.outputs.release-notes-url }}
