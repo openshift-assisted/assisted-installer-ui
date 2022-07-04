@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useField } from 'formik';
 
-import { trimSshPublicKey, UploadField } from '../ui';
+import { trimSshPublicKey, UploadField, PopoverIcon } from '../ui';
 import { SshPublicKeyHelperText } from './SecurityFields';
 
 const UploadSSH: React.FC = () => {
@@ -9,7 +9,12 @@ const UploadSSH: React.FC = () => {
 
   return (
     <UploadField
-      label="SSH public key"
+      label={
+        <>
+          {'SSH public key'}
+          <PopoverIcon bodyContent="Provide an SSH key to receive debugging information during installation" />
+        </>
+      }
       name={name}
       helperText={<SshPublicKeyHelperText />}
       idPostfix="discovery"
@@ -17,10 +22,7 @@ const UploadSSH: React.FC = () => {
       dropzoneProps={{
         accept: '.pub',
         maxSize: 2048,
-        onDropRejected:
-          ({ setError }) =>
-          () =>
-            setError('File not supported.'),
+        onDropRejected: ({ setError }) => () => setError('File not supported.'),
       }}
       transformValue={trimSshPublicKey}
     />

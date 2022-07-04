@@ -30,8 +30,6 @@ const PlatformIntegrationLabel: React.FC = () => (
   <>
     <span>Integrate with vSphere</span>{' '}
     <PopoverIcon
-      minWidth="30rem"
-      variant={'plain'}
       bodyContent={
         <p>
           Enable vSphere integration to access features like node auto-scaling and persistent
