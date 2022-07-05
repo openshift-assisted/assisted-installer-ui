@@ -25,6 +25,7 @@ import {
 import { StackTypeControlGroup } from './StackTypeControl';
 import { AvailableSubnetsControl } from './AvailableSubnetsControl';
 import AdvancedNetworkFields from './AdvancedNetworkFields';
+import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   hostSubnets: HostSubnets;
@@ -119,12 +120,13 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   hideManagedNetworking,
   children,
 }) => {
+  const { t } = useTranslation();
   const featureSupportLevelData = useFeatureSupportLevel();
   const { setFieldValue, values, validateField } = useFormikContext<NetworkConfigurationValues>();
 
   const clusterFeatureSupportLevels = React.useMemo(() => {
-    return getLimitedFeatureSupportLevels(cluster, featureSupportLevelData);
-  }, [cluster, featureSupportLevelData]);
+    return getLimitedFeatureSupportLevels(cluster, featureSupportLevelData, t);
+  }, [cluster, featureSupportLevelData, t]);
   const isSNOCluster = isSNO(cluster);
   const isMultiNodeCluster = !isSNOCluster;
   const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';

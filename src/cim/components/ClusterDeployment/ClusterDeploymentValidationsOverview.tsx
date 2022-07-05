@@ -14,8 +14,8 @@ import { Cluster } from '../../../common/api/types';
 import { ValidationsInfo } from '../../../common/types/clusters';
 import { CLUSTER_VALIDATION_GROUP_LABELS } from '../../../common/config/constants';
 import { filterValidationsInfoByStatus } from '../../../common/components/clusterConfiguration/utils';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 function getCardTitle(clusterStatus: Cluster['status'], t: TFunction) {
   switch (clusterStatus) {

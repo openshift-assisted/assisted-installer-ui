@@ -5,6 +5,7 @@ import { CheckCircleIcon, ExclamationCircleIcon, InProgressIcon } from '@pattern
 import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens/dist/esm/global_danger_color_100';
 import { global_success_color_100 as okColor } from '@patternfly/react-tokens/dist/esm/global_success_color_100';
 import ClusterProgressItem from './ClusterProgressItem';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 type HostProgressProps = {
   hosts: Host[];
@@ -17,7 +18,7 @@ export const ProgressBarTexts = ({ hosts, hostRole }: HostProgressProps) => {
     hosts.length,
     hostRole === 'master' ? 'control plane node' : 'worker',
   )}`;
-
+  const { t } = useTranslation();
   if (hosts.some((host) => ['cancelled', 'error'].includes(host.status))) {
     const failedHostsCount = hosts.filter((host) => host.status === 'error').length;
     return (
@@ -26,7 +27,7 @@ export const ProgressBarTexts = ({ hosts, hostRole }: HostProgressProps) => {
           {hostRoleText}
           <br />
           <small>
-            {failedHostsCount}/{hostCountText} failed
+            {failedHostsCount}/{hostCountText} {t('ai:failed')}
           </small>
         </>
       </ClusterProgressItem>
@@ -39,7 +40,9 @@ export const ProgressBarTexts = ({ hosts, hostRole }: HostProgressProps) => {
         <>
           {hostRoleText}
           <br />
-          <small>{hostCountText} installed</small>
+          <small>
+            {hostCountText} {t('ai:installed')}
+          </small>
         </>
       </ClusterProgressItem>
     );
@@ -50,7 +53,7 @@ export const ProgressBarTexts = ({ hosts, hostRole }: HostProgressProps) => {
       <>
         {hostRoleText}
         <br />
-        <small>Installing {hostCountText}</small>
+        <small>{t('ai:Installing {{hostCountText}}', hostCountText)}</small>
       </>
     </ClusterProgressItem>
   );

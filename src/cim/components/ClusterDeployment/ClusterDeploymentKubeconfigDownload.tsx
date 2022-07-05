@@ -5,23 +5,21 @@ import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-in
 import { ClusterDeploymentK8sResource } from '../../types/k8s/cluster-deployment';
 import { getClusterStatus } from '../helpers/status';
 import { FetchSecret } from './types';
-import { TFunction } from 'i18next';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type ClusterDeploymentKubeconfigDownloadProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall: AgentClusterInstallK8sResource;
   fetchSecret: FetchSecret;
-  t: TFunction;
 };
 
 const ClusterDeploymentKubeconfigDownload = ({
   clusterDeployment,
   agentClusterInstall,
   fetchSecret,
-  t,
 }: ClusterDeploymentKubeconfigDownloadProps) => {
   const [clusterStatus] = getClusterStatus(agentClusterInstall);
-
+  const { t } = useTranslation();
   const handleKubeconfigDownload = async () => {
     const kubeconfigSecretName =
       agentClusterInstall.spec?.clusterMetadata?.adminKubeconfigSecretRef?.name;

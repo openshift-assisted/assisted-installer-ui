@@ -56,7 +56,9 @@ const HostsStep: React.FC<HostsStepProps> = ({
           isPlain
           title={t('ai:Control plane location')}
           variant={AlertVariant.info}
-          actionLinks={<ExternalLink href="https://www.google.com">Learn more</ExternalLink>}
+          actionLinks={
+            <ExternalLink href="https://www.google.com">{t('ai:Learn more')}</ExternalLink>
+          }
         >
           {t(
             'ai:Currently, <b>local-cluster</b> will be selected as the hosting service cluster in order to run OpenShift in a hyperscale manner with many control planes hosted on a central hosting service cluster.',

@@ -48,8 +48,7 @@ const EditBMHModal: React.FC<EditBMHModalProps> = ({
       setLoading(true);
       void getResources();
     }
-  }, [bmhName, bmhNamespace, fetchSecret, bmhSecret, hasDHCP]);
-
+  }, [bmhName, bmhNamespace, fetchSecret, bmhSecret, hasDHCP, t]);
   return (
     <Modal
       aria-label={t('ai:Edit BMH dialog')}

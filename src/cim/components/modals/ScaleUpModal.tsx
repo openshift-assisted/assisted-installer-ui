@@ -67,6 +67,7 @@ const ScaleUpModal: React.FC<ScaleUpModalProps> = ({
   const [editAgent, setEditAgent] = React.useState<AgentK8sResource | undefined>();
   const [error, setError] = React.useState<string | undefined>();
 
+  const { t } = useTranslation();
   const getInitialValues = (): ScaleUpFormValues => {
     const agentSelector = getAgentSelectorFieldsFromAnnotations(
       clusterDeployment?.metadata?.annotations,
@@ -105,7 +106,6 @@ const ScaleUpModal: React.FC<ScaleUpModalProps> = ({
       a.spec.clusterDeploymentName?.name === clusterDeployment.metadata?.name &&
       a.spec.clusterDeploymentName?.namespace === clusterDeployment.metadata?.namespace,
   );
-  const { t } = useTranslation();
   return (
     <>
       <Modal

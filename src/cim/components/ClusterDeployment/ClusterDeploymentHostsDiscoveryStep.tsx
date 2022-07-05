@@ -48,7 +48,6 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
   const usedHostnames = React.useMemo(() => getAgentsHostsNames(infraEnvAgents), [infraEnvAgents]);
 
   const errors = [];
-
   if (getIsSNOCluster(agentClusterInstall)) {
     infraEnvAgents.length > 1 &&
       errors.push(t('ai:Single node cluster cannot contain more than 1 host.'));
@@ -68,9 +67,8 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
   if (uniq(usedHostnames).length !== usedHostnames.length) {
     errors.push(t('ai:Hostnames must be unique.'));
   }
-
   const agentsNotHealthy = infraEnvAgents
-    .map((agent) => getWizardStepAgentStatus(agent, 'hosts-discovery').status.key)
+    .map((agent) => getWizardStepAgentStatus(agent, 'hosts-discovery', t).status.key)
     .some((status) =>
       ['disconnected', 'disabled', 'error', 'insufficient', 'cancelled'].includes(status),
     );

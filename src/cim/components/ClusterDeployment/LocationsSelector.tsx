@@ -16,12 +16,15 @@ const LocationsLabelIcon: React.FC = () => {
         <>
           {t('ai:Select one or multiple locations to choose the hosts from.')}
           <br />
-          {t('Keep the field empty to match <b>any</b> location.')}
+          {t('ai:Keep the field empty to match <b>any</b> location.')}
           <br />
-          {t(
-            "Set <b>{{agent_location_label_key}}</b> label in Agent resource to specify it's location.",
-            { agent_location_label_key: AGENT_LOCATION_LABEL_KEY },
-          )}
+          {
+            (t(
+              "ai:Set {{AGENT_LOCATION_LABEL_KEY}} label in Agent resource to specify it's location.",
+            ),
+            { AGENT_LOCATION_LABEL_KEY })
+          }
+          '
         </>
       }
     />
@@ -34,7 +37,7 @@ const getNumOfHosts = (size: number, t: TFunction) => {
   } else if (size === 1) {
     return t('ai:(1 host available)');
   }
-  return t('ai:({{size}} hosts available)', { size: size });
+  return t('ai:({{size}} hosts available)', { size });
 };
 
 const LocationsSelector: React.FC<{ agents: AgentK8sResource[] }> = ({ agents }) => {
@@ -55,7 +58,7 @@ const LocationsSelector: React.FC<{ agents: AgentK8sResource[] }> = ({ agents })
   return (
     <MultiSelectField
       idPostfix="locations"
-      name={t('ai:"locations')}
+      name="locations"
       label={t('ai:Host locations')}
       labelIcon={<LocationsLabelIcon />}
       placeholderText={t('ai:Type or select location(s)')}

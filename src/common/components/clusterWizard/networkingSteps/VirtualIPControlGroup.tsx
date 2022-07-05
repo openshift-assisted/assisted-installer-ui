@@ -6,6 +6,9 @@ import { HostSubnets, NetworkConfigurationValues, ValidationsInfo } from '../../
 import { CheckboxField, FormikStaticField, InputField } from '../../ui';
 import { NO_SUBNET_SET } from '../../../config';
 import { FeatureSupportLevelBadge } from '../../featureSupportLevels';
+import { useTranslation } from '../../../hooks/use-translation-wrapper';
+import { TFunction } from 'i18next';
+
 interface VipStaticValueProps {
   vipName: string;
   cluster: Cluster;
@@ -14,7 +17,7 @@ interface VipStaticValueProps {
 
 const VipStaticValue = ({ vipName, cluster, validationErrorMessage }: VipStaticValueProps) => {
   const { vipDhcpAllocation, machineNetworkCidr } = cluster;
-
+  const { t } = useTranslation();
   if (vipDhcpAllocation && cluster[vipName]) {
     return cluster[vipName];
   }
@@ -22,7 +25,7 @@ const VipStaticValue = ({ vipName, cluster, validationErrorMessage }: VipStaticV
     return (
       <Alert
         variant={AlertVariant.danger}
-        title="The DHCP server failed to allocate the IP"
+        title={t('ai:The DHCP server failed to allocate the IP')}
         isInline
       >
         {validationErrorMessage}
@@ -33,34 +36,38 @@ const VipStaticValue = ({ vipName, cluster, validationErrorMessage }: VipStaticV
     return (
       <>
         <Spinner size="md" />
-        <i> This IP is being allocated by the DHCP server</i>
+        <i>{t('ai:This IP is being allocated by the DHCP server')}</i>
       </>
     );
   }
-  return <i>This IP will be allocated by the DHCP server</i>;
+  return t('ai:<i>This IP will be allocated by the DHCP server</i>');
 };
 
 const getVipHelperSuffix = (
+  t: TFunction,
   vip?: string,
   vipDhcpAllocation?: boolean,
   vipDhcpAllocationFormValue?: boolean,
 ): string => {
   if (!vipDhcpAllocationFormValue) {
-    return 'Make sure that the VIP is unique and not used by any other device on your network.';
+    return t(
+      'ai:Make sure that the VIP is unique and not used by any other device on your network.',
+    );
   }
   if (vipDhcpAllocation && vip) {
-    return 'This IP was allocated by the DHCP server.';
+    return t('ai:This IP was allocated by the DHCP server.');
   }
   return '';
 };
 
 const getVipValidationsById = (
+  t: TFunction,
   validationsInfoString?: Cluster['validationsInfo'],
 ): { [key: string]: string | undefined } => {
   const validationsInfo = stringToJSON<ValidationsInfo>(validationsInfoString) || {};
   const failedDhcpAllocationMessageStubs = [
-    'VIP IP allocation from DHCP server has been timed out', // TODO(jtomasek): remove this one once it is no longer in backend
-    'IP allocation from the DHCP server timed out.',
+    t('ai:VIP IP allocation from DHCP server has been timed out'), // TODO(jtomasek): remove this one once it is no longer in backend
+    t('ai:IP allocation from the DHCP server timed out.'),
   ];
   return (validationsInfo.network || []).reduce((lookup, validation) => {
     if (['api-vip-defined', 'ingress-vip-defined'].includes(validation.id)) {
@@ -86,24 +93,32 @@ export const VirtualIPControlGroup = ({
   isVipDhcpAllocationDisabled,
 }: VirtualIPControlGroupProps) => {
   const { values } = useFormikContext<NetworkConfigurationValues>();
-
-  const apiVipHelperText = `Provide an endpoint for users, both human and machine, to interact with and configure the platform. If needed, contact your IT manager for more information. ${getVipHelperSuffix(
+  const { t } = useTranslation();
+  const vipHelperSuffix = getVipHelperSuffix(
+    t,
     cluster.apiVip,
     cluster.vipDhcpAllocation,
     values.vipDhcpAllocation,
-  )}`;
-  const ingressVipHelperText = `Provide an endpoint for application traffic flowing in from outside the cluster. If needed, contact your IT manager for more information. ${getVipHelperSuffix(
-    cluster.ingressVip,
-    cluster.vipDhcpAllocation,
-    values.vipDhcpAllocation,
-  )}`;
+  );
+  const apiVipHelperText = t(
+    'ai:Provide an endpoint for users, both human and machine, to interact with and configure the platform. If needed, contact your IT manager for more information. {{vipHelperSufix}}',
+    {
+      vipHelperSuffix: vipHelperSuffix,
+    },
+  );
+  const ingressVipHelperText = t(
+    'ai:Provide an endpoint for application traffic flowing in from outside the cluster. If needed, contact your IT manager for more information. {{vipHelperSufix}}',
+    {
+      vipHelperSuffix: vipHelperSuffix,
+    },
+  );
 
   const {
     'api-vip-defined': apiVipFailedValidationMessage,
     'ingress-vip-defined': ingressVipFailedValidationMessage,
   } = React.useMemo(
-    () => getVipValidationsById(cluster.validationsInfo),
-    [cluster.validationsInfo],
+    () => getVipValidationsById(t, cluster.validationsInfo),
+    [t, cluster.validationsInfo],
   );
 
   return (
@@ -112,7 +127,7 @@ export const VirtualIPControlGroup = ({
         <CheckboxField
           label={
             <>
-              Allocate IPs via DHCP server
+              {t('ai:Allocate IPs via DHCP server')}
               <FeatureSupportLevelBadge
                 featureId="VIP_AUTO_ALLOC"
                 openshiftVersion={cluster.openshiftVersion}
@@ -125,7 +140,7 @@ export const VirtualIPControlGroup = ({
       {values.vipDhcpAllocation ? (
         <>
           <FormikStaticField
-            label="API IP"
+            label={t('ai:API IP')}
             name="apiVip"
             helperText={apiVipHelperText}
             value={cluster.apiVip || ''}
@@ -139,7 +154,7 @@ export const VirtualIPControlGroup = ({
             />
           </FormikStaticField>
           <FormikStaticField
-            label="Ingress IP"
+            label={t('ai:Ingress IP')}
             name="ingressVip"
             helperText={ingressVipHelperText}
             value={cluster.ingressVip || ''}
@@ -156,7 +171,7 @@ export const VirtualIPControlGroup = ({
       ) : (
         <>
           <InputField
-            label="API IP"
+            label={t('ai:API IP')}
             name="apiVip"
             helperText={apiVipHelperText}
             isRequired
@@ -164,7 +179,7 @@ export const VirtualIPControlGroup = ({
           />
           <InputField
             name="ingressVip"
-            label="Ingress IP"
+            label={t('ai:Ingress IP')}
             helperText={ingressVipHelperText}
             isRequired
             isDisabled={!hostSubnets.length || values.hostSubnet === NO_SUBNET_SET}

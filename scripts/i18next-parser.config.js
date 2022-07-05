@@ -3,7 +3,7 @@ module.exports = {
   createOldCatalogs: false,
   keySeparator: false,
   locales: ['en', 'ja'],
-  defaultNS: process.env.TRANSLATION_NAMESPACE ?? 'assisted_installer', // the default file for strings when using useTranslation, etc
+  defaultNS: process.env.TRANSLATION_NAMESPACE, // the default file for strings when using useTranslation, etc
   namespaceSeparator: '~',
   reactNamespace: false,
   useKeysAsDefaultValue: true,

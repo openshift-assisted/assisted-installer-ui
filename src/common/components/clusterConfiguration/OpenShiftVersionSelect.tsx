@@ -13,21 +13,26 @@ import { OpenshiftVersionOptionType } from '../../types';
 import { SelectField } from '../ui';
 import openshiftVersionData from '../../../ocm/data/openshiftVersionsData.json';
 import { diffInDaysBetweenDates } from '../../sevices/DateAndTime';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
-const OpenShiftLifeCycleDatesLink = () => (
-  <a href={OPENSHIFT_LIFE_CYCLE_DATES_LINK} target="_blank" rel="noopener noreferrer">
-    {'Learn more'} <ExternalLinkAltIcon />
-  </a>
-);
+const OpenShiftLifeCycleDatesLink = () => {
+  const { t } = useTranslation();
+  return (
+    <a href={OPENSHIFT_LIFE_CYCLE_DATES_LINK} target="_blank" rel="noopener noreferrer">
+      {t('ai:Learn more')} <ExternalLinkAltIcon />
+    </a>
+  );
+};
 
 const getOpenshiftVersionHelperText =
   // eslint-disable-next-line react/display-name
   (versions: OpenshiftVersionOptionType[]) => (selectedVersionValue: string) => {
+    const { t } = useTranslation();
     if (!versions.length) {
       return (
         <>
           <ExclamationCircleIcon color={dangerColor.value} size="sm" />
-          &nbsp; No release image is available.
+          &nbsp; {t('ai:No release image is available.')}
         </>
       );
     }
@@ -37,7 +42,7 @@ const getOpenshiftVersionHelperText =
       helperTextComponent = (
         <>
           <ExclamationTriangleIcon color={warningColor.value} size="sm" />
-          &nbsp;Please note that this version is not production ready.{' '}
+          &nbsp;{t('ai:Please note that this version is not production ready. ')}
           <OpenShiftLifeCycleDatesLink />
         </>
       );
@@ -49,7 +54,10 @@ const getOpenshiftVersionHelperText =
         <>
           <ExclamationTriangleIcon color={warningColor.value} size="sm" />
           &nbsp;
-          {`Full support for this version ends on ${openshiftVersionData['versions'][selectedVersionValue]} and won't be available as an installation option afterwards.`}
+          {t(
+            "ai:Full support for this version ends on {{openshiftversion}} and won't be available as an installation option afterwards.",
+            { openshiftversion: openshiftVersionData['versions'][selectedVersionValue] },
+          )}
           &nbsp;
           <OpenShiftLifeCycleDatesLink />
         </>
@@ -72,10 +80,10 @@ const OpenShiftVersionSelect: React.FC<OpenShiftVersionSelectProps> = ({ version
         })),
     [versions],
   );
-
+  const { t } = useTranslation();
   return (
     <SelectField
-      label="OpenShift version"
+      label={t('ai:OpenShift version')}
       name="openshiftVersion"
       options={selectOptions}
       getHelperText={getOpenshiftVersionHelperText(versions)}

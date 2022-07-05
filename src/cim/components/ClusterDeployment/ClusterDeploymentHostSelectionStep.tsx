@@ -79,8 +79,9 @@ const getMinHostsCount = (selectedHostsCount: number) => (selectedHostsCount ===
 
 const getValidationSchema = (agentClusterInstall: AgentClusterInstallK8sResource, t: TFunction) => {
   const isSNOCluster = getIsSNOCluster(agentClusterInstall);
+
   const getMinMessage: TestOptionsMessage<{ min: number }> = ({ min }) => {
-    const message = t('ai:Please select at least {{min}} hosts for the cluster', { min: min });
+    const message = t('ai:Please select at least {{min}} hosts for the cluster', { min });
     if (min === 5) {
       return message + t('ai: or select just 3 hosts instead.');
     }
@@ -89,7 +90,7 @@ const getValidationSchema = (agentClusterInstall: AgentClusterInstallK8sResource
 
   return Yup.lazy<ClusterDeploymentHostsSelectionValues>((values) => {
     return Yup.object<ClusterDeploymentHostsSelectionValues>().shape({
-      hostCount: isSNOCluster ? Yup.number() : hostCountValidationSchema,
+      hostCount: isSNOCluster ? Yup.number() : hostCountValidationSchema(t),
       useMastersAsWorkers: Yup.boolean().required(),
       autoSelectedHostIds: values.autoSelectHosts
         ? Yup.array<string>().min(values.hostCount).max(values.hostCount)
@@ -125,7 +126,7 @@ export const useHostsSelectionFormik = ({
 
   const validationSchema = React.useMemo(
     () => getValidationSchema(agentClusterInstall, t),
-    [agentClusterInstall],
+    [agentClusterInstall, t],
   );
 
   return [initialValues, validationSchema];
@@ -175,9 +176,9 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
   const [nextRequested, setNextRequested] = React.useState(false);
   const [showFormErrors, setShowFormErrors] = React.useState(false);
   const selectedAgents = getSelectedAgents(agents, values);
-
+  const { t } = useTranslation();
   const onEditRole = React.useCallback(
-    async (agent, role) => {
+    async (agent: AgentK8sResource, role: string | undefined) => {
       setNextRequested(false);
       setShowClusterErrors(false);
       setSubmitting(true);
@@ -220,7 +221,7 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
   React.useEffect(() => {
     if (nextRequested && !isSubmitting) {
       const agentStatuses = selectedAgents.map(
-        (agent) => getWizardStepAgentStatus(agent, 'hosts-selection').status.key,
+        (agent) => getWizardStepAgentStatus(agent, 'hosts-selection', t).status.key,
       );
       if (
         agentStatuses.some((status) =>
@@ -231,7 +232,7 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
       } else if (
         !!selectedAgents.length &&
         selectedAgents.every(
-          (agent) => getWizardStepAgentStatus(agent, 'hosts-selection').status.key === 'known',
+          (agent) => getWizardStepAgentStatus(agent, 'hosts-selection', t).status.key === 'known',
         )
       ) {
         setShowClusterErrors(true);
@@ -240,8 +241,8 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
         }
       }
     }
-  }, [nextRequested, selectedAgents, agentClusterInstall, setCurrentStepId, isSubmitting]);
-  const { t } = useTranslation();
+  }, [nextRequested, selectedAgents, agentClusterInstall, setCurrentStepId, isSubmitting, t]);
+
   let submittingText: string | undefined = undefined;
 
   if (isSubmitting) {
@@ -308,7 +309,6 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
   const { t } = useTranslation();
 
   const { addAlert } = useAlerts();
-
   const { agents, clusterDeployment, agentClusterInstall } = rest;
 
   const [initialValues, validationSchema] = useHostsSelectionFormik({

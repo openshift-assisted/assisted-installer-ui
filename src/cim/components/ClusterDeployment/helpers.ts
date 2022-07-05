@@ -16,7 +16,6 @@ import { ClusterDeploymentK8sResource, AgentK8sResource } from '../../types';
 import { INFRAENV_GENERATED_AI_FLOW, BMH_HOSTNAME_ANNOTATION } from '../common/constants';
 import { gridSpans } from '@patternfly/react-core';
 import { getErrorMessage } from '../../../common/utils';
-
 export const shouldShowClusterDeploymentValidationOverview = (
   agentClusterInstall?: AgentClusterInstallK8sResource,
 ) => {

@@ -38,19 +38,21 @@ const ClusterDeploymentDetailsTable: React.FC<ClusterDeploymentDetailsTableProps
 }) => {
   const agentClusterInstalls = React.useMemo(() => [agentClusterInstall], [agentClusterInstall]);
   const [hosts, , actionResolver] = useAgentsTable({ agents, agentClusterInstalls });
+  const { t } = useTranslation();
   const content = React.useMemo(
     () => [
-      hostnameColumn(),
-      roleColumn(),
+      hostnameColumn(t),
+      roleColumn(t),
       agentStatusColumn({
         agents,
+        t,
       }),
-      infraEnvColumn(agents),
+      infraEnvColumn(agents, t),
       cpuCoresColumn,
       memoryColumn,
       disksColumn,
     ],
-    [agents],
+    [agents, t],
   );
 
   const paginationProps = usePagination(agents.length);

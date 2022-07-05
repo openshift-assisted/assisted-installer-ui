@@ -94,13 +94,12 @@ const ClusterDeploymentDetails: React.FC<ClusterDeploymentDetailsProps> = ({
                       clusterDeployment={clusterDeployment}
                       agentClusterInstall={agentClusterInstall}
                       fetchSecret={fetchSecret}
-                      t={t}
                     />{' '}
                     <EventsModalButton
                       id="cluster-events-button"
                       entityKind="cluster"
                       cluster={cluster}
-                      title="Cluster Events"
+                      title={t('ai:Cluster Events')}
                       variant={ButtonVariant.link}
                       style={{ textAlign: 'right' }}
                       onFetchEvents={onFetchEvents}

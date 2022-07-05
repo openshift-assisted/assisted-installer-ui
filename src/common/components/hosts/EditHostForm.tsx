@@ -24,6 +24,7 @@ import {
 import { canHostnameBeChanged } from './utils';
 import GridGap from '../ui/GridGap';
 import { EditHostFormValues } from './types';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 export type EditHostFormProps = {
   host: Host;
@@ -62,7 +63,7 @@ const EditHostForm: React.FC<EditHostFormProps> = ({
     hostId: host.id,
     hostname: requestedHostname || '',
   };
-
+  const { t } = useTranslation();
   return (
     <Formik
       validateOnMount
@@ -79,10 +80,10 @@ const EditHostForm: React.FC<EditHostFormProps> = ({
           await onSave(values);
           onCancel();
         } catch (e) {
-          const message = (onFormSaveError && onFormSaveError(e)) || 'Host update failed.';
+          const message = (onFormSaveError && onFormSaveError(e)) || t('ai:Host update failed.');
           formikActions.setStatus({
             error: {
-              title: 'Failed to update host',
+              title: t('ai:Failed to update host'),
               message,
             },
           });
@@ -107,14 +108,14 @@ const EditHostForm: React.FC<EditHostFormProps> = ({
               )}
               <Alert
                 variant={AlertVariant.info}
-                title="This name will replace the original discovered hostname."
+                title={t('ai:This name will replace the original discovered hostname.')}
                 isInline
               />
               <StaticTextField name="discoveredHostname" label="Discovered hostname">
                 {hostname || ''}
               </StaticTextField>
               <RichInputField
-                label="New hostname"
+                label={t('ai:New hostname')}
                 name="hostname"
                 ref={hostnameInputRef}
                 isRequired
@@ -129,10 +130,10 @@ const EditHostForm: React.FC<EditHostFormProps> = ({
               type={ButtonType.submit}
               isDisabled={isSubmitting || !isValid || !dirty}
             >
-              Change
+              {t('ai:Change')}
             </Button>
             <Button key="cancel" variant={ButtonVariant.link} onClick={onCancel}>
-              Cancel
+              {t('ai:Cancel')}
             </Button>
           </ModalBoxFooter>
         </Form>

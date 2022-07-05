@@ -51,7 +51,6 @@ const ClusterDeploymentReviewStep: React.FC<ClusterDeploymentReviewStepProps> = 
   const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
   const [isSubmitting, setSubmitting] = React.useState(false);
   const onBack = () => setCurrentStepId('networking');
-
   const cdName = clusterDeployment.metadata?.name;
   const cdNamespace = clusterDeployment.metadata?.namespace;
 
@@ -68,7 +67,9 @@ const ClusterDeploymentReviewStep: React.FC<ClusterDeploymentReviewStepProps> = 
     try {
       await onFinish();
     } catch (err) {
-      addAlert({ title: err.message || t('ai:An error occured while starting installation.') });
+      addAlert({
+        title: err.message || t('ai:An error occured while starting installation.'),
+      });
     } finally {
       setSubmitting(false);
     }
@@ -112,7 +113,11 @@ const ClusterDeploymentReviewStep: React.FC<ClusterDeploymentReviewStepProps> = 
               value={openShiftVersion}
               testId="openshift-version"
             />
-            <DetailItem title="API IP" value={agentClusterInstall.spec?.apiVIP} testId="api-vip" />
+            <DetailItem
+              title={t('ai:API IP')}
+              value={agentClusterInstall.spec?.apiVIP}
+              testId="api-vip"
+            />
             <DetailItem
               title={t('ai:Ingress IP')}
               value={agentClusterInstall.spec?.ingressVIP}

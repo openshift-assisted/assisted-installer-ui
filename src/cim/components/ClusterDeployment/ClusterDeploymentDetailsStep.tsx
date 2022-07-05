@@ -106,7 +106,6 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
     clusterImages,
     usedClusterNames,
   });
-
   const next = () =>
     isCIMFlow(clusterDeployment)
       ? setCurrentStepId('hosts-selection')

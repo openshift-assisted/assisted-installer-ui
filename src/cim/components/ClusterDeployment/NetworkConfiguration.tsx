@@ -23,23 +23,29 @@ import {
   NO_SUBNET_SET,
   useFeatureSupportLevel,
 } from '../../../common';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   defaultNetworkSettings: ClusterDefaultConfig;
   hideManagedNetworking?: boolean;
 };
 
-const vmsAlert = (
-  <Alert
-    title="Your cluster will be subject to support limitations"
-    variant={AlertVariant.info}
-    isInline={true}
-    data-testid="networking-vms-alert"
-  >
-    Some or all of your discovered hosts are virtual machines, so selecting the cluster-managed
-    networking option will limit your installed cluster's support.
-  </Alert>
-);
+const VmsAlert = () => {
+  const { t } = useTranslation();
+  return (
+    <Alert
+      title="Your cluster will be subject to support limitations"
+      variant={AlertVariant.info}
+      isInline={true}
+      data-testid="networking-vms-alert"
+    >
+      {t(
+        "ai:Some or all of your discovered hosts are virtual machines, so selecting the cluster-managed networking option will limit your installed cluster's support.",
+      )}
+      '
+    </Alert>
+  );
+};
 
 const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   cluster,
@@ -49,12 +55,13 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   hideManagedNetworking,
   children,
 }) => {
+  const { t } = useTranslation();
   const featureSupportLevelData = useFeatureSupportLevel();
   const { setFieldValue, values, touched, validateField } =
     useFormikContext<NetworkConfigurationValues>();
   const clusterFeatureSupportLevels = React.useMemo(() => {
-    return getLimitedFeatureSupportLevels(cluster, featureSupportLevelData);
-  }, [cluster, featureSupportLevelData]);
+    return getLimitedFeatureSupportLevels(cluster, featureSupportLevelData, t);
+  }, [cluster, featureSupportLevelData, t]);
 
   const isMultiNodeCluster = !isSNO(cluster);
   const isClusterCIDRIPv6 = Address6.isValid(values.clusterNetworkCidr || '');
@@ -157,7 +164,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
       {!isUserManagedNetworking &&
         !!clusterFeatureSupportLevels &&
         clusterFeatureSupportLevels['CLUSTER_MANAGED_NETWORKING_WITH_VMS'] === 'unsupported' &&
-        vmsAlert}
+        VmsAlert}
 
       {!(isMultiNodeCluster && isUserManagedNetworking) && (
         <AvailableSubnetsControl
@@ -178,8 +185,8 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
 
       <Checkbox
         id="useAdvancedNetworking"
-        label="Use advanced networking"
-        description="Configure advanced networking properties (e.g. CIDR ranges)."
+        label={t('ai:Use advanced networking')}
+        description={t('ai:Configure advanced networking properties (e.g. CIDR ranges).')}
         isChecked={isAdvanced}
         onChange={toggleAdvConfiguration}
         body={

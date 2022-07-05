@@ -40,6 +40,7 @@ const AgentTable: React.FC<AgentTableProps> = ({
   className,
   onUnbindHost,
 }) => {
+  const { t } = useTranslation();
   const agentClusterInstalls = React.useMemo(() => [agentClusterInstall], [agentClusterInstall]);
   const [hosts, hostActions, actionResolver] = useAgentsTable(
     { agents, agentClusterInstalls },
@@ -49,17 +50,18 @@ const AgentTable: React.FC<AgentTableProps> = ({
   );
   const content = React.useMemo(
     () => [
-      hostnameColumn(hostActions.onEditHost),
-      roleColumn(),
+      hostnameColumn(t, hostActions.onEditHost),
+      roleColumn(t),
       agentStatusColumn({
         agents,
+        t,
       }),
-      infraEnvColumn(agents),
+      infraEnvColumn(agents, t),
       cpuCoresColumn,
       memoryColumn,
       disksColumn,
     ],
-    [agents, hostActions],
+    [agents, hostActions, t],
   );
 
   const paginationProps = usePagination(agents.length);

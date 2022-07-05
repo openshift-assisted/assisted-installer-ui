@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Modal, Button, ModalVariant, ButtonProps, ModalProps } from '@patternfly/react-core';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 type ConfirmationModalProps = {
   title: string;
@@ -19,29 +20,32 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   confirmationButtonVariant = 'danger',
   onClose,
   onConfirm,
-}) => (
-  <Modal
-    title={title}
-    titleIconVariant={titleIconVariant}
-    isOpen={true}
-    onClose={onClose}
-    variant={ModalVariant.small}
-    actions={[
-      <Button
-        data-testid="confirm-modal-submit"
-        key="confirm"
-        variant={confirmationButtonVariant}
-        onClick={onConfirm}
-      >
-        {confirmationButtonText}
-      </Button>,
-      <Button key="cancel" variant="link" onClick={onClose}>
-        Cancel
-      </Button>,
-    ]}
-  >
-    {content}
-  </Modal>
-);
+}) => {
+  const { t } = useTranslation();
+  return (
+    <Modal
+      title={title}
+      titleIconVariant={titleIconVariant}
+      isOpen={true}
+      onClose={onClose}
+      variant={ModalVariant.small}
+      actions={[
+        <Button
+          data-testid="confirm-modal-submit"
+          key="confirm"
+          variant={confirmationButtonVariant}
+          onClick={onConfirm}
+        >
+          {confirmationButtonText}
+        </Button>,
+        <Button key="cancel" variant="link" onClick={onClose}>
+          {t('ai:Cancel')}
+        </Button>,
+      ]}
+    >
+      {content}
+    </Modal>
+  );
+};
 
 export default ConfirmationModal;

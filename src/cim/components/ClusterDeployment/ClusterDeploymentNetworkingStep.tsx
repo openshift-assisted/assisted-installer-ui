@@ -120,7 +120,7 @@ const NetworkingForm: React.FC<NetworkingFormProps> = ({
           title={t('ai:Provided cluster configuration is not valid')}
           isInline
         >
-          {t('ai:The following fields are invalid or missing:')}{' '}
+          {t('ai:The following fields are invalid or missing')}:{' '}
           {errorFields.map((field: string) => CLUSTER_FIELD_LABELS[field] || field).join(', ')}.
         </Alert>
       )}

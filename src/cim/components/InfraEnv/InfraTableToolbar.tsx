@@ -78,9 +78,8 @@ const InfraTableToolbar: React.FC<InfraTableToolbarProps> = ({
 }) => {
   const [statusFilterOpen, setStatusFilterOpen] = React.useState(false);
   const filterStatuses = React.useMemo(() => getStatusesForFiler(agentStatus), []);
-
-  const itemIDs = React.useMemo(() => hosts.map((h) => h.id), [hosts]);
   const { t } = useTranslation();
+  const itemIDs = React.useMemo(() => hosts.map((h) => h.id), [hosts]);
   return (
     <TableToolbar
       selectedIDs={selectedHostIDs || []}

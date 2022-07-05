@@ -9,6 +9,7 @@ import {
   StackItem,
 } from '@patternfly/react-core';
 import { LoadingState } from '../../../common';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 const options = { readOnly: true, scrollBeyondLastLine: false };
 
@@ -45,7 +46,7 @@ const YamlPreview: React.FC<YamlPreviewProps> = ({ children, code, setPreviewOpe
   const editorWillMount = React.useCallback((monaco) => {
     monaco.editor.defineTheme('acm-console', theme);
   }, []);
-
+  const { t } = useTranslation();
   return loading ? (
     <LoadingState content="Loading resources" />
   ) : (
@@ -54,7 +55,7 @@ const YamlPreview: React.FC<YamlPreviewProps> = ({ children, code, setPreviewOpe
         <div>
           <Alert
             isInline
-            title="The resource has been saved and the YAML is now read only."
+            title={t('ai:The resource has been saved and the YAML is now read only.')}
             variant="info"
             actionClose={<AlertActionCloseButton onClose={() => setPreviewOpen(false)} />}
           />

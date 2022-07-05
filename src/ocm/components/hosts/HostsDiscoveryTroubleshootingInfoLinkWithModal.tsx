@@ -1,7 +1,7 @@
 import React from 'react';
 import InfoLinkWithModal from '../ui/InfoLinkWithModal';
 import { pluralize } from 'humanize-plus';
-import { discoveryTroubleshootingModalContent } from '../../../common';
+import { DiscoveryTroubleshootingModalContent } from '../../../common';
 
 export interface HostsDiscoveryTroubleshootingInfoLinkWithModalProps {
   isSingleNode?: boolean;
@@ -16,7 +16,7 @@ const HostsDiscoveryTroubleshootingInfoLinkWithModal = ({
       modalTitle={'Troubleshooting Host Discovery Issues'}
       modalVariant={'large'}
     >
-      {discoveryTroubleshootingModalContent}
+      {DiscoveryTroubleshootingModalContent}
     </InfoLinkWithModal>
   );
 };

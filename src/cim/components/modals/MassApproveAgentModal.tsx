@@ -124,7 +124,7 @@ const MassApproveAgentModal: React.FC<MassApproveAgentModalProps> = ({
       content: [hostnameColumn(agents, t), statusColumn(agents, t)],
       hosts: getAIHosts(agents),
     }),
-    [agents],
+    [agents, t],
   );
 
   const paginationProps = usePagination(hosts.length);

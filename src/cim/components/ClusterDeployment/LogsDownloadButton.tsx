@@ -17,8 +17,8 @@ export const LogsDownloadButton: React.FC<LogsDownloadButtonProps> = ({
   id,
   variant,
 }) => {
-  const logsURL = agentClusterInstall?.status?.debugInfo?.logsURL;
   const { t } = useTranslation();
+  const logsURL = agentClusterInstall?.status?.debugInfo?.logsURL;
   return (
     <Component
       onClick={() => logsURL && saveAs(logsURL, 'logs.tar')}

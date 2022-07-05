@@ -3,6 +3,7 @@ import { Checkbox } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 import { ClusterCreateParams } from '../../api';
 import { PullSecretField, PullSecretInfo } from '../ui';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 export type PullSecretProps = {
   defaultPullSecret?: string;
@@ -13,7 +14,7 @@ const PullSecret: React.FC<PullSecretProps> = ({ defaultPullSecret, isOcm }) => 
   // Fetched pull secret will never change - see LoadingState in NewCluster
   const [isExpanded, setExpanded] = React.useState(!defaultPullSecret);
   const { setFieldValue } = useFormikContext<ClusterCreateParams>();
-
+  const { t } = useTranslation();
   if (isOcm) {
     const onCheckboxChange = () => {
       if (isExpanded) {
@@ -28,12 +29,12 @@ const PullSecret: React.FC<PullSecretProps> = ({ defaultPullSecret, isOcm }) => 
         <Checkbox
           id="checkbox-pull-secret"
           className="pf-u-display-inline-flex"
-          aria-label="edit pull secret"
+          aria-label={t('ai:edit pull secret')}
           isChecked={isExpanded}
           onChange={onCheckboxChange}
           label={
             <>
-              Edit pull secret <PullSecretInfo isOcm={isOcm} />
+              {t('ai:Edit pull secret')} <PullSecretInfo isOcm={isOcm} />
             </>
           }
         />

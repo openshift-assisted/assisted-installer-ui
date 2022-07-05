@@ -97,6 +97,7 @@ const ClusterDeploymentWizardFooter: React.FC<ClusterDeploymentWizardFooterProps
     (c) => c.type === 'SpecSynced' && c.status === 'False',
   )?.message;
 
+  const { t } = useTranslation();
   React.useEffect(() => {
     if (syncError && onSyncError) {
       onSyncError();
@@ -112,7 +113,7 @@ const ClusterDeploymentWizardFooter: React.FC<ClusterDeploymentWizardFooterProps
       hosts={hosts}
     >
       {syncError && (
-        <Alert variant={AlertVariant.danger} title="An error occured" isInline>
+        <Alert variant={AlertVariant.danger} title={t('ai:An error occured')} isInline>
           {syncError}
         </Alert>
       )}

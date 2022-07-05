@@ -13,6 +13,7 @@ import { global_success_color_100 as okColor } from '@patternfly/react-tokens/di
 import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens/dist/esm/global_danger_color_100';
 import ClusterProgressItem from './ClusterProgressItem';
 import capitalize from 'lodash/capitalize';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 type FinalizingProgressProps = {
   cluster: Cluster;
@@ -68,10 +69,11 @@ export const FinalizingProgress: React.FC<FinalizingProgressProps> = ({
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const { finalizingIcon, initializationStatus } = getFinalizingStatus(cluster);
   const closeModal = () => setIsModalOpen(false);
+  const { t } = useTranslation();
   return (
     <>
       <EventsModal
-        title="Cluster Events"
+        title={t('ai:Cluster Events')}
         isOpen={isModalOpen}
         onClose={closeModal}
         hostId={undefined}
@@ -85,27 +87,28 @@ export const FinalizingProgress: React.FC<FinalizingProgressProps> = ({
           {['finalizing', 'pending'].includes(initializationStatus) ? (
             <Popover
               zIndex={300} // set the zIndex below Cluster Events Modal
-              headerContent={<>Initialization</>}
+              headerContent={<>{t('ai:Initialization')}</>}
               bodyContent={
                 <TextContent>
                   <Text>
-                    This stage may take a while to finish. To view detailed information, click the
-                    events log link below.
+                    {t(
+                      'ai:This stage may take a while to finish. To view detailed information, click the events log link below.',
+                    )}
                   </Text>
                 </TextContent>
               }
               footerContent={
                 <Button variant={ButtonVariant.link} isInline onClick={() => setIsModalOpen(true)}>
-                  Open Events Log
+                  {t('ai:Open Events Log')}
                 </Button>
               }
             >
               <Button variant={ButtonVariant.link} isInline>
-                Initialization
+                {t('ai:Initialization')}
               </Button>
             </Popover>
           ) : (
-            'Initialization'
+            t('ai:Initialization')
           )}
           <small>{capitalize(initializationStatus)}</small>
         </>

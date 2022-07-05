@@ -38,6 +38,7 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
   onEditHost,
   onHostSelect,
 }) => {
+  const { t } = useTranslation();
   const [{ value: selectedIDs }] =
     useField<ClusterDeploymentHostsSelectionValues['selectedHostIds']>('selectedHostIds');
 
@@ -84,12 +85,13 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
   const content = React.useMemo(() => {
     return [
       agentHostnameColumn(hosts, matchingAgents, [], actions.onEditHost, actions.canEditHostname),
-      ...(addAll ? [infraEnvColumn(matchingAgents)] : []),
+      ...(addAll ? [infraEnvColumn(matchingAgents, t)] : []),
       agentStatusColumn({
         agents: matchingAgents,
         wizardStepId: 'hosts-selection',
+        t,
       }),
-      roleColumn(actions.canEditRole, actions.onEditRole, undefined, addAll ? 'left' : 'right'),
+      roleColumn(t, actions.canEditRole, actions.onEditRole, undefined, undefined),
       ...(addAll ? [cpuCoresColumn, memoryColumn, disksColumn] : []),
     ];
   }, [
@@ -100,10 +102,10 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
     hosts,
     actions.onEditHost,
     actions.canEditHostname,
+    t,
   ]);
 
   const paginationProps = usePagination(hosts.length);
-  const { t } = useTranslation();
   return (
     <HostsTable
       hosts={hosts}

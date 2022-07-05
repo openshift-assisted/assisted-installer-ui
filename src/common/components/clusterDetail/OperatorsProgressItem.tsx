@@ -16,6 +16,8 @@ import { OPERATOR_LABELS } from '../../config';
 import ClusterProgressItem from './ClusterProgressItem';
 
 import './OperatorsProgressItem.css';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { TFunction } from 'i18next';
 
 export function getAggregatedStatus(operators: MonitoredOperatorsList) {
   const operatorStates: (OperatorStatus | 'pending')[] = operators.map(
@@ -29,21 +31,29 @@ export function getAggregatedStatus(operators: MonitoredOperatorsList) {
 
 export const getOperatorCountString = (count: number) => `${count} ${pluralize(count, 'operator')}`;
 
-export function getOperatorsLabel(operators: MonitoredOperatorsList) {
+export function getOperatorsLabel(operators: MonitoredOperatorsList, t: TFunction) {
   const failedOperatorsCount = operators.filter((o) => o.status === 'failed').length;
   const status = getAggregatedStatus(operators);
   const operatorsCountString = getOperatorCountString(operators.length);
+
   switch (status) {
     case 'available':
-      return `${operatorsCountString} installed`;
+      return t('ai:{{operatorsCountString}} installed', {
+        operatorsCountString: operatorsCountString,
+      });
     case 'failed':
       return operators.length > 1
         ? `${failedOperatorsCount}/${operatorsCountString} failed`
         : `${getOperatorCountString(failedOperatorsCount)} failed`;
     case 'progressing':
-      return `Installing ${operatorsCountString}`;
+      return t('ai:Installing {{operatorsCountString}}', {
+        operatorsCountString: operatorsCountString,
+      });
+
     default:
-      return `Pending - ${operatorsCountString}`;
+      return t('ai: Pending - {{operatorsCountString}}', {
+        operatorsCountString: operatorsCountString,
+      });
   }
 }
 
@@ -66,9 +76,10 @@ type OperatorsPopoverProps = {
 };
 
 const OperatorsPopover: React.FC<OperatorsPopoverProps> = ({ operators, children }) => {
+  const { t } = useTranslation();
   return (
     <Popover
-      headerContent={<div>Operators</div>}
+      headerContent={<div>{t('ai:Operators')}</div>}
       bodyContent={
         <List className="operators-progress-item__operators-list">
           {operators.map((operator) => {
@@ -98,15 +109,15 @@ type OperatorsProgressItemProps = {
 };
 
 const OperatorsProgressItem: React.FC<OperatorsProgressItemProps> = ({ operators }) => {
+  const { t } = useTranslation();
   const icon = getOperatorsIcon(getAggregatedStatus(operators));
-  const label = getOperatorsLabel(operators);
-
+  const label = getOperatorsLabel(operators, t);
   return (
     <ClusterProgressItem icon={icon}>
       <>
         <OperatorsPopover operators={operators}>
           <Button variant={ButtonVariant.link} isInline data-testid="operators-progress-item">
-            Operators
+            {t('ai:Operators')}
           </Button>
         </OperatorsPopover>
         <small>{label}</small>

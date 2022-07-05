@@ -4,10 +4,12 @@ import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 const AgentsSelectionHostCountLabelIcon = () => {
   const { t } = useTranslation();
-  <PopoverIcon
-    position="right"
-    bodyContent={t('ai:Total count of hosts to be included in the cluster.')}
-  />;
+  return (
+    <PopoverIcon
+      position="right"
+      bodyContent={t('ai:Total count of hosts to be included in the cluster.')}
+    />
+  );
 };
 
 export default AgentsSelectionHostCountLabelIcon;

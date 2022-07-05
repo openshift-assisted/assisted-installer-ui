@@ -6,6 +6,7 @@ import { DASH } from '../constants';
 import { stringToJSON } from '../../api';
 import { isSNO } from '../../selectors';
 import { Validation, ValidationsInfo as HostValidationsInfo } from '../../types/hosts';
+import { TFunction } from 'i18next';
 
 export const canEnable = (clusterStatus: Cluster['status'], status: Host['status']) =>
   ['pending-for-input', 'insufficient', 'ready', 'adding-hosts'].includes(clusterStatus) &&
@@ -113,12 +114,13 @@ export const canHostnameBeChanged = (hostStatus: Host['status']) =>
     'pending-for-input',
   ].includes(hostStatus);
 
-export const getHostRole = (host: Host, schedulableMasters?: boolean): string => {
+export const getHostRole = (host: Host, t: TFunction, schedulableMasters?: boolean): string => {
   let roleLabel = `${
     HOST_ROLES.find((role) => role.value === host.role)?.label || HOST_ROLES[0].label
   }`;
+
   if (schedulableMasters && host.role === 'master') {
-    roleLabel = 'Control plane node, Worker';
+    roleLabel = t('ai:Control plane node, Worker');
   }
   return `${roleLabel}${host.bootstrap ? ' (bootstrap)' : ''}`;
 };
@@ -140,15 +142,15 @@ export const getEnabledHosts = (hosts: Host[] = []) =>
 export const getHostname = (host: Host, inventory: Inventory) =>
   host.requestedHostname || inventory.hostname || '';
 
-export const getHardwareTypeText = (inventory: Inventory) => {
+export const getHardwareTypeText = (inventory: Inventory, t: TFunction) => {
   let hardwareTypeText = DASH;
   const { systemVendor } = inventory;
 
   if (systemVendor !== undefined) {
     if (systemVendor.virtual) {
-      hardwareTypeText = 'Virtual machine';
+      hardwareTypeText = t('ai:Virtual machine');
     } else {
-      hardwareTypeText = 'Bare metal';
+      hardwareTypeText = t('ai:Bare metal');
     }
   }
 

@@ -2,6 +2,7 @@ import React from 'react';
 import { Alert, AlertVariant, List, ListComponent, ListItem } from '@patternfly/react-core';
 import { Link } from 'react-router-dom';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { Trans } from 'react-i18next';
 
 const NoAgentsAlert = () => {
   const { t } = useTranslation();
@@ -13,11 +14,10 @@ const NoAgentsAlert = () => {
       <br />
       <List component={ListComponent.ol}>
         <ListItem>
-          {t('ai:Add hosts to an')}{' '}
-          <Link to="/multicloud/infrastructure/environments">
-            {' '}
-            {t('ai:infrastructure environment')}
-          </Link>
+          <Trans t={t}>
+            ai:Add hosts to an{' '}
+            <Link to="/multicloud/infrastructure/environments"> infrastructure environment</Link>
+          </Trans>
         </ListItem>
         <ListItem>
           {t('ai:Continue configuration by editing this cluster and utilize the newly added hosts')}

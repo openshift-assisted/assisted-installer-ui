@@ -18,6 +18,7 @@ import HostsTable from '../../../common/components/hosts/HostsTable';
 import { ExpandComponentProps } from '../../../common/components/hosts/AITable';
 import { UpdateDay2ApiVipDialogToggle } from './UpdateDay2ApiVipDialogToggle';
 import HostsTableEmptyState from '../hosts/HostsTableEmptyState';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 const ExpandComponent: React.FC<ExpandComponentProps<Host>> = ({ obj }) => {
   return (
@@ -37,11 +38,11 @@ export interface ClusterHostsTableProps {
 const ClusterHostsTable: React.FC<ClusterHostsTableProps> = ({ cluster, skipDisabled }) => {
   const { onEditHost, actionChecks, onEditRole, actionResolver, ...modalProps } =
     useHostsTable(cluster);
-
+  const { t } = useTranslation();
   const content = React.useMemo(
     () => [
-      hostnameColumn(onEditHost, undefined, actionChecks.canEditHostname),
-      roleColumn(actionChecks.canEditRole, onEditRole, getSchedulableMasters(cluster)),
+      hostnameColumn(t, onEditHost, undefined, actionChecks.canEditHostname),
+      roleColumn(t, actionChecks.canEditRole, onEditRole, getSchedulableMasters(cluster)),
       statusColumn(AdditionalNTPSourcesDialogToggle, onEditHost, UpdateDay2ApiVipDialogToggle),
       discoveredAtColumn,
       cpuCoresColumn,

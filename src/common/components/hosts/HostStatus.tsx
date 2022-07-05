@@ -27,6 +27,8 @@ import { toSentence } from '../ui/table/utils';
 import { HostStatusProps } from './types';
 import { UpdateDay2ApiVipPropsType } from './HostValidationGroups';
 import { UnknownIcon } from '@patternfly/react-icons';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { TFunction } from 'i18next';
 
 const getTitleWithProgress = (host: Host, status: HostStatusProps['status']) => {
   const stages = getHostProgressStages(host);
@@ -45,15 +47,17 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({
 }) => {
   const { host } = props;
   const { status, statusInfo } = host;
-
+  const { t } = useTranslation();
   if (status === 'added-to-existing-cluster') {
     return (
       <TextContent>
         <Text>
-          This host was successfully installed.
+          {t('ai:This host was successfully installed.')}
           <br />
-          To finish adding it to the cluster, approve its join request inside OpenShift Console's
-          Nodes section. Note that it may take a few minutes for the join request to appear.
+          {t(
+            "ai:To finish adding it to the cluster, approve its join request inside OpenShift Console's Nodes section. Note that it may take a few minutes for the join request to appear.",
+          )}
+          '
         </Text>
       </TextContent>
     );
@@ -121,6 +125,7 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({
 
 const HostStatusPopoverFooter: React.FC<{ host: Host }> = ({ host }) => {
   const { progress, statusUpdatedAt } = host;
+  const { t } = useTranslation();
 
   if (host.status === 'added-to-existing-cluster') {
     return (
@@ -129,20 +134,22 @@ const HostStatusPopoverFooter: React.FC<{ host: Host }> = ({ host }) => {
       />
     );
   }
-
   let footerText;
   if (host.status === 'installing-in-progress') {
     if (progress?.stageUpdatedAt && progress.stageUpdatedAt !== progress.stageStartedAt) {
-      footerText = `Step started at ${getHumanizedDateTime(
-        progress.stageStartedAt,
-      )}, updated ${hdate.relativeTime(progress.stageUpdatedAt)}`;
+      footerText = t('ai: Step started at {{startedAt}}, updated {{updatedAt}}', {
+        startedAt: getHumanizedDateTime(progress.stageStartedAt),
+        updatedAt: hdate.relativeTime(progress.stageUpdatedAt),
+      });
     } else {
-      footerText = `Step started at ${getHumanizedDateTime(
-        progress?.stageStartedAt || statusUpdatedAt,
-      )}`;
+      footerText = t('ai:Step started at {{startedAt}}', {
+        startedAt: getHumanizedDateTime(progress?.stageStartedAt || statusUpdatedAt),
+      });
     }
   } else if (statusUpdatedAt) {
-    footerText = `Status updated at ${getHumanizedDateTime(statusUpdatedAt)}`;
+    footerText = t('ai:Status updated at {{humanizedDataTime}}', {
+      humanizedDataTime: getHumanizedDateTime(statusUpdatedAt),
+    });
   }
 
   return <>{!!footerText && <small>{footerText}</small>}</>;
@@ -158,6 +165,7 @@ type WithHostStatusPopoverProps = AdditionNtpSourcePropsType &
     isSmall?: ButtonProps['isSmall'];
     details?: string;
     zIndex?: number;
+    t: TFunction;
   };
 
 const WithHostStatusPopover: React.FC<WithHostStatusPopoverProps> = (props) => (
@@ -195,7 +203,7 @@ const HostStatus: React.FC<HostStatusProps> = ({
 
   const { title, icon, sublabel, details, noPopover } = status;
   const titleWithProgress = getTitleWithProgress(host, status);
-
+  const { t } = useTranslation();
   const popoverProps: WithHostStatusPopoverProps = {
     hideOnOutsideClick: !keepOnOutsideClick,
     host,
@@ -206,6 +214,7 @@ const HostStatus: React.FC<HostStatusProps> = ({
     details,
     UpdateDay2ApiVipDialogToggleComponent,
     zIndex,
+    t,
   };
 
   return (

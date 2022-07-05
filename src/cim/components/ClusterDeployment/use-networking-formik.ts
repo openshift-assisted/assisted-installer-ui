@@ -136,7 +136,7 @@ export const useInfraEnvProxies = ({ agents, fetchInfraEnv }: UseInfraEnvProxies
     };
 
     void fetch();
-  }, [memoInfraEnvs, fetchInfraEnv, setInfraEnvs, setInfraEnvsError]);
+  }, [memoInfraEnvs, fetchInfraEnv, setInfraEnvs, setInfraEnvsError, t]);
 
   return {
     infraEnvWithProxy,

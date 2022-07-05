@@ -43,6 +43,7 @@ type ClusterDeploymentHostsNetworkTableProps = Pick<
 const ClusterDeploymentHostsNetworkTable: React.FC<ClusterDeploymentHostsNetworkTableProps> =
   // eslint-disable-next-line react/display-name
   React.memo(({ clusterDeployment, agentClusterInstall, agents, onEditHost, onEditRole }) => {
+    const { t } = useTranslation();
     const cluster = React.useMemo(
       () => getAICluster({ clusterDeployment, agentClusterInstall, agents }),
       [clusterDeployment, agentClusterInstall, agents],
@@ -60,29 +61,30 @@ const ClusterDeploymentHostsNetworkTable: React.FC<ClusterDeploymentHostsNetwork
       () =>
         isSNOCluster
           ? [
-              hostnameColumn(hostActions.onEditHost, hosts),
+              hostnameColumn(t, hostActions.onEditHost, hosts),
               agentStatusColumn({
                 agents,
                 onEditHostname: onEditHost,
                 wizardStepId: 'networking',
+                t,
               }),
               activeNICColumn(cluster),
             ]
           : [
-              hostnameColumn(hostActions.onEditHost, hosts),
-              roleColumn(hostActions.canEditRole, hostActions.onEditRole),
+              hostnameColumn(t, hostActions.onEditHost, hosts),
+              roleColumn(t, hostActions.canEditRole, hostActions.onEditRole),
               agentStatusColumn({
                 agents,
                 onEditHostname: onEditHost,
                 wizardStepId: 'networking',
+                t,
               }),
               activeNICColumn(cluster),
             ],
-      [isSNOCluster, onEditHost, hosts, agents, hostActions, cluster],
+      [isSNOCluster, onEditHost, hosts, agents, hostActions, cluster, t],
     );
 
     const paginationProps = usePagination(hosts.length);
-    const { t } = useTranslation();
     return (
       <HostsTable
         testId="networking-host-table"

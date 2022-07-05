@@ -14,11 +14,7 @@ type LabelsSelectorProps = {
   name?: string;
 };
 
-const LabelsSelector: React.FC<LabelsSelectorProps> = ({
-  agents,
-  labelKeysFilter,
-  name = 'agentLabels',
-}) => {
+const LabelsSelector: React.FC<LabelsSelectorProps> = ({ agents, labelKeysFilter }) => {
   const agentLabelOptions = Array.from(
     new Set(
       flatten(
@@ -40,10 +36,12 @@ const LabelsSelector: React.FC<LabelsSelectorProps> = ({
   return (
     <MultiSelectField
       idPostfix="agentLabels"
-      name={name}
+      name="agentLabels"
       label={t('ai:Labels matching hosts')}
       placeholderText="app=frontend"
-      helperText={t('Provide as many labels as you can to narrow the list to relevant hosts only.')}
+      helperText={t(
+        'ai:Provide as many labels as you can to narrow the list to relevant hosts only.',
+      )}
       options={agentLabelOptions}
     />
   );

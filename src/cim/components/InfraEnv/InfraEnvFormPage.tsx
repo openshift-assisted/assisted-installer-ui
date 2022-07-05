@@ -19,6 +19,7 @@ import {
 } from '@patternfly/react-core';
 import { Formik, FormikProps, useFormikContext } from 'formik';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 import {
   httpProxyValidationSchema,
@@ -45,8 +46,8 @@ import {
 
 import './infra-env.css';
 import { getErrorMessage } from '../../../common/utils';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
+import { TFunction } from 'i18next';
 export type EnvironmentStepFormValues = {
   name: string;
   location: string;
@@ -62,12 +63,12 @@ export type EnvironmentStepFormValues = {
   additionalNtpSources: string;
 };
 
-const validationSchema = (usedNames: string[]) =>
+const validationSchema = (usedNames: string[], t: TFunction) =>
   Yup.lazy<EnvironmentStepFormValues>((values) =>
     Yup.object<EnvironmentStepFormValues>().shape({
       name: richNameValidationSchema(usedNames),
-      location: locationValidationSchema.required('Location is a required field.'),
-      pullSecret: pullSecretValidationSchema.required('Pull secret is a required field.'),
+      location: locationValidationSchema.required(t('ai:Location is a required field.')),
+      pullSecret: pullSecretValidationSchema.required(t('ai:Pull secret is a required field.')),
       sshPublicKey: sshPublicKeyValidationSchema,
       httpProxy: httpProxyValidationSchema(values, 'httpsProxy'),
       httpsProxy: httpProxyValidationSchema(values, 'httpProxy'), // share the schema, httpS is currently not supported
@@ -128,7 +129,7 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged }) => {
           />
           <FormGroup
             fieldId="network-type"
-            label="Network type"
+            label={t('ai:Network type')}
             labelIcon={
               <PopoverIcon
                 noVerticalAlign
@@ -250,7 +251,7 @@ export const InfraEnvFormPage: React.FC<InfraEnvFormPageProps> = ({
     <Formik
       initialValues={initialValues}
       initialStatus={{ error: null }}
-      validate={getRichTextValidation(validationSchema(usedNames))}
+      validate={getRichTextValidation(validationSchema(usedNames, t))}
       onSubmit={async (values: EnvironmentStepFormValues) => {
         try {
           await onSubmit?.(values);
@@ -304,7 +305,7 @@ export const InfraEnvFormPage: React.FC<InfraEnvFormPageProps> = ({
                   {t('ai:Create')} {isSubmitting && <Spinner isSVG size="md" />}
                 </Button>
                 <Button variant="link" onClick={onClose} isDisabled={isSubmitting}>
-                  {t('Cancel')}
+                  {t('ai:Cancel')}
                 </Button>
               </>
             </StackItem>

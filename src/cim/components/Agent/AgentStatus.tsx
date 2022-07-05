@@ -30,11 +30,10 @@ const AgentStatus: React.FC<AgentStatusProps> = ({
   const pendingApproval = !agent.spec.approved;
 
   const hostname = getHostname(host, agent.status?.inventory || {});
-
-  const status = wizardStepId
-    ? getWizardStepAgentStatus(agent, wizardStepId)
-    : getAgentStatus(agent);
   const { t } = useTranslation();
+  const status = wizardStepId
+    ? getWizardStepAgentStatus(agent, wizardStepId, t)
+    : getAgentStatus(agent);
 
   return (
     <HostStatus
@@ -49,18 +48,14 @@ const AgentStatus: React.FC<AgentStatusProps> = ({
           aria-label={t('ai:Approve host popover')}
           minWidth="30rem"
           maxWidth="50rem"
-          headerContent={t('ai:<div>Approve host to join infrastructure environment</div>')}
+          headerContent={<div>{t('ai:Approve host to join infrastructure environment')}</div>}
           bodyContent={
             <Stack hasGutter>
               <StackItem>
                 {t('ai:Make sure that you expect and recognize the host before approving.')}
               </StackItem>
               <StackItem>
-                {hostname && (
-                  <>
-                    {t('ai:Hostname:')} {hostname}
-                  </>
-                )}
+                {hostname && <>{t('ai:Hostname: {{hostname}}', { hostname })}</>}
               </StackItem>
             </Stack>
           }

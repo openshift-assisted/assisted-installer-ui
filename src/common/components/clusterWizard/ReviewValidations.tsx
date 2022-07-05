@@ -31,19 +31,22 @@ import {
   FailingValidationsFC,
   ValidationActionLinkFC,
 } from './types';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { Trans } from 'react-i18next';
 
-const AllValidationsPassed = () => (
-  <>
-    <CheckCircleIcon color={okColor.value} /> All validations passed
-  </>
-);
+const AllValidationsPassed = () => {
+  const { t } = useTranslation();
+  return (
+    <>
+      <CheckCircleIcon color={okColor.value} /> {t('ai:All validations passed')}
+    </>
+  );
+};
 
-const PendingValidations: React.FC<{ id: string; count: number }> = ({ id, count }) => (
-  <div id={id}>
-    There {count === 1 ? 'is' : 'are'} still {count} pending validation
-    {count === 1 ? '' : 's'}.
-  </div>
-);
+const PendingValidations: React.FC<{ id: string; count: number }> = ({ id, count }) => {
+  const { t } = useTranslation();
+  return <div id={id}>{t('ai:There is still {{count}} pending validation', { count: count })}</div>;
+};
 
 const ValidationActionLink: ValidationActionLinkFC = ({
   step,
@@ -64,11 +67,14 @@ const FailingValidation: FailingValidationsFC = ({
   wizardStepNames,
   wizardStepsValidationsMap,
 }) => {
-  const issue = `${
-    HOST_VALIDATION_LABELS[validation.id] ||
-    CLUSTER_VALIDATION_LABELS[validation.id] ||
-    validation.id
-  } check failed. `;
+  const { t } = useTranslation();
+
+  const issue = t('ai:{{check_failed}} check failed', {
+    check_failed:
+      HOST_VALIDATION_LABELS[validation.id] ||
+      CLUSTER_VALIDATION_LABELS[validation.id] ||
+      validation.id,
+  });
 
   let fix;
   // eslint-disable-next-line
@@ -76,19 +82,22 @@ const FailingValidation: FailingValidationsFC = ({
     { validationId: validation.id, clusterGroup, hostGroup },
     wizardStepsValidationsMap,
   );
+
   if (step === 'review') {
     // no sooner step, so the user can not do anything about it ...
-    fix = 'Please wait till all validations are finished.';
+    fix = t('ai:Please wait till all validations are finished.');
   } else if (step) {
     fix = (
       <>
-        It can be fixed in the{' '}
-        <ValidationActionLink
-          step={step}
-          setCurrentStepId={setCurrentStepId}
-          wizardStepNames={wizardStepNames}
-        />{' '}
-        step.
+        <Trans t={t}>
+          ai:It can be fixed in the{' '}
+          <ValidationActionLink
+            step={step}
+            setCurrentStepId={setCurrentStepId}
+            wizardStepNames={wizardStepNames}
+          />{' '}
+          step.
+        </Trans>
       </>
     );
   } else {

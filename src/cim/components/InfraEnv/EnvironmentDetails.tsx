@@ -76,7 +76,7 @@ const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({
 
   const namespace = infraEnv.metadata?.namespace ?? '';
   const pullSecretName = infraEnv.spec?.pullSecretRef?.name ?? '';
-
+  const { t } = useTranslation();
   React.useEffect(() => {
     const fetch = async () => {
       try {
@@ -88,15 +88,14 @@ const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({
         setPullSecret(undefined);
         // eslint-disable-next-line
         if ((err as any).code !== 404) {
-          setPullSecretError((err as Error).message || 'Could not fetch pull secret');
+          setPullSecretError((err as Error).message || t('ai:Could not fetch pull secret'));
         }
       } finally {
         setPullSecretLoading(false);
       }
     };
     void fetch();
-  }, [namespace, pullSecretName, fetchSecret, editPullSecret]);
-  const { t } = useTranslation();
+  }, [namespace, pullSecretName, fetchSecret, editPullSecret, t]);
   return (
     <>
       <Grid hasGutter>
@@ -166,17 +165,17 @@ const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({
               <DescriptionListDescription>
                 <>
                   <EditItem
-                    title="Pull secret"
+                    title={t('ai:Pull secret')}
                     onEdit={() => setEditPullSecret(true)}
                     isLoading={pullSecretLoading}
                     isWarning={!pullSecret}
                   />
                   <EditItem
-                    title="SSH public key"
+                    title={t('ai:SSH public key')}
                     onEdit={() => setEditSSHKey(true)}
                     isWarning={!infraEnv.spec?.sshAuthorizedKey}
                   />
-                  <EditItem title="NTP sources" onEdit={() => setEditNtpSources(true)} />
+                  <EditItem title={t('ai:NTP sources')} onEdit={() => setEditNtpSources(true)} />
                 </>
               </DescriptionListDescription>
             </DescriptionListGroup>

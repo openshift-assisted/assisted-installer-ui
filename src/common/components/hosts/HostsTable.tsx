@@ -13,7 +13,7 @@ import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
 import { WithTestID } from '../../types';
 import EmptyState from '../ui/uiState/EmptyState';
 import { usePagination } from './usePagination';
-import { pluralize } from 'humanize-plus';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 const getHostId = (host: Host) => host.id;
 
@@ -25,22 +25,25 @@ type HostsTableEmptyStateProps = {
 export const HostsTableEmptyState: React.FC<HostsTableEmptyStateProps> = ({
   setDiscoveryHintModalOpen,
   isSNO = false,
-}) => (
-  <EmptyState
-    icon={ConnectedIcon}
-    title={`Waiting for ${pluralize(+isSNO, 'host')}...`}
-    content="Hosts may take a few minutes to appear here after booting."
-    secondaryActions={
-      setDiscoveryHintModalOpen && [
-        <HostsNotShowingLink
-          key="hosts-not-showing"
-          isSNO={isSNO}
-          setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
-        />,
-      ]
-    }
-  />
-);
+}) => {
+  const { t } = useTranslation();
+  return (
+    <EmptyState
+      icon={ConnectedIcon}
+      title={t('ai:Waiting for host...', { count: +isSNO })}
+      content={t('ai:Hosts may take a few minutes to appear here after booting.')}
+      secondaryActions={
+        setDiscoveryHintModalOpen && [
+          <HostsNotShowingLink
+            key="hosts-not-showing"
+            isSNO={isSNO}
+            setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
+          />,
+        ]
+      }
+    />
+  );
+};
 
 export const DefaultExpandComponent: React.FC<ExpandComponentProps<Host>> = ({ obj }) => (
   <HostDetail key={obj.id} host={obj} />

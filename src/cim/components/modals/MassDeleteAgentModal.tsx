@@ -68,6 +68,7 @@ const statusColumn = (
     const agent = agents.find((a) => a.metadata?.uid === host.id);
     const clusterName = agent?.spec.clusterDeploymentName?.name;
     const bmh = bmhs?.find((b) => b.metadata?.uid === host.id);
+
     let bmhStatus;
     let title: React.ReactNode = '--';
     if (agent) {
@@ -79,17 +80,17 @@ const statusColumn = (
           <FlexItem align={{ default: 'alignRight' }}>
             <Popover
               aria-label={t('ai:Cluster popover')}
-              headerContent={t('<div>Cannot be deleted</div>')}
+              headerContent={<div>{t('ai:Cannot be deleted')}</div>}
               bodyContent={
                 <div>
                   {t(
-                    'Hosts that are bound to a cluster cannot be deleted. Remove the host from the cluster and try again.',
+                    'ai:Hosts that are bound to a cluster cannot be deleted. Remove the host from the cluster and try again.',
                   )}
                 </div>
               }
               footerContent={
                 <Link to={`/multicloud/infrastructure/clusters/details/${clusterName}/`}>
-                  {t('Go to cluster {{clusterName}}', { clusterName: clusterName })}
+                  {t('ai:Go to cluster {{clusterName}}', { clusterName })}
                 </Link>
               }
             >

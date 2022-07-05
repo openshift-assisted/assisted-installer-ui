@@ -24,6 +24,8 @@ import { getAgentStatus, getBMHStatus, getWizardStepAgentStatus } from '../helpe
 import { filterByHostname } from '../../../common/components/hosts/utils';
 import { agentStatus, bmhStatus } from '../helpers/agentStatus';
 import noop from 'lodash/noop';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { TFunction } from 'i18next';
 
 export const agentHostnameColumn = (
   hosts: Host[],
@@ -78,35 +80,38 @@ export const agentHostnameColumn = (
 export const discoveryTypeColumn = (
   agents: AgentK8sResource[],
   bareMetalHosts: BareMetalHostK8sResource[],
-): TableRow<Host> => ({
-  header: {
-    title: 'Discovery type',
-    props: {
-      id: 'col-header-discovery-type',
+  t: TFunction,
+): TableRow<Host> => {
+  return {
+    header: {
+      title: t('ai:Discovery type'),
+      props: {
+        id: 'col-header-discovery-type',
+      },
+      transforms: [sortable],
     },
-    transforms: [sortable],
-  },
-  cell: (host) => {
-    const agent = agents.find((a) => a.metadata?.uid === host.id);
-    let discoveryType = 'Unknown';
-    if (agent) {
-      // eslint-disable-next-line no-prototype-builtins
-      discoveryType = agent?.metadata?.labels?.hasOwnProperty(AGENT_BMH_NAME_LABEL_KEY)
-        ? 'BMC'
-        : 'Discovery ISO';
-    } else {
-      const bmh = bareMetalHosts.find((bmh) => bmh.metadata?.uid === host.id);
-      if (bmh) {
-        discoveryType = 'BMC';
+    cell: (host) => {
+      const agent = agents.find((a) => a.metadata?.uid === host.id);
+      let discoveryType = 'Unknown';
+      if (agent) {
+        // eslint-disable-next-line no-prototype-builtins
+        discoveryType = agent?.metadata?.labels?.hasOwnProperty(AGENT_BMH_NAME_LABEL_KEY)
+          ? 'BMC'
+          : 'Discovery ISO';
+      } else {
+        const bmh = bareMetalHosts.find((bmh) => bmh.metadata?.uid === host.id);
+        if (bmh) {
+          discoveryType = 'BMC';
+        }
+        return {
+          title: discoveryType,
+          props: { 'data-testid': 'discovery-type' },
+          sortableValue: discoveryType,
+        };
       }
-    }
-    return {
-      title: discoveryType,
-      props: { 'data-testid': 'discovery-type' },
-      sortableValue: discoveryType,
-    };
-  },
-});
+    },
+  };
+};
 
 type AgentStatusColumnProps = {
   agents: AgentK8sResource[];
@@ -114,6 +119,7 @@ type AgentStatusColumnProps = {
   onEditHostname?: AgentTableActions['onEditHost'];
   onApprove?: AgentTableActions['onApprove'];
   wizardStepId?: ClusterDeploymentWizardStepsType;
+  t: TFunction;
 };
 
 export const agentStatusColumn = ({
@@ -122,6 +128,7 @@ export const agentStatusColumn = ({
   onEditHostname,
   onApprove,
   wizardStepId,
+  t,
 }: AgentStatusColumnProps): TableRow<Host> => {
   return {
     header: {
@@ -156,7 +163,7 @@ export const agentStatusColumn = ({
         props: { 'data-testid': 'host-status' },
         sortableValue: agent
           ? wizardStepId
-            ? getWizardStepAgentStatus(agent, wizardStepId).status.title
+            ? getWizardStepAgentStatus(agent, wizardStepId, t).status.title
             : getAgentStatus(agent).status.title
           : bmhStatus?.state.title || '',
       };
@@ -167,10 +174,11 @@ export const agentStatusColumn = ({
 export const clusterColumn = (
   agents: AgentK8sResource[],
   getClusterDeploymentLink: (cd: { name: string; namespace: string }) => string | React.ReactNode,
+  t: TFunction,
 ): TableRow<Host> => {
   return {
     header: {
-      title: 'Cluster',
+      title: t('ai:Cluster'),
       props: {
         id: 'col-header-cluster',
       },
@@ -198,10 +206,10 @@ export const clusterColumn = (
   };
 };
 
-export const infraEnvColumn = (agents: AgentK8sResource[]): TableRow<Host> => {
+export const infraEnvColumn = (agents: AgentK8sResource[], t: TFunction): TableRow<Host> => {
   return {
     header: {
-      title: 'Infrastructure env',
+      title: t('ai:Infrastructure env'),
       props: {
         id: 'col-header-infraenv',
       },
@@ -228,27 +236,30 @@ export const infraEnvColumn = (agents: AgentK8sResource[]): TableRow<Host> => {
   };
 };
 
-export const canEditBMH = (bmh: BareMetalHostK8sResource): ActionCheck => {
+export const canEditBMH = (bmh: BareMetalHostK8sResource, t: TFunction): ActionCheck => {
   const canEdit = [
     bmhStatus.deprovisioning.key,
     bmhStatus.pending.key,
     bmhStatus.registering.key,
   ].includes(getBMHStatus(bmh).state.key);
+
   return [
     canEdit,
     canEdit
       ? undefined
-      : 'Bare metal host cannot be edited. Remove this host and add it again if a change is needed.',
+      : t(
+          'ai:Bare metal host cannot be edited. Remove this host and add it again if a change is needed.',
+        ),
   ];
 };
 
-export const canEditAgent = (agent: AgentK8sResource): ActionCheck => {
+export const canEditAgent = (agent: AgentK8sResource, t: TFunction): ActionCheck => {
   const enabled = getAgentStatus(agent).status.category !== 'Installation related';
   return [
     enabled,
     enabled
       ? undefined
-      : 'Hostname cannot be edited while host is either installed or being installed.',
+      : t('ai:Hostname cannot be edited while host is either installed or being installed.'),
   ];
 };
 
@@ -256,15 +267,16 @@ export const canChangeHostname =
   (
     agents: AgentK8sResource[],
     bareMetalHosts: BareMetalHostK8sResource[],
+    t: TFunction,
   ): ((h: Host) => ActionCheck) =>
   (h: Host) => {
     const agent = agents.find((a) => a.metadata?.uid === h.id);
     if (agent) {
-      return canEditAgent(agent);
+      return canEditAgent(agent, t);
     }
     const bmh = bareMetalHosts.find((bmh) => bmh.metadata?.uid === h.id);
     if (bmh) {
-      return canEditBMH(bmh);
+      return canEditBMH(bmh, t);
     }
     return [true, undefined];
   };
@@ -272,9 +284,10 @@ export const canChangeHostname =
 export const canUnbindAgent = (
   agentClusterInstalls: AgentClusterInstallK8sResource[] | undefined,
   agent: AgentK8sResource,
+  t: TFunction,
 ): ActionCheck => {
   if (!agent?.spec.clusterDeploymentName?.name) {
-    return [false, 'The agent is not bound to a cluster.'];
+    return [false, t('ai:The agent is not bound to a cluster.')];
   }
 
   const { status } = getAgentStatus(agent);
@@ -287,14 +300,17 @@ export const canUnbindAgent = (
       'resetting-pending-user-action',
     ].includes(status.key)
   ) {
-    return [false, 'It is not possible to remove a host which is being installed.'];
+    return [false, t('ai:It is not possible to remove a host which is being installed.')];
   }
 
   if (
     ['installed', 'error', 'cancelled'].includes(status.key) &&
     (agent.status?.role === 'master' || agent.status?.role === 'bootstrap')
   ) {
-    return [false, 'It is not possible to remove control plane node from an installed cluster.'];
+    return [
+      false,
+      t('ai:It is not possible to remove control plane node from an installed cluster.'),
+    ];
   }
 
   if (agentClusterInstalls) {
@@ -302,7 +318,10 @@ export const canUnbindAgent = (
 
     if (agentClusterInstall) {
       if (isInstallationInProgress(agentClusterInstall)) {
-        return [false, 'It is not possible to remove a node from a cluster during installation.'];
+        return [
+          false,
+          t('ai:It is not possible to remove a node from a cluster during installation.'),
+        ];
       }
     }
   }
@@ -310,13 +329,14 @@ export const canUnbindAgent = (
   return [true, undefined];
 };
 
-const canDeleteAgent = (agent: AgentK8sResource): ActionCheck => {
+const canDeleteAgent = (agent: AgentK8sResource, t: TFunction): ActionCheck => {
   const enabled = getAgentStatus(agent).status.category !== 'Installation related';
+
   return [
     enabled,
     enabled
       ? undefined
-      : 'Host cannot be deleted while host is either installed or being installed.',
+      : t('ai:Host cannot be deleted while host is either installed or being installed.'),
   ];
 };
 
@@ -333,6 +353,7 @@ export const useAgentsTable = (
 ): [Host[], HostsTableActions, ActionsResolver<Host>] => {
   const { onEditHost, onDeleteHost, onEditRole, onSelect, onEditBMH, onUnbindHost } =
     tableActions || {};
+  const { t } = useTranslation();
   const [hosts, actions] = React.useMemo(
     (): [Host[], HostsTableActions] => [
       getAIHosts(agents, bmhs, infraEnv),
@@ -355,7 +376,7 @@ export const useAgentsTable = (
           if (!agent) {
             return false;
           }
-          return canEditAgent(agent);
+          return canEditAgent(agent, t);
         },
         onDeleteHost: onDeleteHost
           ? (host: Host) => {
@@ -369,12 +390,12 @@ export const useAgentsTable = (
           const bmh = bmhs?.find((a) => a.metadata?.uid === host.id);
 
           if (agent) {
-            return canDeleteAgent(agent);
+            return canDeleteAgent(agent, t);
           } else if (bmh) {
             return [true, undefined];
           }
 
-          return [false, 'Host not found'];
+          return [false, t('ai:Host not found')];
         },
         onEditRole: onEditRole
           ? (host: Host, role: string | undefined) => {
@@ -397,10 +418,11 @@ export const useAgentsTable = (
           : undefined,
         canEditBMH: (host: Host) => {
           const bmh = bmhs?.find((h) => h.metadata?.uid === host.id);
+
           if (!bmh) {
-            return [false, 'Bare metal host not found'];
+            return [false, t('ai:Bare metal host not found')];
           }
-          return canEditBMH(bmh);
+          return canEditBMH(bmh, t);
         },
         onUnbindHost: onUnbindHost
           ? (host: Host) => {
@@ -410,14 +432,15 @@ export const useAgentsTable = (
           : undefined,
         canUnbindHost: (host: Host) => {
           const agent = agents.find((a) => a.metadata?.uid === host.id);
+
           if (agent) {
-            return canUnbindAgent(agentClusterInstalls, agent);
+            return canUnbindAgent(agentClusterInstalls, agent, t);
           }
           const bmh = bmhs?.find((bmh) => bmh.metadata?.uid === host.id);
           if (bmh) {
-            return [false, 'Bare metal host cannot be removed from cluster.'];
+            return [false, t('ai:Bare metal host cannot be removed from cluster.')];
           }
-          return [false, 'Host not found'];
+          return [false, t('ai:Host not found')];
         },
       },
     ],
@@ -432,6 +455,7 @@ export const useAgentsTable = (
       bmhs,
       infraEnv,
       agentClusterInstalls,
+      t,
     ],
   );
   const actionResolver = React.useMemo(() => hostActionResolver(actions), [actions]);

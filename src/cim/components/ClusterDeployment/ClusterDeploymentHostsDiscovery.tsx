@@ -45,7 +45,6 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
 
   const isSNOCluster = getIsSNOCluster(agentClusterInstall);
   const { t } = useTranslation();
-
   return (
     <Grid hasGutter>
       <GridItem>

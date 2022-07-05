@@ -2,15 +2,17 @@ import React from 'react';
 import { Validation, ValidationsInfo } from '../../../common/types/hosts';
 import HostPropertyValidationPopover from './HostPropertyValidationPopover';
 import { ValidationInfoActionProps } from './HostValidationGroups';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { TFunction } from 'i18next';
 
-const getLabel = (validationStatus?: Validation['status']) => {
+const getLabel = (t: TFunction, validationStatus?: Validation['status']) => {
   switch (validationStatus) {
     case 'failure':
-      return 'Unreachable';
+      return t('ai:Unreachable');
     case 'success':
-      return 'Synced';
+      return t('ai:Synced');
     default:
-      return 'Not available';
+      return t('ai:Not available');
   }
 };
 
@@ -28,7 +30,7 @@ const NtpValidationStatus: React.FC<NtpValidationsStatusProps> = ({
   if (AdditionalNTPSourcesDialogToggleComponent) {
     actions.push(<AdditionalNTPSourcesDialogToggleComponent key="add-ntp-sources" />);
   }
-
+  const { t } = useTranslation();
   return (
     <HostPropertyValidationPopover
       validation={ntpSyncedValidation}
@@ -37,7 +39,7 @@ const NtpValidationStatus: React.FC<NtpValidationsStatusProps> = ({
       showSuccess
       showPending
     >
-      {getLabel(ntpSyncedValidation?.status)}
+      {getLabel(t, ntpSyncedValidation?.status)}
     </HostPropertyValidationPopover>
   );
 };
