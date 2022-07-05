@@ -57,11 +57,11 @@ jobs:
           git add package.json
           git commit -m 'Version ${{ github.ref_name }}'
           git tag -f -a ${{ github.ref_name }} -m '${{ github.ref_name }}'
-          git push origin ${{ github.ref_name }} --force
+          git push origin ${{ github.ref_name }} --force-with-lease
 
       - name: Push updated package.json to ${{ github.event.release.target_commitish }}
         # If the target branch is protected a privileged PAT needs to be configured at the checkout step.
-        run: git push origin ${{ github.event.release.target_commitish }} --force
+        run: git push origin ${{ github.event.release.target_commitish }} --force-with-lease
 
       - name: Build
         run: node scripts/esbuild/prod.js
