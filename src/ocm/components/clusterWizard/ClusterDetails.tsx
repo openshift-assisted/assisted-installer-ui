@@ -11,7 +11,7 @@ import {
   InfraEnv,
 } from '../../../common';
 import { usePullSecret } from '../../hooks';
-import { getErrorMessage, handleApiError } from '../../api';
+import { getApiErrorMessage, handleApiError } from '../../api';
 import { updateCluster } from '../../reducers/clusters';
 import { useClusterWizardContext } from './ClusterWizardContext';
 import { canNextClusterDetails, ClusterWizardFlowStateType } from './wizardTransition';
@@ -54,7 +54,7 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster, infraEnv }) =>
         canNextClusterDetails({ cluster }) && clusterWizardContext.moveNext();
       } catch (e) {
         handleApiError(e, () =>
-          addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),
+          addAlert({ title: 'Failed to update the cluster', message: getApiErrorMessage(e) }),
         );
       }
     },
@@ -71,7 +71,7 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster, infraEnv }) =>
         history.push(`${routeBasePath}/clusters/${cluster.id}`, locationState);
       } catch (e) {
         handleApiError(e, () =>
-          addAlert({ title: 'Failed to create new cluster', message: getErrorMessage(e) }),
+          addAlert({ title: 'Failed to create new cluster', message: getApiErrorMessage(e) }),
         );
       }
     },

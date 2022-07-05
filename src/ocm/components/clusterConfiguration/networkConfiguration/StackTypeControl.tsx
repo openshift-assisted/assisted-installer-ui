@@ -3,26 +3,26 @@ import { ButtonVariant, FormGroup, Tooltip } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 import { Cluster } from '../../../../common/api/types';
 import { NetworkConfigurationValues } from '../../../../common/types';
-import {
-  DUAL_STACK,
-  IPV4_STACK,
-  NETWORK_TYPE_OVN,
-  NETWORK_TYPE_SDN,
-  NO_SUBNET_SET,
-} from '../../../../common/config/constants';
+import { DUAL_STACK, IPV4_STACK, NO_SUBNET_SET } from '../../../../common/config/constants';
 import { getFieldId } from '../../../../common/components/ui/formik/utils';
 import { ConfirmationModal, PopoverIcon, RadioField } from '../../../../common/components/ui';
+import { getDefaultNetworkType } from '../../../../common';
 
-export const StackTypeControlGroup: React.FC<{
+export const StackTypeControlGroup = ({
+  clusterId,
+  isSNO,
+  isDualStackSelectable,
+}: {
   clusterId: Cluster['id'];
   isDualStackSelectable: boolean;
-}> = ({ clusterId, isDualStackSelectable }) => {
+  isSNO: boolean;
+}) => {
   const { setFieldValue, values, validateForm } = useFormikContext<NetworkConfigurationValues>();
   const [openConfirmModal, setConfirmModal] = React.useState(false);
 
   const setSingleStack = React.useCallback(() => {
     setFieldValue('stackType', IPV4_STACK);
-    setFieldValue('networkType', NETWORK_TYPE_SDN);
+    setFieldValue('networkType', getDefaultNetworkType(isSNO, false));
     setFieldValue('vipDhcpAllocation', true);
 
     if (values.machineNetworks && values.machineNetworks?.length >= 2) {
@@ -35,7 +35,7 @@ export const StackTypeControlGroup: React.FC<{
       setFieldValue('serviceNetworks', values.serviceNetworks.slice(0, 1));
     }
 
-    validateForm();
+    void validateForm();
   }, [
     setFieldValue,
     validateForm,
@@ -46,7 +46,7 @@ export const StackTypeControlGroup: React.FC<{
 
   const setDualStack = () => {
     setFieldValue('stackType', DUAL_STACK);
-    setFieldValue('networkType', NETWORK_TYPE_OVN);
+    setFieldValue('networkType', getDefaultNetworkType(isSNO, true));
     setFieldValue('vipDhcpAllocation', false);
 
     if (values.machineNetworks && values.machineNetworks?.length < 2) {
@@ -115,7 +115,6 @@ export const StackTypeControlGroup: React.FC<{
                 {'IPv4'}
                 <PopoverIcon
                   noVerticalAlign
-                  variant="plain"
                   bodyContent="Select this when your hosts are using only IPv4."
                 />
               </>
@@ -130,7 +129,6 @@ export const StackTypeControlGroup: React.FC<{
                 {'Dual-stack'}
                 <PopoverIcon
                   noVerticalAlign
-                  variant="plain"
                   bodyContent="Select dual-stack when your hosts are using IPV4 together with IPV6."
                 />
               </>

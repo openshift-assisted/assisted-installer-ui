@@ -3,13 +3,15 @@ import { Cluster } from '../../../common';
 import { handleApiError } from '../../api/utils';
 import { ResourceUIState } from '../../../common';
 import { ClustersAPI } from '../../services/apis';
+import { ocmClient } from '../../api';
 
 export const fetchClustersAsync = createAsyncThunk<Cluster[] | void>(
   'clusters/fetchClustersAsync',
   async () => {
     try {
       const { data } = await ClustersAPI.list();
-      return data.filter((cluster) => cluster.kind === 'Cluster');
+      const isOcm = !!ocmClient;
+      return data.filter((cluster) => (isOcm ? cluster.kind === 'Cluster' : true));
     } catch (e) {
       handleApiError(e, () => Promise.reject('Failed to fetch clusters.'));
     }

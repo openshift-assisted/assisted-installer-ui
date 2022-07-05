@@ -25,6 +25,7 @@ import ProxyFields from './ProxyFields';
 import UploadSSH from './UploadSSH';
 import DiscoveryImageTypeControlGroup from './DiscoveryImageTypeControlGroup';
 import { OCP_STATIC_IP_DOC } from '../../config/constants';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 export const StaticIPInfo: React.FC = () => (
   <Alert
@@ -84,8 +85,9 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
     httpsProxy: httpsProxy || '',
     noProxy: noProxy || '',
     enableProxy: !!(httpProxy || httpsProxy || noProxy),
-    imageType: imageType || 'full-iso',
+    imageType: imageType || 'minimal-iso',
   };
+  const { t } = useTranslation();
 
   return (
     <Formik
@@ -100,7 +102,7 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
             content="Discovery image is being prepared, this might take a few seconds."
             secondaryActions={[
               <Button key="close" variant={ButtonVariant.secondary} onClick={onCancel}>
-                Cancel
+                {t('ai:Cancel')}
               </Button>,
             ]}
           />
@@ -129,10 +131,10 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
             </ModalBoxBody>
             <ModalBoxFooter>
               <Button key="submit" onClick={submitForm}>
-                Generate Discovery ISO
+                {t('ai:Generate Discovery ISO')}
               </Button>
               <Button key="cancel" variant="link" onClick={onCancel}>
-                Cancel
+                {t('ai:Cancel')}
               </Button>
             </ModalBoxFooter>
           </>

@@ -1,12 +1,12 @@
 import React from 'react';
 import { useInfraEnvId } from '.';
 import { Cluster, InfraEnv, InfraEnvUpdateParams } from '../../common';
-import { APIErrorMixin } from '../api/types';
+import { getErrorMessage } from '../../common/utils';
 import { InfraEnvsAPI } from '../services/apis';
 
 export default function useInfraEnv(clusterId: Cluster['id']) {
   const [infraEnv, setInfraEnv] = React.useState<InfraEnv>();
-  const [error, setError] = React.useState<APIErrorMixin & Error>();
+  const [error, setError] = React.useState('');
   const { infraEnvId, error: infraEnvIdError } = useInfraEnvId(clusterId);
 
   const getInfraEnv = React.useCallback(async () => {
@@ -16,7 +16,7 @@ export default function useInfraEnv(clusterId: Cluster['id']) {
         setInfraEnv(infraEnv);
       }
     } catch (e) {
-      setError(e);
+      setError(getErrorMessage(e));
     }
   }, [infraEnvId]);
 
@@ -37,7 +37,7 @@ export default function useInfraEnv(clusterId: Cluster['id']) {
       setError(infraEnvIdError);
     } else {
       if (!infraEnv) {
-        getInfraEnv();
+        void getInfraEnv();
       }
     }
   }, [getInfraEnv, infraEnv, infraEnvId, infraEnvIdError]);

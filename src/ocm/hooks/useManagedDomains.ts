@@ -1,7 +1,7 @@
 import React from 'react';
 import { ManagedDomain, useAlerts } from '../../common';
 import { ClusterDetailsService } from '../services';
-import { getErrorMessage, handleApiError } from '../api';
+import { getApiErrorMessage, handleApiError } from '../api';
 
 export default function useManagedDomains() {
   const [managedDomains, setManagedDomains] = React.useState<ManagedDomain[]>();
@@ -14,14 +14,14 @@ export default function useManagedDomains() {
     } catch (e) {
       setManagedDomains([]);
       handleApiError(e, () =>
-        addAlert({ title: 'Failed to retrieve managed domains', message: getErrorMessage(e) }),
+        addAlert({ title: 'Failed to retrieve managed domains', message: getApiErrorMessage(e) }),
       );
     }
   }, [addAlert]);
 
   React.useEffect(() => {
     if (!managedDomains) {
-      fetchManagedDomains();
+      void fetchManagedDomains();
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 

@@ -16,6 +16,7 @@ import { InfraEnvK8sResource, SecretK8sResource } from '../../types';
 import { LoadingState, PullSecretField, pullSecretValidationSchema } from '../../../common';
 import { EditPullSecretFormikValues } from './types';
 import { getWarningMessage } from './utils';
+import { getErrorMessage } from '../../../common/utils';
 
 const validationSchema = Yup.object({
   pullSecret: pullSecretValidationSchema.required('Pull secret is a required field.'),
@@ -135,7 +136,7 @@ const EditPullSecretModal: React.FC<EditPullSecretModalProps> = ({
             await onSubmit(values, infraEnv);
             onClose();
           } catch (err) {
-            setError(err?.message || 'An error occured');
+            setError(getErrorMessage(err));
           }
         }}
         validateOnMount

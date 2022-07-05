@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { Alert, AlertGroup, AlertVariant } from '@patternfly/react-core';
 import {

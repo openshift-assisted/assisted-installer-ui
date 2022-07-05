@@ -23,7 +23,7 @@ export const useFormikAutoSave: UseFormikAutoSave = (debounce = 1000) => {
         ids.push(autoSaveID);
         return ids;
       });
-      commitRef.current(autoSaveID);
+      void commitRef.current(autoSaveID);
     }
     if (!isSubmitting) {
       prevValuesRef.current = values;
@@ -45,7 +45,7 @@ const FormikAutoSave: React.FC<{ debounce?: number }> = ({ debounce = 1000 }) =>
 
   React.useEffect(() => {
     if (!shallowEqual(prevValuesRef.current, values) && dirty && !isSubmitting) {
-      commitRef.current();
+      void commitRef.current();
     }
     if (!isSubmitting) {
       prevValuesRef.current = values;

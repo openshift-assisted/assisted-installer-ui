@@ -9,6 +9,7 @@ import { ProxyFieldsType } from '../../../types';
 import { trimCommaSeparatedList, trimSshPublicKey } from './utils';
 import { ClusterNetwork, MachineNetwork, ServiceNetwork } from '../../../api/types';
 import { allSubnetsIPv4 } from '../../../selectors';
+import { getErrorMessage } from '../../../utils';
 import {
   CLUSTER_NAME_VALIDATION_MESSAGES,
   HOSTNAME_VALIDATION_MESSAGES,
@@ -159,10 +160,7 @@ export const vipRangeValidationSchema = (
     try {
       ipValidationSchema.validateSync(value);
     } catch (err) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      return this.createError({ message: err.message });
+      return this.createError({ message: getErrorMessage(err) });
     }
 
     const cidrs = machineNetworks?.map((network) => network.cidr);
@@ -292,6 +290,7 @@ export const dnsNameValidationSchema = Yup.string()
   )
   .matches(DNS_NAME_REGEX, {
     message: 'Value "${value}" is not valid DNS name. Example: basedomain.example.com', // eslint-disable-line no-template-curly-in-string
+    excludeEmptyString: true,
   });
 
 export const hostPrefixValidationSchema = ({

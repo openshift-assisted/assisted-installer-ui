@@ -47,7 +47,7 @@ const ClusterDeploymentCredentials = ({
       }
     };
 
-    fetchCredentials();
+    void fetchCredentials();
   }, [adminPasswordSecretRefName, namespace, fetchSecret, consoleUrl]);
 
   return <ClusterCredentials cluster={cluster} credentials={credentials} error={isError} />;

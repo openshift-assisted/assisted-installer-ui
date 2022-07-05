@@ -11,6 +11,7 @@ import {
 
 import ModalProgress from '../ui/ModalProgress';
 import { Host } from '../../api';
+import { getErrorMessage } from '../../utils';
 
 type MassDeleteHostModalProps = {
   isOpen: boolean;
@@ -39,10 +40,10 @@ const MassDeleteHostModal: React.FC<MassDeleteHostModalProps> = ({
       }
       setProgress(null);
       onClose();
-    } catch (err) {
+    } catch (e) {
       setError({
         title: 'Failed to delete host',
-        message: err?.message || 'An error occured while deleting hosts',
+        message: getErrorMessage(e),
       });
       setProgress(null);
     }

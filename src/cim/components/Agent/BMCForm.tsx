@@ -40,6 +40,7 @@ import {
   BMH_HOSTNAME_ANNOTATION,
   INFRAENV_AGENTINSTALL_LABEL_KEY,
 } from '../common';
+import { getErrorMessage } from '../../../common/utils';
 
 const MacMapping = () => {
   const [field, { touched, error }] = useField<{ macAddress: string; name: string }[]>({
@@ -197,7 +198,7 @@ const BMCForm: React.FC<BMCFormProps> = ({
   isEdit,
   usedHostnames,
 }) => {
-  const [error, setError] = React.useState();
+  const [error, setError] = React.useState<string>();
 
   const handleSubmit: FormikConfig<AddBmcValues>['onSubmit'] = async (values) => {
     try {
@@ -206,7 +207,7 @@ const BMCForm: React.FC<BMCFormProps> = ({
       await onCreateBMH(values, nmState);
       onClose();
     } catch (e) {
-      setError(e.message);
+      setError(getErrorMessage(e));
     }
   };
 

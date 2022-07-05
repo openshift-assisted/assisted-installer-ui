@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect, RouteComponentProps } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { PageSectionVariants, PageSection } from '@patternfly/react-core';
 import { Cluster, ErrorState, LoadingState } from '../../common';
 import { routeBasePath } from '../config';
@@ -7,9 +7,7 @@ import { NewClusterPage } from './clusters';
 import { ClustersAPI } from '../services/apis';
 import { handleApiError } from '../api';
 
-type SingleClusterProps = RouteComponentProps;
-
-const SingleCluster: React.FC<SingleClusterProps> = () => {
+const SingleCluster = () => {
   const [error, setError] = React.useState('');
   const [clusters, setClusters] = React.useState<Cluster[]>();
 
@@ -24,7 +22,7 @@ const SingleCluster: React.FC<SingleClusterProps> = () => {
   }, [setClusters]);
 
   React.useEffect(() => {
-    fetchClusters();
+    void fetchClusters();
   }, [fetchClusters]);
 
   if (error) {

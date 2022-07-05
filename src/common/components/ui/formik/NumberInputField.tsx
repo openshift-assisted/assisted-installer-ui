@@ -24,7 +24,10 @@ const NumberInputField: React.FC<NumberInputFieldProps> = React.forwardRef(
     },
     ref: React.Ref<HTMLInputElement>,
   ) => {
-    const [field, { touched, error }, { setValue }] = useField({ name: props.name, validate });
+    const [field, { touched, error }, { setValue }] = useField<number>({
+      name: props.name,
+      validate,
+    });
     const fieldId = getFieldId(props.name, 'numberinput', idPostfix);
     const isValid = !(touched && error);
     const errorMessage = !isValid ? error : '';

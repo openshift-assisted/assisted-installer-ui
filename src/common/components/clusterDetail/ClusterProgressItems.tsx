@@ -1,13 +1,13 @@
 import { getEnabledHosts } from '../hosts';
-import { getOlmOperators } from './utils';
 import { RenderIf } from '../ui';
-import { Flex, FlexItem } from '@patternfly/react-core';
+import { Grid, GridItem } from '@patternfly/react-core';
 import { ProgressBarTexts } from './ProgressBarTexts';
 import { FinalizingProgress } from './FinalizingProgress';
 import OperatorsProgressItem from './OperatorsProgressItem';
 import React from 'react';
 import { Cluster } from '../../api';
 import { EventListFetchProps } from '../../types';
+import { selectOlmOperators } from '../../../common';
 
 type ClusterProgressItemsProps = {
   cluster: Cluster;
@@ -23,39 +23,35 @@ const ClusterProgressItems = ({
   onFetchEvents,
   fallbackEventsURL,
 }: ClusterProgressItemsProps) => {
-  const { monitoredOperators = [] } = cluster;
   const enabledHosts = getEnabledHosts(cluster.hosts);
   const isWorkersPresent = enabledHosts && enabledHosts.some((host) => host.role === 'worker');
-  const olmOperators = getOlmOperators(monitoredOperators);
+  const olmOperators = selectOlmOperators(cluster);
 
   return (
     <>
       <RenderIf condition={!minimizedView}>
-        <Flex className="pf-u-mt-md">
-          <FlexItem spacer={{ default: 'spacer4xl' }}>
+        <Grid hasGutter>
+          <GridItem span={3}>
             <ProgressBarTexts hosts={enabledHosts} hostRole="master" />
-          </FlexItem>
-          <FlexItem spacer={{ default: 'spacer2xl' }}></FlexItem>
+          </GridItem>
           <RenderIf condition={isWorkersPresent}>
-            <FlexItem spacer={{ default: 'spacer4xl' }}>
+            <GridItem span={3}>
               <ProgressBarTexts hosts={enabledHosts} hostRole="worker" />
-            </FlexItem>
-            <FlexItem spacer={{ default: 'spacer2xl' }}></FlexItem>
+            </GridItem>
           </RenderIf>
-          <FlexItem spacer={{ default: 'spacer4xl' }}>
+          <GridItem span={3}>
             <FinalizingProgress
               cluster={cluster}
               onFetchEvents={onFetchEvents}
               fallbackEventsURL={fallbackEventsURL}
             />
-          </FlexItem>
-          <FlexItem spacer={{ default: 'spacer2xl' }}></FlexItem>
+          </GridItem>
           <RenderIf condition={olmOperators.length > 0}>
-            <FlexItem>
+            <GridItem span={3}>
               <OperatorsProgressItem operators={olmOperators} />
-            </FlexItem>
+            </GridItem>
           </RenderIf>
-        </Flex>
+        </Grid>
       </RenderIf>
     </>
   );

@@ -8,7 +8,7 @@ import {
   Inventory,
 } from '../../../common';
 
-import { ocmClient, handleApiError, getErrorMessage } from '../../api';
+import { ocmClient, handleApiError, getApiErrorMessage } from '../../api';
 import { updateCluster } from '../../reducers/clusters';
 import { ClustersService } from '../../services';
 import ClustersAPI from '../../services/apis/ClustersAPI';
@@ -36,8 +36,8 @@ export const downloadHostInstallationLogs = async (
       saveAs(data, fileName);
     }
   } catch (e) {
-    handleApiError(e, async (e) => {
-      addAlert({ title: 'Could not download host logs.', message: getErrorMessage(e) });
+    handleApiError(e, (e) => {
+      addAlert({ title: 'Could not download host logs.', message: getApiErrorMessage(e) });
     });
   }
 };
@@ -57,7 +57,7 @@ export const onAdditionalNtpSourceAction = async (
     const { data } = await ClustersAPI.update(clusterId, values);
     dispatch(updateCluster(data));
   } catch (e) {
-    handleApiError(e, () => onError(getErrorMessage(e)));
+    handleApiError(e, () => onError(getApiErrorMessage(e)));
   }
 };
 
