@@ -35,5 +35,6 @@ jobs:
           base: master
           commit-message: ${{ env.MESSAGE }}
           title: ${{ env.MESSAGE }}
-          body: >
+          body: |
             [Release notes](${{ inputs.release-notes-url }})
+            cc @openshift-assisted/ui-maintainers 
