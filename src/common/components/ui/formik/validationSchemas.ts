@@ -358,7 +358,17 @@ export const richNameValidationSchema = (usedNames: string[], origName?: string)
       }
       return !usedNames.find((n) => n === value);
     })
-    .notOneOf(['localhost', 'localhost.localdomain'], HOSTNAME_VALIDATION_MESSAGES.LOCALHOST_ERR);
+    .notOneOf(
+      [
+        'localhost',
+        'localhost.localdomain',
+        'localhost4',
+        'localhost4.localdomain4',
+        'localhost6',
+        'localhost6.localdomain6',
+      ],
+      HOSTNAME_VALIDATION_MESSAGES.LOCALHOST_ERR,
+    );
 
 const httpProxyValidationMessage = 'Provide a valid HTTP URL.';
 export const httpProxyValidationSchema = (
