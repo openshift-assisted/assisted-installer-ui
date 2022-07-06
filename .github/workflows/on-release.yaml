@@ -9,7 +9,7 @@ env:
   NODE_OPTIONS: --max-old-space-size=8192
 
 jobs:
-  main:
+  publish-to-npm:
     env:
       GH_REPO_OWNER: openshift-assisted
     runs-on: ubuntu-latest

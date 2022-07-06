@@ -14,7 +14,7 @@ on:
         required: true
 
 jobs:
-  main:
+  bump-openshift-assisted-ui-lib-in-assisted-ui:
     runs-on: ubuntu-latest
     steps:
       - name: Check out assisted-ui
