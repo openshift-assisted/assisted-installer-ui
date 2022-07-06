@@ -43,7 +43,7 @@ jobs:
           script: |
             const normalized_branch_name = "${{ github.ref_name }}".replaceAll('/','_').toLowerCase();
             core.exportVariable('REACT_APP_VERSION', normalized_branch_name);
-            const short_sha = `sha-${"${{ github.sha }}".slice(0,8)}`;
+            const short_sha = `${"${{ github.sha }}".slice(0,8)}`;
             core.exportVariable('REACT_APP_GIT_SHA', short_sha);
             const ui_lib_package_version = `0.0.0+sha.${short_sha}`;
             core.exportVariable('UI_LIB_PACKAGE_VERSION', ui_lib_package_version);
