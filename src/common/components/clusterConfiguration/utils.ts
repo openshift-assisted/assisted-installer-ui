@@ -139,7 +139,7 @@ export const isSubnetInIPv6 = ({
   clusterNetworkCidr,
   machineNetworkCidr,
   serviceNetworkCidr,
-}: Pick<Cluster, 'machineNetworks' | 'clusterNetworks' | 'serviceNetworks'>) =>
+}: Pick<Cluster, 'clusterNetworkCidr' | 'machineNetworkCidr' | 'serviceNetworkCidr'>) =>
   Address6.isValid(clusterNetworkCidr || '') ||
   Address6.isValid(machineNetworkCidr || '') ||
   Address6.isValid(serviceNetworkCidr || '');
