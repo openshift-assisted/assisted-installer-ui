@@ -37,4 +37,4 @@ jobs:
           title: ${{ env.MESSAGE }}
           body: |
             [Release notes](${{ inputs.release-notes-url }})
-            cc @openshift-assisted/ui-maintainers 
+            cc @openshift-assisted/ui-maintainers
