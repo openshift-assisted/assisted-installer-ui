@@ -1,14 +1,5 @@
 import React from 'react';
-import {
-  Button,
-  ButtonVariant,
-  Stack,
-  StackItem,
-  List,
-  ListItem,
-  Popover,
-  TextContent,
-} from '@patternfly/react-core';
+import { Button, ButtonVariant, List, ListItem, Popover } from '@patternfly/react-core';
 import {
   CheckCircleIcon,
   ExclamationCircleIcon,
@@ -22,7 +13,7 @@ import {
 import { pluralize } from 'humanize-plus';
 import { MonitoredOperatorsList, OperatorStatus } from '../../api/types';
 import { OPERATOR_LABELS } from '../../config';
-import BorderedIcon from '../ui/BorderedIcon/BorderedIcon';
+import ClusterProgressItem from './ClusterProgressItem';
 
 import './OperatorsProgressItem.css';
 
@@ -111,21 +102,16 @@ const OperatorsProgressItem: React.FC<OperatorsProgressItemProps> = ({ operators
   const label = getOperatorsLabel(operators);
 
   return (
-    <Stack hasGutter>
-      <StackItem>
-        <BorderedIcon>{icon}</BorderedIcon>
-      </StackItem>
-      <StackItem>
+    <ClusterProgressItem icon={icon}>
+      <>
         <OperatorsPopover operators={operators}>
           <Button variant={ButtonVariant.link} isInline data-testid="operators-progress-item">
             Operators
           </Button>
         </OperatorsPopover>
-        <TextContent>
-          <small>{label}</small>
-        </TextContent>
-      </StackItem>
-    </Stack>
+        <small>{label}</small>
+      </>
+    </ClusterProgressItem>
   );
 };
 
