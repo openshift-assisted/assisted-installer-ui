@@ -2,15 +2,7 @@ import { Cluster } from '../../api/types';
 import { EventListFetchProps } from '../../types';
 import React from 'react';
 import { EventsModal } from '../ui';
-import {
-  Button,
-  ButtonVariant,
-  Popover,
-  Stack,
-  StackItem,
-  Text,
-  TextContent,
-} from '@patternfly/react-core';
+import { Button, ButtonVariant, Popover, Text, TextContent } from '@patternfly/react-core';
 import {
   CheckCircleIcon,
   ExclamationCircleIcon,
@@ -19,7 +11,7 @@ import {
 } from '@patternfly/react-icons';
 import { global_success_color_100 as okColor } from '@patternfly/react-tokens/dist/esm/global_success_color_100';
 import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens/dist/esm/global_danger_color_100';
-import BorderedIcon from '../ui/BorderedIcon/BorderedIcon';
+import ClusterProgressItem from './ClusterProgressItem';
 import capitalize from 'lodash/capitalize';
 
 type FinalizingProgressProps = {
@@ -88,47 +80,36 @@ export const FinalizingProgress: React.FC<FinalizingProgressProps> = ({
         onFetchEvents={onFetchEvents}
         fallbackEventsURL={fallbackEventsURL}
       />
-      <Stack hasGutter>
-        <StackItem>
-          <BorderedIcon>{finalizingIcon}</BorderedIcon>
-        </StackItem>
-        <StackItem>
-          <>
-            {['finalizing', 'pending'].includes(initializationStatus) ? (
-              <Popover
-                zIndex={300} // set the zIndex below Cluster Events Modal
-                headerContent={<>Initialization</>}
-                bodyContent={
-                  <TextContent>
-                    <Text>
-                      This stage may take a while to finish. To view detailed information, click the
-                      events log link below.
-                    </Text>
-                  </TextContent>
-                }
-                footerContent={
-                  <Button
-                    variant={ButtonVariant.link}
-                    isInline
-                    onClick={() => setIsModalOpen(true)}
-                  >
-                    Open Events Log
-                  </Button>
-                }
-              >
-                <Button variant={ButtonVariant.link} isInline>
-                  Initialization
+      <ClusterProgressItem icon={finalizingIcon}>
+        <>
+          {['finalizing', 'pending'].includes(initializationStatus) ? (
+            <Popover
+              zIndex={300} // set the zIndex below Cluster Events Modal
+              headerContent={<>Initialization</>}
+              bodyContent={
+                <TextContent>
+                  <Text>
+                    This stage may take a while to finish. To view detailed information, click the
+                    events log link below.
+                  </Text>
+                </TextContent>
+              }
+              footerContent={
+                <Button variant={ButtonVariant.link} isInline onClick={() => setIsModalOpen(true)}>
+                  Open Events Log
                 </Button>
-              </Popover>
-            ) : (
-              'Initialization'
-            )}
-          </>
-          <TextContent>
-            <small>{capitalize(initializationStatus)}</small>
-          </TextContent>
-        </StackItem>
-      </Stack>
+              }
+            >
+              <Button variant={ButtonVariant.link} isInline>
+                Initialization
+              </Button>
+            </Popover>
+          ) : (
+            'Initialization'
+          )}
+          <small>{capitalize(initializationStatus)}</small>
+        </>
+      </ClusterProgressItem>
     </>
   );
 };
