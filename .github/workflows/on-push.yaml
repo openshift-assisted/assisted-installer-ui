@@ -8,7 +8,7 @@ on:
 
 jobs:
   push-to-quay-io:
-    if: $${{ github.repository == 'openshift-assisted/assisted-ui-lib' }}
+    if: ${{ github.repository == 'openshift-assisted/assisted-ui-lib' }}
     runs-on: ubuntu-latest
     env:
       NODE_OPTIONS: --max-old-space-size=8192
