@@ -76,7 +76,7 @@ jobs:
           script: |
             const tags = ['${{ env.REACT_APP_GIT_SHA }}', '${{ env.REACT_APP_VERSION }}'];
             if ('${{ github.ref_name }}' === 'master')
-              core.setOutput('tags', tags.concat('latest-${{ github.sha }}').join(' '));
+              core.setOutput('tags', tags.concat('latest', 'latest-${{ github.sha }}').join(' '));
             else
               core.setOutput('tags', tags.join(' '));
 
