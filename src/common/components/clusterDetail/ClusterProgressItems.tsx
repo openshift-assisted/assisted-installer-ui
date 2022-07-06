@@ -24,19 +24,21 @@ const ClusterProgressItems = ({
   fallbackEventsURL,
 }: ClusterProgressItemsProps) => {
   const enabledHosts = getEnabledHosts(cluster.hosts);
-  const isWorkersPresent = enabledHosts && enabledHosts.some((host) => host.role === 'worker');
   const olmOperators = selectOlmOperators(cluster);
+
+  const masterHosts = enabledHosts.filter((host) => host.role && 'master' === host.role);
+  const workerHosts = enabledHosts.filter((host) => host.role && 'worker' === host.role);
 
   return (
     <>
       <RenderIf condition={!minimizedView}>
         <Grid hasGutter>
           <GridItem span={3}>
-            <ProgressBarTexts hosts={enabledHosts} hostRole="master" />
+            <ProgressBarTexts hosts={masterHosts} hostRole="master" />
           </GridItem>
-          <RenderIf condition={isWorkersPresent}>
+          <RenderIf condition={workerHosts.length > 0}>
             <GridItem span={3}>
-              <ProgressBarTexts hosts={enabledHosts} hostRole="worker" />
+              <ProgressBarTexts hosts={workerHosts} hostRole="worker" />
             </GridItem>
           </RenderIf>
           <GridItem span={3}>

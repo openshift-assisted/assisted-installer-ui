@@ -52,7 +52,6 @@ export const HostInstallationWarning: React.FC<installationProgressWarningProps>
 
   return (
     <>
-      &nbsp;
       <Alert
         isInline
         variant="warning"
@@ -120,7 +119,6 @@ export const HostsInstallationFailed: React.FC<installationProgressWarningProps>
 
   return (
     <>
-      &nbsp;
       <Alert
         isInline
         variant="danger"
@@ -158,7 +156,6 @@ export const HostsInstallationFailed: React.FC<installationProgressWarningProps>
 export const HostsInstallationSuccess: React.FC<successInstallationProps> = () => {
   return (
     <>
-      &nbsp;
       <Alert isInline variant="success" title={'Installation completed successfully'}>
         {' '}
       </Alert>
