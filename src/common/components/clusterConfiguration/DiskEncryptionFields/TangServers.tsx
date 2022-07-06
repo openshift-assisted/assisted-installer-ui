@@ -18,6 +18,7 @@ export const TangServers: React.FC<{ isDisabled?: boolean }> = ({ isDisabled = f
                 <RemovableField
                   hideRemoveButton={index === 0 || isDisabled}
                   onRemove={() => remove(index)}
+                  removeButtonDataTestId={`remove-button-${index}`}
                 >
                   <div>
                     <InputField
