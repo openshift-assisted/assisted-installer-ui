@@ -134,6 +134,7 @@ export const HOST_VALIDATION_LABELS: { [key in HostValidationId]: string } = {
   'dns-wildcard-not-configured': 'DNS wildcard not configured',
   'non-overlapping-subnets': 'Non overlapping subnets',
   'vsphere-disk-uuid-enabled': 'Vsphere disk uuidenabled',
+  'compatible-agent': 'Agent compatibility',
 };
 
 export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string } = {
@@ -170,6 +171,7 @@ export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string 
   'dns-wildcard-not-configured': '',
   'non-overlapping-subnets': '',
   'vsphere-disk-uuid-enabled': '',
+  'compatible-agent': '',
 };
 
 export const CLUSTER_VALIDATION_LABELS: { [key in ClusterValidationId]: string } = {
