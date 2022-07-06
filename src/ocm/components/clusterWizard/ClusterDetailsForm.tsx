@@ -70,7 +70,6 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
   const { search } = useLocation();
   const params = new URLSearchParams(search);
   const isArm = params.get('useArm') === 'true';
-  console.log('params', params);
 
   const handleOnNext = (
     dirty: boolean,
