@@ -3,7 +3,7 @@ import * as Yup from 'yup';
 
 import { INFRAENV_AGENTINSTALL_LABEL_KEY } from '../common';
 import { getHostSubnets } from '../../../common/components/clusterConfiguration/utils';
-import { getNetworkInitialValues } from '../../../common/components/clusterConfiguration';
+import { getNetworkInitialValues } from './networkConfigurationValidation';
 import {
   AgentClusterInstallK8sResource,
   AgentK8sResource,

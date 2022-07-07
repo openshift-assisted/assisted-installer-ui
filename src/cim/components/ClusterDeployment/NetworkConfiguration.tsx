@@ -1,27 +1,28 @@
 import React, { useEffect } from 'react';
 import { useFormikContext } from 'formik';
 import { Alert, AlertVariant, Checkbox, Grid } from '@patternfly/react-core';
-import AdvancedNetworkFields from './AdvancedNetworkFields';
+import AdvancedNetworkFields from '../../../common/components/clusterConfiguration/AdvancedNetworkFields';
 import { NetworkConfigurationValues } from '../../../common/types/clusters';
+import { Address6 } from 'ip-address';
+import { getLimitedFeatureSupportLevels } from '../../../common/components/featureSupportLevels/utils';
 import {
   AvailableSubnetsControl,
   ManagedNetworkingControlGroup,
   UserManagedNetworkingTextContent,
   VirtualIPControlGroup,
   VirtualIPControlGroupProps,
-} from '../clusterWizard/networkingSteps';
-import { ClusterDefaultConfig } from '../../api';
-import { NETWORK_TYPE_OVN, NO_SUBNET_SET } from '../../config';
+} from '../../../common/components/clusterWizard/networkingSteps';
 import {
   canSelectNetworkTypeSDN,
+  ClusterDefaultConfig,
   getDefaultNetworkType,
   isAdvNetworkConf,
+  isSNO,
   isSubnetInIPv6,
-} from './utils';
-import { useFeatureSupportLevel } from '../featureSupportLevels';
-import { getLimitedFeatureSupportLevels } from '../featureSupportLevels/utils';
-import { isSNO } from '../../selectors';
-import { Address6 } from 'ip-address';
+  NETWORK_TYPE_OVN,
+  NO_SUBNET_SET,
+  useFeatureSupportLevel,
+} from '../../../common';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   defaultNetworkSettings: ClusterDefaultConfig;

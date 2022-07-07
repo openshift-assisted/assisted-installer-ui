@@ -1,28 +1,28 @@
 import * as Yup from 'yup';
-import { Cluster, ClusterDefaultConfig } from '../../api';
-import { HostSubnets, NetworkConfigurationValues } from '../../types/clusters';
+import { Cluster, ClusterDefaultConfig } from '../../../common/api';
+import { HostSubnets, NetworkConfigurationValues } from '../../../common/types/clusters';
 import {
   hostPrefixValidationSchema,
   hostSubnetValidationSchema,
   ipBlockValidationSchema,
   sshPublicKeyValidationSchema,
   vipValidationSchema,
-} from '../ui';
+} from '../../../common/components/ui';
 
 import {
   getSubnetFromMachineNetworkCidr,
   getHostSubnets,
-  getDefaultNetworkType,
   isSubnetInIPv6,
-} from './utils';
+  getDefaultNetworkType,
+} from '../../../common/components/clusterConfiguration/utils';
 import {
   isSNO,
   selectClusterNetworkCIDR,
   selectClusterNetworkHostPrefix,
   selectMachineNetworkCIDR,
   selectServiceNetworkCIDR,
-} from '../../selectors/clusterSelectors';
-import { NO_SUBNET_SET } from '../../config';
+} from '../../../common/selectors/clusterSelectors';
+import { NO_SUBNET_SET } from '../../../common/config';
 
 const getInitHostSubnet = (
   cluster: Cluster,
