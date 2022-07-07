@@ -13,8 +13,8 @@ jobs:
   publish-to-npm:
     runs-on: ubuntu-latest
     outputs:
-      new-version: ${{ env.GH_REPO_OWNER }}/assisted-ui
-      assisted-ui-repo-url: ${{ steps.new-version.outputs.new_version }}
+      new-version: ${{ steps.new-version.outputs.new_version }}
+      assisted-ui-repo-url: ${{ env.GH_REPO_OWNER }}/assisted-ui
       release-notes-url: ${{ steps.new-version.outputs.release_notes_url }}
     steps:
       - uses: actions/checkout@v3
