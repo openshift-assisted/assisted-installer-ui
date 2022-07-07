@@ -20,9 +20,9 @@ import ClusterWizardHeaderExtraActions from '../clusterConfiguration/ClusterWiza
 import { ocmClient } from '../../api';
 import { useFeatureSupportLevel } from '../../../common/components/featureSupportLevels';
 import { ClusterDetailsService } from '../../services';
-
 import { OcmClusterDetailsValues } from '../../services/types';
 import { OcmClusterDetailsFormFields } from '../clusterConfiguration/OcmClusterDetailsFormFields';
+import { useLocation } from 'react-router-dom';
 
 type ClusterDetailsFormProps = {
   cluster?: Cluster;
@@ -53,6 +53,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
     navigation,
   } = props;
 
+  const { search } = useLocation();
   const featureSupportLevels = useFeatureSupportLevel();
   const handleSubmit = React.useCallback(
     async (values: OcmClusterDetailsValues) => {
@@ -85,6 +86,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
         pullSecret,
         managedDomains,
         ocpVersions,
+        urlSearchParams: search,
       }),
     [cluster, pullSecret, managedDomains, ocpVersions, infraEnv],
   );
