@@ -7,12 +7,15 @@ on:
 
 env:
   NODE_OPTIONS: --max-old-space-size=8192
+  GH_REPO_OWNER: openshift-assisted
 
 jobs:
   publish-to-npm:
-    env:
-      GH_REPO_OWNER: openshift-assisted
     runs-on: ubuntu-latest
+    outputs:
+      new-version: ${{ env.GH_REPO_OWNER }}/assisted-ui
+      assisted-ui-repo-url: ${{ steps.new-version.outputs.new_version }}
+      release-notes-url: ${{ steps.new-version.outputs.release_notes_url }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -71,8 +74,30 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPMJS_PUBLISH_TOKEN }}
         run: yarn publish --no-git-tag-version
 
-      - uses: ./.github/workflows/bump-openshift-assisted-ui-lib-in-assisted-ui.yaml
+  bump-openshift-assisted-ui-lib-in-assisted-ui:
+    needs: publish-to-npm
+    runs-on: ubuntu-latest
+    env:
+      NEW_VERSION: ${{ needs.publish-to-npm.outputs.new-version }}
+    steps:
+      - name: Check out assisted-ui
+        uses: actions/checkout@v3
         with:
-          assisted-ui-repo-url: ${{ env.GH_REPO_OWNER }}/assisted-ui
-          new-version: ${{ steps.new-version.outputs.new_version }}
-          release-notes-url: ${{ steps.new-version.outputs.release_notes_url }}
+          repository: ${{ needs.publish-to-npm.outputs.assisted-ui-repo-url }}
+          ref: master
+          path: ./assisted-ui
+
+      - name: Upgrade openshift-assisted-ui-lib to ${{ env.NEW_VERSION }}
+        run: yarn upgrade --exact openshift-assisted-ui-lib@$NEW_VERSION
+
+      - name: Send a pull request to assisted-ui
+        env:
+          MESSAGE: Updates openshift-assisted-ui-lib to ${{ env.NEW_VERSION }}
+        uses: peter-evans/create-pull-request@v4
+        with:
+          base: master
+          commit-message: ${{ env.MESSAGE }}
+          title: ${{ env.MESSAGE }}
+          body: |
+            [Release notes](${{ needs.publish-to-npm.outputs.release-notes-url }})
+            cc @openshift-assisted/ui-maintainers
