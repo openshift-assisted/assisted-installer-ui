@@ -68,6 +68,7 @@ const ClusterDetailsService = {
   getClusterDetailsInitialValues({
     cluster,
     infraEnv,
+    urlSearchParams,
     ...args
   }: {
     cluster?: Cluster;
@@ -75,12 +76,16 @@ const ClusterDetailsService = {
     pullSecret?: string;
     managedDomains: ManagedDomain[];
     ocpVersions: OpenshiftVersionOptionType[];
+    urlSearchParams: string;
   }): OcmClusterDetailsValues {
     const values = getClusterDetailsInitialValues({
       cluster,
       ...args,
     });
-    const cpuArchitecture = cluster?.cpuArchitecture || CpuArchitecture.x86;
+    const params = new URLSearchParams(urlSearchParams);
+    const hasArmSearchParam = params.get('useArm') === 'true';
+    const cpuArchitecture =
+      cluster?.cpuArchitecture || (hasArmSearchParam ? CpuArchitecture.ARM : CpuArchitecture.x86);
     const hostsNetworkConfigurationType = infraEnv?.staticNetworkConfig
       ? HostsNetworkConfigurationType.STATIC
       : HostsNetworkConfigurationType.DHCP;
