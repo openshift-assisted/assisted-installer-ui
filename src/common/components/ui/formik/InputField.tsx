@@ -36,7 +36,6 @@ const InputField: React.FC<
     const fieldId = getFieldId(props.name, 'input', idPostfix);
     const errorMessage = useFieldErrorMsg({ name: props.name, inputError, validate });
     const isValid = !errorMessage;
-
     return (
       <FormGroup
         fieldId={fieldId}

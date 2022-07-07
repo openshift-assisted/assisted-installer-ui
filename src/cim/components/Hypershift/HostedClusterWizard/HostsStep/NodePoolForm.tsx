@@ -4,8 +4,6 @@ import {
   ExpandableSectionToggle,
   Flex,
   FlexItem,
-  Grid,
-  GridItem,
   Label,
   Level,
   LevelItem,
@@ -15,24 +13,19 @@ import {
   StackItem,
 } from '@patternfly/react-core';
 import * as React from 'react';
-import isEqual from 'lodash/isEqual';
 import { TrashIcon } from '@patternfly/react-icons';
-import { CheckboxField, NumberInputField, PencilEditField } from '../../../../../common';
+import isMatch from 'lodash/isMatch';
+import { PencilEditField } from '../../../../../common';
 import { AgentK8sResource, InfraEnvK8sResource } from '../../../../types';
-import { LabelSelectorGroup } from '../../../ClusterDeployment/LabelsSelector';
-import HostsAdvancedSelection from './HostsAdvancedSelection';
-import { getTotalCompute, isAgentOfInfraEnv } from '../../../ClusterDeployment';
+import { isAgentOfInfraEnv } from '../../../ClusterDeployment';
 import { HostsFormValues } from './types';
 import { useFormikContext } from 'formik';
 import { getAgentsForSelection } from '../../../helpers';
-import { AGENT_TO_NODE_POOL_NAME, AGENT_TO_NODE_POOL_NS } from '../constants';
-import { useDeepCompareMemoize } from '../../../../../common/hooks';
+import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
+import { useFormikHelpers } from '../../../../../common/hooks/useFormikHelpers';
 
 import './NodePoolForm.css';
-import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
-import AgentsSelectionHostCountLabelIcon from '../../../Agent/AgentsSelectionHostCountLabelIcon';
-
-export const agentLabelKeysFilter: string[] = [AGENT_TO_NODE_POOL_NAME, AGENT_TO_NODE_POOL_NS];
+import NodePoolAgentsForm from '../../forms/NodePoolAgentsForm';
 
 type NodePoolFormProps = {
   infraEnvs: InfraEnvK8sResource[];
@@ -42,87 +35,48 @@ type NodePoolFormProps = {
 };
 
 const NodePoolForm: React.FC<NodePoolFormProps> = ({ infraEnvs, agents, index, onRemove }) => {
-  const { values, setFieldValue } = useFormikContext<HostsFormValues>();
+  const { t } = useTranslation();
+  const { values } = useFormikContext<HostsFormValues>();
+  const { setValue } = useFormikHelpers(`nodePools[${index}].count`);
   const [isExpanded, setExpanded] = React.useState(true);
   const infraEnvAgents = React.useMemo(() => {
     const infraEnv = infraEnvs.find((ie) => ie.metadata?.namespace === values.agentNamespace);
     return agents.filter((agent) => isAgentOfInfraEnv(infraEnv, agent));
   }, [infraEnvs, agents, values.agentNamespace]);
 
-  const { agentLabels, manualHostSelect, autoSelectedAgentIDs } = values.nodePools[index];
+  const { agentLabels } = values.nodePools[index];
 
-  const matchingAgents = React.useMemo(
-    () =>
-      getAgentsForSelection(infraEnvAgents).filter((agent) => {
-        const labels = agentLabels.reduce((acc, curr) => {
-          const keyValue = curr.split('=');
-          acc[keyValue[0]] = keyValue[1];
-          return acc;
-        }, {});
+  const availableAgents = getAgentsForSelection(infraEnvAgents);
 
-        const hasLabels = Object.keys(labels).every(
-          (key) => agent.metadata?.labels?.[key] === labels[key],
-        );
-        return (
-          hasLabels &&
-          !agent.spec.clusterDeploymentName?.name &&
-          !agent.spec.clusterDeploymentName?.namespace
-        );
-      }),
-    [infraEnvAgents, agentLabels],
-  );
-
-  const autoSelectedAgents = React.useMemo(
-    () => agents.filter((agent) => autoSelectedAgentIDs.includes(agent.metadata?.uid || '')),
-    [autoSelectedAgentIDs, agents],
-  );
-
-  const reservedAgentIDs = useDeepCompareMemoize(
-    values.nodePools.slice(0, index).reduce<string[]>((acc, nodePool) => {
-      acc.push(
-        ...(nodePool.manualHostSelect ? nodePool.selectedAgentIDs : nodePool.autoSelectedAgentIDs),
-      );
+  const matchingAgents = availableAgents.filter((agent) => {
+    const labels = agentLabels.reduce<{ [key: string]: string }>((acc, { key, value }) => {
+      acc[key] = value;
       return acc;
-    }, []),
+    }, {});
+    return (
+      isMatch(agent.metadata?.labels || {}, labels) &&
+      !agent.spec.clusterDeploymentName?.name &&
+      !agent.spec.clusterDeploymentName?.namespace
+    );
+  });
+
+  let previousNodePoolsCount = 0;
+
+  for (let i = 0; i < index; i++) {
+    previousNodePoolsCount += values.nodePools[i].count;
+  }
+
+  const maxAgents = Math.min(
+    matchingAgents.length,
+    availableAgents.length - previousNodePoolsCount,
   );
 
-  const availableAgents = React.useMemo(
-    () => matchingAgents.filter((agent) => !reservedAgentIDs.includes(agent.metadata?.uid || '')),
-    [matchingAgents, reservedAgentIDs],
-  );
-
+  const currentCount = values.nodePools[index].count;
   React.useEffect(() => {
-    const availableAgentIDs = availableAgents.map((a) => a.metadata?.uid || '');
-    const ids = availableAgents.slice(0, values.nodePools[index].count).map((a) => a.metadata?.uid);
-    if (
-      !values.nodePools[index].manualHostSelect &&
-      values.nodePools[index].autoSelectedAgentIDs.length === 0 &&
-      ids.length !== 0
-    ) {
-      setFieldValue(`nodePools.${index}.autoSelectedAgentIDs`, ids);
-    } else {
-      const availableAutoSelectedAgents = autoSelectedAgents.filter((a) =>
-        availableAgentIDs.includes(a.metadata?.uid || ''),
-      );
-      if (
-        !isEqual(
-          availableAutoSelectedAgents.map((a) => a.metadata?.uid || ''),
-          autoSelectedAgents.map((a) => a.metadata?.uid || ''),
-        )
-      ) {
-        const newNodePools = [...values.nodePools];
-        newNodePools[index].autoSelectedAgentIDs = availableAutoSelectedAgents.map(
-          (a) => a.metadata?.uid || '',
-        );
-        setFieldValue('nodePools', newNodePools);
-      }
+    if (currentCount > maxAgents) {
+      void setValue(maxAgents);
     }
-  }, [availableAgents, autoSelectedAgents, setFieldValue, index, values.nodePools]);
-  const { t } = useTranslation();
-
-  const selectedAgents = values.nodePools[index].manualHostSelect
-    ? agents.filter((a) => values.nodePools[index].selectedAgentIDs.includes(a.metadata?.uid || ''))
-    : autoSelectedAgents;
+  }, [maxAgents, setValue, currentCount]);
 
   return (
     <Stack hasGutter>
@@ -154,12 +108,11 @@ const NodePoolForm: React.FC<NodePoolFormProps> = ({ infraEnvs, agents, index, o
                     <Divider isVertical />
                   </FlexItem>
                   <FlexItem>
-                    <Label color="green">{`${selectedAgents.length} Hosts: ${getTotalCompute(
-                      selectedAgents,
-                    )}`}</Label>
-                  </FlexItem>
-                  <FlexItem>
-                    <Label variant="outline">{`${values.nodePools[index].agentLabels.length} filtering labels`}</Label>
+                    <Label variant="outline">
+                      {t('ai:{{count}} filtering label', {
+                        count: values.nodePools[index].agentLabels.length,
+                      })}
+                    </Label>
                   </FlexItem>
                 </>
               )}
@@ -174,43 +127,12 @@ const NodePoolForm: React.FC<NodePoolFormProps> = ({ infraEnvs, agents, index, o
       </StackItem>
       {isExpanded && (
         <StackItem className="ai-node-pool__section">
-          <Grid hasGutter>
-            <GridItem>
-              <LabelSelectorGroup
-                agents={infraEnvAgents}
-                labelKeysFilter={agentLabelKeysFilter}
-                name={`nodePools.${index}.agentLabels`}
-              />
-            </GridItem>
-            <GridItem>
-              <CheckboxField
-                name={`nodePools.${index}.manualHostSelect`}
-                label="Manual host selection"
-              />
-            </GridItem>
-            {!manualHostSelect ? (
-              <GridItem>
-                <NumberInputField
-                  label="Number of hosts"
-                  labelIcon={<AgentsSelectionHostCountLabelIcon />}
-                  idPostfix="count"
-                  name={`nodePools.${index}.count`}
-                  isRequired
-                  minValue={1}
-                  maxValue={availableAgents.length}
-                  onChange={(value) => {
-                    setFieldValue(
-                      `nodePools.${index}.autoSelectedAgentIDs`,
-                      availableAgents.slice(0, value).map((a) => a.metadata?.uid),
-                    );
-                  }}
-                  helperText={`Maximum availability ${availableAgents.length}`}
-                />
-              </GridItem>
-            ) : (
-              <HostsAdvancedSelection agents={availableAgents} index={index} />
-            )}
-          </Grid>
+          <NodePoolAgentsForm
+            agents={infraEnvAgents}
+            countName={`nodePools.${index}.count`}
+            labelName={`nodePools.${index}.agentLabels`}
+            maxAgents={maxAgents}
+          />
         </StackItem>
       )}
     </Stack>

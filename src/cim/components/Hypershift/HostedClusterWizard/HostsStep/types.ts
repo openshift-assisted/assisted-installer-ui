@@ -5,10 +5,10 @@ export type NodePoolFormValue = {
   name: string;
   clusterName: string;
   count: number;
-  agentLabels: string[];
-  autoSelectedAgentIDs: string[];
-  manualHostSelect: boolean;
-  selectedAgentIDs: string[];
+  agentLabels: {
+    key: string;
+    value: string;
+  }[];
   releaseImage: string;
 };
 

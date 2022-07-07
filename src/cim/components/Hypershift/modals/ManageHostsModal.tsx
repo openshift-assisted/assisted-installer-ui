@@ -1,24 +1,37 @@
 import {
+  Alert,
   Button,
   Modal,
   ModalBoxBody,
   ModalBoxFooter,
   ModalVariant,
   Spinner,
+  Stack,
+  StackItem,
 } from '@patternfly/react-core';
-import { Formik } from 'formik';
+import { Formik, FormikConfig } from 'formik';
 import * as React from 'react';
 import { AgentK8sResource } from '../../../types';
-import { NodePoolK8sResource, HostedClusterK8sResource } from '../types';
-import AddNodePoolForm, { AddNodePoolFormValues } from './AddNodePoolForm';
-import isMatch from 'lodash/isMatch';
+import { NodePoolK8sResource, HostedClusterK8sResource, AgentMachineK8sResource } from '../types';
+import NodePoolForm, { NodePoolFormValues } from './NodePoolForm';
+import { formikLabelsToLabels, labelsToFormikValue } from '../utils';
+import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
+import { getErrorMessage } from '../../../../common/utils';
 
 type ManageHostsModalProps = {
   hostedCluster: HostedClusterK8sResource;
   agents: AgentK8sResource[];
   nodePool: NodePoolK8sResource;
   onClose: VoidFunction;
-  onSubmit: (selectedAgents: AgentK8sResource[]) => Promise<void>;
+  onSubmit: (
+    nodePool: NodePoolK8sResource,
+    nodePoolPatches: {
+      op: string;
+      value: unknown;
+      path: string;
+    }[],
+  ) => Promise<void>;
+  agentMachines: AgentMachineK8sResource[];
 };
 
 const ManageHostsModal = ({
@@ -27,52 +40,52 @@ const ManageHostsModal = ({
   hostedCluster,
   agents,
   onSubmit,
+  agentMachines,
 }: ManageHostsModalProps) => {
+  const { t } = useTranslation();
+  const [error, setError] = React.useState<string>();
   const namespaceAgents = agents.filter(
     (a) => a.metadata?.namespace === hostedCluster.spec.platform.agent?.agentNamespace,
   );
-  const handleSubmit = async (values: AddNodePoolFormValues) => {
+  const handleSubmit: FormikConfig<NodePoolFormValues>['onSubmit'] = async (values) => {
+    setError(undefined);
+    const patches = [];
+    if (values.count !== nodePool.spec.replicas) {
+      patches.push({
+        op: 'replace',
+        value: values.count,
+        path: '/spec/replicas',
+      });
+    }
+    patches.push({
+      op: 'replace',
+      value: formikLabelsToLabels(values.agentLabels),
+      path: '/spec/platform/agent/agentLabelSelector/matchLabels',
+    });
     try {
-      await onSubmit(
-        namespaceAgents.filter((a) =>
-          (values.manualHostSelect
-            ? values.selectedAgentIDs
-            : values.autoSelectedAgentIDs
-          ).includes(a.metadata?.uid || ''),
-        ),
-      );
+      await onSubmit(nodePool, patches);
       onClose();
     } catch (err) {
-      console.log(err);
+      setError(getErrorMessage(err));
     }
   };
-
-  const nodePoolAgents = namespaceAgents
-    .filter((a) =>
-      a.metadata?.labels
-        ? isMatch(a.metadata.labels, nodePool.spec.platform.agent.agentLabelSelector.matchLabels)
-        : false,
-    )
-    .map((a) => a.metadata?.uid || '');
 
   return (
     <Modal
       aria-label="Manage hosts dialog"
-      title="Manage hosts"
+      title={t('ai:Manage hosts')}
       isOpen
       onClose={onClose}
       variant={ModalVariant.medium}
       hasNoBodyWrapper
-      id="manage-hosts-modal"
     >
-      <Formik<AddNodePoolFormValues>
+      <Formik<NodePoolFormValues>
         initialValues={{
           nodePoolName: nodePool.metadata?.name || '',
-          agentLabels: [],
-          manualHostSelect: false,
-          autoSelectedAgentIDs: nodePoolAgents,
-          count: nodePoolAgents.length,
-          selectedAgentIDs: nodePoolAgents,
+          agentLabels: labelsToFormikValue(
+            nodePool.spec.platform?.agent?.agentLabelSelector?.matchLabels || {},
+          ),
+          count: nodePool.spec.replicas,
           openshiftVersion: nodePool.spec.release.image,
         }}
         isInitialValid={false}
@@ -81,11 +94,21 @@ const ManageHostsModal = ({
         {({ isSubmitting, isValid, submitForm }) => (
           <>
             <ModalBoxBody>
-              <AddNodePoolForm
-                agents={namespaceAgents}
-                nodePool={nodePool}
-                hostedCluster={hostedCluster}
-              />
+              <Stack hasGutter>
+                <StackItem>
+                  <NodePoolForm
+                    agents={namespaceAgents}
+                    agentMachines={agentMachines}
+                    nodePool={nodePool}
+                    hostedCluster={hostedCluster}
+                  />
+                </StackItem>
+                {error && (
+                  <StackItem>
+                    <Alert variant="danger" title={error} isInline />
+                  </StackItem>
+                )}
+              </Stack>
             </ModalBoxBody>
             <ModalBoxFooter>
               <Button
@@ -93,10 +116,10 @@ const ManageHostsModal = ({
                 isDisabled={!isValid || isSubmitting}
                 icon={isSubmitting ? <Spinner size="md" /> : undefined}
               >
-                Update
+                {t('ai:Update')}
               </Button>
               <Button variant="link" onClick={onClose}>
-                Cancel
+                {t('ai:Cancel')}
               </Button>
             </ModalBoxFooter>
           </>

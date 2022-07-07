@@ -3,6 +3,7 @@ import { saveAs } from 'file-saver';
 import { HostedClusterK8sResource } from '../types';
 import { SecretK8sResource } from '../../../types';
 import { Button, ButtonVariant } from '@patternfly/react-core';
+import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 
 type HypershiftKubeconfigDownloadProps = {
   hostedCluster: HostedClusterK8sResource;
@@ -13,6 +14,7 @@ const HypershiftKubeconfigDownload = ({
   hostedCluster,
   fetchSecret,
 }: HypershiftKubeconfigDownloadProps) => {
+  const { t } = useTranslation();
   const handleKubeconfigDownload = async () => {
     const kubeconfigSecretName = hostedCluster.status?.kubeconfig?.name;
     const kubeconfigSecretNamespace = hostedCluster.metadata?.namespace;
@@ -22,7 +24,9 @@ const HypershiftKubeconfigDownload = ({
         const kubeconfigSecret = await fetchSecret(kubeconfigSecretName, kubeconfigSecretNamespace);
         const kubeconfig = kubeconfigSecret.data?.kubeconfig;
 
-        if (!kubeconfig) throw new Error('Kubeconfig is empty.');
+        if (!kubeconfig) {
+          throw new Error('Kubeconfig is empty.');
+        }
 
         const blob = new Blob([atob(kubeconfig)], { type: 'text/plain;charset=utf-8' });
         saveAs(blob, 'kubeconfig.yaml');
@@ -38,7 +42,7 @@ const HypershiftKubeconfigDownload = ({
       onClick={handleKubeconfigDownload}
       isDisabled={!hostedCluster.status?.kubeconfig?.name}
     >
-      Download kubeconfig
+      {t('ai:Download kubeconfig')}
     </Button>
   );
 };

@@ -2,8 +2,11 @@ import * as React from 'react';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import noop from 'lodash/noop';
+import { Stack, StackItem } from '@patternfly/react-core';
 import HostsForm from './HostsForm';
-import { HostsStepProps, HostsFormValues, NodePoolFormValue } from './types';
+import { HostsStepProps, HostsFormValues } from './types';
+import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
+import { HostsStepProps, HostsFormValues } from './types';
 import { getAgentsForSelection } from '../../../helpers';
 import { INFRAENV_AGENTINSTALL_LABEL_KEY } from '../../../common';
 import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
@@ -12,25 +15,14 @@ import { Stack, StackItem } from '@patternfly/react-core';
 const validationSchema = Yup.object<HostsFormValues>().shape({
   agentNamespace: Yup.string().required(),
   nodePools: Yup.array().of(
-    Yup.lazy<NodePoolFormValue>((nodePool) =>
-      Yup.object()
-        .shape({
-          agentNamespace: Yup.string().notOneOf(['NOT_AVAILABLE']),
-          name: Yup.string().required(),
-          clusterName: Yup.string().required(),
-          count: Yup.number().min(1),
-          autoSelectedAgentIDs: nodePool.manualHostSelect
-            ? Yup.array<string>()
-            : Yup.array<string>().min(nodePool.count),
-          selectedAgentIDs: nodePool.manualHostSelect
-            ? Yup.array<string>().min(1, 'Please select al least one host for the cluster.')
-            : Yup.array<string>(),
-          manualHostSelect: Yup.boolean(),
-          agentLabels: Yup.array().of(Yup.string()),
-          releaseImage: Yup.string().required(),
-        })
-        .required(),
-    ),
+    Yup.object()
+      .shape({
+        name: Yup.string().required(),
+        clusterName: Yup.string().required(),
+        count: Yup.number(),
+        releaseImage: Yup.string().required(),
+      })
+      .required(),
   ),
 });
 
@@ -70,9 +62,6 @@ const HostsStep: React.FC<HostsStepProps> = ({
               {
                 name: `nodepool-${clusterName}-1`,
                 count: 1,
-                autoSelectedAgentIDs: [],
-                manualHostSelect: false,
-                selectedAgentIDs: [],
                 agentLabels: [],
                 releaseImage: initReleaseImage,
                 clusterName,

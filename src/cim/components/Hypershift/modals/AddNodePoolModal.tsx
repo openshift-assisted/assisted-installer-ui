@@ -1,26 +1,27 @@
 import {
+  Alert,
   Button,
   Modal,
   ModalBoxBody,
   ModalBoxFooter,
   ModalVariant,
   Spinner,
+  Stack,
+  StackItem,
 } from '@patternfly/react-core';
 import { Formik } from 'formik';
 import * as React from 'react';
+import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
+import { getErrorMessage } from '../../../../common/utils';
 import { AgentK8sResource, ClusterImageSetK8sResource } from '../../../types';
 import { getOCPVersions } from '../../helpers';
-import { AGENT_TO_NODE_POOL_NAME, AGENT_TO_NODE_POOL_NS } from '../HostedClusterWizard';
 import { HostedClusterK8sResource, NodePoolK8sResource } from '../types';
-import AddNodePoolForm, { AddNodePoolFormValues } from './AddNodePoolForm';
+import { formikLabelsToLabels } from '../utils';
+import NodePoolForm, { NodePoolFormValues } from './NodePoolForm';
 
 type AddNodePoolModalProps = {
   agentsNamespace: string;
-  onSubmit: (
-    nodePool: NodePoolK8sResource,
-    selectedAgents: AgentK8sResource[],
-    matchLabels: { [key: string]: string },
-  ) => Promise<void>;
+  onSubmit: (nodePool: NodePoolK8sResource) => Promise<void>;
   onClose: VoidFunction;
   agents: AgentK8sResource[];
   hostedCluster: HostedClusterK8sResource;
@@ -35,17 +36,11 @@ const AddNodePoolModal = ({
   clusterImages,
   agentsNamespace,
 }: AddNodePoolModalProps) => {
+  const { t } = useTranslation();
+  const [error, setError] = React.useState<string>();
   const namespaceAgents = agents.filter((a) => a.metadata?.namespace === agentsNamespace);
-  const handleSubmit = async (values: AddNodePoolFormValues) => {
-    const matchLabels = {
-      [AGENT_TO_NODE_POOL_NAME]: values.nodePoolName,
-      [AGENT_TO_NODE_POOL_NS]: hostedCluster.metadata?.namespace || '',
-    };
-    const selectedAgents = namespaceAgents.filter((a) =>
-      (values.manualHostSelect ? values.selectedAgentIDs : values.autoSelectedAgentIDs).includes(
-        a.metadata?.uid || '',
-      ),
-    );
+  const handleSubmit = async (values: NodePoolFormValues) => {
+    setError(undefined);
     const nodePool: NodePoolK8sResource = {
       apiVersion: 'hypershift.openshift.io/v1alpha1',
       kind: 'NodePool',
@@ -55,7 +50,7 @@ const AddNodePoolModal = ({
       },
       spec: {
         clusterName: hostedCluster.metadata?.name || '',
-        replicas: selectedAgents.length,
+        replicas: values.count,
         management: {
           autoRepair: false,
           upgradeType: 'InPlace',
@@ -64,7 +59,7 @@ const AddNodePoolModal = ({
           type: 'Agent',
           agent: {
             agentLabelSelector: {
-              matchLabels,
+              matchLabels: formikLabelsToLabels(values.agentLabels),
             },
           },
         },
@@ -75,8 +70,12 @@ const AddNodePoolModal = ({
         },
       },
     };
-    await onSubmit(nodePool, selectedAgents, matchLabels);
-    onClose();
+    try {
+      await onSubmit(nodePool);
+      onClose();
+    } catch (err) {
+      setError(getErrorMessage(err));
+    }
   };
 
   const ocpVersions = React.useMemo(() => getOCPVersions(clusterImages), [clusterImages]);
@@ -84,51 +83,51 @@ const AddNodePoolModal = ({
   return (
     <Modal
       aria-label="add node pool dialog"
-      title="Add Nodepool"
+      title={t('ai:Add Nodepool')}
       isOpen
       onClose={onClose}
       variant={ModalVariant.medium}
       hasNoBodyWrapper
-      id="add-node-pool"
     >
-      <Formik<AddNodePoolFormValues>
+      <Formik<NodePoolFormValues>
         initialValues={{
           nodePoolName: `nodepool-${hostedCluster.metadata?.name || ''}-${Math.floor(
             Math.random() * 100,
           )}`,
           agentLabels: [],
-          manualHostSelect: false,
-          autoSelectedAgentIDs: [],
           count: 1,
-          selectedAgentIDs: [],
           openshiftVersion: ocpVersions[0].value,
         }}
         onSubmit={handleSubmit}
       >
-        {({ isSubmitting, isValid, submitForm, values }) => (
+        {({ isSubmitting, isValid, submitForm }) => (
           <>
             <ModalBoxBody>
-              <AddNodePoolForm
-                agents={namespaceAgents}
-                hostedCluster={hostedCluster}
-                ocpVersions={ocpVersions}
-              />
+              <Stack hasGutter>
+                <StackItem>
+                  <NodePoolForm
+                    agents={namespaceAgents}
+                    hostedCluster={hostedCluster}
+                    ocpVersions={ocpVersions}
+                  />
+                </StackItem>
+                {error && (
+                  <StackItem>
+                    <Alert variant="danger" isInline title={error} />
+                  </StackItem>
+                )}
+              </Stack>
             </ModalBoxBody>
             <ModalBoxFooter>
               <Button
                 onClick={submitForm}
-                isDisabled={
-                  !isValid ||
-                  isSubmitting ||
-                  !(values.manualHostSelect ? values.selectedAgentIDs : values.autoSelectedAgentIDs)
-                    .length
-                }
+                isDisabled={!isValid || isSubmitting}
                 icon={isSubmitting ? <Spinner size="md" /> : undefined}
               >
-                Create
+                {t('ai:Create')}
               </Button>
               <Button variant="link" onClick={onClose}>
-                Cancel
+                {t('ai:Cancel')}
               </Button>
             </ModalBoxFooter>
           </>

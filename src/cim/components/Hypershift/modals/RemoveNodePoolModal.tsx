@@ -12,6 +12,7 @@ import {
 } from '@patternfly/react-core';
 import { NodePoolK8sResource } from '../types';
 import { getErrorMessage } from '../../../../common/utils';
+import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 
 type RemoveNodePoolModalProps = {
   nodePool: NodePoolK8sResource;
@@ -20,27 +21,26 @@ type RemoveNodePoolModalProps = {
 };
 
 const RemoveNodePoolModal = ({ onClose, onRemove, nodePool }: RemoveNodePoolModalProps) => {
+  const { t } = useTranslation();
   const [isRemoving, setIsRemoving] = React.useState(false);
   const [error, setError] = React.useState<string>();
   return (
     <Modal
       aria-label="remove node pool dialog"
-      title="Remove Nodepool"
+      title={t('ai:Remove nodepool')}
       isOpen
       onClose={onClose}
       variant={ModalVariant.small}
       hasNoBodyWrapper
-      id="remove-node-pool"
       titleIconVariant="warning"
     >
       <ModalBoxBody>
         <Stack hasGutter>
           <StackItem>
-            {`Removing ${nodePool.metadata?.name || ''} will remove the association with ${
-              nodePool.spec.replicas
-            } ${
-              nodePool.spec.replicas === 1 ? 'host' : 'hosts'
-            }. These hosts will become available for other nodepools.`}
+            {t(
+              'ai:Removing {{name}} will remove the association with {{count}} host. These hosts will become available for other nodepools.',
+              { name: nodePool.metadata?.name || '', count: nodePool.spec.replicas },
+            )}
           </StackItem>
           {error && (
             <StackItem>
@@ -70,10 +70,10 @@ const RemoveNodePoolModal = ({ onClose, onRemove, nodePool }: RemoveNodePoolModa
           variant="danger"
           icon={isRemoving ? <Spinner size="md" /> : undefined}
         >
-          Create
+          {t('ai:Create')}
         </Button>
         <Button variant="link" onClick={onClose}>
-          Cancel
+          {t('ai:Cancel')}
         </Button>
       </ModalBoxFooter>
     </Modal>

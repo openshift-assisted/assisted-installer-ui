@@ -10,9 +10,11 @@ export type NodePoolK8sResource = K8sResourceCommon & {
     };
     platform: {
       type: string;
-      agent: {
-        agentLabelSelector: {
-          matchLabels: object;
+      agent?: {
+        agentLabelSelector?: {
+          matchLabels?: {
+            [key: string]: string;
+          };
         };
       };
     };
@@ -20,10 +22,21 @@ export type NodePoolK8sResource = K8sResourceCommon & {
       image: string;
     };
   };
+  status?: {
+    conditions?: {
+      type: string;
+      status: string;
+      reason: string;
+      message: string;
+    }[];
+  };
 };
 
 export type HostedClusterK8sResource = K8sResourceCommon & {
   spec: {
+    dns: {
+      baseDomain: string;
+    };
     platform: {
       agent?: {
         agentNamespace: string;
@@ -39,6 +52,15 @@ export type HostedClusterK8sResource = K8sResourceCommon & {
     }[];
     kubeconfig?: {
       name: string;
+    };
+  };
+};
+
+export type AgentMachineK8sResource = K8sResourceCommon & {
+  status?: {
+    agentRef?: {
+      name: string;
+      namespace: string;
     };
   };
 };
