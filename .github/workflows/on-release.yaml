@@ -85,7 +85,6 @@ jobs:
         with:
           repository: ${{ needs.publish-to-npm.outputs.assisted-ui-repo-url }}
           ref: master
-          path: ./assisted-ui
 
       - name: Upgrade openshift-assisted-ui-lib to ${{ env.NEW_VERSION }}
         run: yarn upgrade --exact openshift-assisted-ui-lib@$NEW_VERSION
