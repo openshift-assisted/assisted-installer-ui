@@ -83,6 +83,7 @@ jobs:
       - name: Check out assisted-ui
         uses: actions/checkout@v3
         with:
+          token: ${{ secrets.PUSH_TO_PROTECTED_BRANCH }}
           repository: ${{ needs.publish-to-npm.outputs.assisted-ui-repo-url }}
           ref: master
 
