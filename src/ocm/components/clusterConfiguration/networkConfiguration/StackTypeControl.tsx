@@ -1,24 +1,58 @@
 import React from 'react';
 import { ButtonVariant, FormGroup, Tooltip } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
-import { Cluster } from '../../../../common/api/types';
-import { NetworkConfigurationValues } from '../../../../common/types';
+import {
+  Cluster,
+  ClusterNetwork,
+  MachineNetwork,
+  ServiceNetwork,
+} from '../../../../common/api/types';
+import { HostSubnets, NetworkConfigurationValues } from '../../../../common/types';
 import { DUAL_STACK, IPV4_STACK, NO_SUBNET_SET } from '../../../../common/config/constants';
 import { getFieldId } from '../../../../common/components/ui/formik/utils';
 import { ConfirmationModal, PopoverIcon, RadioField } from '../../../../common/components/ui';
 import { getDefaultNetworkType } from '../../../../common';
+import { useDefaultConfiguration } from '../ClusterDefaultConfigurationContext';
+import { Address6 } from 'ip-address';
+
+type StackTypeControlGroupProps = {
+  clusterId: Cluster['id'];
+  isDualStackSelectable: boolean;
+  isSNO: boolean;
+  hostSubnets: HostSubnets;
+};
+
+const hasDualStackConfigurationChanged = (
+  clusterNetworks: ClusterNetwork[],
+  serviceNetworks: ServiceNetwork[],
+  cidrIPv6: MachineNetwork['cidr'],
+  values: NetworkConfigurationValues,
+) =>
+  clusterNetworks &&
+  serviceNetworks &&
+  ((values.machineNetworks && values.machineNetworks[1].cidr !== cidrIPv6) ||
+    (values.clusterNetworks && values.clusterNetworks[1].cidr !== clusterNetworks[1].cidr) ||
+    (values.clusterNetworks &&
+      values.clusterNetworks[1].hostPrefix !== clusterNetworks[1].hostPrefix) ||
+    (values.serviceNetworks && values.serviceNetworks[1].cidr !== serviceNetworks[1].cidr));
 
 export const StackTypeControlGroup = ({
   clusterId,
   isSNO,
   isDualStackSelectable,
-}: {
-  clusterId: Cluster['id'];
-  isDualStackSelectable: boolean;
-  isSNO: boolean;
-}) => {
+  hostSubnets,
+}: StackTypeControlGroupProps) => {
   const { setFieldValue, values, validateForm } = useFormikContext<NetworkConfigurationValues>();
   const [openConfirmModal, setConfirmModal] = React.useState(false);
+  const defaultNetworkValues = useDefaultConfiguration([
+    'clusterNetworksDualstack',
+    'clusterNetworksIpv4',
+    'serviceNetworksDualstack',
+    'serviceNetworksIpv4',
+  ]);
+
+  const IPv6Subnets = hostSubnets.filter((subnet) => Address6.isValid(subnet.subnet));
+  const cidrIPv6 = IPv6Subnets.length >= 1 ? IPv6Subnets[0].subnet : NO_SUBNET_SET;
 
   const setSingleStack = React.useCallback(() => {
     setFieldValue('stackType', IPV4_STACK);
@@ -37,6 +71,7 @@ export const StackTypeControlGroup = ({
 
     void validateForm();
   }, [
+    isSNO,
     setFieldValue,
     validateForm,
     values.clusterNetworks,
@@ -52,21 +87,31 @@ export const StackTypeControlGroup = ({
     if (values.machineNetworks && values.machineNetworks?.length < 2) {
       setFieldValue(
         'machineNetworks',
-        [...values.machineNetworks, { cidr: NO_SUBNET_SET, clusterId: clusterId }],
+        [...values.machineNetworks, { cidr: cidrIPv6, clusterId: clusterId }],
         false,
       );
     }
     if (values.clusterNetworks && values.clusterNetworks?.length < 2) {
       setFieldValue(
         'clusterNetworks',
-        [...values.clusterNetworks, { cidr: '', hostPrefix: '', clusterId: clusterId }],
+        [
+          ...values.clusterNetworks,
+          defaultNetworkValues.clusterNetworksDualstack?.length
+            ? defaultNetworkValues.clusterNetworksDualstack[1]
+            : { cidr: '', hostPrefix: '', clusterId: clusterId },
+        ],
         false,
       );
     }
     if (values.serviceNetworks && values.serviceNetworks?.length < 2) {
       setFieldValue(
         'serviceNetworks',
-        [...values.serviceNetworks, { cidr: '', clusterId: clusterId }],
+        [
+          ...values.serviceNetworks,
+          defaultNetworkValues.serviceNetworksDualstack?.length
+            ? defaultNetworkValues.serviceNetworksDualstack[1]
+            : { cidr: '', clusterId: clusterId },
+        ],
         false,
       );
     }
@@ -76,10 +121,12 @@ export const StackTypeControlGroup = ({
     if (e.target.value === DUAL_STACK) {
       setDualStack();
     } else if (
-      (values.machineNetworks && values.machineNetworks[1].cidr !== 'NO_SUBNET_SET') ||
-      (values.clusterNetworks && values.clusterNetworks[1].cidr) ||
-      (values.clusterNetworks && values.clusterNetworks[1].hostPrefix) ||
-      (values.serviceNetworks && values.serviceNetworks[1].cidr)
+      hasDualStackConfigurationChanged(
+        defaultNetworkValues.clusterNetworksDualstack || [],
+        defaultNetworkValues.serviceNetworksDualstack || [],
+        cidrIPv6,
+        values,
+      )
     ) {
       setConfirmModal(true);
     } else {

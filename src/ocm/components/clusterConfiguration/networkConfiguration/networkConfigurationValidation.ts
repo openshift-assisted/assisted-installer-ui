@@ -15,11 +15,18 @@ import {
   vipValidationSchema,
   IPV4_STACK,
   DUAL_STACK,
+  ClusterDefaultConfig,
 } from '../../../../common';
 
 export const getNetworkInitialValues = (
   cluster: Cluster,
-  defaultNetworkValues: Pick<NetworkConfigurationValues, 'serviceNetworks' | 'clusterNetworks'>,
+  defaultNetworkValues: Pick<
+    ClusterDefaultConfig,
+    | 'clusterNetworksIpv4'
+    | 'clusterNetworksDualstack'
+    | 'serviceNetworksIpv4'
+    | 'serviceNetworksDualstack'
+  >,
 ): NetworkConfigurationValues => {
   const isSNOCluster = isSNO(cluster);
   const isDualStackType = isDualStack(cluster);
@@ -32,9 +39,17 @@ export const getNetworkInitialValues = (
     managedNetworkingType: cluster.userManagedNetworking ? 'userManaged' : 'clusterManaged',
     networkType: cluster.networkType || getDefaultNetworkType(isSNOCluster, isDualStackType),
     machineNetworks: cluster.machineNetworks || [],
-    clusterNetworks: cluster.clusterNetworks || defaultNetworkValues.clusterNetworks,
-    serviceNetworks: cluster.serviceNetworks || defaultNetworkValues.serviceNetworks,
     stackType: isDualStackType ? DUAL_STACK : IPV4_STACK,
+    clusterNetworks:
+      cluster.clusterNetworks ||
+      (isDualStackType
+        ? defaultNetworkValues.clusterNetworksDualstack
+        : defaultNetworkValues.clusterNetworksIpv4),
+    serviceNetworks:
+      cluster.serviceNetworks ||
+      (isDualStackType
+        ? defaultNetworkValues.serviceNetworksDualstack
+        : defaultNetworkValues.serviceNetworksIpv4),
   };
 };
 

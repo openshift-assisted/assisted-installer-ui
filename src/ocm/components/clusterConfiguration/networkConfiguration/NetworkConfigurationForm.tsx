@@ -1,7 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Formik, FormikConfig, useFormikContext } from 'formik';
-import mapValues from 'lodash/mapValues';
 import { Form, Grid, GridItem, Text, TextContent } from '@patternfly/react-core';
 import {
   Cluster,
@@ -19,6 +18,7 @@ import {
   V2ClusterUpdateParams,
   IPV4_STACK,
   SecurityFields,
+  ClusterDefaultConfig,
 } from '../../../../common';
 import { useDefaultConfiguration } from '../ClusterDefaultConfigurationContext';
 import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContext';
@@ -41,7 +41,13 @@ import { getApiErrorMessage, handleApiError } from '../../../api';
 const NetworkConfigurationForm: React.FC<{
   cluster: Cluster;
   hostSubnets: HostSubnets;
-  defaultNetworkSettings: Pick<NetworkConfigurationValues, 'serviceNetworks' | 'clusterNetworks'>;
+  defaultNetworkSettings: Pick<
+    ClusterDefaultConfig,
+    | 'clusterNetworksIpv4'
+    | 'clusterNetworksDualstack'
+    | 'serviceNetworksIpv4'
+    | 'serviceNetworksDualstack'
+  >;
   infraEnv?: InfraEnv;
 }> = ({ cluster, hostSubnets, defaultNetworkSettings, infraEnv }) => {
   const { alerts } = useAlerts();
@@ -106,30 +112,12 @@ const NetworkConfigurationPage: React.FC<{
   cluster: Cluster;
 }> = ({ cluster }) => {
   const { infraEnv, error: infraEnvError, isLoading } = useInfraEnv(cluster.id);
-  const defaultNetworkSettings = useDefaultConfiguration([
-    'clusterNetworkCidr',
-    'serviceNetworkCidr',
-    'clusterNetworkHostPrefix',
+  const defaultNetworkValues = useDefaultConfiguration([
+    'clusterNetworksDualstack',
+    'clusterNetworksIpv4',
+    'serviceNetworksDualstack',
+    'serviceNetworksIpv4',
   ]);
-
-  const defaultNetworkValues: Pick<
-    NetworkConfigurationValues,
-    'serviceNetworks' | 'clusterNetworks'
-  > = {
-    serviceNetworks: [
-      {
-        cidr: defaultNetworkSettings.serviceNetworkCidr,
-        clusterId: cluster.id,
-      },
-    ],
-    clusterNetworks: [
-      {
-        cidr: defaultNetworkSettings.clusterNetworkCidr,
-        hostPrefix: defaultNetworkSettings.clusterNetworkHostPrefix,
-        clusterId: cluster.id,
-      },
-    ],
-  };
 
   const { addAlert, clearAlerts, alerts } = useAlerts();
   const dispatch = useDispatch();
@@ -139,8 +127,6 @@ const NetworkConfigurationPage: React.FC<{
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [], // just once, Formik does not reinitialize
   );
-
-  const initialTouched = React.useMemo(() => mapValues(initialValues, () => true), [initialValues]);
 
   const memoizedValidationSchema = React.useMemo(
     () => getNetworkConfigurationValidationSchema(initialValues, hostSubnets),
@@ -217,7 +203,6 @@ const NetworkConfigurationPage: React.FC<{
       initialValues={initialValues}
       validationSchema={memoizedValidationSchema}
       onSubmit={handleSubmit}
-      initialTouched={initialTouched}
       validateOnMount
     >
       <NetworkConfigurationForm

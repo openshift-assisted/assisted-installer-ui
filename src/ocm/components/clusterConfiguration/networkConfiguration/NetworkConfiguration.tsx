@@ -1,13 +1,13 @@
-import React, { useCallback, useEffect } from 'react';
+import React from 'react';
 import { useFormikContext } from 'formik';
 import { Alert, AlertVariant, Checkbox, Grid, Tooltip } from '@patternfly/react-core';
 import { VirtualIPControlGroup, VirtualIPControlGroupProps } from './VirtualIPControlGroup';
-import { Cluster } from '../../../../common/api/types';
+import { Cluster, ClusterDefaultConfig } from '../../../../common/api/types';
 import {
   FeatureSupportLevelData,
   useFeatureSupportLevel,
 } from '../../../../common/components/featureSupportLevels';
-import { CpuArchitecture, NetworkConfigurationValues } from '../../../../common/types';
+import { CpuArchitecture, HostSubnets, NetworkConfigurationValues } from '../../../../common/types';
 import { getLimitedFeatureSupportLevels } from '../../../../common/components/featureSupportLevels/utils';
 import { isSNO } from '../../../../common/selectors';
 import {
@@ -27,7 +27,14 @@ import { AvailableSubnetsControl } from './AvailableSubnetsControl';
 import AdvancedNetworkFields from './AdvancedNetworkFields';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
-  defaultNetworkSettings: Partial<Cluster>;
+  hostSubnets: HostSubnets;
+  defaultNetworkSettings: Pick<
+    ClusterDefaultConfig,
+    | 'clusterNetworksIpv4'
+    | 'clusterNetworksDualstack'
+    | 'serviceNetworksIpv4'
+    | 'serviceNetworksDualstack'
+  >;
   hideManagedNetworking?: boolean;
 };
 
@@ -45,7 +52,7 @@ const vmsAlert = (
 
 const isAdvNetworkConf = (
   cluster: Cluster,
-  defaultNetworkValues: Pick<NetworkConfigurationValues, 'serviceNetworks' | 'clusterNetworks'>,
+  defaultNetworkValues: Pick<ClusterDefaultConfig, 'clusterNetworksIpv4' | 'serviceNetworksIpv4'>,
   defaultNetworkType: string,
 ) =>
   !(
@@ -53,9 +60,12 @@ const isAdvNetworkConf = (
     cluster.networkType === defaultNetworkType &&
     serviceNetworksEqual(
       cluster.serviceNetworks || [],
-      defaultNetworkValues.serviceNetworks || [],
+      defaultNetworkValues.serviceNetworksIpv4 || [],
     ) &&
-    clusterNetworksEqual(cluster.clusterNetworks || [], defaultNetworkValues.clusterNetworks || [])
+    clusterNetworksEqual(
+      cluster.clusterNetworks || [],
+      defaultNetworkValues.clusterNetworksIpv4 || [],
+    )
   );
 
 const isManagedNetworkingDisabled = (
@@ -130,10 +140,10 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   }, [isSNOCluster, isDualStack]);
 
   const [isAdvanced, setAdvanced] = React.useState(
-    isAdvNetworkConf(cluster, defaultNetworkSettings, defaultNetworkType) || isDualStack,
+    isDualStack || isAdvNetworkConf(cluster, defaultNetworkSettings, defaultNetworkType),
   );
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (isUserManagedNetworking) {
       // We need to reset these fields' values in order to align with the values the server sends
       setFieldValue('vipDhcpAllocation', false);
@@ -157,26 +167,40 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
     validateField,
   ]);
 
-  const toggleAdvConfiguration = useCallback(
+  const toggleAdvConfiguration = React.useCallback(
     (checked: boolean) => {
       setAdvanced(checked);
 
       if (!checked) {
-        setFieldValue('clusterNetworks', defaultNetworkSettings.clusterNetworks, true);
-        setFieldValue('serviceNetworks', defaultNetworkSettings.serviceNetworks, true);
+        setFieldValue(
+          'clusterNetworks',
+          isDualStack
+            ? defaultNetworkSettings.clusterNetworksDualstack
+            : defaultNetworkSettings.clusterNetworksIpv4,
+          true,
+        );
+        setFieldValue(
+          'serviceNetworks',
+          isDualStack
+            ? defaultNetworkSettings.serviceNetworksDualstack
+            : defaultNetworkSettings.serviceNetworksIpv4,
+          true,
+        );
         setFieldValue('networkType', getDefaultNetworkType(isSNOCluster, isDualStack));
       }
     },
     [
       setFieldValue,
-      defaultNetworkSettings.clusterNetworks,
-      defaultNetworkSettings.serviceNetworks,
-      isSNOCluster,
       isDualStack,
+      isSNOCluster,
+      defaultNetworkSettings.clusterNetworksDualstack,
+      defaultNetworkSettings.clusterNetworksIpv4,
+      defaultNetworkSettings.serviceNetworksDualstack,
+      defaultNetworkSettings.serviceNetworksIpv4,
     ],
   );
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (isDualStack && !isUserManagedNetworking) {
       toggleAdvConfiguration(true);
     }
@@ -218,6 +242,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
           clusterId={cluster.id}
           isDualStackSelectable={isDualStackSelectable}
           isSNO={isSNOCluster}
+          hostSubnets={hostSubnets}
         />
       )}
 
@@ -232,7 +257,6 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
       {!isUserManagedNetworking && (
         <VirtualIPControlGroup
           cluster={cluster}
-          hostSubnets={hostSubnets}
           isVipDhcpAllocationDisabled={isVipDhcpAllocationDisabled}
         />
       )}
