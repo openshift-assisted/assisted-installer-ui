@@ -257,8 +257,8 @@ const MassChangeHostnameModal: React.FC<MassChangeHostnameModalProps> = ({
 
   return (
     <Modal
-      aria-label="Change hostname dialog"
-      title="Change hostname"
+      aria-label="Change hostnames dialog"
+      title="Change hostnames"
       isOpen={isOpen}
       onClose={onClose}
       hasNoBodyWrapper
