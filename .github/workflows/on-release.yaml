@@ -95,6 +95,7 @@ jobs:
           MESSAGE: Updates openshift-assisted-ui-lib to ${{ env.NEW_VERSION }}
         uses: peter-evans/create-pull-request@v4
         with:
+          token: ${{ secrets.PUSH_TO_PROTECTED_BRANCH }}
           base: master
           commit-message: ${{ env.MESSAGE }}
           title: ${{ env.MESSAGE }}
