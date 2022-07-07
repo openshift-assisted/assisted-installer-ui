@@ -5,7 +5,7 @@ import {
   dualStackValidationSchema,
   getDefaultNetworkType,
   HostSubnets,
-  isIPv4,
+  isDualStack,
   isSNO,
   machineNetworksValidationSchema,
   NetworkConfigurationValues,
@@ -22,7 +22,7 @@ export const getNetworkInitialValues = (
   defaultNetworkValues: Pick<NetworkConfigurationValues, 'serviceNetworks' | 'clusterNetworks'>,
 ): NetworkConfigurationValues => {
   const isSNOCluster = isSNO(cluster);
-  const usesIPv6 = !isIPv4(cluster);
+  const isDualStackType = isDualStack(cluster);
 
   return {
     apiVip: cluster.apiVip || '',
@@ -30,11 +30,11 @@ export const getNetworkInitialValues = (
     sshPublicKey: cluster.sshPublicKey || '',
     vipDhcpAllocation: cluster.vipDhcpAllocation,
     managedNetworkingType: cluster.userManagedNetworking ? 'userManaged' : 'clusterManaged',
-    networkType: cluster.networkType || getDefaultNetworkType(isSNOCluster, usesIPv6),
+    networkType: cluster.networkType || getDefaultNetworkType(isSNOCluster, isDualStackType),
     machineNetworks: cluster.machineNetworks || [],
     clusterNetworks: cluster.clusterNetworks || defaultNetworkValues.clusterNetworks,
     serviceNetworks: cluster.serviceNetworks || defaultNetworkValues.serviceNetworks,
-    stackType: usesIPv6 ? DUAL_STACK : IPV4_STACK,
+    stackType: isDualStackType ? DUAL_STACK : IPV4_STACK,
   };
 };
 

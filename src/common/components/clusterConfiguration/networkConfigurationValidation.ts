@@ -9,11 +9,14 @@ import {
   vipValidationSchema,
 } from '../ui';
 
-import { getSubnetFromMachineNetworkCidr, getHostSubnets } from './utils';
 import {
+  getSubnetFromMachineNetworkCidr,
+  getHostSubnets,
   getDefaultNetworkType,
-  isSNO,
   isSubnetInIPv6,
+} from './utils';
+import {
+  isSNO,
   selectClusterNetworkCIDR,
   selectClusterNetworkHostPrefix,
   selectMachineNetworkCIDR,

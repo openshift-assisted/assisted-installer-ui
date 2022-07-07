@@ -9,12 +9,15 @@ import {
 } from '../../../../common/components/featureSupportLevels';
 import { CpuArchitecture, NetworkConfigurationValues } from '../../../../common/types';
 import { getLimitedFeatureSupportLevels } from '../../../../common/components/featureSupportLevels/utils';
+import { isSNO } from '../../../../common/selectors';
 import {
-  allHostSubnetsIPv4,
+  canBeDualStack,
   canSelectNetworkTypeSDN,
   getDefaultNetworkType,
-  isSNO,
-} from '../../../../common/selectors';
+  clusterNetworksEqual,
+  DUAL_STACK,
+  serviceNetworksEqual,
+} from '../../../../common';
 import {
   ManagedNetworkingControlGroup,
   UserManagedNetworkingTextContent,
@@ -22,7 +25,6 @@ import {
 import { StackTypeControlGroup } from './StackTypeControl';
 import { AvailableSubnetsControl } from './AvailableSubnetsControl';
 import AdvancedNetworkFields from './AdvancedNetworkFields';
-import { clusterNetworksEqual, DUAL_STACK, serviceNetworksEqual } from '../../../../common';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   defaultNetworkSettings: Partial<Cluster>;
@@ -118,10 +120,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';
   const isDualStack = values.stackType === DUAL_STACK;
 
-  const isDualStackSelectable = React.useMemo(
-    () => !allHostSubnetsIPv4(hostSubnets),
-    [hostSubnets],
-  );
+  const isDualStackSelectable = React.useMemo(() => canBeDualStack(hostSubnets), [hostSubnets]);
 
   const { defaultNetworkType, isSDNSelectable } = React.useMemo(() => {
     return {
