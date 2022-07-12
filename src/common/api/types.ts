@@ -226,6 +226,12 @@ export interface Cluster {
    * {"networking":{"networkType": "OVNKubernetes"},"fips":true}
    */
   installConfigOverrides?: string;
+  /**
+   * Json formatted string containing the user overrides for the initial ignition config
+   * example:
+   * {"ignition": {"version": "3.1.0"}, "storage": {"files": [{"path": "/tmp/example", "contents": {"source": "data:text/plain;base64,aGVscGltdHJhcHBlZGluYXN3YWdnZXJzcGVj"}}]}}
+   */
+  ignitionConfigOverrides?: string;
   controllerLogsCollectedAt?: string; // date-time
   controllerLogsStartedAt?: string; // date-time
   /**
@@ -644,7 +650,7 @@ export interface Disk {
    * Determine the disk's unique identifier which is the by-id field if it exists and fallback to the by-path field otherwise
    */
   id?: string;
-  driveType?: DriveType;
+  driveType?: string;
   hasUuid?: boolean;
   vendor?: string;
   name?: string;
@@ -680,10 +686,6 @@ export interface Disk {
   };
   smart?: string;
   ioPerf?: IoPerf;
-  /**
-   * A comma-separated list of disk names that this disk belongs to
-   */
-  holders?: string;
 }
 export interface DiskConfigParams {
   id: string;
@@ -756,17 +758,6 @@ export interface DomainResolutionResponse {
     ipv6Addresses?: string /* ipv6 */[];
   }[];
 }
-export type DriveType =
-  | 'Unknown'
-  | 'HDD'
-  | 'FDD'
-  | 'ODD'
-  | 'SSD'
-  | 'virtual'
-  | 'Multipath'
-  | 'iSCSI'
-  | 'FC'
-  | 'LVM';
 export interface Error {
   /**
    * Indicates the type of this object. Will always be 'Error'.
@@ -1007,10 +998,6 @@ export interface Host {
    */
   ignitionConfigOverrides?: string;
   installerArgs?: string;
-  /**
-   * The time on the host as seconds since the Unix epoch.
-   */
-  timestamp?: number;
   machineConfigPoolName?: string;
   /**
    * Array of image statuses.
@@ -1183,10 +1170,6 @@ export interface HostRegistrationResponse {
    */
   ignitionConfigOverrides?: string;
   installerArgs?: string;
-  /**
-   * The time on the host as seconds since the Unix epoch.
-   */
-  timestamp?: number;
   machineConfigPoolName?: string;
   /**
    * Array of image statuses.
@@ -1570,10 +1553,6 @@ export interface InstallCmdRequest {
    * Core-os installer addtional args
    */
   installerArgs?: string;
-  /**
-   * Skip formatting installation disk
-   */
-  skipInstallationDiskCleanup?: boolean;
 }
 export interface InstallerArgsParams {
   /**
@@ -1596,7 +1575,6 @@ export interface Interface {
   macAddress?: string;
   flags?: string[];
   speedMbps?: number;
-  type?: string;
 }
 export interface Inventory {
   hostname?: string;
@@ -1913,6 +1891,10 @@ export interface OsImage {
    * The base OS image used for the discovery iso.
    */
   url: string;
+  /**
+   * The OS rootfs url.
+   */
+  rootfsUrl: string;
   /**
    * Build ID of the OS image.
    */
