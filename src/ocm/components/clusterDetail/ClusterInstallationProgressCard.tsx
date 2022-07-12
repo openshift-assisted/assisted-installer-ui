@@ -55,6 +55,7 @@ const ClusterInstallationProgressCard: React.FC<{ cluster: Cluster }> = ({ clust
               cluster={cluster}
               clusterVarieties={clusterVarieties}
               showAddHostsInfo={false}
+              showKubeConfig={false}
             />
             <GridItem>
               <ClusterHostsTable cluster={cluster} skipDisabled />
