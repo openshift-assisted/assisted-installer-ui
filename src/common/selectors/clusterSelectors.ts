@@ -94,20 +94,16 @@ const getOldSchedulableMastersAlwaysOn = (cluster: Cluster) => {
   return cluster.hosts ? cluster.hosts.length < 5 : true;
 };
 
-export const selectMastersMustRunWorkloads = (
-  cluster: Pick<Cluster, 'schedulableMastersForcedTrue'>,
-): boolean => {
+export const selectMastersMustRunWorkloads = (cluster: Cluster): boolean => {
   // TODO camador 2022-06-30 Remove the logic for old schedulableMasters logic after a few weeks
   // as by then all clusters should have the new field "schedulableMastersForcedTrue"
   if (cluster.schedulableMastersForcedTrue === undefined) {
-    return getOldSchedulableMastersAlwaysOn(cluster as Cluster);
+    return getOldSchedulableMastersAlwaysOn(cluster);
   }
   return cluster.schedulableMastersForcedTrue;
 };
 
-export const selectSchedulableMasters = (
-  cluster: Pick<Cluster, 'schedulableMasters' | 'schedulableMastersForcedTrue'>,
-): boolean => {
+export const selectSchedulableMasters = (cluster: Cluster): boolean => {
   if (selectMastersMustRunWorkloads(cluster)) {
     return true;
   }
