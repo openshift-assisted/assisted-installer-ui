@@ -17,6 +17,7 @@ import {
   getWizardStepClusterStatus,
   getWizardStepClusterValidationsInfo,
 } from './validationsInfoUtils';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 type ClusterWizardStepValidationsAlertProps<ClusterWizardStepsType extends string> = {
   currentStepId: ClusterWizardStepsType;
@@ -59,12 +60,12 @@ const ClusterWizardStepValidationsAlert = <ClusterWizardStepsType extends string
       { status: clusterStatus, validationsInfo: validationsInfo || {} },
       hosts,
     ) === 'ready';
-
+  const { t } = useTranslation();
   return (
     <>
       {!validationsInfo && (
         <Alert variant={AlertVariant.info} title="Cluster validations are initializing." isInline>
-          Please hold on till background checks are started.
+          {t('ai:Please hold on till background checks are started.')}
         </Alert>
       )}
       {!isClusterReady && (
@@ -73,7 +74,7 @@ const ClusterWizardStepValidationsAlert = <ClusterWizardStepsType extends string
           <Alert variant={AlertVariant.warning} title="Cluster is not ready yet." isInline>
             {!!failedClusterValidations.length && (
               <Flex spaceItems={{ default: 'spaceItemsSm' }} direction={{ default: 'column' }}>
-                <FlexItem>The following requirements must be met:</FlexItem>
+                <FlexItem>{t('ai:The following requirements must be met:')}</FlexItem>
                 <FlexItem>
                   <List>
                     {(failedClusterValidations.filter(Boolean) as Validation[]).map(

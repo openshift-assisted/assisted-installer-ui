@@ -27,23 +27,28 @@ import DiscoveryImageTypeControlGroup from './DiscoveryImageTypeControlGroup';
 import { OCP_STATIC_IP_DOC } from '../../config/constants';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
-export const StaticIPInfo: React.FC = () => (
-  <Alert
-    title="To use static network configuration, follow the steps listed in the documentation."
-    isInline
-    variant="info"
-  >
-    <Button
-      variant="link"
-      icon={<ExternalLinkAltIcon />}
-      iconPosition="right"
+export const StaticIPInfo: React.FC = () => {
+  const { t } = useTranslation();
+  return (
+    <Alert
+      title={t(
+        'ai:To use static network configuration, follow the steps listed in the documentation.',
+      )}
       isInline
-      onClick={() => window.open(OCP_STATIC_IP_DOC, '_blank', 'noopener')}
+      variant="info"
     >
-      View documentation
-    </Button>
-  </Alert>
-);
+      <Button
+        variant="link"
+        icon={<ExternalLinkAltIcon />}
+        iconPosition="right"
+        isInline
+        onClick={() => window.open(OCP_STATIC_IP_DOC, '_blank', 'noopener')}
+      >
+        {t('ai:View documentation')}
+      </Button>
+    </Alert>
+  );
+};
 
 export type DiscoveryImageFormValues = ImageCreateParams & ProxyFieldsType;
 
@@ -87,8 +92,8 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
     enableProxy: !!(httpProxy || httpsProxy || noProxy),
     imageType: imageType || 'minimal-iso',
   };
-  const { t } = useTranslation();
 
+  const { t } = useTranslation();
   return (
     <Formik
       initialValues={initialValues}
@@ -99,7 +104,7 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
       {({ submitForm, isSubmitting, status }) => {
         return isSubmitting ? (
           <LoadingState
-            content="Discovery image is being prepared, this might take a few seconds."
+            content={t('ai:Discovery image is being prepared, this might take a few seconds.')}
             secondaryActions={[
               <Button key="close" variant={ButtonVariant.secondary} onClick={onCancel}>
                 {t('ai:Cancel')}

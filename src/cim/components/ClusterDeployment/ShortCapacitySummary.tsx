@@ -1,8 +1,9 @@
 import React from 'react';
 import { fileSize } from '../../../common';
 import { AgentK8sResource } from '../../types';
+import { TFunction } from 'i18next';
 
-export const getTotalCompute = (selectedAgents: AgentK8sResource[]) => {
+export const getTotalCompute = (selectedAgents: AgentK8sResource[], t: TFunction) => {
   const totals = selectedAgents.reduce(
     (acc, agent) => {
       acc.cpus += agent.status?.inventory.cpu?.count || 0;
@@ -14,15 +15,26 @@ export const getTotalCompute = (selectedAgents: AgentK8sResource[]) => {
       memory: 0,
     },
   );
-  return `${totals.cpus} CPUs | ${fileSize(totals.memory, 2, 'iec')} Memory`;
+
+  return t('ai:{{cpus}} CPUs | {{memory}} Memory', {
+    cpus: totals.cpus,
+    memory: fileSize(totals.memory, 2, 'iec'),
+  });
+  //return t('${totals.cpus} CPUs | ${fileSize(totals.memory, 2, "iec")} Memory');
+  //return `${totals.cpus} CPUs | ${fileSize(totals.memory, 2, 'iec')} Memory`;
 };
 
 type ShortCapacitySummaryProps = {
   selectedAgents: AgentK8sResource[];
+  t: TFunction;
 };
 
-const ShortCapacitySummary: React.FC<ShortCapacitySummaryProps> = ({ selectedAgents }) => (
-  <div>Total compute: {getTotalCompute(selectedAgents)}</div>
-);
+const ShortCapacitySummary: React.FC<ShortCapacitySummaryProps> = ({ selectedAgents, t }) => {
+  return (
+    <div>
+      {t('ai:Total compute')}: {getTotalCompute(selectedAgents, t)}
+    </div>
+  );
+};
 
 export default ShortCapacitySummary;

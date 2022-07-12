@@ -25,6 +25,7 @@ import {
 import ClusterDeploymentDetailsForm from './ClusterDeploymentDetailsForm';
 import { ClusterImageSetK8sResource } from '../../types/k8s/cluster-image-set';
 import { isCIMFlow, getGridSpans } from './helpers';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type UseDetailsFormikArgs = {
   clusterImages: ClusterImageSetK8sResource[];
@@ -97,7 +98,7 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
 }) => {
   const { addAlert } = useAlerts();
   const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
-
+  const { t } = useTranslation();
   const [initialValues, validationSchema] = useDetailsFormik({
     clusterDeployment,
     agentClusterInstall,
@@ -105,7 +106,6 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
     clusterImages,
     usedClusterNames,
   });
-
   const next = () =>
     isCIMFlow(clusterDeployment)
       ? setCurrentStepId('hosts-selection')
@@ -117,7 +117,7 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
       next();
     } catch (error) {
       addAlert({
-        title: 'Failed to save ClusterDeployment',
+        title: t('ai:Failed to save ClusterDeployment'),
         message: error as string,
       });
     }

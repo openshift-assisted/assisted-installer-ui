@@ -15,6 +15,10 @@ const ClusterWizardStep: React.FC<ClusterWizardStepProps> = ({ navigation, foote
     <div className={css(styles.wizardOuterWrap, 'cluster-wizard-step')}>
       <div className={css(styles.wizardInnerWrap)}>
         {navigation}
+        {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          /* @ts-ignore: the prop should be optional depending on the WizardBody usage */
+        }
         <WizardBody aria-labelledby="step-id" hasNoBodyPadding={false}>
           {children}
         </WizardBody>

@@ -17,6 +17,7 @@ import { toSentence } from '../ui/table/utils';
 
 import './HostValidationGroups.css';
 import Hostname from './Hostname';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 export type AdditionNtpSourcePropsType = {
   AdditionalNTPSourcesDialogToggleComponent?: React.FC;
@@ -69,15 +70,16 @@ const HostnameAlert: React.FC<
     variant: AlertVariant;
   }
 > = ({ onEditHostname, host, hostnameValidations, variant }) => {
+  const { t } = useTranslation();
   const actionLinks = [
     <Hostname
       key="change-hostname"
-      title="Change hostname"
+      title={t('ai:Change hostname')}
       onEditHostname={onEditHostname}
       host={host}
     />,
   ];
-  const title = 'Illegal hostname';
+  const title = t('ai:Illegal hostname');
   return hostnameValidations.length === 1 ? (
     <Alert title={title} variant={variant} actionLinks={actionLinks} isInline>
       {toSentence(hostnameValidations[0].message)}
@@ -96,8 +98,14 @@ const NtpSyncAlert: React.FC<
   Required<AdditionNtpSourcePropsType> & { variant: AlertVariant; validation: Validation }
 > = ({ AdditionalNTPSourcesDialogToggleComponent, variant, validation }) => {
   const actionLinks = [<AdditionalNTPSourcesDialogToggleComponent key="add-ntp-sources" />];
+  const { t } = useTranslation();
   return (
-    <Alert title="NTP synchronization failure" variant={variant} actionLinks={actionLinks} isInline>
+    <Alert
+      title={t('ai:NTP synchronization failure')}
+      variant={variant}
+      actionLinks={actionLinks}
+      isInline
+    >
       {toSentence(validation.message)} {HOST_VALIDATION_FAILURE_HINTS[validation.id]}
     </Alert>
   );
@@ -107,9 +115,10 @@ const ApiVipConnectivityAlert: React.FC<
   Required<UpdateDay2ApiVipPropsType> & { variant: AlertVariant }
 > = ({ UpdateDay2ApiVipDialogToggleComponent, variant }) => {
   const actionLinks = [<UpdateDay2ApiVipDialogToggleComponent key="update-api-vip" />];
+  const { t } = useTranslation();
   return (
     <Alert title="API IP connectivity failure" variant={variant} actionLinks={actionLinks} isInline>
-      To continue installation, configure your DNS or alternatively
+      {t('ai:To continue installation, configure your DNS or alternatively')}
     </Alert>
   );
 };
@@ -195,6 +204,7 @@ export const HostValidationGroups: React.FC<HostValidationGroupsProps> = ({
   validationsInfo,
   ...props
 }) => {
+  const { t } = useTranslation();
   return (
     <>
       {Object.keys(validationsInfo).map((groupName: string) => {
@@ -211,19 +221,19 @@ export const HostValidationGroups: React.FC<HostValidationGroupsProps> = ({
           if (failedValidations.length) {
             return (
               <>
-                Failed <ExclamationTriangleIcon color={warningColor.value} />
+                {t('ai:Failed')} <ExclamationTriangleIcon color={warningColor.value} />
               </>
             );
           } else if (pendingValidations.length) {
             return (
               <>
-                Pending input <PendingIcon />
+                {t('ai:Pending input')} <PendingIcon />
               </>
             );
           }
           return (
             <>
-              Ready <CheckCircleIcon color={okColor.value} />
+              {t('ai:Ready')} <CheckCircleIcon color={okColor.value} />
             </>
           );
         };
@@ -239,14 +249,14 @@ export const HostValidationGroups: React.FC<HostValidationGroupsProps> = ({
             {!failedValidations.length && ( // display pending validations only if there are no failing validations
               <ValidationGroupAlerts
                 variant={AlertVariant.info}
-                title="Pending validations:"
+                title={t('ai:Pending validations:')}
                 validations={pendingValidations}
                 {...props}
               />
             )}
             <ValidationGroupAlerts
               variant={AlertVariant.warning}
-              title="Failed validations:"
+              title={t('ai:Failed validations:')}
               validations={failedValidations}
               {...props}
             />

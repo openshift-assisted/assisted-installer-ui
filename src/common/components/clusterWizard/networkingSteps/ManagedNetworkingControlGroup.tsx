@@ -2,6 +2,8 @@ import React from 'react';
 import { FormGroup, TooltipProps } from '@patternfly/react-core';
 import { getFieldId } from '../../ui';
 import RadioFieldWithTooltip from '../../ui/formik/RadioFieldWithTooltip';
+import { useTranslation } from '../../../hooks/use-translation-wrapper';
+
 export interface ManagedNetworkingControlGroupProps {
   disabled: boolean;
   tooltip?: string;
@@ -17,22 +19,26 @@ export const ManagedNetworkingControlGroup = ({
     content: tooltip,
     position: 'top',
   };
-
+  const { t } = useTranslation();
   return (
-    <FormGroup label="Network Management" fieldId={getFieldId(GROUP_NAME, 'radio')} isInline>
+    <FormGroup
+      label={t('ai:Network Management')}
+      fieldId={getFieldId(GROUP_NAME, 'radio')}
+      isInline
+    >
       <RadioFieldWithTooltip
         tooltipProps={tooltipProps}
         name={GROUP_NAME}
         isDisabled={disabled}
         value={'clusterManaged'}
-        label="Cluster-Managed Networking"
+        label={t('ai:Cluster-Managed Networking')}
       />
       <RadioFieldWithTooltip
         tooltipProps={tooltipProps}
         name={GROUP_NAME}
         isDisabled={disabled}
         value={'userManaged'}
-        label="User-Managed Networking"
+        label={t('ai:User-Managed Networking')}
       />
     </FormGroup>
   );

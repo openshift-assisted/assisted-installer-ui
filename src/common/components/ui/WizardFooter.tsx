@@ -10,6 +10,7 @@ import {
   Text,
   TextVariants,
 } from '@patternfly/react-core';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 export type WizardFooterGenericProps = {
   onNext?: () => void;
@@ -41,7 +42,8 @@ export const WizardFooter: React.FC<WizardFooterProps> = ({
   submittingText,
   nextButtonText,
 }) => {
-  submittingText = submittingText || 'Saving changes...';
+  const { t } = useTranslation();
+  submittingText = submittingText || t('ai:Saving changes...');
   return (
     <Stack hasGutter>
       {alerts && <StackItem>{alerts}</StackItem>}
@@ -57,7 +59,7 @@ export const WizardFooter: React.FC<WizardFooterProps> = ({
                 onClick={onNext}
                 isDisabled={isNextDisabled}
               >
-                {nextButtonText || 'Next'}
+                {nextButtonText || t('ai:Next')}
               </Button>
             </ActionListItem>
           )}
@@ -69,7 +71,7 @@ export const WizardFooter: React.FC<WizardFooterProps> = ({
                 onClick={onBack}
                 isDisabled={isBackDisabled}
               >
-                {'Back'}
+                {t('ai:Back')}
               </Button>
             </ActionListItem>
           )}
@@ -80,7 +82,7 @@ export const WizardFooter: React.FC<WizardFooterProps> = ({
               onClick={onCancel}
               isDisabled={false}
             >
-              {'Cancel'}
+              {t('ai:Cancel')}
             </Button>
           </ActionListItem>
           {isSubmitting && (

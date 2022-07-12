@@ -12,6 +12,7 @@ import {
 import ModalProgress from '../ui/ModalProgress';
 import { Host } from '../../api';
 import { getErrorMessage } from '../../utils';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 type MassDeleteHostModalProps = {
   isOpen: boolean;
@@ -30,9 +31,11 @@ const MassDeleteHostModal: React.FC<MassDeleteHostModalProps> = ({
 }) => {
   const [progress, setProgress] = React.useState<number | null>(null);
   const [error, setError] = React.useState<{ title: string; message: string }>();
+  const { t } = useTranslation();
   const onClick = async () => {
     setError(undefined);
     const i = 0;
+
     try {
       for (const host of hosts) {
         setProgress((100 * (i + 1)) / hosts.length);
@@ -42,17 +45,16 @@ const MassDeleteHostModal: React.FC<MassDeleteHostModalProps> = ({
       onClose();
     } catch (e) {
       setError({
-        title: 'Failed to delete host',
+        title: t('ai:Failed to delete host'),
         message: getErrorMessage(e),
       });
       setProgress(null);
     }
   };
-
   return (
     <Modal
-      aria-label="Delete hosts dialog"
-      title="Delete hosts"
+      aria-label={t('ai:Delete hosts dialog')}
+      title={t('ai:Delete hosts')}
       isOpen={isOpen}
       onClose={onClose}
       hasNoBodyWrapper
@@ -63,8 +65,9 @@ const MassDeleteHostModal: React.FC<MassDeleteHostModalProps> = ({
       <ModalBoxBody>
         <Stack hasGutter>
           <StackItem>
-            You are deleting multiple resources. All resources listed below will be deleted if you
-            continue. This action cannot be undone.
+            {t(
+              'ai:You are deleting multiple resources. All resources listed below will be deleted if you continue. This action cannot be undone.',
+            )}
           </StackItem>
           <StackItem>{children}</StackItem>
           <StackItem>
@@ -74,10 +77,10 @@ const MassDeleteHostModal: React.FC<MassDeleteHostModalProps> = ({
       </ModalBoxBody>
       <ModalBoxFooter>
         <Button onClick={onClick} isDisabled={progress !== null} variant={ButtonVariant.danger}>
-          Delete hosts
+          {t('ai:Delete hosts')}
         </Button>
         <Button onClick={onClose} variant={ButtonVariant.secondary} isDisabled={progress !== null}>
-          Cancel
+          {t('ai:Cancel')}
         </Button>
       </ModalBoxFooter>
     </Modal>

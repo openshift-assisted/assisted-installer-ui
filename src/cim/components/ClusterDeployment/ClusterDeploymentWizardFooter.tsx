@@ -14,6 +14,7 @@ import { Cluster } from '../../../common/api/types';
 import { ClusterWizardStepsType, wizardStepsValidationsMap } from './wizardTransition';
 import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-install';
 import { AgentK8sResource } from '../../types/k8s/agent';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type ValidationSectionProps = {
   requireProxy?: boolean;
@@ -30,6 +31,7 @@ const ValidationSection: React.FC<ValidationSectionProps> = ({
   hosts,
   children,
 }) => {
+  const { t } = useTranslation();
   return (
     <AlertGroup>
       {children}
@@ -44,7 +46,9 @@ const ValidationSection: React.FC<ValidationSectionProps> = ({
           <Alert
             variant="info"
             isInline
-            title="Validations are running. If they take more than 2 minutes, please attend to the alert below."
+            title={t(
+              'ai:Validations are running. If they take more than 2 minutes, please attend to the alert below.',
+            )}
           />
         </ClusterWizardStepValidationsAlert>
       )}
@@ -93,6 +97,7 @@ const ClusterDeploymentWizardFooter: React.FC<ClusterDeploymentWizardFooterProps
     (c) => c.type === 'SpecSynced' && c.status === 'False',
   )?.message;
 
+  const { t } = useTranslation();
   React.useEffect(() => {
     if (syncError && onSyncError) {
       onSyncError();
@@ -108,7 +113,7 @@ const ClusterDeploymentWizardFooter: React.FC<ClusterDeploymentWizardFooterProps
       hosts={hosts}
     >
       {syncError && (
-        <Alert variant={AlertVariant.danger} title="An error occured" isInline>
+        <Alert variant={AlertVariant.danger} title={t('ai:An error occured')} isInline>
           {syncError}
         </Alert>
       )}

@@ -5,6 +5,7 @@ import { LoadingState, ErrorState } from '../../components/ui/uiState';
 import { DetailList, DetailItem } from '../../components/ui/DetailList';
 import { TroubleshootingOpenshiftConsoleButton } from './ConsoleModal';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 type ClusterCredentialsProps = {
   cluster: Cluster;
@@ -22,8 +23,11 @@ const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
   idPrefix = 'cluster-creds',
 }) => {
   let credentialsBody: JSX.Element;
+  const { t } = useTranslation();
   if (error) {
-    credentialsBody = <ErrorState title="Failed to fetch cluster credentials." fetchData={retry} />;
+    credentialsBody = (
+      <ErrorState title={t('ai:Failed to fetch cluster credentials.')} fetchData={retry} />
+    );
   } else if (!credentials) {
     credentialsBody = <LoadingState />;
   } else if (!credentials.username && !credentials.consoleUrl) {
@@ -33,7 +37,7 @@ const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
       <DetailList>
         {credentials.consoleUrl && (
           <DetailItem
-            title="Web Console URL"
+            title={t('ai:Web Console URL')}
             value={
               <>
                 <Button
@@ -60,7 +64,7 @@ const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
           <>
             <DetailItem title="Username" value={credentials.username} />
             <DetailItem
-              title="Password"
+              title={t('ai:Password')}
               value={
                 <ClipboardCopy
                   isReadOnly

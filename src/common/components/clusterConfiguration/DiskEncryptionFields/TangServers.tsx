@@ -4,10 +4,11 @@ import { ClusterDetailsValues } from '../../clusterWizard/types';
 import { Stack, StackItem, TextInputTypes } from '@patternfly/react-core';
 import { InputField } from '../../ui';
 import { AddButton, RemovableField } from '../../ui/formik';
+import { useTranslation } from '../../../hooks/use-translation-wrapper';
 
 export const TangServers: React.FC<{ isDisabled?: boolean }> = ({ isDisabled = false }) => {
   const { values } = useFormikContext<ClusterDetailsValues>();
-
+  const { t } = useTranslation();
   return (
     <FieldArray name="diskEncryptionTangServers">
       {({ remove, push }) => (
@@ -44,7 +45,7 @@ export const TangServers: React.FC<{ isDisabled?: boolean }> = ({ isDisabled = f
           {!isDisabled && (
             <StackItem>
               <AddButton onAdd={() => push({ url: '', thumbprint: '' })} isInline>
-                Add another Tang server
+                {t('ai:Add another Tang server')}
               </AddButton>
             </StackItem>
           )}

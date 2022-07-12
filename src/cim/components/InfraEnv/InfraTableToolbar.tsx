@@ -18,6 +18,7 @@ import { HostStatus } from '../../../common/components/hosts/types';
 import { agentStatus } from '../helpers/agentStatus';
 import { Host, TableToolbar } from '../../../common';
 import { usePagination } from '../../../common/components/hosts/usePagination';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 const getStatusesForFiler = (statuses: HostStatus<string>) => {
   const filterStatuses: {
@@ -77,7 +78,7 @@ const InfraTableToolbar: React.FC<InfraTableToolbarProps> = ({
 }) => {
   const [statusFilterOpen, setStatusFilterOpen] = React.useState(false);
   const filterStatuses = React.useMemo(() => getStatusesForFiler(agentStatus), []);
-
+  const { t } = useTranslation();
   const itemIDs = React.useMemo(() => hosts.map((h) => h.id), [hosts]);
   return (
     <TableToolbar
@@ -90,7 +91,7 @@ const InfraTableToolbar: React.FC<InfraTableToolbarProps> = ({
     >
       <ToolbarItem>
         <SearchInput
-          placeholder="Find by hostname"
+          placeholder={t('ai:Find by hostname')}
           value={hostnameFilter}
           onChange={setHostnameFilter}
           onClear={() => setHostnameFilter(undefined)}
@@ -105,7 +106,7 @@ const InfraTableToolbar: React.FC<InfraTableToolbarProps> = ({
         >
           <Select
             variant={SelectVariant.checkbox}
-            aria-label="Status"
+            aria-label={t('ai:Status')}
             onToggle={setStatusFilterOpen}
             onSelect={(e, value) => {
               // eslint-disable-next-line
@@ -118,7 +119,7 @@ const InfraTableToolbar: React.FC<InfraTableToolbarProps> = ({
             }}
             selections={statusFilter}
             isOpen={statusFilterOpen}
-            placeholderText="Status"
+            placeholderText={t('ai:Status')}
             toggleIcon={<FilterIcon />}
           >
             {[

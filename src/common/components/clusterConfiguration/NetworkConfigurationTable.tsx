@@ -18,6 +18,7 @@ import { Cluster, stringToJSON } from '../../api';
 import HostsTable from '../hosts/HostsTable';
 import { ValidationsInfo } from '../../types/hosts';
 import NetworkingStatus from '../../../ocm/components/hosts/NetworkingStatus';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 export const networkingStatusColumn = (
   onEditHostname?: HostsTableActions['onEditHost'],
@@ -65,10 +66,11 @@ const NetworkConfigurationTable: React.FC<NetworkConfigurationTableProps> = ({
   onSelect,
   selectedIDs,
 }) => {
+  const { t } = useTranslation();
   const content = React.useMemo(
     () => [
-      hostnameColumn(onEditHost),
-      roleColumn(canEditRole, onEditRole, getSchedulableMasters(cluster)),
+      hostnameColumn(t, onEditHost),
+      roleColumn(t, canEditRole, onEditRole, getSchedulableMasters(cluster)),
       networkingStatusColumn(onEditHost),
       activeNICColumn(cluster),
       ipv4Column(cluster),
@@ -76,7 +78,7 @@ const NetworkConfigurationTable: React.FC<NetworkConfigurationTableProps> = ({
       macAddressColumn(cluster),
       countColumn(cluster),
     ],
-    [onEditHost, onEditRole, canEditRole, cluster],
+    [onEditHost, onEditRole, canEditRole, cluster, t],
   );
 
   const hosts = cluster.hosts || [];

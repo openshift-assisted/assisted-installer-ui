@@ -24,6 +24,7 @@ import DiskLimitations from './DiskLimitations';
 import DiskRole, { onDiskRoleType } from './DiskRole';
 import { getHardwareTypeText, fileSize } from './utils';
 import { ValidationInfoActionProps } from './HostValidationGroups';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 type HostDetailProps = {
   canEditDisks?: (host: Host) => boolean;
@@ -181,14 +182,14 @@ const NicsTable: React.FC<NicsTableProps & WithTestID> = ({ interfaces, testId }
       ],
       key: nic.name,
     }));
-
+  const { t } = useTranslation();
   return (
     <Table
       data-testid={testId}
       rows={rows}
       cells={nicsColumns}
       variant={TableVariant.compact}
-      aria-label="Host's network interfaces table"
+      aria-label={t("ai:Host's network interfaces table")}
       borders={false}
       rowWrapper={NICsTableRowWrapper}
     >
@@ -205,6 +206,7 @@ export const HostDetail: React.FC<HostDetailProps> = ({
   AdditionalNTPSourcesDialogToggleComponent,
   hideNTPStatus = false,
 }) => {
+  const { t } = useTranslation();
   const { id, installationDiskId, validationsInfo: hostValidationsInfo } = host;
   const inventory = getInventory(host);
   const validationsInfo = React.useMemo(
@@ -221,7 +223,7 @@ export const HostDetail: React.FC<HostDetailProps> = ({
   }
   bmcAddress = bmcAddress || DASH;
 
-  const hardwareType = getHardwareTypeText(inventory);
+  const hardwareType = getHardwareTypeText(inventory, t);
 
   const ntpValidationStatus = React.useMemo(
     () => (
@@ -240,12 +242,12 @@ export const HostDetail: React.FC<HostDetailProps> = ({
         <DetailItem testId={'uuid'} title="UUID" value={id} />
         <DetailItem
           testId={'manufacturer'}
-          title="Manufacturer"
+          title={t('ai:Manufacturer')}
           value={inventory.systemVendor?.manufacturer || DASH}
         />
         <DetailItem
           testId={'product'}
-          title="Product"
+          title={t('ai:Product')}
           value={inventory.systemVendor?.productName || DASH}
         />
         <DetailItem testId={'serial-number'} title="Serial number" value={rowInfo.serialNumber} />
@@ -253,22 +255,22 @@ export const HostDetail: React.FC<HostDetailProps> = ({
       <SectionColumn>
         <DetailItem
           testId={'memory-capacity'}
-          title="Memory capacity"
+          title={t('ai:Memory capacity')}
           value={rowInfo.memory.title}
         />
         <DetailItem
           testId={'cpu-model'}
-          title="CPU model name"
+          title={t('ai:CPU model name')}
           value={inventory.cpu?.modelName || DASH}
         />
         <DetailItem
           testId={'cpu-cores-and-clock'}
-          title="CPU cores and clock speed"
+          title={t('ai:CPU cores and clock speed')}
           value={rowInfo.cpuSpeed}
         />
         <DetailItem
           testId={'cpu-arch'}
-          title="CPU architecture"
+          title={t('ai:CPU architecture')}
           value={inventory.cpu?.architecture || DASH}
         />
       </SectionColumn>
@@ -277,20 +279,20 @@ export const HostDetail: React.FC<HostDetailProps> = ({
         <DetailItem testId={'bmc-address'} title="BMC address" value={bmcAddress} />
         <DetailItem
           testId={'boot-mode'}
-          title="Boot mode"
+          title={t('ai:Boot mode')}
           value={inventory.boot?.currentBootMode || DASH}
         />
         {inventory.boot?.pxeInterface && (
           <DetailItem
             testId={'pxe-interface'}
-            title="PXE interface"
+            title={t('ai:PXE interface')}
             value={inventory.boot?.pxeInterface}
           />
         )}
         <DetailItem
           isHidden={hideNTPStatus}
           testId={'ntp-status'}
-          title="NTP status"
+          title={t('ai:NTP status')}
           value={ntpValidationStatus}
         />
       </SectionColumn>

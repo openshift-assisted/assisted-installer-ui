@@ -18,6 +18,7 @@ import {
   roleColumn,
 } from '../../../common/components/hosts/tableUtils';
 import { usePagination } from '../../../common/components/hosts/usePagination';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type ExpandComponentProps = {
   obj: Host;
@@ -42,6 +43,7 @@ type ClusterDeploymentHostsNetworkTableProps = Pick<
 const ClusterDeploymentHostsNetworkTable: React.FC<ClusterDeploymentHostsNetworkTableProps> =
   // eslint-disable-next-line react/display-name
   React.memo(({ clusterDeployment, agentClusterInstall, agents, onEditHost, onEditRole }) => {
+    const { t } = useTranslation();
     const cluster = React.useMemo(
       () => getAICluster({ clusterDeployment, agentClusterInstall, agents }),
       [clusterDeployment, agentClusterInstall, agents],
@@ -59,29 +61,30 @@ const ClusterDeploymentHostsNetworkTable: React.FC<ClusterDeploymentHostsNetwork
       () =>
         isSNOCluster
           ? [
-              hostnameColumn(hostActions.onEditHost, hosts),
+              hostnameColumn(t, hostActions.onEditHost, hosts),
               agentStatusColumn({
                 agents,
                 onEditHostname: onEditHost,
                 wizardStepId: 'networking',
+                t,
               }),
               activeNICColumn(cluster),
             ]
           : [
-              hostnameColumn(hostActions.onEditHost, hosts),
-              roleColumn(hostActions.canEditRole, hostActions.onEditRole),
+              hostnameColumn(t, hostActions.onEditHost, hosts),
+              roleColumn(t, hostActions.canEditRole, hostActions.onEditRole),
               agentStatusColumn({
                 agents,
                 onEditHostname: onEditHost,
                 wizardStepId: 'networking',
+                t,
               }),
               activeNICColumn(cluster),
             ],
-      [isSNOCluster, onEditHost, hosts, agents, hostActions, cluster],
+      [isSNOCluster, onEditHost, hosts, agents, hostActions, cluster, t],
     );
 
     const paginationProps = usePagination(hosts.length);
-
     return (
       <HostsTable
         testId="networking-host-table"
@@ -93,8 +96,8 @@ const ClusterDeploymentHostsNetworkTable: React.FC<ClusterDeploymentHostsNetwork
       >
         <EmptyState
           icon={ConnectedIcon}
-          title="Waiting for hosts..."
-          content="Hosts may take a few minutes to appear here after booting."
+          title={t('ai:Waiting for hosts...')}
+          content={t('ai:Hosts may take a few minutes to appear here after booting.')}
         />
       </HostsTable>
     );

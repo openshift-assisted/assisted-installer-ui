@@ -21,6 +21,7 @@ import { AGENT_LOCATION_LABEL_KEY } from '../common';
 import EditPullSecretModal, { EditPullSecretModalProps } from '../modals/EditPullSecretModal';
 import EditSSHKeyModal, { EditSSHKeyModalProps } from '../modals/EditSSHKeyModal';
 import EditNtpSourcesModal, { EditNtpSourcesModalProps } from '../modals/EditNtpSourcesModal';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type EditItemProps = {
   title: string;
@@ -75,7 +76,7 @@ const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({
 
   const namespace = infraEnv.metadata?.namespace ?? '';
   const pullSecretName = infraEnv.spec?.pullSecretRef?.name ?? '';
-
+  const { t } = useTranslation();
   React.useEffect(() => {
     const fetch = async () => {
       try {
@@ -87,36 +88,36 @@ const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({
         setPullSecret(undefined);
         // eslint-disable-next-line
         if ((err as any).code !== 404) {
-          setPullSecretError((err as Error).message || 'Could not fetch pull secret');
+          setPullSecretError((err as Error).message || t('ai:Could not fetch pull secret'));
         }
       } finally {
         setPullSecretLoading(false);
       }
     };
     void fetch();
-  }, [namespace, pullSecretName, fetchSecret, editPullSecret]);
+  }, [namespace, pullSecretName, fetchSecret, editPullSecret, t]);
   return (
     <>
       <Grid hasGutter>
         <GridItem span={12}>
           <Title headingLevel="h1" size={TitleSizes.lg}>
-            Environment details
+            {t('ai:Environment details')}
           </Title>
         </GridItem>
         <GridItem span={6}>
           <DescriptionList>
             <DescriptionListGroup>
-              <DescriptionListTerm>Infrastructure Environment name</DescriptionListTerm>
+              <DescriptionListTerm>{t('ai:Infrastructure Environment name')}</DescriptionListTerm>
               <DescriptionListDescription>{infraEnv.metadata?.name}</DescriptionListDescription>
             </DescriptionListGroup>
             <DescriptionListGroup>
-              <DescriptionListTerm>Location</DescriptionListTerm>
+              <DescriptionListTerm>{t('ai:Location')}</DescriptionListTerm>
               <DescriptionListDescription>
-                {infraEnv.metadata?.labels?.[AGENT_LOCATION_LABEL_KEY] ?? 'No location'}
+                {infraEnv.metadata?.labels?.[AGENT_LOCATION_LABEL_KEY] ?? t('ai:No location')}
               </DescriptionListDescription>
             </DescriptionListGroup>
             <DescriptionListGroup>
-              <DescriptionListTerm>Labels</DescriptionListTerm>
+              <DescriptionListTerm>{t('ai:Labels')}</DescriptionListTerm>
               <DescriptionListDescription>
                 {Object.keys(infraEnv.metadata?.labels || {}).map((k) => (
                   <LabelValue key={k} value={`${k}=${infraEnv.metadata?.labels?.[k]}`} />
@@ -125,7 +126,7 @@ const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({
             </DescriptionListGroup>
             {infraEnv.metadata?.creationTimestamp && (
               <DescriptionListGroup>
-                <DescriptionListTerm>Created at</DescriptionListTerm>
+                <DescriptionListTerm>{t('ai:Created at')}</DescriptionListTerm>
                 <DescriptionListDescription>
                   {new Date(infraEnv.metadata.creationTimestamp).toString()}
                 </DescriptionListDescription>
@@ -137,7 +138,7 @@ const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({
           <DescriptionList>
             {infraEnv.spec?.proxy?.httpProxy && (
               <DescriptionListGroup>
-                <DescriptionListTerm>HTTP Proxy URL</DescriptionListTerm>
+                <DescriptionListTerm>{t('ai:HTTP Proxy URL')}</DescriptionListTerm>
                 <DescriptionListDescription>
                   {infraEnv.spec.proxy.httpProxy}
                 </DescriptionListDescription>
@@ -145,7 +146,7 @@ const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({
             )}
             {infraEnv.spec?.proxy?.httpsProxy && (
               <DescriptionListGroup>
-                <DescriptionListTerm>HTTPS Proxy URL</DescriptionListTerm>
+                <DescriptionListTerm>{t('ai:HTTPS Proxy URL')}</DescriptionListTerm>
                 <DescriptionListDescription>
                   {infraEnv.spec.proxy.httpsProxy}
                 </DescriptionListDescription>
@@ -153,28 +154,28 @@ const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({
             )}
             {infraEnv.spec?.proxy?.noProxy && (
               <DescriptionListGroup>
-                <DescriptionListTerm>No proxy domains</DescriptionListTerm>
+                <DescriptionListTerm>{t('ai:No proxy domains')}</DescriptionListTerm>
                 <DescriptionListDescription>
                   {infraEnv.spec.proxy.noProxy}
                 </DescriptionListDescription>
               </DescriptionListGroup>
             )}
             <DescriptionListGroup>
-              <DescriptionListTerm>Secret and keys</DescriptionListTerm>
+              <DescriptionListTerm>{t('ai:Secret and keys')}</DescriptionListTerm>
               <DescriptionListDescription>
                 <>
                   <EditItem
-                    title="Pull secret"
+                    title={t('ai:Pull secret')}
                     onEdit={() => setEditPullSecret(true)}
                     isLoading={pullSecretLoading}
                     isWarning={!pullSecret}
                   />
                   <EditItem
-                    title="SSH public key"
+                    title={t('ai:SSH public key')}
                     onEdit={() => setEditSSHKey(true)}
                     isWarning={!infraEnv.spec?.sshAuthorizedKey}
                   />
-                  <EditItem title="NTP sources" onEdit={() => setEditNtpSources(true)} />
+                  <EditItem title={t('ai:NTP sources')} onEdit={() => setEditNtpSources(true)} />
                 </>
               </DescriptionListDescription>
             </DescriptionListGroup>

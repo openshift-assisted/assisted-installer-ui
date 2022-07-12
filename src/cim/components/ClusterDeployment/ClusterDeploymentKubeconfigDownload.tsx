@@ -5,6 +5,7 @@ import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-in
 import { ClusterDeploymentK8sResource } from '../../types/k8s/cluster-deployment';
 import { getClusterStatus } from '../helpers/status';
 import { FetchSecret } from './types';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type ClusterDeploymentKubeconfigDownloadProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
@@ -18,18 +19,17 @@ const ClusterDeploymentKubeconfigDownload = ({
   fetchSecret,
 }: ClusterDeploymentKubeconfigDownloadProps) => {
   const [clusterStatus] = getClusterStatus(agentClusterInstall);
-
+  const { t } = useTranslation();
   const handleKubeconfigDownload = async () => {
     const kubeconfigSecretName =
       agentClusterInstall.spec?.clusterMetadata?.adminKubeconfigSecretRef?.name;
     const kubeconfigSecretNamespace = clusterDeployment.metadata?.namespace;
-
     if (kubeconfigSecretName && kubeconfigSecretNamespace) {
       try {
         const kubeconfigSecret = await fetchSecret(kubeconfigSecretName, kubeconfigSecretNamespace);
         const kubeconfig = kubeconfigSecret.data?.kubeconfig;
 
-        if (!kubeconfig) throw new Error('Kubeconfig is empty.');
+        if (!kubeconfig) throw new Error(t('ai:Kubeconfig is empty.'));
 
         const blob = new Blob([atob(kubeconfig)], { type: 'text/plain;charset=utf-8' });
         saveAs(blob, 'kubeconfig.yaml');

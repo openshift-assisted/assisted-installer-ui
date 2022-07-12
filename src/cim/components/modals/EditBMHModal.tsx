@@ -5,6 +5,7 @@ import { SecretK8sResource } from '../../types';
 import { LoadingState } from '../../../common';
 import { EditBMHModalProps } from './types';
 import { AGENT_BMH_NAME_LABEL_KEY } from '../common/constants';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 const EditBMHModal: React.FC<EditBMHModalProps> = ({
   isOpen,
@@ -27,7 +28,7 @@ const EditBMHModal: React.FC<EditBMHModalProps> = ({
   const nmState = nmStates.find(
     (nm) => nm.metadata?.labels?.[AGENT_BMH_NAME_LABEL_KEY] === bmhName,
   );
-
+  const { t } = useTranslation();
   React.useEffect(() => {
     setSecret(undefined);
     const getResources = async () => {
@@ -36,7 +37,7 @@ const EditBMHModal: React.FC<EditBMHModalProps> = ({
           const secretResult = await fetchSecret(bmhNamespace, bmhSecret);
           setSecret(secretResult);
         } catch (err) {
-          console.error('Could not get secret', err);
+          console.error(t('ai:Could not get secret'), err);
         }
       }
 
@@ -47,11 +48,11 @@ const EditBMHModal: React.FC<EditBMHModalProps> = ({
       setLoading(true);
       void getResources();
     }
-  }, [bmhName, bmhNamespace, fetchSecret, bmhSecret, hasDHCP]);
+  }, [bmhName, bmhNamespace, fetchSecret, bmhSecret, hasDHCP, t]);
   return (
     <Modal
-      aria-label="Edit BMH dialog"
-      title="Edit BMH"
+      aria-label={t('ai:Edit BMH dialog')}
+      title={t('ai:Edit BMH')}
       isOpen={isOpen}
       onClose={onClose}
       variant={ModalVariant.small}

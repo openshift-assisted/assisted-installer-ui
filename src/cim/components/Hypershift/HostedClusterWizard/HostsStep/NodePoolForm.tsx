@@ -25,6 +25,7 @@ import { AGENT_TO_HOSTED_CLUSTER } from '../constants';
 import { useDeepCompareMemoize } from '../../../../../common/hooks';
 
 import './NodePoolForm.css';
+import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
 
 const agentLabelKeysFilter = [...infraEnvLabelKeys, AGENT_TO_HOSTED_CLUSTER];
 
@@ -112,7 +113,7 @@ const NodePoolForm: React.FC<NodePoolFormProps> = ({ infraEnvs, agents, index, o
       }
     }
   }, [availableAgents, autoSelectedAgents, setFieldValue, index, values.nodePools]);
-
+  const { t } = useTranslation();
   return (
     <Stack hasGutter>
       <StackItem>
@@ -135,7 +136,11 @@ const NodePoolForm: React.FC<NodePoolFormProps> = ({ infraEnvs, agents, index, o
         <StackItem className="ai-node-pool__section">
           <Grid hasGutter>
             <GridItem>
-              <InputField name={`nodePools.${index}.name`} isRequired label="Node pool name" />
+              <InputField
+                name={`nodePools.${index}.name`}
+                isRequired
+                label={t('ai:Node pool name')}
+              />
             </GridItem>
             <GridItem>
               <LabelsSelector
@@ -145,13 +150,16 @@ const NodePoolForm: React.FC<NodePoolFormProps> = ({ infraEnvs, agents, index, o
               />
             </GridItem>
             <GridItem>
-              <SwitchField name={`nodePools.${index}.autoSelectHosts`} label="Auto-select hosts" />
+              <SwitchField
+                name={`nodePools.${index}.autoSelectHosts`}
+                label={t('ai:Auto-select hosts')}
+              />
             </GridItem>
             {autoSelectHosts ? (
               <>
                 <GridItem>
                   <NumberInputField
-                    label="Number of workers"
+                    label={t('ai:Number of workers')}
                     labelIcon={<AgentsSelectionHostCountLabelIcon />}
                     idPostfix="count"
                     name={`nodePools.${index}.count`}

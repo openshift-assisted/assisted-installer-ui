@@ -24,6 +24,7 @@ import {
   noProxyValidationSchema,
 } from '../../../common';
 import { ClusterDeploymentNetworkingValues } from './types';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 const getInfraEnvProxy = (infraEnvs: InfraEnvK8sResource[]) => {
   const infraEnvWithProxy = infraEnvs.find(
@@ -120,7 +121,7 @@ export const useInfraEnvProxies = ({ agents, fetchInfraEnv }: UseInfraEnvProxies
     .sort() as { name: string; namespace: string }[];
 
   const memoInfraEnvs = useDeepCompareMemoize(infraEnvsMetadata);
-
+  const { t } = useTranslation();
   React.useEffect(() => {
     const fetch = async () => {
       setInfraEnvs(undefined);
@@ -130,12 +131,12 @@ export const useInfraEnvProxies = ({ agents, fetchInfraEnv }: UseInfraEnvProxies
         const infraEnvResults = await Promise.all(infraEnvRequests);
         setInfraEnvs(infraEnvResults);
       } catch (e) {
-        setInfraEnvsError(e.message || 'Could not fetch infra environments');
+        setInfraEnvsError(e.message || t('ai:Could not fetch infra environments'));
       }
     };
 
     void fetch();
-  }, [memoInfraEnvs, fetchInfraEnv, setInfraEnvs, setInfraEnvsError]);
+  }, [memoInfraEnvs, fetchInfraEnv, setInfraEnvs, setInfraEnvsError, t]);
 
   return {
     infraEnvWithProxy,

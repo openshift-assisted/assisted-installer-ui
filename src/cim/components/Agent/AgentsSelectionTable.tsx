@@ -21,6 +21,7 @@ import {
 import DefaultEmptyState from '../../../common/components/ui/uiState/EmptyState';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useFormikHelpers } from '../../../common/hooks/useFormikHelpers';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type AgentsSelectionTableProps = {
   matchingAgents: AgentK8sResource[];
@@ -37,6 +38,7 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
   onEditHost,
   onHostSelect,
 }) => {
+  const { t } = useTranslation();
   const [{ value: selectedIDs }] =
     useField<ClusterDeploymentHostsSelectionValues['selectedHostIds']>('selectedHostIds');
 
@@ -83,12 +85,13 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
   const content = React.useMemo(() => {
     return [
       agentHostnameColumn(hosts, matchingAgents, [], actions.onEditHost, actions.canEditHostname),
-      ...(addAll ? [infraEnvColumn(matchingAgents)] : []),
+      ...(addAll ? [infraEnvColumn(matchingAgents, t)] : []),
       agentStatusColumn({
         agents: matchingAgents,
         wizardStepId: 'hosts-selection',
+        t,
       }),
-      roleColumn(actions.canEditRole, actions.onEditRole, undefined, addAll ? 'left' : 'right'),
+      roleColumn(t, actions.canEditRole, actions.onEditRole, undefined, undefined),
       ...(addAll ? [cpuCoresColumn, memoryColumn, disksColumn] : []),
     ];
   }, [
@@ -99,10 +102,10 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
     hosts,
     actions.onEditHost,
     actions.canEditHostname,
+    t,
   ]);
 
   const paginationProps = usePagination(hosts.length);
-
   return (
     <HostsTable
       hosts={hosts}
@@ -114,8 +117,8 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
       {...paginationProps}
     >
       <DefaultEmptyState
-        title="No hosts found"
-        content="No host matches provided labels/locations"
+        title={t('ai:No hosts found')}
+        content={t('ai:No host matches provided labels/locations')}
       />
     </HostsTable>
   );

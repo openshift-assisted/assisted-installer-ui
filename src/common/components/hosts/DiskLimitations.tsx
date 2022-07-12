@@ -9,6 +9,7 @@ import {
   Popover,
 } from '@patternfly/react-core';
 import { Disk } from '../../api';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 type DiskLimitationsProps = {
   disk: Disk;
@@ -44,13 +45,13 @@ const DiskLimitationsPopoverContent: React.FC<DiskLimitationsPopoverContentProps
   notEligibleReasons,
 }) => {
   const alerts = [];
-
+  const { t } = useTranslation();
   if (!eligible) {
     alerts.push(
       <Alert
         key="install-eligibility"
         variant={AlertVariant.warning}
-        title="Disk is not eligible for installation"
+        title={t('ai:Disk is not eligible for installation')}
         isInline
       >
         {notEligibleReasons && (

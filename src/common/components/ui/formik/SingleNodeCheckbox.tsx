@@ -8,6 +8,7 @@ import HelperText from './HelperText';
 import { CheckboxFieldProps } from './types';
 import { FeatureSupportLevelBadge, useFeatureSupportLevel } from '../../featureSupportLevels';
 import { ClusterCreateParams } from '../../../api/types';
+import { useTranslation } from '../../../hooks/use-translation-wrapper';
 
 type SingleNodeCheckboxProps = CheckboxFieldProps & { versions: OpenshiftVersionOptionType[] };
 
@@ -25,7 +26,7 @@ const SingleNodeCheckbox: React.FC<SingleNodeCheckboxProps> = ({
   const featureSupportLevelContext = useFeatureSupportLevel();
   const prevVersionRef = React.useRef(openshiftVersion);
   const fieldId = getFieldId(props.name, 'input', idPostfix);
-
+  const { t } = useTranslation();
   const { value } = meta;
   const { setValue } = helpers;
   const isSupportedVersionAvailable = !!versions.find((version) =>
@@ -39,6 +40,7 @@ const SingleNodeCheckbox: React.FC<SingleNodeCheckboxProps> = ({
   const disabledReason = featureSupportLevelContext.getFeatureDisabledReason(
     openshiftVersion,
     'SNO',
+    t,
   );
 
   React.useEffect(() => {
@@ -62,7 +64,7 @@ const SingleNodeCheckbox: React.FC<SingleNodeCheckboxProps> = ({
             id={fieldId}
             label={
               <>
-                Install single node OpenShift (SNO)&nbsp;
+                {t('ai:Install single node OpenShift (SNO)')}&nbsp;
                 <FeatureSupportLevelBadge
                   featureId="SNO"
                   openshiftVersion={openshiftVersion}
@@ -72,7 +74,7 @@ const SingleNodeCheckbox: React.FC<SingleNodeCheckboxProps> = ({
             aria-describedby={`${fieldId}-helper`}
             description={
               <HelperText fieldId={fieldId}>
-                SNO enables you to install OpenShift using only one host.
+                {t('ai:SNO enables you to install OpenShift using only one host.')}
               </HelperText>
             }
             isChecked={value === 'None'}

@@ -23,6 +23,7 @@ import { isAgentOfCluster, isCIMFlow } from './helpers';
 import { useInfraEnvProxies, useNetworkingFormik } from './use-networking-formik';
 import { canNextFromNetworkingStep } from './wizardTransition';
 import { AgentK8sResource } from '../../types';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type NetworkingFormProps = {
   clusterDeployment: ClusterDeploymentDetailsNetworkingProps['clusterDeployment'];
@@ -97,7 +98,7 @@ const NetworkingForm: React.FC<NetworkingFormProps> = ({
   const onSyncError = React.useCallback(() => setNextRequested(false), []);
 
   const errorFields = getFormikErrorFields(errors, touched);
-
+  const { t } = useTranslation();
   const footer = (
     <ClusterDeploymentWizardFooter
       agentClusterInstall={agentClusterInstall}
@@ -116,10 +117,10 @@ const NetworkingForm: React.FC<NetworkingFormProps> = ({
       {showFormErrors && !!errorFields.length && (
         <Alert
           variant={AlertVariant.danger}
-          title="Provided cluster configuration is not valid"
+          title={t('ai:Provided cluster configuration is not valid')}
           isInline
         >
-          The following fields are invalid or missing:{' '}
+          {t('ai:The following fields are invalid or missing')}:{' '}
           {errorFields.map((field: string) => CLUSTER_FIELD_LABELS[field] || field).join(', ')}.
         </Alert>
       )}
@@ -130,7 +131,7 @@ const NetworkingForm: React.FC<NetworkingFormProps> = ({
     <ClusterDeploymentWizardStep footer={footer}>
       <Grid hasGutter>
         <GridItem>
-          <ClusterWizardStepHeader>Networking</ClusterWizardStepHeader>
+          <ClusterWizardStepHeader>{t('ai:Networking')}</ClusterWizardStepHeader>
         </GridItem>
         <GridItem>
           <ClusterDeploymentNetworkingForm
@@ -174,13 +175,13 @@ const ClusterDeploymentNetworkingStep: React.FC<ClusterDeploymentDetailsNetworki
     agentClusterInstall,
     agents: clusterAgents,
   });
-
+  const { t } = useTranslation();
   const handleSubmit = async (values: ClusterDeploymentNetworkingValues) => {
     try {
       await onSaveNetworking(values);
     } catch (error) {
       addAlert({
-        title: 'Failed to save ClusterDeployment',
+        title: t('ai:Failed to save ClusterDeployment'),
         message: error instanceof Error ? error.message : undefined,
       });
     }

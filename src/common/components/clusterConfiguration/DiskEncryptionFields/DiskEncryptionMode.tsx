@@ -14,8 +14,10 @@ import {
 } from '@patternfly/react-core';
 import { TangServers } from './TangServers';
 import { DiskEncryption } from '../../../api/types';
+import { useTranslation } from '../../../hooks/use-translation-wrapper';
 
 const DiskEncryptionModeTPMv2: React.FC = () => {
+  const { t } = useTranslation();
   return (
     <>
       TPM v2
@@ -24,9 +26,12 @@ const DiskEncryptionModeTPMv2: React.FC = () => {
         minWidth="22rem"
         bodyContent={
           <p>
-            TPM v2 stores passphrases in a secure cryptoprocessor contained within as server. &nbsp;
+            {t(
+              'ai:TPM v2 stores passphrases in a secure cryptoprocessor contained within as server.',
+            )}
+            &nbsp;
             <a href={ENCRYPTING_DISK_DURING_INSTALLATION} target="_blank" rel="noopener noreferrer">
-              {'Learn more'} <ExternalLinkAltIcon />
+              {t('ai:Learn more')} <ExternalLinkAltIcon />
             </a>
           </p>
         }
@@ -36,6 +41,7 @@ const DiskEncryptionModeTPMv2: React.FC = () => {
 };
 
 const DiskEncryptionModeTang: React.FC = () => {
+  const { t } = useTranslation();
   return (
     <>
       Tang{' '}
@@ -44,9 +50,9 @@ const DiskEncryptionModeTang: React.FC = () => {
         minWidth="25rem"
         bodyContent={
           <p>
-            Tang server component that enable network-bound disk encryption (NBDE). &nbsp;
+            {t('ai:Tang server component that enable network-bound disk encryption (NBDE).')} &nbsp;
             <a href={ENCRYPTING_DISK_DURING_INSTALLATION} target="_blank" rel="noopener noreferrer">
-              {'Learn more'} <ExternalLinkAltIcon />
+              {t('ai:Learn more')} <ExternalLinkAltIcon />
             </a>
           </p>
         }
@@ -64,6 +70,7 @@ export const DiskEncryptionMode: React.FC<DiskEncryptionModeProps> = ({
   diskEncryptionMode,
   isDisabled,
 }) => {
+  const { t } = useTranslation();
   return (
     <Stack>
       <StackItem>
@@ -93,7 +100,7 @@ export const DiskEncryptionMode: React.FC<DiskEncryptionModeProps> = ({
           &nbsp;
           <StackItem>
             <TextContent>
-              <Text component={TextVariants.h6}>Tang servers</Text>
+              <Text component={TextVariants.h6}>{t('ai:Tang servers')}</Text>
             </TextContent>
           </StackItem>
           &nbsp;

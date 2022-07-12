@@ -31,6 +31,7 @@ import HardwareStatus from './HardwareStatus';
 import { Stack, StackItem } from '@patternfly/react-core';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import HostsTableEmptyState from '../hosts/HostsTableEmptyState';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 export const hardwareStatusColumn = (
   onEditHostname?: HostsTableActions['onEditHost'],
@@ -96,10 +97,11 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({ cluster }) =>
   } = useHostsTable(cluster);
 
   const isSNOCluster = isSNO(cluster);
+  const { t } = useTranslation();
   const content = React.useMemo(
     () => [
-      hostnameColumn(onEditHost, undefined, actionChecks.canEditHostname),
-      roleColumn(actionChecks.canEditRole, onEditRole, getSchedulableMasters(cluster)),
+      hostnameColumn(t, onEditHost, undefined, actionChecks.canEditHostname),
+      roleColumn(t, actionChecks.canEditRole, onEditRole, getSchedulableMasters(cluster)),
       hardwareStatusColumn(onEditHost),
       discoveredAtColumn,
       cpuCoresColumn,

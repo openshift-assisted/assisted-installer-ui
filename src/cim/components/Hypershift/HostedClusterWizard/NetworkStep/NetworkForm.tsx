@@ -18,6 +18,7 @@ import { useFormikContext } from 'formik';
 import { useTemptiflySync } from '../../hooks/useTemptiflySync';
 
 import './NetworkForm.css';
+import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
 
 const NetworkForm: React.FC<NetworkFormProps> = ({ agents, onValuesChanged }) => {
   const { values, setFieldValue } = useFormikContext<NetworkFormValues>();
@@ -69,27 +70,27 @@ const NetworkForm: React.FC<NetworkFormProps> = ({ agents, onValuesChanged }) =>
       setFieldValue('machineCIDR', availableCIDRs[0]);
     }
   }, [setFieldValue, availableCIDRs, values.machineCIDR]);
-
+  const { t } = useTranslation();
   return (
     <Form>
-      <SelectField label="Machine CIDR" name="machineCIDR" options={cidrOptions} />
+      <SelectField label={t('ai:Machine CIDR')} name="machineCIDR" options={cidrOptions} />
       <CheckboxField
         name="isAdvanced"
-        label="Use advanced networking"
+        label={t('ai:Use advanced networking')}
         className="ai-advanced-fields"
         body={
           values.isAdvanced && (
             <Grid hasGutter>
               <GridItem>
-                <InputField name="podCIDR" label="Cluster CIDR" />
+                <InputField name="podCIDR" label={t('ai:Cluster CIDR')} />
               </GridItem>
               <GridItem>
-                <InputField name="serviceCIDR" label="Service CIDR" />
+                <InputField name="serviceCIDR" label={t('ai:Service CIDR')} />
               </GridItem>
             </Grid>
           )
         }
-        helperText="Configure advanced networking properties (e.g. CIDR ranges)."
+        helperText={t('ai:Configure advanced networking properties (e.g. CIDR ranges).')}
       />
       <ProxyFields />
       <UploadSSH isRequired />

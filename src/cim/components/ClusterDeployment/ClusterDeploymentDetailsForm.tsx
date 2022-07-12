@@ -4,6 +4,7 @@ import { ClusterDetailsFormFields, ClusterDetailsFormFieldsProps } from '../../.
 import { AgentClusterInstallK8sResource, ClusterDeploymentK8sResource } from '../../types';
 import { ClusterImageSetK8sResource } from '../../types/k8s/cluster-image-set';
 import { getOCPVersions, getSelectedVersion } from '../helpers';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type ClusterDeploymentDetailsFormProps = {
   clusterImages: ClusterImageSetK8sResource[];
@@ -25,6 +26,7 @@ const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> 
     ? getSelectedVersion(clusterImages, agentClusterInstall)
     : undefined;
   const isEditFlow = !!clusterDeployment;
+  const { t } = useTranslation();
   return (
     <Stack hasGutter>
       {isEditFlow && (
@@ -32,7 +34,7 @@ const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> 
           <Alert
             isInline
             variant="info"
-            title="This option is not editable after the draft cluster was created."
+            title={t('ai:This option is not editable after the draft cluster was created.')}
           />
         </StackItem>
       )}

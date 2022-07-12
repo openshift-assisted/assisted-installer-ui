@@ -66,6 +66,7 @@ module.exports = {
               },
               {
                 name: 'react-i18next',
+                importNames: ['useTranslation'],
                 message:
                   'Please use useTranslation from src/common/hooks/use-translation-wrapper.ts instead',
               },

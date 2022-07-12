@@ -19,6 +19,7 @@ import {
 import { CaretDownIcon } from '@patternfly/react-icons';
 
 import './TableToolbar.css';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 type TableToolbarProps = {
   itemIDs: string[];
@@ -84,7 +85,7 @@ const TableToolbar: React.FC<TableToolbarProps> = ({
 
   const onSelectAll = () => setSelectedIDs(itemIDs);
   const onSelectNone = () => setSelectedIDs([]);
-
+  const { t } = useTranslation();
   return (
     <Split hasGutter>
       <SplitItem isFilled>
@@ -99,11 +100,11 @@ const TableToolbar: React.FC<TableToolbarProps> = ({
                       <DropdownToggleCheckbox
                         id="select-checkbox"
                         key="select-checkbox"
-                        aria-label="Select all"
+                        aria-label={t('ai:Select all')}
                         onChange={(checked) => (checked ? onSelectAll() : onSelectNone())}
                         isChecked={isChecked}
                       >
-                        {selectedIDs.length} selected
+                        {selectedIDs.length} {t('ai:selected')}
                       </DropdownToggleCheckbox>,
                     ]}
                     onToggle={onSelectToggle}
@@ -112,10 +113,10 @@ const TableToolbar: React.FC<TableToolbarProps> = ({
                 isOpen={selectOpen}
                 dropdownItems={[
                   <DropdownItem key="select-all" onClick={onSelectAll}>
-                    Select all
+                    {t('ai:Select all')}
                   </DropdownItem>,
                   <DropdownItem key="select-none" onClick={onSelectNone}>
-                    Select none
+                    {t('ai:Select none')}
                   </DropdownItem>,
                 ]}
               />

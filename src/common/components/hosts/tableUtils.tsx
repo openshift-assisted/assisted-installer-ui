@@ -18,6 +18,7 @@ import { areOnlySoftValidationsFailing, getHostname, getHostRole, getInventory }
 import { selectMachineNetworkCIDR } from '../../selectors/clusterSelectors';
 import { hostStatus } from './status';
 import { DropdownProps } from '@patternfly/react-core';
+import { TFunction } from 'i18next';
 
 export const getSelectedNic = (nics: Interface[], currentSubnet: Address4 | Address6) => {
   return nics.find((nic) => {
@@ -44,13 +45,14 @@ export const getSelectedNic = (nics: Interface[], currentSubnet: Address4 | Addr
 };
 
 export const hostnameColumn = (
+  t: TFunction,
   onEditHostname?: HostsTableActions['onEditHost'],
   hosts?: Host[],
   canEditHostname?: HostsTableActions['canEditHostname'],
 ): TableRow<Host> => {
   return {
     header: {
-      title: 'Hostname',
+      title: t ? t('ai:Hostname') : 'Hostname',
       props: {
         id: 'col-header-hostname', // ACM jest tests require id over testId
       },
@@ -80,6 +82,7 @@ export const hostnameColumn = (
 };
 
 export const roleColumn = (
+  t: TFunction,
   canEditRole?: HostsTableActions['canEditRole'],
   onEditRole?: HostsTableActions['onEditRole'],
   schedulableMasters?: boolean,
@@ -87,7 +90,7 @@ export const roleColumn = (
 ): TableRow<Host> => {
   return {
     header: {
-      title: 'Role',
+      title: t ? t('ai:Role') : 'Role',
       props: {
         id: 'col-header-role',
       },
@@ -97,8 +100,8 @@ export const roleColumn = (
       const editRole = onEditRole
         ? (role: HostUpdateParams['hostRole']) => onEditRole(host, role)
         : undefined;
-      const hostRole = getHostRole(host, schedulableMasters);
       const isRoleEditable = canEditRole?.();
+      const hostRole = getHostRole(host, t, schedulableMasters);
       return {
         title: (
           <RoleCell
@@ -117,13 +120,14 @@ export const roleColumn = (
 };
 
 export const statusColumn = (
+  t: TFunction,
   AdditionalNTPSourcesDialogToggleComponent?: React.FC,
   onEditHostname?: HostsTableActions['onEditHost'],
   UpdateDay2ApiVipDialogToggleComponent?: React.FC,
 ): TableRow<Host> => {
   return {
     header: {
-      title: 'Status',
+      title: t ? t('ai:Status') : 'Status',
       props: {
         id: 'col-header-status',
       },

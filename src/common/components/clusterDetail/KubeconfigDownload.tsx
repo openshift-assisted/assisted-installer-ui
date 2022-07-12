@@ -8,6 +8,8 @@ import { ocmClient } from '../../../ocm/api/axiosClient';
 import { getApiErrorMessage, handleApiError } from '../../../ocm/api/utils';
 import ClustersAPI from '../../../ocm/services/apis/ClustersAPI';
 import { AxiosResponseHeaders } from 'axios';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { TFunction } from 'i18next';
 
 type KubeconfigDownloadProps = {
   clusterId: Cluster['id'];
@@ -31,7 +33,7 @@ const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({
   const { addAlert } = useAlerts();
 
   const download = React.useCallback(
-    async (clusterId: Cluster['id']) => {
+    async (clusterId: Cluster['id'], t: TFunction) => {
       try {
         if (ocmClient) {
           const { data } = await ClustersAPI.getPresignedForClusterCredentials({
@@ -47,17 +49,20 @@ const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({
         }
       } catch (e) {
         handleApiError(e, (e) => {
-          addAlert({ title: 'Could not download kubeconfig', message: getApiErrorMessage(e) });
+          addAlert({
+            title: t('ai:Could not download kubeconfig'),
+            message: getApiErrorMessage(e),
+          });
         });
       }
     },
     [addAlert],
   );
-
+  const { t } = useTranslation();
   return (
     <Button
       variant={ButtonVariant.secondary}
-      onClick={handleDownload || (() => download(clusterId))}
+      onClick={handleDownload || (() => download(clusterId, t))}
       isDisabled={!canDownloadKubeconfig(status)}
       id={id}
       data-testid={id}

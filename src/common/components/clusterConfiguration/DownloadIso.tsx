@@ -20,6 +20,7 @@ import { CheckCircleIcon } from '@patternfly/react-icons';
 import { DetailItem, DetailList } from '../ui';
 import DiscoveryInstructions from './DiscoveryInstructions';
 import { StaticIPInfo } from './DiscoveryImageConfigForm';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 export type DownloadISOProps = {
   hasDHCP?: boolean;
@@ -39,7 +40,7 @@ const DownloadIso: React.FC<DownloadISOProps> = ({
   isSNO = false,
 }) => {
   const wgetCommand = `wget -O ${fileName} '${downloadUrl}'`;
-
+  const { t } = useTranslation();
   return (
     <>
       <ModalBoxBody>
@@ -53,13 +54,13 @@ const DownloadIso: React.FC<DownloadISOProps> = ({
             <EmptyState variant={EmptyStateVariant.small}>
               <EmptyStateIcon icon={CheckCircleIcon} color={successColor.value} />
               <Title headingLevel="h4" size="lg">
-                Discovery ISO is ready to download
+                {t('ai:Discovery ISO is ready to download')}
               </Title>
             </EmptyState>
             <DiscoveryInstructions isSNO={isSNO} />
             <DetailList>
               <DetailItem
-                title="Discovery ISO URL"
+                title={t('ai:Discovery ISO URL')}
                 value={
                   <ClipboardCopy
                     isReadOnly
@@ -70,7 +71,7 @@ const DownloadIso: React.FC<DownloadISOProps> = ({
                 }
               />
               <DetailItem
-                title="Command to download the ISO:"
+                title={t('ai:Command to download the ISO:')}
                 value={
                   <ClipboardCopy
                     isReadOnly
@@ -85,8 +86,8 @@ const DownloadIso: React.FC<DownloadISOProps> = ({
               variant="info"
               isInline
               title={
-                'Never share your downloaded ISO with anyone else. ' +
-                'Forwarding it could put your credentials and personal data at risk.'
+                t('ai:Never share your downloaded ISO with anyone else. ') +
+                t('ai:Forwarding it could put your credentials and personal data at risk.')
               }
             />
           </StackItem>
@@ -99,14 +100,14 @@ const DownloadIso: React.FC<DownloadISOProps> = ({
           data-testid="download-iso-btn"
           isDisabled={!downloadUrl}
         >
-          Download Discovery ISO
+          {t('ai:Download Discovery ISO')}
         </Button>
         <Button variant={ButtonVariant.secondary} onClick={onClose} data-testid="close-iso-btn">
-          Close
+          {t('ai:Close')}
         </Button>
         {onReset && (
           <Button variant={ButtonVariant.link} onClick={onReset} data-testid="edit-iso-btn">
-            Edit ISO configuration
+            {t('ai:Edit ISO configuration')}
           </Button>
         )}
       </ModalBoxFooter>

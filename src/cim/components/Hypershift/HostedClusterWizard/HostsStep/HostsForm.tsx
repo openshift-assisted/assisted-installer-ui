@@ -6,6 +6,7 @@ import { HostsFormValues, HostsFormProps } from './types';
 import { Button, Form, Grid, GridItem } from '@patternfly/react-core';
 import NodePoolForm from './NodePoolForm';
 import { PlusCircleIcon } from '@patternfly/react-icons';
+import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
 
 const HostsForm: React.FC<HostsFormProps> = ({
   onValuesChanged,
@@ -21,7 +22,7 @@ const HostsForm: React.FC<HostsFormProps> = ({
     label: ie.metadata?.name || '',
     value: ie.metadata?.namespace || '',
   }));
-
+  const { t } = useTranslation();
   return (
     <Grid hasGutter>
       <GridItem>
@@ -29,7 +30,7 @@ const HostsForm: React.FC<HostsFormProps> = ({
           <Grid hasGutter>
             <GridItem>
               <SelectField
-                label="Infrastructure environment"
+                label={t('ai:Infrastructure environment')}
                 name="agentNamespace"
                 options={infraEnvOptions}
                 isRequired
