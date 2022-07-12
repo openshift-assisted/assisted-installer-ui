@@ -137,7 +137,7 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
                 </Button>
               )}
               {isSubmitting && (
-                <Button isLoading isDisabled>
+                <Button key="generating" isLoading isDisabled>
                   {t('Generating')}
                 </Button>
               )}
