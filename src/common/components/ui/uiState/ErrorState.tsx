@@ -13,6 +13,7 @@ import {
 } from '@patternfly/react-core';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import { global_danger_color_200 as globalDangerColor200 } from '@patternfly/react-tokens';
+import { useTranslation } from '../../../hooks/use-translation-wrapper';
 
 type Props = {
   title?: string;
@@ -35,15 +36,16 @@ const ErrorState: React.FC<Props> = ({
   primaryAction,
   actions,
 }) => {
+  const { t } = useTranslation();
   const defaultContent = (
     <>
-      There was an error retrieving data. Check your connection and{' '}
+      {t('ai:There was an error retrieving data. Check your connection and')}{' '}
       {fetchData ? (
         <Button onClick={fetchData} variant={ButtonVariant.link} isInline>
-          try again
+          {t('ai:try again')}
         </Button>
       ) : (
-        'try again'
+        t('ai:try again')
       )}
       .
     </>

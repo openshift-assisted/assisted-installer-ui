@@ -16,6 +16,8 @@ import { InfraEnvK8sResource, SecretK8sResource } from '../../types';
 import { LoadingState, PullSecretField, pullSecretValidationSchema } from '../../../common';
 import { EditPullSecretFormikValues } from './types';
 import { getWarningMessage } from './utils';
+import { getErrorMessage } from '../../../common/utils';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 const validationSchema = Yup.object({
   pullSecret: pullSecretValidationSchema.required('Pull secret is a required field.'),
@@ -52,8 +54,8 @@ const EditPullSecretForm: React.FC<EditPullSecretFormProps> = ({
       }
     }
   }, [pullSecret, pullSecretLoading, pullSecretError, setFieldValue]);
-
-  const warningMsg = getWarningMessage(hasAgents, hasBMHs);
+  const { t } = useTranslation();
+  const warningMsg = getWarningMessage(hasAgents, hasBMHs, t);
 
   let body = (
     <Stack hasGutter>
@@ -87,10 +89,10 @@ const EditPullSecretForm: React.FC<EditPullSecretFormProps> = ({
           onClick={submitForm}
           isDisabled={pullSecretLoading || !!pullSecretError || isSubmitting || !isValid}
         >
-          Save
+          {t('ai:Save')}
         </Button>
         <Button onClick={onClose} variant={ButtonVariant.secondary}>
-          Cancel
+          {t('ai:Cancel')}
         </Button>
       </ModalBoxFooter>
     </>
@@ -114,10 +116,11 @@ const EditPullSecretModal: React.FC<EditPullSecretModalProps> = ({
   ...rest
 }) => {
   const [error, setError] = React.useState<string | undefined>();
+  const { t } = useTranslation();
   return (
     <Modal
-      aria-label="Edit pull secret dialog"
-      title="Edit pull secret"
+      aria-label={t('ai:Edit pull secret dialog')}
+      title={t('ai:Edit pull secret')}
       isOpen={isOpen}
       onClose={onClose}
       variant={ModalVariant.small}
@@ -135,7 +138,7 @@ const EditPullSecretModal: React.FC<EditPullSecretModalProps> = ({
             await onSubmit(values, infraEnv);
             onClose();
           } catch (err) {
-            setError(err?.message || 'An error occured');
+            setError(getErrorMessage(err));
           }
         }}
         validateOnMount

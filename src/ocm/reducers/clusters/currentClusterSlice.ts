@@ -6,6 +6,7 @@ import { handleApiError } from '../../api/utils';
 import { ResourceUIState } from '../../../common';
 import { ClustersAPI } from '../../services/apis';
 import { HostsService } from '../../services';
+import { isApiError } from '../../api/types';
 
 export type RetrievalErrorType = {
   code: string;
@@ -27,11 +28,13 @@ export const fetchClusterAsync = createAsyncThunk<
 >('currentCluster/fetchClusterAsync', async (clusterId, { rejectWithValue }) => {
   try {
     const hosts = await HostsService.listHostsBoundToCluster(clusterId);
-    const { data: cluster } = await ClustersAPI.get(clusterId);
-    Object.assign(cluster.hosts, hosts);
+    const res = await ClustersAPI.get(clusterId);
+    const { data: cluster } = res;
+
+    Object.assign(cluster, { hosts: hosts });
     return cluster;
   } catch (e) {
-    handleApiError(e, () => rejectWithValue(e.response.data));
+    handleApiError(e, () => isApiError(e) && e.response?.data && rejectWithValue(e.response?.data));
   }
 });
 

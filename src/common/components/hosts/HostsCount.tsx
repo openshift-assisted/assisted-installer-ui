@@ -2,6 +2,7 @@ import React from 'react';
 import { Popover, Level, LevelItem } from '@patternfly/react-core';
 import { Cluster } from '../../api';
 import { getEnabledHostCount, getReadyHostCount, getTotalHostCount } from './utils';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 type HostsCountProps = {
   cluster: Cluster;
@@ -14,22 +15,23 @@ const HostsCount: React.FC<HostsCountProps> = ({
   inParenthesis = false,
   valueId = 'hosts-count',
 }) => {
+  const { t } = useTranslation();
   const body = (
     <>
       {'readyHostCount' in cluster && (
         <Level>
-          <LevelItem>Ready for the installation</LevelItem>
+          <LevelItem>{t('ai:Ready for the installation')}</LevelItem>
           <LevelItem>{getReadyHostCount(cluster)}</LevelItem>
         </Level>
       )}
       {'enabledHostCount' in cluster && (
         <Level>
-          <LevelItem>Enabled for the installation</LevelItem>
+          <LevelItem>{t('ai:Enabled for the installation')}</LevelItem>
           <LevelItem>{getEnabledHostCount(cluster)}</LevelItem>
         </Level>
       )}
       <Level>
-        <LevelItem>All discovered</LevelItem>
+        <LevelItem>{t('ai:All discovered')}</LevelItem>
         <LevelItem>{getTotalHostCount(cluster)}</LevelItem>
       </Level>
     </>
@@ -38,7 +40,7 @@ const HostsCount: React.FC<HostsCountProps> = ({
   const summary =
     'enabledHostCount' in cluster ? getEnabledHostCount(cluster) : getTotalHostCount(cluster);
   return (
-    <Popover headerContent="Hosts in the cluster" bodyContent={body}>
+    <Popover headerContent={t('ai:Hosts in the cluster')} bodyContent={body}>
       <a id={valueId}>
         {inParenthesis && '('}
         {summary}

@@ -27,6 +27,7 @@ import {
   ClusterWizardStepsType,
   allClusterWizardSoftValidationIds,
 } from './wizardTransition';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type ClusterDeploymentReviewStepProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
@@ -50,7 +51,6 @@ const ClusterDeploymentReviewStep: React.FC<ClusterDeploymentReviewStepProps> = 
   const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
   const [isSubmitting, setSubmitting] = React.useState(false);
   const onBack = () => setCurrentStepId('networking');
-
   const cdName = clusterDeployment.metadata?.name;
   const cdNamespace = clusterDeployment.metadata?.namespace;
 
@@ -60,14 +60,16 @@ const ClusterDeploymentReviewStep: React.FC<ClusterDeploymentReviewStepProps> = 
   );
 
   const canContinue = canNextFromReviewStep(agentClusterInstall, clusterAgents);
-
+  const { t } = useTranslation();
   const onNext = async () => {
     clearAlerts();
     setSubmitting(true);
     try {
       await onFinish();
     } catch (err) {
-      addAlert({ title: err.message || 'An error occured while starting installation.' });
+      addAlert({
+        title: err.message || t('ai:An error occured while starting installation.'),
+      });
     } finally {
       setSubmitting(false);
     }
@@ -82,7 +84,7 @@ const ClusterDeploymentReviewStep: React.FC<ClusterDeploymentReviewStepProps> = 
       onBack={onBack}
       onNext={onNext}
       onCancel={onClose}
-      nextButtonText="Install cluster"
+      nextButtonText={t('ai:Install cluster')}
     />
   );
 
@@ -102,29 +104,33 @@ const ClusterDeploymentReviewStep: React.FC<ClusterDeploymentReviewStepProps> = 
         <GridItem>
           <DetailList>
             <DetailItem
-              title="Cluster address"
+              title={t('ai:Cluster address')}
               value={`${clusterDeployment.metadata?.name}.${clusterDeployment.spec?.baseDomain}`}
               testId="cluster-address"
             />
             <DetailItem
-              title="OpenShift version"
+              title={t('ai:OpenShift version')}
               value={openShiftVersion}
               testId="openshift-version"
             />
-            <DetailItem title="API IP" value={agentClusterInstall.spec?.apiVIP} testId="api-vip" />
             <DetailItem
-              title="Ingress IP"
+              title={t('ai:API IP')}
+              value={agentClusterInstall.spec?.apiVIP}
+              testId="api-vip"
+            />
+            <DetailItem
+              title={t('ai:Ingress IP')}
               value={agentClusterInstall.spec?.ingressVIP}
               testId="ingress-vip"
             />
             <DetailItem
-              title="Cluster summary"
+              title={t('ai:Cluster summary')}
               testId="cluster-summary"
               value={<ReviewHostsInventory hosts={cluster.hosts} />}
             />
 
             <DetailItem
-              title="Cluster validations"
+              title={t('ai:Cluster validations')}
               value={
                 <ClusterValidations<ClusterWizardStepsType>
                   validationsInfo={cluster.validationsInfo}
@@ -136,7 +142,7 @@ const ClusterDeploymentReviewStep: React.FC<ClusterDeploymentReviewStepProps> = 
               testId="cluster-validations"
             />
             <DetailItem
-              title="Host validations"
+              title={t('ai:Host validations')}
               value={
                 <HostsValidations<ClusterWizardStepsType, typeof allClusterWizardSoftValidationIds>
                   hosts={cluster.hosts}

@@ -1,6 +1,7 @@
 import { ConnectedIcon } from '@patternfly/react-icons';
 import { sortable } from '@patternfly/react-table';
 import { useFormikContext } from 'formik';
+import { TFunction } from 'i18next';
 import * as React from 'react';
 import { DASH, EmptyState, getInventory, getSubnet, Host } from '../../../../../common';
 import { TableRow } from '../../../../../common/components/hosts/AITable';
@@ -8,6 +9,7 @@ import { HostDetail } from '../../../../../common/components/hosts/HostRowDetail
 import HostsTable from '../../../../../common/components/hosts/HostsTable';
 import { getSelectedNic, hostnameColumn } from '../../../../../common/components/hosts/tableUtils';
 import { usePagination } from '../../../../../common/components/hosts/usePagination';
+import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
 import { AgentK8sResource } from '../../../../types';
 import { useAgentsTable } from '../../../Agent/tableUtils';
 import { getAgentsHostsNames } from '../../../ClusterDeployment';
@@ -26,8 +28,8 @@ const ExpandComponent: React.FC<ExpandComponentProps> = ({ obj }) => (
   />
 );
 
-const activeNICColumn = (machineNetworkCidr: string): TableRow<Host> => ({
-  header: { title: 'Active NIC', transforms: [sortable] },
+const activeNICColumn = (machineNetworkCidr: string, t: TFunction): TableRow<Host> => ({
+  header: { title: t('ai:Active NIC'), transforms: [sortable] },
   cell: (host) => {
     const inventory = getInventory(host);
     const nics = inventory.interfaces || [];
@@ -48,9 +50,9 @@ const NetworkHostsTable: React.FC<NetworkHostsTableProps> = ({ agents, onEditHos
     { agents },
     { onEditHost: setEditAgent },
   );
-
+  const { t } = useTranslation();
   const content = React.useMemo(
-    () => [hostnameColumn(tableActions.onEditHost, hosts), activeNICColumn(values.machineCIDR)],
+    () => [hostnameColumn(tableActions.onEditHost, hosts), activeNICColumn(values.machineCIDR, t)],
     [hosts, values.machineCIDR, tableActions],
   );
 
@@ -68,8 +70,8 @@ const NetworkHostsTable: React.FC<NetworkHostsTableProps> = ({ agents, onEditHos
       >
         <EmptyState
           icon={ConnectedIcon}
-          title="Waiting for hosts..."
-          content="Hosts may take a few minutes to appear here after booting."
+          title={t('ai:Waiting for hosts...')}
+          content={t('ai:Hosts may take a few minutes to appear here after booting.')}
         />
       </HostsTable>
       {editAgent && (

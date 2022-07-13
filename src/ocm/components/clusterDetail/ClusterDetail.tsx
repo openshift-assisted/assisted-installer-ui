@@ -16,7 +16,8 @@ import {
   canDownloadClusterLogs,
   useAlerts,
   getEnabledHosts,
-  getOlmOperators,
+  selectOlmOperators,
+  isSNO,
 } from '../../../common';
 import { Cluster } from '../../../common/api/types';
 import ClusterHostsTable from '../hosts/ClusterHostsTable';
@@ -35,6 +36,9 @@ import ClusterProgressItems from '../../../common/components/clusterDetail/Clust
 import { EventsModalButton } from '../../../common/components/ui/eventsModal';
 import { onFetchEvents } from '../fetching/fetchEvents';
 import { getClusterProgressAlerts } from './getProgressBarAlerts';
+import { ClustersAPI } from '../../services/apis';
+import { updateCluster } from '../../reducers/clusters';
+import { handleApiError, ocmClient } from '../../api';
 
 type ClusterDetailProps = {
   cluster: Cluster;
@@ -45,7 +49,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
   const { resetClusterDialog, cancelInstallationDialog } = useModalDialogsContext();
   const clusterVarieties = useClusterStatusVarieties(cluster);
   const { credentials, credentialsError } = clusterVarieties;
-  const { monitoredOperators = [] } = cluster;
+  const canAddHosts = !isSNO(cluster) && cluster.status === 'installed' && !ocmClient;
 
   return (
     <Stack hasGutter>
@@ -62,18 +66,20 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
               totalPercentage={cluster.progress?.totalPercentage || 0}
             />
           </GridItem>
-          <GridItem span={6}></GridItem>
-          <GridItem span={8}>
+          <GridItem span={6} rowSpan={4}></GridItem>
+          <GridItem span={6}>
             <ClusterProgressItems cluster={cluster} onFetchEvents={onFetchEvents} />
           </GridItem>
           <GridItem span={6}>
             {getClusterProgressAlerts(
               getEnabledHosts(cluster.hosts),
               cluster,
-              getOlmOperators(monitoredOperators),
+              selectOlmOperators(cluster),
             )}
           </GridItem>
-          <ClusterDetailStatusVarieties cluster={cluster} clusterVarieties={clusterVarieties} />
+          <GridItem span={6}>
+            <ClusterDetailStatusVarieties cluster={cluster} clusterVarieties={clusterVarieties} />
+          </GridItem>
           <GridItem>
             <TextContent>
               <Text component="h2">Host Inventory</Text>
@@ -112,6 +118,25 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
               consoleUrl={credentials?.consoleUrl}
               id={getClusterDetailId('button-launch-console')}
             />
+          )}
+          {canAddHosts && (
+            <ToolbarButton
+              variant={ButtonVariant.primary}
+              component={(props) => (
+                <Link to={`${routeBasePath}/clusters/${cluster.id}`} {...props} />
+              )}
+              id={getClusterDetailId('button-add-hosts')}
+              onClick={async () => {
+                try {
+                  const { data } = await ClustersAPI.allowAddHosts(cluster.id);
+                  updateCluster(data);
+                } catch (e) {
+                  handleApiError(e);
+                }
+              }}
+            >
+              Add hosts
+            </ToolbarButton>
           )}
           {!isSingleClusterMode() && (
             <ToolbarButton

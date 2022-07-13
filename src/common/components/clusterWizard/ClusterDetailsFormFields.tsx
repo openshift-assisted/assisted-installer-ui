@@ -18,6 +18,7 @@ import {
 import DiskEncryptionControlGroup from '../clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
 import { ClusterDetailsValues } from './types';
 import { isSNO } from '../../selectors/clusterSelectors';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 export type ClusterDetailsFormFieldsProps = {
   canEditPullSecret: boolean;
@@ -36,15 +37,20 @@ export type ClusterDetailsFormFieldsProps = {
 export const BaseDnsHelperText: React.FC<{ name?: string; baseDnsDomain?: string }> = ({
   name,
   baseDnsDomain,
-}) => (
-  <>
-    All DNS records must be subdomains of this base and include the cluster name. This cannot be
-    changed after cluster installation. The full cluster address will be: <br />
-    <strong>
-      {name || '[Cluster Name]'}.{baseDnsDomain || '[example.com]'}
-    </strong>
-  </>
-);
+}) => {
+  const { t } = useTranslation();
+  return (
+    <>
+      {t(
+        'ai:All DNS records must be subdomains of this base and include the cluster name. This cannot be changed after cluster installation. The full cluster address will be:',
+      )}{' '}
+      <br />
+      <strong>
+        {name || '[Cluster Name]'}.{baseDnsDomain || '[example.com]'}
+      </strong>
+    </>
+  );
+};
 
 export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> = ({
   managedDomains = [],
@@ -68,14 +74,15 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
   const atListOneDiskEncryptionEnableOn =
     values.enableDiskEncryptionOnMasters || values.enableDiskEncryptionOnWorkers;
 
+  const { t } = useTranslation();
   // TODO(mlibra): Disable fields based on props passed from the caller context. In CIM, the name or domain can not be edited.
   return (
     <Form id="wizard-cluster-details__form">
       <RichInputField
         ref={nameInputRef}
-        label="Cluster name"
+        label={t('ai:Cluster name')}
         name="name"
-        placeholder={isOcm ? '' : 'Enter cluster name'}
+        placeholder={isOcm ? '' : t('ai:Enter cluster name')}
         isDisabled={isNameDisabled}
         richValidationMessages={ACM_CLUSTER_NAME_VALIDATION_MESSAGES}
         isRequired
@@ -84,14 +91,16 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
       {!!managedDomains.length && toggleRedHatDnsService && (
         <CheckboxField
           name="useRedHatDnsService"
-          label="Use a temporary 60-day domain"
-          helperText="A base domain will be provided for temporary, non-production clusters."
+          label={t('ai:Use a temporary 60-day domain')}
+          helperText={t(
+            'ai:A base domain will be provided for temporary, non-production clusters.',
+          )}
           onChange={toggleRedHatDnsService}
         />
       )}
       {useRedHatDnsService ? (
         <SelectField
-          label="Base domain"
+          label={t('ai:Base domain')}
           name="baseDnsDomain"
           helperText={<BaseDnsHelperText name={name} baseDnsDomain={baseDnsDomain} />}
           options={managedDomains.map((d) => ({
@@ -102,7 +111,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
         />
       ) : (
         <InputField
-          label="Base domain"
+          label={t('ai:Base domain')}
           name="baseDnsDomain"
           helperText={<BaseDnsHelperText name={name} baseDnsDomain={baseDnsDomain} />}
           placeholder="example.com"
@@ -112,7 +121,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
       )}
       {forceOpenshiftVersion ? (
         <StaticTextField name="openshiftVersion" label="OpenShift version" isRequired>
-          OpenShift {forceOpenshiftVersion}
+          {t('ai:OpenShift')} {forceOpenshiftVersion}
         </StaticTextField>
       ) : (
         <OpenShiftVersionSelect versions={versions} />
@@ -135,8 +144,9 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
           isInline
           title={
             <FlexItem>
-              To use this encryption method, enable TPMv2 encryption in the BIOS of each selected
-              host.
+              {t(
+                'ai:To use this encryption method, enable TPMv2 encryption in the BIOS of each selected host.',
+              )}
             </FlexItem>
           }
         />
@@ -147,8 +157,9 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
           isInline
           title={
             <FlexItem>
-              The use of Tang encryption mode to encrypt your disks is only supported for bare metal
-              or vSphere installations on user-provisioned infrastructure.
+              {t(
+                'ai:The use of Tang encryption mode to encrypt your disks is only supported for bare metal or vSphere installations on user-provisioned infrastructure.',
+              )}
             </FlexItem>
           }
         />

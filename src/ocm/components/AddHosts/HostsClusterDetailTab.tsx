@@ -15,6 +15,7 @@ import AddHosts from './AddHosts';
 import { OcmClusterType } from './types';
 import Day2ClusterService from '../../services/Day2ClusterService';
 import { useStateSafely } from '../../../common/hooks';
+import { isApiError } from '../../api/types';
 
 type OpenModalType = (modalName: string, cluster?: OcmClusterType) => void;
 
@@ -127,21 +128,23 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
           setDay2Cluster(day2Cluster);
         } catch (e) {
           handleApiError(e);
-          setError(
-            <>
-              {e.request._url.includes('/import')
-                ? 'Failed to create wrapping cluster for adding new hosts.'
-                : 'Failed to fetch cluster for adding new hosts.'}
-              <br />
-              Check your connection and <TryAgain />.
-            </>,
-          );
+          if (isApiError(e) && e.request) {
+            const isImport = e.request._url.includes('/import');
+            setError(
+              <>
+                {isImport
+                  ? 'Failed to create wrapping cluster for adding new hosts.'
+                  : 'Failed to fetch cluster for adding new hosts.'}
+                <br />
+                Check your connection and <TryAgain />.
+              </>,
+            );
+          }
           return;
         }
       };
 
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      doItAsync();
+      void doItAsync();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cluster, openModal, pullSecret, day2Cluster, setDay2Cluster, isVisible]);
@@ -170,8 +173,7 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
       const doItAsync = async () => {
         await resetCluster();
       };
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      doItAsync();
+      void doItAsync();
     }, POLLING_INTERVAL);
     return () => clearTimeout(id);
   }, [resetCluster]);

@@ -13,6 +13,7 @@ import {
 import { MultiSelectFieldProps, MultiSelectOption } from './types';
 import { getFieldId } from './utils';
 import HelperText from './HelperText';
+import { useTranslation } from '../../../hooks/use-translation-wrapper';
 
 // Field value is a string[]
 const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
@@ -88,7 +89,7 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
     ignoreLocation: true,
     keys: ['displayName'],
   });
-
+  const { t } = useTranslation();
   return (
     <FormGroup
       fieldId={fieldId}
@@ -106,7 +107,7 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
         {...props}
         id={fieldId}
         variant={SelectVariant.typeaheadMulti}
-        typeAheadAriaLabel="Select a state"
+        typeAheadAriaLabel={t('ai:Select a state')}
         validated={isValid ? 'default' : 'error'}
         aria-describedby={`${fieldId}-helper`}
         isCreatable={false}

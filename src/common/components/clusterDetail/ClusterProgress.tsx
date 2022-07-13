@@ -10,6 +10,8 @@ import { Cluster } from '../../api/types';
 import { DetailItem, DetailList, getHumanizedDateTime, RenderIf } from '../ui';
 import { CLUSTER_STATUS_LABELS } from '../../config';
 import './ClusterProgress.css';
+import { TFunction } from 'i18next';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 const getProgressVariant = (status: Cluster['status']) => {
   switch (status) {
@@ -32,15 +34,22 @@ const getMeasureLocation = (status: Cluster['status']) =>
 const getInstallationStatus = (
   status: Cluster['status'],
   installCompletedAt: Cluster['installCompletedAt'],
+  t: TFunction,
 ) => {
   if (status === 'installed' || status === 'adding-hosts') {
-    return `Installed on ${getHumanizedDateTime(installCompletedAt)}`;
+    return t('ai:Installed on {{humanizedDataTime}}', {
+      humanizedDataTime: getHumanizedDateTime(installCompletedAt),
+    });
   }
   if (status === 'error') {
-    return `Failed on ${getHumanizedDateTime(installCompletedAt)}`;
+    return t('ai:Failed on {{humanizedDataTime}}', {
+      humanizedDataTime: getHumanizedDateTime(installCompletedAt),
+    });
   }
   if (status === 'cancelled') {
-    return `Cancelled on ${getHumanizedDateTime(installCompletedAt)}`;
+    return t('ai:Cancelled on {{humanizedDataTime}}', {
+      humanizedDataTime: getHumanizedDateTime(installCompletedAt),
+    });
   }
 
   return CLUSTER_STATUS_LABELS[status] || status;
@@ -58,22 +67,22 @@ const ClusterProgress = ({
   totalPercentage,
 }: ClusterProgressProps) => {
   const { status } = cluster;
-
+  const { t } = useTranslation();
   return (
     <>
       <DetailList>
         <Flex direction={{ default: minimizedView ? 'row' : 'column' }}>
           <FlexItem>
             <DetailItem
-              title="Started on"
+              title={t('ai:Started on')}
               value={getHumanizedDateTime(cluster.installStartedAt)}
               idPrefix="cluster-progress-started-on"
             />
           </FlexItem>
           <FlexItem>
             <DetailItem
-              title="Status"
-              value={getInstallationStatus(cluster.status, cluster.installCompletedAt)}
+              title={t('ai:Status')}
+              value={getInstallationStatus(cluster.status, cluster.installCompletedAt, t)}
               idPrefix="cluster-progress-status"
             />
           </FlexItem>
@@ -81,8 +90,8 @@ const ClusterProgress = ({
       </DetailList>
       <RenderIf condition={!minimizedView}>
         <Progress
-          value={totalPercentage}
-          label={`${totalPercentage}%`}
+          value={totalPercentage || 0}
+          label={`${totalPercentage || 0}%`}
           title=" "
           measureLocation={getMeasureLocation(status)}
           variant={getProgressVariant(status)}

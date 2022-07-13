@@ -7,15 +7,21 @@ import { ExternalLink, getFieldId, HelperText, TextAreaField, trimSshPublicKey }
 import { Cluster } from '../../api';
 import { NetworkConfigurationValues } from '../../types/clusters';
 import { SSH_GENERATION_DOC_LINK } from '../../config';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 export const SshPublicKeyHelperText: React.FC<{
   fieldId?: string;
-}> = ({ fieldId = 'sshPublicKey' }) => (
-  <HelperText fieldId={fieldId}>
-    Paste the content of a public ssh key you want to use to connect to the hosts into this field.{' '}
-    <ExternalLink href={SSH_GENERATION_DOC_LINK}>Learn more</ExternalLink>
-  </HelperText>
-);
+}> = ({ fieldId = 'sshPublicKey' }) => {
+  const { t } = useTranslation();
+  return (
+    <HelperText fieldId={fieldId}>
+      {t(
+        'ai:Paste the content of a public ssh key you want to use to connect to the hosts into this field.',
+      )}{' '}
+      <ExternalLink href={SSH_GENERATION_DOC_LINK}>{t('ai:Learn more')}</ExternalLink>
+    </HelperText>
+  );
+};
 
 const label = 'Host SSH Public Key for troubleshooting after installation';
 
@@ -47,6 +53,7 @@ const SecurityFields: React.FC<SecurityFieldsFieldsProps> = ({ clusterSshKey, im
   }, [shareSshKey, imageSshKey, setFieldValue]);
 
   const fieldId = getFieldId('shareDiscoverySshKey', 'checkbox');
+  const { t } = useTranslation();
   return (
     <>
       <FormGroup
@@ -59,7 +66,7 @@ const SecurityFields: React.FC<SecurityFieldsFieldsProps> = ({ clusterSshKey, im
           <Checkbox
             name="shareDiscoverySshKey"
             id={fieldId}
-            label="Use the same host discovery SSH key"
+            label={t('ai:Use the same host discovery SSH key')}
             aria-describedby={`${fieldId}-helper`}
             isChecked={shareSshKey}
             onChange={setShareSshKey}

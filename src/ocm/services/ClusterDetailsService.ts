@@ -6,16 +6,13 @@ import {
   InfraEnv,
   ManagedDomain,
   OpenshiftVersionOptionType,
+  getDefaultNetworkType,
 } from '../../common';
 import { ClustersAPI, ManagedDomainsAPI } from '../services/apis';
 import InfraEnvsService from './InfraEnvsService';
 import omit from 'lodash/omit';
 import DiskEncryptionService from './DiskEncryptionService';
-import {
-  getDefaultNetworkType,
-  isArmArchitecture,
-  isSNO,
-} from '../../common/selectors/clusterSelectors';
+import { isArmArchitecture, isSNO } from '../../common/selectors/clusterSelectors';
 import { CreateParams, HostsNetworkConfigurationType, OcmClusterDetailsValues } from './types';
 import { getDummyInfraEnvField } from '../components/clusterConfiguration/staticIp/data/dummyData';
 
@@ -71,6 +68,7 @@ const ClusterDetailsService = {
   getClusterDetailsInitialValues({
     cluster,
     infraEnv,
+    urlSearchParams,
     ...args
   }: {
     cluster?: Cluster;
@@ -78,12 +76,16 @@ const ClusterDetailsService = {
     pullSecret?: string;
     managedDomains: ManagedDomain[];
     ocpVersions: OpenshiftVersionOptionType[];
+    urlSearchParams: string;
   }): OcmClusterDetailsValues {
     const values = getClusterDetailsInitialValues({
       cluster,
       ...args,
     });
-    const cpuArchitecture = cluster?.cpuArchitecture || CpuArchitecture.x86;
+    const params = new URLSearchParams(urlSearchParams);
+    const hasArmSearchParam = params.get('useArm') === 'true';
+    const cpuArchitecture =
+      cluster?.cpuArchitecture || (hasArmSearchParam ? CpuArchitecture.ARM : CpuArchitecture.x86);
     const hostsNetworkConfigurationType = infraEnv?.staticNetworkConfig
       ? HostsNetworkConfigurationType.STATIC
       : HostsNetworkConfigurationType.DHCP;

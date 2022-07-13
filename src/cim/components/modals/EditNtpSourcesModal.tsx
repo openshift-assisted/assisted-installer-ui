@@ -15,6 +15,8 @@ import { Formik, FormikProps } from 'formik';
 import { InfraEnvK8sResource } from '../../types';
 import { RadioField, AdditionalNTPSourcesField } from '../../../common';
 import { EditNtpSourcesFormikValues } from './types';
+import { getErrorMessage } from '../../../common/utils';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 export type EditNtpSourcesModalProps = {
   onSubmit: (
@@ -32,11 +34,12 @@ const EditNtpSourcesModal: React.FC<EditNtpSourcesModalProps> = ({
   onSubmit,
   infraEnv,
 }) => {
-  const [error, setError] = React.useState();
+  const [error, setError] = React.useState<string>();
+  const { t } = useTranslation();
   return (
     <Modal
-      aria-label="Edit Ntp sources dialog"
-      title="Edit NTP sources"
+      aria-label={t('ai:Edit Ntp sources dialog')}
+      title={t('ai:Edit NTP sources')}
       isOpen={isOpen}
       onClose={onClose}
       variant={ModalVariant.small}
@@ -53,7 +56,7 @@ const EditNtpSourcesModal: React.FC<EditNtpSourcesModalProps> = ({
             await onSubmit(values, infraEnv);
             onClose();
           } catch (err) {
-            setError(err?.message || 'An error occured');
+            setError(getErrorMessage(err));
           }
         }}
         validateOnMount
@@ -71,7 +74,7 @@ const EditNtpSourcesModal: React.FC<EditNtpSourcesModalProps> = ({
                   <Stack hasGutter>
                     <StackItem>
                       <RadioField
-                        label="Auto synchronized NTP (Network Time Protocol) sources"
+                        label={t('ai:Auto synchronized NTP (Network Time Protocol) sources')}
                         value="auto"
                         name="enableNtpSources"
                       />
@@ -83,19 +86,22 @@ const EditNtpSourcesModal: React.FC<EditNtpSourcesModalProps> = ({
                         description={
                           <Stack hasGutter>
                             <StackItem>
-                              Configure your own NTP sources to sychronize the time between the
-                              hosts that will be added to this infrastructure environment.
+                              {t(
+                                'ai:Configure your own NTP sources to sychronize the time between the hosts that will be added to this infrastructure environment.',
+                              )}
                             </StackItem>
                             <StackItem>
                               <AdditionalNTPSourcesField
                                 name="additionalNtpSources"
                                 isDisabled={values.enableNtpSources === 'auto'}
-                                helperText="A comma separated list of IP or domain names of the NTP pools or servers."
+                                helperText={t(
+                                  'ai:A comma separated list of IP or domain names of the NTP pools or servers.',
+                                )}
                               />
                             </StackItem>
                           </Stack>
                         }
-                        label="Your own NTP (Network Time Protocol) sources"
+                        label={t('ai:Your own NTP (Network Time Protocol) sources')}
                       />
                     </StackItem>
                     {error && (
@@ -108,10 +114,10 @@ const EditNtpSourcesModal: React.FC<EditNtpSourcesModalProps> = ({
               </ModalBoxBody>
               <ModalBoxFooter>
                 <Button onClick={submitForm} isDisabled={isSubmitting || !isValid}>
-                  Save
+                  {t('ai:Save')}
                 </Button>
                 <Button onClick={onClose} variant={ButtonVariant.secondary}>
-                  Cancel
+                  {t('ai:Cancel')}
                 </Button>
               </ModalBoxFooter>
             </>

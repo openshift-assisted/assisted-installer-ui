@@ -1,17 +1,23 @@
-import React, { useCallback, useEffect } from 'react';
+import React from 'react';
 import { useFormikContext } from 'formik';
 import { Alert, AlertVariant, Checkbox, Grid, Tooltip } from '@patternfly/react-core';
 import { VirtualIPControlGroup, VirtualIPControlGroupProps } from './VirtualIPControlGroup';
-import { Cluster } from '../../../../common/api/types';
-import { useFeatureSupportLevel } from '../../../../common/components/featureSupportLevels';
-import { NetworkConfigurationValues } from '../../../../common/types';
-import { getLimitedFeatureSupportLevels } from '../../../../common/components/featureSupportLevels/utils';
+import { Cluster, ClusterDefaultConfig } from '../../../../common/api/types';
 import {
-  allHostSubnetsIPv4,
+  FeatureSupportLevelData,
+  useFeatureSupportLevel,
+} from '../../../../common/components/featureSupportLevels';
+import { CpuArchitecture, HostSubnets, NetworkConfigurationValues } from '../../../../common/types';
+import { getLimitedFeatureSupportLevels } from '../../../../common/components/featureSupportLevels/utils';
+import { isSNO } from '../../../../common/selectors';
+import {
+  canBeDualStack,
   canSelectNetworkTypeSDN,
   getDefaultNetworkType,
-  isSNO,
-} from '../../../../common/selectors';
+  clusterNetworksEqual,
+  DUAL_STACK,
+  serviceNetworksEqual,
+} from '../../../../common';
 import {
   ManagedNetworkingControlGroup,
   UserManagedNetworkingTextContent,
@@ -19,10 +25,17 @@ import {
 import { StackTypeControlGroup } from './StackTypeControl';
 import { AvailableSubnetsControl } from './AvailableSubnetsControl';
 import AdvancedNetworkFields from './AdvancedNetworkFields';
-import { clusterNetworksEqual, DUAL_STACK, serviceNetworksEqual } from '../../../../common';
+import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
-  defaultNetworkSettings: Partial<Cluster>;
+  hostSubnets: HostSubnets;
+  defaultNetworkSettings: Pick<
+    ClusterDefaultConfig,
+    | 'clusterNetworksIpv4'
+    | 'clusterNetworksDualstack'
+    | 'serviceNetworksIpv4'
+    | 'serviceNetworksDualstack'
+  >;
   hideManagedNetworking?: boolean;
 };
 
@@ -40,7 +53,7 @@ const vmsAlert = (
 
 const isAdvNetworkConf = (
   cluster: Cluster,
-  defaultNetworkValues: Pick<NetworkConfigurationValues, 'serviceNetworks' | 'clusterNetworks'>,
+  defaultNetworkValues: Pick<ClusterDefaultConfig, 'clusterNetworksIpv4' | 'serviceNetworksIpv4'>,
   defaultNetworkType: string,
 ) =>
   !(
@@ -48,10 +61,56 @@ const isAdvNetworkConf = (
     cluster.networkType === defaultNetworkType &&
     serviceNetworksEqual(
       cluster.serviceNetworks || [],
-      defaultNetworkValues.serviceNetworks || [],
+      defaultNetworkValues.serviceNetworksIpv4 || [],
     ) &&
-    clusterNetworksEqual(cluster.clusterNetworks || [], defaultNetworkValues.clusterNetworks || [])
+    clusterNetworksEqual(
+      cluster.clusterNetworks || [],
+      defaultNetworkValues.clusterNetworksIpv4 || [],
+    )
   );
+
+const isManagedNetworkingDisabled = (
+  isDualStack: boolean,
+  openshiftVersion: Cluster['openshiftVersion'],
+  cpuArchitecture: Cluster['cpuArchitecture'],
+  featureSupportLevelData: FeatureSupportLevelData,
+) => {
+  if (isDualStack) {
+    return {
+      isNetworkManagementDisabled: true,
+      networkManagementDisabledReason:
+        'Network management selection is not supported with dual-stack',
+    };
+  } else if (
+    openshiftVersion &&
+    cpuArchitecture === CpuArchitecture.ARM &&
+    !featureSupportLevelData.isFeatureSupported(
+      openshiftVersion,
+      'ARM64_ARCHITECTURE_WITH_CLUSTER_MANAGED_NETWORKING',
+    )
+  ) {
+    return {
+      isNetworkManagementDisabled: true,
+      networkManagementDisabledReason: featureSupportLevelData.getFeatureDisabledReason(
+        openshiftVersion,
+        'ARM64_ARCHITECTURE_WITH_CLUSTER_MANAGED_NETWORKING',
+      ),
+    };
+  } else if (
+    !!openshiftVersion &&
+    featureSupportLevelData.isFeatureDisabled(openshiftVersion, 'NETWORK_TYPE_SELECTION')
+  ) {
+    return {
+      isNetworkManagementDisabled: true,
+      networkManagementDisabledReason: featureSupportLevelData.getFeatureDisabledReason(
+        openshiftVersion,
+        'NETWORK_TYPE_SELECTION',
+      ),
+    };
+  } else {
+    return { isNetworkManagementDisabled: false, networkManagementDisabledReason: undefined };
+  }
+};
 
 const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   cluster,
@@ -61,33 +120,32 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   hideManagedNetworking,
   children,
 }) => {
+  const { t } = useTranslation();
   const featureSupportLevelData = useFeatureSupportLevel();
   const { setFieldValue, values, validateField } = useFormikContext<NetworkConfigurationValues>();
 
   const clusterFeatureSupportLevels = React.useMemo(() => {
-    return getLimitedFeatureSupportLevels(cluster, featureSupportLevelData);
-  }, [cluster, featureSupportLevelData]);
-  const isMultiNodeCluster = !isSNO(cluster);
+    return getLimitedFeatureSupportLevels(cluster, featureSupportLevelData, t);
+  }, [cluster, featureSupportLevelData, t]);
+  const isSNOCluster = isSNO(cluster);
+  const isMultiNodeCluster = !isSNOCluster;
   const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';
   const isDualStack = values.stackType === DUAL_STACK;
 
-  const isDualStackSelectable = React.useMemo(
-    () => !allHostSubnetsIPv4(hostSubnets),
-    [hostSubnets],
-  );
+  const isDualStackSelectable = React.useMemo(() => canBeDualStack(hostSubnets), [hostSubnets]);
 
   const { defaultNetworkType, isSDNSelectable } = React.useMemo(() => {
     return {
-      defaultNetworkType: getDefaultNetworkType(!isMultiNodeCluster, isDualStack),
-      isSDNSelectable: canSelectNetworkTypeSDN(!isMultiNodeCluster, isDualStack),
+      defaultNetworkType: getDefaultNetworkType(isSNOCluster, isDualStack),
+      isSDNSelectable: canSelectNetworkTypeSDN(isSNOCluster, isDualStack),
     };
-  }, [isMultiNodeCluster, isDualStack]);
+  }, [isSNOCluster, isDualStack]);
 
   const [isAdvanced, setAdvanced] = React.useState(
-    isAdvNetworkConf(cluster, defaultNetworkSettings, defaultNetworkType) || isDualStack,
+    isDualStack || isAdvNetworkConf(cluster, defaultNetworkSettings, defaultNetworkType),
   );
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (isUserManagedNetworking) {
       // We need to reset these fields' values in order to align with the values the server sends
       setFieldValue('vipDhcpAllocation', false);
@@ -111,45 +169,62 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
     validateField,
   ]);
 
-  const toggleAdvConfiguration = useCallback(
+  const toggleAdvConfiguration = React.useCallback(
     (checked: boolean) => {
       setAdvanced(checked);
 
       if (!checked) {
-        setFieldValue('clusterNetworks', defaultNetworkSettings.clusterNetworks, true);
-        setFieldValue('serviceNetworks', defaultNetworkSettings.serviceNetworks, true);
-        setFieldValue('networkType', getDefaultNetworkType(!isMultiNodeCluster, isDualStack));
+        setFieldValue(
+          'clusterNetworks',
+          isDualStack
+            ? defaultNetworkSettings.clusterNetworksDualstack
+            : defaultNetworkSettings.clusterNetworksIpv4,
+          true,
+        );
+        setFieldValue(
+          'serviceNetworks',
+          isDualStack
+            ? defaultNetworkSettings.serviceNetworksDualstack
+            : defaultNetworkSettings.serviceNetworksIpv4,
+          true,
+        );
+        setFieldValue('networkType', getDefaultNetworkType(isSNOCluster, isDualStack));
       }
     },
     [
       setFieldValue,
-      defaultNetworkSettings.clusterNetworks,
-      defaultNetworkSettings.serviceNetworks,
-      isMultiNodeCluster,
       isDualStack,
+      isSNOCluster,
+      defaultNetworkSettings.clusterNetworksDualstack,
+      defaultNetworkSettings.clusterNetworksIpv4,
+      defaultNetworkSettings.serviceNetworksDualstack,
+      defaultNetworkSettings.serviceNetworksIpv4,
     ],
   );
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (isDualStack && !isUserManagedNetworking) {
       toggleAdvConfiguration(true);
     }
   }, [toggleAdvConfiguration, isUserManagedNetworking, isDualStack]);
+
+  const { isNetworkManagementDisabled, networkManagementDisabledReason } = React.useMemo(
+    () =>
+      isManagedNetworkingDisabled(
+        isDualStack,
+        cluster.openshiftVersion,
+        cluster.cpuArchitecture,
+        featureSupportLevelData,
+      ),
+    [cluster.cpuArchitecture, cluster.openshiftVersion, featureSupportLevelData, isDualStack],
+  );
+
   return (
     <Grid hasGutter>
       {!hideManagedNetworking && (
         <ManagedNetworkingControlGroup
-          disabled={
-            isDualStack ||
-            (!!cluster.openshiftVersion &&
-              featureSupportLevelData.isFeatureDisabled(
-                cluster.openshiftVersion,
-                'NETWORK_TYPE_SELECTION',
-              ))
-          }
-          tooltip={
-            isDualStack ? 'User-Managed networking is not supported with dual-stack' : undefined
-          }
+          disabled={isNetworkManagementDisabled}
+          tooltip={networkManagementDisabledReason}
         />
       )}
 
@@ -164,10 +239,12 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
         clusterFeatureSupportLevels['CLUSTER_MANAGED_NETWORKING_WITH_VMS'] === 'unsupported' &&
         vmsAlert}
 
-      {!isUserManagedNetworking && (
+      {(isSNOCluster || !isUserManagedNetworking) && (
         <StackTypeControlGroup
           clusterId={cluster.id}
           isDualStackSelectable={isDualStackSelectable}
+          isSNO={isSNOCluster}
+          hostSubnets={hostSubnets}
         />
       )}
 
@@ -182,7 +259,6 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
       {!isUserManagedNetworking && (
         <VirtualIPControlGroup
           cluster={cluster}
-          hostSubnets={hostSubnets}
           isVipDhcpAllocationDisabled={isVipDhcpAllocationDisabled}
         />
       )}

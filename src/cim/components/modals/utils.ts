@@ -1,3 +1,4 @@
+import { TFunction } from 'i18next';
 import { InfraEnvK8sResource, SecretK8sResource } from '../../types';
 import { INFRAENV_AGENTINSTALL_LABEL_KEY, BMH_HOSTNAME_ANNOTATION } from '../common';
 
@@ -60,14 +61,20 @@ export const getBareMetalHost = (
   },
 });
 
-export const getWarningMessage = (hasAgents: boolean, hasBMHs: boolean) => {
+export const getWarningMessage = (hasAgents: boolean, hasBMHs: boolean, t: TFunction) => {
   if (hasBMHs && hasAgents) {
-    return 'The resource you are changing is already in use by hosts in the infrastructure environment. A change will require booting the hosts with a new discovery ISO file. Hosts will be rebooted automatically after the change is applied if using BMC.';
+    return t(
+      'ai:The resource you are changing is already in use by hosts in the infrastructure environment. A change will require booting the hosts with a new discovery ISO file. Hosts will be rebooted automatically after the change is applied if using BMC.',
+    );
   } else if (hasBMHs) {
-    return 'The resource you are changing is already in use by hosts in the infrastructure environment. The hosts will be rebooted automatically after the change is applied.';
+    return t(
+      'ai:The resource you are changing is already in use by hosts in the infrastructure environment. The hosts will be rebooted automatically after the change is applied.',
+    );
   } else if (hasAgents) {
-    return 'The resource you are changing is already in use by hosts in the infrastructure environment. A change will require booting the hosts with a new discovery ISO file.';
+    return t(
+      'ai:The resource you are changing is already in use by hosts in the infrastructure environment. A change will require booting the hosts with a new discovery ISO file.',
+    );
   } else {
-    return 'A change will require booting hosts with a new discovery ISO file.';
+    return t('ai:A change will require booting hosts with a new discovery ISO file.');
   }
 };

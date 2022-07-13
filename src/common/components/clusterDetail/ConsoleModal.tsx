@@ -12,6 +12,7 @@ import { Cluster } from '../../api/types';
 import { removeProtocolFromURL } from '../../api/utils';
 import { ToolbarButton } from '../ui/Toolbar';
 import PrismCode from '../ui/PrismCode';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 type WebConsoleHintProps = {
   cluster: Cluster;
@@ -72,7 +73,7 @@ export const WebConsoleHint: React.FC<WebConsoleHintProps> = ({ cluster, console
     `api.${clusterUrl}`.padEnd(paddingNum) + `A\t${apiVip}`,
     `*.${appsUrl}`.padEnd(paddingNum) + `A\t${ingressVip}`,
   ];
-
+  const { t } = useTranslation();
   return (
     <>
       <Text component="p">
@@ -80,14 +81,14 @@ export const WebConsoleHint: React.FC<WebConsoleHintProps> = ({ cluster, console
         to resolve its hostname. To do so, either:
       </Text>
       <ModalExpandableSection
-        toggleText="Option 1: Add the following records to your DNS server (recommended)"
+        toggleText={t('ai:Option 1: Add the following records to your DNS server (recommended)')}
         className="pf-u-pb-md"
         isExpanded={isDNSExpanded}
         onToggle={handleToggle}
         requiredList={aRecords}
       />
       <ModalExpandableSection
-        toggleText="Option 2: Update your local /etc/hosts or /etc/resolv.conf files"
+        toggleText={t('ai:Option 2: Update your local /etc/hosts or /etc/resolv.conf files')}
         className="pf-u-pb-md"
         isExpanded={!isDNSExpanded}
         onToggle={handleToggle}
@@ -104,6 +105,7 @@ export const LaunchOpenshiftConsoleButton: React.FC<LaunchOpenshiftConsoleButton
   id,
 }) => {
   const [isOpen, setOpen] = React.useState(false);
+  const { t } = useTranslation();
   return (
     <>
       <ToolbarButton
@@ -113,7 +115,7 @@ export const LaunchOpenshiftConsoleButton: React.FC<LaunchOpenshiftConsoleButton
         onClick={() => setOpen(true)}
         data-testid={id}
       >
-        Launch OpenShift Console
+        {t('ai:Launch OpenShift Console')}
       </ToolbarButton>
       <ConsoleModal
         closeModal={() => setOpen(false)}
@@ -131,6 +133,7 @@ export const TroubleshootingOpenshiftConsoleButton: React.FC<WebConsoleHintProps
   idPrefix,
 }) => {
   const [isOpen, setOpen] = React.useState(false);
+  const { t } = useTranslation();
   return (
     <>
       <Button
@@ -141,7 +144,7 @@ export const TroubleshootingOpenshiftConsoleButton: React.FC<WebConsoleHintProps
         onClick={() => setOpen(true)}
         data-testid={`${idPrefix}-troubleshooting-hint-open`}
       >
-        Not able to access the Web Console?
+        {t('ai:Not able to access the Web Console?')}
       </Button>
       <ConsoleModal
         closeModal={() => setOpen(false)}
@@ -159,6 +162,7 @@ export const ConsoleModal: React.FC<ConsoleModalProps> = ({
   consoleUrl,
   isOpen,
 }) => {
+  const { t } = useTranslation();
   const actions = [
     <Button
       type="submit"
@@ -167,15 +171,15 @@ export const ConsoleModal: React.FC<ConsoleModalProps> = ({
       onClick={() => window.open(consoleUrl, '_blank', 'noopener')}
       isDisabled={!consoleUrl}
     >
-      Launch OpenShift Console
+      {t('ai:Launch OpenShift Console')}
     </Button>,
     <Button variant={ButtonVariant.secondary} onClick={() => closeModal()} key="close">
-      Close
+      {t('ai:Close')}
     </Button>,
   ];
   return (
     <Modal
-      title="OpenShift Web Console troubleshooting"
+      title={t('ai:OpenShift Web Console troubleshooting')}
       isOpen={isOpen}
       onClose={closeModal}
       actions={actions}

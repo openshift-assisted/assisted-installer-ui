@@ -12,8 +12,10 @@ import { Event, EventList } from '../../api';
 import { EmptyState } from './uiState';
 import { getHumanizedDateTime } from './utils';
 import { fitContent, noPadding } from './table';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 const getEventRowKey = ({ rowData }: ExtraParamsType) =>
+  // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
   rowData?.props?.event.sortableTime + rowData?.props?.event.message;
 
 const getLabelColor = (severity: Event['severity']) => {
@@ -47,9 +49,14 @@ export type EventsListProps = {
 };
 
 const EventsList: React.FC<EventsListProps> = ({ events, className }) => {
+  const { t } = useTranslation();
   if (events.length === 0) {
     return (
-      <EmptyState icon={SearchIcon} title="No events found" content="There are no events found." />
+      <EmptyState
+        icon={SearchIcon}
+        title={t('ai:No events found')}
+        content={t('ai:There are no events found.')}
+      />
     );
   }
 
@@ -92,11 +99,11 @@ const EventsList: React.FC<EventsListProps> = ({ events, className }) => {
       <Table
         rows={rows}
         cells={[
-          { title: 'Time', cellTransforms: [fitContent, noPadding] },
-          { title: 'Message', cellTransforms: [breakWord] },
+          { title: t('ai:Time'), cellTransforms: [fitContent, noPadding] },
+          { title: t('ai:Message'), cellTransforms: [breakWord] },
         ]}
         variant={TableVariant.compact}
-        aria-label="Events table"
+        aria-label={t('ai:Events table')}
         borders={false}
       >
         <TableBody rowKey={getEventRowKey} />

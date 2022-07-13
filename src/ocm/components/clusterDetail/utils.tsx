@@ -1,6 +1,6 @@
 import { saveAs } from 'file-saver';
 import get from 'lodash/get';
-import { ocmClient, handleApiError, getErrorMessage } from '../../api';
+import { ocmClient, handleApiError, getApiErrorMessage } from '../../api';
 import {
   Cluster,
   Host,
@@ -30,10 +30,10 @@ export const downloadClusterInstallationLogs = async (
       saveAs(data, fileName);
     }
   } catch (e) {
-    handleApiError(e, async (e) => {
+    handleApiError(e, (e) => {
       addAlert({
         title: 'Could not download cluster installation logs.',
-        message: getErrorMessage(e),
+        message: getApiErrorMessage(e),
       });
     });
   }
@@ -71,7 +71,7 @@ const getClusterResources = (cluster: Cluster, resourcePath: string): number => 
         (host.role === 'master' && singleNodeMode),
     )
     .map((host) => stringToJSON<Inventory>(host.inventory) || {})
-    .map((inventory) => get(inventory, resourcePath, 0))
+    .map((inventory) => get(inventory, resourcePath, 0) as number)
     .reduce((total, value) => total + value, 0);
 
   return result;

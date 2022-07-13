@@ -8,7 +8,7 @@ import {
   Text,
   TextContent,
 } from '@patternfly/react-core';
-import { getErrorMessage, handleApiError } from '../../api/utils';
+import { getApiErrorMessage, handleApiError } from '../../api/utils';
 import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
 import { ErrorState, LoadingState } from '../../../common';
@@ -35,7 +35,7 @@ const CancelInstallationModal: React.FC = () => {
       onClose();
     } catch (e) {
       handleApiError(e, () => {
-        setError({ title: 'Failed to abort cluster installation', message: getErrorMessage(e) });
+        setError({ title: 'Failed to abort cluster installation', message: getApiErrorMessage(e) });
       });
     }
     setIsSubmitting(false);

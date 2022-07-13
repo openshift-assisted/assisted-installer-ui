@@ -6,6 +6,7 @@ import { ClusterEventsFiltersType } from '../../types';
 import { EmptyState } from './uiState';
 import EventsList from './EventsList';
 import ClusterEventsToolbar, { getInitialClusterEventsFilters } from './ClusterEventsToolbar';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 export type ClusterEventsListProps = {
   events: EventList;
@@ -43,7 +44,7 @@ const ClusterEventsList: React.FC<ClusterEventsListProps> = ({ events, cluster, 
     () => filterEvents(filters, events, cluster.hosts),
     [filters, events, cluster.hosts],
   );
-
+  const { t } = useTranslation();
   return (
     <>
       <ClusterEventsToolbar
@@ -55,8 +56,10 @@ const ClusterEventsList: React.FC<ClusterEventsListProps> = ({ events, cluster, 
       {filteredEvents.length === 0 && events.length > 0 ? (
         <EmptyState
           icon={SearchIcon}
-          title="No matching events"
-          content="There are no events that match the current filters. Adjust or clear the filters to view events."
+          title={t('ai:No matching events')}
+          content={t(
+            'ai:There are no events that match the current filters. Adjust or clear the filters to view events.',
+          )}
           primaryAction={
             <Button
               variant={ButtonVariant.primary}
@@ -64,7 +67,7 @@ const ClusterEventsList: React.FC<ClusterEventsListProps> = ({ events, cluster, 
               id="empty-state-cluster-events-clear-filters-button"
               data-ouia-id="button-clear-events-filter"
             >
-              Clear filters
+              {t('ai:Clear filters')}
             </Button>
           }
         />

@@ -6,9 +6,9 @@ import isCIDR from 'is-cidr';
 import { NetworkConfigurationValues, HostSubnets } from '../../../types/clusters';
 import { NO_SUBNET_SET } from '../../../config/constants';
 import { ProxyFieldsType } from '../../../types';
-import { trimCommaSeparatedList, trimSshPublicKey } from './utils';
+import { allSubnetsIPv4, trimCommaSeparatedList, trimSshPublicKey } from './utils';
 import { ClusterNetwork, MachineNetwork, ServiceNetwork } from '../../../api/types';
-import { allSubnetsIPv4 } from '../../../selectors';
+import { getErrorMessage } from '../../../utils';
 import {
   CLUSTER_NAME_VALIDATION_MESSAGES,
   HOSTNAME_VALIDATION_MESSAGES,
@@ -159,10 +159,7 @@ export const vipRangeValidationSchema = (
     try {
       ipValidationSchema.validateSync(value);
     } catch (err) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      return this.createError({ message: err.message });
+      return this.createError({ message: getErrorMessage(err) });
     }
 
     const cidrs = machineNetworks?.map((network) => network.cidr);
@@ -292,6 +289,7 @@ export const dnsNameValidationSchema = Yup.string()
   )
   .matches(DNS_NAME_REGEX, {
     message: 'Value "${value}" is not valid DNS name. Example: basedomain.example.com', // eslint-disable-line no-template-curly-in-string
+    excludeEmptyString: true,
   });
 
 export const hostPrefixValidationSchema = ({
@@ -360,7 +358,17 @@ export const richNameValidationSchema = (usedNames: string[], origName?: string)
       }
       return !usedNames.find((n) => n === value);
     })
-    .notOneOf(['localhost', 'localhost.localdomain'], HOSTNAME_VALIDATION_MESSAGES.LOCALHOST_ERR);
+    .notOneOf(
+      [
+        'localhost',
+        'localhost.localdomain',
+        'localhost4',
+        'localhost4.localdomain4',
+        'localhost6',
+        'localhost6.localdomain6',
+      ],
+      HOSTNAME_VALIDATION_MESSAGES.LOCALHOST_ERR,
+    );
 
 const httpProxyValidationMessage = 'Provide a valid HTTP URL.';
 export const httpProxyValidationSchema = (
@@ -484,7 +492,7 @@ export const locationValidationSchema = Yup.string()
   });
 
 export const machineNetworksValidationSchema = Yup.array().of(
-  Yup.object({ cidr: ipBlockValidationSchema, clusterId: Yup.string() }),
+  Yup.object({ cidr: hostSubnetValidationSchema, clusterId: Yup.string() }),
 );
 
 export const clusterNetworksValidationSchema = Yup.array().of(

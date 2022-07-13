@@ -1,7 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Formik, FormikConfig, useFormikContext } from 'formik';
-import mapValues from 'lodash/mapValues';
 import { Form, Grid, GridItem, Text, TextContent } from '@patternfly/react-core';
 import {
   Cluster,
@@ -18,6 +17,8 @@ import {
   useFormikAutoSave,
   V2ClusterUpdateParams,
   IPV4_STACK,
+  SecurityFields,
+  ClusterDefaultConfig,
 } from '../../../../common';
 import { useDefaultConfiguration } from '../ClusterDefaultConfigurationContext';
 import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContext';
@@ -31,16 +32,22 @@ import {
   getNetworkConfigurationValidationSchema,
   getNetworkInitialValues,
 } from './networkConfigurationValidation';
+import NetworkConfiguration from './NetworkConfiguration';
 import { captureException } from '../../../sentry';
 import { ClustersAPI } from '../../../services/apis';
 import { updateClusterBase } from '../../../reducers/clusters';
-import { getErrorMessage, handleApiError } from '../../../api';
-import NetworkConfigurationFormFields from './NetworkConfigurationFormFields';
+import { getApiErrorMessage, handleApiError } from '../../../api';
 
 const NetworkConfigurationForm: React.FC<{
   cluster: Cluster;
   hostSubnets: HostSubnets;
-  defaultNetworkSettings: Pick<NetworkConfigurationValues, 'serviceNetworks' | 'clusterNetworks'>;
+  defaultNetworkSettings: Pick<
+    ClusterDefaultConfig,
+    | 'clusterNetworksIpv4'
+    | 'clusterNetworksDualstack'
+    | 'serviceNetworksIpv4'
+    | 'serviceNetworksDualstack'
+  >;
   infraEnv?: InfraEnv;
 }> = ({ cluster, hostSubnets, defaultNetworkSettings, infraEnv }) => {
   const { alerts } = useAlerts();
@@ -77,12 +84,17 @@ const NetworkConfigurationForm: React.FC<{
             </ClusterWizardStepHeader>
           </GridItem>
           <GridItem span={12} lg={10} xl={9} xl2={7}>
-            <NetworkConfigurationFormFields
-              cluster={cluster}
-              hostSubnets={hostSubnets}
-              defaultNetworkSettings={defaultNetworkSettings}
-              infraEnv={infraEnv}
-            />
+            <Grid hasGutter>
+              <NetworkConfiguration
+                cluster={cluster}
+                hostSubnets={hostSubnets}
+                defaultNetworkSettings={defaultNetworkSettings}
+              />
+              <SecurityFields
+                clusterSshKey={cluster.sshPublicKey}
+                imageSshKey={infraEnv?.sshAuthorizedKey}
+              />
+            </Grid>
           </GridItem>
           <GridItem>
             <TextContent>
@@ -100,30 +112,12 @@ const NetworkConfigurationPage: React.FC<{
   cluster: Cluster;
 }> = ({ cluster }) => {
   const { infraEnv, error: infraEnvError, isLoading } = useInfraEnv(cluster.id);
-  const defaultNetworkSettings = useDefaultConfiguration([
-    'clusterNetworkCidr',
-    'serviceNetworkCidr',
-    'clusterNetworkHostPrefix',
+  const defaultNetworkValues = useDefaultConfiguration([
+    'clusterNetworksDualstack',
+    'clusterNetworksIpv4',
+    'serviceNetworksDualstack',
+    'serviceNetworksIpv4',
   ]);
-
-  const defaultNetworkValues: Pick<
-    NetworkConfigurationValues,
-    'serviceNetworks' | 'clusterNetworks'
-  > = {
-    serviceNetworks: [
-      {
-        cidr: defaultNetworkSettings.serviceNetworkCidr,
-        clusterId: cluster.id,
-      },
-    ],
-    clusterNetworks: [
-      {
-        cidr: defaultNetworkSettings.clusterNetworkCidr,
-        hostPrefix: defaultNetworkSettings.clusterNetworkHostPrefix,
-        clusterId: cluster.id,
-      },
-    ],
-  };
 
   const { addAlert, clearAlerts, alerts } = useAlerts();
   const dispatch = useDispatch();
@@ -133,8 +127,6 @@ const NetworkConfigurationPage: React.FC<{
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [], // just once, Formik does not reinitialize
   );
-
-  const initialTouched = React.useMemo(() => mapValues(initialValues, () => true), [initialValues]);
 
   const memoizedValidationSchema = React.useMemo(
     () => getNetworkConfigurationValidationSchema(initialValues, hostSubnets),
@@ -151,7 +143,7 @@ const NetworkConfigurationPage: React.FC<{
       captureException(infraEnvError, title);
       addAlert({
         title,
-        message: infraEnvError.message,
+        message: infraEnvError,
       });
     }
     //shouldn't respond to cluster polling. shouldn't respond to alerts changes so remove alert wouldn't trigger adding it back
@@ -197,7 +189,7 @@ const NetworkConfigurationPage: React.FC<{
       dispatch(updateClusterBase(data));
     } catch (e) {
       handleApiError(e, () =>
-        addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),
+        addAlert({ title: 'Failed to update the cluster', message: getApiErrorMessage(e) }),
       );
     }
   };
@@ -211,7 +203,6 @@ const NetworkConfigurationPage: React.FC<{
       initialValues={initialValues}
       validationSchema={memoizedValidationSchema}
       onSubmit={handleSubmit}
-      initialTouched={initialTouched}
       validateOnMount
     >
       <NetworkConfigurationForm

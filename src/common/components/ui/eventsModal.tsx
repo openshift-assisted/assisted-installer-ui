@@ -10,6 +10,8 @@ import ExternalLink from './ExternalLink';
 import ErrorState from './uiState/ErrorState';
 
 import './EventsModal.css';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { Trans } from 'react-i18next';
 
 type EventsModalButtonProps = React.ComponentProps<typeof Button> & {
   ButtonComponent?: typeof Button | typeof ToolbarButton;
@@ -77,15 +79,16 @@ export const EventsModal: React.FC<EventsModalProps> = ({
   title,
   fallbackEventsURL,
 }) => {
+  const { t } = useTranslation();
   return (
     <Modal
       title={title}
       isOpen={isOpen}
-      aria-label="Displays events"
+      aria-label={t('ai:Displays events')}
       hasNoBodyWrapper
       actions={[
         <Button key="close" variant={ButtonVariant.primary} onClick={onClose}>
-          Close
+          {t('ai:Close')}
         </Button>,
       ]}
       onClose={onClose}
@@ -95,12 +98,13 @@ export const EventsModal: React.FC<EventsModalProps> = ({
       <ModalBoxBody className="events-modal__body">
         {fallbackEventsURL ? (
           <ErrorState
-            title="Could not load events"
+            title={t('ai:Could not load events')}
             content={
               <>
-                Could not load events from the standard location. You can check the events in
-                the&nbsp;
-                <ExternalLink href={fallbackEventsURL}>raw format</ExternalLink>.
+                <Trans t={t}>
+                  ai:Could not load events from the standard location. You can check the events in
+                  the <ExternalLink href={fallbackEventsURL}>raw format</ExternalLink>.
+                </Trans>
               </>
             }
             icon={ExclamationTriangleIcon}

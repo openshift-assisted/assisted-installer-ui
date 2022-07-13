@@ -22,6 +22,7 @@ import { SearchIcon, FilterIcon } from '@patternfly/react-icons';
 import { ClusterEventsFiltersType } from '../../types';
 import { Cluster, Event, Host, Inventory, stringToJSON } from '../../api';
 import { EVENT_SEVERITIES } from '../../config';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 type ClustersListToolbarProps = {
   filters: ClusterEventsFiltersType;
@@ -202,7 +203,7 @@ const ClusterEventsToolbar: React.FC<ClustersListToolbarProps> = ({
 
     return selections;
   };
-
+  const { t } = useTranslation();
   return (
     <Toolbar
       id="clusters-events-toolbar"
@@ -225,17 +226,17 @@ const ClusterEventsToolbar: React.FC<ClustersListToolbarProps> = ({
           >
             {[
               <SelectOption inputId={`checkbox-${SELECT_ALL}`} key={SELECT_ALL} value={SELECT_ALL}>
-                Select All
+                {t('ai:Select All')}
               </SelectOption>,
               <SelectOption
                 inputId={`checkbox-${CLUSTER_LEVEL}`}
                 key={CLUSTER_LEVEL}
                 value={CLUSTER_LEVEL}
               >
-                Cluster-level events
+                {t('ai:Cluster-level events')}
               </SelectOption>,
               <SelectOption inputId={`checkbox-${ORPHANS}`} key={ORPHANS} value={ORPHANS}>
-                Deleted hosts
+                {t('ai:Deleted hosts')}
               </SelectOption>,
               ...allHosts.map((host) => (
                 <SelectOption key={host.id} value={host.id}>
@@ -287,7 +288,7 @@ const ClusterEventsToolbar: React.FC<ClustersListToolbarProps> = ({
               aria-label="text to be searched"
               onChange={onFulltextChange}
               value={filters.fulltext}
-              placeholder="Filter by text ..."
+              placeholder={t('ai:Filter by text ...')}
             />
             <Button variant={ButtonVariant.control} aria-label="search text button">
               <SearchIcon />

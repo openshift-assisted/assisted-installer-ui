@@ -5,6 +5,7 @@ import { global_warning_color_100 as warningColor } from '@patternfly/react-toke
 import { Host, Inventory, stringToJSON } from '../../api';
 import { getHostname } from './utils';
 import { DASH } from '../constants';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 type HostnameProps = {
   host: Host;
@@ -48,7 +49,7 @@ const Hostname: React.FC<HostnameProps> = ({
       <FlexItem>{hostname}</FlexItem>
     </Flex>
   );
-
+  const { t } = useTranslation();
   return !readonly && onEditHostname ? (
     isValid ? (
       <Button variant={ButtonVariant.link} isInline onClick={onEditHostname} className={className}>
@@ -64,7 +65,9 @@ const Hostname: React.FC<HostnameProps> = ({
             <FlexItem>Hostname is not valid</FlexItem>
           </Flex>
         }
-        bodyContent={!isNotLocalhost ? 'Hostname can not be localhost' : 'Hostname is not unique'}
+        bodyContent={
+          !isNotLocalhost ? t('ai:Hostname can not be localhost') : t('ai:Hostname is not unique')
+        }
         footerContent={
           <Button
             variant={ButtonVariant.link}
@@ -72,7 +75,7 @@ const Hostname: React.FC<HostnameProps> = ({
             className={className}
             onClick={onEditHostname}
           >
-            Change hostname
+            {t('ai:Change hostname')}
           </Button>
         }
         minWidth="30rem"

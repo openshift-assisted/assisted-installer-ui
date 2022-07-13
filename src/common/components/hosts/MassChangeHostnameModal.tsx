@@ -29,9 +29,11 @@ import {
 } from '../ui';
 import { Host } from '../../api';
 import { getHostname as getHostnameUtils, getInventory } from './utils';
+import { ActionCheck } from './types';
+import { getErrorMessage } from '../../utils';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 import './MassChangeHostnameModal.css';
-import { ActionCheck } from './types';
 
 const getHostname = (host: Host) => {
   const inventory = getInventory(host);
@@ -143,16 +145,16 @@ const MassChangeHostnameForm: React.FC<MassChangeHostnameFormProps> = ({
   const selectedHosts = ref.current;
 
   const newHostnames = getNewHostnames(values, selectedHosts, canChangeHostname);
-
+  const { t } = useTranslation();
   return (
     <Form onSubmit={handleSubmit}>
       <div>
         <ModalBoxBody>
           <Stack hasGutter>
             <StackItem>
-              <div>Rename hostnames using the custom template:</div>
+              <div>{t('ai:Rename hostnames using the custom template:')}</div>
               <div>
-                <b>{`{{n}}`}</b> to add a number.
+                <b>{`{{n}}`}</b> {t('ai:to add a number.')}
               </div>
             </StackItem>
             <StackItem>
@@ -163,11 +165,13 @@ const MassChangeHostnameForm: React.FC<MassChangeHostnameFormProps> = ({
                 richValidationMessages={HOSTNAME_VALIDATION_MESSAGES}
               />
               <HelperText>
-                <HelperTextItem variant="indeterminate">{`For example: host-{{n}}`}</HelperTextItem>
+                <HelperTextItem variant="indeterminate">
+                  {t('ai:For example: host-{{n}}')}
+                </HelperTextItem>
               </HelperText>
             </StackItem>
             <StackItem>
-              Preview
+              {t('ai:Preview')}
               <Split hasGutter className="hostname-preview">
                 <SplitItem className="hostname-column">
                   {selectedHosts.map((h, index) => (
@@ -190,8 +194,8 @@ const MassChangeHostnameForm: React.FC<MassChangeHostnameFormProps> = ({
                       <div key={h.id}>
                         {reason ? (
                           <Popover
-                            aria-label="Cannot change hostname popover"
-                            headerContent={<div>Hostname cannot be changed</div>}
+                            aria-label={t('ai:Cannot change hostname popover')}
+                            headerContent={<div>{t('ai:Hostname cannot be changed')}</div>}
                             bodyContent={<div>{reason}</div>}
                           >
                             <Button
@@ -199,11 +203,11 @@ const MassChangeHostnameForm: React.FC<MassChangeHostnameFormProps> = ({
                               icon={<InfoCircleIcon color={blueInfoColor.value} />}
                               isInline
                             >
-                              Not changeable
+                              {t('ai:Not changeable')}
                             </Button>
                           </Popover>
                         ) : (
-                          newHostname || 'New hostname will appear here...'
+                          newHostname || t('ai:New hostname will appear here...')
                         )}
                       </div>
                     );
@@ -221,10 +225,10 @@ const MassChangeHostnameForm: React.FC<MassChangeHostnameFormProps> = ({
         </ModalBoxBody>
         <ModalBoxFooter>
           <Button key="submit" type={ButtonType.submit} isDisabled={isSubmitting || !isValid}>
-            Change
+            {t('ai:Change')}
           </Button>
           <Button onClick={onClose} variant={ButtonVariant.secondary} isDisabled={isSubmitting}>
-            Cancel
+            {t('ai:Cancel')}
           </Button>
         </ModalBoxFooter>
       </div>
@@ -253,11 +257,11 @@ const MassChangeHostnameModal: React.FC<MassChangeHostnameModalProps> = ({
   const [patchingHost, setPatchingHost] = React.useState<number>(0);
 
   const selectedHosts = hosts.filter((h) => selectedHostIDs.includes(h.id));
-
+  const { t } = useTranslation();
   return (
     <Modal
       aria-label="Change hostname dialog"
-      title="Change hostname"
+      title={t('ai:Change hostname')}
       isOpen={isOpen}
       onClose={onClose}
       hasNoBodyWrapper
@@ -285,8 +289,8 @@ const MassChangeHostnameModal: React.FC<MassChangeHostnameModalProps> = ({
           } catch (e) {
             formikActions.setStatus({
               error: {
-                title: 'Failed to update host',
-                message: e.message || 'Hostname update failed.',
+                title: t('ai:Failed to update host'),
+                message: getErrorMessage(e),
               },
             });
           }

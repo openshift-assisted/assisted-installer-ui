@@ -15,6 +15,7 @@ import { useFeatureSupportLevel } from '../../../common/components/featureSuppor
 import { DetailItem } from '../../../common';
 import { getLimitedFeatureSupportLevels } from '../../../common/components/featureSupportLevels/utils';
 import { WithErrorBoundary } from '../../../common/components/ErrorHandling/WithErrorBoundary';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 export type SupportLevelSummary = {
   unsupportedVms: boolean;
@@ -111,10 +112,11 @@ export const getFeatureSupportLevelTitle = (fullySupported: boolean): string => 
 type ItemProps = { cluster: Cluster };
 
 const Item = ({ cluster }: ItemProps) => {
+  const { t } = useTranslation();
   const featureSupportLevelData = useFeatureSupportLevel();
   const clusterFeatureSupportLevels = React.useMemo(
-    () => getLimitedFeatureSupportLevels(cluster, featureSupportLevelData),
-    [cluster, featureSupportLevelData],
+    () => getLimitedFeatureSupportLevels(cluster, featureSupportLevelData, t),
+    [cluster, featureSupportLevelData, t],
   );
 
   const fullySupported: boolean = React.useMemo<boolean>(() => {

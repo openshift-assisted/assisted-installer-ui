@@ -31,6 +31,7 @@ import HardwareStatus from './HardwareStatus';
 import { Stack, StackItem } from '@patternfly/react-core';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import HostsTableEmptyState from '../hosts/HostsTableEmptyState';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 export const hardwareStatusColumn = (
   onEditHostname?: HostsTableActions['onEditHost'],
@@ -96,10 +97,11 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({ cluster }) =>
   } = useHostsTable(cluster);
 
   const isSNOCluster = isSNO(cluster);
+  const { t } = useTranslation();
   const content = React.useMemo(
     () => [
-      hostnameColumn(onEditHost, undefined, actionChecks.canEditHostname),
-      roleColumn(actionChecks.canEditRole, onEditRole, getSchedulableMasters(cluster)),
+      hostnameColumn(t, onEditHost, undefined, actionChecks.canEditHostname),
+      roleColumn(t, actionChecks.canEditRole, onEditRole, getSchedulableMasters(cluster)),
       hardwareStatusColumn(onEditHost),
       discoveredAtColumn,
       cpuCoresColumn,
@@ -117,18 +119,20 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({ cluster }) =>
   return (
     <>
       <Stack hasGutter>
-        <StackItem>
-          <TableToolbar
-            selectedIDs={selectedHostIDs || []}
-            itemIDs={itemIDs}
-            setSelectedIDs={setSelectedHostIDs}
-            actions={[
-              <ChangeHostnameAction key="hostname" onChangeHostname={onMassChangeHostname} />,
-              <DeleteHostAction key="delete" onDeleteHost={onMassDeleteHost} />,
-            ]}
-            {...paginationProps}
-          />
-        </StackItem>
+        {!isSNOCluster && (
+          <StackItem>
+            <TableToolbar
+              selectedIDs={selectedHostIDs || []}
+              itemIDs={itemIDs}
+              setSelectedIDs={setSelectedHostIDs}
+              actions={[
+                <ChangeHostnameAction key="hostname" onChangeHostname={onMassChangeHostname} />,
+                <DeleteHostAction key="delete" onDeleteHost={onMassDeleteHost} />,
+              ]}
+              {...paginationProps}
+            />
+          </StackItem>
+        )}
         <StackItem>
           <HostsTable
             testId="hosts-discovery-table"
@@ -136,7 +140,7 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({ cluster }) =>
             content={content}
             actionResolver={actionResolver}
             ExpandComponent={getExpandComponent(onDiskRole, actionChecks.canEditDisks)}
-            onSelect={onSelect}
+            onSelect={isSNOCluster ? undefined : onSelect}
             selectedIDs={selectedHostIDs}
             setSelectedIDs={setSelectedHostIDs}
             {...paginationProps}

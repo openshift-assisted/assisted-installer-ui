@@ -2,7 +2,8 @@ import React from 'react';
 import {
   Cluster,
   Credentials,
-  getOlmOperators,
+  selectOlmOperators,
+  selectMonitoredOperators,
   MonitoredOperator,
   MonitoredOperatorsList,
   ClusterCredentials,
@@ -10,50 +11,57 @@ import {
 import { getClusterDetailId } from './utils';
 import { ClustersAPI } from '../../services/apis';
 import ClusterDetailStatusMessages from './ClusterDetailStatusMessages';
+import { Grid } from '@patternfly/react-core';
+import { getErrorMessage } from '../../../common/utils';
 
 type ClusterStatusVarieties = {
   credentials?: Credentials;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  credentialsError?: any;
+  credentialsError: string;
   olmOperators: MonitoredOperatorsList;
   failedOlmOperators: MonitoredOperatorsList;
   consoleOperator?: MonitoredOperator;
   fetchCredentials: () => void;
 };
 
-export const useClusterStatusVarieties = (cluster: Cluster): ClusterStatusVarieties => {
+export const useClusterStatusVarieties = (cluster?: Cluster): ClusterStatusVarieties => {
   const [credentials, setCredentials] = React.useState<Credentials>();
-  const [credentialsError, setCredentialsError] = React.useState();
+  const [credentialsError, setCredentialsError] = React.useState('');
 
-  const olmOperators = getOlmOperators(cluster.monitoredOperators);
+  const clusterId = cluster?.id;
+  const clusterStatus = cluster?.status;
+  const clusterMonitoredOperators = selectMonitoredOperators(cluster);
+  const olmOperators = selectOlmOperators(cluster);
   const failedOlmOperators = olmOperators.filter((o) => o.status === 'failed');
   const consoleOperator = React.useMemo(
-    () => cluster.monitoredOperators?.find((o) => o.name === 'console'),
-    [cluster.monitoredOperators],
+    () => clusterMonitoredOperators.find((o) => o.name === 'console'),
+    [clusterMonitoredOperators],
   );
 
   const fetchCredentials = React.useCallback(() => {
     const fetch = async () => {
-      setCredentialsError(undefined);
+      setCredentialsError('');
+      if (!clusterId) {
+        return;
+      }
       try {
-        const response = await ClustersAPI.getCredentials(cluster.id);
+        const response = await ClustersAPI.getCredentials(clusterId);
         setCredentials(response.data);
       } catch (err) {
-        setCredentialsError(err);
+        setCredentialsError(getErrorMessage(err));
       }
     };
-    fetch();
-  }, [cluster.id]);
+    void fetch();
+  }, [clusterId]);
 
   const consoleOperatorStatus = consoleOperator?.status;
   React.useEffect(() => {
     if (
-      (!consoleOperatorStatus && cluster.status === 'installed') || // Retain backwards compatibility with clusters which don't have monitored clusters
+      (!consoleOperatorStatus && clusterStatus === 'installed') || // Retain backwards compatibility with clusters which don't have monitored clusters
       consoleOperatorStatus === 'available'
     ) {
       fetchCredentials();
     }
-  }, [cluster.status, consoleOperatorStatus, fetchCredentials]);
+  }, [clusterStatus, consoleOperatorStatus, fetchCredentials]);
 
   return {
     credentials,
@@ -76,7 +84,7 @@ const ClusterDetailStatusVarieties: React.FC<{
     consoleOperator?.status === 'available' || (!consoleOperator && cluster.status === 'installed'); // Retain backwards compatibility with clusters which don't have monitored clusters
 
   return (
-    <>
+    <Grid hasGutter>
       {showClusterCredentials && (
         <ClusterCredentials
           cluster={cluster}
@@ -87,7 +95,7 @@ const ClusterDetailStatusVarieties: React.FC<{
         />
       )}
       <ClusterDetailStatusMessages cluster={cluster} showAddHostsInfo={showAddHostsInfo} />
-    </>
+    </Grid>
   );
 };
 

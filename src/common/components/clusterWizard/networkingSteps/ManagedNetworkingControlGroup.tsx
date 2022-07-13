@@ -1,6 +1,9 @@
 import React from 'react';
-import { FormGroup, Tooltip } from '@patternfly/react-core';
-import { getFieldId, RadioField } from '../../ui';
+import { FormGroup, TooltipProps } from '@patternfly/react-core';
+import { getFieldId } from '../../ui';
+import RadioFieldWithTooltip from '../../ui/formik/RadioFieldWithTooltip';
+import { useTranslation } from '../../../hooks/use-translation-wrapper';
+
 export interface ManagedNetworkingControlGroupProps {
   disabled: boolean;
   tooltip?: string;
@@ -11,22 +14,32 @@ export const ManagedNetworkingControlGroup = ({
   disabled = false,
   tooltip,
 }: ManagedNetworkingControlGroupProps) => {
+  const tooltipProps: TooltipProps = {
+    hidden: !tooltip || !disabled,
+    content: tooltip,
+    position: 'top',
+  };
+  const { t } = useTranslation();
   return (
-    <Tooltip hidden={!tooltip || !disabled} content={tooltip} position={'top-start'}>
-      <FormGroup label="Network Management" fieldId={getFieldId(GROUP_NAME, 'radio')} isInline>
-        <RadioField
-          name={GROUP_NAME}
-          isDisabled={disabled}
-          value={'clusterManaged'}
-          label="Cluster-Managed Networking"
-        />
-        <RadioField
-          name={GROUP_NAME}
-          isDisabled={disabled}
-          value={'userManaged'}
-          label="User-Managed Networking"
-        />
-      </FormGroup>
-    </Tooltip>
+    <FormGroup
+      label={t('ai:Network Management')}
+      fieldId={getFieldId(GROUP_NAME, 'radio')}
+      isInline
+    >
+      <RadioFieldWithTooltip
+        tooltipProps={tooltipProps}
+        name={GROUP_NAME}
+        isDisabled={disabled}
+        value={'clusterManaged'}
+        label={t('ai:Cluster-Managed Networking')}
+      />
+      <RadioFieldWithTooltip
+        tooltipProps={tooltipProps}
+        name={GROUP_NAME}
+        isDisabled={disabled}
+        value={'userManaged'}
+        label={t('ai:User-Managed Networking')}
+      />
+    </FormGroup>
   );
 };

@@ -5,7 +5,7 @@ import {
   dualStackValidationSchema,
   getDefaultNetworkType,
   HostSubnets,
-  isIPv4,
+  isDualStack,
   isSNO,
   machineNetworksValidationSchema,
   NetworkConfigurationValues,
@@ -15,14 +15,21 @@ import {
   vipValidationSchema,
   IPV4_STACK,
   DUAL_STACK,
+  ClusterDefaultConfig,
 } from '../../../../common';
 
 export const getNetworkInitialValues = (
   cluster: Cluster,
-  defaultNetworkValues: Pick<NetworkConfigurationValues, 'serviceNetworks' | 'clusterNetworks'>,
+  defaultNetworkValues: Pick<
+    ClusterDefaultConfig,
+    | 'clusterNetworksIpv4'
+    | 'clusterNetworksDualstack'
+    | 'serviceNetworksIpv4'
+    | 'serviceNetworksDualstack'
+  >,
 ): NetworkConfigurationValues => {
   const isSNOCluster = isSNO(cluster);
-  const usesIPv6 = !isIPv4(cluster);
+  const isDualStackType = isDualStack(cluster);
 
   return {
     apiVip: cluster.apiVip || '',
@@ -30,11 +37,19 @@ export const getNetworkInitialValues = (
     sshPublicKey: cluster.sshPublicKey || '',
     vipDhcpAllocation: cluster.vipDhcpAllocation,
     managedNetworkingType: cluster.userManagedNetworking ? 'userManaged' : 'clusterManaged',
-    networkType: cluster.networkType || getDefaultNetworkType(isSNOCluster, usesIPv6),
+    networkType: cluster.networkType || getDefaultNetworkType(isSNOCluster, isDualStackType),
     machineNetworks: cluster.machineNetworks || [],
-    clusterNetworks: cluster.clusterNetworks || defaultNetworkValues.clusterNetworks,
-    serviceNetworks: cluster.serviceNetworks || defaultNetworkValues.serviceNetworks,
-    stackType: usesIPv6 ? DUAL_STACK : IPV4_STACK,
+    stackType: isDualStackType ? DUAL_STACK : IPV4_STACK,
+    clusterNetworks:
+      cluster.clusterNetworks ||
+      (isDualStackType
+        ? defaultNetworkValues.clusterNetworksDualstack
+        : defaultNetworkValues.clusterNetworksIpv4),
+    serviceNetworks:
+      cluster.serviceNetworks ||
+      (isDualStackType
+        ? defaultNetworkValues.serviceNetworksDualstack
+        : defaultNetworkValues.serviceNetworksIpv4),
   };
 };
 

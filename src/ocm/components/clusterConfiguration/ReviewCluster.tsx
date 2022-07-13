@@ -16,7 +16,7 @@ import {
   ReviewHostsInventory,
   ClusterValidations,
   HostsValidations,
-  isIPv4,
+  isDualStack,
 } from '../../../common';
 import { RenderIf } from '../../../common/components/ui/';
 import { wizardStepNames } from '../clusterWizard/constants';
@@ -53,7 +53,11 @@ const ReviewCluster: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         value={cluster.openshiftVersion}
         testId="openshift-version"
       />
-      <DetailItem title={'Stack type'} value={isIPv4(cluster) ? 'IPv4' : 'Dual-stack'} />
+      <DetailItem
+        title={'Stack type'}
+        value={isDualStack(cluster) ? 'Dual-stack' : 'IPv4'}
+        testId="stack-type"
+      />
       <DetailItem
         title="CPU architecture"
         value={cluster.cpuArchitecture}

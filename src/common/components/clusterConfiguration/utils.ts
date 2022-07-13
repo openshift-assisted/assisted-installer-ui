@@ -4,13 +4,15 @@ import {
   ClusterDefaultConfig,
   ClusterNetwork,
   Inventory,
+  MachineNetwork,
   ServiceNetwork,
   stringToJSON,
 } from '../../api';
-import { NO_SUBNET_SET } from '../../config';
+import { NETWORK_TYPE_OVN, NETWORK_TYPE_SDN, NO_SUBNET_SET } from '../../config';
 import {
   selectClusterNetworkCIDR,
   selectClusterNetworkHostPrefix,
+  selectMonitoredOperators,
   selectServiceNetworkCIDR,
 } from '../../selectors';
 import {
@@ -104,8 +106,46 @@ export const isAdvNetworkConf = (
   selectServiceNetworkCIDR(cluster) !== defaultNetworkSettings.serviceNetworkCidr ||
   (Boolean(cluster.networkType) && cluster.networkType !== defaultNetworkType);
 
+export const canSelectNetworkTypeSDN = (isSNO: boolean, isIPv6 = false) => {
+  return !(isSNO || isIPv6);
+};
+
+export const getDefaultNetworkType = (isSNO: boolean, isIPv6 = false) => {
+  return isSNO || isIPv6 ? NETWORK_TYPE_OVN : NETWORK_TYPE_SDN;
+};
+
+export const canBeDualStack = (subnets: HostSubnets) =>
+  subnets.some((subnet) => Address4.isValid(subnet.subnet)) &&
+  subnets.some((subnet) => Address6.isValid(subnet.subnet));
+
+const areNetworksDualStack = (
+  networks: (MachineNetwork | ClusterNetwork | ServiceNetwork)[] | undefined,
+) =>
+  networks &&
+  networks.length > 1 &&
+  Address4.isValid(networks[0].cidr || '') &&
+  Address6.isValid(networks[1].cidr || '');
+
+export const isDualStack = ({
+  machineNetworks,
+  clusterNetworks,
+  serviceNetworks,
+}: Pick<Cluster, 'machineNetworks' | 'clusterNetworks' | 'serviceNetworks'>) =>
+  areNetworksDualStack(machineNetworks) &&
+  areNetworksDualStack(clusterNetworks) &&
+  areNetworksDualStack(serviceNetworks);
+
+export const isSubnetInIPv6 = ({
+  clusterNetworkCidr,
+  machineNetworkCidr,
+  serviceNetworkCidr,
+}: Pick<Cluster, 'clusterNetworkCidr' | 'machineNetworkCidr' | 'serviceNetworkCidr'>) =>
+  Address6.isValid(clusterNetworkCidr || '') ||
+  Address6.isValid(machineNetworkCidr || '') ||
+  Address6.isValid(serviceNetworkCidr || '');
+
 export const getHostDiscoveryInitialValues = (cluster: Cluster): HostDiscoveryValues => {
-  const monitoredOperators = cluster.monitoredOperators || [];
+  const monitoredOperators = selectMonitoredOperators(cluster);
   const isOperatorEnabled = (name: RegExp | string) =>
     !!monitoredOperators.find((operator) => operator.name?.match(name));
   return {

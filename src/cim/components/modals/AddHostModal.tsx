@@ -12,6 +12,7 @@ import {
 import { DownloadIso, DiscoveryImageConfigForm, DiscoveryImageFormValues } from '../../../common';
 import BMCForm from '../Agent/BMCForm';
 import { AddHostModalProps } from './types';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type AddHostModalStepType = 'bmc' | 'iso-config' | 'iso-download';
 
@@ -32,7 +33,7 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
   const areIsoDataAvailable = !!sshPublicKey || !!httpProxy || !!httpsProxy || !!noProxy;
   const isoDialog = areIsoDataAvailable ? 'iso-download' : 'iso-config';
   const [dialogType, setDialogType] = React.useState<AddHostModalStepType>(isoDialog);
-
+  const { t } = useTranslation();
   const handleIsoConfigSubmit = async (
     values: DiscoveryImageFormValues,
     formikActions: FormikHelpers<DiscoveryImageFormValues>,
@@ -43,7 +44,7 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
     } catch (error) {
       formikActions.setStatus({
         error: {
-          title: 'Failed to download the discovery Image',
+          title: t('ai:Failed to download the discovery Image'),
           message: error, // TODO(mlibra): parse it better!!
         },
       });
@@ -52,8 +53,8 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
 
   return (
     <Modal
-      aria-label="Add host dialog"
-      title="Add host"
+      aria-label={t('ai:Add host dialog')}
+      title={t('ai:Add host')}
       isOpen={isOpen}
       onClose={onClose}
       variant={ModalVariant.small}
@@ -66,7 +67,7 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
             <Radio
               id="iso"
               name="type"
-              label="Discovery ISO"
+              label={t('ai:Discovery ISO')}
               isChecked={dialogType !== 'bmc'}
               onChange={(checked) => setDialogType(checked ? isoDialog : 'bmc')}
             />
@@ -75,12 +76,14 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
           <FlexItem>
             <Tooltip
               hidden={isBMPlatform}
-              content="To enable the host’s baseboard management controller (BMC) on the hub cluster,deploy the hub cluster on vSphere, BareMetal, OpenStack, or platform-agnostic (none type)."
+              content={t(
+                'ai:To enable the host’s baseboard management controller (BMC) on the hub cluster,deploy the hub cluster on vSphere, BareMetal, OpenStack, or platform-agnostic (none type).',
+              )}
             >
               <Radio
                 id="bmc"
                 name="type"
-                label="Baseboard Management Controller (BMC)"
+                label={t('ai:Baseboard Management Controller (BMC)')}
                 isChecked={dialogType === 'bmc'}
                 onChange={(checked) => setDialogType(checked ? 'bmc' : isoDialog)}
                 isDisabled={!isBMPlatform}

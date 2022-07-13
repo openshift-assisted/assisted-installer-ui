@@ -3,6 +3,7 @@ import { Split, SplitItem, Tooltip, FormGroup } from '@patternfly/react-core';
 import { RadioField } from '../../ui/formik';
 import { PopoverIcon } from '../../../components/ui';
 import { NETWORK_TYPE_OVN, NETWORK_TYPE_SDN } from '../../../config';
+import { useTranslation } from '../../../hooks/use-translation-wrapper';
 
 const GROUP_NAME = 'networkType';
 export interface NetworkTypeControlGroupProps {
@@ -12,15 +13,16 @@ export interface NetworkTypeControlGroupProps {
 export const NetworkTypeControlGroup: React.FC<NetworkTypeControlGroupProps> = ({
   isSDNSelectable,
 }) => {
+  const { t } = useTranslation();
   return (
     <FormGroup fieldId={GROUP_NAME} label="Network type">
       <Split hasGutter>
         <SplitItem>
           <Tooltip
             hidden={isSDNSelectable}
-            content={
-              'Software-Defined Networking (SDN) cannot be selected for SNO clusters or when IPv6 is detected.'
-            }
+            content={t(
+              'ai:Software-Defined Networking (SDN) cannot be selected for SNO clusters or when IPv6 is detected.',
+            )}
           >
             <RadioField
               id={GROUP_NAME}
@@ -29,10 +31,9 @@ export const NetworkTypeControlGroup: React.FC<NetworkTypeControlGroupProps> = (
               value={NETWORK_TYPE_SDN}
               label={
                 <>
-                  Software-Defined Networking (SDN){' '}
+                  {t('ai:Software-Defined Networking (SDN)')}{' '}
                   <PopoverIcon
                     noVerticalAlign
-                    variant={'plain'}
                     bodyContent={'The classic bullet-proof networking type'}
                   />
                 </>
@@ -48,10 +49,9 @@ export const NetworkTypeControlGroup: React.FC<NetworkTypeControlGroupProps> = (
             value={NETWORK_TYPE_OVN}
             label={
               <>
-                Open Virtual Networking (OVN){' '}
+                {t('ai:Open Virtual Networking (OVN)')}{' '}
                 <PopoverIcon
                   noVerticalAlign
-                  variant={'plain'}
                   bodyContent={
                     "The next generation networking type, select this when you're using new features and telco features"
                   }

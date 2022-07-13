@@ -62,7 +62,7 @@ export const AvailableSubnetsControl = ({
   const IPv6Subnets = hostSubnets.filter((subnet) => Address6.isValid(subnet.subnet));
 
   const hasNoMachineNetworks = (values.machineNetworks ?? []).length === 0;
-  const cidr = hostSubnets.length >= 1 ? hostSubnets[0].subnet : NO_SUBNET_SET;
+  const cidr = IPv4Subnets.length >= 1 ? IPv4Subnets[0].subnet : NO_SUBNET_SET;
   useAutoSelectSingleAvailableSubnet(hasNoMachineNetworks, setFieldValue, cidr, clusterId);
 
   return (
@@ -83,12 +83,11 @@ export const AvailableSubnetsControl = ({
                       name={`machineNetworks.${index}.cidr`}
                       options={
                         (index === 1 ? IPv6Subnets.length > 0 : IPv4Subnets.length > 0)
-                          ? [makeNoSubnetSelectedOption(hostSubnets)].concat(
-                              toFormSelectOptions(index === 1 ? IPv6Subnets : IPv4Subnets),
-                            )
+                          ? [
+                              makeNoSubnetSelectedOption(index === 1 ? IPv6Subnets : IPv4Subnets),
+                            ].concat(toFormSelectOptions(index === 1 ? IPv6Subnets : IPv4Subnets))
                           : [makeNoSubnetAvailableOption()]
                       }
-                      isDisabled={!hostSubnets.length}
                       isRequired={isRequired}
                     />
                   </StackItem>
@@ -97,13 +96,12 @@ export const AvailableSubnetsControl = ({
             ) : (
               <StackItem>
                 <SelectField
-                  isDisabled={!hostSubnets.length}
                   isRequired={isRequired}
                   name={`machineNetworks.0.cidr`}
                   options={
                     IPv4Subnets.length === 0
                       ? [makeNoSubnetAvailableOption()]
-                      : [makeNoSubnetSelectedOption(hostSubnets)].concat(
+                      : [makeNoSubnetSelectedOption(IPv4Subnets)].concat(
                           toFormSelectOptions(IPv4Subnets),
                         )
                   }

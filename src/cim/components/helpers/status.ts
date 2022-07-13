@@ -23,6 +23,7 @@ import {
 } from '../ClusterDeployment/wizardTransition';
 import { HostStatusDef } from '../../../common';
 import { agentStatus, bmhStatus } from './agentStatus';
+import { TFunction } from 'i18next';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const conditionsByTypeReducer = <K>(
@@ -35,6 +36,7 @@ const conditionsByTypeReducer = <K>(
 
 export const getClusterStatusFromConditions = (
   agentClusterInstall: AgentClusterInstallK8sResource,
+  t: TFunction,
 ): [Cluster['status'], string] => {
   const conditions = agentClusterInstall?.status?.conditions || [];
 
@@ -45,7 +47,7 @@ export const getClusterStatusFromConditions = (
   const { Validated, RequirementsMet, Completed, Stopped } = conditionsByType;
 
   if (!Validated || !RequirementsMet || !Completed || !Stopped) {
-    return ['insufficient', 'AgentClusterInstall conditions are missing.'];
+    return ['insufficient', t('ai:AgentClusterInstall conditions are missing.')];
   }
 
   if (Stopped.status === 'True' && Stopped.reason === 'InstallationCancelled')
@@ -73,7 +75,7 @@ export const getClusterStatusFromConditions = (
     return ['insufficient', Completed.message];
 
   console.error('Unhandled conditions to cluster status mapping: ', conditionsByType);
-  return ['insufficient', 'Unexpected AgentClusterInstall conditions.'];
+  return ['insufficient', t('ai:Unexpected AgentClusterInstall conditions.')];
 };
 
 export const getClusterStatus = (
@@ -87,7 +89,10 @@ export const isDraft = (agentClusterInstall?: AgentClusterInstallK8sResource): b
   !!agentClusterInstall &&
   ['pending-for-input', 'insufficient', 'ready'].includes(getClusterStatus(agentClusterInstall)[0]);
 
-export const getAgentStatusFromConditions = (agent: AgentK8sResource): [Host['status'], string] => {
+export const getAgentStatusFromConditions = (
+  agent: AgentK8sResource,
+  t: TFunction,
+): [Host['status'], string] => {
   const conditions = agent.status?.conditions;
 
   const conditionsByType: {
@@ -112,7 +117,7 @@ export const getAgentStatusFromConditions = (agent: AgentK8sResource): [Host['st
     return ['insufficient', ReadyForInstallation.message];
 
   console.error('Unhandled conditions to agent status mapping: ', conditionsByType);
-  return ['insufficient', 'Unexpected Agent conditions.'];
+  return ['insufficient', t('ai:Unexpected Agent conditions.')];
 };
 
 export type AgentStatus = Host['status'] | 'discovered';
@@ -140,6 +145,7 @@ export const getAgentStatus = (
 export const getWizardStepAgentStatus = (
   agent: AgentK8sResource,
   wizardStepId: ClusterWizardStepsType,
+  t: TFunction,
   excludeDiscovered = false,
 ): { status: HostStatusDef; validationsInfo: ValidationsInfo } => {
   const aStatus = getAgentStatus(agent, excludeDiscovered);
@@ -164,7 +170,7 @@ export const getWizardStepAgentStatus = (
     wizardStepId,
     wizardStepsValidationsMap,
   )
-    ? 'Some validations failed'
+    ? t('ai:Some validations failed')
     : undefined;
 
   return {

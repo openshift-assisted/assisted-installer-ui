@@ -412,6 +412,10 @@ export interface ClusterDefaultConfig {
   inactiveDeletionHours?: number;
   serviceNetworkCidr?: string; // ^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)[\/]([1-9]|[1-2][0-9]|3[0-2]?)$
   ntpSource?: string;
+  clusterNetworksIpv4?: ClusterNetwork[];
+  clusterNetworksDualstack?: ClusterNetwork[];
+  serviceNetworksIpv4?: ServiceNetwork[];
+  serviceNetworksDualstack?: ServiceNetwork[];
 }
 export interface ClusterHostRequirements {
   /**
@@ -826,7 +830,9 @@ export interface FeatureSupportLevel {
       | 'CUSTOM_MANIFEST'
       | 'DISK_ENCRYPTION'
       | 'CLUSTER_MANAGED_NETWORKING_WITH_VMS'
-      | 'ARM64_ARCHITECTURE';
+      | 'ARM64_ARCHITECTURE'
+      | 'ARM64_ARCHITECTURE_WITH_CLUSTER_MANAGED_NETWORKING'
+      | 'SINGLE_NODE_EXPANSION';
     supportLevel?: 'supported' | 'unsupported' | 'tech-preview' | 'dev-preview';
   }[];
 }
@@ -1279,7 +1285,8 @@ export type HostValidationId =
   | 'dns-wildcard-not-configured'
   | 'disk-encryption-requirements-satisfied'
   | 'non-overlapping-subnets'
-  | 'vsphere-disk-uuid-enabled';
+  | 'vsphere-disk-uuid-enabled'
+  | 'compatible-agent';
 /**
  * Explicit ignition endpoint overrides the default ignition endpoint.
  */
@@ -2066,7 +2073,8 @@ export type StepType =
   | 'domain-resolution'
   | 'stop-installation'
   | 'logs-gather'
-  | 'next-step-runner';
+  | 'next-step-runner'
+  | 'upgrade-agent';
 export interface Steps {
   nextInstructionSeconds?: number;
   /**
@@ -2086,6 +2094,27 @@ export interface SystemVendor {
    */
   virtual?: boolean;
 }
+export interface UpgradeAgentRequest {
+  /**
+   * Full image reference of the image that the agent should upgrade to, for example
+   * `quay.io/registry-proxy.engineering.redhat.com/rh-osbs/openshift4-assisted-installer-agent-rhel8:v1.0.0-142`.
+   *
+   */
+  agentImage?: string;
+}
+export interface UpgradeAgentResponse {
+  /**
+   * Full image reference of the image that the agent has upgraded to, for example
+   * `quay.io/registry-proxy.engineering.redhat.com/rh-osbs/openshift4-assisted-installer-agent-rhel8:v1.0.0-142`.
+   *
+   */
+  agentImage?: string;
+  result?: UpgradeAgentResult;
+}
+/**
+ * Agent upgrade result.
+ */
+export type UpgradeAgentResult = 'success' | 'failure';
 export interface Usage {
   /**
    * Unique idenftifier of the feature

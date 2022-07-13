@@ -1,5 +1,6 @@
 import React from 'react';
 import { AlertProps, AlertPayload, alertsSlice } from '../reducers';
+import { useTranslation } from '../../common/hooks/use-translation-wrapper';
 
 const {
   addAlert: addAlertAction,
@@ -30,8 +31,9 @@ export const AlertsContextProvider: React.FC = ({ children }) => {
 
 export const useAlerts = () => {
   const context = React.useContext(AlertsContext);
+  const { t } = useTranslation();
   if (!context) {
-    throw new Error('useAlerts must be used within AlertsContextProvider');
+    throw new Error(t('ai:useAlerts must be used within AlertsContextProvider'));
   }
   return context;
 };

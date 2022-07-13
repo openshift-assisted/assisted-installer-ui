@@ -10,6 +10,7 @@ import {
   pullSecretValidationSchema,
 } from '../ui';
 import { ClusterDetailsValues } from './types';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 const emptyTangServers = (): TangServer[] => {
   return [
@@ -92,19 +93,18 @@ export const getClusterDetailsValidationSchema = ({
   isOcm?: boolean;
 }) =>
   Yup.lazy<{ baseDnsDomain: string }>((values) => {
+    const validateName = () =>
+      nameValidationSchema(usedClusterNames, values.baseDnsDomain, validateUniqueName, isOcm);
+
+    const { t } = useTranslation();
     if (pullSecretSet) {
       return Yup.object({
-        name: nameValidationSchema(
-          usedClusterNames,
-          values.baseDnsDomain,
-          validateUniqueName,
-          isOcm,
-        ),
+        name: validateName(),
         baseDnsDomain: dnsNameValidationSchema.required('Required'),
       });
     }
     return Yup.object({
-      name: nameValidationSchema(usedClusterNames, values.baseDnsDomain, validateUniqueName),
+      name: validateName(),
       baseDnsDomain: dnsNameValidationSchema.required('Required'),
       pullSecret: pullSecretValidationSchema.required('Required.'),
       SNODisclaimer: Yup.boolean().when(['highAvailabilityMode', 'openshiftVersion'], {
@@ -118,7 +118,10 @@ export const getClusterDetailsValidationSchema = ({
               'dev-preview'
           );
         },
-        then: Yup.bool().oneOf([true], 'Confirm the Single Node OpenShift disclaimer to continue.'),
+        then: Yup.bool().oneOf(
+          [true],
+          t('ai:Confirm the Single Node OpenShift disclaimer to continue.'),
+        ),
       }),
       diskEncryptionTangServers: Yup.array().when('diskEncryptionMode', {
         is: (diskEncryptionMode) => {
@@ -126,8 +129,10 @@ export const getClusterDetailsValidationSchema = ({
         },
         then: Yup.array().of(
           Yup.object().shape({
-            url: Yup.string().url('Tang Server URL must be a valid URL').required('Required.'),
-            thumbprint: Yup.string().required('Required.'),
+            url: Yup.string()
+              .url(t('ai:Tang Server URL must be a valid URL'))
+              .required(t('ai:Required.')),
+            thumbprint: Yup.string().required(t('ai:Required.')),
           }),
         ),
       }),

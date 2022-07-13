@@ -36,22 +36,26 @@ import { MassChangeHostnameModalProps } from '../../../common/components/hosts/M
 import MassApproveAction from '../modals/MassApproveAction';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import InfraTableToolbar from './InfraTableToolbar';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type NoFilterMatchStateProps = {
   onClearFilters: VoidFunction;
 };
 
-const NoFilterMatchState: React.FC<NoFilterMatchStateProps> = ({ onClearFilters }) => (
-  <EmptyState
-    title="No results found"
-    content="No results match the filter criteria. Clear filters to show results."
-    secondaryActions={[
-      <Button key="clear-filters" variant="link" onClick={onClearFilters}>
-        Clear all filters
-      </Button>,
-    ]}
-  />
-);
+const NoFilterMatchState: React.FC<NoFilterMatchStateProps> = ({ onClearFilters }) => {
+  const { t } = useTranslation();
+  return (
+    <EmptyState
+      title={t('ai:No results found')}
+      content={t('ai:No results match the filter criteria. Clear filters to show results.')}
+      secondaryActions={[
+        <Button key="clear-filters" variant="link" onClick={onClearFilters}>
+          {t('ai:Clear all filters')}
+        </Button>,
+      ]}
+    />
+  );
+};
 
 const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
   agents,
@@ -101,7 +105,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
       onUnbindHost,
     },
   );
-
+  const { t } = useTranslation();
   const {
     statusCount,
     hostnameFilter,
@@ -122,20 +126,30 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
           hostActions.canEditHostname,
           hostActions.canEditBMH,
         ),
-        discoveryTypeColumn(agents, bareMetalHosts),
+        discoveryTypeColumn(agents, bareMetalHosts, t),
         agentStatusColumn({
           agents,
           bareMetalHosts,
           onEditHostname: onEditHost,
           onApprove: onApprove,
+          t,
         }),
-        clusterColumn(agents, getClusterDeploymentLink),
+        clusterColumn(agents, getClusterDeploymentLink, t),
         discoveredAtColumn,
         cpuCoresColumn,
         memoryColumn,
         disksColumn,
       ].filter(Boolean),
-    [hosts, agents, onEditHost, onApprove, getClusterDeploymentLink, hostActions, bareMetalHosts],
+    [
+      hosts,
+      agents,
+      onEditHost,
+      onApprove,
+      getClusterDeploymentLink,
+      hostActions,
+      bareMetalHosts,
+      t,
+    ],
   );
 
   const selectedAgents = agents.filter((a) => selectedHostIDs.includes(a.metadata?.uid || ''));
@@ -144,15 +158,17 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
   );
 
   const canEditHostname =
-    selectedBMHs.some((bmh) => canEditBMH(bmh)[0]) ||
-    selectedAgents.some((a) => canEditAgent(a)[0]);
+    selectedBMHs.some((bmh) => canEditBMH(bmh, t)[0]) ||
+    selectedAgents.some((a) => canEditAgent(a, t)[0]);
 
   const massActions = [
     <DropdownItem
       key="hostname"
       onClick={() => setMassChangeHostOpen(!isMassChangeHostOpen)}
       isDisabled={!canEditHostname}
-      description={canEditHostname ? undefined : 'Hostname cannot be changed for selected hosts.'}
+      description={
+        canEditHostname ? undefined : t('ai:Hostname cannot be changed for selected hosts.')
+      }
     >
       Change hostname
     </DropdownItem>,
@@ -233,7 +249,7 @@ const InfraEnvAgentTable: React.FC<InfraEnvAgentTableProps> = ({
           selectedHostIDs={selectedHostIDs}
           onChangeHostname={onAgentChangeHostname}
           onClose={() => setMassChangeHostOpen(false)}
-          canChangeHostname={canChangeHostname(agents, bareMetalHosts)}
+          canChangeHostname={canChangeHostname(agents, bareMetalHosts, t)}
         />
       )}
       {isMassDeleteOpen && (

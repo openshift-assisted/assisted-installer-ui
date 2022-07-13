@@ -8,6 +8,7 @@ import { getAgentStatus, getWizardStepAgentStatus } from '../helpers/status';
 
 import '@patternfly/react-styles/css/utilities/Text/text.css';
 import { AdditionalNTPSourcesDialogToggle } from '../ClusterDeployment/AdditionalNTPSourcesDialogToggle';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 export type AgentStatusProps = {
   agent: AgentK8sResource;
@@ -29,9 +30,9 @@ const AgentStatus: React.FC<AgentStatusProps> = ({
   const pendingApproval = !agent.spec.approved;
 
   const hostname = getHostname(host, agent.status?.inventory || {});
-
+  const { t } = useTranslation();
   const status = wizardStepId
-    ? getWizardStepAgentStatus(agent, wizardStepId)
+    ? getWizardStepAgentStatus(agent, wizardStepId, t)
     : getAgentStatus(agent);
 
   return (
@@ -44,26 +45,28 @@ const AgentStatus: React.FC<AgentStatusProps> = ({
     >
       {pendingApproval && onApprove && (
         <Popover
-          aria-label="Approve host popover"
+          aria-label={t('ai:Approve host popover')}
           minWidth="30rem"
           maxWidth="50rem"
-          headerContent={<div>Approve host to join infrastructure environment</div>}
+          headerContent={<div>{t('ai:Approve host to join infrastructure environment')}</div>}
           bodyContent={
             <Stack hasGutter>
               <StackItem>
-                Make sure that you expect and recognize the host before approving.
+                {t('ai:Make sure that you expect and recognize the host before approving.')}
               </StackItem>
-              <StackItem>{hostname && <>Hostname: {hostname}</>}</StackItem>
+              <StackItem>
+                {hostname && <>{t('ai:Hostname: {{hostname}}', { hostname })}</>}
+              </StackItem>
             </Stack>
           }
           footerContent={
             <Button variant="link" onClick={() => onApprove(agent)} isInline>
-              Approve host
+              {t('ai:Approve host')}
             </Button>
           }
         >
           <Button variant="link" isInline className="pf-u-font-size-xs">
-            Approve host
+            {t('ai:Approve host')}
           </Button>
         </Popover>
       )}

@@ -4,6 +4,7 @@ import { CaretDownIcon } from '@patternfly/react-icons';
 import { Disk, DiskRole as DiskRoleValue, Host } from '../../api';
 import { DISK_ROLE_LABELS } from '../../config';
 import { useStateSafely } from '../../hooks';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 const getCurrentDiskRoleLabel = (disk: Disk, installationDiskId: Host['installationDiskId']) =>
   disk.id === installationDiskId ? DISK_ROLE_LABELS.install : DISK_ROLE_LABELS.none;
@@ -57,14 +58,14 @@ const DiskRoleDropdown: React.FC<DiskRoleDropdownProps> = ({
 }) => {
   const [isOpen, setOpen] = useStateSafely(false);
   const [isDisabled, setDisabled] = useStateSafely(false);
-
+  const { t } = useTranslation();
   const dropdownItems = [
     <DropdownItem
       key="install"
       id="install"
       isDisabled={!disk.installationEligibility?.eligible}
       description={
-        !disk.installationEligibility?.eligible && 'Disk is not eligible for installation'
+        !disk.installationEligibility?.eligible && t('ai:Disk is not eligible for installation')
       }
     >
       {DISK_ROLE_LABELS.install}
@@ -82,7 +83,7 @@ const DiskRoleDropdown: React.FC<DiskRoleDropdownProps> = ({
         // TODO(mlibra): Improve for the case onDiskRole === undefined
         setOpen(false);
       };
-      asyncFunc();
+      void asyncFunc();
     },
     [setOpen, setDisabled, onDiskRole, host.id, disk.id],
   );

@@ -40,19 +40,23 @@ import {
   BMH_HOSTNAME_ANNOTATION,
   INFRAENV_AGENTINSTALL_LABEL_KEY,
 } from '../common';
+import { getErrorMessage } from '../../../common/utils';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { TFunction } from 'i18next';
 
 const MacMapping = () => {
   const [field, { touched, error }] = useField<{ macAddress: string; name: string }[]>({
     name: 'macMapping',
   });
   const { errors } = useFormikContext();
-
   const fieldId = getFieldId('macMapping', 'input');
   const isValid = !(touched && error);
+  const { t } = useTranslation();
+
   return (
     <FormGroup
       fieldId={fieldId}
-      label="Mac to interface name mapping"
+      label={t('ai:Mac to interface name mapping')}
       validated={isValid ? 'default' : 'error'}
     >
       <FieldArray
@@ -91,7 +95,7 @@ const MacMapping = () => {
                 variant="link"
                 isInline
               >
-                Add more
+                {t('ai:Add more')}
               </Button>
             </GridItem>
           </Grid>
@@ -123,8 +127,8 @@ const getNMState = (values: AddBmcValues, infraEnv: InfraEnvK8sResource): NMStat
   return nmState;
 };
 
-const getValidationSchema = (usedHostnames: string[], origHostname: string) =>
-  Yup.object({
+const getValidationSchema = (usedHostnames: string[], origHostname: string, t: TFunction) => {
+  return Yup.object({
     name: Yup.string().required(),
     hostname: richNameValidationSchema(usedHostnames, origHostname),
     bmcAddress: bmcAddressValidationSchema.required(),
@@ -137,17 +141,18 @@ const getValidationSchema = (usedHostnames: string[], origHostname: string) =>
         {
           macAddress: macAddressValidationSchema.when(['name'], {
             is: (name) => !!name,
-            then: macAddressValidationSchema.required('MAC has to be specified'),
+            then: macAddressValidationSchema.required(t('ai:MAC has to be specified')),
           }),
           name: Yup.string().when(['macAddress'], {
             is: (macAddress) => !!macAddress,
-            then: Yup.string().required('Name has to be specified'),
+            then: Yup.string().required(t('ai:Name has to be specified')),
           }),
         },
         [['name', 'macAddress']],
       ),
     ),
   });
+};
 
 const emptyValues: AddBmcValues = {
   name: '',
@@ -197,7 +202,7 @@ const BMCForm: React.FC<BMCFormProps> = ({
   isEdit,
   usedHostnames,
 }) => {
-  const [error, setError] = React.useState();
+  const [error, setError] = React.useState<string>();
 
   const handleSubmit: FormikConfig<AddBmcValues>['onSubmit'] = async (values) => {
     try {
@@ -206,15 +211,16 @@ const BMCForm: React.FC<BMCFormProps> = ({
       await onCreateBMH(values, nmState);
       onClose();
     } catch (e) {
-      setError(e.message);
+      setError(getErrorMessage(e));
     }
   };
-
+  const { t } = useTranslation();
   const { initValues, validationSchema } = React.useMemo(() => {
     const initValues = getInitValues(bmh, nmState, secret, isEdit);
-    const validationSchema = getValidationSchema(usedHostnames, initValues.hostname);
+    const validationSchema = getValidationSchema(usedHostnames, initValues.hostname, t);
     return { initValues, validationSchema };
-  }, [usedHostnames, bmh, nmState, secret, isEdit]);
+  }, [usedHostnames, bmh, nmState, secret, isEdit, t]);
+
   return (
     <Formik
       initialValues={initValues}
@@ -227,51 +233,55 @@ const BMCForm: React.FC<BMCFormProps> = ({
           <ModalBoxBody>
             <Form id="add-bmc-form">
               <InputField
-                label="Name"
+                label={t('ai:Name')}
                 name="name"
-                placeholder="Enter the name for the Host"
+                placeholder={t('ai:Enter the name for the Host')}
                 isRequired
                 isDisabled={isEdit}
               />
               <RichInputField
-                label="Hostname"
+                label={t('ai:Hostname')}
                 name="hostname"
-                placeholder="Enter the hostname for the Host"
+                placeholder={t('ai:Enter the hostname for the Host')}
                 richValidationMessages={HOSTNAME_VALIDATION_MESSAGES}
                 isRequired
               />
               <InputField
-                label="Baseboard Management Controller Address"
+                label={t('ai:Baseboard Management Controller Address')}
                 name="bmcAddress"
-                placeholder="Enter an address"
+                placeholder={t('ai:Enter an address')}
                 isRequired
               />
               <InputField
-                label="Boot NIC MAC Address"
+                label={t('ai:Boot NIC MAC Address')}
                 name="bootMACAddress"
-                placeholder="Enter an address"
-                description="The MAC address of the host's network connected NIC that wll be used to provision the host."
+                placeholder={t('ai:Enter an address')}
+                description={t(
+                  "ai:The MAC address of the host's network connected NIC that wll be used to provision the host.",
+                )}
               />
               <InputField
-                label="Username"
+                label={t('ai:Username')}
                 name="username"
-                placeholder="Enter a username for the BMC"
+                placeholder={t('ai:Enter a username for the BMC')}
                 isRequired
               />
               <InputField
                 type={TextInputTypes.password}
-                label="Password"
+                label={t('ai:Password')}
                 name="password"
-                placeholder="Enter a password for the BMC"
+                placeholder={t('ai:Enter a password for the BMC')}
                 isRequired
               />
               {!hasDHCP && (
                 <>
                   <CodeField
-                    label="NMState"
+                    label={t('ai:NMState')}
                     name="nmState"
                     language={Language.yaml}
-                    description="Upload a YAML file in NMstate format that includes your network configuration (static IPs, bonds, etc.)."
+                    description={t(
+                      'ai:Upload a YAML file in NMstate format that includes your network configuration (static IPs, bonds, etc.).',
+                    )}
                   />
                   <MacMapping />
                 </>
@@ -279,7 +289,7 @@ const BMCForm: React.FC<BMCFormProps> = ({
             </Form>
             {error && (
               <Alert
-                title="Failed to add host"
+                title={t('ai:Failed to add host')}
                 variant={AlertVariant.danger}
                 isInline
                 actionClose={<AlertActionCloseButton onClose={() => setError(undefined)} />}
@@ -290,7 +300,7 @@ const BMCForm: React.FC<BMCFormProps> = ({
           </ModalBoxBody>
           <ModalBoxFooter>
             <Button onClick={submitForm} isDisabled={isSubmitting || !isValid}>
-              {isEdit ? 'Submit' : 'Create'}
+              {isEdit ? t('ai:Submit') : t('ai:Create')}
             </Button>
             <Button onClick={onClose} variant={ButtonVariant.secondary}>
               Cancel

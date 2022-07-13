@@ -15,6 +15,7 @@ import { useAgentsTable } from '../../../Agent/tableUtils';
 import { HostsFormValues } from './types';
 import DefaultEmptyState from '../../../../../common/components/ui/uiState/EmptyState';
 import { useFormikHelpers } from '../../../../../common/hooks/useFormikHelpers';
+import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
 
 type HostsAdvancedSelectionProps = {
   agents: AgentK8sResource[];
@@ -66,7 +67,7 @@ const HostsAdvancedSelection: React.FC<HostsAdvancedSelectionProps> = ({
   );
 
   const paginationProps = usePagination(hosts.length);
-
+  const { t } = useTranslation();
   return (
     <HostsTable
       hosts={hosts}
@@ -79,11 +80,11 @@ const HostsAdvancedSelection: React.FC<HostsAdvancedSelectionProps> = ({
       {...paginationProps}
     >
       <DefaultEmptyState
-        title="No hosts found"
+        title={t('ai:No hosts found')}
         content={
           !infraEnvAgents.length
-            ? 'There are no available hosts in the selected infra environment'
-            : 'No host matches provided labels'
+            ? t('ai:There are no available hosts in the selected infra environment')
+            : t('ai:No host matches provided labels')
         }
       />
     </HostsTable>

@@ -19,10 +19,10 @@ import {
   CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4,
   getHostSubnets,
   SecurityFields,
-  NetworkConfiguration,
   ProxyFields,
   ProxyInputFields,
 } from '../../../common';
+import NetworkConfiguration from './NetworkConfiguration';
 import ClusterDeploymentHostsNetworkTable from './ClusterDeploymentHostsNetworkTable';
 import { getAICluster } from '../helpers';
 import {
@@ -34,6 +34,7 @@ import {
 import { AgentTableActions, ClusterDeploymentNetworkingValues } from './types';
 import { useFormikContext } from 'formik';
 import { getGridSpans } from './helpers';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 // TODO(mlibra): So far a constant. Should be queried from somewhere.
 export const defaultNetworkSettings: ClusterDefaultConfig = CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4;
@@ -77,7 +78,7 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
   });
 
   const hostSubnets = React.useMemo(() => getHostSubnets(cluster), [cluster]);
-
+  const { t } = useTranslation();
   React.useEffect(() => {
     if (!!infraEnvWithProxy && !touched.enableProxy) {
       setFieldValue('enableProxy', true, false);
@@ -95,10 +96,11 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
       proxyConfig = (
         <>
           <TextContent>
-            <Text component="h2">Cluster-wide proxy</Text>
+            <Text component="h2">{t('ai:Cluster-wide proxy')}</Text>
             <Text component={TextVariants.p}>
-              The hosts you selected are using different proxy settings. Configure a proxy that will
-              be applied for these hosts. <b>Configure at least one of the proxy settings below.</b>
+              {t(
+                'ai:The hosts you selected are using different proxy settings. Configure a proxy that will be applied for these hosts. <b>Configure at least one of the proxy settings below.</b>',
+              )}
             </Text>
           </TextContent>
           <ProxyInputFields />
@@ -109,7 +111,7 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
         <>
           <Checkbox
             id="edit-proxy"
-            label="Edit cluster-wide proxy settings"
+            label={t('ai:Edit cluster-wide proxy settings')}
             onChange={setEditProxy}
             isChecked={editProxy}
             body={editProxy && <ProxyInputFields />}
@@ -145,7 +147,7 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
               <SplitItem>
                 <Spinner isSVG size="md" />
               </SplitItem>
-              <SplitItem>Loading proxy configuration</SplitItem>
+              <SplitItem>{t('ai:Loading proxy configuration')}</SplitItem>
             </Split>
           ) : (
             proxyConfig
@@ -156,7 +158,7 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
         </StackItem>
         <StackItem>
           <TextContent>
-            <Text component="h2">Host inventory</Text>
+            <Text component="h2">{t('ai:Host inventory')}</Text>
           </TextContent>
           <ClusterDeploymentHostsNetworkTable
             clusterDeployment={clusterDeployment}

@@ -5,6 +5,7 @@ import { ConfigMapK8sResource } from '../../types';
 import HostRequirements, {
   HostRequirementsListProps,
 } from '../../../common/components/hosts/HostRequirements';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 export const getHWRequirements = (aiConfigMap: ConfigMapK8sResource): HostRequirementsListProps => {
   let hwRequirements;
@@ -45,6 +46,7 @@ const MinimalHWRequirements: React.FC<MinimalHWRequirementsProps> = ({
   isSNOCluster,
 }) => {
   const [isHostRequirementsOpen, setHostRequirementsOpen] = React.useState(false);
+  const { t } = useTranslation();
   return (
     <>
       <Button
@@ -54,10 +56,10 @@ const MinimalHWRequirements: React.FC<MinimalHWRequirementsProps> = ({
         className="host-requirements-link"
       >
         <InfoCircleIcon size="sm" />
-        &nbsp;Minimum hardware requirements
+        &nbsp;{t('ai:Minimum hardware requirements')}
       </Button>
       <Modal
-        title="Minimum hardware requirements"
+        title={t('ai:Minimum hardware requirements')}
         isOpen={isHostRequirementsOpen}
         actions={[
           <Button
@@ -65,7 +67,7 @@ const MinimalHWRequirements: React.FC<MinimalHWRequirementsProps> = ({
             variant={ButtonVariant.primary}
             onClick={() => setHostRequirementsOpen(false)}
           >
-            Close
+            {t('ai:Close')}
           </Button>,
         ]}
         onClose={() => setHostRequirementsOpen(false)}

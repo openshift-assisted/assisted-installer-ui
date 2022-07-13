@@ -3,6 +3,7 @@ import { useField } from 'formik';
 
 import { PopoverIcon, trimSshPublicKey, UploadField } from '../ui';
 import { SshPublicKeyHelperText } from './SecurityFields';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 type UploadSSHProps = {
   isRequired?: boolean;
@@ -10,15 +11,16 @@ type UploadSSHProps = {
 
 const UploadSSH: React.FC<UploadSSHProps> = ({ isRequired }) => {
   const [{ name, value }, , { setValue }] = useField('sshPublicKey');
-
+  const { t } = useTranslation();
   return (
     <UploadField
       label={
         <>
-          {'SSH public key'}
+          {t('ai:SSH public key')}
           <PopoverIcon
-            variant="plain"
-            bodyContent="Provide an SSH key to receive debugging information during installation"
+            bodyContent={t(
+              'ai:Provide an SSH key to receive debugging information during installation',
+            )}
           />
         </>
       }
@@ -32,7 +34,7 @@ const UploadSSH: React.FC<UploadSSHProps> = ({ isRequired }) => {
         onDropRejected:
           ({ setError }) =>
           () =>
-            setError('File not supported.'),
+            setError(t('ai:File not supported.')),
       }}
       transformValue={trimSshPublicKey}
       isRequired={isRequired}

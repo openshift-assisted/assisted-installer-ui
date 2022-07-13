@@ -14,14 +14,16 @@ import { Cluster } from '../../../common/api/types';
 import { ValidationsInfo } from '../../../common/types/clusters';
 import { CLUSTER_VALIDATION_GROUP_LABELS } from '../../../common/config/constants';
 import { filterValidationsInfoByStatus } from '../../../common/components/clusterConfiguration/utils';
+import { TFunction } from 'i18next';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
-function getCardTitle(clusterStatus: Cluster['status']) {
+function getCardTitle(clusterStatus: Cluster['status'], t: TFunction) {
   switch (clusterStatus) {
     case 'pending-for-input':
     case 'insufficient':
-      return 'The cluster is not ready for installation.';
+      return t('ai:The cluster is not ready for installation.');
     default:
-      return 'Cluster configured and ready for installation.';
+      return t('ai:Cluster configured and ready for installation.');
   }
 }
 
@@ -35,13 +37,13 @@ function getAlertVariant(clusterStatus: Cluster['status']) {
   }
 }
 
-function getContinueClusterConfigurationLinkLabel(clusterStatus: Cluster['status']) {
+function getContinueClusterConfigurationLinkLabel(clusterStatus: Cluster['status'], t: TFunction) {
   switch (clusterStatus) {
     case 'pending-for-input':
     case 'insufficient':
-      return 'Continue cluster configuration';
+      return t('ai:Continue cluster configuration');
     default:
-      return 'Go to cluster configuration to start the installation';
+      return t('ai:Go to cluster configuration to start the installation');
   }
 }
 
@@ -56,8 +58,9 @@ const ClusterDeploymentValidationsOverview = ({
   clusterStatus,
   onContinueClusterConfiguration,
 }: ClusterDeploymentValidationsOverviewProps) => {
+  const { t } = useTranslation();
   const [status] = clusterStatus;
-  const title = getCardTitle(status);
+  const title = getCardTitle(status, t);
   const filteredValidationsInfo = filterValidationsInfoByStatus(validationsInfo);
   return (
     <Alert
@@ -68,7 +71,7 @@ const ClusterDeploymentValidationsOverview = ({
       actionLinks={
         <>
           <AlertActionLink onClick={onContinueClusterConfiguration}>
-            {getContinueClusterConfigurationLinkLabel(status)}
+            {getContinueClusterConfigurationLinkLabel(status, t)}
           </AlertActionLink>
         </>
       }

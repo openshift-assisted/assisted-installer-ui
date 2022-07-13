@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { DropdownItem } from '@patternfly/react-core';
 import { AgentK8sResource } from '../../types';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type MassApproveActionProps = {
   onApprove: VoidFunction;
@@ -8,8 +9,9 @@ type MassApproveActionProps = {
 };
 
 const MassApproveAction: React.FC<MassApproveActionProps> = ({ onApprove, selectedAgents }) => {
+  const { t } = useTranslation();
   const disabledDescription = selectedAgents.every((a) => a.spec.approved)
-    ? 'All selected hosts are already approved.'
+    ? t('ai:All selected hosts are already approved.')
     : undefined;
   return (
     <DropdownItem
@@ -17,7 +19,7 @@ const MassApproveAction: React.FC<MassApproveActionProps> = ({ onApprove, select
       isDisabled={!!disabledDescription}
       description={disabledDescription}
     >
-      Approve
+      {t('ai:Approve')}
     </DropdownItem>
   );
 };

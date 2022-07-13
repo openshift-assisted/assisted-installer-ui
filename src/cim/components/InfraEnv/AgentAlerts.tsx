@@ -5,6 +5,7 @@ import { getInfraEnvNameOfAgent } from '../helpers';
 import { BareMetalHostK8sResource, InfraEnvK8sResource, ConfigMapK8sResource } from '../../types';
 import { HostRequirementsList } from '../../../common/components';
 import { getHWRequirements } from '../Agent/MinimalHWRequirements';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type AgentAlertsProps = {
   docVersion: string;
@@ -26,29 +27,29 @@ const AgentAlerts: React.FC<AgentAlertsProps> = ({
         h.metadata?.namespace === infraEnv.metadata?.namespace &&
         getInfraEnvNameOfAgent(h) === infraEnv.metadata?.name,
     );
-
+  const { t } = useTranslation();
   return (
     <>
       {infraBMHs?.some((bmh) => !bmh.status) && (
         <Alert
-          title="Metal3 operator is not configured"
+          title={t('ai:Metal3 operator is not configured')}
           variant={AlertVariant.warning}
           isInline
           className="cim-resource-alerts"
           actionLinks={
             <a href={getInfraEnvDocs(docVersion)} target="_blank" rel="noopener noreferrer">
-              Open documentation
+              {t('ai:Open documentation')}
             </a>
           }
         >
-          It seems the Metal3 operator is missing configuration which will prevent it to find bare
-          metal hosts in this namespace. Please refer to the documentation for the first time setup
-          steps.
+          {t(
+            'ai:It seems the Metal3 operator is missing configuration which will prevent it to find bare metal hosts in this namespace. Please refer to the documentation for the first time setup steps.',
+          )}
         </Alert>
       )}
       {aiConfigMap && (
         <Alert
-          title="Minimum hardware requirements"
+          title={t('ai:Minimum hardware requirements')}
           variant={AlertVariant.info}
           isInline
           isExpandable

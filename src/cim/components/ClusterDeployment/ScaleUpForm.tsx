@@ -8,6 +8,7 @@ import { ScaleUpFormValues } from './types';
 import SwitchField from '../../../common/components/ui/formik/SwitchField';
 import ClusterScaleUpAutoHostsSelection from './ClusterScaleUpAutoHostsSelection';
 import { AgentTableActions } from '../ClusterDeployment/types';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type ScaleUpFormProps = {
   agents: AgentK8sResource[];
@@ -27,10 +28,10 @@ const ScaleUpForm: React.FC<ScaleUpFormProps> = ({ agents, onEditHost }) => {
       ),
     [agents],
   );
-
+  const { t } = useTranslation();
   return (
     <Form>
-      <SwitchField name="autoSelectHosts" label="Auto-select hosts" />
+      <SwitchField name="autoSelectHosts" label={t('ai:Auto-select hosts')} />
 
       {autoSelectHosts && <ClusterScaleUpAutoHostsSelection availableAgents={availableAgents} />}
 

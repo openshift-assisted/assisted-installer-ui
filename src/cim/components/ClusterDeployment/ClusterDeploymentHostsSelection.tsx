@@ -11,6 +11,7 @@ import ClusterDeploymentHostsSelectionAdvanced from './ClusterDeploymentHostsSel
 import { getAgentsForSelection, getIsSNOCluster } from '../helpers';
 import MinimalHWRequirements from '../Agent/MinimalHWRequirements';
 import NoAgentsAlert from '../Agent/NoAgentsAlert';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionProps> = ({
   agentClusterInstall,
@@ -38,14 +39,16 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
       ),
     [agents, cdNamespace, cdName],
   );
-
+  const { t } = useTranslation();
   return (
     <Grid hasGutter>
       <GridItem>
         <TextContent>
           {isSNOCluster
-            ? 'Exactly 1 host is required, capable of functioning both as control plane and worker node.'
-            : 'At least 3 hosts are required, capable of functioning as control plane nodes.'}
+            ? t(
+                'ai:Exactly 1 host is required, capable of functioning both as control plane and worker node.',
+              )
+            : t('ai:At least 3 hosts are required, capable of functioning as control plane nodes.')}
         </TextContent>
       </GridItem>
       {aiConfigMap && (
@@ -59,7 +62,7 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
           <Form>
             <SwitchField
               name="autoSelectHosts"
-              label="Auto-select hosts"
+              label={t('ai:Auto-select hosts')}
               onChange={onAutoSelectChange}
             />
 

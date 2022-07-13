@@ -1,5 +1,5 @@
 import React from 'react';
-import { getErrorMessage, handleApiError, ocmClient } from '../api';
+import { getApiErrorMessage, handleApiError, ocmClient } from '../api';
 import { useAlerts } from '../../common';
 
 export default function usePullSecret() {
@@ -17,14 +17,14 @@ export default function usePullSecret() {
     } catch (e) {
       handleApiError(e, (e) => {
         setPullSecret('');
-        addAlert({ title: 'Failed to retrieve pull secret', message: getErrorMessage(e) });
+        addAlert({ title: 'Failed to retrieve pull secret', message: getApiErrorMessage(e) });
       });
     }
   }, [addAlert]);
 
   React.useEffect(() => {
     if (!pullSecret) {
-      getPullSecret();
+      void getPullSecret();
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 

@@ -18,6 +18,7 @@ import {
   ntpSourceValidationSchema,
   AdditionalNTPSourcesField,
 } from '../../../common';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 export type AdditionalNTPSourcesFormProps = {
   additionalNtpSource: Cluster['additionalNtpSource'];
@@ -28,11 +29,11 @@ export type AdditionalNTPSourcesFormProps = {
   ) => Promise<void>;
 };
 
-const AdditionalNTPSourcesForm: React.FC<AdditionalNTPSourcesFormProps> = ({
+const AdditionalNTPSourcesForm = ({
   additionalNtpSource,
   onClose,
   onAdditionalNtpSource,
-}) => {
+}: AdditionalNTPSourcesFormProps) => {
   const initialValues: V2ClusterUpdateParams = {
     additionalNtpSource: additionalNtpSource || '',
   };
@@ -41,7 +42,8 @@ const AdditionalNTPSourcesForm: React.FC<AdditionalNTPSourcesFormProps> = ({
     additionalNtpSource: ntpSourceValidationSchema.required(),
   });
 
-  const handleSubmit = async (
+  const { t } = useTranslation();
+  const handleSubmit = (
     values: V2ClusterUpdateParams,
     formikHelpers: FormikHelpers<V2ClusterUpdateParams>,
   ) => {
@@ -54,7 +56,7 @@ const AdditionalNTPSourcesForm: React.FC<AdditionalNTPSourcesFormProps> = ({
             message,
           },
         });
-      onAdditionalNtpSource(values.additionalNtpSource, onError);
+      void onAdditionalNtpSource(values.additionalNtpSource, onError);
     }
     onClose();
   };
@@ -86,8 +88,10 @@ const AdditionalNTPSourcesForm: React.FC<AdditionalNTPSourcesFormProps> = ({
                 )}
                 <AdditionalNTPSourcesField
                   name="additionalNtpSource"
-                  label="Additional NTP Sources"
-                  helperText="A comma separated list of IP or domain names of the NTP pools or servers. Additional NTP sources are added to all hosts to ensure all hosts clocks are synchronized with a valid NTP server. It may take a few minutes for the new NTP sources to sync."
+                  label={t('ai:Additional NTP Sources')}
+                  helperText={t(
+                    'ai:A comma separated list of IP or domain names of the NTP pools or servers. Additional NTP sources are added to all hosts to ensure all hosts clocks are synchronized with a valid NTP server. It may take a few minutes for the new NTP sources to sync.',
+                  )}
                   isRequired
                 />
               </Form>
@@ -99,10 +103,10 @@ const AdditionalNTPSourcesForm: React.FC<AdditionalNTPSourcesFormProps> = ({
                 isDisabled={isSubmitting || !isValid || !dirty}
                 isLoading={isSubmitting}
               >
-                {isSubmitting ? 'Adding...' : 'Add'}
+                {isSubmitting ? t('ai:Adding...') : t('ai:Add')}
               </Button>
               <Button key="cancel" variant="link" onClick={onClose}>
-                Cancel
+                {t('ai:Cancel')}
               </Button>
             </ModalBoxFooter>
           </>

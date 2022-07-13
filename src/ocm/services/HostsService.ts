@@ -14,8 +14,7 @@ const HostsService = {
       const promises: AxiosPromise<void>[] = [];
       const hosts = await HostsService.listHostsBoundToCluster(clusterId);
       const hostDeleteParams = hosts.map<[string, string]>(({ infraEnvId, id }) => [
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        infraEnvId!,
+        infraEnvId || '',
         id,
       ]);
 
