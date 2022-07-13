@@ -1,7 +1,7 @@
 import { CheckCircleIcon, InfoCircleIcon } from '@patternfly/react-icons';
 import React from 'react';
 import { global_success_color_100 as okColor } from '@patternfly/react-tokens';
-import { TextList, TextListItem, TextContent } from '@patternfly/react-core';
+import { Text, TextList, TextListItem, TextContent } from '@patternfly/react-core';
 import {
   FeatureId,
   FeatureIdToSupportLevel,
@@ -85,23 +85,26 @@ export const LimitedSupportedCluster = ({
   showVersionWarning: boolean;
 }) => (
   <TextContent>
-    <InfoCircleIcon size="sm" color="var(--pf-global--info-color--100)" />
-    &nbsp;Your cluster will be subject to support limitations because it includes:
-    <TextList>
-      {showVersionWarning && (
-        <TextListItem>An OpenShift version which is not production ready</TextListItem>
-      )}
-      {Object.keys(clusterFeatureSupportLevels).length > 0 && (
-        <>
+    {showVersionWarning && (
+      <Text>
+        <InfoCircleIcon size="sm" color="var(--pf-global--info-color--100)" />
+        &nbsp;The installed OpenShift version is not production-ready
+      </Text>
+    )}
+    {Object.keys(clusterFeatureSupportLevels).length > 0 && (
+      <>
+        <InfoCircleIcon size="sm" color="var(--pf-global--info-color--100)" />
+        &nbsp;Your cluster will be subject to support limitations because it includes:
+        <TextList>
           {getPreviewFeatureList(clusterFeatureSupportLevels)}
           {clusterFeatureSupportLevels['CLUSTER_MANAGED_NETWORKING_WITH_VMS'] === 'unsupported' && (
             <TextListItem>
               Cluster-managed networking with some or all discovered hosts as virtual machines
             </TextListItem>
           )}
-        </>
-      )}
-    </TextList>
+        </TextList>
+      </>
+    )}
   </TextContent>
 );
 
@@ -143,7 +146,7 @@ const SupportLevel = ({ cluster }: SupportLevelProps) => {
         isFullySupported:
           hasSupportedVersion && Object.keys(limitedClusterFeatures || {}).length === 0,
       };
-    }, [cluster, featureSupportLevelData]);
+    }, [cluster, featureSupportLevelData, t, isSupportedOpenShiftVersion]);
 
   if (!limitedClusterFeatures) {
     return null;

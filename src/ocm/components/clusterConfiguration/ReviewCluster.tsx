@@ -12,15 +12,17 @@ import {
   Cluster,
   DetailList,
   DetailItem,
+  RenderIf,
   VSPHERE_CONFIG_LINK,
   ReviewHostsInventory,
   ClusterValidations,
   HostsValidations,
   isDualStack,
 } from '../../../common';
-import { RenderIf } from '../../../common/components/ui/';
 import { wizardStepNames } from '../clusterWizard/constants';
 import './ReviewCluster.css';
+import OpenShiftVersionDetail from '../clusterDetail/OpenShiftVersionDetail';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 const PlatformIntegrationNote = () => {
   return (
@@ -39,22 +41,19 @@ const PlatformIntegrationNote = () => {
   );
 };
 
-const ReviewCluster: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
+const ReviewCluster = ({ cluster }: { cluster: Cluster }) => {
   const clusterWizardContext = useClusterWizardContext();
+  const { t } = useTranslation();
   return (
     <DetailList>
       <DetailItem
         title="Cluster address"
-        value={`${cluster.name}.${cluster.baseDnsDomain}`}
+        value={`${cluster.name || ''}.${cluster.baseDnsDomain || ''}`}
         testId="cluster-address"
       />
+      <OpenShiftVersionDetail cluster={cluster} />
       <DetailItem
-        title="OpenShift version"
-        value={cluster.openshiftVersion}
-        testId="openshift-version"
-      />
-      <DetailItem
-        title={'Stack type'}
+        title={t('ai:Stack type')}
         value={isDualStack(cluster) ? 'Dual-stack' : 'IPv4'}
         testId="stack-type"
       />
