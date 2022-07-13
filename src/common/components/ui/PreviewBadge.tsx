@@ -70,24 +70,14 @@ const PreviewBadge: React.FC<PreviewBadgeProps> = ({
   );
 };
 
-const PopoverTexts = () => {
-  const { t } = useTranslation();
-  return {
-    'tech-preview': t(
-      'ai:Technology preview features provide early access to upcoming product innovations, enabling you to test functionality and provide feedback during the development process.',
-    ),
-    'dev-preview': t(
-      'ai:Developer preview features are not intended to be used in production environments. The clusters deployed with the developer preview features are considered to be development clusters and are not supported through the Red Hat Customer Portal case management system.',
-    ),
-  };
-};
-
 export const DeveloperPreview: React.FC<DeveloperPreviewProps> = (props) => {
   const { t } = useTranslation();
   return (
     <PreviewBadge
       text={t('ai:Developer Preview')}
-      popoverText={PopoverTexts['dev-preview']}
+      popoverText={t(
+        'ai:Developer preview features are not intended to be used in production environments. The clusters deployed with the developer preview features are considered to be development clusters and are not supported through the Red Hat Customer Portal case management system.',
+      )}
       {...props}
     />
   );
@@ -99,7 +89,9 @@ export const TechnologyPreview: React.FC<TechnologyPreviewProps> = (props) => {
   return (
     <PreviewBadge
       text={t('ai:Technology Preview')}
-      popoverText={PopoverTexts['tech-preview']}
+      popoverText={t(
+        'ai:Technology preview features provide early access to upcoming product innovations, enabling you to test functionality and provide feedback during the development process.',
+      )}
       externalLink={TECH_SUPPORT_LEVEL_LINK}
       {...props}
     />

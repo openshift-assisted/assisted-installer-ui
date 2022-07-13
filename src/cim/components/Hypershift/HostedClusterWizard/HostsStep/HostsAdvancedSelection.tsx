@@ -60,14 +60,14 @@ const HostsAdvancedSelection: React.FC<HostsAdvancedSelectionProps> = ({
   );
 
   const [hosts, actions] = useAgentsTable({ agents }, { onSelect });
-
+  const { t } = useTranslation();
   const content = React.useMemo(
-    () => [hostnameColumn(undefined, hosts), cpuCoresColumn, memoryColumn, disksColumn],
+    () => [hostnameColumn(t, undefined, hosts), cpuCoresColumn, memoryColumn, disksColumn],
     [hosts],
   );
 
   const paginationProps = usePagination(hosts.length);
-  const { t } = useTranslation();
+
   return (
     <HostsTable
       hosts={hosts}

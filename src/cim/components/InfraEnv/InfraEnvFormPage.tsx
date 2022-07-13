@@ -19,7 +19,6 @@ import {
 } from '@patternfly/react-core';
 import { Formik, FormikProps, useFormikContext } from 'formik';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 import {
   httpProxyValidationSchema,
