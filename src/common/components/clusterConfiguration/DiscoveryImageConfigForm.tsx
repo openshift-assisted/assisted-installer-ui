@@ -108,7 +108,7 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
                   <Alert
                     variant={AlertVariant.info}
                     isInline
-                    title={'Generate a Discovery ISO in order to add hosts to the cluster.'}
+                    title={t('ai: Generate a Discovery ISO in order to add hosts to the cluster.')}
                   />
                 </StackItem>
                 {hasDHCP === false && (
@@ -138,7 +138,7 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
               )}
               {isSubmitting && (
                 <Button key="generating" isLoading isDisabled>
-                  {t('Generating')}
+                  {t('ai: Generating')}
                 </Button>
               )}
               <Button key="cancel" variant="link" onClick={onCancel}>

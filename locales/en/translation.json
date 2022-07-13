@@ -1,4 +1,7 @@
 {
+  "ai: Discovery ISO is ready for download": " Discovery ISO is ready for download",
+  "ai: Generate a Discovery ISO in order to add hosts to the cluster.": " Generate a Discovery ISO in order to add hosts to the cluster.",
+  "ai: Generating": " Generating",
   "ai: Go to cluster list": " Go to cluster list",
   "ai: or select just 3 hosts instead.": " or select just 3 hosts instead.",
   "ai: Pending - {{operatorsCountString}}": " Pending - {{operatorsCountString}}",
@@ -144,9 +147,7 @@
   "ai:Developer preview features are not intended to be used in production environments. The clusters deployed with the developer preview features are considered to be development clusters and are not supported through the Red Hat Customer Portal case management system.": "Developer preview features are not intended to be used in production environments. The clusters deployed with the developer preview features are considered to be development clusters and are not supported through the Red Hat Customer Portal case management system.",
   "ai:DHCP or static IP Addresses": "DHCP or static IP Addresses",
   "ai:Discovered hosts will appear in the table.": "Discovered hosts will appear in the table.",
-  "ai:Discovery image is being prepared, this might take a few seconds.": "Discovery image is being prepared, this might take a few seconds.",
   "ai:Discovery ISO": "Discovery ISO",
-  "ai:Discovery ISO is ready to download": "Discovery ISO is ready to download",
   "ai:Discovery ISO URL": "Discovery ISO URL",
   "ai:Discovery type": "Discovery type",
   "ai:Disk is not eligible for installation": "Disk is not eligible for installation",
