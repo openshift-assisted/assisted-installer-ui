@@ -150,7 +150,7 @@ export const macAddressValidationSchema = Yup.string().matches(MAC_REGEX, {
 
 export const vipRangeValidationSchema = (
   hostSubnets: HostSubnets,
-  { machineNetworks }: NetworkConfigurationValues,
+  { machineNetworks, hostSubnet }: NetworkConfigurationValues,
 ) =>
   Yup.string().test('vip-validation', 'IP Address is outside of selected subnet', function (value) {
     if (!value) {
@@ -162,8 +162,16 @@ export const vipRangeValidationSchema = (
       return this.createError({ message: getErrorMessage(err) });
     }
 
-    const cidrs = machineNetworks?.map((network) => network.cidr);
-    const foundHostSubnets = hostSubnets.filter((hn) => cidrs?.includes(hn.subnet));
+    const foundHostSubnets = [];
+    if (machineNetworks) {
+      const cidrs = machineNetworks?.map((network) => network.cidr);
+      foundHostSubnets.push(...hostSubnets.filter((hn) => cidrs?.includes(hn.subnet)));
+    } else {
+      const subnet = hostSubnets.find((hn) => hn.subnet === hostSubnet);
+      if (subnet) {
+        foundHostSubnets.push(subnet);
+      }
+    }
     for (const hostSubnet of foundHostSubnets) {
       if (hostSubnet?.subnet) {
         // Workaround for bug in CIM backend. hostIDs are empty

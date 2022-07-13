@@ -46,6 +46,7 @@ export const useDetailsFormik = ({
   defaultBaseDomain,
   pullSecret,
 }: UseDetailsFormikArgs): [ClusterDetailsValues, Lazy] => {
+  const { t } = useTranslation();
   const featureSupportLevels = useFeatureSupportLevel();
   const ocpVersions = getOCPVersions(clusterImages);
   const cluster = React.useMemo(
@@ -75,11 +76,12 @@ export const useDetailsFormik = ({
       getClusterDetailsValidationSchema({
         usedClusterNames,
         featureSupportLevels,
+        t,
         pullSecretSet: true,
         ocpVersions,
         validateUniqueName: true,
       }),
-    [usedClusterNames, ocpVersions, featureSupportLevels],
+    [usedClusterNames, ocpVersions, featureSupportLevels, t],
   );
 
   return [initialValues, validationSchema];
