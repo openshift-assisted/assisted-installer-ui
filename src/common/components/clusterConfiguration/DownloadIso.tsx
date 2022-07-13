@@ -52,9 +52,9 @@ const DownloadIso: React.FC<DownloadISOProps> = ({
             <Alert
               variant={AlertVariant.info}
               isInline
-              title={
-                'Never share your downloaded ISO with anyone else. Forwarding it could put your credentials and personal data at risk.'
-              }
+              title={t(
+                'ai:Never share your downloaded ISO with anyone else. Forwarding it could put your credentials and personal data at risk.',
+              )}
             />
           </StackItem>
           {hasDHCP === false && (
@@ -91,7 +91,7 @@ const DownloadIso: React.FC<DownloadISOProps> = ({
               variant="info"
               isInline
               title={
-                t('ai:Never share your downloaded ISO with anyone else. ') +
+                t('ai:Never share your downloaded ISO with anyone else.') +
                 t('ai:Forwarding it could put your credentials and personal data at risk.')
               }
             />

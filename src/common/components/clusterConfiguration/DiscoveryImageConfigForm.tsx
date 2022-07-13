@@ -131,16 +131,9 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
               </Stack>
             </ModalBoxBody>
             <ModalBoxFooter>
-              {!isSubmitting && (
-                <Button key="submit" onClick={submitForm}>
-                  {t('ai:Generate Discovery ISO')}
-                </Button>
-              )}
-              {isSubmitting && (
-                <Button key="generating" isLoading isDisabled>
-                  {t('ai: Generating')}
-                </Button>
-              )}
+              <Button onClick={submitForm} isDisabled={isSubmitting} isLoading={isSubmitting}>
+                {isSubmitting ? t('ai: Generating') : t('ai: Generate Discovery ISO')}
+              </Button>
               <Button key="cancel" variant="link" onClick={onCancel}>
                 {t('ai:Cancel')}
               </Button>
