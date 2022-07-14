@@ -1,5 +1,5 @@
+import { TFunction } from 'i18next';
 import * as packageJson from '../../../package.json';
-
 import { ValidationsInfo, HostRole } from '../../common/types/hosts';
 import { Cluster, ClusterValidationId, DiskRole, Event, HostValidationId } from '../api';
 import { ValidationGroup as ClusterValidationGroup } from '../types/clusters';
@@ -38,106 +38,112 @@ export const getProductBrandingCode = () => 'redhat';
 export const POLLING_INTERVAL = 10 * 1000;
 export const EVENTS_POLLING_INTERVAL = 10 * 1000;
 
-export const HOST_ROLES: HostRole[] = [
+export const hostRoles = (t: TFunction): HostRole[] => [
   {
     value: 'auto-assign',
-    label: 'Auto-assign',
-    description:
-      'A role will be chosen automatically based on detected hardware and network latency.',
+    label: t('ai:Auto-assign'),
+    description: t(
+      'ai:A role will be chosen automatically based on detected hardware and network latency.',
+    ),
   },
   {
     value: 'master',
-    label: 'Control plane node',
-    description: 'Runs the control plane components of OpenShift, including the API server.',
+    label: t('ai:Control plane node'),
+    description: t('ai:Runs the control plane components of OpenShift, including the API server.'),
   },
   {
     value: 'worker',
-    label: 'Worker',
-    description:
-      'Runs application workloads. Connect at least 5 hosts to enable dedicated workers.',
+    label: t('ai:Worker'),
+    description: t(
+      'ai:Runs application workloads. Connect at least 5 hosts to enable dedicated workers.',
+    ),
   },
 ];
 
-export const CLUSTER_STATUS_LABELS: { [key in Cluster['status']]: string } = {
-  'pending-for-input': 'Draft',
-  insufficient: 'Draft',
-  ready: 'Draft',
-  'preparing-for-installation': 'Preparing for installation',
-  installing: 'Installing',
-  'installing-pending-user-action': 'Installing (pending action)',
-  finalizing: 'Finalizing',
-  cancelled: 'Installation cancelled',
-  error: 'Error',
-  installed: 'Installed',
-  'adding-hosts': 'Adding hosts',
-};
+export const clusterStatusLabels = (t: TFunction): { [key in Cluster['status']]: string } => ({
+  'pending-for-input': t('ai:Draft'),
+  insufficient: t('ai:Draft'),
+  ready: t('ai:Draft'),
+  'preparing-for-installation': t('ai:Preparing for installation'),
+  installing: t('ai:Installing'),
+  'installing-pending-user-action': t('ai:Installing (pending action)'),
+  finalizing: t('ai:Finalizing'),
+  cancelled: t('ai:Installation cancelled'),
+  error: t('ai:Error'),
+  installed: t('ai:Installed'),
+  'adding-hosts': t('ai:Adding hosts'),
+});
 
-export const CLUSTER_FIELD_LABELS: { [key in string]: string } = {
-  name: 'Cluster name',
-  baseDnsDomain: 'Base domain',
-  clusterNetworkCidr: 'Cluster network CIDR',
-  clusterNetworkHostPrefix: 'Cluster network host prefix',
-  serviceNetworkCidr: 'Service network CIDR',
-  apiVip: 'API IP',
-  ingressVip: 'Ingress IP',
-  pullSecret: 'Pull secret',
-  sshPublicKey: 'SSH public key',
-  SNODisclaimer: 'Single Node OpenShift disclaimer',
-  diskEncryptionTangServers: "Tang servers' URLs or thumbprints",
-  selectedHostIds: 'Hosts selection',
-  httpProxy: 'HTTP proxy',
-  httpsProxy: 'HTTPS proxy',
-  noProxy: 'No proxy',
-  machineNetworks: 'Machine networks',
-  clusterNetworks: 'Cluster networks',
-  serviceNetworks: 'Service networks',
-};
+export const clusterFieldLabels = (t: TFunction): { [key in string]: string } => ({
+  name: t('ai:Cluster name'),
+  baseDnsDomain: t('ai:Base domain'),
+  clusterNetworkCidr: t('ai:Cluster network CIDR'),
+  clusterNetworkHostPrefix: t('ai:Cluster network host prefix'),
+  serviceNetworkCidr: t('ai:Service network CIDR'),
+  apiVip: t('ai:API IP'),
+  ingressVip: t('ai:Ingress IP'),
+  pullSecret: t('ai:Pull secret'),
+  sshPublicKey: t('ai:SSH public key'),
+  SNODisclaimer: t('ai:Single Node OpenShift disclaimer'),
+  diskEncryptionTangServers: t("ai:Tang servers' URLs or thumbprints"),
+  selectedHostIds: t('ai:Hosts selection'),
+  httpProxy: t('ai:HTTP proxy'),
+  httpsProxy: t('ai:HTTPS proxy'),
+  noProxy: t('ai:No proxy'),
+  machineNetworks: t('ai:Machine networks'),
+  clusterNetworks: t('ai:Cluster networks'),
+  serviceNetworks: t('ai:Service networks'),
+});
 
-export const HOST_VALIDATION_GROUP_LABELS: { [key in keyof ValidationsInfo]: string } = {
-  hardware: 'Hardware',
-  network: 'Network',
-  operators: 'Operators',
-  infrastructure: 'Infrastructure',
-};
+export const hostValidationGroupLabels = (
+  t: TFunction,
+): { [key in keyof ValidationsInfo]: string } => ({
+  hardware: t('ai:Hardware'),
+  network: t('ai:Network'),
+  operators: t('ai:Operators'),
+  infrastructure: t('ai:Infrastructure'),
+});
 
-export const HOST_VALIDATION_LABELS: { [key in HostValidationId]: string } = {
-  'odf-requirements-satisfied': 'ODF requirements',
-  'disk-encryption-requirements-satisfied': 'Disk encryption requirements',
+export const hostValidationLabels = (t: TFunction): { [key in HostValidationId]: string } => ({
+  'odf-requirements-satisfied': t('ai:ODF requirements'),
+  'disk-encryption-requirements-satisfied': t('ai:Disk encryption requirements'),
   'compatible-with-cluster-platform': '',
-  'has-default-route': 'Default route to host',
-  'sufficient-network-latency-requirement-for-role': 'Network latency',
-  'sufficient-packet-loss-requirement-for-role': 'Packet loss',
-  'has-inventory': 'Hardware information',
-  'has-min-cpu-cores': 'Minimum CPU cores',
-  'has-min-memory': 'Minimum Memory',
-  'has-min-valid-disks': 'Minimum disks of required size',
-  'has-cpu-cores-for-role': 'Minimum CPU cores for selected role',
-  'has-memory-for-role': 'Minimum memory for selected role',
-  'hostname-unique': 'Unique hostname',
-  'hostname-valid': 'Valid hostname',
-  connected: 'Connected',
-  'media-connected': 'Media Connected',
-  'machine-cidr-defined': 'Machine CIDR',
-  'belongs-to-machine-cidr': 'Belongs to machine CIDR',
-  'ignition-downloadable': 'Ignition file downloadable',
-  'belongs-to-majority-group': 'Belongs to majority connected group',
-  'valid-platform-network-settings': 'Platform network settings',
-  'ntp-synced': 'NTP synchronization',
-  'container-images-available': 'Container images availability',
-  'lso-requirements-satisfied': 'LSO requirements',
-  'ocs-requirements-satisfied': 'OCS requirements',
-  'sufficient-installation-disk-speed': 'Installation disk speed',
-  'cnv-requirements-satisfied': 'CNV requirements',
-  'api-domain-name-resolved-correctly': 'API domain name resolution',
-  'api-int-domain-name-resolved-correctly': 'API internal domain name resolution',
-  'apps-domain-name-resolved-correctly': 'Application ingress domain name resolution',
-  'dns-wildcard-not-configured': 'DNS wildcard not configured',
-  'non-overlapping-subnets': 'Non overlapping subnets',
-  'vsphere-disk-uuid-enabled': 'Vsphere disk uuidenabled',
-  'compatible-agent': 'Agent compatibility',
-};
+  'has-default-route': t('ai:Default route to host'),
+  'sufficient-network-latency-requirement-for-role': t('ai:Network latency'),
+  'sufficient-packet-loss-requirement-for-role': t('ai:Packet loss'),
+  'has-inventory': t('ai:Hardware information'),
+  'has-min-cpu-cores': t('ai:Minimum CPU cores'),
+  'has-min-memory': t('ai:Minimum Memory'),
+  'has-min-valid-disks': t('ai:Minimum disks of required size'),
+  'has-cpu-cores-for-role': t('ai:Minimum CPU cores for selected role'),
+  'has-memory-for-role': t('ai:Minimum memory for selected role'),
+  'hostname-unique': t('ai:Unique hostname'),
+  'hostname-valid': t('ai:Valid hostname'),
+  connected: t('ai:Connected'),
+  'media-connected': t('ai:Media Connected'),
+  'machine-cidr-defined': t('ai:Machine CIDR'),
+  'belongs-to-machine-cidr': t('ai:Belongs to machine CIDR'),
+  'ignition-downloadable': t('ai:Ignition file downloadable'),
+  'belongs-to-majority-group': t('ai:Belongs to majority connected group'),
+  'valid-platform-network-settings': t('ai:Platform network settings'),
+  'ntp-synced': t('ai:NTP synchronization'),
+  'container-images-available': t('ai:Container images availability'),
+  'lso-requirements-satisfied': t('ai:LSO requirements'),
+  'ocs-requirements-satisfied': t('ai:OCS requirements'),
+  'sufficient-installation-disk-speed': t('ai:Installation disk speed'),
+  'cnv-requirements-satisfied': t('ai:CNV requirements'),
+  'api-domain-name-resolved-correctly': t('ai:API domain name resolution'),
+  'api-int-domain-name-resolved-correctly': t('ai:API internal domain name resolution'),
+  'apps-domain-name-resolved-correctly': t('ai:Application ingress domain name resolution'),
+  'dns-wildcard-not-configured': t('ai:DNS wildcard not configured'),
+  'non-overlapping-subnets': t('ai:Non overlapping subnets'),
+  'vsphere-disk-uuid-enabled': t('ai:Vsphere disk uuidenabled'),
+  'compatible-agent': t('ai:Agent compatibility'),
+});
 
-export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string } = {
+export const hostValidationFailureHints = (
+  t: TFunction,
+): { [key in HostValidationId]: string } => ({
   'odf-requirements-satisfied': '',
   'disk-encryption-requirements-satisfied': '',
   'compatible-with-cluster-platform': '',
@@ -159,7 +165,9 @@ export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string 
   'ignition-downloadable': '',
   'belongs-to-majority-group': '',
   'valid-platform-network-settings': '',
-  'ntp-synced': "Please manually fix host's NTP configuration or provide additional NTP sources.",
+  'ntp-synced': t(
+    "ai:Please manually fix host's NTP configuration or provide additional NTP sources.",
+  ),
   'container-images-available': '',
   'lso-requirements-satisfied': '',
   'ocs-requirements-satisfied': '',
@@ -172,39 +180,43 @@ export const HOST_VALIDATION_FAILURE_HINTS: { [key in HostValidationId]: string 
   'non-overlapping-subnets': '',
   'vsphere-disk-uuid-enabled': '',
   'compatible-agent': '',
-};
+});
 
-export const CLUSTER_VALIDATION_LABELS: { [key in ClusterValidationId]: string } = {
-  'odf-requirements-satisfied': 'ODF requirements',
-  'network-type-valid': 'Valid network type',
-  'machine-cidr-defined': 'Machine CIDR',
-  'cluster-cidr-defined': 'Cluster CIDR',
-  'service-cidr-defined': 'Service CIDR',
-  'no-cidrs-overlapping': 'No overlapping CIDR',
-  'networks-same-address-families': 'Networks same address families',
-  'network-prefix-valid': 'Valid network prefix',
-  'machine-cidr-equals-to-calculated-cidr': 'Machine CIDR conforms expected',
-  'api-vip-defined': 'API IP',
-  'api-vip-valid': 'API IP validity',
-  'ingress-vip-defined': 'Ingress IP',
-  'ingress-vip-valid': 'Ingress IP validity',
-  'all-hosts-are-ready-to-install': 'All hosts are ready to install',
-  'sufficient-masters-count': 'Control plane nodes count',
-  'dns-domain-defined': 'DNS domain',
-  'pull-secret-set': 'Pull secret',
-  'ntp-server-configured': 'NTP server',
-  'lso-requirements-satisfied': 'LSO requirements',
-  'ocs-requirements-satisfied': 'OCS requirements',
-  'cnv-requirements-satisfied': 'CNV requirements',
-};
+export const clusterValidationLabels = (
+  t: TFunction,
+): { [key in ClusterValidationId]: string } => ({
+  'odf-requirements-satisfied': t('ai:ODF requirements'),
+  'network-type-valid': t('ai:Valid network type'),
+  'machine-cidr-defined': t('ai:Machine CIDR'),
+  'cluster-cidr-defined': t('ai:Cluster CIDR'),
+  'service-cidr-defined': t('ai:Service CIDR'),
+  'no-cidrs-overlapping': t('ai:No overlapping CIDR'),
+  'networks-same-address-families': t('ai:Networks same address families'),
+  'network-prefix-valid': t('ai:Valid network prefix'),
+  'machine-cidr-equals-to-calculated-cidr': t('ai:Machine CIDR conforms expected'),
+  'api-vip-defined': t('ai:API IP'),
+  'api-vip-valid': t('ai:API IP validity'),
+  'ingress-vip-defined': t('ai:Ingress IP'),
+  'ingress-vip-valid': t('ai:Ingress IP validity'),
+  'all-hosts-are-ready-to-install': t('ai:All hosts are ready to install'),
+  'sufficient-masters-count': t('ai:Control plane nodes count'),
+  'dns-domain-defined': t('ai:DNS domain'),
+  'pull-secret-set': t('ai:Pull secret'),
+  'ntp-server-configured': t('ai:NTP server'),
+  'lso-requirements-satisfied': t('ai:LSO requirements'),
+  'ocs-requirements-satisfied': t('ai:OCS requirements'),
+  'cnv-requirements-satisfied': t('ai:CNV requirements'),
+});
 
-export const CLUSTER_VALIDATION_GROUP_LABELS: { [key in ClusterValidationGroup]: string } = {
-  configuration: 'General configuration',
-  hostsData: 'Hosts',
-  'hosts-data': 'Hosts',
-  network: 'Networking',
-  operators: 'Operators',
-};
+export const clusterValidationGroupLabels = (
+  t: TFunction,
+): { [key in ClusterValidationGroup]: string } => ({
+  configuration: t('ai:General configuration'),
+  hostsData: t('ai:Hosts'),
+  'hosts-data': t('ai:Hosts'),
+  network: t('ai:Networking'),
+  operators: t('ai:Operators'),
+});
 
 export const CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4 = {
   clusterNetworkCidr: '10.128.0.0/14',
@@ -239,10 +251,10 @@ export const PREFIX_MAX_RESTRICTION = {
   IPv4: 25,
 };
 
-export const DISK_ROLE_LABELS: { [key in DiskRole]: string } = {
-  none: 'None',
-  install: 'Installation disk',
-};
+export const diskRoleLabels = (t: TFunction): { [key in DiskRole]: string } => ({
+  none: t('ai:None'),
+  install: t('ai:Installation disk'),
+});
 
 export const SNO_SUPPORT_MIN_VERSION = 4.8;
 
@@ -254,14 +266,14 @@ export const OPERATOR_NAME_ODF = 'odf';
 export const OPERATOR_NAME_CVO = 'cvo';
 export const OPERATOR_NAME_CONSOLE = 'console';
 
-export const OPERATOR_LABELS = {
-  [OPERATOR_NAME_CONSOLE]: 'OpenShift Console',
-  [OPERATOR_NAME_CVO]: 'OpenShift Cluster Version Operator',
-  [OPERATOR_NAME_LSO]: 'OpenShift Local Storage',
-  [OPERATOR_NAME_OCS]: 'OpenShift Container Storage', // TODO(jkilzi): Remove once OCS is replaced by ODF
-  [OPERATOR_NAME_ODF]: 'OpenShift Data Foundation',
-  [OPERATOR_NAME_CNV]: 'OpenShift Virtualization',
-};
+export const operatorLabels = (t: TFunction) => ({
+  [OPERATOR_NAME_CONSOLE]: t('ai:OpenShift Console'),
+  [OPERATOR_NAME_CVO]: t('ai:OpenShift Cluster Version Operator'),
+  [OPERATOR_NAME_LSO]: t('ai:OpenShift Local Storage'),
+  [OPERATOR_NAME_OCS]: t('ai:OpenShift Container Storage'), // TODO(jkilzi): Remove once OCS is replaced by ODF
+  [OPERATOR_NAME_ODF]: t('ai:OpenShift Data Foundation'),
+  [OPERATOR_NAME_CNV]: t('ai:OpenShift Virtualization'),
+});
 
 export const OCP_STATIC_IP_DOC =
   'https://docs.openshift.com/container-platform/latest/scalability_and_performance/ztp-deploying-disconnected.html#ztp-configuring-a-static-ip_ztp-deploying-disconnected';

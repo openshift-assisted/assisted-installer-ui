@@ -39,7 +39,9 @@ const LabelsSelector: React.FC<LabelsSelectorProps> = ({ agents, labelKeysFilter
       name={name}
       label={t('ai:Labels matching hosts')}
       placeholderText="app=frontend"
-      helperText={t('Provide as many labels as you can to narrow the list to relevant hosts only.')}
+      helperText={t(
+        'ai:Provide as many labels as you can to narrow the list to relevant hosts only.',
+      )}
       options={agentLabelOptions}
     />
   );

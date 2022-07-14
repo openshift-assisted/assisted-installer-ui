@@ -7,7 +7,7 @@ import {
   ClusterWizardStepHeader,
   FormikAutoSave,
   getFormikErrorFields,
-  CLUSTER_FIELD_LABELS,
+  clusterFieldLabels,
 } from '../../../common';
 
 import {
@@ -121,7 +121,7 @@ const NetworkingForm: React.FC<NetworkingFormProps> = ({
           isInline
         >
           {t('ai:The following fields are invalid or missing')}:{' '}
-          {errorFields.map((field: string) => CLUSTER_FIELD_LABELS[field] || field).join(', ')}.
+          {errorFields.map((field: string) => clusterFieldLabels(t)[field] || field).join(', ')}.
         </Alert>
       )}
     </ClusterDeploymentWizardFooter>
