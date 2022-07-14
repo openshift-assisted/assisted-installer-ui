@@ -10,7 +10,6 @@ import {
   ModalBoxFooter,
   Stack,
   StackItem,
-  AlertVariant,
 } from '@patternfly/react-core';
 import { DetailItem, DetailList } from '../ui';
 import DiscoveryInstructions from './DiscoveryInstructions';
@@ -47,15 +46,6 @@ const DownloadIso: React.FC<DownloadISOProps> = ({
                 <DiscoveryInstructions isSNO={isSNO} />
               </>
             </Alert>
-          </StackItem>
-          <StackItem>
-            <Alert
-              variant={AlertVariant.info}
-              isInline
-              title={t(
-                'ai:Never share your downloaded ISO with anyone else. Forwarding it could put your credentials and personal data at risk.',
-              )}
-            />
           </StackItem>
           {hasDHCP === false && (
             <StackItem>
