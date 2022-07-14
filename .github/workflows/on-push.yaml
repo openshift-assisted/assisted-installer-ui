@@ -49,6 +49,12 @@ jobs:
             core.exportVariable('UI_LIB_PACKAGE_VERSION', ui_lib_package_version);
             core.exportVariable('UI_LIB_PACKAGE_NAME', `openshift-assisted-ui-lib-v${ui_lib_package_version}.tgz`)
 
+      - name: Validate that i18n locale files are updated and contains 'ai' prefix in keys
+        run: |
+          chmod +x ./scripts/validatei18n_files.sh
+          ./scripts/validatei18n_files.sh
+        shell: bash
+
       - name: Change the package version in assisted-ui-lib to ${{ env.UI_LIB_PACKAGE_VERSION }}
         working-directory: ./assisted-ui-lib
         run: |
