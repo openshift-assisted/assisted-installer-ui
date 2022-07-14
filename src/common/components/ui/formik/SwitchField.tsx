@@ -15,6 +15,7 @@ const SwitchField: React.FC<SwitchFieldProps> = ({
   idPostfix,
   labelIcon,
   tooltipProps,
+  switchOuiaId,
   ...props
 }) => {
   const [field, { touched, error }] = useField(props.name);
@@ -30,6 +31,7 @@ const SwitchField: React.FC<SwitchFieldProps> = ({
     isDisabled: props.isDisabled,
     isChecked: Boolean(field.value),
     hasCheckIcon: Boolean(field.value),
+    ouiaId: switchOuiaId,
     onChange: (checked: boolean, event: React.FormEvent<HTMLInputElement>) => {
       if (onChangeCustomOverride) {
         onChangeCustomOverride(checked, event);

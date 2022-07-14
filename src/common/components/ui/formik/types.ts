@@ -56,6 +56,7 @@ export interface SwitchFieldProps extends FieldProps {
   onChange?: (checked: boolean, event: React.FormEvent<HTMLInputElement>) => void;
   getHelperText?: (value: string) => string | undefined;
   tooltipProps?: TooltipProps;
+  switchOuiaId?: string;
 }
 
 export interface InputFieldProps extends FieldProps {
