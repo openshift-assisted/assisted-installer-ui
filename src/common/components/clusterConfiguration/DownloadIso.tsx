@@ -80,10 +80,9 @@ const DownloadIso: React.FC<DownloadISOProps> = ({
             <Alert
               variant="info"
               isInline
-              title={
-                t('ai:Never share your downloaded ISO with anyone else.') +
-                t('ai:Forwarding it could put your credentials and personal data at risk.')
-              }
+              title={`${t('ai:Never share your downloaded ISO with anyone else.')} ${t(
+                'ai:Forwarding it could put your credentials and personal data at risk.',
+              )}`}
             />
           </StackItem>
         </Stack>
