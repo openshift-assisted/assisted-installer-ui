@@ -49,6 +49,16 @@ jobs:
             core.exportVariable('UI_LIB_PACKAGE_VERSION', ui_lib_package_version);
             core.exportVariable('UI_LIB_PACKAGE_NAME', `openshift-assisted-ui-lib-v${ui_lib_package_version}.tgz`)
 
+      - name: Change the package version in assisted-ui-lib to ${{ env.UI_LIB_PACKAGE_VERSION }}
+        working-directory: ./assisted-ui-lib
+        run: |
+          node scripts/edit-package-version.js ./package.json "$UI_LIB_PACKAGE_VERSION"
+
+      - name: Install deps
+        working-directory: ./assisted-ui-lib
+        run: |
+          yarn install --frozen-lockfile
+
       - name: Validate that i18n locale files are updated and contains 'ai' prefix in keys
         working-directory: ./assisted-ui-lib
         run: |
@@ -56,15 +66,9 @@ jobs:
           ./scripts/validatei18n_files.sh
         shell: bash
 
-      - name: Change the package version in assisted-ui-lib to ${{ env.UI_LIB_PACKAGE_VERSION }}
+      - name: Build and pack
         working-directory: ./assisted-ui-lib
         run: |
-          node scripts/edit-package-version.js ./package.json "$UI_LIB_PACKAGE_VERSION"
-
-      - name: Install deps, build and pack
-        working-directory: ./assisted-ui-lib
-        run: |
-          yarn install --frozen-lockfile
           node scripts/esbuild/prod.js
           yarn pack -f $GITHUB_WORKSPACE/$UI_LIB_PACKAGE_NAME
 
