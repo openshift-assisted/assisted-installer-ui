@@ -11,10 +11,10 @@ export const infraEnvLabelKeys = [INFRAENV_AGENTINSTALL_LABEL_KEY, AGENT_LOCATIO
 type LabelsSelectorProps = {
   agents: AgentK8sResource[];
   labelKeysFilter?: string[];
-  name?: string;
+  name: string;
 };
 
-const LabelsSelector: React.FC<LabelsSelectorProps> = ({ agents, labelKeysFilter }) => {
+const LabelsSelector: React.FC<LabelsSelectorProps> = ({ agents, labelKeysFilter, name }) => {
   const agentLabelOptions = Array.from(
     new Set(
       flatten(
@@ -36,7 +36,7 @@ const LabelsSelector: React.FC<LabelsSelectorProps> = ({ agents, labelKeysFilter
   return (
     <MultiSelectField
       idPostfix="agentLabels"
-      name="agentLabels"
+      name={name}
       label={t('ai:Labels matching hosts')}
       placeholderText="app=frontend"
       helperText={t(

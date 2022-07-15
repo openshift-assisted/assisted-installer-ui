@@ -2,7 +2,7 @@ module.exports = {
   contextSeparator: '_',
   createOldCatalogs: false,
   keySeparator: false,
-  locales: ['en', 'ja'],
+  locales: ['en'],
   defaultNS: process.env.TRANSLATION_NAMESPACE, // the default file for strings when using useTranslation, etc
   namespaceSeparator: '~',
   reactNamespace: false,

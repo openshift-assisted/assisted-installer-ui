@@ -62,7 +62,7 @@ const Hostname: React.FC<HostnameProps> = ({
             <FlexItem className={'pf-u-mr-xs'}>
               <ExclamationTriangleIcon color={warningColor.value} />
             </FlexItem>
-            <FlexItem>Hostname is not valid</FlexItem>
+            <FlexItem>{t('ai:Hostname is not valid')}</FlexItem>
           </Flex>
         }
         bodyContent={

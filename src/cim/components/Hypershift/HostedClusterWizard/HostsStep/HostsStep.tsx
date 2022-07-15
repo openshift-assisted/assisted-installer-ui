@@ -7,6 +7,7 @@ import { HostsStepProps, HostsFormValues, NodePoolFormValue } from './types';
 import { Alert, AlertVariant, Stack, StackItem } from '@patternfly/react-core';
 import { ExternalLink } from '../../../../../common';
 import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
+import { Trans } from 'react-i18next';
 
 const validationSchema = Yup.object<HostsFormValues>().shape({
   agentNamespace: Yup.string().required(),
@@ -60,9 +61,11 @@ const HostsStep: React.FC<HostsStepProps> = ({
             <ExternalLink href="https://www.google.com">{t('ai:Learn more')}</ExternalLink>
           }
         >
-          {t(
-            'ai:Currently, <b>local-cluster</b> will be selected as the hosting service cluster in order to run OpenShift in a hyperscale manner with many control planes hosted on a central hosting service cluster.',
-          )}
+          <Trans
+            t={t}
+            components={{ bold: <strong /> }}
+            i18nKey="ai:Currently, <bold>local-cluster</bold> will be selected as the hosting service cluster in order to run OpenShift in a hyperscale manner with many control planes hosted on a central hosting service cluster."
+          ></Trans>
         </Alert>
       </StackItem>
       <StackItem>
