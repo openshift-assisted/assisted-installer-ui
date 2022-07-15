@@ -85,7 +85,7 @@ const DiskEncryptionControlGroup: React.FC<DiskEncryptionControlGroupProps> = ({
           label={
             isSNO
               ? t('ai:Enable encryption of installation disk')
-              : t("ai:Enable encryption of installation disk's on control plane nodes")
+              : t('ai:Enable encryption of installation disks on control plane nodes')
           }
           isDisabled={isDisabled}
         />

@@ -49,6 +49,7 @@ import UpdateDay2ApiVipModal from './UpdateDay2ApiVipModal';
 import { UpdateDay2ApiVipFormProps } from './UpdateDay2ApiVipForm';
 import { ClustersAPI } from '../../services/apis';
 import { usePagination } from '../../../common/components/hosts/usePagination';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 export const useHostsTable = (cluster: Cluster) => {
   const { addAlert } = useAlerts();
@@ -325,7 +326,7 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
 }) => {
   const dispatch = useDispatch();
   const { resetCluster } = React.useContext(AddHostsContext);
-
+  const { t } = useTranslation();
   const {
     eventsDialog,
     editHostDialog,
@@ -337,7 +338,7 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
     massDeleteHostDialog,
   } = useModalDialogsContext();
 
-  const content = React.useMemo(() => [hostnameColumn(), statusColumn()], []);
+  const content = React.useMemo(() => [hostnameColumn(t), statusColumn(t)], [t]);
   const paginationProps = usePagination(massDeleteHostDialog.data?.hosts?.length || 0);
 
   return (

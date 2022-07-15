@@ -96,12 +96,12 @@ export const discoveryTypeColumn = (
       if (agent) {
         // eslint-disable-next-line no-prototype-builtins
         discoveryType = agent?.metadata?.labels?.hasOwnProperty(AGENT_BMH_NAME_LABEL_KEY)
-          ? 'BMC'
-          : 'Discovery ISO';
+          ? t('ai:BMC')
+          : t('ai:Discovery ISO');
       } else {
         const bmh = bareMetalHosts.find((bmh) => bmh.metadata?.uid === host.id);
         if (bmh) {
-          discoveryType = 'BMC';
+          discoveryType = t('ai:BMC');
         }
         return {
           title: discoveryType,

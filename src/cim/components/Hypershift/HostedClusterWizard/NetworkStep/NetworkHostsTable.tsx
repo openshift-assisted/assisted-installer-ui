@@ -52,7 +52,10 @@ const NetworkHostsTable: React.FC<NetworkHostsTableProps> = ({ agents, onEditHos
   );
   const { t } = useTranslation();
   const content = React.useMemo(
-    () => [hostnameColumn(tableActions.onEditHost, hosts), activeNICColumn(values.machineCIDR, t)],
+    () => [
+      hostnameColumn(t, tableActions.onEditHost, hosts),
+      activeNICColumn(values.machineCIDR, t),
+    ],
     [hosts, values.machineCIDR, tableActions],
   );
 

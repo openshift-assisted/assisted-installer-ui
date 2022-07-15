@@ -35,6 +35,7 @@ import { AgentTableActions, ClusterDeploymentNetworkingValues } from './types';
 import { useFormikContext } from 'formik';
 import { getGridSpans } from './helpers';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { Trans } from 'react-i18next';
 
 // TODO(mlibra): So far a constant. Should be queried from somewhere.
 export const defaultNetworkSettings: ClusterDefaultConfig = CLUSTER_DEFAULT_NETWORK_SETTINGS_IPV4;
@@ -98,9 +99,11 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
           <TextContent>
             <Text component="h2">{t('ai:Cluster-wide proxy')}</Text>
             <Text component={TextVariants.p}>
-              {t(
-                'ai:The hosts you selected are using different proxy settings. Configure a proxy that will be applied for these hosts. <b>Configure at least one of the proxy settings below.</b>',
-              )}
+              <Trans
+                t={t}
+                components={{ bold: <strong /> }}
+                i18nKey="ai:The hosts you selected are using different proxy settings. Configure a proxy that will be applied for these hosts. <bold>Configure at least one of the proxy settings below.</bold>"
+              ></Trans>
             </Text>
           </TextContent>
           <ProxyInputFields />

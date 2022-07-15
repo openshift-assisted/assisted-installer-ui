@@ -1,6 +1,5 @@
 import React from 'react';
 import { Host, HostRole } from '../../api/types';
-import { pluralize } from 'humanize-plus';
 import { CheckCircleIcon, ExclamationCircleIcon, InProgressIcon } from '@patternfly/react-icons';
 import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens/dist/esm/global_danger_color_100';
 import { global_success_color_100 as okColor } from '@patternfly/react-tokens/dist/esm/global_success_color_100';
@@ -13,12 +12,15 @@ type HostProgressProps = {
 };
 
 export const ProgressBarTexts = ({ hosts, hostRole }: HostProgressProps) => {
-  const hostRoleText = pluralize(hosts.length, hostRole === 'master' ? 'Control Plane' : 'Worker');
-  const hostCountText = `${hosts.length} ${pluralize(
-    hosts.length,
-    hostRole === 'master' ? 'control plane node' : 'worker',
-  )}`;
   const { t } = useTranslation();
+  const hostRoleText =
+    hostRole === 'master'
+      ? t('ai:Control Plane', { count: hosts.length })
+      : t('ai:Worker', { count: hosts.length });
+  const hostCountText =
+    hostRole === 'master'
+      ? t('ai:{{count}} control plane node', { count: hosts.length })
+      : t('ai:{{count}} worker', { count: hosts.length });
   if (hosts.some((host) => ['cancelled', 'error'].includes(host.status))) {
     const failedHostsCount = hosts.filter((host) => host.status === 'error').length;
     return (
@@ -53,7 +55,9 @@ export const ProgressBarTexts = ({ hosts, hostRole }: HostProgressProps) => {
       <>
         {hostRoleText}
         <br />
-        <small>{t('ai:Installing {{hostCountText}}', hostCountText)}</small>
+        <small>
+          {t('ai:Installing')} {hostCountText}
+        </small>
       </>
     </ClusterProgressItem>
   );
