@@ -19,7 +19,6 @@ import {
 } from '@patternfly/react-core';
 import { Formik, FormikProps, useFormikContext } from 'formik';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 import {
   httpProxyValidationSchema,
@@ -46,6 +45,7 @@ import {
 
 import './infra-env.css';
 import { getErrorMessage } from '../../../common/utils';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 import { TFunction } from 'i18next';
 export type EnvironmentStepFormValues = {

@@ -6,6 +6,7 @@ import { ProxyFieldsType } from '../../types';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 import './ProxyFields.css';
+import { Trans } from 'react-i18next';
 
 export const ProxyInputFields = () => {
   const { setFieldValue, values } = useFormikContext<ProxyFieldsType>();
@@ -30,7 +31,15 @@ export const ProxyInputFields = () => {
         }
         name="httpProxy"
         placeholder="http://<user>:<password>@<ipaddr>:<port>"
-        helperText={<div>{t('ai:URL must start with <b>http</b>.')}</div>}
+        helperText={
+          <div>
+            <Trans
+              t={t}
+              components={{ bold: <strong /> }}
+              i18nKey="ai:URL must start with <bold>http</bold>."
+            ></Trans>
+          </div>
+        }
       />
       <InputField
         label={
@@ -47,7 +56,11 @@ export const ProxyInputFields = () => {
         placeholder="http://<user>:<password>@<ipaddr>:<port>"
         helperText={
           <div>
-            {t('ai:URL must start with <b>http</b> (https schemes are not currently supported).')}
+            <Trans
+              t={t}
+              components={{ bold: <strong /> }}
+              i18nKey="'ai:URL must start with <bold>http</bold> (https schemes are not currently supported)."
+            ></Trans>
           </div>
         }
       />
@@ -66,9 +79,11 @@ export const ProxyInputFields = () => {
         placeholder="one.domain.com,second.domain.com"
         helperText={
           <div>
-            {t(
-              'ai:Use a comma to separate each listed domain. Preface a domain with <b>.</b> to include its subdomains. Use <b>*</b> to bypass the proxy for all destinations.',
-            )}
+            <Trans
+              t={t}
+              components={{ bold: <strong /> }}
+              i18nKey="ai:Use a comma to separate each listed domain. Preface a domain with <bold>.</bold> to include its subdomains. Use <bold>*</bold> to bypass the proxy for all destinations."
+            ></Trans>
           </div>
         }
         onBlur={onNoProxyBlur}
