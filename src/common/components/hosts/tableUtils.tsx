@@ -52,7 +52,7 @@ export const hostnameColumn = (
 ): TableRow<Host> => {
   return {
     header: {
-      title: t ? t('ai:Hostname') : 'Hostname',
+      title: t('ai:Hostname'),
       props: {
         id: 'col-header-hostname', // ACM jest tests require id over testId
       },
@@ -90,7 +90,7 @@ export const roleColumn = (
 ): TableRow<Host> => {
   return {
     header: {
-      title: t ? t('ai:Role') : 'Role',
+      title: t('ai:Role'),
       props: {
         id: 'col-header-role',
       },
@@ -127,7 +127,7 @@ export const statusColumn = (
 ): TableRow<Host> => {
   return {
     header: {
-      title: t ? t('ai:Status') : 'Status',
+      title: t('ai:Status'),
       props: {
         id: 'col-header-status',
       },

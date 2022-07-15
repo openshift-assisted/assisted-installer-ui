@@ -21,8 +21,6 @@ export const getTotalCompute = (selectedAgents: AgentK8sResource[], t: TFunction
     cpus: totals.cpus,
     memory: fileSize(totals.memory, 2, 'iec'),
   });
-  //return t('${totals.cpus} CPUs | ${fileSize(totals.memory, 2, "iec")} Memory');
-  //return `${totals.cpus} CPUs | ${fileSize(totals.memory, 2, 'iec')} Memory`;
 };
 
 type ShortCapacitySummaryProps = {

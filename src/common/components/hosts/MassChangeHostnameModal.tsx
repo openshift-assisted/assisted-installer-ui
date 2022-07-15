@@ -154,7 +154,7 @@ const MassChangeHostnameForm: React.FC<MassChangeHostnameFormProps> = ({
             <StackItem>
               <div>{t('ai:Rename hostnames using the custom template:')}</div>
               <div>
-                <b>{`{{n}}`}</b> {t('ai:to add a number.')}
+                <strong>{`{{n}}`}</strong> {t('ai:to add a number.')}
               </div>
             </StackItem>
             <StackItem>
@@ -176,14 +176,14 @@ const MassChangeHostnameForm: React.FC<MassChangeHostnameFormProps> = ({
                 <SplitItem className="hostname-column">
                   {selectedHosts.map((h, index) => (
                     <div key={h.id || index} className="hostname-column__text">
-                      <b>{getHostname(h)}</b>
+                      <strong>{getHostname(h)}</strong>
                     </div>
                   ))}
                 </SplitItem>
                 <SplitItem>
                   {selectedHosts.map((h, index) => (
                     <div key={h.id || index}>
-                      <b>{'  >  '}</b>
+                      <strong>{'  >  '}</strong>
                     </div>
                   ))}
                 </SplitItem>
@@ -260,8 +260,8 @@ const MassChangeHostnameModal: React.FC<MassChangeHostnameModalProps> = ({
   const { t } = useTranslation();
   return (
     <Modal
-      aria-label="Change hostname dialog"
-      title={t('ai:Change hostname')}
+      aria-label={t('ai:Change hostnames dialog')}
+      title={t('ai:Change hostnames')}
       isOpen={isOpen}
       onClose={onClose}
       hasNoBodyWrapper
