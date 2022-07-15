@@ -103,7 +103,6 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({ cluster }) =>
       hostnameColumn(t, onEditHost, undefined, actionChecks.canEditHostname),
       roleColumn(t, actionChecks.canEditRole, onEditRole, selectSchedulableMasters(cluster)),
       hardwareStatusColumn(onEditHost),
-      hardwareStatusColumn(onEditHost),
       discoveredAtColumn,
       cpuCoresColumn,
       memoryColumn,
