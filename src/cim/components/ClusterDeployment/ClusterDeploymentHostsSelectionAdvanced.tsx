@@ -58,7 +58,7 @@ const ClusterDeploymentHostsSelectionAdvanced = <T extends FormValues>({
           <LocationsSelector agents={availableAgents} />
         </GridItem>
         <GridItem>
-          <LabelsSelector agents={matchingAgents} />
+          <LabelsSelector agents={matchingAgents} name="agentLabels" />
         </GridItem>
 
         <GridItem>

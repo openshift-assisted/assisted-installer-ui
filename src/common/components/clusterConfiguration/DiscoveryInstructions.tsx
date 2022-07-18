@@ -1,6 +1,7 @@
 import React from 'react';
 import { TextListItem, OrderType, Text, TextContent, TextList } from '@patternfly/react-core';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { Trans } from 'react-i18next';
 
 type DiscoveryInstructionsProps = {
   showAllInstructions?: boolean;
@@ -28,7 +29,12 @@ const DiscoveryInstructions = ({
           )}
         </TextListItem>
         <TextListItem>
-          {t('ai:Set the host to boot <b>only one time</b> from this device.', { count: +isSNO })}
+          <Trans
+            t={t}
+            count={+isSNO}
+            components={{ bold: <strong /> }}
+            i18nKey="ai:Set the host to boot <bold>only one time</bold> from this device."
+          ></Trans>
         </TextListItem>
         <TextListItem>{t('ai:Discovered hosts will appear in the table.')}</TextListItem>
       </TextList>

@@ -6,17 +6,12 @@ import {
   ButtonVariant,
   ClipboardCopy,
   clipboardCopyFunc,
-  EmptyState,
-  EmptyStateIcon,
-  EmptyStateVariant,
-  Title,
   ModalBoxBody,
   ModalBoxFooter,
   Stack,
   StackItem,
+  AlertVariant,
 } from '@patternfly/react-core';
-import { global_success_color_100 as successColor } from '@patternfly/react-tokens';
-import { CheckCircleIcon } from '@patternfly/react-icons';
 import { DetailItem, DetailList } from '../ui';
 import DiscoveryInstructions from './DiscoveryInstructions';
 import { StaticIPInfo } from './DiscoveryImageConfigForm';
@@ -45,19 +40,29 @@ const DownloadIso: React.FC<DownloadISOProps> = ({
     <>
       <ModalBoxBody>
         <Stack hasGutter>
+          <StackItem>
+            <Alert isInline variant="success" title={t('ai: Discovery ISO is ready for download')}>
+              <>
+                &nbsp;
+                <DiscoveryInstructions isSNO={isSNO} />
+              </>
+            </Alert>
+          </StackItem>
+          <StackItem>
+            <Alert
+              variant={AlertVariant.info}
+              isInline
+              title={t(
+                'ai:Never share your downloaded ISO with anyone else. Forwarding it could put your credentials and personal data at risk.',
+              )}
+            />
+          </StackItem>
           {hasDHCP === false && (
             <StackItem>
               <StaticIPInfo />
             </StackItem>
           )}
           <StackItem>
-            <EmptyState variant={EmptyStateVariant.small}>
-              <EmptyStateIcon icon={CheckCircleIcon} color={successColor.value} />
-              <Title headingLevel="h4" size="lg">
-                {t('ai:Discovery ISO is ready to download')}
-              </Title>
-            </EmptyState>
-            <DiscoveryInstructions isSNO={isSNO} />
             <DetailList>
               <DetailItem
                 title={t('ai:Discovery ISO URL')}
@@ -86,7 +91,7 @@ const DownloadIso: React.FC<DownloadISOProps> = ({
               variant="info"
               isInline
               title={
-                t('ai:Never share your downloaded ISO with anyone else. ') +
+                t('ai:Never share your downloaded ISO with anyone else.') +
                 t('ai:Forwarding it could put your credentials and personal data at risk.')
               }
             />

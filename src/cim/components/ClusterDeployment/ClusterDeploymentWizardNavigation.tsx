@@ -5,6 +5,7 @@ import { wizardStepNames } from './constants';
 import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
 import { ClusterDeploymentWizardStepsType } from './types';
 import { isCIMFlow } from './helpers';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 const wizardSteps = Object.keys(wizardStepNames) as ClusterDeploymentWizardStepsType[];
 
@@ -14,13 +15,14 @@ const ClusterDeploymentWizardNavigation: React.FC<{
   const { currentStepId, setCurrentStepId, clusterDeployment } = React.useContext(
     ClusterDeploymentWizardContext,
   );
-
+  const { t } = useTranslation();
+  const stepNames = wizardStepNames(t);
   return (
     <WizardNav>
       <WizardNavItem key="installation-type" content="Installation type" step={0} isDisabled />
       <WizardNavItem
         key="cluster-details"
-        content={wizardStepNames['cluster-details']}
+        content={stepNames['cluster-details']}
         isCurrent={currentStepId === 'cluster-details'}
         // isValid={ () => !cluster || canNextHostDiscovery({ cluster }) }
         isDisabled={false}
@@ -31,7 +33,7 @@ const ClusterDeploymentWizardNavigation: React.FC<{
       {isCIMFlow(clusterDeployment) ? (
         <WizardNavItem
           key="hosts-selection"
-          content={wizardStepNames['hosts-selection']}
+          content={stepNames['hosts-selection']}
           isDisabled={!wizardSteps.slice(1).includes(currentStepId)}
           // isValid={ () => !cluster || canNextHostDiscovery({ cluster }) }
           isCurrent={currentStepId === 'hosts-selection'}
@@ -41,7 +43,7 @@ const ClusterDeploymentWizardNavigation: React.FC<{
       ) : (
         <WizardNavItem
           key="hosts-discovery"
-          content={wizardStepNames['hosts-discovery']}
+          content={stepNames['hosts-discovery']}
           isDisabled={!wizardSteps.slice(1).includes(currentStepId)}
           // isValid={ () => !cluster || canNextHostDiscovery({ cluster }) }
           isCurrent={currentStepId === 'hosts-discovery'}
@@ -51,7 +53,7 @@ const ClusterDeploymentWizardNavigation: React.FC<{
       )}
       <WizardNavItem
         key="networking"
-        content={wizardStepNames['networking']}
+        content={stepNames['networking']}
         isDisabled={!wizardSteps.slice(2).includes(currentStepId)}
         // isValid={ () => !cluster || canNextHostDiscovery({ cluster }) }
         isCurrent={currentStepId === 'networking'}
@@ -60,7 +62,7 @@ const ClusterDeploymentWizardNavigation: React.FC<{
       />
       <WizardNavItem
         key="review"
-        content={wizardStepNames['review']}
+        content={stepNames['review']}
         isDisabled={!wizardSteps.slice(3).includes(currentStepId)}
         // isValid={ () => !cluster || canNextHostDiscovery({ cluster }) }
         isCurrent={currentStepId === 'review'}

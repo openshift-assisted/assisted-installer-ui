@@ -18,13 +18,14 @@ import {
   richNameValidationSchema,
   RichInputField,
   StaticTextField,
-  HOSTNAME_VALIDATION_MESSAGES,
+  hostnameValidationMessages,
   getRichTextValidation,
 } from '../ui';
 import { canHostnameBeChanged } from './utils';
 import GridGap from '../ui/GridGap';
 import { EditHostFormValues } from './types';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { TFunction } from 'i18next';
 
 export type EditHostFormProps = {
   host: Host;
@@ -37,9 +38,13 @@ export type EditHostFormProps = {
   onFormSaveError?: (e: any) => void | string;
 };
 
-const validationSchema = (initialValues: EditHostFormValues, usedHostnames: string[] = []) =>
+const validationSchema = (
+  t: TFunction,
+  initialValues: EditHostFormValues,
+  usedHostnames: string[] = [],
+) =>
   Yup.object().shape({
-    hostname: richNameValidationSchema(usedHostnames, initialValues.hostname),
+    hostname: richNameValidationSchema(t, usedHostnames, initialValues.hostname),
   });
 
 const EditHostForm: React.FC<EditHostFormProps> = ({
@@ -69,7 +74,7 @@ const EditHostForm: React.FC<EditHostFormProps> = ({
       validateOnMount
       initialValues={initialValues}
       initialStatus={{ error: null }}
-      validate={getRichTextValidation(validationSchema(initialValues, usedHostnames))}
+      validate={getRichTextValidation(validationSchema(t, initialValues, usedHostnames))}
       onSubmit={async (values, formikActions) => {
         if (values.hostname === initialValues.hostname) {
           // no change to save
@@ -120,7 +125,7 @@ const EditHostForm: React.FC<EditHostFormProps> = ({
                 ref={hostnameInputRef}
                 isRequired
                 isDisabled={!canHostnameBeChanged(host.status)}
-                richValidationMessages={HOSTNAME_VALIDATION_MESSAGES}
+                richValidationMessages={hostnameValidationMessages(t)}
               />
             </GridGap>
           </ModalBoxBody>

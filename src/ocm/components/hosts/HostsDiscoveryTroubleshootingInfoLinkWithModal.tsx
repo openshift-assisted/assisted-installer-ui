@@ -16,7 +16,7 @@ const HostsDiscoveryTroubleshootingInfoLinkWithModal = ({
       modalTitle={'Troubleshooting Host Discovery Issues'}
       modalVariant={'large'}
     >
-      {DiscoveryTroubleshootingModalContent}
+      <DiscoveryTroubleshootingModalContent />
     </InfoLinkWithModal>
   );
 };
