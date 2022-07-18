@@ -93,7 +93,7 @@ export const LabelSelectorGroup: React.FC<LabelsSelectorProps> = ({
           key={option.id}
           id={option.id}
           onClick={() => {
-            const values = (option.value as string).split('=', 1);
+            const values = (option.value as string).split('=', 2);
             setValue([...field.value, { key: values[0], value: values[1] }]);
           }}
         >
