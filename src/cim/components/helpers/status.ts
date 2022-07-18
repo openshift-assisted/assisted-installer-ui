@@ -128,9 +128,14 @@ const getInsufficientState = (agent: AgentK8sResource) =>
 export const getAgentStatus = (
   agent: AgentK8sResource,
   excludeDiscovered = false,
-): { status: HostStatusDef; validationsInfo: ValidationsInfo } => {
+  autoCSR = false,
+): { status: HostStatusDef; validationsInfo: ValidationsInfo; autoCSR?: boolean } => {
   let status: HostStatusDef =
     agentStatus[agent.status?.debugInfo?.state || getInsufficientState(agent)];
+
+  if (autoCSR && status.key === 'added-to-existing-cluster') {
+    status = agentStatus['installed'];
+  }
   const validationsInfo = agent.status?.validationsInfo || {};
   if (!excludeDiscovered && !agent.spec.approved) {
     status = agentStatus.discovered;

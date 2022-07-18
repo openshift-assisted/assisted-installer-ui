@@ -2,12 +2,16 @@ import React from 'react';
 import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core';
 import { CaretDownIcon } from '@patternfly/react-icons';
 import { Disk, DiskRole as DiskRoleValue, Host } from '../../api';
-import { DISK_ROLE_LABELS } from '../../config';
+import { diskRoleLabels } from '../../config';
 import { useStateSafely } from '../../hooks';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { TFunction } from 'i18next';
 
-const getCurrentDiskRoleLabel = (disk: Disk, installationDiskId: Host['installationDiskId']) =>
-  disk.id === installationDiskId ? DISK_ROLE_LABELS.install : DISK_ROLE_LABELS.none;
+const getCurrentDiskRoleLabel = (
+  disk: Disk,
+  installationDiskId: Host['installationDiskId'],
+  t: TFunction,
+) => (disk.id === installationDiskId ? diskRoleLabels(t).install : diskRoleLabels(t).none);
 
 export type onDiskRoleType = (
   hostId: Host['id'],
@@ -30,6 +34,8 @@ const DiskRole: React.FC<DiskRoleProps> = ({
   isEditable,
   onDiskRole,
 }) => {
+  const { t } = useTranslation();
+  const currentRoleLabel = getCurrentDiskRoleLabel(disk, installationDiskId, t);
   if (isEditable && disk.id !== installationDiskId && onDiskRole) {
     return (
       <DiskRoleDropdown
@@ -40,7 +46,7 @@ const DiskRole: React.FC<DiskRoleProps> = ({
       />
     );
   }
-  return <>{getCurrentDiskRoleLabel(disk, installationDiskId)}</>;
+  return <>{currentRoleLabel}</>;
 };
 
 type DiskRoleDropdownProps = {
@@ -68,7 +74,7 @@ const DiskRoleDropdown: React.FC<DiskRoleDropdownProps> = ({
         !disk.installationEligibility?.eligible && t('ai:Disk is not eligible for installation')
       }
     >
-      {DISK_ROLE_LABELS.install}
+      {diskRoleLabels(t).install}
     </DropdownItem>,
   ];
 
@@ -88,7 +94,7 @@ const DiskRoleDropdown: React.FC<DiskRoleDropdownProps> = ({
     [setOpen, setDisabled, onDiskRole, host.id, disk.id],
   );
 
-  const currentRoleLabel = getCurrentDiskRoleLabel(disk, installationDiskId);
+  const currentRoleLabel = getCurrentDiskRoleLabel(disk, installationDiskId, t);
   const toggle = React.useMemo(
     () => (
       <DropdownToggle

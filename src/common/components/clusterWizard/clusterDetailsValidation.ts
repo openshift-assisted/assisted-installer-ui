@@ -80,23 +80,23 @@ export const getClusterDetailsInitialValues = ({
 export const getClusterDetailsValidationSchema = ({
   usedClusterNames,
   featureSupportLevels,
-  t,
   pullSecretSet,
   ocpVersions,
   validateUniqueName,
   isOcm,
+  t,
 }: {
   usedClusterNames: string[];
   featureSupportLevels: FeatureSupportLevelData;
-  t: TFunction;
   pullSecretSet?: boolean;
   ocpVersions?: OpenshiftVersionOptionType[];
   validateUniqueName?: boolean;
   isOcm?: boolean;
+  t: TFunction;
 }) =>
   Yup.lazy<{ baseDnsDomain: string }>((values) => {
     const validateName = () =>
-      nameValidationSchema(usedClusterNames, values.baseDnsDomain, validateUniqueName, isOcm);
+      nameValidationSchema(t, usedClusterNames, values.baseDnsDomain, validateUniqueName, isOcm);
     if (pullSecretSet) {
       return Yup.object({
         name: validateName(),

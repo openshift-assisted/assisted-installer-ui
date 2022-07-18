@@ -20,15 +20,17 @@ import {
   Tooltip,
 } from '@patternfly/react-core';
 import { FilterIcon, SyncIcon } from '@patternfly/react-icons';
-import { Cluster, CLUSTER_STATUS_LABELS, ToolbarButton } from '../../../common';
+import { Cluster, clusterStatusLabels, ToolbarButton } from '../../../common';
 import { ResourceUIState } from '../../../common';
 import { selectClustersUIState } from '../../selectors/clusters';
 import { fetchClustersAsync } from '../../reducers/clusters/clustersSlice';
 import { routeBasePath } from '../../config';
 import omit from 'lodash/omit';
+import { TFunction } from 'i18next';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 export type ClusterFiltersType = {
-  [key: string]: string[]; // value from CLUSTER_STATUS_LABELS
+  [key: string]: string[]; // value from clusterStatusLabels
 };
 
 type ClustersListToolbarProps = {
@@ -38,9 +40,8 @@ type ClustersListToolbarProps = {
   setFilters: (filters: ClusterFiltersType) => void;
 };
 
-const clusterStatusFilterLabels = Array.from(
-  new Set(Object.values(omit(CLUSTER_STATUS_LABELS, 'adding-hosts'))),
-);
+const clusterStatusFilterLabels = (t: TFunction) =>
+  Array.from(new Set(Object.values(omit(clusterStatusLabels(t), 'adding-hosts'))));
 
 const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
   searchString,
@@ -101,7 +102,7 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
       <FilterIcon /> Status
     </>
   );
-
+  const { t } = useTranslation();
   return (
     <Toolbar
       id="clusters-list-toolbar"
@@ -140,7 +141,7 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
             placeholderText={statusPlaceholder}
             toggleId="cluster-list-filter-status"
           >
-            {clusterStatusFilterLabels.map((label) => (
+            {clusterStatusFilterLabels(t).map((label) => (
               <SelectOption
                 key={label}
                 value={label}

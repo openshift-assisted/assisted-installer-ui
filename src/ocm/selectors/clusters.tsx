@@ -17,6 +17,7 @@ import {
 import { RootState } from '../store/rootReducer';
 import ClusterStatus, { getClusterStatusText } from '../components/clusters/ClusterStatus';
 import { routeBasePath } from '../config/routeBaseBath';
+import { TFunction } from 'i18next';
 
 const selectClusters = (state: RootState) => state.clusters.data;
 const clustersUIState = (state: RootState) => state.clusters.uiState;
@@ -30,10 +31,9 @@ export const selectClustersUIState = createSelector(
   },
 );
 
-const clusterToClusterTableRow = (cluster: Cluster): IRow => {
+const clusterToClusterTableRow = (cluster: Cluster, t: TFunction): IRow => {
   const { id, name = '', openshiftVersion, baseDnsDomain, createdAt } = cluster;
   const dateTimeCell = getDateTimeCell(createdAt);
-
   return {
     cells: [
       {
@@ -58,7 +58,7 @@ const clusterToClusterTableRow = (cluster: Cluster): IRow => {
       {
         title: <ClusterStatus status={cluster.status} />,
         props: { 'data-testid': `cluster-status-${name}` },
-        sortableValue: getClusterStatusText(cluster.status),
+        sortableValue: getClusterStatusText(t, cluster.status),
       } as HumanizedSortable,
       {
         title: <HostsCount cluster={cluster} />,
@@ -83,10 +83,12 @@ const clusterToClusterTableRow = (cluster: Cluster): IRow => {
 export const getClusterTableStatusCell = (rowData: IRowData) =>
   rowData?.cells?.[3] as HumanizedSortable;
 
-export const selectClusterTableRows = createSelector(
-  selectClusters,
-  (clusters): ClusterTableRows => clusters.map(clusterToClusterTableRow),
-);
+export const selectClusterTableRows = (t: TFunction) => {
+  return createSelector(
+    selectClusters,
+    (clusters): ClusterTableRows => clusters.map((c) => clusterToClusterTableRow(c, t)),
+  );
+};
 
 export const selectClusterNames = createSelector(selectClusters, (clusters) =>
   clusters.map((c) => c.name),

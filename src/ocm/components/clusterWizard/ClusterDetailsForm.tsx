@@ -54,8 +54,6 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
     navigation,
   } = props;
 
-  const { t } = useTranslation();
-
   const { search } = useLocation();
   const featureSupportLevels = useFeatureSupportLevel();
   const handleSubmit = React.useCallback(
@@ -93,14 +91,14 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
       }),
     [cluster, pullSecret, managedDomains, ocpVersions, infraEnv],
   );
-
+  const { t } = useTranslation();
   const validationSchema = getClusterDetailsValidationSchema({
     usedClusterNames,
     featureSupportLevels,
-    t,
     pullSecretSet: cluster?.pullSecretSet,
     ocpVersions,
     isOcm: true,
+    t,
   });
 
   return (

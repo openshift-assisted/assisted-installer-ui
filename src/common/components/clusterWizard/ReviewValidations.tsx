@@ -22,7 +22,7 @@ import {
   Validation as HostValidation,
 } from '../../types/hosts';
 import { stringToJSON } from '../../api';
-import { CLUSTER_VALIDATION_LABELS, HOST_VALIDATION_LABELS } from '../../config';
+import { clusterValidationLabels, hostValidationLabels } from '../../config';
 import { getEnabledHosts } from '../hosts';
 import { findValidationFixStep } from './validationsInfoUtils';
 import {
@@ -71,8 +71,8 @@ const FailingValidation: FailingValidationsFC = ({
 
   const issue = t('ai:{{check_failed}} check failed', {
     check_failed:
-      HOST_VALIDATION_LABELS[validation.id] ||
-      CLUSTER_VALIDATION_LABELS[validation.id] ||
+      hostValidationLabels(t)[validation.id] ||
+      clusterValidationLabels(t)[validation.id] ||
       validation.id,
   });
 
