@@ -25,7 +25,7 @@ const DiscoveryInstructions = ({
         </TextListItem>
         <TextListItem>
           {t(
-            'ai:Download the Discovery ISO and save it on a bootable device (local disk, USB drive, etc.).',
+            'ai:Download the Discovery ISO (onto a USB drive, attach it to a virtual media, etc.) and use it to boot your hosts.',
           )}
         </TextListItem>
         <TextListItem>
@@ -33,10 +33,14 @@ const DiscoveryInstructions = ({
             t={t}
             count={+isSNO}
             components={{ bold: <strong /> }}
-            i18nKey="ai:Set the host to boot <bold>only one time</bold> from this device."
-          />
+            i18nKey="ai:Keep the Discovery ISO media connected to the device throughout the installation process and set each host to boot <bold>only one time</bold> from this device. "
+          ></Trans>
         </TextListItem>
-        <TextListItem>{t('ai:Discovered hosts will appear in the table.')}</TextListItem>
+        <TextListItem>
+          {t(
+            'ai:Booted hosts should appear in the host inventory table. This may take a few minutes.',
+          )}
+        </TextListItem>
       </TextList>
     </TextContent>
   );
