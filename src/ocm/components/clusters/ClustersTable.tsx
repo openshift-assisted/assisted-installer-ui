@@ -20,8 +20,9 @@ import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Tabl
 import { ClusterTableRows } from '../../../common/types/clusters';
 import DeleteClusterModal from './DeleteClusterModal';
 import { getClusterTableStatusCell } from '../../selectors/clusters';
-import { CLUSTER_STATUS_LABELS, rowSorter, HumanizedSortable } from '../../../common';
+import { clusterStatusLabels, rowSorter, HumanizedSortable } from '../../../common';
 import ClustersListToolbar, { ClusterFiltersType } from './ClustersListToolbar';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 const rowKey = ({ rowData }: ExtraParamsType) => rowData?.props.id;
 
@@ -91,6 +92,8 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
     status: [],
   });
 
+  const { t } = useTranslation();
+
   React.useEffect(() => {
     const marshalled = window.sessionStorage.getItem(STORAGE_KEY_CLUSTERS_FILTER);
     if (marshalled) {
@@ -118,7 +121,7 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
         title: 'Delete',
         id: `button-delete-${rowData.props.name}`,
         isDisabled:
-          getClusterTableStatusCell(rowData).sortableValue === CLUSTER_STATUS_LABELS.installing,
+          getClusterTableStatusCell(rowData).sortableValue === clusterStatusLabels(t).installing,
         onClick: (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
           setDeleteClusterID({ id: rowData.props.id, name: rowData.props.name });
         },

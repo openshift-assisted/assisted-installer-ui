@@ -27,13 +27,15 @@ import { handleApiError, getApiErrorMessage } from '../../api/utils';
 import ClusterBreadcrumbs from './ClusterBreadcrumbs';
 import { routeBasePath } from '../../config';
 import { ClustersService } from '../../services';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type ClustersProps = RouteComponentProps;
 
 const Clusters: React.FC<ClustersProps> = ({ history }) => {
   const { LOADING, EMPTY, ERROR, RELOADING } = ResourceUIState;
   const { addAlert } = useAlerts();
-  const clusterRows = useSelector(selectClusterTableRows);
+  const { t } = useTranslation();
+  const clusterRows = useSelector(selectClusterTableRows(t));
   const clustersUIState = useSelector(selectClustersUIState);
   const uiState = React.useRef(clustersUIState);
   if (clustersUIState !== RELOADING) {

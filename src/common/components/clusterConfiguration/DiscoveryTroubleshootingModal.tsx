@@ -11,6 +11,7 @@ import {
 import { InfoCircleIcon } from '@patternfly/react-icons';
 import { PrismCode } from '../ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { Trans } from 'react-i18next';
 
 export const DiscoveryTroubleshootingModalContent: React.FC = () => {
   const { t } = useTranslation();
@@ -68,9 +69,11 @@ Oct 15 11:26:35 localhost systemd[1]: agent.service: Failed with result 'exit-co
 Oct 15 11:26:35 localhost systemd[1]: Failed to start agent.service.`}
       />
       <Text component={TextVariants.p}>
-        {t(
-          'ai:Check the proxy settings and verify that the assisted installer service is connected to a network. You can use <code>nmcli</code> to get additional information about your network configuration.',
-        )}
+        <Trans
+          t={t}
+          components={{ code: <code /> }}
+          i18nKey="'ai:Check the proxy settings and verify that the assisted installer service is connected to a network. You can use <code>nmcli</code> to get additional information about your network configuration."
+        ></Trans>
       </Text>
       <Text component={TextVariants.h2}>{t('ai:Check agent logs')}</Text>
       <Text component={TextVariants.p}>
@@ -134,7 +137,7 @@ export const DiscoveryTroubleshootingModal: React.FC<DiscoveryTroubleshootingMod
       onClose={onClose}
       variant={ModalVariant.large}
     >
-      {DiscoveryTroubleshootingModalContent}
+      <DiscoveryTroubleshootingModalContent />
     </Modal>
   );
 };

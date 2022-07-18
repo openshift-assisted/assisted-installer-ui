@@ -10,7 +10,7 @@ import {
   pullSecretValidationSchema,
 } from '../ui';
 import { ClusterDetailsValues } from './types';
-import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { TFunction } from 'i18next';
 
 const emptyTangServers = (): TangServer[] => {
   return [
@@ -84,6 +84,7 @@ export const getClusterDetailsValidationSchema = ({
   ocpVersions,
   validateUniqueName,
   isOcm,
+  t,
 }: {
   usedClusterNames: string[];
   featureSupportLevels: FeatureSupportLevelData;
@@ -91,12 +92,11 @@ export const getClusterDetailsValidationSchema = ({
   ocpVersions?: OpenshiftVersionOptionType[];
   validateUniqueName?: boolean;
   isOcm?: boolean;
+  t: TFunction;
 }) =>
   Yup.lazy<{ baseDnsDomain: string }>((values) => {
     const validateName = () =>
-      nameValidationSchema(usedClusterNames, values.baseDnsDomain, validateUniqueName, isOcm);
-
-    const { t } = useTranslation();
+      nameValidationSchema(t, usedClusterNames, values.baseDnsDomain, validateUniqueName, isOcm);
     if (pullSecretSet) {
       return Yup.object({
         name: validateName(),

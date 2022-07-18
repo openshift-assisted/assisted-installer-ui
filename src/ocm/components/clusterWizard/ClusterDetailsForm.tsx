@@ -23,6 +23,7 @@ import { ClusterDetailsService } from '../../services';
 import { OcmClusterDetailsValues } from '../../services/types';
 import { OcmClusterDetailsFormFields } from '../clusterConfiguration/OcmClusterDetailsFormFields';
 import { useLocation } from 'react-router-dom';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type ClusterDetailsFormProps = {
   cluster?: Cluster;
@@ -90,13 +91,14 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
       }),
     [cluster, pullSecret, managedDomains, ocpVersions, infraEnv],
   );
-
+  const { t } = useTranslation();
   const validationSchema = getClusterDetailsValidationSchema({
     usedClusterNames,
     featureSupportLevels,
     pullSecretSet: cluster?.pullSecretSet,
     ocpVersions,
     isOcm: true,
+    t,
   });
 
   return (

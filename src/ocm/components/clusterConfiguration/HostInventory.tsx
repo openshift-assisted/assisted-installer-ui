@@ -17,7 +17,6 @@ import {
   useFeature,
   isSNO,
   ClusterWizardStepHeader,
-  DiscoveryInstructions,
   SwitchField,
   schedulableMastersAlwaysOn,
   HostDiscoveryValues,
@@ -95,9 +94,6 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         </ClusterWizardStepHeader>
       </StackItem>
       <StackItem>
-        <DiscoveryInstructions isSNO={isSNOCluster} showAllInstructions />
-      </StackItem>
-      <StackItem>
         <TextContent>
           <Text component="p">
             <DiscoveryImageModalButton
@@ -156,6 +152,11 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
       <StackItem>
         <TextContent>
           <InformationAndAlerts cluster={cluster} />
+        </TextContent>
+      </StackItem>
+      <StackItem>
+        <TextContent>
+          <Text component="h3">Host Inventory</Text>
         </TextContent>
       </StackItem>
       <StackItem>

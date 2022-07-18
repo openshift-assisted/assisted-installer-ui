@@ -32,5 +32,11 @@ jobs:
         # --frozen-lockfile: doesn't generate a yarn.lock file, fails if an update is needed.
         run: yarn install --frozen-lockfile
 
+      - name: Validate that i18n locale files are updated and contains 'ai' prefix in keys
+        run: |
+          chmod +x ./scripts/validatei18n_files.sh
+          ./scripts/validatei18n_files.sh
+        shell: bash
+
       - name: Build code (includes tests)
         run: yarn build

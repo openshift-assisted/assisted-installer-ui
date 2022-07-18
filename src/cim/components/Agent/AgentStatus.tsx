@@ -16,6 +16,7 @@ export type AgentStatusProps = {
   onEditHostname?: AgentTableActions['onEditHost'];
   zIndex?: number;
   wizardStepId?: ClusterDeploymentWizardStepsType;
+  autoCSR?: boolean;
 };
 
 const AgentStatus: React.FC<AgentStatusProps> = ({
@@ -24,6 +25,7 @@ const AgentStatus: React.FC<AgentStatusProps> = ({
   onEditHostname,
   zIndex,
   wizardStepId,
+  autoCSR,
 }) => {
   const [host] = getAIHosts([agent]);
   const editHostname = onEditHostname ? () => onEditHostname(agent) : undefined;
@@ -33,7 +35,7 @@ const AgentStatus: React.FC<AgentStatusProps> = ({
   const { t } = useTranslation();
   const status = wizardStepId
     ? getWizardStepAgentStatus(agent, wizardStepId, t)
-    : getAgentStatus(agent);
+    : getAgentStatus(agent, false, autoCSR);
 
   return (
     <HostStatus
@@ -41,6 +43,7 @@ const AgentStatus: React.FC<AgentStatusProps> = ({
       onEditHostname={editHostname}
       zIndex={zIndex}
       AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
+      autoCSR={autoCSR}
       {...status}
     >
       {pendingApproval && onApprove && (

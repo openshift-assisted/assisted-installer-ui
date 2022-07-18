@@ -2,7 +2,6 @@ import React from 'react';
 import * as Yup from 'yup';
 import {
   Button,
-  ButtonVariant,
   Form,
   ModalBoxBody,
   ModalBoxFooter,
@@ -18,7 +17,6 @@ import {
   httpProxyValidationSchema,
   noProxyValidationSchema,
   sshPublicKeyValidationSchema,
-  LoadingState,
 } from '../../../common/components/ui';
 import { ProxyFieldsType } from '../../types';
 import ProxyFields from './ProxyFields';
@@ -102,19 +100,17 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
       onSubmit={handleSubmit}
     >
       {({ submitForm, isSubmitting, status }) => {
-        return isSubmitting ? (
-          <LoadingState
-            content={t('ai:Discovery image is being prepared, this might take a few seconds.')}
-            secondaryActions={[
-              <Button key="close" variant={ButtonVariant.secondary} onClick={onCancel}>
-                {t('ai:Cancel')}
-              </Button>,
-            ]}
-          />
-        ) : (
+        return (
           <>
             <ModalBoxBody>
               <Stack hasGutter>
+                <StackItem>
+                  <Alert
+                    variant={AlertVariant.info}
+                    isInline
+                    title={t('ai: Generate a Discovery ISO in order to add hosts to the cluster.')}
+                  />
+                </StackItem>
                 {hasDHCP === false && (
                   <StackItem>
                     <StaticIPInfo />
@@ -135,8 +131,8 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
               </Stack>
             </ModalBoxBody>
             <ModalBoxFooter>
-              <Button key="submit" onClick={submitForm}>
-                {t('ai:Generate Discovery ISO')}
+              <Button onClick={submitForm} isDisabled={isSubmitting} isLoading={isSubmitting}>
+                {isSubmitting ? t('ai: Generating') : t('ai: Generate Discovery ISO')}
               </Button>
               <Button key="cancel" variant="link" onClick={onCancel}>
                 {t('ai:Cancel')}

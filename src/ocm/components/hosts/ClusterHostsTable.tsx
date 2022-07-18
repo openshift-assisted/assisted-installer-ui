@@ -43,7 +43,7 @@ const ClusterHostsTable: React.FC<ClusterHostsTableProps> = ({ cluster, skipDisa
     () => [
       hostnameColumn(t, onEditHost, undefined, actionChecks.canEditHostname),
       roleColumn(t, actionChecks.canEditRole, onEditRole, getSchedulableMasters(cluster)),
-      statusColumn(AdditionalNTPSourcesDialogToggle, onEditHost, UpdateDay2ApiVipDialogToggle),
+      statusColumn(t, AdditionalNTPSourcesDialogToggle, onEditHost, UpdateDay2ApiVipDialogToggle),
       discoveredAtColumn,
       cpuCoresColumn,
       memoryColumn,
