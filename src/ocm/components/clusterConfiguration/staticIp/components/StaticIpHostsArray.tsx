@@ -220,7 +220,7 @@ const Hosts = <HostFieldType,>({
                 aria-label="copy host configuration"
                 name="copy-host-configuration"
                 id="copy-host-configuration"
-                data-testid="copy-host-cofiguration"
+                data-testid="copy-host-configuration"
               />
             </FlexItem>
           )}
