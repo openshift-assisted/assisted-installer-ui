@@ -21,14 +21,14 @@ export const PullSecretInfo: React.FC<{ isOcm: boolean }> = ({ isOcm }) => {
           <Trans t={t}>
             ai:Pull secrets are used to download OpenShift Container Platform components and connect
             clusters to a Red Hat account.{' '}
-            {isOcm ? (
-              <PullSecretInfoLink />
-            ) : (
-              <>
-                Pull secrets can be found in <ClusterManagerSiteLink />
-              </>
-            )}
           </Trans>
+          {isOcm ? (
+            <PullSecretInfoLink />
+          ) : (
+            <>
+              <Trans t={t}>ai:Pull secrets can be found in</Trans> <ClusterManagerSiteLink />
+            </>
+          )}
         </>
       }
     />

@@ -10,11 +10,12 @@ import { allSubnetsIPv4, trimCommaSeparatedList, trimSshPublicKey } from './util
 import { ClusterNetwork, MachineNetwork, ServiceNetwork } from '../../../api/types';
 import { getErrorMessage } from '../../../utils';
 import {
-  CLUSTER_NAME_VALIDATION_MESSAGES,
-  HOSTNAME_VALIDATION_MESSAGES,
-  LOCATION_VALIDATION_MESSAGES,
-  NAME_VALIDATION_MESSAGES,
+  clusterNameValidationMessages,
+  hostnameValidationMessages,
+  locationValidationMessages,
+  nameValidationMessages,
 } from './constants';
+import { TFunction } from 'i18next';
 
 const ALPHANUMBERIC_REGEX = /^[a-zA-Z0-9]+$/;
 const NAME_START_END_REGEX = /^[a-z0-9](.*[a-z0-9])?$/;
@@ -37,38 +38,40 @@ const BMC_REGEX =
 const LOCATION_CHARS_REGEX = /^[a-zA-Z0-9-._]*$/;
 
 export const nameValidationSchema = (
+  t: TFunction,
   usedClusterNames: string[],
   baseDnsDomain = '',
   validateUniqueName?: boolean,
   isOcm = false,
-) =>
-  Yup.string()
+) => {
+  const clusterNameValidationMessagesList = clusterNameValidationMessages(t);
+  return Yup.string()
     .required('Required')
     .matches(CLUSTER_NAME_CHARS_REGEX, {
-      message: CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_VALUE,
+      message: clusterNameValidationMessagesList.INVALID_VALUE,
       excludeEmptyString: true,
     })
     .matches(CLUSTER_NAME_REGEX, {
-      message: CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_START_END,
+      message: clusterNameValidationMessagesList.INVALID_START_END,
       excludeEmptyString: true,
     })
     .min(
       isOcm ? 1 : 2,
       isOcm
-        ? CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_LENGTH_OCM
-        : CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_LENGTH_ACM,
+        ? clusterNameValidationMessagesList.INVALID_LENGTH_OCM
+        : clusterNameValidationMessagesList.INVALID_LENGTH_ACM,
     )
     .max(
       54,
       isOcm
-        ? CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_LENGTH_OCM
-        : CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_LENGTH_ACM,
+        ? clusterNameValidationMessagesList.INVALID_LENGTH_OCM
+        : clusterNameValidationMessagesList.INVALID_LENGTH_ACM,
     )
     .when('useRedHatDnsService', {
       is: true,
       then: Yup.string().test(
         'is-name-unique',
-        CLUSTER_NAME_VALIDATION_MESSAGES.NOT_UNIQUE,
+        clusterNameValidationMessagesList.NOT_UNIQUE,
         (value: string) => {
           const clusterFullName = `${value}.${baseDnsDomain}`;
           return !value || !usedClusterNames.includes(clusterFullName);
@@ -76,13 +79,14 @@ export const nameValidationSchema = (
       ),
       otherwise: Yup.string().test(
         'is-name-unique',
-        CLUSTER_NAME_VALIDATION_MESSAGES.NOT_UNIQUE,
+        clusterNameValidationMessagesList.NOT_UNIQUE,
         (value: string) => {
           // in CIM cluster name is ClusterDeployment CR name which must be unique
           return validateUniqueName ? !value || !usedClusterNames.includes(value) : true;
         },
       ),
     });
+};
 
 export const sshPublicKeyValidationSchema = Yup.string().test(
   'ssh-public-key',
@@ -335,13 +339,14 @@ export const hostPrefixValidationSchema = ({
   return Yup.number().required(requiredText);
 };
 
-export const richNameValidationSchema = (usedNames: string[], origName?: string) =>
-  Yup.string()
-    .min(1, NAME_VALIDATION_MESSAGES.INVALID_LENGTH)
-    .max(253, NAME_VALIDATION_MESSAGES.INVALID_LENGTH)
+export const richNameValidationSchema = (t: TFunction, usedNames: string[], origName?: string) => {
+  const nameValidationMessagesList = nameValidationMessages(t);
+  return Yup.string()
+    .min(1, nameValidationMessagesList.INVALID_LENGTH)
+    .max(253, nameValidationMessagesList.INVALID_LENGTH)
     .test(
-      NAME_VALIDATION_MESSAGES.INVALID_START_END,
-      NAME_VALIDATION_MESSAGES.INVALID_START_END,
+      nameValidationMessagesList.INVALID_START_END,
+      nameValidationMessagesList.INVALID_START_END,
       (value) => {
         const trimmed: string = value?.trim();
         if (!trimmed) {
@@ -355,12 +360,12 @@ export const richNameValidationSchema = (usedNames: string[], origName?: string)
         );
       },
     )
-    .matches(HOST_NAME_REGEX, NAME_VALIDATION_MESSAGES.INVALID_FORMAT)
+    .matches(HOST_NAME_REGEX, nameValidationMessagesList.INVALID_FORMAT)
     .matches(NAME_CHARS_REGEX, {
-      message: NAME_VALIDATION_MESSAGES.INVALID_VALUE,
+      message: nameValidationMessagesList.INVALID_VALUE,
       excludeEmptyString: true,
     })
-    .test(NAME_VALIDATION_MESSAGES.NOT_UNIQUE, NAME_VALIDATION_MESSAGES.NOT_UNIQUE, (value) => {
+    .test(nameValidationMessagesList.NOT_UNIQUE, nameValidationMessagesList.NOT_UNIQUE, (value) => {
       if (!value || value === origName) {
         return true;
       }
@@ -375,8 +380,9 @@ export const richNameValidationSchema = (usedNames: string[], origName?: string)
         'localhost6',
         'localhost6.localdomain6',
       ],
-      HOSTNAME_VALIDATION_MESSAGES.LOCALHOST_ERR,
+      hostnameValidationMessages(t).LOCALHOST_ERR,
     );
+};
 
 const httpProxyValidationMessage = 'Provide a valid HTTP URL.';
 export const httpProxyValidationSchema = (
@@ -475,29 +481,32 @@ export const bmcAddressValidationSchema = Yup.string().matches(BMC_REGEX, {
   excludeEmptyString: true,
 });
 
-export const locationValidationSchema = Yup.string()
-  .min(1, LOCATION_VALIDATION_MESSAGES.INVALID_LENGTH)
-  .max(63, LOCATION_VALIDATION_MESSAGES.INVALID_LENGTH)
-  .test(
-    LOCATION_VALIDATION_MESSAGES.INVALID_START_END,
-    LOCATION_VALIDATION_MESSAGES.INVALID_START_END,
-    (value) => {
-      const trimmed: string = value?.trim();
-      if (!trimmed) {
-        return true;
-      }
-      return (
-        !!trimmed[0].match(ALPHANUMBERIC_REGEX) &&
-        (trimmed[trimmed.length - 1]
-          ? !!trimmed[trimmed.length - 1].match(ALPHANUMBERIC_REGEX)
-          : true)
-      );
-    },
-  )
-  .matches(LOCATION_CHARS_REGEX, {
-    message: LOCATION_VALIDATION_MESSAGES.INVALID_VALUE,
-    excludeEmptyString: true,
-  });
+export const locationValidationSchema = (t: TFunction) => {
+  const locationValidationMessagesList = locationValidationMessages(t);
+  return Yup.string()
+    .min(1, locationValidationMessagesList.INVALID_LENGTH)
+    .max(63, locationValidationMessagesList.INVALID_LENGTH)
+    .test(
+      locationValidationMessagesList.INVALID_START_END,
+      locationValidationMessagesList.INVALID_START_END,
+      (value) => {
+        const trimmed: string = value?.trim();
+        if (!trimmed) {
+          return true;
+        }
+        return (
+          !!trimmed[0].match(ALPHANUMBERIC_REGEX) &&
+          (trimmed[trimmed.length - 1]
+            ? !!trimmed[trimmed.length - 1].match(ALPHANUMBERIC_REGEX)
+            : true)
+        );
+      },
+    )
+    .matches(LOCATION_CHARS_REGEX, {
+      message: locationValidationMessagesList.INVALID_VALUE,
+      excludeEmptyString: true,
+    });
+};
 
 export const machineNetworksValidationSchema = Yup.array().of(
   Yup.object({ cidr: hostSubnetValidationSchema, clusterId: Yup.string() }),

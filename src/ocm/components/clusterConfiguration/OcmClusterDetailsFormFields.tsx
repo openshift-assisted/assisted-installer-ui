@@ -17,10 +17,11 @@ import {
   SelectField,
   SNOControlGroup,
   StaticTextField,
-  OCM_CLUSTER_NAME_VALIDATION_MESSAGES,
-  UNIQUE_OCM_CLUSTER_NAME_VALIDATION_MESSAGES,
+  ocmClusterNameValidationMessages,
+  uniqueOcmClusterNameValidationMessages,
 } from '../../../common';
 import DiskEncryptionControlGroup from '../../../common/components/clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 export type ClusterDetailsFormFieldsProps = {
   canEditPullSecret: boolean;
@@ -69,6 +70,7 @@ export const OcmClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps
   const atListOneDiskEncryptionEnableOn =
     values.enableDiskEncryptionOnMasters || values.enableDiskEncryptionOnWorkers;
 
+  const { t } = useTranslation();
   // TODO(mlibra): Disable fields based on props passed from the caller context. In CIM, the name or domain can not be edited.
   return (
     <Form id="wizard-cluster-details__form">
@@ -80,8 +82,8 @@ export const OcmClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps
         isRequired
         richValidationMessages={
           useRedHatDnsService
-            ? UNIQUE_OCM_CLUSTER_NAME_VALIDATION_MESSAGES
-            : OCM_CLUSTER_NAME_VALIDATION_MESSAGES
+            ? uniqueOcmClusterNameValidationMessages(t)
+            : ocmClusterNameValidationMessages(t)
         }
       />
       {!!managedDomains.length && toggleRedHatDnsService && (

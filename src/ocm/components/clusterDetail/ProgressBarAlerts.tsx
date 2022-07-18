@@ -7,7 +7,9 @@ import { pluralize } from 'humanize-plus';
 import { useModalDialogsContext } from '../../../ocm/components/hosts/ModalDialogsContext';
 import { canDownloadClusterLogs } from '../../../common/components/hosts';
 import { useAlerts } from '../../../common/components/AlertsContextProvider';
-import { getBugzillaLink, OPERATOR_LABELS } from '../../../common/config/constants';
+import { getBugzillaLink, operatorLabels } from '../../../common/config/constants';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { TFunction } from 'i18next';
 
 type installationProgressWarningProps = {
   cluster: Cluster;
@@ -24,15 +26,16 @@ type successInstallationProps = {
   consoleUrl?: string;
 };
 
-const getFailedOperatorsNames = (failedOperators: MonitoredOperator[]): string => {
+const getFailedOperatorsNames = (failedOperators: MonitoredOperator[], t: TFunction): string => {
   let failedOperatorsNames = '';
+
   for (let i = 0; i < failedOperators.length; i++) {
     const operatorName = failedOperators[i].name;
     if (i > 0) {
       if (i === failedOperators.length - 1) failedOperatorsNames += ' and ';
       else failedOperatorsNames += ', ';
     }
-    failedOperatorsNames += `${operatorName && OPERATOR_LABELS[operatorName]} (${
+    failedOperatorsNames += `${operatorName && operatorLabels(t)[operatorName]} (${
       operatorName && operatorName.toUpperCase()
     })`;
   }
@@ -49,7 +52,7 @@ export const HostInstallationWarning: React.FC<installationProgressWarningProps>
   message,
 }) => {
   const { addAlert } = useAlerts();
-
+  const { t } = useTranslation();
   return (
     <>
       <Alert
@@ -76,9 +79,9 @@ export const HostInstallationWarning: React.FC<installationProgressWarningProps>
         </RenderIf>
         <RenderIf condition={failedOperators?.length > 0}>
           <p>
-            {getFailedOperatorsNames(failedOperators)} failed to install. Due to this, the cluster
-            will be degraded, but you can try to install the operator from the Operator Hub. Please
-            check the installation log for more information.
+            {getFailedOperatorsNames(failedOperators, t)} failed to install. Due to this, the
+            cluster will be degraded, but you can try to install the operator from the Operator Hub.
+            Please check the installation log for more information.
           </p>
         </RenderIf>
       </Alert>

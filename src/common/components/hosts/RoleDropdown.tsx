@@ -1,9 +1,10 @@
 import React from 'react';
-import { HOST_ROLES } from '../../config/constants';
+import { hostRoles } from '../../config/constants';
 import { Host, HostUpdateParams } from '../../api';
 import { SimpleDropdown } from '../ui';
 import { useStateSafely } from '../../hooks';
 import { DropdownProps } from '@patternfly/react-core';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 type RoleDropdownProps = {
   host: Host;
@@ -23,12 +24,12 @@ const RoleDropdown: React.FC<RoleDropdownProps> = ({ host, onEditRole, current, 
       setDisabled(false);
     }
   };
-
+  const { t } = useTranslation();
   return (
     <SimpleDropdown
-      defaultValue={HOST_ROLES[0].value}
+      defaultValue={hostRoles(t)[0].value}
       current={current}
-      items={HOST_ROLES}
+      items={hostRoles(t)}
       setValue={setRole}
       isDisabled={isDisabled}
       idPrefix={`role-${host.requestedHostname}`}
