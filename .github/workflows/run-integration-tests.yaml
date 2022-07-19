@@ -1,0 +1,34 @@
+name: Cypress Tests
+
+on:
+  push:
+    branches:
+      - integration-tests-wip
+
+jobs:
+  cypress-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Openshift Assisted UI tests
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ env.GH_REPO_OWNER }}/openshift-assisted-ui/
+          ref: ${{ github.ref_name }}
+          path: ./openshift-assisted-ui
+
+      - name: Install Cypress dependencies
+        working-directory: ./openshift-assisted-ui
+        run: yarn install
+
+      # Run Cypress tests in Headless mode
+      # Right now just a test using PSI. It should use an updated environment with the new code
+      - name: Cypress run
+        uses: cypress-io/github-action@v4
+        with:
+          working-directory: ./openshift-assisted-ui
+          browser: chrome
+          start: yarn integration-tests:run
+          config: baseUrl=http://assisted-installer-ui.edge-qe.apps.ocp-c1.prod.psi.redhat.com,video=false
+          spec: ./packages/integration-tests/src/integration/ui-behaviour/cluster-updates.spec.js
+          env:
+            CYPRESS_API_BASE_URL=http://assisted-installer-ui.edge-qe.apps.ocp-c1.prod.psi.redhat.com
