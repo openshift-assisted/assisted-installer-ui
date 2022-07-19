@@ -32,6 +32,20 @@ jobs:
         # --frozen-lockfile: doesn't generate a yarn.lock file, fails if an update is needed.
         run: yarn install --frozen-lockfile
 
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v23.2
+        with:
+          files: |
+            src/**/*.ts
+            src/**/*.tsx
+
+      - name: Lint all changed files
+        run: |
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            yarn lint-touched-file $file
+          done
+
       - name: Validate that i18n locale files are updated and contains 'ai' prefix in keys
         run: |
           chmod +x ./scripts/validatei18n_files.sh
