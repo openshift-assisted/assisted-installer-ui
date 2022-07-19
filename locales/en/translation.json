@@ -1,7 +1,6 @@
 {
   "'ai:Check the proxy settings and verify that the assisted installer service is connected to a network. You can use <code>nmcli</code> to get additional information about your network configuration.": "'ai:Check the proxy settings and verify that the assisted installer service is connected to a network. You can use <code>nmcli</code> to get additional information about your network configuration.",
   "'ai:URL must start with <bold>http</bold> (https schemes are not currently supported).": "'ai:URL must start with <bold>http</bold> (https schemes are not currently supported).",
-  "ai: Discovery ISO is ready for download": " Discovery ISO is ready for download",
   "ai: Generate a Discovery ISO in order to add hosts to the cluster.": " Generate a Discovery ISO in order to add hosts to the cluster.",
   "ai: Generate Discovery ISO": " Generate Discovery ISO",
   "ai: Generating": " Generating",
@@ -196,6 +195,7 @@
   "ai:DHCP or static IP Addresses": "DHCP or static IP Addresses",
   "ai:Discovered hosts will appear in the table.": "Discovered hosts will appear in the table.",
   "ai:Discovery ISO": "Discovery ISO",
+  "ai:Discovery ISO is ready for download": "Discovery ISO is ready for download",
   "ai:Discovery ISO URL": "Discovery ISO URL",
   "ai:Discovery type": "Discovery type",
   "ai:Disk encryption requirements": "Disk encryption requirements",
