@@ -14,7 +14,7 @@ import {
 import * as React from 'react';
 import { TableRow } from '../../../../common/components/hosts/AITable';
 import { getHostRowHardwareInfo } from '../../../../common/components/hosts/hardwareInfo';
-import { AgentK8sResource, ClusterImageSetK8sResource } from '../../../types';
+import { AgentK8sResource, ClusterImageSetK8sResource, ConfigMapK8sResource } from '../../../types';
 import AgentStatus from '../../Agent/AgentStatus';
 import { INFRAENV_AGENTINSTALL_LABEL_KEY } from '../../common';
 import ManageHostsModal from '../modals/ManageHostsModal';
@@ -43,6 +43,7 @@ type NodePoolsTableProps = {
   onAddNodePool: (nodePool: NodePoolK8sResource) => Promise<void>;
   clusterImages: ClusterImageSetK8sResource[];
   agentMachines: AgentMachineK8sResource[];
+  supportedVersionsCM?: ConfigMapK8sResource;
 };
 
 type NodePoolWithAgents = {
@@ -80,6 +81,7 @@ const NodePoolsTable = ({
   onAddNodePool,
   clusterImages,
   agentMachines,
+  supportedVersionsCM,
 }: NodePoolsTableProps): JSX.Element => {
   const { t } = useTranslation();
   const [manageHostsOpen, setManageHostsOpen] = React.useState<string>();
@@ -248,6 +250,7 @@ const NodePoolsTable = ({
           agents={agents}
           hostedCluster={hostedCluster}
           clusterImages={clusterImages}
+          supportedVersionsCM={supportedVersionsCM}
         />
       )}
       {removeNodePool && (
