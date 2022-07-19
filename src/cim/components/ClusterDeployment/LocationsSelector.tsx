@@ -28,7 +28,7 @@ const LocationsLabelIcon: React.FC = () => {
             t={t}
             components={{ bold: <strong /> }}
             i18nKey="ai:Set <bold>{{agent_location_label_key}}</bold> label in Agent resource to specify it's location."
-            value={{ agent_location_label_key: AGENT_LOCATION_LABEL_KEY }}
+            values={{ agent_location_label_key: AGENT_LOCATION_LABEL_KEY }}
           ></Trans>
         </>
       }
