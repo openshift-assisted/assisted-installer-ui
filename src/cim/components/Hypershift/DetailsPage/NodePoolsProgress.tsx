@@ -22,17 +22,10 @@ const getNodePoolsStatus = (
   agents: AgentK8sResource[],
   t: TFunction,
 ): React.ReactNode => {
-  const clusterAgentMachines = agentMachines.filter(
-    (am) =>
-      am.metadata?.namespace ===
-        `${hostedCluster.metadata?.namespace || ''}-${hostedCluster.metadata?.name || ''}` &&
-      am.metadata?.labels?.['cluster.x-k8s.io/cluster-name'] === hostedCluster.metadata?.name,
-  );
-
   const nodePoolMap = nodePools.reduce<{
     [key: string]: { agents: AgentK8sResource[]; status: NodePoolStatus };
   }>((acc, np) => {
-    const nodePoolAgents = getNodepoolAgents(np, agents, clusterAgentMachines, hostedCluster);
+    const nodePoolAgents = getNodepoolAgents(np, agents, agentMachines, hostedCluster);
     const status = getNodePoolStatus(np, nodePoolAgents, t);
     acc[np.metadata?.uid || ''] = {
       agents: nodePoolAgents,

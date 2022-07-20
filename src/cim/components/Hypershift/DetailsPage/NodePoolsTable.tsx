@@ -11,6 +11,7 @@ import {
   Thead,
   Tr,
 } from '@patternfly/react-table';
+import classnames from 'classnames';
 import * as React from 'react';
 import { TableRow } from '../../../../common/components/hosts/AITable';
 import { getHostRowHardwareInfo } from '../../../../common/components/hosts/hardwareInfo';
@@ -26,6 +27,8 @@ import { getNodepoolAgents } from '../utils';
 import NodePoolStatus from './NodePoolStatus';
 import { fileSize } from '../../../../common';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
+
+import './NodePoolsTable.css';
 
 type NodePoolsTableProps = {
   nodePools: NodePoolK8sResource[];
@@ -129,7 +132,10 @@ const NodePoolsTable = ({
                 );
 
                 rows.push(
-                  <Tr key={np.metadata?.uid}>
+                  <Tr
+                    key={np.metadata?.uid}
+                    className={isExpanded ? 'ai-nodepools-table__no-border' : undefined}
+                  >
                     <Td
                       expand={
                         nodePoolAgents.length
@@ -188,12 +194,17 @@ const NodePoolsTable = ({
                   </Tr>,
                 );
                 if (expandedNodePools.find((uid) => uid === np.metadata?.uid)) {
-                  nodePoolAgents.forEach((agent) => {
+                  nodePoolAgents.forEach((agent, index) => {
                     const { memory, cores, disk } = getHostRowHardwareInfo(
                       agent.status?.inventory || {},
                     );
                     rows.push(
-                      <Tr key={agent.metadata?.uid}>
+                      <Tr
+                        key={agent.metadata?.uid}
+                        className={classnames({
+                          'ai-nodepools-table__no-border': index < nodePoolAgents.length - 1,
+                        })}
+                      >
                         <Td />
                         <Td />
                         <Td>{agent.spec.hostname || agent.status?.inventory.hostname}</Td>
