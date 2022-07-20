@@ -54,21 +54,10 @@ jobs:
         run: |
           node scripts/edit-package-version.js ./package.json "$UI_LIB_PACKAGE_VERSION"
 
-      - name: Install deps
+      - name: Install deps, build and pack
         working-directory: ./assisted-ui-lib
         run: |
           yarn install --frozen-lockfile
-
-      - name: Validate that i18n locale files are updated and contains 'ai' prefix in keys
-        working-directory: ./assisted-ui-lib
-        run: |
-          chmod +x ./scripts/validatei18n_files.sh
-          ./scripts/validatei18n_files.sh
-        shell: bash
-
-      - name: Build and pack
-        working-directory: ./assisted-ui-lib
-        run: |
           node scripts/esbuild/prod.js
           yarn pack -f $GITHUB_WORKSPACE/$UI_LIB_PACKAGE_NAME
 

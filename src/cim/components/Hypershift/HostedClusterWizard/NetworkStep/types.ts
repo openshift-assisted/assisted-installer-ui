@@ -19,9 +19,7 @@ export type NetworkStepProps = {
   agents: AgentK8sResource[];
   formRef: React.Ref<FormikProps<NetworkFormValues>>;
   onValuesChanged: (values: NetworkFormValues, initRender: boolean) => void;
-  onEditHostname: (agent: AgentK8sResource, hostname: string) => Promise<void>;
   initAdvancedNetworking: boolean;
   initSSHPublicKey?: string;
+  count: number;
 };
-
-export type NetworkHostsTableProps = Pick<NetworkStepProps, 'agents' | 'onEditHostname'>;

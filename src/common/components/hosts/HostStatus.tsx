@@ -39,10 +39,12 @@ const getTitleWithProgress = (host: Host, status: HostStatusProps['status']) => 
 type HostStatusPopoverContentProps = ValidationInfoActionProps & {
   details?: string;
   validationsInfo: ValidationsInfo;
+  autoCSR?: boolean;
 };
 
 const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({
   details,
+  autoCSR,
   ...props
 }) => {
   const { host } = props;
@@ -53,11 +55,14 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({
       <TextContent>
         <Text>
           {t('ai:This host was successfully installed.')}
-          <br />
-          {t(
-            "ai:To finish adding it to the cluster, approve its join request inside OpenShift Console's Nodes section. Note that it may take a few minutes for the join request to appear.",
+          {!autoCSR && (
+            <>
+              <br />
+              {t(
+                "ai:To finish adding it to the cluster, approve its join request inside OpenShift Console's Nodes section. Note that it may take a few minutes for the join request to appear.",
+              )}
+            </>
           )}
-          '
         </Text>
       </TextContent>
     );
@@ -166,6 +171,7 @@ type WithHostStatusPopoverProps = AdditionNtpSourcePropsType &
     details?: string;
     zIndex?: number;
     t: TFunction;
+    autoCSR?: boolean;
   };
 
 const WithHostStatusPopover: React.FC<WithHostStatusPopoverProps> = (props) => (
@@ -193,6 +199,7 @@ const HostStatus: React.FC<HostStatusProps> = ({
   UpdateDay2ApiVipDialogToggleComponent,
   children,
   zIndex,
+  autoCSR,
 }) => {
   const [keepOnOutsideClick, onValidationActionToggle] = React.useState(false);
 
@@ -215,6 +222,7 @@ const HostStatus: React.FC<HostStatusProps> = ({
     UpdateDay2ApiVipDialogToggleComponent,
     zIndex,
     t,
+    autoCSR,
   };
 
   return (

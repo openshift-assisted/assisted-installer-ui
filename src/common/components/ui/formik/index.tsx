@@ -17,6 +17,7 @@ export { default as RichInputField } from './RichInputField';
 export { default as AdditionalNTPSourcesField } from './AdditionalNTPSourcesField';
 export { default as RemovableField } from './RemovableField';
 export { default as AddButton } from './AddButton';
+export { default as PencilEditField } from './PencilEditField';
 
 export * from './utils';
 export * from './PullSecretField';

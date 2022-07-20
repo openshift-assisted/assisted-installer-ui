@@ -24,7 +24,7 @@ import {
   RichInputField,
   getRichTextValidation,
   richNameValidationSchema,
-  HOSTNAME_VALIDATION_MESSAGES,
+  hostnameValidationMessages,
   ModalProgress,
 } from '../ui';
 import { Host } from '../../api';
@@ -34,6 +34,7 @@ import { getErrorMessage } from '../../utils';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 import './MassChangeHostnameModal.css';
+import { TFunction } from 'i18next';
 
 const getHostname = (host: Host) => {
   const inventory = getInventory(host);
@@ -70,9 +71,13 @@ const initialValues = {
   hostname: '',
 };
 
-const validationSchema = (initialValues: EditHostFormValues, usedHostnames: string[]) =>
+const validationSchema = (
+  initialValues: EditHostFormValues,
+  usedHostnames: string[],
+  t: TFunction,
+) =>
   Yup.object().shape({
-    hostname: richNameValidationSchema(usedHostnames, initialValues.hostname).required(),
+    hostname: richNameValidationSchema(t, usedHostnames, initialValues.hostname).required(),
   });
 
 const withTemplate =
@@ -81,6 +86,7 @@ const withTemplate =
     hosts: Host[],
     schema: ReturnType<typeof validationSchema>,
     canChangeHostname: (host: Host) => ActionCheck,
+    t: TFunction,
   ) =>
   async (values: EditHostFormValues) => {
     const newHostnames = getNewHostnames(values, selectedHosts, canChangeHostname)
@@ -104,7 +110,7 @@ const withTemplate =
       validationResult = {
         ...(validationResult || {}),
         hostname: (validationResult?.hostname || []).concat(
-          HOSTNAME_VALIDATION_MESSAGES.NOT_UNIQUE,
+          hostnameValidationMessages(t).NOT_UNIQUE,
         ),
       };
     }
@@ -162,7 +168,7 @@ const MassChangeHostnameForm: React.FC<MassChangeHostnameFormProps> = ({
                 name="hostname"
                 ref={hostnameInputRef}
                 isRequired
-                richValidationMessages={HOSTNAME_VALIDATION_MESSAGES}
+                richValidationMessages={hostnameValidationMessages(t)}
               />
               <HelperText>
                 <HelperTextItem variant="indeterminate">
@@ -273,8 +279,9 @@ const MassChangeHostnameModal: React.FC<MassChangeHostnameModalProps> = ({
         validate={withTemplate(
           selectedHosts,
           hosts,
-          validationSchema(initialValues, []),
+          validationSchema(initialValues, [], t),
           canChangeHostname,
+          t,
         )}
         onSubmit={async (values, formikActions) => {
           let i = 0;

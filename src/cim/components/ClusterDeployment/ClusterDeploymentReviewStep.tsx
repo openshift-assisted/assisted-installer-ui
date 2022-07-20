@@ -133,7 +133,7 @@ const ClusterDeploymentReviewStep: React.FC<ClusterDeploymentReviewStepProps> = 
                 <ClusterValidations<ClusterWizardStepsType>
                   validationsInfo={cluster.validationsInfo}
                   setCurrentStepId={setCurrentStepId}
-                  wizardStepNames={wizardStepNames}
+                  wizardStepNames={wizardStepNames(t)}
                   wizardStepsValidationsMap={wizardStepsValidationsMap}
                 />
               }
@@ -145,7 +145,7 @@ const ClusterDeploymentReviewStep: React.FC<ClusterDeploymentReviewStepProps> = 
                 <HostsValidations<ClusterWizardStepsType, typeof allClusterWizardSoftValidationIds>
                   hosts={cluster.hosts}
                   setCurrentStepId={setCurrentStepId}
-                  wizardStepNames={wizardStepNames}
+                  wizardStepNames={wizardStepNames(t)}
                   allClusterWizardSoftValidationIds={allClusterWizardSoftValidationIds}
                   wizardStepsValidationsMap={wizardStepsValidationsMap}
                 />

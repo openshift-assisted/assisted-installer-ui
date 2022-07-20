@@ -113,6 +113,7 @@ export const getAICluster = ({
   agentClusterInstall?: AgentClusterInstallK8sResource;
   agents?: AgentK8sResource[];
 }): Cluster => {
+  const installVersion = clusterDeployment.status?.installVersion;
   const [status, statusInfo] = getClusterStatus(agentClusterInstall);
   const aiCluster: Cluster = {
     id: clusterDeployment.metadata?.uid || '',
@@ -120,7 +121,7 @@ export const getAICluster = ({
     href: '',
     name: clusterDeployment.spec?.clusterName,
     baseDnsDomain: clusterDeployment.spec?.baseDomain,
-    openshiftVersion: agentClusterInstall?.spec?.imageSetRef?.name,
+    openshiftVersion: installVersion,
     apiVip: agentClusterInstall?.spec?.apiVIP,
     ingressVip: agentClusterInstall?.spec?.ingressVIP,
     highAvailabilityMode:
