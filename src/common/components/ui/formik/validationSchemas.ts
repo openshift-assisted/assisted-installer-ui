@@ -536,6 +536,6 @@ export const dualStackValidationSchema = (field: string) =>
 
 export const IPv4ValidationSchema = Yup.array().test(
   'single-stack',
-  `All network subnets must IPv4.`,
+  `All network subnets must be IPv4.`,
   (values: (MachineNetwork | ClusterNetwork | ServiceNetwork)[]) => allSubnetsIPv4(values),
 );
