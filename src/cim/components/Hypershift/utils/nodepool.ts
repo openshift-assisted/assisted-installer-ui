@@ -1,6 +1,9 @@
 import { AgentK8sResource } from '../../../types';
 import { AgentMachineK8sResource, HostedClusterK8sResource, NodePoolK8sResource } from '../types';
 
+const CLUSTER_NAME_LABEL = 'cluster.x-k8s.io/cluster-name';
+const NODEPOOL_NAME_ANNOTATION = 'cluster.x-k8s.io/cloned-from-name';
+
 export const getNodepoolAgents = (
   nodePool: NodePoolK8sResource,
   agents: AgentK8sResource[],
@@ -10,11 +13,10 @@ export const getNodepoolAgents = (
   const nodePoolAgentMachines = agentMachines
     .filter(
       (am) =>
-        am.metadata?.labels?.[
-          `${hostedCluster.metadata?.name || ''}-${hostedCluster.metadata?.namespace || ''}-${
-            nodePool.metadata?.name || ''
-          }`
-        ] &&
+        am.metadata?.namespace ===
+          `${hostedCluster.metadata?.namespace || ''}-${hostedCluster.metadata?.name || ''}` &&
+        am.metadata?.labels?.[CLUSTER_NAME_LABEL] === hostedCluster.metadata?.name &&
+        am.metadata?.annotations?.[NODEPOOL_NAME_ANNOTATION] === nodePool.metadata?.name &&
         am.status?.agentRef?.name &&
         am.status?.agentRef?.namespace,
     )
