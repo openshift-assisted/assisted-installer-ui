@@ -164,7 +164,7 @@ export const getClusterProperties = (
   },
   openshiftVersion: {
     key: 'OpenShift version',
-    value: agentClusterInstall?.spec?.imageSetRef?.name,
+    value: clusterDeployment.status?.installVersion,
   },
   clusterId: {
     key: 'Cluster ID',
