@@ -8,6 +8,8 @@ import {
 import * as React from 'react';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 
+import './ConditionsTable.css';
+
 type ConditionsTableProps = {
   conditions?: {
     status: string;
@@ -35,7 +37,7 @@ const ConditionsTable = ({ conditions }: ConditionsTableProps) => {
             icon = <ExclamationCircleIcon color={dangerColor.value} size="sm" />;
           }
           return (
-            <Tr key={c.type}>
+            <Tr key={c.type} className="ai-conditions-table__no-border">
               <Td>
                 <Flex
                   alignItems={{ default: 'alignItemsCenter' }}
