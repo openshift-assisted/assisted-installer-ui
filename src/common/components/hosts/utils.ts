@@ -52,7 +52,8 @@ export const canReset = (clusterStatus: Cluster['status'], status: Host['status'
   ['adding-hosts'].includes(clusterStatus) &&
   ['error', 'installing-pending-user-action'].includes(status);
 
-export const canEditRole = (cluster: Cluster): boolean => !isSNO(cluster);
+export const canEditRole = (cluster: Pick<Cluster, 'highAvailabilityMode'>): boolean =>
+  !isSNO(cluster);
 
 export const canEditHost = (clusterStatus: Cluster['status'], status: Host['status']) =>
   ['pending-for-input', 'insufficient', 'ready'].includes(clusterStatus) &&
@@ -80,8 +81,11 @@ export const canDownloadKubeconfig = (clusterStatus: Cluster['status']) =>
     clusterStatus,
   );
 
-export const canInstallHost = (cluster: Cluster, hostStatus: Host['status']) =>
-  cluster.kind === 'AddHostsCluster' && cluster.status === 'adding-hosts' && hostStatus === 'known';
+export const canInstallHost = (
+  status: Cluster['status'],
+  kind: Cluster['kind'],
+  hostStatus: Host['status'],
+) => kind === 'AddHostsCluster' && status === 'adding-hosts' && hostStatus === 'known';
 
 export const getHostProgressStages = (host: Host) => host.progressStages || [];
 

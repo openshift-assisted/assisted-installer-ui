@@ -1,4 +1,6 @@
 import React from 'react';
+import { sortable } from '@patternfly/react-table';
+import { Stack, StackItem } from '@patternfly/react-core';
 import {
   ChangeHostnameAction,
   selectSchedulableMasters,
@@ -22,16 +24,13 @@ import {
 } from '../../../common/components/hosts/tableUtils';
 import HostsTable from '../../../common/components/hosts/HostsTable';
 import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
-import { ExpandComponentProps, TableRow } from '../../../common/components/hosts/AITable';
-import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
-import { onDiskRoleType } from '../../../common/components/hosts/DiskRole';
-import { sortable } from '@patternfly/react-table';
+import { TableRow } from '../../../common/components/hosts/AITable';
 import { ValidationsInfo } from '../../../common/types/hosts';
-import HardwareStatus from './HardwareStatus';
-import { Stack, StackItem } from '@patternfly/react-core';
 import { usePagination } from '../../../common/components/hosts/usePagination';
-import HostsTableEmptyState from '../hosts/HostsTableEmptyState';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import HostsTableEmptyState from '../hosts/HostsTableEmptyState';
+import HardwareStatus from './HardwareStatus';
+import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
 
 export const hardwareStatusColumn = (
   onEditHostname?: HostsTableActions['onEditHost'],
@@ -62,26 +61,7 @@ export const hardwareStatusColumn = (
   };
 };
 
-const getExpandComponent =
-  (onDiskRole: onDiskRoleType, canEditDisks: (host: Host) => boolean) =>
-  // eslint-disable-next-line react/display-name
-  ({ obj: host }: ExpandComponentProps<Host>) =>
-    (
-      <HostDetail
-        key={host.id}
-        host={host}
-        onDiskRole={onDiskRole}
-        canEditDisks={canEditDisks}
-        AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
-      />
-    );
-
-type HostsDiscoveryTableProps = {
-  cluster: Cluster;
-  skipDisabled?: boolean;
-};
-
-const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({ cluster }) => {
+const HostsDiscoveryTable = ({ cluster }: { cluster: Cluster; skipDisabled?: boolean }) => {
   const {
     onEditHost,
     actionChecks,
@@ -109,8 +89,22 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({ cluster }) =>
       disksColumn,
       countColumn(cluster),
     ],
-    [onEditHost, actionChecks.canEditHostname, actionChecks.canEditRole, onEditRole, cluster],
+    [onEditHost, actionChecks.canEditHostname, actionChecks.canEditRole, onEditRole, cluster, t],
   );
+
+  const expandMemo = React.useMemo(() => {
+    return function ExpandedHostDetail({ obj: host }: { obj: Host }) {
+      return (
+        <HostDetail
+          key={host.id}
+          host={host}
+          onDiskRole={onDiskRole}
+          canEditDisks={actionChecks.canEditDisks}
+          AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
+        />
+      );
+    };
+  }, [onDiskRole, actionChecks.canEditDisks]);
 
   const hosts = cluster.hosts || [];
   const paginationProps = usePagination(hosts.length);
@@ -136,10 +130,10 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({ cluster }) =>
         <StackItem>
           <HostsTable
             testId="hosts-discovery-table"
-            hosts={cluster.hosts || []}
+            hosts={hosts}
             content={content}
             actionResolver={actionResolver}
-            ExpandComponent={getExpandComponent(onDiskRole, actionChecks.canEditDisks)}
+            ExpandComponent={expandMemo}
             onSelect={isSNOCluster ? undefined : onSelect}
             selectedIDs={selectedHostIDs}
             setSelectedIDs={setSelectedHostIDs}

@@ -164,8 +164,8 @@ export const useHostsTable = (cluster: Cluster) => {
 
   const actionChecks = React.useMemo(
     () => ({
-      canEditRole: () => canEditRoleUtil(cluster),
-      canInstallHost: (host: Host) => canInstallHostUtil(cluster, host.status),
+      canEditRole: () => canEditRoleUtil({ highAvailabilityMode: cluster.highAvailabilityMode }),
+      canInstallHost: (host: Host) => canInstallHostUtil(cluster.status, cluster.kind, host.status),
       canEditDisks: (host: Host) => canEditDisksUtil(cluster.status, host.status),
       canEnable: (host: Host) => canEnableUtil(cluster.status, host.status),
       canDisable: (host: Host) => canDisableUtil(cluster.status, host.status),
@@ -174,7 +174,7 @@ export const useHostsTable = (cluster: Cluster) => {
       canReset: (host: Host) => canResetUtil(cluster.status, host.status),
       canEditHostname: () => canEditHostnameUtil(cluster.status),
     }),
-    [cluster],
+    [cluster.status, cluster.kind, cluster.highAvailabilityMode],
   );
 
   const onReset = React.useCallback(() => {

@@ -36,7 +36,7 @@ export const selectOlmOperators = (cluster?: Pick<Cluster, 'monitoredOperators'>
   return selectMonitoredOperators(cluster).filter((operator) => operator.operatorType === 'olm');
 };
 
-export const isSNO = ({ highAvailabilityMode }: Partial<Cluster>) =>
+export const isSNO = ({ highAvailabilityMode }: Pick<Cluster, 'highAvailabilityMode'>) =>
   highAvailabilityMode === 'None';
 
 export const selectClusterValidationsInfo = ({

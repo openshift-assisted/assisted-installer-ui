@@ -92,7 +92,7 @@ const HostsService = {
       const hosts = await HostsService.listHostsBoundToCluster(cluster.id);
 
       for (const host of hosts) {
-        if (canInstallHost(cluster, host.status)) {
+        if (canInstallHost(cluster.status, cluster.kind, host.status)) {
           promises.push(HostsAPI.installHost(infraEnvId, host.id));
         }
       }
