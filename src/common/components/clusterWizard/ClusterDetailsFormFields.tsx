@@ -13,7 +13,7 @@ import {
   InputField,
   RichInputField,
   SelectField,
-  ACM_CLUSTER_NAME_VALIDATION_MESSAGES,
+  acmClusterNameValidationMessages,
 } from '../ui/formik';
 import DiskEncryptionControlGroup from '../clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
 import { ClusterDetailsValues } from './types';
@@ -84,7 +84,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
         name="name"
         placeholder={isOcm ? '' : t('ai:Enter cluster name')}
         isDisabled={isNameDisabled}
-        richValidationMessages={ACM_CLUSTER_NAME_VALIDATION_MESSAGES}
+        richValidationMessages={acmClusterNameValidationMessages(t)}
         isRequired
       />
       {extensionAfter?.['name'] && extensionAfter['name']}

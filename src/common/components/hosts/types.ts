@@ -75,4 +75,5 @@ export type HostStatusProps = AdditionNtpSourcePropsType &
     onEditHostname?: () => void;
     status: HostStatusDef;
     zIndex?: number;
+    autoCSR?: boolean;
   };

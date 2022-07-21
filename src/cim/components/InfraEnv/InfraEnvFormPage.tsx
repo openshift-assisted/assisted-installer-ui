@@ -19,7 +19,6 @@ import {
 } from '@patternfly/react-core';
 import { Formik, FormikProps, useFormikContext } from 'formik';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 import {
   httpProxyValidationSchema,
@@ -37,17 +36,18 @@ import {
   AdditionalNTPSourcesField,
   richNameValidationSchema,
   getRichTextValidation,
-  NAME_VALIDATION_MESSAGES,
+  nameValidationMessages,
   RichInputField,
   locationValidationSchema,
-  LOCATION_VALIDATION_MESSAGES,
+  locationValidationMessages,
   ntpSourceValidationSchema,
 } from '../../../common';
 
 import './infra-env.css';
 import { getErrorMessage } from '../../../common/utils';
-
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
+
 export type EnvironmentStepFormValues = {
   name: string;
   location: string;
@@ -66,8 +66,8 @@ export type EnvironmentStepFormValues = {
 const validationSchema = (usedNames: string[], t: TFunction) =>
   Yup.lazy<EnvironmentStepFormValues>((values) =>
     Yup.object<EnvironmentStepFormValues>().shape({
-      name: richNameValidationSchema(usedNames),
-      location: locationValidationSchema.required(t('ai:Location is a required field.')),
+      name: richNameValidationSchema(t, usedNames),
+      location: locationValidationSchema(t).required(t('ai:Location is a required field.')),
       pullSecret: pullSecretValidationSchema.required(t('ai:Pull secret is a required field.')),
       sshPublicKey: sshPublicKeyValidationSchema,
       httpProxy: httpProxyValidationSchema(values, 'httpsProxy'),
@@ -124,7 +124,7 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged }) => {
             label={t('ai:Name')}
             name="name"
             isRequired
-            richValidationMessages={NAME_VALIDATION_MESSAGES}
+            richValidationMessages={nameValidationMessages(t)}
             placeholder={t('ai:Enter infrastructure environment name')}
           />
           <FormGroup
@@ -189,7 +189,7 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged }) => {
             label={t('ai:Location')}
             name="location"
             isRequired
-            richValidationMessages={LOCATION_VALIDATION_MESSAGES}
+            richValidationMessages={locationValidationMessages(t)}
             placeholder={t('ai:Enter geographic location for the environment')}
             helperText={t(
               "ai:Used to describe hosts' physical location. Helps for quicker host selection during cluster creation.",

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text } from '@patternfly/react-core';
-import { Cluster, VMRebootConfigurationInfo, FormatDiskWarning, isSNO } from '../../../common';
+import { Cluster, VMRebootConfigurationInfo, isSNO, FormatDiskWarning } from '../../../common';
 import OCSDisksManualFormattingHint from '../hosts/OCSDisksManualFormattingHint';
 import { isAddHostsCluster } from '../clusters/utils';
 import { isAHostVM } from '../hosts/utils';

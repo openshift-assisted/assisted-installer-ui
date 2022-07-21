@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react';
 import { useFormikContext } from 'formik';
-import { Alert, AlertVariant, Checkbox, Grid } from '@patternfly/react-core';
+import { Checkbox, Grid } from '@patternfly/react-core';
 import AdvancedNetworkFields from '../../../common/components/clusterConfiguration/AdvancedNetworkFields';
 import { NetworkConfigurationValues } from '../../../common/types/clusters';
 import { Address6 } from 'ip-address';
-import { getLimitedFeatureSupportLevels } from '../../../common/components/featureSupportLevels/utils';
 import {
   AvailableSubnetsControl,
   ManagedNetworkingControlGroup,
@@ -21,30 +20,12 @@ import {
   isSubnetInIPv6,
   NETWORK_TYPE_OVN,
   NO_SUBNET_SET,
-  useFeatureSupportLevel,
 } from '../../../common';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   defaultNetworkSettings: ClusterDefaultConfig;
   hideManagedNetworking?: boolean;
-};
-
-const VmsAlert = () => {
-  const { t } = useTranslation();
-  return (
-    <Alert
-      title="Your cluster will be subject to support limitations"
-      variant={AlertVariant.info}
-      isInline={true}
-      data-testid="networking-vms-alert"
-    >
-      {t(
-        "ai:Some or all of your discovered hosts are virtual machines, so selecting the cluster-managed networking option will limit your installed cluster's support.",
-      )}
-      '
-    </Alert>
-  );
 };
 
 const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
@@ -56,12 +37,8 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   children,
 }) => {
   const { t } = useTranslation();
-  const featureSupportLevelData = useFeatureSupportLevel();
   const { setFieldValue, values, touched, validateField } =
     useFormikContext<NetworkConfigurationValues>();
-  const clusterFeatureSupportLevels = React.useMemo(() => {
-    return getLimitedFeatureSupportLevels(cluster, featureSupportLevelData, t);
-  }, [cluster, featureSupportLevelData, t]);
 
   const isMultiNodeCluster = !isSNO(cluster);
   const isClusterCIDRIPv6 = Address6.isValid(values.clusterNetworkCidr || '');
@@ -144,15 +121,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   return (
     <Grid hasGutter>
       {!hideManagedNetworking && (
-        <ManagedNetworkingControlGroup
-          disabled={
-            !!cluster.openshiftVersion &&
-            featureSupportLevelData.isFeatureDisabled(
-              cluster.openshiftVersion,
-              'NETWORK_TYPE_SELECTION',
-            )
-          }
-        />
+        <ManagedNetworkingControlGroup disabled={!!cluster.openshiftVersion} />
       )}
 
       {isUserManagedNetworking && (
@@ -160,11 +129,6 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
       )}
 
       {children}
-
-      {!isUserManagedNetworking &&
-        !!clusterFeatureSupportLevels &&
-        clusterFeatureSupportLevels['CLUSTER_MANAGED_NETWORKING_WITH_VMS'] === 'unsupported' &&
-        VmsAlert}
 
       {!(isMultiNodeCluster && isUserManagedNetworking) && (
         <AvailableSubnetsControl

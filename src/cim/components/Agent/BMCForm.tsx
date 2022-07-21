@@ -27,7 +27,7 @@ import {
   richNameValidationSchema,
   getRichTextValidation,
   RichInputField,
-  HOSTNAME_VALIDATION_MESSAGES,
+  hostnameValidationMessages,
   bmcAddressValidationSchema,
 } from '../../../common';
 import { Language } from '@patternfly/react-code-editor';
@@ -130,7 +130,7 @@ const getNMState = (values: AddBmcValues, infraEnv: InfraEnvK8sResource): NMStat
 const getValidationSchema = (usedHostnames: string[], origHostname: string, t: TFunction) => {
   return Yup.object({
     name: Yup.string().required(),
-    hostname: richNameValidationSchema(usedHostnames, origHostname),
+    hostname: richNameValidationSchema(t, usedHostnames, origHostname),
     bmcAddress: bmcAddressValidationSchema.required(),
     username: Yup.string().required(),
     password: Yup.string().required(),
@@ -243,7 +243,7 @@ const BMCForm: React.FC<BMCFormProps> = ({
                 label={t('ai:Hostname')}
                 name="hostname"
                 placeholder={t('ai:Enter the hostname for the Host')}
-                richValidationMessages={HOSTNAME_VALIDATION_MESSAGES}
+                richValidationMessages={hostnameValidationMessages(t)}
                 isRequired
               />
               <InputField

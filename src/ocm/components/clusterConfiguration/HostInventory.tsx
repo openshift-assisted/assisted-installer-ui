@@ -17,7 +17,6 @@ import {
   useFeature,
   isSNO,
   ClusterWizardStepHeader,
-  DiscoveryInstructions,
   SwitchField,
   schedulableMastersAlwaysOn,
   HostDiscoveryValues,
@@ -54,6 +53,7 @@ const PlatformIntegrationLabel: React.FC = () => (
           </List>
         </>
       }
+      buttonOuiaId="platform-integration-vSphere-popover"
     />
   </>
 );
@@ -94,9 +94,6 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         </ClusterWizardStepHeader>
       </StackItem>
       <StackItem>
-        <DiscoveryInstructions isSNO={isSNOCluster} showAllInstructions />
-      </StackItem>
-      <StackItem>
         <TextContent>
           <Text component="p">
             <DiscoveryImageModalButton
@@ -135,6 +132,7 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
                 }
                 name={'usePlatformIntegration'}
                 label={<PlatformIntegrationLabel />}
+                switchOuiaId="platform-integration-vSphere-switch"
               />
             </SplitItem>
           </Split>
@@ -154,6 +152,11 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
       <StackItem>
         <TextContent>
           <InformationAndAlerts cluster={cluster} />
+        </TextContent>
+      </StackItem>
+      <StackItem>
+        <TextContent>
+          <Text component="h3">Host Inventory</Text>
         </TextContent>
       </StackItem>
       <StackItem>

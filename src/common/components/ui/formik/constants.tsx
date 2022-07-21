@@ -1,46 +1,48 @@
-export const CLUSTER_NAME_VALIDATION_MESSAGES = {
-  INVALID_LENGTH_OCM: '1-54 characters',
-  INVALID_LENGTH_ACM: '2-54 characters',
-  INVALID_VALUE: 'Use lowercase alphanumberic characters, or hyphen (-)',
-  INVALID_START_END: 'Start and end with a lowercase letter or a number.',
-  NOT_UNIQUE: 'Must be unique',
-};
+import { TFunction } from 'i18next';
 
-export const OCM_CLUSTER_NAME_VALIDATION_MESSAGES = {
-  INVALID_LENGTH: CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_LENGTH_OCM,
-  INVALID_VALUE: CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_VALUE,
-  INVALID_START_END: CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_START_END,
-};
+export const clusterNameValidationMessages = (t: TFunction) => ({
+  INVALID_LENGTH_OCM: t('ai:1-54 characters'),
+  INVALID_LENGTH_ACM: t('ai:2-54 characters'),
+  INVALID_VALUE: t('ai:Use lowercase alphanumberic characters, or hyphen (-)'),
+  INVALID_START_END: t('ai:Start and end with a lowercase letter or a number.'),
+  NOT_UNIQUE: t('ai:Must be unique'),
+});
 
-export const UNIQUE_OCM_CLUSTER_NAME_VALIDATION_MESSAGES = {
-  INVALID_LENGTH: CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_LENGTH_OCM,
-  INVALID_VALUE: CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_VALUE,
-  INVALID_START_END: CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_START_END,
-  NOT_UNIQUE: CLUSTER_NAME_VALIDATION_MESSAGES.NOT_UNIQUE,
-};
+export const ocmClusterNameValidationMessages = (t: TFunction) => ({
+  INVALID_LENGTH: clusterNameValidationMessages(t).INVALID_LENGTH_OCM,
+  INVALID_VALUE: clusterNameValidationMessages(t).INVALID_VALUE,
+  INVALID_START_END: clusterNameValidationMessages(t).INVALID_START_END,
+});
 
-export const ACM_CLUSTER_NAME_VALIDATION_MESSAGES = {
-  INVALID_LENGTH: CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_LENGTH_ACM,
-  INVALID_VALUE: CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_VALUE,
-  INVALID_START_END: CLUSTER_NAME_VALIDATION_MESSAGES.INVALID_START_END,
-  NOT_UNIQUE: CLUSTER_NAME_VALIDATION_MESSAGES.NOT_UNIQUE,
-};
+export const uniqueOcmClusterNameValidationMessages = (t: TFunction) => ({
+  INVALID_LENGTH: clusterNameValidationMessages(t).INVALID_LENGTH_OCM,
+  INVALID_VALUE: clusterNameValidationMessages(t).INVALID_VALUE,
+  INVALID_START_END: clusterNameValidationMessages(t).INVALID_START_END,
+  NOT_UNIQUE: clusterNameValidationMessages(t).NOT_UNIQUE,
+});
 
-export const NAME_VALIDATION_MESSAGES = {
-  INVALID_LENGTH: '1-253 characters',
-  NOT_UNIQUE: 'Must be unique',
-  INVALID_VALUE: 'Use lowercase alphanumberic characters, dot (.) or hyphen (-)',
-  INVALID_START_END: 'Must start and end with an lowercase alphanumeric character',
-  INVALID_FORMAT: 'Number of characters between dots (.) must be 1-63',
-};
+export const acmClusterNameValidationMessages = (t: TFunction) => ({
+  INVALID_LENGTH: clusterNameValidationMessages(t).INVALID_LENGTH_ACM,
+  INVALID_VALUE: clusterNameValidationMessages(t).INVALID_VALUE,
+  INVALID_START_END: clusterNameValidationMessages(t).INVALID_START_END,
+  NOT_UNIQUE: clusterNameValidationMessages(t).NOT_UNIQUE,
+});
 
-export const HOSTNAME_VALIDATION_MESSAGES = {
-  ...NAME_VALIDATION_MESSAGES,
-  LOCALHOST_ERR: 'Do not use forbidden words, for example: "localhost".',
-};
+export const nameValidationMessages = (t: TFunction) => ({
+  INVALID_LENGTH: t('ai:1-253 characters'),
+  NOT_UNIQUE: t('ai:Must be unique'),
+  INVALID_VALUE: t('ai:Use lowercase alphanumberic characters, dot (.) or hyphen (-)'),
+  INVALID_START_END: t('ai:Must start and end with an lowercase alphanumeric character'),
+  INVALID_FORMAT: t('ai:Number of characters between dots (.) must be 1-63'),
+});
 
-export const LOCATION_VALIDATION_MESSAGES = {
-  INVALID_LENGTH: '1-63 characters',
-  INVALID_VALUE: 'Use alphanumberic characters, dot (.), underscore (_) or hyphen (-)',
-  INVALID_START_END: 'Must start and end with an alphanumeric character',
-};
+export const hostnameValidationMessages = (t: TFunction) => ({
+  ...nameValidationMessages(t),
+  LOCALHOST_ERR: t('ai:Do not use forbidden words, for example: "localhost".'),
+});
+
+export const locationValidationMessages = (t: TFunction) => ({
+  INVALID_LENGTH: t('ai:1-63 characters'),
+  INVALID_VALUE: t('ai:Use alphanumberic characters, dot (.), underscore (_) or hyphen (-)'),
+  INVALID_START_END: t('ai:Must start and end with an alphanumeric character'),
+});

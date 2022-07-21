@@ -2,17 +2,19 @@ import React from 'react';
 import { Alert, AlertVariant, List, ListItem, Stack, StackItem } from '@patternfly/react-core';
 import { CheckboxField } from '../ui';
 import { SupportLevel } from '../../types';
-import { TFunction } from 'i18next';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 type SNODisclaimerProps = {
   snoSupportLevel: SupportLevel;
   isDisabled?: boolean;
   snoExpansionSupported?: boolean;
 };
-const SNODisclaimer = (
-  { snoSupportLevel, isDisabled = false, snoExpansionSupported = false }: SNODisclaimerProps,
-  t: TFunction,
-) => {
+const SNODisclaimer = ({
+  snoSupportLevel,
+  isDisabled = false,
+  snoExpansionSupported = false,
+}: SNODisclaimerProps) => {
+  const { t } = useTranslation();
   if (!['dev-preview', 'supported'].includes(snoSupportLevel)) {
     //if tech preview or unsupported there's no definition which warning to show
     return null;

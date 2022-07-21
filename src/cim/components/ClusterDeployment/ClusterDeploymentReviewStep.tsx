@@ -67,9 +67,7 @@ const ClusterDeploymentReviewStep: React.FC<ClusterDeploymentReviewStepProps> = 
     try {
       await onFinish();
     } catch (err) {
-      addAlert({
-        title: err.message || t('ai:An error occured while starting installation.'),
-      });
+      addAlert({ title: err.message || t('ai:An error occured while starting installation.') });
     } finally {
       setSubmitting(false);
     }
@@ -135,7 +133,7 @@ const ClusterDeploymentReviewStep: React.FC<ClusterDeploymentReviewStepProps> = 
                 <ClusterValidations<ClusterWizardStepsType>
                   validationsInfo={cluster.validationsInfo}
                   setCurrentStepId={setCurrentStepId}
-                  wizardStepNames={wizardStepNames}
+                  wizardStepNames={wizardStepNames(t)}
                   wizardStepsValidationsMap={wizardStepsValidationsMap}
                 />
               }
@@ -147,7 +145,7 @@ const ClusterDeploymentReviewStep: React.FC<ClusterDeploymentReviewStepProps> = 
                 <HostsValidations<ClusterWizardStepsType, typeof allClusterWizardSoftValidationIds>
                   hosts={cluster.hosts}
                   setCurrentStepId={setCurrentStepId}
-                  wizardStepNames={wizardStepNames}
+                  wizardStepNames={wizardStepNames(t)}
                   allClusterWizardSoftValidationIds={allClusterWizardSoftValidationIds}
                   wizardStepsValidationsMap={wizardStepsValidationsMap}
                 />

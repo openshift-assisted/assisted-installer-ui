@@ -6,8 +6,9 @@ import {
   global_success_color_100 as successColor,
 } from '@patternfly/react-tokens';
 import { toSentence } from '../ui';
-import { HOST_VALIDATION_FAILURE_HINTS, HOST_VALIDATION_LABELS } from '../../config';
+import { hostValidationFailureHints, hostValidationLabels } from '../../config';
 import { Validation } from '../../types/hosts';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 type ValidationPopoverProps = {
   validation: Validation;
@@ -15,10 +16,12 @@ type ValidationPopoverProps = {
 };
 
 const ValidationPopover: React.FC<ValidationPopoverProps> = ({ validation, actions, children }) => {
-  const failedValidationHint = HOST_VALIDATION_FAILURE_HINTS[validation.id];
+  const { t } = useTranslation();
+  const failedValidationHint = hostValidationFailureHints(t)[validation.id];
+
   return (
     <Popover
-      headerContent={<div>{HOST_VALIDATION_LABELS[validation.id]}</div>}
+      headerContent={<div>{hostValidationLabels(t)[validation.id]}</div>}
       bodyContent={
         <div>
           {toSentence(validation.message)}
