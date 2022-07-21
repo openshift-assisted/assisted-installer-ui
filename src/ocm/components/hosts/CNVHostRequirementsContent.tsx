@@ -48,10 +48,12 @@ export const CNVHostRequirementsContent = ({
             ? ` and ${masterRequirements?.diskSizeGb} storage space`
             : ''}
         </ListItem>
-        <ListItem>
-          OpenShift Data Foundation (recommended for full functionality) or another persistent
-          storage service
-        </ListItem>
+        <RenderIf condition={!isSingleNode}>
+          <ListItem>
+            OpenShift Data Foundation (recommended for full functionality) or another persistent
+            storage service
+          </ListItem>
+        </RenderIf>
       </List>
     </>
   );
