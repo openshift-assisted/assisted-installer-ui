@@ -8,7 +8,7 @@ import {
   PullSecret,
 } from '../../../../../common';
 import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
-import { getOCPVersions } from '../../../helpers';
+import { useSupportedOCPVersions } from '../../hooks/useSupportedOCPVersions';
 import { useTemptiflySync } from '../../hooks/useTemptiflySync';
 import { DetailsFormProps, DetailsFormValues } from './types';
 
@@ -16,6 +16,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({
   onValuesChanged,
   extensionAfter,
   clusterImages,
+  supportedVersionsCM,
 }) => {
   const { values } = useFormikContext<DetailsFormValues>();
   useTemptiflySync({ values, onValuesChanged });
@@ -25,7 +26,8 @@ const DetailsForm: React.FC<DetailsFormProps> = ({
     nameInputRef.current?.focus();
   }, []);
 
-  const ocpVersions = React.useMemo(() => getOCPVersions(clusterImages), [clusterImages]);
+  const ocpVersions = useSupportedOCPVersions(clusterImages, supportedVersionsCM);
+
   const { t } = useTranslation();
   return (
     <Form>

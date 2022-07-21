@@ -10,7 +10,7 @@ const getHostCountWarningText = (hostsSelected: number, t: TFunction) => {
     case 0:
       return t('ai:No host is selected.');
   }
-  return t('ai:Only {{hostsSelected}} hosts are selected.', {
+  return t('ai:Only {{hostsSelected}} host is selected.', {
     count: hostsSelected,
     hostsSelected,
   });

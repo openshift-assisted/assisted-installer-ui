@@ -9,9 +9,9 @@ import { PendingIcon, CheckCircleIcon, ExclamationTriangleIcon } from '@patternf
 import { Host, HostValidationId } from '../../api';
 import { Validation, ValidationsInfo } from '../../types/hosts';
 import {
-  HOST_VALIDATION_FAILURE_HINTS,
-  HOST_VALIDATION_GROUP_LABELS,
-  HOST_VALIDATION_LABELS,
+  hostValidationFailureHints,
+  hostValidationGroupLabels,
+  hostValidationLabels,
 } from '../../config';
 import { toSentence } from '../ui/table/utils';
 
@@ -51,18 +51,21 @@ const ValidationsAlert: React.FC<{
   variant: AlertVariant;
   title: string;
   actionLinks?: ReactElement[];
-}> = ({ validations, variant, title, actionLinks = [] }) => (
-  <Alert title={title} variant={variant} actionLinks={actionLinks} isInline>
-    <ul>
-      {validations.map((v) => (
-        <li key={v.id}>
-          <strong>{HOST_VALIDATION_LABELS[v.id] || v.id}:</strong>&nbsp;{toSentence(v.message)}{' '}
-          {v.status === 'failure' && HOST_VALIDATION_FAILURE_HINTS[v.id]}
-        </li>
-      ))}
-    </ul>
-  </Alert>
-);
+}> = ({ validations, variant, title, actionLinks = [] }) => {
+  const { t } = useTranslation();
+  return (
+    <Alert title={title} variant={variant} actionLinks={actionLinks} isInline>
+      <ul>
+        {validations.map((v) => (
+          <li key={v.id}>
+            <strong>{hostValidationLabels(t)[v.id] || v.id}:</strong>&nbsp;{toSentence(v.message)}{' '}
+            {v.status === 'failure' && hostValidationFailureHints(t)[v.id]}
+          </li>
+        ))}
+      </ul>
+    </Alert>
+  );
+};
 
 const HostnameAlert: React.FC<
   Required<InvalidHostnameActionProps> & {
@@ -106,7 +109,7 @@ const NtpSyncAlert: React.FC<
       actionLinks={actionLinks}
       isInline
     >
-      {toSentence(validation.message)} {HOST_VALIDATION_FAILURE_HINTS[validation.id]}
+      {toSentence(validation.message)} {hostValidationFailureHints(t)[validation.id]}
     </Alert>
   );
 };
@@ -208,7 +211,7 @@ export const HostValidationGroups: React.FC<HostValidationGroupsProps> = ({
   return (
     <>
       {Object.keys(validationsInfo).map((groupName: string) => {
-        const groupLabel = HOST_VALIDATION_GROUP_LABELS[groupName];
+        const groupLabel = hostValidationGroupLabels(t)[groupName];
 
         const pendingValidations = (validationsInfo[groupName] as Validation[]).filter(
           (v: Validation) => v.status === 'pending',

@@ -7,13 +7,14 @@ import {
   WizardFooterGenericProps,
   Alerts,
   useAlerts,
-  CLUSTER_FIELD_LABELS,
+  clusterFieldLabels,
   selectClusterValidationsInfo,
 } from '../../../common';
 import { routeBasePath } from '../../config/routeBaseBath';
 import { wizardStepsValidationsMap } from '../clusterWizard/wizardTransition';
 import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
 import ClusterWizardStepValidationsAlert from '../../../common/components/clusterWizard/ClusterWizardStepValidationsAlert';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type ClusterValidationSectionProps = {
   cluster?: Cluster;
@@ -31,10 +32,11 @@ const ValidationSection = ({
 }: ClusterValidationSectionProps) => {
   const { currentStepId } = useClusterWizardContext();
   const validationsInfo = cluster && selectClusterValidationsInfo(cluster);
+  const { t } = useTranslation();
   let _alertContent = alertContent;
   if (_alertContent === undefined) {
     _alertContent = `The following fields are invalid or missing: 
-    ${errorFields.map((field: string) => CLUSTER_FIELD_LABELS[field] || field).join(', ')}.`;
+    ${errorFields.map((field: string) => clusterFieldLabels(t)[field] || field).join(', ')}.`;
   }
   return (
     <AlertGroup>

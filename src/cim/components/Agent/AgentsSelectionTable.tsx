@@ -49,8 +49,8 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
     useFormikHelpers<ClusterDeploymentHostsSelectionValues['selectedHostIds']>('selectedHostIds');
 
   const setFieldValue = React.useCallback(
-    async (ids: string[]) => {
-      await setValue(ids, true);
+    (ids: string[]) => {
+      setValue(ids, true);
       setTouched(true, false);
     },
     [setValue, setTouched],
