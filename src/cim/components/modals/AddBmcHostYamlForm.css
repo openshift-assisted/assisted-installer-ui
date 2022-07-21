@@ -1,0 +1,6 @@
+.ai-bmc-yaml__error {
+  display: block;
+  font-size: var(--pf-global--FontSize--md);
+  color: red;
+}
+

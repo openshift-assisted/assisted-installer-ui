@@ -10,15 +10,16 @@ import {
   ipv6Column,
   macAddressColumn,
 } from '../hosts/tableUtils';
-import { ActionsResolver, TableRow } from '..//hosts/AITable';
+import { ActionsResolver, TableRow } from '../hosts/AITable';
 import { usePagination } from '../hosts/usePagination';
-import { HostDetail } from '..//hosts/HostRowDetail';
-import { getSchedulableMasters, HostsTableActions } from '../hosts';
+import { HostDetail } from '../hosts/HostRowDetail';
+import { HostsTableActions } from '../hosts';
 import { Cluster, stringToJSON } from '../../api';
 import HostsTable from '../hosts/HostsTable';
 import { ValidationsInfo } from '../../types/hosts';
 import NetworkingStatus from '../../../ocm/components/hosts/NetworkingStatus';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { selectSchedulableMasters } from '../../selectors';
 
 export const networkingStatusColumn = (
   onEditHostname?: HostsTableActions['onEditHost'],
@@ -70,7 +71,7 @@ const NetworkConfigurationTable: React.FC<NetworkConfigurationTableProps> = ({
   const content = React.useMemo(
     () => [
       hostnameColumn(t, onEditHost),
-      roleColumn(t, canEditRole, onEditRole, getSchedulableMasters(cluster)),
+      roleColumn(t, canEditRole, onEditRole, selectSchedulableMasters(cluster)),
       networkingStatusColumn(onEditHost),
       activeNICColumn(cluster),
       ipv4Column(cluster),
