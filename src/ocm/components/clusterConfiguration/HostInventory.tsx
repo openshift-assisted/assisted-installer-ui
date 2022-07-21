@@ -80,13 +80,12 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
   const isOpenshiftClusterStorageEnabled = useFeature('ASSISTED_INSTALLER_OCS_FEATURE');
   const isContainerNativeVirtualizationEnabled = useFeature('ASSISTED_INSTALLER_CNV_FEATURE');
   const isSNOCluster = isSNO(cluster);
-  const mastersMustRunWorkload = selectMastersMustRunWorkloads(cluster);
-
+  const mastersMustRunWorkloads = selectMastersMustRunWorkloads(cluster);
   const { setFieldValue } = useFormikContext<HostDiscoveryValues>();
 
   React.useEffect(() => {
     setFieldValue('schedulableMasters', selectSchedulableMasters(cluster));
-  }, [mastersMustRunWorkload]); // Schedulable masters need to be recalculated only when forced status changes
+  }, [mastersMustRunWorkloads]); // Schedulable masters need to be recalculated only when forced status changes
 
   return (
     <Stack hasGutter>
@@ -142,10 +141,10 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
       <StackItem>
         <SwitchField
           tooltipProps={{
-            hidden: !mastersMustRunWorkload,
+            hidden: !mastersMustRunWorkloads,
             content: schedulableMastersTooltip,
           }}
-          isDisabled={mastersMustRunWorkload}
+          isDisabled={mastersMustRunWorkloads}
           name={'schedulableMasters'}
           label={<SchedulableMastersLabel />}
         />
