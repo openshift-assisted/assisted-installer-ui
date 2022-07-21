@@ -1,20 +1,23 @@
 import { ClusterDeploymentWizardStepsType } from './types';
+import { TFunction } from 'i18next';
 
-export const CLUSTER_HOSTS_SELECTION_LABELS: { [key in string]: string } = {
-  hostCount: 'Host Count',
-  masterLabels: 'Host Labels', // used in both masters-only and "auto-select masters" contexts
-  workerLabels: 'Worker Hosts Labels',
-};
+export const clusterHostsSelectionLabel = (t: TFunction): { [key in string]: string } => ({
+  hostCount: t('ai:Host Count'),
+  masterLabels: t('ai:Host Labels'), // used in both masters-only and "auto-select masters" contexts
+  workerLabels: t('ai:Worker Hosts Labels'),
+});
 
-export const wizardStepNames: {
+export const wizardStepNames = (
+  t: TFunction,
+): {
   [key in ClusterDeploymentWizardStepsType]: string;
-} = {
-  'cluster-details': 'Cluster details',
-  'hosts-selection': 'Cluster hosts',
-  'hosts-discovery': 'Cluster hosts',
-  networking: 'Cluster network',
-  review: 'Review and create',
-};
+} => ({
+  'cluster-details': t('ai:Cluster details'),
+  'hosts-selection': t('ai:Cluster hosts'),
+  'hosts-discovery': t('ai:Cluster hosts'),
+  networking: t('ai:Cluster network'),
+  review: t('ai:Review and create'),
+});
 
 // TODO(mlibra): what is the limit???
 export const HOSTS_MAX_COUNT = 1024;

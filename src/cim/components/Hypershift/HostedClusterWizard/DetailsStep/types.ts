@@ -1,6 +1,6 @@
 import { FormikProps } from 'formik';
 import { ObjectSchema } from 'yup';
-import { ClusterImageSetK8sResource } from '../../../../types';
+import { ClusterImageSetK8sResource, ConfigMapK8sResource } from '../../../../types';
 
 export type DetailsFormValues = {
   name: string;
@@ -29,9 +29,10 @@ export type DetailsStepProps = {
   formRef: React.Ref<FormikProps<DetailsFormValues>>;
   initPullSecret?: string;
   initBaseDomain?: string;
+  supportedVersionsCM?: ConfigMapK8sResource;
 };
 
 export type DetailsFormProps = Pick<
   DetailsStepProps,
-  'onValuesChanged' | 'extensionAfter' | 'clusterImages'
+  'onValuesChanged' | 'extensionAfter' | 'clusterImages' | 'supportedVersionsCM'
 >;

@@ -12,7 +12,9 @@ import {
   InProgressIcon,
   BanIcon,
 } from '@patternfly/react-icons';
-import { Cluster, CLUSTER_STATUS_LABELS, WithTestID } from '../../../common';
+import { Cluster, clusterStatusLabels, WithTestID } from '../../../common';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { TFunction } from 'i18next';
 
 type ClusterStatusProps = {
   status: Cluster['status'];
@@ -48,15 +50,17 @@ export const ClusterStatusIcon: React.FC<ClusterStatusIconProps> = ({ status, ..
   }
 };
 
-export const getClusterStatusText = (status: Cluster['status']) =>
-  CLUSTER_STATUS_LABELS[status] || status;
+export const getClusterStatusText = (t: TFunction, status: Cluster['status']) => {
+  return clusterStatusLabels(t)[status] || status;
+};
 
 const ClusterStatus: React.FC<ClusterStatusProps & WithTestID> = ({
   status,
   testId,
   className,
 }) => {
-  const title = getClusterStatusText(status);
+  const { t } = useTranslation();
+  const title = getClusterStatusText(t, status);
 
   return (
     <>

@@ -51,12 +51,6 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Validate that i18n locale files are updated and contains 'ai' prefix in keys
-        run: |
-          chmod +x ./scripts/validatei18n_files.sh
-          ./scripts/validatei18n_files.sh
-        shell: bash
-
       - name: Update the version in package.json
         # In order to align the new tag with the commit that bumps the version in the package.json
         # we must first push the tag (github.ref_name) and then update the remote branch.

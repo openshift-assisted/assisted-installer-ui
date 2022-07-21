@@ -18,22 +18,26 @@ import { isSingleClusterMode } from '../../config';
 
 type ClusterDetailStatusMessagesProps = {
   cluster: Cluster;
-  showAddHostsInfo?: boolean;
+  showAddHostsInfo: boolean;
+  showKubeConfig: boolean;
 };
 
-const ClusterDetailStatusMessages: React.FC<ClusterDetailStatusMessagesProps> = ({
+const ClusterDetailStatusMessages = ({
   cluster,
-  showAddHostsInfo = true,
-}) => {
+  showAddHostsInfo,
+  showKubeConfig,
+}: ClusterDetailStatusMessagesProps) => {
   const { inactiveDeletionHours } = useDefaultConfiguration(['inactiveDeletionHours']);
   const inactiveDeletionDays = Math.round((inactiveDeletionHours || 0) / 24);
   const dateDifference = calculateClusterDateDiff(inactiveDeletionDays, cluster.installCompletedAt);
   const showAddHostsAlert =
     showAddHostsInfo && !isSingleClusterMode() && cluster.status === 'installed' && !isSNO(cluster);
 
+  const showKubeConfigDownload =
+    showKubeConfig && dateDifference > 0 && canDownloadKubeconfig(cluster.status);
   return (
     <>
-      <RenderIf condition={dateDifference > 0 && canDownloadKubeconfig(cluster.status)}>
+      <RenderIf condition={showKubeConfigDownload}>
         <GridItem>
           <KubeconfigDownload
             status={cluster.status}

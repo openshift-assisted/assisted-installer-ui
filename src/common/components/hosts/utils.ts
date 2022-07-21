@@ -1,7 +1,7 @@
 import filesize from 'filesize.js';
 import Fuse from 'fuse.js';
 import { Host, Cluster, Inventory } from '../../api/types';
-import { HOST_ROLES, TIME_ZERO } from '../../config';
+import { hostRoles, TIME_ZERO } from '../../config';
 import { DASH } from '../constants';
 import { stringToJSON } from '../../api';
 import { isSNO } from '../../selectors';
@@ -116,7 +116,7 @@ export const canHostnameBeChanged = (hostStatus: Host['status']) =>
 
 export const getHostRole = (host: Host, t: TFunction, schedulableMasters?: boolean): string => {
   let roleLabel = `${
-    HOST_ROLES.find((role) => role.value === host.role)?.label || HOST_ROLES[0].label
+    hostRoles(t).find((role) => role.value === host.role)?.label || hostRoles(t)[0].label
   }`;
 
   if (schedulableMasters && host.role === 'master') {

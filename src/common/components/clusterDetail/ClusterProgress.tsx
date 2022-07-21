@@ -8,7 +8,7 @@ import {
 } from '@patternfly/react-core';
 import { Cluster } from '../../api/types';
 import { DetailItem, DetailList, getHumanizedDateTime, RenderIf } from '../ui';
-import { CLUSTER_STATUS_LABELS } from '../../config';
+import { clusterStatusLabels } from '../../config';
 import './ClusterProgress.css';
 import { TFunction } from 'i18next';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
@@ -52,7 +52,7 @@ const getInstallationStatus = (
     });
   }
 
-  return CLUSTER_STATUS_LABELS[status] || status;
+  return clusterStatusLabels(t)[status] || status;
 };
 
 type ClusterProgressProps = {

@@ -3,11 +3,12 @@ import { Text } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 
 interface ExternalLinkProps {
-  href: string;
+  href?: string;
+  onClick?: VoidFunction;
   children?: ReactNode;
 }
-const ExternalLink: React.FC<ExternalLinkProps> = ({ href, children, ...rest }) => (
-  <Text component="a" href={href} target="_blank" rel="noopener noreferrer" {...rest}>
+const ExternalLink: React.FC<ExternalLinkProps> = ({ href, children, onClick }) => (
+  <Text component="a" href={href} onClick={onClick} target="_blank" rel="noopener noreferrer">
     {children ? children : href} <ExternalLinkAltIcon color="rgb(0, 123, 186)" />
   </Text>
 );

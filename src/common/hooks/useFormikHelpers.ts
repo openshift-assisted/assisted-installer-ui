@@ -14,8 +14,7 @@ export const useFormikHelpers = <R>(fieldID: string) => {
   const setTouchedRef = React.useRef(setTouched);
   setTouchedRef.current = setTouched;
 
-  // eslint-disable-next-line @typescript-eslint/require-await
-  const setFieldValue = React.useCallback(async (value: R, shouldValidate?: boolean) => {
+  const setFieldValue = React.useCallback((value: R, shouldValidate?: boolean) => {
     setValueRef.current(value, shouldValidate);
   }, []);
 
@@ -24,5 +23,8 @@ export const useFormikHelpers = <R>(fieldID: string) => {
     [],
   );
 
-  return { setValue: setFieldValue, setTouched: setFieldTouched };
+  const valueRef = React.useRef<R>(value);
+  valueRef.current = value;
+
+  return { setValue: setFieldValue, setTouched: setFieldTouched, valueRef };
 };

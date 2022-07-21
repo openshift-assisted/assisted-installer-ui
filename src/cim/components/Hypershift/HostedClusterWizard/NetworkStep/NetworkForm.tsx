@@ -6,7 +6,7 @@ import xor from 'lodash/xor';
 import { Form, Grid, GridItem } from '@patternfly/react-core';
 import {
   CheckboxField,
-  getHumanizedSubnetRange,
+  getHumanizedSubnet,
   getSubnet,
   InputField,
   Interface,
@@ -16,9 +16,9 @@ import {
 } from '../../../../../common';
 import { useFormikContext } from 'formik';
 import { useTemptiflySync } from '../../hooks/useTemptiflySync';
+import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
 
 import './NetworkForm.css';
-import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
 
 const NetworkForm: React.FC<NetworkFormProps> = ({ agents, onValuesChanged }) => {
   const { values, setFieldValue } = useFormikContext<NetworkFormValues>();
@@ -61,7 +61,7 @@ const NetworkForm: React.FC<NetworkFormProps> = ({ agents, onValuesChanged }) =>
   const cidrOptions = availableCIDRs.map((cidr) => {
     return {
       value: cidr,
-      label: getHumanizedSubnetRange(getSubnet(cidr)),
+      label: getHumanizedSubnet(getSubnet(cidr)),
     };
   });
 

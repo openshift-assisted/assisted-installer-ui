@@ -53,6 +53,7 @@ const PlatformIntegrationLabel: React.FC = () => (
           </List>
         </>
       }
+      buttonOuiaId="platform-integration-vSphere-popover"
     />
   </>
 );
@@ -133,6 +134,7 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
                 }
                 name={'usePlatformIntegration'}
                 label={<PlatformIntegrationLabel />}
+                switchOuiaId="platform-integration-vSphere-switch"
               />
             </SplitItem>
           </Split>

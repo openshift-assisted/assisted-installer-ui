@@ -27,3 +27,11 @@ export type BMCFormProps = {
   secret?: SecretK8sResource;
   isEdit?: boolean;
 };
+
+export type AddYamlValues = {
+  fileName: string;
+  fileError: string;
+  textOpenFile: string;
+  yamlContent: object;
+  showOpenFileButton: boolean;
+};

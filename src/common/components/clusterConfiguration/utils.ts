@@ -45,7 +45,7 @@ export const getHumanizedSubnetRange = (subnet: Address6 | Address4 | null) => {
   return '';
 };
 
-const getHumanizedSubnet = (subnet: Address6 | Address4 | null) => {
+export const getHumanizedSubnet = (subnet: Address6 | Address4 | null) => {
   if (subnet) {
     return `${subnet.address} ${getHumanizedSubnetRange(subnet)}`;
   }

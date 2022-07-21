@@ -76,10 +76,10 @@ export const useDetailsFormik = ({
       getClusterDetailsValidationSchema({
         usedClusterNames,
         featureSupportLevels,
-        t,
         pullSecretSet: true,
         ocpVersions,
         validateUniqueName: true,
+        t,
       }),
     [usedClusterNames, ocpVersions, featureSupportLevels, t],
   );
