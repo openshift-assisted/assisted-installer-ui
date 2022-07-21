@@ -12,7 +12,7 @@ jobs:
       - name: Checkout Openshift Assisted UI tests
         uses: actions/checkout@v3
         with:
-          repository: ${{ env.GH_REPO_OWNER }}/openshift-assisted-ui/
+          repository: celdrake/openshift-assisted-ui/
           ref: ${{ github.ref_name }}
           path: ./openshift-assisted-ui
 
