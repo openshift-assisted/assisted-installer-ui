@@ -17,6 +17,8 @@ import {
   selectIpv6HostPrefix,
 } from '../../../common/selectors/clusterSelectors';
 import { ClusterFeatureSupportLevelsDetailItem } from '../featureSupportLevels';
+import OpenShiftVersionDetail from './OpenShiftVersionDetail';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 const getCpuArchTitle = () => (
   <>
@@ -77,25 +79,19 @@ const getDiskEncryptionEnabledOnStatus = (diskEncryption: DiskEncryption['enable
 
 const ClusterProperties = ({ cluster, externalMode = false }: ClusterPropertiesProps) => {
   const isDualStackType = isDualStack(cluster);
+  const { t } = useTranslation();
   return (
     <>
       {!externalMode && (
         <GridItem>
           <TextContent>
-            <Text component="h2">Cluster Details</Text>
+            <Text component="h2">{t('ai:Cluster Details')}</Text>
           </TextContent>
         </GridItem>
       )}
       <GridItem md={6} data-testid="cluster-details">
         <DetailList>
-          {externalMode ? undefined : (
-            <DetailItem
-              title="OpenShift version"
-              value={cluster.openshiftVersion}
-              testId="openshift-version"
-            />
-          )}
-
+          {externalMode ? undefined : <OpenShiftVersionDetail cluster={cluster} />}
           <DetailItem title="Base domain" value={cluster.baseDnsDomain} testId="base-dns-domain" />
           <DetailItem
             title={getCpuArchTitle()}

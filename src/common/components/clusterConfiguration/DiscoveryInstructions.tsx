@@ -34,7 +34,7 @@ const DiscoveryInstructions = ({
             count={+isSNO}
             components={{ bold: <strong /> }}
             i18nKey="ai:Set the host to boot <bold>only one time</bold> from this device."
-          ></Trans>
+          />
         </TextListItem>
         <TextListItem>{t('ai:Discovered hosts will appear in the table.')}</TextListItem>
       </TextList>

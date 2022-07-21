@@ -69,7 +69,7 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
   };
 
   if (infraEnvError) {
-    return <ErrorState></ErrorState>;
+    return <ErrorState />;
   }
 
   return (

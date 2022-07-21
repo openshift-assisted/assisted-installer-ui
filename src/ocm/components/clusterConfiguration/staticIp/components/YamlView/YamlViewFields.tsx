@@ -31,7 +31,7 @@ const CollapsedHost: React.FC<HostComponentProps> = ({ fieldName, hostIdx }) => 
       mappingValue={mapValue}
       hostIdx={hostIdx}
       hasError={hasError}
-    ></HostSummary>
+    />
   );
 };
 
@@ -80,7 +80,7 @@ export const YamlViewFields: React.FC = () => {
         CollapsedHostComponent={CollapsedHost}
         emptyHostData={emptyHostData}
         enableCopyAboveConfiguration={true}
-      ></StaticIpHostsArray>
+      />
     </Grid>
   );
 };

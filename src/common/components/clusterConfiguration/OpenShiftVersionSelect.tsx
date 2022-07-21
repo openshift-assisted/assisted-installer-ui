@@ -42,7 +42,7 @@ const getOpenshiftVersionHelperText =
       helperTextComponent = (
         <>
           <ExclamationTriangleIcon color={warningColor.value} size="sm" />
-          &nbsp;{t('ai:Please note that this version is not production ready. ')}
+          &nbsp;{t('ai:Please note that this version is not production-ready.')}&nbsp;
           <OpenShiftLifeCycleDatesLink />
         </>
       );
