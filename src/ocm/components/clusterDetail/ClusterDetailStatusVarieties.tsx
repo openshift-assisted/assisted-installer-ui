@@ -73,11 +73,19 @@ export const useClusterStatusVarieties = (cluster?: Cluster): ClusterStatusVarie
   };
 };
 
-const ClusterDetailStatusVarieties: React.FC<{
+type ClusterDetailStatusVarietiesProps = {
   cluster: Cluster;
   clusterVarieties: ClusterStatusVarieties;
   showAddHostsInfo?: boolean;
-}> = ({ cluster, clusterVarieties, showAddHostsInfo = true }) => {
+  showKubeConfig?: boolean;
+};
+
+const ClusterDetailStatusVarieties = ({
+  cluster,
+  clusterVarieties,
+  showAddHostsInfo = true,
+  showKubeConfig = true,
+}: ClusterDetailStatusVarietiesProps) => {
   const { credentials, credentialsError, consoleOperator, fetchCredentials } = clusterVarieties;
 
   const showClusterCredentials =
@@ -94,7 +102,11 @@ const ClusterDetailStatusVarieties: React.FC<{
           idPrefix={getClusterDetailId('cluster-creds')}
         />
       )}
-      <ClusterDetailStatusMessages cluster={cluster} showAddHostsInfo={showAddHostsInfo} />
+      <ClusterDetailStatusMessages
+        cluster={cluster}
+        showAddHostsInfo={showAddHostsInfo}
+        showKubeConfig={showKubeConfig}
+      />
     </Grid>
   );
 };

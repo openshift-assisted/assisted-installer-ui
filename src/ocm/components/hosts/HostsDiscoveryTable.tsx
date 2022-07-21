@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   ChangeHostnameAction,
-  getSchedulableMasters,
+  selectSchedulableMasters,
   Cluster,
   Host,
   HostsTableActions,
@@ -101,7 +101,7 @@ const HostsDiscoveryTable: React.FC<HostsDiscoveryTableProps> = ({ cluster }) =>
   const content = React.useMemo(
     () => [
       hostnameColumn(t, onEditHost, undefined, actionChecks.canEditHostname),
-      roleColumn(t, actionChecks.canEditRole, onEditRole, getSchedulableMasters(cluster)),
+      roleColumn(t, actionChecks.canEditRole, onEditRole, selectSchedulableMasters(cluster)),
       hardwareStatusColumn(onEditHost),
       discoveredAtColumn,
       cpuCoresColumn,

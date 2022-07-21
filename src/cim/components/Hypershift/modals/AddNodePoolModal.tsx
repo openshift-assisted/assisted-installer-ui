@@ -13,8 +13,8 @@ import { Formik } from 'formik';
 import * as React from 'react';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { getErrorMessage } from '../../../../common/utils';
-import { AgentK8sResource, ClusterImageSetK8sResource } from '../../../types';
-import { getOCPVersions } from '../../helpers';
+import { AgentK8sResource, ClusterImageSetK8sResource, ConfigMapK8sResource } from '../../../types';
+import { useSupportedOCPVersions } from '../hooks/useSupportedOCPVersions';
 import { HostedClusterK8sResource, NodePoolK8sResource } from '../types';
 import { formikLabelsToLabels } from '../utils';
 import NodePoolForm, { NodePoolFormValues } from './NodePoolForm';
@@ -26,6 +26,7 @@ type AddNodePoolModalProps = {
   agents: AgentK8sResource[];
   hostedCluster: HostedClusterK8sResource;
   clusterImages: ClusterImageSetK8sResource[];
+  supportedVersionsCM?: ConfigMapK8sResource;
 };
 
 const AddNodePoolModal = ({
@@ -35,6 +36,7 @@ const AddNodePoolModal = ({
   hostedCluster,
   clusterImages,
   agentsNamespace,
+  supportedVersionsCM,
 }: AddNodePoolModalProps) => {
   const { t } = useTranslation();
   const [error, setError] = React.useState<string>();
@@ -78,7 +80,7 @@ const AddNodePoolModal = ({
     }
   };
 
-  const ocpVersions = React.useMemo(() => getOCPVersions(clusterImages), [clusterImages]);
+  const ocpVersions = useSupportedOCPVersions(clusterImages, supportedVersionsCM);
 
   return (
     <Modal

@@ -179,6 +179,12 @@ export interface Cluster {
    */
   schedulableMasters?: boolean;
   /**
+   * Indicates if schedule workloads on masters will be enabled regardless the value of 'schedulableMasters' property.
+   * Set to 'true' when not enough hosts are associated with this cluster to disable the scheduling on masters.
+   *
+   */
+  schedulableMastersForcedTrue?: boolean;
+  /**
    * The last time that this cluster was updated.
    */
   updatedAt?: string; // date-time

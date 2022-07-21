@@ -6,7 +6,7 @@ import {
   OPERATOR_NAME_LSO,
   OPERATOR_NAME_OCS,
   OPERATOR_NAME_ODF,
-  schedulableMastersAlwaysOn,
+  selectMastersMustRunWorkloads,
 } from '../../common';
 import { getOlmOperatorCreateParamsByName } from '../components/clusters/utils';
 
@@ -56,11 +56,8 @@ const HostDiscoveryService = {
     values: HostDiscoveryValues,
     cluster: Cluster,
   ): void {
-    if (!schedulableMastersAlwaysOn(cluster)) {
-      /*
-        backend shouldn't be updated with the schedulable masters when there are less than 5 hosts,
-        it'll mess up getting false for the default value when there are 5 hosts and up
-      */
+    // The backend tells us when the control to update schedulable_masters is enabled,
+    if (!selectMastersMustRunWorkloads(cluster)) {
       params.schedulableMasters = values.schedulableMasters;
     }
   },

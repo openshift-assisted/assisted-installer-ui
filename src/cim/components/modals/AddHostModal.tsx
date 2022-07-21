@@ -1,14 +1,6 @@
 import * as React from 'react';
 import { FormikHelpers } from 'formik';
-import {
-  Flex,
-  FlexItem,
-  Modal,
-  ModalBoxHeader,
-  ModalVariant,
-  Radio,
-  Tooltip,
-} from '@patternfly/react-core';
+import { Modal, ModalVariant } from '@patternfly/react-core';
 import { DownloadIso, DiscoveryImageConfigForm, DiscoveryImageFormValues } from '../../../common';
 import BMCForm from '../Agent/BMCForm';
 import { AddHostModalProps } from './types';
@@ -24,7 +16,6 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
   onCreateBMH,
   onSaveISOParams,
   usedHostnames,
-  isBMPlatform,
 }) => {
   const hasDHCP = infraEnv.metadata?.labels?.networkType !== 'static';
   const sshPublicKey = infraEnv.spec?.sshAuthorizedKey || agentClusterInstall?.spec?.sshPublicKey;
@@ -61,37 +52,6 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
       hasNoBodyWrapper
       id="add-host-modal"
     >
-      <ModalBoxHeader>
-        <Flex justifyContent={{ default: 'justifyContentSpaceBetween' }}>
-          <FlexItem>
-            <Radio
-              id="iso"
-              name="type"
-              label={t('ai:Discovery ISO')}
-              isChecked={dialogType !== 'bmc'}
-              onChange={(checked) => setDialogType(checked ? isoDialog : 'bmc')}
-            />
-          </FlexItem>
-          <FlexItem spacer={{ default: isBMPlatform ? 'spacerXl' : 'spacerSm' }} />
-          <FlexItem>
-            <Tooltip
-              hidden={isBMPlatform}
-              content={t(
-                'ai:To enable the host’s baseboard management controller (BMC) on the hub cluster,deploy the hub cluster on vSphere, BareMetal, OpenStack, or platform-agnostic (none type).',
-              )}
-            >
-              <Radio
-                id="bmc"
-                name="type"
-                label={t('ai:Baseboard Management Controller (BMC)')}
-                isChecked={dialogType === 'bmc'}
-                onChange={(checked) => setDialogType(checked ? 'bmc' : isoDialog)}
-                isDisabled={!isBMPlatform}
-              />
-            </Tooltip>
-          </FlexItem>
-        </Flex>
-      </ModalBoxHeader>
       {dialogType === 'iso-config' && (
         <DiscoveryImageConfigForm
           onCancel={onClose}
