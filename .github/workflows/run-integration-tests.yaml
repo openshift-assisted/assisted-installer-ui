@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: celdrake/openshift-assisted-ui
-          ref: main
+          ref: integration-tests-wip
           path: ./openshift-assisted-ui
 
       - name: Install Cypress dependencies
@@ -29,7 +29,7 @@ jobs:
           browser: chrome
           project: ./packages/integration-tests
           config-file: cypress.json
-          config: baseUrl=http://assisted-installer-ui.edge-qe.apps.ocp-c1.prod.psi.redhat.com,video=false
+          config: video=false
           start: yarn integration-tests:run
           spec: ./src/integration/ui-behaviour/cluster-updates.spec.js
           env: CYPRESS_API_BASE_URL=https://assisted-installer.edge-qe.apps.ocp-c1.prod.psi.redhat.com
