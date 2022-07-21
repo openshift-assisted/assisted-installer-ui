@@ -23,11 +23,12 @@ jobs:
       # Run Cypress tests in Headless mode
       # Right now just a test using PSI. It should use an updated environment with the new code
       - name: Cypress run
-        uses: cypress-io/github-action@v4
+        uses: cypress-io/github-action@v4.1.0
         with:
           working-directory: ./openshift-assisted-ui
           browser: chrome
-          start: yarn integration-tests:run --config-file=./packages/integration-tests/cypress.json
           config: baseUrl=http://assisted-installer-ui.edge-qe.apps.ocp-c1.prod.psi.redhat.com,video=false
+          config-file: cypress.json
+          start: yarn integration-tests:run --config-file=./packages/integration-tests/cypress.json
           spec: ./packages/integration-tests/src/integration/ui-behaviour/cluster-updates.spec.js
           env: CYPRESS_API_BASE_URL=http://assisted-installer-ui.edge-qe.apps.ocp-c1.prod.psi.redhat.com
