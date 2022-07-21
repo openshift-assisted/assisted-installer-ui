@@ -16,7 +16,7 @@ const AddBmcHostModal: React.FC<AddHostModalProps> = ({
   return (
     <Modal
       aria-label={t('ai:Add BMC host dialog')}
-      title={t('ai:Add BMC host')}
+      title={t('ai:Add host using Baseboard Management Controller (BMC)')}
       isOpen={isOpen}
       onClose={onClose}
       variant={ModalVariant.small}

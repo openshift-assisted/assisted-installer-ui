@@ -9,7 +9,6 @@ import {
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
-  Form,
   ModalBoxBody,
   ModalBoxFooter,
   Spinner,
@@ -115,10 +114,10 @@ const AddBmcHostYamlForm: React.FC<UploadActionModalProps> = ({ onClose, onCreat
   };
 
   return (
-    <Form>
-      <>
-        <ModalBoxBody>
-          <Stack hasGutter>
+    <>
+      <ModalBoxBody>
+        <Stack hasGutter>
+          <StackItem>
             <EmptyState variant={EmptyStateVariant.large}>
               <EmptyStateIcon icon={UploadIcon} />
               <Title headingLevel="h4" size="lg">
@@ -127,73 +126,77 @@ const AddBmcHostYamlForm: React.FC<UploadActionModalProps> = ({ onClose, onCreat
               <EmptyStateBody>
                 <p>
                   {t(
-                    "ai:Upload a YAML file to add hosts's credentials. For each host, include: hostname, Baseboard Mangement Controller Address, username and password",
+                    'ai:Upload a YAML file with BareMetalHost and Secret resource definitions. Use the provided template as a reference.',
                   )}
                 </p>
-                <StackItem>
-                  <Button variant={ButtonVariant.link} onClick={downloadYaml}>
-                    {t('ai:Download template')}
-                  </Button>
-                </StackItem>
-                {showOpenFileButton && (
-                  <Button
-                    variant={ButtonVariant.secondary}
-                    onClick={() => {
-                      try {
-                        importBMAsYAML();
-                      } catch (e) {
-                        setError(getErrorMessage(e));
-                      }
-                    }}
-                    isDisabled={showOpeningMessage}
-                  >
-                    {showOpeningMessage ? (
-                      <>
-                        {t('ai:Opening file')} <Spinner size="sm" />
-                      </>
-                    ) : (
-                      t('ai:Open file')
-                    )}
-                  </Button>
-                )}
-                {fileName && (
-                  <>
-                    {fileName}&nbsp;
-                    <ErrorCircleOIcon onClick={deleteFileContent} />
-                  </>
-                )}
-                <Text className="ai-bmc-yaml__error">{fileError}</Text>
+                <Stack hasGutter>
+                  <StackItem>
+                    <Button variant={ButtonVariant.link} onClick={downloadYaml}>
+                      {t('ai:Download template')}
+                    </Button>
+                  </StackItem>
+                  {showOpenFileButton && (
+                    <StackItem>
+                      <Button
+                        variant={ButtonVariant.secondary}
+                        onClick={() => {
+                          try {
+                            importBMAsYAML();
+                          } catch (e) {
+                            setError(getErrorMessage(e));
+                          }
+                        }}
+                        isDisabled={showOpeningMessage}
+                      >
+                        {showOpeningMessage ? (
+                          <>
+                            {t('ai:Opening file')} <Spinner size="sm" />
+                          </>
+                        ) : (
+                          t('ai:Open file')
+                        )}
+                      </Button>
+                    </StackItem>
+                  )}
+                  {fileName && (
+                    <StackItem>
+                      {fileName}&nbsp;
+                      <ErrorCircleOIcon onClick={deleteFileContent} />
+                    </StackItem>
+                  )}
+                  <StackItem>
+                    <Text className="ai-bmc-yaml__error">{fileError}</Text>
+                  </StackItem>
+                </Stack>
               </EmptyStateBody>
             </EmptyState>
-            {error && (
-              <StackItem>
-                <Alert
-                  title={t('ai:Failed to add host by YAML')}
-                  variant={AlertVariant.danger}
-                  isInline
-                  actionClose={<AlertActionCloseButton onClose={() => setError(undefined)} />}
-                >
-                  {error}
-                </Alert>
-              </StackItem>
-            )}
-          </Stack>
-        </ModalBoxBody>
-        <ModalBoxFooter>
-          <Button
-            onClick={handleSubmit}
-            isDisabled={
-              fileName === undefined || (fileName !== undefined && fileError !== undefined)
-            }
-          >
-            {t('ai:Upload')}
-          </Button>
-          <Button onClick={onClose} variant={ButtonVariant.secondary}>
-            {t('ai:Cancel')}
-          </Button>
-        </ModalBoxFooter>
-      </>
-    </Form>
+          </StackItem>
+          {error && (
+            <StackItem>
+              <Alert
+                title={t('ai:Failed to add host by YAML')}
+                variant={AlertVariant.danger}
+                isInline
+                actionClose={<AlertActionCloseButton onClose={() => setError(undefined)} />}
+              >
+                {error}
+              </Alert>
+            </StackItem>
+          )}
+        </Stack>
+      </ModalBoxBody>
+      <ModalBoxFooter>
+        <Button
+          onClick={handleSubmit}
+          isDisabled={fileName === undefined || (fileName !== undefined && fileError !== undefined)}
+        >
+          {t('ai:Upload')}
+        </Button>
+        <Button onClick={onClose} variant={ButtonVariant.secondary}>
+          {t('ai:Cancel')}
+        </Button>
+      </ModalBoxFooter>
+    </>
   );
 };
 
