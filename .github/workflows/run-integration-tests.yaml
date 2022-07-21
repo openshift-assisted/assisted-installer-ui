@@ -13,21 +13,32 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: celdrake/openshift-assisted-ui
-          ref: main
+          ref: integration-tests-wip
           path: ./openshift-assisted-ui
 
       - name: Install Cypress dependencies
         working-directory: ./openshift-assisted-ui
         run: yarn install
 
+      # For now just checkout assisted-UI to start a dev server with a stable version (integration-tests-wip uses v2.10)
+      # We'll need to adjust this to use the updated code from Assisted-UI-lib
+      - name: Checkout Assisted-UI
+        uses: actions/checkout@v3
+        with:
+          repository: celdrake/assisted-ui
+          ref: integration-tests-wip
+          path: ./assisted-ui
+
+
       # Run Cypress tests in Headless mode
-      # Right now just a test using PSI. It should use an updated environment with the new code
       - name: Cypress run
-        uses: cypress-io/github-action@v4
+        uses: cypress-io/github-action@v4.1.0
         with:
           working-directory: ./openshift-assisted-ui
           browser: chrome
-          start: yarn integration-tests:run
-          config: baseUrl=http://assisted-installer-ui.edge-qe.apps.ocp-c1.prod.psi.redhat.com,video=false
-          spec: ./packages/integration-tests/src/integration/ui-behaviour/cluster-updates.spec.js
-          env: CYPRESS_API_BASE_URL=http://assisted-installer-ui.edge-qe.apps.ocp-c1.prod.psi.redhat.com
+          project: ./packages/integration-tests
+          config-file: cypress.json
+          config: video=false
+          start: yarn --cwd ../assisted-ui integration-tests-proxy & yarn --cwd ../assisted-ui start & yarn integration-tests:run
+          spec: ./src/integration/ui-behaviour/cluster-updates.spec.js
+          env: CYPRESS_API_BASE_URL=https://localhost:5000
