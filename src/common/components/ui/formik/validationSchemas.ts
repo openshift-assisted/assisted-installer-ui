@@ -34,14 +34,12 @@ const PROXY_DNS_REGEX =
   /^([a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62}){1}(\.[a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62})*[._]?$/;
 const IP_V4_ZERO = '0.0.0.0';
 const IP_V6_ZERO = '0000:0000:0000:0000:0000:0000:0000:0000';
+const MAC_REGEX = /^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$/;
 const HOST_NAME_REGEX = /^[^.]{1,63}(?:[.][^.]{1,63})*$/;
 
 // Source of information: https://github.com/metal3-io/baremetal-operator/blob/main/docs/api.md#baremetalhost-spec
-const MAC_REGEX =
-  /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})|([0-9a-fA-F]{4}\\.[0-9a-fA-F]{4}\\.[0-9a-fA-F]{4})$”/;
-//Source of information: https://github.com/metal3-io/baremetal-operator/blob/main/docs/api.md#baremetalhost-spec
 const BMC_REGEX =
-  /^((ipmi|ibmc(\+https?)?|idrac(\+https?)?|idrac-redfish(\+https?)?|idrac-virtualmedia(\+https?)?|irmc|redfish(\+https?)?|redfish-virtualmedia(\+https?)?|ilo4(\+https)?|ilo4-virtuallmedia(\+https)?|ilo5(\+https)?|ilo5-redfish(\+https)|ilo5-virtualmedia(\+https)|https?|ftp):(\/\/([a-z0-9\-._~%!$&'()*+,;=]+@)?([a-z0-9\-._~%]+|\[[a-f0-9:.]+\]|\[v[a-f0-9][a-z0-9\-._~%!$&'()*+,;=:]+\])(:[0-9]+)?(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?|(\/?[a-z0-9\-._~%!$&'()*+,;=:@]+(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?)?)|([a-z0-9\-._~%!$&'()*+,;=@]+(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?|(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)+\/?))(\?[a-z0-9\-._~%!$&'()*+,;=:@/?]*)?(#[a-z0-9\-._~%!$&'()*+,;=:@/?]*)?$/i;
+  /^((redfish-virtualmedia|idrac-virtualmedia)(\+https?)?:(\/\/([a-z0-9\-._~%!$&'()*+,;=]+@)?([a-z0-9\-._~%]+|\[[a-f0-9:.]+\]|\[v[a-f0-9][a-z0-9\-._~%!$&'()*+,;=:]+\])(:[0-9]+)?(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?|(\/?[a-z0-9\-._~%!$&'()*+,;=:@]+(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?)?)|([a-z0-9\-._~%!$&'()*+,;=@]+(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?|(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)+\/?))(\?[a-z0-9\-._~%!$&'()*+,;=:@/?]*)?(#[a-z0-9\-._~%!$&'()*+,;=:@/?]*)?$/i;
 const LOCATION_CHARS_REGEX = /^[a-zA-Z0-9-._]*$/;
 
 export const nameValidationSchema = (
@@ -537,9 +535,3 @@ export const IPv4ValidationSchema = Yup.array().test(
   `All network subnets must be IPv4.`,
   (values: (MachineNetwork | ClusterNetwork | ServiceNetwork)[]) => allSubnetsIPv4(values),
 );
-
-export const LOCATION_VALIDATION_MESSAGES = {
-  INVALID_LENGTH: '1-63 characters',
-  INVALID_VALUE: 'Use alphanumberic characters, dot (.), underscore (_) or hyphen (-)',
-  INVALID_START_END: 'Must start and end with an alphanumeric character',
-};
