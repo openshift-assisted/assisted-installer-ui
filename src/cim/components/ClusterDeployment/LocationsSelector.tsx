@@ -21,7 +21,7 @@ const LocationsLabelIcon: React.FC = () => {
             t={t}
             components={{ bold: <strong /> }}
             i18nKey="ai:Keep the field empty to match <bold>any</bold> location."
-          ></Trans>
+          />
 
           <br />
           <Trans
@@ -29,7 +29,7 @@ const LocationsLabelIcon: React.FC = () => {
             components={{ bold: <strong /> }}
             i18nKey="ai:Set <bold>{{agent_location_label_key}}</bold> label in Agent resource to specify it's location."
             values={{ agent_location_label_key: AGENT_LOCATION_LABEL_KEY }}
-          ></Trans>
+          />
         </>
       }
     />
