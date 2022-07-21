@@ -12,8 +12,8 @@ jobs:
       - name: Checkout Openshift Assisted UI tests
         uses: actions/checkout@v3
         with:
-          repository: celdrake/openshift-assisted-ui/
-          ref: ${{ github.ref_name }}
+          repository: celdrake/openshift-assisted-ui
+          ref: main
           path: ./openshift-assisted-ui
 
       - name: Install Cypress dependencies
