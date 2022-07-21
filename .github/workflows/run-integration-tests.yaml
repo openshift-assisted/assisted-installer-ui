@@ -27,8 +27,9 @@ jobs:
         with:
           working-directory: ./openshift-assisted-ui
           browser: chrome
+          project: ./packages/integration-tests
           config: baseUrl=http://assisted-installer-ui.edge-qe.apps.ocp-c1.prod.psi.redhat.com,video=false
-          config-file: ./packages/integration-tests/cypress.json
+          config-file: cypress.json
           start: yarn integration-tests:run
-          spec: ./packages/integration-tests/src/integration/ui-behaviour/cluster-updates.spec.js
+          spec: ./src/integration/ui-behaviour/cluster-updates.spec.js
           env: CYPRESS_API_BASE_URL=http://assisted-installer-ui.edge-qe.apps.ocp-c1.prod.psi.redhat.com
