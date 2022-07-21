@@ -145,7 +145,7 @@ const Item = ({ cluster }: ItemProps) => {
 
 const ClusterFeatureSupportLevelsDetailItem = ({ ...props }: ItemProps) => (
   <WithErrorBoundary title="Failed to load feature support levels review">
-    <Item {...props}></Item>
+    <Item {...props} />
   </WithErrorBoundary>
 );
 export default ClusterFeatureSupportLevelsDetailItem;
