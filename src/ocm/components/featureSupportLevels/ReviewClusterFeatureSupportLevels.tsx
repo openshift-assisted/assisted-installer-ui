@@ -18,12 +18,6 @@ import { WithErrorBoundary } from '../../../common/components/ErrorHandling/With
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import useOpenshiftVersions from '../../hooks/useOpenshiftVersions';
 
-export type SupportLevelSummary = {
-  unsupportedVms: boolean;
-  featureIds: FeatureId[];
-  supportLevel: PreviewSupportLevel;
-};
-
 const getFeatureReviewText = (featureId: FeatureId): string => {
   switch (featureId) {
     case 'SNO':
