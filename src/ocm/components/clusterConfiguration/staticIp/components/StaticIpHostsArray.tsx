@@ -15,6 +15,8 @@ import cloneDeep from 'lodash/cloneDeep';
 import React from 'react';
 import { getFormikArrayItemFieldName, LoadingState } from '../../../../../common';
 import ConfirmationModal from '../../../../../common/components/ui/ConfirmationModal';
+import { selectIsCurrentClusterSNO } from '../../../../selectors';
+import { useSelector } from 'react-redux';
 
 const fieldName = 'hosts';
 
@@ -144,6 +146,7 @@ const Hosts = <HostFieldType,>({
   emptyHostData,
   ...props
 }: HostsProps<HostFieldType>) => {
+  const canAddHosts = !useSelector(selectIsCurrentClusterSNO);
   const [field, { error }] = useField<HostFieldType[]>({
     name: fieldName,
   });
@@ -196,31 +199,33 @@ const Hosts = <HostFieldType,>({
         );
       })}
 
-      <Flex>
-        <FlexItem>
-          <Button
-            variant="secondary"
-            onClick={onAddHost}
-            data-testid="add-host"
-            isDisabled={!!error}
-          >
-            Add another host
-          </Button>
-        </FlexItem>
-        {enableCopyAboveConfiguration && (
-          <FlexItem alignSelf={{ default: 'alignSelfCenter' }}>
-            <Checkbox
-              label="Copy the above configuration"
-              isChecked={copyConfiguration}
-              onChange={setCopyConfiguration}
-              aria-label="copy host configuration"
-              name="copy-host-configuration"
-              id="copy-host-configuration"
-              data-testid="copy-host-cofiguration"
-            />
+      {canAddHosts && (
+        <Flex>
+          <FlexItem>
+            <Button
+              variant="secondary"
+              onClick={onAddHost}
+              data-testid="add-host"
+              isDisabled={!!error}
+            >
+              Add another host
+            </Button>
           </FlexItem>
-        )}
-      </Flex>
+          {enableCopyAboveConfiguration && (
+            <FlexItem alignSelf={{ default: 'alignSelfCenter' }}>
+              <Checkbox
+                label="Copy the above configuration"
+                isChecked={copyConfiguration}
+                onChange={setCopyConfiguration}
+                aria-label="copy host configuration"
+                name="copy-host-configuration"
+                id="copy-host-configuration"
+                data-testid="copy-host-configuration"
+              />
+            </FlexItem>
+          )}
+        </Flex>
+      )}
 
       {hostIdxToRemove && (
         <ConfirmationModal
