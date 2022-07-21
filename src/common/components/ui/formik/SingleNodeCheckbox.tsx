@@ -65,10 +65,7 @@ const SingleNodeCheckbox: React.FC<SingleNodeCheckboxProps> = ({
             label={
               <>
                 {t('ai:Install single node OpenShift (SNO)')}&nbsp;
-                <FeatureSupportLevelBadge
-                  featureId="SNO"
-                  openshiftVersion={openshiftVersion}
-                ></FeatureSupportLevelBadge>
+                <FeatureSupportLevelBadge featureId="SNO" openshiftVersion={openshiftVersion} />
               </>
             }
             aria-describedby={`${fieldId}-helper`}

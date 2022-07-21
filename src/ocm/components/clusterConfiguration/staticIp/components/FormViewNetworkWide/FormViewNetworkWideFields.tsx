@@ -45,7 +45,7 @@ const hostsConfiguredAlert = (
     isInline={true}
     data-testid="hosts-configured-alert"
     title="If you edit the values and click Next, the earlier configurations will be replaced with the new values for all of the hosts."
-  ></Alert>
+  />
 );
 
 const MachineNetwork: React.FC<{ fieldName: string; protocolVersion: ProtocolVersion }> = ({
@@ -217,7 +217,7 @@ export const FormViewNetworkWideFields: React.FC<{ hosts: FormViewHost[] }> = ({
           <IpConfigFields
             fieldName={`ipConfigs.${protocolVersion}`}
             protocolVersion={protocolVersion}
-          ></IpConfigFields>
+          />
         </FormGroup>
       ))}
     </>

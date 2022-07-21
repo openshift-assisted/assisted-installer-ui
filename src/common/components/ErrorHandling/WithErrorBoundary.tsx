@@ -17,7 +17,7 @@ const getErrorFallbackComponent = ({ title }: WithErrorBoundaryProps) => {
         try again
       </Button>,
     ];
-    return <ErrorState {...{ content, primaryAction, title }}></ErrorState>;
+    return <ErrorState {...{ content, primaryAction, title }} />;
   };
   return FallbackComponent;
 };
