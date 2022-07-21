@@ -18,18 +18,18 @@ import {
   isSNO,
   ClusterWizardStepHeader,
   SwitchField,
-  schedulableMastersAlwaysOn,
+  selectMastersMustRunWorkloads,
+  selectSchedulableMasters,
   HostDiscoveryValues,
-  getSchedulableMasters,
 } from '../../../common';
 import HostsDiscoveryTable from '../hosts/HostsDiscoveryTable';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
 import InformationAndAlerts from './InformationAndAlerts';
 import ClusterWizardHeaderExtraActions from './ClusterWizardHeaderExtraActions';
 import { useClusterSupportedPlatforms } from '../../hooks';
-import { useFormikContext } from 'formik';
 import { ODFCheckbox } from './ODFCheckbox';
 import { CnvCheckbox } from './CnvCheckbox';
+import { useFormikContext } from 'formik';
 
 const PlatformIntegrationLabel: React.FC = () => (
   <>
@@ -58,7 +58,7 @@ const PlatformIntegrationLabel: React.FC = () => (
   </>
 );
 
-const SchedulableMastersLabel: React.FC = () => (
+const SchedulableMastersLabel = () => (
   <>
     <span>Run workloads on control plane nodes</span>{' '}
     <PopoverIcon
@@ -69,10 +69,11 @@ const SchedulableMastersLabel: React.FC = () => (
 
 const platformIntegrationTooltip =
   'vSphere integration is applicable only when all discovered hosts are vSphere originated';
+
 const schedulableMastersTooltip =
   'This toggle will be "On" and not editable when less than 5 hosts were discovered';
 
-const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
+const HostInventory = ({ cluster }: { cluster: Cluster }) => {
   const { isPlatformIntegrationSupported } = useClusterSupportedPlatforms(cluster.id);
   const isPlatformIntegrationFeatureEnabled = useFeature(
     'ASSISTED_INSTALLER_PLATFORM_INTEGRATION_FEATURE',
@@ -80,12 +81,13 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const isOpenshiftClusterStorageEnabled = useFeature('ASSISTED_INSTALLER_OCS_FEATURE');
   const isContainerNativeVirtualizationEnabled = useFeature('ASSISTED_INSTALLER_CNV_FEATURE');
   const isSNOCluster = isSNO(cluster);
-  const isSchedulableMastersEnabled = !schedulableMastersAlwaysOn(cluster);
+  const mastersMustRunWorkloads = selectMastersMustRunWorkloads(cluster);
   const { setFieldValue } = useFormikContext<HostDiscoveryValues>();
+
   React.useEffect(() => {
-    setFieldValue('schedulableMasters', getSchedulableMasters(cluster));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSchedulableMastersEnabled]); //just when changes from disabled to enabled, shouldn't respond to continous polling otherwise
+    setFieldValue('schedulableMasters', selectSchedulableMasters(cluster));
+  }, [mastersMustRunWorkloads]); // Schedulable masters need to be recalculated only when forced status changes
+
   return (
     <Stack hasGutter>
       <StackItem>
@@ -141,10 +143,10 @@ const HostInventory: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
       <StackItem>
         <SwitchField
           tooltipProps={{
-            hidden: isSchedulableMastersEnabled,
+            hidden: !mastersMustRunWorkloads,
             content: schedulableMastersTooltip,
           }}
-          isDisabled={!isSchedulableMastersEnabled}
+          isDisabled={mastersMustRunWorkloads}
           name={'schedulableMasters'}
           label={<SchedulableMastersLabel />}
         />
