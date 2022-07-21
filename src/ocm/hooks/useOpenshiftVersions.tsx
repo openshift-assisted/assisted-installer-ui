@@ -32,7 +32,7 @@ export const findVersionItemByVersion = (
 ): OpenshiftVersionOptionType | undefined => {
   return versions.find(({ value: versionKey }) => {
     // For version 4.10 match 4.10, 4.10.3, not 4.1, 4.1.5
-    const versionNameMatch = new RegExp(`^${versionKey}(\\..*)?$`);
+    const versionNameMatch = new RegExp(`^${versionKey}(\\..+)?$`);
     return versionNameMatch.test(version);
   });
 };
