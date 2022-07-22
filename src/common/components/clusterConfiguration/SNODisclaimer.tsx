@@ -25,10 +25,11 @@ const SNODisclaimer = ({
       <ListItem>
         {t('ai:Installing SNO will result in a non-highly available OpenShift deployment.')}
       </ListItem>
-      <ListItem>
-        {!snoExpansionSupported &&
-          t('ai:Adding additional machines to your cluster is currently out of scope.')}
-      </ListItem>
+      {!snoExpansionSupported && (
+        <ListItem>
+          {t('ai:Adding additional machines to your cluster is currently out of scope.')}
+        </ListItem>
+      )}
     </>
   );
   const unsupportedWarnings = (
