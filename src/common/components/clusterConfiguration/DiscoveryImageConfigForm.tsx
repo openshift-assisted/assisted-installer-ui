@@ -108,7 +108,7 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
                   <Alert
                     variant={AlertVariant.info}
                     isInline
-                    title={t('ai: Generate a Discovery ISO in order to add hosts to the cluster.')}
+                    title={t('ai:Generate a Discovery ISO in order to add hosts to the cluster.')}
                   />
                 </StackItem>
                 {hasDHCP === false && (
@@ -132,7 +132,7 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
             </ModalBoxBody>
             <ModalBoxFooter>
               <Button onClick={submitForm} isDisabled={isSubmitting} isLoading={isSubmitting}>
-                {isSubmitting ? t('ai: Generating') : t('ai: Generate Discovery ISO')}
+                {isSubmitting ? t('ai:Generating') : t('ai:Generate Discovery ISO')}
               </Button>
               <Button key="cancel" variant="link" onClick={onCancel}>
                 {t('ai:Cancel')}
