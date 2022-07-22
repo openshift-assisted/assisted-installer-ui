@@ -68,7 +68,7 @@ const ClusterDeploymentCreateProgress: React.FC<ClusterDeploymentCreateProgressP
             {t('ai:See cluster details')}
           </Button>
           <Button variant="link" onClick={toListView}>
-            {t('ai: Go to cluster list')}
+            {t('ai:Go to cluster list')}
           </Button>
         </EmptyStateSecondaryActions>
       </EmptyState>
