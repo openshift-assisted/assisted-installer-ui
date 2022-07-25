@@ -96,12 +96,12 @@ const storageStepValidationsMap: WizardStepValidationMap = {
   //TODO: edit validation map for storage when information from BE (i.e node labeling) will be available
   cluster: {
     groups: [],
-    validationIds: [],
+    validationIds: ['sufficient-masters-count'],
   },
   host: {
-    allowedStatuses: [],
-    groups: [],
-    validationIds: [],
+    allowedStatuses: ['known', 'disabled'],
+    groups: ['hardware'],
+    validationIds: ['connected', 'media-connected'],
   },
   softValidationIds: [],
 };

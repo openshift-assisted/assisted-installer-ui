@@ -1,21 +1,12 @@
 import React from 'react';
 import {
-  HostsNotShowingLinkProps,
-  getSchedulableMasters,
-  Cluster,
   Host,
-  isSNO,
-  OPERATOR_LABELS,
   OPERATOR_NAME_ODF,
+  isSNO,
+  ClusterHostsTableProps,
+  selectSchedulableMasters,
 } from '../../../common';
-import {
-  numberOfDisks,
-  totalStorageColumn,
-  roleColumn,
-  hardwareStatusColumn,
-  ODFUsage,
-} from './StorageUtils';
-import { HostsTableEmptyState } from '../../../common/components/hosts/HostsTable';
+import { numberOfDisks, totalStorageColumn, roleColumn, ODFUsage } from './StorageUtils';
 import { ExpandComponentProps } from '../../../common/components/hosts/AITable';
 import { onDiskRoleType } from '../../../common/components/hosts/DiskRole';
 import { Stack, StackItem } from '@patternfly/react-core';
@@ -25,6 +16,9 @@ import { AdditionalNTPSourcesDialogToggle } from '../hosts/AdditionaNTPSourceDia
 import { HostsTableModals, useHostsTable } from '../hosts/use-hosts-table';
 import { StorageDetail } from './StorageDetail';
 import { countColumn, hostnameColumn } from '../../../common/components/hosts/tableUtils';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { HostsTableEmptyState } from '../../../common/components/hosts/HostsTable';
+import { hardwareStatusColumn } from '../hosts/HostsDiscoveryTable';
 
 const getExpandComponent =
   (onDiskRole: onDiskRoleType, canEditDisks: (host: Host) => boolean) =>
@@ -40,13 +34,10 @@ const getExpandComponent =
       />
     );
 
-type StorageTableProps = {
-  cluster: Cluster;
-  skipDisabled?: boolean;
-  setDiscoveryHintModalOpen?: HostsNotShowingLinkProps['setDiscoveryHintModalOpen'];
-};
-
-const StorageStepTable: React.FC<StorageTableProps> = ({ cluster, setDiscoveryHintModalOpen }) => {
+const StorageStepTable: React.FC<ClusterHostsTableProps> = ({
+  cluster,
+  setDiscoveryHintModalOpen,
+}) => {
   const {
     onEditHost,
     actionChecks,
@@ -65,12 +56,12 @@ const StorageStepTable: React.FC<StorageTableProps> = ({ cluster, setDiscoveryHi
     );
 
   const isCompact = cluster.hosts && cluster.hosts.length <= 3;
-
+  const { t } = useTranslation();
   const content = React.useMemo(
     () =>
       [
-        hostnameColumn(onEditHost, undefined, actionChecks.canEditHostname),
-        roleColumn(getSchedulableMasters(cluster)),
+        hostnameColumn(t, onEditHost, undefined, actionChecks.canEditHostname),
+        roleColumn(t, selectSchedulableMasters(cluster)),
         hardwareStatusColumn(),
         totalStorageColumn,
         numberOfDisks(),
@@ -88,7 +79,7 @@ const StorageStepTable: React.FC<StorageTableProps> = ({ cluster, setDiscoveryHi
       <Stack hasGutter>
         <StackItem>
           <StorageTable
-            testId="hosts-discovery-table"
+            testId="storage-table"
             hosts={cluster.hosts || []}
             content={content}
             actionResolver={actionResolver}

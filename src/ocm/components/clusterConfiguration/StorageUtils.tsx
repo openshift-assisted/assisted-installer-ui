@@ -1,21 +1,11 @@
 import { sortable } from '@patternfly/react-table';
 import * as React from 'react';
-import {
-  getHostRole,
-  getInventory,
-  Host,
-  hostStatus,
-  MonitoredOperator,
-  OPERATOR_NAME_ODF,
-  RoleCell,
-  stringToJSON,
-} from '../../../common';
+import { getHostRole, getInventory, Host, RoleCell, stringToJSON } from '../../../common';
 import { TableRow } from './StorageAITable';
 import { getHostRowHardwareInfo } from '../../../common/components/hosts/hardwareInfo';
 import { ValidationsInfo } from '../../../common/types/hosts';
 import HostPropertyValidationPopover from '../../../common/components/hosts/HostPropertyValidationPopover';
-import { Flex, FlexItem, Stack, StackItem } from '@patternfly/react-core';
-import { UnknownIcon } from '@patternfly/react-icons';
+import { TFunction } from 'i18next';
 
 export const ODFUsageStatus = (host: Host, isCompact?: boolean): string => {
   if (!isCompact && host.role === 'master') {
@@ -24,7 +14,7 @@ export const ODFUsageStatus = (host: Host, isCompact?: boolean): string => {
   return 'Use ODF';
 };
 
-export const roleColumn = (schedulableMasters?: boolean): TableRow<Host> => {
+export const roleColumn = (t: TFunction, schedulableMasters?: boolean): TableRow<Host> => {
   return {
     header: {
       title: 'Role',
@@ -34,7 +24,7 @@ export const roleColumn = (schedulableMasters?: boolean): TableRow<Host> => {
       transforms: [sortable],
     },
     cell: (host) => {
-      const hostRole = getHostRole(host, schedulableMasters);
+      const hostRole = getHostRole(host, t, schedulableMasters);
       return {
         title: <RoleCell host={host} role={hostRole} />,
         props: { 'data-testid': 'host-role' },
@@ -81,38 +71,6 @@ export const ODFUsage = (isCompact?: boolean): TableRow<Host> => {
         title: <> {ODFUsageStatus(host, isCompact)} </>,
         props: { 'data-testid': 'use-odf' },
         sortableValue: disks.length,
-      };
-    },
-  };
-};
-
-export const hardwareStatusColumn = (): TableRow<Host> => {
-  return {
-    header: {
-      title: 'Hardware Status',
-      props: {
-        id: 'col-header-hwstatus',
-      },
-      transforms: [sortable],
-    },
-    cell: (host) => {
-      const { title, icon } = hostStatus[host.status];
-      return {
-        title: (
-          <Flex
-            alignItems={{ default: 'alignItemsCenter' }}
-            spaceItems={{ default: 'spaceItemsXs' }}
-          >
-            {<FlexItem>{icon || <UnknownIcon />}</FlexItem>}
-            <FlexItem>
-              <Stack>
-                <StackItem>{title}</StackItem>
-              </Stack>
-            </FlexItem>
-          </Flex>
-        ),
-        props: { 'data-testid': 'host-hw-status' },
-        sortableValue: status,
       };
     },
   };

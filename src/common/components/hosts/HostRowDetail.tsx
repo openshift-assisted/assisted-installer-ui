@@ -12,7 +12,7 @@ import {
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
 
 import { DetailItem, DetailList, DetailListProps } from '../ui';
-import { Disk, Host, Interface, stringToJSON } from '../../api';
+import { Host, Interface, stringToJSON } from '../../api';
 import { ValidationsInfo } from '../../types/hosts';
 import { WithTestID } from '../../types';
 import { DASH } from '../constants';
@@ -20,9 +20,8 @@ import { getInventory } from '../hosts/utils';
 
 import { getHostRowHardwareInfo } from './hardwareInfo';
 import NtpValidationStatus from './NtpValidationStatus';
-import DiskLimitations from './DiskLimitations';
-import DiskRole, { onDiskRoleType } from './DiskRole';
-import { getHardwareTypeText, fileSize } from './utils';
+import { onDiskRoleType } from './DiskRole';
+import { getHardwareTypeText } from './utils';
 import { ValidationInfoActionProps } from './HostValidationGroups';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
@@ -40,14 +39,6 @@ type SectionTitleProps = {
 
 type SectionColumnProps = {
   children: DetailListProps['children'];
-};
-
-type DisksTableProps = {
-  canEditDisks?: (host: Host) => boolean;
-  onDiskRole?: onDiskRoleType;
-  host: Host;
-  disks: Disk[];
-  installationDiskId?: string;
 };
 
 type NicsTableProps = {
@@ -126,21 +117,18 @@ const NicsTable: React.FC<NicsTableProps & WithTestID> = ({ interfaces, testId }
 };
 
 export const HostDetail: React.FC<HostDetailProps> = ({
-  canEditDisks,
-  onDiskRole,
   host,
   AdditionalNTPSourcesDialogToggleComponent,
   hideNTPStatus = false,
 }) => {
   const { t } = useTranslation();
-  const { id, installationDiskId, validationsInfo: hostValidationsInfo } = host;
+  const { id, validationsInfo: hostValidationsInfo } = host;
   const inventory = getInventory(host);
   const validationsInfo = React.useMemo(
     () => stringToJSON<ValidationsInfo>(hostValidationsInfo) || {},
     [hostValidationsInfo],
   );
   const rowInfo = getHostRowHardwareInfo(inventory);
-  const disks = inventory.disks || [];
   const nics = inventory.interfaces || [];
 
   let bmcAddress = inventory.bmcAddress;
