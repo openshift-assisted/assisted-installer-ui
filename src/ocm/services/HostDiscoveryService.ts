@@ -2,10 +2,6 @@ import {
   Cluster,
   V2ClusterUpdateParams,
   HostDiscoveryValues,
-  OPERATOR_NAME_CNV,
-  OPERATOR_NAME_LSO,
-  OPERATOR_NAME_OCS,
-  OPERATOR_NAME_ODF,
   selectMastersMustRunWorkloads,
 } from '../../common';
 

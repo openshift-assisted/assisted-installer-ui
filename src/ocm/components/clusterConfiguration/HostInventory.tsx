@@ -15,7 +15,6 @@ import {
   Cluster,
   PopoverIcon,
   useFeature,
-  isSNO,
   ClusterWizardStepHeader,
   SwitchField,
   selectMastersMustRunWorkloads,
@@ -27,8 +26,6 @@ import { DiscoveryImageModalButton } from './discoveryImageModal';
 import InformationAndAlerts from './InformationAndAlerts';
 import ClusterWizardHeaderExtraActions from './ClusterWizardHeaderExtraActions';
 import { useClusterSupportedPlatforms } from '../../hooks';
-import { ODFCheckbox } from './ODFCheckbox';
-import { CnvCheckbox } from './CnvCheckbox';
 import { useFormikContext } from 'formik';
 
 const PlatformIntegrationLabel: React.FC = () => (
@@ -78,7 +75,6 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
   const isPlatformIntegrationFeatureEnabled = useFeature(
     'ASSISTED_INSTALLER_PLATFORM_INTEGRATION_FEATURE',
   );
-  const isSNOCluster = isSNO(cluster);
   const mastersMustRunWorkloads = selectMastersMustRunWorkloads(cluster);
   const { setFieldValue } = useFormikContext<HostDiscoveryValues>();
 

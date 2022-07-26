@@ -146,10 +146,6 @@ export const isSubnetInIPv6 = ({
   Address6.isValid(serviceNetworkCidr || '');
 
 export const getHostDiscoveryInitialValues = (cluster: Cluster): HostDiscoveryValues => {
-  const monitoredOperators = selectMonitoredOperators(cluster);
-  const isOperatorEnabled = (name: RegExp | string) =>
-    !!monitoredOperators.find((operator) => operator.name?.match(name));
-
   return {
     usePlatformIntegration: cluster.platform?.type !== 'baremetal',
     schedulableMasters: selectSchedulableMasters(cluster),
