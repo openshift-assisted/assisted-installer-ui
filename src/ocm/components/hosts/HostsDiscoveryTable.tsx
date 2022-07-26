@@ -24,13 +24,14 @@ import {
 } from '../../../common/components/hosts/tableUtils';
 import HostsTable from '../../../common/components/hosts/HostsTable';
 import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
-import { TableRow } from '../../../common/components/hosts/AITable';
+import { ExpandComponentProps, TableRow } from '../../../common/components/hosts/AITable';
 import { ValidationsInfo } from '../../../common/types/hosts';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import HostsTableEmptyState from '../hosts/HostsTableEmptyState';
 import HardwareStatus from './HardwareStatus';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
+import { onDiskRoleType } from '../../../common/components/hosts/DiskRole';
 
 export const hardwareStatusColumn = (
   onEditHostname?: HostsTableActions['onEditHost'],
@@ -60,6 +61,19 @@ export const hardwareStatusColumn = (
     },
   };
 };
+
+const getExpandComponent = (onDiskRole: onDiskRoleType, canEditDisks: (host: Host) => boolean) =>
+  function HostDetailExpander({ obj: host }: ExpandComponentProps<Host>) {
+    return (
+      <HostDetail
+        key={host.id}
+        host={host}
+        onDiskRole={onDiskRole}
+        canEditDisks={canEditDisks}
+        AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
+      />
+    );
+  };
 
 const HostsDiscoveryTable = ({ cluster }: { cluster: Cluster; skipDisabled?: boolean }) => {
   const {
@@ -92,18 +106,8 @@ const HostsDiscoveryTable = ({ cluster }: { cluster: Cluster; skipDisabled?: boo
     [onEditHost, actionChecks.canEditHostname, actionChecks.canEditRole, onEditRole, cluster, t],
   );
 
-  const expandMemo = React.useMemo(() => {
-    return function ExpandedHostDetail({ obj: host }: { obj: Host }) {
-      return (
-        <HostDetail
-          key={host.id}
-          host={host}
-          onDiskRole={onDiskRole}
-          canEditDisks={actionChecks.canEditDisks}
-          AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
-        />
-      );
-    };
+  const detailExpander = React.useMemo(() => {
+    return getExpandComponent(onDiskRole, actionChecks.canEditDisks);
   }, [onDiskRole, actionChecks.canEditDisks]);
 
   const hosts = cluster.hosts || [];
@@ -133,7 +137,7 @@ const HostsDiscoveryTable = ({ cluster }: { cluster: Cluster; skipDisabled?: boo
             hosts={hosts}
             content={content}
             actionResolver={actionResolver}
-            ExpandComponent={expandMemo}
+            ExpandComponent={detailExpander}
             onSelect={isSNOCluster ? undefined : onSelect}
             selectedIDs={selectedHostIDs}
             setSelectedIDs={setSelectedHostIDs}
