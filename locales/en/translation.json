@@ -1,10 +1,6 @@
 {
   "'ai:Check the proxy settings and verify that the assisted installer service is connected to a network. You can use <code>nmcli</code> to get additional information about your network configuration.": "'ai:Check the proxy settings and verify that the assisted installer service is connected to a network. You can use <code>nmcli</code> to get additional information about your network configuration.",
   "'ai:URL must start with <bold>http</bold> (https schemes are not currently supported).": "'ai:URL must start with <bold>http</bold> (https schemes are not currently supported).",
-  "ai: Generate a Discovery ISO in order to add hosts to the cluster.": " Generate a Discovery ISO in order to add hosts to the cluster.",
-  "ai: Generate Discovery ISO": " Generate Discovery ISO",
-  "ai: Generating": " Generating",
-  "ai: Go to cluster list": " Go to cluster list",
   "ai: or select just 3 hosts instead.": " or select just 3 hosts instead.",
   "ai:({{size}} hosts available)": "({{size}} hosts available)",
   "ai:(1 host available)": "(1 host available)",
@@ -210,6 +206,7 @@
   "ai:Download host discovery ISO dialog": "Download host discovery ISO dialog",
   "ai:Download Installation Logs": "Download Installation Logs",
   "ai:Download kubeconfig": "Download kubeconfig",
+  "ai:Download template": "Download template",
   "ai:Download the Discovery ISO (onto a USB drive, attach it to a virtual media, etc.) and use it to boot your hosts.": "Download the Discovery ISO (onto a USB drive, attach it to a virtual media, etc.) and use it to boot your hosts.",
   "ai:Draft": "Draft",
   "ai:Edit BMH": "Edit BMH",
