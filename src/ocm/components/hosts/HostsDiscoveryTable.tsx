@@ -31,7 +31,10 @@ import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import HostsTableEmptyState from '../hosts/HostsTableEmptyState';
 import HardwareStatus from './HardwareStatus';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
-import { onDiskRoleType } from '../../../common/components/hosts/DiskRole';
+import {
+  HostsTableDetailContextProvider,
+  useHostTableDetailContext,
+} from './HostsTableDetailContext';
 
 export const hardwareStatusColumn = (
   onEditHostname?: HostsTableActions['onEditHost'],
@@ -62,27 +65,27 @@ export const hardwareStatusColumn = (
   };
 };
 
-const getExpandComponent = (onDiskRole: onDiskRoleType, canEditDisks: (host: Host) => boolean) =>
-  function HostDetailExpander({ obj: host }: ExpandComponentProps<Host>) {
-    return (
-      <HostDetail
-        key={host.id}
-        host={host}
-        onDiskRole={onDiskRole}
-        canEditDisks={canEditDisks}
-        AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
-      />
-    );
-  };
+const ExpandHostDetail = ({ obj: host }: ExpandComponentProps<Host>) => {
+  const { onDiskRole, canEditDisks } = useHostTableDetailContext();
+  return (
+    <HostDetail
+      key={host.id}
+      host={host}
+      onDiskRole={onDiskRole}
+      canEditDisks={canEditDisks}
+      AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
+    />
+  );
+};
 
 const HostsDiscoveryTable = ({ cluster }: { cluster: Cluster; skipDisabled?: boolean }) => {
   const {
     onEditHost,
     actionChecks,
     onEditRole,
-    onDiskRole,
     actionResolver,
     onSelect,
+    onDiskRole,
     selectedHostIDs,
     setSelectedHostIDs,
     onMassChangeHostname,
@@ -106,10 +109,6 @@ const HostsDiscoveryTable = ({ cluster }: { cluster: Cluster; skipDisabled?: boo
     [onEditHost, actionChecks.canEditHostname, actionChecks.canEditRole, onEditRole, cluster, t],
   );
 
-  const detailExpander = React.useMemo(() => {
-    return getExpandComponent(onDiskRole, actionChecks.canEditDisks);
-  }, [onDiskRole, actionChecks.canEditDisks]);
-
   const hosts = cluster.hosts || [];
   const paginationProps = usePagination(hosts.length);
   const itemIDs = hosts.map((h) => h.id);
@@ -132,19 +131,24 @@ const HostsDiscoveryTable = ({ cluster }: { cluster: Cluster; skipDisabled?: boo
           </StackItem>
         )}
         <StackItem>
-          <HostsTable
-            testId="hosts-discovery-table"
-            hosts={hosts}
-            content={content}
-            actionResolver={actionResolver}
-            ExpandComponent={detailExpander}
-            onSelect={isSNOCluster ? undefined : onSelect}
-            selectedIDs={selectedHostIDs}
-            setSelectedIDs={setSelectedHostIDs}
-            {...paginationProps}
+          <HostsTableDetailContextProvider
+            onDiskRole={onDiskRole}
+            canEditDisks={actionChecks.canEditDisks}
           >
-            <HostsTableEmptyState isSingleNode={isSNOCluster} />
-          </HostsTable>
+            <HostsTable
+              testId="hosts-discovery-table"
+              hosts={hosts}
+              content={content}
+              actionResolver={actionResolver}
+              ExpandComponent={ExpandHostDetail}
+              onSelect={isSNOCluster ? undefined : onSelect}
+              selectedIDs={selectedHostIDs}
+              setSelectedIDs={setSelectedHostIDs}
+              {...paginationProps}
+            >
+              <HostsTableEmptyState isSingleNode={isSNOCluster} />
+            </HostsTable>
+          </HostsTableDetailContextProvider>
         </StackItem>
       </Stack>
       <HostsTableModals cluster={cluster} {...modalProps} />
