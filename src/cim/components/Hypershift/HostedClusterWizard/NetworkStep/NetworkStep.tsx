@@ -5,6 +5,7 @@ import * as React from 'react';
 import NetworkForm from './NetworkForm';
 import { NetworkStepProps, NetworkFormValues } from './types';
 import {
+  day2ApiVipValidationSchema,
   httpProxyValidationSchema,
   ipBlockValidationSchema,
   noProxyValidationSchema,
@@ -21,6 +22,10 @@ const validationSchema = Yup.lazy<NetworkFormValues>((values) =>
     httpProxy: httpProxyValidationSchema(values, 'httpsProxy'),
     httpsProxy: httpProxyValidationSchema(values, 'httpProxy'), // share the schema, httpS is currently not supported
     noProxy: noProxyValidationSchema,
+    nodePortAddress:
+      values.apiPublishingStrategy === 'NodePort'
+        ? day2ApiVipValidationSchema.required()
+        : Yup.string(),
   }),
 );
 
@@ -30,6 +35,7 @@ const NetworkStep: React.FC<NetworkStepProps> = ({
   onValuesChanged,
   initAdvancedNetworking,
   initSSHPublicKey = '',
+  isBMPlatform,
 }) => {
   const availableAgents = getAgentsForSelection(agents).filter(
     (a) => !a.spec.clusterDeploymentName,
@@ -47,6 +53,9 @@ const NetworkStep: React.FC<NetworkStepProps> = ({
         httpProxy: '',
         httpsProxy: '',
         noProxy: '',
+        apiPublishingStrategy: isBMPlatform ? 'NodePort' : 'LoadBalancer',
+        nodePortPort: 0,
+        nodePortAddress: '',
       }}
       validationSchema={validationSchema}
       innerRef={formRef}
