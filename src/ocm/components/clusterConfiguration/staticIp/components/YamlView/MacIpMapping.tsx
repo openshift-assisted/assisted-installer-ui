@@ -41,7 +41,7 @@ const MacMappingItem: React.FC<{
             isRequired
             name={`${fieldName}.macAddress`}
             data-testid={`mac-address-${hostIdx}-${mapIdx}`}
-          ></InputField>
+          />
         </GridItem>
         <GridItem span={6}>
           <InputField
@@ -49,7 +49,7 @@ const MacMappingItem: React.FC<{
             isRequired
             name={`${fieldName}.logicalNicName`}
             data-testid={`interface-name-${hostIdx}-${mapIdx}`}
-          ></InputField>
+          />
         </GridItem>
       </Grid>
     </RemovableField>
@@ -83,7 +83,7 @@ export const MacIpMapping: React.FC<{
               <AddMapping onPush={push} />
             </Grid>
           )}
-        ></FieldArray>
+        />
       </GridItem>
     </Grid>
   );

@@ -143,7 +143,7 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
   const rowFilter = React.useCallback(
     (row: IRow) => {
       const searchableProps: string[] = [row.props.name, row.props.id, row.props.baseDnsDomain].map(
-        (prop) => (prop || '').toLowerCase(),
+        (prop: string) => (prop || '').toLowerCase(),
       );
       if (
         searchString &&

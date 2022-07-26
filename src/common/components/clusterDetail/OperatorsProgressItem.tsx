@@ -51,7 +51,7 @@ export function getOperatorsLabel(operators: MonitoredOperatorsList, t: TFunctio
       });
 
     default:
-      return t('ai: Pending - {{operatorsCountString}}', {
+      return t('ai:Pending - {{operatorsCountString}}', {
         operatorsCountString: operatorsCountString,
       });
   }

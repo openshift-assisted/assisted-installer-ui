@@ -1,7 +1,7 @@
 import { CheckCircleIcon, InfoCircleIcon } from '@patternfly/react-icons';
 import React from 'react';
 import { global_success_color_100 as okColor } from '@patternfly/react-tokens';
-import { TextList, TextListItem, TextContent } from '@patternfly/react-core';
+import { Text, TextList, TextListItem, TextContent } from '@patternfly/react-core';
 import {
   FeatureId,
   FeatureIdToSupportLevel,
@@ -16,12 +16,7 @@ import { DetailItem } from '../../../common';
 import { getLimitedFeatureSupportLevels } from '../../../common/components/featureSupportLevels/utils';
 import { WithErrorBoundary } from '../../../common/components/ErrorHandling/WithErrorBoundary';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-
-export type SupportLevelSummary = {
-  unsupportedVms: boolean;
-  featureIds: FeatureId[];
-  supportLevel: PreviewSupportLevel;
-};
+import useOpenshiftVersions from '../../hooks/useOpenshiftVersions';
 
 const getFeatureReviewText = (featureId: FeatureId): string => {
   switch (featureId) {
@@ -76,28 +71,38 @@ const getPreviewFeatureList = (supportLevelMap: FeatureIdToSupportLevel) => {
   );
 };
 
-type LimitedSupportedClusterProps = {
-  clusterFeatureSupportLevels: FeatureIdToSupportLevel;
-};
-
-export const LimitedSupportedCluster: React.FC<LimitedSupportedClusterProps> = ({
+export const LimitedSupportedCluster = ({
   clusterFeatureSupportLevels,
+  showVersionWarning,
+}: {
+  clusterFeatureSupportLevels: FeatureIdToSupportLevel;
+  showVersionWarning: boolean;
 }) => (
   <TextContent>
-    <InfoCircleIcon size="sm" color="var(--pf-global--info-color--100)" />
-    &nbsp;Your cluster will be subject to support limitations because it includes:
-    <TextList>
-      {getPreviewFeatureList(clusterFeatureSupportLevels)}
-      {clusterFeatureSupportLevels['CLUSTER_MANAGED_NETWORKING_WITH_VMS'] === 'unsupported' && (
-        <TextListItem>
-          Cluster-managed networking with some or all discovered hosts as virtual machines
-        </TextListItem>
-      )}
-    </TextList>
+    {showVersionWarning && (
+      <Text>
+        <InfoCircleIcon size="sm" color="var(--pf-global--info-color--100)" />
+        &nbsp;The installed OpenShift version is not production-ready
+      </Text>
+    )}
+    {Object.keys(clusterFeatureSupportLevels).length > 0 && (
+      <>
+        <InfoCircleIcon size="sm" color="var(--pf-global--info-color--100)" />
+        &nbsp;Your cluster will be subject to support limitations because it includes:
+        <TextList>
+          {getPreviewFeatureList(clusterFeatureSupportLevels)}
+          {clusterFeatureSupportLevels['CLUSTER_MANAGED_NETWORKING_WITH_VMS'] === 'unsupported' && (
+            <TextListItem>
+              Cluster-managed networking with some or all discovered hosts as virtual machines
+            </TextListItem>
+          )}
+        </TextList>
+      </>
+    )}
   </TextContent>
 );
 
-export const FullySupportedCluster: React.FC = () => (
+export const FullySupportedCluster = () => (
   <>
     <CheckCircleIcon color={okColor.value} />
     &nbsp;Your installed cluster will be fully supported
@@ -109,43 +114,59 @@ export const getFeatureSupportLevelTitle = (fullySupported: boolean): string => 
   return `Cluster support level: ${supportLevel}`;
 };
 
-type ItemProps = { cluster: Cluster };
-
-const Item = ({ cluster }: ItemProps) => {
-  const { t } = useTranslation();
-  const featureSupportLevelData = useFeatureSupportLevel();
-  const clusterFeatureSupportLevels = React.useMemo(
-    () => getLimitedFeatureSupportLevels(cluster, featureSupportLevelData, t),
-    [cluster, featureSupportLevelData, t],
-  );
-
-  const fullySupported: boolean = React.useMemo<boolean>(() => {
-    return !!clusterFeatureSupportLevels && Object.keys(clusterFeatureSupportLevels).length === 0;
-  }, [clusterFeatureSupportLevels]);
-  if (!clusterFeatureSupportLevels) {
-    return null;
-  }
-  if (clusterFeatureSupportLevels) {
-    return (
-      <DetailItem
-        title={getFeatureSupportLevelTitle(fullySupported)}
-        value={
-          fullySupported ? (
-            <FullySupportedCluster />
-          ) : (
-            <LimitedSupportedCluster clusterFeatureSupportLevels={clusterFeatureSupportLevels} />
-          )
-        }
-        testId="feature-support-levels"
-      />
-    );
-  }
-  return null;
+type SupportLevelProps = { cluster: Cluster };
+type SupportLevelMemo = {
+  limitedClusterFeatures: FeatureIdToSupportLevel;
+  hasSupportedVersion: boolean;
+  isFullySupported: boolean;
 };
 
-const ClusterFeatureSupportLevelsDetailItem = ({ ...props }: ItemProps) => (
+const SupportLevel = ({ cluster }: SupportLevelProps) => {
+  const { t } = useTranslation();
+  const featureSupportLevelData = useFeatureSupportLevel();
+  const { isSupportedOpenShiftVersion } = useOpenshiftVersions();
+
+  const { limitedClusterFeatures, hasSupportedVersion, isFullySupported } =
+    React.useMemo<SupportLevelMemo>(() => {
+      const limitedClusterFeatures = getLimitedFeatureSupportLevels(
+        cluster,
+        featureSupportLevelData,
+        t,
+      );
+      const hasSupportedVersion: boolean = isSupportedOpenShiftVersion(cluster.openshiftVersion);
+      return {
+        limitedClusterFeatures,
+        hasSupportedVersion,
+        isFullySupported:
+          hasSupportedVersion && Object.keys(limitedClusterFeatures || {}).length === 0,
+      };
+    }, [cluster, featureSupportLevelData, t, isSupportedOpenShiftVersion]);
+
+  if (!limitedClusterFeatures) {
+    return null;
+  }
+
+  return (
+    <DetailItem
+      title={getFeatureSupportLevelTitle(isFullySupported)}
+      value={
+        isFullySupported ? (
+          <FullySupportedCluster />
+        ) : (
+          <LimitedSupportedCluster
+            clusterFeatureSupportLevels={limitedClusterFeatures}
+            showVersionWarning={!hasSupportedVersion}
+          />
+        )
+      }
+      testId="feature-support-levels"
+    />
+  );
+};
+
+const ClusterFeatureSupportLevelsDetailItem = ({ ...props }: SupportLevelProps) => (
   <WithErrorBoundary title="Failed to load feature support levels review">
-    <Item {...props}></Item>
+    <SupportLevel {...props} />
   </WithErrorBoundary>
 );
 export default ClusterFeatureSupportLevelsDetailItem;

@@ -19,7 +19,7 @@ const AddBmcHostModal: React.FC<AddHostModalProps> = ({
       title={t('ai:Add host using Baseboard Management Controller (BMC)')}
       isOpen={isOpen}
       onClose={onClose}
-      variant={ModalVariant.small}
+      variant={ModalVariant.medium}
       hasNoBodyWrapper
       id="add-host-modal"
     >

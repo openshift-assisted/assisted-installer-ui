@@ -3,14 +3,17 @@ import cidrTools from 'cidr-tools';
 import { NetworkFormProps, NetworkFormValues } from './types';
 import flattenDeep from 'lodash/flattenDeep';
 import xor from 'lodash/xor';
-import { Form, Grid, GridItem } from '@patternfly/react-core';
+import { Form, FormGroup, Grid, GridItem } from '@patternfly/react-core';
 import {
   CheckboxField,
   getHumanizedSubnet,
   getSubnet,
   InputField,
   Interface,
+  NumberInputField,
+  PopoverIcon,
   ProxyFields,
+  RadioField,
   SelectField,
   UploadSSH,
 } from '../../../../../common';
@@ -73,6 +76,67 @@ const NetworkForm: React.FC<NetworkFormProps> = ({ agents, onValuesChanged }) =>
   const { t } = useTranslation();
   return (
     <Form>
+      <FormGroup label={t('ai:API server publishing strategy')}>
+        <Grid hasGutter>
+          <GridItem>
+            <RadioField
+              name="apiPublishingStrategy"
+              label="LoadBalancer"
+              value="LoadBalancer"
+              description={t(
+                `ai:Exposes the service externally using a cloud provider's load balancer`,
+              )}
+            />
+          </GridItem>
+          <GridItem>
+            <RadioField
+              name="apiPublishingStrategy"
+              label="NodePort"
+              value="NodePort"
+              className="ai-nodeport-fields"
+              description={t(`ai:Exposes the service on each node's IP at a static port`)}
+              body={
+                values.apiPublishingStrategy === 'NodePort' && (
+                  <Grid hasGutter>
+                    <GridItem>
+                      <InputField
+                        isRequired
+                        name="nodePortAddress"
+                        label={t('ai:Host address')}
+                        labelIcon={
+                          <PopoverIcon
+                            position="right"
+                            bodyContent={t(
+                              'ai:Address is the host/ip that the NodePort service is exposed over.',
+                            )}
+                          />
+                        }
+                      />
+                    </GridItem>
+                    <GridItem>
+                      <NumberInputField
+                        label={t('ai:Host port')}
+                        idPostfix="nodePortPort"
+                        name="nodePortPort"
+                        minValue={0}
+                        maxValue={65535}
+                        labelIcon={
+                          <PopoverIcon
+                            position="right"
+                            bodyContent={t(
+                              'ai:Port of the NodePort service. If set to 0, the port is dynamically assigned when the service is created.',
+                            )}
+                          />
+                        }
+                      />
+                    </GridItem>
+                  </Grid>
+                )
+              }
+            />
+          </GridItem>
+        </Grid>
+      </FormGroup>
       <SelectField label={t('ai:Machine CIDR')} name="machineCIDR" options={cidrOptions} />
       <CheckboxField
         name="isAdvanced"

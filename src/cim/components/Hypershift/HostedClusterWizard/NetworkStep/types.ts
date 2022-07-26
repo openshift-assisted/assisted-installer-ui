@@ -11,6 +11,9 @@ export type NetworkFormValues = {
   httpProxy: string;
   httpsProxy: string;
   noProxy: string;
+  apiPublishingStrategy: 'LoadBalancer' | 'NodePort';
+  nodePortPort: number;
+  nodePortAddress: string;
 };
 
 export type NetworkFormProps = Pick<NetworkStepProps, 'agents' | 'onValuesChanged'>;
@@ -22,4 +25,5 @@ export type NetworkStepProps = {
   initAdvancedNetworking: boolean;
   initSSHPublicKey?: string;
   count: number;
+  isBMPlatform: boolean;
 };
