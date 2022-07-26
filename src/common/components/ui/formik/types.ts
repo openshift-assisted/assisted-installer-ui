@@ -132,4 +132,6 @@ export interface CodeFieldProps extends FieldProps {
   description?: React.ReactNode;
 }
 
-export type RadioFieldProps = Optional<RadioProps, 'id'> & { callFormikOnChange?: boolean };
+type RadioWithoutRef = Omit<RadioProps, 'ref'>;
+
+export type RadioFieldProps = Optional<RadioWithoutRef, 'id'> & { callFormikOnChange?: boolean };
