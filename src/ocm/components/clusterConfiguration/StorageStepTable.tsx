@@ -61,6 +61,7 @@ const StorageStepTable: React.FC<ClusterHostsTableProps> = ({
     () =>
       [
         hostnameColumn(t, onEditHost, undefined, actionChecks.canEditHostname),
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-call
         roleColumn(t, selectSchedulableMasters(cluster)),
         hardwareStatusColumn(),
         totalStorageColumn,
@@ -68,7 +69,7 @@ const StorageStepTable: React.FC<ClusterHostsTableProps> = ({
       ].concat(
         isODFUsage ? [ODFUsage(isCompact)].concat(countColumn(cluster)) : [countColumn(cluster)],
       ),
-    [onEditHost, actionChecks.canEditHostname, cluster],
+    [onEditHost, actionChecks.canEditHostname, cluster, isODFUsage, isCompact],
   );
 
   const hosts = cluster.hosts || [];

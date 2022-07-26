@@ -63,9 +63,11 @@ const diskColumns = [
   { title: 'WWN' },
 ];
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 const diskRowKey = ({ rowData }: ExtraParamsType) => rowData?.key;
 
 const DisksTableRowWrapper = (props: RowWrapperProps) => (
+  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
   <RowWrapper {...props} data-testid={`disk-row:${props.row?.key}`} />
 );
 
@@ -83,6 +85,7 @@ const DisksTable: React.FC<DisksTableProps & WithTestID> = ({
     .map((disk) => ({
       cells: [
         {
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           title: disk.bootable ? `${disk.name} (bootable)` : disk.name,
           props: { 'data-testid': 'disk-name' },
         },

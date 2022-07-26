@@ -23,6 +23,7 @@ import { getColSpanRow, rowSorter } from '../ui/table/utils';
 import { WithTestID } from '../../types';
 import './HostsTable.css';
 import { usePagination } from './usePagination';
+// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 const rowKey = ({ rowData }: ExtraParamsType) => rowData?.key;
 type TableMemoProps = {
   rows: TableProps['rows'];
@@ -80,6 +81,7 @@ type OpenRows = {
   [id: string]: boolean;
 };
 const HostsTableRowWrapper = (props: RowWrapperProps) => (
+  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
   <RowWrapper {...props} data-testid={`host-row-${props.rowProps?.rowIndex}`} />
 );
 export type TableRow<R> = {
@@ -257,6 +259,7 @@ const AITable = <R extends any>({
             cells: [
               {
                 // do not render unnecessarily to improve performance
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 title: row.isOpen ? <ExpandComponent obj={row.obj} /> : undefined,
               },
             ],
@@ -277,6 +280,7 @@ const AITable = <R extends any>({
   }, [hostRows, columns, children]);
   const onCollapse = React.useCallback(
     (_event, rowKey) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       const id = hostRows[rowKey].id;
       if (id) {
         setOpenRows(Object.assign({}, openRows, { [id]: !openRows[id] }));

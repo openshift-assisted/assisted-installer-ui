@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ExpandComponentProps, AITableProps } from './StorageAITable';
+import { ExpandComponentProps, AITableProps } from '../../../common/components/hosts/AITable';
 import { Host, WithTestID } from '../../../common';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { StorageDetail } from './StorageDetail';
