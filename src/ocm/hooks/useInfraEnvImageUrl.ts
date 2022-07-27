@@ -1,15 +1,21 @@
 import React from 'react';
 import useInfraEnvId from './useInfraEnvId';
-import { Cluster } from '../../common';
+import { Cluster, PresignedUrl } from '../../common';
 import { InfraEnvsAPI } from '../services/apis';
+import { getErrorMessage } from '../../common/utils';
+
+type ImgUrl = {
+  url: PresignedUrl['url'];
+  error: string;
+};
 
 export default function useInfraEnvImageUrl(clusterId: Cluster['id']) {
-  const { infraEnvId } = useInfraEnvId(clusterId);
+  const { infraEnvId, error: infraEnvError } = useInfraEnvId(clusterId);
 
-  const getImageUrl = React.useCallback(async (): Promise<string> => {
+  const getImageUrl = React.useCallback(async (): Promise<ImgUrl> => {
     try {
       if (!infraEnvId) {
-        return '';
+        return { url: '', error: infraEnvError || 'Missing infraEnv' };
       }
       const {
         data: { url },
@@ -17,11 +23,11 @@ export default function useInfraEnvImageUrl(clusterId: Cluster['id']) {
       if (!url) {
         throw 'Failed to retrieve the image URL, the API returned an invalid URL';
       }
-      return url;
+      return { url, error: '' };
     } catch (e) {
-      return '';
+      return { url: '', error: getErrorMessage(e) };
     }
-  }, [infraEnvId]);
+  }, [infraEnvError, infraEnvId]);
 
   return { getImageUrl };
 }
