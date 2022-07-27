@@ -71,7 +71,8 @@ export const DiscoveryImageModal: React.FC = () => {
       {isoDownloadError && <ErrorState />}
       {isoDownloadUrl ? (
         <DiscoveryImageSummary
-          cluster={cluster}
+          clusterName={cluster.name || ''}
+          isSNO={isSNOCluster}
           onClose={close}
           onReset={onReset}
           isoDownloadUrl={isoDownloadUrl}
