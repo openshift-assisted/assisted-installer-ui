@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, Button, ButtonVariant, ModalVariant } from '@patternfly/react-core';
-import { Cluster, isSNO, ToolbarButton } from '../../../common';
+import { Cluster, ErrorState, isSNO, ToolbarButton } from '../../../common';
 import DiscoveryImageForm from './DiscoveryImageForm';
 import DiscoveryImageSummary from './DiscoveryImageSummary';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
@@ -35,6 +35,7 @@ export const DiscoveryImageModalButton: React.FC<DiscoveryImageModalButtonProps>
 
 export const DiscoveryImageModal: React.FC = () => {
   const [isoDownloadUrl, setIsoDownloadUrl] = React.useState<string>('');
+  const [isoDownloadError, setIsoDownloadError] = React.useState<string>('');
 
   const { discoveryImageDialog } = useModalDialogsContext();
   const { data, isOpen, close } = discoveryImageDialog;
@@ -42,8 +43,9 @@ export const DiscoveryImageModal: React.FC = () => {
   const { getImageUrl } = useInfraEnvImageUrl(cluster?.id);
 
   const onImageReady = React.useCallback(async () => {
-    const url = await getImageUrl();
+    const { url, error } = await getImageUrl();
     setIsoDownloadUrl(url);
+    setIsoDownloadError(error);
   }, [getImageUrl]);
 
   const onReset = React.useCallback(() => {
@@ -66,6 +68,7 @@ export const DiscoveryImageModal: React.FC = () => {
       hasNoBodyWrapper
       id="generate-discovery-iso-modal"
     >
+      {isoDownloadError && <ErrorState />}
       {isoDownloadUrl ? (
         <DiscoveryImageSummary
           cluster={cluster}
