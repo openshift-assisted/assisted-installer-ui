@@ -1,24 +1,25 @@
 import React from 'react';
-import { Cluster, isSNO } from '../../../common';
 import DownloadIso from '../../../common/components/clusterConfiguration/DownloadIso';
 
 type DiscoveryImageSummaryProps = {
-  cluster: Cluster;
+  clusterName: string;
+  isSNO: boolean;
   isoDownloadUrl: string;
   onClose: () => void;
   onReset: () => void;
 };
 
 const DiscoveryImageSummary = ({
-  cluster,
+  clusterName,
+  isSNO,
   isoDownloadUrl,
   ...restProps
 }: DiscoveryImageSummaryProps) => {
   return (
     <DownloadIso
-      fileName={`discovery_image_${cluster.name || ''}.iso`}
+      fileName={`discovery_image_${clusterName}.iso`}
       downloadUrl={isoDownloadUrl}
-      isSNO={isSNO(cluster)}
+      isSNO={isSNO}
       {...restProps}
     />
   );
