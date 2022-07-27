@@ -63,7 +63,6 @@ const ClusterWizardNavigation = ({ cluster }: { cluster?: Cluster }) => {
   const getStaticIpFormViewNavItem = (idx: number): ReactNode => {
     return (
       <WizardNavItem
-        //isValid={() => !cluster || canNextHostDiscovery({ cluster })}
         step={idx}
         isExpandable={true}
         content="Static network configurations"

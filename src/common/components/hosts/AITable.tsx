@@ -162,7 +162,6 @@ const AITable = <R extends any>({
   showPagination,
   perPageOptions,
   canSelectAll,
-  isStorageTable,
 }: WithTestID & AITableProps<R>) => {
   const itemIDs = React.useMemo(() => data.map(getDataId), [data, getDataId]);
   React.useEffect(() => {
@@ -198,7 +197,7 @@ const AITable = <R extends any>({
 
   const [contentWithAdditions, columns] = React.useMemo<[TableRow<R>[], (string | ICell)[]]>(() => {
     let newContent = content;
-    if (!isStorageTable && onSelect) {
+    if (onSelect) {
       newContent = [
         {
           header: {
@@ -305,7 +304,7 @@ const AITable = <R extends any>({
       >
         <TableMemo
           rows={rows}
-          cells={isStorageTable ? columns : columns}
+          cells={columns}
           onCollapse={ExpandComponent ? onCollapse : undefined}
           className={className}
           sortBy={sortBy}

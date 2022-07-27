@@ -11,20 +11,23 @@ export const DefaultExpandComponent: React.FC<ExpandComponentProps<Host>> = ({ o
   <StorageDetail key={obj.id} host={obj} />
 );
 
-type HostsTableProps = ReturnType<typeof usePagination> & {
+type StorageTableProps = ReturnType<typeof usePagination> & {
   hosts: Host[];
   skipDisabled?: boolean;
   content: AITableProps<Host>['content'];
   actionResolver?: AITableProps<Host>['actionResolver'];
   children: React.ReactNode;
-  onSelect?: AITableProps<Host>['onSelect'];
   selectedIDs?: AITableProps<Host>['selectedIDs'];
   setSelectedHostIDs?: AITableProps<Host>['setSelectedIDs'];
   ExpandComponent?: AITableProps<Host>['ExpandComponent'];
   className?: AITableProps<Host>['className'];
 };
 
-const StorageTable: React.FC<HostsTableProps & WithTestID> = ({ hosts, skipDisabled, ...rest }) => {
+const StorageTable: React.FC<StorageTableProps & WithTestID> = ({
+  hosts,
+  skipDisabled,
+  ...rest
+}) => {
   const data = React.useMemo(
     () => (hosts || []).filter((host) => !skipDisabled || host.status !== 'disabled'),
     [hosts, skipDisabled],
