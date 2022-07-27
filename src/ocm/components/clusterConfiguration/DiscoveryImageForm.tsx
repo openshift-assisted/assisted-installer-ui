@@ -17,7 +17,7 @@ import { DiscoveryImageFormService } from '../../services';
 type DiscoveryImageFormProps = {
   cluster: Cluster;
   onCancel: () => void;
-  onSuccess: () => void;
+  onSuccess: () => Promise<void>;
 };
 
 const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
@@ -53,7 +53,7 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
           formValues,
           ocmPullSecret,
         );
-        onSuccess();
+        await onSuccess();
         dispatch(updateCluster(updatedCluster));
       } catch (error) {
         handleApiError(error, () => {
