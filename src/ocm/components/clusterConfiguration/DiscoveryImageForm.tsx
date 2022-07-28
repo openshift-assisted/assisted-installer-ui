@@ -8,6 +8,7 @@ import {
   DiscoveryImageConfigForm,
   DiscoveryImageFormValues,
   ErrorState,
+  LoadingState,
 } from '../../../common';
 import { updateCluster, forceReload } from '../../reducers/clusters';
 import { usePullSecret } from '../../hooks';
@@ -71,16 +72,19 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
   if (infraEnvError) {
     return <ErrorState />;
   }
+  if (!infraEnv) {
+    return <LoadingState />;
+  }
 
   return (
     <DiscoveryImageConfigForm
       onCancel={handleCancel}
       handleSubmit={handleSubmit}
-      sshPublicKey={infraEnv?.sshAuthorizedKey}
-      httpProxy={infraEnv?.proxy?.httpProxy}
-      httpsProxy={infraEnv?.proxy?.httpsProxy}
-      noProxy={infraEnv?.proxy?.noProxy}
-      imageType={infraEnv?.type}
+      sshPublicKey={infraEnv.sshAuthorizedKey}
+      httpProxy={infraEnv.proxy?.httpProxy}
+      httpsProxy={infraEnv.proxy?.httpsProxy}
+      noProxy={infraEnv.proxy?.noProxy}
+      imageType={infraEnv.type}
     />
   );
 };
