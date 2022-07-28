@@ -1,10 +1,11 @@
 import React from 'react';
 import { Modal, Button, ButtonVariant, ModalVariant } from '@patternfly/react-core';
-import { Cluster, isSNO, ToolbarButton } from '../../../common';
+import { Cluster, ErrorState, isSNO, ToolbarButton } from '../../../common';
 import DiscoveryImageForm from './DiscoveryImageForm';
 import DiscoveryImageSummary from './DiscoveryImageSummary';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
 import { pluralize } from 'humanize-plus';
+import useInfraEnvImageUrl from '../../hooks/useInfraEnvImageUrl';
 
 type DiscoveryImageModalButtonProps = {
   ButtonComponent?: typeof Button | typeof ToolbarButton;
@@ -33,11 +34,23 @@ export const DiscoveryImageModalButton: React.FC<DiscoveryImageModalButtonProps>
 };
 
 export const DiscoveryImageModal: React.FC = () => {
-  const [showSummary, setShowSummary] = React.useState<boolean>(false);
+  const [isoDownloadUrl, setIsoDownloadUrl] = React.useState<string>('');
+  const [isoDownloadError, setIsoDownloadError] = React.useState<string>('');
 
   const { discoveryImageDialog } = useModalDialogsContext();
   const { data, isOpen, close } = discoveryImageDialog;
   const cluster = data?.cluster;
+  const { getImageUrl } = useInfraEnvImageUrl(cluster?.id);
+
+  const onImageReady = React.useCallback(async () => {
+    const { url, error } = await getImageUrl();
+    setIsoDownloadUrl(url);
+    setIsoDownloadError(error);
+  }, [getImageUrl]);
+
+  const onReset = React.useCallback(() => {
+    setIsoDownloadUrl('');
+  }, []);
 
   if (!cluster) {
     return null;
@@ -55,18 +68,17 @@ export const DiscoveryImageModal: React.FC = () => {
       hasNoBodyWrapper
       id="generate-discovery-iso-modal"
     >
-      {showSummary ? (
+      {isoDownloadError && <ErrorState />}
+      {isoDownloadUrl ? (
         <DiscoveryImageSummary
-          cluster={cluster}
+          clusterName={cluster.name || ''}
+          isSNO={isSNOCluster}
           onClose={close}
-          onReset={() => setShowSummary(false)}
+          onReset={onReset}
+          isoDownloadUrl={isoDownloadUrl}
         />
       ) : (
-        <DiscoveryImageForm
-          cluster={cluster}
-          onCancel={close}
-          onSuccess={() => setShowSummary(true)}
-        />
+        <DiscoveryImageForm cluster={cluster} onCancel={close} onSuccess={onImageReady} />
       )}
     </Modal>
   );
