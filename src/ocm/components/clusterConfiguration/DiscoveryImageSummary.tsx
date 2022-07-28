@@ -1,25 +1,25 @@
 import React from 'react';
-import { Cluster, ErrorState, isSNO } from '../../../common';
 import DownloadIso from '../../../common/components/clusterConfiguration/DownloadIso';
-import useInfraEnvImageUrl from '../../hooks/useInfraEnvImageUrl';
 
 type DiscoveryImageSummaryProps = {
-  cluster: Cluster;
+  clusterName: string;
+  isSNO: boolean;
+  isoDownloadUrl: string;
   onClose: () => void;
-  onReset?: () => void;
+  onReset: () => void;
 };
 
-const DiscoveryImageSummary: React.FC<DiscoveryImageSummaryProps> = ({ cluster, ...restProps }) => {
-  const { imageUrl, error } = useInfraEnvImageUrl(cluster.id);
-  if (error) {
-    return <ErrorState />;
-  }
-
+const DiscoveryImageSummary = ({
+  clusterName,
+  isSNO,
+  isoDownloadUrl,
+  ...restProps
+}: DiscoveryImageSummaryProps) => {
   return (
     <DownloadIso
-      fileName={`discovery_image_${cluster.name}.iso`}
-      downloadUrl={imageUrl}
-      isSNO={isSNO(cluster)}
+      fileName={`discovery_image_${clusterName}.iso`}
+      downloadUrl={isoDownloadUrl}
+      isSNO={isSNO}
       {...restProps}
     />
   );
