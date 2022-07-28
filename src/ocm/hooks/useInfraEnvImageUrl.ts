@@ -1,22 +1,22 @@
 import React from 'react';
-import useInfraEnvId from './useInfraEnvId';
 import { Cluster, PresignedUrl } from '../../common';
 import { InfraEnvsAPI } from '../services/apis';
 import { getErrorMessage } from '../../common/utils';
+import { InfraEnvsService } from '../services';
 
 type ImgUrl = {
   url: PresignedUrl['url'];
   error: string;
 };
 
-export default function useInfraEnvImageUrl(clusterId: Cluster['id']) {
-  const { infraEnvId, error: infraEnvError } = useInfraEnvId(clusterId);
-
-  const getImageUrl = React.useCallback(async (): Promise<ImgUrl> => {
+export default function useInfraEnvImageUrl() {
+  const getImageUrl = React.useCallback(async (clusterId: Cluster['id']): Promise<ImgUrl> => {
     try {
+      const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId);
       if (!infraEnvId) {
-        return { url: '', error: infraEnvError || 'Missing infraEnv' };
+        return { url: '', error: `Failed to retrieve the infraEnv for ${clusterId}` };
       }
+
       const {
         data: { url },
       } = await InfraEnvsAPI.getImageUrl(infraEnvId);
@@ -27,7 +27,7 @@ export default function useInfraEnvImageUrl(clusterId: Cluster['id']) {
     } catch (e) {
       return { url: '', error: getErrorMessage(e) };
     }
-  }, [infraEnvError, infraEnvId]);
+  }, []);
 
   return { getImageUrl };
 }
