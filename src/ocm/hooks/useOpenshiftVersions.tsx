@@ -90,7 +90,7 @@ export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
 
   return {
     error,
-    loading: !error && !versions,
+    loading: !error && versions.length === 0,
     versions,
     normalizeClusterVersion,
     isSupportedOpenShiftVersion,
