@@ -54,6 +54,8 @@ export type AgentClusterInstallK8sResource = K8sResourceCommon & {
     holdInstallation: boolean;
   };
   status?: {
+    apiVIP?: string;
+    ingressVIP?: string;
     connectivityMajorityGroups?: string;
     conditions?: AgentClusterInstallStatusCondition[];
     progress?: {

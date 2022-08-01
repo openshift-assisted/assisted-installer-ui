@@ -131,7 +131,7 @@ export const VirtualIPControlGroup = ({
               <FeatureSupportLevelBadge
                 featureId="VIP_AUTO_ALLOC"
                 openshiftVersion={cluster.openshiftVersion}
-              ></FeatureSupportLevelBadge>
+              />
             </>
           }
           name="vipDhcpAllocation"

@@ -51,6 +51,7 @@ const DetailsStep: React.FC<DetailsStepProps> = ({
   formRef,
   initBaseDomain,
   initPullSecret,
+  supportedVersionsCM,
 }) => {
   const [initialValues, validationSchema] = useDetailsFormik({
     clusterImages,
@@ -70,6 +71,7 @@ const DetailsStep: React.FC<DetailsStepProps> = ({
         onValuesChanged={onValuesChanged}
         clusterImages={clusterImages}
         extensionAfter={extensionAfter}
+        supportedVersionsCM={supportedVersionsCM}
       />
     </Formik>
   );

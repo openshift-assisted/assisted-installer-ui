@@ -30,7 +30,7 @@ const getFailedOperatorsNames = (failedOperators: MonitoredOperator[], t: TFunct
   let failedOperatorsNames = '';
 
   for (let i = 0; i < failedOperators.length; i++) {
-    const operatorName = failedOperators[i].name;
+    const operatorName: string = failedOperators[i].name || '';
     if (i > 0) {
       if (i === failedOperators.length - 1) failedOperatorsNames += ' and ';
       else failedOperatorsNames += ', ';

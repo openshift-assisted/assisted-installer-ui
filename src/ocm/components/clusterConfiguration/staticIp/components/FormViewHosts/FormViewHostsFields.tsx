@@ -54,7 +54,7 @@ const getCollapsedHostComponent = (protocolType: StaticProtocolType) => {
         mappingValue={mapValue}
         hostIdx={hostIdx}
         hasError={!!error}
-      ></HostSummary>
+      />
     );
   };
   return Component;

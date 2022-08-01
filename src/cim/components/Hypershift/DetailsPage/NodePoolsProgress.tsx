@@ -10,7 +10,7 @@ import { global_palette_green_500 as okColor } from '@patternfly/react-tokens';
 import { CheckCircleIcon } from '@patternfly/react-icons';
 import NodePoolsTable from './NodePoolsTable';
 import { AgentMachineK8sResource, HostedClusterK8sResource, NodePoolK8sResource } from '../types';
-import { AgentK8sResource, ClusterImageSetK8sResource } from '../../../types';
+import { AgentK8sResource, ClusterImageSetK8sResource, ConfigMapK8sResource } from '../../../types';
 import { getNodepoolAgents, getNodePoolStatus, NodePoolStatus } from '../utils';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
@@ -22,17 +22,10 @@ const getNodePoolsStatus = (
   agents: AgentK8sResource[],
   t: TFunction,
 ): React.ReactNode => {
-  const clusterAgentMachines = agentMachines.filter(
-    (am) =>
-      am.metadata?.namespace ===
-        `${hostedCluster.metadata?.namespace || ''}-${hostedCluster.metadata?.name || ''}` &&
-      am.metadata?.labels?.['cluster.x-k8s.io/cluster-name'] === hostedCluster.metadata?.name,
-  );
-
   const nodePoolMap = nodePools.reduce<{
     [key: string]: { agents: AgentK8sResource[]; status: NodePoolStatus };
   }>((acc, np) => {
-    const nodePoolAgents = getNodepoolAgents(np, agents, clusterAgentMachines, hostedCluster);
+    const nodePoolAgents = getNodepoolAgents(np, agents, agentMachines, hostedCluster);
     const status = getNodePoolStatus(np, nodePoolAgents, t);
     acc[np.metadata?.uid || ''] = {
       agents: nodePoolAgents,
@@ -81,6 +74,7 @@ type NodePoolsProgressProps = {
   ) => Promise<void>;
   onAddNodePool: (nodePool: NodePoolK8sResource) => Promise<void>;
   clusterImages: ClusterImageSetK8sResource[];
+  supportedVersionsCM?: ConfigMapK8sResource;
 };
 
 const NodePoolsProgress = ({

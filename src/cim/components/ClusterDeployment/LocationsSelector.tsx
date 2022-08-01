@@ -21,15 +21,15 @@ const LocationsLabelIcon: React.FC = () => {
             t={t}
             components={{ bold: <strong /> }}
             i18nKey="ai:Keep the field empty to match <bold>any</bold> location."
-          ></Trans>
+          />
 
           <br />
           <Trans
             t={t}
             components={{ bold: <strong /> }}
             i18nKey="ai:Set <bold>{{agent_location_label_key}}</bold> label in Agent resource to specify it's location."
-            value={{ agent_location_label_key: AGENT_LOCATION_LABEL_KEY }}
-          ></Trans>
+            values={{ agent_location_label_key: AGENT_LOCATION_LABEL_KEY }}
+          />
         </>
       }
     />
@@ -63,7 +63,7 @@ const LocationsSelector: React.FC<{ agents: AgentK8sResource[] }> = ({ agents })
   return (
     <MultiSelectField
       idPostfix="locations"
-      name={t('ai:"locations')}
+      name="locations"
       label={t('ai:Host locations')}
       labelIcon={<LocationsLabelIcon />}
       placeholderText={t('ai:Type or select location(s)')}

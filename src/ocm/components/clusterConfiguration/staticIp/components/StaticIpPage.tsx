@@ -17,7 +17,7 @@ const isoRegenerationAlert = (
     data-testid="regenerate-iso-alert"
     title="To add new hosts that will use the new or edited configurations, you'll need to regenerate the
   Discovery ISO in the 'Host discovery' step and boot your new hosts from it."
-  ></Alert>
+  />
 );
 
 export const StaticIpPage: React.FC<StaticIpPageProps> = ({

@@ -71,21 +71,6 @@ const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         <GridItem>
           <ReviewCluster cluster={cluster} />
         </GridItem>
-
-        {/* TODO(mlibra): Implement in context of the initial configuration selection
-        <GridItem span={12} lg={10} xl={9} xl2={7}>
-          <TextContent>
-            <Text component="h2">Capability level</Text>
-          </TextContent>
-        </GridItem>
-        */}
-
-        {/* TODO(mlibra): Show YAML manifests
-         <GridItem span={12} lg={10} xl={9} xl2={7}>
-         <ExpandableSection>
-         </ExpandableSection>
-         </GridItem>
-        */}
       </Grid>
     </ClusterWizardStep>
   );

@@ -20,7 +20,6 @@ import {
   isSubnetInIPv6,
   NETWORK_TYPE_OVN,
   NO_SUBNET_SET,
-  useFeatureSupportLevel,
 } from '../../../common';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
@@ -38,7 +37,6 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   children,
 }) => {
   const { t } = useTranslation();
-  const featureSupportLevelData = useFeatureSupportLevel();
   const { setFieldValue, values, touched, validateField } =
     useFormikContext<NetworkConfigurationValues>();
 
@@ -123,15 +121,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   return (
     <Grid hasGutter>
       {!hideManagedNetworking && (
-        <ManagedNetworkingControlGroup
-          disabled={
-            !!cluster.openshiftVersion &&
-            featureSupportLevelData.isFeatureDisabled(
-              cluster.openshiftVersion,
-              'NETWORK_TYPE_SELECTION',
-            )
-          }
-        />
+        <ManagedNetworkingControlGroup disabled={!!cluster.openshiftVersion} />
       )}
 
       {isUserManagedNetworking && (

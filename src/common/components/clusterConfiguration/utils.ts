@@ -14,6 +14,7 @@ import {
   selectClusterNetworkHostPrefix,
   selectMonitoredOperators,
   selectServiceNetworkCIDR,
+  selectSchedulableMasters,
 } from '../../selectors';
 import {
   HostDiscoveryValues,
@@ -22,7 +23,7 @@ import {
   ValidationGroup,
   ValidationsInfo,
 } from '../../types/clusters';
-import { getHostname, getSchedulableMasters } from '../hosts/utils';
+import { getHostname } from '../hosts/utils';
 
 export const getSubnet = (cidr: string): Address6 | Address4 | null => {
   if (Address4.isValid(cidr)) {
@@ -148,11 +149,12 @@ export const getHostDiscoveryInitialValues = (cluster: Cluster): HostDiscoveryVa
   const monitoredOperators = selectMonitoredOperators(cluster);
   const isOperatorEnabled = (name: RegExp | string) =>
     !!monitoredOperators.find((operator) => operator.name?.match(name));
+
   return {
     useExtraDisksForLocalStorage: isOperatorEnabled(/ocs|odf/),
     useContainerNativeVirtualization: isOperatorEnabled('cnv'),
     usePlatformIntegration: cluster.platform?.type !== 'baremetal',
-    schedulableMasters: getSchedulableMasters(cluster),
+    schedulableMasters: selectSchedulableMasters(cluster),
   };
 };
 

@@ -11,9 +11,12 @@ import { SupportedOpenshiftVersionsAPI } from '../services/apis';
 type UseOpenshiftVersionsType = {
   versions: OpenshiftVersionOptionType[];
   normalizeClusterVersion: (version?: string) => ImportClusterParams['openshiftVersion'];
+  isSupportedOpenShiftVersion: (version?: string) => boolean;
   error?: { title: string; message: string };
   loading: boolean;
 };
+
+const supportedVersionLevels = ['production', 'maintenance'];
 
 const sortVersions = (versions: OpenshiftVersionOptionType[]) => {
   return versions
@@ -23,13 +26,25 @@ const sortVersions = (versions: OpenshiftVersionOptionType[]) => {
     .reverse();
 };
 
+export const findVersionItemByVersion = (
+  versions: OpenshiftVersionOptionType[],
+  version: string,
+): OpenshiftVersionOptionType | undefined => {
+  return versions.find(({ value: versionKey }) => {
+    // For version 4.10 match 4.10, 4.10.3, not 4.1, 4.1.5
+    const versionNameMatch = new RegExp(`^${versionKey}(\\..+)?$`);
+    return versionNameMatch.test(version);
+  });
+};
+
 export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
-  const [versions, setVersions] = React.useState<OpenshiftVersionOptionType[]>();
+  const [versions, setVersions] = React.useState<OpenshiftVersionOptionType[]>([]);
   const [error, setError] = React.useState<UseOpenshiftVersionsType['error']>();
 
   const doAsync = React.useCallback(async () => {
     try {
       const { data } = await SupportedOpenshiftVersionsAPI.list();
+
       const versions: OpenshiftVersionOptionType[] = Object.keys(data).map((key) => {
         const versionItem = data[key] as OpenshiftVersion;
         const version = versionItem.displayName;
@@ -58,16 +73,26 @@ export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
   }, [doAsync, setVersions]);
 
   const normalizeClusterVersion = React.useCallback(
-    (version = ''): string =>
-      versions?.map((obj) => obj.value).find((normalized) => version.startsWith(normalized)) ||
-      version,
+    (version = ''): string => {
+      const matchingVersion = findVersionItemByVersion(versions, version);
+      return matchingVersion?.value || version;
+    },
+    [versions],
+  );
+
+  const isSupportedOpenShiftVersion = React.useCallback(
+    (version = ''): boolean => {
+      const selectedVersion = findVersionItemByVersion(versions, version);
+      return supportedVersionLevels.includes(selectedVersion?.supportLevel || '');
+    },
     [versions],
   );
 
   return {
     error,
-    loading: !error && !versions,
-    versions: versions || [],
+    loading: !error && versions.length === 0,
+    versions,
     normalizeClusterVersion,
+    isSupportedOpenShiftVersion,
   };
 }

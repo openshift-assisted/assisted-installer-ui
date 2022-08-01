@@ -53,7 +53,7 @@ const HostsForm: React.FC<HostsFormProps> = ({
             <Alert
               isInline
               variant="warning"
-              title={t('ai: The cluster has 0 hosts. No workloads will be able to run.')}
+              title={t('ai:The cluster has 0 hosts. No workloads will be able to run.')}
             />
           </GridItem>
         )}
