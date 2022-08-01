@@ -1,5 +1,5 @@
 import React from 'react';
-import { StorageStep } from '../clusterConfiguration/StorageStep';
+import { StackItem } from '@patternfly/react-core';
 import { Formik, FormikConfig, useFormikContext } from 'formik';
 import {
   Cluster,
@@ -8,21 +8,22 @@ import {
   ClusterWizardStep,
   useAlerts,
   getStorageInitialValues,
-  HostDiscoveryValues,
+  StorageValues,
   useFormikAutoSave,
 } from '../../../common';
-import { StorageValues } from '../../../common/types/clusters';
 import ClusterWizardFooter from './ClusterWizardFooter';
 import { useClusterWizardContext } from './ClusterWizardContext';
 import ClusterWizardNavigation from './ClusterWizardNavigation';
+import ClusterWizardStepHeader from './ClusterWizardStepHeader';
 import { canNextStorage } from './wizardTransition';
+import HostsStorageTable from '../hosts/HostsStorageTable';
 
-const StorageForm: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
+const StorageForm = ({ cluster }: { cluster: Cluster }) => {
   const { alerts } = useAlerts();
   const clusterWizardContext = useClusterWizardContext();
-  const { isSubmitting, touched, errors } = useFormikContext<HostDiscoveryValues>();
+  const { isSubmitting, touched, errors } = useFormikContext<StorageValues>();
   const isAutoSaveRunning = useFormikAutoSave();
-  const errorFields = getFormikErrorFields(errors, touched);
+  const errorFields = getFormikErrorFields<StorageValues>(errors, touched);
   const isNextDisabled =
     !canNextStorage({ cluster }) || isAutoSaveRunning || !!alerts.length || isSubmitting;
 
@@ -38,17 +39,21 @@ const StorageForm: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   );
   return (
     <ClusterWizardStep navigation={<ClusterWizardNavigation cluster={cluster} />} footer={footer}>
-      <StorageStep cluster={cluster} />
+      <StackItem>
+        <ClusterWizardStepHeader>Storage</ClusterWizardStepHeader>
+      </StackItem>
+      <StackItem>
+        <HostsStorageTable cluster={cluster} />
+      </StackItem>
       <FormikAutoSave />
     </ClusterWizardStep>
   );
 };
 
-const Storage: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
+const Storage = ({ cluster }: { cluster: Cluster }) => {
   const { clearAlerts } = useAlerts();
   const initialValues = React.useMemo(
     () => getStorageInitialValues(),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [], // just once, Formik does not reinitialize
   );
   const handleSubmit: FormikConfig<StorageValues>['onSubmit'] = () => {

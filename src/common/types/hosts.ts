@@ -1,4 +1,4 @@
-import { Host, HostRoleUpdateParams, HostValidationId } from '../api/types';
+import { Host, HostRoleUpdateParams, HostValidationId } from '../api';
 
 export type Validation = {
   id: HostValidationId;

@@ -10,38 +10,29 @@ import {
   IRow,
 } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
-import {
-  Disk,
-  fileSize,
-  getInventory,
-  Host,
-  ValidationInfoActionProps,
-  WithTestID,
-} from '../../../common';
-import DiskRole, { onDiskRoleType } from '../../../common/components/hosts/DiskRole';
-import DiskLimitations from '../../../common/components/hosts/DiskLimitations';
+import { Disk, fileSize, getInventory, Host, WithTestID } from '../../index';
+import DiskRole, { onDiskRoleType } from '../hosts/DiskRole';
+import DiskLimitations from '../hosts/DiskLimitations';
 
 type StorageDetailProps = {
+  host: Host;
   canEditDisks?: (host: Host) => boolean;
   onDiskRole?: onDiskRoleType;
-  host: Host;
-  AdditionalNTPSourcesDialogToggleComponent?: ValidationInfoActionProps['AdditionalNTPSourcesDialogToggleComponent'];
-  hideNTPStatus?: boolean;
 };
 
-type SectionTitleProps = {
+interface SectionTitleProps extends WithTestID {
   title: string;
-};
+}
 
-type DisksTableProps = {
+interface DisksTableProps extends WithTestID {
   canEditDisks?: (host: Host) => boolean;
   onDiskRole?: onDiskRoleType;
   host: Host;
   disks: Disk[];
   installationDiskId?: string;
-};
+}
 
-const SectionTitle: React.FC<SectionTitleProps & WithTestID> = ({ title, testId }) => (
+const SectionTitle = ({ title, testId }: SectionTitleProps) => (
   <GridItem>
     <TextContent>
       <Text data-testid={testId} component={TextVariants.h3}>
@@ -58,35 +49,31 @@ const diskColumns = [
   { title: 'Drive type' },
   { title: 'Size' },
   { title: 'Serial' },
-  // { title: 'Vendor' }, TODO(mlibra): search HW database for humanized values
   { title: 'Model' },
   { title: 'WWN' },
 ];
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-return
-const diskRowKey = ({ rowData }: ExtraParamsType) => rowData?.key;
+const diskRowKey = ({ rowData }: ExtraParamsType) => rowData?.key as string;
 
 const DisksTableRowWrapper = (props: RowWrapperProps) => (
-  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-  <RowWrapper {...props} data-testid={`disk-row:${props.row?.key}`} />
+  <RowWrapper {...props} data-testid={`disk-row-${(props.row?.key as string) || ''}`} />
 );
 
-const DisksTable: React.FC<DisksTableProps & WithTestID> = ({
+const DisksTable = ({
   canEditDisks,
   host,
   disks,
   installationDiskId,
   testId,
   onDiskRole,
-}) => {
+}: DisksTableProps) => {
   const isEditable = !!canEditDisks?.(host);
   const rows: IRow[] = [...disks]
     .sort((diskA, diskB) => diskA.name?.localeCompare(diskB.name || '') || 0)
     .map((disk) => ({
       cells: [
         {
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          title: disk.bootable ? `${disk.name} (bootable)` : disk.name,
+          title: disk.bootable ? `${disk.name || ''} (bootable)` : disk.name,
           props: { 'data-testid': 'disk-name' },
         },
         {
@@ -105,7 +92,6 @@ const DisksTable: React.FC<DisksTableProps & WithTestID> = ({
         { title: disk.driveType, props: { 'data-testid': 'drive-type' } },
         { title: fileSize(disk.sizeBytes || 0, 2, 'si'), props: { 'data-testid': 'disk-size' } },
         { title: disk.serial, props: { 'data-testid': 'disk-serial' } },
-        // disk.vendor, TODO(mlibra): search HW database for humanized values
         { title: disk.model, props: { 'data-testid': 'disk-model' } },
         { title: disk.wwn, props: { 'data-testid': 'disk-wwn' } },
       ],
@@ -128,8 +114,7 @@ const DisksTable: React.FC<DisksTableProps & WithTestID> = ({
   );
 };
 
-export const StorageDetail: React.FC<StorageDetailProps> = ({ canEditDisks, onDiskRole, host }) => {
-  const { installationDiskId } = host;
+const StorageDetail = ({ host, canEditDisks, onDiskRole }: StorageDetailProps) => {
   const inventory = getInventory(host);
   const disks = inventory.disks || [];
 
@@ -145,10 +130,12 @@ export const StorageDetail: React.FC<StorageDetailProps> = ({ canEditDisks, onDi
           canEditDisks={canEditDisks}
           host={host}
           disks={disks}
-          installationDiskId={installationDiskId}
+          installationDiskId={host.installationDiskId}
           onDiskRole={onDiskRole}
         />
       </GridItem>
     </Grid>
   );
 };
+
+export default StorageDetail;

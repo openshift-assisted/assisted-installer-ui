@@ -10,27 +10,26 @@ import {
   IRow,
 } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
-
 import { DetailItem, DetailList, DetailListProps } from '../ui';
 import { Host, Interface, stringToJSON } from '../../api';
 import { ValidationsInfo } from '../../types/hosts';
 import { WithTestID } from '../../types';
 import { DASH } from '../constants';
-import { getInventory } from '../hosts/utils';
-
 import { getHostRowHardwareInfo } from './hardwareInfo';
+import { getHardwareTypeText, getInventory } from './utils';
+import { ValidationInfoActionProps } from './HostValidationGroups';
 import NtpValidationStatus from './NtpValidationStatus';
 import { onDiskRoleType } from './DiskRole';
-import { getHardwareTypeText } from './utils';
-import { ValidationInfoActionProps } from './HostValidationGroups';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
+import StorageDetail from '../storage/StorageDetail';
 
 type HostDetailProps = {
+  host: Host;
   canEditDisks?: (host: Host) => boolean;
   onDiskRole?: onDiskRoleType;
-  host: Host;
   AdditionalNTPSourcesDialogToggleComponent?: ValidationInfoActionProps['AdditionalNTPSourcesDialogToggleComponent'];
   hideNTPStatus?: boolean;
+  showStorage?: boolean;
 };
 
 type SectionTitleProps = {
@@ -116,11 +115,14 @@ const NicsTable: React.FC<NicsTableProps & WithTestID> = ({ interfaces, testId }
   );
 };
 
-export const HostDetail: React.FC<HostDetailProps> = ({
+export const HostDetail = ({
   host,
+  canEditDisks,
+  onDiskRole,
   AdditionalNTPSourcesDialogToggleComponent,
   hideNTPStatus = false,
-}) => {
+  showStorage = true,
+}: HostDetailProps) => {
   const { t } = useTranslation();
   const { id, validationsInfo: hostValidationsInfo } = host;
   const inventory = getInventory(host);
@@ -210,6 +212,9 @@ export const HostDetail: React.FC<HostDetailProps> = ({
           value={ntpValidationStatus}
         />
       </SectionColumn>
+      {showStorage && (
+        <StorageDetail host={host} onDiskRole={onDiskRole} canEditDisks={canEditDisks} />
+      )}
       <SectionTitle
         testId={'nics-section'}
         title={`${nics.length} NIC${nics.length === 1 ? '' : 's'}`}

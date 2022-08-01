@@ -1,4 +1,5 @@
 import React from 'react';
+import { Checkbox, Pagination, PaginationVariant } from '@patternfly/react-core';
 import {
   Table,
   TableHeader,
@@ -16,15 +17,16 @@ import {
   TableProps,
 } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
-import { Checkbox, Pagination, PaginationVariant } from '@patternfly/react-core';
-import classnames from 'classnames';
 import xor from 'lodash/xor';
-import { getColSpanRow, rowSorter } from '../ui/table/utils';
+import classnames from 'classnames';
+
+import { getColSpanRow, rowSorter } from '../ui';
 import { WithTestID } from '../../types';
-import './HostsTable.css';
 import { usePagination } from './usePagination';
-// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+import './HostsTable.css';
+
 const rowKey = ({ rowData }: ExtraParamsType) => rowData?.key;
+
 type TableMemoProps = {
   rows: TableProps['rows'];
   cells: TableProps['cells'];
@@ -81,8 +83,7 @@ type OpenRows = {
   [id: string]: boolean;
 };
 const HostsTableRowWrapper = (props: RowWrapperProps) => (
-  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-  <RowWrapper {...props} data-testid={`host-row-${props.rowProps?.rowIndex}`} />
+  <RowWrapper {...props} data-testid={`host-row-${props.rowProps?.rowIndex || ''}`} />
 );
 export type TableRow<R> = {
   header: ICell | string;
@@ -247,7 +248,7 @@ const AITable = <R extends any>({
       )
       .slice((page - 1) * perPage, page * perPage);
     if (ExpandComponent) {
-      rows = rows.reduce((allRows, row, index) => {
+      rows = rows.reduce((allRows, row: IRow, index) => {
         allRows.push(row);
         if (ExpandComponent) {
           allRows.push({
@@ -257,11 +258,10 @@ const AITable = <R extends any>({
             cells: [
               {
                 // do not render unnecessarily to improve performance
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                title: row.isOpen ? <ExpandComponent obj={row.obj} /> : undefined,
+                title: row.isOpen ? <ExpandComponent obj={row.obj as R} /> : undefined,
               },
             ],
-            key: `${row.id}-detail`,
+            key: `${row.id || ''}-detail`,
             parent: index * 2,
           });
         }
@@ -277,9 +277,8 @@ const AITable = <R extends any>({
     return getColSpanRow(children, columns.length);
   }, [hostRows, columns, children]);
   const onCollapse = React.useCallback(
-    (_event, rowKey) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      const id = hostRows[rowKey].id;
+    (_event, rowKey: number) => {
+      const id = hostRows[rowKey].id as string;
       if (id) {
         setOpenRows(Object.assign({}, openRows, { [id]: !openRows[id] }));
       }

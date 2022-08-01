@@ -118,7 +118,9 @@ export const useHostsTable = (cluster: Cluster) => {
   );
 
   const onDownloadHostLogs = React.useCallback(
-    (host: Host) => downloadHostInstallationLogs(addAlert, host),
+    (host: Host) => {
+      void downloadHostInstallationLogs(addAlert, host);
+    },
     [addAlert],
   );
 

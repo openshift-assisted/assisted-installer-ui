@@ -1,20 +1,13 @@
-import { sortable } from '@patternfly/react-table';
 import * as React from 'react';
-import { getHostRole, getInventory, Host, RoleCell, stringToJSON } from '../../../common';
-import { TableRow } from './StorageAITable';
-import { getHostRowHardwareInfo } from '../../../common/components/hosts/hardwareInfo';
-import { ValidationsInfo } from '../../../common/types/hosts';
-import HostPropertyValidationPopover from '../../../common/components/hosts/HostPropertyValidationPopover';
+import { sortable } from '@patternfly/react-table';
 import { TFunction } from 'i18next';
+import { getHostRole, getInventory, Host, RoleCell, stringToJSON } from '../../index';
+import { getHostRowHardwareInfo } from '../hosts/hardwareInfo';
+import { ValidationsInfo } from '../../types/hosts';
+import HostPropertyValidationPopover from '../hosts/HostPropertyValidationPopover';
+import { TableRow } from '../hosts/AITable';
 
-export const ODFUsageStatus = (host: Host, isCompact?: boolean): string => {
-  if (!isCompact && host.role === 'master') {
-    return 'Excluded for ODF';
-  }
-  return 'Use ODF';
-};
-
-export const roleColumn = (t: TFunction, schedulableMasters?: boolean): TableRow<Host> => {
+export const roleColumn = (t: TFunction, schedulableMasters: boolean): TableRow<Host> => {
   return {
     header: {
       title: 'Role',
@@ -34,28 +27,26 @@ export const roleColumn = (t: TFunction, schedulableMasters?: boolean): TableRow
   };
 };
 
-export const numberOfDisks = (): TableRow<Host> => {
-  return {
-    header: {
-      title: 'Number of disks',
-      props: {
-        id: 'col-header-num-disks',
-      },
-      transforms: [sortable],
+export const numberOfDisksColumn: TableRow<Host> = {
+  header: {
+    title: 'Number of disks',
+    props: {
+      id: 'col-header-num-disks',
     },
-    cell: (host) => {
-      const inventory = getInventory(host);
-      const disks = inventory.disks || [];
-      return {
-        title: <> {disks.length} </>,
-        props: { 'data-testid': 'host-role' },
-        sortableValue: disks.length,
-      };
-    },
-  };
+    transforms: [sortable],
+  },
+  cell: (host) => {
+    const inventory = getInventory(host);
+    const disks = inventory.disks || [];
+    return {
+      title: <> {disks.length} </>,
+      props: { 'data-testid': 'host-role' },
+      sortableValue: disks.length,
+    };
+  },
 };
 
-export const ODFUsage = (isCompact?: boolean): TableRow<Host> => {
+export const odfUsageColumn = (excludeMasters: boolean): TableRow<Host> => {
   return {
     header: {
       title: 'ODF Usage',
@@ -67,8 +58,9 @@ export const ODFUsage = (isCompact?: boolean): TableRow<Host> => {
     cell: (host) => {
       const inventory = getInventory(host);
       const disks = inventory.disks || [];
+      const isExcluded = excludeMasters && host.role === 'master';
       return {
-        title: <> {ODFUsageStatus(host, isCompact)} </>,
+        title: <> {isExcluded ? 'Excluded for ODF' : 'Use ODF'} </>,
         props: { 'data-testid': 'use-odf' },
         sortableValue: disks.length,
       };

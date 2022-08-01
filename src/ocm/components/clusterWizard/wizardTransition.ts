@@ -93,7 +93,6 @@ const hostDiscoveryStepValidationsMap: WizardStepValidationMap = {
 };
 
 const storageStepValidationsMap: WizardStepValidationMap = {
-  //TODO: edit validation map for storage when information from BE (i.e node labeling) will be available
   cluster: {
     groups: [],
     validationIds: ['sufficient-masters-count'],
@@ -144,7 +143,6 @@ export const wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardSt
   'static-ip-host-configurations': staticIpValidationsMap,
   'host-discovery': hostDiscoveryStepValidationsMap,
   storage: storageStepValidationsMap,
-  //TODO: edit validation map for storage when information from BE (i.e node labeling) will be available
   networking: networkingStepValidationsMap,
   review: reviewStepValidationsMap,
 };

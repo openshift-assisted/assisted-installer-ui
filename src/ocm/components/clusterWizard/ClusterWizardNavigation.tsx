@@ -5,6 +5,7 @@ import {
   canNextClusterDetails,
   canNextHostDiscovery,
   canNextNetwork,
+  canNextStorage,
   ClusterWizardStepsType,
   isStaticIpStep,
 } from './wizardTransition';
@@ -24,6 +25,7 @@ const isStepValid = (stepId: ClusterWizardStepsType, cluster?: Cluster): boolean
     case 'static-ip-network-wide-configurations':
       return canNextClusterDetails({ cluster });
     case 'storage':
+      return canNextStorage({ cluster });
     case 'host-discovery':
       return canNextHostDiscovery({ cluster });
     case 'networking':
