@@ -160,7 +160,7 @@ export const getHostDiscoveryInitialValues = (cluster: Cluster): HostDiscoveryVa
 };
 
 export const getStorageInitialValues = (): StorageValues => {
-  //DOTO (dchason): add initial values to node labeling
+  // TODO (dchason): add initial values to node labeling
   return {
     nodeLabeling: '',
   };
