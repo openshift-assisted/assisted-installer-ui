@@ -1253,8 +1253,10 @@ export interface HostUpdateParams {
    * A string which will be used as Authorization Bearer token to fetch the ignition from ignitionEndpointUrl.
    */
   ignitionEndpointToken?: string;
-  validationsInfo?: string;
-  nodeLabels?: string;
+  /**
+   * Labels to be added to the corresponding node.
+   */
+  nodeLabels?: NodeLabelParams[];
 }
 export type HostValidationId =
   | 'connected'
