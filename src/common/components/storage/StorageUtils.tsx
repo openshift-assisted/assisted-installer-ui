@@ -58,9 +58,14 @@ export const odfUsageColumn = (excludeMasters: boolean): TableRow<Host> => {
     cell: (host) => {
       const inventory = getInventory(host);
       const disks = inventory.disks || [];
-      const isExcluded = excludeMasters && host.role === 'master';
+      const isMaster = host.role === 'master' || host.suggestedRole === 'master';
+      const isExcluded = excludeMasters && isMaster;
       return {
-        title: <> {isExcluded ? 'Excluded for ODF' : 'Use ODF'} </>,
+        title: isExcluded ? (
+          <div style={{ color: 'var(--pf-global--disabled-color--100)' }}>Excluded for ODF</div>
+        ) : (
+          'Use ODF'
+        ),
         props: { 'data-testid': 'use-odf' },
         sortableValue: disks.length,
       };
