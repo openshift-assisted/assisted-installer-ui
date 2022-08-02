@@ -9,6 +9,7 @@ const ODFLabel: React.FC = () => (
     Install OpenShift Data Foundation{' '}
     <PopoverIcon
       component={'a'}
+      buttonClassName="small-button-link"
       headerContent="Additional Requirements"
       bodyContent={
         <a href={ODF_REQUIREMENTS_LINK} target="_blank" rel="noopener noreferrer">

@@ -13,6 +13,7 @@ const CNVLabel: React.FC<{ clusterId: Cluster['id']; isSingleNode?: boolean }> =
       Install OpenShift Virtualization{' '}
       <PopoverIcon
         component={'a'}
+        buttonClassName="small-button-link"
         headerContent="Additional Requirements"
         bodyContent={
           <CNVHostRequirementsContent clusterId={clusterId} isSingleNode={isSingleNode} />

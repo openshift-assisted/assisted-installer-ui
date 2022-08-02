@@ -20,6 +20,8 @@ const getLabel = (openshiftVersion: string) => {
     <>
       Use arm64 CPU architecture{' '}
       <PopoverIcon
+        component="a"
+        buttonClassName="small-button-link"
         noVerticalAlign
         bodyContent={
           <p>

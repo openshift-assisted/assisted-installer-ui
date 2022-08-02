@@ -62,6 +62,8 @@ const SchedulableMastersLabel = () => (
   <>
     <span>Run workloads on control plane nodes</span>{' '}
     <PopoverIcon
+      component="a"
+      buttonClassName="small-button-link"
       bodyContent={<p>Enables your control plane nodes to be used for running applications.</p>}
     />
   </>
