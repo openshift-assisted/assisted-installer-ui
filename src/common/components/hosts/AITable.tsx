@@ -83,7 +83,7 @@ type OpenRows = {
   [id: string]: boolean;
 };
 const HostsTableRowWrapper = (props: RowWrapperProps) => (
-  <RowWrapper {...props} data-testid={`host-row-${props.rowProps?.rowIndex || ''}`} />
+  <RowWrapper {...props} data-testid={`host-row-${Number(props.rowProps?.rowIndex)}`} />
 );
 export type TableRow<R> = {
   header: ICell | string;
