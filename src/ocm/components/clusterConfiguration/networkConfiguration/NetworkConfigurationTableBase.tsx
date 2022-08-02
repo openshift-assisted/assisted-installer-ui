@@ -47,7 +47,6 @@ export const networkingStatusColumn = (
 
 type NetworkConfigurationTableProps = {
   cluster: Cluster;
-  skipDisabled?: boolean;
   AdditionalNTPSourcesDialogToggleComponent: React.FC;
   actionResolver: ActionsResolver<Host>;
   children: React.ReactNode;
@@ -60,7 +59,6 @@ type NetworkConfigurationTableProps = {
 
 const NetworkConfigurationTableBase = ({
   cluster,
-  skipDisabled,
   AdditionalNTPSourcesDialogToggleComponent,
   onEditHost,
   onEditRole,
@@ -90,7 +88,7 @@ const NetworkConfigurationTableBase = ({
   const paginationProps = usePagination(hosts.length);
 
   const ExpandComponent = React.useCallback(
-    ({ obj }) => {
+    ({ obj }: { obj: Host }) => {
       return (
         <HostDetail
           host={obj}
@@ -106,7 +104,6 @@ const NetworkConfigurationTableBase = ({
     <HostsTable
       testId="networking-host-table"
       hosts={hosts}
-      skipDisabled={skipDisabled}
       ExpandComponent={ExpandComponent}
       content={content}
       actionResolver={actionResolver}
