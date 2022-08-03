@@ -1,6 +1,5 @@
 import React from 'react';
 import { ENCRYPTING_DISK_DURING_INSTALLATION } from '../../../config/constants';
-import PopoverIcon from '../../ui/PopoverIcon';
 import { RadioField } from '../../ui/formik';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import {
@@ -15,14 +14,14 @@ import {
 import { TangServers } from './TangServers';
 import { DiskEncryption } from '../../../api/types';
 import { useTranslation } from '../../../hooks/use-translation-wrapper';
+import { PopoverHelperIcon } from '../../ui';
 
-const DiskEncryptionModeTPMv2: React.FC = () => {
+const DiskEncryptionModeTPMv2 = () => {
   const { t } = useTranslation();
   return (
     <>
       TPM v2
-      <PopoverIcon
-        component={'a'}
+      <PopoverHelperIcon
         minWidth="22rem"
         bodyContent={
           <p>
@@ -40,13 +39,12 @@ const DiskEncryptionModeTPMv2: React.FC = () => {
   );
 };
 
-const DiskEncryptionModeTang: React.FC = () => {
+const DiskEncryptionModeTang = () => {
   const { t } = useTranslation();
   return (
     <>
       Tang{' '}
-      <PopoverIcon
-        component={'a'}
+      <PopoverHelperIcon
         minWidth="25rem"
         bodyContent={
           <p>

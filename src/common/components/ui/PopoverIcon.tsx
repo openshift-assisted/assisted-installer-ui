@@ -5,8 +5,6 @@ import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
 import { PopoverProps } from '@patternfly/react-core/dist/js/components/Popover/Popover';
 import { SVGIconProps } from '@patternfly/react-icons/dist/js/createIcon';
 
-import './PopoverIcon.css';
-
 type PopoverIconProps = PopoverProps & {
   variant?: ButtonProps['variant'];
   component?: ButtonProps['component'];

@@ -1,7 +1,12 @@
 import React from 'react';
-import { CheckboxField, Cluster, getFieldId, PopoverIcon } from '../../../common';
-import { useFeatureSupportLevel } from '../../../common/components/featureSupportLevels';
 import { FormGroup, Tooltip } from '@patternfly/react-core';
+import {
+  CheckboxField,
+  PopoverHelperIcon,
+  Cluster,
+  getFieldId,
+  useFeatureSupportLevel,
+} from '../../../common';
 import CNVHostRequirementsContent from '../hosts/CNVHostRequirementsContent';
 
 const CNVLabel: React.FC<{ clusterId: Cluster['id']; isSingleNode?: boolean }> = ({
@@ -11,9 +16,7 @@ const CNVLabel: React.FC<{ clusterId: Cluster['id']; isSingleNode?: boolean }> =
   return (
     <>
       Install OpenShift Virtualization{' '}
-      <PopoverIcon
-        component={'a'}
-        buttonClassName="small-button-link"
+      <PopoverHelperIcon
         headerContent="Additional Requirements"
         bodyContent={
           <CNVHostRequirementsContent clusterId={clusterId} isSingleNode={isSingleNode} />

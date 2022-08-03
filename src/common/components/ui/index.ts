@@ -13,6 +13,7 @@ export * from './PreviewBadge';
 export * from './utils';
 
 export { default as PopoverIcon } from './PopoverIcon';
+export { default as PopoverHelperIcon } from './PopoverHelperIcon';
 export { default as WizardNavItem } from './WizardNavItem';
 export { default as Alerts } from './Alerts';
 export { default as ExternalLink } from './ExternalLink';

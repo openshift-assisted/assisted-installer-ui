@@ -1,6 +1,6 @@
 import React from 'react';
 import { Stack, StackItem } from '@patternfly/react-core';
-import { PopoverIcon, RadioField } from '../ui';
+import { PopoverHelperIcon, RadioField } from '../ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 const GROUP_NAME = 'imageType';
@@ -14,7 +14,7 @@ const DiscoveryImageTypeControlGroupLabel = ({
 }) => (
   <>
     {text}
-    <PopoverIcon component={'a'} bodyContent={popoverContent} noVerticalAlign />
+    <PopoverHelperIcon bodyContent={popoverContent} />
   </>
 );
 

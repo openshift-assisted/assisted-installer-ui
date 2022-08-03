@@ -13,7 +13,6 @@ import {
 } from '@patternfly/react-core';
 import {
   Cluster,
-  PopoverIcon,
   useFeature,
   isSNO,
   ClusterWizardStepHeader,
@@ -21,6 +20,7 @@ import {
   selectMastersMustRunWorkloads,
   selectSchedulableMasters,
   HostDiscoveryValues,
+  PopoverHelperIcon,
 } from '../../../common';
 import HostsDiscoveryTable from '../hosts/HostsDiscoveryTable';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
@@ -31,10 +31,10 @@ import { ODFCheckbox } from './ODFCheckbox';
 import { CnvCheckbox } from './CnvCheckbox';
 import { useFormikContext } from 'formik';
 
-const PlatformIntegrationLabel: React.FC = () => (
+const PlatformIntegrationLabel = () => (
   <>
     <span>Integrate with vSphere</span>{' '}
-    <PopoverIcon
+    <PopoverHelperIcon
       bodyContent={
         <>
           Enable vSphere integration to access features like node auto-scaling and persistent
@@ -53,7 +53,7 @@ const PlatformIntegrationLabel: React.FC = () => (
           </List>
         </>
       }
-      buttonOuiaId="platform-integration-vSphere-popover"
+      ouiaId="platform-integration-vSphere-popover"
     />
   </>
 );
@@ -61,9 +61,7 @@ const PlatformIntegrationLabel: React.FC = () => (
 const SchedulableMastersLabel = () => (
   <>
     <span>Run workloads on control plane nodes</span>{' '}
-    <PopoverIcon
-      component="a"
-      buttonClassName="small-button-link"
+    <PopoverHelperIcon
       bodyContent={<p>Enables your control plane nodes to be used for running applications.</p>}
     />
   </>

@@ -1,15 +1,18 @@
 import React from 'react';
-import { CheckboxField, getFieldId, PopoverIcon, ODF_REQUIREMENTS_LINK } from '../../../common';
-import { useFeatureSupportLevel } from '../../../common/components/featureSupportLevels';
 import { FormGroup, Tooltip } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
+import {
+  CheckboxField,
+  PopoverHelperIcon,
+  getFieldId,
+  useFeatureSupportLevel,
+  ODF_REQUIREMENTS_LINK,
+} from '../../../common';
 
-const ODFLabel: React.FC = () => (
+const ODFLabel = () => (
   <>
     Install OpenShift Data Foundation{' '}
-    <PopoverIcon
-      component={'a'}
-      buttonClassName="small-button-link"
+    <PopoverHelperIcon
       headerContent="Additional Requirements"
       bodyContent={
         <a href={ODF_REQUIREMENTS_LINK} target="_blank" rel="noopener noreferrer">

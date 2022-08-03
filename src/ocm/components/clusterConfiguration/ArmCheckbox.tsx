@@ -5,7 +5,7 @@ import {
   getFieldId,
   ClusterCreateParams,
   HelperText,
-  PopoverIcon,
+  PopoverHelperIcon,
   CpuArchitecture,
   OpenshiftVersionOptionType,
 } from '../../../common';
@@ -19,10 +19,7 @@ const getLabel = (openshiftVersion: string) => {
   return (
     <>
       Use arm64 CPU architecture{' '}
-      <PopoverIcon
-        component="a"
-        buttonClassName="small-button-link"
-        noVerticalAlign
+      <PopoverHelperIcon
         bodyContent={
           <p>
             Check this option if you want to use the arm64 CPU architecture instead of the default
