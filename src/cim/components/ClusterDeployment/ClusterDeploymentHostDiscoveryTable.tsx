@@ -32,6 +32,7 @@ import { MassChangeHostnameModalProps } from '../../../common/components/hosts/M
 import MassApproveAction from '../modals/MassApproveAction';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { getExpandComponent } from '../Agent/AgentsSelectionTable';
 
 const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscoveryTableProps> = ({
   agents,
@@ -41,6 +42,7 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
   onChangeHostname,
   onChangeBMHHostname,
   onEditRole,
+  onSetInstallationDiskId,
   onEditHost,
   onEditBMH,
   onDeleteHost,
@@ -65,7 +67,7 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
       bmhs: bareMetalHosts,
       infraEnv,
     },
-    { onEditHost, onEditRole, onEditBMH, onDeleteHost },
+    { onEditHost, onEditRole, onEditBMH, onDeleteHost, onSetInstallationDiskId },
   );
 
   const addAll = width && width > 700;
@@ -138,7 +140,11 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
             selectedIDs={selectedHostIDs}
             setSelectedIDs={setSelectedHostIDs}
             onSelect={onSelect}
-            ExpandComponent={DefaultExpandComponent}
+            ExpandComponent={
+              hostActions.onDiskRole
+                ? getExpandComponent(hostActions.onDiskRole, hostActions.canEditDisks)
+                : DefaultExpandComponent
+            }
             {...paginationProps}
           >
             <HostsTableEmptyState setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
