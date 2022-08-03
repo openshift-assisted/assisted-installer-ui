@@ -2,23 +2,18 @@ import * as React from 'react';
 import { Alert, AlertVariant, FlexItem, Form } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 
-import { SNOControlGroup } from '../clusterConfiguration';
-import { StaticTextField } from '../ui/StaticTextField';
-import OpenShiftVersionSelect from '../clusterConfiguration/OpenShiftVersionSelect';
-import { PullSecret } from '../clusters';
-import { ManagedDomain } from '../../api';
-import { OpenshiftVersionOptionType } from '../../types';
+import { SNOControlGroup } from '../../../common/components/clusterConfiguration';
+import { StaticTextField } from '../../../common/components/ui/StaticTextField';
+import OpenShiftVersionSelect from '../../../common/components/clusterConfiguration/OpenShiftVersionSelect';
+import { PullSecret } from '../../../common/components/clusters';
+import { OpenshiftVersionOptionType } from '../../../common/types';
 import {
-  CheckboxField,
   InputField,
   RichInputField,
-  SelectField,
   acmClusterNameValidationMessages,
-} from '../ui/formik';
-import DiskEncryptionControlGroup from '../clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
-import { ClusterDetailsValues } from './types';
-import { isSNO } from '../../selectors/clusterSelectors';
-import { useTranslation } from '../../hooks/use-translation-wrapper';
+} from '../../../common/components/ui/formik';
+import { ClusterDetailsValues } from '../../../common/components/clusterWizard/types';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 export type ClusterDetailsFormFieldsProps = {
   canEditPullSecret: boolean;
@@ -26,12 +21,8 @@ export type ClusterDetailsFormFieldsProps = {
   isNameDisabled?: boolean;
   isBaseDnsDomainDisabled?: boolean;
   defaultPullSecret?: string;
-  isOcm: boolean;
   extensionAfter?: { [key: string]: React.ReactElement };
-  managedDomains?: ManagedDomain[];
   versions: OpenshiftVersionOptionType[];
-  toggleRedHatDnsService?: (checked: boolean) => void;
-  isPullSecretSet: boolean;
 };
 
 export const BaseDnsHelperText: React.FC<{ name?: string; baseDnsDomain?: string }> = ({
@@ -53,8 +44,6 @@ export const BaseDnsHelperText: React.FC<{ name?: string; baseDnsDomain?: string
 };
 
 export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> = ({
-  managedDomains = [],
-  toggleRedHatDnsService,
   canEditPullSecret,
   isNameDisabled,
   isBaseDnsDomainDisabled,
@@ -62,11 +51,9 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
   defaultPullSecret,
   forceOpenshiftVersion,
   extensionAfter,
-  isOcm, // TODO(mlibra): make it optional, false by default
-  isPullSecretSet,
 }) => {
   const { values } = useFormikContext<ClusterDetailsValues>();
-  const { name, baseDnsDomain, highAvailabilityMode, useRedHatDnsService } = values;
+  const { name, baseDnsDomain, highAvailabilityMode } = values;
   const nameInputRef = React.useRef<HTMLInputElement>();
   React.useEffect(() => {
     nameInputRef.current?.focus();
@@ -75,47 +62,38 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
     values.enableDiskEncryptionOnMasters || values.enableDiskEncryptionOnWorkers;
 
   const { t } = useTranslation();
-  // TODO(mlibra): Disable fields based on props passed from the caller context. In CIM, the name or domain can not be edited.
   return (
     <Form id="wizard-cluster-details__form">
-      <RichInputField
-        ref={nameInputRef}
-        label={t('ai:Cluster name')}
-        name="name"
-        placeholder={isOcm ? '' : t('ai:Enter cluster name')}
-        isDisabled={isNameDisabled}
-        richValidationMessages={acmClusterNameValidationMessages(t)}
-        isRequired
-      />
-      {extensionAfter?.['name'] && extensionAfter['name']}
-      {!!managedDomains.length && toggleRedHatDnsService && (
-        <CheckboxField
-          name="useRedHatDnsService"
-          label={t('ai:Use a temporary 60-day domain')}
-          helperText={t(
-            'ai:A base domain will be provided for temporary, non-production clusters.',
-          )}
-          onChange={toggleRedHatDnsService}
-        />
-      )}
-      {useRedHatDnsService ? (
-        <SelectField
-          label={t('ai:Base domain')}
-          name="baseDnsDomain"
-          helperText={<BaseDnsHelperText name={name} baseDnsDomain={baseDnsDomain} />}
-          options={managedDomains.map((d) => ({
-            label: `${d.domain} (${d.provider})`,
-            value: d.domain,
-          }))}
+      {isNameDisabled ? (
+        <StaticTextField name="name" label={t('ai:Cluster name')} isRequired>
+          {name}
+        </StaticTextField>
+      ) : (
+        <RichInputField
+          ref={nameInputRef}
+          label={t('ai:Cluster name')}
+          name="name"
+          placeholder={t('ai:Enter cluster name')}
+          richValidationMessages={acmClusterNameValidationMessages(t)}
           isRequired
         />
+      )}
+      {extensionAfter?.['name'] && extensionAfter['name']}
+      {isBaseDnsDomainDisabled ? (
+        <StaticTextField
+          name="baseDnsDomain"
+          label={t('ai:Base domain')}
+          helperText={<BaseDnsHelperText name={name} baseDnsDomain={baseDnsDomain} />}
+          isRequired
+        >
+          {baseDnsDomain}
+        </StaticTextField>
       ) : (
         <InputField
           label={t('ai:Base domain')}
           name="baseDnsDomain"
           helperText={<BaseDnsHelperText name={name} baseDnsDomain={baseDnsDomain} />}
           placeholder="example.com"
-          isDisabled={isBaseDnsDomainDisabled || useRedHatDnsService}
           isRequired
         />
       )}
@@ -128,16 +106,13 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
       )}
       <SNOControlGroup versions={versions} highAvailabilityMode={highAvailabilityMode} />
       {extensionAfter?.['openshiftVersion'] && extensionAfter['openshiftVersion']}
-      {canEditPullSecret && <PullSecret isOcm={isOcm} defaultPullSecret={defaultPullSecret} />}
+      {canEditPullSecret && <PullSecret defaultPullSecret={defaultPullSecret} />}
       {extensionAfter?.['pullSecret'] && extensionAfter['pullSecret']}
-      {isOcm && (
-        <DiskEncryptionControlGroup
-          values={values}
-          isDisabled={isPullSecretSet}
-          isSNO={isSNO({ highAvailabilityMode })}
-        />
-      )}
-
+      {/* <DiskEncryptionControlGroup
+        values={values}
+        isDisabled={isPullSecretSet}
+        isSNO={isSNO({ highAvailabilityMode })}
+      /> */}
       {atListOneDiskEncryptionEnableOn && values.diskEncryptionMode === 'tpmv2' && (
         <Alert
           variant={AlertVariant.warning}
