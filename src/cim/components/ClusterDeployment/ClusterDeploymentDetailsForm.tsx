@@ -1,10 +1,13 @@
 import * as React from 'react';
 import { Alert, Stack, StackItem } from '@patternfly/react-core';
-import { ClusterDetailsFormFields, ClusterDetailsFormFieldsProps } from '../../../common';
 import { AgentClusterInstallK8sResource, ClusterDeploymentK8sResource } from '../../types';
 import { ClusterImageSetK8sResource } from '../../types/k8s/cluster-image-set';
 import { getOCPVersions, getSelectedVersion } from '../helpers';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import {
+  ClusterDetailsFormFields,
+  ClusterDetailsFormFieldsProps,
+} from './ClusterDetailsFormFields';
 
 type ClusterDeploymentDetailsFormProps = {
   clusterImages: ClusterImageSetK8sResource[];
@@ -42,11 +45,9 @@ const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> 
         <ClusterDetailsFormFields
           versions={ocpVersions}
           canEditPullSecret={!clusterDeployment}
-          isPullSecretSet={!!clusterDeployment?.spec?.pullSecretRef?.name}
           isNameDisabled={isEditFlow}
           isBaseDnsDomainDisabled={isEditFlow}
           forceOpenshiftVersion={forceOpenshiftVersion}
-          isOcm={false}
           defaultPullSecret={pullSecret}
           extensionAfter={extensionAfter}
         />
