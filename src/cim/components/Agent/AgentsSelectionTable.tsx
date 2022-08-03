@@ -22,14 +22,30 @@ import DefaultEmptyState from '../../../common/components/ui/uiState/EmptyState'
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useFormikHelpers } from '../../../common/hooks/useFormikHelpers';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
+import { ExpandComponentProps } from '../../../common/components/hosts/AITable';
+import { Host } from '../../../common/api/types';
+import { onDiskRoleType } from '../../../common/components/hosts/DiskRole';
+import { HostsTableActions } from '../../../common/components/hosts/types';
 
 type AgentsSelectionTableProps = {
   matchingAgents: AgentK8sResource[];
   width?: number;
   onEditRole?: AgentTableActions['onEditRole'];
+  onSetInstallationDiskId?: AgentTableActions['onSetInstallationDiskId'];
   onEditHost?: AgentTableActions['onEditHost'];
   onHostSelect?: VoidFunction;
 };
+
+export const getExpandComponent = (
+  onDiskRole: onDiskRoleType,
+  canEditDisks: HostsTableActions['canEditDisks'],
+) =>
+  function ExpandComponent({ obj: host }: ExpandComponentProps<Host>) {
+    return (
+      <HostDetail key={host.id} host={host} onDiskRole={onDiskRole} canEditDisks={canEditDisks} />
+    );
+  };
 
 const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
   matchingAgents,
@@ -37,6 +53,7 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
   width,
   onEditHost,
   onHostSelect,
+  onSetInstallationDiskId,
 }) => {
   const { t } = useTranslation();
   const [{ value: selectedIDs }] =
@@ -77,7 +94,7 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
 
   const [hosts, actions, actionResolver] = useAgentsTable(
     { agents: matchingAgents },
-    { onSelect, onEditRole, onEditHost },
+    { onSelect, onEditRole, onEditHost, onSetInstallationDiskId },
   );
 
   const addAll = width && width > 700;
@@ -112,7 +129,11 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
       content={content}
       selectedIDs={selectedIDs}
       actionResolver={actionResolver}
-      ExpandComponent={DefaultExpandComponent}
+      ExpandComponent={
+        actions.onDiskRole
+          ? getExpandComponent(actions.onDiskRole, actions.canEditDisks)
+          : DefaultExpandComponent
+      }
       {...actions}
       {...paginationProps}
     >
