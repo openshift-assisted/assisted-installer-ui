@@ -101,12 +101,17 @@ export const getDnsSection = (
   return { config: { server: servers } };
 };
 
-export const getVlanInterface = (nicName: string, vlanId: number): NmstateVlanInterface => {
+export const getVlanInterface = (
+  nicName: string,
+  vlanId: number,
+  protocolConfigs: NmstateProtocolConfigs,
+): NmstateVlanInterface => {
   return {
     name: `${nicName}.${vlanId}`,
     type: NmstateInterfaceType.VLAN,
     state: 'up',
     vlan: { 'base-iface': nicName, id: vlanId },
+    ...protocolConfigs,
   };
 };
 

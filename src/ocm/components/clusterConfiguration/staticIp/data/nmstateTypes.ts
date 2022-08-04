@@ -51,7 +51,7 @@ export type NmstateVlanInterface = {
     'base-iface': string;
     id: number;
   };
-};
+} & NmstateProtocolConfigs;
 
 export type NmstateInterface = NmstateEthernetInterface | NmstateVlanInterface;
 
