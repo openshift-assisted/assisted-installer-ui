@@ -40,7 +40,11 @@ const DownloadIso: React.FC<DownloadISOProps> = ({
       <ModalBoxBody>
         <Stack hasGutter>
           <StackItem>
-            <Alert isInline variant="success" title={t('ai:Discovery ISO is ready for download')}>
+            <Alert
+              isInline
+              variant="success"
+              title={t('ai:Discovery ISO is ready to be downloaded')}
+            >
               <>
                 &nbsp;
                 <DiscoveryInstructions isSNO={isSNO} />

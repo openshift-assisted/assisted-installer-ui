@@ -131,7 +131,7 @@ const getValidationSchema = (usedHostnames: string[], origHostname: string, t: T
   return Yup.object({
     name: Yup.string().required(),
     hostname: richNameValidationSchema(t, usedHostnames, origHostname),
-    bmcAddress: bmcAddressValidationSchema.required(),
+    bmcAddress: bmcAddressValidationSchema(t).required(),
     username: Yup.string().required(),
     password: Yup.string().required(),
     bootMACAddress: macAddressValidationSchema,

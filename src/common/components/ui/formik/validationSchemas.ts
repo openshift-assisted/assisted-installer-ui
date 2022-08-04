@@ -10,6 +10,7 @@ import { allSubnetsIPv4, trimCommaSeparatedList, trimSshPublicKey } from './util
 import { ClusterNetwork, MachineNetwork, ServiceNetwork } from '../../../api/types';
 import { getErrorMessage } from '../../../utils';
 import {
+  bmcAddressValidationMessages,
   clusterNameValidationMessages,
   hostnameValidationMessages,
   locationValidationMessages,
@@ -32,9 +33,9 @@ const IP_V6_ZERO = '0000:0000:0000:0000:0000:0000:0000:0000';
 const MAC_REGEX = /^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$/;
 const HOST_NAME_REGEX = /^[^.]{1,63}(?:[.][^.]{1,63})*$/;
 
-//Source of information: https://github.com/metal3-io/baremetal-operator/blob/main/docs/api.md#baremetalhost-spec
+// Source of information: https://github.com/metal3-io/baremetal-operator/blob/main/docs/api.md#baremetalhost-spec
 const BMC_REGEX =
-  /^((ipmi|ibmc(\+https?)?|idrac(\+https?)?|idrac-redfish(\+https?)?|idrac-virtualmedia(\+https?)?|irmc|redfish(\+https?)?|redfish-virtualmedia(\+https?)?|ilo4(\+https)?|ilo4-virtuallmedia(\+https)?|ilo5(\+https)?|ilo5-redfish(\+https)|ilo5-virtualmedia(\+https)|https?|ftp):(\/\/([a-z0-9\-._~%!$&'()*+,;=]+@)?([a-z0-9\-._~%]+|\[[a-f0-9:.]+\]|\[v[a-f0-9][a-z0-9\-._~%!$&'()*+,;=:]+\])(:[0-9]+)?(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?|(\/?[a-z0-9\-._~%!$&'()*+,;=:@]+(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?)?)|([a-z0-9\-._~%!$&'()*+,;=@]+(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?|(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)+\/?))(\?[a-z0-9\-._~%!$&'()*+,;=:@/?]*)?(#[a-z0-9\-._~%!$&'()*+,;=:@/?]*)?$/i;
+  /^((redfish-virtualmedia|idrac-virtualmedia)(\+https?)?:(\/\/([a-z0-9\-._~%!$&'()*+,;=]+@)?([a-z0-9\-._~%]+|\[[a-f0-9:.]+\]|\[v[a-f0-9][a-z0-9\-._~%!$&'()*+,;=:]+\])(:[0-9]+)?(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?|(\/?[a-z0-9\-._~%!$&'()*+,;=:@]+(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?)?)|([a-z0-9\-._~%!$&'()*+,;=@]+(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)*\/?|(\/[a-z0-9\-._~%!$&'()*+,;=:@]+)+\/?))(\?[a-z0-9\-._~%!$&'()*+,;=:@/?]*)?(#[a-z0-9\-._~%!$&'()*+,;=:@/?]*)?$/i;
 const LOCATION_CHARS_REGEX = /^[a-zA-Z0-9-._]*$/;
 
 export const nameValidationSchema = (
@@ -476,11 +477,14 @@ export const day2ApiVipValidationSchema = Yup.string().test(
   },
 );
 
-export const bmcAddressValidationSchema = Yup.string().matches(BMC_REGEX, {
-  message: 'Value "${value}" is not valid BMC address.', // eslint-disable-line no-template-curly-in-string
-  excludeEmptyString: true,
-});
+export const bmcAddressValidationSchema = (t: TFunction) => {
+  const bmcAddressValidationMessagesList = bmcAddressValidationMessages(t);
 
+  return Yup.string().matches(BMC_REGEX, {
+    message: bmcAddressValidationMessagesList.INVALID_VALUE,
+    excludeEmptyString: true,
+  });
+};
 export const locationValidationSchema = (t: TFunction) => {
   const locationValidationMessagesList = locationValidationMessages(t);
   return Yup.string()
