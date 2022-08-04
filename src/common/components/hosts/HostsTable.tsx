@@ -1,15 +1,12 @@
-import { ConnectedIcon } from '@patternfly/react-icons';
 import * as React from 'react';
-import {
-  HostsNotShowingLink,
-  HostsNotShowingLinkProps,
-} from '../clusterConfiguration/DiscoveryTroubleshootingModal';
+import { ConnectedIcon } from '@patternfly/react-icons';
+import { HostsNotShowingLink, HostsNotShowingLinkProps } from '../clusterConfiguration';
 import { Host } from '../../api';
 import AITable, {
   ExpandComponentProps,
   AITableProps,
 } from '../../../common/components/hosts/AITable';
-import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
+import { HostDetail } from './HostRowDetail';
 import { WithTestID } from '../../types';
 import EmptyState from '../ui/uiState/EmptyState';
 import { usePagination } from './usePagination';
@@ -45,7 +42,7 @@ export const HostsTableEmptyState: React.FC<HostsTableEmptyStateProps> = ({
   );
 };
 
-export const DefaultExpandComponent: React.FC<ExpandComponentProps<Host>> = ({ obj }) => (
+export const DefaultExpandComponent = ({ obj }: ExpandComponentProps<Host>) => (
   <HostDetail key={obj.id} host={obj} />
 );
 

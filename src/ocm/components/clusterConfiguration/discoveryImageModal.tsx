@@ -40,13 +40,13 @@ export const DiscoveryImageModal: React.FC = () => {
   const { discoveryImageDialog } = useModalDialogsContext();
   const { data, isOpen, close } = discoveryImageDialog;
   const cluster = data?.cluster;
-  const { getImageUrl } = useInfraEnvImageUrl(cluster?.id);
+  const { getImageUrl } = useInfraEnvImageUrl();
 
   const onImageReady = React.useCallback(async () => {
-    const { url, error } = await getImageUrl();
+    const { url, error } = await getImageUrl(cluster.id);
     setIsoDownloadUrl(url);
     setIsoDownloadError(error);
-  }, [getImageUrl]);
+  }, [getImageUrl, cluster?.id]);
 
   const onReset = React.useCallback(() => {
     setIsoDownloadUrl('');

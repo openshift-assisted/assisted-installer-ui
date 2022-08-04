@@ -74,8 +74,8 @@ export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
 
   const normalizeClusterVersion = React.useCallback(
     (version = ''): string => {
-      const matchingVersion = findVersionItemByVersion(versions, version);
-      return matchingVersion?.value || version;
+      const matchingVersion = findVersionItemByVersion(versions, version as string);
+      return (matchingVersion?.value || version) as string;
     },
     [versions],
   );
@@ -90,7 +90,7 @@ export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
 
   return {
     error,
-    loading: !error && !versions,
+    loading: !error && versions.length === 0,
     versions,
     normalizeClusterVersion,
     isSupportedOpenShiftVersion,
