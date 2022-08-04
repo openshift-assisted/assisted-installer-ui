@@ -1,4 +1,5 @@
 import React from 'react';
+import { Checkbox, Pagination, PaginationVariant } from '@patternfly/react-core';
 import {
   Table,
   TableHeader,
@@ -16,14 +17,13 @@ import {
   TableProps,
 } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
-import { Checkbox, Pagination, PaginationVariant } from '@patternfly/react-core';
-import classnames from 'classnames';
 import xor from 'lodash/xor';
-import { getColSpanRow, rowSorter } from '../ui/table/utils';
-import { WithTestID } from '../../types';
+import classnames from 'classnames';
 
-import './HostsTable.css';
+import { getColSpanRow, rowSorter } from '../ui';
+import { WithTestID } from '../../types';
 import { usePagination } from './usePagination';
+import './HostsTable.css';
 
 const rowKey = ({ rowData }: ExtraParamsType) => rowData?.key;
 
@@ -38,19 +38,16 @@ type TableMemoProps = {
   // eslint-disable-next-line
   actionResolver?: ActionsResolver<any>;
 };
-
 const TableMemo: React.FC<WithTestID & TableMemoProps> = React.memo(
   ({ rows, cells, onCollapse, className, sortBy, onSort, rowWrapper, testId, actionResolver }) => {
     const tableActionResolver = React.useCallback(
       (rowData) => actionResolver?.(rowData.obj) as (IAction | ISeparator)[],
       [actionResolver],
     );
-
     // new prop for @patternfly/react-table 4.67.7 which is used in ACM, but not in OCM
     const newProps = {
       canCollapseAll: false,
     };
-
     return (
       <Table
         rows={rows}
@@ -72,9 +69,7 @@ const TableMemo: React.FC<WithTestID & TableMemoProps> = React.memo(
     );
   },
 );
-
 TableMemo.displayName = 'tableMemo';
-
 const getMainIndex = (hasOnSelect: boolean, hasExpandComponent: boolean) => {
   if (hasOnSelect && hasExpandComponent) {
     return 2;
@@ -84,21 +79,17 @@ const getMainIndex = (hasOnSelect: boolean, hasExpandComponent: boolean) => {
   }
   return 0;
 };
-
 type OpenRows = {
   [id: string]: boolean;
 };
-
 const HostsTableRowWrapper = (props: RowWrapperProps) => (
-  <RowWrapper {...props} data-testid={`host-row-${props.rowProps?.rowIndex}`} />
+  <RowWrapper {...props} data-testid={`host-row-${Number(props.rowProps?.rowIndex)}`} />
 );
-
 export type TableRow<R> = {
   header: ICell | string;
   // eslint-disable-next-line
   cell?: (obj: R) => { title: React.ReactNode; props: any; sortableValue?: string | number };
 };
-
 export type ActionsResolver<R> = (obj: R) => (IAction | ISeparator)[];
 export type ExpandComponentProps<R> = {
   obj: R;
@@ -116,7 +107,6 @@ type SelectCheckboxProps = {
   onSelect: (isChecked: boolean) => void;
   id: string;
 };
-
 const SelectCheckbox: React.FC<SelectCheckboxProps> = ({ onSelect, id }) => {
   const { selectedIDs } = React.useContext(SelectionProvider);
   const isChecked = selectedIDs?.includes(id);
@@ -152,7 +142,6 @@ export type AITableProps<R> = ReturnType<typeof usePagination> & {
   actionResolver?: ActionsResolver<R>;
   canSelectAll?: boolean;
 };
-
 // eslint-disable-next-line
 const AITable = <R extends any>({
   data,
@@ -189,7 +178,6 @@ const AITable = <R extends any>({
       }
     }
   }, [data, setSelectedIDs, selectedIDs, getDataId]);
-
   const [openRows, setOpenRows] = React.useState<OpenRows>({});
   const [sortBy, setSortBy] = React.useState<ISortBy>({
     index: getMainIndex(!!onSelect, !!ExpandComponent),
@@ -260,7 +248,7 @@ const AITable = <R extends any>({
       )
       .slice((page - 1) * perPage, page * perPage);
     if (ExpandComponent) {
-      rows = rows.reduce((allRows, row, index) => {
+      rows = rows.reduce((allRows, row: IRow, index) => {
         allRows.push(row);
         if (ExpandComponent) {
           allRows.push({
@@ -270,10 +258,10 @@ const AITable = <R extends any>({
             cells: [
               {
                 // do not render unnecessarily to improve performance
-                title: row.isOpen ? <ExpandComponent obj={row.obj} /> : undefined,
+                title: row.isOpen ? <ExpandComponent obj={row.obj as R} /> : undefined,
               },
             ],
-            key: `${row.id}-detail`,
+            key: `${row.id || ''}-detail`,
             parent: index * 2,
           });
         }
@@ -282,24 +270,21 @@ const AITable = <R extends any>({
     }
     return rows;
   }, [contentWithAdditions, ExpandComponent, getDataId, data, openRows, sortBy, page, perPage]);
-
   const rows = React.useMemo(() => {
     if (hostRows.length) {
       return hostRows;
     }
     return getColSpanRow(children, columns.length);
   }, [hostRows, columns, children]);
-
   const onCollapse = React.useCallback(
-    (_event, rowKey) => {
-      const id = hostRows[rowKey].id;
+    (_event, rowKey: number) => {
+      const id = hostRows[rowKey].id as string;
       if (id) {
         setOpenRows(Object.assign({}, openRows, { [id]: !openRows[id] }));
       }
     },
     [hostRows, openRows],
   );
-
   const onSort: OnSort = React.useCallback((_event, index, direction) => {
     setOpenRows({}); // collapse all
     setSortBy({
@@ -307,7 +292,6 @@ const AITable = <R extends any>({
       direction,
     });
   }, []);
-
   return (
     <>
       <SelectionProvider.Provider
@@ -342,5 +326,4 @@ const AITable = <R extends any>({
     </>
   );
 };
-
 export default AITable;

@@ -59,6 +59,14 @@ const HostsService = {
     return HostsService.update(clusterId, hostId, { hostRole: newHostRole });
   },
 
+  updateHostODF(
+    clusterId: Cluster['id'],
+    hostId: Host['id'],
+    newNodeLabels: HostUpdateParams['nodeLabels'],
+  ) {
+    return HostsService.update(clusterId, hostId, { nodeLabels: newNodeLabels }); //need to edit that
+  },
+
   updateDiskRole(
     clusterId: Cluster['id'],
     hostId: Host['id'],
