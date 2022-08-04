@@ -119,7 +119,7 @@ const FailingValidation: FailingValidationsFC = ({
   return (
     <div id={`failing-validation-${validation.id}`}>
       {icon} {issue}
-      {fix}
+      {fix ? '.' : ''} {fix}
     </div>
   );
 };

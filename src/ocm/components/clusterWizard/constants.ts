@@ -6,6 +6,7 @@ export const wizardStepNames: { [key in ClusterWizardStepsType]: string } = {
   'static-ip-yaml-view': 'Static network configurations',
   'static-ip-network-wide-configurations': 'Network-wide configurations',
   'static-ip-host-configurations': 'Host specific configurations',
+  storage: 'Storage',
   networking: 'Networking',
   review: 'Review and create',
 };
@@ -13,6 +14,7 @@ export const wizardStepNames: { [key in ClusterWizardStepsType]: string } = {
 export const defaultWizardSteps: ClusterWizardStepsType[] = [
   'cluster-details',
   'host-discovery',
+  'storage',
   'networking',
   'review',
 ];
