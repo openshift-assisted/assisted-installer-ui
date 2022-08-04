@@ -1,25 +1,28 @@
 import * as React from 'react';
 import { sortable } from '@patternfly/react-table';
-import { Host } from '../../api';
+import {
+  Cluster,
+  Host,
+  HostsTableActions,
+  selectSchedulableMasters,
+  stringToJSON,
+} from '../../../../common';
+import NetworkingStatus from '../../hosts/NetworkingStatus';
+import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import {
   hostnameColumn,
   roleColumn,
-  countColumn,
   activeNICColumn,
   ipv4Column,
   ipv6Column,
   macAddressColumn,
-} from '../hosts/tableUtils';
-import { ActionsResolver, TableRow } from '../hosts/AITable';
-import { usePagination } from '../hosts/usePagination';
-import { HostDetail } from '../hosts/HostRowDetail';
-import { HostsTableActions } from '../hosts';
-import { Cluster, stringToJSON } from '../../api';
-import HostsTable from '../hosts/HostsTable';
-import { ValidationsInfo } from '../../types/hosts';
-import NetworkingStatus from '../../../ocm/components/hosts/NetworkingStatus';
-import { useTranslation } from '../../hooks/use-translation-wrapper';
-import { selectSchedulableMasters } from '../../selectors';
+  countColumn,
+} from '../../../../common/components/hosts/tableUtils';
+import { ActionsResolver, TableRow } from '../../../../common/components/hosts/AITable';
+import { usePagination } from '../../../../common/components/hosts/usePagination';
+import { HostDetail } from '../../../../common/components/hosts/HostRowDetail';
+import HostsTable from '../../../../common/components/hosts/HostsTable';
+import { ValidationsInfo } from '../../../../common/types/hosts';
 
 export const networkingStatusColumn = (
   onEditHostname?: HostsTableActions['onEditHost'],
@@ -44,7 +47,6 @@ export const networkingStatusColumn = (
 
 type NetworkConfigurationTableProps = {
   cluster: Cluster;
-  skipDisabled?: boolean;
   AdditionalNTPSourcesDialogToggleComponent: React.FC;
   actionResolver: ActionsResolver<Host>;
   children: React.ReactNode;
@@ -55,9 +57,8 @@ type NetworkConfigurationTableProps = {
   selectedIDs?: string[];
 };
 
-const NetworkConfigurationTable: React.FC<NetworkConfigurationTableProps> = ({
+const NetworkConfigurationTableBase = ({
   cluster,
-  skipDisabled,
   AdditionalNTPSourcesDialogToggleComponent,
   onEditHost,
   onEditRole,
@@ -66,7 +67,7 @@ const NetworkConfigurationTable: React.FC<NetworkConfigurationTableProps> = ({
   children,
   onSelect,
   selectedIDs,
-}) => {
+}: NetworkConfigurationTableProps) => {
   const { t } = useTranslation();
   const content = React.useMemo(
     () => [
@@ -87,10 +88,11 @@ const NetworkConfigurationTable: React.FC<NetworkConfigurationTableProps> = ({
   const paginationProps = usePagination(hosts.length);
 
   const ExpandComponent = React.useCallback(
-    ({ obj }) => {
+    ({ obj }: { obj: Host }) => {
       return (
         <HostDetail
           host={obj}
+          showStorage={false}
           AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
         />
       );
@@ -102,7 +104,6 @@ const NetworkConfigurationTable: React.FC<NetworkConfigurationTableProps> = ({
     <HostsTable
       testId="networking-host-table"
       hosts={hosts}
-      skipDisabled={skipDisabled}
       ExpandComponent={ExpandComponent}
       content={content}
       actionResolver={actionResolver}
@@ -115,4 +116,4 @@ const NetworkConfigurationTable: React.FC<NetworkConfigurationTableProps> = ({
   );
 };
 
-export default NetworkConfigurationTable;
+export default NetworkConfigurationTableBase;
