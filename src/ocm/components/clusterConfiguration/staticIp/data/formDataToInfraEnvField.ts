@@ -45,7 +45,7 @@ const getPrefixLength = (
 
 const toYamlWithComments = (json: object, comments: string[]) => {
   const yamlComments = comments.map((comment) => `${YAML_COMMENT_CHAR}${comment}`);
-  return `${yamlComments.join('\n')}\n${dump(json)}`;
+  return `${yamlComments.join('\n')}\n${dump(json, { noRefs: true })}`;
 };
 
 const getNmstateObject = (
@@ -84,7 +84,20 @@ const getNmstateObject = (
     interfaces.unshift(getEthernetInterface(REAL_NIC_NAME, realProtocolConfigs));
   }
   if (networkWide.useVlan && networkWide.vlanId) {
-    interfaces.push(getVlanInterface(interfaces[0].name, networkWide.vlanId));
+    let configs = [] as NmstateProtocolConfigs;
+    interfaces.forEach((item) => {
+      configs = {
+        ipv4: item['ipv4'] ? item['ipv4'] : configs['ipv4'],
+        ipv6: item['ipv6'] ? item['ipv6'] : configs['ipv6'],
+      };
+      delete item['ipv4'];
+      delete item['ipv6'];
+    });
+    const vlanInterface = getVlanInterface(interfaces[0].name, networkWide.vlanId, configs);
+    interfaces.push(vlanInterface);
+    routeConfigs.forEach((route) => {
+      route['next-hop-interface'] = vlanInterface.name;
+    });
   }
   const nmstate = {
     interfaces,
