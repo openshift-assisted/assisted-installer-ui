@@ -8,7 +8,7 @@ import { AgentK8sResource } from '../../types';
 import { AGENT_LOCATION_LABEL_KEY, AGENT_NOLOCATION_VALUE } from '../common';
 import LocationsSelector from './LocationsSelector';
 import { ClusterDeploymentHostsSelectionValues, ScaleUpFormValues } from './types';
-import LabelsSelector from './LabelsSelector';
+import LabelsSelector, { infraEnvLabelKeys } from './LabelsSelector';
 import AgentsSelectionTable from '../Agent/AgentsSelectionTable';
 import { AgentTableActions } from './types';
 
@@ -60,7 +60,11 @@ const ClusterDeploymentHostsSelectionAdvanced = <T extends FormValues>({
           <LocationsSelector agents={availableAgents} />
         </GridItem>
         <GridItem>
-          <LabelsSelector agents={matchingAgents} name="agentLabels" />
+          <LabelsSelector
+            agents={matchingAgents}
+            name="agentLabels"
+            labelKeysFilter={infraEnvLabelKeys}
+          />
         </GridItem>
 
         <GridItem>
