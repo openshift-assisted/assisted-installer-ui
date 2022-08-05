@@ -30,6 +30,7 @@
   "ai:A cluster needs 2 or more worker nodes.": "A cluster needs 2 or more worker nodes.",
   "ai:A comma separated list of IP or domain names of the NTP pools or servers.": "A comma separated list of IP or domain names of the NTP pools or servers.",
   "ai:A comma separated list of IP or domain names of the NTP pools or servers. Additional NTP sources are added to all hosts to ensure all hosts clocks are synchronized with a valid NTP server. It may take a few minutes for the new NTP sources to sync.": "A comma separated list of IP or domain names of the NTP pools or servers. Additional NTP sources are added to all hosts to ensure all hosts clocks are synchronized with a valid NTP server. It may take a few minutes for the new NTP sources to sync.",
+  "ai:A host namespace may be comprised of multiple infrastructure environments, in which the hosts are stored.": "A host namespace may be comprised of multiple infrastructure environments, in which the hosts are stored.",
   "ai:A Red Hat account's pull secret can be found in ": "A Red Hat account's pull secret can be found in ",
   "ai:A role will be chosen automatically based on detected hardware and network latency.": "A role will be chosen automatically based on detected hardware and network latency.",
   "ai:Add": "Add",
