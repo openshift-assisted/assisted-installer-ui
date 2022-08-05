@@ -136,7 +136,6 @@
   "ai:Cluster is ready for installation": "Cluster is ready for installation",
   "ai:Cluster must have 3 or 5 and more hosts.": "Cluster must have 3 or 5 and more hosts.",
   "ai:Cluster name": "Cluster name",
-  "ai:Cluster network": "Cluster network",
   "ai:Cluster network CIDR": "Cluster network CIDR",
   "ai:Cluster network host prefix": "Cluster network host prefix",
   "ai:Cluster networks": "Cluster networks",
