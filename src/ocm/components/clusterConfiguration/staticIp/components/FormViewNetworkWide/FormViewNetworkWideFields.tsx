@@ -121,12 +121,6 @@ const IpConfigFields: React.FC<{
         name={`${fieldName}.gateway`}
         data-testid={`${protocolVersion}-gateway`}
       />
-      <InputField
-        isRequired
-        label="DNS"
-        name={`${fieldName}.dns`}
-        data-testid={`${protocolVersion}-dns`}
-      />
     </Grid>
   );
 };
@@ -208,6 +202,9 @@ export const FormViewNetworkWideFields: React.FC<{ hosts: FormViewHost[] }> = ({
           />
         </div>
       )}
+
+      <InputField isRequired label="DNS" name={`dns`} data-testid={`dns`} />
+
       {getShownProtocolVersions(values.protocolType).map((protocolVersion) => (
         <FormGroup
           key={protocolVersion}
