@@ -1,10 +1,10 @@
-import { Cluster } from '../../../common/api/types';
 import {
+  Cluster,
   getAllClusterWizardSoftValidationIds,
   getWizardStepClusterStatus,
   WizardStepsValidationMap,
   WizardStepValidationMap,
-} from '../../../common/components/clusterWizard/validationsInfoUtils';
+} from '../../../common';
 import { StaticIpInfo, StaticIpView } from '../clusterConfiguration/staticIp/data/dataTypes';
 
 export type ClusterWizardStepsType =
@@ -43,7 +43,7 @@ export const getClusterWizardFirstStep = (
 
 type TransitionProps = { cluster: Cluster };
 
-const staticIpValidationsMap: WizardStepValidationMap = {
+const buildEmptyValidationsMap = (): WizardStepValidationMap => ({
   cluster: {
     groups: [],
     validationIds: [],
@@ -54,7 +54,10 @@ const staticIpValidationsMap: WizardStepValidationMap = {
     validationIds: [],
   },
   softValidationIds: [],
-};
+});
+
+const staticIpValidationsMap = buildEmptyValidationsMap();
+const operatorsStepValidationsMap = buildEmptyValidationsMap();
 
 const clusterDetailsStepValidationsMap: WizardStepValidationMap = {
   cluster: {
@@ -101,19 +104,6 @@ const storageStepValidationsMap: WizardStepValidationMap = {
     allowedStatuses: ['known', 'disabled'],
     groups: ['hardware'],
     validationIds: ['connected', 'media-connected'],
-  },
-  softValidationIds: [],
-};
-
-const operatorsStepValidationsMap: WizardStepValidationMap = {
-  cluster: {
-    groups: [],
-    validationIds: [],
-  },
-  host: {
-    allowedStatuses: [],
-    groups: [],
-    validationIds: [],
   },
   softValidationIds: [],
 };
