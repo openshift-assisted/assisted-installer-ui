@@ -58,24 +58,42 @@ const MinimalHWRequirements: React.FC<MinimalHWRequirementsProps> = ({
         <InfoCircleIcon size="sm" />
         &nbsp;{t('ai:Minimum hardware requirements')}
       </Button>
-      <Modal
-        title={t('ai:Minimum hardware requirements')}
+      <MinimalHWRequirementsModal
         isOpen={isHostRequirementsOpen}
-        actions={[
-          <Button
-            key="close"
-            variant={ButtonVariant.primary}
-            onClick={() => setHostRequirementsOpen(false)}
-          >
-            {t('ai:Close')}
-          </Button>,
-        ]}
         onClose={() => setHostRequirementsOpen(false)}
-        variant={ModalVariant.medium}
-      >
-        <HostRequirements {...getHWRequirements(aiConfigMap)} isSNOCluster={isSNOCluster} />
-      </Modal>
+        aiConfigMap={aiConfigMap}
+        isSNOCluster={isSNOCluster}
+      />
     </>
+  );
+};
+
+type MinimalHWRequirementsModalProps = MinimalHWRequirementsProps & {
+  isOpen: boolean;
+  onClose: () => void;
+};
+
+export const MinimalHWRequirementsModal = ({
+  isOpen,
+  aiConfigMap,
+  isSNOCluster,
+  onClose,
+}: MinimalHWRequirementsModalProps) => {
+  const { t } = useTranslation();
+  return (
+    <Modal
+      title={t('ai:Minimum hardware requirements')}
+      isOpen={isOpen}
+      actions={[
+        <Button key="close" variant={ButtonVariant.primary} onClick={onClose}>
+          {t('ai:Close')}
+        </Button>,
+      ]}
+      onClose={onClose}
+      variant={ModalVariant.medium}
+    >
+      <HostRequirements {...getHWRequirements(aiConfigMap)} isSNOCluster={isSNOCluster} />
+    </Modal>
   );
 };
 
