@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { useFormikContext } from 'formik';
 import { Spinner, Alert, AlertVariant, Tooltip } from '@patternfly/react-core';
 import { Cluster } from '../../../../common/api/types';
@@ -8,6 +9,7 @@ import { CheckboxField, FormikStaticField, InputField } from '../../../../common
 import { FeatureSupportLevelBadge } from '../../../../common/components';
 import { NETWORK_TYPE_SDN } from '../../../../common/config/constants';
 import { selectMachineNetworkCIDR } from '../../../../common';
+import { selectCurrentClusterPermissionsState } from '../../../selectors';
 
 interface VipStaticValueProps {
   vipName: string;
@@ -87,7 +89,9 @@ export const VirtualIPControlGroup = ({
   cluster,
   isVipDhcpAllocationDisabled,
 }: VirtualIPControlGroupProps) => {
+  // TODO can I mock the "setFieldValue" so it doesn't update any field??
   const { values, setFieldValue } = useFormikContext<NetworkConfigurationValues>();
+  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
 
   const apiVipHelperText = `Provide an endpoint for users, both human and machine, to interact with and configure the platform. If needed, contact your IT manager for more information. ${getVipHelperSuffix(
     cluster.apiVip,
@@ -111,10 +115,10 @@ export const VirtualIPControlGroup = ({
   const enableAllocation = values.networkType === NETWORK_TYPE_SDN;
 
   React.useEffect(() => {
-    if (!enableAllocation) {
+    if (!isViewerMode && !enableAllocation) {
       setFieldValue('vipDhcpAllocation', false);
     }
-  }, [enableAllocation, setFieldValue]);
+  }, [enableAllocation, isViewerMode, setFieldValue]);
 
   return (
     <>

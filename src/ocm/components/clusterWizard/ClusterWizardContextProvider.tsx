@@ -11,6 +11,8 @@ import { Cluster, InfraEnv } from '../../../common/api';
 import { StaticIpView } from '../clusterConfiguration/staticIp/data/dataTypes';
 import { getStaticIpInfo } from '../clusterConfiguration/staticIp/data/fromInfraEnv';
 import isEqual from 'lodash/isEqual';
+import { AssistedInstallerOCMPermissionTypesListType } from '../../../common';
+import useClusterPermissions from '../../hooks/useClusterPermissions';
 
 const getWizardStepIds = (staticIpView?: StaticIpView): ClusterWizardStepsType[] => {
   const stepIds: ClusterWizardStepsType[] = [...defaultWizardSteps];
@@ -26,16 +28,20 @@ const ClusterWizardContextProvider: React.FC<
   PropsWithChildren<{
     cluster?: Cluster;
     infraEnv?: InfraEnv;
+    permissions?: AssistedInstallerOCMPermissionTypesListType;
   }>
-> = ({ children, cluster, infraEnv }) => {
+> = ({ children, cluster, infraEnv, permissions }) => {
   const [currentStepId, setCurrentStepId] = React.useState<ClusterWizardStepsType>();
   const [wizardStepIds, setWizardStepIds] = React.useState<ClusterWizardStepsType[]>();
+  const { setPermissions } = useClusterPermissions();
+
   React.useEffect(() => {
     const staticIpInfo = infraEnv ? getStaticIpInfo(infraEnv) : undefined;
     const firstStep = getClusterWizardFirstStep(staticIpInfo, cluster?.status);
     const firstStepIds = getWizardStepIds(staticIpInfo?.view);
     setCurrentStepId(firstStep);
     setWizardStepIds(firstStepIds);
+    setPermissions(permissions, cluster);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const contextValue = React.useMemo<ClusterWizardContextType | null>(() => {

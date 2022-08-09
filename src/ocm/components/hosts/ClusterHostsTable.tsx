@@ -34,8 +34,11 @@ export interface ClusterHostsTableProps {
 }
 
 const ClusterHostsTable = ({ cluster, skipDisabled }: ClusterHostsTableProps) => {
-  const { onEditHost, actionChecks, onEditRole, actionResolver, ...modalProps } =
-    useHostsTable(cluster);
+  // TODO Celia NOT OK
+  const { onEditHost, actionChecks, onEditRole, actionResolver, ...modalProps } = useHostsTable(
+    cluster,
+    true,
+  );
   const { t } = useTranslation();
   const content = React.useMemo(
     () => [

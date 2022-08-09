@@ -9,6 +9,7 @@ import {
 } from '../clusterConfiguration/staticIp/components/propTypes';
 import { StaticIpPage } from '../clusterConfiguration/staticIp/components/StaticIpPage';
 import { WithErrorBoundary } from '../../../common/components/ErrorHandling/WithErrorBoundary';
+import useClusterPermissions from '../../hooks/useClusterPermissions';
 
 const getInitialFormStateProps = () => {
   return {
@@ -26,13 +27,16 @@ const StaticIp: React.FC<StaticIpProps & { cluster: Cluster }> = ({
   updateInfraEnv,
 }) => {
   const clusterWizardContext = useClusterWizardContext();
+  const { isViewerMode } = useClusterPermissions();
   const { alerts } = useAlerts();
   const [formState, setFormStateProps] = React.useState<StaticIpFormState>(
     getInitialFormStateProps(),
   );
 
   const onFormStateChange = (formState: StaticIpFormState) => {
-    setFormStateProps(formState);
+    if (!isViewerMode) {
+      setFormStateProps(formState);
+    }
   };
 
   const isNextDisabled =
@@ -47,7 +51,7 @@ const StaticIp: React.FC<StaticIpProps & { cluster: Cluster }> = ({
       isSubmitting={formState.isSubmitting}
       onNext={() => clusterWizardContext.moveNext()}
       onBack={() => clusterWizardContext.moveBack()}
-      isNextDisabled={isNextDisabled}
+      isNextDisabled={!isViewerMode && isNextDisabled}
     />
   );
 

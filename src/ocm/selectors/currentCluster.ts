@@ -5,3 +5,5 @@ export const selectCurrentCluster = (state: RootState) => state.currentCluster.d
 export const selectCurrentClusterUIState = (state: RootState) => state.currentCluster.uiState;
 export const selectIsCurrentClusterSNO = (state: RootState) =>
   state.currentCluster.data?.highAvailabilityMode === 'None';
+export const selectCurrentClusterPermissionsState = (state: RootState) =>
+  state.currentCluster.permissions;

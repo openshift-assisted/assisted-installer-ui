@@ -1,6 +1,7 @@
 import React from 'react';
 import { ButtonVariant, FormGroup, Tooltip } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
+import { Address6 } from 'ip-address';
 import {
   Cluster,
   ClusterNetwork,
@@ -12,8 +13,8 @@ import { DUAL_STACK, IPV4_STACK, NO_SUBNET_SET } from '../../../../common/config
 import { getFieldId } from '../../../../common/components/ui/formik/utils';
 import { ConfirmationModal, PopoverIcon, RadioField } from '../../../../common/components/ui';
 import { getDefaultNetworkType } from '../../../../common';
+import useClusterPermissions from '../../../hooks/useClusterPermissions';
 import { useDefaultConfiguration } from '../ClusterDefaultConfigurationContext';
-import { Address6 } from 'ip-address';
 
 type StackTypeControlGroupProps = {
   clusterId: Cluster['id'];
@@ -53,6 +54,9 @@ export const StackTypeControlGroup = ({
 
   const IPv6Subnets = hostSubnets.filter((subnet) => Address6.isValid(subnet.subnet));
   const cidrIPv6 = IPv6Subnets.length >= 1 ? IPv6Subnets[0].subnet : NO_SUBNET_SET;
+  const { isViewerMode } = useClusterPermissions();
+  const shouldSetSingleStack =
+    !isViewerMode && !isDualStackSelectable && values.stackType === DUAL_STACK;
 
   const setSingleStack = React.useCallback(() => {
     setFieldValue('stackType', IPV4_STACK);
@@ -135,10 +139,10 @@ export const StackTypeControlGroup = ({
   };
 
   React.useEffect(() => {
-    if (!isDualStackSelectable && values.stackType === DUAL_STACK) {
+    if (shouldSetSingleStack) {
       setSingleStack();
     }
-  }, [isDualStackSelectable, setSingleStack, values.stackType]);
+  }, [shouldSetSingleStack, setSingleStack]);
 
   return (
     <Tooltip

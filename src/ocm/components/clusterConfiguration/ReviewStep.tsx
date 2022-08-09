@@ -11,10 +11,12 @@ import ReviewCluster from './ReviewCluster';
 import ClusterWizardHeaderExtraActions from './ClusterWizardHeaderExtraActions';
 import { ClustersAPI } from '../../services/apis';
 import { useStateSafely } from '../../../common/hooks';
+import useClusterPermissions from '../../hooks/useClusterPermissions';
 
 const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const { addAlert } = useAlerts();
   const clusterWizardContext = useClusterWizardContext();
+  const { isViewerMode } = useClusterPermissions();
   const [isStartingInstallation, setIsStartingInstallation] = useStateSafely(false);
   const dispatch = useDispatch();
 
@@ -49,7 +51,7 @@ const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
             variant={ButtonVariant.primary}
             name="install"
             onClick={handleClusterInstall}
-            isDisabled={isStartingInstallation || cluster.status !== 'ready'}
+            isDisabled={isViewerMode || isStartingInstallation || cluster.status !== 'ready'}
           >
             Install cluster
           </Button>
