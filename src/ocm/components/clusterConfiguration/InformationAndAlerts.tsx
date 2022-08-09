@@ -1,13 +1,6 @@
 import React from 'react';
 import { Text } from '@patternfly/react-core';
-import {
-  Cluster,
-  VMRebootConfigurationInfo,
-  isSNO,
-  FormatDiskWarning,
-  hasODFOperators,
-} from '../../../common';
-import OCSDisksManualFormattingHint from '../hosts/OCSDisksManualFormattingHint';
+import { Cluster, VMRebootConfigurationInfo, isSNO } from '../../../common';
 import { isAddHostsCluster } from '../clusters/utils';
 import { isAHostVM } from '../hosts/utils';
 import InfoLinkWithModal from '../ui/InfoLinkWithModal';
@@ -17,7 +10,6 @@ import HostsDiscoveryTroubleshootingInfoLinkWithModal from '../hosts/HostsDiscov
 const InformationAndAlerts = ({ cluster }: { cluster: Cluster }) => {
   const isVM = React.useMemo(() => isAHostVM(cluster.hosts || []), [cluster.hosts]);
   const isSNOCluster = isSNO(cluster);
-  const showFormattingHint = hasODFOperators(cluster) && !isAddHostsCluster(cluster);
 
   return (
     <>
@@ -37,8 +29,6 @@ const InformationAndAlerts = ({ cluster }: { cluster: Cluster }) => {
         <HostsDiscoveryTroubleshootingInfoLinkWithModal isSingleNode={isSNOCluster} />
       </Text>
       {isVM && <VMRebootConfigurationInfo />}
-      {showFormattingHint && <OCSDisksManualFormattingHint />}
-      <FormatDiskWarning />
     </>
   );
 };

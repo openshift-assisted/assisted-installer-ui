@@ -22,8 +22,9 @@ import { hardwareStatusColumn } from './HostsDiscoveryTable';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { onDiskRoleType } from '../../../common/components/hosts/DiskRole';
 import { ExpandComponentProps } from '../../../common/components/hosts/AITable';
-import StorageDetail from '../../../common/components/storage/StorageDetail';
 import CommonStorageTable from '../../../common/components/storage/StorageTable';
+import StorageDetail from '../../../common/components/storage/StorageDetail';
+import StorageAlerts from './StorageAlerts';
 import { HostsTableModals, useHostsTable } from './use-hosts-table';
 
 const getExpandComponent = (onDiskRole: onDiskRoleType, canEditDisks: (host: Host) => boolean) =>
@@ -74,6 +75,9 @@ const HostsStorageTable = ({ cluster }: { cluster: Cluster }) => {
             ExpandComponent={getExpandComponent(onDiskRole, actionChecks.canEditDisks)}
             {...paginationProps}
           />
+        </StackItem>
+        <StackItem>
+          <StorageAlerts cluster={cluster} />
         </StackItem>
       </Stack>
       <HostsTableModals cluster={cluster} {...modalProps} />
