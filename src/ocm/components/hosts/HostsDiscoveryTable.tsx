@@ -71,10 +71,10 @@ const HostRowDetailExpand = ({ obj: host }: ExpandComponentProps<Host>) => (
 
 type HostsDiscoveryTableProps = {
   cluster: Cluster;
-  skipDisabled?: boolean;
 };
 
 const HostsDiscoveryTable = ({ cluster }: HostsDiscoveryTableProps) => {
+  const isDisabled = true; // TODO Celia NOT OK
   const {
     onEditHost,
     actionChecks,
@@ -86,7 +86,7 @@ const HostsDiscoveryTable = ({ cluster }: HostsDiscoveryTableProps) => {
     onMassChangeHostname,
     onMassDeleteHost,
     ...modalProps
-  } = useHostsTable(cluster);
+  } = useHostsTable(cluster, isDisabled);
 
   const isSNOCluster = isSNO(cluster);
   const { t } = useTranslation();
@@ -107,11 +107,12 @@ const HostsDiscoveryTable = ({ cluster }: HostsDiscoveryTableProps) => {
   const hosts = cluster.hosts || [];
   const paginationProps = usePagination(hosts.length);
   const itemIDs = hosts.map((h) => h.id);
+  const showBulkActions = !isDisabled && !isSNOCluster;
 
   return (
     <>
       <Stack hasGutter>
-        {!isSNOCluster && (
+        {showBulkActions && (
           <StackItem>
             <TableToolbar
               selectedIDs={selectedHostIDs || []}
@@ -132,7 +133,7 @@ const HostsDiscoveryTable = ({ cluster }: HostsDiscoveryTableProps) => {
             content={content}
             actionResolver={actionResolver}
             ExpandComponent={HostRowDetailExpand}
-            onSelect={isSNOCluster ? undefined : onSelect}
+            onSelect={showBulkActions ? onSelect : undefined}
             selectedIDs={selectedHostIDs}
             setSelectedIDs={setSelectedHostIDs}
             {...paginationProps}

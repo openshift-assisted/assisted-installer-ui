@@ -4,9 +4,14 @@ import { ClusterHostsTableProps, isSNO } from '../../../../common';
 import { AdditionalNTPSourcesDialogToggle } from '../../hosts/AdditionaNTPSourceDialogToggle';
 import { HostsTableModals, useHostsTable } from '../../hosts/use-hosts-table';
 import NetworkConfigurationTableBase from './NetworkConfigurationTableBase';
+import useClusterPermissions from '../../../hooks/useClusterPermissions';
 
 const NetworkConfigurationTable = ({ cluster }: ClusterHostsTableProps) => {
-  const { onEditHost, actionResolver, ...modalProps } = useHostsTable(cluster);
+  const { isViewerMode } = useClusterPermissions();
+  const { onEditHost, actionChecks, onEditRole, actionResolver, ...modalProps } = useHostsTable(
+    cluster,
+    isViewerMode,
+  );
 
   return (
     <>

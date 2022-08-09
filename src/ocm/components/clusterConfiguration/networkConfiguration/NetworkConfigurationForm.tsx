@@ -27,6 +27,7 @@ import { canNextNetwork } from '../../clusterWizard/wizardTransition';
 import ClusterWizardNavigation from '../../clusterWizard/ClusterWizardNavigation';
 import NetworkConfigurationTable from './NetworkConfigurationTable';
 import useInfraEnv from '../../../hooks/useInfraEnv';
+import useClusterPermissions from '../../../hooks/useClusterPermissions';
 import {
   getNetworkConfigurationValidationSchema,
   getNetworkInitialValues,
@@ -51,26 +52,29 @@ const NetworkConfigurationForm: React.FC<{
 }> = ({ cluster, hostSubnets, defaultNetworkSettings, infraEnv }) => {
   const { alerts } = useAlerts();
   const clusterWizardContext = useClusterWizardContext();
+  const { isViewerMode } = useClusterPermissions();
   const { errors, touched, isSubmitting, isValid } = useFormikContext<NetworkConfigurationValues>();
   const isAutoSaveRunning = useFormikAutoSave();
   const errorFields = getFormikErrorFields(errors, touched);
+
+  const isNextDisabled =
+    isSubmitting ||
+    isAutoSaveRunning ||
+    !!alerts.length ||
+    !isValid ||
+    !canNextNetwork({ cluster });
 
   const footer = (
     <ClusterWizardFooter
       cluster={cluster}
       errorFields={errorFields}
       isSubmitting={isSubmitting}
-      isNextDisabled={
-        isSubmitting ||
-        isAutoSaveRunning ||
-        !canNextNetwork({ cluster }) ||
-        !!alerts.length ||
-        !isValid
-      }
+      isNextDisabled={!isViewerMode && isNextDisabled}
       onNext={() => clusterWizardContext.moveNext()}
       onBack={() => clusterWizardContext.moveBack()}
     />
   );
+
   return (
     <ClusterWizardStep navigation={<ClusterWizardNavigation cluster={cluster} />} footer={footer}>
       <Form>
@@ -88,6 +92,7 @@ const NetworkConfigurationForm: React.FC<{
               <SecurityFields
                 clusterSshKey={cluster.sshPublicKey}
                 imageSshKey={infraEnv?.sshAuthorizedKey}
+                isDisabled={isViewerMode}
               />
             </Grid>
           </GridItem>
@@ -114,6 +119,8 @@ const NetworkConfigurationPage = ({ cluster }: { cluster: Cluster }) => {
 
   const { addAlert, clearAlerts, alerts } = useAlerts();
   const dispatch = useDispatch();
+  const { isViewerMode } = useClusterPermissions();
+
   const hostSubnets = React.useMemo(() => getHostSubnets(cluster), [cluster]);
   const initialValues = React.useMemo(
     () => getNetworkInitialValues(cluster, defaultNetworkValues),
@@ -192,11 +199,13 @@ const NetworkConfigurationPage = ({ cluster }: { cluster: Cluster }) => {
     return <LoadingState />;
   }
 
+  const onSubmit = isViewerMode ? () => Promise.resolve() : handleSubmit;
+
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={memoizedValidationSchema}
-      onSubmit={handleSubmit}
+      onSubmit={onSubmit}
       validateOnMount
     >
       <NetworkConfigurationForm
