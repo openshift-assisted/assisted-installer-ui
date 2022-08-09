@@ -1,7 +1,8 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { Grid, GridItem } from '@patternfly/react-core';
 import isUndefined from 'lodash/isUndefined';
-import { useLocation } from 'react-router-dom';
 import { Formik, FormikHelpers } from 'formik';
 import {
   Cluster,
@@ -24,7 +25,7 @@ import { ClusterDetailsService } from '../../services';
 import { OcmClusterDetailsValues } from '../../services/types';
 import { OcmClusterDetailsFormFields } from '../clusterConfiguration/OcmClusterDetailsFormFields';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import useClusterPermissions from '../../hooks/useClusterPermissions';
+import { selectCurrentClusterPermissionsState } from '../../selectors';
 
 type ClusterDetailsFormProps = {
   cluster?: Cluster;
@@ -55,7 +56,7 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
 
   const { search } = useLocation();
   // Allow creation of new clusters on Standalone UI configured with isViewerMode
-  const { isViewerMode: realViewerMode } = useClusterPermissions();
+  const { isViewerMode: realViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const isViewerMode = !!cluster && realViewerMode;
   const featureSupportLevels = useFeatureSupportLevel();
   const handleSubmit = React.useCallback(

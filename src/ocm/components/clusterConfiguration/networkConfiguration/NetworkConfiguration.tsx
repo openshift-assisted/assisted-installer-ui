@@ -1,5 +1,6 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
+import { useSelector } from 'react-redux';
 import { Alert, AlertVariant, Checkbox, Grid, Tooltip } from '@patternfly/react-core';
 import { VirtualIPControlGroup, VirtualIPControlGroupProps } from './VirtualIPControlGroup';
 import { Cluster, ClusterDefaultConfig } from '../../../../common/api/types';
@@ -26,7 +27,7 @@ import { StackTypeControlGroup } from './StackTypeControl';
 import { AvailableSubnetsControl } from './AvailableSubnetsControl';
 import AdvancedNetworkFields from './AdvancedNetworkFields';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
-import useClusterPermissions from '../../../hooks/useClusterPermissions';
+import { selectCurrentClusterPermissionsState } from '../../../selectors';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   hostSubnets: HostSubnets;
@@ -132,7 +133,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
   const isMultiNodeCluster = !isSNOCluster;
   const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';
   const isDualStack = values.stackType === DUAL_STACK;
-  const { isViewerMode } = useClusterPermissions();
+  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const shouldUpdateAdvConf = !isViewerMode && isDualStack && !isUserManagedNetworking;
   const isDualStackSelectable = React.useMemo(() => canBeDualStack(hostSubnets), [hostSubnets]);
 

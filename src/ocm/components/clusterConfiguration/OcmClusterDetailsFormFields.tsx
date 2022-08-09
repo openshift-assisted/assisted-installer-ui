@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useSelector } from 'react-redux';
 import { Alert, AlertVariant, FlexItem, Form } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 
@@ -22,7 +23,7 @@ import {
 } from '../../../common';
 import DiskEncryptionControlGroup from '../../../common/components/clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import useClusterPermissions from '../../hooks/useClusterPermissions';
+import { selectCurrentClusterPermissionsState } from '../../selectors';
 
 export type OcmClusterDetailsFormFieldsProps = {
   canEditPullSecret: boolean;
@@ -59,7 +60,7 @@ export const OcmClusterDetailsFormFields = ({
   clusterExists,
 }: OcmClusterDetailsFormFieldsProps) => {
   const { values } = useFormikContext<ClusterDetailsValues>();
-  const { isViewerMode: realViewerMode } = useClusterPermissions();
+  const { isViewerMode: realViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const isViewerMode = clusterExists && realViewerMode;
   const { name, baseDnsDomain, highAvailabilityMode, useRedHatDnsService } = values;
   const nameInputRef = React.useRef<HTMLInputElement>();

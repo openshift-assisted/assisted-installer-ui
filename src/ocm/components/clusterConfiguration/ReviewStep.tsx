@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ActionListItem, Button, ButtonVariant, Grid, GridItem } from '@patternfly/react-core';
 import { Cluster, ClusterWizardStepHeader, useAlerts, ClusterWizardStep } from '../../../common';
 import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
@@ -11,12 +11,12 @@ import ReviewCluster from './ReviewCluster';
 import ClusterWizardHeaderExtraActions from './ClusterWizardHeaderExtraActions';
 import { ClustersAPI } from '../../services/apis';
 import { useStateSafely } from '../../../common/hooks';
-import useClusterPermissions from '../../hooks/useClusterPermissions';
+import { selectCurrentClusterPermissionsState } from '../../selectors';
 
 const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const { addAlert } = useAlerts();
   const clusterWizardContext = useClusterWizardContext();
-  const { isViewerMode } = useClusterPermissions();
+  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const [isStartingInstallation, setIsStartingInstallation] = useStateSafely(false);
   const dispatch = useDispatch();
 

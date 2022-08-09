@@ -1,3 +1,5 @@
+import React from 'react';
+import { useSelector } from 'react-redux';
 import {
   Button,
   ButtonVariant,
@@ -12,12 +14,12 @@ import {
 import { MinusCircleIcon } from '@patternfly/react-icons';
 import { FieldArray, FieldArrayRenderProps, useField } from 'formik';
 import cloneDeep from 'lodash/cloneDeep';
-import React from 'react';
 import { getFormikArrayItemFieldName, LoadingState } from '../../../../../common';
 import ConfirmationModal from '../../../../../common/components/ui/ConfirmationModal';
-import { selectIsCurrentClusterSNO } from '../../../../selectors';
-import { useSelector } from 'react-redux';
-import useClusterPermissions from '../../../../hooks/useClusterPermissions';
+import {
+  selectIsCurrentClusterSNO,
+  selectCurrentClusterPermissionsState,
+} from '../../../../selectors';
 
 const fieldName = 'hosts';
 
@@ -167,7 +169,7 @@ const Hosts = <HostFieldType,>({
   const [field, { error }] = useField<HostFieldType[]>({
     name: fieldName,
   });
-  const { isViewerMode } = useClusterPermissions();
+  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const [expandedHosts, setExpandedHosts] = React.useState<ExpandedHosts>(
     getExpandedHostsDefaultValue(field.value.length),
   );

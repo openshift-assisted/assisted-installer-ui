@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Formik, FormikConfig, useFormikContext } from 'formik';
 import { Form, Grid, GridItem, Text, TextContent } from '@patternfly/react-core';
 import {
@@ -28,7 +28,7 @@ import ClusterWizardNavigation from '../../clusterWizard/ClusterWizardNavigation
 import ClusterWizardHeaderExtraActions from '../ClusterWizardHeaderExtraActions';
 import NetworkConfigurationTable from './NetworkConfigurationTable';
 import useInfraEnv from '../../../hooks/useInfraEnv';
-import useClusterPermissions from '../../../hooks/useClusterPermissions';
+import { selectCurrentClusterPermissionsState } from '../../../selectors';
 import {
   getNetworkConfigurationValidationSchema,
   getNetworkInitialValues,
@@ -53,7 +53,7 @@ const NetworkConfigurationForm: React.FC<{
 }> = ({ cluster, hostSubnets, defaultNetworkSettings, infraEnv }) => {
   const { alerts } = useAlerts();
   const clusterWizardContext = useClusterWizardContext();
-  const { isViewerMode } = useClusterPermissions();
+  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const { errors, touched, isSubmitting, isValid } = useFormikContext<NetworkConfigurationValues>();
   const isAutoSaveRunning = useFormikAutoSave();
   const errorFields = getFormikErrorFields(errors, touched);
@@ -126,7 +126,7 @@ const NetworkConfigurationPage: React.FC<{
 
   const { addAlert, clearAlerts, alerts } = useAlerts();
   const dispatch = useDispatch();
-  const { isViewerMode } = useClusterPermissions();
+  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
 
   const hostSubnets = React.useMemo(() => getHostSubnets(cluster), [cluster]);
   const initialValues = React.useMemo(

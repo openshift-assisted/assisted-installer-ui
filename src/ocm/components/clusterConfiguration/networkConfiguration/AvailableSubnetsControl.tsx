@@ -1,6 +1,9 @@
 import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { Alert, AlertVariant, FormGroup, Stack, StackItem } from '@patternfly/react-core';
 import { FieldArray, useFormikContext, FormikHelpers } from 'formik';
+import { Address4, Address6 } from 'ip-address';
+
 import {
   Cluster,
   MachineNetwork,
@@ -10,8 +13,7 @@ import {
   NO_SUBNET_SET,
 } from '../../../../common';
 import { SelectField } from '../../../../common/components/ui';
-import { Address4, Address6 } from 'ip-address';
-import useClusterPermissions from '../../../hooks/useClusterPermissions';
+import { selectCurrentClusterPermissionsState } from '../../../selectors';
 
 const subnetSort = (subA: HostSubnet, subB: HostSubnet) =>
   subA.humanized.localeCompare(subB.humanized);
@@ -64,7 +66,7 @@ export const AvailableSubnetsControl = ({
 }: AvailableSubnetsControlProps) => {
   const { values, errors, setFieldValue } = useFormikContext<NetworkConfigurationValues>();
   const isDualStack = values.stackType === DUAL_STACK;
-  const { isViewerMode } = useClusterPermissions();
+  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
 
   const IPv4Subnets = hostSubnets
     .filter((subnet) => Address4.isValid(subnet.subnet))
