@@ -3,7 +3,7 @@ import { TFunction } from 'i18next';
 export const clusterNameValidationMessages = (t: TFunction) => ({
   INVALID_LENGTH_OCM: t('ai:1-54 characters'),
   INVALID_LENGTH_ACM: t('ai:2-54 characters'),
-  INVALID_VALUE: t('ai:Use lowercase alphanumberic characters, or hyphen (-)'),
+  INVALID_VALUE: t('ai:Use lowercase alphanumeric characters, or hyphen (-)'),
   INVALID_START_END: t('ai:Start and end with a lowercase letter or a number.'),
   NOT_UNIQUE: t('ai:Must be unique'),
 });
@@ -31,7 +31,7 @@ export const acmClusterNameValidationMessages = (t: TFunction) => ({
 export const nameValidationMessages = (t: TFunction) => ({
   INVALID_LENGTH: t('ai:1-253 characters'),
   NOT_UNIQUE: t('ai:Must be unique'),
-  INVALID_VALUE: t('ai:Use lowercase alphanumberic characters, dot (.) or hyphen (-)'),
+  INVALID_VALUE: t('ai:Use lowercase alphanumeric characters, dot (.) or hyphen (-)'),
   INVALID_START_END: t('ai:Must start and end with an lowercase alphanumeric character'),
   INVALID_FORMAT: t('ai:Number of characters between dots (.) must be 1-63'),
 });
@@ -43,7 +43,7 @@ export const hostnameValidationMessages = (t: TFunction) => ({
 
 export const locationValidationMessages = (t: TFunction) => ({
   INVALID_LENGTH: t('ai:1-63 characters'),
-  INVALID_VALUE: t('ai:Use alphanumberic characters, dot (.), underscore (_) or hyphen (-)'),
+  INVALID_VALUE: t('ai:Use alphanumeric characters, dot (.), underscore (_) or hyphen (-)'),
   INVALID_START_END: t('ai:Must start and end with an alphanumeric character'),
 });
 
