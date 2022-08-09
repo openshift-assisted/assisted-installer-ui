@@ -35,7 +35,7 @@ export const getClusterWizardFirstStep = (
     case 'pending-for-input':
     case 'adding-hosts':
     case 'insufficient':
-      return 'operators';
+      return 'host-discovery';
     default:
       return 'cluster-details';
   }
@@ -76,6 +76,7 @@ const hostDiscoveryStepValidationsMap: WizardStepValidationMap = {
   cluster: {
     groups: [],
     validationIds: [
+      'sufficient-masters-count',
       'odf-requirements-satisfied',
       'lso-requirements-satisfied',
       'cnv-requirements-satisfied',
