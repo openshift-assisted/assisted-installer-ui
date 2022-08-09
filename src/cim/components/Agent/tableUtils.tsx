@@ -92,23 +92,23 @@ export const discoveryTypeColumn = (
     },
     cell: (host) => {
       const agent = agents.find((a) => a.metadata?.uid === host.id);
-      let discoveryType = 'Unknown';
+      let discoveryType = t('ai:Unknown');
       if (agent) {
         // eslint-disable-next-line no-prototype-builtins
         discoveryType = agent?.metadata?.labels?.hasOwnProperty(AGENT_BMH_NAME_LABEL_KEY)
-          ? t('ai:BMC')
-          : t('ai:Discovery ISO');
+          ? 'BMC'
+          : 'Discovery ISO';
       } else {
         const bmh = bareMetalHosts.find((bmh) => bmh.metadata?.uid === host.id);
         if (bmh) {
-          discoveryType = t('ai:BMC');
+          discoveryType = 'BMC';
         }
-        return {
-          title: discoveryType,
-          props: { 'data-testid': 'discovery-type' },
-          sortableValue: discoveryType,
-        };
       }
+      return {
+        title: discoveryType,
+        props: { 'data-testid': 'discovery-type' },
+        sortableValue: discoveryType,
+      };
     },
   };
 };
