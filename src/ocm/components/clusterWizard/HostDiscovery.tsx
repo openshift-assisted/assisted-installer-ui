@@ -1,33 +1,32 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Formik, FormikConfig, useFormikContext } from 'formik';
 import {
   Cluster,
   V2ClusterUpdateParams,
   getFormikErrorFields,
   ClusterWizardStep,
+  HostDiscoveryValues,
   useAlerts,
   getHostDiscoveryInitialValues,
   useFormikAutoSave,
 } from '../../../common';
-import { HostDiscoveryValues } from '../../../common/types/clusters';
 import HostInventory from '../clusterConfiguration/HostInventory';
 import { useClusterWizardContext } from './ClusterWizardContext';
 import { canNextHostDiscovery } from './wizardTransition';
-import { getApiErrorMessage, handleApiError } from '../../api/utils';
-import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
+import { getApiErrorMessage, handleApiError } from '../../api';
+import { updateCluster } from '../../reducers/clusters';
 import ClusterWizardFooter from './ClusterWizardFooter';
 import ClusterWizardNavigation from './ClusterWizardNavigation';
 import { ClustersService, HostDiscoveryService } from '../../services';
-import useClusterPermissions from '../../hooks/useClusterPermissions';
+import { selectCurrentClusterPermissionsState } from '../../selectors';
 
-const HostDiscoveryForm: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
+const HostDiscoveryForm = ({ cluster }: { cluster: Cluster }) => {
   const { alerts } = useAlerts();
   const { errors, touched, isSubmitting, isValid } = useFormikContext<HostDiscoveryValues>();
   const clusterWizardContext = useClusterWizardContext();
   const isAutoSaveRunning = useFormikAutoSave();
   const errorFields = getFormikErrorFields(errors, touched);
-  const { isViewerMode } = useClusterPermissions();
 
   const isNextDisabled =
     !isValid ||
@@ -41,7 +40,7 @@ const HostDiscoveryForm: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
       cluster={cluster}
       errorFields={errorFields}
       isSubmitting={isSubmitting}
-      isNextDisabled={!isViewerMode && isNextDisabled}
+      isNextDisabled={isNextDisabled}
       onNext={() => clusterWizardContext.moveNext()}
       onBack={() => clusterWizardContext.moveBack()}
     />
@@ -54,10 +53,10 @@ const HostDiscoveryForm: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   );
 };
 
-const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
+const HostDiscovery = ({ cluster }: { cluster: Cluster }) => {
   const dispatch = useDispatch();
   const { addAlert, clearAlerts } = useAlerts();
-  const { isViewerMode } = useClusterPermissions();
+  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const initialValues = React.useMemo(
     () => getHostDiscoveryInitialValues(cluster),
     // eslint-disable-next-line react-hooks/exhaustive-deps

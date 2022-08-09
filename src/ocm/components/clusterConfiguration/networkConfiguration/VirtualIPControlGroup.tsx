@@ -6,15 +6,14 @@ import {
   Cluster,
   NetworkConfigurationValues,
   ValidationsInfo,
-  CheckboxField,
   FormikStaticField,
-  InputField,
   FeatureSupportLevelBadge,
   NETWORK_TYPE_SDN,
-  selectMachineNetworkCIDR,
   stringToJSON,
+  selectMachineNetworkCIDR,
 } from '../../../../common';
 import { selectCurrentClusterPermissionsState } from '../../../selectors';
+import { OcmCheckboxField, OcmInputField } from '../../ui/OcmFormFields';
 
 interface VipStaticValueProps {
   vipName: string;
@@ -27,7 +26,7 @@ const VipStaticValue = ({ vipName, cluster, validationErrorMessage }: VipStaticV
   const machineNetworkCidr = selectMachineNetworkCIDR(cluster);
 
   if (vipDhcpAllocation && cluster[vipName]) {
-    return cluster[vipName];
+    return <>cluster[vipName]</>;
   }
   if (vipDhcpAllocation && validationErrorMessage) {
     return (
@@ -94,7 +93,6 @@ export const VirtualIPControlGroup = ({
   cluster,
   isVipDhcpAllocationDisabled,
 }: VirtualIPControlGroupProps) => {
-  // TODO can I mock the "setFieldValue" so it doesn't update any field??
   const { values, setFieldValue } = useFormikContext<NetworkConfigurationValues>();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
 
@@ -137,7 +135,7 @@ export const VirtualIPControlGroup = ({
   return (
     <>
       {!isVipDhcpAllocationDisabled && (
-        <CheckboxField
+        <OcmCheckboxField
           onChange={onChangeDhcp}
           label={
             <>
@@ -192,8 +190,8 @@ export const VirtualIPControlGroup = ({
         </>
       ) : (
         <>
-          <InputField label="API IP" name="apiVip" helperText={apiVipHelperText} isRequired />
-          <InputField
+          <OcmInputField label="API IP" name="apiVip" helperText={apiVipHelperText} isRequired />
+          <OcmInputField
             name="ingressVip"
             label="Ingress IP"
             helperText={ingressVipHelperText}

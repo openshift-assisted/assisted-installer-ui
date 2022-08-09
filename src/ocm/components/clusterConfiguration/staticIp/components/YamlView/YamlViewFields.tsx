@@ -1,12 +1,13 @@
 import React from 'react';
 import { TextVariants, TextContent, Text, FormGroup, Grid } from '@patternfly/react-core';
 import { useField } from 'formik';
-import { CodeField, getFieldId, HostStaticNetworkConfig } from '../../../../../../common';
 import { Language } from '@patternfly/react-code-editor';
+import { getFieldId, HostStaticNetworkConfig } from '../../../../../../common';
 import StaticIpHostsArray, { HostComponentProps } from '../StaticIpHostsArray';
 import HostSummary from '../CollapsedHost';
 import { MacIpMapping } from './MacIpMapping';
 import { getEmptyYamlHost } from '../../data/emptyData';
+import { OcmCodeField } from '../../../../ui/OcmFormFields';
 
 const CollapsedHost: React.FC<HostComponentProps> = ({ fieldName, hostIdx }) => {
   const mapFieldName = `${fieldName}.macInterfaceMap`;
@@ -41,10 +42,11 @@ const ExpandedHost: React.FC<HostComponentProps> = ({ fieldName, hostIdx }) => {
     name: mapFieldName,
   });
   const macInterfaceMap = mapField.value ? mapField.value : [];
+
   return (
     <>
       <FormGroup label="" fieldId={getFieldId('nmstateYaml', 'inputs')}>
-        <CodeField
+        <OcmCodeField
           language={Language.yaml}
           name={`${fieldName}.networkYaml`}
           data-testid={`yaml-${hostIdx}`}
@@ -64,7 +66,7 @@ const ExpandedHost: React.FC<HostComponentProps> = ({ fieldName, hostIdx }) => {
   );
 };
 
-export const YamlViewFields: React.FC = () => {
+export const YamlViewFields = () => {
   const emptyHostData = getEmptyYamlHost();
   return (
     <Grid hasGutter>

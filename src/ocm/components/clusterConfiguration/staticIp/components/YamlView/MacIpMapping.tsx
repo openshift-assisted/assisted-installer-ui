@@ -4,10 +4,12 @@ import { ArrayHelpers, FieldArray } from 'formik';
 import { PlusCircleIcon } from '@patternfly/react-icons';
 import {
   getFormikArrayItemFieldName,
-  InputField,
   MacInterfaceMap,
   RemovableField,
 } from '../../../../../../common';
+import { OcmInputField } from '../../../../ui/OcmFormFields';
+import { useSelector } from 'react-redux';
+import { selectCurrentClusterPermissionsState } from '../../../../../selectors';
 
 const AddMapping: React.FC<{
   onPush: ArrayHelpers['push'];
@@ -31,32 +33,28 @@ const MacMappingItem = ({
   mapIdx,
   enableRemove,
   hostIdx,
-  isDisabled,
 }: {
   fieldName: string;
   onRemove: () => void;
   mapIdx: number;
   hostIdx: number;
   enableRemove: boolean;
-  isDisabled: boolean;
 }) => {
   return (
     <RemovableField hideRemoveButton={!enableRemove} onRemove={onRemove}>
       <Grid hasGutter>
         <GridItem span={6}>
-          <InputField
+          <OcmInputField
             label="MAC address"
             isRequired
-            isDisabled={isDisabled}
             name={`${fieldName}.macAddress`}
             data-testid={`mac-address-${hostIdx}-${mapIdx}`}
           />
         </GridItem>
         <GridItem span={6}>
-          <InputField
+          <OcmInputField
             label="Interface name"
             isRequired
-            isDisabled={isDisabled}
             name={`${fieldName}.logicalNicName`}
             data-testid={`interface-name-${hostIdx}-${mapIdx}`}
           />
@@ -70,13 +68,13 @@ export const MacIpMapping = ({
   fieldName,
   macInterfaceMap,
   hostIdx,
-  isDisabled,
 }: {
   fieldName: string;
   macInterfaceMap: MacInterfaceMap;
   hostIdx: number;
-  isDisabled: boolean;
 }) => {
+  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
+
   return (
     <Grid className="mac-ip-mapping">
       <GridItem span={6}>
@@ -89,15 +87,14 @@ export const MacIpMapping = ({
                 <MacMappingItem
                   key={getFormikArrayItemFieldName(fieldName, idx)}
                   fieldName={getFormikArrayItemFieldName(fieldName, idx)}
-                  isDisabled={isDisabled}
                   onRemove={() => remove(idx)}
                   mapIdx={idx}
-                  enableRemove={!isDisabled && idx > 0}
+                  enableRemove={!isViewerMode && idx > 0}
                   hostIdx={hostIdx}
                 />
               ))}
 
-              {!isDisabled && <AddMapping onPush={push} />}
+              {!isViewerMode && <AddMapping onPush={push} />}
             </Grid>
           )}
         />

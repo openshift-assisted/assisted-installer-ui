@@ -2,13 +2,13 @@ import React from 'react';
 import { FormGroup, Tooltip } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import {
-  CheckboxField,
   getFieldId,
   useFeatureSupportLevel,
   PopoverIcon,
   ODF_REQUIREMENTS_LINK,
   ODF_LINK,
 } from '../../../../common';
+import { OcmCheckboxField } from '../../ui/OcmFormFields';
 
 const ODF_FIELD_NAME = 'useOpenShiftDataFoundation';
 
@@ -47,7 +47,7 @@ const OdfCheckbox = ({ openshiftVersion }: { openshiftVersion?: string }) => {
   return (
     <FormGroup isInline fieldId={fieldId}>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
-        <CheckboxField
+        <OcmCheckboxField
           name={ODF_FIELD_NAME}
           label={<OdfLabel />}
           isDisabled={!!disabledReason}

@@ -1,13 +1,13 @@
+import React, { PropsWithChildren } from 'react';
+import { useSelector } from 'react-redux';
 import { Form } from '@patternfly/react-core';
 import { Formik, FormikConfig, useFormikContext, yupToFormErrors } from 'formik';
 import isEqual from 'lodash/isEqual';
-import React, { PropsWithChildren } from 'react';
-import { useAlerts } from '../../../../../common';
-import { useFormikAutoSave } from '../../../../../common/components/ui/formik/FormikAutoSave';
+import { useAlerts, useFormikAutoSave } from '../../../../../common';
 import { useErrorMonitor } from '../../../../../common/components/ErrorHandling/ErrorMonitorContext';
 import { getApiErrorMessage } from '../../../../api';
 import { StaticIpFormProps } from './propTypes';
-import useClusterPermissions from '../../../../hooks/useClusterPermissions';
+import { selectCurrentClusterPermissionsState } from '../../../../selectors';
 
 const AutosaveWithParentUpdate = <StaticIpFormValues extends object>({
   onFormStateChange,
@@ -43,7 +43,7 @@ export const StaticIpForm = <StaticIpFormValues extends object>({
 }: PropsWithChildren<StaticIpFormProps<StaticIpFormValues>>) => {
   const { clearAlerts, addAlert } = useAlerts();
   const { captureException } = useErrorMonitor();
-  const { isViewerMode } = useClusterPermissions();
+  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const [initialValues, setInitialValues] = React.useState<StaticIpFormValues | undefined>();
   React.useEffect(() => {
     if (showEmptyValues) {

@@ -10,11 +10,10 @@ import {
 } from './wizardTransition';
 import { HostsNetworkConfigurationType } from '../../services';
 import { defaultWizardSteps, staticIpFormViewSubSteps } from './constants';
-import { Cluster, InfraEnv } from '../../../common';
 import { StaticIpView } from '../clusterConfiguration/staticIp/data/dataTypes';
 import { getStaticIpInfo } from '../clusterConfiguration/staticIp/data/fromInfraEnv';
-import { AssistedInstallerOCMPermissionTypesListType } from '../../../common';
-import useClusterPermissions from '../../hooks/useClusterPermissions';
+import { Cluster, InfraEnv, AssistedInstallerOCMPermissionTypesListType } from '../../../common';
+import useSetClusterPermissions from '../../hooks/useSetClusterPermissions';
 
 const getWizardStepIds = (staticIpView?: StaticIpView): ClusterWizardStepsType[] => {
   const stepIds: ClusterWizardStepsType[] = [...defaultWizardSteps];
@@ -36,7 +35,7 @@ const ClusterWizardContextProvider: React.FC<
   const [currentStepId, setCurrentStepId] = React.useState<ClusterWizardStepsType>();
   const [wizardStepIds, setWizardStepIds] = React.useState<ClusterWizardStepsType[]>();
   const { state: locationState } = useLocation<ClusterWizardFlowStateType>();
-  const { setPermissions } = useClusterPermissions();
+  const setClusterPermissions = useSetClusterPermissions();
 
   React.useEffect(() => {
     const staticIpInfo = infraEnv ? getStaticIpInfo(infraEnv) : undefined;
@@ -44,7 +43,8 @@ const ClusterWizardContextProvider: React.FC<
     const firstStepIds = getWizardStepIds(staticIpInfo?.view);
     setCurrentStepId(firstStep);
     setWizardStepIds(firstStepIds);
-    setPermissions(permissions, cluster);
+    setClusterPermissions(cluster, permissions);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const contextValue = React.useMemo<ClusterWizardContextType | null>(() => {

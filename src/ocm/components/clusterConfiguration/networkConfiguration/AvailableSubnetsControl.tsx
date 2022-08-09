@@ -1,6 +1,9 @@
 import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { Alert, AlertVariant, FormGroup, Stack, StackItem } from '@patternfly/react-core';
 import { FieldArray, useFormikContext, FormikHelpers } from 'formik';
+import { Address4, Address6 } from 'ip-address';
+
 import {
   Cluster,
   MachineNetwork,
@@ -9,9 +12,8 @@ import {
   DUAL_STACK,
   NO_SUBNET_SET,
 } from '../../../../common';
-import { SelectField } from '../../../../common/components/ui';
-import { Address4, Address6 } from 'ip-address';
-import useClusterPermissions from '../../../hooks/useClusterPermissions';
+import { selectCurrentClusterPermissionsState } from '../../../selectors';
+import { OcmSelectField } from '../../ui/OcmFormFields';
 
 const subnetSort = (subA: HostSubnet, subB: HostSubnet) =>
   subA.humanized.localeCompare(subB.humanized);
@@ -64,7 +66,7 @@ export const AvailableSubnetsControl = ({
 }: AvailableSubnetsControlProps) => {
   const { values, errors, setFieldValue } = useFormikContext<NetworkConfigurationValues>();
   const isDualStack = values.stackType === DUAL_STACK;
-  const { isViewerMode } = useClusterPermissions();
+  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
 
   const IPv4Subnets = hostSubnets
     .filter((subnet) => Address4.isValid(subnet.subnet))
@@ -104,7 +106,7 @@ export const AvailableSubnetsControl = ({
                 const machineSubnets = index === 1 ? IPv6Subnets : IPv4Subnets;
                 return (
                   <StackItem key={index}>
-                    <SelectField
+                    <OcmSelectField
                       name={`machineNetworks.${index}.cidr`}
                       options={buildOptions(machineSubnets)}
                       isRequired={isRequired}
@@ -114,7 +116,7 @@ export const AvailableSubnetsControl = ({
               })
             ) : (
               <StackItem>
-                <SelectField
+                <OcmSelectField
                   name={`machineNetworks.0.cidr`}
                   options={buildOptions(IPv4Subnets)}
                   isRequired={isRequired}

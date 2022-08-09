@@ -5,16 +5,12 @@ import { useFormikContext } from 'formik';
 import ArmCheckbox from './ArmCheckbox';
 import { HostsNetworkConfigurationControlGroup } from './HostsNetworkConfigurationControlGroup';
 import {
-  CheckboxField,
   ClusterDetailsValues,
-  InputField,
   isSNO,
   ManagedDomain,
   OpenshiftVersionOptionType,
   OpenShiftVersionSelect,
   PullSecret,
-  RichInputField,
-  SelectField,
   SNOControlGroup,
   StaticTextField,
   ocmClusterNameValidationMessages,
@@ -22,10 +18,14 @@ import {
 } from '../../../common';
 import DiskEncryptionControlGroup from '../../../common/components/clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import useClusterPermissions from '../../hooks/useClusterPermissions';
+import {
+  OcmCheckboxField,
+  OcmInputField,
+  OcmRichInputField,
+  OcmSelectField,
+} from '../ui/OcmFormFields';
 
 export type OcmClusterDetailsFormFieldsProps = {
-  canEditPullSecret: boolean;
   forceOpenshiftVersion?: string;
   isBaseDnsDomainDisabled?: boolean;
   defaultPullSecret?: string;
@@ -59,8 +59,6 @@ export const OcmClusterDetailsFormFields = ({
   clusterExists,
 }: OcmClusterDetailsFormFieldsProps) => {
   const { values } = useFormikContext<ClusterDetailsValues>();
-  const { isViewerMode: realViewerMode } = useClusterPermissions();
-  const isViewerMode = clusterExists && realViewerMode;
   const { name, baseDnsDomain, highAvailabilityMode, useRedHatDnsService } = values;
   const nameInputRef = React.useRef<HTMLInputElement>();
   React.useEffect(() => {
@@ -70,12 +68,11 @@ export const OcmClusterDetailsFormFields = ({
   const { t } = useTranslation();
   return (
     <Form id="wizard-cluster-details__form">
-      <RichInputField
+      <OcmRichInputField
         ref={nameInputRef}
         label="Cluster name"
         name="name"
         placeholder={isOcm ? '' : 'Enter cluster name'}
-        isDisabled={isViewerMode}
         isRequired
         richValidationMessages={
           useRedHatDnsService
@@ -84,20 +81,18 @@ export const OcmClusterDetailsFormFields = ({
         }
       />
       {!!managedDomains.length && toggleRedHatDnsService && (
-        <CheckboxField
+        <OcmCheckboxField
           name="useRedHatDnsService"
           label="Use a temporary 60-day domain"
           helperText="A base domain will be provided for temporary, non-production clusters."
-          isDisabled={isViewerMode}
           onChange={toggleRedHatDnsService}
         />
       )}
       {useRedHatDnsService ? (
-        <SelectField
+        <OcmSelectField
           label="Base domain"
           name="baseDnsDomain"
           helperText={<BaseDnsHelperText name={name} baseDnsDomain={baseDnsDomain} />}
-          isDisabled={isViewerMode}
           options={managedDomains.map((d) => ({
             label: `${d.domain || ''} (${d.provider || ''})`,
             value: d.domain,
@@ -105,10 +100,9 @@ export const OcmClusterDetailsFormFields = ({
           isRequired
         />
       ) : (
-        <InputField
+        <OcmInputField
           label="Base domain"
           name="baseDnsDomain"
-          isReadOnly={isViewerMode}
           helperText={<BaseDnsHelperText name={name} baseDnsDomain={baseDnsDomain} />}
           placeholder="example.com"
           isDisabled={isBaseDnsDomainDisabled || useRedHatDnsService}
@@ -129,7 +123,7 @@ export const OcmClusterDetailsFormFields = ({
       <HostsNetworkConfigurationControlGroup clusterExists={clusterExists} />
       <DiskEncryptionControlGroup
         values={values}
-        isDisabled={isViewerMode || isPullSecretSet}
+        isDisabled={isPullSecretSet}
         isSNO={isSNO({ highAvailabilityMode })}
       />
     </Form>
