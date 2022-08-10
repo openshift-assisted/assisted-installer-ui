@@ -22,11 +22,26 @@ import DefaultEmptyState from '../../../common/components/ui/uiState/EmptyState'
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useFormikHelpers } from '../../../common/hooks/useFormikHelpers';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
+import { ExpandComponentProps } from '../../../common/components/hosts/AITable';
+import { Host } from '../../../common/api/types';
+import {
+  HostsTableDetailContextProvider,
+  useHostsTableDetailContext,
+} from '../../../common/components/hosts/HostsTableDetailContext';
+
+export function ExpandComponent({ obj: host }: ExpandComponentProps<Host>) {
+  const { onDiskRole, canEditDisks } = useHostsTableDetailContext();
+  return (
+    <HostDetail key={host.id} host={host} onDiskRole={onDiskRole} canEditDisks={canEditDisks} />
+  );
+}
 
 type AgentsSelectionTableProps = {
   matchingAgents: AgentK8sResource[];
   width?: number;
   onEditRole?: AgentTableActions['onEditRole'];
+  onSetInstallationDiskId?: AgentTableActions['onSetInstallationDiskId'];
   onEditHost?: AgentTableActions['onEditHost'];
   onHostSelect?: VoidFunction;
 };
@@ -37,6 +52,7 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
   width,
   onEditHost,
   onHostSelect,
+  onSetInstallationDiskId,
 }) => {
   const { t } = useTranslation();
   const [{ value: selectedIDs }] =
@@ -77,7 +93,7 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
 
   const [hosts, actions, actionResolver] = useAgentsTable(
     { agents: matchingAgents },
-    { onSelect, onEditRole, onEditHost },
+    { onSelect, onEditRole, onEditHost, onSetInstallationDiskId },
   );
 
   const addAll = width && width > 700;
@@ -107,20 +123,25 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
 
   const paginationProps = usePagination(hosts.length);
   return (
-    <HostsTable
-      hosts={hosts}
-      content={content}
-      selectedIDs={selectedIDs}
-      actionResolver={actionResolver}
-      ExpandComponent={DefaultExpandComponent}
-      {...actions}
-      {...paginationProps}
+    <HostsTableDetailContextProvider
+      canEditDisks={actions.canEditDisks}
+      onDiskRole={actions.onDiskRole}
     >
-      <DefaultEmptyState
-        title={t('ai:No hosts found')}
-        content={t('ai:No host matches provided labels/locations')}
-      />
-    </HostsTable>
+      <HostsTable
+        hosts={hosts}
+        content={content}
+        selectedIDs={selectedIDs}
+        actionResolver={actionResolver}
+        ExpandComponent={actions.onDiskRole ? ExpandComponent : DefaultExpandComponent}
+        {...actions}
+        {...paginationProps}
+      >
+        <DefaultEmptyState
+          title={t('ai:No hosts found')}
+          content={t('ai:No host matches provided labels/locations')}
+        />
+      </HostsTable>
+    </HostsTableDetailContextProvider>
   );
 };
 
