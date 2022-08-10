@@ -50,6 +50,7 @@ import { UpdateDay2ApiVipFormProps } from './UpdateDay2ApiVipForm';
 import { ClustersAPI } from '../../services/apis';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { getErrorMessage } from '../../../common/utils';
 
 export const useHostsTable = (cluster: Cluster) => {
   const { addAlert } = useAlerts();
@@ -117,7 +118,9 @@ export const useHostsTable = (cluster: Cluster) => {
   );
 
   const onDownloadHostLogs = React.useCallback(
-    (host: Host) => downloadHostInstallationLogs(addAlert, host),
+    (host: Host) => {
+      void downloadHostInstallationLogs(addAlert, host);
+    },
     [addAlert],
   );
 
@@ -134,6 +137,20 @@ export const useHostsTable = (cluster: Cluster) => {
       } catch (e) {
         handleApiError(e, () =>
           addAlert({ title: 'Failed to set disk role', message: getApiErrorMessage(e) }),
+        );
+      }
+    },
+    [dispatch, resetCluster, addAlert, cluster.id],
+  );
+
+  const onExcludedODF = React.useCallback(
+    async (hostId: Host['id'], nodeLabels: HostUpdateParams['nodeLabels']) => {
+      try {
+        const { data } = await HostsService.updateHostODF(cluster.id, hostId, nodeLabels);
+        resetCluster ? await resetCluster() : dispatch(updateHost(data));
+      } catch (e) {
+        handleApiError(e, () =>
+          addAlert({ title: 'Failed to update ODF status', message: getErrorMessage(e) }),
         );
       }
     },
@@ -241,6 +258,7 @@ export const useHostsTable = (cluster: Cluster) => {
         ...actionChecks,
         onEditRole,
         onDiskRole,
+        onExcludedODF,
         onEditHost,
         onHostReset,
         onDownloadHostLogs,
@@ -256,6 +274,7 @@ export const useHostsTable = (cluster: Cluster) => {
       onEditHost,
       onHostReset,
       onDownloadHostLogs,
+      onExcludedODF,
       onViewHostEvents,
     ],
   );

@@ -19,6 +19,7 @@ import {
 import {
   HostDiscoveryValues,
   HostSubnets,
+  StorageValues,
   Validation,
   ValidationGroup,
   ValidationsInfo,
@@ -155,6 +156,13 @@ export const getHostDiscoveryInitialValues = (cluster: Cluster): HostDiscoveryVa
     useContainerNativeVirtualization: isOperatorEnabled('cnv'),
     usePlatformIntegration: cluster.platform?.type !== 'baremetal',
     schedulableMasters: selectSchedulableMasters(cluster),
+  };
+};
+
+export const getStorageInitialValues = (): StorageValues => {
+  // TODO (dchason): add initial values to node labeling
+  return {
+    nodeLabeling: '',
   };
 };
 

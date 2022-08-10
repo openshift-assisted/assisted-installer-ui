@@ -1,38 +1,33 @@
 import React from 'react';
-import useInfraEnvId from './useInfraEnvId';
 import { Cluster, PresignedUrl } from '../../common';
 import { InfraEnvsAPI } from '../services/apis';
 import { getErrorMessage } from '../../common/utils';
+import { InfraEnvsService } from '../services';
 
-export default function useInfraEnvImageUrl(clusterId: Cluster['id']) {
-  const { infraEnvId, error: infraEnvIdError } = useInfraEnvId(clusterId);
-  const [imageUrl, setImageUrl] = React.useState<PresignedUrl['url']>();
-  const [error, setError] = React.useState('');
+type ImgUrl = {
+  url: PresignedUrl['url'];
+  error: string;
+};
 
-  const getImageUrl = React.useCallback(async () => {
+export default function useInfraEnvImageUrl() {
+  const getImageUrl = React.useCallback(async (clusterId: Cluster['id']): Promise<ImgUrl> => {
     try {
+      const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId);
       if (!infraEnvId) {
-        return;
+        return { url: '', error: `Failed to retrieve the infraEnv for ${clusterId}` };
       }
+
       const {
         data: { url },
       } = await InfraEnvsAPI.getImageUrl(infraEnvId);
       if (!url) {
         throw 'Failed to retrieve the image URL, the API returned an invalid URL';
       }
-      setImageUrl(url);
+      return { url, error: '' };
     } catch (e) {
-      setError(getErrorMessage(e));
+      return { url: '', error: getErrorMessage(e) };
     }
-  }, [infraEnvId]);
+  }, []);
 
-  React.useEffect(() => {
-    if (infraEnvIdError) {
-      setError(infraEnvIdError);
-    } else if (!imageUrl) {
-      void getImageUrl();
-    }
-  }, [imageUrl, getImageUrl, infraEnvId, infraEnvIdError]);
-
-  return { imageUrl, error, isLoading: (!imageUrl || !infraEnvId) && !error };
+  return { getImageUrl };
 }
