@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { Checkbox, FormGroup, Tooltip } from '@patternfly/react-core';
+import { FormGroup, Tooltip } from '@patternfly/react-core';
 import { useField, useFormikContext } from 'formik';
 import {
   getFieldId,
+  isArmArchitecture,
   ClusterCreateParams,
   HelperText,
   PopoverIcon,
@@ -13,7 +14,7 @@ import {
   FeatureSupportLevelBadge,
   useFeatureSupportLevel,
 } from '../../../common/components/featureSupportLevels';
-import { isArmArchitecture } from '../../../common/selectors/clusterSelectors';
+import { OCMCheckbox } from '../ui/OCMInputField';
 
 const getLabel = (openshiftVersion: string) => {
   return (
@@ -74,7 +75,7 @@ const ArmCheckbox: React.FC<ArmCheckboxProps> = ({ versions }) => {
   return (
     <FormGroup isInline fieldId={fieldId}>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
-        <Checkbox
+        <OCMCheckbox
           id={fieldId}
           name={name}
           isDisabled={featureSupportLevelContext.isFeatureDisabled(

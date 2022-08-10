@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import {
   Alert,
   AlertVariant,
@@ -8,17 +9,21 @@ import {
   Grid,
 } from '@patternfly/react-core';
 import { FieldArray, useFormikContext } from 'formik';
-import { NetworkConfigurationValues } from '../../../../common/types';
-import { useFeature } from '../../../../common/features';
-import { InputField } from '../../../../common/components/ui';
-import { DUAL_STACK, PREFIX_MAX_RESTRICTION } from '../../../../common/config/constants';
+import {
+  DUAL_STACK,
+  PREFIX_MAX_RESTRICTION,
+  useFeature,
+  NetworkConfigurationValues,
+} from '../../../../common';
 import { NetworkTypeControlGroup } from '../../../../common/components/clusterWizard/networkingSteps/NetworkTypeControlGroup';
+import { selectCurrentClusterPermissionsState } from '../../../selectors';
+import { OCMInputField } from '../../ui/OCMInputField';
 
 type AdvancedNetworkFieldsProps = {
   isSDNSelectable: boolean;
 };
 
-const getNextworkLabelSuffix = (index: number, isDualStack: boolean) => {
+const getNetworkLabelSuffix = (index: number, isDualStack: boolean) => {
   return isDualStack ? ` (${index === 0 ? 'IPv4' : 'IPv6'})` : '';
 };
 
@@ -34,8 +39,9 @@ const clusterCidrHelperText =
 const serviceCidrHelperText =
   'The IP address pool to use for service IP addresses. You can enter only one IP address pool. If you need to access the services from an external network, configure load balancers and routers to manage the traffic.';
 
-const AdvancedNetworkFields: React.FC<AdvancedNetworkFieldsProps> = ({ isSDNSelectable }) => {
+const AdvancedNetworkFields = ({ isSDNSelectable }: AdvancedNetworkFieldsProps) => {
   const { setFieldValue, values, errors } = useFormikContext<NetworkConfigurationValues>();
+  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
 
   const isNetworkTypeSelectionEnabled = useFeature(
     'ASSISTED_INSTALLER_NETWORK_TYPE_SELECTION_FEATURE',
@@ -68,17 +74,17 @@ const AdvancedNetworkFields: React.FC<AdvancedNetworkFieldsProps> = ({ isSDNSele
         {() => (
           <FormGroup fieldId="clusterNetworks" labelInfo={isDualStack && 'Primary'}>
             {values.clusterNetworks?.map((_, index) => {
-              const networkSuffix = getNextworkLabelSuffix(index, isDualStack);
+              const networkSuffix = getNetworkLabelSuffix(index, isDualStack);
               return (
                 <StackItem key={index} className={'network-field-group'}>
-                  <InputField
+                  <OCMInputField
                     name={`clusterNetworks.${index}.cidr`}
                     label={`Cluster network CIDR${networkSuffix}`}
                     helperText={clusterCidrHelperText}
                     isRequired
                     labelInfo={index === 0 && isDualStack ? 'Primary' : ''}
                   />
-                  <InputField
+                  <OCMInputField
                     name={`clusterNetworks.${index}.hostPrefix`}
                     label={`Cluster network host prefix${networkSuffix}`}
                     type={TextInputTypes.number}
@@ -88,11 +94,8 @@ const AdvancedNetworkFields: React.FC<AdvancedNetworkFieldsProps> = ({ isSDNSele
                         ? PREFIX_MAX_RESTRICTION.IPv6
                         : PREFIX_MAX_RESTRICTION.IPv4
                     }
-                    onBlur={(e) =>
-                      formatClusterNetworkHostPrefix(
-                        e as React.ChangeEvent<HTMLInputElement>,
-                        index,
-                      )
+                    onBlur={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      formatClusterNetworkHostPrefix(e, index)
                     }
                     helperText={clusterNetworkHostPrefixHelperText(index)}
                     isRequired
@@ -113,9 +116,9 @@ const AdvancedNetworkFields: React.FC<AdvancedNetworkFieldsProps> = ({ isSDNSele
           <FormGroup fieldId="serviceNetworks" labelInfo={isDualStack && 'Primary'}>
             {values.serviceNetworks?.map((_, index) => (
               <StackItem key={index} className={'network-field-group'}>
-                <InputField
+                <OCMInputField
                   name={`serviceNetworks.${index}.cidr`}
-                  label={`Service network CIDR${getNextworkLabelSuffix(index, isDualStack)}`}
+                  label={`Service network CIDR${getNetworkLabelSuffix(index, isDualStack)}`}
                   helperText={serviceCidrHelperText}
                   isRequired
                   labelInfo={index === 0 && isDualStack ? 'Primary' : ''}
@@ -131,7 +134,7 @@ const AdvancedNetworkFields: React.FC<AdvancedNetworkFieldsProps> = ({ isSDNSele
       )}
 
       {isNetworkTypeSelectionEnabled && (
-        <NetworkTypeControlGroup isSDNSelectable={isSDNSelectable} />
+        <NetworkTypeControlGroup isDisabled={isViewerMode} isSDNSelectable={isSDNSelectable} />
       )}
     </Grid>
   );

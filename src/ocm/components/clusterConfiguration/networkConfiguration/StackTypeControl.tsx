@@ -3,19 +3,24 @@ import { useSelector } from 'react-redux';
 import { ButtonVariant, FormGroup, Tooltip } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 import { Address6 } from 'ip-address';
+
 import {
+  HostSubnets,
+  NetworkConfigurationValues,
+  getFieldId,
+  getDefaultNetworkType,
+  DUAL_STACK,
+  IPV4_STACK,
+  NO_SUBNET_SET,
   Cluster,
   ClusterNetwork,
   MachineNetwork,
   ServiceNetwork,
-} from '../../../../common/api/types';
-import { HostSubnets, NetworkConfigurationValues } from '../../../../common/types';
-import { DUAL_STACK, IPV4_STACK, NO_SUBNET_SET } from '../../../../common/config/constants';
-import { getFieldId } from '../../../../common/components/ui/formik/utils';
-import { ConfirmationModal, PopoverIcon, RadioField } from '../../../../common/components/ui';
-import { getDefaultNetworkType } from '../../../../common';
+} from '../../../../common';
+import { ConfirmationModal, PopoverIcon } from '../../../../common/components/ui';
 import { useDefaultConfiguration } from '../ClusterDefaultConfigurationContext';
 import { selectCurrentClusterPermissionsState } from '../../../selectors';
+import { OCMRadioField } from '../../ui/OCMInputField';
 
 type StackTypeControlGroupProps = {
   clusterId: Cluster['id'];
@@ -158,7 +163,7 @@ export const StackTypeControlGroup = ({
           isInline
           onChange={setStackType}
         >
-          <RadioField
+          <OCMRadioField
             name={'stackType'}
             value={IPV4_STACK}
             isDisabled={!isDualStackSelectable}
@@ -172,7 +177,7 @@ export const StackTypeControlGroup = ({
               </>
             }
           />
-          <RadioField
+          <OCMRadioField
             name={'stackType'}
             value={DUAL_STACK}
             isDisabled={!isDualStackSelectable}

@@ -1,12 +1,15 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
+import { Checkbox } from '@patternfly/react-core';
 import { selectCurrentClusterPermissionsState } from '../../selectors';
 import {
   CheckboxField,
   InputField,
+  RadioField,
   RichInputField,
   SelectField,
   SwitchField,
+  TextAreaField,
 } from '../../../common';
 
 // TODO set the proper type that already has isDisabled
@@ -45,13 +48,19 @@ const OCMInputField = InputFieldDisabler(InputField);
 const OCMRichInputField = InputRefFieldDisabler(RichInputField);
 const OCMSelectField = InputFieldDisabler(SelectField);
 const OCMCheckboxField = InputFieldDisabler(CheckboxField);
+const OCMCheckbox = InputFieldDisabler(Checkbox);
 const OCMSwitchField = InputFieldDisabler(SwitchField);
+const OCMRadioField = InputFieldDisabler(RadioField);
+const OCMTextAreaField = InputFieldDisabler(TextAreaField);
 
 export {
   InputFieldDisabler,
   OCMInputField,
   OCMRichInputField,
   OCMSelectField,
+  OCMCheckbox,
   OCMCheckboxField,
   OCMSwitchField,
+  OCMRadioField,
+  OCMTextAreaField,
 };

@@ -2,14 +2,18 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useFormikContext } from 'formik';
 import { Spinner, Alert, AlertVariant, Tooltip } from '@patternfly/react-core';
-import { Cluster } from '../../../../common/api/types';
-import { stringToJSON } from '../../../../common/api/utils';
-import { NetworkConfigurationValues, ValidationsInfo } from '../../../../common/types';
-import { CheckboxField, FormikStaticField, InputField } from '../../../../common/components/ui';
+import {
+  Cluster,
+  NetworkConfigurationValues,
+  ValidationsInfo,
+  FormikStaticField,
+  selectMachineNetworkCIDR,
+  stringToJSON,
+  NETWORK_TYPE_SDN,
+} from '../../../../common';
 import { FeatureSupportLevelBadge } from '../../../../common/components';
-import { NETWORK_TYPE_SDN } from '../../../../common/config/constants';
-import { selectMachineNetworkCIDR } from '../../../../common';
 import { selectCurrentClusterPermissionsState } from '../../../selectors';
+import { OCMCheckboxField, OCMInputField } from '../../ui/OCMInputField';
 
 interface VipStaticValueProps {
   vipName: string;
@@ -22,7 +26,7 @@ const VipStaticValue = ({ vipName, cluster, validationErrorMessage }: VipStaticV
   const machineNetworkCidr = selectMachineNetworkCIDR(cluster);
 
   if (vipDhcpAllocation && cluster[vipName]) {
-    return cluster[vipName];
+    return <>cluster[vipName]</>;
   }
   if (vipDhcpAllocation && validationErrorMessage) {
     return (
@@ -123,7 +127,7 @@ export const VirtualIPControlGroup = ({
   return (
     <>
       {!isVipDhcpAllocationDisabled && (
-        <CheckboxField
+        <OCMCheckboxField
           label={
             <>
               <Tooltip
@@ -177,8 +181,8 @@ export const VirtualIPControlGroup = ({
         </>
       ) : (
         <>
-          <InputField label="API IP" name="apiVip" helperText={apiVipHelperText} isRequired />
-          <InputField
+          <OCMInputField label="API IP" name="apiVip" helperText={apiVipHelperText} isRequired />
+          <OCMInputField
             name="ingressVip"
             label="Ingress IP"
             helperText={ingressVipHelperText}

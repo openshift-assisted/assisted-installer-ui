@@ -12,8 +12,8 @@ import {
   DUAL_STACK,
   NO_SUBNET_SET,
 } from '../../../../common';
-import { SelectField } from '../../../../common/components/ui';
 import { selectCurrentClusterPermissionsState } from '../../../selectors';
+import { OCMSelectField } from '../../ui/OCMInputField';
 
 const subnetSort = (subA: HostSubnet, subB: HostSubnet) =>
   subA.humanized.localeCompare(subB.humanized);
@@ -106,7 +106,7 @@ export const AvailableSubnetsControl = ({
                 const machineSubnets = index === 1 ? IPv6Subnets : IPv4Subnets;
                 return (
                   <StackItem key={index}>
-                    <SelectField
+                    <OCMSelectField
                       name={`machineNetworks.${index}.cidr`}
                       options={buildOptions(machineSubnets)}
                       isRequired={isRequired}
@@ -116,7 +116,7 @@ export const AvailableSubnetsControl = ({
               })
             ) : (
               <StackItem>
-                <SelectField
+                <OCMSelectField
                   name={`machineNetworks.0.cidr`}
                   options={buildOptions(IPv4Subnets)}
                   isRequired={isRequired}

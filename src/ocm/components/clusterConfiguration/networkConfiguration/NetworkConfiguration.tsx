@@ -1,17 +1,17 @@
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import { useFormikContext } from 'formik';
 import { useSelector } from 'react-redux';
-import { Alert, AlertVariant, Checkbox, Grid, Tooltip } from '@patternfly/react-core';
+import { Alert, AlertVariant, Grid, Tooltip } from '@patternfly/react-core';
 import { VirtualIPControlGroup, VirtualIPControlGroupProps } from './VirtualIPControlGroup';
-import { Cluster, ClusterDefaultConfig } from '../../../../common/api/types';
 import {
+  CpuArchitecture,
+  HostSubnets,
+  NetworkConfigurationValues,
+  Cluster,
+  ClusterDefaultConfig,
   FeatureSupportLevelData,
   useFeatureSupportLevel,
-} from '../../../../common/components/featureSupportLevels';
-import { CpuArchitecture, HostSubnets, NetworkConfigurationValues } from '../../../../common/types';
-import { getLimitedFeatureSupportLevels } from '../../../../common/components/featureSupportLevels/utils';
-import { isSNO } from '../../../../common/selectors';
-import {
+  isSNO,
   canBeDualStack,
   canSelectNetworkTypeSDN,
   getDefaultNetworkType,
@@ -19,6 +19,7 @@ import {
   DUAL_STACK,
   serviceNetworksEqual,
 } from '../../../../common';
+import { getLimitedFeatureSupportLevels } from '../../../../common/components/featureSupportLevels/utils';
 import {
   ManagedNetworkingControlGroup,
   UserManagedNetworkingTextContent,
@@ -28,6 +29,7 @@ import { AvailableSubnetsControl } from './AvailableSubnetsControl';
 import AdvancedNetworkFields from './AdvancedNetworkFields';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { selectCurrentClusterPermissionsState } from '../../../selectors';
+import { OCMCheckbox } from '../../ui/OCMInputField';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   hostSubnets: HostSubnets;
@@ -114,14 +116,14 @@ const isManagedNetworkingDisabled = (
   }
 };
 
-const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
+const NetworkConfiguration = ({
   cluster,
   hostSubnets,
   isVipDhcpAllocationDisabled,
   defaultNetworkSettings,
   hideManagedNetworking,
   children,
-}) => {
+}: PropsWithChildren<NetworkConfigurationProps>) => {
   const { t } = useTranslation();
   const featureSupportLevelData = useFeatureSupportLevel();
   const { setFieldValue, values, validateField } = useFormikContext<NetworkConfigurationValues>();
@@ -262,7 +264,7 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
       {!isUserManagedNetworking && (
         <VirtualIPControlGroup
           cluster={cluster}
-          isVipDhcpAllocationDisabled={isViewerMode || isVipDhcpAllocationDisabled}
+          isVipDhcpAllocationDisabled={isVipDhcpAllocationDisabled}
         />
       )}
 
@@ -271,13 +273,13 @@ const NetworkConfiguration: React.FC<NetworkConfigurationProps> = ({
         hidden={!isDualStack}
         position={'top-start'}
       >
-        <Checkbox
+        <OCMCheckbox
           id="useAdvancedNetworking"
           label="Use advanced networking"
           description="Configure advanced networking properties (e.g. CIDR ranges)."
           isChecked={isAdvanced}
           onChange={toggleAdvConfiguration}
-          isDisabled={isViewerMode || isDualStack}
+          isDisabled={isDualStack}
         />
       </Tooltip>
 

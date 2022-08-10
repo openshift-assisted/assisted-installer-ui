@@ -74,6 +74,7 @@ const SecurityFields = ({
             label={t('ai:Use the same host discovery SSH key')}
             aria-describedby={`${fieldId}-helper`}
             isChecked={shareSshKey}
+            isDisabled={isDisabled}
             onChange={setShareSshKey}
           />
         </RenderIf>
@@ -82,6 +83,7 @@ const SecurityFields = ({
             name="sshPublicKey"
             helperText={<SshPublicKeyHelperText />}
             onBlur={handleSshKeyBlur}
+            isDisabled={isDisabled}
           />
         </RenderIf>
       </FormGroup>
