@@ -584,7 +584,6 @@
   "ai:There was an error retrieving data. Check your connection and": "There was an error retrieving data. Check your connection and",
   "ai:This cluster has been created and is ready to begin installation.": "This cluster has been created and is ready to begin installation.",
   "ai:This cluster is in the process of getting ready to start installation.": "This cluster is in the process of getting ready to start installation.",
-  "ai:This host was successfully installed.": "This host was successfully installed.",
   "ai:This IP is being allocated by the DHCP server": "This IP is being allocated by the DHCP server",
   "ai:This IP was allocated by the DHCP server.": "This IP was allocated by the DHCP server.",
   "ai:This name will replace the original discovered hostname.": "This name will replace the original discovered hostname.",
