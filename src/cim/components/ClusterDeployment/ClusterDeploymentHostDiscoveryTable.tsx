@@ -32,7 +32,8 @@ import { MassChangeHostnameModalProps } from '../../../common/components/hosts/M
 import MassApproveAction from '../modals/MassApproveAction';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import { getExpandComponent } from '../Agent/AgentsSelectionTable';
+import { ExpandComponent } from '../Agent/AgentsSelectionTable';
+import { HostsTableDetailContextProvider } from '../../../common/components/hosts/HostsTableDetailContext';
 
 const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscoveryTableProps> = ({
   agents,
@@ -133,22 +134,23 @@ const ClusterDeploymentHostDiscoveryTable: React.FC<ClusterDeploymentHostDiscove
           />
         </StackItem>
         <StackItem>
-          <HostsTable
-            hosts={hosts}
-            content={content}
-            actionResolver={actionResolver}
-            selectedIDs={selectedHostIDs}
-            setSelectedIDs={setSelectedHostIDs}
-            onSelect={onSelect}
-            ExpandComponent={
-              hostActions.onDiskRole
-                ? getExpandComponent(hostActions.onDiskRole, hostActions.canEditDisks)
-                : DefaultExpandComponent
-            }
-            {...paginationProps}
+          <HostsTableDetailContextProvider
+            canEditDisks={hostActions.canEditDisks}
+            onDiskRole={hostActions.onDiskRole}
           >
-            <HostsTableEmptyState setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
-          </HostsTable>
+            <HostsTable
+              hosts={hosts}
+              content={content}
+              actionResolver={actionResolver}
+              selectedIDs={selectedHostIDs}
+              setSelectedIDs={setSelectedHostIDs}
+              onSelect={onSelect}
+              ExpandComponent={hostActions.onDiskRole ? ExpandComponent : DefaultExpandComponent}
+              {...paginationProps}
+            >
+              <HostsTableEmptyState setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
+            </HostsTable>
+          </HostsTableDetailContextProvider>
         </StackItem>
       </Stack>
       {isDiscoveryHintModalOpen && (
