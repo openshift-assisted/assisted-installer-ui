@@ -4,9 +4,9 @@ import {
   hostnameColumn,
   roleColumn,
   countColumn,
+  disksColumn,
 } from '../../../common/components/hosts/tableUtils';
 import {
-  totalStorageColumn,
   odfUsageColumn,
   numberOfDisksColumn,
 } from '../../../common/components/storage/StorageUtils';
@@ -48,7 +48,7 @@ const HostsStorageTable = ({ cluster }: { cluster: Cluster }) => {
       hostnameColumn(t, onEditHost, undefined, actionChecks.canEditHostname),
       roleColumn(t, undefined, undefined, selectSchedulableMasters(cluster)),
       hardwareStatusColumn(),
-      totalStorageColumn,
+      disksColumn,
       numberOfDisksColumn,
     ];
     if (hasODFOperators(cluster)) {
