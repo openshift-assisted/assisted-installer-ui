@@ -50,23 +50,6 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({
   const { host } = props;
   const { status, statusInfo } = host;
   const { t } = useTranslation();
-  if (status === 'added-to-existing-cluster') {
-    return (
-      <TextContent>
-        <Text>
-          {t('ai:This host was successfully installed.')}
-          {!autoCSR && (
-            <>
-              <br />
-              {t(
-                "ai:To finish adding it to the cluster, approve its join request inside OpenShift Console's Nodes section. Note that it may take a few minutes for the join request to appear.",
-              )}
-            </>
-          )}
-        </Text>
-      </TextContent>
-    );
-  }
 
   if (['installing-in-progress'].includes(status)) {
     return (
@@ -93,6 +76,23 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({
     return (
       <TextContent>
         <Text>{details}</Text>
+        <HostProgress host={host} />
+      </TextContent>
+    );
+  }
+
+  if (['added-to-existing-cluster'].includes(status)) {
+    return (
+      <TextContent>
+        <Text>{details}</Text>
+        {!autoCSR && (
+          <>
+            <br />
+            {t(
+              "ai:To finish adding it to the cluster, approve its join request inside OpenShift Console's Nodes section. Note that it may take a few minutes for the join request to appear.",
+            )}
+          </>
+        )}
         <HostProgress host={host} />
       </TextContent>
     );
