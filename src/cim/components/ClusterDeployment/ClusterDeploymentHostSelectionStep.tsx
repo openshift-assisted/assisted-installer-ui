@@ -16,7 +16,6 @@ import ClusterDeploymentHostsSelection from './ClusterDeploymentHostsSelection';
 import {
   ClusterDeploymentHostSelectionStepProps,
   ClusterDeploymentHostsSelectionValues,
-  AgentTableActions,
 } from './types';
 import { hostCountValidationSchema } from './validationSchemas';
 import {
@@ -142,14 +141,7 @@ const getSelectedAgents = (
   return agents.filter((agent) => selectedHostIds.includes(agent.metadata?.uid || ''));
 };
 
-type HostSelectionFormProps = {
-  agents: ClusterDeploymentHostSelectionStepProps['agents'];
-  agentClusterInstall: ClusterDeploymentHostSelectionStepProps['agentClusterInstall'];
-  onClose: ClusterDeploymentHostSelectionStepProps['onClose'];
-  clusterDeployment: ClusterDeploymentHostSelectionStepProps['clusterDeployment'];
-  aiConfigMap?: ClusterDeploymentHostSelectionStepProps['aiConfigMap'];
-  onEditRole: AgentTableActions['onEditRole'];
-};
+type HostSelectionFormProps = Omit<ClusterDeploymentHostSelectionStepProps, 'onSaveHostsSelection'>;
 
 const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
   agents,
@@ -158,6 +150,7 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
   clusterDeployment,
   aiConfigMap,
   onEditRole: onEditRoleInit,
+  onSetInstallationDiskId,
 }) => {
   const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
   const [showClusterErrors, setShowClusterErrors] = React.useState(false);
@@ -293,6 +286,7 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
             clusterDeployment={clusterDeployment}
             aiConfigMap={aiConfigMap}
             onEditRole={onEditRole}
+            onSetInstallationDiskId={onSetInstallationDiskId}
             onAutoSelectChange={onAutoSelectChange}
             onHostSelect={onHostSelect}
           />
