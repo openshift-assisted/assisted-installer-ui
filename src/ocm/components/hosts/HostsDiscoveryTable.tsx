@@ -31,6 +31,8 @@ import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import HardwareStatus from './HardwareStatus';
 import HostsTableEmptyState from '../hosts/HostsTableEmptyState';
+import { useSelector } from 'react-redux';
+import { selectCurrentClusterPermissionsState } from '../../selectors';
 
 export const hardwareStatusColumn = (
   onEditHostname?: HostsTableActions['onEditHost'],
@@ -75,7 +77,6 @@ type HostsDiscoveryTableProps = {
 };
 
 const HostsDiscoveryTable = ({ cluster }: HostsDiscoveryTableProps) => {
-  const isDisabled = true; // TODO Celia NOT OK
   const {
     onEditHost,
     actionChecks,
@@ -87,8 +88,9 @@ const HostsDiscoveryTable = ({ cluster }: HostsDiscoveryTableProps) => {
     onMassChangeHostname,
     onMassDeleteHost,
     ...modalProps
-  } = useHostsTable(cluster, isDisabled);
+  } = useHostsTable(cluster);
 
+  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const isSNOCluster = isSNO(cluster);
   const { t } = useTranslation();
   const content = React.useMemo(
@@ -108,7 +110,7 @@ const HostsDiscoveryTable = ({ cluster }: HostsDiscoveryTableProps) => {
   const hosts = cluster.hosts || [];
   const paginationProps = usePagination(hosts.length);
   const itemIDs = hosts.map((h) => h.id);
-  const showBulkActions = !isDisabled && !isSNOCluster;
+  const showBulkActions = !(isViewerMode || isSNOCluster);
 
   return (
     <>

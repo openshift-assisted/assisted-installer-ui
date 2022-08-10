@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   useAlerts,
   Cluster,
@@ -51,8 +51,9 @@ import { ClustersAPI } from '../../services/apis';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { getErrorMessage } from '../../../common/utils';
+import { selectCurrentClusterPermissionsState } from '../../selectors';
 
-export const useHostsTable = (cluster: Cluster, isViewerMode: boolean) => {
+export const useHostsTable = (cluster: Cluster) => {
   const { addAlert } = useAlerts();
   const {
     eventsDialog,
@@ -63,6 +64,7 @@ export const useHostsTable = (cluster: Cluster, isViewerMode: boolean) => {
     massDeleteHostDialog,
   } = useModalDialogsContext();
   const { resetCluster } = React.useContext(AddHostsContext);
+  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
 
   const dispatch = useDispatch();
 

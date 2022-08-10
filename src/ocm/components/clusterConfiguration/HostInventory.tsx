@@ -17,7 +17,6 @@ import {
   useFeature,
   isSNO,
   ClusterWizardStepHeader,
-  SwitchField,
   selectMastersMustRunWorkloads,
   selectSchedulableMasters,
   HostDiscoveryValues,
@@ -31,6 +30,8 @@ import { ODFCheckbox } from './ODFCheckbox';
 import { CnvCheckbox } from './CnvCheckbox';
 import { useFormikContext } from 'formik';
 import { OCMSwitchField } from '../ui/OCMInputField';
+import { useSelector } from 'react-redux';
+import { selectCurrentClusterPermissionsState } from '../../selectors';
 
 const PlatformIntegrationLabel: React.FC = () => (
   <>
@@ -84,6 +85,8 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
   const isSNOCluster = isSNO(cluster);
   const mastersMustRunWorkloads = selectMastersMustRunWorkloads(cluster);
   const { setFieldValue } = useFormikContext<HostDiscoveryValues>();
+  // TODO confirm if the button and the modal should be visible
+  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
 
   React.useEffect(() => {
     setFieldValue('schedulableMasters', selectSchedulableMasters(cluster));
@@ -96,17 +99,19 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
           Host discovery
         </ClusterWizardStepHeader>
       </StackItem>
-      <StackItem>
-        <TextContent>
-          <Text component="p">
-            <DiscoveryImageModalButton
-              ButtonComponent={Button}
-              cluster={cluster}
-              idPrefix="host-inventory"
-            />
-          </Text>
-        </TextContent>
-      </StackItem>
+      {!isViewerMode && (
+        <StackItem>
+          <TextContent>
+            <Text component="p">
+              <DiscoveryImageModalButton
+                ButtonComponent={Button}
+                cluster={cluster}
+                idPrefix="host-inventory"
+              />
+            </Text>
+          </TextContent>
+        </StackItem>
+      )}
       {isContainerNativeVirtualizationEnabled && (
         <StackItem>
           <CnvCheckbox
