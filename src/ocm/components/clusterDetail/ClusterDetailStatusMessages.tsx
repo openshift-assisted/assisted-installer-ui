@@ -5,16 +5,17 @@ import {
   KubeconfigDownload,
   REDHAT_CONSOLE_OPENSHIFT,
   canDownloadKubeconfig,
+  useFeatureSupportLevel,
+  isSNO,
 } from '../../../common';
 import { Cluster } from '../../../common/api/types';
 import { getClusterDetailId } from './utils';
 
 import { useDefaultConfiguration } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
 import { VSPHERE_CONFIG_LINK } from '../../../common/config/constants';
-import { isSNO } from '../../../common/selectors/clusterSelectors';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { calculateClusterDateDiff } from '../../../common/sevices/DateAndTime';
-import { isSingleClusterMode } from '../../config';
+import { ocmClient } from '../../api';
 
 type ClusterDetailStatusMessagesProps = {
   cluster: Cluster;
@@ -27,11 +28,20 @@ const ClusterDetailStatusMessages = ({
   showAddHostsInfo,
   showKubeConfig,
 }: ClusterDetailStatusMessagesProps) => {
+  const featureSupportLevelContext = useFeatureSupportLevel();
   const { inactiveDeletionHours } = useDefaultConfiguration(['inactiveDeletionHours']);
   const inactiveDeletionDays = Math.round((inactiveDeletionHours || 0) / 24);
   const dateDifference = calculateClusterDateDiff(inactiveDeletionDays, cluster.installCompletedAt);
   const showAddHostsAlert =
-    showAddHostsInfo && !isSingleClusterMode() && cluster.status === 'installed' && !isSNO(cluster);
+    showAddHostsInfo &&
+    ocmClient &&
+    cluster.status === 'installed' &&
+    (!isSNO(cluster) ||
+      (cluster.openshiftVersion &&
+        featureSupportLevelContext.isFeatureSupported(
+          cluster.openshiftVersion,
+          'SINGLE_NODE_EXPANSION',
+        )));
 
   const showKubeConfigDownload =
     showKubeConfig && dateDifference > 0 && canDownloadKubeconfig(cluster.status);
