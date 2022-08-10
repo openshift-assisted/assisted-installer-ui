@@ -4,7 +4,6 @@ export { default as ClusterWizardStepValidationsAlert } from './ClusterWizardSte
 export { default as ReviewHostsInventory } from './ReviewHostsInventory';
 export { ClusterValidations, HostsValidations } from './ReviewValidations';
 
-export * from './ClusterDetailsFormFields';
 export * from './clusterDetailsValidation';
 export * from './types';
 export * from './validationsInfoUtils';

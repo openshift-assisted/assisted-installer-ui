@@ -17,7 +17,7 @@ export type onDiskRoleType = (
   hostId: Host['id'],
   diskId: Disk['id'],
   role: DiskRoleValue,
-) => Promise<void>;
+) => Promise<unknown>;
 
 export type DiskRoleProps = {
   host: Host;
@@ -86,7 +86,6 @@ const DiskRoleDropdown: React.FC<DiskRoleDropdownProps> = ({
           await onDiskRole(host.id, disk.id, event.currentTarget.id as DiskRoleValue);
           setDisabled(false);
         }
-        // TODO(mlibra): Improve for the case onDiskRole === undefined
         setOpen(false);
       };
       void asyncFunc();

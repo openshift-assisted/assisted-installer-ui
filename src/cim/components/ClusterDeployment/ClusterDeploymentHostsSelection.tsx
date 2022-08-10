@@ -21,6 +21,7 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
   onEditRole,
   onAutoSelectChange,
   onHostSelect,
+  onSetInstallationDiskId,
 }) => {
   const { values } = useFormikContext<ClusterDeploymentHostsSelectionValues>();
   const { autoSelectHosts } = values;
@@ -78,6 +79,7 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
                 availableAgents={availableAgents}
                 onEditRole={onEditRole}
                 onHostSelect={onHostSelect}
+                onSetInstallationDiskId={onSetInstallationDiskId}
               />
             )}
           </Form>
