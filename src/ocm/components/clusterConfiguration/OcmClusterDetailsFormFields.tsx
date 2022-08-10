@@ -19,11 +19,11 @@ import {
 import DiskEncryptionControlGroup from '../../../common/components/clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import {
-  OCMCheckboxField,
-  OCMInputField,
-  OCMRichInputField,
-  OCMSelectField,
-} from '../ui/OCMInputField';
+  OcmCheckboxField,
+  OcmInputField,
+  OcmRichInputField,
+  OcmSelectField,
+} from '../ui/OcmFormFields';
 
 export type OcmClusterDetailsFormFieldsProps = {
   canEditPullSecret: boolean;
@@ -72,7 +72,7 @@ export const OcmClusterDetailsFormFields = ({
   // TODO(mlibra): Disable fields based on props passed from the caller context. In CIM, the name or domain can not be edited.
   return (
     <Form id="wizard-cluster-details__form">
-      <OCMRichInputField
+      <OcmRichInputField
         ref={nameInputRef}
         label="Cluster name"
         name="name"
@@ -85,7 +85,7 @@ export const OcmClusterDetailsFormFields = ({
         }
       />
       {!!managedDomains.length && toggleRedHatDnsService && (
-        <OCMCheckboxField
+        <OcmCheckboxField
           name="useRedHatDnsService"
           label="Use a temporary 60-day domain"
           helperText="A base domain will be provided for temporary, non-production clusters."
@@ -93,7 +93,7 @@ export const OcmClusterDetailsFormFields = ({
         />
       )}
       {useRedHatDnsService ? (
-        <OCMSelectField
+        <OcmSelectField
           label="Base domain"
           name="baseDnsDomain"
           helperText={<BaseDnsHelperText name={name} baseDnsDomain={baseDnsDomain} />}
@@ -104,7 +104,7 @@ export const OcmClusterDetailsFormFields = ({
           isRequired
         />
       ) : (
-        <OCMInputField
+        <OcmInputField
           label="Base domain"
           name="baseDnsDomain"
           helperText={<BaseDnsHelperText name={name} baseDnsDomain={baseDnsDomain} />}

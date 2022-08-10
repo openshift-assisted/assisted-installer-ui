@@ -20,7 +20,7 @@ import {
 import { ConfirmationModal, PopoverIcon } from '../../../../common/components/ui';
 import { useDefaultConfiguration } from '../ClusterDefaultConfigurationContext';
 import { selectCurrentClusterPermissionsState } from '../../../selectors';
-import { OCMRadioField } from '../../ui/OCMInputField';
+import { OcmRadioField } from '../../ui/OcmFormFields';
 
 type StackTypeControlGroupProps = {
   clusterId: Cluster['id'];
@@ -163,7 +163,7 @@ export const StackTypeControlGroup = ({
           isInline
           onChange={setStackType}
         >
-          <OCMRadioField
+          <OcmRadioField
             name={'stackType'}
             value={IPV4_STACK}
             isDisabled={!isDualStackSelectable}
@@ -177,7 +177,7 @@ export const StackTypeControlGroup = ({
               </>
             }
           />
-          <OCMRadioField
+          <OcmRadioField
             name={'stackType'}
             value={DUAL_STACK}
             isDisabled={!isDualStackSelectable}

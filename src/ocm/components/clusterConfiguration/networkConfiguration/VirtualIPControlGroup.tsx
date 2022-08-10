@@ -13,7 +13,7 @@ import {
 } from '../../../../common';
 import { FeatureSupportLevelBadge } from '../../../../common/components';
 import { selectCurrentClusterPermissionsState } from '../../../selectors';
-import { OCMCheckboxField, OCMInputField } from '../../ui/OCMInputField';
+import { OcmCheckboxField, OcmInputField } from '../../ui/OcmFormFields';
 
 interface VipStaticValueProps {
   vipName: string;
@@ -127,7 +127,7 @@ export const VirtualIPControlGroup = ({
   return (
     <>
       {!isVipDhcpAllocationDisabled && (
-        <OCMCheckboxField
+        <OcmCheckboxField
           label={
             <>
               <Tooltip
@@ -181,8 +181,8 @@ export const VirtualIPControlGroup = ({
         </>
       ) : (
         <>
-          <OCMInputField label="API IP" name="apiVip" helperText={apiVipHelperText} isRequired />
-          <OCMInputField
+          <OcmInputField label="API IP" name="apiVip" helperText={apiVipHelperText} isRequired />
+          <OcmInputField
             name="ingressVip"
             label="Ingress IP"
             helperText={ingressVipHelperText}

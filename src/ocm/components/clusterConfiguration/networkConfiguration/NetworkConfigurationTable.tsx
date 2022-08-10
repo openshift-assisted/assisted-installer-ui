@@ -15,6 +15,7 @@ const NetworkConfigurationTable = ({ cluster }: ClusterHostsTableProps) => {
         cluster={cluster}
         AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
         canEditRole={actionChecks.canEditRole}
+        canEditHostname={actionChecks.canEditHostname}
         onEditHost={onEditHost}
         onEditRole={onEditRole}
         actionResolver={actionResolver}

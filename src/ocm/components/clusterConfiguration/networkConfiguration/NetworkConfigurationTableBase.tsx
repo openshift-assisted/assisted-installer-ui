@@ -53,6 +53,7 @@ type NetworkConfigurationTableProps = {
   onEditHost?: HostsTableActions['onEditHost'];
   onEditRole?: HostsTableActions['onEditRole'];
   canEditRole?: HostsTableActions['canEditRole'];
+  canEditHostname?: HostsTableActions['canEditHostname'];
   onSelect?: (obj: Host, isSelected: boolean) => void;
   selectedIDs?: string[];
 };
@@ -63,6 +64,7 @@ const NetworkConfigurationTableBase = ({
   onEditHost,
   onEditRole,
   canEditRole,
+  canEditHostname,
   actionResolver,
   children,
   onSelect,
@@ -71,7 +73,7 @@ const NetworkConfigurationTableBase = ({
   const { t } = useTranslation();
   const content = React.useMemo(
     () => [
-      hostnameColumn(t, onEditHost),
+      hostnameColumn(t, onEditHost, undefined, canEditHostname),
       roleColumn(t, canEditRole, onEditRole, selectSchedulableMasters(cluster)),
       networkingStatusColumn(onEditHost),
       activeNICColumn(cluster),
@@ -80,7 +82,7 @@ const NetworkConfigurationTableBase = ({
       macAddressColumn(cluster),
       countColumn(cluster),
     ],
-    [onEditHost, onEditRole, canEditRole, cluster, t],
+    [t, onEditHost, onEditRole, canEditHostname, canEditRole, cluster],
   );
 
   const hosts = cluster.hosts || [];

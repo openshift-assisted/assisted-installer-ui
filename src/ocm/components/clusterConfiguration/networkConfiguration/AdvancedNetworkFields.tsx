@@ -17,7 +17,7 @@ import {
 } from '../../../../common';
 import { NetworkTypeControlGroup } from '../../../../common/components/clusterWizard/networkingSteps/NetworkTypeControlGroup';
 import { selectCurrentClusterPermissionsState } from '../../../selectors';
-import { OCMInputField } from '../../ui/OCMInputField';
+import { OcmInputField } from '../../ui/OcmFormFields';
 
 type AdvancedNetworkFieldsProps = {
   isSDNSelectable: boolean;
@@ -77,14 +77,14 @@ const AdvancedNetworkFields = ({ isSDNSelectable }: AdvancedNetworkFieldsProps) 
               const networkSuffix = getNetworkLabelSuffix(index, isDualStack);
               return (
                 <StackItem key={index} className={'network-field-group'}>
-                  <OCMInputField
+                  <OcmInputField
                     name={`clusterNetworks.${index}.cidr`}
                     label={`Cluster network CIDR${networkSuffix}`}
                     helperText={clusterCidrHelperText}
                     isRequired
                     labelInfo={index === 0 && isDualStack ? 'Primary' : ''}
                   />
-                  <OCMInputField
+                  <OcmInputField
                     name={`clusterNetworks.${index}.hostPrefix`}
                     label={`Cluster network host prefix${networkSuffix}`}
                     type={TextInputTypes.number}
@@ -116,7 +116,7 @@ const AdvancedNetworkFields = ({ isSDNSelectable }: AdvancedNetworkFieldsProps) 
           <FormGroup fieldId="serviceNetworks" labelInfo={isDualStack && 'Primary'}>
             {values.serviceNetworks?.map((_, index) => (
               <StackItem key={index} className={'network-field-group'}>
-                <OCMInputField
+                <OcmInputField
                   name={`serviceNetworks.${index}.cidr`}
                   label={`Service network CIDR${getNetworkLabelSuffix(index, isDualStack)}`}
                   helperText={serviceCidrHelperText}

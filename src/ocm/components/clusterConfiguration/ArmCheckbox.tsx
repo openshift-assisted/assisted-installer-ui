@@ -14,7 +14,7 @@ import {
   FeatureSupportLevelBadge,
   useFeatureSupportLevel,
 } from '../../../common/components/featureSupportLevels';
-import { OCMCheckbox } from '../ui/OCMInputField';
+import { OcmCheckbox } from '../ui/OcmFormFields';
 
 const getLabel = (openshiftVersion: string) => {
   return (
@@ -75,7 +75,7 @@ const ArmCheckbox: React.FC<ArmCheckboxProps> = ({ versions }) => {
   return (
     <FormGroup isInline fieldId={fieldId}>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
-        <OCMCheckbox
+        <OcmCheckbox
           id={fieldId}
           name={name}
           isDisabled={featureSupportLevelContext.isFeatureDisabled(

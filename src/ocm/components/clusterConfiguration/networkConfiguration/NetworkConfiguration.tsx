@@ -29,7 +29,7 @@ import { AvailableSubnetsControl } from './AvailableSubnetsControl';
 import AdvancedNetworkFields from './AdvancedNetworkFields';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { selectCurrentClusterPermissionsState } from '../../../selectors';
-import { OCMCheckbox } from '../../ui/OCMInputField';
+import { OcmCheckbox } from '../../ui/OcmFormFields';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   hostSubnets: HostSubnets;
@@ -273,7 +273,7 @@ const NetworkConfiguration = ({
         hidden={!isDualStack}
         position={'top-start'}
       >
-        <OCMCheckbox
+        <OcmCheckbox
           id="useAdvancedNetworking"
           label="Use advanced networking"
           description="Configure advanced networking properties (e.g. CIDR ranges)."

@@ -3,7 +3,7 @@ import { Cluster, getFieldId, PopoverIcon } from '../../../common';
 import { useFeatureSupportLevel } from '../../../common/components/featureSupportLevels';
 import { FormGroup, Tooltip } from '@patternfly/react-core';
 import CNVHostRequirementsContent from '../hosts/CNVHostRequirementsContent';
-import { OCMCheckboxField } from '../ui/OCMInputField';
+import { OcmCheckboxField } from '../ui/OcmFormFields';
 
 const CNVLabel: React.FC<{ clusterId: Cluster['id']; isSingleNode?: boolean }> = ({
   clusterId,
@@ -39,7 +39,7 @@ export const CnvCheckbox: React.FC<CnvCheckboxProps> = ({ openshiftVersion, isSN
   return (
     <FormGroup isInline fieldId={fieldId}>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
-        <OCMCheckboxField
+        <OcmCheckboxField
           name={name}
           label={<CNVLabel clusterId={clusterId} isSingleNode={isSNO} />}
           helperText="Run virtual machines along containers."

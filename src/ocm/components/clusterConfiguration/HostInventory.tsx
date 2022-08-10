@@ -29,7 +29,7 @@ import { useClusterSupportedPlatforms } from '../../hooks';
 import { ODFCheckbox } from './ODFCheckbox';
 import { CnvCheckbox } from './CnvCheckbox';
 import { useFormikContext } from 'formik';
-import { OCMSwitchField } from '../ui/OCMInputField';
+import { OcmSwitchField } from '../ui/OcmFormFields';
 import { useSelector } from 'react-redux';
 import { selectCurrentClusterPermissionsState } from '../../selectors';
 
@@ -130,7 +130,7 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
         <StackItem>
           <Split hasGutter>
             <SplitItem>
-              <OCMSwitchField
+              <OcmSwitchField
                 tooltipProps={{
                   hidden: isPlatformIntegrationSupported,
                   content: platformIntegrationTooltip,
@@ -147,7 +147,7 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
         </StackItem>
       )}
       <StackItem>
-        <OCMSwitchField
+        <OcmSwitchField
           tooltipProps={{
             hidden: !mastersMustRunWorkloads,
             content: schedulableMastersTooltip,
