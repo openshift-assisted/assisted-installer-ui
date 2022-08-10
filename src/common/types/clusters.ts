@@ -48,6 +48,9 @@ export type HostDiscoveryValues = V2ClusterUpdateParams & {
   usePlatformIntegration: boolean;
   schedulableMasters: boolean;
 };
+export type StorageValues = V2ClusterUpdateParams & {
+  nodeLabeling: string;
+};
 export enum CpuArchitecture {
   x86 = 'x86_64',
   ARM = 'arm64',

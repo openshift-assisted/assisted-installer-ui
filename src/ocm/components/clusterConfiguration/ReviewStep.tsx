@@ -4,7 +4,7 @@ import { ActionListItem, Button, ButtonVariant, Grid, GridItem } from '@patternf
 import { Cluster, ClusterWizardStepHeader, useAlerts, ClusterWizardStep } from '../../../common';
 import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
 import { getApiErrorMessage, handleApiError } from '../../api';
-import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
+import { updateCluster } from '../../reducers/clusters';
 import ClusterWizardFooter from '../clusterWizard/ClusterWizardFooter';
 import ClusterWizardNavigation from '../clusterWizard/ClusterWizardNavigation';
 import ReviewCluster from './ReviewCluster';
