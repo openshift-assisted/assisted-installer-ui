@@ -4,27 +4,45 @@ import { Formik } from 'formik';
 import noop from 'lodash/noop';
 import { Stack, StackItem } from '@patternfly/react-core';
 import HostsForm from './HostsForm';
-import { HostsStepProps, HostsFormValues } from './types';
+import { HostsStepProps, HostsFormValues, NodePoolFormValue } from './types';
 import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
 import { HostsStepProps, HostsFormValues } from './types';
 import { getAgentsForSelection } from '../../../helpers';
 import { INFRAENV_AGENTINSTALL_LABEL_KEY } from '../../../common';
 import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
 import { Stack, StackItem } from '@patternfly/react-core';
+import { TFunction } from 'i18next';
+import { NodePoolK8sResource } from '../../types';
 
-const validationSchema = Yup.object<HostsFormValues>().shape({
-  agentNamespace: Yup.string().required(),
-  nodePools: Yup.array().of(
-    Yup.object()
-      .shape({
-        name: Yup.string().required(),
-        clusterName: Yup.string().required(),
-        count: Yup.number(),
-        releaseImage: Yup.string().required(),
-      })
-      .required(),
-  ),
-});
+const validationSchema = (clusterName: string, nodePools: NodePoolK8sResource[], t: TFunction) =>
+  Yup.lazy<HostsFormValues>((values) =>
+    Yup.object<HostsFormValues>().shape({
+      agentNamespace: Yup.string().required(),
+      nodePools: Yup.array().of(
+        Yup.object<NodePoolFormValue>()
+          .shape({
+            name: Yup.string()
+              .required()
+              .test(t('ai:Must be unique'), t('ai:Must be unique'), (value) => {
+                if (!value) {
+                  return true;
+                }
+                return (
+                  values.nodePools.filter(({ name }) => name === value).length === 1 &&
+                  !nodePools.some(
+                    ({ metadata }) =>
+                      metadata?.name === value && metadata?.namespace === clusterName,
+                  )
+                );
+              }),
+            clusterName: Yup.string().required(),
+            count: Yup.number(),
+            releaseImage: Yup.string().required(),
+          })
+          .required(),
+      ),
+    }),
+  );
 
 const HostsStep: React.FC<HostsStepProps> = ({
   formRef,
@@ -35,6 +53,7 @@ const HostsStep: React.FC<HostsStepProps> = ({
   initInfraEnv,
   initNodePools,
   initReleaseImage,
+  nodePools,
 }) => {
   const { t } = useTranslation();
   const availableAgents = getAgentsForSelection(agents);
@@ -68,7 +87,7 @@ const HostsStep: React.FC<HostsStepProps> = ({
               },
             ],
           }}
-          validationSchema={validationSchema}
+          validationSchema={validationSchema(clusterName, nodePools, t)}
           innerRef={formRef}
           onSubmit={noop}
         >

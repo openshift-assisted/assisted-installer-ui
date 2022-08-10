@@ -16,6 +16,7 @@ type ClusterDeploymentHostsSelectionAdvancedProps = {
   availableAgents: AgentK8sResource[];
   onEditRole?: AgentTableActions['onEditRole'];
   onEditHost?: AgentTableActions['onEditHost'];
+  onSetInstallationDiskId?: AgentTableActions['onSetInstallationDiskId'];
   onHostSelect?: VoidFunction;
 };
 
@@ -24,6 +25,7 @@ type FormValues = ClusterDeploymentHostsSelectionValues | ScaleUpFormValues;
 const ClusterDeploymentHostsSelectionAdvanced = <T extends FormValues>({
   availableAgents,
   onEditRole,
+  onSetInstallationDiskId,
   onEditHost,
   onHostSelect,
 }: ClusterDeploymentHostsSelectionAdvancedProps) => {
@@ -68,6 +70,7 @@ const ClusterDeploymentHostsSelectionAdvanced = <T extends FormValues>({
                 <AgentsSelectionTable
                   matchingAgents={matchingAgents}
                   onEditRole={onEditRole}
+                  onSetInstallationDiskId={onSetInstallationDiskId}
                   width={contentRect.bounds?.width}
                   onEditHost={onEditHost}
                   onHostSelect={onHostSelect}
