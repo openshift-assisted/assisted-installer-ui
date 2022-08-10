@@ -1,8 +1,9 @@
 import React from 'react';
-import { CheckboxField, getFieldId, PopoverIcon, ODF_REQUIREMENTS_LINK } from '../../../common';
+import { getFieldId, PopoverIcon, ODF_REQUIREMENTS_LINK } from '../../../common';
 import { useFeatureSupportLevel } from '../../../common/components/featureSupportLevels';
 import { FormGroup, Tooltip } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
+import { OCMCheckboxField } from '../ui/OCMInputField';
 
 const ODFLabel: React.FC = () => (
   <>
@@ -33,7 +34,7 @@ export const ODFCheckbox: React.FC<ODFCheckboxProps> = ({ openshiftVersion }) =>
   return (
     <FormGroup isInline fieldId={fieldId}>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
-        <CheckboxField
+        <OCMCheckboxField
           name={name}
           label={<ODFLabel />}
           isDisabled={!!disabledReason}

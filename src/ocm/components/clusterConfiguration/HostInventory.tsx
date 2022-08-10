@@ -30,6 +30,7 @@ import { useClusterSupportedPlatforms } from '../../hooks';
 import { ODFCheckbox } from './ODFCheckbox';
 import { CnvCheckbox } from './CnvCheckbox';
 import { useFormikContext } from 'formik';
+import { OCMSwitchField } from '../ui/OCMInputField';
 
 const PlatformIntegrationLabel: React.FC = () => (
   <>
@@ -124,7 +125,7 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
         <StackItem>
           <Split hasGutter>
             <SplitItem>
-              <SwitchField
+              <OCMSwitchField
                 tooltipProps={{
                   hidden: isPlatformIntegrationSupported,
                   content: platformIntegrationTooltip,
@@ -141,7 +142,7 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
         </StackItem>
       )}
       <StackItem>
-        <SwitchField
+        <OCMSwitchField
           tooltipProps={{
             hidden: !mastersMustRunWorkloads,
             content: schedulableMastersTooltip,

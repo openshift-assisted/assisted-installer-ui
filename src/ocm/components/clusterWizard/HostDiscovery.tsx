@@ -22,13 +22,12 @@ import { ClustersAPI } from '../../services/apis';
 import { HostDiscoveryService } from '../../services';
 import { selectCurrentClusterPermissionsState } from '../../selectors';
 
-const HostDiscoveryForm: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
+const HostDiscoveryForm = ({ cluster }: { cluster: Cluster }) => {
   const { alerts } = useAlerts();
   const { errors, touched, isSubmitting, isValid } = useFormikContext<HostDiscoveryValues>();
   const clusterWizardContext = useClusterWizardContext();
   const isAutoSaveRunning = useFormikAutoSave();
   const errorFields = getFormikErrorFields(errors, touched);
-  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
 
   const isNextDisabled =
     !isValid ||
@@ -42,7 +41,7 @@ const HostDiscoveryForm: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
       cluster={cluster}
       errorFields={errorFields}
       isSubmitting={isSubmitting}
-      isNextDisabled={!isViewerMode && isNextDisabled}
+      isNextDisabled={isNextDisabled}
       onNext={() => clusterWizardContext.moveNext()}
       onBack={() => clusterWizardContext.moveBack()}
     />
@@ -55,7 +54,7 @@ const HostDiscoveryForm: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   );
 };
 
-const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
+const HostDiscovery = ({ cluster }: { cluster: Cluster }) => {
   const dispatch = useDispatch();
   const { addAlert, clearAlerts } = useAlerts();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
