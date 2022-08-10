@@ -25,8 +25,17 @@ import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
 import { ExpandComponentProps } from '../../../common/components/hosts/AITable';
 import { Host } from '../../../common/api/types';
-import { onDiskRoleType } from '../../../common/components/hosts/DiskRole';
-import { HostsTableActions } from '../../../common/components/hosts/types';
+import {
+  HostsTableDetailContextProvider,
+  useHostsTableDetailContext,
+} from '../../../common/components/hosts/HostsTableDetailContext';
+
+export function ExpandComponent({ obj: host }: ExpandComponentProps<Host>) {
+  const { onDiskRole, canEditDisks } = useHostsTableDetailContext();
+  return (
+    <HostDetail key={host.id} host={host} onDiskRole={onDiskRole} canEditDisks={canEditDisks} />
+  );
+}
 
 type AgentsSelectionTableProps = {
   matchingAgents: AgentK8sResource[];
@@ -36,16 +45,6 @@ type AgentsSelectionTableProps = {
   onEditHost?: AgentTableActions['onEditHost'];
   onHostSelect?: VoidFunction;
 };
-
-export const getExpandComponent = (
-  onDiskRole: onDiskRoleType,
-  canEditDisks: HostsTableActions['canEditDisks'],
-) =>
-  function ExpandComponent({ obj: host }: ExpandComponentProps<Host>) {
-    return (
-      <HostDetail key={host.id} host={host} onDiskRole={onDiskRole} canEditDisks={canEditDisks} />
-    );
-  };
 
 const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
   matchingAgents,
@@ -124,24 +123,25 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
 
   const paginationProps = usePagination(hosts.length);
   return (
-    <HostsTable
-      hosts={hosts}
-      content={content}
-      selectedIDs={selectedIDs}
-      actionResolver={actionResolver}
-      ExpandComponent={
-        actions.onDiskRole
-          ? getExpandComponent(actions.onDiskRole, actions.canEditDisks)
-          : DefaultExpandComponent
-      }
-      {...actions}
-      {...paginationProps}
+    <HostsTableDetailContextProvider
+      canEditDisks={actions.canEditDisks}
+      onDiskRole={actions.onDiskRole}
     >
-      <DefaultEmptyState
-        title={t('ai:No hosts found')}
-        content={t('ai:No host matches provided labels/locations')}
-      />
-    </HostsTable>
+      <HostsTable
+        hosts={hosts}
+        content={content}
+        selectedIDs={selectedIDs}
+        actionResolver={actionResolver}
+        ExpandComponent={actions.onDiskRole ? ExpandComponent : DefaultExpandComponent}
+        {...actions}
+        {...paginationProps}
+      >
+        <DefaultEmptyState
+          title={t('ai:No hosts found')}
+          content={t('ai:No host matches provided labels/locations')}
+        />
+      </HostsTable>
+    </HostsTableDetailContextProvider>
   );
 };
 
