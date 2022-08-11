@@ -549,7 +549,7 @@
   "ai:Submit": "Submit",
   "ai:Synced": "Synced",
   "ai:Tang server component that enable network-bound disk encryption (NBDE).": "Tang server component that enable network-bound disk encryption (NBDE).",
-  "ai:Tang Server URL must be a valid URL": "Tang Server URL must be a valid URL",
+  "ai:Tang Server URL must be a valid URL starting with \"http://\" or \"https://\"": "Tang Server URL must be a valid URL starting with \"http://\" or \"https://\"",
   "ai:Tang servers": "Tang servers",
   "ai:Tang servers' URLs or thumbprints": "Tang servers' URLs or thumbprints",
   "ai:Technology Preview": "Technology Preview",
