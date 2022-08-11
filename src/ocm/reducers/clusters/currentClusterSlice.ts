@@ -42,7 +42,7 @@ export const fetchClusterAsync = createAsyncThunk<
 const initialState: CurrentClusterStateSlice = {
   data: undefined,
   uiState: ResourceUIState.LOADING,
-  permissions: { isViewerMode: true },
+  permissions: { isViewerMode: false },
   errorDetail: undefined,
   isReloadScheduled: 0,
 };

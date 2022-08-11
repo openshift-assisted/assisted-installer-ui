@@ -3,13 +3,17 @@ import { AssistedInstallerOCMPermissionTypesListType, Cluster } from '../../comm
 import { ExtendedCluster, getBasePermissions, ocmPermissionsToAIPermissions } from '../config';
 import { updateClusterPermissions } from '../reducers/clusters';
 
-export default function useClusterPermissions() {
+export default function useSetClusterPermissions() {
   const dispatch = useDispatch();
 
   const updatePermissions = (
-    ocmPermissions?: AssistedInstallerOCMPermissionTypesListType,
     cluster?: Cluster,
+    ocmPermissions?: AssistedInstallerOCMPermissionTypesListType,
   ) => {
+    if (!cluster) {
+      // When the cluster is cleaned, the state permissions are reset
+      return;
+    }
     let newPermissions = getBasePermissions(cluster as ExtendedCluster);
     if (ocmPermissions) {
       newPermissions = {
@@ -20,7 +24,5 @@ export default function useClusterPermissions() {
     dispatch(updateClusterPermissions(newPermissions));
   };
 
-  return {
-    setPermissions: updatePermissions,
-  };
+  return updatePermissions;
 }

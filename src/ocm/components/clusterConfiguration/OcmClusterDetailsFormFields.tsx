@@ -56,7 +56,7 @@ export const OcmClusterDetailsFormFields = ({
   isPullSecretSet,
   defaultPullSecret,
   forceOpenshiftVersion,
-  isOcm, // TODO(mlibra): make it optional, false by default
+  isOcm,
   clusterExists,
 }: OcmClusterDetailsFormFieldsProps) => {
   const { values } = useFormikContext<ClusterDetailsValues>();
@@ -69,7 +69,6 @@ export const OcmClusterDetailsFormFields = ({
     values.enableDiskEncryptionOnMasters || values.enableDiskEncryptionOnWorkers;
 
   const { t } = useTranslation();
-  // TODO(mlibra): Disable fields based on props passed from the caller context. In CIM, the name or domain can not be edited.
   return (
     <Form id="wizard-cluster-details__form">
       <OcmRichInputField

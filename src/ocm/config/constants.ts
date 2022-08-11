@@ -14,9 +14,9 @@ export type ExtendedCluster = Cluster & {
 };
 
 export const getBasePermissions = (
-  cluster?: ExtendedCluster,
+  cluster: ExtendedCluster,
 ): AssistedInstallerPermissionTypesListType => {
-  if (cluster?.permissions) {
+  if (cluster.permissions) {
     return { isViewerMode: !cluster.permissions.canEdit };
   }
 
@@ -24,7 +24,9 @@ export const getBasePermissions = (
   if (!process.env.REACT_APP_CLUSTER_PERMISSIONS) {
     return basePermissions;
   }
-  const ocmPermissions = JSON.parse(process.env.REACT_APP_CLUSTER_PERMISSIONS);
+  const ocmPermissions = JSON.parse(
+    process.env.REACT_APP_CLUSTER_PERMISSIONS,
+  ) as AssistedInstallerOCMPermissionTypesListType;
 
   return {
     ...basePermissions,
