@@ -165,11 +165,11 @@ const Hosts = <HostFieldType,>({
   emptyHostData,
   ...props
 }: HostsProps<HostFieldType>) => {
-  const canAddHosts = !useSelector(selectIsCurrentClusterSNO);
   const [field, { error }] = useField<HostFieldType[]>({
     name: fieldName,
   });
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
+  const canAddHosts = !useSelector(selectIsCurrentClusterSNO) && !isViewerMode;
   const [expandedHosts, setExpandedHosts] = React.useState<ExpandedHosts>(
     getExpandedHostsDefaultValue(field.value.length),
   );

@@ -1,8 +1,9 @@
 import React from 'react';
-import { ButtonVariant, Form, FormGroup, Radio } from '@patternfly/react-core';
-import { getFieldId } from '../../../../../common';
+import { ButtonVariant, Form, FormGroup } from '@patternfly/react-core';
 import { StaticIpView } from '../data/dataTypes';
+import { getFieldId } from '../../../../../common';
 import ConfirmationModal from '../../../../../common/components/ui/ConfirmationModal';
+import { OcmRadio } from '../../../ui/OcmFormFields';
 
 export type StaticIpViewRadioGroupProps = {
   initialView: StaticIpView;
@@ -10,11 +11,11 @@ export type StaticIpViewRadioGroupProps = {
   onChangeView(view: StaticIpView): void;
 };
 
-const StaticIpViewRadioGroup: React.FC<StaticIpViewRadioGroupProps> = ({
+const StaticIpViewRadioGroup = ({
   initialView,
   confirmOnChangeView,
   onChangeView,
-}) => {
+}: StaticIpViewRadioGroupProps) => {
   const GROUP_NAME = 'select-static-ip-view';
   const [confirmView, setConfirmView] = React.useState<StaticIpView>();
   const [view, setView] = React.useState<StaticIpView>(initialView);
@@ -51,7 +52,7 @@ const StaticIpViewRadioGroup: React.FC<StaticIpViewRadioGroupProps> = ({
           label="Configure via :"
           className="static-config-type-label"
         >
-          <Radio
+          <OcmRadio
             label="Form view"
             name={GROUP_NAME}
             data-testid="select-form-view"
@@ -60,14 +61,14 @@ const StaticIpViewRadioGroup: React.FC<StaticIpViewRadioGroupProps> = ({
             isChecked={view === StaticIpView.FORM}
             onChange={handleChange}
           />
-          <Radio
+          <OcmRadio
             label="YAML view"
             name={GROUP_NAME}
             data-testid="select-yaml-view"
             id="select-yaml-view"
             value={StaticIpView.YAML}
-            onChange={handleChange}
             isChecked={view === StaticIpView.YAML}
+            onChange={handleChange}
           />
         </FormGroup>
       </Form>

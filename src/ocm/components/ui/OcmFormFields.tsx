@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
-import { Checkbox } from '@patternfly/react-core';
-import { CheckboxProps } from '@patternfly/react-core/src/components/Checkbox/Checkbox';
+import { Checkbox, CheckboxProps, Radio, RadioProps } from '@patternfly/react-core';
 import { selectCurrentClusterPermissionsState } from '../../selectors';
 import {
   CheckboxField,
+  CodeField,
   InputField,
   RadioField,
   RichInputField,
@@ -13,6 +13,7 @@ import {
 } from '../../../common';
 import {
   CheckboxFieldProps,
+  CodeFieldProps,
   InputFieldProps,
   RadioFieldProps,
   SelectFieldProps,
@@ -24,9 +25,7 @@ type DisableableField = {
   isDisabled?: boolean;
 };
 
-function FormFieldDisabler<T extends DisableableField>(
-  FormComponent: (props: T) => JSX.Element | null,
-) {
+function FormFieldDisabler<T extends DisableableField>(FormComponent: React.ComponentType<T>) {
   return function WrapperHoc(props: T) {
     const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
 
@@ -36,7 +35,7 @@ function FormFieldDisabler<T extends DisableableField>(
 }
 
 export function RefFormFieldDisabler<T extends DisableableField>(
-  FormComponent: (props: T) => JSX.Element | null,
+  FormComponent: React.ComponentType<T>,
 ) {
   return React.forwardRef(function useInputRef(props: T, ref) {
     const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
@@ -46,16 +45,17 @@ export function RefFormFieldDisabler<T extends DisableableField>(
   });
 }
 
+// Formik Fields
 const OcmInputField = FormFieldDisabler<InputFieldProps>(InputField);
 const OcmSelectField = FormFieldDisabler<SelectFieldProps>(SelectField);
 const OcmCheckboxField = FormFieldDisabler<CheckboxFieldProps>(CheckboxField);
 const OcmSwitchField = FormFieldDisabler<SwitchFieldProps>(SwitchField);
 const OcmRadioField = FormFieldDisabler<RadioFieldProps>(RadioField);
+const OcmCodeField = FormFieldDisabler<CodeFieldProps>(CodeField);
 
-// TODO Try to fix the linting error
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
+// Patternfly components
 const OcmCheckbox = FormFieldDisabler<CheckboxProps>(Checkbox);
+const OcmRadio = FormFieldDisabler<RadioProps>(Radio);
 
 // With forwardRef
 const OcmRichInputField = RefFormFieldDisabler<RichInputFieldPropsProps>(RichInputField);
@@ -66,6 +66,8 @@ export {
   OcmSelectField,
   OcmCheckbox,
   OcmCheckboxField,
+  OcmCodeField,
   OcmSwitchField,
   OcmRadioField,
+  OcmRadio,
 };
