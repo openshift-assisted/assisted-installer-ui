@@ -44,6 +44,7 @@ const Day2ClusterService = {
         ocmCluster.display_name || ocmCluster.name || openshiftClusterId,
         apiVipDnsname,
         pullSecret,
+        ocmCluster.openshift_version,
       );
     }
   },
@@ -59,17 +60,20 @@ const Day2ClusterService = {
     clusterName: string,
     apiVipDnsname: string,
     pullSecret: string,
+    openshiftVersion: string,
   ) {
     const { data } = await ClustersAPI.registerAddHosts({
       openshiftClusterId, // used to both match OpenShift Cluster and as an assisted-installer ID
       name: `scale-up-${clusterName}`, // both cluster.name and cluster.display-name contain just UUID which fails AI validation (k8s naming conventions)
       apiVipDnsname,
+      openshiftVersion: openshiftVersion,
     });
 
     await InfraEnvsService.create({
       name: `${data.name || ''}_infra-env`,
       pullSecret,
       clusterId: data.id,
+      openshiftVersion: openshiftVersion,
     });
 
     data.hosts = await Day2ClusterService.fetchHosts(data.id);
