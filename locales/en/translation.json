@@ -1,6 +1,4 @@
 {
-  "'ai:Check the proxy settings and verify that the assisted installer service is connected to a network. You can use <code>nmcli</code> to get additional information about your network configuration.": "'ai:Check the proxy settings and verify that the assisted installer service is connected to a network. You can use <code>nmcli</code> to get additional information about your network configuration.",
-  "'ai:URL must start with <bold>http</bold> (https schemes are not currently supported).": "'ai:URL must start with <bold>http</bold> (https schemes are not currently supported).",
   "ai: or select just 3 hosts instead.": " or select just 3 hosts instead.",
   "ai:({{size}} hosts available)": "({{size}} hosts available)",
   "ai:(1 host available)": "(1 host available)",
@@ -113,6 +111,7 @@
   "ai:Check agent logs": "Check agent logs",
   "ai:Check assisted-installer logs": "Check assisted-installer logs",
   "ai:Check bootkube logs": "Check bootkube logs",
+  "ai:Check the proxy settings and verify that the assisted installer service is connected to a network. You can use <code>nmcli</code> to get additional information about your network configuration.": "Check the proxy settings and verify that the assisted installer service is connected to a network. You can use <code>nmcli</code> to get additional information about your network configuration.",
   "ai:Check your VM reboot configuration": "Check your VM reboot configuration",
   "ai:Clear all filters": "Clear all filters",
   "ai:Clear filters": "Clear filters",
@@ -619,6 +618,7 @@
   "ai:Upload a YAML file": "Upload a YAML file",
   "ai:Upload a YAML file in NMstate format that includes your network configuration (static IPs, bonds, etc.).": "Upload a YAML file in NMstate format that includes your network configuration (static IPs, bonds, etc.).",
   "ai:Upload a YAML file with BareMetalHost and Secret resource definitions. Use the provided template as a reference.": "Upload a YAML file with BareMetalHost and Secret resource definitions. Use the provided template as a reference.",
+  "ai:URL must start with <bold>http</bold> (https schemes are not currently supported).": "URL must start with <bold>http</bold> (https schemes are not currently supported).",
   "ai:URL must start with <bold>http</bold>.": "URL must start with <bold>http</bold>.",
   "ai:Use a comma to separate each listed domain. Preface a domain with <bold>.</bold> to include its subdomains. Use <bold>*</bold> to bypass the proxy for all destinations.": "Use a comma to separate each listed domain. Preface a domain with <bold>.</bold> to include its subdomains. Use <bold>*</bold> to bypass the proxy for all destinations.",
   "ai:Use advanced networking": "Use advanced networking",
