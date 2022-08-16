@@ -33,6 +33,7 @@ const ValidationSection = ({
   const { currentStepId } = useClusterWizardContext();
   const validationsInfo = cluster && selectClusterValidationsInfo(cluster);
   const { t } = useTranslation();
+  const allHostsAreVsphere = cluster && cluster.platform?.type === 'vsphere';
   let _alertContent = alertContent;
   if (_alertContent === undefined) {
     _alertContent = `The following fields are invalid or missing: 
@@ -43,6 +44,17 @@ const ValidationSection = ({
       {!!errorFields.length && (
         <Alert variant={AlertVariant.danger} title={alertTitle || defaultAlertTitle} isInline>
           {_alertContent}
+        </Alert>
+      )}
+      {allHostsAreVsphere && (
+        <Alert
+          title="Discover the full potential of vSphere integration"
+          variant={AlertVariant.info}
+          isInline={true}
+          data-testid="discover-vsphere-hosts"
+        >
+          Since all of your hosts originated from vSphere platform, you now have the option to
+          integrate with vSphere. Switch the 'Integrate with vSphere' toggle to get started.
         </Alert>
       )}
       {cluster && (
