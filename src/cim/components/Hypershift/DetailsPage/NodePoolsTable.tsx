@@ -209,7 +209,7 @@ const NodePoolsTable = ({
                         <Td />
                         <Td>{agent.spec.hostname || agent.status?.inventory.hostname}</Td>
                         <Td>
-                          <AgentStatus agent={agent} autoCSR />
+                          <AgentStatus agent={agent} />
                         </Td>
                         <Td>
                           <Link

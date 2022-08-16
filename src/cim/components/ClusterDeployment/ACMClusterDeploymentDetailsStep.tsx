@@ -2,7 +2,7 @@ import { Formik, FormikProps, useFormikContext } from 'formik';
 import noop from 'lodash/noop';
 import * as React from 'react';
 import { Ref } from 'react';
-import { ClusterDetailsFormFieldsProps, ClusterDetailsValues } from '../../../common';
+import { ClusterDetailsValues } from '../../../common';
 import {
   AgentClusterInstallK8sResource,
   AgentK8sResource,
@@ -11,6 +11,7 @@ import {
 import { ClusterImageSetK8sResource } from '../../types/k8s/cluster-image-set';
 import ClusterDeploymentDetailsForm from './ClusterDeploymentDetailsForm';
 import { useDetailsFormik } from './ClusterDeploymentDetailsStep';
+import { ClusterDetailsFormFieldsProps } from './ClusterDetailsFormFields';
 
 type DetailsFormBodyProps = {
   clusterImages: ClusterImageSetK8sResource[];

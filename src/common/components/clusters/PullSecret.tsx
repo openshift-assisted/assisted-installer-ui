@@ -7,10 +7,10 @@ import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 export type PullSecretProps = {
   defaultPullSecret?: string;
-  isOcm: boolean;
+  isOcm?: boolean;
 };
 
-const PullSecret: React.FC<PullSecretProps> = ({ defaultPullSecret, isOcm }) => {
+const PullSecret: React.FC<PullSecretProps> = ({ defaultPullSecret, isOcm = false }) => {
   // Fetched pull secret will never change - see LoadingState in NewCluster
   const [isExpanded, setExpanded] = React.useState(!defaultPullSecret);
   const { setFieldValue } = useFormikContext<ClusterCreateParams>();
