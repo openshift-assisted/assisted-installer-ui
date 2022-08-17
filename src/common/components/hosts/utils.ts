@@ -4,7 +4,6 @@ import { Host, Cluster, Inventory } from '../../api/types';
 import { hostRoles, TIME_ZERO } from '../../config';
 import { DASH } from '../constants';
 import { stringToJSON } from '../../api';
-import { isSNO } from '../../selectors';
 import { Validation, ValidationsInfo as HostValidationsInfo } from '../../types/hosts';
 import { TFunction } from 'i18next';
 
@@ -52,9 +51,6 @@ export const canReset = (clusterStatus: Cluster['status'], status: Host['status'
   ['adding-hosts'].includes(clusterStatus) &&
   ['error', 'installing-pending-user-action'].includes(status);
 
-export const canEditRole = (cluster: Cluster): boolean =>
-  !isSNO(cluster) && cluster.status !== 'installed';
-
 export const canEditHost = (clusterStatus: Cluster['status'], status: Host['status']) =>
   ['pending-for-input', 'insufficient', 'ready'].includes(clusterStatus) &&
   [
@@ -70,6 +66,12 @@ export const canEditHost = (clusterStatus: Cluster['status'], status: Host['stat
     'insufficient-unbound',
     'pending-for-input',
   ].includes(status);
+
+export const canEditRole = (
+  clusterStatus: Cluster['status'],
+  status: Host['status'],
+  isSNO?: boolean,
+) => canEditHost(clusterStatus, status) && !isSNO;
 
 export const canEditHostname = (clusterStatus: Cluster['status']) =>
   ['insufficient', 'adding-hosts', 'ready', 'pending-for-input'].includes(clusterStatus);
