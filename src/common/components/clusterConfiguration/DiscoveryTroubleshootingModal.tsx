@@ -72,7 +72,7 @@ Oct 15 11:26:35 localhost systemd[1]: Failed to start agent.service.`}
         <Trans
           t={t}
           components={{ code: <code /> }}
-          i18nKey="'ai:Check the proxy settings and verify that the assisted installer service is connected to a network. You can use <code>nmcli</code> to get additional information about your network configuration."
+          i18nKey="ai:Check the proxy settings and verify that the assisted installer service is connected to a network. You can use <code>nmcli</code> to get additional information about your network configuration."
         />
       </Text>
       <Text component={TextVariants.h2}>{t('ai:Check agent logs')}</Text>

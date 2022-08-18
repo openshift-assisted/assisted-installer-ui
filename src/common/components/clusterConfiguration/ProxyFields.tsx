@@ -59,7 +59,7 @@ export const ProxyInputFields = () => {
             <Trans
               t={t}
               components={{ bold: <strong /> }}
-              i18nKey="'ai:URL must start with <bold>http</bold> (https schemes are not currently supported)."
+              i18nKey="ai:URL must start with <bold>http</bold> (https schemes are not currently supported)."
             />
           </div>
         }
