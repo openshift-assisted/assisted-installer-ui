@@ -1,25 +1,17 @@
-import { Alert, AlertVariant } from '@patternfly/react-core';
 import * as React from 'react';
+import { Alert, AlertVariant } from '@patternfly/react-core';
 import { getInfraEnvDocs } from '../common/constants';
 import { getInfraEnvNameOfAgent } from '../helpers';
-import { BareMetalHostK8sResource, InfraEnvK8sResource, ConfigMapK8sResource } from '../../types';
-import { HostRequirementsList } from '../../../common/components';
-import { getHWRequirements } from '../Agent/MinimalHWRequirements';
+import { BareMetalHostK8sResource, InfraEnvK8sResource } from '../../types';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type AgentAlertsProps = {
   docVersion: string;
   infraEnv: InfraEnvK8sResource;
   bareMetalHosts: BareMetalHostK8sResource[];
-  aiConfigMap: ConfigMapK8sResource;
 };
 
-const AgentAlerts: React.FC<AgentAlertsProps> = ({
-  infraEnv,
-  bareMetalHosts,
-  docVersion,
-  aiConfigMap,
-}) => {
+const AgentAlerts: React.FC<AgentAlertsProps> = ({ infraEnv, bareMetalHosts, docVersion }) => {
   const infraBMHs =
     infraEnv &&
     bareMetalHosts?.filter(
@@ -45,17 +37,6 @@ const AgentAlerts: React.FC<AgentAlertsProps> = ({
           {t(
             'ai:It seems the Metal3 operator is missing configuration which will prevent it to find bare metal hosts in this namespace. Please refer to the documentation for the first time setup steps.',
           )}
-        </Alert>
-      )}
-      {aiConfigMap && (
-        <Alert
-          title={t('ai:Minimum hardware requirements')}
-          variant={AlertVariant.info}
-          isInline
-          isExpandable
-          className="cim-resource-alerts"
-        >
-          <HostRequirementsList {...getHWRequirements(aiConfigMap)} />
         </Alert>
       )}
     </>

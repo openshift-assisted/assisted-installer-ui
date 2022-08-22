@@ -141,7 +141,7 @@ export const hostValidationLabels = (t: TFunction): { [key in HostValidationId]:
   'apps-domain-name-resolved-correctly': t('ai:Application ingress domain name resolution'),
   'dns-wildcard-not-configured': t('ai:DNS wildcard not configured'),
   'non-overlapping-subnets': t('ai:Non overlapping subnets'),
-  'vsphere-disk-uuid-enabled': t('ai:Vsphere disk uuidenabled'),
+  'vsphere-disk-uuid-enabled': t('ai:Vsphere disk uuid enabled'),
   'compatible-agent': t('ai:Agent compatibility'),
 });
 

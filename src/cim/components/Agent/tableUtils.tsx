@@ -92,23 +92,23 @@ export const discoveryTypeColumn = (
     },
     cell: (host) => {
       const agent = agents.find((a) => a.metadata?.uid === host.id);
-      let discoveryType = 'Unknown';
+      let discoveryType = t('ai:Unknown');
       if (agent) {
         // eslint-disable-next-line no-prototype-builtins
         discoveryType = agent?.metadata?.labels?.hasOwnProperty(AGENT_BMH_NAME_LABEL_KEY)
-          ? t('ai:BMC')
-          : t('ai:Discovery ISO');
+          ? 'BMC'
+          : 'Discovery ISO';
       } else {
         const bmh = bareMetalHosts.find((bmh) => bmh.metadata?.uid === host.id);
         if (bmh) {
-          discoveryType = t('ai:BMC');
+          discoveryType = 'BMC';
         }
-        return {
-          title: discoveryType,
-          props: { 'data-testid': 'discovery-type' },
-          sortableValue: discoveryType,
-        };
       }
+      return {
+        title: discoveryType,
+        props: { 'data-testid': 'discovery-type' },
+        sortableValue: discoveryType,
+      };
     },
   };
 };
@@ -351,8 +351,15 @@ export const useAgentsTable = (
   { agents, bmhs, infraEnv, agentClusterInstalls }: AgentsTableResources,
   tableActions?: Partial<AgentTableActions>,
 ): [Host[], HostsTableActions, ActionsResolver<Host>] => {
-  const { onEditHost, onDeleteHost, onEditRole, onSelect, onEditBMH, onUnbindHost } =
-    tableActions || {};
+  const {
+    onEditHost,
+    onDeleteHost,
+    onEditRole,
+    onSelect,
+    onEditBMH,
+    onUnbindHost,
+    onSetInstallationDiskId,
+  } = tableActions || {};
   const { t } = useTranslation();
   const [hosts, actions] = React.useMemo(
     (): [Host[], HostsTableActions] => [
@@ -404,6 +411,16 @@ export const useAgentsTable = (
             }
           : undefined,
         canEditRole: () => !!onEditRole,
+        onDiskRole: onSetInstallationDiskId
+          ? (hostId, diskId) => {
+              const agent = agents.find((a) => a.metadata?.uid === hostId);
+              if (agent && diskId) {
+                return onSetInstallationDiskId(agent, diskId);
+              }
+              return Promise.resolve(agent);
+            }
+          : undefined,
+        canEditDisks: () => !!onSetInstallationDiskId,
         onSelect: onSelect
           ? (host: Host, selected: boolean) => {
               const agent = agents.find((a) => a.metadata?.uid === host.id);
@@ -445,17 +462,18 @@ export const useAgentsTable = (
       },
     ],
     [
+      agents,
+      bmhs,
+      infraEnv,
       onEditHost,
       onDeleteHost,
       onEditRole,
-      agents,
+      onSetInstallationDiskId,
       onSelect,
       onEditBMH,
       onUnbindHost,
-      bmhs,
-      infraEnv,
-      agentClusterInstalls,
       t,
+      agentClusterInstalls,
     ],
   );
   const actionResolver = React.useMemo(() => hostActionResolver(actions), [actions]);
