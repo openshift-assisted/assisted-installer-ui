@@ -17,12 +17,19 @@ export type ClusterWizardStepsType =
   | 'storage'
   | 'networking'
   | 'review';
-export type ClusterWizardFlowStateType = Cluster['status'] | 'new';
+
+export const ClusterWizardFlowStateNew = 'new';
+export type ClusterWizardFlowStateType = Cluster['status'] | typeof ClusterWizardFlowStateNew;
 
 export const getClusterWizardFirstStep = (
+  locationState: ClusterWizardFlowStateType | undefined,
   staticIpInfo: StaticIpInfo | undefined,
   state?: ClusterWizardFlowStateType,
 ): ClusterWizardStepsType => {
+  // Move to operators just the first time after the cluster is created
+  if (locationState === ClusterWizardFlowStateNew) {
+    return 'operators';
+  }
   if (staticIpInfo && !staticIpInfo.isDataComplete) {
     if (staticIpInfo.view === StaticIpView.YAML) {
       return 'static-ip-yaml-view';
