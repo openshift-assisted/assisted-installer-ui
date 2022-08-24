@@ -6,17 +6,14 @@ import { HostsTableModals, useHostsTable } from '../../hosts/use-hosts-table';
 import NetworkConfigurationTableBase from './NetworkConfigurationTableBase';
 
 const NetworkConfigurationTable = ({ cluster }: ClusterHostsTableProps) => {
-  const { onEditHost, actionChecks, onEditRole, actionResolver, ...modalProps } =
-    useHostsTable(cluster);
+  const { onEditHost, actionResolver, ...modalProps } = useHostsTable(cluster);
 
   return (
     <>
       <NetworkConfigurationTableBase
         cluster={cluster}
         AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
-        canEditRole={actionChecks.canEditRole}
         onEditHost={onEditHost}
-        onEditRole={onEditRole}
         actionResolver={actionResolver}
       >
         <HostsTableEmptyState isSNO={isSNO(cluster)} />
