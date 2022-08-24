@@ -27,9 +27,10 @@ export const getClusterWizardFirstStep = (
   state?: ClusterWizardFlowStateType,
 ): ClusterWizardStepsType => {
   // Move to operators just the first time after the cluster is created
-  if (locationState === ClusterWizardFlowStateNew) {
+  if (locationState === ClusterWizardFlowStateNew && !staticIpInfo) {
     return 'operators';
   }
+
   if (staticIpInfo && !staticIpInfo.isDataComplete) {
     if (staticIpInfo.view === StaticIpView.YAML) {
       return 'static-ip-yaml-view';
