@@ -90,7 +90,7 @@ const OperatorsPopover: React.FC<OperatorsPopoverProps> = ({ operators, children
             const name = operator.name && operatorLabels(t)[operator.name];
             return (
               <ListItem key={operator.name} title={operator.statusInfo}>
-                {name} {status}.
+                {name} {status}
               </ListItem>
             );
           })}
