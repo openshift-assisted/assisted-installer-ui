@@ -9,9 +9,9 @@ import {
   NmstateRoutesConfig,
   NmstateVlanInterface,
 } from './nmstateTypes';
-import { IpConfigs, ProtocolVersion, StaticProtocolType } from './dataTypes';
+import { ProtocolVersion, StaticProtocolType } from './dataTypes';
 import findLastIndex from 'lodash/findLastIndex';
-import { getProtocolVersions, getShownProtocolVersions } from './protocolVersion';
+import { getProtocolVersions } from './protocolVersion';
 import { load } from 'js-yaml';
 
 const ROUTE_DESTINATIONS = {
@@ -90,23 +90,21 @@ export const getNmstateProtocolConfig = (
   };
 };
 
-export const getDnsSection = (
-  ipConfigs: IpConfigs,
-  protocolType: StaticProtocolType,
-): NmstateDns => {
-  const servers: string[] = [];
-  for (const protocolVersion of getShownProtocolVersions(protocolType)) {
-    servers.push(ipConfigs[protocolVersion].dns);
-  }
-  return { config: { server: servers } };
+export const getDnsSection = (dns: string): NmstateDns => {
+  return { config: { server: [dns] } };
 };
 
-export const getVlanInterface = (nicName: string, vlanId: number): NmstateVlanInterface => {
+export const getVlanInterface = (
+  nicName: string,
+  vlanId: number,
+  protocolConfigs: NmstateProtocolConfigs,
+): NmstateVlanInterface => {
   return {
     name: `${nicName}.${vlanId}`,
     type: NmstateInterfaceType.VLAN,
     state: 'up',
     vlan: { 'base-iface': nicName, id: vlanId },
+    ...protocolConfigs,
   };
 };
 

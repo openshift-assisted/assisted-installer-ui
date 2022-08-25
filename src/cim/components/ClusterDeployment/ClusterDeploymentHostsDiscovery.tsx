@@ -27,6 +27,7 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
   onCreateBMH,
   onSaveAgent,
   onEditRole,
+  onSetInstallationDiskId,
   onSaveBMH,
   onSaveISOParams,
   onFormSaveError,
@@ -85,6 +86,7 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
                 infraEnv={infraEnv}
                 onEditHost={setEditAgent}
                 onEditRole={onEditRole}
+                onSetInstallationDiskId={onSetInstallationDiskId}
                 onEditBMH={setEditBMH}
                 onChangeHostname={onSaveAgent}
                 onChangeBMHHostname={onChangeBMHHostname}

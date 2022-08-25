@@ -210,5 +210,6 @@ export const hostStatus: HostStatus<Host['status']> = Object.freeze({
     title: 'Installed',
     category: 'Installation related',
     icon: <AddCircleOIcon />,
+    details: 'This host completed its installation successfully.',
   },
 });

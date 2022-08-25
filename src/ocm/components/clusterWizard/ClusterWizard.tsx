@@ -5,6 +5,7 @@ import ReviewStep from '../clusterConfiguration/ReviewStep';
 import { useClusterWizardContext } from './ClusterWizardContext';
 import ClusterDetails from './ClusterDetails';
 import HostDiscovery from './HostDiscovery';
+import Storage from './Storage';
 import StaticIp from './StaticIp';
 import classNames from 'classnames';
 import { WithErrorBoundary } from '../../../common/components/ErrorHandling/WithErrorBoundary';
@@ -21,6 +22,8 @@ const ClusterWizard = ({ cluster, infraEnv, updateInfraEnv }: ClusterWizardProps
     switch (currentStepId) {
       case 'host-discovery':
         return <HostDiscovery cluster={cluster} />;
+      case 'storage':
+        return <Storage cluster={cluster} />;
       case 'networking':
         return <NetworkConfigurationPage cluster={cluster} />;
       case 'review':

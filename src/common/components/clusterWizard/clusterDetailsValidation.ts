@@ -130,7 +130,9 @@ export const getClusterDetailsValidationSchema = ({
         then: Yup.array().of(
           Yup.object().shape({
             url: Yup.string()
-              .url(t('ai:Tang Server URL must be a valid URL'))
+              .url(
+                t('ai:Tang Server URL must be a valid URL starting with "http://" or "https://"'),
+              )
               .required(t('ai:Required.')),
             thumbprint: Yup.string().required(t('ai:Required.')),
           }),

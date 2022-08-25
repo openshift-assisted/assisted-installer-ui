@@ -1,35 +1,23 @@
 import * as React from 'react';
 import { HostsTableEmptyState } from '../../../../common/components/hosts/HostsTable';
-import { ClusterHostsTableProps } from '../../../../common/components/hosts/types';
-import { isSNO } from '../../../../common/selectors/clusterSelectors';
+import { ClusterHostsTableProps, isSNO } from '../../../../common';
 import { AdditionalNTPSourcesDialogToggle } from '../../hosts/AdditionaNTPSourceDialogToggle';
 import { HostsTableModals, useHostsTable } from '../../hosts/use-hosts-table';
-import CommonNetworkConfigurationTable from '../../../../common/components/clusterConfiguration/NetworkConfigurationTable';
+import NetworkConfigurationTableBase from './NetworkConfigurationTableBase';
 
-const NetworkConfigurationTable: React.FC<ClusterHostsTableProps> = ({
-  cluster,
-  setDiscoveryHintModalOpen,
-  skipDisabled,
-}) => {
-  const { onEditHost, actionChecks, onEditRole, actionResolver, ...modalProps } =
-    useHostsTable(cluster);
+const NetworkConfigurationTable = ({ cluster }: ClusterHostsTableProps) => {
+  const { onEditHost, actionResolver, ...modalProps } = useHostsTable(cluster);
 
   return (
     <>
-      <CommonNetworkConfigurationTable
+      <NetworkConfigurationTableBase
         cluster={cluster}
-        skipDisabled={skipDisabled}
         AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
-        canEditRole={actionChecks.canEditRole}
         onEditHost={onEditHost}
-        onEditRole={onEditRole}
         actionResolver={actionResolver}
       >
-        <HostsTableEmptyState
-          isSNO={isSNO(cluster)}
-          setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
-        />
-      </CommonNetworkConfigurationTable>
+        <HostsTableEmptyState isSNO={isSNO(cluster)} />
+      </NetworkConfigurationTableBase>
       <HostsTableModals cluster={cluster} {...modalProps} />
     </>
   );

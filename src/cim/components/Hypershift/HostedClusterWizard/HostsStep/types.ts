@@ -1,5 +1,6 @@
 import { FormikProps } from 'formik';
 import { AgentK8sResource, InfraEnvK8sResource } from '../../../../types';
+import { NodePoolK8sResource } from '../../types';
 
 export type NodePoolFormValue = {
   name: string;
@@ -31,4 +32,5 @@ export type HostsStepProps = {
   initReleaseImage: string;
   initInfraEnv?: string;
   initNodePools?: NodePoolFormValue[];
+  nodePools: NodePoolK8sResource[];
 };
