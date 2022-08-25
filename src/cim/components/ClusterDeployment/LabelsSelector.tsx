@@ -26,7 +26,7 @@ const getSelectOptions = (agents: AgentK8sResource[], labelKeysFilter?: string[]
       flatten(
         agents.map((agent) =>
           Object.keys(agent.metadata?.labels || {})
-            .filter((k) => !(labelKeysFilter || infraEnvLabelKeys).includes(k))
+            .filter((k) => !labelKeysFilter?.includes(k))
             .map((k) => `${k}=${agent.metadata?.labels?.[k] || ''}`),
         ),
       ),
