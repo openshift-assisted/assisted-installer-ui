@@ -25,23 +25,27 @@ export const StaticIpPage: React.FC<StaticIpPageProps> = ({
   updateInfraEnv,
   onFormStateChange: onFormStateChangeParent,
 }) => {
-  const initialStaticIpInfo = React.useMemo<StaticIpInfo | undefined>(() => {
-    return getStaticIpInfo(infraEnv);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
   const clusterWizardContext = useClusterWizardContext();
   const [confirmOnChangeView, setConfirmOnChangeView] = React.useState<boolean>(false);
   const [viewChanged, setViewChanged] = React.useState<boolean>(false);
+
   const onChangeView = React.useCallback((view: StaticIpView) => {
     clusterWizardContext.onUpdateStaticIpView(view);
     setViewChanged(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const initialStaticIpInfo = React.useMemo<StaticIpInfo | undefined>(() => {
+    return getStaticIpInfo(infraEnv);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   if (!initialStaticIpInfo) {
     return null;
   }
   const onFormStateChange = (formState: StaticIpFormState) => {
-    setConfirmOnChangeView(!formState.isEmpty);
+    const hasFilledData =
+      clusterWizardContext.currentStepId === 'static-ip-host-configurations' || !formState.isEmpty;
+    setConfirmOnChangeView(hasFilledData);
     onFormStateChangeParent(formState);
   };
 
