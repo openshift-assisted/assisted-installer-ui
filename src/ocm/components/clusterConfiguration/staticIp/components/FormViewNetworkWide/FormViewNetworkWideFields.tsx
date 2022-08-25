@@ -39,6 +39,13 @@ import {
 import { getMachineNetworkCidr } from '../../data/machineNetwork';
 import '../staticIp.css';
 import useFieldErrorMsg from '../../../../../../common/hooks/useFieldErrorMsg';
+import {
+  MIN_PREFIX_LENGTH,
+  MAX_PREFIX_LENGTH,
+  MAX_VLAN_ID,
+  MIN_VLAN_ID,
+} from './formViewNetworkWideValidationSchema';
+
 const hostsConfiguredAlert = (
   <Alert
     variant={AlertVariant.warning}
@@ -95,6 +102,8 @@ const MachineNetwork: React.FC<{ fieldName: string; protocolVersion: ProtocolVer
             data-testid={`${protocolVersion}-machine-network-prefix-length`}
             type={TextInputTypes.number}
             showErrorMessage={false}
+            min={MIN_PREFIX_LENGTH}
+            max={protocolVersion === 'ipv4' ? MAX_PREFIX_LENGTH.ipv4 : MAX_PREFIX_LENGTH.ipv6}
           />
         </FlexItem>
       </Flex>
@@ -120,12 +129,6 @@ const IpConfigFields: React.FC<{
         }
         name={`${fieldName}.gateway`}
         data-testid={`${protocolVersion}-gateway`}
-      />
-      <InputField
-        isRequired
-        label="DNS"
-        name={`${fieldName}.dns`}
-        data-testid={`${protocolVersion}-dns`}
       />
     </Grid>
   );
@@ -205,9 +208,14 @@ export const FormViewNetworkWideFields: React.FC<{ hosts: FormViewHost[] }> = ({
             isRequired
             data-testid="vlan-id"
             type={TextInputTypes.number}
+            min={MIN_VLAN_ID}
+            max={MAX_VLAN_ID}
           />
         </div>
       )}
+
+      <InputField isRequired label="DNS" name={`dns`} data-testid={`dns`} />
+
       {getShownProtocolVersions(values.protocolType).map((protocolVersion) => (
         <FormGroup
           key={protocolVersion}

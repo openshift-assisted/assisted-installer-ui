@@ -25,7 +25,7 @@ const InformationAndAlerts = ({ cluster }: { cluster: Cluster }) => {
             isAddingHosts={isAddHostsCluster(cluster)}
           />
         </InfoLinkWithModal>
-        &nbsp;
+        <span className={'pf-u-mr-md'}>&nbsp;</span>
         <HostsDiscoveryTroubleshootingInfoLinkWithModal isSingleNode={isSNOCluster} />
       </Text>
       {isVM && <VMRebootConfigurationInfo />}
