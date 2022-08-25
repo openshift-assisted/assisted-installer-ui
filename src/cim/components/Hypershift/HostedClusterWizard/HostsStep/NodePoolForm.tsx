@@ -98,7 +98,11 @@ const NodePoolForm: React.FC<NodePoolFormProps> = ({ infraEnvs, agents, index, o
                     />
                   </SplitItem>
                   <SplitItem>
-                    <PencilEditField name={`nodePools.${index}.name`} isRequired />
+                    <PencilEditField
+                      name={`nodePools.${index}.name`}
+                      isRequired
+                      showErrorMessage={false}
+                    />
                   </SplitItem>
                 </Split>
               </FlexItem>
