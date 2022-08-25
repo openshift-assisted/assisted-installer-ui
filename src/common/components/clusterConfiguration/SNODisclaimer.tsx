@@ -27,7 +27,7 @@ const SNODisclaimer = ({
       </ListItem>
       {!snoExpansionSupported && (
         <ListItem>
-          {t('ai:Adding additional machines to your cluster is currently out of scope.')}
+          {t('ai:Currently, adding additional machines to your cluster is not supported.')}
         </ListItem>
       )}
     </>
