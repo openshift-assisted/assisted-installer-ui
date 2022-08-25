@@ -29,6 +29,7 @@ export type AgentTableActions = {
   onEditHost: (agent: AgentK8sResource) => void;
   onEditRole: (agent: AgentK8sResource, role: string | undefined) => Promise<AgentK8sResource>;
   onDeleteHost: (agent?: AgentK8sResource, bmh?: BareMetalHostK8sResource) => void;
+  onSetInstallationDiskId: (agent: AgentK8sResource, diskId: string) => Promise<AgentK8sResource>;
   // eslint-disable-next-line
   onMassDeleteHost: (agent?: AgentK8sResource, bmh?: BareMetalHostK8sResource) => Promise<any>;
   onApprove: (agent: AgentK8sResource) => Promise<AgentK8sResource>;
@@ -125,7 +126,10 @@ export type ClusterDeploymentWizardProps = {
   onApproveAgent: InfraEnvAgentTableProps['onApprove'];
   onFinish: () => Promise<AgentClusterInstallK8sResource>;
 
-  hostActions: Pick<AgentTableActions, 'onEditHost' | 'onEditRole' | 'onDeleteHost'>;
+  hostActions: Pick<
+    AgentTableActions,
+    'onEditHost' | 'onEditRole' | 'onDeleteHost' | 'onSetInstallationDiskId'
+  >;
   clusterImages: ClusterImageSetK8sResource[];
   usedClusterNames: string[];
 
@@ -159,6 +163,7 @@ export type ClusterDeploymentHostsSelectionProps = {
   agents: AgentK8sResource[];
   aiConfigMap?: ConfigMapK8sResource;
   onEditRole: AgentTableActions['onEditRole'];
+  onSetInstallationDiskId: AgentTableActions['onSetInstallationDiskId'];
   onAutoSelectChange: VoidFunction;
   onHostSelect: VoidFunction;
 };
@@ -185,7 +190,7 @@ export type InfraEnvAgentTableProps = Pick<
 
 export type ClusterDeploymentHostDiscoveryTableProps = Pick<
   AgentTableActions,
-  'onEditRole' | 'onEditHost' | 'onEditBMH' | 'onDeleteHost'
+  'onEditRole' | 'onEditHost' | 'onEditBMH' | 'onDeleteHost' | 'onSetInstallationDiskId'
 > & {
   agents: AgentK8sResource[];
   bareMetalHosts: BareMetalHostK8sResource[];
@@ -213,6 +218,7 @@ export type ClusterDeploymentHostsDiscoveryProps = {
   onCreateBMH?: AddHostModalProps['onCreateBMH'];
   onSaveAgent: EditAgentModalProps['onSave'];
   onEditRole: ClusterDeploymentHostDiscoveryTableProps['onEditRole'];
+  onSetInstallationDiskId: AgentTableActions['onSetInstallationDiskId'];
   onSaveBMH: EditBMHModalProps['onEdit'];
   onSaveISOParams: AddHostModalProps['onSaveISOParams'];
   onFormSaveError?: EditAgentModalProps['onFormSaveError'];

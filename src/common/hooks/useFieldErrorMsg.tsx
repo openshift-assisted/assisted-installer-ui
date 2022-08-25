@@ -15,7 +15,7 @@ const adaptErrorInvalidFormat = (error?: string | string[]): string | undefined 
   return error;
 };
 
-const useFieldErrorMsg = ({ name, inputError, validate }: Props): string | undefined => {
+export const useFieldErrorMsg = ({ name, inputError, validate }: Props): string | undefined => {
   /*
     for empty values - show an error only if at a certain point it was none empty, to avoid new items in a field array shown as invalid right away
     for none empty values - always show the error if there is one

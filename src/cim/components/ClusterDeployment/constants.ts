@@ -15,7 +15,7 @@ export const wizardStepNames = (
   'cluster-details': t('ai:Cluster details'),
   'hosts-selection': t('ai:Cluster hosts'),
   'hosts-discovery': t('ai:Cluster hosts'),
-  networking: t('ai:Cluster network'),
+  networking: t('ai:Networking'),
   review: t('ai:Review and create'),
 });
 

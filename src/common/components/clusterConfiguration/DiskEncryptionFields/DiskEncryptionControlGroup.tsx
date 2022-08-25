@@ -1,6 +1,6 @@
 import React from 'react';
 import isEqual from 'lodash/isEqual';
-import { Stack, StackItem } from '@patternfly/react-core';
+import { FormGroup, Stack, StackItem } from '@patternfly/react-core';
 import SwitchField from '../../ui/formik/SwitchField';
 import { DiskEncryptionMode } from './DiskEncryptionMode';
 import { RenderIf } from '../../ui';
@@ -77,37 +77,35 @@ const DiskEncryptionControlGroup: React.FC<DiskEncryptionControlGroupProps> = ({
   };
 
   return (
-    <Stack hasGutter>
-      <StackItem>
-        <SwitchField
-          tooltipProps={tooltipProps}
-          name="enableDiskEncryptionOnMasters"
-          label={
-            isSNO
-              ? t('ai:Enable encryption of installation disk')
-              : t('ai:Enable encryption of installation disks on control plane nodes')
-          }
-          isDisabled={isDisabled}
-        />
-      </StackItem>
-      <RenderIf condition={!isSNO}>
+    <FormGroup label="Encryption of installation disks">
+      <Stack hasGutter>
         <StackItem>
           <SwitchField
             tooltipProps={tooltipProps}
-            name="enableDiskEncryptionOnWorkers"
+            name="enableDiskEncryptionOnMasters"
+            label={isSNO ? t('ai:Control plane node, worker') : t('ai:Control plane nodes')}
             isDisabled={isDisabled}
-            label={t('ai:Enable encryption of installation disks on workers')}
           />
         </StackItem>
-      </RenderIf>
-      <RenderIf
-        condition={enableDiskEncryptionOnMasters || (enableDiskEncryptionOnWorkers && !isSNO)}
-      >
-        <StackItem>
-          <DiskEncryptionMode diskEncryptionMode={diskEncryptionMode} isDisabled={isDisabled} />
-        </StackItem>
-      </RenderIf>
-    </Stack>
+        <RenderIf condition={!isSNO}>
+          <StackItem>
+            <SwitchField
+              tooltipProps={tooltipProps}
+              name="enableDiskEncryptionOnWorkers"
+              isDisabled={isDisabled}
+              label={t('ai:Workers')}
+            />
+          </StackItem>
+        </RenderIf>
+        <RenderIf
+          condition={enableDiskEncryptionOnMasters || (enableDiskEncryptionOnWorkers && !isSNO)}
+        >
+          <StackItem>
+            <DiskEncryptionMode diskEncryptionMode={diskEncryptionMode} isDisabled={isDisabled} />
+          </StackItem>
+        </RenderIf>
+      </Stack>
+    </FormGroup>
   );
 };
 

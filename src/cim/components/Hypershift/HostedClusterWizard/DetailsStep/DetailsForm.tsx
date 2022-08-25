@@ -1,13 +1,9 @@
 import { Form } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 import * as React from 'react';
-import {
-  BaseDnsHelperText,
-  InputField,
-  OpenShiftVersionSelect,
-  PullSecret,
-} from '../../../../../common';
+import { InputField, OpenShiftVersionSelect, PullSecret } from '../../../../../common';
 import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
+import { BaseDnsHelperText } from '../../../ClusterDeployment/ClusterDetailsFormFields';
 import { useSupportedOCPVersions } from '../../hooks/useSupportedOCPVersions';
 import { useTemptiflySync } from '../../hooks/useTemptiflySync';
 import { DetailsFormProps, DetailsFormValues } from './types';
@@ -47,7 +43,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({
         isRequired
       />
       <OpenShiftVersionSelect versions={ocpVersions} />
-      <PullSecret isOcm={false} />
+      <PullSecret />
     </Form>
   );
 };

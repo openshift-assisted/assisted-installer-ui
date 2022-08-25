@@ -79,6 +79,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
               agents={agents}
               aiConfigMap={aiConfigMap}
               onEditRole={hostActions.onEditRole}
+              onSetInstallationDiskId={hostActions.onSetInstallationDiskId}
             />
           );
         }
@@ -109,6 +110,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
                 return Promise.resolve(bmh);
               }}
               onEditRole={hostActions.onEditRole}
+              onSetInstallationDiskId={hostActions.onSetInstallationDiskId}
               onApproveAgent={onApproveAgent}
               isBMPlatform={isBMPlatform}
               onDeleteHost={hostActions.onDeleteHost}

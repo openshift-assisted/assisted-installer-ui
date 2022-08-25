@@ -55,11 +55,11 @@ const AddBmcHostYamlForm: React.FC<UploadActionModalProps> = ({ onClose, onCreat
       input.remove();
       const target = e.target as HTMLInputElement;
       const file: File = (target.files as FileList)[0];
-      const maxSize = 12582912; //12 Mb
+      const maxSize = 12582912; //12 MiB
       if (file.size > maxSize) {
         setShowOpenFileButton(false);
         setFileName(file.name);
-        setFileError(t('ai:The file is too big. Upload a file up to 12 Mb.'));
+        setFileError(t('ai:The file is too big. Upload a file up to 12 MiB.'));
         setYamlContent(undefined);
       } else {
         const reader = new FileReader();
