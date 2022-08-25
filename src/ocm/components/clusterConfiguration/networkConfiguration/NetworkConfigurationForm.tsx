@@ -181,7 +181,8 @@ const NetworkConfigurationPage: React.FC<{
           delete params.apiVip;
           delete params.ingressVip;
         } else if (values.stackType === IPV4_STACK) {
-          delete params.machineNetworks;
+          // The API will rebuild the default machineNetwork
+          params.machineNetworks = [];
         }
       }
 

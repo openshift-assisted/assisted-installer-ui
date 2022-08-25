@@ -54,7 +54,7 @@ const getNmstateObject = (
 ): Nmstate => {
   const interfaces: NmstateInterface[] = [];
   const routeConfigs: NmstateRoutesConfig[] = [];
-  const dns = getDnsSection(networkWide.ipConfigs, networkWide.protocolType);
+  const dns = getDnsSection(networkWide.dns);
   const realProtocolConfigs: NmstateProtocolConfigs = {};
   for (const protocolVersion of getShownProtocolVersions(networkWide.protocolType)) {
     const hostIp = hostIps[protocolVersion];
