@@ -155,12 +155,13 @@ export const getIpIsNotNetworkOrBroadcastAddressSchema = (
     `The IP address must not match the network or broadcast address`,
     (value) => {
       const subnetAddr = getAddressObject(subnet, protocolVersion);
-      if (subnetAddr) {
+      if (!subnetAddr) {
+        return false;
+      } else {
         const subnetStart = subnetAddr?.startAddress().correctForm();
         const subnetEnd = subnetAddr?.endAddress().correctForm();
         return !(value === subnetStart || value === subnetEnd);
       }
-      return true;
     },
   );
 };
