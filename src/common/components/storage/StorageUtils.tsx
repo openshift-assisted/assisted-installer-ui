@@ -37,7 +37,7 @@ export const numberOfDisksColumn: TableRow<Host> = {
     const disks = inventory.disks || [];
     return {
       title: <> {disks.length} </>,
-      props: { 'data-testid': 'host-role' },
+      props: { 'data-testid': 'disk-number' },
       sortableValue: disks.length,
     };
   },

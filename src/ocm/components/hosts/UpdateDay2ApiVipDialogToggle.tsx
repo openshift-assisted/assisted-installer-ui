@@ -7,5 +7,12 @@ export const UpdateDay2ApiVipDialogToggle: React.FC = () => {
     UpdateDay2ApiVipDialog: { open },
   } = useModalDialogsContext();
 
-  return <AlertActionLink onClick={() => open()}>Update cluster with API IP</AlertActionLink>;
+  return (
+    <>
+      Check your DNS and network configuration, or{' '}
+      <AlertActionLink onClick={() => open()} isInline>
+        set the IP or domain used to reach the cluster.
+      </AlertActionLink>
+    </>
+  );
 };

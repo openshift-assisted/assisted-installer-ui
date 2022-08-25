@@ -16,7 +16,6 @@ export type Cidr = {
 export type IpConfig = {
   machineNetwork: Cidr;
   gateway: string;
-  dns: string;
 };
 
 export type IpConfigs = { [protocolVersion in ProtocolVersion]: IpConfig };
@@ -51,5 +50,6 @@ export interface FormViewNetworkWideValues {
   protocolType: StaticProtocolType;
   useVlan: boolean;
   vlanId: number | '';
+  dns: string;
   ipConfigs: IpConfigs;
 }
