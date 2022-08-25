@@ -27,6 +27,8 @@ import {
   isEthernetInterface,
 } from './nmstateTypes';
 import { isDummyInterface } from './dummyData';
+import head from 'lodash/head';
+
 /* handle four cases:
     1. right after create, there are no network wide configurations - yaml contains a dummy ipv4 interface and no machine network fields in the comments
     2. only network wide configurations - yaml contains only dummy interfaces and does contain machine network fileds in the comments
@@ -86,12 +88,12 @@ const getIpAddress = (
   return ipAddressData.address[0].ip;
 };
 
-const getDns = (nmstate: Nmstate, protocolVersion: ProtocolVersion): string => {
+const getDns = (nmstate: Nmstate): string => {
   const dnsServers = nmstate['dns-resolver']?.config.server;
-  if (!dnsServers) {
+  if (!dnsServers || !dnsServers.length) {
     throw `Nmstate YAML doesn't contain dns-resolver section`;
   }
-  return dnsServers[getProtocolVersionIdx(protocolVersion)];
+  return head(dnsServers) || '';
 };
 
 const getGateway = (nmstate: Nmstate, protocolVersion: ProtocolVersion): string => {
@@ -109,6 +111,7 @@ const getNetworkWideConfigurations = (
 ): FormViewNetworkWideValues => {
   const vlanId = getVlanId(nmstate.interfaces);
   const networkWide = getEmptyNetworkWideConfigurations();
+  networkWide.dns = getDns(nmstate);
   networkWide.protocolType = protocolType;
   if (vlanId) {
     networkWide.useVlan = true;
@@ -116,7 +119,6 @@ const getNetworkWideConfigurations = (
   }
   for (const protocolVersion of getShownProtocolVersions(protocolType)) {
     networkWide.ipConfigs[protocolVersion].gateway = getGateway(nmstate, protocolVersion);
-    networkWide.ipConfigs[protocolVersion].dns = getDns(nmstate, protocolVersion);
     const [ip, prefixLength] = machineNetworks[protocolVersion].split('/');
     networkWide.ipConfigs[protocolVersion].machineNetwork = {
       ip: ip,

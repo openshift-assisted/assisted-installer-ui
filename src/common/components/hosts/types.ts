@@ -38,7 +38,7 @@ export type HostsTableActions = {
   canDelete?: (host: Host) => boolean | ActionCheck;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onEditRole?: (host: Host, role: HostUpdateParams['hostRole']) => Promise<any>;
-  canEditRole?: () => boolean;
+  canEditRole?: (host: Host) => boolean;
   onEditBMH?: (host: Host) => void;
   canEditBMH?: (host: Host) => ActionCheck;
   onSelect?: (host: Host, selected: boolean) => void;

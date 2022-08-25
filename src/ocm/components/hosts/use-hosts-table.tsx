@@ -12,6 +12,7 @@ import {
   MassChangeHostnameModal,
   getInventory,
   MassDeleteHostModal,
+  isSNO,
 } from '../../../common';
 import {
   AdditionalNTPSourcesDialog,
@@ -181,7 +182,7 @@ export const useHostsTable = (cluster: Cluster) => {
 
   const actionChecks = React.useMemo(
     () => ({
-      canEditRole: () => canEditRoleUtil(cluster),
+      canEditRole: (host: Host) => canEditRoleUtil(cluster.status, host.status, isSNO(cluster)),
       canInstallHost: (host: Host) => canInstallHostUtil(cluster, host.status),
       canEditDisks: (host: Host) => canEditDisksUtil(cluster.status, host.status),
       canEnable: (host: Host) => canEnableUtil(cluster.status, host.status),
