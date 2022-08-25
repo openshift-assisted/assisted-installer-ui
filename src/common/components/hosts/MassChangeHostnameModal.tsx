@@ -154,90 +154,84 @@ const MassChangeHostnameForm: React.FC<MassChangeHostnameFormProps> = ({
   const { t } = useTranslation();
   return (
     <Form onSubmit={handleSubmit}>
-      <div>
-        <ModalBoxBody>
-          <Stack hasGutter>
-            <StackItem>
-              <div>{t('ai:Rename hostnames using the custom template:')}</div>
-              <div>
-                <strong>{`{{n}}`}</strong> {t('ai:to add a number.')}
-              </div>
-            </StackItem>
-            <StackItem>
-              <RichInputField
-                name="hostname"
-                ref={hostnameInputRef}
-                isRequired
-                richValidationMessages={hostnameValidationMessages(t)}
-              />
-              <HelperText>
-                <HelperTextItem variant="indeterminate">
-                  {t('ai:For example: host-{{n}}')}
-                </HelperTextItem>
-              </HelperText>
-            </StackItem>
-            <StackItem>
-              {t('ai:Preview')}
-              <Split hasGutter className="hostname-preview">
-                <SplitItem className="hostname-column">
-                  {selectedHosts.map((h, index) => (
-                    <div key={h.id || index} className="hostname-column__text">
-                      <strong>{getHostname(h)}</strong>
-                    </div>
-                  ))}
-                </SplitItem>
-                <SplitItem>
-                  {selectedHosts.map((h, index) => (
-                    <div key={h.id || index}>
-                      <strong>{'  >  '}</strong>
-                    </div>
-                  ))}
-                </SplitItem>
-                <SplitItem isFilled>
-                  {selectedHosts.map((h, index) => {
-                    const { newHostname, reason } = newHostnames[index];
-                    return (
-                      <div key={h.id}>
-                        {reason ? (
-                          <Popover
-                            aria-label={t('ai:Cannot change hostname popover')}
-                            headerContent={<div>{t('ai:Hostname cannot be changed')}</div>}
-                            bodyContent={<div>{reason}</div>}
-                          >
-                            <Button
-                              variant="link"
-                              icon={<InfoCircleIcon color={blueInfoColor.value} />}
-                              isInline
-                            >
-                              {t('ai:Not changeable')}
-                            </Button>
-                          </Popover>
-                        ) : (
-                          newHostname || t('ai:New hostname will appear here...')
-                        )}
+      <ModalBoxBody>
+        <Stack hasGutter>
+          <StackItem>
+            <div>{t('ai:Rename hostnames using the custom template:')}</div>
+            <div>
+              <strong>{`{{n}}`}</strong> {t('ai:to add a number.')}
+            </div>
+          </StackItem>
+          <StackItem>
+            <RichInputField
+              name="hostname"
+              ref={hostnameInputRef}
+              isRequired
+              richValidationMessages={hostnameValidationMessages(t)}
+            />
+            <HelperText>
+              <HelperTextItem variant="indeterminate">
+                {t('ai:For example: host-{{n}}')}
+              </HelperTextItem>
+            </HelperText>
+          </StackItem>
+          <StackItem>
+            {t('ai:Preview')}
+            <div className="hostname-preview">
+              {selectedHosts.map((h, index) => {
+                const { newHostname, reason } = newHostnames[index];
+                return (
+                  <Split key={h.id || index} hasGutter>
+                    <SplitItem className="hostname-column">
+                      <div className="hostname-column__text">
+                        <strong>{getHostname(h)}</strong>
                       </div>
-                    );
-                  })}
-                </SplitItem>
-              </Split>
-            </StackItem>
-            <StackItem>
-              <ModalProgress
-                error={status?.error}
-                progress={isSubmitting ? (100 * (patchingHost + 1)) / selectedHosts.length : null}
-              />
-            </StackItem>
-          </Stack>
-        </ModalBoxBody>
-        <ModalBoxFooter>
-          <Button key="submit" type={ButtonType.submit} isDisabled={isSubmitting || !isValid}>
-            {t('ai:Change')}
-          </Button>
-          <Button onClick={onClose} variant={ButtonVariant.secondary} isDisabled={isSubmitting}>
-            {t('ai:Cancel')}
-          </Button>
-        </ModalBoxFooter>
-      </div>
+                    </SplitItem>
+                    <SplitItem>
+                      <div>
+                        <strong>{'>'}</strong>
+                      </div>
+                    </SplitItem>
+                    <SplitItem isFilled>
+                      {reason ? (
+                        <Popover
+                          aria-label={t('ai:Cannot change hostname popover')}
+                          headerContent={<div>{t('ai:Hostname cannot be changed')}</div>}
+                          bodyContent={<div>{reason}</div>}
+                        >
+                          <Button
+                            variant="link"
+                            icon={<InfoCircleIcon color={blueInfoColor.value} />}
+                            isInline
+                          >
+                            {t('ai:Not changeable')}
+                          </Button>
+                        </Popover>
+                      ) : (
+                        newHostname || t('ai:New hostname will appear here...')
+                      )}
+                    </SplitItem>
+                  </Split>
+                );
+              })}
+            </div>
+          </StackItem>
+          <StackItem>
+            <ModalProgress
+              error={status?.error}
+              progress={isSubmitting ? (100 * (patchingHost + 1)) / selectedHosts.length : null}
+            />
+          </StackItem>
+        </Stack>
+      </ModalBoxBody>
+      <ModalBoxFooter>
+        <Button key="submit" type={ButtonType.submit} isDisabled={isSubmitting || !isValid}>
+          {t('ai:Change')}
+        </Button>
+        <Button onClick={onClose} variant={ButtonVariant.secondary} isDisabled={isSubmitting}>
+          {t('ai:Cancel')}
+        </Button>
+      </ModalBoxFooter>
     </Form>
   );
 };
