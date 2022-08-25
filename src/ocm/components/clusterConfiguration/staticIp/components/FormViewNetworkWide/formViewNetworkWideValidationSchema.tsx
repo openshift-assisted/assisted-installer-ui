@@ -13,12 +13,14 @@ import {
 } from '../../commonValidationSchemas';
 const REQUIRED_MESSAGE = 'A value is required';
 
-const MAX_PREFIX_LENGTH = {
+export const MIN_PREFIX_LENGTH = 1;
+export const MAX_PREFIX_LENGTH = {
   ipv4: 32,
   ipv6: 128,
 };
 
-const MAX_VLAN_ID = 4094;
+export const MIN_VLAN_ID = 1;
+export const MAX_VLAN_ID = 4094;
 
 const transformNumber = (originalValue: number) => {
   return isNaN(originalValue) ? null : originalValue;
@@ -67,7 +69,6 @@ const getIPValidationSchema = (protocolVersion: ProtocolVersion) => {
 
 const getAddressDataValidationSchema = (protocolVersion: ProtocolVersion, ipConfig: IpConfig) => {
   return Yup.object().shape<IpConfig>({
-    dns: getIPValidationSchema(protocolVersion),
     machineNetwork: getMachineNetworkValidationSchema(protocolVersion),
     gateway: getIPValidationSchema(protocolVersion)
       .concat(getInMachineNetworkValidationSchema(protocolVersion, ipConfig.machineNetwork))
@@ -95,6 +96,7 @@ export const networkWideValidationSchema = Yup.lazy<FormViewNetworkWideValues>(
           .transform(transformNumber),
       }),
       protocolType: Yup.string(),
+      dns: getIPValidationSchema('ipv4'),
       ipConfigs: ipConfigsValidationSchemas,
     });
   },

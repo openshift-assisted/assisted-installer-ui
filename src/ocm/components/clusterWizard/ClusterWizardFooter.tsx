@@ -15,6 +15,7 @@ import { wizardStepsValidationsMap } from '../clusterWizard/wizardTransition';
 import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
 import ClusterWizardStepValidationsAlert from '../../../common/components/clusterWizard/ClusterWizardStepValidationsAlert';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { ClusterPlatformIntegrationHint } from './ClusterPlatformIntegrationHint';
 
 type ClusterValidationSectionProps = {
   cluster?: Cluster;
@@ -33,6 +34,7 @@ const ValidationSection = ({
   const { currentStepId } = useClusterWizardContext();
   const validationsInfo = cluster && selectClusterValidationsInfo(cluster);
   const { t } = useTranslation();
+
   let _alertContent = alertContent;
   if (_alertContent === undefined) {
     _alertContent = `The following fields are invalid or missing: 
@@ -45,6 +47,13 @@ const ValidationSection = ({
           {_alertContent}
         </Alert>
       )}
+      {currentStepId === 'host-discovery' && cluster && (
+        <ClusterPlatformIntegrationHint
+          clusterId={cluster.id}
+          platformType={cluster.platform?.type}
+        />
+      )}
+
       {cluster && (
         <ClusterWizardStepValidationsAlert
           currentStepId={currentStepId}

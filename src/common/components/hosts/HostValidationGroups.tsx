@@ -115,13 +115,18 @@ const NtpSyncAlert: React.FC<
 };
 
 const ApiVipConnectivityAlert: React.FC<
-  Required<UpdateDay2ApiVipPropsType> & { variant: AlertVariant }
-> = ({ UpdateDay2ApiVipDialogToggleComponent, variant }) => {
+  Required<UpdateDay2ApiVipPropsType> & { variant: AlertVariant; validation: Validation }
+> = ({ UpdateDay2ApiVipDialogToggleComponent, variant, validation }) => {
   const actionLinks = [<UpdateDay2ApiVipDialogToggleComponent key="update-api-vip" />];
   const { t } = useTranslation();
   return (
-    <Alert title="API IP connectivity failure" variant={variant} actionLinks={actionLinks} isInline>
-      {t('ai:To continue installation, configure your DNS or alternatively')}
+    <Alert
+      title={t('ai:API connectivity failure')}
+      variant={variant}
+      actionLinks={actionLinks}
+      isInline
+    >
+      {toSentence(validation.message)}
     </Alert>
   );
 };
@@ -175,6 +180,7 @@ const ValidationGroupAlerts: React.FC<ValidationGroupAlertProps> = ({
     alerts.push(
       <ApiVipConnectivityAlert
         UpdateDay2ApiVipDialogToggleComponent={UpdateDay2ApiVipDialogToggleComponent}
+        validation={validationsWithActions['ignition-downloadable']}
         variant={variant}
         key="ignition-downloadable-alert"
       />,
