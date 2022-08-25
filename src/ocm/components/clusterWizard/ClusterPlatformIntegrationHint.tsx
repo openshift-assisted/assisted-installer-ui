@@ -20,7 +20,7 @@ export const ClusterPlatformIntegrationHint: React.FC<ClusterPlatformIntegration
         isInline={true}
         data-testid="discover-vsphere-hosts"
       >
-        Since all of your hosts originated from vSphere platform, you now have the option to
+        Since all of your hosts originated from the vSphere platform, you now have the option to
         integrate with vSphere. Switch the 'Integrate with vSphere' toggle to get started.
       </Alert>
     );
