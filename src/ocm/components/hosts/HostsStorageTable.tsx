@@ -20,23 +20,21 @@ import {
 } from '../../../common';
 import { hardwareStatusColumn } from './HostsDiscoveryTable';
 import { usePagination } from '../../../common/components/hosts/usePagination';
-import { onDiskRoleType } from '../../../common/components/hosts/DiskRole';
 import { ExpandComponentProps } from '../../../common/components/hosts/AITable';
 import StorageDetail from '../../../common/components/storage/StorageDetail';
 import CommonStorageTable from '../../../common/components/storage/StorageTable';
 import { HostsTableModals, useHostsTable } from './use-hosts-table';
+import {
+  HostsTableDetailContextProvider,
+  useHostsTableDetailContext,
+} from '../../../common/components/hosts/HostsTableDetailContext';
 
-const getExpandComponent = (onDiskRole: onDiskRoleType, canEditDisks: (host: Host) => boolean) =>
-  function Expander({ obj: host }: ExpandComponentProps<Host>) {
-    return (
-      <StorageDetail
-        key={host.id}
-        host={host}
-        onDiskRole={onDiskRole}
-        canEditDisks={canEditDisks}
-      />
-    );
-  };
+export function ExpandComponent({ obj: host }: ExpandComponentProps<Host>) {
+  const { onDiskRole, canEditDisks } = useHostsTableDetailContext();
+  return (
+    <StorageDetail key={host.id} host={host} onDiskRole={onDiskRole} canEditDisks={canEditDisks} />
+  );
+}
 
 const HostsStorageTable = ({ cluster }: { cluster: Cluster }) => {
   const { t } = useTranslation();
@@ -66,14 +64,19 @@ const HostsStorageTable = ({ cluster }: { cluster: Cluster }) => {
     <>
       <Stack hasGutter>
         <StackItem>
-          <CommonStorageTable
-            testId="storage-table"
-            hosts={hosts}
-            content={content}
-            actionResolver={actionResolver}
-            ExpandComponent={getExpandComponent(onDiskRole, actionChecks.canEditDisks)}
-            {...paginationProps}
-          />
+          <HostsTableDetailContextProvider
+            canEditDisks={actionChecks.canEditDisks}
+            onDiskRole={onDiskRole}
+          >
+            <CommonStorageTable
+              testId="storage-table"
+              hosts={hosts}
+              content={content}
+              actionResolver={actionResolver}
+              ExpandComponent={ExpandComponent}
+              {...paginationProps}
+            />
+          </HostsTableDetailContextProvider>
         </StackItem>
       </Stack>
       <HostsTableModals cluster={cluster} {...modalProps} />

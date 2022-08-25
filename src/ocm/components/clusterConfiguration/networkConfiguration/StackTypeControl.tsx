@@ -57,7 +57,6 @@ export const StackTypeControlGroup = ({
   const setSingleStack = React.useCallback(() => {
     setFieldValue('stackType', IPV4_STACK);
     setFieldValue('networkType', getDefaultNetworkType(isSNO, false));
-    setFieldValue('vipDhcpAllocation', true);
 
     if (values.machineNetworks && values.machineNetworks?.length >= 2) {
       setFieldValue('machineNetworks', values.machineNetworks.slice(0, 1));

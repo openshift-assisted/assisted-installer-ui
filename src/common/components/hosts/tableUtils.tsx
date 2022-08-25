@@ -100,7 +100,7 @@ export const roleColumn = (
       const editRole = onEditRole
         ? (role: HostUpdateParams['hostRole']) => onEditRole(host, role)
         : undefined;
-      const isRoleEditable = canEditRole?.();
+      const isRoleEditable = canEditRole?.(host);
       const hostRole = getHostRole(host, t, schedulableMasters);
       return {
         title: (

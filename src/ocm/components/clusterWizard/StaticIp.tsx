@@ -17,7 +17,7 @@ const getInitialFormStateProps = () => {
     isAutoSaveRunning: false,
     errors: {},
     touched: {},
-    isEmpty: false,
+    isEmpty: true,
   };
 };
 const StaticIp: React.FC<StaticIpProps & { cluster: Cluster }> = ({

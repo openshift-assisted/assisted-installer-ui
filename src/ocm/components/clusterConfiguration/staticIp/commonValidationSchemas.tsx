@@ -1,6 +1,7 @@
 import { Address4, Address6 } from 'ip-address';
 import { isInSubnet } from 'is-in-subnet';
 import * as Yup from 'yup';
+import { getAddressObject } from './data/protocolVersion';
 
 const LOCAL_HOST_IP = {
   ipv4: '127.0.0.0',
@@ -140,6 +141,26 @@ export const getIpAddressInSubnetValidationSchema = (
       } catch (err) {
         //if isInSubnet fails it means the machine network cidr isn't valid and this validation is irrelevant
         return true;
+      }
+    },
+  );
+};
+
+export const getIpIsNotNetworkOrBroadcastAddressSchema = (
+  protocolVersion: 'ipv4' | 'ipv6',
+  subnet: string,
+) => {
+  return Yup.string().test(
+    'is-not-network-or-broadcast',
+    `The IP address must not match the network or broadcast address`,
+    (value) => {
+      const subnetAddr = getAddressObject(subnet, protocolVersion);
+      if (!subnetAddr) {
+        return false;
+      } else {
+        const subnetStart = subnetAddr?.startAddress().correctForm();
+        const subnetEnd = subnetAddr?.endAddress().correctForm();
+        return !(value === subnetStart || value === subnetEnd);
       }
     },
   );
