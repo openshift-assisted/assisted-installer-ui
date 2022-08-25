@@ -1,10 +1,7 @@
 import * as React from 'react';
 import { sortable } from '@patternfly/react-table';
 import { TFunction } from 'i18next';
-import { getHostRole, getInventory, Host, RoleCell, stringToJSON } from '../../index';
-import { getHostRowHardwareInfo } from '../hosts/hardwareInfo';
-import { ValidationsInfo } from '../../types/hosts';
-import HostPropertyValidationPopover from '../hosts/HostPropertyValidationPopover';
+import { getHostRole, getInventory, Host, RoleCell } from '../../index';
 import { TableRow } from '../hosts/AITable';
 
 export const roleColumn = (t: TFunction, schedulableMasters: boolean): TableRow<Host> => {
@@ -40,7 +37,7 @@ export const numberOfDisksColumn: TableRow<Host> = {
     const disks = inventory.disks || [];
     return {
       title: <> {disks.length} </>,
-      props: { 'data-testid': 'host-role' },
+      props: { 'data-testid': 'disk-number' },
       sortableValue: disks.length,
     };
   },
@@ -56,8 +53,6 @@ export const odfUsageColumn = (excludeMasters: boolean): TableRow<Host> => {
       transforms: [sortable],
     },
     cell: (host) => {
-      const inventory = getInventory(host);
-      const disks = inventory.disks || [];
       const isMaster = host.role === 'master' || host.suggestedRole === 'master';
       const isExcluded = excludeMasters && isMaster;
       return {
@@ -67,33 +62,8 @@ export const odfUsageColumn = (excludeMasters: boolean): TableRow<Host> => {
           'Use ODF'
         ),
         props: { 'data-testid': 'use-odf' },
-        sortableValue: disks.length,
+        sortableValue: Number(isExcluded),
       };
     },
   };
-};
-
-export const totalStorageColumn: TableRow<Host> = {
-  header: {
-    title: 'Total Storage',
-    props: {
-      id: 'col-header-total-storage',
-    },
-    transforms: [sortable],
-  },
-  cell: (host) => {
-    const inventory = getInventory(host);
-    const { memory } = getHostRowHardwareInfo(inventory);
-    const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
-    const memoryValidation = validationsInfo?.hardware?.find((v) => v.id === 'has-memory-for-role');
-    return {
-      title: (
-        <HostPropertyValidationPopover validation={memoryValidation}>
-          {memory.title}
-        </HostPropertyValidationPopover>
-      ),
-      props: { 'data-testid': 'host-memory' },
-      sortableValue: memory.sortableValue,
-    };
-  },
 };

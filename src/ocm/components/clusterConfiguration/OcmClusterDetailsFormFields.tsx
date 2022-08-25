@@ -23,7 +23,7 @@ import {
 import DiskEncryptionControlGroup from '../../../common/components/clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
-export type ClusterDetailsFormFieldsProps = {
+export type OcmClusterDetailsFormFieldsProps = {
   canEditPullSecret: boolean;
   forceOpenshiftVersion?: string;
   isBaseDnsDomainDisabled?: boolean;
@@ -49,7 +49,7 @@ const BaseDnsHelperText: React.FC<{ name?: string; baseDnsDomain?: string }> = (
   </>
 );
 
-export const OcmClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> = ({
+export const OcmClusterDetailsFormFields: React.FC<OcmClusterDetailsFormFieldsProps> = ({
   managedDomains = [],
   toggleRedHatDnsService,
   canEditPullSecret,

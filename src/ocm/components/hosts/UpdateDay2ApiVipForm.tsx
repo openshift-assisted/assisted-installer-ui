@@ -81,7 +81,12 @@ const UpdateDay2ApiVipForm: React.FC<UpdateDay2ApiVipFormProps> = ({
                   {status.error.message}
                 </Alert>
               )}
-              <InputField label="API IP" name="apiVip" ref={apiVipInputRef} isRequired />
+              <InputField
+                label="Set the IP or domain used to reach the cluster"
+                name="apiVip"
+                ref={apiVipInputRef}
+                isRequired
+              />
             </GridGap>
           </ModalBoxBody>
           <ModalBoxFooter>
