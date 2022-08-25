@@ -24,7 +24,7 @@ export const TangServers: React.FC<{ isDisabled?: boolean }> = ({ isDisabled = f
                     <InputField
                       type={TextInputTypes.url}
                       name={`diskEncryptionTangServers.${index}.url`}
-                      placeholder="http//tang.srv"
+                      helperText={`Must start with "http://" or "https://". Optionally, end with ":<port>"`}
                       label="Server URL"
                       isRequired
                       isDisabled={isDisabled}
