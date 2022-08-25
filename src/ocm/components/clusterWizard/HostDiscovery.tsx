@@ -66,7 +66,6 @@ const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
 
     const params: V2ClusterUpdateParams = {};
     HostDiscoveryService.setPlatform(params, values.usePlatformIntegration);
-    HostDiscoveryService.setOLMOperators(params, values, cluster);
     HostDiscoveryService.setSchedulableMasters(params, values, cluster);
 
     try {

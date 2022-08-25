@@ -1,12 +1,22 @@
 import React from 'react';
-import { CheckboxField, Cluster, getFieldId, PopoverIcon } from '../../../common';
-import { useFeatureSupportLevel } from '../../../common/components/featureSupportLevels';
 import { FormGroup, Tooltip } from '@patternfly/react-core';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons';
+import {
+  Cluster,
+  CheckboxField,
+  PopoverIcon,
+  getFieldId,
+  useFeatureSupportLevel,
+  CNV_LINK,
+} from '../../../common';
 import CNVHostRequirementsContent from '../hosts/CNVHostRequirementsContent';
 
-const CNVLabel: React.FC<{ clusterId: Cluster['id']; isSingleNode?: boolean }> = ({
+const CNVLabel = ({
   clusterId,
   isSingleNode,
+}: {
+  clusterId: Cluster['id'];
+  isSingleNode?: boolean;
 }) => {
   return (
     <>
@@ -28,7 +38,18 @@ export type CnvCheckboxProps = {
   clusterId: string;
 };
 
-export const CnvCheckbox: React.FC<CnvCheckboxProps> = ({ openshiftVersion, isSNO, clusterId }) => {
+const CNVHelperText = () => {
+  return (
+    <>
+      Run virtual machines alongside containers on one platform.{' '}
+      <a href={CNV_LINK} target="_blank" rel="noopener noreferrer">
+        {'Learn more'} <ExternalLinkAltIcon />
+      </a>
+    </>
+  );
+};
+
+export const CnvCheckbox = ({ openshiftVersion, isSNO, clusterId }: CnvCheckboxProps) => {
   const featureSupportLevelContext = useFeatureSupportLevel();
   const name = 'useContainerNativeVirtualization';
   const fieldId = getFieldId(name, 'input');
@@ -41,7 +62,7 @@ export const CnvCheckbox: React.FC<CnvCheckboxProps> = ({ openshiftVersion, isSN
         <CheckboxField
           name={name}
           label={<CNVLabel clusterId={clusterId} isSingleNode={isSNO} />}
-          helperText="Run virtual machines along containers."
+          helperText={<CNVHelperText />}
           isDisabled={!!disabledReason}
         />
       </Tooltip>

@@ -1,16 +1,18 @@
 import React, { PropsWithChildren } from 'react';
+import { useLocation } from 'react-router-dom';
+import isEqual from 'lodash/isEqual';
 import ClusterWizardContext, { ClusterWizardContextType } from './ClusterWizardContext';
 import {
+  ClusterWizardFlowStateType,
   ClusterWizardStepsType,
   getClusterWizardFirstStep,
   isStaticIpStep,
 } from './wizardTransition';
 import { HostsNetworkConfigurationType } from '../../services';
 import { defaultWizardSteps, staticIpFormViewSubSteps } from './constants';
-import { Cluster, InfraEnv } from '../../../common/api';
+import { Cluster, InfraEnv } from '../../../common';
 import { StaticIpView } from '../clusterConfiguration/staticIp/data/dataTypes';
 import { getStaticIpInfo } from '../clusterConfiguration/staticIp/data/fromInfraEnv';
-import isEqual from 'lodash/isEqual';
 
 const getWizardStepIds = (staticIpView?: StaticIpView): ClusterWizardStepsType[] => {
   const stepIds: ClusterWizardStepsType[] = [...defaultWizardSteps];
@@ -30,9 +32,10 @@ const ClusterWizardContextProvider: React.FC<
 > = ({ children, cluster, infraEnv }) => {
   const [currentStepId, setCurrentStepId] = React.useState<ClusterWizardStepsType>();
   const [wizardStepIds, setWizardStepIds] = React.useState<ClusterWizardStepsType[]>();
+  const { state: locationState } = useLocation<ClusterWizardFlowStateType>();
   React.useEffect(() => {
     const staticIpInfo = infraEnv ? getStaticIpInfo(infraEnv) : undefined;
-    const firstStep = getClusterWizardFirstStep(staticIpInfo, cluster?.status);
+    const firstStep = getClusterWizardFirstStep(locationState, staticIpInfo, cluster?.status);
     const firstStepIds = getWizardStepIds(staticIpInfo?.view);
     setCurrentStepId(firstStep);
     setWizardStepIds(firstStepIds);

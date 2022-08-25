@@ -14,7 +14,7 @@ import { usePullSecret } from '../../hooks';
 import { getApiErrorMessage, handleApiError } from '../../api';
 import { updateCluster } from '../../reducers/clusters';
 import { useClusterWizardContext } from './ClusterWizardContext';
-import { canNextClusterDetails, ClusterWizardFlowStateType } from './wizardTransition';
+import { canNextClusterDetails, ClusterWizardFlowStateNew } from './wizardTransition';
 import { useOpenshiftVersions, useManagedDomains, useUsedClusterNames } from '../../hooks';
 import ClusterDetailsForm from './ClusterDetailsForm';
 import ClusterWizardNavigation from './ClusterWizardNavigation';
@@ -66,9 +66,7 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster, infraEnv }) =>
       clearAlerts();
       try {
         const cluster = await ClusterDetailsService.create(params);
-        const locationState: ClusterWizardFlowStateType = 'new';
-        // TODO(mlibra): figure out subscription ID and navigate to ${routeBasePath}/../details/s/${subscriptionId} instead
-        history.push(`${routeBasePath}/clusters/${cluster.id}`, locationState);
+        history.push(`${routeBasePath}/clusters/${cluster.id}`, ClusterWizardFlowStateNew);
       } catch (e) {
         handleApiError(e, () =>
           addAlert({ title: 'Failed to create new cluster', message: getApiErrorMessage(e) }),
