@@ -9,6 +9,7 @@ import {
   getIpAddressValidationSchema,
   isNotLocalHostIPAddress,
   isNotCatchAllIPAddress,
+  getIpIsNotNetworkOrBroadcastAddressSchema,
 } from '../../commonValidationSchemas';
 const REQUIRED_MESSAGE = 'A value is required';
 
@@ -30,6 +31,16 @@ export const getInMachineNetworkValidationSchema = (
   machineNetwork: Cidr,
 ) => {
   return getIpAddressInSubnetValidationSchema(
+    protocolVersion,
+    getMachineNetworkCidr(machineNetwork),
+  );
+};
+
+export const getIsNotNetworkOrBroadcastAddressSchema = (
+  protocolVersion: 'ipv4' | 'ipv6',
+  machineNetwork: Cidr,
+) => {
+  return getIpIsNotNetworkOrBroadcastAddressSchema(
     protocolVersion,
     getMachineNetworkCidr(machineNetwork),
   );
@@ -60,9 +71,9 @@ const getAddressDataValidationSchema = (protocolVersion: ProtocolVersion, ipConf
   return Yup.object().shape<IpConfig>({
     dns: getIPValidationSchema(protocolVersion),
     machineNetwork: getMachineNetworkValidationSchema(protocolVersion),
-    gateway: getIPValidationSchema(protocolVersion).concat(
-      getInMachineNetworkValidationSchema(protocolVersion, ipConfig.machineNetwork),
-    ),
+    gateway: getIPValidationSchema(protocolVersion)
+      .concat(getInMachineNetworkValidationSchema(protocolVersion, ipConfig.machineNetwork))
+      .concat(getIsNotNetworkOrBroadcastAddressSchema(protocolVersion, ipConfig.machineNetwork)),
   });
 };
 
