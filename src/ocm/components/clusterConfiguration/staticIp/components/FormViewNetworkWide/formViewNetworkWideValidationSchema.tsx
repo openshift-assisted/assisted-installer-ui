@@ -69,7 +69,6 @@ const getIPValidationSchema = (protocolVersion: ProtocolVersion) => {
 
 const getAddressDataValidationSchema = (protocolVersion: ProtocolVersion, ipConfig: IpConfig) => {
   return Yup.object().shape<IpConfig>({
-    dns: getIPValidationSchema(protocolVersion),
     machineNetwork: getMachineNetworkValidationSchema(protocolVersion),
     gateway: getIPValidationSchema(protocolVersion)
       .concat(getInMachineNetworkValidationSchema(protocolVersion, ipConfig.machineNetwork))
@@ -97,6 +96,7 @@ export const networkWideValidationSchema = Yup.lazy<FormViewNetworkWideValues>(
           .transform(transformNumber),
       }),
       protocolType: Yup.string(),
+      dns: getIPValidationSchema('ipv4'),
       ipConfigs: ipConfigsValidationSchemas,
     });
   },
