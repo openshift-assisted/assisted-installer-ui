@@ -1,6 +1,4 @@
 import React from 'react';
-import { useFormikContext } from 'formik';
-import { HostDiscoveryValues } from '../../../common/types/clusters';
 import {
   Button,
   ButtonVariant,
@@ -22,8 +20,7 @@ const Hint = () => (
 );
 
 const OCSDisksManualFormattingHint = () => {
-  const { values } = useFormikContext<HostDiscoveryValues>();
-  return values.useExtraDisksForLocalStorage ? (
+  return (
     <Text component="p">
       <Popover bodyContent={<Hint />} minWidth="30rem">
         <Button variant={ButtonVariant.link} isInline>
@@ -32,7 +29,7 @@ const OCSDisksManualFormattingHint = () => {
         </Button>
       </Popover>
     </Text>
-  ) : null;
+  );
 };
 
 export default OCSDisksManualFormattingHint;

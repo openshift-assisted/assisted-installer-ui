@@ -21,8 +21,9 @@ import {
 import { hardwareStatusColumn } from './HostsDiscoveryTable';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { ExpandComponentProps } from '../../../common/components/hosts/AITable';
-import StorageDetail from '../../../common/components/storage/StorageDetail';
 import CommonStorageTable from '../../../common/components/storage/StorageTable';
+import StorageDetail from '../../../common/components/storage/StorageDetail';
+import StorageAlerts from './StorageAlerts';
 import { HostsTableModals, useHostsTable } from './use-hosts-table';
 import {
   HostsTableDetailContextProvider,
@@ -77,6 +78,9 @@ const HostsStorageTable = ({ cluster }: { cluster: Cluster }) => {
               {...paginationProps}
             />
           </HostsTableDetailContextProvider>
+        </StackItem>
+        <StackItem>
+          <StorageAlerts cluster={cluster} />
         </StackItem>
       </Stack>
       <HostsTableModals cluster={cluster} {...modalProps} />

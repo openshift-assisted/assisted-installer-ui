@@ -12,7 +12,6 @@ import { NETWORK_TYPE_OVN, NETWORK_TYPE_SDN, NO_SUBNET_SET } from '../../config'
 import {
   selectClusterNetworkCIDR,
   selectClusterNetworkHostPrefix,
-  selectMonitoredOperators,
   selectServiceNetworkCIDR,
   selectSchedulableMasters,
 } from '../../selectors';
@@ -147,13 +146,7 @@ export const isSubnetInIPv6 = ({
   Address6.isValid(serviceNetworkCidr || '');
 
 export const getHostDiscoveryInitialValues = (cluster: Cluster): HostDiscoveryValues => {
-  const monitoredOperators = selectMonitoredOperators(cluster);
-  const isOperatorEnabled = (name: RegExp | string) =>
-    !!monitoredOperators.find((operator) => operator.name?.match(name));
-
   return {
-    useExtraDisksForLocalStorage: isOperatorEnabled(/ocs|odf/),
-    useContainerNativeVirtualization: isOperatorEnabled('cnv'),
     usePlatformIntegration: cluster.platform?.type !== 'baremetal',
     schedulableMasters: selectSchedulableMasters(cluster),
   };

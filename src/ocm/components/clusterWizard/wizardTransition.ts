@@ -1,10 +1,10 @@
-import { Cluster } from '../../../common/api/types';
 import {
+  Cluster,
   getAllClusterWizardSoftValidationIds,
   getWizardStepClusterStatus,
   WizardStepsValidationMap,
   WizardStepValidationMap,
-} from '../../../common/components/clusterWizard/validationsInfoUtils';
+} from '../../../common';
 import { StaticIpInfo, StaticIpView } from '../clusterConfiguration/staticIp/data/dataTypes';
 
 export type ClusterWizardStepsType =
@@ -12,16 +12,25 @@ export type ClusterWizardStepsType =
   | 'static-ip-yaml-view'
   | 'static-ip-network-wide-configurations'
   | 'static-ip-host-configurations'
+  | 'operators'
   | 'host-discovery'
   | 'storage'
   | 'networking'
   | 'review';
-export type ClusterWizardFlowStateType = Cluster['status'] | 'new';
+
+export const ClusterWizardFlowStateNew = 'new';
+export type ClusterWizardFlowStateType = Cluster['status'] | typeof ClusterWizardFlowStateNew;
 
 export const getClusterWizardFirstStep = (
+  locationState: ClusterWizardFlowStateType | undefined,
   staticIpInfo: StaticIpInfo | undefined,
   state?: ClusterWizardFlowStateType,
 ): ClusterWizardStepsType => {
+  // Move to operators just the first time after the cluster is created
+  if (locationState === ClusterWizardFlowStateNew && !staticIpInfo) {
+    return 'operators';
+  }
+
   if (staticIpInfo && !staticIpInfo.isDataComplete) {
     if (staticIpInfo.view === StaticIpView.YAML) {
       return 'static-ip-yaml-view';
@@ -42,7 +51,7 @@ export const getClusterWizardFirstStep = (
 
 type TransitionProps = { cluster: Cluster };
 
-const staticIpValidationsMap: WizardStepValidationMap = {
+const buildEmptyValidationsMap = (): WizardStepValidationMap => ({
   cluster: {
     groups: [],
     validationIds: [],
@@ -53,7 +62,10 @@ const staticIpValidationsMap: WizardStepValidationMap = {
     validationIds: [],
   },
   softValidationIds: [],
-};
+});
+
+const staticIpValidationsMap = buildEmptyValidationsMap();
+const operatorsStepValidationsMap = buildEmptyValidationsMap();
 
 const clusterDetailsStepValidationsMap: WizardStepValidationMap = {
   cluster: {
@@ -141,6 +153,7 @@ export const wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardSt
   'static-ip-yaml-view': staticIpValidationsMap,
   'static-ip-network-wide-configurations': staticIpValidationsMap,
   'static-ip-host-configurations': staticIpValidationsMap,
+  operators: operatorsStepValidationsMap,
   'host-discovery': hostDiscoveryStepValidationsMap,
   storage: storageStepValidationsMap,
   networking: networkingStepValidationsMap,
@@ -172,6 +185,10 @@ export const canNextHostDiscovery = ({ cluster }: TransitionProps): boolean =>
 
 export const canNextStorage = ({ cluster }: TransitionProps): boolean =>
   getWizardStepClusterStatus('storage', wizardStepsValidationsMap, cluster, cluster.hosts) ===
+  'ready';
+
+export const canNextOperators = ({ cluster }: TransitionProps): boolean =>
+  getWizardStepClusterStatus('operators', wizardStepsValidationsMap, cluster, cluster.hosts) ===
   'ready';
 
 export const canNextNetwork = ({ cluster }: TransitionProps): boolean =>

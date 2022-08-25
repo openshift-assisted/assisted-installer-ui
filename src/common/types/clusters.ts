@@ -43,13 +43,15 @@ export type NetworkConfigurationValues = Pick<
   stackType?: 'singleStack' | 'dualStack';
 };
 export type HostDiscoveryValues = V2ClusterUpdateParams & {
-  useExtraDisksForLocalStorage: boolean;
-  useContainerNativeVirtualization: boolean;
   usePlatformIntegration: boolean;
   schedulableMasters: boolean;
 };
 export type StorageValues = V2ClusterUpdateParams & {
   nodeLabeling: string;
+};
+export type OperatorsValues = V2ClusterUpdateParams & {
+  useExtraDisksForLocalStorage: boolean;
+  useContainerNativeVirtualization: boolean;
 };
 export enum CpuArchitecture {
   x86 = 'x86_64',
