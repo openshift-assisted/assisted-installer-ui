@@ -23,6 +23,7 @@ import {
   NmstateInterface,
   isVlanInterface,
   NmstateEthernetInterface,
+  NmstateVlanInterface,
   isEthernetInterface,
 } from './nmstateTypes';
 import { isDummyInterface } from './dummyData';
@@ -48,6 +49,12 @@ const findFirstRealEthernetInterface = (
   ) as unknown as NmstateEthernetInterface | undefined;
 };
 
+const findFirstVlanInterface = (
+  interfaces: NmstateInterface[],
+): NmstateVlanInterface | undefined => {
+  return interfaces.find(isVlanInterface);
+};
+
 const parseYaml = (yaml: string): ParsedFormViewYaml => {
   const lines = yaml.split('\n');
   const lastCommentIdx = findLastIndex(lines, (line) => line.startsWith(YAML_COMMENT_CHAR));
@@ -68,10 +75,10 @@ const getVlanId = (interfaces: NmstateInterface[]): number | null => {
 };
 
 const getIpAddress = (
-  ethernetInterface: NmstateEthernetInterface,
+  networkInterface: NmstateEthernetInterface | NmstateVlanInterface,
   protocolVersion: ProtocolVersion,
 ): string => {
-  const ipAddressData = ethernetInterface[protocolVersion];
+  const ipAddressData = networkInterface[protocolVersion];
   if (ipAddressData === undefined) {
     return ''; //handle case 4
   }
@@ -134,6 +141,7 @@ const getFormViewHost = (
   }
   const { nmstate } = parseYaml(infraEnvHost.networkYaml);
   const ethernetInterface = findFirstRealEthernetInterface(nmstate.interfaces);
+  const vlanInterface = findFirstVlanInterface(nmstate.interfaces);
   if (!ethernetInterface) {
     //handle case 2
     return null;
@@ -147,7 +155,9 @@ const getFormViewHost = (
     },
   };
   for (const protocolVersion of getShownProtocolVersions(protocolType)) {
-    ret.ips[protocolVersion] = getIpAddress(ethernetInterface, protocolVersion);
+    vlanInterface
+      ? (ret.ips[protocolVersion] = getIpAddress(vlanInterface, protocolVersion))
+      : (ret.ips[protocolVersion] = getIpAddress(ethernetInterface, protocolVersion));
   }
   return ret;
 };
