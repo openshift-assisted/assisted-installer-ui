@@ -8,7 +8,7 @@ const Day2ClusterService = {
     return ocmCluster && ocmCluster.external_id;
   },
 
-  async fetchCluster(ocmCluster: OcmClusterType, pullSecret: string) {
+  async fetchCluster(ocmCluster: OcmClusterType, pullSecret: string, openshiftVersion: string) {
     const openshiftClusterId = Day2ClusterService.getOpenshiftClusterId(ocmCluster);
 
     if (!openshiftClusterId) {
@@ -44,7 +44,7 @@ const Day2ClusterService = {
         ocmCluster.display_name || ocmCluster.name || openshiftClusterId,
         apiVipDnsname,
         pullSecret,
-        ocmCluster.openshift_version,
+        openshiftVersion,
       );
     }
   },
@@ -66,14 +66,14 @@ const Day2ClusterService = {
       openshiftClusterId, // used to both match OpenShift Cluster and as an assisted-installer ID
       name: `scale-up-${clusterName}`, // both cluster.name and cluster.display-name contain just UUID which fails AI validation (k8s naming conventions)
       apiVipDnsname,
-      openshiftVersion: openshiftVersion,
+      openshiftVersion,
     });
 
     await InfraEnvsService.create({
       name: `${data.name || ''}_infra-env`,
       pullSecret,
       clusterId: data.id,
-      openshiftVersion: openshiftVersion,
+      openshiftVersion,
     });
 
     data.hosts = await Day2ClusterService.fetchHosts(data.id);
