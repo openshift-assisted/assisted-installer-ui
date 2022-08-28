@@ -11,6 +11,7 @@ import {
 import { usePullSecret } from '../../hooks';
 import { AssistedUILibVersion } from '../ui';
 import { handleApiError } from '../../api';
+import { useOpenshiftVersions } from '../../hooks';
 import AddHosts from './AddHosts';
 import { OcmClusterType } from './types';
 import Day2ClusterService from '../../services/Day2ClusterService';
@@ -34,6 +35,7 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
   const [error, setError] = React.useState<ReactNode>();
   const [day2Cluster, setDay2Cluster] = useStateSafely<Cluster | null | undefined>(undefined);
   const pullSecret = usePullSecret();
+  const { normalizeClusterVersion } = useOpenshiftVersions();
 
   const TryAgain = React.useCallback(
     () => (
@@ -85,6 +87,19 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
     if (isVisible && day2Cluster === undefined && cluster && openshiftClusterId && pullSecret) {
       // ensure exclusive run
       setDay2Cluster(null);
+
+      const openshiftVersion = normalizeClusterVersion(cluster.openshift_version);
+      if (!openshiftVersion) {
+        setError(
+          <>
+            Unsupported OpenShift cluster version: ${cluster.openshift_version}.
+            <br />
+            Check your connection and <TryAgain />.
+          </>,
+        );
+        return;
+      }
+
       let apiVipDnsname = '';
       // Format of cluster.api.url: protocol://domain:port
       if (cluster.api?.url) {
@@ -125,7 +140,11 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
 
       const doItAsync = async () => {
         try {
-          const day2Cluster = await Day2ClusterService.fetchCluster(cluster, pullSecret);
+          const day2Cluster = await Day2ClusterService.fetchCluster(
+            cluster,
+            pullSecret,
+            openshiftVersion,
+          );
           setDay2Cluster(day2Cluster);
         } catch (e) {
           handleApiError(e);
@@ -148,7 +167,15 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
       void doItAsync();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cluster, openModal, pullSecret, day2Cluster, setDay2Cluster, isVisible]);
+  }, [
+    cluster,
+    openModal,
+    pullSecret,
+    day2Cluster,
+    setDay2Cluster,
+    isVisible,
+    normalizeClusterVersion,
+  ]);
 
   const resetCluster = React.useCallback(async () => {
     if (day2Cluster) {
