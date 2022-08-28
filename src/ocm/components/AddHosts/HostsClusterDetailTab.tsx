@@ -17,6 +17,7 @@ import { OcmClusterType } from './types';
 import Day2ClusterService from '../../services/Day2ClusterService';
 import { useStateSafely } from '../../../common/hooks';
 import { isApiError } from '../../api/types';
+import { FeatureSupportLevelProvider } from '../featureSupportLevels';
 
 type OpenModalType = (modalName: string, cluster?: OcmClusterType) => void;
 
@@ -225,7 +226,9 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
       resetCluster={resetCluster}
       ocpConsoleUrl={cluster?.console?.url}
     >
-      <AddHosts />
+      <FeatureSupportLevelProvider loadingUi={<LoadingState />} cluster={day2Cluster}>
+        <AddHosts />
+      </FeatureSupportLevelProvider>
     </AddHostsContextProvider>
   );
 };
