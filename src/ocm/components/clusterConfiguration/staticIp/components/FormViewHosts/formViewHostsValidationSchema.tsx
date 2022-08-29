@@ -12,7 +12,9 @@ import { getInMachineNetworkValidationSchema } from '../FormViewNetworkWide/form
 import {
   getUniqueValidationSchema,
   UniqueStringArrayExtractor,
+  getIpIsNotNetworkOrBroadcastAddressSchema,
 } from '../../commonValidationSchemas';
+import { getMachineNetworkCidr } from '../../data/machineNetwork';
 const requiredMsg = 'A value is required';
 
 const getAllIpv4Addresses: UniqueStringArrayExtractor<FormViewHostsValues> = (
@@ -40,6 +42,12 @@ const getHostValidationSchema = (networkWideValues: FormViewNetworkWideValues) =
           )
             .required(requiredMsg)
             .concat(getUniqueValidationSchema(getAllIpv4Addresses))
+            .concat(
+              getIpIsNotNetworkOrBroadcastAddressSchema(
+                'ipv4',
+                getMachineNetworkCidr(networkWideValues.ipConfigs['ipv4'].machineNetwork),
+              ),
+            )
         : Yup.string(),
       ipv6: showIpv6(networkWideValues.protocolType)
         ? getInMachineNetworkValidationSchema(
@@ -48,6 +56,12 @@ const getHostValidationSchema = (networkWideValues: FormViewNetworkWideValues) =
           )
             .required(requiredMsg)
             .concat(getUniqueValidationSchema(getAllIpv6Addresses))
+            .concat(
+              getIpIsNotNetworkOrBroadcastAddressSchema(
+                'ipv6',
+                getMachineNetworkCidr(networkWideValues.ipConfigs['ipv6'].machineNetwork),
+              ),
+            )
         : Yup.string(),
     }),
   });
