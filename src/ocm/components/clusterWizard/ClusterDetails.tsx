@@ -41,7 +41,7 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster, infraEnv }) =>
   }, [errorOCPVersions, addAlert]);
 
   const handleClusterUpdate = React.useCallback(
-    async (clusterId: Cluster['id'], values: V2ClusterUpdateParams) => {
+    async (cluster: Cluster, values: V2ClusterUpdateParams) => {
       clearAlerts();
       const params: V2ClusterUpdateParams = omit(values, [
         'highAvailabilityMode',
@@ -60,7 +60,7 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster, infraEnv }) =>
         );
       }
     },
-    [clearAlerts, cluster, dispatch, clusterWizardContext, addAlert],
+    [clearAlerts, dispatch, clusterWizardContext, addAlert],
   );
 
   const handleClusterCreate = React.useCallback(

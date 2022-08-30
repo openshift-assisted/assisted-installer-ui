@@ -37,7 +37,7 @@ type ClusterDetailsFormProps = {
 
   moveNext: () => void;
   handleClusterCreate: (params: ClusterCreateParams) => Promise<void>;
-  handleClusterUpdate: (clusterId: Cluster['id'], params: V2ClusterUpdateParams) => Promise<void>;
+  handleClusterUpdate: (cluster: Cluster, params: V2ClusterUpdateParams) => Promise<void>;
 };
 
 const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
@@ -60,7 +60,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
     async (values: OcmClusterDetailsValues) => {
       const params = ClusterDetailsService.getClusterCreateParams(values);
       if (cluster) {
-        await handleClusterUpdate(cluster.id, params);
+        await handleClusterUpdate(cluster, params);
       } else {
         await handleClusterCreate(params);
       }
@@ -89,7 +89,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
         ocpVersions,
         urlSearchParams: search,
       }),
-    [cluster, pullSecret, managedDomains, ocpVersions, infraEnv],
+    [infraEnv, cluster, pullSecret, managedDomains, ocpVersions, search],
   );
   const { t } = useTranslation();
   const validationSchema = getClusterDetailsValidationSchema({
