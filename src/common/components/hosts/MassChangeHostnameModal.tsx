@@ -26,6 +26,7 @@ import {
   richNameValidationSchema,
   hostnameValidationMessages,
   ModalProgress,
+  FORBIDDEN_HOSTNAMES,
 } from '../ui';
 import { Host } from '../../api';
 import { getHostname as getHostnameUtils, getInventory } from './utils';
@@ -99,10 +100,12 @@ const withTemplate =
       }
       return acc;
     }, []);
+
     let validationResult = await getRichTextValidation(schema)({
       ...values,
       hostname: newHostnames[0] || '',
     });
+
     if (
       newHostnames.some((newHostname) => usedHostnames.includes(newHostname || '')) ||
       new Set(newHostnames).size !== newHostnames.length
@@ -114,6 +117,16 @@ const withTemplate =
         ),
       };
     }
+
+    if (newHostnames.some((hostname) => FORBIDDEN_HOSTNAMES.includes(hostname || ''))) {
+      validationResult = {
+        ...(validationResult || {}),
+        hostname: (validationResult?.hostname || []).concat(
+          hostnameValidationMessages(t).LOCALHOST_ERR,
+        ),
+      };
+    }
+
     return validationResult;
   };
 
