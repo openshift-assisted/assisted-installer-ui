@@ -48,9 +48,8 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
     if (cluster.id && infraEnv?.id) {
       try {
         const { updatedCluster } = await DiscoveryImageFormService.update(
-          cluster.id,
+          cluster,
           infraEnv.id,
-          cluster.kind,
           formValues,
           ocmPullSecret,
         );

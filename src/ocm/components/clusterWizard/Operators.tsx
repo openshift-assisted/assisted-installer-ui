@@ -13,8 +13,7 @@ import ClusterWizardFooter from '../clusterWizard/ClusterWizardFooter';
 import { OperatorsStep } from './OperatorsStep';
 import ClusterWizardNavigation from '../clusterWizard/ClusterWizardNavigation';
 import { Formik, FormikConfig, useFormikContext } from 'formik';
-import { OperatorsService } from '../../services';
-import { ClustersAPI } from '../../services/apis';
+import { ClustersService, OperatorsService } from '../../services';
 import { updateCluster } from '../../reducers/clusters';
 import { handleApiError } from '../../api';
 import { useDispatch } from 'react-redux';
@@ -78,7 +77,7 @@ const Operators: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
     OperatorsService.setOLMOperators(params, values, cluster);
 
     try {
-      const { data } = await ClustersAPI.update(cluster.id, params);
+      const { data } = await ClustersService.update(cluster, params);
       dispatch(updateCluster(data));
     } catch (e) {
       handleApiError(e, () =>

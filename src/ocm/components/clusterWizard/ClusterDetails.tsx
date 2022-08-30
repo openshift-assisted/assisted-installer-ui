@@ -49,16 +49,18 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster, infraEnv }) =>
         'openshiftVersion',
       ]);
       try {
-        const cluster = await ClusterDetailsService.update(clusterId, params);
-        dispatch(updateCluster(cluster));
-        canNextClusterDetails({ cluster }) && clusterWizardContext.moveNext();
+        if (cluster) {
+          const updatedCluster = await ClusterDetailsService.update(cluster, params);
+          dispatch(updateCluster(updatedCluster));
+          canNextClusterDetails({ cluster: updatedCluster }) && clusterWizardContext.moveNext();
+        }
       } catch (e) {
         handleApiError(e, () =>
           addAlert({ title: 'Failed to update the cluster', message: getApiErrorMessage(e) }),
         );
       }
     },
-    [addAlert, clearAlerts, dispatch, clusterWizardContext],
+    [clearAlerts, cluster, dispatch, clusterWizardContext, addAlert],
   );
 
   const handleClusterCreate = React.useCallback(

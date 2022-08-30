@@ -4,14 +4,14 @@ import {
   Cluster,
   InfraEnv,
 } from '../../common/api/types';
-import { ClustersAPI, InfraEnvsAPI } from './apis';
+import { InfraEnvsAPI } from './apis';
 import { DiscoveryImageFormValues } from '../../common/components/clusterConfiguration';
+import ClustersService from './ClustersService';
 
 const DiscoveryImageFormService = {
   async update(
-    clusterId: Cluster['id'],
+    cluster: Cluster,
     infraEnvId: InfraEnv['id'],
-    clusterKind: Cluster['kind'],
     formValues: DiscoveryImageFormValues,
     ocmPullSecret?: string,
   ) {
@@ -36,7 +36,7 @@ const DiscoveryImageFormService = {
       imageType: formValues.imageType,
     };
 
-    const { data: updatedCluster } = await ClustersAPI.update(clusterId, proxyParams);
+    const { data: updatedCluster } = await ClustersService.update(cluster, proxyParams);
     const { data: updatedInfraEnv } = await InfraEnvsAPI.update(infraEnvId, infraEnvParams);
 
     return { updatedCluster, updatedInfraEnv };

@@ -45,10 +45,9 @@ import {
 import ResetHostModal from './ResetHostModal';
 import DeleteHostModal from './DeleteHostModal';
 import { onFetchEvents } from '../fetching/fetchEvents';
-import { HostsService } from '../../services';
+import { ClustersService, HostsService } from '../../services';
 import UpdateDay2ApiVipModal from './UpdateDay2ApiVipModal';
 import { UpdateDay2ApiVipFormProps } from './UpdateDay2ApiVipForm';
-import { ClustersAPI } from '../../services/apis';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { getErrorMessage } from '../../../common/utils';
@@ -161,7 +160,7 @@ export const useHostsTable = (cluster: Cluster) => {
   const onUpdateDay2ApiVip: UpdateDay2ApiVipFormProps['onUpdateDay2ApiVip'] = React.useCallback(
     async (apiVip: string, onError: (message: string) => void) => {
       try {
-        const { data } = await ClustersAPI.update(cluster.id, {
+        const { data } = await ClustersService.update(cluster, {
           apiVipDnsName: apiVip,
         });
         dispatch(updateCluster(data));
@@ -169,15 +168,15 @@ export const useHostsTable = (cluster: Cluster) => {
         handleApiError(e, () => onError(getApiErrorMessage(e)));
       }
     },
-    [cluster.id, dispatch],
+    [cluster, dispatch],
   );
 
   const onAdditionalNtpSource: AdditionalNTPSourcesFormProps['onAdditionalNtpSource'] =
     React.useMemo(
       () =>
         async (...args) =>
-          await onAdditionalNtpSourceAction(dispatch, cluster.id, ...args),
-      [cluster.id, dispatch],
+          await onAdditionalNtpSourceAction(dispatch, cluster, ...args),
+      [cluster, dispatch],
     );
 
   const actionChecks = React.useMemo(

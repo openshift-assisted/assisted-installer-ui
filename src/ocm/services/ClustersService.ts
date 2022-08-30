@@ -1,7 +1,8 @@
 import { ClustersAPI } from '../services/apis';
 import HostsService from './HostsService';
 import InfraEnvsService from './InfraEnvsService';
-import { Cluster, Host } from '../../common';
+import { AI_UI_TAG, Cluster, Host, V2ClusterUpdateParams } from '../../common';
+import { ocmClient } from '../api';
 
 const ClustersService = {
   async delete(clusterId: Cluster['id']) {
@@ -21,6 +22,27 @@ const ClustersService = {
     const contentHeader = headers['content-disposition'];
     const fileName = contentHeader?.match(/filename="(.+)"/)?.[1];
     return { data, fileName };
+  },
+
+  async update(cluster: Cluster, params: V2ClusterUpdateParams) {
+    if (ocmClient) {
+      params = ClustersService.updateClusterTags(cluster.tags, params);
+    }
+    return ClustersAPI.update(cluster.id, params);
+  },
+
+  updateClusterTags(
+    clusterTags: Cluster['tags'],
+    params: V2ClusterUpdateParams,
+  ): V2ClusterUpdateParams {
+    const tags = clusterTags?.split(',') || [];
+    if (tags?.includes(AI_UI_TAG)) {
+      params.tags = clusterTags;
+    } else {
+      tags?.push(AI_UI_TAG);
+      params.tags = tags?.join(',');
+    }
+    return params;
   },
 };
 
