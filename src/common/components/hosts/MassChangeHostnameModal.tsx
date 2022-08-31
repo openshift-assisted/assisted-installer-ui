@@ -31,11 +31,11 @@ import {
 import { Host } from '../../api';
 import { getHostname as getHostnameUtils, getInventory } from './utils';
 import { ActionCheck } from './types';
-import { getErrorMessage } from '../../utils';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 import './MassChangeHostnameModal.css';
 import { TFunction } from 'i18next';
+import { getApiErrorMessage } from '../../../ocm/api';
 
 const getHostname = (host: Host) => {
   const inventory = getInventory(host);
@@ -311,7 +311,7 @@ const MassChangeHostnameModal: React.FC<MassChangeHostnameModalProps> = ({
             formikActions.setStatus({
               error: {
                 title: t('ai:Failed to update host'),
-                message: getErrorMessage(e),
+                message: getApiErrorMessage(e),
               },
             });
           }
