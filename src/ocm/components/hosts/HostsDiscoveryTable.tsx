@@ -65,7 +65,6 @@ const HostRowDetailExpand = ({ obj: host }: ExpandComponentProps<Host>) => (
   <HostDetail
     key={host.id}
     host={host}
-    showStorage={false}
     AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
   />
 );
