@@ -81,6 +81,17 @@ const validationSchema = (
     hostname: richNameValidationSchema(t, usedHostnames, initialValues.hostname).required(),
   });
 
+const updateHostnameValidationResult = (
+  validationResult: { [key: string]: string[] } | undefined,
+  message: string,
+) => {
+  validationResult = {
+    ...(validationResult || {}),
+    hostname: (validationResult?.hostname || []).concat(message),
+  };
+  return validationResult;
+};
+
 const withTemplate =
   (
     selectedHosts: Host[],
@@ -110,21 +121,17 @@ const withTemplate =
       newHostnames.some((newHostname) => usedHostnames.includes(newHostname || '')) ||
       new Set(newHostnames).size !== newHostnames.length
     ) {
-      validationResult = {
-        ...(validationResult || {}),
-        hostname: (validationResult?.hostname || []).concat(
-          hostnameValidationMessages(t).NOT_UNIQUE,
-        ),
-      };
+      validationResult = updateHostnameValidationResult(
+        validationResult,
+        hostnameValidationMessages(t).NOT_UNIQUE,
+      );
     }
 
     if (newHostnames.some((hostname) => FORBIDDEN_HOSTNAMES.includes(hostname || ''))) {
-      validationResult = {
-        ...(validationResult || {}),
-        hostname: (validationResult?.hostname || []).concat(
-          hostnameValidationMessages(t).LOCALHOST_ERR,
-        ),
-      };
+      validationResult = updateHostnameValidationResult(
+        validationResult,
+        hostnameValidationMessages(t).LOCALHOST_ERR,
+      );
     }
 
     return validationResult;
