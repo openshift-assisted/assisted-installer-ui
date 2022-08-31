@@ -26,15 +26,16 @@ import {
   richNameValidationSchema,
   hostnameValidationMessages,
   ModalProgress,
+  FORBIDDEN_HOSTNAMES,
 } from '../ui';
 import { Host } from '../../api';
 import { getHostname as getHostnameUtils, getInventory } from './utils';
 import { ActionCheck } from './types';
-import { getErrorMessage } from '../../utils';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 import './MassChangeHostnameModal.css';
 import { TFunction } from 'i18next';
+import { getApiErrorMessage } from '../../../ocm/api';
 
 const getHostname = (host: Host) => {
   const inventory = getInventory(host);
@@ -80,6 +81,17 @@ const validationSchema = (
     hostname: richNameValidationSchema(t, usedHostnames, initialValues.hostname).required(),
   });
 
+const updateHostnameValidationResult = (
+  validationResult: { [key: string]: string[] } | undefined,
+  message: string,
+) => {
+  validationResult = {
+    ...(validationResult || {}),
+    hostname: (validationResult?.hostname || []).concat(message),
+  };
+  return validationResult;
+};
+
 const withTemplate =
   (
     selectedHosts: Host[],
@@ -99,21 +111,29 @@ const withTemplate =
       }
       return acc;
     }, []);
+
     let validationResult = await getRichTextValidation(schema)({
       ...values,
       hostname: newHostnames[0] || '',
     });
+
     if (
       newHostnames.some((newHostname) => usedHostnames.includes(newHostname || '')) ||
       new Set(newHostnames).size !== newHostnames.length
     ) {
-      validationResult = {
-        ...(validationResult || {}),
-        hostname: (validationResult?.hostname || []).concat(
-          hostnameValidationMessages(t).NOT_UNIQUE,
-        ),
-      };
+      validationResult = updateHostnameValidationResult(
+        validationResult,
+        hostnameValidationMessages(t).NOT_UNIQUE,
+      );
     }
+
+    if (newHostnames.some((hostname) => FORBIDDEN_HOSTNAMES.includes(hostname || ''))) {
+      validationResult = updateHostnameValidationResult(
+        validationResult,
+        hostnameValidationMessages(t).LOCALHOST_ERR,
+      );
+    }
+
     return validationResult;
   };
 
@@ -293,7 +313,7 @@ const MassChangeHostnameModal: React.FC<MassChangeHostnameModalProps> = ({
             formikActions.setStatus({
               error: {
                 title: t('ai:Failed to update host'),
-                message: getErrorMessage(e),
+                message: getApiErrorMessage(e),
               },
             });
           }
