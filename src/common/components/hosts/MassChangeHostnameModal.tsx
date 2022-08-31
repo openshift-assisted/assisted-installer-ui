@@ -171,7 +171,9 @@ const MassChangeHostnameForm: React.FC<MassChangeHostnameFormProps> = ({
             />
             <HelperText>
               <HelperTextItem variant="indeterminate">
-                {t('ai:For example: host-{{n}}')}
+                {t('ai:For example: host-{{n}}', {
+                  interpolation: { suffix: '###', prefix: '###' },
+                })}
               </HelperTextItem>
             </HelperText>
           </StackItem>
