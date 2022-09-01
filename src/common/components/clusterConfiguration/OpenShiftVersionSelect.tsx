@@ -9,9 +9,9 @@ import {
   global_danger_color_100 as dangerColor,
 } from '@patternfly/react-tokens';
 import { OPENSHIFT_LIFE_CYCLE_DATES_LINK } from '../../config';
+import openshiftVersionData from '../../config/openshiftVersionsData.json';
 import { OpenshiftVersionOptionType } from '../../types';
 import { SelectField } from '../ui';
-import openshiftVersionData from '../../../ocm/data/openshiftVersionsData.json';
 import { diffInDaysBetweenDates } from '../../sevices/DateAndTime';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
@@ -20,6 +20,8 @@ const OpenShiftLifeCycleDatesLink = () => {
   return (
     <a href={OPENSHIFT_LIFE_CYCLE_DATES_LINK} target="_blank" rel="noopener noreferrer">
       {t('ai:Learn more')} <ExternalLinkAltIcon />
+      <OcmFolderImportComponent />
+      <CimFolderImportComponent />
     </a>
   );
 };

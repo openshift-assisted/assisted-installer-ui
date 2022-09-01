@@ -1,15 +1,17 @@
 import React from 'react';
-import { saveAs } from 'file-saver';
 import { Button, ButtonVariant } from '@patternfly/react-core';
-import { canDownloadKubeconfig } from '../hosts/utils';
-import { useAlerts } from '../AlertsContextProvider';
-import { Cluster } from '../../api/types';
-import { ocmClient } from '../../../ocm/api/axiosClient';
-import { getApiErrorMessage, handleApiError } from '../../../ocm/api/utils';
-import ClustersAPI from '../../../ocm/services/apis/ClustersAPI';
+import { saveAs } from 'file-saver';
 import { AxiosResponseHeaders } from 'axios';
-import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
+import { canDownloadKubeconfig } from '../hosts';
+import { useAlerts } from '../AlertsContextProvider';
+import { Cluster } from '../../api';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
+
+/* eslint-disable no-restricted-imports */
+import { ocmClient, getApiErrorMessage, handleApiError } from '../../../ocm/api';
+import ClustersAPI from '../../../ocm/services/apis/ClustersAPI';
+/* eslint-enable no-restricted-imports */
 
 type KubeconfigDownloadProps = {
   clusterId: Cluster['id'];
