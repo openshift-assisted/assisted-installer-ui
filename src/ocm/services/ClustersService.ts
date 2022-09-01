@@ -35,6 +35,17 @@ const ClustersService = {
     return ClustersAPI.update(clusterId, params);
   },
 
+  async install(clusterId: Cluster['id'], clusterTags: Cluster['tags']) {
+    if (ocmClient) {
+      const params = ClustersService.updateClusterTags(clusterTags, {});
+      if (params.tags) {
+        await ClustersService.update(clusterId, clusterTags, {});
+      }
+    }
+
+    return ClustersAPI.install(clusterId);
+  },
+
   updateClusterTags(
     clusterTags: Cluster['tags'],
     params: V2ClusterUpdateParams,
