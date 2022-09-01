@@ -92,7 +92,6 @@ const NetworkConfigurationTableBase = ({
       return (
         <HostDetail
           host={obj}
-          showStorage={false}
           AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
         />
       );

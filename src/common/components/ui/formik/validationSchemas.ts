@@ -12,6 +12,7 @@ import { getErrorMessage } from '../../../utils';
 import {
   bmcAddressValidationMessages,
   clusterNameValidationMessages,
+  FORBIDDEN_HOSTNAMES,
   hostnameValidationMessages,
   locationValidationMessages,
   nameValidationMessages,
@@ -372,17 +373,7 @@ export const richNameValidationSchema = (t: TFunction, usedNames: string[], orig
       }
       return !usedNames.find((n) => n === value);
     })
-    .notOneOf(
-      [
-        'localhost',
-        'localhost.localdomain',
-        'localhost4',
-        'localhost4.localdomain4',
-        'localhost6',
-        'localhost6.localdomain6',
-      ],
-      hostnameValidationMessages(t).LOCALHOST_ERR,
-    );
+    .notOneOf(FORBIDDEN_HOSTNAMES, hostnameValidationMessages(t).LOCALHOST_ERR);
 };
 
 const httpProxyValidationMessage = 'Provide a valid HTTP URL.';

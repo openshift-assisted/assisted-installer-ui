@@ -31,13 +31,13 @@ export const HostsNetworkConfigurationControlGroup = ({
         name={GROUP_NAME}
         isDisabled={clusterExists}
         value={HostsNetworkConfigurationType.DHCP}
-        label="DHCP server"
+        label="DHCP only"
       />
       <RadioField
         name={GROUP_NAME}
         isDisabled={clusterExists}
         value={HostsNetworkConfigurationType.STATIC}
-        label="Static network configuration"
+        label="Static IP, bridges, and bonds"
       />
     </FormGroup>
   );

@@ -1,9 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { Cluster } from '../../../common';
-import { handleApiError } from '../../api/utils';
-import { ResourceUIState } from '../../../common';
+import { Cluster, ResourceUIState } from '../../../common';
 import { ClustersAPI } from '../../services/apis';
-import { ocmClient } from '../../api';
+import { handleApiError, ocmClient } from '../../api';
 
 export const fetchClustersAsync = createAsyncThunk<Cluster[] | void>(
   'clusters/fetchClustersAsync',
@@ -13,7 +11,9 @@ export const fetchClustersAsync = createAsyncThunk<Cluster[] | void>(
       const isOcm = !!ocmClient;
       return data.filter((cluster) => (isOcm ? cluster.kind === 'Cluster' : true));
     } catch (e) {
-      handleApiError(e, () => Promise.reject('Failed to fetch clusters.'));
+      handleApiError(e, () => {
+        void Promise.reject('Failed to fetch clusters.');
+      });
     }
   },
 );
