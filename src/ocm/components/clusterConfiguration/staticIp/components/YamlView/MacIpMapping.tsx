@@ -20,7 +20,7 @@ const AddMapping: React.FC<{
       data-testid="add-mapping"
       variant="link"
     >
-      Add another mapping
+      Add another MAC to interface name mapping
     </Button>
   );
 };

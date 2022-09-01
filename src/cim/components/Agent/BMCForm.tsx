@@ -56,7 +56,7 @@ const MacMapping = () => {
   return (
     <FormGroup
       fieldId={fieldId}
-      label={t('ai:Mac to interface name mapping')}
+      label={t('ai:MAC to interface name mapping')}
       validated={isValid ? 'default' : 'error'}
     >
       <FieldArray

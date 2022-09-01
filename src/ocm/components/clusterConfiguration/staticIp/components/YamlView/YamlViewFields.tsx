@@ -51,7 +51,7 @@ const ExpandedHost: React.FC<HostComponentProps> = ({ fieldName, hostIdx }) => {
         />
       </FormGroup>
       <FormGroup
-        label="Mac to interface name mapping"
+        label="MAC to interface name mapping"
         fieldId={getFieldId('macNicMaping', 'inputs')}
       >
         <MacIpMapping
