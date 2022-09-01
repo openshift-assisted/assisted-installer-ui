@@ -186,7 +186,7 @@ const NetworkConfigurationPage: React.FC<{
         }
       }
 
-      const { data } = await ClustersService.update(cluster, params);
+      const { data } = await ClustersService.update(cluster.id, cluster.tags, params);
       dispatch(updateClusterBase(data));
     } catch (e) {
       handleApiError(e, () =>

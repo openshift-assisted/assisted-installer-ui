@@ -24,20 +24,24 @@ const ClustersService = {
     return { data, fileName };
   },
 
-  async update(cluster: Cluster, params: V2ClusterUpdateParams) {
+  async update(
+    clusterId: Cluster['id'],
+    clusterTags: Cluster['tags'],
+    params: V2ClusterUpdateParams,
+  ) {
     if (ocmClient) {
-      params = ClustersService.updateClusterTags(cluster.tags, params);
+      params = ClustersService.updateClusterTags(clusterTags, params);
     }
-    return ClustersAPI.update(cluster.id, params);
+    return ClustersAPI.update(clusterId, params);
   },
 
   updateClusterTags(
     clusterTags: Cluster['tags'],
     params: V2ClusterUpdateParams,
   ): V2ClusterUpdateParams {
-    const tags = clusterTags?.split(',') || [];
-    if (tags?.includes(AI_UI_TAG)) {
-      params.tags = clusterTags;
+    const tags = clusterTags?.split(',') || <string[]>[];
+    if (tags.includes(AI_UI_TAG)) {
+      delete params.tags;
     } else {
       tags?.push(AI_UI_TAG);
       params.tags = tags?.join(',');

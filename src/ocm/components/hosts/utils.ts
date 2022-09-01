@@ -54,7 +54,7 @@ export const onAdditionalNtpSourceAction = async (
       additionalNtpSource,
     };
 
-    const { data } = await ClustersService.update(cluster, values);
+    const { data } = await ClustersService.update(cluster.id, cluster.tags, values);
     dispatch(updateCluster(data));
   } catch (e) {
     handleApiError(e, () => onError(getApiErrorMessage(e)));

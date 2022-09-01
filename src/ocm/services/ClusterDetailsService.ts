@@ -35,8 +35,12 @@ const ClusterDetailsService = {
     return cluster;
   },
 
-  async update(cluster: Cluster, params: V2ClusterUpdateParams) {
-    const { data: updatedCluster } = await ClustersService.update(cluster, params);
+  async update(
+    clusterId: Cluster['id'],
+    clusterTags: Cluster['tags'],
+    params: V2ClusterUpdateParams,
+  ) {
+    const { data: updatedCluster } = await ClustersService.update(clusterId, clusterTags, params);
     return updatedCluster;
   },
 

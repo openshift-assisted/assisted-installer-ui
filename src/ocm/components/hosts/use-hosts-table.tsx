@@ -160,7 +160,7 @@ export const useHostsTable = (cluster: Cluster) => {
   const onUpdateDay2ApiVip: UpdateDay2ApiVipFormProps['onUpdateDay2ApiVip'] = React.useCallback(
     async (apiVip: string, onError: (message: string) => void) => {
       try {
-        const { data } = await ClustersService.update(cluster, {
+        const { data } = await ClustersService.update(cluster.id, cluster.tags, {
           apiVipDnsName: apiVip,
         });
         dispatch(updateCluster(data));
@@ -168,7 +168,7 @@ export const useHostsTable = (cluster: Cluster) => {
         handleApiError(e, () => onError(getApiErrorMessage(e)));
       }
     },
-    [cluster, dispatch],
+    [cluster.id, cluster.tags, dispatch],
   );
 
   const onAdditionalNtpSource: AdditionalNTPSourcesFormProps['onAdditionalNtpSource'] =

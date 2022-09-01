@@ -41,7 +41,7 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster, infraEnv }) =>
   }, [errorOCPVersions, addAlert]);
 
   const handleClusterUpdate = React.useCallback(
-    async (cluster: Cluster, values: V2ClusterUpdateParams) => {
+    async (clusterId: Cluster['id'], values: V2ClusterUpdateParams) => {
       clearAlerts();
       const params: V2ClusterUpdateParams = omit(values, [
         'highAvailabilityMode',
@@ -49,18 +49,16 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster, infraEnv }) =>
         'openshiftVersion',
       ]);
       try {
-        if (cluster) {
-          const updatedCluster = await ClusterDetailsService.update(cluster, params);
-          dispatch(updateCluster(updatedCluster));
-          canNextClusterDetails({ cluster: updatedCluster }) && clusterWizardContext.moveNext();
-        }
+        const updatedCluster = await ClusterDetailsService.update(clusterId, cluster?.tags, params);
+        dispatch(updateCluster(updatedCluster));
+        canNextClusterDetails({ cluster: updatedCluster }) && clusterWizardContext.moveNext();
       } catch (e) {
         handleApiError(e, () =>
           addAlert({ title: 'Failed to update the cluster', message: getApiErrorMessage(e) }),
         );
       }
     },
-    [clearAlerts, dispatch, clusterWizardContext, addAlert],
+    [clearAlerts, cluster?.tags, dispatch, clusterWizardContext, addAlert],
   );
 
   const handleClusterCreate = React.useCallback(

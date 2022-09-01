@@ -68,7 +68,7 @@ const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
     HostDiscoveryService.setSchedulableMasters(params, values, cluster);
 
     try {
-      const { data } = await ClustersService.update(cluster, params);
+      const { data } = await ClustersService.update(cluster.id, cluster.tags, params);
       dispatch(updateCluster(data));
     } catch (e) {
       handleApiError(e, () =>

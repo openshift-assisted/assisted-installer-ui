@@ -10,7 +10,8 @@ import ClustersService from './ClustersService';
 
 const DiscoveryImageFormService = {
   async update(
-    cluster: Cluster,
+    clusterId: Cluster['id'],
+    clusterTags: Cluster['tags'],
     infraEnvId: InfraEnv['id'],
     formValues: DiscoveryImageFormValues,
     ocmPullSecret?: string,
@@ -36,7 +37,11 @@ const DiscoveryImageFormService = {
       imageType: formValues.imageType,
     };
 
-    const { data: updatedCluster } = await ClustersService.update(cluster, proxyParams);
+    const { data: updatedCluster } = await ClustersService.update(
+      clusterId,
+      clusterTags,
+      proxyParams,
+    );
     const { data: updatedInfraEnv } = await InfraEnvsAPI.update(infraEnvId, infraEnvParams);
 
     return { updatedCluster, updatedInfraEnv };
