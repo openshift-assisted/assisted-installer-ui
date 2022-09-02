@@ -18,8 +18,7 @@ import { getApiErrorMessage, handleApiError } from '../../api/utils';
 import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
 import ClusterWizardFooter from './ClusterWizardFooter';
 import ClusterWizardNavigation from './ClusterWizardNavigation';
-import { ClustersAPI } from '../../services/apis';
-import { HostDiscoveryService } from '../../services';
+import { ClustersService, HostDiscoveryService } from '../../services';
 
 const HostDiscoveryForm: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const { alerts } = useAlerts();
@@ -69,7 +68,7 @@ const HostDiscovery: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
     HostDiscoveryService.setSchedulableMasters(params, values, cluster);
 
     try {
-      const { data } = await ClustersAPI.update(cluster.id, params);
+      const { data } = await ClustersService.update(cluster.id, cluster.tags, params);
       dispatch(updateCluster(data));
     } catch (e) {
       handleApiError(e, () =>

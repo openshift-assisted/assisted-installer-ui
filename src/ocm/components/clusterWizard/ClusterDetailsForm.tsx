@@ -89,7 +89,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
         ocpVersions,
         urlSearchParams: search,
       }),
-    [cluster, pullSecret, managedDomains, ocpVersions, infraEnv],
+    [infraEnv, cluster, pullSecret, managedDomains, ocpVersions, search],
   );
   const { t } = useTranslation();
   const validationSchema = getClusterDetailsValidationSchema({

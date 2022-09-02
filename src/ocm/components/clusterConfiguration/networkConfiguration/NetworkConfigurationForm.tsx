@@ -34,7 +34,7 @@ import {
 } from './networkConfigurationValidation';
 import NetworkConfiguration from './NetworkConfiguration';
 import { captureException } from '../../../sentry';
-import { ClustersAPI } from '../../../services/apis';
+import { ClustersService } from '../../../services';
 import { updateClusterBase } from '../../../reducers/clusters';
 import { getApiErrorMessage, handleApiError } from '../../../api';
 
@@ -186,7 +186,7 @@ const NetworkConfigurationPage: React.FC<{
         }
       }
 
-      const { data } = await ClustersAPI.update(cluster.id, params);
+      const { data } = await ClustersService.update(cluster.id, cluster.tags, params);
       dispatch(updateClusterBase(data));
     } catch (e) {
       handleApiError(e, () =>
