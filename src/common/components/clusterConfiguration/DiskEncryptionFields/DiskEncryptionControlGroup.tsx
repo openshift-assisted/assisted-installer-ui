@@ -1,6 +1,6 @@
 import React from 'react';
 import isEqual from 'lodash/isEqual';
-import { FormGroup, Stack, StackItem } from '@patternfly/react-core';
+import { Alert, AlertVariant, FlexItem, FormGroup, Stack, StackItem } from '@patternfly/react-core';
 import SwitchField from '../../ui/formik/SwitchField';
 import { DiskEncryptionMode } from './DiskEncryptionMode';
 import { RenderIf } from '../../ui';
@@ -31,11 +31,11 @@ export interface DiskEncryptionControlGroupProps {
   isDisabled?: boolean;
 }
 
-const DiskEncryptionControlGroup: React.FC<DiskEncryptionControlGroupProps> = ({
+const DiskEncryptionControlGroup = ({
   values,
   isSNO = false,
-  isDisabled,
-}) => {
+  isDisabled = false,
+}: DiskEncryptionControlGroupProps) => {
   const {
     enableDiskEncryptionOnMasters,
     enableDiskEncryptionOnWorkers,
@@ -43,6 +43,7 @@ const DiskEncryptionControlGroup: React.FC<DiskEncryptionControlGroupProps> = ({
     diskEncryptionTangServers,
   } = values;
 
+  const hasEnabledDiskEncryption = enableDiskEncryptionOnMasters || enableDiskEncryptionOnWorkers;
   const { setFieldValue, setFieldTouched } = useFormikContext<ClusterDetailsValues>();
 
   React.useEffect(() => {
@@ -105,6 +106,28 @@ const DiskEncryptionControlGroup: React.FC<DiskEncryptionControlGroupProps> = ({
           </StackItem>
         </RenderIf>
       </Stack>
+      {hasEnabledDiskEncryption && (
+        <Alert
+          variant={AlertVariant.warning}
+          isInline
+          title={
+            <FlexItem>
+              {diskEncryptionMode === 'tpmv2' && (
+                <>
+                  To use this encryption method, enable TPMv2 encryption in the BIOS of each
+                  selected host.
+                </>
+              )}
+              {diskEncryptionMode === 'tang' && (
+                <>
+                  The use of Tang encryption mode to encrypt your disks is only supported for bare
+                  metal or vSphere installations on user-provisioned infrastructure.
+                </>
+              )}
+            </FlexItem>
+          }
+        />
+      )}
     </FormGroup>
   );
 };

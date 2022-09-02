@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Alert, AlertVariant, FlexItem, Form } from '@patternfly/react-core';
+import { Form } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 
 import ArmCheckbox from './ArmCheckbox';
@@ -49,7 +49,7 @@ const BaseDnsHelperText: React.FC<{ name?: string; baseDnsDomain?: string }> = (
   </>
 );
 
-export const OcmClusterDetailsFormFields: React.FC<OcmClusterDetailsFormFieldsProps> = ({
+export const OcmClusterDetailsFormFields = ({
   managedDomains = [],
   toggleRedHatDnsService,
   canEditPullSecret,
@@ -57,23 +57,25 @@ export const OcmClusterDetailsFormFields: React.FC<OcmClusterDetailsFormFieldsPr
   versions,
   defaultPullSecret,
   forceOpenshiftVersion,
-  isOcm, // TODO(mlibra): make it optional, false by default
+  isOcm,
   isPullSecretSet,
   clusterExists,
-}) => {
+}: OcmClusterDetailsFormFieldsProps) => {
   const { values } = useFormikContext<ClusterDetailsValues>();
   const { name, baseDnsDomain, highAvailabilityMode, useRedHatDnsService } = values;
   const nameInputRef = React.useRef<HTMLInputElement>();
   React.useEffect(() => {
     nameInputRef.current?.focus();
   }, []);
-  const atListOneDiskEncryptionEnableOn =
-    values.enableDiskEncryptionOnMasters || values.enableDiskEncryptionOnWorkers;
 
   const { t } = useTranslation();
-  // TODO(mlibra): Disable fields based on props passed from the caller context. In CIM, the name or domain can not be edited.
   return (
     <Form id="wizard-cluster-details__form">
+      <DiskEncryptionControlGroup
+        values={values}
+        isDisabled={isPullSecretSet}
+        isSNO={isSNO({ highAvailabilityMode })}
+      />
       <RichInputField
         ref={nameInputRef}
         label="Cluster name"
@@ -100,7 +102,7 @@ export const OcmClusterDetailsFormFields: React.FC<OcmClusterDetailsFormFieldsPr
           name="baseDnsDomain"
           helperText={<BaseDnsHelperText name={name} baseDnsDomain={baseDnsDomain} />}
           options={managedDomains.map((d) => ({
-            label: `${d.domain} (${d.provider})`,
+            label: `${d.domain || ''} (${d.provider || ''})`,
             value: d.domain,
           }))}
           isRequired
@@ -127,35 +129,6 @@ export const OcmClusterDetailsFormFields: React.FC<OcmClusterDetailsFormFieldsPr
       {canEditPullSecret && <PullSecret isOcm={isOcm} defaultPullSecret={defaultPullSecret} />}
       <ArmCheckbox versions={versions} />
       <HostsNetworkConfigurationControlGroup clusterExists={clusterExists} />
-      <DiskEncryptionControlGroup
-        values={values}
-        isDisabled={isPullSecretSet}
-        isSNO={isSNO({ highAvailabilityMode })}
-      />
-      {atListOneDiskEncryptionEnableOn && values.diskEncryptionMode === 'tpmv2' && (
-        <Alert
-          variant={AlertVariant.warning}
-          isInline
-          title={
-            <FlexItem>
-              To use this encryption method, enable TPMv2 encryption in the BIOS of each selected
-              host.
-            </FlexItem>
-          }
-        />
-      )}
-      {atListOneDiskEncryptionEnableOn && values.diskEncryptionMode === 'tang' && (
-        <Alert
-          variant={AlertVariant.warning}
-          isInline
-          title={
-            <FlexItem>
-              The use of Tang encryption mode to encrypt your disks is only supported for bare metal
-              or vSphere installations on user-provisioned infrastructure.
-            </FlexItem>
-          }
-        />
-      )}
     </Form>
   );
 };

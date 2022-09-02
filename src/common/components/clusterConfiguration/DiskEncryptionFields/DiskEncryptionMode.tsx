@@ -1,7 +1,4 @@
 import React from 'react';
-import { ENCRYPTING_DISK_DURING_INSTALLATION } from '../../../config/constants';
-import PopoverIcon from '../../ui/PopoverIcon';
-import { RadioField } from '../../ui/formik';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import {
   Flex,
@@ -12,11 +9,14 @@ import {
   TextVariants,
   TextContent,
 } from '@patternfly/react-core';
+import { ENCRYPTING_DISK_DURING_INSTALLATION } from '../../../config';
+import PopoverIcon from '../../ui/PopoverIcon';
+import { RadioField } from '../../ui/formik';
 import { TangServers } from './TangServers';
-import { DiskEncryption } from '../../../api/types';
+import { DiskEncryption } from '../../../api';
 import { useTranslation } from '../../../hooks/use-translation-wrapper';
 
-const DiskEncryptionModeTPMv2: React.FC = () => {
+const DiskEncryptionModeTPMv2 = () => {
   const { t } = useTranslation();
   return (
     <>
@@ -40,7 +40,7 @@ const DiskEncryptionModeTPMv2: React.FC = () => {
   );
 };
 
-const DiskEncryptionModeTang: React.FC = () => {
+const DiskEncryptionModeTang = () => {
   const { t } = useTranslation();
   return (
     <>
@@ -62,14 +62,11 @@ const DiskEncryptionModeTang: React.FC = () => {
 };
 
 export interface DiskEncryptionModeProps {
-  isDisabled?: boolean;
+  isDisabled: boolean;
   diskEncryptionMode: DiskEncryption['mode'];
 }
 
-export const DiskEncryptionMode: React.FC<DiskEncryptionModeProps> = ({
-  diskEncryptionMode,
-  isDisabled,
-}) => {
+export const DiskEncryptionMode = ({ diskEncryptionMode, isDisabled }: DiskEncryptionModeProps) => {
   const { t } = useTranslation();
   return (
     <Stack>
