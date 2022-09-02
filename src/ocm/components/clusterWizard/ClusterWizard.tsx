@@ -2,7 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 import { Cluster, InfraEnv, InfraEnvUpdateParams, LoadingState } from '../../../common';
 import NetworkConfigurationPage from '../clusterConfiguration/networkConfiguration/NetworkConfigurationForm';
-import ReviewStep from '../clusterConfiguration/ReviewStep';
+import ReviewStep from '../clusterConfiguration/review/ReviewStep';
 import { useClusterWizardContext } from './ClusterWizardContext';
 import ClusterDetails from './ClusterDetails';
 import HostDiscovery from './HostDiscovery';

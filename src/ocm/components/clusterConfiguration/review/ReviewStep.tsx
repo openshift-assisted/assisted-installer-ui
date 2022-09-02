@@ -1,18 +1,20 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ActionListItem, Button, ButtonVariant, Grid, GridItem } from '@patternfly/react-core';
-import { Cluster, ClusterWizardStepHeader, useAlerts, ClusterWizardStep } from '../../../common';
-import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
-import { getApiErrorMessage, handleApiError } from '../../api';
-import { updateCluster } from '../../reducers/clusters';
-import ClusterWizardFooter from '../clusterWizard/ClusterWizardFooter';
-import ClusterWizardNavigation from '../clusterWizard/ClusterWizardNavigation';
-import ReviewCluster from './ReviewCluster';
-import { ClustersService } from '../../services';
-import { useStateSafely } from '../../../common/hooks';
-import { selectCurrentClusterPermissionsState } from '../../selectors';
+import { Cluster, ClusterWizardStepHeader, useAlerts, ClusterWizardStep } from '../../../../common';
+import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContext';
+import { getApiErrorMessage, handleApiError } from '../../../api';
+import { updateCluster } from '../../../reducers/clusters';
+import ClusterWizardFooter from '../../clusterWizard/ClusterWizardFooter';
+import ClusterWizardNavigation from '../../clusterWizard/ClusterWizardNavigation';
+import { ClustersService } from '../../../services';
+import { useStateSafely } from '../../../../common/hooks';
+import { selectCurrentClusterPermissionsState } from '../../../selectors';
+import { ReviewValidations } from './ReviewValidations';
+import { ReviewSummary } from './ReviewSummary';
+import './ReviewCluster.css';
 
-const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
+const ReviewStep = ({ cluster }: { cluster: Cluster }) => {
   const { addAlert } = useAlerts();
   const clusterWizardContext = useClusterWizardContext();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
@@ -49,7 +51,7 @@ const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
           <Button
             variant={ButtonVariant.primary}
             name="install"
-            onClick={handleClusterInstall}
+            onClick={void handleClusterInstall}
             isDisabled={isViewerMode || isStartingInstallation || cluster.status !== 'ready'}
           >
             Install cluster
@@ -65,9 +67,8 @@ const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
         <GridItem>
           <ClusterWizardStepHeader>Review and create</ClusterWizardStepHeader>
         </GridItem>
-        <GridItem>
-          <ReviewCluster cluster={cluster} />
-        </GridItem>
+        <ReviewValidations cluster={cluster} />
+        <ReviewSummary cluster={cluster} />
       </Grid>
     </ClusterWizardStep>
   );
