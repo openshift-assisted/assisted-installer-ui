@@ -25,6 +25,7 @@ const PopoverIcon: React.FC<PopoverIconProps> = ({
 }) => (
   <Popover {...props}>
     <Button
+      style={{ padding: 0 }}
       component={component}
       variant={variant}
       onClick={(e) => e.preventDefault()}
