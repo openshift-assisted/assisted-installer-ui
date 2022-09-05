@@ -71,11 +71,6 @@ export const OcmClusterDetailsFormFields = ({
   const { t } = useTranslation();
   return (
     <Form id="wizard-cluster-details__form">
-      <DiskEncryptionControlGroup
-        values={values}
-        isDisabled={isPullSecretSet}
-        isSNO={isSNO({ highAvailabilityMode })}
-      />
       <RichInputField
         ref={nameInputRef}
         label="Cluster name"
@@ -129,6 +124,11 @@ export const OcmClusterDetailsFormFields = ({
       {canEditPullSecret && <PullSecret isOcm={isOcm} defaultPullSecret={defaultPullSecret} />}
       <ArmCheckbox versions={versions} />
       <HostsNetworkConfigurationControlGroup clusterExists={clusterExists} />
+      <DiskEncryptionControlGroup
+        values={values}
+        isDisabled={isPullSecretSet}
+        isSNO={isSNO({ highAvailabilityMode })}
+      />
     </Form>
   );
 };
