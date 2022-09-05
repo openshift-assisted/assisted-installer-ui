@@ -78,6 +78,7 @@ const ClusterDetailStatusMessages = ({
         <Alert
           variant="info"
           isInline
+          data-testid="alert-add-hosts"
           title={
             <p>
               Add new hosts by generating a new Discovery ISO under your cluster's "Add hosts” tab
@@ -94,6 +95,7 @@ const ClusterDetailStatusMessages = ({
         <Alert
           variant="warning"
           isInline
+          data-testid="alert-modify-platform-config"
           title={
             <p>
               Modify your platform configuration to access your platform's features directly in
