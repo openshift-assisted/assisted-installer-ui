@@ -20,6 +20,7 @@ import {
   selectMastersMustRunWorkloads,
   selectSchedulableMasters,
   HostDiscoveryValues,
+  isClusterPlatformTypeVM,
 } from '../../../common';
 import HostsDiscoveryTable from '../hosts/HostsDiscoveryTable';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
@@ -109,9 +110,7 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
                   hidden: isPlatformIntegrationSupported,
                   content: platformIntegrationTooltip,
                 }}
-                isDisabled={
-                  !isPlatformIntegrationSupported && cluster?.platform?.type === 'baremetal'
-                }
+                isDisabled={!isPlatformIntegrationSupported && !isClusterPlatformTypeVM(cluster)}
                 name={'usePlatformIntegration'}
                 label={<PlatformIntegrationLabel />}
                 switchOuiaId="platform-integration-vSphere-switch"

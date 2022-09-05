@@ -14,6 +14,7 @@ import {
   selectClusterNetworkHostPrefix,
   selectServiceNetworkCIDR,
   selectSchedulableMasters,
+  isClusterPlatformTypeVM,
 } from '../../selectors';
 import {
   HostDiscoveryValues,
@@ -147,7 +148,7 @@ export const isSubnetInIPv6 = ({
 
 export const getHostDiscoveryInitialValues = (cluster: Cluster): HostDiscoveryValues => {
   return {
-    usePlatformIntegration: cluster.platform?.type !== 'baremetal',
+    usePlatformIntegration: isClusterPlatformTypeVM(cluster),
     schedulableMasters: selectSchedulableMasters(cluster),
   };
 };
