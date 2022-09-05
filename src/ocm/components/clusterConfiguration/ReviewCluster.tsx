@@ -18,6 +18,7 @@ import {
   ClusterValidations,
   HostsValidations,
   isDualStack,
+  isClusterPlatformTypeVM,
 } from '../../../common';
 import { wizardStepNames } from '../clusterWizard/constants';
 import './ReviewCluster.css';
@@ -108,7 +109,7 @@ const ReviewCluster = ({ cluster }: { cluster: Cluster }) => {
         }
         testId="host-validations"
       />
-      <RenderIf condition={cluster.platform?.type !== 'baremetal'}>
+      <RenderIf condition={isClusterPlatformTypeVM(cluster)}>
         <DetailItem
           title="Platform integration"
           value={<PlatformIntegrationNote />}
