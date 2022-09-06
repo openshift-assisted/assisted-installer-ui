@@ -19,14 +19,14 @@ import { getHostRowHardwareInfo } from './hardwareInfo';
 import { getHardwareTypeText, getInventory } from './utils';
 import { ValidationInfoActionProps } from './HostValidationGroups';
 import NtpValidationStatus from './NtpValidationStatus';
-import { onDiskRoleType } from './DiskRole';
+import { OnDiskRoleType } from './DiskRole';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import StorageDetail from '../storage/StorageDetail';
 
 type HostDetailProps = {
   host: Host;
   canEditDisks?: (host: Host) => boolean;
-  onDiskRole?: onDiskRoleType;
+  onDiskRole?: OnDiskRoleType;
   AdditionalNTPSourcesDialogToggleComponent?: ValidationInfoActionProps['AdditionalNTPSourcesDialogToggleComponent'];
   hideNTPStatus?: boolean;
 };

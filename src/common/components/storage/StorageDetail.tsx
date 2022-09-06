@@ -11,13 +11,13 @@ import {
 } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
 import { Disk, fileSize, getInventory, Host, WithTestID } from '../../index';
-import DiskRole, { onDiskRoleType } from '../hosts/DiskRole';
+import DiskRole, { OnDiskRoleType } from '../hosts/DiskRole';
 import DiskLimitations from '../hosts/DiskLimitations';
 
 type StorageDetailProps = {
   host: Host;
   canEditDisks?: (host: Host) => boolean;
-  onDiskRole?: onDiskRoleType;
+  onDiskRole?: OnDiskRoleType;
 };
 
 interface SectionTitleProps extends WithTestID {
@@ -26,7 +26,7 @@ interface SectionTitleProps extends WithTestID {
 
 interface DisksTableProps extends WithTestID {
   canEditDisks?: (host: Host) => boolean;
-  onDiskRole?: onDiskRoleType;
+  onDiskRole?: OnDiskRoleType;
   host: Host;
   disks: Disk[];
   installationDiskId?: string;

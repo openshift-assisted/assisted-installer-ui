@@ -2,7 +2,7 @@ import React from 'react';
 import { Cluster, Host, HostUpdateParams } from '../../api';
 import { ValidationsInfo } from '../../types/hosts';
 import { HostsNotShowingLinkProps } from '../clusterConfiguration';
-import { onDiskRoleType } from './DiskRole';
+import { OnDiskRoleType } from './DiskRole';
 import { AdditionNtpSourcePropsType, UpdateDay2ApiVipPropsType } from './HostValidationGroups';
 
 export type ClusterHostsTableProps = {
@@ -29,7 +29,7 @@ export type HostsTableActions = {
   onDownloadHostLogs?: (host: Host) => void;
   canInstallHost?: (host: Host) => boolean;
   canEditDisks?: (host: Host) => boolean;
-  onDiskRole?: onDiskRoleType;
+  onDiskRole?: OnDiskRoleType;
   canEditHost?: (host: Host) => boolean | ActionCheck;
   canEnable?: (host: Host) => boolean;
   canDisable?: (host: Host) => boolean;

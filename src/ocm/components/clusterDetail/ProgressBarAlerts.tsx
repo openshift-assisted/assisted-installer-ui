@@ -11,7 +11,7 @@ import { getBugzillaLink, operatorLabels } from '../../../common/config/constant
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
 
-type installationProgressWarningProps = {
+type InstallationProgressWarningProps = {
   cluster: Cluster;
   totalHosts: number;
   failedHosts: number;
@@ -20,10 +20,6 @@ type installationProgressWarningProps = {
   failedOperators?: MonitoredOperator[];
   message?: string;
   isCriticalNumberOfWorkersFailed?: boolean;
-};
-
-type successInstallationProps = {
-  consoleUrl?: string;
 };
 
 const getFailedOperatorsNames = (failedOperators: MonitoredOperator[], t: TFunction): string => {
@@ -42,7 +38,7 @@ const getFailedOperatorsNames = (failedOperators: MonitoredOperator[], t: TFunct
   return failedOperatorsNames;
 };
 
-export const HostInstallationWarning: React.FC<installationProgressWarningProps> = ({
+export const HostInstallationWarning = ({
   cluster,
   failedHosts,
   totalHosts,
@@ -50,7 +46,7 @@ export const HostInstallationWarning: React.FC<installationProgressWarningProps>
   hostsType,
   failedOperators = [],
   message,
-}) => {
+}: InstallationProgressWarningProps) => {
   const { addAlert } = useAlerts();
   const { t } = useTranslation();
   return (
@@ -89,12 +85,12 @@ export const HostInstallationWarning: React.FC<installationProgressWarningProps>
   );
 };
 
-export const HostsInstallationFailed: React.FC<installationProgressWarningProps> = ({
+export const HostsInstallationFailed = ({
   cluster,
   failedHosts,
   totalHosts,
   isCriticalNumberOfWorkersFailed,
-}) => {
+}: InstallationProgressWarningProps) => {
   const { addAlert } = useAlerts();
   const { resetClusterDialog } = useModalDialogsContext();
   const getID = (suffix: string) => `cluster-install-error-${suffix}`;
@@ -156,7 +152,7 @@ export const HostsInstallationFailed: React.FC<installationProgressWarningProps>
   );
 };
 
-export const HostsInstallationSuccess: React.FC<successInstallationProps> = () => {
+export const HostsInstallationSuccess = () => {
   return (
     <>
       <Alert isInline variant="success" title={'Installation completed successfully'}>
