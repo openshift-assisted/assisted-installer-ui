@@ -69,8 +69,19 @@ export const HostInstallationWarning = ({
       >
         <RenderIf condition={failedHosts !== 0}>
           <p>
-            {failedHosts}/{totalHosts} {pluralize(totalHosts, hostsType)} {message} Due to this, the
-            cluster will be degraded. Please check the installation log for more information.
+            {hostsType === 'worker' ? (
+              <>
+                Error information for each host can be found in the host inventory table. To retry
+                adding failed hosts, navigate to the clusters list inside OpenShift Cluster Manager,
+                click your cluster name, and select the <b>Add hosts</b> tab.
+              </>
+            ) : (
+              <>
+                {failedHosts}/{totalHosts} {pluralize(totalHosts, hostsType)} {message} Due to this,
+                the cluster will be degraded. Please check the installation log for more
+                information.
+              </>
+            )}
           </p>
         </RenderIf>
         <RenderIf condition={failedOperators?.length > 0}>
