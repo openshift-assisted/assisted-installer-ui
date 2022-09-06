@@ -20,8 +20,6 @@ const OpenShiftLifeCycleDatesLink = () => {
   return (
     <a href={OPENSHIFT_LIFE_CYCLE_DATES_LINK} target="_blank" rel="noopener noreferrer">
       {t('ai:Learn more')} <ExternalLinkAltIcon />
-      <OcmFolderImportComponent />
-      <CimFolderImportComponent />
     </a>
   );
 };
