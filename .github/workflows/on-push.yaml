@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - features/*
+      - bugs/*
 
 jobs:
   push-to-quay-io:
