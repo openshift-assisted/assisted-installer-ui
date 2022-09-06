@@ -74,6 +74,7 @@ const diskColumns = [
   { title: 'Name' },
   { title: 'Role' },
   { title: 'Limitations' },
+  { title: 'Format?' },
   { title: 'Drive type' },
   { title: 'Size' },
   { title: 'Serial' },

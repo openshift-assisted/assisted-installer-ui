@@ -182,12 +182,18 @@ export const useHostsTable = (cluster: Cluster) => {
   const updateDiskSkipFormatting = React.useCallback(
     async (doFormatDisk: boolean, hostId: Host['id'], diskId: Disk['id']) => {
       try {
-        if (!cluster) {
-          return new Error(`Cannot update disksSkipFormatting in host ${hostId}\nMissing cluster`);
+        if (!cluster.id) {
+          throw new Error(
+            `Failed to update disks skip formatting state in host ${hostId}\nMissing cluster id`,
+          );
         }
         if (!diskId) {
-          throw new Error(`Cannot update disksSkipFormatting in host ${hostId}\nMissing diskId`);
+          throw new Error(
+            `Failed to update disks skip formatting state in host ${hostId}\nMissing disk id`,
+          );
         }
+        ClustersService.cancelPreviousRequest();
+        HostsService.cancelPreviousRequest();
         const { data } = await HostsService.updateFormattingDisks(
           cluster.id,
           hostId,

@@ -58,6 +58,10 @@ const HostsAPI = {
       `${HostsAPI.makeActionsBaseURI(infraEnvId, hostId)}/install`,
     );
   },
+
+  cancelRequest() {
+    return controller && controller.abort();
+  },
 };
 
 export default HostsAPI;

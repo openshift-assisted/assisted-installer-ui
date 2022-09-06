@@ -122,6 +122,10 @@ const HostsService = {
       throw e as AxiosError<APIErrorMixin>;
     }
   },
+
+  cancelPreviousRequest() {
+    HostsAPI.cancelRequest();
+  },
 };
 
 export default HostsService;
