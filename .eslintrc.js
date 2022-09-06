@@ -45,6 +45,18 @@ module.exports = {
       rules: {
         eqeqeq: ['error', 'always'],
         indent: 'off',
+        '@typescript-eslint/naming-convention': [
+          'error',
+          {
+            selector: 'typeLike',
+            format: ['PascalCase'],
+          },
+          // Allowing for React components definitions
+          {
+            selector: 'function',
+            format: ['PascalCase', 'camelCase'],
+          },
+        ],
         '@typescript-eslint/ban-types': [
           'error',
           {

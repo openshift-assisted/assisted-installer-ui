@@ -13,7 +13,7 @@ const getCurrentDiskRoleLabel = (
   t: TFunction,
 ) => (disk.id === installationDiskId ? diskRoleLabels(t).install : diskRoleLabels(t).none);
 
-export type onDiskRoleType = (
+export type OnDiskRoleType = (
   hostId: Host['id'],
   diskId: Disk['id'],
   role: DiskRoleValue,
@@ -24,7 +24,7 @@ export type DiskRoleProps = {
   disk: Disk;
   installationDiskId: Host['installationDiskId'];
   isEditable: boolean;
-  onDiskRole?: onDiskRoleType;
+  onDiskRole?: OnDiskRoleType;
 };
 
 const DiskRole: React.FC<DiskRoleProps> = ({
@@ -53,7 +53,7 @@ type DiskRoleDropdownProps = {
   host: Host;
   disk: Disk;
   installationDiskId: Host['installationDiskId'];
-  onDiskRole: onDiskRoleType;
+  onDiskRole: OnDiskRoleType;
 };
 
 const DiskRoleDropdown: React.FC<DiskRoleDropdownProps> = ({
