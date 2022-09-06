@@ -7,11 +7,11 @@ import {
   stringToJSON,
   Inventory,
 } from '../../../common';
-
-import { ocmClient, handleApiError, getApiErrorMessage } from '../../api';
+import { ocmClient, handleApiError } from '../../api';
 import { updateCluster } from '../../reducers/clusters';
 import { ClustersService } from '../../services';
 import ClustersAPI from '../../services/apis/ClustersAPI';
+import { getApiErrorMessage } from '../../../common/utils';
 
 export const downloadHostInstallationLogs = async (
   addAlert: AlertsContextType['addAlert'],

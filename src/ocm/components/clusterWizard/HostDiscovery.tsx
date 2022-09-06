@@ -4,9 +4,9 @@ import { Formik, FormikConfig, useFormikContext } from 'formik';
 import {
   Cluster,
   V2ClusterUpdateParams,
+  HostDiscoveryValues,
   getFormikErrorFields,
   ClusterWizardStep,
-  HostDiscoveryValues,
   useAlerts,
   getHostDiscoveryInitialValues,
   useFormikAutoSave,
@@ -14,7 +14,7 @@ import {
 import HostInventory from '../clusterConfiguration/HostInventory';
 import { useClusterWizardContext } from './ClusterWizardContext';
 import { canNextHostDiscovery } from './wizardTransition';
-import { getApiErrorMessage, handleApiError } from '../../api';
+import { handleApiError } from '../../api';
 import { updateCluster } from '../../reducers/clusters';
 import ClusterWizardFooter from './ClusterWizardFooter';
 import ClusterWizardNavigation from './ClusterWizardNavigation';
@@ -23,6 +23,7 @@ import { selectCurrentClusterPermissionsState } from '../../selectors';
 import useClusterSupportedPlatforms, {
   PlatformIntegrationType,
 } from '../../hooks/useClusterSupportedPlatforms';
+import { getApiErrorMessage } from '../../../common/utils';
 
 const HostDiscoveryForm = ({ cluster }: { cluster: Cluster }) => {
   const { alerts } = useAlerts();

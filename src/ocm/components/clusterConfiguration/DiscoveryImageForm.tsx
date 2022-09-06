@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import Axios, { CancelTokenSource } from 'axios';
 import { FormikHelpers } from 'formik';
-import { handleApiError, getApiErrorMessage } from '../../api';
+import { handleApiError } from '../../api';
 import {
   Cluster,
   DiscoveryImageConfigForm,
@@ -14,6 +14,7 @@ import { updateCluster, forceReload } from '../../reducers/clusters';
 import { usePullSecret } from '../../hooks';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { DiscoveryImageFormService } from '../../services';
+import { getApiErrorMessage } from '../../../common/utils';
 
 type DiscoveryImageFormProps = {
   cluster: Cluster;

@@ -5,9 +5,9 @@ import { Formik, FormikConfig, useFormikContext, yupToFormErrors } from 'formik'
 import isEqual from 'lodash/isEqual';
 import { useAlerts, useFormikAutoSave } from '../../../../../common';
 import { useErrorMonitor } from '../../../../../common/components/ErrorHandling/ErrorMonitorContext';
-import { getApiErrorMessage } from '../../../../api';
 import { StaticIpFormProps } from './propTypes';
 import { selectCurrentClusterPermissionsState } from '../../../../selectors';
+import { getApiErrorMessage } from '../../../../../common/utils';
 
 const AutosaveWithParentUpdate = <StaticIpFormValues extends object>({
   onFormStateChange,

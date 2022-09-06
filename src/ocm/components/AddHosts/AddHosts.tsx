@@ -12,7 +12,7 @@ import {
   ToolbarContent,
 } from '@patternfly/react-core';
 import React from 'react';
-import { getApiErrorMessage, handleApiError } from '../../api/utils';
+import { handleApiError } from '../../api/utils';
 import { DiscoveryImageModal } from '../clusterConfiguration/discoveryImageModal';
 import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
 import {
@@ -29,6 +29,7 @@ import ClusterDetailStatusVarieties, {
   useClusterStatusVarieties,
 } from '../clusterDetail/ClusterDetailStatusVarieties';
 import ViewClusterEventsButton from '../../../common/components/ui/ViewClusterEventsButton';
+import { getApiErrorMessage } from '../../../common/utils';
 
 const { addAlert } = alertsSlice.actions;
 

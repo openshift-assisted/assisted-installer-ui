@@ -5,8 +5,9 @@ import {
   OpenshiftVersion,
   OpenshiftVersionOptionType,
 } from '../../common';
-import { getApiErrorMessage, handleApiError } from '../api';
+import { handleApiError } from '../api';
 import { SupportedOpenshiftVersionsAPI } from '../services/apis';
+import { getApiErrorMessage } from '../../common/utils';
 
 type UseOpenshiftVersionsType = {
   versions: OpenshiftVersionOptionType[];

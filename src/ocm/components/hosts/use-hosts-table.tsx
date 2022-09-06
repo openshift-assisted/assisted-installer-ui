@@ -18,7 +18,7 @@ import {
   AdditionalNTPSourcesDialog,
   AdditionalNTPSourcesFormProps,
 } from '../../../common/components/hosts/AdditionalNTPSourcesDialog';
-import { getApiErrorMessage, handleApiError } from '../../api';
+import { handleApiError } from '../../api';
 import { forceReload, updateCluster, updateHost } from '../../reducers/clusters';
 import { useModalDialogsContext } from './ModalDialogsContext';
 import { downloadHostInstallationLogs, onAdditionalNtpSourceAction } from './utils';
@@ -50,8 +50,8 @@ import UpdateDay2ApiVipModal from './UpdateDay2ApiVipModal';
 import { UpdateDay2ApiVipFormProps } from './UpdateDay2ApiVipForm';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import { getErrorMessage } from '../../../common/utils';
 import { selectCurrentClusterPermissionsState } from '../../selectors';
+import { getErrorMessage, getApiErrorMessage } from '../../../common/utils';
 
 export const useHostsTable = (cluster: Cluster) => {
   const { addAlert } = useAlerts();

@@ -11,7 +11,7 @@ import {
   InfraEnv,
 } from '../../../common';
 import { usePullSecret } from '../../hooks';
-import { getApiErrorMessage, handleApiError } from '../../api';
+import { handleApiError } from '../../api';
 import { updateCluster } from '../../reducers/clusters';
 import { useClusterWizardContext } from './ClusterWizardContext';
 import { canNextClusterDetails, ClusterWizardFlowStateNew } from './wizardTransition';
@@ -19,8 +19,8 @@ import { useOpenshiftVersions, useManagedDomains, useUsedClusterNames } from '..
 import ClusterDetailsForm from './ClusterDetailsForm';
 import ClusterWizardNavigation from './ClusterWizardNavigation';
 import { routeBasePath } from '../../config';
-import { ClusterDetailsService } from '../../services';
-import { CreateParams } from '../../services/types';
+import { ClusterDetailsService, CreateParams } from '../../services';
+import { getApiErrorMessage } from '../../../common/utils';
 
 type ClusterDetailsProps = {
   cluster?: Cluster;

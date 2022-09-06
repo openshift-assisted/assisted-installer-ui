@@ -1,15 +1,15 @@
 import React from 'react';
 import { AxiosError } from 'axios';
 import useSWR from 'swr';
-import { getApiErrorMessage, handleApiError } from '../api';
+import { handleApiError } from '../api';
 import { ClustersAPI } from '../services/apis';
 import {
+  APIErrorMixin,
   PlatformType,
   POLLING_INTERVAL,
   SupportedPlatformIntegrations,
   useAlerts,
 } from '../../common';
-import { APIErrorMixin } from '../api/types';
 
 export type PlatformIntegrationType = typeof SupportedPlatformIntegrations[number];
 export type SupportedPlatformIntegrationType = 'no-active-integrations' | PlatformIntegrationType;
@@ -24,6 +24,7 @@ function getIntegrablePlatformIntegration(platform: PlatformType[]) {
   }
   return undefined;
 }
+import { getApiErrorMessage } from '../../common/utils';
 
 export default function useClusterSupportedPlatforms(clusterId: string) {
   const { addAlert, alerts } = useAlerts();

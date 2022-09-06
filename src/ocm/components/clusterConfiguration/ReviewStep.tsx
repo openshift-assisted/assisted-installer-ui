@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ActionListItem, Button, ButtonVariant, Grid, GridItem } from '@patternfly/react-core';
 import { Cluster, ClusterWizardStepHeader, useAlerts, ClusterWizardStep } from '../../../common';
 import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
-import { getApiErrorMessage, handleApiError } from '../../api';
+import { handleApiError } from '../../api';
 import { updateCluster } from '../../reducers/clusters';
 import ClusterWizardFooter from '../clusterWizard/ClusterWizardFooter';
 import ClusterWizardNavigation from '../clusterWizard/ClusterWizardNavigation';
@@ -11,6 +11,7 @@ import ReviewCluster from './ReviewCluster';
 import { ClustersService } from '../../services';
 import { useStateSafely } from '../../../common/hooks';
 import { selectCurrentClusterPermissionsState } from '../../selectors';
+import { getApiErrorMessage } from '../../../common/utils';
 
 const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const { addAlert } = useAlerts();

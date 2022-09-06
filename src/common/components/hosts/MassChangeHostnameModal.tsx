@@ -19,6 +19,7 @@ import { Formik, useFormikContext } from 'formik';
 import * as Yup from 'yup';
 import { global_palette_blue_300 as blueInfoColor } from '@patternfly/react-tokens/dist/js/global_palette_blue_300';
 import { InfoCircleIcon } from '@patternfly/react-icons';
+import { TFunction } from 'i18next';
 
 import {
   RichInputField,
@@ -32,10 +33,9 @@ import { Host } from '../../api';
 import { getHostname as getHostnameUtils, getInventory } from './utils';
 import { ActionCheck } from './types';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { getApiErrorMessage } from '../../utils';
 
 import './MassChangeHostnameModal.css';
-import { TFunction } from 'i18next';
-import { getApiErrorMessage } from '../../../ocm/api';
 
 const getHostname = (host: Host) => {
   const inventory = getInventory(host);

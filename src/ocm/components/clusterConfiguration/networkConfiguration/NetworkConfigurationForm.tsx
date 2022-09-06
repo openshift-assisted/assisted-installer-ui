@@ -36,7 +36,8 @@ import NetworkConfiguration from './NetworkConfiguration';
 import { captureException } from '../../../sentry';
 import { ClustersService } from '../../../services';
 import { updateClusterBase } from '../../../reducers/clusters';
-import { getApiErrorMessage, handleApiError } from '../../../api';
+import { handleApiError } from '../../../api';
+import { getApiErrorMessage } from '../../../../common/utils';
 
 const NetworkConfigurationForm: React.FC<{
   cluster: Cluster;

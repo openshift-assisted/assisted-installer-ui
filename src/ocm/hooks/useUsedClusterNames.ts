@@ -1,7 +1,8 @@
 import React from 'react';
-import { getApiErrorMessage, handleApiError } from '../api';
+import { handleApiError } from '../api';
 import { ClustersAPI } from '../services/apis';
 import { Cluster, useAlerts } from '../../common';
+import { getApiErrorMessage } from '../../common/utils';
 
 export default function useUsedClusterNames(clusterId: Cluster['id']) {
   const [usedClusterNames, setUsedClusterNames] = React.useState<string[]>();

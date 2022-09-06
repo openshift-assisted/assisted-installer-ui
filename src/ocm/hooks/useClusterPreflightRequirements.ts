@@ -1,9 +1,8 @@
 import React from 'react';
-import { alertsSlice } from '../../common/reducers';
-import { Cluster, PreflightHardwareRequirements } from '../../common/api/types';
+import { Cluster, PreflightHardwareRequirements, alertsSlice } from '../../common';
 import { ClustersAPI } from '../services/apis';
-import { getApiErrorMessage, handleApiError } from '../api';
-import { getErrorMessage } from '../../common/utils';
+import { handleApiError } from '../api';
+import { getErrorMessage, getApiErrorMessage } from '../../common/utils';
 
 const { addAlert } = alertsSlice.actions;
 

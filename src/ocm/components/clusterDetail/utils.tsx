@@ -1,6 +1,6 @@
 import { saveAs } from 'file-saver';
 import get from 'lodash/get';
-import { ocmClient, handleApiError, getApiErrorMessage } from '../../api';
+import { ocmClient, handleApiError } from '../../api';
 import {
   Cluster,
   Host,
@@ -9,6 +9,7 @@ import {
   stringToJSON,
   AlertsContextType,
 } from '../../../common';
+import { getApiErrorMessage } from '../../../common/utils';
 import { ClustersAPI } from '../../services/apis';
 import { ClustersService } from '../../services';
 

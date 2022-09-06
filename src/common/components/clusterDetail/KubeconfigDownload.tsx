@@ -6,10 +6,11 @@ import { TFunction } from 'i18next';
 import { canDownloadKubeconfig } from '../hosts';
 import { useAlerts } from '../AlertsContextProvider';
 import { Cluster } from '../../api';
+import { getApiErrorMessage } from '../../utils';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 /* eslint-disable no-restricted-imports */
-import { ocmClient, getApiErrorMessage, handleApiError } from '../../../ocm/api';
+import { ocmClient, handleApiError } from '../../../ocm/api';
 import ClustersAPI from '../../../ocm/services/apis/ClustersAPI';
 /* eslint-enable no-restricted-imports */
 

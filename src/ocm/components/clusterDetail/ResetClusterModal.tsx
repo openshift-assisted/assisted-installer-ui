@@ -11,12 +11,13 @@ import {
 import { ExclamationTriangleIcon } from '@patternfly/react-icons';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens';
 
-import { getApiErrorMessage, handleApiError } from '../../api/utils';
-import { updateCluster } from '../../reducers/clusters/currentClusterSlice';
+import { handleApiError } from '../../api';
+import { updateCluster } from '../../reducers/clusters';
 import { calculateCollectedLogsCount } from '../clusters/utils';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
-import { ErrorState, LoadingState } from '../../../common';
 import { ClustersAPI } from '../../services/apis';
+import { ErrorState, LoadingState } from '../../../common';
+import { getApiErrorMessage } from '../../../common/utils';
 
 const ResetClusterModal: React.FC = () => {
   const dispatch = useDispatch();

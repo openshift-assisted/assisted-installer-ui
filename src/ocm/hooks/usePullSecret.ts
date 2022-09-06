@@ -1,6 +1,7 @@
 import React from 'react';
-import { getApiErrorMessage, handleApiError, ocmClient } from '../api';
+import { handleApiError, ocmClient } from '../api';
 import { useAlerts } from '../../common';
+import { getApiErrorMessage } from '../../common/utils';
 
 export default function usePullSecret() {
   const [pullSecret, setPullSecret] = React.useState<string>();

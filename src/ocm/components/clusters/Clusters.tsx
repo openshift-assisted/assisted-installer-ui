@@ -11,7 +11,7 @@ import {
 } from '@patternfly/react-core';
 import { AddCircleOIcon } from '@patternfly/react-icons';
 
-import { selectClusterTableRows, selectClustersUIState } from '../../selectors/clusters';
+import { selectClusterTableRows, selectClustersUIState } from '../../selectors';
 import {
   ResourceUIState,
   Alerts,
@@ -22,12 +22,13 @@ import {
   AlertsContextProvider,
 } from '../../../common';
 import ClustersTable from './ClustersTable';
-import { fetchClustersAsync, deleteCluster } from '../../reducers/clusters/clustersSlice';
-import { handleApiError, getApiErrorMessage } from '../../api/utils';
+import { fetchClustersAsync, deleteCluster } from '../../reducers/clusters';
+import { handleApiError } from '../../api';
 import ClusterBreadcrumbs from './ClusterBreadcrumbs';
 import { routeBasePath } from '../../config';
 import { ClustersService } from '../../services';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { getApiErrorMessage } from '../../../common/utils';
 
 type ClustersProps = RouteComponentProps;
 

@@ -1,7 +1,8 @@
 import React from 'react';
 import { ManagedDomain, useAlerts } from '../../common';
 import { ClusterDetailsService } from '../services';
-import { getApiErrorMessage, handleApiError } from '../api';
+import { handleApiError } from '../api';
+import { getApiErrorMessage } from '../../common/utils';
 
 export default function useManagedDomains() {
   const [managedDomains, setManagedDomains] = React.useState<ManagedDomain[]>();

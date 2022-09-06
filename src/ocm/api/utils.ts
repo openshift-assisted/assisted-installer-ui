@@ -2,8 +2,7 @@ import { Severity } from '@sentry/browser';
 import Axios from 'axios';
 import pick from 'lodash/pick';
 import { captureException } from '../sentry';
-import { isApiError } from './types';
-import { getErrorMessage } from '../../common/utils';
+import { isApiError } from '../../common/api/customTypes';
 
 type OnError = (arg0: unknown) => void;
 
@@ -38,11 +37,4 @@ export const handleApiError = (error: unknown, onError?: OnError): void => {
     captureException(error);
   }
   if (onError) onError(error);
-};
-
-export const getApiErrorMessage = (error: unknown): string => {
-  if (isApiError(error)) {
-    return error.response?.data?.message || error.response?.data.reason || error.message;
-  }
-  return getErrorMessage(error);
 };
