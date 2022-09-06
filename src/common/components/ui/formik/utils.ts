@@ -46,15 +46,15 @@ export const parseStringLabels = (
   return labels;
 };
 
-type innerError = { path: string; message: string };
-type innerErrors = { inner: innerError[] };
-type fieldErrors = { [key: string]: string[] };
+type InnerError = { path: string; message: string };
+type InnerErrors = { inner: InnerError[] };
+type FieldErrors = { [key: string]: string[] };
 
-const fieldErrorReducer = (errors: innerError[]): fieldErrors => {
-  return errors.reduce(
+const fieldErrorReducer = (errors: InnerError[]): FieldErrors => {
+  return errors.reduce<FieldErrors>(
     (memo, { path, message }) => ({
       ...memo,
-      [path]: (memo[path] || []).concat(message), // eslint-disable-line
+      [path]: (memo[path] || []).concat(message),
     }),
     {},
   );
@@ -62,19 +62,19 @@ const fieldErrorReducer = (errors: innerError[]): fieldErrors => {
 
 export const getRichTextValidation =
   <T extends object>(schema: Yup.ObjectSchema<T> | Yup.Lazy) =>
-  async (values: T): Promise<fieldErrors | undefined> => {
+  async (values: T): Promise<FieldErrors | undefined> => {
     try {
       await schema.validate(values, {
         abortEarly: false,
       });
     } catch (e) {
-      const { inner } = e as innerErrors;
+      const { inner } = e as InnerErrors;
       if (!inner || inner.length === 0) {
         return {};
       }
 
-      const baseFields: innerError[] = [];
-      const arraySubfields: innerError[] = [];
+      const baseFields: InnerError[] = [];
+      const arraySubfields: InnerError[] = [];
 
       inner.forEach((item) => {
         const isArraySubfield = /\.|\[/.test(item.path);
