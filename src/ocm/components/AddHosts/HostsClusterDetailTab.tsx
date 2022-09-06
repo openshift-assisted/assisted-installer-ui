@@ -7,8 +7,8 @@ import {
   AlertsContextProvider,
   ErrorState,
   LoadingState,
-  isApiError,
 } from '../../../common';
+import { isApiError } from '../../../common/api/customTypes';
 import { usePullSecret } from '../../hooks';
 import { AssistedUILibVersion } from '../ui';
 import { handleApiError } from '../../api';

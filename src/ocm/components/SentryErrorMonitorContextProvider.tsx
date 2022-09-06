@@ -1,5 +1,5 @@
 import React from 'react';
-import { isApiError } from '../../common';
+import { isApiError } from '../../common/api/customTypes';
 import {
   ErrorMonitorContextProvider,
   ErrorSeverity,

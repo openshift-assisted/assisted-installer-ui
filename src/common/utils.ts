@@ -1,5 +1,5 @@
 import isString from 'lodash/isString';
-import { isApiError } from './api';
+import { isApiError } from './api/customTypes';
 
 export const getErrorMessage = (error: unknown) => {
   if (error instanceof Error) {
