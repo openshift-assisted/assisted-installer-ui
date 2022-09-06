@@ -1,8 +1,9 @@
 import { FormikErrors, FormikTouched } from 'formik';
 import * as Yup from 'yup';
+import { Address4 } from 'ip-address';
+import set from 'lodash/set';
 import { OpenshiftVersionOptionType } from '../../../types';
 import { ClusterNetwork, MachineNetwork, ServiceNetwork } from '../../../api';
-import { Address4 } from 'ip-address';
 
 export const getFieldId = (fieldName: string, fieldType: string, unique?: string) => {
   unique = unique ? `${unique}-` : '';
@@ -31,14 +32,6 @@ export const getFormikErrorFields = <FormikValues>(
 export const getDefaultOpenShiftVersion = (versions: OpenshiftVersionOptionType[]) =>
   versions.find((v) => v.default)?.value || versions[0]?.value || '';
 
-export const labelsToArray = (labels: { [key in string]: string } = {}): string[] => {
-  const result: string[] = [];
-  for (const key in labels) {
-    result.push(`${key}=${labels[key]}`);
-  }
-  return result;
-};
-
 // strValues: array of 'key=value' items
 export const parseStringLabels = (
   strValues: string[],
@@ -53,32 +46,57 @@ export const parseStringLabels = (
   return labels;
 };
 
-// Input: ['foo=bar', 'key=value', 'foo=blee']
-// Result: ['key=value', 'foo=blee']
-export const uniqueLabels = (labelPairs: string[]): string[] =>
-  labelsToArray(parseStringLabels(labelPairs));
+type InnerError = { path: string; message: string };
+type InnerErrors = { inner: InnerError[] };
+type FieldErrors = { [key: string]: string[] };
 
-// Input: (['foo=bar', 'key=value'], ['foo', 'bar'])
-// Result: ['foo=bar']
-export const selectedLabelsOnly = (labelPairs: string[], allowedKeys: string[]) =>
-  labelPairs.filter((pair) => allowedKeys.includes(pair.split('=')[0]));
+const fieldErrorReducer = (errors: InnerError[]): FieldErrors => {
+  return errors.reduce<FieldErrors>(
+    (memo, { path, message }) => ({
+      ...memo,
+      [path]: (memo[path] || []).concat(message),
+    }),
+    {},
+  );
+};
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getRichTextValidation =
   <T extends object>(schema: Yup.ObjectSchema<T> | Yup.Lazy) =>
-  async (values: T): Promise<{ [key: string]: string[] } | undefined> => {
+  async (values: T): Promise<FieldErrors | undefined> => {
     try {
       await schema.validate(values, {
         abortEarly: false,
       });
-    } catch ({ inner }) {
-      return (inner as { path: string; message: string }[]).reduce(
-        (memo, { path, message }) => ({
-          ...memo,
-          [path]: (memo[path] || []).concat(message),
-        }),
-        {},
-      );
+    } catch (e) {
+      const { inner } = e as InnerErrors;
+      if (!inner || inner.length === 0) {
+        return {};
+      }
+
+      const baseFields: InnerError[] = [];
+      const arraySubfields: InnerError[] = [];
+
+      inner.forEach((item) => {
+        const isArraySubfield = /\.|\[/.test(item.path);
+        if (isArraySubfield) {
+          arraySubfields.push(item);
+        } else {
+          baseFields.push(item);
+        }
+      });
+
+      const fieldErrors = fieldErrorReducer(baseFields);
+      if (arraySubfields.length === 0) {
+        return fieldErrors;
+      }
+
+      // Now we need to convert the fieldArray errors to the parent object
+      // eg. items[0].thumbprint --> { items: [{ thumbprint: ['subField error'] }]}
+      const arrayErrors = {};
+      arraySubfields.forEach((field) => {
+        set(arrayErrors, field.path, [field.message]);
+      });
+      return { ...fieldErrors, ...arrayErrors };
     }
   };
 
