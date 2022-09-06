@@ -7,6 +7,7 @@ import {
   AlertsContextProvider,
   ErrorState,
   LoadingState,
+  isApiError,
 } from '../../../common';
 import { usePullSecret } from '../../hooks';
 import { AssistedUILibVersion } from '../ui';
@@ -16,7 +17,6 @@ import AddHosts from './AddHosts';
 import { OcmClusterType } from './types';
 import Day2ClusterService from '../../services/Day2ClusterService';
 import { useStateSafely } from '../../../common/hooks';
-import { isApiError } from '../../api/types';
 import { FeatureSupportLevelProvider } from '../featureSupportLevels';
 
 type OpenModalType = (modalName: string, cluster?: OcmClusterType) => void;

@@ -1,11 +1,11 @@
 import React from 'react';
+import { isApiError } from '../../common';
 import {
   ErrorMonitorContextProvider,
   ErrorSeverity,
   ExceptionReporter,
 } from '../../common/components/ErrorHandling/ErrorMonitorContext';
 import { handleApiError } from '../api';
-import { isApiError } from '../api/types';
 import { captureException } from '../sentry';
 import * as Sentry from '@sentry/browser';
 

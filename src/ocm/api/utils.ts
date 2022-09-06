@@ -2,7 +2,7 @@ import { Severity } from '@sentry/browser';
 import Axios from 'axios';
 import pick from 'lodash/pick';
 import { captureException } from '../sentry';
-import { isApiError } from '../../common/api/customTypes';
+import { isApiError } from '../../common';
 
 type OnError = (arg0: unknown) => void;
 

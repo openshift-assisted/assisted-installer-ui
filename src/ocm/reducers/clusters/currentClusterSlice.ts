@@ -1,11 +1,15 @@
 import findIndex from 'lodash/findIndex';
 import set from 'lodash/set';
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { AssistedInstallerPermissionTypesListType, Cluster, Host } from '../../../common';
-import { handleApiError } from '../../api/utils';
-import { ResourceUIState } from '../../../common';
+import {
+  AssistedInstallerPermissionTypesListType,
+  Cluster,
+  Host,
+  ResourceUIState,
+} from '../../../common';
+import { isApiError } from '../../../common/api/customTypes';
+import { handleApiError } from '../../api';
 import { ClustersService, HostsService } from '../../services';
-import { isApiError } from '../../api/types';
 
 export type RetrievalErrorType = {
   code: string;
