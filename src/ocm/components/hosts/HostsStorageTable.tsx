@@ -14,7 +14,7 @@ import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import {
   Cluster,
   Host,
-  hasODFOperators,
+  hasOdfOperators,
   selectSchedulableMasters,
   isCompact,
 } from '../../../common';
@@ -50,7 +50,7 @@ const HostsStorageTable = ({ cluster }: { cluster: Cluster }) => {
       disksColumn,
       numberOfDisksColumn,
     ];
-    if (hasODFOperators(cluster)) {
+    if (hasOdfOperators(cluster)) {
       const excludeODfForMasters = !isCompact(cluster);
       columns.push(odfUsageColumn(excludeODfForMasters));
     }

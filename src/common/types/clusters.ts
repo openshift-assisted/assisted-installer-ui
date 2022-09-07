@@ -50,7 +50,8 @@ export type StorageValues = V2ClusterUpdateParams & {
   nodeLabeling: string;
 };
 export type OperatorsValues = V2ClusterUpdateParams & {
-  useExtraDisksForLocalStorage: boolean;
+  useOpenShiftDataFoundation: boolean;
+  useOdfLogicalVolumeManager: boolean;
   useContainerNativeVirtualization: boolean;
 };
 export enum CpuArchitecture {

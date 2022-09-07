@@ -1,15 +1,24 @@
 import {
+  Cluster,
+  OperatorsValues,
   V2ClusterUpdateParams,
   OPERATOR_NAME_CNV,
   OPERATOR_NAME_ODF,
   OPERATOR_NAME_OCS,
   OPERATOR_NAME_LSO,
-  OperatorsValues,
-  Cluster,
+  OPERATOR_NAME_LVM,
 } from '../../common';
 import { getOlmOperatorCreateParamsByName } from '../components/clusters/utils';
+
+const hasActiveOperators = (values: OperatorsValues) => {
+  return Object.keys(values).some((operatorName) => !!values[operatorName]);
+};
+
 const OperatorsService = {
-  setOLMOperators(params: V2ClusterUpdateParams, values: OperatorsValues, cluster: Cluster): void {
+  getOLMOperators(
+    values: OperatorsValues,
+    cluster: Cluster,
+  ): V2ClusterUpdateParams['olmOperators'] {
     const enabledOlmOperatorsByName = getOlmOperatorCreateParamsByName(cluster);
     const setOperator = (name: string, enabled: boolean) => {
       if (enabled) {
@@ -20,17 +29,19 @@ const OperatorsService = {
     };
 
     setOperator(OPERATOR_NAME_CNV, values.useContainerNativeVirtualization);
+    setOperator(OPERATOR_NAME_LVM, values.useOdfLogicalVolumeManager);
+
     // TODO(jkilzi): remove traces of OCS once it's fully deprecated/renamed to ODF
     setOperator(
       OPERATOR_NAME_ODF in enabledOlmOperatorsByName ? OPERATOR_NAME_ODF : OPERATOR_NAME_OCS,
-      values.useExtraDisksForLocalStorage,
+      values.useOpenShiftDataFoundation,
     );
     // TODO(jtomasek): remove following once enabling OCS is moved into a separate storage step and LSO option is exposed to the user
-    if (!values.useExtraDisksForLocalStorage && !values.useContainerNativeVirtualization) {
+    if (!hasActiveOperators(values)) {
       setOperator(OPERATOR_NAME_LSO, false);
     }
 
-    params.olmOperators = Object.values(enabledOlmOperatorsByName);
+    return Object.values(enabledOlmOperatorsByName);
   },
 };
 export default OperatorsService;

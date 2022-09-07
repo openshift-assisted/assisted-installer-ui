@@ -2,43 +2,31 @@ import React from 'react';
 import { FormGroup, Tooltip } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import {
-  Cluster,
   CheckboxField,
   PopoverIcon,
   getFieldId,
   useFeatureSupportLevel,
   CNV_LINK,
-} from '../../../common';
-import CNVHostRequirementsContent from '../hosts/CNVHostRequirementsContent';
+  ClusterOperatorProps,
+} from '../../../../common';
+import CnvHostRequirements from './CnvHostRequirements';
 
-const CNVLabel = ({
-  clusterId,
-  isSingleNode,
-}: {
-  clusterId: Cluster['id'];
-  isSingleNode?: boolean;
-}) => {
+const CNV_FIELD_NAME = 'useContainerNativeVirtualization';
+
+const CnvLabel = ({ clusterId }: { clusterId: ClusterOperatorProps['clusterId'] }) => {
   return (
     <>
       Install OpenShift Virtualization{' '}
       <PopoverIcon
         component={'a'}
         headerContent="Additional Requirements"
-        bodyContent={
-          <CNVHostRequirementsContent clusterId={clusterId} isSingleNode={isSingleNode} />
-        }
+        bodyContent={<CnvHostRequirements clusterId={clusterId} />}
       />
     </>
   );
 };
 
-export type CnvCheckboxProps = {
-  openshiftVersion?: string;
-  isSNO: boolean;
-  clusterId: string;
-};
-
-const CNVHelperText = () => {
+const CnvHelperText = () => {
   return (
     <>
       Run virtual machines alongside containers on one platform.{' '}
@@ -49,10 +37,9 @@ const CNVHelperText = () => {
   );
 };
 
-export const CnvCheckbox = ({ openshiftVersion, isSNO, clusterId }: CnvCheckboxProps) => {
+const CnvCheckbox = ({ clusterId, openshiftVersion }: ClusterOperatorProps) => {
   const featureSupportLevelContext = useFeatureSupportLevel();
-  const name = 'useContainerNativeVirtualization';
-  const fieldId = getFieldId(name, 'input');
+  const fieldId = getFieldId(CNV_FIELD_NAME, 'input');
   const disabledReason = openshiftVersion
     ? featureSupportLevelContext.getFeatureDisabledReason(openshiftVersion, 'CNV')
     : undefined;
@@ -60,12 +47,14 @@ export const CnvCheckbox = ({ openshiftVersion, isSNO, clusterId }: CnvCheckboxP
     <FormGroup isInline fieldId={fieldId}>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
         <CheckboxField
-          name={name}
-          label={<CNVLabel clusterId={clusterId} isSingleNode={isSNO} />}
-          helperText={<CNVHelperText />}
+          name={CNV_FIELD_NAME}
+          label={<CnvLabel clusterId={clusterId} />}
+          helperText={<CnvHelperText />}
           isDisabled={!!disabledReason}
         />
       </Tooltip>
     </FormGroup>
   );
 };
+
+export default CnvCheckbox;

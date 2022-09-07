@@ -1,47 +1,51 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import { Formik, FormikConfig, useFormikContext } from 'formik';
 import {
   Cluster,
   ClusterWizardStep,
-  V2ClusterUpdateParams,
   OperatorsValues,
   useAlerts,
   getFormikErrorFields,
   useFormikAutoSave,
+  OPERATOR_NAME_LVM,
+  OPERATOR_NAME_CNV,
+  OPERATOR_NAME_ODF,
+  OPERATOR_NAME_OCS,
 } from '../../../common';
-import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
+import { useClusterWizardContext } from './ClusterWizardContext';
 import ClusterWizardFooter from '../clusterWizard/ClusterWizardFooter';
-import { OperatorsStep } from './OperatorsStep';
 import ClusterWizardNavigation from '../clusterWizard/ClusterWizardNavigation';
-import { Formik, FormikConfig, useFormikContext } from 'formik';
+import { OperatorsStep } from './OperatorsStep';
 import { ClustersService, OperatorsService } from '../../services';
 import { updateCluster } from '../../reducers/clusters';
 import { handleApiError } from '../../api';
-import { useDispatch } from 'react-redux';
 import { canNextOperators } from './wizardTransition';
 import { getErrorMessage } from '../../../common/utils';
 
 export const getOperatorsInitialValues = (cluster: Cluster): OperatorsValues => {
   const monitoredOperators = cluster.monitoredOperators || [];
-  const isOperatorEnabled = (name: RegExp | string) =>
-    !!monitoredOperators.find((operator) => operator.name?.match(name));
+  const isOperatorEnabled = (operatorNames: string[]) =>
+    !!monitoredOperators.find((operator) => operatorNames.includes(operator.name || ''));
   return {
-    useExtraDisksForLocalStorage: isOperatorEnabled(/ocs|odf/),
-    useContainerNativeVirtualization: isOperatorEnabled('cnv'),
+    useOpenShiftDataFoundation: isOperatorEnabled([OPERATOR_NAME_ODF, OPERATOR_NAME_OCS]),
+    useOdfLogicalVolumeManager: isOperatorEnabled([OPERATOR_NAME_LVM]),
+    useContainerNativeVirtualization: isOperatorEnabled([OPERATOR_NAME_CNV]),
   };
 };
 
-const OperatorsForm: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
+const OperatorsForm = ({ cluster }: { cluster: Cluster }) => {
   const { alerts } = useAlerts();
   const { errors, touched, isSubmitting, isValid } = useFormikContext<OperatorsValues>();
   const clusterWizardContext = useClusterWizardContext();
   const errorFields = getFormikErrorFields(errors, touched);
   const isAutoSaveRunning = useFormikAutoSave();
   const isNextDisabled =
-    !canNextOperators({ cluster }) ||
     isAutoSaveRunning ||
     !isValid ||
     !!alerts.length ||
-    isSubmitting;
+    isSubmitting ||
+    !canNextOperators({ cluster });
 
   const footer = (
     <ClusterWizardFooter
@@ -56,12 +60,12 @@ const OperatorsForm: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
 
   return (
     <ClusterWizardStep navigation={<ClusterWizardNavigation cluster={cluster} />} footer={footer}>
-      <OperatorsStep cluster={cluster} />
+      <OperatorsStep clusterId={cluster.id} openshiftVersion={cluster.openshiftVersion} />
     </ClusterWizardStep>
   );
 };
 
-const Operators: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
+const Operators = ({ cluster }: { cluster: Cluster }) => {
   const dispatch = useDispatch();
   const { addAlert, clearAlerts } = useAlerts();
   const initialValues = React.useMemo(
@@ -73,11 +77,12 @@ const Operators: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const handleSubmit: FormikConfig<OperatorsValues>['onSubmit'] = async (values) => {
     clearAlerts();
 
-    const params: V2ClusterUpdateParams = {};
-    OperatorsService.setOLMOperators(params, values, cluster);
+    const enabledOperators = OperatorsService.getOLMOperators(values, cluster);
 
     try {
-      const { data } = await ClustersService.update(cluster.id, cluster.tags, params);
+      const { data } = await ClustersService.update(cluster.id, cluster.tags, {
+        olmOperators: enabledOperators,
+      });
       dispatch(updateCluster(data));
     } catch (e) {
       handleApiError(e, () =>

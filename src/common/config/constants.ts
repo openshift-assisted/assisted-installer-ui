@@ -1,6 +1,6 @@
 import { TFunction } from 'i18next';
 import * as packageJson from '../../../package.json';
-import { ValidationsInfo, HostRole } from '../../common/types/hosts';
+import { ValidationsInfo, HostRole } from '../types/hosts';
 import { Cluster, ClusterValidationId, DiskRole, Event, HostValidationId } from '../api';
 import { ValidationGroup as ClusterValidationGroup } from '../types/clusters';
 
@@ -35,6 +35,9 @@ export const SSH_GENERATION_DOC_LINK = 'https://www.redhat.com/sysadmin/configur
 export const CNV_LINK = 'https://cloud.redhat.com/learn/topics/virtualization/';
 
 export const ODF_LINK = 'https://www.redhat.com/en/resources/openshift-data-foundation-datasheet';
+
+// TODO Celia LINK
+export const LVM_LINK = 'https://www.redhat.com/en/resources/openshift-data-foundation-datasheet';
 
 // TODO(mlibra): Retrieve branding dynamically, if needed, i.e. via injecting to the "window" object
 export const getProductBrandingCode = () => 'redhat';
@@ -109,8 +112,6 @@ export const hostValidationGroupLabels = (
 });
 
 export const hostValidationLabels = (t: TFunction): { [key in HostValidationId]: string } => ({
-  'odf-requirements-satisfied': t('ai:ODF requirements'),
-  'disk-encryption-requirements-satisfied': t('ai:Disk encryption requirements'),
   'compatible-with-cluster-platform': '',
   'has-default-route': t('ai:Default route to host'),
   'sufficient-network-latency-requirement-for-role': t('ai:Network latency'),
@@ -134,8 +135,11 @@ export const hostValidationLabels = (t: TFunction): { [key in HostValidationId]:
   'container-images-available': t('ai:Container images availability'),
   'lso-requirements-satisfied': t('ai:LSO requirements'),
   'ocs-requirements-satisfied': t('ai:OCS requirements'),
-  'sufficient-installation-disk-speed': t('ai:Installation disk speed'),
+  'odf-requirements-satisfied': t('ai:ODF requirements'),
+  'lvm-requirements-satisfied': t('ai:LVM requirements'),
   'cnv-requirements-satisfied': t('ai:CNV requirements'),
+  'disk-encryption-requirements-satisfied': t('ai:Disk encryption requirements'),
+  'sufficient-installation-disk-speed': t('ai:Installation disk speed'),
   'api-domain-name-resolved-correctly': t('ai:API domain name resolution'),
   'api-int-domain-name-resolved-correctly': t('ai:API internal domain name resolution'),
   'apps-domain-name-resolved-correctly': t('ai:Application ingress domain name resolution'),
@@ -148,8 +152,6 @@ export const hostValidationLabels = (t: TFunction): { [key in HostValidationId]:
 export const hostValidationFailureHints = (
   t: TFunction,
 ): { [key in HostValidationId]: string } => ({
-  'odf-requirements-satisfied': '',
-  'disk-encryption-requirements-satisfied': '',
   'compatible-with-cluster-platform': '',
   'has-default-route': '',
   'sufficient-network-latency-requirement-for-role': '',
@@ -175,8 +177,11 @@ export const hostValidationFailureHints = (
   'container-images-available': '',
   'lso-requirements-satisfied': '',
   'ocs-requirements-satisfied': '',
-  'sufficient-installation-disk-speed': '',
+  'odf-requirements-satisfied': '',
+  'lvm-requirements-satisfied': '',
   'cnv-requirements-satisfied': '',
+  'disk-encryption-requirements-satisfied': '',
+  'sufficient-installation-disk-speed': '',
   'api-domain-name-resolved-correctly': '',
   'api-int-domain-name-resolved-correctly': '',
   'apps-domain-name-resolved-correctly': '',
@@ -189,7 +194,6 @@ export const hostValidationFailureHints = (
 export const clusterValidationLabels = (
   t: TFunction,
 ): { [key in ClusterValidationId]: string } => ({
-  'odf-requirements-satisfied': t('ai:ODF requirements'),
   'network-type-valid': t('ai:Valid network type'),
   'machine-cidr-defined': t('ai:Machine CIDR'),
   'cluster-cidr-defined': t('ai:Cluster CIDR'),
@@ -209,6 +213,8 @@ export const clusterValidationLabels = (
   'ntp-server-configured': t('ai:NTP server'),
   'lso-requirements-satisfied': t('ai:LSO requirements'),
   'ocs-requirements-satisfied': t('ai:OCS requirements'),
+  'odf-requirements-satisfied': t('ai:ODF requirements'),
+  'lvm-requirements-satisfied': t('ai:LVM requirements'),
   'cnv-requirements-satisfied': t('ai:CNV requirements'),
 });
 
@@ -260,13 +266,12 @@ export const diskRoleLabels = (t: TFunction): { [key in DiskRole]: string } => (
   install: t('ai:Installation disk'),
 });
 
-export const SNO_SUPPORT_MIN_VERSION = 4.8;
-
-// The API uses free-form string for operator names, so let's gueard at least using constants
+// The API uses free-form string for operator names, so let's guard at least using constants
 export const OPERATOR_NAME_CNV = 'cnv';
 export const OPERATOR_NAME_LSO = 'lso';
 export const OPERATOR_NAME_OCS = 'ocs'; // TODO(jkilzi): Remove once OCS is replaced by ODF
 export const OPERATOR_NAME_ODF = 'odf';
+export const OPERATOR_NAME_LVM = 'lvm';
 export const OPERATOR_NAME_CVO = 'cvo';
 export const OPERATOR_NAME_CONSOLE = 'console';
 
@@ -276,6 +281,7 @@ export const operatorLabels = (t: TFunction) => ({
   [OPERATOR_NAME_LSO]: t('ai:OpenShift Local Storage'),
   [OPERATOR_NAME_OCS]: t('ai:OpenShift Container Storage'), // TODO(jkilzi): Remove once OCS is replaced by ODF
   [OPERATOR_NAME_ODF]: t('ai:OpenShift Data Foundation'),
+  [OPERATOR_NAME_LVM]: t('ai:OpenShift Data Foundation Logical Volume Manager'),
   [OPERATOR_NAME_CNV]: t('ai:OpenShift Virtualization'),
 });
 

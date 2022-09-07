@@ -36,7 +36,7 @@ export const selectOlmOperators = (cluster?: Pick<Cluster, 'monitoredOperators'>
   return selectMonitoredOperators(cluster).filter((operator) => operator.operatorType === 'olm');
 };
 
-export const hasODFOperators = (cluster: Pick<Cluster, 'monitoredOperators'>) => {
+export const hasOdfOperators = (cluster: Pick<Cluster, 'monitoredOperators'>) => {
   return selectMonitoredOperators(cluster).some(
     (operator) => operator.name && operator.name === OPERATOR_NAME_ODF,
   );
