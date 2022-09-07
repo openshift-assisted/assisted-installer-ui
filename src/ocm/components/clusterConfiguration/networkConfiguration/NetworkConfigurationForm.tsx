@@ -25,7 +25,6 @@ import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContex
 import ClusterWizardFooter from '../../clusterWizard/ClusterWizardFooter';
 import { canNextNetwork } from '../../clusterWizard/wizardTransition';
 import ClusterWizardNavigation from '../../clusterWizard/ClusterWizardNavigation';
-import ClusterWizardHeaderExtraActions from '../ClusterWizardHeaderExtraActions';
 import NetworkConfigurationTable from './NetworkConfigurationTable';
 import useInfraEnv from '../../../hooks/useInfraEnv';
 import {
@@ -77,11 +76,7 @@ const NetworkConfigurationForm: React.FC<{
       <Form>
         <Grid hasGutter>
           <GridItem>
-            <ClusterWizardStepHeader
-              extraItems={<ClusterWizardHeaderExtraActions cluster={cluster} />}
-            >
-              Networking
-            </ClusterWizardStepHeader>
+            <ClusterWizardStepHeader>Networking</ClusterWizardStepHeader>
           </GridItem>
           <GridItem span={12} lg={10} xl={9} xl2={7}>
             <Grid hasGutter>
