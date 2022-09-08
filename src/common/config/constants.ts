@@ -274,6 +274,10 @@ export const OPERATOR_NAME_ODF = 'odf';
 export const OPERATOR_NAME_LVM = 'lvm';
 export const OPERATOR_NAME_CVO = 'cvo';
 export const OPERATOR_NAME_CONSOLE = 'console';
+export type OperatorName =
+  | typeof OPERATOR_NAME_LVM
+  | typeof OPERATOR_NAME_ODF
+  | typeof OPERATOR_NAME_CNV;
 
 export const operatorLabels = (t: TFunction) => ({
   [OPERATOR_NAME_CONSOLE]: t('ai:OpenShift Console'),

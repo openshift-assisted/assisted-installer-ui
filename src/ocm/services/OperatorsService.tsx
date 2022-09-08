@@ -38,6 +38,12 @@ const OperatorsService = {
     );
     // TODO(jtomasek): remove following once enabling OCS is moved into a separate storage step and LSO option is exposed to the user
     if (!hasActiveOperators(values)) {
+      console.log(
+        '%c no operators selected',
+        'font-size: 16px; color: blue',
+        JSON.stringify(values),
+      );
+
       setOperator(OPERATOR_NAME_LSO, false);
     }
 

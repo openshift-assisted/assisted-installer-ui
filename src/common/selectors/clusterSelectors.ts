@@ -1,7 +1,7 @@
 import head from 'lodash/fp/head';
 import { CpuArchitecture, ValidationsInfo } from '../types';
 import { Cluster, stringToJSON } from '../api';
-import { OPERATOR_NAME_ODF } from '../config';
+import { OperatorName } from '../config';
 
 export const selectMachineNetworkCIDR = ({
   machineNetworks,
@@ -36,9 +36,12 @@ export const selectOlmOperators = (cluster?: Pick<Cluster, 'monitoredOperators'>
   return selectMonitoredOperators(cluster).filter((operator) => operator.operatorType === 'olm');
 };
 
-export const hasOdfOperators = (cluster: Pick<Cluster, 'monitoredOperators'>) => {
+export const hasEnabledOperators = (
+  cluster: Pick<Cluster, 'monitoredOperators'>,
+  searchOperator: OperatorName,
+) => {
   return selectMonitoredOperators(cluster).some(
-    (operator) => operator.name && operator.name === OPERATOR_NAME_ODF,
+    (operator) => operator.name && operator.name === searchOperator,
   );
 };
 

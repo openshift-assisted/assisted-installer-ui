@@ -9,8 +9,10 @@ import {
   PopoverIcon,
   LVM_LINK,
   ClusterOperatorProps,
+  OperatorsValues,
 } from '../../../../common';
 import LvmHostRequirements from './LvmHostRequirements';
+import { useFormikContext } from 'formik';
 
 const LVM_FIELD_NAME = 'useOdfLogicalVolumeManager';
 
@@ -41,9 +43,16 @@ const LvmCheckbox = ({ clusterId, openshiftVersion }: ClusterOperatorProps) => {
   const featureSupportLevelContext = useFeatureSupportLevel();
   const fieldId = getFieldId(LVM_FIELD_NAME, 'input');
 
-  const disabledReason = openshiftVersion
+  const { values } = useFormikContext<OperatorsValues>();
+  const disabled = values.useContainerNativeVirtualization;
+
+  let disabledReason = openshiftVersion
     ? featureSupportLevelContext.getFeatureDisabledReason(openshiftVersion, 'LVM')
     : undefined;
+
+  if (disabled) {
+    disabledReason = 'INcompatible';
+  }
   return (
     <FormGroup isInline fieldId={fieldId}>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
@@ -51,8 +60,8 @@ const LvmCheckbox = ({ clusterId, openshiftVersion }: ClusterOperatorProps) => {
           <CheckboxField
             name={LVM_FIELD_NAME}
             label={<LvmLabel clusterId={clusterId} openshiftVersion={openshiftVersion} />}
-            isDisabled={!!disabledReason}
             helperText={<LvmHelperText />}
+            style={{ border: disabledReason ? '2px solid red' : 'none' }}
           />
         </>
       </Tooltip>

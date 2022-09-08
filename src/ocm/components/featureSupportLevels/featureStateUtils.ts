@@ -8,6 +8,7 @@ import {
   isSNO,
   OPERATOR_NAME_LVM,
   OPERATOR_NAME_CNV,
+  hasEnabledOperators,
 } from '../../../common';
 
 const CNV_OPERATOR_LABEL = 'Virtualization';
@@ -21,14 +22,14 @@ const clusterExistsReason = 'This option is not editable after the draft cluster
 
 const getCnvAndLvmIncompatibilityReason = (
   cluster: Cluster,
+  versionName: string,
   testOperator: typeof OPERATOR_NAME_LVM | typeof OPERATOR_NAME_CNV,
   incompatibleOperator: typeof OPERATOR_NAME_LVM | typeof OPERATOR_NAME_CNV,
 ) => {
-  const hasIncompatibleOperator = incompatibleOperator.length !== 7; // TODO UNFAKE
+  const hasIncompatibleOperator = hasEnabledOperators(cluster, incompatibleOperator);
   if (!hasIncompatibleOperator) {
     return undefined;
   }
-
   const firstOperator =
     testOperator === OPERATOR_NAME_CNV ? CNV_OPERATOR_LABEL : LVM_OPERATOR_LABEL;
   const secondOperator =
@@ -80,17 +81,26 @@ const getOdfDisabledReason = (cluster: Cluster | undefined, isSupported: boolean
   return undefined;
 };
 
-const getLvmDisabledReason = (cluster: Cluster | undefined, isSupported: boolean) => {
+const getLvmDisabledReason = (
+  cluster: Cluster | undefined,
+  versionName: string,
+  isSupported: boolean,
+) => {
   if (!cluster) {
     return undefined;
   }
   if (!isSupported) {
     return 'The installer cannot currently enable OpenShift Data Foundation Logical Volume Manager with the selected OpenShift version.';
   }
-  return getCnvAndLvmIncompatibilityReason(cluster, OPERATOR_NAME_LVM, OPERATOR_NAME_LVM);
+  return getCnvAndLvmIncompatibilityReason(
+    cluster,
+    versionName,
+    OPERATOR_NAME_LVM,
+    OPERATOR_NAME_LVM,
+  );
 };
 
-const getCnvDisabledReason = (cluster: Cluster | undefined) => {
+const getCnvDisabledReason = (cluster: Cluster | undefined, versionName: string) => {
   if (!cluster) {
     return undefined;
   }
@@ -98,7 +108,12 @@ const getCnvDisabledReason = (cluster: Cluster | undefined) => {
     return 'OpenShift Virtualization is not available when ARM CPU architecture is selected.';
   }
 
-  return getCnvAndLvmIncompatibilityReason(cluster, OPERATOR_NAME_CNV, OPERATOR_NAME_LVM);
+  return getCnvAndLvmIncompatibilityReason(
+    cluster,
+    versionName,
+    OPERATOR_NAME_CNV,
+    OPERATOR_NAME_LVM,
+  );
 };
 
 const getNetworkTypeSelectionDisabledReason = (cluster: Cluster | undefined) => {
@@ -126,13 +141,13 @@ export const getFeatureDisabledReason = (
       return getArmDisabledReason(cluster, versionName, versionOptions);
     }
     case 'CNV': {
-      return getCnvDisabledReason(cluster);
+      return getCnvDisabledReason(cluster, versionName);
     }
     case 'ODF': {
       return getOdfDisabledReason(cluster, isSupported);
     }
     case 'LVM': {
-      return getLvmDisabledReason(cluster, isSupported);
+      return getLvmDisabledReason(cluster, versionName, isSupported);
     }
     case 'NETWORK_TYPE_SELECTION': {
       return getNetworkTypeSelectionDisabledReason(cluster);

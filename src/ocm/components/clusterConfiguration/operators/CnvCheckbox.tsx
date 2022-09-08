@@ -50,7 +50,7 @@ const CnvCheckbox = ({ clusterId, openshiftVersion }: ClusterOperatorProps) => {
           name={CNV_FIELD_NAME}
           label={<CnvLabel clusterId={clusterId} />}
           helperText={<CnvHelperText />}
-          isDisabled={!!disabledReason}
+          style={{ border: disabledReason ? '2px solid red' : 'none' }}
         />
       </Tooltip>
     </FormGroup>

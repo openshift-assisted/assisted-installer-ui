@@ -1,11 +1,17 @@
 import * as React from 'react';
 import { Stack, StackItem } from '@patternfly/react-core';
-import { Cluster, FormatDiskWarning, hasOdfOperators } from '../../../common';
+import {
+  Cluster,
+  FormatDiskWarning,
+  hasEnabledOperators,
+  OPERATOR_NAME_ODF,
+} from '../../../common';
 import { isAddHostsCluster } from '../clusters/utils';
 import OdfDisksManualFormattingHint from './OdfDisksManualFormattingHint';
 
 const StorageAlerts = ({ cluster }: { cluster: Cluster }) => {
-  const showFormattingHint = hasOdfOperators(cluster) && !isAddHostsCluster(cluster);
+  const showFormattingHint =
+    hasEnabledOperators(cluster, OPERATOR_NAME_ODF) && !isAddHostsCluster(cluster);
   return (
     <Stack hasGutter>
       {showFormattingHint && (

@@ -1,22 +1,23 @@
 import React from 'react';
 import { Stack, StackItem } from '@patternfly/react-core';
 import {
-  hostnameColumn,
-  roleColumn,
   countColumn,
   disksColumn,
+  hostnameColumn,
+  roleColumn,
 } from '../../../common/components/hosts/tableUtils';
 import {
-  odfUsageColumn,
   numberOfDisksColumn,
+  odfUsageColumn,
 } from '../../../common/components/storage/StorageUtils';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import {
   Cluster,
+  hasEnabledOperators,
   Host,
-  hasOdfOperators,
-  selectSchedulableMasters,
   isCompact,
+  OPERATOR_NAME_ODF,
+  selectSchedulableMasters,
 } from '../../../common';
 import { hardwareStatusColumn } from './HostsDiscoveryTable';
 import { usePagination } from '../../../common/components/hosts/usePagination';
@@ -50,7 +51,7 @@ const HostsStorageTable = ({ cluster }: { cluster: Cluster }) => {
       disksColumn,
       numberOfDisksColumn,
     ];
-    if (hasOdfOperators(cluster)) {
+    if (hasEnabledOperators(cluster, OPERATOR_NAME_ODF)) {
       const excludeODfForMasters = !isCompact(cluster);
       columns.push(odfUsageColumn(excludeODfForMasters));
     }
