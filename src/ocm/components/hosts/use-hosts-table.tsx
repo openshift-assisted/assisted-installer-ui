@@ -192,8 +192,6 @@ export const useHostsTable = (cluster: Cluster) => {
             `Failed to update disks skip formatting state in host ${hostId}\nMissing disk id`,
           );
         }
-        ClustersService.cancelPreviousRequest();
-        HostsService.cancelPreviousRequest();
         const { data } = await HostsService.updateFormattingDisks(
           cluster.id,
           hostId,

@@ -203,10 +203,6 @@ const ClustersAPI = {
       `${ClustersAPI.makeBaseURI()}?ams_subscription_ids=${subscriptionIds.toString()}`,
     );
   },
-
-  cancelRequest() {
-    return controller && controller.abort();
-  },
 };
 
 export default ClustersAPI;
