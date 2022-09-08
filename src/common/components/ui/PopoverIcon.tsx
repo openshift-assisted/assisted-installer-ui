@@ -25,11 +25,10 @@ const PopoverIcon: React.FC<PopoverIconProps> = ({
 }) => (
   <Popover {...props}>
     <Button
-      style={{ padding: 0 }}
       component={component}
       variant={variant}
       onClick={(e) => e.preventDefault()}
-      className={classNames('pf-c-form__group-label-help', buttonClassName)}
+      className={classNames('pf-c-form__group-label-help', 'pf-u-p-0', buttonClassName)}
       ouiaId={buttonOuiaId}
     >
       <IconComponent noVerticalAlign={noVerticalAlign} />

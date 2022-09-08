@@ -20,7 +20,7 @@ const DiskEncryptionModeTPMv2 = () => {
   const { t } = useTranslation();
   return (
     <>
-      TPM v2
+      TPM v2{' '}
       <PopoverIcon
         component={'a'}
         minWidth="22rem"

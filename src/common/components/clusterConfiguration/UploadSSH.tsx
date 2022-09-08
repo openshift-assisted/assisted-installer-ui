@@ -16,7 +16,7 @@ const UploadSSH: React.FC<UploadSSHProps> = ({ isRequired }) => {
     <UploadField
       label={
         <>
-          {t('ai:SSH public key')}
+          {t('ai:SSH public key')}{' '}
           <PopoverIcon
             bodyContent={t(
               'ai:Provide an SSH key to receive debugging information during installation',
