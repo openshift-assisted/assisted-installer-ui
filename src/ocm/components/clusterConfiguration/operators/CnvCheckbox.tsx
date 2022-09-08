@@ -1,15 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FormGroup, Tooltip } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
+import { useFormikContext } from 'formik';
 import {
   CheckboxField,
-  PopoverIcon,
-  getFieldId,
-  useFeatureSupportLevel,
-  CNV_LINK,
   ClusterOperatorProps,
+  CNV_LINK,
+  getFieldId,
+  OPERATOR_NAME_CNV,
+  OperatorsValues,
+  PopoverIcon,
+  useFeatureSupportLevel,
 } from '../../../../common';
 import CnvHostRequirements from './CnvHostRequirements';
+import { getCnvAndLvmIncompatibilityReason } from '../../featureSupportLevels/featureStateUtils';
 
 const CNV_FIELD_NAME = 'useContainerNativeVirtualization';
 
@@ -38,11 +42,23 @@ const CnvHelperText = () => {
 };
 
 const CnvCheckbox = ({ clusterId, openshiftVersion }: ClusterOperatorProps) => {
-  const featureSupportLevelContext = useFeatureSupportLevel();
   const fieldId = getFieldId(CNV_FIELD_NAME, 'input');
-  const disabledReason = openshiftVersion
-    ? featureSupportLevelContext.getFeatureDisabledReason(openshiftVersion, 'CNV')
-    : undefined;
+
+  const featureSupportLevel = useFeatureSupportLevel();
+  const { values } = useFormikContext<OperatorsValues>();
+  const [disabledReason, setDisabledReason] = useState<string | undefined>();
+
+  React.useEffect(() => {
+    let reason = undefined;
+    if (openshiftVersion) {
+      reason = featureSupportLevel.getFeatureDisabledReason(openshiftVersion, 'CNV');
+      if (!reason) {
+        reason = getCnvAndLvmIncompatibilityReason(values, openshiftVersion, OPERATOR_NAME_CNV);
+      }
+    }
+    setDisabledReason(reason);
+  }, [values, openshiftVersion, featureSupportLevel]);
+
   return (
     <FormGroup isInline fieldId={fieldId}>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
@@ -50,7 +66,7 @@ const CnvCheckbox = ({ clusterId, openshiftVersion }: ClusterOperatorProps) => {
           name={CNV_FIELD_NAME}
           label={<CnvLabel clusterId={clusterId} />}
           helperText={<CnvHelperText />}
-          style={{ border: disabledReason ? '2px solid red' : 'none' }}
+          isDisabled={!!disabledReason}
         />
       </Tooltip>
     </FormGroup>

@@ -2,13 +2,13 @@ import {
   Cluster,
   CpuArchitecture,
   FeatureId,
-  OpenshiftVersionOptionType,
-  SupportLevel,
   isArmArchitecture,
   isSNO,
-  OPERATOR_NAME_LVM,
+  OpenshiftVersionOptionType,
   OPERATOR_NAME_CNV,
-  hasEnabledOperators,
+  OPERATOR_NAME_LVM,
+  OperatorsValues,
+  SupportLevel,
 } from '../../../common';
 
 const CNV_OPERATOR_LABEL = 'Virtualization';
@@ -20,16 +20,20 @@ const isArmSupported = (versionName: string, versionOptions: OpenshiftVersionOpt
 };
 const clusterExistsReason = 'This option is not editable after the draft cluster is created';
 
-const getCnvAndLvmIncompatibilityReason = (
-  cluster: Cluster,
-  versionName: string,
+export const getCnvAndLvmIncompatibilityReason = (
+  operatorValues: OperatorsValues,
+  versionName: string | undefined,
   testOperator: typeof OPERATOR_NAME_LVM | typeof OPERATOR_NAME_CNV,
-  incompatibleOperator: typeof OPERATOR_NAME_LVM | typeof OPERATOR_NAME_CNV,
 ) => {
-  const hasIncompatibleOperator = hasEnabledOperators(cluster, incompatibleOperator);
+  const hasIncompatibleOperator =
+    testOperator === OPERATOR_NAME_CNV
+      ? operatorValues.useOdfLogicalVolumeManager
+      : operatorValues.useContainerNativeVirtualization;
+
   if (!hasIncompatibleOperator) {
     return undefined;
   }
+
   const firstOperator =
     testOperator === OPERATOR_NAME_CNV ? CNV_OPERATOR_LABEL : LVM_OPERATOR_LABEL;
   const secondOperator =
@@ -81,39 +85,24 @@ const getOdfDisabledReason = (cluster: Cluster | undefined, isSupported: boolean
   return undefined;
 };
 
-const getLvmDisabledReason = (
-  cluster: Cluster | undefined,
-  versionName: string,
-  isSupported: boolean,
-) => {
+const getLvmDisabledReason = (cluster: Cluster | undefined, isSupported: boolean) => {
   if (!cluster) {
     return undefined;
   }
   if (!isSupported) {
     return 'The installer cannot currently enable OpenShift Data Foundation Logical Volume Manager with the selected OpenShift version.';
   }
-  return getCnvAndLvmIncompatibilityReason(
-    cluster,
-    versionName,
-    OPERATOR_NAME_LVM,
-    OPERATOR_NAME_LVM,
-  );
+  return undefined;
 };
 
-const getCnvDisabledReason = (cluster: Cluster | undefined, versionName: string) => {
+const getCnvDisabledReason = (cluster: Cluster | undefined) => {
   if (!cluster) {
     return undefined;
   }
   if (isArmArchitecture(cluster)) {
     return 'OpenShift Virtualization is not available when ARM CPU architecture is selected.';
   }
-
-  return getCnvAndLvmIncompatibilityReason(
-    cluster,
-    versionName,
-    OPERATOR_NAME_CNV,
-    OPERATOR_NAME_LVM,
-  );
+  return undefined;
 };
 
 const getNetworkTypeSelectionDisabledReason = (cluster: Cluster | undefined) => {
@@ -141,13 +130,13 @@ export const getFeatureDisabledReason = (
       return getArmDisabledReason(cluster, versionName, versionOptions);
     }
     case 'CNV': {
-      return getCnvDisabledReason(cluster, versionName);
+      return getCnvDisabledReason(cluster);
     }
     case 'ODF': {
       return getOdfDisabledReason(cluster, isSupported);
     }
     case 'LVM': {
-      return getLvmDisabledReason(cluster, versionName, isSupported);
+      return getLvmDisabledReason(cluster, isSupported);
     }
     case 'NETWORK_TYPE_SELECTION': {
       return getNetworkTypeSelectionDisabledReason(cluster);

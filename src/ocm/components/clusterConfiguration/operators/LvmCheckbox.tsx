@@ -1,18 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FormGroup, Tooltip } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
+import { useFormikContext } from 'formik';
 import {
-  getFieldId,
-  useFeatureSupportLevel,
   CheckboxField,
-  FeatureSupportLevelBadge,
-  PopoverIcon,
-  LVM_LINK,
   ClusterOperatorProps,
+  FeatureSupportLevelBadge,
+  getFieldId,
+  LVM_LINK,
+  OPERATOR_NAME_LVM,
   OperatorsValues,
+  PopoverIcon,
+  useFeatureSupportLevel,
 } from '../../../../common';
 import LvmHostRequirements from './LvmHostRequirements';
-import { useFormikContext } from 'formik';
+import { getCnvAndLvmIncompatibilityReason } from '../../featureSupportLevels/featureStateUtils';
 
 const LVM_FIELD_NAME = 'useOdfLogicalVolumeManager';
 
@@ -40,30 +42,32 @@ const LvmHelperText = () => {
 };
 
 const LvmCheckbox = ({ clusterId, openshiftVersion }: ClusterOperatorProps) => {
-  const featureSupportLevelContext = useFeatureSupportLevel();
   const fieldId = getFieldId(LVM_FIELD_NAME, 'input');
 
+  const featureSupportLevel = useFeatureSupportLevel();
   const { values } = useFormikContext<OperatorsValues>();
-  const disabled = values.useContainerNativeVirtualization;
+  const [disabledReason, setDisabledReason] = useState<string | undefined>();
 
-  let disabledReason = openshiftVersion
-    ? featureSupportLevelContext.getFeatureDisabledReason(openshiftVersion, 'LVM')
-    : undefined;
+  React.useEffect(() => {
+    let reason = undefined;
+    if (openshiftVersion) {
+      reason = featureSupportLevel.getFeatureDisabledReason(openshiftVersion, 'LVM');
+      if (!reason) {
+        reason = getCnvAndLvmIncompatibilityReason(values, openshiftVersion, OPERATOR_NAME_LVM);
+      }
+    }
+    setDisabledReason(reason);
+  }, [values, openshiftVersion, featureSupportLevel]);
 
-  if (disabled) {
-    disabledReason = 'INcompatible';
-  }
   return (
     <FormGroup isInline fieldId={fieldId}>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
-        <>
-          <CheckboxField
-            name={LVM_FIELD_NAME}
-            label={<LvmLabel clusterId={clusterId} openshiftVersion={openshiftVersion} />}
-            helperText={<LvmHelperText />}
-            style={{ border: disabledReason ? '2px solid red' : 'none' }}
-          />
-        </>
+        <CheckboxField
+          name={LVM_FIELD_NAME}
+          label={<LvmLabel clusterId={clusterId} openshiftVersion={openshiftVersion} />}
+          helperText={<LvmHelperText />}
+          isDisabled={!!disabledReason}
+        />
       </Tooltip>
     </FormGroup>
   );
