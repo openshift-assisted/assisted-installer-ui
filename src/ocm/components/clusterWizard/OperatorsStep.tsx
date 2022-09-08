@@ -1,7 +1,6 @@
 import React from 'react';
-import { Cluster, isSNO, useFeature } from '../../../common';
+import { Cluster, ClusterWizardStepHeader, isSNO, useFeature } from '../../../common';
 import { Stack, StackItem } from '@patternfly/react-core';
-import ClusterWizardStepHeader from '../clusterWizard/ClusterWizardStepHeader';
 import { CnvCheckbox } from '../clusterConfiguration/CnvCheckbox';
 import { ODFCheckbox } from '../clusterConfiguration/ODFCheckbox';
 

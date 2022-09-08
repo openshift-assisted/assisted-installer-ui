@@ -16,6 +16,7 @@ import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
 import ClusterWizardStepValidationsAlert from '../../../common/components/clusterWizard/ClusterWizardStepValidationsAlert';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { ClusterPlatformIntegrationHint } from './ClusterPlatformIntegrationHint';
+import { onFetchEvents } from '../fetching/fetchEvents';
 
 type ClusterValidationSectionProps = {
   cluster?: Cluster;
@@ -109,6 +110,8 @@ const ClusterWizardFooter = ({
       errors={errorsSection}
       onCancel={onCancel || handleCancel}
       leftExtraActions={additionalActions}
+      cluster={cluster}
+      onFetchEvents={onFetchEvents}
       {...rest}
     />
   );

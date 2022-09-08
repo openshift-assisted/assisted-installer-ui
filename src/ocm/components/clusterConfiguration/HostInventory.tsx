@@ -25,7 +25,6 @@ import {
 import HostsDiscoveryTable from '../hosts/HostsDiscoveryTable';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
 import InformationAndAlerts from './InformationAndAlerts';
-import ClusterWizardHeaderExtraActions from './ClusterWizardHeaderExtraActions';
 import { useClusterSupportedPlatforms } from '../../hooks';
 import { useFormikContext } from 'formik';
 
@@ -86,9 +85,7 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
   return (
     <Stack hasGutter>
       <StackItem>
-        <ClusterWizardStepHeader extraItems={<ClusterWizardHeaderExtraActions cluster={cluster} />}>
-          Host discovery
-        </ClusterWizardStepHeader>
+        <ClusterWizardStepHeader>Host discovery</ClusterWizardStepHeader>
       </StackItem>
       <StackItem>
         <TextContent>

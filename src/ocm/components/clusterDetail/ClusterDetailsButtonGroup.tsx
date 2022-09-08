@@ -1,16 +1,11 @@
 import { Flex, FlexItem, Button, ButtonVariant } from '@patternfly/react-core';
 import React from 'react';
-import {
-  Cluster,
-  canDownloadClusterLogs,
-  useAlerts,
-  EventsModalButton,
-  KubeconfigDownload,
-} from '../../../common';
+import { Cluster, canDownloadClusterLogs, useAlerts, KubeconfigDownload } from '../../../common';
 import { downloadClusterInstallationLogs } from './utils';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
 import { canAbortInstallation } from '../clusters/utils';
 import { onFetchEvents } from '../fetching/fetchEvents';
+import ViewClusterEventsButton from '../../../common/components/ui/ViewClusterEventsButton';
 
 type ClusterDetailsButtonGroupProps = {
   cluster: Cluster;
@@ -47,6 +42,9 @@ const ClusterDetailsButtonGroup: React.FC<ClusterDetailsButtonGroupProps> = ({ c
         />
       </FlexItem>
       <FlexItem>
+        <ViewClusterEventsButton cluster={cluster} onFetchEvents={onFetchEvents} />
+      </FlexItem>
+      <FlexItem>
         <Button
           data-testid="cluster-installation-logs-button"
           variant={ButtonVariant.link}
@@ -55,18 +53,6 @@ const ClusterDetailsButtonGroup: React.FC<ClusterDetailsButtonGroupProps> = ({ c
         >
           Download Installation Logs
         </Button>
-      </FlexItem>
-      <FlexItem>
-        <EventsModalButton
-          data-testid="cluster-events-button"
-          entityKind="cluster"
-          cluster={cluster}
-          title="Cluster Events"
-          variant={ButtonVariant.link}
-          onFetchEvents={onFetchEvents}
-        >
-          View Cluster Events
-        </EventsModalButton>
       </FlexItem>
     </Flex>
   );
