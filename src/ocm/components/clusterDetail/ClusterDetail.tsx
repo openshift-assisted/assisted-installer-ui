@@ -33,12 +33,12 @@ import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
 import { canAbortInstallation } from '../clusters/utils';
 import ClusterProgress from '../../../common/components/clusterDetail/ClusterProgress';
 import ClusterProgressItems from '../../../common/components/clusterDetail/ClusterProgressItems';
-import { EventsModalButton } from '../../../common/components/ui/eventsModal';
 import { onFetchEvents } from '../fetching/fetchEvents';
 import { getClusterProgressAlerts } from './getProgressBarAlerts';
 import { ClustersAPI } from '../../services/apis';
 import { updateCluster } from '../../reducers/clusters';
 import { handleApiError, ocmClient } from '../../api';
+import ViewClusterEventsButton from '../../../common/components/ui/ViewClusterEventsButton';
 
 type ClusterDetailProps = {
   cluster: Cluster;
@@ -156,16 +156,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
             >
               Download Installation Logs
             </ToolbarButton>
-            <EventsModalButton
-              id="cluster-events-button"
-              entityKind="cluster"
-              cluster={cluster}
-              title="Cluster Events"
-              variant={ButtonVariant.link}
-              onFetchEvents={onFetchEvents}
-            >
-              View Cluster Events
-            </EventsModalButton>
+            <ViewClusterEventsButton cluster={cluster} onFetchEvents={onFetchEvents} />
           </ToolbarSecondaryGroup>
         </ClusterToolbar>
       </StackItem>

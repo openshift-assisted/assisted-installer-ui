@@ -7,6 +7,7 @@ import {
   ManagedDomain,
   OpenshiftVersionOptionType,
   getDefaultNetworkType,
+  AI_UI_TAG,
 } from '../../common';
 import { ClustersAPI, ManagedDomainsAPI } from '../services/apis';
 import InfraEnvsService from './InfraEnvsService';
@@ -15,6 +16,8 @@ import DiskEncryptionService from './DiskEncryptionService';
 import { isArmArchitecture, isSNO } from '../../common/selectors/clusterSelectors';
 import { CreateParams, HostsNetworkConfigurationType, OcmClusterDetailsValues } from './types';
 import { getDummyInfraEnvField } from '../components/clusterConfiguration/staticIp/data/dummyData';
+import ClustersService from './ClustersService';
+import { ocmClient } from '../api';
 
 const ClusterDetailsService = {
   async create(params: CreateParams) {
@@ -32,9 +35,13 @@ const ClusterDetailsService = {
     return cluster;
   },
 
-  async update(clusterId: string, params: V2ClusterUpdateParams) {
-    const { data: cluster } = await ClustersAPI.update(clusterId, params);
-    return cluster;
+  async update(
+    clusterId: Cluster['id'],
+    clusterTags: Cluster['tags'],
+    params: V2ClusterUpdateParams,
+  ) {
+    const { data: updatedCluster } = await ClustersService.update(clusterId, clusterTags, params);
+    return updatedCluster;
   },
 
   async getManagedDomains() {
@@ -61,6 +68,9 @@ const ClusterDetailsService = {
     params.networkType = getDefaultNetworkType(isSNOCluster);
     if (values.hostsNetworkConfigurationType === HostsNetworkConfigurationType.STATIC) {
       params.staticNetworkConfig = getDummyInfraEnvField();
+    }
+    if (ocmClient) {
+      params.tags = AI_UI_TAG;
     }
     return params;
   },

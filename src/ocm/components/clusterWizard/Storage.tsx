@@ -10,11 +10,11 @@ import {
   getStorageInitialValues,
   StorageValues,
   useFormikAutoSave,
+  ClusterWizardStepHeader,
 } from '../../../common';
 import ClusterWizardFooter from './ClusterWizardFooter';
 import { useClusterWizardContext } from './ClusterWizardContext';
 import ClusterWizardNavigation from './ClusterWizardNavigation';
-import ClusterWizardStepHeader from './ClusterWizardStepHeader';
 import { canNextStorage } from './wizardTransition';
 import HostsStorageTable from '../hosts/HostsStorageTable';
 

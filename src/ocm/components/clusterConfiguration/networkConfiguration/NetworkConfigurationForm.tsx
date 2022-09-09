@@ -25,7 +25,6 @@ import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContex
 import ClusterWizardFooter from '../../clusterWizard/ClusterWizardFooter';
 import { canNextNetwork } from '../../clusterWizard/wizardTransition';
 import ClusterWizardNavigation from '../../clusterWizard/ClusterWizardNavigation';
-import ClusterWizardHeaderExtraActions from '../ClusterWizardHeaderExtraActions';
 import NetworkConfigurationTable from './NetworkConfigurationTable';
 import useInfraEnv from '../../../hooks/useInfraEnv';
 import {
@@ -34,7 +33,7 @@ import {
 } from './networkConfigurationValidation';
 import NetworkConfiguration from './NetworkConfiguration';
 import { captureException } from '../../../sentry';
-import { ClustersAPI } from '../../../services/apis';
+import { ClustersService } from '../../../services';
 import { updateClusterBase } from '../../../reducers/clusters';
 import { getApiErrorMessage, handleApiError } from '../../../api';
 
@@ -77,11 +76,7 @@ const NetworkConfigurationForm: React.FC<{
       <Form>
         <Grid hasGutter>
           <GridItem>
-            <ClusterWizardStepHeader
-              extraItems={<ClusterWizardHeaderExtraActions cluster={cluster} />}
-            >
-              Networking
-            </ClusterWizardStepHeader>
+            <ClusterWizardStepHeader>Networking</ClusterWizardStepHeader>
           </GridItem>
           <GridItem span={12} lg={10} xl={9} xl2={7}>
             <Grid hasGutter>
@@ -186,7 +181,7 @@ const NetworkConfigurationPage: React.FC<{
         }
       }
 
-      const { data } = await ClustersAPI.update(cluster.id, params);
+      const { data } = await ClustersService.update(cluster.id, cluster.tags, params);
       dispatch(updateClusterBase(data));
     } catch (e) {
       handleApiError(e, () =>

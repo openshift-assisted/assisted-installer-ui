@@ -1,9 +1,9 @@
 import React from 'react';
-import { onDiskRoleType } from './DiskRole';
+import { OnDiskRoleType } from './DiskRole';
 import { HostsTableActions } from './types';
 
 type HostsTableDetailContextValue = {
-  onDiskRole: onDiskRoleType | undefined;
+  onDiskRole: OnDiskRoleType | undefined;
   canEditDisks: HostsTableActions['canEditDisks'];
 };
 

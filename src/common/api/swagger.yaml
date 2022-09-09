@@ -4388,6 +4388,10 @@ definitions:
         type: object
         $ref: '#/definitions/ignition-endpoint'
         description: Explicit ignition endpoint overrides the default ignition endpoint.
+      tags:
+        type: string
+        description: A comma-separated list of tags that are associated to the cluster.
+        x-nullable: true
 
   host-update-params:
     type: object
@@ -4576,6 +4580,10 @@ definitions:
         type: object
         $ref: '#/definitions/ignition-endpoint'
         description: Explicit ignition endpoint overrides the default ignition endpoint.
+      tags:
+        type: string
+        description: A comma-separated list of tags that are associated to the cluster.
+        x-nullable: true
 
   import-cluster-params:
     type: object
@@ -4934,6 +4942,9 @@ definitions:
         type: object
         $ref: '#/definitions/ignition-endpoint'
         description: Explicit ignition endpoint overrides the default ignition endpoint.
+      tags:
+        type: string
+        description: A comma-separated list of tags that are associated to the cluster.
 
   ignition-endpoint:
     type: object

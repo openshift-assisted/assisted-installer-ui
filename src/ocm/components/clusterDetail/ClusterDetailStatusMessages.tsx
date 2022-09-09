@@ -7,6 +7,7 @@ import {
   canDownloadKubeconfig,
   useFeatureSupportLevel,
   isSNO,
+  isClusterPlatformTypeVM,
 } from '../../../common';
 import { Cluster } from '../../../common/api/types';
 import { getClusterDetailId } from './utils';
@@ -32,16 +33,17 @@ const ClusterDetailStatusMessages = ({
   const { inactiveDeletionHours } = useDefaultConfiguration(['inactiveDeletionHours']);
   const inactiveDeletionDays = Math.round((inactiveDeletionHours || 0) / 24);
   const dateDifference = calculateClusterDateDiff(inactiveDeletionDays, cluster.installCompletedAt);
-  const showAddHostsAlert =
+  const showAddHostsAlert = Boolean(
     showAddHostsInfo &&
-    ocmClient &&
-    cluster.status === 'installed' &&
-    (!isSNO(cluster) ||
-      (cluster.openshiftVersion &&
-        featureSupportLevelContext.isFeatureSupported(
-          cluster.openshiftVersion,
-          'SINGLE_NODE_EXPANSION',
-        )));
+      ocmClient &&
+      cluster.status === 'installed' &&
+      (!isSNO(cluster) ||
+        (cluster.openshiftVersion &&
+          featureSupportLevelContext.isFeatureSupported(
+            cluster.openshiftVersion,
+            'SINGLE_NODE_EXPANSION',
+          ))),
+  );
 
   const showKubeConfigDownload =
     showKubeConfig && dateDifference > 0 && canDownloadKubeconfig(cluster.status);
@@ -76,6 +78,7 @@ const ClusterDetailStatusMessages = ({
         <Alert
           variant="info"
           isInline
+          data-testid="alert-add-hosts"
           title={
             <p>
               Add new hosts by generating a new Discovery ISO under your cluster's "Add hosts” tab
@@ -88,10 +91,11 @@ const ClusterDetailStatusMessages = ({
           }
         />
       </RenderIf>
-      <RenderIf condition={cluster.platform?.type !== 'baremetal'}>
+      <RenderIf condition={isClusterPlatformTypeVM(cluster)}>
         <Alert
           variant="warning"
           isInline
+          data-testid="alert-modify-platform-config"
           title={
             <p>
               Modify your platform configuration to access your platform's features directly in

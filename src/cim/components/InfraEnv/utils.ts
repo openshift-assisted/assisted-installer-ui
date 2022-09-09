@@ -29,7 +29,7 @@ export const getClusterDeploymentForInfraEnv = (
     pullSecretName,
   });
 
-type getAgentClusterInstallProps = {
+type GetAgentClusterInstallProps = {
   clusterDeploymentName?: string;
   namespace: string;
   values: EnvironmentStepFormValues;
@@ -39,7 +39,7 @@ export const getAgentClusterInstall = ({
   clusterDeploymentName,
   namespace,
   values,
-}: getAgentClusterInstallProps): AgentClusterInstallK8sResource => {
+}: GetAgentClusterInstallProps): AgentClusterInstallK8sResource => {
   const obj: AgentClusterInstallK8sResource = {
     apiVersion: 'extensions.hive.openshift.io/v1beta1',
     kind: 'AgentClusterInstall',

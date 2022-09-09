@@ -16,7 +16,6 @@ import { Grid, GridItem } from '@patternfly/react-core';
 import { canNextClusterDetails } from './wizardTransition';
 import { OpenshiftVersionOptionType, getFormikErrorFields } from '../../../common';
 import ClusterWizardFooter from './ClusterWizardFooter';
-import ClusterWizardHeaderExtraActions from '../clusterConfiguration/ClusterWizardHeaderExtraActions';
 import { ocmClient } from '../../api';
 import { useFeatureSupportLevel } from '../../../common/components/featureSupportLevels';
 import { ClusterDetailsService } from '../../services';
@@ -89,7 +88,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
         ocpVersions,
         urlSearchParams: search,
       }),
-    [cluster, pullSecret, managedDomains, ocpVersions, infraEnv],
+    [infraEnv, cluster, pullSecret, managedDomains, ocpVersions, search],
   );
   const { t } = useTranslation();
   const validationSchema = getClusterDetailsValidationSchema({
@@ -116,11 +115,7 @@ const ClusterDetailsForm: React.FC<ClusterDetailsFormProps> = (props) => {
           <>
             <Grid hasGutter>
               <GridItem>
-                <ClusterWizardStepHeader
-                  extraItems={<ClusterWizardHeaderExtraActions cluster={cluster} />}
-                >
-                  Cluster details
-                </ClusterWizardStepHeader>
+                <ClusterWizardStepHeader>Cluster details</ClusterWizardStepHeader>
               </GridItem>
               <GridItem span={12} lg={10} xl={9} xl2={7}>
                 <OcmClusterDetailsFormFields

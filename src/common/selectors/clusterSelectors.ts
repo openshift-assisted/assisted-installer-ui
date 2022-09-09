@@ -119,3 +119,6 @@ export const selectSchedulableMasters = (cluster: Cluster): boolean => {
   }
   return cluster.schedulableMasters || false;
 };
+
+export const isClusterPlatformTypeVM = ({ platform }: Pick<Cluster, 'platform'>) =>
+  !/baremetal|none/.test(platform?.type ?? 'none');

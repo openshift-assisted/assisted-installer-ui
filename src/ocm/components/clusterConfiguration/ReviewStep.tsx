@@ -8,8 +8,7 @@ import { updateCluster } from '../../reducers/clusters';
 import ClusterWizardFooter from '../clusterWizard/ClusterWizardFooter';
 import ClusterWizardNavigation from '../clusterWizard/ClusterWizardNavigation';
 import ReviewCluster from './ReviewCluster';
-import ClusterWizardHeaderExtraActions from './ClusterWizardHeaderExtraActions';
-import { ClustersAPI } from '../../services/apis';
+import { ClustersService } from '../../services';
 import { useStateSafely } from '../../../common/hooks';
 
 const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
@@ -21,7 +20,7 @@ const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const handleClusterInstall = async () => {
     setIsStartingInstallation(true);
     try {
-      const { data } = await ClustersAPI.install(cluster.id);
+      const { data } = await ClustersService.install(cluster.id, cluster.tags);
       dispatch(updateCluster(data));
       setIsStartingInstallation(false);
       // If successful, backend changes cluster state which leads to unmounting the Wizard
@@ -62,11 +61,7 @@ const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
     <ClusterWizardStep navigation={<ClusterWizardNavigation cluster={cluster} />} footer={footer}>
       <Grid hasGutter>
         <GridItem>
-          <ClusterWizardStepHeader
-            extraItems={<ClusterWizardHeaderExtraActions cluster={cluster} />}
-          >
-            Review and create
-          </ClusterWizardStepHeader>
+          <ClusterWizardStepHeader>Review and create</ClusterWizardStepHeader>
         </GridItem>
         <GridItem>
           <ReviewCluster cluster={cluster} />

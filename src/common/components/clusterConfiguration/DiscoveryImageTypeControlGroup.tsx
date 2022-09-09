@@ -13,8 +13,7 @@ const DiscoveryImageTypeControlGroupLabel = ({
   popoverContent: string;
 }) => (
   <>
-    {text}
-    <PopoverIcon component={'a'} bodyContent={popoverContent} noVerticalAlign />
+    {text} <PopoverIcon component={'a'} bodyContent={popoverContent} noVerticalAlign />
   </>
 );
 

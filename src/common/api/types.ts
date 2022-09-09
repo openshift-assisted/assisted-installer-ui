@@ -290,6 +290,10 @@ export interface Cluster {
    * Explicit ignition endpoint overrides the default ignition endpoint.
    */
   ignitionEndpoint?: IgnitionEndpoint;
+  /**
+   * A comma-separated list of tags that are associated to the cluster.
+   */
+  tags?: string;
 }
 export interface ClusterCreateParams {
   /**
@@ -411,6 +415,10 @@ export interface ClusterCreateParams {
    * Explicit ignition endpoint overrides the default ignition endpoint.
    */
   ignitionEndpoint?: IgnitionEndpoint;
+  /**
+   * A comma-separated list of tags that are associated to the cluster.
+   */
+  tags?: string;
 }
 export interface ClusterDefaultConfig {
   clusterNetworkCidr?: string; // ^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)[\/]([1-9]|[1-2][0-9]|3[0-2]?)$
@@ -2247,6 +2255,10 @@ export interface V2ClusterUpdateParams {
    * Explicit ignition endpoint overrides the default ignition endpoint.
    */
   ignitionEndpoint?: IgnitionEndpoint;
+  /**
+   * A comma-separated list of tags that are associated to the cluster.
+   */
+  tags?: string;
 }
 export interface V2Events {
   clusterId?: string;

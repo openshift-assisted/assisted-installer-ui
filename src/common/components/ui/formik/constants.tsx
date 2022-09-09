@@ -52,3 +52,12 @@ export const bmcAddressValidationMessages = (t: TFunction) => ({
     'ai:The Value is not valid BMC address, supported protocols are redfish-virtualmedia or idrac-virtualmedia.',
   ),
 });
+
+export const FORBIDDEN_HOSTNAMES = [
+  'localhost',
+  'localhost.localdomain',
+  'localhost4',
+  'localhost4.localdomain4',
+  'localhost6',
+  'localhost6.localdomain6',
+];

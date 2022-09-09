@@ -5,12 +5,16 @@ import {
   Button,
   ButtonVariant,
   Spinner,
+  SplitItem,
   Stack,
   StackItem,
   Text,
   TextVariants,
 } from '@patternfly/react-core';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { Cluster } from '../../api';
+import { EventListFetchProps } from '../../types/events';
+import ViewClusterEventsButton from './ViewClusterEventsButton';
 
 export type WizardFooterGenericProps = {
   onNext?: () => void;
@@ -27,6 +31,8 @@ type WizardFooterProps = WizardFooterGenericProps & {
   alerts?: React.ReactNode;
   errors?: React.ReactNode;
   leftExtraActions?: React.ReactNode;
+  cluster?: Cluster;
+  onFetchEvents?: EventListFetchProps['onFetchEvents'];
 };
 
 export const WizardFooter: React.FC<WizardFooterProps> = ({
@@ -41,6 +47,8 @@ export const WizardFooter: React.FC<WizardFooterProps> = ({
   isSubmitting,
   submittingText,
   nextButtonText,
+  cluster,
+  onFetchEvents,
 }) => {
   const { t } = useTranslation();
   submittingText = submittingText || t('ai:Saving changes...');
@@ -90,6 +98,12 @@ export const WizardFooter: React.FC<WizardFooterProps> = ({
               <Text component={TextVariants.small}>
                 <Spinner size="sm" /> {submittingText}
               </Text>
+            </ActionListItem>
+          )}
+          <SplitItem isFilled />
+          {cluster && onFetchEvents && (
+            <ActionListItem>
+              <ViewClusterEventsButton cluster={cluster} onFetchEvents={onFetchEvents} />
             </ActionListItem>
           )}
         </ActionList>

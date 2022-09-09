@@ -45,7 +45,7 @@ export const downloadHostInstallationLogs = async (
 export const onAdditionalNtpSourceAction = async (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dispatch: (payload: any) => void,
-  clusterId: Cluster['id'],
+  cluster: Cluster,
   additionalNtpSource: string,
   onError: (message: string) => void,
 ) => {
@@ -54,7 +54,7 @@ export const onAdditionalNtpSourceAction = async (
       additionalNtpSource,
     };
 
-    const { data } = await ClustersAPI.update(clusterId, values);
+    const { data } = await ClustersService.update(cluster.id, cluster.tags, values);
     dispatch(updateCluster(data));
   } catch (e) {
     handleApiError(e, () => onError(getApiErrorMessage(e)));

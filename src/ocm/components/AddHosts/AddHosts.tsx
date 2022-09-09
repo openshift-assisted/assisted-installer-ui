@@ -17,12 +17,10 @@ import { DiscoveryImageModal } from '../clusterConfiguration/discoveryImageModal
 import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
 import {
   ToolbarButton,
-  ToolbarSecondaryGroup,
   getReadyHostCount,
   Alerts,
   AddHostsContext,
   alertsSlice,
-  EventsModalButton,
 } from '../../../common';
 import InventoryAddHosts from './InventoryAddHost';
 import { onFetchEvents } from '../fetching/fetchEvents';
@@ -30,6 +28,7 @@ import { HostsService } from '../../services';
 import ClusterDetailStatusVarieties, {
   useClusterStatusVarieties,
 } from '../clusterDetail/ClusterDetailStatusVarieties';
+import ViewClusterEventsButton from '../../../common/components/ui/ViewClusterEventsButton';
 
 const { addAlert } = alertsSlice.actions;
 
@@ -97,19 +96,7 @@ const AddHosts: React.FC = () => {
               >
                 Install ready hosts
               </ToolbarButton>
-              <ToolbarSecondaryGroup>
-                <EventsModalButton
-                  id="cluster-events-button"
-                  entityKind="cluster"
-                  cluster={cluster}
-                  title="Cluster Events"
-                  variant={ButtonVariant.link}
-                  style={{ textAlign: 'right' }}
-                  onFetchEvents={onFetchEvents}
-                >
-                  View Cluster Events
-                </EventsModalButton>
-              </ToolbarSecondaryGroup>
+              <ViewClusterEventsButton cluster={cluster} onFetchEvents={onFetchEvents} />
             </ToolbarContent>
           </Toolbar>
         </CardFooter>

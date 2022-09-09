@@ -20,11 +20,11 @@ import {
   selectMastersMustRunWorkloads,
   selectSchedulableMasters,
   HostDiscoveryValues,
+  isClusterPlatformTypeVM,
 } from '../../../common';
 import HostsDiscoveryTable from '../hosts/HostsDiscoveryTable';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
 import InformationAndAlerts from './InformationAndAlerts';
-import ClusterWizardHeaderExtraActions from './ClusterWizardHeaderExtraActions';
 import { useClusterSupportedPlatforms } from '../../hooks';
 import { useFormikContext } from 'formik';
 
@@ -85,9 +85,7 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
   return (
     <Stack hasGutter>
       <StackItem>
-        <ClusterWizardStepHeader extraItems={<ClusterWizardHeaderExtraActions cluster={cluster} />}>
-          Host discovery
-        </ClusterWizardStepHeader>
+        <ClusterWizardStepHeader>Host discovery</ClusterWizardStepHeader>
       </StackItem>
       <StackItem>
         <TextContent>
@@ -109,9 +107,7 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
                   hidden: isPlatformIntegrationSupported,
                   content: platformIntegrationTooltip,
                 }}
-                isDisabled={
-                  !isPlatformIntegrationSupported && cluster?.platform?.type === 'baremetal'
-                }
+                isDisabled={!isPlatformIntegrationSupported && !isClusterPlatformTypeVM(cluster)}
                 name={'usePlatformIntegration'}
                 label={<PlatformIntegrationLabel />}
                 switchOuiaId="platform-integration-vSphere-switch"

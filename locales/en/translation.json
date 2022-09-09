@@ -361,7 +361,7 @@
   "ai:Location is a required field.": "Location is a required field.",
   "ai:LSO requirements": "LSO requirements",
   "ai:MAC has to be specified": "MAC has to be specified",
-  "ai:Mac to interface name mapping": "Mac to interface name mapping",
+  "ai:MAC to interface name mapping": "MAC to interface name mapping",
   "ai:Machine CIDR": "Machine CIDR",
   "ai:Machine CIDR conforms expected": "Machine CIDR conforms expected",
   "ai:Machine networks": "Machine networks",
