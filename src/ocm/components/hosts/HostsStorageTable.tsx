@@ -13,11 +13,11 @@ import {
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import {
   Cluster,
-  hasEnabledOperators,
   Host,
+  hasEnabledOperators,
   isCompact,
-  OPERATOR_NAME_ODF,
   selectSchedulableMasters,
+  OPERATOR_NAME_ODF,
 } from '../../../common';
 import { hardwareStatusColumn } from './HostsDiscoveryTable';
 import { usePagination } from '../../../common/components/hosts/usePagination';
@@ -51,7 +51,7 @@ const HostsStorageTable = ({ cluster }: { cluster: Cluster }) => {
       disksColumn,
       numberOfDisksColumn,
     ];
-    if (hasEnabledOperators(cluster, OPERATOR_NAME_ODF)) {
+    if (hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_ODF)) {
       const excludeODfForMasters = !isCompact(cluster);
       columns.push(odfUsageColumn(excludeODfForMasters));
     }

@@ -4,14 +4,16 @@ import { Formik, FormikConfig, useFormikContext } from 'formik';
 import {
   Cluster,
   ClusterWizardStep,
-  OperatorsValues,
-  useAlerts,
   getFormikErrorFields,
-  useFormikAutoSave,
-  OPERATOR_NAME_LVM,
+  MonitoredOperator,
   OPERATOR_NAME_CNV,
-  OPERATOR_NAME_ODF,
+  OPERATOR_NAME_LVM,
   OPERATOR_NAME_OCS,
+  OPERATOR_NAME_ODF,
+  OperatorsValues,
+  selectMonitoredOperators,
+  useAlerts,
+  useFormikAutoSave,
 } from '../../../common';
 import { useClusterWizardContext } from './ClusterWizardContext';
 import ClusterWizardFooter from '../clusterWizard/ClusterWizardFooter';
@@ -23,8 +25,9 @@ import { handleApiError } from '../../api';
 import { canNextOperators } from './wizardTransition';
 import { getErrorMessage } from '../../../common/utils';
 
-export const getOperatorsInitialValues = (cluster: Cluster): OperatorsValues => {
-  const monitoredOperators = cluster.monitoredOperators || [];
+export const getOperatorsInitialValues = (
+  monitoredOperators: MonitoredOperator[],
+): OperatorsValues => {
   const isOperatorEnabled = (operatorNames: string[]) =>
     !!monitoredOperators.find((operator) => operatorNames.includes(operator.name || ''));
   return {
@@ -36,10 +39,10 @@ export const getOperatorsInitialValues = (cluster: Cluster): OperatorsValues => 
 
 const OperatorsForm = ({ cluster }: { cluster: Cluster }) => {
   const { alerts } = useAlerts();
-  const { errors, touched, isSubmitting, isValid } = useFormikContext<OperatorsValues>();
   const clusterWizardContext = useClusterWizardContext();
-  const errorFields = getFormikErrorFields(errors, touched);
   const isAutoSaveRunning = useFormikAutoSave();
+  const { errors, touched, isSubmitting, isValid } = useFormikContext<OperatorsValues>();
+
   const isNextDisabled =
     isAutoSaveRunning ||
     !isValid ||
@@ -47,19 +50,20 @@ const OperatorsForm = ({ cluster }: { cluster: Cluster }) => {
     isSubmitting ||
     !canNextOperators({ cluster });
 
-  const footer = (
-    <ClusterWizardFooter
-      cluster={cluster}
-      errorFields={errorFields}
-      isSubmitting={isSubmitting}
-      isNextDisabled={isNextDisabled}
-      onNext={() => clusterWizardContext.moveNext()}
-      onBack={() => clusterWizardContext.moveBack()}
-    />
-  );
-
   return (
-    <ClusterWizardStep navigation={<ClusterWizardNavigation cluster={cluster} />} footer={footer}>
+    <ClusterWizardStep
+      navigation={<ClusterWizardNavigation cluster={cluster} />}
+      footer={
+        <ClusterWizardFooter
+          cluster={cluster}
+          errorFields={getFormikErrorFields(errors, touched)}
+          isSubmitting={isSubmitting}
+          isNextDisabled={isNextDisabled}
+          onNext={() => clusterWizardContext.moveNext()}
+          onBack={() => clusterWizardContext.moveBack()}
+        />
+      }
+    >
       <OperatorsStep clusterId={cluster.id} openshiftVersion={cluster.openshiftVersion} />
     </ClusterWizardStep>
   );
@@ -68,22 +72,36 @@ const OperatorsForm = ({ cluster }: { cluster: Cluster }) => {
 const Operators = ({ cluster }: { cluster: Cluster }) => {
   const dispatch = useDispatch();
   const { addAlert, clearAlerts } = useAlerts();
+
+  const olmOperators = selectMonitoredOperators(cluster.monitoredOperators);
+
   const initialValues = React.useMemo(
-    () => getOperatorsInitialValues(cluster),
+    () => getOperatorsInitialValues(olmOperators),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [], // just once, Formik does not reinitialize
   );
 
-  const handleSubmit: FormikConfig<OperatorsValues>['onSubmit'] = async (values) => {
+  const handleSubmit: FormikConfig<OperatorsValues>['onSubmit'] = async (
+    values,
+    { setFieldValue },
+  ) => {
     clearAlerts();
 
     const enabledOperators = OperatorsService.getOLMOperators(values, cluster);
 
     try {
-      const { data } = await ClustersService.update(cluster.id, cluster.tags, {
+      const { data: updatedCluster } = await ClustersService.update(cluster.id, cluster.tags, {
         olmOperators: enabledOperators,
       });
-      dispatch(updateCluster(data));
+
+      const updatedOperators = OperatorsService.getOLMOperators(values, updatedCluster);
+
+      const needSyncOperators = OperatorsService.syncOperators(enabledOperators, updatedOperators);
+      Object.keys(needSyncOperators).forEach((operatorName) => {
+        setFieldValue(operatorName, true);
+      });
+
+      dispatch(updateCluster(updatedCluster));
     } catch (e) {
       handleApiError(e, () =>
         addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),

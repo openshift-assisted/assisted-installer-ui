@@ -29,7 +29,7 @@ export const useClusterStatusVarieties = (cluster?: Cluster): ClusterStatusVarie
 
   const clusterId = cluster?.id;
   const clusterStatus = cluster?.status;
-  const clusterMonitoredOperators = selectMonitoredOperators(cluster);
+  const clusterMonitoredOperators = selectMonitoredOperators(cluster?.monitoredOperators);
   const olmOperators = selectOlmOperators(cluster);
   const failedOlmOperators = olmOperators.filter((o) => o.status === 'failed');
   const consoleOperator = React.useMemo(

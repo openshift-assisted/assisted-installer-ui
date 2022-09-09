@@ -33,6 +33,10 @@ export const getCnvAndLvmIncompatibilityReason = (
   if (!hasIncompatibleOperator) {
     return undefined;
   }
+  if (testOperator === OPERATOR_NAME_CNV && operatorValues.useContainerNativeVirtualization) {
+    // If both are enabled, CNV automatically installs LVM. Allow deactivating CNV
+    return undefined;
+  }
 
   const firstOperator =
     testOperator === OPERATOR_NAME_CNV ? CNV_OPERATOR_LABEL : LVM_OPERATOR_LABEL;

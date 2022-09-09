@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { FormGroup, Tooltip } from '@patternfly/react-core';
-import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { useFormikContext } from 'formik';
 import {
   CheckboxField,
   ClusterOperatorProps,
   FeatureSupportLevelBadge,
   getFieldId,
-  LVM_LINK,
   OPERATOR_NAME_LVM,
   OperatorsValues,
   PopoverIcon,
@@ -29,17 +27,6 @@ const LvmLabel = (props: ClusterOperatorProps) => (
     <FeatureSupportLevelBadge featureId="LVM" openshiftVersion={props.openshiftVersion} />
   </>
 );
-
-const LvmHelperText = () => {
-  return (
-    <>
-      Storage virtualization that offers a more flexible approach for disk space management.{' '}
-      <a href={LVM_LINK} target="_blank" rel="noopener noreferrer">
-        {'Learn more'} <ExternalLinkAltIcon />
-      </a>
-    </>
-  );
-};
 
 const LvmCheckbox = ({ clusterId, openshiftVersion }: ClusterOperatorProps) => {
   const fieldId = getFieldId(LVM_FIELD_NAME, 'input');
@@ -65,7 +52,9 @@ const LvmCheckbox = ({ clusterId, openshiftVersion }: ClusterOperatorProps) => {
         <CheckboxField
           name={LVM_FIELD_NAME}
           label={<LvmLabel clusterId={clusterId} openshiftVersion={openshiftVersion} />}
-          helperText={<LvmHelperText />}
+          helperText={
+            'Storage virtualization that offers a more flexible approach for disk space management.'
+          }
           isDisabled={!!disabledReason}
         />
       </Tooltip>

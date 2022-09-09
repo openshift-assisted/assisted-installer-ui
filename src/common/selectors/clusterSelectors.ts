@@ -27,20 +27,22 @@ export const selectServiceNetworkCIDR = ({
 }: Pick<Cluster, 'serviceNetworks' | 'serviceNetworkCidr'>) =>
   head(serviceNetworks)?.cidr ?? serviceNetworkCidr;
 
-export const selectMonitoredOperators = (cluster?: Pick<Cluster, 'monitoredOperators'>) => {
+export const selectMonitoredOperators = (monitoredOperators: Cluster['monitoredOperators']) => {
   // monitoredOperators can sometimes be either undefined or also null, we must use the fallback
-  return cluster?.monitoredOperators || [];
+  return monitoredOperators || [];
 };
 
 export const selectOlmOperators = (cluster?: Pick<Cluster, 'monitoredOperators'>) => {
-  return selectMonitoredOperators(cluster).filter((operator) => operator.operatorType === 'olm');
+  return selectMonitoredOperators(cluster?.monitoredOperators).filter(
+    (operator) => operator.operatorType === 'olm',
+  );
 };
 
 export const hasEnabledOperators = (
-  cluster: Pick<Cluster, 'monitoredOperators'>,
+  monitoredOperators: Cluster['monitoredOperators'],
   searchOperator: OperatorName,
 ) => {
-  return selectMonitoredOperators(cluster).some(
+  return selectMonitoredOperators(monitoredOperators).some(
     (operator) => operator.name && operator.name === searchOperator,
   );
 };

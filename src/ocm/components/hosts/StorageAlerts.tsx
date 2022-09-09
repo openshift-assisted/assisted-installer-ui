@@ -11,7 +11,8 @@ import OdfDisksManualFormattingHint from './OdfDisksManualFormattingHint';
 
 const StorageAlerts = ({ cluster }: { cluster: Cluster }) => {
   const showFormattingHint =
-    hasEnabledOperators(cluster, OPERATOR_NAME_ODF) && !isAddHostsCluster(cluster);
+    hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_ODF) &&
+    !isAddHostsCluster(cluster);
   return (
     <Stack hasGutter>
       {showFormattingHint && (
