@@ -94,7 +94,7 @@ const getLvmDisabledReason = (cluster: Cluster | undefined, isSupported: boolean
     return undefined;
   }
   if (!isSupported) {
-    return 'The installer cannot currently enable OpenShift Data Foundation Logical Volume Manager with the selected OpenShift version.';
+    return 'OpenShift Data Foundation Logical Volume Manager is enabled only for OpenShift 4.11 and above.';
   }
   return undefined;
 };
