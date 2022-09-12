@@ -10,7 +10,6 @@ import LvmCheckbox from '../clusterConfiguration/operators/LvmCheckbox';
 export const OperatorsStep = (props: ClusterOperatorProps) => {
   const isSNO = useSelector(selectIsCurrentClusterSNO);
   const isOpenshiftDataFoundationEnabled = useFeature('ASSISTED_INSTALLER_OCS_FEATURE') && !isSNO;
-  const isLogicalVolumeManagerEnabled = useFeature('ASSISTED_INSTALLER_LVM_FEATURE') && isSNO;
   const isContainerNativeVirtualizationEnabled = useFeature('ASSISTED_INSTALLER_CNV_FEATURE');
 
   return (
@@ -28,7 +27,7 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
           <OdfCheckbox openshiftVersion={props.openshiftVersion} />
         </StackItem>
       )}
-      {isLogicalVolumeManagerEnabled && (
+      {isSNO && (
         <StackItem>
           <LvmCheckbox {...props} />
         </StackItem>
