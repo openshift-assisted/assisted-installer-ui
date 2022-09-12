@@ -113,3 +113,11 @@ export const allSubnetsIPv4 = (
 ) => {
   return !!networks?.every((network) => network.cidr && Address4.isValid(network.cidr));
 };
+
+export const labelsToArray = (labels: { [key in string]: string } = {}): string[] => {
+  const result: string[] = [];
+  for (const key in labels) {
+    result.push(`${key}=${labels[key]}`);
+  }
+  return result;
+};
