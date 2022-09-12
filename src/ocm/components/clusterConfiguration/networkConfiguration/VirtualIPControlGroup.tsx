@@ -1,13 +1,16 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
 import { Spinner, Alert, AlertVariant, Tooltip } from '@patternfly/react-core';
-import { Cluster } from '../../../../common/api/types';
-import { stringToJSON } from '../../../../common/api/utils';
-import { NetworkConfigurationValues, ValidationsInfo } from '../../../../common/types';
-import { CheckboxField, FormikStaticField, InputField } from '../../../../common/components/ui';
+import {
+  Cluster,
+  NetworkConfigurationValues,
+  ValidationsInfo,
+  NETWORK_TYPE_SDN,
+  selectMachineNetworkCIDR,
+  stringToJSON,
+} from '../../../../common';
 import { FeatureSupportLevelBadge } from '../../../../common/components';
-import { NETWORK_TYPE_SDN } from '../../../../common/config/constants';
-import { selectMachineNetworkCIDR } from '../../../../common';
+import { CheckboxField, FormikStaticField, InputField } from '../../../../common/components/ui';
 
 interface VipStaticValueProps {
   vipName: string;
@@ -116,10 +119,20 @@ export const VirtualIPControlGroup = ({
     }
   }, [enableAllocation, setFieldValue]);
 
+  const onChangeDhcp = React.useCallback(
+    (hasDhcp: boolean) => {
+      // We need to sync the values back to the form
+      setFieldValue('apiVip', hasDhcp ? '' : cluster.apiVip);
+      setFieldValue('ingressVip', hasDhcp ? '' : cluster.ingressVip);
+    },
+    [cluster.apiVip, cluster.ingressVip, setFieldValue],
+  );
+
   return (
     <>
       {!isVipDhcpAllocationDisabled && (
         <CheckboxField
+          onChange={onChangeDhcp}
           label={
             <>
               <Tooltip
@@ -146,7 +159,7 @@ export const VirtualIPControlGroup = ({
             label="API IP"
             name="apiVip"
             helperText={apiVipHelperText}
-            value={cluster.apiVip || ''}
+            value={values.apiVip || ''}
             isValid={!apiVipFailedValidationMessage}
             isRequired
           >
@@ -160,7 +173,7 @@ export const VirtualIPControlGroup = ({
             label="Ingress IP"
             name="ingressVip"
             helperText={ingressVipHelperText}
-            value={cluster.ingressVip || ''}
+            value={values.ingressVip || ''}
             isValid={!ingressVipFailedValidationMessage}
             isRequired
           >
