@@ -180,7 +180,11 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
     );
   }
 
-  return <Redirect to="/clusters" />;
+  return (
+    <PageSection variant={PageSectionVariants.light} isFilled>
+      <ErrorState fetchData={fetchCluster} actions={errorStateActions} />
+    </PageSection>
+  );
 };
 
 export default ClusterPage;
