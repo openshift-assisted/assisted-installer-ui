@@ -1,5 +1,14 @@
 import React from 'react';
-import { TextContent, Text, TextVariants, Grid, GridItem } from '@patternfly/react-core';
+import {
+  TextContent,
+  Text,
+  TextVariants,
+  Grid,
+  GridItem,
+  Checkbox,
+  Popover,
+  Tooltip,
+} from '@patternfly/react-core';
 import {
   Table,
   TableHeader,
@@ -10,14 +19,28 @@ import {
   IRow,
 } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
-import { Disk, fileSize, getInventory, Host, WithTestID } from '../../index';
+import {
+  Disk,
+  fileSize,
+  getInventory,
+  Host,
+  trimCommaSeparatedList,
+  WithTestID,
+} from '../../index';
 import DiskRole, { OnDiskRoleType } from '../hosts/DiskRole';
 import DiskLimitations from '../hosts/DiskLimitations';
+import { ExclamationTriangleIcon } from '@patternfly/react-icons';
+import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
 
 type StorageDetailProps = {
   host: Host;
   canEditDisks?: (host: Host) => boolean;
   onDiskRole?: OnDiskRoleType;
+  updateDiskSkipFormatting?: (
+    doFormatDisk: boolean,
+    hostId: Host['id'],
+    diskId: Disk['id'],
+  ) => Promise<unknown>;
 };
 
 interface SectionTitleProps extends WithTestID {
@@ -30,6 +53,11 @@ interface DisksTableProps extends WithTestID {
   host: Host;
   disks: Disk[];
   installationDiskId?: string;
+  updateDiskSkipFormatting?: (
+    doFormatDisk: boolean,
+    hostId: Host['id'],
+    diskId: Disk['id'],
+  ) => Promise<unknown>;
 }
 
 const SectionTitle = ({ title, testId }: SectionTitleProps) => (
@@ -51,6 +79,7 @@ const diskColumns = [
   { title: 'Serial' },
   { title: 'Model' },
   { title: 'WWN' },
+  { title: 'Will be formatted' },
 ];
 
 const diskRowKey = ({ rowData }: ExtraParamsType) => rowData?.key as string;
@@ -59,6 +88,27 @@ const DisksTableRowWrapper = (props: RowWrapperProps) => (
   <RowWrapper {...props} data-testid={`disk-row-${(props.row?.key as string) || ''}`} />
 );
 
+const SkipFormattingDisk = () => (
+  <TextContent>
+    <Text component={TextVariants.p}>This bootable disk will skip formatting</Text>
+  </TextContent>
+);
+
+const isDiskFormattable = (host: Host, diskId: string | undefined) => {
+  return (
+    trimCommaSeparatedList(host.disksToBeFormatted ? host.disksToBeFormatted : '')
+      .split(',')
+      .filter((diskToBeFormatted) => diskToBeFormatted === diskId).length > 0
+  );
+};
+const isDiskSkipFormatting = (host: Host, diskId: string | undefined) => {
+  return (
+    trimCommaSeparatedList(host.skipFormattingDisks ? host.skipFormattingDisks : '')
+      .split(',')
+      .filter((diskSkipFormatting) => diskSkipFormatting === diskId).length > 0
+  );
+};
+
 const DisksTable = ({
   canEditDisks,
   host,
@@ -66,14 +116,28 @@ const DisksTable = ({
   installationDiskId,
   testId,
   onDiskRole,
+  updateDiskSkipFormatting,
 }: DisksTableProps) => {
   const isEditable = !!canEditDisks?.(host);
+
+  const isInstallationDisk = (disk: Disk) => disk.id === installationDiskId;
+  console.log(isInstallationDisk);
   const rows: IRow[] = [...disks]
     .sort((diskA, diskB) => diskA.name?.localeCompare(diskB.name || '') || 0)
     .map((disk) => ({
       cells: [
         {
-          title: disk.bootable ? `${disk.name || ''} (bootable)` : disk.name,
+          title: (
+            <>
+              {isDiskSkipFormatting(host, disk.id) && (
+                <Popover bodyContent={<SkipFormattingDisk />} minWidth="20rem" maxWidth="30rem">
+                  <ExclamationTriangleIcon color={warningColor.value} size="sm" />
+                </Popover>
+              )}
+              {'   '}
+              {disk.bootable ? `${disk.name || ''} (bootable)` : disk.name}
+            </>
+          ),
           props: { 'data-testid': 'disk-name' },
         },
         {
@@ -94,6 +158,26 @@ const DisksTable = ({
         { title: disk.serial, props: { 'data-testid': 'disk-serial' } },
         { title: disk.model, props: { 'data-testid': 'disk-model' } },
         { title: disk.wwn, props: { 'data-testid': 'disk-wwn' } },
+        (isDiskFormattable(host, disk.id) || isInstallationDisk(disk)) && {
+          title: (
+            <Tooltip
+              hidden={!isInstallationDisk(disk)}
+              content={'Installation disks are always being formatted'}
+            >
+              <Checkbox
+                id={`select-formatted}`}
+                isChecked={isInstallationDisk(disk) || !isDiskSkipFormatting(host, disk.id)}
+                onChange={(doFormatDisk: boolean) =>
+                  updateDiskSkipFormatting
+                    ? updateDiskSkipFormatting(doFormatDisk, host.id, disk.id)
+                    : ''
+                }
+                isDisabled={isInstallationDisk(disk)}
+              />
+            </Tooltip>
+          ),
+          props: { 'data-testid': 'disk-formatted' },
+        },
       ],
       key: disk.path,
     }));
@@ -114,7 +198,12 @@ const DisksTable = ({
   );
 };
 
-const StorageDetail = ({ host, canEditDisks, onDiskRole }: StorageDetailProps) => {
+const StorageDetail = ({
+  host,
+  canEditDisks,
+  onDiskRole,
+  updateDiskSkipFormatting,
+}: StorageDetailProps) => {
   const inventory = getInventory(host);
   const disks = inventory.disks || [];
 
@@ -132,6 +221,7 @@ const StorageDetail = ({ host, canEditDisks, onDiskRole }: StorageDetailProps) =
           disks={disks}
           installationDiskId={host.installationDiskId}
           onDiskRole={onDiskRole}
+          updateDiskSkipFormatting={updateDiskSkipFormatting}
         />
       </GridItem>
     </Grid>

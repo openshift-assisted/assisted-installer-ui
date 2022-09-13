@@ -179,6 +179,34 @@ export const useHostsTable = (cluster: Cluster) => {
       [cluster, dispatch],
     );
 
+  const updateDiskSkipFormatting = React.useCallback(
+    async (doFormatDisk: boolean, hostId: Host['id'], diskId: Disk['id']) => {
+      try {
+        if (!cluster) {
+          return new Error(`Cannot update disksSkipFormatting in host ${hostId}\nMissing cluster`);
+        }
+        if (!diskId) {
+          throw new Error(`Cannot update disksSkipFormatting in host ${hostId}\nMissing diskId`);
+        }
+        const { data } = await HostsService.updateFormattingDisks(
+          cluster.id,
+          hostId,
+          diskId,
+          !doFormatDisk,
+        );
+        resetCluster ? void resetCluster() : dispatch(updateHost(data));
+      } catch (e) {
+        handleApiError(e, () =>
+          addAlert({
+            title: 'Failed to set disks skip formatting',
+            message: getApiErrorMessage(e),
+          }),
+        );
+      }
+    },
+    [dispatch, addAlert, cluster],
+  );
+
   const actionChecks = React.useMemo(
     () => ({
       canEditRole: (host: Host) => canEditRoleUtil(cluster.status, host.status, isSNO(cluster)),
@@ -322,6 +350,7 @@ export const useHostsTable = (cluster: Cluster) => {
     setSelectedHostIDs,
     onMassChangeHostname,
     onMassDeleteHost,
+    updateDiskSkipFormatting,
   };
 };
 

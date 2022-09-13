@@ -79,6 +79,17 @@ const HostsService = {
     });
   },
 
+  updateFormattingDisks(
+    clusterId: Cluster['id'],
+    hostId: Host['id'],
+    diskIdValue: Required<Disk>['id'],
+    shouldSkipFormat: boolean,
+  ) {
+    return HostsService.update(clusterId, hostId, {
+      disksSkipFormatting: [{ diskId: diskIdValue, skipFormatting: shouldSkipFormat }],
+    });
+  },
+
   async delete(clusterId: Cluster['id'], hostId: Host['id']) {
     const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId);
     return HostsAPI.deregister(infraEnvId, hostId);

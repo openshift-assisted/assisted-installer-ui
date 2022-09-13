@@ -143,6 +143,8 @@ export const hostValidationLabels = (t: TFunction): { [key in HostValidationId]:
   'non-overlapping-subnets': t('ai:Non overlapping subnets'),
   'vsphere-disk-uuid-enabled': t('ai:Vsphere disk uuid enabled'),
   'compatible-agent': t('ai:Agent compatibility'),
+  'no-skip-installation-disk': t('ai:No skip installation disk'),
+  'no-skip-missing-disk': t('ai:No skip missing disk'),
 });
 
 export const hostValidationFailureHints = (
@@ -184,6 +186,8 @@ export const hostValidationFailureHints = (
   'non-overlapping-subnets': '',
   'vsphere-disk-uuid-enabled': '',
   'compatible-agent': '',
+  'no-skip-installation-disk': '',
+  'no-skip-missing-disk': '',
 });
 
 export const clusterValidationLabels = (

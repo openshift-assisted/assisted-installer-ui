@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { Stack, StackItem } from '@patternfly/react-core';
 import { Cluster, FormatDiskWarning, hasODFOperators } from '../../../common';
-import { isAddHostsCluster } from '../clusters/utils';
+import { isAddHostsCluster, isSomeDisksSkipFormatting } from '../clusters/utils';
 import OCSDisksManualFormattingHint from './OCSDisksManualFormattingHint';
 
 const StorageAlerts = ({ cluster }: { cluster: Cluster }) => {
   const showFormattingHint = hasODFOperators(cluster) && !isAddHostsCluster(cluster);
+  const someDisksAreSkipFormatting = isSomeDisksSkipFormatting(cluster);
   return (
     <Stack hasGutter>
       {showFormattingHint && (
@@ -14,7 +15,7 @@ const StorageAlerts = ({ cluster }: { cluster: Cluster }) => {
         </StackItem>
       )}
       <StackItem>
-        <FormatDiskWarning />
+        <FormatDiskWarning someDisksAreSkipFormatting={someDisksAreSkipFormatting} />
       </StackItem>
     </Stack>
   );

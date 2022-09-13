@@ -5,6 +5,7 @@ import { HostsTableActions } from './types';
 type HostsTableDetailContextValue = {
   onDiskRole: OnDiskRoleType | undefined;
   canEditDisks: HostsTableActions['canEditDisks'];
+  updateDiskSkipFormatting: HostsTableActions['updateSkipFormatting'];
 };
 
 const HostsTableDetailContext = React.createContext<HostsTableDetailContextValue | undefined>(
@@ -14,11 +15,13 @@ const HostsTableDetailContext = React.createContext<HostsTableDetailContextValue
 const HostsTableDetailContextProvider: React.FC<HostsTableDetailContextValue> = ({
   canEditDisks,
   onDiskRole,
+  updateDiskSkipFormatting,
   children,
 }) => {
   const context = {
     canEditDisks,
     onDiskRole,
+    updateDiskSkipFormatting,
   };
 
   return (

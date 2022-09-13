@@ -11,7 +11,7 @@ import {
 } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
 import { DetailItem, DetailList, DetailListProps } from '../ui';
-import { Host, Interface, stringToJSON } from '../../api';
+import { Disk, Host, Interface, stringToJSON } from '../../api';
 import { ValidationsInfo } from '../../types/hosts';
 import { WithTestID } from '../../types';
 import { DASH } from '../constants';
@@ -29,6 +29,12 @@ type HostDetailProps = {
   onDiskRole?: OnDiskRoleType;
   AdditionalNTPSourcesDialogToggleComponent?: ValidationInfoActionProps['AdditionalNTPSourcesDialogToggleComponent'];
   hideNTPStatus?: boolean;
+  showStorage?: boolean;
+  updateDiskSkipFormatting?: (
+    doFormatDisk: boolean,
+    hostId: Host['id'],
+    diskId: Disk['id'],
+  ) => Promise<unknown>;
 };
 
 type SectionTitleProps = {
@@ -120,6 +126,8 @@ export const HostDetail = ({
   onDiskRole,
   AdditionalNTPSourcesDialogToggleComponent,
   hideNTPStatus = false,
+  showStorage = true,
+  updateDiskSkipFormatting,
 }: HostDetailProps) => {
   const { t } = useTranslation();
   const { id, validationsInfo: hostValidationsInfo } = host;
@@ -210,7 +218,14 @@ export const HostDetail = ({
           value={ntpValidationStatus}
         />
       </SectionColumn>
-      <StorageDetail host={host} onDiskRole={onDiskRole} canEditDisks={canEditDisks} />
+      {showStorage && (
+        <StorageDetail
+          host={host}
+          onDiskRole={onDiskRole}
+          canEditDisks={canEditDisks}
+          updateDiskSkipFormatting={updateDiskSkipFormatting}
+        />
+      )}
       <SectionTitle
         testId={'nics-section'}
         title={`${nics.length} NIC${nics.length === 1 ? '' : 's'}`}
