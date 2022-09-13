@@ -15,6 +15,7 @@ import { ClusterWizardStepsType, wizardStepsValidationsMap } from './wizardTrans
 import { AgentClusterInstallK8sResource } from '../../types/k8s/agent-cluster-install';
 import { AgentK8sResource } from '../../types/k8s/agent';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import ValidationsRunningAlert from '../common/ValidationsRunningAlert';
 
 type ValidationSectionProps = {
   requireProxy?: boolean;
@@ -31,7 +32,6 @@ const ValidationSection: React.FC<ValidationSectionProps> = ({
   hosts,
   children,
 }) => {
-  const { t } = useTranslation();
   return (
     <AlertGroup>
       {children}
@@ -43,13 +43,7 @@ const ValidationSection: React.FC<ValidationSectionProps> = ({
           validationsInfo={validationsInfo}
           wizardStepsValidationsMap={wizardStepsValidationsMap}
         >
-          <Alert
-            variant="info"
-            isInline
-            title={t(
-              'ai:Validations are running. If they take more than 2 minutes, please attend to the alert below.',
-            )}
-          />
+          <ValidationsRunningAlert />
         </ClusterWizardStepValidationsAlert>
       )}
     </AlertGroup>
