@@ -56,9 +56,11 @@ const getNmstateObject = (
   const routeConfigs: NmstateRoutesConfig[] = [];
   const dns = getDnsSection(networkWide.dns);
   const realProtocolConfigs: NmstateProtocolConfigs = {};
+
   for (const protocolVersion of getShownProtocolVersions(networkWide.protocolType)) {
     const hostIp = hostIps[protocolVersion];
     let nicName = '';
+
     if (hostIp) {
       nicName = REAL_NIC_NAME;
       realProtocolConfigs[protocolVersion] = getNmstateProtocolConfig(
@@ -74,36 +76,44 @@ const getNmstateObject = (
         ),
       };
       nicName = getDummyNicName(protocolVersion);
-      interfaces.push(getEthernetInterface(nicName, protocolConfigs));
+
+      if (networkWide.useVlan && networkWide.vlanId) {
+        const vlanInterface = getVlanInterface(nicName, networkWide.vlanId, protocolConfigs);
+        interfaces.push(vlanInterface);
+        nicName = vlanInterface.name;
+      } else {
+        interfaces.push(getEthernetInterface(nicName, protocolConfigs));
+      }
     }
+
     routeConfigs.push(
       getRouteConfig(protocolVersion, networkWide.ipConfigs[protocolVersion].gateway, nicName),
     );
   }
+
   if (Object.keys(realProtocolConfigs).length > 0) {
-    interfaces.unshift(getEthernetInterface(REAL_NIC_NAME, realProtocolConfigs));
+    if (networkWide.useVlan && networkWide.vlanId) {
+      const vlanInterface = getVlanInterface(
+        REAL_NIC_NAME,
+        networkWide.vlanId,
+        realProtocolConfigs,
+      );
+
+      interfaces.unshift(vlanInterface);
+      routeConfigs.forEach((route) => {
+        route['next-hop-interface'] = vlanInterface.name;
+      });
+    } else {
+      interfaces.unshift(getEthernetInterface(REAL_NIC_NAME, realProtocolConfigs));
+    }
   }
-  if (networkWide.useVlan && networkWide.vlanId) {
-    let configs = [] as NmstateProtocolConfigs;
-    interfaces.forEach((item) => {
-      configs = {
-        ipv4: item['ipv4'] ? item['ipv4'] : configs['ipv4'],
-        ipv6: item['ipv6'] ? item['ipv6'] : configs['ipv6'],
-      };
-      delete item['ipv4'];
-      delete item['ipv6'];
-    });
-    const vlanInterface = getVlanInterface(interfaces[0].name, networkWide.vlanId, configs);
-    interfaces.push(vlanInterface);
-    routeConfigs.forEach((route) => {
-      route['next-hop-interface'] = vlanInterface.name;
-    });
-  }
+
   const nmstate = {
     interfaces,
     'dns-resolver': dns,
     routes: { config: routeConfigs },
   };
+
   return nmstate;
 };
 
