@@ -25,6 +25,7 @@ export default function useInfraEnv(clusterId: Cluster['id']) {
       if (!infraEnvId) {
         throw 'updateInfraEnv should not be called before infra env was loaded';
       }
+      InfraEnvsAPI.abortLastGetRequest();
       const { data } = await InfraEnvsAPI.update(infraEnvId, infraEnvUpdateParams);
       setInfraEnv(data);
       return data;
