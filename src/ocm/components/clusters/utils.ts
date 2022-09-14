@@ -52,7 +52,7 @@ export const canAbortInstallation = (cluster: Cluster) => {
 };
 
 export const isSomeDisksSkipFormatting = (cluster: Cluster) => {
-  return cluster.hosts?.find(
+  return cluster.hosts?.some(
     (host) => host.skipFormattingDisks && host.skipFormattingDisks.length > 0,
   );
 };

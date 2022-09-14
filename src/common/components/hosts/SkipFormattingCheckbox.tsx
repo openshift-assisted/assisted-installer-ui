@@ -38,7 +38,7 @@ export const isDiskFormattable = (host: Host, diskId: string | undefined) => {
 const onSelectSkipFormatting = (
   doFormatDisk: boolean,
   hostId: string,
-  diskId: string,
+  diskId?: string,
   updateDiskSkipFormatting?: DiskFormattingType,
 ) => {
   updateDiskSkipFormatting ? updateDiskSkipFormatting(doFormatDisk, hostId, diskId) : '';
