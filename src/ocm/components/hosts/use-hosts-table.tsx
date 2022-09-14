@@ -208,7 +208,7 @@ export const useHostsTable = (cluster: Cluster) => {
         );
       }
     },
-    [dispatch, addAlert, cluster],
+    [dispatch, addAlert, cluster, resetCluster],
   );
 
   const actionChecks = React.useMemo(

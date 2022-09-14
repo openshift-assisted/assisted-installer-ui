@@ -29,7 +29,6 @@ type HostDetailProps = {
   onDiskRole?: OnDiskRoleType;
   AdditionalNTPSourcesDialogToggleComponent?: ValidationInfoActionProps['AdditionalNTPSourcesDialogToggleComponent'];
   hideNTPStatus?: boolean;
-  showStorage?: boolean;
   updateDiskSkipFormatting?: (
     doFormatDisk: boolean,
     hostId: Host['id'],
@@ -126,7 +125,6 @@ export const HostDetail = ({
   onDiskRole,
   AdditionalNTPSourcesDialogToggleComponent,
   hideNTPStatus = false,
-  showStorage = true,
   updateDiskSkipFormatting,
 }: HostDetailProps) => {
   const { t } = useTranslation();
@@ -218,14 +216,12 @@ export const HostDetail = ({
           value={ntpValidationStatus}
         />
       </SectionColumn>
-      {showStorage && (
-        <StorageDetail
-          host={host}
-          onDiskRole={onDiskRole}
-          canEditDisks={canEditDisks}
-          updateDiskSkipFormatting={updateDiskSkipFormatting}
-        />
-      )}
+      <StorageDetail
+        host={host}
+        onDiskRole={onDiskRole}
+        canEditDisks={canEditDisks}
+        updateDiskSkipFormatting={updateDiskSkipFormatting}
+      />
       <SectionTitle
         testId={'nics-section'}
         title={`${nics.length} NIC${nics.length === 1 ? '' : 's'}`}

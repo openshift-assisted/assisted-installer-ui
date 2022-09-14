@@ -32,15 +32,17 @@ import DiskLimitations from '../hosts/DiskLimitations';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
 
+export type DiskFormattingType = (
+  doFormatDisk: boolean,
+  hostId: Host['id'],
+  diskId: Disk['id'],
+) => void;
+
 type StorageDetailProps = {
   host: Host;
   canEditDisks?: (host: Host) => boolean;
   onDiskRole?: OnDiskRoleType;
-  updateDiskSkipFormatting?: (
-    doFormatDisk: boolean,
-    hostId: Host['id'],
-    diskId: Disk['id'],
-  ) => Promise<unknown>;
+  updateDiskSkipFormatting?: DiskFormattingType;
 };
 
 interface SectionTitleProps extends WithTestID {
@@ -53,11 +55,7 @@ interface DisksTableProps extends WithTestID {
   host: Host;
   disks: Disk[];
   installationDiskId?: string;
-  updateDiskSkipFormatting?: (
-    doFormatDisk: boolean,
-    hostId: Host['id'],
-    diskId: Disk['id'],
-  ) => Promise<unknown>;
+  updateDiskSkipFormatting?: DiskFormattingType;
 }
 
 const SectionTitle = ({ title, testId }: SectionTitleProps) => (
@@ -80,7 +78,6 @@ const diskColumns = [
   { title: 'Serial' },
   { title: 'Model' },
   { title: 'WWN' },
-  { title: 'Will be formatted' },
 ];
 
 const diskRowKey = ({ rowData }: ExtraParamsType) => rowData?.key as string;
@@ -120,12 +117,10 @@ const DisksTable = ({
   updateDiskSkipFormatting,
 }: DisksTableProps) => {
   const isEditable = !!canEditDisks?.(host);
-
   const isInstallationDisk = (disk: Disk) => disk.id === installationDiskId;
-  console.log(isInstallationDisk);
   const rows: IRow[] = [...disks]
     .sort((diskA, diskB) => diskA.name?.localeCompare(diskB.name || '') || 0)
-    .map((disk) => ({
+    .map((disk, index) => ({
       cells: [
         {
           title: (
@@ -154,11 +149,6 @@ const DisksTable = ({
           props: { 'data-testid': 'disk-role' },
         },
         { title: <DiskLimitations disk={disk} />, props: { 'data-testid': 'disk-limitations' } },
-        { title: disk.driveType, props: { 'data-testid': 'drive-type' } },
-        { title: fileSize(disk.sizeBytes || 0, 2, 'si'), props: { 'data-testid': 'disk-size' } },
-        { title: disk.serial, props: { 'data-testid': 'disk-serial' } },
-        { title: disk.model, props: { 'data-testid': 'disk-model' } },
-        { title: disk.wwn, props: { 'data-testid': 'disk-wwn' } },
         (isDiskFormattable(host, disk.id) || isInstallationDisk(disk)) && {
           title: (
             <Tooltip
@@ -166,19 +156,24 @@ const DisksTable = ({
               content={'Installation disks are always being formatted'}
             >
               <Checkbox
-                id={`select-formatted}`}
+                id={`select-formatted-${index}`}
                 isChecked={isInstallationDisk(disk) || !isDiskSkipFormatting(host, disk.id)}
                 onChange={(doFormatDisk: boolean) =>
                   updateDiskSkipFormatting
                     ? updateDiskSkipFormatting(doFormatDisk, host.id, disk.id)
                     : ''
                 }
-                isDisabled={isInstallationDisk(disk)}
+                isDisabled={isInstallationDisk(disk) || !updateDiskSkipFormatting}
               />
             </Tooltip>
           ),
           props: { 'data-testid': 'disk-formatted' },
         },
+        { title: disk.driveType, props: { 'data-testid': 'drive-type' } },
+        { title: fileSize(disk.sizeBytes || 0, 2, 'si'), props: { 'data-testid': 'disk-size' } },
+        { title: disk.serial, props: { 'data-testid': 'disk-serial' } },
+        { title: disk.model, props: { 'data-testid': 'disk-model' } },
+        { title: disk.wwn, props: { 'data-testid': 'disk-wwn' } },
       ],
       key: disk.path,
     }));
