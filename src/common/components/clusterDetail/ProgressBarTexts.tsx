@@ -36,7 +36,7 @@ export const ProgressBarTexts = ({ hosts, hostRole }: HostProgressProps) => {
     );
   }
 
-  if (hosts.every((host) => host.status === 'installed')) {
+  if (hosts.every((host) => ['installed', 'added-to-existing-cluster'].includes(host.status))) {
     return (
       <ClusterProgressItem icon={<CheckCircleIcon color={okColor.value} />}>
         <>
