@@ -50,7 +50,7 @@ export type HostsTableActions = {
     nodeLabels: HostUpdateParams['nodeLabels'],
   ) => Promise<unknown>;
   updateSkipFormatting?: (
-    doFormatDisk: boolean,
+    shouldFormatDisk: boolean,
     hostId: Host['id'],
     diskId: Disk['id'],
   ) => Promise<unknown>;

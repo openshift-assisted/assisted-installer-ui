@@ -5,7 +5,7 @@ import { HostsTableActions } from './types';
 type HostsTableDetailContextValue = {
   onDiskRole: OnDiskRoleType | undefined;
   canEditDisks: HostsTableActions['canEditDisks'];
-  updateDiskSkipFormatting: HostsTableActions['updateSkipFormatting'];
+  updateDiskSkipFormatting?: HostsTableActions['updateSkipFormatting'];
 };
 
 const HostsTableDetailContext = React.createContext<HostsTableDetailContextValue | undefined>(

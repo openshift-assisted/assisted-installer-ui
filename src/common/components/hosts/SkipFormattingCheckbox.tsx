@@ -4,7 +4,7 @@ import { Disk, Host } from '../../api';
 import { trimCommaSeparatedList } from '../..';
 
 export type DiskFormattingType = (
-  doFormatDisk: boolean,
+  shouldFormatDisk: boolean,
   hostId: Host['id'],
   diskId: Disk['id'],
 ) => void;
@@ -36,12 +36,12 @@ export const isDiskFormattable = (host: Host, diskId: string | undefined) => {
 };
 
 const onSelectSkipFormatting = (
-  doFormatDisk: boolean,
+  shouldFormatDisk: boolean,
   hostId: string,
   diskId?: string,
   updateDiskSkipFormatting?: DiskFormattingType,
 ) => {
-  updateDiskSkipFormatting ? updateDiskSkipFormatting(doFormatDisk, hostId, diskId) : '';
+  updateDiskSkipFormatting ? updateDiskSkipFormatting(shouldFormatDisk, hostId, diskId) : '';
 };
 
 const SkipFormattingCheckbox: React.FC<SkipFormattingProps> = ({

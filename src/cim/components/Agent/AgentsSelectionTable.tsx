@@ -126,7 +126,6 @@ const AgentsSelectionTable: React.FC<AgentsSelectionTableProps> = ({
     <HostsTableDetailContextProvider
       canEditDisks={actions.canEditDisks}
       onDiskRole={actions.onDiskRole}
-      updateDiskSkipFormatting={actions.updateSkipFormatting}
     >
       <HostsTable
         hosts={hosts}

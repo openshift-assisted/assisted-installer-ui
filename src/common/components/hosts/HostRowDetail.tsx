@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextContent, Text, TextVariants, Grid, GridItem } from '@patternfly/react-core';
+import { Grid, GridItem } from '@patternfly/react-core';
 import {
   Table,
   TableHeader,
@@ -22,6 +22,7 @@ import NtpValidationStatus from './NtpValidationStatus';
 import { OnDiskRoleType } from './DiskRole';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import StorageDetail from '../storage/StorageDetail';
+import SectionTitle from '../ui/SectionTitle';
 
 type HostDetailProps = {
   host: Host;
@@ -30,14 +31,10 @@ type HostDetailProps = {
   AdditionalNTPSourcesDialogToggleComponent?: ValidationInfoActionProps['AdditionalNTPSourcesDialogToggleComponent'];
   hideNTPStatus?: boolean;
   updateDiskSkipFormatting?: (
-    doFormatDisk: boolean,
+    shouldFormatDisk: boolean,
     hostId: Host['id'],
     diskId: Disk['id'],
   ) => Promise<unknown>;
-};
-
-type SectionTitleProps = {
-  title: string;
 };
 
 type SectionColumnProps = {
@@ -47,16 +44,6 @@ type SectionColumnProps = {
 type NicsTableProps = {
   interfaces: Interface[];
 };
-
-const SectionTitle: React.FC<SectionTitleProps & WithTestID> = ({ title, testId }) => (
-  <GridItem>
-    <TextContent>
-      <Text data-testid={testId} component={TextVariants.h3}>
-        {title}
-      </Text>
-    </TextContent>
-  </GridItem>
-);
 
 const SectionColumn: React.FC<SectionColumnProps> = ({ children }) => (
   <GridItem span={4}>

@@ -180,7 +180,7 @@ export const useHostsTable = (cluster: Cluster) => {
     );
 
   const updateDiskSkipFormatting = React.useCallback(
-    async (doFormatDisk: boolean, hostId: Host['id'], diskId: Disk['id']) => {
+    async (shouldFormatDisk: boolean, hostId: Host['id'], diskId: Disk['id']) => {
       try {
         if (!cluster.id) {
           throw new Error(
@@ -196,7 +196,7 @@ export const useHostsTable = (cluster: Cluster) => {
           cluster.id,
           hostId,
           diskId,
-          !doFormatDisk,
+          !shouldFormatDisk,
         );
         resetCluster ? void resetCluster() : dispatch(updateHost(data));
       } catch (e) {
