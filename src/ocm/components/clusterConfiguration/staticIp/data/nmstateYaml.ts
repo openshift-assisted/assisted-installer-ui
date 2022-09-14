@@ -25,6 +25,8 @@ export const getMachineNetworkFieldName = (protocolVersion: ProtocolVersion): st
   return `${protocolVersion}MachineNetwork`;
 };
 
+export const getVlanNicName = (nicName: string, vlanId: number) => `${nicName}.${vlanId}`;
+
 export const getProtocolVersionIdx = (protocolVersion: ProtocolVersion): number => {
   return protocolVersion === 'ipv4' ? 0 : 1;
 };
@@ -100,7 +102,7 @@ export const getInterface = (
 ): NmstateInterface => {
   if (networkWide.useVlan && networkWide.vlanId) {
     return {
-      name: `${nicName}.${networkWide.vlanId}`,
+      name: getVlanNicName(nicName, networkWide.vlanId),
       type: NmstateInterfaceType.VLAN,
       state: 'up',
       vlan: { 'base-iface': nicName, id: networkWide.vlanId },

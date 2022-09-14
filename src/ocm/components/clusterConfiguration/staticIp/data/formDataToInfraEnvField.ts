@@ -14,6 +14,7 @@ import {
   getMachineNetworkFieldName,
   getNmstateProtocolConfig,
   getRouteConfig,
+  getVlanNicName,
   YAML_COMMENT_CHAR,
 } from './nmstateYaml';
 import { getShownProtocolVersions } from './protocolVersion';
@@ -82,7 +83,9 @@ const getNmstateObject = (
       getRouteConfig(
         protocolVersion,
         networkWide.ipConfigs[protocolVersion].gateway,
-        networkWide.useVlan && networkWide.vlanId ? `${nicName}.${networkWide.vlanId}` : nicName,
+        networkWide.useVlan && networkWide.vlanId
+          ? getVlanNicName(nicName, networkWide.vlanId)
+          : nicName,
       ),
     );
   }
