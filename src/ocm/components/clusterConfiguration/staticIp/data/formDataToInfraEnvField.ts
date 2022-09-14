@@ -10,11 +10,10 @@ import {
 import {
   FORM_VIEW_PREFIX,
   getDnsSection,
-  getEthernetInterface,
+  getInterface,
   getMachineNetworkFieldName,
   getNmstateProtocolConfig,
   getRouteConfig,
-  getVlanInterface,
   YAML_COMMENT_CHAR,
 } from './nmstateYaml';
 import { getShownProtocolVersions } from './protocolVersion';
@@ -76,36 +75,20 @@ const getNmstateObject = (
         ),
       };
       nicName = getDummyNicName(protocolVersion);
-
-      if (networkWide.useVlan && networkWide.vlanId) {
-        const vlanInterface = getVlanInterface(nicName, networkWide.vlanId, protocolConfigs);
-        interfaces.push(vlanInterface);
-        nicName = vlanInterface.name;
-      } else {
-        interfaces.push(getEthernetInterface(nicName, protocolConfigs));
-      }
+      interfaces.push(getInterface(nicName, protocolConfigs, networkWide));
     }
 
     routeConfigs.push(
-      getRouteConfig(protocolVersion, networkWide.ipConfigs[protocolVersion].gateway, nicName),
+      getRouteConfig(
+        protocolVersion,
+        networkWide.ipConfigs[protocolVersion].gateway,
+        networkWide.useVlan && networkWide.vlanId ? `${nicName}.${networkWide.vlanId}` : nicName,
+      ),
     );
   }
 
   if (Object.keys(realProtocolConfigs).length > 0) {
-    if (networkWide.useVlan && networkWide.vlanId) {
-      const vlanInterface = getVlanInterface(
-        REAL_NIC_NAME,
-        networkWide.vlanId,
-        realProtocolConfigs,
-      );
-
-      interfaces.unshift(vlanInterface);
-      routeConfigs.forEach((route) => {
-        route['next-hop-interface'] = vlanInterface.name;
-      });
-    } else {
-      interfaces.unshift(getEthernetInterface(REAL_NIC_NAME, realProtocolConfigs));
-    }
+    interfaces.unshift(getInterface(REAL_NIC_NAME, realProtocolConfigs, networkWide));
   }
 
   const nmstate = {

@@ -2,14 +2,13 @@ import { dump } from 'js-yaml';
 import {
   Nmstate,
   NmstateDns,
-  NmstateEthernetInterface,
+  NmstateInterface,
   NmstateInterfaceType,
   NmstateProtocolConfig,
   NmstateProtocolConfigs,
   NmstateRoutesConfig,
-  NmstateVlanInterface,
 } from './nmstateTypes';
-import { ProtocolVersion, StaticProtocolType } from './dataTypes';
+import { FormViewNetworkWideValues, ProtocolVersion, StaticProtocolType } from './dataTypes';
 import findLastIndex from 'lodash/findLastIndex';
 import { getProtocolVersions } from './protocolVersion';
 import { load } from 'js-yaml';
@@ -94,30 +93,27 @@ export const getDnsSection = (dns: string): NmstateDns => {
   return { config: { server: [dns] } };
 };
 
-export const getVlanInterface = (
-  nicName: string,
-  vlanId: number,
-  protocolConfigs: NmstateProtocolConfigs,
-): NmstateVlanInterface => {
-  return {
-    name: `${nicName}.${vlanId}`,
-    type: NmstateInterfaceType.VLAN,
-    state: 'up',
-    vlan: { 'base-iface': nicName, id: vlanId },
-    ...protocolConfigs,
-  };
-};
-
-export const getEthernetInterface = (
+export const getInterface = (
   nicName: string,
   protocolConfigs: NmstateProtocolConfigs,
-): NmstateEthernetInterface => {
-  return {
-    name: nicName,
-    type: NmstateInterfaceType.ETHERNET,
-    state: 'up',
-    ...protocolConfigs,
-  };
+  networkWide: FormViewNetworkWideValues,
+): NmstateInterface => {
+  if (networkWide.useVlan && networkWide.vlanId) {
+    return {
+      name: `${nicName}.${networkWide.vlanId}`,
+      type: NmstateInterfaceType.VLAN,
+      state: 'up',
+      vlan: { 'base-iface': nicName, id: networkWide.vlanId },
+      ...protocolConfigs,
+    };
+  } else {
+    return {
+      name: nicName,
+      type: NmstateInterfaceType.ETHERNET,
+      state: 'up',
+      ...protocolConfigs,
+    };
+  }
 };
 
 export const getRouteConfig = (
