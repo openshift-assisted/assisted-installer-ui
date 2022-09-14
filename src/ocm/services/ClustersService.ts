@@ -1,8 +1,15 @@
 import { ClustersAPI } from '../services/apis';
 import HostsService from './HostsService';
 import InfraEnvsService from './InfraEnvsService';
-import { AI_UI_TAG, Cluster, Host, V2ClusterUpdateParams } from '../../common';
+import {
+  AI_UI_TAG,
+  Cluster,
+  getKubeconfigFileName,
+  Host,
+  V2ClusterUpdateParams,
+} from '../../common';
 import { ocmClient } from '../api';
+import { saveAs } from 'file-saver';
 
 const ClustersService = {
   async delete(clusterId: Cluster['id']) {
@@ -45,6 +52,21 @@ const ClustersService = {
     }
 
     return ClustersAPI.install(clusterId);
+  },
+
+  async downloadKubeconfigFile(clusterId: Cluster['id']) {
+    if (ocmClient) {
+      const { data } = await ClustersAPI.getPresignedForClusterCredentials({
+        clusterId,
+        fileName: 'kubeconfig',
+      });
+      saveAs(data.url);
+    } else {
+      const response = await ClustersAPI.downloadClusterCredentials(clusterId, 'kubeconfig');
+      const fileName = getKubeconfigFileName(response.headers);
+
+      saveAs(response.data, fileName);
+    }
   },
 
   updateClusterTags(

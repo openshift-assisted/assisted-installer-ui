@@ -1,7 +1,6 @@
 import React from 'react';
 import { Alert, GridItem } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
-import { saveAs } from 'file-saver';
 import {
   Cluster,
   RenderIf,
@@ -13,7 +12,6 @@ import {
   isSNO,
   isClusterPlatformTypeVM,
   useAlerts,
-  getKubeconfigFileName,
 } from '../../../common';
 import { getClusterDetailId } from './utils';
 
@@ -22,7 +20,7 @@ import { calculateClusterDateDiff } from '../../../common/sevices/DateAndTime';
 import { getApiErrorMessage } from '../../../common/utils';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { handleApiError, ocmClient } from '../../api';
-import { ClustersAPI } from '../../services/apis';
+import ClustersService from '../../services/ClustersService';
 
 type ClusterDetailStatusMessagesProps = {
   cluster: Cluster;
@@ -59,18 +57,7 @@ const ClusterDetailStatusMessages = ({
 
   const handleDownload = React.useCallback(async () => {
     try {
-      if (ocmClient) {
-        const { data } = await ClustersAPI.getPresignedForClusterCredentials({
-          clusterId: cluster.id,
-          fileName: 'kubeconfig',
-        });
-        saveAs(data.url);
-      } else {
-        const response = await ClustersAPI.downloadClusterCredentials(cluster.id, 'kubeconfig');
-        const fileName = getKubeconfigFileName(response.headers);
-
-        saveAs(response.data, fileName);
-      }
+      await ClustersService.downloadKubeconfigFile(cluster.id);
     } catch (e) {
       handleApiError(e, (e) => {
         addAlert({
@@ -88,7 +75,7 @@ const ClusterDetailStatusMessages = ({
           <KubeconfigDownload
             id={getClusterDetailId('button-download-kubeconfig')}
             status={cluster.status}
-            handleDownload={() => void handleDownload()}
+            handleDownload={handleDownload}
           />
         </GridItem>
       </RenderIf>

@@ -6,7 +6,7 @@ import { Cluster } from '../../api';
 type KubeconfigDownloadProps = {
   status: Cluster['status'];
   id?: string;
-  handleDownload: () => void;
+  handleDownload: () => Promise<unknown>;
 };
 
 const KubeconfigDownload = ({ id, status, handleDownload }: KubeconfigDownloadProps) => {
