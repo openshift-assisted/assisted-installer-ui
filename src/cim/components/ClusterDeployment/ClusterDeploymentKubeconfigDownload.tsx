@@ -39,13 +39,7 @@ const ClusterDeploymentKubeconfigDownload = ({
     }
   };
 
-  return (
-    <KubeconfigDownload
-      handleDownload={handleKubeconfigDownload}
-      clusterId={clusterDeployment.metadata?.uid || ''}
-      status={clusterStatus}
-    />
-  );
+  return <KubeconfigDownload handleDownload={handleKubeconfigDownload} status={clusterStatus} />;
 };
 
 export default ClusterDeploymentKubeconfigDownload;

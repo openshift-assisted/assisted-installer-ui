@@ -1,22 +1,28 @@
 import React from 'react';
 import { Alert, GridItem } from '@patternfly/react-core';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons';
+import { saveAs } from 'file-saver';
 import {
+  Cluster,
   RenderIf,
   KubeconfigDownload,
   REDHAT_CONSOLE_OPENSHIFT,
+  VSPHERE_CONFIG_LINK,
   canDownloadKubeconfig,
   useFeatureSupportLevel,
   isSNO,
   isClusterPlatformTypeVM,
+  useAlerts,
+  getKubeconfigFileName,
 } from '../../../common';
-import { Cluster } from '../../../common/api/types';
 import { getClusterDetailId } from './utils';
 
 import { useDefaultConfiguration } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
-import { VSPHERE_CONFIG_LINK } from '../../../common/config/constants';
-import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { calculateClusterDateDiff } from '../../../common/sevices/DateAndTime';
-import { ocmClient } from '../../api';
+import { getApiErrorMessage } from '../../../common/utils';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { handleApiError, ocmClient } from '../../api';
+import { ClustersAPI } from '../../services/apis';
 
 type ClusterDetailStatusMessagesProps = {
   cluster: Cluster;
@@ -29,10 +35,13 @@ const ClusterDetailStatusMessages = ({
   showAddHostsInfo,
   showKubeConfig,
 }: ClusterDetailStatusMessagesProps) => {
+  const { addAlert } = useAlerts();
+  const { t } = useTranslation();
   const featureSupportLevelContext = useFeatureSupportLevel();
   const { inactiveDeletionHours } = useDefaultConfiguration(['inactiveDeletionHours']);
   const inactiveDeletionDays = Math.round((inactiveDeletionHours || 0) / 24);
   const dateDifference = calculateClusterDateDiff(inactiveDeletionDays, cluster.installCompletedAt);
+
   const showAddHostsAlert = Boolean(
     showAddHostsInfo &&
       ocmClient &&
@@ -47,14 +56,39 @@ const ClusterDetailStatusMessages = ({
 
   const showKubeConfigDownload =
     showKubeConfig && dateDifference > 0 && canDownloadKubeconfig(cluster.status);
+
+  const handleDownload = React.useCallback(async () => {
+    try {
+      if (ocmClient) {
+        const { data } = await ClustersAPI.getPresignedForClusterCredentials({
+          clusterId: cluster.id,
+          fileName: 'kubeconfig',
+        });
+        saveAs(data.url);
+      } else {
+        const response = await ClustersAPI.downloadClusterCredentials(cluster.id, 'kubeconfig');
+        const fileName = getKubeconfigFileName(response.headers);
+
+        saveAs(response.data, fileName);
+      }
+    } catch (e) {
+      handleApiError(e, (e) => {
+        addAlert({
+          title: t('ai:Could not download kubeconfig'),
+          message: getApiErrorMessage(e),
+        });
+      });
+    }
+  }, [addAlert, cluster.id, t]);
+
   return (
     <>
       <RenderIf condition={showKubeConfigDownload}>
         <GridItem>
           <KubeconfigDownload
-            status={cluster.status}
-            clusterId={cluster.id}
             id={getClusterDetailId('button-download-kubeconfig')}
+            status={cluster.status}
+            handleDownload={() => void handleDownload()}
           />
         </GridItem>
       </RenderIf>
