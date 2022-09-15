@@ -19,7 +19,7 @@ const Hint = () => (
   </TextContent>
 );
 
-const OCSDisksManualFormattingHint = () => {
+const OdfDisksManualFormattingHint = () => {
   return (
     <Text component="p">
       <Popover bodyContent={<Hint />} minWidth="30rem">
@@ -32,4 +32,4 @@ const OCSDisksManualFormattingHint = () => {
   );
 };
 
-export default OCSDisksManualFormattingHint;
+export default OdfDisksManualFormattingHint;
