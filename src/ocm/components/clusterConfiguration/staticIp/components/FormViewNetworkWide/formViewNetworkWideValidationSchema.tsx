@@ -12,7 +12,7 @@ import {
   getIpIsNotNetworkOrBroadcastAddressSchema,
 } from '../../commonValidationSchemas';
 const REQUIRED_MESSAGE = 'A value is required';
-const REQUIRED_MESSAGE_AND_MUST_BE_A_NUMBER = 'A value is required and must be a number';
+const REQUIRED_MESSAGE_AND_MUST_BE_A_NUMBER = 'Must be a number';
 
 export const MIN_PREFIX_LENGTH = 1;
 export const MAX_PREFIX_LENGTH = {
