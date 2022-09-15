@@ -12,6 +12,7 @@ import {
   getIpIsNotNetworkOrBroadcastAddressSchema,
 } from '../../commonValidationSchemas';
 const REQUIRED_MESSAGE = 'A value is required';
+const REQUIRED_MESSAGE_AND_MUST_BE_A_NUMBER = 'A value is required and must be a number';
 
 export const MIN_PREFIX_LENGTH = 1;
 export const MAX_PREFIX_LENGTH = {
@@ -89,11 +90,11 @@ export const networkWideValidationSchema = Yup.lazy<FormViewNetworkWideValues>(
       vlanId: Yup.mixed().when('useVlan', {
         is: true,
         then: Yup.number()
-          .required(REQUIRED_MESSAGE)
+          .required(REQUIRED_MESSAGE_AND_MUST_BE_A_NUMBER)
           .min(1, `Must be more than or equal to 1`)
           .max(MAX_VLAN_ID, `Must be less than or equal to ${MAX_VLAN_ID}`)
           .nullable()
-          .transform(transformNumber),
+          .transform(transformNumber) as Yup.NumberSchema,
       }),
       protocolType: Yup.string(),
       dns: getIPValidationSchema('ipv4'),

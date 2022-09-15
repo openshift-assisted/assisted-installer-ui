@@ -207,7 +207,6 @@ export const FormViewNetworkWideFields: React.FC<{ hosts: FormViewHost[] }> = ({
             name="vlanId"
             isRequired
             data-testid="vlan-id"
-            type={TextInputTypes.number}
             min={MIN_VLAN_ID}
             max={MAX_VLAN_ID}
           />
