@@ -3646,6 +3646,7 @@ definitions:
                 - 'ARM64_ARCHITECTURE'
                 - 'ARM64_ARCHITECTURE_WITH_CLUSTER_MANAGED_NETWORKING'
                 - 'SINGLE_NODE_EXPANSION'
+                - 'LVM'
             support_level:
               type: string
               enum: [supported, unsupported, tech-preview, dev-preview]
@@ -5759,6 +5760,7 @@ definitions:
       - 'lso-requirements-satisfied'
       - 'ocs-requirements-satisfied'
       - 'odf-requirements-satisfied'
+      - 'lvm-requirements-satisfied'
       - 'sufficient-installation-disk-speed'
       - 'cnv-requirements-satisfied'
       - 'sufficient-network-latency-requirement-for-role'
@@ -6087,6 +6089,7 @@ definitions:
       - 'ocs-requirements-satisfied'
       - 'odf-requirements-satisfied'
       - 'cnv-requirements-satisfied'
+      - 'lvm-requirements-satisfied'
       - 'network-type-valid'
 
   logs_type:
