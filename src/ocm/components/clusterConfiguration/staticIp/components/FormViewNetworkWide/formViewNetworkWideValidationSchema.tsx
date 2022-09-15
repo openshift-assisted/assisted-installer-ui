@@ -11,8 +11,11 @@ import {
   isNotCatchAllIPAddress,
   getIpIsNotNetworkOrBroadcastAddressSchema,
 } from '../../commonValidationSchemas';
+
 const REQUIRED_MESSAGE = 'A value is required';
-const REQUIRED_MESSAGE_AND_MUST_BE_A_NUMBER = 'Must be a number';
+const MUST_BE_A_NUMBER = 'Must be a number';
+const NUMBER_REGEX = /^[0-9]*$/;
+const NUMBER_EXPONENTIAL = /[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)/;
 
 export const MIN_PREFIX_LENGTH = 1;
 export const MAX_PREFIX_LENGTH = {
@@ -90,9 +93,12 @@ export const networkWideValidationSchema = Yup.lazy<FormViewNetworkWideValues>(
       vlanId: Yup.mixed().when('useVlan', {
         is: true,
         then: Yup.number()
-          .required(REQUIRED_MESSAGE_AND_MUST_BE_A_NUMBER)
+          .required(MUST_BE_A_NUMBER)
           .min(1, `Must be more than or equal to 1`)
           .max(MAX_VLAN_ID, `Must be less than or equal to ${MAX_VLAN_ID}`)
+          .test('not-number', MUST_BE_A_NUMBER, (value) =>
+            validateNumber(value as number, values.vlanId),
+          )
           .nullable()
           .transform(transformNumber) as Yup.NumberSchema,
       }),
@@ -102,3 +108,12 @@ export const networkWideValidationSchema = Yup.lazy<FormViewNetworkWideValues>(
     });
   },
 );
+
+export const validateNumber = (value: number, vlanId: number | '') => {
+  //We need to validate that value is a number(without letters) and is not an exponential number (ex: 1e2)
+  return (
+    value !== null &&
+    new RegExp(NUMBER_REGEX).test(value.toString()) &&
+    !new RegExp(NUMBER_EXPONENTIAL).test(vlanId.toString())
+  );
+};
