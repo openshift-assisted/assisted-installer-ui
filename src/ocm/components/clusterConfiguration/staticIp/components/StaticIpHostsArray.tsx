@@ -208,7 +208,7 @@ const Hosts = <HostFieldType,>({
               data-testid="add-host"
               isDisabled={!!error}
             >
-              Add another host
+              Add another host configuration
             </Button>
           </FlexItem>
           {enableCopyAboveConfiguration && (
