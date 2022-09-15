@@ -7,7 +7,19 @@ import {
 } from '../../../common';
 import { AxiosResponse } from 'axios';
 
+let _getRequestAbortController = new AbortController();
+
 const InfraEnvsAPI = {
+  abortLastGetRequest() {
+    _getRequestAbortController.abort();
+    /*
+     * The AbortController.signal can only be aborted once per instance.
+     * Therefore in order for other requests to be also abortable we need
+     * to create a new instance when this event occurs
+     */
+    _getRequestAbortController = new AbortController();
+  },
+
   makeBaseURI(infraEnvId?: InfraEnv['id']) {
     return `/v2/infra-envs/${infraEnvId ? infraEnvId : ''}`;
   },
@@ -18,11 +30,15 @@ const InfraEnvsAPI = {
    */
   list(clusterId = '') {
     const query = clusterId && `?${new URLSearchParams({ ['cluster_id']: clusterId }).toString()}`;
-    return client.get<InfraEnv[]>(`${InfraEnvsAPI.makeBaseURI()}${query}`);
+    return client.get<InfraEnv[]>(`${InfraEnvsAPI.makeBaseURI()}${query}`, {
+      signal: _getRequestAbortController.signal,
+    });
   },
 
   get(infraEnvId: InfraEnv['id']) {
-    return client.get<InfraEnv>(`${InfraEnvsAPI.makeBaseURI(infraEnvId)}`);
+    return client.get<InfraEnv>(`${InfraEnvsAPI.makeBaseURI(infraEnvId)}`, {
+      signal: _getRequestAbortController.signal,
+    });
   },
 
   update(infraEnvId: InfraEnv['id'], params: InfraEnvUpdateParams) {

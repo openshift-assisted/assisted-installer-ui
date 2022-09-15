@@ -40,6 +40,7 @@ const HostsService = {
 
   async update(clusterId: Cluster['id'], hostId: Host['id'], params: HostUpdateParams) {
     const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId);
+    HostsAPI.abortLastGetRequest();
     return HostsAPI.update(infraEnvId, hostId, params);
   },
 
