@@ -14,8 +14,7 @@ import {
 
 const REQUIRED_MESSAGE = 'A value is required';
 const MUST_BE_A_NUMBER = 'Must be a number';
-const NUMBER_REGEX = /^[0-9]*$/;
-const NUMBER_EXPONENTIAL = /[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)/;
+const ONLY_DIGITS_REGEX = /^\d+$/;
 
 export const MIN_PREFIX_LENGTH = 1;
 export const MAX_PREFIX_LENGTH = {
@@ -96,9 +95,7 @@ export const networkWideValidationSchema = Yup.lazy<FormViewNetworkWideValues>(
           .required(MUST_BE_A_NUMBER)
           .min(1, `Must be more than or equal to 1`)
           .max(MAX_VLAN_ID, `Must be less than or equal to ${MAX_VLAN_ID}`)
-          .test('not-number', MUST_BE_A_NUMBER, (value) =>
-            validateNumber(value as number, values.vlanId),
-          )
+          .test('not-number', MUST_BE_A_NUMBER, () => validateNumber(values.vlanId))
           .nullable()
           .transform(transformNumber) as Yup.NumberSchema,
       }),
@@ -109,11 +106,7 @@ export const networkWideValidationSchema = Yup.lazy<FormViewNetworkWideValues>(
   },
 );
 
-export const validateNumber = (value: number, vlanId: number | '') => {
+export const validateNumber = (vlanId: FormViewNetworkWideValues['vlanId']) => {
   //We need to validate that value is a number(without letters) and is not an exponential number (ex: 1e2)
-  return (
-    value !== null &&
-    new RegExp(NUMBER_REGEX).test(value.toString()) &&
-    !new RegExp(NUMBER_EXPONENTIAL).test(vlanId.toString())
-  );
+  return new RegExp(ONLY_DIGITS_REGEX).test((vlanId || '').toString());
 };
