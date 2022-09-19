@@ -1437,7 +1437,7 @@ export type HostValidationId =
   | 'vsphere-disk-uuid-enabled'
   | 'compatible-agent'
   | 'no-skip-installation-disk'
-  | 'no-skip-missing-disk';
+  | 'no-skip-missing-disk'
   | 'service-has-sufficient-spoke-kube-api-access';
 
 /**
