@@ -6,8 +6,11 @@ import {
   Stack,
   StackItem,
 } from '@patternfly/react-core';
-import { global_palette_green_500 as okColor } from '@patternfly/react-tokens';
-import { CheckCircleIcon } from '@patternfly/react-icons';
+import {
+  global_palette_green_500 as okColor,
+  global_danger_color_100 as dangerColor,
+} from '@patternfly/react-tokens';
+import { CheckCircleIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
 import { HostedClusterK8sResource } from '../types';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { ExternalLink } from '../../../../common';
@@ -22,15 +25,24 @@ const HostedClusterProgress = ({ hostedCluster, launchToOCP }: HostedClusterProg
   const { t } = useTranslation();
   const [isExpanded, setExpanded] = React.useState(true);
 
-  const hostedClusterAvailable =
-    hostedCluster.status?.conditions?.find((c) => c.type === 'Available')?.status === 'True';
+  const availableCondtion = hostedCluster.status?.conditions?.find((c) => c.type === 'Available');
+  const progressingCondtion = hostedCluster.status?.conditions?.find(
+    (c) => c.type === 'Progressing',
+  );
+
+  let progressIcon = <Spinner size="md" />;
+
+  if (progressingCondtion?.status === 'False') {
+    progressIcon =
+      availableCondtion?.status === 'True' ? (
+        <CheckCircleIcon color={okColor.value} />
+      ) : (
+        <ExclamationCircleIcon color={dangerColor.value} size="sm" />
+      );
+  }
 
   return (
-    <ProgressStep
-      icon={
-        hostedClusterAvailable ? <CheckCircleIcon color={okColor.value} /> : <Spinner size="md" />
-      }
-    >
+    <ProgressStep icon={progressIcon}>
       <Stack hasGutter>
         <StackItem>
           <ExpandableSectionToggle
