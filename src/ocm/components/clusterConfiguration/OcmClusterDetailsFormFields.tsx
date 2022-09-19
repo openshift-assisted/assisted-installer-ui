@@ -5,16 +5,12 @@ import { useFormikContext } from 'formik';
 import ArmCheckbox from './ArmCheckbox';
 import { HostsNetworkConfigurationControlGroup } from './HostsNetworkConfigurationControlGroup';
 import {
-  CheckboxField,
   ClusterDetailsValues,
-  InputField,
   isSNO,
   ManagedDomain,
   OpenshiftVersionOptionType,
   OpenShiftVersionSelect,
   PullSecret,
-  RichInputField,
-  SelectField,
   SNOControlGroup,
   StaticTextField,
   ocmClusterNameValidationMessages,
@@ -22,9 +18,14 @@ import {
 } from '../../../common';
 import DiskEncryptionControlGroup from '../../../common/components/clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import {
+  OcmCheckboxField,
+  OcmInputField,
+  OcmRichInputField,
+  OcmSelectField,
+} from '../ui/OcmFormFields';
 
 export type OcmClusterDetailsFormFieldsProps = {
-  canEditPullSecret: boolean;
   forceOpenshiftVersion?: string;
   isBaseDnsDomainDisabled?: boolean;
   defaultPullSecret?: string;
@@ -36,10 +37,7 @@ export type OcmClusterDetailsFormFieldsProps = {
   clusterExists: boolean;
 };
 
-const BaseDnsHelperText: React.FC<{ name?: string; baseDnsDomain?: string }> = ({
-  name,
-  baseDnsDomain,
-}) => (
+const BaseDnsHelperText = ({ name, baseDnsDomain }: { name?: string; baseDnsDomain?: string }) => (
   <>
     All DNS records must be subdomains of this base and include the cluster name. This cannot be
     changed after cluster installation. The full cluster address will be: <br />
@@ -52,13 +50,12 @@ const BaseDnsHelperText: React.FC<{ name?: string; baseDnsDomain?: string }> = (
 export const OcmClusterDetailsFormFields = ({
   managedDomains = [],
   toggleRedHatDnsService,
-  canEditPullSecret,
   isBaseDnsDomainDisabled,
   versions,
+  isPullSecretSet,
   defaultPullSecret,
   forceOpenshiftVersion,
   isOcm,
-  isPullSecretSet,
   clusterExists,
 }: OcmClusterDetailsFormFieldsProps) => {
   const { values } = useFormikContext<ClusterDetailsValues>();
@@ -71,7 +68,7 @@ export const OcmClusterDetailsFormFields = ({
   const { t } = useTranslation();
   return (
     <Form id="wizard-cluster-details__form">
-      <RichInputField
+      <OcmRichInputField
         ref={nameInputRef}
         label="Cluster name"
         name="name"
@@ -84,7 +81,7 @@ export const OcmClusterDetailsFormFields = ({
         }
       />
       {!!managedDomains.length && toggleRedHatDnsService && (
-        <CheckboxField
+        <OcmCheckboxField
           name="useRedHatDnsService"
           label="Use a temporary 60-day domain"
           helperText="A base domain will be provided for temporary, non-production clusters."
@@ -92,7 +89,7 @@ export const OcmClusterDetailsFormFields = ({
         />
       )}
       {useRedHatDnsService ? (
-        <SelectField
+        <OcmSelectField
           label="Base domain"
           name="baseDnsDomain"
           helperText={<BaseDnsHelperText name={name} baseDnsDomain={baseDnsDomain} />}
@@ -103,7 +100,7 @@ export const OcmClusterDetailsFormFields = ({
           isRequired
         />
       ) : (
-        <InputField
+        <OcmInputField
           label="Base domain"
           name="baseDnsDomain"
           helperText={<BaseDnsHelperText name={name} baseDnsDomain={baseDnsDomain} />}
@@ -121,7 +118,7 @@ export const OcmClusterDetailsFormFields = ({
       )}
       <SNOControlGroup versions={versions} highAvailabilityMode={highAvailabilityMode} />
 
-      {canEditPullSecret && <PullSecret isOcm={isOcm} defaultPullSecret={defaultPullSecret} />}
+      {!isPullSecretSet && <PullSecret isOcm={isOcm} defaultPullSecret={defaultPullSecret} />}
       <ArmCheckbox versions={versions} />
       <HostsNetworkConfigurationControlGroup clusterExists={clusterExists} />
       <DiskEncryptionControlGroup

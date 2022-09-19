@@ -4,10 +4,12 @@ import { ArrayHelpers, FieldArray } from 'formik';
 import { PlusCircleIcon } from '@patternfly/react-icons';
 import {
   getFormikArrayItemFieldName,
-  InputField,
   MacInterfaceMap,
   RemovableField,
 } from '../../../../../../common';
+import { OcmInputField } from '../../../../ui/OcmFormFields';
+import { useSelector } from 'react-redux';
+import { selectCurrentClusterPermissionsState } from '../../../../../selectors';
 
 const AddMapping: React.FC<{
   onPush: ArrayHelpers['push'];
@@ -25,18 +27,24 @@ const AddMapping: React.FC<{
   );
 };
 
-const MacMappingItem: React.FC<{
+const MacMappingItem = ({
+  fieldName,
+  onRemove,
+  mapIdx,
+  enableRemove,
+  hostIdx,
+}: {
   fieldName: string;
   onRemove: () => void;
   mapIdx: number;
   hostIdx: number;
   enableRemove: boolean;
-}> = ({ fieldName, onRemove, mapIdx, enableRemove, hostIdx }) => {
+}) => {
   return (
     <RemovableField hideRemoveButton={!enableRemove} onRemove={onRemove}>
       <Grid hasGutter>
         <GridItem span={6}>
-          <InputField
+          <OcmInputField
             label="MAC address"
             isRequired
             name={`${fieldName}.macAddress`}
@@ -44,7 +52,7 @@ const MacMappingItem: React.FC<{
           />
         </GridItem>
         <GridItem span={6}>
-          <InputField
+          <OcmInputField
             label="Interface name"
             isRequired
             name={`${fieldName}.logicalNicName`}
@@ -56,11 +64,17 @@ const MacMappingItem: React.FC<{
   );
 };
 
-export const MacIpMapping: React.FC<{
+export const MacIpMapping = ({
+  fieldName,
+  macInterfaceMap,
+  hostIdx,
+}: {
   fieldName: string;
   macInterfaceMap: MacInterfaceMap;
   hostIdx: number;
-}> = ({ fieldName, macInterfaceMap, hostIdx }) => {
+}) => {
+  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
+
   return (
     <Grid className="mac-ip-mapping">
       <GridItem span={6}>
@@ -69,18 +83,18 @@ export const MacIpMapping: React.FC<{
           validateOnChange={false}
           render={({ push, remove }) => (
             <Grid hasGutter>
-              {macInterfaceMap.map((value, idx) => (
+              {macInterfaceMap.map((_, idx) => (
                 <MacMappingItem
                   key={getFormikArrayItemFieldName(fieldName, idx)}
                   fieldName={getFormikArrayItemFieldName(fieldName, idx)}
                   onRemove={() => remove(idx)}
                   mapIdx={idx}
-                  enableRemove={idx > 0}
+                  enableRemove={!isViewerMode && idx > 0}
                   hostIdx={hostIdx}
                 />
               ))}
 
-              <AddMapping onPush={push} />
+              {!isViewerMode && <AddMapping onPush={push} />}
             </Grid>
           )}
         />

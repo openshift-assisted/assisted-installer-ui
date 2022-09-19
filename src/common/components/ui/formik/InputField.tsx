@@ -69,8 +69,10 @@ const InputField: React.FC<
               isRequired={isRequired}
               aria-describedby={`${fieldId}-helper`}
               onChange={(value, event) => {
-                !noDefaultOnChange && field.onChange(event);
-                onChange && onChange(event);
+                if (!props.isDisabled) {
+                  !noDefaultOnChange && field.onChange(event);
+                  onChange && onChange(event);
+                }
               }}
             />
           </SplitItem>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Cluster, ClusterWizardStep, getFormikErrorFields, useAlerts } from '../../../common';
 import { useClusterWizardContext } from './ClusterWizardContext';
 import ClusterWizardFooter from './ClusterWizardFooter';
@@ -9,6 +10,7 @@ import {
 } from '../clusterConfiguration/staticIp/components/propTypes';
 import { StaticIpPage } from '../clusterConfiguration/staticIp/components/StaticIpPage';
 import { WithErrorBoundary } from '../../../common/components/ErrorHandling/WithErrorBoundary';
+import { selectCurrentClusterPermissionsState } from '../../selectors';
 
 const getInitialFormStateProps = () => {
   return {
@@ -26,13 +28,16 @@ const StaticIp: React.FC<StaticIpProps & { cluster: Cluster }> = ({
   updateInfraEnv,
 }) => {
   const clusterWizardContext = useClusterWizardContext();
+  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const { alerts } = useAlerts();
   const [formState, setFormStateProps] = React.useState<StaticIpFormState>(
     getInitialFormStateProps(),
   );
 
   const onFormStateChange = (formState: StaticIpFormState) => {
-    setFormStateProps(formState);
+    if (!isViewerMode) {
+      setFormStateProps(formState);
+    }
   };
 
   const isNextDisabled =
