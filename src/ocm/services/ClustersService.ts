@@ -29,6 +29,7 @@ const ClustersService = {
     clusterTags: Cluster['tags'],
     params: V2ClusterUpdateParams,
   ) {
+    ClustersAPI.abortLastGetRequest();
     if (ocmClient) {
       params = ClustersService.updateClusterTags(clusterTags, params);
     }
@@ -58,6 +59,11 @@ const ClustersService = {
       params.tags = tags?.join(',');
     }
     return params;
+  },
+
+  async get(clusterId: Cluster['id']) {
+    const { data: cluster } = await ClustersAPI.get(clusterId);
+    return cluster;
   },
 };
 

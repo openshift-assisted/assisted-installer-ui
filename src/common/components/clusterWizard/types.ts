@@ -72,3 +72,5 @@ export type ValidationActionLinkProps<S extends string> = {
 export type ValidationActionLinkFC = <S extends string>(
   props: ValidationActionLinkProps<S>,
 ) => JSX.Element;
+
+export type ClusterOperatorProps = Pick<Cluster, 'openshiftVersion'> & { clusterId: Cluster['id'] };

@@ -21,7 +21,7 @@ export const ProxyInputFields = () => {
       <InputField
         label={
           <>
-            {t('ai:HTTP proxy URL')}
+            {t('ai:HTTP proxy URL')}{' '}
             <PopoverIcon
               bodyContent={t(
                 'ai:The HTTP proxy URL that agents should use to access the discovery service.',
@@ -44,7 +44,7 @@ export const ProxyInputFields = () => {
       <InputField
         label={
           <>
-            {t('ai:HTTPS proxy URL')}
+            {t('ai:HTTPS proxy URL')}{' '}
             <PopoverIcon
               bodyContent={t(
                 "ai:Specify the HTTPS proxy that agents should use to access the discovery service. If you don't provide a value, your HTTP proxy URL will be used by default for both HTTP and HTTPS connections.",
@@ -67,7 +67,7 @@ export const ProxyInputFields = () => {
       <InputField
         label={
           <>
-            {t('ai:No proxy domains')}
+            {t('ai:No proxy domains')}{' '}
             <PopoverIcon
               bodyContent={t(
                 'ai:Exclude destination domain names, IP addresses, or other network CIDRs from proxying by adding them to this comma-separated list.',

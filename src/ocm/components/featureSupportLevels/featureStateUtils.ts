@@ -1,17 +1,50 @@
 import {
+  Cluster,
   CpuArchitecture,
   FeatureId,
+  isArmArchitecture,
+  isSNO,
   OpenshiftVersionOptionType,
+  OPERATOR_NAME_CNV,
+  OPERATOR_NAME_LVM,
+  OperatorsValues,
   SupportLevel,
-} from '../../../common/types';
-import { Cluster } from '../../../common/api/types';
-import { isArmArchitecture, isSNO } from '../../../common/selectors/clusterSelectors';
+} from '../../../common';
+
+const CNV_OPERATOR_LABEL = 'Virtualization';
+const LVM_OPERATOR_LABEL = 'OpenShift Data Foundation Logical Volume Manager';
 
 const isArmSupported = (versionName: string, versionOptions: OpenshiftVersionOptionType[]) => {
   const versionOption = versionOptions.find((option) => option.value === versionName);
   return !!versionOption?.cpuArchitectures?.includes(CpuArchitecture.ARM);
 };
 const clusterExistsReason = 'This option is not editable after the draft cluster is created';
+
+export const getCnvAndLvmIncompatibilityReason = (
+  operatorValues: OperatorsValues,
+  versionName: string | undefined,
+  testOperator: typeof OPERATOR_NAME_LVM | typeof OPERATOR_NAME_CNV,
+) => {
+  const hasIncompatibleOperator =
+    testOperator === OPERATOR_NAME_CNV
+      ? operatorValues.useOdfLogicalVolumeManager
+      : operatorValues.useContainerNativeVirtualization;
+
+  if (!hasIncompatibleOperator) {
+    return undefined;
+  }
+  if (testOperator === OPERATOR_NAME_CNV && operatorValues.useContainerNativeVirtualization) {
+    // If both are enabled, CNV automatically installs LVM. Allow deactivating CNV
+    return undefined;
+  }
+
+  const firstOperator =
+    testOperator === OPERATOR_NAME_CNV ? CNV_OPERATOR_LABEL : LVM_OPERATOR_LABEL;
+  const secondOperator =
+    testOperator === OPERATOR_NAME_CNV ? LVM_OPERATOR_LABEL : CNV_OPERATOR_LABEL;
+
+  return `Currently, you can not install ${firstOperator} operator at the same time as ${secondOperator} operator.`;
+};
 
 const getSNODisabledReason = (cluster: Cluster | undefined, isSupported: boolean) => {
   if (cluster) {
@@ -51,7 +84,17 @@ const getOdfDisabledReason = (cluster: Cluster | undefined, isSupported: boolean
     return 'OpenShift Data Foundation is not available when deploying a Single Node OpenShift.';
   }
   if (!isSupported) {
-    return 'The installer cannot currently enable OpenShift Data Foundation with the selected OpenShift version,  but it can be enabled later through the OpenShift Console once the installation is complete.';
+    return 'The installer cannot currently enable OpenShift Data Foundation with the selected OpenShift version, but it can be enabled later through the OpenShift Console once the installation is complete.';
+  }
+  return undefined;
+};
+
+const getLvmDisabledReason = (cluster: Cluster | undefined, isSupported: boolean) => {
+  if (!cluster) {
+    return undefined;
+  }
+  if (!isSupported) {
+    return 'OpenShift Data Foundation Logical Volume Manager is enabled only for OpenShift 4.11 and above.';
   }
   return undefined;
 };
@@ -95,6 +138,9 @@ export const getFeatureDisabledReason = (
     }
     case 'ODF': {
       return getOdfDisabledReason(cluster, isSupported);
+    }
+    case 'LVM': {
+      return getLvmDisabledReason(cluster, isSupported);
     }
     case 'NETWORK_TYPE_SELECTION': {
       return getNetworkTypeSelectionDisabledReason(cluster);

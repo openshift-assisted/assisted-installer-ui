@@ -8,7 +8,6 @@ import { updateCluster } from '../../reducers/clusters';
 import ClusterWizardFooter from '../clusterWizard/ClusterWizardFooter';
 import ClusterWizardNavigation from '../clusterWizard/ClusterWizardNavigation';
 import ReviewCluster from './ReviewCluster';
-import ClusterWizardHeaderExtraActions from './ClusterWizardHeaderExtraActions';
 import { ClustersService } from '../../services';
 import { useStateSafely } from '../../../common/hooks';
 
@@ -62,11 +61,7 @@ const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
     <ClusterWizardStep navigation={<ClusterWizardNavigation cluster={cluster} />} footer={footer}>
       <Grid hasGutter>
         <GridItem>
-          <ClusterWizardStepHeader
-            extraItems={<ClusterWizardHeaderExtraActions cluster={cluster} />}
-          >
-            Review and create
-          </ClusterWizardStepHeader>
+          <ClusterWizardStepHeader>Review and create</ClusterWizardStepHeader>
         </GridItem>
         <GridItem>
           <ReviewCluster cluster={cluster} />

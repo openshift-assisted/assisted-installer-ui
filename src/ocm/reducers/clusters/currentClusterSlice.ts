@@ -4,8 +4,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { Cluster, Host } from '../../../common';
 import { handleApiError } from '../../api/utils';
 import { ResourceUIState } from '../../../common';
-import { ClustersAPI } from '../../services/apis';
-import { HostsService } from '../../services';
+import { ClustersService, HostsService } from '../../services';
 import { isApiError } from '../../api/types';
 
 export type RetrievalErrorType = {
@@ -27,14 +26,14 @@ export const fetchClusterAsync = createAsyncThunk<
   }
 >('currentCluster/fetchClusterAsync', async (clusterId, { rejectWithValue }) => {
   try {
+    const cluster = await ClustersService.get(clusterId);
     const hosts = await HostsService.listHostsBoundToCluster(clusterId);
-    const res = await ClustersAPI.get(clusterId);
-    const { data: cluster } = res;
-
     Object.assign(cluster, { hosts: hosts });
     return cluster;
   } catch (e) {
-    handleApiError(e, () => isApiError(e) && e.response?.data && rejectWithValue(e.response?.data));
+    handleApiError(e, () => {
+      return isApiError(e) && e.response?.data && rejectWithValue(e.response?.data);
+    });
   }
 });
 
@@ -84,11 +83,18 @@ export const currentClusterSlice = createSlice({
             ? ResourceUIState.RELOADING
             : ResourceUIState.LOADING,
       }))
-      .addCase(fetchClusterAsync.fulfilled, (state, action) => ({
-        ...state,
-        data: action.payload as Cluster,
-        uiState: ResourceUIState.LOADED,
-      }))
+      .addCase(fetchClusterAsync.fulfilled, (state, action) => {
+        /**
+         * In case the last get cluster request is aborted,
+         * then the action payload is undefined therefore
+         * we must not update the data property
+         */
+        return {
+          ...state,
+          data: (action.payload as Cluster) ?? state.data,
+          uiState: ResourceUIState.LOADED,
+        };
+      })
       .addCase(fetchClusterAsync.rejected, (state, action) => ({
         ...state,
         uiState: ResourceUIState.ERROR,
