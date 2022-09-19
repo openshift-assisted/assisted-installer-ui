@@ -28,9 +28,14 @@ const label = 'Host SSH Public Key for troubleshooting after installation';
 interface SecurityFieldsFieldsProps {
   clusterSshKey: Cluster['sshPublicKey'];
   imageSshKey?: Cluster['imageInfo']['sshPublicKey'];
+  isDisabled?: boolean;
 }
 
-const SecurityFields: React.FC<SecurityFieldsFieldsProps> = ({ clusterSshKey, imageSshKey }) => {
+const SecurityFields = ({
+  clusterSshKey,
+  imageSshKey,
+  isDisabled = false,
+}: SecurityFieldsFieldsProps) => {
   //shareSshKey shouldn't response to changes. imageSshKey stays the same, there's a loading state while it's requested
   //clusterSshKey updating causes the textarea to disappear when the user clears it to edit it
   const defaultShareSshKey = !!imageSshKey && (clusterSshKey === imageSshKey || !clusterSshKey);
@@ -47,10 +52,10 @@ const SecurityFields: React.FC<SecurityFieldsFieldsProps> = ({ clusterSshKey, im
   };
 
   React.useEffect(() => {
-    if (shareSshKey) {
+    if (!isDisabled && shareSshKey) {
       setFieldValue('sshPublicKey', imageSshKey);
     }
-  }, [shareSshKey, imageSshKey, setFieldValue]);
+  }, [shareSshKey, imageSshKey, setFieldValue, isDisabled]);
 
   const fieldId = getFieldId('shareDiscoverySshKey', 'checkbox');
   const { t } = useTranslation();
@@ -69,6 +74,7 @@ const SecurityFields: React.FC<SecurityFieldsFieldsProps> = ({ clusterSshKey, im
             label={t('ai:Use the same host discovery SSH key')}
             aria-describedby={`${fieldId}-helper`}
             isChecked={shareSshKey}
+            isDisabled={isDisabled}
             onChange={setShareSshKey}
           />
         </RenderIf>
@@ -77,6 +83,7 @@ const SecurityFields: React.FC<SecurityFieldsFieldsProps> = ({ clusterSshKey, im
             name="sshPublicKey"
             helperText={<SshPublicKeyHelperText />}
             onBlur={handleSshKeyBlur}
+            isDisabled={isDisabled}
           />
         </RenderIf>
       </FormGroup>

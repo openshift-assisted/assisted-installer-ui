@@ -4,6 +4,7 @@ import React from 'react';
 type AssistedInstallerFeatureType =
   | 'ASSISTED_INSTALLER_SNO_FEATURE'
   | 'ASSISTED_INSTALLER_OCS_FEATURE'
+  | 'ASSISTED_INSTALLER_ODF_FEATURE'
   | 'ASSISTED_INSTALLER_CNV_FEATURE'
   | 'ASSISTED_INSTALLER_NETWORK_TYPE_SELECTION_FEATURE'
   | 'ASSISTED_INSTALLER_PLATFORM_INTEGRATION_FEATURE';
@@ -11,10 +12,20 @@ export type FeatureListType = {
   [key in AssistedInstallerFeatureType]?: boolean;
 };
 
+export type AssistedInstallerOCMPermissionTypes = 'canEdit';
+export type AssistedInstallerOCMPermissionTypesListType = {
+  [key in AssistedInstallerOCMPermissionTypes]: boolean;
+};
+export type AssistedInstallerPermissionTypes = 'isViewerMode';
+export type AssistedInstallerPermissionTypesListType = {
+  [key in AssistedInstallerPermissionTypes]: boolean;
+};
+
 // Hardcoded for ACM
 export const ACM_ENABLED_FEATURES: FeatureListType = {
   ASSISTED_INSTALLER_SNO_FEATURE: true,
   ASSISTED_INSTALLER_OCS_FEATURE: false,
+  ASSISTED_INSTALLER_ODF_FEATURE: false,
   ASSISTED_INSTALLER_CNV_FEATURE: false,
   ASSISTED_INSTALLER_NETWORK_TYPE_SELECTION_FEATURE: false,
   ASSISTED_INSTALLER_PLATFORM_INTEGRATION_FEATURE: false,
@@ -24,6 +35,7 @@ export const ACM_ENABLED_FEATURES: FeatureListType = {
 export const SINGLE_CLUSTER_ENABLED_FEATURES: FeatureListType = {
   ASSISTED_INSTALLER_SNO_FEATURE: false,
   ASSISTED_INSTALLER_OCS_FEATURE: false,
+  ASSISTED_INSTALLER_ODF_FEATURE: false,
   ASSISTED_INSTALLER_CNV_FEATURE: false,
   ASSISTED_INSTALLER_NETWORK_TYPE_SELECTION_FEATURE: false,
   ASSISTED_INSTALLER_PLATFORM_INTEGRATION_FEATURE: false,
@@ -33,6 +45,7 @@ export const SINGLE_CLUSTER_ENABLED_FEATURES: FeatureListType = {
 export const STANDALONE_DEPLOYMENT_ENABLED_FEATURES: FeatureListType = {
   ASSISTED_INSTALLER_SNO_FEATURE: true,
   ASSISTED_INSTALLER_OCS_FEATURE: true,
+  ASSISTED_INSTALLER_ODF_FEATURE: true,
   ASSISTED_INSTALLER_CNV_FEATURE: true,
   ASSISTED_INSTALLER_NETWORK_TYPE_SELECTION_FEATURE: true,
   ASSISTED_INSTALLER_PLATFORM_INTEGRATION_FEATURE: true,
@@ -52,6 +65,7 @@ export const FeatureGateContextProvider: React.FC<{
   // hardcoded defaults
   const featuresWithDefaults: FeatureListType = {
     ASSISTED_INSTALLER_OCS_FEATURE: false,
+    ASSISTED_INSTALLER_ODF_FEATURE: false,
     ASSISTED_INSTALLER_CNV_FEATURE: false,
     ...features,
   };

@@ -12,15 +12,8 @@ import {
   Flex,
   FlexItem,
 } from '@patternfly/react-core';
-import {
-  CheckboxField,
-  getFieldId,
-  getHumanizedSubnetRange,
-  InputField,
-  PopoverIcon,
-  SelectField,
-} from '../../../../../../common';
 import { useField, useFormikContext } from 'formik';
+import { getFieldId, getHumanizedSubnetRange, PopoverIcon } from '../../../../../../common';
 import {
   getAddressObject,
   getProtocolVersionLabel,
@@ -37,7 +30,6 @@ import {
   StaticProtocolType,
 } from '../../data/dataTypes';
 import { getMachineNetworkCidr } from '../../data/machineNetwork';
-import '../staticIp.css';
 import useFieldErrorMsg from '../../../../../../common/hooks/useFieldErrorMsg';
 import {
   MIN_PREFIX_LENGTH,
@@ -45,6 +37,9 @@ import {
   MAX_VLAN_ID,
   MIN_VLAN_ID,
 } from './formViewNetworkWideValidationSchema';
+import { OcmCheckboxField, OcmInputField, OcmSelectField } from '../../../../ui/OcmFormFields';
+
+import '../staticIp.css';
 
 const hostsConfiguredAlert = (
   <Alert
@@ -87,7 +82,7 @@ const MachineNetwork: React.FC<{ fieldName: string; protocolVersion: ProtocolVer
     >
       <Flex>
         <FlexItem spacer={{ default: 'spacerSm' }}>
-          <InputField
+          <OcmInputField
             name={`${fieldName}.ip`}
             isRequired={true}
             data-testid={`${protocolVersion}-machine-network-ip`}
@@ -96,7 +91,7 @@ const MachineNetwork: React.FC<{ fieldName: string; protocolVersion: ProtocolVer
         </FlexItem>
         <FlexItem spacer={{ default: 'spacerSm' }}>{'/'}</FlexItem>
         <FlexItem>
-          <InputField
+          <OcmInputField
             name={`${fieldName}.prefixLength`}
             isRequired={true}
             data-testid={`${protocolVersion}-machine-network-prefix-length`}
@@ -118,7 +113,7 @@ const IpConfigFields: React.FC<{
   return (
     <Grid hasGutter>
       <MachineNetwork fieldName={`${fieldName}.machineNetwork`} protocolVersion={protocolVersion} />
-      <InputField
+      <OcmInputField
         isRequired
         label="Default gateway"
         labelIcon={
@@ -129,6 +124,12 @@ const IpConfigFields: React.FC<{
         }
         name={`${fieldName}.gateway`}
         data-testid={`${protocolVersion}-gateway`}
+      />
+      <OcmInputField
+        isRequired
+        label="DNS"
+        name={`${fieldName}.dns`}
+        data-testid={`${protocolVersion}-dns`}
       />
     </Grid>
   );
@@ -145,7 +146,7 @@ const protocolVersionOptions: FormSelectOptionProps[] = [
   },
 ];
 
-export const ProtocolTypeSelect: React.FC = () => {
+export const ProtocolTypeSelect = () => {
   const selectFieldName = 'protocolType';
   const [{ value: protocolType }, , { setValue: setProtocolType }] =
     useField<StaticProtocolType>(selectFieldName);
@@ -160,7 +161,7 @@ export const ProtocolTypeSelect: React.FC = () => {
     setProtocolType(newProtocolType);
   };
   return (
-    <SelectField
+    <OcmSelectField
       label="Internet protocol version"
       options={protocolVersionOptions}
       name={selectFieldName}
@@ -170,7 +171,7 @@ export const ProtocolTypeSelect: React.FC = () => {
     />
   );
 };
-export const FormViewNetworkWideFields: React.FC<{ hosts: FormViewHost[] }> = ({ hosts }) => {
+export const FormViewNetworkWideFields = ({ hosts }: { hosts: FormViewHost[] }) => {
   const { values, setFieldValue } = useFormikContext<FormViewNetworkWideValues>();
   return (
     <>
@@ -185,7 +186,7 @@ export const FormViewNetworkWideFields: React.FC<{ hosts: FormViewHost[] }> = ({
 
       <ProtocolTypeSelect />
 
-      <CheckboxField
+      <OcmCheckboxField
         label={
           <>
             {'Use VLAN '}
@@ -202,19 +203,18 @@ export const FormViewNetworkWideFields: React.FC<{ hosts: FormViewHost[] }> = ({
 
       {values.useVlan && (
         <div className="vlan-id">
-          <InputField
+          <OcmInputField
             label="VLAN ID"
             name="vlanId"
             isRequired
             data-testid="vlan-id"
-            type={TextInputTypes.number}
             min={MIN_VLAN_ID}
             max={MAX_VLAN_ID}
           />
         </div>
       )}
 
-      <InputField isRequired label="DNS" name={`dns`} data-testid={`dns`} />
+      <OcmInputField isRequired label="DNS" name={`dns`} data-testid={`dns`} />
 
       {getShownProtocolVersions(values.protocolType).map((protocolVersion) => (
         <FormGroup

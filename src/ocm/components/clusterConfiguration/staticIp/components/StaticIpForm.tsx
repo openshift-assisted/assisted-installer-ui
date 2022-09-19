@@ -1,12 +1,13 @@
+import React, { PropsWithChildren } from 'react';
+import { useSelector } from 'react-redux';
 import { Form } from '@patternfly/react-core';
 import { Formik, FormikConfig, useFormikContext, yupToFormErrors } from 'formik';
 import isEqual from 'lodash/isEqual';
-import React, { PropsWithChildren } from 'react';
-import { useAlerts } from '../../../../../common';
-import { useFormikAutoSave } from '../../../../../common/components/ui/formik/FormikAutoSave';
+import { useAlerts, useFormikAutoSave } from '../../../../../common';
 import { useErrorMonitor } from '../../../../../common/components/ErrorHandling/ErrorMonitorContext';
 import { getApiErrorMessage } from '../../../../api';
 import { StaticIpFormProps } from './propTypes';
+import { selectCurrentClusterPermissionsState } from '../../../../selectors';
 
 const AutosaveWithParentUpdate = <StaticIpFormValues extends object>({
   onFormStateChange,
@@ -42,6 +43,7 @@ export const StaticIpForm = <StaticIpFormValues extends object>({
 }: PropsWithChildren<StaticIpFormProps<StaticIpFormValues>>) => {
   const { clearAlerts, addAlert } = useAlerts();
   const { captureException } = useErrorMonitor();
+  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const [initialValues, setInitialValues] = React.useState<StaticIpFormValues | undefined>();
   React.useEffect(() => {
     if (showEmptyValues) {
@@ -52,6 +54,10 @@ export const StaticIpForm = <StaticIpFormValues extends object>({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  if (!initialValues) {
+    return null;
+  }
 
   const handleSubmit: FormikConfig<StaticIpFormValues>['onSubmit'] = async (values) => {
     clearAlerts();
@@ -65,21 +71,21 @@ export const StaticIpForm = <StaticIpFormValues extends object>({
       addAlert({ title: getApiErrorMessage(error) });
     }
   };
-  if (!initialValues) {
-    return null;
-  }
+
   const validate = (values: StaticIpFormValues) => {
     try {
-      validationSchema.validateSync(values, { abortEarly: false, context: { values: values } });
+      validationSchema.validateSync(values, { abortEarly: false, context: { values } });
       return {};
     } catch (error) {
       return yupToFormErrors(error);
     }
   };
+
+  const onSubmit = isViewerMode ? () => Promise.resolve() : handleSubmit;
   return (
     <Formik
       initialValues={initialValues}
-      onSubmit={handleSubmit}
+      onSubmit={onSubmit}
       validate={validate}
       validateOnMount
       enableReinitialize

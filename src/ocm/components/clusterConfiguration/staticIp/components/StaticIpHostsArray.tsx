@@ -1,3 +1,5 @@
+import React from 'react';
+import { useSelector } from 'react-redux';
 import {
   Button,
   ButtonVariant,
@@ -12,17 +14,19 @@ import {
 import { MinusCircleIcon } from '@patternfly/react-icons';
 import { FieldArray, FieldArrayRenderProps, useField } from 'formik';
 import cloneDeep from 'lodash/cloneDeep';
-import React from 'react';
 import { getFormikArrayItemFieldName, LoadingState } from '../../../../../common';
 import ConfirmationModal from '../../../../../common/components/ui/ConfirmationModal';
-import { selectIsCurrentClusterSNO } from '../../../../selectors';
-import { useSelector } from 'react-redux';
+import {
+  selectIsCurrentClusterSNO,
+  selectCurrentClusterPermissionsState,
+} from '../../../../selectors';
 
 const fieldName = 'hosts';
 
 export type HostComponentProps = {
   fieldName: string;
   hostIdx: number;
+  isDisabled: boolean;
 };
 
 export type HostArrayProps<HostFieldType> = {
@@ -39,6 +43,7 @@ type SingleHostProps<HostFieldType> = {
   onRemove: () => void;
   onToggleExpand: (isExpanded: boolean) => void;
   isExpanded: boolean;
+  isDisabled: boolean;
   emptyHostData: HostFieldType;
   CollapsedHostComponent: React.FC<HostComponentProps>;
   ExpandedHostComponent: React.FC<HostComponentProps>;
@@ -69,6 +74,7 @@ const SingleHost = <HostFieldType,>({
   onRemove,
   onToggleExpand,
   isExpanded,
+  isDisabled,
   CollapsedHostComponent,
   ExpandedHostComponent,
   enableRemoveHost,
@@ -76,6 +82,9 @@ const SingleHost = <HostFieldType,>({
   //TODO: fix RemovableField reusable component to support this use case
   const [showRemoveButton, setShowRemoveButton] = React.useState(false);
   const updateShowRemoveButton = (value: boolean) => {
+    if (isDisabled) {
+      return;
+    }
     if (!enableRemoveHost) {
       setShowRemoveButton(false);
     } else {
@@ -100,7 +109,7 @@ const SingleHost = <HostFieldType,>({
             {getHostName(hostIdx)}
           </ExpandableSectionToggle>
         </FlexItem>
-        {hostIdx > 0 && (
+        {!isDisabled && hostIdx > 0 && (
           <FlexItem align={{ default: 'alignRight' }}>
             <RemoveItemButton
               onRemove={onRemove}
@@ -111,12 +120,21 @@ const SingleHost = <HostFieldType,>({
         )}
       </Flex>
 
-      {isExpanded && (
-        <ExpandableSection isDetached key={hostIdx} isExpanded={true}>
-          <ExpandedHostComponent fieldName={hostFieldName} hostIdx={hostIdx} />
+      {isExpanded ? (
+        <ExpandableSection isDetached key={hostIdx} isExpanded>
+          <ExpandedHostComponent
+            fieldName={hostFieldName}
+            hostIdx={hostIdx}
+            isDisabled={isDisabled}
+          />
         </ExpandableSection>
+      ) : (
+        <CollapsedHostComponent
+          fieldName={hostFieldName}
+          hostIdx={hostIdx}
+          isDisabled={isDisabled}
+        />
       )}
-      {!isExpanded && <CollapsedHostComponent fieldName={hostFieldName} hostIdx={hostIdx} />}
     </Grid>
   );
 };
@@ -146,10 +164,11 @@ const Hosts = <HostFieldType,>({
   emptyHostData,
   ...props
 }: HostsProps<HostFieldType>) => {
-  const canAddHosts = !useSelector(selectIsCurrentClusterSNO);
   const [field, { error }] = useField<HostFieldType[]>({
     name: fieldName,
   });
+  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
+  const canAddHosts = !useSelector(selectIsCurrentClusterSNO) && !isViewerMode;
   const [expandedHosts, setExpandedHosts] = React.useState<ExpandedHosts>(
     getExpandedHostsDefaultValue(field.value.length),
   );
@@ -175,7 +194,7 @@ const Hosts = <HostFieldType,>({
 
   return (
     <>
-      {field.value.map((data, hostIdx) => {
+      {field.value.map((_data, hostIdx) => {
         const onToggleExpand = (isExpanded: boolean) => {
           const newExpandedHosts = cloneDeep(expandedHosts);
           newExpandedHosts[hostIdx] = isExpanded;
@@ -187,6 +206,7 @@ const Hosts = <HostFieldType,>({
               hostIdx={hostIdx}
               onToggleExpand={onToggleExpand}
               isExpanded={expandedHosts[hostIdx]}
+              isDisabled={isViewerMode}
               onRemove={() => setHostIdxToRemove(hostIdx)}
               fieldName={fieldName}
               emptyHostData={emptyHostData}
@@ -208,7 +228,7 @@ const Hosts = <HostFieldType,>({
               data-testid="add-host"
               isDisabled={!!error}
             >
-              Add another host
+              Add another host configuration
             </Button>
           </FlexItem>
           {enableCopyAboveConfiguration && (

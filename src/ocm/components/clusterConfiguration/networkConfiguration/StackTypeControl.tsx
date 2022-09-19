@@ -1,19 +1,26 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { ButtonVariant, FormGroup, Tooltip } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
+import { Address6 } from 'ip-address';
+
 import {
+  HostSubnets,
+  NetworkConfigurationValues,
+  getFieldId,
+  getDefaultNetworkType,
+  DUAL_STACK,
+  IPV4_STACK,
+  NO_SUBNET_SET,
   Cluster,
   ClusterNetwork,
   MachineNetwork,
   ServiceNetwork,
-} from '../../../../common/api/types';
-import { HostSubnets, NetworkConfigurationValues } from '../../../../common/types';
-import { DUAL_STACK, IPV4_STACK, NO_SUBNET_SET } from '../../../../common/config/constants';
-import { getFieldId } from '../../../../common/components/ui/formik/utils';
-import { ConfirmationModal, PopoverIcon, RadioField } from '../../../../common/components/ui';
-import { getDefaultNetworkType } from '../../../../common';
+} from '../../../../common';
+import { ConfirmationModal, PopoverIcon } from '../../../../common/components/ui';
 import { useDefaultConfiguration } from '../ClusterDefaultConfigurationContext';
-import { Address6 } from 'ip-address';
+import { selectCurrentClusterPermissionsState } from '../../../selectors';
+import { OcmRadioField } from '../../ui/OcmFormFields';
 
 type StackTypeControlGroupProps = {
   clusterId: Cluster['id'];
@@ -53,6 +60,9 @@ export const StackTypeControlGroup = ({
 
   const IPv6Subnets = hostSubnets.filter((subnet) => Address6.isValid(subnet.subnet));
   const cidrIPv6 = IPv6Subnets.length >= 1 ? IPv6Subnets[0].subnet : NO_SUBNET_SET;
+  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
+  const shouldSetSingleStack =
+    !isViewerMode && !isDualStackSelectable && values.stackType === DUAL_STACK;
 
   const setSingleStack = React.useCallback(() => {
     setFieldValue('stackType', IPV4_STACK);
@@ -134,10 +144,10 @@ export const StackTypeControlGroup = ({
   };
 
   React.useEffect(() => {
-    if (!isDualStackSelectable && values.stackType === DUAL_STACK) {
+    if (shouldSetSingleStack) {
       setSingleStack();
     }
-  }, [isDualStackSelectable, setSingleStack, values.stackType]);
+  }, [shouldSetSingleStack, setSingleStack]);
 
   return (
     <Tooltip
@@ -152,7 +162,7 @@ export const StackTypeControlGroup = ({
           isInline
           onChange={setStackType}
         >
-          <RadioField
+          <OcmRadioField
             name={'stackType'}
             value={IPV4_STACK}
             isDisabled={!isDualStackSelectable}
@@ -166,7 +176,7 @@ export const StackTypeControlGroup = ({
               </>
             }
           />
-          <RadioField
+          <OcmRadioField
             name={'stackType'}
             value={DUAL_STACK}
             isDisabled={!isDualStackSelectable}

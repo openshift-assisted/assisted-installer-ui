@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   useAlerts,
   Cluster,
@@ -51,6 +51,7 @@ import { UpdateDay2ApiVipFormProps } from './UpdateDay2ApiVipForm';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { getErrorMessage } from '../../../common/utils';
+import { selectCurrentClusterPermissionsState } from '../../selectors';
 
 export const useHostsTable = (cluster: Cluster) => {
   const { addAlert } = useAlerts();
@@ -63,6 +64,7 @@ export const useHostsTable = (cluster: Cluster) => {
     massDeleteHostDialog,
   } = useModalDialogsContext();
   const { resetCluster } = React.useContext(AddHostsContext);
+  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
 
   const dispatch = useDispatch();
 
@@ -181,17 +183,18 @@ export const useHostsTable = (cluster: Cluster) => {
 
   const actionChecks = React.useMemo(
     () => ({
-      canEditRole: (host: Host) => canEditRoleUtil(cluster.status, host.status, isSNO(cluster)),
-      canInstallHost: (host: Host) => canInstallHostUtil(cluster, host.status),
-      canEditDisks: (host: Host) => canEditDisksUtil(cluster.status, host.status),
-      canEnable: (host: Host) => canEnableUtil(cluster.status, host.status),
-      canDisable: (host: Host) => canDisableUtil(cluster.status, host.status),
-      canDelete: (host: Host) => canDeleteUtil(cluster.status, host.status),
-      canEditHost: (host: Host) => canEditHostUtil(cluster.status, host.status),
-      canReset: (host: Host) => canResetUtil(cluster.status, host.status),
-      canEditHostname: () => canEditHostnameUtil(cluster.status),
+      canEditRole: (host: Host) =>
+        !isViewerMode && canEditRoleUtil(cluster.status, host.status, isSNO(cluster)),
+      canInstallHost: (host: Host) => !isViewerMode && canInstallHostUtil(cluster, host.status),
+      canEditDisks: (host: Host) => !isViewerMode && canEditDisksUtil(cluster.status, host.status),
+      canEnable: (host: Host) => !isViewerMode && canEnableUtil(cluster.status, host.status),
+      canDisable: (host: Host) => !isViewerMode && canDisableUtil(cluster.status, host.status),
+      canDelete: (host: Host) => !isViewerMode && canDeleteUtil(cluster.status, host.status),
+      canEditHost: (host: Host) => !isViewerMode && canEditHostUtil(cluster.status, host.status),
+      canReset: (host: Host) => !isViewerMode && canResetUtil(cluster.status, host.status),
+      canEditHostname: () => !isViewerMode && canEditHostnameUtil(cluster.status),
     }),
-    [cluster],
+    [cluster, isViewerMode],
   );
 
   const onReset = React.useCallback(() => {
@@ -317,7 +320,7 @@ export const useHostsTable = (cluster: Cluster) => {
     onDelete,
     onAdditionalNtpSource,
     onUpdateDay2ApiVip,
-    onSelect,
+    onSelect: isViewerMode ? undefined : onSelect,
     selectedHostIDs,
     setSelectedHostIDs,
     onMassChangeHostname,

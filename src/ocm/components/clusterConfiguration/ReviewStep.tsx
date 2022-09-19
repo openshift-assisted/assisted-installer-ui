@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ActionListItem, Button, ButtonVariant, Grid, GridItem } from '@patternfly/react-core';
 import { Cluster, ClusterWizardStepHeader, useAlerts, ClusterWizardStep } from '../../../common';
 import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
@@ -10,10 +10,12 @@ import ClusterWizardNavigation from '../clusterWizard/ClusterWizardNavigation';
 import ReviewCluster from './ReviewCluster';
 import { ClustersService } from '../../services';
 import { useStateSafely } from '../../../common/hooks';
+import { selectCurrentClusterPermissionsState } from '../../selectors';
 
 const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const { addAlert } = useAlerts();
   const clusterWizardContext = useClusterWizardContext();
+  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const [isStartingInstallation, setIsStartingInstallation] = useStateSafely(false);
   const dispatch = useDispatch();
 
@@ -48,7 +50,7 @@ const ReviewStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
             variant={ButtonVariant.primary}
             name="install"
             onClick={handleClusterInstall}
-            isDisabled={isStartingInstallation || cluster.status !== 'ready'}
+            isDisabled={isViewerMode || isStartingInstallation || cluster.status !== 'ready'}
           >
             Install cluster
           </Button>
