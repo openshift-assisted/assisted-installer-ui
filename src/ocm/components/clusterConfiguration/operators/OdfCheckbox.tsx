@@ -8,9 +8,11 @@ import {
   PopoverIcon,
   ODF_REQUIREMENTS_LINK,
   ODF_LINK,
-} from '../../../common';
+} from '../../../../common';
 
-const ODFLabel = () => (
+const ODF_FIELD_NAME = 'useOpenShiftDataFoundation';
+
+const OdfLabel = () => (
   <>
     Install OpenShift Data Foundation{' '}
     <PopoverIcon
@@ -25,7 +27,7 @@ const ODFLabel = () => (
   </>
 );
 
-const ODFHelperText = () => {
+const OdfHelperText = () => {
   return (
     <>
       Persistent software-defined storage for hybrid applications.{' '}
@@ -36,10 +38,9 @@ const ODFHelperText = () => {
   );
 };
 
-export const ODFCheckbox = ({ openshiftVersion }: { openshiftVersion?: string }) => {
+const OdfCheckbox = ({ openshiftVersion }: { openshiftVersion?: string }) => {
   const featureSupportLevelContext = useFeatureSupportLevel();
-  const name = 'useExtraDisksForLocalStorage';
-  const fieldId = getFieldId(name, 'input');
+  const fieldId = getFieldId(ODF_FIELD_NAME, 'input');
   const disabledReason = openshiftVersion
     ? featureSupportLevelContext.getFeatureDisabledReason(openshiftVersion, 'ODF')
     : undefined;
@@ -47,12 +48,14 @@ export const ODFCheckbox = ({ openshiftVersion }: { openshiftVersion?: string })
     <FormGroup isInline fieldId={fieldId}>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
         <CheckboxField
-          name={name}
-          label={<ODFLabel />}
+          name={ODF_FIELD_NAME}
+          label={<OdfLabel />}
           isDisabled={!!disabledReason}
-          helperText={<ODFHelperText />}
+          helperText={<OdfHelperText />}
         />
       </Tooltip>
     </FormGroup>
   );
 };
+
+export default OdfCheckbox;

@@ -103,9 +103,7 @@ const NetworkConfigurationForm: React.FC<{
   );
 };
 
-const NetworkConfigurationPage: React.FC<{
-  cluster: Cluster;
-}> = ({ cluster }) => {
+const NetworkConfigurationPage = ({ cluster }: { cluster: Cluster }) => {
   const { infraEnv, error: infraEnvError, isLoading } = useInfraEnv(cluster.id);
   const defaultNetworkValues = useDefaultConfiguration([
     'clusterNetworksDualstack',

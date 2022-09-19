@@ -1,33 +1,35 @@
 import React from 'react';
-import { Cluster, ClusterWizardStepHeader, isSNO, useFeature } from '../../../common';
+import { useSelector } from 'react-redux';
 import { Stack, StackItem } from '@patternfly/react-core';
-import { CnvCheckbox } from '../clusterConfiguration/CnvCheckbox';
-import { ODFCheckbox } from '../clusterConfiguration/ODFCheckbox';
+import { ClusterOperatorProps, ClusterWizardStepHeader, useFeature } from '../../../common';
+import { selectIsCurrentClusterSNO } from '../../selectors';
+import CnvCheckbox from '../clusterConfiguration/operators/CnvCheckbox';
+import OdfCheckbox from '../clusterConfiguration/operators/OdfCheckbox';
+import LvmCheckbox from '../clusterConfiguration/operators/LvmCheckbox';
 
-export const OperatorsStep: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
-  const isOpenshiftClusterStorageEnabled = useFeature('ASSISTED_INSTALLER_OCS_FEATURE');
+export const OperatorsStep = (props: ClusterOperatorProps) => {
+  const isSNO = useSelector(selectIsCurrentClusterSNO);
+  const isOpenshiftDataFoundationEnabled = useFeature('ASSISTED_INSTALLER_OCS_FEATURE') && !isSNO;
   const isContainerNativeVirtualizationEnabled = useFeature('ASSISTED_INSTALLER_CNV_FEATURE');
-  const isSNOCluster = isSNO(cluster);
 
   return (
-    <Stack>
+    <Stack hasGutter>
       <StackItem>
         <ClusterWizardStepHeader>Operators</ClusterWizardStepHeader>
       </StackItem>
-      &nbsp;
       {isContainerNativeVirtualizationEnabled && (
         <StackItem>
-          <CnvCheckbox
-            clusterId={cluster.id}
-            isSNO={isSNOCluster}
-            openshiftVersion={cluster.openshiftVersion}
-          />
+          <CnvCheckbox {...props} />
         </StackItem>
       )}
-      &nbsp;
-      {isOpenshiftClusterStorageEnabled && (
+      {isOpenshiftDataFoundationEnabled && (
         <StackItem>
-          <ODFCheckbox openshiftVersion={cluster.openshiftVersion} />
+          <OdfCheckbox openshiftVersion={props.openshiftVersion} />
+        </StackItem>
+      )}
+      {isSNO && (
+        <StackItem>
+          <LvmCheckbox {...props} />
         </StackItem>
       )}
     </Stack>

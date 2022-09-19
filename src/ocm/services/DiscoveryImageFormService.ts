@@ -42,6 +42,7 @@ const DiscoveryImageFormService = {
       clusterTags,
       proxyParams,
     );
+    InfraEnvsAPI.abortLastGetRequest();
     const { data: updatedInfraEnv } = await InfraEnvsAPI.update(infraEnvId, infraEnvParams);
 
     return { updatedCluster, updatedInfraEnv };

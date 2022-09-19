@@ -1,14 +1,13 @@
-import { useClusterPreflightRequirements } from '../../hooks';
-import { ErrorState, LoadingState, OPERATOR_NAME_CNV, RenderIf } from '../../../common';
-import { List, ListItem } from '@patternfly/react-core';
 import React from 'react';
-import { PreflightRequirementsContentProps } from './HostRequirementsContent';
+import { useSelector } from 'react-redux';
+import { List, ListItem } from '@patternfly/react-core';
+import { useClusterPreflightRequirements } from '../../../hooks';
+import { Cluster, ErrorState, LoadingState, OPERATOR_NAME_CNV, RenderIf } from '../../../../common';
+import { selectIsCurrentClusterSNO } from '../../../selectors';
 
-export const CNVHostRequirementsContent = ({
-  clusterId,
-  isSingleNode = false,
-}: PreflightRequirementsContentProps) => {
+const CnvHostRequirements = ({ clusterId }: { clusterId: Cluster['id'] }) => {
   const { preflightRequirements, error, isLoading } = useClusterPreflightRequirements(clusterId);
+  const isSingleNode = useSelector(selectIsCurrentClusterSNO);
 
   if (isLoading) {
     return <LoadingState content="Loading hardware requirements ..." />;
@@ -59,4 +58,4 @@ export const CNVHostRequirementsContent = ({
   );
 };
 
-export default CNVHostRequirementsContent;
+export default CnvHostRequirements;
