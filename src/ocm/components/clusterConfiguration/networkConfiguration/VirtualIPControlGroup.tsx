@@ -1,16 +1,19 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { useFormikContext } from 'formik';
 import { Spinner, Alert, AlertVariant, Tooltip } from '@patternfly/react-core';
 import {
   Cluster,
   NetworkConfigurationValues,
   ValidationsInfo,
+  FormikStaticField,
+  FeatureSupportLevelBadge,
   NETWORK_TYPE_SDN,
-  selectMachineNetworkCIDR,
   stringToJSON,
+  selectMachineNetworkCIDR,
 } from '../../../../common';
-import { FeatureSupportLevelBadge } from '../../../../common/components';
-import { CheckboxField, FormikStaticField, InputField } from '../../../../common/components/ui';
+import { selectCurrentClusterPermissionsState } from '../../../selectors';
+import { OcmCheckboxField, OcmInputField } from '../../ui/OcmFormFields';
 
 interface VipStaticValueProps {
   vipName: string;
@@ -23,7 +26,7 @@ const VipStaticValue = ({ vipName, cluster, validationErrorMessage }: VipStaticV
   const machineNetworkCidr = selectMachineNetworkCIDR(cluster);
 
   if (vipDhcpAllocation && cluster[vipName]) {
-    return cluster[vipName];
+    return <>cluster[vipName]</>;
   }
   if (vipDhcpAllocation && validationErrorMessage) {
     return (
@@ -91,6 +94,7 @@ export const VirtualIPControlGroup = ({
   isVipDhcpAllocationDisabled,
 }: VirtualIPControlGroupProps) => {
   const { values, setFieldValue } = useFormikContext<NetworkConfigurationValues>();
+  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
 
   const apiVipHelperText = `Provide an endpoint for users, both human and machine, to interact with and configure the platform. If needed, contact your IT manager for more information. ${getVipHelperSuffix(
     cluster.apiVip,
@@ -114,10 +118,10 @@ export const VirtualIPControlGroup = ({
   const enableAllocation = values.networkType === NETWORK_TYPE_SDN;
 
   React.useEffect(() => {
-    if (!enableAllocation) {
+    if (!isViewerMode && !enableAllocation) {
       setFieldValue('vipDhcpAllocation', false);
     }
-  }, [enableAllocation, setFieldValue]);
+  }, [enableAllocation, isViewerMode, setFieldValue]);
 
   const onChangeDhcp = React.useCallback(
     (hasDhcp: boolean) => {
@@ -131,7 +135,7 @@ export const VirtualIPControlGroup = ({
   return (
     <>
       {!isVipDhcpAllocationDisabled && (
-        <CheckboxField
+        <OcmCheckboxField
           onChange={onChangeDhcp}
           label={
             <>
@@ -186,8 +190,8 @@ export const VirtualIPControlGroup = ({
         </>
       ) : (
         <>
-          <InputField label="API IP" name="apiVip" helperText={apiVipHelperText} isRequired />
-          <InputField
+          <OcmInputField label="API IP" name="apiVip" helperText={apiVipHelperText} isRequired />
+          <OcmInputField
             name="ingressVip"
             label="Ingress IP"
             helperText={ingressVipHelperText}

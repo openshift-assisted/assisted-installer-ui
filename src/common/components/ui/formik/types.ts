@@ -27,8 +27,8 @@ export interface FieldProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ref?: React.Ref<any>;
   validate?: FieldValidator;
-  min?: number;
-  max?: number;
+  min?: number | string;
+  max?: number | string;
   idPostfix?: string;
   callFormikOnChange?: boolean;
 }

@@ -8,8 +8,7 @@ import {
   ExpandableSection,
 } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons';
-import { Cluster } from '../../api/types';
-import { removeProtocolFromURL } from '../../api/utils';
+import { Cluster, removeProtocolFromURL } from '../../api';
 import { ToolbarButton } from '../ui/Toolbar';
 import PrismCode from '../ui/PrismCode';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
@@ -55,7 +54,7 @@ const ModalExpandableSection: React.FC<ModalExpandableSectionProps> = (props) =>
 export const WebConsoleHint: React.FC<WebConsoleHintProps> = ({ cluster, consoleUrl }) => {
   const [isDNSExpanded, setIsDNSExpanded] = React.useState(true);
   const handleToggle = () => setIsDNSExpanded(!isDNSExpanded);
-  const [apiVip, ingressVip] = [cluster.apiVip, cluster.ingressVip];
+  const [apiVip = '', ingressVip = ''] = [cluster.apiVip, cluster.ingressVip];
   const clusterUrl = `${cluster.name}.${cluster.baseDnsDomain}`;
   const appsUrl = `apps.${clusterUrl}`;
   const etcHosts = [

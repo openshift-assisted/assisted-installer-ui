@@ -11,7 +11,7 @@ const isSNOExpansionAllowed = (cluster: OcmClusterType) => {
 };
 
 export const canAddHost = ({ cluster }: { cluster: OcmClusterType }) => {
-  if (!Day2ClusterService.getOpenshiftClusterId(cluster)) {
+  if (!cluster.canEdit || !Day2ClusterService.getOpenshiftClusterId(cluster)) {
     return false;
   }
 

@@ -3,7 +3,6 @@ import { FormGroup, Tooltip } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { useFormikContext } from 'formik';
 import {
-  CheckboxField,
   ClusterOperatorProps,
   CNV_LINK,
   getFieldId,
@@ -14,6 +13,7 @@ import {
 } from '../../../../common';
 import CnvHostRequirements from './CnvHostRequirements';
 import { getCnvAndLvmIncompatibilityReason } from '../../featureSupportLevels/featureStateUtils';
+import { OcmCheckboxField } from '../../ui/OcmFormFields';
 
 const CNV_FIELD_NAME = 'useContainerNativeVirtualization';
 
@@ -62,7 +62,7 @@ const CnvCheckbox = ({ clusterId, openshiftVersion }: ClusterOperatorProps) => {
   return (
     <FormGroup isInline fieldId={fieldId}>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
-        <CheckboxField
+        <OcmCheckboxField
           name={CNV_FIELD_NAME}
           label={<CnvLabel clusterId={clusterId} />}
           helperText={<CnvHelperText />}

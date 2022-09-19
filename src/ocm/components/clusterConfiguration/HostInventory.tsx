@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import {
   Text,
   TextContent,
@@ -11,22 +12,23 @@ import {
   Split,
   SplitItem,
 } from '@patternfly/react-core';
+import { useFormikContext } from 'formik';
 import {
   Cluster,
+  HostDiscoveryValues,
   PopoverIcon,
   useFeature,
   ClusterWizardStepHeader,
-  SwitchField,
   selectMastersMustRunWorkloads,
   selectSchedulableMasters,
-  HostDiscoveryValues,
   isClusterPlatformTypeVM,
 } from '../../../common';
 import HostsDiscoveryTable from '../hosts/HostsDiscoveryTable';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
 import InformationAndAlerts from './InformationAndAlerts';
 import { useClusterSupportedPlatforms } from '../../hooks';
-import { useFormikContext } from 'formik';
+import { OcmSwitchField } from '../ui/OcmFormFields';
+import { selectCurrentClusterPermissionsState } from '../../selectors';
 
 const PlatformIntegrationLabel: React.FC = () => (
   <>
@@ -77,6 +79,7 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
   );
   const mastersMustRunWorkloads = selectMastersMustRunWorkloads(cluster);
   const { setFieldValue } = useFormikContext<HostDiscoveryValues>();
+  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
 
   React.useEffect(() => {
     setFieldValue('schedulableMasters', selectSchedulableMasters(cluster));
@@ -88,21 +91,23 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
         <ClusterWizardStepHeader>Host discovery</ClusterWizardStepHeader>
       </StackItem>
       <StackItem>
-        <TextContent>
-          <Text component="p">
-            <DiscoveryImageModalButton
-              ButtonComponent={Button}
-              cluster={cluster}
-              idPrefix="host-inventory"
-            />
-          </Text>
-        </TextContent>
+        {!isViewerMode && (
+          <TextContent>
+            <Text component="p">
+              <DiscoveryImageModalButton
+                ButtonComponent={Button}
+                cluster={cluster}
+                idPrefix="host-inventory"
+              />
+            </Text>
+          </TextContent>
+        )}
       </StackItem>
       {isPlatformIntegrationFeatureEnabled && (
         <StackItem>
           <Split hasGutter>
             <SplitItem>
-              <SwitchField
+              <OcmSwitchField
                 tooltipProps={{
                   hidden: isPlatformIntegrationSupported,
                   content: platformIntegrationTooltip,
@@ -117,7 +122,7 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
         </StackItem>
       )}
       <StackItem>
-        <SwitchField
+        <OcmSwitchField
           tooltipProps={{
             hidden: !mastersMustRunWorkloads,
             content: schedulableMastersTooltip,
