@@ -184,6 +184,8 @@ export const networkWideToInfraEnvField = (
   const currentFormData = formDataFromInfraEnvField(staticNetworkConfig);
   fixHostIps(networkWide, currentFormData.hosts);
   //Transform vlanId to number
-  networkWide.vlanId !== '' ? (networkWide.vlanId = Number(networkWide.vlanId)) : '';
+  if (networkWide.vlanId !== '') {
+    networkWide.vlanId = Number(networkWide.vlanId);
+  }
   return formDataToInfraEnvField({ networkWide, hosts: currentFormData.hosts });
 };
