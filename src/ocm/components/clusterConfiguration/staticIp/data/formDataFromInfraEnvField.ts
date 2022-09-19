@@ -24,7 +24,6 @@ import {
   isVlanInterface,
   NmstateEthernetInterface,
   NmstateVlanInterface,
-  isEthernetInterface,
 } from './nmstateTypes';
 import { isDummyInterface } from './dummyData';
 import head from 'lodash/head';
@@ -40,19 +39,10 @@ type ParsedFormViewYaml = {
   nmstate: Nmstate;
 };
 
-const findFirstRealEthernetInterface = (
-  interfaces: NmstateInterface[],
-): NmstateEthernetInterface | undefined => {
+const findFirstRealInterface = (interfaces: NmstateInterface[]): NmstateInterface | undefined => {
   return interfaces.find(
-    (currentInterface) =>
-      isEthernetInterface(currentInterface) && !isDummyInterface(currentInterface.name),
-  ) as unknown as NmstateEthernetInterface | undefined;
-};
-
-const findFirstVlanInterface = (
-  interfaces: NmstateInterface[],
-): NmstateVlanInterface | undefined => {
-  return interfaces.find(isVlanInterface);
+    (currentInterface) => !isDummyInterface(currentInterface.name),
+  ) as unknown as NmstateInterface | undefined;
 };
 
 const parseYaml = (yaml: string): ParsedFormViewYaml => {
@@ -135,17 +125,20 @@ const getFormViewHost = (
   if (!infraEnvHost.macInterfaceMap || !infraEnvHost.networkYaml) {
     throw `Static network config is missing information`;
   }
+
   const macAddress = infraEnvHost.macInterfaceMap[0].macAddress;
   if (!macAddress) {
     throw `Static network config is missing mac address`;
   }
+
   const { nmstate } = parseYaml(infraEnvHost.networkYaml);
-  const ethernetInterface = findFirstRealEthernetInterface(nmstate.interfaces);
-  const vlanInterface = findFirstVlanInterface(nmstate.interfaces);
-  if (!ethernetInterface) {
+  const realInterface = findFirstRealInterface(nmstate.interfaces);
+
+  if (!realInterface) {
     //handle case 2
     return null;
   }
+
   //handle cases 3 and 4
   const ret: FormViewHost = {
     macAddress,
@@ -154,10 +147,9 @@ const getFormViewHost = (
       ipv6: '',
     },
   };
+
   for (const protocolVersion of getShownProtocolVersions(protocolType)) {
-    vlanInterface
-      ? (ret.ips[protocolVersion] = getIpAddress(vlanInterface, protocolVersion))
-      : (ret.ips[protocolVersion] = getIpAddress(ethernetInterface, protocolVersion));
+    ret.ips[protocolVersion] = getIpAddress(realInterface, protocolVersion);
   }
   return ret;
 };

@@ -1,16 +1,16 @@
 import React from 'react';
 import { List, ListItem, Text, TextContent } from '@patternfly/react-core';
-import { Cluster, ErrorState, LoadingState, fileSize } from '../../../common';
+import { Cluster, ErrorState, ExternalLink, LoadingState, fileSize } from '../../../common';
 import { useClusterPreflightRequirements } from '../../hooks';
-import ExternalLink from '../../../common/components/ui/ExternalLink';
 
 const DISK_WRITE_SPEED_LINK = 'https://access.redhat.com/solutions/4885641';
+
 const parseRAM = (ramMib: number) => fileSize(ramMib * 1024 * 1024, 2, 'iec');
 
-export type PreflightRequirementsContentProps = {
+type PreflightRequirementsContentProps = {
   clusterId: Cluster['id'];
-  isSingleNode?: boolean;
-  isAddingHosts?: boolean;
+  isSingleNode: boolean;
+  isAddingHosts: boolean;
 };
 
 const HostRequirementsContent = ({
