@@ -1,0 +1,76 @@
+import React, { useState } from 'react';
+import { FormGroup, Tooltip } from '@patternfly/react-core';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons';
+import { useFormikContext } from 'formik';
+import {
+  CheckboxField,
+  ClusterOperatorProps,
+  CNV_LINK,
+  getFieldId,
+  OPERATOR_NAME_CNV,
+  OperatorsValues,
+  PopoverIcon,
+  useFeatureSupportLevel,
+} from '../../../../common';
+import CnvHostRequirements from './CnvHostRequirements';
+import { getCnvAndLvmIncompatibilityReason } from '../../featureSupportLevels/featureStateUtils';
+
+const CNV_FIELD_NAME = 'useContainerNativeVirtualization';
+
+const CnvLabel = ({ clusterId }: { clusterId: ClusterOperatorProps['clusterId'] }) => {
+  return (
+    <>
+      Install OpenShift Virtualization{' '}
+      <PopoverIcon
+        component={'a'}
+        headerContent="Additional Requirements"
+        bodyContent={<CnvHostRequirements clusterId={clusterId} />}
+      />
+    </>
+  );
+};
+
+const CnvHelperText = () => {
+  return (
+    <>
+      Run virtual machines alongside containers on one platform.{' '}
+      <a href={CNV_LINK} target="_blank" rel="noopener noreferrer">
+        {'Learn more'} <ExternalLinkAltIcon />
+      </a>
+    </>
+  );
+};
+
+const CnvCheckbox = ({ clusterId, openshiftVersion }: ClusterOperatorProps) => {
+  const fieldId = getFieldId(CNV_FIELD_NAME, 'input');
+
+  const featureSupportLevel = useFeatureSupportLevel();
+  const { values } = useFormikContext<OperatorsValues>();
+  const [disabledReason, setDisabledReason] = useState<string | undefined>();
+
+  React.useEffect(() => {
+    let reason = undefined;
+    if (openshiftVersion) {
+      reason = featureSupportLevel.getFeatureDisabledReason(openshiftVersion, 'CNV');
+      if (!reason) {
+        reason = getCnvAndLvmIncompatibilityReason(values, openshiftVersion, OPERATOR_NAME_CNV);
+      }
+    }
+    setDisabledReason(reason);
+  }, [values, openshiftVersion, featureSupportLevel]);
+
+  return (
+    <FormGroup isInline fieldId={fieldId}>
+      <Tooltip hidden={!disabledReason} content={disabledReason}>
+        <CheckboxField
+          name={CNV_FIELD_NAME}
+          label={<CnvLabel clusterId={clusterId} />}
+          helperText={<CnvHelperText />}
+          isDisabled={!!disabledReason}
+        />
+      </Tooltip>
+    </FormGroup>
+  );
+};
+
+export default CnvCheckbox;

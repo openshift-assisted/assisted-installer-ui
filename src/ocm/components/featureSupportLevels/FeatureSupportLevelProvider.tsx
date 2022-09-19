@@ -133,7 +133,7 @@ export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = 
   );
 
   const isFeatureDisabled = React.useCallback(
-    (version, featureId: FeatureId) => !!getDisabledReasonCallback(version, featureId),
+    (version: string, featureId: FeatureId) => !!getDisabledReasonCallback(version, featureId),
     [getDisabledReasonCallback],
   );
 

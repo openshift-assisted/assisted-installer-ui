@@ -525,6 +525,7 @@ export type ClusterValidationId =
   | 'ocs-requirements-satisfied'
   | 'odf-requirements-satisfied'
   | 'cnv-requirements-satisfied'
+  | 'lvm-requirements-satisfied'
   | 'network-type-valid';
 export interface CompletionParams {
   isSuccess: boolean;
@@ -859,7 +860,8 @@ export interface FeatureSupportLevel {
       | 'CLUSTER_MANAGED_NETWORKING_WITH_VMS'
       | 'ARM64_ARCHITECTURE'
       | 'ARM64_ARCHITECTURE_WITH_CLUSTER_MANAGED_NETWORKING'
-      | 'SINGLE_NODE_EXPANSION';
+      | 'SINGLE_NODE_EXPANSION'
+      | 'LVM';
     supportLevel?: 'supported' | 'unsupported' | 'tech-preview' | 'dev-preview';
   }[];
 }
@@ -1330,6 +1332,7 @@ export type HostValidationId =
   | 'lso-requirements-satisfied'
   | 'ocs-requirements-satisfied'
   | 'odf-requirements-satisfied'
+  | 'lvm-requirements-satisfied'
   | 'sufficient-installation-disk-speed'
   | 'cnv-requirements-satisfied'
   | 'sufficient-network-latency-requirement-for-role'
