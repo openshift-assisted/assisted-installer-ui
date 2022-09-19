@@ -13,7 +13,7 @@ const StorageAlerts = ({ cluster }: { cluster: Cluster }) => {
   const showFormattingHint =
     hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_ODF) &&
     !isAddHostsCluster(cluster);
-const someDisksAreSkipFormatting = isSomeDisksSkipFormatting(cluster);
+  const someDisksAreSkipFormatting = isSomeDisksSkipFormatting(cluster);
 
   return (
     <Stack hasGutter>
