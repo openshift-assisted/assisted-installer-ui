@@ -24,7 +24,6 @@ export const getEmptyFormViewHost = (): FormViewHost => {
 
 export const getEmptyIpConfig = (): IpConfig => {
   return {
-    dns: '',
     machineNetwork: {
       ip: '',
       prefixLength: '',
@@ -49,6 +48,7 @@ export const getEmptyNetworkWideConfigurations = (): FormViewNetworkWideValues =
     protocolType: 'ipv4',
     useVlan: false,
     vlanId: '',
+    dns: '',
   };
 };
 
