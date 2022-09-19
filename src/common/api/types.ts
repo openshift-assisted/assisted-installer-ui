@@ -16,13 +16,26 @@ export interface ApiVipConnectivityRequest {
    */
   ignitionEndpointToken?: string;
 }
+/**
+ * The response from the day-2 agent's attempt to download the worker ignition file from the API machine config server of the target cluster.
+ * Note - the name "API VIP connectivity" is old and misleading and is preserved for backwards compatibility.
+ */
 export interface ApiVipConnectivityResponse {
   /**
-   * Ignition downloadability check result.
+   * Whether the agent was able to download the ignition or not
    */
   isSuccess?: boolean;
   /**
-   * Ignition fetched from the specified API VIP
+   * This parameter mirrors the url parameter of the corresponding apiVipConnectivityRequest
+   */
+  url?: string;
+  /**
+   * The error that occurred while downloading the worker ignition file, ignored when isSuccess is true
+   */
+  downloadError?: string;
+  /**
+   * Ignition file fetched from the target cluster's API machine config server.
+   * This ignition file may be incomplete as almost all files / systemd units are removed from it by the agent in order to save space.
    */
   ignition?: string;
 }
@@ -226,12 +239,6 @@ export interface Cluster {
    * {"networking":{"networkType": "OVNKubernetes"},"fips":true}
    */
   installConfigOverrides?: string;
-  /**
-   * Json formatted string containing the user overrides for the initial ignition config
-   * example:
-   * {"ignition": {"version": "3.1.0"}, "storage": {"files": [{"path": "/tmp/example", "contents": {"source": "data:text/plain;base64,aGVscGltdHJhcHBlZGluYXN3YWdnZXJzcGVj"}}]}}
-   */
-  ignitionConfigOverrides?: string;
   controllerLogsCollectedAt?: string; // date-time
   controllerLogsStartedAt?: string; // date-time
   /**
@@ -290,6 +297,17 @@ export interface Cluster {
    * Explicit ignition endpoint overrides the default ignition endpoint.
    */
   ignitionEndpoint?: IgnitionEndpoint;
+  /**
+   * Indicates whether this cluster is an imported day-2 cluster or a
+   * regular cluster. Clusters are considered imported when they are
+   * created via the ../clusters/import endpoint. Day-2 clusters converted
+   * from day-1 clusters by kube-api controllers or the
+   * ../clusters/<clusterId>/actions/allow-add-workers endpoint are not
+   * considered imported. Imported clusters usually lack a lot of
+   * information and are filled with default values that don't necessarily
+   * reflect the actual cluster they represent
+   */
+  imported?: boolean;
   /**
    * A comma-separated list of tags that are associated to the cluster.
    */
@@ -430,6 +448,10 @@ export interface ClusterDefaultConfig {
   clusterNetworksDualstack?: ClusterNetwork[];
   serviceNetworksIpv4?: ServiceNetwork[];
   serviceNetworksDualstack?: ServiceNetwork[];
+  /**
+   * This provides a list of forbidden hostnames. If this list is empty or not present, this implies that the UI should fall back to a hard coded list.
+   */
+  forbiddenHostnames?: string[];
 }
 export interface ClusterHostRequirements {
   /**
@@ -659,7 +681,7 @@ export interface Disk {
    * Determine the disk's unique identifier which is the by-id field if it exists and fallback to the by-path field otherwise
    */
   id?: string;
-  driveType?: string;
+  driveType?: DriveType;
   hasUuid?: boolean;
   vendor?: string;
   name?: string;
@@ -695,6 +717,10 @@ export interface Disk {
   };
   smart?: string;
   ioPerf?: IoPerf;
+  /**
+   * A comma-separated list of disk names that this disk belongs to
+   */
+  holders?: string;
 }
 export interface DiskConfigParams {
   id: string;
@@ -780,6 +806,39 @@ export interface DomainResolutionResponse {
     ipv6Addresses?: string /* ipv6 */[];
   }[];
 }
+/**
+ * Information sent to the agent for downloading artifacts to boot a host into discovery.
+ */
+export interface DownloadBootArtifactsRequest {
+  /**
+   * URL address to download the kernel.
+   */
+  kernelUrl: string;
+  /**
+   * URL address to download the rootfs.
+   */
+  rootfsUrl: string;
+  /**
+   * URL address to download the initrd.
+   */
+  initrdUrl: string;
+  /**
+   * The base directory on the host that contains the /boot folder. The host will download boot
+   * artifacts into a folder in this directory.
+   */
+  hostFsMountDir: string;
+}
+export type DriveType =
+  | 'Unknown'
+  | 'HDD'
+  | 'FDD'
+  | 'ODD'
+  | 'SSD'
+  | 'virtual'
+  | 'Multipath'
+  | 'iSCSI'
+  | 'FC'
+  | 'LVM';
 export interface Error {
   /**
    * Indicates the type of this object. Will always be 'Error'.
@@ -861,7 +920,9 @@ export interface FeatureSupportLevel {
       | 'ARM64_ARCHITECTURE'
       | 'ARM64_ARCHITECTURE_WITH_CLUSTER_MANAGED_NETWORKING'
       | 'SINGLE_NODE_EXPANSION'
-      | 'LVM';
+      | 'LVM'
+      | 'DUAL_STACK_NETWORKING'
+      | 'MULTIARCH_RELEASE_IMAGE';
     supportLevel?: 'supported' | 'unsupported' | 'tech-preview' | 'dev-preview';
   }[];
 }
@@ -945,7 +1006,9 @@ export interface Host {
     | 'disconnected-unbound'
     | 'insufficient-unbound'
     | 'disabled-unbound'
-    | 'discovering-unbound';
+    | 'discovering-unbound'
+    | 'reclaiming'
+    | 'reclaiming-rebooting';
   statusInfo: string;
   /**
    * JSON-formatted string containing the validation results for each validation id grouped by category (network, hardware, etc.)
@@ -970,7 +1033,11 @@ export interface Host {
   stageUpdatedAt?: string; // date-time
   progressStages?: HostStage[];
   connectivity?: string;
+  /**
+   * Contains a serialized apiVipConnectivityResponse
+   */
   apiVipConnectivity?: string;
+  tangConnectivity?: string;
   inventory?: string;
   freeAddresses?: string;
   /**
@@ -1006,6 +1073,10 @@ export interface Host {
    * The last time the host's agent communicated with the service.
    */
   checkedInAt?: string; // date-time
+  /**
+   * The last time the host's agent tried to register in the service.
+   */
+  registeredAt?: string; // date-time
   discoveryAgentVersion?: string;
   requestedHostname?: string;
   userName?: string;
@@ -1021,6 +1092,10 @@ export interface Host {
    */
   ignitionConfigOverrides?: string;
   installerArgs?: string;
+  /**
+   * The time on the host as seconds since the Unix epoch.
+   */
+  timestamp?: number;
   machineConfigPoolName?: string;
   /**
    * Array of image statuses.
@@ -1130,7 +1205,9 @@ export interface HostRegistrationResponse {
     | 'disconnected-unbound'
     | 'insufficient-unbound'
     | 'disabled-unbound'
-    | 'discovering-unbound';
+    | 'discovering-unbound'
+    | 'reclaiming'
+    | 'reclaiming-rebooting';
   statusInfo: string;
   /**
    * JSON-formatted string containing the validation results for each validation id grouped by category (network, hardware, etc.)
@@ -1155,7 +1232,11 @@ export interface HostRegistrationResponse {
   stageUpdatedAt?: string; // date-time
   progressStages?: HostStage[];
   connectivity?: string;
+  /**
+   * Contains a serialized apiVipConnectivityResponse
+   */
   apiVipConnectivity?: string;
+  tangConnectivity?: string;
   inventory?: string;
   freeAddresses?: string;
   /**
@@ -1191,6 +1272,10 @@ export interface HostRegistrationResponse {
    * The last time the host's agent communicated with the service.
    */
   checkedInAt?: string; // date-time
+  /**
+   * The last time the host's agent tried to register in the service.
+   */
+  registeredAt?: string; // date-time
   discoveryAgentVersion?: string;
   requestedHostname?: string;
   userName?: string;
@@ -1206,6 +1291,10 @@ export interface HostRegistrationResponse {
    */
   ignitionConfigOverrides?: string;
   installerArgs?: string;
+  /**
+   * The time on the host as seconds since the Unix epoch.
+   */
+  timestamp?: number;
   machineConfigPoolName?: string;
   /**
    * Array of image statuses.
@@ -1349,6 +1438,8 @@ export type HostValidationId =
   | 'compatible-agent'
   | 'no-skip-installation-disk'
   | 'no-skip-missing-disk';
+  | 'service-has-sufficient-spoke-kube-api-access';
+
 /**
  * Explicit ignition endpoint overrides the default ignition endpoint.
  */
@@ -1635,6 +1726,7 @@ export interface Interface {
   macAddress?: string;
   flags?: string[];
   speedMbps?: number;
+  type?: string;
 }
 export interface Inventory {
   hostname?: string;
@@ -1646,7 +1738,6 @@ export interface Inventory {
   bmcV6address?: string;
   memory?: Memory;
   cpu?: Cpu;
-  timestamp?: number;
   gpus?: Gpu[];
   routes?: Route[];
   tpmVersion?: 'none' | '1.2' | '2.0';
@@ -1952,62 +2043,16 @@ export interface OsImage {
    */
   url: string;
   /**
-   * The OS rootfs url.
-   */
-  rootfsUrl: string;
-  /**
    * Build ID of the OS image.
    */
   version: string;
 }
 export type OsImages = OsImage[];
 /**
- * oVirt platform-specific configuration upon which to perform the installation.
- */
-export interface OvirtPlatform {
-  /**
-   * The oVirt's engine fully qualified domain name.
-   */
-  fqdn?: string;
-  /**
-   * The user name to use to connect to the oVirt instance.
-   */
-  username?: string;
-  /**
-   * The password for the oVirt user name.
-   */
-  password?: string; // password
-  /**
-   * Verify oVirt engine certificate.
-   */
-  insecure?: boolean;
-  /**
-   * The CA Bundle of the oVirt's engine certificate.
-   */
-  caBundle?: string;
-  /**
-   * The oVirt cluster ID.
-   */
-  clusterId?: string; // uuid
-  /**
-   * The oVirt storage domain ID.
-   */
-  storageDomainId?: string; // uuid
-  /**
-   * The oVirt network the VMs will be attached to.
-   */
-  networkName?: string;
-  /**
-   * The oVirt VNIC profile ID.
-   */
-  vnicProfileId?: string; // uuid
-}
-/**
  * The configuration for the specific platform upon which to perform the installation.
  */
 export interface Platform {
   type: PlatformType;
-  ovirt?: OvirtPlatform;
 }
 export type PlatformType = 'baremetal' | 'vsphere' | 'ovirt' | 'none';
 export interface PreflightHardwareRequirements {
@@ -2048,15 +2093,29 @@ export interface Proxy {
    */
   noProxy?: string;
 }
+/**
+ * Information sent to the agent for rebooting a host into discovery.
+ */
+export interface RebootForReclaimRequest {
+  /**
+   * The base directory on the host that contains the /boot folder. The host needs to
+   * chroot into this directory in order to properly reboot.
+   */
+  hostFsMountDir: string;
+}
 export interface ReleaseImage {
   /**
    * Version of the OpenShift cluster.
    */
   openshiftVersion: string;
   /**
-   * The CPU architecture of the image (x86_64/arm64/etc).
+   * (DEPRECATED) The CPU architecture of the image (x86_64/arm64/etc).
    */
   cpuArchitecture: string;
+  /**
+   * List of CPU architectures provided by the image.
+   */
+  cpuArchitectures?: string[];
   /**
    * The installation image of the OpenShift cluster.
    */
@@ -2092,6 +2151,10 @@ export interface Route {
    * Defines whether this is an IPv4 (4) or IPv6 route (6)
    */
   family?: number; // int32
+  /**
+   * Route priority metric
+   */
+  metric?: number; // int32
 }
 /**
  * IP address block for service IP blocks.
@@ -2133,6 +2196,7 @@ export type StepType =
   | 'free-network-addresses'
   | 'dhcp-lease-allocate'
   | 'api-vip-connectivity-check'
+  | 'tang-connectivity-check'
   | 'ntp-synchronizer'
   | 'installation-disk-speed-check'
   | 'container-image-availability'
@@ -2140,7 +2204,9 @@ export type StepType =
   | 'stop-installation'
   | 'logs-gather'
   | 'next-step-runner'
-  | 'upgrade-agent';
+  | 'upgrade-agent'
+  | 'download-boot-artifacts'
+  | 'reboot-for-reclaim';
 export interface Steps {
   nextInstructionSeconds?: number;
   /**
@@ -2159,6 +2225,32 @@ export interface SystemVendor {
    * Whether the machine appears to be a virtual machine or not
    */
   virtual?: boolean;
+}
+export interface TangConnectivityRequest {
+  /**
+   * JSON-formatted string containing additional information regarding tang's configuration
+   */
+  tangServers: string;
+}
+export interface TangConnectivityResponse {
+  /**
+   * Tang check result.
+   */
+  isSuccess?: boolean;
+  tangServerResponse?: {
+    /**
+     * Tang URL.
+     */
+    tangUrl?: string;
+    /**
+     * Tang response payload.
+     */
+    payload?: string;
+    signatures?: {
+      protected?: string;
+      signature?: string;
+    }[];
+  }[];
 }
 export interface UpgradeAgentRequest {
   /**

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { FormGroup, Tooltip } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 import {
-  CheckboxField,
   ClusterOperatorProps,
   FeatureSupportLevelBadge,
   getFieldId,
@@ -13,6 +12,7 @@ import {
 } from '../../../../common';
 import LvmHostRequirements from './LvmHostRequirements';
 import { getCnvAndLvmIncompatibilityReason } from '../../featureSupportLevels/featureStateUtils';
+import { OcmCheckboxField } from '../../ui/OcmFormFields';
 
 const LVM_FIELD_NAME = 'useOdfLogicalVolumeManager';
 
@@ -49,7 +49,7 @@ const LvmCheckbox = ({ clusterId, openshiftVersion }: ClusterOperatorProps) => {
   return (
     <FormGroup isInline fieldId={fieldId}>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
-        <CheckboxField
+        <OcmCheckboxField
           name={LVM_FIELD_NAME}
           label={<LvmLabel clusterId={clusterId} openshiftVersion={openshiftVersion} />}
           helperText={

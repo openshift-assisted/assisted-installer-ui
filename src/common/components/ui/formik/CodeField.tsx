@@ -8,7 +8,7 @@ import { CodeEditor } from '@patternfly/react-code-editor';
 import useFieldErrorMsg from '../../../hooks/useFieldErrorMsg';
 import { monaco } from 'react-monaco-editor';
 
-const CodeField: React.FC<CodeFieldProps> = ({
+const CodeField = ({
   label,
   labelIcon,
   helperText,
@@ -18,7 +18,8 @@ const CodeField: React.FC<CodeFieldProps> = ({
   language,
   name,
   description,
-}) => {
+  isDisabled,
+}: CodeFieldProps) => {
   const [field, , { setValue, setTouched }] = useField({ name, validate });
   const fieldId = getFieldId(name, 'input', idPostfix);
   const [monacoSubscription, setMonacoSubscription] = React.useState<monaco.IDisposable>();
@@ -74,7 +75,7 @@ const CodeField: React.FC<CodeFieldProps> = ({
         )}
         <CodeEditor
           code={field.value}
-          isUploadEnabled
+          isUploadEnabled={!isDisabled}
           isDownloadEnabled
           isCopyEnabled
           isLanguageLabelVisible

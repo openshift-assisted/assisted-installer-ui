@@ -71,7 +71,7 @@ export const RichValidation: React.FC<RichValidationProps> = ({
   );
 };
 
-type RichInputFieldPropsProps = BaseInputProps & {
+export type RichInputFieldPropsProps = BaseInputProps & {
   richValidationMessages: RichValidationProps['richValidationMessages'];
   placeholder?: string;
 };

@@ -1,18 +1,19 @@
 import React from 'react';
 import { FormGroup, Grid } from '@patternfly/react-core';
-import StaticIpHostsArray, { HostComponentProps } from '../StaticIpHostsArray';
 import { useField } from 'formik';
-import { getFieldId, InputField } from '../../../../../../common';
+import StaticIpHostsArray, { HostComponentProps } from '../StaticIpHostsArray';
+import { getFieldId } from '../../../../../../common';
 import HostSummary from '../CollapsedHost';
 import { FormViewHost, StaticProtocolType } from '../../data/dataTypes';
 import { getProtocolVersionLabel, getShownProtocolVersions } from '../../data/protocolVersion';
 import { getEmptyFormViewHost } from '../../data/emptyData';
+import { OcmInputField } from '../../../../ui/OcmFormFields';
 
 const getExpandedHostComponent = (protocolType: StaticProtocolType) => {
   const Component: React.FC<HostComponentProps> = ({ fieldName, hostIdx }) => {
     return (
       <Grid hasGutter>
-        <InputField
+        <OcmInputField
           name={`${fieldName}.macAddress`}
           label="MAC Address"
           isRequired
@@ -24,9 +25,9 @@ const getExpandedHostComponent = (protocolType: StaticProtocolType) => {
             fieldId={getFieldId(`${fieldName}.ips.${protocolVersion}`, 'input')}
             key={protocolVersion}
           >
-            <InputField
+            <OcmInputField
               name={`${fieldName}.ips.${protocolVersion}`}
-              isRequired={true}
+              isRequired
               data-testid={`${protocolVersion}-address-${hostIdx}`}
             />{' '}
           </FormGroup>
