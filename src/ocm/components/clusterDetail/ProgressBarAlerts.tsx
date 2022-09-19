@@ -58,7 +58,7 @@ const getFailedHostsMessage = (
     return (
       <>
         Error information for each host can be found in the host inventory table. To retry adding
-        failed hosts, click the <b>Add hosts</b> button below.
+        failed hosts, press the <b>Add hosts</b> button.
       </>
     );
   }
