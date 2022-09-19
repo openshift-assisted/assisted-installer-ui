@@ -10,6 +10,9 @@ import { useTranslation } from '../../../../common/hooks/use-translation-wrapper
 
 import './ConditionsTable.css';
 
+const ignoredConditions = ['Progressing'];
+const reversedConditions = ['Degraded'];
+
 type ConditionsTableProps = {
   conditions?: {
     status: string;
@@ -29,28 +32,35 @@ const ConditionsTable = ({ conditions }: ConditionsTableProps) => {
         </Tr>
       </Thead>
       <Tbody>
-        {conditions?.map((c) => {
-          let icon = <UnknownIcon />;
-          if (c.status === 'True') {
-            icon = <CheckCircleIcon color={okColor.value} />;
-          } else if (c.status === 'False') {
-            icon = <ExclamationCircleIcon color={dangerColor.value} size="sm" />;
-          }
-          return (
-            <Tr key={c.type} className="ai-conditions-table__no-border">
-              <Td>
-                <Flex
-                  alignItems={{ default: 'alignItemsCenter' }}
-                  spaceItems={{ default: 'spaceItemsXs' }}
-                >
-                  <FlexItem>{icon}</FlexItem>
-                  <FlexItem>{c.type}</FlexItem>
-                </Flex>
-              </Td>
-              <Td span={8}>{c.message}</Td>
-            </Tr>
-          );
-        })}
+        {conditions
+          ?.filter(({ type }) => !ignoredConditions.includes(type))
+          .map((c) => {
+            let icon = <UnknownIcon />;
+
+            const { okStatus, nokStatus } = reversedConditions.includes(c.type)
+              ? { okStatus: 'False', nokStatus: 'True' }
+              : { okStatus: 'True', nokStatus: 'False' };
+
+            if (c.status === okStatus) {
+              icon = <CheckCircleIcon color={okColor.value} />;
+            } else if (c.status === nokStatus) {
+              icon = <ExclamationCircleIcon color={dangerColor.value} size="sm" />;
+            }
+            return (
+              <Tr key={c.type} className="ai-conditions-table__no-border">
+                <Td>
+                  <Flex
+                    alignItems={{ default: 'alignItemsCenter' }}
+                    spaceItems={{ default: 'spaceItemsXs' }}
+                  >
+                    <FlexItem>{icon}</FlexItem>
+                    <FlexItem>{c.type}</FlexItem>
+                  </Flex>
+                </Td>
+                <Td span={8}>{c.message}</Td>
+              </Tr>
+            );
+          })}
       </Tbody>
     </TableComposable>
   );
