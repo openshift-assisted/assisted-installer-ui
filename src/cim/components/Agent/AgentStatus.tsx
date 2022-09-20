@@ -9,6 +9,7 @@ import { getAgentStatus, getWizardStepAgentStatus } from '../helpers/status';
 import '@patternfly/react-styles/css/utilities/Text/text.css';
 import { AdditionalNTPSourcesDialogToggle } from '../ClusterDeployment/AdditionalNTPSourcesDialogToggle';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import ValidationsRunningAlert from '../common/ValidationsRunningAlert';
 
 export type AgentStatusProps = {
   agent: AgentK8sResource;
@@ -16,6 +17,7 @@ export type AgentStatusProps = {
   onEditHostname?: AgentTableActions['onEditHost'];
   zIndex?: number;
   wizardStepId?: ClusterDeploymentWizardStepsType;
+  isDay2?: boolean;
 };
 
 const AgentStatus: React.FC<AgentStatusProps> = ({
@@ -24,6 +26,7 @@ const AgentStatus: React.FC<AgentStatusProps> = ({
   onEditHostname,
   zIndex,
   wizardStepId,
+  isDay2,
 }) => {
   const [host] = getAIHosts([agent]);
   const editHostname = onEditHostname ? () => onEditHostname(agent) : undefined;
@@ -35,6 +38,12 @@ const AgentStatus: React.FC<AgentStatusProps> = ({
     ? getWizardStepAgentStatus(agent, wizardStepId, t)
     : getAgentStatus(agent, false);
 
+  const showValidationsRunning =
+    isDay2 &&
+    Object.values(status.validationsInfo).some((valInfo) =>
+      valInfo.some((v) => ['pending', 'error', 'failure'].includes(v.status)),
+    );
+
   return (
     <HostStatus
       host={host}
@@ -42,6 +51,13 @@ const AgentStatus: React.FC<AgentStatusProps> = ({
       zIndex={zIndex}
       AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
       autoCSR
+      additionalPopoverContent={
+        showValidationsRunning ? (
+          <StackItem>
+            <ValidationsRunningAlert />
+          </StackItem>
+        ) : undefined
+      }
       {...status}
     >
       {pendingApproval && onApprove && (

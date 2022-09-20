@@ -5,6 +5,7 @@ import { AgentK8sResource } from '../../../types';
 import { getNodePoolStatus } from '../utils';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import ConditionsTable from './ConditionsTable';
+import ValidationsRunningAlert from '../../common/ValidationsRunningAlert';
 
 type NodePoolStatusProps = {
   nodePool: NodePoolK8sResource;
@@ -26,22 +27,32 @@ const NodePoolStatus = ({ nodePool, agents }: NodePoolStatusProps) => {
           bodyContent={
             <Stack hasGutter>
               {status.type === 'error' && (
-                <StackItem>
-                  <Alert
-                    variant="danger"
-                    isInline
-                    title={t('ai:Some hosts are in an error state.')}
-                  />
-                </StackItem>
+                <>
+                  <StackItem>
+                    <ValidationsRunningAlert />
+                  </StackItem>
+                  <StackItem>
+                    <Alert
+                      variant="danger"
+                      isInline
+                      title={t('ai:Some hosts are in an error state.')}
+                    />
+                  </StackItem>
+                </>
               )}
               {status.type === 'warning' && (
-                <StackItem>
-                  <Alert
-                    variant="warning"
-                    isInline
-                    title={t('ai:Some hosts are in a warning state.')}
-                  />
-                </StackItem>
+                <>
+                  <StackItem>
+                    <ValidationsRunningAlert />
+                  </StackItem>
+                  <StackItem>
+                    <Alert
+                      variant="warning"
+                      isInline
+                      title={t('ai:Some hosts are in a warning state.')}
+                    />
+                  </StackItem>
+                </>
               )}
               <StackItem>
                 <ConditionsTable conditions={nodePool.status?.conditions} />
