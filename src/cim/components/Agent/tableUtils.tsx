@@ -120,6 +120,7 @@ type AgentStatusColumnProps = {
   onApprove?: AgentTableActions['onApprove'];
   wizardStepId?: ClusterDeploymentWizardStepsType;
   t: TFunction;
+  isDay2?: boolean;
 };
 
 export const agentStatusColumn = ({
@@ -129,6 +130,7 @@ export const agentStatusColumn = ({
   onApprove,
   wizardStepId,
   t,
+  isDay2,
 }: AgentStatusColumnProps): TableRow<Host> => {
   return {
     header: {
@@ -151,6 +153,7 @@ export const agentStatusColumn = ({
             onApprove={onApprove}
             onEditHostname={editHostname}
             wizardStepId={wizardStepId}
+            isDay2={isDay2}
           />
         );
       } else if (bmh) {

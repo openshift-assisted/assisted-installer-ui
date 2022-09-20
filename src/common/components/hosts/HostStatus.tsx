@@ -7,6 +7,8 @@ import {
   FlexItem,
   Flex,
   ButtonProps,
+  Stack,
+  StackItem,
 } from '@patternfly/react-core';
 import { PopoverProps } from '@patternfly/react-core/dist/js/components/Popover/Popover';
 import hdate from 'human-date';
@@ -28,7 +30,6 @@ import { HostStatusProps } from './types';
 import { UpdateDay2ApiVipPropsType } from './HostValidationGroups';
 import { UnknownIcon } from '@patternfly/react-icons';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
-import { TFunction } from 'i18next';
 
 const getTitleWithProgress = (host: Host, status: HostStatusProps['status']) => {
   const stages = getHostProgressStages(host);
@@ -40,11 +41,13 @@ type HostStatusPopoverContentProps = ValidationInfoActionProps & {
   details?: string;
   validationsInfo: ValidationsInfo;
   autoCSR?: boolean;
+  additionalPopoverContent?: React.ReactNode;
 };
 
 const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({
   details,
   autoCSR,
+  additionalPopoverContent,
   ...props
 }) => {
   const { host } = props;
@@ -117,14 +120,17 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({
   }
 
   return (
-    <>
-      {details && (
-        <TextContent>
-          <Text>{details}</Text>
-        </TextContent>
-      )}
-      <HostValidationGroups {...props} />
-    </>
+    <Stack hasGutter>
+      {additionalPopoverContent}
+      <StackItem>
+        {details && (
+          <TextContent>
+            <Text>{details}</Text>
+          </TextContent>
+        )}
+        <HostValidationGroups {...props} />
+      </StackItem>
+    </Stack>
   );
 };
 
@@ -170,8 +176,8 @@ type WithHostStatusPopoverProps = AdditionNtpSourcePropsType &
     isSmall?: ButtonProps['isSmall'];
     details?: string;
     zIndex?: number;
-    t: TFunction;
     autoCSR?: boolean;
+    additionalPopoverContent?: React.ReactNode;
   };
 
 const WithHostStatusPopover: React.FC<WithHostStatusPopoverProps> = (props) => (
@@ -200,6 +206,7 @@ const HostStatus: React.FC<HostStatusProps> = ({
   children,
   zIndex,
   autoCSR,
+  additionalPopoverContent,
 }) => {
   const [keepOnOutsideClick, onValidationActionToggle] = React.useState(false);
 
@@ -210,7 +217,6 @@ const HostStatus: React.FC<HostStatusProps> = ({
 
   const { title, icon, sublabel, details, noPopover } = status;
   const titleWithProgress = getTitleWithProgress(host, status);
-  const { t } = useTranslation();
   const popoverProps: WithHostStatusPopoverProps = {
     hideOnOutsideClick: !keepOnOutsideClick,
     host,
@@ -221,8 +227,8 @@ const HostStatus: React.FC<HostStatusProps> = ({
     details,
     UpdateDay2ApiVipDialogToggleComponent,
     zIndex,
-    t,
     autoCSR,
+    additionalPopoverContent,
   };
 
   return (
