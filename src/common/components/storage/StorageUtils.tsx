@@ -3,6 +3,15 @@ import { sortable } from '@patternfly/react-table';
 import { TFunction } from 'i18next';
 import { getHostRole, getInventory, Host, RoleCell } from '../../index';
 import { TableRow } from '../hosts/AITable';
+import { Popover, Text, TextContent, TextVariants } from '@patternfly/react-core';
+import { ExclamationTriangleIcon } from '@patternfly/react-icons';
+import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
+
+const SkipFormattingDisks = () => (
+  <TextContent>
+    <Text component={TextVariants.p}>Some bootable disks will skip formatting</Text>
+  </TextContent>
+);
 
 export const roleColumn = (t: TFunction, schedulableMasters: boolean): TableRow<Host> => {
   return {
@@ -36,7 +45,18 @@ export const numberOfDisksColumn: TableRow<Host> = {
     const inventory = getInventory(host);
     const disks = inventory.disks || [];
     return {
-      title: <> {disks.length} </>,
+      title: (
+        <>
+          {' '}
+          {disks.length}
+          {'   '}
+          {host.skipFormattingDisks && (
+            <Popover bodyContent={<SkipFormattingDisks />} minWidth="20rem" maxWidth="30rem">
+              <ExclamationTriangleIcon color={warningColor.value} size="sm" />
+            </Popover>
+          )}
+        </>
+      ),
       props: { 'data-testid': 'disk-number' },
       sortableValue: disks.length,
     };

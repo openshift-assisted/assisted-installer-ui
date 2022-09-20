@@ -114,7 +114,12 @@ const storageStepValidationsMap: WizardStepValidationMap = {
   host: {
     allowedStatuses: ['known', 'disabled'],
     groups: ['hardware'],
-    validationIds: ['connected', 'media-connected'],
+    validationIds: [
+      'connected',
+      'media-connected',
+      'no-skip-installation-disk',
+      'no-skip-missing-disk',
+    ],
   },
   softValidationIds: [],
 };

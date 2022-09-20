@@ -748,6 +748,19 @@ export interface DiskInfo {
   diskSpeed?: DiskSpeed;
 }
 export type DiskRole = 'none' | 'install';
+/**
+ * Allows an addition or removal of a host disk from the host's skipFormattingDisks list
+ */
+export interface DiskSkipFormattingParams {
+  /**
+   * The ID of the disk that is being added to or removed from the host's skipFormattingDisks list
+   */
+  diskId: string;
+  /**
+   * True if you wish to add the disk to the skipFormattingDisks list, false if you wish to remove it
+   */
+  skipFormatting: boolean;
+}
 export interface DiskSpeed {
   tested?: boolean;
   exitCode?: number;
@@ -1100,6 +1113,19 @@ export interface Host {
    * Json containing node's labels.
    */
   nodeLabels?: string;
+  /**
+   * A comma-separated list of disks that will be formatted once
+   * installation begins, unless otherwise set to be skipped by
+   * skipFormattingDisks. This means that this list also includes disks
+   * that appear in skipFormattingDisks. This property is managed by the
+   * service and cannot be modified by the user.
+   */
+  disksToBeFormatted?: string;
+  /**
+   * A comma-seperated list of host disks that the service will avoid
+   * formatting.
+   */
+  skipFormattingDisks?: string;
 }
 export interface HostCreateParams {
   hostId: string; // uuid
@@ -1287,6 +1313,19 @@ export interface HostRegistrationResponse {
    */
   nodeLabels?: string;
   /**
+   * A comma-separated list of disks that will be formatted once
+   * installation begins, unless otherwise set to be skipped by
+   * skipFormattingDisks. This means that this list also includes disks
+   * that appear in skipFormattingDisks. This property is managed by the
+   * service and cannot be modified by the user.
+   */
+  disksToBeFormatted?: string;
+  /**
+   * A comma-seperated list of host disks that the service will avoid
+   * formatting.
+   */
+  skipFormattingDisks?: string;
+  /**
    * Command for starting the next step runner
    */
   nextStepRunnerCommand?: {
@@ -1347,6 +1386,10 @@ export interface HostUpdateParams {
   hostRole?: 'auto-assign' | 'master' | 'worker';
   hostName?: string;
   disksSelectedConfig?: DiskConfigParams[];
+  /**
+   * Allows changing the host's skipFormattingDisks parameter
+   */
+  disksSkipFormatting?: DiskSkipFormattingParams[];
   machineConfigPoolName?: string;
   /**
    * A string which will be used as Authorization Bearer token to fetch the ignition from ignitionEndpointUrl.
@@ -1393,7 +1436,10 @@ export type HostValidationId =
   | 'non-overlapping-subnets'
   | 'vsphere-disk-uuid-enabled'
   | 'compatible-agent'
+  | 'no-skip-installation-disk'
+  | 'no-skip-missing-disk'
   | 'service-has-sufficient-spoke-kube-api-access';
+
 /**
  * Explicit ignition endpoint overrides the default ignition endpoint.
  */
@@ -1654,6 +1700,10 @@ export interface InstallCmdRequest {
    * Core-os installer addtional args
    */
   installerArgs?: string;
+  /**
+   * Skip formatting installation disk
+   */
+  skipInstallationDiskCleanup?: boolean;
 }
 export interface InstallerArgsParams {
   /**
