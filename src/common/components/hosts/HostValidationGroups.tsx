@@ -210,8 +210,8 @@ export const HostValidationGroups: React.FC<HostValidationGroupsProps> = ({
   const { t } = useTranslation();
   return (
     <>
-      {Object.keys(validationsInfo).map((groupName: string) => {
-        const groupLabel = hostValidationGroupLabels(t)[groupName];
+      {Object.keys(validationsInfo).map((groupName) => {
+        const groupLabel = hostValidationGroupLabels(t)[groupName] as string;
 
         const pendingValidations = (validationsInfo[groupName] as Validation[]).filter(
           (v: Validation) => v.status === 'pending',
