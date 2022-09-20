@@ -14,9 +14,11 @@ export const useSupportedOCPVersions = (
 ) => {
   return React.useMemo(() => {
     const ocpVersions = getOCPVersions(clusterImages);
-    if (supportedVersionsCM?.data?.versions) {
+    const supportedVersionsString = supportedVersionsCM?.data?.['supported-versions'];
+    if (supportedVersionsString) {
       try {
-        const supportedVersions = JSON.parse(supportedVersionsCM.data.versions) as string[];
+        const supportedVersions = (JSON.parse(supportedVersionsString) as { versions: string[] })
+          .versions;
         return ocpVersions.filter((v) => supportedVersions.find((sv) => v.version.startsWith(sv)));
       } catch (err) {
         console.error('Could not parse supported versions config map value.', getErrorMessage(err));

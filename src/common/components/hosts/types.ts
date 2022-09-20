@@ -80,4 +80,5 @@ export type HostStatusProps = AdditionNtpSourcePropsType &
     status: HostStatusDef;
     zIndex?: number;
     autoCSR?: boolean;
+    additionalPopoverContent?: React.ReactNode;
   };
