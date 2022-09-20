@@ -26,7 +26,7 @@ const VipStaticValue = ({ vipName, cluster, validationErrorMessage }: VipStaticV
   const machineNetworkCidr = selectMachineNetworkCIDR(cluster);
 
   if (vipDhcpAllocation && cluster[vipName]) {
-    return <>cluster[vipName]</>;
+    return <>{cluster[vipName]}</>;
   }
   if (vipDhcpAllocation && validationErrorMessage) {
     return (
