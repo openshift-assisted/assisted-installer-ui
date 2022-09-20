@@ -1,5 +1,5 @@
 import React from 'react';
-import { Cluster, Host, HostUpdateParams } from '../../api';
+import { Cluster, Disk, Host, HostUpdateParams } from '../../api';
 import { ValidationsInfo } from '../../types/hosts';
 import { HostsNotShowingLinkProps } from '../clusterConfiguration';
 import { OnDiskRoleType } from './DiskRole';
@@ -48,6 +48,11 @@ export type HostsTableActions = {
   onExcludedODF?: (
     hostId: Host['id'],
     nodeLabels: HostUpdateParams['nodeLabels'],
+  ) => Promise<unknown>;
+  updateSkipFormatting?: (
+    shouldFormatDisk: boolean,
+    hostId: Host['id'],
+    diskId: Disk['id'],
   ) => Promise<unknown>;
 };
 

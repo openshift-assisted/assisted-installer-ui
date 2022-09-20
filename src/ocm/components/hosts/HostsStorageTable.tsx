@@ -32,16 +32,28 @@ import {
 } from '../../../common/components/hosts/HostsTableDetailContext';
 
 export function ExpandComponent({ obj: host }: ExpandComponentProps<Host>) {
-  const { onDiskRole, canEditDisks } = useHostsTableDetailContext();
+  const { onDiskRole, canEditDisks, updateDiskSkipFormatting } = useHostsTableDetailContext();
   return (
-    <StorageDetail key={host.id} host={host} onDiskRole={onDiskRole} canEditDisks={canEditDisks} />
+    <StorageDetail
+      key={host.id}
+      host={host}
+      onDiskRole={onDiskRole}
+      canEditDisks={canEditDisks}
+      updateDiskSkipFormatting={updateDiskSkipFormatting}
+    />
   );
 }
 
 const HostsStorageTable = ({ cluster }: { cluster: Cluster }) => {
   const { t } = useTranslation();
-  const { onEditHost, actionChecks, onDiskRole, actionResolver, ...modalProps } =
-    useHostsTable(cluster);
+  const {
+    onEditHost,
+    actionChecks,
+    onDiskRole,
+    actionResolver,
+    updateDiskSkipFormatting,
+    ...modalProps
+  } = useHostsTable(cluster);
 
   const content = React.useMemo(() => {
     const columns = [
@@ -69,6 +81,7 @@ const HostsStorageTable = ({ cluster }: { cluster: Cluster }) => {
           <HostsTableDetailContextProvider
             canEditDisks={actionChecks.canEditDisks}
             onDiskRole={onDiskRole}
+            updateDiskSkipFormatting={updateDiskSkipFormatting}
           >
             <CommonStorageTable
               testId="storage-table"

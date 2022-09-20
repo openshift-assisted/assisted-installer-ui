@@ -6,13 +6,15 @@ import {
   hasEnabledOperators,
   OPERATOR_NAME_ODF,
 } from '../../../common';
-import { isAddHostsCluster } from '../clusters/utils';
+import { isAddHostsCluster, isSomeDisksSkipFormatting } from '../clusters/utils';
 import OdfDisksManualFormattingHint from './OdfDisksManualFormattingHint';
 
 const StorageAlerts = ({ cluster }: { cluster: Cluster }) => {
   const showFormattingHint =
     hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_ODF) &&
     !isAddHostsCluster(cluster);
+  const someDisksAreSkipFormatting = isSomeDisksSkipFormatting(cluster);
+
   return (
     <Stack hasGutter>
       {showFormattingHint && (
@@ -21,7 +23,7 @@ const StorageAlerts = ({ cluster }: { cluster: Cluster }) => {
         </StackItem>
       )}
       <StackItem>
-        <FormatDiskWarning />
+        <FormatDiskWarning someDisksAreSkipFormatting={someDisksAreSkipFormatting} />
       </StackItem>
     </Stack>
   );

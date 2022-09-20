@@ -7,7 +7,7 @@ import { useStateSafely } from '../../hooks';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
 
-const getCurrentDiskRoleLabel = (
+export const getCurrentDiskRoleLabel = (
   disk: Disk,
   installationDiskId: Host['installationDiskId'],
   t: TFunction,
