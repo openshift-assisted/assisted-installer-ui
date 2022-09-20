@@ -55,7 +55,7 @@ export const getClusterProgressAlerts = (
               cluster={cluster}
               totalHosts={totalWorkers}
               failedHosts={failedWorkers}
-              title={'Some workers failed to install'}
+              title={`Could not install ${failedWorkers} worker hosts`}
               hostsType={'worker'}
               message={'failed to install.'}
             />

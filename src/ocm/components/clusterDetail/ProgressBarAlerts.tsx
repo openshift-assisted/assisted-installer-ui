@@ -10,6 +10,7 @@ import { useAlerts } from '../../../common/components/AlertsContextProvider';
 import { getBugzillaLink, operatorLabels } from '../../../common/config/constants';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
+import { ocmClient } from '../../api';
 
 type InstallationProgressWarningProps = {
   cluster: Cluster;
@@ -36,6 +37,37 @@ const getFailedOperatorsNames = (failedOperators: MonitoredOperator[], t: TFunct
     })`;
   }
   return failedOperatorsNames;
+};
+
+const getFailedHostsMessage = (
+  failedHosts: number,
+  totalHosts: number,
+  message?: string,
+  hostsType?: string,
+) => {
+  if (hostsType === 'worker') {
+    if (ocmClient) {
+      return (
+        <>
+          Error information for each host can be found in the host inventory table. To retry adding
+          failed hosts, navigate to the clusters list inside OpenShift Cluster Manager, click your
+          cluster name, and select the <b>Add hosts</b> tab.
+        </>
+      );
+    }
+    return (
+      <>
+        Error information for each host can be found in the host inventory table. To retry adding
+        failed hosts, press the <b>Add hosts</b> button.
+      </>
+    );
+  }
+  return (
+    <>
+      {failedHosts}/{totalHosts} {pluralize(totalHosts, hostsType)} {message} Due to this, the
+      cluster will be degraded. Please check the installation log for more information.
+    </>
+  );
 };
 
 export const HostInstallationWarning = ({
@@ -68,10 +100,7 @@ export const HostInstallationWarning = ({
         }
       >
         <RenderIf condition={failedHosts !== 0}>
-          <p>
-            {failedHosts}/{totalHosts} {pluralize(totalHosts, hostsType)} {message} Due to this, the
-            cluster will be degraded. Please check the installation log for more information.
-          </p>
+          <p>{getFailedHostsMessage(failedHosts, totalHosts, message, hostsType)}</p>
         </RenderIf>
         <RenderIf condition={failedOperators?.length > 0}>
           <p>
