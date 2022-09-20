@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextContent, Text, TextVariants, Grid, GridItem } from '@patternfly/react-core';
+import { Grid, GridItem } from '@patternfly/react-core';
 import {
   Table,
   TableHeader,
@@ -11,7 +11,7 @@ import {
 } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
 import { DetailItem, DetailList, DetailListProps } from '../ui';
-import { Host, Interface, stringToJSON } from '../../api';
+import { Disk, Host, Interface, stringToJSON } from '../../api';
 import { ValidationsInfo } from '../../types/hosts';
 import { WithTestID } from '../../types';
 import { DASH } from '../constants';
@@ -22,6 +22,7 @@ import NtpValidationStatus from './NtpValidationStatus';
 import { OnDiskRoleType } from './DiskRole';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import StorageDetail from '../storage/StorageDetail';
+import SectionTitle from '../ui/SectionTitle';
 
 type HostDetailProps = {
   host: Host;
@@ -29,10 +30,11 @@ type HostDetailProps = {
   onDiskRole?: OnDiskRoleType;
   AdditionalNTPSourcesDialogToggleComponent?: ValidationInfoActionProps['AdditionalNTPSourcesDialogToggleComponent'];
   hideNTPStatus?: boolean;
-};
-
-type SectionTitleProps = {
-  title: string;
+  updateDiskSkipFormatting?: (
+    shouldFormatDisk: boolean,
+    hostId: Host['id'],
+    diskId: Disk['id'],
+  ) => Promise<unknown>;
 };
 
 type SectionColumnProps = {
@@ -42,16 +44,6 @@ type SectionColumnProps = {
 type NicsTableProps = {
   interfaces: Interface[];
 };
-
-const SectionTitle: React.FC<SectionTitleProps & WithTestID> = ({ title, testId }) => (
-  <GridItem>
-    <TextContent>
-      <Text data-testid={testId} component={TextVariants.h3}>
-        {title}
-      </Text>
-    </TextContent>
-  </GridItem>
-);
 
 const SectionColumn: React.FC<SectionColumnProps> = ({ children }) => (
   <GridItem span={4}>
@@ -120,6 +112,7 @@ export const HostDetail = ({
   onDiskRole,
   AdditionalNTPSourcesDialogToggleComponent,
   hideNTPStatus = false,
+  updateDiskSkipFormatting,
 }: HostDetailProps) => {
   const { t } = useTranslation();
   const { id, validationsInfo: hostValidationsInfo } = host;
@@ -210,7 +203,12 @@ export const HostDetail = ({
           value={ntpValidationStatus}
         />
       </SectionColumn>
-      <StorageDetail host={host} onDiskRole={onDiskRole} canEditDisks={canEditDisks} />
+      <StorageDetail
+        host={host}
+        onDiskRole={onDiskRole}
+        canEditDisks={canEditDisks}
+        updateDiskSkipFormatting={updateDiskSkipFormatting}
+      />
       <SectionTitle
         testId={'nics-section'}
         title={`${nics.length} NIC${nics.length === 1 ? '' : 's'}`}

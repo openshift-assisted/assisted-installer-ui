@@ -11,6 +11,7 @@ import {
   ErrorState,
   LoadingState,
   FeatureListType,
+  AssistedInstallerOCMPermissionTypesListType,
 } from '../../../common';
 import { useClusterPolling, useFetchCluster } from '../clusters/clusterPolling';
 import ClusterWizard from '../clusterWizard/ClusterWizard';
@@ -28,6 +29,7 @@ import ClusterWizardContextProvider from '../clusterWizard/ClusterWizardContextP
 type AssistedInstallerDetailCardProps = {
   aiClusterId: string;
   allEnabledFeatures: FeatureListType;
+  permissions?: AssistedInstallerOCMPermissionTypesListType;
 };
 
 const errorStateActions: React.ReactNode[] = [];
@@ -92,6 +94,7 @@ const LoadingDefaultConfigFailedCard: React.FC = () => (
 const AssistedInstallerDetailCard: React.FC<AssistedInstallerDetailCardProps> = ({
   aiClusterId,
   allEnabledFeatures,
+  permissions,
 }) => {
   const fetchCluster = useFetchCluster(aiClusterId);
   const { cluster, uiState } = useClusterPolling(aiClusterId);
@@ -116,16 +119,17 @@ const AssistedInstallerDetailCard: React.FC<AssistedInstallerDetailCardProps> = 
     return null;
   }
 
-  let content;
-  if (['insufficient', 'ready', 'pending-for-input'].includes(cluster.status)) {
-    content = (
-      <ClusterWizardContextProvider cluster={cluster} infraEnv={infraEnv}>
+  const showWizard = ['insufficient', 'ready', 'pending-for-input'].includes(cluster.status);
+
+  const content = (
+    <ClusterWizardContextProvider cluster={cluster} infraEnv={infraEnv} permissions={permissions}>
+      {showWizard ? (
         <ClusterWizard cluster={cluster} infraEnv={infraEnv} updateInfraEnv={updateInfraEnv} />
-      </ClusterWizardContextProvider>
-    );
-  } else {
-    content = <ClusterInstallationProgressCard cluster={cluster} />;
-  }
+      ) : (
+        <ClusterInstallationProgressCard cluster={cluster} />
+      )}
+    </ClusterWizardContextProvider>
+  );
 
   return (
     <FeatureGateContextProvider features={allEnabledFeatures}>

@@ -40,6 +40,7 @@ const HostsService = {
 
   async update(clusterId: Cluster['id'], hostId: Host['id'], params: HostUpdateParams) {
     const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId);
+    HostsAPI.abortLastGetRequest();
     return HostsAPI.update(infraEnvId, hostId, params);
   },
 
@@ -75,6 +76,17 @@ const HostsService = {
   ) {
     return HostsService.update(clusterId, hostId, {
       disksSelectedConfig: [{ id: diskId, role: newDiskRole }],
+    });
+  },
+
+  updateFormattingDisks(
+    clusterId: Cluster['id'],
+    hostId: Host['id'],
+    diskIdValue: Required<Disk>['id'],
+    shouldSkipFormat: boolean,
+  ) {
+    return HostsService.update(clusterId, hostId, {
+      disksSkipFormatting: [{ diskId: diskIdValue, skipFormatting: shouldSkipFormat }],
     });
   },
 

@@ -31,6 +31,8 @@ import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import HardwareStatus from './HardwareStatus';
 import HostsTableEmptyState from '../hosts/HostsTableEmptyState';
+import { useSelector } from 'react-redux';
+import { selectCurrentClusterPermissionsState } from '../../selectors';
 
 export const hardwareStatusColumn = (
   onEditHostname?: HostsTableActions['onEditHost'],
@@ -71,7 +73,6 @@ const HostRowDetailExpand = ({ obj: host }: ExpandComponentProps<Host>) => (
 
 type HostsDiscoveryTableProps = {
   cluster: Cluster;
-  skipDisabled?: boolean;
 };
 
 const HostsDiscoveryTable = ({ cluster }: HostsDiscoveryTableProps) => {
@@ -88,6 +89,7 @@ const HostsDiscoveryTable = ({ cluster }: HostsDiscoveryTableProps) => {
     ...modalProps
   } = useHostsTable(cluster);
 
+  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const isSNOCluster = isSNO(cluster);
   const { t } = useTranslation();
   const content = React.useMemo(
@@ -107,11 +109,12 @@ const HostsDiscoveryTable = ({ cluster }: HostsDiscoveryTableProps) => {
   const hosts = cluster.hosts || [];
   const paginationProps = usePagination(hosts.length);
   const itemIDs = hosts.map((h) => h.id);
+  const showBulkActions = !(isViewerMode || isSNOCluster);
 
   return (
     <>
       <Stack hasGutter>
-        {!isSNOCluster && (
+        {showBulkActions && (
           <StackItem>
             <TableToolbar
               selectedIDs={selectedHostIDs || []}
@@ -132,7 +135,7 @@ const HostsDiscoveryTable = ({ cluster }: HostsDiscoveryTableProps) => {
             content={content}
             actionResolver={actionResolver}
             ExpandComponent={HostRowDetailExpand}
-            onSelect={isSNOCluster ? undefined : onSelect}
+            onSelect={showBulkActions ? onSelect : undefined}
             selectedIDs={selectedHostIDs}
             setSelectedIDs={setSelectedHostIDs}
             {...paginationProps}

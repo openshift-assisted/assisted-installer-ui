@@ -1,20 +1,29 @@
 import * as React from 'react';
 import { Stack, StackItem } from '@patternfly/react-core';
-import { Cluster, FormatDiskWarning, hasODFOperators } from '../../../common';
-import { isAddHostsCluster } from '../clusters/utils';
-import OCSDisksManualFormattingHint from './OCSDisksManualFormattingHint';
+import {
+  Cluster,
+  FormatDiskWarning,
+  hasEnabledOperators,
+  OPERATOR_NAME_ODF,
+} from '../../../common';
+import { isAddHostsCluster, isSomeDisksSkipFormatting } from '../clusters/utils';
+import OdfDisksManualFormattingHint from './OdfDisksManualFormattingHint';
 
 const StorageAlerts = ({ cluster }: { cluster: Cluster }) => {
-  const showFormattingHint = hasODFOperators(cluster) && !isAddHostsCluster(cluster);
+  const showFormattingHint =
+    hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_ODF) &&
+    !isAddHostsCluster(cluster);
+  const someDisksAreSkipFormatting = isSomeDisksSkipFormatting(cluster);
+
   return (
     <Stack hasGutter>
       {showFormattingHint && (
         <StackItem>
-          <OCSDisksManualFormattingHint />
+          <OdfDisksManualFormattingHint />
         </StackItem>
       )}
       <StackItem>
-        <FormatDiskWarning />
+        <FormatDiskWarning someDisksAreSkipFormatting={someDisksAreSkipFormatting} />
       </StackItem>
     </Stack>
   );

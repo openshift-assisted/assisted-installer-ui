@@ -14,7 +14,19 @@ import {
 import { AxiosResponse } from 'axios';
 import { ClustersAPIGetPresignedOptions } from './types';
 
+let _getRequestAbortController = new AbortController();
+
 const ClustersAPI = {
+  abortLastGetRequest() {
+    _getRequestAbortController.abort();
+    /**
+     * The AbortController.signal can only be aborted once per instance.
+     * Therefore in order for other requests to be also abortable we need
+     * to create a new instance when this event occurs
+     */
+    _getRequestAbortController = new AbortController();
+  },
+
   makeBaseURI(clusterId?: Cluster['id']) {
     return `/v2/clusters/${clusterId ? clusterId : ''}`;
   },
@@ -92,11 +104,15 @@ const ClustersAPI = {
   },
 
   list() {
-    return client.get<Cluster[]>(`${ClustersAPI.makeBaseURI()}`);
+    return client.get<Cluster[]>(`${ClustersAPI.makeBaseURI()}`, {
+      signal: _getRequestAbortController.signal,
+    });
   },
 
   get(clusterId: Cluster['id']) {
-    return client.get<Cluster>(`${ClustersAPI.makeBaseURI(clusterId)}`);
+    return client.get<Cluster>(`${ClustersAPI.makeBaseURI(clusterId)}`, {
+      signal: _getRequestAbortController.signal,
+    });
   },
 
   getSupportedPlatforms(clusterId: Cluster['id']) {

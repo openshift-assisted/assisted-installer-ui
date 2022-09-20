@@ -1,22 +1,23 @@
 import React from 'react';
 import { Stack, StackItem } from '@patternfly/react-core';
 import {
-  hostnameColumn,
-  roleColumn,
   countColumn,
   disksColumn,
+  hostnameColumn,
+  roleColumn,
 } from '../../../common/components/hosts/tableUtils';
 import {
-  odfUsageColumn,
   numberOfDisksColumn,
+  odfUsageColumn,
 } from '../../../common/components/storage/StorageUtils';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import {
   Cluster,
   Host,
-  hasODFOperators,
-  selectSchedulableMasters,
+  hasEnabledOperators,
   isCompact,
+  selectSchedulableMasters,
+  OPERATOR_NAME_ODF,
 } from '../../../common';
 import { hardwareStatusColumn } from './HostsDiscoveryTable';
 import { usePagination } from '../../../common/components/hosts/usePagination';
@@ -31,16 +32,28 @@ import {
 } from '../../../common/components/hosts/HostsTableDetailContext';
 
 export function ExpandComponent({ obj: host }: ExpandComponentProps<Host>) {
-  const { onDiskRole, canEditDisks } = useHostsTableDetailContext();
+  const { onDiskRole, canEditDisks, updateDiskSkipFormatting } = useHostsTableDetailContext();
   return (
-    <StorageDetail key={host.id} host={host} onDiskRole={onDiskRole} canEditDisks={canEditDisks} />
+    <StorageDetail
+      key={host.id}
+      host={host}
+      onDiskRole={onDiskRole}
+      canEditDisks={canEditDisks}
+      updateDiskSkipFormatting={updateDiskSkipFormatting}
+    />
   );
 }
 
 const HostsStorageTable = ({ cluster }: { cluster: Cluster }) => {
   const { t } = useTranslation();
-  const { onEditHost, actionChecks, onDiskRole, actionResolver, ...modalProps } =
-    useHostsTable(cluster);
+  const {
+    onEditHost,
+    actionChecks,
+    onDiskRole,
+    actionResolver,
+    updateDiskSkipFormatting,
+    ...modalProps
+  } = useHostsTable(cluster);
 
   const content = React.useMemo(() => {
     const columns = [
@@ -50,7 +63,7 @@ const HostsStorageTable = ({ cluster }: { cluster: Cluster }) => {
       disksColumn,
       numberOfDisksColumn,
     ];
-    if (hasODFOperators(cluster)) {
+    if (hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_ODF)) {
       const excludeODfForMasters = !isCompact(cluster);
       columns.push(odfUsageColumn(excludeODfForMasters));
     }
@@ -68,6 +81,7 @@ const HostsStorageTable = ({ cluster }: { cluster: Cluster }) => {
           <HostsTableDetailContextProvider
             canEditDisks={actionChecks.canEditDisks}
             onDiskRole={onDiskRole}
+            updateDiskSkipFormatting={updateDiskSkipFormatting}
           >
             <CommonStorageTable
               testId="storage-table"

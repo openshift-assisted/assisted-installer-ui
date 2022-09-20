@@ -85,8 +85,9 @@ const hostDiscoveryStepValidationsMap: WizardStepValidationMap = {
     groups: [],
     validationIds: [
       'sufficient-masters-count',
-      'odf-requirements-satisfied',
       'lso-requirements-satisfied',
+      'odf-requirements-satisfied',
+      'lvm-requirements-satisfied',
       'cnv-requirements-satisfied',
     ],
   },
@@ -96,8 +97,9 @@ const hostDiscoveryStepValidationsMap: WizardStepValidationMap = {
     validationIds: [
       'connected',
       'media-connected',
-      'odf-requirements-satisfied',
       'lso-requirements-satisfied',
+      'odf-requirements-satisfied',
+      'lvm-requirements-satisfied',
       'cnv-requirements-satisfied',
     ],
   },
@@ -112,7 +114,12 @@ const storageStepValidationsMap: WizardStepValidationMap = {
   host: {
     allowedStatuses: ['known', 'disabled'],
     groups: ['hardware'],
-    validationIds: ['connected', 'media-connected'],
+    validationIds: [
+      'connected',
+      'media-connected',
+      'no-skip-installation-disk',
+      'no-skip-missing-disk',
+    ],
   },
   softValidationIds: [],
 };
