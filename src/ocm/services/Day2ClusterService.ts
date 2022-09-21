@@ -1,7 +1,7 @@
 import { InfraEnvsService } from '.';
 import { Cluster } from '../../common/api/types';
 import { OcmClusterType } from '../components/AddHosts/types';
-import { ClustersAPI, HostsAPI } from './apis';
+import { ClustersAPI } from './apis';
 
 const Day2ClusterService = {
   getOpenshiftClusterId(ocmCluster?: OcmClusterType) {
@@ -36,7 +36,6 @@ const Day2ClusterService = {
 
     if (day2Clusters.length !== 0) {
       const { data } = await ClustersAPI.get(day2Clusters[0].id);
-      data.hosts = await Day2ClusterService.fetchHosts(data.id);
       return data;
     } else {
       return Day2ClusterService.createCluster(
@@ -51,7 +50,6 @@ const Day2ClusterService = {
 
   async fetchClusterById(clusterId: Cluster['id']) {
     const { data } = await ClustersAPI.get(clusterId);
-    data.hosts = await Day2ClusterService.fetchHosts(data.id);
     return data;
   },
 
@@ -76,13 +74,6 @@ const Day2ClusterService = {
       openshiftVersion,
     });
 
-    data.hosts = await Day2ClusterService.fetchHosts(data.id);
-    return data;
-  },
-
-  async fetchHosts(clusterId: Cluster['id']) {
-    const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId);
-    const { data } = await HostsAPI.list(infraEnvId);
     return data;
   },
 };

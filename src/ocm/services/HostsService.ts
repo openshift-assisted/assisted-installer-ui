@@ -1,7 +1,7 @@
 import { canInstallHost, Cluster, Disk, DiskRole, Host, HostUpdateParams } from '../../common';
 import { AxiosError, AxiosPromise } from 'axios';
 import InfraEnvsService from './InfraEnvsService';
-import { HostsAPI } from '../services/apis';
+import { ClustersAPI, HostsAPI } from '../services/apis';
 import { APIErrorMixin } from '../api/types';
 
 const HostsService = {
@@ -40,7 +40,7 @@ const HostsService = {
 
   async update(clusterId: Cluster['id'], hostId: Host['id'], params: HostUpdateParams) {
     const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId);
-    HostsAPI.abortLastGetRequest();
+    ClustersAPI.abortLastGetRequest();
     return HostsAPI.update(infraEnvId, hostId, params);
   },
 
