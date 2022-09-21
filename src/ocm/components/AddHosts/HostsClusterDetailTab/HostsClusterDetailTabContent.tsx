@@ -1,33 +1,23 @@
 import React, { ReactNode } from 'react';
-import { Button, ButtonVariant, EmptyStateVariant } from '@patternfly/react-core';
+import { useStateSafely } from '../../../../common/hooks';
 import {
-  Cluster,
-  POLLING_INTERVAL,
   AddHostsContextProvider,
-  AlertsContextProvider,
+  Cluster,
   ErrorState,
   LoadingState,
-} from '../../../common';
-import { usePullSecret } from '../../hooks';
-import { AssistedUILibVersion } from '../ui';
-import { handleApiError } from '../../api';
-import { useOpenshiftVersions } from '../../hooks';
-import AddHosts from './AddHosts';
-import { OcmClusterType } from './types';
-import Day2ClusterService from '../../services/Day2ClusterService';
-import { useStateSafely } from '../../../common/hooks';
-import { isApiError } from '../../api/types';
-import { FeatureSupportLevelProvider } from '../featureSupportLevels';
+  POLLING_INTERVAL,
+  InlineLink,
+} from '../../../../common';
+import { useOpenshiftVersions, usePullSecret } from '../../../hooks';
+import { EmptyStateVariant } from '@patternfly/react-core';
+import Day2ClusterService from '../../../services/Day2ClusterService';
+import { handleApiError } from '../../../api';
+import { isApiError } from '../../../api/types';
+import { FeatureSupportLevelProvider } from '../../featureSupportLevels';
+import AddHosts from '../AddHosts';
+import { HostsClusterDetailTabProps } from './types';
 
-type OpenModalType = (modalName: string, cluster?: OcmClusterType) => void;
-
-type HostsClusterDetailTabProps = {
-  cluster?: OcmClusterType;
-  isVisible: boolean;
-  openModal?: OpenModalType;
-};
-
-const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
+export const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
   cluster,
   isVisible,
   openModal,
@@ -37,45 +27,15 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
   const pullSecret = usePullSecret();
   const { normalizeClusterVersion } = useOpenshiftVersions();
 
-  const TryAgain = React.useCallback(
-    () => (
-      <Button
-        onClick={() => {
-          setError(undefined);
-          setDay2Cluster(undefined);
-        }}
-        variant={ButtonVariant.link}
-        isInline
-      >
-        try again
-      </Button>
-    ),
-    [setError, setDay2Cluster],
-  );
+  const handleClickTryAgainLink = React.useCallback(() => {
+    setError(undefined);
+    setDay2Cluster(undefined);
+  }, [setDay2Cluster]);
 
-  const MissingApiUrl = React.useCallback(() => {
-    return (
-      <>
-        Neither API nor Console URL has been reported by the cluster yet.
-        {openModal && (
-          <>
-            {' '}
-            <br />
-            Please hold on and {<TryAgain />} later or{' '}
-            <Button
-              variant={ButtonVariant.link}
-              isInline
-              onClick={() => openModal('edit-console-url', cluster)}
-            >
-              add console URL
-            </Button>{' '}
-            manually.
-          </>
-        )}
-      </>
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [openModal, cluster]);
+  const handleClickMissingApiUrlLink = React.useCallback(
+    () => openModal?.('edit-console-url', cluster),
+    [cluster, openModal],
+  );
 
   React.useEffect(() => {
     if (!isVisible && day2Cluster) {
@@ -94,7 +54,8 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
           <>
             Unsupported OpenShift cluster version: ${cluster.openshift_version}.
             <br />
-            Check your connection and <TryAgain />.
+            Check your connection and{' '}
+            <InlineLink onClick={handleClickTryAgainLink}>try again</InlineLink>.
           </>,
         );
         return;
@@ -109,7 +70,8 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
         } catch {
           setError(
             <>
-              Cluster API URL is not valid (${cluster.api.url}), you can <TryAgain />.
+              Cluster API URL is not valid (${cluster.api.url}), you can{' '}
+              <InlineLink onClick={handleClickTryAgainLink}>try again</InlineLink>.
             </>,
           );
           return;
@@ -126,7 +88,8 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
         } catch {
           setError(
             <>
-              Cluster Console URL is not valid (${cluster.console?.url}), you can <TryAgain />.
+              Cluster Console URL is not valid (${cluster.console?.url}), you can{' '}
+              <InlineLink onClick={handleClickTryAgainLink}>try again</InlineLink>.
             </>,
           );
           return;
@@ -134,7 +97,21 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
       }
 
       if (!apiVipDnsname) {
-        setError(<MissingApiUrl />);
+        setError(
+          <>
+            Neither API nor Console URL has been reported by the cluster yet.
+            {openModal && (
+              <>
+                <br />
+                Please hold on and{' '}
+                <InlineLink onClick={handleClickTryAgainLink}>try again</InlineLink> later or{' '}
+                <InlineLink onClick={handleClickMissingApiUrlLink}>add console URL</InlineLink>{' '}
+                manually.
+              </>
+            )}
+          </>,
+        );
+
         return;
       }
 
@@ -148,15 +125,16 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
           setDay2Cluster(day2Cluster);
         } catch (e) {
           handleApiError(e);
-          if (isApiError(e) && e.request) {
-            const isImport = e.request._url.includes('/import');
+          if (isApiError(e)) {
+            const isImport = e.config.url?.includes('/import');
             setError(
               <>
                 {isImport
                   ? 'Failed to create wrapping cluster for adding new hosts.'
                   : 'Failed to fetch cluster for adding new hosts.'}
                 <br />
-                Check your connection and <TryAgain />.
+                Check your connection and{' '}
+                <InlineLink onClick={handleClickTryAgainLink}>try again</InlineLink>.
               </>,
             );
           }
@@ -188,7 +166,8 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
           <>
             Failed to reload cluster data.
             <br />
-            Check your connection and <TryAgain />.
+            Check your connection and{' '}
+            <InlineLink onClick={handleClickTryAgainLink}>try again</InlineLink>.
           </>,
         );
       }
@@ -232,12 +211,3 @@ const HostsClusterDetailTabContent: React.FC<HostsClusterDetailTabProps> = ({
     </AddHostsContextProvider>
   );
 };
-
-export const HostsClusterDetailTab: React.FC<HostsClusterDetailTabProps> = (props) => (
-  <>
-    <AssistedUILibVersion />
-    <AlertsContextProvider>
-      <HostsClusterDetailTabContent {...props} />
-    </AlertsContextProvider>
-  </>
-);
