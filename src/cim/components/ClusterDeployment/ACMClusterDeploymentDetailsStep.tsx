@@ -2,7 +2,7 @@ import { Formik, FormikProps, useFormikContext } from 'formik';
 import noop from 'lodash/noop';
 import * as React from 'react';
 import { Ref } from 'react';
-import { ClusterDetailsValues } from '../../../common';
+import { ClusterDetailsValues, getRichTextValidation } from '../../../common';
 import {
   AgentClusterInstallK8sResource,
   AgentK8sResource,
@@ -79,7 +79,7 @@ const ACMClusterDeploymentDetailsStep: React.FC<ACMClusterDeploymentDetailsStepP
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={validationSchema}
+      validate={getRichTextValidation(validationSchema)}
       innerRef={formRef}
       onSubmit={noop}
     >

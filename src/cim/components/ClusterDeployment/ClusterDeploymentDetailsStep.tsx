@@ -10,6 +10,7 @@ import {
   ClusterWizardStepHeader,
   ClusterDetailsValues,
   useFeatureSupportLevel,
+  getRichTextValidation,
 } from '../../../common';
 
 import { ClusterDeploymentDetailsStepProps, ClusterDeploymentDetailsValues } from './types';
@@ -128,7 +129,7 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={validationSchema}
+      validate={getRichTextValidation(validationSchema)}
       onSubmit={handleSubmit}
     >
       {({ submitForm, isSubmitting, isValid, isValidating, dirty }) => {
