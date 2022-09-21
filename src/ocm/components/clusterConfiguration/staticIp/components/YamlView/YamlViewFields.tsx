@@ -2,7 +2,7 @@ import React from 'react';
 import { TextVariants, TextContent, Text, FormGroup, Grid } from '@patternfly/react-core';
 import { useField } from 'formik';
 import { Language } from '@patternfly/react-code-editor';
-import { getFieldId, HostStaticNetworkConfig } from '../../../../../../common';
+import { getFieldId, HostStaticNetworkConfig, PopoverIcon } from '../../../../../../common';
 import StaticIpHostsArray, { HostComponentProps } from '../StaticIpHostsArray';
 import HostSummary from '../CollapsedHost';
 import { MacIpMapping } from './MacIpMapping';
@@ -53,7 +53,16 @@ const ExpandedHost: React.FC<HostComponentProps> = ({ fieldName, hostIdx }) => {
         />
       </FormGroup>
       <FormGroup
-        label="MAC to interface name mapping"
+        label={
+          <>
+            MAC to interface name mapping{' '}
+            <PopoverIcon
+              bodyContent={
+                'MAC address and interface name are needed in order to execute the above nmstate YAML on the right machine.'
+              }
+            />
+          </>
+        }
         fieldId={getFieldId('macNicMaping', 'inputs')}
       >
         <MacIpMapping
