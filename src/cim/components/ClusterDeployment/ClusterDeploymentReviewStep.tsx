@@ -28,6 +28,7 @@ import {
   allClusterWizardSoftValidationIds,
 } from './wizardTransition';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { getErrorMessage } from '../../../common/utils';
 
 type ClusterDeploymentReviewStepProps = {
   clusterDeployment: ClusterDeploymentK8sResource;
@@ -68,10 +69,7 @@ const ClusterDeploymentReviewStep: React.FC<ClusterDeploymentReviewStepProps> = 
       await onFinish();
     } catch (error) {
       addAlert({
-        title:
-          error instanceof Error
-            ? error.message
-            : t('ai:An error occured while starting installation.'),
+        title: getErrorMessage(error, t('ai:An error occured while starting installation.')),
       });
     } finally {
       setSubmitting(false);

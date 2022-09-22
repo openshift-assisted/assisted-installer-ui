@@ -25,6 +25,7 @@ import {
 } from '../../../common';
 import { ClusterDeploymentNetworkingValues } from './types';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { getErrorMessage } from '../../../common/utils';
 
 const getInfraEnvProxy = (infraEnvs: InfraEnvK8sResource[]) => {
   const infraEnvWithProxy = infraEnvs.find(
@@ -131,9 +132,8 @@ export const useInfraEnvProxies = ({ agents, fetchInfraEnv }: UseInfraEnvProxies
         const infraEnvResults = await Promise.all(infraEnvRequests);
         setInfraEnvs(infraEnvResults);
       } catch (error) {
-        setInfraEnvsError(
-          error instanceof Error ? error.message : t('ai:Could not fetch infra environments'),
-        );
+        const errorMessage = getErrorMessage(error, t('ai:Could not fetch infra environments'));
+        setInfraEnvsError(errorMessage);
       }
     };
 

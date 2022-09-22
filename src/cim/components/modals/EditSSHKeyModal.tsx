@@ -18,6 +18,7 @@ import { UploadSSH, sshPublicKeyValidationSchema } from '../../../common';
 import { EditSSHKeyFormikValues } from './types';
 import { getWarningMessage } from './utils';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { getErrorMessage } from '../../../common/utils';
 
 const validationSchema = Yup.object({
   sshPublicKey: sshPublicKeyValidationSchema.required(
@@ -67,7 +68,7 @@ const EditSSHKeyModal: React.FC<EditSSHKeyModalProps> = ({
             await onSubmit(values, infraEnv);
             onClose();
           } catch (error) {
-            setError(error instanceof Error ? error.message : t('ai:An error occured'));
+            setError(getErrorMessage(error, t('ai:An error occured')));
           }
         }}
         validateOnMount

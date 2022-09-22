@@ -26,6 +26,7 @@ import {
 import { canNextFromHostSelectionStep } from './wizardTransition';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
+import { getErrorMessage } from '../../../common/utils';
 
 const getInitialValues = ({
   agents,
@@ -321,7 +322,7 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
     } catch (error) {
       addAlert({
         title: t('ai:Failed to save host selection.'),
-        message: error instanceof Error ? error.message : undefined,
+        message: getErrorMessage(error),
       });
     } finally {
       setSubmitting(false);
