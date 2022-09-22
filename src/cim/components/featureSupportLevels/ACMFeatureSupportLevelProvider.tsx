@@ -93,7 +93,7 @@ export const ACMFeatureSupportLevelProvider: React.FC<ACMFeatureSupportLevelProv
   const getDisabledReasonCallback = React.useCallback(
     (versionName: string, featureId: FeatureId) => {
       const isSupported = isFeatureSupportedCallback(versionName, featureId);
-      return getFeatureDisabledReason(featureId, undefined, isSupported);
+      return getFeatureDisabledReason(featureId, undefined, isSupported, (s: string) => s);
     },
     [isFeatureSupportedCallback],
   );

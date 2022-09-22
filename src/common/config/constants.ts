@@ -148,6 +148,9 @@ export const hostValidationLabels = (t: TFunction): { [key in HostValidationId]:
   'compatible-agent': t('ai:Agent compatibility'),
   'no-skip-installation-disk': t('ai:No skip installation disk'),
   'no-skip-missing-disk': t('ai:No skip missing disk'),
+  'service-has-sufficient-spoke-kube-api-access': t(
+    'ai:Service has sufficient spoke kube api access',
+  ),
 });
 
 export const hostValidationFailureHints = (
@@ -192,6 +195,7 @@ export const hostValidationFailureHints = (
   'compatible-agent': '',
   'no-skip-installation-disk': '',
   'no-skip-missing-disk': '',
+  'service-has-sufficient-spoke-kube-api-access': '',
 });
 
 export const clusterValidationLabels = (

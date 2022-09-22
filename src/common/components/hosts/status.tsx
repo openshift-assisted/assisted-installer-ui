@@ -212,4 +212,16 @@ export const hostStatus: HostStatus<Host['status']> = Object.freeze({
     icon: <AddCircleOIcon />,
     details: 'This host completed its installation successfully.',
   },
+  reclaiming: {
+    key: 'reclaiming',
+    title: 'Reclaiming',
+    category: 'Discovery related',
+    icon: <InProgressIcon />,
+  },
+  'reclaiming-rebooting': {
+    key: 'reclaiming-rebooting',
+    title: 'Reclaiming rebooting',
+    category: 'Discovery related',
+    icon: <InProgressIcon />,
+  },
 });

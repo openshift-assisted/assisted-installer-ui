@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, RouteComponentProps, Redirect } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import {
   PageSection,
   PageSectionVariants,
@@ -39,6 +40,7 @@ type MatchParams = {
 };
 
 const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
+  const dispatch = useDispatch();
   const { clusterId } = match.params;
   const fetchCluster = useFetchCluster(clusterId);
   const { cluster, uiState, errorDetail } = useClusterPolling(clusterId);
@@ -60,10 +62,17 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
       </Button>,
     );
   }
+
+  const forceReloadAsync = () =>
+    new Promise<void>((resolve) => {
+      dispatch(forceReload());
+      resolve();
+    });
+
   const getContent = (cluster: Cluster, infraEnv: InfraEnv) => {
     if (cluster.status === 'adding-hosts') {
       return (
-        <AddHostsContextProvider cluster={cluster} resetCluster={forceReload}>
+        <AddHostsContextProvider cluster={cluster} resetCluster={forceReloadAsync}>
           <AddHosts />
         </AddHostsContextProvider>
       );
