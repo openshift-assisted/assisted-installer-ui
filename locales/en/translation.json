@@ -1,5 +1,4 @@
 {
-  "ai: or select just 3 hosts instead.": " or select just 3 hosts instead.",
   "ai:({{size}} hosts available)": "({{size}} hosts available)",
   "ai:(1 host available)": "(1 host available)",
   "ai:(no hosts available)": "(no hosts available)",
@@ -465,6 +464,7 @@
   "ai:Operators": "Operators",
   "ai:Option 1: Add the following records to your DNS server (recommended)": "Option 1: Add the following records to your DNS server (recommended)",
   "ai:Option 2: Update your local /etc/hosts or /etc/resolv.conf files": "Option 2: Update your local /etc/hosts or /etc/resolv.conf files",
+  "ai:or select just 3 hosts instead.": "or select just 3 hosts instead.",
   "ai:Otherwise, the VMs will not be able to reboot during the installation process.": "Otherwise, the VMs will not be able to reboot during the installation process.",
   "ai:Packet loss": "Packet loss",
   "ai:Password": "Password",
