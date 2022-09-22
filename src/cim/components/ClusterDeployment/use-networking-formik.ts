@@ -130,8 +130,10 @@ export const useInfraEnvProxies = ({ agents, fetchInfraEnv }: UseInfraEnvProxies
       try {
         const infraEnvResults = await Promise.all(infraEnvRequests);
         setInfraEnvs(infraEnvResults);
-      } catch (e) {
-        setInfraEnvsError(e.message || t('ai:Could not fetch infra environments'));
+      } catch (error) {
+        setInfraEnvsError(
+          error instanceof Error ? error.message : t('ai:Could not fetch infra environments'),
+        );
       }
     };
 

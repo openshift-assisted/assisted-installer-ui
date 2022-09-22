@@ -66,8 +66,8 @@ const EditSSHKeyModal: React.FC<EditSSHKeyModalProps> = ({
           try {
             await onSubmit(values, infraEnv);
             onClose();
-          } catch (err) {
-            setError(err?.message || t('ai:An error occured'));
+          } catch (error) {
+            setError(error instanceof Error ? error.message : t('ai:An error occured'));
           }
         }}
         validateOnMount

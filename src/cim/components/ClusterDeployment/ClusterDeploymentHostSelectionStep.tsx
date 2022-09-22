@@ -321,7 +321,7 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
     } catch (error) {
       addAlert({
         title: t('ai:Failed to save host selection.'),
-        message: error.message as string,
+        message: error instanceof Error ? error.message : undefined,
       });
     } finally {
       setSubmitting(false);

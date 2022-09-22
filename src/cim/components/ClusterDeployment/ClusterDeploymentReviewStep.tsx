@@ -66,8 +66,13 @@ const ClusterDeploymentReviewStep: React.FC<ClusterDeploymentReviewStepProps> = 
     setSubmitting(true);
     try {
       await onFinish();
-    } catch (err) {
-      addAlert({ title: err.message || t('ai:An error occured while starting installation.') });
+    } catch (error) {
+      addAlert({
+        title:
+          error instanceof Error
+            ? error.message
+            : t('ai:An error occured while starting installation.'),
+      });
     } finally {
       setSubmitting(false);
     }
