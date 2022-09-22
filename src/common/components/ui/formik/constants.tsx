@@ -3,7 +3,7 @@ import { TFunction } from 'i18next';
 export const clusterNameValidationMessages = (t: TFunction) => ({
   INVALID_LENGTH_OCM: t('ai:1-54 characters'),
   INVALID_LENGTH_ACM: t('ai:2-54 characters'),
-  INVALID_VALUE: t('ai:Use lowercase alphanumeric characters, or hyphen (-)'),
+  INVALID_VALUE: t("ai:Use lowercase alphanumeric characters, '-' or '.'"),
   INVALID_START_END: t('ai:Start and end with a lowercase letter or a number.'),
   NOT_UNIQUE: t('ai:Must be unique'),
 });
