@@ -82,6 +82,7 @@ const AdvancedNetworkFields = ({ isSDNSelectable }: AdvancedNetworkFieldsProps) 
                     label={`Cluster network CIDR${networkSuffix}`}
                     helperText={clusterCidrHelperText}
                     isRequired
+                    labelInfo={index === 0 && isDualStack ? 'Primary' : ''}
                   />
                   <OcmInputField
                     name={`clusterNetworks.${index}.hostPrefix`}
@@ -120,6 +121,7 @@ const AdvancedNetworkFields = ({ isSDNSelectable }: AdvancedNetworkFieldsProps) 
                   label={`Service network CIDR${getNetworkLabelSuffix(index, isDualStack)}`}
                   helperText={serviceCidrHelperText}
                   isRequired
+                  labelInfo={index === 0 && isDualStack ? 'Primary' : ''}
                 />
               </StackItem>
             ))}

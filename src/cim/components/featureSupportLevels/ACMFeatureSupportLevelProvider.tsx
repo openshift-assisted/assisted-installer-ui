@@ -11,6 +11,7 @@ import { ClusterImageSetK8sResource } from '../../types';
 import { featureSupportLevelsACM } from '../../config/constants';
 import { getFeatureDisabledReason, isFeatureSupported } from './featureStateUtils';
 import { getVersionFromReleaseImage } from '../helpers';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 export type ACMFeatureSupportLevelProvider = PropsWithChildren<{
   clusterImages: ClusterImageSetK8sResource[];
@@ -39,6 +40,8 @@ export const ACMFeatureSupportLevelProvider: React.FC<ACMFeatureSupportLevelProv
   clusterImages,
   isEditClusterFlow,
 }) => {
+  const { t } = useTranslation();
+
   const supportLevelData: FeatureSupportLevelsMap = React.useMemo<FeatureSupportLevelsMap>(() => {
     return getFeatureSupportLevelsMap();
   }, []);
@@ -93,7 +96,7 @@ export const ACMFeatureSupportLevelProvider: React.FC<ACMFeatureSupportLevelProv
   const getDisabledReasonCallback = React.useCallback(
     (versionName: string, featureId: FeatureId) => {
       const isSupported = isFeatureSupportedCallback(versionName, featureId);
-      return getFeatureDisabledReason(featureId, undefined, isSupported, (s: string) => s);
+      return getFeatureDisabledReason(featureId, undefined, isSupported, t);
     },
     [isFeatureSupportedCallback],
   );
