@@ -3,6 +3,7 @@ import { AxiosError, AxiosPromise } from 'axios';
 import InfraEnvsService from './InfraEnvsService';
 import { HostsAPI } from '../services/apis';
 import { APIErrorMixin } from '../api/types';
+import ClustersService from './ClustersService';
 
 const HostsService = {
   /**
@@ -12,7 +13,7 @@ const HostsService = {
   async deleteAll(clusterId: Cluster['id']) {
     try {
       const promises: AxiosPromise<void>[] = [];
-      const hosts = await HostsService.listHostsBoundToCluster(clusterId);
+      const { hosts = [] } = await ClustersService.get(clusterId);
       const hostDeleteParams = hosts.map<[string, string]>(({ infraEnvId, id }) => [
         infraEnvId || '',
         id,
@@ -26,16 +27,6 @@ const HostsService = {
     } catch (e) {
       throw e as AxiosError<APIErrorMixin>;
     }
-  },
-
-  /**
-   * Retrieves all the hosts that are bound to the given cluster
-   * @param clusterId
-   */
-  async listHostsBoundToCluster(clusterId: Cluster['id']) {
-    const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId);
-    const { data: hosts } = await HostsAPI.list(infraEnvId);
-    return hosts.filter((host) => host.clusterId === clusterId);
   },
 
   async update(clusterId: Cluster['id'], hostId: Host['id'], params: HostUpdateParams) {
@@ -109,7 +100,7 @@ const HostsService = {
     try {
       const promises: AxiosPromise<Host>[] = [];
       const infraEnvId = await InfraEnvsService.getInfraEnvId(cluster.id);
-      const hosts = await HostsService.listHostsBoundToCluster(cluster.id);
+      const hosts = cluster.hosts ?? [];
 
       for (const host of hosts) {
         if (canInstallHost(cluster, host.status)) {
