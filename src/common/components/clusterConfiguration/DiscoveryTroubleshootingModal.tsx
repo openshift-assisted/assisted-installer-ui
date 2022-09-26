@@ -26,7 +26,14 @@ export const DiscoveryTroubleshootingModalContent: React.FC = () => {
           'ai:Note: Boot time depends on several factors such as your hardware and network configuration, and if you are booting from an ISO.',
         )}
       </Text>
-      <Text component={TextVariants.h2}>{t('ai:Verify if DHCP is enabled')}</Text>
+      <Text component={TextVariants.h2}>
+        {t('ai:If you used DHCP networking, verify that your DHCP server is enabled')}
+      </Text>
+      <Text component={TextVariants.h2}>
+        {t(
+          'ai:If you used static IP, bridges, and bonds networking, verify that your configurations are correct',
+        )}
+      </Text>
       <Text component={TextVariants.h2}>{t('ai:SSH into your machine')}</Text>
       <Text component={TextVariants.p}>
         {t(
