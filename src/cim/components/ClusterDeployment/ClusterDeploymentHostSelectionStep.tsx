@@ -82,7 +82,7 @@ const getValidationSchema = (agentClusterInstall: AgentClusterInstallK8sResource
   const getMinMessage: TestOptionsMessage<{ min: number }> = ({ min }) => {
     const message = t('ai:Please select at least {{min}} hosts for the cluster', { min });
     if (min === 5) {
-      return message + t('ai: or select just 3 hosts instead.');
+      return `${message} ${t('ai:or select just 3 hosts instead.')}`;
     }
     return `${message}.`;
   };
