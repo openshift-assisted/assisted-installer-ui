@@ -26,7 +26,6 @@ import {
   NmstateVlanInterface,
 } from './nmstateTypes';
 import { isDummyInterface } from './dummyData';
-import head from 'lodash/head';
 
 /* handle four cases:
     1. right after create, there are no network wide configurations - yaml contains a dummy ipv4 interface and no machine network fields in the comments
@@ -83,7 +82,7 @@ const getDns = (nmstate: Nmstate): string => {
   if (!dnsServers || !dnsServers.length) {
     throw `Nmstate YAML doesn't contain dns-resolver section`;
   }
-  return head(dnsServers) || '';
+  return dnsServers.join(',');
 };
 
 const getGateway = (nmstate: Nmstate, protocolVersion: ProtocolVersion): string => {

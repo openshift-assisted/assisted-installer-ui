@@ -92,7 +92,8 @@ export const getNmstateProtocolConfig = (
 };
 
 export const getDnsSection = (dns: string): NmstateDns => {
-  return { config: { server: [dns] } };
+  const dnsServers = dns.split(',');
+  return { config: { server: dnsServers } };
 };
 
 export const getInterface = (

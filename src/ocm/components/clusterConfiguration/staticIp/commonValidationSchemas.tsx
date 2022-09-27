@@ -38,25 +38,28 @@ export const getUniqueValidationSchema = <FormValues,>(
   });
 };
 
-export const getIpAddressValidationSchema = (protocolVersion: 'ipv4' | 'ipv6') => {
-  const protocolVersionLabel = protocolVersion === 'ipv4' ? 'IPv4' : 'IPv6';
+const isValidAddress = (protocolVersion: 'ipv4' | 'ipv6', addressStr: string) => {
+  try {
+    const address =
+      protocolVersion === 'ipv4' ? new Address4(addressStr) : new Address6(addressStr);
+    // ip-address package treats cidr addresses as valid so need to verify it isn't a cidr
+    return !address.parsedSubnet;
+  } catch (e) {
+    return false;
+  }
+};
+
+export const getIpAddressValidationSchema = (protocolVersion: ProtocolVersion) => {
+  const protocolVersionLabel = protocolVersion === ProtocolVersion.ipv4 ? 'IPv4' : 'IPv6';
   return Yup.string().test(
     protocolVersion,
     `Value \${value} is not a valid ${protocolVersionLabel} address`,
-    function (value) {
+    function (value: string) {
       if (!value) {
         return true;
       }
-      try {
-        const address = protocolVersion === 'ipv4' ? new Address4(value) : new Address6(value);
-        if (address.parsedSubnet) {
-          //ip-address package treats cidr addresses as valid so need to verify it isn't a cidr
-          return false;
-        }
-      } catch (e) {
-        return false;
-      }
-      return true;
+      const addresses: string[] = value.split(',');
+      return addresses.every((address) => isValidAddress(protocolVersion, address));
     },
   );
 };
