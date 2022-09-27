@@ -8,9 +8,13 @@ import {
   NmstateProtocolConfigs,
   NmstateRoutesConfig,
 } from './nmstateTypes';
-import { FormViewNetworkWideValues, ProtocolVersion, StaticProtocolType } from './dataTypes';
+import {
+  FormViewNetworkWideValues,
+  MachineNetworks,
+  ProtocolVersion,
+  StaticProtocolType,
+} from './dataTypes';
 import findLastIndex from 'lodash/findLastIndex';
-import { getProtocolVersions } from './protocolVersion';
 
 const ROUTE_DESTINATIONS = {
   ipv4: '0.0.0.0/0',
@@ -45,30 +49,26 @@ export const toYamlWithComments = (json: object, comments: string[]) => {
   return `${yamlComments.join('\n')}\n${dump(json)}`;
 };
 
-export const getMachineNetworks = (
-  comments: string[],
-): { [protocolVersion in ProtocolVersion]: string } => {
-  const machineNetworks: { [protocolVersion in ProtocolVersion]: string } = {
-    ipv4: '',
-    ipv6: '',
+const getMachineNetwork = (comments: string[], protocolVersion: ProtocolVersion) => {
+  const line = comments.find((comment) =>
+    comment.startsWith(getMachineNetworkFieldName(protocolVersion)),
+  );
+  return line ? line.split(' ')[1] : '';
+};
+
+export const getMachineNetworks = (comments: string[]): MachineNetworks => {
+  return {
+    ipv4: getMachineNetwork(comments, ProtocolVersion.ipv4),
+    ipv6: getMachineNetwork(comments, ProtocolVersion.ipv6),
   };
-  for (const protocolVersion of getProtocolVersions()) {
-    const line = comments.find((comment) =>
-      comment.startsWith(getMachineNetworkFieldName(protocolVersion)),
-    );
-    if (line) {
-      machineNetworks[protocolVersion] = line.split(' ')[1];
-    }
-  }
-  return machineNetworks;
 };
 
 export const getProtocolType = (comments: string[]): StaticProtocolType | null => {
   const machineNetworks = getMachineNetworks(comments);
-  if (machineNetworks['ipv4'] && machineNetworks['ipv6']) {
+  if (machineNetworks[ProtocolVersion.ipv4] && machineNetworks[ProtocolVersion.ipv6]) {
     return 'dualStack';
   }
-  if (machineNetworks['ipv4']) {
+  if (machineNetworks[ProtocolVersion.ipv4]) {
     return 'ipv4';
   }
   return null;

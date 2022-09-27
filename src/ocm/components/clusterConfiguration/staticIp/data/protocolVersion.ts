@@ -15,20 +15,20 @@ export const showProtocolVersion = (
   protocolType: StaticProtocolType,
   protocolVersion: ProtocolVersion,
 ) => {
-  if (protocolVersion === 'ipv4') {
+  if (protocolVersion === ProtocolVersion.ipv4) {
     return showIpv4(protocolType);
   }
   return showIpv6(protocolType);
 };
 
-export const getProtocolVersions = (): ProtocolVersion[] => ['ipv4', 'ipv6'];
-
 export const getShownProtocolVersions = (protocolType: StaticProtocolType): ProtocolVersion[] => {
-  return protocolType === 'dualStack' ? getProtocolVersions() : ['ipv4'];
+  return protocolType === 'dualStack'
+    ? [ProtocolVersion.ipv4, ProtocolVersion.ipv6]
+    : [ProtocolVersion.ipv4];
 };
 
 export const getProtocolVersionLabel = (protocolVersion: ProtocolVersion) =>
-  protocolVersion === 'ipv4' ? 'IPv4' : 'IPv6';
+  protocolVersion === ProtocolVersion.ipv4 ? 'IPv4' : 'IPv6';
 
 export const getAddressObject = (
   ip: string,
