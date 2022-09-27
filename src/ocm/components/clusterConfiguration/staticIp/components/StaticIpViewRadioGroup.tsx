@@ -1,5 +1,5 @@
 import React from 'react';
-import { ButtonVariant, Form, FormGroup } from '@patternfly/react-core';
+import { Alert, AlertVariant, ButtonVariant, Form, FormGroup } from '@patternfly/react-core';
 import { StaticIpView } from '../data/dataTypes';
 import { getFieldId } from '../../../../../common';
 import ConfirmationModal from '../../../../../common/components/ui/ConfirmationModal';
@@ -43,6 +43,8 @@ const StaticIpViewRadioGroup = ({
     return view === StaticIpView.YAML ? 'YAML' : 'form';
   };
 
+  const isFormViewSelected = view === StaticIpView.FORM;
+
   return (
     <>
       <Form isHorizontal>
@@ -58,7 +60,7 @@ const StaticIpViewRadioGroup = ({
             data-testid="select-form-view"
             id="select-form-view"
             value={StaticIpView.FORM}
-            isChecked={view === StaticIpView.FORM}
+            isChecked={isFormViewSelected}
             onChange={handleChange}
           />
           <OcmRadio
@@ -67,11 +69,20 @@ const StaticIpViewRadioGroup = ({
             data-testid="select-yaml-view"
             id="select-yaml-view"
             value={StaticIpView.YAML}
-            isChecked={view === StaticIpView.YAML}
+            isChecked={!isFormViewSelected}
             onChange={handleChange}
           />
         </FormGroup>
       </Form>
+      {isFormViewSelected && (
+        <Alert
+          variant={AlertVariant.info}
+          isInline
+          title={
+            'Form view supports basic configurations. Select YAML view for advanced configurations.'
+          }
+        />
+      )}
       {confirmView && (
         <ConfirmationModal
           title={'Change configuration option?'}
