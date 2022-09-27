@@ -1,10 +1,17 @@
 import React from 'react';
-import { DropdownItem, DropdownToggle, Dropdown, HelperText } from '@patternfly/react-core';
+import {
+  DropdownItem,
+  DropdownToggle,
+  Dropdown,
+  HelperText,
+  FormGroup,
+} from '@patternfly/react-core';
 import { CaretDownIcon } from '@patternfly/react-icons';
 
 import { OpenshiftVersionOptionType } from '../../types';
 import { TFunction } from 'i18next';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { useField } from 'formik';
 
 export type HelperTextType = (
   versions: OpenshiftVersionOptionType[],
@@ -13,6 +20,7 @@ export type HelperTextType = (
 ) => JSX.Element | null;
 
 type OpenShiftVersionDropdownProps = {
+  name: string;
   defaultValue: string | undefined;
   items: {
     label: string;
@@ -24,16 +32,18 @@ type OpenShiftVersionDropdownProps = {
 };
 
 export const OpenShiftVersionDropdown = ({
+  name,
   defaultValue,
   items,
   isDisabled,
   versions,
   getHelperText,
 }: OpenShiftVersionDropdownProps) => {
+  const [field, , { setValue }] = useField(name);
   const [isOpen, setOpen] = React.useState(false);
-  const [current, setCurrent] = React.useState(defaultValue);
+  const [current, setCurrent] = React.useState<string>();
   const { t } = useTranslation();
-  const [helperText, setHelperText] = React.useState(getHelperText(versions, current, t));
+  const [helperText, setHelperText] = React.useState(getHelperText(versions, defaultValue, t));
 
   const dropdownItems = items.map(({ value, label }) => (
     <DropdownItem key={value} id={value}>
@@ -46,11 +56,12 @@ export const OpenShiftVersionDropdown = ({
       const currentValue = event?.currentTarget.innerText
         ? event?.currentTarget.innerText
         : defaultValue;
-      setCurrent(currentValue);
+      setCurrent(currentValue ? currentValue : '');
+      setValue(event?.currentTarget.id);
       setHelperText(getHelperText(versions, currentValue, t));
       setOpen(false);
     },
-    [setCurrent, setHelperText, setOpen],
+    [setCurrent, setHelperText, setOpen, defaultValue, getHelperText, t, versions, setValue],
   );
 
   const toggle = React.useMemo(
@@ -61,16 +72,26 @@ export const OpenShiftVersionDropdown = ({
         isDisabled={isDisabled}
         isText
       >
-        {current}
+        {current || defaultValue}
       </DropdownToggle>
     ),
-    [setOpen, current, isDisabled],
+    [setOpen, current, isDisabled, defaultValue],
   );
 
   return (
     <>
-      <Dropdown onSelect={onSelect} dropdownItems={dropdownItems} toggle={toggle} isOpen={isOpen} />
-      <HelperText style={{ display: 'inherit' }}>{helperText}</HelperText>
+      <FormGroup fieldId={name} label={t('ai:Openshift version')} isRequired>
+        <Dropdown
+          {...field}
+          name={name}
+          id={name}
+          onSelect={onSelect}
+          dropdownItems={dropdownItems}
+          toggle={toggle}
+          isOpen={isOpen}
+        />
+        <HelperText style={{ display: 'inherit' }}>{helperText}</HelperText>
+      </FormGroup>
     </>
   );
 };

@@ -1,7 +1,6 @@
 import React from 'react';
 import { OpenshiftVersionOptionType } from '../../types';
 import { OpenShiftVersionDropdown } from '../ui/OpenShiftVersionDropown';
-import { FormGroup } from '@patternfly/react-core';
 import {
   ExclamationCircleIcon,
   ExclamationTriangleIcon,
@@ -82,7 +81,7 @@ const OpenShiftVersionSelect: React.FC<OpenShiftVersionSelectProps> = ({ version
         .map((version) => ({
           label:
             version.supportLevel === 'beta'
-              ? version.label + ' - Developer preview release'
+              ? version.label + ' - ' + t('ai:Developer preview release')
               : version.label,
           value: version.value,
         })),
@@ -92,15 +91,14 @@ const OpenShiftVersionSelect: React.FC<OpenShiftVersionSelectProps> = ({ version
 
   return (
     <>
-      <FormGroup fieldId="openshiftVersion" label={t('ai:Openshift version')} isRequired>
-        <OpenShiftVersionDropdown
-          defaultValue={defaultVersion?.label}
-          items={selectOptions}
-          isDisabled={versions.length === 0}
-          versions={versions}
-          getHelperText={getOpenshiftVersionHelperText}
-        />
-      </FormGroup>
+      <OpenShiftVersionDropdown
+        name="openshiftVersion"
+        defaultValue={defaultVersion?.label}
+        items={selectOptions}
+        isDisabled={versions.length === 0}
+        versions={versions}
+        getHelperText={getOpenshiftVersionHelperText}
+      />
     </>
   );
 };

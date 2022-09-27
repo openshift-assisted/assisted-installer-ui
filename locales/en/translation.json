@@ -188,6 +188,7 @@
   "ai:Details": "Details",
   "ai:Developer Preview": "Developer Preview",
   "ai:Developer preview features are not intended to be used in production environments. The clusters deployed with the developer preview features are considered to be development clusters and are not supported through the Red Hat Customer Portal case management system.": "Developer preview features are not intended to be used in production environments. The clusters deployed with the developer preview features are considered to be development clusters and are not supported through the Red Hat Customer Portal case management system.",
+  "ai:Developer preview release": "Developer preview release",
   "ai:DHCP only": "DHCP only",
   "ai:DHCP or static IP Addresses": "DHCP or static IP Addresses",
   "ai:Discovery ISO is ready to be downloaded": "Discovery ISO is ready to be downloaded",
