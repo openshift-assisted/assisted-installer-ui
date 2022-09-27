@@ -34,10 +34,10 @@ export const getAddressObject = (
   ip: string,
   protocolVersion: ProtocolVersion,
 ): Address4 | Address6 | null => {
-  if (protocolVersion === 'ipv4' && Address4.isValid(ip)) {
+  if (protocolVersion === ProtocolVersion.ipv4 && Address4.isValid(ip)) {
     return new Address4(ip);
   }
-  if (protocolVersion === 'ipv6' && Address6.isValid(ip)) {
+  if (protocolVersion === ProtocolVersion.ipv6 && Address6.isValid(ip)) {
     return new Address6(ip);
   }
   return null;

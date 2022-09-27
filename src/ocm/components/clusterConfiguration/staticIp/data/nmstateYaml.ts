@@ -1,4 +1,4 @@
-import { dump } from 'js-yaml';
+import { dump, load } from 'js-yaml';
 import {
   Nmstate,
   NmstateDns,
@@ -11,7 +11,6 @@ import {
 import { FormViewNetworkWideValues, ProtocolVersion, StaticProtocolType } from './dataTypes';
 import findLastIndex from 'lodash/findLastIndex';
 import { getProtocolVersions } from './protocolVersion';
-import { load } from 'js-yaml';
 
 const ROUTE_DESTINATIONS = {
   ipv4: '0.0.0.0/0',
@@ -28,7 +27,7 @@ export const getMachineNetworkFieldName = (protocolVersion: ProtocolVersion): st
 export const getVlanNicName = (nicName: string, vlanId: number) => `${nicName}.${vlanId}`;
 
 export const getProtocolVersionIdx = (protocolVersion: ProtocolVersion): number => {
-  return protocolVersion === 'ipv4' ? 0 : 1;
+  return protocolVersion === ProtocolVersion.ipv4 ? 0 : 1;
 };
 
 export const yamlToNmstateObject = (yaml: string): Nmstate => {

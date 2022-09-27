@@ -5,7 +5,10 @@ export enum StaticIpView {
   FORM = 'form',
 }
 
-export type ProtocolVersion = 'ipv4' | 'ipv6';
+export enum ProtocolVersion {
+  ipv4 = 'ipv4',
+  ipv6 = 'ipv6',
+}
 export type StaticProtocolType = 'ipv4' | 'dualStack';
 
 export type Cidr = {
