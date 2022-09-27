@@ -1,8 +1,14 @@
 import React from 'react';
 import { TextVariants, TextContent, Text, FormGroup, Grid } from '@patternfly/react-core';
-import { useField } from 'formik';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { Language } from '@patternfly/react-code-editor';
-import { getFieldId, HostStaticNetworkConfig, PopoverIcon } from '../../../../../../common';
+import { useField } from 'formik';
+import {
+  getFieldId,
+  HostStaticNetworkConfig,
+  NMSTATE_EXAMPLES_LINK,
+  PopoverIcon,
+} from '../../../../../../common';
 import StaticIpHostsArray, { HostComponentProps } from '../StaticIpHostsArray';
 import HostSummary from '../CollapsedHost';
 import { MacIpMapping } from './MacIpMapping';
@@ -81,8 +87,11 @@ export const YamlViewFields = () => {
     <Grid hasGutter>
       <TextContent>
         <Text component={TextVariants.small}>
-          Upload, drag and drop, or copy and paste a YAML file that contains NMstate into the editor
-          for network configurations. Each host also needs the MAC to interface name mapping.
+          Upload, drag and drop, or copy and paste a YAML file that contains NMState into the editor
+          for network configurations. Each host also needs the MAC to interface name mapping.{' '}
+          <a href={NMSTATE_EXAMPLES_LINK} target="_blank" rel="noopener noreferrer">
+            Learn more about NMState <ExternalLinkAltIcon />
+          </a>
         </Text>
       </TextContent>
 
