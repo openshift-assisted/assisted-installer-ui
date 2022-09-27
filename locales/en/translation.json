@@ -458,6 +458,7 @@
   "ai:OpenShift Data Foundation Logical Volume Manager": "OpenShift Data Foundation Logical Volume Manager",
   "ai:OpenShift in-place upgrades aren't expected to work with SNO. If an upgrade is needed, your system will need a redeployment.": "OpenShift in-place upgrades aren't expected to work with SNO. If an upgrade is needed, your system will need a redeployment.",
   "ai:OpenShift Local Storage": "OpenShift Local Storage",
+  "ai:Openshift version": "Openshift version",
   "ai:OpenShift version": "OpenShift version",
   "ai:OpenShift Virtualization": "OpenShift Virtualization",
   "ai:OpenShift Web Console troubleshooting": "OpenShift Web Console troubleshooting",

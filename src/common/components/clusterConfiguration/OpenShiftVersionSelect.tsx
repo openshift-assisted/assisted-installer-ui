@@ -28,7 +28,7 @@ const OpenShiftLifeCycleDatesLink = () => {
 
 const getOpenshiftVersionHelperText = (
   versions: OpenshiftVersionOptionType[],
-  selectedVersionValue: string,
+  selectedVersionValue: string | undefined,
   t: TFunction,
 ) => {
   if (!versions.length) {
@@ -50,6 +50,7 @@ const getOpenshiftVersionHelperText = (
       </>
     );
   } else if (
+    selectedVersionValue &&
     selectedVersionValue in openshiftVersionData['versions'] &&
     diffInDaysBetweenDates(openshiftVersionData['versions'][selectedVersionValue]) <= 30
   ) {
@@ -87,16 +88,17 @@ const OpenShiftVersionSelect: React.FC<OpenShiftVersionSelectProps> = ({ version
         })),
     [versions],
   );
+  const defaultVersion = versions.find((version) => version.default);
+
   return (
     <>
-      <FormGroup fieldId="openshiftVersion" label="Openshift version" isRequired>
+      <FormGroup fieldId="openshiftVersion" label={t('ai:Openshift version')} isRequired>
         <OpenShiftVersionDropdown
-          defaultValue={selectOptions[0].label}
+          defaultValue={defaultVersion?.label}
           items={selectOptions}
           isDisabled={versions.length === 0}
           versions={versions}
           getHelperText={getOpenshiftVersionHelperText}
-          helperTextDefault={getOpenshiftVersionHelperText(versions, selectOptions[0].label, t)}
         />
       </FormGroup>
     </>
