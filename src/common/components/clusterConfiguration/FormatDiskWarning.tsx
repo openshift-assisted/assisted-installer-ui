@@ -14,14 +14,16 @@ const FormatDiskWarning = ({ someDisksAreSkipFormatting }: FormatDiskWarningProp
       isInline
       title={
         someDisksAreSkipFormatting
-          ? t('ai:Some bootable disks are set to skip formatting')
+          ? t('ai:There may be issues with the boot order')
           : t(
               'ai:All bootable disks will be formatted during installation. Make sure to backup any sensitive data.',
             )
       }
     >
       {someDisksAreSkipFormatting
-        ? t("ai:Make sure those disks don't interrupt the boot order of the hosts.")
+        ? t(
+            'ai:You have opted out of formatting bootable disks on some hosts. To ensure the hosts reboot into the expected installation disk, manual user intervention may be required during OpenShift installation.',
+          )
         : ''}
     </Alert>
   );
