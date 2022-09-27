@@ -125,12 +125,6 @@ const IpConfigFields: React.FC<{
         name={`${fieldName}.gateway`}
         data-testid={`${protocolVersion}-gateway`}
       />
-      <OcmInputField
-        isRequired
-        label="DNS"
-        name={`${fieldName}.dns`}
-        data-testid={`${protocolVersion}-dns`}
-      />
     </Grid>
   );
 };
