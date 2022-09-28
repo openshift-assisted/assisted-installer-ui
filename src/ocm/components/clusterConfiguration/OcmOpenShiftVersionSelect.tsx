@@ -87,12 +87,12 @@ const OcmOpenShiftVersionSelect: React.FC<OcmOpenShiftVersionSelectProps> = ({ v
         })),
     [versions, t],
   );
-  const defaultVersion = versions.find((version) => version.default);
+  const defaultVersion = versions.find((v) => v.default)?.label || versions[0]?.label || '';
 
   return (
     <OpenShiftVersionDropdown
       name="openshiftVersion"
-      defaultValue={defaultVersion?.label}
+      defaultValue={defaultVersion}
       items={selectOptions}
       isDisabled={versions.length === 0}
       versions={versions}
