@@ -3,6 +3,7 @@ import { isInSubnet } from 'is-in-subnet';
 import * as Yup from 'yup';
 import { getAddressObject } from './data/protocolVersion';
 import { ProtocolVersion } from './data/dataTypes';
+import { getDuplicates } from '../../../../common';
 
 const LOCAL_HOST_IP = {
   ipv4: '127.0.0.0',
@@ -56,12 +57,31 @@ export const getIpAddressValidationSchema = (protocolVersion: ProtocolVersion) =
   const protocolVersionLabel = protocolVersion === ProtocolVersion.ipv4 ? 'IPv4' : 'IPv6';
   return Yup.string().test(
     protocolVersion,
-    `Value \${value} is not a valid ${protocolVersionLabel} address`,
+    ({ value }) => {
+      const addresses = (value as string).split(',');
+      const invalidAddresses = addresses.filter(
+        (address) => !isValidAddress(protocolVersion, address),
+      );
+      const displayValue = invalidAddresses.join(', ');
+      if (invalidAddresses.length === 1) {
+        return `Value ${displayValue} is not a valid ${protocolVersionLabel} address`;
+      } else if (invalidAddresses.length > 1) {
+        return `The values ${displayValue} are not valid ${protocolVersionLabel} addresses`;
+      }
+      // If all addresses are valid, then there must be duplicated addresses
+      const duplicates = getDuplicates(addresses);
+      return `The following IP addresses are duplicated: ${duplicates.join(',')}`;
+    },
     function (value: string) {
       if (!value) {
         return true;
       }
       const addresses: string[] = value.split(',');
+      const duplicates = getDuplicates(addresses);
+      if (duplicates.length !== 0) {
+        return false;
+      }
+
       return addresses.every((address) => isValidAddress(protocolVersion, address));
     },
   );
