@@ -72,7 +72,7 @@ export const OpenShiftVersionDropdown = ({
         toggleIndicator={CaretDownIcon}
         isDisabled={isDisabled}
         isText
-        style={{ width: '450px' }}
+        className="pf-u-w-100"
       >
         {current}
       </DropdownToggle>
@@ -90,6 +90,7 @@ export const OpenShiftVersionDropdown = ({
         dropdownItems={dropdownItems}
         toggle={toggle}
         isOpen={isOpen}
+        className="pf-u-w-100"
       />
       <HelperText style={{ display: 'inherit' }}>{helperText}</HelperText>
     </FormGroup>

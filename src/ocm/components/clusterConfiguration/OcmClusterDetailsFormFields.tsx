@@ -9,7 +9,6 @@ import {
   isSNO,
   ManagedDomain,
   OpenshiftVersionOptionType,
-  OpenShiftVersionSelect,
   PullSecret,
   SNOControlGroup,
   StaticTextField,
@@ -24,6 +23,7 @@ import {
   OcmRichInputField,
   OcmSelectField,
 } from '../ui/OcmFormFields';
+import OcmOpenShiftVersionSelect from './OcmOpenShiftVersionSelect';
 
 export type OcmClusterDetailsFormFieldsProps = {
   forceOpenshiftVersion?: string;
@@ -116,7 +116,7 @@ export const OcmClusterDetailsFormFields = ({
           {getDeveloperPreviewText(forceOpenshiftVersion, versions)}
         </StaticTextField>
       ) : (
-        <OpenShiftVersionSelect versions={versions} />
+        <OcmOpenShiftVersionSelect versions={versions} />
       )}
       <SNOControlGroup versions={versions} highAvailabilityMode={highAvailabilityMode} />
 
