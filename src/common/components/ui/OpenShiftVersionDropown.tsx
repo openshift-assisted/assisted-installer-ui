@@ -42,7 +42,7 @@ export const OpenShiftVersionDropdown = ({
 }: OpenShiftVersionDropdownProps) => {
   const [field, , { setValue }] = useField(name);
   const [isOpen, setOpen] = React.useState(false);
-  const [current, setCurrent] = React.useState<string>();
+  const [current, setCurrent] = React.useState(defaultValue);
   const { t } = useTranslation();
   const [helperText, setHelperText] = React.useState(getHelperText(versions, defaultValue, t));
   const fieldId = getFieldId(name, 'input');
@@ -74,10 +74,10 @@ export const OpenShiftVersionDropdown = ({
         isText
         style={{ width: '450px' }}
       >
-        {current || defaultValue}
+        {current}
       </DropdownToggle>
     ),
-    [setOpen, current, isDisabled, defaultValue],
+    [setOpen, current, isDisabled],
   );
 
   return (
