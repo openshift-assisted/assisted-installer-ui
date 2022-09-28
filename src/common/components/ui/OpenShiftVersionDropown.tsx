@@ -12,6 +12,7 @@ import { OpenshiftVersionOptionType } from '../../types';
 import { TFunction } from 'i18next';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { useField } from 'formik';
+import { getFieldId } from './formik';
 
 export type HelperTextType = (
   versions: OpenshiftVersionOptionType[],
@@ -44,7 +45,7 @@ export const OpenShiftVersionDropdown = ({
   const [current, setCurrent] = React.useState<string>();
   const { t } = useTranslation();
   const [helperText, setHelperText] = React.useState(getHelperText(versions, defaultValue, t));
-
+  const fieldId = getFieldId(name, 'input');
   const dropdownItems = items.map(({ value, label }) => (
     <DropdownItem key={value} id={value}>
       {label}
@@ -71,6 +72,7 @@ export const OpenShiftVersionDropdown = ({
         toggleIndicator={CaretDownIcon}
         isDisabled={isDisabled}
         isText
+        style={{ width: '450px' }}
       >
         {current || defaultValue}
       </DropdownToggle>
@@ -80,11 +82,11 @@ export const OpenShiftVersionDropdown = ({
 
   return (
     <>
-      <FormGroup fieldId={name} label={t('ai:Openshift version')} isRequired>
+      <FormGroup fieldId={fieldId} label={t('ai:OpenShift version')} isRequired>
         <Dropdown
           {...field}
           name={name}
-          id={name}
+          id={fieldId}
           onSelect={onSelect}
           dropdownItems={dropdownItems}
           toggle={toggle}

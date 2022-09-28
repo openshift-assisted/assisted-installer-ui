@@ -83,7 +83,7 @@ const OpenShiftVersionSelect: React.FC<OpenShiftVersionSelectProps> = ({ version
             version.supportLevel === 'beta'
               ? version.label + ' - ' + t('ai:Developer preview release')
               : version.label,
-          value: version.value,
+          value: version.version,
         })),
     [versions],
   );
