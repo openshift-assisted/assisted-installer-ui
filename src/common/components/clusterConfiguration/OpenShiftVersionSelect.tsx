@@ -90,16 +90,14 @@ const OpenShiftVersionSelect: React.FC<OpenShiftVersionSelectProps> = ({ version
   const defaultVersion = versions.find((version) => version.default);
 
   return (
-    <>
-      <OpenShiftVersionDropdown
-        name="openshiftVersion"
-        defaultValue={defaultVersion?.label}
-        items={selectOptions}
-        isDisabled={versions.length === 0}
-        versions={versions}
-        getHelperText={getOpenshiftVersionHelperText}
-      />
-    </>
+    <OpenShiftVersionDropdown
+      name="openshiftVersion"
+      defaultValue={defaultVersion?.label}
+      items={selectOptions}
+      isDisabled={versions.length === 0}
+      versions={versions}
+      getHelperText={getOpenshiftVersionHelperText}
+    />
   );
 };
 

@@ -81,19 +81,17 @@ export const OpenShiftVersionDropdown = ({
   );
 
   return (
-    <>
-      <FormGroup fieldId={fieldId} label={t('ai:OpenShift version')} isRequired>
-        <Dropdown
-          {...field}
-          name={name}
-          id={fieldId}
-          onSelect={onSelect}
-          dropdownItems={dropdownItems}
-          toggle={toggle}
-          isOpen={isOpen}
-        />
-        <HelperText style={{ display: 'inherit' }}>{helperText}</HelperText>
-      </FormGroup>
-    </>
+    <FormGroup fieldId={fieldId} label={t('ai:OpenShift version')} isRequired>
+      <Dropdown
+        {...field}
+        name={name}
+        id={fieldId}
+        onSelect={onSelect}
+        dropdownItems={dropdownItems}
+        toggle={toggle}
+        isOpen={isOpen}
+      />
+      <HelperText style={{ display: 'inherit' }}>{helperText}</HelperText>
+    </FormGroup>
   );
 };
