@@ -57,6 +57,20 @@ export const getIpAddressValidationSchema = (protocolVersion: ProtocolVersion) =
   const protocolVersionLabel = protocolVersion === ProtocolVersion.ipv4 ? 'IPv4' : 'IPv6';
   return Yup.string().test(
     protocolVersion,
+    `Value \${value} is not a valid ${protocolVersionLabel} address`,
+    function (value: string) {
+      if (!value) {
+        return true;
+      }
+      return isValidAddress(protocolVersion, value);
+    },
+  );
+};
+
+export const getMultipleIpAddressValidationSchema = (protocolVersion: ProtocolVersion) => {
+  const protocolVersionLabel = protocolVersion === ProtocolVersion.ipv4 ? 'IPv4' : 'IPv6';
+  return Yup.string().test(
+    protocolVersion,
     ({ value }) => {
       const addresses = (value as string).split(',');
       const invalidAddresses = addresses.filter(

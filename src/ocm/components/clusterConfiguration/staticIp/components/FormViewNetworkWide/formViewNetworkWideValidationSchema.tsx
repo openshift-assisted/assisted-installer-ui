@@ -10,6 +10,7 @@ import {
   isNotLocalHostIPAddress,
   isNotCatchAllIPAddress,
   getIpIsNotNetworkOrBroadcastAddressSchema,
+  getMultipleIpAddressValidationSchema,
 } from '../../commonValidationSchemas';
 
 const REQUIRED_MESSAGE = 'A value is required';
@@ -63,8 +64,11 @@ const getMachineNetworkValidationSchema = (protocolVersion: ProtocolVersion) =>
       .transform(transformNumber) as Yup.NumberSchema, //add casting to not get typescript error caused by nullable
   });
 
-const getIPValidationSchema = (protocolVersion: ProtocolVersion) => {
-  return getIpAddressValidationSchema(protocolVersion)
+const getIPValidationSchema = (protocolVersion: ProtocolVersion, allowsMultiple = false) => {
+  const baseValidation = allowsMultiple
+    ? getMultipleIpAddressValidationSchema
+    : getIpAddressValidationSchema;
+  return baseValidation(protocolVersion)
     .required(REQUIRED_MESSAGE)
     .concat(isNotLocalHostIPAddress(protocolVersion))
     .concat(isNotCatchAllIPAddress(protocolVersion));
@@ -100,7 +104,7 @@ export const networkWideValidationSchema = Yup.lazy<FormViewNetworkWideValues>(
           .transform(transformNumber) as Yup.NumberSchema,
       }),
       protocolType: Yup.string(),
-      dns: getIPValidationSchema(ProtocolVersion.ipv4),
+      dns: getIPValidationSchema(ProtocolVersion.ipv4, true),
       ipConfigs: ipConfigsValidationSchemas,
     });
   },
