@@ -51,7 +51,7 @@ const getOpenshiftVersionHelperText = (
   } else if (
     selectedVersionValue &&
     selectedVersionValue in openshiftVersionData['versions'] &&
-    diffInDaysBetweenDates(openshiftVersionData['versions'][selectedVersionValue]) <= 30
+    diffInDaysBetweenDates(openshiftVersionData['versions'][selectedVersionValue] as string) <= 30
   ) {
     helperTextComponent = (
       <>
