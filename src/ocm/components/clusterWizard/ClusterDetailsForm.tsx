@@ -91,8 +91,6 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
       }),
     [infraEnv, cluster, pullSecret, managedDomains, ocpVersions, search],
   );
-  initialValues.openshiftVersion =
-    ocpVersions.find((v) => v.default)?.version || ocpVersions[0]?.version || '';
 
   const { t } = useTranslation();
   const validationSchema = getClusterDetailsValidationSchema({
