@@ -37,7 +37,7 @@
     "prepare": "install-peers",
     "test": "run-s test:circular lint format:check",
     "test:circular": "dpdm --warning false --tree false --exit-code circular:1 ./src/index.ts",
-    "lint": "eslint . --max-warnings=293 --color",
+    "lint": "eslint . --max-warnings=288 --color",
     "lint:fix": "yarn run lint --fix",
     "format": "prettier --write '**/*.{json,md,scss,yaml,yml}'",
     "format:check": "prettier --check '**/*.{json,md,scss,yaml,yml}'",
