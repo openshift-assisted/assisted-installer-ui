@@ -28,7 +28,10 @@ jobs:
           repository: celdrake/assisted-ui
           ref: integration-tests-wip
           path: ./assisted-ui
-          run: yarn
+
+      - name: Install Assisted-UI dependencies for proxy server
+        working-directory: ./assisted-ui
+        run: yarn install
 
       # Run Cypress tests in Headless mode
       - name: Cypress run
