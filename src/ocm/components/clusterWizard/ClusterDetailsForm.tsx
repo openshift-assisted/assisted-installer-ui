@@ -91,6 +91,7 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
       }),
     [infraEnv, cluster, pullSecret, managedDomains, ocpVersions, search],
   );
+
   const { t } = useTranslation();
   const validationSchema = getClusterDetailsValidationSchema({
     usedClusterNames,
