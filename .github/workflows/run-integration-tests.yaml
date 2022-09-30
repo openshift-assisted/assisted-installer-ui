@@ -20,6 +20,16 @@ jobs:
         working-directory: ./openshift-assisted-ui
         run: yarn install
 
+      # For now just checkout assisted-UI to start a dev server with a stable version
+      # We'll need to adjust this to use the updated code from Assisted-UI-lib
+      - name: Checkout Assisted-UI
+        uses: actions/checkout@v3
+        with:
+          repository: openshift-assisted/assisted-ui
+          ref: releases/v2.10
+          path: ./assisted-ui
+
+
       # Run Cypress tests in Headless mode
       # Right now just a test using PSI. It should use an updated environment with the new code
       - name: Cypress run
@@ -30,6 +40,6 @@ jobs:
           project: ./packages/integration-tests
           config-file: cypress.json
           config: video=false
-          start: yarn integration-tests:run
+          start: yarn --cwd ../assisted-ui start && yarn integration-tests:run
           spec: ./src/integration/ui-behaviour/cluster-updates.spec.js
           env: CYPRESS_API_BASE_URL=https://assisted-installer.edge-qe.apps.ocp-c1.prod.psi.redhat.com
