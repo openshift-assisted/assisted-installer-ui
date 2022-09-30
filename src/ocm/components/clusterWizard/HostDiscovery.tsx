@@ -10,6 +10,8 @@ import {
   useAlerts,
   getHostDiscoveryInitialValues,
   useFormikAutoSave,
+  isClusterPlatformTypeVsphere,
+  isClusterPlatformTypeNutanix,
 } from '../../../common';
 import HostInventory from '../clusterConfiguration/HostInventory';
 import { useClusterWizardContext } from './ClusterWizardContext';
@@ -67,7 +69,12 @@ const HostDiscovery = ({ cluster }: { cluster: Cluster }) => {
     clearAlerts();
 
     const params: V2ClusterUpdateParams = {};
-    HostDiscoveryService.setPlatform(params, values.usePlatformIntegration);
+    HostDiscoveryService.setPlatform(
+      params,
+      values.usePlatformIntegration,
+      isClusterPlatformTypeVsphere(cluster),
+      isClusterPlatformTypeNutanix(cluster),
+    );
     HostDiscoveryService.setSchedulableMasters(params, values, cluster);
 
     try {

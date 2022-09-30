@@ -45,6 +45,7 @@ export type NetworkConfigurationValues = Pick<
 export type HostDiscoveryValues = V2ClusterUpdateParams & {
   usePlatformIntegration: boolean;
   schedulableMasters: boolean;
+  platformIntegrationType: string | undefined;
 };
 export type StorageValues = V2ClusterUpdateParams & {
   nodeLabeling: string;

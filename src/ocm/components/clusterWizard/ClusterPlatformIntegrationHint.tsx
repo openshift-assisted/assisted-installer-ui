@@ -12,16 +12,21 @@ export const ClusterPlatformIntegrationHint: React.FC<ClusterPlatformIntegration
   platformType,
 }) => {
   const { isPlatformIntegrationSupported } = useClusterSupportedPlatforms(clusterId);
-  if (isPlatformIntegrationSupported && platformType !== 'vsphere') {
+  if (isPlatformIntegrationSupported) {
     return (
       <Alert
-        title="Discover the full potential of vSphere integration"
+        title={
+          platformType === 'vsphere'
+            ? 'Discover the full potential of vSphere integration'
+            : 'Discover the full potential of Nutanix integration'
+        }
         variant={AlertVariant.info}
         isInline={true}
         data-testid="discover-vsphere-hosts"
       >
-        Since all of your hosts originated from the vSphere platform, you now have the option to
-        integrate with vSphere. Switch the 'Integrate with vSphere' toggle to get started.
+        {platformType === 'vsphere'
+          ? 'Since all of your hosts originated from the vSphere platform, you now have the option to integrate with it.'
+          : 'Since all of your hosts originated from the Nutanix platform, you now have the option to integrate with it.'}
       </Alert>
     );
   } else return null;

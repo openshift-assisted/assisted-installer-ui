@@ -17,12 +17,13 @@ export default function useClusterSupportedPlatforms(clusterId: string) {
   });
 
   const isLoading = !error && !data;
+  const platformsSupported = ['vpshere', 'nutanix'];
   // Platform integration is supported
-  // if there is another platform type
-  // besides 'baremetal' or 'none', in the returned data.
+  // if there is a platform type
+  // inside platformssupported array, in the returned data.
   const isPlatformIntegrationSupported =
     !isLoading &&
-    (data?.filter((platform) => !['none', 'baremetal'].includes(platform)) || [])?.length > 0;
+    (data?.filter((platform) => platformsSupported.includes(platform)) || [])?.length > 0;
 
   React.useEffect(() => {
     if (error) {

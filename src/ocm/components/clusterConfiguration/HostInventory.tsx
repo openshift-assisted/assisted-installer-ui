@@ -22,6 +22,8 @@ import {
   selectMastersMustRunWorkloads,
   selectSchedulableMasters,
   isClusterPlatformTypeVM,
+  isClusterPlatformTypeVsphere,
+  isClusterPlatformTypeNutanix,
 } from '../../../common';
 import HostsDiscoveryTable from '../hosts/HostsDiscoveryTable';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
@@ -30,32 +32,43 @@ import { useClusterSupportedPlatforms } from '../../hooks';
 import { OcmSwitchField } from '../ui/OcmFormFields';
 import { selectCurrentClusterPermissionsState } from '../../selectors';
 
-const PlatformIntegrationLabel: React.FC = () => (
-  <>
-    <span>Integrate with vSphere</span>{' '}
-    <PopoverIcon
-      bodyContent={
-        <>
-          Enable vSphere integration to access features like node auto-scaling and persistent
-          storage directly inside OpenShift. You'll need to set vSphere configuration after cluster
-          installation is complete.
-        </>
-      }
-      footerContent={
-        <>
-          <Title headingLevel="h6">Requirements</Title>
-          <List>
-            <ListItem>A network connection between vSphere and the installed OCP cluster</ListItem>
-            <ListItem>
-              Set <code>disk.enableUUID</code> to <code>true</code> inside vSphere
-            </ListItem>
-          </List>
-        </>
-      }
-      buttonOuiaId="platform-integration-vSphere-popover"
-    />
-  </>
-);
+const PlatformIntegrationLabel: React.FC<{
+  isPlatformTypeVsphere: boolean;
+  isPlatformTypeNutanix: boolean;
+}> = ({ isPlatformTypeVsphere, isPlatformTypeNutanix }) => {
+  let message =
+    'Enable platform integration to access features directly in OpenShift, like vSphere node auto-scaling and persistent storage or Nutanix node auto-scaling.';
+  if (isPlatformTypeVsphere && !isPlatformTypeNutanix) {
+    message =
+      "Enable vSphere platform integration to access features directly inside OpenShift like node auto-scaling and persistent storage directly inside OpenShift. You'll need to set vSphere configuration after cluster installation is complete.";
+  } else if (isPlatformTypeNutanix && !isPlatformTypeVsphere) {
+    message =
+      'Enable Nutanix platform integration to access features directly inside OpenShift like node auto-scaling .';
+  }
+  return (
+    <>
+      <span>Integrate with platform (vSphere/Nutanix)</span>{' '}
+      <PopoverIcon
+        bodyContent={message}
+        footerContent={
+          isPlatformTypeVsphere && (
+            <>
+              <Title headingLevel="h6">Requirements</Title>
+              <List>
+                <ListItem>A network connection between vSphere and the installed OCP.</ListItem>
+                <ListItem>
+                  Ensure clusterSet <code>disk.enableUUID</code> is set to <code>true</code> inside
+                  of vSphere
+                </ListItem>
+              </List>
+            </>
+          )
+        }
+        buttonOuiaId="platform-integration-vSphere-popover"
+      />
+    </>
+  );
+};
 
 const SchedulableMastersLabel = () => (
   <>
@@ -67,7 +80,7 @@ const SchedulableMastersLabel = () => (
 );
 
 const platformIntegrationTooltip =
-  'vSphere integration is applicable only when all discovered hosts are vSphere originated';
+  'Platform integration is only applicable when all discovered hosts originated from the same platform.';
 
 const schedulableMastersTooltip =
   'This toggle will be "On" and not editable when less than 5 hosts were discovered';
@@ -114,8 +127,13 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
                 }}
                 isDisabled={!isPlatformIntegrationSupported && !isClusterPlatformTypeVM(cluster)}
                 name={'usePlatformIntegration'}
-                label={<PlatformIntegrationLabel />}
-                switchOuiaId="platform-integration-vSphere-switch"
+                label={
+                  <PlatformIntegrationLabel
+                    isPlatformTypeVsphere={isClusterPlatformTypeVsphere(cluster)}
+                    isPlatformTypeNutanix={isClusterPlatformTypeNutanix(cluster)}
+                  />
+                }
+                switchOuiaId="platform-integration-switch"
               />
             </SplitItem>
           </Split>
