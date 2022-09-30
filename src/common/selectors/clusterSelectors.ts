@@ -127,3 +127,9 @@ export const selectSchedulableMasters = (cluster: Cluster): boolean => {
 
 export const isClusterPlatformTypeVM = ({ platform }: Pick<Cluster, 'platform'>) =>
   !/baremetal|none/.test(platform?.type ?? 'none');
+
+export const isClusterPlatformTypeVsphere = ({ platform }: Pick<Cluster, 'platform'>) =>
+  /vsphere/.test(platform?.type ?? 'none');
+
+export const isClusterPlatformTypeNutanix = ({ platform }: Pick<Cluster, 'platform'>) =>
+  /nutanix/.test(platform?.type ?? 'none');

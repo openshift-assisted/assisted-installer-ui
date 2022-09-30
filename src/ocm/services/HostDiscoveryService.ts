@@ -6,10 +6,15 @@ import {
 } from '../../common';
 
 const HostDiscoveryService = {
-  setPlatform(params: V2ClusterUpdateParams, usePlatformIntegration: boolean): void {
-    if (usePlatformIntegration) {
+  setPlatform(
+    params: V2ClusterUpdateParams,
+    usePlatformIntegration: boolean,
+    isClusterPlatformTypeVsphere: boolean,
+    isClusterPlatformTypeNutanix: boolean,
+  ): void {
+    if (usePlatformIntegration && (isClusterPlatformTypeVsphere || isClusterPlatformTypeNutanix)) {
       params.platform = {
-        type: 'vsphere',
+        type: isClusterPlatformTypeVsphere ? 'vsphere' : 'nutanix',
       };
     } else {
       params.platform = {
