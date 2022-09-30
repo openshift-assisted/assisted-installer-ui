@@ -150,7 +150,6 @@ export const getHostDiscoveryInitialValues = (cluster: Cluster): HostDiscoveryVa
   return {
     usePlatformIntegration: isClusterPlatformTypeVM(cluster),
     schedulableMasters: selectSchedulableMasters(cluster),
-    platformIntegrationType: cluster.platform?.type,
   };
 };
 

@@ -1,10 +1,18 @@
+import React from 'react';
+import { AxiosError } from 'axios';
 import useSWR from 'swr';
 import { getApiErrorMessage, handleApiError } from '../api';
 import { ClustersAPI } from '../services/apis';
-import { PlatformType, POLLING_INTERVAL, useAlerts } from '../../common';
-import { AxiosError } from 'axios';
+import {
+  PlatformType,
+  POLLING_INTERVAL,
+  SupportedPlatformIntegrations,
+  useAlerts,
+} from '../../common';
 import { APIErrorMixin } from '../api/types';
-import React from 'react';
+
+export type PlatformIntegrationType = 'vsphere' | 'nutanix';
+export type SupportedPlatformIntegrationType = 'no-active-integrations' | PlatformIntegrationType;
 
 export default function useClusterSupportedPlatforms(clusterId: string) {
   const { addAlert, alerts } = useAlerts();
@@ -17,13 +25,10 @@ export default function useClusterSupportedPlatforms(clusterId: string) {
   });
 
   const isLoading = !error && !data;
-  const platformsSupported = ['vpshere', 'nutanix'];
-  // Platform integration is supported
-  // if there is a platform type
-  // inside platformssupported array, in the returned data.
-  const isPlatformIntegrationSupported =
-    !isLoading &&
-    (data?.filter((platform) => platformsSupported.includes(platform)) || [])?.length > 0;
+  const supportedPlatformIntegration =
+    isLoading || !data
+      ? undefined
+      : data.find((platform) => SupportedPlatformIntegrations.includes(platform));
 
   React.useEffect(() => {
     if (error) {
@@ -42,7 +47,8 @@ export default function useClusterSupportedPlatforms(clusterId: string) {
   }, [error, addAlert, clusterId, alerts]);
 
   return {
-    isPlatformIntegrationSupported,
+    isPlatformIntegrationSupported: supportedPlatformIntegration !== undefined,
+    supportedPlatformIntegration: supportedPlatformIntegration as SupportedPlatformIntegrationType,
     isLoading,
     error,
   };

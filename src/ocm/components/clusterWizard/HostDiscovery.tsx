@@ -10,8 +10,6 @@ import {
   useAlerts,
   getHostDiscoveryInitialValues,
   useFormikAutoSave,
-  isClusterPlatformTypeVsphere,
-  isClusterPlatformTypeNutanix,
 } from '../../../common';
 import HostInventory from '../clusterConfiguration/HostInventory';
 import { useClusterWizardContext } from './ClusterWizardContext';
@@ -68,13 +66,11 @@ const HostDiscovery = ({ cluster }: { cluster: Cluster }) => {
   const onSubmit: FormikConfig<HostDiscoveryValues>['onSubmit'] = async (values) => {
     clearAlerts();
 
+    // TODO WIP needs to receive it from the hook info.
+    const platformToIntegrate = values.usePlatformIntegration ? 'vsphere' : undefined;
+
     const params: V2ClusterUpdateParams = {};
-    HostDiscoveryService.setPlatform(
-      params,
-      values.usePlatformIntegration,
-      isClusterPlatformTypeVsphere(cluster),
-      isClusterPlatformTypeNutanix(cluster),
-    );
+    HostDiscoveryService.setPlatform(params, platformToIntegrate);
     HostDiscoveryService.setSchedulableMasters(params, values, cluster);
 
     try {

@@ -4,23 +4,17 @@ import {
   HostDiscoveryValues,
   selectMastersMustRunWorkloads,
 } from '../../common';
+import { PlatformIntegrationType } from '../hooks/useClusterSupportedPlatforms';
 
 const HostDiscoveryService = {
   setPlatform(
     params: V2ClusterUpdateParams,
-    usePlatformIntegration: boolean,
-    isClusterPlatformTypeVsphere: boolean,
-    isClusterPlatformTypeNutanix: boolean,
+    platformToIntegrate: PlatformIntegrationType | undefined,
   ): void {
-    if (usePlatformIntegration && (isClusterPlatformTypeVsphere || isClusterPlatformTypeNutanix)) {
-      params.platform = {
-        type: isClusterPlatformTypeVsphere ? 'vsphere' : 'nutanix',
-      };
-    } else {
-      params.platform = {
-        type: 'baremetal',
-      };
-    }
+    const type = platformToIntegrate === undefined ? 'baremetal' : platformToIntegrate;
+    params.platform = {
+      type,
+    };
   },
 
   setSchedulableMasters(
