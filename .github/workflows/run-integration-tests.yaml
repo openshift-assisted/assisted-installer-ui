@@ -42,6 +42,10 @@ jobs:
           project: ./packages/integration-tests
           config-file: cypress.json
           config: video=false
+          # Wait for 4 minutes until a dummy page loads (does not require any API mocking)
+          # TODO remove dummy server if it's not needed
+          wait-on: 'http://localhost:3000/status'
+          wait-on-timeout: 240
           start:
             yarn --cwd ../assisted-ui integration-tests-proxy & yarn --cwd ../assisted-ui start &
             yarn integration-tests:run
