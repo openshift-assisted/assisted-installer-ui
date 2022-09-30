@@ -46,8 +46,6 @@ jobs:
           # TODO remove dummy server if it's not needed
           wait-on: 'http://localhost:3000/status'
           wait-on-timeout: 240
-          start:
-            yarn --cwd ../assisted-ui integration-tests-proxy & yarn --cwd ../assisted-ui start &
-            yarn integration-tests:run
+          start: yarn --cwd ../assisted-ui start & yarn integration-tests:run
           spec: ./src/integration/ui-behaviour/cluster-updates.spec.js
           env: CYPRESS_API_BASE_URL=https://localhost:5000
