@@ -1,5 +1,10 @@
 import { Flex, FlexItem } from '@patternfly/react-core';
-import { CheckCircleIcon, ExclamationCircleIcon, UnknownIcon } from '@patternfly/react-icons';
+import {
+  CheckCircleIcon,
+  ExclamationCircleIcon,
+  InProgressIcon,
+  UnknownIcon,
+} from '@patternfly/react-icons';
 import { TableComposable, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import {
   global_palette_green_500 as okColor,
@@ -19,9 +24,10 @@ type ConditionsTableProps = {
     type: string;
     message: string;
   }[];
+  isDone: boolean;
 };
 
-const ConditionsTable = ({ conditions }: ConditionsTableProps) => {
+const ConditionsTable = ({ conditions, isDone }: ConditionsTableProps) => {
   const { t } = useTranslation();
   return (
     <TableComposable variant="compact">
@@ -44,7 +50,11 @@ const ConditionsTable = ({ conditions }: ConditionsTableProps) => {
             if (c.status === okStatus) {
               icon = <CheckCircleIcon color={okColor.value} />;
             } else if (c.status === nokStatus) {
-              icon = <ExclamationCircleIcon color={dangerColor.value} size="sm" />;
+              icon = isDone ? (
+                <ExclamationCircleIcon color={dangerColor.value} size="sm" />
+              ) : (
+                <InProgressIcon />
+              );
             }
             return (
               <Tr key={c.type} className="ai-conditions-table__no-border">
