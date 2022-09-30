@@ -28,6 +28,7 @@ jobs:
           repository: celdrake/assisted-ui
           ref: integration-tests-wip
           path: ./assisted-ui
+          run: yarn
 
 
       # Run Cypress tests in Headless mode
