@@ -30,7 +30,6 @@ jobs:
           path: ./assisted-ui
           run: yarn
 
-
       # Run Cypress tests in Headless mode
       - name: Cypress run
         uses: cypress-io/github-action@v4.1.0
@@ -40,6 +39,8 @@ jobs:
           project: ./packages/integration-tests
           config-file: cypress.json
           config: video=false
-          start: yarn --cwd ../assisted-ui integration-tests-proxy & yarn --cwd ../assisted-ui start & yarn integration-tests:run
+          start:
+            yarn --cwd ../assisted-ui integration-tests-proxy & yarn --cwd ../assisted-ui start &
+            yarn integration-tests:run
           spec: ./src/integration/ui-behaviour/cluster-updates.spec.js
           env: CYPRESS_API_BASE_URL=https://localhost:5000
