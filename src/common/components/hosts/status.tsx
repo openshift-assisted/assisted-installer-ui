@@ -30,6 +30,20 @@ export const hostStatus: HostStatus<Host['status']> = Object.freeze({
     details:
       'This host is being removed from the cluster. To finish, reboot the host with the infrastructure environment ISO.',
   },
+  reclaiming: {
+    key: 'reclaiming',
+    title: 'Returning to the infrastructure environment',
+    category: 'Discovery related',
+    icon: <InProgressIcon />,
+    details: 'This host is being removed from the cluster.',
+  },
+  'reclaiming-rebooting': {
+    key: 'reclaiming-rebooting',
+    title: 'Rebooting while returning to the infrastructure environment',
+    category: 'Discovery related',
+    icon: <InProgressIcon />,
+    details: 'This host is being rebooted to be available for reuse in another cluster.',
+  },
   'preparing-failed': {
     key: 'preparing-failed',
     title: 'Preparing step failed',
