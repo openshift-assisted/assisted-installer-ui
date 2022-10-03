@@ -3,11 +3,8 @@ import { AgentClusterInstallK8sResource, ClusterImageSetK8sResource } from '../.
 import { OpenshiftVersionOptionType, OpenshiftVersion } from '../../../common';
 
 export const getVersionFromReleaseImage = (releaseImage = '') => {
-  const match = /.+:(.*)-/gm.exec(releaseImage);
-  if (match && match[1]) {
-    return match[1];
-  }
-  return '';
+  const releaseImageParts = releaseImage.split(':');
+  return (releaseImageParts[releaseImageParts.length - 1] || '').split('-')[0];
 };
 
 // eslint-disable-next-line
@@ -38,7 +35,7 @@ export const getOCPVersions = (
       const version = getVersionFromReleaseImage(clusterImageSet.spec?.releaseImage);
       return {
         label: version ? `OpenShift ${version}` : (clusterImageSet.metadata?.name as string),
-        version,
+        version: version || clusterImageSet.metadata?.name || '',
         value: clusterImageSet.metadata?.name as string,
         default: false,
         // (rawagner) ACM does not have the warning so changing to 'production'
