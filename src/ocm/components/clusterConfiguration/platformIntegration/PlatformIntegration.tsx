@@ -1,21 +1,32 @@
 import React from 'react';
 
 import { OcmSwitchField } from '../../ui/OcmFormFields';
-import { isClusterPlatformTypeVM, Cluster, PopoverIcon, PlatformType } from '../../../../common';
+import {
+  isClusterPlatformTypeVM,
+  Cluster,
+  PopoverIcon,
+  PlatformType,
+  VSPHERE_CONFIG_LINK,
+} from '../../../../common';
 import useClusterSupportedPlatforms, {
   SupportedPlatformIntegrationType,
 } from '../../../hooks/useClusterSupportedPlatforms';
 import PlatformIntegrationVsphere from './PlatformIntegrationVsphere';
+import { Link } from 'react-router-dom';
 
 type KeyType = Record<SupportedPlatformIntegrationType, string>;
 
 const undeterminedPlatformMessage =
   'Enable platform integration to access features directly in OpenShift, like vSphere node auto-scaling and persistent storage or Nutanix node auto-scaling.';
 const vspherePlatformMessage =
-  "Enable vSphere platform integration to access features directly inside OpenShift like node auto-scaling and persistent storage directly inside OpenShift. You'll need to set vSphere configuration after cluster installation is complete.";
+  "Enable vSphere platform integration to access features directly inside OpenShift, like node auto-scaling and persistent storage. You'll need to set vSphere configuration after cluster installation is complete.";
+{
+  (' ');
+}
+<Link to={VSPHERE_CONFIG_LINK}>Learn more about vSphere platform integration </Link>;
 
 const nutanixPlatformMessage =
-  'Enable Nutanix platform integration to access features directly inside OpenShift like node auto-scaling .';
+  'Enable Nutanix platform integration to access features like node auto-scaling directly inside OpenShift.';
 
 const platformIntegrationTooltip =
   'Platform integration is only applicable when all discovered hosts originated from the same platform.';

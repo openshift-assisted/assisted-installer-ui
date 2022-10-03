@@ -35,7 +35,7 @@ export const ClusterPlatformIntegrationHint = ({
     <Alert
       title={`Discover the full potential of ${integrationBrand} integration`}
       variant={AlertVariant.info}
-      isInline={true}
+      isInline
       data-testid="discover-platform-integration-hosts"
     >
       {`Since all of your hosts originated from the ${integrationBrand} platform, you now have the option to integrate with it.`}

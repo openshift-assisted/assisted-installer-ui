@@ -1,6 +1,6 @@
 import head from 'lodash/fp/head';
 import { CpuArchitecture, ValidationsInfo } from '../types';
-import { Cluster, stringToJSON } from '../api';
+import { Cluster, PlatformType, stringToJSON } from '../api';
 import { OperatorName } from '../config';
 
 export const selectMachineNetworkCIDR = ({
@@ -125,7 +125,8 @@ export const selectSchedulableMasters = (cluster: Cluster): boolean => {
   return cluster.schedulableMasters || false;
 };
 
-export const SupportedPlatformIntegrations = ['vpshere', 'nutanix'];
-
 export const isClusterPlatformTypeVM = ({ platform }: Pick<Cluster, 'platform'>) =>
   SupportedPlatformIntegrations.includes(platform?.type ?? 'none');
+
+// then define the array as...
+export const SupportedPlatformIntegrations: PlatformType[] = ['vsphere', 'nutanix'];

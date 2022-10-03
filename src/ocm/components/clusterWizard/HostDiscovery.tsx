@@ -20,6 +20,9 @@ import ClusterWizardFooter from './ClusterWizardFooter';
 import ClusterWizardNavigation from './ClusterWizardNavigation';
 import { ClustersService, HostDiscoveryService } from '../../services';
 import { selectCurrentClusterPermissionsState } from '../../selectors';
+import useClusterSupportedPlatforms, {
+  PlatformIntegrationType,
+} from '../../hooks/useClusterSupportedPlatforms';
 
 const HostDiscoveryForm = ({ cluster }: { cluster: Cluster }) => {
   const { alerts } = useAlerts();
@@ -62,15 +65,19 @@ const HostDiscovery = ({ cluster }: { cluster: Cluster }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [], // just once, Formik does not reinitialize
   );
+  const { supportedPlatformIntegration } = useClusterSupportedPlatforms(cluster.id);
 
   const onSubmit: FormikConfig<HostDiscoveryValues>['onSubmit'] = async (values) => {
     clearAlerts();
 
-    // TODO WIP needs to receive it from the hook info.
-    const platformToIntegrate = values.usePlatformIntegration ? 'vsphere' : undefined;
+    const platformToIntegrate = values.usePlatformIntegration
+      ? supportedPlatformIntegration === 'no-active-integrations'
+        ? undefined
+        : supportedPlatformIntegration
+      : undefined;
 
     const params: V2ClusterUpdateParams = {};
-    HostDiscoveryService.setPlatform(params, platformToIntegrate);
+    HostDiscoveryService.setPlatform(params, platformToIntegrate as PlatformIntegrationType);
     HostDiscoveryService.setSchedulableMasters(params, values, cluster);
 
     try {
