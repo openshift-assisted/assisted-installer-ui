@@ -7,10 +7,9 @@ import { getMachineNetworkCidr } from '../../data/machineNetwork';
 import {
   getIpAddressInSubnetValidationSchema,
   getIpAddressValidationSchema,
-  isNotLocalHostIPAddress,
-  isNotCatchAllIPAddress,
   getIpIsNotNetworkOrBroadcastAddressSchema,
   getMultipleIpAddressValidationSchema,
+  isNotReservedHostIPAddress,
 } from '../../commonValidationSchemas';
 
 const REQUIRED_MESSAGE = 'A value is required';
@@ -70,8 +69,7 @@ const getIPValidationSchema = (protocolVersion: ProtocolVersion, allowsMultiple 
     : getIpAddressValidationSchema;
   return baseValidation(protocolVersion)
     .required(REQUIRED_MESSAGE)
-    .concat(isNotLocalHostIPAddress(protocolVersion))
-    .concat(isNotCatchAllIPAddress(protocolVersion));
+    .concat(isNotReservedHostIPAddress(protocolVersion));
 };
 
 const getAddressDataValidationSchema = (protocolVersion: ProtocolVersion, ipConfig: IpConfig) => {

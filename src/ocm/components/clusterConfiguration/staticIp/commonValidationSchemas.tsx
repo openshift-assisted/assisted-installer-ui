@@ -5,12 +5,12 @@ import { getAddressObject } from './data/protocolVersion';
 import { ProtocolVersion } from './data/dataTypes';
 import { getDuplicates } from '../../../../common';
 
-const LOCAL_HOST_IP = {
+const RESERVED_LOCAL_HOST_IPS = {
   ipv4: '127.0.0.0',
   ipv6: '::1',
 };
 
-const CATCH_ALL_IP = {
+const RESERVED_CATCH_ALL_IPS = {
   ipv4: '0.0.0.0',
   ipv6: '0000::',
 };
@@ -48,6 +48,22 @@ const isValidAddress = (protocolVersion: ProtocolVersion, addressStr: string) =>
         : new Address6(addressStr);
     // ip-address package treats cidr addresses as valid so need to verify it isn't a cidr
     return !address.parsedSubnet;
+  } catch (e) {
+    return false;
+  }
+};
+
+const isReservedAddress = (ip: string, protocolVersion: ProtocolVersion) => {
+  try {
+    if (protocolVersion === ProtocolVersion.ipv4) {
+      return ip === RESERVED_LOCAL_HOST_IPS.ipv4 || ip === RESERVED_CATCH_ALL_IPS.ipv4;
+    } else {
+      const ipv6Address = new Address6(ip);
+      return (
+        compareIPV6Addresses(new Address6(RESERVED_LOCAL_HOST_IPS.ipv6), ipv6Address) ||
+        compareIPV6Addresses(new Address6(RESERVED_CATCH_ALL_IPS.ipv6), ipv6Address)
+      );
+    }
   } catch (e) {
     return false;
   }
@@ -105,54 +121,29 @@ export const compareIPV6Addresses = (address1: Address6, address2: Address6) => 
   return JSON.stringify(address1.toByteArray()) === JSON.stringify(address2.toByteArray());
 };
 
-export const isNotLocalHostIPAddress = (protocolVersion: ProtocolVersion) => {
+export const isNotReservedHostIPAddress = (protocolVersion: ProtocolVersion) => {
   return Yup.string().test(
-    'is-local-host',
-    `Provided IP address is not a correct address for an interface.`,
-    function (value) {
-      if (!value) {
-        return true;
+    'is-not-reserved-address',
+    ({ value }) => {
+      const addresses = (value as string).split(',');
+      if (addresses.length === 1) {
+        return 'Provided IP address is not a correct address for an interface.';
       }
-      try {
-        if (protocolVersion === ProtocolVersion.ipv6) {
-          if (compareIPV6Addresses(new Address6(LOCAL_HOST_IP.ipv6), new Address6(value))) {
-            return false;
-          }
-        } else {
-          if (value === LOCAL_HOST_IP.ipv4) {
-            return false;
-          }
-        }
-      } catch (e) {
-        return true;
-      }
-      return true;
-    },
-  );
-};
 
-export const isNotCatchAllIPAddress = (protocolVersion: ProtocolVersion) => {
-  return Yup.string().test(
-    'is-catch-all',
-    `Provided IP address is not a correct address for an interface.`,
+      const reservedAddresses = addresses.filter((address) => {
+        return isReservedAddress(address, protocolVersion);
+      });
+      return `Provided IP addresses ${reservedAddresses.join(
+        ', ',
+      )} are not correct addresses for an interface.`;
+    },
     function (value) {
       if (!value) {
         return true;
       }
-      try {
-        if (protocolVersion === ProtocolVersion.ipv6) {
-          if (compareIPV6Addresses(new Address6(CATCH_ALL_IP.ipv6), new Address6(value))) {
-            return false;
-          }
-        } else {
-          if (value === CATCH_ALL_IP.ipv4) {
-            return false;
-          }
-        }
-      } catch (e) {
-        return true;
-      }
-      return true;
+      // The field may admit multiple values as a comma-separated string
+      const addresses = (value as string).split(',');
+      return addresses.every((address) => !isReservedAddress(address, protocolVersion));
     },
   );
 };
