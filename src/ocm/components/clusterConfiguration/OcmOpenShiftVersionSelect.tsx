@@ -1,6 +1,4 @@
 import React from 'react';
-import { OpenshiftVersionOptionType } from '../../../common/types';
-import { OpenShiftVersionDropdown } from '../../../common/components/ui/OpenShiftVersionDropown';
 import {
   ExclamationCircleIcon,
   ExclamationTriangleIcon,
@@ -10,11 +8,12 @@ import {
   global_warning_color_100 as warningColor,
   global_danger_color_100 as dangerColor,
 } from '@patternfly/react-tokens';
-import openshiftVersionData from '../../data/openshiftVersionsData.json';
+import { TFunction } from 'i18next';
+import { OPENSHIFT_LIFE_CYCLE_DATES_LINK, OpenshiftVersionOptionType } from '../../../common';
 import { diffInDaysBetweenDates } from '../../../common/sevices/DateAndTime';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import { OPENSHIFT_LIFE_CYCLE_DATES_LINK } from '../../../common/config';
-import { TFunction } from 'i18next';
+import { OpenShiftVersionDropdown } from '../../../common/components/ui/OpenShiftVersionDropown';
+import openshiftVersionData from '../../../common/config/openshiftVersionsData.json';
 
 const OpenShiftLifeCycleDatesLink = () => {
   const { t } = useTranslation();
