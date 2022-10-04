@@ -56,7 +56,10 @@ const HostedClusterProgress = ({ hostedCluster, launchToOCP }: HostedClusterProg
         {isExpanded && (
           <>
             <StackItem className="ai-progress-item__body">
-              <ConditionsTable conditions={hostedCluster.status?.conditions} />
+              <ConditionsTable
+                conditions={hostedCluster.status?.conditions}
+                isDone={progressingCondtion?.status === 'False'}
+              />
             </StackItem>
             <StackItem className="ai-progress-item__body">
               <ExternalLink
