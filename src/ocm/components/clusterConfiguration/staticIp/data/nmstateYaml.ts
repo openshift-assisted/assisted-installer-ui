@@ -1,4 +1,4 @@
-import { dump } from 'js-yaml';
+import { dump, load } from 'js-yaml';
 import {
   Nmstate,
   NmstateDns,
@@ -8,10 +8,13 @@ import {
   NmstateProtocolConfigs,
   NmstateRoutesConfig,
 } from './nmstateTypes';
-import { FormViewNetworkWideValues, ProtocolVersion, StaticProtocolType } from './dataTypes';
+import {
+  FormViewNetworkWideValues,
+  MachineNetworks,
+  ProtocolVersion,
+  StaticProtocolType,
+} from './dataTypes';
 import findLastIndex from 'lodash/findLastIndex';
-import { getProtocolVersions } from './protocolVersion';
-import { load } from 'js-yaml';
 
 const ROUTE_DESTINATIONS = {
   ipv4: '0.0.0.0/0',
@@ -28,7 +31,7 @@ export const getMachineNetworkFieldName = (protocolVersion: ProtocolVersion): st
 export const getVlanNicName = (nicName: string, vlanId: number) => `${nicName}.${vlanId}`;
 
 export const getProtocolVersionIdx = (protocolVersion: ProtocolVersion): number => {
-  return protocolVersion === 'ipv4' ? 0 : 1;
+  return protocolVersion === ProtocolVersion.ipv4 ? 0 : 1;
 };
 
 export const yamlToNmstateObject = (yaml: string): Nmstate => {
@@ -46,30 +49,26 @@ export const toYamlWithComments = (json: object, comments: string[]) => {
   return `${yamlComments.join('\n')}\n${dump(json)}`;
 };
 
-export const getMachineNetworks = (
-  comments: string[],
-): { [protocolVersion in ProtocolVersion]: string } => {
-  const machineNetworks: { [protocolVersion in ProtocolVersion]: string } = {
-    ipv4: '',
-    ipv6: '',
+const getMachineNetwork = (comments: string[], protocolVersion: ProtocolVersion) => {
+  const line = comments.find((comment) =>
+    comment.startsWith(getMachineNetworkFieldName(protocolVersion)),
+  );
+  return line ? line.split(' ')[1] : '';
+};
+
+export const getMachineNetworks = (comments: string[]): MachineNetworks => {
+  return {
+    ipv4: getMachineNetwork(comments, ProtocolVersion.ipv4),
+    ipv6: getMachineNetwork(comments, ProtocolVersion.ipv6),
   };
-  for (const protocolVersion of getProtocolVersions()) {
-    const line = comments.find((comment) =>
-      comment.startsWith(getMachineNetworkFieldName(protocolVersion)),
-    );
-    if (line) {
-      machineNetworks[protocolVersion] = line.split(' ')[1];
-    }
-  }
-  return machineNetworks;
 };
 
 export const getProtocolType = (comments: string[]): StaticProtocolType | null => {
   const machineNetworks = getMachineNetworks(comments);
-  if (machineNetworks['ipv4'] && machineNetworks['ipv6']) {
+  if (machineNetworks[ProtocolVersion.ipv4] && machineNetworks[ProtocolVersion.ipv6]) {
     return 'dualStack';
   }
-  if (machineNetworks['ipv4']) {
+  if (machineNetworks[ProtocolVersion.ipv4]) {
     return 'ipv4';
   }
   return null;
@@ -92,7 +91,8 @@ export const getNmstateProtocolConfig = (
 };
 
 export const getDnsSection = (dns: string): NmstateDns => {
-  return { config: { server: [dns] } };
+  const dnsServers = dns.split(',');
+  return { config: { server: dnsServers } };
 };
 
 export const getInterface = (

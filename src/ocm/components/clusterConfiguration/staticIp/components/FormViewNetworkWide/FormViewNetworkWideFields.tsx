@@ -98,7 +98,11 @@ const MachineNetwork: React.FC<{ fieldName: string; protocolVersion: ProtocolVer
             type={TextInputTypes.number}
             showErrorMessage={false}
             min={MIN_PREFIX_LENGTH}
-            max={protocolVersion === 'ipv4' ? MAX_PREFIX_LENGTH.ipv4 : MAX_PREFIX_LENGTH.ipv6}
+            max={
+              protocolVersion === ProtocolVersion.ipv4
+                ? MAX_PREFIX_LENGTH.ipv4
+                : MAX_PREFIX_LENGTH.ipv6
+            }
           />
         </FlexItem>
       </Flex>
@@ -131,7 +135,7 @@ const IpConfigFields: React.FC<{
 
 const protocolVersionOptions: FormSelectOptionProps[] = [
   {
-    label: getProtocolVersionLabel('ipv4'),
+    label: getProtocolVersionLabel(ProtocolVersion.ipv4),
     value: 'ipv4',
   },
   {
