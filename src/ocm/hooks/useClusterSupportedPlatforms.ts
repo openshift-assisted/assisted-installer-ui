@@ -3,15 +3,11 @@ import { AxiosError } from 'axios';
 import useSWR from 'swr';
 import { getApiErrorMessage, handleApiError } from '../api';
 import { ClustersAPI } from '../services/apis';
-import {
-  PlatformType,
-  POLLING_INTERVAL,
-  SupportedPlatformIntegrations,
-  useAlerts,
-} from '../../common';
+import { PlatformType, POLLING_INTERVAL, useAlerts } from '../../common';
 import { APIErrorMixin } from '../api/types';
 
-export type PlatformIntegrationType = 'vsphere' | 'nutanix';
+const platformsToIntegrate = ['vsphere', 'nutanix'] as const;
+export type PlatformIntegrationType = typeof platformsToIntegrate[number];
 export type SupportedPlatformIntegrationType = 'no-active-integrations' | PlatformIntegrationType;
 
 export default function useClusterSupportedPlatforms(clusterId: string) {
@@ -25,10 +21,9 @@ export default function useClusterSupportedPlatforms(clusterId: string) {
   });
 
   const isLoading = !error && !data;
+
   const supportedPlatformIntegration =
-    isLoading || !data
-      ? undefined
-      : data.find((platform) => SupportedPlatformIntegrations.includes(platform));
+    isLoading || !data ? undefined : getUniqueValuesFromData(data);
 
   React.useEffect(() => {
     if (error) {
@@ -54,4 +49,17 @@ export default function useClusterSupportedPlatforms(clusterId: string) {
     isLoading,
     error,
   };
+}
+
+function getUniqueValuesFromData(data: PlatformType[] | undefined) {
+  const setData = data ? new Set(data) : undefined;
+  if (
+    setData &&
+    setData.size === 1 &&
+    platformsToIntegrate.includes(setData.values().next().value as PlatformIntegrationType)
+  ) {
+    return setData.values().next().value as PlatformType;
+  } else {
+    return undefined;
+  }
 }

@@ -1,5 +1,6 @@
 import React from 'react';
 import { List, ListItem, Title } from '@patternfly/react-core';
+import { VSPHERE_CONFIG_LINK } from '../../../../common';
 
 const PlatformIntegrationVsphere = () => {
   return (
@@ -12,6 +13,9 @@ const PlatformIntegrationVsphere = () => {
           vSphere
         </ListItem>
       </List>
+      <a href={VSPHERE_CONFIG_LINK} target="_blank" rel="noopener noreferrer">
+        {'Learn more about vSphere platform integration'}
+      </a>
     </>
   );
 };
