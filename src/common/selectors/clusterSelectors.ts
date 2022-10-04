@@ -125,11 +125,7 @@ export const selectSchedulableMasters = (cluster: Cluster): boolean => {
   return cluster.schedulableMasters || false;
 };
 
+export const SupportedPlatformIntegrations = ['vpshere', 'nutanix'];
+
 export const isClusterPlatformTypeVM = ({ platform }: Pick<Cluster, 'platform'>) =>
-  !/baremetal|none/.test(platform?.type ?? 'none');
-
-export const isClusterPlatformTypeVsphere = ({ platform }: Pick<Cluster, 'platform'>) =>
-  /vsphere/.test(platform?.type ?? 'none');
-
-export const isClusterPlatformTypeNutanix = ({ platform }: Pick<Cluster, 'platform'>) =>
-  /nutanix/.test(platform?.type ?? 'none');
+  SupportedPlatformIntegrations.includes(platform?.type ?? 'none');

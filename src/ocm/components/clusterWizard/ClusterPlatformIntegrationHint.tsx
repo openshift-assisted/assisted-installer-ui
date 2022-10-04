@@ -1,33 +1,44 @@
 import React from 'react';
 import { Alert, AlertVariant } from '@patternfly/react-core';
 import { useClusterSupportedPlatforms } from '../../hooks';
+import { isClusterPlatformTypeVM, PlatformType } from '../../../common';
+import { PlatformIntegrationType } from '../../hooks/useClusterSupportedPlatforms';
 
 type ClusterPlatformIntegrationHintProps = {
   clusterId: string;
-  platformType: string | undefined;
+  platformType: PlatformType;
 };
 
-export const ClusterPlatformIntegrationHint: React.FC<ClusterPlatformIntegrationHintProps> = ({
+const integrationBrands: Record<PlatformIntegrationType, string> = {
+  vsphere: 'vSphere',
+  nutanix: 'Nutanix',
+};
+
+export const ClusterPlatformIntegrationHint = ({
   clusterId,
   platformType,
-}) => {
-  const { isPlatformIntegrationSupported } = useClusterSupportedPlatforms(clusterId);
-  if (isPlatformIntegrationSupported) {
-    return (
-      <Alert
-        title={
-          platformType === 'vsphere'
-            ? 'Discover the full potential of vSphere integration'
-            : 'Discover the full potential of Nutanix integration'
-        }
-        variant={AlertVariant.info}
-        isInline={true}
-        data-testid="discover-vsphere-hosts"
-      >
-        {platformType === 'vsphere'
-          ? 'Since all of your hosts originated from the vSphere platform, you now have the option to integrate with it.'
-          : 'Since all of your hosts originated from the Nutanix platform, you now have the option to integrate with it.'}
-      </Alert>
-    );
-  } else return null;
+}: ClusterPlatformIntegrationHintProps) => {
+  const { isPlatformIntegrationSupported, supportedPlatformIntegration } =
+    useClusterSupportedPlatforms(clusterId);
+
+  const canIntegrateWithPlatform =
+    isPlatformIntegrationSupported &&
+    !isClusterPlatformTypeVM({ platform: { type: platformType } });
+  if (!canIntegrateWithPlatform) {
+    return null;
+  }
+
+  const integrationBrand =
+    integrationBrands[supportedPlatformIntegration as PlatformIntegrationType];
+
+  return (
+    <Alert
+      title={`Discover the full potential of ${integrationBrand} integration`}
+      variant={AlertVariant.info}
+      isInline={true}
+      data-testid="discover-platform-integration-hosts"
+    >
+      {`Since all of your hosts originated from the ${integrationBrand} platform, you now have the option to integrate with it.`}
+    </Alert>
+  );
 };
