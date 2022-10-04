@@ -55,7 +55,7 @@ const NodePoolStatus = ({ nodePool, agents }: NodePoolStatusProps) => {
                 </>
               )}
               <StackItem>
-                <ConditionsTable conditions={nodePool.status?.conditions} />
+                <ConditionsTable conditions={nodePool.status?.conditions} isDone />
               </StackItem>
             </Stack>
           }
