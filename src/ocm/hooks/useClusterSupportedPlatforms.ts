@@ -43,8 +43,7 @@ export default function useClusterSupportedPlatforms(clusterId: string) {
 
   return {
     isPlatformIntegrationSupported: supportedPlatformIntegration !== undefined,
-    supportedPlatformIntegration: (supportedPlatformIntegration ||
-      'no-active-integrations') as SupportedPlatformIntegrationType,
+    supportedPlatformIntegration: supportedPlatformIntegration || 'no-active-integrations',
     isLoading,
     error,
   };
@@ -55,7 +54,9 @@ function getIntegrablePlatformIntegration(platform: PlatformType[]) {
   if (platformsSet.size === 1) {
     const exclusivelyAvailablePlatform = platformsSet.values().next()
       .value as PlatformIntegrationType;
-    return platformsToIntegrate.includes(exclusivelyAvailablePlatform);
+    return platformsToIntegrate.includes(exclusivelyAvailablePlatform)
+      ? exclusivelyAvailablePlatform
+      : undefined;
   }
   return undefined;
 }
