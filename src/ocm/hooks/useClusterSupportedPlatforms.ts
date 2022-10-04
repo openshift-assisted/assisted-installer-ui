@@ -23,7 +23,7 @@ export default function useClusterSupportedPlatforms(clusterId: string) {
   const isLoading = !error && !data;
 
   const supportedPlatformIntegration =
-    isLoading || !data ? undefined : getUniqueValuesFromData(data);
+    isLoading || !data ? undefined : getIntegrablePlatformIntegration(data);
 
   React.useEffect(() => {
     if (error) {
@@ -43,23 +43,19 @@ export default function useClusterSupportedPlatforms(clusterId: string) {
 
   return {
     isPlatformIntegrationSupported: supportedPlatformIntegration !== undefined,
-    supportedPlatformIntegration: supportedPlatformIntegration
-      ? (supportedPlatformIntegration as SupportedPlatformIntegrationType)
-      : 'no-active-integrations',
+    supportedPlatformIntegration: (supportedPlatformIntegration ||
+      'no-active-integrations') as SupportedPlatformIntegrationType,
     isLoading,
     error,
   };
 }
 
-function getUniqueValuesFromData(data: PlatformType[] | undefined) {
-  const setData = data ? new Set(data) : undefined;
-  if (
-    setData &&
-    setData.size === 1 &&
-    platformsToIntegrate.includes(setData.values().next().value as PlatformIntegrationType)
-  ) {
-    return setData.values().next().value as PlatformType;
-  } else {
-    return undefined;
+function getIntegrablePlatformIntegration(platform: PlatformType[]) {
+  const platformsSet = new Set(platform);
+  if (platformsSet.size === 1) {
+    const exclusivelyAvailablePlatform = platformsSet.values().next()
+      .value as PlatformIntegrationType;
+    return platformsToIntegrate.includes(exclusivelyAvailablePlatform);
   }
+  return undefined;
 }

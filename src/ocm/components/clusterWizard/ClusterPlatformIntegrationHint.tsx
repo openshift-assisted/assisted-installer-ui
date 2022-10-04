@@ -23,8 +23,7 @@ export const ClusterPlatformIntegrationHint = ({
 
   const canIntegrateWithPlatform =
     isPlatformIntegrationSupported &&
-    !isClusterPlatformTypeVM({ platform: { type: platformType } }) &&
-    supportedPlatformIntegration !== undefined;
+    !isClusterPlatformTypeVM({ platform: { type: platformType } });
   if (!canIntegrateWithPlatform) {
     return null;
   }
