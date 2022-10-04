@@ -43,7 +43,8 @@ export default function useClusterSupportedPlatforms(clusterId: string) {
 
   return {
     isPlatformIntegrationSupported: supportedPlatformIntegration !== undefined,
-    supportedPlatformIntegration: supportedPlatformIntegration || 'no-active-integrations',
+    supportedPlatformIntegration:
+      supportedPlatformIntegration || ('no-active-integrations' as PlatformIntegrationType),
     isLoading,
     error,
   };

@@ -37,7 +37,7 @@ const PlatformIntegrationLabel = ({
       <PopoverIcon
         bodyContent={messages[supportedPlatformIntegration]}
         footerContent={supportedPlatformIntegration === 'vsphere' && <PlatformIntegrationVsphere />}
-        buttonOuiaId="platform-integration-enabled-popover"
+        buttonOuiaId="platform-integration-vSphere-popover"
       />
     </>
   );
@@ -67,7 +67,7 @@ const PlatformIntegration = ({
       label={
         <PlatformIntegrationLabel supportedPlatformIntegration={supportedPlatformIntegration} />
       }
-      switchOuiaId="platform-integration-switch"
+      switchOuiaId="platform-integration-vSphere-switch"
     />
   );
 };
