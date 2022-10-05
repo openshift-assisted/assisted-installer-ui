@@ -254,7 +254,7 @@
   "ai:Failing infrastructure environment": "Failing infrastructure environment",
   "ai:File is not structured correctly. Use the template to use the right file structure.": "File is not structured correctly. Use the template to use the right file structure.",
   "ai:File not supported.": "File not supported.",
-  "ai:Filter by text ...": "Filter by text ...",
+  "ai:Filter by text": "Filter by text",
   "ai:Finalizing": "Finalizing",
   "ai:Find by hostname": "Find by hostname",
   "ai:For example: host-{{n}}": "For example: host-{{n}}",
