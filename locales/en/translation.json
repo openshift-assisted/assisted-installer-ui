@@ -455,7 +455,6 @@
   "ai:OpenShift Cluster Manager": "OpenShift Cluster Manager",
   "ai:OpenShift Cluster Version Operator": "OpenShift Cluster Version Operator",
   "ai:OpenShift Console": "OpenShift Console",
-  "ai:OpenShift Container Storage": "OpenShift Container Storage",
   "ai:OpenShift Data Foundation": "OpenShift Data Foundation",
   "ai:OpenShift Data Foundation Logical Volume Manager": "OpenShift Data Foundation Logical Volume Manager",
   "ai:OpenShift in-place upgrades aren't expected to work with SNO. If an upgrade is needed, your system will need a redeployment.": "OpenShift in-place upgrades aren't expected to work with SNO. If an upgrade is needed, your system will need a redeployment.",
