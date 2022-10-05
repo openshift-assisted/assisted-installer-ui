@@ -1,19 +1,18 @@
 import {
+  AI_UI_TAG,
   Cluster,
   V2ClusterUpdateParams,
   CpuArchitecture,
-  getClusterDetailsInitialValues,
   InfraEnv,
   ManagedDomain,
   OpenshiftVersionOptionType,
-  getDefaultNetworkType,
-  AI_UI_TAG,
+  getClusterDetailsInitialValues,
+  isArmArchitecture,
 } from '../../common';
 import { ClustersAPI, ManagedDomainsAPI } from '../services/apis';
 import InfraEnvsService from './InfraEnvsService';
 import omit from 'lodash/omit';
 import DiskEncryptionService from './DiskEncryptionService';
-import { isArmArchitecture, isSNO } from '../../common/selectors/clusterSelectors';
 import { CreateParams, HostsNetworkConfigurationType, OcmClusterDetailsValues } from './types';
 import { getDummyInfraEnvField } from '../components/clusterConfiguration/staticIp/data/dummyData';
 import ClustersService from './ClustersService';
@@ -50,7 +49,6 @@ const ClusterDetailsService = {
   },
 
   getClusterCreateParams(values: OcmClusterDetailsValues): CreateParams {
-    const isSNOCluster = isSNO(values);
     const params: CreateParams = omit(values, [
       'useRedHatDnsService',
       'SNODisclaimer',
@@ -65,7 +63,6 @@ const ClusterDetailsService = {
     if (isArmArchitecture({ cpuArchitecture: params.cpuArchitecture })) {
       params.userManagedNetworking = true;
     }
-    params.networkType = getDefaultNetworkType(isSNOCluster);
     if (values.hostsNetworkConfigurationType === HostsNetworkConfigurationType.STATIC) {
       params.staticNetworkConfig = getDummyInfraEnvField();
     }
