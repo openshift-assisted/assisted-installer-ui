@@ -1,12 +1,13 @@
 import { ClustersAPI } from '../services/apis';
 import HostsService from './HostsService';
 import InfraEnvsService from './InfraEnvsService';
-import { AI_UI_TAG, Cluster, Host, V2ClusterUpdateParams } from '../../common';
+import { AI_UI_TAG, Cluster, Host, V2ClusterUpdateParams, WithRequired } from '../../common';
 import { ocmClient } from '../api';
 
 const ClustersService = {
-  async delete(clusterId: Cluster['id']) {
-    const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId);
+  findHost(hosts: Cluster['hosts'] = [], hostId: Host['id']) {
+    return hosts.find((host) => host.id === hostId);
+  },
 
     if (infraEnvId === clusterId) {
       await ClustersAPI.deregister(clusterId);

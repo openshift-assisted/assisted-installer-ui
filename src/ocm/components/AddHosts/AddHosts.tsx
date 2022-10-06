@@ -21,6 +21,7 @@ import {
   Alerts,
   AddHostsContext,
   alertsSlice,
+  canInstallHost,
 } from '../../../common';
 import InventoryAddHosts from './InventoryAddHost';
 import { onFetchEvents } from '../fetching/fetchEvents';
@@ -44,8 +45,19 @@ const AddHosts: React.FC = () => {
   const handleHostsInstall = async () => {
     setSubmitting(true);
     try {
-      await HostsService.installAll(cluster);
-      void resetCluster();
+      if (!cluster.hosts) {
+        return;
+      }
+
+      const canAllHostsBeInstalled = cluster.hosts.every((host) =>
+        canInstallHost(cluster, host.status),
+      );
+      if (canAllHostsBeInstalled) {
+        await HostsService.installAll(cluster.hosts);
+        void resetCluster();
+      } else {
+        throw new Error(`Not all hosts are ready to be installed`);
+      }
     } catch (e) {
       handleApiError(e, () =>
         addAlert({
@@ -91,7 +103,7 @@ const AddHosts: React.FC = () => {
               <ToolbarButton
                 variant={ButtonVariant.primary}
                 name="install"
-                onClick={handleHostsInstall}
+                onClick={() => void handleHostsInstall()}
                 isDisabled={isSubmitting || getReadyHostCount(cluster) <= 0}
               >
                 Install ready hosts

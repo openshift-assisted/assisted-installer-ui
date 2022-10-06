@@ -1,117 +1,80 @@
-import { canInstallHost, Cluster, Disk, DiskRole, Host, HostUpdateParams } from '../../common';
-import { AxiosError, AxiosPromise } from 'axios';
-import InfraEnvsService from './InfraEnvsService';
+import { Disk, DiskRole, Host, HostUpdateParams, WithRequired } from '../../common';
 import { HostsAPI } from '../services/apis';
-import { APIErrorMixin } from '../api/types';
-import ClustersService from './ClustersService';
 
 const HostsService = {
-  /**
-   * Deletes all the hosts in the given cluster
-   * @param clusterId
-   */
-  async deleteAll(clusterId: Cluster['id']) {
-    try {
-      const promises: AxiosPromise<void>[] = [];
-      const { hosts = [] } = await ClustersService.get(clusterId);
-      const hostDeleteParams = hosts.map<[string, string]>(({ infraEnvId, id }) => [
-        infraEnvId || '',
-        id,
-      ]);
-
-      for (const hostDeleteParam of hostDeleteParams) {
-        promises.push(HostsAPI.deregister(...hostDeleteParam));
-      }
-
-      return Promise.all(promises);
-    } catch (e) {
-      throw e as AxiosError<APIErrorMixin>;
+  removeAll(hosts: WithRequired<Pick<Host, 'infraEnvId' | 'id'>, 'infraEnvId'>[]) {
+    const promises = [];
+    for (const host of hosts) {
+      promises.push(HostsAPI.deregister(host.infraEnvId, host.id));
     }
+
+    return Promise.all(promises);
   },
 
-  async update(clusterId: Cluster['id'], hostId: Host['id'], params: HostUpdateParams) {
-    const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId);
+  update(host: Host, params: HostUpdateParams) {
     HostsAPI.abortLastGetRequest();
-    return HostsAPI.update(infraEnvId, hostId, params);
+    if (!host.infraEnvId) {
+      throw new Error(`Cannot update host ${host.id}, missing infraEnvId`);
+    }
+
+    return HostsAPI.update(host.infraEnvId, host.id, params);
   },
 
-  updateHostName(
-    clusterId: Cluster['id'],
-    hostId: Host['id'],
-    newHostName: HostUpdateParams['hostName'],
-  ) {
-    return HostsService.update(clusterId, hostId, { hostName: newHostName });
+  updateHostName(host: Host, newHostName: HostUpdateParams['hostName']) {
+    return HostsService.update(host, { hostName: newHostName });
   },
 
-  updateRole(
-    clusterId: Cluster['id'],
-    hostId: Host['id'],
-    newHostRole: HostUpdateParams['hostRole'],
-  ) {
-    return HostsService.update(clusterId, hostId, { hostRole: newHostRole });
+  updateRole(host: Host, newHostRole: HostUpdateParams['hostRole']) {
+    return HostsService.update(host, { hostRole: newHostRole });
   },
 
-  updateHostODF(
-    clusterId: Cluster['id'],
-    hostId: Host['id'],
-    newNodeLabels: HostUpdateParams['nodeLabels'],
-  ) {
-    return HostsService.update(clusterId, hostId, { nodeLabels: newNodeLabels }); //need to edit that
+  updateHostODF(host: Host, newNodeLabels: HostUpdateParams['nodeLabels']) {
+    return HostsService.update(host, { nodeLabels: newNodeLabels }); //need to edit that
   },
 
-  updateDiskRole(
-    clusterId: Cluster['id'],
-    hostId: Host['id'],
-    diskId: Required<Disk>['id'],
-    newDiskRole: DiskRole,
-  ) {
-    return HostsService.update(clusterId, hostId, {
+  updateDiskRole(host: Host, diskId: Required<Disk>['id'], newDiskRole: DiskRole) {
+    return HostsService.update(host, {
       disksSelectedConfig: [{ id: diskId, role: newDiskRole }],
     });
   },
 
-  updateFormattingDisks(
-    clusterId: Cluster['id'],
-    hostId: Host['id'],
-    diskIdValue: Required<Disk>['id'],
-    shouldSkipFormat: boolean,
-  ) {
-    return HostsService.update(clusterId, hostId, {
+  updateFormattingDisks(host: Host, diskIdValue: Required<Disk>['id'], shouldSkipFormat: boolean) {
+    return HostsService.update(host, {
       disksSkipFormatting: [{ diskId: diskIdValue, skipFormatting: shouldSkipFormat }],
     });
   },
 
-  async delete(clusterId: Cluster['id'], hostId: Host['id']) {
-    const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId);
-    return HostsAPI.deregister(infraEnvId, hostId);
-  },
-
-  async reset(clusterId: Cluster['id'], hostId: Host['id']) {
-    const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId);
-    return HostsAPI.reset(infraEnvId, hostId);
-  },
-
-  async install(clusterId: Cluster['id'], hostId: Host['id']) {
-    const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId);
-    return HostsAPI.installHost(infraEnvId, hostId);
-  },
-
-  async installAll(cluster: Cluster) {
-    try {
-      const promises: AxiosPromise<Host>[] = [];
-      const infraEnvId = await InfraEnvsService.getInfraEnvId(cluster.id);
-      const hosts = cluster.hosts ?? [];
-
-      for (const host of hosts) {
-        if (canInstallHost(cluster, host.status)) {
-          promises.push(HostsAPI.installHost(infraEnvId, host.id));
-        }
-      }
-
-      return Promise.all(promises);
-    } catch (e) {
-      throw e as AxiosError<APIErrorMixin>;
+  delete(host: Host) {
+    if (!host.infraEnvId) {
+      throw new Error(`Cannot delete host ${host.id}, missing infraEnvId`);
     }
+
+    return HostsAPI.deregister(host.infraEnvId, host.id);
+  },
+
+  reset(host: Host) {
+    if (!host.infraEnvId) {
+      throw new Error(`Cannot reset host ${host.id}, missing infraEnvId`);
+    }
+
+    return HostsAPI.reset(host.infraEnvId, host.id);
+  },
+
+  install(host: Host) {
+    if (!host.infraEnvId) {
+      throw new Error(`Cannot install host ${host.id}, missing infraEnvId`);
+    }
+
+    return HostsAPI.installHost(host.infraEnvId, host.id);
+  },
+
+  installAll(hosts: Host[]) {
+    const promises = [];
+    for (const host of hosts) {
+      promises.push(HostsService.install(host));
+    }
+
+    return Promise.all(promises);
   },
 };
 
