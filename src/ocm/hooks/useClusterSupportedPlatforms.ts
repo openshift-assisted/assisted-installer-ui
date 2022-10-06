@@ -15,7 +15,7 @@ export type PlatformIntegrationType = typeof SupportedPlatformIntegrations[numbe
 export type SupportedPlatformIntegrationType = 'no-active-integrations' | PlatformIntegrationType;
 
 function getIntegrablePlatformIntegration(platform: PlatformType[]) {
-  const platformsSet = Array.from(new Set(platform)); // this removes duplicates, gives you an array in return
+  const platformsSet = Array.from(new Set(platform));
   if (platformsSet.length === 1) {
     const [exclusivelyAvailablePlatform] = platformsSet;
     return SupportedPlatformIntegrations.includes(exclusivelyAvailablePlatform)
