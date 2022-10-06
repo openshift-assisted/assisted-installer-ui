@@ -111,7 +111,7 @@ export const hostValidationGroupLabels = (
 });
 
 export const hostValidationLabels = (t: TFunction): { [key in HostValidationId]: string } => ({
-  'compatible-with-cluster-platform': '',
+  'compatible-with-cluster-platform': t('ai:Compatible with cluster platform'),
   'has-default-route': t('ai:Default route to host'),
   'sufficient-network-latency-requirement-for-role': t('ai:Network latency'),
   'sufficient-packet-loss-requirement-for-role': t('ai:Packet loss'),

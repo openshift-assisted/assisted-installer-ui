@@ -6,9 +6,6 @@ import {
   Button,
   Stack,
   StackItem,
-  List,
-  ListItem,
-  Title,
   Split,
   SplitItem,
 } from '@patternfly/react-core';
@@ -21,41 +18,13 @@ import {
   ClusterWizardStepHeader,
   selectMastersMustRunWorkloads,
   selectSchedulableMasters,
-  isClusterPlatformTypeVM,
 } from '../../../common';
 import HostsDiscoveryTable from '../hosts/HostsDiscoveryTable';
 import { DiscoveryImageModalButton } from './discoveryImageModal';
 import InformationAndAlerts from './InformationAndAlerts';
-import { useClusterSupportedPlatforms } from '../../hooks';
 import { OcmSwitchField } from '../ui/OcmFormFields';
 import { selectCurrentClusterPermissionsState } from '../../selectors';
-
-const PlatformIntegrationLabel: React.FC = () => (
-  <>
-    <span>Integrate with vSphere</span>{' '}
-    <PopoverIcon
-      bodyContent={
-        <>
-          Enable vSphere integration to access features like node auto-scaling and persistent
-          storage directly inside OpenShift. You'll need to set vSphere configuration after cluster
-          installation is complete.
-        </>
-      }
-      footerContent={
-        <>
-          <Title headingLevel="h6">Requirements</Title>
-          <List>
-            <ListItem>A network connection between vSphere and the installed OCP cluster</ListItem>
-            <ListItem>
-              Set <code>disk.enableUUID</code> to <code>true</code> inside vSphere
-            </ListItem>
-          </List>
-        </>
-      }
-      buttonOuiaId="platform-integration-vSphere-popover"
-    />
-  </>
-);
+import PlatformIntegration from './platformIntegration/PlatformIntegration';
 
 const SchedulableMastersLabel = () => (
   <>
@@ -66,14 +35,10 @@ const SchedulableMastersLabel = () => (
   </>
 );
 
-const platformIntegrationTooltip =
-  'vSphere integration is applicable only when all discovered hosts are vSphere originated';
-
 const schedulableMastersTooltip =
   'This toggle will be "On" and not editable when less than 5 hosts were discovered';
 
 const HostInventory = ({ cluster }: { cluster: Cluster }) => {
-  const { isPlatformIntegrationSupported } = useClusterSupportedPlatforms(cluster.id);
   const isPlatformIntegrationFeatureEnabled = useFeature(
     'ASSISTED_INSTALLER_PLATFORM_INTEGRATION_FEATURE',
   );
@@ -83,7 +48,7 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
 
   React.useEffect(() => {
     setFieldValue('schedulableMasters', selectSchedulableMasters(cluster));
-  }, [mastersMustRunWorkloads]); // Schedulable masters need to be recalculated only when forced status changes
+  }, [cluster, mastersMustRunWorkloads, setFieldValue]); // Schedulable masters need to be recalculated only when forced status changes
 
   return (
     <Stack hasGutter>
@@ -107,15 +72,9 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
         <StackItem>
           <Split hasGutter>
             <SplitItem>
-              <OcmSwitchField
-                tooltipProps={{
-                  hidden: isPlatformIntegrationSupported,
-                  content: platformIntegrationTooltip,
-                }}
-                isDisabled={!isPlatformIntegrationSupported && !isClusterPlatformTypeVM(cluster)}
-                name={'usePlatformIntegration'}
-                label={<PlatformIntegrationLabel />}
-                switchOuiaId="platform-integration-vSphere-switch"
+              <PlatformIntegration
+                clusterId={cluster.id}
+                platformType={cluster.platform?.type || 'none'}
               />
             </SplitItem>
           </Split>

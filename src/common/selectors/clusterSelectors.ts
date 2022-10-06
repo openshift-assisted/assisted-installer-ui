@@ -1,5 +1,5 @@
 import head from 'lodash/fp/head';
-import { CpuArchitecture, ValidationsInfo } from '../types';
+import { CpuArchitecture, SupportedPlatformIntegrations, ValidationsInfo } from '../types';
 import { Cluster, stringToJSON } from '../api';
 import { OperatorName } from '../config';
 
@@ -126,4 +126,4 @@ export const selectSchedulableMasters = (cluster: Cluster): boolean => {
 };
 
 export const isClusterPlatformTypeVM = ({ platform }: Pick<Cluster, 'platform'>) =>
-  !/baremetal|none/.test(platform?.type ?? 'none');
+  SupportedPlatformIntegrations.includes(platform?.type ?? 'none');
