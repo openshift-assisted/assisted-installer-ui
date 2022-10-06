@@ -53,7 +53,7 @@ const ValidationSection = ({
       {currentStepId === 'host-discovery' && cluster && (
         <ClusterPlatformIntegrationHint
           clusterId={cluster.id}
-          platformType={cluster.platform?.type}
+          platformType={cluster.platform?.type || 'none'}
         />
       )}
 

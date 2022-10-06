@@ -1,28 +1,43 @@
 import React from 'react';
 import { Alert, AlertVariant } from '@patternfly/react-core';
 import { useClusterSupportedPlatforms } from '../../hooks';
+import { isClusterPlatformTypeVM, PlatformType } from '../../../common';
+import { PlatformIntegrationType } from '../../hooks/useClusterSupportedPlatforms';
 
 type ClusterPlatformIntegrationHintProps = {
   clusterId: string;
-  platformType: string | undefined;
+  platformType: PlatformType;
 };
 
-export const ClusterPlatformIntegrationHint: React.FC<ClusterPlatformIntegrationHintProps> = ({
+const integrationBrands: Record<PlatformIntegrationType, string> = {
+  vsphere: 'vSphere',
+  nutanix: 'Nutanix',
+};
+
+export const ClusterPlatformIntegrationHint = ({
   clusterId,
   platformType,
-}) => {
-  const { isPlatformIntegrationSupported } = useClusterSupportedPlatforms(clusterId);
-  if (isPlatformIntegrationSupported && platformType !== 'vsphere') {
-    return (
-      <Alert
-        title="Discover the full potential of vSphere integration"
-        variant={AlertVariant.info}
-        isInline={true}
-        data-testid="discover-vsphere-hosts"
-      >
-        Since all of your hosts originated from the vSphere platform, you now have the option to
-        integrate with vSphere. Switch the 'Integrate with vSphere' toggle to get started.
-      </Alert>
-    );
-  } else return null;
+}: ClusterPlatformIntegrationHintProps) => {
+  const { isPlatformIntegrationSupported, supportedPlatformIntegration } =
+    useClusterSupportedPlatforms(clusterId);
+
+  const canIntegrateWithPlatform =
+    isPlatformIntegrationSupported &&
+    !isClusterPlatformTypeVM({ platform: { type: platformType } });
+  if (!canIntegrateWithPlatform) {
+    return null;
+  }
+
+  const integrationBrand: string = integrationBrands[supportedPlatformIntegration] as string;
+
+  return (
+    <Alert
+      title={`Discover the full potential of ${integrationBrand} integration`}
+      variant={AlertVariant.info}
+      isInline
+      data-testid="discover-platform-integration-hosts"
+    >
+      {`Since all of your hosts originated from the ${integrationBrand} platform, you now have the option to integrate with it.`}
+    </Alert>
+  );
 };
