@@ -37,11 +37,7 @@ import {
   EditHostFormValues,
 } from '../../../common/components/hosts';
 import HostsTable from '../../../common/components/hosts/HostsTable';
-import {
-  hostActionResolver,
-  hostnameColumn,
-  statusColumn,
-} from '../../../common/components/hosts/tableUtils';
+import { hostActionResolver, hostnameColumn } from '../../../common/components/hosts/tableUtils';
 import ResetHostModal from './ResetHostModal';
 import DeleteHostModal from './DeleteHostModal';
 import { onFetchEvents } from '../fetching/fetchEvents';
@@ -52,6 +48,7 @@ import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { getErrorMessage } from '../../../common/utils';
 import { selectCurrentClusterPermissionsState } from '../../selectors';
+import { hardwareStatusColumn } from './HardwareStatus';
 
 const DELETE_MODAL_STATUS_Z_INDEX = 500;
 
@@ -396,7 +393,7 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
   } = useModalDialogsContext();
 
   const content = React.useMemo(
-    () => [hostnameColumn(t), statusColumn({ t, zIndex: DELETE_MODAL_STATUS_Z_INDEX })],
+    () => [hostnameColumn(t), hardwareStatusColumn({ zIndex: DELETE_MODAL_STATUS_Z_INDEX })],
     [t],
   );
   const paginationProps = usePagination(massDeleteHostDialog.data?.hosts?.length || 0);
