@@ -38,26 +38,19 @@ const AddHosts: React.FC = () => {
   const [isSubmitting, setSubmitting] = React.useState(false);
   const clusterVarieties = useClusterStatusVarieties(cluster);
 
-  if (!cluster || !resetCluster) {
-    return null;
-  }
-
-  const handleHostsInstall = async () => {
+  const handleHostsInstall = React.useCallback(async () => {
     setSubmitting(true);
     try {
-      if (!cluster.hosts) {
+      if (!cluster || !resetCluster || !cluster.hosts) {
         return;
       }
 
-      const canAllHostsBeInstalled = cluster.hosts.every((host) =>
+      const hostsToBeInstalled = cluster.hosts.filter((host) =>
         canInstallHost(cluster, host.status),
       );
-      if (canAllHostsBeInstalled) {
-        await HostsService.installAll(cluster.hosts);
-        void resetCluster();
-      } else {
-        throw new Error(`Not all hosts are ready to be installed`);
-      }
+
+      await HostsService.installAll(hostsToBeInstalled);
+      void resetCluster();
     } catch (e) {
       handleApiError(e, () =>
         addAlert({
@@ -70,7 +63,11 @@ const AddHosts: React.FC = () => {
         setSubmitting(false);
       }, 10000);
     }
-  };
+  }, [cluster, resetCluster]);
+
+  if (!cluster || !resetCluster) {
+    return null;
+  }
 
   return (
     <ModalDialogsContextProvider>
@@ -104,7 +101,7 @@ const AddHosts: React.FC = () => {
                 variant={ButtonVariant.primary}
                 name="install"
                 onClick={() => void handleHostsInstall()}
-                isDisabled={isSubmitting || getReadyHostCount(cluster) <= 0}
+                isDisabled={isSubmitting || getReadyHostCount(cluster) === 0}
               >
                 Install ready hosts
               </ToolbarButton>

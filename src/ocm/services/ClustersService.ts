@@ -1,7 +1,7 @@
 import { ClustersAPI } from '../services/apis';
 import HostsService from './HostsService';
 import InfraEnvsService from './InfraEnvsService';
-import { AI_UI_TAG, Cluster, Host, V2ClusterUpdateParams, WithRequired } from '../../common';
+import { AI_UI_TAG, Cluster, Host, V2ClusterUpdateParams } from '../../common';
 import { ocmClient } from '../api';
 
 const ClustersService = {
@@ -9,13 +9,16 @@ const ClustersService = {
     return hosts.find((host) => host.id === hostId);
   },
 
-    if (infraEnvId === clusterId) {
-      await ClustersAPI.deregister(clusterId);
-    } else {
-      await HostsService.deleteAll(clusterId);
-      await ClustersAPI.deregister(clusterId);
-      await InfraEnvsService.delete(clusterId);
-    }
+  async remove(clusterId: Cluster['id']) {
+    const { data: cluster } = await ClustersAPI.get(clusterId);
+    const hosts = cluster.hosts ?? [];
+    // All hosts appearing in cluster.hosts must have an infraEnvId value
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const infraEnvIdsList = hosts.map((host) => host.infraEnvId!);
+
+    await HostsService.removeAll(hosts);
+    await InfraEnvsService.removeAll(clusterId, infraEnvIdsList);
+    await ClustersAPI.deregister(clusterId);
   },
 
   async downloadLogs(clusterId: Cluster['id'], hostId?: Host['id']) {
@@ -25,11 +28,7 @@ const ClustersService = {
     return { data, fileName };
   },
 
-  async update(
-    clusterId: Cluster['id'],
-    clusterTags: Cluster['tags'],
-    params: V2ClusterUpdateParams,
-  ) {
+  update(clusterId: Cluster['id'], clusterTags: Cluster['tags'], params: V2ClusterUpdateParams) {
     ClustersAPI.abortLastGetRequest();
     if (ocmClient) {
       params = ClustersService.updateClusterTags(clusterTags, params);

@@ -1,11 +1,18 @@
-import { Disk, DiskRole, Host, HostUpdateParams, WithRequired } from '../../common';
+import { Disk, DiskRole, Host, HostUpdateParams } from '../../common';
 import { HostsAPI } from '../services/apis';
 
 const HostsService = {
-  removeAll(hosts: WithRequired<Pick<Host, 'infraEnvId' | 'id'>, 'infraEnvId'>[]) {
+  /**
+   * Removes all the hosts in the list assuming
+   * all of them have a valid infraEnvId value.
+   * @param hosts
+   */
+  removeAll(hosts: Host[]) {
     const promises = [];
-    for (const host of hosts) {
-      promises.push(HostsAPI.deregister(host.infraEnvId, host.id));
+
+    for (const { id, infraEnvId } of hosts) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      promises.push(HostsAPI.deregister(infraEnvId!, id));
     }
 
     return Promise.all(promises);
