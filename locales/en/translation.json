@@ -145,6 +145,7 @@
   "ai:Cluster-wide proxy": "Cluster-wide proxy",
   "ai:CNV requirements": "CNV requirements",
   "ai:Command to download the ISO:": "Command to download the ISO:",
+  "ai:Compatible with cluster platform": "Compatible with cluster platform",
   "ai:Condition": "Condition",
   "ai:Configure advanced networking properties (e.g. CIDR ranges).": "Configure advanced networking properties (e.g. CIDR ranges).",
   "ai:Configure cluster-wide proxy settings": "Configure cluster-wide proxy settings",
