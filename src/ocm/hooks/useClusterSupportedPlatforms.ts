@@ -3,12 +3,27 @@ import { AxiosError } from 'axios';
 import useSWR from 'swr';
 import { getApiErrorMessage, handleApiError } from '../api';
 import { ClustersAPI } from '../services/apis';
-import { PlatformType, POLLING_INTERVAL, useAlerts } from '../../common';
+import {
+  PlatformType,
+  POLLING_INTERVAL,
+  SupportedPlatformIntegrations,
+  useAlerts,
+} from '../../common';
 import { APIErrorMixin } from '../api/types';
 
-const platformsToIntegrate = ['vsphere', 'nutanix'] as const;
-export type PlatformIntegrationType = typeof platformsToIntegrate[number];
+export type PlatformIntegrationType = typeof SupportedPlatformIntegrations[number];
 export type SupportedPlatformIntegrationType = 'no-active-integrations' | PlatformIntegrationType;
+
+function getIntegrablePlatformIntegration(platform: PlatformType[]) {
+  const platformsSet = Array.from(new Set(platform)); // this removes duplicates, gives you an array in return
+  if (platformsSet.length === 1) {
+    const [exclusivelyAvailablePlatform] = platformsSet;
+    return SupportedPlatformIntegrations.includes(exclusivelyAvailablePlatform)
+      ? exclusivelyAvailablePlatform
+      : undefined;
+  }
+  return undefined;
+}
 
 export default function useClusterSupportedPlatforms(clusterId: string) {
   const { addAlert, alerts } = useAlerts();
@@ -47,16 +62,4 @@ export default function useClusterSupportedPlatforms(clusterId: string) {
     isLoading,
     error,
   };
-}
-
-function getIntegrablePlatformIntegration(platform: PlatformType[]) {
-  const platformsSet = new Set(platform);
-  if (platformsSet.size === 1) {
-    const exclusivelyAvailablePlatform = platformsSet.values().next()
-      .value as PlatformIntegrationType;
-    return platformsToIntegrate.includes(exclusivelyAvailablePlatform)
-      ? exclusivelyAvailablePlatform
-      : undefined;
-  }
-  return undefined;
 }
