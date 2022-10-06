@@ -119,12 +119,19 @@ export const roleColumn = (
   };
 };
 
-export const statusColumn = (
-  t: TFunction,
-  AdditionalNTPSourcesDialogToggleComponent?: React.FC,
-  onEditHostname?: HostsTableActions['onEditHost'],
-  UpdateDay2ApiVipDialogToggleComponent?: React.FC,
-): TableRow<Host> => {
+export const statusColumn = ({
+  t,
+  zIndex,
+  AdditionalNTPSourcesDialogToggleComponent,
+  onEditHostname,
+  UpdateDay2ApiVipDialogToggleComponent,
+}: {
+  t: TFunction;
+  zIndex?: number;
+  AdditionalNTPSourcesDialogToggleComponent?: React.FC;
+  onEditHostname?: HostsTableActions['onEditHost'];
+  UpdateDay2ApiVipDialogToggleComponent?: React.FC;
+}): TableRow<Host> => {
   return {
     header: {
       title: t('ai:Status'),
@@ -150,6 +157,7 @@ export const statusColumn = (
             validationsInfo={validationsInfo}
             AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggleComponent}
             UpdateDay2ApiVipDialogToggleComponent={UpdateDay2ApiVipDialogToggleComponent}
+            zIndex={zIndex}
           />
         ),
         props: { 'data-testid': 'host-status' },

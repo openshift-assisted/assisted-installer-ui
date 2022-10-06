@@ -53,6 +53,8 @@ import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { getErrorMessage } from '../../../common/utils';
 import { selectCurrentClusterPermissionsState } from '../../selectors';
 
+const DELETE_MODAL_STATUS_Z_INDEX = 500;
+
 export const useHostsTable = (cluster: Cluster) => {
   const { addAlert } = useAlerts();
   const {
@@ -393,7 +395,10 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
     massDeleteHostDialog,
   } = useModalDialogsContext();
 
-  const content = React.useMemo(() => [hostnameColumn(t), statusColumn(t)], [t]);
+  const content = React.useMemo(
+    () => [hostnameColumn(t), statusColumn({ t, zIndex: DELETE_MODAL_STATUS_Z_INDEX })],
+    [t],
+  );
   const paginationProps = usePagination(massDeleteHostDialog.data?.hosts?.length || 0);
 
   return (

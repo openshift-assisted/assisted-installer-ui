@@ -41,7 +41,12 @@ const ClusterHostsTable = ({ cluster, skipDisabled }: ClusterHostsTableProps) =>
     () => [
       hostnameColumn(t, onEditHost, undefined, actionChecks.canEditHostname),
       roleColumn(t, actionChecks.canEditRole, onEditRole, selectSchedulableMasters(cluster)),
-      statusColumn(t, AdditionalNTPSourcesDialogToggle, onEditHost, UpdateDay2ApiVipDialogToggle),
+      statusColumn({
+        t,
+        AdditionalNTPSourcesDialogToggleComponent: AdditionalNTPSourcesDialogToggle,
+        onEditHostname: onEditHost,
+        UpdateDay2ApiVipDialogToggleComponent: UpdateDay2ApiVipDialogToggle,
+      }),
       discoveredAtColumn,
       cpuCoresColumn,
       memoryColumn,
