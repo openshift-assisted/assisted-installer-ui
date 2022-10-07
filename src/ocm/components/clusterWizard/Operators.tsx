@@ -8,7 +8,6 @@ import {
   MonitoredOperator,
   OPERATOR_NAME_CNV,
   OPERATOR_NAME_LVM,
-  OPERATOR_NAME_OCS,
   OPERATOR_NAME_ODF,
   OperatorsValues,
   selectMonitoredOperators,
@@ -31,7 +30,7 @@ export const getOperatorsInitialValues = (
   const isOperatorEnabled = (operatorNames: string[]) =>
     !!monitoredOperators.find((operator) => operatorNames.includes(operator.name || ''));
   return {
-    useOpenShiftDataFoundation: isOperatorEnabled([OPERATOR_NAME_ODF, OPERATOR_NAME_OCS]),
+    useOpenShiftDataFoundation: isOperatorEnabled([OPERATOR_NAME_ODF]),
     useOdfLogicalVolumeManager: isOperatorEnabled([OPERATOR_NAME_LVM]),
     useContainerNativeVirtualization: isOperatorEnabled([OPERATOR_NAME_CNV]),
   };
