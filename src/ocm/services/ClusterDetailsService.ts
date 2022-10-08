@@ -9,7 +9,7 @@ import {
   getClusterDetailsInitialValues,
   isArmArchitecture,
 } from '../../common';
-import { ClustersAPI, ManagedDomainsAPI } from '../services/apis';
+import { ClustersAPI } from '../services/apis';
 import InfraEnvsService from './InfraEnvsService';
 import omit from 'lodash/omit';
 import DiskEncryptionService from './DiskEncryptionService';
@@ -44,11 +44,6 @@ const ClusterDetailsService = {
   ) {
     const { data: updatedCluster } = await ClustersService.update(clusterId, clusterTags, params);
     return updatedCluster;
-  },
-
-  async getManagedDomains() {
-    const { data: domains } = await ManagedDomainsAPI.list();
-    return domains;
   },
 
   getClusterCreateParams(values: OcmClusterDetailsValues): ClusterCreateParamsWithStaticNetworking {
