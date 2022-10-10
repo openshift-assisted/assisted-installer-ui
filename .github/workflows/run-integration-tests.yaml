@@ -43,6 +43,6 @@ jobs:
           config-file: cypress.json
           config: video=false
           # Added serve as a local package in integration-tests package
-          start: yarn serve -p 3000 ../assisted-ui/build
+          start: yarn serve -p 3000 -s /home/runner/work/assisted-ui-lib/assisted-ui-lib/assisted-ui/build
           spec: ./packages/integration-tests/src/integration/ui-behaviour/cluster-updates.spec.js
           env: CYPRESS_API_BASE_URL=https://localhost:3000
