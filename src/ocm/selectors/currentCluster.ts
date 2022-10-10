@@ -1,5 +1,5 @@
-import { RootState } from '../store/rootReducer';
 import { AssistedInstallerPermissionTypesListType } from '../../common';
+import { RootState } from '../store';
 
 export const selectCurrentClusterState = (state: RootState) => state.currentCluster;
 export const selectCurrentCluster = (state: RootState) => state.currentCluster.data;
