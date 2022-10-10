@@ -302,3 +302,5 @@ export const OCP_STATIC_IP_DOC =
   'https://docs.openshift.com/container-platform/latest/scalability_and_performance/ztp-deploying-disconnected.html#ztp-configuring-a-static-ip_ztp-deploying-disconnected';
 
 export const AI_UI_TAG = 'ui_ocm';
+
+export const OCP_RELEASES_PAGE = 'https://console.redhat.com/openshift/releases';

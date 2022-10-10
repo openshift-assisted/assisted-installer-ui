@@ -16,6 +16,7 @@ import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { useField } from 'formik';
 import { getFieldId } from './formik';
 import ExternalLink from './ExternalLink';
+import { OCP_RELEASES_PAGE } from '../../config';
 
 export type HelperTextType = (
   versions: OpenshiftVersionOptionType[],
@@ -100,12 +101,8 @@ export const OpenShiftVersionDropdown = ({
           <HelperText style={{ display: 'inherit' }}>{helperText}</HelperText>
         </FlexItem>
         <FlexItem align={{ default: 'alignRight' }}>
-          <ExternalLink
-            href={
-              'https://source.redhat.com/groups/public/atomicopenshift/atomicopenshift_blog/4next_release_notes_for_sprint_224'
-            }
-          >
-            Learn more about OpenShift releases
+          <ExternalLink href={OCP_RELEASES_PAGE}>
+            {t('ai:Learn more about OpenShift releases')}
           </ExternalLink>
         </FlexItem>
       </Flex>
