@@ -5,6 +5,8 @@ import {
   Dropdown,
   HelperText,
   FormGroup,
+  Flex,
+  FlexItem,
 } from '@patternfly/react-core';
 import { CaretDownIcon } from '@patternfly/react-icons';
 
@@ -13,6 +15,7 @@ import { TFunction } from 'i18next';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { useField } from 'formik';
 import { getFieldId } from './formik';
+import ExternalLink from './ExternalLink';
 
 export type HelperTextType = (
   versions: OpenshiftVersionOptionType[],
@@ -82,17 +85,30 @@ export const OpenShiftVersionDropdown = ({
 
   return (
     <FormGroup fieldId={fieldId} label={t('ai:OpenShift version')} isRequired>
-      <Dropdown
-        {...field}
-        name={name}
-        id={fieldId}
-        onSelect={onSelect}
-        dropdownItems={dropdownItems}
-        toggle={toggle}
-        isOpen={isOpen}
-        className="pf-u-w-100"
-      />
-      <HelperText style={{ display: 'inherit' }}>{helperText}</HelperText>
+      <Flex direction={{ default: 'column', lg: 'row' }}>
+        <FlexItem flex={{ default: 'flex_1' }}>
+          <Dropdown
+            {...field}
+            name={name}
+            id={fieldId}
+            onSelect={onSelect}
+            dropdownItems={dropdownItems}
+            toggle={toggle}
+            isOpen={isOpen}
+            className="pf-u-w-100"
+          />
+          <HelperText style={{ display: 'inherit' }}>{helperText}</HelperText>
+        </FlexItem>
+        <FlexItem align={{ default: 'alignRight' }}>
+          <ExternalLink
+            href={
+              'https://source.redhat.com/groups/public/atomicopenshift/atomicopenshift_blog/4next_release_notes_for_sprint_224'
+            }
+          >
+            Learn more about OpenShift releases
+          </ExternalLink>
+        </FlexItem>
+      </Flex>
     </FormGroup>
   );
 };
