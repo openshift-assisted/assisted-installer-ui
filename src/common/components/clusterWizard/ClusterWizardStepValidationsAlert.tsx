@@ -9,7 +9,7 @@ import {
   List,
   ListItem,
 } from '@patternfly/react-core';
-import { WizardStepsValidationMap } from './validationsInfoUtils';
+import { checkHostValidations, WizardStepsValidationMap } from './validationsInfoUtils';
 import { Cluster } from '../../api/types';
 import { ValidationsInfo } from '../../types/clusters';
 import { ValidationsInfo as HostValidationsInfo } from '../../types/hosts';
@@ -38,35 +38,29 @@ const ClusterWizardStepValidationsAlert = <ClusterWizardStepsType extends string
   wizardStepsValidationsMap,
   children,
 }: ClusterWizardStepValidationsAlertProps<ClusterWizardStepsType>) => {
-  const { failedClusterValidations, failedHostValidations } = React.useMemo(() => {
+  const { failedClusterValidations, failedHostnameValidations } = React.useMemo(() => {
     const reducedValidationsInfo = getWizardStepClusterValidationsInfo(
       validationsInfo || {},
       currentStepId,
       wizardStepsValidationsMap,
     );
 
-    const reducedHostValidationsInfo = hosts.map((host) => {
-      let validations;
-      if (typeof host.validationsInfo === 'string') {
-        validations = stringToJSON<HostValidationsInfo>(host.validationsInfo);
-      } else if (host.validationsInfo) {
-        validations = host.validationsInfo;
-      }
-      return lodashValues(validations)
-        .flat()
-        .filter((validation) => ['hostname-valid', 'hostname-unique'].includes(validation.id));
-    });
-
     const flattenedValues = lodashValues(reducedValidationsInfo).flat();
-    const flattenedHostValues = lodashValues(reducedHostValidationsInfo).flat();
+
+    const hostnameValidations = hosts.some((host) => {
+      const validations =
+        typeof host.validationsInfo === 'string'
+          ? stringToJSON<HostValidationsInfo>(host.validationsInfo)
+          : host.validationsInfo;
+
+      return !checkHostValidations(validations || {}, ['hostname-valid', 'hostname-unique']);
+    });
 
     return {
       failedClusterValidations: flattenedValues.filter(
         (validation) => validation?.status === 'failure',
       ),
-      failedHostValidations: flattenedHostValues.filter(
-        (validation) => validation?.status === 'failure',
-      ),
+      failedHostnameValidations: hostnameValidations,
     };
   }, [validationsInfo, currentStepId, wizardStepsValidationsMap, hosts]);
 
@@ -104,7 +98,7 @@ const ClusterWizardStepValidationsAlert = <ClusterWizardStepsType extends string
                   </FlexItem>
                 </>
               )}
-              {!!failedHostValidations.length && (
+              {failedHostnameValidations && (
                 <FlexItem>
                   {t(
                     'ai:The cluster is not ready yet. Some hosts have an ineligible name. To change the hostname, click on it.',
