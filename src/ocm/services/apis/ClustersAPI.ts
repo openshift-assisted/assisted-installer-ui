@@ -106,12 +106,14 @@ const ClustersAPI = {
   list() {
     return client.get<Cluster[]>(`${ClustersAPI.makeBaseURI()}`, {
       signal: _getRequestAbortController.signal,
+      timeout: 5000,
     });
   },
 
   get(clusterId: Cluster['id']) {
     return client.get<Cluster>(`${ClustersAPI.makeBaseURI(clusterId)}`, {
       signal: _getRequestAbortController.signal,
+      timeout: 5000,
     });
   },
 

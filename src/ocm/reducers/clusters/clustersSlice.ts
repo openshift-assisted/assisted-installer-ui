@@ -12,7 +12,7 @@ export const fetchClustersAsync = createAsyncThunk<Cluster[] | void>(
       return data.filter((cluster) => (isOcm ? cluster.kind === 'Cluster' : true));
     } catch (e) {
       handleApiError(e, () => {
-        void Promise.reject('Failed to fetch clusters.');
+        throw new Error('Failed to fetch clusters.');
       });
     }
   },
