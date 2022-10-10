@@ -33,12 +33,6 @@ jobs:
         working-directory: ./assisted-ui
         run: yarn install && yarn build
 
-      - name: Install Serve for serving for Cypress
-        working-directory: ./assisted-ui
-        run: |
-          yarn global add serve
-          echo "$(yarn global bin)" >> $GITHUB_PATH
-
       # Run Cypress tests in Headless mode
       - name: Cypress run
         uses: cypress-io/github-action@v4.1.0
@@ -48,6 +42,7 @@ jobs:
           project: ./packages/integration-tests
           config-file: cypress.json
           config: video=false
+          # Added serve as a local package in integration-tests package
           start: yarn serve -p 3000 ../assisted-ui/build
-          spec: ./src/integration/ui-behaviour/cluster-updates.spec.js
+          spec: ./packages/integration-tests/src/integration/ui-behaviour/cluster-updates.spec.js
           env: CYPRESS_API_BASE_URL=https://localhost:3000
