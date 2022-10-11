@@ -303,4 +303,4 @@ export const OCP_STATIC_IP_DOC =
 
 export const AI_UI_TAG = 'ui_ocm';
 
-export const OCP_RELEASES_PAGE = 'https://console.redhat.com/openshift/releases';
+export const OCP_RELEASES_PAGE = 'openshift/releases';

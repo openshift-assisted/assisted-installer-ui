@@ -101,7 +101,7 @@ export const OpenShiftVersionDropdown = ({
           <HelperText style={{ display: 'inherit' }}>{helperText}</HelperText>
         </FlexItem>
         <FlexItem align={{ default: 'alignRight' }}>
-          <ExternalLink href={OCP_RELEASES_PAGE}>
+          <ExternalLink href={`${window.location.origin}/${OCP_RELEASES_PAGE}`}>
             {t('ai:Learn more about OpenShift releases')}
           </ExternalLink>
         </FlexItem>
