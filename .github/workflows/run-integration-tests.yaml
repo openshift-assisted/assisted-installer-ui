@@ -17,7 +17,7 @@ jobs:
           path: ./openshift-assisted-ui
 
       - name: Install Cypress dependencies
-        working-directory: ./openshift-assisted-ui
+        working-directory: ./openshift-assisted-ui/packages/integration-tests
         run: yarn install
 
       # For now just checkout assisted-UI to start a dev server with a stable version (integration-tests-wip uses v2.10)
@@ -37,12 +37,11 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v4.1.0
         with:
-          working-directory: ./openshift-assisted-ui
+          working-directory: ./openshift-assisted-ui/packages/integration-tests
           browser: chrome
-          project: ./packages/integration-tests
           config-file: cypress.json
           config: video=false
           # Added serve as a local package in integration-tests package
           start: yarn serve -p 3000 -s /home/runner/work/assisted-ui-lib/assisted-ui-lib/assisted-ui/build
-          spec: ./packages/integration-tests/src/integration/ui-behaviour/ci-integration.spec.ts
+          spec: ./src/integration/ui-behaviour/ci-integration.spec.ts
           env: CYPRESS_API_BASE_URL=https://localhost:3000
