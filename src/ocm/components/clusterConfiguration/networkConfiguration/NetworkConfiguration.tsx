@@ -237,7 +237,6 @@ const NetworkConfiguration = ({
         <StackTypeControlGroup
           clusterId={cluster.id}
           isDualStackSelectable={isDualStackSelectable}
-          isSNO={isSNOCluster}
           hostSubnets={hostSubnets}
         />
       )}
