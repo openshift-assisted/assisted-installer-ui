@@ -17,7 +17,6 @@ import {
   ClusterNetwork,
   MachineNetwork,
   ServiceNetwork,
-  canSelectNetworkTypeSDN,
 } from '../../../../common';
 import { ConfirmationModal, PopoverIcon } from '../../../../common/components/ui';
 import { useDefaultConfiguration } from '../ClusterDefaultConfigurationContext';
@@ -27,7 +26,6 @@ import { OcmRadioField } from '../../ui/OcmFormFields';
 type StackTypeControlGroupProps = {
   clusterId: Cluster['id'];
   isDualStackSelectable: boolean;
-  isSNO: boolean;
   hostSubnets: HostSubnets;
 };
 
@@ -47,7 +45,6 @@ const hasDualStackConfigurationChanged = (
 
 export const StackTypeControlGroup = ({
   clusterId,
-  isSNO,
   isDualStackSelectable,
   hostSubnets,
 }: StackTypeControlGroupProps) => {
@@ -92,7 +89,7 @@ export const StackTypeControlGroup = ({
     setFieldValue('stackType', DUAL_STACK);
     setFieldValue('vipDhcpAllocation', false);
 
-    if (values.networkType === NETWORK_TYPE_SDN && !canSelectNetworkTypeSDN(isSNO, true)) {
+    if (values.networkType === NETWORK_TYPE_SDN) {
       setFieldValue('networkType', NETWORK_TYPE_OVN);
     }
 
