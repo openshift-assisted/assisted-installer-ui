@@ -6,7 +6,7 @@ import { store } from '../store';
 import { FeatureGateContextProvider, FeatureListType } from '../../common';
 import { isSingleClusterMode, routeBasePath } from '../config';
 import SingleCluster from './SingleCluster';
-import { AssistedUILibVersion, StatusPage } from './ui';
+import { AssistedUILibVersion } from './ui';
 
 export const AssistedUiRouter: React.FC<{ allEnabledFeatures: FeatureListType }> = ({
   allEnabledFeatures,
@@ -28,7 +28,6 @@ export const Router: React.FC<{ features: FeatureListType }> = ({ features, chil
       </Switch>
     ) : (
       <Switch>
-        <Route path={`${routeBasePath}/status`} component={StatusPage} />
         <Route path={`${routeBasePath}/clusters/~new`} component={NewClusterPage} />
         <Route path={`${routeBasePath}/clusters/:clusterId`} component={ClusterPage} />
         <Route path={`${routeBasePath}/clusters`} component={Clusters} />
