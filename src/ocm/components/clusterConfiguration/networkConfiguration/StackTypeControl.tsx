@@ -8,9 +8,10 @@ import {
   HostSubnets,
   NetworkConfigurationValues,
   getFieldId,
-  getDefaultNetworkType,
   DUAL_STACK,
   IPV4_STACK,
+  NETWORK_TYPE_OVN,
+  NETWORK_TYPE_SDN,
   NO_SUBNET_SET,
   Cluster,
   ClusterNetwork,
@@ -25,7 +26,6 @@ import { OcmRadioField } from '../../ui/OcmFormFields';
 type StackTypeControlGroupProps = {
   clusterId: Cluster['id'];
   isDualStackSelectable: boolean;
-  isSNO: boolean;
   hostSubnets: HostSubnets;
 };
 
@@ -45,7 +45,6 @@ const hasDualStackConfigurationChanged = (
 
 export const StackTypeControlGroup = ({
   clusterId,
-  isSNO,
   isDualStackSelectable,
   hostSubnets,
 }: StackTypeControlGroupProps) => {
@@ -66,7 +65,6 @@ export const StackTypeControlGroup = ({
 
   const setSingleStack = React.useCallback(() => {
     setFieldValue('stackType', IPV4_STACK);
-    setFieldValue('networkType', getDefaultNetworkType(isSNO, false));
 
     if (values.machineNetworks && values.machineNetworks?.length >= 2) {
       setFieldValue('machineNetworks', values.machineNetworks.slice(0, 1));
@@ -80,7 +78,6 @@ export const StackTypeControlGroup = ({
 
     void validateForm();
   }, [
-    isSNO,
     setFieldValue,
     validateForm,
     values.clusterNetworks,
@@ -90,8 +87,11 @@ export const StackTypeControlGroup = ({
 
   const setDualStack = () => {
     setFieldValue('stackType', DUAL_STACK);
-    setFieldValue('networkType', getDefaultNetworkType(isSNO, true));
     setFieldValue('vipDhcpAllocation', false);
+
+    if (values.networkType === NETWORK_TYPE_SDN) {
+      setFieldValue('networkType', NETWORK_TYPE_OVN);
+    }
 
     if (values.machineNetworks && values.machineNetworks?.length < 2) {
       setFieldValue(
