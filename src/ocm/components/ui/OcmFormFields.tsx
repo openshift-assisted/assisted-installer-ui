@@ -14,7 +14,6 @@ import {
 import {
   CheckboxFieldProps,
   CodeFieldProps,
-  InputFieldProps,
   RadioFieldProps,
   SelectFieldProps,
   SwitchFieldProps,
@@ -46,7 +45,7 @@ export function RefFormFieldDisabler<T extends DisableableField>(
 }
 
 // Formik Fields
-const OcmInputField = FormFieldDisabler<InputFieldProps>(InputField);
+const OcmInputField = FormFieldDisabler<React.ComponentProps<typeof InputField>>(InputField);
 const OcmSelectField = FormFieldDisabler<SelectFieldProps>(SelectField);
 const OcmCheckboxField = FormFieldDisabler<CheckboxFieldProps>(CheckboxField);
 const OcmSwitchField = FormFieldDisabler<SwitchFieldProps>(SwitchField);

@@ -83,7 +83,9 @@ const OcmOpenShiftVersionSelect: React.FC<OcmOpenShiftVersionSelectProps> = ({ v
             version.supportLevel === 'beta'
               ? version.label + ' - ' + t('ai:Developer preview release')
               : version.label,
-          value: version.version,
+          // This is the "key" from openshift-versions API response
+          // It can either be in the long or short (for default versions) form
+          value: version.value,
         })),
     [versions, t],
   );

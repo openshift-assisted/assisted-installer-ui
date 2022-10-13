@@ -1,5 +1,5 @@
 import { IRow } from '@patternfly/react-table';
-import { Cluster, V2ClusterUpdateParams, ClusterValidationId } from '../api/types';
+import { Cluster, V2ClusterUpdateParams, ClusterValidationId, PlatformType } from '../api/types';
 import { Validation as HostValidation } from './hosts';
 export type Validation = Omit<HostValidation, 'id'> & {
   id: ClusterValidationId;
@@ -58,3 +58,4 @@ export enum CpuArchitecture {
   x86 = 'x86_64',
   ARM = 'arm64',
 }
+export const SupportedPlatformIntegrations: PlatformType[] = ['vsphere', 'nutanix'];

@@ -1,10 +1,29 @@
+import React from 'react';
+import { AxiosError } from 'axios';
 import useSWR from 'swr';
 import { getApiErrorMessage, handleApiError } from '../api';
 import { ClustersAPI } from '../services/apis';
-import { PlatformType, POLLING_INTERVAL, useAlerts } from '../../common';
-import { AxiosError } from 'axios';
+import {
+  PlatformType,
+  POLLING_INTERVAL,
+  SupportedPlatformIntegrations,
+  useAlerts,
+} from '../../common';
 import { APIErrorMixin } from '../api/types';
-import React from 'react';
+
+export type PlatformIntegrationType = typeof SupportedPlatformIntegrations[number];
+export type SupportedPlatformIntegrationType = 'no-active-integrations' | PlatformIntegrationType;
+
+function getIntegrablePlatformIntegration(platform: PlatformType[]) {
+  const platformsSet = Array.from(new Set(platform));
+  if (platformsSet.length === 1) {
+    const [exclusivelyAvailablePlatform] = platformsSet;
+    return SupportedPlatformIntegrations.includes(exclusivelyAvailablePlatform)
+      ? exclusivelyAvailablePlatform
+      : undefined;
+  }
+  return undefined;
+}
 
 export default function useClusterSupportedPlatforms(clusterId: string) {
   const { addAlert, alerts } = useAlerts();
@@ -17,12 +36,9 @@ export default function useClusterSupportedPlatforms(clusterId: string) {
   });
 
   const isLoading = !error && !data;
-  // Platform integration is supported
-  // if there is another platform type
-  // besides 'baremetal' or 'none', in the returned data.
-  const isPlatformIntegrationSupported =
-    !isLoading &&
-    (data?.filter((platform) => !['none', 'baremetal'].includes(platform)) || [])?.length > 0;
+
+  const supportedPlatformIntegration =
+    isLoading || !data ? undefined : getIntegrablePlatformIntegration(data);
 
   React.useEffect(() => {
     if (error) {
@@ -41,7 +57,8 @@ export default function useClusterSupportedPlatforms(clusterId: string) {
   }, [error, addAlert, clusterId, alerts]);
 
   return {
-    isPlatformIntegrationSupported,
+    isPlatformIntegrationSupported: supportedPlatformIntegration !== undefined,
+    supportedPlatformIntegration: supportedPlatformIntegration || 'no-active-integrations',
     isLoading,
     error,
   };

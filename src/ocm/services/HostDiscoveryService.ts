@@ -4,18 +4,17 @@ import {
   HostDiscoveryValues,
   selectMastersMustRunWorkloads,
 } from '../../common';
+import { PlatformIntegrationType } from '../hooks/useClusterSupportedPlatforms';
 
 const HostDiscoveryService = {
-  setPlatform(params: V2ClusterUpdateParams, usePlatformIntegration: boolean): void {
-    if (usePlatformIntegration) {
-      params.platform = {
-        type: 'vsphere',
-      };
-    } else {
-      params.platform = {
-        type: 'baremetal',
-      };
-    }
+  setPlatform(
+    params: V2ClusterUpdateParams,
+    platformToIntegrate: PlatformIntegrationType | undefined,
+  ): void {
+    const type = platformToIntegrate === undefined ? 'baremetal' : platformToIntegrate;
+    params.platform = {
+      type,
+    };
   },
 
   setSchedulableMasters(
