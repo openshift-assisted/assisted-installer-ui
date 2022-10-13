@@ -9,9 +9,10 @@ import {
   StackItem,
 } from '@patternfly/react-core';
 import ClusterHostsTable from '../hosts/ClusterHostsTable';
-import { DiscoveryImageModalButton } from '../clusterConfiguration/discoveryImageModal';
 import InformationAndAlerts from '../clusterConfiguration/InformationAndAlerts';
 import { Cluster, isArmArchitecture } from '../../../common';
+import Day2WizardContextProvider from './day2Wizard/Day2WizardContextProvider';
+import { Day2DiscoveryImageModalButton, Day2Wizard } from './day2Wizard/Day2Wizard';
 
 const InventoryAddHosts = ({ cluster }: { cluster?: Cluster }) => {
   return !cluster ? null : (
@@ -19,11 +20,14 @@ const InventoryAddHosts = ({ cluster }: { cluster?: Cluster }) => {
       <StackItem>
         <TextContent>
           <Text component="p">
-            <DiscoveryImageModalButton
-              ButtonComponent={Button}
-              cluster={cluster}
-              idPrefix="bare-metal-inventory-add-host"
-            />
+            <Day2WizardContextProvider>
+              <Day2DiscoveryImageModalButton
+                ButtonComponent={Button}
+                cluster={cluster}
+                idPrefix="bare-metal-inventory-add-host"
+              />
+              <Day2Wizard />
+            </Day2WizardContextProvider>
           </Text>
           <InformationAndAlerts cluster={cluster} />
         </TextContent>
