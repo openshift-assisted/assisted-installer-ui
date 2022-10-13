@@ -5,8 +5,6 @@ import {
   Dropdown,
   HelperText,
   FormGroup,
-  Flex,
-  FlexItem,
 } from '@patternfly/react-core';
 import { CaretDownIcon } from '@patternfly/react-icons';
 
@@ -17,6 +15,7 @@ import { useField } from 'formik';
 import { getFieldId } from './formik';
 import ExternalLink from './ExternalLink';
 import { OCP_RELEASES_PAGE } from '../../config';
+import { ocmClient } from '../../../ocm/api';
 
 export type HelperTextType = (
   versions: OpenshiftVersionOptionType[],
@@ -51,7 +50,17 @@ export const OpenShiftVersionDropdown = ({
   const [helperText, setHelperText] = React.useState(getHelperText(versions, defaultValue, t));
   const fieldId = getFieldId(name, 'input');
   const dropdownItems = items.map(({ value, label }) => (
-    <DropdownItem key={value} id={value}>
+    <DropdownItem
+      key={value}
+      id={value}
+      tooltip={
+        ocmClient && (
+          <ExternalLink href={`${window.location.origin}/${OCP_RELEASES_PAGE}`}>
+            {t('ai:Learn more about OpenShift releases')}
+          </ExternalLink>
+        )
+      }
+    >
       {label}
     </DropdownItem>
   ));
@@ -86,26 +95,22 @@ export const OpenShiftVersionDropdown = ({
 
   return (
     <FormGroup fieldId={fieldId} label={t('ai:OpenShift version')} isRequired>
-      <Flex direction={{ default: 'column', lg: 'row' }}>
-        <FlexItem flex={{ default: 'flex_1' }}>
-          <Dropdown
-            {...field}
-            name={name}
-            id={fieldId}
-            onSelect={onSelect}
-            dropdownItems={dropdownItems}
-            toggle={toggle}
-            isOpen={isOpen}
-            className="pf-u-w-100"
-          />
-          <HelperText style={{ display: 'inherit' }}>{helperText}</HelperText>
-        </FlexItem>
-        <FlexItem align={{ default: 'alignRight' }}>
-          <ExternalLink href={`${window.location.origin}/${OCP_RELEASES_PAGE}`}>
-            {t('ai:Learn more about OpenShift releases')}
-          </ExternalLink>
-        </FlexItem>
-      </Flex>
+      <Dropdown
+        {...field}
+        name={name}
+        id={fieldId}
+        onSelect={onSelect}
+        dropdownItems={dropdownItems}
+        toggle={toggle}
+        isOpen={isOpen}
+        className="pf-u-w-100"
+      />
+      <HelperText style={{ display: 'inherit' }}>{helperText}</HelperText>
+      {ocmClient && (
+        <ExternalLink href={`${window.location.origin}/${OCP_RELEASES_PAGE}`}>
+          {t('ai:Learn more about OpenShift releases')}
+        </ExternalLink>
+      )}
     </FormGroup>
   );
 };
