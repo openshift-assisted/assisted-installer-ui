@@ -9,17 +9,6 @@ jobs:
   cypress-run:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Openshift Assisted UI tests
-        uses: actions/checkout@v3
-        with:
-          repository: celdrake/openshift-assisted-ui
-          ref: integration-tests-wip
-          path: ./openshift-assisted-ui
-
-      - name: Install Cypress dependencies
-        working-directory: ./openshift-assisted-ui/packages/integration-tests
-        run: yarn install
-
       - name: Checkout Assisted-UI
         uses: actions/checkout@v3
         with:
@@ -27,9 +16,15 @@ jobs:
           ref: integration-tests-wip
           path: ./assisted-ui
 
+      - name: Checkout Assisted-UI lib
+        uses: actions/checkout@v3
+        with:
+          repository: celdrake/assisted-ui-lib
+          ref: ${{ github.ref_name }}
+          path: ./assisted-ui-lib
+
       - name: Generate Assisted-UI with updated Assisted UI lib
         working-directory: ./assisted-ui-lib
-        ref: ${{ github.ref_name }}
         run: |
           yarn install --frozen-lockfile
           node scripts/esbuild/prod.js
@@ -42,6 +37,13 @@ jobs:
           yarn add file:../assisted-ui-lib/openshift-assisted-ui-lib-updated.tgz
           yarn build
 
+      - name: Checkout Openshift Assisted UI tests
+        uses: actions/checkout@v3
+        with:
+          repository: celdrake/openshift-assisted-ui
+          ref: integration-tests-wip
+          path: ./openshift-assisted-ui
+
       # Run Cypress tests in Headless mode
       - name: Cypress run
         uses: cypress-io/github-action@v4.1.0
@@ -50,7 +52,8 @@ jobs:
           browser: chrome
           config-file: cypress.json
           config: video=false
+          env: CYPRESS_API_BASE_URL=https://localhost:3000
+          build: yarn install
           # Serve is a package included by the "integration-tests" package
           start: yarn serve -p 3000 -s /home/runner/work/assisted-ui-lib/assisted-ui-lib/assisted-ui/build
           spec: ./src/integration/create-multinode/1-host-discovery.spec.ts
-          env: CYPRESS_API_BASE_URL=https://localhost:3000
