@@ -15,7 +15,6 @@ import { useField } from 'formik';
 import { getFieldId } from './formik';
 import ExternalLink from './ExternalLink';
 import { OCP_RELEASES_PAGE } from '../../config';
-import { ocmClient } from '../../../ocm/api';
 
 export type HelperTextType = (
   versions: OpenshiftVersionOptionType[],
@@ -33,6 +32,7 @@ type OpenShiftVersionDropdownProps = {
   isDisabled: boolean;
   versions: OpenshiftVersionOptionType[];
   getHelperText: HelperTextType;
+  showReleasesLink: boolean;
 };
 
 export const OpenShiftVersionDropdown = ({
@@ -42,6 +42,7 @@ export const OpenShiftVersionDropdown = ({
   isDisabled,
   versions,
   getHelperText,
+  showReleasesLink,
 }: OpenShiftVersionDropdownProps) => {
   const [field, , { setValue }] = useField(name);
   const [isOpen, setOpen] = React.useState(false);
@@ -50,17 +51,7 @@ export const OpenShiftVersionDropdown = ({
   const [helperText, setHelperText] = React.useState(getHelperText(versions, defaultValue, t));
   const fieldId = getFieldId(name, 'input');
   const dropdownItems = items.map(({ value, label }) => (
-    <DropdownItem
-      key={value}
-      id={value}
-      tooltip={
-        ocmClient && (
-          <ExternalLink href={`${window.location.origin}/${OCP_RELEASES_PAGE}`}>
-            {t('ai:Learn more about OpenShift releases')}
-          </ExternalLink>
-        )
-      }
-    >
+    <DropdownItem key={value} id={value}>
       {label}
     </DropdownItem>
   ));
@@ -106,7 +97,7 @@ export const OpenShiftVersionDropdown = ({
         className="pf-u-w-100"
       />
       <HelperText style={{ display: 'inherit' }}>{helperText}</HelperText>
-      {ocmClient && (
+      {showReleasesLink && (
         <ExternalLink href={`${window.location.origin}/${OCP_RELEASES_PAGE}`}>
           {t('ai:Learn more about OpenShift releases')}
         </ExternalLink>
