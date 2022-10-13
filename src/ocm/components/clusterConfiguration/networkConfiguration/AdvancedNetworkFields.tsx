@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import {
   Alert,
   AlertVariant,
@@ -9,19 +8,8 @@ import {
   Grid,
 } from '@patternfly/react-core';
 import { FieldArray, useFormikContext } from 'formik';
-import {
-  DUAL_STACK,
-  PREFIX_MAX_RESTRICTION,
-  useFeature,
-  NetworkConfigurationValues,
-} from '../../../../common';
-import { NetworkTypeControlGroup } from '../../../../common/components/clusterWizard/networkingSteps/NetworkTypeControlGroup';
-import { selectCurrentClusterPermissionsState } from '../../../selectors';
+import { DUAL_STACK, PREFIX_MAX_RESTRICTION, NetworkConfigurationValues } from '../../../../common';
 import { OcmInputField } from '../../ui/OcmFormFields';
-
-type AdvancedNetworkFieldsProps = {
-  isSDNSelectable: boolean;
-};
 
 const getNetworkLabelSuffix = (index: number, isDualStack: boolean) => {
   return isDualStack ? ` (${index === 0 ? 'IPv4' : 'IPv6'})` : '';
@@ -39,13 +27,8 @@ const clusterCidrHelperText =
 const serviceCidrHelperText =
   'The IP address pool to use for service IP addresses. You can enter only one IP address pool. If you need to access the services from an external network, configure load balancers and routers to manage the traffic.';
 
-const AdvancedNetworkFields = ({ isSDNSelectable }: AdvancedNetworkFieldsProps) => {
+const AdvancedNetworkFields = () => {
   const { setFieldValue, values, errors } = useFormikContext<NetworkConfigurationValues>();
-  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
-
-  const isNetworkTypeSelectionEnabled = useFeature(
-    'ASSISTED_INSTALLER_NETWORK_TYPE_SELECTION_FEATURE',
-  );
 
   const isDualStack = values.stackType === DUAL_STACK;
 
@@ -131,10 +114,6 @@ const AdvancedNetworkFields = ({ isSDNSelectable }: AdvancedNetworkFieldsProps) 
 
       {typeof errors.serviceNetworks === 'string' && (
         <Alert variant={AlertVariant.warning} title={errors.serviceNetworks} isInline />
-      )}
-
-      {isNetworkTypeSelectionEnabled && (
-        <NetworkTypeControlGroup isDisabled={isViewerMode} isSDNSelectable={isSDNSelectable} />
       )}
     </Grid>
   );
