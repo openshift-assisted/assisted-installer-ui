@@ -20,8 +20,6 @@ jobs:
         working-directory: ./openshift-assisted-ui/packages/integration-tests
         run: yarn install
 
-      # For now just checkout assisted-UI to start a dev server with a stable version (integration-tests-wip uses v2.10)
-      # We'll need to adjust this to use the updated code from Assisted-UI-lib
       - name: Checkout Assisted-UI
         uses: actions/checkout@v3
         with:
@@ -29,9 +27,20 @@ jobs:
           ref: integration-tests-wip
           path: ./assisted-ui
 
-      - name: Install Assisted-UI dependencies for local server
+      - name: Generate Assisted-UI with updated Assisted UI lib
+        working-directory: ./assisted-ui-lib
+        ref: ${{ github.ref_name }}
+        run: |
+          yarn install --frozen-lockfile
+          node scripts/esbuild/prod.js
+          yarn pack -f openshift-assisted-ui-lib-updated.tgz
+
+      - name: Build Assisted-UI for local server
         working-directory: ./assisted-ui
-        run: yarn install && yarn build
+        run: |
+          yarn install --frozen-lockfile
+          yarn add file:../assisted-ui-lib/openshift-assisted-ui-lib-updated.tgz
+          yarn build
 
       # Run Cypress tests in Headless mode
       - name: Cypress run
@@ -41,7 +50,7 @@ jobs:
           browser: chrome
           config-file: cypress.json
           config: video=false
-          # Added serve as a local package in integration-tests package
+          # Serve is a package included by the "integration-tests" package
           start: yarn serve -p 3000 -s /home/runner/work/assisted-ui-lib/assisted-ui-lib/assisted-ui/build
           spec: ./src/integration/create-multinode/1-host-discovery.spec.ts
           env: CYPRESS_API_BASE_URL=https://localhost:3000
