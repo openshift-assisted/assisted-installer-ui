@@ -6,8 +6,25 @@ on:
       - integration-tests-wip
 
 jobs:
-  cypress-run:
+  check-runs-tests:
     runs-on: ubuntu-latest
+    steps:
+      - id: check_integration_tests_label
+        uses: docker://agilepathway/pull-request-label-checker:latest
+        with:
+          one_of: ocm-integration-tests
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          allow_failure: true
+      - id: pass_condition
+        run: |
+          echo "RUN_INTEGRATION_TESTS=Y" >> $GITHUB_ENV
+        if: steps.check_integration_tests_label.outputs.label_check == 'success'
+
+  cypress-run:
+    if: ${{ env.RUN_INTEGRATION_TESTS == 'Y' }}
+    runs-on: ubuntu-latest
+    env:
+      RUN_INTEGRATION_TESTS: N
     steps:
       - name: Checkout Assisted-UI
         uses: actions/checkout@v3
