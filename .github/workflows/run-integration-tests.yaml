@@ -1,36 +1,15 @@
 name: Cypress Tests
 
 on:
-  pull_request:
+  issue_comment:
     types:
-      - opened
-      - reopened
-      - synchronize
-      - ready_for_review
-      - edited
-    branches:
-      - integration-tests-wip
+      - created
 
 jobs:
-  check-runs-tests:
-    runs-on: ubuntu-latest
-    outputs:
-      has_tests: ${{ steps.check_integration_tests_label.outputs.has_tests }}
-    steps:
-      - id: check_integration_tests_label
-        uses: docker://agilepathway/pull-request-label-checker:latest
-        with:
-          one_of: ocm-integration-tests
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          allow_failure: true
-      - id: set_success_condition
-        run: echo "::set-output name=has_tests::yes"
-        if: steps.check_integration_tests_label.outputs.label_check == 'success'
-
   cypress-run:
     runs-on: ubuntu-latest
     needs: check-runs-tests
-    if: needs.check-runs-tests.outputs.has_tests
+    if: ${{ github.event.issue.pull_request && github.event.comment.body == '/ocm-integration-tests'}}
     steps:
       - name: Checkout Assisted-UI
         uses: actions/checkout@v3
