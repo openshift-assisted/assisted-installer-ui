@@ -9,8 +9,9 @@ on:
       - ready_for_review
       - edited
     branches:
-      # Removed master and CIM just to save time, this needs to be reverted later
-      - integration-tests-wip
+      - master
+      - releases/*
+      - CIM-*
 
 jobs:
   test-and-build:

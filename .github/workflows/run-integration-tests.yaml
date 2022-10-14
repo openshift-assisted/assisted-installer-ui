@@ -9,8 +9,7 @@ on:
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
-    needs: check-runs-tests
-    if: ${{ github.event.issue.pull_request && github.event.comment.body == '/ocm-integration-tests'}}
+    if: ${{ github.event.comment.body == '/ocm-integration-tests'}}
     steps:
       - name: Checkout Assisted-UI
         uses: actions/checkout@v3
@@ -23,7 +22,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: celdrake/assisted-ui-lib
-          ref: ${{ github.ref_name }}
+          ref: integration-tests-wip
           path: ./assisted-ui-lib
 
       - name: Generate Assisted-UI with updated Assisted UI lib
@@ -58,5 +57,7 @@ jobs:
           env: CYPRESS_API_BASE_URL=https://localhost:3000
           build: yarn install
           # Serve is a package included by the "integration-tests" package
-          start: yarn serve -p 3000 -s /home/runner/work/assisted-ui-lib/assisted-ui-lib/assisted-ui/build
+          start:
+            yarn serve -p 3000 -s
+            /home/runner/work/assisted-ui-lib/assisted-ui-lib/assisted-ui/build
           spec: ./src/integration/create-multinode/1-host-discovery.spec.ts
