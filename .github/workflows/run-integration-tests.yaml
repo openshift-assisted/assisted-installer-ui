@@ -11,6 +11,24 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.comment.body == '/ocm-integration-tests'}}
     steps:
+      - id: get_test_branch
+        uses: actions/github-script@v6
+        name: Determine test branch
+        with:
+          script: |
+            const branch = context.payload.comment.body
+            const tokens = branch.split(' ')
+            core.setOutput('test_branch', tokens.length === 1 ? 'integration-tests-wip' : tokens[1])
+
+      - run: echo "${{steps.get_test_branch.outputs.test_branch}}"
+
+      - name: Checkout Openshift Assisted UI tests
+        uses: actions/checkout@v3
+        with:
+          repository: celdrake/openshift-assisted-ui
+          ref: ${{ steps.get_test_branch.test_branch.id }}
+          path: ./openshift-assisted-ui
+
       - name: Checkout Assisted-UI
         uses: actions/checkout@v3
         with:
@@ -38,13 +56,6 @@ jobs:
           yarn install --frozen-lockfile
           yarn add file:../assisted-ui-lib/openshift-assisted-ui-lib-updated.tgz
           yarn build
-
-      - name: Checkout Openshift Assisted UI tests
-        uses: actions/checkout@v3
-        with:
-          repository: celdrake/openshift-assisted-ui
-          ref: integration-tests-wip
-          path: ./openshift-assisted-ui
 
       # Run Cypress tests in Headless mode
       - name: Cypress run
