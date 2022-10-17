@@ -5,6 +5,8 @@ import { Cluster, ClusterWizardStep, ToolbarButton, WizardFooter } from '../../.
 import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
 import { Day2WizardStepsType } from './constants';
 import { Day2ClusterDetails } from './Day2ClusterDetails';
+import { Day2DownloadISO } from './Day2DownloadISO';
+import { Day2GenerateISO } from './Day2GenerateISO';
 import { Day2WizardContextType, useDay2WizardContext } from './Day2WizardContext';
 import { Day2WizardNav } from './Day2WizardNav';
 
@@ -36,6 +38,10 @@ const getCurrentStep = (step: Day2WizardStepsType, wizardContext: Day2WizardCont
   switch (step) {
     case 'cluster-details':
       return <Day2ClusterDetails />;
+    case 'generate-iso':
+      return <Day2GenerateISO />;
+    case 'download-iso':
+      return <Day2DownloadISO />;
     default:
       return (
         <ClusterWizardStep
