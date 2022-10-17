@@ -1,26 +1,12 @@
-import {
-  Button,
-  ButtonVariant,
-  Modal,
-  ModalVariant,
-  WizardHeader,
-  WizardNav,
-} from '@patternfly/react-core';
+import { Button, ButtonVariant, Modal, ModalVariant, WizardHeader } from '@patternfly/react-core';
 import classNames from 'classnames';
-import { Form, Formik } from 'formik';
 import React from 'react';
-import {
-  Cluster,
-  ClusterWizardStep,
-  ClusterWizardStepHeader,
-  ToolbarButton,
-  WizardFooter,
-  WizardNavItem,
-} from '../../../../common';
-import DiskEncryptionControlGroup from '../../../../common/components/clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
+import { Cluster, ClusterWizardStep, ToolbarButton, WizardFooter } from '../../../../common';
 import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
-import { day2WizardStepNames, Day2WizardStepsType } from './constants';
-import { useDay2WizardContext } from './Day2WizardContext';
+import { Day2WizardStepsType } from './constants';
+import { Day2ClusterDetails } from './Day2ClusterDetails';
+import { Day2WizardContextType, useDay2WizardContext } from './Day2WizardContext';
+import { Day2WizardNav } from './Day2WizardNav';
 
 export const Day2DiscoveryImageModalButton = ({
   ButtonComponent = Button,
@@ -45,83 +31,15 @@ export const Day2DiscoveryImageModalButton = ({
   );
 };
 
-const Day2ClusterDetails = () => {
-  return (
-    <>
-      <Formik
-        initialValues={{
-          enableDiskEncryptionOnMasters: false,
-          enableDiskEncryptionOnWorkers: false,
-          diskEncryptionMode: undefined,
-          diskEncryptionTangServers: [],
-          diskEncryption: undefined,
-        }}
-        onSubmit={(values) => console.log(values)}
-      >
-        {({ values }) => {
-          return (
-            <>
-              <Form id="day2-wizard-cluster-details__form">
-                <ClusterWizardStepHeader>Cluster details</ClusterWizardStepHeader>
-                {/* <ArmCheckbox versions={versions} /> */}
-                {/* <HostsNetworkConfigurationControlGroup clusterExists={false} /> */}
-                <DiskEncryptionControlGroup values={values} isSNO={false} />
-              </Form>
-            </>
-          );
-        }}
-      </Formik>
-    </>
-  );
-};
-
-const getCurrentStep = (step: Day2WizardStepsType) => {
+// TODO(jgyselov): remove wizardContext
+const getCurrentStep = (step: Day2WizardStepsType, wizardContext: Day2WizardContextType) => {
   switch (step) {
     case 'cluster-details':
       return <Day2ClusterDetails />;
     default:
-      return <>Step {step}</>;
-  }
-};
-
-export const Day2Wizard = () => {
-  const { day2DiscoveryImageDialog } = useModalDialogsContext();
-  const { isOpen, close } = day2DiscoveryImageDialog;
-  const wizardContext = useDay2WizardContext();
-
-  const isStepIdxAfterCurrent = (idx: number) => {
-    return !wizardContext.wizardStepIds.slice(idx).includes(wizardContext.currentStepId);
-  };
-
-  const isStepDisabled = (idx: number, stepId: Day2WizardStepsType) => {
-    return stepId === 'cluster-details' ? false : isStepIdxAfterCurrent(idx);
-  };
-
-  console.log(wizardContext);
-
-  return (
-    <Modal isOpen={isOpen} variant={ModalVariant.large} showClose={false} hasNoBodyWrapper>
-      <div className={classNames('pf-c-wizard', 'cluster-wizard')}>
-        <WizardHeader
-          title={'Add hosts'}
-          description={'Choose the settings for adding a new host'}
-          onClose={close}
-        />
+      return (
         <ClusterWizardStep
-          navigation={
-            <WizardNav>
-              {wizardContext.wizardStepIds.map((step, index) => (
-                <WizardNavItem
-                  key={index}
-                  step={index}
-                  content={day2WizardStepNames[step]}
-                  isCurrent={wizardContext.currentStepId === step}
-                  isDisabled={isStepDisabled(index, step)}
-                  onNavItemClick={() => wizardContext.setCurrentStepId(step)}
-                />
-              ))}
-            </WizardNav>
-          }
+          navigation={<Day2WizardNav />}
           footer={
             <WizardFooter
               onNext={() => wizardContext.moveNext()}
@@ -132,8 +50,26 @@ export const Day2Wizard = () => {
             />
           }
         >
-          {getCurrentStep(wizardContext.currentStepId)}
+          Step {step}
         </ClusterWizardStep>
+      );
+  }
+};
+
+export const Day2Wizard = () => {
+  const { day2DiscoveryImageDialog } = useModalDialogsContext();
+  const { isOpen, close } = day2DiscoveryImageDialog;
+  const wizardContext = useDay2WizardContext();
+
+  return (
+    <Modal isOpen={isOpen} variant={ModalVariant.large} showClose={false} hasNoBodyWrapper>
+      <div className={classNames('pf-c-wizard', 'cluster-wizard')}>
+        <WizardHeader
+          title={'Add hosts'}
+          description={'Choose the settings for adding a new host'}
+          onClose={close}
+        />
+        {getCurrentStep(wizardContext.currentStepId, wizardContext)}
       </div>
     </Modal>
   );
