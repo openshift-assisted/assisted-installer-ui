@@ -12,6 +12,8 @@ const AGENT_FOR_SELECTION_STATUSES: AgentStatus[] = [
   'binding',
   'unbinding',
   'discovering',
+  'reclaiming',
+  'reclaiming-rebooting',
 ];
 
 export const hostToAgent = (agents: AgentK8sResource[] = [], host: Host) =>
