@@ -1,16 +1,38 @@
 name: Cypress Tests
 
+## Runs the Cypress Integration tests project based on the creation of a comment in the PR
+## The comment must start with "/ocm-integration-tests", then:
+## - It can be followed by a branch name, in which case the tests will run from that branch in openshift-assisted-ui
+## - If no branch name is specified, "main" branch will be the one used
+
 on:
-  pull_request_review_comment:
+  issue_comment:
     types: [created]
     branches:
-      - integration-tests-wip
+      - master
 
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
-    if: ${{ github.event.comment.body == '/ocm-integration-tests'}}
+    if: contains(github.event.comment.body, '/ocm-integration-tests')
     steps:
+      - id: get_test_branch
+        uses: actions/github-script@v6
+        name: Determine test branch
+        with:
+          # Script to extract the branch name or fallback to main, from the PR comment
+          script: |
+            const branch = context.payload.comment.body
+            const tokens = branch.split(' ')
+            core.setOutput('test_branch', tokens.length === 1 ? '' : tokens[1])
+
+      - name: Checkout Openshift Assisted UI tests
+        uses: actions/checkout@v3
+        with:
+          repository: celdrake/openshift-assisted-ui
+          ref: ${{ steps.get_test_branch.outputs.test_branch }}
+          path: ./openshift-assisted-ui
+
       - name: Checkout Assisted-UI
         uses: actions/checkout@v3
         with:
@@ -38,13 +60,6 @@ jobs:
           yarn install --frozen-lockfile
           yarn add file:../assisted-ui-lib/openshift-assisted-ui-lib-updated.tgz
           yarn build
-
-      - name: Checkout Openshift Assisted UI tests
-        uses: actions/checkout@v3
-        with:
-          repository: celdrake/openshift-assisted-ui
-          ref: integration-tests-wip
-          path: ./openshift-assisted-ui
 
       # Run Cypress tests in Headless mode
       - name: Cypress run
