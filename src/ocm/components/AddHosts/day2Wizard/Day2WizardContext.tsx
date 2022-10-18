@@ -1,5 +1,5 @@
 import React from 'react';
-import { HostsNetworkConfigurationType } from '../../../services';
+import { HostsNetworkConfigurationType } from '../../../services/types';
 import { StaticIpView } from '../../clusterConfiguration/staticIp/data/dataTypes';
 import { Day2WizardStepsType } from './constants';
 import { CpuArchitecture } from '../../../../common';
