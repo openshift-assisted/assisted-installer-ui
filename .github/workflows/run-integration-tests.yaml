@@ -36,29 +36,20 @@ jobs:
       - name: Checkout Assisted-UI
         uses: actions/checkout@v3
         with:
-          repository: celdrake/assisted-ui
-          ref: integration-tests-wip
+          repository: openshift-assisted/assisted-ui
+          ref: v2.11.2
           path: ./assisted-ui
-
-      - name: Checkout Assisted-UI lib
-        uses: actions/checkout@v3
-        with:
-          repository: celdrake/assisted-ui-lib
-          ref: integration-tests-wip
-          path: ./assisted-ui-lib
 
       - name: Generate Assisted-UI with updated Assisted UI lib
         working-directory: ./assisted-ui-lib
         run: |
           yarn install --frozen-lockfile
           node scripts/esbuild/prod.js
-          yarn pack -f openshift-assisted-ui-lib-updated.tgz
 
       - name: Build Assisted-UI for local server
         working-directory: ./assisted-ui
         run: |
           yarn install --frozen-lockfile
-          yarn add file:../assisted-ui-lib/openshift-assisted-ui-lib-updated.tgz
           yarn build
 
       # Run Cypress tests in Headless mode
