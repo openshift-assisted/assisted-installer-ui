@@ -109,6 +109,8 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({
       'unbinding-pending-user-action',
       'binding',
       'unbinding',
+      'reclaiming',
+      'reclaiming-rebooting',
     ].includes(status)
   ) {
     // No additional error messages shown
