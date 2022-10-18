@@ -1,19 +1,30 @@
 import { Stack, StackItem, FormGroup } from '@patternfly/react-core';
-import { Form, Formik, FormikHelpers } from 'formik';
+import { Form, Formik, FormikHelpers, useFormikContext } from 'formik';
 import React from 'react';
 import {
   ClusterWizardStep,
   ClusterWizardStepHeader,
+  DiskEncryption,
   getFieldId,
   RadioField,
   WizardFooter,
 } from '../../../../common';
 import DiskEncryptionControlGroup from '../../../../common/components/clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
+import { TangServer } from '../../../../common/components/clusterConfiguration/DiskEncryptionFields/DiskEncryptionValues';
 import { useOpenshiftVersions } from '../../../hooks';
+import { HostsNetworkConfigurationType } from '../../../services';
 import ArmCheckbox from '../../clusterConfiguration/ArmCheckbox';
 import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
 import { useDay2WizardContext } from './Day2WizardContext';
 import { Day2WizardNav } from './Day2WizardNav';
+
+type Day2ClusterDetailValues = {
+  hostsNetworkConfigurationType: 'dhcp' | 'static';
+  diskEncryption: boolean;
+  enableDiskEncryptionOnWorkers: boolean;
+  diskEncryptionMode: DiskEncryption['mode'];
+  diskEncryptionTangServers: TangServer[];
+};
 
 export const Day2ClusterDetails = () => {
   const { day2DiscoveryImageDialog } = useModalDialogsContext();
@@ -23,7 +34,7 @@ export const Day2ClusterDetails = () => {
   const { versions } = useOpenshiftVersions();
 
   const handleSubmit = React.useCallback(
-    (values: unknown) => {
+    (values: Day2ClusterDetailValues) => {
       console.log(values);
       wizardContext.moveNext();
     },
@@ -69,22 +80,7 @@ export const Day2ClusterDetails = () => {
                   <ArmCheckbox versions={versions} />
                 </StackItem>
                 <StackItem>
-                  <FormGroup
-                    label="Hosts' network configuration"
-                    fieldId={getFieldId('hostsNetworkConfigurationType', 'radio')}
-                    isInline
-                  >
-                    <RadioField
-                      name={'hostsNetworkConfigurationType'}
-                      value={'dhcp'}
-                      label="DHCP only"
-                    />
-                    <RadioField
-                      name={'hostsNetworkConfigurationType'}
-                      value={'static'}
-                      label="Static IP, bridges, and bonds"
-                    />
-                  </FormGroup>
+                  <Day2HostConfigurations />
                 </StackItem>
                 <StackItem>
                   {/* TODO(jgyselov): figure out the copy */}
@@ -100,5 +96,32 @@ export const Day2ClusterDetails = () => {
         );
       }}
     </Formik>
+  );
+};
+
+const Day2HostConfigurations = () => {
+  const { setFieldValue } = useFormikContext<Day2ClusterDetailValues>();
+  const wizardContext = useDay2WizardContext();
+
+  const onChangeNetworkType = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    wizardContext.onUpdateHostNetworkConfigType(value as HostsNetworkConfigurationType);
+    setFieldValue('hostsNetworkConfigurationType', value);
+  };
+
+  return (
+    <FormGroup
+      label="Hosts' network configuration"
+      fieldId={getFieldId('hostsNetworkConfigurationType', 'radio')}
+      isInline
+      onChange={onChangeNetworkType}
+    >
+      <RadioField name={'hostsNetworkConfigurationType'} value={'dhcp'} label="DHCP only" />
+      <RadioField
+        name={'hostsNetworkConfigurationType'}
+        value={'static'}
+        label="Static IP, bridges, and bonds"
+      />
+    </FormGroup>
   );
 };

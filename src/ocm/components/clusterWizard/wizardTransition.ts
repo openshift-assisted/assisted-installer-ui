@@ -5,6 +5,7 @@ import {
   WizardStepsValidationMap,
   WizardStepValidationMap,
 } from '../../../common';
+import { Day2WizardStepsType } from '../AddHosts/day2Wizard/constants';
 import { StaticIpInfo, StaticIpView } from '../clusterConfiguration/staticIp/data/dataTypes';
 
 export type ClusterWizardStepsType =
@@ -202,6 +203,6 @@ export const canNextNetwork = ({ cluster }: TransitionProps): boolean =>
   getWizardStepClusterStatus('networking', wizardStepsValidationsMap, cluster, cluster.hosts) ===
   'ready';
 
-export const isStaticIpStep = (stepId: ClusterWizardStepsType) => {
+export const isStaticIpStep = (stepId: ClusterWizardStepsType | Day2WizardStepsType) => {
   return stepId.startsWith('static-ip');
 };

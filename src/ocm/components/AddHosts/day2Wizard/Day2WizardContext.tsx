@@ -1,4 +1,6 @@
 import React from 'react';
+import { HostsNetworkConfigurationType } from '../../../services/types';
+import { StaticIpView } from '../../clusterConfiguration/staticIp/data/dataTypes';
 import { Day2WizardStepsType } from './constants';
 
 export type Day2WizardContextType = {
@@ -6,6 +8,8 @@ export type Day2WizardContextType = {
   setCurrentStepId(stepId: Day2WizardStepsType): void;
   moveBack(): void;
   moveNext(): void;
+  onUpdateStaticIpView(view: StaticIpView): void;
+  onUpdateHostNetworkConfigType(type: HostsNetworkConfigurationType): void;
   wizardStepIds: Day2WizardStepsType[];
 };
 

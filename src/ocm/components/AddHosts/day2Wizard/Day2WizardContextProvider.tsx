@@ -1,34 +1,32 @@
 import React, { PropsWithChildren } from 'react';
 import Day2WizardContext, { Day2WizardContextType } from './Day2WizardContext';
 import { AssistedInstallerOCMPermissionTypesListType, Cluster, InfraEnv } from '../../../../common';
-import useSetClusterPermissions from '../../../hooks/useSetClusterPermissions';
-import { Day2WizardStepsType, defaultWizardSteps } from './constants';
+import { Day2WizardStepsType, defaultWizardSteps, staticIpFormViewSubSteps } from './constants';
+import { StaticIpView } from '../../clusterConfiguration/staticIp/data/dataTypes';
+import { HostsNetworkConfigurationType } from '../../../services/types';
 
-const getWizardStepIds = (): Day2WizardStepsType[] => {
+const getWizardStepIds = (staticIpView?: StaticIpView): Day2WizardStepsType[] => {
   const stepIds: Day2WizardStepsType[] = [...defaultWizardSteps];
+  if (staticIpView === StaticIpView.YAML) {
+    stepIds.splice(1, 0, 'static-ip-yaml-view');
+  } else if (staticIpView === StaticIpView.FORM) {
+    stepIds.splice(1, 0, ...staticIpFormViewSubSteps);
+  }
+  console.log('new IDs:', stepIds);
   return stepIds;
 };
 
 const Day2WizardContextProvider = ({
   children,
-  cluster,
-  permissions,
 }: PropsWithChildren<{
   cluster?: Cluster;
   infraEnv?: InfraEnv;
   permissions?: AssistedInstallerOCMPermissionTypesListType;
 }>) => {
   const [currentStepId, setCurrentStepId] = React.useState<Day2WizardStepsType>('cluster-details');
-  const [wizardStepIds, setWizardStepIds] = React.useState<Day2WizardStepsType[]>();
-  const setClusterPermissions = useSetClusterPermissions();
-
-  React.useEffect(() => {
-    const firstStepIds = getWizardStepIds();
-    setWizardStepIds(firstStepIds);
-    setClusterPermissions(cluster, permissions);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const [wizardStepIds, setWizardStepIds] = React.useState<Day2WizardStepsType[]>(
+    getWizardStepIds(),
+  );
 
   const contextValue = React.useMemo<Day2WizardContextType | null>(() => {
     if (!wizardStepIds || !currentStepId) {
@@ -52,6 +50,21 @@ const Day2WizardContextProvider = ({
       moveNext(): void {
         const currentStepIdx = wizardStepIds.indexOf(currentStepId);
         onSetCurrentStepId(wizardStepIds[currentStepIdx + 1]);
+      },
+      onUpdateStaticIpView(view: StaticIpView): void {
+        setWizardStepIds(getWizardStepIds(view));
+        if (view === StaticIpView.YAML) {
+          setCurrentStepId('static-ip-yaml-view');
+        } else {
+          setCurrentStepId('static-ip-network-wide-configurations');
+        }
+      },
+      onUpdateHostNetworkConfigType(type: HostsNetworkConfigurationType): void {
+        if (type === HostsNetworkConfigurationType.STATIC) {
+          setWizardStepIds(getWizardStepIds(StaticIpView.FORM));
+        } else {
+          setWizardStepIds(getWizardStepIds());
+        }
       },
       wizardStepIds,
       currentStepId,

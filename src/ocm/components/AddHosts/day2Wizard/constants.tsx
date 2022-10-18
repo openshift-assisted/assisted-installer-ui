@@ -8,11 +8,11 @@ export type Day2WizardStepsType =
 
 export const day2WizardStepNames: { [key in Day2WizardStepsType]: string } = {
   'cluster-details': 'Cluster details',
+  'static-ip-yaml-view': 'Static network configurations',
+  'static-ip-network-wide-configurations': 'Network-wide configurations',
+  'static-ip-host-configurations': 'Host specific configurations',
   'generate-iso': 'Generate discovery ISO',
   'download-iso': 'Download discovery ISO',
-  'static-ip-yaml-view': 'todo',
-  'static-ip-network-wide-configurations': 'todo',
-  'static-ip-host-configurations': 'todo',
 };
 
 export const defaultWizardSteps: Day2WizardStepsType[] = [
