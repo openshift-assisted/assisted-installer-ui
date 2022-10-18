@@ -40,12 +40,6 @@ jobs:
           ref: v2.11.2
           path: ./assisted-ui
 
-      - name: Generate Assisted-UI with updated Assisted UI lib
-        working-directory: ./assisted-ui-lib
-        run: |
-          yarn install --frozen-lockfile
-          node scripts/esbuild/prod.js
-
       - name: Build Assisted-UI for local server
         working-directory: ./assisted-ui
         run: |
