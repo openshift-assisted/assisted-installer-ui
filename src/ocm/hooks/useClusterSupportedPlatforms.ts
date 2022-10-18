@@ -6,6 +6,7 @@ import { ClustersAPI } from '../services/apis';
 import {
   PlatformType,
   POLLING_INTERVAL,
+  NonPlatformIntegrations,
   SupportedPlatformIntegrations,
   useAlerts,
 } from '../../common';
@@ -14,10 +15,13 @@ import { APIErrorMixin } from '../api/types';
 export type PlatformIntegrationType = typeof SupportedPlatformIntegrations[number];
 export type SupportedPlatformIntegrationType = 'no-active-integrations' | PlatformIntegrationType;
 
-function getIntegrablePlatformIntegration(platform: PlatformType[]) {
-  const platformsSet = Array.from(new Set(platform));
-  if (platformsSet.length === 1) {
-    const [exclusivelyAvailablePlatform] = platformsSet;
+function getIntegrablePlatformIntegration(allClusterPlatforms: PlatformType[]) {
+  const integrationPlatforms = allClusterPlatforms.filter(
+    (platform) => !NonPlatformIntegrations.includes(platform),
+  );
+  const uniqueIntegrationPlatforms = Array.from(new Set(integrationPlatforms));
+  if (integrationPlatforms.length === 1) {
+    const [exclusivelyAvailablePlatform] = uniqueIntegrationPlatforms;
     return SupportedPlatformIntegrations.includes(exclusivelyAvailablePlatform)
       ? exclusivelyAvailablePlatform
       : undefined;
