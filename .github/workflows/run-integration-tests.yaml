@@ -75,4 +75,6 @@ jobs:
           start:
             yarn serve -p 3000 -s
             /home/runner/work/assisted-ui-lib/assisted-ui-lib/assisted-ui/build
-          spec: ./src/integration/create-multinode/1-host-discovery.spec.ts
+          spec: |
+            ./src/integration/create-multinode/*.spec.ts
+            ./src/integration/ui-behaviour/*.spec.ts
