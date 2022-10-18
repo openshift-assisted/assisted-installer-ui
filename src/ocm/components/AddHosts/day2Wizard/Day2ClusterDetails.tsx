@@ -1,22 +1,24 @@
+import { FormGroup, Grid, GridItem } from '@patternfly/react-core';
+import { Form, Formik, FormikHelpers, useFormikContext } from 'formik';
 import React from 'react';
-import { Form, Grid, GridItem } from '@patternfly/react-core';
-import { Formik, FormikHelpers } from 'formik';
 import {
   ClusterWizardStep,
   ClusterWizardStepHeader,
   CpuArchitecture,
   WizardFooter,
+  getFieldId,
+  RadioField,
 } from '../../../../common';
+import { HostsNetworkConfigurationType } from '../../../services';
 import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
 import { useDay2WizardContext } from './Day2WizardContext';
 import { Day2WizardNav } from './Day2WizardNav';
 import DiscoverImageCpuArchitectureControlGroup from '../../../../common/components/clusterConfiguration/DiscoveryImageCpuArchitectureControlGroup';
 import { useOpenshiftVersions } from '../../../hooks';
-import { getDefaultDay1CpuArchitecture } from '../../../services/Day2ClusterService';
 
 type Day2ClusterDetailValues = {
   cpuArchitecture: CpuArchitecture;
-  // hostsNetworkConfigurationType: 'dhcp' | 'static';
+  hostsNetworkConfigurationType: HostsNetworkConfigurationType;
 };
 
 export const Day2ClusterDetails = () => {
@@ -47,7 +49,8 @@ export const Day2ClusterDetails = () => {
   return (
     <Formik
       initialValues={{
-        cpuArchitecture: getDefaultDay1CpuArchitecture(day1CpuArchitecture),
+        cpuArchitecture: day1CpuArchitecture || CpuArchitecture.x86,
+        hostsNetworkConfigurationType: HostsNetworkConfigurationType.DHCP,
       }}
       onSubmit={handleSubmit}
     >
@@ -77,11 +80,47 @@ export const Day2ClusterDetails = () => {
                     day1CpuArchitecture={day1CpuArchitecture}
                   />
                 </GridItem>
+                <GridItem>
+                  <DiscoverImageCpuArchitectureControlGroup
+                    isMultiArchitecture={isMultiArch}
+                    day1CpuArchitecture={day1CpuArchitecture}
+                  />
+                </GridItem>
+                <GridItem>
+                  <Day2HostConfigurations />
+                </GridItem>
               </Grid>
             </Form>
           </ClusterWizardStep>
         );
       }}
     </Formik>
+  );
+};
+
+const Day2HostConfigurations = () => {
+  const { setFieldValue } = useFormikContext<Day2ClusterDetailValues>();
+  const wizardContext = useDay2WizardContext();
+
+  const onChangeNetworkType = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    wizardContext.onUpdateHostNetworkConfigType(value as HostsNetworkConfigurationType);
+    setFieldValue('hostsNetworkConfigurationType', value);
+  };
+
+  return (
+    <FormGroup
+      label="Hosts' network configuration"
+      fieldId={getFieldId('hostsNetworkConfigurationType', 'radio')}
+      isInline
+      onChange={onChangeNetworkType}
+    >
+      <RadioField name={'hostsNetworkConfigurationType'} value={'dhcp'} label="DHCP only" />
+      <RadioField
+        name={'hostsNetworkConfigurationType'}
+        value={'static'}
+        label="Static IP, bridges, and bonds"
+      />
+    </FormGroup>
   );
 };
