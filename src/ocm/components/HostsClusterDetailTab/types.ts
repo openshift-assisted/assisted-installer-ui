@@ -1,4 +1,4 @@
-import { OcmClusterType } from '../types';
+import { OcmClusterType } from '../AddHosts/types';
 
 export type OpenModalType = (modalName: string, cluster?: OcmClusterType) => void;
 
