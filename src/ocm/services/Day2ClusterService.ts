@@ -3,38 +3,21 @@ import { OcmClusterType } from '../components';
 import { ClustersAPI, HostsAPI } from './apis';
 import {
   CpuArchitecture,
-  hasMultiArchitecture,
-  SupportedCpuArchitectures,
   Cluster,
   InfraEnvCreateParams,
+  SupportedCpuArchitectures,
 } from '../../common';
 
 const createNecessaryInfraEnvs = (
-  clusterCpuArchitecture: CpuArchitecture,
+  cpuArchitectures: CpuArchitecture[],
   baseInfraEnvDetails: InfraEnvCreateParams,
 ) => {
-  const createAllInfraEnvs = hasMultiArchitecture({
-    openshiftVersion: baseInfraEnvDetails.openshiftVersion,
-  });
-
-  const infraEnvsToCreate = [];
-  if (createAllInfraEnvs) {
-    SupportedCpuArchitectures.forEach((cpuArchitecture) => {
-      infraEnvsToCreate.push(
-        InfraEnvsService.create({
-          ...baseInfraEnvDetails,
-          cpuArchitecture: cpuArchitecture,
-        }),
-      );
+  const infraEnvsToCreate = cpuArchitectures.map((cpuArchitecture) => {
+    return InfraEnvsService.create({
+      ...baseInfraEnvDetails,
+      cpuArchitecture,
     });
-  } else {
-    infraEnvsToCreate.push(
-      InfraEnvsService.create({
-        ...baseInfraEnvDetails,
-        cpuArchitecture: clusterCpuArchitecture,
-      }),
-    );
-  }
+  });
   return Promise.all(infraEnvsToCreate);
 };
 
@@ -79,13 +62,16 @@ const Day2ClusterService = {
       data.hosts = await Day2ClusterService.fetchHosts(data.id);
       return data;
     } else {
+      const cpuArchitectures = isMultiArch
+        ? SupportedCpuArchitectures
+        : [(ocmCluster.cpu_architecture as CpuArchitecture) || CpuArchitecture.x86];
       return Day2ClusterService.createCluster(
         openshiftClusterId,
         ocmCluster.display_name || ocmCluster.name || openshiftClusterId,
         apiVipDnsname,
         pullSecret,
         openshiftVersion,
-        (ocmCluster.cpu_architecture as CpuArchitecture) || CpuArchitecture.x86,
+        cpuArchitectures,
       );
     }
   },
@@ -102,7 +88,7 @@ const Day2ClusterService = {
     apiVipDnsname: string,
     pullSecret: string,
     openshiftVersion: string,
-    cpuArchitecture: CpuArchitecture,
+    cpuArchitectures: CpuArchitecture[],
   ) {
     const { data } = await ClustersAPI.registerAddHosts({
       openshiftClusterId, // used to both match OpenShift Cluster and as an assisted-installer ID
@@ -112,7 +98,7 @@ const Day2ClusterService = {
     });
 
     // Create all the infra-env for all the existing CPU architectures
-    await createNecessaryInfraEnvs(cpuArchitecture, {
+    await createNecessaryInfraEnvs(cpuArchitectures, {
       name: `${data.name || ''}_infra-env`,
       pullSecret,
       clusterId: data.id,
