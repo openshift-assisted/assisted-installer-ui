@@ -24,7 +24,7 @@ export const HostsClusterDetailTabContent = ({
   const [error, setError] = React.useState<ReactNode>();
   const [day2Cluster, setDay2Cluster] = useStateSafely<Cluster | null | undefined>(undefined);
   const pullSecret = usePullSecret();
-  const { normalizeClusterVersion } = useOpenshiftVersions();
+  const { normalizeClusterVersion, isMultiCpuArchSupported } = useOpenshiftVersions();
 
   const handleClickTryAgainLink = React.useCallback(() => {
     setError(undefined);
@@ -47,8 +47,8 @@ export const HostsClusterDetailTabContent = ({
       // ensure exclusive run
       setDay2Cluster(null);
 
-      const openshiftVersion = normalizeClusterVersion(cluster.openshift_version);
-      if (!openshiftVersion) {
+      const normalizedVersion = normalizeClusterVersion(cluster.openshift_version);
+      if (!normalizedVersion) {
         setError(
           <>
             Unsupported OpenShift cluster version: ${cluster.openshift_version}.
@@ -124,7 +124,6 @@ export const HostsClusterDetailTabContent = ({
             )}
           </>,
         );
-
         return;
       }
 
@@ -133,7 +132,8 @@ export const HostsClusterDetailTabContent = ({
           const day2Cluster = await Day2ClusterService.fetchCluster(
             cluster,
             pullSecret,
-            openshiftVersion,
+            normalizedVersion,
+            isMultiCpuArchSupported(cluster.openshift_version),
           );
           setDay2Cluster(day2Cluster);
         } catch (e) {
