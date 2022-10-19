@@ -21,6 +21,7 @@ import {
   Alerts,
   AddHostsContext,
   alertsSlice,
+  canInstallHost,
 } from '../../../common';
 import InventoryAddHosts from './InventoryAddHost';
 import { onFetchEvents } from '../fetching/fetchEvents';
@@ -37,14 +38,18 @@ const AddHosts: React.FC = () => {
   const [isSubmitting, setSubmitting] = React.useState(false);
   const clusterVarieties = useClusterStatusVarieties(cluster);
 
-  if (!cluster || !resetCluster) {
-    return null;
-  }
-
-  const handleHostsInstall = async () => {
+  const handleHostsInstall = React.useCallback(async () => {
     setSubmitting(true);
     try {
-      await HostsService.installAll(cluster);
+      if (!cluster || !resetCluster || !cluster.hosts) {
+        return;
+      }
+
+      const hostsToBeInstalled = cluster.hosts.filter((host) =>
+        canInstallHost(cluster, host.status),
+      );
+
+      await HostsService.installAll(hostsToBeInstalled);
       void resetCluster();
     } catch (e) {
       handleApiError(e, () =>
@@ -58,7 +63,11 @@ const AddHosts: React.FC = () => {
         setSubmitting(false);
       }, 10000);
     }
-  };
+  }, [cluster, resetCluster]);
+
+  if (!cluster || !resetCluster) {
+    return null;
+  }
 
   return (
     <ModalDialogsContextProvider>
@@ -91,8 +100,8 @@ const AddHosts: React.FC = () => {
               <ToolbarButton
                 variant={ButtonVariant.primary}
                 name="install"
-                onClick={handleHostsInstall}
-                isDisabled={isSubmitting || getReadyHostCount(cluster) <= 0}
+                onClick={() => void handleHostsInstall()}
+                isDisabled={isSubmitting || getReadyHostCount(cluster) === 0}
               >
                 Install ready hosts
               </ToolbarButton>
