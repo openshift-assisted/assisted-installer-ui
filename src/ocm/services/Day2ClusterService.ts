@@ -1,14 +1,38 @@
 import { InfraEnvsService } from '.';
-import { Cluster } from '../../common/api/types';
-import { OcmClusterType } from '../components/AddHosts/types';
+import { OcmClusterType } from '../components';
 import { ClustersAPI, HostsAPI } from './apis';
+import {
+  CpuArchitecture,
+  Cluster,
+  InfraEnvCreateParams,
+  SupportedCpuArchitectures,
+  Host,
+} from '../../common';
+
+const createNecessaryInfraEnvs = (
+  cpuArchitectures: CpuArchitecture[],
+  baseInfraEnvDetails: InfraEnvCreateParams,
+) => {
+  const infraEnvsToCreate = cpuArchitectures.map((cpuArchitecture) => {
+    return InfraEnvsService.create({
+      ...baseInfraEnvDetails,
+      cpuArchitecture,
+    });
+  });
+  return Promise.all(infraEnvsToCreate);
+};
 
 const Day2ClusterService = {
   getOpenshiftClusterId(ocmCluster?: OcmClusterType) {
     return ocmCluster && ocmCluster.external_id;
   },
 
-  async fetchCluster(ocmCluster: OcmClusterType, pullSecret: string, openshiftVersion: string) {
+  async fetchCluster(
+    ocmCluster: OcmClusterType,
+    pullSecret: string,
+    openshiftVersion: string,
+    isMultiArch: boolean,
+  ) {
     const openshiftClusterId = Day2ClusterService.getOpenshiftClusterId(ocmCluster);
 
     if (!openshiftClusterId) {
@@ -39,12 +63,16 @@ const Day2ClusterService = {
       data.hosts = await Day2ClusterService.fetchHosts(data.id);
       return data;
     } else {
+      const cpuArchitectures = isMultiArch
+        ? SupportedCpuArchitectures
+        : [(ocmCluster.cpu_architecture as CpuArchitecture) || CpuArchitecture.x86];
       return Day2ClusterService.createCluster(
         openshiftClusterId,
         ocmCluster.display_name || ocmCluster.name || openshiftClusterId,
         apiVipDnsname,
         pullSecret,
         openshiftVersion,
+        cpuArchitectures,
       );
     }
   },
@@ -61,6 +89,7 @@ const Day2ClusterService = {
     apiVipDnsname: string,
     pullSecret: string,
     openshiftVersion: string,
+    cpuArchitectures: CpuArchitecture[],
   ) {
     const { data } = await ClustersAPI.registerAddHosts({
       openshiftClusterId, // used to both match OpenShift Cluster and as an assisted-installer ID
@@ -69,21 +98,28 @@ const Day2ClusterService = {
       openshiftVersion,
     });
 
-    await InfraEnvsService.create({
+    // Create all the infra-env for all the existing CPU architectures
+    await createNecessaryInfraEnvs(cpuArchitectures, {
       name: `${data.name || ''}_infra-env`,
       pullSecret,
       clusterId: data.id,
       openshiftVersion,
     });
 
-    data.hosts = await Day2ClusterService.fetchHosts(data.id);
     return data;
   },
 
   async fetchHosts(clusterId: Cluster['id']) {
-    const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId);
-    const { data } = await HostsAPI.list(infraEnvId);
-    return data;
+    const infraEnvIds = await InfraEnvsService.getAllInfraEnvIds(clusterId);
+    // TODO verify this actually retrives all hosts from all infraenvs
+    const allHostPromises = infraEnvIds.map((infraEnvId) => HostsAPI.list(infraEnvId));
+    return Promise.all(allHostPromises).then((results) => {
+      let allHosts: Host[] = [];
+      results.forEach(({ data: hostResult }) => {
+        allHosts = allHosts.concat(hostResult);
+      });
+      return allHosts;
+    });
   },
 };
 

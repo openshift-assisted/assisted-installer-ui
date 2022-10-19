@@ -3,13 +3,17 @@ import { Cluster, InfraEnv } from '../../common';
 import { getErrorMessage } from '../../common/utils';
 import { InfraEnvsService } from '../services';
 
-export default function useInfraEnvId(clusterId: Cluster['id']) {
+export default function useInfraEnvId(
+  clusterId: Cluster['id'],
+  test: boolean,
+  cpuArchitecture: Cluster['cpuArchitecture'],
+) {
   const [infraEnvId, setInfraEnv] = React.useState<InfraEnv['id']>();
   const [error, setError] = React.useState('');
 
   const findInfraEnvId = React.useCallback(async () => {
     try {
-      const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId);
+      const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId, cpuArchitecture);
       setInfraEnv(infraEnvId);
     } catch (e) {
       setError(getErrorMessage(e));

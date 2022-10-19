@@ -1,5 +1,5 @@
 import { IRow } from '@patternfly/react-table';
-import { Cluster, V2ClusterUpdateParams, ClusterValidationId, PlatformType } from '../api/types';
+import { Cluster, V2ClusterUpdateParams, ClusterValidationId, PlatformType } from '../api';
 import { Validation as HostValidation } from './hosts';
 export type Validation = Omit<HostValidation, 'id'> & {
   id: ClusterValidationId;
@@ -58,8 +58,12 @@ export enum CpuArchitecture {
   x86 = 'x86_64',
   ARM = 'arm64',
 }
+export const SupportedCpuArchitectures: CpuArchitecture[] = [
+  CpuArchitecture.x86,
+  CpuArchitecture.ARM,
+];
+
 export type SupportedPlatformType = Extract<PlatformType, 'vsphere' | 'nutanix'>;
 
 export const SupportedPlatformIntegrations: SupportedPlatformType[] = ['vsphere', 'nutanix'];
-
 export const NonPlatformIntegrations: PlatformType[] = ['baremetal', 'none'];

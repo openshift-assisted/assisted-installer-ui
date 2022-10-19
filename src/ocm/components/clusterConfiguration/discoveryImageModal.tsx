@@ -33,20 +33,21 @@ export const DiscoveryImageModalButton: React.FC<DiscoveryImageModalButtonProps>
   );
 };
 
-export const DiscoveryImageModal: React.FC = () => {
+export const DiscoveryImageModal = () => {
   const [isoDownloadUrl, setIsoDownloadUrl] = React.useState<string>('');
   const [isoDownloadError, setIsoDownloadError] = React.useState<string>('');
 
   const { discoveryImageDialog } = useModalDialogsContext();
   const { data, isOpen, close } = discoveryImageDialog;
   const cluster = data?.cluster;
-  const { getImageUrl } = useInfraEnvImageUrl();
+  const { getIsoImageUrl } = useInfraEnvImageUrl();
 
   const onImageReady = React.useCallback(async () => {
-    const { url, error } = await getImageUrl(cluster.id);
+    // We need to retrieve the Iso for the only infraEnv on Day1, hence we don't specify the architecture
+    const { url, error } = await getIsoImageUrl(cluster.id, undefined);
     setIsoDownloadUrl(url);
     setIsoDownloadError(error);
-  }, [getImageUrl, cluster?.id]);
+  }, [getIsoImageUrl, cluster?.id]);
 
   const onReset = React.useCallback(() => {
     setIsoDownloadUrl('');
