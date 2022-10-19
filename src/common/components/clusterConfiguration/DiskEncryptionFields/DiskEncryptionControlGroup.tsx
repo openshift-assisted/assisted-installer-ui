@@ -29,12 +29,14 @@ export interface DiskEncryptionControlGroupProps {
   values: DiskEncryptionValues;
   isSNO: boolean;
   isDisabled?: boolean;
+  enableOnMasters?: boolean;
 }
 
 const DiskEncryptionControlGroup = ({
   values,
   isSNO = false,
   isDisabled = false,
+  enableOnMasters = true,
 }: DiskEncryptionControlGroupProps) => {
   const {
     enableDiskEncryptionOnMasters,
@@ -80,14 +82,16 @@ const DiskEncryptionControlGroup = ({
   return (
     <FormGroup label="Encryption of installation disks">
       <Stack hasGutter>
-        <StackItem>
-          <SwitchField
-            tooltipProps={tooltipProps}
-            name="enableDiskEncryptionOnMasters"
-            label={isSNO ? t('ai:Control plane node, worker') : t('ai:Control plane nodes')}
-            isDisabled={isDisabled}
-          />
-        </StackItem>
+        <RenderIf condition={enableOnMasters}>
+          <StackItem>
+            <SwitchField
+              tooltipProps={tooltipProps}
+              name="enableDiskEncryptionOnMasters"
+              label={isSNO ? t('ai:Control plane node, worker') : t('ai:Control plane nodes')}
+              isDisabled={isDisabled}
+            />
+          </StackItem>
+        </RenderIf>
         <RenderIf condition={!isSNO}>
           <StackItem>
             <SwitchField

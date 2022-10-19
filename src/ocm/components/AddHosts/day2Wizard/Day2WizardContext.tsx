@@ -1,0 +1,26 @@
+import React from 'react';
+import { HostsNetworkConfigurationType } from '../../../services/types';
+import { StaticIpView } from '../../clusterConfiguration/staticIp/data/dataTypes';
+import { Day2WizardStepsType } from './constants';
+
+export type Day2WizardContextType = {
+  currentStepId: Day2WizardStepsType;
+  setCurrentStepId(stepId: Day2WizardStepsType): void;
+  moveBack(): void;
+  moveNext(): void;
+  onUpdateStaticIpView(view: StaticIpView): void;
+  onUpdateHostNetworkConfigType(type: HostsNetworkConfigurationType): void;
+  wizardStepIds: Day2WizardStepsType[];
+};
+
+const Day2WizardContext = React.createContext<Day2WizardContextType | null>(null);
+
+export const useDay2WizardContext = () => {
+  const context = React.useContext(Day2WizardContext);
+  if (!context) {
+    throw new Error('useClusterWizardContext must be used within ClusterWizardContextProvider');
+  }
+  return context;
+};
+
+export default Day2WizardContext;
