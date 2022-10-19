@@ -33,7 +33,7 @@ import ViewClusterEventsButton from '../../../common/components/ui/ViewClusterEv
 
 const { addAlert } = alertsSlice.actions;
 
-const AddHosts: React.FC = () => {
+export const AddHosts = () => {
   const { cluster, resetCluster } = React.useContext(AddHostsContext);
   const [isSubmitting, setSubmitting] = React.useState(false);
   const clusterVarieties = useClusterStatusVarieties(cluster);
@@ -88,7 +88,7 @@ const AddHosts: React.FC = () => {
               </Grid>
             </StackItem>
             <StackItem>
-              <InventoryAddHosts />
+              <InventoryAddHosts cluster={cluster} />
             </StackItem>
           </Stack>
         </CardBody>
@@ -114,5 +114,3 @@ const AddHosts: React.FC = () => {
     </ModalDialogsContextProvider>
   );
 };
-
-export default AddHosts;
