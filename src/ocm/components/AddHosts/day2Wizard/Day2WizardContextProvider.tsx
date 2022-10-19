@@ -1,0 +1,86 @@
+import React, { PropsWithChildren } from 'react';
+import Day2WizardContext, { Day2WizardContextType } from './Day2WizardContext';
+import { AssistedInstallerOCMPermissionTypesListType, Cluster, InfraEnv } from '../../../../common';
+import { Day2WizardStepsType, defaultWizardSteps, staticIpFormViewSubSteps } from './constants';
+import { StaticIpView } from '../../clusterConfiguration/staticIp/data/dataTypes';
+import { HostsNetworkConfigurationType } from '../../../services/types';
+
+const getWizardStepIds = (staticIpView?: StaticIpView): Day2WizardStepsType[] => {
+  const stepIds: Day2WizardStepsType[] = [...defaultWizardSteps];
+  if (staticIpView === StaticIpView.YAML) {
+    stepIds.splice(1, 0, 'static-ip-yaml-view');
+  } else if (staticIpView === StaticIpView.FORM) {
+    stepIds.splice(1, 0, ...staticIpFormViewSubSteps);
+  }
+  console.log('new IDs:', stepIds);
+  return stepIds;
+};
+
+const Day2WizardContextProvider = ({
+  children,
+}: PropsWithChildren<{
+  cluster?: Cluster;
+  infraEnv?: InfraEnv;
+  permissions?: AssistedInstallerOCMPermissionTypesListType;
+}>) => {
+  const [currentStepId, setCurrentStepId] = React.useState<Day2WizardStepsType>('cluster-details');
+  const [wizardStepIds, setWizardStepIds] = React.useState<Day2WizardStepsType[]>(
+    getWizardStepIds(),
+  );
+
+  const contextValue = React.useMemo<Day2WizardContextType | null>(() => {
+    if (!wizardStepIds || !currentStepId) {
+      return null;
+    }
+
+    const onSetCurrentStepId = (stepId: Day2WizardStepsType) => {
+      setCurrentStepId(stepId);
+    };
+
+    return {
+      moveBack(): void {
+        const currentStepIdx = wizardStepIds.indexOf(currentStepId);
+        let nextStepId = wizardStepIds[currentStepIdx - 1];
+        if (nextStepId === 'static-ip-host-configurations') {
+          //when moving back to static ip form view, it should go to network wide configurations
+          nextStepId = 'static-ip-network-wide-configurations';
+        }
+        onSetCurrentStepId(nextStepId);
+      },
+      moveNext(): void {
+        const currentStepIdx = wizardStepIds.indexOf(currentStepId);
+        onSetCurrentStepId(wizardStepIds[currentStepIdx + 1]);
+      },
+      onUpdateStaticIpView(view: StaticIpView): void {
+        setWizardStepIds(getWizardStepIds(view));
+        if (view === StaticIpView.YAML) {
+          setCurrentStepId('static-ip-yaml-view');
+        } else {
+          setCurrentStepId('static-ip-network-wide-configurations');
+        }
+      },
+      onUpdateHostNetworkConfigType(type: HostsNetworkConfigurationType): void {
+        if (type === HostsNetworkConfigurationType.STATIC) {
+          setWizardStepIds(getWizardStepIds(StaticIpView.FORM));
+        } else {
+          setWizardStepIds(getWizardStepIds());
+        }
+      },
+      wizardStepIds,
+      currentStepId,
+      setCurrentStepId: onSetCurrentStepId,
+    };
+  }, [wizardStepIds, currentStepId]);
+
+  if (!contextValue) {
+    return null;
+  }
+
+  return (
+    <>
+      <Day2WizardContext.Provider value={contextValue}>{children}</Day2WizardContext.Provider>
+    </>
+  );
+};
+
+export default Day2WizardContextProvider;

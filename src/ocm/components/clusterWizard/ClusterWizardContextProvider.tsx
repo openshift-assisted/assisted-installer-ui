@@ -74,6 +74,7 @@ const ClusterWizardContextProvider: React.FC<
         handleMoveFromStaticIp();
       }
       setCurrentStepId(stepId);
+      console.log('current step', currentStepId);
     };
 
     return {
