@@ -11,31 +11,13 @@ import {
 import ClusterHostsTable from '../hosts/ClusterHostsTable';
 import { DiscoveryImageModalButton } from '../clusterConfiguration/discoveryImageModal';
 import InformationAndAlerts from '../clusterConfiguration/InformationAndAlerts';
-import { AddHostsContext, DiscoveryInstructions, isArmArchitecture, isSNO } from '../../../common';
+import { Cluster, isArmArchitecture } from '../../../common';
 
-const armArchAlert = (
-  <Alert
-    title="Only hosts that have arm64 cpu architecture can be added to this cluster."
-    variant={AlertVariant.info}
-    data-testid="arm-architecture-alert"
-    isInline
-  />
-);
-
-const InventoryAddHosts: React.FC = () => {
-  const { cluster } = React.useContext(AddHostsContext);
-
-  if (!cluster) {
-    return null;
-  }
-
-  const isSNOCluster = isSNO(cluster);
-
-  return (
+const InventoryAddHosts = ({ cluster }: { cluster?: Cluster }) => {
+  return !cluster ? null : (
     <Stack hasGutter>
       <StackItem>
         <TextContent>
-          <DiscoveryInstructions isSNO={isSNOCluster} showAllInstructions />
           <Text component="p">
             <DiscoveryImageModalButton
               ButtonComponent={Button}
@@ -46,7 +28,16 @@ const InventoryAddHosts: React.FC = () => {
           <InformationAndAlerts cluster={cluster} />
         </TextContent>
       </StackItem>
-      {isArmArchitecture(cluster) && <StackItem>{armArchAlert}</StackItem>}
+      {isArmArchitecture(cluster) && (
+        <StackItem>
+          <Alert
+            title="Only hosts that have arm64 cpu architecture can be added to this cluster."
+            variant={AlertVariant.info}
+            data-testid="arm-architecture-alert"
+            isInline
+          />
+        </StackItem>
+      )}
       <StackItem>
         <ClusterHostsTable cluster={cluster} />
       </StackItem>
