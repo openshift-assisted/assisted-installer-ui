@@ -1,8 +1,10 @@
 import React from 'react';
-import { AlertsContextProvider } from '../../../common';
+import { Provider } from 'react-redux';
 import { AssistedUILibVersion } from '../ui';
+import { AlertsContextProvider } from '../../../common';
 import { HostsClusterDetailTabContent } from './HostsClusterDetailTabContent';
 import { HostsClusterDetailTabProps } from './types';
+import { store } from '../../store';
 
 export const HostsClusterDetailTab = (props: HostsClusterDetailTabProps) => (
   <>
@@ -12,3 +14,11 @@ export const HostsClusterDetailTab = (props: HostsClusterDetailTabProps) => (
     </AlertsContextProvider>
   </>
 );
+
+const Wrapper = (props: HostsClusterDetailTabProps) => (
+  <Provider store={store}>
+    <HostsClusterDetailTab {...props} />
+  </Provider>
+);
+
+export default Wrapper;

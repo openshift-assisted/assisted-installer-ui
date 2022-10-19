@@ -1,2 +1,2 @@
-export * from './HostsClusterDetailTab';
+export { default as HostsClusterDetailTab } from './HostsClusterDetailTab';
 export * from './utils';
