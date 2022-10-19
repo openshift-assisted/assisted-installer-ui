@@ -10,24 +10,31 @@ type ImgUrl = {
 };
 
 export default function useInfraEnvImageUrl() {
-  const getImageUrl = React.useCallback(async (clusterId: Cluster['id']): Promise<ImgUrl> => {
-    try {
-      const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId);
-      if (!infraEnvId) {
-        return { url: '', error: `Failed to retrieve the infraEnv for ${clusterId}` };
-      }
+  const getImageUrl = React.useCallback(
+    async (
+      clusterId: Cluster['id'],
+      test: boolean,
+      cpuArchitecture: Cluster['cpuArchitecture'],
+    ): Promise<ImgUrl> => {
+      try {
+        const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId, test, cpuArchitecture);
+        if (!infraEnvId) {
+          return { url: '', error: `Failed to retrieve the infraEnv for ${clusterId}` };
+        }
 
-      const {
-        data: { url },
-      } = await InfraEnvsAPI.getImageUrl(infraEnvId);
-      if (!url) {
-        throw 'Failed to retrieve the image URL, the API returned an invalid URL';
+        const {
+          data: { url },
+        } = await InfraEnvsAPI.getImageUrl(infraEnvId);
+        if (!url) {
+          throw 'Failed to retrieve the image URL, the API returned an invalid URL';
+        }
+        return { url, error: '' };
+      } catch (e) {
+        return { url: '', error: getErrorMessage(e) };
       }
-      return { url, error: '' };
-    } catch (e) {
-      return { url: '', error: getErrorMessage(e) };
-    }
-  }, []);
+    },
+    [],
+  );
 
   return { getImageUrl };
 }

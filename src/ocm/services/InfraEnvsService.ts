@@ -3,9 +3,14 @@ import { InfraEnvsAPI } from './apis';
 import InfraEnvIdsCacheService from './InfraEnvIdsCacheService';
 
 const InfraEnvsService = {
-  async getInfraEnvId(clusterId: Cluster['id']): Promise<string> {
+  async getInfraEnvId(
+    clusterId: Cluster['id'],
+    test: boolean,
+    cpuArchitecture: Cluster['cpuArchitecture'],
+  ): Promise<string> {
     let infraEnvId = InfraEnvIdsCacheService.getItem(clusterId);
     if (!infraEnvId) {
+      // TODO Fix
       const { data: infraEnvs } = await InfraEnvsAPI.list(clusterId);
       if (infraEnvs.length !== 0) {
         const [infraEnv] = infraEnvs;
@@ -18,6 +23,11 @@ const InfraEnvsService = {
     }
 
     return infraEnvId;
+  },
+
+  async getAllInfraEnvIds(clusterId: Cluster['id']): Promise<string[]> {
+    const { data: infraEnvs } = await InfraEnvsAPI.list(clusterId);
+    return infraEnvs.map((infraEnv) => infraEnv.id);
   },
 
   async create(params: InfraEnvCreateParams) {

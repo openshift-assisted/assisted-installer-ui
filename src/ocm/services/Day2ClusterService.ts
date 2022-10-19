@@ -6,6 +6,7 @@ import {
   Cluster,
   InfraEnvCreateParams,
   SupportedCpuArchitectures,
+  Host,
 } from '../../common';
 
 const createNecessaryInfraEnvs = (
@@ -109,9 +110,16 @@ const Day2ClusterService = {
   },
 
   async fetchHosts(clusterId: Cluster['id']) {
-    const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId);
-    const { data } = await HostsAPI.list(infraEnvId);
-    return data;
+    const infraEnvIds = await InfraEnvsService.getAllInfraEnvIds(clusterId);
+    // TODO verify this actually retrives all hosts from all infraenvs
+    const allHostPromises = infraEnvIds.map((infraEnvId) => HostsAPI.list(infraEnvId));
+    return Promise.all(allHostPromises).then((results) => {
+      let allHosts: Host[] = [];
+      results.forEach(({ data: hostResult }) => {
+        allHosts = allHosts.concat(hostResult);
+      });
+      return allHosts;
+    });
   },
 };
 
