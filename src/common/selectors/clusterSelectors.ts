@@ -127,3 +127,6 @@ export const selectSchedulableMasters = (cluster: Cluster): boolean => {
 
 export const isClusterPlatformTypeVM = ({ platform }: Pick<Cluster, 'platform'>) =>
   SupportedPlatformIntegrations.includes(platform?.type ?? 'none');
+
+export const hasMultiArchitecture = ({ openshiftVersion }: Pick<Cluster, 'openshiftVersion'>) =>
+  /-multi*/.test(openshiftVersion || '');

@@ -58,5 +58,10 @@ export enum CpuArchitecture {
   x86 = 'x86_64',
   ARM = 'arm64',
 }
+export const SupportedCpuArchitectures: CpuArchitecture[] = [
+  CpuArchitecture.x86,
+  CpuArchitecture.ARM,
+];
+
 export const SupportedPlatformIntegrations: PlatformType[] = ['vsphere', 'nutanix'];
 export const NonPlatformIntegrations: PlatformType[] = ['baremetal', 'none'];
