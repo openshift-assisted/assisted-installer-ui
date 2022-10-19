@@ -1,7 +1,7 @@
 import React from 'react';
 import { ManagedDomain, useAlerts } from '../../common';
-import { ClusterDetailsService } from '../services';
 import { getApiErrorMessage, handleApiError } from '../api';
+import { ManagedDomainsAPI } from '../services/apis';
 
 export default function useManagedDomains() {
   const [managedDomains, setManagedDomains] = React.useState<ManagedDomain[]>();
@@ -9,7 +9,7 @@ export default function useManagedDomains() {
 
   const fetchManagedDomains = React.useCallback(async () => {
     try {
-      const domains = await ClusterDetailsService.getManagedDomains();
+      const { data: domains } = await ManagedDomainsAPI.list();
       setManagedDomains(domains);
     } catch (e) {
       setManagedDomains([]);
