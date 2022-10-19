@@ -129,6 +129,3 @@ export const isClusterPlatformTypeVM = ({ platform }: Pick<Cluster, 'platform'>)
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   SupportedPlatformIntegrations.includes(platform?.type ?? 'none');
-
-export const hasMultiArchitecture = ({ openshiftVersion }: Pick<Cluster, 'openshiftVersion'>) =>
-  /-multi*/.test(openshiftVersion || '');

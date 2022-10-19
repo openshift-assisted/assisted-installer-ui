@@ -43,7 +43,12 @@ const Day2ClusterService = {
     return ocmCluster && ocmCluster.external_id;
   },
 
-  async fetchCluster(ocmCluster: OcmClusterType, pullSecret: string, openshiftVersion: string) {
+  async fetchCluster(
+    ocmCluster: OcmClusterType,
+    pullSecret: string,
+    openshiftVersion: string,
+    isMultiArch: boolean,
+  ) {
     const openshiftClusterId = Day2ClusterService.getOpenshiftClusterId(ocmCluster);
 
     if (!openshiftClusterId) {
