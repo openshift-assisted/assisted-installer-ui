@@ -1,5 +1,5 @@
 import React from 'react';
-import { Cluster, PresignedUrl } from '../../common';
+import { Cluster, CpuArchitecture, PresignedUrl } from '../../common';
 import { InfraEnvsAPI } from '../services/apis';
 import { getErrorMessage } from '../../common/utils';
 import { InfraEnvsService } from '../services';
@@ -10,14 +10,10 @@ type ImgUrl = {
 };
 
 export default function useInfraEnvImageUrl() {
-  const getImageUrl = React.useCallback(
-    async (
-      clusterId: Cluster['id'],
-      test: boolean,
-      cpuArchitecture: Cluster['cpuArchitecture'],
-    ): Promise<ImgUrl> => {
+  const getIsoImageUrl = React.useCallback(
+    async (clusterId: Cluster['id'], cpuArchitecture: CpuArchitecture): Promise<ImgUrl> => {
       try {
-        const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId, test, cpuArchitecture);
+        const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId, cpuArchitecture);
         if (!infraEnvId) {
           return { url: '', error: `Failed to retrieve the infraEnv for ${clusterId}` };
         }
@@ -36,5 +32,5 @@ export default function useInfraEnvImageUrl() {
     [],
   );
 
-  return { getImageUrl };
+  return { getIsoImageUrl };
 }
