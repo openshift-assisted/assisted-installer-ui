@@ -113,7 +113,7 @@ const NetworkConfigurationPage = ({ cluster }: { cluster: Cluster }) => {
     infraEnv,
     error: infraEnvError,
     isLoading,
-  } = useInfraEnv(cluster.id, CpuArchitecture.DAY1_ARCHITECTURE);
+  } = useInfraEnv(cluster.id, CpuArchitecture.USE_DAY1_ARCHITECTURE);
   const defaultNetworkValues = useDefaultConfiguration([
     'clusterNetworksDualstack',
     'clusterNetworksIpv4',

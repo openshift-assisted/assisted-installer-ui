@@ -51,7 +51,7 @@ const InfraEnvIdsCacheService: InfraEnvStorage = {
     if (!clusterInfraEnvs) {
       return null;
     }
-    if (cpuArchitecture !== CpuArchitecture.DAY1_ARCHITECTURE) {
+    if (cpuArchitecture !== CpuArchitecture.USE_DAY1_ARCHITECTURE) {
       return clusterInfraEnvs[cpuArchitecture] || null;
     }
 
@@ -74,7 +74,7 @@ const InfraEnvIdsCacheService: InfraEnvStorage = {
     }
 
     const cache = read();
-    if (cpuArchitecture === CpuArchitecture.DAY1_ARCHITECTURE) {
+    if (cpuArchitecture === CpuArchitecture.USE_DAY1_ARCHITECTURE) {
       delete cache[clusterId];
     } else if (cache[clusterId]) {
       delete cache[clusterId][cpuArchitecture];

@@ -1,9 +1,14 @@
 import React, { PropsWithChildren } from 'react';
 import Day2WizardContext, { Day2WizardContextType } from './Day2WizardContext';
-import { AssistedInstallerOCMPermissionTypesListType, Cluster, InfraEnv } from '../../../../common';
+import {
+  AssistedInstallerOCMPermissionTypesListType,
+  Cluster,
+  CpuArchitecture,
+  InfraEnv,
+} from '../../../../common';
 import { Day2WizardStepsType, defaultWizardSteps, staticIpFormViewSubSteps } from './constants';
 import { StaticIpView } from '../../clusterConfiguration/staticIp/data/dataTypes';
-import { HostsNetworkConfigurationType } from '../../../services/types';
+import { HostsNetworkConfigurationType } from '../../../services';
 
 const getWizardStepIds = (staticIpView?: StaticIpView): Day2WizardStepsType[] => {
   const stepIds: Day2WizardStepsType[] = [...defaultWizardSteps];
@@ -24,6 +29,9 @@ const Day2WizardContextProvider = ({
   permissions?: AssistedInstallerOCMPermissionTypesListType;
 }>) => {
   const [currentStepId, setCurrentStepId] = React.useState<Day2WizardStepsType>('cluster-details');
+  const [selectedCpuArchitecture, setSelectedCpuArchitecture] = React.useState<CpuArchitecture>(
+    CpuArchitecture.x86,
+  );
   const [wizardStepIds, setWizardStepIds] = React.useState<Day2WizardStepsType[]>(
     getWizardStepIds(),
   );
@@ -33,10 +41,6 @@ const Day2WizardContextProvider = ({
       return null;
     }
 
-    const onSetCurrentStepId = (stepId: Day2WizardStepsType) => {
-      setCurrentStepId(stepId);
-    };
-
     return {
       moveBack(): void {
         const currentStepIdx = wizardStepIds.indexOf(currentStepId);
@@ -45,11 +49,11 @@ const Day2WizardContextProvider = ({
           //when moving back to static ip form view, it should go to network wide configurations
           nextStepId = 'static-ip-network-wide-configurations';
         }
-        onSetCurrentStepId(nextStepId);
+        setCurrentStepId(nextStepId);
       },
       moveNext(): void {
         const currentStepIdx = wizardStepIds.indexOf(currentStepId);
-        onSetCurrentStepId(wizardStepIds[currentStepIdx + 1]);
+        setCurrentStepId(wizardStepIds[currentStepIdx + 1]);
       },
       onUpdateStaticIpView(view: StaticIpView): void {
         setWizardStepIds(getWizardStepIds(view));
@@ -66,11 +70,14 @@ const Day2WizardContextProvider = ({
           setWizardStepIds(getWizardStepIds());
         }
       },
+
       wizardStepIds,
       currentStepId,
-      setCurrentStepId: onSetCurrentStepId,
+      selectedCpuArchitecture,
+      setCurrentStepId,
+      setSelectedCpuArchitecture,
     };
-  }, [wizardStepIds, currentStepId]);
+  }, [wizardStepIds, currentStepId, selectedCpuArchitecture]);
 
   if (!contextValue) {
     return null;

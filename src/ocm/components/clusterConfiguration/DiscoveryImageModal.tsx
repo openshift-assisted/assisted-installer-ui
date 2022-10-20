@@ -44,7 +44,7 @@ export const DiscoveryImageModal = () => {
 
   const onImageReady = React.useCallback(async () => {
     // We need to retrieve the Iso for the only infraEnv on Day1, hence we don't specify the architecture
-    const { url, error } = await getIsoImageUrl(cluster.id, CpuArchitecture.DAY1_ARCHITECTURE);
+    const { url, error } = await getIsoImageUrl(cluster.id, CpuArchitecture.USE_DAY1_ARCHITECTURE);
     setIsoDownloadUrl(url);
     setIsoDownloadError(error);
   }, [getIsoImageUrl, cluster?.id]);

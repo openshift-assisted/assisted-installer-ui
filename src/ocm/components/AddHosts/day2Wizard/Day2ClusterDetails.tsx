@@ -1,41 +1,30 @@
-import { Stack, StackItem, FormGroup } from '@patternfly/react-core';
-import { Form, Formik, FormikHelpers, useFormikContext } from 'formik';
 import React from 'react';
+import { Stack, StackItem } from '@patternfly/react-core';
+import { Form, Formik, FormikHelpers } from 'formik';
 import {
   ClusterWizardStep,
   ClusterWizardStepHeader,
-  DiskEncryption,
-  getFieldId,
-  RadioField,
+  CpuArchitecture,
   WizardFooter,
 } from '../../../../common';
-import DiskEncryptionControlGroup from '../../../../common/components/clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
-import { TangServer } from '../../../../common/components/clusterConfiguration/DiskEncryptionFields/DiskEncryptionValues';
-import { useOpenshiftVersions } from '../../../hooks';
-import { HostsNetworkConfigurationType } from '../../../services';
-import ArmCheckbox from '../../clusterConfiguration/ArmCheckbox';
 import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
 import { useDay2WizardContext } from './Day2WizardContext';
 import { Day2WizardNav } from './Day2WizardNav';
+import DiscoverImageCpuArchitectureControlGroup from '../../../../common/components/clusterConfiguration/DiscoveryImageCpuArchitectureControlGroup';
 
 type Day2ClusterDetailValues = {
-  hostsNetworkConfigurationType: 'dhcp' | 'static';
-  diskEncryption: boolean;
-  enableDiskEncryptionOnWorkers: boolean;
-  diskEncryptionMode: DiskEncryption['mode'];
-  diskEncryptionTangServers: TangServer[];
+  cpuArchitecture: CpuArchitecture;
+  // hostsNetworkConfigurationType: 'dhcp' | 'static';
 };
 
 export const Day2ClusterDetails = () => {
   const { day2DiscoveryImageDialog } = useModalDialogsContext();
-  const { close } = day2DiscoveryImageDialog;
   const wizardContext = useDay2WizardContext();
-
-  const { versions } = useOpenshiftVersions();
+  const { close } = day2DiscoveryImageDialog;
 
   const handleSubmit = React.useCallback(
     (values: Day2ClusterDetailValues) => {
-      console.log(values);
+      wizardContext.setSelectedCpuArchitecture(values.cpuArchitecture);
       wizardContext.moveNext();
     },
     [wizardContext],
@@ -48,15 +37,12 @@ export const Day2ClusterDetails = () => {
   return (
     <Formik
       initialValues={{
-        enableDiskEncryptionOnWorkers: false,
-        diskEncryptionMode: 'tpmv2',
-        diskEncryptionTangServers: [],
-        diskEncryption: false,
-        hostsNetworkConfigurationType: 'dhcp',
+        // TODO (multi-arch) improve to set the default value equal to the cpuArchitecture of Day1 cluster
+        cpuArchitecture: CpuArchitecture.x86,
       }}
       onSubmit={handleSubmit}
     >
-      {({ values, submitForm }) => {
+      {({ submitForm }) => {
         return (
           <ClusterWizardStep
             navigation={<Day2WizardNav />}
@@ -77,18 +63,7 @@ export const Day2ClusterDetails = () => {
                   <ClusterWizardStepHeader>Cluster details</ClusterWizardStepHeader>
                 </StackItem>
                 <StackItem>
-                  <ArmCheckbox versions={versions} />
-                </StackItem>
-                <StackItem>
-                  <Day2HostConfigurations />
-                </StackItem>
-                <StackItem>
-                  {/* TODO(jgyselov): figure out the copy */}
-                  <DiskEncryptionControlGroup
-                    values={values}
-                    isSNO={false}
-                    enableOnMasters={false}
-                  />
+                  <DiscoverImageCpuArchitectureControlGroup />
                 </StackItem>
               </Stack>
             </Form>
@@ -96,32 +71,5 @@ export const Day2ClusterDetails = () => {
         );
       }}
     </Formik>
-  );
-};
-
-const Day2HostConfigurations = () => {
-  const { setFieldValue } = useFormikContext<Day2ClusterDetailValues>();
-  const wizardContext = useDay2WizardContext();
-
-  const onChangeNetworkType = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    wizardContext.onUpdateHostNetworkConfigType(value as HostsNetworkConfigurationType);
-    setFieldValue('hostsNetworkConfigurationType', value);
-  };
-
-  return (
-    <FormGroup
-      label="Hosts' network configuration"
-      fieldId={getFieldId('hostsNetworkConfigurationType', 'radio')}
-      isInline
-      onChange={onChangeNetworkType}
-    >
-      <RadioField name={'hostsNetworkConfigurationType'} value={'dhcp'} label="DHCP only" />
-      <RadioField
-        name={'hostsNetworkConfigurationType'}
-        value={'static'}
-        label="Static IP, bridges, and bonds"
-      />
-    </FormGroup>
   );
 };

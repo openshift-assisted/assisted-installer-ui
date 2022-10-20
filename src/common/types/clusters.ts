@@ -59,7 +59,7 @@ export enum CpuArchitecture {
   ARM = 'arm64',
   // This value refers to use whichever CPU architecture was selected for the cluster
   // It's not a value that can be returned from the Backend.
-  DAY1_ARCHITECTURE = 'cluster-day1-cpu-architecture',
+  USE_DAY1_ARCHITECTURE = 'cluster-day1-cpu-architecture',
 }
 export const SupportedCpuArchitectures: CpuArchitecture[] = [
   CpuArchitecture.x86,

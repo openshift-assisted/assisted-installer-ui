@@ -32,6 +32,7 @@ const InventoryAddHosts = ({ cluster }: { cluster?: Cluster }) => {
           <InformationAndAlerts cluster={cluster} />
         </TextContent>
       </StackItem>
+      {/* TODO (multi-arch) Adapt message based on multi / not multi https://issues.redhat.com/browse/MGMT-11964*/}
       {isArmArchitecture(cluster) && (
         <StackItem>
           <Alert

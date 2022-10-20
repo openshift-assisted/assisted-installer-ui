@@ -27,7 +27,7 @@ import ClusterBreadcrumbs from './ClusterBreadcrumbs';
 import ClusterWizard from '../clusterWizard/ClusterWizard';
 import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
 import { useClusterPolling, useFetchCluster } from './clusterPolling';
-import { DiscoveryImageModal } from '../clusterConfiguration/discoveryImageModal';
+import { DiscoveryImageModal } from '../clusterConfiguration/DiscoveryImageModal';
 import { isSingleClusterMode, routeBasePath } from '../../config';
 import { FeatureSupportLevelProvider } from '../featureSupportLevels';
 import ClusterWizardContextProvider from '../clusterWizard/ClusterWizardContextProvider';
@@ -48,7 +48,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
     isLoading: infraEnvLoading,
     error: infraEnvError,
     updateInfraEnv,
-  } = useInfraEnv(clusterId, CpuArchitecture.DAY1_ARCHITECTURE);
+  } = useInfraEnv(clusterId, CpuArchitecture.USE_DAY1_ARCHITECTURE);
   const errorStateActions = [];
   if (!isSingleClusterMode()) {
     errorStateActions.push(

@@ -29,7 +29,7 @@ const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
 }) => {
   const { infraEnv, error: infraEnvError } = useInfraEnv(
     cluster.id,
-    CpuArchitecture.DAY1_ARCHITECTURE,
+    CpuArchitecture.USE_DAY1_ARCHITECTURE,
   );
   const cancelSourceRef = React.useRef<CancelTokenSource>();
   const dispatch = useDispatch();

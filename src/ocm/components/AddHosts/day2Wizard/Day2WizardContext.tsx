@@ -1,11 +1,14 @@
 import React from 'react';
-import { HostsNetworkConfigurationType } from '../../../services/types';
+import { HostsNetworkConfigurationType } from '../../../services';
 import { StaticIpView } from '../../clusterConfiguration/staticIp/data/dataTypes';
 import { Day2WizardStepsType } from './constants';
+import { CpuArchitecture } from '../../../../common';
 
 export type Day2WizardContextType = {
   currentStepId: Day2WizardStepsType;
   setCurrentStepId(stepId: Day2WizardStepsType): void;
+  selectedCpuArchitecture: CpuArchitecture;
+  setSelectedCpuArchitecture(cpuArchitecture: CpuArchitecture): void;
   moveBack(): void;
   moveNext(): void;
   onUpdateStaticIpView(view: StaticIpView): void;
