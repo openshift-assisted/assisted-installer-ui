@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Cluster,
   CpuArchitecture,
   ImportClusterParams,
   OpenshiftVersion,
