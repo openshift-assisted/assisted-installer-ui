@@ -15,7 +15,6 @@ import { isApiError } from '../../api/types';
 import { FeatureSupportLevelProvider } from '../featureSupportLevels';
 import { AddHosts } from '../AddHosts';
 import { HostsClusterDetailTabProps } from './types';
-import ClustersAPI from '../../services/apis/ClustersAPI';
 
 export const HostsClusterDetailTabContent = ({
   cluster,
