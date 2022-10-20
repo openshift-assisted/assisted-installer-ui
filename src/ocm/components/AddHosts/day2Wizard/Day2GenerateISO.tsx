@@ -14,8 +14,11 @@ export const Day2GenerateISO = () => {
   const { getIsoImageUrl } = useInfraEnvImageUrl();
 
   const onImageReady = React.useCallback(async () => {
-    await getIsoImageUrl(cluster.id, wizardContext.selectedCpuArchitecture);
-    wizardContext.moveNext();
+    const isoUrl = await getIsoImageUrl(cluster.id, wizardContext.selectedCpuArchitecture);
+    if (!isoUrl.error) {
+      wizardContext.setSelectedIsoUrl(isoUrl.url);
+      wizardContext.moveNext();
+    }
   }, [cluster?.id, wizardContext, getIsoImageUrl]);
 
   return (

@@ -77,6 +77,7 @@ export const DiscoveryImageModal = () => {
           onClose={close}
           onReset={onReset}
           isoDownloadUrl={isoDownloadUrl}
+          cpuArchitecture={CpuArchitecture.USE_DAY1_ARCHITECTURE}
         />
       ) : (
         <DiscoveryImageForm
