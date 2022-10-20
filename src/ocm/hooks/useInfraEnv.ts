@@ -1,13 +1,13 @@
 import React from 'react';
 import { useInfraEnvId } from '.';
-import { Cluster, InfraEnv, InfraEnvUpdateParams } from '../../common';
+import { Cluster, CpuArchitecture, InfraEnv, InfraEnvUpdateParams } from '../../common';
 import { getErrorMessage } from '../../common/utils';
 import { InfraEnvsAPI } from '../services/apis';
 
-export default function useInfraEnv(clusterId: Cluster['id']) {
+export default function useInfraEnv(clusterId: Cluster['id'], cpuArchitecture: CpuArchitecture) {
   const [infraEnv, setInfraEnv] = React.useState<InfraEnv>();
   const [error, setError] = React.useState('');
-  const { infraEnvId, error: infraEnvIdError } = useInfraEnvId(clusterId);
+  const { infraEnvId, error: infraEnvIdError } = useInfraEnvId(clusterId, cpuArchitecture);
 
   const getInfraEnv = React.useCallback(async () => {
     try {
@@ -26,6 +26,7 @@ export default function useInfraEnv(clusterId: Cluster['id']) {
         throw 'updateInfraEnv should not be called before infra env was loaded';
       }
       InfraEnvsAPI.abortLastGetRequest();
+      // TODO do we need to propagate the updates across all the infraEnvs of the same cluster??
       const { data } = await InfraEnvsAPI.update(infraEnvId, infraEnvUpdateParams);
       setInfraEnv(data);
       return data;

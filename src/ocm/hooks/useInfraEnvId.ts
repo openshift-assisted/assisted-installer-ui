@@ -1,13 +1,9 @@
 import React from 'react';
-import { Cluster, InfraEnv } from '../../common';
+import { Cluster, CpuArchitecture, InfraEnv } from '../../common';
 import { getErrorMessage } from '../../common/utils';
 import { InfraEnvsService } from '../services';
 
-export default function useInfraEnvId(
-  clusterId: Cluster['id'],
-  test: boolean,
-  cpuArchitecture: Cluster['cpuArchitecture'],
-) {
+export default function useInfraEnvId(clusterId: Cluster['id'], cpuArchitecture: CpuArchitecture) {
   const [infraEnvId, setInfraEnv] = React.useState<InfraEnv['id']>();
   const [error, setError] = React.useState('');
 
@@ -18,7 +14,7 @@ export default function useInfraEnvId(
     } catch (e) {
       setError(getErrorMessage(e));
     }
-  }, [clusterId]);
+  }, [clusterId, cpuArchitecture]);
 
   React.useEffect(() => {
     if (clusterId && !infraEnvId) {
