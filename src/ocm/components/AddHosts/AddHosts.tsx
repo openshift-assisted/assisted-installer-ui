@@ -13,7 +13,7 @@ import {
 } from '@patternfly/react-core';
 import React from 'react';
 import { getApiErrorMessage, handleApiError } from '../../api/utils';
-import { DiscoveryImageModal } from '../clusterConfiguration/discoveryImageModal';
+import { DiscoveryImageModal } from '../clusterConfiguration/DiscoveryImageModal';
 import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
 import {
   ToolbarButton,

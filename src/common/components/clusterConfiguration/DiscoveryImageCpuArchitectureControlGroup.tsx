@@ -1,25 +1,21 @@
-import { RadioField } from '../ui';
-import { FormGroup } from '@patternfly/react-core';
 import React from 'react';
+import { FormGroup } from '@patternfly/react-core';
+import { getFieldId, RadioField } from '../ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
-import { CpuArchitecture } from '../../types';
+import { SupportedCpuArchitectures } from '../../types';
 
 const GROUP_NAME = 'cpuArchitecture';
 
-const DiscoverImageCpuArchitectureControlGroup = ({
-  cpuArchitectures,
-}: {
-  cpuArchitectures: CpuArchitecture[];
-}) => {
+const DiscoverImageCpuArchitectureControlGroup = () => {
   const { t } = useTranslation();
   return (
     <FormGroup
       role={'radiogroup'}
       isInline
-      fieldId={'cpu-architecture-control-group'}
+      fieldId={getFieldId(GROUP_NAME, 'radio')}
       label={t('ai:CPU architecture')}
     >
-      {cpuArchitectures.map((cpuArch) => (
+      {SupportedCpuArchitectures.map((cpuArch) => (
         <RadioField
           name={GROUP_NAME}
           label={cpuArch}

@@ -1,12 +1,11 @@
 import { InfraEnvsService } from '.';
 import { OcmClusterType } from '../components';
-import { ClustersAPI, HostsAPI } from './apis';
+import { ClustersAPI } from './apis';
 import {
   CpuArchitecture,
   Cluster,
   InfraEnvCreateParams,
   SupportedCpuArchitectures,
-  Host,
 } from '../../common';
 
 const createNecessaryInfraEnvs = (

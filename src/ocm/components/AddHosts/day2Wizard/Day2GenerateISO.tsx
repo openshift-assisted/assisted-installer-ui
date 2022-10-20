@@ -1,5 +1,5 @@
 import React from 'react';
-import { ClusterWizardStep, CpuArchitecture } from '../../../../common';
+import { ClusterWizardStep } from '../../../../common';
 import DiscoveryImageForm from '../../clusterConfiguration/DiscoveryImageForm';
 import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
 import { useDay2WizardContext } from './Day2WizardContext';
@@ -13,13 +13,10 @@ export const Day2GenerateISO = () => {
   const wizardContext = useDay2WizardContext();
   const { getIsoImageUrl } = useInfraEnvImageUrl();
 
-  // TODO Needs to come from the user selection in the first step
-  const selectedCpuArchitecture = CpuArchitecture.x86;
-
   const onImageReady = React.useCallback(async () => {
-    await getIsoImageUrl(cluster.id, selectedCpuArchitecture);
+    await getIsoImageUrl(cluster.id, wizardContext.selectedCpuArchitecture);
     wizardContext.moveNext();
-  }, [cluster.id, wizardContext, getIsoImageUrl, selectedCpuArchitecture]);
+  }, [cluster.id, wizardContext, getIsoImageUrl]);
 
   return (
     <ClusterWizardStep navigation={<Day2WizardNav />}>

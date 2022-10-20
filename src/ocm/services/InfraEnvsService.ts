@@ -49,7 +49,7 @@ const InfraEnvsService = {
       return InfraEnvsAPI.deregister(infraEnv.id);
     });
 
-    InfraEnvIdsCacheService.removeInfraEnvId(clusterId, CpuArchitecture.DAY1_ARCHITECTURE);
+    InfraEnvIdsCacheService.removeInfraEnvId(clusterId, CpuArchitecture.USE_DAY1_ARCHITECTURE);
 
     return Promise.all(promises);
   },
