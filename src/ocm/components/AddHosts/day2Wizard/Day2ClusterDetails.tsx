@@ -19,6 +19,7 @@ type Day2ClusterDetailValues = {
 
 export const Day2ClusterDetails = () => {
   const { day2DiscoveryImageDialog } = useModalDialogsContext();
+
   const wizardContext = useDay2WizardContext();
   const { close } = day2DiscoveryImageDialog;
 

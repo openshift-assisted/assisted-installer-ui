@@ -25,15 +25,15 @@ export type DownloadISOProps = {
   onReset?: () => void;
 };
 
-const DownloadIso: React.FC<DownloadISOProps> = ({
+const DownloadIso = ({
   fileName = 'discovery.iso',
   downloadUrl,
   onClose,
   onReset,
   hasDHCP,
   isSNO = false,
-}) => {
-  const wgetCommand = `wget -O ${fileName} '${downloadUrl}'`;
+}: DownloadISOProps) => {
+  const wgetCommand = `wget -O ${fileName} '${downloadUrl || ''}'`;
   const { t } = useTranslation();
   return (
     <>

@@ -6,19 +6,18 @@ import {
   CpuArchitecture,
   InfraEnv,
 } from '../../../../common';
-import { Day2WizardStepsType, defaultWizardSteps, staticIpFormViewSubSteps } from './constants';
-import { StaticIpView } from '../../clusterConfiguration/staticIp/data/dataTypes';
+import { Day2WizardStepsType, defaultWizardSteps } from './constants';
 import { HostsNetworkConfigurationType } from '../../../services';
 
-const getWizardStepIds = (staticIpView?: StaticIpView): Day2WizardStepsType[] => {
-  const stepIds: Day2WizardStepsType[] = [...defaultWizardSteps];
-  if (staticIpView === StaticIpView.YAML) {
-    stepIds.splice(1, 0, 'static-ip-yaml-view');
-  } else if (staticIpView === StaticIpView.FORM) {
-    stepIds.splice(1, 0, ...staticIpFormViewSubSteps);
-  }
-  console.log('new IDs:', stepIds);
-  return stepIds;
+const getWizardStepIds = (): Day2WizardStepsType[] => {
+  // const stepIds: Day2WizardStepsType[] = [...defaultWizardSteps];
+  // if (staticIpView === StaticIpView.YAML) {
+  //   stepIds.splice(1, 0, 'static-ip-yaml-view');
+  // } else if (staticIpView === StaticIpView.FORM) {
+  //   stepIds.splice(1, 0, ...staticIpFormViewSubSteps);
+  // }
+  // console.log('new IDs:', stepIds);
+  return defaultWizardSteps;
 };
 
 const Day2WizardContextProvider = ({
@@ -32,6 +31,7 @@ const Day2WizardContextProvider = ({
   const [selectedCpuArchitecture, setSelectedCpuArchitecture] = React.useState<CpuArchitecture>(
     CpuArchitecture.x86,
   );
+  const [selectedIsoUrl, setSelectedIsoUrl] = React.useState<string>('');
   const [wizardStepIds, setWizardStepIds] = React.useState<Day2WizardStepsType[]>(
     getWizardStepIds(),
   );
@@ -44,28 +44,28 @@ const Day2WizardContextProvider = ({
     return {
       moveBack(): void {
         const currentStepIdx = wizardStepIds.indexOf(currentStepId);
-        let nextStepId = wizardStepIds[currentStepIdx - 1];
-        if (nextStepId === 'static-ip-host-configurations') {
-          //when moving back to static ip form view, it should go to network wide configurations
-          nextStepId = 'static-ip-network-wide-configurations';
-        }
+        const nextStepId = wizardStepIds[currentStepIdx - 1];
+        // if (nextStepId === 'static-ip-host-configurations') {
+        //   //when moving back to static ip form view, it should go to network wide configurations
+        //   nextStepId = 'static-ip-network-wide-configurations';
+        // }
         setCurrentStepId(nextStepId);
       },
       moveNext(): void {
         const currentStepIdx = wizardStepIds.indexOf(currentStepId);
         setCurrentStepId(wizardStepIds[currentStepIdx + 1]);
       },
-      onUpdateStaticIpView(view: StaticIpView): void {
-        setWizardStepIds(getWizardStepIds(view));
-        if (view === StaticIpView.YAML) {
-          setCurrentStepId('static-ip-yaml-view');
-        } else {
-          setCurrentStepId('static-ip-network-wide-configurations');
-        }
+      onUpdateStaticIpView(/*view: StaticIpView*/): void {
+        setWizardStepIds(getWizardStepIds(/*view*/));
+        // if (view === StaticIpView.YAML) {
+        //   setCurrentStepId('static-ip-yaml-view');
+        // } else {
+        //   setCurrentStepId('static-ip-network-wide-configurations');
+        // }
       },
       onUpdateHostNetworkConfigType(type: HostsNetworkConfigurationType): void {
         if (type === HostsNetworkConfigurationType.STATIC) {
-          setWizardStepIds(getWizardStepIds(StaticIpView.FORM));
+          setWizardStepIds(getWizardStepIds(/*StaticIpView.FORM*/));
         } else {
           setWizardStepIds(getWizardStepIds());
         }
@@ -73,11 +73,13 @@ const Day2WizardContextProvider = ({
 
       wizardStepIds,
       currentStepId,
-      selectedCpuArchitecture,
       setCurrentStepId,
+      selectedIsoUrl,
+      setSelectedIsoUrl,
+      selectedCpuArchitecture,
       setSelectedCpuArchitecture,
     };
-  }, [wizardStepIds, currentStepId, selectedCpuArchitecture]);
+  }, [wizardStepIds, currentStepId, selectedIsoUrl, selectedCpuArchitecture]);
 
   if (!contextValue) {
     return null;

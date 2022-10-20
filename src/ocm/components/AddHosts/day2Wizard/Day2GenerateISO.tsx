@@ -1,5 +1,6 @@
 import React from 'react';
-import { ClusterWizardStep } from '../../../../common';
+import { Stack, StackItem } from '@patternfly/react-core';
+import { ClusterWizardStep, ClusterWizardStepHeader } from '../../../../common';
 import DiscoveryImageForm from '../../clusterConfiguration/DiscoveryImageForm';
 import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
 import { useDay2WizardContext } from './Day2WizardContext';
@@ -14,13 +15,28 @@ export const Day2GenerateISO = () => {
   const { getIsoImageUrl } = useInfraEnvImageUrl();
 
   const onImageReady = React.useCallback(async () => {
-    await getIsoImageUrl(cluster.id, wizardContext.selectedCpuArchitecture);
-    wizardContext.moveNext();
-  }, [cluster.id, wizardContext, getIsoImageUrl]);
+    const isoUrl = await getIsoImageUrl(cluster.id, wizardContext.selectedCpuArchitecture);
+    if (!isoUrl.error) {
+      wizardContext.setSelectedIsoUrl(isoUrl.url);
+      wizardContext.moveNext();
+    }
+  }, [cluster?.id, wizardContext, getIsoImageUrl]);
 
   return (
     <ClusterWizardStep navigation={<Day2WizardNav />}>
-      <DiscoveryImageForm cluster={cluster} onCancel={close} onSuccess={onImageReady} />
+      <Stack hasGutter>
+        <StackItem>
+          <ClusterWizardStepHeader>Generate Discovery ISO</ClusterWizardStepHeader>
+        </StackItem>
+        <StackItem>
+          <DiscoveryImageForm
+            cluster={cluster}
+            cpuArchitecture={wizardContext.selectedCpuArchitecture}
+            onCancel={close}
+            onSuccess={onImageReady}
+          />
+        </StackItem>
+      </Stack>
     </ClusterWizardStep>
   );
 };

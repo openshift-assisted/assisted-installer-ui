@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormGroup } from '@patternfly/react-core';
+import { Flex, FlexItem, FormGroup } from '@patternfly/react-core';
 import { getFieldId, RadioField } from '../ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { SupportedCpuArchitectures } from '../../types';
@@ -15,15 +15,18 @@ const DiscoverImageCpuArchitectureControlGroup = () => {
       fieldId={getFieldId(GROUP_NAME, 'radio')}
       label={t('ai:CPU architecture')}
     >
-      {SupportedCpuArchitectures.map((cpuArch) => (
-        <RadioField
-          name={GROUP_NAME}
-          label={cpuArch}
-          id={`cpu-arch_${cpuArch}`}
-          value={cpuArch}
-          key={cpuArch}
-        />
-      ))}
+      <Flex>
+        {SupportedCpuArchitectures.map((cpuArch) => (
+          <FlexItem key={cpuArch}>
+            <RadioField
+              id={`cpu-arch_${cpuArch}`}
+              name={GROUP_NAME}
+              label={cpuArch}
+              value={cpuArch}
+            />
+          </FlexItem>
+        ))}
+      </Flex>
     </FormGroup>
   );
 };

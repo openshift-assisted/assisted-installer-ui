@@ -6,19 +6,13 @@ import { HostsClusterDetailTabContent } from './HostsClusterDetailTabContent';
 import { HostsClusterDetailTabProps } from './types';
 import { store } from '../../store';
 
-export const HostsClusterDetailTab = (props: HostsClusterDetailTabProps) => (
-  <>
+const HostsClusterDetailTab = (props: HostsClusterDetailTabProps) => (
+  <Provider store={store}>
     <AssistedUILibVersion />
     <AlertsContextProvider>
       <HostsClusterDetailTabContent {...props} />
     </AlertsContextProvider>
-  </>
-);
-
-const Wrapper = (props: HostsClusterDetailTabProps) => (
-  <Provider store={store}>
-    <HostsClusterDetailTab {...props} />
   </Provider>
 );
 
-export default Wrapper;
+export default HostsClusterDetailTab;
