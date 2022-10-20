@@ -11,7 +11,10 @@ type ImgUrl = {
 
 export default function useInfraEnvImageUrl() {
   const getIsoImageUrl = React.useCallback(
-    async (clusterId: Cluster['id'], cpuArchitecture: CpuArchitecture): Promise<ImgUrl> => {
+    async (
+      clusterId: Cluster['id'],
+      cpuArchitecture: CpuArchitecture | undefined,
+    ): Promise<ImgUrl> => {
       try {
         const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId, cpuArchitecture);
         if (!infraEnvId) {

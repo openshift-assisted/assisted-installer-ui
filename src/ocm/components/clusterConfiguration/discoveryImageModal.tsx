@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, Button, ButtonVariant, ModalVariant } from '@patternfly/react-core';
-import { Cluster, CpuArchitecture, ErrorState, isSNO, ToolbarButton } from '../../../common';
+import { Cluster, ErrorState, isSNO, ToolbarButton } from '../../../common';
 import DiscoveryImageForm from './DiscoveryImageForm';
 import DiscoveryImageSummary from './DiscoveryImageSummary';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
@@ -43,14 +43,11 @@ export const DiscoveryImageModal = () => {
   const { getIsoImageUrl } = useInfraEnvImageUrl();
 
   const onImageReady = React.useCallback(async () => {
-    // FRom the cluster information we need to know which data refers to the infraENv we need to use
-    const { url, error } = await getIsoImageUrl(
-      cluster.id,
-      cluster?.cpuArchitecture as CpuArchitecture,
-    );
+    // We need to retrieve the Iso for the only infraEnv on Day1, hence we don't specify the architecture
+    const { url, error } = await getIsoImageUrl(cluster.id, undefined);
     setIsoDownloadUrl(url);
     setIsoDownloadError(error);
-  }, [getIsoImageUrl, cluster?.id, cluster?.cpuArchitecture]);
+  }, [getIsoImageUrl, cluster?.id]);
 
   const onReset = React.useCallback(() => {
     setIsoDownloadUrl('');

@@ -3,7 +3,10 @@ import { InfraEnvsAPI } from './apis';
 import InfraEnvIdsCacheService from './InfraEnvIdsCacheService';
 
 const InfraEnvsService = {
-  async getInfraEnvId(clusterId: Cluster['id'], cpuArchitecture: CpuArchitecture): Promise<string> {
+  async getInfraEnvId(
+    clusterId: Cluster['id'],
+    cpuArchitecture: CpuArchitecture | undefined,
+  ): Promise<string> {
     let infraEnvId = InfraEnvIdsCacheService.getInfraEnvId(clusterId, cpuArchitecture);
     if (infraEnvId === null) {
       const { data: infraEnvs } = await InfraEnvsAPI.list(clusterId);
@@ -14,7 +17,9 @@ const InfraEnvsService = {
       if (!infraEnvId) {
         InfraEnvIdsCacheService.removeInfraEnvId(clusterId, cpuArchitecture);
         throw new Error(
-          `No InfraEnv could be found for clusterId: ${clusterId} and architecture ${cpuArchitecture}`,
+          `No InfraEnv could be found for clusterId: ${clusterId} and architecture ${
+            cpuArchitecture || ''
+          }`,
         );
       }
     }
