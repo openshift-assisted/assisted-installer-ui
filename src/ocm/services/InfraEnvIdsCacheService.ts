@@ -1,6 +1,6 @@
 import { Cluster, CpuArchitecture, InfraEnv, SupportedCpuArchitectures } from '../../common';
 
-const CACHE_KEY = 'infra-env-ids-cache';
+const CACHE_KEY = 'infra-env-ids-cache-v2';
 
 type ClusterInfraEnvIds = Partial<Record<CpuArchitecture, InfraEnv['id']>>;
 type InfraEnvCache = Record<Cluster['id'], ClusterInfraEnvIds>;
