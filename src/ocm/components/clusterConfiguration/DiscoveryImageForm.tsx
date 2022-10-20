@@ -20,17 +20,16 @@ type DiscoveryImageFormProps = {
   cluster: Cluster;
   onCancel: () => void;
   onSuccess: () => Promise<void>;
+  cpuArchitecture: CpuArchitecture;
 };
 
-const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
+const DiscoveryImageForm = ({
   cluster,
   onCancel,
   onSuccess,
-}) => {
-  const { infraEnv, error: infraEnvError } = useInfraEnv(
-    cluster.id,
-    CpuArchitecture.USE_DAY1_ARCHITECTURE,
-  );
+  cpuArchitecture,
+}: DiscoveryImageFormProps) => {
+  const { infraEnv, error: infraEnvError } = useInfraEnv(cluster.id, cpuArchitecture);
   const cancelSourceRef = React.useRef<CancelTokenSource>();
   const dispatch = useDispatch();
   const ocmPullSecret = usePullSecret();

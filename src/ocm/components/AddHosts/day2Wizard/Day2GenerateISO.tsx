@@ -16,11 +16,16 @@ export const Day2GenerateISO = () => {
   const onImageReady = React.useCallback(async () => {
     await getIsoImageUrl(cluster.id, wizardContext.selectedCpuArchitecture);
     wizardContext.moveNext();
-  }, [cluster.id, wizardContext, getIsoImageUrl]);
+  }, [cluster?.id, wizardContext, getIsoImageUrl]);
 
   return (
     <ClusterWizardStep navigation={<Day2WizardNav />}>
-      <DiscoveryImageForm cluster={cluster} onCancel={close} onSuccess={onImageReady} />
+      <DiscoveryImageForm
+        cluster={cluster}
+        cpuArchitecture={wizardContext.selectedCpuArchitecture}
+        onCancel={close}
+        onSuccess={onImageReady}
+      />
     </ClusterWizardStep>
   );
 };
