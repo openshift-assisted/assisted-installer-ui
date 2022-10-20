@@ -79,7 +79,12 @@ export const DiscoveryImageModal = () => {
           isoDownloadUrl={isoDownloadUrl}
         />
       ) : (
-        <DiscoveryImageForm cluster={cluster} onCancel={close} onSuccess={onImageReady} />
+        <DiscoveryImageForm
+          cluster={cluster}
+          onCancel={close}
+          onSuccess={onImageReady}
+          cpuArchitecture={CpuArchitecture.USE_DAY1_ARCHITECTURE}
+        />
       )}
     </Modal>
   );
