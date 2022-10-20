@@ -1,12 +1,9 @@
-import { InfraEnvCreateParams, Cluster, InfraEnv, CpuArchitecture } from '../../common';
+import { Cluster, CpuArchitecture, InfraEnvCreateParams } from '../../common';
 import { InfraEnvsAPI } from './apis';
 import InfraEnvIdsCacheService from './InfraEnvIdsCacheService';
 
 const InfraEnvsService = {
-  async getInfraEnvId(
-    clusterId: Cluster['id'],
-    cpuArchitecture: CpuArchitecture | undefined,
-  ): Promise<string> {
+  async getInfraEnvId(clusterId: Cluster['id'], cpuArchitecture: CpuArchitecture): Promise<string> {
     let infraEnvId = InfraEnvIdsCacheService.getInfraEnvId(clusterId, cpuArchitecture);
     if (infraEnvId === null) {
       const { data: infraEnvs } = await InfraEnvsAPI.list(clusterId);
@@ -25,11 +22,11 @@ const InfraEnvsService = {
     }
     return infraEnvId;
   },
-
-  async getAllInfraEnvIds(clusterId: Cluster['id']): Promise<string[]> {
-    const { data: infraEnvs } = await InfraEnvsAPI.list(clusterId);
-    return infraEnvs.map((infraEnv) => infraEnv.id);
-  },
+  //
+  // async getAllInfraEnvIds(clusterId: Cluster['id']): Promise<string[]> {
+  //   const { data: infraEnvs } = await InfraEnvsAPI.list(clusterId);
+  //   return infraEnvs.map((infraEnv) => infraEnv.id);
+  // },
 
   async create(params: InfraEnvCreateParams) {
     if (!params.clusterId) {
@@ -42,15 +39,17 @@ const InfraEnvsService = {
       throw new Error('API returned no ID for the underlying InfraEnv');
     }
 
-    InfraEnvIdsCacheService.setItem(params.clusterId, infraEnv.id);
+    InfraEnvIdsCacheService.setInfraEnvs(params.clusterId, [infraEnv]);
   },
 
-  removeAll(clusterId: Cluster['id'], infraEnvIds: InfraEnv['id'][]) {
-    const promises = [];
-    for (const infraEnvId of infraEnvIds) {
-      promises.push(InfraEnvsAPI.deregister(infraEnvId));
-    }
-    InfraEnvIdsCacheService.removeItem(clusterId);
+  async removeAll(clusterId: Cluster['id']) {
+    const { data: infraEnvs } = await InfraEnvsAPI.list(clusterId);
+
+    const promises = infraEnvs.map((infraEnv) => {
+      return InfraEnvsAPI.deregister(infraEnv.id);
+    });
+
+    InfraEnvIdsCacheService.removeInfraEnvId(clusterId, CpuArchitecture.DAY1_ARCHITECTURE);
 
     return Promise.all(promises);
   },

@@ -1,6 +1,6 @@
 import { Cluster, CpuArchitecture, InfraEnv, SupportedCpuArchitectures } from '../../common';
 
-const CACHE_KEY = 'infra-env-ids-cache';
+const CACHE_KEY = 'infra-env-ids-cache-v2';
 
 type ClusterInfraEnvIds = Partial<Record<CpuArchitecture, InfraEnv['id']>>;
 type InfraEnvCache = Record<Cluster['id'], ClusterInfraEnvIds>;
@@ -21,8 +21,8 @@ const read = (): InfraEnvCache => {
 };
 
 type InfraEnvStorage = Omit<Storage, 'getItem' | 'removeItem' | 'setItem'> & {
-  getInfraEnvId(clusterId: string, cpuArchitecture: CpuArchitecture | undefined): string | null;
-  removeInfraEnvId(clusterId: string, cpuArchitecture: CpuArchitecture | undefined): void;
+  getInfraEnvId(clusterId: string, cpuArchitecture: CpuArchitecture): string | null;
+  removeInfraEnvId(clusterId: string, cpuArchitecture: CpuArchitecture): void;
   setInfraEnvs(clusterId: string, infraEnvs: InfraEnv[]): void;
 };
 
@@ -41,7 +41,7 @@ const InfraEnvIdsCacheService: InfraEnvStorage = {
     localStorage.removeItem(CACHE_KEY);
   },
 
-  getInfraEnvId(clusterId: string, cpuArchitecture: CpuArchitecture | undefined): string | null {
+  getInfraEnvId(clusterId: string, cpuArchitecture: CpuArchitecture): string | null {
     if (!clusterId || !cpuArchitecture) {
       return null;
     }
@@ -51,7 +51,7 @@ const InfraEnvIdsCacheService: InfraEnvStorage = {
     if (!clusterInfraEnvs) {
       return null;
     }
-    if (cpuArchitecture) {
+    if (cpuArchitecture !== CpuArchitecture.DAY1_ARCHITECTURE) {
       return clusterInfraEnvs[cpuArchitecture] || null;
     }
 
@@ -68,13 +68,13 @@ const InfraEnvIdsCacheService: InfraEnvStorage = {
     );
   },
 
-  removeInfraEnvId(clusterId: string, cpuArchitecture: CpuArchitecture | undefined): void {
+  removeInfraEnvId(clusterId: string, cpuArchitecture: CpuArchitecture): void {
     if (!clusterId) {
       return;
     }
 
     const cache = read();
-    if (cpuArchitecture === undefined) {
+    if (cpuArchitecture === CpuArchitecture.DAY1_ARCHITECTURE) {
       delete cache[clusterId];
     } else if (cache[clusterId]) {
       delete cache[clusterId][cpuArchitecture];
