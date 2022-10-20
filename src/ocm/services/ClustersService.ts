@@ -28,13 +28,11 @@ const ClustersService = {
   async remove(clusterId: Cluster['id']) {
     const { data: cluster } = await ClustersAPI.get(clusterId);
     const hosts = cluster.hosts ?? [];
-    // All hosts appearing in cluster.hosts must have an infraEnvId value
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const infraEnvIdsList = hosts.map((host) => host.infraEnvId!);
 
-    // TODO figure out if we can link the infraEnv from the redux store (based on arch + Day1/2) and not via the hosts
-    await HostsService.removeAll(hosts);
-    await InfraEnvsService.removeAll(clusterId, infraEnvIdsList);
+    if (hosts.length > 0) {
+      await HostsService.removeAll(hosts);
+    }
+    await InfraEnvsService.removeAll(clusterId);
     await ClustersAPI.deregister(clusterId);
   },
 

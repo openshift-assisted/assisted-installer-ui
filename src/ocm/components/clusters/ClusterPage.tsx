@@ -1,21 +1,22 @@
 import React from 'react';
-import { Link, RouteComponentProps, Redirect } from 'react-router-dom';
+import { Link, Redirect, RouteComponentProps } from 'react-router-dom';
 import {
+  Button,
+  ButtonVariant,
   PageSection,
   PageSectionVariants,
-  ButtonVariant,
-  Button,
-  TextContent,
   Text,
+  TextContent,
 } from '@patternfly/react-core';
 import {
-  ResourceUIState,
-  Cluster,
-  ErrorState,
-  LoadingState,
-  AlertsContextProvider,
   AddHostsContextProvider,
+  AlertsContextProvider,
+  Cluster,
+  CpuArchitecture,
+  ErrorState,
   InfraEnv,
+  LoadingState,
+  ResourceUIState,
 } from '../../../common';
 import ClusterDetail from '../clusterDetail/ClusterDetail';
 import CancelInstallationModal from '../clusterDetail/CancelInstallationModal';
@@ -47,7 +48,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
     isLoading: infraEnvLoading,
     error: infraEnvError,
     updateInfraEnv,
-  } = useInfraEnv(clusterId);
+  } = useInfraEnv(clusterId, CpuArchitecture.DAY1_ARCHITECTURE);
   const errorStateActions = [];
   if (!isSingleClusterMode()) {
     errorStateActions.push(
