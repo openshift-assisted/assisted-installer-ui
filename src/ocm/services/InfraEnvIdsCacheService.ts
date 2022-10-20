@@ -1,4 +1,4 @@
-import { Cluster, CpuArchitecture, InfraEnv } from '../../common';
+import { Cluster, CpuArchitecture, InfraEnv, SupportedCpuArchitectures } from '../../common';
 
 const CACHE_KEY = 'infra-env-ids-cache';
 
@@ -21,8 +21,8 @@ const read = (): InfraEnvCache => {
 };
 
 type InfraEnvStorage = Omit<Storage, 'getItem' | 'removeItem' | 'setItem'> & {
-  getInfraEnvId(clusterId: string, cpuArchitecture: CpuArchitecture): string | null;
-  removeInfraEnvId(clusterId: string, cpuArchitecture: CpuArchitecture): void;
+  getInfraEnvId(clusterId: string, cpuArchitecture: CpuArchitecture | undefined): string | null;
+  removeInfraEnvId(clusterId: string, cpuArchitecture: CpuArchitecture | undefined): void;
   setInfraEnvs(clusterId: string, infraEnvs: InfraEnv[]): void;
 };
 
@@ -41,7 +41,7 @@ const InfraEnvIdsCacheService: InfraEnvStorage = {
     localStorage.removeItem(CACHE_KEY);
   },
 
-  getInfraEnvId(clusterId: string, cpuArchitecture: CpuArchitecture): string | null {
+  getInfraEnvId(clusterId: string, cpuArchitecture: CpuArchitecture | undefined): string | null {
     if (!clusterId || !cpuArchitecture) {
       return null;
     }
@@ -51,16 +51,32 @@ const InfraEnvIdsCacheService: InfraEnvStorage = {
     if (!clusterInfraEnvs) {
       return null;
     }
-    return clusterInfraEnvs[cpuArchitecture] || null;
+    if (cpuArchitecture) {
+      return clusterInfraEnvs[cpuArchitecture] || null;
+    }
+
+    const architectures = SupportedCpuArchitectures.filter((arch) => {
+      return clusterInfraEnvs[arch];
+    });
+
+    if (architectures.length === 1) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      return clusterInfraEnvs[architectures[0]]!;
+    }
+    throw new Error(
+      `More than one infraEnv found for cluster ${clusterId} without specified architecture`,
+    );
   },
 
-  removeInfraEnvId(clusterId: string, cpuArchitecture: CpuArchitecture): void {
+  removeInfraEnvId(clusterId: string, cpuArchitecture: CpuArchitecture | undefined): void {
     if (!clusterId) {
       return;
     }
 
     const cache = read();
-    if (cache[clusterId]) {
+    if (cpuArchitecture === undefined) {
+      delete cache[clusterId];
+    } else if (cache[clusterId]) {
       delete cache[clusterId][cpuArchitecture];
     }
     update(cache);
