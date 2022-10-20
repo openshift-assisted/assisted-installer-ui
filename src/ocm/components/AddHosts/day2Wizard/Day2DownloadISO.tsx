@@ -18,7 +18,8 @@ export const Day2DownloadISO = () => {
         onReset={() => wizardContext.moveBack()}
         clusterName={cluster?.name || 'cluster'}
         isSNO={isSNO(cluster)}
-        isoDownloadUrl={'url'}
+        isoDownloadUrl={wizardContext.selectedIsoUrl}
+        cpuArchitecture={wizardContext.selectedCpuArchitecture}
       />
     </ClusterWizardStep>
   );

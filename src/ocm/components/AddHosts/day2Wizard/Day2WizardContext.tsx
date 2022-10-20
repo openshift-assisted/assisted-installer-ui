@@ -7,6 +7,8 @@ import { CpuArchitecture } from '../../../../common';
 export type Day2WizardContextType = {
   currentStepId: Day2WizardStepsType;
   setCurrentStepId(stepId: Day2WizardStepsType): void;
+  selectedIsoUrl: string;
+  setSelectedIsoUrl: (isoUrl: string) => void;
   selectedCpuArchitecture: CpuArchitecture;
   setSelectedCpuArchitecture(cpuArchitecture: CpuArchitecture): void;
   moveBack(): void;
