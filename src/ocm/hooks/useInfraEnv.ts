@@ -26,7 +26,7 @@ export default function useInfraEnv(clusterId: Cluster['id'], cpuArchitecture: C
         throw 'updateInfraEnv should not be called before infra env was loaded';
       }
       InfraEnvsAPI.abortLastGetRequest();
-      // TODO do we need to propagate the updates across all the infraEnvs of the same cluster??
+      // TODO (multi-arch) do we need to propagate the updates across all the infraEnvs of the same cluster??
       const { data } = await InfraEnvsAPI.update(infraEnvId, infraEnvUpdateParams);
       setInfraEnv(data);
       return data;
