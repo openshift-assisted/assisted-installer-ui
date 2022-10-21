@@ -17,6 +17,16 @@ import { AddHosts } from '../AddHosts';
 import { HostsClusterDetailTabProps } from './types';
 import useDay1CpuArchitecture from '../../hooks/useDay1CpuArchitecture';
 
+const getUpdateDay2ClusterWithVersion = (
+  day2Cluster: Cluster,
+  openshiftVersion: Cluster['openshiftVersion'],
+) => {
+  return {
+    ...day2Cluster,
+    openshiftVersion,
+  };
+};
+
 export const HostsClusterDetailTabContent = ({
   cluster,
   isVisible,
@@ -138,7 +148,7 @@ export const HostsClusterDetailTabContent = ({
             day1CpuArchitecture,
             isMultiCpuArchSupported(cluster.openshift_version),
           );
-          setDay2Cluster(day2Cluster);
+          setDay2Cluster(getUpdateDay2ClusterWithVersion(day2Cluster, cluster.openshift_version));
         } catch (e) {
           handleApiError(e);
           if (isApiError(e)) {
@@ -179,8 +189,10 @@ export const HostsClusterDetailTabContent = ({
       return;
     }
     try {
-      const cluster = await Day2ClusterService.fetchClusterById(day2Cluster.id);
-      setDay2Cluster(cluster);
+      const updatedDay2Cluster = await Day2ClusterService.fetchClusterById(day2Cluster.id);
+      setDay2Cluster(
+        getUpdateDay2ClusterWithVersion(updatedDay2Cluster, cluster?.openshift_version),
+      );
     } catch (e) {
       handleApiError(e);
       setError(
