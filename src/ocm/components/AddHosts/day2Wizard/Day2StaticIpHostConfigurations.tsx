@@ -5,7 +5,7 @@ import { useDay2WizardContext } from './Day2WizardContext';
 import { HostsNetworkConfigurationType } from '../../../services';
 import { getFieldId, RadioField } from '../../../../common';
 
-type WipValues = Record<string, unknown>; // TODO (multi-arch) define
+type WipValues = Record<string, string>; // TODO (multi-arch) define
 
 const Day2StaticIpHostConfigurations = () => {
   const { setFieldValue } = useFormikContext<WipValues>();

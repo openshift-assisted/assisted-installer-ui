@@ -19,8 +19,10 @@ type Day2ClusterDetailValues = {
 
 export const Day2ClusterDetails = () => {
   const { day2DiscoveryImageDialog } = useModalDialogsContext();
+
   const wizardContext = useDay2WizardContext();
-  const { close } = day2DiscoveryImageDialog;
+  const { close, data } = day2DiscoveryImageDialog;
+  const cluster = data.cluster;
 
   const handleSubmit = React.useCallback(
     (values: Day2ClusterDetailValues) => {
@@ -38,7 +40,7 @@ export const Day2ClusterDetails = () => {
     <Formik
       initialValues={{
         // TODO (multi-arch) improve to set the default value equal to the cpuArchitecture of Day1 cluster
-        cpuArchitecture: CpuArchitecture.x86,
+        cpuArchitecture: (cluster?.cpuArchitecture as CpuArchitecture) || CpuArchitecture.x86,
       }}
       onSubmit={handleSubmit}
     >
