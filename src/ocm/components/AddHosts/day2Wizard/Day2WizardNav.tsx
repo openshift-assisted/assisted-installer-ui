@@ -1,7 +1,8 @@
 import React from 'react';
 import { WizardNav, WizardNavItem } from '@patternfly/react-core';
-import { Day2WizardStepsType, day2WizardStepNames } from './constants';
+import { Day2WizardStepsType, day2WizardStepNames, staticIpFormViewSubSteps } from './constants';
 import { useDay2WizardContext } from './Day2WizardContext';
+import { isStaticIpStep } from '../../clusterWizard/wizardTransition';
 
 export const Day2WizardNav = () => {
   const wizardContext = useDay2WizardContext();
@@ -26,32 +27,39 @@ export const Day2WizardNav = () => {
       />
     );
   };
-  //
-  // const getStaticIpFormViewNavItem = (idx: number): React.ReactNode => {
-  //   return (
-  //     <WizardNavItem
-  //       step={idx}
-  //       isExpandable={true}
-  //       content="Static network configurations"
-  //       key="static-network-configuration-form-view"
-  //       isCurrent={isStaticIpStep(wizardContext.currentStepId)}
-  //       isDisabled={isStepIdxAfterCurrent(idx)}
-  //     >
-  //       <WizardNav returnList>
-  //         {staticIpFormViewSubSteps.map((stepId, subIdx) => {
-  //           return getNavItem(idx + subIdx, stepId);
-  //         })}
-  //       </WizardNav>
-  //     </WizardNavItem>
-  //   );
-  // };
+
+  const getStaticIpFormViewNavItem = (idx: number): React.ReactNode => {
+    return (
+      <WizardNavItem
+        step={idx}
+        isExpandable={true}
+        content="Static network configurations"
+        key="static-network-configuration-form-view"
+        isCurrent={isStaticIpStep(wizardContext.currentStepId)}
+        isDisabled={isStepIdxAfterCurrent(idx)}
+      >
+        <WizardNav returnList>
+          {staticIpFormViewSubSteps.map((stepId, subIdx) => {
+            return getNavItem(idx + subIdx, stepId);
+          })}
+        </WizardNav>
+      </WizardNavItem>
+    );
+  };
 
   const getWizardNavItems = (): React.ReactNode[] => {
     const navItems: React.ReactNode[] = [];
     let i = 0;
     while (i < wizardContext.wizardStepIds.length) {
       const stepId = wizardContext.wizardStepIds[i];
-      navItems.push(getNavItem(i++, stepId));
+      if (stepId !== 'static-ip-network-wide-configurations') {
+        navItems.push(getNavItem(i, stepId));
+        i += 1;
+      } else {
+        navItems.push(getStaticIpFormViewNavItem(i));
+        //skip iteration on form view sub steps
+        i += 2;
+      }
     }
     return navItems;
   };
