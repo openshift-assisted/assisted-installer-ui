@@ -4,7 +4,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { AssistedInstallerPermissionTypesListType, Cluster, Host } from '../../../common';
 import { handleApiError } from '../../api/utils';
 import { ResourceUIState } from '../../../common';
-import { ClustersService, HostsService } from '../../services';
+import { ClustersService } from '../../services';
 import { isApiError } from '../../api/types';
 
 export type RetrievalErrorType = {
@@ -28,8 +28,6 @@ export const fetchClusterAsync = createAsyncThunk<
 >('currentCluster/fetchClusterAsync', async (clusterId, { rejectWithValue }) => {
   try {
     const cluster = await ClustersService.get(clusterId);
-    const hosts = await HostsService.listHostsBoundToCluster(clusterId);
-    Object.assign(cluster, { hosts: hosts });
     return cluster;
   } catch (e) {
     handleApiError(e, () => {

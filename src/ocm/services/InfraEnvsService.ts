@@ -1,4 +1,4 @@
-import { InfraEnvCreateParams, Cluster } from '../../common';
+import { InfraEnvCreateParams, Cluster, InfraEnv } from '../../common';
 import { InfraEnvsAPI } from './apis';
 import InfraEnvIdsCacheService from './InfraEnvIdsCacheService';
 
@@ -34,10 +34,14 @@ const InfraEnvsService = {
     InfraEnvIdsCacheService.setItem(params.clusterId, infraEnv.id);
   },
 
-  async delete(clusterId: Cluster['id']) {
-    const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId);
+  removeAll(clusterId: Cluster['id'], infraEnvIds: InfraEnv['id'][]) {
+    const promises = [];
+    for (const infraEnvId of infraEnvIds) {
+      promises.push(InfraEnvsAPI.deregister(infraEnvId));
+    }
     InfraEnvIdsCacheService.removeItem(clusterId);
-    return InfraEnvsAPI.deregister(infraEnvId);
+
+    return Promise.all(promises);
   },
 };
 
