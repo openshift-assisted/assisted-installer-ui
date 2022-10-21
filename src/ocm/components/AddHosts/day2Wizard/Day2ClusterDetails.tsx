@@ -25,6 +25,22 @@ type Day2ClusterDetailValues = {
   hostsNetworkConfigurationType: HostsNetworkConfigurationType;
 };
 
+const getDay2ClusterDetailInitialValues = async (clusterId: Cluster['id']) => {
+  try {
+    const { data: infraEnv } = await InfraEnvsService.getInfraEnv(clusterId, CpuArchitecture.x86);
+
+    return {
+      // TODO (multi-arch) improve to set the default value equal to the cpuArchitecture of Day1 cluster
+      cpuArchitecture: CpuArchitecture.x86,
+      hostsNetworkConfigurationType: infraEnv.staticNetworkConfig
+        ? HostsNetworkConfigurationType.STATIC
+        : HostsNetworkConfigurationType.DHCP,
+    };
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export const Day2ClusterDetails = () => {
   const { day2DiscoveryImageDialog } = useModalDialogsContext();
   const {
@@ -33,15 +49,33 @@ export const Day2ClusterDetails = () => {
   } = day2DiscoveryImageDialog;
   const wizardContext = useDay2WizardContext();
   const day1CpuArchitecture = cluster.cpuArchitecture as CpuArchitecture;
-
   const { isMultiCpuArchSupported } = useOpenshiftVersions();
+  const [initialValues, setInitialValues] = React.useState<Day2ClusterDetailValues>();
+
+  React.useEffect(() => {
+    const doItAsync = async () => {
+      const initialValues = await getDay2ClusterDetailInitialValues(cluster.id);
+      setInitialValues(initialValues);
+    };
+    void doItAsync();
+  }, [cluster.id]);
 
   const handleSubmit = React.useCallback(
-    (values: Day2ClusterDetailValues) => {
-      wizardContext.setSelectedCpuArchitecture(values.cpuArchitecture);
-      wizardContext.moveNext();
+    async (values: Day2ClusterDetailValues) => {
+      try {
+        await InfraEnvsService.updateAll(cluster.id, {
+          staticNetworkConfig:
+            values.hostsNetworkConfigurationType === HostsNetworkConfigurationType.DHCP
+              ? []
+              : getDummyInfraEnvField(),
+        });
+        wizardContext.setSelectedCpuArchitecture(values.cpuArchitecture);
+        wizardContext.moveNext();
+      } catch (error) {
+        handleApiError(error);
+      }
     },
-    [wizardContext],
+    [cluster.id, wizardContext],
   );
 
   const handleOnNext = (submitForm: FormikHelpers<unknown>['submitForm']) => {
@@ -50,14 +84,8 @@ export const Day2ClusterDetails = () => {
 
   const isMultiArch = isMultiCpuArchSupported(cluster.openshiftVersion);
 
-  return (
-    <Formik
-      initialValues={{
-        cpuArchitecture: day1CpuArchitecture || CpuArchitecture.x86,
-        hostsNetworkConfigurationType: HostsNetworkConfigurationType.DHCP,
-      }}
-      onSubmit={handleSubmit}
-    >
+  return initialValues ? (
+    <Formik initialValues={initialValues} onSubmit={handleSubmit}>
       {({ submitForm }) => {
         return (
           <ClusterWizardStep
@@ -99,12 +127,21 @@ export const Day2ClusterDetails = () => {
         );
       }}
     </Formik>
+  ) : (
+    <LoadingState />
   );
 };
 
 const Day2HostConfigurations = () => {
-  const { setFieldValue } = useFormikContext<Day2ClusterDetailValues>();
+  const { values, setFieldValue } = useFormikContext<Day2ClusterDetailValues>();
   const wizardContext = useDay2WizardContext();
+
+  React.useEffect(() => {
+    if (values.hostsNetworkConfigurationType) {
+      wizardContext.onUpdateHostNetworkConfigType(values.hostsNetworkConfigurationType);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const onChangeNetworkType = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -119,10 +156,14 @@ const Day2HostConfigurations = () => {
       isInline
       onChange={onChangeNetworkType}
     >
-      <RadioField name={'hostsNetworkConfigurationType'} value={'dhcp'} label="DHCP only" />
       <RadioField
         name={'hostsNetworkConfigurationType'}
-        value={'static'}
+        value={HostsNetworkConfigurationType.DHCP}
+        label="DHCP only"
+      />
+      <RadioField
+        name={'hostsNetworkConfigurationType'}
+        value={HostsNetworkConfigurationType.STATIC}
         label="Static IP, bridges, and bonds"
       />
     </FormGroup>
