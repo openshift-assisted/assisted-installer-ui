@@ -1,4 +1,4 @@
-import { Cluster, CpuArchitecture, InfraEnvCreateParams } from '../../common';
+import { Cluster, CpuArchitecture, InfraEnvCreateParams, InfraEnvUpdateParams } from '../../common';
 import { InfraEnvsAPI } from './apis';
 import InfraEnvIdsCacheService from './InfraEnvIdsCacheService';
 
@@ -21,6 +21,24 @@ const InfraEnvsService = {
       }
     }
     return infraEnvId;
+  },
+
+  async getInfraEnv(clusterId: Cluster['id'], cpuArchitecture: CpuArchitecture) {
+    const infraEnvId = InfraEnvIdsCacheService.getInfraEnvId(clusterId, cpuArchitecture);
+    if (infraEnvId) {
+      return InfraEnvsAPI.get(infraEnvId);
+    } else {
+      throw new Error(
+        `No InfraEnv could be found for clusterId: ${clusterId} and architecture ${
+          cpuArchitecture || ''
+        }`,
+      );
+    }
+  },
+
+  async getAllInfraEnvIds(clusterId: Cluster['id']): Promise<string[]> {
+    const { data: infraEnvs } = await InfraEnvsAPI.list(clusterId);
+    return infraEnvs.map((infraEnv) => infraEnv.id);
   },
 
   async create(params: InfraEnvCreateParams) {
@@ -46,6 +64,12 @@ const InfraEnvsService = {
 
     InfraEnvIdsCacheService.removeInfraEnvId(clusterId, CpuArchitecture.USE_DAY1_ARCHITECTURE);
 
+    return Promise.all(promises);
+  },
+
+  async updateAll(clusterId: Cluster['id'], params: InfraEnvUpdateParams) {
+    const infraEnvIds = await InfraEnvsService.getAllInfraEnvIds(clusterId);
+    const promises = infraEnvIds.map((id) => InfraEnvsAPI.update(id, params));
     return Promise.all(promises);
   },
 };
