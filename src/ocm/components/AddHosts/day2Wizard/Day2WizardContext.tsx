@@ -23,7 +23,7 @@ const Day2WizardContext = React.createContext<Day2WizardContextType | null>(null
 export const useDay2WizardContext = () => {
   const context = React.useContext(Day2WizardContext);
   if (!context) {
-    throw new Error('useClusterWizardContext must be used within ClusterWizardContextProvider');
+    throw new Error('useDay2WizardContext must be used within Day2WizardContextProvider');
   }
   return context;
 };
