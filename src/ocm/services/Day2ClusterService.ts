@@ -43,7 +43,15 @@ const Day2ClusterService = {
       return Day2ClusterService.fetchClusterById(day2Clusters[0].id);
     } else {
       // TODO (multi-arch) https://issues.redhat.com/browse/MGMT-10439 we need to retrieve the cpuArchitecture of the Day1 cluster
-      const cpuArchitectures = isMultiArch ? SupportedCpuArchitectures : [CpuArchitecture.x86];
+      let cpuArchitectures;
+      if (isMultiArch) {
+        cpuArchitectures = SupportedCpuArchitectures;
+      } else {
+        const day1CpuArchitecture = await InfraEnvsService.getClusterCpuArchitecture(
+          ocmCluster.external_id,
+        );
+        cpuArchitectures = [day1CpuArchitecture];
+      }
       return Day2ClusterService.createCluster(
         openshiftClusterId,
         ocmCluster.display_name || ocmCluster.name || openshiftClusterId,
