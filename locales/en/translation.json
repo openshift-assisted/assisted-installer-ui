@@ -566,6 +566,7 @@
   "ai:The cluster can not be installed yet because there are no available hosts found. To continue:": "The cluster can not be installed yet because there are no available hosts found. To continue:",
   "ai:The cluster has 0 hosts. No workloads will be able to run.": "The cluster has 0 hosts. No workloads will be able to run.",
   "ai:The cluster is not ready for installation.": "The cluster is not ready for installation.",
+  "ai:The cluster is not ready yet. Some hosts have an ineligible name. To change the hostname, click on it.": "The cluster is not ready yet. Some hosts have an ineligible name. To change the hostname, click on it.",
   "ai:The DHCP server failed to allocate the IP": "The DHCP server failed to allocate the IP",
   "ai:The file is too big. Upload a file up to 12 MiB.": "The file is too big. Upload a file up to 12 MiB.",
   "ai:The following fields are invalid or missing": "The following fields are invalid or missing",

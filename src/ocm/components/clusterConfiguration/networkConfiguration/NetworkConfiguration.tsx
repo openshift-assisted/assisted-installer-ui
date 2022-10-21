@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react';
+import React from 'react';
 import { useFormikContext } from 'formik';
 import { useSelector } from 'react-redux';
 import { Alert, AlertVariant, Grid, Tooltip } from '@patternfly/react-core';
@@ -14,7 +14,6 @@ import {
   isSNO,
   canBeDualStack,
   canSelectNetworkTypeSDN,
-  getDefaultNetworkType,
   clusterNetworksEqual,
   DUAL_STACK,
   serviceNetworksEqual,
@@ -30,6 +29,7 @@ import AdvancedNetworkFields from './AdvancedNetworkFields';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { selectCurrentClusterPermissionsState } from '../../../selectors';
 import { OcmCheckbox } from '../../ui/OcmFormFields';
+import { NetworkTypeControlGroup } from '../../../../common/components/clusterWizard/networkingSteps/NetworkTypeControlGroup';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   hostSubnets: HostSubnets;
@@ -58,11 +58,8 @@ const vmsAlert = (
 const isAdvNetworkConf = (
   cluster: Cluster,
   defaultNetworkValues: Pick<ClusterDefaultConfig, 'clusterNetworksIpv4' | 'serviceNetworksIpv4'>,
-  defaultNetworkType: string,
 ) =>
   !(
-    !!cluster.networkType &&
-    cluster.networkType === defaultNetworkType &&
     serviceNetworksEqual(
       cluster.serviceNetworks || [],
       defaultNetworkValues.serviceNetworksIpv4 || [],
@@ -122,8 +119,7 @@ const NetworkConfiguration = ({
   isVipDhcpAllocationDisabled,
   defaultNetworkSettings,
   hideManagedNetworking,
-  children,
-}: PropsWithChildren<NetworkConfigurationProps>) => {
+}: NetworkConfigurationProps) => {
   const { t } = useTranslation();
   const featureSupportLevelData = useFeatureSupportLevel();
   const { setFieldValue, values, validateField } = useFormikContext<NetworkConfigurationValues>();
@@ -139,15 +135,12 @@ const NetworkConfiguration = ({
   const shouldUpdateAdvConf = !isViewerMode && isDualStack && !isUserManagedNetworking;
   const isDualStackSelectable = React.useMemo(() => canBeDualStack(hostSubnets), [hostSubnets]);
 
-  const { defaultNetworkType, isSDNSelectable } = React.useMemo(() => {
-    return {
-      defaultNetworkType: getDefaultNetworkType(isSNOCluster, isDualStack),
-      isSDNSelectable: canSelectNetworkTypeSDN(isSNOCluster, isDualStack),
-    };
+  const isSDNSelectable = React.useMemo(() => {
+    return canSelectNetworkTypeSDN(isSNOCluster, isDualStack);
   }, [isSNOCluster, isDualStack]);
 
   const [isAdvanced, setAdvanced] = React.useState(
-    isDualStack || isAdvNetworkConf(cluster, defaultNetworkSettings, defaultNetworkType),
+    isDualStack || isAdvNetworkConf(cluster, defaultNetworkSettings),
   );
 
   React.useEffect(() => {
@@ -193,13 +186,11 @@ const NetworkConfiguration = ({
             : defaultNetworkSettings.serviceNetworksIpv4,
           true,
         );
-        setFieldValue('networkType', getDefaultNetworkType(isSNOCluster, isDualStack));
       }
     },
     [
       setFieldValue,
       isDualStack,
-      isSNOCluster,
       defaultNetworkSettings.clusterNetworksDualstack,
       defaultNetworkSettings.clusterNetworksIpv4,
       defaultNetworkSettings.serviceNetworksDualstack,
@@ -237,8 +228,6 @@ const NetworkConfiguration = ({
         <UserManagedNetworkingTextContent shouldDisplayLoadBalancersBullet={isMultiNodeCluster} />
       )}
 
-      {children}
-
       {!isUserManagedNetworking &&
         !!clusterFeatureSupportLevels &&
         clusterFeatureSupportLevels['CLUSTER_MANAGED_NETWORKING_WITH_VMS'] === 'unsupported' &&
@@ -248,10 +237,10 @@ const NetworkConfiguration = ({
         <StackTypeControlGroup
           clusterId={cluster.id}
           isDualStackSelectable={isDualStackSelectable}
-          isSNO={isSNOCluster}
           hostSubnets={hostSubnets}
         />
       )}
+      <NetworkTypeControlGroup isDisabled={isViewerMode} isSDNSelectable={isSDNSelectable} />
 
       {!(isUserManagedNetworking && isMultiNodeCluster) && (
         <AvailableSubnetsControl
@@ -283,7 +272,7 @@ const NetworkConfiguration = ({
         />
       </Tooltip>
 
-      {isAdvanced && <AdvancedNetworkFields isSDNSelectable={isSDNSelectable} />}
+      {isAdvanced && <AdvancedNetworkFields />}
     </Grid>
   );
 };
