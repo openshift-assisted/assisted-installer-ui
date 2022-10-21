@@ -8,7 +8,7 @@ const InfraEnvsService = {
     if (infraEnvId === null) {
       const { data: infraEnvs } = await InfraEnvsAPI.list(clusterId);
       if (infraEnvs.length > 0) {
-        InfraEnvIdsCacheService.setInfraEnvs(clusterId, infraEnvs);
+        InfraEnvIdsCacheService.updateInfraEnvs(clusterId, infraEnvs);
         infraEnvId = InfraEnvIdsCacheService.getInfraEnvId(clusterId, cpuArchitecture);
       }
       if (!infraEnvId) {
@@ -34,8 +34,7 @@ const InfraEnvsService = {
       throw new Error('API returned no ID for the underlying InfraEnv');
     }
 
-    // TODO (multi-arch) should not overwrite all of the cache
-    InfraEnvIdsCacheService.setInfraEnvs(params.clusterId, [infraEnv]);
+    InfraEnvIdsCacheService.updateInfraEnvs(params.clusterId, [infraEnv]);
   },
 
   async removeAll(clusterId: Cluster['id']) {
