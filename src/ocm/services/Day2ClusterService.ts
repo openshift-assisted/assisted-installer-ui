@@ -1,7 +1,7 @@
 import { InfraEnvsService } from '.';
-import { OcmClusterType } from '../components';
 import { ClustersAPI } from './apis';
 import { CpuArchitecture, Cluster, SupportedCpuArchitectures } from '../../common';
+import { OcmClusterType } from '../components/AddHosts/types';
 
 const Day2ClusterService = {
   getOpenshiftClusterId(ocmCluster?: OcmClusterType) {
