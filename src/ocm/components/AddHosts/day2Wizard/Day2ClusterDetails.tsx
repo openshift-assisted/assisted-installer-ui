@@ -40,7 +40,7 @@ export const Day2ClusterDetails = () => {
     <Formik
       initialValues={{
         // TODO (multi-arch) improve to set the default value equal to the cpuArchitecture of Day1 cluster
-        cpuArchitecture: (cluster?.cpuArchitecture as CpuArchitecture) || CpuArchitecture.x86,
+        cpuArchitecture: CpuArchitecture.x86,
       }}
       onSubmit={handleSubmit}
     >
