@@ -8,7 +8,7 @@ const InfraEnvsService = {
     if (infraEnvId === null) {
       const { data: infraEnvs } = await InfraEnvsAPI.list(clusterId);
       if (infraEnvs.length > 0) {
-        InfraEnvIdsCacheService.setInfraEnvs(clusterId, infraEnvs);
+        InfraEnvIdsCacheService.updateInfraEnvs(clusterId, infraEnvs);
         infraEnvId = InfraEnvIdsCacheService.getInfraEnvId(clusterId, cpuArchitecture);
       }
       if (!infraEnvId) {
@@ -22,11 +22,23 @@ const InfraEnvsService = {
     }
     return infraEnvId;
   },
-  //
-  // async getAllInfraEnvIds(clusterId: Cluster['id']): Promise<string[]> {
-  //   const { data: infraEnvs } = await InfraEnvsAPI.list(clusterId);
-  //   return infraEnvs.map((infraEnv) => infraEnv.id);
-  // },
+
+  /**
+   * This function can only be used to return the Cpu Architecture for a Day1 cluster.
+   * It will check the infraEnvs for the cluster, and expect only 1 to exist
+   * @param clusterId Day1 clusterId
+   */
+  async getClusterCpuArchitecture(clusterId: Cluster['id']): Promise<CpuArchitecture> {
+    const { data: infraEnvs } = await InfraEnvsAPI.list(clusterId);
+    if (infraEnvs.length === 1) {
+      const cpuArchitecture = infraEnvs[0].cpuArchitecture as CpuArchitecture;
+      return cpuArchitecture || CpuArchitecture.x86;
+    } else {
+      throw new Error(
+        `A Day1 cluster should have exactly 1 infraEnv, but ${infraEnvs.length} were found`,
+      );
+    }
+  },
 
   async create(params: InfraEnvCreateParams) {
     if (!params.clusterId) {
@@ -39,7 +51,7 @@ const InfraEnvsService = {
       throw new Error('API returned no ID for the underlying InfraEnv');
     }
 
-    InfraEnvIdsCacheService.setInfraEnvs(params.clusterId, [infraEnv]);
+    InfraEnvIdsCacheService.updateInfraEnvs(params.clusterId, [infraEnv]);
   },
 
   async removeAll(clusterId: Cluster['id']) {

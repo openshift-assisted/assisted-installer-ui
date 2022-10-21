@@ -172,16 +172,13 @@ export const HostsClusterDetailTabContent = ({
   ]);
 
   const resetCluster = React.useCallback(async () => {
-    console.log('%c will reset the cluster??', 'font-size: 16px; color: blue', !!day2Cluster);
     if (!day2Cluster) {
       return;
     }
     try {
-      console.log('%c will reset the cluster', 'font-size: 16px; color: blue', day2Cluster.id);
       const cluster = await Day2ClusterService.fetchClusterById(day2Cluster.id);
       setDay2Cluster(cluster);
     } catch (e) {
-      console.log('%c error in cluster reset', 'font-size: 16px; color: red', e);
       handleApiError(e);
       setError(
         <>
