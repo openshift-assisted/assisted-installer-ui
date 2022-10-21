@@ -22,11 +22,6 @@ const InfraEnvsService = {
     }
     return infraEnvId;
   },
-  //
-  // async getAllInfraEnvIds(clusterId: Cluster['id']): Promise<string[]> {
-  //   const { data: infraEnvs } = await InfraEnvsAPI.list(clusterId);
-  //   return infraEnvs.map((infraEnv) => infraEnv.id);
-  // },
 
   async create(params: InfraEnvCreateParams) {
     if (!params.clusterId) {
@@ -39,6 +34,7 @@ const InfraEnvsService = {
       throw new Error('API returned no ID for the underlying InfraEnv');
     }
 
+    // TODO (multi-arch) should not overwrite all of the cache
     InfraEnvIdsCacheService.setInfraEnvs(params.clusterId, [infraEnv]);
   },
 
