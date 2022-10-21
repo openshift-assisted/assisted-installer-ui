@@ -57,7 +57,7 @@ const SkipFormattingCheckbox: React.FC<SkipFormattingProps> = ({
       content={'Installation disks are always being formatted'}
     >
       <Checkbox
-        id={`select-formatted-${index}`}
+        id={`select-formatted-${host.id}-${index}`}
         isChecked={
           isInstallationDisk(diskId, installationDiskId) || !isDiskSkipFormatting(host, diskId)
         }
