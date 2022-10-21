@@ -8,13 +8,17 @@ import {
   WizardFooter,
   getFieldId,
   RadioField,
+  Cluster,
+  LoadingState,
 } from '../../../../common';
-import { HostsNetworkConfigurationType } from '../../../services';
+import { HostsNetworkConfigurationType, InfraEnvsService } from '../../../services';
 import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
 import { useDay2WizardContext } from './Day2WizardContext';
 import { Day2WizardNav } from './Day2WizardNav';
 import DiscoverImageCpuArchitectureControlGroup from '../../../../common/components/clusterConfiguration/DiscoveryImageCpuArchitectureControlGroup';
 import { useOpenshiftVersions } from '../../../hooks';
+import { handleApiError } from '../../../api';
+import { getDummyInfraEnvField } from '../../clusterConfiguration/staticIp/data/dummyData';
 
 type Day2ClusterDetailValues = {
   cpuArchitecture: CpuArchitecture;
