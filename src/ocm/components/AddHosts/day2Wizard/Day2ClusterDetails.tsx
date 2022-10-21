@@ -2,6 +2,7 @@ import React from 'react';
 import { Stack, StackItem } from '@patternfly/react-core';
 import { Form, Formik, FormikHelpers } from 'formik';
 import {
+  AddHostsContext,
   ClusterWizardStep,
   ClusterWizardStepHeader,
   CpuArchitecture,
@@ -19,6 +20,7 @@ type Day2ClusterDetailValues = {
 
 export const Day2ClusterDetails = () => {
   const { day2DiscoveryImageDialog } = useModalDialogsContext();
+  const { day1CpuArchitecture } = React.useContext(AddHostsContext);
 
   const wizardContext = useDay2WizardContext();
   const { close } = day2DiscoveryImageDialog;
@@ -38,8 +40,7 @@ export const Day2ClusterDetails = () => {
   return (
     <Formik
       initialValues={{
-        // TODO (multi-arch) improve to set the default value equal to the cpuArchitecture of Day1 cluster
-        cpuArchitecture: CpuArchitecture.x86,
+        cpuArchitecture: day1CpuArchitecture || CpuArchitecture.x86,
       }}
       onSubmit={handleSubmit}
     >
