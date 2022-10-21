@@ -13,8 +13,10 @@ import InformationAndAlerts from '../clusterConfiguration/InformationAndAlerts';
 import { Cluster, isArmArchitecture } from '../../../common';
 import Day2WizardContextProvider from './day2Wizard/Day2WizardContextProvider';
 import { Day2DiscoveryImageModalButton, Day2Wizard } from './day2Wizard/Day2Wizard';
+import { useOpenshiftVersions } from '../../hooks';
 
 const InventoryAddHosts = ({ cluster }: { cluster?: Cluster }) => {
+  const { isMultiCpuArchSupported } = useOpenshiftVersions();
   return !cluster ? null : (
     <Stack hasGutter>
       <StackItem>
@@ -39,6 +41,16 @@ const InventoryAddHosts = ({ cluster }: { cluster?: Cluster }) => {
             title="Only hosts that have arm64 cpu architecture can be added to this cluster."
             variant={AlertVariant.info}
             data-testid="arm-architecture-alert"
+            isInline
+          />
+        </StackItem>
+      )}
+      {cluster.openshiftVersion && isMultiCpuArchSupported(cluster.openshiftVersion) && (
+        <StackItem>
+          <Alert
+            title="The original cluster hosts CPU architecture. You can add hosts that are using either x86 or arm64 CPU architecture to this cluster."
+            variant={AlertVariant.info}
+            data-testid="cpu-architecture-alert"
             isInline
           />
         </StackItem>
