@@ -21,8 +21,7 @@ export const Day2ClusterDetails = () => {
   const { day2DiscoveryImageDialog } = useModalDialogsContext();
 
   const wizardContext = useDay2WizardContext();
-  const { close, data } = day2DiscoveryImageDialog;
-  const cluster = data.cluster;
+  const { close } = day2DiscoveryImageDialog;
 
   const handleSubmit = React.useCallback(
     (values: Day2ClusterDetailValues) => {
