@@ -12,6 +12,7 @@ import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
 import { useDay2WizardContext } from './Day2WizardContext';
 import { Day2WizardNav } from './Day2WizardNav';
 import DiscoverImageCpuArchitectureControlGroup from '../../../../common/components/clusterConfiguration/DiscoveryImageCpuArchitectureControlGroup';
+import { useOpenshiftVersions } from '../../../hooks';
 
 type Day2ClusterDetailValues = {
   cpuArchitecture: CpuArchitecture;
@@ -20,10 +21,14 @@ type Day2ClusterDetailValues = {
 
 export const Day2ClusterDetails = () => {
   const { day2DiscoveryImageDialog } = useModalDialogsContext();
+  const {
+    close,
+    data: { cluster },
+  } = day2DiscoveryImageDialog;
   const { day1CpuArchitecture } = React.useContext(AddHostsContext);
-
   const wizardContext = useDay2WizardContext();
-  const { close } = day2DiscoveryImageDialog;
+
+  const { isMultiCpuArchSupported } = useOpenshiftVersions();
 
   const handleSubmit = React.useCallback(
     (values: Day2ClusterDetailValues) => {
@@ -36,6 +41,8 @@ export const Day2ClusterDetails = () => {
   const handleOnNext = (submitForm: FormikHelpers<unknown>['submitForm']) => {
     return submitForm;
   };
+
+  const isMultiArch = isMultiCpuArchSupported(cluster.openshiftVersion);
 
   return (
     <Formik
@@ -65,7 +72,10 @@ export const Day2ClusterDetails = () => {
                   <ClusterWizardStepHeader>Cluster details</ClusterWizardStepHeader>
                 </StackItem>
                 <StackItem>
-                  <DiscoverImageCpuArchitectureControlGroup />
+                  <DiscoverImageCpuArchitectureControlGroup
+                    isMultiArchitecture={isMultiArch}
+                    day1CpuArchitecture={day1CpuArchitecture}
+                  />
                 </StackItem>
               </Stack>
             </Form>
