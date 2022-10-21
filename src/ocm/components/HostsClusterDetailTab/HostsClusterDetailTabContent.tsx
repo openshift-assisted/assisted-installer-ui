@@ -15,6 +15,7 @@ import { isApiError } from '../../api/types';
 import { FeatureSupportLevelProvider } from '../featureSupportLevels';
 import { AddHosts } from '../AddHosts';
 import { HostsClusterDetailTabProps } from './types';
+import useDay1CpuArchitecture from '../../hooks/useDay1CpuArchitecture';
 
 export const HostsClusterDetailTabContent = ({
   cluster,
@@ -25,6 +26,7 @@ export const HostsClusterDetailTabContent = ({
   const [day2Cluster, setDay2Cluster] = useStateSafely<Cluster | null | undefined>(undefined);
   const pullSecret = usePullSecret();
   const { normalizeClusterVersion, isMultiCpuArchSupported } = useOpenshiftVersions();
+  const day1CpuArchitecture = useDay1CpuArchitecture(cluster?.id || '');
 
   const handleClickTryAgainLink = React.useCallback(() => {
     setError(undefined);
@@ -133,6 +135,7 @@ export const HostsClusterDetailTabContent = ({
             cluster,
             pullSecret,
             normalizedVersion,
+            day1CpuArchitecture,
             isMultiCpuArchSupported(cluster.openshift_version),
           );
           setDay2Cluster(day2Cluster);
@@ -221,6 +224,7 @@ export const HostsClusterDetailTabContent = ({
   return (
     <AddHostsContextProvider
       cluster={day2Cluster}
+      day1CpuArchitecture={day1CpuArchitecture}
       resetCluster={resetCluster}
       ocpConsoleUrl={cluster?.console?.url}
     >
