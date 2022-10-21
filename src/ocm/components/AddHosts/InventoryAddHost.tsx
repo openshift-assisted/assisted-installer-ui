@@ -21,7 +21,7 @@ const InventoryAddHosts = ({ cluster }: { cluster?: Cluster }) => {
     return null;
   }
 
-  const showMultiArchAlert = isMultiCpuArchSupported(cluster.openshiftVersion || '');
+  const showMultiArchAlert = isMultiCpuArchSupported(cluster.openshiftVersion);
   const showArmOnlyAlert = !showMultiArchAlert && isArmArchitecture(cluster);
 
   return (
