@@ -1,6 +1,6 @@
 import React from 'react';
-import { Stack, StackItem } from '@patternfly/react-core';
-import { Form, Formik, FormikHelpers } from 'formik';
+import { Form, Grid, GridItem } from '@patternfly/react-core';
+import { Formik, FormikHelpers } from 'formik';
 import {
   AddHostsContext,
   ClusterWizardStep,
@@ -67,17 +67,17 @@ export const Day2ClusterDetails = () => {
             }
           >
             <Form id="day2-wizard-cluster-details__form">
-              <Stack hasGutter>
-                <StackItem>
+              <Grid hasGutter>
+                <GridItem>
                   <ClusterWizardStepHeader>Cluster details</ClusterWizardStepHeader>
-                </StackItem>
-                <StackItem>
+                </GridItem>
+                <GridItem span={12} lg={10} xl={9} xl2={7}>
                   <DiscoverImageCpuArchitectureControlGroup
                     isMultiArchitecture={isMultiArch}
                     day1CpuArchitecture={day1CpuArchitecture}
                   />
-                </StackItem>
-              </Stack>
+                </GridItem>
+              </Grid>
             </Form>
           </ClusterWizardStep>
         );

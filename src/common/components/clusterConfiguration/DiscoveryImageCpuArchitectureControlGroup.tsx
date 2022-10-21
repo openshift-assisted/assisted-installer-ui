@@ -15,29 +15,21 @@ const DiscoverImageCpuArchitectureControlGroup = ({
 }) => {
   const { t } = useTranslation();
   return (
-    <FormGroup
-      role={'radiogroup'}
-      isInline
-      fieldId={getFieldId(GROUP_NAME, 'radio')}
-      label={t('ai:CPU architecture')}
-    >
-      <Flex>
-        {SupportedCpuArchitectures.map((cpuArch) => {
-          if (!isMultiArchitecture && cpuArch !== day1CpuArchitecture) {
-            return null;
-          }
-          return (
-            <FlexItem key={cpuArch}>
-              <RadioField
-                id={`cpu-arch_${cpuArch}`}
-                name={GROUP_NAME}
-                label={cpuArch}
-                value={cpuArch}
-              />
-            </FlexItem>
-          );
-        })}
-      </Flex>
+    <FormGroup isInline fieldId={getFieldId(GROUP_NAME, 'radio')} label={t('ai:CPU architecture')}>
+      {SupportedCpuArchitectures.map((cpuArch) => {
+        if (!isMultiArchitecture && cpuArch !== day1CpuArchitecture) {
+          return null;
+        }
+        return (
+          <RadioField
+            id={`cpu-arch_${cpuArch}`}
+            name={GROUP_NAME}
+            label={cpuArch}
+            value={cpuArch}
+            data-testid={`cpu-arch_${cpuArch}`}
+          />
+        );
+      })}
     </FormGroup>
   );
 };
