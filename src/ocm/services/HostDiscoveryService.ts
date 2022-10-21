@@ -3,13 +3,13 @@ import {
   V2ClusterUpdateParams,
   HostDiscoveryValues,
   selectMastersMustRunWorkloads,
+  SupportedPlatformType,
 } from '../../common';
-import { PlatformIntegrationType } from '../hooks/useClusterSupportedPlatforms';
 
 const HostDiscoveryService = {
   setPlatform(
     params: V2ClusterUpdateParams,
-    platformToIntegrate: PlatformIntegrationType | undefined,
+    platformToIntegrate: SupportedPlatformType | undefined,
   ): void {
     const type = platformToIntegrate === undefined ? 'baremetal' : platformToIntegrate;
     params.platform = {
