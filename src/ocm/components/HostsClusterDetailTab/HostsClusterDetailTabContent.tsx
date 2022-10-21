@@ -172,27 +172,30 @@ export const HostsClusterDetailTabContent = ({
   ]);
 
   const resetCluster = React.useCallback(async () => {
-    if (day2Cluster) {
-      try {
-        const cluster = await Day2ClusterService.fetchClusterById(day2Cluster.id);
-        setDay2Cluster(cluster);
-      } catch (e) {
-        handleApiError(e);
-        setError(
-          <>
-            Failed to reload cluster data.
-            <br />
-            Check your connection and{' '}
-            <Button variant={'link'} isInline onClick={handleClickTryAgainLink}>
-              try again
-            </Button>
-            .
-          </>,
-        );
-      }
+    console.log('%c will reset the cluster??', 'font-size: 16px; color: blue', !!day2Cluster);
+    if (!day2Cluster) {
+      return;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [day2Cluster, setDay2Cluster]);
+    try {
+      console.log('%c will reset the cluster', 'font-size: 16px; color: blue', day2Cluster.id);
+      const cluster = await Day2ClusterService.fetchClusterById(day2Cluster.id);
+      setDay2Cluster(cluster);
+    } catch (e) {
+      console.log('%c error in cluster reset', 'font-size: 16px; color: red', e);
+      handleApiError(e);
+      setError(
+        <>
+          Failed to reload cluster data.
+          <br />
+          Check your connection and{' '}
+          <Button variant={'link'} isInline onClick={handleClickTryAgainLink}>
+            try again
+          </Button>
+          .
+        </>,
+      );
+    }
+  }, [day2Cluster, handleClickTryAgainLink, setDay2Cluster]);
 
   React.useEffect(() => {
     const id = setTimeout(() => {

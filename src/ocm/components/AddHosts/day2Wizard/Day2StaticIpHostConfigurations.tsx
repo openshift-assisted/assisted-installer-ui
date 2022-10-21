@@ -7,6 +7,7 @@ import { getFieldId, RadioField } from '../../../../common';
 
 type WipValues = Record<string, string>; // TODO (multi-arch) define
 
+// TODO (multi-arch) the config of Static IP should be replicated across all cluster's infra-envs
 const Day2StaticIpHostConfigurations = () => {
   const { setFieldValue } = useFormikContext<WipValues>();
   const wizardContext = useDay2WizardContext();

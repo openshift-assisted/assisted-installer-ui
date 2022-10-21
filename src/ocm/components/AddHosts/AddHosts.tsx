@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   ButtonVariant,
   Card,
@@ -11,8 +12,7 @@ import {
   Toolbar,
   ToolbarContent,
 } from '@patternfly/react-core';
-import React from 'react';
-import { getApiErrorMessage, handleApiError } from '../../api/utils';
+import { getApiErrorMessage, handleApiError } from '../../api';
 import { DiscoveryImageModal } from '../clusterConfiguration/DiscoveryImageModal';
 import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
 import {
@@ -50,7 +50,7 @@ export const AddHosts = () => {
       );
 
       await HostsService.installAll(hostsToBeInstalled);
-      void resetCluster();
+      await resetCluster();
     } catch (e) {
       handleApiError(e, () =>
         addAlert({
