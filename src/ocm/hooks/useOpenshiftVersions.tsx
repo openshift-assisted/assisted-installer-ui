@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Cluster,
   CpuArchitecture,
   ImportClusterParams,
   OpenshiftVersion,
@@ -11,9 +12,10 @@ import { SupportedOpenshiftVersionsAPI } from '../services/apis';
 type UseOpenshiftVersionsType = {
   versions: OpenshiftVersionOptionType[];
   normalizeClusterVersion: (version: string) => ImportClusterParams['openshiftVersion'];
+  // TODO (multi-arch) review TS errors and maybe define with Cluster['openshiftVersion']
   isSupportedOpenShiftVersion: (version: string) => boolean;
   getCpuArchitectures: (version: string) => CpuArchitecture[];
-  isMultiCpuArchSupported: (version: string) => boolean;
+  isMultiCpuArchSupported: (version: Cluster['openshiftVersion']) => boolean;
   error?: { title: string; message: string };
   loading: boolean;
 };
@@ -87,9 +89,9 @@ export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
     [findVersionItemByVersion],
   );
 
-  const isMultiCpuArchSupported = React.useCallback((version: string) => {
+  const isMultiCpuArchSupported = React.useCallback((version: Cluster['openshiftVersion']) => {
     // TODO (multi-arch) check with existing versions list and check the cpuArchitectures length
-    return /-multi*/.test(version);
+    return /-multi*/.test(version || '');
   }, []);
 
   const getCpuArchitectures = React.useCallback(
