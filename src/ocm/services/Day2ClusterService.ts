@@ -42,9 +42,8 @@ const Day2ClusterService = {
     if (day2Clusters.length !== 0) {
       return Day2ClusterService.fetchClusterById(day2Clusters[0].id);
     } else {
-      const cpuArchitectures = isMultiArch
-        ? SupportedCpuArchitectures
-        : [(ocmCluster.cpu_architecture as CpuArchitecture) || CpuArchitecture.x86];
+      // TODO (multi-arch) https://issues.redhat.com/browse/MGMT-10439 we need to retrieve the cpuArchitecture of the Day1 cluster
+      const cpuArchitectures = isMultiArch ? SupportedCpuArchitectures : [CpuArchitecture.x86];
       return Day2ClusterService.createCluster(
         openshiftClusterId,
         ocmCluster.display_name || ocmCluster.name || openshiftClusterId,
@@ -58,8 +57,6 @@ const Day2ClusterService = {
 
   async fetchClusterById(clusterId: Cluster['id']) {
     const { data } = await ClustersAPI.get(clusterId);
-    // TODO (multi-arch) confirm that the cluster here retrieves all the existing hosts even from different infraEnvs
-    // data.hosts = await Day2ClusterService.fetchHosts(data.id);
     return data;
   },
 
@@ -92,19 +89,6 @@ const Day2ClusterService = {
 
     return day2Cluster;
   },
-
-  // async fetchHosts(clusterId: Cluster['id']) {
-  //   const infraEnvIds = await InfraEnvsService.getAllInfraEnvIds(clusterId);
-  //   // TODO (multi-arch) verify this actually retrieves all hosts from all infraenvs
-  //   const allHostPromises = infraEnvIds.map((infraEnvId) => HostsAPI.list(infraEnvId));
-  //   return Promise.all(allHostPromises).then((results) => {
-  //     let allHosts: Host[] = [];
-  //     results.forEach(({ data: hostResult }) => {
-  //       allHosts = allHosts.concat(hostResult);
-  //     });
-  //     return allHosts;
-  //   });
-  // },
 };
 
 export default Day2ClusterService;
