@@ -51,7 +51,7 @@ export const HostsClusterDetailTabContent = ({
       if (!normalizedVersion) {
         setError(
           <>
-            Unsupported OpenShift cluster version: ${ocmCluster.openshift_version}.
+            Unsupported OpenShift cluster version: {ocmCluster.openshift_version || 'N/A'}.
             <br />
             Check your connection and{' '}
             <Button variant={'link'} isInline onClick={handleClickTryAgainLink}>
