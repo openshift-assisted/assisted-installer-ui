@@ -52,6 +52,7 @@ export const Day2ClusterDetails = () => {
   const day1CpuArchitecture = cluster.cpuArchitecture as CpuArchitecture;
   const { isMultiCpuArchSupported } = useOpenshiftVersions();
   const [initialValues, setInitialValues] = React.useState<Day2ClusterDetailValues>();
+  const [isSubmitting, setSubmitting] = React.useState(false);
 
   React.useEffect(() => {
     const doItAsync = async () => {
@@ -64,6 +65,7 @@ export const Day2ClusterDetails = () => {
   const handleSubmit = React.useCallback(
     async (values: Day2ClusterDetailValues) => {
       try {
+        setSubmitting(true);
         const { data: infraEnvs } = await InfraEnvsAPI.list(cluster.id);
         if (infraEnvs.every((infraEnv) => infraEnv.staticNetworkConfig)) {
           await InfraEnvsService.updateAll(cluster.id, {
@@ -84,6 +86,8 @@ export const Day2ClusterDetails = () => {
         wizardContext.moveNext();
       } catch (error) {
         handleApiError(error);
+      } finally {
+        setSubmitting(false);
       }
     },
     [cluster.id, wizardContext],
@@ -109,6 +113,7 @@ export const Day2ClusterDetails = () => {
                 isBackDisabled={wizardContext.currentStepId === 'cluster-details'}
                 isNextDisabled={wizardContext.currentStepId === 'download-iso'}
                 onCancel={close}
+                isSubmitting={isSubmitting}
               />
             }
           >
@@ -118,12 +123,6 @@ export const Day2ClusterDetails = () => {
                   <ClusterWizardStepHeader>Cluster details</ClusterWizardStepHeader>
                 </GridItem>
                 <GridItem span={12} lg={10} xl={9} xl2={7}>
-                  <DiscoverImageCpuArchitectureControlGroup
-                    isMultiArchitecture={isMultiArch}
-                    day1CpuArchitecture={day1CpuArchitecture}
-                  />
-                </GridItem>
-                <GridItem>
                   <DiscoverImageCpuArchitectureControlGroup
                     isMultiArchitecture={isMultiArch}
                     day1CpuArchitecture={day1CpuArchitecture}

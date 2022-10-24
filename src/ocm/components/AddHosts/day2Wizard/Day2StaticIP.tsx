@@ -30,6 +30,7 @@ export const Day2StaticIP = () => {
   const [confirmOnChangeView, setConfirmOnChangeView] = React.useState<boolean>(false);
   const [viewChanged, setViewChanged] = React.useState<boolean>(false);
   const [initialStaticIpInfo, setInitialStaticIpInfo] = React.useState<StaticIpInfo>();
+  const [formState, setFormState] = React.useState<StaticIpFormState>();
   const { data, close } = day2DiscoveryImageDialog;
   const cluster = data.cluster;
   const { updateInfraEnv } = useInfraEnv(cluster.id, CpuArchitecture.x86);
@@ -61,6 +62,7 @@ export const Day2StaticIP = () => {
     const hasFilledData =
       wizardContext.currentStepId === 'static-ip-host-configurations' || !formState.isEmpty;
     setConfirmOnChangeView(hasFilledData);
+    setFormState(formState);
   };
 
   const viewProps: StaticIpViewProps = {
@@ -75,6 +77,9 @@ export const Day2StaticIP = () => {
   };
 
   const getContent = () => {
+    if (initialStaticIpInfo.view === StaticIpView.YAML && !viewChanged) {
+      return <YamlView {...viewProps} />;
+    }
     switch (wizardContext.currentStepId) {
       case 'static-ip-yaml-view':
         return <YamlView {...viewProps} />;
@@ -100,9 +105,9 @@ export const Day2StaticIP = () => {
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onNext={() => wizardContext.moveNext()}
           onBack={() => wizardContext.moveBack()}
-          isBackDisabled={wizardContext.currentStepId === 'cluster-details'}
-          isNextDisabled={wizardContext.currentStepId === 'download-iso'}
+          isNextDisabled={!formState?.isValid || formState.isAutoSaveRunning}
           onCancel={close}
+          isSubmitting={formState?.isSubmitting}
         />
       }
     >
@@ -117,7 +122,7 @@ export const Day2StaticIP = () => {
           </TextContent>
 
           <StaticIpViewRadioGroup
-            initialView={'form' as StaticIpView}
+            initialView={initialStaticIpInfo.view}
             confirmOnChangeView={confirmOnChangeView}
             onChangeView={onChangeView}
           />
