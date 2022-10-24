@@ -1,7 +1,21 @@
 import { InfraEnvsService } from '.';
 import { ClustersAPI } from './apis';
-import { CpuArchitecture, Cluster, SupportedCpuArchitectures } from '../../common';
+import { Cluster, CpuArchitecture, SupportedCpuArchitectures } from '../../common';
 import { OcmClusterType } from '../components/AddHosts/types';
+
+const OCM_x86_ARCH = 'amd64';
+const OCM_ARM_ARCH = 'arm64';
+
+export const getCpuArchitecture = (ocmArch: string): CpuArchitecture => {
+  switch (ocmArch) {
+    case OCM_x86_ARCH:
+      return CpuArchitecture.x86;
+    case OCM_ARM_ARCH:
+      return CpuArchitecture.ARM;
+    default:
+      throw new Error(`Unknown OCM CPU architecture: ${ocmArch}`);
+  }
+};
 
 const Day2ClusterService = {
   getOpenshiftClusterId(ocmCluster?: OcmClusterType) {
@@ -12,7 +26,6 @@ const Day2ClusterService = {
     ocmCluster: OcmClusterType,
     pullSecret: string,
     openshiftVersion: string,
-    day1CpuArchitecture: CpuArchitecture,
     isMultiArch: boolean,
   ) {
     const openshiftClusterId = Day2ClusterService.getOpenshiftClusterId(ocmCluster);
@@ -37,13 +50,13 @@ const Day2ClusterService = {
         'api.' + consoleUrlHostname.substring(consoleUrlHostname.indexOf(APPS) + APPS.length);
     }
 
-    const { data: clusters } = await ClustersAPI.listByOpenshiftId(openshiftClusterId);
-    const day2Clusters = clusters.filter((cluster) => cluster.kind === 'AddHostsCluster');
-
-    if (day2Clusters.length !== 0) {
-      return Day2ClusterService.fetchClusterById(day2Clusters[0].id);
+    const day2ClusterId = await Day2ClusterService.getDay2ClusterId(openshiftClusterId);
+    if (day2ClusterId) {
+      return Day2ClusterService.fetchClusterById(day2ClusterId);
     } else {
-      const cpuArchitectures = isMultiArch ? SupportedCpuArchitectures : [day1CpuArchitecture];
+      const cpuArchitectures = isMultiArch
+        ? SupportedCpuArchitectures
+        : [getCpuArchitecture(ocmCluster.cpu_architecture)];
       return Day2ClusterService.createCluster(
         openshiftClusterId,
         ocmCluster.display_name || ocmCluster.name || openshiftClusterId,
@@ -58,6 +71,15 @@ const Day2ClusterService = {
   async fetchClusterById(clusterId: Cluster['id']) {
     const { data } = await ClustersAPI.get(clusterId);
     return data;
+  },
+
+  async getDay2ClusterId(openshiftClusterId: OcmClusterType['external_id']) {
+    const { data: clusters } = await ClustersAPI.listByOpenshiftId(openshiftClusterId);
+    const day2Clusters = clusters.filter((cluster) => cluster.kind === 'AddHostsCluster');
+    if (day2Clusters.length > 0) {
+      return day2Clusters[0].id;
+    }
+    return undefined;
   },
 
   async createCluster(
@@ -88,6 +110,25 @@ const Day2ClusterService = {
     await Promise.all(infraEnvsToCreate);
 
     return day2Cluster;
+  },
+
+  /**
+   * Complete the day2Cluster coming from AI polling with the data in the OCM cluster
+   * @param day2Cluster Day2 cluster
+   * @param ocmCluster OCM cluster
+   */
+  mapOcmClusterToAssistedCluster: (
+    day2Cluster: Cluster | undefined,
+    ocmCluster: OcmClusterType | undefined,
+  ) => {
+    if (!ocmCluster || !day2Cluster) {
+      return day2Cluster;
+    }
+    return {
+      ...day2Cluster,
+      openshiftVersion: ocmCluster.openshift_version,
+      cpuArchitecture: getCpuArchitecture(ocmCluster.cpu_architecture),
+    };
   },
 };
 
