@@ -2,7 +2,6 @@ import React from 'react';
 import { Form, Grid, GridItem } from '@patternfly/react-core';
 import { Formik, FormikHelpers } from 'formik';
 import {
-  AddHostsContext,
   ClusterWizardStep,
   ClusterWizardStepHeader,
   CpuArchitecture,
@@ -13,6 +12,7 @@ import { useDay2WizardContext } from './Day2WizardContext';
 import { Day2WizardNav } from './Day2WizardNav';
 import DiscoverImageCpuArchitectureControlGroup from '../../../../common/components/clusterConfiguration/DiscoveryImageCpuArchitectureControlGroup';
 import { useOpenshiftVersions } from '../../../hooks';
+import { getDefaultDay1CpuArchitecture } from '../../../services/Day2ClusterService';
 
 type Day2ClusterDetailValues = {
   cpuArchitecture: CpuArchitecture;
@@ -25,8 +25,8 @@ export const Day2ClusterDetails = () => {
     close,
     data: { cluster },
   } = day2DiscoveryImageDialog;
-  const { day1CpuArchitecture } = React.useContext(AddHostsContext);
   const wizardContext = useDay2WizardContext();
+  const day1CpuArchitecture = cluster.cpuArchitecture as CpuArchitecture;
 
   const { isMultiCpuArchSupported } = useOpenshiftVersions();
 
@@ -47,7 +47,7 @@ export const Day2ClusterDetails = () => {
   return (
     <Formik
       initialValues={{
-        cpuArchitecture: day1CpuArchitecture || CpuArchitecture.x86,
+        cpuArchitecture: getDefaultDay1CpuArchitecture(day1CpuArchitecture),
       }}
       onSubmit={handleSubmit}
     >
