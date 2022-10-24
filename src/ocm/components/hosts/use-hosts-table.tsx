@@ -140,6 +140,10 @@ export const useHostsTable = (cluster: Cluster) => {
         }
 
         const { data } = await HostsService.updateDiskRole(host, diskId, role);
+        //once selecting a disk which is in role none as a installation disk , the skip formatting attribute should be unselected and set to false
+        if (role === 'install') {
+          await HostsService.updateFormattingDisks(host, diskId, false);
+        }
         resetCluster ? void resetCluster() : dispatch(updateHost(data));
       } catch (e) {
         handleApiError(e, () =>
