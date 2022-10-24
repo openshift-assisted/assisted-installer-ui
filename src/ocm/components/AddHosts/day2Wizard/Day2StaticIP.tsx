@@ -1,7 +1,14 @@
 import { Grid, TextContent, Text, TextVariants } from '@patternfly/react-core';
 import React from 'react';
-import { ClusterWizardStep, WizardFooter } from '../../../../common';
+import {
+  ClusterWizardStep,
+  CpuArchitecture,
+  InfraEnv,
+  InfraEnvUpdateParams,
+  WizardFooter,
+} from '../../../../common';
 import useInfraEnv from '../../../hooks/useInfraEnv';
+import { InfraEnvsService } from '../../../services';
 import { FormViewHosts } from '../../clusterConfiguration/staticIp/components/FormViewHosts/FormViewHosts';
 import { FormViewNetworkWide } from '../../clusterConfiguration/staticIp/components/FormViewNetworkWide/FormViewNetworkWide';
 import {
@@ -18,15 +25,27 @@ import { Day2WizardNav } from './Day2WizardNav';
 
 export const Day2StaticIP = () => {
   const { day2DiscoveryImageDialog } = useModalDialogsContext();
-  const { data } = day2DiscoveryImageDialog;
-  const cluster = data.cluster;
-  const { infraEnv } = useInfraEnv(cluster.id);
-
-  const { close } = day2DiscoveryImageDialog;
   const wizardContext = useDay2WizardContext();
-
+  const [infraEnv, setInfraEnv] = React.useState<InfraEnv>();
   const [confirmOnChangeView, setConfirmOnChangeView] = React.useState<boolean>(false);
   const [viewChanged, setViewChanged] = React.useState<boolean>(false);
+  const [initialStaticIpInfo, setInitialStaticIpInfo] = React.useState<StaticIpInfo>();
+  const { data, close } = day2DiscoveryImageDialog;
+  const cluster = data.cluster;
+  const { updateInfraEnv } = useInfraEnv(cluster.id, CpuArchitecture.x86);
+
+  React.useEffect(() => {
+    const doItAsync = async () => {
+      const { data: infraEnv } = await InfraEnvsService.getInfraEnv(
+        cluster.id,
+        CpuArchitecture.x86,
+      );
+      setInfraEnv(infraEnv);
+      infraEnv && setInitialStaticIpInfo(getStaticIpInfo(infraEnv));
+    };
+    void doItAsync();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const onChangeView = React.useCallback((view: StaticIpView) => {
     wizardContext.onUpdateStaticIpView(view);
@@ -34,13 +53,7 @@ export const Day2StaticIP = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const initialStaticIpInfo = React.useMemo<StaticIpInfo | undefined>(() => {
-    return infraEnv && getStaticIpInfo(infraEnv);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   if (!initialStaticIpInfo || !infraEnv) {
-    console.log('no', initialStaticIpInfo, infraEnv);
     return null;
   }
 
@@ -48,13 +61,16 @@ export const Day2StaticIP = () => {
     const hasFilledData =
       wizardContext.currentStepId === 'static-ip-host-configurations' || !formState.isEmpty;
     setConfirmOnChangeView(hasFilledData);
-    onFormStateChange(formState);
   };
 
   const viewProps: StaticIpViewProps = {
     onFormStateChange,
     infraEnv,
-    updateInfraEnv: () => new Promise(() => console.log('update infra Env')),
+    updateInfraEnv: async (params: InfraEnvUpdateParams) => {
+      const data = await updateInfraEnv(params);
+      setInfraEnv(data);
+      return data;
+    },
     showEmptyValues: viewChanged,
   };
 
