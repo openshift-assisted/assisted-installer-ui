@@ -19,6 +19,7 @@ import DiscoverImageCpuArchitectureControlGroup from '../../../../common/compone
 import { useOpenshiftVersions } from '../../../hooks';
 import { handleApiError } from '../../../api';
 import { getDummyInfraEnvField } from '../../clusterConfiguration/staticIp/data/dummyData';
+import { InfraEnvsAPI } from '../../../services/apis';
 
 type Day2ClusterDetailValues = {
   cpuArchitecture: CpuArchitecture;
@@ -63,12 +64,22 @@ export const Day2ClusterDetails = () => {
   const handleSubmit = React.useCallback(
     async (values: Day2ClusterDetailValues) => {
       try {
-        await InfraEnvsService.updateAll(cluster.id, {
-          staticNetworkConfig:
-            values.hostsNetworkConfigurationType === HostsNetworkConfigurationType.DHCP
-              ? []
-              : getDummyInfraEnvField(),
-        });
+        const { data: infraEnvs } = await InfraEnvsAPI.list(cluster.id);
+        if (infraEnvs.every((infraEnv) => infraEnv.staticNetworkConfig)) {
+          await InfraEnvsService.updateAll(cluster.id, {
+            staticNetworkConfig:
+              values.hostsNetworkConfigurationType === HostsNetworkConfigurationType.DHCP
+                ? []
+                : undefined,
+          });
+        } else {
+          await InfraEnvsService.updateAll(cluster.id, {
+            staticNetworkConfig:
+              values.hostsNetworkConfigurationType === HostsNetworkConfigurationType.DHCP
+                ? []
+                : getDummyInfraEnvField(),
+          });
+        }
         wizardContext.setSelectedCpuArchitecture(values.cpuArchitecture);
         wizardContext.moveNext();
       } catch (error) {
