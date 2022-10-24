@@ -1,13 +1,7 @@
 import { Button, ButtonVariant, Modal, ModalVariant, WizardHeader } from '@patternfly/react-core';
 import classNames from 'classnames';
 import React from 'react';
-import {
-  Cluster,
-  ClusterWizardStep,
-  CpuArchitecture,
-  ToolbarButton,
-  WizardFooter,
-} from '../../../../common';
+import { Cluster, ClusterWizardStep, ToolbarButton, WizardFooter } from '../../../../common';
 import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
 import { Day2WizardStepsType } from './constants';
 import { Day2ClusterDetails } from './Day2ClusterDetails';
