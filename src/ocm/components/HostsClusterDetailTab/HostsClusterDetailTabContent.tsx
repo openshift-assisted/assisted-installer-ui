@@ -15,20 +15,9 @@ import { isApiError } from '../../api/types';
 import { FeatureSupportLevelProvider } from '../featureSupportLevels';
 import { AddHosts } from '../AddHosts';
 import { HostsClusterDetailTabProps } from './types';
-import useDay1CpuArchitecture from '../../hooks/useDay1CpuArchitecture';
-
-const getUpdateDay2ClusterWithVersion = (
-  day2Cluster: Cluster,
-  openshiftVersion: Cluster['openshiftVersion'],
-) => {
-  return {
-    ...day2Cluster,
-    openshiftVersion,
-  };
-};
 
 export const HostsClusterDetailTabContent = ({
-  cluster,
+  cluster: ocmCluster,
   isVisible,
   openModal,
 }: HostsClusterDetailTabProps) => {
@@ -36,7 +25,6 @@ export const HostsClusterDetailTabContent = ({
   const [day2Cluster, setDay2Cluster] = useStateSafely<Cluster | null | undefined>(undefined);
   const pullSecret = usePullSecret();
   const { normalizeClusterVersion, isMultiCpuArchSupported } = useOpenshiftVersions();
-  const day1CpuArchitecture = useDay1CpuArchitecture(cluster?.id || '');
 
   const handleClickTryAgainLink = React.useCallback(() => {
     setError(undefined);
@@ -44,8 +32,8 @@ export const HostsClusterDetailTabContent = ({
   }, [setDay2Cluster]);
 
   const handleClickMissingApiUrlLink = React.useCallback(
-    () => openModal?.('edit-console-url', cluster),
-    [cluster, openModal],
+    () => openModal?.('edit-console-url', ocmCluster),
+    [ocmCluster, openModal],
   );
 
   React.useEffect(() => {
@@ -53,17 +41,17 @@ export const HostsClusterDetailTabContent = ({
       // the tab is not visible, stop polling
       setDay2Cluster(undefined);
     }
-    const openshiftClusterId = Day2ClusterService.getOpenshiftClusterId(cluster);
+    const openshiftClusterId = Day2ClusterService.getOpenshiftClusterId(ocmCluster);
 
-    if (isVisible && day2Cluster === undefined && cluster && openshiftClusterId && pullSecret) {
+    if (isVisible && day2Cluster === undefined && ocmCluster && openshiftClusterId && pullSecret) {
       // ensure exclusive run
       setDay2Cluster(null);
 
-      const normalizedVersion = normalizeClusterVersion(cluster.openshift_version);
+      const normalizedVersion = normalizeClusterVersion(ocmCluster.openshift_version);
       if (!normalizedVersion) {
         setError(
           <>
-            Unsupported OpenShift cluster version: ${cluster.openshift_version}.
+            Unsupported OpenShift cluster version: ${ocmCluster.openshift_version}.
             <br />
             Check your connection and{' '}
             <Button variant={'link'} isInline onClick={handleClickTryAgainLink}>
@@ -77,14 +65,14 @@ export const HostsClusterDetailTabContent = ({
 
       let apiVipDnsname = '';
       // Format of cluster.api.url: protocol://domain:port
-      if (cluster.api?.url) {
+      if (ocmCluster.api?.url) {
         try {
-          const apiVipUrl = new URL(cluster.api.url);
+          const apiVipUrl = new URL(ocmCluster.api.url);
           apiVipDnsname = apiVipUrl.hostname; // just domain is needed
         } catch {
           setError(
             <>
-              Cluster API URL is not valid (${cluster.api.url}), you can{' '}
+              Cluster API URL is not valid (${ocmCluster.api.url}), you can{' '}
               <Button variant={'link'} isInline onClick={handleClickTryAgainLink}>
                 try again
               </Button>
@@ -93,19 +81,19 @@ export const HostsClusterDetailTabContent = ({
           );
           return;
         }
-      } else if (cluster.console?.url) {
+      } else if (ocmCluster.console?.url) {
         // Try to guess API URL from Console URL.
         // Assumption: the cluster is originated by Assisted Installer, so console URL format should be of a fixed format.
         try {
           // protocol://console-openshift-console.apps.[CLUSTER_NAME].[BASE_DOMAIN]"
-          const consoleUrlHostname = new URL(cluster.console.url).hostname;
+          const consoleUrlHostname = new URL(ocmCluster.console.url).hostname;
           const APPS = '.apps.';
           apiVipDnsname =
             'api.' + consoleUrlHostname.substring(consoleUrlHostname.indexOf(APPS) + APPS.length);
         } catch {
           setError(
             <>
-              Cluster Console URL is not valid (${cluster.console?.url}), you can{' '}
+              Cluster Console URL is not valid (${ocmCluster.console?.url}), you can{' '}
               <Button variant={'link'} isInline onClick={handleClickTryAgainLink}>
                 try again
               </Button>
@@ -142,13 +130,14 @@ export const HostsClusterDetailTabContent = ({
       const doItAsync = async () => {
         try {
           const day2Cluster = await Day2ClusterService.fetchCluster(
-            cluster,
+            ocmCluster,
             pullSecret,
             normalizedVersion,
-            day1CpuArchitecture,
-            isMultiCpuArchSupported(cluster.openshift_version),
+            isMultiCpuArchSupported(ocmCluster.openshift_version),
           );
-          setDay2Cluster(getUpdateDay2ClusterWithVersion(day2Cluster, cluster.openshift_version));
+          setDay2Cluster(
+            Day2ClusterService.mapOcmClusterToAssistedCluster(day2Cluster, ocmCluster),
+          );
         } catch (e) {
           handleApiError(e);
           if (isApiError(e)) {
@@ -175,7 +164,7 @@ export const HostsClusterDetailTabContent = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    cluster,
+    ocmCluster,
     openModal,
     pullSecret,
     day2Cluster,
@@ -191,7 +180,7 @@ export const HostsClusterDetailTabContent = ({
     try {
       const updatedDay2Cluster = await Day2ClusterService.fetchClusterById(day2Cluster.id);
       setDay2Cluster(
-        getUpdateDay2ClusterWithVersion(updatedDay2Cluster, cluster?.openshift_version),
+        Day2ClusterService.mapOcmClusterToAssistedCluster(updatedDay2Cluster, ocmCluster),
       );
     } catch (e) {
       handleApiError(e);
@@ -207,7 +196,7 @@ export const HostsClusterDetailTabContent = ({
         </>,
       );
     }
-  }, [day2Cluster, handleClickTryAgainLink, setDay2Cluster]);
+  }, [day2Cluster, handleClickTryAgainLink, ocmCluster, setDay2Cluster]);
 
   React.useEffect(() => {
     const id = setTimeout(() => {
@@ -236,9 +225,8 @@ export const HostsClusterDetailTabContent = ({
   return (
     <AddHostsContextProvider
       cluster={day2Cluster}
-      day1CpuArchitecture={day1CpuArchitecture}
       resetCluster={resetCluster}
-      ocpConsoleUrl={cluster?.console?.url}
+      ocpConsoleUrl={ocmCluster?.console?.url}
     >
       <FeatureSupportLevelProvider loadingUi={<LoadingState />} cluster={day2Cluster}>
         <AddHosts />

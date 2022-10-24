@@ -2,7 +2,6 @@ import React from 'react';
 import { Form, Grid, GridItem } from '@patternfly/react-core';
 import { Formik, FormikHelpers } from 'formik';
 import {
-  AddHostsContext,
   ClusterWizardStep,
   ClusterWizardStepHeader,
   CpuArchitecture,
@@ -25,8 +24,8 @@ export const Day2ClusterDetails = () => {
     close,
     data: { cluster },
   } = day2DiscoveryImageDialog;
-  const { day1CpuArchitecture } = React.useContext(AddHostsContext);
   const wizardContext = useDay2WizardContext();
+  const day1CpuArchitecture = cluster.cpuArchitecture as CpuArchitecture;
 
   const { isMultiCpuArchSupported } = useOpenshiftVersions();
 
