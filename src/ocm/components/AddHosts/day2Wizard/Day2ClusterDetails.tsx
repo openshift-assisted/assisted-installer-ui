@@ -1,15 +1,14 @@
-import { FormGroup, Grid, GridItem } from '@patternfly/react-core';
-import { Form, Formik, FormikHelpers, useFormikContext } from 'formik';
+import { Grid, GridItem } from '@patternfly/react-core';
+import { Form, Formik, FormikHelpers } from 'formik';
 import React from 'react';
 import {
   ClusterWizardStep,
   ClusterWizardStepHeader,
   CpuArchitecture,
   WizardFooter,
-  getFieldId,
-  RadioField,
   Cluster,
   LoadingState,
+  InfraEnvUpdateParams,
 } from '../../../../common';
 import { HostsNetworkConfigurationType, InfraEnvsService } from '../../../services';
 import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
@@ -20,25 +19,24 @@ import { useOpenshiftVersions } from '../../../hooks';
 import { handleApiError } from '../../../api';
 import { getDummyInfraEnvField } from '../../clusterConfiguration/staticIp/data/dummyData';
 import { InfraEnvsAPI } from '../../../services/apis';
+import Day2HostConfigurations from './Day2StaticIpHostConfigurations';
+import { Day2ClusterDetailValues } from '../types';
 
-type Day2ClusterDetailValues = {
-  cpuArchitecture: CpuArchitecture;
-  hostsNetworkConfigurationType: HostsNetworkConfigurationType;
-};
-
-const getDay2ClusterDetailInitialValues = async (clusterId: Cluster['id']) => {
+const getDay2ClusterDetailInitialValues = async (
+  clusterId: Cluster['id'],
+  day1CpuArchitecture: CpuArchitecture,
+) => {
   try {
-    const { data: infraEnv } = await InfraEnvsService.getInfraEnv(clusterId, CpuArchitecture.x86);
+    const { data: infraEnv } = await InfraEnvsService.getInfraEnv(clusterId, day1CpuArchitecture);
 
     return {
-      // TODO (multi-arch) improve to set the default value equal to the cpuArchitecture of Day1 cluster
-      cpuArchitecture: CpuArchitecture.x86,
+      cpuArchitecture: day1CpuArchitecture || CpuArchitecture.x86,
       hostsNetworkConfigurationType: infraEnv.staticNetworkConfig
         ? HostsNetworkConfigurationType.STATIC
         : HostsNetworkConfigurationType.DHCP,
     };
   } catch (error) {
-    console.error(error);
+    handleApiError(error);
   }
 };
 
@@ -56,32 +54,38 @@ export const Day2ClusterDetails = () => {
 
   React.useEffect(() => {
     const doItAsync = async () => {
-      const initialValues = await getDay2ClusterDetailInitialValues(cluster.id);
+      const initialValues = await getDay2ClusterDetailInitialValues(
+        cluster.id,
+        day1CpuArchitecture,
+      );
       setInitialValues(initialValues);
     };
     void doItAsync();
-  }, [cluster.id]);
+  }, [cluster.id, day1CpuArchitecture]);
 
   const handleSubmit = React.useCallback(
     async (values: Day2ClusterDetailValues) => {
       try {
         setSubmitting(true);
         const { data: infraEnvs } = await InfraEnvsAPI.list(cluster.id);
-        if (infraEnvs.every((infraEnv) => infraEnv.staticNetworkConfig)) {
-          await InfraEnvsService.updateAll(cluster.id, {
-            staticNetworkConfig:
-              values.hostsNetworkConfigurationType === HostsNetworkConfigurationType.DHCP
-                ? []
-                : undefined,
-          });
-        } else {
-          await InfraEnvsService.updateAll(cluster.id, {
-            staticNetworkConfig:
-              values.hostsNetworkConfigurationType === HostsNetworkConfigurationType.DHCP
-                ? []
-                : getDummyInfraEnvField(),
-          });
+        const staticIPSet = infraEnvs.every((infraEnv) => infraEnv.staticNetworkConfig);
+
+        const infraEnvUpdateParams: InfraEnvUpdateParams = {
+          staticNetworkConfig:
+            values.hostsNetworkConfigurationType === HostsNetworkConfigurationType.STATIC
+              ? getDummyInfraEnvField()
+              : [],
+        };
+
+        if (
+          !(
+            values.hostsNetworkConfigurationType === HostsNetworkConfigurationType.STATIC &&
+            staticIPSet
+          )
+        ) {
+          await InfraEnvsService.updateAll(cluster.id, infraEnvUpdateParams);
         }
+
         wizardContext.setSelectedCpuArchitecture(values.cpuArchitecture);
         wizardContext.moveNext();
       } catch (error) {
@@ -139,43 +143,5 @@ export const Day2ClusterDetails = () => {
     </Formik>
   ) : (
     <LoadingState />
-  );
-};
-
-const Day2HostConfigurations = () => {
-  const { values, setFieldValue } = useFormikContext<Day2ClusterDetailValues>();
-  const wizardContext = useDay2WizardContext();
-
-  React.useEffect(() => {
-    if (values.hostsNetworkConfigurationType) {
-      wizardContext.onUpdateHostNetworkConfigType(values.hostsNetworkConfigurationType);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const onChangeNetworkType = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    wizardContext.onUpdateHostNetworkConfigType(value as HostsNetworkConfigurationType);
-    setFieldValue('hostsNetworkConfigurationType', value);
-  };
-
-  return (
-    <FormGroup
-      label="Hosts' network configuration"
-      fieldId={getFieldId('hostsNetworkConfigurationType', 'radio')}
-      isInline
-      onChange={onChangeNetworkType}
-    >
-      <RadioField
-        name={'hostsNetworkConfigurationType'}
-        value={HostsNetworkConfigurationType.DHCP}
-        label="DHCP only"
-      />
-      <RadioField
-        name={'hostsNetworkConfigurationType'}
-        value={HostsNetworkConfigurationType.STATIC}
-        label="Static IP, bridges, and bonds"
-      />
-    </FormGroup>
   );
 };

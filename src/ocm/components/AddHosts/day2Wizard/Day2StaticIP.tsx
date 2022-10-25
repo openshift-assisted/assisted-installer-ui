@@ -39,7 +39,7 @@ export const Day2StaticIP = () => {
     const doItAsync = async () => {
       const { data: infraEnv } = await InfraEnvsService.getInfraEnv(
         cluster.id,
-        CpuArchitecture.x86,
+        cluster.cpuArchitecture as CpuArchitecture,
       );
       setInfraEnv(infraEnv);
       infraEnv && setInitialStaticIpInfo(getStaticIpInfo(infraEnv));

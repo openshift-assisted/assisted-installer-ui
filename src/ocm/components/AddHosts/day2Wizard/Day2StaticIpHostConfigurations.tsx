@@ -4,13 +4,18 @@ import { useFormikContext } from 'formik';
 import { useDay2WizardContext } from './Day2WizardContext';
 import { HostsNetworkConfigurationType } from '../../../services';
 import { getFieldId, RadioField } from '../../../../common';
+import { Day2ClusterDetailValues } from '../types';
 
-type WipValues = Record<string, string>; // TODO (multi-arch) define
-
-// TODO (multi-arch) the config of Static IP should be replicated across all cluster's infra-envs
-const Day2StaticIpHostConfigurations = () => {
-  const { setFieldValue } = useFormikContext<WipValues>();
+const Day2HostConfigurations = () => {
+  const { values, setFieldValue } = useFormikContext<Day2ClusterDetailValues>();
   const wizardContext = useDay2WizardContext();
+
+  React.useEffect(() => {
+    if (values.hostsNetworkConfigurationType) {
+      wizardContext.onUpdateHostNetworkConfigType(values.hostsNetworkConfigurationType);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const onChangeNetworkType = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -25,14 +30,18 @@ const Day2StaticIpHostConfigurations = () => {
       isInline
       onChange={onChangeNetworkType}
     >
-      <RadioField name={'hostsNetworkConfigurationType'} value={'dhcp'} label="DHCP only" />
       <RadioField
         name={'hostsNetworkConfigurationType'}
-        value={'static'}
+        value={HostsNetworkConfigurationType.DHCP}
+        label="DHCP only"
+      />
+      <RadioField
+        name={'hostsNetworkConfigurationType'}
+        value={HostsNetworkConfigurationType.STATIC}
         label="Static IP, bridges, and bonds"
       />
     </FormGroup>
   );
 };
 
-export default Day2StaticIpHostConfigurations;
+export default Day2HostConfigurations;
