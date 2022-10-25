@@ -46,33 +46,35 @@ export const getClusterWizardFirstStep = (
     }
     return 'static-ip-network-wide-configurations';
   }
-  const step = getStepIdByHostValidations(hosts);
   switch (state) {
     case 'ready':
       return 'review';
     case 'pending-for-input':
     case 'adding-hosts':
     case 'insufficient':
-      return step ? step : 'host-discovery';
+      return getStepForFailingHostValidations(hosts);
     default:
       return 'cluster-details';
   }
 };
 
-const getStepIdByHostValidations = (hosts: Host[] | undefined) => {
-  const failingValidations: HostValidationId[] = getHostValidations(hosts);
-  let step = '';
-  failingValidations.forEach((failingValidationId) => {
-    const stepFound = findValidationStep<string>(
+const getStepForFailingHostValidations = (hosts: Host[] | undefined) => {
+  const failingValidations: HostValidationId[] = getHostFailingValidationIds(hosts);
+  let step;
+  for (const failingValidationId of failingValidations) {
+    step = findValidationStep<string>(
       { validationId: failingValidationId },
       wizardStepsValidationsMap,
     );
-    if (stepFound !== undefined) step = stepFound;
-  });
-  return step as ClusterWizardStepsType;
+    console.log(step);
+    if (step !== undefined) {
+      break;
+    }
+  }
+  return step ? (step as ClusterWizardStepsType) : 'host-discovery';
 };
 
-const getHostValidations = (hosts: Host[] | undefined) => {
+const getHostFailingValidationIds = (hosts: Host[] | undefined) => {
   const failingValidations: HostValidationId[] = [];
   hosts?.forEach((host) => {
     const validationsInfo = stringToJSON<HostValidationsInfo>(host.validationsInfo) || {};

@@ -271,14 +271,10 @@ export const findValidationStep = <ClusterWizardStepsType extends string>(
   },
   wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType>,
 ): ClusterWizardStepsType | undefined => {
-  const keys = lodashKeys(wizardStepsValidationsMap) as ClusterWizardStepsType[];
-  return keys.find((key) => {
+  const wizardStepsIds = lodashKeys(wizardStepsValidationsMap) as ClusterWizardStepsType[];
+  return wizardStepsIds.find((wizardStepId) => {
     // find first matching validation-map name
-    const { cluster: clusterValidationMap, host: hostValidationMap } =
-      wizardStepsValidationsMap[key];
-    return (
-      clusterValidationMap.validationIds.includes(validationId as ClusterValidationId) ||
-      hostValidationMap.validationIds.includes(validationId as HostValidationId)
-    );
+    const { host: hostValidationMap } = wizardStepsValidationsMap[wizardStepId];
+    return hostValidationMap.validationIds.includes(validationId as HostValidationId);
   });
 };
