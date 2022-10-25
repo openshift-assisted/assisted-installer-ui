@@ -35,19 +35,39 @@ export const isDiskFormattable = (host: Host, diskId: string | undefined) => {
   );
 };
 
-export const isDiskToBeFormatted = (host: Host, diskId: string | undefined) => {
-  return isDiskFormattable(host, diskId) && !isDiskSkipFormatting(host, diskId);
+const isInvalidInstallationDisk = (
+  host: Host,
+  diskId: string | undefined,
+  installationDiskId: Host['installationDiskId'],
+) => {
+  // If it's an installation disk that somehow is set to skip formatting, enable the checkbox to let the user fix it
+  if (isInstallationDisk(diskId, installationDiskId)) {
+    return isDiskSkipFormatting(host, diskId);
+  }
+  return false;
+};
+
+export const isDiskToBeFormatted = (
+  host: Host,
+  diskId: string | undefined,
+  installationDiskId: Host['installationDiskId'],
+) => {
+  return (
+    (isInstallationDisk(diskId, installationDiskId) || isDiskFormattable(host, diskId)) &&
+    !isDiskSkipFormatting(host, diskId)
+  );
 };
 
 export const isFormatDiskDisabled = (
   host: Host,
   diskId: string | undefined,
-  installationDiskId: string | undefined,
+  installationDiskId: Host['installationDiskId'],
 ) => {
-  return (
-    !isDiskFormattable(host, diskId) ||
-    (isInstallationDisk(diskId, installationDiskId) && !isDiskSkipFormatting(host, diskId))
-  );
+  // If it's an installation disk that somehow is set to skip formatting, enable the checkbox to let the user fix it
+  if (isInvalidInstallationDisk(host, diskId, installationDiskId)) {
+    return false;
+  }
+  return !isDiskFormattable(host, diskId);
 };
 
 const onSelectFormattingDisk = (
@@ -59,13 +79,13 @@ const onSelectFormattingDisk = (
   updateDiskSkipFormatting ? updateDiskSkipFormatting(shouldFormatDisk, hostId, diskId) : '';
 };
 
-const FormatDiskCheckbox: React.FC<FormatDiskProps> = ({
+const FormatDiskCheckbox = ({
   host,
   diskId,
   installationDiskId,
   index,
   updateDiskSkipFormatting,
-}) => {
+}: FormatDiskProps) => {
   return (
     <Tooltip
       hidden={!isInstallationDisk(diskId, installationDiskId)}
@@ -73,7 +93,7 @@ const FormatDiskCheckbox: React.FC<FormatDiskProps> = ({
     >
       <Checkbox
         id={`select-formatted-${host.id}-${index}`}
-        isChecked={isDiskToBeFormatted(host, diskId)}
+        isChecked={isDiskToBeFormatted(host, diskId, installationDiskId)}
         onChange={(checked: boolean) =>
           onSelectFormattingDisk(checked, host.id, diskId, updateDiskSkipFormatting)
         }

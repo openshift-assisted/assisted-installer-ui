@@ -15,7 +15,7 @@ import DiskRole, { OnDiskRoleType } from '../hosts/DiskRole';
 import DiskLimitations from '../hosts/DiskLimitations';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
-import SkipFormattingCheckbox, {
+import FormatDiskCheckbox, {
   DiskFormattingType,
   isDiskSkipFormatting,
 } from '../hosts/FormatDiskCheckbox';
@@ -97,7 +97,7 @@ const DisksTable = ({
         { title: <DiskLimitations disk={disk} />, props: { 'data-testid': 'disk-limitations' } },
         {
           title: (
-            <SkipFormattingCheckbox
+            <FormatDiskCheckbox
               host={host}
               diskId={disk.id}
               installationDiskId={installationDiskId}
