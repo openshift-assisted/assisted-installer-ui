@@ -60,18 +60,15 @@ export const getClusterWizardFirstStep = (
 
 const getStepForFailingHostValidations = (hosts: Host[] | undefined) => {
   const failingValidations: HostValidationId[] = getHostFailingValidationIds(hosts);
+  const minimumStep = 'host-discovery';
   let step;
   for (const failingValidationId of failingValidations) {
-    step = findValidationStep<string>(
-      { validationId: failingValidationId },
-      wizardStepsValidationsMap,
-    );
-    console.log(step);
+    step = findValidationStep<string>(failingValidationId, wizardStepsValidationsMap, minimumStep);
     if (step !== undefined) {
       break;
     }
   }
-  return step ? (step as ClusterWizardStepsType) : 'host-discovery';
+  return (step || minimumStep) as ClusterWizardStepsType;
 };
 
 const getHostFailingValidationIds = (hosts: Host[] | undefined) => {
