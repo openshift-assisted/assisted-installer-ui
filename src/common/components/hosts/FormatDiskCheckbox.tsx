@@ -1,7 +1,7 @@
 import React from 'react';
 import { Checkbox, Tooltip } from '@patternfly/react-core';
 import { Disk, Host } from '../../api';
-import { trimCommaSeparatedList } from '../..';
+import { getInventory, OpticalDiskDriveType, trimCommaSeparatedList } from '../..';
 
 export type DiskFormattingType = (
   shouldFormatDisk: boolean,
@@ -35,27 +35,15 @@ export const isDiskFormattable = (host: Host, diskId: string | undefined) => {
   );
 };
 
-const isInvalidInstallationDisk = (
-  host: Host,
-  diskId: string | undefined,
-  installationDiskId: Host['installationDiskId'],
-) => {
-  // If it's an installation disk that somehow is set to skip formatting, enable the checkbox to let the user fix it
-  if (isInstallationDisk(diskId, installationDiskId)) {
-    return isDiskSkipFormatting(host, diskId);
-  }
-  return false;
-};
-
 export const isDiskToBeFormatted = (
   host: Host,
   diskId: string | undefined,
   installationDiskId: Host['installationDiskId'],
 ) => {
-  return (
-    (isInstallationDisk(diskId, installationDiskId) || isDiskFormattable(host, diskId)) &&
-    !isDiskSkipFormatting(host, diskId)
-  );
+  if (isInstallationDisk(diskId, installationDiskId)) {
+    return true;
+  }
+  return isDiskFormattable(host, diskId) && !isDiskSkipFormatting(host, diskId);
 };
 
 export const isFormatDiskDisabled = (
@@ -63,11 +51,13 @@ export const isFormatDiskDisabled = (
   diskId: string | undefined,
   installationDiskId: Host['installationDiskId'],
 ) => {
-  // If it's an installation disk that somehow is set to skip formatting, enable the checkbox to let the user fix it
-  if (isInvalidInstallationDisk(host, diskId, installationDiskId)) {
-    return false;
-  }
-  return !isDiskFormattable(host, diskId);
+  const inventory = getInventory(host);
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const disk = (inventory.disks || []).find((disk) => disk.id === diskId)!;
+  const isInstallationDisk = disk.id === installationDiskId;
+  const condition =
+    disk.driveType === OpticalDiskDriveType || disk.driveType === 'Unknown' || isInstallationDisk;
+  return condition;
 };
 
 const onSelectFormattingDisk = (
