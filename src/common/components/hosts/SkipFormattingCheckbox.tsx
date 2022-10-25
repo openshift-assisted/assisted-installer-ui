@@ -46,13 +46,11 @@ export const isSkipFormattingDisabled = (
 ) => {
   return (
     !isDiskFormattable(host, diskId) ||
-    (isDiskFormattable(host, diskId) &&
-      isInstallationDisk(diskId, installationDiskId) &&
-      !isDiskSkipFormatting(host, diskId))
+    (isInstallationDisk(diskId, installationDiskId) && !isDiskSkipFormatting(host, diskId))
   );
 };
 
-const onSelectSkipFormatting = (
+const onSelectFormattingDisk = (
   shouldFormatDisk: boolean,
   hostId: string,
   diskId?: string,
@@ -77,7 +75,7 @@ const SkipFormattingCheckbox: React.FC<SkipFormattingProps> = ({
         id={`select-formatted-${host.id}-${index}`}
         isChecked={isSkipFormattingChecked(host, diskId)}
         onChange={(checked: boolean) =>
-          onSelectSkipFormatting(checked, host.id, diskId, updateDiskSkipFormatting)
+          onSelectFormattingDisk(checked, host.id, diskId, updateDiskSkipFormatting)
         }
         isDisabled={isSkipFormattingDisabled(host, diskId, installationDiskId)}
       />
