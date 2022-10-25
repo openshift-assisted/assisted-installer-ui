@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormGroup } from '@patternfly/react-core';
-import { getFieldId, RadioField } from '../ui';
+import { DetailItem, DetailList, getFieldId, RadioField } from '../ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { CpuArchitecture, SupportedCpuArchitectures } from '../../types';
 
@@ -14,12 +14,22 @@ const DiscoverImageCpuArchitectureControlGroup = ({
   day1CpuArchitecture: CpuArchitecture | undefined;
 }) => {
   const { t } = useTranslation();
+
+  if (!isMultiArchitecture) {
+    return (
+      <DetailList>
+        <DetailItem
+          title={t('ai:CPU architecture')}
+          value={day1CpuArchitecture}
+          testId="cpu-architecture"
+        />
+      </DetailList>
+    );
+  }
+
   return (
     <FormGroup isInline fieldId={getFieldId(GROUP_NAME, 'radio')} label={t('ai:CPU architecture')}>
       {SupportedCpuArchitectures.map((cpuArch) => {
-        if (!isMultiArchitecture && cpuArch !== day1CpuArchitecture) {
-          return null;
-        }
         return (
           <RadioField
             key={cpuArch}
