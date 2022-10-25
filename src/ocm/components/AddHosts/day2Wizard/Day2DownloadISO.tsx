@@ -1,12 +1,12 @@
 import React from 'react';
+import { Stack, StackItem } from '@patternfly/react-core';
 import { ClusterWizardStep, ClusterWizardStepHeader, isSNO } from '../../../../common';
 import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
 import { useDay2WizardContext } from './Day2WizardContext';
-import { Day2WizardNav } from './Day2WizardNav';
+import Day2WizardNav from './Day2WizardNav';
 import DiscoveryImageSummary from '../../clusterConfiguration/DiscoveryImageSummary';
-import { Stack, StackItem } from '@patternfly/react-core';
 
-export const Day2DownloadISO = () => {
+const Day2DownloadISO = () => {
   const { day2DiscoveryImageDialog } = useModalDialogsContext();
   const { close, data } = day2DiscoveryImageDialog;
   const cluster = data.cluster;
@@ -32,3 +32,5 @@ export const Day2DownloadISO = () => {
     </ClusterWizardStep>
   );
 };
+
+export default Day2DownloadISO;

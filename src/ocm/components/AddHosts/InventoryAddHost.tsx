@@ -1,19 +1,12 @@
 import React from 'react';
-import {
-  Text,
-  TextContent,
-  Button,
-  Alert,
-  AlertVariant,
-  Stack,
-  StackItem,
-} from '@patternfly/react-core';
+import { Text, TextContent, Alert, AlertVariant, Stack, StackItem } from '@patternfly/react-core';
 import ClusterHostsTable from '../hosts/ClusterHostsTable';
 import InformationAndAlerts from '../clusterConfiguration/InformationAndAlerts';
 import { Cluster, isArmArchitecture } from '../../../common';
-import Day2WizardContextProvider from './day2Wizard/Day2WizardContextProvider';
-import { Day2DiscoveryImageModalButton, Day2Wizard } from './day2Wizard/Day2Wizard';
 import { useOpenshiftVersions } from '../../hooks';
+import Day2WizardContextProvider from './day2Wizard/Day2WizardContextProvider';
+import Day2DiscoveryImageModalButton from './day2Wizard/Day2DiscoveryImageModalButton';
+import Day2Wizard from './day2Wizard/Day2Wizard';
 
 const InventoryAddHosts = ({ cluster }: { cluster?: Cluster }) => {
   const { isMultiCpuArchSupported } = useOpenshiftVersions();
@@ -30,11 +23,7 @@ const InventoryAddHosts = ({ cluster }: { cluster?: Cluster }) => {
         <TextContent>
           <Text component="p">
             <Day2WizardContextProvider>
-              <Day2DiscoveryImageModalButton
-                ButtonComponent={Button}
-                cluster={cluster}
-                idPrefix="bare-metal-inventory-add-host"
-              />
+              <Day2DiscoveryImageModalButton cluster={cluster} />
               <Day2Wizard />
             </Day2WizardContextProvider>
           </Text>

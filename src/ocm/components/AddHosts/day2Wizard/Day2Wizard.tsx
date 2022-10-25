@@ -1,38 +1,15 @@
-import { Button, ButtonVariant, Modal, ModalVariant, WizardHeader } from '@patternfly/react-core';
-import classNames from 'classnames';
 import React from 'react';
-import { Cluster, ClusterWizardStep, ToolbarButton, WizardFooter } from '../../../../common';
+import { Modal, ModalVariant, WizardHeader } from '@patternfly/react-core';
+import classNames from 'classnames';
+import { ClusterWizardStep, WizardFooter } from '../../../../common';
 import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
 import { Day2WizardStepsType } from './constants';
-import { Day2ClusterDetails } from './Day2ClusterDetails';
-import { Day2DownloadISO } from './Day2DownloadISO';
-import { Day2GenerateISO } from './Day2GenerateISO';
-import { Day2StaticIP } from './Day2StaticIP';
+import Day2ClusterDetails from './Day2ClusterDetails';
+import Day2DownloadISO from './Day2DownloadISO';
+import Day2GenerateISO from './Day2GenerateISO';
+import Day2StaticIP from './Day2StaticIP';
+import Day2WizardNav from './Day2WizardNav';
 import { Day2WizardContextType, useDay2WizardContext } from './Day2WizardContext';
-import { Day2WizardNav } from './Day2WizardNav';
-
-export const Day2DiscoveryImageModalButton = ({
-  ButtonComponent = Button,
-  cluster,
-  idPrefix,
-}: {
-  ButtonComponent: typeof Button | typeof ToolbarButton;
-  cluster: Cluster;
-  idPrefix: string;
-}) => {
-  const { day2DiscoveryImageDialog } = useModalDialogsContext();
-  const { open } = day2DiscoveryImageDialog;
-
-  return (
-    <ButtonComponent
-      variant={ButtonVariant.secondary}
-      onClick={() => open({ cluster })}
-      id={`${idPrefix}-button-download-discovery-iso`}
-    >
-      Add hosts
-    </ButtonComponent>
-  );
-};
 
 // TODO(jgyselov): remove wizardContext
 const getCurrentStep = (step: Day2WizardStepsType, wizardContext: Day2WizardContextType) => {
@@ -67,7 +44,7 @@ const getCurrentStep = (step: Day2WizardStepsType, wizardContext: Day2WizardCont
   }
 };
 
-export const Day2Wizard = () => {
+const Day2Wizard = () => {
   const { day2DiscoveryImageDialog } = useModalDialogsContext();
   const { isOpen, close } = day2DiscoveryImageDialog;
   const wizardContext = useDay2WizardContext();
@@ -85,3 +62,5 @@ export const Day2Wizard = () => {
     </Modal>
   );
 };
+
+export default Day2Wizard;

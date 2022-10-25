@@ -1,6 +1,8 @@
 import { Cluster, CpuArchitecture, InfraEnvCreateParams, InfraEnvUpdateParams } from '../../common';
 import { InfraEnvsAPI } from './apis';
 import InfraEnvIdsCacheService from './InfraEnvIdsCacheService';
+import { HostsNetworkConfigurationType } from './types';
+import { getDummyInfraEnvField } from '../components/clusterConfiguration/staticIp/data/dummyData';
 
 const InfraEnvsService = {
   async getInfraEnvId(clusterId: Cluster['id'], cpuArchitecture: CpuArchitecture): Promise<string> {
@@ -65,6 +67,37 @@ const InfraEnvsService = {
     InfraEnvIdsCacheService.removeInfraEnvId(clusterId, CpuArchitecture.USE_DAY1_ARCHITECTURE);
 
     return Promise.all(promises);
+  },
+
+  /**
+   * In Day2 the StaticIp configuration must be synced across al infraEnvs.
+   * This method will update all infraEnvs of the same cluster to have the same config
+   *
+   * @param clusterId cluster's id
+   * @param selectedNetworkConfig selected networkConfig (DHCP or Static IP)
+   */
+  async syncDhcpOrStaticIpConfigs(
+    clusterId: Cluster['id'],
+    selectedNetworkConfig: HostsNetworkConfigurationType,
+  ) {
+    const { data: infraEnvs } = await InfraEnvsAPI.list(clusterId);
+    const staticIPSet = infraEnvs.every((infraEnv) => infraEnv.staticNetworkConfig);
+
+    const needsUpdate = !(
+      selectedNetworkConfig === HostsNetworkConfigurationType.STATIC && staticIPSet
+    );
+    if (!needsUpdate) {
+      return;
+    }
+
+    const infraEnvUpdateParams: InfraEnvUpdateParams = {
+      staticNetworkConfig:
+        selectedNetworkConfig === HostsNetworkConfigurationType.STATIC
+          ? getDummyInfraEnvField()
+          : [],
+    };
+
+    await InfraEnvsService.updateAll(clusterId, infraEnvUpdateParams);
   },
 
   async updateAll(clusterId: Cluster['id'], params: InfraEnvUpdateParams) {

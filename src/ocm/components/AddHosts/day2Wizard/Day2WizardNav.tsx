@@ -4,7 +4,7 @@ import { Day2WizardStepsType, day2WizardStepNames, staticIpFormViewSubSteps } fr
 import { useDay2WizardContext } from './Day2WizardContext';
 import { isStaticIpStep } from '../../clusterWizard/wizardTransition';
 
-export const Day2WizardNav = () => {
+const Day2WizardNav = () => {
   const wizardContext = useDay2WizardContext();
 
   const isStepIdxAfterCurrent = (idx: number) => {
@@ -52,13 +52,13 @@ export const Day2WizardNav = () => {
     let i = 0;
     while (i < wizardContext.wizardStepIds.length) {
       const stepId = wizardContext.wizardStepIds[i];
-      if (stepId !== 'static-ip-network-wide-configurations') {
-        navItems.push(getNavItem(i, stepId));
-        i += 1;
-      } else {
+      if (stepId === 'static-ip-network-wide-configurations') {
         navItems.push(getStaticIpFormViewNavItem(i));
         //skip iteration on form view sub steps
         i += 2;
+      } else {
+        navItems.push(getNavItem(i, stepId));
+        i += 1;
       }
     }
     return navItems;
@@ -66,3 +66,5 @@ export const Day2WizardNav = () => {
 
   return <WizardNav>{getWizardNavItems()}</WizardNav>;
 };
+
+export default Day2WizardNav;
