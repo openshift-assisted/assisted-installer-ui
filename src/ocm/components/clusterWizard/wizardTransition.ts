@@ -1,11 +1,19 @@
 import {
   Cluster,
+  findValidationStep,
   getAllClusterWizardSoftValidationIds,
   getWizardStepClusterStatus,
+  Host,
+  HostValidationId,
+  stringToJSON,
   WizardStepsValidationMap,
   WizardStepValidationMap,
 } from '../../../common';
 import { StaticIpInfo, StaticIpView } from '../clusterConfiguration/staticIp/data/dataTypes';
+import {
+  ValidationsInfo as HostValidationsInfo,
+  Validation as HostValidation,
+} from '../../../common/types/hosts';
 
 export type ClusterWizardStepsType =
   | 'cluster-details'
@@ -25,6 +33,7 @@ export const getClusterWizardFirstStep = (
   locationState: ClusterWizardFlowStateType | undefined,
   staticIpInfo: StaticIpInfo | undefined,
   state?: ClusterWizardFlowStateType,
+  hosts?: Host[] | undefined,
 ): ClusterWizardStepsType => {
   // Move to operators just the first time after the cluster is created
   if (locationState === ClusterWizardFlowStateNew && !staticIpInfo) {
@@ -37,16 +46,46 @@ export const getClusterWizardFirstStep = (
     }
     return 'static-ip-network-wide-configurations';
   }
+  const step = getStepIdByHostValidations(hosts);
   switch (state) {
     case 'ready':
       return 'review';
     case 'pending-for-input':
     case 'adding-hosts':
     case 'insufficient':
-      return 'host-discovery';
+      return step ? step : 'host-discovery';
     default:
       return 'cluster-details';
   }
+};
+
+const getStepIdByHostValidations = (hosts: Host[] | undefined) => {
+  const failingValidations: HostValidationId[] = getHostValidations(hosts);
+  let step = '';
+  failingValidations.forEach((failingValidationId) => {
+    const stepFound = findValidationStep<string>(
+      { validationId: failingValidationId },
+      wizardStepsValidationsMap,
+    );
+    if (stepFound !== undefined) step = stepFound;
+  });
+  return step as ClusterWizardStepsType;
+};
+
+const getHostValidations = (hosts: Host[] | undefined) => {
+  const failingValidations: HostValidationId[] = [];
+  hosts?.forEach((host) => {
+    const validationsInfo = stringToJSON<HostValidationsInfo>(host.validationsInfo) || {};
+    Object.keys(validationsInfo).forEach((group) => {
+      const f: (validation: HostValidation) => void = (validation) => {
+        if (validation.status === 'failure') {
+          failingValidations.push(validation.id);
+        }
+      };
+      validationsInfo[group].forEach(f);
+    });
+  });
+  return failingValidations;
 };
 
 type TransitionProps = { cluster: Cluster };

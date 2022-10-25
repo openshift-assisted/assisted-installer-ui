@@ -18,7 +18,7 @@ import { global_warning_color_100 as warningColor } from '@patternfly/react-toke
 import SkipFormattingCheckbox, {
   DiskFormattingType,
   isDiskSkipFormatting,
-} from '../hosts/SkipFormattingCheckbox';
+} from '../hosts/FormatDiskCheckbox';
 
 interface DisksTableProps extends WithTestID {
   canEditDisks?: (host: Host) => boolean;

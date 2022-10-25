@@ -261,3 +261,24 @@ export const areOnlySoftValidationsOfWizardStepFailing = <ClusterWizardStepsType
   }
   return true;
 };
+
+export const findValidationStep = <ClusterWizardStepsType extends string>(
+  {
+    validationId,
+  }: {
+    // validation IDs are unique
+    validationId: ClusterValidationId | HostValidationId;
+  },
+  wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType>,
+): ClusterWizardStepsType | undefined => {
+  const keys = lodashKeys(wizardStepsValidationsMap) as ClusterWizardStepsType[];
+  return keys.find((key) => {
+    // find first matching validation-map name
+    const { cluster: clusterValidationMap, host: hostValidationMap } =
+      wizardStepsValidationsMap[key];
+    return (
+      clusterValidationMap.validationIds.includes(validationId as ClusterValidationId) ||
+      hostValidationMap.validationIds.includes(validationId as HostValidationId)
+    );
+  });
+};

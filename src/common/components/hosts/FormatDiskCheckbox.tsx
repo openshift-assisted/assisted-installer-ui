@@ -9,7 +9,7 @@ export type DiskFormattingType = (
   diskId: Disk['id'],
 ) => void;
 
-type SkipFormattingProps = {
+type FormatDiskProps = {
   host: Host;
   index: number;
   updateDiskSkipFormatting?: DiskFormattingType;
@@ -35,11 +35,11 @@ export const isDiskFormattable = (host: Host, diskId: string | undefined) => {
   );
 };
 
-export const isSkipFormattingChecked = (host: Host, diskId: string | undefined) => {
+export const isDiskToBeFormatted = (host: Host, diskId: string | undefined) => {
   return isDiskFormattable(host, diskId) && !isDiskSkipFormatting(host, diskId);
 };
 
-export const isSkipFormattingDisabled = (
+export const isFormatDiskDisabled = (
   host: Host,
   diskId: string | undefined,
   installationDiskId: string | undefined,
@@ -59,7 +59,7 @@ const onSelectFormattingDisk = (
   updateDiskSkipFormatting ? updateDiskSkipFormatting(shouldFormatDisk, hostId, diskId) : '';
 };
 
-const SkipFormattingCheckbox: React.FC<SkipFormattingProps> = ({
+const FormatDiskCheckbox: React.FC<FormatDiskProps> = ({
   host,
   diskId,
   installationDiskId,
@@ -73,13 +73,13 @@ const SkipFormattingCheckbox: React.FC<SkipFormattingProps> = ({
     >
       <Checkbox
         id={`select-formatted-${host.id}-${index}`}
-        isChecked={isSkipFormattingChecked(host, diskId)}
+        isChecked={isDiskToBeFormatted(host, diskId)}
         onChange={(checked: boolean) =>
           onSelectFormattingDisk(checked, host.id, diskId, updateDiskSkipFormatting)
         }
-        isDisabled={isSkipFormattingDisabled(host, diskId, installationDiskId)}
+        isDisabled={isFormatDiskDisabled(host, diskId, installationDiskId)}
       />
     </Tooltip>
   );
 };
-export default SkipFormattingCheckbox;
+export default FormatDiskCheckbox;

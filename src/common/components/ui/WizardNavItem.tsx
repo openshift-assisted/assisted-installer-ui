@@ -9,7 +9,7 @@ const getNavItemContent = (
   isDisabled?: boolean,
   isCurrent?: boolean,
 ): ReactNode => {
-  if (!isDisabled && (!isCurrent || (isCurrent && content === 'Storage')) && !isValid()) {
+  if (!isDisabled && !isCurrent && !isValid()) {
     return (
       <>
         {content}
