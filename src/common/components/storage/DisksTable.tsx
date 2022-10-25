@@ -10,7 +10,7 @@ import {
   IRow,
 } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
-import { Disk, fileSize, Host, OpticalDiskDriveType, WithTestID } from '../../index';
+import { Disk, fileSize, Host, WithTestID } from '../../index';
 import DiskRole, { OnDiskRoleType } from '../hosts/DiskRole';
 import DiskLimitations from '../hosts/DiskLimitations';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons';
@@ -95,20 +95,18 @@ const DisksTable = ({
           props: { 'data-testid': 'disk-role' },
         },
         { title: <DiskLimitations disk={disk} />, props: { 'data-testid': 'disk-limitations' } },
-        disk.driveType !== OpticalDiskDriveType &&
-          disk.driveType !== 'Unknown' &&
-          disk.bootable && {
-            title: (
-              <SkipFormattingCheckbox
-                host={host}
-                diskId={disk.id}
-                installationDiskId={installationDiskId}
-                index={index}
-                updateDiskSkipFormatting={updateDiskSkipFormatting}
-              />
-            ),
-            props: { 'data-testid': 'disk-formatted' },
-          },
+        {
+          title: (
+            <SkipFormattingCheckbox
+              host={host}
+              diskId={disk.id}
+              installationDiskId={installationDiskId}
+              index={index}
+              updateDiskSkipFormatting={updateDiskSkipFormatting}
+            />
+          ),
+          props: { 'data-testid': 'disk-formatted' },
+        },
         { title: disk.driveType, props: { 'data-testid': 'drive-type' } },
         { title: fileSize(disk.sizeBytes || 0, 2, 'si'), props: { 'data-testid': 'disk-size' } },
         { title: disk.serial, props: { 'data-testid': 'disk-serial' } },
