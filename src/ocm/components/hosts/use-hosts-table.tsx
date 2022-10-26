@@ -140,6 +140,7 @@ export const useHostsTable = (cluster: Cluster) => {
         }
 
         const { data } = await HostsService.updateDiskRole(host, diskId, role);
+
         resetCluster ? void resetCluster() : dispatch(updateHost(data));
       } catch (e) {
         handleApiError(e, () =>

@@ -13,6 +13,8 @@ import { TFunction } from 'i18next';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { useField } from 'formik';
 import { getFieldId } from './formik';
+import ExternalLink from './ExternalLink';
+import { OCP_RELEASES_PAGE } from '../../config';
 
 export type HelperTextType = (
   versions: OpenshiftVersionOptionType[],
@@ -30,6 +32,7 @@ type OpenShiftVersionDropdownProps = {
   isDisabled: boolean;
   versions: OpenshiftVersionOptionType[];
   getHelperText: HelperTextType;
+  showReleasesLink: boolean;
 };
 
 export const OpenShiftVersionDropdown = ({
@@ -39,6 +42,7 @@ export const OpenShiftVersionDropdown = ({
   isDisabled,
   versions,
   getHelperText,
+  showReleasesLink,
 }: OpenShiftVersionDropdownProps) => {
   const [field, , { setValue }] = useField(name);
   const [isOpen, setOpen] = React.useState(false);
@@ -93,6 +97,11 @@ export const OpenShiftVersionDropdown = ({
         className="pf-u-w-100"
       />
       <HelperText style={{ display: 'inherit' }}>{helperText}</HelperText>
+      {showReleasesLink && (
+        <ExternalLink href={`${window.location.origin}/${OCP_RELEASES_PAGE}`}>
+          {t('ai:Learn more about OpenShift releases')}
+        </ExternalLink>
+      )}
     </FormGroup>
   );
 };

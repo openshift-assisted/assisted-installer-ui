@@ -15,12 +15,10 @@ import DiskRole, { OnDiskRoleType } from '../hosts/DiskRole';
 import DiskLimitations from '../hosts/DiskLimitations';
 import { ExclamationTriangleIcon } from '@patternfly/react-icons';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
-import SkipFormattingCheckbox, {
+import FormatDiskCheckbox, {
   DiskFormattingType,
-  isDiskSkipFormatting,
-  isInstallationDisk,
-  isDiskFormattable,
-} from '../hosts/SkipFormattingCheckbox';
+  isInDiskSkipFormattingList,
+} from '../hosts/FormatDiskCheckbox';
 
 interface DisksTableProps extends WithTestID {
   canEditDisks?: (host: Host) => boolean;
@@ -73,7 +71,7 @@ const DisksTable = ({
         {
           title: (
             <>
-              {isDiskSkipFormatting(host, disk.id) && (
+              {isInDiskSkipFormattingList(host, disk.id) && (
                 <Popover bodyContent={<SkipFormattingDisk />} minWidth="20rem" maxWidth="30rem">
                   <ExclamationTriangleIcon color={warningColor.value} size="sm" />
                 </Popover>
@@ -97,9 +95,9 @@ const DisksTable = ({
           props: { 'data-testid': 'disk-role' },
         },
         { title: <DiskLimitations disk={disk} />, props: { 'data-testid': 'disk-limitations' } },
-        (isDiskFormattable(host, disk.id) || isInstallationDisk(disk.id, installationDiskId)) && {
+        {
           title: (
-            <SkipFormattingCheckbox
+            <FormatDiskCheckbox
               host={host}
               diskId={disk.id}
               installationDiskId={installationDiskId}
