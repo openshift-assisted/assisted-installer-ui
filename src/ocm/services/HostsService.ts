@@ -74,9 +74,13 @@ const HostsService = {
     diskId: Required<Disk>['id'],
     newDiskRole: DiskRole,
   ) {
-    return HostsService.update(clusterId, hostId, {
+    const params: HostUpdateParams = {
       disksSelectedConfig: [{ id: diskId, role: newDiskRole }],
-    });
+    };
+    if (newDiskRole === 'install') {
+      params.disksSkipFormatting = [{ diskId, skipFormatting: false }];
+    }
+    return HostsService.update(clusterId, hostId, params);
   },
 
   updateFormattingDisks(
