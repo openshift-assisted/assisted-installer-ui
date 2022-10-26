@@ -17,7 +17,7 @@ import { ExclamationTriangleIcon } from '@patternfly/react-icons';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
 import FormatDiskCheckbox, {
   DiskFormattingType,
-  isDiskSkipFormatting,
+  isInDiskSkipFormattingList,
 } from '../hosts/FormatDiskCheckbox';
 
 interface DisksTableProps extends WithTestID {
@@ -71,7 +71,7 @@ const DisksTable = ({
         {
           title: (
             <>
-              {isDiskSkipFormatting(host, disk.id) && (
+              {isInDiskSkipFormattingList(host, disk.id) && (
                 <Popover bodyContent={<SkipFormattingDisk />} minWidth="20rem" maxWidth="30rem">
                   <ExclamationTriangleIcon color={warningColor.value} size="sm" />
                 </Popover>

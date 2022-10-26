@@ -20,14 +20,14 @@ type FormatDiskProps = {
 export const isInstallationDisk = (diskId?: string, installationDiskId?: string) =>
   diskId === installationDiskId;
 
-export const isDiskSkipFormatting = (host: Host, diskId: string | undefined) => {
+export const isInDiskSkipFormattingList = (host: Host, diskId: string | undefined) => {
   return (
     trimCommaSeparatedList(host.skipFormattingDisks ? host.skipFormattingDisks : '')
       .split(',')
       .filter((diskSkipFormatting) => diskSkipFormatting === diskId).length > 0
   );
 };
-export const isDiskFormattable = (host: Host, diskId: string | undefined) => {
+export const isInDiskToBeFormattedList = (host: Host, diskId: string | undefined) => {
   return (
     trimCommaSeparatedList(host.disksToBeFormatted ? host.disksToBeFormatted : '')
       .split(',')
@@ -35,15 +35,27 @@ export const isDiskFormattable = (host: Host, diskId: string | undefined) => {
   );
 };
 
-export const isDiskToBeFormatted = (
+const isInvalidInstallationDisk = (
+  host: Host,
+  diskId: string | undefined,
+  installationDiskId: Host['installationDiskId'],
+) => {
+  // If it's an installation disk that somehow is set to skip formatting, enable the checkbox to let the user fix it
+  if (isInstallationDisk(diskId, installationDiskId)) {
+    return isInDiskSkipFormattingList(host, diskId);
+  }
+  return false;
+};
+
+export const isFormatDiskChecked = (
   host: Host,
   diskId: string | undefined,
   installationDiskId: Host['installationDiskId'],
 ) => {
   if (isInstallationDisk(diskId, installationDiskId)) {
-    return true;
+    return !isInDiskSkipFormattingList(host, diskId);
   }
-  return isDiskFormattable(host, diskId) && !isDiskSkipFormatting(host, diskId);
+  return isInDiskToBeFormattedList(host, diskId) && !isInDiskSkipFormattingList(host, diskId);
 };
 
 export const isFormatDiskDisabled = (
@@ -51,10 +63,11 @@ export const isFormatDiskDisabled = (
   diskId: string | undefined,
   installationDiskId: Host['installationDiskId'],
 ) => {
-  return (
-    !isDiskFormattable(host, diskId) ||
-    (isInstallationDisk(diskId, installationDiskId) && !isDiskSkipFormatting(host, diskId))
-  );
+  if (isInstallationDisk(diskId, installationDiskId)) {
+    // If it's an installation disk that somehow is set to skip formatting, enable the checkbox to let the user fix it
+    return !isInvalidInstallationDisk(host, diskId, installationDiskId);
+  }
+  return !isInDiskToBeFormattedList(host, diskId);
 };
 
 const onSelectFormattingDisk = (
@@ -80,11 +93,11 @@ const FormatDiskCheckbox = ({
     >
       <Checkbox
         id={`select-formatted-${host.id}-${index}`}
-        isChecked={isDiskToBeFormatted(host, diskId, installationDiskId)}
+        isChecked={isFormatDiskChecked(host, diskId, installationDiskId)}
+        isDisabled={isFormatDiskDisabled(host, diskId, installationDiskId)}
         onChange={(checked: boolean) =>
           onSelectFormattingDisk(checked, host.id, diskId, updateDiskSkipFormatting)
         }
-        isDisabled={isFormatDiskDisabled(host, diskId, installationDiskId)}
       />
     </Tooltip>
   );
