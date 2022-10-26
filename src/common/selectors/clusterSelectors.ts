@@ -126,4 +126,6 @@ export const selectSchedulableMasters = (cluster: Cluster): boolean => {
 };
 
 export const isClusterPlatformTypeVM = ({ platform }: Pick<Cluster, 'platform'>) =>
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   SupportedPlatformIntegrations.includes(platform?.type ?? 'none');

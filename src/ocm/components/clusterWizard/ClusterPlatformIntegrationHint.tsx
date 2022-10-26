@@ -1,15 +1,14 @@
 import React from 'react';
 import { Alert, AlertVariant } from '@patternfly/react-core';
 import { useClusterSupportedPlatforms } from '../../hooks';
-import { isClusterPlatformTypeVM, PlatformType } from '../../../common';
-import { PlatformIntegrationType } from '../../hooks/useClusterSupportedPlatforms';
+import { isClusterPlatformTypeVM, PlatformType, SupportedPlatformType } from '../../../common';
 
 type ClusterPlatformIntegrationHintProps = {
   clusterId: string;
   platformType: PlatformType;
 };
 
-const integrationBrands: Record<PlatformIntegrationType, string> = {
+const integrationBrands: Record<SupportedPlatformType, string> = {
   vsphere: 'vSphere',
   nutanix: 'Nutanix',
 };
