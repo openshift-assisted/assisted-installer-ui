@@ -50,8 +50,6 @@ import { getErrorMessage } from '../../../common/utils';
 import { selectCurrentClusterPermissionsState } from '../../selectors';
 import { hardwareStatusColumn } from './HardwareStatus';
 
-const DELETE_MODAL_STATUS_Z_INDEX = 500;
-
 export const useHostsTable = (cluster: Cluster) => {
   const { addAlert } = useAlerts();
   const {
@@ -393,7 +391,7 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
   } = useModalDialogsContext();
 
   const content = React.useMemo(
-    () => [hostnameColumn(t), hardwareStatusColumn({ zIndex: DELETE_MODAL_STATUS_Z_INDEX })],
+    () => [hostnameColumn(t), hardwareStatusColumn({ isWithinModal: true })],
     [t],
   );
   const paginationProps = usePagination(massDeleteHostDialog.data?.hosts?.length || 0);

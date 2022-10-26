@@ -19,8 +19,10 @@ type HardwareStatusProps = {
   host: Host;
   validationsInfo: ValidationsInfo;
   onEditHostname?: () => void;
-  zIndex?: number;
+  isWithinModal?: boolean;
 };
+
+const DELETE_MODAL_STATUS_Z_INDEX = 500;
 
 const HardwareStatus = (props: HardwareStatusProps) => {
   const hardwareStatus = getWizardStepHostStatus(
@@ -45,6 +47,7 @@ const HardwareStatus = (props: HardwareStatusProps) => {
   return (
     <HostStatus
       {...props}
+      zIndex={props.isWithinModal ? DELETE_MODAL_STATUS_Z_INDEX : undefined}
       status={{ ...status, sublabel }}
       validationsInfo={validationsInfo}
       AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
@@ -54,10 +57,10 @@ const HardwareStatus = (props: HardwareStatusProps) => {
 
 export const hardwareStatusColumn = ({
   onEditHostname,
-  zIndex,
+  isWithinModal,
 }: {
   onEditHostname?: HostsTableActions['onEditHost'];
-  zIndex?: number;
+  isWithinModal?: boolean;
 }): TableRow<Host> => {
   return {
     header: {
@@ -76,7 +79,7 @@ export const hardwareStatusColumn = ({
             host={host}
             onEditHostname={editHostname}
             validationsInfo={validationsInfo}
-            zIndex={zIndex}
+            isWithinModal={isWithinModal}
           />
         ),
         props: { 'data-testid': 'host-hw-status' },
