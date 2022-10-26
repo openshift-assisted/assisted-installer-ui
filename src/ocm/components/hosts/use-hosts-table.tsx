@@ -37,11 +37,7 @@ import {
   EditHostFormValues,
 } from '../../../common/components/hosts';
 import HostsTable from '../../../common/components/hosts/HostsTable';
-import {
-  hostActionResolver,
-  hostnameColumn,
-  statusColumn,
-} from '../../../common/components/hosts/tableUtils';
+import { hostActionResolver, hostnameColumn } from '../../../common/components/hosts/tableUtils';
 import ResetHostModal from './ResetHostModal';
 import DeleteHostModal from './DeleteHostModal';
 import { onFetchEvents } from '../fetching/fetchEvents';
@@ -52,6 +48,7 @@ import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { getErrorMessage } from '../../../common/utils';
 import { selectCurrentClusterPermissionsState } from '../../selectors';
+import { hardwareStatusColumn } from './HardwareStatus';
 
 export const useHostsTable = (cluster: Cluster) => {
   const { addAlert } = useAlerts();
@@ -415,7 +412,10 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
     massDeleteHostDialog,
   } = useModalDialogsContext();
 
-  const content = React.useMemo(() => [hostnameColumn(t), statusColumn(t)], [t]);
+  const content = React.useMemo(
+    () => [hostnameColumn(t), hardwareStatusColumn({ isWithinModal: true })],
+    [t],
+  );
   const paginationProps = usePagination(massDeleteHostDialog.data?.hosts?.length || 0);
 
   return (
