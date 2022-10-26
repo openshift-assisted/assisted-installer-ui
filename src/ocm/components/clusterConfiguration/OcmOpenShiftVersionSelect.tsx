@@ -15,6 +15,7 @@ import { diffInDaysBetweenDates } from '../../../common/sevices/DateAndTime';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { OPENSHIFT_LIFE_CYCLE_DATES_LINK } from '../../../common/config';
 import { TFunction } from 'i18next';
+import { ocmClient } from '../../api';
 
 const OpenShiftLifeCycleDatesLink = () => {
   const { t } = useTranslation();
@@ -99,6 +100,7 @@ const OcmOpenShiftVersionSelect: React.FC<OcmOpenShiftVersionSelectProps> = ({ v
       isDisabled={versions.length === 0}
       versions={versions}
       getHelperText={getOpenshiftVersionHelperText}
+      showReleasesLink={ocmClient !== undefined}
     />
   );
 };

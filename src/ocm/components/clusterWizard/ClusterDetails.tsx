@@ -20,7 +20,7 @@ import ClusterDetailsForm from './ClusterDetailsForm';
 import ClusterWizardNavigation from './ClusterWizardNavigation';
 import { routeBasePath } from '../../config';
 import { ClusterDetailsService } from '../../services';
-import { CreateParams } from '../../services/types';
+import { ClusterCreateParamsWithStaticNetworking } from '../../services/types';
 
 type ClusterDetailsProps = {
   cluster?: Cluster;
@@ -62,7 +62,7 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster, infraEnv }) =>
   );
 
   const handleClusterCreate = React.useCallback(
-    async (params: CreateParams) => {
+    async (params: ClusterCreateParamsWithStaticNetworking) => {
       clearAlerts();
       try {
         const cluster = await ClusterDetailsService.create(params);

@@ -9,15 +9,17 @@ import {
   List,
   ListItem,
 } from '@patternfly/react-core';
-import { WizardStepsValidationMap } from './validationsInfoUtils';
+import { checkHostValidations, WizardStepsValidationMap } from './validationsInfoUtils';
 import { Cluster } from '../../api/types';
 import { ValidationsInfo } from '../../types/clusters';
+import { ValidationsInfo as HostValidationsInfo } from '../../types/hosts';
 import { ClusterWizardStepHostStatusDeterminationObject, Validation } from '../../types/hosts';
 import {
   getWizardStepClusterStatus,
   getWizardStepClusterValidationsInfo,
 } from './validationsInfoUtils';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { stringToJSON } from '../../api';
 
 type ClusterWizardStepValidationsAlertProps<ClusterWizardStepsType extends string> = {
   currentStepId: ClusterWizardStepsType;
@@ -36,22 +38,31 @@ const ClusterWizardStepValidationsAlert = <ClusterWizardStepsType extends string
   wizardStepsValidationsMap,
   children,
 }: ClusterWizardStepValidationsAlertProps<ClusterWizardStepsType>) => {
-  const { failedClusterValidations } = React.useMemo(() => {
+  const { failedClusterValidations, failedHostnameValidations } = React.useMemo(() => {
     const reducedValidationsInfo = getWizardStepClusterValidationsInfo(
       validationsInfo || {},
       currentStepId,
       wizardStepsValidationsMap,
     );
+
     const flattenedValues = lodashValues(reducedValidationsInfo).flat();
+
+    const hostnameValidations = hosts.some((host) => {
+      const validations =
+        typeof host.validationsInfo === 'string'
+          ? stringToJSON<HostValidationsInfo>(host.validationsInfo)
+          : host.validationsInfo;
+
+      return !checkHostValidations(validations || {}, ['hostname-valid', 'hostname-unique']);
+    });
+
     return {
-      pendingClusterValidations: flattenedValues.filter(
-        (validation) => validation?.status === 'pending',
-      ),
       failedClusterValidations: flattenedValues.filter(
         (validation) => validation?.status === 'failure',
       ),
+      failedHostnameValidations: hostnameValidations,
     };
-  }, [validationsInfo, currentStepId, wizardStepsValidationsMap]);
+  }, [validationsInfo, currentStepId, wizardStepsValidationsMap, hosts]);
 
   const isClusterReady =
     getWizardStepClusterStatus(
@@ -72,20 +83,29 @@ const ClusterWizardStepValidationsAlert = <ClusterWizardStepsType extends string
         <AlertGroup>
           {children}
           <Alert variant={AlertVariant.warning} title="Cluster is not ready yet." isInline>
-            {!!failedClusterValidations.length && (
-              <Flex spaceItems={{ default: 'spaceItemsSm' }} direction={{ default: 'column' }}>
-                <FlexItem>{t('ai:The following requirements must be met:')}</FlexItem>
+            <Flex spaceItems={{ default: 'spaceItemsSm' }} direction={{ default: 'column' }}>
+              {!!failedClusterValidations.length && (
+                <>
+                  <FlexItem>{t('ai:The following requirements must be met:')}</FlexItem>
+                  <FlexItem>
+                    <List>
+                      {(failedClusterValidations.filter(Boolean) as Validation[]).map(
+                        (validation) => (
+                          <ListItem key={validation.id}>{validation.message}</ListItem>
+                        ),
+                      )}
+                    </List>
+                  </FlexItem>
+                </>
+              )}
+              {failedHostnameValidations && (
                 <FlexItem>
-                  <List>
-                    {(failedClusterValidations.filter(Boolean) as Validation[]).map(
-                      (validation) => (
-                        <ListItem key={validation.id}>{validation.message}</ListItem>
-                      ),
-                    )}
-                  </List>
+                  {t(
+                    'ai:The cluster is not ready yet. Some hosts have an ineligible name. To change the hostname, click on it.',
+                  )}
                 </FlexItem>
-              </Flex>
-            )}
+              )}
+            </Flex>
           </Alert>
         </AlertGroup>
       )}

@@ -1,6 +1,6 @@
 import { ClusterCreateParams, ClusterDetailsValues, HostStaticNetworkConfig } from '../../common';
 
-export type CreateParams = ClusterCreateParams & {
+export type ClusterCreateParamsWithStaticNetworking = ClusterCreateParams & {
   staticNetworkConfig?: HostStaticNetworkConfig[];
 };
 

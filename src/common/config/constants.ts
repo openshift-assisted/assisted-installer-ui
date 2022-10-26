@@ -111,7 +111,7 @@ export const hostValidationGroupLabels = (
 });
 
 export const hostValidationLabels = (t: TFunction): { [key in HostValidationId]: string } => ({
-  'compatible-with-cluster-platform': '',
+  'compatible-with-cluster-platform': t('ai:Compatible with cluster platform'),
   'has-default-route': t('ai:Default route to host'),
   'sufficient-network-latency-requirement-for-role': t('ai:Network latency'),
   'sufficient-packet-loss-requirement-for-role': t('ai:Packet loss'),
@@ -276,7 +276,6 @@ export const diskRoleLabels = (t: TFunction): { [key in DiskRole]: string } => (
 // The API uses free-form string for operator names, so let's guard at least using constants
 export const OPERATOR_NAME_CNV = 'cnv';
 export const OPERATOR_NAME_LSO = 'lso';
-export const OPERATOR_NAME_OCS = 'ocs'; // TODO(jkilzi): Remove once OCS is replaced by ODF
 export const OPERATOR_NAME_ODF = 'odf';
 export const OPERATOR_NAME_LVM = 'lvm';
 export const OPERATOR_NAME_CVO = 'cvo';
@@ -285,7 +284,6 @@ export const OPERATOR_NAME_CONSOLE = 'console';
 export type OperatorName =
   | typeof OPERATOR_NAME_CNV
   | typeof OPERATOR_NAME_LSO
-  | typeof OPERATOR_NAME_OCS
   | typeof OPERATOR_NAME_ODF
   | typeof OPERATOR_NAME_LVM
   | typeof OPERATOR_NAME_CVO
@@ -295,7 +293,6 @@ export const operatorLabels = (t: TFunction): { [key in OperatorName]: string } 
   [OPERATOR_NAME_CONSOLE]: t('ai:OpenShift Console'),
   [OPERATOR_NAME_CVO]: t('ai:OpenShift Cluster Version Operator'),
   [OPERATOR_NAME_LSO]: t('ai:OpenShift Local Storage'),
-  [OPERATOR_NAME_OCS]: t('ai:OpenShift Container Storage'), // TODO(jkilzi): Remove once OCS is replaced by ODF
   [OPERATOR_NAME_ODF]: t('ai:OpenShift Data Foundation'),
   [OPERATOR_NAME_LVM]: t('ai:OpenShift Data Foundation Logical Volume Manager'),
   [OPERATOR_NAME_CNV]: t('ai:OpenShift Virtualization'),
@@ -305,3 +302,5 @@ export const OCP_STATIC_IP_DOC =
   'https://docs.openshift.com/container-platform/latest/scalability_and_performance/ztp-deploying-disconnected.html#ztp-configuring-a-static-ip_ztp-deploying-disconnected';
 
 export const AI_UI_TAG = 'ui_ocm';
+
+export const OCP_RELEASES_PAGE = 'openshift/releases';
