@@ -1,7 +1,7 @@
 import React from 'react';
 import { Checkbox, Tooltip } from '@patternfly/react-core';
 import { Disk, Host } from '../../api';
-import { getInventory, OpticalDiskDriveType, trimCommaSeparatedList } from '../..';
+import { trimCommaSeparatedList } from '../..';
 
 export type DiskFormattingType = (
   shouldFormatDisk: boolean,
@@ -51,13 +51,10 @@ export const isFormatDiskDisabled = (
   diskId: string | undefined,
   installationDiskId: Host['installationDiskId'],
 ) => {
-  const inventory = getInventory(host);
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const disk = (inventory.disks || []).find((disk) => disk.id === diskId)!;
-  const isInstallationDisk = disk.id === installationDiskId;
-  const condition =
-    disk.driveType === OpticalDiskDriveType || disk.driveType === 'Unknown' || isInstallationDisk;
-  return condition;
+  return (
+    !isDiskFormattable(host, diskId) ||
+    (isInstallationDisk(diskId, installationDiskId) && !isDiskSkipFormatting(host, diskId))
+  );
 };
 
 const onSelectFormattingDisk = (
