@@ -141,7 +141,7 @@ const hostDiscoveryStepValidationsMap: WizardStepValidationMap = {
       'cnv-requirements-satisfied',
     ],
   },
-  softValidationIds: [],
+  softValidationIds: ['no-skip-installation-disk', 'no-skip-missing-disk'],
 };
 
 const storageStepValidationsMap: WizardStepValidationMap = {
