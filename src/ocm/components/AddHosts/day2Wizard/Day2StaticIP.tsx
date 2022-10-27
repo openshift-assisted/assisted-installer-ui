@@ -2,7 +2,6 @@ import React from 'react';
 import { Grid, TextContent, Text, TextVariants } from '@patternfly/react-core';
 import {
   ClusterWizardStep,
-  CpuArchitecture,
   InfraEnv,
   InfraEnvUpdateParams,
   WizardFooter,
@@ -34,21 +33,23 @@ const Day2StaticIP = () => {
   const [formState, setFormState] = React.useState<StaticIpFormState>();
   const { data, close } = day2DiscoveryImageDialog;
   const cluster = data.cluster;
-  const { updateInfraEnv } = useInfraEnv(cluster.id, CpuArchitecture.x86);
+
+  const day1CpuArchitecture = mapClusterCpuArchToInfraEnvCpuArch(cluster.cpuArchitecture);
+  const { updateInfraEnv } = useInfraEnv(cluster.id, day1CpuArchitecture);
 
   React.useEffect(() => {
-    const doItAsync = async () => {
-      // TODO celia does not query
+    const setCurrentStaticConfig = async () => {
       const { data: infraEnv } = await InfraEnvsService.getInfraEnv(
         cluster.id,
-        mapClusterCpuArchToInfraEnvCpuArch(cluster.cpuArchitecture),
+        day1CpuArchitecture,
       );
       setInfraEnv(infraEnv);
-      infraEnv && setInitialStaticIpInfo(getStaticIpInfo(infraEnv));
+      if (infraEnv) {
+        setInitialStaticIpInfo(getStaticIpInfo(infraEnv));
+      }
     };
-    void doItAsync();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    void setCurrentStaticConfig();
+  }, [cluster.id, day1CpuArchitecture]);
 
   const onChangeView = React.useCallback((view: StaticIpView) => {
     wizardContext.onUpdateStaticIpView(view);
@@ -104,7 +105,6 @@ const Day2StaticIP = () => {
       navigation={<Day2WizardNav />}
       footer={
         <WizardFooter
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onNext={() => wizardContext.moveNext()}
           onBack={() => wizardContext.moveBack()}
           isNextDisabled={!formState?.isValid || formState.isAutoSaveRunning}

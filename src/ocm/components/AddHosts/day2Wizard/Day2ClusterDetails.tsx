@@ -2,12 +2,12 @@ import { Grid, GridItem } from '@patternfly/react-core';
 import { Form, Formik } from 'formik';
 import React from 'react';
 import {
+  Cluster,
   ClusterWizardStep,
   ClusterWizardStepHeader,
   CpuArchitecture,
-  WizardFooter,
-  Cluster,
   LoadingState,
+  WizardFooter,
 } from '../../../../common';
 import DiscoverImageCpuArchitectureControlGroup from '../../../../common/components/clusterConfiguration/DiscoveryImageCpuArchitectureControlGroup';
 import { HostsNetworkConfigurationType, InfraEnvsService } from '../../../services';
@@ -25,7 +25,6 @@ const getDay2ClusterDetailInitialValues = async (
   day1CpuArchitecture: CpuArchitecture,
 ) => {
   try {
-    // TODO celia does not query
     const { data: infraEnv } = await InfraEnvsService.getInfraEnv(clusterId, day1CpuArchitecture);
 
     return {
@@ -68,11 +67,14 @@ const Day2ClusterDetails = () => {
     async (values: Day2ClusterDetailValues) => {
       try {
         setSubmitting(true);
-        await InfraEnvsService.syncDhcpOrStaticIpConfigs(
-          cluster.id,
-          values.hostsNetworkConfigurationType,
-        );
 
+        // - If the user selected DHCP, update all infraEnvs to have DHCP too
+        // - If the user selected StaticIP, perform no changes yet.
+        //   (The changes will be synced to all the infraEnvs when they are submitted on the StaticIP steps)
+        const isDhcp = values.hostsNetworkConfigurationType === HostsNetworkConfigurationType.DHCP;
+        if (isDhcp) {
+          await InfraEnvsService.updateAllInfraEnvsToDhcp(cluster.id);
+        }
         wizardContext.setSelectedCpuArchitecture(values.cpuArchitecture);
         wizardContext.moveNext();
       } catch (error) {
