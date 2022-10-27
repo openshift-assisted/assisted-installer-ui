@@ -8,7 +8,7 @@ const OCM_DISCOVERED_HOSTS_ARCH_ARM = 'arm64';
 const OCM_DISCOVERED_HOSTS_ARCH_MULTI = 'multi';
 
 // OCM's "arch" field is based on the hosts that have been discovered to this moment
-export const getDefaultCpuArchitecture = (ocmArch: string): CpuArchitecture => {
+export const getDefaultOcmCpuArchitecture = (ocmArch: string): CpuArchitecture => {
   switch (ocmArch) {
     case OCM_DISCOVERED_HOSTS_ARCH_x86:
       return CpuArchitecture.x86;
@@ -18,6 +18,19 @@ export const getDefaultCpuArchitecture = (ocmArch: string): CpuArchitecture => {
       return CpuArchitecture.x86;
     default:
       throw new Error(`Unknown OCM CPU architecture: ${ocmArch}`);
+  }
+};
+
+export const getDefaultDay1CpuArchitecture = (
+  cpuArchitecture: CpuArchitecture,
+): CpuArchitecture => {
+  switch (cpuArchitecture) {
+    case CpuArchitecture.ARM:
+      return CpuArchitecture.ARM;
+    case CpuArchitecture.DAY1_CLUSTER_USES_MULTI:
+    default:
+      // For multi, set default selection to x86, although they can choose the other architectures too
+      return CpuArchitecture.x86;
   }
 };
 
@@ -60,7 +73,7 @@ const Day2ClusterService = {
     } else {
       const cpuArchitectures = isMultiArch
         ? SupportedCpuArchitectures
-        : [getDefaultCpuArchitecture(ocmCluster.cpu_architecture)];
+        : [getDefaultOcmCpuArchitecture(ocmCluster.cpu_architecture)];
       return Day2ClusterService.createCluster(
         openshiftClusterId,
         ocmCluster.display_name || ocmCluster.name || openshiftClusterId,
@@ -131,7 +144,7 @@ const Day2ClusterService = {
     return {
       ...day2Cluster,
       openshiftVersion: ocmCluster.openshift_version,
-      cpuArchitecture: getDefaultCpuArchitecture(ocmCluster.cpu_architecture),
+      cpuArchitecture: getDefaultOcmCpuArchitecture(ocmCluster.cpu_architecture),
     };
   },
 };
