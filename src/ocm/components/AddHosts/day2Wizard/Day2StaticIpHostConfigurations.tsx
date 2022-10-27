@@ -6,7 +6,9 @@ import { HostsNetworkConfigurationType } from '../../../services';
 import { getFieldId, RadioField } from '../../../../common';
 import { Day2ClusterDetailValues } from '../types';
 
-const Day2HostConfigurations = () => {
+const GROUP_NAME = 'hostsNetworkConfigurationType';
+
+const Day2HostStaticIpConfigurations = () => {
   const { values, setFieldValue } = useFormikContext<Day2ClusterDetailValues>();
   const wizardContext = useDay2WizardContext();
 
@@ -14,7 +16,6 @@ const Day2HostConfigurations = () => {
     if (values.hostsNetworkConfigurationType) {
       wizardContext.onUpdateHostNetworkConfigType(values.hostsNetworkConfigurationType);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onChangeNetworkType = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,17 +27,13 @@ const Day2HostConfigurations = () => {
   return (
     <FormGroup
       label="Hosts' network configuration"
-      fieldId={getFieldId('hostsNetworkConfigurationType', 'radio')}
+      fieldId={getFieldId(GROUP_NAME, 'radio')}
       isInline
       onChange={onChangeNetworkType}
     >
+      <RadioField name={GROUP_NAME} value={HostsNetworkConfigurationType.DHCP} label="DHCP only" />
       <RadioField
-        name={'hostsNetworkConfigurationType'}
-        value={HostsNetworkConfigurationType.DHCP}
-        label="DHCP only"
-      />
-      <RadioField
-        name={'hostsNetworkConfigurationType'}
+        name={GROUP_NAME}
         value={HostsNetworkConfigurationType.STATIC}
         label="Static IP, bridges, and bonds"
       />
@@ -44,4 +41,4 @@ const Day2HostConfigurations = () => {
   );
 };
 
-export default Day2HostConfigurations;
+export default Day2HostStaticIpConfigurations;

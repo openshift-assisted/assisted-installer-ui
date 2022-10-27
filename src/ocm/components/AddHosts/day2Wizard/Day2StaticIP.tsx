@@ -1,5 +1,5 @@
-import { Grid, TextContent, Text, TextVariants } from '@patternfly/react-core';
 import React from 'react';
+import { Grid, TextContent, Text, TextVariants } from '@patternfly/react-core';
 import {
   ClusterWizardStep,
   CpuArchitecture,
@@ -21,9 +21,9 @@ import { StaticIpInfo, StaticIpView } from '../../clusterConfiguration/staticIp/
 import { getStaticIpInfo } from '../../clusterConfiguration/staticIp/data/fromInfraEnv';
 import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
 import { useDay2WizardContext } from './Day2WizardContext';
-import { Day2WizardNav } from './Day2WizardNav';
+import Day2WizardNav from './Day2WizardNav';
 
-export const Day2StaticIP = () => {
+const Day2StaticIP = () => {
   const { day2DiscoveryImageDialog } = useModalDialogsContext();
   const wizardContext = useDay2WizardContext();
   const [infraEnv, setInfraEnv] = React.useState<InfraEnv>();
@@ -37,6 +37,7 @@ export const Day2StaticIP = () => {
 
   React.useEffect(() => {
     const doItAsync = async () => {
+      // TODO celia does not query
       const { data: infraEnv } = await InfraEnvsService.getInfraEnv(
         cluster.id,
         cluster.cpuArchitecture as CpuArchitecture,
@@ -111,24 +112,24 @@ export const Day2StaticIP = () => {
         />
       }
     >
-      {
-        <Grid hasGutter>
-          <TextContent>
-            <Text component={TextVariants.h2}>Static network configurations</Text>
-            <Text component={TextVariants.small}>
-              Network configuration can be done using either the form view or YAML view.
-              Configurations done in this step are for discovering hosts.
-            </Text>
-          </TextContent>
+      <Grid hasGutter>
+        <TextContent>
+          <Text component={TextVariants.h2}>Static network configurations</Text>
+          <Text component={TextVariants.small}>
+            Network configuration can be done using either the form view or YAML view.
+            Configurations done in this step are for discovering hosts.
+          </Text>
+        </TextContent>
 
-          <StaticIpViewRadioGroup
-            initialView={initialStaticIpInfo.view}
-            confirmOnChangeView={confirmOnChangeView}
-            onChangeView={onChangeView}
-          />
-          {content}
-        </Grid>
-      }
+        <StaticIpViewRadioGroup
+          initialView={initialStaticIpInfo.view}
+          confirmOnChangeView={confirmOnChangeView}
+          onChangeView={onChangeView}
+        />
+        {content}
+      </Grid>
     </ClusterWizardStep>
   );
 };
+
+export default Day2StaticIP;

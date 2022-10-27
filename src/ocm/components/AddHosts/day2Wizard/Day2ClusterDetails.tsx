@@ -1,5 +1,5 @@
 import { Grid, GridItem } from '@patternfly/react-core';
-import { Form, Formik, FormikHelpers } from 'formik';
+import { Form, Formik } from 'formik';
 import React from 'react';
 import {
   ClusterWizardStep,
@@ -8,29 +8,27 @@ import {
   WizardFooter,
   Cluster,
   LoadingState,
-  InfraEnvUpdateParams,
 } from '../../../../common';
+import DiscoverImageCpuArchitectureControlGroup from '../../../../common/components/clusterConfiguration/DiscoveryImageCpuArchitectureControlGroup';
 import { HostsNetworkConfigurationType, InfraEnvsService } from '../../../services';
 import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
-import { useDay2WizardContext } from './Day2WizardContext';
-import { Day2WizardNav } from './Day2WizardNav';
-import DiscoverImageCpuArchitectureControlGroup from '../../../../common/components/clusterConfiguration/DiscoveryImageCpuArchitectureControlGroup';
 import { useOpenshiftVersions } from '../../../hooks';
 import { handleApiError } from '../../../api';
-import { getDummyInfraEnvField } from '../../clusterConfiguration/staticIp/data/dummyData';
-import { InfraEnvsAPI } from '../../../services/apis';
-import Day2HostConfigurations from './Day2StaticIpHostConfigurations';
 import { Day2ClusterDetailValues } from '../types';
+import { useDay2WizardContext } from './Day2WizardContext';
+import Day2WizardNav from './Day2WizardNav';
+import Day2HostStaticIpConfigurations from './Day2StaticIpHostConfigurations';
 
 const getDay2ClusterDetailInitialValues = async (
   clusterId: Cluster['id'],
   day1CpuArchitecture: CpuArchitecture,
 ) => {
   try {
+    // TODO celia does not query
     const { data: infraEnv } = await InfraEnvsService.getInfraEnv(clusterId, day1CpuArchitecture);
 
     return {
-      cpuArchitecture: day1CpuArchitecture || CpuArchitecture.x86,
+      cpuArchitecture: day1CpuArchitecture,
       hostsNetworkConfigurationType: infraEnv.staticNetworkConfig
         ? HostsNetworkConfigurationType.STATIC
         : HostsNetworkConfigurationType.DHCP,
@@ -40,51 +38,39 @@ const getDay2ClusterDetailInitialValues = async (
   }
 };
 
-export const Day2ClusterDetails = () => {
+const Day2ClusterDetails = () => {
   const { day2DiscoveryImageDialog } = useModalDialogsContext();
   const {
     close,
     data: { cluster },
   } = day2DiscoveryImageDialog;
   const wizardContext = useDay2WizardContext();
-  const day1CpuArchitecture = cluster.cpuArchitecture as CpuArchitecture;
   const { isMultiCpuArchSupported } = useOpenshiftVersions();
   const [initialValues, setInitialValues] = React.useState<Day2ClusterDetailValues>();
   const [isSubmitting, setSubmitting] = React.useState(false);
 
+  const isMultiArch = isMultiCpuArchSupported(cluster.openshiftVersion);
+  const day1CpuArchitecture = cluster.cpuArchitecture as CpuArchitecture;
+
   React.useEffect(() => {
-    const doItAsync = async () => {
+    const fetchAndSetInitialValues = async () => {
       const initialValues = await getDay2ClusterDetailInitialValues(
         cluster.id,
         day1CpuArchitecture,
       );
       setInitialValues(initialValues);
     };
-    void doItAsync();
+    void fetchAndSetInitialValues();
   }, [cluster.id, day1CpuArchitecture]);
 
   const handleSubmit = React.useCallback(
     async (values: Day2ClusterDetailValues) => {
       try {
         setSubmitting(true);
-        const { data: infraEnvs } = await InfraEnvsAPI.list(cluster.id);
-        const staticIPSet = infraEnvs.every((infraEnv) => infraEnv.staticNetworkConfig);
-
-        const infraEnvUpdateParams: InfraEnvUpdateParams = {
-          staticNetworkConfig:
-            values.hostsNetworkConfigurationType === HostsNetworkConfigurationType.STATIC
-              ? getDummyInfraEnvField()
-              : [],
-        };
-
-        if (
-          !(
-            values.hostsNetworkConfigurationType === HostsNetworkConfigurationType.STATIC &&
-            staticIPSet
-          )
-        ) {
-          await InfraEnvsService.updateAll(cluster.id, infraEnvUpdateParams);
-        }
+        await InfraEnvsService.syncDhcpOrStaticIpConfigs(
+          cluster.id,
+          values.hostsNetworkConfigurationType,
+        );
 
         wizardContext.setSelectedCpuArchitecture(values.cpuArchitecture);
         wizardContext.moveNext();
@@ -97,13 +83,11 @@ export const Day2ClusterDetails = () => {
     [cluster.id, wizardContext],
   );
 
-  const handleOnNext = (submitForm: FormikHelpers<unknown>['submitForm']) => {
-    return submitForm;
-  };
+  if (!initialValues) {
+    return <LoadingState />;
+  }
 
-  const isMultiArch = isMultiCpuArchSupported(cluster.openshiftVersion);
-
-  return initialValues ? (
+  return (
     <Formik initialValues={initialValues} onSubmit={handleSubmit}>
       {({ submitForm }) => {
         return (
@@ -111,8 +95,9 @@ export const Day2ClusterDetails = () => {
             navigation={<Day2WizardNav />}
             footer={
               <WizardFooter
-                // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                onNext={handleOnNext(submitForm)}
+                onNext={() => {
+                  void submitForm();
+                }}
                 onBack={() => wizardContext.moveBack()}
                 isBackDisabled={wizardContext.currentStepId === 'cluster-details'}
                 isNextDisabled={wizardContext.currentStepId === 'download-iso'}
@@ -133,7 +118,7 @@ export const Day2ClusterDetails = () => {
                   />
                 </GridItem>
                 <GridItem>
-                  <Day2HostConfigurations />
+                  <Day2HostStaticIpConfigurations />
                 </GridItem>
               </Grid>
             </Form>
@@ -141,7 +126,7 @@ export const Day2ClusterDetails = () => {
         );
       }}
     </Formik>
-  ) : (
-    <LoadingState />
   );
 };
+
+export default Day2ClusterDetails;
