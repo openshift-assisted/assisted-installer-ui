@@ -136,7 +136,7 @@ export const HostsClusterDetailTabContent = ({
             isMultiCpuArchSupported(ocmCluster.openshift_version),
           );
           setDay2Cluster(
-            Day2ClusterService.mapOcmClusterToAssistedCluster(day2Cluster, ocmCluster),
+            Day2ClusterService.completeAiClusterWithOcmCluster(day2Cluster, ocmCluster),
           );
         } catch (e) {
           handleApiError(e);
@@ -180,7 +180,7 @@ export const HostsClusterDetailTabContent = ({
     try {
       const updatedDay2Cluster = await Day2ClusterService.fetchClusterById(day2Cluster.id);
       setDay2Cluster(
-        Day2ClusterService.mapOcmClusterToAssistedCluster(updatedDay2Cluster, ocmCluster),
+        Day2ClusterService.completeAiClusterWithOcmCluster(updatedDay2Cluster, ocmCluster),
       );
     } catch (e) {
       handleApiError(e);

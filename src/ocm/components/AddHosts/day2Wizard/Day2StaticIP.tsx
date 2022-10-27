@@ -22,6 +22,7 @@ import { getStaticIpInfo } from '../../clusterConfiguration/staticIp/data/fromIn
 import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
 import { useDay2WizardContext } from './Day2WizardContext';
 import Day2WizardNav from './Day2WizardNav';
+import { mapClusterCpuArchToInfraEnvCpuArch } from '../../../services/CpuArchitectureService';
 
 const Day2StaticIP = () => {
   const { day2DiscoveryImageDialog } = useModalDialogsContext();
@@ -40,7 +41,7 @@ const Day2StaticIP = () => {
       // TODO celia does not query
       const { data: infraEnv } = await InfraEnvsService.getInfraEnv(
         cluster.id,
-        cluster.cpuArchitecture as CpuArchitecture,
+        mapClusterCpuArchToInfraEnvCpuArch(cluster.cpuArchitecture),
       );
       setInfraEnv(infraEnv);
       infraEnv && setInitialStaticIpInfo(getStaticIpInfo(infraEnv));

@@ -1,4 +1,9 @@
-import { Cluster, CpuArchitecture, FeatureSupportLevels } from '../../../common';
+import {
+  Cluster,
+  CpuArchitecture,
+  FeatureSupportLevels,
+  OcmCpuArchitecture,
+} from '../../../common';
 import { HostsNetworkConfigurationType } from '../../services';
 
 /* The type is reverse engineered.
@@ -12,7 +17,7 @@ export type OcmClusterType = {
   name: string;
   display_name: string;
   openshift_version: string;
-  cpu_architecture: string;
+  cpu_architecture: OcmCpuArchitecture;
   managed: boolean;
   canEdit: boolean;
   canDelete: boolean;

@@ -16,7 +16,7 @@ const Day2HostStaticIpConfigurations = () => {
     if (values.hostsNetworkConfigurationType) {
       wizardContext.onUpdateHostNetworkConfigType(values.hostsNetworkConfigurationType);
     }
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const onChangeNetworkType = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;

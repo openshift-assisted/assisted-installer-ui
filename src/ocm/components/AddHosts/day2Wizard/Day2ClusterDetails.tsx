@@ -18,6 +18,7 @@ import { Day2ClusterDetailValues } from '../types';
 import { useDay2WizardContext } from './Day2WizardContext';
 import Day2WizardNav from './Day2WizardNav';
 import Day2HostStaticIpConfigurations from './Day2StaticIpHostConfigurations';
+import { mapClusterCpuArchToInfraEnvCpuArch } from '../../../services/CpuArchitectureService';
 
 const getDay2ClusterDetailInitialValues = async (
   clusterId: Cluster['id'],
@@ -50,7 +51,7 @@ const Day2ClusterDetails = () => {
   const [isSubmitting, setSubmitting] = React.useState(false);
 
   const isMultiArch = isMultiCpuArchSupported(cluster.openshiftVersion);
-  const day1CpuArchitecture = cluster.cpuArchitecture as CpuArchitecture;
+  const day1CpuArchitecture = mapClusterCpuArchToInfraEnvCpuArch(cluster.cpuArchitecture);
 
   React.useEffect(() => {
     const fetchAndSetInitialValues = async () => {
