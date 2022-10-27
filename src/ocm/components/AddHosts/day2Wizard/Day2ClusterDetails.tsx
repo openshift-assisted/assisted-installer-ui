@@ -76,7 +76,7 @@ const Day2ClusterDetails = () => {
           await InfraEnvsService.updateAllInfraEnvsToDhcp(cluster.id);
         }
         wizardContext.setSelectedCpuArchitecture(values.cpuArchitecture);
-        wizardContext.moveNext();
+        wizardContext.onUpdateHostNetworkConfigType(values.hostsNetworkConfigurationType);
       } catch (error) {
         handleApiError(error);
       } finally {
