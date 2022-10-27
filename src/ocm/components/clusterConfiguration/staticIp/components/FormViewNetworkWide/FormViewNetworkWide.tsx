@@ -5,7 +5,11 @@ import { FormViewHost, FormViewNetworkWideValues } from '../../data/dataTypes';
 import { networkWideValidationSchema } from './formViewNetworkWideValidationSchema';
 import { networkWideToInfraEnvField } from '../../data/formDataToInfraEnvField';
 import { FormViewNetworkWideFields } from './FormViewNetworkWideFields';
-import { getFormData, getFormViewNetworkWideValues } from '../../data/fromInfraEnv';
+import {
+  getFormData,
+  getFormViewNetworkWideValues,
+  getStaticNetworkConfig,
+} from '../../data/fromInfraEnv';
 import { getEmptyNetworkWideConfigurations } from '../../data/emptyData';
 import { InfraEnv } from '../../../../../../common';
 
@@ -14,7 +18,8 @@ export const FormViewNetworkWide: React.FC<StaticIpViewProps> = ({ infraEnv, ...
   const [hosts, setHosts] = React.useState<FormViewHost[]>();
 
   React.useEffect(() => {
-    const _hosts = getFormData(infraEnv).hosts;
+    const staticNetworkConfig = getStaticNetworkConfig(infraEnv);
+    const _hosts = getFormData(staticNetworkConfig).hosts;
     setHosts(_hosts);
     if (!_hosts) {
       return;

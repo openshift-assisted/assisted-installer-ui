@@ -1,7 +1,15 @@
 import React from 'react';
-import { Grid, TextContent, Text, TextVariants } from '@patternfly/react-core';
+import {
+  Grid,
+  TextContent,
+  Text,
+  TextVariants,
+  PageSection,
+  PageSectionVariants,
+} from '@patternfly/react-core';
 import {
   ClusterWizardStep,
+  ErrorState,
   InfraEnv,
   InfraEnvUpdateParams,
   WizardFooter,
@@ -17,11 +25,12 @@ import {
 import StaticIpViewRadioGroup from '../../clusterConfiguration/staticIp/components/StaticIpViewRadioGroup';
 import { YamlView } from '../../clusterConfiguration/staticIp/components/YamlView/YamlView';
 import { StaticIpInfo, StaticIpView } from '../../clusterConfiguration/staticIp/data/dataTypes';
-import { getStaticIpInfo } from '../../clusterConfiguration/staticIp/data/fromInfraEnv';
+import { getOrCreateStaticIpInfo } from '../../clusterConfiguration/staticIp/data/fromInfraEnv';
 import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
 import { useDay2WizardContext } from './Day2WizardContext';
 import Day2WizardNav from './Day2WizardNav';
 import { mapClusterCpuArchToInfraEnvCpuArch } from '../../../services/CpuArchitectureService';
+import { getDummyInfraEnvField } from '../../clusterConfiguration/staticIp/data/dummyData';
 
 const Day2StaticIP = () => {
   const { day2DiscoveryImageDialog } = useModalDialogsContext();
@@ -43,9 +52,17 @@ const Day2StaticIP = () => {
         cluster.id,
         day1CpuArchitecture,
       );
-      setInfraEnv(infraEnv);
+
       if (infraEnv) {
-        setInitialStaticIpInfo(getStaticIpInfo(infraEnv));
+        const fakeInfraEnv = {
+          ...infraEnv,
+          // TODO ADD THE DUMMY DATA IF IT DOESN'T HAVE IT YET SO WE CAN REUSE THE STATIC IP COMPONENTS that use the InfraEnv
+          // staticNetworkConfig: getDummyInfraEnvField(),
+        };
+        setInfraEnv(fakeInfraEnv);
+        setInitialStaticIpInfo(getOrCreateStaticIpInfo(infraEnv));
+      } else {
+        setInfraEnv(undefined);
       }
     };
     void setCurrentStaticConfig();
@@ -58,7 +75,11 @@ const Day2StaticIP = () => {
   }, []);
 
   if (!initialStaticIpInfo || !infraEnv) {
-    return null;
+    return (
+      <PageSection variant={PageSectionVariants.light} isFilled>
+        <ErrorState title="Cannot load the Static IP configuration for this cluster" />
+      </PageSection>
+    );
   }
 
   const onFormStateChange = (formState: StaticIpFormState) => {

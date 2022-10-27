@@ -8,7 +8,7 @@ import {
   FormViewNetworkWideValues,
   YamlViewValues,
 } from './dataTypes';
-import { isDummyYaml } from './dummyData';
+import { getDummyInfraEnvField, isDummyYaml } from './dummyData';
 import { formDataFromInfraEnvField } from './formDataFromInfraEnvField';
 import { getEmptyFormViewHost } from './emptyData';
 
@@ -55,21 +55,28 @@ export const getStaticIpInfo = (infraEnv: InfraEnv): StaticIpInfo | undefined =>
   return getStaticIpInfoFromInfraEnvField(staticNetworkConfig);
 };
 
+export const getOrCreateStaticIpInfo = (infraEnv: InfraEnv): StaticIpInfo | undefined => {
+  const staticNetworkConfig = getStaticIpInfo(infraEnv);
+  return staticNetworkConfig || getStaticIpInfoFromInfraEnvField(getDummyInfraEnvField());
+};
+
 //Fails if form data doesn't exist
-export const getFormData = (infraEnv: InfraEnv): StaticFormData => {
-  const staticNetworkConfig = getStaticNetworkConfig(infraEnv);
+export const getFormData = (
+  staticNetworkConfig: HostStaticNetworkConfig[] | undefined,
+): StaticFormData => {
   if (!staticNetworkConfig) {
     throw `Infra env doesn't contain static ip data`;
   }
   const formData = formDataFromInfraEnvField(staticNetworkConfig);
   if (!formData) {
-    throw `Failed to get static ip form data from infra env ${infraEnv.id}`;
+    throw `Failed to get static ip form data from infra env`;
   }
   return formData;
 };
 
 export const getFormViewHostsValues = (infraEnv: InfraEnv): FormViewHostsValues => {
-  const formData = getFormData(infraEnv);
+  const staticNetworkConfig = getStaticNetworkConfig(infraEnv);
+  const formData = getFormData(staticNetworkConfig);
   if (!formData.hosts.length) {
     return { hosts: [getEmptyFormViewHost()] };
   }
@@ -77,7 +84,8 @@ export const getFormViewHostsValues = (infraEnv: InfraEnv): FormViewHostsValues 
 };
 
 export const getFormViewNetworkWideValues = (infraEnv: InfraEnv): FormViewNetworkWideValues => {
-  return getFormData(infraEnv).networkWide;
+  const staticNetworkConfig = getStaticNetworkConfig(infraEnv);
+  return getFormData(staticNetworkConfig).networkWide;
 };
 
 export const getYamlViewValues = (infraEnv: InfraEnv): YamlViewValues => {
