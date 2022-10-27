@@ -1,13 +1,20 @@
 import React from 'react';
-import { Grid, TextContent, Text, TextVariants } from '@patternfly/react-core';
+import {
+  Grid,
+  TextContent,
+  Text,
+  TextVariants,
+  PageSection,
+  PageSectionVariants,
+} from '@patternfly/react-core';
 import {
   ClusterWizardStep,
-  CpuArchitecture,
+  ErrorState,
   InfraEnv,
   InfraEnvUpdateParams,
+  LoadingState,
   WizardFooter,
 } from '../../../../common';
-import useInfraEnv from '../../../hooks/useInfraEnv';
 import { InfraEnvsService } from '../../../services';
 import { FormViewHosts } from '../../clusterConfiguration/staticIp/components/FormViewHosts/FormViewHosts';
 import { FormViewNetworkWide } from '../../clusterConfiguration/staticIp/components/FormViewNetworkWide/FormViewNetworkWide';
@@ -19,35 +26,53 @@ import StaticIpViewRadioGroup from '../../clusterConfiguration/staticIp/componen
 import { YamlView } from '../../clusterConfiguration/staticIp/components/YamlView/YamlView';
 import { StaticIpInfo, StaticIpView } from '../../clusterConfiguration/staticIp/data/dataTypes';
 import { getStaticIpInfo } from '../../clusterConfiguration/staticIp/data/fromInfraEnv';
+import { getDummyStaticIpInfo } from '../../clusterConfiguration/staticIp/data/dummyData';
 import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
 import { useDay2WizardContext } from './Day2WizardContext';
 import Day2WizardNav from './Day2WizardNav';
+import { mapClusterCpuArchToInfraEnvCpuArch } from '../../../services/CpuArchitectureService';
 
 const Day2StaticIP = () => {
   const { day2DiscoveryImageDialog } = useModalDialogsContext();
   const wizardContext = useDay2WizardContext();
-  const [infraEnv, setInfraEnv] = React.useState<InfraEnv>();
+  const [infraEnv, setInfraEnv] = React.useState<InfraEnv | undefined>(undefined);
+  const [hasLoadError, setHasLoadError] = React.useState<boolean>(false);
   const [confirmOnChangeView, setConfirmOnChangeView] = React.useState<boolean>(false);
   const [viewChanged, setViewChanged] = React.useState<boolean>(false);
-  const [initialStaticIpInfo, setInitialStaticIpInfo] = React.useState<StaticIpInfo>();
+  const [initialStaticIpInfo, setInitialStaticIpInfo] = React.useState<StaticIpInfo>(
+    getDummyStaticIpInfo(),
+  );
   const [formState, setFormState] = React.useState<StaticIpFormState>();
-  const { data, close } = day2DiscoveryImageDialog;
-  const cluster = data.cluster;
-  const { updateInfraEnv } = useInfraEnv(cluster.id, CpuArchitecture.x86);
+  const {
+    data: { cluster },
+  } = day2DiscoveryImageDialog;
+
+  const day1CpuArchitecture = mapClusterCpuArchToInfraEnvCpuArch(cluster.cpuArchitecture);
 
   React.useEffect(() => {
-    const doItAsync = async () => {
-      // TODO celia does not query
-      const { data: infraEnv } = await InfraEnvsService.getInfraEnv(
-        cluster.id,
-        cluster.cpuArchitecture as CpuArchitecture,
-      );
-      setInfraEnv(infraEnv);
-      infraEnv && setInitialStaticIpInfo(getStaticIpInfo(infraEnv));
+    const setCurrentStaticConfig = async () => {
+      const infraEnv = await InfraEnvsService.getInfraEnv(cluster.id, day1CpuArchitecture);
+      if (!infraEnv) {
+        setHasLoadError(true);
+        setInfraEnv(undefined);
+        return;
+      }
+
+      if (!infraEnv.staticNetworkConfig) {
+        // Make sure the infraEnv we store in the state has staticIP config
+        // This is required to be able to reuse the StaticIP services
+        await InfraEnvsService.setDummyStaticConfigToInfraEnv(infraEnv.id);
+      }
+      const staticIpInfo = getStaticIpInfo(infraEnv);
+      if (staticIpInfo) {
+        setInfraEnv(infraEnv);
+        setInitialStaticIpInfo(staticIpInfo);
+      } else {
+        setHasLoadError(true);
+      }
     };
-    void doItAsync();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    void setCurrentStaticConfig();
+  }, [cluster.id, day1CpuArchitecture]);
 
   const onChangeView = React.useCallback((view: StaticIpView) => {
     wizardContext.onUpdateStaticIpView(view);
@@ -55,8 +80,15 @@ const Day2StaticIP = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (!initialStaticIpInfo || !infraEnv) {
-    return null;
+  if (hasLoadError) {
+    return (
+      <PageSection variant={PageSectionVariants.light} isFilled>
+        <ErrorState title="Cannot load the Static IP configuration for this cluster" />
+      </PageSection>
+    );
+  } else if (!infraEnv) {
+    // It's still loading
+    return <LoadingState />;
   }
 
   const onFormStateChange = (formState: StaticIpFormState) => {
@@ -67,12 +99,16 @@ const Day2StaticIP = () => {
   };
 
   const viewProps: StaticIpViewProps = {
-    onFormStateChange,
     infraEnv,
-    updateInfraEnv: async (params: InfraEnvUpdateParams) => {
-      const data = await updateInfraEnv(params);
-      setInfraEnv(data);
-      return data;
+    onFormStateChange,
+    updateInfraEnv: async (updateParams: InfraEnvUpdateParams) => {
+      const updatedInfraEnv = await InfraEnvsService.syncStaticIpConfigs(
+        cluster.id,
+        infraEnv.id,
+        updateParams.staticNetworkConfig!, // eslint-disable-line @typescript-eslint/no-non-null-assertion
+      );
+      setInfraEnv(updatedInfraEnv);
+      return updatedInfraEnv;
     },
     showEmptyValues: viewChanged,
   };
@@ -103,11 +139,10 @@ const Day2StaticIP = () => {
       navigation={<Day2WizardNav />}
       footer={
         <WizardFooter
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onNext={() => wizardContext.moveNext()}
           onBack={() => wizardContext.moveBack()}
           isNextDisabled={!formState?.isValid || formState.isAutoSaveRunning}
-          onCancel={close}
+          onCancel={day2DiscoveryImageDialog.close}
           isSubmitting={formState?.isSubmitting}
         />
       }

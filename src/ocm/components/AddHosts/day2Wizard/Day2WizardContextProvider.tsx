@@ -20,6 +20,11 @@ const getWizardStepIds = (staticIpView?: string): Day2WizardStepsType[] => {
   return stepIds;
 };
 
+const getNextStep = (wizardStepIds: Day2WizardStepsType[], currentStepId: Day2WizardStepsType) => {
+  const currentStepIdx = wizardStepIds.indexOf(currentStepId);
+  return wizardStepIds[currentStepIdx + 1];
+};
+
 const Day2WizardContextProvider = ({
   children,
 }: PropsWithChildren<{
@@ -52,8 +57,7 @@ const Day2WizardContextProvider = ({
         setCurrentStepId(nextStepId);
       },
       moveNext(): void {
-        const currentStepIdx = wizardStepIds.indexOf(currentStepId);
-        setCurrentStepId(wizardStepIds[currentStepIdx + 1]);
+        setCurrentStepId(getNextStep(wizardStepIds, currentStepId));
       },
       onUpdateStaticIpView(view: StaticIpView): void {
         setWizardStepIds(getWizardStepIds(view));
@@ -64,11 +68,14 @@ const Day2WizardContextProvider = ({
         }
       },
       onUpdateHostNetworkConfigType(type: HostsNetworkConfigurationType): void {
+        let stepIds;
         if (type === HostsNetworkConfigurationType.STATIC) {
-          setWizardStepIds(getWizardStepIds(StaticIpView.FORM));
+          stepIds = getWizardStepIds(StaticIpView.FORM);
         } else {
-          setWizardStepIds(getWizardStepIds());
+          stepIds = getWizardStepIds();
         }
+        setWizardStepIds(stepIds);
+        setCurrentStepId(getNextStep(stepIds, currentStepId));
       },
 
       wizardStepIds,
