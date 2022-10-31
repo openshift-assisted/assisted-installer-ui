@@ -9,23 +9,26 @@ import {
   getClusterDetailsInitialValues,
   isArmArchitecture,
 } from '../../common';
-import { ClustersAPI, ManagedDomainsAPI } from '../services/apis';
+import { ClustersAPI } from '../services/apis';
 import InfraEnvsService from './InfraEnvsService';
 import omit from 'lodash/omit';
 import DiskEncryptionService from './DiskEncryptionService';
-import { CreateParams, HostsNetworkConfigurationType, OcmClusterDetailsValues } from './types';
+import {
+  ClusterCreateParamsWithStaticNetworking,
+  HostsNetworkConfigurationType,
+  OcmClusterDetailsValues,
+} from './types';
 import { getDummyInfraEnvField } from '../components/clusterConfiguration/staticIp/data/dummyData';
 import ClustersService from './ClustersService';
 import { ocmClient } from '../api';
 
 const ClusterDetailsService = {
-  async create(params: CreateParams) {
+  async create(params: ClusterCreateParamsWithStaticNetworking) {
     const { data: cluster } = await ClustersAPI.register(omit(params, 'staticNetworkConfig'));
     await InfraEnvsService.create({
       name: `${params.name}_infra-env`,
       pullSecret: params.pullSecret,
       clusterId: cluster.id,
-      // TODO(jkilzi): MGMT-7709 will deprecate the openshiftVersion field, remove the line below once it happens.
       openshiftVersion: params.openshiftVersion,
       cpuArchitecture: params.cpuArchitecture,
       staticNetworkConfig: params.staticNetworkConfig,
@@ -43,13 +46,8 @@ const ClusterDetailsService = {
     return updatedCluster;
   },
 
-  async getManagedDomains() {
-    const { data: domains } = await ManagedDomainsAPI.list();
-    return domains;
-  },
-
-  getClusterCreateParams(values: OcmClusterDetailsValues): CreateParams {
-    const params: CreateParams = omit(values, [
+  getClusterCreateParams(values: OcmClusterDetailsValues): ClusterCreateParamsWithStaticNetworking {
+    const params: ClusterCreateParamsWithStaticNetworking = omit(values, [
       'useRedHatDnsService',
       'SNODisclaimer',
       'enableDiskEncryptionOnMasters',

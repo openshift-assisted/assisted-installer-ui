@@ -1,13 +1,10 @@
 import React from 'react';
 import { Stack, StackItem } from '@patternfly/react-core';
-import { sortable } from '@patternfly/react-table';
 import {
   ChangeHostnameAction,
   selectSchedulableMasters,
   Cluster,
   Host,
-  HostsTableActions,
-  stringToJSON,
   isSNO,
   DeleteHostAction,
   TableToolbar,
@@ -24,44 +21,14 @@ import {
 } from '../../../common/components/hosts/tableUtils';
 import HostsTable from '../../../common/components/hosts/HostsTable';
 import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
-import { ExpandComponentProps, TableRow } from '../../../common/components/hosts/AITable';
+import { ExpandComponentProps } from '../../../common/components/hosts/AITable';
 import { AdditionalNTPSourcesDialogToggle } from './AdditionaNTPSourceDialogToggle';
-import { ValidationsInfo } from '../../../common/types/hosts';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import HardwareStatus from './HardwareStatus';
+import { hardwareStatusColumn } from './HardwareStatus';
 import HostsTableEmptyState from '../hosts/HostsTableEmptyState';
 import { useSelector } from 'react-redux';
 import { selectCurrentClusterPermissionsState } from '../../selectors';
-
-export const hardwareStatusColumn = (
-  onEditHostname?: HostsTableActions['onEditHost'],
-): TableRow<Host> => {
-  return {
-    header: {
-      title: 'Status',
-      props: {
-        id: 'col-header-hwstatus',
-      },
-      transforms: [sortable],
-    },
-    cell: (host) => {
-      const validationsInfo = stringToJSON<ValidationsInfo>(host.validationsInfo) || {};
-      const editHostname = onEditHostname ? () => onEditHostname(host) : undefined;
-      return {
-        title: (
-          <HardwareStatus
-            host={host}
-            onEditHostname={editHostname}
-            validationsInfo={validationsInfo}
-          />
-        ),
-        props: { 'data-testid': 'host-hw-status' },
-        sortableValue: status,
-      };
-    },
-  };
-};
 
 const HostRowDetailExpand = ({ obj: host }: ExpandComponentProps<Host>) => (
   <HostDetail
@@ -96,7 +63,7 @@ const HostsDiscoveryTable = ({ cluster }: HostsDiscoveryTableProps) => {
     () => [
       hostnameColumn(t, onEditHost, undefined, actionChecks.canEditHostname),
       roleColumn(t, actionChecks.canEditRole, onEditRole, selectSchedulableMasters(cluster)),
-      hardwareStatusColumn(onEditHost),
+      hardwareStatusColumn({ onEditHostname: onEditHost }),
       discoveredAtColumn,
       cpuCoresColumn,
       memoryColumn,
