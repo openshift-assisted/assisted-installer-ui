@@ -63,7 +63,7 @@ const LocationsSelector: React.FC<{ agents: AgentK8sResource[] }> = ({ agents })
   return (
     <MultiSelectField
       idPostfix="locations"
-      name={t('ai:"locations')}
+      name="locations"
       label={t('ai:Host locations')}
       labelIcon={<LocationsLabelIcon />}
       placeholderText={t('ai:Type or select location(s)')}
