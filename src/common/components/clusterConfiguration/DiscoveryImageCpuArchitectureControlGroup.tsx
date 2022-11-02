@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormGroup } from '@patternfly/react-core';
+import { FormGroup, Flex, FlexItem, TextContent, Text, TextVariants } from '@patternfly/react-core';
 import { DetailItem, DetailList, getFieldId, RadioField } from '../ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { CpuArchitecture, SupportedCpuArchitectures } from '../../types';
@@ -28,19 +28,31 @@ const DiscoverImageCpuArchitectureControlGroup = ({
   }
 
   return (
-    <FormGroup isInline fieldId={getFieldId(GROUP_NAME, 'radio')} label={t('ai:CPU architecture')}>
-      {SupportedCpuArchitectures.map((cpuArch) => {
-        return (
-          <RadioField
-            key={cpuArch}
-            id={`cpu-arch_${cpuArch}`}
-            name={GROUP_NAME}
-            label={cpuArch}
-            value={cpuArch}
-            data-testid={`cpu-arch_${cpuArch}`}
-          />
-        );
-      })}
+    <FormGroup
+      isInline
+      fieldId={getFieldId(GROUP_NAME, 'radio')}
+      label={
+        <TextContent>
+          <Text component={TextVariants.h4}>{t('ai:CPU architecture')}</Text>
+        </TextContent>
+      }
+    >
+      <Flex>
+        {SupportedCpuArchitectures.map((cpuArch) => {
+          return (
+            <FlexItem key={cpuArch}>
+              <RadioField
+                key={cpuArch}
+                id={`cpu-arch_${cpuArch}`}
+                name={GROUP_NAME}
+                label={cpuArch}
+                value={cpuArch}
+                data-testid={`cpu-arch_${cpuArch}`}
+              />
+            </FlexItem>
+          );
+        })}
+      </Flex>
     </FormGroup>
   );
 };
