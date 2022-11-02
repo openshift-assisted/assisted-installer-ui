@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { OcmSwitchField } from '../../ui/OcmFormFields';
-import { isClusterPlatformTypeVM, Cluster, PopoverIcon, PlatformType } from '../../../../common';
+import { Cluster, PopoverIcon } from '../../../../common';
 import useClusterSupportedPlatforms, {
   SupportedPlatformIntegrationType,
 } from '../../../hooks/useClusterSupportedPlatforms';
@@ -43,13 +43,7 @@ const PlatformIntegrationLabel = ({
   );
 };
 
-const PlatformIntegration = ({
-  clusterId,
-  platformType,
-}: {
-  clusterId: Cluster['id'];
-  platformType: PlatformType;
-}) => {
+const PlatformIntegration = ({ clusterId }: { clusterId: Cluster['id'] }) => {
   const { isPlatformIntegrationSupported, supportedPlatformIntegration } =
     useClusterSupportedPlatforms(clusterId);
 
@@ -59,10 +53,7 @@ const PlatformIntegration = ({
         hidden: isPlatformIntegrationSupported,
         content: platformIntegrationTooltip,
       }}
-      isDisabled={
-        !isPlatformIntegrationSupported &&
-        !isClusterPlatformTypeVM({ platform: { type: platformType } })
-      }
+      isDisabled={!isPlatformIntegrationSupported}
       name={'usePlatformIntegration'}
       label={
         <PlatformIntegrationLabel supportedPlatformIntegration={supportedPlatformIntegration} />
