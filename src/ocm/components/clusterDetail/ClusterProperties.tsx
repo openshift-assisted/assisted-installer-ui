@@ -2,7 +2,6 @@ import React from 'react';
 import { GridItem, TextContent, Text } from '@patternfly/react-core';
 import {
   Cluster,
-  CpuArchitecture,
   DetailList,
   DetailItem,
   DiskEncryption,
@@ -13,46 +12,24 @@ import {
   selectIpv6Cidr,
   selectIpv4HostPrefix,
   selectIpv6HostPrefix,
-  SupportedCpuArchitectures,
 } from '../../../common';
-
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { ClusterFeatureSupportLevelsDetailItem } from '../featureSupportLevels';
 import OpenShiftVersionDetail from './OpenShiftVersionDetail';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import { useOpenshiftVersions } from '../../hooks';
 
-const listArchitectures = (architectures: CpuArchitecture[], lastSeparator = 'or') => {
-  if (architectures.length === 1) {
-    return architectures[0];
-  }
-  const beginningItems = architectures.slice(0, architectures.length - 1);
-  const lastItem = architectures[architectures.length - 1];
-  return `${beginningItems.join(', ')} ${lastSeparator} ${lastItem}`;
-};
-
-const CpuArchTitle = ({ isMultiArch }: { isMultiArch: boolean }) => {
-  const architectureEnumeration = listArchitectures(SupportedCpuArchitectures);
-  return (
-    <>
-      {'CPU architecture '}
-      <PopoverIcon
-        bodyContent={
-          isMultiArch ? (
-            <p>
-              The original cluster hosts CPU architecture. You can add hosts that are using either{' '}
-              {architectureEnumeration} CPU architecture to this cluster.
-            </p>
-          ) : (
-            <p>
-              The generated ISO is specific to the cluster’s CPU architecture. Only hosts with the
-              same CPU architecture can be added to this cluster.
-            </p>
-          )
-        }
-      />
-    </>
-  );
-};
+const CpuArchTitle = () => (
+  <>
+    {'CPU architecture '}
+    <PopoverIcon
+      bodyContent={
+        <p>
+          The generated ISO is specific to the cluster’s CPU architecture. Only hosts with the same
+          CPU architecture can be added to this cluster.
+        </p>
+      }
+    />
+  </>
+);
 
 type ClusterPropertiesProps = {
   cluster: Cluster;
@@ -99,7 +76,6 @@ const getDiskEncryptionEnabledOnStatus = (diskEncryption: DiskEncryption['enable
 
 const ClusterProperties = ({ cluster, externalMode = false }: ClusterPropertiesProps) => {
   const { t } = useTranslation();
-  const { isMultiCpuArchSupported } = useOpenshiftVersions();
   const isDualStackType = isDualStack(cluster);
 
   return (
@@ -116,7 +92,7 @@ const ClusterProperties = ({ cluster, externalMode = false }: ClusterPropertiesP
           {externalMode ? undefined : <OpenShiftVersionDetail cluster={cluster} />}
           <DetailItem title="Base domain" value={cluster.baseDnsDomain} testId="base-dns-domain" />
           <DetailItem
-            title={<CpuArchTitle isMultiArch={isMultiCpuArchSupported(cluster.openshiftVersion)} />}
+            title={<CpuArchTitle />}
             value={cluster.cpuArchitecture}
             testId="cpu-architecture"
           />

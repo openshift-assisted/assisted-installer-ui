@@ -2,6 +2,7 @@ import { Grid, GridItem } from '@patternfly/react-core';
 import { Form, Formik } from 'formik';
 import React from 'react';
 import {
+  canSelectCpuArchitecture,
   Cluster,
   ClusterWizardStep,
   ClusterWizardStepHeader,
@@ -12,7 +13,6 @@ import {
 import DiscoverImageCpuArchitectureControlGroup from '../../../../common/components/clusterConfiguration/DiscoveryImageCpuArchitectureControlGroup';
 import { HostsNetworkConfigurationType, InfraEnvsService } from '../../../services';
 import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
-import { useOpenshiftVersions } from '../../../hooks';
 import { handleApiError } from '../../../api';
 import { Day2ClusterDetailValues } from '../types';
 import { useDay2WizardContext } from './Day2WizardContext';
@@ -42,26 +42,25 @@ const Day2ClusterDetails = () => {
   const { day2DiscoveryImageDialog } = useModalDialogsContext();
   const {
     close,
-    data: { cluster },
+    data: { cluster: day2Cluster },
   } = day2DiscoveryImageDialog;
   const wizardContext = useDay2WizardContext();
-  const { isMultiCpuArchSupported } = useOpenshiftVersions();
   const [initialValues, setInitialValues] = React.useState<Day2ClusterDetailValues>();
   const [isSubmitting, setSubmitting] = React.useState(false);
+  const canSelectCpuArch = canSelectCpuArchitecture(day2Cluster);
 
-  const isMultiArch = isMultiCpuArchSupported(cluster.openshiftVersion);
-  const day1CpuArchitecture = mapClusterCpuArchToInfraEnvCpuArch(cluster.cpuArchitecture);
+  const day1CpuArchitecture = mapClusterCpuArchToInfraEnvCpuArch(day2Cluster.cpuArchitecture);
 
   React.useEffect(() => {
     const fetchAndSetInitialValues = async () => {
       const initialValues = await getDay2ClusterDetailInitialValues(
-        cluster.id,
+        day2Cluster.id,
         day1CpuArchitecture,
       );
       setInitialValues(initialValues);
     };
     void fetchAndSetInitialValues();
-  }, [cluster.id, day1CpuArchitecture]);
+  }, [day2Cluster.id, day1CpuArchitecture]);
 
   const handleSubmit = React.useCallback(
     async (values: Day2ClusterDetailValues) => {
@@ -73,7 +72,7 @@ const Day2ClusterDetails = () => {
         //   (The changes will be synced to all the infraEnvs when they are submitted on the StaticIP steps)
         const isDhcp = values.hostsNetworkConfigurationType === HostsNetworkConfigurationType.DHCP;
         if (isDhcp) {
-          await InfraEnvsService.updateAllInfraEnvsToDhcp(cluster.id);
+          await InfraEnvsService.updateAllInfraEnvsToDhcp(day2Cluster.id);
         }
         wizardContext.setSelectedCpuArchitecture(values.cpuArchitecture);
         wizardContext.onUpdateHostNetworkConfigType(values.hostsNetworkConfigurationType);
@@ -83,7 +82,7 @@ const Day2ClusterDetails = () => {
         setSubmitting(false);
       }
     },
-    [cluster.id, wizardContext],
+    [day2Cluster.id, wizardContext],
   );
 
   if (!initialValues) {
@@ -116,8 +115,9 @@ const Day2ClusterDetails = () => {
                 </GridItem>
                 <GridItem span={12} lg={10} xl={9} xl2={7}>
                   <DiscoverImageCpuArchitectureControlGroup
-                    isMultiArchitecture={isMultiArch}
+                    canSelectCpuArchitecture={canSelectCpuArch}
                     day1CpuArchitecture={day1CpuArchitecture}
+                    openshiftVersion={day2Cluster.openshiftVersion}
                   />
                 </GridItem>
                 <GridItem>

@@ -23,6 +23,7 @@ const read = (): InfraEnvCache => {
 type InfraEnvStorage = Omit<Storage, 'getItem' | 'removeItem' | 'setItem'> & {
   getInfraEnvId(clusterId: string, cpuArchitecture: CpuArchitecture): string | null;
   removeInfraEnvId(clusterId: string, cpuArchitecture: CpuArchitecture): void;
+  removeInfraEnvs(clusterId: string): void;
   updateInfraEnvs(clusterId: string, infraEnvs: InfraEnv[]): void;
 };
 
@@ -79,6 +80,16 @@ const InfraEnvIdsCacheService: InfraEnvStorage = {
     } else if (cache[clusterId]) {
       delete cache[clusterId][cpuArchitecture];
     }
+    update(cache);
+  },
+
+  removeInfraEnvs(clusterId: string): void {
+    if (!clusterId) {
+      return;
+    }
+
+    const cache = read();
+    delete cache[clusterId];
     update(cache);
   },
 

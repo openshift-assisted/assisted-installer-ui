@@ -16,7 +16,6 @@ type UseOpenshiftVersionsType = {
   normalizeClusterVersion: (version: OpenShiftVersion) => ImportClusterParams['openshiftVersion'];
   isSupportedOpenShiftVersion: (version: OpenShiftVersion) => boolean;
   getCpuArchitectures: (version: OpenShiftVersion) => CpuArchitecture[];
-  isMultiCpuArchSupported: (version: OpenShiftVersion) => boolean;
   error?: { title: string; message: string };
   loading: boolean;
 };
@@ -89,11 +88,6 @@ export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
     [findVersionItemByVersion],
   );
 
-  const isMultiCpuArchSupported = React.useCallback((version: OpenShiftVersion) => {
-    // TODO (multi-arch) check with existing versions list and check the cpuArchitectures length
-    return /-multi*/.test(version || '');
-  }, []);
-
   const getCpuArchitectures = React.useCallback(
     (version: OpenShiftVersion) => {
       // TODO (multi-arch) confirm this is correctly retrieving the associated version
@@ -114,6 +108,5 @@ export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
     normalizeClusterVersion,
     isSupportedOpenShiftVersion,
     getCpuArchitectures,
-    isMultiCpuArchSupported,
   };
 }

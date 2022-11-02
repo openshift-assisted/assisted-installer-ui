@@ -21,10 +21,10 @@ export default function useInfraEnvImageUrl() {
         const {
           data: { url },
         } = await InfraEnvsAPI.getImageUrl(infraEnvId);
-        if (!url) {
-          throw 'Failed to retrieve the image URL, the API returned an invalid URL';
-        }
-        return { url, error: '' };
+        return {
+          url,
+          error: url ? '' : 'Failed to retrieve the image URL, the API returned an invalid URL',
+        };
       } catch (e) {
         return { url: '', error: getErrorMessage(e) };
       }

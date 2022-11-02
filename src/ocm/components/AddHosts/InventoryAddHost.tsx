@@ -2,21 +2,17 @@ import React from 'react';
 import { Text, TextContent, Alert, AlertVariant, Stack, StackItem } from '@patternfly/react-core';
 import ClusterHostsTable from '../hosts/ClusterHostsTable';
 import InformationAndAlerts from '../clusterConfiguration/InformationAndAlerts';
-import { Cluster, isArmArchitecture } from '../../../common';
-import { useOpenshiftVersions } from '../../hooks';
+import { canSelectCpuArchitecture, Cluster, isArmArchitecture } from '../../../common';
 import Day2WizardContextProvider from './day2Wizard/Day2WizardContextProvider';
 import Day2DiscoveryImageModalButton from './day2Wizard/Day2DiscoveryImageModalButton';
 import Day2Wizard from './day2Wizard/Day2Wizard';
 
 const InventoryAddHosts = ({ cluster }: { cluster?: Cluster }) => {
-  const { isMultiCpuArchSupported } = useOpenshiftVersions();
   if (!cluster) {
     return null;
   }
 
-  const showMultiArchAlert = isMultiCpuArchSupported(cluster.openshiftVersion);
-  const showArmOnlyAlert = !showMultiArchAlert && isArmArchitecture(cluster);
-
+  const showArmOnlyAlert = !canSelectCpuArchitecture(cluster) && isArmArchitecture(cluster);
   return (
     <Stack hasGutter>
       <StackItem>
@@ -30,16 +26,6 @@ const InventoryAddHosts = ({ cluster }: { cluster?: Cluster }) => {
           <InformationAndAlerts cluster={cluster} />
         </TextContent>
       </StackItem>
-      {showMultiArchAlert && (
-        <StackItem>
-          <Alert
-            title="You can add hosts that are using either x86 or arm64 CPU architecture to this cluster."
-            variant={AlertVariant.info}
-            data-testid="cpu-architecture-alert"
-            isInline
-          />
-        </StackItem>
-      )}
       {showArmOnlyAlert && (
         <StackItem>
           <Alert

@@ -24,7 +24,7 @@ export const HostsClusterDetailTabContent = ({
   const [error, setError] = React.useState<ReactNode>();
   const [day2Cluster, setDay2Cluster] = useStateSafely<Cluster | null | undefined>(undefined);
   const pullSecret = usePullSecret();
-  const { normalizeClusterVersion, isMultiCpuArchSupported } = useOpenshiftVersions();
+  const { normalizeClusterVersion } = useOpenshiftVersions();
 
   const handleClickTryAgainLink = React.useCallback(() => {
     setError(undefined);
@@ -133,7 +133,6 @@ export const HostsClusterDetailTabContent = ({
             ocmCluster,
             pullSecret,
             normalizedVersion,
-            isMultiCpuArchSupported(ocmCluster.openshift_version),
           );
           setDay2Cluster(
             Day2ClusterService.completeAiClusterWithOcmCluster(day2Cluster, ocmCluster),

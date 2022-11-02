@@ -18,6 +18,7 @@ export type OcmClusterType = {
   display_name: string;
   openshift_version: string;
   cpu_architecture: OcmCpuArchitecture;
+  can_select_cpu_arch: boolean;
   managed: boolean;
   canEdit: boolean;
   canDelete: boolean;

@@ -6,6 +6,8 @@ import {
   TextVariants,
   PageSection,
   PageSectionVariants,
+  Button,
+  ButtonVariant,
 } from '@patternfly/react-core';
 import {
   ClusterWizardStep,
@@ -15,7 +17,7 @@ import {
   LoadingState,
   WizardFooter,
 } from '../../../../common';
-import { InfraEnvsService } from '../../../services';
+import { HostsNetworkConfigurationType, InfraEnvsService } from '../../../services';
 import { FormViewHosts } from '../../clusterConfiguration/staticIp/components/FormViewHosts/FormViewHosts';
 import { FormViewNetworkWide } from '../../clusterConfiguration/staticIp/components/FormViewNetworkWide/FormViewNetworkWide';
 import {
@@ -30,7 +32,6 @@ import { getDummyStaticIpInfo } from '../../clusterConfiguration/staticIp/data/d
 import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
 import { useDay2WizardContext } from './Day2WizardContext';
 import Day2WizardNav from './Day2WizardNav';
-import { mapClusterCpuArchToInfraEnvCpuArch } from '../../../services/CpuArchitectureService';
 
 const Day2StaticIP = () => {
   const { day2DiscoveryImageDialog } = useModalDialogsContext();
@@ -47,12 +48,19 @@ const Day2StaticIP = () => {
     data: { cluster },
   } = day2DiscoveryImageDialog;
 
-  const day1CpuArchitecture = mapClusterCpuArchToInfraEnvCpuArch(cluster.cpuArchitecture);
+  const selectedArchitecture = wizardContext.selectedCpuArchitecture;
+
+  const restartWizard = React.useCallback(() => {
+    wizardContext.setCurrentStepId('cluster-details');
+    wizardContext.onUpdateHostNetworkConfigType(HostsNetworkConfigurationType.DHCP);
+  }, [wizardContext]);
 
   React.useEffect(() => {
     const setCurrentStaticConfig = async () => {
-      const infraEnv = await InfraEnvsService.getInfraEnv(cluster.id, day1CpuArchitecture);
-      if (!infraEnv) {
+      let infraEnv;
+      try {
+        infraEnv = await InfraEnvsService.getInfraEnv(cluster.id, selectedArchitecture);
+      } catch (e) {
         setHasLoadError(true);
         setInfraEnv(undefined);
         return;
@@ -72,7 +80,7 @@ const Day2StaticIP = () => {
       }
     };
     void setCurrentStaticConfig();
-  }, [cluster.id, day1CpuArchitecture]);
+  }, [cluster.id, selectedArchitecture]);
 
   const onChangeView = React.useCallback((view: StaticIpView) => {
     wizardContext.onUpdateStaticIpView(view);
@@ -83,7 +91,15 @@ const Day2StaticIP = () => {
   if (hasLoadError) {
     return (
       <PageSection variant={PageSectionVariants.light} isFilled>
-        <ErrorState title="Cannot load the Static IP configuration for this cluster" />
+        <ErrorState
+          title="Cannot load the Static IP configuration for this cluster"
+          content="For non-multi-architecture clusters, make sure you select the Day1 cpu architecture"
+          actions={[
+            <Button key="restart-wizard" variant={ButtonVariant.primary} onClick={restartWizard}>
+              Back to Wizard
+            </Button>,
+          ]}
+        />
       </PageSection>
     );
   } else if (!infraEnv) {

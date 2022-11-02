@@ -1,6 +1,11 @@
 import { InfraEnvsService } from '.';
 import { ClustersAPI } from './apis';
-import { Cluster, CpuArchitecture, SupportedCpuArchitectures } from '../../common';
+import {
+  Cluster,
+  CpuArchitecture,
+  OcmCpuArchitecture,
+  SupportedCpuArchitectures,
+} from '../../common';
 import { OcmClusterType } from '../components/AddHosts/types';
 import { mapOcmArchToCpuArchitecture } from './CpuArchitectureService';
 
@@ -9,12 +14,7 @@ const Day2ClusterService = {
     return ocmCluster && ocmCluster.external_id;
   },
 
-  async fetchCluster(
-    ocmCluster: OcmClusterType,
-    pullSecret: string,
-    openshiftVersion: string,
-    isMultiArch: boolean,
-  ) {
+  async fetchCluster(ocmCluster: OcmClusterType, pullSecret: string, openshiftVersion: string) {
     const openshiftClusterId = Day2ClusterService.getOpenshiftClusterId(ocmCluster);
 
     if (!openshiftClusterId) {
@@ -41,7 +41,9 @@ const Day2ClusterService = {
     if (day2ClusterId) {
       return Day2ClusterService.fetchClusterById(day2ClusterId);
     } else {
-      const cpuArchitectures = isMultiArch
+      const createMultipleInfraEnvs =
+        ocmCluster.cpu_architecture === OcmCpuArchitecture.MULTI || ocmCluster.can_select_cpu_arch;
+      const cpuArchitectures = createMultipleInfraEnvs
         ? SupportedCpuArchitectures
         : [mapOcmArchToCpuArchitecture(ocmCluster.cpu_architecture)];
       return Day2ClusterService.createCluster(
@@ -117,6 +119,9 @@ const Day2ClusterService = {
       // The field "cpu_architecture" is calculated based on the existing hosts' architecture
       // It can be a specific architecture, or "multi" if hosts from several architectures have been discovered
       cpuArchitecture: ocmCluster.cpu_architecture,
+      // The field "can_select_cpu_arch" only tells us that the organization has this feature,
+      // but it's not applicable to individual clusters. They may actually not support multi-arch (eg OpenShift < 4.12)
+      canSelectCpuArch: ocmCluster.can_select_cpu_arch,
     };
   },
 };
