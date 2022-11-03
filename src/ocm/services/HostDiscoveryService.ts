@@ -11,7 +11,7 @@ const HostDiscoveryService = {
     params: V2ClusterUpdateParams,
     platformToIntegrate: SupportedPlatformType | undefined,
   ): void {
-    const type = platformToIntegrate === undefined ? 'baremetal' : platformToIntegrate;
+    const type = platformToIntegrate === undefined ? 'none' : platformToIntegrate;
     params.platform = {
       type,
     };
