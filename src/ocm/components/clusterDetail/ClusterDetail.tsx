@@ -18,6 +18,7 @@ import {
   getEnabledHosts,
   selectOlmOperators,
   isSNO,
+  useFeatureSupportLevel,
 } from '../../../common';
 import { Cluster } from '../../../common/api/types';
 import ClusterHostsTable from '../hosts/ClusterHostsTable';
@@ -49,7 +50,15 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
   const { resetClusterDialog, cancelInstallationDialog } = useModalDialogsContext();
   const clusterVarieties = useClusterStatusVarieties(cluster);
   const { credentials, credentialsError } = clusterVarieties;
-  const canAddHosts = !isSNO(cluster) && cluster.status === 'installed' && !ocmClient;
+  const featureSupportLevelContext = useFeatureSupportLevel();
+  const isSNOExpansionAllowed =
+    cluster.openshiftVersion &&
+    featureSupportLevelContext.isFeatureSupported(
+      cluster.openshiftVersion,
+      'SINGLE_NODE_EXPANSION',
+    );
+  const canAddHosts =
+    (!isSNO(cluster) || isSNOExpansionAllowed) && cluster.status === 'installed' && !ocmClient;
 
   return (
     <Stack hasGutter>
