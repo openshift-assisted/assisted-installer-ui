@@ -32,7 +32,7 @@ const InfraEnvsService = {
   },
 
   async getInfraEnv(clusterId: Cluster['id'], cpuArchitecture: CpuArchitecture) {
-    const infraEnvId = InfraEnvCache.getInfraEnvId(clusterId, cpuArchitecture);
+    const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId, cpuArchitecture);
     if (infraEnvId) {
       const { data } = await InfraEnvsAPI.get(infraEnvId);
       return data;
