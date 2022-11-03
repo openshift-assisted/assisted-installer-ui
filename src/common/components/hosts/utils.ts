@@ -52,7 +52,7 @@ export const canReset = (clusterStatus: Cluster['status'], status: Host['status'
   ['error', 'installing-pending-user-action'].includes(status);
 
 export const canEditHost = (clusterStatus: Cluster['status'], status: Host['status']) =>
-  ['pending-for-input', 'insufficient', 'ready'].includes(clusterStatus) &&
+  ['pending-for-input', 'insufficient', 'ready', 'adding-hosts'].includes(clusterStatus) &&
   [
     'discovering',
     'discovering-unbound',
