@@ -19,14 +19,24 @@ import { HostDetail } from '../../../common/components/hosts/HostRowDetail';
 import { ExpandComponentProps } from '../../../common/components/hosts/AITable';
 import { UpdateDay2ApiVipDialogToggle } from './UpdateDay2ApiVipDialogToggle';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import {
+  HostsTableDetailContextProvider,
+  useHostsTableDetailContext,
+} from '../../../common/components/hosts/HostsTableDetailContext';
 
-const ExpandComponent = ({ obj }: ExpandComponentProps<Host>) => (
-  <HostDetail
-    host={obj}
-    AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
-    hideNTPStatus
-  />
-);
+export function ExpandComponent({ obj: host }: ExpandComponentProps<Host>) {
+  const { onDiskRole, canEditDisks, updateDiskSkipFormatting } = useHostsTableDetailContext();
+  return (
+    <HostDetail
+      host={host}
+      AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
+      hideNTPStatus
+      onDiskRole={onDiskRole}
+      canEditDisks={canEditDisks}
+      updateDiskSkipFormatting={updateDiskSkipFormatting}
+    />
+  );
+}
 
 export interface ClusterHostsTableProps {
   cluster: Cluster;
@@ -34,8 +44,15 @@ export interface ClusterHostsTableProps {
 }
 
 const ClusterHostsTable = ({ cluster, skipDisabled }: ClusterHostsTableProps) => {
-  const { onEditHost, actionChecks, onEditRole, actionResolver, ...modalProps } =
-    useHostsTable(cluster);
+  const {
+    onEditHost,
+    onEditRole,
+    actionChecks,
+    onDiskRole,
+    actionResolver,
+    updateDiskSkipFormatting,
+    ...modalProps
+  } = useHostsTable(cluster);
   const { t } = useTranslation();
   const content = React.useMemo(
     () => [
@@ -56,16 +73,22 @@ const ClusterHostsTable = ({ cluster, skipDisabled }: ClusterHostsTableProps) =>
 
   return (
     <>
-      <HostsTable
-        hosts={hosts}
-        skipDisabled={skipDisabled}
-        ExpandComponent={ExpandComponent}
-        content={content}
-        actionResolver={actionResolver}
-        {...paginationProps}
+      <HostsTableDetailContextProvider
+        canEditDisks={actionChecks.canEditDisks}
+        onDiskRole={onDiskRole}
+        updateDiskSkipFormatting={updateDiskSkipFormatting}
       >
-        <HostsTableEmptyState isSingleNode={isSNO(cluster)} />
-      </HostsTable>
+        <HostsTable
+          hosts={hosts}
+          skipDisabled={skipDisabled}
+          ExpandComponent={ExpandComponent}
+          content={content}
+          actionResolver={actionResolver}
+          {...paginationProps}
+        >
+          <HostsTableEmptyState isSingleNode={isSNO(cluster)} />
+        </HostsTable>
+      </HostsTableDetailContextProvider>
       <HostsTableModals cluster={cluster} {...modalProps} />
     </>
   );
