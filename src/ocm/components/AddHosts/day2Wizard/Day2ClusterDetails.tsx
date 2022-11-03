@@ -7,6 +7,7 @@ import {
   ClusterWizardStep,
   ClusterWizardStepHeader,
   CpuArchitecture,
+  ErrorState,
   LoadingState,
   WizardFooter,
 } from '../../../../common';
@@ -35,6 +36,7 @@ const getDay2ClusterDetailInitialValues = async (
     };
   } catch (error) {
     handleApiError(error);
+    return null;
   }
 };
 
@@ -45,7 +47,7 @@ const Day2ClusterDetails = () => {
     data: { cluster: day2Cluster },
   } = day2DiscoveryImageDialog;
   const wizardContext = useDay2WizardContext();
-  const [initialValues, setInitialValues] = React.useState<Day2ClusterDetailValues>();
+  const [initialValues, setInitialValues] = React.useState<Day2ClusterDetailValues | null>();
   const [isSubmitting, setSubmitting] = React.useState(false);
   const canSelectCpuArch = canSelectCpuArchitecture(day2Cluster);
 
@@ -85,8 +87,10 @@ const Day2ClusterDetails = () => {
     [day2Cluster.id, wizardContext],
   );
 
-  if (!initialValues) {
+  if (initialValues === undefined) {
     return <LoadingState />;
+  } else if (initialValues === null) {
+    return <ErrorState content="Failed to load associated data for the Day2 cluster" />;
   }
 
   return (
