@@ -51,15 +51,14 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
   const clusterVarieties = useClusterStatusVarieties(cluster);
   const { credentials, credentialsError } = clusterVarieties;
   const featureSupportLevelContext = useFeatureSupportLevel();
+  const isSNOExpansionAllowed =
+    cluster.openshiftVersion &&
+    featureSupportLevelContext.isFeatureSupported(
+      cluster.openshiftVersion,
+      'SINGLE_NODE_EXPANSION',
+    );
   const canAddHosts =
-    (!isSNO(cluster) ||
-      (cluster.openshiftVersion &&
-        featureSupportLevelContext.isFeatureSupported(
-          cluster.openshiftVersion,
-          'SINGLE_NODE_EXPANSION',
-        ))) &&
-    cluster.status === 'installed' &&
-    !ocmClient;
+    (!isSNO(cluster) || isSNOExpansionAllowed) && cluster.status === 'installed' && !ocmClient;
 
   return (
     <Stack hasGutter>
