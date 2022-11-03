@@ -68,10 +68,9 @@ const Day2ClusterDetails = () => {
     async (values: Day2ClusterDetailValues) => {
       try {
         setSubmitting(true);
-
         // - If the user selected DHCP, update all infraEnvs to have DHCP too
         // - If the user selected StaticIP, perform no changes yet.
-        //   (The changes will be synced to all the infraEnvs when they are submitted on the StaticIP steps)
+        //  (The changes will be synced to all the infraEnvs when they are submitted on the StaticIP steps)
         const isDhcp = values.hostsNetworkConfigurationType === HostsNetworkConfigurationType.DHCP;
         if (isDhcp) {
           await InfraEnvsService.updateAllInfraEnvsToDhcp(day2Cluster.id);

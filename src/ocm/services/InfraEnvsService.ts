@@ -67,14 +67,6 @@ const InfraEnvsService = {
   async removeAll(clusterId: Cluster['id']) {
     const { data: infraEnvs } = await InfraEnvsAPI.list(clusterId);
 
-    console.log(
-      '%c list of infraEnvs',
-      'font-size: 16px; color: red',
-      clusterId,
-      'has',
-      infraEnvs.length,
-    );
-
     const promises = infraEnvs.map((infraEnv) => {
       return InfraEnvsAPI.deregister(infraEnv.id);
     });
