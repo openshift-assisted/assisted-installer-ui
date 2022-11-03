@@ -76,7 +76,12 @@ const HostDiscovery = ({ cluster }: { cluster: Cluster }) => {
       : undefined;
 
     const params: V2ClusterUpdateParams = {};
-    HostDiscoveryService.setPlatform(params, platformToIntegrate as SupportedPlatformType);
+
+    HostDiscoveryService.setPlatform(
+      params,
+      platformToIntegrate as SupportedPlatformType,
+      cluster.userManagedNetworking,
+    );
     HostDiscoveryService.setSchedulableMasters(params, values, cluster);
 
     try {
