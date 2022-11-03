@@ -94,10 +94,11 @@ const InfraEnvsService = {
     return Promise.all(infraEnvUpdates);
   },
 
-  async setDummyStaticConfigToInfraEnv(infraEnvId: InfraEnv['id']) {
-    return InfraEnvsAPI.update(infraEnvId, {
+  async setDummyStaticConfigToInfraEnv(infraEnvId: InfraEnv['id']): Promise<InfraEnv> {
+    const { data } = await InfraEnvsAPI.update(infraEnvId, {
       staticNetworkConfig: getDummyInfraEnvField(),
     });
+    return data;
   },
 
   async syncStaticIpConfigs(
