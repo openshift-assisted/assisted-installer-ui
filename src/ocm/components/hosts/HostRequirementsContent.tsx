@@ -67,6 +67,7 @@ const HostRequirementsContent = ({
           <br />
           <ExternalLink href={DISK_WRITE_SPEED_LINK}>Learn more</ExternalLink>
         </ListItem>
+        <ListItem>Operators might require additional resources.</ListItem>
       </List>
     );
   }
