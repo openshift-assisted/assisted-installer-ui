@@ -11,13 +11,13 @@ import { mapOcmArchToCpuArchitecture } from './CpuArchitectureService';
 
 export const getApiVipDnsName = (ocmCluster: OcmClusterType) => {
   let apiVipDnsname = '';
-  let errorType = '';
+  let urlType = '';
   try {
     // Format of cluster.api.url: protocol://domain:port
     if (ocmCluster.api?.url) {
       const apiVipUrl = new URL(ocmCluster.api.url);
       apiVipDnsname = apiVipUrl.hostname; // just domain is needed
-      errorType = 'api';
+      urlType = 'api';
     } else if (ocmCluster.console?.url) {
       // Try to guess API URL from Console URL.
       // Assumption: the cluster is originated by Assisted Installer, so console URL format should be of a fixed format.
@@ -26,12 +26,12 @@ export const getApiVipDnsName = (ocmCluster: OcmClusterType) => {
       const APPS = '.apps.';
       apiVipDnsname =
         'api.' + consoleUrlHostname.substring(consoleUrlHostname.indexOf(APPS) + APPS.length);
-      errorType = 'console';
+      urlType = 'console';
     }
   } catch (e) {
-    // can be ignored
+    // can be ignored, the error type has been set already
   }
-  return { apiVipDnsname, errorType };
+  return { apiVipDnsname, errorType: apiVipDnsname ? '' : urlType };
 };
 
 const Day2ClusterService = {
