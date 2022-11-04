@@ -15,10 +15,11 @@ export const getApiVipDnsName = (ocmCluster: OcmClusterType) => {
   try {
     // Format of cluster.api.url: protocol://domain:port
     if (ocmCluster.api?.url) {
+      urlType = 'api';
       const apiVipUrl = new URL(ocmCluster.api.url);
       apiVipDnsname = apiVipUrl.hostname; // just domain is needed
-      urlType = 'api';
     } else if (ocmCluster.console?.url) {
+      urlType = 'console';
       // Try to guess API URL from Console URL.
       // Assumption: the cluster is originated by Assisted Installer, so console URL format should be of a fixed format.
       // protocol://console-openshift-console.apps.[CLUSTER_NAME].[BASE_DOMAIN]"
@@ -26,7 +27,6 @@ export const getApiVipDnsName = (ocmCluster: OcmClusterType) => {
       const APPS = '.apps.';
       apiVipDnsname =
         'api.' + consoleUrlHostname.substring(consoleUrlHostname.indexOf(APPS) + APPS.length);
-      urlType = 'console';
     }
   } catch (e) {
     // can be ignored, the error type has been set already
