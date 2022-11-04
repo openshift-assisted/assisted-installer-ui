@@ -9,7 +9,7 @@ import {
 } from '../../../common';
 import { useOpenshiftVersions, usePullSecret } from '../../hooks';
 import { Button, EmptyStateVariant } from '@patternfly/react-core';
-import Day2ClusterService from '../../services/Day2ClusterService';
+import Day2ClusterService, { getApiVipDnsName } from '../../services/Day2ClusterService';
 import { handleApiError } from '../../api';
 import { isApiError } from '../../api/types';
 import { FeatureSupportLevelProvider } from '../featureSupportLevels';
@@ -18,8 +18,8 @@ import { HostsClusterDetailTabProps } from './types';
 
 export const HostsClusterDetailTabContent = ({
   cluster: ocmCluster,
+  extraInfo,
   isVisible,
-  openModal,
 }: HostsClusterDetailTabProps) => {
   const [error, setError] = React.useState<ReactNode>();
   const [day2Cluster, setDay2Cluster] = useStateSafely<Cluster | null | undefined>(undefined);
@@ -30,11 +30,6 @@ export const HostsClusterDetailTabContent = ({
     setError(undefined);
     setDay2Cluster(undefined);
   }, [setDay2Cluster]);
-
-  const handleClickMissingApiUrlLink = React.useCallback(
-    () => openModal?.('edit-console-url', ocmCluster),
-    [ocmCluster, openModal],
-  );
 
   React.useEffect(() => {
     if (!isVisible && day2Cluster) {
@@ -63,67 +58,26 @@ export const HostsClusterDetailTabContent = ({
         return;
       }
 
-      let apiVipDnsname = '';
-      // Format of cluster.api.url: protocol://domain:port
-      if (ocmCluster.api?.url) {
-        try {
-          const apiVipUrl = new URL(ocmCluster.api.url);
-          apiVipDnsname = apiVipUrl.hostname; // just domain is needed
-        } catch {
-          setError(
-            <>
-              Cluster API URL is not valid (${ocmCluster.api.url}), you can{' '}
-              <Button variant={'link'} isInline onClick={handleClickTryAgainLink}>
-                try again
-              </Button>
-              .
-            </>,
-          );
-          return;
-        }
-      } else if (ocmCluster.console?.url) {
-        // Try to guess API URL from Console URL.
-        // Assumption: the cluster is originated by Assisted Installer, so console URL format should be of a fixed format.
-        try {
-          // protocol://console-openshift-console.apps.[CLUSTER_NAME].[BASE_DOMAIN]"
-          const consoleUrlHostname = new URL(ocmCluster.console.url).hostname;
-          const APPS = '.apps.';
-          apiVipDnsname =
-            'api.' + consoleUrlHostname.substring(consoleUrlHostname.indexOf(APPS) + APPS.length);
-        } catch {
-          setError(
-            <>
-              Cluster Console URL is not valid (${ocmCluster.console?.url}), you can{' '}
-              <Button variant={'link'} isInline onClick={handleClickTryAgainLink}>
-                try again
-              </Button>
-              .
-            </>,
-          );
-          return;
-        }
+      const { apiVipDnsname, errorType } = getApiVipDnsName(ocmCluster);
+      if (errorType) {
+        const wrongUrlMessage =
+          errorType === 'console'
+            ? `Cluster Console URL is not valid (${ocmCluster.console?.url || ''})`
+            : `Cluster API URL is not valid (${ocmCluster.api?.url || ''})`;
+        setError(
+          <>
+            {wrongUrlMessage}, you can{' '}
+            <Button variant={'link'} isInline onClick={handleClickTryAgainLink}>
+              try again
+            </Button>
+            .
+          </>,
+        );
+        return;
       }
 
       if (!apiVipDnsname) {
-        setError(
-          <>
-            Neither API nor Console URL has been reported by the cluster yet.
-            {openModal && (
-              <>
-                <br />
-                Please hold on and{' '}
-                <Button variant={'link'} isInline onClick={handleClickTryAgainLink}>
-                  try again
-                </Button>{' '}
-                later or{' '}
-                <Button variant={'link'} isInline onClick={handleClickMissingApiUrlLink}>
-                  add console URL
-                </Button>{' '}
-                manually.
-              </>
-            )}
-          </>,
-        );
+        setError(<>Neither API nor Console URL has been reported by the cluster yet.</>);
         return;
       }
 
@@ -133,9 +87,10 @@ export const HostsClusterDetailTabContent = ({
             ocmCluster,
             pullSecret,
             normalizedVersion,
+            extraInfo,
           );
           setDay2Cluster(
-            Day2ClusterService.completeAiClusterWithOcmCluster(day2Cluster, ocmCluster),
+            Day2ClusterService.completeAiClusterWithOcmCluster(day2Cluster, ocmCluster, extraInfo),
           );
         } catch (e) {
           handleApiError(e);
@@ -161,25 +116,29 @@ export const HostsClusterDetailTabContent = ({
 
       void doItAsync();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     ocmCluster,
-    openModal,
+    extraInfo,
     pullSecret,
     day2Cluster,
     setDay2Cluster,
     isVisible,
     normalizeClusterVersion,
+    handleClickTryAgainLink,
   ]);
 
   const resetCluster = React.useCallback(async () => {
-    if (!day2Cluster) {
+    if (!day2Cluster?.id) {
       return;
     }
     try {
       const updatedDay2Cluster = await Day2ClusterService.fetchClusterById(day2Cluster.id);
       setDay2Cluster(
-        Day2ClusterService.completeAiClusterWithOcmCluster(updatedDay2Cluster, ocmCluster),
+        Day2ClusterService.completeAiClusterWithOcmCluster(
+          updatedDay2Cluster,
+          ocmCluster,
+          extraInfo,
+        ),
       );
     } catch (e) {
       handleApiError(e);
@@ -195,7 +154,7 @@ export const HostsClusterDetailTabContent = ({
         </>,
       );
     }
-  }, [day2Cluster, handleClickTryAgainLink, ocmCluster, setDay2Cluster]);
+  }, [day2Cluster?.id, handleClickTryAgainLink, ocmCluster, extraInfo, setDay2Cluster]);
 
   React.useEffect(() => {
     const id = setTimeout(() => {

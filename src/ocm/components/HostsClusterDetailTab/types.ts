@@ -1,9 +1,7 @@
-import { OcmClusterType } from '../AddHosts/types';
-
-export type OpenModalType = (modalName: string, cluster?: OcmClusterType) => void;
+import { OcmClusterExtraInfo, OcmClusterType } from '../AddHosts/types';
 
 export type HostsClusterDetailTabProps = {
-  cluster?: OcmClusterType;
+  cluster: OcmClusterType;
+  extraInfo: OcmClusterExtraInfo;
   isVisible: boolean;
-  openModal?: OpenModalType;
 };

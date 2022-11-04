@@ -6,27 +6,18 @@ import {
   OcmCpuArchitecture,
   SupportedCpuArchitectures,
 } from '../../common';
-import { OcmClusterType } from '../components/AddHosts/types';
+import { OcmClusterExtraInfo, OcmClusterType } from '../components/AddHosts/types';
 import { mapOcmArchToCpuArchitecture } from './CpuArchitectureService';
 
-const Day2ClusterService = {
-  getOpenshiftClusterId(ocmCluster?: OcmClusterType) {
-    return ocmCluster && ocmCluster.external_id;
-  },
-
-  async fetchCluster(ocmCluster: OcmClusterType, pullSecret: string, openshiftVersion: string) {
-    const openshiftClusterId = Day2ClusterService.getOpenshiftClusterId(ocmCluster);
-
-    if (!openshiftClusterId) {
-      // error?
-      return;
-    }
-
-    let apiVipDnsname = '';
+export const getApiVipDnsName = (ocmCluster: OcmClusterType) => {
+  let apiVipDnsname = '';
+  let errorType = '';
+  try {
     // Format of cluster.api.url: protocol://domain:port
     if (ocmCluster.api?.url) {
       const apiVipUrl = new URL(ocmCluster.api.url);
       apiVipDnsname = apiVipUrl.hostname; // just domain is needed
+      errorType = 'api';
     } else if (ocmCluster.console?.url) {
       // Try to guess API URL from Console URL.
       // Assumption: the cluster is originated by Assisted Installer, so console URL format should be of a fixed format.
@@ -35,26 +26,52 @@ const Day2ClusterService = {
       const APPS = '.apps.';
       apiVipDnsname =
         'api.' + consoleUrlHostname.substring(consoleUrlHostname.indexOf(APPS) + APPS.length);
+      errorType = 'console';
+    }
+  } catch (e) {
+    // can be ignored
+  }
+  return { apiVipDnsname, errorType };
+};
+
+const Day2ClusterService = {
+  getOpenshiftClusterId(ocmCluster?: OcmClusterType) {
+    return ocmCluster && ocmCluster.external_id;
+  },
+
+  async fetchCluster(
+    ocmCluster: OcmClusterType,
+    pullSecret: string,
+    openshiftVersion: string,
+    extraInfo: OcmClusterExtraInfo,
+  ) {
+    const openshiftClusterId = Day2ClusterService.getOpenshiftClusterId(ocmCluster);
+
+    if (!openshiftClusterId) {
+      // error?
+      return;
     }
 
     const day2ClusterId = await Day2ClusterService.getDay2ClusterId(openshiftClusterId);
     if (day2ClusterId) {
       return Day2ClusterService.fetchClusterById(day2ClusterId);
-    } else {
-      const createMultipleInfraEnvs =
-        ocmCluster.cpu_architecture === OcmCpuArchitecture.MULTI || ocmCluster.can_select_cpu_arch;
-      const cpuArchitectures = createMultipleInfraEnvs
-        ? SupportedCpuArchitectures
-        : [mapOcmArchToCpuArchitecture(ocmCluster.cpu_architecture)];
-      return Day2ClusterService.createCluster(
-        openshiftClusterId,
-        ocmCluster.display_name || ocmCluster.name || openshiftClusterId,
-        apiVipDnsname,
-        pullSecret,
-        openshiftVersion,
-        cpuArchitectures,
-      );
     }
+    // The first time the user accesses "Add hosts" tab, the infraEnv(s) need to be created
+    const createMultipleInfraEnvs =
+      ocmCluster.cpu_architecture === OcmCpuArchitecture.MULTI ||
+      extraInfo.canSelectCpuArchitecture;
+    const cpuArchitectures = createMultipleInfraEnvs
+      ? SupportedCpuArchitectures
+      : [mapOcmArchToCpuArchitecture(ocmCluster.cpu_architecture)];
+
+    return Day2ClusterService.createCluster(
+      openshiftClusterId,
+      ocmCluster.display_name || ocmCluster.name || openshiftClusterId,
+      getApiVipDnsName(ocmCluster).apiVipDnsname,
+      pullSecret,
+      openshiftVersion,
+      cpuArchitectures,
+    );
   },
 
   async fetchClusterById(clusterId: Cluster['id']) {
@@ -105,10 +122,12 @@ const Day2ClusterService = {
    * Complete the day2Cluster coming from AI polling with the data in the OCM cluster
    * @param day2Cluster Day2 cluster
    * @param ocmCluster OCM cluster
+   * @param extraInfo Extra information coming from OCM
    */
   completeAiClusterWithOcmCluster: (
     day2Cluster: Cluster | undefined,
     ocmCluster: OcmClusterType | undefined,
+    extraInfo: OcmClusterExtraInfo,
   ) => {
     if (!ocmCluster || !day2Cluster) {
       return day2Cluster;
@@ -121,7 +140,7 @@ const Day2ClusterService = {
       cpuArchitecture: ocmCluster.cpu_architecture,
       // The field "can_select_cpu_arch" only tells us that the organization has this feature,
       // but it's not applicable to individual clusters. They may actually not support multi-arch (eg OpenShift < 4.12)
-      canSelectCpuArch: ocmCluster.can_select_cpu_arch,
+      canSelectCpuArch: extraInfo.canSelectCpuArchitecture,
     };
   },
 };

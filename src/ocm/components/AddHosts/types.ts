@@ -18,7 +18,6 @@ export type OcmClusterType = {
   display_name: string;
   openshift_version: string;
   cpu_architecture: OcmCpuArchitecture;
-  can_select_cpu_arch: boolean;
   managed: boolean;
   canEdit: boolean;
   canDelete: boolean;
@@ -30,7 +29,7 @@ export type OcmClusterType = {
     id: string; // OCP-AssistedInstall
   };
 
-  // Missing for AI-clusters since Subcription is created by AI-service.
+  // Missing for AI-clusters since Subscription is created by AI-service.
   // Keeping here for backwards compatibility with old clusters
   cloud_provider?: {
     kind: string;
@@ -55,6 +54,10 @@ export type OcmClusterType = {
 
   aiCluster?: Cluster;
   aiSupportLevels?: FeatureSupportLevels;
+};
+
+export type OcmClusterExtraInfo = {
+  canSelectCpuArchitecture: boolean;
 };
 
 export type Day2ClusterDetailValues = {
