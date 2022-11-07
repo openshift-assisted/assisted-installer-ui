@@ -1,10 +1,10 @@
 import React from 'react';
-import { Modal, Button, ButtonVariant, ModalVariant } from '@patternfly/react-core';
-import { Cluster, ErrorState, isSNO, ToolbarButton } from '../../../common';
+import { Button, ButtonVariant, Modal, ModalVariant } from '@patternfly/react-core';
+import { pluralize } from 'humanize-plus';
+import { Cluster, CpuArchitecture, ErrorState, isSNO, ToolbarButton } from '../../../common';
 import DiscoveryImageForm from './DiscoveryImageForm';
 import DiscoveryImageSummary from './DiscoveryImageSummary';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
-import { pluralize } from 'humanize-plus';
 import useInfraEnvImageUrl from '../../hooks/useInfraEnvImageUrl';
 
 type DiscoveryImageModalButtonProps = {
@@ -33,20 +33,21 @@ export const DiscoveryImageModalButton: React.FC<DiscoveryImageModalButtonProps>
   );
 };
 
-export const DiscoveryImageModal: React.FC = () => {
+export const DiscoveryImageModal = () => {
   const [isoDownloadUrl, setIsoDownloadUrl] = React.useState<string>('');
   const [isoDownloadError, setIsoDownloadError] = React.useState<string>('');
 
   const { discoveryImageDialog } = useModalDialogsContext();
   const { data, isOpen, close } = discoveryImageDialog;
   const cluster = data?.cluster;
-  const { getImageUrl } = useInfraEnvImageUrl();
+  const { getIsoImageUrl } = useInfraEnvImageUrl();
 
   const onImageReady = React.useCallback(async () => {
-    const { url, error } = await getImageUrl(cluster.id);
+    // We need to retrieve the Iso for the only infraEnv on Day1, hence we don't specify the architecture
+    const { url, error } = await getIsoImageUrl(cluster.id, CpuArchitecture.USE_DAY1_ARCHITECTURE);
     setIsoDownloadUrl(url);
     setIsoDownloadError(error);
-  }, [getImageUrl, cluster?.id]);
+  }, [getIsoImageUrl, cluster?.id]);
 
   const onReset = React.useCallback(() => {
     setIsoDownloadUrl('');
@@ -76,9 +77,15 @@ export const DiscoveryImageModal: React.FC = () => {
           onClose={close}
           onReset={onReset}
           isoDownloadUrl={isoDownloadUrl}
+          cpuArchitecture={CpuArchitecture.USE_DAY1_ARCHITECTURE}
         />
       ) : (
-        <DiscoveryImageForm cluster={cluster} onCancel={close} onSuccess={onImageReady} />
+        <DiscoveryImageForm
+          cluster={cluster}
+          onCancel={close}
+          onSuccess={onImageReady}
+          cpuArchitecture={CpuArchitecture.USE_DAY1_ARCHITECTURE}
+        />
       )}
     </Modal>
   );

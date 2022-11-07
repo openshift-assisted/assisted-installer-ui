@@ -1,4 +1,10 @@
-import { Cluster, FeatureSupportLevels } from '../../../common';
+import {
+  Cluster,
+  CpuArchitecture,
+  FeatureSupportLevels,
+  OcmCpuArchitecture,
+} from '../../../common';
+import { HostsNetworkConfigurationType } from '../../services';
 
 /* The type is reverse engineered.
    The OCM object contains additional data.
@@ -11,7 +17,7 @@ export type OcmClusterType = {
   name: string;
   display_name: string;
   openshift_version: string;
-
+  cpu_architecture: OcmCpuArchitecture;
   managed: boolean;
   canEdit: boolean;
   canDelete: boolean;
@@ -23,7 +29,7 @@ export type OcmClusterType = {
     id: string; // OCP-AssistedInstall
   };
 
-  // Missing for AI-clusters since Subcription is created by AI-service.
+  // Missing for AI-clusters since Subscription is created by AI-service.
   // Keeping here for backwards compatibility with old clusters
   cloud_provider?: {
     kind: string;
@@ -48,4 +54,13 @@ export type OcmClusterType = {
 
   aiCluster?: Cluster;
   aiSupportLevels?: FeatureSupportLevels;
+};
+
+export type OcmClusterExtraInfo = {
+  canSelectCpuArchitecture: boolean;
+};
+
+export type Day2ClusterDetailValues = {
+  cpuArchitecture: CpuArchitecture;
+  hostsNetworkConfigurationType: HostsNetworkConfigurationType;
 };
