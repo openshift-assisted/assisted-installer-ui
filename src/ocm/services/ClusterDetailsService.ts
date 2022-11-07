@@ -1,7 +1,6 @@
 import {
   AI_UI_TAG,
   Cluster,
-  V2ClusterUpdateParams,
   CpuArchitecture,
   InfraEnv,
   ManagedDomain,
@@ -9,8 +8,6 @@ import {
   getClusterDetailsInitialValues,
   isArmArchitecture,
 } from '../../common';
-import { ClustersAPI } from '../services/apis';
-import InfraEnvsService from './InfraEnvsService';
 import omit from 'lodash/omit';
 import DiskEncryptionService from './DiskEncryptionService';
 import {
@@ -19,33 +16,9 @@ import {
   OcmClusterDetailsValues,
 } from './types';
 import { getDummyInfraEnvField } from '../components/clusterConfiguration/staticIp/data/dummyData';
-import ClustersService from './ClustersService';
 import { ocmClient } from '../api';
 
 const ClusterDetailsService = {
-  async create(params: ClusterCreateParamsWithStaticNetworking) {
-    const { data: cluster } = await ClustersAPI.register(omit(params, 'staticNetworkConfig'));
-    await InfraEnvsService.create({
-      name: `${params.name}_infra-env`,
-      pullSecret: params.pullSecret,
-      clusterId: cluster.id,
-      openshiftVersion: params.openshiftVersion,
-      cpuArchitecture: params.cpuArchitecture,
-      staticNetworkConfig: params.staticNetworkConfig,
-    });
-
-    return cluster;
-  },
-
-  async update(
-    clusterId: Cluster['id'],
-    clusterTags: Cluster['tags'],
-    params: V2ClusterUpdateParams,
-  ) {
-    const { data: updatedCluster } = await ClustersService.update(clusterId, clusterTags, params);
-    return updatedCluster;
-  },
-
   getClusterCreateParams(values: OcmClusterDetailsValues): ClusterCreateParamsWithStaticNetworking {
     const params: ClusterCreateParamsWithStaticNetworking = omit(values, [
       'useRedHatDnsService',
