@@ -1,10 +1,5 @@
 import React from 'react';
 import flatten from 'lodash/flatten';
-import { MultiSelectField } from '../../../common';
-import { AgentK8sResource } from '../../types';
-import { MultiSelectOption } from '../../../common/components/ui/formik/types';
-import { AGENT_LOCATION_LABEL_KEY, INFRAENV_AGENTINSTALL_LABEL_KEY } from '../common';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import {
   Dropdown,
   DropdownItem,
@@ -15,6 +10,12 @@ import {
   SplitItem,
 } from '@patternfly/react-core';
 import { useField } from 'formik';
+
+import { MultiSelectField } from '../../../common';
+import { AgentK8sResource } from '../../types';
+import { MultiSelectOption } from '../../../common/components/ui/formik/types';
+import { AGENT_LOCATION_LABEL_KEY, INFRAENV_AGENTINSTALL_LABEL_KEY } from '../common';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 import './LabelSelector.css';
 
@@ -106,15 +107,14 @@ export const LabelSelectorGroup: React.FC<LabelsSelectorProps> = ({
         </DropdownItem>,
       ];
 
+  const categoryName = label || t('ai:Filter hosts by existing labels');
+
   return (
-    <Split hasGutter className="pf-c-label-group pf-m-category">
+    <Split hasGutter className="pf-c-label-group pf-m-category ai-split-filter-hosts">
       <SplitItem>
-        <LabelGroup
-          categoryName={label || t('ai:Host label filter')}
-          className="ai-group-label-selector"
-        >
-          {field.value.length ? (
-            field.value.map(({ key, value }) => (
+        {field.value.length ? (
+          <LabelGroup categoryName={categoryName} className="ai-group-label-selector">
+            {field.value.map(({ key, value }) => (
               <Label
                 key={key}
                 onClose={() => setValue(field.value.filter((value) => value.key !== key))}
@@ -122,11 +122,11 @@ export const LabelSelectorGroup: React.FC<LabelsSelectorProps> = ({
               >
                 {`${key}=${value}`}
               </Label>
-            ))
-          ) : (
-            <Label> {t('ai:Any label')}</Label>
-          )}
-        </LabelGroup>
+            ))}
+          </LabelGroup>
+        ) : (
+          <span className="pf-c-label-group__label">{categoryName}</span>
+        )}
       </SplitItem>
       <SplitItem>
         <Dropdown
