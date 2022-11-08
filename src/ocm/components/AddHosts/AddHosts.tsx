@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   ButtonVariant,
   Card,
@@ -11,9 +12,8 @@ import {
   Toolbar,
   ToolbarContent,
 } from '@patternfly/react-core';
-import React from 'react';
-import { getApiErrorMessage, handleApiError } from '../../api/utils';
-import { DiscoveryImageModal } from '../clusterConfiguration/discoveryImageModal';
+import { getApiErrorMessage, handleApiError } from '../../api';
+import { DiscoveryImageModal } from '../clusterConfiguration/DiscoveryImageModal';
 import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
 import {
   ToolbarButton,
@@ -33,7 +33,7 @@ import ViewClusterEventsButton from '../../../common/components/ui/ViewClusterEv
 
 const { addAlert } = alertsSlice.actions;
 
-const AddHosts: React.FC = () => {
+export const AddHosts = () => {
   const { cluster, resetCluster } = React.useContext(AddHostsContext);
   const [isSubmitting, setSubmitting] = React.useState(false);
   const clusterVarieties = useClusterStatusVarieties(cluster);
@@ -50,7 +50,7 @@ const AddHosts: React.FC = () => {
       );
 
       await HostsService.installAll(hostsToBeInstalled);
-      void resetCluster();
+      await resetCluster();
     } catch (e) {
       handleApiError(e, () =>
         addAlert({
@@ -88,7 +88,7 @@ const AddHosts: React.FC = () => {
               </Grid>
             </StackItem>
             <StackItem>
-              <InventoryAddHosts />
+              <InventoryAddHosts cluster={cluster} />
             </StackItem>
           </Stack>
         </CardBody>
@@ -114,5 +114,3 @@ const AddHosts: React.FC = () => {
     </ModalDialogsContextProvider>
   );
 };
-
-export default AddHosts;
