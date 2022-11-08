@@ -1,23 +1,53 @@
-import { InfraEnvCreateParams, Cluster } from '../../common';
+import { AxiosResponse } from 'axios';
+import {
+  Cluster,
+  CpuArchitecture,
+  HostStaticNetworkConfig,
+  InfraEnv,
+  InfraEnvCreateParams,
+} from '../../common';
 import { InfraEnvsAPI } from './apis';
-import InfraEnvIdsCacheService from './InfraEnvIdsCacheService';
+import InfraEnvCache from './InfraEnvIdsCacheService';
+import { getDummyInfraEnvField } from '../components/clusterConfiguration/staticIp/data/dummyData';
 
 const InfraEnvsService = {
-  async getInfraEnvId(clusterId: Cluster['id']): Promise<string> {
-    let infraEnvId = InfraEnvIdsCacheService.getItem(clusterId);
-    if (!infraEnvId) {
+  async getInfraEnvId(clusterId: Cluster['id'], cpuArchitecture: CpuArchitecture): Promise<string> {
+    let infraEnvId = InfraEnvCache.getInfraEnvId(clusterId, cpuArchitecture);
+    if (infraEnvId === null) {
       const { data: infraEnvs } = await InfraEnvsAPI.list(clusterId);
-      if (infraEnvs.length !== 0) {
-        const [infraEnv] = infraEnvs;
-        InfraEnvIdsCacheService.setItem(clusterId, infraEnv.id);
-        infraEnvId = infraEnv.id;
-      } else {
-        InfraEnvIdsCacheService.removeItem(clusterId);
-        throw new Error(`No InfraEnv could be found for clusterId: ${clusterId}`);
+      if (infraEnvs.length > 0) {
+        InfraEnvCache.updateInfraEnvs(clusterId, infraEnvs);
+        infraEnvId = InfraEnvCache.getInfraEnvId(clusterId, cpuArchitecture);
+      }
+      if (!infraEnvId) {
+        InfraEnvCache.removeInfraEnvId(clusterId, cpuArchitecture);
+        throw new Error(
+          `No InfraEnv could be found for clusterId: ${clusterId} and architecture ${
+            cpuArchitecture || ''
+          }`,
+        );
       }
     }
-
     return infraEnvId;
+  },
+
+  async getInfraEnv(clusterId: Cluster['id'], cpuArchitecture: CpuArchitecture) {
+    const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId, cpuArchitecture);
+    if (infraEnvId) {
+      const { data } = await InfraEnvsAPI.get(infraEnvId);
+      return data;
+    } else {
+      throw new Error(
+        `No InfraEnv could be found for clusterId: ${clusterId} and architecture ${
+          cpuArchitecture || ''
+        }`,
+      );
+    }
+  },
+
+  async getAllInfraEnvIds(clusterId: Cluster['id']): Promise<string[]> {
+    const { data: infraEnvs } = await InfraEnvsAPI.list(clusterId);
+    return infraEnvs.map((infraEnv) => infraEnv.id);
   },
 
   async create(params: InfraEnvCreateParams) {
@@ -31,13 +61,65 @@ const InfraEnvsService = {
       throw new Error('API returned no ID for the underlying InfraEnv');
     }
 
-    InfraEnvIdsCacheService.setItem(params.clusterId, infraEnv.id);
+    InfraEnvCache.updateInfraEnvs(params.clusterId, [infraEnv]);
   },
 
-  async delete(clusterId: Cluster['id']) {
-    const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId);
-    InfraEnvIdsCacheService.removeItem(clusterId);
-    return InfraEnvsAPI.deregister(infraEnvId);
+  async removeAll(clusterId: Cluster['id']) {
+    const { data: infraEnvs } = await InfraEnvsAPI.list(clusterId);
+
+    const promises = infraEnvs.map((infraEnv) => {
+      return InfraEnvsAPI.deregister(infraEnv.id);
+    });
+
+    InfraEnvCache.removeInfraEnvs(clusterId);
+
+    return Promise.all(promises);
+  },
+
+  async updateAllInfraEnvsToDhcp(clusterId: Cluster['id']) {
+    const infraEnvIds = await InfraEnvsService.getAllInfraEnvIds(clusterId);
+    const infraEnvUpdates = infraEnvIds.map((id) =>
+      InfraEnvsAPI.update(id, {
+        staticNetworkConfig: [],
+      }),
+    );
+    return Promise.all(infraEnvUpdates);
+  },
+
+  async setDummyStaticConfigToInfraEnv(infraEnvId: InfraEnv['id']): Promise<InfraEnv> {
+    const { data } = await InfraEnvsAPI.update(infraEnvId, {
+      staticNetworkConfig: getDummyInfraEnvField(),
+    });
+    return data;
+  },
+
+  async syncStaticIpConfigs(
+    clusterId: Cluster['id'],
+    currentInfraEnvId: InfraEnv['id'],
+    staticNetworkConfig: HostStaticNetworkConfig[],
+  ): Promise<InfraEnv> {
+    // Updates staticIpConfigs on "currentInfraEnvId", and then it
+    const { data: updatedInfraEnv } = await InfraEnvsAPI.update(currentInfraEnvId, {
+      staticNetworkConfig,
+    });
+
+    const updateRequests: Promise<AxiosResponse<InfraEnv, unknown>>[] = [];
+    const infraEnvIds = await InfraEnvsService.getAllInfraEnvIds(clusterId);
+    infraEnvIds.forEach((infraEnvId) => {
+      // Copies the same configuration to the other infraEnvs of the same cluster
+      if (infraEnvId !== currentInfraEnvId) {
+        updateRequests.push(
+          InfraEnvsAPI.update(infraEnvId, {
+            staticNetworkConfig,
+          }),
+        );
+      }
+    });
+
+    // TODO (multi-arch) what should happen if one of the infraEnvs fails to get the same configuration
+    return Promise.all(updateRequests).then(() => {
+      return updatedInfraEnv;
+    });
   },
 };
 

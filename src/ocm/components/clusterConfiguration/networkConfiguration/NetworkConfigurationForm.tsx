@@ -4,21 +4,22 @@ import { Formik, FormikConfig, useFormikContext } from 'formik';
 import { Form, Grid, GridItem, Text, TextContent } from '@patternfly/react-core';
 import {
   Cluster,
+  ClusterDefaultConfig,
   ClusterWizardStep,
   ClusterWizardStepHeader,
+  CpuArchitecture,
   getFormikErrorFields,
   getHostSubnets,
-  NetworkConfigurationValues,
   HostSubnets,
   InfraEnv,
+  IPV4_STACK,
   isSNO,
   LoadingState,
+  NetworkConfigurationValues,
+  SecurityFields,
   useAlerts,
   useFormikAutoSave,
   V2ClusterUpdateParams,
-  IPV4_STACK,
-  SecurityFields,
-  ClusterDefaultConfig,
 } from '../../../../common';
 import { useDefaultConfiguration } from '../ClusterDefaultConfigurationContext';
 import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContext';
@@ -108,7 +109,11 @@ const NetworkConfigurationForm: React.FC<{
 };
 
 const NetworkConfigurationPage = ({ cluster }: { cluster: Cluster }) => {
-  const { infraEnv, error: infraEnvError, isLoading } = useInfraEnv(cluster.id);
+  const {
+    infraEnv,
+    error: infraEnvError,
+    isLoading,
+  } = useInfraEnv(cluster.id, CpuArchitecture.USE_DAY1_ARCHITECTURE);
   const defaultNetworkValues = useDefaultConfiguration([
     'clusterNetworksDualstack',
     'clusterNetworksIpv4',

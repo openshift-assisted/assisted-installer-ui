@@ -14,10 +14,10 @@ import {
   HumanizedSortable,
   ResourceUIState,
 } from '../../common';
-import { RootState } from '../store/rootReducer';
 import ClusterStatus, { getClusterStatusText } from '../components/clusters/ClusterStatus';
 import { routeBasePath } from '../config/routeBaseBath';
 import { TFunction } from 'i18next';
+import { RootState } from '../store';
 
 const selectClusters = (state: RootState) => state.clusters.data;
 const clustersUIState = (state: RootState) => state.clusters.uiState;

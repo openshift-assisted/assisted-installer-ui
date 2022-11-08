@@ -6,19 +6,23 @@ import { ClustersAPI } from '../services/apis';
 import {
   PlatformType,
   POLLING_INTERVAL,
-  SupportedPlatformIntegrations,
+  NonPlatformIntegrations,
+  isClusterPlatformTypeVM,
   useAlerts,
+  SupportedPlatformType,
 } from '../../common';
 import { APIErrorMixin } from '../api/types';
 
-export type PlatformIntegrationType = typeof SupportedPlatformIntegrations[number];
-export type SupportedPlatformIntegrationType = 'no-active-integrations' | PlatformIntegrationType;
+export type SupportedPlatformIntegrationType = 'no-active-integrations' | SupportedPlatformType;
 
-function getIntegrablePlatformIntegration(platform: PlatformType[]) {
-  const platformsSet = Array.from(new Set(platform));
-  if (platformsSet.length === 1) {
-    const [exclusivelyAvailablePlatform] = platformsSet;
-    return SupportedPlatformIntegrations.includes(exclusivelyAvailablePlatform)
+function getIntegrablePlatformIntegration(allClusterPlatforms: PlatformType[]) {
+  const integrationPlatforms = allClusterPlatforms.filter(
+    (platform) => !NonPlatformIntegrations.includes(platform),
+  );
+  const uniqueIntegrationPlatforms = Array.from(new Set(integrationPlatforms));
+  if (integrationPlatforms.length === 1) {
+    const [exclusivelyAvailablePlatform] = uniqueIntegrationPlatforms;
+    return isClusterPlatformTypeVM({ platform: { type: exclusivelyAvailablePlatform } })
       ? exclusivelyAvailablePlatform
       : undefined;
   }
@@ -58,7 +62,8 @@ export default function useClusterSupportedPlatforms(clusterId: string) {
 
   return {
     isPlatformIntegrationSupported: supportedPlatformIntegration !== undefined,
-    supportedPlatformIntegration: supportedPlatformIntegration || 'no-active-integrations',
+    supportedPlatformIntegration: (supportedPlatformIntegration ||
+      'no-active-integrations') as SupportedPlatformIntegrationType,
     isLoading,
     error,
   };
