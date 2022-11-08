@@ -22,8 +22,6 @@ export type NetworkStepProps = {
   agents: AgentK8sResource[];
   formRef: React.Ref<FormikProps<NetworkFormValues>>;
   onValuesChanged: (values: NetworkFormValues, initRender: boolean) => void;
-  initAdvancedNetworking: boolean;
-  initSSHPublicKey?: string;
+  initialValues: NetworkFormValues;
   count: number;
-  isBMPlatform: boolean;
 };
