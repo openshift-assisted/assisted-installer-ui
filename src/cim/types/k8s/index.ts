@@ -7,3 +7,6 @@ export * from './cluster-image-set';
 export * from './nm-state';
 export * from './bare-metal-host';
 export * from './infrastructure';
+export * from './agent-service-config';
+export * from './cluster-version';
+export * from './storage-class';

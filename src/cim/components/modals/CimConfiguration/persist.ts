@@ -1,0 +1,478 @@
+import { AlertVariant } from '@patternfly/react-core';
+import { K8sResourceCommon } from 'console-sdk-ai-lib';
+import { TFunction } from 'react-i18next';
+
+import {
+  AgentServiceConfigK8sResource,
+  CreateResourceFuncType,
+  GetResourceFuncType,
+  ListResourcesFuncType,
+  PatchResourceFuncType,
+  ResourcePatch,
+  RouteK8sResource,
+} from '../../../types';
+
+export type SetErrorFuncType = ({
+  title,
+  message,
+  variant,
+}: {
+  title: string;
+  message?: string;
+  variant?: AlertVariant;
+}) => void;
+
+const ASSISTED_IMAGE_SERVICE_ROUTE_PREFIX = 'assisted-image-service-multicluster-engine';
+
+// Since we do not know MCE's namespace, query all routes,
+// Find assisted-image-service's one and parse domain from there.
+const getAssistedImageServiceRoute = async (
+  t: TFunction,
+  setError: SetErrorFuncType,
+  listResources: ListResourcesFuncType,
+): Promise<RouteK8sResource | undefined> => {
+  let allRoutes;
+  try {
+    allRoutes = (await listResources({
+      kind: 'Route',
+      apiVersion: 'route.openshift.io/v1',
+    })) as RouteK8sResource[];
+  } catch (e) {
+    console.error('Failed to read all routes: ', allRoutes);
+    setError({
+      title: t('ai:Failed to save configuration'),
+      message: t('ai:Can not query routes.'),
+    });
+    return undefined;
+  }
+
+  const assistedImageServiceRoute = allRoutes?.find(
+    (r: RouteK8sResource) => r.metadata?.name === 'assisted-image-service',
+  );
+
+  if (!assistedImageServiceRoute?.spec?.host) {
+    setError({
+      title: t('ai:Failed to save configuration'),
+      message: t('ai:Can not find host of the assisted-image-service route'),
+    });
+    return undefined;
+  }
+
+  return assistedImageServiceRoute;
+};
+
+// There are many ways how to get the domain name, let's follow the documentation.
+const getClusterDomain = (
+  t: TFunction,
+  setError: SetErrorFuncType,
+  assistedImageServiceRoute: RouteK8sResource,
+): string | undefined => {
+  const prefix = `${ASSISTED_IMAGE_SERVICE_ROUTE_PREFIX}.`;
+  const host: string = assistedImageServiceRoute.spec?.host || '';
+  const appsDomain = host.substring(host.indexOf(prefix) + prefix.length);
+
+  // the appsDomain can be prefixed either by "apps." or "nlb-apps." so search for first dot
+  const domain = appsDomain.substring(appsDomain.indexOf('.') + 1);
+
+  if (!domain) {
+    // It must be present
+    console.error('Can not find domain in assistedImageServiceRoute: ', assistedImageServiceRoute);
+    setError({
+      title: t('ai:Can not find cluster domain.'),
+    });
+  }
+
+  console.log('--- Domain found: ', domain, ', from host: ', host);
+  return domain;
+};
+
+// Keep this function in sync with getClusterDomain()
+const patchAssistedImageServiceRoute = async (
+  t: TFunction,
+  setError: SetErrorFuncType,
+  patchResource: PatchResourceFuncType,
+
+  assistedImageServiceRoute: RouteK8sResource,
+  domain: string,
+) => {
+  const newHost = `${ASSISTED_IMAGE_SERVICE_ROUTE_PREFIX}.nlb-apps.${domain}`;
+  const patches: ResourcePatch[] = [
+    {
+      op: 'replace',
+      path: '/spec/host',
+      value: newHost,
+    },
+  ];
+
+  try {
+    await patchResource(assistedImageServiceRoute, patches);
+  } catch (e) {
+    console.error('Failed to patch assisted-image-service route: ', e, patches);
+    setError({
+      title: t('ai:Failed to patch assisted-image-service route for new domain.'),
+    });
+  }
+};
+
+export const isIngressController = async (getResource: GetResourceFuncType): Promise<boolean> => {
+  try {
+    await getResource({
+      apiVersion: 'operator.openshift.io/v1',
+      kind: 'IngressController',
+      metadata: {
+        name: 'ingress-controller-with-nlb',
+        namespace: 'openshift-ingress-operator',
+      },
+    });
+
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const createIngressController = async (
+  t: TFunction,
+  setError: SetErrorFuncType,
+  createResource: CreateResourceFuncType,
+
+  domain: string,
+): Promise<boolean> => {
+  // Assumption: the IngressController reource is not present - ensured at higher level
+
+  const ingressController = {
+    apiVersion: 'operator.openshift.io/v1',
+    kind: 'IngressController',
+    metadata: {
+      name: 'ingress-controller-with-nlb',
+      namespace: 'openshift-ingress-operator',
+    },
+    spec: {
+      domain: `nlb-apps.${domain}`,
+      routeSelector: {
+        matchLabels: {
+          'router-type': 'nlb',
+        },
+      },
+      endpointPublishingStrategy: {
+        type: 'LoadBalancerService',
+        loadBalancer: {
+          scope: 'External',
+          providerParameters: {
+            type: 'AWS',
+            aws: {
+              type: 'NLB',
+            },
+          },
+        },
+      },
+    },
+  };
+
+  try {
+    await createResource(ingressController);
+    return true;
+  } catch (e) {
+    console.error('Create IngressController error: ', e);
+    setError({
+      title: t('ai:Failed to create IngressController'),
+    });
+  }
+
+  return false;
+};
+
+const patchAssistedImageService = async (
+  t: TFunction,
+  setError: SetErrorFuncType,
+  getResource: GetResourceFuncType,
+  patchResource: PatchResourceFuncType,
+  mceNamespace: string,
+) => {
+  // The service should be already present
+  let assistedImageService;
+
+  try {
+    assistedImageService = await getResource({
+      kind: 'Service',
+      apiVersion: 'v1',
+      metadata: {
+        name: 'assisted-image-service',
+        namespace: mceNamespace,
+      },
+    });
+  } catch (e) {
+    console.error('Error fetching assisted-image-service: ', e);
+    setError({
+      title: t('ai:Failed to patch assisted-image-service'),
+    });
+
+    return;
+  }
+
+  const labels = assistedImageService.metadata?.labels || {};
+  labels['router-type'] = 'nlb';
+  const patches: ResourcePatch[] = [
+    {
+      op: assistedImageService.metadata?.labels ? 'replace' : 'add',
+      path: '/metadata/labels',
+      value: labels,
+    },
+  ];
+
+  try {
+    await patchResource(assistedImageService, patches);
+  } catch (e) {
+    console.error('Failed to patch assisted-image-service: ', e, patches);
+    setError({
+      title: t('ai:Failed to patch assisted-image-service'),
+    });
+  }
+};
+
+const patchProvisioningConfiguration = async ({
+  t,
+  setError,
+  patchResource,
+  getResource,
+}: {
+  t: TFunction;
+  setError: SetErrorFuncType;
+  patchResource: PatchResourceFuncType;
+  getResource: GetResourceFuncType;
+}): Promise<boolean> => {
+  console.log('---- patchProvisioningConfiguration start');
+
+  try {
+    const provisioning = (await getResource({
+      kind: 'Provisioning',
+      apiVersion: 'metal3.io/v1alpha1',
+      metadata: {
+        name: 'provisioning-configuration',
+      },
+    })) as K8sResourceCommon & { spec?: { watchAllNamespaces?: boolean } };
+
+    const patches: ResourcePatch[] = [
+      {
+        op: provisioning.spec?.watchAllNamespaces ? 'replace' : 'add',
+        path: '/spec/watchAllNamespaces',
+        value: true,
+      },
+    ];
+
+    await patchResource(provisioning, patches);
+    return true;
+  } catch (e) {
+    console.error('Failed to patch provisioning-configuration: ', e);
+    setError({
+      title: t('ai:Failed to configure provisioning.'),
+    });
+    return false;
+  }
+};
+
+const createAgentServiceConfig = async ({
+  t,
+  setError,
+  createResource,
+  dbVolSizeGB,
+  fsVolSizeGB,
+  imgVolSizeGB,
+}: {
+  t: TFunction;
+  setError: SetErrorFuncType;
+  createResource: CreateResourceFuncType;
+
+  dbVolSizeGB: number;
+  fsVolSizeGB: number;
+  imgVolSizeGB: number;
+}): Promise<boolean> => {
+  try {
+    const agentServiceConfig: AgentServiceConfigK8sResource = {
+      apiVersion: 'agent-install.openshift.io/v1beta1',
+      kind: 'AgentServiceConfig',
+      metadata: {
+        name: 'agent',
+      },
+      spec: {
+        databaseStorage: {
+          accessModes: ['ReadWriteOnce'],
+          resources: {
+            requests: {
+              storage: `${dbVolSizeGB}G`,
+            },
+          },
+        },
+        filesystemStorage: {
+          accessModes: ['ReadWriteOnce'],
+          resources: {
+            requests: {
+              storage: `${fsVolSizeGB}G`,
+            },
+          },
+        },
+        imageStorage: {
+          accessModes: ['ReadWriteOnce'],
+          resources: {
+            requests: {
+              storage: `${imgVolSizeGB}G`,
+            },
+          },
+        },
+      },
+    };
+
+    await createResource(agentServiceConfig);
+    return true;
+  } catch (e) {
+    console.error('Failed to create AgentServiceConfig: ', e);
+    setError({
+      title: t('ai:Failed to create AgentServiceConfig'),
+    });
+    return false;
+  }
+};
+
+const patchAgentServiceConfig = async ({
+  t,
+  setError,
+  patchResource,
+  agentServiceConfig,
+  imgVolSizeGB,
+}: {
+  t: TFunction;
+  setError: SetErrorFuncType;
+  patchResource: PatchResourceFuncType;
+  agentServiceConfig: AgentServiceConfigK8sResource;
+
+  imgVolSizeGB: number;
+}): Promise<boolean> => {
+  try {
+    const patches: ResourcePatch[] = [
+      {
+        op: 'replace',
+        path: '/spec/imageStorage/resources/requests/storage',
+        value: `${imgVolSizeGB}G`,
+      },
+    ];
+    await patchResource(agentServiceConfig, patches);
+    return true;
+  } catch (e) {
+    console.error('Failed to patch AgentServiceConfig: ', e);
+    setError({
+      title: t('ai:Failed to update the AgentServiceConfig'),
+    });
+    return false;
+  }
+};
+
+// https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.6/html/multicluster_engine/multicluster_engine_overview#enable-cim
+export const onEnableCIM = async ({
+  t,
+  setError,
+  createResource,
+  getResource,
+  listResources,
+  patchResource,
+
+  agentServiceConfig,
+  platform,
+
+  dbVolSize,
+  fsVolSize,
+  imgVolSize,
+
+  configureLoadBalancer,
+}: {
+  t: TFunction;
+  setError: SetErrorFuncType;
+  createResource: CreateResourceFuncType;
+  getResource: GetResourceFuncType;
+  listResources: ListResourcesFuncType;
+  patchResource: PatchResourceFuncType;
+
+  agentServiceConfig?: AgentServiceConfigK8sResource;
+  platform: string;
+
+  dbVolSize: number;
+  fsVolSize: number;
+  imgVolSize: number;
+
+  configureLoadBalancer: boolean;
+}) => {
+  console.log('---- onEnableCIM start for platform: ', platform);
+
+  if (['none', 'baremetal', 'openstack', 'vsphere'].includes(platform.toLocaleLowerCase())) {
+    if (!(await patchProvisioningConfiguration({ t, setError, patchResource, getResource }))) {
+      return;
+    }
+  }
+
+  if (!!agentServiceConfig) {
+    console.log('---- onEnableCIM to UPDATE');
+    if (
+      !(await patchAgentServiceConfig({
+        t,
+        setError,
+        agentServiceConfig,
+        patchResource,
+        imgVolSizeGB: imgVolSize,
+      }))
+    ) {
+      return;
+    }
+  } else {
+    console.log('---- onEnableCIM to CREATE');
+    if (
+      !(await createAgentServiceConfig({
+        t,
+        setError,
+        createResource,
+        dbVolSizeGB: dbVolSize,
+        fsVolSizeGB: fsVolSize,
+        imgVolSizeGB: imgVolSize,
+      }))
+    ) {
+      return;
+    }
+  }
+
+  if (configureLoadBalancer) {
+    console.log('---- onEnableCIM to configureLoadBalancer');
+    if (!!(await isIngressController(getResource))) {
+      console.log('IngressController already present, we do not patch it.');
+      return;
+    }
+
+    const assistedImageServiceRoute = await getAssistedImageServiceRoute(
+      t,
+      setError,
+      listResources,
+    );
+    if (!assistedImageServiceRoute) {
+      return;
+    }
+
+    const domain = getClusterDomain(t, setError, assistedImageServiceRoute);
+    if (!domain) {
+      return;
+    }
+
+    if (await createIngressController(t, setError, createResource, domain)) {
+      await patchAssistedImageService(
+        t,
+        setError,
+        getResource,
+        patchResource,
+        assistedImageServiceRoute.metadata?.namespace || '',
+      );
+      await patchAssistedImageServiceRoute(
+        t,
+        setError,
+        patchResource,
+        assistedImageServiceRoute,
+        domain,
+      );
+    }
+  }
+};
