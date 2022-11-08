@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { OcmSwitchField } from '../../ui/OcmFormFields';
-import { isClusterPlatformTypeVM, Cluster, PopoverIcon, PlatformType } from '../../../../common';
+import { Cluster, PopoverIcon } from '../../../../common';
 import useClusterSupportedPlatforms, {
   SupportedPlatformIntegrationType,
 } from '../../../hooks/useClusterSupportedPlatforms';
@@ -18,7 +18,7 @@ const nutanixPlatformMessage =
   'Enable Nutanix platform integration to access features like node auto-scaling directly inside OpenShift.';
 
 const platformIntegrationTooltip =
-  'Platform integration is only applicable when all discovered hosts originated from the same platform.';
+  'Platform integration is only applicable on non-SNO deployments and when all discovered hosts originated from the same platform.';
 
 const messages: KeyType = {
   'no-active-integrations': undeterminedPlatformMessage,
@@ -43,13 +43,7 @@ const PlatformIntegrationLabel = ({
   );
 };
 
-const PlatformIntegration = ({
-  clusterId,
-  platformType,
-}: {
-  clusterId: Cluster['id'];
-  platformType: PlatformType;
-}) => {
+const PlatformIntegration = ({ clusterId }: { clusterId: Cluster['id'] }) => {
   const { isPlatformIntegrationSupported, supportedPlatformIntegration } =
     useClusterSupportedPlatforms(clusterId);
 
@@ -59,10 +53,7 @@ const PlatformIntegration = ({
         hidden: isPlatformIntegrationSupported,
         content: platformIntegrationTooltip,
       }}
-      isDisabled={
-        !isPlatformIntegrationSupported &&
-        !isClusterPlatformTypeVM({ platform: { type: platformType } })
-      }
+      isDisabled={!isPlatformIntegrationSupported}
       name={'usePlatformIntegration'}
       label={
         <PlatformIntegrationLabel supportedPlatformIntegration={supportedPlatformIntegration} />

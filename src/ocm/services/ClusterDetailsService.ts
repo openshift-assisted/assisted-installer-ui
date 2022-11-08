@@ -1,7 +1,6 @@
 import {
   AI_UI_TAG,
   Cluster,
-  V2ClusterUpdateParams,
   CpuArchitecture,
   InfraEnv,
   ManagedDomain,
@@ -9,47 +8,19 @@ import {
   getClusterDetailsInitialValues,
   isArmArchitecture,
 } from '../../common';
-import { ClustersAPI, ManagedDomainsAPI } from '../services/apis';
-import InfraEnvsService from './InfraEnvsService';
 import omit from 'lodash/omit';
 import DiskEncryptionService from './DiskEncryptionService';
-import { CreateParams, HostsNetworkConfigurationType, OcmClusterDetailsValues } from './types';
+import {
+  ClusterCreateParamsWithStaticNetworking,
+  HostsNetworkConfigurationType,
+  OcmClusterDetailsValues,
+} from './types';
 import { getDummyInfraEnvField } from '../components/clusterConfiguration/staticIp/data/dummyData';
-import ClustersService from './ClustersService';
 import { ocmClient } from '../api';
 
 const ClusterDetailsService = {
-  async create(params: CreateParams) {
-    const { data: cluster } = await ClustersAPI.register(omit(params, 'staticNetworkConfig'));
-    await InfraEnvsService.create({
-      name: `${params.name}_infra-env`,
-      pullSecret: params.pullSecret,
-      clusterId: cluster.id,
-      // TODO(jkilzi): MGMT-7709 will deprecate the openshiftVersion field, remove the line below once it happens.
-      openshiftVersion: params.openshiftVersion,
-      cpuArchitecture: params.cpuArchitecture,
-      staticNetworkConfig: params.staticNetworkConfig,
-    });
-
-    return cluster;
-  },
-
-  async update(
-    clusterId: Cluster['id'],
-    clusterTags: Cluster['tags'],
-    params: V2ClusterUpdateParams,
-  ) {
-    const { data: updatedCluster } = await ClustersService.update(clusterId, clusterTags, params);
-    return updatedCluster;
-  },
-
-  async getManagedDomains() {
-    const { data: domains } = await ManagedDomainsAPI.list();
-    return domains;
-  },
-
-  getClusterCreateParams(values: OcmClusterDetailsValues): CreateParams {
-    const params: CreateParams = omit(values, [
+  getClusterCreateParams(values: OcmClusterDetailsValues): ClusterCreateParamsWithStaticNetworking {
+    const params: ClusterCreateParamsWithStaticNetworking = omit(values, [
       'useRedHatDnsService',
       'SNODisclaimer',
       'enableDiskEncryptionOnMasters',

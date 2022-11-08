@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   ButtonVariant,
   Card,
@@ -11,9 +12,8 @@ import {
   Toolbar,
   ToolbarContent,
 } from '@patternfly/react-core';
-import React from 'react';
-import { getApiErrorMessage, handleApiError } from '../../api/utils';
-import { DiscoveryImageModal } from '../clusterConfiguration/discoveryImageModal';
+import { getApiErrorMessage, handleApiError } from '../../api';
+import { DiscoveryImageModal } from '../clusterConfiguration/DiscoveryImageModal';
 import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
 import {
   ToolbarButton,
@@ -21,6 +21,7 @@ import {
   Alerts,
   AddHostsContext,
   alertsSlice,
+  canInstallHost,
 } from '../../../common';
 import InventoryAddHosts from './InventoryAddHost';
 import { onFetchEvents } from '../fetching/fetchEvents';
@@ -32,20 +33,24 @@ import ViewClusterEventsButton from '../../../common/components/ui/ViewClusterEv
 
 const { addAlert } = alertsSlice.actions;
 
-const AddHosts: React.FC = () => {
+export const AddHosts = () => {
   const { cluster, resetCluster } = React.useContext(AddHostsContext);
   const [isSubmitting, setSubmitting] = React.useState(false);
   const clusterVarieties = useClusterStatusVarieties(cluster);
 
-  if (!cluster || !resetCluster) {
-    return null;
-  }
-
-  const handleHostsInstall = async () => {
+  const handleHostsInstall = React.useCallback(async () => {
     setSubmitting(true);
     try {
-      await HostsService.installAll(cluster);
-      void resetCluster();
+      if (!cluster || !resetCluster || !cluster.hosts) {
+        return;
+      }
+
+      const hostsToBeInstalled = cluster.hosts.filter((host) =>
+        canInstallHost(cluster, host.status),
+      );
+
+      await HostsService.installAll(hostsToBeInstalled);
+      await resetCluster();
     } catch (e) {
       handleApiError(e, () =>
         addAlert({
@@ -58,7 +63,11 @@ const AddHosts: React.FC = () => {
         setSubmitting(false);
       }, 10000);
     }
-  };
+  }, [cluster, resetCluster]);
+
+  if (!cluster || !resetCluster) {
+    return null;
+  }
 
   return (
     <ModalDialogsContextProvider>
@@ -79,7 +88,7 @@ const AddHosts: React.FC = () => {
               </Grid>
             </StackItem>
             <StackItem>
-              <InventoryAddHosts />
+              <InventoryAddHosts cluster={cluster} />
             </StackItem>
           </Stack>
         </CardBody>
@@ -91,8 +100,8 @@ const AddHosts: React.FC = () => {
               <ToolbarButton
                 variant={ButtonVariant.primary}
                 name="install"
-                onClick={handleHostsInstall}
-                isDisabled={isSubmitting || getReadyHostCount(cluster) <= 0}
+                onClick={() => void handleHostsInstall()}
+                isDisabled={isSubmitting || getReadyHostCount(cluster) === 0}
               >
                 Install ready hosts
               </ToolbarButton>
@@ -105,5 +114,3 @@ const AddHosts: React.FC = () => {
     </ModalDialogsContextProvider>
   );
 };
-
-export default AddHosts;
