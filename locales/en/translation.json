@@ -491,7 +491,7 @@
   "ai:Progress": "Progress",
   "ai:Provide an endpoint for application traffic flowing in from outside the cluster. If needed, contact your IT manager for more information. {{vipHelperSufix}}": "Provide an endpoint for application traffic flowing in from outside the cluster. If needed, contact your IT manager for more information. {{vipHelperSufix}}",
   "ai:Provide an endpoint for users, both human and machine, to interact with and configure the platform. If needed, contact your IT manager for more information. {{vipHelperSufix}}": "Provide an endpoint for users, both human and machine, to interact with and configure the platform. If needed, contact your IT manager for more information. {{vipHelperSufix}}",
-  "ai:Provide an SSH key to receive debugging information during installation": "Provide an SSH key to receive debugging information during installation",
+  "ai:Provide an SSH key to be able to connect to the hosts for debugging purposes during the discovery process": "Provide an SSH key to be able to connect to the hosts for debugging purposes during the discovery process",
   "ai:Provide as many labels as you can to narrow the list to relevant hosts only.": "Provide as many labels as you can to narrow the list to relevant hosts only.",
   "ai:Provided cluster configuration is not valid": "Provided cluster configuration is not valid",
   "ai:Pull secret": "Pull secret",
