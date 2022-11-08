@@ -19,7 +19,7 @@ import { useOpenshiftVersions, useManagedDomains, useUsedClusterNames } from '..
 import ClusterDetailsForm from './ClusterDetailsForm';
 import ClusterWizardNavigation from './ClusterWizardNavigation';
 import { routeBasePath } from '../../config';
-import { ClusterDetailsService } from '../../services';
+import { ClustersService } from '../../services';
 import { ClusterCreateParamsWithStaticNetworking } from '../../services/types';
 
 type ClusterDetailsProps = {
@@ -49,7 +49,11 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster, infraEnv }) =>
         'openshiftVersion',
       ]);
       try {
-        const updatedCluster = await ClusterDetailsService.update(clusterId, cluster?.tags, params);
+        const { data: updatedCluster } = await ClustersService.update(
+          clusterId,
+          cluster?.tags,
+          params,
+        );
         dispatch(updateCluster(updatedCluster));
         canNextClusterDetails({ cluster: updatedCluster }) && clusterWizardContext.moveNext();
       } catch (e) {
@@ -65,7 +69,7 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster, infraEnv }) =>
     async (params: ClusterCreateParamsWithStaticNetworking) => {
       clearAlerts();
       try {
-        const cluster = await ClusterDetailsService.create(params);
+        const cluster = await ClustersService.create(params);
         history.push(`${routeBasePath}/clusters/${cluster.id}`, ClusterWizardFlowStateNew);
       } catch (e) {
         handleApiError(e, () =>

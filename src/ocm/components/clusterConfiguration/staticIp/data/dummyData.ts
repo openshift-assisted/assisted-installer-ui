@@ -1,5 +1,5 @@
 import { HostStaticNetworkConfig, MacInterfaceMap } from '../../../../../common';
-import { ProtocolVersion } from './dataTypes';
+import { ProtocolVersion, StaticIpInfo, StaticIpView } from './dataTypes';
 import { NmstateEthernetInterface, NmstateInterfaceType } from './nmstateTypes';
 import { FORM_VIEW_PREFIX, getNmstateProtocolConfig, toYamlWithComments } from './nmstateYaml';
 
@@ -54,3 +54,9 @@ export const getDummyInfraEnvField = (): HostStaticNetworkConfig[] => {
   const dummyYaml = toYamlWithComments(json, comments);
   return [{ networkYaml: dummyYaml, macInterfaceMap: getDummyMacInterfaceMap() }];
 };
+
+export const getDummyStaticIpInfo = (): StaticIpInfo => ({
+  isDataComplete: false,
+  view: StaticIpView.FORM,
+  formViewProtocolType: null,
+});

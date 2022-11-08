@@ -20,7 +20,7 @@ import {
   selectSchedulableMasters,
 } from '../../../common';
 import HostsDiscoveryTable from '../hosts/HostsDiscoveryTable';
-import { DiscoveryImageModalButton } from './discoveryImageModal';
+import { DiscoveryImageModalButton } from './DiscoveryImageModal';
 import InformationAndAlerts from './InformationAndAlerts';
 import { OcmSwitchField } from '../ui/OcmFormFields';
 import { selectCurrentClusterPermissionsState } from '../../selectors';
