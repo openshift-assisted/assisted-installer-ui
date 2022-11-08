@@ -70,7 +70,7 @@ const RemoveNodePoolModal = ({ onClose, onRemove, nodePool }: RemoveNodePoolModa
           variant="danger"
           icon={isRemoving ? <Spinner size="md" /> : undefined}
         >
-          {t('ai:Create')}
+          {t('ai:Remove')}
         </Button>
         <Button variant="link" onClick={onClose}>
           {t('ai:Cancel')}
