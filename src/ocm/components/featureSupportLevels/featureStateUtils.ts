@@ -18,7 +18,7 @@ const isArmSupported = (versionName: string, versionOptions: OpenshiftVersionOpt
   const versionOption = versionOptions.find((option) => option.value === versionName);
   return !!versionOption?.cpuArchitectures?.includes(CpuArchitecture.ARM);
 };
-const clusterExistsReason = 'This option is not editable after the draft cluster is created';
+export const clusterExistsReason = 'This option is not editable after the draft cluster is created';
 
 export const getCnvAndLvmIncompatibilityReason = (
   operatorValues: OperatorsValues,
