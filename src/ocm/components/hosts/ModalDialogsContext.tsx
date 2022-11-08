@@ -47,6 +47,7 @@ type ModalDialogsDataTypes = {
   resetClusterDialog: ResetClusterProps;
   cancelInstallationDialog: CancelInstallationProps;
   discoveryImageDialog: DiscoveryImageDialogProps;
+  day2DiscoveryImageDialog: DiscoveryImageDialogProps;
   UpdateDay2ApiVipDialog: void;
   massUpdateHostnameDialog: MassUpdateHostnameDialogProps;
   massDeleteHostDialog: MassDeleteHostDialogProps;
@@ -61,6 +62,7 @@ type DialogId =
   | 'resetClusterDialog'
   | 'cancelInstallationDialog'
   | 'discoveryImageDialog'
+  | 'day2DiscoveryImageDialog'
   | 'UpdateDay2ApiVipDialog'
   | 'massUpdateHostnameDialog'
   | 'massDeleteHostDialog';
@@ -83,6 +85,7 @@ const dialogIds: DialogId[] = [
   'resetClusterDialog',
   'cancelInstallationDialog',
   'discoveryImageDialog',
+  'day2DiscoveryImageDialog',
   'UpdateDay2ApiVipDialog',
   'massUpdateHostnameDialog',
   'massDeleteHostDialog',

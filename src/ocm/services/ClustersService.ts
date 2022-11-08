@@ -3,21 +3,36 @@ import HostsService from './HostsService';
 import InfraEnvsService from './InfraEnvsService';
 import { AI_UI_TAG, Cluster, Host, V2ClusterUpdateParams } from '../../common';
 import { ocmClient } from '../api';
+import { ClusterCreateParamsWithStaticNetworking } from './types';
+import omit from 'lodash/omit';
 
 const ClustersService = {
   findHost(hosts: Cluster['hosts'] = [], hostId: Host['id']) {
     return hosts.find((host) => host.id === hostId);
   },
 
+  async create(params: ClusterCreateParamsWithStaticNetworking) {
+    const { data: cluster } = await ClustersAPI.register(omit(params, 'staticNetworkConfig'));
+    await InfraEnvsService.create({
+      name: `${params.name}_infra-env`,
+      pullSecret: params.pullSecret,
+      clusterId: cluster.id,
+      openshiftVersion: params.openshiftVersion,
+      cpuArchitecture: params.cpuArchitecture,
+      staticNetworkConfig: params.staticNetworkConfig,
+    });
+
+    return cluster;
+  },
+
   async remove(clusterId: Cluster['id']) {
     const { data: cluster } = await ClustersAPI.get(clusterId);
     const hosts = cluster.hosts ?? [];
-    // All hosts appearing in cluster.hosts must have an infraEnvId value
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const infraEnvIdsList = hosts.map((host) => host.infraEnvId!);
 
-    await HostsService.removeAll(hosts);
-    await InfraEnvsService.removeAll(clusterId, infraEnvIdsList);
+    if (hosts.length > 0) {
+      await HostsService.removeAll(hosts);
+    }
+    await InfraEnvsService.removeAll(clusterId);
     await ClustersAPI.deregister(clusterId);
   },
 
