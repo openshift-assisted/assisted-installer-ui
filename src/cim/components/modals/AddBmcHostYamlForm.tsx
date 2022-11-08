@@ -179,7 +179,11 @@ const AddBmcHostYamlForm: React.FC<UploadActionModalProps> = ({ onClose, onCreat
                 isInline
                 actionClose={<AlertActionCloseButton onClose={() => setError(undefined)} />}
               >
-                {error}
+                {t(
+                  'ai:The YAML file might not be formatted correctly. Use the template to format and try again.',
+                )}
+                <br />
+                {t('ai:Received error:')}&nbsp;{error}
               </Alert>
             </StackItem>
           )}
