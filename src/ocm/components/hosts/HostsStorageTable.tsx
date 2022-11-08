@@ -19,7 +19,6 @@ import {
   selectSchedulableMasters,
   OPERATOR_NAME_ODF,
 } from '../../../common';
-import { hardwareStatusColumn } from './HostsDiscoveryTable';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { ExpandComponentProps } from '../../../common/components/hosts/AITable';
 import CommonStorageTable from '../../../common/components/storage/StorageTable';
@@ -30,6 +29,7 @@ import {
   HostsTableDetailContextProvider,
   useHostsTableDetailContext,
 } from '../../../common/components/hosts/HostsTableDetailContext';
+import { hardwareStatusColumn } from './HardwareStatus';
 
 export function ExpandComponent({ obj: host }: ExpandComponentProps<Host>) {
   const { onDiskRole, canEditDisks, updateDiskSkipFormatting } = useHostsTableDetailContext();
@@ -59,7 +59,7 @@ const HostsStorageTable = ({ cluster }: { cluster: Cluster }) => {
     const columns = [
       hostnameColumn(t, onEditHost, undefined, actionChecks.canEditHostname),
       roleColumn(t, undefined, undefined, selectSchedulableMasters(cluster)),
-      hardwareStatusColumn(),
+      hardwareStatusColumn({}),
       disksColumn,
       numberOfDisksColumn,
     ];

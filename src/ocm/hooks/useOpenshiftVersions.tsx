@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Cluster,
   CpuArchitecture,
   ImportClusterParams,
   OpenshiftVersion,
@@ -8,15 +9,16 @@ import {
 import { getApiErrorMessage, handleApiError } from '../api';
 import { SupportedOpenshiftVersionsAPI } from '../services/apis';
 
+type OpenShiftVersion = Cluster['openshiftVersion'];
+
 type UseOpenshiftVersionsType = {
   versions: OpenshiftVersionOptionType[];
-  normalizeClusterVersion: (version?: string) => ImportClusterParams['openshiftVersion'];
-  isSupportedOpenShiftVersion: (version?: string) => boolean;
+  normalizeClusterVersion: (version: OpenShiftVersion) => ImportClusterParams['openshiftVersion'];
+  isSupportedOpenShiftVersion: (version: OpenShiftVersion) => boolean;
+  getCpuArchitectures: (version: OpenShiftVersion) => CpuArchitecture[];
   error?: { title: string; message: string };
   loading: boolean;
 };
-
-const supportedVersionLevels = ['production', 'maintenance'];
 
 const sortVersions = (versions: OpenshiftVersionOptionType[]) => {
   return versions
@@ -26,22 +28,24 @@ const sortVersions = (versions: OpenshiftVersionOptionType[]) => {
     .reverse();
 };
 
-export const findVersionItemByVersion = (
-  versions: OpenshiftVersionOptionType[],
-  version: string,
-): OpenshiftVersionOptionType | undefined => {
-  return versions.find(({ value: versionKey }) => {
-    // For version 4.10 match 4.10, 4.10.3, not 4.1, 4.1.5
-    const versionNameMatch = new RegExp(`^${versionKey}(\\..+)?$`);
-    return versionNameMatch.test(version);
-  });
-};
+const supportedVersionLevels = ['production', 'maintenance'];
 
 export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
   const [versions, setVersions] = React.useState<OpenshiftVersionOptionType[]>([]);
   const [error, setError] = React.useState<UseOpenshiftVersionsType['error']>();
 
-  const doAsync = React.useCallback(async () => {
+  const findVersionItemByVersion = React.useCallback(
+    (version: OpenShiftVersion) => {
+      return versions.find(({ value: versionKey }) => {
+        // For version 4.10 match 4.10, 4.10.3, not 4.1, 4.1.5
+        const versionNameMatch = new RegExp(`^${versionKey}(\\..+)?$`);
+        return versionNameMatch.test(version || '');
+      });
+    },
+    [versions],
+  );
+
+  const fetchOpenshiftVersions = React.useCallback(async () => {
     try {
       const { data } = await SupportedOpenshiftVersionsAPI.list();
 
@@ -68,25 +72,34 @@ export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
     }
   }, []);
 
-  React.useEffect(() => {
-    void doAsync();
-  }, [doAsync, setVersions]);
-
   const normalizeClusterVersion = React.useCallback(
-    (version = ''): string => {
-      const matchingVersion = findVersionItemByVersion(versions, version as string);
-      return (matchingVersion?.value || version) as string;
+    (version: OpenShiftVersion) => {
+      const matchingVersion = findVersionItemByVersion(version);
+      return matchingVersion?.value || version;
     },
-    [versions],
+    [findVersionItemByVersion],
   );
 
   const isSupportedOpenShiftVersion = React.useCallback(
-    (version = ''): boolean => {
-      const selectedVersion = findVersionItemByVersion(versions, version);
+    (version: OpenShiftVersion) => {
+      const selectedVersion = findVersionItemByVersion(version);
       return supportedVersionLevels.includes(selectedVersion?.supportLevel || '');
     },
-    [versions],
+    [findVersionItemByVersion],
   );
+
+  const getCpuArchitectures = React.useCallback(
+    (version: OpenShiftVersion) => {
+      // TODO (multi-arch) confirm this is correctly retrieving the associated version
+      const matchingVersion = findVersionItemByVersion(version);
+      return matchingVersion?.cpuArchitectures ?? [];
+    },
+    [findVersionItemByVersion],
+  );
+
+  React.useEffect(() => {
+    void fetchOpenshiftVersions();
+  }, [fetchOpenshiftVersions]);
 
   return {
     error,
@@ -94,5 +107,6 @@ export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
     versions,
     normalizeClusterVersion,
     isSupportedOpenShiftVersion,
+    getCpuArchitectures,
   };
 }

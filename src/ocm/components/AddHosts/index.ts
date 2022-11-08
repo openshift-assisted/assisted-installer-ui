@@ -1,4 +1,2 @@
-export { default as AddHosts } from './AddHosts';
-export * from './HostsClusterDetailTab';
+export * from './AddHosts';
 export * from './types';
-export * from './utils';

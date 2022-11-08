@@ -37,11 +37,7 @@ import {
   EditHostFormValues,
 } from '../../../common/components/hosts';
 import HostsTable from '../../../common/components/hosts/HostsTable';
-import {
-  hostActionResolver,
-  hostnameColumn,
-  statusColumn,
-} from '../../../common/components/hosts/tableUtils';
+import { hostActionResolver, hostnameColumn } from '../../../common/components/hosts/tableUtils';
 import ResetHostModal from './ResetHostModal';
 import DeleteHostModal from './DeleteHostModal';
 import { onFetchEvents } from '../fetching/fetchEvents';
@@ -52,6 +48,7 @@ import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { getErrorMessage } from '../../../common/utils';
 import { selectCurrentClusterPermissionsState } from '../../selectors';
+import { hardwareStatusColumn } from './HardwareStatus';
 
 export const useHostsTable = (cluster: Cluster) => {
   const { addAlert } = useAlerts();
@@ -80,7 +77,7 @@ export const useHostsTable = (cluster: Cluster) => {
       onInstallHost: async (host: Host) => {
         const hostId = host.id;
         try {
-          const { data } = await HostsService.install(cluster.id, hostId);
+          const { data } = await HostsService.install(host);
           resetCluster ? void resetCluster() : dispatch(updateHost(data));
         } catch (e) {
           handleApiError(e, () =>
@@ -89,7 +86,7 @@ export const useHostsTable = (cluster: Cluster) => {
         }
       },
     }),
-    [cluster.id, dispatch, resetCluster, addAlert, deleteHostDialog],
+    [dispatch, resetCluster, addAlert, deleteHostDialog],
   );
 
   const onViewHostEvents = React.useCallback(
@@ -134,7 +131,13 @@ export const useHostsTable = (cluster: Cluster) => {
           throw new Error(`Cannot update disk role in host ${hostId}\nMissing diskId`);
         }
 
-        const { data } = await HostsService.updateDiskRole(cluster.id, hostId, diskId, role);
+        const host = ClustersService.findHost(cluster.hosts, hostId);
+        if (!host) {
+          throw new Error(`No host found with id:${hostId}`);
+        }
+
+        const { data } = await HostsService.updateDiskRole(host, diskId, role);
+
         resetCluster ? void resetCluster() : dispatch(updateHost(data));
       } catch (e) {
         handleApiError(e, () =>
@@ -148,7 +151,12 @@ export const useHostsTable = (cluster: Cluster) => {
   const onExcludedODF = React.useCallback(
     async (hostId: Host['id'], nodeLabels: HostUpdateParams['nodeLabels']) => {
       try {
-        const { data } = await HostsService.updateHostODF(cluster.id, hostId, nodeLabels);
+        const host = ClustersService.findHost(cluster.hosts, hostId);
+        if (!host) {
+          throw new Error(`No host found with id:${hostId}`);
+        }
+
+        const { data } = await HostsService.updateHostODF(host, nodeLabels);
         resetCluster ? await resetCluster() : dispatch(updateHost(data));
       } catch (e) {
         handleApiError(e, () =>
@@ -156,7 +164,7 @@ export const useHostsTable = (cluster: Cluster) => {
         );
       }
     },
-    [dispatch, resetCluster, addAlert, cluster.id],
+    [cluster.hosts, resetCluster, dispatch, addAlert],
   );
 
   const onUpdateDay2ApiVip: UpdateDay2ApiVipFormProps['onUpdateDay2ApiVip'] = React.useCallback(
@@ -194,12 +202,13 @@ export const useHostsTable = (cluster: Cluster) => {
             `Failed to update disks skip formatting state in host ${hostId}\nMissing disk id`,
           );
         }
-        const { data } = await HostsService.updateFormattingDisks(
-          cluster.id,
-          hostId,
-          diskId,
-          !shouldFormatDisk,
-        );
+
+        const host = ClustersService.findHost(cluster.hosts, hostId);
+        if (!host) {
+          throw new Error(`No host found with id:${hostId}`);
+        }
+
+        const { data } = await HostsService.updateFormattingDisks(host, diskId, !shouldFormatDisk);
         resetCluster ? void resetCluster() : dispatch(updateHost(data));
       } catch (e) {
         handleApiError(e, () =>
@@ -233,7 +242,12 @@ export const useHostsTable = (cluster: Cluster) => {
     const reset = async (hostId: string | undefined) => {
       if (hostId) {
         try {
-          const { data } = await HostsService.reset(cluster.id, hostId);
+          const host = ClustersService.findHost(cluster.hosts, hostId);
+          if (!host) {
+            throw new Error(`No host found with id:${hostId}`);
+          }
+
+          const { data } = await HostsService.reset(host);
           resetCluster ? void resetCluster() : dispatch(updateHost(data));
         } catch (e) {
           handleApiError(e, () =>
@@ -253,7 +267,12 @@ export const useHostsTable = (cluster: Cluster) => {
     const deleteHost = async (hostId: string | undefined) => {
       if (hostId) {
         try {
-          await HostsService.delete(cluster.id, hostId);
+          const host = ClustersService.findHost(cluster.hosts, hostId);
+          if (!host) {
+            throw new Error(`No host found with id:${hostId}`);
+          }
+
+          await HostsService.delete(host);
           resetCluster ? void resetCluster() : dispatch(forceReload());
         } catch (e) {
           handleApiError(e, () =>
@@ -267,16 +286,16 @@ export const useHostsTable = (cluster: Cluster) => {
     };
     void deleteHost(deleteHostDialog.data?.hostId);
     deleteHostDialog.close();
-  }, [addAlert, cluster.id, dispatch, resetCluster, deleteHostDialog]);
+  }, [deleteHostDialog, cluster.hosts, resetCluster, dispatch, addAlert]);
 
   const onEditRole = React.useCallback(
-    async ({ id, clusterId }: Host, role: HostUpdateParams['hostRole']) => {
+    async (host: Host, role: HostUpdateParams['hostRole']) => {
       try {
-        if (!clusterId) {
+        if (!host.clusterId) {
           // noinspection ExceptionCaughtLocallyJS
-          throw new Error(`Failed to edit role in host: ${id}.\nMissing cluster_id`);
+          throw new Error(`Failed to edit role in host: ${host.id}.\nMissing cluster_id`);
         }
-        const { data } = await HostsService.updateRole(clusterId, id, role);
+        const { data } = await HostsService.updateRole(host, role);
         resetCluster ? void resetCluster() : dispatch(updateHost(data));
       } catch (e) {
         handleApiError(e, () =>
@@ -337,9 +356,9 @@ export const useHostsTable = (cluster: Cluster) => {
     () =>
       massDeleteHostDialog.open({
         hosts: (cluster.hosts || []).filter((h) => selectedHostIDs.includes(h.id)),
-        onDelete: (host) => HostsService.delete(cluster.id, host.id),
+        onDelete: (host) => HostsService.delete(host),
       }),
-    [cluster.hosts, cluster.id, selectedHostIDs, massDeleteHostDialog],
+    [cluster.hosts, selectedHostIDs, massDeleteHostDialog],
   );
 
   return {
@@ -393,7 +412,10 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
     massDeleteHostDialog,
   } = useModalDialogsContext();
 
-  const content = React.useMemo(() => [hostnameColumn(t), statusColumn(t)], [t]);
+  const content = React.useMemo(
+    () => [hostnameColumn(t), hardwareStatusColumn({ isWithinModal: true })],
+    [t],
+  );
   const paginationProps = usePagination(massDeleteHostDialog.data?.hosts?.length || 0);
 
   return (
@@ -439,11 +461,12 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
           }
           onClose={editHostDialog.close}
           onSave={async (values: EditHostFormValues) => {
-            const { data } = await HostsService.updateHostName(
-              cluster.id,
-              values.hostId,
-              values.hostname,
-            );
+            const host = ClustersService.findHost(cluster.hosts, values.hostId);
+            if (!host) {
+              throw new Error(`No host found with id:${values.hostId}`);
+            }
+
+            const { data } = await HostsService.updateHostName(host, values.hostname);
             resetCluster ? void resetCluster() : dispatch(updateHost(data));
             editHostDialog.close();
           }}
@@ -479,9 +502,7 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
           onClose={massUpdateHostnameDialog.close}
           hosts={massUpdateHostnameDialog.data?.cluster?.hosts || []}
           selectedHostIDs={massUpdateHostnameDialog.data?.hostIDs || []}
-          onChangeHostname={(host, hostname) =>
-            HostsService.updateHostName(cluster.id, host.id, hostname)
-          }
+          onChangeHostname={(host, hostname) => HostsService.updateHostName(host, hostname)}
           canChangeHostname={() => [true, undefined]}
         />
       )}

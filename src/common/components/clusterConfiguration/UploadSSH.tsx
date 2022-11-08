@@ -19,7 +19,7 @@ const UploadSSH: React.FC<UploadSSHProps> = ({ isRequired }) => {
           {t('ai:SSH public key')}{' '}
           <PopoverIcon
             bodyContent={t(
-              'ai:Provide an SSH key to receive debugging information during installation',
+              'ai:Provide an SSH key to be able to connect to the hosts for debugging purposes during the discovery process',
             )}
           />
         </>

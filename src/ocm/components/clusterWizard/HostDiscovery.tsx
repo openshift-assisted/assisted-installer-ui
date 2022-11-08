@@ -10,6 +10,7 @@ import {
   useAlerts,
   getHostDiscoveryInitialValues,
   useFormikAutoSave,
+  SupportedPlatformType,
 } from '../../../common';
 import HostInventory from '../clusterConfiguration/HostInventory';
 import { useClusterWizardContext } from './ClusterWizardContext';
@@ -20,9 +21,7 @@ import ClusterWizardFooter from './ClusterWizardFooter';
 import ClusterWizardNavigation from './ClusterWizardNavigation';
 import { ClustersService, HostDiscoveryService } from '../../services';
 import { selectCurrentClusterPermissionsState } from '../../selectors';
-import useClusterSupportedPlatforms, {
-  PlatformIntegrationType,
-} from '../../hooks/useClusterSupportedPlatforms';
+import useClusterSupportedPlatforms from '../../hooks/useClusterSupportedPlatforms';
 
 const HostDiscoveryForm = ({ cluster }: { cluster: Cluster }) => {
   const { alerts } = useAlerts();
@@ -77,7 +76,12 @@ const HostDiscovery = ({ cluster }: { cluster: Cluster }) => {
       : undefined;
 
     const params: V2ClusterUpdateParams = {};
-    HostDiscoveryService.setPlatform(params, platformToIntegrate as PlatformIntegrationType);
+
+    HostDiscoveryService.setPlatform(
+      params,
+      platformToIntegrate as SupportedPlatformType,
+      cluster.userManagedNetworking,
+    );
     HostDiscoveryService.setSchedulableMasters(params, values, cluster);
 
     try {

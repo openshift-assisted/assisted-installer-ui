@@ -39,7 +39,12 @@ const ClusterWizardContextProvider: React.FC<
 
   React.useEffect(() => {
     const staticIpInfo = infraEnv ? getStaticIpInfo(infraEnv) : undefined;
-    const firstStep = getClusterWizardFirstStep(locationState, staticIpInfo, cluster?.status);
+    const firstStep = getClusterWizardFirstStep(
+      locationState,
+      staticIpInfo,
+      cluster?.status,
+      cluster?.hosts,
+    );
     const firstStepIds = getWizardStepIds(staticIpInfo?.view);
     setCurrentStepId(firstStep);
     setWizardStepIds(firstStepIds);

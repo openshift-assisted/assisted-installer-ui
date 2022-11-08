@@ -261,3 +261,23 @@ export const areOnlySoftValidationsOfWizardStepFailing = <ClusterWizardStepsType
   }
   return true;
 };
+
+export const findValidationStep = <ClusterWizardStepsType extends string>(
+  validationId: ClusterValidationId | HostValidationId,
+  wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType>,
+  minimumStep: ClusterWizardStepsType,
+): ClusterWizardStepsType | undefined => {
+  const wizardStepsIds = lodashKeys(wizardStepsValidationsMap) as ClusterWizardStepsType[];
+  let isBeforeMinimumStep = true;
+  return wizardStepsIds.find((wizardStepId) => {
+    if (wizardStepId === minimumStep) {
+      isBeforeMinimumStep = false;
+    }
+    if (isBeforeMinimumStep) {
+      return false;
+    }
+    // find first matching validation-map name, ignoring steps before minimumStep
+    const { host: hostValidationMap } = wizardStepsValidationsMap[wizardStepId];
+    return hostValidationMap.validationIds.includes(validationId as HostValidationId);
+  });
+};
