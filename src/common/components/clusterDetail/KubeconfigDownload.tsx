@@ -4,9 +4,11 @@ import { Button, ButtonVariant } from '@patternfly/react-core';
 import { canDownloadKubeconfig } from '../hosts/utils';
 import { useAlerts } from '../AlertsContextProvider';
 import { Cluster } from '../../api/types';
+/* eslint-disable no-restricted-imports */
 import { ocmClient } from '../../../ocm/api/axiosClient';
 import { getApiErrorMessage, handleApiError } from '../../../ocm/api/utils';
 import ClustersAPI from '../../../ocm/services/apis/ClustersAPI';
+/* eslint-enable no-restricted-imports */
 import { AxiosResponseHeaders } from 'axios';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
