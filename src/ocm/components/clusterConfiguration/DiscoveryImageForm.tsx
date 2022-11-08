@@ -2,15 +2,16 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import Axios, { CancelTokenSource } from 'axios';
 import { FormikHelpers } from 'formik';
-import { handleApiError, getApiErrorMessage } from '../../api';
+import { getApiErrorMessage, handleApiError } from '../../api';
 import {
   Cluster,
+  CpuArchitecture,
   DiscoveryImageConfigForm,
   DiscoveryImageFormValues,
   ErrorState,
   LoadingState,
 } from '../../../common';
-import { updateCluster, forceReload } from '../../reducers/clusters';
+import { forceReload, updateCluster } from '../../reducers/clusters';
 import { usePullSecret } from '../../hooks';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { DiscoveryImageFormService } from '../../services';
@@ -19,14 +20,16 @@ type DiscoveryImageFormProps = {
   cluster: Cluster;
   onCancel: () => void;
   onSuccess: () => Promise<void>;
+  cpuArchitecture: CpuArchitecture;
 };
 
-const DiscoveryImageForm: React.FC<DiscoveryImageFormProps> = ({
+const DiscoveryImageForm = ({
   cluster,
   onCancel,
   onSuccess,
-}) => {
-  const { infraEnv, error: infraEnvError } = useInfraEnv(cluster.id);
+  cpuArchitecture,
+}: DiscoveryImageFormProps) => {
+  const { infraEnv, error: infraEnvError } = useInfraEnv(cluster.id, cpuArchitecture);
   const cancelSourceRef = React.useRef<CancelTokenSource>();
   const dispatch = useDispatch();
   const ocmPullSecret = usePullSecret();

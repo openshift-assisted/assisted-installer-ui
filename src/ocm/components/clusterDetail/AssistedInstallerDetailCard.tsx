@@ -6,18 +6,19 @@ import { store } from '../../store';
 import { isSingleClusterMode, OCM_CLUSTER_LIST_LINK } from '../../config';
 import {
   AlertsContextProvider,
-  ResourceUIState,
-  FeatureGateContextProvider,
-  ErrorState,
-  LoadingState,
-  FeatureListType,
   AssistedInstallerOCMPermissionTypesListType,
+  CpuArchitecture,
+  ErrorState,
+  FeatureGateContextProvider,
+  FeatureListType,
+  LoadingState,
+  ResourceUIState,
 } from '../../../common';
 import { useClusterPolling, useFetchCluster } from '../clusters/clusterPolling';
 import ClusterWizard from '../clusterWizard/ClusterWizard';
 import { ClusterDefaultConfigurationProvider } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
 import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
-import { DiscoveryImageModal } from '../clusterConfiguration/discoveryImageModal';
+import { DiscoveryImageModal } from '../clusterConfiguration/DiscoveryImageModal';
 import ClusterInstallationProgressCard from './ClusterInstallationProgressCard';
 import CancelInstallationModal from './CancelInstallationModal';
 import ResetClusterModal from './ResetClusterModal';
@@ -103,7 +104,7 @@ const AssistedInstallerDetailCard: React.FC<AssistedInstallerDetailCardProps> = 
     isLoading: infraEnvLoading,
     error: infraEnvError,
     updateInfraEnv,
-  } = useInfraEnv(aiClusterId);
+  } = useInfraEnv(aiClusterId, CpuArchitecture.USE_DAY1_ARCHITECTURE);
   if (uiState === ResourceUIState.LOADING || infraEnvLoading) {
     return <LoadingCard />;
   } else if (uiState === ResourceUIState.ERROR || infraEnvError) {

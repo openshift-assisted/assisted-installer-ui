@@ -15,7 +15,7 @@ import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import { global_danger_color_200 as globalDangerColor200 } from '@patternfly/react-tokens';
 import { useTranslation } from '../../../hooks/use-translation-wrapper';
 
-type Props = {
+type ErrorStateProps = {
   title?: string;
   content?: React.ReactNode;
   fetchData?: () => void;
@@ -26,18 +26,9 @@ type Props = {
   variant?: EmptyStateVariant;
 };
 
-const ErrorState: React.FC<Props> = ({
-  title = 'Error loading data',
-  content,
-  fetchData,
-  icon = ExclamationCircleIcon,
-  iconColor = globalDangerColor200.value,
-  variant = EmptyStateVariant.small,
-  primaryAction,
-  actions,
-}) => {
+const DefaultErrorContent = ({ fetchData }: { fetchData: ErrorStateProps['fetchData'] }) => {
   const { t } = useTranslation();
-  const defaultContent = (
+  return (
     <>
       {t('ai:There was an error retrieving data. Check your connection and')}{' '}
       {fetchData ? (
@@ -50,13 +41,24 @@ const ErrorState: React.FC<Props> = ({
       .
     </>
   );
+};
 
+const ErrorState = ({
+  title = 'Error loading data',
+  content,
+  fetchData,
+  icon = ExclamationCircleIcon,
+  iconColor = globalDangerColor200.value,
+  variant = EmptyStateVariant.small,
+  primaryAction,
+  actions,
+}: ErrorStateProps) => {
   return (
     <Bullseye>
       <EmptyState variant={variant}>
         <EmptyStateIcon icon={icon} color={iconColor} />
         <Title headingLevel="h2">{title}</Title>
-        <EmptyStateBody>{content || defaultContent}</EmptyStateBody>
+        <EmptyStateBody>{content || <DefaultErrorContent fetchData={fetchData} />}</EmptyStateBody>
         {primaryAction}
         {actions && <EmptyStateSecondaryActions>{actions}</EmptyStateSecondaryActions>}
       </EmptyState>
