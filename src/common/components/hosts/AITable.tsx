@@ -15,6 +15,7 @@ import {
   IAction,
   ISeparator,
   TableProps,
+  InnerScrollContainer,
 } from '@patternfly/react-table';
 import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base';
 import xor from 'lodash/xor';
@@ -49,23 +50,25 @@ const TableMemo: React.FC<WithTestID & TableMemoProps> = React.memo(
       canCollapseAll: false,
     };
     return (
-      <Table
-        rows={rows}
-        cells={cells}
-        onCollapse={onCollapse}
-        variant={TableVariant.compact}
-        aria-label="Hosts table"
-        className={classnames(className, 'hosts-table')}
-        sortBy={sortBy}
-        onSort={onSort}
-        rowWrapper={rowWrapper}
-        data-testid={testId}
-        actionResolver={actionResolver ? tableActionResolver : undefined}
-        {...newProps}
-      >
-        <TableHeader />
-        <TableBody rowKey={rowKey} />
-      </Table>
+      <InnerScrollContainer>
+        <Table
+          rows={rows}
+          cells={cells}
+          onCollapse={onCollapse}
+          variant={TableVariant.compact}
+          aria-label="Hosts table"
+          className={classnames(className, 'hosts-table')}
+          sortBy={sortBy}
+          onSort={onSort}
+          rowWrapper={rowWrapper}
+          data-testid={testId}
+          actionResolver={actionResolver ? tableActionResolver : undefined}
+          {...newProps}
+        >
+          <TableHeader />
+          <TableBody rowKey={rowKey} />
+        </Table>
+      </InnerScrollContainer>
     );
   },
 );
