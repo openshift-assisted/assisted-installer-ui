@@ -1,6 +1,6 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Alert, AlertVariant, Grid, Tooltip } from '@patternfly/react-core';
 import { VirtualIPControlGroup, VirtualIPControlGroupProps } from './VirtualIPControlGroup';
 import {
@@ -31,7 +31,8 @@ import { useTranslation } from '../../../../common/hooks/use-translation-wrapper
 import { selectCurrentClusterPermissionsState } from '../../../selectors';
 import { OcmCheckbox } from '../../ui/OcmFormFields';
 import { NetworkTypeControlGroup } from '../../../../common/components/clusterWizard/networkingSteps/NetworkTypeControlGroup';
-import { ClustersAPI } from '../../../services/apis';
+import { ClustersService } from '../../../services';
+import { updateCluster } from '../../../reducers/clusters';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   hostSubnets: HostSubnets;
@@ -115,13 +116,6 @@ const isManagedNetworkingDisabled = (
   }
 };
 
-const resetUserManagedNetworking = (clusterId: string) => {
-  const params: V2ClusterUpdateParams = {
-    userManagedNetworking: false,
-  };
-  ClustersAPI.update(clusterId, params);
-};
-
 const NetworkConfiguration = ({
   cluster,
   hostSubnets,
@@ -151,7 +145,17 @@ const NetworkConfiguration = ({
   const [isAdvanced, setAdvanced] = React.useState(
     isDualStack || isAdvNetworkConf(cluster, defaultNetworkSettings),
   );
-
+  const dispatch = useDispatch();
+  const resetUserManagedNetworking = React.useCallback(
+    async (clusterId: string, clusterTags?: string) => {
+      const params: V2ClusterUpdateParams = {
+        userManagedNetworking: false,
+      };
+      const { data } = await ClustersService.update(clusterId, clusterTags, params);
+      dispatch(updateCluster(data));
+    },
+    [dispatch],
+  );
   React.useEffect(() => {
     if (isUserManagedNetworking) {
       // We need to reset these fields' values in order to align with the values the server sends
@@ -164,7 +168,7 @@ const NetworkConfiguration = ({
       }
     } else {
       //We need to set umn=false in the server when "Cluster managed networking" is selected
-      resetUserManagedNetworking(cluster.id);
+      void resetUserManagedNetworking(cluster.id, cluster.tags);
       if (!values.vipDhcpAllocation) {
         validateField('ingressVip');
         validateField('apiVip');
@@ -176,6 +180,9 @@ const NetworkConfiguration = ({
     values.vipDhcpAllocation,
     setFieldValue,
     validateField,
+    cluster.id,
+    cluster.tags,
+    resetUserManagedNetworking,
   ]);
 
   const toggleAdvConfiguration = React.useCallback(
