@@ -17,6 +17,7 @@ import {
   clusterNetworksEqual,
   DUAL_STACK,
   serviceNetworksEqual,
+  V2ClusterUpdateParams,
 } from '../../../../common';
 import { getLimitedFeatureSupportLevels } from '../../../../common/components/featureSupportLevels/utils';
 import {
@@ -30,6 +31,7 @@ import { useTranslation } from '../../../../common/hooks/use-translation-wrapper
 import { selectCurrentClusterPermissionsState } from '../../../selectors';
 import { OcmCheckbox } from '../../ui/OcmFormFields';
 import { NetworkTypeControlGroup } from '../../../../common/components/clusterWizard/networkingSteps/NetworkTypeControlGroup';
+import { ClustersAPI } from '../../../services/apis';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   hostSubnets: HostSubnets;
@@ -113,6 +115,13 @@ const isManagedNetworkingDisabled = (
   }
 };
 
+const resetUserManagedNetworking = (clusterId: string) => {
+  const params: V2ClusterUpdateParams = {
+    userManagedNetworking: false,
+  };
+  ClustersAPI.update(clusterId, params);
+};
+
 const NetworkConfiguration = ({
   cluster,
   hostSubnets,
@@ -154,6 +163,8 @@ const NetworkConfiguration = ({
         setFieldValue('machineNetworks', [], false);
       }
     } else {
+      //We need to set umn=false in the server when "Cluster managed networking" is selected
+      resetUserManagedNetworking(cluster.id);
       if (!values.vipDhcpAllocation) {
         validateField('ingressVip');
         validateField('apiVip');
