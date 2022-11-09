@@ -18,8 +18,9 @@ import {
   nameValidationMessages,
 } from './constants';
 import { TFunction } from 'i18next';
+import { getSubnet } from '../../clusterConfiguration/utils';
 
-const ALPHANUMBERIC_REGEX = /^[a-zA-Z0-9]+$/;
+const ALPHANUMERIC_REGEX = /^[a-zA-Z0-9]+$/;
 const NAME_START_END_REGEX = /^[a-z0-9](.*[a-z0-9])?$/;
 const NAME_CHARS_REGEX = /^[a-z0-9-.]*$/;
 const CLUSTER_NAME_START_END_REGEX = /^[a-z0-9](.*[a-z0-9])?$/;
@@ -213,17 +214,6 @@ const requiredOnceSet = (initialValue?: string, message?: string) =>
     (value) => value || !initialValue,
   );
 
-const stringToIPAddress = (value: string): Address4 | Address6 | null => {
-  let ip = null;
-  if (Address4.isValid(value)) {
-    ip = new Address4(value);
-  } else if (Address6.isValid(value)) {
-    ip = new Address6(value);
-  }
-
-  return ip;
-};
-
 export const hostSubnetValidationSchema = Yup.string().when(['managedNetworkingType'], {
   is: 'clusterManaged',
   then: Yup.string().notOneOf([NO_SUBNET_SET], 'Host subnet must be selected.'),
@@ -237,7 +227,7 @@ export const vipValidationSchema = (
   Yup.mixed().when(['vipDhcpAllocation', 'managedNetworkingType'], {
     is: (vipDhcpAllocation, managedNetworkingType) =>
       !vipDhcpAllocation && managedNetworkingType !== 'userManaged',
-    then: requiredOnceSet(initialValue)
+    then: requiredOnceSet(initialValue, 'Required. Please provide an IP address')
       .concat(vipRangeValidationSchema(hostSubnets, values))
       .concat(vipUniqueValidationSchema(values))
       .when('hostSubnet', {
@@ -268,8 +258,8 @@ export const ipBlockValidationSchema = Yup.string()
   .test(
     'cidr-is-not-unspecified',
     'The specified CIDR is invalid because its resulting routing prefix matches the unspecified address.',
-    (value = '') => {
-      const ip = stringToIPAddress(value);
+    (cidr = '') => {
+      const ip = getSubnet(cidr);
       if (ip === null) {
         return false;
       }
@@ -282,9 +272,9 @@ export const ipBlockValidationSchema = Yup.string()
   )
   .test(
     'valid-cidr-base-address',
-    ({ value }) => `${value} is not a valid CIDR`,
-    (value = '') => {
-      const ip = stringToIPAddress(value);
+    ({ value }) => `${value as string} is not a valid CIDR`,
+    (cidr = '') => {
+      const ip = getSubnet(cidr);
       if (ip === null) {
         return false;
       }
@@ -351,8 +341,8 @@ export const richNameValidationSchema = (t: TFunction, usedNames: string[], orig
     .test(
       nameValidationMessagesList.INVALID_START_END,
       nameValidationMessagesList.INVALID_START_END,
-      (value) => {
-        const trimmed: string = value?.trim();
+      (value: string) => {
+        const trimmed = value?.trim();
         if (!trimmed) {
           return true;
         }
@@ -492,9 +482,9 @@ export const locationValidationSchema = (t: TFunction) => {
           return true;
         }
         return (
-          !!trimmed[0].match(ALPHANUMBERIC_REGEX) &&
+          !!trimmed[0].match(ALPHANUMERIC_REGEX) &&
           (trimmed[trimmed.length - 1]
-            ? !!trimmed[trimmed.length - 1].match(ALPHANUMBERIC_REGEX)
+            ? !!trimmed[trimmed.length - 1].match(ALPHANUMERIC_REGEX)
             : true)
         );
       },

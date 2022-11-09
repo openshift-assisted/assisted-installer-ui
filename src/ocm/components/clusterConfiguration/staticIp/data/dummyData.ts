@@ -1,5 +1,5 @@
 import { HostStaticNetworkConfig, MacInterfaceMap } from '../../../../../common';
-import { ProtocolVersion } from './dataTypes';
+import { ProtocolVersion, StaticIpInfo, StaticIpView } from './dataTypes';
 import { NmstateEthernetInterface, NmstateInterfaceType } from './nmstateTypes';
 import { FORM_VIEW_PREFIX, getNmstateProtocolConfig, toYamlWithComments } from './nmstateYaml';
 
@@ -7,7 +7,7 @@ const DUMMY_MAC = '01:23:45:67:89:AB';
 const DUMMY_NIC_PREFIX = 'DUMMY';
 
 export const getDummyNicName = (protocolVersion: ProtocolVersion) => {
-  const protocolNumber = protocolVersion === 'ipv4' ? 4 : 6;
+  const protocolNumber = protocolVersion === ProtocolVersion.ipv4 ? 4 : 6;
   return `${DUMMY_NIC_PREFIX}${protocolNumber}`;
 };
 
@@ -25,7 +25,7 @@ export const DUMMY_NMSTATE_ADDRESSES = {
 export const getDummyInterfaces = (): NmstateEthernetInterface[] => {
   return [
     {
-      name: getDummyNicName('ipv4'),
+      name: getDummyNicName(ProtocolVersion.ipv4),
       type: NmstateInterfaceType.ETHERNET,
       state: 'up',
       ipv4: getNmstateProtocolConfig(
@@ -37,7 +37,7 @@ export const getDummyInterfaces = (): NmstateEthernetInterface[] => {
 };
 
 export const getDummyMacInterfaceMap = (): MacInterfaceMap => {
-  return [{ macAddress: DUMMY_MAC, logicalNicName: getDummyNicName('ipv4') }];
+  return [{ macAddress: DUMMY_MAC, logicalNicName: getDummyNicName(ProtocolVersion.ipv4) }];
 };
 
 export const isDummyInterface = (nicName: string) => {
@@ -54,3 +54,9 @@ export const getDummyInfraEnvField = (): HostStaticNetworkConfig[] => {
   const dummyYaml = toYamlWithComments(json, comments);
   return [{ networkYaml: dummyYaml, macInterfaceMap: getDummyMacInterfaceMap() }];
 };
+
+export const getDummyStaticIpInfo = (): StaticIpInfo => ({
+  isDataComplete: false,
+  view: StaticIpView.FORM,
+  formViewProtocolType: null,
+});

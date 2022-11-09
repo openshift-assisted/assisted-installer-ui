@@ -20,6 +20,7 @@ import {
   EmptyState,
   useAlerts,
   AlertsContextProvider,
+  Cluster,
 } from '../../../common';
 import ClustersTable from './ClustersTable';
 import { fetchClustersAsync, deleteCluster } from '../../reducers/clusters/clustersSlice';
@@ -43,9 +44,9 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
   }
   const dispatch = useDispatch();
   const deleteClusterAsync = React.useCallback(
-    async (clusterId) => {
+    async (clusterId: Cluster['id']) => {
       try {
-        await ClustersService.delete(clusterId);
+        await ClustersService.remove(clusterId);
         dispatch(deleteCluster(clusterId));
       } catch (e) {
         handleApiError(e, () =>
@@ -108,7 +109,10 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
           </PageSection>
           <PageSection variant={PageSectionVariants.light} isFilled>
             <Alerts />
-            <ClustersTable rows={clusterRows} deleteCluster={deleteClusterAsync} />
+            <ClustersTable
+              rows={clusterRows}
+              deleteCluster={(clusterId) => void deleteClusterAsync(clusterId)}
+            />
           </PageSection>
         </>
       );

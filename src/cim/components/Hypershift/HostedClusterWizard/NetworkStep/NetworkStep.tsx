@@ -33,9 +33,7 @@ const NetworkStep: React.FC<NetworkStepProps> = ({
   agents,
   formRef,
   onValuesChanged,
-  initAdvancedNetworking,
-  initSSHPublicKey = '',
-  isBMPlatform,
+  initialValues,
 }) => {
   const availableAgents = getAgentsForSelection(agents).filter(
     (a) => !a.spec.clusterDeploymentName,
@@ -43,20 +41,7 @@ const NetworkStep: React.FC<NetworkStepProps> = ({
 
   return (
     <Formik<NetworkFormValues>
-      initialValues={{
-        machineCIDR: '',
-        isAdvanced: initAdvancedNetworking,
-        sshPublicKey: initSSHPublicKey,
-        serviceCIDR: '172.31.0.0/16',
-        podCIDR: '10.132.0.0/14',
-        enableProxy: false,
-        httpProxy: '',
-        httpsProxy: '',
-        noProxy: '',
-        apiPublishingStrategy: isBMPlatform ? 'NodePort' : 'LoadBalancer',
-        nodePortPort: 0,
-        nodePortAddress: '',
-      }}
+      initialValues={initialValues}
       validationSchema={validationSchema}
       innerRef={formRef}
       onSubmit={noop}

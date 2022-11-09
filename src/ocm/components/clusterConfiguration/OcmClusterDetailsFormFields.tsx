@@ -9,7 +9,6 @@ import {
   isSNO,
   ManagedDomain,
   OpenshiftVersionOptionType,
-  OpenShiftVersionSelect,
   PullSecret,
   SNOControlGroup,
   StaticTextField,
@@ -24,6 +23,7 @@ import {
   OcmRichInputField,
   OcmSelectField,
 } from '../ui/OcmFormFields';
+import OcmOpenShiftVersionSelect from './OcmOpenShiftVersionSelect';
 
 export type OcmClusterDetailsFormFieldsProps = {
   forceOpenshiftVersion?: string;
@@ -66,6 +66,7 @@ export const OcmClusterDetailsFormFields = ({
   }, []);
 
   const { t } = useTranslation();
+
   return (
     <Form id="wizard-cluster-details__form">
       <OcmRichInputField
@@ -111,10 +112,11 @@ export const OcmClusterDetailsFormFields = ({
       )}
       {forceOpenshiftVersion ? (
         <StaticTextField name="openshiftVersion" label="OpenShift version" isRequired>
-          OpenShift {forceOpenshiftVersion}
+          OpenShift {forceOpenshiftVersion}{' '}
+          {getDeveloperPreviewText(forceOpenshiftVersion, versions)}
         </StaticTextField>
       ) : (
-        <OpenShiftVersionSelect versions={versions} />
+        <OcmOpenShiftVersionSelect versions={versions} />
       )}
       <SNOControlGroup versions={versions} highAvailabilityMode={highAvailabilityMode} />
 
@@ -129,3 +131,10 @@ export const OcmClusterDetailsFormFields = ({
     </Form>
   );
 };
+function getDeveloperPreviewText(
+  forceOpenshiftVersion: string,
+  versions: OpenshiftVersionOptionType[],
+): string {
+  const versionSelected = versions.find((version) => version.version === forceOpenshiftVersion);
+  return versionSelected?.supportLevel === 'beta' ? '- Developer preview release' : '';
+}

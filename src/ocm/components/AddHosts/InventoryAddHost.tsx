@@ -1,52 +1,41 @@
 import React from 'react';
-import {
-  Text,
-  TextContent,
-  Button,
-  Alert,
-  AlertVariant,
-  Stack,
-  StackItem,
-} from '@patternfly/react-core';
+import { Text, TextContent, Alert, AlertVariant, Stack, StackItem } from '@patternfly/react-core';
 import ClusterHostsTable from '../hosts/ClusterHostsTable';
-import { DiscoveryImageModalButton } from '../clusterConfiguration/discoveryImageModal';
 import InformationAndAlerts from '../clusterConfiguration/InformationAndAlerts';
-import { AddHostsContext, DiscoveryInstructions, isArmArchitecture, isSNO } from '../../../common';
+import { canSelectCpuArchitecture, Cluster, isArmArchitecture } from '../../../common';
+import Day2WizardContextProvider from './day2Wizard/Day2WizardContextProvider';
+import Day2DiscoveryImageModalButton from './day2Wizard/Day2DiscoveryImageModalButton';
+import Day2Wizard from './day2Wizard/Day2Wizard';
 
-const armArchAlert = (
-  <Alert
-    title="Only hosts that have arm64 cpu architecture can be added to this cluster."
-    variant={AlertVariant.info}
-    data-testid="arm-architecture-alert"
-    isInline
-  />
-);
-
-const InventoryAddHosts: React.FC = () => {
-  const { cluster } = React.useContext(AddHostsContext);
-
+const InventoryAddHosts = ({ cluster }: { cluster?: Cluster }) => {
   if (!cluster) {
     return null;
   }
 
-  const isSNOCluster = isSNO(cluster);
-
+  const showArmOnlyAlert = !canSelectCpuArchitecture(cluster) && isArmArchitecture(cluster);
   return (
     <Stack hasGutter>
       <StackItem>
         <TextContent>
-          <DiscoveryInstructions isSNO={isSNOCluster} showAllInstructions />
           <Text component="p">
-            <DiscoveryImageModalButton
-              ButtonComponent={Button}
-              cluster={cluster}
-              idPrefix="bare-metal-inventory-add-host"
-            />
+            <Day2WizardContextProvider>
+              <Day2DiscoveryImageModalButton cluster={cluster} />
+              <Day2Wizard />
+            </Day2WizardContextProvider>
           </Text>
           <InformationAndAlerts cluster={cluster} />
         </TextContent>
       </StackItem>
-      {isArmArchitecture(cluster) && <StackItem>{armArchAlert}</StackItem>}
+      {showArmOnlyAlert && (
+        <StackItem>
+          <Alert
+            title="Only hosts that have arm64 cpu architecture can be added to this cluster."
+            variant={AlertVariant.info}
+            data-testid="arm-architecture-alert"
+            isInline
+          />
+        </StackItem>
+      )}
       <StackItem>
         <ClusterHostsTable cluster={cluster} />
       </StackItem>

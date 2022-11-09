@@ -3,19 +3,22 @@ import {
   V2ClusterUpdateParams,
   HostDiscoveryValues,
   selectMastersMustRunWorkloads,
+  SupportedPlatformType,
 } from '../../common';
 
 const HostDiscoveryService = {
-  setPlatform(params: V2ClusterUpdateParams, usePlatformIntegration: boolean): void {
-    if (usePlatformIntegration) {
-      params.platform = {
-        type: 'vsphere',
-      };
-    } else {
-      params.platform = {
-        type: 'baremetal',
-      };
-    }
+  setPlatform(
+    params: V2ClusterUpdateParams,
+    platformToIntegrate: SupportedPlatformType | undefined,
+    userManagedNetworking: boolean | undefined,
+  ): void {
+    //the UI client sends cluster.platform.type=none if UMN is selected.
+    //the UI client sends cluster.platform.type=baremetal if UMN is not selected.
+    const resetPlatform = userManagedNetworking ? 'none' : 'baremetal';
+    const type = platformToIntegrate === undefined ? resetPlatform : platformToIntegrate;
+    params.platform = {
+      type,
+    };
   },
 
   setSchedulableMasters(

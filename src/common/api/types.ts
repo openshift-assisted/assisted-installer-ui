@@ -922,7 +922,8 @@ export interface FeatureSupportLevel {
       | 'SINGLE_NODE_EXPANSION'
       | 'LVM'
       | 'DUAL_STACK_NETWORKING'
-      | 'MULTIARCH_RELEASE_IMAGE';
+      | 'MULTIARCH_RELEASE_IMAGE'
+      | 'NUTANIX_INTEGRATION';
     supportLevel?: 'supported' | 'unsupported' | 'tech-preview' | 'dev-preview';
   }[];
 }
@@ -2054,7 +2055,7 @@ export type OsImages = OsImage[];
 export interface Platform {
   type: PlatformType;
 }
-export type PlatformType = 'baremetal' | 'vsphere' | 'ovirt' | 'none';
+export type PlatformType = 'baremetal' | 'nutanix' | 'vsphere' | 'none';
 export interface PreflightHardwareRequirements {
   /**
    * Preflight operators hardware requirements

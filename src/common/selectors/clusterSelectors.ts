@@ -1,5 +1,5 @@
 import head from 'lodash/fp/head';
-import { CpuArchitecture, ValidationsInfo } from '../types';
+import { CpuArchitecture, SupportedPlatformIntegrations, ValidationsInfo } from '../types';
 import { Cluster, stringToJSON } from '../api';
 import { OperatorName } from '../config';
 
@@ -126,4 +126,21 @@ export const selectSchedulableMasters = (cluster: Cluster): boolean => {
 };
 
 export const isClusterPlatformTypeVM = ({ platform }: Pick<Cluster, 'platform'>) =>
-  !/baremetal|none/.test(platform?.type ?? 'none');
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  SupportedPlatformIntegrations.includes(platform?.type ?? 'none');
+
+/**
+ * Determines whether users can select multiple architectures when adding hosts.
+ * The cluster may actually NOT support multi-arch, because the capability
+ * is determined at the Organization level and not at the Cluster's level.
+ * @param cluster the cluster
+ */
+export const canSelectCpuArchitecture = (cluster: Cluster) => {
+  // The field "canSelectCpuArch" is being passed only from OCM.
+  // Therefore, on Stand-alone we must always allow cpu architecture selection
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  return cluster.canSelectCpuArch !== false;
+};

@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Alert, AlertGroup, AlertVariant } from '@patternfly/react-core';
 import {
@@ -18,7 +17,6 @@ import ClusterWizardStepValidationsAlert from '../../../common/components/cluste
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { ClusterPlatformIntegrationHint } from './ClusterPlatformIntegrationHint';
 import { onFetchEvents } from '../fetching/fetchEvents';
-import { selectCurrentClusterPermissionsState } from '../../selectors';
 
 type ClusterValidationSectionProps = {
   cluster?: Cluster;
@@ -53,7 +51,7 @@ const ValidationSection = ({
       {currentStepId === 'host-discovery' && cluster && (
         <ClusterPlatformIntegrationHint
           clusterId={cluster.id}
-          platformType={cluster.platform?.type}
+          platformType={cluster.platform?.type || 'none'}
         />
       )}
 
@@ -85,12 +83,10 @@ const ClusterWizardFooter = ({
   alertTitle,
   alertContent,
   onCancel,
-  isNextDisabled,
   ...rest
 }: ClusterWizardFooterProps) => {
   const { alerts } = useAlerts();
   const history = useHistory();
-  const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
 
   const handleCancel = React.useCallback(
     () => history.push(`${routeBasePath}/clusters/`),
@@ -116,7 +112,6 @@ const ClusterWizardFooter = ({
       leftExtraActions={additionalActions}
       cluster={cluster}
       onFetchEvents={onFetchEvents}
-      isNextDisabled={isNextDisabled && !isViewerMode}
       {...rest}
     />
   );

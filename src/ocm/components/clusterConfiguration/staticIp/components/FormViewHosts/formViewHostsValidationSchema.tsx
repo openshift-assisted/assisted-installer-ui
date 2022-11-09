@@ -5,6 +5,7 @@ import {
   HostIps,
   FormViewNetworkWideValues,
   FormViewHostsValues,
+  ProtocolVersion,
 } from '../../data/dataTypes';
 import { macAddressValidationSchema } from '../../../../../../common';
 import { showIpv4, showIpv6 } from '../../data/protocolVersion';
@@ -37,28 +38,28 @@ const getHostValidationSchema = (networkWideValues: FormViewNetworkWideValues) =
     ips: Yup.object().shape<HostIps>({
       ipv4: showIpv4(networkWideValues.protocolType)
         ? getInMachineNetworkValidationSchema(
-            'ipv4',
+            ProtocolVersion.ipv4,
             networkWideValues.ipConfigs['ipv4'].machineNetwork,
           )
             .required(requiredMsg)
             .concat(getUniqueValidationSchema(getAllIpv4Addresses))
             .concat(
               getIpIsNotNetworkOrBroadcastAddressSchema(
-                'ipv4',
+                ProtocolVersion.ipv4,
                 getMachineNetworkCidr(networkWideValues.ipConfigs['ipv4'].machineNetwork),
               ),
             )
         : Yup.string(),
       ipv6: showIpv6(networkWideValues.protocolType)
         ? getInMachineNetworkValidationSchema(
-            'ipv6',
+            ProtocolVersion.ipv6,
             networkWideValues.ipConfigs['ipv6'].machineNetwork,
           )
             .required(requiredMsg)
             .concat(getUniqueValidationSchema(getAllIpv6Addresses))
             .concat(
               getIpIsNotNetworkOrBroadcastAddressSchema(
-                'ipv6',
+                ProtocolVersion.ipv6,
                 getMachineNetworkCidr(networkWideValues.ipConfigs['ipv6'].machineNetwork),
               ),
             )
