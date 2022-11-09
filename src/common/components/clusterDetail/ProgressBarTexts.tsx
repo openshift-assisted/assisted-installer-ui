@@ -13,14 +13,12 @@ type HostProgressProps = {
 
 export const ProgressBarTexts = ({ hosts, hostRole }: HostProgressProps) => {
   const { t } = useTranslation();
+
   const hostRoleText =
     hostRole === 'master'
       ? t('ai:Control Plane', { count: hosts.length })
       : t('ai:Worker', { count: hosts.length });
-  const hostCountText =
-    hostRole === 'master'
-      ? t('ai:{{count}} control plane node', { count: hosts.length })
-      : t('ai:{{count}} worker', { count: hosts.length });
+
   if (hosts.some((host) => ['cancelled', 'error'].includes(host.status))) {
     const failedHostsCount = hosts.filter((host) => host.status === 'error').length;
     return (
@@ -29,21 +27,43 @@ export const ProgressBarTexts = ({ hosts, hostRole }: HostProgressProps) => {
           {hostRoleText}
           <br />
           <small>
-            {failedHostsCount}/{hostCountText} {t('ai:failed')}
+            {failedHostsCount}/
+            {hostRole === 'master'
+              ? t('ai:{{count}} control plane node failed', { count: hosts.length })
+              : t('ai:{{count}} worker failed', { count: hosts.length })}
           </small>
         </>
       </ClusterProgressItem>
     );
   }
 
-  if (hosts.every((host) => ['installed', 'added-to-existing-cluster'].includes(host.status))) {
+  const installedHosts = hosts.filter((host) =>
+    ['installed', 'added-to-existing-cluster'].includes(host.status),
+  );
+  const beingInstalledHosts = hosts.filter((host) =>
+    [
+      'preparing-for-installation',
+      'preparing-successful',
+      'pending-for-input',
+      'installing',
+      'installing-in-progress',
+      'installing-pending-user-action',
+      'resetting-pending-user-action',
+      'resetting',
+    ].includes(host.status),
+  );
+  if (beingInstalledHosts.length > 0) {
     return (
-      <ClusterProgressItem icon={<CheckCircleIcon color={okColor.value} />}>
+      <ClusterProgressItem icon={<InProgressIcon />}>
         <>
           {hostRoleText}
           <br />
           <small>
-            {hostCountText} {t('ai:installed')}
+            {hostRole === 'master'
+              ? t('ai:Installing {{count}} control plane node', {
+                  count: beingInstalledHosts.length,
+                })
+              : t('ai:Installing {{count}} worker', { count: beingInstalledHosts.length })}
           </small>
         </>
       </ClusterProgressItem>
@@ -51,12 +71,14 @@ export const ProgressBarTexts = ({ hosts, hostRole }: HostProgressProps) => {
   }
 
   return (
-    <ClusterProgressItem icon={<InProgressIcon />}>
+    <ClusterProgressItem icon={<CheckCircleIcon color={okColor.value} />}>
       <>
         {hostRoleText}
         <br />
         <small>
-          {t('ai:Installing')} {hostCountText}
+          {hostRole === 'master'
+            ? t('ai:{{count}} control plane node installed', { count: installedHosts.length })
+            : t('ai:{{count}} worker installed', { count: installedHosts.length })}
         </small>
       </>
     </ClusterProgressItem>
