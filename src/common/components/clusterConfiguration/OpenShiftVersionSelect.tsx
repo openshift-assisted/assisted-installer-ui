@@ -11,6 +11,7 @@ import {
 import { OPENSHIFT_LIFE_CYCLE_DATES_LINK } from '../../config';
 import { OpenshiftVersionOptionType } from '../../types';
 import { SelectField } from '../ui';
+// eslint-disable-next-line no-restricted-imports
 import openshiftVersionData from '../../../ocm/data/openshiftVersionsData.json';
 import { diffInDaysBetweenDates } from '../../sevices/DateAndTime';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
