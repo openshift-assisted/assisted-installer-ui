@@ -67,6 +67,7 @@ const AdvancedNetworkFields = () => {
                     isRequired
                     labelInfo={index === 0 && isDualStack ? 'Primary' : ''}
                   />
+                  <br />
                   <OcmInputField
                     name={`clusterNetworks.${index}.hostPrefix`}
                     label={`Cluster network host prefix${networkSuffix}`}
