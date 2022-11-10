@@ -145,17 +145,7 @@ const NetworkConfiguration = ({
   const [isAdvanced, setAdvanced] = React.useState(
     isDualStack || isAdvNetworkConf(cluster, defaultNetworkSettings),
   );
-  const dispatch = useDispatch();
-  const resetUserManagedNetworking = React.useCallback(
-    async (clusterId: string, clusterTags?: string) => {
-      const params: V2ClusterUpdateParams = {
-        userManagedNetworking: false,
-      };
-      const { data } = await ClustersService.update(clusterId, clusterTags, params);
-      dispatch(updateCluster(data));
-    },
-    [dispatch],
-  );
+
   React.useEffect(() => {
     if (isUserManagedNetworking) {
       // We need to reset these fields' values in order to align with the values the server sends
@@ -167,8 +157,6 @@ const NetworkConfiguration = ({
         setFieldValue('machineNetworks', [], false);
       }
     } else {
-      //We need to set umn=false in the server when "Cluster managed networking" is selected
-      void resetUserManagedNetworking(cluster.id, cluster.tags);
       if (!values.vipDhcpAllocation) {
         validateField('ingressVip');
         validateField('apiVip');
@@ -180,9 +168,6 @@ const NetworkConfiguration = ({
     values.vipDhcpAllocation,
     setFieldValue,
     validateField,
-    cluster.id,
-    cluster.tags,
-    resetUserManagedNetworking,
   ]);
 
   const toggleAdvConfiguration = React.useCallback(
@@ -233,12 +218,28 @@ const NetworkConfiguration = ({
     [cluster.cpuArchitecture, cluster.openshiftVersion, featureSupportLevelData, isDualStack],
   );
 
+  const dispatch = useDispatch();
+  const toggleManagedNetworking = React.useCallback(
+    async (checked: boolean) => {
+      if (checked) {
+        //We need to set umn=false in the server when "Cluster managed networking" is selected
+        const params: V2ClusterUpdateParams = {
+          userManagedNetworking: false,
+        };
+        const { data } = await ClustersService.update(cluster.id, cluster.tags, params);
+        dispatch(updateCluster(data));
+      }
+    },
+    [dispatch, cluster.id, cluster.tags],
+  );
+
   return (
     <Grid hasGutter>
       {!hideManagedNetworking && (
         <ManagedNetworkingControlGroup
           disabled={isViewerMode || isNetworkManagementDisabled}
           tooltip={networkManagementDisabledReason}
+          toggleManagedNetworking={toggleManagedNetworking}
         />
       )}
 
