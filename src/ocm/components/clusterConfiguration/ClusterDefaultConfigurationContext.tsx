@@ -54,7 +54,7 @@ export const ClusterDefaultConfigurationProvider = ({
     return () => {
       mounted = false;
     };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   const render = (state: State<ClusterDefaultConfig>) => {
     let result: {

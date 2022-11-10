@@ -2,10 +2,9 @@ import findIndex from 'lodash/findIndex';
 import set from 'lodash/set';
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { AssistedInstallerPermissionTypesListType, Cluster, Host } from '../../../common';
-import { handleApiError } from '../../api/utils';
+import { getApiErrorMessage, handleApiError } from '../../api';
 import { ResourceUIState } from '../../../common';
 import { ClustersService } from '../../services';
-import { isApiError } from '../../api/types';
 
 export type RetrievalErrorType = {
   code: string;
@@ -30,8 +29,9 @@ export const fetchClusterAsync = createAsyncThunk<
     const cluster = await ClustersService.get(clusterId);
     return cluster;
   } catch (e) {
-    handleApiError(e, () => {
-      return isApiError(e) && e.response?.data && rejectWithValue(e.response?.data);
+    return handleApiError(e, () => {
+      const rejectError = getApiErrorMessage(e);
+      return rejectWithValue(rejectError as unknown as RetrievalErrorType);
     });
   }
 });
