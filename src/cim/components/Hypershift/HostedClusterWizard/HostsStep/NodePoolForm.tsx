@@ -66,9 +66,9 @@ const NodePoolForm: React.FC<NodePoolFormProps> = ({ infraEnvs, agents, index, o
     previousNodePoolsCount += values.nodePools[i].count;
   }
 
-  const maxAgents = Math.min(
-    matchingAgents.length,
-    availableAgents.length - previousNodePoolsCount,
+  const maxAgents = Math.max(
+    0,
+    Math.min(matchingAgents.length, availableAgents.length - previousNodePoolsCount),
   );
 
   const currentCount = values.nodePools[index].count;
