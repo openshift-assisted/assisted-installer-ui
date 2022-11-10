@@ -48,8 +48,8 @@ const getNetworkConfigurationValidationSchema = (
   Yup.lazy<ClusterDeploymentNetworkingValues>((values) =>
     Yup.object<ClusterDeploymentNetworkingValues>().shape({
       clusterNetworkHostPrefix: hostPrefixValidationSchema(values),
-      clusterNetworkCidr: ipBlockValidationSchema,
-      serviceNetworkCidr: ipBlockValidationSchema,
+      clusterNetworkCidr: ipBlockValidationSchema(values.serviceNetworkCidr),
+      serviceNetworkCidr: ipBlockValidationSchema(values.clusterNetworkCidr),
       apiVip: vipValidationSchema(hostSubnets, values, initialValues.apiVip),
       ingressVip: vipValidationSchema(hostSubnets, values, initialValues.ingressVip),
       sshPublicKey: sshPublicKeyValidationSchema,
