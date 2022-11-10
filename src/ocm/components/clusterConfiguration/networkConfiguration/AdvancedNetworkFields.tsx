@@ -6,6 +6,7 @@ import {
   StackItem,
   TextInputTypes,
   Grid,
+  Stack,
 } from '@patternfly/react-core';
 import { FieldArray, useFormikContext } from 'formik';
 import { DUAL_STACK, PREFIX_MAX_RESTRICTION, NetworkConfigurationValues } from '../../../../common';
@@ -59,8 +60,8 @@ const AdvancedNetworkFields = () => {
             {values.clusterNetworks?.map((_, index) => {
               const networkSuffix = getNetworkLabelSuffix(index, isDualStack);
               return (
-                <>
-                  <StackItem key={index} className={'network-field-group pf-u-pb-md'}>
+                <Stack key={index}>
+                  <StackItem className={'network-field-group pf-u-pb-md'}>
                     <OcmInputField
                       name={`clusterNetworks.${index}.cidr`}
                       label={`Cluster network CIDR${networkSuffix}`}
@@ -69,7 +70,7 @@ const AdvancedNetworkFields = () => {
                       labelInfo={index === 0 && isDualStack ? 'Primary' : ''}
                     />
                   </StackItem>
-                  <StackItem key={index} className={'network-field-group pf-u-pb-md'}>
+                  <StackItem className={'network-field-group pf-u-pb-md'}>
                     <OcmInputField
                       name={`clusterNetworks.${index}.hostPrefix`}
                       label={`Cluster network host prefix${networkSuffix}`}
@@ -87,7 +88,7 @@ const AdvancedNetworkFields = () => {
                       isRequired
                     />
                   </StackItem>
-                </>
+                </Stack>
               );
             })}
           </FormGroup>
