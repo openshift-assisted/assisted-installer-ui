@@ -52,7 +52,7 @@ const AdvancedNetworkFields = () => {
     isSubnetIPv6(index) ? IPv6PrefixHelperText : IPv4PrefixHelperText;
 
   return (
-    <Grid hasGutter>
+    <Grid hasGutter className="pf-u-ml-lg">
       <FieldArray name="clusterNetworks">
         {() => (
           <FormGroup fieldId="clusterNetworks" labelInfo={isDualStack && 'Primary'}>
