@@ -21,7 +21,7 @@ module.exports = {
     },
     {
       files: ['*.ts', '*.tsx'],
-      plugins: ['@typescript-eslint', 'react', 'react-hooks'],
+      plugins: ['@typescript-eslint', 'react', 'react-hooks', 'import'],
       extends: [
         'plugin:react/recommended',
         'plugin:@typescript-eslint/recommended',
@@ -83,6 +83,7 @@ module.exports = {
                   'Please use useTranslation from src/common/hooks/use-translation-wrapper.ts instead',
               },
             ],
+            patterns: ['**/ocm/**/', '**/cim/**/'],
           },
         ],
         '@typescript-eslint/no-explicit-any': [
