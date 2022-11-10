@@ -29,11 +29,7 @@ export const useClusterPolling = (
 
   React.useEffect(() => {
     if (isReloadScheduled) {
-      const bannedUIStates = [
-        ResourceUIState.LOADING,
-        ResourceUIState.RELOADING,
-        ResourceUIState.ERROR,
-      ];
+      const bannedUIStates = [ResourceUIState.LOADING, ResourceUIState.RELOADING];
       if (!bannedUIStates.includes(uiState)) {
         fetchCluster();
       }

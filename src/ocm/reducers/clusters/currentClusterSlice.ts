@@ -1,9 +1,13 @@
 import findIndex from 'lodash/findIndex';
 import set from 'lodash/set';
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { AssistedInstallerPermissionTypesListType, Cluster, Host } from '../../../common';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {
+  AssistedInstallerPermissionTypesListType,
+  Cluster,
+  Host,
+  ResourceUIState,
+} from '../../../common';
 import { getApiErrorMessage, handleApiError } from '../../api';
-import { ResourceUIState } from '../../../common';
 import { ClustersService } from '../../services';
 
 export type RetrievalErrorType = {
@@ -83,22 +87,19 @@ export const currentClusterSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchClusterAsync.pending, (state) => ({
-        ...state,
-        uiState:
-          state.uiState === ResourceUIState.LOADED
-            ? ResourceUIState.RELOADING
-            : ResourceUIState.LOADING,
-      }))
-      .addCase(fetchClusterAsync.fulfilled, (state, action) => {
-        /**
-         * In case the last get cluster request is aborted,
-         * then the action payload is undefined therefore
-         * we must not update the data property
-         */
+      .addCase(fetchClusterAsync.pending, (state) => {
+        const needsReload =
+          state.uiState === ResourceUIState.LOADED ||
+          (state.uiState === ResourceUIState.ERROR && state.data);
         return {
           ...state,
-          data: (action.payload as Cluster) ?? state.data,
+          uiState: needsReload ? ResourceUIState.RELOADING : ResourceUIState.LOADING,
+        };
+      })
+      .addCase(fetchClusterAsync.fulfilled, (state, action) => {
+        return {
+          ...state,
+          data: action.payload as Cluster,
           uiState: ResourceUIState.LOADED,
         };
       })
