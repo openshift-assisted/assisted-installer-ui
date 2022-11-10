@@ -48,7 +48,7 @@ const PullSecretInfoLink = () => {
   const { t } = useTranslation();
   return (
     <a href={PULL_SECRET_INFO_LINK} target="_blank" rel="noopener noreferrer">
-      {t('ai:Learn more about pull secrets')} <ExternalLinkAltIcon />.
+      {t('ai:Learn more about pull-secrets and view examples')} <ExternalLinkAltIcon />.
     </a>
   );
 };
@@ -56,10 +56,7 @@ const PullSecretInfoLink = () => {
 const GetPullSecretHelperText: React.FC<{ isOcm: boolean }> = ({ isOcm }) => {
   const { t } = useTranslation();
   return isOcm ? (
-    <>
-      {t("ai:Your Red Hat account's pull secret is used by default.")}&nbsp;
-      <PullSecretInfoLink />
-    </>
+    <PullSecretInfoLink />
   ) : (
     <>
       {t("ai:A Red Hat account's pull secret can be found in ")}&nbsp;
