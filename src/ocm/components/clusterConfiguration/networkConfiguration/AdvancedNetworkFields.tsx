@@ -59,32 +59,35 @@ const AdvancedNetworkFields = () => {
             {values.clusterNetworks?.map((_, index) => {
               const networkSuffix = getNetworkLabelSuffix(index, isDualStack);
               return (
-                <StackItem key={index} className={'network-field-group'}>
-                  <OcmInputField
-                    name={`clusterNetworks.${index}.cidr`}
-                    label={`Cluster network CIDR${networkSuffix}`}
-                    helperText={clusterCidrHelperText}
-                    isRequired
-                    labelInfo={index === 0 && isDualStack ? 'Primary' : ''}
-                  />
-                  <br />
-                  <OcmInputField
-                    name={`clusterNetworks.${index}.hostPrefix`}
-                    label={`Cluster network host prefix${networkSuffix}`}
-                    type={TextInputTypes.number}
-                    min={clusterNetworkCidrPrefix(index)}
-                    max={
-                      isSubnetIPv6(index)
-                        ? PREFIX_MAX_RESTRICTION.IPv6
-                        : PREFIX_MAX_RESTRICTION.IPv4
-                    }
-                    onBlur={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      formatClusterNetworkHostPrefix(e, index)
-                    }
-                    helperText={clusterNetworkHostPrefixHelperText(index)}
-                    isRequired
-                  />
-                </StackItem>
+                <>
+                  <StackItem key={index} className={'network-field-group pf-u-pb-md'}>
+                    <OcmInputField
+                      name={`clusterNetworks.${index}.cidr`}
+                      label={`Cluster network CIDR${networkSuffix}`}
+                      helperText={clusterCidrHelperText}
+                      isRequired
+                      labelInfo={index === 0 && isDualStack ? 'Primary' : ''}
+                    />
+                  </StackItem>
+                  <StackItem key={index} className={'network-field-group pf-u-pb-md'}>
+                    <OcmInputField
+                      name={`clusterNetworks.${index}.hostPrefix`}
+                      label={`Cluster network host prefix${networkSuffix}`}
+                      type={TextInputTypes.number}
+                      min={clusterNetworkCidrPrefix(index)}
+                      max={
+                        isSubnetIPv6(index)
+                          ? PREFIX_MAX_RESTRICTION.IPv6
+                          : PREFIX_MAX_RESTRICTION.IPv4
+                      }
+                      onBlur={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        formatClusterNetworkHostPrefix(e, index)
+                      }
+                      helperText={clusterNetworkHostPrefixHelperText(index)}
+                      isRequired
+                    />
+                  </StackItem>
+                </>
               );
             })}
           </FormGroup>
@@ -99,7 +102,7 @@ const AdvancedNetworkFields = () => {
         {() => (
           <FormGroup fieldId="serviceNetworks" labelInfo={isDualStack && 'Primary'}>
             {values.serviceNetworks?.map((_, index) => (
-              <StackItem key={index} className={'network-field-group'}>
+              <StackItem key={index} className={'network-field-group pf-u-pb-md'}>
                 <OcmInputField
                   name={`serviceNetworks.${index}.cidr`}
                   label={`Service network CIDR${getNetworkLabelSuffix(index, isDualStack)}`}
