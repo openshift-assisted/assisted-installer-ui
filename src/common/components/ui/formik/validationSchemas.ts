@@ -2,6 +2,7 @@ import * as Yup from 'yup';
 import { Address4, Address6 } from 'ip-address';
 import { isInSubnet } from 'is-in-subnet';
 import isCIDR from 'is-cidr';
+import { overlap } from 'cidr-tools';
 
 import { NetworkConfigurationValues, HostSubnets } from '../../../types/clusters';
 import { NO_SUBNET_SET } from '../../../config/constants';
@@ -236,56 +237,65 @@ export const vipValidationSchema = (
       }),
   });
 
-export const ipBlockValidationSchema = Yup.string()
-  .required('A value is required.')
-  .test(
-    'valid-ip-address',
-    'Invalid IP address block. Expected value is a network expressed in CIDR notation (IP/netmask). For example: 123.123.123.0/24, 2055:d7a::/116',
-    (value = '') => isCIDR.v4(value) || isCIDR.v6(value),
-  )
-  .test(
-    'valid-netmask',
-    'IPv4 netmask must be between 1-25 and include at least 128 addresses.\nIPv6 netmask must be between 8-128 and include at least 256 addresses.',
-    (value = '') => {
-      const suffix = parseInt(value.split('/')[1]);
+export const ipBlockValidationSchema = (reservedCidrs: string | string[] | undefined) =>
+  Yup.string()
+    .required('A value is required.')
+    .test(
+      'valid-ip-address',
+      'Invalid IP address block. Expected value is a network expressed in CIDR notation (IP/netmask). For example: 123.123.123.0/24, 2055:d7a::/116',
+      (value = '') => isCIDR.v4(value) || isCIDR.v6(value),
+    )
+    .test(
+      'valid-netmask',
+      'IPv4 netmask must be between 1-25 and include at least 128 addresses.\nIPv6 netmask must be between 8-128 and include at least 256 addresses.',
+      (value = '') => {
+        const suffix = parseInt(value.split('/')[1]);
 
-      return (
-        (isCIDR.v4(value) && 0 < suffix && suffix < 26) ||
-        (isCIDR.v6(value) && 7 < suffix && suffix < 129)
-      );
-    },
-  )
-  .test(
-    'cidr-is-not-unspecified',
-    'The specified CIDR is invalid because its resulting routing prefix matches the unspecified address.',
-    (cidr = '') => {
-      const ip = getSubnet(cidr);
-      if (ip === null) {
-        return false;
+        return (
+          (isCIDR.v4(value) && 0 < suffix && suffix < 26) ||
+          (isCIDR.v6(value) && 7 < suffix && suffix < 129)
+        );
+      },
+    )
+    .test(
+      'cidr-is-not-unspecified',
+      'The specified CIDR is invalid because its resulting routing prefix matches the unspecified address.',
+      (cidr = '') => {
+        const ip = getSubnet(cidr);
+        if (ip === null) {
+          return false;
+        }
+
+        // The first address is used to represent the network
+        const startAddress = ip.startAddress().address;
+
+        return startAddress !== IP_V4_ZERO && startAddress !== IP_V6_ZERO;
+      },
+    )
+    .test(
+      'valid-cidr-base-address',
+      ({ value }) => `${value as string} is not a valid CIDR`,
+      (cidr = '') => {
+        const ip = getSubnet(cidr);
+        if (ip === null) {
+          return false;
+        }
+
+        const networkAddress = ip.startAddress().parsedAddress;
+        const ipAddress = ip.parsedAddress;
+        const result = ipAddress.every((part, idx) => part === networkAddress[idx]);
+
+        return result;
+      },
+    )
+    .test('cidrs-can-not-overlap', 'Provided CIDRs can not overlap.', (cidr = '') => {
+      if (cidr && reservedCidrs && reservedCidrs.length > 0) {
+        return !overlap(cidr, reservedCidrs);
       }
 
-      // The first address is used to represent the network
-      const startAddress = ip.startAddress().address;
-
-      return startAddress !== IP_V4_ZERO && startAddress !== IP_V6_ZERO;
-    },
-  )
-  .test(
-    'valid-cidr-base-address',
-    ({ value }) => `${value as string} is not a valid CIDR`,
-    (cidr = '') => {
-      const ip = getSubnet(cidr);
-      if (ip === null) {
-        return false;
-      }
-
-      const networkAddress = ip.startAddress().parsedAddress;
-      const ipAddress = ip.parsedAddress;
-      const result = ipAddress.every((part, idx) => part === networkAddress[idx]);
-
-      return result;
-    },
-  );
+      // passing by default
+      return true;
+    });
 
 export const dnsNameValidationSchema = Yup.string()
   .test(
@@ -502,7 +512,9 @@ export const machineNetworksValidationSchema = Yup.array().of(
 export const clusterNetworksValidationSchema = Yup.array().of(
   Yup.lazy((values: ClusterNetwork) =>
     Yup.object({
-      cidr: ipBlockValidationSchema,
+      cidr: ipBlockValidationSchema(
+        undefined /* So far used in OCM only and so validated by backend */,
+      ),
       hostPrefix: hostPrefixValidationSchema({ clusterNetworkCidr: values.cidr }),
       clusterId: Yup.string(),
     }),
@@ -511,7 +523,9 @@ export const clusterNetworksValidationSchema = Yup.array().of(
 
 export const serviceNetworkValidationSchema = Yup.array().of(
   Yup.object({
-    cidr: ipBlockValidationSchema,
+    cidr: ipBlockValidationSchema(
+      undefined /* So far used in OCM only and so validated by backend */,
+    ),
     clusterId: Yup.string(),
   }),
 );

@@ -104,7 +104,7 @@ const ModalDialogsContextProvider: React.FC = ({ children }) => {
     dispatchDialogsAction(closeDialogAction({ dialogId }));
 
   const context = dialogIds.reduce((context, dialogId) => {
-    const dialogData: ModalDialogsDataTypes[typeof dialogId] = dialogsState[dialogId];
+    const dialogData = dialogsState[dialogId] as ModalDialogsDataTypes[typeof dialogId];
     context[dialogId] = {
       isOpen: !!dialogData,
       open: (data: ModalDialogsDataTypes[typeof dialogId]) =>
