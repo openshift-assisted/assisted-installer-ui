@@ -5,6 +5,7 @@ import { Alert, Button, Form, Grid, GridItem } from '@patternfly/react-core';
 
 import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
 import { PopoverIcon, SelectField } from '../../../../../common';
+import { getRandomString } from '../../../../../common/utils';
 import { useTemptiflySync } from '../../hooks/useTemptiflySync';
 
 import NodePoolForm from './NodePoolForm';
@@ -85,15 +86,16 @@ const HostsForm: React.FC<HostsFormProps> = ({
                   variant="link"
                   icon={<PlusCircleIcon />}
                   iconPosition="right"
-                  onClick={() =>
+                  onClick={() => {
+                    const uniquePoolName = `nodepool-${clusterName}-${getRandomString(5)}`;
                     push({
-                      name: `nodepool-${clusterName}-${values.nodePools.length + 1}`,
+                      name: uniquePoolName,
                       count: 1,
                       agentLabels: [],
                       releaseImage: initReleaseImage,
                       clusterName,
-                    } as NodePoolFormValue)
-                  }
+                    } as NodePoolFormValue);
+                  }}
                 >
                   {t('ai:Add Nodepool')}
                 </Button>
