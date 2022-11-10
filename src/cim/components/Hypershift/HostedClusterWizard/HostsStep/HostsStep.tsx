@@ -6,11 +6,8 @@ import { Stack, StackItem } from '@patternfly/react-core';
 import HostsForm from './HostsForm';
 import { HostsStepProps, HostsFormValues, NodePoolFormValue } from './types';
 import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
-import { HostsStepProps, HostsFormValues } from './types';
 import { getAgentsForSelection } from '../../../helpers';
 import { INFRAENV_AGENTINSTALL_LABEL_KEY } from '../../../common';
-import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
-import { Stack, StackItem } from '@patternfly/react-core';
 import { TFunction } from 'i18next';
 import { NodePoolK8sResource } from '../../types';
 
