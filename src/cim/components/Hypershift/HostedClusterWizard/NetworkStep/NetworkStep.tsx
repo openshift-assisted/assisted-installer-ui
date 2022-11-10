@@ -17,8 +17,8 @@ const validationSchema = Yup.lazy<NetworkFormValues>((values) =>
   Yup.object<NetworkFormValues>().shape({
     machineCIDR: Yup.string().required(),
     sshPublicKey: sshPublicKeyValidationSchema.required(),
-    serviceCIDR: values.isAdvanced ? ipBlockValidationSchema : Yup.string(),
-    podCIDR: values.isAdvanced ? ipBlockValidationSchema : Yup.string(),
+    serviceCIDR: values.isAdvanced ? ipBlockValidationSchema(values.podCIDR) : Yup.string(),
+    podCIDR: values.isAdvanced ? ipBlockValidationSchema(values.serviceCIDR) : Yup.string(),
     httpProxy: httpProxyValidationSchema(values, 'httpsProxy'),
     httpsProxy: httpProxyValidationSchema(values, 'httpProxy'), // share the schema, httpS is currently not supported
     noProxy: noProxyValidationSchema,
