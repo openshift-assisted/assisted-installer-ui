@@ -114,7 +114,7 @@ export const sshPublicKeyValidationSchema = Yup.string().test(
 
 export const pullSecretValidationSchema = Yup.string().test(
   'is-well-formed-json',
-  "Invalid pull-secret format. You must use your Red Hat account's pull-secret.",
+  "Invalid pull secret format. You must use your Red Hat account's pull secret.",
   (value) => {
     const isValid = true;
     if (!value) return isValid;

@@ -48,7 +48,7 @@ const PullSecretInfoLink = () => {
   const { t } = useTranslation();
   return (
     <a href={PULL_SECRET_INFO_LINK} target="_blank" rel="noopener noreferrer">
-      {t('ai:Learn more about pull-secrets and view examples')} <ExternalLinkAltIcon />.
+      {t('ai:Learn more about pull secrets and view examples')} <ExternalLinkAltIcon />.
     </a>
   );
 };
