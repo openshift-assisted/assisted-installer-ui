@@ -75,6 +75,7 @@ jobs:
         run: yarn publish --no-git-tag-version
 
   bump-openshift-assisted-ui-lib-in-assisted-ui:
+    if: ${{ !endsWith(env.NEW_VERSION, '-cim') }}
     needs: publish-to-npm
     runs-on: ubuntu-latest
     env:
