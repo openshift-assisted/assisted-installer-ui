@@ -1,6 +1,6 @@
 import Day2ClusterService from '../../services/Day2ClusterService';
 import { getFeatureSupported } from '../featureSupportLevels/FeatureSupportLevelProvider';
-import { OcmClusterType } from './types';
+import { OcmClusterType } from '../AddHosts/types';
 
 const isSNOExpansionAllowed = (cluster: OcmClusterType) => {
   return getFeatureSupported(

@@ -10,6 +10,7 @@ import {
   useAlerts,
   getHostDiscoveryInitialValues,
   useFormikAutoSave,
+  SupportedPlatformType,
 } from '../../../common';
 import HostInventory from '../clusterConfiguration/HostInventory';
 import { useClusterWizardContext } from './ClusterWizardContext';
@@ -20,6 +21,7 @@ import ClusterWizardFooter from './ClusterWizardFooter';
 import ClusterWizardNavigation from './ClusterWizardNavigation';
 import { ClustersService, HostDiscoveryService } from '../../services';
 import { selectCurrentClusterPermissionsState } from '../../selectors';
+import useClusterSupportedPlatforms from '../../hooks/useClusterSupportedPlatforms';
 
 const HostDiscoveryForm = ({ cluster }: { cluster: Cluster }) => {
   const { alerts } = useAlerts();
@@ -62,12 +64,24 @@ const HostDiscovery = ({ cluster }: { cluster: Cluster }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [], // just once, Formik does not reinitialize
   );
+  const { supportedPlatformIntegration } = useClusterSupportedPlatforms(cluster.id);
 
   const onSubmit: FormikConfig<HostDiscoveryValues>['onSubmit'] = async (values) => {
     clearAlerts();
 
+    const platformToIntegrate = values.usePlatformIntegration
+      ? supportedPlatformIntegration === 'no-active-integrations'
+        ? undefined
+        : supportedPlatformIntegration
+      : undefined;
+
     const params: V2ClusterUpdateParams = {};
-    HostDiscoveryService.setPlatform(params, values.usePlatformIntegration);
+
+    HostDiscoveryService.setPlatform(
+      params,
+      platformToIntegrate as SupportedPlatformType,
+      cluster.userManagedNetworking,
+    );
     HostDiscoveryService.setSchedulableMasters(params, values, cluster);
 
     try {

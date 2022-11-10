@@ -1,12 +1,15 @@
 import * as React from 'react';
 import { FieldArray, useFormikContext } from 'formik';
-import { PopoverIcon, SelectField } from '../../../../../common';
-import { useTemptiflySync } from '../../hooks/useTemptiflySync';
-import { HostsFormValues, HostsFormProps, NodePoolFormValue } from './types';
-import { Alert, Button, Form, Grid, GridItem } from '@patternfly/react-core';
-import NodePoolForm from './NodePoolForm';
 import { PlusCircleIcon } from '@patternfly/react-icons';
+import { Alert, Button, Form, Grid, GridItem } from '@patternfly/react-core';
+
 import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
+import { PopoverIcon, SelectField } from '../../../../../common';
+import { getRandomString } from '../../../../../common/utils';
+import { useTemptiflySync } from '../../hooks/useTemptiflySync';
+
+import NodePoolForm from './NodePoolForm';
+import { HostsFormValues, HostsFormProps, NodePoolFormValue } from './types';
 
 const HostsForm: React.FC<HostsFormProps> = ({
   onValuesChanged,
@@ -41,7 +44,7 @@ const HostsForm: React.FC<HostsFormProps> = ({
       <Grid hasGutter>
         <GridItem>
           <SelectField
-            label={t('ai:Hosts namespace')}
+            label={t('ai:Namespace')}
             name="agentNamespace"
             options={infraEnvOptions}
             isRequired
@@ -50,7 +53,7 @@ const HostsForm: React.FC<HostsFormProps> = ({
               <PopoverIcon
                 position="right"
                 bodyContent={t(
-                  'ai:A host namespace may be comprised of multiple infrastructure environments, in which the hosts are stored.',
+                  'ai:Choose a namespace from your existing host inventory in order to select hosts for your node pools. The namespace will be composed of 1 or more infrastructure environments. After the cluster is created, a host will become a worker node.',
                 )}
               />
             }
@@ -83,15 +86,16 @@ const HostsForm: React.FC<HostsFormProps> = ({
                   variant="link"
                   icon={<PlusCircleIcon />}
                   iconPosition="right"
-                  onClick={() =>
+                  onClick={() => {
+                    const uniquePoolName = `nodepool-${clusterName}-${getRandomString(5)}`;
                     push({
-                      name: `nodepool-${clusterName}-${values.nodePools.length + 1}`,
+                      name: uniquePoolName,
                       count: 1,
                       agentLabels: [],
                       releaseImage: initReleaseImage,
                       clusterName,
-                    } as NodePoolFormValue)
-                  }
+                    } as NodePoolFormValue);
+                  }}
                 >
                   {t('ai:Add Nodepool')}
                 </Button>

@@ -3,18 +3,37 @@ import HostsService from './HostsService';
 import InfraEnvsService from './InfraEnvsService';
 import { AI_UI_TAG, Cluster, Host, V2ClusterUpdateParams } from '../../common';
 import { ocmClient } from '../api';
+import { ClusterCreateParamsWithStaticNetworking } from './types';
+import omit from 'lodash/omit';
 
 const ClustersService = {
-  async delete(clusterId: Cluster['id']) {
-    const infraEnvId = await InfraEnvsService.getInfraEnvId(clusterId);
+  findHost(hosts: Cluster['hosts'] = [], hostId: Host['id']) {
+    return hosts.find((host) => host.id === hostId);
+  },
 
-    if (infraEnvId === clusterId) {
-      await ClustersAPI.deregister(clusterId);
-    } else {
-      await HostsService.deleteAll(clusterId);
-      await ClustersAPI.deregister(clusterId);
-      await InfraEnvsService.delete(clusterId);
+  async create(params: ClusterCreateParamsWithStaticNetworking) {
+    const { data: cluster } = await ClustersAPI.register(omit(params, 'staticNetworkConfig'));
+    await InfraEnvsService.create({
+      name: `${params.name}_infra-env`,
+      pullSecret: params.pullSecret,
+      clusterId: cluster.id,
+      openshiftVersion: params.openshiftVersion,
+      cpuArchitecture: params.cpuArchitecture,
+      staticNetworkConfig: params.staticNetworkConfig,
+    });
+
+    return cluster;
+  },
+
+  async remove(clusterId: Cluster['id']) {
+    const { data: cluster } = await ClustersAPI.get(clusterId);
+    const hosts = cluster.hosts ?? [];
+
+    if (hosts.length > 0) {
+      await HostsService.removeAll(hosts);
     }
+    await InfraEnvsService.removeAll(clusterId);
+    await ClustersAPI.deregister(clusterId);
   },
 
   async downloadLogs(clusterId: Cluster['id'], hostId?: Host['id']) {
@@ -24,11 +43,7 @@ const ClustersService = {
     return { data, fileName };
   },
 
-  async update(
-    clusterId: Cluster['id'],
-    clusterTags: Cluster['tags'],
-    params: V2ClusterUpdateParams,
-  ) {
+  update(clusterId: Cluster['id'], clusterTags: Cluster['tags'], params: V2ClusterUpdateParams) {
     ClustersAPI.abortLastGetRequest();
     if (ocmClient) {
       params = ClustersService.updateClusterTags(clusterTags, params);

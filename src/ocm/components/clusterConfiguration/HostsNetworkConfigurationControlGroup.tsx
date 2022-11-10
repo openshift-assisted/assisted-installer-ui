@@ -1,9 +1,12 @@
 import React from 'react';
-import { FormGroup } from '@patternfly/react-core';
-import { getFieldId, RadioField } from '../../../common/components/ui';
+import { FormGroup, TooltipProps } from '@patternfly/react-core';
+import { getFieldId } from '../../../common/components/ui';
 import { HostsNetworkConfigurationType } from '../../services/types';
 import { useField } from 'formik';
 import { useClusterWizardContext } from '../clusterWizard/ClusterWizardContext';
+import RadioFieldWithTooltip from '../../../common/components/ui/formik/RadioFieldWithTooltip';
+import { clusterExistsReason } from '../featureSupportLevels/featureStateUtils';
+
 export interface HostsNetworkConfigurationControlGroupProps {
   clusterExists: boolean;
 }
@@ -14,6 +17,13 @@ export const HostsNetworkConfigurationControlGroup = ({
   const GROUP_NAME = 'hostsNetworkConfigurationType';
   const clusterWizardContext = useClusterWizardContext();
   const [{ value }, ,] = useField(GROUP_NAME);
+
+  const tooltipProps: TooltipProps = {
+    hidden: !clusterExists,
+    content: clusterExistsReason,
+    position: 'top',
+  };
+
   React.useEffect(() => {
     if (clusterExists) {
       return;
@@ -27,17 +37,19 @@ export const HostsNetworkConfigurationControlGroup = ({
       fieldId={getFieldId(GROUP_NAME, 'radio')}
       isInline
     >
-      <RadioField
+      <RadioFieldWithTooltip
         name={GROUP_NAME}
         isDisabled={clusterExists}
         value={HostsNetworkConfigurationType.DHCP}
         label="DHCP only"
+        tooltipProps={tooltipProps}
       />
-      <RadioField
+      <RadioFieldWithTooltip
         name={GROUP_NAME}
         isDisabled={clusterExists}
         value={HostsNetworkConfigurationType.STATIC}
         label="Static IP, bridges, and bonds"
+        tooltipProps={tooltipProps}
       />
     </FormGroup>
   );

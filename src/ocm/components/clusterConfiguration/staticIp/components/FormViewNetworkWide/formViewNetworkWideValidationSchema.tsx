@@ -7,9 +7,9 @@ import { getMachineNetworkCidr } from '../../data/machineNetwork';
 import {
   getIpAddressInSubnetValidationSchema,
   getIpAddressValidationSchema,
-  isNotLocalHostIPAddress,
-  isNotCatchAllIPAddress,
   getIpIsNotNetworkOrBroadcastAddressSchema,
+  getMultipleIpAddressValidationSchema,
+  isNotReservedHostIPAddress,
 } from '../../commonValidationSchemas';
 
 const REQUIRED_MESSAGE = 'A value is required';
@@ -30,7 +30,7 @@ const transformNumber = (originalValue: number) => {
 };
 
 export const getInMachineNetworkValidationSchema = (
-  protocolVersion: 'ipv4' | 'ipv6',
+  protocolVersion: ProtocolVersion,
   machineNetwork: Cidr,
 ) => {
   return getIpAddressInSubnetValidationSchema(
@@ -40,7 +40,7 @@ export const getInMachineNetworkValidationSchema = (
 };
 
 export const getIsNotNetworkOrBroadcastAddressSchema = (
-  protocolVersion: 'ipv4' | 'ipv6',
+  protocolVersion: ProtocolVersion,
   machineNetwork: Cidr,
 ) => {
   return getIpIsNotNetworkOrBroadcastAddressSchema(
@@ -63,11 +63,13 @@ const getMachineNetworkValidationSchema = (protocolVersion: ProtocolVersion) =>
       .transform(transformNumber) as Yup.NumberSchema, //add casting to not get typescript error caused by nullable
   });
 
-const getIPValidationSchema = (protocolVersion: ProtocolVersion) => {
-  return getIpAddressValidationSchema(protocolVersion)
+const getIPValidationSchema = (protocolVersion: ProtocolVersion, allowsMultiple = false) => {
+  const baseValidation = allowsMultiple
+    ? getMultipleIpAddressValidationSchema
+    : getIpAddressValidationSchema;
+  return baseValidation(protocolVersion)
     .required(REQUIRED_MESSAGE)
-    .concat(isNotLocalHostIPAddress(protocolVersion))
-    .concat(isNotCatchAllIPAddress(protocolVersion));
+    .concat(isNotReservedHostIPAddress(protocolVersion));
 };
 
 const getAddressDataValidationSchema = (protocolVersion: ProtocolVersion, ipConfig: IpConfig) => {
@@ -82,9 +84,9 @@ const getAddressDataValidationSchema = (protocolVersion: ProtocolVersion, ipConf
 export const networkWideValidationSchema = Yup.lazy<FormViewNetworkWideValues>(
   (values: FormViewNetworkWideValues) => {
     const ipConfigsValidationSchemas = Yup.object().shape({
-      ipv4: getAddressDataValidationSchema('ipv4', values.ipConfigs.ipv4),
-      ipv6: showProtocolVersion(values.protocolType, 'ipv6')
-        ? getAddressDataValidationSchema('ipv6', values.ipConfigs.ipv6)
+      ipv4: getAddressDataValidationSchema(ProtocolVersion.ipv4, values.ipConfigs.ipv4),
+      ipv6: showProtocolVersion(values.protocolType, ProtocolVersion.ipv6)
+        ? getAddressDataValidationSchema(ProtocolVersion.ipv6, values.ipConfigs.ipv6)
         : Yup.object<IpConfig>(),
     });
     return Yup.object().shape({
@@ -100,7 +102,7 @@ export const networkWideValidationSchema = Yup.lazy<FormViewNetworkWideValues>(
           .transform(transformNumber) as Yup.NumberSchema,
       }),
       protocolType: Yup.string(),
-      dns: getIPValidationSchema('ipv4'),
+      dns: getIPValidationSchema(ProtocolVersion.ipv4, true),
       ipConfigs: ipConfigsValidationSchemas,
     });
   },

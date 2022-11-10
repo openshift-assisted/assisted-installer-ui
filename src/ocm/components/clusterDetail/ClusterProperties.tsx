@@ -8,19 +8,16 @@ import {
   PopoverIcon,
   NETWORK_TYPE_SDN,
   isDualStack,
-} from '../../../common';
-
-import {
   selectIpv4Cidr,
   selectIpv6Cidr,
   selectIpv4HostPrefix,
   selectIpv6HostPrefix,
-} from '../../../common/selectors/clusterSelectors';
+} from '../../../common';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { ClusterFeatureSupportLevelsDetailItem } from '../featureSupportLevels';
 import OpenShiftVersionDetail from './OpenShiftVersionDetail';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
-const getCpuArchTitle = () => (
+const CpuArchTitle = () => (
   <>
     {'CPU architecture '}
     <PopoverIcon
@@ -78,8 +75,9 @@ const getDiskEncryptionEnabledOnStatus = (diskEncryption: DiskEncryption['enable
 };
 
 const ClusterProperties = ({ cluster, externalMode = false }: ClusterPropertiesProps) => {
-  const isDualStackType = isDualStack(cluster);
   const { t } = useTranslation();
+  const isDualStackType = isDualStack(cluster);
+
   return (
     <>
       {!externalMode && (
@@ -94,7 +92,7 @@ const ClusterProperties = ({ cluster, externalMode = false }: ClusterPropertiesP
           {externalMode ? undefined : <OpenShiftVersionDetail cluster={cluster} />}
           <DetailItem title="Base domain" value={cluster.baseDnsDomain} testId="base-dns-domain" />
           <DetailItem
-            title={getCpuArchTitle()}
+            title={<CpuArchTitle />}
             value={cluster.cpuArchitecture}
             testId="cpu-architecture"
           />

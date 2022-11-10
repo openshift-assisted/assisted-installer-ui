@@ -2,6 +2,8 @@ import { FormikErrors, FormikTouched } from 'formik';
 import * as Yup from 'yup';
 import { Address4 } from 'ip-address';
 import set from 'lodash/set';
+import groupBy from 'lodash/groupBy';
+import pickBy from 'lodash/pickBy';
 import { OpenshiftVersionOptionType } from '../../../types';
 import { ClusterNetwork, MachineNetwork, ServiceNetwork } from '../../../api';
 
@@ -58,6 +60,11 @@ const fieldErrorReducer = (errors: InnerError[]): FieldErrors => {
     }),
     {},
   );
+};
+
+export const getDuplicates = (list: string[]): string[] => {
+  const duplicateKeys = pickBy(groupBy(list), (x) => x.length > 1);
+  return Object.keys(duplicateKeys);
 };
 
 export const getRichTextValidation =
