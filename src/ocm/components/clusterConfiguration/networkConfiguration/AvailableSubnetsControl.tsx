@@ -57,12 +57,14 @@ export interface AvailableSubnetsControlProps {
   clusterId: Cluster['id'];
   hostSubnets: HostSubnet[];
   isRequired: boolean;
+  isDisabled: boolean;
 }
 
 export const AvailableSubnetsControl = ({
   clusterId,
   hostSubnets,
   isRequired = false,
+  isDisabled,
 }: AvailableSubnetsControlProps) => {
   const { values, errors, setFieldValue } = useFormikContext<NetworkConfigurationValues>();
   const isDualStack = values.stackType === DUAL_STACK;
@@ -90,7 +92,6 @@ export const AvailableSubnetsControl = ({
     },
     [],
   );
-
   return (
     <FormGroup
       label="Machine network"
@@ -110,6 +111,7 @@ export const AvailableSubnetsControl = ({
                       name={`machineNetworks.${index}.cidr`}
                       options={buildOptions(machineSubnets)}
                       isRequired={isRequired}
+                      isDisabled={isDisabled}
                     />
                   </StackItem>
                 );
@@ -120,6 +122,7 @@ export const AvailableSubnetsControl = ({
                   name={`machineNetworks.0.cidr`}
                   options={buildOptions(IPv4Subnets)}
                   isRequired={isRequired}
+                  isDisabled={isDisabled}
                 />
               </StackItem>
             )}
