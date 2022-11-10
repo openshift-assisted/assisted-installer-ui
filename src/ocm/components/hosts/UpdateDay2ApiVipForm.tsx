@@ -25,6 +25,8 @@ export type UpdateDay2ApiVipValues = {
   apiVip?: string;
 };
 
+type StatusErrorType = { error?: { message?: string; title?: string } | null };
+
 const UpdateDay2ApiVipForm: React.FC<UpdateDay2ApiVipFormProps> = ({
   onUpdateDay2ApiVip,
   onClose,
@@ -53,56 +55,62 @@ const UpdateDay2ApiVipForm: React.FC<UpdateDay2ApiVipFormProps> = ({
       initialStatus={{ error: null }}
       onSubmit={async (values, formikHelpers) => {
         if (values.apiVip) {
-          const onError = (message: string) =>
-            formikHelpers.setStatus({
+          const onError = (message: string) => {
+            const error: StatusErrorType = {
               error: {
                 title: 'Failed to update API IP',
                 message,
               },
-            });
+            };
+            formikHelpers.setStatus(error);
+          };
           await onUpdateDay2ApiVip(values.apiVip, onError);
           onClose();
         }
       }}
     >
-      {({ handleSubmit, status, setStatus, isSubmitting, isValid, dirty }) => (
-        <Form onSubmit={handleSubmit}>
-          <ModalBoxBody>
-            <GridGap>
-              {status.error && (
-                <Alert
-                  variant={AlertVariant.danger}
-                  title={status.error.title}
-                  actionClose={
-                    <AlertActionCloseButton onClose={() => setStatus({ error: null })} />
-                  }
-                  isInline
-                >
-                  {status.error.message}
-                </Alert>
-              )}
-              <InputField
-                label="Set the IP or domain used to reach the cluster"
-                name="apiVip"
-                ref={apiVipInputRef}
-                isRequired
-              />
-            </GridGap>
-          </ModalBoxBody>
-          <ModalBoxFooter>
-            <Button
-              key="submit"
-              type={ButtonType.submit}
-              isDisabled={isSubmitting || !isValid || !dirty}
-            >
-              Update
-            </Button>
-            <Button key="cancel" variant={ButtonVariant.link} onClick={onClose}>
-              Cancel
-            </Button>
-          </ModalBoxFooter>
-        </Form>
-      )}
+      {({ handleSubmit, status, setStatus, isSubmitting, isValid, dirty }) => {
+        const { error } = status as unknown as StatusErrorType;
+
+        return (
+          <Form onSubmit={handleSubmit}>
+            <ModalBoxBody>
+              <GridGap>
+                {error && (
+                  <Alert
+                    variant={AlertVariant.danger}
+                    title={error.title}
+                    actionClose={
+                      <AlertActionCloseButton onClose={() => setStatus({ error: null })} />
+                    }
+                    isInline
+                  >
+                    {error.message}
+                  </Alert>
+                )}
+                <InputField
+                  label="Set the IP or domain used to reach the cluster"
+                  name="apiVip"
+                  ref={apiVipInputRef}
+                  isRequired
+                />
+              </GridGap>
+            </ModalBoxBody>
+            <ModalBoxFooter>
+              <Button
+                key="submit"
+                type={ButtonType.submit}
+                isDisabled={isSubmitting || !isValid || !dirty}
+              >
+                Update
+              </Button>
+              <Button key="cancel" variant={ButtonVariant.link} onClick={onClose}>
+                Cancel
+              </Button>
+            </ModalBoxFooter>
+          </Form>
+        );
+      }}
     </Formik>
   );
 };
