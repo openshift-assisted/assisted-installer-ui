@@ -2,8 +2,7 @@ import React from 'react';
 import { Modal, ModalVariant } from '@patternfly/react-core';
 
 const ClusterPollingErrorModal = () => {
-  // TODO not fully implemented
-  // TODO check what happens if a request is willingly aborted by us
+  // TODO camador needs correct copy and to implement the retry action if there will be one
   const onClose = () => {
     console.log('%c should close', 'font-size: 16px; color: red');
   };

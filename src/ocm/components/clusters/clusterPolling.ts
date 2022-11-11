@@ -10,6 +10,13 @@ import {
 } from '../../reducers/clusters';
 import { selectCurrentClusterState } from '../../selectors';
 
+const shouldRefetch = (uiState: ResourceUIState, hasClusterData: boolean) => {
+  if (uiState === ResourceUIState.ERROR) {
+    return hasClusterData;
+  }
+  return ![ResourceUIState.LOADING, ResourceUIState.RELOADING].includes(uiState);
+};
+
 export const useFetchCluster = (clusterId: string) => {
   const dispatch = useDispatch();
   return React.useCallback(() => dispatch(fetchClusterAsync(clusterId)), [clusterId, dispatch]);
@@ -25,16 +32,14 @@ export const useClusterPolling = (
   const { isReloadScheduled, uiState, data, errorDetail } = useSelector(selectCurrentClusterState);
   const dispatch = useDispatch();
   const fetchCluster = useFetchCluster(clusterId);
+  const hasClusterData = !!data;
 
   React.useEffect(() => {
-    if (isReloadScheduled) {
-      const bannedUIStates = [ResourceUIState.LOADING, ResourceUIState.RELOADING];
-      if (!bannedUIStates.includes(uiState)) {
-        fetchCluster();
-      }
+    if (isReloadScheduled && shouldRefetch(uiState, hasClusterData)) {
+      fetchCluster();
     }
     dispatch(cancelForceReload());
-  }, [fetchCluster, dispatch, isReloadScheduled, uiState]);
+  }, [fetchCluster, dispatch, isReloadScheduled, hasClusterData, uiState]);
 
   React.useEffect(() => {
     fetchCluster();

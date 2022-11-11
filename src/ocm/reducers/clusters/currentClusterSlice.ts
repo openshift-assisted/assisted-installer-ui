@@ -114,11 +114,12 @@ export const currentClusterSlice = createSlice({
       })
       .addCase(fetchClusterAsync.rejected, (state, action) => {
         const error = action.payload as FetchErrorType;
-        if (error.code === FETCH_ABORTED_ERROR_CODE) {
-          // The request was aborted as the cluster was being updated by PATCH / DELETE etc requests
+        if (error.code === FETCH_ABORTED_ERROR_CODE && !!state.data) {
+          // This failure is due to having aborted the request on purpose (to avoid conflicts with update operations).
+          // The error can be ignored, and the data will be refreshed on the next polling
           return {
             ...state,
-            uiState: state.data ? ResourceUIState.LOADED : ResourceUIState.LOADED,
+            uiState: ResourceUIState.LOADED,
           };
         }
         return {
