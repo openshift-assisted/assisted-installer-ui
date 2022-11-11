@@ -1,15 +1,14 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Cluster, POLLING_INTERVAL } from '../../../common';
+import { Cluster, ResourceUIState, POLLING_INTERVAL } from '../../../common';
 import {
   fetchClusterAsync,
   cleanCluster,
   forceReload,
   cancelForceReload,
-  RetrievalErrorType,
-} from '../../reducers/clusters/currentClusterSlice';
+  FetchErrorType,
+} from '../../reducers/clusters';
 import { selectCurrentClusterState } from '../../selectors';
-import { ResourceUIState } from '../../../common';
 
 export const useFetchCluster = (clusterId: string) => {
   const dispatch = useDispatch();
@@ -21,7 +20,7 @@ export const useClusterPolling = (
 ): {
   cluster: Cluster | undefined;
   uiState: ResourceUIState;
-  errorDetail: RetrievalErrorType | undefined;
+  errorDetail: FetchErrorType | undefined;
 } => {
   const { isReloadScheduled, uiState, data, errorDetail } = useSelector(selectCurrentClusterState);
   const dispatch = useDispatch();

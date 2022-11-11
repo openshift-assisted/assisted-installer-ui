@@ -1,5 +1,6 @@
 import findIndex from 'lodash/findIndex';
 import set from 'lodash/set';
+import { AxiosError } from 'axios';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   AssistedInstallerPermissionTypesListType,
@@ -7,11 +8,17 @@ import {
   Host,
   ResourceUIState,
 } from '../../../common';
-import { getApiErrorMessage, handleApiError } from '../../api';
+import {
+  getApiErrorMessage,
+  getApiErrorCode,
+  handleApiError,
+  FETCH_ABORTED_ERROR_CODE,
+} from '../../api';
 import { ClustersService } from '../../services';
 
-export type RetrievalErrorType = {
-  code: string;
+export type FetchErrorType = {
+  code: string | number;
+  message: string;
 };
 
 type CurrentClusterStateSlice = {
@@ -19,14 +26,14 @@ type CurrentClusterStateSlice = {
   uiState: ResourceUIState;
   isReloadScheduled: number;
   permissions: AssistedInstallerPermissionTypesListType;
-  errorDetail?: RetrievalErrorType;
+  errorDetail?: FetchErrorType;
 };
 
 export const fetchClusterAsync = createAsyncThunk<
   Cluster | void,
   string,
   {
-    rejectValue: RetrievalErrorType;
+    rejectValue: FetchErrorType;
   }
 >('currentCluster/fetchClusterAsync', async (clusterId, { rejectWithValue }) => {
   try {
@@ -34,8 +41,10 @@ export const fetchClusterAsync = createAsyncThunk<
     return cluster;
   } catch (e) {
     return handleApiError(e, () => {
-      const rejectError = getApiErrorMessage(e);
-      return rejectWithValue(rejectError as unknown as RetrievalErrorType);
+      return rejectWithValue({
+        code: getApiErrorCode(e as Error | AxiosError),
+        message: getApiErrorMessage(e),
+      });
     });
   }
 });
@@ -103,11 +112,21 @@ export const currentClusterSlice = createSlice({
           uiState: ResourceUIState.LOADED,
         };
       })
-      .addCase(fetchClusterAsync.rejected, (state, action) => ({
-        ...state,
-        uiState: ResourceUIState.ERROR,
-        errorDetail: action.payload as RetrievalErrorType,
-      }));
+      .addCase(fetchClusterAsync.rejected, (state, action) => {
+        const error = action.payload as FetchErrorType;
+        if (error.code === FETCH_ABORTED_ERROR_CODE) {
+          // The request was aborted as the cluster was being updated by PATCH / DELETE etc requests
+          return {
+            ...state,
+            uiState: state.data ? ResourceUIState.LOADED : ResourceUIState.LOADED,
+          };
+        }
+        return {
+          ...state,
+          uiState: ResourceUIState.ERROR,
+          errorDetail: error,
+        };
+      });
   },
 });
 

@@ -29,6 +29,7 @@ import { forceReload } from '../../reducers/clusters';
 import { getErrorStateActions, ClusterUiError } from './ClusterPageErrors';
 import ClusterLoading from './ClusterLoading';
 import ClusterPollingErrorModal from '../clusterDetail/ClusterPollingErrorModal';
+import { ClustersAPI } from '../../services/apis';
 
 type MatchParams = {
   clusterId: string;
