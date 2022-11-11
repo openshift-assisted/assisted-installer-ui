@@ -81,8 +81,9 @@ const ClusterDetailStatusMessages = ({
           data-testid="alert-add-hosts"
           title={
             <p>
-              Add new hosts by generating a new Discovery ISO under your cluster's "Add hosts” tab
-              on{' '}
+              {isClusterPlatformTypeVM(cluster)
+                ? 'Add new hosts by using the platform auto-scale feature or manually generating a new Discovery ISO under the "Add hosts" tab on '
+                : 'Add new hosts by generating a new Discovery ISO under your cluster\'s "Add hosts" tab on '}
               <a href={REDHAT_CONSOLE_OPENSHIFT} target="_blank" rel="noopener noreferrer">
                 console.redhat.com/openshift <ExternalLinkAltIcon />
               </a>
