@@ -260,8 +260,12 @@ const AITable = <R extends any>({
             fullWidth: true,
             cells: [
               {
+                title: row.isOpen ? '' : undefined,
+              },
+              {
                 // do not render unnecessarily to improve performance
                 title: row.isOpen ? <ExpandComponent obj={row.obj as R} /> : undefined,
+                props: { colSpan: columns.length },
               },
             ],
             key: `${row.id || ''}-detail`,
@@ -272,7 +276,17 @@ const AITable = <R extends any>({
       }, [] as IRow[]);
     }
     return rows;
-  }, [contentWithAdditions, ExpandComponent, getDataId, data, openRows, sortBy, page, perPage]);
+  }, [
+    contentWithAdditions,
+    ExpandComponent,
+    getDataId,
+    data,
+    openRows,
+    sortBy,
+    page,
+    perPage,
+    columns.length,
+  ]);
   const rows = React.useMemo(() => {
     if (hostRows.length) {
       return hostRows;
