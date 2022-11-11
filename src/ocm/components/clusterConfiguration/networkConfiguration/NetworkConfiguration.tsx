@@ -219,19 +219,14 @@ const NetworkConfiguration = ({
   );
 
   const dispatch = useDispatch();
-  const toggleManagedNetworking = React.useCallback(
-    async (checked: boolean) => {
-      if (checked) {
-        //We need to set umn=false in the server when "Cluster managed networking" is selected
-        const params: V2ClusterUpdateParams = {
-          userManagedNetworking: false,
-        };
-        const { data } = await ClustersService.update(cluster.id, cluster.tags, params);
-        dispatch(updateCluster(data));
-      }
-    },
-    [dispatch, cluster.id, cluster.tags],
-  );
+  const setClusterManagedNetworking = React.useCallback(async () => {
+    //We need to set umn=false in the server when "Cluster managed networking" is selected
+    const params: V2ClusterUpdateParams = {
+      userManagedNetworking: false,
+    };
+    const { data } = await ClustersService.update(cluster.id, cluster.tags, params);
+    dispatch(updateCluster(data));
+  }, [dispatch, cluster.id, cluster.tags]);
 
   return (
     <Grid hasGutter>
@@ -239,7 +234,7 @@ const NetworkConfiguration = ({
         <ManagedNetworkingControlGroup
           disabled={isViewerMode || isNetworkManagementDisabled}
           tooltip={networkManagementDisabledReason}
-          toggleManagedNetworking={toggleManagedNetworking}
+          setClusterManagedNetworking={setClusterManagedNetworking}
         />
       )}
 

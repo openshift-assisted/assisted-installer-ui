@@ -7,7 +7,7 @@ import { useTranslation } from '../../../hooks/use-translation-wrapper';
 export interface ManagedNetworkingControlGroupProps {
   disabled: boolean;
   tooltip?: string;
-  toggleManagedNetworking: (checked: boolean) => Promise<void>;
+  setClusterManagedNetworking: () => Promise<void>;
 }
 
 const GROUP_NAME = 'managedNetworkingType';
@@ -15,7 +15,7 @@ const GROUP_NAME = 'managedNetworkingType';
 export const ManagedNetworkingControlGroup = ({
   disabled = false,
   tooltip,
-  toggleManagedNetworking,
+  setClusterManagedNetworking,
 }: ManagedNetworkingControlGroupProps) => {
   const tooltipProps: TooltipProps = {
     hidden: !tooltip || !disabled,
@@ -36,7 +36,11 @@ export const ManagedNetworkingControlGroup = ({
         isDisabled={disabled}
         value={'clusterManaged'}
         label={t('ai:Cluster-Managed Networking')}
-        onChange={(checked: boolean) => toggleManagedNetworking(checked)}
+        onChange={(checked: boolean) => {
+          if (checked) {
+            void setClusterManagedNetworking();
+          }
+        }}
       />
       <RadioFieldWithTooltip
         tooltipProps={tooltipProps}
