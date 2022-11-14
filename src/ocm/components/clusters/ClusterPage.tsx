@@ -148,7 +148,13 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
   if (infraEnvError) {
     return (
       <PageSection variant={PageSectionVariants.light} isFilled>
-        <ErrorState title="Failed to fetch the infra env" actions={errorStateActions} />
+        <ErrorState
+          title="Cluster not found"
+          actions={errorStateActions}
+          content={
+            'Check to make sure the cluster-ID is valid. Otherwise, the cluster may have been deleted.'
+          }
+        />
       </PageSection>
     );
   }
