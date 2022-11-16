@@ -257,11 +257,7 @@ const AITable = <R extends any>({
           allRows.push({
             // expandable detail
             // parent will be set after sorting
-            fullWidth: true,
             cells: [
-              {
-                title: row.isOpen ? '' : undefined,
-              },
               {
                 // do not render unnecessarily to improve performance
                 title: row.isOpen ? <ExpandComponent obj={row.obj as R} /> : undefined,
