@@ -19,19 +19,29 @@ import {
   HostsValidations,
   isDualStack,
   isClusterPlatformTypeVM,
+  NUTANIX_CONFIG_LINK,
 } from '../../../common';
 import { wizardStepNames } from '../clusterWizard/constants';
 import './ReviewCluster.css';
 import OpenShiftVersionDetail from '../clusterDetail/OpenShiftVersionDetail';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import useClusterSupportedPlatforms, {
+  SupportedPlatformIntegrationType,
+} from '../../hooks/useClusterSupportedPlatforms';
 
-const PlatformIntegrationNote = () => {
+const PlatformIntegrationNote = ({
+  supportedPlatformIntegration,
+}: {
+  supportedPlatformIntegration: SupportedPlatformIntegrationType;
+}) => {
   return (
     <p>
       <ExclamationTriangleIcon color={warningColor.value} size="sm" /> You will need to modify your
       platform configuration after cluster installation is completed.{' '}
       <a
-        href={VSPHERE_CONFIG_LINK}
+        href={
+          supportedPlatformIntegration === 'nutanix' ? NUTANIX_CONFIG_LINK : VSPHERE_CONFIG_LINK
+        }
         target="_blank"
         rel="noopener noreferrer"
         data-ouia-component-id="vm-integration-kb-page"
@@ -45,6 +55,7 @@ const PlatformIntegrationNote = () => {
 const ReviewCluster = ({ cluster }: { cluster: Cluster }) => {
   const clusterWizardContext = useClusterWizardContext();
   const { t } = useTranslation();
+  const { supportedPlatformIntegration } = useClusterSupportedPlatforms(cluster.id);
   return (
     <DetailList>
       <DetailItem
@@ -112,7 +123,9 @@ const ReviewCluster = ({ cluster }: { cluster: Cluster }) => {
       <RenderIf condition={isClusterPlatformTypeVM(cluster)}>
         <DetailItem
           title="Platform integration"
-          value={<PlatformIntegrationNote />}
+          value={
+            <PlatformIntegrationNote supportedPlatformIntegration={supportedPlatformIntegration} />
+          }
           testId="platform-integration"
         />
       </RenderIf>
