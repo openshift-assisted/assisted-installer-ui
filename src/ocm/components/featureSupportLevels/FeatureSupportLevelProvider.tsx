@@ -17,7 +17,11 @@ import { handleApiError } from '../../api';
 import { FeatureSupportLevelsAPI } from '../../services/apis';
 import { captureException } from '../../sentry';
 import { useOpenshiftVersions } from '../../hooks';
-import { getFeatureDisabledReason, isFeatureSupported } from './featureStateUtils';
+import {
+  getFeatureDisabledReason,
+  isFeatureSupported,
+  isFeatureFullySupported,
+} from './featureStateUtils';
 
 export type SupportLevelProviderProps = PropsWithChildren<{
   clusterFeatureUsage?: string;
@@ -137,6 +141,14 @@ export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = 
     [getDisabledReasonCallback],
   );
 
+  const isFeatureFullySupportedCallback = React.useCallback(
+    (versionName: string, featureId: FeatureId) => {
+      const supportLevel = getFeatureSupportLevel(versionName, featureId);
+      return isFeatureFullySupported(versionName, featureId, supportLevel, versionOptions);
+    },
+    [getFeatureSupportLevel, versionOptions],
+  );
+
   const providerValue = React.useMemo<FeatureSupportLevelData>(() => {
     return {
       getVersionSupportLevelsMap: getVersionSupportLevelsMapCallback,
@@ -144,6 +156,7 @@ export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = 
       isFeatureDisabled: isFeatureDisabled,
       getFeatureDisabledReason: getDisabledReasonCallback,
       isFeatureSupported: isFeatureSupportedCallback,
+      isFeatureFullySupported: isFeatureFullySupportedCallback,
     };
   }, [
     getVersionSupportLevelsMapCallback,
@@ -151,6 +164,7 @@ export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = 
     isFeatureDisabled,
     getDisabledReasonCallback,
     isFeatureSupportedCallback,
+    isFeatureFullySupportedCallback,
   ]);
 
   React.useEffect(() => {

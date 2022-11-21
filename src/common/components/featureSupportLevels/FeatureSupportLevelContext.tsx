@@ -13,6 +13,7 @@ export type FeatureSupportLevelData = {
     t?: TFunction,
   ): string | undefined;
   isFeatureSupported(version: string, featureId: FeatureId): boolean;
+  isFeatureFullySupported(version: string, featureId: FeatureId): boolean;
 };
 
 const FeatureSupportLevelContext = React.createContext<FeatureSupportLevelData | null>(null);

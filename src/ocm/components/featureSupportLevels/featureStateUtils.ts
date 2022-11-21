@@ -166,3 +166,16 @@ export const isFeatureSupported = (
     return supportLevel !== 'unsupported';
   }
 };
+
+export const isFeatureFullySupported = (
+  versionName: string,
+  featureId: FeatureId,
+  supportLevel: SupportLevel | undefined,
+  versionOptions: OpenshiftVersionOptionType[],
+) => {
+  if (featureId === 'ARM64_ARCHITECTURE') {
+    return isArmSupported(versionName, versionOptions);
+  } else {
+    return supportLevel === 'supported';
+  }
+};
