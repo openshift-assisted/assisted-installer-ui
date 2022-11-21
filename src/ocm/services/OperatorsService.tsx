@@ -43,17 +43,16 @@ const OperatorsService = {
    */
   syncOperators(
     uiOperators: OperatorCreateParams[],
-    updatedOperators: OperatorCreateParams[],
+    updatedOperators: Cluster['monitoredOperators'],
   ): Partial<OperatorsValues> {
     // LVM operator can be automatically selected depending on Openshift version + other operators
-    const prevInactive = uiOperators?.find((op) => op.name === OPERATOR_NAME_LVM);
-    const nowActive = updatedOperators?.find((op) => op.name === OPERATOR_NAME_LVM);
+    const prevInactive = uiOperators?.find((op) => op.name === OPERATOR_NAME_LVM) === undefined;
+    const nowActive = updatedOperators?.find((op) => op.name === OPERATOR_NAME_LVM) !== undefined;
 
     const updates: Partial<OperatorsValues> = {};
     if (prevInactive && nowActive) {
       updates.useOdfLogicalVolumeManager = true;
     }
-
     return updates;
   },
 };
