@@ -12,7 +12,6 @@ import {
   LoadingState,
 } from '../../../common';
 import { forceReload, updateCluster } from '../../reducers/clusters';
-import { usePullSecret } from '../../hooks';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { DiscoveryImageFormService } from '../../services';
 
@@ -32,7 +31,6 @@ const DiscoveryImageForm = ({
   const { infraEnv, error: infraEnvError } = useInfraEnv(cluster.id, cpuArchitecture);
   const cancelSourceRef = React.useRef<CancelTokenSource>();
   const dispatch = useDispatch();
-  const ocmPullSecret = usePullSecret();
 
   React.useEffect(() => {
     cancelSourceRef.current = Axios.CancelToken.source();
@@ -55,7 +53,6 @@ const DiscoveryImageForm = ({
           cluster.tags,
           infraEnv.id,
           formValues,
-          ocmPullSecret,
         );
         await onSuccess();
         dispatch(updateCluster(updatedCluster));

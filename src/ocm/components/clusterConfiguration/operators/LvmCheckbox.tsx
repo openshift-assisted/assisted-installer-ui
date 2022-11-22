@@ -5,13 +5,12 @@ import {
   ClusterOperatorProps,
   FeatureSupportLevelBadge,
   getFieldId,
-  OPERATOR_NAME_LVM,
   OperatorsValues,
   PopoverIcon,
   useFeatureSupportLevel,
 } from '../../../../common';
 import LvmHostRequirements from './LvmHostRequirements';
-import { getCnvAndLvmIncompatibilityReason } from '../../featureSupportLevels/featureStateUtils';
+import { getLvmIncompatibleWithCnvReason } from '../../featureSupportLevels/featureStateUtils';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 
 const LVM_FIELD_NAME = 'useOdfLogicalVolumeManager';
@@ -40,7 +39,8 @@ const LvmCheckbox = ({ clusterId, openshiftVersion }: ClusterOperatorProps) => {
     if (openshiftVersion) {
       reason = featureSupportLevel.getFeatureDisabledReason(openshiftVersion, 'LVM');
       if (!reason) {
-        reason = getCnvAndLvmIncompatibilityReason(values, openshiftVersion, OPERATOR_NAME_LVM);
+        const lvmSupport = featureSupportLevel.getFeatureSupportLevel(openshiftVersion, 'LVM');
+        reason = getLvmIncompatibleWithCnvReason(values, openshiftVersion, lvmSupport);
       }
     }
     setDisabledReason(reason);
