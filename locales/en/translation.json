@@ -364,7 +364,7 @@
   "ai:Launch OpenShift Console": "Launch OpenShift Console",
   "ai:Learn more": "Learn more",
   "ai:Learn more about OpenShift releases": "Learn more about OpenShift releases",
-  "ai:Learn more about pull secrets": "Learn more about pull secrets",
+  "ai:Learn more about pull secrets and view examples": "Learn more about pull secrets and view examples",
   "ai:Limitations for using Single Node OpenShift": "Limitations for using Single Node OpenShift",
   "ai:Load balancers": "Load balancers",
   "ai:Loading proxy configuration": "Loading proxy configuration",
@@ -682,6 +682,5 @@
   "ai:You are deleting multiple resources. All resources listed below will be deleted if you continue. This action cannot be undone.": "You are deleting multiple resources. All resources listed below will be deleted if you continue. This action cannot be undone.",
   "ai:You have opted out of formatting bootable disks on some hosts. To ensure the hosts reboot into the expected installation disk, manual user intervention may be required during OpenShift installation.": "You have opted out of formatting bootable disks on some hosts. To ensure the hosts reboot into the expected installation disk, manual user intervention may be required during OpenShift installation.",
   "ai:Your libvirt virtual machines should be configured to restart automatically after a reboot. You can check this by running:": "Your libvirt virtual machines should be configured to restart automatically after a reboot. You can check this by running:",
-  "ai:Your own NTP (Network Time Protocol) sources": "Your own NTP (Network Time Protocol) sources",
-  "ai:Your Red Hat account's pull secret is used by default.": "Your Red Hat account's pull secret is used by default."
+  "ai:Your own NTP (Network Time Protocol) sources": "Your own NTP (Network Time Protocol) sources"
 }
