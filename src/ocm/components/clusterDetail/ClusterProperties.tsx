@@ -18,7 +18,7 @@ import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { ClusterFeatureSupportLevelsDetailItem } from '../featureSupportLevels';
 import OpenShiftVersionDetail from './OpenShiftVersionDetail';
 
-const getCpuArchTitle = (isMultiArchSupported: boolean) => {
+const CpuArchTitle = ({ isMultiArchSupported }: { isMultiArchSupported: boolean }) => {
   let stringCpuArch: string;
   isMultiArchSupported
     ? (stringCpuArch =
@@ -79,13 +79,14 @@ const ClusterProperties = ({ cluster, externalMode = false }: ClusterPropertiesP
   const { t } = useTranslation();
   const isDualStackType = isDualStack(cluster);
   const featureSupportLevelContext = useFeatureSupportLevel();
+
   const isMultiArchSupported = Boolean(
     cluster.cpuArchitecture === 'multi' ||
       (cluster.openshiftVersion &&
-        featureSupportLevelContext.isFeatureFullySupported(
+        featureSupportLevelContext.getFeatureSupportLevel(
           cluster.openshiftVersion,
           'MULTIARCH_RELEASE_IMAGE',
-        )),
+        ) === 'supported'),
   );
   return (
     <>
@@ -101,7 +102,7 @@ const ClusterProperties = ({ cluster, externalMode = false }: ClusterPropertiesP
           {externalMode ? undefined : <OpenShiftVersionDetail cluster={cluster} />}
           <DetailItem title="Base domain" value={cluster.baseDnsDomain} testId="base-dns-domain" />
           <DetailItem
-            title={getCpuArchTitle(isMultiArchSupported)}
+            title={<CpuArchTitle isMultiArchSupported={isMultiArchSupported} />}
             value={cluster.cpuArchitecture}
             testId="cpu-architecture"
           />
