@@ -206,11 +206,6 @@ const AITable = <R extends any>({
           header: {
             title: canSelectAll ? <SelectAllCheckbox onSelect={onSelectAll} /> : '',
             cellFormatters: [],
-            props: {
-              style: {
-                width: '30px',
-              },
-            },
           },
           cell: (obj) => {
             const id = getDataId(obj);
