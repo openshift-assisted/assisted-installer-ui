@@ -9,18 +9,17 @@ import {
   pullSecretValidationSchema,
 } from '../../../../../common';
 import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
-import { getOCPVersions } from '../../../helpers';
+import { useSupportedOCPVersions } from '../../hooks/useSupportedOCPVersions';
 import DetailsForm from './DetailsForm';
 import { DetailsStepProps, UseDetailsFormik } from './types';
 
 const useDetailsFormik: UseDetailsFormik = ({
-  clusterImages,
+  ocpVersions,
   usedClusterNames,
   initPullSecret = '',
   initBaseDomain = '',
 }) => {
   const { t } = useTranslation();
-  const ocpVersions = getOCPVersions(clusterImages);
   const initialValues = React.useMemo(
     () => ({
       name: '',
@@ -37,7 +36,7 @@ const useDetailsFormik: UseDetailsFormik = ({
         baseDnsDomain: dnsNameValidationSchema.required('Required'),
         pullSecret: pullSecretValidationSchema.required('Required.'),
       }),
-    [usedClusterNames],
+    [usedClusterNames, t],
   );
 
   return [initialValues, validationSchema];
@@ -53,8 +52,9 @@ const DetailsStep: React.FC<DetailsStepProps> = ({
   initPullSecret,
   supportedVersionsCM,
 }) => {
+  const ocpVersions = useSupportedOCPVersions(clusterImages, supportedVersionsCM);
   const [initialValues, validationSchema] = useDetailsFormik({
-    clusterImages,
+    ocpVersions,
     usedClusterNames,
     initPullSecret,
     initBaseDomain,
@@ -69,9 +69,8 @@ const DetailsStep: React.FC<DetailsStepProps> = ({
     >
       <DetailsForm
         onValuesChanged={onValuesChanged}
-        clusterImages={clusterImages}
+        ocpVersions={ocpVersions}
         extensionAfter={extensionAfter}
-        supportedVersionsCM={supportedVersionsCM}
       />
     </Formik>
   );
