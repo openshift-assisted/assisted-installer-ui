@@ -13,25 +13,30 @@ import {
   DetailList,
   DetailItem,
   RenderIf,
-  VSPHERE_CONFIG_LINK,
   ReviewHostsInventory,
   ClusterValidations,
   HostsValidations,
   isDualStack,
   isClusterPlatformTypeVM,
+  PlatformType,
 } from '../../../common';
 import { wizardStepNames } from '../clusterWizard/constants';
 import './ReviewCluster.css';
 import OpenShiftVersionDetail from '../clusterDetail/OpenShiftVersionDetail';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { integrationPlatformLinks } from '../clusterWizard/ClusterPlatformIntegrationHint';
 
-const PlatformIntegrationNote = () => {
+const PlatformIntegrationNote = ({ platformType }: { platformType: PlatformType | undefined }) => {
+  const integrationPlatformLink: string = platformType
+    ? (integrationPlatformLinks[platformType] as string)
+    : '';
+
   return (
     <p>
       <ExclamationTriangleIcon color={warningColor.value} size="sm" /> You will need to modify your
       platform configuration after cluster installation is completed.{' '}
       <a
-        href={VSPHERE_CONFIG_LINK}
+        href={integrationPlatformLink}
         target="_blank"
         rel="noopener noreferrer"
         data-ouia-component-id="vm-integration-kb-page"
@@ -112,7 +117,7 @@ const ReviewCluster = ({ cluster }: { cluster: Cluster }) => {
       <RenderIf condition={isClusterPlatformTypeVM(cluster)}>
         <DetailItem
           title="Platform integration"
-          value={<PlatformIntegrationNote />}
+          value={<PlatformIntegrationNote platformType={cluster.platform?.type} />}
           testId="platform-integration"
         />
       </RenderIf>
