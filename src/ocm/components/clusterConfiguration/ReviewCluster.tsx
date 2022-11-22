@@ -13,35 +13,30 @@ import {
   DetailList,
   DetailItem,
   RenderIf,
-  VSPHERE_CONFIG_LINK,
   ReviewHostsInventory,
   ClusterValidations,
   HostsValidations,
   isDualStack,
   isClusterPlatformTypeVM,
-  NUTANIX_CONFIG_LINK,
+  PlatformType,
 } from '../../../common';
 import { wizardStepNames } from '../clusterWizard/constants';
 import './ReviewCluster.css';
 import OpenShiftVersionDetail from '../clusterDetail/OpenShiftVersionDetail';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import useClusterSupportedPlatforms, {
-  SupportedPlatformIntegrationType,
-} from '../../hooks/useClusterSupportedPlatforms';
+import { integrationPlatformLinks } from '../clusterWizard/ClusterPlatformIntegrationHint';
 
-const PlatformIntegrationNote = ({
-  supportedPlatformIntegration,
-}: {
-  supportedPlatformIntegration: SupportedPlatformIntegrationType;
-}) => {
+const PlatformIntegrationNote = ({ platformType }: { platformType: PlatformType | undefined }) => {
+  const integrationPlatformLink: string = platformType
+    ? (integrationPlatformLinks[platformType] as string)
+    : '';
+
   return (
     <p>
       <ExclamationTriangleIcon color={warningColor.value} size="sm" /> You will need to modify your
       platform configuration after cluster installation is completed.{' '}
       <a
-        href={
-          supportedPlatformIntegration === 'nutanix' ? NUTANIX_CONFIG_LINK : VSPHERE_CONFIG_LINK
-        }
+        href={integrationPlatformLink}
         target="_blank"
         rel="noopener noreferrer"
         data-ouia-component-id="vm-integration-kb-page"
@@ -55,7 +50,6 @@ const PlatformIntegrationNote = ({
 const ReviewCluster = ({ cluster }: { cluster: Cluster }) => {
   const clusterWizardContext = useClusterWizardContext();
   const { t } = useTranslation();
-  const { supportedPlatformIntegration } = useClusterSupportedPlatforms(cluster.id);
   return (
     <DetailList>
       <DetailItem
@@ -123,9 +117,7 @@ const ReviewCluster = ({ cluster }: { cluster: Cluster }) => {
       <RenderIf condition={isClusterPlatformTypeVM(cluster)}>
         <DetailItem
           title="Platform integration"
-          value={
-            <PlatformIntegrationNote supportedPlatformIntegration={supportedPlatformIntegration} />
-          }
+          value={<PlatformIntegrationNote platformType={cluster.platform?.type} />}
           testId="platform-integration"
         />
       </RenderIf>
