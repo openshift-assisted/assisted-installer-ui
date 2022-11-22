@@ -1,4 +1,4 @@
-import { ObjectMetadata } from 'console-sdk-ai-lib';
+import { ObjectMetadata } from '@openshift-console/dynamic-plugin-sdk';
 import { getHumanizedDateTime, parseStringLabels } from '../../../common';
 import { AgentClusterInstallK8sResource, ClusterDeploymentK8sResource } from '../../types';
 import {
