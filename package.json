@@ -93,6 +93,7 @@
     "unique-names-generator": "^4.2.0"
   },
   "devDependencies": {
+    "@openshift-console/dynamic-plugin-sdk": "0.0.3",
     "@types/classnames": "^2.3.1",
     "@types/file-saver": "^2.0.1",
     "@types/human-date": "^1.4.0",
@@ -111,7 +112,6 @@
     "@types/yup": "^0.26.9",
     "@typescript-eslint/eslint-plugin": "^5.23.0",
     "@typescript-eslint/parser": "^5.23.0",
-    "console-sdk-ai-lib": "0.0.1",
     "cross-env": "^7.0.2",
     "dpdm": "^3.8.0",
     "env-cmd": "^10.1.0",

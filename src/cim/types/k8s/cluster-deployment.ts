@@ -1,4 +1,5 @@
-import { K8sResourceCommon, Selector } from 'console-sdk-ai-lib';
+import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
+import { Selector } from '@openshift-console/dynamic-plugin-sdk/lib/api/common-types';
 import { StatusCondition } from './shared';
 
 export type ClusterDeploymentStatusConditionType =
