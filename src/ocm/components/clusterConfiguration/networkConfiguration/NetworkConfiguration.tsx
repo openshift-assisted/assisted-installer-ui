@@ -247,6 +247,12 @@ const NetworkConfiguration = ({
           clusterId={cluster.id}
           hostSubnets={hostSubnets}
           isRequired={!isUserManagedNetworking}
+          isDisabled={
+            (cluster.vipDhcpAllocation &&
+              cluster.apiVip === undefined &&
+              cluster.ingressVip === undefined) ||
+            false
+          }
         />
       )}
 
