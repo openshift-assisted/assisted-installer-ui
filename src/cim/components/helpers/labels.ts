@@ -1,4 +1,4 @@
-import { MatchExpression } from 'console-sdk-ai-lib';
+import { MatchExpression } from '@openshift-console/dynamic-plugin-sdk/lib/api/common-types';
 import { AGENT_LOCATION_LABEL_KEY } from '../common';
 
 export const getLocationsFromMatchExpressions = (expressions: MatchExpression[] = []) =>
