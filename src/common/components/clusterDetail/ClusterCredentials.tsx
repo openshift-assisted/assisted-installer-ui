@@ -22,20 +22,20 @@ const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
   error = false,
   retry,
   idPrefix = 'cluster-creds',
-  credentialsError,
+  credentialsError = '',
 }) => {
   let credentialsBody: JSX.Element;
   const { t } = useTranslation();
   if (error) {
     //Unauthorized users can't fetch cluster credentials
-    if (credentialsError && credentialsError.indexOf('403') > -1) {
+    if (credentialsError.includes('403')) {
       credentialsBody = (
         <Alert
           variant="info"
           isInline
-          title={"You don't have permissions to view cluster credentials"}
+          title={'You do not have permission to view the cluster credentials'}
         >
-          Contact your IT manager for more information
+          For more information, contact your organization administrator
         </Alert>
       );
     } else {
