@@ -11,9 +11,10 @@ type SimpleDropdownProps = {
   isDisabled: boolean;
   idPrefix?: string;
   position?: DropdownProps['position'];
+  menuAppendTo?: DropdownProps['menuAppendTo'];
 };
 
-export const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
+export const SimpleDropdown = ({
   current,
   defaultValue,
   items,
@@ -21,7 +22,8 @@ export const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
   isDisabled,
   idPrefix,
   position,
-}) => {
+  menuAppendTo,
+}: SimpleDropdownProps) => {
   const [isOpen, setOpen] = React.useState(false);
   const dropdownItems = items.map(({ value, label, description }) => (
     <DropdownItem key={value} id={value} description={description}>
@@ -61,6 +63,7 @@ export const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
       isPlain
       id={idPrefix ? `${idPrefix}-dropdown-toggle` : undefined}
       position={position}
+      menuAppendTo={menuAppendTo}
     />
   );
 };
