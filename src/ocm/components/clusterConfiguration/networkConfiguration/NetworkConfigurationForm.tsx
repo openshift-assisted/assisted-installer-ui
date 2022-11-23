@@ -58,6 +58,10 @@ const NetworkConfigurationForm: React.FC<{
   const isAutoSaveRunning = useFormikAutoSave();
   const errorFields = getFormikErrorFields(errors, touched);
 
+  // DHCP allocation is currently not supported with Nutanix
+  // https://issues.redhat.com/browse/MGMT-12382
+  const isVipDhcpAllocationDisabled = cluster.platform?.type === 'nutanix';
+
   const footer = (
     <ClusterWizardFooter
       cluster={cluster}
@@ -88,6 +92,7 @@ const NetworkConfigurationForm: React.FC<{
                 cluster={cluster}
                 hostSubnets={hostSubnets}
                 defaultNetworkSettings={defaultNetworkSettings}
+                isVipDhcpAllocationDisabled={isVipDhcpAllocationDisabled}
               />
               <SecurityFields
                 clusterSshKey={cluster.sshPublicKey}
