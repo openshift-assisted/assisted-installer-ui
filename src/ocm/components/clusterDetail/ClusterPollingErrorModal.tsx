@@ -1,21 +1,30 @@
 import React from 'react';
-import { Modal, ModalVariant } from '@patternfly/react-core';
+import { Button, ButtonVariant, Modal, ModalVariant } from '@patternfly/react-core';
 
 const ClusterPollingErrorModal = () => {
-  // TODO camador needs correct copy and to implement the retry action if there will be one
   const onClose = () => {
-    console.log('%c should close', 'font-size: 16px; color: red');
+    window.location.reload();
   };
 
   return (
     <Modal
-      title="The cluster details could not be updated"
+      title="Unable to fetch the latest data"
       isOpen
       variant={ModalVariant.small}
       onClose={onClose}
+      titleIconVariant="danger"
+      actions={[
+        <Button
+          key="refresh"
+          variant={ButtonVariant.primary}
+          onClick={() => window.location.reload()}
+        >
+          Refresh page
+        </Button>,
+      ]}
     >
-      This means that you wouldn't be able to see the latest cluster status. We are trying to update
-      your cluster details. Please wait for this window to close, or <a>retry now</a>
+      A network error caused an error fetching the latest data from the API. We'll try again. If the
+      data does not update in a few minutes, try refreshing.
     </Modal>
   );
 };
