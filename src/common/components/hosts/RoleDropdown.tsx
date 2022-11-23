@@ -34,6 +34,7 @@ const RoleDropdown: React.FC<RoleDropdownProps> = ({ host, onEditRole, current, 
       isDisabled={isDisabled}
       idPrefix={`role-${host.requestedHostname}`}
       position={position}
+      menuAppendTo={() => document.body}
     />
   );
 };
