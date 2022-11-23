@@ -1,4 +1,4 @@
-import { K8sResourceCommon } from 'console-sdk-ai-lib';
+import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
 
 type PlatformType = 'AWS' | 'BareMetal'; // TODO(mlibra): List all supported platform types here
 
