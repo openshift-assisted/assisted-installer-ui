@@ -4,7 +4,6 @@ import {
   Table,
   TableHeader,
   TableBody,
-  TableVariant,
   IRow,
   SortByDirection,
   ISortBy,
@@ -55,7 +54,6 @@ const TableMemo: React.FC<WithTestID & TableMemoProps> = React.memo(
           rows={rows}
           cells={cells}
           onCollapse={onCollapse}
-          variant={TableVariant.compact}
           aria-label="Hosts table"
           className={classnames(className, 'hosts-table')}
           sortBy={sortBy}
