@@ -1,5 +1,6 @@
 import { FormikProps } from 'formik';
 import { ObjectSchema } from 'yup';
+import { OpenshiftVersionOptionType } from '../../../../../common';
 import { ClusterImageSetK8sResource, ConfigMapK8sResource } from '../../../../types';
 
 export type DetailsFormValues = {
@@ -11,7 +12,7 @@ export type DetailsFormValues = {
 
 type UseDetailsFormikArgs = {
   usedClusterNames: string[];
-  clusterImages: ClusterImageSetK8sResource[];
+  ocpVersions: OpenshiftVersionOptionType[];
   initPullSecret?: string;
   initBaseDomain?: string;
 };
@@ -32,7 +33,6 @@ export type DetailsStepProps = {
   supportedVersionsCM?: ConfigMapK8sResource;
 };
 
-export type DetailsFormProps = Pick<
-  DetailsStepProps,
-  'onValuesChanged' | 'extensionAfter' | 'clusterImages' | 'supportedVersionsCM'
->;
+export type DetailsFormProps = Pick<DetailsStepProps, 'onValuesChanged' | 'extensionAfter'> & {
+  ocpVersions: OpenshiftVersionOptionType[];
+};
