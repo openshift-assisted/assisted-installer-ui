@@ -24,7 +24,7 @@ type ClusterOperatorObjectReference = {
 };
 
 export type ClusterOperatorK8sResource = {
-  spec: {};
+  spec: Record<string, unknown>;
   status: {
     conditions?: StatusCondition<string>[];
     versions?: OperandVersion[];
