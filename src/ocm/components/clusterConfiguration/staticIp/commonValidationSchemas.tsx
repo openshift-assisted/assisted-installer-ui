@@ -15,6 +15,10 @@ const RESERVED_CATCH_ALL_IPS = {
   ipv6: '0000::',
 };
 
+const RESERVED_DNS_LOCALHOST_IP = '127.0.0.1';
+
+const RESERVED_DNS_BROADCAST_IP = '255.255.255.255';
+
 export type UniqueStringArrayExtractor<FormValues> = (
   values: FormValues,
   context: Yup.TestContext,
@@ -53,16 +57,36 @@ const isValidAddress = (protocolVersion: ProtocolVersion, addressStr: string) =>
   }
 };
 
-const isReservedAddress = (ip: string, protocolVersion: ProtocolVersion) => {
+const isReservedAddress = (ip: string, protocolVersion: ProtocolVersion, isDnsAddress = false) => {
   try {
+    console.log(protocolVersion);
+
     if (protocolVersion === ProtocolVersion.ipv4) {
-      return ip === RESERVED_LOCAL_HOST_IPS.ipv4 || ip === RESERVED_CATCH_ALL_IPS.ipv4;
+      if (isDnsAddress) {
+        return (
+          ip === RESERVED_DNS_LOCALHOST_IP ||
+          ip === RESERVED_DNS_BROADCAST_IP ||
+          ip === RESERVED_LOCAL_HOST_IPS.ipv4 ||
+          ip === RESERVED_CATCH_ALL_IPS.ipv4
+        );
+      } else {
+        return ip === RESERVED_LOCAL_HOST_IPS.ipv4 || ip === RESERVED_CATCH_ALL_IPS.ipv4;
+      }
     } else {
       const ipv6Address = new Address6(ip);
-      return (
-        compareIPV6Addresses(new Address6(RESERVED_LOCAL_HOST_IPS.ipv6), ipv6Address) ||
-        compareIPV6Addresses(new Address6(RESERVED_CATCH_ALL_IPS.ipv6), ipv6Address)
-      );
+      if (isDnsAddress) {
+        return (
+          ip === RESERVED_DNS_LOCALHOST_IP ||
+          ip === RESERVED_DNS_BROADCAST_IP ||
+          compareIPV6Addresses(new Address6(RESERVED_LOCAL_HOST_IPS.ipv6), ipv6Address) ||
+          compareIPV6Addresses(new Address6(RESERVED_CATCH_ALL_IPS.ipv6), ipv6Address)
+        );
+      } else {
+        return (
+          compareIPV6Addresses(new Address6(RESERVED_LOCAL_HOST_IPS.ipv6), ipv6Address) ||
+          compareIPV6Addresses(new Address6(RESERVED_CATCH_ALL_IPS.ipv6), ipv6Address)
+        );
+      }
     }
   } catch (e) {
     return false;
@@ -121,21 +145,25 @@ export const compareIPV6Addresses = (address1: Address6, address2: Address6) => 
   return JSON.stringify(address1.toByteArray()) === JSON.stringify(address2.toByteArray());
 };
 
-export const isNotReservedHostIPAddress = (protocolVersion: ProtocolVersion) => {
+export const isNotReservedHostIPAddress = (
+  protocolVersion: ProtocolVersion,
+  isDnsAddress = false,
+) => {
+  const textForAddress = isDnsAddress ? 'a DNS' : 'an interface';
   return Yup.string().test(
     'is-not-reserved-address',
     ({ value }) => {
       const addresses = (value as string).split(',');
       if (addresses.length === 1) {
-        return 'Provided IP address is not a correct address for an interface.';
+        return `Provided IP address is not a correct address for ${textForAddress}.`;
       }
 
       const reservedAddresses = addresses.filter((address) => {
-        return isReservedAddress(address, protocolVersion);
+        return isReservedAddress(address, protocolVersion, isDnsAddress);
       });
       return `Provided IP addresses ${reservedAddresses.join(
         ', ',
-      )} are not correct addresses for an interface.`;
+      )} are not correct addresses for ${textForAddress}.`;
     },
     function (value) {
       if (!value) {
@@ -143,7 +171,9 @@ export const isNotReservedHostIPAddress = (protocolVersion: ProtocolVersion) => 
       }
       // The field may admit multiple values as a comma-separated string
       const addresses = (value as string).split(',');
-      return addresses.every((address) => !isReservedAddress(address, protocolVersion));
+      return addresses.every(
+        (address) => !isReservedAddress(address, protocolVersion, isDnsAddress),
+      );
     },
   );
 };
