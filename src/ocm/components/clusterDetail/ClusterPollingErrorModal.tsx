@@ -2,16 +2,12 @@ import React from 'react';
 import { Button, ButtonVariant, Modal, ModalVariant } from '@patternfly/react-core';
 
 const ClusterPollingErrorModal = () => {
-  const onClose = () => {
-    window.location.reload();
-  };
-
   return (
     <Modal
       title="Unable to fetch the latest data"
       isOpen
       variant={ModalVariant.small}
-      onClose={onClose}
+      showClose={false}
       titleIconVariant="danger"
       actions={[
         <Button
