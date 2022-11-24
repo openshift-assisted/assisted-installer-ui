@@ -5,6 +5,7 @@ import { TFunction } from 'i18next';
 import {
   AgentServiceConfigK8sResource,
   CreateResourceFuncType,
+  DeleteResourceFuncType,
   GetResourceFuncType,
   ListResourcesFuncType,
   PatchResourceFuncType,
@@ -469,5 +470,24 @@ export const onEnableCIM = async ({
         domain,
       );
     }
+  }
+};
+
+export const onDeleteCimConfig = async ({
+  deleteResource,
+}: {
+  deleteResource: DeleteResourceFuncType;
+}) => {
+  try {
+    await deleteResource({
+      apiVersion: 'agent-install.openshift.io/v1beta1',
+      kind: 'AgentServiceConfig',
+      metadata: {
+        name: 'agent',
+        // cluster-scoped resource
+      },
+    });
+  } catch (e) {
+    console.error('Failed to delete AgentServiceConfig: ', e);
   }
 };

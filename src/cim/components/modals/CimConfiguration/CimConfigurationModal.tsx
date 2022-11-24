@@ -10,6 +10,7 @@ import {
 
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { getStorageSizeGB } from '../../helpers';
+import { AlertPayload } from '../../../../common';
 
 import { CimConfigurationModalProps, CimConfiguratioProps } from './types';
 import { CimConfigurationForm } from './CimConfigurationForm';
@@ -32,13 +33,10 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
   listResources,
   patchResource,
   createResource,
+  deleteResource,
 }) => {
   const { t } = useTranslation();
-  const [error, setError] = React.useState<{
-    title: string;
-    message?: string;
-    variant?: AlertVariant;
-  }>();
+  const [error, setError] = React.useState<AlertPayload>();
   const [isSaving, setSaving] = React.useState(false);
 
   const [dbVolSize, _setDbVolSize] = React.useState<number>(() =>
@@ -144,8 +142,6 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
         configureLoadBalancer,
       });
 
-      // TODO: start countdown till showing error
-
       setSaving(false);
     };
 
@@ -198,7 +194,12 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
           {error.message}
         </Alert>
       )}
-      <CimConfigProgressAlert showSuccess={true} agentServiceConfig={agentServiceConfig} />
+      <CimConfigProgressAlert
+        showSuccess={true}
+        showDelete={true}
+        agentServiceConfig={agentServiceConfig}
+        deleteResource={deleteResource}
+      />
     </Modal>
   );
 };

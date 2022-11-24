@@ -1,14 +1,17 @@
 import * as React from 'react';
-import { Alert, AlertVariant } from '@patternfly/react-core';
+import { Alert, AlertVariant, Button, ButtonVariant } from '@patternfly/react-core';
 
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { AgentServiceConfigConditionType } from '../../../types';
 import { CimConfigProgressAlertProps } from './types';
 import { getConditionsByType } from '../../../utils';
+import { onDeleteCimConfig } from './persist';
 
 export const CimConfigProgressAlert: React.FC<CimConfigProgressAlertProps> = ({
   agentServiceConfig,
   showSuccess,
+  showDelete,
+  deleteResource,
 }) => {
   const { t } = useTranslation();
 
@@ -52,11 +55,29 @@ export const CimConfigProgressAlert: React.FC<CimConfigProgressAlertProps> = ({
   }
 
   // error
+  const onDelete = () => {
+    if (!deleteResource) {
+      return;
+    }
+
+    // TODO: REQUEST USER'S CONFIRMATION!
+
+    void onDeleteCimConfig({ deleteResource });
+  };
+
   const reconcileCompletedCondition = getConditionsByType<AgentServiceConfigConditionType>(
     agentServiceConfig.status?.conditions || [],
     'ReconcileCompleted',
   )?.[0];
-  const actionLinks: React.ReactNode[] = [];
+  const actionLinks: React.ReactNode[] =
+    showDelete && deleteResource
+      ? [
+          <Button variant={ButtonVariant.link} onClick={onDelete} isInline key="delete-cim">
+            {t('ai:Delete Central management infrastructure configuration')}
+          </Button>,
+        ]
+      : [];
+
   return (
     <Alert
       title={t('ai:Central infrastructure management is failing.')}
@@ -66,6 +87,14 @@ export const CimConfigProgressAlert: React.FC<CimConfigProgressAlertProps> = ({
     >
       {t('ai:Error:')}{' '}
       {deploymentsHealthyCondition?.message || reconcileCompletedCondition?.message}
+      {showDelete && (
+        <>
+          <br />
+          {t(
+            'ai:A common issue can be in misconfigured storage. You can fix it and then delete the configuration for starting over.',
+          )}
+        </>
+      )}
     </Alert>
   );
 };

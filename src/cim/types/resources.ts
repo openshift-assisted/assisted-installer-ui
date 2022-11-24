@@ -1,18 +1,9 @@
-import { K8sResourceCommon } from 'console-sdk-ai-lib';
+import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
 
 type ResourceType = K8sResourceCommon;
-// { apiVersion: string; kind: string; metadata?: ObjectMetadata };
-
-// export const convertResource = (res: K8sResourceCommon): ResourceType => ({
-//   apiVersion: res.apiVersion || '',
-//   kind: res.kind || '',
-//   metadata: {
-//     name: res.metadata?.name,
-//     namespace: res.metadata?.namespace,
-//   },
-// });
 
 export type CreateResourceFuncType = (resource: ResourceType) => Promise<ResourceType>;
+export type DeleteResourceFuncType = (resource: ResourceType) => Promise<void>;
 export type GetResourceFuncType = (resource: ResourceType) => Promise<ResourceType>;
 export type ListResourcesFuncType = (
   resource: { apiVersion: string; kind: string; metadata?: { namespace?: string } },

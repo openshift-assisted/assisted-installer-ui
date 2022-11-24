@@ -106,7 +106,7 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
                 value={dbVolSize}
                 onChange={(v: string) => setDbVolSize(getNumber(v, 1))}
                 min={0 /* Do the validation elsewhere */}
-              />
+              />{' '}
               G
             </span>
           </FormGroup>
@@ -146,7 +146,7 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
                 value={fsVolSize}
                 onChange={(v: string) => setFsVolSize(getNumber(v, 1))}
                 min={0}
-              />
+              />{' '}
               G
             </span>
           </FormGroup>
@@ -186,7 +186,7 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
                 value={imgVolSize}
                 onChange={(v: string) => setImgVolSize(getNumber(v, 10))}
                 min={0}
-              />
+              />{' '}
               G
             </span>
           </FormGroup>
