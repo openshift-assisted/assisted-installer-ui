@@ -105,6 +105,7 @@
   "ai:Booted hosts should appear in the host inventory table. This may take a few minutes.": "Booted hosts should appear in the host inventory table. This may take a few minutes.",
   "ai:Can not find cluster domain.": "Can not find cluster domain.",
   "ai:Can not find host of the assisted-image-service route": "Can not find host of the assisted-image-service route",
+  "ai:Can not manage hosts until Central Infrastructure Management is set up.": "Can not manage hosts until Central Infrastructure Management is set up.",
   "ai:Can not query routes.": "Can not query routes.",
   "ai:Cancel": "Cancel",
   "ai:Cancelled on {{humanizedDataTime}}": "Cancelled on {{humanizedDataTime}}",
@@ -254,6 +255,7 @@
   "ai:Error": "Error",
   "ai:Error creating InfraEnv": "Error creating InfraEnv",
   "ai:Error parsing cluster feature_usage field": "Error parsing cluster feature_usage field",
+  "ai:Error:": "Error:",
   "ai:Events table": "Events table",
   "ai:Exactly 1 host is required, capable of functioning both as control plane and worker node.": "Exactly 1 host is required, capable of functioning both as control plane and worker node.",
   "ai:Exclude destination domain names, IP addresses, or other network CIDRs from proxying by adding them to this comma-separated list.": "Exclude destination domain names, IP addresses, or other network CIDRs from proxying by adding them to this comma-separated list.",
@@ -734,6 +736,5 @@
   "ai:You are deleting multiple resources. All resources listed below will be deleted if you continue. This action cannot be undone.": "You are deleting multiple resources. All resources listed below will be deleted if you continue. This action cannot be undone.",
   "ai:You have opted out of formatting bootable disks on some hosts. To ensure the hosts reboot into the expected installation disk, manual user intervention may be required during OpenShift installation.": "You have opted out of formatting bootable disks on some hosts. To ensure the hosts reboot into the expected installation disk, manual user intervention may be required during OpenShift installation.",
   "ai:Your libvirt virtual machines should be configured to restart automatically after a reboot. You can check this by running:": "Your libvirt virtual machines should be configured to restart automatically after a reboot. You can check this by running:",
-  "ai:Your own NTP (Network Time Protocol) sources": "Your own NTP (Network Time Protocol) sources",
-  "Error:": "Error:"
+  "ai:Your own NTP (Network Time Protocol) sources": "Your own NTP (Network Time Protocol) sources"
 }
