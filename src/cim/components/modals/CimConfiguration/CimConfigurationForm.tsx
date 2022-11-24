@@ -1,16 +1,14 @@
 import * as React from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { Trans } from 'react-i18next';
 import { Flex, FlexItem, Form, FormGroup, Popover, Radio, TextInput } from '@patternfly/react-core';
 import { ExternalLinkAltIcon, HelpIcon } from '@patternfly/react-icons';
 
+import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { CimConfigurationFormProps } from './types';
 
 import './CimConfigurationForm.css';
 
 // TODO: https://miro.com/app/board/uXjVPM4GkzQ=/?moveToWidget=3458764538969838424&cot=14
-// TODO: Update minimums:
-//  - https://github.com/stolostron/rhacm-docs/pull/4371
-//  - https://github.com/stolostron/rhacm-docs/issues/4372
 export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
   docConfigUrl,
   isEdit,
@@ -50,7 +48,7 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
               'ai:The storage sizes will be used to store different files and data for cluster creation. Learn more about storage sizes.',
             )}
             footerContent={
-              <a href={docConfigUrl} target="_blank">
+              <a href={docConfigUrl} target="_blank" rel="noreferrer">
                 <Trans t={t}>
                   ai:View documentation <ExternalLinkAltIcon />
                 </Trans>
@@ -205,7 +203,7 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
               "ai: If you're running your hub cluster of Amazon Web Services and want to enable the CIM service, we recommend you to configure your load balance if it is not already configured.",
             )}
             footerContent={
-              <a href={docConfigUrl} target="_blank">
+              <a href={docConfigUrl} target="_blank" rel="noreferrer">
                 <Trans t={t}>
                   ai:View documentation <ExternalLinkAltIcon />
                 </Trans>

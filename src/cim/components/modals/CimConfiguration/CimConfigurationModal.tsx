@@ -90,20 +90,24 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
 
   const isEdit = !!agentServiceConfig;
 
-  React.useEffect(() => {
-    const doItAsync = async (): Promise<void> => {
-      if (platform === 'AWS') {
-        if (!isEdit || (await isIngressController(getResource))) {
-          setConfigureLoadBalancer(true);
-          return;
+  React.useEffect(
+    () => {
+      const doItAsync = async (): Promise<void> => {
+        if (platform === 'AWS') {
+          if (!isEdit || (await isIngressController(getResource))) {
+            setConfigureLoadBalancer(true);
+            return;
+          }
         }
-      }
 
-      setConfigureLoadBalancer(false);
-    };
+        setConfigureLoadBalancer(false);
+      };
 
-    doItAsync();
-  }, [platform]);
+      void doItAsync();
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [platform],
+  );
 
   const formProps: CimConfiguratioProps = {
     dbVolSize,
@@ -145,7 +149,7 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
       setSaving(false);
     };
 
-    doItAsync();
+    void doItAsync();
   };
 
   const canConfigure =

@@ -1,16 +1,16 @@
 import * as React from 'react';
+import { useHistory } from 'react-router-dom';
 import { Alert, AlertActionLink, AlertVariant } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
-import { useHistory } from 'react-router-dom';
 
 export const CimStorageMissingAlert: React.FC<{
   docStorageUrl: string;
   storageOperatorUrl: string;
 }> = ({ docStorageUrl, storageOperatorUrl }) => {
   const { t } = useTranslation();
-  const { push } = useHistory();
+  const history = useHistory();
 
   const contentWorkaround = (
     <>
@@ -20,7 +20,10 @@ export const CimStorageMissingAlert: React.FC<{
   );
 
   const actionLinks: React.ReactNode[] = [
-    <AlertActionLink key="install-storage-operator" onClick={() => push(storageOperatorUrl)}>
+    <AlertActionLink
+      key="install-storage-operator"
+      onClick={() => history.push(storageOperatorUrl)}
+    >
       {t('ai:Install storage operator')}
     </AlertActionLink>,
     <AlertActionLink key="storage-class" onClick={() => window.open(docStorageUrl, '_blank')}>

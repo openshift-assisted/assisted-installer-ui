@@ -64,7 +64,8 @@ export const CimConfigProgressAlert: React.FC<CimConfigProgressAlertProps> = ({
       isInline
       actionLinks={actionLinks}
     >
-      {t('Error:')} {deploymentsHealthyCondition?.message || reconcileCompletedCondition?.message}
+      {t('ai:Error:')}{' '}
+      {deploymentsHealthyCondition?.message || reconcileCompletedCondition?.message}
     </Alert>
   );
 };

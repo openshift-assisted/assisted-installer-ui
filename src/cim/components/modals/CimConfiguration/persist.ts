@@ -1,6 +1,6 @@
+import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
 import { AlertVariant } from '@patternfly/react-core';
-import { K8sResourceCommon } from 'console-sdk-ai-lib';
-import { TFunction } from 'react-i18next';
+import { TFunction } from 'i18next';
 
 import {
   AgentServiceConfigK8sResource,
@@ -190,17 +190,17 @@ const patchAssistedImageService = async (
   mceNamespace: string,
 ) => {
   // The service should be already present
-  let assistedImageService;
+  let assistedImageService: AgentServiceConfigK8sResource;
 
   try {
-    assistedImageService = await getResource({
+    assistedImageService = (await getResource({
       kind: 'Service',
       apiVersion: 'v1',
       metadata: {
         name: 'assisted-image-service',
         namespace: mceNamespace,
       },
-    });
+    })) as AgentServiceConfigK8sResource;
   } catch (e) {
     console.error('Error fetching assisted-image-service: ', e);
     setError({
@@ -400,16 +400,13 @@ export const onEnableCIM = async ({
 
   configureLoadBalancer: boolean;
 }) => {
-  console.log('---- onEnableCIM start for platform: ', platform);
-
   if (['none', 'baremetal', 'openstack', 'vsphere'].includes(platform.toLocaleLowerCase())) {
     if (!(await patchProvisioningConfiguration({ t, setError, patchResource, getResource }))) {
       return;
     }
   }
 
-  if (!!agentServiceConfig) {
-    console.log('---- onEnableCIM to UPDATE');
+  if (agentServiceConfig) {
     if (
       !(await patchAgentServiceConfig({
         t,
@@ -422,7 +419,6 @@ export const onEnableCIM = async ({
       return;
     }
   } else {
-    console.log('---- onEnableCIM to CREATE');
     if (
       !(await createAgentServiceConfig({
         t,
@@ -438,8 +434,7 @@ export const onEnableCIM = async ({
   }
 
   if (configureLoadBalancer) {
-    console.log('---- onEnableCIM to configureLoadBalancer');
-    if (!!(await isIngressController(getResource))) {
+    if (await isIngressController(getResource)) {
       console.log('IngressController already present, we do not patch it.');
       return;
     }

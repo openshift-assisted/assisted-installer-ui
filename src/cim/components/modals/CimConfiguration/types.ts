@@ -1,5 +1,4 @@
 import {
-  ClusterOperatorK8sResource,
   CreateResourceFuncType,
   GetResourceFuncType,
   ListResourcesFuncType,

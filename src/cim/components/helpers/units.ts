@@ -1,4 +1,8 @@
-import { defaults, findIndex, isPlainObject, isString, toNumber } from 'lodash';
+import defaults from 'lodash/defaults';
+import findIndex from 'lodash/findIndex';
+import isPlainObject from 'lodash/isPlainObject';
+import isString from 'lodash/isString';
+import toNumber from 'lodash/toNumber';
 
 type TypeTS = {
   units: string[];
@@ -205,7 +209,7 @@ const humanize = (
   const formattedValue = formatValue(converted.value);
 
   return {
-    string: type.space ? `${formattedValue} ${converted.unit}` : formattedValue + converted.unit,
+    string: `${formattedValue}${type.space ? ' ' : ''}${converted.unit || ''}`,
     unit: converted.unit,
     value: converted.value,
   };
