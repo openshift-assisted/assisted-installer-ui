@@ -33,13 +33,13 @@ export const CimStorageMissingAlert: React.FC<{
 
   return (
     <Alert
-      title={t('ai:Must create a storage class')}
+      title={t('ai:Must have a storage class')}
       variant={AlertVariant.warning}
       isInline
       actionLinks={actionLinks}
     >
       {t(
-        'ai:In order to configure the host inventory settings, you must create a storage class. We recommend installing OpenShift Data Foundation operator, but you can use any storage operator.',
+        "ai:You'll first need to have a storage operator in order to create the storage class. If you don't have one installed, we recommend OpenShift Data Foundation operator, but you may use any.",
       )}
     </Alert>
   );

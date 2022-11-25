@@ -1,6 +1,5 @@
 import {
   CreateResourceFuncType,
-  DeleteResourceFuncType,
   GetResourceFuncType,
   ListResourcesFuncType,
   PatchResourceFuncType,
@@ -24,14 +23,16 @@ export type CimConfiguratioProps = {
 export type CimConfigProgressAlertProps = {
   agentServiceConfig?: AgentServiceConfigK8sResource;
   showSuccess: boolean;
-  showDelete: boolean;
-  deleteResource?: DeleteResourceFuncType;
+  showTroublehooting: boolean;
+  assistedServiceDeploymentUrl?: string;
+  showProgress: boolean;
 };
 
 export type CimConfigurationFormProps = CimConfiguratioProps & {
   onClose: () => void;
   isEdit: boolean;
   docConfigUrl: string;
+  docConfigAwsUrl: string;
 };
 
 export type CimConfigurationModalProps = {
@@ -41,9 +42,10 @@ export type CimConfigurationModalProps = {
   platform: string;
   docDisconnectedUrl: string;
   docConfigUrl: string;
+  docConfigAwsUrl: string;
+  assistedServiceDeploymentUrl: string;
 
   createResource: CreateResourceFuncType;
-  deleteResource: DeleteResourceFuncType;
   getResource: GetResourceFuncType;
   listResources: ListResourcesFuncType;
   patchResource: PatchResourceFuncType;

@@ -1,46 +1,46 @@
 import * as React from 'react';
-import { Alert, AlertVariant, Button, ButtonVariant } from '@patternfly/react-core';
+import { useHistory } from 'react-router-dom';
+import { Alert, AlertVariant, AlertActionLink } from '@patternfly/react-core';
 
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { AgentServiceConfigConditionType } from '../../../types';
 import { CimConfigProgressAlertProps } from './types';
 import { getConditionsByType } from '../../../utils';
-import { onDeleteCimConfig } from './persist';
+import { isCIMConfigProgressing, isCIMConfigured } from './utils';
 
 export const CimConfigProgressAlert: React.FC<CimConfigProgressAlertProps> = ({
   agentServiceConfig,
   showSuccess,
-  showDelete,
-  deleteResource,
+  showTroublehooting,
+  assistedServiceDeploymentUrl,
+  showProgress,
 }) => {
   const { t } = useTranslation();
+  const history = useHistory();
 
   if (!agentServiceConfig) {
     // missing
     return null;
   }
 
-  const deploymentsHealthyCondition = getConditionsByType<AgentServiceConfigConditionType>(
-    agentServiceConfig.status?.conditions || [],
-    'DeploymentsHealthy',
-  )?.[0];
-
   // progressing
-  if (!deploymentsHealthyCondition || deploymentsHealthyCondition.status === 'Unknown') {
-    console.log('returning Progressing alert');
-    return (
-      <Alert
-        variant={AlertVariant.info}
-        isInline
-        title={t(
-          'ai:Central infrastructure management configuration persisted, waiting on operator to reconcile.',
-        )}
-      />
-    );
+  if (isCIMConfigProgressing({ agentServiceConfig })) {
+    if (showProgress) {
+      return (
+        <Alert
+          variant={AlertVariant.info}
+          isInline
+          title={t(
+            'ai:Central infrastructure management configuration persisted, waiting on operator to reconcile.',
+          )}
+        />
+      );
+    }
+    return null;
   }
 
   // success
-  if (deploymentsHealthyCondition.status === 'True') {
+  if (isCIMConfigured({ agentServiceConfig })) {
     if (!showSuccess) {
       return null;
     }
@@ -55,26 +55,34 @@ export const CimConfigProgressAlert: React.FC<CimConfigProgressAlertProps> = ({
   }
 
   // error
-  const onDelete = () => {
-    if (!deleteResource) {
-      return;
-    }
+  // const onDelete = () => {
+  //   if (!deleteResource) {
+  //     return;
+  //   }
 
-    // TODO: REQUEST USER'S CONFIRMATION!
+  //   // User's confirmation would be really nice here.
 
-    void onDeleteCimConfig({ deleteResource });
-  };
+  //   void onDeleteCimConfig({ deleteResource });
+  // };
 
+  const deploymentsHealthyCondition = getConditionsByType<AgentServiceConfigConditionType>(
+    agentServiceConfig.status?.conditions || [],
+    'DeploymentsHealthy',
+  )?.[0];
   const reconcileCompletedCondition = getConditionsByType<AgentServiceConfigConditionType>(
     agentServiceConfig.status?.conditions || [],
     'ReconcileCompleted',
   )?.[0];
+
   const actionLinks: React.ReactNode[] =
-    showDelete && deleteResource
+    showTroublehooting && assistedServiceDeploymentUrl
       ? [
-          <Button variant={ButtonVariant.link} onClick={onDelete} isInline key="delete-cim">
-            {t('ai:Delete Central management infrastructure configuration')}
-          </Button>,
+          <AlertActionLink
+            key="install-storage-operator"
+            onClick={() => history.push(assistedServiceDeploymentUrl)}
+          >
+            {t('ai:Troubleshoot from the assisted service deployment')}
+          </AlertActionLink>,
         ]
       : [];
 
@@ -87,7 +95,7 @@ export const CimConfigProgressAlert: React.FC<CimConfigProgressAlertProps> = ({
     >
       {t('ai:Error:')}{' '}
       {deploymentsHealthyCondition?.message || reconcileCompletedCondition?.message}
-      {showDelete && (
+      {showTroublehooting && (
         <>
           <br />
           {t(

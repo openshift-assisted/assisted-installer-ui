@@ -11,6 +11,7 @@ import './CimConfigurationForm.css';
 // TODO: https://miro.com/app/board/uXjVPM4GkzQ=/?moveToWidget=3458764538969838424&cot=14
 export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
   docConfigUrl,
+  docConfigAwsUrl,
   isEdit,
 
   dbVolSize,
@@ -40,17 +41,17 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
     <Form>
       <FormGroup
         fieldId="cim-config-form-storage-title"
-        label={t('ai:Configure storage sizes')}
+        label={t('ai:Storage sizes')}
         className="cim-config-form-title"
         labelIcon={
           <Popover
             bodyContent={t(
-              'ai:The storage sizes will be used to store different files and data for cluster creation. Learn more about storage sizes.',
+              'ai:The storage sizes will be used to store different files and data for cluster creation.',
             )}
             footerContent={
               <a href={docConfigUrl} target="_blank" rel="noreferrer">
                 <Trans t={t}>
-                  ai:View documentation <ExternalLinkAltIcon />
+                  ai:Learn more about storage sizes. <ExternalLinkAltIcon />
                 </Trans>
               </a>
             }
@@ -195,17 +196,17 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
 
       <FormGroup
         fieldId="cim-config-form-aws-title"
-        label={t('ai:Configure load balancer on Amazon web services')}
+        label={t('ai:Do you want us to configure load balancer on Amazon Web Services?')}
         className="cim-config-form-title"
         labelIcon={
           <Popover
             bodyContent={t(
-              "ai: If you're running your hub cluster of Amazon Web Services and want to enable the CIM service, we recommend you to configure your load balance if it is not already configured.",
+              "ai:If you're running your hub cluster of Amazon Web Services and want to enable the CIM service, we recommend you to configure your load balance if it is not already configured. Learn more about enabling CIM on AWS.",
             )}
             footerContent={
-              <a href={docConfigUrl} target="_blank" rel="noreferrer">
+              <a href={docConfigAwsUrl} target="_blank" rel="noreferrer">
                 <Trans t={t}>
-                  ai:View documentation <ExternalLinkAltIcon />
+                  ai:Learn more about enabling CIM on AWS <ExternalLinkAltIcon />
                 </Trans>
               </a>
             }
@@ -221,17 +222,12 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
             </button>
           </Popover>
         }
-      />
-
-      <FormGroup
-        fieldId="cim-config-form-aws-yes"
-        className="cim-config-form-aws"
-        label={t('ai:Do you want to configure load balancer on AWS?')}
       >
         <Flex>
           <FlexItem>
             <Radio
               isChecked={configureLoadBalancer}
+              isDisabled={isEdit && configureLoadBalancer}
               onChange={() => setConfigureLoadBalancer(true)}
               label={t('ai:Yes')}
               id="cim-config-form-aws-yes"
@@ -241,6 +237,10 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
           <FlexItem>
             <Radio
               isChecked={!configureLoadBalancer}
+              isDisabled={
+                // In the Edit flow, we support No to Yes transition only
+                isEdit && configureLoadBalancer
+              }
               onChange={() => setConfigureLoadBalancer(false)}
               label={t('ai:No')}
               id="cim-config-form-aws-no"

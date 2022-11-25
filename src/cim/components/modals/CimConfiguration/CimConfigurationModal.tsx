@@ -20,6 +20,8 @@ import { CimConfigDisconnectedAlert } from './CimConfigDisconnectedAlert';
 import { MIN_DB_VOL_SIZE, MIN_FS_VOL_SIZE, MIN_IMG_VOL_SIZE } from './constants';
 
 import './CimConfigurationModal.css';
+import { isCIMConfigProgressing } from './utils';
+import { SpinnerIcon } from '@patternfly/react-icons';
 
 export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
   isOpen,
@@ -28,12 +30,13 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
   platform,
   docDisconnectedUrl,
   docConfigUrl,
+  docConfigAwsUrl,
+  assistedServiceDeploymentUrl,
 
   getResource,
   listResources,
   patchResource,
   createResource,
-  deleteResource,
 }) => {
   const { t } = useTranslation();
   const [error, setError] = React.useState<AlertPayload>();
@@ -56,6 +59,11 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
     getStorageSizeGB(50, agentServiceConfig?.spec?.imageStorage?.resources?.requests?.storage),
   );
   const [imgVolSizeValidation, setImgVolSizeValidation] = React.useState<string>();
+
+  const [configureLoadBalancer, setConfigureLoadBalancer] = React.useState<boolean>(
+    platform === 'AWS',
+  );
+  const [configureLoadBalancerInitial, setConfigureLoadBalancerInitial] = React.useState(false);
 
   const setDbVolSize = (v: number): void => {
     if (v < MIN_DB_VOL_SIZE) {
@@ -82,10 +90,6 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
     _setImgVolSize(v);
   };
 
-  const [configureLoadBalancer, setConfigureLoadBalancer] = React.useState<boolean>(
-    platform === 'AWS',
-  );
-
   const isEdit = !!agentServiceConfig;
 
   React.useEffect(
@@ -94,6 +98,7 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
         if (platform === 'AWS') {
           if (!isEdit || (await isIngressController(getResource))) {
             setConfigureLoadBalancer(true);
+            setConfigureLoadBalancerInitial(true);
             return;
           }
         }
@@ -148,25 +153,36 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
     void doItAsync();
   };
 
+  const isProgressing = isCIMConfigProgressing({ agentServiceConfig });
+  const isCancel =
+    !!error?.title || (isEdit && configureLoadBalancerInitial === configureLoadBalancer);
+
   const canConfigure =
-    !isSaving && !dbVolSizeValidation && !fsVolSizeValidation && !imgVolSizeValidation;
+    !isSaving &&
+    !dbVolSizeValidation &&
+    !fsVolSizeValidation &&
+    !imgVolSizeValidation &&
+    (!isEdit || configureLoadBalancerInitial !== configureLoadBalancer);
 
   const actions = [
-    <Button
-      key="configure"
-      isDisabled={!canConfigure}
-      variant={ButtonVariant.primary}
-      onClick={onConfigure}
-    >
-      {t('ai:Configure')}
-    </Button>,
-    isSaving ? (
-      <Button key="close" variant={ButtonVariant.link} onClick={onClose}>
-        {t('ai:Close')}
+    isCancel ? (
+      <Button key="cancel" variant={ButtonVariant.primary} onClick={onClose}>
+        {t('ai:Cancel')}
       </Button>
     ) : (
-      <Button key="cancel" variant={ButtonVariant.link} onClick={onClose}>
-        {t('ai:Cancel')}
+      <Button
+        key="configure"
+        isDisabled={!canConfigure}
+        variant={ButtonVariant.primary}
+        onClick={onConfigure}
+      >
+        {(isProgressing || isSaving) && (
+          <>
+            <SpinnerIcon size="md" />
+            &nbsp;
+          </>
+        )}
+        {t('ai:Configure')}
       </Button>
     ),
   ];
@@ -178,17 +194,13 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
       isOpen={isOpen}
       onClose={onClose}
       actions={actions}
-      variant={ModalVariant.small}
+      variant={ModalVariant.medium}
       id="cim-config-modal"
       className="cim-config-modal"
     >
-      <CimConfigDisconnectedAlert docDisconnectedUrl={docDisconnectedUrl} />
-      <CimConfigurationForm
-        isEdit={isEdit}
-        onClose={onClose}
-        docConfigUrl={docConfigUrl}
-        {...formProps}
-      />
+      {t(
+        'ai:Configuring the host inventory settings will enable the Central Infrastructure Management.',
+      )}
       {error && (
         <Alert title={error.title} variant={error.variant || AlertVariant.danger} isInline>
           {error.message}
@@ -196,9 +208,21 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
       )}
       <CimConfigProgressAlert
         showSuccess={true}
-        showDelete={true}
+        showTroublehooting={true}
+        showProgress={
+          // Since the Configure button gets disabled and the spinner is shown instead
+          false
+        }
+        assistedServiceDeploymentUrl={assistedServiceDeploymentUrl}
         agentServiceConfig={agentServiceConfig}
-        deleteResource={deleteResource}
+      />
+      <CimConfigDisconnectedAlert docDisconnectedUrl={docDisconnectedUrl} />
+      <CimConfigurationForm
+        isEdit={isEdit}
+        onClose={onClose}
+        docConfigUrl={docConfigUrl}
+        docConfigAwsUrl={docConfigAwsUrl}
+        {...formProps}
       />
     </Modal>
   );
