@@ -27,6 +27,10 @@ export const isCIMConfigProgressing = ({
 }: {
   agentServiceConfig?: AgentServiceConfigK8sResource;
 }): boolean => {
+  if (!agentServiceConfig) {
+    return false;
+  }
+
   const deploymentsHealthyCondition = getConditionsByType<AgentServiceConfigConditionType>(
     agentServiceConfig?.status?.conditions || [],
     'DeploymentsHealthy',

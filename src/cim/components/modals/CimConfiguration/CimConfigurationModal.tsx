@@ -6,6 +6,7 @@ import {
   ButtonVariant,
   Modal,
   ModalVariant,
+  Spinner,
 } from '@patternfly/react-core';
 
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
@@ -17,11 +18,15 @@ import { CimConfigurationForm } from './CimConfigurationForm';
 import { isIngressController, onEnableCIM } from './persist';
 import { CimConfigProgressAlert } from './CimConfigProgressAlert';
 import { CimConfigDisconnectedAlert } from './CimConfigDisconnectedAlert';
-import { MIN_DB_VOL_SIZE, MIN_FS_VOL_SIZE, MIN_IMG_VOL_SIZE } from './constants';
+import {
+  CIM_CONFIG_TIMEOUT,
+  MIN_DB_VOL_SIZE,
+  MIN_FS_VOL_SIZE,
+  MIN_IMG_VOL_SIZE,
+} from './constants';
+import { isCIMConfigured } from './utils';
 
 import './CimConfigurationModal.css';
-import { isCIMConfigProgressing } from './utils';
-import { SpinnerIcon } from '@patternfly/react-icons';
 
 export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
   isOpen,
@@ -41,6 +46,7 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
   const { t } = useTranslation();
   const [error, setError] = React.useState<AlertPayload>();
   const [isSaving, setSaving] = React.useState(false);
+  const [persistenceStartedAt, setPersistenceStartedAt] = React.useState(0);
 
   const [dbVolSize, _setDbVolSize] = React.useState<number>(() =>
     getStorageSizeGB(10, agentServiceConfig?.spec?.databaseStorage?.resources?.requests?.storage),
@@ -112,6 +118,12 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
     [platform],
   );
 
+  React.useEffect(() => {
+    if (isCIMConfigured({ agentServiceConfig })) {
+      setPersistenceStartedAt(0);
+    }
+  }, [agentServiceConfig]);
+
   const formProps: CimConfiguratioProps = {
     dbVolSize,
     dbVolSizeValidation,
@@ -131,6 +143,12 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
       setSaving(true);
       setError(undefined);
 
+      setPersistenceStartedAt(Date.now());
+      setTimeout(() => {
+        // Make sure we got re-rendered
+        setPersistenceStartedAt((v: number) => (v - 1 >= 0 ? v - 1 : 0));
+      }, CIM_CONFIG_TIMEOUT);
+
       await onEnableCIM({
         t,
         setError,
@@ -147,15 +165,24 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
         configureLoadBalancer,
       });
 
+      setConfigureLoadBalancerInitial(configureLoadBalancer);
       setSaving(false);
     };
 
     void doItAsync();
   };
 
-  const isProgressing = isCIMConfigProgressing({ agentServiceConfig });
+  // const isProgressing = isCIMConfigProgressing({ agentServiceConfig });
+
+  const isError = !!error?.title; // this is a communication error only (not from the agentServiceConfig)
+
+  // Postpone showing agentServiceConfig error, it can be part of normal progress which the user is not interested in seeing
+  const showProgressError =
+    persistenceStartedAt === 0 || Date.now() - persistenceStartedAt > CIM_CONFIG_TIMEOUT;
+
   const isCancel =
-    !!error?.title || (isEdit && configureLoadBalancerInitial === configureLoadBalancer);
+    showProgressError &&
+    (isError || (isEdit && configureLoadBalancerInitial === configureLoadBalancer));
 
   const canConfigure =
     !isSaving &&
@@ -176,9 +203,9 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
         variant={ButtonVariant.primary}
         onClick={onConfigure}
       >
-        {(isProgressing || isSaving) && (
+        {(persistenceStartedAt > 0 || isSaving) && (
           <>
-            <SpinnerIcon size="md" />
+            <Spinner size="sm" />
             &nbsp;
           </>
         )}
@@ -201,7 +228,7 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
       {t(
         'ai:Configuring the host inventory settings will enable the Central Infrastructure Management.',
       )}
-      {error && (
+      {isError && (
         <Alert title={error.title} variant={error.variant || AlertVariant.danger} isInline>
           {error.message}
         </Alert>
@@ -213,6 +240,7 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
           // Since the Configure button gets disabled and the spinner is shown instead
           false
         }
+        showError={showProgressError}
         assistedServiceDeploymentUrl={assistedServiceDeploymentUrl}
         agentServiceConfig={agentServiceConfig}
       />

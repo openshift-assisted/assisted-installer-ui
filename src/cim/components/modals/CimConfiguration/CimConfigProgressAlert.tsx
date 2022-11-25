@@ -11,6 +11,7 @@ import { isCIMConfigProgressing, isCIMConfigured } from './utils';
 export const CimConfigProgressAlert: React.FC<CimConfigProgressAlertProps> = ({
   agentServiceConfig,
   showSuccess,
+  showError,
   showTroublehooting,
   assistedServiceDeploymentUrl,
   showProgress,
@@ -54,55 +55,48 @@ export const CimConfigProgressAlert: React.FC<CimConfigProgressAlertProps> = ({
     );
   }
 
-  // error
-  // const onDelete = () => {
-  //   if (!deleteResource) {
-  //     return;
-  //   }
+  if (showError) {
+    const deploymentsHealthyCondition = getConditionsByType<AgentServiceConfigConditionType>(
+      agentServiceConfig.status?.conditions || [],
+      'DeploymentsHealthy',
+    )?.[0];
+    const reconcileCompletedCondition = getConditionsByType<AgentServiceConfigConditionType>(
+      agentServiceConfig.status?.conditions || [],
+      'ReconcileCompleted',
+    )?.[0];
 
-  //   // User's confirmation would be really nice here.
+    const actionLinks: React.ReactNode[] =
+      showTroublehooting && assistedServiceDeploymentUrl
+        ? [
+            <AlertActionLink
+              key="install-storage-operator"
+              onClick={() => history.push(assistedServiceDeploymentUrl)}
+            >
+              {t('ai:Troubleshoot from the assisted service deployment')}
+            </AlertActionLink>,
+          ]
+        : [];
 
-  //   void onDeleteCimConfig({ deleteResource });
-  // };
+    return (
+      <Alert
+        title={t('ai:Central infrastructure management did not come up on time.')}
+        variant={AlertVariant.danger}
+        isInline
+        actionLinks={actionLinks}
+      >
+        {t('ai:Error:')}{' '}
+        {deploymentsHealthyCondition?.message || reconcileCompletedCondition?.message}
+        {showTroublehooting && (
+          <>
+            <br />
+            {t(
+              'ai:Your can either wait or investigate. A common issue can be in misconfigured storage. If you fix the issue, you can delete the AgentServiceConfig for starting over.',
+            )}
+          </>
+        )}
+      </Alert>
+    );
+  }
 
-  const deploymentsHealthyCondition = getConditionsByType<AgentServiceConfigConditionType>(
-    agentServiceConfig.status?.conditions || [],
-    'DeploymentsHealthy',
-  )?.[0];
-  const reconcileCompletedCondition = getConditionsByType<AgentServiceConfigConditionType>(
-    agentServiceConfig.status?.conditions || [],
-    'ReconcileCompleted',
-  )?.[0];
-
-  const actionLinks: React.ReactNode[] =
-    showTroublehooting && assistedServiceDeploymentUrl
-      ? [
-          <AlertActionLink
-            key="install-storage-operator"
-            onClick={() => history.push(assistedServiceDeploymentUrl)}
-          >
-            {t('ai:Troubleshoot from the assisted service deployment')}
-          </AlertActionLink>,
-        ]
-      : [];
-
-  return (
-    <Alert
-      title={t('ai:Central infrastructure management is failing.')}
-      variant={AlertVariant.danger}
-      isInline
-      actionLinks={actionLinks}
-    >
-      {t('ai:Error:')}{' '}
-      {deploymentsHealthyCondition?.message || reconcileCompletedCondition?.message}
-      {showTroublehooting && (
-        <>
-          <br />
-          {t(
-            'ai:A common issue can be in misconfigured storage. You can fix it and then delete the configuration for starting over.',
-          )}
-        </>
-      )}
-    </Alert>
-  );
+  return null;
 };

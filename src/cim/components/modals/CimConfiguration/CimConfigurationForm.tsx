@@ -119,7 +119,7 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
             labelIcon={
               <Popover
                 bodyContent={t(
-                  'ai:Specify how much storage is allocated for storing logs, manifests and "kubeconfig" files for the clusters. The value can not be updated later.',
+                  'ai:Specify how much storage is allocated for storing logs, manifests and "kubeconfig" files for the clusters. Recommended is 100G or more. The value can not be updated later.',
                 )}
               >
                 <button
@@ -159,7 +159,7 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
             labelIcon={
               <Popover
                 bodyContent={t(
-                  'ai:Specify how much storage to allocate for the images of the clusters. There must be 1G of image storage for each instance of Red Hat Enterprise Linux CoreOS that is running',
+                  'ai:Specify how much storage to allocate for the images of the clusters. There must be 1G of image storage for each instance of Red Hat Enterprise Linux CoreOS that is running. Recommended is 50G or more.',
                 )}
               >
                 <button

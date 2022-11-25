@@ -23,6 +23,7 @@ export type CimConfiguratioProps = {
 export type CimConfigProgressAlertProps = {
   agentServiceConfig?: AgentServiceConfigK8sResource;
   showSuccess: boolean;
+  showError: boolean;
   showTroublehooting: boolean;
   assistedServiceDeploymentUrl?: string;
   showProgress: boolean;
