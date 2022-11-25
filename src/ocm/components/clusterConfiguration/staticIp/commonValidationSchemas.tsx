@@ -58,11 +58,7 @@ const isReservedAddress = (ip: string, protocolVersion: ProtocolVersion) => {
     if (protocolVersion === ProtocolVersion.ipv4) {
       return RESERVED_LOCAL_HOST_IPS.ipv4.includes(ip) || RESERVED_CATCH_ALL_IPS.ipv4.includes(ip);
     } else {
-      const ipv6Address = new Address6(ip);
-      return (
-        findIPV6AddressInReservedAddresses(RESERVED_LOCAL_HOST_IPS.ipv6, ipv6Address) ||
-        findIPV6AddressInReservedAddresses(RESERVED_CATCH_ALL_IPS.ipv6, ipv6Address)
-      );
+      return isReservedIpv6Address(new Address6(ip)) !== undefined;
     }
   } catch (e) {
     return false;
@@ -117,8 +113,15 @@ export const getMultipleIpAddressValidationSchema = (protocolVersion: ProtocolVe
   );
 };
 
-export const findIPV6AddressInReservedAddresses = (addresses: string[], ipv6Address: Address6) => {
-  return addresses.every((address) => compareIPV6Addresses(new Address6(address), ipv6Address));
+export const isReservedIpv6Address = (ipv6Address: Address6) => {
+  return (
+    RESERVED_CATCH_ALL_IPS.ipv6.find((address) =>
+      compareIPV6Addresses(new Address6(address), ipv6Address),
+    ) ||
+    RESERVED_LOCAL_HOST_IPS.ipv6.find((address) =>
+      compareIPV6Addresses(new Address6(address), ipv6Address),
+    )
+  );
 };
 
 export const compareIPV6Addresses = (address1: Address6, address2: Address6) => {
