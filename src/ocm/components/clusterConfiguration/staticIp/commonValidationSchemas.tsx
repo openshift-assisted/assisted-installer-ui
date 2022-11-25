@@ -6,18 +6,14 @@ import { ProtocolVersion } from './data/dataTypes';
 import { getDuplicates } from '../../../../common';
 
 const RESERVED_LOCAL_HOST_IPS = {
-  ipv4: '127.0.0.0',
-  ipv6: '::1',
+  ipv4: ['127.0.0.0', '127.0.0.1'],
+  ipv6: ['::1', '::ffff:7f00:1'],
 };
 
 const RESERVED_CATCH_ALL_IPS = {
-  ipv4: '0.0.0.0',
-  ipv6: '0000::',
+  ipv4: ['0.0.0.0', '255.255.255.255'],
+  ipv6: ['0000::', '::ffff:ffff:ffff'],
 };
-
-const RESERVED_DNS_LOCALHOST_IP = '127.0.0.1';
-
-const RESERVED_DNS_BROADCAST_IP = '255.255.255.255';
 
 export type UniqueStringArrayExtractor<FormValues> = (
   values: FormValues,
@@ -57,36 +53,16 @@ const isValidAddress = (protocolVersion: ProtocolVersion, addressStr: string) =>
   }
 };
 
-const isReservedAddress = (ip: string, protocolVersion: ProtocolVersion, isDnsAddress = false) => {
+const isReservedAddress = (ip: string, protocolVersion: ProtocolVersion) => {
   try {
-    console.log(protocolVersion);
-
     if (protocolVersion === ProtocolVersion.ipv4) {
-      if (isDnsAddress) {
-        return (
-          ip === RESERVED_DNS_LOCALHOST_IP ||
-          ip === RESERVED_DNS_BROADCAST_IP ||
-          ip === RESERVED_LOCAL_HOST_IPS.ipv4 ||
-          ip === RESERVED_CATCH_ALL_IPS.ipv4
-        );
-      } else {
-        return ip === RESERVED_LOCAL_HOST_IPS.ipv4 || ip === RESERVED_CATCH_ALL_IPS.ipv4;
-      }
+      return RESERVED_LOCAL_HOST_IPS.ipv4.includes(ip) || RESERVED_CATCH_ALL_IPS.ipv4.includes(ip);
     } else {
       const ipv6Address = new Address6(ip);
-      if (isDnsAddress) {
-        return (
-          ip === RESERVED_DNS_LOCALHOST_IP ||
-          ip === RESERVED_DNS_BROADCAST_IP ||
-          compareIPV6Addresses(new Address6(RESERVED_LOCAL_HOST_IPS.ipv6), ipv6Address) ||
-          compareIPV6Addresses(new Address6(RESERVED_CATCH_ALL_IPS.ipv6), ipv6Address)
-        );
-      } else {
-        return (
-          compareIPV6Addresses(new Address6(RESERVED_LOCAL_HOST_IPS.ipv6), ipv6Address) ||
-          compareIPV6Addresses(new Address6(RESERVED_CATCH_ALL_IPS.ipv6), ipv6Address)
-        );
-      }
+      return (
+        findIPV6AddressInReservedAddresses(RESERVED_LOCAL_HOST_IPS.ipv6, ipv6Address) ||
+        findIPV6AddressInReservedAddresses(RESERVED_CATCH_ALL_IPS.ipv6, ipv6Address)
+      );
     }
   } catch (e) {
     return false;
@@ -141,6 +117,10 @@ export const getMultipleIpAddressValidationSchema = (protocolVersion: ProtocolVe
   );
 };
 
+export const findIPV6AddressInReservedAddresses = (addresses: string[], ipv6Address: Address6) => {
+  return addresses.every((address) => compareIPV6Addresses(new Address6(address), ipv6Address));
+};
+
 export const compareIPV6Addresses = (address1: Address6, address2: Address6) => {
   return JSON.stringify(address1.toByteArray()) === JSON.stringify(address2.toByteArray());
 };
@@ -159,7 +139,7 @@ export const isNotReservedHostIPAddress = (
       }
 
       const reservedAddresses = addresses.filter((address) => {
-        return isReservedAddress(address, protocolVersion, isDnsAddress);
+        return isReservedAddress(address, protocolVersion);
       });
       return `Provided IP addresses ${reservedAddresses.join(
         ', ',
@@ -171,9 +151,7 @@ export const isNotReservedHostIPAddress = (
       }
       // The field may admit multiple values as a comma-separated string
       const addresses = (value as string).split(',');
-      return addresses.every(
-        (address) => !isReservedAddress(address, protocolVersion, isDnsAddress),
-      );
+      return addresses.every((address) => !isReservedAddress(address, protocolVersion));
     },
   );
 };
