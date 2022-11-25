@@ -37,16 +37,14 @@ const ClusterDeploymentDetailsForm: React.FC<ClusterDeploymentDetailsFormProps> 
           <Alert
             isInline
             variant="info"
-            title={t('ai:This option is not editable after the draft cluster was created.')}
+            title={t('ai:Some details are not editable after the draft cluster was created.')}
           />
         </StackItem>
       )}
       <StackItem>
         <ClusterDetailsFormFields
           versions={ocpVersions}
-          canEditPullSecret={!clusterDeployment}
-          isNameDisabled={isEditFlow}
-          isBaseDnsDomainDisabled={isEditFlow}
+          isEditFlow={isEditFlow}
           forceOpenshiftVersion={forceOpenshiftVersion}
           defaultPullSecret={pullSecret}
           extensionAfter={extensionAfter}

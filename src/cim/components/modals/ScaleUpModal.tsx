@@ -16,7 +16,10 @@ import { Formik, FormikConfig, FormikProps } from 'formik';
 import { AgentK8sResource } from '../../types/k8s/agent';
 import { ClusterDeploymentK8sResource } from '../../types/k8s/cluster-deployment';
 import ScaleUpForm from '../ClusterDeployment/ScaleUpForm';
-import { getAgentSelectorFieldsFromAnnotations } from '../helpers/clusterDeployment';
+import {
+  getAgentSelectorFieldsFromAnnotations,
+  getClusterDeploymentCpuArchitecture,
+} from '../helpers/clusterDeployment';
 import { ScaleUpFormValues } from '../ClusterDeployment/types';
 import EditAgentModal from './EditAgentModal';
 import { getAgentsHostsNames } from '../ClusterDeployment/helpers';
@@ -79,6 +82,7 @@ const ScaleUpModal: React.FC<ScaleUpModalProps> = ({
       hostCount: 1,
       agentLabels: agentSelector.labels,
       locations: agentSelector.locations,
+      cpuArchitecture: getClusterDeploymentCpuArchitecture(clusterDeployment),
       selectedHostIds: [],
       autoSelectedHostIds: [],
     };
