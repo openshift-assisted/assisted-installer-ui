@@ -6,7 +6,6 @@ import { getApiErrorMessage, handleApiError } from '../../api';
 import {
   Cluster,
   CpuArchitecture,
-  DiscoveryImageConfigForm,
   DiscoveryImageFormValues,
   ErrorState,
   LoadingState,
@@ -14,6 +13,7 @@ import {
 import { forceReload, updateCluster } from '../../reducers/clusters';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { DiscoveryImageFormService } from '../../services';
+import { OcmDiscoveryImageConfigForm } from './OcmDiscoveryImageConfigForm';
 
 type DiscoveryImageFormProps = {
   cluster: Cluster;
@@ -77,7 +77,7 @@ const DiscoveryImageForm = ({
   }
 
   return (
-    <DiscoveryImageConfigForm
+    <OcmDiscoveryImageConfigForm
       onCancel={handleCancel}
       handleSubmit={handleSubmit}
       sshPublicKey={infraEnv.sshAuthorizedKey}
