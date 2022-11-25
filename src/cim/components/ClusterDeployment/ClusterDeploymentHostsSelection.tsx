@@ -8,7 +8,11 @@ import {
 } from './types';
 import ClusterDeploymentHostsSelectionBasic from './ClusterDeploymentHostsSelectionBasic';
 import ClusterDeploymentHostsSelectionAdvanced from './ClusterDeploymentHostsSelectionAdvanced';
-import { getAgentsForSelection, getIsSNOCluster } from '../helpers';
+import {
+  getAgentsForSelection,
+  getClusterDeploymentCpuArchitecture,
+  getIsSNOCluster,
+} from '../helpers';
 import MinimalHWRequirements from '../Agent/MinimalHWRequirements';
 import NoAgentsAlert from '../Agent/NoAgentsAlert';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
@@ -29,6 +33,7 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
 
   const cdName = clusterDeployment?.metadata?.name;
   const cdNamespace = clusterDeployment?.metadata?.namespace;
+  const cpuArchitecture = getClusterDeploymentCpuArchitecture(clusterDeployment);
 
   const availableAgents = React.useMemo(
     () =>
@@ -36,9 +41,11 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
         (agent) =>
           (agent.spec.clusterDeploymentName?.name === cdName &&
             agent.spec.clusterDeploymentName?.namespace === cdNamespace) ||
-          (!agent.spec.clusterDeploymentName?.name && !agent.spec.clusterDeploymentName?.namespace),
+          (!agent.spec.clusterDeploymentName?.name &&
+            !agent.spec.clusterDeploymentName?.namespace &&
+            agent.status?.inventory.cpu?.architecture === cpuArchitecture),
       ),
-    [agents, cdNamespace, cdName],
+    [agents, cdNamespace, cdName, cpuArchitecture],
   );
   const { t } = useTranslation();
   return (
@@ -80,11 +87,12 @@ const ClusterDeploymentHostsSelection: React.FC<ClusterDeploymentHostsSelectionP
                 onEditRole={onEditRole}
                 onHostSelect={onHostSelect}
                 onSetInstallationDiskId={onSetInstallationDiskId}
+                cpuArchitecture={cpuArchitecture}
               />
             )}
           </Form>
         ) : (
-          <NoAgentsAlert />
+          <NoAgentsAlert cpuArchitecture={cpuArchitecture} />
         )}
       </GridItem>
     </Grid>

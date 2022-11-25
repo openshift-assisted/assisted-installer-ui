@@ -41,6 +41,7 @@ import {
   locationValidationSchema,
   locationValidationMessages,
   ntpSourceValidationSchema,
+  CpuArchitecture,
 } from '../../../common';
 
 import './infra-env.css';
@@ -59,6 +60,7 @@ export type EnvironmentStepFormValues = {
   enableProxy: boolean;
   labels: string[];
   networkType: 'dhcp' | 'static';
+  cpuArchitecture: CpuArchitecture;
   enableNtpSources: boolean;
   additionalNtpSources: string;
 };
@@ -99,6 +101,7 @@ const initialValues: EnvironmentStepFormValues = {
   enableProxy: false,
   labels: [],
   networkType: 'dhcp',
+  cpuArchitecture: CpuArchitecture.x86,
   enableNtpSources: false,
   additionalNtpSources: '',
 };
@@ -181,6 +184,27 @@ const InfraEnvForm: React.FC<InfraEnvFormProps> = ({ onValuesChanged }) => {
                       />
                     </>
                   }
+                />
+              </FlexItem>
+            </Flex>
+          </FormGroup>
+          <FormGroup fieldId="cpuArchitecture" label={t('ai:CPU architecture')}>
+            <Flex justifyContent={{ default: 'justifyContentFlexStart' }}>
+              <FlexItem>
+                <RadioField
+                  name="cpuArchitecture"
+                  id="x86_64"
+                  value="x86_64"
+                  label={t('ai:x86_64')}
+                />
+              </FlexItem>
+              <FlexItem spacer={{ default: 'spacer4xl' }} />
+              <FlexItem>
+                <RadioField
+                  name="cpuArchitecture"
+                  id="arm64"
+                  value="arm64"
+                  label={<>{t('ai:arm64')}&nbsp;</>}
                 />
               </FlexItem>
             </Flex>

@@ -262,7 +262,7 @@ const AITable = <R extends any>({
                 title: row.isOpen ? <ExpandComponent obj={row.obj as R} /> : undefined,
               },
             ],
-            key: `${row.id || ''}-detail`,
+            key: `${(row.id as string) || ''}-detail`,
             parent: index * 2,
           });
         }

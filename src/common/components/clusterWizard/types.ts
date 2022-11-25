@@ -24,6 +24,7 @@ export type ClusterDetailsValues = {
   diskEncryptionMode: DiskEncryption['mode'];
   diskEncryptionTangServers: TangServer[];
   diskEncryption: DiskEncryption;
+  cpuArchitecture: string;
 };
 
 export type HostsValidationsProps<S extends string, V extends string[]> = {
