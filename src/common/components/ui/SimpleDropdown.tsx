@@ -2,6 +2,7 @@ import React from 'react';
 import { DropdownItem, DropdownToggle, Dropdown, DropdownProps } from '@patternfly/react-core';
 import { CaretDownIcon } from '@patternfly/react-icons';
 import { HostRole } from '../../../common/types/hosts';
+import './SimpleDropdown.css';
 
 type SimpleDropdownProps = {
   current?: string;
@@ -11,9 +12,10 @@ type SimpleDropdownProps = {
   isDisabled: boolean;
   idPrefix?: string;
   position?: DropdownProps['position'];
+  menuAppendTo?: DropdownProps['menuAppendTo'];
 };
 
-export const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
+export const SimpleDropdown = ({
   current,
   defaultValue,
   items,
@@ -21,7 +23,8 @@ export const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
   isDisabled,
   idPrefix,
   position,
-}) => {
+  menuAppendTo,
+}: SimpleDropdownProps) => {
   const [isOpen, setOpen] = React.useState(false);
   const dropdownItems = items.map(({ value, label, description }) => (
     <DropdownItem key={value} id={value} description={description}>
@@ -44,7 +47,7 @@ export const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
         toggleIndicator={CaretDownIcon}
         isDisabled={isDisabled}
         id={idPrefix ? `${idPrefix}-dropdown-toggle-items` : undefined}
-        className="pf-m-text" // TODO(jtomasek): replace this with 'isText' prop once we update the PF
+        className="role-dropdown"
       >
         {current || defaultValue}
       </DropdownToggle>
@@ -61,6 +64,7 @@ export const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
       isPlain
       id={idPrefix ? `${idPrefix}-dropdown-toggle` : undefined}
       position={position}
+      menuAppendTo={menuAppendTo}
     />
   );
 };

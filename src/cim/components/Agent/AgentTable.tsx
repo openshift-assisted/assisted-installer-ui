@@ -5,6 +5,7 @@ import DefaultEmptyState from '../../../common/components/ui/uiState/EmptyState'
 import { ConnectedIcon } from '@patternfly/react-icons';
 import { infraEnvColumn, agentStatusColumn, useAgentsTable } from './tableUtils';
 import {
+  cpuArchitectureColumn,
   cpuCoresColumn,
   disksColumn,
   hostnameColumn,
@@ -57,6 +58,7 @@ const AgentTable: React.FC<AgentTableProps> = ({
         t,
       }),
       infraEnvColumn(agents, t),
+      cpuArchitectureColumn(t),
       cpuCoresColumn,
       memoryColumn,
       disksColumn,

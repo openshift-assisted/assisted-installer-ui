@@ -15,7 +15,7 @@ import { CheckCircleIcon, ExclamationTriangleIcon, PencilAltIcon } from '@patter
 import { global_palette_green_500 as okColor } from '@patternfly/react-tokens/dist/js/global_palette_green_500';
 import { global_warning_color_100 as warningColor } from '@patternfly/react-tokens/dist/js/global_warning_color_100';
 
-import { LabelValue } from '../../../common';
+import { CpuArchitecture, LabelValue } from '../../../common';
 import { InfraEnvK8sResource, SecretK8sResource } from '../../types';
 import { AGENT_LOCATION_LABEL_KEY } from '../common';
 import EditPullSecretModal, { EditPullSecretModalProps } from '../modals/EditPullSecretModal';
@@ -114,6 +114,20 @@ const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({
               <DescriptionListTerm>{t('ai:Location')}</DescriptionListTerm>
               <DescriptionListDescription>
                 {infraEnv.metadata?.labels?.[AGENT_LOCATION_LABEL_KEY] ?? t('ai:No location')}
+              </DescriptionListDescription>
+            </DescriptionListGroup>
+            <DescriptionListGroup>
+              <DescriptionListTerm>{t('ai:Network type')}</DescriptionListTerm>
+              <DescriptionListDescription>
+                {infraEnv.metadata?.labels?.networkType === 'static'
+                  ? t('ai:Static IP, bridges and bonds')
+                  : t('ai:DHCP only')}
+              </DescriptionListDescription>
+            </DescriptionListGroup>
+            <DescriptionListGroup>
+              <DescriptionListTerm>{t('ai:CPU architecture')}</DescriptionListTerm>
+              <DescriptionListDescription>
+                {infraEnv.spec?.cpuArchitecture ?? CpuArchitecture.x86}
               </DescriptionListDescription>
             </DescriptionListGroup>
             <DescriptionListGroup>
