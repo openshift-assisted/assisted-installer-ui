@@ -7,6 +7,7 @@ import { isSingleClusterMode, OCM_CLUSTER_LIST_LINK } from '../../config';
 import {
   AlertsContextProvider,
   AssistedInstallerOCMPermissionTypesListType,
+  Cluster,
   CpuArchitecture,
   ErrorState,
   FeatureGateContextProvider,
@@ -18,10 +19,11 @@ import { useClusterPolling, useFetchCluster } from '../clusters/clusterPolling';
 import ClusterWizard from '../clusterWizard/ClusterWizard';
 import { ClusterDefaultConfigurationProvider } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
 import { ModalDialogsContextProvider } from '../hosts/ModalDialogsContext';
-import { DiscoveryImageModal } from '../clusterConfiguration/DiscoveryImageModal';
 import ClusterInstallationProgressCard from './ClusterInstallationProgressCard';
+import { DiscoveryImageModal } from '../clusterConfiguration/DiscoveryImageModal';
 import CancelInstallationModal from './CancelInstallationModal';
 import ResetClusterModal from './ResetClusterModal';
+import ClusterPollingErrorModal from './ClusterPollingErrorModal';
 import { FeatureSupportLevelProvider } from '../featureSupportLevels';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { SentryErrorMonitorContextProvider } from '../SentryErrorMonitorContextProvider';
@@ -33,20 +35,23 @@ type AssistedInstallerDetailCardProps = {
   permissions?: AssistedInstallerOCMPermissionTypesListType;
 };
 
-const errorStateActions: React.ReactNode[] = [];
-if (!isSingleClusterMode()) {
-  errorStateActions.push(
-    <Button
-      key="cancel"
-      variant={ButtonVariant.secondary}
-      component={(props) => <Link to={OCM_CLUSTER_LIST_LINK} {...props} />}
-    >
-      Back
-    </Button>,
-  );
-}
+const getErrorStateActions = () => {
+  const errorStateActions: React.ReactNode[] = [];
+  if (!isSingleClusterMode()) {
+    errorStateActions.push(
+      <Button
+        key="cancel"
+        variant={ButtonVariant.secondary}
+        component={(props) => <Link to={OCM_CLUSTER_LIST_LINK} {...props} />}
+      >
+        Back
+      </Button>,
+    );
+  }
+  return errorStateActions;
+};
 
-const LoadingCard: React.FC = () => (
+const LoadingCard = () => (
   <Card data-testid="ai-cluster-details-card">
     <CardHeader>
       <Title headingLevel="h1" size="lg" className="card-title">
@@ -59,24 +64,27 @@ const LoadingCard: React.FC = () => (
   </Card>
 );
 
-const ClusterLoadFailed: React.FC<{ fetchCluster: () => void }> = ({ fetchCluster }) => (
-  <Card data-testid="ai-cluster-details-card">
-    <CardHeader>
-      <Title headingLevel="h1" size="lg" className="card-title">
-        Loading additional details
-      </Title>
-    </CardHeader>
-    <CardBody>
-      <ErrorState
-        title="Failed to fetch the cluster"
-        fetchData={fetchCluster}
-        actions={errorStateActions}
-      />
-    </CardBody>
-  </Card>
-);
+const ClusterLoadFailed = ({ clusterId }: { clusterId: Cluster['id'] }) => {
+  const fetchCluster = useFetchCluster(clusterId);
+  return (
+    <Card data-testid="ai-cluster-details-card">
+      <CardHeader>
+        <Title headingLevel="h1" size="lg" className="card-title">
+          Loading additional details
+        </Title>
+      </CardHeader>
+      <CardBody>
+        <ErrorState
+          title="Failed to fetch the cluster"
+          fetchData={fetchCluster}
+          actions={getErrorStateActions()}
+        />
+      </CardBody>
+    </Card>
+  );
+};
 
-const LoadingDefaultConfigFailedCard: React.FC = () => (
+const LoadingDefaultConfigFailedCard = () => (
   <Card data-testid="ai-cluster-details-card">
     <CardHeader>
       <Title headingLevel="h1" size="lg" className="card-title">
@@ -86,18 +94,17 @@ const LoadingDefaultConfigFailedCard: React.FC = () => (
     <CardBody>
       <ErrorState
         title="Failed to retrieve the default configuration"
-        actions={errorStateActions}
+        actions={getErrorStateActions()}
       />
     </CardBody>
   </Card>
 );
 
-const AssistedInstallerDetailCard: React.FC<AssistedInstallerDetailCardProps> = ({
+const AssistedInstallerDetailCard = ({
   aiClusterId,
   allEnabledFeatures,
   permissions,
-}) => {
-  const fetchCluster = useFetchCluster(aiClusterId);
+}: AssistedInstallerDetailCardProps) => {
   const { cluster, uiState } = useClusterPolling(aiClusterId);
   const {
     infraEnv,
@@ -107,16 +114,12 @@ const AssistedInstallerDetailCard: React.FC<AssistedInstallerDetailCardProps> = 
   } = useInfraEnv(aiClusterId, CpuArchitecture.USE_DAY1_ARCHITECTURE);
   if (uiState === ResourceUIState.LOADING || infraEnvLoading) {
     return <LoadingCard />;
-  } else if (uiState === ResourceUIState.ERROR || infraEnvError) {
-    return <ClusterLoadFailed fetchCluster={fetchCluster} />;
+  } else if ((uiState === ResourceUIState.ERROR && !cluster) || infraEnvError) {
+    return <ClusterLoadFailed clusterId={aiClusterId} />;
   }
 
-  if (!cluster || !infraEnv) {
-    return null;
-  }
-
-  if (cluster.status === 'adding-hosts') {
-    // TODO(mlibra): So far the Day 2 is rendered in a separate tab. Merge it to a single smooth flow.
+  if (!cluster || !infraEnv || cluster.status === 'adding-hosts') {
+    // In OCM the Day 2 flow is rendered in a separate tab.
     return null;
   }
 
@@ -132,6 +135,7 @@ const AssistedInstallerDetailCard: React.FC<AssistedInstallerDetailCardProps> = 
     </ClusterWizardContextProvider>
   );
 
+  const isOutdatedClusterData = uiState === ResourceUIState.ERROR;
   return (
     <FeatureGateContextProvider features={allEnabledFeatures}>
       <AlertsContextProvider>
@@ -144,6 +148,7 @@ const AssistedInstallerDetailCard: React.FC<AssistedInstallerDetailCardProps> = 
               <FeatureSupportLevelProvider loadingUi={<LoadingCard />} cluster={cluster}>
                 {content}
               </FeatureSupportLevelProvider>
+              {isOutdatedClusterData && <ClusterPollingErrorModal />}
               <CancelInstallationModal />
               <ResetClusterModal />
               <DiscoveryImageModal />
@@ -155,7 +160,7 @@ const AssistedInstallerDetailCard: React.FC<AssistedInstallerDetailCardProps> = 
   );
 };
 
-const Wrapper: React.FC<AssistedInstallerDetailCardProps> = (props) => (
+const Wrapper = (props: AssistedInstallerDetailCardProps) => (
   <Provider store={store}>
     <AssistedInstallerDetailCard {...props} />
   </Provider>

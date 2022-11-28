@@ -1,9 +1,13 @@
+import Axios, { AxiosError } from 'axios';
 import { Severity } from '@sentry/browser';
-import Axios from 'axios';
 import pick from 'lodash/pick';
 import { captureException } from '../sentry';
 import { isApiError } from './types';
 import { getErrorMessage } from '../../common/utils';
+import { isAxiosError } from './axiosExtensions';
+
+export const FETCH_ABORTED_ERROR_CODE = 'ERR_CANCELED';
+export const FETCH_CONNECTIVITY_ERROR_CODE = 'CONNECTIVITY_ERROR';
 
 type OnError = (arg0: unknown) => void;
 
@@ -37,7 +41,7 @@ export const handleApiError = (error: unknown, onError?: OnError): void => {
   } else {
     captureException(error);
   }
-  if (onError) onError(error);
+  if (onError) return onError(error);
 };
 
 export const getApiErrorMessage = (error: unknown): string => {
@@ -45,4 +49,21 @@ export const getApiErrorMessage = (error: unknown): string => {
     return error.response?.data?.message || error.response?.data.reason || error.message;
   }
   return getErrorMessage(error);
+};
+
+export const getApiErrorCode = (error: Error | AxiosError): string | number => {
+  if (!isAxiosError(error)) {
+    return FETCH_CONNECTIVITY_ERROR_CODE;
+  }
+  const responseStatus = error.response?.status || 0;
+  // Error status
+  if (responseStatus >= 400 && responseStatus < 500) {
+    return responseStatus;
+  }
+  // Aborted request
+  if (error.code === FETCH_ABORTED_ERROR_CODE) {
+    return FETCH_ABORTED_ERROR_CODE;
+  }
+  // A generic connectivity issue
+  return FETCH_CONNECTIVITY_ERROR_CODE;
 };
