@@ -19,8 +19,8 @@ const ClusterPollingErrorModal = () => {
         </Button>,
       ]}
     >
-      A network error caused an error fetching the latest data from the API. We'll try again. If the
-      data does not update in a few minutes, try refreshing.
+      There was an error fetching the latest data from the API. We'll try again, but if the data
+      does not update in a few minutes, try refreshing the page.
     </Modal>
   );
 };
