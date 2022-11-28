@@ -21,9 +21,9 @@ import {
 import { ProxyFieldsType } from '../../../common/types';
 import ProxyFields from '../../../common/components/clusterConfiguration/ProxyFields';
 import UploadSSH from '../../../common/components/clusterConfiguration/UploadSSH';
-import DiscoveryImageTypeControlGroup from '../../../common/components/clusterConfiguration/DiscoveryImageTypeControlGroup';
 import { OCP_STATIC_IP_DOC } from '../../../common/config/constants';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import DiscoveryImageTypeDropdown from './DiscoveryImageTypeDropdown';
 
 export const StaticIPInfo: React.FC = () => {
   const { t } = useTranslation();
@@ -123,7 +123,12 @@ export const OcmDiscoveryImageConfigForm: React.FC<OcmDiscoveryImageConfigFormPr
                         {status.error.message}
                       </Alert>
                     )}
-                    {!hideDiscoveryImageType && <DiscoveryImageTypeControlGroup />}
+                    {!hideDiscoveryImageType && (
+                      <DiscoveryImageTypeDropdown
+                        name="discoveryImageDropdown"
+                        defaultValue="Full image file - Provision with physicial media"
+                      />
+                    )}
                     <UploadSSH />
                     <ProxyFields />
                   </Form>
