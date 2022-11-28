@@ -14,12 +14,11 @@ import {
 } from '../../../common/components/ui/formik';
 import { ClusterDetailsValues } from '../../../common/components/clusterWizard/types';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import ArmCheckbox from './ArmCheckbox';
 
 export type ClusterDetailsFormFieldsProps = {
-  canEditPullSecret: boolean;
+  isEditFlow: boolean;
   forceOpenshiftVersion?: string;
-  isNameDisabled?: boolean;
-  isBaseDnsDomainDisabled?: boolean;
   defaultPullSecret?: string;
   extensionAfter?: { [key: string]: React.ReactElement };
   versions: OpenshiftVersionOptionType[];
@@ -44,9 +43,7 @@ export const BaseDnsHelperText: React.FC<{ name?: string; baseDnsDomain?: string
 };
 
 export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> = ({
-  canEditPullSecret,
-  isNameDisabled,
-  isBaseDnsDomainDisabled,
+  isEditFlow,
   versions,
   defaultPullSecret,
   forceOpenshiftVersion,
@@ -64,7 +61,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
   const { t } = useTranslation();
   return (
     <Form id="wizard-cluster-details__form">
-      {isNameDisabled ? (
+      {isEditFlow ? (
         <StaticTextField name="name" label={t('ai:Cluster name')} isRequired>
           {name}
         </StaticTextField>
@@ -79,7 +76,7 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
         />
       )}
       {extensionAfter?.['name'] && extensionAfter['name']}
-      {isBaseDnsDomainDisabled ? (
+      {isEditFlow ? (
         <StaticTextField
           name="baseDnsDomain"
           label={t('ai:Base domain')}
@@ -105,8 +102,9 @@ export const ClusterDetailsFormFields: React.FC<ClusterDetailsFormFieldsProps> =
         <OpenShiftVersionSelect versions={versions} />
       )}
       <SNOControlGroup versions={versions} highAvailabilityMode={highAvailabilityMode} />
+      <ArmCheckbox versions={versions} />
       {extensionAfter?.['openshiftVersion'] && extensionAfter['openshiftVersion']}
-      {canEditPullSecret && <PullSecret defaultPullSecret={defaultPullSecret} />}
+      {!isEditFlow && <PullSecret defaultPullSecret={defaultPullSecret} />}
       {extensionAfter?.['pullSecret'] && extensionAfter['pullSecret']}
       {/* <DiskEncryptionControlGroup
         values={values}
