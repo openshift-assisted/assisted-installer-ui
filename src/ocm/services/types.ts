@@ -10,6 +10,5 @@ export enum HostsNetworkConfigurationType {
 }
 
 export type OcmClusterDetailsValues = ClusterDetailsValues & {
-  cpuArchitecture: string;
   hostsNetworkConfigurationType: HostsNetworkConfigurationType;
 };

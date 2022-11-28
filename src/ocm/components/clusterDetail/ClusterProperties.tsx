@@ -12,24 +12,25 @@ import {
   selectIpv6Cidr,
   selectIpv4HostPrefix,
   selectIpv6HostPrefix,
+  useFeatureSupportLevel,
 } from '../../../common';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { ClusterFeatureSupportLevelsDetailItem } from '../featureSupportLevels';
 import OpenShiftVersionDetail from './OpenShiftVersionDetail';
 
-const CpuArchTitle = () => (
-  <>
-    {'CPU architecture '}
-    <PopoverIcon
-      bodyContent={
-        <p>
-          The generated ISO is specific to the cluster’s CPU architecture. Only hosts with the same
-          CPU architecture can be added to this cluster.
-        </p>
-      }
-    />
-  </>
-);
+const CpuArchTitle = ({ isMultiArchSupported }: { isMultiArchSupported: boolean }) => {
+  let stringCpuArch: string;
+  isMultiArchSupported
+    ? (stringCpuArch =
+        'The original cluster hosts CPU architecture. You can add hosts that are using either x86 or arm64 CPU architecture to this cluster.')
+    : (stringCpuArch = 'The original cluster hosts CPU architecture.');
+  return (
+    <>
+      {'CPU architecture '}
+      <PopoverIcon bodyContent={<p>{stringCpuArch}</p>} />
+    </>
+  );
+};
 
 type ClusterPropertiesProps = {
   cluster: Cluster;
@@ -77,7 +78,16 @@ const getDiskEncryptionEnabledOnStatus = (diskEncryption: DiskEncryption['enable
 const ClusterProperties = ({ cluster, externalMode = false }: ClusterPropertiesProps) => {
   const { t } = useTranslation();
   const isDualStackType = isDualStack(cluster);
+  const featureSupportLevelContext = useFeatureSupportLevel();
 
+  const isMultiArchSupported = Boolean(
+    cluster.cpuArchitecture === 'multi' ||
+      (cluster.openshiftVersion &&
+        featureSupportLevelContext.getFeatureSupportLevel(
+          cluster.openshiftVersion,
+          'MULTIARCH_RELEASE_IMAGE',
+        ) === 'supported'),
+  );
   return (
     <>
       {!externalMode && (
@@ -92,7 +102,7 @@ const ClusterProperties = ({ cluster, externalMode = false }: ClusterPropertiesP
           {externalMode ? undefined : <OpenShiftVersionDetail cluster={cluster} />}
           <DetailItem title="Base domain" value={cluster.baseDnsDomain} testId="base-dns-domain" />
           <DetailItem
-            title={<CpuArchTitle />}
+            title={<CpuArchTitle isMultiArchSupported={isMultiArchSupported} />}
             value={cluster.cpuArchitecture}
             testId="cpu-architecture"
           />

@@ -4,15 +4,13 @@ import * as React from 'react';
 import { InputField, OpenShiftVersionSelect, PullSecret } from '../../../../../common';
 import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
 import { BaseDnsHelperText } from '../../../ClusterDeployment/ClusterDetailsFormFields';
-import { useSupportedOCPVersions } from '../../hooks/useSupportedOCPVersions';
 import { useTemptiflySync } from '../../hooks/useTemptiflySync';
 import { DetailsFormProps, DetailsFormValues } from './types';
 
 const DetailsForm: React.FC<DetailsFormProps> = ({
   onValuesChanged,
   extensionAfter,
-  clusterImages,
-  supportedVersionsCM,
+  ocpVersions,
 }) => {
   const { values } = useFormikContext<DetailsFormValues>();
   useTemptiflySync({ values, onValuesChanged });
@@ -21,8 +19,6 @@ const DetailsForm: React.FC<DetailsFormProps> = ({
   React.useEffect(() => {
     nameInputRef.current?.focus();
   }, []);
-
-  const ocpVersions = useSupportedOCPVersions(clusterImages, supportedVersionsCM);
 
   const { t } = useTranslation();
   return (

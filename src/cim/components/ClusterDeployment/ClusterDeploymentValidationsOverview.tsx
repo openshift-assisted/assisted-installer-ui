@@ -76,24 +76,26 @@ const ClusterDeploymentValidationsOverview = ({
         </>
       }
     >
-      <DescriptionList>
-        {Object.entries(filteredValidationsInfo).map(([group, validations]) => {
-          return (
-            <DescriptionListGroup key={group}>
-              <DescriptionListTerm>{clusterValidationGroupLabels(t)[group]}</DescriptionListTerm>
-              <DescriptionListDescription>
-                {validations && (
-                  <List>
-                    {validations.map((validation) => (
-                      <ListItem key={validation.id}>{validation.message}</ListItem>
-                    ))}
-                  </List>
-                )}
-              </DescriptionListDescription>
-            </DescriptionListGroup>
-          );
-        })}
-      </DescriptionList>
+      {!!Object.entries(filteredValidationsInfo).length && (
+        <DescriptionList>
+          {Object.entries(filteredValidationsInfo).map(([group, validations]) => {
+            return (
+              <DescriptionListGroup key={group}>
+                <DescriptionListTerm>{clusterValidationGroupLabels(t)[group]}</DescriptionListTerm>
+                <DescriptionListDescription>
+                  {validations && (
+                    <List>
+                      {validations.map((validation) => (
+                        <ListItem key={validation.id}>{validation.message}</ListItem>
+                      ))}
+                    </List>
+                  )}
+                </DescriptionListDescription>
+              </DescriptionListGroup>
+            );
+          })}
+        </DescriptionList>
+      )}
     </Alert>
   );
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { GridItem, ClipboardCopy, clipboardCopyFunc, Button } from '@patternfly/react-core';
+import { GridItem, ClipboardCopy, clipboardCopyFunc, Button, Alert } from '@patternfly/react-core';
 import { Credentials, Cluster } from '../../api/types';
 import { LoadingState, ErrorState } from '../../components/ui/uiState';
 import { DetailList, DetailItem } from '../../components/ui/DetailList';
@@ -13,6 +13,7 @@ type ClusterCredentialsProps = {
   retry?: () => void;
   credentials?: Credentials;
   idPrefix?: string;
+  credentialsError?: string;
 };
 
 const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
@@ -21,13 +22,27 @@ const ClusterCredentials: React.FC<ClusterCredentialsProps> = ({
   error = false,
   retry,
   idPrefix = 'cluster-creds',
+  credentialsError = '',
 }) => {
   let credentialsBody: JSX.Element;
   const { t } = useTranslation();
   if (error) {
-    credentialsBody = (
-      <ErrorState title={t('ai:Failed to fetch cluster credentials.')} fetchData={retry} />
-    );
+    //Unauthorized users can't fetch cluster credentials
+    if (credentialsError.includes('403')) {
+      credentialsBody = (
+        <Alert
+          variant="info"
+          isInline
+          title={'You do not have permission to view the cluster credentials'}
+        >
+          For more information, contact your organization administrator
+        </Alert>
+      );
+    } else {
+      credentialsBody = (
+        <ErrorState title={t('ai:Failed to fetch cluster credentials.')} fetchData={retry} />
+      );
+    }
   } else if (!credentials) {
     credentialsBody = <LoadingState />;
   } else if (!credentials.username && !credentials.consoleUrl) {

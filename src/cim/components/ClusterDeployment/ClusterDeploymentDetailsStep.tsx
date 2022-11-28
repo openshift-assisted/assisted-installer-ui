@@ -22,6 +22,7 @@ import {
   AgentClusterInstallK8sResource,
   AgentK8sResource,
   ClusterDeploymentK8sResource,
+  InfraEnvK8sResource,
 } from '../../types';
 import ClusterDeploymentDetailsForm from './ClusterDeploymentDetailsForm';
 import { ClusterImageSetK8sResource } from '../../types/k8s/cluster-image-set';
@@ -36,6 +37,7 @@ type UseDetailsFormikArgs = {
   agents?: AgentK8sResource[];
   defaultBaseDomain?: string;
   pullSecret?: string;
+  infraEnv?: InfraEnvK8sResource;
 };
 
 export const useDetailsFormik = ({
@@ -46,6 +48,7 @@ export const useDetailsFormik = ({
   usedClusterNames,
   defaultBaseDomain,
   pullSecret,
+  infraEnv,
 }: UseDetailsFormikArgs): [ClusterDetailsValues, Lazy] => {
   const { t } = useTranslation();
   const featureSupportLevels = useFeatureSupportLevel();
@@ -57,9 +60,10 @@ export const useDetailsFormik = ({
             clusterDeployment,
             agentClusterInstall,
             agents,
+            infraEnv,
           })
         : undefined,
-    [agentClusterInstall, clusterDeployment, agents],
+    [agentClusterInstall, clusterDeployment, agents, infraEnv],
   );
   const initialValues = React.useMemo(
     () =>
@@ -98,6 +102,7 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
   onClose,
   pullSecret,
   isPreviewOpen,
+  infraEnv,
 }) => {
   const { addAlert } = useAlerts();
   const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
@@ -108,6 +113,7 @@ const ClusterDeploymentDetailsStep: React.FC<ClusterDeploymentDetailsStepProps> 
     agents,
     clusterImages,
     usedClusterNames,
+    infraEnv,
   });
   const next = () =>
     isCIMFlow(clusterDeployment)

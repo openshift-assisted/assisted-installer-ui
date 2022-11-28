@@ -1,4 +1,4 @@
-import { K8sResourceCommon } from 'console-sdk-ai-lib';
+import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
 import { Host, HostRole, HostStage, Inventory } from '../../../common';
 import { ValidationsInfo } from '../../../common/types/hosts';
 import { StatusCondition } from './shared';
