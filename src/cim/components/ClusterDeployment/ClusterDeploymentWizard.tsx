@@ -1,11 +1,7 @@
 import * as React from 'react';
 import classNames from 'classnames';
 import { Grid, GridItem } from '@patternfly/react-core';
-
 import { AlertsContextProvider, LoadingState } from '../../../common';
-import { isAIFlowInfraEnv } from '../helpers';
-import { InfraEnvK8sResource } from '../../types';
-
 import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
 import ClusterDeploymentDetailsStep from './ClusterDeploymentDetailsStep';
 import ClusterDeploymentNetworkingStep from './ClusterDeploymentNetworkingStep';
@@ -52,7 +48,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
     initialStep || 'cluster-details',
   );
 
-  const isAIFlow = isAIFlowInfraEnv(infraEnv);
+  const isAIFlow = infraEnv;
 
   const { code, loadingResources } = useYamlPreview({
     agentClusterInstall,
@@ -93,9 +89,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
               agents={agents}
               bareMetalHosts={[] /* TODO(mlibra) */}
               aiConfigMap={aiConfigMap}
-              infraEnv={
-                infraEnv as InfraEnvK8sResource /* Must be available since isAIFlow === true */
-              }
+              infraEnv={infraEnv}
               infraNMStates={infraNMStates}
               onSaveAgent={onSaveAgent}
               onSaveBMH={onSaveBMH}
@@ -141,6 +135,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
             agents={agents}
             onClose={onClose}
             clusterImages={clusterImages}
+            infraEnv={infraEnv}
           />
         );
       case 'cluster-details':
@@ -155,6 +150,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
             onSaveDetails={onSaveDetails}
             onClose={onClose}
             isPreviewOpen={isPreviewOpen}
+            infraEnv={infraEnv}
           />
         );
     }
@@ -180,7 +176,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
       {isPreviewOpen && (
         <GridItem span={5}>
           <YamlPreview code={code} setPreviewOpen={setPreviewOpen} loading={loadingResources}>
-            {`${clusterDeployment.metadata?.name} cluster`}
+            {`${clusterDeployment.metadata?.name || ''} cluster`}
           </YamlPreview>
         </GridItem>
       )}

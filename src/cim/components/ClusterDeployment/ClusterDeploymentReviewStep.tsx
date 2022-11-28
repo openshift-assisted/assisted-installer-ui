@@ -6,6 +6,7 @@ import {
   AgentK8sResource,
   ClusterDeploymentK8sResource,
   ClusterImageSetK8sResource,
+  InfraEnvK8sResource,
 } from '../../types';
 import {
   ClusterWizardStepHeader,
@@ -19,7 +20,7 @@ import {
 import ClusterDeploymentWizardContext from './ClusterDeploymentWizardContext';
 import ClusterDeploymentWizardFooter from './ClusterDeploymentWizardFooter';
 import ClusterDeploymentWizardStep from './ClusterDeploymentWizardStep';
-import { getSelectedVersion, getAICluster } from '../helpers';
+import { getSelectedVersion, getAICluster, getClusterDeploymentCpuArchitecture } from '../helpers';
 import { isAgentOfCluster } from './helpers';
 import { wizardStepNames } from './constants';
 import {
@@ -37,6 +38,7 @@ type ClusterDeploymentReviewStepProps = {
   // eslint-disable-next-line
   onFinish: () => Promise<any>;
   clusterImages: ClusterImageSetK8sResource[];
+  infraEnv?: InfraEnvK8sResource;
 };
 
 const ClusterDeploymentReviewStep: React.FC<ClusterDeploymentReviewStepProps> = ({
@@ -46,6 +48,7 @@ const ClusterDeploymentReviewStep: React.FC<ClusterDeploymentReviewStepProps> = 
   onFinish,
   clusterDeployment,
   clusterImages,
+  infraEnv,
 }) => {
   const { addAlert, clearAlerts } = useAlerts();
   const { setCurrentStepId } = React.useContext(ClusterDeploymentWizardContext);
@@ -53,6 +56,7 @@ const ClusterDeploymentReviewStep: React.FC<ClusterDeploymentReviewStepProps> = 
   const onBack = () => setCurrentStepId('networking');
   const cdName = clusterDeployment.metadata?.name;
   const cdNamespace = clusterDeployment.metadata?.namespace;
+  const cpuArchitecture = getClusterDeploymentCpuArchitecture(clusterDeployment, infraEnv);
 
   const clusterAgents = React.useMemo(
     () => agents.filter((a) => isAgentOfCluster(a, cdName, cdNamespace)),
@@ -110,6 +114,11 @@ const ClusterDeploymentReviewStep: React.FC<ClusterDeploymentReviewStepProps> = 
               title={t('ai:OpenShift version')}
               value={openShiftVersion}
               testId="openshift-version"
+            />
+            <DetailItem
+              title={t('ai:CPU architecture')}
+              value={cpuArchitecture}
+              testId="cpu-architecture"
             />
             <DetailItem
               title={t('ai:API IP')}
