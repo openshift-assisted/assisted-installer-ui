@@ -147,6 +147,7 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
                 (dirty || (cluster && canNextClusterDetails({ cluster })))
               )
             }
+            isBackDisabled={isSubmitting}
             onNext={handleOnNext(dirty, submitForm, cluster)}
           />
         );
