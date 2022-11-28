@@ -7,12 +7,10 @@ import { getDuplicates } from '../../../../common';
 
 const RESERVED_LOCAL_HOST_IPS = {
   ipv4: ['127.0.0.0', '127.0.0.1'],
-  ipv6: ['::1', '::ffff:7f00:1'],
 };
 
 const RESERVED_CATCH_ALL_IPS = {
   ipv4: ['0.0.0.0', '255.255.255.255'],
-  ipv6: ['0000::', '::ffff:ffff:ffff'],
 };
 
 export type UniqueStringArrayExtractor<FormValues> = (
@@ -114,14 +112,7 @@ export const getMultipleIpAddressValidationSchema = (protocolVersion: ProtocolVe
 };
 
 export const isReservedIpv6Address = (ipv6Address: Address6) => {
-  return (
-    RESERVED_CATCH_ALL_IPS.ipv6.find((address) =>
-      compareIPV6Addresses(new Address6(address), ipv6Address),
-    ) ||
-    RESERVED_LOCAL_HOST_IPS.ipv6.find((address) =>
-      compareIPV6Addresses(new Address6(address), ipv6Address),
-    )
-  );
+  return ipv6Address.isLoopback() || ipv6Address.isMulticast();
 };
 
 export const compareIPV6Addresses = (address1: Address6, address2: Address6) => {
