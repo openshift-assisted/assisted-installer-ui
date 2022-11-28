@@ -1,6 +1,6 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Alert, AlertVariant, Grid, Tooltip } from '@patternfly/react-core';
 import { VirtualIPControlGroup, VirtualIPControlGroupProps } from './VirtualIPControlGroup';
 import {
@@ -17,7 +17,6 @@ import {
   clusterNetworksEqual,
   DUAL_STACK,
   serviceNetworksEqual,
-  V2ClusterUpdateParams,
 } from '../../../../common';
 import { getLimitedFeatureSupportLevels } from '../../../../common/components/featureSupportLevels/utils';
 import {
@@ -31,8 +30,6 @@ import { useTranslation } from '../../../../common/hooks/use-translation-wrapper
 import { selectCurrentClusterPermissionsState } from '../../../selectors';
 import { OcmCheckbox } from '../../ui/OcmFormFields';
 import { NetworkTypeControlGroup } from '../../../../common/components/clusterWizard/networkingSteps/NetworkTypeControlGroup';
-import { ClustersService } from '../../../services';
-import { updateCluster } from '../../../reducers/clusters';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   hostSubnets: HostSubnets;
@@ -156,11 +153,6 @@ const NetworkConfiguration = ({
       if (isMultiNodeCluster) {
         setFieldValue('machineNetworks', [], false);
       }
-    } else {
-      if (!values.vipDhcpAllocation) {
-        validateField('ingressVip');
-        validateField('apiVip');
-      }
     }
   }, [
     isMultiNodeCluster,
@@ -218,23 +210,12 @@ const NetworkConfiguration = ({
     [cluster.cpuArchitecture, cluster.openshiftVersion, featureSupportLevelData, isDualStack],
   );
 
-  const dispatch = useDispatch();
-  const setClusterManagedNetworking = React.useCallback(async () => {
-    //We need to set umn=false in the server when "Cluster managed networking" is selected
-    const params: V2ClusterUpdateParams = {
-      userManagedNetworking: false,
-    };
-    const { data } = await ClustersService.update(cluster.id, cluster.tags, params);
-    dispatch(updateCluster(data));
-  }, [dispatch, cluster.id, cluster.tags]);
-
   return (
     <Grid hasGutter>
       {!hideManagedNetworking && (
         <ManagedNetworkingControlGroup
           disabled={isViewerMode || isNetworkManagementDisabled}
           tooltip={networkManagementDisabledReason}
-          setClusterManagedNetworking={setClusterManagedNetworking}
         />
       )}
 

@@ -148,7 +148,7 @@ const NetworkConfigurationPage = ({ cluster }: { cluster: Cluster }) => {
   );
 
   const memoizedValidationSchema = React.useMemo(
-    () => getNetworkConfigurationValidationSchema(initialValues, hostSubnets),
+    () => getNetworkConfigurationValidationSchema(),
     [hostSubnets, initialValues],
   );
 
