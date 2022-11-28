@@ -100,6 +100,7 @@ const ClusterDetailStatusVarieties = ({
           error={!!credentialsError}
           retry={fetchCredentials}
           idPrefix={getClusterDetailId('cluster-creds')}
+          credentialsError={credentialsError}
         />
       )}
       <ClusterDetailStatusMessages

@@ -38,6 +38,9 @@ export const ODF_LINK = 'https://www.redhat.com/en/resources/openshift-data-foun
 
 export const NMSTATE_EXAMPLES_LINK = 'https://nmstate.io/examples.html';
 
+export const APPROVE_NODES_IN_CL_LINK =
+  'https://docs.openshift.com/container-platform/4.11/installing/installing_platform_agnostic/installing-platform-agnostic.html#installation-approve-csrs_installing-platform-agnostic';
+
 // TODO(mlibra): Retrieve branding dynamically, if needed, i.e. via injecting to the "window" object
 export const getProductBrandingCode = () => 'redhat';
 
@@ -304,3 +307,5 @@ export const OCP_STATIC_IP_DOC =
 export const AI_UI_TAG = 'ui_ocm';
 
 export const OCP_RELEASES_PAGE = 'openshift/releases';
+
+export const NUTANIX_CONFIG_LINK = 'https://access.redhat.com/solutions/6983944';

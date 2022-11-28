@@ -145,7 +145,7 @@ export const useHostsTable = (cluster: Cluster) => {
         );
       }
     },
-    [dispatch, resetCluster, addAlert, cluster.id],
+    [dispatch, resetCluster, addAlert, cluster.hosts],
   );
 
   const onExcludedODF = React.useCallback(
@@ -261,7 +261,7 @@ export const useHostsTable = (cluster: Cluster) => {
     };
     void reset(resetHostDialog.data?.hostId);
     resetHostDialog.close();
-  }, [addAlert, cluster.id, dispatch, resetCluster, resetHostDialog]);
+  }, [addAlert, cluster.hosts, dispatch, resetCluster, resetHostDialog]);
 
   const onDelete = React.useCallback(() => {
     const deleteHost = async (hostId: string | undefined) => {

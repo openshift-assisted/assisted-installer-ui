@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import { Cluster, ManagedDomain } from '../../api';
-import { OpenshiftVersionOptionType } from '../../types';
+import { CpuArchitecture, OpenshiftVersionOptionType } from '../../types';
 import { TangServer } from '../clusterConfiguration/DiskEncryptionFields/DiskEncryptionValues';
 import { FeatureSupportLevelData } from '../featureSupportLevels';
 import {
@@ -74,6 +74,7 @@ export const getClusterDetailsInitialValues = ({
     diskEncryptionMode: cluster?.diskEncryption?.mode ?? 'tpmv2',
     diskEncryptionTangServers: parseTangServers(cluster?.diskEncryption?.tangServers),
     diskEncryption: cluster?.diskEncryption ?? {},
+    cpuArchitecture: cluster?.cpuArchitecture || CpuArchitecture.x86,
   };
 };
 

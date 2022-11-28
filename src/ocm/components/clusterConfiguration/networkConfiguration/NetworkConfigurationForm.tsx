@@ -54,9 +54,23 @@ const NetworkConfigurationForm: React.FC<{
   const { alerts } = useAlerts();
   const clusterWizardContext = useClusterWizardContext();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
-  const { errors, touched, isSubmitting, isValid } = useFormikContext<NetworkConfigurationValues>();
+  const { errors, touched, isSubmitting, isValid, setFieldValue, values } =
+    useFormikContext<NetworkConfigurationValues>();
   const isAutoSaveRunning = useFormikAutoSave();
   const errorFields = getFormikErrorFields(errors, touched);
+
+  // DHCP allocation is currently not supported with Nutanix
+  // https://issues.redhat.com/browse/MGMT-12382
+  const isClusterPlatformTypeNutanix = React.useMemo(
+    () => cluster.platform?.type === 'nutanix',
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+  React.useEffect(() => {
+    if (isClusterPlatformTypeNutanix && values.vipDhcpAllocation) {
+      setFieldValue('vipDhcpAllocation', false);
+    }
+  }, [isClusterPlatformTypeNutanix, setFieldValue, values.vipDhcpAllocation]);
 
   const footer = (
     <ClusterWizardFooter
@@ -88,6 +102,7 @@ const NetworkConfigurationForm: React.FC<{
                 cluster={cluster}
                 hostSubnets={hostSubnets}
                 defaultNetworkSettings={defaultNetworkSettings}
+                isVipDhcpAllocationDisabled={isClusterPlatformTypeNutanix}
               />
               <SecurityFields
                 clusterSshKey={cluster.sshPublicKey}

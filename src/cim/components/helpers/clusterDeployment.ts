@@ -1,6 +1,12 @@
-import { ObjectMetadata } from 'console-sdk-ai-lib';
-import { getHumanizedDateTime, parseStringLabels } from '../../../common';
-import { AgentClusterInstallK8sResource, ClusterDeploymentK8sResource } from '../../types';
+import { ObjectMetadata } from '@openshift-console/dynamic-plugin-sdk';
+import isEqual from 'lodash/isEqual';
+import pick from 'lodash/pick';
+import { CpuArchitecture, getHumanizedDateTime, parseStringLabels } from '../../../common';
+import {
+  AgentClusterInstallK8sResource,
+  ClusterDeploymentK8sResource,
+  InfraEnvK8sResource,
+} from '../../types';
 import {
   AgentSelectorChangeProps,
   ClusterDeploymentHostsSelectionValues,
@@ -9,6 +15,7 @@ import {
   AGENT_LOCATION_LABEL_KEY,
   AGENT_AUTO_SELECT_ANNOTATION_KEY,
   AGENT_SELECTOR,
+  CPU_ARCHITECTURE_ANNOTATION_KEY,
 } from '../common';
 import { getClusterStatus } from './status';
 
@@ -199,3 +206,20 @@ export const getClusterProperties = (
     value: getHumanizedDateTime(clusterDeployment.status?.installedTimestamp),
   },
 });
+
+export const getClusterDeploymentCpuArchitecture = (
+  clusterDeployment: ClusterDeploymentK8sResource,
+  infraEnv?: InfraEnvK8sResource,
+) => {
+  let arch;
+  if (
+    infraEnv &&
+    isEqual(infraEnv.spec?.clusterRef, pick(clusterDeployment.metadata, ['name', 'namespace']))
+  ) {
+    arch = infraEnv.spec?.cpuArchitecture;
+  } else {
+    arch = clusterDeployment.metadata?.annotations?.[CPU_ARCHITECTURE_ANNOTATION_KEY];
+  }
+
+  return arch === CpuArchitecture.ARM ? CpuArchitecture.ARM : CpuArchitecture.x86;
+};

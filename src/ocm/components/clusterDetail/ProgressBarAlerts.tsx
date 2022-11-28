@@ -1,15 +1,20 @@
-import { Alert, AlertActionLink, Text, TextContent } from '@patternfly/react-core';
-import { downloadClusterInstallationLogs } from '../../../ocm/components/clusterDetail/utils';
-import { RenderIf, toSentence } from '../../../common/components/ui';
-import { Cluster, MonitoredOperator } from '../../../common/api/types';
 import React from 'react';
+import { Alert, AlertActionLink, Text, TextContent } from '@patternfly/react-core';
 import { pluralize } from 'humanize-plus';
-import { useModalDialogsContext } from '../../../ocm/components/hosts/ModalDialogsContext';
-import { canDownloadClusterLogs } from '../../../common/components/hosts';
-import { useAlerts } from '../../../common/components/AlertsContextProvider';
-import { getBugzillaLink, operatorLabels } from '../../../common/config/constants';
-import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
+import {
+  Cluster,
+  MonitoredOperator,
+  RenderIf,
+  toSentence,
+  canDownloadClusterLogs,
+  getBugzillaLink,
+  operatorLabels,
+  useAlerts,
+} from '../../../common';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { downloadClusterInstallationLogs } from './utils';
+import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
 import { ocmClient } from '../../api';
 
 type InstallationProgressWarningProps = {

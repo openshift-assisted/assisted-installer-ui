@@ -35,7 +35,7 @@ import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 import './MassChangeHostnameModal.css';
 import { TFunction } from 'i18next';
-import { getApiErrorMessage } from '../../../ocm/api';
+import { getApiErrorMessage } from '../../../ocm/api'; // eslint-disable-line no-restricted-imports
 
 const getHostname = (host: Host) => {
   const inventory = getInventory(host);

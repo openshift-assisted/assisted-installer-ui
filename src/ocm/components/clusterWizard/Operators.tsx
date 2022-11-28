@@ -93,9 +93,10 @@ const Operators = ({ cluster }: { cluster: Cluster }) => {
         olmOperators: enabledOperators,
       });
 
-      const updatedOperators = OperatorsService.getOLMOperators(values, updatedCluster);
-
-      const needSyncOperators = OperatorsService.syncOperators(enabledOperators, updatedOperators);
+      const needSyncOperators = OperatorsService.syncOperators(
+        enabledOperators,
+        updatedCluster.monitoredOperators,
+      );
       Object.keys(needSyncOperators).forEach((operatorName) => {
         setFieldValue(operatorName, true);
       });
