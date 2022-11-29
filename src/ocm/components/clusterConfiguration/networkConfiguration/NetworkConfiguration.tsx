@@ -153,6 +153,12 @@ const NetworkConfiguration = ({
       if (isMultiNodeCluster) {
         setFieldValue('machineNetworks', [], false);
       }
+    } else {
+      if (!values.vipDhcpAllocation) {
+        // We need to sync the values back to the form
+        setFieldValue('apiVip', cluster.apiVip, false);
+        setFieldValue('ingressVip', cluster.ingressVip, false);
+      }
     }
   }, [
     isMultiNodeCluster,

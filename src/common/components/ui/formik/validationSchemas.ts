@@ -213,7 +213,7 @@ export const vipValidationSchema = (
 ) =>
   Yup.mixed().when(['vipDhcpAllocation', 'managedNetworkingType'], {
     is: (vipDhcpAllocation, managedNetworkingType) =>
-      vipDhcpAllocation && managedNetworkingType !== 'userManaged',
+      !vipDhcpAllocation && managedNetworkingType !== 'userManaged',
     then: requiredOnceSet(initialValue, 'Required. Please provide an IP address')
       .concat(vipRangeValidationSchema(hostSubnets, values))
       .concat(vipUniqueValidationSchema(values))
