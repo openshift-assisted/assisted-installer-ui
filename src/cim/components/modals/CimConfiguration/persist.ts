@@ -5,13 +5,13 @@ import { TFunction } from 'i18next';
 import {
   AgentServiceConfigK8sResource,
   CreateResourceFuncType,
-  DeleteResourceFuncType,
   GetResourceFuncType,
   ListResourcesFuncType,
   PatchResourceFuncType,
   ResourcePatch,
   RouteK8sResource,
 } from '../../../types';
+import { LOCAL_STORAGE_ID_LAST_UPDATE_TIMESTAMP } from './utils';
 
 export type SetErrorFuncType = ({
   title,
@@ -83,7 +83,6 @@ const getClusterDomain = (
     });
   }
 
-  console.log('--- Domain found: ', domain, ', from host: ', host);
   return domain;
 };
 
@@ -95,7 +94,7 @@ const patchAssistedImageServiceRoute = async (
 
   assistedImageServiceRoute: RouteK8sResource,
   domain: string,
-) => {
+): Promise<boolean> => {
   const newHost = `${ASSISTED_IMAGE_SERVICE_ROUTE_PREFIX}.nlb-apps.${domain}`;
   const patches: ResourcePatch[] = [
     {
@@ -112,7 +111,10 @@ const patchAssistedImageServiceRoute = async (
     setError({
       title: t('ai:Failed to patch assisted-image-service route for new domain.'),
     });
+    return false;
   }
+
+  return true;
 };
 
 export const isIngressController = async (getResource: GetResourceFuncType): Promise<boolean> => {
@@ -189,7 +191,7 @@ const patchAssistedImageService = async (
   getResource: GetResourceFuncType,
   patchResource: PatchResourceFuncType,
   mceNamespace: string,
-) => {
+): Promise<boolean> => {
   // The service should be already present
   let assistedImageService: AgentServiceConfigK8sResource;
 
@@ -208,7 +210,7 @@ const patchAssistedImageService = async (
       title: t('ai:Failed to patch assisted-image-service'),
     });
 
-    return;
+    return false;
   }
 
   const labels = assistedImageService.metadata?.labels || {};
@@ -228,7 +230,10 @@ const patchAssistedImageService = async (
     setError({
       title: t('ai:Failed to patch assisted-image-service'),
     });
+    return false;
   }
+
+  return true;
 };
 
 const patchProvisioningConfiguration = async ({
@@ -242,8 +247,6 @@ const patchProvisioningConfiguration = async ({
   patchResource: PatchResourceFuncType;
   getResource: GetResourceFuncType;
 }): Promise<boolean> => {
-  console.log('---- patchProvisioningConfiguration start');
-
   try {
     const provisioning = (await getResource({
       kind: 'Provisioning',
@@ -334,6 +337,7 @@ const createAgentServiceConfig = async ({
   }
 };
 
+/* Following functions are tested but recently not used.
 const patchAgentServiceConfig = async ({
   t,
   setError,
@@ -367,6 +371,25 @@ const patchAgentServiceConfig = async ({
   }
 };
 
+export const onDeleteCimConfig = async ({
+  deleteResource,
+}: {
+  deleteResource: DeleteResourceFuncType;
+}) => {
+  try {
+    await deleteResource({
+      apiVersion: 'agent-install.openshift.io/v1beta1',
+      kind: 'AgentServiceConfig',
+      metadata: {
+        name: 'agent',
+        // cluster-scoped resource
+      },
+    });
+  } catch (e) {
+    console.error('Failed to delete AgentServiceConfig: ', e);
+  }
+};
+*/
 // https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.6/html/multicluster_engine/multicluster_engine_overview#enable-cim
 export const onEnableCIM = async ({
   t,
@@ -403,22 +426,12 @@ export const onEnableCIM = async ({
 }) => {
   if (['none', 'baremetal', 'openstack', 'vsphere'].includes(platform.toLocaleLowerCase())) {
     if (!(await patchProvisioningConfiguration({ t, setError, patchResource, getResource }))) {
-      return;
+      return false;
     }
   }
 
   if (agentServiceConfig) {
-    if (
-      !(await patchAgentServiceConfig({
-        t,
-        setError,
-        agentServiceConfig,
-        patchResource,
-        imgVolSizeGB: imgVolSize,
-      }))
-    ) {
-      return;
-    }
+    console.log('The AgentServiceConfig recently can not be patched. Delete and create instead.');
   } else {
     if (
       !(await createAgentServiceConfig({
@@ -430,14 +443,18 @@ export const onEnableCIM = async ({
         imgVolSizeGB: imgVolSize,
       }))
     ) {
-      return;
+      return false;
     }
   }
 
+  // see isCIMConfigProgressing()
+  window.localStorage.setItem(LOCAL_STORAGE_ID_LAST_UPDATE_TIMESTAMP, new Date().toISOString());
+
   if (configureLoadBalancer) {
+    // Recently No to Yes only (since we do not delete the ingress controller)
     if (await isIngressController(getResource)) {
       console.log('IngressController already present, we do not patch it.');
-      return;
+      return true /* Not an error */;
     }
 
     const assistedImageServiceRoute = await getAssistedImageServiceRoute(
@@ -446,48 +463,35 @@ export const onEnableCIM = async ({
       listResources,
     );
     if (!assistedImageServiceRoute) {
-      return;
+      return false;
     }
 
     const domain = getClusterDomain(t, setError, assistedImageServiceRoute);
     if (!domain) {
-      return;
+      return false;
     }
 
     if (await createIngressController(t, setError, createResource, domain)) {
-      await patchAssistedImageService(
-        t,
-        setError,
-        getResource,
-        patchResource,
-        assistedImageServiceRoute.metadata?.namespace || '',
-      );
-      await patchAssistedImageServiceRoute(
-        t,
-        setError,
-        patchResource,
-        assistedImageServiceRoute,
-        domain,
-      );
+      if (
+        !(await patchAssistedImageService(
+          t,
+          setError,
+          getResource,
+          patchResource,
+          assistedImageServiceRoute.metadata?.namespace || '',
+        )) ||
+        !(await patchAssistedImageServiceRoute(
+          t,
+          setError,
+          patchResource,
+          assistedImageServiceRoute,
+          domain,
+        ))
+      ) {
+        return false;
+      }
     }
   }
-};
 
-export const onDeleteCimConfig = async ({
-  deleteResource,
-}: {
-  deleteResource: DeleteResourceFuncType;
-}) => {
-  try {
-    await deleteResource({
-      apiVersion: 'agent-install.openshift.io/v1beta1',
-      kind: 'AgentServiceConfig',
-      metadata: {
-        name: 'agent',
-        // cluster-scoped resource
-      },
-    });
-  } catch (e) {
-    console.error('Failed to delete AgentServiceConfig: ', e);
-  }
+  return true;
 };

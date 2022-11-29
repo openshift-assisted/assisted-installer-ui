@@ -1,6 +1,14 @@
 import * as React from 'react';
 import { Trans } from 'react-i18next';
-import { Flex, FlexItem, Form, FormGroup, Popover, Radio, TextInput } from '@patternfly/react-core';
+import {
+  Flex,
+  FlexItem,
+  Form,
+  FormGroup,
+  Popover,
+  Checkbox,
+  TextInput,
+} from '@patternfly/react-core';
 import { ExternalLinkAltIcon, HelpIcon } from '@patternfly/react-icons';
 
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
@@ -8,11 +16,11 @@ import { CimConfigurationFormProps } from './types';
 
 import './CimConfigurationForm.css';
 
-// TODO: https://miro.com/app/board/uXjVPM4GkzQ=/?moveToWidget=3458764538969838424&cot=14
 export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
   docConfigUrl,
   docConfigAwsUrl,
   isEdit,
+  isInProgressPeriod,
 
   dbVolSize,
   dbVolSizeValidation,
@@ -24,6 +32,7 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
   imgVolSizeValidation,
   setImgVolSize,
   configureLoadBalancer,
+  configureLoadBalancerInitial,
   setConfigureLoadBalancer,
 }) => {
   const { t } = useTranslation();
@@ -36,6 +45,31 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
     }
     return p;
   };
+
+  const awsHelp = (
+    <Popover
+      bodyContent={t(
+        "ai:If you're running your hub cluster of Amazon Web Services and want to enable the CIM service, we recommend you to configure your load balance if it is not already configured. Learn more about enabling CIM on AWS.",
+      )}
+      footerContent={
+        <a href={docConfigAwsUrl} target="_blank" rel="noreferrer">
+          <Trans t={t}>
+            ai:Learn more about enabling CIM on AWS <ExternalLinkAltIcon />
+          </Trans>
+        </a>
+      }
+    >
+      <button
+        type="button"
+        aria-label={t('ai:More info for load balancer on Amazon web services')}
+        aria-describedby="cim-config-form-aws-title"
+        onClick={(e) => e.preventDefault()}
+        className="pf-c-form__group-label-help"
+      >
+        <HelpIcon noVerticalAlign />
+      </button>
+    </Popover>
+  );
 
   return (
     <Form>
@@ -70,7 +104,6 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
       >
         {t('ai:If there are many clusters, use a higher values for the storage fields.')}
       </FormGroup>
-
       <Flex justifyContent={{ default: 'justifyContentSpaceBetween' }}>
         <FlexItem>
           <FormGroup
@@ -194,61 +227,26 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
         </FlexItem>
       </Flex>
 
-      <FormGroup
-        fieldId="cim-config-form-aws-title"
-        label={t('ai:Do you want us to configure load balancer on Amazon Web Services?')}
-        className="cim-config-form-title"
-        labelIcon={
-          <Popover
-            bodyContent={t(
-              "ai:If you're running your hub cluster of Amazon Web Services and want to enable the CIM service, we recommend you to configure your load balance if it is not already configured. Learn more about enabling CIM on AWS.",
-            )}
-            footerContent={
-              <a href={docConfigAwsUrl} target="_blank" rel="noreferrer">
-                <Trans t={t}>
-                  ai:Learn more about enabling CIM on AWS <ExternalLinkAltIcon />
-                </Trans>
-              </a>
-            }
-          >
-            <button
-              type="button"
-              aria-label={t('ai:More info for load balancer on Amazon web services')}
-              aria-describedby="cim-config-form-aws-title"
-              onClick={(e) => e.preventDefault()}
-              className="pf-c-form__group-label-help"
-            >
-              <HelpIcon noVerticalAlign />
-            </button>
-          </Popover>
+      <Checkbox
+        label={
+          <span className="cim-config-form-aws-label">
+            {t('ai:Configure load balancer on Amazon Web Services')}
+            &nbsp;
+            {awsHelp}
+          </span>
         }
-      >
-        <Flex>
-          <FlexItem>
-            <Radio
-              isChecked={configureLoadBalancer}
-              isDisabled={isEdit && configureLoadBalancer}
-              onChange={() => setConfigureLoadBalancer(true)}
-              label={t('ai:Yes')}
-              id="cim-config-form-aws-yes"
-              name="cim-config-form-aws-yes"
-            />
-          </FlexItem>
-          <FlexItem>
-            <Radio
-              isChecked={!configureLoadBalancer}
-              isDisabled={
-                // In the Edit flow, we support No to Yes transition only
-                isEdit && configureLoadBalancer
-              }
-              onChange={() => setConfigureLoadBalancer(false)}
-              label={t('ai:No')}
-              id="cim-config-form-aws-no"
-              name="cim-config-form-aws-no"
-            />
-          </FlexItem>
-        </Flex>
-      </FormGroup>
+        id="cim-config-form-aws"
+        className="cim-config-form-aws"
+        // isRequired
+        name="aws-loadbalancer-checkbox"
+        isChecked={configureLoadBalancer}
+        isDisabled={
+          isInProgressPeriod ||
+          (isEdit &&
+            configureLoadBalancerInitial) /* For edit flow, only No to Yes transition is possible */
+        }
+        onChange={(checked: boolean) => setConfigureLoadBalancer(checked)}
+      />
     </Form>
   );
 };

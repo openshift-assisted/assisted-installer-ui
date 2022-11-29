@@ -16,15 +16,10 @@ import { AlertPayload } from '../../../../common';
 import { CimConfigurationModalProps, CimConfiguratioProps } from './types';
 import { CimConfigurationForm } from './CimConfigurationForm';
 import { isIngressController, onEnableCIM } from './persist';
-import { CimConfigProgressAlert } from './CimConfigProgressAlert';
 import { CimConfigDisconnectedAlert } from './CimConfigDisconnectedAlert';
-import {
-  CIM_CONFIG_TIMEOUT,
-  MIN_DB_VOL_SIZE,
-  MIN_FS_VOL_SIZE,
-  MIN_IMG_VOL_SIZE,
-} from './constants';
-import { isCIMConfigured } from './utils';
+import { MIN_DB_VOL_SIZE, MIN_FS_VOL_SIZE, MIN_IMG_VOL_SIZE } from './constants';
+import { isCIMConfigProgressing } from './utils';
+import { resetCimConfigProgressAlertSuccessStatus } from './CimConfigProgressAlert';
 
 import './CimConfigurationModal.css';
 
@@ -36,7 +31,6 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
   docDisconnectedUrl,
   docConfigUrl,
   docConfigAwsUrl,
-  assistedServiceDeploymentUrl,
 
   getResource,
   listResources,
@@ -46,7 +40,6 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
   const { t } = useTranslation();
   const [error, setError] = React.useState<AlertPayload>();
   const [isSaving, setSaving] = React.useState(false);
-  const [persistenceStartedAt, setPersistenceStartedAt] = React.useState(0);
 
   const [dbVolSize, _setDbVolSize] = React.useState<number>(() =>
     getStorageSizeGB(10, agentServiceConfig?.spec?.databaseStorage?.resources?.requests?.storage),
@@ -69,7 +62,7 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
   const [configureLoadBalancer, setConfigureLoadBalancer] = React.useState<boolean>(
     platform === 'AWS',
   );
-  const [configureLoadBalancerInitial, setConfigureLoadBalancerInitial] = React.useState(false);
+  const [configureLoadBalancerInitial, setConfigureLoadBalancerInitial] = React.useState(true);
 
   const setDbVolSize = (v: number): void => {
     if (v < MIN_DB_VOL_SIZE) {
@@ -110,6 +103,7 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
         }
 
         setConfigureLoadBalancer(false);
+        setConfigureLoadBalancerInitial(false);
       };
 
       void doItAsync();
@@ -117,12 +111,6 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [platform],
   );
-
-  React.useEffect(() => {
-    if (isCIMConfigured({ agentServiceConfig })) {
-      setPersistenceStartedAt(0);
-    }
-  }, [agentServiceConfig]);
 
   const formProps: CimConfiguratioProps = {
     dbVolSize,
@@ -134,7 +122,9 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
     imgVolSize,
     imgVolSizeValidation,
     setImgVolSize,
+
     configureLoadBalancer,
+    configureLoadBalancerInitial,
     setConfigureLoadBalancer,
   };
 
@@ -142,29 +132,30 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
     const doItAsync = async (): Promise<void> => {
       setSaving(true);
       setError(undefined);
+      resetCimConfigProgressAlertSuccessStatus();
 
-      setPersistenceStartedAt(Date.now());
-      setTimeout(() => {
-        // Make sure we got re-rendered
-        setPersistenceStartedAt((v: number) => (v - 1 >= 0 ? v - 1 : 0));
-      }, CIM_CONFIG_TIMEOUT);
+      if (
+        await onEnableCIM({
+          t,
+          setError,
+          getResource,
+          listResources,
+          patchResource,
+          createResource,
+          agentServiceConfig,
 
-      await onEnableCIM({
-        t,
-        setError,
-        getResource,
-        listResources,
-        patchResource,
-        createResource,
-        agentServiceConfig,
+          platform,
+          dbVolSize,
+          fsVolSize,
+          imgVolSize,
+          configureLoadBalancer,
+        })
+      ) {
+        // successfuly persisted
+        onClose();
+      }
 
-        platform,
-        dbVolSize,
-        fsVolSize,
-        imgVolSize,
-        configureLoadBalancer,
-      });
-
+      // keep modal open and show error
       setConfigureLoadBalancerInitial(configureLoadBalancer);
       setSaving(false);
     };
@@ -172,47 +163,55 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
     void doItAsync();
   };
 
-  // const isProgressing = isCIMConfigProgressing({ agentServiceConfig });
+  const isError = !!error?.title; // this is a communication error only (not the one from agentServiceConfig)
 
-  const isError = !!error?.title; // this is a communication error only (not from the agentServiceConfig)
+  const isConfigure =
+    !isEdit || !configureLoadBalancerInitial; /* The only possible change for the Edit flow */
 
-  // Postpone showing agentServiceConfig error, it can be part of normal progress which the user is not interested in seeing
-  const showProgressError =
-    persistenceStartedAt === 0 || Date.now() - persistenceStartedAt > CIM_CONFIG_TIMEOUT;
+  const isConfigureDisabled = !!(
+    isSaving ||
+    dbVolSizeValidation ||
+    fsVolSizeValidation ||
+    imgVolSizeValidation ||
+    (isEdit && configureLoadBalancerInitial === configureLoadBalancer)
+  );
 
-  const isCancel =
-    showProgressError &&
-    (isError || (isEdit && configureLoadBalancerInitial === configureLoadBalancer));
+  const isInProgressPeriod = isCIMConfigProgressing({ agentServiceConfig });
+  const isConfiguring = isSaving || isInProgressPeriod;
 
-  const canConfigure =
-    !isSaving &&
-    !dbVolSizeValidation &&
-    !fsVolSizeValidation &&
-    !imgVolSizeValidation &&
-    (!isEdit || configureLoadBalancerInitial !== configureLoadBalancer);
-
-  const actions = [
-    isCancel ? (
-      <Button key="cancel" variant={ButtonVariant.primary} onClick={onClose}>
-        {t('ai:Cancel')}
-      </Button>
-    ) : (
+  let actions: React.ReactNode[];
+  if (isConfigure) {
+    actions = [
       <Button
         key="configure"
-        isDisabled={!canConfigure}
         variant={ButtonVariant.primary}
+        isDisabled={isConfigureDisabled}
         onClick={onConfigure}
       >
-        {(persistenceStartedAt > 0 || isSaving) && (
-          <>
-            <Spinner size="sm" />
-            &nbsp;
-          </>
-        )}
         {t('ai:Configure')}
-      </Button>
-    ),
-  ];
+      </Button>,
+      <Button key="cancel" variant={ButtonVariant.link} onClick={onClose}>
+        {t('ai:Cancel')}
+      </Button>,
+    ];
+  } else if (isConfiguring) {
+    actions = [
+      <Button key="configuring" isDisabled={true /* always */} variant={ButtonVariant.primary}>
+        <Spinner size="sm" />
+        &nbsp;
+        {t('ai:Configuring')}
+      </Button>,
+      <Button key="close" variant={ButtonVariant.link} onClick={onClose}>
+        {t('ai:Close')}
+      </Button>,
+    ];
+  } else {
+    actions = [
+      <Button key="close" variant={ButtonVariant.primary} onClick={onClose}>
+        {t('ai:Close')}
+      </Button>,
+    ];
+  }
 
   return (
     <Modal
@@ -233,25 +232,22 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
           {error.message}
         </Alert>
       )}
-      <CimConfigProgressAlert
-        showSuccess={true}
-        showTroublehooting={true}
-        showProgress={
-          // Since the Configure button gets disabled and the spinner is shown instead
-          false
-        }
-        showError={showProgressError}
-        assistedServiceDeploymentUrl={assistedServiceDeploymentUrl}
-        agentServiceConfig={agentServiceConfig}
-      />
       <CimConfigDisconnectedAlert docDisconnectedUrl={docDisconnectedUrl} />
       <CimConfigurationForm
         isEdit={isEdit}
+        isInProgressPeriod={isInProgressPeriod}
         onClose={onClose}
         docConfigUrl={docConfigUrl}
         docConfigAwsUrl={docConfigAwsUrl}
         {...formProps}
       />
+      {isConfigure && (
+        <Alert
+          variant={AlertVariant.warning}
+          title={t("ai:Note that the storage sizes cannot be changed once you click 'Configure'.")}
+          isInline
+        />
+      )}
     </Modal>
   );
 };

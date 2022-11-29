@@ -2,6 +2,9 @@ import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
 
 import { AgentServiceConfigConditionType, AgentServiceConfigK8sResource } from '../../../types';
 import { getConditionsByType } from '../../../utils';
+import { CIM_CONFIG_TIMEOUT } from './constants';
+
+export const LOCAL_STORAGE_ID_LAST_UPDATE_TIMESTAMP = 'cim-config-configuring-started-at';
 
 export const isCIMEnabled = ({
   agentServiceConfig,
@@ -36,7 +39,22 @@ export const isCIMConfigProgressing = ({
     'DeploymentsHealthy',
   )?.[0];
 
-  return !deploymentsHealthyCondition || deploymentsHealthyCondition.status === 'Unknown';
+  const now = Date.now();
+
+  // Potential post-creation change of the ingress controller (from No to Yes) forces the AI deployment reconciliation and so reporting "errors" during the course.
+  // For that reason we can not reuse AgentServiceController's creationTimestamp to report issues with a graceful delay.
+  // We can store timestamp into a label or simply to the localStorage - let's see if that is an issue in a multi-tenant environment.
+  const updateTime = new Date(
+    // agentServiceConfig.metadata?.creationTimestamp || 0,
+    window.localStorage.getItem(LOCAL_STORAGE_ID_LAST_UPDATE_TIMESTAMP) || 0,
+  );
+  const withinProgressingTimePerion: boolean = now - updateTime.valueOf() < CIM_CONFIG_TIMEOUT;
+
+  return (
+    !deploymentsHealthyCondition ||
+    deploymentsHealthyCondition.status === 'Unknown' ||
+    (deploymentsHealthyCondition.status === 'False' && withinProgressingTimePerion)
+  );
 };
 
 export const isStorageConfigured = ({

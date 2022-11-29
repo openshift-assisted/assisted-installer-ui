@@ -17,21 +17,19 @@ export type CimConfiguratioProps = {
   imgVolSizeValidation?: string;
   setImgVolSize: (v: number) => void;
   configureLoadBalancer: boolean;
+  configureLoadBalancerInitial: boolean;
   setConfigureLoadBalancer: (v: boolean) => void;
 };
 
 export type CimConfigProgressAlertProps = {
   agentServiceConfig?: AgentServiceConfigK8sResource;
-  showSuccess: boolean;
-  showError: boolean;
-  showTroublehooting: boolean;
-  assistedServiceDeploymentUrl?: string;
-  showProgress: boolean;
+  assistedServiceDeploymentUrl: string;
 };
 
 export type CimConfigurationFormProps = CimConfiguratioProps & {
   onClose: () => void;
   isEdit: boolean;
+  isInProgressPeriod: boolean;
   docConfigUrl: string;
   docConfigAwsUrl: string;
 };
@@ -44,7 +42,6 @@ export type CimConfigurationModalProps = {
   docDisconnectedUrl: string;
   docConfigUrl: string;
   docConfigAwsUrl: string;
-  assistedServiceDeploymentUrl: string;
 
   createResource: CreateResourceFuncType;
   getResource: GetResourceFuncType;
