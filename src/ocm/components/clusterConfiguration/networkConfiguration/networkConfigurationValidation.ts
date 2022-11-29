@@ -4,6 +4,7 @@ import {
   clusterNetworksValidationSchema,
   dualStackValidationSchema,
   getDefaultNetworkType,
+  HostSubnets,
   isDualStack,
   isSNO,
   machineNetworksValidationSchema,
@@ -11,6 +12,7 @@ import {
   serviceNetworkValidationSchema,
   IPv4ValidationSchema,
   sshPublicKeyValidationSchema,
+  vipValidationSchema,
   IPV4_STACK,
   DUAL_STACK,
   ClusterDefaultConfig,
@@ -51,9 +53,14 @@ export const getNetworkInitialValues = (
   };
 };
 
-export const getNetworkConfigurationValidationSchema = () =>
+export const getNetworkConfigurationValidationSchema = (
+  initialValues: NetworkConfigurationValues,
+  hostSubnets: HostSubnets,
+) =>
   Yup.lazy<NetworkConfigurationValues>((values) =>
     Yup.object<NetworkConfigurationValues>().shape({
+      apiVip: vipValidationSchema(hostSubnets, values, initialValues.apiVip),
+      ingressVip: vipValidationSchema(hostSubnets, values, initialValues.ingressVip),
       sshPublicKey: sshPublicKeyValidationSchema,
       machineNetworks:
         values.managedNetworkingType === 'userManaged'
