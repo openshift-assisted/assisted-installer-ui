@@ -21,7 +21,7 @@ import NodePoolForm, { NodePoolFormValues } from './NodePoolForm';
 
 type AddNodePoolModalProps = {
   agentsNamespace: string;
-  onSubmit: (nodePool: NodePoolK8sResource) => Promise<void>;
+  onSubmit: (nodePool: NodePoolK8sResource) => Promise<unknown>;
   onClose: VoidFunction;
   agents: AgentK8sResource[];
   hostedCluster: HostedClusterK8sResource;

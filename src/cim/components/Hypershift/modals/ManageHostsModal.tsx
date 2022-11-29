@@ -30,7 +30,7 @@ type ManageHostsModalProps = {
       value: unknown;
       path: string;
     }[],
-  ) => Promise<void>;
+  ) => Promise<unknown>;
   agentMachines: AgentMachineK8sResource[];
 };
 
