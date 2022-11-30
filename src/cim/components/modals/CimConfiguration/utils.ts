@@ -1,7 +1,7 @@
 import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
 
 import { AgentServiceConfigConditionType, AgentServiceConfigK8sResource } from '../../../types';
-import { getConditionsByType } from '../../../utils';
+import { getConditionByType } from '../../../utils';
 import { CIM_CONFIG_TIMEOUT } from './constants';
 
 export const LOCAL_STORAGE_ID_LAST_UPDATE_TIMESTAMP = 'cim-config-configuring-started-at';
@@ -17,10 +17,10 @@ export const isCIMConfigured = ({
 }: {
   agentServiceConfig?: AgentServiceConfigK8sResource;
 }): boolean => {
-  const deploymentsHealthyCondition = getConditionsByType<AgentServiceConfigConditionType>(
+  const deploymentsHealthyCondition = getConditionByType<AgentServiceConfigConditionType>(
     agentServiceConfig?.status?.conditions || [],
     'DeploymentsHealthy',
-  )?.[0];
+  );
 
   return deploymentsHealthyCondition?.status === 'True';
 };
@@ -34,10 +34,10 @@ export const isCIMConfigProgressing = ({
     return false;
   }
 
-  const deploymentsHealthyCondition = getConditionsByType<AgentServiceConfigConditionType>(
+  const deploymentsHealthyCondition = getConditionByType<AgentServiceConfigConditionType>(
     agentServiceConfig?.status?.conditions || [],
     'DeploymentsHealthy',
-  )?.[0];
+  );
 
   const now = Date.now();
 

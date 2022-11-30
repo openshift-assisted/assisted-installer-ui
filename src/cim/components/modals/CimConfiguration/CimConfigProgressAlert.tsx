@@ -10,7 +10,7 @@ import {
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { AgentServiceConfigConditionType } from '../../../types';
 import { CimConfigProgressAlertProps } from './types';
-import { getConditionsByType } from '../../../utils';
+import { getConditionByType } from '../../../utils';
 import { isCIMConfigProgressing, isCIMConfigured } from './utils';
 
 const LOCAL_STORAGE_ID_SUCCESS = 'cim-config-progress-alert';
@@ -85,14 +85,14 @@ export const CimConfigProgressAlert: React.FC<CimConfigProgressAlertProps> = ({
     );
   }
 
-  const deploymentsHealthyCondition = getConditionsByType<AgentServiceConfigConditionType>(
+  const deploymentsHealthyCondition = getConditionByType<AgentServiceConfigConditionType>(
     agentServiceConfig.status?.conditions || [],
     'DeploymentsHealthy',
-  )?.[0];
-  const reconcileCompletedCondition = getConditionsByType<AgentServiceConfigConditionType>(
+  );
+  const reconcileCompletedCondition = getConditionByType<AgentServiceConfigConditionType>(
     agentServiceConfig.status?.conditions || [],
     'ReconcileCompleted',
-  )?.[0];
+  );
 
   const actionLinks: React.ReactNode[] = [assistedServiceDeploymentLink];
 

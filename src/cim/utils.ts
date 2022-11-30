@@ -1,8 +1,8 @@
 import { StatusCondition } from './types';
 
-export function getConditionsByType<ConditionType>(
+export function getConditionByType<ConditionType>(
   conditions: StatusCondition<ConditionType>[],
   type: ConditionType,
-): StatusCondition<ConditionType>[] {
-  return conditions.filter((c) => c.type === type);
+): StatusCondition<ConditionType> | undefined {
+  return conditions.find((c) => c.type === type);
 }
