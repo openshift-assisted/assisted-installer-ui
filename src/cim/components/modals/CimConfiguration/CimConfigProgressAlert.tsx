@@ -107,7 +107,7 @@ export const CimConfigProgressAlert: React.FC<CimConfigProgressAlertProps> = ({
       {deploymentsHealthyCondition?.message || reconcileCompletedCondition?.message}
       <br />
       {t(
-        'ai:You can either wait or investigate. A common issue can be in misconfigured storage. If you fix the issue, you can delete the AgentServiceConfig for starting over.',
+        'ai:You can either wait or investigate. A common issue can be in misconfigured storage. If you fix the issue, you can delete the AgentServiceConfig and start over.',
       )}
     </Alert>
   );

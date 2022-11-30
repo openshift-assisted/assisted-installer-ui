@@ -6,7 +6,6 @@ import {
   ButtonVariant,
   Modal,
   ModalVariant,
-  Spinner,
 } from '@patternfly/react-core';
 
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
@@ -196,9 +195,12 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
     ];
   } else if (isConfiguring) {
     actions = [
-      <Button key="configuring" isDisabled={true /* always */} variant={ButtonVariant.primary}>
-        <Spinner size="sm" />
-        &nbsp;
+      <Button
+        key="configuring"
+        isLoading
+        isDisabled={true /* always */}
+        variant={ButtonVariant.primary}
+      >
         {t('ai:Configuring')}
       </Button>,
       <Button key="close" variant={ButtonVariant.link} onClick={onClose}>

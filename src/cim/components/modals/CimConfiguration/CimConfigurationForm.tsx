@@ -49,7 +49,7 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
   const awsHelp = (
     <Popover
       bodyContent={t(
-        "ai:If you're running your hub cluster of Amazon Web Services and want to enable the CIM service, we recommend you to configure your load balance if it is not already configured. Learn more about enabling CIM on AWS.",
+        "ai:If you're running your hub cluster of Amazon Web Services and want to enable the CIM service, we recommend you to configure your load balancer if it is not already configured. Learn more about enabling CIM on AWS.",
       )}
       footerContent={
         <a href={docConfigAwsUrl} target="_blank" rel="noreferrer">
@@ -245,7 +245,7 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
           (isEdit &&
             configureLoadBalancerInitial) /* For edit flow, only No to Yes transition is possible */
         }
-        onChange={(checked: boolean) => setConfigureLoadBalancer(checked)}
+        onChange={setConfigureLoadBalancer}
       />
     </Form>
   );
