@@ -3,9 +3,11 @@ import { useHistory } from 'react-router-dom';
 import {
   Alert,
   AlertVariant,
-  AlertActionLink,
+  Button,
+  ButtonVariant,
   AlertActionCloseButton,
 } from '@patternfly/react-core';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { AgentServiceConfigConditionType } from '../../../types';
@@ -55,19 +57,21 @@ export const CimConfigProgressAlert: React.FC<CimConfigProgressAlertProps> = ({
       <Alert
         variant={AlertVariant.success}
         isInline
-        title={t('ai:Central infrastructure management is successfuly configured now.')}
+        title={t('ai:Host inventory configured successfully.')}
         actionClose={<AlertActionCloseButton onClose={onCloseSuccess} />}
       />
     );
   }
 
   const assistedServiceDeploymentLink = (
-    <AlertActionLink
+    <Button
+      variant={ButtonVariant.link}
+      isInline
       key="assisted-service-deployment"
       onClick={() => history.push(assistedServiceDeploymentUrl)}
     >
-      {t('ai:Troubleshoot from the assisted service deployment')}
-    </AlertActionLink>
+      {t('ai:Troubleshoot in the assisted service deployment')} <ExternalLinkAltIcon />
+    </Button>
   );
 
   // progressing
@@ -98,7 +102,7 @@ export const CimConfigProgressAlert: React.FC<CimConfigProgressAlertProps> = ({
 
   return (
     <Alert
-      title={t('ai:Central infrastructure management did not come up on time.')}
+      title={t('ai:Configuration is hanging for a long time.')}
       variant={AlertVariant.danger}
       isInline
       actionLinks={actionLinks}
@@ -107,7 +111,7 @@ export const CimConfigProgressAlert: React.FC<CimConfigProgressAlertProps> = ({
       {deploymentsHealthyCondition?.message || reconcileCompletedCondition?.message}
       <br />
       {t(
-        'ai:You can either wait or investigate. A common issue can be in misconfigured storage. If you fix the issue, you can delete the AgentServiceConfig and start over.',
+        'ai:You can either wait or investigate. A common issue can be misconfigured storage. Once you fix the issue, you can delete AgentServiceConfig to try again.',
       )}
     </Alert>
   );
