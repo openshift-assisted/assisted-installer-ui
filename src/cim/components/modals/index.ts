@@ -6,4 +6,5 @@ export { default as MassApproveAgentModal } from './MassApproveAgentModal';
 export { default as MassDeleteAgentModal } from './MassDeleteAgentModal';
 export { default as AddBmcHostModal } from './AddBmcHostModal';
 export { default as AddBmcHostYamlModal } from './AddBmcHostYamlModal';
+export * from './CimConfiguration';
 export * from './utils';
