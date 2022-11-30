@@ -6,6 +6,7 @@ import DiscoveryImageForm from './DiscoveryImageForm';
 import DiscoveryImageSummary from './DiscoveryImageSummary';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
 import useInfraEnvImageUrl from '../../hooks/useInfraEnvImageUrl';
+import useInfraEnvIpxeImageUrl from '../../hooks/useInfraEnvIpxeImageUrl';
 
 type DiscoveryImageModalButtonProps = {
   ButtonComponent?: typeof Button | typeof ToolbarButton;
@@ -41,6 +42,7 @@ export const DiscoveryImageModal = () => {
   const { data, isOpen, close } = discoveryImageDialog;
   const cluster = data?.cluster;
   const { getIsoImageUrl } = useInfraEnvImageUrl();
+  const { getIpxeImageUrl } = useInfraEnvIpxeImageUrl();
 
   const onImageReady = React.useCallback(async () => {
     // We need to retrieve the Iso for the only infraEnv on Day1, hence we don't specify the architecture

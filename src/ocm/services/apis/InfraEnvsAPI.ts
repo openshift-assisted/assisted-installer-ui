@@ -62,6 +62,12 @@ const InfraEnvsAPI = {
   getImageUrl(infraEnvId: InfraEnv['id']) {
     return client.get<PresignedUrl>(`${InfraEnvsAPI.makeBaseURI(infraEnvId)}/downloads/image-url`);
   },
+
+  getIpxeImageUrl(infraEnvId: InfraEnv['id']) {
+    return client.get<PresignedUrl>(
+      `${InfraEnvsAPI.makeBaseURI(infraEnvId)}/files?file_name=ipxe-script`,
+    );
+  },
 };
 
 export default InfraEnvsAPI;
