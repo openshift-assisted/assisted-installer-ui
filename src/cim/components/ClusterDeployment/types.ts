@@ -80,7 +80,7 @@ export type ScaleUpFormValues = Omit<
 > & { cpuArchitecture: CpuArchitecture };
 
 export type ClusterDeploymentDetailsStepProps = ClusterDeploymentDetailsProps & {
-  onSaveDetails: (values: ClusterDeploymentDetailsValues) => Promise<string | void>;
+  onSaveDetails: (values: ClusterDeploymentDetailsValues) => Promise<unknown>;
   onClose: () => void;
   isPreviewOpen: boolean;
 };
@@ -152,7 +152,7 @@ export type ClusterDeploymentWizardProps = {
   isBMPlatform: boolean;
   onSaveAgent: EditAgentModalProps['onSave'];
   onSaveBMH: EditBMHModalProps['onEdit'];
-  onSaveISOParams: AddHostModalProps['onSaveISOParams'];
+  onSaveISOParams?: AddHostModalProps['onSaveISOParams'];
   onSaveHostsDiscovery: ClusterDeploymentHostsDiscoveryStepProps['onSaveHostsDiscovery'];
   onCreateBMH?: AddHostModalProps['onCreateBMH'];
   getClusterDeploymentLink: InfraEnvAgentTableProps['getClusterDeploymentLink'];
@@ -224,7 +224,7 @@ export type ClusterDeploymentHostsDiscoveryProps = {
   onEditRole: ClusterDeploymentHostDiscoveryTableProps['onEditRole'];
   onSetInstallationDiskId: AgentTableActions['onSetInstallationDiskId'];
   onSaveBMH: EditBMHModalProps['onEdit'];
-  onSaveISOParams: AddHostModalProps['onSaveISOParams'];
+  onSaveISOParams?: AddHostModalProps['onSaveISOParams'];
   onFormSaveError?: EditAgentModalProps['onFormSaveError'];
   fetchSecret: EditBMHModalProps['fetchSecret'];
   getClusterDeploymentLink: InfraEnvAgentTableProps['getClusterDeploymentLink'];

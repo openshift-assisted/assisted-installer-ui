@@ -28,14 +28,14 @@ export const shouldShowClusterDeploymentValidationOverview = (
 };
 
 export const shouldShowClusterCredentials = (
-  agentClusterInstall: AgentClusterInstallK8sResource,
+  agentClusterInstall?: AgentClusterInstallK8sResource,
 ) => {
   const [clusterStatus] = getClusterStatus(agentClusterInstall);
   return ['installed', 'adding-hosts'].includes(clusterStatus);
 };
 
 export const shouldShowClusterInstallationProgress = (
-  agentClusterInstall: AgentClusterInstallK8sResource,
+  agentClusterInstall?: AgentClusterInstallK8sResource,
 ) => {
   const [clusterStatus] = getClusterStatus(agentClusterInstall);
   return [
