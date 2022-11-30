@@ -176,7 +176,7 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
   );
 
   const isInProgressPeriod = isCIMConfigProgressing({ agentServiceConfig });
-  const isConfiguring = isSaving || isInProgressPeriod;
+  // const isConfiguring = isSaving || isInProgressPeriod;
 
   let actions: React.ReactNode[];
   if (isConfigure) {
@@ -191,20 +191,6 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
       </Button>,
       <Button key="cancel" variant={ButtonVariant.link} onClick={onClose}>
         {t('ai:Cancel')}
-      </Button>,
-    ];
-  } else if (isConfiguring) {
-    actions = [
-      <Button
-        key="configuring"
-        isLoading
-        isDisabled={true /* always */}
-        variant={ButtonVariant.primary}
-      >
-        {t('ai:Configuring')}
-      </Button>,
-      <Button key="close" variant={ButtonVariant.link} onClick={onClose}>
-        {t('ai:Close')}
       </Button>,
     ];
   } else {
@@ -246,7 +232,7 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
       {isConfigure && (
         <Alert
           variant={AlertVariant.warning}
-          title={t("ai:Note that the storage sizes cannot be changed once you click 'Configure'.")}
+          title={t('ai:Storage sizes cannot be changed once you configure.')}
           isInline
         />
       )}

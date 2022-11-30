@@ -230,7 +230,7 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
       <Checkbox
         label={
           <span className="cim-config-form-aws-label">
-            {t('ai:Configure load balancer on Amazon Web Services')}
+            {t('ai:Configure load balancer on Amazon Web Services for me.')}
             &nbsp;
             {awsHelp}
           </span>
