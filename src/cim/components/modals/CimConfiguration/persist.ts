@@ -4,6 +4,7 @@ import { TFunction } from 'i18next';
 
 import {
   AgentServiceConfigK8sResource,
+  convertOCPtoCIMResourceHeader,
   CreateResourceFuncType,
   GetResourceFuncType,
   ListResourcesFuncType,
@@ -105,7 +106,7 @@ const patchAssistedImageServiceRoute = async (
   ];
 
   try {
-    await patchResource(assistedImageServiceRoute, patches);
+    await patchResource(convertOCPtoCIMResourceHeader(assistedImageServiceRoute), patches);
   } catch (e) {
     console.error('Failed to patch assisted-image-service route: ', e, patches);
     setError({
@@ -224,7 +225,7 @@ const patchAssistedImageService = async (
   ];
 
   try {
-    await patchResource(assistedImageService, patches);
+    await patchResource(convertOCPtoCIMResourceHeader(assistedImageService), patches);
   } catch (e) {
     console.error('Failed to patch assisted-image-service: ', e, patches);
     setError({
@@ -264,7 +265,7 @@ const patchProvisioningConfiguration = async ({
       },
     ];
 
-    await patchResource(provisioning, patches);
+    await patchResource(convertOCPtoCIMResourceHeader(provisioning), patches);
     return true;
   } catch (e) {
     console.error('Failed to patch provisioning-configuration: ', e);
@@ -326,7 +327,7 @@ const createAgentServiceConfig = async ({
       },
     };
 
-    await createResource(agentServiceConfig);
+    await createResource(convertOCPtoCIMResourceHeader(agentServiceConfig));
     return true;
   } catch (e) {
     console.error('Failed to create AgentServiceConfig: ', e);
