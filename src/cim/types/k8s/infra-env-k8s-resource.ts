@@ -29,5 +29,9 @@ export type InfraEnvK8sResource = K8sResourceCommon & {
     agentLabelSelector?: Selector;
     conditions?: StatusCondition<InfraEnvStatusConditionType>[];
     isoDownloadURL?: string;
+    createdTime?: string;
+    debugInfo?: {
+      eventsURL?: string;
+    };
   };
 };

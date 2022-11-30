@@ -41,9 +41,9 @@ type NodePoolsTableProps = {
       value: unknown;
       path: string;
     }[],
-  ) => Promise<void>;
+  ) => Promise<unknown>;
   hostedCluster: HostedClusterK8sResource;
-  onAddNodePool: (nodePool: NodePoolK8sResource) => Promise<void>;
+  onAddNodePool: (nodePool: NodePoolK8sResource) => Promise<unknown>;
   clusterImages: ClusterImageSetK8sResource[];
   agentMachines: AgentMachineK8sResource[];
   supportedVersionsCM?: ConfigMapK8sResource;
