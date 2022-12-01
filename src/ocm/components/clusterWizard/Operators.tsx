@@ -23,6 +23,7 @@ import { updateCluster } from '../../reducers/clusters';
 import { handleApiError } from '../../api';
 import { canNextOperators } from './wizardTransition';
 import { getErrorMessage } from '../../../common/utils';
+import { useHistory, useLocation } from 'react-router-dom';
 
 export const getOperatorsInitialValues = (
   monitoredOperators: MonitoredOperator[],
@@ -41,6 +42,8 @@ const OperatorsForm = ({ cluster }: { cluster: Cluster }) => {
   const clusterWizardContext = useClusterWizardContext();
   const isAutoSaveRunning = useFormikAutoSave();
   const { errors, touched, isSubmitting, isValid } = useFormikContext<OperatorsValues>();
+  const history = useHistory();
+  const { pathname } = useLocation();
 
   const isNextDisabled =
     isAutoSaveRunning ||
@@ -48,6 +51,11 @@ const OperatorsForm = ({ cluster }: { cluster: Cluster }) => {
     !!alerts.length ||
     isSubmitting ||
     !canNextOperators({ cluster });
+
+  const handleNext = () => {
+    history.replace(pathname, undefined);
+    clusterWizardContext.moveNext();
+  };
 
   return (
     <ClusterWizardStep
@@ -58,7 +66,7 @@ const OperatorsForm = ({ cluster }: { cluster: Cluster }) => {
           errorFields={getFormikErrorFields(errors, touched)}
           isSubmitting={isSubmitting}
           isNextDisabled={isNextDisabled}
-          onNext={() => clusterWizardContext.moveNext()}
+          onNext={handleNext}
           onBack={() => clusterWizardContext.moveBack()}
         />
       }
