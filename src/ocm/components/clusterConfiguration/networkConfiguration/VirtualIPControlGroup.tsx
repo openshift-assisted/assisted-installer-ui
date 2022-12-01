@@ -126,8 +126,8 @@ export const VirtualIPControlGroup = ({
   const onChangeDhcp = React.useCallback(
     (hasDhcp: boolean) => {
       // We need to sync the values back to the form
-      setFieldValue('apiVip', hasDhcp ? '' : cluster.apiVip, false);
-      setFieldValue('ingressVip', hasDhcp ? '' : cluster.ingressVip, false);
+      setFieldValue('apiVip', hasDhcp ? '' : cluster.apiVip);
+      setFieldValue('ingressVip', hasDhcp ? '' : cluster.ingressVip);
     },
     [cluster.apiVip, cluster.ingressVip, setFieldValue],
   );
