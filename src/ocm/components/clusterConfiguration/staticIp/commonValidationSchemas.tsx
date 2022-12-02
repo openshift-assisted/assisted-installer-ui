@@ -5,15 +5,7 @@ import { getAddressObject } from './data/protocolVersion';
 import { ProtocolVersion } from './data/dataTypes';
 import { getDuplicates } from '../../../../common';
 
-const RESERVED_LOCAL_HOST_IPS = {
-  ipv4: '127.0.0.0',
-  ipv6: '::1',
-};
-
-const RESERVED_CATCH_ALL_IPS = {
-  ipv4: '0.0.0.0',
-  ipv6: '0000::',
-};
+const RESERVED_IPS = ['127.0.0.0', '127.0.0.1', '0.0.0.0', '255.255.255.255'];
 
 export type UniqueStringArrayExtractor<FormValues> = (
   values: FormValues,
@@ -56,13 +48,9 @@ const isValidAddress = (protocolVersion: ProtocolVersion, addressStr: string) =>
 const isReservedAddress = (ip: string, protocolVersion: ProtocolVersion) => {
   try {
     if (protocolVersion === ProtocolVersion.ipv4) {
-      return ip === RESERVED_LOCAL_HOST_IPS.ipv4 || ip === RESERVED_CATCH_ALL_IPS.ipv4;
+      return RESERVED_IPS.includes(ip);
     } else {
-      const ipv6Address = new Address6(ip);
-      return (
-        compareIPV6Addresses(new Address6(RESERVED_LOCAL_HOST_IPS.ipv6), ipv6Address) ||
-        compareIPV6Addresses(new Address6(RESERVED_CATCH_ALL_IPS.ipv6), ipv6Address)
-      );
+      return isReservedIpv6Address(new Address6(ip)) !== undefined;
     }
   } catch (e) {
     return false;
@@ -117,17 +105,21 @@ export const getMultipleIpAddressValidationSchema = (protocolVersion: ProtocolVe
   );
 };
 
-export const compareIPV6Addresses = (address1: Address6, address2: Address6) => {
-  return JSON.stringify(address1.toByteArray()) === JSON.stringify(address2.toByteArray());
+export const isReservedIpv6Address = (ipv6Address: Address6) => {
+  return ipv6Address.isLoopback() || ipv6Address.isMulticast();
 };
 
-export const isNotReservedHostIPAddress = (protocolVersion: ProtocolVersion) => {
+export const isNotReservedHostIPAddress = (
+  protocolVersion: ProtocolVersion,
+  isDnsAddress = false,
+) => {
+  const textForAddress = isDnsAddress ? 'a DNS' : 'an interface';
   return Yup.string().test(
     'is-not-reserved-address',
     ({ value }) => {
       const addresses = (value as string).split(',');
       if (addresses.length === 1) {
-        return 'Provided IP address is not a correct address for an interface.';
+        return `Provided IP address is not a correct address for ${textForAddress}.`;
       }
 
       const reservedAddresses = addresses.filter((address) => {
@@ -135,7 +127,7 @@ export const isNotReservedHostIPAddress = (protocolVersion: ProtocolVersion) => 
       });
       return `Provided IP addresses ${reservedAddresses.join(
         ', ',
-      )} are not correct addresses for an interface.`;
+      )} are not correct addresses for ${textForAddress}.`;
     },
     function (value) {
       if (!value) {
