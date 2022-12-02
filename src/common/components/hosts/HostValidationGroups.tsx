@@ -46,12 +46,17 @@ type ValidationGroupAlertProps = ValidationInfoActionProps & {
   title: string;
 };
 
-const ValidationsAlert: React.FC<{
+const ValidationsAlert = ({
+  validations,
+  variant,
+  title,
+  actionLinks = [],
+}: {
   validations: Validation[];
   variant: AlertVariant;
   title: string;
   actionLinks?: ReactElement[];
-}> = ({ validations, variant, title, actionLinks = [] }) => {
+}) => {
   const { t } = useTranslation();
   return (
     <Alert title={title} variant={variant} actionLinks={actionLinks} isInline>
@@ -67,12 +72,15 @@ const ValidationsAlert: React.FC<{
   );
 };
 
-const HostnameAlert: React.FC<
-  Required<InvalidHostnameActionProps> & {
-    hostnameValidations: Validation[];
-    variant: AlertVariant;
-  }
-> = ({ onEditHostname, host, hostnameValidations, variant }) => {
+const HostnameAlert = ({
+  onEditHostname,
+  host,
+  hostnameValidations,
+  variant,
+}: Required<InvalidHostnameActionProps> & {
+  hostnameValidations: Validation[];
+  variant: AlertVariant;
+}) => {
   const { t } = useTranslation();
   const actionLinks = [
     <Hostname
@@ -97,9 +105,11 @@ const HostnameAlert: React.FC<
   );
 };
 
-const NtpSyncAlert: React.FC<
-  Required<AdditionNtpSourcePropsType> & { variant: AlertVariant; validation: Validation }
-> = ({ AdditionalNTPSourcesDialogToggleComponent, variant, validation }) => {
+const NtpSyncAlert = ({
+  AdditionalNTPSourcesDialogToggleComponent,
+  variant,
+  validation,
+}: Required<AdditionNtpSourcePropsType> & { variant: AlertVariant; validation: Validation }) => {
   const actionLinks = [<AdditionalNTPSourcesDialogToggleComponent key="add-ntp-sources" />];
   const { t } = useTranslation();
   return (
@@ -114,9 +124,11 @@ const NtpSyncAlert: React.FC<
   );
 };
 
-const ApiVipConnectivityAlert: React.FC<
-  Required<UpdateDay2ApiVipPropsType> & { variant: AlertVariant; validation: Validation }
-> = ({ UpdateDay2ApiVipDialogToggleComponent, variant, validation }) => {
+const ApiVipConnectivityAlert = ({
+  UpdateDay2ApiVipDialogToggleComponent,
+  variant,
+  validation,
+}: Required<UpdateDay2ApiVipPropsType> & { variant: AlertVariant; validation: Validation }) => {
   const actionLinks = [<UpdateDay2ApiVipDialogToggleComponent key="update-api-vip" />];
   const { t } = useTranslation();
   return (
@@ -131,7 +143,7 @@ const ApiVipConnectivityAlert: React.FC<
   );
 };
 
-const ValidationGroupAlerts: React.FC<ValidationGroupAlertProps> = ({
+const ValidationGroupAlerts = ({
   validations,
   title,
   variant,
@@ -139,7 +151,7 @@ const ValidationGroupAlerts: React.FC<ValidationGroupAlertProps> = ({
   AdditionalNTPSourcesDialogToggleComponent,
   UpdateDay2ApiVipDialogToggleComponent,
   host,
-}) => {
+}: ValidationGroupAlertProps) => {
   if (!validations.length) {
     return null;
   }
@@ -209,10 +221,7 @@ const ValidationGroupAlerts: React.FC<ValidationGroupAlertProps> = ({
   return <AlertGroup>{alerts}</AlertGroup>;
 };
 
-export const HostValidationGroups: React.FC<HostValidationGroupsProps> = ({
-  validationsInfo,
-  ...props
-}) => {
+export const HostValidationGroups = ({ validationsInfo, ...props }: HostValidationGroupsProps) => {
   const { t } = useTranslation();
   return (
     <>
@@ -220,10 +229,16 @@ export const HostValidationGroups: React.FC<HostValidationGroupsProps> = ({
         const groupLabel = hostValidationGroupLabels(t)[groupName] as string;
 
         const pendingValidations = (validationsInfo[groupName] as Validation[]).filter(
-          (v: Validation) => v.status === 'pending',
+          (v: Validation) => v.status === 'pending' && v.id !== 'ntp-synced',
         );
         const failedValidations = (validationsInfo[groupName] as Validation[]).filter(
-          (v: Validation) => v.status === 'failure' || v.status === 'error',
+          (v: Validation) =>
+            (v.status === 'failure' || v.status === 'error') && v.id !== 'ntp-synced',
+        );
+
+        const softValidations = (validationsInfo[groupName] as Validation[]).filter(
+          (v: Validation) =>
+            ['pending', 'failure', 'error'].includes(v.status) && v.id === 'ntp-synced',
         );
 
         const getValidationGroupState = () => {
@@ -255,14 +270,25 @@ export const HostValidationGroups: React.FC<HostValidationGroupsProps> = ({
               </LevelItem>
               <LevelItem>{getValidationGroupState()}</LevelItem>
             </Level>
-            {!failedValidations.length && ( // display pending validations only if there are no failing validations
-              <ValidationGroupAlerts
-                variant={AlertVariant.info}
-                title={t('ai:Pending validations:')}
-                validations={pendingValidations}
-                {...props}
-              />
-            )}
+            {
+              // display pending and soft validations only if there are no failing validations
+              !failedValidations.length && (
+                <>
+                  <ValidationGroupAlerts
+                    variant={AlertVariant.info}
+                    title={t('ai:Pending validations:')}
+                    validations={pendingValidations}
+                    {...props}
+                  />
+                  <ValidationGroupAlerts
+                    variant={AlertVariant.info}
+                    validations={softValidations}
+                    title={''}
+                    {...props}
+                  />
+                </>
+              )
+            }
             <ValidationGroupAlerts
               variant={AlertVariant.warning}
               title={t('ai:Failed validations:')}
