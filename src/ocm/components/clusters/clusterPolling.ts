@@ -1,15 +1,21 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Cluster, POLLING_INTERVAL } from '../../../common';
+import { Cluster, ResourceUIState, POLLING_INTERVAL } from '../../../common';
 import {
   fetchClusterAsync,
   cleanCluster,
   forceReload,
   cancelForceReload,
-  RetrievalErrorType,
-} from '../../reducers/clusters/currentClusterSlice';
+  FetchErrorType,
+} from '../../reducers/clusters';
 import { selectCurrentClusterState } from '../../selectors';
-import { ResourceUIState } from '../../../common';
+
+const shouldRefetch = (uiState: ResourceUIState, hasClusterData: boolean) => {
+  if (uiState === ResourceUIState.ERROR) {
+    return hasClusterData;
+  }
+  return ![ResourceUIState.LOADING, ResourceUIState.RELOADING].includes(uiState);
+};
 
 export const useFetchCluster = (clusterId: string) => {
   const dispatch = useDispatch();
@@ -21,25 +27,19 @@ export const useClusterPolling = (
 ): {
   cluster: Cluster | undefined;
   uiState: ResourceUIState;
-  errorDetail: RetrievalErrorType | undefined;
+  errorDetail: FetchErrorType | undefined;
 } => {
   const { isReloadScheduled, uiState, data, errorDetail } = useSelector(selectCurrentClusterState);
   const dispatch = useDispatch();
   const fetchCluster = useFetchCluster(clusterId);
+  const hasClusterData = !!data;
 
   React.useEffect(() => {
-    if (isReloadScheduled) {
-      const bannedUIStates = [
-        ResourceUIState.LOADING,
-        ResourceUIState.RELOADING,
-        ResourceUIState.ERROR,
-      ];
-      if (!bannedUIStates.includes(uiState)) {
-        fetchCluster();
-      }
+    if (isReloadScheduled && shouldRefetch(uiState, hasClusterData)) {
+      fetchCluster();
     }
     dispatch(cancelForceReload());
-  }, [fetchCluster, dispatch, isReloadScheduled, uiState]);
+  }, [fetchCluster, dispatch, isReloadScheduled, hasClusterData, uiState]);
 
   React.useEffect(() => {
     fetchCluster();

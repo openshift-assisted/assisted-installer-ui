@@ -1,5 +1,5 @@
 import { TFunction } from 'i18next';
-import { InfraEnvK8sResource, SecretK8sResource } from '../../types';
+import { BareMetalHostK8sResource, InfraEnvK8sResource, SecretK8sResource } from '../../types';
 import { INFRAENV_AGENTINSTALL_LABEL_KEY, BMH_HOSTNAME_ANNOTATION } from '../common';
 
 export const getBareMetalHostCredentialsSecret = (
@@ -34,14 +34,14 @@ export const getBareMetalHost = (
   },
   infraEnv: InfraEnvK8sResource,
   secret: SecretK8sResource,
-) => ({
+): BareMetalHostK8sResource => ({
   apiVersion: 'metal3.io/v1alpha1',
   kind: 'BareMetalHost',
   metadata: {
     name: values.name,
     namespace: infraEnv.metadata?.namespace,
     labels: {
-      [INFRAENV_AGENTINSTALL_LABEL_KEY]: infraEnv.metadata?.name,
+      [INFRAENV_AGENTINSTALL_LABEL_KEY]: infraEnv.metadata?.name || '',
     },
     annotations: {
       'inspect.metal3.io': 'disabled',

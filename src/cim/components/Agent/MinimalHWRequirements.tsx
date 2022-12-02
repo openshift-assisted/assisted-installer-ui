@@ -1,22 +1,49 @@
+import * as React from 'react';
 import { Button, ButtonVariant, Modal, ModalVariant } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons';
-import * as React from 'react';
+
 import { ConfigMapK8sResource } from '../../types';
 import HostRequirements, {
   HostRequirementsListProps,
 } from '../../../common/components/hosts/HostRequirements';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
+type HostData = {
+  cpu_cores: number;
+  ram_mib: number;
+  disk_size_gb: number;
+};
+
+type HWRequirements = {
+  version: string;
+  master: HostData;
+  worker: HostData;
+  sno: HostData;
+};
+
+type MinimalHWRequirementsProps = {
+  aiConfigMap: ConfigMapK8sResource;
+  isSNOCluster?: boolean;
+};
+
+type MinimalHWRequirementsModalProps = MinimalHWRequirementsProps & {
+  isOpen: boolean;
+  onClose: () => void;
+};
+
 export const getHWRequirements = (aiConfigMap: ConfigMapK8sResource): HostRequirementsListProps => {
-  let hwRequirements;
+  let hwRequirements: HWRequirements | undefined;
   try {
-    hwRequirements = JSON.parse(aiConfigMap.data?.HW_VALIDATOR_REQUIREMENTS || '[]')?.find(
-      // eslint-disable-next-line
-      (req: any) => req.version === 'default',
-    );
+    const hwData = JSON.parse(
+      aiConfigMap.data?.HW_VALIDATOR_REQUIREMENTS || '[]',
+    ) as HWRequirements[];
+
+    hwRequirements = hwData.find((req: { version?: string }) => req.version === 'default');
   } catch {
-    hwRequirements = {};
+    console.error('Failed to parse hw requirements config map');
+    hwRequirements = undefined;
   }
+
   return {
     master: {
       cpuCores: hwRequirements?.master?.cpu_cores,
@@ -34,11 +61,6 @@ export const getHWRequirements = (aiConfigMap: ConfigMapK8sResource): HostRequir
       diskSizeGb: hwRequirements?.sno?.disk_size_gb,
     },
   };
-};
-
-type MinimalHWRequirementsProps = {
-  aiConfigMap: ConfigMapK8sResource;
-  isSNOCluster?: boolean;
 };
 
 const MinimalHWRequirements: React.FC<MinimalHWRequirementsProps> = ({
@@ -66,11 +88,6 @@ const MinimalHWRequirements: React.FC<MinimalHWRequirementsProps> = ({
       />
     </>
   );
-};
-
-type MinimalHWRequirementsModalProps = MinimalHWRequirementsProps & {
-  isOpen: boolean;
-  onClose: () => void;
 };
 
 export const MinimalHWRequirementsModal = ({
