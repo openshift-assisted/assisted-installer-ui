@@ -27,8 +27,8 @@ type ClusterInstallationProgressProps = {
       value: unknown;
       path: string;
     }[],
-  ) => Promise<void>;
-  onAddNodePool: (nodePool: NodePoolK8sResource) => Promise<void>;
+  ) => Promise<unknown>;
+  onAddNodePool: (nodePool: NodePoolK8sResource) => Promise<unknown>;
   clusterImages: ClusterImageSetK8sResource[];
   launchToOCP: (urlSuffix: string, newTab: boolean) => void;
   supportedVersionsCM?: ConfigMapK8sResource;
