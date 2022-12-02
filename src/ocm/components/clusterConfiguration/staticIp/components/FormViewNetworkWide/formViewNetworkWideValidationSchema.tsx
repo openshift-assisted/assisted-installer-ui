@@ -63,13 +63,17 @@ const getMachineNetworkValidationSchema = (protocolVersion: ProtocolVersion) =>
       .transform(transformNumber) as Yup.NumberSchema, //add casting to not get typescript error caused by nullable
   });
 
-const getIPValidationSchema = (protocolVersion: ProtocolVersion, allowsMultiple = false) => {
+const getIPValidationSchema = (
+  protocolVersion: ProtocolVersion,
+  allowsMultiple = false,
+  isDnsAddress = false,
+) => {
   const baseValidation = allowsMultiple
     ? getMultipleIpAddressValidationSchema
     : getIpAddressValidationSchema;
   return baseValidation(protocolVersion)
     .required(REQUIRED_MESSAGE)
-    .concat(isNotReservedHostIPAddress(protocolVersion));
+    .concat(isNotReservedHostIPAddress(protocolVersion, isDnsAddress));
 };
 
 const getAddressDataValidationSchema = (protocolVersion: ProtocolVersion, ipConfig: IpConfig) => {
@@ -102,7 +106,7 @@ export const networkWideValidationSchema = Yup.lazy<FormViewNetworkWideValues>(
           .transform(transformNumber) as Yup.NumberSchema,
       }),
       protocolType: Yup.string(),
-      dns: getIPValidationSchema(ProtocolVersion.ipv4, true),
+      dns: getIPValidationSchema(ProtocolVersion.ipv4, true, true),
       ipConfigs: ipConfigsValidationSchemas,
     });
   },
