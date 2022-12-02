@@ -5,13 +5,7 @@ import { getAddressObject } from './data/protocolVersion';
 import { ProtocolVersion } from './data/dataTypes';
 import { getDuplicates } from '../../../../common';
 
-const RESERVED_LOCAL_HOST_IPS = {
-  ipv4: ['127.0.0.0', '127.0.0.1'],
-};
-
-const RESERVED_CATCH_ALL_IPS = {
-  ipv4: ['0.0.0.0', '255.255.255.255'],
-};
+const RESERVED_IPS = ['127.0.0.0', '127.0.0.1', '0.0.0.0', '255.255.255.255'];
 
 export type UniqueStringArrayExtractor<FormValues> = (
   values: FormValues,
@@ -54,7 +48,7 @@ const isValidAddress = (protocolVersion: ProtocolVersion, addressStr: string) =>
 const isReservedAddress = (ip: string, protocolVersion: ProtocolVersion) => {
   try {
     if (protocolVersion === ProtocolVersion.ipv4) {
-      return RESERVED_LOCAL_HOST_IPS.ipv4.includes(ip) || RESERVED_CATCH_ALL_IPS.ipv4.includes(ip);
+      return RESERVED_IPS.includes(ip);
     } else {
       return isReservedIpv6Address(new Address6(ip)) !== undefined;
     }
@@ -113,10 +107,6 @@ export const getMultipleIpAddressValidationSchema = (protocolVersion: ProtocolVe
 
 export const isReservedIpv6Address = (ipv6Address: Address6) => {
   return ipv6Address.isLoopback() || ipv6Address.isMulticast();
-};
-
-export const compareIPV6Addresses = (address1: Address6, address2: Address6) => {
-  return JSON.stringify(address1.toByteArray()) === JSON.stringify(address2.toByteArray());
 };
 
 export const isNotReservedHostIPAddress = (
