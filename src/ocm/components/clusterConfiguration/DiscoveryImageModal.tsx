@@ -4,6 +4,7 @@ import { pluralize } from 'humanize-plus';
 import { Cluster, CpuArchitecture, ErrorState, isSNO, ToolbarButton } from '../../../common';
 import DiscoveryImageForm from './DiscoveryImageForm';
 import DiscoveryImageSummary from './DiscoveryImageSummary';
+import DiscoveryIpxeImageSummary from './DiscoveryIpxeImageSummary';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
 import useInfraEnvImageUrl from '../../hooks/useInfraEnvImageUrl';
 import useInfraEnvIpxeImageUrl from '../../hooks/useInfraEnvIpxeImageUrl';
@@ -37,6 +38,8 @@ export const DiscoveryImageModalButton: React.FC<DiscoveryImageModalButtonProps>
 export const DiscoveryImageModal = () => {
   const [isoDownloadUrl, setIsoDownloadUrl] = React.useState<string>('');
   const [isoDownloadError, setIsoDownloadError] = React.useState<string>('');
+  const [ipxeDownloadUrl, setIpxeDownloadUrl] = React.useState<string>('');
+  const [ipxeDownloadError, setIpxeDownloadError] = React.useState<string>('');
 
   const { discoveryImageDialog } = useModalDialogsContext();
   const { data, isOpen, close } = discoveryImageDialog;
@@ -51,8 +54,16 @@ export const DiscoveryImageModal = () => {
     setIsoDownloadError(error);
   }, [getIsoImageUrl, cluster?.id]);
 
+  const onImageIpxeReady = React.useCallback(async () => {
+    // We need to retrieve the Iso for the only infraEnv on Day1, hence we don't specify the architecture
+    const { url, error } = await getIpxeImageUrl(cluster.id, CpuArchitecture.USE_DAY1_ARCHITECTURE);
+    setIpxeDownloadUrl(url);
+    setIpxeDownloadError(error);
+  }, [setIpxeDownloadUrl, cluster?.id]);
+
   const onReset = React.useCallback(() => {
     setIsoDownloadUrl('');
+    setIpxeDownloadUrl('');
   }, []);
 
   if (!cluster) {
@@ -71,7 +82,7 @@ export const DiscoveryImageModal = () => {
       hasNoBodyWrapper
       id="generate-discovery-iso-modal"
     >
-      {isoDownloadError && <ErrorState />}
+      {(isoDownloadError || ipxeDownloadError) && <ErrorState />}
       {isoDownloadUrl ? (
         <DiscoveryImageSummary
           clusterName={cluster.name || ''}
@@ -81,12 +92,22 @@ export const DiscoveryImageModal = () => {
           isoDownloadUrl={isoDownloadUrl}
           cpuArchitecture={CpuArchitecture.USE_DAY1_ARCHITECTURE}
         />
+      ) : ipxeDownloadUrl ? (
+        <DiscoveryIpxeImageSummary
+          clusterName={cluster.name || ''}
+          isSNO={isSNOCluster}
+          onClose={close}
+          onReset={onReset}
+          ipxeDownloadUrl={ipxeDownloadUrl}
+          cpuArchitecture={CpuArchitecture.USE_DAY1_ARCHITECTURE}
+        />
       ) : (
         <DiscoveryImageForm
           cluster={cluster}
           onCancel={close}
           onSuccess={onImageReady}
           cpuArchitecture={CpuArchitecture.USE_DAY1_ARCHITECTURE}
+          onSuccessIpxe={onImageIpxeReady}
         />
       )}
     </Modal>

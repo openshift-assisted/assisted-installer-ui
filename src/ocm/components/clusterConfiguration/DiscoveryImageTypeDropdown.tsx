@@ -3,29 +3,29 @@ import {
   DropdownItem,
   DropdownToggle,
   Dropdown,
-  HelperText,
   FormGroup,
   DropdownSeparator,
 } from '@patternfly/react-core';
 import { CaretDownIcon } from '@patternfly/react-icons';
-import { TFunction } from 'i18next';
 import { useField } from 'formik';
 import { getFieldId } from '../../../common';
 
 const discoveryImageTypes = {
   'discovery-iso-minimal': 'Minimal image file - Provision with virtual media',
   'discovery-iso-full': 'Full image file - Provision with physicial media',
-  'discovery-iso-ipxe': 'iPXE - Provision from your network server',
+  'discovery-image-ipxe': 'iPXE - Provision from your network server',
 };
 
 type DiscoveryImageTypeDropdownProps = {
   name: string;
   defaultValue: string | undefined;
+  updateAlertAndButtonText: (imageType: string) => void;
 };
 
 export const DiscoveryImageTypeDropdown = ({
   name,
   defaultValue,
+  updateAlertAndButtonText,
 }: DiscoveryImageTypeDropdownProps) => {
   const [field, , { setValue }] = useField(name);
   const [isOpen, setOpen] = React.useState(false);
@@ -35,30 +35,27 @@ export const DiscoveryImageTypeDropdown = ({
     <DropdownItem
       key="discovery-iso-minimal"
       id="discovery-iso-minimal"
-      onClick={() => {}}
       description={
         'Use when your storage capacity is limited or being served over a constrained network.'
       }
     >
       {discoveryImageTypes['discovery-iso-minimal']}
     </DropdownItem>,
-    <DropdownSeparator />,
+    <DropdownSeparator key="separator1" />,
     <DropdownItem
       key="discovery-iso-full"
       id="discovery-iso-full"
-      onClick={() => {}}
       description={'The generated discovery ISO will contain everything needed to boot.'}
     >
       {discoveryImageTypes['discovery-iso-full']}
     </DropdownItem>,
-    <DropdownSeparator />,
+    <DropdownSeparator key="separator2" />,
     <DropdownItem
-      key="discovery-iso-ipxe"
-      id="discovery-iso-ipxe"
-      onClick={() => {}}
+      key="discovery-image-ipxe"
+      id="discovery-image-ipxe"
       description={'Use when you have an iPXE server that has already been set up.'}
     >
-      {discoveryImageTypes['discovery-iso-ipxe']}
+      {discoveryImageTypes['discovery-image-ipxe']}
     </DropdownItem>,
   ];
 
@@ -70,6 +67,7 @@ export const DiscoveryImageTypeDropdown = ({
       setCurrent(currentValue ? currentValue : '');
       setValue(event?.currentTarget.id);
       setOpen(false);
+      updateAlertAndButtonText(event?.currentTarget.id || '');
     },
     [setCurrent, setOpen, defaultValue, setValue],
   );

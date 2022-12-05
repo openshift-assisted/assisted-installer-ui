@@ -92,6 +92,19 @@ export const OcmDiscoveryImageConfigForm: React.FC<OcmDiscoveryImageConfigFormPr
   };
 
   const { t } = useTranslation();
+  const [buttonText, setButtonText] = React.useState<string>(t('ai:Generate Discovery ISO'));
+  const [alertDiscoveryText, setAlertDiscoveryText] = React.useState<string>(
+    t('ai:To add hosts to the cluster, generate a Discovery ISO.'),
+  );
+  const updateDiscoveryButtonAndAlertText = React.useCallback((imageType: string) => {
+    if (imageType === 'discovery-iso-minimal' || imageType === 'discovery-iso-full') {
+      setButtonText(t('ai:Generate Discovery ISO'));
+      setAlertDiscoveryText(t('ai:To add hosts to the cluster, generate a Discovery ISO.'));
+    } else {
+      setButtonText(t('ai:Generate script'));
+      setAlertDiscoveryText(t('ai:To add hosts to the cluster, generate iPXE script.'));
+    }
+  }, []);
   return (
     <Formik
       initialValues={initialValues}
@@ -105,11 +118,7 @@ export const OcmDiscoveryImageConfigForm: React.FC<OcmDiscoveryImageConfigFormPr
             <ModalBoxBody>
               <Stack hasGutter>
                 <StackItem>
-                  <Alert
-                    variant={AlertVariant.info}
-                    isInline
-                    title={'To add hosts to the cluster, generate a Discovery ISO.'}
-                  />
+                  <Alert variant={AlertVariant.info} isInline title={alertDiscoveryText} />
                 </StackItem>
                 {hasDHCP === false && (
                   <StackItem>
@@ -127,6 +136,7 @@ export const OcmDiscoveryImageConfigForm: React.FC<OcmDiscoveryImageConfigFormPr
                       <DiscoveryImageTypeDropdown
                         name="discoveryImageDropdown"
                         defaultValue="Full image file - Provision with physicial media"
+                        updateAlertAndButtonText={updateDiscoveryButtonAndAlertText}
                       />
                     )}
                     <UploadSSH />
@@ -137,7 +147,7 @@ export const OcmDiscoveryImageConfigForm: React.FC<OcmDiscoveryImageConfigFormPr
             </ModalBoxBody>
             <ModalBoxFooter>
               <Button onClick={submitForm} isDisabled={isSubmitting} isLoading={isSubmitting}>
-                {isSubmitting ? t('ai:Generating') : t('ai:Generate Discovery ISO')}
+                {isSubmitting ? t('ai:Generating') : buttonText}
               </Button>
               <Button key="cancel" variant="link" onClick={onCancel}>
                 {t('ai:Cancel')}

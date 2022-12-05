@@ -20,6 +20,7 @@ type DiscoveryImageFormProps = {
   onCancel: () => void;
   onSuccess: () => Promise<void>;
   cpuArchitecture: CpuArchitecture;
+  onSuccessIpxe: () => Promise<void>;
 };
 
 const DiscoveryImageForm = ({
@@ -27,6 +28,7 @@ const DiscoveryImageForm = ({
   onCancel,
   onSuccess,
   cpuArchitecture,
+  onSuccessIpxe,
 }: DiscoveryImageFormProps) => {
   const { infraEnv, error: infraEnvError } = useInfraEnv(cluster.id, cpuArchitecture);
   const cancelSourceRef = React.useRef<CancelTokenSource>();
@@ -46,26 +48,30 @@ const DiscoveryImageForm = ({
     formValues: DiscoveryImageFormValues,
     formikActions: FormikHelpers<DiscoveryImageFormValues>,
   ) => {
-    if (cluster.id && infraEnv?.id) {
-      try {
-        const { updatedCluster } = await DiscoveryImageFormService.update(
-          cluster.id,
-          cluster.tags,
-          infraEnv.id,
-          formValues,
-        );
-        await onSuccess();
-        dispatch(updateCluster(updatedCluster));
-      } catch (error) {
-        handleApiError(error, () => {
-          formikActions.setStatus({
-            error: {
-              title: 'Failed to download the discovery Image',
-              message: getApiErrorMessage(error),
-            },
+    if (formValues['discoveryImageDropdown'] !== 'discovery-image-ipxe') {
+      if (cluster.id && infraEnv?.id) {
+        try {
+          const { updatedCluster } = await DiscoveryImageFormService.update(
+            cluster.id,
+            cluster.tags,
+            infraEnv.id,
+            formValues,
+          );
+          await onSuccess();
+          dispatch(updateCluster(updatedCluster));
+        } catch (error) {
+          handleApiError(error, () => {
+            formikActions.setStatus({
+              error: {
+                title: 'Failed to download the discovery Image',
+                message: getApiErrorMessage(error),
+              },
+            });
           });
-        });
+        }
       }
+    } else {
+      await onSuccessIpxe();
     }
   };
 
@@ -75,7 +81,6 @@ const DiscoveryImageForm = ({
   if (!infraEnv) {
     return <LoadingState />;
   }
-
   return (
     <OcmDiscoveryImageConfigForm
       onCancel={handleCancel}
