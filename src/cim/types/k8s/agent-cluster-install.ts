@@ -30,12 +30,18 @@ export type AgentClusterInstallK8sResource = K8sResourceCommon & {
       adminPasswordSecretRef?: {
         name: string;
       };
+      clusterID?: string;
     };
     apiVIP?: string;
     ingressVIP?: string;
     sshPublicKey?: string;
     imageSetRef?: {
       name?: string;
+    };
+    proxy?: {
+      httpProxy?: string;
+      httpsProxy?: string;
+      noProxy?: string;
     };
     provisionRequirements: {
       controlPlaneAgents: number;
@@ -51,7 +57,7 @@ export type AgentClusterInstallK8sResource = K8sResourceCommon & {
         cidr: string;
       }[];
     };
-    holdInstallation: boolean;
+    holdInstallation?: boolean;
   };
   status?: {
     apiVIP?: string;
@@ -62,10 +68,10 @@ export type AgentClusterInstallK8sResource = K8sResourceCommon & {
       totalPercentage: number;
     };
     debugInfo?: {
-      eventsURL: string;
-      logsURL: string;
-      state: Cluster['status'];
-      stateInfo: Cluster['statusInfo'];
+      eventsURL?: string;
+      logsURL?: string;
+      state?: Cluster['status'];
+      stateInfo?: Cluster['statusInfo'];
     };
     validationsInfo?: ValidationsInfo;
     machineNetwork?: {

@@ -85,7 +85,7 @@ export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = 
 }) => {
   const { loading: loadingOCPVersions, versions: versionOptions } = useOpenshiftVersions();
   const fetcher = () => FeatureSupportLevelsAPI.list().then((res) => res.data);
-  const { data: featureSupportLevels, error } = useSWR<FeatureSupportLevels>(
+  const { data: featureSupportLevels, error } = useSWR<FeatureSupportLevels, unknown>(
     FeatureSupportLevelsAPI.makeBaseURI(),
     fetcher,
     { errorRetryCount: 0, revalidateOnFocus: false },
