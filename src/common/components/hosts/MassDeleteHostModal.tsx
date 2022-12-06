@@ -20,15 +20,18 @@ type MassDeleteHostModalProps = {
   hosts: Host[];
   // eslint-disable-next-line
   onDelete: (host: Host) => Promise<any>;
+  reloadCluster?: VoidFunction;
+  children?: React.ReactNode;
 };
 
-const MassDeleteHostModal: React.FC<MassDeleteHostModalProps> = ({
+const MassDeleteHostModal = ({
   isOpen,
   onClose,
   onDelete,
+  reloadCluster,
   hosts,
   children,
-}) => {
+}: MassDeleteHostModalProps) => {
   const [progress, setProgress] = React.useState<number | null>(null);
   const [error, setError] = React.useState<{ title: string; message: string }>();
   const { t } = useTranslation();
@@ -42,6 +45,7 @@ const MassDeleteHostModal: React.FC<MassDeleteHostModalProps> = ({
         await onDelete(host);
       }
       setProgress(null);
+      reloadCluster && reloadCluster();
       onClose();
     } catch (e) {
       setError({
