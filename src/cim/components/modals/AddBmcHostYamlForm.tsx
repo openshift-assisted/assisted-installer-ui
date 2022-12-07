@@ -14,16 +14,18 @@ import {
   Spinner,
   Stack,
   StackItem,
-  Text,
   Title,
 } from '@patternfly/react-core';
-import { UploadActionModalProps } from './types';
 import { ErrorCircleOIcon, UploadIcon } from '@patternfly/react-icons';
 import jsYaml from 'js-yaml';
 import { saveAs } from 'file-saver';
-import { credentials, host1, host2 } from './constants';
+
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { getErrorMessage } from '../../../common/utils';
+
+import { credentials, host1, host2 } from './constants';
+import { UploadActionModalProps } from './types';
+
 import './AddBmcHostYamlForm.css';
 
 const AddBmcHostYamlForm: React.FC<UploadActionModalProps> = ({ onClose, onCreateBmcByYaml }) => {
@@ -67,14 +69,13 @@ const AddBmcHostYamlForm: React.FC<UploadActionModalProps> = ({ onClose, onCreat
         reader.onload = (readerEvent) => {
           const content = readerEvent.target?.result;
           // parse yaml
-          if (typeof content === 'string') {
+          if (content && typeof content === 'string') {
             try {
               //await new Promise((r) => setTimeout(r, 100));
               const yamlContent = jsYaml.loadAll(content);
               setFileName(file.name);
               setFileError(undefined);
               setYamlContent(yamlContent);
-              setShowOpenFileButton(false);
             } catch (err) {
               setFileName(file.name);
               setFileError(
@@ -83,9 +84,18 @@ const AddBmcHostYamlForm: React.FC<UploadActionModalProps> = ({ onClose, onCreat
                 ),
               );
               setYamlContent(undefined);
-              setShowOpenFileButton(false);
             }
+          } else {
+            setYamlContent(undefined);
+            setFileName(file.name);
+            setFileError(
+              t(
+                'ai:File is not structured correctly. Use the template to use the right file structure.',
+              ),
+            );
           }
+
+          setShowOpenFileButton(false);
         };
       }
     };
@@ -94,6 +104,7 @@ const AddBmcHostYamlForm: React.FC<UploadActionModalProps> = ({ onClose, onCreat
 
   const deleteFileContent = () => {
     setFileError(undefined);
+    setError(undefined);
     setFileName(undefined);
     setShowOpenFileButton(true);
     setShowOpeningMessage(false);
@@ -164,9 +175,6 @@ const AddBmcHostYamlForm: React.FC<UploadActionModalProps> = ({ onClose, onCreat
                       <ErrorCircleOIcon onClick={deleteFileContent} />
                     </StackItem>
                   )}
-                  <StackItem>
-                    <Text className="ai-bmc-yaml__error">{fileError}</Text>
-                  </StackItem>
                 </Stack>
               </EmptyStateBody>
             </EmptyState>
@@ -187,12 +195,28 @@ const AddBmcHostYamlForm: React.FC<UploadActionModalProps> = ({ onClose, onCreat
               </Alert>
             </StackItem>
           )}
+          {fileError && (
+            <StackItem>
+              <Alert
+                title={t('ai:The file cannot be uploaded')}
+                variant={AlertVariant.danger}
+                isInline
+                actionClose={
+                  <AlertActionCloseButton /* onClose={() => setFileError(undefined)}*/ />
+                }
+              >
+                {fileError}
+              </Alert>
+            </StackItem>
+          )}
         </Stack>
       </ModalBoxBody>
       <ModalBoxFooter>
         <Button
-          onClick={handleSubmit}
-          isDisabled={fileName === undefined || (fileName !== undefined && fileError !== undefined)}
+          onClick={() => {
+            void handleSubmit();
+          }}
+          isDisabled={!fileName || !!fileError}
         >
           {t('ai:Upload')}
         </Button>
