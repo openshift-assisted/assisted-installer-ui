@@ -566,6 +566,7 @@
   "ai:The cluster has 0 hosts. No workloads will be able to run.": "The cluster has 0 hosts. No workloads will be able to run.",
   "ai:The cluster is not ready for installation.": "The cluster is not ready for installation.",
   "ai:The DHCP server failed to allocate the IP": "The DHCP server failed to allocate the IP",
+  "ai:The file cannot be uploaded": "The file cannot be uploaded",
   "ai:The file is too big. Upload a file up to 12 MiB.": "The file is too big. Upload a file up to 12 MiB.",
   "ai:The following fields are invalid or missing": "The following fields are invalid or missing",
   "ai:The following requirements must be met:": "The following requirements must be met:",
