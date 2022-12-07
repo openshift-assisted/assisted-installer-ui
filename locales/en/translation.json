@@ -699,7 +699,7 @@
   "ai:Use advanced networking": "Use advanced networking",
   "ai:Use alphanumeric characters, dot (.), underscore (_) or hyphen (-)": "Use alphanumeric characters, dot (.), underscore (_) or hyphen (-)",
   "ai:Use arm64 CPU architecture": "Use arm64 CPU architecture",
-  "ai:Use lowercase alphanumeric characters, '-' or '.'": "Use lowercase alphanumeric characters, '-' or '.'",
+  "ai:Use lowercase alphanumeric characters or hyphen (-)": "Use lowercase alphanumeric characters or hyphen (-)",
   "ai:Use lowercase alphanumeric characters, dot (.) or hyphen (-)": "Use lowercase alphanumeric characters, dot (.) or hyphen (-)",
   "ai:Use the same host discovery SSH key": "Use the same host discovery SSH key",
   "ai:useAlerts must be used within AlertsContextProvider": "useAlerts must be used within AlertsContextProvider",
