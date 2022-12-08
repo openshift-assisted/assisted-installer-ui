@@ -293,7 +293,7 @@ const createAgentServiceConfig = async ({
   imgVolSizeGB: number;
 }): Promise<boolean> => {
   try {
-    const agentServiceConfig: AgentServiceConfigK8sResource = {
+    const agentServiceConfig = {
       apiVersion: 'agent-install.openshift.io/v1beta1',
       kind: 'AgentServiceConfig',
       metadata: {
@@ -327,7 +327,7 @@ const createAgentServiceConfig = async ({
       },
     };
 
-    await createResource(convertOCPtoCIMResourceHeader(agentServiceConfig));
+    await createResource(agentServiceConfig);
     return true;
   } catch (e) {
     console.error('Failed to create AgentServiceConfig: ', e);
