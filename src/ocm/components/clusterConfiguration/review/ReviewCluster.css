@@ -7,6 +7,10 @@
   padding-bottom: 0px !important;
 }
 
+.review-table {
+  width: fit-content;
+}
+
 .review-table tr > *:first-child {
   width: 13rem !important;
   padding-left: 0px;
