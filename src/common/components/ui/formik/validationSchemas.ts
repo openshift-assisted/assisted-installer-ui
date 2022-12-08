@@ -1,14 +1,13 @@
-import * as Yup from 'yup';
-import { Address4, Address6 } from 'ip-address';
-import { isInSubnet } from 'is-in-subnet';
-import isCIDR from 'is-cidr';
 import { overlap } from 'cidr-tools';
-
-import { NetworkConfigurationValues, HostSubnets } from '../../../types/clusters';
+import { Address4, Address6 } from 'ip-address';
+import isCIDR from 'is-cidr';
+import { isInSubnet } from 'is-in-subnet';
+import * as Yup from 'yup';
+import { TFunction } from 'i18next';
+import { ClusterNetwork, MachineNetwork, ServiceNetwork } from '../../../api/types';
 import { NO_SUBNET_SET } from '../../../config/constants';
 import { ProxyFieldsType } from '../../../types';
-import { allSubnetsIPv4, trimCommaSeparatedList, trimSshPublicKey } from './utils';
-import { ClusterNetwork, MachineNetwork, ServiceNetwork } from '../../../api/types';
+import { HostSubnets, NetworkConfigurationValues } from '../../../types/clusters';
 import { getErrorMessage } from '../../../utils';
 import {
   bmcAddressValidationMessages,
@@ -17,7 +16,7 @@ import {
   locationValidationMessages,
   nameValidationMessages,
 } from './constants';
-import { TFunction } from 'i18next';
+import { allSubnetsIPv4, trimCommaSeparatedList, trimSshPublicKey } from './utils';
 
 const ALPHANUMBERIC_REGEX = /^[a-zA-Z0-9]+$/;
 const NAME_START_END_REGEX = /^[a-z0-9](.*[a-z0-9])?$/;
@@ -26,6 +25,7 @@ const CLUSTER_NAME_START_END_REGEX = /^[a-z0-9](.*[a-z0-9])?$/;
 // NOTE: based on https://github.com/openshift/assisted-service/blob/master/internal/cluster/validations/validations.go#L32
 const CLUSTER_NAME_REGEX =
   /^[.-a-z0-9]?(([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*)*)[.-a-z0-9]?$/;
+const CLUSTER_NAME_NO_DOT_REGEX = /^[a-z0-9-]*$/;
 const SSH_PUBLIC_KEY_REGEX =
   /^(ssh-rsa|ssh-ed25519|ecdsa-[-a-z0-9]*) AAAA[0-9A-Za-z+/]+[=]{0,3}( .+)?$/;
 const DNS_NAME_REGEX = /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/;
@@ -51,8 +51,10 @@ export const nameValidationSchema = (
   const clusterNameValidationMessagesList = clusterNameValidationMessages(t);
   return Yup.string()
     .required('Required')
-    .matches(CLUSTER_NAME_REGEX, {
-      message: clusterNameValidationMessagesList.INVALID_VALUE,
+    .matches(isOcm ? CLUSTER_NAME_REGEX : CLUSTER_NAME_NO_DOT_REGEX, {
+      message: isOcm
+        ? clusterNameValidationMessagesList.INVALID_VALUE_OCM
+        : clusterNameValidationMessagesList.INVALID_VALUE_ACM,
       excludeEmptyString: true,
     })
     .matches(CLUSTER_NAME_START_END_REGEX, {
