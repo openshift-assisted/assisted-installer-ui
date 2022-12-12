@@ -11,6 +11,8 @@
   "ai:{{count}} control plane node installed_plural": "{{count}} control plane nodes installed",
   "ai:{{count}} filtering label": "{{count}} filtering label",
   "ai:{{count}} filtering label_plural": "{{count}} filtering labels",
+  "ai:{{count}} host has problems": "{{count}} host has problems",
+  "ai:{{count}} host has problems_plural": "{{count}} hosts have problems",
   "ai:{{count}} host requested": "{{count}} host requested",
   "ai:{{count}} host requested_plural": "{{count}} hosts requested",
   "ai:{{count}} worker failed": "{{count}} worker failed",
