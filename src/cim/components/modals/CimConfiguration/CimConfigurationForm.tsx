@@ -192,7 +192,7 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
             labelIcon={
               <Popover
                 bodyContent={t(
-                  'ai:Specify how much storage to allocate for the images of the clusters. There must be 1G of image storage for each instance of Red Hat Enterprise Linux CoreOS that is running. Recommended is 50G or more.',
+                  'ai:Specify how much storage to allocate for the images of the clusters. There must be 1G of image storage for each instance of Red Hat Enterprise Linux CoreOS that is running. Recommended is 50G or more. The value can not be updated later.',
                 )}
               >
                 <button
