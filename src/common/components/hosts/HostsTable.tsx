@@ -19,10 +19,10 @@ type HostsTableEmptyStateProps = {
   isSNO?: boolean;
 };
 
-export const HostsTableEmptyState: React.FC<HostsTableEmptyStateProps> = ({
+export const HostsTableEmptyState = ({
   setDiscoveryHintModalOpen,
   isSNO = false,
-}) => {
+}: HostsTableEmptyStateProps) => {
   const { t } = useTranslation();
   return (
     <EmptyState
@@ -63,9 +63,12 @@ type HostsTableProps = ReturnType<typeof usePagination> &
     children: React.ReactNode;
   };
 
-const HostsTable: React.FC<HostsTableProps & WithTestID> = ({ hosts, skipDisabled, ...rest }) => {
+const HostsTable = ({ hosts, skipDisabled, ...rest }: HostsTableProps & WithTestID) => {
   const data = React.useMemo(
-    () => (hosts || []).filter((host) => !skipDisabled || host.status !== 'disabled'),
+    () =>
+      (hosts || [])
+        .filter((host) => !skipDisabled || host.status !== 'disabled')
+        .sort((a, b) => (a.createdAt && b.createdAt && a.createdAt < b.createdAt ? -1 : 1)),
     [hosts, skipDisabled],
   );
 
