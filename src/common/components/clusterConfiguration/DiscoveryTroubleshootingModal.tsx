@@ -13,7 +13,7 @@ import { PrismCode } from '../ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { Trans } from 'react-i18next';
 
-export const DiscoveryTroubleshootingModalContent: React.FC = () => {
+export const DiscoveryTroubleshootingModalContent = () => {
   const { t } = useTranslation();
   return (
     <TextContent>
@@ -102,6 +102,7 @@ podman logs <container id>`}
 export type HostsNotShowingLinkProps = {
   setDiscoveryHintModalOpen: (isOpen: boolean) => void;
   isSNO?: boolean;
+  isInline?: boolean;
 };
 
 type DiscoveryTroubleshootingModalProps = {
@@ -109,23 +110,29 @@ type DiscoveryTroubleshootingModalProps = {
   isOpen: boolean;
 };
 
-export const HostsNotShowingLink: React.FC<HostsNotShowingLinkProps> = ({
+export const HostsNotShowingLink = ({
   setDiscoveryHintModalOpen,
   isSNO = false,
-}) => {
+  isInline = false,
+}: HostsNotShowingLinkProps) => {
   const { t } = useTranslation();
   return (
     <Button variant={ButtonVariant.link} onClick={() => setDiscoveryHintModalOpen(true)} isInline>
-      <InfoCircleIcon size="sm" />
-      &nbsp;{t('ai:Host not showing up?', { count: +isSNO })}
+      {!isInline && (
+        <>
+          <InfoCircleIcon size="sm" />
+          &nbsp;
+        </>
+      )}
+      {t('ai:Host not showing up?', { count: +isSNO })}
     </Button>
   );
 };
 
-export const DiscoveryTroubleshootingModal: React.FC<DiscoveryTroubleshootingModalProps> = ({
+export const DiscoveryTroubleshootingModal = ({
   setDiscoveryHintModalOpen,
   isOpen,
-}) => {
+}: DiscoveryTroubleshootingModalProps) => {
   const onClose = React.useCallback(
     () => setDiscoveryHintModalOpen(false),
     [setDiscoveryHintModalOpen],
