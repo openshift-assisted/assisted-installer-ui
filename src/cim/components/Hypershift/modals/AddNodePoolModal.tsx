@@ -1,3 +1,4 @@
+import * as React from 'react';
 import {
   Alert,
   Button,
@@ -10,11 +11,10 @@ import {
   StackItem,
 } from '@patternfly/react-core';
 import { Formik } from 'formik';
-import * as React from 'react';
+
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { getErrorMessage } from '../../../../common/utils';
-import { AgentK8sResource, ClusterImageSetK8sResource, ConfigMapK8sResource } from '../../../types';
-import { useSupportedOCPVersions } from '../hooks/useSupportedOCPVersions';
+import { AgentK8sResource, ConfigMapK8sResource } from '../../../types';
 import { HostedClusterK8sResource, NodePoolK8sResource } from '../types';
 import { formikLabelsToLabels } from '../utils';
 import NodePoolForm, { NodePoolFormValues } from './NodePoolForm';
@@ -25,7 +25,6 @@ type AddNodePoolModalProps = {
   onClose: VoidFunction;
   agents: AgentK8sResource[];
   hostedCluster: HostedClusterK8sResource;
-  clusterImages: ClusterImageSetK8sResource[];
   supportedVersionsCM?: ConfigMapK8sResource;
 };
 
@@ -34,9 +33,7 @@ const AddNodePoolModal = ({
   onClose,
   agents,
   hostedCluster,
-  clusterImages,
   agentsNamespace,
-  supportedVersionsCM,
 }: AddNodePoolModalProps) => {
   const { t } = useTranslation();
   const [error, setError] = React.useState<string>();
@@ -66,9 +63,7 @@ const AddNodePoolModal = ({
           },
         },
         release: {
-          image:
-            clusterImages.find((ci) => ci.metadata?.name === values.openshiftVersion)?.spec
-              ?.releaseImage || '',
+          image: hostedCluster.spec.release.image,
         },
       },
     };
@@ -79,8 +74,6 @@ const AddNodePoolModal = ({
       setError(getErrorMessage(err));
     }
   };
-
-  const ocpVersions = useSupportedOCPVersions(clusterImages, supportedVersionsCM);
 
   return (
     <Modal
@@ -98,7 +91,6 @@ const AddNodePoolModal = ({
           )}`,
           agentLabels: [],
           count: 1,
-          openshiftVersion: ocpVersions[0].value,
         }}
         onSubmit={handleSubmit}
       >
@@ -107,11 +99,7 @@ const AddNodePoolModal = ({
             <ModalBoxBody>
               <Stack hasGutter>
                 <StackItem>
-                  <NodePoolForm
-                    agents={namespaceAgents}
-                    hostedCluster={hostedCluster}
-                    ocpVersions={ocpVersions}
-                  />
+                  <NodePoolForm agents={namespaceAgents} hostedCluster={hostedCluster} />
                 </StackItem>
                 {error && (
                   <StackItem>
