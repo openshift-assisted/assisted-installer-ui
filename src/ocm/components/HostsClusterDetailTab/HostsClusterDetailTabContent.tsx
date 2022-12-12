@@ -42,6 +42,21 @@ export const HostsClusterDetailTabContent = ({
       // ensure exclusive run
       setDay2Cluster(null);
 
+      const day1ClusterHostCount = ocmCluster.metrics?.nodes?.total || 0;
+      if (day1ClusterHostCount === 0 || !Day2ClusterService.getOpenshiftClusterId(ocmCluster)) {
+        setError(
+          <>
+            Temporarily unable to add hosts
+            <br />
+            We're waiting for your recently installed cluster to report its metrics.
+            <Button variant={'link'} isInline onClick={handleClickTryAgainLink}>
+              Try again
+            </Button>{' '}
+            in a few minutes.
+          </>,
+        );
+      }
+
       const normalizedVersion = normalizeClusterVersion(ocmCluster.openshift_version);
       if (!normalizedVersion) {
         setError(

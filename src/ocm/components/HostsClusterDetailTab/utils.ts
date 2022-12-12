@@ -10,48 +10,49 @@ const isSNOExpansionAllowed = (cluster: OcmClusterType) => {
   );
 };
 
+const visibleTabResult = {
+  showTab: true,
+  isDisabled: false,
+  tabTooltip: '',
+};
+
+const hiddenTabResult = {
+  showTab: false,
+  isDisabled: false,
+  tabTooltip: '',
+};
+
+const disabledTabResult = (tooltipMessage: string) => ({
+  showTab: true,
+  isDisabled: true,
+  tabTooltip: tooltipMessage,
+});
+
 export const getAddHostTabDetails = ({ cluster }: { cluster: OcmClusterType }) => {
-  const isAiDay2Ready = cluster.state === 'ready' && cluster.product?.id === 'OCP-AssistedInstall';
-
-  // TODO camador make the tab visible for !canEdit with read-only content for Day2 in MGMT-11768
-  const isHiddenTab = !cluster.canEdit || !isAiDay2Ready;
+  // TODO MGMT-11768 Remove "cannot edit" and make the content read-only (assuming the other conditions are satisfied)
+  const isHiddenTab = !cluster.canEdit || cluster.state !== 'ready';
   if (isHiddenTab) {
-    return {
-      showTab: false,
-      isDisabled: false,
-      tabTooltip: '',
-    };
+    return hiddenTabResult;
   }
 
-  // If it's a Day2 AI cluster, it can happen that the cluster hasn't reported required information yet.
-  // In that case the Tab will be disabled and the content would be a message explaining what the problem is
-  const day2ClusterHostCount = cluster.metrics?.nodes?.total || 0;
-  if (day2ClusterHostCount === 0 || !Day2ClusterService.getOpenshiftClusterId(cluster)) {
-    return {
-      showTab: true,
-      isDisabled: true,
-      tabTooltip:
-        day2ClusterHostCount === 0
-          ? // TODO use real copy messages
-            'The cluster did not report metrics yet'
-          : 'Explanation of why the cluster cannot be scaled at this moment',
-    };
+  if (cluster.product?.id !== 'OCP-AssistedInstall') {
+    return disabledTabResult('Only clusters created via Assisted Installer may add new hosts.');
   }
 
-  if (day2ClusterHostCount === 1 && !isSNOExpansionAllowed(cluster)) {
-    // It's an SNO with an OpenshiftVersion that doesn't support Day2 flow
-    return {
-      showTab: true,
-      isDisabled: true,
-      // TODO use real copy messages
-      tabTooltip: 'The OpenShift version does not support adding hosts',
-    };
+  // Checking if the Day1 cluster has reported metrics, so it can be determined if it's an SNO / multi node and has required information
+  // If that's not the case, we will still show the tab, and the content will be an ErrorState with an explanation message
+  const day1ClusterHostCount = cluster.metrics?.nodes?.total || 0;
+  if (day1ClusterHostCount === 0 || !Day2ClusterService.getOpenshiftClusterId(cluster)) {
+    return visibleTabResult;
+  }
+
+  // The cluster has metrics etc., but it's an SNO with an OpenshiftVersion that doesn't support Day2 flow
+  if (day1ClusterHostCount === 1 && !isSNOExpansionAllowed(cluster)) {
+    return disabledTabResult(
+      'OpenShift version not supported for SNO expansion. Hosts cannot be added to an existing SNO cluster that was installed with any OpenShift version older than 4.11. Upgrade to a newer OpenShift version and try again.',
+    );
   }
 
   // This is a multi-node cluster that supports the AI Day2 flow
-  return {
-    showTab: true,
-    isDisabled: false,
-    tabTooltip: '',
-  };
+  return visibleTabResult;
 };
