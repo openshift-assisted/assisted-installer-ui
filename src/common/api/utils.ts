@@ -6,7 +6,7 @@ export const stringToJSON = <T>(jsonString: string | undefined): T | undefined =
     try {
       const camelCased = jsonString.replace(
         /"([\w-]+)":/g,
-        (_match, offset) => `"${camelCase(offset)}":`,
+        (_match, offset: string) => `"${camelCase(offset)}":`,
       );
       jsObject = JSON.parse(camelCased) as T;
     } catch (e) {

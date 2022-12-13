@@ -10,7 +10,7 @@ import {
 import { ClusterImageSetK8sResource } from '../../types';
 import { featureSupportLevelsACM } from '../../config/constants';
 import { getFeatureDisabledReason, isFeatureSupported } from './featureStateUtils';
-import { getOCPVersions, getVersionFromReleaseImage } from '../helpers';
+import { getOCPVersions, getVersionFromReleaseImage, getMajorMinorVersion } from '../helpers';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 export type ACMFeatureSupportLevelProvider = PropsWithChildren<{
@@ -41,15 +41,11 @@ export const ACMFeatureSupportLevelProvider: React.FC<ACMFeatureSupportLevelProv
   isEditClusterFlow = false,
 }) => {
   const { t } = useTranslation();
+
   const supportLevelData: FeatureSupportLevelsMap = React.useMemo<FeatureSupportLevelsMap>(() => {
     return getFeatureSupportLevelsMap();
   }, []);
   const ocpVersions = getOCPVersions(clusterImages);
-
-  const getMajorMinorVersion = (version = '') => {
-    const match = /[0-9].[0-9][0-9]?/g.exec(version);
-    return match?.[0] || '';
-  };
 
   const getNormalizedVersion = React.useCallback(
     (versionName: string) => {

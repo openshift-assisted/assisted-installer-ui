@@ -8,6 +8,7 @@ export interface InfoLinkWithModalProps {
   infoCircleSize?: SVGIconProps['size'];
   modalTitle: string;
   modalVariant?: ModalProps['variant'];
+  isInline?: boolean;
 }
 
 const InfoLinkWithModal = ({
@@ -15,6 +16,7 @@ const InfoLinkWithModal = ({
   infoCircleSize = 'sm',
   modalTitle,
   modalVariant = 'medium',
+  isInline = false,
   children,
 }: React.PropsWithChildren<InfoLinkWithModalProps>) => {
   const [isModalOpen, setModalOpen] = React.useState(false);
@@ -24,7 +26,13 @@ const InfoLinkWithModal = ({
   return (
     <>
       <Button variant={ButtonVariant.link} onClick={handleLinkClick} isInline>
-        <InfoCircleIcon size={infoCircleSize} /> {linkText}
+        {!isInline && (
+          <>
+            <InfoCircleIcon size={infoCircleSize} />
+            &nbsp;
+          </>
+        )}
+        {linkText}
       </Button>
       <Modal
         title={modalTitle}

@@ -1,7 +1,7 @@
 import { AgentClusterInstallK8sResource, AgentK8sResource } from '../../types/k8s';
 import { getClusterNameOfAgent } from './agents';
 
-export const getIsSNOCluster = (agentClusterInstall: AgentClusterInstallK8sResource) =>
+export const getIsSNOCluster = (agentClusterInstall?: AgentClusterInstallK8sResource) =>
   agentClusterInstall?.spec?.provisionRequirements?.controlPlaneAgents === 1;
 
 export const getAgentClusterInstallOfAgent = (

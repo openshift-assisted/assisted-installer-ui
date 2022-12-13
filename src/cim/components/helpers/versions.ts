@@ -1,5 +1,10 @@
 import uniqBy from 'lodash/uniqBy';
-import { AgentClusterInstallK8sResource, ClusterImageSetK8sResource } from '../../types';
+
+import {
+  AgentClusterInstallK8sResource,
+  ClusterImageSetK8sResource,
+  ClusterVersionK8sResource,
+} from '../../types';
 import { OpenshiftVersionOptionType, OpenshiftVersion } from '../../../common';
 
 export const getVersionFromReleaseImage = (releaseImage = '') => {
@@ -64,4 +69,12 @@ export const getSelectedVersion = (
   return selectedClusterImage
     ? getOCPVersions([selectedClusterImage])?.[0]?.version
     : agentClusterInstall?.spec?.imageSetRef?.name;
+};
+
+export const getCurrentClusterVersion = (cv?: ClusterVersionK8sResource): string | undefined =>
+  cv?.status?.history?.[0]?.version || cv?.spec?.desiredUpdate?.version;
+
+export const getMajorMinorVersion = (version = '') => {
+  const match = /[0-9].[0-9][0-9]?/g.exec(version);
+  return match?.[0] || '';
 };

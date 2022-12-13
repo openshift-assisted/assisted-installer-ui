@@ -4,6 +4,8 @@ import { global_warning_color_100 as warningColor } from '@patternfly/react-toke
 import { getAgentStatus, getBMHStatus } from '../helpers';
 import { AgentK8sResource, BareMetalHostK8sResource } from '../../types';
 import { AGENT_BMH_NAME_LABEL_KEY } from '../common';
+import { Tooltip } from '@patternfly/react-core';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 export type InfraEnvHostsTabAgentsWarning = {
   infraAgents: AgentK8sResource[];
@@ -14,6 +16,7 @@ const InfraEnvHostsTabAgentsWarning: React.FC<InfraEnvHostsTabAgentsWarning> = (
   infraAgents,
   infraBMHs,
 }) => {
+  const { t } = useTranslation();
   const agentsBMHNames = infraAgents.reduce<string[]>((names, agent) => {
     const name = agent.metadata?.labels?.[AGENT_BMH_NAME_LABEL_KEY];
     name && names.push(name);
@@ -40,12 +43,16 @@ const InfraEnvHostsTabAgentsWarning: React.FC<InfraEnvHostsTabAgentsWarning> = (
     'error',
   ];
 
-  if (hostStates.some(({ key }) => problemStates.includes(key))) {
+  const hostsWithProblemsCount = hostStates.filter(({ key }) => problemStates.includes(key)).length;
+
+  if (hostsWithProblemsCount) {
     return (
-      <ExclamationTriangleIcon
-        color={warningColor.value}
-        className="infra-env-hosts-tab-title__icon"
-      />
+      <Tooltip content={t('ai:{{count}} host has problems', { count: hostsWithProblemsCount })}>
+        <ExclamationTriangleIcon
+          color={warningColor.value}
+          className="infra-env-hosts-tab-title__icon"
+        />
+      </Tooltip>
     );
   }
   return null;

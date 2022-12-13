@@ -1,50 +1,24 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import {
-  PageSectionVariants,
-  TextContent,
-  Text,
-  Button,
-  ButtonVariant,
-  PageSection,
-} from '@patternfly/react-core';
-import { AlertsContextProvider, ErrorState, LoadingState } from '../../../common';
+import { PageSectionVariants, TextContent, Text, PageSection } from '@patternfly/react-core';
+import { AlertsContextProvider } from '../../../common';
 import ClusterBreadcrumbs from './ClusterBreadcrumbs';
 import { ClusterDefaultConfigurationProvider } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
 import NewClusterWizard from '../clusterWizard/NewClusterWizard';
-import { routeBasePath } from '../../config';
 import { FeatureSupportLevelProvider } from '../featureSupportLevels';
 import ClusterWizardContextProvider from '../clusterWizard/ClusterWizardContextProvider';
 import { SentryErrorMonitorContextProvider } from '../SentryErrorMonitorContextProvider';
-const loadingUI = (
-  <PageSection variant={PageSectionVariants.light} isFilled>
-    <LoadingState />
-  </PageSection>
-);
+import ClusterLoading from './ClusterLoading';
+import { ClusterUiError } from './ClusterPageErrors';
 
-const errorUI = (
-  <PageSection variant={PageSectionVariants.light} isFilled>
-    <ErrorState
-      title="Failed to retrieve the default configuration"
-      actions={[
-        <Button
-          key="cancel"
-          variant={ButtonVariant.secondary}
-          component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
-        >
-          Back
-        </Button>,
-      ]}
-    />
-  </PageSection>
-);
-
-const NewClusterPage: React.FC = () => {
+const NewClusterPage = () => {
   return (
     <AlertsContextProvider>
       <SentryErrorMonitorContextProvider>
-        <ClusterDefaultConfigurationProvider loadingUI={loadingUI} errorUI={errorUI}>
-          <FeatureSupportLevelProvider loadingUi={loadingUI}>
+        <ClusterDefaultConfigurationProvider
+          loadingUI={<ClusterLoading />}
+          errorUI={<ClusterUiError />}
+        >
+          <FeatureSupportLevelProvider loadingUi={<ClusterLoading />}>
             <ClusterBreadcrumbs clusterName="New cluster" />
             <PageSection variant={PageSectionVariants.light}>
               <TextContent>
