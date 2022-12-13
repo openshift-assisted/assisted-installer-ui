@@ -30,13 +30,10 @@ const disabledTabResult = (tooltipMessage: string) => ({
 
 export const getAddHostTabDetails = ({ cluster }: { cluster: OcmClusterType }) => {
   // TODO MGMT-11768 Remove "cannot edit" and make the content read-only (assuming the other conditions are satisfied)
-  const isHiddenTab = !cluster.canEdit || cluster.state !== 'ready';
+  const isHiddenTab =
+    !cluster.canEdit || cluster.state !== 'ready' || cluster.product?.id !== 'OCP-AssistedInstall';
   if (isHiddenTab) {
     return hiddenTabResult;
-  }
-
-  if (cluster.product?.id !== 'OCP-AssistedInstall') {
-    return disabledTabResult('Only clusters created via Assisted Installer may add new hosts.');
   }
 
   // Checking if the Day1 cluster has reported metrics, so it can be determined if it's an SNO / multi node and has required information
