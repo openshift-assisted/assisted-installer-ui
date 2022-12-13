@@ -18,12 +18,13 @@ import {
   noProxyValidationSchema,
   sshPublicKeyValidationSchema,
 } from '../../../common/components/ui';
-import { ProxyFieldsType } from '../../types';
+import { ProxyFieldsType, TrustedCertificateFieldsType } from '../../types';
 import ProxyFields from './ProxyFields';
 import UploadSSH from './UploadSSH';
 import DiscoveryImageTypeControlGroup from './DiscoveryImageTypeControlGroup';
 import { OCP_STATIC_IP_DOC } from '../../config/constants';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
+import CertificateFields from './CertificateFields';
 
 export const StaticIPInfo: React.FC = () => {
   const { t } = useTranslation();
@@ -48,7 +49,9 @@ export const StaticIPInfo: React.FC = () => {
   );
 };
 
-export type DiscoveryImageFormValues = ImageCreateParams & ProxyFieldsType;
+export type DiscoveryImageFormValues = ImageCreateParams &
+  ProxyFieldsType &
+  TrustedCertificateFieldsType;
 
 const validationSchema = Yup.lazy<DiscoveryImageFormValues>((values) =>
   Yup.object<DiscoveryImageFormValues>().shape({
@@ -126,6 +129,7 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
                     {!hideDiscoveryImageType && <DiscoveryImageTypeControlGroup />}
                     <UploadSSH />
                     <ProxyFields />
+                    <CertificateFields />
                   </Form>
                 </StackItem>
               </Stack>

@@ -35,6 +35,7 @@ const DiscoveryImageFormService = {
       pullSecret: ocmPullSecret || undefined,
       staticNetworkConfig: formValues.staticNetworkConfig,
       imageType: formValues.imageType,
+      additionalTrustBundle: formValues.trustBundle,
     };
 
     const { data: updatedCluster } = await ClustersService.update(
