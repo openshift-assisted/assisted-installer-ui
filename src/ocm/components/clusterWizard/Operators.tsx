@@ -68,6 +68,7 @@ const OperatorsForm = ({ cluster }: { cluster: Cluster }) => {
           isNextDisabled={isNextDisabled}
           onNext={handleNext}
           onBack={() => clusterWizardContext.moveBack()}
+          isBackDisabled={isSubmitting || isAutoSaveRunning}
         />
       }
     >
