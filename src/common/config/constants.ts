@@ -14,8 +14,8 @@ export const ODF_REQUIREMENTS_LINK =
   'https://access.redhat.com/documentation/en-us/red_hat_openshift_data_foundation/4.9/html/planning_your_deployment/infrastructure-requirements_rhodf#resource-requirements_rhodf';
 export const VSPHERE_CONFIG_LINK = 'https://access.redhat.com/solutions/6677901';
 
-export const getBugzillaLink = (version = '') =>
-  `https://bugzilla.redhat.com/enter_bug.cgi?product=OpenShift%20Container%20Platform&Component=OpenShift%20Container%20Platform&component=assisted-installer&version=${version}`;
+export const getReportIssueLink = () =>
+  'https://issues.redhat.com/secure/CreateIssue!default.jspa?pid=12332330&issuetype=1&components=12370775';
 
 export const FEEDBACK_FORM_LINK =
   'https://docs.google.com/forms/d/e/1FAIpQLSfg9M8wRW4m_HkWeAl6KpB5dTcMu8iI3iJ29GlLfZpF2hnjng/viewform';
