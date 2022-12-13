@@ -30,12 +30,14 @@ type DiscoveryImageDialogProps = {
 type MassUpdateHostnameDialogProps = {
   cluster: Cluster;
   hostIDs: string[];
+  reloadCluster: VoidFunction;
 };
 
 type MassDeleteHostDialogProps = {
   hosts: Host[];
   // eslint-disable-next-line
   onDelete: (host: Host) => Promise<any>;
+  reloadCluster: VoidFunction;
 };
 
 type ModalDialogsDataTypes = {
