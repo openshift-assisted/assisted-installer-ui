@@ -53,6 +53,6 @@ export const getAddHostTabDetails = ({ cluster }: { cluster: OcmClusterType }) =
     );
   }
 
-  // This is a multi-node cluster that supports the AI Day2 flow
+  // This is a cluster that supports the AI Day2 flow
   return visibleTabResult;
 };
