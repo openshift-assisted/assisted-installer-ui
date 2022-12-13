@@ -1,6 +1,6 @@
 import { convertToBaseValue } from './units';
 
-export const getStorageSizeGB = (def: number, actual?: string): number => {
+export const getStorageSizeGiB = (def: number, actual?: string): number => {
   if (!actual) {
     return def;
   }
@@ -10,5 +10,5 @@ export const getStorageSizeGB = (def: number, actual?: string): number => {
     return def;
   }
 
-  return base / 1000 / 1000 / 1000;
+  return base / 1024 / 1024 / 1024;
 };
