@@ -11,9 +11,8 @@ export type WithTestID = {
 };
 
 export * from './versions';
-export * from './proxyFields';
 export * from './events';
 export * from './clusters';
 export * from './featureSupportLevel';
 export * from './typescriptExtensions';
-export * from './trustedCertificateFields';
+export * from './generateIsoFields';

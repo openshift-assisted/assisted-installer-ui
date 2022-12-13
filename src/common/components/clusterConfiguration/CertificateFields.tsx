@@ -5,12 +5,11 @@ import { CheckboxField, HelperText, PopoverIcon, UploadField } from '../ui';
 import { TrustedCertificateFieldsType } from '../../types';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
-import './ProxyFields.css';
 import { InfraEnv } from '../../api';
 
-export const CertificateFieldsHelperText: React.FC<{
-  fieldId?: string;
-}> = ({ fieldId = 'certificateField' }) => {
+const FIELD_NAME = 'certificateField';
+
+export const CertificateFieldsHelperText = ({ fieldId = FIELD_NAME }) => {
   const { t } = useTranslation();
   return (
     <HelperText fieldId={fieldId}>
@@ -56,13 +55,13 @@ export const CertificateInputFields = () => {
   );
 };
 
-const CertificateFields: React.FC = () => {
+const CertificateFields = () => {
   const { setFieldValue, values, initialValues } = useFormikContext<TrustedCertificateFieldsType>();
   const resetCertificate = (isNewlyChecked: boolean) => {
     if (isNewlyChecked) {
-      setFieldValue('certificateField', initialValues.trustBundle);
+      setFieldValue(FIELD_NAME, initialValues.trustBundle);
     } else {
-      setFieldValue('certificateField', '');
+      setFieldValue(FIELD_NAME, '');
     }
   };
   const { t } = useTranslation();

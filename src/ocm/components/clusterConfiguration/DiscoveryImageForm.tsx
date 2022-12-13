@@ -85,6 +85,8 @@ const DiscoveryImageForm = ({
       httpsProxy={infraEnv.proxy?.httpsProxy}
       noProxy={infraEnv.proxy?.noProxy}
       imageType={infraEnv.type}
+      enableCertificate={infraEnv.additionalTrustBundle !== undefined}
+      trustBundle={infraEnv.additionalTrustBundle}
     />
   );
 };

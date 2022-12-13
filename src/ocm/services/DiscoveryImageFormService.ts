@@ -1,3 +1,4 @@
+import { DiscoveryImageFormValues } from '../../common';
 import {
   V2ClusterUpdateParams,
   InfraEnvUpdateParams,
@@ -5,7 +6,6 @@ import {
   InfraEnv,
 } from '../../common/api/types';
 import { InfraEnvsAPI } from './apis';
-import { DiscoveryImageFormValues } from '../../common/components/clusterConfiguration';
 import ClustersService from './ClustersService';
 
 const DiscoveryImageFormService = {

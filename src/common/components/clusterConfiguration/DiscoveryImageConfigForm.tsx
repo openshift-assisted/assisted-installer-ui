@@ -12,13 +12,13 @@ import {
 } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { Formik, FormikHelpers } from 'formik';
-import { ImageCreateParams, ImageType, Proxy } from '../../api';
+import { ImageType, InfraEnv, Proxy } from '../../api';
 import {
   httpProxyValidationSchema,
   noProxyValidationSchema,
   sshPublicKeyValidationSchema,
 } from '../../../common/components/ui';
-import { ProxyFieldsType, TrustedCertificateFieldsType } from '../../types';
+import { DiscoveryImageFormValues } from '../../types';
 import ProxyFields from './ProxyFields';
 import UploadSSH from './UploadSSH';
 import DiscoveryImageTypeControlGroup from './DiscoveryImageTypeControlGroup';
@@ -49,10 +49,6 @@ export const StaticIPInfo: React.FC = () => {
   );
 };
 
-export type DiscoveryImageFormValues = ImageCreateParams &
-  ProxyFieldsType &
-  TrustedCertificateFieldsType;
-
 const validationSchema = Yup.lazy<DiscoveryImageFormValues>((values) =>
   Yup.object<DiscoveryImageFormValues>().shape({
     sshPublicKey: sshPublicKeyValidationSchema,
@@ -72,6 +68,8 @@ type DiscoveryImageConfigFormProps = Proxy & {
   hideDiscoveryImageType?: boolean;
   sshPublicKey?: string;
   imageType?: ImageType;
+  enableCertificate?: boolean;
+  trustBundle?: InfraEnv['additionalTrustBundle'];
 };
 
 export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> = ({
@@ -84,6 +82,8 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
   imageType,
   hideDiscoveryImageType,
   hasDHCP,
+  enableCertificate,
+  trustBundle,
 }) => {
   const initialValues: DiscoveryImageFormValues = {
     sshPublicKey: sshPublicKey || '',
@@ -92,6 +92,8 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
     noProxy: noProxy || '',
     enableProxy: !!(httpProxy || httpsProxy || noProxy),
     imageType: imageType || 'minimal-iso',
+    enableCertificate: enableCertificate || false,
+    trustBundle: trustBundle || '',
   };
 
   const { t } = useTranslation();
