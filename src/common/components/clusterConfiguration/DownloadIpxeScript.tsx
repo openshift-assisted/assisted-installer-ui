@@ -13,11 +13,9 @@ import {
 } from '@patternfly/react-core';
 import { DetailItem, DetailList } from '../ui';
 import DiscoveryIpxeInstructions from './DiscoveryIpxeInstructions';
-import { StaticIPInfo } from './DiscoveryImageConfigForm';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 export type DownloadISOProps = {
-  hasDHCP?: boolean;
   isSNO?: boolean;
   fileName?: string;
   downloadUrl?: string;
@@ -30,7 +28,6 @@ const DownloadIpxeScript = ({
   downloadUrl,
   onClose,
   onReset,
-  hasDHCP,
 }: DownloadISOProps) => {
   const wgetCommand = `wget -O ${fileName} '${downloadUrl || ''}'`;
   const { t } = useTranslation();
@@ -42,7 +39,7 @@ const DownloadIpxeScript = ({
             <Alert
               isInline
               variant="success"
-              title={t('ai:iPXE script are ready to be downloaded')}
+              title={t('ai:iPXE script file is ready to be downloaded')}
             >
               <>
                 &nbsp;
@@ -50,15 +47,10 @@ const DownloadIpxeScript = ({
               </>
             </Alert>
           </StackItem>
-          {hasDHCP === false && (
-            <StackItem>
-              <StaticIPInfo />
-            </StackItem>
-          )}
           <StackItem>
             <DetailList>
               <DetailItem
-                title={t('ai:iPXE script URL')}
+                title={t('ai:iPXE script file URL')}
                 value={
                   <ClipboardCopy
                     isReadOnly
@@ -69,7 +61,7 @@ const DownloadIpxeScript = ({
                 }
               />
               <DetailItem
-                title={t('ai:Command to download the iPXE script')}
+                title={t('ai:Command to download the iPXE script file')}
                 value={
                   <ClipboardCopy
                     isReadOnly
@@ -90,14 +82,14 @@ const DownloadIpxeScript = ({
           data-testid="download-ipxe-btn"
           isDisabled={!downloadUrl}
         >
-          {t('ai:Download script')}
+          {t('ai:Download script file')}
         </Button>
-        <Button variant={ButtonVariant.secondary} onClick={onClose} data-testid="close-ipxe-btn">
-          {t('ai:Close')}
+        <Button variant={ButtonVariant.secondary} onClick={onReset} data-testid="close-ipxe-btn">
+          {t('ai:Back')}
         </Button>
         {onReset && (
-          <Button variant={ButtonVariant.link} onClick={onReset} data-testid="edit-ipxe-btn">
-            {t('ai:Edit configuration')}
+          <Button variant={ButtonVariant.link} onClick={onClose} data-testid="edit-ipxe-btn">
+            {t('ai:Cancel')}
           </Button>
         )}
       </ModalBoxFooter>

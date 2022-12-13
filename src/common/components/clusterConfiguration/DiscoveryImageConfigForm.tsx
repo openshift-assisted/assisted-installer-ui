@@ -18,7 +18,7 @@ import {
   noProxyValidationSchema,
   sshPublicKeyValidationSchema,
 } from '../../../common/components/ui';
-import { ProxyFieldsType } from '../../types';
+import { ProxyFieldsType, StatusErrorType } from '../../types';
 import ProxyFields from './ProxyFields';
 import UploadSSH from './UploadSSH';
 import DiscoveryImageTypeControlGroup from './DiscoveryImageTypeControlGroup';
@@ -100,6 +100,7 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
       onSubmit={handleSubmit}
     >
       {({ submitForm, isSubmitting, status }) => {
+        const { error } = status as unknown as StatusErrorType;
         return (
           <>
             <ModalBoxBody>
@@ -118,9 +119,9 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
                 )}
                 <StackItem>
                   <Form>
-                    {status?.error && (
-                      <Alert variant={AlertVariant.danger} title={status.error.title} isInline>
-                        {status.error.message}
+                    {error && (
+                      <Alert variant={AlertVariant.danger} title={error.title} isInline>
+                        {error.message}
                       </Alert>
                     )}
                     {!hideDiscoveryImageType && <DiscoveryImageTypeControlGroup />}

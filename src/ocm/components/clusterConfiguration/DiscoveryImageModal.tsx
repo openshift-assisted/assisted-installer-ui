@@ -1,13 +1,19 @@
 import React from 'react';
 import { Button, ButtonVariant, Modal, ModalVariant } from '@patternfly/react-core';
 import { pluralize } from 'humanize-plus';
-import { Cluster, CpuArchitecture, ErrorState, isSNO, ToolbarButton } from '../../../common';
+import {
+  Cluster,
+  CpuArchitecture,
+  DownloadIso,
+  ErrorState,
+  isSNO,
+  ToolbarButton,
+} from '../../../common';
 import DiscoveryImageForm from './DiscoveryImageForm';
-import DiscoveryImageSummary from './DiscoveryImageSummary';
-import DiscoveryIpxeImageSummary from './DiscoveryIpxeImageSummary';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
 import useInfraEnvImageUrl from '../../hooks/useInfraEnvImageUrl';
 import useInfraEnvIpxeImageUrl from '../../hooks/useInfraEnvIpxeImageUrl';
+import DownloadIpxeScript from '../../../common/components/clusterConfiguration/DownloadIpxeScript';
 
 type DiscoveryImageModalButtonProps = {
   ButtonComponent?: typeof Button | typeof ToolbarButton;
@@ -84,22 +90,20 @@ export const DiscoveryImageModal = () => {
     >
       {(isoDownloadError || ipxeDownloadError) && <ErrorState />}
       {isoDownloadUrl ? (
-        <DiscoveryImageSummary
-          clusterName={cluster.name || ''}
+        <DownloadIso
+          fileName={`discovery_image_${cluster.name || ''}.iso`}
+          downloadUrl={isoDownloadUrl}
           isSNO={isSNOCluster}
-          onClose={close}
           onReset={onReset}
-          isoDownloadUrl={isoDownloadUrl}
-          cpuArchitecture={CpuArchitecture.USE_DAY1_ARCHITECTURE}
+          onClose={close}
         />
       ) : ipxeDownloadUrl ? (
-        <DiscoveryIpxeImageSummary
-          clusterName={cluster.name || ''}
+        <DownloadIpxeScript
+          fileName={`discovery_ipxe_script_${cluster.name || ''}.txt`}
+          downloadUrl={ipxeDownloadUrl}
           isSNO={isSNOCluster}
-          onClose={close}
           onReset={onReset}
-          ipxeDownloadUrl={ipxeDownloadUrl}
-          cpuArchitecture={CpuArchitecture.USE_DAY1_ARCHITECTURE}
+          onClose={close}
         />
       ) : (
         <DiscoveryImageForm

@@ -18,14 +18,14 @@ import {
   noProxyValidationSchema,
   sshPublicKeyValidationSchema,
 } from '../../../common/components/ui';
-import { ProxyFieldsType } from '../../../common/types';
+import { ProxyFieldsType, StatusErrorType } from '../../../common/types';
 import ProxyFields from '../../../common/components/clusterConfiguration/ProxyFields';
 import UploadSSH from '../../../common/components/clusterConfiguration/UploadSSH';
 import { OCP_STATIC_IP_DOC } from '../../../common/config/constants';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import DiscoveryImageTypeDropdown from './DiscoveryImageTypeDropdown';
 
-export const StaticIPInfo: React.FC = () => {
+export const StaticIPInfo = () => {
   const { t } = useTranslation();
   return (
     <Alert
@@ -53,8 +53,8 @@ export type OcmDiscoveryImageFormValues = ImageCreateParams & ProxyFieldsType;
 const validationSchema = Yup.lazy<OcmDiscoveryImageFormValues>((values) =>
   Yup.object<OcmDiscoveryImageFormValues>().shape({
     sshPublicKey: sshPublicKeyValidationSchema,
-    httpProxy: httpProxyValidationSchema(values, 'httpsProxy'),
-    httpsProxy: httpProxyValidationSchema(values, 'httpProxy'), // share the schema, httpS is currently not supported
+    httpProxy: httpProxyValidationSchema(values, 'httpProxy'),
+    httpsProxy: httpProxyValidationSchema(values, 'httpsProxy'), // share the schema, httpS is currently not supported
     noProxy: noProxyValidationSchema,
   }),
 );
@@ -65,8 +65,6 @@ type OcmDiscoveryImageConfigFormProps = Proxy & {
     values: OcmDiscoveryImageFormValues,
     formikActions: FormikHelpers<OcmDiscoveryImageFormValues>,
   ) => Promise<void>;
-  hasDHCP?: boolean;
-  hideDiscoveryImageType?: boolean;
   sshPublicKey?: string;
   imageType?: ImageType;
 };
@@ -79,8 +77,6 @@ export const OcmDiscoveryImageConfigForm: React.FC<OcmDiscoveryImageConfigFormPr
   httpsProxy,
   noProxy,
   imageType,
-  hideDiscoveryImageType,
-  hasDHCP,
 }) => {
   const initialValues: OcmDiscoveryImageFormValues = {
     sshPublicKey: sshPublicKey || '',
@@ -96,15 +92,18 @@ export const OcmDiscoveryImageConfigForm: React.FC<OcmDiscoveryImageConfigFormPr
   const [alertDiscoveryText, setAlertDiscoveryText] = React.useState<string>(
     t('ai:To add hosts to the cluster, generate a Discovery ISO.'),
   );
-  const updateDiscoveryButtonAndAlertText = React.useCallback((imageType: string) => {
-    if (imageType === 'discovery-iso-minimal' || imageType === 'discovery-iso-full') {
-      setButtonText(t('ai:Generate Discovery ISO'));
-      setAlertDiscoveryText(t('ai:To add hosts to the cluster, generate a Discovery ISO.'));
-    } else {
-      setButtonText(t('ai:Generate script'));
-      setAlertDiscoveryText(t('ai:To add hosts to the cluster, generate iPXE script.'));
-    }
-  }, []);
+  const updateDiscoveryButtonAndAlertText = React.useCallback(
+    (imageType: string) => {
+      if (imageType === 'minimal-iso' || imageType === 'full-iso') {
+        setButtonText(t('ai:Generate Discovery ISO'));
+        setAlertDiscoveryText(t('ai:To add hosts to the cluster, generate a Discovery ISO.'));
+      } else {
+        setButtonText(t('ai:Generate script file'));
+        setAlertDiscoveryText(t('ai:To add hosts to the cluster, generate iPXE script.'));
+      }
+    },
+    [t],
+  );
   return (
     <Formik
       initialValues={initialValues}
@@ -113,6 +112,7 @@ export const OcmDiscoveryImageConfigForm: React.FC<OcmDiscoveryImageConfigFormPr
       onSubmit={handleSubmit}
     >
       {({ submitForm, isSubmitting, status }) => {
+        const { error } = status as unknown as StatusErrorType;
         return (
           <>
             <ModalBoxBody>
@@ -120,25 +120,20 @@ export const OcmDiscoveryImageConfigForm: React.FC<OcmDiscoveryImageConfigFormPr
                 <StackItem>
                   <Alert variant={AlertVariant.info} isInline title={alertDiscoveryText} />
                 </StackItem>
-                {hasDHCP === false && (
-                  <StackItem>
-                    <StaticIPInfo />
-                  </StackItem>
-                )}
+
                 <StackItem>
                   <Form>
-                    {status?.error && (
-                      <Alert variant={AlertVariant.danger} title={status.error.title} isInline>
-                        {status.error.message}
+                    {error && (
+                      <Alert variant={AlertVariant.danger} title={error.title} isInline>
+                        {error.message}
                       </Alert>
                     )}
-                    {!hideDiscoveryImageType && (
-                      <DiscoveryImageTypeDropdown
-                        name="discoveryImageDropdown"
-                        defaultValue="Full image file - Provision with physicial media"
-                        updateAlertAndButtonText={updateDiscoveryButtonAndAlertText}
-                      />
-                    )}
+
+                    <DiscoveryImageTypeDropdown
+                      name="imageType"
+                      defaultValue="Full image file - Provision with physical media"
+                      onChange={updateDiscoveryButtonAndAlertText}
+                    />
                     <UploadSSH />
                     <ProxyFields />
                   </Form>

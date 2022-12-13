@@ -9,6 +9,7 @@ import {
   DiscoveryImageFormValues,
   ErrorState,
   LoadingState,
+  StatusErrorType,
 } from '../../../common';
 import { forceReload, updateCluster } from '../../reducers/clusters';
 import useInfraEnv from '../../hooks/useInfraEnv';
@@ -48,8 +49,10 @@ const DiscoveryImageForm = ({
     formValues: DiscoveryImageFormValues,
     formikActions: FormikHelpers<DiscoveryImageFormValues>,
   ) => {
-    if (formValues['discoveryImageDropdown'] !== 'discovery-image-ipxe') {
-      if (cluster.id && infraEnv?.id) {
+    if (cluster.id && infraEnv?.id) {
+      if (formValues['imageType'] !== 'full-iso' && formValues['imageType'] !== 'minimal-iso') {
+        await onSuccessIpxe();
+      } else {
         try {
           const { updatedCluster } = await DiscoveryImageFormService.update(
             cluster.id,
@@ -59,19 +62,18 @@ const DiscoveryImageForm = ({
           );
           await onSuccess();
           dispatch(updateCluster(updatedCluster));
-        } catch (error) {
-          handleApiError(error, () => {
-            formikActions.setStatus({
+        } catch (e) {
+          handleApiError(e, () => {
+            const error: StatusErrorType = {
               error: {
                 title: 'Failed to download the discovery Image',
-                message: getApiErrorMessage(error),
+                message: getApiErrorMessage(e),
               },
-            });
+            };
+            formikActions.setStatus(error);
           });
         }
       }
-    } else {
-      await onSuccessIpxe();
     }
   };
 

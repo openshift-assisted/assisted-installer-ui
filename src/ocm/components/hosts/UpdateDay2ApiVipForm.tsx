@@ -14,6 +14,7 @@ import {
 import { Formik } from 'formik';
 import { day2ApiVipValidationSchema, InputField } from '../../../common/components/ui';
 import GridGap from '../../../common/components/ui/GridGap';
+import { StatusErrorType } from '../../../common';
 
 export type UpdateDay2ApiVipFormProps = {
   onClose: () => void;
@@ -24,8 +25,6 @@ export type UpdateDay2ApiVipFormProps = {
 export type UpdateDay2ApiVipValues = {
   apiVip?: string;
 };
-
-type StatusErrorType = { error?: { message?: string; title?: string } | null };
 
 const UpdateDay2ApiVipForm: React.FC<UpdateDay2ApiVipFormProps> = ({
   onUpdateDay2ApiVip,

@@ -11,21 +11,21 @@ import { useField } from 'formik';
 import { getFieldId } from '../../../common';
 
 const discoveryImageTypes = {
-  'discovery-iso-minimal': 'Minimal image file - Provision with virtual media',
-  'discovery-iso-full': 'Full image file - Provision with physicial media',
+  'minimal-iso': 'Minimal image file - Provision with virtual media',
+  'full-iso': 'Full image file - Provision with physicial media',
   'discovery-image-ipxe': 'iPXE - Provision from your network server',
 };
 
 type DiscoveryImageTypeDropdownProps = {
   name: string;
   defaultValue: string | undefined;
-  updateAlertAndButtonText: (imageType: string) => void;
+  onChange: (imageType: string) => void;
 };
 
 export const DiscoveryImageTypeDropdown = ({
   name,
   defaultValue,
-  updateAlertAndButtonText,
+  onChange,
 }: DiscoveryImageTypeDropdownProps) => {
   const [field, , { setValue }] = useField(name);
   const [isOpen, setOpen] = React.useState(false);
@@ -33,21 +33,21 @@ export const DiscoveryImageTypeDropdown = ({
   const fieldId = getFieldId(name, 'input');
   const dropdownItems = [
     <DropdownItem
-      key="discovery-iso-minimal"
-      id="discovery-iso-minimal"
+      key="minimal-iso"
+      id="minimal-iso"
       description={
         'Use when your storage capacity is limited or being served over a constrained network.'
       }
     >
-      {discoveryImageTypes['discovery-iso-minimal']}
+      {discoveryImageTypes['minimal-iso']}
     </DropdownItem>,
     <DropdownSeparator key="separator1" />,
     <DropdownItem
-      key="discovery-iso-full"
-      id="discovery-iso-full"
+      key="full-iso"
+      id="full-iso"
       description={'The generated discovery ISO will contain everything needed to boot.'}
     >
-      {discoveryImageTypes['discovery-iso-full']}
+      {discoveryImageTypes['full-iso']}
     </DropdownItem>,
     <DropdownSeparator key="separator2" />,
     <DropdownItem
@@ -62,14 +62,14 @@ export const DiscoveryImageTypeDropdown = ({
   const onSelect = React.useCallback(
     (event?: React.SyntheticEvent<HTMLDivElement>) => {
       const currentValue = event?.currentTarget.id
-        ? discoveryImageTypes[event?.currentTarget.id]
+        ? (discoveryImageTypes[event?.currentTarget.id] as string)
         : defaultValue;
       setCurrent(currentValue ? currentValue : '');
       setValue(event?.currentTarget.id);
       setOpen(false);
-      updateAlertAndButtonText(event?.currentTarget.id || '');
+      onChange(event?.currentTarget.id || '');
     },
-    [setCurrent, setOpen, defaultValue, setValue],
+    [setCurrent, setOpen, defaultValue, setValue, onChange],
   );
 
   const toggle = React.useMemo(
