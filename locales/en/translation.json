@@ -342,7 +342,7 @@
   "ai:If hosts are behind a firewall that requires the use of a proxy, provide additional information about the proxy.": "If hosts are behind a firewall that requires the use of a proxy, provide additional information about the proxy.",
   "ai:If not, please start your VMs with the following configuration:": "If not, please start your VMs with the following configuration:",
   "ai:If the configuration is taking longer than 3 minutes, you'll need to troubleshoot.": "If the configuration is taking longer than 3 minutes, you'll need to troubleshoot.",
-  "ai:If there are many clusters, use a higher values for the storage fields.": "If there are many clusters, use a higher values for the storage fields.",
+  "ai:If there are many clusters, use higher values for the storage fields.": "If there are many clusters, use higher values for the storage fields.",
   "ai:If you exit this flow you can see its status in the list view or details page.": "If you exit this flow you can see its status in the list view or details page.",
   "ai:If you prefer using the CLI, follow the instructions in": "If you prefer using the CLI, follow the instructions in",
   "ai:If you used DHCP networking, verify that your DHCP server is enabled": "If you used DHCP networking, verify that your DHCP server is enabled",
