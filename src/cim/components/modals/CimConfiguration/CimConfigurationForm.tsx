@@ -102,7 +102,7 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
           </Popover>
         }
       >
-        {t('ai:If there are many clusters, use a higher values for the storage fields.')}
+        {t('ai:If there are many clusters, use higher values for the storage fields.')}
       </FormGroup>
       <Flex justifyContent={{ default: 'justifyContentSpaceBetween' }}>
         <FlexItem>
