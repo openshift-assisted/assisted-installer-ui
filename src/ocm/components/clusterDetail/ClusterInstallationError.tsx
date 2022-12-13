@@ -9,7 +9,7 @@ import {
 } from '@patternfly/react-core';
 import {
   Cluster,
-  getBugzillaLink,
+  getReportIssueLink,
   canDownloadClusterLogs,
   useAlerts,
   toSentence,
@@ -52,7 +52,7 @@ const ClusterInstallationError: React.FC<ClusterInstallationErrorProps> = ({
               Download Installation Logs
             </AlertActionLink>
             <AlertActionLink
-              onClick={() => window.open(getBugzillaLink(cluster.openshiftVersion), '_blank')}
+              onClick={() => window.open(getReportIssueLink(), '_blank')}
               id={getID('button-report-bug')}
             >
               Report a bug
