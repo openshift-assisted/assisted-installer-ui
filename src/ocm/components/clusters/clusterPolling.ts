@@ -14,7 +14,11 @@ const shouldRefetch = (uiState: ResourceUIState, hasClusterData: boolean) => {
   if (uiState === ResourceUIState.ERROR) {
     return hasClusterData;
   }
-  return ![ResourceUIState.LOADING, ResourceUIState.RELOADING].includes(uiState);
+  return ![
+    ResourceUIState.LOADING,
+    ResourceUIState.RELOADING,
+    ResourceUIState.UPDATE_ERROR,
+  ].includes(uiState);
 };
 
 export const useFetchCluster = (clusterId: string) => {

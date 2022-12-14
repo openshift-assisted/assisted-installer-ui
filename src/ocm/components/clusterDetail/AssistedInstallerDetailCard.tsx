@@ -112,6 +112,7 @@ const AssistedInstallerDetailCard = ({
     error: infraEnvError,
     updateInfraEnv,
   } = useInfraEnv(aiClusterId, CpuArchitecture.USE_DAY1_ARCHITECTURE);
+  // TODO check
   if (uiState === ResourceUIState.LOADING || infraEnvLoading) {
     return <LoadingCard />;
   } else if ((uiState === ResourceUIState.ERROR && !cluster) || infraEnvError) {

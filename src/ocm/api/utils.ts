@@ -8,6 +8,8 @@ import { isAxiosError } from './axiosExtensions';
 
 export const FETCH_ABORTED_ERROR_CODE = 'ERR_CANCELED';
 export const FETCH_CONNECTIVITY_ERROR_CODE = 'CONNECTIVITY_ERROR';
+export const SERVER_ERROR_CODE = 'SERVER_ERROR';
+export const PAGE_RELOAD_ERROR = 'ECONNABORTED';
 
 type OnError = (arg0: unknown) => void;
 
@@ -55,14 +57,24 @@ export const getApiErrorCode = (error: Error | AxiosError): string | number => {
   if (!isAxiosError(error)) {
     return FETCH_CONNECTIVITY_ERROR_CODE;
   }
-  const responseStatus = error.response?.status || 0;
-  // Error status
-  if (responseStatus >= 400 && responseStatus < 500) {
-    return responseStatus;
-  }
   // Aborted request
   if (error.code === FETCH_ABORTED_ERROR_CODE) {
     return FETCH_ABORTED_ERROR_CODE;
+  }
+
+  // Page is reloading and some request has been interrupted
+  if (error.code === PAGE_RELOAD_ERROR) {
+    return '';
+  }
+
+  const responseStatus = error.response?.status || 0;
+
+  // Error status
+  if (responseStatus >= 500 && responseStatus < 600) {
+    return SERVER_ERROR_CODE;
+  }
+  if (responseStatus >= 400 && responseStatus < 500) {
+    return responseStatus;
   }
   // A generic connectivity issue
   return FETCH_CONNECTIVITY_ERROR_CODE;

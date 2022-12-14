@@ -13,6 +13,7 @@ import {
   getApiErrorCode,
   handleApiError,
   FETCH_ABORTED_ERROR_CODE,
+  SERVER_ERROR_CODE,
 } from '../../api';
 import { ClustersService } from '../../services';
 
@@ -77,6 +78,9 @@ export const currentClusterSlice = createSlice({
       }
       return state;
     },
+    setServerUpdateError: (state) => {
+      return { ...state, uiState: ResourceUIState.UPDATE_ERROR };
+    },
     cleanCluster: () => initialState,
     forceReload: (state) => ({
       ...state,
@@ -135,6 +139,7 @@ export const {
   updateCluster,
   updateClusterBase,
   updateHost,
+  setServerUpdateError,
   cleanCluster,
   forceReload,
   cancelForceReload,

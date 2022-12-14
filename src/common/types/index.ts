@@ -1,9 +1,10 @@
 export enum ResourceUIState {
   LOADING = 'LOADING',
   RELOADING = 'RELOADING',
-  ERROR = 'ERROR',
   EMPTY = 'EMPTY',
   LOADED = 'LOADED',
+  ERROR = 'ERROR', // Polling error
+  UPDATE_ERROR = 'UPDATE_ERROR',
 }
 
 export type WithTestID = {

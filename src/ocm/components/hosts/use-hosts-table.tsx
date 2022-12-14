@@ -13,13 +13,19 @@ import {
   getInventory,
   MassDeleteHostModal,
   isSNO,
+  ResourceUIState,
 } from '../../../common';
 import {
   AdditionalNTPSourcesDialog,
   AdditionalNTPSourcesFormProps,
 } from '../../../common/components/hosts/AdditionalNTPSourcesDialog';
-import { getApiErrorMessage, handleApiError } from '../../api';
-import { forceReload, updateCluster, updateHost } from '../../reducers/clusters';
+import { getApiErrorCode, getApiErrorMessage, handleApiError, SERVER_ERROR_CODE } from '../../api';
+import {
+  forceReload,
+  setServerUpdateError,
+  updateCluster,
+  updateHost,
+} from '../../reducers/clusters';
 import { useModalDialogsContext } from './ModalDialogsContext';
 import { downloadHostInstallationLogs, onAdditionalNtpSourceAction } from './utils';
 import {
@@ -47,7 +53,7 @@ import { UpdateDay2ApiVipFormProps } from './UpdateDay2ApiVipForm';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { getErrorMessage } from '../../../common/utils';
-import { selectCurrentClusterPermissionsState } from '../../selectors';
+import { selectCurrentClusterPermissionsState, selectCurrentClusterState } from '../../selectors';
 import { hardwareStatusColumn } from './HardwareStatus';
 
 export const useHostsTable = (cluster: Cluster) => {
@@ -396,15 +402,17 @@ type HostsTableModalsProps = {
   onUpdateDay2ApiVip: UpdateDay2ApiVipFormProps['onUpdateDay2ApiVip'];
 };
 
-export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
+export const HostsTableModals = ({
   cluster,
   onDelete,
   onReset,
   onAdditionalNtpSource,
   onUpdateDay2ApiVip,
-}) => {
+}: HostsTableModalsProps) => {
   const dispatch = useDispatch();
   const { resetCluster } = React.useContext(AddHostsContext);
+  const { uiState } = useSelector(selectCurrentClusterState);
+
   const { t } = useTranslation();
   const {
     eventsDialog,
@@ -422,6 +430,10 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
     [t],
   );
   const paginationProps = usePagination(massDeleteHostDialog.data?.hosts?.length || 0);
+
+  if (uiState === ResourceUIState.UPDATE_ERROR) {
+    return null;
+  }
 
   return (
     <>
@@ -475,9 +487,15 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
             resetCluster ? void resetCluster() : dispatch(updateHost(data));
             editHostDialog.close();
           }}
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          onFormSaveError={(e: any) => {
-            let message;
+          onHostSaveError={(e: Error) => {
+            const hasServerError = getApiErrorCode(e) === SERVER_ERROR_CODE;
+            if (hasServerError) {
+              dispatch(setServerUpdateError());
+              editHostDialog.close();
+            }
+          }}
+          getEditErrorMessage={(e: Error) => {
+            let message = '';
             handleApiError(e, () => (message = getApiErrorMessage(e)));
             return message;
           }}
@@ -508,6 +526,13 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
           hosts={massUpdateHostnameDialog.data?.cluster?.hosts || []}
           selectedHostIDs={massUpdateHostnameDialog.data?.hostIDs || []}
           onChangeHostname={(host, hostname) => HostsService.updateHostName(host, hostname)}
+          onHostSaveError={(e: Error) => {
+            const hasServerError = getApiErrorCode(e) === SERVER_ERROR_CODE;
+            if (hasServerError) {
+              dispatch(setServerUpdateError());
+              editHostDialog.close();
+            }
+          }}
           canChangeHostname={() => [true, undefined]}
           reloadCluster={massUpdateHostnameDialog.data?.reloadCluster}
         />
