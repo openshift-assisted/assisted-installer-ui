@@ -86,6 +86,7 @@ const NetworkConfigurationForm: React.FC<{
       }
       onNext={() => clusterWizardContext.moveNext()}
       onBack={() => clusterWizardContext.moveBack()}
+      isBackDisabled={isSubmitting || isAutoSaveRunning}
     />
   );
 

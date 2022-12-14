@@ -89,9 +89,7 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
         />
       </StackItem>
       <StackItem>
-        <TextContent>
-          <InformationAndAlerts cluster={cluster} />
-        </TextContent>
+        <InformationAndAlerts cluster={cluster} />
       </StackItem>
       <StackItem>
         <TextContent>

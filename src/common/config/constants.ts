@@ -179,7 +179,7 @@ export const hostValidationFailureHints = (
   'belongs-to-majority-group': '',
   'valid-platform-network-settings': '',
   'ntp-synced': t(
-    "ai:Please manually fix host's NTP configuration or provide additional NTP sources.",
+    "ai:Manually fix the host's NTP configuration or provide additional NTP sources.",
   ),
   'container-images-available': '',
   'lso-requirements-satisfied': '',

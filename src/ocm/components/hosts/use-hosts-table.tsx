@@ -349,16 +349,21 @@ export const useHostsTable = (cluster: Cluster) => {
       const host = cluster.hosts?.find((host) => host.id === selectedHostIDs[0]);
       return host && onEditHost(host);
     }
-    return massUpdateHostnameDialog.open({ hostIDs: selectedHostIDs, cluster });
-  }, [selectedHostIDs, massUpdateHostnameDialog, cluster, onEditHost]);
+    return massUpdateHostnameDialog.open({
+      hostIDs: selectedHostIDs,
+      cluster,
+      reloadCluster: () => (resetCluster ? void resetCluster() : dispatch(forceReload())),
+    });
+  }, [selectedHostIDs, massUpdateHostnameDialog, cluster, onEditHost, resetCluster, dispatch]);
 
   const onMassDeleteHost = React.useCallback(
     () =>
       massDeleteHostDialog.open({
         hosts: (cluster.hosts || []).filter((h) => selectedHostIDs.includes(h.id)),
         onDelete: (host) => HostsService.delete(host),
+        reloadCluster: () => (resetCluster ? void resetCluster() : dispatch(forceReload())),
       }),
-    [cluster.hosts, selectedHostIDs, massDeleteHostDialog],
+    [massDeleteHostDialog, cluster.hosts, selectedHostIDs, resetCluster, dispatch],
   );
 
   return {
@@ -504,6 +509,7 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
           selectedHostIDs={massUpdateHostnameDialog.data?.hostIDs || []}
           onChangeHostname={(host, hostname) => HostsService.updateHostName(host, hostname)}
           canChangeHostname={() => [true, undefined]}
+          reloadCluster={massUpdateHostnameDialog.data?.reloadCluster}
         />
       )}
       {massDeleteHostDialog.isOpen && (
@@ -512,6 +518,7 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
           onClose={massDeleteHostDialog.close}
           hosts={massDeleteHostDialog.data?.hosts || []}
           onDelete={massDeleteHostDialog.data?.onDelete}
+          reloadCluster={massDeleteHostDialog.data?.reloadCluster}
         >
           <HostsTable
             hosts={massDeleteHostDialog.data?.hosts || []}
