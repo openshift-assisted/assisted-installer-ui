@@ -10,7 +10,6 @@ import {
   Stack,
   StackItem,
 } from '@patternfly/react-core';
-import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { Formik, FormikHelpers } from 'formik';
 import { ImageCreateParams, ImageType, Proxy } from '../../../common/api';
 import {
@@ -21,32 +20,8 @@ import {
 import { ProxyFieldsType, StatusErrorType } from '../../../common/types';
 import ProxyFields from '../../../common/components/clusterConfiguration/ProxyFields';
 import UploadSSH from '../../../common/components/clusterConfiguration/UploadSSH';
-import { OCP_STATIC_IP_DOC } from '../../../common/config/constants';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import DiscoveryImageTypeDropdown from './DiscoveryImageTypeDropdown';
-
-export const StaticIPInfo = () => {
-  const { t } = useTranslation();
-  return (
-    <Alert
-      title={t(
-        'ai:To use static network configuration, follow the steps listed in the documentation.',
-      )}
-      isInline
-      variant="info"
-    >
-      <Button
-        variant="link"
-        icon={<ExternalLinkAltIcon />}
-        iconPosition="right"
-        isInline
-        onClick={() => window.open(OCP_STATIC_IP_DOC, '_blank', 'noopener')}
-      >
-        {t('ai:View documentation')}
-      </Button>
-    </Alert>
-  );
-};
 
 export type OcmDiscoveryImageFormValues = ImageCreateParams & ProxyFieldsType;
 

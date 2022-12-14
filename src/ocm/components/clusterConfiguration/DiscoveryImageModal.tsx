@@ -78,6 +78,7 @@ export const DiscoveryImageModal = () => {
 
   const isSNOCluster = isSNO(cluster);
 
+  const nameImageSuffix = `${cluster.name || ''}`;
   return (
     <Modal
       aria-label="Add hosts dialog"
@@ -91,7 +92,7 @@ export const DiscoveryImageModal = () => {
       {(isoDownloadError || ipxeDownloadError) && <ErrorState />}
       {isoDownloadUrl ? (
         <DownloadIso
-          fileName={`discovery_image_${cluster.name || ''}.iso`}
+          fileName={`discovery_image_${nameImageSuffix}.iso`}
           downloadUrl={isoDownloadUrl}
           isSNO={isSNOCluster}
           onReset={onReset}
@@ -99,7 +100,7 @@ export const DiscoveryImageModal = () => {
         />
       ) : ipxeDownloadUrl ? (
         <DownloadIpxeScript
-          fileName={`discovery_ipxe_script_${cluster.name || ''}.txt`}
+          fileName={`discovery_ipxe_script_${nameImageSuffix}.txt`}
           downloadUrl={ipxeDownloadUrl}
           isSNO={isSNOCluster}
           onReset={onReset}

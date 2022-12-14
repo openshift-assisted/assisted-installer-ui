@@ -6,6 +6,7 @@ import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
 import { useDay2WizardContext } from './Day2WizardContext';
 import Day2WizardNav from './Day2WizardNav';
 import useInfraEnvImageUrl from '../../../hooks/useInfraEnvImageUrl';
+import useInfraEnvIpxeImageUrl from '../../../hooks/useInfraEnvIpxeImageUrl';
 
 const Day2GenerateISO = () => {
   const { day2DiscoveryImageDialog } = useModalDialogsContext();
@@ -13,6 +14,7 @@ const Day2GenerateISO = () => {
   const cluster = data.cluster;
   const wizardContext = useDay2WizardContext();
   const { getIsoImageUrl } = useInfraEnvImageUrl();
+  const { getIpxeImageUrl } = useInfraEnvIpxeImageUrl();
 
   const onImageReady = React.useCallback(async () => {
     const isoUrl = await getIsoImageUrl(cluster.id, wizardContext.selectedCpuArchitecture);
@@ -21,6 +23,14 @@ const Day2GenerateISO = () => {
       wizardContext.moveNext();
     }
   }, [cluster?.id, wizardContext, getIsoImageUrl]);
+
+  const onImageIpxeReady = React.useCallback(async () => {
+    const ipxeUrl = await getIpxeImageUrl(cluster.id, wizardContext.selectedCpuArchitecture);
+    if (!ipxeUrl.error) {
+      wizardContext.setSelectedIpxeUrl(ipxeUrl.url);
+      wizardContext.moveNext();
+    }
+  }, [cluster?.id, wizardContext, getIpxeImageUrl]);
 
   return (
     <ClusterWizardStep navigation={<Day2WizardNav />}>
@@ -34,6 +44,7 @@ const Day2GenerateISO = () => {
             cpuArchitecture={wizardContext.selectedCpuArchitecture}
             onCancel={close}
             onSuccess={onImageReady}
+            onSuccessIpxe={onImageIpxeReady}
           />
         </StackItem>
       </Stack>

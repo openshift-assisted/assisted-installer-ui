@@ -12,7 +12,7 @@ import { getFieldId } from '../../../common';
 
 const discoveryImageTypes = {
   'minimal-iso': 'Minimal image file - Provision with virtual media',
-  'full-iso': 'Full image file - Provision with physicial media',
+  'full-iso': 'Full image file - Provision with physical media',
   'discovery-image-ipxe': 'iPXE - Provision from your network server',
 };
 
