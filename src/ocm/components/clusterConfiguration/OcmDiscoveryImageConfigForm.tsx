@@ -21,7 +21,7 @@ import { ProxyFieldsType, StatusErrorType } from '../../../common/types';
 import ProxyFields from '../../../common/components/clusterConfiguration/ProxyFields';
 import UploadSSH from '../../../common/components/clusterConfiguration/UploadSSH';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import DiscoveryImageTypeDropdown from './DiscoveryImageTypeDropdown';
+import DiscoveryImageTypeDropdown, { discoveryImageTypes } from './DiscoveryImageTypeDropdown';
 
 export type OcmDiscoveryImageFormValues = ImageCreateParams & ProxyFieldsType;
 
@@ -42,6 +42,7 @@ type OcmDiscoveryImageConfigFormProps = Proxy & {
   ) => Promise<void>;
   sshPublicKey?: string;
   imageType?: ImageType;
+  isIpxeSelected?: boolean;
 };
 
 export const OcmDiscoveryImageConfigForm: React.FC<OcmDiscoveryImageConfigFormProps> = ({
@@ -52,6 +53,7 @@ export const OcmDiscoveryImageConfigForm: React.FC<OcmDiscoveryImageConfigFormPr
   httpsProxy,
   noProxy,
   imageType,
+  isIpxeSelected,
 }) => {
   const initialValues: OcmDiscoveryImageFormValues = {
     sshPublicKey: sshPublicKey || '',
@@ -59,17 +61,15 @@ export const OcmDiscoveryImageConfigForm: React.FC<OcmDiscoveryImageConfigFormPr
     httpsProxy: httpsProxy || '',
     noProxy: noProxy || '',
     enableProxy: !!(httpProxy || httpsProxy || noProxy),
-    imageType: imageType || 'minimal-iso',
+    imageType: imageType,
   };
 
   const { t } = useTranslation();
   const [buttonText, setButtonText] = React.useState<string>(t('ai:Generate Discovery ISO'));
-  const [alertDiscoveryText, setAlertDiscoveryText] = React.useState<string>(
-    t('ai:To add hosts to the cluster, generate a Discovery ISO.'),
-  );
+
   const updateDiscoveryButtonAndAlertText = React.useCallback(
-    (imageType: string) => {
-      if (imageType === 'minimal-iso' || imageType === 'full-iso') {
+    (imageType: string, isIpxeSelected?: boolean) => {
+      if (!isIpxeSelected && (imageType === 'minimal-iso' || imageType === 'full-iso')) {
         setButtonText(t('ai:Generate Discovery ISO'));
         setAlertDiscoveryText(t('ai:To add hosts to the cluster, generate a Discovery ISO.'));
       } else {
@@ -79,6 +79,15 @@ export const OcmDiscoveryImageConfigForm: React.FC<OcmDiscoveryImageConfigFormPr
     },
     [t],
   );
+
+  React.useEffect(() => {
+    updateDiscoveryButtonAndAlertText(imageType ? imageType : '', isIpxeSelected);
+  }, [updateDiscoveryButtonAndAlertText, imageType, isIpxeSelected]);
+
+  const [alertDiscoveryText, setAlertDiscoveryText] = React.useState<string>(
+    t('ai:To add hosts to the cluster, generate a Discovery ISO.'),
+  );
+
   return (
     <Formik
       initialValues={initialValues}
@@ -106,7 +115,13 @@ export const OcmDiscoveryImageConfigForm: React.FC<OcmDiscoveryImageConfigFormPr
 
                     <DiscoveryImageTypeDropdown
                       name="imageType"
-                      defaultValue="Full image file - Provision with physical media"
+                      defaultValue={
+                        isIpxeSelected
+                          ? discoveryImageTypes['discovery-image-ipxe']
+                          : imageType
+                          ? discoveryImageTypes[imageType]
+                          : discoveryImageTypes['full-iso']
+                      }
                       onChange={updateDiscoveryButtonAndAlertText}
                     />
                     <UploadSSH />

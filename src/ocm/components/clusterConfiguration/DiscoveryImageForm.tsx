@@ -22,6 +22,7 @@ type DiscoveryImageFormProps = {
   onSuccess: () => Promise<void>;
   cpuArchitecture: CpuArchitecture;
   onSuccessIpxe: () => Promise<void>;
+  isIpxeSelected?: boolean;
 };
 
 const DiscoveryImageForm = ({
@@ -30,6 +31,7 @@ const DiscoveryImageForm = ({
   onSuccess,
   cpuArchitecture,
   onSuccessIpxe,
+  isIpxeSelected,
 }: DiscoveryImageFormProps) => {
   const { infraEnv, error: infraEnvError } = useInfraEnv(cluster.id, cpuArchitecture);
   const cancelSourceRef = React.useRef<CancelTokenSource>();
@@ -92,6 +94,7 @@ const DiscoveryImageForm = ({
       httpsProxy={infraEnv.proxy?.httpsProxy}
       noProxy={infraEnv.proxy?.noProxy}
       imageType={infraEnv.type}
+      isIpxeSelected={isIpxeSelected}
     />
   );
 };

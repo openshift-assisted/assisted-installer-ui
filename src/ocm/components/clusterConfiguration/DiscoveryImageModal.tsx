@@ -46,6 +46,7 @@ export const DiscoveryImageModal = () => {
   const [isoDownloadError, setIsoDownloadError] = React.useState<string>('');
   const [ipxeDownloadUrl, setIpxeDownloadUrl] = React.useState<string>('');
   const [ipxeDownloadError, setIpxeDownloadError] = React.useState<string>('');
+  const [isIpxeSelected, setIpxeSelected] = React.useState<boolean>(false);
 
   const { discoveryImageDialog } = useModalDialogsContext();
   const { data, isOpen, close } = discoveryImageDialog;
@@ -65,11 +66,15 @@ export const DiscoveryImageModal = () => {
     const { url, error } = await getIpxeImageUrl(cluster.id, CpuArchitecture.USE_DAY1_ARCHITECTURE);
     setIpxeDownloadUrl(url);
     setIpxeDownloadError(error);
-  }, [setIpxeDownloadUrl, cluster?.id]);
+  }, [getIpxeImageUrl, cluster?.id]);
 
   const onReset = React.useCallback(() => {
     setIsoDownloadUrl('');
+  }, []);
+
+  const onResetIpxe = React.useCallback(() => {
     setIpxeDownloadUrl('');
+    setIpxeSelected(true);
   }, []);
 
   if (!cluster) {
@@ -103,7 +108,7 @@ export const DiscoveryImageModal = () => {
           fileName={`discovery_ipxe_script_${nameImageSuffix}.txt`}
           downloadUrl={ipxeDownloadUrl}
           isSNO={isSNOCluster}
-          onReset={onReset}
+          onReset={onResetIpxe}
           onClose={close}
         />
       ) : (
@@ -113,6 +118,7 @@ export const DiscoveryImageModal = () => {
           onSuccess={onImageReady}
           cpuArchitecture={CpuArchitecture.USE_DAY1_ARCHITECTURE}
           onSuccessIpxe={onImageIpxeReady}
+          isIpxeSelected={isIpxeSelected}
         />
       )}
     </Modal>

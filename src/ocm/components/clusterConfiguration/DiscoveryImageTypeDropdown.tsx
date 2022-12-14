@@ -10,7 +10,7 @@ import { CaretDownIcon } from '@patternfly/react-icons';
 import { useField } from 'formik';
 import { getFieldId } from '../../../common';
 
-const discoveryImageTypes = {
+export const discoveryImageTypes = {
   'minimal-iso': 'Minimal image file - Provision with virtual media',
   'full-iso': 'Full image file - Provision with physical media',
   'discovery-image-ipxe': 'iPXE - Provision from your network server',
@@ -27,7 +27,7 @@ export const DiscoveryImageTypeDropdown = ({
   defaultValue,
   onChange,
 }: DiscoveryImageTypeDropdownProps) => {
-  const [field, , { setValue }] = useField(name);
+  const [field, { value }, { setValue }] = useField(name);
   const [isOpen, setOpen] = React.useState(false);
   const [current, setCurrent] = React.useState(defaultValue);
   const fieldId = getFieldId(name, 'input');
@@ -80,10 +80,10 @@ export const DiscoveryImageTypeDropdown = ({
         isText
         className="pf-u-w-100"
       >
-        {current}
+        {current || value}
       </DropdownToggle>
     ),
-    [setOpen, current],
+    [setOpen, current, value],
   );
 
   return (
