@@ -23,8 +23,6 @@ export const SshPublicKeyHelperText: React.FC<{
   );
 };
 
-const label = 'Host SSH Public Key for troubleshooting after installation';
-
 interface SecurityFieldsFieldsProps {
   clusterSshKey: Cluster['sshPublicKey'];
   imageSshKey?: Cluster['imageInfo']['sshPublicKey'];
@@ -63,7 +61,7 @@ const SecurityFields = ({
     <>
       <FormGroup
         fieldId={fieldId}
-        label={label}
+        label={t('ai:Host SSH Public Key for troubleshooting after installation')}
         helperTextInvalid={errorMsg}
         validated={touched && errorMsg ? 'error' : 'default'}
       >
