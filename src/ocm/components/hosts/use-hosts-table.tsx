@@ -319,6 +319,9 @@ export const useHostsTable = (cluster: Cluster) => {
         handleApiError(e, () =>
           addAlert({ title: 'Failed to set role', message: getApiErrorMessage(e) }),
         );
+        if (isUnknownServerError(e as Error)) {
+          dispatch(setServerUpdateError());
+        }
       }
     },
     [addAlert, dispatch, resetCluster],
