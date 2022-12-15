@@ -1,6 +1,7 @@
 import React from 'react';
 import { Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
+import { TFunction } from 'i18next';
 import {
   Alert,
   Form,
@@ -38,9 +39,10 @@ const AdditionalNTPSourcesForm = ({
     additionalNtpSource: additionalNtpSource || '',
   };
 
-  const validationSchema = Yup.object().shape({
-    additionalNtpSource: ntpSourceValidationSchema.required(),
-  });
+  const getValidationSchema = (t: TFunction) =>
+    Yup.object().shape({
+      additionalNtpSource: ntpSourceValidationSchema.required(t('ai:Required field')),
+    });
 
   const { t } = useTranslation();
   const handleSubmit = (
@@ -66,7 +68,7 @@ const AdditionalNTPSourcesForm = ({
       initialValues={initialValues}
       initialTouched={{ additionalNtpSource: true }}
       initialStatus={{ error: null }}
-      validationSchema={validationSchema}
+      validationSchema={getValidationSchema(t)}
       onSubmit={handleSubmit}
     >
       {({ submitForm, status, setStatus, isSubmitting, isValid, dirty }) => {

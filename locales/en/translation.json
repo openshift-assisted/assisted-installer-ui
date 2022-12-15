@@ -565,6 +565,7 @@
   "ai:Removing {{name}} will remove the association with {{count}} host. These hosts will become available for other nodepools._plural": "Removing {{name}} will remove the association with {{count}} hosts. These hosts will become available for other nodepools.",
   "ai:Rename hostnames using the custom template:": "Rename hostnames using the custom template:",
   "ai:Report a bug": "Report a bug",
+  "ai:Required field": "Required field",
   "ai:Required.": "Required.",
   "ai:Review and create": "Review and create",
   "ai:Role": "Role",
