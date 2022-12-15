@@ -14,6 +14,7 @@ import {
 import { Formik } from 'formik';
 import { day2ApiVipValidationSchema, InputField } from '../../../common/components/ui';
 import GridGap from '../../../common/components/ui/GridGap';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 export type UpdateDay2ApiVipFormProps = {
   onClose: () => void;
@@ -32,6 +33,8 @@ const UpdateDay2ApiVipForm: React.FC<UpdateDay2ApiVipFormProps> = ({
   onClose,
   currentApiVip: originApiVip,
 }) => {
+  const { t } = useTranslation();
+
   const apiVipInputRef = React.useRef<HTMLInputElement>();
   React.useEffect(() => {
     apiVipInputRef.current?.focus();
@@ -43,9 +46,9 @@ const UpdateDay2ApiVipForm: React.FC<UpdateDay2ApiVipFormProps> = ({
   const validationSchema = React.useMemo(
     () =>
       Yup.object().shape({
-        apiVip: day2ApiVipValidationSchema.required(),
+        apiVip: day2ApiVipValidationSchema.required(t('ai:Required field')),
       }),
-    [],
+    [t],
   );
 
   return (
