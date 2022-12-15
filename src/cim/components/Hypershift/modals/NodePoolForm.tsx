@@ -1,3 +1,4 @@
+import * as React from 'react';
 import {
   DescriptionList,
   DescriptionListDescription,
@@ -8,11 +9,11 @@ import {
   GridItem,
 } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
-import * as React from 'react';
-import { InputField, OpenshiftVersionOptionType, OpenShiftVersionSelect } from '../../../../common';
+
+import { InputField } from '../../../../common';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { AgentK8sResource } from '../../../types';
-import { getAgentsForSelection } from '../../helpers';
+import { getAgentsForSelection, getVersionFromReleaseImage } from '../../helpers';
 import NodePoolAgentsForm from '../forms/NodePoolAgentsForm';
 import { AgentMachineK8sResource, HostedClusterK8sResource, NodePoolK8sResource } from '../types';
 import { getNodepoolAgents } from '../utils';
@@ -24,7 +25,6 @@ export type NodePoolFormValues = {
     value: string;
   }[];
   count: number;
-  openshiftVersion: string;
 };
 
 type NodePoolFormProps = {
@@ -32,16 +32,9 @@ type NodePoolFormProps = {
   agentMachines?: AgentMachineK8sResource[];
   hostedCluster: HostedClusterK8sResource;
   nodePool?: NodePoolK8sResource;
-  ocpVersions?: OpenshiftVersionOptionType[];
 };
 
-const NodePoolForm = ({
-  agents,
-  nodePool,
-  hostedCluster,
-  ocpVersions,
-  agentMachines,
-}: NodePoolFormProps) => {
+const NodePoolForm = ({ agents, nodePool, hostedCluster, agentMachines }: NodePoolFormProps) => {
   const { t } = useTranslation();
   const { values } = useFormikContext<NodePoolFormValues>();
 
@@ -54,6 +47,8 @@ const NodePoolForm = ({
       values.agentLabels.every(({ key, value }) => agent.metadata?.labels?.[key] === value) &&
       !agent.spec.clusterDeploymentName,
   );
+
+  const ocpVersion = getVersionFromReleaseImage(hostedCluster.spec.release.image);
 
   if (isEdit) {
     const nodePoolAgents = getNodepoolAgents(nodePool, agents, agentMachines, hostedCluster);
@@ -91,11 +86,6 @@ const NodePoolForm = ({
             <InputField name="nodePoolName" isRequired label={t('ai:Nodepool name')} />
           )}
         </GridItem>
-        {ocpVersions && (
-          <GridItem>
-            <OpenShiftVersionSelect versions={ocpVersions} />
-          </GridItem>
-        )}
         <GridItem>
           <NodePoolAgentsForm
             agents={agents}
@@ -103,6 +93,14 @@ const NodePoolForm = ({
             labelName="agentLabels"
             maxAgents={maxAgents}
           />
+        </GridItem>
+        <GridItem>
+          <DescriptionList isHorizontal>
+            <DescriptionListGroup>
+              <DescriptionListTerm>{t('ai:OpenShift version')}</DescriptionListTerm>
+              <DescriptionListDescription>{ocpVersion}</DescriptionListDescription>
+            </DescriptionListGroup>
+          </DescriptionList>
         </GridItem>
       </Grid>
     </Form>

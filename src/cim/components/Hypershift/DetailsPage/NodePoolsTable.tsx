@@ -1,3 +1,5 @@
+import * as React from 'react';
+import { Link } from 'react-router-dom';
 import { Button, Label, Popover, Stack, StackItem } from '@patternfly/react-core';
 import { PlusCircleIcon } from '@patternfly/react-icons';
 import {
@@ -12,21 +14,20 @@ import {
   Tr,
 } from '@patternfly/react-table';
 import classnames from 'classnames';
-import * as React from 'react';
+
 import { TableRow } from '../../../../common/components/hosts/AITable';
 import { getHostRowHardwareInfo } from '../../../../common/components/hosts/hardwareInfo';
-import { AgentK8sResource, ClusterImageSetK8sResource, ConfigMapK8sResource } from '../../../types';
+import { AgentK8sResource, ConfigMapK8sResource } from '../../../types';
 import AgentStatus from '../../Agent/AgentStatus';
 import { INFRAENV_AGENTINSTALL_LABEL_KEY } from '../../common';
 import ManageHostsModal from '../modals/ManageHostsModal';
 import AddNodePoolModal from '../modals/AddNodePoolModal';
 import { AgentMachineK8sResource, HostedClusterK8sResource, NodePoolK8sResource } from '../types';
-import { Link } from 'react-router-dom';
 import RemoveNodePoolModal from '../modals/RemoveNodePoolModal';
-import { getNodepoolAgents } from '../utils';
 import NodePoolStatus from './NodePoolStatus';
 import { fileSize } from '../../../../common';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
+import { getNodepoolAgents } from '../utils';
 
 import './NodePoolsTable.css';
 
@@ -44,7 +45,6 @@ type NodePoolsTableProps = {
   ) => Promise<unknown>;
   hostedCluster: HostedClusterK8sResource;
   onAddNodePool: (nodePool: NodePoolK8sResource) => Promise<unknown>;
-  clusterImages: ClusterImageSetK8sResource[];
   agentMachines: AgentMachineK8sResource[];
   supportedVersionsCM?: ConfigMapK8sResource;
 };
@@ -82,7 +82,6 @@ const NodePoolsTable = ({
   onUpdateNodePool,
   hostedCluster,
   onAddNodePool,
-  clusterImages,
   agentMachines,
   supportedVersionsCM,
 }: NodePoolsTableProps): JSX.Element => {
@@ -260,7 +259,6 @@ const NodePoolsTable = ({
           agentsNamespace={hostedCluster.spec.platform.agent?.agentNamespace || ''}
           agents={agents}
           hostedCluster={hostedCluster}
-          clusterImages={clusterImages}
           supportedVersionsCM={supportedVersionsCM}
         />
       )}
