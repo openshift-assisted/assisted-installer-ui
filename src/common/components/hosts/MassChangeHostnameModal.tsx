@@ -78,7 +78,9 @@ const validationSchema = (
   t: TFunction,
 ) =>
   Yup.object().shape({
-    hostname: richNameValidationSchema(t, usedHostnames, initialValues.hostname).required(),
+    hostname: richNameValidationSchema(t, usedHostnames, initialValues.hostname).required(
+      t('ai:Required field'),
+    ),
   });
 
 const updateHostnameValidationResult = (
