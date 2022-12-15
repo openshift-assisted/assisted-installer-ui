@@ -4,6 +4,7 @@ import { FormGroup, FileUpload } from '@patternfly/react-core';
 import { UploadFieldProps } from './types';
 import { getFieldId } from './utils';
 import HelperText from './HelperText';
+import { useTranslation } from '../../../hooks/use-translation-wrapper';
 
 const UploadField: React.FC<UploadFieldProps> = ({
   label,
@@ -20,6 +21,8 @@ const UploadField: React.FC<UploadFieldProps> = ({
   dropzoneProps,
   transformValue,
 }) => {
+  const { t } = useTranslation();
+
   const [filename, setFilename] = React.useState<string>();
   const [isFileUploading, setIsFileUploading] = React.useState(false);
 
@@ -61,6 +64,9 @@ const UploadField: React.FC<UploadFieldProps> = ({
     >
       {children}
       <FileUpload
+        filenamePlaceholder={t('ai:Drag a file here or browse to upload')}
+        browseButtonText={t('ai:Browse...')}
+        clearButtonText={t('ai:Clear')}
         id={field.name}
         style={{ resize: 'vertical' }}
         validated={isValid ? 'default' : 'error'}
