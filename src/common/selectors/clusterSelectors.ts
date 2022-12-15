@@ -1,7 +1,7 @@
 import head from 'lodash/fp/head';
 import { CpuArchitecture, SupportedPlatformIntegrations, ValidationsInfo } from '../types';
 import { Cluster, stringToJSON } from '../api';
-import { OperatorName, OPERATOR_NAME_CNV } from '../config';
+import { OperatorName } from '../config';
 
 export const selectMachineNetworkCIDR = ({
   machineNetworks,
