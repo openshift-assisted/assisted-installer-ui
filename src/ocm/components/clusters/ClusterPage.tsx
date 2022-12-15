@@ -106,7 +106,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
     return <ClusterLoading />;
   }
 
-  if (uiState === ResourceUIState.ERROR && !cluster) {
+  if (uiState === ResourceUIState.POLLING_ERROR && !cluster) {
     if (Number(errorDetail?.code) === 404) {
       return <Redirect to={`${routeBasePath}/clusters`} />;
     }
@@ -148,7 +148,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
             >
               <FeatureSupportLevelProvider loadingUi={<ClusterLoading />} cluster={cluster}>
                 {getContent(cluster, infraEnv)}
-                {uiState === ResourceUIState.ERROR && <ClusterPollingErrorModal />}
+                {uiState === ResourceUIState.POLLING_ERROR && <ClusterPollingErrorModal />}
                 {uiState === ResourceUIState.UPDATE_ERROR && <ClusterUpdateErrorModal />}
                 <CancelInstallationModal />
                 <ResetClusterModal />

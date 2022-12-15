@@ -11,7 +11,7 @@ import {
 import { selectCurrentClusterState } from '../../selectors';
 
 const shouldRefetch = (uiState: ResourceUIState, hasClusterData: boolean) => {
-  if (uiState === ResourceUIState.ERROR) {
+  if (uiState === ResourceUIState.POLLING_ERROR) {
     return hasClusterData;
   }
   return ![

@@ -444,6 +444,7 @@ export const HostsTableModals = ({
   const paginationProps = usePagination(massDeleteHostDialog.data?.hosts?.length || 0);
 
   if (uiState === ResourceUIState.UPDATE_ERROR) {
+    // Do not show a modal beneath the ServerUpdateError
     return null;
   }
 

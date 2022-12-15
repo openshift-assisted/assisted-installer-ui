@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import Axios, { CancelTokenSource } from 'axios';
 import { FormikHelpers } from 'formik';
-import { getApiErrorMessage, handleApiError } from '../../api';
+import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../api';
 import {
   Cluster,
   CpuArchitecture,
@@ -10,7 +10,7 @@ import {
   LoadingState,
   StatusErrorType,
 } from '../../../common';
-import { forceReload, updateCluster } from '../../reducers/clusters';
+import { forceReload, setServerUpdateError, updateCluster } from '../../reducers/clusters';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { DiscoveryImageFormService } from '../../services';
 import {
@@ -76,6 +76,10 @@ const DiscoveryImageForm = ({
             };
             formikActions.setStatus(error);
           });
+          if (isUnknownServerError(e as Error)) {
+            dispatch(setServerUpdateError());
+            onCancel();
+          }
         }
       }
     }

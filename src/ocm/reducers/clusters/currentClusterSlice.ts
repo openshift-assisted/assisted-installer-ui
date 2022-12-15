@@ -102,7 +102,7 @@ export const currentClusterSlice = createSlice({
       .addCase(fetchClusterAsync.pending, (state) => {
         const needsReload =
           state.uiState === ResourceUIState.LOADED ||
-          (state.uiState === ResourceUIState.ERROR && state.data);
+          (state.uiState === ResourceUIState.POLLING_ERROR && state.data);
         return {
           ...state,
           uiState: needsReload ? ResourceUIState.RELOADING : ResourceUIState.LOADING,
@@ -127,7 +127,7 @@ export const currentClusterSlice = createSlice({
         }
         return {
           ...state,
-          uiState: ResourceUIState.ERROR,
+          uiState: ResourceUIState.POLLING_ERROR,
           errorDetail: error,
         };
       });

@@ -3,7 +3,7 @@ export enum ResourceUIState {
   RELOADING = 'RELOADING',
   EMPTY = 'EMPTY',
   LOADED = 'LOADED',
-  ERROR = 'ERROR', // Polling error
+  POLLING_ERROR = 'POLLING_ERROR',
   UPDATE_ERROR = 'UPDATE_ERROR',
 }
 
