@@ -4,16 +4,18 @@ import {
   ExpandableSection,
   Grid,
   GridItem,
+  gridSpans,
   Split,
   SplitItem,
 } from '@patternfly/react-core';
-import { CheckCircleIcon, InfoCircleIcon } from '@patternfly/react-icons';
+import { CheckCircleIcon, ExclamationCircleIcon, InfoCircleIcon } from '@patternfly/react-icons';
 import {
   Cluster,
   ClusterValidations,
   DetailItem,
   DetailList,
   HostsValidations,
+  stringToJSON,
   useFeatureSupportLevel,
 } from '../../../../common';
 import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContext';
@@ -32,8 +34,12 @@ import {
 import {
   global_success_color_100 as okColor,
   global_info_color_100 as infoColor,
+  global_danger_color_100 as dangerColor,
 } from '@patternfly/react-tokens';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
+
+import { ValidationsInfo as ClusterValidationsInfo } from '../../../../common/types/clusters';
+import { ValidationsInfo as HostValidationsInfo } from '../../../../common/types/hosts';
 
 const ValidationsDetailExpanded = ({ cluster }: { cluster: Cluster }) => {
   const clusterWizardContext = useClusterWizardContext();
@@ -70,9 +76,17 @@ const ValidationsDetailExpanded = ({ cluster }: { cluster: Cluster }) => {
   );
 };
 
-const ValidationsInfo = ({ title, icon }: { title: string; icon: unknown }) => {
+const ValidationsInfo = ({
+  title,
+  icon,
+  span = 3,
+}: {
+  title: string;
+  icon: unknown;
+  span?: gridSpans;
+}) => {
   return (
-    <GridItem span={3}>
+    <GridItem span={span}>
       <Split hasGutter>
         <SplitItem>{icon}</SplitItem>
         <SplitItem>
@@ -81,6 +95,15 @@ const ValidationsInfo = ({ title, icon }: { title: string; icon: unknown }) => {
       </Split>
     </GridItem>
   );
+};
+
+const getValidationsIcon = (validationStatuses: string[]) => {
+  if (validationStatuses.includes('failure') || validationStatuses.includes('error')) {
+    return <ExclamationCircleIcon color={dangerColor.value} size="sm" />;
+  } else if (validationStatuses.includes('pending')) {
+    return <InfoCircleIcon size="sm" color={infoColor.value} />;
+  }
+  return <CheckCircleIcon color={okColor.value} />;
 };
 
 const ValidationsDetailCollapsed = ({ cluster }: { cluster: Cluster }) => {
@@ -93,21 +116,30 @@ const ValidationsDetailCollapsed = ({ cluster }: { cluster: Cluster }) => {
     [cluster, featureSupportLevelData, t, isSupportedOpenShiftVersion],
   );
 
-  const allClusterValidationsPassed = false;
+  const clusterValidations = React.useMemo(
+    () =>
+      Object.values(stringToJSON<ClusterValidationsInfo>(cluster.validationsInfo) || {})
+        .flat()
+        .map((val) => val.status),
+    [cluster.validationsInfo],
+  );
+
+  const hostValidations = React.useMemo(
+    () =>
+      cluster.hosts
+        ?.map((host) =>
+          Object.values(stringToJSON<HostValidationsInfo>(host.validationsInfo) || {})
+            .flat()
+            .map((val) => val.status),
+        )
+        .flat() || [],
+    [cluster.hosts],
+  );
 
   return (
     <>
-      <ValidationsInfo
-        title="Cluster validations"
-        icon={
-          allClusterValidationsPassed ? (
-            <CheckCircleIcon color={okColor.value} />
-          ) : (
-            <InfoCircleIcon size="sm" color={infoColor.value} />
-          )
-        }
-      />
-      <ValidationsInfo title="Host validations" icon={<CheckCircleIcon color={okColor.value} />} />
+      <ValidationsInfo title="Cluster validations" icon={getValidationsIcon(clusterValidations)} />
+      <ValidationsInfo title="Host validations" icon={getValidationsIcon(hostValidations)} />
       <ValidationsInfo
         title={`Cluster support level: ${isFullySupported ? 'Full' : 'Limited'}`}
         icon={
@@ -117,6 +149,7 @@ const ValidationsDetailCollapsed = ({ cluster }: { cluster: Cluster }) => {
             <InfoCircleIcon size="sm" color={infoColor.value} />
           )
         }
+        span={4}
       />
     </>
   );
@@ -131,7 +164,7 @@ export const ReviewValidations = ({ cluster }: { cluster: Cluster }) => {
       <ExpandableSection
         toggleContent={
           <Grid>
-            <GridItem span={3}>Validations</GridItem>
+            <GridItem span={2}>Validations</GridItem>
             {!isValidationsExpanded && <ValidationsDetailCollapsed cluster={cluster} />}
           </Grid>
         }
