@@ -16,7 +16,7 @@ const RadioField = ({
     value,
     type: 'radio',
   });
-  const fieldId = getFieldId(name, 'radio', field.value);
+  const fieldId = getFieldId(name, 'radio', field.value as string | undefined);
 
   return (
     <Radio
