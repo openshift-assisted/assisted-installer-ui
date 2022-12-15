@@ -46,7 +46,7 @@ type OcmDiscoveryImageConfigFormProps = Proxy & {
   isIpxeSelected?: boolean;
 };
 
-export const OcmDiscoveryImageConfigForm: React.FC<OcmDiscoveryImageConfigFormProps> = ({
+export const OcmDiscoveryImageConfigForm = ({
   handleSubmit,
   onCancel,
   sshPublicKey,
@@ -55,7 +55,7 @@ export const OcmDiscoveryImageConfigForm: React.FC<OcmDiscoveryImageConfigFormPr
   noProxy,
   imageType,
   isIpxeSelected,
-}) => {
+}: OcmDiscoveryImageConfigFormProps) => {
   const initialValues: OcmDiscoveryImageFormValues = {
     sshPublicKey: sshPublicKey || '',
     httpProxy: httpProxy || '',
@@ -69,8 +69,8 @@ export const OcmDiscoveryImageConfigForm: React.FC<OcmDiscoveryImageConfigFormPr
   const [buttonText, setButtonText] = React.useState<string>(t('ai:Generate Discovery ISO'));
 
   const updateDiscoveryButtonAndAlertText = React.useCallback(
-    (imageType: string, isIpxeSelected?: boolean) => {
-      if (!isIpxeSelected && (imageType === 'minimal-iso' || imageType === 'full-iso')) {
+    (isIpxeSelected?: boolean) => {
+      if (!isIpxeSelected) {
         setButtonText(t('ai:Generate Discovery ISO'));
         setAlertDiscoveryText(t('ai:To add hosts to the cluster, generate a Discovery ISO.'));
       } else {
@@ -82,8 +82,8 @@ export const OcmDiscoveryImageConfigForm: React.FC<OcmDiscoveryImageConfigFormPr
   );
 
   React.useEffect(() => {
-    updateDiscoveryButtonAndAlertText(imageType ? imageType : '', isIpxeSelected);
-  }, [updateDiscoveryButtonAndAlertText, imageType, isIpxeSelected]);
+    updateDiscoveryButtonAndAlertText(isIpxeSelected);
+  }, [updateDiscoveryButtonAndAlertText, isIpxeSelected]);
 
   const [alertDiscoveryText, setAlertDiscoveryText] = React.useState<string>(
     t('ai:To add hosts to the cluster, generate a Discovery ISO.'),

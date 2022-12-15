@@ -19,7 +19,7 @@ export const discoveryImageTypes = {
 type DiscoveryImageTypeDropdownProps = {
   name: string;
   defaultValue: string | undefined;
-  onChange: (imageType: string) => void;
+  onChange: (isIpxeSelected: boolean) => void;
 };
 
 export const DiscoveryImageTypeDropdown = ({
@@ -67,7 +67,7 @@ export const DiscoveryImageTypeDropdown = ({
       setCurrent(currentValue ? currentValue : '');
       setValue(event?.currentTarget.id);
       setOpen(false);
-      onChange(event?.currentTarget.id || '');
+      onChange(event?.currentTarget.id === 'discovery-image-ipxe');
     },
     [setCurrent, setOpen, defaultValue, setValue, onChange],
   );

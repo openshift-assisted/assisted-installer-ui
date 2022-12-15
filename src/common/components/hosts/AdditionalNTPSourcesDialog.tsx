@@ -15,9 +15,9 @@ import {
   V2ClusterUpdateParams,
   ntpSourceValidationSchema,
   AdditionalNTPSourcesField,
-  AlertFormikError,
   StatusErrorType,
 } from '../../../common';
+import { AlertFormikError } from '../../../common/components/ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 export type AdditionalNTPSourcesFormProps = {

@@ -47,6 +47,7 @@ const Day2GenerateISO = () => {
             onCancel={close}
             onSuccess={onImageReady}
             onSuccessIpxe={onImageIpxeReady}
+            isIpxeSelected={wizardContext.selectedIpxeUrl !== ''}
           />
         </StackItem>
       </Stack>
