@@ -53,6 +53,10 @@ export const getApiErrorMessage = (error: unknown): string => {
   return getErrorMessage(error);
 };
 
+export const isUnknownServerError = (error: Error): boolean => {
+  return getApiErrorCode(error) === SERVER_ERROR_CODE;
+};
+
 export const getApiErrorCode = (error: Error | AxiosError): string | number => {
   if (!isAxiosError(error)) {
     return FETCH_CONNECTIVITY_ERROR_CODE;

@@ -13,7 +13,6 @@ import {
   getApiErrorCode,
   handleApiError,
   FETCH_ABORTED_ERROR_CODE,
-  SERVER_ERROR_CODE,
 } from '../../api';
 import { ClustersService } from '../../services';
 

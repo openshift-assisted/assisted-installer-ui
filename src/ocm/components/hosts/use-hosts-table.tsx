@@ -19,7 +19,7 @@ import {
   AdditionalNTPSourcesDialog,
   AdditionalNTPSourcesFormProps,
 } from '../../../common/components/hosts/AdditionalNTPSourcesDialog';
-import { getApiErrorCode, getApiErrorMessage, handleApiError, SERVER_ERROR_CODE } from '../../api';
+import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../api';
 import {
   forceReload,
   setServerUpdateError,
@@ -149,6 +149,9 @@ export const useHostsTable = (cluster: Cluster) => {
         handleApiError(e, () =>
           addAlert({ title: 'Failed to set disk role', message: getApiErrorMessage(e) }),
         );
+        if (isUnknownServerError(e as Error)) {
+          dispatch(setServerUpdateError());
+        }
       }
     },
     [dispatch, resetCluster, addAlert, cluster.hosts],
@@ -168,6 +171,9 @@ export const useHostsTable = (cluster: Cluster) => {
         handleApiError(e, () =>
           addAlert({ title: 'Failed to update ODF status', message: getErrorMessage(e) }),
         );
+        if (isUnknownServerError(e as Error)) {
+          dispatch(setServerUpdateError());
+        }
       }
     },
     [cluster.hosts, resetCluster, dispatch, addAlert],
@@ -182,6 +188,9 @@ export const useHostsTable = (cluster: Cluster) => {
         dispatch(updateCluster(data));
       } catch (e) {
         handleApiError(e, () => onError(getApiErrorMessage(e)));
+        if (isUnknownServerError(e as Error)) {
+          dispatch(setServerUpdateError());
+        }
       }
     },
     [cluster.id, cluster.tags, dispatch],
@@ -223,6 +232,9 @@ export const useHostsTable = (cluster: Cluster) => {
             message: getApiErrorMessage(e),
           }),
         );
+        if (isUnknownServerError(e as Error)) {
+          dispatch(setServerUpdateError());
+        }
       }
     },
     [dispatch, addAlert, cluster, resetCluster],
@@ -488,8 +500,7 @@ export const HostsTableModals = ({
             editHostDialog.close();
           }}
           onHostSaveError={(e: Error) => {
-            const hasServerError = getApiErrorCode(e) === SERVER_ERROR_CODE;
-            if (hasServerError) {
+            if (isUnknownServerError(e)) {
               dispatch(setServerUpdateError());
               editHostDialog.close();
             }
@@ -527,8 +538,7 @@ export const HostsTableModals = ({
           selectedHostIDs={massUpdateHostnameDialog.data?.hostIDs || []}
           onChangeHostname={(host, hostname) => HostsService.updateHostName(host, hostname)}
           onHostSaveError={(e: Error) => {
-            const hasServerError = getApiErrorCode(e) === SERVER_ERROR_CODE;
-            if (hasServerError) {
+            if (isUnknownServerError(e)) {
               dispatch(setServerUpdateError());
               editHostDialog.close();
             }
