@@ -90,7 +90,7 @@ const getValidationSchema = (agentClusterInstall: AgentClusterInstallK8sResource
   return Yup.lazy<ClusterDeploymentHostsSelectionValues>((values) => {
     return Yup.object<ClusterDeploymentHostsSelectionValues>().shape({
       hostCount: isSNOCluster ? Yup.number() : hostCountValidationSchema(t),
-      useMastersAsWorkers: Yup.boolean().required(),
+      useMastersAsWorkers: Yup.boolean().required(t('ai:Required field')),
       autoSelectedHostIds: values.autoSelectHosts
         ? Yup.array<string>().min(values.hostCount).max(values.hostCount)
         : Yup.array<string>(),

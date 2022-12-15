@@ -9,7 +9,7 @@ import {
 } from '@patternfly/react-core';
 
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
-import { getStorageSizeGB } from '../../helpers';
+import { getStorageSizeGiB } from '../../helpers';
 import { AlertPayload } from '../../../../common';
 
 import { CimConfigurationModalProps, CimConfiguratioProps } from './types';
@@ -41,12 +41,12 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
   const [isSaving, setSaving] = React.useState(false);
 
   const [dbVolSize, _setDbVolSize] = React.useState<number>(() =>
-    getStorageSizeGB(10, agentServiceConfig?.spec?.databaseStorage?.resources?.requests?.storage),
+    getStorageSizeGiB(10, agentServiceConfig?.spec?.databaseStorage?.resources?.requests?.storage),
   );
   const [dbVolSizeValidation, setDbVolSizeValidation] = React.useState<string>();
 
   const [fsVolSize, _setFsVolSize] = React.useState<number>(() =>
-    getStorageSizeGB(
+    getStorageSizeGiB(
       100,
       agentServiceConfig?.spec?.filesystemStorage?.resources?.requests?.storage,
     ),
@@ -54,7 +54,7 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
   const [fsVolSizeValidation, setFsVolSizeValidation] = React.useState<string>();
 
   const [imgVolSize, _setImgVolSize] = React.useState<number>(() =>
-    getStorageSizeGB(50, agentServiceConfig?.spec?.imageStorage?.resources?.requests?.storage),
+    getStorageSizeGiB(50, agentServiceConfig?.spec?.imageStorage?.resources?.requests?.storage),
   );
   const [imgVolSizeValidation, setImgVolSizeValidation] = React.useState<string>();
 
@@ -65,7 +65,7 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
 
   const setDbVolSize = (v: number): void => {
     if (v < MIN_DB_VOL_SIZE) {
-      setDbVolSizeValidation(t('ai:Minimal value is 1G'));
+      setDbVolSizeValidation(t('ai:Minimal value is 1Gi'));
     } else {
       setDbVolSizeValidation(undefined);
     }
@@ -73,7 +73,7 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
   };
   const setFsVolSize = (v: number): void => {
     if (v < MIN_FS_VOL_SIZE) {
-      setFsVolSizeValidation(t('ai:Minimal value is 1G'));
+      setFsVolSizeValidation(t('ai:Minimal value is 1Gi'));
     } else {
       setFsVolSizeValidation(undefined);
     }
@@ -81,7 +81,7 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
   };
   const setImgVolSize = (v: number): void => {
     if (v < MIN_IMG_VOL_SIZE) {
-      setImgVolSizeValidation(t('ai:Minimal value is 10G'));
+      setImgVolSizeValidation(t('ai:Minimal value is 10Gi'));
     } else {
       setImgVolSizeValidation(undefined);
     }
@@ -144,9 +144,9 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
           agentServiceConfig,
 
           platform,
-          dbVolSize,
-          fsVolSize,
-          imgVolSize,
+          dbVolSizeGiB: dbVolSize,
+          fsVolSizeGiB: fsVolSize,
+          imgVolSizeGiB: imgVolSize,
           configureLoadBalancer,
         })
       ) {

@@ -193,7 +193,11 @@ type WithHostStatusPopoverProps = AdditionNtpSourcePropsType &
 const WithHostStatusPopover: React.FC<WithHostStatusPopoverProps> = (props) => (
   <Popover
     headerContent={<div>{props.title}</div>}
-    bodyContent={<HostStatusPopoverContent {...props} />}
+    bodyContent={
+      <div style={{ maxHeight: '33vh', overflow: 'auto' }}>
+        <HostStatusPopoverContent {...props} />
+      </div>
+    }
     footerContent={<HostStatusPopoverFooter host={props.host} />}
     minWidth="30rem"
     maxWidth="50rem"

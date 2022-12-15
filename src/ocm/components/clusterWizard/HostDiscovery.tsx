@@ -45,6 +45,7 @@ const HostDiscoveryForm = ({ cluster }: { cluster: Cluster }) => {
       isNextDisabled={isNextDisabled}
       onNext={() => clusterWizardContext.moveNext()}
       onBack={() => clusterWizardContext.moveBack()}
+      isBackDisabled={isSubmitting || isAutoSaveRunning}
     />
   );
 

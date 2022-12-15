@@ -8,7 +8,7 @@ import {
   RenderIf,
   toSentence,
   canDownloadClusterLogs,
-  getBugzillaLink,
+  getReportIssueLink,
   operatorLabels,
   useAlerts,
 } from '../../../common';
@@ -172,7 +172,7 @@ export const HostsInstallationFailed = ({
               Download installation logs
             </AlertActionLink>
             <AlertActionLink
-              onClick={() => window.open(getBugzillaLink(cluster.openshiftVersion), '_blank')}
+              onClick={() => window.open(getReportIssueLink(), '_blank')}
               id={getID('button-report-bug')}
             >
               Report a bug
