@@ -14,12 +14,12 @@ import { NodePoolK8sResource } from '../../types';
 const validationSchema = (clusterName: string, nodePools: NodePoolK8sResource[], t: TFunction) =>
   Yup.lazy<HostsFormValues>((values) =>
     Yup.object<HostsFormValues>().shape({
-      agentNamespace: Yup.string().required(),
+      agentNamespace: Yup.string().required(t('ai:Required field')),
       nodePools: Yup.array().of(
         Yup.object<NodePoolFormValue>()
           .shape({
             name: Yup.string()
-              .required()
+              .required(t('ai:Required field'))
               .test(t('ai:Must be unique'), t('ai:Must be unique'), (value) => {
                 if (!value) {
                   return true;
@@ -32,11 +32,11 @@ const validationSchema = (clusterName: string, nodePools: NodePoolK8sResource[],
                   )
                 );
               }),
-            clusterName: Yup.string().required(),
+            clusterName: Yup.string().required(t('ai:Required field')),
             count: Yup.number(),
-            releaseImage: Yup.string().required(),
+            releaseImage: Yup.string().required(t('ai:Required field')),
           })
-          .required(),
+          .required(t('ai:Required field')),
       ),
     }),
   );
