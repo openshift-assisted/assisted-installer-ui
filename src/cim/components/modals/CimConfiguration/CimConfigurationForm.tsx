@@ -102,7 +102,7 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
           </Popover>
         }
       >
-        {t('ai:If there are many clusters, use a higher values for the storage fields.')}
+        {t('ai:If there are many clusters, use higher values for the storage fields.')}
       </FormGroup>
       <Flex justifyContent={{ default: 'justifyContentSpaceBetween' }}>
         <FlexItem>
@@ -112,7 +112,7 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
             labelIcon={
               <Popover
                 bodyContent={t(
-                  'ai:Specify how much storage is allocated for storing files such as database tables and database views for the clusters. Recommended is 10G or more. The value can not be updated later.',
+                  'ai:Specify how much storage is allocated for storing files such as database tables and database views for the clusters. Recommended is 10Gi or more. The value can not be updated later.',
                 )}
               >
                 <button
@@ -141,7 +141,7 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
                 onChange={(v: string) => setDbVolSize(getNumber(v, 1))}
                 min={0 /* Do the validation elsewhere */}
               />{' '}
-              G
+              Gi
             </span>
           </FormGroup>
         </FlexItem>
@@ -152,7 +152,7 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
             labelIcon={
               <Popover
                 bodyContent={t(
-                  'ai:Specify how much storage is allocated for storing logs, manifests and "kubeconfig" files for the clusters. Recommended is 100G or more. The value can not be updated later.',
+                  'ai:Specify how much storage is allocated for storing logs, manifests and "kubeconfig" files for the clusters. Recommended is 100Gi or more. The value can not be updated later.',
                 )}
               >
                 <button
@@ -181,7 +181,7 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
                 onChange={(v: string) => setFsVolSize(getNumber(v, 1))}
                 min={0}
               />{' '}
-              G
+              Gi
             </span>
           </FormGroup>
         </FlexItem>
@@ -192,7 +192,7 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
             labelIcon={
               <Popover
                 bodyContent={t(
-                  'ai:Specify how much storage to allocate for the images of the clusters. There must be 1G of image storage for each instance of Red Hat Enterprise Linux CoreOS that is running. Recommended is 50G or more. The value can not be updated later.',
+                  'ai:Specify how much storage to allocate for the images of the clusters. There must be 1G of image storage for each instance of Red Hat Enterprise Linux CoreOS that is running. Recommended is 50Gi or more. The value can not be updated later.',
                 )}
               >
                 <button
@@ -221,7 +221,7 @@ export const CimConfigurationForm: React.FC<CimConfigurationFormProps> = ({
                 onChange={(v: string) => setImgVolSize(getNumber(v, 10))}
                 min={0}
               />{' '}
-              G
+              Gi
             </span>
           </FormGroup>
         </FlexItem>
