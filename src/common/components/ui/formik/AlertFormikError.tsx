@@ -1,16 +1,27 @@
 import React from 'react';
-import { Alert, AlertVariant } from '@patternfly/react-core';
+import { Alert, AlertActionCloseButton, AlertVariant } from '@patternfly/react-core';
+import { StatusErrorType } from '../../../types';
 
-export const AlertFormikError = (statusFormik: any, actionClose?: React.ReactNode) => {
+type AlertFormikErrorProps = {
+  status: StatusErrorType;
+  onClose?: () => void;
+};
+
+export const AlertFormikError = ({ status, onClose }: AlertFormikErrorProps) => {
+  if (!status || !status.error) {
+    return null;
+  }
+  const actionClose = onClose ? <AlertActionCloseButton onClose={onClose} /> : undefined;
+
   return (
     <>
       <Alert
         variant={AlertVariant.danger}
-        title={statusFormik?.error?.title}
+        title={status.error.title}
         isInline
         actionClose={actionClose}
       >
-        {statusFormik?.error?.message}
+        {status.error.message}
       </Alert>
     </>
   );

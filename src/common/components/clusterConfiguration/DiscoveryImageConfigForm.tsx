@@ -19,7 +19,7 @@ import {
   noProxyValidationSchema,
   sshPublicKeyValidationSchema,
 } from '../../../common/components/ui';
-import { ProxyFieldsType } from '../../types';
+import { ProxyFieldsType, StatusErrorType } from '../../types';
 import ProxyFields from './ProxyFields';
 import UploadSSH from './UploadSSH';
 import DiscoveryImageTypeControlGroup from './DiscoveryImageTypeControlGroup';
@@ -118,7 +118,7 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
                 )}
                 <StackItem>
                   <Form>
-                    <AlertFormikError status={status as unknown} />
+                    <AlertFormikError status={status as StatusErrorType} />
                     {!hideDiscoveryImageType && <DiscoveryImageTypeControlGroup />}
                     <UploadSSH />
                     <ProxyFields />

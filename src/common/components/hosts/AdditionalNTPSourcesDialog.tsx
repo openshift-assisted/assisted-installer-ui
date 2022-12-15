@@ -8,7 +8,6 @@ import {
   ModalBoxBody,
   ModalBoxFooter,
   Button,
-  AlertActionCloseButton,
 } from '@patternfly/react-core';
 import {
   Cluster,
@@ -16,6 +15,7 @@ import {
   ntpSourceValidationSchema,
   AdditionalNTPSourcesField,
   AlertFormikError,
+  StatusErrorType,
 } from '../../../common';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
@@ -74,10 +74,8 @@ const AdditionalNTPSourcesForm = ({
             <ModalBoxBody>
               <Form>
                 <AlertFormikError
-                  status={status as unknown}
-                  actionClose={
-                    <AlertActionCloseButton onClose={() => setStatus({ error: null })} />
-                  }
+                  status={status as StatusErrorType}
+                  onClose={() => setStatus({ error: null })}
                 />
 
                 <AdditionalNTPSourcesField

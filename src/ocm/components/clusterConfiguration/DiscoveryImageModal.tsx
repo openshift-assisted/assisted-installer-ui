@@ -83,7 +83,11 @@ export const DiscoveryImageModal = () => {
 
   const isSNOCluster = isSNO(cluster);
 
-  const nameImageSuffix = `${cluster.name || ''}`;
+  const nameImageSuffix =
+    cluster.cpuArchitecture !== undefined &&
+    cluster.cpuArchitecture !== CpuArchitecture.USE_DAY1_ARCHITECTURE
+      ? `${cluster.name || ''}_${cluster.cpuArchitecture}`
+      : cluster.name || '';
   return (
     <Modal
       aria-label="Add hosts dialog"

@@ -7,7 +7,6 @@ import {
   Form,
   ModalBoxBody,
   ModalBoxFooter,
-  AlertActionCloseButton,
 } from '@patternfly/react-core';
 import { Formik } from 'formik';
 import {
@@ -76,10 +75,8 @@ const UpdateDay2ApiVipForm: React.FC<UpdateDay2ApiVipFormProps> = ({
             <ModalBoxBody>
               <GridGap>
                 <AlertFormikError
-                  status={status as unknown}
-                  actionClose={
-                    <AlertActionCloseButton onClose={() => setStatus({ error: null })} />
-                  }
+                  status={status as StatusErrorType}
+                  onClose={() => setStatus({ error: null })}
                 />
 
                 <InputField

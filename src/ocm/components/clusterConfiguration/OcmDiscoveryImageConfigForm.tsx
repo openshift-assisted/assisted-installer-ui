@@ -18,7 +18,7 @@ import {
   noProxyValidationSchema,
   sshPublicKeyValidationSchema,
 } from '../../../common/components/ui';
-import { ProxyFieldsType } from '../../../common/types';
+import { ProxyFieldsType, StatusErrorType } from '../../../common/types';
 import ProxyFields from '../../../common/components/clusterConfiguration/ProxyFields';
 import UploadSSH from '../../../common/components/clusterConfiguration/UploadSSH';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
@@ -107,7 +107,7 @@ export const OcmDiscoveryImageConfigForm: React.FC<OcmDiscoveryImageConfigFormPr
 
                 <StackItem>
                   <Form>
-                    <AlertFormikError status={status as unknown} />
+                    <AlertFormikError status={status as StatusErrorType} />
                     <DiscoveryImageTypeDropdown
                       name="imageType"
                       defaultValue={

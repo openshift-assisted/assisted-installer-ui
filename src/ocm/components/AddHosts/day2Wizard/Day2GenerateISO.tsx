@@ -20,6 +20,7 @@ const Day2GenerateISO = () => {
     const isoUrl = await getIsoImageUrl(cluster.id, wizardContext.selectedCpuArchitecture);
     if (!isoUrl.error) {
       wizardContext.setSelectedIsoUrl(isoUrl.url);
+      wizardContext.setSelectedIpxeUrl('');
       wizardContext.moveNext();
     }
   }, [cluster?.id, wizardContext, getIsoImageUrl]);
@@ -28,6 +29,7 @@ const Day2GenerateISO = () => {
     const ipxeUrl = await getIpxeImageUrl(cluster.id, wizardContext.selectedCpuArchitecture);
     if (!ipxeUrl.error) {
       wizardContext.setSelectedIpxeUrl(ipxeUrl.url);
+      wizardContext.setSelectedIsoUrl('');
       wizardContext.moveNext();
     }
   }, [cluster?.id, wizardContext, getIpxeImageUrl]);
