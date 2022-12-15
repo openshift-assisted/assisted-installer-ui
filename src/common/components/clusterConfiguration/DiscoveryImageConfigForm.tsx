@@ -14,17 +14,17 @@ import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { Formik, FormikHelpers } from 'formik';
 import { ImageCreateParams, ImageType, Proxy } from '../../api';
 import {
+  AlertFormikError,
   httpProxyValidationSchema,
   noProxyValidationSchema,
   sshPublicKeyValidationSchema,
 } from '../../../common/components/ui';
-import { ProxyFieldsType, StatusErrorType } from '../../types';
+import { ProxyFieldsType } from '../../types';
 import ProxyFields from './ProxyFields';
 import UploadSSH from './UploadSSH';
 import DiscoveryImageTypeControlGroup from './DiscoveryImageTypeControlGroup';
 import { OCP_STATIC_IP_DOC } from '../../config/constants';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
-
 export const StaticIPInfo: React.FC = () => {
   const { t } = useTranslation();
   return (
@@ -100,7 +100,6 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
       onSubmit={handleSubmit}
     >
       {({ submitForm, isSubmitting, status }) => {
-        const { error } = status as unknown as StatusErrorType;
         return (
           <>
             <ModalBoxBody>
@@ -119,11 +118,7 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
                 )}
                 <StackItem>
                   <Form>
-                    {error && (
-                      <Alert variant={AlertVariant.danger} title={error.title} isInline>
-                        {error.message}
-                      </Alert>
-                    )}
+                    <AlertFormikError status={status as unknown} />
                     {!hideDiscoveryImageType && <DiscoveryImageTypeControlGroup />}
                     <UploadSSH />
                     <ProxyFields />

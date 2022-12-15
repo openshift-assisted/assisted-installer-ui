@@ -7,12 +7,14 @@ import {
   Form,
   ModalBoxBody,
   ModalBoxFooter,
-  AlertVariant,
-  Alert,
   AlertActionCloseButton,
 } from '@patternfly/react-core';
 import { Formik } from 'formik';
-import { day2ApiVipValidationSchema, InputField } from '../../../common/components/ui';
+import {
+  AlertFormikError,
+  day2ApiVipValidationSchema,
+  InputField,
+} from '../../../common/components/ui';
 import GridGap from '../../../common/components/ui/GridGap';
 import { StatusErrorType } from '../../../common';
 
@@ -69,24 +71,17 @@ const UpdateDay2ApiVipForm: React.FC<UpdateDay2ApiVipFormProps> = ({
       }}
     >
       {({ handleSubmit, status, setStatus, isSubmitting, isValid, dirty }) => {
-        const { error } = status as unknown as StatusErrorType;
-
         return (
           <Form onSubmit={handleSubmit}>
             <ModalBoxBody>
               <GridGap>
-                {error && (
-                  <Alert
-                    variant={AlertVariant.danger}
-                    title={error.title}
-                    actionClose={
-                      <AlertActionCloseButton onClose={() => setStatus({ error: null })} />
-                    }
-                    isInline
-                  >
-                    {error.message}
-                  </Alert>
-                )}
+                <AlertFormikError
+                  status={status as unknown}
+                  actionClose={
+                    <AlertActionCloseButton onClose={() => setStatus({ error: null })} />
+                  }
+                />
+
                 <InputField
                   label="Set the IP or domain used to reach the cluster"
                   name="apiVip"

@@ -13,11 +13,12 @@ import {
 import { Formik, FormikHelpers } from 'formik';
 import { ImageCreateParams, ImageType, Proxy } from '../../../common/api';
 import {
+  AlertFormikError,
   httpProxyValidationSchema,
   noProxyValidationSchema,
   sshPublicKeyValidationSchema,
 } from '../../../common/components/ui';
-import { ProxyFieldsType, StatusErrorType } from '../../../common/types';
+import { ProxyFieldsType } from '../../../common/types';
 import ProxyFields from '../../../common/components/clusterConfiguration/ProxyFields';
 import UploadSSH from '../../../common/components/clusterConfiguration/UploadSSH';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
@@ -96,7 +97,6 @@ export const OcmDiscoveryImageConfigForm: React.FC<OcmDiscoveryImageConfigFormPr
       onSubmit={handleSubmit}
     >
       {({ submitForm, isSubmitting, status }) => {
-        const { error } = status as unknown as StatusErrorType;
         return (
           <>
             <ModalBoxBody>
@@ -107,12 +107,7 @@ export const OcmDiscoveryImageConfigForm: React.FC<OcmDiscoveryImageConfigFormPr
 
                 <StackItem>
                   <Form>
-                    {error && (
-                      <Alert variant={AlertVariant.danger} title={error.title} isInline>
-                        {error.message}
-                      </Alert>
-                    )}
-
+                    <AlertFormikError status={status as unknown} />
                     <DiscoveryImageTypeDropdown
                       name="imageType"
                       defaultValue={

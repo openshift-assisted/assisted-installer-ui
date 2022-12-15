@@ -2,7 +2,6 @@ import React from 'react';
 import { Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import {
-  Alert,
   Form,
   Modal,
   ModalVariant,
@@ -10,13 +9,13 @@ import {
   ModalBoxFooter,
   Button,
   AlertActionCloseButton,
-  AlertVariant,
 } from '@patternfly/react-core';
 import {
   Cluster,
   V2ClusterUpdateParams,
   ntpSourceValidationSchema,
   AdditionalNTPSourcesField,
+  AlertFormikError,
 } from '../../../common';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
@@ -74,18 +73,13 @@ const AdditionalNTPSourcesForm = ({
           <>
             <ModalBoxBody>
               <Form>
-                {status.error && (
-                  <Alert
-                    variant={AlertVariant.danger}
-                    title={status.error.title}
-                    actionClose={
-                      <AlertActionCloseButton onClose={() => setStatus({ error: null })} />
-                    }
-                    isInline
-                  >
-                    {status.error.message}
-                  </Alert>
-                )}
+                <AlertFormikError
+                  status={status as unknown}
+                  actionClose={
+                    <AlertActionCloseButton onClose={() => setStatus({ error: null })} />
+                  }
+                />
+
                 <AdditionalNTPSourcesField
                   name="additionalNtpSource"
                   label={t('ai:Additional NTP Sources')}
