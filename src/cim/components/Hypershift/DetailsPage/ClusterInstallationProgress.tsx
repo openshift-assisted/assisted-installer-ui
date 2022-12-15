@@ -1,11 +1,6 @@
-import { ProgressStepper, Stack, StackItem } from '@patternfly/react-core';
 import * as React from 'react';
-import {
-  AgentK8sResource,
-  ClusterImageSetK8sResource,
-  ConfigMapK8sResource,
-  SecretK8sResource,
-} from '../../../types';
+import { ProgressStepper, Stack, StackItem } from '@patternfly/react-core';
+import { AgentK8sResource, ConfigMapK8sResource, SecretK8sResource } from '../../../types';
 import { AgentMachineK8sResource, HostedClusterK8sResource, NodePoolK8sResource } from '../types';
 import HypershiftKubeconfigDownload from './HypershiftKubeconfigDownload';
 import HostedClusterProgress from './HostedClusterProgress';
@@ -29,7 +24,6 @@ type ClusterInstallationProgressProps = {
     }[],
   ) => Promise<unknown>;
   onAddNodePool: (nodePool: NodePoolK8sResource) => Promise<unknown>;
-  clusterImages: ClusterImageSetK8sResource[];
   launchToOCP: (urlSuffix: string, newTab: boolean) => void;
   supportedVersionsCM?: ConfigMapK8sResource;
 };
