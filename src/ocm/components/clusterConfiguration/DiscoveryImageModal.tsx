@@ -70,6 +70,7 @@ export const DiscoveryImageModal = () => {
 
   const onReset = React.useCallback(() => {
     setIsoDownloadUrl('');
+    setIpxeSelected(false);
   }, []);
 
   const onResetIpxe = React.useCallback(() => {
