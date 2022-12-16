@@ -98,7 +98,7 @@ export const nameValidationSchema = (
 export const sshPublicKeyValidationSchema = Yup.string().test(
   'ssh-public-key',
   'SSH public key must consist of "[TYPE] key [[EMAIL]]", supported types are: ssh-rsa, ssh-ed25519, ecdsa-[VARIANT]. A single key can be provided only.',
-  (value) => {
+  (value: string) => {
     if (!value) {
       return true;
     }
@@ -117,11 +117,13 @@ export const sshPublicKeyValidationSchema = Yup.string().test(
 export const pullSecretValidationSchema = Yup.string().test(
   'is-well-formed-json',
   "Invalid pull secret format. You must use your Red Hat account's pull secret.",
-  (value) => {
+  (value: string) => {
     const isValid = true;
     if (!value) return isValid;
     try {
-      const pullSecret = JSON.parse(value);
+      const pullSecret = JSON.parse(value) as {
+        auths: string;
+      };
       return (
         pullSecret.constructor.name === 'Object' &&
         !!pullSecret?.auths &&
@@ -247,7 +249,7 @@ export const ipBlockValidationSchema = (reservedCidrs: string | string[] | undef
     .test(
       'cidr-is-not-unspecified',
       'The specified CIDR is invalid because its resulting routing prefix matches the unspecified address.',
-      (cidr = '') => {
+      (cidr: string) => {
         const ip = getSubnet(cidr);
         if (ip === null) {
           return false;
@@ -262,7 +264,7 @@ export const ipBlockValidationSchema = (reservedCidrs: string | string[] | undef
     .test(
       'valid-cidr-base-address',
       ({ value }) => `${value as string} is not a valid CIDR`,
-      (cidr = '') => {
+      (cidr: string) => {
         const ip = getSubnet(cidr);
         if (ip === null) {
           return false;
@@ -275,7 +277,7 @@ export const ipBlockValidationSchema = (reservedCidrs: string | string[] | undef
         return result;
       },
     )
-    .test('cidrs-can-not-overlap', 'Provided CIDRs can not overlap.', (cidr = '') => {
+    .test('cidrs-can-not-overlap', 'Provided CIDRs can not overlap.', (cidr: string) => {
       if (cidr && reservedCidrs && reservedCidrs.length > 0) {
         return !overlap(cidr, reservedCidrs);
       }
@@ -288,7 +290,7 @@ export const dnsNameValidationSchema = Yup.string()
   .test(
     'dns-name-label-length',
     'Single label of the DNS name can not be longer than 63 characters.',
-    (value = '') => value.split('.').every((label: string) => label.length <= 63),
+    (value: string) => (value || '').split('.').every((label: string) => label.length <= 63),
   )
   .matches(DNS_NAME_REGEX, {
     message: 'Value "${value}" is not valid DNS name. Example: basedomain.example.com', // eslint-disable-line no-template-curly-in-string
@@ -374,9 +376,9 @@ export const httpProxyValidationSchema = (
     .test(
       'http-proxy-no-empty-validation',
       'At least one of the HTTP or HTTPS proxy URLs is required.',
-      (value) => !values.enableProxy || value || values[pairValueName],
+      (value) => Boolean(!values.enableProxy || value || values[pairValueName]),
     )
-    .test('http-proxy-validation', httpProxyValidationMessage, (value) => {
+    .test('http-proxy-validation', httpProxyValidationMessage, (value: string) => {
       if (!value) {
         return true;
       }
@@ -473,8 +475,8 @@ export const locationValidationSchema = (t: TFunction) => {
     .test(
       locationValidationMessagesList.INVALID_START_END,
       locationValidationMessagesList.INVALID_START_END,
-      (value) => {
-        const trimmed: string = value?.trim();
+      (value: string) => {
+        const trimmed = value?.trim();
         if (!trimmed) {
           return true;
         }
