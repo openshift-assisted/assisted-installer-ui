@@ -6,7 +6,6 @@ import { getApiErrorMessage, handleApiError } from '../../api';
 import {
   Cluster,
   CpuArchitecture,
-  DiscoveryImageFormValues,
   ErrorState,
   LoadingState,
   StatusErrorType,
@@ -14,7 +13,10 @@ import {
 import { forceReload, updateCluster } from '../../reducers/clusters';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { DiscoveryImageFormService } from '../../services';
-import { OcmDiscoveryImageConfigForm } from './OcmDiscoveryImageConfigForm';
+import {
+  OcmDiscoveryImageConfigForm,
+  OcmDiscoveryImageFormValues,
+} from './OcmDiscoveryImageConfigForm';
 
 type DiscoveryImageFormProps = {
   cluster: Cluster;
@@ -48,11 +50,11 @@ const DiscoveryImageForm = ({
   };
 
   const handleSubmit = async (
-    formValues: DiscoveryImageFormValues,
-    formikActions: FormikHelpers<DiscoveryImageFormValues>,
+    formValues: OcmDiscoveryImageFormValues,
+    formikActions: FormikHelpers<OcmDiscoveryImageFormValues>,
   ) => {
     if (cluster.id && infraEnv?.id) {
-      if (formValues['imageType'] !== 'full-iso' && formValues['imageType'] !== 'minimal-iso') {
+      if (formValues['imageType'] === 'discovery-image-ipxe') {
         await onSuccessIpxe();
       } else {
         try {

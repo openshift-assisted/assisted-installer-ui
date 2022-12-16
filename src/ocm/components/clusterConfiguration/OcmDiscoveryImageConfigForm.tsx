@@ -11,7 +11,7 @@ import {
   StackItem,
 } from '@patternfly/react-core';
 import { Formik, FormikHelpers } from 'formik';
-import { ImageCreateParams, ImageType, Proxy } from '../../../common/api';
+import { HostStaticNetworkConfig, ImageType, Proxy } from '../../../common/api';
 import {
   AlertFormikError,
   httpProxyValidationSchema,
@@ -24,7 +24,21 @@ import UploadSSH from '../../../common/components/clusterConfiguration/UploadSSH
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import DiscoveryImageTypeDropdown, { discoveryImageTypes } from './DiscoveryImageTypeDropdown';
 
-export type OcmDiscoveryImageFormValues = ImageCreateParams & ProxyFieldsType;
+export type OcmImageType = ImageType | 'discovery-image-ipxe';
+
+export interface OcmImageCreateParams {
+  /**
+   * SSH public key for debugging the installation.
+   */
+  sshPublicKey?: string;
+  staticNetworkConfig?: HostStaticNetworkConfig[];
+  /**
+   * Type of image that should be generated.
+   */
+  imageType?: OcmImageType;
+}
+
+export type OcmDiscoveryImageFormValues = OcmImageCreateParams & ProxyFieldsType;
 
 const validationSchema = Yup.lazy<OcmDiscoveryImageFormValues>((values) =>
   Yup.object<OcmDiscoveryImageFormValues>().shape({
