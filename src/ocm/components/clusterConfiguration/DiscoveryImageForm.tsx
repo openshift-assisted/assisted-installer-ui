@@ -6,20 +6,25 @@ import { getApiErrorMessage, handleApiError } from '../../api';
 import {
   Cluster,
   CpuArchitecture,
-  DiscoveryImageConfigForm,
-  DiscoveryImageFormValues,
   ErrorState,
   LoadingState,
+  StatusErrorType,
 } from '../../../common';
 import { forceReload, updateCluster } from '../../reducers/clusters';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { DiscoveryImageFormService } from '../../services';
+import {
+  OcmDiscoveryImageConfigForm,
+  OcmDiscoveryImageFormValues,
+} from './OcmDiscoveryImageConfigForm';
 
 type DiscoveryImageFormProps = {
   cluster: Cluster;
   onCancel: () => void;
   onSuccess: () => Promise<void>;
   cpuArchitecture: CpuArchitecture;
+  onSuccessIpxe: () => Promise<void>;
+  isIpxeSelected?: boolean;
 };
 
 const DiscoveryImageForm = ({
@@ -27,6 +32,8 @@ const DiscoveryImageForm = ({
   onCancel,
   onSuccess,
   cpuArchitecture,
+  onSuccessIpxe,
+  isIpxeSelected,
 }: DiscoveryImageFormProps) => {
   const { infraEnv, error: infraEnvError } = useInfraEnv(cluster.id, cpuArchitecture);
   const cancelSourceRef = React.useRef<CancelTokenSource>();
@@ -43,28 +50,33 @@ const DiscoveryImageForm = ({
   };
 
   const handleSubmit = async (
-    formValues: DiscoveryImageFormValues,
-    formikActions: FormikHelpers<DiscoveryImageFormValues>,
+    formValues: OcmDiscoveryImageFormValues,
+    formikActions: FormikHelpers<OcmDiscoveryImageFormValues>,
   ) => {
     if (cluster.id && infraEnv?.id) {
-      try {
-        const { updatedCluster } = await DiscoveryImageFormService.update(
-          cluster.id,
-          cluster.tags,
-          infraEnv.id,
-          formValues,
-        );
-        await onSuccess();
-        dispatch(updateCluster(updatedCluster));
-      } catch (error) {
-        handleApiError(error, () => {
-          formikActions.setStatus({
-            error: {
-              title: 'Failed to download the discovery Image',
-              message: getApiErrorMessage(error),
-            },
+      if (formValues['imageType'] === 'discovery-image-ipxe') {
+        await onSuccessIpxe();
+      } else {
+        try {
+          const { updatedCluster } = await DiscoveryImageFormService.update(
+            cluster.id,
+            cluster.tags,
+            infraEnv.id,
+            formValues,
+          );
+          await onSuccess();
+          dispatch(updateCluster(updatedCluster));
+        } catch (e) {
+          handleApiError(e, () => {
+            const error: StatusErrorType = {
+              error: {
+                title: 'Failed to download the discovery Image',
+                message: getApiErrorMessage(e),
+              },
+            };
+            formikActions.setStatus(error);
           });
-        });
+        }
       }
     }
   };
@@ -75,9 +87,8 @@ const DiscoveryImageForm = ({
   if (!infraEnv) {
     return <LoadingState />;
   }
-
   return (
-    <DiscoveryImageConfigForm
+    <OcmDiscoveryImageConfigForm
       onCancel={handleCancel}
       handleSubmit={handleSubmit}
       sshPublicKey={infraEnv.sshAuthorizedKey}
@@ -85,6 +96,7 @@ const DiscoveryImageForm = ({
       httpsProxy={infraEnv.proxy?.httpsProxy}
       noProxy={infraEnv.proxy?.noProxy}
       imageType={infraEnv.type}
+      isIpxeSelected={isIpxeSelected}
     />
   );
 };
