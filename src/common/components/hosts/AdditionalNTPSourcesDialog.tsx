@@ -1,23 +1,23 @@
 import React from 'react';
 import { Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
+import { TFunction } from 'i18next';
 import {
-  Alert,
   Form,
   Modal,
   ModalVariant,
   ModalBoxBody,
   ModalBoxFooter,
   Button,
-  AlertActionCloseButton,
-  AlertVariant,
 } from '@patternfly/react-core';
 import {
   Cluster,
   V2ClusterUpdateParams,
   ntpSourceValidationSchema,
   AdditionalNTPSourcesField,
+  StatusErrorType,
 } from '../../../common';
+import { AlertFormikError } from '../../../common/components/ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 export type AdditionalNTPSourcesFormProps = {
@@ -38,9 +38,10 @@ const AdditionalNTPSourcesForm = ({
     additionalNtpSource: additionalNtpSource || '',
   };
 
-  const validationSchema = Yup.object().shape({
-    additionalNtpSource: ntpSourceValidationSchema.required(),
-  });
+  const getValidationSchema = (t: TFunction) =>
+    Yup.object().shape({
+      additionalNtpSource: ntpSourceValidationSchema.required(t('ai:Required field')),
+    });
 
   const { t } = useTranslation();
   const handleSubmit = (
@@ -66,7 +67,7 @@ const AdditionalNTPSourcesForm = ({
       initialValues={initialValues}
       initialTouched={{ additionalNtpSource: true }}
       initialStatus={{ error: null }}
-      validationSchema={validationSchema}
+      validationSchema={getValidationSchema(t)}
       onSubmit={handleSubmit}
     >
       {({ submitForm, status, setStatus, isSubmitting, isValid, dirty }) => {
@@ -74,18 +75,11 @@ const AdditionalNTPSourcesForm = ({
           <>
             <ModalBoxBody>
               <Form>
-                {status.error && (
-                  <Alert
-                    variant={AlertVariant.danger}
-                    title={status.error.title}
-                    actionClose={
-                      <AlertActionCloseButton onClose={() => setStatus({ error: null })} />
-                    }
-                    isInline
-                  >
-                    {status.error.message}
-                  </Alert>
-                )}
+                <AlertFormikError
+                  status={status as StatusErrorType}
+                  onClose={() => setStatus({ error: null })}
+                />
+
                 <AdditionalNTPSourcesField
                   name="additionalNtpSource"
                   label={t('ai:Additional NTP Sources')}

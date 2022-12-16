@@ -129,11 +129,11 @@ const getNMState = (values: AddBmcValues, infraEnv: InfraEnvK8sResource): NMStat
 
 const getValidationSchema = (usedHostnames: string[], origHostname: string, t: TFunction) => {
   return Yup.object({
-    name: Yup.string().required(),
+    name: Yup.string().required(t('ai:Required field')),
     hostname: richNameValidationSchema(t, usedHostnames, origHostname),
-    bmcAddress: bmcAddressValidationSchema(t).required(),
-    username: Yup.string().required(),
-    password: Yup.string().required(),
+    bmcAddress: bmcAddressValidationSchema(t).required(t('ai:Required field')),
+    username: Yup.string().required(t('ai:Required field')),
+    password: Yup.string().required(t('ai:Required field')),
     bootMACAddress: macAddressValidationSchema,
     nmState: Yup.string(),
     macMapping: Yup.array().of(

@@ -6,14 +6,15 @@ import {
   Stack,
   StackItem,
 } from '@patternfly/react-core';
+import { TFunction } from 'i18next';
 import { global_palette_green_500 as okColor } from '@patternfly/react-tokens';
 import { CheckCircleIcon } from '@patternfly/react-icons';
-import NodePoolsTable from './NodePoolsTable';
+
 import { AgentMachineK8sResource, HostedClusterK8sResource, NodePoolK8sResource } from '../types';
-import { AgentK8sResource, ClusterImageSetK8sResource, ConfigMapK8sResource } from '../../../types';
+import { AgentK8sResource, ConfigMapK8sResource } from '../../../types';
 import { getNodepoolAgents, getNodePoolStatus, NodePoolStatus } from '../utils';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
-import { TFunction } from 'i18next';
+import NodePoolsTable from './NodePoolsTable';
 
 const getNodePoolsStatus = (
   agentMachines: AgentMachineK8sResource[],
@@ -73,7 +74,6 @@ type NodePoolsProgressProps = {
     }[],
   ) => Promise<unknown>;
   onAddNodePool: (nodePool: NodePoolK8sResource) => Promise<unknown>;
-  clusterImages: ClusterImageSetK8sResource[];
   supportedVersionsCM?: ConfigMapK8sResource;
 };
 

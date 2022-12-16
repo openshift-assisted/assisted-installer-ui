@@ -16,3 +16,4 @@ export * from './clusters';
 export * from './featureSupportLevel';
 export * from './typescriptExtensions';
 export * from './generateIsoFields';
+export * from './errortype';

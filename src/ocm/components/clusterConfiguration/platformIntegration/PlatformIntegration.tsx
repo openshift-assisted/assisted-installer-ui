@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { OcmSwitchField } from '../../ui/OcmFormFields';
-import { Cluster, PopoverIcon } from '../../../../common';
+import { Cluster, PopoverIcon, useFeatureSupportLevel } from '../../../../common';
 import useClusterSupportedPlatforms, {
   SupportedPlatformIntegrationType,
 } from '../../../hooks/useClusterSupportedPlatforms';
@@ -43,9 +43,21 @@ const PlatformIntegrationLabel = ({
   );
 };
 
-const PlatformIntegration = ({ clusterId }: { clusterId: Cluster['id'] }) => {
+const PlatformIntegration = ({
+  clusterId,
+  openshiftVersion,
+}: {
+  clusterId: Cluster['id'];
+  openshiftVersion: Cluster['openshiftVersion'];
+}) => {
   const { isPlatformIntegrationSupported, supportedPlatformIntegration } =
     useClusterSupportedPlatforms(clusterId);
+
+  const featureSupportLevels = useFeatureSupportLevel();
+  const isNutanixFeatureSupported = featureSupportLevels.isFeatureSupported(
+    openshiftVersion || '',
+    'NUTANIX_INTEGRATION',
+  );
 
   return (
     <OcmSwitchField
@@ -53,7 +65,10 @@ const PlatformIntegration = ({ clusterId }: { clusterId: Cluster['id'] }) => {
         hidden: isPlatformIntegrationSupported,
         content: platformIntegrationTooltip,
       }}
-      isDisabled={!isPlatformIntegrationSupported}
+      isDisabled={
+        !isPlatformIntegrationSupported ||
+        (supportedPlatformIntegration === 'nutanix' && !isNutanixFeatureSupported)
+      }
       name={'usePlatformIntegration'}
       label={
         <PlatformIntegrationLabel supportedPlatformIntegration={supportedPlatformIntegration} />

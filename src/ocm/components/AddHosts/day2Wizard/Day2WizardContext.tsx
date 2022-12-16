@@ -16,6 +16,8 @@ export type Day2WizardContextType = {
   onUpdateStaticIpView(view: StaticIpView): void;
   onUpdateHostNetworkConfigType(type: HostsNetworkConfigurationType): void;
   wizardStepIds: Day2WizardStepsType[];
+  selectedIpxeUrl: string;
+  setSelectedIpxeUrl: (ipxeUrl: string) => void;
 };
 
 const Day2WizardContext = React.createContext<Day2WizardContextType | null>(null);

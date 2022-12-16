@@ -280,20 +280,20 @@ const createAgentServiceConfig = async ({
   t,
   setError,
   createResource,
-  dbVolSizeGB,
-  fsVolSizeGB,
-  imgVolSizeGB,
+  dbVolSizeGiB,
+  fsVolSizeGiB,
+  imgVolSizeGiB,
 }: {
   t: TFunction;
   setError: SetErrorFuncType;
   createResource: CreateResourceFuncType;
 
-  dbVolSizeGB: number;
-  fsVolSizeGB: number;
-  imgVolSizeGB: number;
+  dbVolSizeGiB: number;
+  fsVolSizeGiB: number;
+  imgVolSizeGiB: number;
 }): Promise<boolean> => {
   try {
-    const agentServiceConfig: AgentServiceConfigK8sResource = {
+    const agentServiceConfig = {
       apiVersion: 'agent-install.openshift.io/v1beta1',
       kind: 'AgentServiceConfig',
       metadata: {
@@ -304,7 +304,7 @@ const createAgentServiceConfig = async ({
           accessModes: ['ReadWriteOnce'],
           resources: {
             requests: {
-              storage: `${dbVolSizeGB}G`,
+              storage: `${dbVolSizeGiB}Gi`,
             },
           },
         },
@@ -312,7 +312,7 @@ const createAgentServiceConfig = async ({
           accessModes: ['ReadWriteOnce'],
           resources: {
             requests: {
-              storage: `${fsVolSizeGB}G`,
+              storage: `${fsVolSizeGiB}Gi`,
             },
           },
         },
@@ -320,14 +320,14 @@ const createAgentServiceConfig = async ({
           accessModes: ['ReadWriteOnce'],
           resources: {
             requests: {
-              storage: `${imgVolSizeGB}G`,
+              storage: `${imgVolSizeGiB}Gi`,
             },
           },
         },
       },
     };
 
-    await createResource(convertOCPtoCIMResourceHeader(agentServiceConfig));
+    await createResource(agentServiceConfig);
     return true;
   } catch (e) {
     console.error('Failed to create AgentServiceConfig: ', e);
@@ -403,9 +403,9 @@ export const onEnableCIM = async ({
   agentServiceConfig,
   platform,
 
-  dbVolSize,
-  fsVolSize,
-  imgVolSize,
+  dbVolSizeGiB,
+  fsVolSizeGiB,
+  imgVolSizeGiB,
 
   configureLoadBalancer,
 }: {
@@ -419,9 +419,9 @@ export const onEnableCIM = async ({
   agentServiceConfig?: AgentServiceConfigK8sResource;
   platform: string;
 
-  dbVolSize: number;
-  fsVolSize: number;
-  imgVolSize: number;
+  dbVolSizeGiB: number;
+  fsVolSizeGiB: number;
+  imgVolSizeGiB: number;
 
   configureLoadBalancer: boolean;
 }) => {
@@ -439,9 +439,9 @@ export const onEnableCIM = async ({
         t,
         setError,
         createResource,
-        dbVolSizeGB: dbVolSize,
-        fsVolSizeGB: fsVolSize,
-        imgVolSizeGB: imgVolSize,
+        dbVolSizeGiB,
+        fsVolSizeGiB,
+        imgVolSizeGiB,
       }))
     ) {
       return false;
