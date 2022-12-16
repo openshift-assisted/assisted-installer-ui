@@ -14,8 +14,8 @@ export const ODF_REQUIREMENTS_LINK =
   'https://access.redhat.com/documentation/en-us/red_hat_openshift_data_foundation/4.9/html/planning_your_deployment/infrastructure-requirements_rhodf#resource-requirements_rhodf';
 export const VSPHERE_CONFIG_LINK = 'https://access.redhat.com/solutions/6677901';
 
-export const getBugzillaLink = (version = '') =>
-  `https://bugzilla.redhat.com/enter_bug.cgi?product=OpenShift%20Container%20Platform&Component=OpenShift%20Container%20Platform&component=assisted-installer&version=${version}`;
+export const getReportIssueLink = () =>
+  'https://issues.redhat.com/secure/CreateIssue!default.jspa?pid=12332330&issuetype=1&components=12370775';
 
 export const FEEDBACK_FORM_LINK =
   'https://docs.google.com/forms/d/e/1FAIpQLSfg9M8wRW4m_HkWeAl6KpB5dTcMu8iI3iJ29GlLfZpF2hnjng/viewform';
@@ -37,6 +37,9 @@ export const CNV_LINK = 'https://cloud.redhat.com/learn/topics/virtualization/';
 export const ODF_LINK = 'https://www.redhat.com/en/resources/openshift-data-foundation-datasheet';
 
 export const NMSTATE_EXAMPLES_LINK = 'https://nmstate.io/examples.html';
+
+export const APPROVE_NODES_IN_CL_LINK =
+  'https://docs.openshift.com/container-platform/4.11/installing/installing_platform_agnostic/installing-platform-agnostic.html#installation-approve-csrs_installing-platform-agnostic';
 
 // TODO(mlibra): Retrieve branding dynamically, if needed, i.e. via injecting to the "window" object
 export const getProductBrandingCode = () => 'redhat';
@@ -176,7 +179,7 @@ export const hostValidationFailureHints = (
   'belongs-to-majority-group': '',
   'valid-platform-network-settings': '',
   'ntp-synced': t(
-    "ai:Please manually fix host's NTP configuration or provide additional NTP sources.",
+    "ai:Manually fix the host's NTP configuration or provide additional NTP sources.",
   ),
   'container-images-available': '',
   'lso-requirements-satisfied': '',
@@ -304,3 +307,5 @@ export const OCP_STATIC_IP_DOC =
 export const AI_UI_TAG = 'ui_ocm';
 
 export const OCP_RELEASES_PAGE = 'openshift/releases';
+
+export const NUTANIX_CONFIG_LINK = 'https://access.redhat.com/solutions/6983944';

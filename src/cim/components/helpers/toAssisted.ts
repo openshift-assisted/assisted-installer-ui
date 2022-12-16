@@ -8,6 +8,7 @@ import { getHostNetworks } from './network';
 import { BareMetalHostK8sResource, InfraEnvK8sResource } from '../../types';
 import { AGENT_BMH_NAME_LABEL_KEY, BMH_HOSTNAME_ANNOTATION } from '../common/constants';
 import { getAgentProgress, getAgentRole, getInfraEnvNameOfAgent } from './agents';
+import { getClusterDeploymentCpuArchitecture } from './clusterDeployment';
 
 export const getAIHosts = (
   agents: AgentK8sResource[],
@@ -109,10 +110,12 @@ export const getAICluster = ({
   clusterDeployment,
   agentClusterInstall,
   agents = [],
+  infraEnv,
 }: {
   clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall?: AgentClusterInstallK8sResource;
   agents?: AgentK8sResource[];
+  infraEnv?: InfraEnvK8sResource;
 }): Cluster => {
   const installVersion = clusterDeployment.status?.installVersion;
   const [status, statusInfo] = getClusterStatus(agentClusterInstall);
@@ -148,6 +151,7 @@ export const getAICluster = ({
     installStartedAt: clusterDeployment.status?.installStartedTimestamp,
     installCompletedAt: clusterDeployment.status?.installedTimestamp,
     validationsInfo: JSON.stringify(agentClusterInstall?.status?.validationsInfo || {}),
+    cpuArchitecture: getClusterDeploymentCpuArchitecture(clusterDeployment, infraEnv),
   };
   /*
   aiCluster.agentSelectorMasterLabels =

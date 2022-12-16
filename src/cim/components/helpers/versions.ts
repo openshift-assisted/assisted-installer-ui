@@ -1,10 +1,17 @@
 import uniqBy from 'lodash/uniqBy';
-import { AgentClusterInstallK8sResource, ClusterImageSetK8sResource } from '../../types';
+
+import {
+  AgentClusterInstallK8sResource,
+  ClusterImageSetK8sResource,
+  ClusterVersionK8sResource,
+} from '../../types';
 import { OpenshiftVersionOptionType, OpenshiftVersion } from '../../../common';
 
 export const getVersionFromReleaseImage = (releaseImage = '') => {
-  const releaseImageParts = releaseImage.split(':');
-  return (releaseImageParts[releaseImageParts.length - 1] || '').split('-')[0];
+  const match = /.+:(.*)-/gm.exec(releaseImage);
+  if (match && match[1]) {
+    return match[1];
+  }
 };
 
 // eslint-disable-next-line
@@ -34,7 +41,7 @@ export const getOCPVersions = (
     .map((clusterImageSet): OpenshiftVersionOptionType => {
       const version = getVersionFromReleaseImage(clusterImageSet.spec?.releaseImage);
       return {
-        label: version ? `OpenShift ${version}` : (clusterImageSet.metadata?.name as string),
+        label: `OpenShift ${version ? version : (clusterImageSet.metadata?.name as string)}`,
         version: version || clusterImageSet.metadata?.name || '',
         value: clusterImageSet.metadata?.name as string,
         default: false,
@@ -64,4 +71,12 @@ export const getSelectedVersion = (
   return selectedClusterImage
     ? getOCPVersions([selectedClusterImage])?.[0]?.version
     : agentClusterInstall?.spec?.imageSetRef?.name;
+};
+
+export const getCurrentClusterVersion = (cv?: ClusterVersionK8sResource): string | undefined =>
+  cv?.status?.history?.[0]?.version || cv?.spec?.desiredUpdate?.version;
+
+export const getMajorMinorVersion = (version = '') => {
+  const match = /[0-9].[0-9][0-9]?/g.exec(version);
+  return match?.[0] || '';
 };

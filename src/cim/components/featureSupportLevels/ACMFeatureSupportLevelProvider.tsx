@@ -10,7 +10,8 @@ import {
 import { ClusterImageSetK8sResource } from '../../types';
 import { featureSupportLevelsACM } from '../../config/constants';
 import { getFeatureDisabledReason, isFeatureSupported } from './featureStateUtils';
-import { getVersionFromReleaseImage } from '../helpers';
+import { getOCPVersions, getVersionFromReleaseImage, getMajorMinorVersion } from '../helpers';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 export type ACMFeatureSupportLevelProvider = PropsWithChildren<{
   clusterImages: ClusterImageSetK8sResource[];
@@ -37,16 +38,14 @@ const getFeatureSupportLevelsMap = (): FeatureSupportLevelsMap => {
 export const ACMFeatureSupportLevelProvider: React.FC<ACMFeatureSupportLevelProvider> = ({
   children,
   clusterImages,
-  isEditClusterFlow,
+  isEditClusterFlow = false,
 }) => {
+  const { t } = useTranslation();
+
   const supportLevelData: FeatureSupportLevelsMap = React.useMemo<FeatureSupportLevelsMap>(() => {
     return getFeatureSupportLevelsMap();
   }, []);
-
-  const getMajorMinorVersion = (version = '') => {
-    const match = /[0-9].[0-9][0-9]?/g.exec(version);
-    return match?.[0] || '';
-  };
+  const ocpVersions = getOCPVersions(clusterImages);
 
   const getNormalizedVersion = React.useCallback(
     (versionName: string) => {
@@ -93,21 +92,21 @@ export const ACMFeatureSupportLevelProvider: React.FC<ACMFeatureSupportLevelProv
   const getDisabledReasonCallback = React.useCallback(
     (versionName: string, featureId: FeatureId) => {
       const isSupported = isFeatureSupportedCallback(versionName, featureId);
-      return getFeatureDisabledReason(featureId, undefined, isSupported);
+      return getFeatureDisabledReason(
+        featureId,
+        isEditClusterFlow,
+        versionName,
+        ocpVersions,
+        isSupported,
+        t,
+      );
     },
-    [isFeatureSupportedCallback],
+    [isFeatureSupportedCallback, t, ocpVersions, isEditClusterFlow],
   );
 
-  const isFeatureDisabled: FeatureSupportLevelData['isFeatureDisabled'] = React.useCallback(
-    (_version: string, featureId: FeatureId) => {
-      if (isEditClusterFlow) {
-        if (featureId === 'SNO') {
-          return true;
-        }
-      }
-      return false;
-    },
-    [isEditClusterFlow],
+  const isFeatureDisabled = React.useCallback(
+    (version: string, featureId: FeatureId) => !!getDisabledReasonCallback(version, featureId),
+    [getDisabledReasonCallback],
   );
 
   const providerValue = React.useMemo<FeatureSupportLevelData>(() => {

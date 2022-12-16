@@ -1,0 +1,23 @@
+.cim-config-form-title .pf-c-form__label-text {
+  font-size: larger;
+}
+
+.cim-config-form-volume {
+  white-space: nowrap;
+}
+
+.cim-config-form-aws-label {
+  white-space: nowrap;
+}
+
+.cim-config-form-aws {
+  margin-bottom: var(--pf-global--spacer--md);
+}
+
+.cim-config-form-volume input {
+  width: 10rem;
+}
+
+.cim-config-modal .pf-c-modal-box__body {
+  overflow: hidden;
+}

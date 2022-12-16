@@ -5,8 +5,6 @@ import {
   isArmArchitecture,
   isSNO,
   OpenshiftVersionOptionType,
-  OPERATOR_NAME_CNV,
-  OPERATOR_NAME_LVM,
   OperatorsValues,
   SupportLevel,
 } from '../../../common';
@@ -20,30 +18,34 @@ const isArmSupported = (versionName: string, versionOptions: OpenshiftVersionOpt
 };
 export const clusterExistsReason = 'This option is not editable after the draft cluster is created';
 
-export const getCnvAndLvmIncompatibilityReason = (
+export const getCnvIncompatibleWithLvmReason = (
   operatorValues: OperatorsValues,
   versionName: string | undefined,
-  testOperator: typeof OPERATOR_NAME_LVM | typeof OPERATOR_NAME_CNV,
+  lvmSupport: SupportLevel | undefined,
 ) => {
-  const hasIncompatibleOperator =
-    testOperator === OPERATOR_NAME_CNV
-      ? operatorValues.useOdfLogicalVolumeManager
-      : operatorValues.useContainerNativeVirtualization;
+  const mustDisableCnv =
+    !operatorValues.useContainerNativeVirtualization &&
+    operatorValues.useOdfLogicalVolumeManager &&
+    lvmSupport !== 'supported';
+  // In versions with none or limited support for LVM (< 4.12), it's no possible to select CNV + LVM
+  return mustDisableCnv
+    ? `Currently, you can not install ${CNV_OPERATOR_LABEL} operator at the same time as ${LVM_OPERATOR_LABEL} operator.`
+    : undefined;
+};
 
-  if (!hasIncompatibleOperator) {
-    return undefined;
+export const getLvmIncompatibleWithCnvReason = (
+  operatorValues: OperatorsValues,
+  versionName: string | undefined,
+  lvmSupport: SupportLevel | undefined,
+) => {
+  const hasSelectedCnv = operatorValues.useContainerNativeVirtualization;
+  if (hasSelectedCnv && operatorValues.useOdfLogicalVolumeManager) {
+    return `${LVM_OPERATOR_LABEL} must be installed when ${CNV_OPERATOR_LABEL} operator is also installed`;
   }
-  if (testOperator === OPERATOR_NAME_CNV && operatorValues.useContainerNativeVirtualization) {
-    // If both are enabled, CNV automatically installs LVM. Allow deactivating CNV
-    return undefined;
+  if (hasSelectedCnv && lvmSupport !== 'supported') {
+    return `Currently, you can not install ${LVM_OPERATOR_LABEL} operator at the same time as ${CNV_OPERATOR_LABEL} operator.`;
   }
-
-  const firstOperator =
-    testOperator === OPERATOR_NAME_CNV ? CNV_OPERATOR_LABEL : LVM_OPERATOR_LABEL;
-  const secondOperator =
-    testOperator === OPERATOR_NAME_CNV ? LVM_OPERATOR_LABEL : CNV_OPERATOR_LABEL;
-
-  return `Currently, you can not install ${firstOperator} operator at the same time as ${secondOperator} operator.`;
+  return undefined;
 };
 
 const getSNODisabledReason = (cluster: Cluster | undefined, isSupported: boolean) => {

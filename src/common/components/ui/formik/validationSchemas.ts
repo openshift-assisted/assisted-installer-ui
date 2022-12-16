@@ -1,15 +1,16 @@
-import * as Yup from 'yup';
-import { Address4, Address6 } from 'ip-address';
-import { isInSubnet } from 'is-in-subnet';
-import isCIDR from 'is-cidr';
 import { overlap } from 'cidr-tools';
+import { Address4, Address6 } from 'ip-address';
+import isCIDR from 'is-cidr';
+import { isInSubnet } from 'is-in-subnet';
+import * as Yup from 'yup';
 
-import { NetworkConfigurationValues, HostSubnets } from '../../../types/clusters';
+import { TFunction } from 'i18next';
+import { ClusterNetwork, MachineNetwork, ServiceNetwork } from '../../../api/types';
 import { NO_SUBNET_SET } from '../../../config/constants';
 import { ProxyFieldsType } from '../../../types';
-import { allSubnetsIPv4, trimCommaSeparatedList, trimSshPublicKey } from './utils';
-import { ClusterNetwork, MachineNetwork, ServiceNetwork } from '../../../api/types';
+import { HostSubnets, NetworkConfigurationValues } from '../../../types/clusters';
 import { getErrorMessage } from '../../../utils';
+import { getSubnet } from '../../clusterConfiguration/utils';
 import {
   bmcAddressValidationMessages,
   clusterNameValidationMessages,
@@ -18,8 +19,7 @@ import {
   locationValidationMessages,
   nameValidationMessages,
 } from './constants';
-import { TFunction } from 'i18next';
-import { getSubnet } from '../../clusterConfiguration/utils';
+import { allSubnetsIPv4, trimCommaSeparatedList, trimSshPublicKey } from './utils';
 
 const ALPHANUMERIC_REGEX = /^[a-zA-Z0-9]+$/;
 const NAME_START_END_REGEX = /^[a-z0-9](.*[a-z0-9])?$/;
@@ -28,6 +28,7 @@ const CLUSTER_NAME_START_END_REGEX = /^[a-z0-9](.*[a-z0-9])?$/;
 // NOTE: based on https://github.com/openshift/assisted-service/blob/master/internal/cluster/validations/validations.go#L32
 const CLUSTER_NAME_REGEX =
   /^[.-a-z0-9]?(([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*)*)[.-a-z0-9]?$/;
+const CLUSTER_NAME_NO_DOT_REGEX = /^[a-z0-9-]*$/;
 const SSH_PUBLIC_KEY_REGEX =
   /^(ssh-rsa|ssh-ed25519|ecdsa-[-a-z0-9]*) AAAA[0-9A-Za-z+/]+[=]{0,3}( .+)?$/;
 const DNS_NAME_REGEX = /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/;
@@ -53,8 +54,10 @@ export const nameValidationSchema = (
   const clusterNameValidationMessagesList = clusterNameValidationMessages(t);
   return Yup.string()
     .required('Required')
-    .matches(CLUSTER_NAME_REGEX, {
-      message: clusterNameValidationMessagesList.INVALID_VALUE,
+    .matches(isOcm ? CLUSTER_NAME_REGEX : CLUSTER_NAME_NO_DOT_REGEX, {
+      message: isOcm
+        ? clusterNameValidationMessagesList.INVALID_VALUE_OCM
+        : clusterNameValidationMessagesList.INVALID_VALUE_ACM,
       excludeEmptyString: true,
     })
     .matches(CLUSTER_NAME_START_END_REGEX, {
@@ -113,38 +116,24 @@ export const sshPublicKeyValidationSchema = Yup.string().test(
   },
 );
 
-export const pullSecretValidationSchema = Yup.string()
-  .test(
-    'is-well-formed-json',
-    'The pull-secret format is malformed, refer to the documentation for examples.',
-    (value) => {
-      const isValid = true;
-      if (!value) return isValid;
-      try {
-        JSON.parse(value);
-        return isValid;
-      } catch {
-        return !isValid;
-      }
-    },
-  )
-  .test(
-    'is-valid-pull-secret',
-    'The pull-secret format is invalid, refer to the documentation for examples.',
-    (value) => {
-      if (!value) return true;
-      try {
-        const pullSecret = JSON.parse(value);
-        return (
-          pullSecret.constructor.name === 'Object' &&
-          !!pullSecret?.auths &&
-          pullSecret.auths.constructor.name === 'Object'
-        );
-      } catch {
-        return false;
-      }
-    },
-  );
+export const pullSecretValidationSchema = Yup.string().test(
+  'is-well-formed-json',
+  "Invalid pull secret format. You must use your Red Hat account's pull secret.",
+  (value) => {
+    const isValid = true;
+    if (!value) return isValid;
+    try {
+      const pullSecret = JSON.parse(value);
+      return (
+        pullSecret.constructor.name === 'Object' &&
+        !!pullSecret?.auths &&
+        pullSecret.auths.constructor.name === 'Object'
+      );
+    } catch {
+      return !isValid;
+    }
+  },
+);
 
 export const ipValidationSchema = Yup.string().test(
   'ip-validation',

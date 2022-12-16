@@ -6,13 +6,12 @@ import {
   ClusterOperatorProps,
   CNV_LINK,
   getFieldId,
-  OPERATOR_NAME_CNV,
   OperatorsValues,
   PopoverIcon,
   useFeatureSupportLevel,
 } from '../../../../common';
 import CnvHostRequirements from './CnvHostRequirements';
-import { getCnvAndLvmIncompatibilityReason } from '../../featureSupportLevels/featureStateUtils';
+import { getCnvIncompatibleWithLvmReason } from '../../featureSupportLevels/featureStateUtils';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 
 const CNV_FIELD_NAME = 'useContainerNativeVirtualization';
@@ -53,7 +52,8 @@ const CnvCheckbox = ({ clusterId, openshiftVersion }: ClusterOperatorProps) => {
     if (openshiftVersion) {
       reason = featureSupportLevel.getFeatureDisabledReason(openshiftVersion, 'CNV');
       if (!reason) {
-        reason = getCnvAndLvmIncompatibilityReason(values, openshiftVersion, OPERATOR_NAME_CNV);
+        const lvmSupport = featureSupportLevel.getFeatureSupportLevel(openshiftVersion, 'LVM');
+        reason = getCnvIncompatibleWithLvmReason(values, openshiftVersion, lvmSupport);
       }
     }
     setDisabledReason(reason);

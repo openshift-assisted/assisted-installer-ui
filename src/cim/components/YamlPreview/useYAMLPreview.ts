@@ -1,7 +1,7 @@
 import cloneDeep from 'lodash/cloneDeep';
 import * as React from 'react';
 import * as yaml from 'js-yaml';
-import { K8sResourceCommon } from 'console-sdk-ai-lib';
+import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
 import {
   ClusterDeploymentK8sResource,
   AgentClusterInstallK8sResource,

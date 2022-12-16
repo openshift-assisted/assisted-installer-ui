@@ -38,18 +38,24 @@ const Hint = () => {
   );
 };
 
-const VMRebootConfigurationInfo: React.FC = () => {
+const VMRebootConfigurationInfo = ({ isInline = false }: { isInline?: boolean }) => {
   const { t } = useTranslation();
-  return (
-    <Text component="p">
-      <Popover bodyContent={<Hint />} minWidth="35rem">
-        <Button variant={ButtonVariant.link} isInline>
-          <InfoCircleIcon size="sm" />
-          &nbsp;{t('ai:Check your VM reboot configuration')}
-        </Button>
-      </Popover>
-    </Text>
+
+  const popover = (
+    <Popover bodyContent={<Hint />} minWidth="35rem">
+      <Button variant={ButtonVariant.link} isInline>
+        {!isInline && (
+          <>
+            <InfoCircleIcon size="sm" />
+            &nbsp;
+          </>
+        )}
+        {t('ai:Check your VM reboot configuration')}
+      </Button>
+    </Popover>
   );
+
+  return isInline ? popover : <Text component="p">{popover}</Text>;
 };
 
 export default VMRebootConfigurationInfo;

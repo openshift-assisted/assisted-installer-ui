@@ -15,7 +15,7 @@ import hdate from 'human-date';
 
 import { Host } from '../../api';
 import { ValidationsInfo } from '../../types/hosts';
-import { getHumanizedDateTime } from '../ui';
+import { ExternalLink, getHumanizedDateTime } from '../ui';
 
 import HostProgress from './HostProgress';
 import { getHostProgressStageNumber, getHostProgressStages } from './utils';
@@ -30,6 +30,7 @@ import { HostStatusProps } from './types';
 import { UpdateDay2ApiVipPropsType } from './HostValidationGroups';
 import { UnknownIcon } from '@patternfly/react-icons';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { APPROVE_NODES_IN_CL_LINK } from '../../config';
 
 const getTitleWithProgress = (host: Host, status: HostStatusProps['status']) => {
   const stages = getHostProgressStages(host);
@@ -92,8 +93,15 @@ const HostStatusPopoverContent: React.FC<HostStatusPopoverContentProps> = ({
           <>
             <br />
             {t(
-              "ai:To finish adding it to the cluster, approve its join request inside OpenShift Console's Nodes section. Note that it may take a few minutes for the join request to appear.",
+              "ai:To finish adding nodes to the cluster, approve the join request inside OpenShift Console's Nodes section.",
             )}
+            <br />
+            {t('ai:It may take a few minutes for the join request to appear.')}
+            <br />
+            {t('ai:If you prefer using the CLI, follow the instructions in')}&nbsp;
+            <ExternalLink href={APPROVE_NODES_IN_CL_LINK}>
+              {t('ai:How to approve nodes using the CLI')}
+            </ExternalLink>
           </>
         )}
         <HostProgress host={host} />
@@ -185,7 +193,11 @@ type WithHostStatusPopoverProps = AdditionNtpSourcePropsType &
 const WithHostStatusPopover: React.FC<WithHostStatusPopoverProps> = (props) => (
   <Popover
     headerContent={<div>{props.title}</div>}
-    bodyContent={<HostStatusPopoverContent {...props} />}
+    bodyContent={
+      <div style={{ maxHeight: '33vh', overflow: 'auto' }}>
+        <HostStatusPopoverContent {...props} />
+      </div>
+    }
     footerContent={<HostStatusPopoverFooter host={props.host} />}
     minWidth="30rem"
     maxWidth="50rem"

@@ -71,9 +71,11 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
             <HostsNotShowingLink setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
           </Text>
           {isVM && <VMRebootConfigurationInfo />}
-          {/* <OCSDisksManualFormattingHint /> Recently not used in the ACM flow */}
-          <FormatDiskWarning />
         </TextContent>
+      </GridItem>
+      <GridItem>
+        {/* <OCSDisksManualFormattingHint /> Recently not used in the ACM flow */}
+        <FormatDiskWarning />
       </GridItem>
 
       <GridItem>

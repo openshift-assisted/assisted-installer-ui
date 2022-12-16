@@ -78,7 +78,9 @@ const validationSchema = (
   t: TFunction,
 ) =>
   Yup.object().shape({
-    hostname: richNameValidationSchema(t, usedHostnames, initialValues.hostname).required(),
+    hostname: richNameValidationSchema(t, usedHostnames, initialValues.hostname).required(
+      t('ai:Required field'),
+    ),
   });
 
 const updateHostnameValidationResult = (
@@ -145,13 +147,13 @@ type MassChangeHostnameFormProps = {
   canChangeHostname: (host: Host) => ActionCheck;
 };
 
-const MassChangeHostnameForm: React.FC<MassChangeHostnameFormProps> = ({
+const MassChangeHostnameForm = ({
   selectedHosts: initHosts,
   isOpen,
   patchingHost,
   onClose,
   canChangeHostname,
-}) => {
+}: MassChangeHostnameFormProps) => {
   const { values, handleSubmit, isSubmitting, status, isValid } =
     useFormikContext<EditHostFormValues>();
 
@@ -266,16 +268,18 @@ export type MassChangeHostnameModalProps = {
   // eslint-disable-next-line
   onChangeHostname: (host: Host, hostname: string) => Promise<any>;
   canChangeHostname: (host: Host) => ActionCheck;
+  reloadCluster?: VoidFunction;
 };
 
-const MassChangeHostnameModal: React.FC<MassChangeHostnameModalProps> = ({
+const MassChangeHostnameModal = ({
   isOpen,
   onClose,
   selectedHostIDs,
   hosts,
   onChangeHostname,
   canChangeHostname,
-}) => {
+  reloadCluster,
+}: MassChangeHostnameModalProps) => {
   const [patchingHost, setPatchingHost] = React.useState<number>(0);
 
   const selectedHosts = hosts.filter((h) => selectedHostIDs.includes(h.id));
@@ -308,6 +312,7 @@ const MassChangeHostnameModal: React.FC<MassChangeHostnameModalProps> = ({
               await onChangeHostname(agent, newHostname);
               i++;
             }
+            reloadCluster && reloadCluster();
             onClose();
           } catch (e) {
             formikActions.setStatus({

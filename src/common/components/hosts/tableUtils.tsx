@@ -178,6 +178,24 @@ export const discoveredAtColumn: TableRow<Host> = {
   },
 };
 
+export const cpuArchitectureColumn = (t: TFunction): TableRow<Host> => ({
+  header: {
+    title: t('ai:CPU Architecture'),
+    props: {
+      id: 'col-header-cpuarchitecture',
+    },
+    transforms: [sortable],
+  },
+  cell: (host) => {
+    const inventory = getInventory(host);
+    return {
+      title: inventory.cpu?.architecture,
+      props: { 'data-testid': 'host-cpu-architecture' },
+      sortableValue: inventory.cpu?.architecture,
+    };
+  },
+});
+
 export const cpuCoresColumn: TableRow<Host> = {
   header: {
     title: 'CPU Cores',

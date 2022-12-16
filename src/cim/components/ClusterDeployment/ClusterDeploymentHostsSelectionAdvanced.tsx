@@ -2,7 +2,7 @@ import isMatch from 'lodash/isMatch';
 import { useFormikContext } from 'formik';
 import React from 'react';
 import Measure from 'react-measure';
-import { Grid, GridItem } from '@patternfly/react-core';
+import { Alert, AlertVariant, Grid, GridItem } from '@patternfly/react-core';
 
 import { AgentK8sResource } from '../../types';
 import { AGENT_LOCATION_LABEL_KEY, AGENT_NOLOCATION_VALUE } from '../common';
@@ -11,6 +11,8 @@ import { ClusterDeploymentHostsSelectionValues, ScaleUpFormValues } from './type
 import LabelsSelector, { infraEnvLabelKeys } from './LabelsSelector';
 import AgentsSelectionTable from '../Agent/AgentsSelectionTable';
 import { AgentTableActions } from './types';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { CpuArchitecture } from '../../../common';
 
 type ClusterDeploymentHostsSelectionAdvancedProps = {
   availableAgents: AgentK8sResource[];
@@ -18,6 +20,7 @@ type ClusterDeploymentHostsSelectionAdvancedProps = {
   onEditHost?: AgentTableActions['onEditHost'];
   onSetInstallationDiskId?: AgentTableActions['onSetInstallationDiskId'];
   onHostSelect?: VoidFunction;
+  cpuArchitecture?: CpuArchitecture;
 };
 
 type FormValues = ClusterDeploymentHostsSelectionValues | ScaleUpFormValues;
@@ -28,7 +31,9 @@ const ClusterDeploymentHostsSelectionAdvanced = <T extends FormValues>({
   onSetInstallationDiskId,
   onEditHost,
   onHostSelect,
+  cpuArchitecture,
 }: ClusterDeploymentHostsSelectionAdvancedProps) => {
+  const { t } = useTranslation();
   const { values } = useFormikContext<T>();
   const { locations, agentLabels } = values;
 
@@ -66,7 +71,18 @@ const ClusterDeploymentHostsSelectionAdvanced = <T extends FormValues>({
             labelKeysFilter={infraEnvLabelKeys}
           />
         </GridItem>
-
+        {cpuArchitecture && (
+          <Alert
+            variant={AlertVariant.info}
+            title={t(
+              'ai:Displaying only hosts with {{cpuArchitecture}} architecture in the table.',
+              {
+                cpuArchitecture,
+              },
+            )}
+            isInline
+          />
+        )}
         <GridItem>
           <Measure bounds>
             {({ measureRef, contentRect }) => (

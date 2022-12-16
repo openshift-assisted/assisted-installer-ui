@@ -1,6 +1,6 @@
-import { K8sResourceCommon } from 'console-sdk-ai-lib';
+import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
 import { ClusterDetailsValues } from '../../../common/components/clusterWizard/types';
-import { NetworkConfigurationValues } from '../../../common/types/clusters';
+import { CpuArchitecture, NetworkConfigurationValues } from '../../../common/types/clusters';
 import {
   AgentK8sResource,
   ClusterDeploymentK8sResource,
@@ -52,6 +52,7 @@ export type ClusterDeploymentDetailsProps = {
   agents: AgentK8sResource[];
   usedClusterNames: string[];
   pullSecret?: string;
+  infraEnv?: InfraEnvK8sResource;
 };
 
 export type ClusterDeploymentDetailsValues = ClusterDetailsValues;
@@ -73,10 +74,13 @@ export type ClusterDeploymentHostsDiscoveryValues = {
   selectedHostIds: string[];
 };
 
-export type ScaleUpFormValues = Omit<ClusterDeploymentHostsSelectionValues, 'useMastersAsWorkers'>;
+export type ScaleUpFormValues = Omit<
+  ClusterDeploymentHostsSelectionValues,
+  'useMastersAsWorkers'
+> & { cpuArchitecture: CpuArchitecture };
 
 export type ClusterDeploymentDetailsStepProps = ClusterDeploymentDetailsProps & {
-  onSaveDetails: (values: ClusterDeploymentDetailsValues) => Promise<string | void>;
+  onSaveDetails: (values: ClusterDeploymentDetailsValues) => Promise<unknown>;
   onClose: () => void;
   isPreviewOpen: boolean;
 };
@@ -148,7 +152,7 @@ export type ClusterDeploymentWizardProps = {
   isBMPlatform: boolean;
   onSaveAgent: EditAgentModalProps['onSave'];
   onSaveBMH: EditBMHModalProps['onEdit'];
-  onSaveISOParams: AddHostModalProps['onSaveISOParams'];
+  onSaveISOParams?: AddHostModalProps['onSaveISOParams'];
   onSaveHostsDiscovery: ClusterDeploymentHostsDiscoveryStepProps['onSaveHostsDiscovery'];
   onCreateBMH?: AddHostModalProps['onCreateBMH'];
   getClusterDeploymentLink: InfraEnvAgentTableProps['getClusterDeploymentLink'];
@@ -220,7 +224,7 @@ export type ClusterDeploymentHostsDiscoveryProps = {
   onEditRole: ClusterDeploymentHostDiscoveryTableProps['onEditRole'];
   onSetInstallationDiskId: AgentTableActions['onSetInstallationDiskId'];
   onSaveBMH: EditBMHModalProps['onEdit'];
-  onSaveISOParams: AddHostModalProps['onSaveISOParams'];
+  onSaveISOParams?: AddHostModalProps['onSaveISOParams'];
   onFormSaveError?: EditAgentModalProps['onFormSaveError'];
   fetchSecret: EditBMHModalProps['fetchSecret'];
   getClusterDeploymentLink: InfraEnvAgentTableProps['getClusterDeploymentLink'];

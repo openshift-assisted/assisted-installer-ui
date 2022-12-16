@@ -1,6 +1,12 @@
-import { ObjectMetadata } from 'console-sdk-ai-lib';
-import { getHumanizedDateTime, parseStringLabels } from '../../../common';
-import { AgentClusterInstallK8sResource, ClusterDeploymentK8sResource } from '../../types';
+import { ObjectMetadata } from '@openshift-console/dynamic-plugin-sdk';
+import isEqual from 'lodash/isEqual';
+import pick from 'lodash/pick';
+import { CpuArchitecture, getHumanizedDateTime, parseStringLabels } from '../../../common';
+import {
+  AgentClusterInstallK8sResource,
+  ClusterDeploymentK8sResource,
+  InfraEnvK8sResource,
+} from '../../types';
 import {
   AgentSelectorChangeProps,
   ClusterDeploymentHostsSelectionValues,
@@ -9,6 +15,7 @@ import {
   AGENT_LOCATION_LABEL_KEY,
   AGENT_AUTO_SELECT_ANNOTATION_KEY,
   AGENT_SELECTOR,
+  CPU_ARCHITECTURE_ANNOTATION_KEY,
 } from '../common';
 import { getClusterStatus } from './status';
 
@@ -157,45 +164,71 @@ type ClusterPropertyItem = {
 export const getClusterProperties = (
   clusterDeployment: ClusterDeploymentK8sResource,
   agentClusterInstall: AgentClusterInstallK8sResource,
-): { [key in ClusterPropertyKeys]: ClusterPropertyItem } => ({
-  name: {
-    key: 'Name',
-    value: clusterDeployment.metadata?.name,
-  },
-  openshiftVersion: {
-    key: 'OpenShift version',
-    value: clusterDeployment.status?.installVersion,
-  },
-  clusterId: {
-    key: 'Cluster ID',
-    value: clusterDeployment.metadata?.uid,
-  },
-  baseDnsDomain: {
-    key: 'Base DNS domain',
-    value: clusterDeployment.spec?.baseDomain,
-  },
-  apiVip: {
-    key: 'API IP',
-    value: agentClusterInstall?.spec?.apiVIP,
-  },
-  ingressVip: {
-    key: 'Ingress IP',
-    value: agentClusterInstall?.spec?.ingressVIP,
-  },
-  clusterNetworkCidr: {
-    key: 'Cluster network CIDR',
-    value: agentClusterInstall.spec?.networking?.clusterNetwork?.[0].cidr,
-  },
-  clusterNetworkHostPrefix: {
-    key: 'Cluster network host prefix',
-    value: agentClusterInstall.spec?.networking?.clusterNetwork?.[0]?.hostPrefix,
-  },
-  serviceNetworkCidr: {
-    key: 'Service network CIDR',
-    value: agentClusterInstall.spec?.networking?.serviceNetwork?.[0],
-  },
-  installedTimestamp: {
-    key: 'Installed at',
-    value: getHumanizedDateTime(clusterDeployment.status?.installedTimestamp),
-  },
-});
+): { [key in ClusterPropertyKeys]: ClusterPropertyItem } => {
+  const serviceNetworks = agentClusterInstall.spec?.networking?.serviceNetwork;
+  const clusterNetworks = agentClusterInstall.spec?.networking?.clusterNetwork;
+
+  return {
+    // TODO: we should translate following keys since they are used "as it is" in AcmDescriptionList.tsx / List component of the stolostron project
+    name: {
+      key: 'Name',
+      value: clusterDeployment.metadata?.name,
+    },
+    openshiftVersion: {
+      key: 'OpenShift version',
+      value: clusterDeployment.status?.installVersion,
+    },
+    clusterId: {
+      key: 'Cluster ID',
+      value: clusterDeployment.metadata?.uid,
+    },
+    baseDnsDomain: {
+      key: 'Base DNS domain',
+      value: clusterDeployment.spec?.baseDomain,
+    },
+    apiVip: {
+      key: 'API IP',
+      value: agentClusterInstall?.spec?.apiVIP,
+    },
+    ingressVip: {
+      key: 'Ingress IP',
+      value: agentClusterInstall?.spec?.ingressVIP,
+    },
+    clusterNetworkCidr: {
+      key: (clusterNetworks?.length || 0) > 1 ? 'Cluster network CIDRs' : 'Cluster network CIDR',
+      value: clusterNetworks?.map((n) => n.cidr).join(', '),
+    },
+    clusterNetworkHostPrefix: {
+      key:
+        (clusterNetworks?.length || 0) > 1
+          ? 'Cluster network host prefixes'
+          : 'Cluster network host prefix',
+      value: clusterNetworks?.map((n) => n.hostPrefix).join(', '),
+    },
+    serviceNetworkCidr: {
+      key: (serviceNetworks?.length || 0) > 1 ? 'Service network CIDRs' : 'Service network CIDR',
+      value: serviceNetworks?.join(', '),
+    },
+    installedTimestamp: {
+      key: 'Installed at',
+      value: getHumanizedDateTime(clusterDeployment.status?.installedTimestamp),
+    },
+  };
+};
+
+export const getClusterDeploymentCpuArchitecture = (
+  clusterDeployment: ClusterDeploymentK8sResource,
+  infraEnv?: InfraEnvK8sResource,
+) => {
+  let arch;
+  if (
+    infraEnv &&
+    isEqual(infraEnv.spec?.clusterRef, pick(clusterDeployment.metadata, ['name', 'namespace']))
+  ) {
+    arch = infraEnv.spec?.cpuArchitecture;
+  } else {
+    arch = clusterDeployment.metadata?.annotations?.[CPU_ARCHITECTURE_ANNOTATION_KEY];
+  }
+
+  return arch === CpuArchitecture.ARM ? CpuArchitecture.ARM : CpuArchitecture.x86;
+};

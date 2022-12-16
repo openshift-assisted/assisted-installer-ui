@@ -4,10 +4,12 @@ import { pluralize } from 'humanize-plus';
 import { DiscoveryTroubleshootingModalContent } from '../../../common';
 
 export interface HostsDiscoveryTroubleshootingInfoLinkWithModalProps {
+  isInline?: boolean;
   isSingleNode?: boolean;
 }
 
 const HostsDiscoveryTroubleshootingInfoLinkWithModal = ({
+  isInline = false,
   isSingleNode = false,
 }: HostsDiscoveryTroubleshootingInfoLinkWithModalProps) => {
   return (
@@ -15,6 +17,7 @@ const HostsDiscoveryTroubleshootingInfoLinkWithModal = ({
       linkText={`${pluralize(+isSingleNode, 'Host')} not showing up?`}
       modalTitle={'Troubleshooting Host Discovery Issues'}
       modalVariant={'large'}
+      isInline={isInline}
     >
       <DiscoveryTroubleshootingModalContent />
     </InfoLinkWithModal>
