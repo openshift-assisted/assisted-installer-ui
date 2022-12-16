@@ -141,7 +141,7 @@ const NetworkConfigurationPage = ({ cluster }: { cluster: Cluster }) => {
   const dispatch = useDispatch();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
 
-  const hostSubnets = React.useMemo(() => getHostSubnets(cluster), [cluster]);
+  const hostSubnets = React.useMemo(() => getHostSubnets(cluster, true), [cluster]);
   const initialValues = React.useMemo(
     () => getNetworkInitialValues(cluster, defaultNetworkValues),
     // eslint-disable-next-line react-hooks/exhaustive-deps
