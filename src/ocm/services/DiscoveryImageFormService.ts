@@ -1,4 +1,3 @@
-import { DiscoveryImageFormValues } from '../../common';
 import {
   V2ClusterUpdateParams,
   InfraEnvUpdateParams,

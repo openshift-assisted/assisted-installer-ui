@@ -1,4 +1,4 @@
-import { Cluster, ImageCreateParams, InfraEnv } from '../api';
+import { Cluster, InfraEnv } from '../api';
 
 export type ProxyFieldsType = {
   enableProxy: boolean;
@@ -11,7 +11,3 @@ export type TrustedCertificateFieldsType = {
   enableCertificate: boolean;
   trustBundle?: InfraEnv['additionalTrustBundle'];
 };
-
-export type DiscoveryImageFormValues = ImageCreateParams &
-  ProxyFieldsType &
-  TrustedCertificateFieldsType;

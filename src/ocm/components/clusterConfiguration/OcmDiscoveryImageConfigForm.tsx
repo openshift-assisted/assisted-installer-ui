@@ -11,18 +11,23 @@ import {
   StackItem,
 } from '@patternfly/react-core';
 import { Formik, FormikHelpers } from 'formik';
-import { HostStaticNetworkConfig, ImageType, Proxy } from '../../../common/api';
+import { HostStaticNetworkConfig, ImageType, InfraEnv, Proxy } from '../../../common/api';
 import {
   AlertFormikError,
   httpProxyValidationSchema,
   noProxyValidationSchema,
   sshPublicKeyValidationSchema,
 } from '../../../common/components/ui';
-import { ProxyFieldsType, StatusErrorType } from '../../../common/types';
+import {
+  ProxyFieldsType,
+  StatusErrorType,
+  TrustedCertificateFieldsType,
+} from '../../../common/types';
 import ProxyFields from '../../../common/components/clusterConfiguration/ProxyFields';
 import UploadSSH from '../../../common/components/clusterConfiguration/UploadSSH';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import DiscoveryImageTypeDropdown, { discoveryImageTypes } from './DiscoveryImageTypeDropdown';
+import CertificateFields from '../../../common/components/clusterConfiguration/CertificateFields';
 
 export type OcmImageType = ImageType | 'discovery-image-ipxe';
 
@@ -38,7 +43,9 @@ export interface OcmImageCreateParams {
   imageType?: OcmImageType;
 }
 
-export type OcmDiscoveryImageFormValues = OcmImageCreateParams & ProxyFieldsType;
+export type OcmDiscoveryImageFormValues = OcmImageCreateParams &
+  ProxyFieldsType &
+  TrustedCertificateFieldsType;
 
 const validationSchema = Yup.lazy<OcmDiscoveryImageFormValues>((values) =>
   Yup.object<OcmDiscoveryImageFormValues>().shape({
@@ -58,6 +65,8 @@ type OcmDiscoveryImageConfigFormProps = Proxy & {
   sshPublicKey?: string;
   imageType?: ImageType;
   isIpxeSelected?: boolean;
+  enableCertificate?: boolean;
+  trustBundle?: InfraEnv['additionalTrustBundle'];
 };
 
 export const OcmDiscoveryImageConfigForm = ({
@@ -69,6 +78,8 @@ export const OcmDiscoveryImageConfigForm = ({
   noProxy,
   imageType,
   isIpxeSelected,
+  enableCertificate,
+  trustBundle,
 }: OcmDiscoveryImageConfigFormProps) => {
   const initialValues: OcmDiscoveryImageFormValues = {
     sshPublicKey: sshPublicKey || '',
@@ -77,6 +88,8 @@ export const OcmDiscoveryImageConfigForm = ({
     noProxy: noProxy || '',
     enableProxy: !!(httpProxy || httpsProxy || noProxy),
     imageType: imageType,
+    enableCertificate: enableCertificate || false,
+    trustBundle: trustBundle || '',
   };
 
   const { t } = useTranslation();
@@ -135,6 +148,7 @@ export const OcmDiscoveryImageConfigForm = ({
                     />
                     <UploadSSH />
                     <ProxyFields />
+                    <CertificateFields />
                   </Form>
                 </StackItem>
               </Stack>
