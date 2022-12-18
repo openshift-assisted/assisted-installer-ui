@@ -16,27 +16,27 @@ on:
 jobs:
   test-and-build:
     runs-on: ubuntu-latest
-    env:
-      NODE_OPTIONS: --max-old-space-size=8192
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v3
+      - uses: pnpm/action-setup@v2
         with:
-          cache: yarn
-          node-version: '12'
+          version: '^7.18'
+
+      - uses: actions/setup-node@v3
+        with:
+          cache: pnpm
+          node-version: '^14.6'
 
       - name: Install dependencies
-        # --frozen-lockfile: doesn't generate a yarn.lock file, fails if an update is needed.
-        run: yarn install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
 
       - name: Validate that i18n locale files are updated and contains 'ai' prefix in keys
         run: |
-          chmod +x ./scripts/validatei18n_files.sh
-          ./scripts/validatei18n_files.sh
+          chmod +x ./scripts/validate-i18n-files.sh
+          ./scripts/validate-i18n-files.sh
         shell: bash
 
       - name: Build code (includes tests)
-        run: yarn build
+        run: pnpm build

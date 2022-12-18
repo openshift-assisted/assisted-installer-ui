@@ -42,7 +42,7 @@ You can use the following steps in order to set up your dev environment.
      ```
 3. Install the project dependencies:
    - ```bash
-     yarn --cwd=./assisted-ui-lib/ install
+     pnpm --cwd=./assisted-ui-lib/ install
      ```
 4. Fork and clone these projects too, they act as the main app:
    - [assisted-ui](https://github.com/openshift-assisted/assisted-ui) (a light-weight stand-alone
@@ -52,9 +52,9 @@ You can use the following steps in order to set up your dev environment.
 5. These scripts start the project in watch mode:
    - ```bash
      # Watches for changes in the `/src` folder and bundles the files into `/dist` folder
-     yarn start
+     pnpm run start
      # Synchronizes `/dist` with `node_modules/openshift-assisted-ui-lib/` folder in .
-     yarn sync-dist
+     pnpm run sync-dist
      ```
 6. This project uses the `assisted-ui` project to ease the development experience outside OCM (aka
    `uhc-portal`), follow the instructions in those projects in order to access the app's UI.
@@ -75,7 +75,7 @@ To publish a new version of the package to
 ## Updating the API types
 
 The types used by Assisted Installer UI are defined in `src/common/api/types.ts` and they are
-generated automatically by running `yarn update-api`.
+generated automatically by running `pnpm update-api`.
 
 ## Troubleshooting
 

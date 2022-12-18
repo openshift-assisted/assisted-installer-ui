@@ -6,7 +6,6 @@ on:
       - published
 
 env:
-  NODE_OPTIONS: --max-old-space-size=8192
   GH_REPO_OWNER: openshift-assisted
 
 jobs:
@@ -34,29 +33,32 @@ jobs:
         with:
           script: |
             const new_version = '${{ github.ref_name }}'.slice(1);
+            const release_notes_url = 'https://github.com/${{ env.GH_REPO_OWNER }}/assisted-ui-lib/releases/tag/v${new_version}`;
             core.setOutput('new_version', new_version);
-            const base_rn_url = 'https://github.com/${{ env.GH_REPO_OWNER }}/assisted-ui-lib/releases/tag'
-            const rn_url = `${base_rn_url}/v${new_version}`;
-            core.setOutput('release_notes_url', rn_url);
+            core.setOutput('release_notes_url', release_notes_url);
 
       - name: Check out the target branch
         run: git checkout ${{ github.event.release.target_commitish }}
 
+      - uses: pnpm/action-setup@v2
+        with:
+          version: '^7.18'
+
       - uses: actions/setup-node@v3
         with:
-          cache: yarn
-          node-version: '12'
+          cache: pnpm
+          node-version: '^14.6'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: pnpm install
 
       - name: Update the version in package.json
         # In order to align the new tag with the commit that bumps the version in the package.json
         # we must first push the tag (github.ref_name) and then update the remote branch.
         # Attempting to remove the tag first, invalidates the release and puts it on a draft state.
         run: |
-          yarn version --new-version ${{ steps.new-version.outputs.new_version }} --no-git-tag-version
+          pnpm version ${{ steps.new-version.outputs.new_version }} --no-git-tag-version
           git add package.json
           git commit -m 'Version ${{ github.ref_name }}'
           git tag -f -a ${{ github.ref_name }} -m '${{ github.ref_name }}'
@@ -72,7 +74,7 @@ jobs:
       - name: Publish to NPM
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPMJS_PUBLISH_TOKEN }}
-        run: yarn publish --no-git-tag-version
+        run: pnpm publish
 
   bump-openshift-assisted-ui-lib-in-assisted-ui:
     if: ${{ !endsWith(github.ref_name, '-cim') }}
@@ -89,7 +91,7 @@ jobs:
           ref: master
 
       - name: Upgrade openshift-assisted-ui-lib to ${{ env.NEW_VERSION }}
-        run: yarn upgrade --exact openshift-assisted-ui-lib@$NEW_VERSION
+        run: pnpm upgrade openshift-assisted-ui-lib@$NEW_VERSION
 
       - name: Send a pull request to assisted-ui
         env:

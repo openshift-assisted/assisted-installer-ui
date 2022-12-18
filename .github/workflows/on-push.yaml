@@ -12,7 +12,6 @@ jobs:
     if: ${{ github.repository == 'openshift-assisted/assisted-ui-lib' }}
     runs-on: ubuntu-latest
     env:
-      NODE_OPTIONS: --max-old-space-size=8192
       GH_REPO_OWNER: openshift-assisted
       QUAY_IO_REGISTRY_OWNER: edge-infrastructure
     steps:
@@ -30,13 +29,17 @@ jobs:
           ref: ${{ github.ref_name }}
           path: ./assisted-ui
 
+      - uses: pnpm/action-setup@v2
+        with:
+          version: '^7.18'
+
       - uses: actions/setup-node@v3
         with:
-          node-version: '12'
-          cache: yarn
+          node-version: '^14.6'
+          cache: pnpm
           cache-dependency-path: |
-            ./assisted-ui-lib/yarn.lock
-            ./assisted-ui/yarn.lock
+            ./assisted-ui-lib/pnpm-lock.yaml
+            ./assisted-ui/pnpm-lock.yaml
 
       - name: Define additional environment variables
         uses: actions/github-script@v6
@@ -58,16 +61,16 @@ jobs:
       - name: Install deps, build and pack
         working-directory: ./assisted-ui-lib
         run: |
-          yarn install --frozen-lockfile
+          pnpm install
           node scripts/esbuild/prod.js
-          yarn pack -f $GITHUB_WORKSPACE/$UI_LIB_PACKAGE_NAME
+          pnpm pack -f $GITHUB_WORKSPACE/$UI_LIB_PACKAGE_NAME
 
       - name: Add generated openshift-assisted-ui-lib package to assisted-ui and build it
         working-directory: ./assisted-ui
         run: |
           mv $GITHUB_WORKSPACE/$UI_LIB_PACKAGE_NAME .
-          yarn add file:./$UI_LIB_PACKAGE_NAME
-          yarn build
+          pnpm add file:./$UI_LIB_PACKAGE_NAME
+          pnpm build
 
       - name: Get container image tags
         # Appends the 'latest' tag only if the commit was pushed to 'master'

@@ -26,19 +26,20 @@
   "source": "src/index.ts",
   "types": "dist/src/index.d.ts",
   "engines": {
-    "node": ">=12.16"
+    "node": ">=14.6",
+    "pnpm": "^7.18"
   },
   "scripts": {
     "clean": "rimraf dist",
     "prebuild": "run-s clean test",
     "build": "node ./scripts/esbuild/prod.js",
-    "start": "yarn clean && node ./scripts/esbuild/dev.js",
+    "start": "pnpm run clean && node ./scripts/esbuild/dev.js",
     "sync-dist": "./scripts/sync-dist.sh",
     "prepare": "install-peers",
     "test": "run-s test:circular lint format:check",
     "test:circular": "dpdm --warning false --tree false --exit-code circular:1 ./src/index.ts",
     "lint": "eslint . --max-warnings=195 --color",
-    "lint:fix": "yarn run lint --fix",
+    "lint:fix": "pnpm run lint --fix",
     "format": "prettier --write '**/*.{json,md,scss,yaml,yml}'",
     "format:check": "prettier --check '**/*.{json,md,scss,yaml,yml}'",
     "update-api": "./scripts/update-api.sh ./src/common/api/swagger.yaml ./src/common/api/types.ts",
@@ -74,6 +75,7 @@
   },
   "dependencies": {
     "axios-case-converter": "^0.8.1",
+    "camel-case": "^4.1.2",
     "cidr-tools": "^4.3.0",
     "classnames": "^2.3.1",
     "eslint-plugin-import": "^2.26.0",
