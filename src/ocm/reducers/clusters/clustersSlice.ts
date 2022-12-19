@@ -35,7 +35,7 @@ export const clustersSlice = createSlice({
     }),
   },
   extraReducers: (builder) => {
-    const { LOADED, LOADING, RELOADING, ERROR } = ResourceUIState;
+    const { LOADED, LOADING, RELOADING, POLLING_ERROR } = ResourceUIState;
     builder
       .addCase(fetchClustersAsync.pending, (state) => {
         const uiState = state.uiState === LOADED ? RELOADING : LOADING;
@@ -48,7 +48,7 @@ export const clustersSlice = createSlice({
       }))
       .addCase(fetchClustersAsync.rejected, (state) => ({
         ...state,
-        uiState: ERROR,
+        uiState: POLLING_ERROR,
       }));
   },
 });

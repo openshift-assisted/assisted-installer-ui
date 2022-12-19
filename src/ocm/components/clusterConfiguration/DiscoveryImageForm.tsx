@@ -2,15 +2,9 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import Axios, { CancelTokenSource } from 'axios';
 import { FormikHelpers } from 'formik';
-import { getApiErrorMessage, handleApiError } from '../../api';
-import {
-  Cluster,
-  CpuArchitecture,
-  ErrorState,
-  LoadingState,
-  StatusErrorType,
-} from '../../../common';
-import { forceReload, updateCluster } from '../../reducers/clusters';
+import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../api';
+import { Cluster, CpuArchitecture, ErrorState, LoadingState } from '../../../common';
+import { forceReload, setServerUpdateError, updateCluster } from '../../reducers/clusters';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { DiscoveryImageFormService } from '../../services';
 import {
@@ -66,16 +60,19 @@ const DiscoveryImageForm = ({
           );
           await onSuccess();
           dispatch(updateCluster(updatedCluster));
-        } catch (e) {
-          handleApiError(e, () => {
-            const error: StatusErrorType = {
+        } catch (error) {
+          handleApiError(error, () => {
+            formikActions.setStatus({
               error: {
                 title: 'Failed to download the discovery Image',
-                message: getApiErrorMessage(e),
+                message: getApiErrorMessage(error),
               },
-            };
-            formikActions.setStatus(error);
+            });
           });
+          if (isUnknownServerError(error as Error)) {
+            dispatch(setServerUpdateError());
+            onCancel();
+          }
         }
       }
     }

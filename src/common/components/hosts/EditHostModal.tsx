@@ -2,28 +2,27 @@ import React from 'react';
 import { Modal, ModalVariant } from '@patternfly/react-core';
 import { Host, Inventory } from '../../api';
 import EditHostForm, { EditHostFormProps } from './EditHostForm';
-import { EditHostFormValues } from './types';
 
-type EditHostModalProps = {
+type EditHostModalProps = Pick<
+  EditHostFormProps,
+  'usedHostnames' | 'onSave' | 'getEditErrorMessage' | 'onHostSaveError'
+> & {
   host?: Host;
   inventory?: Inventory;
   isOpen: boolean;
-  usedHostnames: string[] | undefined;
   onClose: () => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onSave: (values: EditHostFormValues) => Promise<any>;
-  onFormSaveError?: EditHostFormProps['onFormSaveError'];
 };
 
-const EditHostModal: React.FC<EditHostModalProps> = ({
+const EditHostModal = ({
   isOpen,
   host,
   inventory,
   usedHostnames,
   onClose,
   onSave,
-  onFormSaveError,
-}) =>
+  onHostSaveError,
+  getEditErrorMessage,
+}: EditHostModalProps) =>
   host && inventory ? (
     <Modal
       aria-label="Change hostname dialog"
@@ -39,7 +38,8 @@ const EditHostModal: React.FC<EditHostModalProps> = ({
         usedHostnames={usedHostnames}
         onCancel={onClose}
         onSave={onSave}
-        onFormSaveError={onFormSaveError}
+        getEditErrorMessage={getEditErrorMessage}
+        onHostSaveError={onHostSaveError}
       />
     </Modal>
   ) : null;
