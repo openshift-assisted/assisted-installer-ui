@@ -625,7 +625,6 @@
   "ai:Specify the HTTPS proxy that agents should use to access the discovery service. If you don't provide a value, your HTTP proxy URL will be used by default for both HTTP and HTTPS connections.": "Specify the HTTPS proxy that agents should use to access the discovery service. If you don't provide a value, your HTTP proxy URL will be used by default for both HTTP and HTTPS connections.",
   "ai:SSH into your machine": "SSH into your machine",
   "ai:SSH public key": "SSH public key",
-  "ai:Stack type": "Stack type",
   "ai:Start and end with a lowercase letter or a number.": "Start and end with a lowercase letter or a number.",
   "ai:Started on": "Started on",
   "ai:Static IP, bridges and bonds": "Static IP, bridges and bonds",

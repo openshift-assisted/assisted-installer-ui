@@ -8,7 +8,12 @@ import {
   Split,
   SplitItem,
 } from '@patternfly/react-core';
-import { CheckCircleIcon, ExclamationCircleIcon, InfoCircleIcon } from '@patternfly/react-icons';
+import {
+  CheckCircleIcon,
+  ExclamationCircleIcon,
+  ExclamationTriangleIcon,
+  InfoCircleIcon,
+} from '@patternfly/react-icons';
 import {
   Cluster,
   ClusterValidations,
@@ -35,6 +40,7 @@ import {
   global_success_color_100 as okColor,
   global_info_color_100 as infoColor,
   global_danger_color_100 as dangerColor,
+  global_warning_color_100 as warningColor,
 } from '@patternfly/react-tokens';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 
@@ -100,6 +106,8 @@ const ValidationsInfo = ({
 const getValidationsIcon = (validationStatuses: string[]) => {
   if (validationStatuses.includes('failure') || validationStatuses.includes('error')) {
     return <ExclamationCircleIcon color={dangerColor.value} size="sm" />;
+  } else if (validationStatuses.includes('warning')) {
+    return <ExclamationTriangleIcon color={warningColor.value} />;
   } else if (validationStatuses.includes('pending')) {
     return <InfoCircleIcon size="sm" color={infoColor.value} />;
   }
@@ -116,6 +124,12 @@ const ValidationsDetailCollapsed = ({ cluster }: { cluster: Cluster }) => {
     [cluster, featureSupportLevelData, t, isSupportedOpenShiftVersion],
   );
 
+  const supportLevelIcon = isFullySupported ? (
+    <CheckCircleIcon color={okColor.value} />
+  ) : (
+    <InfoCircleIcon size="sm" color={infoColor.value} />
+  );
+
   const clusterValidations = React.useMemo(
     () =>
       Object.values(stringToJSON<ClusterValidationsInfo>(cluster.validationsInfo) || {})
@@ -124,17 +138,19 @@ const ValidationsDetailCollapsed = ({ cluster }: { cluster: Cluster }) => {
     [cluster.validationsInfo],
   );
 
-  const hostValidations = React.useMemo(
-    () =>
-      cluster.hosts
-        ?.map((host) =>
-          Object.values(stringToJSON<HostValidationsInfo>(host.validationsInfo) || {})
-            .flat()
-            .map((val) => val.status),
-        )
-        .flat() || [],
-    [cluster.hosts],
-  );
+  const hostValidations = React.useMemo(() => {
+    const hostValidations = cluster.hosts
+      ?.map((host) => Object.values(stringToJSON<HostValidationsInfo>(host.validationsInfo) || {}))
+      .flat(2);
+
+    return (
+      hostValidations?.map((val) =>
+        allClusterWizardSoftValidationIds.includes(val.id) && val.status !== 'success'
+          ? 'warning'
+          : val.status,
+      ) || []
+    );
+  }, [cluster.hosts]);
 
   return (
     <>
@@ -142,13 +158,7 @@ const ValidationsDetailCollapsed = ({ cluster }: { cluster: Cluster }) => {
       <ValidationsInfo title="Host validations" icon={getValidationsIcon(hostValidations)} />
       <ValidationsInfo
         title={`Cluster support level: ${isFullySupported ? 'Full' : 'Limited'}`}
-        icon={
-          isFullySupported ? (
-            <CheckCircleIcon color={okColor.value} />
-          ) : (
-            <InfoCircleIcon size="sm" color={infoColor.value} />
-          )
-        }
+        icon={supportLevelIcon}
         span={4}
       />
     </>

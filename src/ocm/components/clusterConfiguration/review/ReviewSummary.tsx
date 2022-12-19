@@ -1,6 +1,6 @@
 import React from 'react';
 import { ExpandableSection, Title } from '@patternfly/react-core';
-import { Table, TableVariant, TableBody } from '@patternfly/react-table';
+import { Table, TableVariant, TableBody, IRow } from '@patternfly/react-table';
 import {
   Cluster,
   CpuArchitecture,
@@ -12,6 +12,7 @@ import {
 } from '../../../../common';
 import useInfraEnv from '../../../hooks/useInfraEnv';
 import {
+  getDiskEncryptionEnabledOnStatus,
   getManagementType,
   getNetworkType,
   getStackType,
@@ -23,7 +24,7 @@ const ClusterSummaryExpandable = ({
   children,
 }: {
   title: string;
-  children: React.ReactNode | undefined;
+  children?: React.ReactNode;
 }) => {
   const [isExpanded, setExpanded] = React.useState(true);
   return (
@@ -83,23 +84,21 @@ const ReviewClusterDetailTable = ({ cluster }: { cluster: Cluster }) => {
           },
         ],
       },
-      // cluster.diskEncryption?.enableOn !== 'none' && {
-      //   cells: [
-      //     { title: 'Disk encryption' },
-      //     {
-      //       title: (
-      //         <>{getDiskEncryptionEnabledOnStatus(cluster.diskEncryption?.enableOn) || 'None'}</>
-      //       ),
-      //       props: { 'data-testId': 'disk-encryption' },
-      //     },
-      //   ],
-      // },
+      cluster.diskEncryption?.enableOn !== 'none' && {
+        cells: [
+          { title: 'Disk encryption' },
+          {
+            title: getDiskEncryptionEnabledOnStatus(cluster.diskEncryption?.enableOn),
+            props: { 'data-testId': 'disk-encryption' },
+          },
+        ],
+      },
     ];
   }, [cluster, infraEnv?.staticNetworkConfig]);
 
   return (
     <Table
-      rows={rows}
+      rows={rows as IRow[]}
       cells={['', '']}
       variant={TableVariant.compact}
       borders={false}
@@ -110,7 +109,7 @@ const ReviewClusterDetailTable = ({ cluster }: { cluster: Cluster }) => {
   );
 };
 
-const ReviewStorageTable = ({ cluster }: { cluster: Cluster }) => {
+const ReviewOperatorsTable = ({ cluster }: { cluster: Cluster }) => {
   const rows = React.useMemo(() => {
     return [
       {
@@ -131,7 +130,7 @@ const ReviewStorageTable = ({ cluster }: { cluster: Cluster }) => {
             title: hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_ODF)
               ? 'Enabled'
               : 'Disabled',
-            props: { 'data-testId': 'openshift-container-storage' },
+            props: { 'data-testId': 'openshift-data-foundation' },
           },
         ],
       },
@@ -189,7 +188,7 @@ const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
       },
       {
         cells: [
-          { title: 'API Virtual IP' },
+          { title: 'API IP' },
           {
             title: cluster.apiVip,
             props: { 'data-testId': 'api-vip', colSpan: 2 },
@@ -198,7 +197,7 @@ const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
       },
       {
         cells: [
-          { title: 'Ingress Virtual IP' },
+          { title: 'Ingress IP' },
           {
             title: cluster.ingressVip,
             props: { 'data-testId': 'ingress-vip', colSpan: 2 },
@@ -298,6 +297,10 @@ const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
 };
 
 export const ReviewSummary = ({ cluster }: { cluster: Cluster }) => {
+  const showOperatorsSummary =
+    hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_CNV) ||
+    hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_ODF);
+
   return (
     <ExpandableSection
       toggleText={'Cluster summary'}
@@ -309,9 +312,11 @@ export const ReviewSummary = ({ cluster }: { cluster: Cluster }) => {
         <ReviewClusterDetailTable cluster={cluster} />
       </ClusterSummaryExpandable>
 
-      <ClusterSummaryExpandable title={'Storage'}>
-        <ReviewStorageTable cluster={cluster} />
-      </ClusterSummaryExpandable>
+      {showOperatorsSummary && (
+        <ClusterSummaryExpandable title={'Operators'}>
+          <ReviewOperatorsTable cluster={cluster} />
+        </ClusterSummaryExpandable>
+      )}
 
       <ClusterSummaryExpandable title={'Inventory'}>
         <ReviewHostsInventory hosts={cluster.hosts} />

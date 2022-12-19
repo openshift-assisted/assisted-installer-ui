@@ -51,7 +51,7 @@ const ReviewStep = ({ cluster }: { cluster: Cluster }) => {
           <Button
             variant={ButtonVariant.primary}
             name="install"
-            onClick={void handleClusterInstall}
+            onClick={() => void handleClusterInstall()}
             isDisabled={isViewerMode || isStartingInstallation || cluster.status !== 'ready'}
           >
             Install cluster
