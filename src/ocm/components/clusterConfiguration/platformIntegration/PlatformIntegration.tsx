@@ -33,7 +33,7 @@ const PlatformIntegrationLabel = ({
 }) => {
   return (
     <>
-      <span>Integrate with platform (vSphere/Nutanix)</span>{' '}
+      <span>Integrate with your virtualization platform</span>{' '}
       <PopoverIcon
         bodyContent={messages[supportedPlatformIntegration]}
         footerContent={supportedPlatformIntegration === 'vsphere' && <PlatformIntegrationVsphere />}
