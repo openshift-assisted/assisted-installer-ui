@@ -7,7 +7,7 @@ import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 import { InfraEnv } from '../../api';
 
-const FIELD_NAME = 'certificateField';
+const FIELD_NAME = 'trustBundle';
 
 export const CertificateFieldsHelperText = ({ fieldId = FIELD_NAME }) => {
   const { t } = useTranslation();
