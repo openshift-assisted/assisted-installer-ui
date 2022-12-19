@@ -14,17 +14,17 @@ import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { Formik, FormikHelpers } from 'formik';
 import { ImageCreateParams, ImageType, Proxy } from '../../api';
 import {
+  AlertFormikError,
   httpProxyValidationSchema,
   noProxyValidationSchema,
   sshPublicKeyValidationSchema,
 } from '../../../common/components/ui';
-import { ProxyFieldsType } from '../../types';
+import { ProxyFieldsType, StatusErrorType } from '../../types';
 import ProxyFields from './ProxyFields';
 import UploadSSH from './UploadSSH';
 import DiscoveryImageTypeControlGroup from './DiscoveryImageTypeControlGroup';
 import { OCP_STATIC_IP_DOC } from '../../config/constants';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
-
 export const StaticIPInfo: React.FC = () => {
   const { t } = useTranslation();
   return (
@@ -118,11 +118,7 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
                 )}
                 <StackItem>
                   <Form>
-                    {status?.error && (
-                      <Alert variant={AlertVariant.danger} title={status.error.title} isInline>
-                        {status.error.message}
-                      </Alert>
-                    )}
+                    <AlertFormikError status={status as StatusErrorType} />
                     {!hideDiscoveryImageType && <DiscoveryImageTypeControlGroup />}
                     <UploadSSH />
                     <ProxyFields />

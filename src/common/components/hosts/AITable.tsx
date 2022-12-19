@@ -204,11 +204,6 @@ const AITable = <R extends any>({
           header: {
             title: canSelectAll ? <SelectAllCheckbox onSelect={onSelectAll} /> : '',
             cellFormatters: [],
-            props: {
-              style: {
-                width: '30px',
-              },
-            },
           },
           cell: (obj) => {
             const id = getDataId(obj);
@@ -255,11 +250,11 @@ const AITable = <R extends any>({
           allRows.push({
             // expandable detail
             // parent will be set after sorting
-            fullWidth: true,
             cells: [
               {
                 // do not render unnecessarily to improve performance
                 title: row.isOpen ? <ExpandComponent obj={row.obj as R} /> : undefined,
+                props: { colSpan: columns.length },
               },
             ],
             key: `${(row.id as string) || ''}-detail`,
@@ -270,7 +265,17 @@ const AITable = <R extends any>({
       }, [] as IRow[]);
     }
     return rows;
-  }, [contentWithAdditions, ExpandComponent, getDataId, data, openRows, sortBy, page, perPage]);
+  }, [
+    contentWithAdditions,
+    ExpandComponent,
+    getDataId,
+    data,
+    openRows,
+    sortBy,
+    page,
+    perPage,
+    columns.length,
+  ]);
   const rows = React.useMemo(() => {
     if (hostRows.length) {
       return hostRows;

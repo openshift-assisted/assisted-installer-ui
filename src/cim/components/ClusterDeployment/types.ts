@@ -21,8 +21,6 @@ export type EditAgentModalProps = {
   onClose: () => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSave: (agent: AgentK8sResource, hostname: string) => Promise<any>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onFormSaveError?: (e: any) => void | string;
 };
 
 export type AgentTableActions = {
@@ -225,7 +223,6 @@ export type ClusterDeploymentHostsDiscoveryProps = {
   onSetInstallationDiskId: AgentTableActions['onSetInstallationDiskId'];
   onSaveBMH: EditBMHModalProps['onEdit'];
   onSaveISOParams?: AddHostModalProps['onSaveISOParams'];
-  onFormSaveError?: EditAgentModalProps['onFormSaveError'];
   fetchSecret: EditBMHModalProps['fetchSecret'];
   getClusterDeploymentLink: InfraEnvAgentTableProps['getClusterDeploymentLink'];
   onChangeBMHHostname: InfraEnvAgentTableProps['onChangeBMHHostname'];

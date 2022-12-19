@@ -36,8 +36,8 @@ import {
 import NetworkConfiguration from './NetworkConfiguration';
 import { captureException } from '../../../sentry';
 import { ClustersService } from '../../../services';
-import { updateClusterBase } from '../../../reducers/clusters';
-import { getApiErrorMessage, handleApiError } from '../../../api';
+import { setServerUpdateError, updateClusterBase } from '../../../reducers/clusters';
+import { isUnknownServerError, getApiErrorMessage, handleApiError } from '../../../api';
 
 const NetworkConfigurationForm: React.FC<{
   cluster: Cluster;
@@ -212,6 +212,9 @@ const NetworkConfigurationPage = ({ cluster }: { cluster: Cluster }) => {
       handleApiError(e, () =>
         addAlert({ title: 'Failed to update the cluster', message: getApiErrorMessage(e) }),
       );
+      if (isUnknownServerError(e as Error)) {
+        dispatch(setServerUpdateError());
+      }
     }
   };
 

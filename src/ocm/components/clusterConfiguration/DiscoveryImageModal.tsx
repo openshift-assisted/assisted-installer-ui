@@ -1,11 +1,19 @@
 import React from 'react';
 import { Button, ButtonVariant, Modal, ModalVariant } from '@patternfly/react-core';
 import { pluralize } from 'humanize-plus';
-import { Cluster, CpuArchitecture, ErrorState, isSNO, ToolbarButton } from '../../../common';
+import {
+  Cluster,
+  CpuArchitecture,
+  DownloadIso,
+  ErrorState,
+  isSNO,
+  ToolbarButton,
+} from '../../../common';
 import DiscoveryImageForm from './DiscoveryImageForm';
-import DiscoveryImageSummary from './DiscoveryImageSummary';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
 import useInfraEnvImageUrl from '../../hooks/useInfraEnvImageUrl';
+import useInfraEnvIpxeImageUrl from '../../hooks/useInfraEnvIpxeImageUrl';
+import DownloadIpxeScript from '../../../common/components/clusterConfiguration/DownloadIpxeScript';
 
 type DiscoveryImageModalButtonProps = {
   ButtonComponent?: typeof Button | typeof ToolbarButton;
@@ -36,11 +44,15 @@ export const DiscoveryImageModalButton: React.FC<DiscoveryImageModalButtonProps>
 export const DiscoveryImageModal = () => {
   const [isoDownloadUrl, setIsoDownloadUrl] = React.useState<string>('');
   const [isoDownloadError, setIsoDownloadError] = React.useState<string>('');
+  const [ipxeDownloadUrl, setIpxeDownloadUrl] = React.useState<string>('');
+  const [ipxeDownloadError, setIpxeDownloadError] = React.useState<string>('');
+  const [isIpxeSelected, setIpxeSelected] = React.useState<boolean>(false);
 
   const { discoveryImageDialog } = useModalDialogsContext();
   const { data, isOpen, close } = discoveryImageDialog;
   const cluster = data?.cluster;
   const { getIsoImageUrl } = useInfraEnvImageUrl();
+  const { getIpxeImageUrl } = useInfraEnvIpxeImageUrl();
 
   const onImageReady = React.useCallback(async () => {
     // We need to retrieve the Iso for the only infraEnv on Day1, hence we don't specify the architecture
@@ -49,8 +61,21 @@ export const DiscoveryImageModal = () => {
     setIsoDownloadError(error);
   }, [getIsoImageUrl, cluster?.id]);
 
+  const onImageIpxeReady = React.useCallback(async () => {
+    // We need to retrieve the Iso for the only infraEnv on Day1, hence we don't specify the architecture
+    const { url, error } = await getIpxeImageUrl(cluster.id, CpuArchitecture.USE_DAY1_ARCHITECTURE);
+    setIpxeDownloadUrl(url);
+    setIpxeDownloadError(error);
+  }, [getIpxeImageUrl, cluster?.id]);
+
   const onReset = React.useCallback(() => {
     setIsoDownloadUrl('');
+    setIpxeSelected(false);
+  }, []);
+
+  const onResetIpxe = React.useCallback(() => {
+    setIpxeDownloadUrl('');
+    setIpxeSelected(true);
   }, []);
 
   if (!cluster) {
@@ -59,6 +84,11 @@ export const DiscoveryImageModal = () => {
 
   const isSNOCluster = isSNO(cluster);
 
+  const nameImageSuffix =
+    cluster.cpuArchitecture !== undefined &&
+    cluster.cpuArchitecture !== CpuArchitecture.USE_DAY1_ARCHITECTURE
+      ? `${cluster.name || ''}_${cluster.cpuArchitecture}`
+      : cluster.name || '';
   return (
     <Modal
       aria-label="Add hosts dialog"
@@ -69,15 +99,22 @@ export const DiscoveryImageModal = () => {
       hasNoBodyWrapper
       id="generate-discovery-iso-modal"
     >
-      {isoDownloadError && <ErrorState />}
+      {(isoDownloadError || ipxeDownloadError) && <ErrorState />}
       {isoDownloadUrl ? (
-        <DiscoveryImageSummary
-          clusterName={cluster.name || ''}
+        <DownloadIso
+          fileName={`discovery_image_${nameImageSuffix}.iso`}
+          downloadUrl={isoDownloadUrl}
           isSNO={isSNOCluster}
-          onClose={close}
           onReset={onReset}
-          isoDownloadUrl={isoDownloadUrl}
-          cpuArchitecture={CpuArchitecture.USE_DAY1_ARCHITECTURE}
+          onClose={close}
+        />
+      ) : ipxeDownloadUrl ? (
+        <DownloadIpxeScript
+          fileName={`discovery_ipxe_script_${nameImageSuffix}.txt`}
+          downloadUrl={ipxeDownloadUrl}
+          isSNO={isSNOCluster}
+          onReset={onResetIpxe}
+          onClose={close}
         />
       ) : (
         <DiscoveryImageForm
@@ -85,6 +122,8 @@ export const DiscoveryImageModal = () => {
           onCancel={close}
           onSuccess={onImageReady}
           cpuArchitecture={CpuArchitecture.USE_DAY1_ARCHITECTURE}
+          onSuccessIpxe={onImageIpxeReady}
+          isIpxeSelected={isIpxeSelected}
         />
       )}
     </Modal>

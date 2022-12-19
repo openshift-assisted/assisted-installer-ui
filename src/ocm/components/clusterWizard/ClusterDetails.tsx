@@ -11,8 +11,8 @@ import {
   InfraEnv,
 } from '../../../common';
 import { usePullSecret } from '../../hooks';
-import { getApiErrorMessage, handleApiError } from '../../api';
-import { updateCluster } from '../../reducers/clusters';
+import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../api';
+import { setServerUpdateError, updateCluster } from '../../reducers/clusters';
 import { useClusterWizardContext } from './ClusterWizardContext';
 import { canNextClusterDetails, ClusterWizardFlowStateNew } from './wizardTransition';
 import { useOpenshiftVersions, useManagedDomains, useUsedClusterNames } from '../../hooks';
@@ -60,9 +60,12 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster, infraEnv }) =>
         handleApiError(e, () =>
           addAlert({ title: 'Failed to update the cluster', message: getApiErrorMessage(e) }),
         );
+        if (isUnknownServerError(e as Error)) {
+          dispatch(setServerUpdateError());
+        }
       }
     },
-    [clearAlerts, cluster?.tags, dispatch, clusterWizardContext, addAlert],
+    [clearAlerts, addAlert, dispatch, cluster?.tags, clusterWizardContext],
   );
 
   const handleClusterCreate = React.useCallback(
@@ -75,9 +78,12 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster, infraEnv }) =>
         handleApiError(e, () =>
           addAlert({ title: 'Failed to create new cluster', message: getApiErrorMessage(e) }),
         );
+        if (isUnknownServerError(e as Error)) {
+          dispatch(setServerUpdateError());
+        }
       }
     },
-    [addAlert, clearAlerts, history],
+    [clearAlerts, addAlert, dispatch, history],
   );
 
   if (pullSecret === undefined || !managedDomains || loadingOCPVersions || !usedClusterNames) {
