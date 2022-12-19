@@ -22,6 +22,7 @@ export type HostSubnet = {
   subnet: string;
   hostIDs: string[];
   humanized: string;
+  isValid: boolean;
 };
 export type HostSubnets = HostSubnet[];
 export type NetworkConfigurationValues = Pick<

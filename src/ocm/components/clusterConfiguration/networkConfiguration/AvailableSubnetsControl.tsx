@@ -20,7 +20,7 @@ const subnetSort = (subA: HostSubnet, subB: HostSubnet) =>
 
 const toFormSelectOptions = (subnets: HostSubnet[]) => {
   return subnets.map((hn, index) => ({
-    label: hn.humanized,
+    label: `${hn.humanized}${hn.isValid ? '' : ' (Invalid network)'}`,
     value: hn.subnet,
     isDisabled: false,
     id: `form-input-hostSubnet-field-option-${index}`,
