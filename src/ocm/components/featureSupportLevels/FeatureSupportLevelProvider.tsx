@@ -54,10 +54,11 @@ const getVersionSupportLevelsMap = (
   versionName: string,
   supportLevelData: FeatureSupportLevelsMap,
 ): FeatureIdToSupportLevel | undefined => {
-  const versionKey = Object.keys(supportLevelData).find((key) => {
-    const versionNameMatch = new RegExp(`^${key}(\\..*)?$`); // For version 4.10 match 4.10, 4.10.3, not 4.1, 4.1.5
-    return versionNameMatch.test(versionName);
-  });
+  // There is only one feature-support-level item per minor OpenShift version
+  // To solve the problem of partial matching (4.1 vs 4.11), we sort the list from most recent to least recent.
+  const versionKey = Object.keys(supportLevelData)
+    .reverse()
+    .find((key) => versionName.startsWith(key));
   if (!versionKey) {
     return undefined;
   }

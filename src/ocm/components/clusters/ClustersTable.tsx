@@ -34,6 +34,7 @@ interface ClustersTableProps {
 }
 
 type TablePropsCellType = TableProps['cells'][0];
+type StoredFilters = { filters: ClusterFiltersType; sortBy: ISortBy; searchString: string };
 
 const columnConfig: TablePropsCellType = {
   transforms: [sortable],
@@ -98,7 +99,7 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
     const marshalled = window.sessionStorage.getItem(STORAGE_KEY_CLUSTERS_FILTER);
     if (marshalled) {
       try {
-        const parsed = JSON.parse(marshalled);
+        const parsed = JSON.parse(marshalled) as StoredFilters;
         parsed.filters && setFilters(parsed.filters);
         parsed.sortBy && setSortBy(parsed.sortBy);
         parsed.searchString && setSearchString(parsed.searchString);
@@ -127,7 +128,7 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
         },
       },
     ],
-    [setDeleteClusterID],
+    [t],
   );
 
   const onSort: OnSort = React.useCallback(

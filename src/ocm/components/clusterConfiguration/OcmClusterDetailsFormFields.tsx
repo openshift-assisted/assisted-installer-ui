@@ -11,7 +11,6 @@ import {
   OpenshiftVersionOptionType,
   PullSecret,
   SNOControlGroup,
-  StaticTextField,
   ocmClusterNameValidationMessages,
   uniqueOcmClusterNameValidationMessages,
 } from '../../../common';
@@ -23,6 +22,7 @@ import {
   OcmRichInputField,
   OcmSelectField,
 } from '../ui/OcmFormFields';
+import OcmOpenShiftVersion from './OcmOpenShiftVersion';
 import OcmOpenShiftVersionSelect from './OcmOpenShiftVersionSelect';
 
 export type OcmClusterDetailsFormFieldsProps = {
@@ -35,6 +35,7 @@ export type OcmClusterDetailsFormFieldsProps = {
   toggleRedHatDnsService?: (checked: boolean) => void;
   isPullSecretSet: boolean;
   clusterExists: boolean;
+  cpuArchitecture?: string;
 };
 
 const BaseDnsHelperText = ({ name, baseDnsDomain }: { name?: string; baseDnsDomain?: string }) => (
@@ -57,6 +58,7 @@ export const OcmClusterDetailsFormFields = ({
   forceOpenshiftVersion,
   isOcm,
   clusterExists,
+  cpuArchitecture,
 }: OcmClusterDetailsFormFieldsProps) => {
   const { values } = useFormikContext<ClusterDetailsValues>();
   const { name, baseDnsDomain, highAvailabilityMode, useRedHatDnsService } = values;
@@ -111,10 +113,13 @@ export const OcmClusterDetailsFormFields = ({
         />
       )}
       {forceOpenshiftVersion ? (
-        <StaticTextField name="openshiftVersion" label="OpenShift version" isRequired>
-          OpenShift {forceOpenshiftVersion}{' '}
-          {getDeveloperPreviewText(forceOpenshiftVersion, versions)}
-        </StaticTextField>
+        <OcmOpenShiftVersion
+          versions={versions}
+          openshiftVersion={forceOpenshiftVersion}
+          cpuArchitecture={cpuArchitecture}
+          withPreviewText
+          withMultiText
+        />
       ) : (
         <OcmOpenShiftVersionSelect versions={versions} />
       )}
@@ -131,10 +136,3 @@ export const OcmClusterDetailsFormFields = ({
     </Form>
   );
 };
-function getDeveloperPreviewText(
-  forceOpenshiftVersion: string,
-  versions: OpenshiftVersionOptionType[],
-): string {
-  const versionSelected = versions.find((version) => version.version === forceOpenshiftVersion);
-  return versionSelected?.supportLevel === 'beta' ? '- Developer preview release' : '';
-}

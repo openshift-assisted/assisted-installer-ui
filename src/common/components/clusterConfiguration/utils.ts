@@ -20,12 +20,49 @@ import {
 import {
   HostDiscoveryValues,
   HostSubnets,
+  OpenshiftVersionOptionType,
   StorageValues,
   Validation,
   ValidationGroup,
   ValidationsInfo,
-} from '../../types/clusters';
+  WithRequired,
+} from '../../types';
 import { getHostname } from '../hosts/utils';
+
+type VersionConfig = WithRequired<Pick<Cluster, 'openshiftVersion'>, 'openshiftVersion'> & {
+  cpuArchitecture?: Cluster['cpuArchitecture'];
+  versions?: OpenshiftVersionOptionType[];
+  withPreviewText?: boolean;
+  withMultiText?: boolean;
+};
+
+const getBetaVersionText = (
+  openshiftVersion: string,
+  versions: OpenshiftVersionOptionType[],
+): string => {
+  const versionSelected = versions.find((version) => version.version === openshiftVersion);
+  return versionSelected?.supportLevel === 'beta' ? '- Developer preview release' : '';
+};
+
+const getMultiVersionText = (
+  openshiftVersion: string,
+  cpuArchitecture: Cluster['cpuArchitecture'],
+) => {
+  if (!cpuArchitecture || openshiftVersion.includes('multi')) {
+    return '';
+  }
+  return cpuArchitecture === 'multi' ? ' (multi)' : '';
+};
+
+export const getOpenshiftVersionText = (params: VersionConfig) => {
+  return `${params.openshiftVersion} ${
+    params.withPreviewText && params.versions
+      ? getBetaVersionText(params.openshiftVersion, params.versions)
+      : ''
+  } ${
+    params.withMultiText ? getMultiVersionText(params.openshiftVersion, params.cpuArchitecture) : ''
+  }`;
+};
 
 export const getSubnet = (cidr: string): Address6 | Address4 | null => {
   if (Address4.isValid(cidr)) {
