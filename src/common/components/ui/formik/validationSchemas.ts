@@ -26,9 +26,8 @@ const NAME_START_END_REGEX = /^[a-z0-9](.*[a-z0-9])?$/;
 const NAME_CHARS_REGEX = /^[a-z0-9-.]*$/;
 const CLUSTER_NAME_START_END_REGEX = /^[a-z0-9](.*[a-z0-9])?$/;
 // NOTE: based on https://github.com/openshift/assisted-service/blob/master/internal/cluster/validations/validations.go#L32
-const CLUSTER_NAME_REGEX =
-  /^[-a-z0-9]?(([a-z0-9]([-a-z0-9]*[a-z0-9])?([a-z0-9]([-a-z0-9]*[a-z0-9])?)*)*)[-a-z0-9]?$/;
-const CLUSTER_NAME_NO_DOT_REGEX = /^[a-z0-9-]*$/;
+const CLUSTER_NAME_NO_DOT_REGEX =
+  /^[a-z0-9]?(([a-z0-9]([-a-z0-9]*[a-z0-9])?([a-z0-9]([-a-z0-9]*[a-z0-9])?)*)*)[a-z0-9]?$/;
 const SSH_PUBLIC_KEY_REGEX =
   /^(ssh-rsa|ssh-ed25519|ecdsa-[-a-z0-9]*) AAAA[0-9A-Za-z+/]+[=]{0,3}( .+)?$/;
 const DNS_NAME_REGEX = /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/;
@@ -54,7 +53,7 @@ export const nameValidationSchema = (
   const clusterNameValidationMessagesList = clusterNameValidationMessages(t);
   return Yup.string()
     .required('Required')
-    .matches(isOcm ? CLUSTER_NAME_REGEX : CLUSTER_NAME_NO_DOT_REGEX, {
+    .matches(CLUSTER_NAME_NO_DOT_REGEX, {
       message: clusterNameValidationMessagesList.INVALID_VALUE,
       excludeEmptyString: true,
     })
