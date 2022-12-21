@@ -11,12 +11,16 @@ import {
 import { TECH_SUPPORT_LEVEL_LINK } from '../../../common/config/constants';
 import ExternalLink from '../../../common/components/ui/ExternalLink';
 import { Cluster } from '../../../common/api/types';
-import { useFeatureSupportLevel } from '../../../common/components/featureSupportLevels';
+import {
+  FeatureSupportLevelData,
+  useFeatureSupportLevel,
+} from '../../../common/components/featureSupportLevels';
 import { DetailItem } from '../../../common';
 import { getLimitedFeatureSupportLevels } from '../../../common/components/featureSupportLevels/utils';
 import { WithErrorBoundary } from '../../../common/components/ErrorHandling/WithErrorBoundary';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import useOpenshiftVersions from '../../hooks/useOpenshiftVersions';
+import { TFunction } from 'i18next';
 
 const getFeatureReviewText = (featureId: FeatureId): string => {
   switch (featureId) {
@@ -115,10 +119,29 @@ export const getFeatureSupportLevelTitle = (fullySupported: boolean): string => 
 };
 
 type SupportLevelProps = { cluster: Cluster };
-type SupportLevelMemo = {
+export type SupportLevelMemo = {
   limitedClusterFeatures: FeatureIdToSupportLevel;
   hasSupportedVersion: boolean;
   isFullySupported: boolean;
+};
+
+export const getSupportLevelInfo = (
+  cluster: Cluster,
+  featureSupportLevelData: FeatureSupportLevelData,
+  isSupportedOpenShiftVersion: (version?: string) => boolean,
+  t: TFunction,
+) => {
+  const limitedClusterFeatures = getLimitedFeatureSupportLevels(
+    cluster,
+    featureSupportLevelData,
+    t,
+  );
+  const hasSupportedVersion: boolean = isSupportedOpenShiftVersion(cluster.openshiftVersion);
+  return {
+    limitedClusterFeatures,
+    hasSupportedVersion,
+    isFullySupported: hasSupportedVersion && Object.keys(limitedClusterFeatures || {}).length === 0,
+  };
 };
 
 const SupportLevel = ({ cluster }: SupportLevelProps) => {
@@ -127,20 +150,10 @@ const SupportLevel = ({ cluster }: SupportLevelProps) => {
   const { isSupportedOpenShiftVersion } = useOpenshiftVersions();
 
   const { limitedClusterFeatures, hasSupportedVersion, isFullySupported } =
-    React.useMemo<SupportLevelMemo>(() => {
-      const limitedClusterFeatures = getLimitedFeatureSupportLevels(
-        cluster,
-        featureSupportLevelData,
-        t,
-      );
-      const hasSupportedVersion: boolean = isSupportedOpenShiftVersion(cluster.openshiftVersion);
-      return {
-        limitedClusterFeatures,
-        hasSupportedVersion,
-        isFullySupported:
-          hasSupportedVersion && Object.keys(limitedClusterFeatures || {}).length === 0,
-      };
-    }, [cluster, featureSupportLevelData, t, isSupportedOpenShiftVersion]);
+    React.useMemo<SupportLevelMemo>(
+      () => getSupportLevelInfo(cluster, featureSupportLevelData, isSupportedOpenShiftVersion, t),
+      [cluster, featureSupportLevelData, t, isSupportedOpenShiftVersion],
+    );
 
   if (!limitedClusterFeatures) {
     return null;
