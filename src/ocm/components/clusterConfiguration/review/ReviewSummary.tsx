@@ -4,6 +4,7 @@ import {
   Cluster,
   hasEnabledOperators,
   OPERATOR_NAME_CNV,
+  OPERATOR_NAME_LVM,
   OPERATOR_NAME_ODF,
   ReviewHostsInventory,
 } from '../../../../common';
@@ -17,7 +18,8 @@ import {
 export const ReviewSummary = ({ cluster }: { cluster: Cluster }) => {
   const showOperatorsSummary =
     hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_CNV) ||
-    hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_ODF);
+    hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_ODF) ||
+    hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_LVM);
 
   return (
     <ExpandableSection

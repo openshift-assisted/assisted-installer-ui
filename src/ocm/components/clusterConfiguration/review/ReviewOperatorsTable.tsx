@@ -3,16 +3,23 @@ import React from 'react';
 import {
   Cluster,
   hasEnabledOperators,
+  isSNO,
+  operatorLabels,
   OPERATOR_NAME_CNV,
+  OPERATOR_NAME_LVM,
   OPERATOR_NAME_ODF,
 } from '../../../../common';
+import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 
 export const ReviewOperatorsTable = ({ cluster }: { cluster: Cluster }) => {
+  const { t } = useTranslation();
+  const operatorNames = operatorLabels(t);
+
   const rows = React.useMemo(() => {
     return [
       {
         cells: [
-          'OpenShift Virtualization',
+          operatorNames[OPERATOR_NAME_CNV],
           {
             title: hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_CNV)
               ? 'Enabled'
@@ -21,9 +28,9 @@ export const ReviewOperatorsTable = ({ cluster }: { cluster: Cluster }) => {
           },
         ],
       },
-      {
+      !isSNO(cluster) && {
         cells: [
-          'OpenShift Data Foundation',
+          operatorNames[OPERATOR_NAME_ODF],
           {
             title: hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_ODF)
               ? 'Enabled'
@@ -32,8 +39,19 @@ export const ReviewOperatorsTable = ({ cluster }: { cluster: Cluster }) => {
           },
         ],
       },
+      isSNO(cluster) && {
+        cells: [
+          operatorNames[OPERATOR_NAME_LVM],
+          {
+            title: hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_LVM)
+              ? 'Enabled'
+              : 'Disabled',
+            props: { 'data-testId': 'openshift-data-foundation' },
+          },
+        ],
+      },
     ];
-  }, [cluster]);
+  }, [cluster, operatorNames]);
 
   return (
     <Table
