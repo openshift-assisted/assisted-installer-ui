@@ -129,6 +129,7 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
                   isOcm={!!ocmClient}
                   managedDomains={managedDomains}
                   clusterExists={!!cluster}
+                  cpuArchitecture={cluster?.cpuArchitecture}
                 />
               </GridItem>
             </Grid>

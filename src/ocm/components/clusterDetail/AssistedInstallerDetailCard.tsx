@@ -114,7 +114,7 @@ const AssistedInstallerDetailCard = ({
   } = useInfraEnv(aiClusterId, CpuArchitecture.USE_DAY1_ARCHITECTURE);
   if (uiState === ResourceUIState.LOADING || infraEnvLoading) {
     return <LoadingCard />;
-  } else if ((uiState === ResourceUIState.ERROR && !cluster) || infraEnvError) {
+  } else if ((uiState === ResourceUIState.POLLING_ERROR && !cluster) || infraEnvError) {
     return <ClusterLoadFailed clusterId={aiClusterId} />;
   }
 
@@ -135,7 +135,7 @@ const AssistedInstallerDetailCard = ({
     </ClusterWizardContextProvider>
   );
 
-  const isOutdatedClusterData = uiState === ResourceUIState.ERROR;
+  const isOutdatedClusterData = uiState === ResourceUIState.POLLING_ERROR;
   return (
     <FeatureGateContextProvider features={allEnabledFeatures}>
       <AlertsContextProvider>
