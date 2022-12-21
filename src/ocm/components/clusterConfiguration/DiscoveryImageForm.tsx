@@ -70,7 +70,7 @@ const DiscoveryImageForm = ({
           handleApiError(e, () => {
             const error: StatusErrorType = {
               error: {
-                title: 'Failed to download the discovery Image',
+                title: 'Failed to create discovery image',
                 message: getApiErrorMessage(e),
               },
             };
