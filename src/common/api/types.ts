@@ -534,9 +534,13 @@ export type ClusterValidationId =
   | 'networks-same-address-families'
   | 'network-prefix-valid'
   | 'machine-cidr-equals-to-calculated-cidr'
+  | 'api-vips-defined'
   | 'api-vip-defined'
+  | 'api-vips-valid'
   | 'api-vip-valid'
+  | 'ingress-vips-defined'
   | 'ingress-vip-defined'
+  | 'ingress-vips-valid'
   | 'ingress-vip-valid'
   | 'all-hosts-are-ready-to-install'
   | 'sufficient-masters-count'
@@ -1418,6 +1422,7 @@ export type HostValidationId =
   | 'belongs-to-majority-group'
   | 'valid-platform-network-settings'
   | 'ntp-synced'
+  | 'time-synced-between-host-and-service'
   | 'container-images-available'
   | 'lso-requirements-satisfied'
   | 'ocs-requirements-satisfied'
@@ -1439,8 +1444,7 @@ export type HostValidationId =
   | 'compatible-agent'
   | 'no-skip-installation-disk'
   | 'no-skip-missing-disk'
-  | 'service-has-sufficient-spoke-kube-api-access';
-
+  | 'no-ip-collisions-in-network';
 /**
  * Explicit ignition endpoint overrides the default ignition endpoint.
  */

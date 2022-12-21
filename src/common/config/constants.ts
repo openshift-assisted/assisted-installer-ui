@@ -151,9 +151,8 @@ export const hostValidationLabels = (t: TFunction): { [key in HostValidationId]:
   'compatible-agent': t('ai:Agent compatibility'),
   'no-skip-installation-disk': t('ai:No skip installation disk'),
   'no-skip-missing-disk': t('ai:No skip missing disk'),
-  'service-has-sufficient-spoke-kube-api-access': t(
-    'ai:Service has sufficient spoke kube api access',
-  ),
+  'time-synced-between-host-and-service': t('ai:Time synced between host and service'),
+  'no-ip-collisions-in-network': t('ai:No IP collisions in network'),
 });
 
 export const hostValidationFailureHints = (
@@ -181,6 +180,7 @@ export const hostValidationFailureHints = (
   'ntp-synced': t(
     "ai:Manually fix the host's NTP configuration or provide additional NTP sources.",
   ),
+  'time-synced-between-host-and-service': '',
   'container-images-available': '',
   'lso-requirements-satisfied': '',
   'ocs-requirements-satisfied': '',
@@ -198,7 +198,7 @@ export const hostValidationFailureHints = (
   'compatible-agent': '',
   'no-skip-installation-disk': '',
   'no-skip-missing-disk': '',
-  'service-has-sufficient-spoke-kube-api-access': '',
+  'no-ip-collisions-in-network': '',
 });
 
 export const clusterValidationLabels = (
@@ -212,9 +212,13 @@ export const clusterValidationLabels = (
   'networks-same-address-families': t('ai:Networks same address families'),
   'network-prefix-valid': t('ai:Valid network prefix'),
   'machine-cidr-equals-to-calculated-cidr': t('ai:Machine CIDR conforms expected'),
+  'api-vips-defined': t('ai:API IP'),
   'api-vip-defined': t('ai:API IP'),
+  'api-vips-valid': t('ai:API IP validity'),
   'api-vip-valid': t('ai:API IP validity'),
+  'ingress-vips-defined': t('ai:Ingress IP'),
   'ingress-vip-defined': t('ai:Ingress IP'),
+  'ingress-vips-valid': t('ai:Ingress IP validity'),
   'ingress-vip-valid': t('ai:Ingress IP validity'),
   'all-hosts-are-ready-to-install': t('ai:All hosts are ready to install'),
   'sufficient-masters-count': t('ai:Control plane nodes count'),
