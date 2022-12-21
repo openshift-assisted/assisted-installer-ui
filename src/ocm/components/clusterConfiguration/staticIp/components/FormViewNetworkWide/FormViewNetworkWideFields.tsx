@@ -212,7 +212,13 @@ export const FormViewNetworkWideFields = ({ hosts }: { hosts: FormViewHost[] }) 
         </div>
       )}
 
-      <OcmInputField isRequired label="DNS" name={`dns`} data-testid={`dns`} />
+      <OcmInputField
+        isRequired
+        label="DNS"
+        name={`dns`}
+        data-testid={`dns`}
+        helperText={'List of your DNS server addresses, separated by commas.'}
+      />
 
       {getShownProtocolVersions(values.protocolType).map((protocolVersion) => (
         <FormGroup
