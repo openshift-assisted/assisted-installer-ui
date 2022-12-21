@@ -6568,7 +6568,14 @@ definitions:
         x-nullable: false
         default: 'x86_64'
         description: The CPU architecture of the image (x86_64/arm64/etc).
-
+      additional_trust_bundle:
+        type: string
+        x-nullable: false
+        description: |-
+          PEM-encoded X.509 certificate bundle. Hosts discovered by this
+          infra-env will trust the certificates in this bundle. Clusters formed
+          from the hosts discovered by this infra-env will also trust the
+          certificates in this bundle.
   proxy:
     type: object
     x-go-custom-tag: gorm:"embedded;embeddedPrefix:proxy_"
@@ -6648,7 +6655,14 @@ definitions:
         x-nullable: false
         default: 'x86_64'
         description: The CPU architecture of the image (x86_64/arm64/etc).
-
+      additional_trust_bundle:
+        type: string
+        x-nullable: false
+        description: |-
+          PEM-encoded X.509 certificate bundle. Hosts discovered by this
+          infra-env will trust the certificates in this bundle. Clusters formed
+          from the hosts discovered by this infra-env will also trust the
+          certificates in this bundle.
   infra-env-update-params:
     type: object
     properties:
@@ -6678,6 +6692,10 @@ definitions:
         type: string
         description:
           JSON formatted string containing the user overrides for the initial ignition config.
+      additional_trust_bundle:
+        type: string
+        description: Allows users to change the additional_trust_bundle infra-env field
+        x-nullable: true
 
   subnet:
     type: string

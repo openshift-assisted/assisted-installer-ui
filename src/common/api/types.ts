@@ -1569,6 +1569,13 @@ export interface InfraEnv {
    * The CPU architecture of the image (x86_64/arm64/etc).
    */
   cpuArchitecture?: string;
+  /**
+   * PEM-encoded X.509 certificate bundle. Hosts discovered by this
+   * infra-env will trust the certificates in this bundle. Clusters formed
+   * from the hosts discovered by this infra-env will also trust the
+   * certificates in this bundle.
+   */
+  additionalTrustBundle?: string;
 }
 export interface InfraEnvCreateParams {
   /**
@@ -1606,6 +1613,13 @@ export interface InfraEnvCreateParams {
    * The CPU architecture of the image (x86_64/arm64/etc).
    */
   cpuArchitecture?: string;
+  /**
+   * PEM-encoded X.509 certificate bundle. Hosts discovered by this
+   * infra-env will trust the certificates in this bundle. Clusters formed
+   * from the hosts discovered by this infra-env will also trust the
+   * certificates in this bundle.
+   */
+  additionalTrustBundle?: string;
 }
 export type InfraEnvList = InfraEnv[];
 export interface InfraEnvUpdateParams {
@@ -1628,6 +1642,10 @@ export interface InfraEnvUpdateParams {
    * JSON formatted string containing the user overrides for the initial ignition config.
    */
   ignitionConfigOverride?: string;
+  /**
+   * Allows users to change the additionalTrustBundle infra-env field
+   */
+  additionalTrustBundle?: string;
 }
 export interface InfraError {
   /**

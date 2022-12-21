@@ -64,8 +64,8 @@ const DiscoveryImageForm = ({
           handleApiError(error, () => {
             formikActions.setStatus({
               error: {
-                title: 'Failed to download the discovery Image',
-                message: getApiErrorMessage(error),
+                title: 'Failed to create discovery image',
+                message: getApiErrorMessage(e),
               },
             });
           });
@@ -93,6 +93,8 @@ const DiscoveryImageForm = ({
       httpsProxy={infraEnv.proxy?.httpsProxy}
       noProxy={infraEnv.proxy?.noProxy}
       imageType={infraEnv.type}
+      enableCertificate={infraEnv.additionalTrustBundle !== undefined}
+      trustBundle={infraEnv.additionalTrustBundle}
       isIpxeSelected={isIpxeSelected}
     />
   );

@@ -35,6 +35,7 @@ const DiscoveryImageFormService = {
       sshAuthorizedKey: formValues.sshPublicKey,
       pullSecret: ocmPullSecret || undefined,
       staticNetworkConfig: formValues.staticNetworkConfig,
+      additionalTrustBundle: formValues.trustBundle,
       imageType: formValues.imageType as ImageType,
     };
 

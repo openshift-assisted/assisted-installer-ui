@@ -25,6 +25,7 @@ import UploadSSH from './UploadSSH';
 import DiscoveryImageTypeControlGroup from './DiscoveryImageTypeControlGroup';
 import { OCP_STATIC_IP_DOC } from '../../config/constants';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
+
 export const StaticIPInfo: React.FC = () => {
   const { t } = useTranslation();
   return (
