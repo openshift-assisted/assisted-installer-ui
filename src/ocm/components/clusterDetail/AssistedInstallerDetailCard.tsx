@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Button, ButtonVariant, Card, CardBody, CardHeader, Title } from '@patternfly/react-core';
 import { store } from '../../store';
-import { isSingleClusterMode, OCM_CLUSTER_LIST_LINK } from '../../config';
+import { OCM_CLUSTER_LIST_LINK } from '../../config';
 import {
   AlertsContextProvider,
   AssistedInstallerOCMPermissionTypesListType,
@@ -37,17 +37,16 @@ type AssistedInstallerDetailCardProps = {
 
 const getErrorStateActions = () => {
   const errorStateActions: React.ReactNode[] = [];
-  if (!isSingleClusterMode()) {
-    errorStateActions.push(
-      <Button
-        key="cancel"
-        variant={ButtonVariant.secondary}
-        component={(props) => <Link to={OCM_CLUSTER_LIST_LINK} {...props} />}
-      >
-        Back
-      </Button>,
-    );
-  }
+  errorStateActions.push(
+    <Button
+      key="cancel"
+      variant={ButtonVariant.secondary}
+      component={(props) => <Link to={OCM_CLUSTER_LIST_LINK} {...props} />}
+    >
+      Back
+    </Button>,
+  );
+
   return errorStateActions;
 };
 

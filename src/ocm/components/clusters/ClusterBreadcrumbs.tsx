@@ -6,7 +6,7 @@ import {
   PageSection,
 } from '@patternfly/react-core';
 import { Link } from 'react-router-dom';
-import { isSingleClusterMode, routeBasePath } from '../../config';
+import { routeBasePath } from '../../config';
 import { ocmClient } from '../../api';
 
 type Props = {
@@ -14,7 +14,7 @@ type Props = {
   isHidden?: boolean;
 };
 
-const ClusterBreadcrumbs: React.FC<Props> = ({ clusterName, isHidden = isSingleClusterMode() }) =>
+const ClusterBreadcrumbs: React.FC<Props> = ({ clusterName, isHidden = false }) =>
   isHidden ? null : (
     <PageSection variant={PageSectionVariants.light}>
       {(clusterName || ocmClient) && (
