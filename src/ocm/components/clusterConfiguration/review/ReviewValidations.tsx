@@ -88,7 +88,7 @@ const ValidationsInfo = ({
   span = 3,
 }: {
   title: string;
-  icon: unknown;
+  icon: React.ReactNode;
   span?: gridSpans;
 }) => {
   return (
@@ -134,7 +134,8 @@ const ValidationsDetailCollapsed = ({ cluster }: { cluster: Cluster }) => {
     () =>
       Object.values(stringToJSON<ClusterValidationsInfo>(cluster.validationsInfo) || {})
         .flat()
-        .map((val) => val.status),
+        .map((val) => val?.status || '')
+        .filter(Boolean),
     [cluster.validationsInfo],
   );
 
@@ -145,9 +146,11 @@ const ValidationsDetailCollapsed = ({ cluster }: { cluster: Cluster }) => {
 
     return (
       hostValidations?.map((val) =>
-        allClusterWizardSoftValidationIds.includes(val.id) && val.status !== 'success'
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        allClusterWizardSoftValidationIds.includes(val?.id || '') && val?.status !== 'success'
           ? 'warning'
-          : val.status,
+          : val?.status || '',
       ) || []
     );
   }, [cluster.hosts]);

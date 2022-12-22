@@ -65,7 +65,7 @@ const DiscoveryImageForm = ({
             formikActions.setStatus({
               error: {
                 title: 'Failed to create discovery image',
-                message: getApiErrorMessage(e),
+                message: getApiErrorMessage(error),
               },
             });
           });

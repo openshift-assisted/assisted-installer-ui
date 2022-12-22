@@ -123,7 +123,7 @@ const ClusterProperties = ({ cluster, externalMode = false }: ClusterPropertiesP
           />
           <DetailItem
             title="Network management type"
-            value={getManagementType(cluster.userManagedNetworking)}
+            value={getManagementType(cluster)}
             testId="network-management-type"
           />
           <DetailItem

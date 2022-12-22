@@ -1,12 +1,12 @@
 import React from 'react';
 import { Table, IRow, TableVariant, TableBody } from '@patternfly/react-table';
-import { Cluster } from '../../../../common';
+import { Cluster, CpuArchitecture } from '../../../../common';
 import useInfraEnv from '../../../hooks/useInfraEnv';
 import { getDiskEncryptionEnabledOnStatus } from '../../clusterDetail/ClusterProperties';
 import OpenShiftVersionDetail from '../../clusterDetail/OpenShiftVersionDetail';
 
 export const ReviewClusterDetailTable = ({ cluster }: { cluster: Cluster }) => {
-  const { infraEnv } = useInfraEnv(cluster.id, cluster.cpuArchitecture);
+  const { infraEnv } = useInfraEnv(cluster.id, cluster.cpuArchitecture as CpuArchitecture);
 
   const rows = React.useMemo(() => {
     return [
