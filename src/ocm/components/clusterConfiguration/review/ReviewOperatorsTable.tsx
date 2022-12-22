@@ -1,5 +1,5 @@
-import { Table, TableVariant, TableBody } from '@patternfly/react-table';
 import React from 'react';
+import { Table, TableVariant, TableBody, IRow } from '@patternfly/react-table';
 import {
   Cluster,
   hasEnabledOperators,
@@ -55,7 +55,7 @@ export const ReviewOperatorsTable = ({ cluster }: { cluster: Cluster }) => {
 
   return (
     <Table
-      rows={rows}
+      rows={rows as IRow[]}
       cells={['', '']}
       variant={TableVariant.compact}
       borders={false}
