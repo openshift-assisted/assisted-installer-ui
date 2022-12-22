@@ -134,7 +134,8 @@ const ValidationsDetailCollapsed = ({ cluster }: { cluster: Cluster }) => {
     () =>
       Object.values(stringToJSON<ClusterValidationsInfo>(cluster.validationsInfo) || {})
         .flat()
-        .map((val) => val?.status || ''),
+        .map((val) => val?.status || '')
+        .filter(Boolean),
     [cluster.validationsInfo],
   );
 
