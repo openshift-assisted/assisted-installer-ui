@@ -27,7 +27,10 @@ import {
   DetailItem,
   DetailList,
   HostsValidations,
+  isClusterPlatformTypeVM,
+  RenderIf,
   stringToJSON,
+  SupportedPlatformType,
   useFeatureSupportLevel,
 } from '../../../../common';
 import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContext';
@@ -47,6 +50,7 @@ import {
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { ValidationsInfo as ClusterValidationsInfo } from '../../../../common/types/clusters';
 import { ValidationsInfo as HostValidationsInfo } from '../../../../common/types/hosts';
+import PlatformIntegrationNote from '../platformIntegration/PlatformIntegrationNote';
 
 const PreflightChecksDetailExpanded = ({ cluster }: { cluster: Cluster }) => {
   const clusterWizardContext = useClusterWizardContext();
@@ -81,6 +85,18 @@ const PreflightChecksDetailExpanded = ({ cluster }: { cluster: Cluster }) => {
         testId="host-preflight-checks"
       />
       <ClusterFeatureSupportLevelsDetailItem cluster={cluster} />
+      <RenderIf condition={isClusterPlatformTypeVM(cluster)}>
+        <DetailItem
+          title="Platform integration"
+          value={
+            <PlatformIntegrationNote
+              platformType={cluster.platform?.type as SupportedPlatformType}
+            />
+          }
+          testId="platform-integration-preflight-checks"
+          classNameValue={'pf-u-mb-md'}
+        />
+      </RenderIf>
     </DetailList>
   );
 };
@@ -174,6 +190,15 @@ const PreflightChecksDetailCollapsed = ({ cluster }: { cluster: Cluster }) => {
         icon={supportLevelIcon}
         span={4}
       />
+      <RenderIf condition={isClusterPlatformTypeVM(cluster)}>
+        <PreflightCheckInfo
+          title={`Platform integration`}
+          icon={<ExclamationTriangleIcon color={warningColor.value} />}
+          span={4}
+          offset={2}
+          className={'pf-u-mt-md'}
+        />
+      </RenderIf>
     </>
   );
 };
