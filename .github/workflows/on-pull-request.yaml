@@ -38,5 +38,14 @@ jobs:
           ./scripts/validatei18n_files.sh
         shell: bash
 
-      - name: Build code (includes tests)
+      - name: Check for circular dependencies
+        run: yarn test:circular
+
+      - name: Lint
+        run: yarn  lint
+
+      - name: Format
+        run: yarn format:check
+
+      - name: Build
         run: yarn build

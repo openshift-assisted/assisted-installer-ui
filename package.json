@@ -30,7 +30,6 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "prebuild": "run-s clean test",
     "build": "node ./scripts/esbuild/prod.js",
     "start": "yarn clean && node ./scripts/esbuild/dev.js",
     "sync-dist": "./scripts/sync-dist.sh",
