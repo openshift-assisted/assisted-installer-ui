@@ -3,7 +3,6 @@ import { Table, TableVariant, TableBody, IRow } from '@patternfly/react-table';
 import {
   Cluster,
   hasEnabledOperators,
-  isSNO,
   operatorLabels,
   OPERATOR_NAME_CNV,
   OPERATOR_NAME_LVM,
@@ -15,43 +14,24 @@ export const ReviewOperatorsTable = ({ cluster }: { cluster: Cluster }) => {
   const { t } = useTranslation();
   const operatorNames = operatorLabels(t);
 
+  const operators = React.useMemo(
+    () => [OPERATOR_NAME_CNV, OPERATOR_NAME_ODF, OPERATOR_NAME_LVM],
+    [],
+  );
+
   const rows = React.useMemo(() => {
-    return [
-      {
+    return operators
+      .filter((operator) => hasEnabledOperators(cluster.monitoredOperators, operator))
+      .map((operator) => ({
         cells: [
-          operatorNames[OPERATOR_NAME_CNV],
+          operatorNames[operator],
           {
-            title: hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_CNV)
-              ? 'Enabled'
-              : 'Disabled',
-            props: { 'data-testid': 'openshift-virtualization' },
+            title: 'Enabled',
+            props: { 'data-testid': `operator-${operator}` },
           },
         ],
-      },
-      !isSNO(cluster) && {
-        cells: [
-          operatorNames[OPERATOR_NAME_ODF],
-          {
-            title: hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_ODF)
-              ? 'Enabled'
-              : 'Disabled',
-            props: { 'data-testid': 'openshift-data-foundation' },
-          },
-        ],
-      },
-      isSNO(cluster) && {
-        cells: [
-          operatorNames[OPERATOR_NAME_LVM],
-          {
-            title: hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_LVM)
-              ? 'Enabled'
-              : 'Disabled',
-            props: { 'data-testid': 'openshift-data-foundation' },
-          },
-        ],
-      },
-    ];
-  }, [cluster, operatorNames]);
+      }));
+  }, [cluster.monitoredOperators, operatorNames, operators]);
 
   return (
     <Table
