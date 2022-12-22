@@ -33,7 +33,7 @@ export const CertificateInputFields = () => {
             {t('ai:Additional certificates')}{' '}
             <PopoverIcon
               bodyContent={t(
-                'ai:You can upload additional trusted certificates in x.509 format if the cluster hosts are in a network with a re-encrypting (MITM) proxy or the cluster needs to trust certificates for other purposes (for example, container image registries).',
+                'ai:You can upload additional trusted certificates in PEM-encoded X.509 format if the cluster hosts are in a network with a re-encrypting (MITM) proxy or the cluster needs to trust certificates for other purposes (for example, container image registries).',
               )}
             />
           </>
