@@ -21,7 +21,7 @@ export const ReviewClusterDetailTable = ({ cluster }: { cluster: Cluster }) => {
                 {cluster.baseDnsDomain || ''}
               </>
             ),
-            props: { 'data-testId': 'cluster-address' },
+            props: { 'data-testid': 'cluster-address' },
           },
         ],
       },
@@ -30,14 +30,14 @@ export const ReviewClusterDetailTable = ({ cluster }: { cluster: Cluster }) => {
           { title: 'OpenShift version' },
           {
             title: <OpenShiftVersionDetail cluster={cluster} />,
-            props: { 'data-testId': 'openshift-version' },
+            props: { 'data-testid': 'openshift-version' },
           },
         ],
       },
       {
         cells: [
           { title: 'CPU architecture' },
-          { title: <>{cluster.cpuArchitecture}</>, props: { 'data-testId': 'cpu-architecture' } },
+          { title: <>{cluster.cpuArchitecture}</>, props: { 'data-testid': 'cpu-architecture' } },
         ],
       },
       {
@@ -45,7 +45,7 @@ export const ReviewClusterDetailTable = ({ cluster }: { cluster: Cluster }) => {
           { title: "Hosts' network configuration" },
           {
             title: <>{infraEnv?.staticNetworkConfig ? 'Static IP' : 'DHCP'}</>,
-            props: { 'data-testId': 'network-configuration' },
+            props: { 'data-testid': 'network-configuration' },
           },
         ],
       },
@@ -54,7 +54,7 @@ export const ReviewClusterDetailTable = ({ cluster }: { cluster: Cluster }) => {
           { title: 'Disk encryption' },
           {
             title: getDiskEncryptionEnabledOnStatus(cluster.diskEncryption?.enableOn),
-            props: { 'data-testId': 'disk-encryption' },
+            props: { 'data-testid': 'disk-encryption' },
           },
         ],
       },

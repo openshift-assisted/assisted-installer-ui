@@ -16,7 +16,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
           { title: 'Networking management type' },
           {
             title: getManagementType(cluster),
-            props: { 'data-testId': 'networking-management-type', colSpan: 2 },
+            props: { 'data-testid': 'networking-management-type', colSpan: 2 },
           },
         ],
       },
@@ -25,7 +25,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
           { title: 'Stack type', colSpan: 2 },
           {
             title: getStackTypeLabel(cluster),
-            props: { 'data-testId': 'stack-type', colSpan: 2 },
+            props: { 'data-testid': 'stack-type', colSpan: 2 },
           },
         ],
       },
@@ -39,7 +39,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
                 <br />
               </span>
             )),
-            props: { 'data-testId': 'machine-networks' },
+            props: { 'data-testid': 'machine-networks' },
           },
           isDualStack(cluster) && { title: 'Primary' },
         ],
@@ -49,7 +49,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
           { title: 'API IP' },
           {
             title: cluster.apiVip,
-            props: { 'data-testId': 'api-vip', colSpan: 2 },
+            props: { 'data-testid': 'api-vip', colSpan: 2 },
           },
         ],
       },
@@ -58,7 +58,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
           { title: 'Ingress IP' },
           {
             title: cluster.ingressVip,
-            props: { 'data-testId': 'ingress-vip', colSpan: 2 },
+            props: { 'data-testid': 'ingress-vip', colSpan: 2 },
           },
         ],
       },
@@ -77,7 +77,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
                 <br />
               </span>
             )),
-            props: { 'data-testId': 'cluster-network-cidr' },
+            props: { 'data-testid': 'cluster-network-cidr' },
           },
           isDualStack(cluster) && { title: 'Primary' },
         ],
@@ -92,7 +92,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
                 <br />
               </span>
             )),
-            props: { 'data-testId': 'cluster-network-prefix' },
+            props: { 'data-testid': 'cluster-network-prefix' },
           },
           isDualStack(cluster) && { title: 'Primary' },
         ],
@@ -107,7 +107,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
                 <br />
               </span>
             )),
-            props: { 'data-testId': 'service-network-cidr' },
+            props: { 'data-testid': 'service-network-cidr' },
           },
           isDualStack(cluster) && { title: 'Primary' },
         ],
@@ -117,7 +117,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
           'Networking type',
           {
             title: getNetworkType(cluster.networkType),
-            props: { 'data-testId': 'networking-type', colSpan: 2 },
+            props: { 'data-testid': 'networking-type', colSpan: 2 },
           },
         ],
       },

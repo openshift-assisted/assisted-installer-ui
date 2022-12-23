@@ -24,7 +24,7 @@ export const ReviewOperatorsTable = ({ cluster }: { cluster: Cluster }) => {
             title: hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_CNV)
               ? 'Enabled'
               : 'Disabled',
-            props: { 'data-testId': 'openshift-virtualization' },
+            props: { 'data-testid': 'openshift-virtualization' },
           },
         ],
       },
@@ -35,7 +35,7 @@ export const ReviewOperatorsTable = ({ cluster }: { cluster: Cluster }) => {
             title: hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_ODF)
               ? 'Enabled'
               : 'Disabled',
-            props: { 'data-testId': 'openshift-data-foundation' },
+            props: { 'data-testid': 'openshift-data-foundation' },
           },
         ],
       },
@@ -46,7 +46,7 @@ export const ReviewOperatorsTable = ({ cluster }: { cluster: Cluster }) => {
             title: hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_LVM)
               ? 'Enabled'
               : 'Disabled',
-            props: { 'data-testId': 'openshift-data-foundation' },
+            props: { 'data-testid': 'openshift-data-foundation' },
           },
         ],
       },
