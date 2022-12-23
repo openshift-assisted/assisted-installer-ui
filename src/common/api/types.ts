@@ -534,9 +534,13 @@ export type ClusterValidationId =
   | 'networks-same-address-families'
   | 'network-prefix-valid'
   | 'machine-cidr-equals-to-calculated-cidr'
+  | 'api-vips-defined'
   | 'api-vip-defined'
+  | 'api-vips-valid'
   | 'api-vip-valid'
+  | 'ingress-vips-defined'
   | 'ingress-vip-defined'
+  | 'ingress-vips-valid'
   | 'ingress-vip-valid'
   | 'all-hosts-are-ready-to-install'
   | 'sufficient-masters-count'
@@ -1418,6 +1422,7 @@ export type HostValidationId =
   | 'belongs-to-majority-group'
   | 'valid-platform-network-settings'
   | 'ntp-synced'
+  | 'time-synced-between-host-and-service'
   | 'container-images-available'
   | 'lso-requirements-satisfied'
   | 'ocs-requirements-satisfied'
@@ -1439,8 +1444,7 @@ export type HostValidationId =
   | 'compatible-agent'
   | 'no-skip-installation-disk'
   | 'no-skip-missing-disk'
-  | 'service-has-sufficient-spoke-kube-api-access';
-
+  | 'no-ip-collisions-in-network';
 /**
  * Explicit ignition endpoint overrides the default ignition endpoint.
  */
@@ -1569,6 +1573,13 @@ export interface InfraEnv {
    * The CPU architecture of the image (x86_64/arm64/etc).
    */
   cpuArchitecture?: string;
+  /**
+   * PEM-encoded X.509 certificate bundle. Hosts discovered by this
+   * infra-env will trust the certificates in this bundle. Clusters formed
+   * from the hosts discovered by this infra-env will also trust the
+   * certificates in this bundle.
+   */
+  additionalTrustBundle?: string;
 }
 export interface InfraEnvCreateParams {
   /**
@@ -1606,6 +1617,13 @@ export interface InfraEnvCreateParams {
    * The CPU architecture of the image (x86_64/arm64/etc).
    */
   cpuArchitecture?: string;
+  /**
+   * PEM-encoded X.509 certificate bundle. Hosts discovered by this
+   * infra-env will trust the certificates in this bundle. Clusters formed
+   * from the hosts discovered by this infra-env will also trust the
+   * certificates in this bundle.
+   */
+  additionalTrustBundle?: string;
 }
 export type InfraEnvList = InfraEnv[];
 export interface InfraEnvUpdateParams {
@@ -1628,6 +1646,10 @@ export interface InfraEnvUpdateParams {
    * JSON formatted string containing the user overrides for the initial ignition config.
    */
   ignitionConfigOverride?: string;
+  /**
+   * Allows users to change the additionalTrustBundle infra-env field
+   */
+  additionalTrustBundle?: string;
 }
 export interface InfraError {
   /**

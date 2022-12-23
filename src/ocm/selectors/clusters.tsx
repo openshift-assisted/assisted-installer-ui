@@ -2,26 +2,26 @@ import React from 'react';
 import { createSelector } from 'reselect';
 import { IRow, IRowData } from '@patternfly/react-table';
 import { Link } from 'react-router-dom';
+import { TFunction } from 'i18next';
 
-import { ClusterTableRows } from '../../common/types/clusters';
 import {
   Cluster,
   DASH,
   getDateTimeCell,
   getEnabledHostCount,
+  getOpenshiftVersionText,
   getTotalHostCount,
+  ClusterTableRows,
   HostsCount,
   HumanizedSortable,
   ResourceUIState,
 } from '../../common';
 import ClusterStatus, { getClusterStatusText } from '../components/clusters/ClusterStatus';
-import { routeBasePath } from '../config/routeBaseBath';
-import { TFunction } from 'i18next';
+import { routeBasePath } from '../config';
 import { RootState } from '../store';
 
 const selectClusters = (state: RootState) => state.clusters.data;
 const clustersUIState = (state: RootState) => state.clusters.uiState;
-const currentClusterName = (state: RootState) => state.currentCluster.data?.name;
 
 export const selectClustersUIState = createSelector(
   [selectClusters, clustersUIState],
@@ -32,8 +32,13 @@ export const selectClustersUIState = createSelector(
 );
 
 const clusterToClusterTableRow = (cluster: Cluster, t: TFunction): IRow => {
-  const { id, name = '', openshiftVersion, baseDnsDomain, createdAt } = cluster;
+  const { id, name = '', baseDnsDomain, createdAt } = cluster;
   const dateTimeCell = getDateTimeCell(createdAt);
+  const versionText = getOpenshiftVersionText({
+    openshiftVersion: cluster.openshiftVersion || '',
+    cpuArchitecture: cluster.cpuArchitecture,
+    withMultiText: true,
+  });
   return {
     cells: [
       {
@@ -51,9 +56,9 @@ const clusterToClusterTableRow = (cluster: Cluster, t: TFunction): IRow => {
         sortableValue: baseDnsDomain,
       },
       {
-        title: openshiftVersion,
+        title: versionText,
         props: { 'data-testid': `cluster-version-${name}` },
-        sortableValue: openshiftVersion,
+        sortableValue: versionText,
       },
       {
         title: <ClusterStatus status={cluster.status} />,
@@ -92,10 +97,4 @@ export const selectClusterTableRows = (t: TFunction) => {
 
 export const selectClusterNames = createSelector(selectClusters, (clusters) =>
   clusters.map((c) => c.name),
-);
-
-export const selectClusterNamesButCurrent = createSelector(
-  selectClusterNames,
-  currentClusterName,
-  (clusterNames, currentName) => clusterNames.filter((n) => n !== currentName),
 );

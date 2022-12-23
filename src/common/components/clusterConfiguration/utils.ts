@@ -3,6 +3,7 @@ import {
   Cluster,
   ClusterDefaultConfig,
   ClusterNetwork,
+  Host,
   Inventory,
   MachineNetwork,
   ServiceNetwork,
@@ -19,12 +20,49 @@ import {
 import {
   HostDiscoveryValues,
   HostSubnets,
+  OpenshiftVersionOptionType,
   StorageValues,
   Validation,
   ValidationGroup,
   ValidationsInfo,
-} from '../../types/clusters';
+  WithRequired,
+} from '../../types';
 import { getHostname } from '../hosts/utils';
+
+type VersionConfig = WithRequired<Pick<Cluster, 'openshiftVersion'>, 'openshiftVersion'> & {
+  cpuArchitecture?: Cluster['cpuArchitecture'];
+  versions?: OpenshiftVersionOptionType[];
+  withPreviewText?: boolean;
+  withMultiText?: boolean;
+};
+
+const getBetaVersionText = (
+  openshiftVersion: string,
+  versions: OpenshiftVersionOptionType[],
+): string => {
+  const versionSelected = versions.find((version) => version.version === openshiftVersion);
+  return versionSelected?.supportLevel === 'beta' ? '- Developer preview release' : '';
+};
+
+const getMultiVersionText = (
+  openshiftVersion: string,
+  cpuArchitecture: Cluster['cpuArchitecture'],
+) => {
+  if (!cpuArchitecture || openshiftVersion.includes('multi')) {
+    return '';
+  }
+  return cpuArchitecture === 'multi' ? ' (multi)' : '';
+};
+
+export const getOpenshiftVersionText = (params: VersionConfig) => {
+  return `${params.openshiftVersion} ${
+    params.withPreviewText && params.versions
+      ? getBetaVersionText(params.openshiftVersion, params.versions)
+      : ''
+  } ${
+    params.withMultiText ? getMultiVersionText(params.openshiftVersion, params.cpuArchitecture) : ''
+  }`;
+};
 
 export const getSubnet = (cidr: string): Address6 | Address4 | null => {
   if (Address4.isValid(cidr)) {
@@ -53,26 +91,51 @@ export const getHumanizedSubnet = (subnet: Address6 | Address4 | null) => {
   return '';
 };
 
-export const getHostSubnets = (cluster: Cluster): HostSubnets => {
-  const hostnameMap: { [id: string]: string } =
-    cluster.hosts?.reduce((acc, host) => {
-      const inventory = stringToJSON<Inventory>(host.inventory) || {};
-      acc = {
-        ...acc,
-        [host.id]: getHostname(host, inventory),
-      };
-      return acc;
-    }, {}) || {};
+const buildHostnameMap = (hosts: Host[]): { [id: string]: string } => {
+  return hosts.reduce((acc, host) => {
+    const inventory = stringToJSON<Inventory>(host.inventory) || {};
+    acc = {
+      ...acc,
+      [host.id]: getHostname(host, inventory),
+    };
+    return acc;
+  }, {});
+};
 
-  return (
-    cluster.hostNetworks?.map((hn) => {
-      return {
-        subnet: hn.cidr || '',
-        hostIDs: hn.hostIds?.map((id) => hostnameMap[id] || id) || [],
-        humanized: getHumanizedSubnet(getSubnet(hn.cidr as string)),
-      };
-    }) || []
-  );
+export const getHostSubnets = (cluster: Cluster, addInvalidNetworks?: boolean): HostSubnets => {
+  const hostnameMap = buildHostnameMap(cluster.hosts || []);
+
+  // Transform the data to handle the optional values
+  const hostNetworkList =
+    cluster.hostNetworks?.map((hn) => ({
+      cidr: hn.cidr || '',
+      hostIds: hn.hostIds || [],
+      isValid: true,
+    })) || [];
+
+  const hostNetworkCidrs = hostNetworkList.map((item) => item.cidr);
+  if (addInvalidNetworks) {
+    cluster.machineNetworks?.forEach((mn) => {
+      // If the machine networks are not present in the hostNetworks (the interface may have changed),
+      // it must be added so that it's shown as selected and the user can select the correct one
+      if (!hostNetworkCidrs.includes(mn.cidr || '')) {
+        hostNetworkList.push({
+          cidr: mn.cidr || '',
+          hostIds: [],
+          isValid: false,
+        });
+      }
+    });
+  }
+
+  return hostNetworkList.map((networkItem) => {
+    return {
+      subnet: networkItem.cidr,
+      hostIDs: networkItem.hostIds.map((id) => hostnameMap[id] || id),
+      humanized: getHumanizedSubnet(getSubnet(networkItem.cidr)),
+      isValid: networkItem.isValid,
+    };
+  });
 };
 
 export const getSubnetFromMachineNetworkCidr = (machineNetworkCidr?: string) => {

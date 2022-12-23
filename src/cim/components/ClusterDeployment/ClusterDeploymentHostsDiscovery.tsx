@@ -30,7 +30,6 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
   onSetInstallationDiskId,
   onSaveBMH,
   onSaveISOParams,
-  onFormSaveError,
   fetchSecret,
   onChangeBMHHostname,
   onApproveAgent,
@@ -113,7 +112,6 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
           isOpen={!!editAgent}
           onClose={() => setEditAgent(undefined)}
           usedHostnames={usedHostnames}
-          onFormSaveError={onFormSaveError}
           agent={editAgent}
           onSave={onSaveAgent}
         />

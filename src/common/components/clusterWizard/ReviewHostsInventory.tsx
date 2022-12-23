@@ -4,7 +4,7 @@ import { stringToJSON, Inventory, Host } from '../../api';
 import { getEnabledHosts, fileSize } from '../hosts';
 import { getSimpleHardwareInfo } from '../hosts/hardwareInfo';
 
-const ReviewHostsInventory: React.FC<{ hosts?: Host[] }> = ({ hosts = [] }) => {
+const ReviewHostsInventory = ({ hosts = [] }: { hosts?: Host[] }) => {
   const rows = React.useMemo(() => {
     const summary = getEnabledHosts(hosts).reduce(
       (summary, host) => {
@@ -31,13 +31,13 @@ const ReviewHostsInventory: React.FC<{ hosts?: Host[] }> = ({ hosts = [] }) => {
         cells: ['Hosts', summary.count],
       },
       {
-        cells: ['Cores', summary.cores],
+        cells: ['Total Cores', summary.cores],
       },
       {
-        cells: ['Memory', fileSize(summary.memory, 2, 'iec')],
+        cells: ['Total Memory', fileSize(summary.memory, 2, 'iec')],
       },
       {
-        cells: ['Storage', fileSize(summary.fs, 2, 'si')],
+        cells: ['Total Storage', fileSize(summary.fs, 2, 'si')],
       },
     ];
   }, [hosts]);
@@ -49,7 +49,7 @@ const ReviewHostsInventory: React.FC<{ hosts?: Host[] }> = ({ hosts = [] }) => {
       variant={TableVariant.compact}
       borders={false}
       aria-label="Cluster summary table"
-      className="review-hosts-table"
+      className="review-table"
     >
       <TableBody />
     </Table>

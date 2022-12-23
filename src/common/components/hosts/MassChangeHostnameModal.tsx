@@ -78,7 +78,9 @@ const validationSchema = (
   t: TFunction,
 ) =>
   Yup.object().shape({
-    hostname: richNameValidationSchema(t, usedHostnames, initialValues.hostname).required(),
+    hostname: richNameValidationSchema(t, usedHostnames, initialValues.hostname).required(
+      t('ai:Required field'),
+    ),
   });
 
 const updateHostnameValidationResult = (
@@ -267,6 +269,7 @@ export type MassChangeHostnameModalProps = {
   onChangeHostname: (host: Host, hostname: string) => Promise<any>;
   canChangeHostname: (host: Host) => ActionCheck;
   reloadCluster?: VoidFunction;
+  onHostSaveError?: (e: Error) => void;
 };
 
 const MassChangeHostnameModal = ({
@@ -277,6 +280,7 @@ const MassChangeHostnameModal = ({
   onChangeHostname,
   canChangeHostname,
   reloadCluster,
+  onHostSaveError,
 }: MassChangeHostnameModalProps) => {
   const [patchingHost, setPatchingHost] = React.useState<number>(0);
 
@@ -319,6 +323,7 @@ const MassChangeHostnameModal = ({
                 message: getApiErrorMessage(e),
               },
             });
+            onHostSaveError && onHostSaveError(e as Error);
           }
         }}
       >

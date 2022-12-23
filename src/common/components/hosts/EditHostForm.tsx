@@ -13,6 +13,7 @@ import {
 } from '@patternfly/react-core';
 
 import { Formik } from 'formik';
+import { TFunction } from 'i18next';
 import { Host, Inventory } from '../../api';
 import {
   richNameValidationSchema,
@@ -25,17 +26,15 @@ import { canHostnameBeChanged } from './utils';
 import GridGap from '../ui/GridGap';
 import { EditHostFormValues } from './types';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
-import { TFunction } from 'i18next';
 
 export type EditHostFormProps = {
   host: Host;
   inventory: Inventory;
   usedHostnames: string[] | undefined;
   onCancel: () => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onSave: (values: EditHostFormValues) => Promise<any>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onFormSaveError?: (e: any) => void | string;
+  onSave: (values: EditHostFormValues) => Promise<unknown>;
+  onHostSaveError?: (e: Error) => void;
+  getEditErrorMessage?: (e: Error) => string;
 };
 
 const validationSchema = (
@@ -47,15 +46,17 @@ const validationSchema = (
     hostname: richNameValidationSchema(t, usedHostnames, initialValues.hostname),
   });
 
-const EditHostForm: React.FC<EditHostFormProps> = ({
+const EditHostForm = ({
   host,
   inventory,
   usedHostnames,
   onCancel,
   onSave,
-  onFormSaveError,
-}) => {
+  onHostSaveError,
+  getEditErrorMessage,
+}: EditHostFormProps) => {
   const hostnameInputRef = React.useRef<HTMLInputElement>();
+
   React.useEffect(() => {
     hostnameInputRef.current?.focus();
     hostnameInputRef.current?.select();
@@ -85,13 +86,16 @@ const EditHostForm: React.FC<EditHostFormProps> = ({
           await onSave(values);
           onCancel();
         } catch (e) {
-          const message = (onFormSaveError && onFormSaveError(e)) || t('ai:Host update failed.');
+          const error = e as Error;
+          const message =
+            (getEditErrorMessage && getEditErrorMessage(error)) || t('ai:Host update failed.');
           formikActions.setStatus({
             error: {
               title: t('ai:Failed to update host'),
               message,
             },
           });
+          onHostSaveError && onHostSaveError(error);
         }
       }}
     >

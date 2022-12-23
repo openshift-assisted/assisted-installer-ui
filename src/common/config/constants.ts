@@ -14,8 +14,8 @@ export const ODF_REQUIREMENTS_LINK =
   'https://access.redhat.com/documentation/en-us/red_hat_openshift_data_foundation/4.9/html/planning_your_deployment/infrastructure-requirements_rhodf#resource-requirements_rhodf';
 export const VSPHERE_CONFIG_LINK = 'https://access.redhat.com/solutions/6677901';
 
-export const getBugzillaLink = (version = '') =>
-  `https://bugzilla.redhat.com/enter_bug.cgi?product=OpenShift%20Container%20Platform&Component=OpenShift%20Container%20Platform&component=assisted-installer&version=${version}`;
+export const getReportIssueLink = () =>
+  'https://issues.redhat.com/secure/CreateIssue!default.jspa?pid=12332330&issuetype=1&components=12370775';
 
 export const FEEDBACK_FORM_LINK =
   'https://docs.google.com/forms/d/e/1FAIpQLSfg9M8wRW4m_HkWeAl6KpB5dTcMu8iI3iJ29GlLfZpF2hnjng/viewform';
@@ -151,9 +151,8 @@ export const hostValidationLabels = (t: TFunction): { [key in HostValidationId]:
   'compatible-agent': t('ai:Agent compatibility'),
   'no-skip-installation-disk': t('ai:No skip installation disk'),
   'no-skip-missing-disk': t('ai:No skip missing disk'),
-  'service-has-sufficient-spoke-kube-api-access': t(
-    'ai:Service has sufficient spoke kube api access',
-  ),
+  'time-synced-between-host-and-service': t('ai:Time synced between host and service'),
+  'no-ip-collisions-in-network': t('ai:No IP collisions in network'),
 });
 
 export const hostValidationFailureHints = (
@@ -181,6 +180,7 @@ export const hostValidationFailureHints = (
   'ntp-synced': t(
     "ai:Manually fix the host's NTP configuration or provide additional NTP sources.",
   ),
+  'time-synced-between-host-and-service': '',
   'container-images-available': '',
   'lso-requirements-satisfied': '',
   'ocs-requirements-satisfied': '',
@@ -198,7 +198,7 @@ export const hostValidationFailureHints = (
   'compatible-agent': '',
   'no-skip-installation-disk': '',
   'no-skip-missing-disk': '',
-  'service-has-sufficient-spoke-kube-api-access': '',
+  'no-ip-collisions-in-network': '',
 });
 
 export const clusterValidationLabels = (
@@ -212,9 +212,13 @@ export const clusterValidationLabels = (
   'networks-same-address-families': t('ai:Networks same address families'),
   'network-prefix-valid': t('ai:Valid network prefix'),
   'machine-cidr-equals-to-calculated-cidr': t('ai:Machine CIDR conforms expected'),
+  'api-vips-defined': t('ai:API IP'),
   'api-vip-defined': t('ai:API IP'),
+  'api-vips-valid': t('ai:API IP validity'),
   'api-vip-valid': t('ai:API IP validity'),
+  'ingress-vips-defined': t('ai:Ingress IP'),
   'ingress-vip-defined': t('ai:Ingress IP'),
+  'ingress-vips-valid': t('ai:Ingress IP validity'),
   'ingress-vip-valid': t('ai:Ingress IP validity'),
   'all-hosts-are-ready-to-install': t('ai:All hosts are ready to install'),
   'sufficient-masters-count': t('ai:Control plane nodes count'),

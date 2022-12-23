@@ -53,6 +53,7 @@ const StaticIp: React.FC<StaticIpProps & { cluster: Cluster }> = ({
       onNext={() => clusterWizardContext.moveNext()}
       onBack={() => clusterWizardContext.moveBack()}
       isNextDisabled={isNextDisabled}
+      isBackDisabled={formState.isSubmitting || formState.isAutoSaveRunning}
     />
   );
 

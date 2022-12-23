@@ -7,13 +7,16 @@ import {
   Form,
   ModalBoxBody,
   ModalBoxFooter,
-  AlertVariant,
-  Alert,
-  AlertActionCloseButton,
 } from '@patternfly/react-core';
 import { Formik } from 'formik';
-import { day2ApiVipValidationSchema, InputField } from '../../../common/components/ui';
+import {
+  AlertFormikError,
+  day2ApiVipValidationSchema,
+  InputField,
+} from '../../../common/components/ui';
 import GridGap from '../../../common/components/ui/GridGap';
+import { StatusErrorType } from '../../../common';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 export type UpdateDay2ApiVipFormProps = {
   onClose: () => void;
@@ -25,13 +28,13 @@ export type UpdateDay2ApiVipValues = {
   apiVip?: string;
 };
 
-type StatusErrorType = { error?: { message?: string; title?: string } | null };
-
 const UpdateDay2ApiVipForm: React.FC<UpdateDay2ApiVipFormProps> = ({
   onUpdateDay2ApiVip,
   onClose,
   currentApiVip: originApiVip,
 }) => {
+  const { t } = useTranslation();
+
   const apiVipInputRef = React.useRef<HTMLInputElement>();
   React.useEffect(() => {
     apiVipInputRef.current?.focus();
@@ -43,9 +46,9 @@ const UpdateDay2ApiVipForm: React.FC<UpdateDay2ApiVipFormProps> = ({
   const validationSchema = React.useMemo(
     () =>
       Yup.object().shape({
-        apiVip: day2ApiVipValidationSchema.required(),
+        apiVip: day2ApiVipValidationSchema.required(t('ai:Required field')),
       }),
-    [],
+    [t],
   );
 
   return (
@@ -70,24 +73,15 @@ const UpdateDay2ApiVipForm: React.FC<UpdateDay2ApiVipFormProps> = ({
       }}
     >
       {({ handleSubmit, status, setStatus, isSubmitting, isValid, dirty }) => {
-        const { error } = status as unknown as StatusErrorType;
-
         return (
           <Form onSubmit={handleSubmit}>
             <ModalBoxBody>
               <GridGap>
-                {error && (
-                  <Alert
-                    variant={AlertVariant.danger}
-                    title={error.title}
-                    actionClose={
-                      <AlertActionCloseButton onClose={() => setStatus({ error: null })} />
-                    }
-                    isInline
-                  >
-                    {error.message}
-                  </Alert>
-                )}
+                <AlertFormikError
+                  status={status as StatusErrorType}
+                  onClose={() => setStatus({ error: null })}
+                />
+
                 <InputField
                   label="Set the IP or domain used to reach the cluster"
                   name="apiVip"

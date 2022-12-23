@@ -29,6 +29,7 @@ import { forceReload } from '../../reducers/clusters';
 import { getErrorStateActions, ClusterUiError } from './ClusterPageErrors';
 import ClusterLoading from './ClusterLoading';
 import ClusterPollingErrorModal from '../clusterDetail/ClusterPollingErrorModal';
+import ClusterUpdateErrorModal from '../clusterDetail/ClusterUpdateErrorModal';
 
 type MatchParams = {
   clusterId: string;
@@ -105,7 +106,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
     return <ClusterLoading />;
   }
 
-  if (uiState === ResourceUIState.ERROR && !cluster) {
+  if (uiState === ResourceUIState.POLLING_ERROR && !cluster) {
     if (Number(errorDetail?.code) === 404) {
       return <Redirect to={`${routeBasePath}/clusters`} />;
     }
@@ -137,7 +138,6 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
   }
 
   if (cluster && infraEnv) {
-    const isOutdatedClusterData = uiState === ResourceUIState.ERROR;
     return (
       <AlertsContextProvider>
         <SentryErrorMonitorContextProvider>
@@ -148,7 +148,8 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
             >
               <FeatureSupportLevelProvider loadingUi={<ClusterLoading />} cluster={cluster}>
                 {getContent(cluster, infraEnv)}
-                {isOutdatedClusterData && <ClusterPollingErrorModal />}
+                {uiState === ResourceUIState.POLLING_ERROR && <ClusterPollingErrorModal />}
+                {uiState === ResourceUIState.UPDATE_ERROR && <ClusterUpdateErrorModal />}
                 <CancelInstallationModal />
                 <ResetClusterModal />
                 <DiscoveryImageModal />
