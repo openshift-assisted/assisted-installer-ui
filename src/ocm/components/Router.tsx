@@ -18,14 +18,12 @@ export const AssistedUiRouter: React.FC<{ allEnabledFeatures: FeatureListType }>
 export const Router: React.FC<{ features: FeatureListType }> = ({ features, children }) => (
   <FeatureGateContextProvider features={features}>
     <AssistedUILibVersion />
-    {
-      <Switch>
-        <Route path={`${routeBasePath}/clusters/~new`} component={NewClusterPage} />
-        <Route path={`${routeBasePath}/clusters/:clusterId`} component={ClusterPage} />
-        <Route path={`${routeBasePath}/clusters`} component={Clusters} />
-        {children}
-        <Redirect to={`${routeBasePath}/clusters`} />
-      </Switch>
-    }
+    <Switch>
+      <Route path={`${routeBasePath}/clusters/~new`} component={NewClusterPage} />
+      <Route path={`${routeBasePath}/clusters/:clusterId`} component={ClusterPage} />
+      <Route path={`${routeBasePath}/clusters`} component={Clusters} />
+      {children}
+      <Redirect to={`${routeBasePath}/clusters`} />
+    </Switch>
   </FeatureGateContextProvider>
 );
