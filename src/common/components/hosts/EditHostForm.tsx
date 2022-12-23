@@ -9,23 +9,24 @@ import {
   ModalBoxFooter,
   AlertVariant,
   Alert,
-  AlertActionCloseButton,
 } from '@patternfly/react-core';
 
 import { Formik } from 'formik';
 import { TFunction } from 'i18next';
 import { Host, Inventory } from '../../api';
 import {
-  richNameValidationSchema,
+  richHostnameValidationSchema,
   RichInputField,
   StaticTextField,
   hostnameValidationMessages,
   getRichTextValidation,
+  AlertFormikError,
 } from '../ui';
 import { canHostnameBeChanged } from './utils';
 import GridGap from '../ui/GridGap';
 import { EditHostFormValues } from './types';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { StatusErrorType } from '../../types';
 
 export type EditHostFormProps = {
   host: Host;
@@ -43,7 +44,7 @@ const validationSchema = (
   usedHostnames: string[] = [],
 ) =>
   Yup.object().shape({
-    hostname: richNameValidationSchema(t, usedHostnames, initialValues.hostname),
+    hostname: richHostnameValidationSchema(t, usedHostnames, initialValues.hostname),
   });
 
 const EditHostForm = ({
@@ -99,22 +100,14 @@ const EditHostForm = ({
         }
       }}
     >
-      {({ handleSubmit, status, setStatus, isSubmitting, isValid, dirty }) => (
+      {({ handleSubmit, status, isSubmitting, isValid, setStatus, dirty }) => (
         <Form onSubmit={handleSubmit}>
           <ModalBoxBody>
             <GridGap>
-              {status.error && (
-                <Alert
-                  variant={AlertVariant.danger}
-                  title={status.error.title}
-                  actionClose={
-                    <AlertActionCloseButton onClose={() => setStatus({ error: null })} />
-                  }
-                  isInline
-                >
-                  {status.error.message}
-                </Alert>
-              )}
+              <AlertFormikError
+                status={status as StatusErrorType}
+                onClose={() => setStatus({ error: null })}
+              />
               <Alert
                 variant={AlertVariant.info}
                 title={t('ai:This name will replace the original discovered hostname.')}

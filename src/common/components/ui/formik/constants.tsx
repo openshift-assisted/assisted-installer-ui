@@ -36,8 +36,16 @@ export const nameValidationMessages = (t: TFunction) => ({
   INVALID_FORMAT: t('ai:Number of characters between dots (.) must be 1-63'),
 });
 
-export const hostnameValidationMessages = (t: TFunction) => ({
+export const BMCValidationMessages = (t: TFunction) => ({
   ...nameValidationMessages(t),
+  LOCALHOST_ERR: t('ai:Do not use forbidden words, for example: "localhost".'),
+});
+
+export const hostnameValidationMessages = (t: TFunction) => ({
+  INVALID_LENGTH: t('ai:1-63 characters'),
+  NOT_UNIQUE: t('ai:Must be unique'),
+  INVALID_VALUE: t('ai:Use lowercase alphanumeric characters, dot (.) or hyphen (-)'),
+  INVALID_START_END: t('ai:Must start and end with an lowercase alphanumeric character'),
   LOCALHOST_ERR: t('ai:Do not use forbidden words, for example: "localhost".'),
 });
 
