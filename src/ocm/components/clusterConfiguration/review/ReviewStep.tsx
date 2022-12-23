@@ -10,8 +10,8 @@ import ClusterWizardNavigation from '../../clusterWizard/ClusterWizardNavigation
 import { ClustersService } from '../../../services';
 import { useStateSafely } from '../../../../common/hooks';
 import { selectCurrentClusterPermissionsState } from '../../../selectors';
-import { ReviewValidations } from './ReviewValidations';
-import { ReviewSummary } from './ReviewSummary';
+import ReviewPreflightChecks from './ReviewPreflightChecks';
+import ReviewSummary from './ReviewSummary';
 import './ReviewCluster.css';
 
 const ReviewStep = ({ cluster }: { cluster: Cluster }) => {
@@ -67,7 +67,7 @@ const ReviewStep = ({ cluster }: { cluster: Cluster }) => {
         <GridItem>
           <ClusterWizardStepHeader>Review and create</ClusterWizardStepHeader>
         </GridItem>
-        <ReviewValidations cluster={cluster} />
+        <ReviewPreflightChecks cluster={cluster} />
         <ReviewSummary cluster={cluster} />
       </Grid>
     </ClusterWizardStep>
