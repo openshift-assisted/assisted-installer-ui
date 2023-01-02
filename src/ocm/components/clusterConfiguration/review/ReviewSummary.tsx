@@ -15,7 +15,7 @@ import {
   TableSummaryExpandable,
 } from '.';
 
-export const ReviewSummary = ({ cluster }: { cluster: Cluster }) => {
+const ReviewSummary = ({ cluster }: { cluster: Cluster }) => {
   const showOperatorsSummary =
     hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_CNV) ||
     hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_ODF) ||
@@ -48,3 +48,5 @@ export const ReviewSummary = ({ cluster }: { cluster: Cluster }) => {
     </ExpandableSection>
   );
 };
+
+export default ReviewSummary;

@@ -15,6 +15,13 @@ import {
   InfoCircleIcon,
 } from '@patternfly/react-icons';
 import {
+  global_success_color_100 as okColor,
+  global_info_color_100 as infoColor,
+  global_danger_color_100 as dangerColor,
+  global_warning_color_100 as warningColor,
+} from '@patternfly/react-tokens';
+
+import {
   Cluster,
   ClusterValidations,
   DetailItem,
@@ -36,24 +43,18 @@ import {
   SupportLevelMemo,
   getSupportLevelInfo,
 } from '../../featureSupportLevels/ReviewClusterFeatureSupportLevels';
-import {
-  global_success_color_100 as okColor,
-  global_info_color_100 as infoColor,
-  global_danger_color_100 as dangerColor,
-  global_warning_color_100 as warningColor,
-} from '@patternfly/react-tokens';
-import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 
+import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { ValidationsInfo as ClusterValidationsInfo } from '../../../../common/types/clusters';
 import { ValidationsInfo as HostValidationsInfo } from '../../../../common/types/hosts';
 
-const ValidationsDetailExpanded = ({ cluster }: { cluster: Cluster }) => {
+const PreflightChecksDetailExpanded = ({ cluster }: { cluster: Cluster }) => {
   const clusterWizardContext = useClusterWizardContext();
 
   return (
     <DetailList>
       <DetailItem
-        title="Cluster validations"
+        title="Cluster preflight checks"
         value={
           <ClusterValidations<ClusterWizardStepsType>
             validationsInfo={cluster.validationsInfo}
@@ -62,10 +63,11 @@ const ValidationsDetailExpanded = ({ cluster }: { cluster: Cluster }) => {
             wizardStepsValidationsMap={wizardStepsValidationsMap}
           />
         }
-        testId="cluster-validations"
+        classNameValue={'pf-u-mb-md'}
+        testId="cluster-preflight-checks"
       />
       <DetailItem
-        title="Host validations"
+        title="Host preflight checks"
         value={
           <HostsValidations<ClusterWizardStepsType, typeof allClusterWizardSoftValidationIds>
             hosts={cluster.hosts}
@@ -75,24 +77,29 @@ const ValidationsDetailExpanded = ({ cluster }: { cluster: Cluster }) => {
             wizardStepsValidationsMap={wizardStepsValidationsMap}
           />
         }
-        testId="host-validations"
+        classNameValue={'pf-u-mb-md'}
+        testId="host-preflight-checks"
       />
       <ClusterFeatureSupportLevelsDetailItem cluster={cluster} />
     </DetailList>
   );
 };
 
-const ValidationsInfo = ({
+const PreflightCheckInfo = ({
   title,
   icon,
   span = 3,
+  offset,
+  className,
 }: {
   title: string;
   icon: React.ReactNode;
   span?: gridSpans;
+  offset?: gridSpans;
+  className?: string;
 }) => {
   return (
-    <GridItem span={span}>
+    <GridItem span={span} offset={offset} className={className}>
       <Split hasGutter>
         <SplitItem>{icon}</SplitItem>
         <SplitItem>
@@ -103,7 +110,7 @@ const ValidationsInfo = ({
   );
 };
 
-const getValidationsIcon = (validationStatuses: string[]) => {
+const getCheckIcon = (validationStatuses: string[]) => {
   if (validationStatuses.includes('failure') || validationStatuses.includes('error')) {
     return <ExclamationCircleIcon color={dangerColor.value} size="sm" />;
   } else if (validationStatuses.includes('warning')) {
@@ -114,7 +121,7 @@ const getValidationsIcon = (validationStatuses: string[]) => {
   return <CheckCircleIcon color={okColor.value} />;
 };
 
-const ValidationsDetailCollapsed = ({ cluster }: { cluster: Cluster }) => {
+const PreflightChecksDetailCollapsed = ({ cluster }: { cluster: Cluster }) => {
   const { t } = useTranslation();
   const featureSupportLevelData = useFeatureSupportLevel();
   const { isSupportedOpenShiftVersion } = useOpenshiftVersions();
@@ -157,9 +164,12 @@ const ValidationsDetailCollapsed = ({ cluster }: { cluster: Cluster }) => {
 
   return (
     <>
-      <ValidationsInfo title="Cluster validations" icon={getValidationsIcon(clusterValidations)} />
-      <ValidationsInfo title="Host validations" icon={getValidationsIcon(hostValidations)} />
-      <ValidationsInfo
+      <PreflightCheckInfo
+        title="Cluster preflight checks"
+        icon={getCheckIcon(clusterValidations)}
+      />
+      <PreflightCheckInfo title="Host preflight checks" icon={getCheckIcon(hostValidations)} />
+      <PreflightCheckInfo
         title={`Cluster support level: ${isFullySupported ? 'Full' : 'Limited'}`}
         icon={supportLevelIcon}
         span={4}
@@ -168,8 +178,8 @@ const ValidationsDetailCollapsed = ({ cluster }: { cluster: Cluster }) => {
   );
 };
 
-export const ReviewValidations = ({ cluster }: { cluster: Cluster }) => {
-  const [isValidationsExpanded, setValidationsExpanded] = React.useState(false);
+const ReviewPreflightChecks = ({ cluster }: { cluster: Cluster }) => {
+  const [isChecksExpanded, setChecksExpanded] = React.useState(false);
   return (
     <>
       <Divider />
@@ -177,18 +187,20 @@ export const ReviewValidations = ({ cluster }: { cluster: Cluster }) => {
       <ExpandableSection
         toggleContent={
           <Grid>
-            <GridItem span={2}>Validations</GridItem>
-            {!isValidationsExpanded && <ValidationsDetailCollapsed cluster={cluster} />}
+            <GridItem span={2}>Preflight checks</GridItem>
+            {!isChecksExpanded && <PreflightChecksDetailCollapsed cluster={cluster} />}
           </Grid>
         }
         isIndented
-        isExpanded={isValidationsExpanded}
-        onToggle={() => setValidationsExpanded(!isValidationsExpanded)}
+        isExpanded={isChecksExpanded}
+        onToggle={() => setChecksExpanded(!isChecksExpanded)}
         className={'review-expandable'}
       >
-        <ValidationsDetailExpanded cluster={cluster} />
+        <PreflightChecksDetailExpanded cluster={cluster} />
       </ExpandableSection>
       <Divider />
     </>
   );
 };
+
+export default ReviewPreflightChecks;
