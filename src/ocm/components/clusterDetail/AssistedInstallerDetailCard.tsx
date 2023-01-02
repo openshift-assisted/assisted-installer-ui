@@ -1,7 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { Button, ButtonVariant, Card, CardBody, CardHeader, Title } from '@patternfly/react-core';
+import { Card, CardBody, CardHeader, Title } from '@patternfly/react-core';
 import { store } from '../../store';
 import { OCM_CLUSTER_LIST_LINK } from '../../config';
 import {
@@ -28,26 +27,12 @@ import { FeatureSupportLevelProvider } from '../featureSupportLevels';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { SentryErrorMonitorContextProvider } from '../SentryErrorMonitorContextProvider';
 import ClusterWizardContextProvider from '../clusterWizard/ClusterWizardContextProvider';
+import { BackButton } from '../ui/Buttons/BackButton';
 
 type AssistedInstallerDetailCardProps = {
   aiClusterId: string;
   allEnabledFeatures: FeatureListType;
   permissions?: AssistedInstallerOCMPermissionTypesListType;
-};
-
-const getErrorStateActions = () => {
-  const errorStateActions: React.ReactNode[] = [];
-  errorStateActions.push(
-    <Button
-      key="cancel"
-      variant={ButtonVariant.secondary}
-      component={(props) => <Link to={OCM_CLUSTER_LIST_LINK} {...props} />}
-    >
-      Back
-    </Button>,
-  );
-
-  return errorStateActions;
 };
 
 const LoadingCard = () => (
@@ -76,7 +61,7 @@ const ClusterLoadFailed = ({ clusterId }: { clusterId: Cluster['id'] }) => {
         <ErrorState
           title="Failed to fetch the cluster"
           fetchData={fetchCluster}
-          actions={getErrorStateActions()}
+          actions={[<BackButton key={'cancel'} to={OCM_CLUSTER_LIST_LINK} />]}
         />
       </CardBody>
     </Card>
@@ -93,7 +78,7 @@ const LoadingDefaultConfigFailedCard = () => (
     <CardBody>
       <ErrorState
         title="Failed to retrieve the default configuration"
-        actions={getErrorStateActions()}
+        actions={[<BackButton key={'cancel'} to={OCM_CLUSTER_LIST_LINK} />]}
       />
     </CardBody>
   </Card>
@@ -165,5 +150,4 @@ const Wrapper = (props: AssistedInstallerDetailCardProps) => (
   </Provider>
 );
 
-// TODO(mlibra): The provider should go higher within the OCM hierarchy otherwise we do not have multiple cards/tabs with redux.
 export default Wrapper;
