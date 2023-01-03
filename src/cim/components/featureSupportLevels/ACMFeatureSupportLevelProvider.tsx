@@ -49,10 +49,13 @@ export const ACMFeatureSupportLevelProvider: React.FC<ACMFeatureSupportLevelProv
 
   const getNormalizedVersion = React.useCallback(
     (versionName: string) => {
-      const clusterImage = clusterImages.filter(
+      const clusterImage = clusterImages.find(
         (clusterImageSet) => clusterImageSet.metadata?.name === versionName,
       );
-      const version = getVersionFromReleaseImage(clusterImage[0]?.spec?.releaseImage);
+      const version =
+        getVersionFromReleaseImage(clusterImage?.spec?.releaseImage) ||
+        clusterImage?.metadata?.name ||
+        '';
       return getMajorMinorVersion(version);
     },
     [clusterImages],

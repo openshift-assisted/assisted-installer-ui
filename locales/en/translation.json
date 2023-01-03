@@ -363,6 +363,7 @@
   "ai:Ignition file downloadable": "Ignition file downloadable",
   "ai:Illegal hostname": "Illegal hostname",
   "ai:Image storage": "Image storage",
+  "ai:In order to access the OpenShift Web Console, use external DNS server or local configuration to resolve its hostname. To do so, either:": "In order to access the OpenShift Web Console, use external DNS server or local configuration to resolve its hostname. To do so, either:",
   "ai:In the following example, the errors indicate there is a network issue:": "In the following example, the errors indicate there is a network issue:",
   "ai:Information & Troubleshooting": "Information & Troubleshooting",
   "ai:Information and warnings": "Information and warnings",

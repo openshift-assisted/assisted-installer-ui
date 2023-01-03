@@ -76,8 +76,9 @@ export const WebConsoleHint: React.FC<WebConsoleHintProps> = ({ cluster, console
   return (
     <>
       <Text component="p">
-        In order to access the OpenShift Web Console, use external DNS server or local configuration
-        to resolve its hostname. To do so, either:
+        {t(
+          'ai:In order to access the OpenShift Web Console, use external DNS server or local configuration to resolve its hostname. To do so, either:',
+        )}
       </Text>
       <ModalExpandableSection
         toggleText={t('ai:Option 1: Add the following records to your DNS server (recommended)')}
