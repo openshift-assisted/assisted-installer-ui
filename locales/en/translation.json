@@ -280,7 +280,6 @@
   "ai:Failed to download the discovery Image": "Failed to download the discovery Image",
   "ai:Failed to fetch adminPasswordSecret secret.": "Failed to fetch adminPasswordSecret secret.",
   "ai:Failed to fetch cluster credentials.": "Failed to fetch cluster credentials.",
-  "ai:Failed to patch assisted-image-service": "Failed to patch assisted-image-service",
   "ai:Failed to patch assisted-image-service route for new domain.": "Failed to patch assisted-image-service route for new domain.",
   "ai:Failed to save ClusterDeployment": "Failed to save ClusterDeployment",
   "ai:Failed to save configuration": "Failed to save configuration",
