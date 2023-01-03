@@ -6,12 +6,14 @@ import {
   NUTANIX_CONFIG_LINK,
   PlatformType,
   SupportedPlatformType,
+  useFeatureSupportLevel,
   VSPHERE_CONFIG_LINK,
 } from '../../../common';
 
 type ClusterPlatformIntegrationHintProps = {
   clusterId: string;
   platformType: PlatformType;
+  openshiftVersion: string;
 };
 
 const integrationBrands: Record<SupportedPlatformType, string> = {
@@ -27,13 +29,17 @@ export const integrationPlatformLinks: Record<SupportedPlatformType, string> = {
 export const ClusterPlatformIntegrationHint = ({
   clusterId,
   platformType,
+  openshiftVersion,
 }: ClusterPlatformIntegrationHintProps) => {
   const { isPlatformIntegrationSupported, supportedPlatformIntegration } =
     useClusterSupportedPlatforms(clusterId);
-
+  const featureSupportLevels = useFeatureSupportLevel();
+  const isNutanixFeatureSupported =
+    featureSupportLevels.isFeatureSupported(openshiftVersion || '', 'NUTANIX_INTEGRATION') ?? false;
   const canIntegrateWithPlatform =
-    isPlatformIntegrationSupported &&
-    !isClusterPlatformTypeVM({ platform: { type: platformType } });
+    (isPlatformIntegrationSupported &&
+      !isClusterPlatformTypeVM({ platform: { type: platformType } })) ||
+    (supportedPlatformIntegration === 'nutanix' && isNutanixFeatureSupported);
   if (!canIntegrateWithPlatform) {
     return null;
   }
