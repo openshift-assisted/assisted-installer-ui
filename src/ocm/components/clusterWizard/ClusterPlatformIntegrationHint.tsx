@@ -34,10 +34,8 @@ export const ClusterPlatformIntegrationHint = ({
   const { isPlatformIntegrationSupported, supportedPlatformIntegration } =
     useClusterSupportedPlatforms(clusterId);
   const featureSupportLevels = useFeatureSupportLevel();
-  const isNutanixFeatureSupported = featureSupportLevels.isFeatureSupported(
-    openshiftVersion || '',
-    'NUTANIX_INTEGRATION',
-  );
+  const isNutanixFeatureSupported =
+    featureSupportLevels.isFeatureSupported(openshiftVersion || '', 'NUTANIX_INTEGRATION') ?? false;
   const canIntegrateWithPlatform =
     (isPlatformIntegrationSupported &&
       !isClusterPlatformTypeVM({ platform: { type: platformType } })) ||
