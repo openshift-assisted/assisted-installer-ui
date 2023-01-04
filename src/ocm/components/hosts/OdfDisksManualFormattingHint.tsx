@@ -6,7 +6,7 @@ const Hint = () => (
     <Text component={TextVariants.p}>
       All non-installation disks will be used for local storage and must be formatted before the
       storage operator's installation. To view and format available disks, expand each host row in
-      the table
+      the table.
     </Text>
   </TextContent>
 );
