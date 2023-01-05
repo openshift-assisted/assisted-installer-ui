@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import * as React from 'react';
 import cidrTools from 'cidr-tools';
 import { NetworkFormProps, NetworkFormValues } from './types';
 import flattenDeep from 'lodash/flattenDeep';
 import xor from 'lodash/xor';
 import { Form, FormGroup, Grid, GridItem } from '@patternfly/react-core';
+import { useFormikContext } from 'formik';
 import {
   CheckboxField,
   getHumanizedSubnet,
@@ -17,9 +19,9 @@ import {
   SelectField,
   UploadSSH,
 } from '../../../../../common';
-import { useFormikContext } from 'formik';
 import { useTemptiflySync } from '../../hooks/useTemptiflySync';
 import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
+import { AgentK8sResource } from '../../../../types';
 
 import './NetworkForm.css';
 
@@ -27,16 +29,20 @@ const NetworkForm: React.FC<NetworkFormProps> = ({ agents, onValuesChanged }) =>
   const { values, setFieldValue } = useFormikContext<NetworkFormValues>();
   useTemptiflySync({ values, onValuesChanged });
 
-  const allIps = flattenDeep<string>(
-    agents
-      .filter((a) => !!a.status?.inventory.interfaces)
-      .map((a) =>
-        (a.status?.inventory.interfaces as Interface[]).map(
-          // eslint-disable-next-line
-          (i) => (i as any).ipV4Addresses as string[],
-        ),
-      ),
+  const allAgents: AgentK8sResource[] = agents.filter((a) => !!a.status?.inventory.interfaces);
+  const allInterfacesDeep: (Interface[] | undefined)[] = allAgents.map(
+    (a) => a.status?.inventory?.interfaces,
   );
+  const allInterfaces: Interface[] = flattenDeep(allInterfacesDeep).filter(Boolean) as Interface[];
+  const allIpsRaw: string[][] = allInterfaces.map((i: Interface): string[] => {
+    // @ts-ignore
+    const ipV4Addresses: string[] = (i.ipV4Addresses as string[]) || ([] as string[]);
+    // @ts-ignore
+    const ipV6Addresses: string[] = (i.ipV6Addresses as string[]) || ([] as string[]);
+    return [...ipV4Addresses, ...ipV6Addresses];
+  });
+  const allIps: string[] = flattenDeep<string>(allIpsRaw);
+
   const agentCIDRs = allIps.map((ip) => cidrTools.merge([ip][0]));
 
   const cidrToAgentsMapping = agentCIDRs.reduce((acc, curr) => {
