@@ -10,7 +10,7 @@ import {
 } from '../../../common';
 
 const CNV_OPERATOR_LABEL = 'Virtualization';
-const LVM_OPERATOR_LABEL = 'OpenShift Data Foundation Logical Volume Manager';
+const LVM_OPERATOR_LABEL = 'OpenShift Data Foundation Logical Volume Manager Storage';
 
 const isArmSupported = (versionName: string, versionOptions: OpenshiftVersionOptionType[]) => {
   const versionOption = versionOptions.find((option) => option.value === versionName);
@@ -96,7 +96,7 @@ const getLvmDisabledReason = (cluster: Cluster | undefined, isSupported: boolean
     return undefined;
   }
   if (!isSupported) {
-    return 'OpenShift Data Foundation Logical Volume Manager is enabled only for OpenShift 4.11 and above.';
+    return 'OpenShift Data Foundation Logical Volume Manager Storage is enabled only for OpenShift 4.11 and above.';
   }
   return undefined;
 };
