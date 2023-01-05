@@ -17,7 +17,7 @@ const LVM_FIELD_NAME = 'useOdfLogicalVolumeManager';
 
 const LvmLabel = (props: ClusterOperatorProps) => (
   <>
-    Install OpenShift Data Foundation Logical Volume Manager{' '}
+    Install OpenShift Data Foundation Logical Volume Manager Storage{' '}
     <PopoverIcon
       component={'a'}
       headerContent="Additional Requirements"
