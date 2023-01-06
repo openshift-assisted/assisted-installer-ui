@@ -301,7 +301,7 @@ export const operatorLabels = (t: TFunction): { [key in OperatorName]: string } 
   [OPERATOR_NAME_CVO]: t('ai:OpenShift Cluster Version Operator'),
   [OPERATOR_NAME_LSO]: t('ai:OpenShift Local Storage'),
   [OPERATOR_NAME_ODF]: t('ai:OpenShift Data Foundation'),
-  [OPERATOR_NAME_LVM]: t('ai:OpenShift Data Foundation Logical Volume Manager'),
+  [OPERATOR_NAME_LVM]: t('ai:OpenShift Data Foundation Logical Volume Manager Storage'),
   [OPERATOR_NAME_CNV]: t('ai:OpenShift Virtualization'),
 });
 
