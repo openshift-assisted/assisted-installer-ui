@@ -277,11 +277,14 @@ export const ipBlockValidationSchema = (reservedCidrs: string | string[] | undef
         return result;
       },
     )
-    .test('cidrs-can-not-overlap', 'Provided CIDRs can not overlap.', (cidr = '') => {
-      if (cidr && reservedCidrs && reservedCidrs.length > 0) {
-        return !overlap(cidr, reservedCidrs);
+    .test('cidrs-can-not-overlap', 'Provided CIDRs can not overlap.', (cidr: string) => {
+      try {
+        if (cidr && reservedCidrs && reservedCidrs.length > 0) {
+          return !overlap(cidr, reservedCidrs);
+        }
+      } catch {
+        return false;
       }
-
       // passing by default
       return true;
     });
