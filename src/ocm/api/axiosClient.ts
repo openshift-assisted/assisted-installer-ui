@@ -19,7 +19,7 @@ const getDefaultClient = () => {
   const client = axios.create();
   client.interceptors.request.use((cfg) => ({
     ...cfg,
-    url: `${process.env.REACT_APP_API_ROOT}${cfg.url}`,
+    url: `${process.env.REACT_APP_API_ROOT || ''}${cfg.url || ''}`,
   }));
   return applyCaseMiddleware(client, axiosCaseConverterOptions);
 };
@@ -30,7 +30,7 @@ let ocmClient: AxiosInstance | null;
 const aiInterceptor = (client: AxiosInstance) => {
   client.interceptors.request.use((cfg) => ({
     ...cfg,
-    url: `${BASE_PATH}${cfg.url}`,
+    url: `${BASE_PATH}${cfg.url || ''}`,
   }));
   return client;
 };
