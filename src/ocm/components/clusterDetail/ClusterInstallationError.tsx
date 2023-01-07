@@ -45,7 +45,9 @@ const ClusterInstallationError: React.FC<ClusterInstallationErrorProps> = ({
               Reset Cluster
             </AlertActionLink>
             <AlertActionLink
-              onClick={() => downloadClusterInstallationLogs(addAlert, cluster.id)}
+              onClick={() => {
+                void downloadClusterInstallationLogs(addAlert, cluster.id);
+              }}
               isDisabled={!canDownloadClusterLogs(cluster)}
               id={getID('button-download-installation-logs')}
             >
