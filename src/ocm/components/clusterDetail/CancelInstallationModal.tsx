@@ -66,7 +66,9 @@ const CancelInstallationModal: React.FC = () => {
         <Button
           key="submit"
           variant={ButtonVariant.danger}
-          onClick={handleSubmit}
+          onClick={() => {
+            void handleSubmit();
+          }}
           isDisabled={isSubmitting}
         >
           Abort Installation
