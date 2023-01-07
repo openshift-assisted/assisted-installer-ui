@@ -1,5 +1,5 @@
 import { K8sResourceCommon } from '@openshift-console/dynamic-plugin-sdk';
-import { Host, HostRole, HostStage, Inventory } from '../../../common';
+import { Host, HostRole, HostStage, Inventory, Interface } from '../../../common';
 import { ValidationsInfo } from '../../../common/types/hosts';
 import { StatusCondition } from './shared';
 
@@ -13,6 +13,15 @@ export type AgentStatusConditionType =
   | 'RequirementsMet';
 
 export type AgentStatusCondition = StatusCondition<AgentStatusConditionType>;
+
+export type CIMInterface = Omit<Interface, 'ipv6Addresses' | 'ipv4Addresses'> & {
+  ipV4Addresses: Interface['ipv4Addresses'];
+  ipV6Addresses: Interface['ipv6Addresses'];
+};
+
+export type AgentInventory = Omit<Inventory, 'interfaces'> & {
+  interfaces?: CIMInterface[];
+};
 
 export type AgentK8sResource = K8sResourceCommon & {
   spec: {
@@ -33,7 +42,7 @@ export type AgentK8sResource = K8sResourceCommon & {
   status?: {
     conditions?: AgentStatusCondition[];
     validationsInfo?: ValidationsInfo;
-    inventory: Inventory;
+    inventory: AgentInventory;
     progress?: {
       currentStage?: HostStage;
       installationPercentage?: number;
