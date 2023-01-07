@@ -23,6 +23,7 @@ import { ClusterEventsFiltersType } from '../../types';
 import { Cluster, Event, Host, Inventory, stringToJSON } from '../../api';
 import { EVENT_SEVERITIES } from '../../config';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { isSelectEventChecked } from './utils';
 
 type ClustersListToolbarProps = {
   filters: ClusterEventsFiltersType;
@@ -46,7 +47,7 @@ const mapHosts = (hosts: Cluster['hosts']) =>
     const inventory = stringToJSON<Inventory>(host.inventory) || {};
     let hostname = host.requestedHostname;
     if (inventory.hostname !== host.requestedHostname) {
-      hostname += ` (${inventory.hostname})`;
+      hostname += ` (${inventory.hostname || ''})`;
     }
     return {
       hostname,
@@ -118,9 +119,7 @@ const ClusterEventsToolbar: React.FC<ClustersListToolbarProps> = ({
 
   const onHostToggle: SelectProps['onToggle'] = () => setHostExpanded(!isHostExpanded);
   const onHostSelect: SelectProps['onSelect'] = (event, value) => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const isChecked = event.target.checked;
+    const isChecked = isSelectEventChecked(event);
 
     switch (value) {
       case SELECT_ALL:
@@ -165,9 +164,7 @@ const ClusterEventsToolbar: React.FC<ClustersListToolbarProps> = ({
 
   const onSeverityToggle: SelectProps['onToggle'] = () => setSeverityExpanded(!isSeverityExpanded);
   const onSeveritySelect: SelectProps['onSelect'] = (event, value) => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    onSelect('severity', event.target.checked, value as string);
+    onSelect('severity', isSelectEventChecked(event), value as string);
   };
 
   const onFulltextChange: TextInputProps['onChange'] = (fulltext) => {
@@ -177,9 +174,9 @@ const ClusterEventsToolbar: React.FC<ClustersListToolbarProps> = ({
     });
   };
 
-  const onDeleteChip: ToolbarFilterProps['deleteChip'] = (type, chip) => {
+  const onDeleteChip: ToolbarFilterProps['deleteChip'] = (type, chip: ToolbarChip | string) => {
     if (type) {
-      const id = chip['key'] || chip;
+      const id = (chip['key'] || chip || '') as string;
       setFilters({
         ...filters,
         [type as string]: filters[type as string].filter((v: string) => v !== id),
