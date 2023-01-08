@@ -1,0 +1,9 @@
+/* @import '~@patternfly/patternfly/patternfly-base.css'; */
+/*
+  TODO(jtomasek): use ^ but somehow fix the stylesheets order which causes some of the styles to get reset
+  This is caused by webpack because it first puts <style> tags for individual components styles and then
+  one for patternfly-base. This stylesheet includes reset which overrides components styling
+*/
+@import '@patternfly/patternfly/patternfly.css';
+@import '@patternfly/patternfly/patternfly-addons.css';
+/*@import '~openshift-assisted-ui-lib/dist/index.css'; */
