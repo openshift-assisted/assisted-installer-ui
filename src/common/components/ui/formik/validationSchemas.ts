@@ -275,10 +275,13 @@ export const ipBlockValidationSchema = (reservedCidrs: string | string[] | undef
       },
     )
     .test('cidrs-can-not-overlap', 'Provided CIDRs can not overlap.', (cidr: string) => {
-      if (cidr && reservedCidrs && reservedCidrs.length > 0) {
-        return !overlap(cidr, reservedCidrs);
+      try {
+        if (cidr && reservedCidrs && reservedCidrs.length > 0) {
+          return !overlap(cidr, reservedCidrs);
+        }
+      } catch {
+        return false;
       }
-
       // passing by default
       return true;
     });
