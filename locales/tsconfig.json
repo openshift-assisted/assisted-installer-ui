@@ -1,0 +1,9 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "noEmit": true,
+    "resolveJsonModule": true
+  },
+  "include": ["en", "ja", "ko", "zh"]
+}

@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "@openshift-assisted/locales": "link:../../locales",
+    "@patternfly/patternfly": "^4.222.4",
+    "openshift-assisted-ui-lib": "link:../../libs/assisted-ui-lib"
+  },
+  "license": "Apache-2.0",
+  "name": "assisted-ui",
+  "private": true,
+  "version": "0.0.0"
+}

@@ -1,5 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-i18next \"src/**/*.{js,jsx,ts,tsx}\" [-oc] -c ./scripts/i18next-parser.config.js;
+yarn i18next \"libs/openshift-assisted-ui-lib/src/**/*.{js,jsx,ts,tsx}\" \
+    -c scripts/i18next-parser.config.js
 
-find ./locales -type f -exec sed -i 's/": "ai:/": "/' {} \;
+find locales \
+    -type f \
+    -name "translation.json" \
+    -exec sed -i 's/": "ai:/": "/' {} \;

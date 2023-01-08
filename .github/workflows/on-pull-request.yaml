@@ -34,8 +34,8 @@ jobs:
 
       - name: Validate that i18n locale files are updated and contains 'ai' prefix in keys
         run: |
-          chmod +x ./scripts/validatei18n_files.sh
-          ./scripts/validatei18n_files.sh
+          chmod +x ./scripts/validate-i18n-files.sh
+          ./scripts/validate-i18n-files.sh
         shell: bash
 
       - name: Build code (includes tests)
