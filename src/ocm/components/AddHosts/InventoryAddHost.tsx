@@ -24,6 +24,8 @@ const InventoryAddHosts = ({ cluster }: { cluster?: Cluster }) => {
             </Day2WizardContextProvider>
           </Text>
         </TextContent>
+      </StackItem>
+      <StackItem>
         <InformationAndAlerts cluster={cluster} />
       </StackItem>
       {showArmOnlyAlert && (

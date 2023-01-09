@@ -15,8 +15,8 @@ import {
 import HostInventory from '../clusterConfiguration/HostInventory';
 import { useClusterWizardContext } from './ClusterWizardContext';
 import { canNextHostDiscovery } from './wizardTransition';
-import { getApiErrorMessage, handleApiError } from '../../api';
-import { updateCluster } from '../../reducers/clusters';
+import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../api';
+import { setServerUpdateError, updateCluster } from '../../reducers/clusters';
 import ClusterWizardFooter from './ClusterWizardFooter';
 import ClusterWizardNavigation from './ClusterWizardNavigation';
 import { ClustersService, HostDiscoveryService } from '../../services';
@@ -45,6 +45,7 @@ const HostDiscoveryForm = ({ cluster }: { cluster: Cluster }) => {
       isNextDisabled={isNextDisabled}
       onNext={() => clusterWizardContext.moveNext()}
       onBack={() => clusterWizardContext.moveBack()}
+      isBackDisabled={isSubmitting || isAutoSaveRunning}
     />
   );
 
@@ -91,6 +92,9 @@ const HostDiscovery = ({ cluster }: { cluster: Cluster }) => {
       handleApiError(e, () =>
         addAlert({ title: 'Failed to update the cluster', message: getApiErrorMessage(e) }),
       );
+      if (isUnknownServerError(e as Error)) {
+        dispatch(setServerUpdateError());
+      }
     }
   };
 

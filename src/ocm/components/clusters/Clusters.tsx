@@ -33,7 +33,7 @@ import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 type ClustersProps = RouteComponentProps;
 
 const Clusters: React.FC<ClustersProps> = ({ history }) => {
-  const { LOADING, EMPTY, ERROR, RELOADING } = ResourceUIState;
+  const { LOADING, EMPTY, POLLING_ERROR, RELOADING } = ResourceUIState;
   const { addAlert } = useAlerts();
   const { t } = useTranslation();
   const clusterRows = useSelector(selectClusterTableRows(t));
@@ -72,7 +72,7 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
           <LoadingState />
         </PageSection>
       );
-    case ERROR:
+    case POLLING_ERROR:
       return (
         <PageSection variant={PageSectionVariants.light} isFilled>
           <ErrorState title="Failed to fetch clusters." fetchData={fetchClusters} />

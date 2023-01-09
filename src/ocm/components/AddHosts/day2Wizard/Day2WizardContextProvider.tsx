@@ -37,6 +37,7 @@ const Day2WizardContextProvider = ({
     CpuArchitecture.x86,
   );
   const [selectedIsoUrl, setSelectedIsoUrl] = React.useState<string>('');
+  const [selectedIpxeUrl, setSelectedIpxeUrl] = React.useState<string>('');
   const [wizardStepIds, setWizardStepIds] = React.useState<Day2WizardStepsType[]>(
     getWizardStepIds(),
   );
@@ -85,8 +86,10 @@ const Day2WizardContextProvider = ({
       setSelectedIsoUrl,
       selectedCpuArchitecture,
       setSelectedCpuArchitecture,
+      selectedIpxeUrl,
+      setSelectedIpxeUrl,
     };
-  }, [wizardStepIds, currentStepId, selectedIsoUrl, selectedCpuArchitecture]);
+  }, [wizardStepIds, currentStepId, selectedIsoUrl, selectedCpuArchitecture, selectedIpxeUrl]);
 
   if (!contextValue) {
     return null;

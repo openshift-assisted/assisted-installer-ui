@@ -19,8 +19,8 @@ import ClusterWizardFooter from '../clusterWizard/ClusterWizardFooter';
 import ClusterWizardNavigation from '../clusterWizard/ClusterWizardNavigation';
 import { OperatorsStep } from './OperatorsStep';
 import { ClustersService, OperatorsService } from '../../services';
-import { updateCluster } from '../../reducers/clusters';
-import { handleApiError } from '../../api';
+import { setServerUpdateError, updateCluster } from '../../reducers/clusters';
+import { handleApiError, isUnknownServerError } from '../../api';
 import { canNextOperators } from './wizardTransition';
 import { getErrorMessage } from '../../../common/utils';
 import { useHistory, useLocation } from 'react-router-dom';
@@ -68,6 +68,7 @@ const OperatorsForm = ({ cluster }: { cluster: Cluster }) => {
           isNextDisabled={isNextDisabled}
           onNext={handleNext}
           onBack={() => clusterWizardContext.moveBack()}
+          isBackDisabled={isSubmitting || isAutoSaveRunning}
         />
       }
     >
@@ -114,6 +115,9 @@ const Operators = ({ cluster }: { cluster: Cluster }) => {
       handleApiError(e, () =>
         addAlert({ title: 'Failed to update the cluster', message: getErrorMessage(e) }),
       );
+      if (isUnknownServerError(e as Error)) {
+        dispatch(setServerUpdateError());
+      }
     }
   };
 

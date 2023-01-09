@@ -37,7 +37,7 @@
     "prepare": "install-peers",
     "test": "run-s test:circular lint format:check",
     "test:circular": "dpdm --warning false --tree false --exit-code circular:1 ./src/index.ts",
-    "lint": "eslint . --max-warnings=240 --color",
+    "lint": "eslint . --max-warnings=195 --color",
     "lint:fix": "yarn run lint --fix",
     "format": "prettier --write '**/*.{json,md,scss,yaml,yml}'",
     "format:check": "prettier --check '**/*.{json,md,scss,yaml,yml}'",
@@ -53,7 +53,7 @@
     "@patternfly/react-tokens": "^4.58.2",
     "@reduxjs/toolkit": "^1.5",
     "@sentry/browser": "^5.9 || ^6.0",
-    "axios": ">=0.19.2 <1.0.0",
+    "axios": ">=0.23.0 <1.0.0",
     "i18next": "^20.4.0 || ^21.0",
     "i18next-browser-languagedetector": "^6.1.2",
     "i18next-parser": "^3.3.0",
@@ -73,7 +73,7 @@
     "yup": "^0.28.3"
   },
   "dependencies": {
-    "axios-case-converter": "^0.8.1",
+    "axios-case-converter": "^0.11.1",
     "cidr-tools": "^4.3.0",
     "classnames": "^2.3.1",
     "eslint-plugin-import": "^2.26.0",

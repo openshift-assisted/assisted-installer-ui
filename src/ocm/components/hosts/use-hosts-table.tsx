@@ -13,13 +13,19 @@ import {
   getInventory,
   MassDeleteHostModal,
   isSNO,
+  ResourceUIState,
 } from '../../../common';
 import {
   AdditionalNTPSourcesDialog,
   AdditionalNTPSourcesFormProps,
 } from '../../../common/components/hosts/AdditionalNTPSourcesDialog';
-import { getApiErrorMessage, handleApiError } from '../../api';
-import { forceReload, updateCluster, updateHost } from '../../reducers/clusters';
+import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../api';
+import {
+  forceReload,
+  setServerUpdateError,
+  updateCluster,
+  updateHost,
+} from '../../reducers/clusters';
 import { useModalDialogsContext } from './ModalDialogsContext';
 import { downloadHostInstallationLogs, onAdditionalNtpSourceAction } from './utils';
 import {
@@ -47,7 +53,7 @@ import { UpdateDay2ApiVipFormProps } from './UpdateDay2ApiVipForm';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { getErrorMessage } from '../../../common/utils';
-import { selectCurrentClusterPermissionsState } from '../../selectors';
+import { selectCurrentClusterPermissionsState, selectCurrentClusterState } from '../../selectors';
 import { hardwareStatusColumn } from './HardwareStatus';
 
 export const useHostsTable = (cluster: Cluster) => {
@@ -143,6 +149,9 @@ export const useHostsTable = (cluster: Cluster) => {
         handleApiError(e, () =>
           addAlert({ title: 'Failed to set disk role', message: getApiErrorMessage(e) }),
         );
+        if (isUnknownServerError(e as Error)) {
+          dispatch(setServerUpdateError());
+        }
       }
     },
     [dispatch, resetCluster, addAlert, cluster.hosts],
@@ -162,6 +171,9 @@ export const useHostsTable = (cluster: Cluster) => {
         handleApiError(e, () =>
           addAlert({ title: 'Failed to update ODF status', message: getErrorMessage(e) }),
         );
+        if (isUnknownServerError(e as Error)) {
+          dispatch(setServerUpdateError());
+        }
       }
     },
     [cluster.hosts, resetCluster, dispatch, addAlert],
@@ -176,6 +188,9 @@ export const useHostsTable = (cluster: Cluster) => {
         dispatch(updateCluster(data));
       } catch (e) {
         handleApiError(e, () => onError(getApiErrorMessage(e)));
+        if (isUnknownServerError(e as Error)) {
+          dispatch(setServerUpdateError());
+        }
       }
     },
     [cluster.id, cluster.tags, dispatch],
@@ -217,6 +232,9 @@ export const useHostsTable = (cluster: Cluster) => {
             message: getApiErrorMessage(e),
           }),
         );
+        if (isUnknownServerError(e as Error)) {
+          dispatch(setServerUpdateError());
+        }
       }
     },
     [dispatch, addAlert, cluster, resetCluster],
@@ -301,6 +319,9 @@ export const useHostsTable = (cluster: Cluster) => {
         handleApiError(e, () =>
           addAlert({ title: 'Failed to set role', message: getApiErrorMessage(e) }),
         );
+        if (isUnknownServerError(e as Error)) {
+          dispatch(setServerUpdateError());
+        }
       }
     },
     [addAlert, dispatch, resetCluster],
@@ -349,16 +370,21 @@ export const useHostsTable = (cluster: Cluster) => {
       const host = cluster.hosts?.find((host) => host.id === selectedHostIDs[0]);
       return host && onEditHost(host);
     }
-    return massUpdateHostnameDialog.open({ hostIDs: selectedHostIDs, cluster });
-  }, [selectedHostIDs, massUpdateHostnameDialog, cluster, onEditHost]);
+    return massUpdateHostnameDialog.open({
+      hostIDs: selectedHostIDs,
+      cluster,
+      reloadCluster: () => (resetCluster ? void resetCluster() : dispatch(forceReload())),
+    });
+  }, [selectedHostIDs, massUpdateHostnameDialog, cluster, onEditHost, resetCluster, dispatch]);
 
   const onMassDeleteHost = React.useCallback(
     () =>
       massDeleteHostDialog.open({
         hosts: (cluster.hosts || []).filter((h) => selectedHostIDs.includes(h.id)),
         onDelete: (host) => HostsService.delete(host),
+        reloadCluster: () => (resetCluster ? void resetCluster() : dispatch(forceReload())),
       }),
-    [cluster.hosts, selectedHostIDs, massDeleteHostDialog],
+    [massDeleteHostDialog, cluster.hosts, selectedHostIDs, resetCluster, dispatch],
   );
 
   return {
@@ -391,15 +417,17 @@ type HostsTableModalsProps = {
   onUpdateDay2ApiVip: UpdateDay2ApiVipFormProps['onUpdateDay2ApiVip'];
 };
 
-export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
+export const HostsTableModals = ({
   cluster,
   onDelete,
   onReset,
   onAdditionalNtpSource,
   onUpdateDay2ApiVip,
-}) => {
+}: HostsTableModalsProps) => {
   const dispatch = useDispatch();
   const { resetCluster } = React.useContext(AddHostsContext);
+  const { uiState } = useSelector(selectCurrentClusterState);
+
   const { t } = useTranslation();
   const {
     eventsDialog,
@@ -417,6 +445,11 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
     [t],
   );
   const paginationProps = usePagination(massDeleteHostDialog.data?.hosts?.length || 0);
+
+  if (uiState === ResourceUIState.UPDATE_ERROR) {
+    // Do not show a modal beneath the ServerUpdateError
+    return null;
+  }
 
   return (
     <>
@@ -470,9 +503,14 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
             resetCluster ? void resetCluster() : dispatch(updateHost(data));
             editHostDialog.close();
           }}
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          onFormSaveError={(e: any) => {
-            let message;
+          onHostSaveError={(e: Error) => {
+            if (isUnknownServerError(e)) {
+              dispatch(setServerUpdateError());
+              editHostDialog.close();
+            }
+          }}
+          getEditErrorMessage={(e: Error) => {
+            let message = '';
             handleApiError(e, () => (message = getApiErrorMessage(e)));
             return message;
           }}
@@ -503,7 +541,14 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
           hosts={massUpdateHostnameDialog.data?.cluster?.hosts || []}
           selectedHostIDs={massUpdateHostnameDialog.data?.hostIDs || []}
           onChangeHostname={(host, hostname) => HostsService.updateHostName(host, hostname)}
+          onHostSaveError={(e: Error) => {
+            if (isUnknownServerError(e)) {
+              dispatch(setServerUpdateError());
+              editHostDialog.close();
+            }
+          }}
           canChangeHostname={() => [true, undefined]}
+          reloadCluster={massUpdateHostnameDialog.data?.reloadCluster}
         />
       )}
       {massDeleteHostDialog.isOpen && (
@@ -512,6 +557,7 @@ export const HostsTableModals: React.FC<HostsTableModalsProps> = ({
           onClose={massDeleteHostDialog.close}
           hosts={massDeleteHostDialog.data?.hosts || []}
           onDelete={massDeleteHostDialog.data?.onDelete}
+          reloadCluster={massDeleteHostDialog.data?.reloadCluster}
         >
           <HostsTable
             hosts={massDeleteHostDialog.data?.hosts || []}

@@ -36,8 +36,9 @@ import {
 import NetworkConfiguration from './NetworkConfiguration';
 import { captureException } from '../../../sentry';
 import { ClustersService } from '../../../services';
-import { updateClusterBase } from '../../../reducers/clusters';
-import { getApiErrorMessage, handleApiError } from '../../../api';
+import { setServerUpdateError, updateClusterBase } from '../../../reducers/clusters';
+import { isUnknownServerError, getApiErrorMessage, handleApiError } from '../../../api';
+import { useClusterSupportedPlatforms } from '../../../hooks';
 
 const NetworkConfigurationForm: React.FC<{
   cluster: Cluster;
@@ -58,19 +59,20 @@ const NetworkConfigurationForm: React.FC<{
     useFormikContext<NetworkConfigurationValues>();
   const isAutoSaveRunning = useFormikAutoSave();
   const errorFields = getFormikErrorFields(errors, touched);
+  const { supportedPlatformIntegration } = useClusterSupportedPlatforms(cluster.id);
 
-  // DHCP allocation is currently not supported with Nutanix
+  // DHCP allocation is currently not supported for Nutanix hosts
   // https://issues.redhat.com/browse/MGMT-12382
-  const isClusterPlatformTypeNutanix = React.useMemo(
-    () => cluster.platform?.type === 'nutanix',
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
+  const isHostsPlatformTypeNutanix = React.useMemo(
+    () => supportedPlatformIntegration === 'nutanix',
+    [supportedPlatformIntegration],
   );
+
   React.useEffect(() => {
-    if (isClusterPlatformTypeNutanix && values.vipDhcpAllocation) {
+    if (isHostsPlatformTypeNutanix && values.vipDhcpAllocation) {
       setFieldValue('vipDhcpAllocation', false);
     }
-  }, [isClusterPlatformTypeNutanix, setFieldValue, values.vipDhcpAllocation]);
+  }, [isHostsPlatformTypeNutanix, setFieldValue, values.vipDhcpAllocation]);
 
   const footer = (
     <ClusterWizardFooter
@@ -86,6 +88,7 @@ const NetworkConfigurationForm: React.FC<{
       }
       onNext={() => clusterWizardContext.moveNext()}
       onBack={() => clusterWizardContext.moveBack()}
+      isBackDisabled={isSubmitting || isAutoSaveRunning}
     />
   );
 
@@ -102,7 +105,7 @@ const NetworkConfigurationForm: React.FC<{
                 cluster={cluster}
                 hostSubnets={hostSubnets}
                 defaultNetworkSettings={defaultNetworkSettings}
-                isVipDhcpAllocationDisabled={isClusterPlatformTypeNutanix}
+                isVipDhcpAllocationDisabled={isHostsPlatformTypeNutanix}
               />
               <SecurityFields
                 clusterSshKey={cluster.sshPublicKey}
@@ -140,7 +143,7 @@ const NetworkConfigurationPage = ({ cluster }: { cluster: Cluster }) => {
   const dispatch = useDispatch();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
 
-  const hostSubnets = React.useMemo(() => getHostSubnets(cluster), [cluster]);
+  const hostSubnets = React.useMemo(() => getHostSubnets(cluster, true), [cluster]);
   const initialValues = React.useMemo(
     () => getNetworkInitialValues(cluster, defaultNetworkValues),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -211,6 +214,9 @@ const NetworkConfigurationPage = ({ cluster }: { cluster: Cluster }) => {
       handleApiError(e, () =>
         addAlert({ title: 'Failed to update the cluster', message: getApiErrorMessage(e) }),
       );
+      if (isUnknownServerError(e as Error)) {
+        dispatch(setServerUpdateError());
+      }
     }
   };
 

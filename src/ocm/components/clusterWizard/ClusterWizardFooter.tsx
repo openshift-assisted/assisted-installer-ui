@@ -52,6 +52,7 @@ const ValidationSection = ({
         <ClusterPlatformIntegrationHint
           clusterId={cluster.id}
           platformType={cluster.platform?.type || 'none'}
+          openshiftVersion={cluster.openshiftVersion || ''}
         />
       )}
 

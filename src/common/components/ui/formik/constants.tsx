@@ -3,28 +3,27 @@ import { TFunction } from 'i18next';
 export const clusterNameValidationMessages = (t: TFunction) => ({
   INVALID_LENGTH_OCM: t('ai:1-54 characters'),
   INVALID_LENGTH_ACM: t('ai:2-54 characters'),
-  INVALID_VALUE_OCM: nameValidationMessages(t).INVALID_VALUE,
-  INVALID_VALUE_ACM: t('ai:Use lowercase alphanumeric characters or hyphen (-)'),
+  INVALID_VALUE: t('ai:Use lowercase alphanumeric characters or hyphen (-)'),
   INVALID_START_END: t('ai:Start and end with a lowercase letter or a number.'),
   NOT_UNIQUE: t('ai:Must be unique'),
 });
 
 export const ocmClusterNameValidationMessages = (t: TFunction) => ({
   INVALID_LENGTH: clusterNameValidationMessages(t).INVALID_LENGTH_OCM,
-  INVALID_VALUE: clusterNameValidationMessages(t).INVALID_VALUE_OCM,
+  INVALID_VALUE: clusterNameValidationMessages(t).INVALID_VALUE,
   INVALID_START_END: clusterNameValidationMessages(t).INVALID_START_END,
 });
 
 export const uniqueOcmClusterNameValidationMessages = (t: TFunction) => ({
   INVALID_LENGTH: clusterNameValidationMessages(t).INVALID_LENGTH_OCM,
-  INVALID_VALUE: clusterNameValidationMessages(t).INVALID_VALUE_OCM,
+  INVALID_VALUE: clusterNameValidationMessages(t).INVALID_VALUE,
   INVALID_START_END: clusterNameValidationMessages(t).INVALID_START_END,
   NOT_UNIQUE: clusterNameValidationMessages(t).NOT_UNIQUE,
 });
 
 export const acmClusterNameValidationMessages = (t: TFunction) => ({
   INVALID_LENGTH: clusterNameValidationMessages(t).INVALID_LENGTH_ACM,
-  INVALID_VALUE: clusterNameValidationMessages(t).INVALID_VALUE_ACM,
+  INVALID_VALUE: clusterNameValidationMessages(t).INVALID_VALUE,
   INVALID_START_END: clusterNameValidationMessages(t).INVALID_START_END,
   NOT_UNIQUE: clusterNameValidationMessages(t).NOT_UNIQUE,
 });

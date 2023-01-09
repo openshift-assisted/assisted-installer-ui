@@ -59,8 +59,14 @@ export const getNetworkConfigurationValidationSchema = (
 ) =>
   Yup.lazy<NetworkConfigurationValues>((values) =>
     Yup.object<NetworkConfigurationValues>().shape({
-      apiVip: vipValidationSchema(hostSubnets, values, initialValues.apiVip),
-      ingressVip: vipValidationSchema(hostSubnets, values, initialValues.ingressVip),
+      apiVip:
+        values.apiVip !== undefined && values.apiVip !== ''
+          ? vipValidationSchema(hostSubnets, values, initialValues.apiVip)
+          : Yup.string(),
+      ingressVip:
+        values.ingressVip !== undefined && values.ingressVip !== ''
+          ? vipValidationSchema(hostSubnets, values, initialValues.ingressVip)
+          : Yup.string(),
       sshPublicKey: sshPublicKeyValidationSchema,
       machineNetworks:
         values.managedNetworkingType === 'userManaged'

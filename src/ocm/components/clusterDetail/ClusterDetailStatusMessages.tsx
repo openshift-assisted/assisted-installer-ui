@@ -8,15 +8,16 @@ import {
   useFeatureSupportLevel,
   isSNO,
   isClusterPlatformTypeVM,
+  SupportedPlatformType,
+  Cluster,
 } from '../../../common';
-import { Cluster } from '../../../common/api/types';
 import { getClusterDetailId } from './utils';
 
 import { useDefaultConfiguration } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
-import { VSPHERE_CONFIG_LINK } from '../../../common/config/constants';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { calculateClusterDateDiff } from '../../../common/sevices/DateAndTime';
 import { ocmClient } from '../../api';
+import { integrationPlatformLinks } from '../clusterWizard/ClusterPlatformIntegrationHint';
 
 type ClusterDetailStatusMessagesProps = {
   cluster: Cluster;
@@ -47,6 +48,11 @@ const ClusterDetailStatusMessages = ({
 
   const showKubeConfigDownload =
     showKubeConfig && dateDifference > 0 && canDownloadKubeconfig(cluster.status);
+
+  const platformLink = isClusterPlatformTypeVM(cluster)
+    ? integrationPlatformLinks[cluster.platform?.type as SupportedPlatformType]
+    : '';
+
   return (
     <>
       <RenderIf condition={showKubeConfigDownload}>
@@ -92,7 +98,7 @@ const ClusterDetailStatusMessages = ({
           }
         />
       </RenderIf>
-      <RenderIf condition={isClusterPlatformTypeVM(cluster)}>
+      <RenderIf condition={!!platformLink}>
         <Alert
           variant="warning"
           isInline
@@ -101,7 +107,7 @@ const ClusterDetailStatusMessages = ({
             <p>
               Modify your platform configuration to access your platform's features directly in
               OpenShift.{' '}
-              <a href={VSPHERE_CONFIG_LINK} target="_blank" rel="noopener noreferrer">
+              <a href={platformLink} target="_blank" rel="noopener noreferrer">
                 Learn more about configuration <i className="fas fa-external-link-alt" />
               </a>
             </p>

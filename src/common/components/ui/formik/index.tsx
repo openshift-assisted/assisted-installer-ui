@@ -18,6 +18,7 @@ export { default as AdditionalNTPSourcesField } from './AdditionalNTPSourcesFiel
 export { default as RemovableField } from './RemovableField';
 export { default as AddButton } from './AddButton';
 export { default as PencilEditField } from './PencilEditField';
+export { default as AlertFormikError } from './AlertFormikError';
 
 export * from './utils';
 export * from './PullSecretField';

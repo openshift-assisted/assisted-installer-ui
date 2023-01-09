@@ -37,7 +37,7 @@ type ClusterPropertiesProps = {
   externalMode?: boolean;
 };
 
-const getNetworkType = (clusterNetworkType: Cluster['networkType']): string => {
+export const getNetworkType = (clusterNetworkType: Cluster['networkType']): string => {
   let networkType: string;
   clusterNetworkType === NETWORK_TYPE_SDN
     ? (networkType = 'Software-Defined Networking (SDN)')
@@ -45,15 +45,18 @@ const getNetworkType = (clusterNetworkType: Cluster['networkType']): string => {
   return networkType;
 };
 
-const getManagementType = (isUserManagementType: boolean | undefined): string => {
+export const getManagementType = ({ userManagedNetworking }: Cluster): string => {
   let managementType: string;
-  isUserManagementType
+  userManagedNetworking
     ? (managementType = 'User-Managed Networking')
     : (managementType = 'Cluster-managed networking');
   return managementType;
 };
 
-const getDiskEncryptionEnabledOnStatus = (diskEncryption: DiskEncryption['enableOn']) => {
+export const getStackTypeLabel = (cluster: Cluster): string =>
+  isDualStack(cluster) ? 'Dual-stack' : 'IPv4';
+
+export const getDiskEncryptionEnabledOnStatus = (diskEncryption: DiskEncryption['enableOn']) => {
   let diskEncryptionType = null;
   switch (diskEncryption) {
     case 'all':
@@ -103,7 +106,11 @@ const ClusterProperties = ({ cluster, externalMode = false }: ClusterPropertiesP
           <DetailItem title="Base domain" value={cluster.baseDnsDomain} testId="base-dns-domain" />
           <DetailItem
             title={<CpuArchTitle isMultiArchSupported={isMultiArchSupported} />}
-            value={cluster.cpuArchitecture}
+            value={
+              cluster.cpuArchitecture === 'multi'
+                ? 'Multiple CPU architectures'
+                : cluster.cpuArchitecture
+            }
             testId="cpu-architecture"
           />
           <DetailItem
@@ -120,7 +127,7 @@ const ClusterProperties = ({ cluster, externalMode = false }: ClusterPropertiesP
           />
           <DetailItem
             title="Network management type"
-            value={getManagementType(cluster.userManagedNetworking)}
+            value={getManagementType(cluster)}
             testId="network-management-type"
           />
           <DetailItem

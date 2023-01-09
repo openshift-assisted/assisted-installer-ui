@@ -72,7 +72,10 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
         <StackItem>
           <Split hasGutter>
             <SplitItem>
-              <PlatformIntegration clusterId={cluster.id} />
+              <PlatformIntegration
+                clusterId={cluster.id}
+                openshiftVersion={cluster.openshiftVersion}
+              />
             </SplitItem>
           </Split>
         </StackItem>

@@ -97,11 +97,20 @@ const patchAssistedImageServiceRoute = async (
   domain: string,
 ): Promise<boolean> => {
   const newHost = `${ASSISTED_IMAGE_SERVICE_ROUTE_PREFIX}.nlb-apps.${domain}`;
+
+  const labels = assistedImageServiceRoute.metadata?.labels || {};
+  labels['router-type'] = 'nlb';
+
   const patches: ResourcePatch[] = [
     {
       op: 'replace',
       path: '/spec/host',
       value: newHost,
+    },
+    {
+      op: assistedImageServiceRoute.metadata?.labels ? 'replace' : 'add',
+      path: '/metadata/labels',
+      value: labels,
     },
   ];
 
@@ -142,7 +151,7 @@ const createIngressController = async (
 
   domain: string,
 ): Promise<boolean> => {
-  // Assumption: the IngressController reource is not present - ensured at higher level
+  // Assumption: the IngressController resource is not present - ensured at higher level
 
   const ingressController = {
     apiVersion: 'operator.openshift.io/v1',
@@ -184,57 +193,6 @@ const createIngressController = async (
   }
 
   return false;
-};
-
-const patchAssistedImageService = async (
-  t: TFunction,
-  setError: SetErrorFuncType,
-  getResource: GetResourceFuncType,
-  patchResource: PatchResourceFuncType,
-  mceNamespace: string,
-): Promise<boolean> => {
-  // The service should be already present
-  let assistedImageService: AgentServiceConfigK8sResource;
-
-  try {
-    assistedImageService = (await getResource({
-      kind: 'Service',
-      apiVersion: 'v1',
-      metadata: {
-        name: 'assisted-image-service',
-        namespace: mceNamespace,
-      },
-    })) as AgentServiceConfigK8sResource;
-  } catch (e) {
-    console.error('Error fetching assisted-image-service: ', e);
-    setError({
-      title: t('ai:Failed to patch assisted-image-service'),
-    });
-
-    return false;
-  }
-
-  const labels = assistedImageService.metadata?.labels || {};
-  labels['router-type'] = 'nlb';
-  const patches: ResourcePatch[] = [
-    {
-      op: assistedImageService.metadata?.labels ? 'replace' : 'add',
-      path: '/metadata/labels',
-      value: labels,
-    },
-  ];
-
-  try {
-    await patchResource(convertOCPtoCIMResourceHeader(assistedImageService), patches);
-  } catch (e) {
-    console.error('Failed to patch assisted-image-service: ', e, patches);
-    setError({
-      title: t('ai:Failed to patch assisted-image-service'),
-    });
-    return false;
-  }
-
-  return true;
 };
 
 const patchProvisioningConfiguration = async ({
@@ -280,17 +238,17 @@ const createAgentServiceConfig = async ({
   t,
   setError,
   createResource,
-  dbVolSizeGB,
-  fsVolSizeGB,
-  imgVolSizeGB,
+  dbVolSizeGiB,
+  fsVolSizeGiB,
+  imgVolSizeGiB,
 }: {
   t: TFunction;
   setError: SetErrorFuncType;
   createResource: CreateResourceFuncType;
 
-  dbVolSizeGB: number;
-  fsVolSizeGB: number;
-  imgVolSizeGB: number;
+  dbVolSizeGiB: number;
+  fsVolSizeGiB: number;
+  imgVolSizeGiB: number;
 }): Promise<boolean> => {
   try {
     const agentServiceConfig = {
@@ -304,7 +262,7 @@ const createAgentServiceConfig = async ({
           accessModes: ['ReadWriteOnce'],
           resources: {
             requests: {
-              storage: `${dbVolSizeGB}G`,
+              storage: `${dbVolSizeGiB}Gi`,
             },
           },
         },
@@ -312,7 +270,7 @@ const createAgentServiceConfig = async ({
           accessModes: ['ReadWriteOnce'],
           resources: {
             requests: {
-              storage: `${fsVolSizeGB}G`,
+              storage: `${fsVolSizeGiB}Gi`,
             },
           },
         },
@@ -320,7 +278,7 @@ const createAgentServiceConfig = async ({
           accessModes: ['ReadWriteOnce'],
           resources: {
             requests: {
-              storage: `${imgVolSizeGB}G`,
+              storage: `${imgVolSizeGiB}Gi`,
             },
           },
         },
@@ -403,9 +361,9 @@ export const onEnableCIM = async ({
   agentServiceConfig,
   platform,
 
-  dbVolSize,
-  fsVolSize,
-  imgVolSize,
+  dbVolSizeGiB,
+  fsVolSizeGiB,
+  imgVolSizeGiB,
 
   configureLoadBalancer,
 }: {
@@ -419,9 +377,9 @@ export const onEnableCIM = async ({
   agentServiceConfig?: AgentServiceConfigK8sResource;
   platform: string;
 
-  dbVolSize: number;
-  fsVolSize: number;
-  imgVolSize: number;
+  dbVolSizeGiB: number;
+  fsVolSizeGiB: number;
+  imgVolSizeGiB: number;
 
   configureLoadBalancer: boolean;
 }) => {
@@ -439,9 +397,9 @@ export const onEnableCIM = async ({
         t,
         setError,
         createResource,
-        dbVolSizeGB: dbVolSize,
-        fsVolSizeGB: fsVolSize,
-        imgVolSizeGB: imgVolSize,
+        dbVolSizeGiB,
+        fsVolSizeGiB,
+        imgVolSizeGiB,
       }))
     ) {
       return false;
@@ -472,25 +430,17 @@ export const onEnableCIM = async ({
       return false;
     }
 
-    if (await createIngressController(t, setError, createResource, domain)) {
-      if (
-        !(await patchAssistedImageService(
-          t,
-          setError,
-          getResource,
-          patchResource,
-          assistedImageServiceRoute.metadata?.namespace || '',
-        )) ||
-        !(await patchAssistedImageServiceRoute(
-          t,
-          setError,
-          patchResource,
-          assistedImageServiceRoute,
-          domain,
-        ))
-      ) {
-        return false;
-      }
+    if (
+      !(await createIngressController(t, setError, createResource, domain)) ||
+      !(await patchAssistedImageServiceRoute(
+        t,
+        setError,
+        patchResource,
+        assistedImageServiceRoute,
+        domain,
+      ))
+    ) {
+      return false;
     }
   }
 

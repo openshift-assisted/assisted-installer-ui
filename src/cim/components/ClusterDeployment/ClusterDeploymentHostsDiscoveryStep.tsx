@@ -26,7 +26,6 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
   onSetInstallationDiskId,
   onSaveBMH,
   onSaveISOParams,
-  onFormSaveError,
   fetchSecret,
   onChangeBMHHostname,
   onApproveAgent,
@@ -162,7 +161,6 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
             onSetInstallationDiskId={onSetInstallationDiskId}
             onSaveBMH={onSaveBMH}
             onSaveISOParams={onSaveISOParams}
-            onFormSaveError={onFormSaveError}
             fetchSecret={fetchSecret}
             onChangeBMHHostname={onChangeBMHHostname}
             onApproveAgent={onApproveAgent}

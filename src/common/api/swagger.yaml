@@ -5916,6 +5916,7 @@ definitions:
       - 'belongs-to-majority-group'
       - 'valid-platform-network-settings'
       - 'ntp-synced'
+      - 'time-synced-between-host-and-service'
       - 'container-images-available'
       - 'lso-requirements-satisfied'
       - 'ocs-requirements-satisfied'
@@ -5937,7 +5938,7 @@ definitions:
       - 'compatible-agent'
       - 'no-skip-installation-disk'
       - 'no-skip-missing-disk'
-      - 'service-has-sufficient-spoke-kube-api-access'
+      - 'no-ip-collisions-in-network'
 
   dhcp_allocation_request:
     type: object
@@ -6242,9 +6243,13 @@ definitions:
       - 'networks-same-address-families'
       - 'network-prefix-valid'
       - 'machine-cidr-equals-to-calculated-cidr'
+      - 'api-vips-defined'
       - 'api-vip-defined'
+      - 'api-vips-valid'
       - 'api-vip-valid'
+      - 'ingress-vips-defined'
       - 'ingress-vip-defined'
+      - 'ingress-vips-valid'
       - 'ingress-vip-valid'
       - 'all-hosts-are-ready-to-install'
       - 'sufficient-masters-count'
@@ -6568,7 +6573,14 @@ definitions:
         x-nullable: false
         default: 'x86_64'
         description: The CPU architecture of the image (x86_64/arm64/etc).
-
+      additional_trust_bundle:
+        type: string
+        x-nullable: false
+        description: |-
+          PEM-encoded X.509 certificate bundle. Hosts discovered by this
+          infra-env will trust the certificates in this bundle. Clusters formed
+          from the hosts discovered by this infra-env will also trust the
+          certificates in this bundle.
   proxy:
     type: object
     x-go-custom-tag: gorm:"embedded;embeddedPrefix:proxy_"
@@ -6648,7 +6660,14 @@ definitions:
         x-nullable: false
         default: 'x86_64'
         description: The CPU architecture of the image (x86_64/arm64/etc).
-
+      additional_trust_bundle:
+        type: string
+        x-nullable: false
+        description: |-
+          PEM-encoded X.509 certificate bundle. Hosts discovered by this
+          infra-env will trust the certificates in this bundle. Clusters formed
+          from the hosts discovered by this infra-env will also trust the
+          certificates in this bundle.
   infra-env-update-params:
     type: object
     properties:
@@ -6678,6 +6697,10 @@ definitions:
         type: string
         description:
           JSON formatted string containing the user overrides for the initial ignition config.
+      additional_trust_bundle:
+        type: string
+        description: Allows users to change the additional_trust_bundle infra-env field
+        x-nullable: true
 
   subnet:
     type: string

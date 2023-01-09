@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as Yup from 'yup';
+import { TFunction } from 'i18next';
 import {
   Alert,
   Button,
@@ -19,9 +20,10 @@ import { getWarningMessage } from './utils';
 import { getErrorMessage } from '../../../common/utils';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
-const validationSchema = Yup.object({
-  pullSecret: pullSecretValidationSchema.required('Pull secret is a required field.'),
-});
+const validationSchema = (t: TFunction) =>
+  Yup.object({
+    pullSecret: pullSecretValidationSchema.required(t('ai:Pull secret is a required field.')),
+  });
 
 type EditPullSecretFormProps = {
   onClose: VoidFunction;

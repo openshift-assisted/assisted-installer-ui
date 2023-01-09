@@ -26,10 +26,10 @@ import { clusterValidationLabels, hostValidationLabels } from '../../config';
 import { getEnabledHosts } from '../hosts';
 import { findValidationFixStep } from './validationsInfoUtils';
 import {
-  HostsValidationsFC,
-  ClusterValidationsFC,
-  FailingValidationsFC,
-  ValidationActionLinkFC,
+  ClusterValidationsProps,
+  FailingValidationsProps,
+  HostsValidationsProps,
+  ValidationActionLinkProps,
 } from './types';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { Trans } from 'react-i18next';
@@ -43,22 +43,22 @@ const AllValidationsPassed = () => {
   );
 };
 
-const PendingValidations: React.FC<{ id: string; count: number }> = ({ id, count }) => {
+const PendingValidations = ({ id, count }: { id: string; count: number }) => {
   const { t } = useTranslation();
   return <div id={id}>{t('ai:There is still {{count}} pending validation', { count: count })}</div>;
 };
 
-const ValidationActionLink: ValidationActionLinkFC = ({
+const ValidationActionLink = <S extends string>({
   step,
   setCurrentStepId,
   wizardStepNames,
-}) => (
+}: ValidationActionLinkProps<S>) => (
   <Button variant={ButtonVariant.link} onClick={() => setCurrentStepId(step)} isInline>
     {wizardStepNames[step]}
   </Button>
 );
 
-const FailingValidation: FailingValidationsFC = ({
+const FailingValidation = <S extends string>({
   validation,
   clusterGroup,
   hostGroup,
@@ -66,19 +66,18 @@ const FailingValidation: FailingValidationsFC = ({
   setCurrentStepId,
   wizardStepNames,
   wizardStepsValidationsMap,
-}) => {
+}: FailingValidationsProps<S>) => {
   const { t } = useTranslation();
 
   const issue = t('ai:{{check_failed}} check failed', {
     check_failed:
-      hostValidationLabels(t)[validation.id] ||
-      clusterValidationLabels(t)[validation.id] ||
+      (hostValidationLabels(t)[validation.id] as string) ||
+      (clusterValidationLabels(t)[validation.id] as string) ||
       validation.id,
   });
 
   let fix;
-  // eslint-disable-next-line
-  const step = findValidationFixStep<any>(
+  const step = findValidationFixStep<S>(
     { validationId: validation.id, clusterGroup, hostGroup },
     wizardStepsValidationsMap,
   );
@@ -124,12 +123,12 @@ const FailingValidation: FailingValidationsFC = ({
   );
 };
 
-export const ClusterValidations: ClusterValidationsFC = ({
+export const ClusterValidations = <S extends string>({
   validationsInfo: validationsInfoString = '',
   setCurrentStepId,
   wizardStepNames,
   wizardStepsValidationsMap,
-}) => {
+}: ClusterValidationsProps<S>) => {
   const validationsInfo = stringToJSON<ClusterValidationsInfo>(validationsInfoString) || {};
   const failingValidations: React.ReactNode[] = [];
   let pendingCount = 0;
@@ -153,7 +152,7 @@ export const ClusterValidations: ClusterValidationsFC = ({
       }
     };
 
-    validationsInfo[group].forEach(f);
+    validationsInfo[group as ClusterValidationGroup]?.forEach(f);
   });
 
   if (pendingCount) {
@@ -173,14 +172,14 @@ export const ClusterValidations: ClusterValidationsFC = ({
   return <>{failingValidations}</>;
 };
 
-export const HostsValidations: HostsValidationsFC = ({
+export const HostsValidations = <S extends string, V extends string[]>({
   hosts = [],
   setCurrentStepId,
   wizardStepNames,
   allClusterWizardSoftValidationIds,
   wizardStepsValidationsMap,
-}) => {
-  const failingValidations = {};
+}: HostsValidationsProps<S, V>) => {
+  const failingValidations = {} as HostValidation;
   getEnabledHosts(hosts).forEach((host) => {
     const validationsInfo = stringToJSON<HostValidationsInfo>(host.validationsInfo) || {};
     Object.keys(validationsInfo).forEach((group) => {
@@ -189,8 +188,10 @@ export const HostsValidations: HostsValidationsFC = ({
           const severity = allClusterWizardSoftValidationIds.includes(validation.id)
             ? 'warning'
             : 'danger';
-          failingValidations[validation.id] = failingValidations[validation.id] || (
-            <FailingValidation
+          failingValidations[validation.id] = (failingValidations[
+            validation.id
+          ] as HostValidation) || (
+            <FailingValidation<S>
               key={validation.id}
               validation={validation}
               hostGroup={group as HostValidationGroup}
@@ -203,7 +204,7 @@ export const HostsValidations: HostsValidationsFC = ({
         }
       };
 
-      validationsInfo[group].forEach(f);
+      validationsInfo[group as HostValidationGroup]?.forEach(f);
     });
   });
 
