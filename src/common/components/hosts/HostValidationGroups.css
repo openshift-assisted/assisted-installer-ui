@@ -1,0 +1,4 @@
+.host-validation-groups__validation-group {
+  margin-top: var(--pf-global--spacer--md) !important;
+  margin-bottom: var(--pf-global--spacer--sm) !important;
+}

@@ -1,0 +1,9 @@
+.ai-remove-button__tooltip {
+  --pf-c-tooltip__content--BackgroundColor: rgba(0, 0, 0, 0);
+  --pf-c-tooltip--BoxShadow: rgba(0, 0, 0, 0);
+  --pf-c-tooltip__content--PaddingTop: 2.25em;
+}
+
+.ai-remove-button__tooltip--padding-none {
+  --pf-c-tooltip__content--PaddingTop: 0;
+}

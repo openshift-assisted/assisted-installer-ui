@@ -1,0 +1,17 @@
+.rich-input__rules {
+  padding-top: var(--pf-c-helper-text--Gap);
+}
+
+.rich-input__group {
+  border-color: var(--pf-global--BorderColor--300) var(--pf-global--BorderColor--300) var(--pf-global--BorderColor--200) var(--pf-global--BorderColor--300);
+  border-width: 1px;
+  border-style: solid;
+}
+
+.rich-input__group--invalid {
+  border-bottom-color: var(--pf-global--danger-color--100);
+}
+
+.rich-input__text {
+  border: none;
+}

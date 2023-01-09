@@ -1,0 +1,15 @@
+.host-table-alerts {
+  padding-top: var(--pf-global--spacer--lg) !important;
+}
+
+.hosts-table .pf-c-dropdown__toggle-text {
+  color: var(--pf-global--Color--100) !important;
+}
+
+.hosts-table button {
+  font-size: var(--pf-c-table-cell--FontSize);
+}
+
+.hosts-table {
+  height: 1rem; /* Workaround for: https://bugzilla.redhat.com/show_bug.cgi?id=1879378 in FF; The actual table height will be recalculated accordingly. */
+}
