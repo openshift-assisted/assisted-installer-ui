@@ -10,7 +10,7 @@ import {
 } from '../../../common';
 
 const CNV_OPERATOR_LABEL = 'Virtualization';
-const LVM_OPERATOR_LABEL = 'OpenShift Data Foundation Logical Volume Manager';
+const LVM_OPERATOR_LABEL = 'OpenShift Data Foundation Logical Volume Manager Storage';
 
 const isArmSupported = (versionName: string, versionOptions: OpenshiftVersionOptionType[]) => {
   const versionOption = versionOptions.find((option) => option.value === versionName);
