@@ -1,0 +1,3 @@
+.table-no-padding {
+  --pf-c-table--m-compact--cell--first-last-child--PaddingLeft: 0 !important;
+}

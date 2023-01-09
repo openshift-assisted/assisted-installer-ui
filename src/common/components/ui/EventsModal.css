@@ -1,0 +1,8 @@
+.events-modal__body {
+  display: flex;
+  flex-direction: column;
+}
+
+.events-modal__event-list {
+  overflow: auto;
+}

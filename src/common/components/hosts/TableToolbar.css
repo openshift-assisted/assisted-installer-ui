@@ -1,0 +1,11 @@
+.table-toolbar__dropdown {
+    width: max-content;
+}
+
+.table-toolbar {
+    padding: 0;
+}
+
+.table-toolbar .pf-c-toolbar__content {
+    padding: 0;
+}

@@ -1,0 +1,16 @@
+.hostname-preview {
+	background-color: var(--pf-global--BackgroundColor--200);
+	padding: var(--pf-global--spacer--sm);
+	max-height: 10rem;
+	overflow-y: auto
+}
+
+.hostname-column__text {
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.hostname-column {
+	max-width: 30%;
+}

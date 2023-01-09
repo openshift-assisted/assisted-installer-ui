@@ -1,0 +1,9 @@
+.ai-group-label-selector {
+  padding: 0 !important;
+  border: none !important;
+}
+
+.ai-split-filter-hosts .pf-c-label-group__label {
+  overflow: unset !important;
+  max-width: unset !important;
+}

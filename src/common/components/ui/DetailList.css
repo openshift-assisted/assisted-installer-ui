@@ -1,0 +1,11 @@
+.detail-list {
+  display: block !important;
+}
+
+.detail-list dd {
+  margin-bottom: var(--pf-global--spacer--sm);
+}
+
+.detail-list ul ul, .detail-list ul li {
+  margin-top: var(--pf-c-content--dt--sm--MarginTop);
+}

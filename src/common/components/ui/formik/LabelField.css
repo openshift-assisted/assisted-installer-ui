@@ -1,0 +1,38 @@
+.label-field__value {
+  margin: 0 var(--pf-global--spacer--sm) 0 0;
+}
+
+.label-field__input {
+  border: 1px solid transparent;
+  outline: none;
+  width: 100%;
+}
+
+.label-field .react-autosuggest__suggestions-list {
+  margin-left: var(--pf-global--spacer-xs);
+  margin-right: var(--pf-global--spacer-xs);
+  box-shadow: var(--pf-global--BoxShadow--lg);
+  
+  max-height: 10rem;
+  overflow: auto;
+  list-style-type: none;
+}
+
+.label-field .react-autosuggest__suggestion {
+  cursor: pointer;
+}
+
+.label-field .react-autosuggest__suggestion--highlighted {
+  /* TODO(mlibra): maybe a lighter color would be better */
+  background-color: var(--pf-global--primary-color--light-100);
+}
+
+.label-field .react-autosuggest__section-title {
+  padding: 10px 0 0 10px;
+  font-size: var(--pf-global--FontSize--sm);
+  color: var(--pf-global--Color--200);
+}
+
+.label-field .react-tagsinput {
+  width: 100%;
+}
