@@ -33,14 +33,20 @@ export const ClusterPlatformIntegrationHint = ({
 }: ClusterPlatformIntegrationHintProps) => {
   const { isPlatformIntegrationSupported, supportedPlatformIntegration } =
     useClusterSupportedPlatforms(clusterId);
+
   const featureSupportLevels = useFeatureSupportLevel();
   const isNutanixFeatureSupported =
     featureSupportLevels.isFeatureSupported(openshiftVersion || '', 'NUTANIX_INTEGRATION') ?? false;
   const canIntegrateWithPlatform =
-    (isPlatformIntegrationSupported &&
-      !isClusterPlatformTypeVM({ platform: { type: platformType } })) ||
-    (supportedPlatformIntegration === 'nutanix' && isNutanixFeatureSupported);
+    isPlatformIntegrationSupported &&
+    !isClusterPlatformTypeVM({ platform: { type: platformType } });
+
   if (!canIntegrateWithPlatform) {
+    return null;
+  }
+
+  //Not show nutanix message in host discovery step when nutanix is not supported
+  if (supportedPlatformIntegration === 'nutanix' && !isNutanixFeatureSupported) {
     return null;
   }
 
