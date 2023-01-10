@@ -2,11 +2,16 @@ import React from 'react';
 import { ExpandableSection } from '@patternfly/react-core';
 import {
   Cluster,
+  DetailItem,
+  DetailList,
   hasEnabledOperators,
+  isClusterPlatformTypeVM,
   OPERATOR_NAME_CNV,
   OPERATOR_NAME_LVM,
   OPERATOR_NAME_ODF,
   ReviewHostsInventory,
+  SupportedPlatformType,
+  RenderIf,
 } from '../../../../common';
 import {
   ReviewClusterDetailTable,
@@ -14,6 +19,7 @@ import {
   ReviewOperatorsTable,
   TableSummaryExpandable,
 } from '.';
+import PlatformIntegrationNote from '../platformIntegration/PlatformIntegrationNote';
 
 const ReviewSummary = ({ cluster }: { cluster: Cluster }) => {
   const showOperatorsSummary =
@@ -38,8 +44,24 @@ const ReviewSummary = ({ cluster }: { cluster: Cluster }) => {
         </TableSummaryExpandable>
       )}
 
-      <TableSummaryExpandable title={'Inventory'}>
-        <ReviewHostsInventory hosts={cluster.hosts} />
+      <TableSummaryExpandable title={'Host inventory'}>
+        <>
+          <ReviewHostsInventory hosts={cluster.hosts} />
+          <RenderIf condition={isClusterPlatformTypeVM(cluster)}>
+            <DetailList>
+              <DetailItem
+                title={'Platform integration'}
+                value={
+                  <PlatformIntegrationNote
+                    platformType={cluster.platform?.type as SupportedPlatformType}
+                  />
+                }
+                testId="platform-integration-note"
+                classNameValue={'pf-u-mt-sm'}
+              />
+            </DetailList>
+          </RenderIf>
+        </>
       </TableSummaryExpandable>
 
       <TableSummaryExpandable title={'Networking'}>
