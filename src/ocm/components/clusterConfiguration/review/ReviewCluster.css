@@ -1,10 +1,11 @@
 .review-table {
   width: fit-content;
+  margin-bottom: 0.75rem;
 }
 
 .review-table tr > *:first-child {
   width: 13rem !important;
-  padding-left: 0px;
+  padding-left: 0;
 }
 
 .review-expandable > .pf-c-expandable-section__toggle {
