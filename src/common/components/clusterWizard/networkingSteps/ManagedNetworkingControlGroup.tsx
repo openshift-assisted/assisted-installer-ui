@@ -7,16 +7,25 @@ import { useTranslation } from '../../../hooks/use-translation-wrapper';
 export interface ManagedNetworkingControlGroupProps {
   disabled: boolean;
   tooltip?: string;
+  isUmnDisabled?: boolean;
 }
+
+const tooltipUmnDisabled = 'User-Managed Networking is not supported when using Nutanix';
 
 const GROUP_NAME = 'managedNetworkingType';
 export const ManagedNetworkingControlGroup = ({
   disabled = false,
   tooltip,
+  isUmnDisabled,
 }: ManagedNetworkingControlGroupProps) => {
   const tooltipProps: TooltipProps = {
     hidden: !tooltip || !disabled,
     content: tooltip,
+    position: 'top',
+  };
+  const tooltipPropsUmnDisabled: TooltipProps = {
+    hidden: !isUmnDisabled,
+    content: tooltipUmnDisabled,
     position: 'top',
   };
   const { t } = useTranslation();
@@ -34,9 +43,9 @@ export const ManagedNetworkingControlGroup = ({
         label={t('ai:Cluster-Managed Networking')}
       />
       <RadioFieldWithTooltip
-        tooltipProps={tooltipProps}
+        tooltipProps={isUmnDisabled ? tooltipPropsUmnDisabled : tooltipProps}
         name={GROUP_NAME}
-        isDisabled={disabled}
+        isDisabled={disabled || (isUmnDisabled ? isUmnDisabled : false)}
         value={'userManaged'}
         label={t('ai:User-Managed Networking')}
       />

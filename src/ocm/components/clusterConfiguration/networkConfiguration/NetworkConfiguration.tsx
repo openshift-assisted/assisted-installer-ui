@@ -30,6 +30,7 @@ import { useTranslation } from '../../../../common/hooks/use-translation-wrapper
 import { selectCurrentClusterPermissionsState } from '../../../selectors';
 import { OcmCheckbox } from '../../ui/OcmFormFields';
 import { NetworkTypeControlGroup } from '../../../../common/components/clusterWizard/networkingSteps/NetworkTypeControlGroup';
+import { useClusterSupportedPlatforms } from '../../../hooks';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   hostSubnets: HostSubnets;
@@ -210,12 +211,15 @@ const NetworkConfiguration = ({
     [cluster.cpuArchitecture, cluster.openshiftVersion, featureSupportLevelData, isDualStack],
   );
 
+  const { supportedPlatformIntegration } = useClusterSupportedPlatforms(cluster.id);
+
   return (
     <Grid hasGutter>
       {!hideManagedNetworking && (
         <ManagedNetworkingControlGroup
           disabled={isViewerMode || isNetworkManagementDisabled}
           tooltip={networkManagementDisabledReason}
+          isUmnDisabled={supportedPlatformIntegration === 'nutanix'}
         />
       )}
 
