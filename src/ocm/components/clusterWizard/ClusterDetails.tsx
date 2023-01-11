@@ -1,15 +1,7 @@
 import React from 'react';
-import omit from 'lodash/omit';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import {
-  Cluster,
-  V2ClusterUpdateParams,
-  useAlerts,
-  LoadingState,
-  ClusterWizardStep,
-  InfraEnv,
-} from '../../../common';
+import { Cluster, useAlerts, LoadingState, ClusterWizardStep, InfraEnv, V2ClusterUpdateParams } from "../../../common";
 import { usePullSecret } from '../../hooks';
 import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../api';
 import { setServerUpdateError, updateCluster } from '../../reducers/clusters';
@@ -41,13 +33,9 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster, infraEnv }) =>
   }, [errorOCPVersions, addAlert]);
 
   const handleClusterUpdate = React.useCallback(
-    async (clusterId: Cluster['id'], values: V2ClusterUpdateParams) => {
+    async (clusterId: Cluster['id'], params: V2ClusterUpdateParams) => {
       clearAlerts();
-      const params: V2ClusterUpdateParams = omit(values, [
-        'highAvailabilityMode',
-        'pullSecret',
-        'openshiftVersion',
-      ]);
+
       try {
         const { data: updatedCluster } = await ClustersService.update(
           clusterId,
