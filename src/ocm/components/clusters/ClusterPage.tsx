@@ -26,10 +26,11 @@ import ClusterWizardContextProvider from '../clusterWizard/ClusterWizardContextP
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { SentryErrorMonitorContextProvider } from '../SentryErrorMonitorContextProvider';
 import { forceReload } from '../../reducers/clusters';
-import { getErrorStateActions, ClusterUiError } from './ClusterPageErrors';
+import { ClusterUiError } from './ClusterPageErrors';
 import ClusterLoading from './ClusterLoading';
 import ClusterPollingErrorModal from '../clusterDetail/ClusterPollingErrorModal';
 import ClusterUpdateErrorModal from '../clusterDetail/ClusterUpdateErrorModal';
+import { BackButton } from '../ui/Buttons/BackButton';
 
 type MatchParams = {
   clusterId: string;
@@ -117,7 +118,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
           fetchData={
             Number(errorDetail?.code) === 401 ? () => window.location.reload() : fetchCluster
           }
-          actions={getErrorStateActions()}
+          actions={[<BackButton key={'cancel'} to={`${routeBasePath}/clusters`} />]}
         />
       </PageSection>
     );
@@ -128,7 +129,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
       <PageSection variant={PageSectionVariants.light} isFilled>
         <ErrorState
           title="Cluster not found"
-          actions={getErrorStateActions()}
+          actions={[<BackButton key={'cancel'} to={`${routeBasePath}/clusters`} />]}
           content={
             'Check to make sure the cluster-ID is valid. Otherwise, the cluster may have been deleted.'
           }

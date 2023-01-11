@@ -26,7 +26,7 @@ import ClusterToolbar from '../clusters/ClusterToolbar';
 import { downloadClusterInstallationLogs, getClusterDetailId } from './utils';
 import { LaunchOpenshiftConsoleButton } from '../../../common/components/clusterDetail/ConsoleModal';
 import ClusterProperties from './ClusterProperties';
-import { isSingleClusterMode, routeBasePath } from '../../config';
+import { routeBasePath } from '../../config';
 import ClusterDetailStatusVarieties, {
   useClusterStatusVarieties,
 } from './ClusterDetailStatusVarieties';
@@ -147,15 +147,13 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
               Add hosts
             </ToolbarButton>
           )}
-          {!isSingleClusterMode() && (
-            <ToolbarButton
-              variant={ButtonVariant.link}
-              component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
-              id={getClusterDetailId('button-back-to-all-clusters')}
-            >
-              Back to all clusters
-            </ToolbarButton>
-          )}
+          <ToolbarButton
+            variant={ButtonVariant.link}
+            component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
+            id={getClusterDetailId('button-back-to-all-clusters')}
+          >
+            Back to all clusters
+          </ToolbarButton>
           <ToolbarSecondaryGroup>
             <ToolbarButton
               id="cluster-installation-logs-button"
