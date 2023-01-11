@@ -1,8 +1,5 @@
 {
   "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "noEmit": true
-  },
   "include": ["src", "../../env.d.ts"],
   "references": [{ "path": "../../libs/openshift-assisted-ui-lib" }]
 }
