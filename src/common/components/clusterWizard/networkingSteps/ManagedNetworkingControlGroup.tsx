@@ -10,8 +10,6 @@ export interface ManagedNetworkingControlGroupProps {
   isUmnDisabled?: boolean;
 }
 
-const tooltipUmnDisabled = 'User-Managed Networking is not supported when using Nutanix';
-
 const GROUP_NAME = 'managedNetworkingType';
 export const ManagedNetworkingControlGroup = ({
   disabled = false,
@@ -29,6 +27,8 @@ export const ManagedNetworkingControlGroup = ({
     position: 'top',
   };
   const { t } = useTranslation();
+  const tooltipUmnDisabled = t('ai:User-Managed Networking is not supported when using Nutanix');
+
   return (
     <FormGroup
       label={t('ai:Network Management')}
