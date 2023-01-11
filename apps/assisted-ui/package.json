@@ -7,5 +7,12 @@
   "license": "Apache-2.0",
   "name": "assisted-ui",
   "private": true,
+  "scripts": {
+    "build": "scripts/vite-wrapper.sh build",
+    "prepreview": "yarn build",
+    "preview": "scripts/vite-wrapper.sh preview",
+    "serve": "scripts/vite-wrapper.sh serve"
+  },
+  "type": "module",
   "version": "0.0.0"
 }
