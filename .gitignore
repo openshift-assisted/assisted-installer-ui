@@ -15,6 +15,7 @@ dist
 dist-ssr
 gen
 *.local
+*.tsbuildinfo
 
 # Editor directories and files
 .vscode/*
