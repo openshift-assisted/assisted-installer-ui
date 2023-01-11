@@ -58,10 +58,11 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
   const featureSupportLevels = useFeatureSupportLevel();
   const handleSubmit = React.useCallback(
     async (values: OcmClusterDetailsValues) => {
-      const params = ClusterDetailsService.getClusterCreateParams(values);
       if (cluster) {
+        const params = ClusterDetailsService.getClusterUpdateParams(values);
         await handleClusterUpdate(cluster.id, params);
       } else {
+        const params = ClusterDetailsService.getClusterCreateParams(values);
         await handleClusterCreate(params);
       }
     },

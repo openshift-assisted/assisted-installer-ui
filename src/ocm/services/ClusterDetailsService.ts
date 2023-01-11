@@ -7,8 +7,10 @@ import {
   OpenshiftVersionOptionType,
   getClusterDetailsInitialValues,
   isArmArchitecture,
+  V2ClusterUpdateParams,
 } from '../../common';
 import omit from 'lodash/omit';
+import pick from 'lodash/pick';
 import DiskEncryptionService from './DiskEncryptionService';
 import {
   ClusterCreateParamsWithStaticNetworking,
@@ -39,6 +41,13 @@ const ClusterDetailsService = {
     }
     if (ocmClient) {
       params.tags = AI_UI_TAG;
+    }
+    return params;
+  },
+  getClusterUpdateParams(values: OcmClusterDetailsValues): V2ClusterUpdateParams {
+    const params: V2ClusterUpdateParams = pick(values, ['name', 'baseDnsDomain']);
+    if (values.pullSecret) {
+      params.pullSecret = values.pullSecret;
     }
     return params;
   },
