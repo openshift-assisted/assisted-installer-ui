@@ -7,13 +7,11 @@ import {
   OpenshiftVersionOptionType,
   getClusterDetailsInitialValues,
   isArmArchitecture,
-  V2ClusterUpdateParams,
 } from '../../common';
-import omit from 'lodash/omit';
-import pick from 'lodash/pick';
 import DiskEncryptionService from './DiskEncryptionService';
 import {
   ClusterCreateParamsWithStaticNetworking,
+  ClusterDetailsUpdateParams,
   HostsNetworkConfigurationType,
   OcmClusterDetailsValues,
 } from './types';
@@ -22,17 +20,15 @@ import { ocmClient } from '../api';
 
 const ClusterDetailsService = {
   getClusterCreateParams(values: OcmClusterDetailsValues): ClusterCreateParamsWithStaticNetworking {
-    const params: ClusterCreateParamsWithStaticNetworking = omit(values, [
-      'useRedHatDnsService',
-      'SNODisclaimer',
-      'enableDiskEncryptionOnMasters',
-      'enableDiskEncryptionOnWorkers',
-      'diskEncryptionMode',
-      'diskEncryption',
-      'diskEncryptionTangServers',
-      'hostsNetworkConfigurationType',
-    ]);
-    params.diskEncryption = DiskEncryptionService.getDiskEncryptionParams(values);
+    const params: ClusterCreateParamsWithStaticNetworking = {
+      name: values.name,
+      highAvailabilityMode: values.highAvailabilityMode,
+      openshiftVersion: values.openshiftVersion,
+      pullSecret: values.pullSecret,
+      baseDnsDomain: values.baseDnsDomain,
+      cpuArchitecture: values.cpuArchitecture,
+      diskEncryption: DiskEncryptionService.getDiskEncryptionParams(values),
+    };
     if (isArmArchitecture({ cpuArchitecture: params.cpuArchitecture })) {
       params.userManagedNetworking = true;
     }
@@ -44,8 +40,11 @@ const ClusterDetailsService = {
     }
     return params;
   },
-  getClusterUpdateParams(values: OcmClusterDetailsValues): V2ClusterUpdateParams {
-    const params: V2ClusterUpdateParams = pick(values, ['name', 'baseDnsDomain']);
+  getClusterUpdateParams(values: OcmClusterDetailsValues): ClusterDetailsUpdateParams {
+    const params: ClusterDetailsUpdateParams = {
+      name: values.name,
+      baseDnsDomain: values.baseDnsDomain,
+    };
     if (values.pullSecret) {
       params.pullSecret = values.pullSecret;
     }
