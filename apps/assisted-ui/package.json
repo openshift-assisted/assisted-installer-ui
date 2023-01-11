@@ -2,14 +2,15 @@
   "dependencies": {
     "@openshift-assisted/locales": "link:../../locales",
     "@patternfly/patternfly": "^4.222.4",
-    "openshift-assisted-ui-lib": "link:../../libs/assisted-ui-lib"
+    "openshift-assisted-ui-lib": "link:../../libs/openshift-assisted-ui-lib"
   },
   "license": "Apache-2.0",
   "name": "assisted-ui",
   "private": true,
   "scripts": {
+    "clean": "rm -rf node_modules build",
     "build": "scripts/vite-wrapper.sh build",
-    "prepreview": "yarn build",
+    "prepreview": "[ ! -d  build ] && yarn build || exit 0",
     "preview": "scripts/vite-wrapper.sh preview",
     "serve": "scripts/vite-wrapper.sh serve"
   },

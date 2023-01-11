@@ -1978,8 +1978,27 @@ onetime@^5.1.0:
   dependencies:
     mimic-fn "^2.1.0"
 
-"openshift-assisted-ui-lib@link:libs/assisted-ui-lib":
+"openshift-assisted-ui-lib@file:libs/openshift-assisted-ui-lib/build/openshift-assisted-ui-lib-v2.15.0-rc1.tgz":
   version "0.0.0"
+  resolved "file:libs/openshift-assisted-ui-lib/build/openshift-assisted-ui-lib-v2.15.0-rc1.tgz#f60e087814994459f733c2b582605193a8b2c8d9"
+  dependencies:
+    axios-case-converter "^0.11.1"
+    cidr-tools "^4.3.0"
+    classnames "^2.3.1"
+    file-saver "^2.0.2"
+    filesize.js "^2.0.0"
+    formik "2.2.6"
+    fuse.js "^6.4.6"
+    human-date "^1.4.0"
+    humanize-plus "^1.8.2"
+    ip-address "^7.1.0"
+    is-cidr "^4.0.2"
+    is-in-subnet "^4"
+    js-yaml "^4.1.0"
+    prism-react-renderer "^1.1.1"
+    react-error-boundary "^3.1.4"
+    react-measure "^2.5.2"
+    unique-names-generator "^4.2.0"
 
 ora@^5.4.1:
   version "5.4.1"

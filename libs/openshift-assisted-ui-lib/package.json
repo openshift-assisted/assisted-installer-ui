@@ -1,5 +1,4 @@
 {
-  "$schema": "https://json.schemastore.org/package.json",
   "dependencies": {
     "axios-case-converter": "^0.11.1",
     "cidr-tools": "^4.3.0",
@@ -45,9 +44,6 @@
     "./cim": "./src/cim/index.ts",
     "./ocm": "./src/ocm/index.ts"
   },
-  "files": [
-    "build"
-  ],
   "keywords": [
     "react",
     "facet-lib",
@@ -89,8 +85,11 @@
   },
   "repository": "openshift-assisted/assisted-ui-lib",
   "scripts": {
-    "tsc": "tsc",
-    "check:circular": "dpdm --warning false --tree false --exit-code circular:1 ./src/index.ts"
+    "clean": "rm -rf node_modules build",
+    "build": "vite build -c vite.config.ts",
+    "check:circular": "dpdm --warning false --tree false --exit-code circular:1 ./src/index.ts",
+    "postbuild": "node scripts/postbuild.mjs",
+    "tsc": "tsc"
   },
   "type": "module",
   "version": "0.0.0"
