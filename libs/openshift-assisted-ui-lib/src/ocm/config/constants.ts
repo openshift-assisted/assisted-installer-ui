@@ -4,10 +4,6 @@ import {
   Cluster,
 } from '../../common';
 
-export const isSingleClusterMode = () => {
-  return import.meta.env.VITE_APP_BUILD_MODE === 'single-cluster';
-};
-
 /* Used from Integration tests so we can mock the permissions */
 export type ExtendedCluster = Cluster & {
   permissions: AssistedInstallerOCMPermissionTypesListType;
