@@ -7,7 +7,6 @@ import { Formik, FormikHelpers } from 'formik';
 import {
   Cluster,
   ClusterCreateParams,
-  V2ClusterUpdateParams,
   ManagedDomain,
   ClusterWizardStep,
   ClusterWizardStepHeader,
@@ -20,8 +19,11 @@ import { canNextClusterDetails } from './wizardTransition';
 import { OpenshiftVersionOptionType, getFormikErrorFields } from '../../../common';
 import ClusterWizardFooter from './ClusterWizardFooter';
 import { ocmClient } from '../../api';
-import { ClusterDetailsService } from '../../services';
-import { OcmClusterDetailsValues } from '../../services/types';
+import {
+  ClusterDetailsService,
+  ClusterDetailsUpdateParams,
+  OcmClusterDetailsValues,
+} from '../../services';
 import { OcmClusterDetailsFormFields } from '../clusterConfiguration/OcmClusterDetailsFormFields';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { selectCurrentClusterPermissionsState } from '../../selectors';
@@ -36,7 +38,10 @@ type ClusterDetailsFormProps = {
   navigation: React.ReactNode;
   moveNext: () => void;
   handleClusterCreate: (params: ClusterCreateParams) => Promise<void>;
-  handleClusterUpdate: (clusterId: Cluster['id'], params: V2ClusterUpdateParams) => Promise<void>;
+  handleClusterUpdate: (
+    clusterId: Cluster['id'],
+    params: ClusterDetailsUpdateParams,
+  ) => Promise<void>;
 };
 
 const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
@@ -58,10 +63,11 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
   const featureSupportLevels = useFeatureSupportLevel();
   const handleSubmit = React.useCallback(
     async (values: OcmClusterDetailsValues) => {
-      const params = ClusterDetailsService.getClusterCreateParams(values);
       if (cluster) {
+        const params = ClusterDetailsService.getClusterUpdateParams(values);
         await handleClusterUpdate(cluster.id, params);
       } else {
+        const params = ClusterDetailsService.getClusterCreateParams(values);
         await handleClusterCreate(params);
       }
     },
@@ -129,7 +135,7 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
                   isOcm={!!ocmClient}
                   managedDomains={managedDomains}
                   clusterExists={!!cluster}
-                  cpuArchitecture={cluster?.cpuArchitecture}
+                  clusterCpuArchitecture={cluster?.cpuArchitecture}
                 />
               </GridItem>
             </Grid>

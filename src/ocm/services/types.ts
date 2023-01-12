@@ -1,4 +1,14 @@
-import { ClusterCreateParams, ClusterDetailsValues, HostStaticNetworkConfig } from '../../common';
+import {
+  ClusterCreateParams,
+  ClusterDetailsValues,
+  HostStaticNetworkConfig,
+  V2ClusterUpdateParams,
+} from '../../common';
+
+export type ClusterDetailsUpdateParams = Pick<
+  V2ClusterUpdateParams,
+  'name' | 'baseDnsDomain' | 'pullSecret'
+>;
 
 export type ClusterCreateParamsWithStaticNetworking = ClusterCreateParams & {
   staticNetworkConfig?: HostStaticNetworkConfig[];
