@@ -14,21 +14,21 @@ const GROUP_NAME = 'managedNetworkingType';
 export const ManagedNetworkingControlGroup = ({
   disabled = false,
   tooltip,
-  isUmnDisabled,
+  isUmnDisabled = false,
 }: ManagedNetworkingControlGroupProps) => {
   const tooltipProps: TooltipProps = {
     hidden: !tooltip || !disabled,
     content: tooltip,
     position: 'top',
   };
+
+  const { t } = useTranslation();
+  const tooltipUmnDisabled = t('ai:User-Managed Networking is not supported when using Nutanix');
   const tooltipPropsUmnDisabled: TooltipProps = {
     hidden: !isUmnDisabled,
     content: tooltipUmnDisabled,
     position: 'top',
   };
-  const { t } = useTranslation();
-  const tooltipUmnDisabled = t('ai:User-Managed Networking is not supported when using Nutanix');
-
   return (
     <FormGroup
       label={t('ai:Network Management')}
@@ -45,7 +45,7 @@ export const ManagedNetworkingControlGroup = ({
       <RadioFieldWithTooltip
         tooltipProps={isUmnDisabled ? tooltipPropsUmnDisabled : tooltipProps}
         name={GROUP_NAME}
-        isDisabled={disabled || (isUmnDisabled ? isUmnDisabled : false)}
+        isDisabled={disabled || isUmnDisabled}
         value={'userManaged'}
         label={t('ai:User-Managed Networking')}
       />
