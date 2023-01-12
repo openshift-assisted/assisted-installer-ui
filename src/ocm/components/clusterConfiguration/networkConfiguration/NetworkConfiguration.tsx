@@ -31,6 +31,7 @@ import { selectCurrentClusterPermissionsState } from '../../../selectors';
 import { OcmCheckbox } from '../../ui/OcmFormFields';
 import { NetworkTypeControlGroup } from '../../../../common/components/clusterWizard/networkingSteps/NetworkTypeControlGroup';
 import { useClusterSupportedPlatforms } from '../../../hooks';
+import { TFunction } from 'i18next';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   hostSubnets: HostSubnets;
@@ -111,6 +112,25 @@ const isManagedNetworkingDisabled = (
     };
   } else {
     return { isNetworkManagementDisabled: false, networkManagementDisabledReason: undefined };
+  }
+};
+
+const isUserManagedNetworkingDisabled = (
+  isSupportedPlatformIntegrationNutanix: boolean,
+  t: TFunction,
+) => {
+  if (isSupportedPlatformIntegrationNutanix) {
+    return {
+      isUserManagementDisabled: isSupportedPlatformIntegrationNutanix,
+      userManagementDisabledReason: t(
+        'ai:User-Managed Networking is not supported when using Nutanix',
+      ),
+    };
+  } else {
+    return {
+      isUserManagementDisabled: false,
+      userManagementDisabledReason: '',
+    };
   }
 };
 
@@ -200,6 +220,8 @@ const NetworkConfiguration = ({
     }
   }, [shouldUpdateAdvConf, toggleAdvConfiguration]);
 
+  const { supportedPlatformIntegration } = useClusterSupportedPlatforms(cluster.id);
+  const isSupportedPlatformIntegrationNutanix = supportedPlatformIntegration === 'nutanix';
   const { isNetworkManagementDisabled, networkManagementDisabledReason } = React.useMemo(
     () =>
       isManagedNetworkingDisabled(
@@ -211,18 +233,18 @@ const NetworkConfiguration = ({
     [cluster.cpuArchitecture, cluster.openshiftVersion, featureSupportLevelData, isDualStack],
   );
 
-  const umnDisabledReason = t('ai:User-Managed Networking is not supported when using Nutanix');
-
-  const { supportedPlatformIntegration } = useClusterSupportedPlatforms(cluster.id);
+  const { isUserManagementDisabled, userManagementDisabledReason } = React.useMemo(
+    () => isUserManagedNetworkingDisabled(isSupportedPlatformIntegrationNutanix, t),
+    [isSupportedPlatformIntegrationNutanix, t],
+  );
 
   return (
     <Grid hasGutter>
       {!hideManagedNetworking && (
         <ManagedNetworkingControlGroup
-          disabled={isViewerMode || isNetworkManagementDisabled}
+          disabled={isViewerMode || isNetworkManagementDisabled || isUserManagementDisabled}
           tooltip={networkManagementDisabledReason}
-          isUmnDisabled={supportedPlatformIntegration === 'nutanix'}
-          tooltipUmnDisabled={umnDisabledReason}
+          tooltipUmnDisabled={userManagementDisabledReason}
         />
       )}
 

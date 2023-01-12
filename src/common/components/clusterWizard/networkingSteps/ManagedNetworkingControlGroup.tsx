@@ -7,7 +7,6 @@ import { useTranslation } from '../../../hooks/use-translation-wrapper';
 export interface ManagedNetworkingControlGroupProps {
   disabled: boolean;
   tooltip?: string;
-  isUmnDisabled?: boolean;
   tooltipUmnDisabled?: string;
 }
 
@@ -15,7 +14,6 @@ const GROUP_NAME = 'managedNetworkingType';
 export const ManagedNetworkingControlGroup = ({
   disabled = false,
   tooltip,
-  isUmnDisabled = false,
   tooltipUmnDisabled,
 }: ManagedNetworkingControlGroupProps) => {
   const tooltipProps: TooltipProps = {
@@ -27,7 +25,7 @@ export const ManagedNetworkingControlGroup = ({
   const { t } = useTranslation();
 
   const tooltipPropsUmnDisabled: TooltipProps = {
-    hidden: !isUmnDisabled,
+    hidden: !tooltipUmnDisabled || !disabled,
     content: tooltipUmnDisabled,
     position: 'top',
   };
@@ -45,9 +43,9 @@ export const ManagedNetworkingControlGroup = ({
         label={t('ai:Cluster-Managed Networking')}
       />
       <RadioFieldWithTooltip
-        tooltipProps={isUmnDisabled ? tooltipPropsUmnDisabled : tooltipProps}
+        tooltipProps={tooltipUmnDisabled !== '' ? tooltipPropsUmnDisabled : tooltipProps}
         name={GROUP_NAME}
-        isDisabled={disabled || isUmnDisabled}
+        isDisabled={disabled}
         value={'userManaged'}
         label={t('ai:User-Managed Networking')}
       />
