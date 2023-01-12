@@ -43,7 +43,7 @@ export const ManagedNetworkingControlGroup = ({
         label={t('ai:Cluster-Managed Networking')}
       />
       <RadioFieldWithTooltip
-        tooltipProps={tooltipUmnDisabled !== '' ? tooltipPropsUmnDisabled : tooltipProps}
+        tooltipProps={tooltipUmnDisabled ? tooltipPropsUmnDisabled : tooltipProps}
         name={GROUP_NAME}
         isDisabled={disabled}
         value={'userManaged'}
