@@ -211,6 +211,8 @@ const NetworkConfiguration = ({
     [cluster.cpuArchitecture, cluster.openshiftVersion, featureSupportLevelData, isDualStack],
   );
 
+  const umnDisabledReason = t('ai:User-Managed Networking is not supported when using Nutanix');
+
   const { supportedPlatformIntegration } = useClusterSupportedPlatforms(cluster.id);
 
   return (
@@ -220,6 +222,7 @@ const NetworkConfiguration = ({
           disabled={isViewerMode || isNetworkManagementDisabled}
           tooltip={networkManagementDisabledReason}
           isUmnDisabled={supportedPlatformIntegration === 'nutanix'}
+          tooltipUmnDisabled={umnDisabledReason}
         />
       )}
 

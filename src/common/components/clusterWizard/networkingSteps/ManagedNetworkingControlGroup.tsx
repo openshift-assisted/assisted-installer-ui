@@ -8,6 +8,7 @@ export interface ManagedNetworkingControlGroupProps {
   disabled: boolean;
   tooltip?: string;
   isUmnDisabled?: boolean;
+  tooltipUmnDisabled?: string;
 }
 
 const GROUP_NAME = 'managedNetworkingType';
@@ -15,6 +16,7 @@ export const ManagedNetworkingControlGroup = ({
   disabled = false,
   tooltip,
   isUmnDisabled = false,
+  tooltipUmnDisabled,
 }: ManagedNetworkingControlGroupProps) => {
   const tooltipProps: TooltipProps = {
     hidden: !tooltip || !disabled,
@@ -23,7 +25,7 @@ export const ManagedNetworkingControlGroup = ({
   };
 
   const { t } = useTranslation();
-  const tooltipUmnDisabled = t('ai:User-Managed Networking is not supported when using Nutanix');
+
   const tooltipPropsUmnDisabled: TooltipProps = {
     hidden: !isUmnDisabled,
     content: tooltipUmnDisabled,
