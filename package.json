@@ -87,7 +87,6 @@
   "private": true,
   "scripts": {
     "build:libs/openshift-assisted-ui-lib": "yarn workspace openshift-assisted-ui-lib run build",
-    "pack:libs/openshift-assisted-ui-lib": "yarn workspace openshift-assisted-ui-lib pack -f openshift-assisted-ui-lib-v2.15.0.tgz",
     "tsc:libs/openshift-assisted-ui-lib": "yarn workspace openshift-assisted-ui-lib run tsc",
     "build:apps/assisted-ui": "yarn workspace assisted-ui run build",
     "preview:apps/assisted-ui": "yarn workspace assisted-ui run preview",
