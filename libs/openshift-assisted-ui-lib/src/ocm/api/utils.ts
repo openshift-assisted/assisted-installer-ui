@@ -16,8 +16,12 @@ export const handleApiError = (error: unknown, onError?: OnError): void => {
   if (Axios.isCancel(error)) {
     captureException(error, 'Request canceled', 'info');
   } else if (isApiError(error)) {
-    let message = `URL: ${JSON.stringify(error.config.url, null, 1)}\n`;
-    message += `Method: ${JSON.stringify(error.config.method, null, 1)}\n`;
+    let message = 'N/A';
+    if (error.config) {
+      message = `URL: ${JSON.stringify(error.config.url, null, 1)}\n`;
+      message += `Method: ${JSON.stringify(error.config.method, null, 1)}\n`;
+    }
+
     if (error.response) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
