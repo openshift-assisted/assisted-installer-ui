@@ -8,14 +8,14 @@ import {
 type OcmOpenShiftVersionProps = {
   versions: OpenshiftVersionOptionType[];
   openshiftVersion: string;
-  cpuArchitecture: string | undefined;
+  clusterCpuArchitecture: string | undefined;
   withPreviewText?: boolean;
   withMultiText?: boolean;
 };
 
 const OcmOpenShiftVersion = ({
   openshiftVersion,
-  cpuArchitecture,
+  clusterCpuArchitecture,
   versions,
   withPreviewText,
   withMultiText,
@@ -25,7 +25,7 @@ const OcmOpenShiftVersion = ({
       Openshift{' '}
       {getOpenshiftVersionText({
         openshiftVersion,
-        cpuArchitecture,
+        cpuArchitecture: clusterCpuArchitecture,
         versions,
         withPreviewText,
         withMultiText,

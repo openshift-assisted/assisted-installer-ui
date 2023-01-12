@@ -35,7 +35,7 @@ export type OcmClusterDetailsFormFieldsProps = {
   toggleRedHatDnsService?: (checked: boolean) => void;
   isPullSecretSet: boolean;
   clusterExists: boolean;
-  cpuArchitecture?: string;
+  clusterCpuArchitecture?: string;
 };
 
 const BaseDnsHelperText = ({ name, baseDnsDomain }: { name?: string; baseDnsDomain?: string }) => (
@@ -58,7 +58,7 @@ export const OcmClusterDetailsFormFields = ({
   forceOpenshiftVersion,
   isOcm,
   clusterExists,
-  cpuArchitecture,
+  clusterCpuArchitecture,
 }: OcmClusterDetailsFormFieldsProps) => {
   const { values } = useFormikContext<ClusterDetailsValues>();
   const { name, baseDnsDomain, highAvailabilityMode, useRedHatDnsService } = values;
@@ -116,7 +116,7 @@ export const OcmClusterDetailsFormFields = ({
         <OcmOpenShiftVersion
           versions={versions}
           openshiftVersion={forceOpenshiftVersion}
-          cpuArchitecture={cpuArchitecture}
+          clusterCpuArchitecture={clusterCpuArchitecture}
           withPreviewText
           withMultiText
         />

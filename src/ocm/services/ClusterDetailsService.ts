@@ -18,6 +18,16 @@ import {
 import { getDummyInfraEnvField } from '../components/clusterConfiguration/staticIp/data/dummyData';
 import { ocmClient } from '../api';
 
+const getNewClusterCpuArchitecture = (urlSearchParams: string) => {
+  const params = new URLSearchParams(urlSearchParams);
+  const hasArmSearchParam = params.get('useArm') === 'true';
+  return hasArmSearchParam ? CpuArchitecture.ARM : CpuArchitecture.x86;
+};
+
+const getExistingClusterCpuArchitecture = (infraEnv: InfraEnv) => {
+  return infraEnv.cpuArchitecture || CpuArchitecture.x86;
+};
+
 const ClusterDetailsService = {
   getClusterCreateParams(values: OcmClusterDetailsValues): ClusterCreateParamsWithStaticNetworking {
     const params: ClusterCreateParamsWithStaticNetworking = omit(values, [
@@ -60,10 +70,11 @@ const ClusterDetailsService = {
       cluster,
       ...args,
     });
-    const params = new URLSearchParams(urlSearchParams);
-    const hasArmSearchParam = params.get('useArm') === 'true';
-    const cpuArchitecture =
-      cluster?.cpuArchitecture || (hasArmSearchParam ? CpuArchitecture.ARM : CpuArchitecture.x86);
+
+    const cpuArchitecture = infraEnv
+      ? getExistingClusterCpuArchitecture(infraEnv)
+      : getNewClusterCpuArchitecture(urlSearchParams);
+
     const hostsNetworkConfigurationType = infraEnv?.staticNetworkConfig
       ? HostsNetworkConfigurationType.STATIC
       : HostsNetworkConfigurationType.DHCP;
