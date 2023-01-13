@@ -9,8 +9,9 @@ import {
   SupportLevel,
 } from '../../../common';
 
-const CNV_OPERATOR_LABEL = 'Virtualization';
-const LVM_OPERATOR_LABEL = 'OpenShift Data Foundation Logical Volume Manager Storage';
+const CNV_OPERATOR_LABEL = 'Openshift Virtualization';
+const LVM_OPERATOR_LABEL = 'Logical Volume Manager Storage';
+const ODF_OPERATOR_LABEL = 'OpenShift Data Foundation';
 
 const isArmSupported = (versionName: string, versionOptions: OpenshiftVersionOptionType[]) => {
   const versionOption = versionOptions.find((option) => option.value === versionName);
@@ -77,16 +78,16 @@ const getOdfDisabledReason = (cluster: Cluster | undefined, isSupported: boolean
     return undefined;
   }
   if (isArmArchitecture(cluster) && isSNO(cluster)) {
-    return 'OpenShift Data Foundation is not available when using Single Node OpenShift or ARM CPU architecture.';
+    return `${ODF_OPERATOR_LABEL} is not available when using Single Node OpenShift or ARM CPU architecture.`;
   }
   if (isArmArchitecture(cluster)) {
-    return 'OpenShift Data Foundation is not available when ARM CPU architecture is selected.';
+    return `${ODF_OPERATOR_LABEL} is not available when ARM CPU architecture is selected.`;
   }
   if (isSNO(cluster)) {
-    return 'OpenShift Data Foundation is not available when deploying a Single Node OpenShift.';
+    return `${ODF_OPERATOR_LABEL} is not available when deploying a Single Node OpenShift.`;
   }
   if (!isSupported) {
-    return 'The installer cannot currently enable OpenShift Data Foundation with the selected OpenShift version, but it can be enabled later through the OpenShift Console once the installation is complete.';
+    return `The installer cannot currently enable ${ODF_OPERATOR_LABEL} with the selected OpenShift version, but it can be enabled later through the OpenShift Console once the installation is complete.`;
   }
   return undefined;
 };
@@ -96,7 +97,7 @@ const getLvmDisabledReason = (cluster: Cluster | undefined, isSupported: boolean
     return undefined;
   }
   if (!isSupported) {
-    return 'OpenShift Data Foundation Logical Volume Manager Storage is enabled only for OpenShift 4.11 and above.';
+    return `${LVM_OPERATOR_LABEL} is enabled only for OpenShift 4.11 and above.`;
   }
   return undefined;
 };
@@ -106,7 +107,7 @@ const getCnvDisabledReason = (cluster: Cluster | undefined) => {
     return undefined;
   }
   if (isArmArchitecture(cluster)) {
-    return 'OpenShift Virtualization is not available when ARM CPU architecture is selected.';
+    return `${CNV_OPERATOR_LABEL} is not available when ARM CPU architecture is selected.`;
   }
   return undefined;
 };

@@ -11,13 +11,13 @@ import {
   global_success_color_100 as okColor,
 } from '@patternfly/react-tokens';
 import { pluralize } from 'humanize-plus';
-import { MonitoredOperatorsList, OperatorStatus } from '../../api/types';
+import { TFunction } from 'i18next';
+import { MonitoredOperatorsList, OperatorStatus } from '../../api';
 import { operatorLabels } from '../../config';
 import ClusterProgressItem from './ClusterProgressItem';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 import './OperatorsProgressItem.css';
-import { useTranslation } from '../../hooks/use-translation-wrapper';
-import { TFunction } from 'i18next';
 
 export function getAggregatedStatus(operators: MonitoredOperatorsList) {
   const operatorStates: (OperatorStatus | 'pending')[] = operators.map(
@@ -87,7 +87,7 @@ const OperatorsPopover: React.FC<OperatorsPopoverProps> = ({ operators, children
             if (operator.status === 'available') {
               status = 'installed';
             }
-            const name = operator.name && operatorLabels(t)[operator.name];
+            const name = operator.name && (operatorLabels(t)[operator.name] as string);
             return (
               <ListItem key={operator.name} title={operator.statusInfo}>
                 {name} {status}
