@@ -1,12 +1,12 @@
 import React from 'react';
+import { Constants } from 'openshift-assisted-ui-lib/ocm';
 import { Brand, PageHeader, PageHeaderTools, Button, ButtonVariant } from '@patternfly/react-core';
-import * as OCM from 'openshift-assisted-ui-lib/ocm';
-import upstreamLogo from './images/metal3_facet-whitetext.png';
-import redhatLogo from './images/Logo-Red_Hat-OpenShift_Container_Platform-B-Reverse-RGB.png';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
-import AboutModalButton from './AboutModal.jsx';
+import upstreamLogo from '../../../images/metal3_facet-whitetext.png';
+import redhatLogo from '../../../images/Logo-Red_Hat-OpenShift_Container_Platform-B-Reverse-RGB.png';
+import AboutModalButton from './AboutModal.js';
 
-const { getProductBrandingCode, FEEDBACK_FORM_LINK } = OCM.Constants;
+const { getProductBrandingCode, FEEDBACK_FORM_LINK } = Constants;
 
 const getBrandingDetails = () => {
   switch (getProductBrandingCode()) {
@@ -25,7 +25,7 @@ const getBrandingDetails = () => {
   }
 };
 
-const Header: React.FC = () => {
+const Header = () => {
   const branding = getBrandingDetails();
   const logoProps = { href: branding.href };
   return (
@@ -44,10 +44,6 @@ const Header: React.FC = () => {
           <AboutModalButton />
         </PageHeaderTools>
       }
-      // toolbar={PageToolbar}
-      //avatar={<Avatar src={avatarImg} alt="Avatar image" />}
-      // showNavToggle
-      // onNavToggle={this.onNavToggle}
     />
   );
 };

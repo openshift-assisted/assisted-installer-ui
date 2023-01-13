@@ -5,19 +5,9 @@ import {
   TextContent,
   ButtonVariant,
 } from '@patternfly/react-core';
-import * as OCM from 'openshift-assisted-ui-lib/ocm';
-import { GIT_SHA, VERSION, SERVICE_LABELS, IMAGE_REPO } from './config/standalone.js';
-import redHatLogo from './images/Logo-Red_Hat-OpenShift_Container_Platform-B-Reverse-RGB.png';
-
-const {
-  Services: {
-    APIs: { ComponentVersionsAPI },
-  },
-  Api: { handleApiError },
-  Constants,
-  DetailList,
-  DetailItem,
-} = OCM;
+import { Services, Api, Constants, DetailList, DetailItem, ListVersions } from 'openshift-assisted-ui-lib/ocm';
+import { GIT_SHA, VERSION, SERVICE_LABELS, IMAGE_REPO } from '../../../config.js';
+import redHatLogo from '../../../images/Logo-Red_Hat-OpenShift_Container_Platform-B-Reverse-RGB.png';
 
 export const AboutModalButton: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -39,23 +29,23 @@ type AboutModalProps = {
 };
 
 const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
-  const [{ versions, releaseTag }, setVersions] = React.useState<OCM.ListVersions>({
+  const [{ versions, releaseTag }, setVersions] = React.useState<ListVersions>({
     versions: {},
     releaseTag: undefined,
   });
 
   const fetchData = React.useCallback(async () => {
     try {
-      const { data } = await ComponentVersionsAPI.list();
+      const { data } = await Services.APIs.ComponentVersionsAPI.list();
       setVersions(data);
     } catch (e) {
-      handleApiError(e);
+      Api.handleApiError(e);
     }
   }, []);
 
   React.useEffect(() => {
     if (isOpen) {
-      fetchData();
+      void fetchData();
     }
   }, [fetchData, isOpen]);
 
