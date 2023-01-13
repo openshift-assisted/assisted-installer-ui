@@ -19,13 +19,7 @@ const App = () => (
         isManagedSidebar
         defaultManagedSidebarIsOpen={false}
       >
-        <LibRouter
-          features={
-            Config.isSingleClusterMode()
-              ? Features.SINGLE_CLUSTER_ENABLED_FEATURES
-              : Features.STANDALONE_DEPLOYMENT_ENABLED_FEATURES
-          }
-        />
+        <LibRouter features={Features.STANDALONE_DEPLOYMENT_ENABLED_FEATURES} />
       </Page>
     </BrowserRouter>
   </Provider>
