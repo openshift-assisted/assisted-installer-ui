@@ -10,7 +10,7 @@
   "scripts": {
     "clean": "rm -rf node_modules build",
     "build": "scripts/vite-wrapper.sh build",
-    "prepreview": "[ ! -d  build ] && yarn build || exit 0",
+    "prepreview": "scripts/prepreview.sh",
     "preview": "scripts/vite-wrapper.sh preview",
     "serve": "scripts/vite-wrapper.sh serve"
   },
