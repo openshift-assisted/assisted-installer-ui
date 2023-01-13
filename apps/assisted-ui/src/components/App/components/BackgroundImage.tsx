@@ -3,7 +3,6 @@ import {
   BackgroundImage as PfBackgroundImage,
   BackgroundImageSrcMap,
 } from '@patternfly/react-core';
-
 import pfbg1200 from '@patternfly/patternfly/assets/images/pfbg_1200.jpg';
 import pfbg768 from '@patternfly/patternfly/assets/images/pfbg_768.jpg';
 import pfbg768at2x from '@patternfly/patternfly/assets/images/pfbg_768@2x.jpg';
