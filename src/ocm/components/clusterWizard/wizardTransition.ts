@@ -31,14 +31,24 @@ export type ClusterWizardStepsType =
 export const ClusterWizardFlowStateNew = 'new';
 export type ClusterWizardFlowStateType = Cluster['status'] | typeof ClusterWizardFlowStateNew;
 
-export const getClusterWizardFirstStep = (
-  locationState: ClusterWizardFlowStateType | undefined,
-  staticIpInfo: StaticIpInfo | undefined,
-  state?: ClusterWizardFlowStateType,
-  hosts?: Host[] | undefined,
-): ClusterWizardStepsType => {
-  // Move to operators just the first time after the cluster is created
+export const getClusterWizardFirstStep = ({
+  locationState,
+  staticIpInfo,
+  state,
+  hosts,
+  isSingleClusterFeatureEnabled,
+}: {
+  locationState: ClusterWizardFlowStateType | undefined;
+  staticIpInfo: StaticIpInfo | undefined;
+  state?: ClusterWizardFlowStateType;
+  hosts?: Host[] | undefined;
+  isSingleClusterFeatureEnabled: boolean;
+}): ClusterWizardStepsType => {
+  // Just for the first time when the cluster is created
   if (locationState === ClusterWizardFlowStateNew && !staticIpInfo) {
+    if (isSingleClusterFeatureEnabled) {
+      return 'host-discovery';
+    }
     return 'operators';
   }
 
