@@ -32,13 +32,21 @@ import ClusterLoading from './ClusterLoading';
 import ClusterPollingErrorModal from '../clusterDetail/ClusterPollingErrorModal';
 import ClusterUpdateErrorModal from '../clusterDetail/ClusterUpdateErrorModal';
 import { BackButton } from '../ui/Buttons/BackButton';
+import { RebootNodeZeroModal } from '../clusterDetail/RebootNodeZeroModal';
 
 type MatchParams = {
   clusterId: string;
 };
 
-const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
-  const { clusterId } = match.params;
+const ClusterPageGeneric: React.FC<{ clusterId: string; showBreadcrumbs: boolean }> = ({
+  clusterId,
+  showBreadcrumbs,
+}) => {
+  if (!clusterId) {
+    console.error('ClusterPage: clusterId is not provided');
+    return null;
+  }
+
   const fetchCluster = useFetchCluster(clusterId);
   const dispatch = useDispatch();
   const { cluster, uiState, errorDetail } = useClusterPolling(clusterId);
@@ -73,7 +81,7 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
     ) {
       return (
         <>
-          <ClusterBreadcrumbs clusterName={cluster.name} />
+          {showBreadcrumbs && <ClusterBreadcrumbs clusterName={cluster.name} />}
           <PageSection variant={PageSectionVariants.light}>
             <TextContent>
               <Text component="h1">{cluster.name}</Text>
@@ -87,14 +95,17 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
     } else {
       return (
         <>
-          <ClusterBreadcrumbs clusterName={cluster.name} />
-          <PageSection variant={PageSectionVariants.light}>
-            <TextContent>
-              <Text component="h1" className="pf-u-display-inline">
-                Install OpenShift with the Assisted Installer
-              </Text>
-            </TextContent>
-          </PageSection>
+          {showBreadcrumbs && <ClusterBreadcrumbs clusterName={cluster.name} />}
+          {showBreadcrumbs && (
+            <PageSection variant={PageSectionVariants.light}>
+              <TextContent>
+                <Text component="h1" className="pf-u-display-inline">
+                  Install OpenShift with the Assisted Installer
+                </Text>
+              </TextContent>
+            </PageSection>
+          )}
+
           <PageSection variant={PageSectionVariants.light}>
             <ClusterWizardContextProvider cluster={cluster} infraEnv={infraEnv}>
               <ClusterWizard
@@ -154,6 +165,9 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
               errorUI={<ClusterUiError />}
             >
               <FeatureSupportLevelProvider loadingUi={<ClusterLoading />} cluster={cluster}>
+                {/* TODO(mlibra): Position better, for development only*/}
+                <RebootNodeZeroModal cluster={cluster} />
+
                 {getContent(cluster, infraEnv)}
                 {uiState === ResourceUIState.POLLING_ERROR && <ClusterPollingErrorModal />}
                 {uiState === ResourceUIState.UPDATE_ERROR && <ClusterUpdateErrorModal />}
@@ -171,4 +185,9 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
   return <Redirect to="/clusters" />;
 };
 
-export default ClusterPage;
+export const SingleClusterPage: React.FC<{ clusterId: string }> = ({ clusterId }) => (
+  <ClusterPageGeneric clusterId={clusterId} showBreadcrumbs={false} />
+);
+export const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => (
+  <ClusterPageGeneric clusterId={match.params.clusterId} showBreadcrumbs />
+);
