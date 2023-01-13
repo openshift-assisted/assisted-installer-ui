@@ -99,7 +99,9 @@ export const OpenShiftVersionDropdown = ({
       <HelperText style={{ display: 'inherit' }}>{helperText}</HelperText>
       {showReleasesLink && (
         <ExternalLink href={`${window.location.origin}/${OCP_RELEASES_PAGE}`}>
-          {t('ai:Learn more about OpenShift releases')}
+          <span data-ouia-id="openshift-releases-link">
+            {t('ai:Learn more about OpenShift releases')}
+          </span>
         </ExternalLink>
       )}
     </FormGroup>
