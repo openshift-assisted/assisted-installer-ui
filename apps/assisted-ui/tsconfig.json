@@ -1,4 +1,7 @@
 {
+  "compilerOptions": {
+    "moduleResolution": "Node16"
+  },
   "extends": "../../tsconfig.json",
   "include": ["src", "../../env.d.ts"],
   "references": [{ "path": "../../libs/openshift-assisted-ui-lib" }]

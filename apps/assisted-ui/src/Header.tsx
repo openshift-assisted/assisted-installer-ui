@@ -4,7 +4,7 @@ import * as OCM from 'openshift-assisted-ui-lib/ocm';
 import upstreamLogo from './images/metal3_facet-whitetext.png';
 import redhatLogo from './images/Logo-Red_Hat-OpenShift_Container_Platform-B-Reverse-RGB.png';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
-import AboutModalButton from './AboutModal';
+import AboutModalButton from './AboutModal.jsx';
 
 const { getProductBrandingCode, FEEDBACK_FORM_LINK } = OCM.Constants;
 
