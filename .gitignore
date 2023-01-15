@@ -26,3 +26,6 @@ gen
 .editorconfig
 .gitattributes
 .DS_Store
+
+# ignored apps
+apps/uhc-portal

@@ -1,0 +1,10 @@
+.github
+.idea
+.vscode
+apps/uhc-portal
+build
+docs
+node_modules
+src
+Dockerfile
+*.local
