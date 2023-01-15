@@ -58,7 +58,7 @@
   "name": "openshift-assisted-ui-lib",
   "peerDependencies": {
     "@openshift-console/dynamic-plugin-sdk": "0.0.3",
-    "@patternfly/react-code-editor": "^4.82.87",
+    "@patternfly/react-code-editor": "^4.82.82",
     "@patternfly/react-core": "^4.168.8",
     "@patternfly/react-icons": "^4.93.3",
     "@patternfly/react-styles": "^4.92.3",
