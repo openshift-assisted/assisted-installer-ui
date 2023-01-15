@@ -4,8 +4,8 @@ import fs from "node:fs";
 /**
  * This lifecycle script transforms the entry points in package.json
  * in order to reference the built modules instead of the ones in
- * the source code. After the transformations had been applied it
- * writes the new package.json in the 'build' folder.
+ * the source code. After the transformation is applied it
+ * writes the new package.json into the 'build' folder.
  */
 function main() {
     const require = module.createRequire(import.meta.url);
@@ -26,10 +26,10 @@ function main() {
     pkgManifest.exports["./css"] = './lib/style.css';
     pkgManifest.main = './lib/main.cjs'
     pkgManifest.module = './lib/main.js'
+
     /**
-     * The NEXT_VERSION variable can be assigned to the value
-     * of a git tag in CI/CD envs in order to populate the
-     * version field in the new package.json
+     * The NEXT_VERSION variable can be used in CI/CD envs in order to populate
+     * the version field in the new package.json
      */
     pkgManifest.version = process.env.NEXT_VERSION ?? '0.0.0';
     fs.writeFileSync(
