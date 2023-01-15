@@ -104,7 +104,7 @@
     "build:apps/assisted-ui": "yarn workspace assisted-ui run build",
     "preview:apps/assisted-ui": "yarn workspace assisted-ui run preview",
     "serve:apps/assisted-ui": "yarn workspace assisted-ui serve",
-    "clean": "rm -rf node_modules && yarn workspaces run clean",
+    "clean": "rm -rf {apps,libs}/*/{node_modules,build} node_modules",
     "update-api": "scripts/update-api.sh",
     "i18n": "scripts/i18n.sh"
   },
