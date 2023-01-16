@@ -16,7 +16,7 @@ import { selectCurrentClusterPermissionsState } from '../../../selectors';
 import { OcmCheckboxField, OcmInputField } from '../../ui/OcmFormFields';
 
 interface VipStaticValueProps {
-  vipName: string;
+  vipName: 'apiVip' | 'ingressVip';
   cluster: Cluster;
   validationErrorMessage?: string;
 }

@@ -11,6 +11,7 @@ import {
   getReportIssueLink,
   operatorLabels,
   useAlerts,
+  OperatorName,
 } from '../../../common';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { downloadClusterInstallationLogs } from './utils';
@@ -30,11 +31,10 @@ type InstallationProgressWarningProps = {
 
 const getFailedOperatorsNames = (failedOperators: MonitoredOperator[], t: TFunction): string => {
   let failedOperatorsNames = '';
-  const translatedOperatorLables = operatorLabels(t);
+  const translatedOperatorLabels = operatorLabels(t);
   for (let i = 0; i < failedOperators.length; i++) {
-    const operatorName: string = failedOperators[i].name || '';
-    const operatorLabel: string =
-      (operatorName && (translatedOperatorLables[operatorName] as string)) || '';
+    const operatorName = (failedOperators[i].name as OperatorName) || '';
+    const operatorLabel: string = (operatorName && translatedOperatorLabels[operatorName]) || '';
     if (i > 0) {
       if (i === failedOperators.length - 1) failedOperatorsNames += ' and ';
       else failedOperatorsNames += ', ';
