@@ -1,60 +1,4 @@
 {
-  "name": "openshift-assisted-ui-lib",
-  "version": "0.0.0",
-  "description": "React component library for the Bare Metal Installer",
-  "license": "Apache-2.0",
-  "repository": "openshift-assisted/assisted-ui-lib",
-  "main": "dist/index.js",
-  "exports": {
-    ".": "./dist/index.js",
-    "./index.css": "./dist/index.css",
-    "./cim": "./dist/cim/index.js",
-    "./ocm": "./dist/ocm/index.js",
-    "./locales/": "./dist/locales/"
-  },
-  "typesVersions": {
-    "*": {
-      "cim": [
-        "./dist/src/cim/index.d.ts"
-      ],
-      "ocm": [
-        "./dist/src/ocm/index.d.ts"
-      ]
-    }
-  },
-  "module": "dist/index.js",
-  "source": "src/index.ts",
-  "types": "dist/src/index.d.ts",
-  "engines": {
-    "node": ">=12.16"
-  },
-  "scripts": {
-    "clean": "rimraf dist",
-    "prebuild": "run-s clean test",
-    "build": "node ./scripts/esbuild/prod.js",
-    "start": "yarn clean && node ./scripts/esbuild/dev.js",
-    "sync-dist": "./scripts/sync-dist.sh",
-    "prepare": "install-peers",
-    "test": "run-s test:circular lint format:check",
-    "test:circular": "dpdm --warning false --tree false --exit-code circular:1 ./src/index.ts",
-    "lint": "eslint . --max-warnings=114 --color",
-    "lint:fix": "yarn run lint --fix",
-    "format": "prettier --write '**/*.{json,md,scss,yaml,yml}'",
-    "format:check": "prettier --check '**/*.{json,md,scss,yaml,yml}'",
-    "update-api": "./scripts/update-api.sh ./src/common/api/swagger.yaml ./src/common/api/types.ts",
-    "i18n": "./scripts/i18n.sh"
-  },
-  "peerDependencies": {
-    "@patternfly/react-code-editor": "^4.47.2",
-    "@patternfly/react-core": "^4.206.2",
-    "@patternfly/react-icons": "^4.57.2",
-    "@patternfly/react-styles": "^4.56.2",
-    "@patternfly/react-table": "^4.75.2",
-    "@patternfly/react-tokens": "^4.58.2",
-    "@reduxjs/toolkit": "^1.5",
-    "@sentry/browser": "^5.9 || ^6.0",
-    "axios": ">=0.23.0 <1.0.0",
-    "i18next": "^20.4.0 || ^21.0",
   "dependencies": {
     "@openshift-console/dynamic-plugin-sdk": "0.0.3",
     "@patternfly/react-code-editor": "^4.82.82",
@@ -104,7 +48,7 @@
     "build:apps/assisted-ui": "yarn workspace assisted-ui run build",
     "preview:apps/assisted-ui": "yarn workspace assisted-ui run preview",
     "serve:apps/assisted-ui": "yarn workspace assisted-ui serve",
-    "clean": "rm -rf {apps,libs}/*/{node_modules,build} node_modules",
+    "clean": "rm -rf {apps,libs}/*/{node_modules,build,.cache} node_modules",
     "update-api": "scripts/update-api.sh",
     "i18n": "scripts/i18n.sh"
   },
