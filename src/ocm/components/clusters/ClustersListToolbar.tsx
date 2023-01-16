@@ -20,7 +20,7 @@ import {
   Tooltip,
 } from '@patternfly/react-core';
 import { FilterIcon, SyncIcon } from '@patternfly/react-icons';
-import { Cluster, clusterStatusLabels, ToolbarButton } from '../../../common';
+import { Cluster, clusterStatusLabels, isSelectEventChecked, ToolbarButton } from '../../../common';
 import { ResourceUIState } from '../../../common';
 import { selectClustersUIState } from '../../selectors/clusters';
 import { fetchClustersAsync } from '../../reducers/clusters/clustersSlice';
@@ -73,10 +73,9 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
   };
 
   const onStatusToggle: SelectProps['onToggle'] = () => setStatusExpanded(!isStatusExpanded);
-  const onStatusSelect: SelectProps['onSelect'] = (event, value) => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    onSelect('status', event.target.checked, value as string);
+  const onStatusSelect: SelectProps['onSelect'] = (event, val) => {
+    const value = val as Cluster['status'];
+    onSelect('status', isSelectEventChecked(event), value);
   };
 
   const onDeleteChip: ToolbarFilterProps['deleteChip'] = (type, id) => {

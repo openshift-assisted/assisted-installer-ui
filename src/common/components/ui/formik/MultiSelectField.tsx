@@ -29,11 +29,11 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
   ...props
 }) => {
   const [isOpen, setOpen] = React.useState(false);
-  const [field, { touched, error }, { setValue }] = useField(props.name);
+  const [field, { touched, error }, { setValue }] = useField<string[]>(props.name);
   const fieldId = getFieldId(props.name, 'multiinput', idPostfix);
   const isValid = !(touched && error);
   const errorMessage = !isValid ? error : '';
-  const hText = getHelperText ? getHelperText(field.value) : helperText;
+  const hText = getHelperText ? getHelperText(field.value?.join(',') || '') : helperText;
 
   const onToggle = (isOpen: boolean) => setOpen(isOpen);
   const onClearSelection = () => {
@@ -48,14 +48,14 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
     const selected = field.value;
 
     // selected just now
-    const selectionValue =
+    const selectionValue: string =
       (
         selection as {
           /* TypeScript hack, debug hint: created as part of "selections" array below */ value?: string;
         }
-      ).value || selection;
+      ).value || (selection as string);
 
-    let newValue;
+    let newValue: string[];
     if (selected.includes(selectionValue)) {
       newValue = selected.filter((sel: string) => sel !== selectionValue);
     } else {
@@ -78,7 +78,7 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
   });
 
   const children = options
-    .filter((option) => !(field.value || []).includes(option.value))
+    .filter((option) => !(field.value || []).includes(option.value.toString()))
     .map((option) => (
       <SelectOption key={option.id} id={option.id} value={option.value}>
         {option.displayName}

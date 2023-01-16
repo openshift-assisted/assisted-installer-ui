@@ -148,38 +148,42 @@ export const vipRangeValidationSchema = (
   hostSubnets: HostSubnets,
   { machineNetworks, hostSubnet }: NetworkConfigurationValues,
 ) =>
-  Yup.string().test('vip-validation', 'IP Address is outside of selected subnet', function (value) {
-    if (!value) {
-      return true;
-    }
-    try {
-      ipValidationSchema.validateSync(value);
-    } catch (err) {
-      return this.createError({ message: getErrorMessage(err) });
-    }
-
-    const foundHostSubnets = [];
-    if (machineNetworks) {
-      const cidrs = machineNetworks?.map((network) => network.cidr);
-      foundHostSubnets.push(...hostSubnets.filter((hn) => cidrs?.includes(hn.subnet)));
-    } else {
-      const subnet = hostSubnets.find((hn) => hn.subnet === hostSubnet);
-      if (subnet) {
-        foundHostSubnets.push(subnet);
+  Yup.string().test(
+    'vip-validation',
+    'IP Address is outside of selected subnet',
+    function (value: string) {
+      if (!value) {
+        return true;
       }
-    }
-    for (const hostSubnet of foundHostSubnets) {
-      if (hostSubnet?.subnet) {
-        // Workaround for bug in CIM backend. hostIDs are empty
-        if (!hostSubnet.hostIDs.length) {
-          return true;
-        } else if (isInSubnet(value, hostSubnet.subnet)) {
-          return true;
+      try {
+        ipValidationSchema.validateSync(value);
+      } catch (err) {
+        return this.createError({ message: getErrorMessage(err) });
+      }
+
+      const foundHostSubnets = [];
+      if (machineNetworks) {
+        const cidrs = machineNetworks?.map((network) => network.cidr);
+        foundHostSubnets.push(...hostSubnets.filter((hn) => cidrs?.includes(hn.subnet)));
+      } else {
+        const subnet = hostSubnets.find((hn) => hn.subnet === hostSubnet);
+        if (subnet) {
+          foundHostSubnets.push(subnet);
         }
       }
-    }
-    return false;
-  });
+      for (const hostSubnet of foundHostSubnets) {
+        if (hostSubnet?.subnet) {
+          // Workaround for bug in CIM backend. hostIDs are empty
+          if (!hostSubnet.hostIDs.length) {
+            return true;
+          } else if (isInSubnet(value, hostSubnet.subnet)) {
+            return true;
+          }
+        }
+      }
+      return false;
+    },
+  );
 
 const vipUniqueValidationSchema = ({ ingressVip, apiVip }: NetworkConfigurationValues) =>
   Yup.string().test(
@@ -198,7 +202,7 @@ const requiredOnceSet = (initialValue?: string, message?: string) =>
   Yup.string().test(
     'required-once-set',
     message || 'The value is required.',
-    (value) => value || !initialValue,
+    (value?: string): boolean => !!value || !initialValue,
   );
 
 export const hostSubnetValidationSchema = Yup.string().when(['managedNetworkingType'], {
@@ -229,13 +233,13 @@ export const ipBlockValidationSchema = (reservedCidrs: string | string[] | undef
     .test(
       'valid-ip-address',
       'Invalid IP address block. Expected value is a network expressed in CIDR notation (IP/netmask). For example: 123.123.123.0/24, 2055:d7a::/116',
-      (value = '') => isCIDR.v4(value) || isCIDR.v6(value),
+      (value: string): boolean => !!value && (isCIDR.v4(value) || isCIDR.v6(value)),
     )
     .test(
       'valid-netmask',
       'IPv4 netmask must be between 1-25 and include at least 128 addresses.\nIPv6 netmask must be between 8-128 and include at least 256 addresses.',
-      (value = '') => {
-        const suffix = parseInt(value.split('/')[1]);
+      (value: string) => {
+        const suffix = parseInt((value || '').split('/')[1]);
 
         return (
           (isCIDR.v4(value) && 0 < suffix && suffix < 26) ||
@@ -525,12 +529,14 @@ export const dualStackValidationSchema = (field: string) =>
     .test(
       'dual-stack-ipv4',
       'First network has to be IPv4 subnet.',
-      (values) => values[0].cidr && Address4.isValid(values[0].cidr),
+      (values?: { cidr: MachineNetwork['cidr'] }[]): boolean =>
+        !!values?.[0].cidr && Address4.isValid(values[0].cidr),
     )
     .test(
       'dual-stack-ipv6',
       'Second network has to be IPv6 subnet.',
-      (values) => values[1].cidr && Address6.isValid(values[1].cidr),
+      (values?: { cidr: MachineNetwork['cidr'] }[]): boolean =>
+        !!values?.[1].cidr && Address6.isValid(values[1].cidr),
     );
 
 export const IPv4ValidationSchema = Yup.array().test(

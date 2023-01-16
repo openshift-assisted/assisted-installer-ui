@@ -60,6 +60,18 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
   const canAddHosts =
     (!isSNO(cluster) || isSNOExpansionAllowed) && cluster.status === 'installed' && !ocmClient;
 
+  const onAddHosts = React.useCallback(() => {
+    const doItAsync = async () => {
+      try {
+        const { data } = await ClustersAPI.allowAddHosts(cluster.id);
+        updateCluster(data);
+      } catch (e) {
+        handleApiError(e);
+      }
+    };
+    void doItAsync();
+  }, [cluster.id]);
+
   return (
     <Stack hasGutter>
       <StackItem>
@@ -135,14 +147,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
                 <Link to={`${routeBasePath}/clusters/${cluster.id}`} {...props} />
               )}
               id={getClusterDetailId('button-add-hosts')}
-              onClick={async () => {
-                try {
-                  const { data } = await ClustersAPI.allowAddHosts(cluster.id);
-                  updateCluster(data);
-                } catch (e) {
-                  handleApiError(e);
-                }
-              }}
+              onClick={onAddHosts}
             >
               Add hosts
             </ToolbarButton>
