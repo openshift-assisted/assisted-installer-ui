@@ -71,8 +71,8 @@ const FailingValidation = <S extends string>({
 
   const issue = t('ai:{{check_failed}} check failed', {
     check_failed:
-      (hostValidationLabels(t)[validation.id] as string) ||
-      (clusterValidationLabels(t)[validation.id] as string) ||
+      (hostValidationLabels(t)[validation.id as HostValidation['id']]) ||
+      (clusterValidationLabels(t)[validation.id as ClusterValidation['id']]) ||
       validation.id,
   });
 

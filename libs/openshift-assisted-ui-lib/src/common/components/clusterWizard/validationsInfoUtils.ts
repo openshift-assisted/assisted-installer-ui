@@ -11,9 +11,9 @@ import {
 import {
   ClusterWizardStepHostStatusDeterminationObject,
   Validation,
-  ValidationGroup as HostValidationGroup,
-  ValidationsInfo as HostValidationsInfo,
-} from '../../../common/types/hosts';
+  ValidationGroup as HostValidationGroup, ValidationsInfo,
+  ValidationsInfo as HostValidationsInfo
+} from "../../../common/types/hosts";
 import { stringToJSON } from '../../api/utils';
 
 export type WizardStepValidationMap = {
@@ -123,8 +123,9 @@ export const getWizardStepHostValidationsInfo = <ClusterWizardStepsType extends 
   const { groups, validationIds } = wizardStepsValidationsMap[wizardStepId].host;
   return reduce(
     validationsInfo,
-    (result, groupValidations, groupName) => {
-      if (groups.includes(groupName as HostValidationGroup)) {
+    (result, groupValidations, groupNameStr) => {
+      const groupName = groupNameStr as HostValidationGroup;
+      if (groups.includes(groupName)) {
         result[groupName] = groupValidations;
         return result;
       }
@@ -137,7 +138,7 @@ export const getWizardStepHostValidationsInfo = <ClusterWizardStepsType extends 
       }
       return result;
     },
-    {},
+    {} as ValidationsInfo,
   );
 };
 
@@ -171,8 +172,9 @@ export const getWizardStepClusterValidationsInfo = <ClusterWizardStepsType exten
   const { groups, validationIds } = wizardStepsValidationsMap[wizardStepId].cluster;
   return reduce(
     validationsInfo,
-    (result, groupValidations, groupName) => {
-      if (groups.includes(groupName as ClusterValidationGroup)) {
+    (result, groupValidations, groupNameStr) => {
+      const groupName = groupNameStr as ClusterValidationGroup;
+      if (groups.includes(groupName)) {
         result[groupName] = groupValidations;
         return result;
       }
@@ -185,7 +187,7 @@ export const getWizardStepClusterValidationsInfo = <ClusterWizardStepsType exten
       }
       return result;
     },
-    {},
+    {} as ClusterValidationsInfo,
   );
 };
 

@@ -10,8 +10,8 @@ import {
   canDownloadClusterLogs,
   getReportIssueLink,
   operatorLabels,
-  useAlerts,
-} from '../../../common';
+  useAlerts, OperatorName
+} from "../../../common";
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { downloadClusterInstallationLogs } from './utils';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
@@ -32,7 +32,7 @@ const getFailedOperatorsNames = (failedOperators: MonitoredOperator[], t: TFunct
   let failedOperatorsNames = '';
 
   for (let i = 0; i < failedOperators.length; i++) {
-    const operatorName: string = failedOperators[i].name || '';
+    const operatorName = failedOperators[i].name as OperatorName || '';
     if (i > 0) {
       if (i === failedOperators.length - 1) failedOperatorsNames += ' and ';
       else failedOperatorsNames += ', ';

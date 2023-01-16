@@ -10,7 +10,7 @@ import { useTranslation } from '../../../hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
 
 interface VipStaticValueProps {
-  vipName: string;
+  vipName: 'apiVip' | 'ingressVip';
   cluster: Cluster;
   validationErrorMessage?: string;
 }
@@ -19,7 +19,7 @@ const VipStaticValue = ({ vipName, cluster, validationErrorMessage }: VipStaticV
   const { vipDhcpAllocation, machineNetworkCidr } = cluster;
   const { t } = useTranslation();
   if (vipDhcpAllocation && cluster[vipName]) {
-    return cluster[vipName];
+    return <>{cluster[vipName]}</>;
   }
   if (vipDhcpAllocation && validationErrorMessage) {
     return (

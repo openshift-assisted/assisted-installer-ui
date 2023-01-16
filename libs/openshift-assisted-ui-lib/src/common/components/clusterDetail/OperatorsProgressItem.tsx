@@ -12,7 +12,7 @@ import {
 } from '@patternfly/react-tokens';
 import { pluralize } from 'humanize-plus';
 import { MonitoredOperatorsList, OperatorStatus } from '../../api/types';
-import { operatorLabels } from '../../config';
+import { operatorLabels, OperatorName } from "../../config";
 import ClusterProgressItem from './ClusterProgressItem';
 
 import './OperatorsProgressItem.css';
@@ -87,7 +87,8 @@ const OperatorsPopover: React.FC<OperatorsPopoverProps> = ({ operators, children
             if (operator.status === 'available') {
               status = 'installed';
             }
-            const name = operator.name && operatorLabels(t)[operator.name];
+            const operatorName = operator.name as OperatorName;
+            const name = operatorLabels(t)[operatorName] || operator.name;
             return (
               <ListItem key={operator.name} title={operator.statusInfo}>
                 {name} {status}
