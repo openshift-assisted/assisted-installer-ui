@@ -39,6 +39,10 @@
     "vite": "^4.0.0",
     "zx": "^7.1.1"
   },
+  "resolutions": {
+    "@types/react": "17.0.52",
+    "@types/react-dom": "17.0.18"
+  },
   "license": "Apache-2.0",
   "name": "assisted-installer-ui",
   "private": true,
