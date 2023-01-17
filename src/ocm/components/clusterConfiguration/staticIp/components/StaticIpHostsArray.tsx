@@ -142,7 +142,7 @@ const SingleHost = <HostFieldType,>({
 type ExpandedHosts = { [hostIdx: number]: boolean };
 
 const getExpandedHostsInitialValue = (numHosts: number): ExpandedHosts => {
-  const ret = {};
+  const ret: Record<number, boolean> = {};
   for (let i = 0; i < numHosts; ++i) {
     ret[i] = false;
   }

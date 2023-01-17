@@ -21,7 +21,7 @@ import {
   ValidationGroup as HostValidationGroup,
   Validation as HostValidation,
 } from '../../types/hosts';
-import { stringToJSON } from '../../api';
+import { ClusterValidationId, HostValidationId, stringToJSON } from '../../api';
 import { clusterValidationLabels, hostValidationLabels } from '../../config';
 import { getEnabledHosts } from '../hosts';
 import { findValidationFixStep } from './validationsInfoUtils';
@@ -71,8 +71,8 @@ const FailingValidation = <S extends string>({
 
   const issue = t('ai:{{check_failed}} check failed', {
     check_failed:
-      (hostValidationLabels(t)[validation.id] as string) ||
-      (clusterValidationLabels(t)[validation.id] as string) ||
+      (hostValidationLabels(t)[validation.id] as HostValidationId) ||
+      (clusterValidationLabels(t)[validation.id] as ClusterValidationId) ||
       validation.id,
   });
 
