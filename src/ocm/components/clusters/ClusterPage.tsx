@@ -165,9 +165,9 @@ const ClusterPageGeneric: React.FC<{ clusterId: string; showBreadcrumbs: boolean
               errorUI={<ClusterUiError />}
             >
               <FeatureSupportLevelProvider loadingUi={<ClusterLoading />} cluster={cluster}>
-                {/* TODO(mlibra): Position better, for development only*/}
+                {/* TODO(mlibra): Position better, for development only
                 <RebootNodeZeroModal cluster={cluster} />
-
+                */}
                 {getContent(cluster, infraEnv)}
                 {uiState === ResourceUIState.POLLING_ERROR && <ClusterPollingErrorModal />}
                 {uiState === ResourceUIState.UPDATE_ERROR && <ClusterUpdateErrorModal />}
