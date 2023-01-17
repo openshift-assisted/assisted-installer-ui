@@ -30,7 +30,7 @@ let ocmClient: AxiosInstance | null;
 const aiInterceptor = (client: AxiosInstance) => {
   client.interceptors.request.use((cfg) => ({
     ...cfg,
-    url: `${BASE_PATH}${cfg.url}`,
+    url: `${BASE_PATH}${cfg.url || ''}`,
   }));
   return client;
 };
