@@ -2,7 +2,6 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "composite": true,
-    "tsBuildInfoFile": ".cache/.tsbuildinfo"
   },
-  "include": ["src", "../../env.d.ts"]
+  "include": ["src", "env.d.ts"]
 }

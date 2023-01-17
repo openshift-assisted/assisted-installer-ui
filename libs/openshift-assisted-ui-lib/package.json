@@ -87,8 +87,10 @@
   "scripts": {
     "clean": "rm -rf node_modules build",
     "build": "vite build -c vite.config.ts",
+    "build:watch": "vite build -c vite.config.ts --watch",
     "check:circular": "dpdm --warning false --tree false --exit-code circular:1 ./src/index.ts",
     "postbuild": "node scripts/postbuild.mjs",
+    "prebuild:watch": "yarn build",
     "tsc": "tsc"
   },
   "type": "module",

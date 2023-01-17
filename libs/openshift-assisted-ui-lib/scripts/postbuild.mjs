@@ -10,22 +10,23 @@ import fs from "node:fs";
 function main() {
     const require = module.createRequire(import.meta.url);
     const pkgManifest = require('../package.json');
-    pkgManifest.files = ["lib"];
+    pkgManifest.files = ["src"];
     pkgManifest.exports["."] = {
-        import: './lib/main.js',
-        require: './lib/main.cjs'
+        import: './src/index.js',
+        require: './src/index.cjs'
     };
     pkgManifest.exports["./cim"] = {
-        import: './lib/cim.js',
-        require: './lib/cim.cjs'
+        import: './src/cim/index.js',
+        require: './src/cim/index.cjs'
     };
     pkgManifest.exports["./ocm"] = {
-        import: './lib/ocm.js',
-        require: './lib/ocm.cjs'
+        import: './src/ocm/index.js',
+        require: './src/ocm/index.cjs'
     };
-    pkgManifest.exports["./css"] = './lib/style.css';
-    pkgManifest.main = './lib/main.cjs'
-    pkgManifest.module = './lib/main.js'
+    pkgManifest.exports["./css"] = './src/style.css';
+    pkgManifest.main = './src/index.cjs';
+    pkgManifest.module = './src/index.js';
+    pkgManifest.types = './src/index.d.ts';
 
     /**
      * The NEXT_VERSION variable can be used in CI/CD envs in order to populate

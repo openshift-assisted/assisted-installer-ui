@@ -33,10 +33,12 @@
     "@types/react-dom": "^17",
     "@vitejs/plugin-react-swc": "^3.0.0",
     "dpdm": "^3.10.0",
+    "rollup-plugin-visualizer": "^5.9.0",
     "sass": "^1.57.1",
     "sw2dts": "^2.6.3",
     "typescript": "^4.9.3",
     "vite": "^4.0.0",
+    "vite-plugin-dts": "^1.7.1",
     "zx": "^7.1.1"
   },
   "license": "Apache-2.0",
