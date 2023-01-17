@@ -82,7 +82,8 @@ const getHostFailingValidationIds = (hosts: Host[] | undefined) => {
           failingValidations.push(validation.id);
         }
       };
-      validationsInfo[group].forEach(f);
+      const validationGroup = validationsInfo[group] as HostValidation[];
+      validationGroup.forEach(f);
     });
   });
   return failingValidations;

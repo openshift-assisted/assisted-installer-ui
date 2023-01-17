@@ -16,7 +16,7 @@ export const HostsNetworkConfigurationControlGroup = ({
 }: HostsNetworkConfigurationControlGroupProps) => {
   const GROUP_NAME = 'hostsNetworkConfigurationType';
   const clusterWizardContext = useClusterWizardContext();
-  const [{ value }, ,] = useField(GROUP_NAME);
+  const [{ value }] = useField<HostsNetworkConfigurationType>(GROUP_NAME);
 
   const tooltipProps: TooltipProps = {
     hidden: !clusterExists,

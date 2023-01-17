@@ -5,6 +5,8 @@ import {
   ClusterOperatorProps,
   FeatureSupportLevelBadge,
   getFieldId,
+  OPERATOR_NAME_LVM,
+  operatorLabels,
   OperatorsValues,
   PopoverIcon,
   useFeatureSupportLevel,
@@ -12,20 +14,25 @@ import {
 import LvmHostRequirements from './LvmHostRequirements';
 import { getLvmIncompatibleWithCnvReason } from '../../featureSupportLevels/featureStateUtils';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
+import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 
 const LVM_FIELD_NAME = 'useOdfLogicalVolumeManager';
 
-const LvmLabel = (props: ClusterOperatorProps) => (
-  <>
-    Install OpenShift Data Foundation Logical Volume Manager Storage{' '}
-    <PopoverIcon
-      component={'a'}
-      headerContent="Additional Requirements"
-      bodyContent={<LvmHostRequirements clusterId={props.clusterId} />}
-    />
-    <FeatureSupportLevelBadge featureId="LVM" openshiftVersion={props.openshiftVersion} />
-  </>
-);
+const LvmLabel = (props: ClusterOperatorProps) => {
+  const { t } = useTranslation();
+  const operatorName = operatorLabels(t)[OPERATOR_NAME_LVM];
+  return (
+    <>
+      Install {operatorName}{' '}
+      <PopoverIcon
+        component={'a'}
+        headerContent="Additional Requirements"
+        bodyContent={<LvmHostRequirements clusterId={props.clusterId} />}
+      />
+      <FeatureSupportLevelBadge featureId="LVM" openshiftVersion={props.openshiftVersion} />
+    </>
+  );
+};
 
 const LvmCheckbox = ({ clusterId, openshiftVersion }: ClusterOperatorProps) => {
   const fieldId = getFieldId(LVM_FIELD_NAME, 'input');

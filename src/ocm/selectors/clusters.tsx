@@ -31,6 +31,12 @@ export const selectClustersUIState = createSelector(
   },
 );
 
+export type ClusterRowDataProps = {
+  id: string;
+  name: string;
+  baseDnsDomain?: string;
+};
+
 const clusterToClusterTableRow = (cluster: Cluster, t: TFunction): IRow => {
   const { id, name = '', baseDnsDomain, createdAt } = cluster;
   const dateTimeCell = getDateTimeCell(createdAt);
@@ -39,6 +45,12 @@ const clusterToClusterTableRow = (cluster: Cluster, t: TFunction): IRow => {
     cpuArchitecture: cluster.cpuArchitecture,
     withMultiText: true,
   });
+  const props: ClusterRowDataProps = {
+    name,
+    id,
+    baseDnsDomain,
+  };
+
   return {
     cells: [
       {
@@ -77,11 +89,7 @@ const clusterToClusterTableRow = (cluster: Cluster, t: TFunction): IRow => {
         sortableValue: dateTimeCell.sortableValue,
       } as HumanizedSortable,
     ],
-    props: {
-      name,
-      id,
-      baseDnsDomain,
-    },
+    props,
   };
 };
 

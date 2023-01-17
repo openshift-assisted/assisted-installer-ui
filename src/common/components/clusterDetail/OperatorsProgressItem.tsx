@@ -11,13 +11,13 @@ import {
   global_success_color_100 as okColor,
 } from '@patternfly/react-tokens';
 import { pluralize } from 'humanize-plus';
-import { MonitoredOperatorsList, OperatorStatus } from '../../api/types';
-import { operatorLabels } from '../../config';
+import { TFunction } from 'i18next';
+import { MonitoredOperatorsList, OperatorStatus } from '../../api';
+import { operatorLabels, OperatorName } from '../../config';
 import ClusterProgressItem from './ClusterProgressItem';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 import './OperatorsProgressItem.css';
-import { useTranslation } from '../../hooks/use-translation-wrapper';
-import { TFunction } from 'i18next';
 
 export function getAggregatedStatus(operators: MonitoredOperatorsList) {
   const operatorStates: (OperatorStatus | 'pending')[] = operators.map(
@@ -70,12 +70,15 @@ export function getOperatorsIcon(status: OperatorStatus | 'pending') {
   }
 }
 
-type OperatorsPopoverProps = {
+type OperatorListProps = {
   operators: MonitoredOperatorsList;
+};
+
+type OperatorsPopoverProps = OperatorListProps & {
   children: React.ComponentProps<typeof Popover>['children'];
 };
 
-const OperatorsPopover: React.FC<OperatorsPopoverProps> = ({ operators, children }) => {
+const OperatorsPopover = ({ operators, children }: OperatorsPopoverProps) => {
   const { t } = useTranslation();
   return (
     <Popover
@@ -87,7 +90,8 @@ const OperatorsPopover: React.FC<OperatorsPopoverProps> = ({ operators, children
             if (operator.status === 'available') {
               status = 'installed';
             }
-            const name = operator.name && operatorLabels(t)[operator.name];
+            const operatorName = operator.name as OperatorName;
+            const name = operatorLabels(t)[operatorName] || operator.name;
             return (
               <ListItem key={operator.name} title={operator.statusInfo}>
                 {name} {status}
@@ -104,11 +108,7 @@ const OperatorsPopover: React.FC<OperatorsPopoverProps> = ({ operators, children
   );
 };
 
-type OperatorsProgressItemProps = {
-  operators: MonitoredOperatorsList;
-};
-
-const OperatorsProgressItem: React.FC<OperatorsProgressItemProps> = ({ operators }) => {
+const OperatorsProgressItem = ({ operators }: OperatorListProps) => {
   const { t } = useTranslation();
   const icon = getOperatorsIcon(getAggregatedStatus(operators));
   const label = getOperatorsLabel(operators, t);

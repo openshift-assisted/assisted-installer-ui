@@ -36,19 +36,25 @@ const ResetClusterModal: React.FC = () => {
     onClose();
   };
 
-  const handleReset = async () => {
-    setIsSubmitting(true);
-    try {
-      setError(null);
-      const { data } = await ClustersAPI.reset(cluster.id);
-      dispatch(updateCluster(data));
-      onClose();
-    } catch (e) {
-      handleApiError(e, () => {
-        setError({ title: 'Failed to reset cluster installation', message: getApiErrorMessage(e) });
-      });
-    }
-    setIsSubmitting(false);
+  const handleReset = () => {
+    const doItAsync = async () => {
+      setIsSubmitting(true);
+      try {
+        setError(null);
+        const { data } = await ClustersAPI.reset(cluster.id);
+        dispatch(updateCluster(data));
+        onClose();
+      } catch (e) {
+        handleApiError(e, () => {
+          setError({
+            title: 'Failed to reset cluster installation',
+            message: getApiErrorMessage(e),
+          });
+        });
+      }
+      setIsSubmitting(false);
+    };
+    void doItAsync();
   };
 
   const collectedLogsPercentage = `${Math.round(

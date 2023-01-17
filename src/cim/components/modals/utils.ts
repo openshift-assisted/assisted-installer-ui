@@ -51,7 +51,7 @@ export const getBareMetalHost = (
   spec: {
     bmc: {
       address: values.bmcAddress,
-      credentialsName: secret.metadata?.name,
+      credentialsName: secret.metadata?.name || '',
       disableCertificateVerification: !!values.disableCertificateVerification,
     },
     bootMACAddress: values.bootMACAddress,
