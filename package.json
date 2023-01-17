@@ -42,6 +42,10 @@
   "license": "Apache-2.0",
   "name": "assisted-installer-ui",
   "private": true,
+  "resolutions": {
+    "@types/react": "^17",
+    "@types/react-dom": "^17"
+  },
   "scripts": {
     "build:libs/openshift-assisted-ui-lib": "yarn workspace openshift-assisted-ui-lib run build",
     "tsc:libs/openshift-assisted-ui-lib": "yarn workspace openshift-assisted-ui-lib run tsc",
