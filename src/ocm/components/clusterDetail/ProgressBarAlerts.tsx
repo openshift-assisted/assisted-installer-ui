@@ -30,16 +30,16 @@ type InstallationProgressWarningProps = {
 
 const getFailedOperatorsNames = (failedOperators: MonitoredOperator[], t: TFunction): string => {
   let failedOperatorsNames = '';
-
+  const translatedOperatorLables = operatorLabels(t);
   for (let i = 0; i < failedOperators.length; i++) {
     const operatorName: string = failedOperators[i].name || '';
+    const operatorLabel: string =
+      (operatorName && (translatedOperatorLables[operatorName] as string)) || '';
     if (i > 0) {
       if (i === failedOperators.length - 1) failedOperatorsNames += ' and ';
       else failedOperatorsNames += ', ';
     }
-    failedOperatorsNames += `${operatorName && operatorLabels(t)[operatorName]} (${
-      operatorName && operatorName.toUpperCase()
-    })`;
+    failedOperatorsNames += `${operatorLabel} (${operatorName.toUpperCase()})`;
   }
   return failedOperatorsNames;
 };
@@ -96,7 +96,9 @@ export const HostInstallationWarning = ({
           <>
             <AlertActionLink
               id="cluster-installation-logs-button"
-              onClick={() => downloadClusterInstallationLogs(addAlert, cluster.id)}
+              onClick={() => {
+                void downloadClusterInstallationLogs(addAlert, cluster.id);
+              }}
               isDisabled={!canDownloadClusterLogs(cluster)}
             >
               Download installation logs
@@ -166,7 +168,9 @@ export const HostsInstallationFailed = ({
             </AlertActionLink>
             <AlertActionLink
               id="cluster-installation-logs-button"
-              onClick={() => downloadClusterInstallationLogs(addAlert, cluster.id)}
+              onClick={() => {
+                void downloadClusterInstallationLogs(addAlert, cluster.id);
+              }}
               isDisabled={!canDownloadClusterLogs(cluster)}
             >
               Download installation logs

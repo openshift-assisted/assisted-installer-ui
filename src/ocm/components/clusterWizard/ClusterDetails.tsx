@@ -1,15 +1,7 @@
 import React from 'react';
-import omit from 'lodash/omit';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import {
-  Cluster,
-  V2ClusterUpdateParams,
-  useAlerts,
-  LoadingState,
-  ClusterWizardStep,
-  InfraEnv,
-} from '../../../common';
+import { Cluster, useAlerts, LoadingState, ClusterWizardStep, InfraEnv } from '../../../common';
 import { usePullSecret } from '../../hooks';
 import { getApiErrorMessage, handleApiError, isUnknownServerError } from '../../api';
 import { setServerUpdateError, updateCluster } from '../../reducers/clusters';
@@ -19,15 +11,18 @@ import { useOpenshiftVersions, useManagedDomains, useUsedClusterNames } from '..
 import ClusterDetailsForm from './ClusterDetailsForm';
 import ClusterWizardNavigation from './ClusterWizardNavigation';
 import { routeBasePath } from '../../config';
-import { ClustersService } from '../../services';
-import { ClusterCreateParamsWithStaticNetworking } from '../../services/types';
+import {
+  ClusterDetailsUpdateParams,
+  ClustersService,
+  ClusterCreateParamsWithStaticNetworking,
+} from '../../services';
 
 type ClusterDetailsProps = {
   cluster?: Cluster;
   infraEnv?: InfraEnv;
 };
 
-const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster, infraEnv }) => {
+const ClusterDetails = ({ cluster, infraEnv }: ClusterDetailsProps) => {
   const clusterWizardContext = useClusterWizardContext();
   const managedDomains = useManagedDomains();
   const { addAlert, clearAlerts } = useAlerts();
@@ -41,13 +36,9 @@ const ClusterDetails: React.FC<ClusterDetailsProps> = ({ cluster, infraEnv }) =>
   }, [errorOCPVersions, addAlert]);
 
   const handleClusterUpdate = React.useCallback(
-    async (clusterId: Cluster['id'], values: V2ClusterUpdateParams) => {
+    async (clusterId: Cluster['id'], params: ClusterDetailsUpdateParams) => {
       clearAlerts();
-      const params: V2ClusterUpdateParams = omit(values, [
-        'highAvailabilityMode',
-        'pullSecret',
-        'openshiftVersion',
-      ]);
+
       try {
         const { data: updatedCluster } = await ClustersService.update(
           clusterId,

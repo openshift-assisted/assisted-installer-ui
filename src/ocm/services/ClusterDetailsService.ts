@@ -8,29 +8,37 @@ import {
   getClusterDetailsInitialValues,
   isArmArchitecture,
 } from '../../common';
-import omit from 'lodash/omit';
 import DiskEncryptionService from './DiskEncryptionService';
 import {
   ClusterCreateParamsWithStaticNetworking,
+  ClusterDetailsUpdateParams,
   HostsNetworkConfigurationType,
   OcmClusterDetailsValues,
 } from './types';
 import { getDummyInfraEnvField } from '../components/clusterConfiguration/staticIp/data/dummyData';
 import { ocmClient } from '../api';
 
+const getNewClusterCpuArchitecture = (urlSearchParams: string) => {
+  const params = new URLSearchParams(urlSearchParams);
+  const hasArmSearchParam = params.get('useArm') === 'true';
+  return hasArmSearchParam ? CpuArchitecture.ARM : CpuArchitecture.x86;
+};
+
+const getExistingClusterCpuArchitecture = (infraEnv: InfraEnv) => {
+  return infraEnv.cpuArchitecture || CpuArchitecture.x86;
+};
+
 const ClusterDetailsService = {
   getClusterCreateParams(values: OcmClusterDetailsValues): ClusterCreateParamsWithStaticNetworking {
-    const params: ClusterCreateParamsWithStaticNetworking = omit(values, [
-      'useRedHatDnsService',
-      'SNODisclaimer',
-      'enableDiskEncryptionOnMasters',
-      'enableDiskEncryptionOnWorkers',
-      'diskEncryptionMode',
-      'diskEncryption',
-      'diskEncryptionTangServers',
-      'hostsNetworkConfigurationType',
-    ]);
-    params.diskEncryption = DiskEncryptionService.getDiskEncryptionParams(values);
+    const params: ClusterCreateParamsWithStaticNetworking = {
+      name: values.name,
+      highAvailabilityMode: values.highAvailabilityMode,
+      openshiftVersion: values.openshiftVersion,
+      pullSecret: values.pullSecret,
+      baseDnsDomain: values.baseDnsDomain,
+      cpuArchitecture: values.cpuArchitecture,
+      diskEncryption: DiskEncryptionService.getDiskEncryptionParams(values),
+    };
     if (isArmArchitecture({ cpuArchitecture: params.cpuArchitecture })) {
       params.userManagedNetworking = true;
     }
@@ -39,6 +47,16 @@ const ClusterDetailsService = {
     }
     if (ocmClient) {
       params.tags = AI_UI_TAG;
+    }
+    return params;
+  },
+  getClusterUpdateParams(values: OcmClusterDetailsValues): ClusterDetailsUpdateParams {
+    const params: ClusterDetailsUpdateParams = {
+      name: values.name,
+      baseDnsDomain: values.baseDnsDomain,
+    };
+    if (values.pullSecret) {
+      params.pullSecret = values.pullSecret;
     }
     return params;
   },
@@ -60,10 +78,11 @@ const ClusterDetailsService = {
       cluster,
       ...args,
     });
-    const params = new URLSearchParams(urlSearchParams);
-    const hasArmSearchParam = params.get('useArm') === 'true';
-    const cpuArchitecture =
-      cluster?.cpuArchitecture || (hasArmSearchParam ? CpuArchitecture.ARM : CpuArchitecture.x86);
+
+    const cpuArchitecture = infraEnv
+      ? getExistingClusterCpuArchitecture(infraEnv)
+      : getNewClusterCpuArchitecture(urlSearchParams);
+
     const hostsNetworkConfigurationType = infraEnv?.staticNetworkConfig
       ? HostsNetworkConfigurationType.STATIC
       : HostsNetworkConfigurationType.DHCP;

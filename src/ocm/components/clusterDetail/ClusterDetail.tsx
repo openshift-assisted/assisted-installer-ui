@@ -26,7 +26,7 @@ import ClusterToolbar from '../clusters/ClusterToolbar';
 import { downloadClusterInstallationLogs, getClusterDetailId } from './utils';
 import { LaunchOpenshiftConsoleButton } from '../../../common/components/clusterDetail/ConsoleModal';
 import ClusterProperties from './ClusterProperties';
-import { isSingleClusterMode, routeBasePath } from '../../config';
+import { routeBasePath } from '../../config';
 import ClusterDetailStatusVarieties, {
   useClusterStatusVarieties,
 } from './ClusterDetailStatusVarieties';
@@ -59,6 +59,18 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
     );
   const canAddHosts =
     (!isSNO(cluster) || isSNOExpansionAllowed) && cluster.status === 'installed' && !ocmClient;
+
+  const onAddHosts = React.useCallback(() => {
+    const doItAsync = async () => {
+      try {
+        const { data } = await ClustersAPI.allowAddHosts(cluster.id);
+        updateCluster(data);
+      } catch (e) {
+        handleApiError(e);
+      }
+    };
+    void doItAsync();
+  }, [cluster.id]);
 
   return (
     <Stack hasGutter>
@@ -135,27 +147,18 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
                 <Link to={`${routeBasePath}/clusters/${cluster.id}`} {...props} />
               )}
               id={getClusterDetailId('button-add-hosts')}
-              onClick={async () => {
-                try {
-                  const { data } = await ClustersAPI.allowAddHosts(cluster.id);
-                  updateCluster(data);
-                } catch (e) {
-                  handleApiError(e);
-                }
-              }}
+              onClick={onAddHosts}
             >
               Add hosts
             </ToolbarButton>
           )}
-          {!isSingleClusterMode() && (
-            <ToolbarButton
-              variant={ButtonVariant.link}
-              component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
-              id={getClusterDetailId('button-back-to-all-clusters')}
-            >
-              Back to all clusters
-            </ToolbarButton>
-          )}
+          <ToolbarButton
+            variant={ButtonVariant.link}
+            component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
+            id={getClusterDetailId('button-back-to-all-clusters')}
+          >
+            Back to all clusters
+          </ToolbarButton>
           <ToolbarSecondaryGroup>
             <ToolbarButton
               id="cluster-installation-logs-button"

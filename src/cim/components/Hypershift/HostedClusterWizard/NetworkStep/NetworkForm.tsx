@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import * as React from 'react';
 import cidrTools from 'cidr-tools';
 import { NetworkFormProps, NetworkFormValues } from './types';
@@ -34,13 +33,10 @@ const NetworkForm: React.FC<NetworkFormProps> = ({ agents, onValuesChanged }) =>
     (a) => a.status?.inventory?.interfaces,
   );
   const allInterfaces: Interface[] = flattenDeep(allInterfacesDeep).filter(Boolean) as Interface[];
-  const allIpsRaw: string[][] = allInterfaces.map((i: Interface): string[] => {
-    // @ts-ignore
-    const ipV4Addresses: string[] = (i.ipV4Addresses as string[]) || ([] as string[]);
-    // @ts-ignore
-    const ipV6Addresses: string[] = (i.ipV6Addresses as string[]) || ([] as string[]);
-    return [...ipV4Addresses, ...ipV6Addresses];
-  });
+  const allIpsRaw: string[][] = allInterfaces.map((i: Interface): string[] => [
+    ...(i.ipv4Addresses || []),
+    ...(i.ipv6Addresses || []),
+  ]);
   const allIps: string[] = flattenDeep<string>(allIpsRaw);
 
   const agentCIDRs = allIps.map((ip) => cidrTools.merge([ip][0]));

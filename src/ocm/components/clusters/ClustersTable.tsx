@@ -6,7 +6,6 @@ import {
   TableBody,
   RowWrapper,
   RowWrapperProps,
-  IRowData,
   SortByDirection,
   ISortBy,
   OnSort,
@@ -16,15 +15,17 @@ import {
   breakWord,
   sortable,
 } from '@patternfly/react-table';
-import { ExtraParamsType } from '@patternfly/react-table/dist/js/components/Table/base/types';
 import { ClusterTableRows } from '../../../common/types/clusters';
 import DeleteClusterModal from './DeleteClusterModal';
-import { getClusterTableStatusCell } from '../../selectors/clusters';
+import { ClusterRowDataProps, getClusterTableStatusCell } from '../../selectors/clusters';
 import { clusterStatusLabels, rowSorter, HumanizedSortable } from '../../../common';
 import ClustersListToolbar, { ClusterFiltersType } from './ClustersListToolbar';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
-const rowKey = ({ rowData }: ExtraParamsType) => rowData?.props.id;
+type DeleteClusterID = Pick<ClusterRowDataProps, 'id' | 'name'>;
+
+const rowKey = ({ rowData }: { rowData?: { props?: ClusterRowDataProps } }): string | undefined =>
+  rowData?.props?.id;
 
 const STORAGE_KEY_CLUSTERS_FILTER = 'assisted-installer-cluster-list-filters';
 
@@ -67,18 +68,12 @@ const columns: TablePropsCellType[] = [
 
 const getStatusCell = (row: IRow) => row.cells?.[3] as HumanizedSortable | undefined;
 
-const ClusterRowWrapper = (props: RowWrapperProps) => {
-  /* eslint-disable @typescript-eslint/ban-ts-comment */
-  return (
-    <RowWrapper
-      {...props}
-      // @ts-ignore
-      data-testid={`cluster-row-${props.row?.props?.name}`}
-      // @ts-ignore
-      id={`cluster-row-${props.row?.props?.name}`}
-    />
-  );
-  /* eslint-enable @typescript-eslint/ban-ts-comment */
+const ClusterRowWrapper = (_props: RowWrapperProps) => {
+  const props = { ..._props };
+  const name = (props?.row?.props as ClusterRowDataProps | undefined)?.name || '';
+  props['id'] = `cluster-row-${name}`;
+  props['data-testid'] = `cluster-row-${name}`;
+  return <RowWrapper {...props} />;
 };
 
 const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) => {
@@ -117,17 +112,20 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
   }, [filters, sortBy, searchString]);
 
   const actionResolver: IActionsResolver = React.useCallback(
-    (rowData) => [
-      {
-        title: 'Delete',
-        id: `button-delete-${rowData.props.name}`,
-        isDisabled:
-          getClusterTableStatusCell(rowData).sortableValue === clusterStatusLabels(t).installing,
-        onClick: (event: React.MouseEvent, rowIndex: number, rowData: IRowData) => {
-          setDeleteClusterID({ id: rowData.props.id, name: rowData.props.name });
+    (rowData) => {
+      const props = rowData.props as ClusterRowDataProps;
+      return [
+        {
+          title: 'Delete',
+          id: `button-delete-${props.name}`,
+          isDisabled:
+            getClusterTableStatusCell(rowData).sortableValue === clusterStatusLabels(t).installing,
+          onClick: (/*event: React.MouseEvent, rowIndex: number, rowData: IRowData*/) => {
+            setDeleteClusterID({ id: props.id, name: props.name });
+          },
         },
-      },
-    ],
+      ];
+    },
     [t],
   );
 
@@ -143,8 +141,9 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
 
   const rowFilter = React.useCallback(
     (row: IRow) => {
-      const searchableProps: string[] = [row.props.name, row.props.id, row.props.baseDnsDomain].map(
-        (prop: string) => (prop || '').toLowerCase(),
+      const props = row.props as ClusterRowDataProps;
+      const searchableProps: string[] = [props.name, props.id, props.baseDnsDomain].map(
+        (prop?: string) => (prop || '').toLowerCase(),
       );
       if (
         searchString &&
@@ -207,11 +206,6 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
       )}
     </>
   );
-};
-
-type DeleteClusterID = {
-  id: string;
-  name: string;
 };
 
 export default ClustersTable;
