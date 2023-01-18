@@ -1,13 +1,14 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
 import { Spinner, Alert, AlertVariant } from '@patternfly/react-core';
-import { Cluster, stringToJSON } from '../../../api';
-import { HostSubnets, NetworkConfigurationValues, ValidationsInfo } from '../../../types/clusters';
+import { Cluster } from '../../../api';
+import { HostSubnets, NetworkConfigurationValues } from '../../../types';
 import { CheckboxField, FormikStaticField, InputField } from '../../ui';
 import { NO_SUBNET_SET } from '../../../config';
 import { FeatureSupportLevelBadge } from '../../featureSupportLevels';
 import { useTranslation } from '../../../hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
+import { getVipValidationsById } from '../../clusterConfiguration';
 
 interface VipStaticValueProps {
   vipName: 'apiVip' | 'ingressVip';
@@ -58,27 +59,6 @@ const getVipHelperSuffix = (
     return t('ai:This IP was allocated by the DHCP server.');
   }
   return '';
-};
-
-const getVipValidationsById = (
-  t: TFunction,
-  validationsInfoString?: Cluster['validationsInfo'],
-): { [key: string]: string | undefined } => {
-  const validationsInfo = stringToJSON<ValidationsInfo>(validationsInfoString) || {};
-  const failedDhcpAllocationMessageStubs = [
-    t('ai:VIP IP allocation from DHCP server has been timed out'), // TODO(jtomasek): remove this one once it is no longer in backend
-    t('ai:IP allocation from the DHCP server timed out.'),
-  ];
-  return (validationsInfo.network || []).reduce((lookup, validation) => {
-    if (['api-vip-defined', 'ingress-vip-defined'].includes(validation.id)) {
-      lookup[validation.id] =
-        validation.status === 'failure' &&
-        failedDhcpAllocationMessageStubs.find((stub) => validation.message.match(stub))
-          ? validation.message
-          : undefined;
-    }
-    return lookup;
-  }, {});
 };
 
 export type VirtualIPControlGroupProps = {

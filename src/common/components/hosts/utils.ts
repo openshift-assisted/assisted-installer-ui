@@ -1,11 +1,14 @@
 import filesize from 'filesize.js';
 import Fuse from 'fuse.js';
-import { Host, Cluster, Inventory } from '../../api/types';
+import { TFunction } from 'i18next';
+import { Host, Cluster, Inventory, stringToJSON } from '../../api';
 import { hostRoles, TIME_ZERO } from '../../config';
 import { DASH } from '../constants';
-import { stringToJSON } from '../../api';
-import { Validation, ValidationsInfo as HostValidationsInfo } from '../../types/hosts';
-import { TFunction } from 'i18next';
+import {
+  Validation,
+  ValidationsInfo as HostValidationsInfo,
+  ValidationGroup as HostValidationGroup,
+} from '../../types/hosts';
 
 export const canEnable = (clusterStatus: Cluster['status'], status: Host['status']) =>
   ['pending-for-input', 'insufficient', 'ready', 'adding-hosts'].includes(clusterStatus) &&
@@ -193,7 +196,8 @@ export const filterByHostname = (hosts: Host[], hostnameFilter: string | undefin
 };
 
 export const getFailingHostValidations = (validationsInfo: HostValidationsInfo) =>
-  Object.keys(validationsInfo).reduce((curr, group) => {
+  Object.keys(validationsInfo).reduce((curr, groupStr) => {
+    const group = groupStr as HostValidationGroup;
     const failingValidations: Validation[] = (validationsInfo[group] as Validation[]).filter(
       (validation: Validation) => validation.status === 'failure',
     );
