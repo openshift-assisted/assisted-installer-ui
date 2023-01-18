@@ -104,7 +104,7 @@ const InfraEnvIdsCacheService: InfraEnvStorage = {
     }
     infraEnvs.forEach((infraEnv) => {
       if (infraEnv.cpuArchitecture) {
-        cache[clusterId][infraEnv.cpuArchitecture] = infraEnv.id;
+        cache[clusterId][infraEnv.cpuArchitecture as CpuArchitecture] = infraEnv.id;
       }
     });
     update(cache);

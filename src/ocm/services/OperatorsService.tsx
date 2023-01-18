@@ -8,9 +8,10 @@ import {
   OPERATOR_NAME_LVM,
 } from '../../common';
 import { getOlmOperatorCreateParamsByName } from '../components/clusters/utils';
+import { getKeys } from '../../common/utils';
 
 const hasActiveOperators = (values: OperatorsValues) => {
-  return Object.keys(values).some((operatorName) => !!values[operatorName]);
+  return getKeys(values).some((operatorParam) => values[operatorParam]);
 };
 
 const OperatorsService = {
