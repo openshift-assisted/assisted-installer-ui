@@ -50,7 +50,7 @@ export const ClusterPlatformIntegrationHint = ({
     return null;
   }
 
-  const integrationBrand: string = integrationBrands[supportedPlatformIntegration] as string;
+  const integrationBrand = integrationBrands[supportedPlatformIntegration as SupportedPlatformType];
 
   return (
     <Alert
