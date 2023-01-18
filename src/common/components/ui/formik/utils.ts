@@ -44,7 +44,7 @@ export const parseStringLabels = (
     const label = curr.split('=');
     acc[label[0]] = label[1];
     return acc;
-  }, {});
+  }, {} as Record<string, string>);
   return labels;
 };
 
