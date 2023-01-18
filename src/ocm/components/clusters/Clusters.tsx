@@ -23,7 +23,11 @@ import {
   Cluster,
 } from '../../../common';
 import ClustersTable from './ClustersTable';
-import { fetchClustersAsync, deleteCluster } from '../../reducers/clusters/clustersSlice';
+import {
+  fetchClustersAsync,
+  deleteCluster,
+  ClustersDispatch,
+} from '../../reducers/clusters/clustersSlice';
 import { handleApiError, getApiErrorMessage } from '../../api/utils';
 import ClusterBreadcrumbs from './ClusterBreadcrumbs';
 import { routeBasePath } from '../../config';
@@ -42,7 +46,7 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
   if (clustersUIState !== RELOADING) {
     uiState.current = clustersUIState;
   }
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<ClustersDispatch>();
   const deleteClusterAsync = React.useCallback(
     async (clusterId: Cluster['id']) => {
       try {
@@ -60,7 +64,7 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
     [dispatch, addAlert],
   );
 
-  const fetchClusters = React.useCallback(() => dispatch(fetchClustersAsync()), [dispatch]);
+  const fetchClusters = React.useCallback(() => void dispatch(fetchClustersAsync()), [dispatch]);
   React.useEffect(() => {
     fetchClusters();
   }, [fetchClusters]);

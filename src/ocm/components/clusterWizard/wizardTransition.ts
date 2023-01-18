@@ -15,6 +15,7 @@ import {
   ValidationsInfo as HostValidationsInfo,
   Validation as HostValidation,
 } from '../../../common/types/hosts';
+import { getKeys } from '../../../common/utils';
 
 export type ClusterWizardStepsType =
   | 'cluster-details'
@@ -76,7 +77,7 @@ const getHostFailingValidationIds = (hosts: Host[] | undefined) => {
   const failingValidations: HostValidationId[] = [];
   hosts?.forEach((host) => {
     const validationsInfo = stringToJSON<HostValidationsInfo>(host.validationsInfo) || {};
-    Object.keys(validationsInfo).forEach((group) => {
+    getKeys(validationsInfo).forEach((group) => {
       const f: (validation: HostValidation) => void = (validation) => {
         if (validation.status === 'failure') {
           failingValidations.push(validation.id);
