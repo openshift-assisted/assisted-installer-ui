@@ -134,7 +134,7 @@ const EditPullSecretModal: React.FC<EditPullSecretModalProps> = ({
           pullSecret: undefined,
           createSecret: false,
         }}
-        validationSchema={validationSchema}
+        validationSchema={validationSchema(t)}
         onSubmit={async (values) => {
           try {
             await onSubmit(values, infraEnv);
