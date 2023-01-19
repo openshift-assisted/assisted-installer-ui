@@ -1,6 +1,6 @@
 import isString from 'lodash/isString';
 
-export const getErrorMessage = (error: unknown) => {
+export const getErrorMessage = (error: unknown): string => {
   if (error instanceof Error) {
     return error.message;
   }

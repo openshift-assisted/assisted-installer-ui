@@ -5,15 +5,15 @@ import { Spinner, Alert, AlertVariant, Tooltip } from '@patternfly/react-core';
 import {
   Cluster,
   NetworkConfigurationValues,
-  ValidationsInfo,
   FormikStaticField,
   FeatureSupportLevelBadge,
   NETWORK_TYPE_SDN,
-  stringToJSON,
   selectMachineNetworkCIDR,
+  getVipValidationsById,
 } from '../../../../common';
 import { selectCurrentClusterPermissionsState } from '../../../selectors';
 import { OcmCheckboxField, OcmInputField } from '../../ui/OcmFormFields';
+import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 
 interface VipStaticValueProps {
   vipName: 'apiVip' | 'ingressVip';
@@ -64,26 +64,6 @@ const getVipHelperSuffix = (
   return '';
 };
 
-const getVipValidationsById = (
-  validationsInfoString?: Cluster['validationsInfo'],
-): { [key: string]: string | undefined } => {
-  const validationsInfo = stringToJSON<ValidationsInfo>(validationsInfoString) || {};
-  const failedDhcpAllocationMessageStubs = [
-    'VIP IP allocation from DHCP server has been timed out', // TODO(jtomasek): remove this one once it is no longer in backend
-    'IP allocation from the DHCP server timed out.',
-  ];
-  return (validationsInfo.network || []).reduce((lookup, validation) => {
-    if (['api-vip-defined', 'ingress-vip-defined'].includes(validation.id)) {
-      lookup[validation.id] =
-        validation.status === 'failure' &&
-        failedDhcpAllocationMessageStubs.find((stub) => validation.message.match(stub))
-          ? validation.message
-          : undefined;
-    }
-    return lookup;
-  }, {});
-};
-
 export type VirtualIPControlGroupProps = {
   cluster: Cluster;
   isVipDhcpAllocationDisabled?: boolean;
@@ -95,6 +75,7 @@ export const VirtualIPControlGroup = ({
 }: VirtualIPControlGroupProps) => {
   const { values, setFieldValue } = useFormikContext<NetworkConfigurationValues>();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
+  const { t } = useTranslation();
 
   const apiVipHelperText = `Provide an endpoint for users, both human and machine, to interact with and configure the platform. If needed, contact your IT manager for more information. ${getVipHelperSuffix(
     cluster.apiVip,
@@ -111,8 +92,8 @@ export const VirtualIPControlGroup = ({
     'api-vip-defined': apiVipFailedValidationMessage,
     'ingress-vip-defined': ingressVipFailedValidationMessage,
   } = React.useMemo(
-    () => getVipValidationsById(cluster.validationsInfo),
-    [cluster.validationsInfo],
+    () => getVipValidationsById(t, cluster.validationsInfo),
+    [t, cluster.validationsInfo],
   );
 
   const enableAllocation = values.networkType === NETWORK_TYPE_SDN;

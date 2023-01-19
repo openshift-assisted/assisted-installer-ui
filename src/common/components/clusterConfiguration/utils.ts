@@ -1,4 +1,5 @@
 import { Address4, Address6 } from 'ip-address';
+import { TFunction } from 'i18next';
 import {
   Cluster,
   ClusterDefaultConfig,
@@ -227,9 +228,12 @@ export function filterValidationsInfoByGroup(
   validationsInfo: ValidationsInfo,
   selectedGroups: ValidationGroup[] = ['configuration', 'hosts-data', 'network', 'operators'],
 ): ValidationsInfo {
-  const result = {};
-  (Object.keys(validationsInfo) as ValidationGroup[]).forEach((groupKey) => {
-    if (selectedGroups.includes(groupKey)) result[groupKey] = validationsInfo[groupKey];
+  const result: ValidationsInfo = {};
+  Object.keys(validationsInfo).forEach((groupKeyStr) => {
+    const groupKey = groupKeyStr as ValidationGroup;
+    if (selectedGroups.includes(groupKey)) {
+      result[groupKey] = validationsInfo[groupKey];
+    }
   });
   return result;
 }
@@ -238,12 +242,41 @@ export function filterValidationsInfoByStatus(
   validationsInfo: ValidationsInfo,
   selectedStatuses: Validation['status'][] = ['failure', 'pending', 'error'],
 ): ValidationsInfo {
-  const result = {};
-  Object.entries(validationsInfo).forEach(([group, validations = []]) => {
+  const result: ValidationsInfo = {};
+  Object.entries(validationsInfo).forEach(([groupKeyStr, validations = []]) => {
     const filteredValidations = validations.filter((validation) =>
       selectedStatuses.includes(validation.status),
     );
-    if (filteredValidations.length) result[group] = filteredValidations;
+    if (filteredValidations.length) {
+      const groupKey = groupKeyStr as ValidationGroup;
+      result[groupKey] = filteredValidations;
+    }
   });
   return result;
 }
+
+type VipValidations = {
+  'api-vip-defined': string | undefined;
+  'ingress-vip-defined': string | undefined;
+};
+
+export const getVipValidationsById = (
+  t: TFunction,
+  validationsInfoString?: Cluster['validationsInfo'],
+): { [key: string]: string | undefined } => {
+  const validationsInfo = stringToJSON<ValidationsInfo>(validationsInfoString) || {};
+  const failedDhcpAllocationMessageStubs = [
+    t('ai:VIP IP allocation from DHCP server has been timed out'), // TODO(jtomasek): remove this one once it is no longer in backend
+    t('ai:IP allocation from the DHCP server timed out.'),
+  ];
+  return (validationsInfo.network || []).reduce((lookup, validation) => {
+    if (['api-vip-defined', 'ingress-vip-defined'].includes(validation.id)) {
+      lookup[validation.id] =
+        validation.status === 'failure' &&
+        failedDhcpAllocationMessageStubs.find((stub) => validation.message.match(stub))
+          ? validation.message
+          : undefined;
+    }
+    return lookup;
+  }, {} as VipValidations);
+};

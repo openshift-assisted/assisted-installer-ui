@@ -13,7 +13,7 @@ export const getLabels = (values: EnvironmentStepFormValues) =>
     const label = curr.split('=');
     acc[label[0]] = label[1];
     return acc;
-  }, {});
+  }, {} as Record<string, string>);
 
 // TODO(mlibra): This should not be needed once we have late-binding
 export const getClusterDeploymentForInfraEnv = (

@@ -2,7 +2,7 @@ import lodashValues from 'lodash/values';
 import lodashKeys from 'lodash/keys';
 import reduce from 'lodash/reduce';
 
-import { Cluster, ClusterValidationId, Host, HostValidationId } from '../../api/types';
+import { Cluster, ClusterValidationId, Host, HostValidationId, stringToJSON } from '../../api';
 import {
   ClusterWizardStepStatusDeterminationObject,
   ValidationGroup as ClusterValidationGroup,
@@ -11,11 +11,11 @@ import {
 import {
   ClusterWizardStepHostStatusDeterminationObject,
   Validation,
+  ValidationGroup,
   ValidationGroup as HostValidationGroup,
   ValidationsInfo,
   ValidationsInfo as HostValidationsInfo,
 } from '../../../common/types/hosts';
-import { stringToJSON } from '../../api/utils';
 
 export type WizardStepValidationMap = {
   cluster: {
@@ -227,19 +227,22 @@ export const getWizardStepClusterStatus = <ClusterWizardStepsType extends string
 export const getAllClusterWizardSoftValidationIds = <ClusterWizardStepsType extends string>(
   wizardStepsValidationsMap: WizardStepsValidationMap<ClusterWizardStepsType>,
 ): WizardStepValidationMap['softValidationIds'] =>
-  Object.keys(wizardStepsValidationsMap).reduce(
-    (prev, curr) => [...prev, ...wizardStepsValidationsMap[curr].softValidationIds],
-    [] as WizardStepValidationMap['softValidationIds'],
-  );
+  Object.keys(wizardStepsValidationsMap).reduce((prev, curr) => {
+    const failingStepValidations = wizardStepsValidationsMap[curr as ClusterWizardStepsType];
+    return [...prev, ...failingStepValidations.softValidationIds];
+  }, [] as WizardStepValidationMap['softValidationIds']);
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getFailingClusterWizardStepHostValidations = <ClusterWizardStepsType extends string>(
   wizardHostStepValidationsInfo: HostValidationsInfo,
 ) =>
-  Object.keys(wizardHostStepValidationsInfo).reduce((curr, group) => {
-    const failingValidations = wizardHostStepValidationsInfo[group].filter(
-      (validation: Validation) => validation.status === 'failure',
-    );
+  Object.keys(wizardHostStepValidationsInfo).reduce((curr, groupStr) => {
+    const groupValidations = wizardHostStepValidationsInfo[groupStr as ValidationGroup];
+    if (!groupValidations) {
+      return curr;
+    }
+    const failingValidations =
+      groupValidations.filter((validation: Validation) => validation.status === 'failure') || [];
     return [...curr, ...failingValidations];
   }, [] as Validation[]);
 
