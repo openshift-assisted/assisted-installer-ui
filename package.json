@@ -8,7 +8,7 @@
     "@patternfly/react-table": "^4.37.8",
     "@patternfly/react-tokens": "^4.94.3",
     "@reduxjs/toolkit": "^1.9.1",
-    "@sentry/browser": "^5.9 || ^6 || ^7",
+    "@sentry/browser": "^5.9 || ^6.0",
     "axios": ">=0.23.0 <2.0.0",
     "i18next": "^20.4 || ^21",
     "i18next-browser-languagedetector": "^6.1.2",
