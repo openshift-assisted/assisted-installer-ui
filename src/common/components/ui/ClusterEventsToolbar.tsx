@@ -176,10 +176,11 @@ const ClusterEventsToolbar: React.FC<ClustersListToolbarProps> = ({
 
   const onDeleteChip: ToolbarFilterProps['deleteChip'] = (type, chip: ToolbarChip | string) => {
     if (type) {
-      const id = (chip['key'] || chip || '') as string;
+      const id = (typeof chip === 'string' ? chip : chip.key) || '';
       setFilters({
         ...filters,
-        [type as string]: filters[type as string].filter((v: string) => v !== id),
+        // @ts-ignore
+        [type as string]: filters[type].filter((v: string) => v !== id),
       });
     } else {
       onClearAllFilters();
