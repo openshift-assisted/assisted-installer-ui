@@ -1,5 +1,5 @@
 import React from 'react';
-import { WizardBody } from '@patternfly/react-core';
+import { WizardBody, WizardBodyProps } from '@patternfly/react-core';
 import { css } from '@patternfly/react-styles';
 import styles from '@patternfly/react-styles/css/components/Wizard/wizard';
 
@@ -11,15 +11,13 @@ type ClusterWizardStepProps = {
 };
 
 const ClusterWizardStep: React.FC<ClusterWizardStepProps> = ({ navigation, footer, children }) => {
+  // activeStep is required, but we're not passing it. Using the cast to avoid TS error
+  const activeStep = undefined as unknown as WizardBodyProps['activeStep'];
   return (
     <div className={css(styles.wizardOuterWrap, 'cluster-wizard-step')}>
       <div className={css(styles.wizardInnerWrap)}>
         {navigation}
-        {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          /* @ts-ignore: the prop should be optional depending on the WizardBody usage */
-        }
-        <WizardBody aria-labelledby="step-id" hasNoBodyPadding={false}>
+        <WizardBody aria-labelledby="step-id" hasNoBodyPadding={false} activeStep={activeStep}>
           {children}
         </WizardBody>
       </div>
