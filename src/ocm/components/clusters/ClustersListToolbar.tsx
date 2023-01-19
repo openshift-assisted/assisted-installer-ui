@@ -22,8 +22,8 @@ import {
 import { FilterIcon, SyncIcon } from '@patternfly/react-icons';
 import { Cluster, clusterStatusLabels, isSelectEventChecked, ToolbarButton } from '../../../common';
 import { ResourceUIState } from '../../../common';
-import { selectClustersUIState } from '../../selectors/clusters';
-import { fetchClustersAsync } from '../../reducers/clusters/clustersSlice';
+import { selectClustersUIState } from '../../selectors';
+import { ClustersDispatch, fetchClustersAsync } from '../../reducers/clusters';
 import { routeBasePath } from '../../config';
 import omit from 'lodash/omit';
 import { TFunction } from 'i18next';
@@ -52,8 +52,8 @@ const ClustersListToolbar: React.FC<ClustersListToolbarProps> = ({
   const [isStatusExpanded, setStatusExpanded] = React.useState(false);
   const history = useHistory();
   const clustersUIState = useSelector(selectClustersUIState);
-  const dispatch = useDispatch();
-  const fetchClusters = React.useCallback(() => dispatch(fetchClustersAsync()), [dispatch]);
+  const dispatch = useDispatch<ClustersDispatch>();
+  const fetchClusters = React.useCallback(() => void dispatch(fetchClustersAsync()), [dispatch]);
 
   const onClearAllFilters: ToolbarProps['clearAllFilters'] = () => {
     setFilters({
