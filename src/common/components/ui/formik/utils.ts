@@ -6,6 +6,7 @@ import groupBy from 'lodash/groupBy';
 import pickBy from 'lodash/pickBy';
 import { OpenshiftVersionOptionType } from '../../../types';
 import { ClusterNetwork, MachineNetwork, ServiceNetwork } from '../../../api';
+import { getKeys } from '../../../utils';
 
 export const getFieldId = (fieldName: string, fieldType: string, unique?: string) => {
   unique = unique ? `${unique}-` : '';
@@ -29,7 +30,7 @@ export const trimCommaSeparatedList = (list: string) =>
 export const getFormikErrorFields = <FormikValues>(
   errors: FormikErrors<FormikValues>,
   touched: FormikTouched<FormikValues>,
-) => Object.keys(errors).filter((field) => touched[field]);
+) => getKeys(errors).filter((field) => touched[field]);
 
 export const getDefaultOpenShiftVersion = (versions: OpenshiftVersionOptionType[]) =>
   versions.find((v) => v.default)?.value || versions[0]?.value || '';

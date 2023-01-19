@@ -1,6 +1,6 @@
 import React from 'react';
 import { Alert, AlertVariant, Text, TextContent } from '@patternfly/react-core';
-import { MonitoredOperatorsList, operatorLabels } from '../../../common';
+import { MonitoredOperatorsList, operatorLabels, OperatorName } from '../../../common';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 interface FailedOperatorsWarningProps {
@@ -11,7 +11,7 @@ const FailedOperatorsWarning = ({ failedOperators }: FailedOperatorsWarningProps
   const { t } = useTranslation();
   const operatorText =
     failedOperators.length === 1
-      ? `${operatorLabels(t)[failedOperators[0].name || '']} operator`
+      ? `${operatorLabels(t)[(failedOperators[0].name as OperatorName) || '']} operator`
       : `${failedOperators.length} operators`;
 
   return (

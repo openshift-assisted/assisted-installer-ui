@@ -1,4 +1,11 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import {
+  createSlice,
+  createAsyncThunk,
+  PayloadAction,
+  ThunkDispatch,
+  AnyAction,
+  Dispatch,
+} from '@reduxjs/toolkit';
 import { Cluster, ResourceUIState } from '../../../common';
 import { ClustersAPI } from '../../services/apis';
 import { handleApiError, ocmClient } from '../../api';
@@ -22,6 +29,8 @@ type ClustersStateSlice = {
   data: Cluster[];
   uiState: ResourceUIState;
 };
+
+export type ClustersDispatch = ThunkDispatch<ClustersStateSlice, undefined, AnyAction> & Dispatch;
 
 const initialState: ClustersStateSlice = { data: [], uiState: ResourceUIState.LOADING };
 

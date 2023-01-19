@@ -13,11 +13,12 @@ import {
   hostValidationGroupLabels,
   hostValidationLabels,
 } from '../../config';
-import { toSentence } from '../ui/table/utils';
-
-import './HostValidationGroups.css';
+import { toSentence } from '../ui';
 import Hostname from './Hostname';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { getKeys } from '../../utils';
+
+import './HostValidationGroups.css';
 
 export type AdditionNtpSourcePropsType = {
   AdditionalNTPSourcesDialogToggleComponent?: React.FC;
@@ -225,20 +226,18 @@ export const HostValidationGroups = ({ validationsInfo, ...props }: HostValidati
   const { t } = useTranslation();
   return (
     <>
-      {Object.keys(validationsInfo).map((groupName) => {
-        const groupLabel = hostValidationGroupLabels(t)[groupName] as string;
+      {getKeys(validationsInfo).map((groupName) => {
+        const validations = validationsInfo[groupName] || [];
 
-        const pendingValidations = (validationsInfo[groupName] as Validation[]).filter(
-          (v: Validation) => v.status === 'pending' && v.id !== 'ntp-synced',
+        const pendingValidations = validations.filter(
+          (v) => v.status === 'pending' && v.id !== 'ntp-synced',
         );
-        const failedValidations = (validationsInfo[groupName] as Validation[]).filter(
-          (v: Validation) =>
-            (v.status === 'failure' || v.status === 'error') && v.id !== 'ntp-synced',
+        const failedValidations = validations.filter(
+          (v) => (v.status === 'failure' || v.status === 'error') && v.id !== 'ntp-synced',
         );
 
-        const softValidations = (validationsInfo[groupName] as Validation[]).filter(
-          (v: Validation) =>
-            ['pending', 'failure', 'error'].includes(v.status) && v.id === 'ntp-synced',
+        const softValidations = validations.filter(
+          (v) => ['pending', 'failure', 'error'].includes(v.status) && v.id === 'ntp-synced',
         );
 
         const getValidationGroupState = () => {
@@ -262,6 +261,7 @@ export const HostValidationGroups = ({ validationsInfo, ...props }: HostValidati
           );
         };
 
+        const groupLabel = hostValidationGroupLabels(t)[groupName] as string;
         return (
           <Fragment key={groupName}>
             <Level className="host-validation-groups__validation-group">

@@ -1,7 +1,14 @@
 import findIndex from 'lodash/findIndex';
 import set from 'lodash/set';
 import { AxiosError } from 'axios';
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {
+  AnyAction,
+  createAsyncThunk,
+  createSlice,
+  Dispatch,
+  PayloadAction,
+  ThunkDispatch,
+} from '@reduxjs/toolkit';
 import {
   AssistedInstallerPermissionTypesListType,
   Cluster,
@@ -28,6 +35,9 @@ type CurrentClusterStateSlice = {
   permissions: AssistedInstallerPermissionTypesListType;
   errorDetail?: FetchErrorType;
 };
+
+export type ClusterDispatch = ThunkDispatch<CurrentClusterStateSlice, undefined, AnyAction> &
+  Dispatch;
 
 export const fetchClusterAsync = createAsyncThunk<
   Cluster | void,
