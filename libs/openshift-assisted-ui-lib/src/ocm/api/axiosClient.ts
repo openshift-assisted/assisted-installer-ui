@@ -19,7 +19,7 @@ const getDefaultClient = () => {
   const client = axios.create();
   client.interceptors.request.use((cfg) => ({
     ...cfg,
-    url: `${import.meta.env.VITE_APP_API_ROOT}${cfg.url}`,
+    url: `${import.meta.env.VITE_APP_API_ROOT || ''}${cfg.url || ''}`,
   }));
   return applyCaseMiddleware(client, axiosCaseConverterOptions);
 };
