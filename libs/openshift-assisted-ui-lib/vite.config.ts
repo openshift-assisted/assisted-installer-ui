@@ -29,7 +29,6 @@ export default defineConfig({
     react(),
     dts({
       outputDir: "build",
-      skipDiagnostics: true, // TODO(jkilzi): Remove this line!
     })
   ],
 });
