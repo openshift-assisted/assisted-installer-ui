@@ -102,7 +102,13 @@ const ClusterProperties = ({ cluster, externalMode = false }: ClusterPropertiesP
       )}
       <GridItem md={6} data-testid="cluster-details">
         <DetailList>
-          {externalMode ? undefined : <OpenShiftVersionDetail cluster={cluster} />}
+          {externalMode ? undefined : (
+            <DetailItem
+              title={t('ai:OpenShift version')}
+              value={<OpenShiftVersionDetail cluster={cluster} />}
+              testId="openshift-version"
+            />
+          )}
           <DetailItem title="Base domain" value={cluster.baseDnsDomain} testId="base-dns-domain" />
           <DetailItem
             title={<CpuArchTitle isMultiArchSupported={isMultiArchSupported} />}
