@@ -70,8 +70,8 @@ const FailingValidation = <S extends string>({
 
   const issue = t('ai:{{check_failed}} check failed', {
     check_failed:
-      (hostValidationLabels(t)[validation.id] as HostValidationId) ||
-      (clusterValidationLabels(t)[validation.id] as ClusterValidationId) ||
+      hostValidationLabels(t)[validation.id as HostValidationId] ||
+      clusterValidationLabels(t)[validation.id as ClusterValidationId] ||
       validation.id,
   });
 
