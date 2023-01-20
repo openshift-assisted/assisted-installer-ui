@@ -57,7 +57,9 @@ export const getBareMetalHost = (
     bootMACAddress: values.bootMACAddress,
     description: '', // TODO(mlibra)
     online: !!values.online,
-    automatedCleaningMode: 'disabled',
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    automatedCleaningMode: 'disabled', // TODO is it a left-over and can be deleted? not in the Type
   },
 });
 
