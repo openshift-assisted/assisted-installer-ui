@@ -51,6 +51,7 @@
   "scripts": {
     "build:libs/openshift-assisted-ui-lib": "yarn workspace openshift-assisted-ui-lib run build",
     "tsc:libs/openshift-assisted-ui-lib": "yarn workspace openshift-assisted-ui-lib run tsc",
+    "lint:libs/openshift-assisted-ui-lib": "yarn workspace openshift-assisted-ui-lib run lint",
     "build:apps/assisted-ui": "yarn workspace assisted-ui run build",
     "preview:apps/assisted-ui": "yarn workspace assisted-ui run preview",
     "serve:apps/assisted-ui": "yarn workspace assisted-ui serve",

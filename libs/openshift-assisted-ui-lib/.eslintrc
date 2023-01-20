@@ -1,0 +1,99 @@
+{
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:jsx-a11y/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:import/typescript",
+    "plugin:react/jsx-runtime",
+    "plugin:prettier/recommended",
+    "prettier"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+    "project": ["./tsconfig.json"]
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "plugins": ["react", "@typescript-eslint", "import", "jsx-a11y", "react-hooks", "prettier"],
+  "rules": {
+    "eqeqeq": ["error", "always"],
+    "indent": "off",
+    "curly": "error",
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        "selector": "typeLike",
+        "format": ["PascalCase"]
+      },
+      // Allowing for React components definitions
+      {
+        "selector": "function",
+        "format": ["PascalCase", "camelCase"]
+      }
+    ],
+    "@typescript-eslint/ban-types": [
+      "error",
+      {
+        "types": {
+          "{}": {
+            "message": "Use Record<string, unknown> instead",
+            "fixWith": "Record<string, unknown>"
+          }
+        }
+      }
+    ],
+    "no-restricted-imports": [
+      "error",
+      {
+        "paths": [
+          {
+            "name": "lodash",
+            "message": "Please use lodash/module instead."
+          },
+          {
+            "name": "react-i18next",
+            "importNames": ["useTranslation"],
+            "message":
+            "Please use useTranslation from src/common/hooks/use-translation-wrapper.ts instead"
+          }
+        ],
+        "patterns": ["**/ocm/**/", "**/cim/**/"]
+      }
+    ],
+    "@typescript-eslint/no-explicit-any": [
+      "warn",
+      {
+        "fixToUnknown": true
+      }
+    ],
+    "@typescript-eslint/no-misused-promises": "warn",
+    "@typescript-eslint/no-unsafe-call": "warn",
+    "@typescript-eslint/no-unsafe-argument": "warn",
+    "@typescript-eslint/no-unsafe-assignment": "warn",
+    "@typescript-eslint/no-unsafe-member-access": "warn",
+    "@typescript-eslint/no-unsafe-return": "warn",
+    "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/restrict-template-expressions": "warn",
+    "react-hooks/rules-of-hooks": "error",
+    "react/self-closing-comp": "error",
+    "react/no-unescaped-entities": ["error", { "forbid": [">", "}"] }],
+    "react/prop-types": "off",
+    "react-hooks/exhaustive-deps": "error",
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto",
+        "singleQuote": true
+      }
+    ]
+  }
+}
