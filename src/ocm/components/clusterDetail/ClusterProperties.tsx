@@ -84,8 +84,11 @@ const ClusterProperties = ({ cluster, externalMode = false }: ClusterPropertiesP
   const isDualStackType = isDualStack(cluster);
   const featureSupportLevelContext = useFeatureSupportLevel();
 
+  const { underlyingCpuArchitecture } = featureSupportLevelContext.activeFeatureConfiguration;
+  const hasMultiCpuArchitecture = cluster.cpuArchitecture === CpuArchitecture.MULTI;
+
   const isMultiArchSupported = Boolean(
-    cluster.cpuArchitecture === CpuArchitecture.MULTI ||
+    hasMultiCpuArchitecture ||
       (cluster.openshiftVersion &&
         featureSupportLevelContext.getFeatureSupportLevel(
           cluster.openshiftVersion,
@@ -108,9 +111,7 @@ const ClusterProperties = ({ cluster, externalMode = false }: ClusterPropertiesP
           <DetailItem
             title={<CpuArchTitle isMultiArchSupported={isMultiArchSupported} />}
             value={
-              cluster.cpuArchitecture === CpuArchitecture.MULTI
-                ? 'Multiple CPU architectures'
-                : cluster.cpuArchitecture
+              hasMultiCpuArchitecture ? 'Multiple CPU architectures' : underlyingCpuArchitecture
             }
             testId="cpu-architecture"
           />

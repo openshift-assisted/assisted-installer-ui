@@ -6,10 +6,10 @@ import {
   CpuArchitecture,
   FeatureId,
   FeatureIdToSupportLevel,
-  FeatureSupportLevels,
-  FeatureSupportLevelsMap,
   FeatureSupportLevelContextProvider,
   FeatureSupportLevelData,
+  FeatureSupportLevels,
+  FeatureSupportLevelsMap,
   SupportLevel,
 } from '../../../common';
 import { handleApiError } from '../../api';
@@ -156,6 +156,12 @@ export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = 
       isFeatureDisabled: isFeatureDisabled,
       getFeatureDisabledReason: getDisabledReasonCallback,
       isFeatureSupported: isFeatureSupportedCallback,
+      activeFeatureConfiguration: {
+        underlyingCpuArchitecture: (infraEnv?.cpuArchitecture ||
+          cluster?.cpuArchitecture ||
+          CpuArchitecture.x86) as CpuArchitecture,
+        hasStaticIpNetworking: !!infraEnv?.staticNetworkConfig,
+      },
     };
   }, [
     getVersionSupportLevelsMapCallback,
@@ -163,6 +169,8 @@ export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = 
     isFeatureDisabled,
     getDisabledReasonCallback,
     isFeatureSupportedCallback,
+    cluster?.cpuArchitecture,
+    infraEnv,
   ]);
 
   React.useEffect(() => {
