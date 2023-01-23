@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { Trans } from 'react-i18next';
+import { useHistory } from 'react-router-dom';
 import {
   Alert,
   AlertVariant,
@@ -7,6 +9,7 @@ import {
   Modal,
   ModalVariant,
 } from '@patternfly/react-core';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { getStorageSizeGiB } from '../../helpers';
@@ -14,9 +17,14 @@ import { AlertPayload } from '../../../../common';
 
 import { CimConfigurationModalProps, CimConfiguratioProps } from './types';
 import { CimConfigurationForm } from './CimConfigurationForm';
-import { isIngressController, onEnableCIM } from './persist';
+import { isIngressController, isIngressControllerDomainInConflict, onEnableCIM } from './persist';
 import { CimConfigDisconnectedAlert } from './CimConfigDisconnectedAlert';
-import { MIN_DB_VOL_SIZE, MIN_FS_VOL_SIZE, MIN_IMG_VOL_SIZE } from './constants';
+import {
+  INGRESS_CONTROLLERS_URL,
+  MIN_DB_VOL_SIZE,
+  MIN_FS_VOL_SIZE,
+  MIN_IMG_VOL_SIZE,
+} from './constants';
 import { isCIMConfigProgressing } from './utils';
 import { resetCimConfigProgressAlertSuccessStatus } from './CimConfigProgressAlert';
 
@@ -30,6 +38,7 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
   docDisconnectedUrl,
   docConfigUrl,
   docConfigAwsUrl,
+  ingressControllersUrl = INGRESS_CONTROLLERS_URL,
 
   getResource,
   listResources,
@@ -37,8 +46,11 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
   createResource,
 }) => {
   const { t } = useTranslation();
+  const history = useHistory();
+
   const [error, setError] = React.useState<AlertPayload>();
   const [isSaving, setSaving] = React.useState(false);
+  const [isConflictingAWSIngress, setConflictingAWSIngress] = React.useState(false);
 
   const [dbVolSize, _setDbVolSize] = React.useState<number>(() =>
     getStorageSizeGiB(10, agentServiceConfig?.spec?.databaseStorage?.resources?.requests?.storage),
@@ -110,6 +122,20 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [platform],
   );
+
+  React.useEffect(() => {
+    const doItAsync = async (): Promise<void> => {
+      if (platform === 'AWS' && configureLoadBalancer) {
+        setConflictingAWSIngress(
+          await isIngressControllerDomainInConflict(t, setError, listResources),
+        );
+      } else {
+        setConflictingAWSIngress(false);
+      }
+    };
+
+    void doItAsync();
+  }, [platform, configureLoadBalancer, listResources, t]);
 
   const formProps: CimConfiguratioProps = {
     dbVolSize,
@@ -232,7 +258,36 @@ export const CimConfigurationModal: React.FC<CimConfigurationModalProps> = ({
       {isConfigure && (
         <Alert
           variant={AlertVariant.warning}
-          title={t('ai:Storage sizes cannot be changed once you configure.')}
+          title={t('ai:Storage sizes cannot be changed after you configure.')}
+          isInline
+        />
+      )}
+      {isConflictingAWSIngress && (
+        <Alert
+          variant={AlertVariant.warning}
+          title={t(
+            'ai:The Amazon Web Services load balancer configuration conflicts with existing IngressController resources. Make sure that all IngressController resources have distinct spec.domain fields.',
+          )}
+          actionLinks={[
+            <Button
+              variant={ButtonVariant.link}
+              isInline
+              key="ingress-controller"
+              onClick={() => history.push(ingressControllersUrl)}
+            >
+              {t('ai:View IngressController resources')} <ExternalLinkAltIcon />
+            </Button>,
+            <a
+              href={docConfigAwsUrl}
+              key="ingress-controller-documentation"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <Trans t={t}>
+                ai:Learn more about configuring ingress Controller for AWS <ExternalLinkAltIcon />
+              </Trans>
+            </a>,
+          ]}
           isInline
         />
       )}

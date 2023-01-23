@@ -10,3 +10,4 @@ export * from './infrastructure';
 export * from './agent-service-config';
 export * from './cluster-version';
 export * from './storage-class';
+export * from './ingress-controller';

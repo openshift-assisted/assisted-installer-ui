@@ -11,6 +11,7 @@ import {
   PatchResourceFuncType,
   ResourcePatch,
   RouteK8sResource,
+  IngressControllerK8sResource,
 } from '../../../types';
 import { LOCAL_STORAGE_ID_LAST_UPDATE_TIMESTAMP } from './utils';
 
@@ -25,6 +26,7 @@ export type SetErrorFuncType = ({
 }) => void;
 
 const ASSISTED_IMAGE_SERVICE_ROUTE_PREFIX = 'assisted-image-service-multicluster-engine';
+const NLB_INGRESS_CONTROLLER_NAME = 'ingress-controller-with-nlb';
 
 // Since we do not know MCE's namespace, query all routes,
 // Find assisted-image-service's one and parse domain from there.
@@ -144,6 +146,35 @@ export const isIngressController = async (getResource: GetResourceFuncType): Pro
   }
 };
 
+export const isIngressControllerDomainInConflict = async (
+  t: TFunction,
+  setError: SetErrorFuncType,
+  listResources: ListResourcesFuncType,
+): Promise<boolean> => {
+  try {
+    const ingressControllers: IngressControllerK8sResource[] = (await listResources({
+      apiVersion: 'operator.openshift.io/v1',
+      kind: 'IngressController',
+      metadata: {
+        namespace: 'openshift-ingress-operator',
+      },
+    })) as IngressControllerK8sResource[];
+
+    // The assisted-image-service route might not be present at this moment, we should
+    // get the cluster domain differently or workaround our need as implemented bellow
+    return !!ingressControllers.find(
+      (ingressController) =>
+        !ingressController.spec?.domain ||
+        (ingressController.metadata?.name !== NLB_INGRESS_CONTROLLER_NAME &&
+          ingressController.spec.domain.includes(
+            'nlb-apps.' /* Can be false-positive check unless we know the domain. But very low probability */,
+          )),
+    );
+  } catch {
+    return false;
+  }
+};
+
 const createIngressController = async (
   t: TFunction,
   setError: SetErrorFuncType,
@@ -157,7 +188,7 @@ const createIngressController = async (
     apiVersion: 'operator.openshift.io/v1',
     kind: 'IngressController',
     metadata: {
-      name: 'ingress-controller-with-nlb',
+      name: NLB_INGRESS_CONTROLLER_NAME,
       namespace: 'openshift-ingress-operator',
     },
     spec: {
