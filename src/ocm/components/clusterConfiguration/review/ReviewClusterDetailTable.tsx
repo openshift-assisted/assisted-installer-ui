@@ -37,7 +37,7 @@ export const ReviewClusterDetailTable = ({ cluster }: { cluster: Cluster }) => {
         cells: [
           { title: 'CPU architecture' },
           {
-            title: <>{activeFeatureConfiguration?.underlyingCpuArchitecture}</>,
+            title: <>{activeFeatureConfiguration.underlyingCpuArchitecture}</>,
             props: { 'data-testid': 'cpu-architecture' },
           },
         ],
@@ -46,7 +46,7 @@ export const ReviewClusterDetailTable = ({ cluster }: { cluster: Cluster }) => {
         cells: [
           { title: "Hosts' network configuration" },
           {
-            title: <>{activeFeatureConfiguration?.hasStaticIpNetworking ? 'Static IP' : 'DHCP'}</>,
+            title: <>{activeFeatureConfiguration.hasStaticIpNetworking ? 'Static IP' : 'DHCP'}</>,
             props: { 'data-testid': 'network-configuration' },
           },
         ],

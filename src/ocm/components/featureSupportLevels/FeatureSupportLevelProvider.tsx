@@ -2,6 +2,7 @@ import useSWR from 'swr';
 import React, { PropsWithChildren } from 'react';
 import * as Sentry from '@sentry/browser';
 import {
+  ActiveFeatureConfiguration,
   Cluster,
   CpuArchitecture,
   FeatureId,
@@ -97,12 +98,22 @@ export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = 
   );
   const isLoading = (!featureSupportLevels && !error) || loadingOCPVersions || isInfraEnvLoading;
 
-  const supportLevelData: FeatureSupportLevelsMap = React.useMemo<FeatureSupportLevelsMap>(() => {
+  const supportLevelData = React.useMemo<FeatureSupportLevelsMap>(() => {
     if (!featureSupportLevels || error) {
       return {};
     }
     return getFeatureSupportLevelsMap(featureSupportLevels);
   }, [error, featureSupportLevels]);
+
+  const activeFeatureConfiguration = React.useMemo<ActiveFeatureConfiguration>(
+    () => ({
+      underlyingCpuArchitecture: (infraEnv?.cpuArchitecture ||
+        cluster?.cpuArchitecture ||
+        CpuArchitecture.x86) as CpuArchitecture,
+      hasStaticIpNetworking: !!infraEnv?.staticNetworkConfig,
+    }),
+    [cluster?.cpuArchitecture, infraEnv?.cpuArchitecture, infraEnv?.staticNetworkConfig],
+  );
 
   const getVersionSupportLevelsMapCallback = React.useCallback(
     (versionName: string): FeatureIdToSupportLevel | undefined => {
@@ -135,13 +146,13 @@ export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = 
       return getFeatureDisabledReason(
         featureId,
         cluster,
-        infraEnv,
+        activeFeatureConfiguration,
         versionName,
         versionOptions,
         isSupported,
       );
     },
-    [isFeatureSupportedCallback, versionOptions, cluster, infraEnv],
+    [isFeatureSupportedCallback, versionOptions, cluster, activeFeatureConfiguration],
   );
 
   const isFeatureDisabled = React.useCallback(
@@ -156,12 +167,7 @@ export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = 
       isFeatureDisabled: isFeatureDisabled,
       getFeatureDisabledReason: getDisabledReasonCallback,
       isFeatureSupported: isFeatureSupportedCallback,
-      activeFeatureConfiguration: {
-        underlyingCpuArchitecture: (infraEnv?.cpuArchitecture ||
-          cluster?.cpuArchitecture ||
-          CpuArchitecture.x86) as CpuArchitecture,
-        hasStaticIpNetworking: !!infraEnv?.staticNetworkConfig,
-      },
+      activeFeatureConfiguration,
     };
   }, [
     getVersionSupportLevelsMapCallback,
@@ -169,8 +175,7 @@ export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = 
     isFeatureDisabled,
     getDisabledReasonCallback,
     isFeatureSupportedCallback,
-    cluster?.cpuArchitecture,
-    infraEnv,
+    activeFeatureConfiguration,
   ]);
 
   React.useEffect(() => {

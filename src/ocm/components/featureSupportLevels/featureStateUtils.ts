@@ -1,9 +1,8 @@
 import {
+  ActiveFeatureConfiguration,
   Cluster,
   CpuArchitecture,
   FeatureId,
-  InfraEnv,
-  isArmInfraEnvCpuArchitecture,
   isSNO,
   OpenshiftVersionOptionType,
   OperatorsValues,
@@ -76,16 +75,18 @@ const getArmDisabledReason = (
 
 const getOdfDisabledReason = (
   cluster: Cluster | undefined,
-  infraEnv: InfraEnv | undefined,
+  activeFeatureConfiguration: ActiveFeatureConfiguration,
   isSupported: boolean,
 ) => {
-  if (!(cluster && infraEnv)) {
+  if (!cluster) {
     return undefined;
   }
-  if (isArmInfraEnvCpuArchitecture(infraEnv) && isSNO(cluster)) {
+
+  const isArm = activeFeatureConfiguration.underlyingCpuArchitecture === CpuArchitecture.ARM;
+  if (isArm && isSNO(cluster)) {
     return `${ODF_OPERATOR_LABEL} is not available when using Single Node OpenShift or ARM CPU architecture.`;
   }
-  if (isArmInfraEnvCpuArchitecture(infraEnv)) {
+  if (isArm) {
     return `${ODF_OPERATOR_LABEL} is not available when ARM CPU architecture is selected.`;
   }
   if (isSNO(cluster)) {
@@ -107,11 +108,11 @@ const getLvmDisabledReason = (cluster: Cluster | undefined, isSupported: boolean
   return undefined;
 };
 
-const getCnvDisabledReason = (infraEnv: InfraEnv | undefined) => {
-  if (!infraEnv) {
+const getCnvDisabledReason = (activeFeatureConfiguration: ActiveFeatureConfiguration) => {
+  if (!activeFeatureConfiguration) {
     return undefined;
   }
-  if (isArmInfraEnvCpuArchitecture(infraEnv)) {
+  if (activeFeatureConfiguration.underlyingCpuArchitecture === CpuArchitecture.ARM) {
     return `${CNV_OPERATOR_LABEL} is not available when ARM CPU architecture is selected.`;
   }
   return undefined;
@@ -130,7 +131,7 @@ const getNetworkTypeSelectionDisabledReason = (cluster: Cluster | undefined) => 
 export const getFeatureDisabledReason = (
   featureId: FeatureId,
   cluster: Cluster | undefined,
-  infraEnv: InfraEnv | undefined,
+  activeFeatureConfiguration: ActiveFeatureConfiguration,
   versionName: string,
   versionOptions: OpenshiftVersionOptionType[],
   isSupported: boolean,
@@ -143,10 +144,10 @@ export const getFeatureDisabledReason = (
       return getArmDisabledReason(cluster, versionName, versionOptions);
     }
     case 'CNV': {
-      return getCnvDisabledReason(infraEnv);
+      return getCnvDisabledReason(activeFeatureConfiguration);
     }
     case 'ODF': {
-      return getOdfDisabledReason(cluster, infraEnv, isSupported);
+      return getOdfDisabledReason(cluster, activeFeatureConfiguration, isSupported);
     }
     case 'LVM': {
       return getLvmDisabledReason(cluster, isSupported);
