@@ -58,7 +58,7 @@ export type OperatorsValues = V2ClusterUpdateParams & {
 export enum CpuArchitecture {
   x86 = 'x86_64',
   ARM = 'arm64',
-  DAY1_CLUSTER_USES_MULTI = 'multi',
+  MULTI = 'multi',
   // This value refers to use whichever CPU architecture was selected for the cluster
   // It's not a value that can be returned from the Backend.
   USE_DAY1_ARCHITECTURE = 'cluster-day1-cpu-architecture',

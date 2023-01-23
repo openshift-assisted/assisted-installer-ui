@@ -2,7 +2,8 @@ import {
   Cluster,
   CpuArchitecture,
   FeatureId,
-  isArmArchitecture,
+  InfraEnv,
+  isArmInfraEnvCpuArchitecture,
   isSNO,
   OpenshiftVersionOptionType,
   OperatorsValues,
@@ -73,14 +74,18 @@ const getArmDisabledReason = (
   return undefined;
 };
 
-const getOdfDisabledReason = (cluster: Cluster | undefined, isSupported: boolean) => {
-  if (!cluster) {
+const getOdfDisabledReason = (
+  cluster: Cluster | undefined,
+  infraEnv: InfraEnv | undefined,
+  isSupported: boolean,
+) => {
+  if (!(cluster && infraEnv)) {
     return undefined;
   }
-  if (isArmArchitecture(cluster) && isSNO(cluster)) {
+  if (isArmInfraEnvCpuArchitecture(infraEnv) && isSNO(cluster)) {
     return `${ODF_OPERATOR_LABEL} is not available when using Single Node OpenShift or ARM CPU architecture.`;
   }
-  if (isArmArchitecture(cluster)) {
+  if (isArmInfraEnvCpuArchitecture(infraEnv)) {
     return `${ODF_OPERATOR_LABEL} is not available when ARM CPU architecture is selected.`;
   }
   if (isSNO(cluster)) {
@@ -102,11 +107,11 @@ const getLvmDisabledReason = (cluster: Cluster | undefined, isSupported: boolean
   return undefined;
 };
 
-const getCnvDisabledReason = (cluster: Cluster | undefined) => {
-  if (!cluster) {
+const getCnvDisabledReason = (infraEnv: InfraEnv | undefined) => {
+  if (!infraEnv) {
     return undefined;
   }
-  if (isArmArchitecture(cluster)) {
+  if (isArmInfraEnvCpuArchitecture(infraEnv)) {
     return `${CNV_OPERATOR_LABEL} is not available when ARM CPU architecture is selected.`;
   }
   return undefined;
@@ -125,6 +130,7 @@ const getNetworkTypeSelectionDisabledReason = (cluster: Cluster | undefined) => 
 export const getFeatureDisabledReason = (
   featureId: FeatureId,
   cluster: Cluster | undefined,
+  infraEnv: InfraEnv | undefined,
   versionName: string,
   versionOptions: OpenshiftVersionOptionType[],
   isSupported: boolean,
@@ -137,10 +143,10 @@ export const getFeatureDisabledReason = (
       return getArmDisabledReason(cluster, versionName, versionOptions);
     }
     case 'CNV': {
-      return getCnvDisabledReason(cluster);
+      return getCnvDisabledReason(infraEnv);
     }
     case 'ODF': {
-      return getOdfDisabledReason(cluster, isSupported);
+      return getOdfDisabledReason(cluster, infraEnv, isSupported);
     }
     case 'LVM': {
       return getLvmDisabledReason(cluster, isSupported);

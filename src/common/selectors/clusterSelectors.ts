@@ -1,6 +1,6 @@
 import head from 'lodash/fp/head';
 import { CpuArchitecture, SupportedPlatformIntegrations, ValidationsInfo } from '../types';
-import { Cluster, stringToJSON } from '../api';
+import { Cluster, InfraEnv, stringToJSON } from '../api';
 import { OperatorName } from '../config';
 
 export const selectMachineNetworkCIDR = ({
@@ -102,8 +102,8 @@ export const selectIpv4HostPrefix = ({ clusterNetworks }: Pick<Cluster, 'cluster
 export const selectIpv6HostPrefix = ({ clusterNetworks }: Pick<Cluster, 'clusterNetworks'>) =>
   clusterNetworks && clusterNetworks[1].hostPrefix;
 
-export const isArmArchitecture = ({ cpuArchitecture }: Pick<Cluster, 'cpuArchitecture'>) =>
-  cpuArchitecture === CpuArchitecture.ARM;
+export const isArmInfraEnvCpuArchitecture = (infraEnv: InfraEnv) =>
+  infraEnv.cpuArchitecture === CpuArchitecture.ARM;
 
 const getOldSchedulableMastersAlwaysOn = (cluster: Cluster) => {
   return cluster.hosts ? cluster.hosts.length < 5 : true;
