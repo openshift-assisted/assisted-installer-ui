@@ -10,7 +10,7 @@
     "./index.css": "./dist/index.css",
     "./cim": "./dist/cim/index.js",
     "./ocm": "./dist/ocm/index.js",
-    "./locales/": "./dist/locales/"
+    "./locales/*": "./dist/locales/*"
   },
   "typesVersions": {
     "*": {
