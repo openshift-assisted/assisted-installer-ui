@@ -17,12 +17,13 @@ export const getUniqueValidationSchema = <FormValues,>(
   uniqueStringArrayExtractor: UniqueStringArrayExtractor<FormValues>,
 ) => {
   return Yup.string().test('unique', 'Value must be unique', function (value: string) {
-    if (!this.options.context || !('values' in this.options.context)) {
+    const context = this.options.context as Yup.TestContext & { values?: FormValues };
+    if (!context || !context.values) {
       return this.createError({
         message: 'Unexpected error: Yup test context should contain form values',
       });
     }
-    const values = uniqueStringArrayExtractor(this.options.context['values'], this, value);
+    const values = uniqueStringArrayExtractor(context.values, this, value);
     if (!values) {
       return this.createError({
         message: 'Unexpected error: Failed to get values to test uniqueness',

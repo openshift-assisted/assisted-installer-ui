@@ -21,9 +21,9 @@ const getFeatureSupportLevelsMap = (): FeatureSupportLevelsMap => {
   try {
     const featureSupportLevelsMap: FeatureSupportLevelsMap = {};
     featureSupportLevelsACM.supportLevels.forEach((feature) => {
-      const featureIdParams = {};
+      const featureIdParams: FeatureIdToSupportLevel = {};
       const featureProps = feature.features;
-      featureProps.forEach((ops: { featureId: string | number; supportLevel: string }) => {
+      featureProps.forEach((ops) => {
         featureIdParams[ops.featureId] = ops.supportLevel;
       });
       featureSupportLevelsMap[feature.openshiftVersion] = featureIdParams;

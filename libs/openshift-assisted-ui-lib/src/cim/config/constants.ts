@@ -1,5 +1,21 @@
+import { FeatureId, SupportLevel } from '../../common';
+
+type FeatureConfig = {
+  featureId: FeatureId;
+  supportLevel: SupportLevel;
+};
+
+type FeaturesConfig = {
+  openshiftVersion: string;
+  features: FeatureConfig[];
+};
+
+type FeatureSupportLevelsConfig = {
+  supportLevels: FeaturesConfig[];
+};
+
 // source: https://github.com/openshift/assisted-service/blob/master/internal/featuresupport/support_levels_list.go
-export const featureSupportLevelsACM = {
+export const featureSupportLevelsACM: FeatureSupportLevelsConfig = {
   supportLevels: [
     {
       features: [

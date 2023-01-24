@@ -1,4 +1,5 @@
 import Axios, { AxiosError } from 'axios';
+import { Severity } from '@sentry/browser';
 import pick from 'lodash/pick';
 import { captureException } from '../sentry';
 import { isApiError } from './types';
@@ -14,7 +15,7 @@ type OnError = (arg0: unknown) => void;
 
 export const handleApiError = (error: unknown, onError?: OnError): void => {
   if (Axios.isCancel(error)) {
-    captureException(error, 'Request canceled', 'info');
+    captureException(error, 'Request canceled', Severity.Info);
   } else if (isApiError(error)) {
     const config = error.config || { url: '', method: '' };
     let message = `URL: ${JSON.stringify(config.url, null, 1)}\n`;

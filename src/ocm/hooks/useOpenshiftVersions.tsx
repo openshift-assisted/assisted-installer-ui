@@ -8,6 +8,7 @@ import {
 } from '../../common';
 import { getApiErrorMessage, handleApiError } from '../api';
 import { SupportedOpenshiftVersionsAPI } from '../services/apis';
+import { getKeys } from '../../common/utils';
 
 type OpenShiftVersion = Cluster['openshiftVersion'];
 
@@ -49,12 +50,12 @@ export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
     try {
       const { data } = await SupportedOpenshiftVersionsAPI.list();
 
-      const versions: OpenshiftVersionOptionType[] = Object.keys(data).map((key) => {
+      const versions: OpenshiftVersionOptionType[] = getKeys(data).map((key) => {
         const versionItem = data[key] as OpenshiftVersion;
         const version = versionItem.displayName;
         return {
           label: `OpenShift ${version}`,
-          value: key,
+          value: key as string,
           version,
           default: Boolean(versionItem.default),
           supportLevel: versionItem.supportLevel,

@@ -529,13 +529,15 @@ type UseAgentsFilterArgs = {
   hosts: Host[];
 };
 
+export type StatusCount = Record<string, number>;
+
 export const useAgentsFilter = ({ agents, bmhs, hosts }: UseAgentsFilterArgs) => {
   const [hostnameFilter, setHostnameFilter] = React.useState<string>();
   const [statusFilter, setStatusFilter] = React.useState<string[]>([]);
   const statusCount = Object.keys(agentStatus).reduce((acc, curr) => {
     acc[agentStatus[curr].title] = 0;
     return acc;
-  }, {});
+  }, {} as StatusCount);
   hosts.forEach((host) => {
     const agent = agents.find((a) => a.metadata?.uid === host.id);
     const bmh = bmhs.find((bmh) => bmh.metadata?.uid === host.id);

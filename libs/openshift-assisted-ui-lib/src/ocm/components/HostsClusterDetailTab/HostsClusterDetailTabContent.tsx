@@ -109,7 +109,7 @@ export const HostsClusterDetailTabContent = ({
         } catch (e) {
           handleApiError(e);
           if (isApiError(e)) {
-            const isImport = e.config.url?.includes('/import');
+            const isImport = e.config?.url?.includes('/import');
             setError(
               <>
                 {isImport

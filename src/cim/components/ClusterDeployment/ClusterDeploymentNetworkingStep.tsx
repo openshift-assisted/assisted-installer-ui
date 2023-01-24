@@ -71,7 +71,7 @@ const NetworkingForm: React.FC<NetworkingFormProps> = ({
         Object.keys(errors).reduce((acc, curr) => {
           acc[curr] = true;
           return acc;
-        }, {}),
+        }, {} as Record<string, boolean>),
       );
       setShowFormErrors(true);
       if (Object.keys(errors).length) {

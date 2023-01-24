@@ -95,14 +95,19 @@ const dialogIds: DialogId[] = [
 
 const ModalDialogsContext = React.createContext<ModalDialogsContextType | undefined>(undefined);
 
-const ModalDialogsContextProvider: React.FC = ({ children }) => {
-  const [dialogsState, dispatchDialogsAction] = React.useReducer(dialogsReducer, {});
+type DialogStoreType = Partial<Record<DialogId, unknown>>;
 
-  function getOpenDialog<DataType>(dialogId: string) {
+const ModalDialogsContextProvider: React.FC = ({ children }) => {
+  const [dialogsState, dispatchDialogsAction] = React.useReducer(
+    dialogsReducer,
+    {} as DialogStoreType,
+  );
+
+  function getOpenDialog<DataType>(dialogId: DialogId) {
     return (data: DataType) => dispatchDialogsAction(openDialogAction({ dialogId, data }));
   }
 
-  const getCloseDialog = (dialogId: string) => () =>
+  const getCloseDialog = (dialogId: DialogId) => () =>
     dispatchDialogsAction(closeDialogAction({ dialogId }));
 
   const context = dialogIds.reduce((context, dialogId) => {
@@ -115,8 +120,7 @@ const ModalDialogsContextProvider: React.FC = ({ children }) => {
       data: dialogData,
     };
     return context;
-  }, {});
-
+  }, {} as DialogStoreType);
   return (
     <ModalDialogsContext.Provider value={context as ModalDialogsContextType}>
       {children}

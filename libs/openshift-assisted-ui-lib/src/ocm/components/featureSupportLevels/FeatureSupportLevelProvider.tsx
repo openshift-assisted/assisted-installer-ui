@@ -45,7 +45,7 @@ const getFeatureSupportLevelsMap = (
     }
     return featureSupportLevelsMap;
   } catch (err) {
-    captureException(err, 'Failed to parse feature support levels', 'warning');
+    captureException(err, 'Failed to parse feature support levels', Sentry.Severity.Warning);
     return {};
   }
 };

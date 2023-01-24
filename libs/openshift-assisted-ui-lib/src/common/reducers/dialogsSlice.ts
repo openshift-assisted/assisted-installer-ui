@@ -5,7 +5,7 @@ export type DialogPayload = {
   data?: unknown;
 };
 
-const initialState = {};
+const initialState: Record<string, unknown> = {};
 
 export const dialogsSlice = createSlice({
   initialState,

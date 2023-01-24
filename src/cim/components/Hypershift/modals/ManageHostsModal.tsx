@@ -86,7 +86,6 @@ const ManageHostsModal = ({
             nodePool.spec.platform?.agent?.agentLabelSelector?.matchLabels || {},
           ),
           count: nodePool.spec.replicas,
-          openshiftVersion: nodePool.spec.release.image,
         }}
         isInitialValid={false}
         onSubmit={handleSubmit}

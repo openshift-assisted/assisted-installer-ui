@@ -8,9 +8,9 @@ import {
 } from '@patternfly/react-core';
 import { CaretDownIcon } from '@patternfly/react-icons';
 import { useField } from 'formik';
-import { getFieldId } from '../../../common';
+import { DiscoveryImageType, getFieldId } from '../../../common';
 
-export const discoveryImageTypes = {
+export const discoveryImageTypes: Record<DiscoveryImageType, string> = {
   'minimal-iso': 'Minimal image file - Provision with virtual media',
   'full-iso': 'Full image file - Provision with physical media',
   'discovery-image-ipxe': 'iPXE - Provision from your network server',
@@ -61,13 +61,14 @@ export const DiscoveryImageTypeDropdown = ({
 
   const onSelect = React.useCallback(
     (event?: React.SyntheticEvent<HTMLDivElement>) => {
-      const currentValue = event?.currentTarget.id
-        ? (discoveryImageTypes[event?.currentTarget.id] as string)
+      const imageTypeSelection = event?.currentTarget.id as DiscoveryImageType;
+      const currentValue = imageTypeSelection
+        ? discoveryImageTypes[imageTypeSelection]
         : defaultValue;
       setCurrent(currentValue ? currentValue : '');
-      setValue(event?.currentTarget.id);
+      setValue(imageTypeSelection);
       setOpen(false);
-      onChange(event?.currentTarget.id === 'discovery-image-ipxe');
+      onChange(imageTypeSelection === 'discovery-image-ipxe');
     },
     [setCurrent, setOpen, defaultValue, setValue, onChange],
   );

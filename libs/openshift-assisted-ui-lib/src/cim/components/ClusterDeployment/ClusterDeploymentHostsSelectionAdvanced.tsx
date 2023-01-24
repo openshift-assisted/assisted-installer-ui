@@ -44,7 +44,7 @@ const ClusterDeploymentHostsSelectionAdvanced = <T extends FormValues>({
           const label = curr.split('=');
           acc[label[0]] = label[1];
           return acc;
-        }, {});
+        }, {} as Record<string, string>);
         const matchesLocation = locations.length
           ? locations.includes(
               agent.metadata?.labels?.[AGENT_LOCATION_LABEL_KEY] || AGENT_NOLOCATION_VALUE,

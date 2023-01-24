@@ -5,13 +5,13 @@ export const captureException = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   error: any,
   message?: string,
-  severity = Sentry.Severity.Error,
+  severity: Sentry.Severity = Sentry.Severity.Error,
 ) => {
   if (ocmClient) {
     message && Sentry.captureMessage(message, severity);
     Sentry.captureException(error);
   } else {
-    severity === 'error'
+    severity === Sentry.Severity.Error
       ? console.error(message, error)
       : console.warn(message, error);
   }

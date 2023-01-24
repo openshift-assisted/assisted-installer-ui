@@ -69,10 +69,12 @@ const columns: TablePropsCellType[] = [
 const getStatusCell = (row: IRow) => row.cells?.[3] as HumanizedSortable | undefined;
 
 const ClusterRowWrapper = (_props: RowWrapperProps) => {
-  const props = { ..._props };
-  const name = (props?.row?.props as ClusterRowDataProps | undefined)?.name || '';
-  props['id'] = `cluster-row-${name}`;
-  props['data-testid'] = `cluster-row-${name}`;
+  const name = (_props?.row?.props as ClusterRowDataProps | undefined)?.name || '';
+  const props = {
+    ..._props,
+    id: `cluster-row-${name}`,
+    'data-testid': `cluster-row-${name}`,
+  };
   return <RowWrapper {...props} />;
 };
 

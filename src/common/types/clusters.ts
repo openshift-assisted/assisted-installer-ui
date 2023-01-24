@@ -1,5 +1,11 @@
 import { IRow } from '@patternfly/react-table';
-import { Cluster, V2ClusterUpdateParams, ClusterValidationId, PlatformType } from '../api';
+import {
+  Cluster,
+  V2ClusterUpdateParams,
+  ClusterValidationId,
+  PlatformType,
+  ImageType,
+} from '../api';
 import { Validation as HostValidation } from './hosts';
 export type Validation = Omit<HostValidation, 'id'> & {
   id: ClusterValidationId;
@@ -78,3 +84,5 @@ export type SupportedPlatformType = Extract<PlatformType, 'vsphere' | 'nutanix'>
 
 export const SupportedPlatformIntegrations: SupportedPlatformType[] = ['vsphere', 'nutanix'];
 export const NonPlatformIntegrations: PlatformType[] = ['baremetal', 'none'];
+
+export type DiscoveryImageType = ImageType | 'discovery-image-ipxe';

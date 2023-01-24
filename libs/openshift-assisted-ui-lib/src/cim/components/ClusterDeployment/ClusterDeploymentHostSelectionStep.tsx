@@ -201,7 +201,7 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
         Object.keys(errors).reduce((acc, curr) => {
           acc[curr] = true;
           return acc;
-        }, {}),
+        }, {} as Record<string, boolean>),
       );
       if (Object.keys(errors).length) {
         return;
@@ -318,10 +318,11 @@ const ClusterDeploymentHostSelectionStep: React.FC<ClusterDeploymentHostSelectio
   ) => {
     try {
       await onSaveHostsSelection(values);
-    } catch (error) {
+    } catch (e) {
+      const error = e as Error;
       addAlert({
         title: t('ai:Failed to save host selection.'),
-        message: error.message as string,
+        message: error.message,
       });
     } finally {
       setSubmitting(false);

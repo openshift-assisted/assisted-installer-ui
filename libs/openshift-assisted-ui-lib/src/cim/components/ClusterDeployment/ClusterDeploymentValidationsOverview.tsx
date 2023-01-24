@@ -10,11 +10,14 @@ import {
   List,
   ListItem,
 } from '@patternfly/react-core';
+import { TFunction } from 'i18next';
 import { Cluster } from '../../../common/api/types';
-import { ValidationsInfo } from '../../../common/types/clusters';
+import {
+  ValidationsInfo,
+  ValidationGroup as ClusterValidationGroup,
+} from '../../../common/types/clusters';
 import { clusterValidationGroupLabels } from '../../../common/config/constants';
 import { filterValidationsInfoByStatus } from '../../../common/components/clusterConfiguration/utils';
-import { TFunction } from 'i18next';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 function getCardTitle(clusterStatus: Cluster['status'], t: TFunction) {
@@ -79,9 +82,10 @@ const ClusterDeploymentValidationsOverview = ({
       {!!Object.entries(filteredValidationsInfo).length && (
         <DescriptionList>
           {Object.entries(filteredValidationsInfo).map(([group, validations]) => {
+            const label = clusterValidationGroupLabels(t)[group as ClusterValidationGroup];
             return (
               <DescriptionListGroup key={group}>
-                <DescriptionListTerm>{clusterValidationGroupLabels(t)[group]}</DescriptionListTerm>
+                <DescriptionListTerm>{label}</DescriptionListTerm>
                 <DescriptionListDescription>
                   {validations && (
                     <List>
