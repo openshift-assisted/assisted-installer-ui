@@ -6,10 +6,15 @@ const DiskEncryptionService = {
     isEnableOnWorkers: boolean,
   ): DiskEncryption['enableOn'] {
     let enableOnParam: DiskEncryption['enableOn'];
-    if (isEnableOnMasters && isEnableOnWorkers) enableOnParam = 'all';
-    else if (isEnableOnWorkers) enableOnParam = 'workers';
-    else if (isEnableOnMasters) enableOnParam = 'masters';
-    else enableOnParam = 'none';
+    if (isEnableOnMasters && isEnableOnWorkers) {
+      enableOnParam = 'all';
+    } else if (isEnableOnWorkers) {
+      enableOnParam = 'workers';
+    } else if (isEnableOnMasters) {
+      enableOnParam = 'masters';
+    } else {
+      enableOnParam = 'none';
+    }
     return enableOnParam;
   },
 

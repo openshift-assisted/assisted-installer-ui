@@ -259,7 +259,9 @@ export const areOnlySoftValidationsOfWizardStepFailing = <ClusterWizardStepsType
   const failingValidationIds = getFailingClusterWizardStepHostValidations(stepValidationsInfo).map(
     (validation) => validation.id,
   );
-  if (!failingValidationIds.length) return false;
+  if (!failingValidationIds.length) {
+    return false;
+  }
   for (const id of failingValidationIds) {
     if (!wizardStepsValidationsMap[wizardStepId].softValidationIds.includes(id)) {
       return false;

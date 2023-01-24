@@ -41,7 +41,7 @@ const HostsCount: React.FC<HostsCountProps> = ({
     'enabledHostCount' in cluster ? getEnabledHostCount(cluster) : getTotalHostCount(cluster);
   return (
     <Popover headerContent={t('ai:Hosts in the cluster')} bodyContent={body}>
-      <a id={valueId}>
+      <a id={valueId} href={'#'}>
         {inParenthesis && '('}
         {summary}
         {inParenthesis && ')'}

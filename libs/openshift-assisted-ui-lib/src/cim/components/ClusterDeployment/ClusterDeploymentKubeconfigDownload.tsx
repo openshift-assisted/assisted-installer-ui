@@ -29,7 +29,9 @@ const ClusterDeploymentKubeconfigDownload = ({
         const kubeconfigSecret = await fetchSecret(kubeconfigSecretName, kubeconfigSecretNamespace);
         const kubeconfig = kubeconfigSecret.data?.kubeconfig;
 
-        if (!kubeconfig) throw new Error(t('ai:Kubeconfig is empty.'));
+        if (!kubeconfig) {
+          throw new Error(t('ai:Kubeconfig is empty.'));
+        }
 
         const blob = new Blob([atob(kubeconfig)], { type: 'text/plain;charset=utf-8' });
         saveAs(blob, 'kubeconfig.yaml');

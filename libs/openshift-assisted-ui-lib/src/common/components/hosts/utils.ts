@@ -208,7 +208,9 @@ export const areOnlySoftValidationsFailing = (validationsInfo: HostValidationsIn
   const failingValidationIds = getFailingHostValidations(validationsInfo).map(
     (validation) => validation.id,
   );
-  if (!failingValidationIds.length) return false;
+  if (!failingValidationIds.length) {
+    return false;
+  }
   for (const id of failingValidationIds) {
     if (!['ntp-synced', 'container-images-available'].includes(id)) {
       return false;

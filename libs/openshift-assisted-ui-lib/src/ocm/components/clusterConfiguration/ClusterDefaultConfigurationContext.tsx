@@ -42,11 +42,17 @@ export const ClusterDefaultConfigurationProvider = ({
     let mounted = true;
     const fetchAndSetDefaultConfiguration = async () => {
       try {
-        if (mounted) dispatch({ type: 'request' });
+        if (mounted) {
+          dispatch({ type: 'request' });
+        }
         const { data } = await ClustersAPI.getDefaultConfig();
-        if (mounted) dispatch({ type: 'success', data });
+        if (mounted) {
+          dispatch({ type: 'success', data });
+        }
       } catch {
-        if (mounted) dispatch({ type: 'failure', data: {} });
+        if (mounted) {
+          dispatch({ type: 'failure', data: {} });
+        }
       }
     };
     void fetchAndSetDefaultConfiguration();

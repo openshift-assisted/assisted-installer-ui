@@ -2,13 +2,17 @@ import * as React from 'react';
 import { DASH } from '../constants';
 
 export const getHumanizedDateTime = (dateTime?: string) => {
-  if (!dateTime) return DASH;
+  if (!dateTime) {
+    return DASH;
+  }
   const date = new Date(dateTime);
   return date.toLocaleString();
 };
 
 export const getHumanizedTime = (dateTime?: string) => {
-  if (!dateTime) return DASH;
+  if (!dateTime) {
+    return DASH;
+  }
   const date = new Date(dateTime);
   return date.toLocaleTimeString();
 };

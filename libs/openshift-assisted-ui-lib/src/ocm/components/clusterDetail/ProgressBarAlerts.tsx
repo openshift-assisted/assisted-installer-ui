@@ -36,8 +36,11 @@ const getFailedOperatorsNames = (failedOperators: MonitoredOperator[], t: TFunct
     const operatorName = (failedOperators[i].name as OperatorName) || '';
     const operatorLabel: string = (operatorName && translatedOperatorLabels[operatorName]) || '';
     if (i > 0) {
-      if (i === failedOperators.length - 1) failedOperatorsNames += ' and ';
-      else failedOperatorsNames += ', ';
+      if (i === failedOperators.length - 1) {
+        failedOperatorsNames += ' and ';
+      } else {
+        failedOperatorsNames += ', ';
+      }
     }
     failedOperatorsNames += `${operatorLabel} (${operatorName.toUpperCase()})`;
   }

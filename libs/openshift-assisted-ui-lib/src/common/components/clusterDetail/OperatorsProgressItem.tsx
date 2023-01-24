@@ -23,9 +23,15 @@ export function getAggregatedStatus(operators: MonitoredOperatorsList) {
   const operatorStates: (OperatorStatus | 'pending')[] = operators.map(
     (operator) => operator.status || 'pending',
   );
-  if (operatorStates.includes('failed')) return 'failed';
-  if (operatorStates.includes('progressing')) return 'progressing';
-  if (operatorStates.includes('pending')) return 'pending';
+  if (operatorStates.includes('failed')) {
+    return 'failed';
+  }
+  if (operatorStates.includes('progressing')) {
+    return 'progressing';
+  }
+  if (operatorStates.includes('pending')) {
+    return 'pending';
+  }
   return 'available';
 }
 

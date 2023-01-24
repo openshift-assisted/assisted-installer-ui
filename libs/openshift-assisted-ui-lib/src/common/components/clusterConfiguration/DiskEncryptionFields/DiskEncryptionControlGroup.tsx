@@ -20,7 +20,8 @@ const hasFilledTangServers = (tangServers: TangServer[]): boolean => {
   };
   return (
     tangServers.find(
-      (server: typeof tangServers[number]) => !isEqual(server, emptyServer) && !isEqual(server, {}),
+      (server: (typeof tangServers)[number]) =>
+        !isEqual(server, emptyServer) && !isEqual(server, {}),
     ) !== undefined
   );
 };

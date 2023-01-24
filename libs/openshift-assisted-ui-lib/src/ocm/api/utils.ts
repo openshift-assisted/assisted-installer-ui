@@ -44,7 +44,9 @@ export const handleApiError = (error: unknown, onError?: OnError): void => {
   } else {
     captureException(error);
   }
-  if (onError) return onError(error);
+  if (onError) {
+    return onError(error);
+  }
 };
 
 export const getApiErrorMessage = (error: unknown): string => {
