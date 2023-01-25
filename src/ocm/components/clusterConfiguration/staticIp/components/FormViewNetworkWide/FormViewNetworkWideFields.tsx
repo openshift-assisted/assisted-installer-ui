@@ -11,9 +11,15 @@ import {
   TextContent,
   Flex,
   FlexItem,
+  ButtonVariant,
 } from '@patternfly/react-core';
 import { useField, useFormikContext } from 'formik';
-import { getFieldId, getHumanizedSubnetRange, PopoverIcon } from '../../../../../../common';
+import {
+  ConfirmationModal,
+  getFieldId,
+  getHumanizedSubnetRange,
+  PopoverIcon,
+} from '../../../../../../common';
 import {
   getAddressObject,
   getProtocolVersionLabel,
@@ -144,29 +150,65 @@ const protocolVersionOptions: FormSelectOptionProps[] = [
   },
 ];
 
+const ipv6ValuesEmpty = (values: FormViewNetworkWideValues) =>
+  values.ipConfigs.ipv6.gateway === '' &&
+  values.ipConfigs.ipv6.machineNetwork.ip === '' &&
+  values.ipConfigs.ipv6.machineNetwork.prefixLength === '';
+
 export const ProtocolTypeSelect = () => {
   const selectFieldName = 'protocolType';
   const [{ value: protocolType }, , { setValue: setProtocolType }] =
     useField<StaticProtocolType>(selectFieldName);
   const [, , { setValue: setIpv6 }] = useField<IpConfig>(`ipConfigs.ipv6`);
+  const [openConfirmModal, setConfirmModal] = React.useState(false);
+  const { values } = useFormikContext<FormViewNetworkWideValues>();
+
   const onChange = (e: React.FormEvent<HTMLSelectElement>) => {
     const newProtocolType = e.currentTarget.value as types.StaticProtocolType;
     if (newProtocolType === protocolType) {
       return;
     }
-    //no need to empty ipv4, when switching back dual stack ipv4 remains as is
-    setIpv6(getEmptyIpConfig());
-    setProtocolType(newProtocolType);
+    if (newProtocolType === 'ipv4' && !ipv6ValuesEmpty(values)) {
+      setConfirmModal(true);
+    } else {
+      //no need to empty ipv4, when switching back dual stack ipv4 remains as is
+      setIpv6(getEmptyIpConfig());
+      setProtocolType(newProtocolType);
+    }
   };
+
   return (
-    <OcmSelectField
-      label="Internet protocol version"
-      options={protocolVersionOptions}
-      name={selectFieldName}
-      callFormikOnChange={false}
-      onChange={onChange}
-      data-testid="select-protocol-version"
-    />
+    <>
+      <OcmSelectField
+        label="Internet protocol version"
+        options={protocolVersionOptions}
+        name={selectFieldName}
+        callFormikOnChange={false}
+        onChange={onChange}
+        data-testid="select-protocol-version"
+      />
+      {openConfirmModal && (
+        <ConfirmationModal
+          title={'Change internet protocol version type?'}
+          titleIconVariant={'warning'}
+          confirmationButtonText={'Change'}
+          confirmationButtonVariant={ButtonVariant.primary}
+          content={
+            <>
+              <p>All data and configuration done for 'Dual Stack' will be lost.</p>
+            </>
+          }
+          onClose={() => {
+            setConfirmModal(false);
+            setProtocolType('dualStack');
+          }}
+          onConfirm={() => {
+            setConfirmModal(false);
+            setProtocolType('ipv4');
+          }}
+        />
+      )}
+    </>
   );
 };
 export const FormViewNetworkWideFields = ({ hosts }: { hosts: FormViewHost[] }) => {
