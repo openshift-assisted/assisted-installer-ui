@@ -16,6 +16,9 @@ import { AgentK8sResource, BareMetalHostK8sResource } from '../../types';
 import ClusterDeploymentHostDiscoveryTable from './ClusterDeploymentHostDiscoveryTable';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
+// TODO either make "onSaveISOParams" optional everywhere, or make it required and ensure it's set
+const dummyOnSaveISOParams = () => Promise.resolve();
+
 const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryProps> = ({
   agentClusterInstall,
   agents,
@@ -128,7 +131,7 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
             isOpen={isoModalOpen}
             onClose={() => setISOModalOpen(false)}
             onCreateBMH={onCreateBMH}
-            onSaveISOParams={onSaveISOParams}
+            onSaveISOParams={onSaveISOParams || dummyOnSaveISOParams}
             usedHostnames={usedHostnames || []}
             isBMPlatform={isBMPlatform}
           />

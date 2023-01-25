@@ -1,10 +1,10 @@
 import { StatusCondition } from '../../types';
-import { AgentK8sResource } from '../../types/k8s/agent';
+import { AgentK8sResource, AgentStatusCondition } from '../../types/k8s/agent';
 
 export const REQUIRED_AGENT_CONDITION_TYPES = ['SpecSynced', 'Connected', 'Validated'];
 
 export const getFailingAgentConditions = (agents: AgentK8sResource[] = []) => {
-  const agentsAlerts = {};
+  const agentsAlerts: Record<string, AgentStatusCondition[]> = {};
   const ofType = REQUIRED_AGENT_CONDITION_TYPES;
 
   agents.forEach((a) => {
