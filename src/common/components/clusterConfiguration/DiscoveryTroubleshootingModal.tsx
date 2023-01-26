@@ -12,6 +12,12 @@ import { InfoCircleIcon } from '@patternfly/react-icons';
 import { PrismCode } from '../ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { Trans } from 'react-i18next';
+import { saveAs } from 'file-saver';
+
+export const downloadIsoPasswordScript = () => {
+  const blob = new Blob(['text'], { type: 'text/plain;charset=utf-8' });
+  saveAs(blob, 'change-iso-password.sh');
+};
 
 export const DiscoveryTroubleshootingModalContent = () => {
   const { t } = useTranslation();
@@ -48,9 +54,16 @@ export const DiscoveryTroubleshootingModalContent = () => {
       </Text>
       <Text component={TextVariants.h2}>{t("ai:If you're not able to SSH into your hosts")}</Text>
       <Text component={TextVariants.p}>
-        {t(
-          "ai:Download the full image file and patch it locally with a login password using this script if you're not able to SSH into your host due to network issues.",
-        )}
+        {t('ai:Download the full image file and patch it locally with a login password using this')}{' '}
+        <Button
+          variant={ButtonVariant.link}
+          onClick={() => downloadIsoPasswordScript()}
+          data-testid="download-change-password-script"
+          isInline
+        >
+          {t('ai:script')}
+        </Button>{' '}
+        {t("ai:if you're not able to SSH into your host due to network issues.")}
       </Text>
       <Text component={TextVariants.p}>{t('ai:Run these commands to use the script:')}</Text>
       <PrismCode
