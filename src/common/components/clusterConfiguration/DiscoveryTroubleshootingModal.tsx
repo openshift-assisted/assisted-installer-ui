@@ -46,6 +46,17 @@ export const DiscoveryTroubleshootingModalContent = () => {
           'ai:NOTE: Authentication is provided by the discovery ISO, therefore when you access your host using SSH, a password is not required. Optional -i parameter can be used to specify the private key that matches the public key provided when generating Discovery ISO.',
         )}
       </Text>
+      <Text component={TextVariants.h2}>{t("ai:If you're not able to SSH into your hosts")}</Text>
+      <Text component={TextVariants.p}>
+        {t(
+          "ai:Download the full image file and patch it locally with a login password using this script if you're not able to SSH into your host due to network issues.",
+        )}
+      </Text>
+      <Text component={TextVariants.p}>{t('ai:Run these commands to use the script:')}</Text>
+      <PrismCode
+        code={`chmod +x ./change-iso-password.sh
+./change-iso-password.sh <path_to_your_iso_file></path_to_your_iso_file>`}
+      />
       <Text component={TextVariants.h2}>
         {t('ai:Verify that the discovery agent is running with the correct parameters')}
       </Text>
