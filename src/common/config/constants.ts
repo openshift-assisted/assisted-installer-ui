@@ -11,7 +11,7 @@ export const OPENSHIFT_NETWORKING_DOCS_LINK =
 export const CLUSTER_MANAGER_SITE_LINK = 'https://console.redhat.com/openshift/install/pull-secret';
 export const PULL_SECRET_INFO_LINK = CLUSTER_MANAGER_SITE_LINK;
 export const ODF_REQUIREMENTS_LINK =
-  'https://access.redhat.com/documentation/en-us/red_hat_openshift_data_foundation/4.9/html/planning_your_deployment/infrastructure-requirements_rhodf#resource-requirements_rhodf';
+  'https://access.redhat.com/documentation/en-us/assisted_installer_for_openshift_container_platform/2022/html/assisted_installer_for_openshift_container_platform/assembly_installing-operators#proc_installing-openshift-data-foundation_assembly_installing-operators';
 export const VSPHERE_CONFIG_LINK = 'https://access.redhat.com/solutions/6677901';
 
 export const getReportIssueLink = () =>
