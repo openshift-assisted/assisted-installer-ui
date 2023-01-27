@@ -1,5 +1,6 @@
 import React from 'react';
 import { Redirect, RouteComponentProps } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { PageSection, PageSectionVariants, Text, TextContent } from '@patternfly/react-core';
 import {
   AddHostsContextProvider,
@@ -39,6 +40,7 @@ type MatchParams = {
 const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
   const { clusterId } = match.params;
   const fetchCluster = useFetchCluster(clusterId);
+  const dispatch = useDispatch();
   const { cluster, uiState, errorDetail } = useClusterPolling(clusterId);
   const {
     infraEnv,
@@ -49,8 +51,12 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
 
   const getContent = (cluster: Cluster, infraEnv: InfraEnv) => {
     if (cluster.status === 'adding-hosts') {
+      const onReset = async () => {
+        dispatch(forceReload());
+        return Promise.resolve();
+      };
       return (
-        <AddHostsContextProvider cluster={cluster} resetCluster={forceReload}>
+        <AddHostsContextProvider cluster={cluster} resetCluster={onReset}>
           <AddHosts />
         </AddHostsContextProvider>
       );

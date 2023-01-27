@@ -19,6 +19,7 @@ import { agentStatus } from '../helpers/agentStatus';
 import { Host, TableToolbar } from '../../../common';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { StatusCount } from '../Agent/tableUtils';
 
 const getStatusesForFiler = (statuses: HostStatus<string>) => {
   const filterStatuses: {
@@ -57,7 +58,7 @@ type InfraTableToolbarProps = ReturnType<typeof usePagination> & {
   massActions: React.ReactNode[];
   hosts: Host[];
   statusFilter: string[];
-  statusCount: object;
+  statusCount: StatusCount;
   hostnameFilter: string | undefined;
   setHostnameFilter: (hostname: string | undefined) => void;
   setStatusFilter: (status: string[]) => void;

@@ -6,6 +6,7 @@ import {
   ToolbarContent,
   ToolbarFilter,
   ToolbarChip,
+  ToolbarChipGroup,
   Button,
   ButtonVariant,
   InputGroup,
@@ -174,12 +175,18 @@ const ClusterEventsToolbar: React.FC<ClustersListToolbarProps> = ({
     });
   };
 
-  const onDeleteChip: ToolbarFilterProps['deleteChip'] = (type, chip: ToolbarChip | string) => {
+  const onDeleteChip: ToolbarFilterProps['deleteChip'] = (
+    type: string | ToolbarChipGroup,
+    chip: ToolbarChip | string,
+  ) => {
     if (type) {
-      const id = (chip['key'] || chip || '') as string;
+      const id = (typeof chip === 'string' ? chip : chip.key) || '';
+      const typeId = (typeof type === 'string' ? type : type.key) || '';
       setFilters({
         ...filters,
-        [type as string]: filters[type as string].filter((v: string) => v !== id),
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        [typeId]: filters[typeId].filter((v: string) => v !== id),
       });
     } else {
       onClearAllFilters();

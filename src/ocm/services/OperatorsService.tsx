@@ -6,6 +6,7 @@ import {
   OPERATOR_NAME_ODF,
   OPERATOR_NAME_LSO,
   OPERATOR_NAME_LVM,
+  OperatorName,
 } from '../../common';
 import { getOlmOperatorCreateParamsByName } from '../components/clusters/utils';
 import { getKeys } from '../../common/utils';
@@ -17,7 +18,9 @@ const hasActiveOperators = (values: OperatorsValues) => {
 const OperatorsService = {
   getOLMOperators(values: OperatorsValues, cluster: Cluster): OperatorCreateParams[] {
     const enabledOlmOperatorsByName = getOlmOperatorCreateParamsByName(cluster);
-    const setOperator = (name: string, enabled: boolean) => {
+
+    // TODO: change OperatorName to ExposedOperatorName once the LSO option is exposed to the user
+    const setOperator = (name: OperatorName, enabled: boolean) => {
       if (enabled) {
         enabledOlmOperatorsByName[name] = { name };
       } else {
@@ -27,9 +30,9 @@ const OperatorsService = {
 
     setOperator(OPERATOR_NAME_LVM, values.useOdfLogicalVolumeManager);
     setOperator(OPERATOR_NAME_CNV, values.useContainerNativeVirtualization);
-
     setOperator(OPERATOR_NAME_ODF, values.useOpenShiftDataFoundation);
-    // TODO(jtomasek): remove following once enabling OCS is moved into a separate storage step and LSO option is exposed to the user
+
+    // TODO: remove following once the LSO option is exposed to the user
     if (!hasActiveOperators(values)) {
       setOperator(OPERATOR_NAME_LSO, false);
     }

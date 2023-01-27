@@ -19,6 +19,7 @@ import {
   sshPublicKeyValidationSchema,
 } from '../../../common/components/ui';
 import {
+  DiscoveryImageType,
   ProxyFieldsType,
   StatusErrorType,
   TrustedCertificateFieldsType,
@@ -29,8 +30,6 @@ import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import DiscoveryImageTypeDropdown, { discoveryImageTypes } from './DiscoveryImageTypeDropdown';
 import CertificateFields from '../../../common/components/clusterConfiguration/CertificateFields';
 
-export type OcmImageType = ImageType | 'discovery-image-ipxe';
-
 export interface OcmImageCreateParams {
   /**
    * SSH public key for debugging the installation.
@@ -40,7 +39,7 @@ export interface OcmImageCreateParams {
   /**
    * Type of image that should be generated.
    */
-  imageType?: OcmImageType;
+  imageType?: DiscoveryImageType;
 }
 
 export type OcmDiscoveryImageFormValues = OcmImageCreateParams &

@@ -1,7 +1,7 @@
 import head from 'lodash/fp/head';
 import { SupportedPlatformIntegrations, ValidationsInfo } from '../types';
 import { Cluster, stringToJSON } from '../api';
-import { OperatorName } from '../config';
+import { ExposedOperatorName } from '../config';
 
 export const selectMachineNetworkCIDR = ({
   machineNetworks,
@@ -40,7 +40,7 @@ export const selectOlmOperators = (cluster?: Pick<Cluster, 'monitoredOperators'>
 
 export const hasEnabledOperators = (
   monitoredOperators: Cluster['monitoredOperators'],
-  searchOperator: OperatorName,
+  searchOperator: ExposedOperatorName,
 ) => {
   return selectMonitoredOperators(monitoredOperators).some(
     (operator) => operator.name && operator.name === searchOperator,
