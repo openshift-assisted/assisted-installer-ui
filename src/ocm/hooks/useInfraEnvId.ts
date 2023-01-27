@@ -17,7 +17,9 @@ export default function useInfraEnvId(clusterId: Cluster['id'], cpuArchitecture:
   }, [clusterId, cpuArchitecture]);
 
   React.useEffect(() => {
-    if (clusterId && !infraEnvId) {
+    if (!clusterId) {
+      setError('Missing clusterId to load infrastructure environment');
+    } else if (!infraEnvId) {
       void findInfraEnvId();
     }
   }, [clusterId, findInfraEnvId, infraEnvId]);
