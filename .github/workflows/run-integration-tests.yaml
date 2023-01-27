@@ -1,0 +1,59 @@
+name: Cypress Tests
+
+## Runs the Cypress Integration tests project based on the creation of a comment in a PR review
+## The comment must start with "/ocm-integration-tests", then:
+## - It can be followed by a branch name, in which case the tests will run from that branch in openshift-assisted-ui
+## - If no branch name is specified, "main" branch will be the one used
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+      - edited
+    branches:
+      - master
+      - releases/*
+      - CIM-*
+
+jobs:
+  cypress-run:
+    runs-on: ubuntu-latest
+    env:
+      NODE_OPTIONS: --max-old-space-size=8192
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          cache: yarn
+          node-version: 16
+
+      - name: Remove existing env file
+        run: rm -f apps/assisted-ui/.env.development.local
+
+      - name: Create env file
+        run: echo "VITE_APP_API_URL=http://localhost:3000" >> apps/assisted-ui/.env.development.local
+
+      - name: Build Assisted-UI for local server
+        run: |
+          yarn install --frozen-lockfile
+          yarn build:apps/assisted-ui
+
+      # Run Cypress tests in Headless mode
+      - name: Cypress run
+        uses: cypress-io/github-action@v4.1.0
+        with:
+          working-directory: ./tests/openshift-assisted-ui-tests
+          browser: chrome
+          config-file: cypress.json
+          config: video=false
+          env: CYPRESS_API_BASE_URL=http://localhost:3000
+          start:
+            yarn --cwd=../../ preview:apps/assisted-ui
+          spec: |
+            ./src/integration/ui-behaviour/cluster-updates.spec.ts

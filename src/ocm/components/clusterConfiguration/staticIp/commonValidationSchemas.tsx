@@ -51,7 +51,7 @@ const isReservedAddress = (ip: string, protocolVersion: ProtocolVersion) => {
     if (protocolVersion === ProtocolVersion.ipv4) {
       return RESERVED_IPS.includes(ip);
     } else {
-      return isReservedIpv6Address(new Address6(ip)) !== undefined;
+      return isReservedIpv6Address(new Address6(ip));
     }
   } catch (e) {
     return false;

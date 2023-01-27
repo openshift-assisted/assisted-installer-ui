@@ -39,4 +39,4 @@ jobs:
         shell: bash
 
       - name: Build code (includes tests)
-        run: yarn build
+        run: yarn build:libs/openshift-assisted-ui-lib

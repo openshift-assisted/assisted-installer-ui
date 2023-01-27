@@ -1,0 +1,32 @@
+{
+  "name": "openshift-assisted-ui-tests",
+  "version": "0.0.1",
+  "private": false,
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@types/file-saver": "^2.0.1",
+    "@types/jest": "^24.0.0",
+    "@types/lodash": "^4.14.121",
+    "@types/node": "^12.0.0",
+    "@types/uuid": "^8.0.0",
+    "file-saver": "^2.0.2",
+    "http-proxy-middleware": "^1.0.3",
+    "lodash": "^4.17.15",
+    "uuid": "^8.1.0",
+    "yaml": "^1.7.2"
+  },
+  "scripts": {
+    "cypress:open": "yarn cypress open"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.3.4",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.3.4",
+    "cypress": "^7.4.0",
+    "cypress-file-upload": "^5.0.7",
+    "cypress-fill-command": "^1.0.2",
+    "cypress-pipe": "^2.0.0",
+    "prop-types": "^15.7.2",
+    "xml-js": "^1.6.11"
+  }
+}

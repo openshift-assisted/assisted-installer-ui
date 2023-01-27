@@ -9,7 +9,7 @@ if [ -n "$GIT_STATUS" ]; then
   exit 1
 fi
 
-result=$(grep -r -v -h '^  "ai:' locales/en | grep -v "^[{|}]$")
+result=$(grep -r -v -h '^  "ai:' locales/en/translation.json | grep -v "^[{|}]$")
 if [ -n "$result" ]; then
    echo "Found some i18n keys missing the 'ai:' prefix."
    echo "Please, review the output, run 'yarn i18n' and then commit the changes."

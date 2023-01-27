@@ -33,3 +33,4 @@ gen
 # ignored apps
 apps/*
 !apps/assisted-ui
+cypress.env.json
