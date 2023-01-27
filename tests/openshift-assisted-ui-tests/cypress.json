@@ -28,7 +28,7 @@
     "REMOTE_USER": "",
     "REMOTE_HOST": "",
     "PULL_SECRET": "fake-pull-secret",
-    "API_BASE_URL": "http://locahost:3000/",
+    "API_BASE_URL": "http://localhost:3000",
     "API_VERSION": "v2",
     "DEV_FLAG": true,
     "NUM_MASTERS": "1",
