@@ -2,13 +2,12 @@ import * as React from 'react';
 import { FormGroup, Tooltip } from '@patternfly/react-core';
 import { useField, useFormikContext } from 'formik';
 import {
-  getFieldId,
-  isArmArchitecture,
   ClusterCreateParams,
-  HelperText,
-  PopoverIcon,
   CpuArchitecture,
+  getFieldId,
+  HelperText,
   OpenshiftVersionOptionType,
+  PopoverIcon,
 } from '../../../common';
 import {
   FeatureSupportLevelBadge,
@@ -89,7 +88,7 @@ const ArmCheckbox: React.FC<ArmCheckboxProps> = ({ versions }) => {
               Make sure all the hosts are using arm64 CPU architecture.
             </HelperText>
           }
-          isChecked={isArmArchitecture({ cpuArchitecture: value })}
+          isChecked={value === CpuArchitecture.ARM}
           onChange={onChanged}
           className="with-tooltip"
         />

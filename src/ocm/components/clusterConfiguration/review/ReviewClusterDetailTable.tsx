@@ -1,12 +1,11 @@
 import React from 'react';
 import { Table, IRow, TableVariant, TableBody } from '@patternfly/react-table';
-import { Cluster, CpuArchitecture } from '../../../../common';
-import useInfraEnv from '../../../hooks/useInfraEnv';
+import { Cluster, useFeatureSupportLevel } from '../../../../common';
 import { getDiskEncryptionEnabledOnStatus } from '../../clusterDetail/ClusterProperties';
 import OpenShiftVersionDetail from '../../clusterDetail/OpenShiftVersionDetail';
 
 export const ReviewClusterDetailTable = ({ cluster }: { cluster: Cluster }) => {
-  const { infraEnv } = useInfraEnv(cluster.id, cluster.cpuArchitecture as CpuArchitecture);
+  const { activeFeatureConfiguration } = useFeatureSupportLevel();
 
   const rows = React.useMemo(() => {
     return [
@@ -37,14 +36,17 @@ export const ReviewClusterDetailTable = ({ cluster }: { cluster: Cluster }) => {
       {
         cells: [
           { title: 'CPU architecture' },
-          { title: <>{cluster.cpuArchitecture}</>, props: { 'data-testid': 'cpu-architecture' } },
+          {
+            title: <>{activeFeatureConfiguration.underlyingCpuArchitecture}</>,
+            props: { 'data-testid': 'cpu-architecture' },
+          },
         ],
       },
       {
         cells: [
           { title: "Hosts' network configuration" },
           {
-            title: <>{infraEnv?.staticNetworkConfig ? 'Static IP' : 'DHCP'}</>,
+            title: <>{activeFeatureConfiguration.hasStaticIpNetworking ? 'Static IP' : 'DHCP'}</>,
             props: { 'data-testid': 'network-configuration' },
           },
         ],
@@ -59,7 +61,7 @@ export const ReviewClusterDetailTable = ({ cluster }: { cluster: Cluster }) => {
         ],
       },
     ];
-  }, [cluster, infraEnv?.staticNetworkConfig]);
+  }, [cluster, activeFeatureConfiguration]);
 
   return (
     <Table

@@ -75,7 +75,7 @@ const isAdvNetworkConf = (
 const isManagedNetworkingDisabled = (
   isDualStack: boolean,
   openshiftVersion: Cluster['openshiftVersion'],
-  cpuArchitecture: Cluster['cpuArchitecture'],
+  cpuArchitecture: CpuArchitecture,
   featureSupportLevelData: FeatureSupportLevelData,
 ) => {
   if (isDualStack) {
@@ -145,8 +145,16 @@ const NetworkConfiguration = ({
   const featureSupportLevelData = useFeatureSupportLevel();
   const { setFieldValue, values, validateField } = useFormikContext<NetworkConfigurationValues>();
 
-  const clusterFeatureSupportLevels = React.useMemo(() => {
-    return getLimitedFeatureSupportLevels(cluster, featureSupportLevelData, t);
+  const { clusterFeatureSupportLevels, underlyingCpuArchitecture } = React.useMemo(() => {
+    return {
+      clusterFeatureSupportLevels: getLimitedFeatureSupportLevels(
+        cluster,
+        featureSupportLevelData,
+        t,
+      ),
+      underlyingCpuArchitecture:
+        featureSupportLevelData.activeFeatureConfiguration.underlyingCpuArchitecture,
+    };
   }, [cluster, featureSupportLevelData, t]);
   const isSNOCluster = isSNO(cluster);
   const isMultiNodeCluster = !isSNOCluster;
@@ -227,10 +235,10 @@ const NetworkConfiguration = ({
       isManagedNetworkingDisabled(
         isDualStack,
         cluster.openshiftVersion,
-        cluster.cpuArchitecture,
+        underlyingCpuArchitecture,
         featureSupportLevelData,
       ),
-    [cluster.cpuArchitecture, cluster.openshiftVersion, featureSupportLevelData, isDualStack],
+    [underlyingCpuArchitecture, cluster.openshiftVersion, featureSupportLevelData, isDualStack],
   );
 
   const { isUserManagementDisabled, userManagementDisabledReason } = React.useMemo(

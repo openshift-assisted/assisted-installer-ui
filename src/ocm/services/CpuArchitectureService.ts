@@ -30,7 +30,7 @@ const mapClusterCpuArchToInfraEnvCpuArch = (
     case OcmCpuArchitecture.ARM:
       return CpuArchitecture.ARM;
 
-    case CpuArchitecture.DAY1_CLUSTER_USES_MULTI:
+    case CpuArchitecture.MULTI:
     case OcmCpuArchitecture.MULTI:
     case CpuArchitecture.x86:
     case OcmCpuArchitecture.x86:

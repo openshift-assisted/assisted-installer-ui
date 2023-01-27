@@ -6,7 +6,6 @@ import {
   ManagedDomain,
   OpenshiftVersionOptionType,
   getClusterDetailsInitialValues,
-  isArmArchitecture,
 } from '../../common';
 import DiskEncryptionService from './DiskEncryptionService';
 import {
@@ -39,7 +38,7 @@ const ClusterDetailsService = {
       cpuArchitecture: values.cpuArchitecture,
       diskEncryption: DiskEncryptionService.getDiskEncryptionParams(values),
     };
-    if (isArmArchitecture({ cpuArchitecture: params.cpuArchitecture })) {
+    if (params.cpuArchitecture === CpuArchitecture.ARM) {
       params.userManagedNetworking = true;
     }
     if (values.hostsNetworkConfigurationType === HostsNetworkConfigurationType.STATIC) {

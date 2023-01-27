@@ -13,6 +13,7 @@ import {
   selectIpv4HostPrefix,
   selectIpv6HostPrefix,
   useFeatureSupportLevel,
+  CpuArchitecture,
 } from '../../../common';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { ClusterFeatureSupportLevelsDetailItem } from '../featureSupportLevels';
@@ -83,8 +84,11 @@ const ClusterProperties = ({ cluster, externalMode = false }: ClusterPropertiesP
   const isDualStackType = isDualStack(cluster);
   const featureSupportLevelContext = useFeatureSupportLevel();
 
+  const { underlyingCpuArchitecture } = featureSupportLevelContext.activeFeatureConfiguration;
+  const hasMultiCpuArchitecture = cluster.cpuArchitecture === CpuArchitecture.MULTI;
+
   const isMultiArchSupported = Boolean(
-    cluster.cpuArchitecture === 'multi' ||
+    hasMultiCpuArchitecture ||
       (cluster.openshiftVersion &&
         featureSupportLevelContext.getFeatureSupportLevel(
           cluster.openshiftVersion,
@@ -107,9 +111,7 @@ const ClusterProperties = ({ cluster, externalMode = false }: ClusterPropertiesP
           <DetailItem
             title={<CpuArchTitle isMultiArchSupported={isMultiArchSupported} />}
             value={
-              cluster.cpuArchitecture === 'multi'
-                ? 'Multiple CPU architectures'
-                : cluster.cpuArchitecture
+              hasMultiCpuArchitecture ? 'Multiple CPU architectures' : underlyingCpuArchitecture
             }
             testId="cpu-architecture"
           />
