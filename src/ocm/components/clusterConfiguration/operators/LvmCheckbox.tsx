@@ -1,35 +1,43 @@
 import React, { useState } from 'react';
 import { FormGroup, Tooltip } from '@patternfly/react-core';
-import { useFormikContext } from 'formik';
 import {
   ClusterOperatorProps,
-  FeatureSupportLevelBadge,
   getFieldId,
-  OPERATOR_NAME_LVM,
-  operatorLabels,
-  OperatorsValues,
   PopoverIcon,
   useFeatureSupportLevel,
+  operatorLabels,
+  OperatorsValues,
 } from '../../../../common';
 import LvmHostRequirements from './LvmHostRequirements';
-import { getLvmIncompatibleWithCnvReason } from '../../featureSupportLevels/featureStateUtils';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
+import { handleLVMS } from './utils';
+import { useFormikContext } from 'formik';
+import { getLvmIncompatibleWithCnvReason } from '../../featureSupportLevels/featureStateUtils';
 
 const LVM_FIELD_NAME = 'useOdfLogicalVolumeManager';
 
-const LvmLabel = (props: ClusterOperatorProps) => {
+type LvmLabelProps = ClusterOperatorProps; // & { operator: ExposedOperatorName };
+
+const LvmLabel = ({ openshiftVersion, clusterId }: LvmLabelProps) => {
   const { t } = useTranslation();
-  const operatorName = operatorLabels(t)[OPERATOR_NAME_LVM];
+  const [operator, setOperator] = React.useState('');
+
+  const featureSupportLevel = useFeatureSupportLevel();
+  React.useEffect(() => {
+    setOperator(handleLVMS({ openshiftVersion, featureSupportLevel }));
+  }, [featureSupportLevel, openshiftVersion]);
+
+  const operatorName = operatorLabels(t)[operator];
+
   return (
     <>
       Install {operatorName}{' '}
       <PopoverIcon
         component={'a'}
         headerContent="Additional Requirements"
-        bodyContent={<LvmHostRequirements clusterId={props.clusterId} />}
+        bodyContent={<LvmHostRequirements clusterId={clusterId} />}
       />
-      <FeatureSupportLevelBadge featureId="LVM" openshiftVersion={props.openshiftVersion} />
     </>
   );
 };
@@ -44,11 +52,8 @@ const LvmCheckbox = ({ clusterId, openshiftVersion }: ClusterOperatorProps) => {
   React.useEffect(() => {
     let reason = undefined;
     if (openshiftVersion) {
-      reason = featureSupportLevel.getFeatureDisabledReason(openshiftVersion, 'LVM');
-      if (!reason) {
-        const lvmSupport = featureSupportLevel.getFeatureSupportLevel(openshiftVersion, 'LVM');
-        reason = getLvmIncompatibleWithCnvReason(values, openshiftVersion, lvmSupport);
-      }
+      const lvmSupport = featureSupportLevel.getFeatureSupportLevel(openshiftVersion, 'LVM');
+      reason = getLvmIncompatibleWithCnvReason(values, lvmSupport);
     }
     setDisabledReason(reason);
   }, [values, openshiftVersion, featureSupportLevel]);
