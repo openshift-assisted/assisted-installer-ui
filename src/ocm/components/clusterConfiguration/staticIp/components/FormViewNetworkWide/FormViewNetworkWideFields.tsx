@@ -131,7 +131,7 @@ const IpConfigFields: React.FC<{
             bodyContent="An IP address to where any IP packet should be forwarded in case there is no other routing rule configured for a destination IP."
           />
         }
-        name={`${fieldName}.gatewayOcmSelectField`}
+        name={`${fieldName}.gateway`}
         data-testid={`${protocolVersion}-gateway`}
       />
     </Grid>
@@ -151,8 +151,8 @@ export const ProtocolTypeSelect = () => {
   const [openConfirmModal, setConfirmModal] = React.useState(false);
   const { values } = useFormikContext<FormViewNetworkWideValues>();
 
-  const onChange = (checked: boolean, e: React.FormEvent<HTMLInputElement>) => {
-    const newProtocolType = e.currentTarget.value as types.StaticProtocolType;
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newProtocolType = e.target.value as types.StaticProtocolType;
     if (newProtocolType === protocolType) {
       return;
     }
@@ -172,6 +172,7 @@ export const ProtocolTypeSelect = () => {
         isInline
         label="Internet protocol version"
         isRequired
+        onChange={onChange}
       >
         <OcmRadioField
           label={
@@ -188,7 +189,6 @@ export const ProtocolTypeSelect = () => {
           id="select-ipv4"
           value="ipv4"
           isChecked={isIpv4Selected}
-          onChange={onChange}
         />
         <OcmRadioField
           label={
@@ -205,7 +205,6 @@ export const ProtocolTypeSelect = () => {
           id="select-dual-stack"
           value="dualStack"
           isChecked={!isIpv4Selected}
-          onChange={onChange}
         />
       </FormGroup>
 
