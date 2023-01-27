@@ -8,12 +8,15 @@ import {
   OPERATOR_NAME_CNV,
   OPERATOR_NAME_LVM,
   OPERATOR_NAME_ODF,
+  useFeatureSupportLevel,
 } from '../../../../common';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
+import { handleLVMS } from '../operators/utils';
 
 export const ReviewOperatorsTable = ({ cluster }: { cluster: Cluster }) => {
   const { t } = useTranslation();
   const operatorNames = operatorLabels(t);
+  const featureSupportLevel = useFeatureSupportLevel();
 
   const rows = React.useMemo(() => {
     return [
@@ -41,7 +44,12 @@ export const ReviewOperatorsTable = ({ cluster }: { cluster: Cluster }) => {
       },
       isSNO(cluster) && {
         cells: [
-          operatorNames[OPERATOR_NAME_LVM],
+          operatorNames[
+            handleLVMS({
+              openshiftVersion: cluster.openshiftVersion || '',
+              featureSupportLevel,
+            }) as string
+          ],
           {
             title: hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_LVM)
               ? 'Enabled'
@@ -51,7 +59,7 @@ export const ReviewOperatorsTable = ({ cluster }: { cluster: Cluster }) => {
         ],
       },
     ];
-  }, [cluster, operatorNames]);
+  }, [cluster, featureSupportLevel, operatorNames]);
 
   return (
     <Table
