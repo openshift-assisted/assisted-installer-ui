@@ -4,7 +4,15 @@ import { Cluster, CpuArchitecture, InfraEnv, InfraEnvUpdateParams } from '../../
 import { getErrorMessage } from '../../common/utils';
 import { InfraEnvsAPI } from '../services/apis';
 
-export default function useInfraEnv(clusterId: Cluster['id'], cpuArchitecture: CpuArchitecture) {
+export default function useInfraEnv(
+  clusterId: Cluster['id'],
+  cpuArchitecture: CpuArchitecture,
+): {
+  infraEnv?: InfraEnv;
+  error?: string;
+  isLoading: boolean;
+  updateInfraEnv: (infraEnvUpdateParams: InfraEnvUpdateParams) => Promise<InfraEnv>;
+} {
   const [infraEnv, setInfraEnv] = React.useState<InfraEnv>();
   const [error, setError] = React.useState('');
   const { infraEnvId, error: infraEnvIdError } = useInfraEnvId(clusterId, cpuArchitecture);

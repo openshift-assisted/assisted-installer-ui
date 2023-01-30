@@ -8,4 +8,4 @@ export const formikLabelsToLabels = (labels: { key: string; value: string }[]) =
   labels.reduce((acc, curr) => {
     acc[curr.key] = curr.value;
     return acc;
-  }, {});
+  }, {} as Record<string, string>);

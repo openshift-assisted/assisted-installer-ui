@@ -14,6 +14,7 @@ import { getSubnet } from '../../clusterConfiguration/utils';
 import {
   bmcAddressValidationMessages,
   clusterNameValidationMessages,
+  CLUSTER_NAME_MAX_LENGTH,
   FORBIDDEN_HOSTNAMES,
   hostnameValidationMessages,
   locationValidationMessages,
@@ -66,7 +67,7 @@ export const nameValidationSchema = (
         : clusterNameValidationMessagesList.INVALID_LENGTH_ACM,
     )
     .max(
-      54,
+      CLUSTER_NAME_MAX_LENGTH,
       isOcm
         ? clusterNameValidationMessagesList.INVALID_LENGTH_OCM
         : clusterNameValidationMessagesList.INVALID_LENGTH_ACM,

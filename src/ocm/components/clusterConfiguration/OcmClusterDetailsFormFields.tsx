@@ -13,6 +13,7 @@ import {
   SNOControlGroup,
   ocmClusterNameValidationMessages,
   uniqueOcmClusterNameValidationMessages,
+  CLUSTER_NAME_MAX_LENGTH,
 } from '../../../common';
 import DiskEncryptionControlGroup from '../../../common/components/clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
@@ -82,6 +83,7 @@ export const OcmClusterDetailsFormFields = ({
             ? uniqueOcmClusterNameValidationMessages(t)
             : ocmClusterNameValidationMessages(t)
         }
+        maxLength={CLUSTER_NAME_MAX_LENGTH}
       />
       {!!managedDomains.length && toggleRedHatDnsService && (
         <OcmCheckboxField

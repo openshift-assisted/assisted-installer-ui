@@ -1,5 +1,11 @@
 import { IRow } from '@patternfly/react-table';
-import { Cluster, V2ClusterUpdateParams, ClusterValidationId, PlatformType } from '../api';
+import {
+  Cluster,
+  V2ClusterUpdateParams,
+  ClusterValidationId,
+  PlatformType,
+  ImageType,
+} from '../api';
 import { Validation as HostValidation } from './hosts';
 export type Validation = Omit<HostValidation, 'id'> & {
   id: ClusterValidationId;
@@ -58,7 +64,7 @@ export type OperatorsValues = V2ClusterUpdateParams & {
 export enum CpuArchitecture {
   x86 = 'x86_64',
   ARM = 'arm64',
-  DAY1_CLUSTER_USES_MULTI = 'multi',
+  MULTI = 'multi',
   // This value refers to use whichever CPU architecture was selected for the cluster
   // It's not a value that can be returned from the Backend.
   USE_DAY1_ARCHITECTURE = 'cluster-day1-cpu-architecture',
@@ -78,3 +84,5 @@ export type SupportedPlatformType = Extract<PlatformType, 'vsphere' | 'nutanix'>
 
 export const SupportedPlatformIntegrations: SupportedPlatformType[] = ['vsphere', 'nutanix'];
 export const NonPlatformIntegrations: PlatformType[] = ['baremetal', 'none'];
+
+export type DiscoveryImageType = ImageType | 'discovery-image-ipxe';

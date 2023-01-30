@@ -1,16 +1,17 @@
 import React from 'react';
-import { GridItem, TextContent, Text } from '@patternfly/react-core';
+import { GridItem, Text, TextContent } from '@patternfly/react-core';
 import {
   Cluster,
-  DetailList,
+  CpuArchitecture,
   DetailItem,
+  DetailList,
   DiskEncryption,
-  PopoverIcon,
-  NETWORK_TYPE_SDN,
   isDualStack,
+  NETWORK_TYPE_SDN,
+  PopoverIcon,
   selectIpv4Cidr,
-  selectIpv6Cidr,
   selectIpv4HostPrefix,
+  selectIpv6Cidr,
   selectIpv6HostPrefix,
   useFeatureSupportLevel,
 } from '../../../common';
@@ -83,8 +84,13 @@ const ClusterProperties = ({ cluster, externalMode = false }: ClusterPropertiesP
   const isDualStackType = isDualStack(cluster);
   const featureSupportLevelContext = useFeatureSupportLevel();
 
+  const activeFeatureConfiguration = featureSupportLevelContext.activeFeatureConfiguration;
+  const underlyingCpuArchitecture =
+    activeFeatureConfiguration?.underlyingCpuArchitecture || CpuArchitecture.x86;
+  const hasMultiCpuArchitecture = cluster.cpuArchitecture === CpuArchitecture.MULTI;
+
   const isMultiArchSupported = Boolean(
-    cluster.cpuArchitecture === 'multi' ||
+    hasMultiCpuArchitecture ||
       (cluster.openshiftVersion &&
         featureSupportLevelContext.getFeatureSupportLevel(
           cluster.openshiftVersion,
@@ -113,9 +119,7 @@ const ClusterProperties = ({ cluster, externalMode = false }: ClusterPropertiesP
           <DetailItem
             title={<CpuArchTitle isMultiArchSupported={isMultiArchSupported} />}
             value={
-              cluster.cpuArchitecture === 'multi'
-                ? 'Multiple CPU architectures'
-                : cluster.cpuArchitecture
+              hasMultiCpuArchitecture ? 'Multiple CPU architectures' : underlyingCpuArchitecture
             }
             testId="cpu-architecture"
           />

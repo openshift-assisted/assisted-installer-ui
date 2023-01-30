@@ -1,8 +1,8 @@
 import {
+  ActiveFeatureConfiguration,
   Cluster,
   CpuArchitecture,
   FeatureId,
-  isArmArchitecture,
   isSNO,
   OpenshiftVersionOptionType,
   OperatorsValues,
@@ -73,14 +73,20 @@ const getArmDisabledReason = (
   return undefined;
 };
 
-const getOdfDisabledReason = (cluster: Cluster | undefined, isSupported: boolean) => {
+const getOdfDisabledReason = (
+  cluster: Cluster | undefined,
+  activeFeatureConfiguration: ActiveFeatureConfiguration | undefined,
+  isSupported: boolean,
+) => {
   if (!cluster) {
     return undefined;
   }
-  if (isArmArchitecture(cluster) && isSNO(cluster)) {
+
+  const isArm = activeFeatureConfiguration?.underlyingCpuArchitecture === CpuArchitecture.ARM;
+  if (isArm && isSNO(cluster)) {
     return `${ODF_OPERATOR_LABEL} is not available when using Single Node OpenShift or ARM CPU architecture.`;
   }
-  if (isArmArchitecture(cluster)) {
+  if (isArm) {
     return `${ODF_OPERATOR_LABEL} is not available when ARM CPU architecture is selected.`;
   }
   if (isSNO(cluster)) {
@@ -102,11 +108,11 @@ const getLvmDisabledReason = (cluster: Cluster | undefined, isSupported: boolean
   return undefined;
 };
 
-const getCnvDisabledReason = (cluster: Cluster | undefined) => {
-  if (!cluster) {
+const getCnvDisabledReason = (activeFeatureConfiguration: ActiveFeatureConfiguration) => {
+  if (!activeFeatureConfiguration) {
     return undefined;
   }
-  if (isArmArchitecture(cluster)) {
+  if (activeFeatureConfiguration.underlyingCpuArchitecture === CpuArchitecture.ARM) {
     return `${CNV_OPERATOR_LABEL} is not available when ARM CPU architecture is selected.`;
   }
   return undefined;
@@ -125,6 +131,7 @@ const getNetworkTypeSelectionDisabledReason = (cluster: Cluster | undefined) => 
 export const getFeatureDisabledReason = (
   featureId: FeatureId,
   cluster: Cluster | undefined,
+  activeFeatureConfiguration: ActiveFeatureConfiguration,
   versionName: string,
   versionOptions: OpenshiftVersionOptionType[],
   isSupported: boolean,
@@ -137,10 +144,10 @@ export const getFeatureDisabledReason = (
       return getArmDisabledReason(cluster, versionName, versionOptions);
     }
     case 'CNV': {
-      return getCnvDisabledReason(cluster);
+      return getCnvDisabledReason(activeFeatureConfiguration);
     }
     case 'ODF': {
-      return getOdfDisabledReason(cluster, isSupported);
+      return getOdfDisabledReason(cluster, activeFeatureConfiguration, isSupported);
     }
     case 'LVM': {
       return getLvmDisabledReason(cluster, isSupported);

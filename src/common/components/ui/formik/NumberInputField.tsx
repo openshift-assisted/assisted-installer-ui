@@ -48,8 +48,10 @@ const NumberInputField: React.FC<NumberInputFieldProps> = React.forwardRef(
       doChange(field.value - 1);
     };
 
-    const handleChange: NumberInputProps['onChange'] = (event) => {
-      const targetValue = event.target['value'] as number;
+    const handleChange: NumberInputProps['onChange'] = (
+      event: React.FormEvent<HTMLInputElement>,
+    ) => {
+      const targetValue = (event.target as HTMLInputElement).value as unknown as number;
       doChange(isNaN(targetValue) ? 0 : Number(targetValue));
     };
 
