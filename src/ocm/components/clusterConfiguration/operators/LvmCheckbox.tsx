@@ -7,11 +7,12 @@ import {
   useFeatureSupportLevel,
   operatorLabels,
   OperatorsValues,
+  FeatureSupportLevelBadge,
 } from '../../../../common';
 import LvmHostRequirements from './LvmHostRequirements';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
-import { handleLVMS } from './utils';
+import { getActualLVMOperatorName } from './utils';
 import { useFormikContext } from 'formik';
 import { getLvmIncompatibleWithCnvReason } from '../../featureSupportLevels/featureStateUtils';
 
@@ -25,19 +26,20 @@ const LvmLabel = ({ openshiftVersion, clusterId }: LvmLabelProps) => {
 
   const featureSupportLevel = useFeatureSupportLevel();
   React.useEffect(() => {
-    setOperator(handleLVMS({ openshiftVersion, featureSupportLevel }) as string);
+    setOperator(getActualLVMOperatorName({ openshiftVersion, featureSupportLevel }) as string);
   }, [featureSupportLevel, openshiftVersion]);
 
-  const operatorName = operatorLabels(t)[operator] as string;
+  const operatorLabel = operatorLabels(t)[operator] as string;
 
   return (
     <>
-      Install {operatorName}{' '}
+      Install {operatorLabel}{' '}
       <PopoverIcon
         component={'a'}
         headerContent="Additional Requirements"
         bodyContent={<LvmHostRequirements clusterId={clusterId} />}
       />
+      <FeatureSupportLevelBadge featureId="LVM" openshiftVersion={openshiftVersion} />
     </>
   );
 };
@@ -50,12 +52,11 @@ const LvmCheckbox = ({ clusterId, openshiftVersion }: ClusterOperatorProps) => {
   const [disabledReason, setDisabledReason] = useState<string | undefined>();
 
   React.useEffect(() => {
-    let reason = undefined;
     if (openshiftVersion) {
       const lvmSupport = featureSupportLevel.getFeatureSupportLevel(openshiftVersion, 'LVM');
-      reason = getLvmIncompatibleWithCnvReason(values, lvmSupport);
+      const reason = getLvmIncompatibleWithCnvReason(values, lvmSupport);
+      setDisabledReason(reason);
     }
-    setDisabledReason(reason);
   }, [values, openshiftVersion, featureSupportLevel]);
 
   return (

@@ -6,7 +6,7 @@ import {
   OPERATOR_NAME_LVMS,
 } from '../../../../common';
 
-export const handleLVMS = ({
+export const getActualLVMOperatorName = ({
   openshiftVersion,
   featureSupportLevel,
   operator = OPERATOR_NAME_LVM,
