@@ -75,14 +75,14 @@ const getArmDisabledReason = (
 
 const getOdfDisabledReason = (
   cluster: Cluster | undefined,
-  activeFeatureConfiguration: ActiveFeatureConfiguration,
+  activeFeatureConfiguration: ActiveFeatureConfiguration | undefined,
   isSupported: boolean,
 ) => {
   if (!cluster) {
     return undefined;
   }
 
-  const isArm = activeFeatureConfiguration.underlyingCpuArchitecture === CpuArchitecture.ARM;
+  const isArm = activeFeatureConfiguration?.underlyingCpuArchitecture === CpuArchitecture.ARM;
   if (isArm && isSNO(cluster)) {
     return `${ODF_OPERATOR_LABEL} is not available when using Single Node OpenShift or ARM CPU architecture.`;
   }

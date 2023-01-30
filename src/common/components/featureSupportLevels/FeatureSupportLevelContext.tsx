@@ -19,7 +19,7 @@ export type FeatureSupportLevelData = {
     t?: TFunction,
   ): string | undefined;
   isFeatureSupported(version: string, featureId: FeatureId): boolean;
-  activeFeatureConfiguration: ActiveFeatureConfiguration;
+  activeFeatureConfiguration?: ActiveFeatureConfiguration;
 };
 
 const FeatureSupportLevelContext = React.createContext<FeatureSupportLevelData | null>(null);

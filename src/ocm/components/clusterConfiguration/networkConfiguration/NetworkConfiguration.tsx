@@ -4,19 +4,19 @@ import { useSelector } from 'react-redux';
 import { Alert, AlertVariant, Grid, Tooltip } from '@patternfly/react-core';
 import { VirtualIPControlGroup, VirtualIPControlGroupProps } from './VirtualIPControlGroup';
 import {
-  CpuArchitecture,
-  HostSubnets,
-  NetworkConfigurationValues,
-  Cluster,
-  ClusterDefaultConfig,
-  FeatureSupportLevelData,
-  useFeatureSupportLevel,
-  isSNO,
   canBeDualStack,
   canSelectNetworkTypeSDN,
+  Cluster,
+  ClusterDefaultConfig,
   clusterNetworksEqual,
+  CpuArchitecture,
   DUAL_STACK,
+  FeatureSupportLevelData,
+  HostSubnets,
+  isSNO,
+  NetworkConfigurationValues,
   serviceNetworksEqual,
+  useFeatureSupportLevel,
 } from '../../../../common';
 import { getLimitedFeatureSupportLevels } from '../../../../common/components/featureSupportLevels/utils';
 import {
@@ -153,7 +153,8 @@ const NetworkConfiguration = ({
         t,
       ),
       underlyingCpuArchitecture:
-        featureSupportLevelData.activeFeatureConfiguration.underlyingCpuArchitecture,
+        featureSupportLevelData.activeFeatureConfiguration?.underlyingCpuArchitecture ||
+        CpuArchitecture.x86,
     };
   }, [cluster, featureSupportLevelData, t]);
   const isSNOCluster = isSNO(cluster);
