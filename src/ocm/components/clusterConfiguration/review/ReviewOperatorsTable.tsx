@@ -8,7 +8,7 @@ import {
   useFeatureSupportLevel,
 } from '../../../../common';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
-import { handleLVMS } from '../operators/utils';
+import { getActualLVMOperatorName } from '../operators/utils';
 
 export const ReviewOperatorsTable = ({ cluster }: { cluster: Cluster }) => {
   const { t } = useTranslation();
@@ -20,7 +20,11 @@ export const ReviewOperatorsTable = ({ cluster }: { cluster: Cluster }) => {
       hasEnabledOperators(cluster.monitoredOperators, operator),
     )
       .map((operator) =>
-        handleLVMS({ openshiftVersion: cluster.openshiftVersion, featureSupportLevel, operator }),
+        getActualLVMOperatorName({
+          openshiftVersion: cluster.openshiftVersion,
+          featureSupportLevel,
+          operator,
+        }),
       )
       .map((operator) => ({
         cells: [
