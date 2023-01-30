@@ -11,7 +11,7 @@ export default function useInfraEnv(
   infraEnv?: InfraEnv;
   error?: string;
   isLoading: boolean;
-  updateInfraEnv?: (infraEnvUpdateParams: InfraEnvUpdateParams) => Promise<InfraEnv>;
+  updateInfraEnv: (infraEnvUpdateParams: InfraEnvUpdateParams) => Promise<InfraEnv>;
 } {
   const [infraEnv, setInfraEnv] = React.useState<InfraEnv>();
   const [error, setError] = React.useState('');
