@@ -10,7 +10,8 @@ import {
 } from '../../../common';
 
 const CNV_OPERATOR_LABEL = 'Openshift Virtualization';
-const LVM_OPERATOR_LABEL = 'Logical Volume Manager Storage';
+const LVMS_OPERATOR_LABEL = 'Logical Volume Manager Storage';
+const LVM_OPERATOR_LABEL = 'Logical Volume Manager';
 const ODF_OPERATOR_LABEL = 'OpenShift Data Foundation';
 
 const isArmSupported = (versionName: string, versionOptions: OpenshiftVersionOptionType[]) => {
@@ -21,14 +22,13 @@ export const clusterExistsReason = 'This option is not editable after the draft 
 
 export const getCnvIncompatibleWithLvmReason = (
   operatorValues: OperatorsValues,
-  versionName: string | undefined,
   lvmSupport: SupportLevel | undefined,
 ) => {
   const mustDisableCnv =
     !operatorValues.useContainerNativeVirtualization &&
     operatorValues.useOdfLogicalVolumeManager &&
     lvmSupport !== 'supported';
-  // In versions with none or limited support for LVM (< 4.12), it's no possible to select CNV + LVM
+  // In versions with none or limited support for LVM (< 4.12), it's not possible to select CNV + LVM
   return mustDisableCnv
     ? `Currently, you can not install ${CNV_OPERATOR_LABEL} operator at the same time as ${LVM_OPERATOR_LABEL} operator.`
     : undefined;
@@ -36,13 +36,15 @@ export const getCnvIncompatibleWithLvmReason = (
 
 export const getLvmIncompatibleWithCnvReason = (
   operatorValues: OperatorsValues,
-  versionName: string | undefined,
   lvmSupport: SupportLevel | undefined,
 ) => {
   const hasSelectedCnv = operatorValues.useContainerNativeVirtualization;
-  if (hasSelectedCnv && operatorValues.useOdfLogicalVolumeManager) {
-    return `${LVM_OPERATOR_LABEL} must be installed when ${CNV_OPERATOR_LABEL} operator is also installed`;
+  const hasSelectedLVMS = operatorValues.useOdfLogicalVolumeManager;
+  // In versions which support for LVMS (4.12+), LVMS needs to be installed together with CNV
+  if (hasSelectedCnv && hasSelectedLVMS) {
+    return `${LVMS_OPERATOR_LABEL} must be installed when ${CNV_OPERATOR_LABEL} operator is also installed`;
   }
+  // In versions with none or limited support for LVM (< 4.12), it's not possible to select CNV + LVM
   if (hasSelectedCnv && lvmSupport !== 'supported') {
     return `Currently, you can not install ${LVM_OPERATOR_LABEL} operator at the same time as ${CNV_OPERATOR_LABEL} operator.`;
   }
@@ -92,16 +94,6 @@ const getOdfDisabledReason = (cluster: Cluster | undefined, isSupported: boolean
   return undefined;
 };
 
-const getLvmDisabledReason = (cluster: Cluster | undefined, isSupported: boolean) => {
-  if (!cluster) {
-    return undefined;
-  }
-  if (!isSupported) {
-    return `${LVM_OPERATOR_LABEL} is enabled only for OpenShift 4.11 and above.`;
-  }
-  return undefined;
-};
-
 const getCnvDisabledReason = (cluster: Cluster | undefined) => {
   if (!cluster) {
     return undefined;
@@ -141,9 +133,6 @@ export const getFeatureDisabledReason = (
     }
     case 'ODF': {
       return getOdfDisabledReason(cluster, isSupported);
-    }
-    case 'LVM': {
-      return getLvmDisabledReason(cluster, isSupported);
     }
     case 'NETWORK_TYPE_SELECTION': {
       return getNetworkTypeSelectionDisabledReason(cluster);
