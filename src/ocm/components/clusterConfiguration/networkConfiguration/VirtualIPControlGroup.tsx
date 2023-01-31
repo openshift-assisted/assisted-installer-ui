@@ -9,6 +9,7 @@ import {
   FormikStaticField,
   FeatureSupportLevelBadge,
   NETWORK_TYPE_SDN,
+  DUAL_STACK,
   stringToJSON,
   selectMachineNetworkCIDR,
 } from '../../../../common';
@@ -132,6 +133,7 @@ export const VirtualIPControlGroup = ({
     [cluster.apiVip, cluster.ingressVip, setFieldValue],
   );
 
+  const ipFieldsSuffix = values.stackType === DUAL_STACK ? ' (IPv4)' : '';
   return (
     <>
       {!isVipDhcpAllocationDisabled && (
@@ -160,7 +162,7 @@ export const VirtualIPControlGroup = ({
       {values.vipDhcpAllocation ? (
         <>
           <FormikStaticField
-            label="API IP"
+            label={`API IP${ipFieldsSuffix}`}
             name="apiVip"
             helperText={apiVipHelperText}
             value={values.apiVip || ''}
@@ -174,7 +176,7 @@ export const VirtualIPControlGroup = ({
             />
           </FormikStaticField>
           <FormikStaticField
-            label="Ingress IP"
+            label={`Ingress IP${ipFieldsSuffix}`}
             name="ingressVip"
             helperText={ingressVipHelperText}
             value={values.ingressVip || ''}
@@ -190,10 +192,15 @@ export const VirtualIPControlGroup = ({
         </>
       ) : (
         <>
-          <OcmInputField label="API IP" name="apiVip" helperText={apiVipHelperText} isRequired />
+          <OcmInputField
+            label={`API IP${ipFieldsSuffix}`}
+            name="apiVip"
+            helperText={apiVipHelperText}
+            isRequired
+          />
           <OcmInputField
             name="ingressVip"
-            label="Ingress IP"
+            label={`Ingress IP${ipFieldsSuffix}`}
             helperText={ingressVipHelperText}
             isRequired
           />
