@@ -12,7 +12,7 @@ import {
   serviceNetworkValidationSchema,
   IPv4ValidationSchema,
   sshPublicKeyValidationSchema,
-  vipValidationSchema,
+  vipNoSuffixValidationSchema,
   IPV4_STACK,
   DUAL_STACK,
   ClusterDefaultConfig,
@@ -61,11 +61,11 @@ export const getNetworkConfigurationValidationSchema = (
     Yup.object<NetworkConfigurationValues>().shape({
       apiVip:
         values.apiVip !== undefined && values.apiVip !== ''
-          ? vipValidationSchema(hostSubnets, values, initialValues.apiVip)
+          ? vipNoSuffixValidationSchema(hostSubnets, values, initialValues.apiVip)
           : Yup.string(),
       ingressVip:
         values.ingressVip !== undefined && values.ingressVip !== ''
-          ? vipValidationSchema(hostSubnets, values, initialValues.ingressVip)
+          ? vipNoSuffixValidationSchema(hostSubnets, values, initialValues.ingressVip)
           : Yup.string(),
       sshPublicKey: sshPublicKeyValidationSchema,
       machineNetworks:
