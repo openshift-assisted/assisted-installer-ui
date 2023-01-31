@@ -138,7 +138,7 @@ export const hostValidationLabels = (t: TFunction): { [key in HostValidationId]:
   'lso-requirements-satisfied': t('ai:LSO requirements'),
   'ocs-requirements-satisfied': t('ai:OCS requirements'),
   'odf-requirements-satisfied': t('ai:ODF requirements'),
-  'lvm-requirements-satisfied': t('ai:LVMS requirements'),
+  'lvm-requirements-satisfied': t('ai:Logical Volume Manager requirements'),
   'cnv-requirements-satisfied': t('ai:CNV requirements'),
   'disk-encryption-requirements-satisfied': t('ai:Disk encryption requirements'),
   'sufficient-installation-disk-speed': t('ai:Installation disk speed'),
@@ -228,7 +228,7 @@ export const clusterValidationLabels = (
   'lso-requirements-satisfied': t('ai:LSO requirements'),
   'ocs-requirements-satisfied': t('ai:OCS requirements'),
   'odf-requirements-satisfied': t('ai:ODF requirements'),
-  'lvm-requirements-satisfied': t('ai:LVMS requirements'),
+  'lvm-requirements-satisfied': t('ai:Logical Volume Manager requirements'),
   'cnv-requirements-satisfied': t('ai:CNV requirements'),
 });
 
@@ -285,16 +285,29 @@ export const OPERATOR_NAME_CNV = 'cnv';
 export const OPERATOR_NAME_LSO = 'lso';
 export const OPERATOR_NAME_ODF = 'odf';
 export const OPERATOR_NAME_LVM = 'lvm';
+export const OPERATOR_NAME_LVMS = 'lvms';
 
-const OperatorNames = [OPERATOR_NAME_CNV, OPERATOR_NAME_LSO, OPERATOR_NAME_ODF, OPERATOR_NAME_LVM];
-export const ExposedOperatorNames = [OPERATOR_NAME_CNV, OPERATOR_NAME_ODF, OPERATOR_NAME_LVM];
+const OperatorNames = [
+  OPERATOR_NAME_CNV,
+  OPERATOR_NAME_LSO,
+  OPERATOR_NAME_ODF,
+  OPERATOR_NAME_LVM,
+  OPERATOR_NAME_LVMS,
+];
+export const ExposedOperatorNames = [
+  OPERATOR_NAME_CNV,
+  OPERATOR_NAME_ODF,
+  OPERATOR_NAME_LVM,
+  OPERATOR_NAME_LVMS,
+];
 
 export type OperatorName = typeof OperatorNames[number];
 export type ExposedOperatorName = typeof ExposedOperatorNames[number];
 
 export const operatorLabels = (t: TFunction): { [key in ExposedOperatorName]: string } => ({
   [OPERATOR_NAME_ODF]: t('ai:OpenShift Data Foundation'),
-  [OPERATOR_NAME_LVM]: t('ai:Logical Volume Manager Storage'),
+  [OPERATOR_NAME_LVM]: t('ai:Logical Volume Manager'),
+  [OPERATOR_NAME_LVMS]: t('ai:Logical Volume Manager Storage'),
   [OPERATOR_NAME_CNV]: t('ai:OpenShift Virtualization'),
 });
 
