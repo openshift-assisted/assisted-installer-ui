@@ -43,6 +43,7 @@ export const ReviewOperatorsTable = ({ cluster }: { cluster: Cluster }) => {
       cells={['', '']}
       variant={TableVariant.compact}
       borders={false}
+      aria-label={'Operators review table'}
       className="review-table"
     >
       <TableBody />

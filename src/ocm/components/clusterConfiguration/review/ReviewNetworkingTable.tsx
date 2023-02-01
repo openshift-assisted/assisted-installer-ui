@@ -132,6 +132,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
         variant={TableVariant.compact}
         borders={false}
         className={'review-table'}
+        aria-label={'Networking review table'}
       >
         <TableBody />
       </Table>
@@ -147,6 +148,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
         variant={TableVariant.compact}
         borders={false}
         className={'review-table'}
+        aria-label={'Advanced networking review table'}
       >
         <TableBody />
       </Table>
