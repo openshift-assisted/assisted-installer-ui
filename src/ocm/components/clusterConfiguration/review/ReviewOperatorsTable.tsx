@@ -2,56 +2,40 @@ import React from 'react';
 import { Table, TableVariant, TableBody, IRow } from '@patternfly/react-table';
 import {
   Cluster,
+  ExposedOperatorNames,
   hasEnabledOperators,
-  isSNO,
   operatorLabels,
-  OPERATOR_NAME_CNV,
-  OPERATOR_NAME_LVM,
-  OPERATOR_NAME_ODF,
+  useFeatureSupportLevel,
 } from '../../../../common';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
+import { getActualLVMOperatorName } from '../operators/utils';
 
 export const ReviewOperatorsTable = ({ cluster }: { cluster: Cluster }) => {
   const { t } = useTranslation();
   const operatorNames = operatorLabels(t);
+  const featureSupportLevel = useFeatureSupportLevel();
 
   const rows = React.useMemo(() => {
-    return [
-      {
+    return ExposedOperatorNames.filter((operator) =>
+      hasEnabledOperators(cluster.monitoredOperators, operator),
+    )
+      .map((operator) =>
+        getActualLVMOperatorName({
+          openshiftVersion: cluster.openshiftVersion,
+          featureSupportLevel,
+          operator,
+        }),
+      )
+      .map((operator) => ({
         cells: [
-          operatorNames[OPERATOR_NAME_CNV],
+          operatorNames[operator],
           {
-            title: hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_CNV)
-              ? 'Enabled'
-              : 'Disabled',
-            props: { 'data-testid': 'openshift-virtualization' },
+            title: 'Enabled',
+            props: { 'data-testid': `operator-${operator}` },
           },
         ],
-      },
-      !isSNO(cluster) && {
-        cells: [
-          operatorNames[OPERATOR_NAME_ODF],
-          {
-            title: hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_ODF)
-              ? 'Enabled'
-              : 'Disabled',
-            props: { 'data-testid': 'openshift-data-foundation' },
-          },
-        ],
-      },
-      isSNO(cluster) && {
-        cells: [
-          operatorNames[OPERATOR_NAME_LVM],
-          {
-            title: hasEnabledOperators(cluster.monitoredOperators, OPERATOR_NAME_LVM)
-              ? 'Enabled'
-              : 'Disabled',
-            props: { 'data-testid': 'openshift-data-foundation' },
-          },
-        ],
-      },
-    ];
-  }, [cluster, operatorNames]);
+      }));
+  }, [cluster.monitoredOperators, cluster.openshiftVersion, featureSupportLevel, operatorNames]);
 
   return (
     <Table

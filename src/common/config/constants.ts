@@ -11,7 +11,7 @@ export const OPENSHIFT_NETWORKING_DOCS_LINK =
 export const CLUSTER_MANAGER_SITE_LINK = 'https://console.redhat.com/openshift/install/pull-secret';
 export const PULL_SECRET_INFO_LINK = CLUSTER_MANAGER_SITE_LINK;
 export const ODF_REQUIREMENTS_LINK =
-  'https://access.redhat.com/documentation/en-us/red_hat_openshift_data_foundation/4.9/html/planning_your_deployment/infrastructure-requirements_rhodf#resource-requirements_rhodf';
+  'https://access.redhat.com/documentation/en-us/assisted_installer_for_openshift_container_platform/2022/html/assisted_installer_for_openshift_container_platform/assembly_installing-operators#proc_installing-openshift-data-foundation_assembly_installing-operators';
 export const VSPHERE_CONFIG_LINK = 'https://access.redhat.com/solutions/6677901';
 
 export const getReportIssueLink = () =>
@@ -138,7 +138,7 @@ export const hostValidationLabels = (t: TFunction): { [key in HostValidationId]:
   'lso-requirements-satisfied': t('ai:LSO requirements'),
   'ocs-requirements-satisfied': t('ai:OCS requirements'),
   'odf-requirements-satisfied': t('ai:ODF requirements'),
-  'lvm-requirements-satisfied': t('ai:LVMS requirements'),
+  'lvm-requirements-satisfied': t('ai:Logical Volume Manager requirements'),
   'cnv-requirements-satisfied': t('ai:CNV requirements'),
   'disk-encryption-requirements-satisfied': t('ai:Disk encryption requirements'),
   'sufficient-installation-disk-speed': t('ai:Installation disk speed'),
@@ -228,7 +228,7 @@ export const clusterValidationLabels = (
   'lso-requirements-satisfied': t('ai:LSO requirements'),
   'ocs-requirements-satisfied': t('ai:OCS requirements'),
   'odf-requirements-satisfied': t('ai:ODF requirements'),
-  'lvm-requirements-satisfied': t('ai:LVMS requirements'),
+  'lvm-requirements-satisfied': t('ai:Logical Volume Manager requirements'),
   'cnv-requirements-satisfied': t('ai:CNV requirements'),
 });
 
@@ -285,23 +285,29 @@ export const OPERATOR_NAME_CNV = 'cnv';
 export const OPERATOR_NAME_LSO = 'lso';
 export const OPERATOR_NAME_ODF = 'odf';
 export const OPERATOR_NAME_LVM = 'lvm';
-export const OPERATOR_NAME_CVO = 'cvo';
-export const OPERATOR_NAME_CONSOLE = 'console';
+export const OPERATOR_NAME_LVMS = 'lvms';
 
-export type OperatorName =
-  | typeof OPERATOR_NAME_CNV
-  | typeof OPERATOR_NAME_LSO
-  | typeof OPERATOR_NAME_ODF
-  | typeof OPERATOR_NAME_LVM
-  | typeof OPERATOR_NAME_CVO
-  | typeof OPERATOR_NAME_CONSOLE;
+const OperatorNames = [
+  OPERATOR_NAME_CNV,
+  OPERATOR_NAME_LSO,
+  OPERATOR_NAME_ODF,
+  OPERATOR_NAME_LVM,
+  OPERATOR_NAME_LVMS,
+];
+export const ExposedOperatorNames = [
+  OPERATOR_NAME_CNV,
+  OPERATOR_NAME_ODF,
+  OPERATOR_NAME_LVM,
+  OPERATOR_NAME_LVMS,
+];
 
-export const operatorLabels = (t: TFunction): { [key in OperatorName]: string } => ({
-  [OPERATOR_NAME_CONSOLE]: t('ai:OpenShift Console'),
-  [OPERATOR_NAME_CVO]: t('ai:OpenShift Cluster Version Operator'),
-  [OPERATOR_NAME_LSO]: t('ai:OpenShift Local Storage'),
+export type OperatorName = typeof OperatorNames[number];
+export type ExposedOperatorName = typeof ExposedOperatorNames[number];
+
+export const operatorLabels = (t: TFunction): { [key in ExposedOperatorName]: string } => ({
   [OPERATOR_NAME_ODF]: t('ai:OpenShift Data Foundation'),
-  [OPERATOR_NAME_LVM]: t('ai:Logical Volume Manager Storage'),
+  [OPERATOR_NAME_LVM]: t('ai:Logical Volume Manager'),
+  [OPERATOR_NAME_LVMS]: t('ai:Logical Volume Manager Storage'),
   [OPERATOR_NAME_CNV]: t('ai:OpenShift Virtualization'),
 });
 

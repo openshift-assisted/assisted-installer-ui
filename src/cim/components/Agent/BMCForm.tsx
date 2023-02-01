@@ -16,9 +16,18 @@ import {
   TextInputTypes,
   TextVariants,
 } from '@patternfly/react-core';
-import { Formik, FormikProps, FormikConfig, FieldArray, useField, useFormikContext } from 'formik';
+import {
+  Formik,
+  FormikProps,
+  FormikConfig,
+  FieldArray,
+  useField,
+  useFormikContext,
+  FormikErrors,
+} from 'formik';
 import * as Yup from 'yup';
-import { InfraEnvK8sResource, SecretK8sResource } from '../../types';
+import { TFunction } from 'i18next';
+
 import {
   InputField,
   macAddressValidationSchema,
@@ -32,9 +41,13 @@ import {
 } from '../../../common';
 import { Language } from '@patternfly/react-code-editor';
 import { MinusCircleIcon, PlusCircleIcon } from '@patternfly/react-icons';
+import {
+  InfraEnvK8sResource,
+  SecretK8sResource,
+  NMStateK8sResource,
+  BareMetalHostK8sResource,
+} from '../../types';
 import { AddBmcValues, BMCFormProps } from './types';
-import { NMStateK8sResource } from '../../types/k8s/nm-state';
-import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
 import {
   AGENT_BMH_NAME_LABEL_KEY,
   BMH_HOSTNAME_ANNOTATION,
@@ -42,7 +55,13 @@ import {
 } from '../common';
 import { getErrorMessage } from '../../../common/utils';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import { TFunction } from 'i18next';
+
+const getFieldError = (errors: FormikErrors<unknown>, fieldName: string) => {
+  /* eslint-disable */
+  // @ts-ignore
+  return errors[fieldName]?.[0];
+  /* eslint-enable */
+};
 
 const MacMapping = () => {
   const [field, { touched, error }] = useField<{ macAddress: string; name: string }[]>({
@@ -75,10 +94,10 @@ const MacMapping = () => {
               return (
                 <React.Fragment key={index}>
                   <GridItem span={5}>
-                    <InputField name={macField} inputError={errors[macField]?.[0]} />
+                    <InputField name={macField} inputError={getFieldError(errors, macField)} />
                   </GridItem>
                   <GridItem span={5}>
-                    <InputField name={nameField} inputError={errors[nameField]?.[0]} />
+                    <InputField name={nameField} inputError={getFieldError(errors, nameField)} />
                   </GridItem>
                   {index !== 0 && (
                     <GridItem span={2}>

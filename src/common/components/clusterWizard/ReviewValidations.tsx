@@ -13,12 +13,10 @@ import {
 } from '@patternfly/react-tokens';
 import {
   ValidationsInfo as ClusterValidationsInfo,
-  ValidationGroup as ClusterValidationGroup,
   Validation as ClusterValidation,
 } from '../../types/clusters';
 import {
   ValidationsInfo as HostValidationsInfo,
-  ValidationGroup as HostValidationGroup,
   Validation as HostValidation,
 } from '../../types/hosts';
 import { ClusterValidationId, HostValidationId, stringToJSON } from '../../api';
@@ -33,6 +31,7 @@ import {
 } from './types';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { Trans } from 'react-i18next';
+import { getKeys } from '../../utils';
 
 const AllValidationsPassed = () => {
   const { t } = useTranslation();
@@ -71,8 +70,8 @@ const FailingValidation = <S extends string>({
 
   const issue = t('ai:{{check_failed}} check failed', {
     check_failed:
-      (hostValidationLabels(t)[validation.id] as HostValidationId) ||
-      (clusterValidationLabels(t)[validation.id] as ClusterValidationId) ||
+      hostValidationLabels(t)[validation.id as HostValidationId] ||
+      clusterValidationLabels(t)[validation.id as ClusterValidationId] ||
       validation.id,
   });
 
@@ -132,8 +131,8 @@ export const ClusterValidations = <S extends string>({
   const validationsInfo = stringToJSON<ClusterValidationsInfo>(validationsInfoString) || {};
   const failingValidations: React.ReactNode[] = [];
   let pendingCount = 0;
-  Object.keys(validationsInfo).forEach((group) => {
-    const f: (validation: ClusterValidation) => void = (validation) => {
+  getKeys(validationsInfo).forEach((group) => {
+    const addFailingValidation = (validation: ClusterValidation): void => {
       if (validation.status === 'pending') {
         pendingCount++;
       }
@@ -143,7 +142,7 @@ export const ClusterValidations = <S extends string>({
           <FailingValidation
             key={validation.id}
             validation={validation}
-            clusterGroup={group as ClusterValidationGroup}
+            clusterGroup={group}
             setCurrentStepId={setCurrentStepId}
             wizardStepNames={wizardStepNames}
             wizardStepsValidationsMap={wizardStepsValidationsMap}
@@ -152,7 +151,7 @@ export const ClusterValidations = <S extends string>({
       }
     };
 
-    validationsInfo[group as ClusterValidationGroup]?.forEach(f);
+    validationsInfo[group]?.forEach(addFailingValidation);
   });
 
   if (pendingCount) {
@@ -179,32 +178,33 @@ export const HostsValidations = <S extends string, V extends string[]>({
   allClusterWizardSoftValidationIds,
   wizardStepsValidationsMap,
 }: HostsValidationsProps<S, V>) => {
-  const failingValidations = {} as HostValidation;
+  const failingValidations: Partial<Record<HostValidationId, React.ReactNode>> = {};
   getEnabledHosts(hosts).forEach((host) => {
     const validationsInfo = stringToJSON<HostValidationsInfo>(host.validationsInfo) || {};
-    Object.keys(validationsInfo).forEach((group) => {
-      const f: (validation: HostValidation) => void = (validation) => {
+    getKeys(validationsInfo).forEach((group) => {
+      const addFailingValidation = (validation: HostValidation): void => {
         if (validation.status === 'failure') {
-          const severity = allClusterWizardSoftValidationIds.includes(validation.id)
+          const validationId = validation.id;
+          const severity = allClusterWizardSoftValidationIds.includes(validationId)
             ? 'warning'
             : 'danger';
-          failingValidations[validation.id] = (failingValidations[
-            validation.id
-          ] as HostValidation) || (
-            <FailingValidation<S>
-              key={validation.id}
-              validation={validation}
-              hostGroup={group as HostValidationGroup}
-              severity={severity}
-              setCurrentStepId={setCurrentStepId}
-              wizardStepNames={wizardStepNames}
-              wizardStepsValidationsMap={wizardStepsValidationsMap}
-            />
-          );
+          if (!failingValidations[validationId]) {
+            failingValidations[validationId] = (
+              <FailingValidation<S>
+                key={validationId}
+                validation={validation}
+                hostGroup={group}
+                severity={severity}
+                setCurrentStepId={setCurrentStepId}
+                wizardStepNames={wizardStepNames}
+                wizardStepsValidationsMap={wizardStepsValidationsMap}
+              />
+            );
+          }
         }
       };
 
-      validationsInfo[group as HostValidationGroup]?.forEach(f);
+      validationsInfo[group]?.forEach(addFailingValidation);
     });
   });
 

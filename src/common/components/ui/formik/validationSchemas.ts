@@ -14,6 +14,7 @@ import { getSubnet } from '../../clusterConfiguration/utils';
 import {
   bmcAddressValidationMessages,
   clusterNameValidationMessages,
+  CLUSTER_NAME_MAX_LENGTH,
   FORBIDDEN_HOSTNAMES,
   hostnameValidationMessages,
   locationValidationMessages,
@@ -66,7 +67,7 @@ export const nameValidationSchema = (
         : clusterNameValidationMessagesList.INVALID_LENGTH_ACM,
     )
     .max(
-      54,
+      CLUSTER_NAME_MAX_LENGTH,
       isOcm
         ? clusterNameValidationMessagesList.INVALID_LENGTH_OCM
         : clusterNameValidationMessagesList.INVALID_LENGTH_ACM,
@@ -132,11 +133,28 @@ export const pullSecretValidationSchema = Yup.string().test(
   },
 );
 
+const isValidIpWithoutSuffix = (addr: string) => {
+  let address = undefined;
+  if (Address4.isValid(addr)) {
+    address = new Address4(addr);
+  } else if (Address6.isValid(addr)) {
+    address = new Address6(addr);
+  }
+  return !!address && address.address === address.addressMinusSuffix;
+};
+
 export const ipValidationSchema = Yup.string().test(
   'ip-validation',
   'Not a valid IP address',
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  (value) => Address4.isValid(value) || Address6.isValid(value),
+  (value: string) => Address4.isValid(value) || Address6.isValid(value),
+);
+
+export const ipNoSuffixValidationSchema = Yup.string().test(
+  'ip-validation-no-suffix',
+  'Not a valid IP address',
+  (value: string) => {
+    return isValidIpWithoutSuffix(value);
+  },
 );
 
 export const macAddressValidationSchema = Yup.string().matches(MAC_REGEX, {
@@ -147,6 +165,7 @@ export const macAddressValidationSchema = Yup.string().matches(MAC_REGEX, {
 export const vipRangeValidationSchema = (
   hostSubnets: HostSubnets,
   { machineNetworks, hostSubnet }: NetworkConfigurationValues,
+  allowSuffix: boolean,
 ) =>
   Yup.string().test(
     'vip-validation',
@@ -155,8 +174,10 @@ export const vipRangeValidationSchema = (
       if (!value) {
         return true;
       }
+
       try {
-        ipValidationSchema.validateSync(value);
+        const validator = allowSuffix ? ipValidationSchema : ipNoSuffixValidationSchema;
+        validator.validateSync(value);
       } catch (err) {
         return this.createError({ message: getErrorMessage(err) });
       }
@@ -219,7 +240,25 @@ export const vipValidationSchema = (
     is: (vipDhcpAllocation, managedNetworkingType) =>
       !vipDhcpAllocation && managedNetworkingType !== 'userManaged',
     then: requiredOnceSet(initialValue, 'Required. Please provide an IP address')
-      .concat(vipRangeValidationSchema(hostSubnets, values))
+      .concat(vipRangeValidationSchema(hostSubnets, values, true))
+      .concat(vipUniqueValidationSchema(values))
+      .when('hostSubnet', {
+        is: (hostSubnet) => hostSubnet !== NO_SUBNET_SET,
+        then: Yup.string().required('Required. Please provide an IP address'),
+      }),
+  });
+
+export const vipNoSuffixValidationSchema = (
+  hostSubnets: HostSubnets,
+  values: NetworkConfigurationValues,
+  initialValue?: string,
+) =>
+  Yup.mixed().when(['vipDhcpAllocation', 'managedNetworkingType'], {
+    is: (vipDhcpAllocation, managedNetworkingType) =>
+      !vipDhcpAllocation && managedNetworkingType !== 'userManaged',
+    then: requiredOnceSet(initialValue, 'Required. Please provide an IP address')
+      .concat(ipNoSuffixValidationSchema)
+      .concat(vipRangeValidationSchema(hostSubnets, values, false))
       .concat(vipUniqueValidationSchema(values))
       .when('hostSubnet', {
         is: (hostSubnet) => hostSubnet !== NO_SUBNET_SET,

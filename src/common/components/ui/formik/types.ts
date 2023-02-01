@@ -31,6 +31,8 @@ export interface FieldProps {
   max?: number | string;
   idPostfix?: string;
   callFormikOnChange?: boolean;
+  maxLength?: number | undefined;
+  minLength?: number | undefined;
 }
 
 export interface SelectFieldProps extends FieldProps {

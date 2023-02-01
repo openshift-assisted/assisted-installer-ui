@@ -12,7 +12,7 @@ import { OPENSHIFT_LIFE_CYCLE_DATES_LINK } from '../../config';
 import { OpenshiftVersionOptionType } from '../../types';
 import { SelectField } from '../ui';
 // eslint-disable-next-line no-restricted-imports
-import openshiftVersionData from '../../../ocm/data/openshiftVersionsData.json';
+import openshiftVersionData from '../../../ocm/data/openshiftVersionsData';
 import { diffInDaysBetweenDates } from '../../sevices/DateAndTime';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
@@ -39,7 +39,11 @@ const getOpenshiftVersionHelperText =
     }
     let helperTextComponent = null;
     const selectedVersion = versions.find((version) => version.value === selectedVersionValue);
-    if (selectedVersion?.supportLevel !== 'production') {
+    if (!selectedVersionValue || !selectedVersion) {
+      return null;
+    }
+
+    if (selectedVersion.supportLevel !== 'production') {
       helperTextComponent = (
         <>
           <ExclamationTriangleIcon color={warningColor.value} size="sm" />
@@ -47,17 +51,20 @@ const getOpenshiftVersionHelperText =
           <OpenShiftLifeCycleDatesLink />
         </>
       );
-    } else if (
-      selectedVersionValue in openshiftVersionData['versions'] &&
-      diffInDaysBetweenDates(openshiftVersionData['versions'][selectedVersionValue]) <= 30
-    ) {
+    }
+
+    const versionSupportEndDate = openshiftVersionData.versions[selectedVersionValue];
+    const showSupportEndWarning =
+      versionSupportEndDate && diffInDaysBetweenDates(versionSupportEndDate) <= 30;
+
+    if (showSupportEndWarning) {
       helperTextComponent = (
         <>
           <ExclamationTriangleIcon color={warningColor.value} size="sm" />
           &nbsp;
           {t(
             "ai:Full support for this version ends on {{openshiftversion}} and won't be available as an installation option afterwards.",
-            { openshiftversion: openshiftVersionData['versions'][selectedVersionValue] },
+            { openshiftversion: versionSupportEndDate },
           )}
           &nbsp;
           <OpenShiftLifeCycleDatesLink />

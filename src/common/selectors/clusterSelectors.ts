@@ -1,7 +1,7 @@
 import head from 'lodash/fp/head';
-import { CpuArchitecture, SupportedPlatformIntegrations, ValidationsInfo } from '../types';
+import { SupportedPlatformIntegrations, ValidationsInfo } from '../types';
 import { Cluster, stringToJSON } from '../api';
-import { OperatorName } from '../config';
+import { ExposedOperatorName } from '../config';
 
 export const selectMachineNetworkCIDR = ({
   machineNetworks,
@@ -40,7 +40,7 @@ export const selectOlmOperators = (cluster?: Pick<Cluster, 'monitoredOperators'>
 
 export const hasEnabledOperators = (
   monitoredOperators: Cluster['monitoredOperators'],
-  searchOperator: OperatorName,
+  searchOperator: ExposedOperatorName,
 ) => {
   return selectMonitoredOperators(monitoredOperators).some(
     (operator) => operator.name && operator.name === searchOperator,
@@ -101,9 +101,6 @@ export const selectIpv4HostPrefix = ({ clusterNetworks }: Pick<Cluster, 'cluster
 
 export const selectIpv6HostPrefix = ({ clusterNetworks }: Pick<Cluster, 'clusterNetworks'>) =>
   clusterNetworks && clusterNetworks[1].hostPrefix;
-
-export const isArmArchitecture = ({ cpuArchitecture }: Pick<Cluster, 'cpuArchitecture'>) =>
-  cpuArchitecture === CpuArchitecture.ARM;
 
 const getOldSchedulableMastersAlwaysOn = (cluster: Cluster) => {
   return cluster.hosts ? cluster.hosts.length < 5 : true;

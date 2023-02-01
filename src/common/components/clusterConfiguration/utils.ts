@@ -19,6 +19,7 @@ import {
   isClusterPlatformTypeVM,
 } from '../../selectors';
 import {
+  CpuArchitecture,
   HostDiscoveryValues,
   HostSubnets,
   OpenshiftVersionOptionType,
@@ -52,7 +53,7 @@ const getMultiVersionText = (
   if (!cpuArchitecture || openshiftVersion.includes('multi')) {
     return '';
   }
-  return cpuArchitecture === 'multi' ? ' (multi)' : '';
+  return cpuArchitecture === CpuArchitecture.MULTI ? ' (multi)' : '';
 };
 
 export const getOpenshiftVersionText = (params: VersionConfig) => {
@@ -271,7 +272,8 @@ export const getVipValidationsById = (
   ];
   return (validationsInfo.network || []).reduce((lookup, validation) => {
     if (['api-vip-defined', 'ingress-vip-defined'].includes(validation.id)) {
-      lookup[validation.id] =
+      const vipId = validation.id as keyof VipValidations;
+      lookup[vipId] =
         validation.status === 'failure' &&
         failedDhcpAllocationMessageStubs.find((stub) => validation.message.match(stub))
           ? validation.message
