@@ -57,7 +57,7 @@ const EditHostForm = ({
   getEditErrorMessage,
 }: EditHostFormProps) => {
   const hostnameInputRef = React.useRef<HTMLInputElement>();
-  const [isEditInProgress, setIsEditInProgress] = React.useState<boolean>(false);
+  const [isSaveInProgress, setIsSaveInProgress] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     hostnameInputRef.current?.focus();
@@ -85,10 +85,10 @@ const EditHostForm = ({
           return;
         }
         try {
-          setIsEditInProgress(true); // onSave ends closing the modal, so we can't update the status unless there is an error
+          setIsSaveInProgress(true); // onSave ends closing the modal, so we can't update the status unless there is an error
           await onSave(values);
         } catch (e) {
-          setIsEditInProgress(false);
+          setIsSaveInProgress(false);
           const error = e as Error;
           const message =
             (getEditErrorMessage && getEditErrorMessage(error)) || t('ai:Host update failed.');
@@ -123,7 +123,7 @@ const EditHostForm = ({
                 name="hostname"
                 ref={hostnameInputRef}
                 isRequired
-                isDisabled={isEditInProgress || !canHostnameBeChanged(host.status)}
+                isDisabled={isSaveInProgress || !canHostnameBeChanged(host.status)}
                 richValidationMessages={hostnameValidationMessages(t)}
               />
             </GridGap>
