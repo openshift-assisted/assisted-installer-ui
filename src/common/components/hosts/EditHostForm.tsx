@@ -15,7 +15,7 @@ import { Formik } from 'formik';
 import { TFunction } from 'i18next';
 import { Host, Inventory } from '../../api';
 import {
-  richNameValidationSchema,
+  richHostnameValidationSchema,
   RichInputField,
   StaticTextField,
   hostnameValidationMessages,
@@ -44,7 +44,7 @@ const validationSchema = (
   usedHostnames: string[] = [],
 ) =>
   Yup.object().shape({
-    hostname: richNameValidationSchema(t, usedHostnames, initialValues.hostname),
+    hostname: richHostnameValidationSchema(t, usedHostnames, initialValues.hostname),
   });
 
 const EditHostForm = ({
@@ -102,7 +102,7 @@ const EditHostForm = ({
         }
       }}
     >
-      {({ handleSubmit, status, setStatus, isSubmitting, isValid, dirty }) => (
+      {({ handleSubmit, status, isSubmitting, isValid, setStatus, dirty }) => (
         <Form onSubmit={handleSubmit}>
           <ModalBoxBody>
             <GridGap>
