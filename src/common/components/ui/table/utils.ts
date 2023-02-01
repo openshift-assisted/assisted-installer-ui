@@ -11,6 +11,14 @@ export type HumanizedSortable = {
 
 type GetCellType = (row: IRow, index: number | undefined) => string | HumanizedSortable;
 
+export type GenericTableProps = {
+  rowId: string;
+  cells: IRow['cells'][];
+};
+
+export const genericTableRowKey = ({ rowData }: { rowData: GenericTableProps }): string =>
+  `row-key${rowData.rowId}`;
+
 /**
  * Generates rows array for item which spans across all table columns.
  * Used to put EmptyState etc. components into the table body.

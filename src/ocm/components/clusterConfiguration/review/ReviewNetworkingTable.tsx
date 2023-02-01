@@ -1,17 +1,20 @@
 import { Title } from '@patternfly/react-core';
 import { Table, TableVariant, TableBody } from '@patternfly/react-table';
 import React from 'react';
-import { Cluster, isDualStack } from '../../../../common';
+import { Cluster, genericTableRowKey, isDualStack } from '../../../../common';
 import {
   getManagementType,
   getStackTypeLabel,
   getNetworkType,
 } from '../../clusterDetail/ClusterProperties';
 
+const dummyCells = ['', '', ''];
+
 export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
   const rows = React.useMemo(() => {
     return [
       {
+        rowId: 'network-management',
         cells: [
           { title: 'Networking management type' },
           {
@@ -21,6 +24,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
         ],
       },
       {
+        rowId: 'stack-type',
         cells: [
           { title: 'Stack type', colSpan: 2 },
           {
@@ -30,6 +34,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
         ],
       },
       {
+        rowId: 'machine-networks-cidr',
         cells: [
           { title: 'Machine networks CIDR' },
           {
@@ -45,6 +50,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
         ],
       },
       {
+        rowId: 'api-ip',
         cells: [
           { title: 'API IP' },
           {
@@ -54,6 +60,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
         ],
       },
       {
+        rowId: 'ingress-ip',
         cells: [
           { title: 'Ingress IP' },
           {
@@ -68,6 +75,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
   const rowsAdvanced = React.useMemo(() => {
     return [
       {
+        rowId: 'cluster-network-cidr',
         cells: [
           'Cluster network CIDR',
           {
@@ -83,6 +91,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
         ],
       },
       {
+        rowId: 'cluster-network-host-prefix',
         cells: [
           'Cluster network host prefix',
           {
@@ -98,6 +107,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
         ],
       },
       {
+        rowId: 'service-network-cidr',
         cells: [
           'Service network CIDR',
           {
@@ -113,6 +123,7 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
         ],
       },
       {
+        rowId: 'networking-type',
         cells: [
           'Networking type',
           {
@@ -128,13 +139,13 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
     <>
       <Table
         rows={rows}
-        cells={['', '', '']}
+        cells={dummyCells}
         variant={TableVariant.compact}
         borders={false}
         className={'review-table'}
         aria-label={'Networking review table'}
       >
-        <TableBody />
+        <TableBody rowKey={genericTableRowKey} />
       </Table>
 
       <br />
@@ -144,13 +155,13 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
 
       <Table
         rows={rowsAdvanced}
-        cells={['', '', '']}
+        cells={dummyCells}
         variant={TableVariant.compact}
         borders={false}
         className={'review-table'}
         aria-label={'Advanced networking review table'}
       >
-        <TableBody />
+        <TableBody rowKey={genericTableRowKey} />
       </Table>
     </>
   );
