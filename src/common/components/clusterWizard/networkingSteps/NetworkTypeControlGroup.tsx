@@ -18,8 +18,8 @@ export const NetworkTypeControlGroup = ({
 }: NetworkTypeControlGroupProps) => {
   const { t } = useTranslation();
   return (
-    <FormGroup fieldId={GROUP_NAME} label="Network type">
-      <Split hasGutter>
+    <FormGroup isInline fieldId={GROUP_NAME} label="Network type">
+      <Split>
         <SplitItem>
           <Tooltip
             hidden={isSDNSelectable}
@@ -32,36 +32,33 @@ export const NetworkTypeControlGroup = ({
               name={GROUP_NAME}
               isDisabled={isDisabled || !isSDNSelectable}
               value={NETWORK_TYPE_SDN}
-              label={
-                <>
-                  {t('ai:Software-Defined Networking (SDN)')}{' '}
-                  <PopoverIcon
-                    noVerticalAlign
-                    bodyContent={'The classic bullet-proof networking type'}
-                  />
-                </>
-              }
+              label={<>{t('ai:Software-Defined Networking (SDN)')}&nbsp;</>}
             />
           </Tooltip>
         </SplitItem>
-        <SplitItem />
+        <SplitItem>
+          <PopoverIcon
+            bodyContent={'The classic bullet-proof networking type'}
+            buttonStyle={{ top: '-4px' }}
+          />
+        </SplitItem>
+      </Split>
+      <Split>
         <SplitItem>
           <RadioField
             id={GROUP_NAME}
             name={GROUP_NAME}
             isDisabled={isDisabled}
             value={NETWORK_TYPE_OVN}
-            label={
-              <>
-                {t('ai:Open Virtual Networking (OVN)')}{' '}
-                <PopoverIcon
-                  noVerticalAlign
-                  bodyContent={
-                    "The next generation networking type, select this when you're using new features and telco features"
-                  }
-                />
-              </>
+            label={<>{t('ai:Open Virtual Networking (OVN)')}&nbsp;</>}
+          />
+        </SplitItem>
+        <SplitItem>
+          <PopoverIcon
+            bodyContent={
+              "The next generation networking type, select this when you're using new features and telco features"
             }
+            buttonStyle={{ top: '-4px' }}
           />
         </SplitItem>
       </Split>
