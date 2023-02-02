@@ -117,7 +117,7 @@ export const OcmClusterDetailsFormFields = ({
           isRequired
         />
       )}
-      {/* TODO(mlibra): For single-cluster: Reause this to  show just a static text */}
+      {/* TODO(mlibra): For single-cluster: We will probably change this to just a static text */}
       {forceOpenshiftVersion ? (
         <OcmOpenShiftVersion
           versions={versions}

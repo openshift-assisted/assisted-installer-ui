@@ -17,21 +17,28 @@ import { OcmCheckboxField, OcmInputField } from '../../ui/OcmFormFields';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 
 interface VipStaticValueProps {
+  id?: string;
   vipName: 'apiVip' | 'ingressVip';
   cluster: Cluster;
   validationErrorMessage?: string;
 }
 
-const VipStaticValue = ({ vipName, cluster, validationErrorMessage }: VipStaticValueProps) => {
+const VipStaticValue = ({
+  vipName,
+  cluster,
+  validationErrorMessage,
+  id = 'vip-static',
+}: VipStaticValueProps) => {
   const { vipDhcpAllocation } = cluster;
   const machineNetworkCidr = selectMachineNetworkCIDR(cluster);
 
   if (vipDhcpAllocation && cluster[vipName]) {
-    return <>{cluster[vipName]}</>;
+    return <span id={`${id}-allocated`}>{cluster[vipName]}</span>;
   }
   if (vipDhcpAllocation && validationErrorMessage) {
     return (
       <Alert
+        id={`${id}-alert-allocation-failed`}
         variant={AlertVariant.danger}
         title="The DHCP server failed to allocate the IP"
         isInline
@@ -43,7 +50,7 @@ const VipStaticValue = ({ vipName, cluster, validationErrorMessage }: VipStaticV
   if (vipDhcpAllocation && machineNetworkCidr) {
     return (
       <>
-        <Spinner size="md" />
+        <Spinner size="md" id={`${id}-allocating`} />
         <i> This IP is being allocated by the DHCP server</i>
       </>
     );
@@ -151,6 +158,7 @@ export const VirtualIPControlGroup = ({
             isRequired
           >
             <VipStaticValue
+              id="vip-api"
               vipName="apiVip"
               cluster={cluster}
               validationErrorMessage={apiVipFailedValidationMessage}
@@ -165,6 +173,7 @@ export const VirtualIPControlGroup = ({
             isRequired
           >
             <VipStaticValue
+              id="vip-ingress"
               vipName="ingressVip"
               cluster={cluster}
               validationErrorMessage={ingressVipFailedValidationMessage}

@@ -139,7 +139,7 @@ const ClusterWizardContextProvider: React.FC<
       currentStepId,
       setCurrentStepId: onSetCurrentStepId,
     };
-  }, [wizardStepIds, currentStepId, infraEnv]);
+  }, [wizardStepIds, currentStepId, infraEnv, isSingleClusterFeatureEnabled]);
   if (!contextValue) {
     return null;
   }

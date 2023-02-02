@@ -32,7 +32,6 @@ import ClusterLoading from './ClusterLoading';
 import ClusterPollingErrorModal from '../clusterDetail/ClusterPollingErrorModal';
 import ClusterUpdateErrorModal from '../clusterDetail/ClusterUpdateErrorModal';
 import { BackButton } from '../ui/Buttons/BackButton';
-import { RebootNodeZeroModal } from '../clusterDetail/RebootNodeZeroModal';
 
 type MatchParams = {
   clusterId: string;
@@ -43,10 +42,8 @@ const ClusterPageGeneric: React.FC<{ clusterId: string; showBreadcrumbs: boolean
   showBreadcrumbs,
 }) => {
   if (!clusterId) {
-    console.error('ClusterPage: clusterId is not provided');
-    return null;
+    console.error('ClusterPageGeneric: missing clusterId');
   }
-
   const fetchCluster = useFetchCluster(clusterId);
   const dispatch = useDispatch();
   const { cluster, uiState, errorDetail } = useClusterPolling(clusterId);
@@ -165,7 +162,7 @@ const ClusterPageGeneric: React.FC<{ clusterId: string; showBreadcrumbs: boolean
               errorUI={<ClusterUiError />}
             >
               <FeatureSupportLevelProvider loadingUi={<ClusterLoading />} cluster={cluster}>
-                {/* TODO(mlibra): Position better, for development only
+                {/* TODO(mlibra): Will be reworked within https://issues.redhat.com/browse/AGENT-522
                 <RebootNodeZeroModal cluster={cluster} />
                 */}
                 {getContent(cluster, infraEnv)}
