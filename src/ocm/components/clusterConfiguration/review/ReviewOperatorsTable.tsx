@@ -27,8 +27,8 @@ export const ReviewOperatorsTable = ({ cluster }: { cluster: Cluster }) => {
           operator,
         }),
       )
-      .map((operator, index) => ({
-        rowId: `operator-${operator}-${index}`,
+      .map((operator) => ({
+        rowId: `operator-${operator}`,
         cells: [
           operatorNames[operator],
           {
