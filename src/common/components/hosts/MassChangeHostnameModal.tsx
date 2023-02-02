@@ -23,7 +23,7 @@ import { InfoCircleIcon } from '@patternfly/react-icons';
 import {
   RichInputField,
   getRichTextValidation,
-  richNameValidationSchema,
+  richHostnameValidationSchema,
   hostnameValidationMessages,
   ModalProgress,
   FORBIDDEN_HOSTNAMES,
@@ -78,7 +78,7 @@ const validationSchema = (
   t: TFunction,
 ) =>
   Yup.object().shape({
-    hostname: richNameValidationSchema(t, usedHostnames, initialValues.hostname).required(
+    hostname: richHostnameValidationSchema(t, usedHostnames, initialValues.hostname).required(
       t('ai:Required field'),
     ),
   });
