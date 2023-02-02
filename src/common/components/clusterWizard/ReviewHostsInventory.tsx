@@ -31,13 +31,13 @@ const ReviewHostsInventory = ({ hosts = [] }: { hosts?: Host[] }) => {
         cells: ['Hosts', summary.count],
       },
       {
-        cells: ['Total Cores', summary.cores],
+        cells: ['Total cores', summary.cores],
       },
       {
-        cells: ['Total Memory', fileSize(summary.memory, 2, 'iec')],
+        cells: ['Total memory', fileSize(summary.memory, 2, 'iec')],
       },
       {
-        cells: ['Total Storage', fileSize(summary.fs, 2, 'si')],
+        cells: ['Total storage', fileSize(summary.fs, 2, 'si')],
       },
     ];
   }, [hosts]);
@@ -45,6 +45,7 @@ const ReviewHostsInventory = ({ hosts = [] }: { hosts?: Host[] }) => {
   return (
     <Table
       rows={rows}
+      data-testid="review-host-inventory-table"
       cells={['', '']}
       variant={TableVariant.compact}
       borders={false}

@@ -109,6 +109,7 @@ const DiskEncryptionControlGroup = ({
       {hasEnabledDiskEncryption && (
         <Alert
           variant={AlertVariant.warning}
+          data-testid="alert-tpmv2-bios"
           isInline
           title={
             <FlexItem>

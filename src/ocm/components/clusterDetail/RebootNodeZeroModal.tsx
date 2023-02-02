@@ -6,10 +6,11 @@ import { Cluster, KubeconfigDownload, ClusterCredentials } from '../../../common
 
 import './RebootNodeZeroModal.css';
 
+// TODO(mlibra): Following will be reimplemented based on future decisions in https://issues.redhat.com/browse/AGENT-522
 export const RebootNodeZeroModal: React.FC<{ cluster: Cluster }> = ({ cluster }) => {
   const [rebootConfirmed, setRebootCofirmed] = React.useState(false);
   const clusterVarieties = useClusterStatusVarieties(cluster);
-  let { credentials, credentialsError, consoleOperator, fetchCredentials } = clusterVarieties;
+  const { credentials, credentialsError, fetchCredentials } = clusterVarieties;
 
   const onReboot = () => {
     console.error('onReboot handler to be implemented');
@@ -17,11 +18,11 @@ export const RebootNodeZeroModal: React.FC<{ cluster: Cluster }> = ({ cluster })
   };
 
   // Do not merge, development only:
-  credentials = credentials || {
-    username: 'mock-user',
-    password: 'mock-password',
-    consoleUrl: 'https://www.google.com/search?q=mock',
-  };
+  // credentials = credentials || {
+  //   username: 'mock-user',
+  //   password: 'mock-password',
+  //   consoleUrl: 'https://www.google.com/search?q=mock',
+  // };
 
   return (
     <Modal

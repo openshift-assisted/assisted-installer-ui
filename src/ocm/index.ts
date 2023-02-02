@@ -14,4 +14,3 @@ export * as Reducers from '../common/reducers';
 
 export * from '../common/components';
 export * from '../common/api';
-export * from './';
