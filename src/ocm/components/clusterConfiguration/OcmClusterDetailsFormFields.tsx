@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Form } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 
-import ArmCheckbox from './ArmCheckbox';
 import { HostsNetworkConfigurationControlGroup } from './HostsNetworkConfigurationControlGroup';
 import {
   ClusterDetailsValues,
@@ -14,6 +13,7 @@ import {
   ocmClusterNameValidationMessages,
   uniqueOcmClusterNameValidationMessages,
   CLUSTER_NAME_MAX_LENGTH,
+  StaticTextField,
 } from '../../../common';
 import DiskEncryptionControlGroup from '../../../common/components/clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
@@ -25,6 +25,7 @@ import {
 } from '../ui/OcmFormFields';
 import OcmOpenShiftVersion from './OcmOpenShiftVersion';
 import OcmOpenShiftVersionSelect from './OcmOpenShiftVersionSelect';
+import CpuArchitectureDropdown from './CpuArchitectureDropdown';
 
 export type OcmClusterDetailsFormFieldsProps = {
   forceOpenshiftVersion?: string;
@@ -125,11 +126,20 @@ export const OcmClusterDetailsFormFields = ({
       ) : (
         <OcmOpenShiftVersionSelect versions={versions} />
       )}
+      {clusterExists ? (
+        <StaticTextField name="cpuArchitecture" label="CPU architecture" isRequired>
+          {values.cpuArchitecture}
+        </StaticTextField>
+      ) : (
+        <CpuArchitectureDropdown />
+      )}
+
       <SNOControlGroup versions={versions} highAvailabilityMode={highAvailabilityMode} />
 
       {!isPullSecretSet && <PullSecret isOcm={isOcm} defaultPullSecret={defaultPullSecret} />}
-      <ArmCheckbox versions={versions} />
+
       <HostsNetworkConfigurationControlGroup clusterExists={clusterExists} />
+
       <DiskEncryptionControlGroup
         values={values}
         isDisabled={isPullSecretSet}

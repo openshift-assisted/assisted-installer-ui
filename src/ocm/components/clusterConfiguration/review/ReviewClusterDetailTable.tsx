@@ -2,8 +2,8 @@ import React from 'react';
 import { Table, TableBody, TableVariant } from '@patternfly/react-table';
 import {
   Cluster,
-  CpuArchitecture,
   genericTableRowKey,
+  getDefaultCpuArchitecture,
   useFeatureSupportLevel,
 } from '../../../../common';
 import { getDiskEncryptionEnabledOnStatus } from '../../clusterDetail/ClusterProperties';
@@ -14,7 +14,7 @@ export const ReviewClusterDetailTable = ({ cluster }: { cluster: Cluster }) => {
 
   const rows = React.useMemo(() => {
     const cpuArchitecture =
-      activeFeatureConfiguration?.underlyingCpuArchitecture || CpuArchitecture.x86;
+      activeFeatureConfiguration?.underlyingCpuArchitecture || getDefaultCpuArchitecture();
     const hasStaticIp = activeFeatureConfiguration?.hasStaticIpNetworking || false;
 
     const rows = [

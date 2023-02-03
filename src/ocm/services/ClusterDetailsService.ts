@@ -16,15 +16,16 @@ import {
 } from './types';
 import { getDummyInfraEnvField } from '../components/clusterConfiguration/staticIp/data/dummyData';
 import { ocmClient } from '../api';
+import { getDefaultCpuArchitecture } from './CpuArchitectureService';
 
 const getNewClusterCpuArchitecture = (urlSearchParams: string) => {
   const params = new URLSearchParams(urlSearchParams);
   const hasArmSearchParam = params.get('useArm') === 'true';
-  return hasArmSearchParam ? CpuArchitecture.ARM : CpuArchitecture.x86;
+  return hasArmSearchParam ? CpuArchitecture.ARM : getDefaultCpuArchitecture();
 };
 
 const getExistingClusterCpuArchitecture = (infraEnv: InfraEnv) => {
-  return infraEnv.cpuArchitecture || CpuArchitecture.x86;
+  return infraEnv.cpuArchitecture || getDefaultCpuArchitecture();
 };
 
 const ClusterDetailsService = {
