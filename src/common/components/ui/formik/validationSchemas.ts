@@ -520,18 +520,27 @@ export const noProxyValidationSchema = Yup.string().test(
   },
 );
 
-export const ntpSourceValidationSchema = Yup.string().test(
-  'ntp-source-validation',
-  'Provide a comma separated list of valid DNS names or IP addresses.',
-  (value: string) => {
-    if (!value) {
-      return true;
-    }
-    return trimCommaSeparatedList(value)
-      .split(',')
-      .every((v) => isIPorDN(v));
-  },
-);
+export const ntpSourceValidationSchema = Yup.string()
+  .test(
+    'ntp-source-validation',
+    'Provide a comma separated list of valid DNS names or IP addresses.',
+    (value: string) => {
+      if (!value) {
+        return true;
+      }
+      return trimCommaSeparatedList(value)
+        .split(',')
+        .every((v) => isIPorDN(v));
+    },
+  )
+  .test(
+    'ntp-source-validation-unique',
+    'DNS names and IP addresses must be unique.',
+    (value: string) => {
+      const arr = trimCommaSeparatedList(value).split(',');
+      return arr.length === new Set(arr).size;
+    },
+  );
 
 export const day2ApiVipValidationSchema = Yup.string().test(
   'day2-api-vip',
