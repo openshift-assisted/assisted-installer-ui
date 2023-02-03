@@ -1,9 +1,10 @@
 import React from 'react';
-import { Table, TableVariant, TableBody, IRow } from '@patternfly/react-table';
+import { Table, TableVariant, TableBody } from '@patternfly/react-table';
 import {
   Cluster,
   ExposedOperatorNames,
   hasEnabledOperators,
+  genericTableRowKey,
   operatorLabels,
   useFeatureSupportLevel,
 } from '../../../../common';
@@ -27,6 +28,7 @@ export const ReviewOperatorsTable = ({ cluster }: { cluster: Cluster }) => {
         }),
       )
       .map((operator) => ({
+        rowId: `operator-${operator}`,
         cells: [
           operatorNames[operator],
           {
@@ -39,13 +41,14 @@ export const ReviewOperatorsTable = ({ cluster }: { cluster: Cluster }) => {
 
   return (
     <Table
-      rows={rows as IRow[]}
+      rows={rows}
       cells={['', '']}
       variant={TableVariant.compact}
       borders={false}
+      aria-label={'Operators review table'}
       className="review-table"
     >
-      <TableBody />
+      <TableBody rowKey={genericTableRowKey} />
     </Table>
   );
 };

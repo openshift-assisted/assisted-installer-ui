@@ -6,6 +6,7 @@ import useClusterSupportedPlatforms, {
   SupportedPlatformIntegrationType,
 } from '../../../hooks/useClusterSupportedPlatforms';
 import PlatformIntegrationVsphere from './PlatformIntegrationVsphere';
+import { SplitItem } from '@patternfly/react-core';
 
 type KeyType = Record<SupportedPlatformIntegrationType, string>;
 
@@ -26,23 +27,6 @@ const messages: KeyType = {
   nutanix: nutanixPlatformMessage,
 };
 
-const PlatformIntegrationLabel = ({
-  supportedPlatformIntegration,
-}: {
-  supportedPlatformIntegration: SupportedPlatformIntegrationType;
-}) => {
-  return (
-    <>
-      <span>Integrate with your virtualization platform</span>{' '}
-      <PopoverIcon
-        bodyContent={messages[supportedPlatformIntegration]}
-        footerContent={supportedPlatformIntegration === 'vsphere' && <PlatformIntegrationVsphere />}
-        buttonOuiaId="platform-integration-vSphere-popover"
-      />
-    </>
-  );
-};
-
 const PlatformIntegration = ({
   clusterId,
   openshiftVersion,
@@ -60,21 +44,33 @@ const PlatformIntegration = ({
   );
 
   return (
-    <OcmSwitchField
-      tooltipProps={{
-        hidden: isPlatformIntegrationSupported,
-        content: platformIntegrationTooltip,
-      }}
-      isDisabled={
-        !isPlatformIntegrationSupported ||
-        (supportedPlatformIntegration === 'nutanix' && !isNutanixFeatureSupported)
-      }
-      name={'usePlatformIntegration'}
-      label={
-        <PlatformIntegrationLabel supportedPlatformIntegration={supportedPlatformIntegration} />
-      }
-      switchOuiaId="platform-integration-vSphere-switch"
-    />
+    <>
+      <SplitItem>
+        <OcmSwitchField
+          tooltipProps={{
+            hidden: isPlatformIntegrationSupported,
+            content: platformIntegrationTooltip,
+          }}
+          isDisabled={
+            !isPlatformIntegrationSupported ||
+            (supportedPlatformIntegration === 'nutanix' && !isNutanixFeatureSupported)
+          }
+          name={'usePlatformIntegration'}
+          label="Integrate with your virtualization platform&nbsp;"
+          switchOuiaId="platform-integration-vSphere-switch"
+        />
+      </SplitItem>
+      <SplitItem>
+        <PopoverIcon
+          bodyContent={messages[supportedPlatformIntegration]}
+          footerContent={
+            supportedPlatformIntegration === 'vsphere' && <PlatformIntegrationVsphere />
+          }
+          buttonOuiaId="platform-integration-vSphere-popover"
+          buttonStyle={{ marginTop: '4px' }}
+        />
+      </SplitItem>
+    </>
   );
 };
 

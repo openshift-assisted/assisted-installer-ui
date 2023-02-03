@@ -26,15 +26,6 @@ import { OcmSwitchField } from '../ui/OcmFormFields';
 import { selectCurrentClusterPermissionsState } from '../../selectors';
 import PlatformIntegration from './platformIntegration/PlatformIntegration';
 
-const SchedulableMastersLabel = () => (
-  <>
-    <span>Run workloads on control plane nodes</span>{' '}
-    <PopoverIcon
-      bodyContent={<p>Enables your control plane nodes to be used for running applications.</p>}
-    />
-  </>
-);
-
 const schedulableMastersTooltip =
   'This toggle will be "On" and not editable when less than 5 hosts were discovered';
 
@@ -70,26 +61,36 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
       </StackItem>
       {isPlatformIntegrationFeatureEnabled && (
         <StackItem>
-          <Split hasGutter>
-            <SplitItem>
-              <PlatformIntegration
-                clusterId={cluster.id}
-                openshiftVersion={cluster.openshiftVersion}
-              />
-            </SplitItem>
+          <Split>
+            <PlatformIntegration
+              clusterId={cluster.id}
+              openshiftVersion={cluster.openshiftVersion}
+            />
           </Split>
         </StackItem>
       )}
       <StackItem>
-        <OcmSwitchField
-          tooltipProps={{
-            hidden: !mastersMustRunWorkloads,
-            content: schedulableMastersTooltip,
-          }}
-          isDisabled={mastersMustRunWorkloads}
-          name={'schedulableMasters'}
-          label={<SchedulableMastersLabel />}
-        />
+        <Split>
+          <SplitItem>
+            <OcmSwitchField
+              tooltipProps={{
+                hidden: !mastersMustRunWorkloads,
+                content: schedulableMastersTooltip,
+              }}
+              isDisabled={mastersMustRunWorkloads}
+              name={'schedulableMasters'}
+              label="Run workloads on control plane nodes&nbsp;"
+            />
+          </SplitItem>
+          <SplitItem>
+            <PopoverIcon
+              bodyContent={
+                <p>Enables your control plane nodes to be used for running applications.</p>
+              }
+              buttonStyle={{ marginTop: '4px' }}
+            />
+          </SplitItem>
+        </Split>
       </StackItem>
       <StackItem>
         <InformationAndAlerts cluster={cluster} />
