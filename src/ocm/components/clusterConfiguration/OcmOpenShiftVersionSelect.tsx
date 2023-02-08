@@ -9,8 +9,6 @@ import {
   global_danger_color_100 as dangerColor,
 } from '@patternfly/react-tokens';
 import { TFunction } from 'i18next';
-import openshiftVersionData from '../../data/openshiftVersionsData';
-import { diffInDaysBetweenDates } from '../../../common/sevices/DateAndTime';
 import { OpenShiftVersionDropdown } from '../../../common/components/ui/OpenShiftVersionDropown';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { OPENSHIFT_LIFE_CYCLE_DATES_LINK, OpenshiftVersionOptionType } from '../../../common';
@@ -38,14 +36,14 @@ const getOpenshiftVersionHelperText = (
       </>
     );
   }
-  let helperTextComponent = null;
+
   const selectedVersion = versions.find((version) => version.label === selectedVersionValue);
   if (!selectedVersionValue || !selectedVersion) {
     return null;
   }
 
   if (selectedVersion.supportLevel !== 'production') {
-    helperTextComponent = (
+    return (
       <>
         <ExclamationTriangleIcon color={warningColor.value} size="sm" />
         &nbsp;{t('ai:Please note that this version is not production-ready.')}&nbsp;
@@ -53,26 +51,7 @@ const getOpenshiftVersionHelperText = (
       </>
     );
   }
-
-  const versionSupportEndDate = openshiftVersionData.versions[selectedVersionValue];
-  const showSupportEndWarning =
-    versionSupportEndDate && diffInDaysBetweenDates(versionSupportEndDate) <= 30;
-
-  if (showSupportEndWarning) {
-    helperTextComponent = (
-      <>
-        <ExclamationTriangleIcon color={warningColor.value} size="sm" />
-        &nbsp;
-        {t(
-          "ai:Full support for this version ends on {{openshiftversion}} and won't be available as an installation option afterwards.",
-          { openshiftversion: versionSupportEndDate },
-        )}
-        &nbsp;
-        <OpenShiftLifeCycleDatesLink />
-      </>
-    );
-  }
-  return helperTextComponent;
+  return null;
 };
 
 type OcmOpenShiftVersionSelectProps = {
