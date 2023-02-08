@@ -189,6 +189,7 @@ export const ProtocolTypeSelect = () => {
           id="select-ipv4"
           value="ipv4"
           isChecked={isIpv4Selected}
+          callFormikOnChange={false}
         />
         <OcmRadioField
           label={
@@ -205,6 +206,7 @@ export const ProtocolTypeSelect = () => {
           id="select-dual-stack"
           value="dualStack"
           isChecked={!isIpv4Selected}
+          callFormikOnChange={false}
         />
       </FormGroup>
 
