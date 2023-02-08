@@ -19,6 +19,7 @@ import {
   isClusterPlatformTypeVM,
 } from '../../selectors';
 import {
+  CpuArchitecture,
   HostDiscoveryValues,
   HostSubnets,
   OpenshiftVersionOptionType,
@@ -52,7 +53,7 @@ const getMultiVersionText = (
   if (!cpuArchitecture || openshiftVersion.includes('multi')) {
     return '';
   }
-  return cpuArchitecture === 'multi' ? ' (multi)' : '';
+  return cpuArchitecture === CpuArchitecture.MULTI ? ' (multi)' : '';
 };
 
 export const getOpenshiftVersionText = (params: VersionConfig) => {

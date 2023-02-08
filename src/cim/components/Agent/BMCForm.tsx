@@ -36,7 +36,7 @@ import {
   richNameValidationSchema,
   getRichTextValidation,
   RichInputField,
-  hostnameValidationMessages,
+  BMCValidationMessages,
   bmcAddressValidationSchema,
 } from '../../../common';
 import { Language } from '@patternfly/react-code-editor';
@@ -262,7 +262,7 @@ const BMCForm: React.FC<BMCFormProps> = ({
                 label={t('ai:Hostname')}
                 name="hostname"
                 placeholder={t('ai:Enter the hostname for the Host')}
-                richValidationMessages={hostnameValidationMessages(t)}
+                richValidationMessages={BMCValidationMessages(t)}
                 isRequired
               />
               <InputField

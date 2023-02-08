@@ -170,7 +170,7 @@ export const ProtocolTypeSelect = () => {
       <FormGroup
         fieldId={getFieldId(selectFieldName, 'radio')}
         isInline
-        label="Internet protocol version"
+        label="Networking stack type"
         isRequired
         onChange={onChange}
       >
@@ -210,7 +210,7 @@ export const ProtocolTypeSelect = () => {
 
       {openConfirmModal && (
         <ConfirmationModal
-          title={'Change internet protocol version type?'}
+          title={'Change networking stack type?'}
           titleIconVariant={'warning'}
           confirmationButtonText={'Change'}
           confirmationButtonVariant={ButtonVariant.primary}

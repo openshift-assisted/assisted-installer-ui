@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { ButtonVariant, FormGroup, Tooltip } from '@patternfly/react-core';
+import { ButtonVariant, FormGroup, Split, SplitItem, Tooltip } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 import { Address6 } from 'ip-address';
 
@@ -150,69 +150,78 @@ export const StackTypeControlGroup = ({
   }, [shouldSetSingleStack, setSingleStack]);
 
   return (
-    <Tooltip
-      content={'Dual-stack is only available when your hosts are using IPV4 together with IPV6.'}
-      hidden={isDualStackSelectable}
-      position={'top-start'}
-    >
-      <>
-        <FormGroup
-          label="Networking stack type"
-          fieldId={getFieldId('stackType', 'radio')}
-          isInline
-          onChange={setStackType}
-        >
-          <OcmRadioField
-            name={'stackType'}
-            value={IPV4_STACK}
-            isDisabled={!isDualStackSelectable}
-            label={
-              <>
-                {'IPv4'}{' '}
-                <PopoverIcon
-                  noVerticalAlign
-                  bodyContent="Select this when your hosts are using only IPv4."
-                />
-              </>
-            }
-          />
-          <OcmRadioField
-            name={'stackType'}
-            value={DUAL_STACK}
-            isDisabled={!isDualStackSelectable}
-            label={
-              <>
-                {'Dual-stack'}{' '}
-                <PopoverIcon
-                  noVerticalAlign
-                  bodyContent="Select dual-stack when your hosts are using IPV4 together with IPV6."
-                />
-              </>
-            }
-          />
-        </FormGroup>
-        {openConfirmModal && (
-          <ConfirmationModal
-            title={'Change stack type?'}
-            titleIconVariant={'warning'}
-            confirmationButtonText={'Change'}
-            confirmationButtonVariant={ButtonVariant.primary}
-            content={
-              <>
-                <p>All data and configuration done for 'Dual-stack' will be lost.</p>
-              </>
-            }
-            onClose={() => {
-              setConfirmModal(false);
-              setDualStack();
-            }}
-            onConfirm={() => {
-              setConfirmModal(false);
-              setSingleStack();
-            }}
-          />
-        )}
-      </>
-    </Tooltip>
+    <>
+      <FormGroup
+        label="Networking stack type"
+        fieldId={getFieldId('stackType', 'radio')}
+        onChange={setStackType}
+        isInline
+      >
+        <Split>
+          <SplitItem>
+            <Tooltip
+              content={
+                'Dual-stack is only available when your hosts are using IPV4 together with IPV6.'
+              }
+              hidden={isDualStackSelectable}
+            >
+              <OcmRadioField
+                name={'stackType'}
+                value={IPV4_STACK}
+                isDisabled={!isDualStackSelectable}
+                label="IPv4&nbsp;"
+              />
+            </Tooltip>
+          </SplitItem>
+          <SplitItem>
+            <PopoverIcon
+              bodyContent="Select this when your hosts are using only IPv4."
+              buttonStyle={{ top: '-4px' }}
+            />
+          </SplitItem>
+        </Split>
+        <Split>
+          <SplitItem>
+            <Tooltip
+              content={
+                'Dual-stack is only available when your hosts are using IPV4 together with IPV6.'
+              }
+              hidden={isDualStackSelectable}
+            >
+              <OcmRadioField
+                name={'stackType'}
+                value={DUAL_STACK}
+                isDisabled={!isDualStackSelectable}
+                label="Dual-stack&nbsp;"
+              />
+            </Tooltip>
+          </SplitItem>
+          <SplitItem>
+            <PopoverIcon
+              bodyContent="Select dual-stack when your hosts are using IPV4 together with IPV6."
+              buttonStyle={{ top: '-4px' }}
+            />
+          </SplitItem>
+        </Split>
+      </FormGroup>
+
+      {openConfirmModal && (
+        <ConfirmationModal
+          title={'Change stack type?'}
+          titleIconVariant={'warning'}
+          confirmationButtonText={'Change'}
+          confirmationButtonVariant={ButtonVariant.primary}
+          content={<p>All data and configuration done for 'Dual-stack' will be lost.</p>}
+          onClose={() => {
+            setConfirmModal(false);
+            setDualStack();
+          }}
+          onConfirm={() => {
+            setConfirmModal(false);
+            setSingleStack();
+          }}
+        />
+      )}
+    </>
   );
 };
