@@ -109,7 +109,7 @@ const SingleHost = <HostFieldType,>({
             {getHostName(hostIdx)}
           </ExpandableSectionToggle>
         </FlexItem>
-        {!isDisabled && hostIdx > 0 && (
+        {!isDisabled && enableRemoveHost && (
           <FlexItem align={{ default: 'alignRight' }}>
             <RemoveItemButton
               onRemove={onRemove}
@@ -247,7 +247,7 @@ const Hosts = <HostFieldType,>({
         </Flex>
       )}
 
-      {hostIdxToRemove && (
+      {hostIdxToRemove !== null && (
         <ConfirmationModal
           title={`Delete ${getHostName(hostIdxToRemove)}?`}
           titleIconVariant="warning"

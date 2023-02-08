@@ -11,9 +11,6 @@ import {
 import { OPENSHIFT_LIFE_CYCLE_DATES_LINK } from '../../config';
 import { OpenshiftVersionOptionType } from '../../types';
 import { SelectField } from '../ui';
-// eslint-disable-next-line no-restricted-imports
-import openshiftVersionData from '../../../ocm/data/openshiftVersionsData';
-import { diffInDaysBetweenDates } from '../../sevices/DateAndTime';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 const OpenShiftLifeCycleDatesLink = () => {
@@ -37,14 +34,13 @@ const getOpenshiftVersionHelperText =
         </>
       );
     }
-    let helperTextComponent = null;
     const selectedVersion = versions.find((version) => version.value === selectedVersionValue);
     if (!selectedVersionValue || !selectedVersion) {
       return null;
     }
 
     if (selectedVersion.supportLevel !== 'production') {
-      helperTextComponent = (
+      return (
         <>
           <ExclamationTriangleIcon color={warningColor.value} size="sm" />
           &nbsp;{t('ai:Please note that this version is not production-ready.')}&nbsp;
@@ -53,25 +49,7 @@ const getOpenshiftVersionHelperText =
       );
     }
 
-    const versionSupportEndDate = openshiftVersionData.versions[selectedVersionValue];
-    const showSupportEndWarning =
-      versionSupportEndDate && diffInDaysBetweenDates(versionSupportEndDate) <= 30;
-
-    if (showSupportEndWarning) {
-      helperTextComponent = (
-        <>
-          <ExclamationTriangleIcon color={warningColor.value} size="sm" />
-          &nbsp;
-          {t(
-            "ai:Full support for this version ends on {{openshiftversion}} and won't be available as an installation option afterwards.",
-            { openshiftversion: versionSupportEndDate },
-          )}
-          &nbsp;
-          <OpenShiftLifeCycleDatesLink />
-        </>
-      );
-    }
-    return helperTextComponent;
+    return null;
   };
 
 type OpenShiftVersionSelectProps = {

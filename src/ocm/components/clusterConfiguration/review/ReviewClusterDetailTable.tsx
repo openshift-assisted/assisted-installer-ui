@@ -1,6 +1,11 @@
 import React from 'react';
-import { IRow, Table, TableBody, TableVariant } from '@patternfly/react-table';
-import { Cluster, CpuArchitecture, useFeatureSupportLevel } from '../../../../common';
+import { Table, TableBody, TableVariant } from '@patternfly/react-table';
+import {
+  Cluster,
+  CpuArchitecture,
+  genericTableRowKey,
+  useFeatureSupportLevel,
+} from '../../../../common';
 import { getDiskEncryptionEnabledOnStatus } from '../../clusterDetail/ClusterProperties';
 import OpenShiftVersionDetail from '../../clusterDetail/OpenShiftVersionDetail';
 
@@ -11,8 +16,10 @@ export const ReviewClusterDetailTable = ({ cluster }: { cluster: Cluster }) => {
     const cpuArchitecture =
       activeFeatureConfiguration?.underlyingCpuArchitecture || CpuArchitecture.x86;
     const hasStaticIp = activeFeatureConfiguration?.hasStaticIpNetworking || false;
-    return [
+
+    const rows = [
       {
+        rowId: 'address',
         cells: [
           { title: 'Cluster address' },
           {
@@ -28,6 +35,7 @@ export const ReviewClusterDetailTable = ({ cluster }: { cluster: Cluster }) => {
         ],
       },
       {
+        rowId: 'version',
         cells: [
           { title: 'OpenShift version' },
           {
@@ -37,6 +45,7 @@ export const ReviewClusterDetailTable = ({ cluster }: { cluster: Cluster }) => {
         ],
       },
       {
+        rowId: 'cpuArchitecture',
         cells: [
           { title: 'CPU architecture' },
           {
@@ -46,6 +55,8 @@ export const ReviewClusterDetailTable = ({ cluster }: { cluster: Cluster }) => {
         ],
       },
       {
+        rowId: 'hostNetwork',
+
         cells: [
           { title: "Hosts' network configuration" },
           {
@@ -54,27 +65,33 @@ export const ReviewClusterDetailTable = ({ cluster }: { cluster: Cluster }) => {
           },
         ],
       },
-      cluster.diskEncryption?.enableOn !== 'none' && {
+    ];
+    const diskEncryptionTitle = getDiskEncryptionEnabledOnStatus(cluster.diskEncryption?.enableOn);
+    if (diskEncryptionTitle) {
+      rows.push({
+        rowId: 'diskEncryption',
         cells: [
           { title: 'Disk encryption' },
           {
-            title: getDiskEncryptionEnabledOnStatus(cluster.diskEncryption?.enableOn),
+            title: diskEncryptionTitle,
             props: { 'data-testid': 'disk-encryption' },
           },
         ],
-      },
-    ];
+      });
+    }
+    return rows;
   }, [cluster, activeFeatureConfiguration]);
 
   return (
     <Table
-      rows={rows as IRow[]}
+      rows={rows}
       cells={['', '']}
       variant={TableVariant.compact}
       borders={false}
+      aria-label={'Cluster details review table'}
       className="review-table"
     >
-      <TableBody />
+      <TableBody rowKey={genericTableRowKey} />
     </Table>
   );
 };

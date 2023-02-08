@@ -299,7 +299,6 @@
   "ai:For example: host-{{n}}": "For example: host-{{n}}",
   "ai:Forwarding it could put your credentials and personal data at risk.": "Forwarding it could put your credentials and personal data at risk.",
   "ai:Full image file: Provision with physical media": "Full image file: Provision with physical media",
-  "ai:Full support for this version ends on {{openshiftversion}} and won't be available as an installation option afterwards.": "Full support for this version ends on {{openshiftversion}} and won't be available as an installation option afterwards.",
   "ai:General configuration": "General configuration",
   "ai:Generate a Discovery ISO in order to add hosts to the cluster.": "Generate a Discovery ISO in order to add hosts to the cluster.",
   "ai:Generate Discovery ISO": "Generate Discovery ISO",
