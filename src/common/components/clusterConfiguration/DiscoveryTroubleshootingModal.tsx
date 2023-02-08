@@ -13,11 +13,7 @@ import { PrismCode } from '../ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { Trans } from 'react-i18next';
 import { saveAs } from 'file-saver';
-
-export const downloadIsoPasswordScript = () => {
-  const blob = new Blob(['text'], { type: 'text/plain;charset=utf-8' });
-  saveAs(blob, 'change-iso-password.sh');
-};
+import { CHANGE_ISO_PASSWORD_FILE_LINK } from '../../config/constants';
 
 export const DiscoveryTroubleshootingModalContent = () => {
   const { t } = useTranslation();
@@ -57,7 +53,7 @@ export const DiscoveryTroubleshootingModalContent = () => {
         {t('ai:Download the full image file and patch it locally with a login password using this')}{' '}
         <Button
           variant={ButtonVariant.link}
-          onClick={() => downloadIsoPasswordScript()}
+          onClick={() => saveAs(CHANGE_ISO_PASSWORD_FILE_LINK, 'change-iso-password.sh')}
           data-testid="download-change-password-script"
           isInline
         >
