@@ -4,6 +4,7 @@ import {
   AssistedInstallerOCMPermissionTypesListType,
   Cluster,
   CpuArchitecture,
+  getDefaultCpuArchitecture,
   InfraEnv,
 } from '../../../../common';
 import { Day2WizardStepsType, defaultWizardSteps, staticIpFormViewSubSteps } from './constants';
@@ -34,7 +35,7 @@ const Day2WizardContextProvider = ({
 }>) => {
   const [currentStepId, setCurrentStepId] = React.useState<Day2WizardStepsType>('cluster-details');
   const [selectedCpuArchitecture, setSelectedCpuArchitecture] = React.useState<CpuArchitecture>(
-    CpuArchitecture.x86,
+    getDefaultCpuArchitecture(),
   );
   const [selectedIsoUrl, setSelectedIsoUrl] = React.useState<string>('');
   const [selectedIpxeUrl, setSelectedIpxeUrl] = React.useState<string>('');

@@ -1,4 +1,4 @@
-import { Cluster, CpuArchitecture, InfraEnv, SupportedCpuArchitectures } from '../../common';
+import { Cluster, CpuArchitecture, InfraEnv, getSupportedCpuArchitectures } from '../../common';
 
 const CACHE_KEY = 'infra-env-ids-cache-v2';
 
@@ -56,7 +56,7 @@ const InfraEnvIdsCacheService: InfraEnvStorage = {
       return clusterInfraEnvs[cpuArchitecture] || null;
     }
 
-    const architectures = SupportedCpuArchitectures.filter((arch) => {
+    const architectures = getSupportedCpuArchitectures().filter((arch) => {
       return clusterInfraEnvs[arch];
     });
 

@@ -9,7 +9,7 @@ import {
   global_danger_color_100 as dangerColor,
 } from '@patternfly/react-tokens';
 import { TFunction } from 'i18next';
-import { OpenShiftVersionDropdown } from '../../../common/components/ui/OpenShiftVersionDropown';
+import { OpenShiftVersionDropdown } from '../../../common/components/ui/OpenShiftVersionDropdown';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { OPENSHIFT_LIFE_CYCLE_DATES_LINK, OpenshiftVersionOptionType } from '../../../common';
 import { ocmClient } from '../../api';

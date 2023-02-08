@@ -6,6 +6,7 @@ import {
   DetailItem,
   DetailList,
   DiskEncryption,
+  getDefaultCpuArchitecture,
   isDualStack,
   NETWORK_TYPE_SDN,
   PopoverIcon,
@@ -86,7 +87,7 @@ const ClusterProperties = ({ cluster, externalMode = false }: ClusterPropertiesP
 
   const activeFeatureConfiguration = featureSupportLevelContext.activeFeatureConfiguration;
   const underlyingCpuArchitecture =
-    activeFeatureConfiguration?.underlyingCpuArchitecture || CpuArchitecture.x86;
+    activeFeatureConfiguration?.underlyingCpuArchitecture || getDefaultCpuArchitecture();
   const hasMultiCpuArchitecture = cluster.cpuArchitecture === CpuArchitecture.MULTI;
 
   const isMultiArchSupported = Boolean(

@@ -11,6 +11,7 @@ import {
   FeatureSupportLevelData,
   FeatureSupportLevels,
   FeatureSupportLevelsMap,
+  getDefaultCpuArchitecture,
   SupportLevel,
 } from '../../../common';
 import { handleApiError } from '../../api';
@@ -109,7 +110,7 @@ export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = 
     () => ({
       underlyingCpuArchitecture: (infraEnv?.cpuArchitecture ||
         cluster?.cpuArchitecture ||
-        CpuArchitecture.x86) as CpuArchitecture,
+        getDefaultCpuArchitecture()) as CpuArchitecture,
       hasStaticIpNetworking: !!infraEnv?.staticNetworkConfig,
     }),
     [cluster?.cpuArchitecture, infraEnv?.cpuArchitecture, infraEnv?.staticNetworkConfig],

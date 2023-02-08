@@ -1,5 +1,6 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
+import { TFunction } from 'i18next';
 import { useSelector } from 'react-redux';
 import { Alert, AlertVariant, Grid, Tooltip } from '@patternfly/react-core';
 import { VirtualIPControlGroup, VirtualIPControlGroupProps } from './VirtualIPControlGroup';
@@ -12,6 +13,7 @@ import {
   CpuArchitecture,
   DUAL_STACK,
   FeatureSupportLevelData,
+  getDefaultCpuArchitecture,
   HostSubnets,
   isSNO,
   NetworkConfigurationValues,
@@ -31,7 +33,6 @@ import { selectCurrentClusterPermissionsState } from '../../../selectors';
 import { OcmCheckbox } from '../../ui/OcmFormFields';
 import { NetworkTypeControlGroup } from '../../../../common/components/clusterWizard/networkingSteps/NetworkTypeControlGroup';
 import { useClusterSupportedPlatforms } from '../../../hooks';
-import { TFunction } from 'i18next';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   hostSubnets: HostSubnets;
@@ -154,7 +155,7 @@ const NetworkConfiguration = ({
       ),
       underlyingCpuArchitecture:
         featureSupportLevelData.activeFeatureConfiguration?.underlyingCpuArchitecture ||
-        CpuArchitecture.x86,
+        getDefaultCpuArchitecture(),
     };
   }, [cluster, featureSupportLevelData, t]);
   const isSNOCluster = isSNO(cluster);

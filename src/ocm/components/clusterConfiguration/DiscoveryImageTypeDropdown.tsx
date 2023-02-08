@@ -27,7 +27,7 @@ export const DiscoveryImageTypeDropdown = ({
   defaultValue,
   onChange,
 }: DiscoveryImageTypeDropdownProps) => {
-  const [field, { value }, { setValue }] = useField(name);
+  const [field, { value }, { setValue }] = useField<DiscoveryImageType>(name);
   const [isOpen, setOpen] = React.useState(false);
   const [current, setCurrent] = React.useState(defaultValue);
   const fieldId = getFieldId(name, 'input');
