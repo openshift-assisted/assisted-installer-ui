@@ -180,7 +180,7 @@ export const ProtocolTypeSelect = () => {
   return (
     <>
       <OcmSelectField
-        label="Internet protocol version"
+        label="Networking stack type"
         options={protocolVersionOptions}
         name={selectFieldName}
         callFormikOnChange={false}
@@ -189,7 +189,7 @@ export const ProtocolTypeSelect = () => {
       />
       {openConfirmModal && (
         <ConfirmationModal
-          title={'Change internet protocol version type?'}
+          title={'Change networking stack type?'}
           titleIconVariant={'warning'}
           confirmationButtonText={'Change'}
           confirmationButtonVariant={ButtonVariant.primary}
