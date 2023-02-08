@@ -2,7 +2,6 @@ import React from 'react';
 import {
   Text,
   TextVariants,
-  FormSelectOptionProps,
   Grid,
   FormGroup,
   TextInputTypes,
@@ -43,7 +42,7 @@ import {
   MAX_VLAN_ID,
   MIN_VLAN_ID,
 } from './formViewNetworkWideValidationSchema';
-import { OcmCheckboxField, OcmInputField, OcmSelectField } from '../../../../ui/OcmFormFields';
+import { OcmCheckboxField, OcmInputField, OcmRadioField } from '../../../../ui/OcmFormFields';
 
 import '../staticIp.css';
 
@@ -139,17 +138,6 @@ const IpConfigFields: React.FC<{
   );
 };
 
-const protocolVersionOptions: FormSelectOptionProps[] = [
-  {
-    label: getProtocolVersionLabel(ProtocolVersion.ipv4),
-    value: 'ipv4',
-  },
-  {
-    label: 'Dual Stack',
-    value: 'dualStack',
-  },
-];
-
 const ipv6ValuesEmpty = (values: FormViewNetworkWideValues) =>
   values.ipConfigs.ipv6.gateway === '' &&
   values.ipConfigs.ipv6.machineNetwork.ip === '' &&
@@ -163,8 +151,8 @@ export const ProtocolTypeSelect = () => {
   const [openConfirmModal, setConfirmModal] = React.useState(false);
   const { values } = useFormikContext<FormViewNetworkWideValues>();
 
-  const onChange = (e: React.FormEvent<HTMLSelectElement>) => {
-    const newProtocolType = e.currentTarget.value as types.StaticProtocolType;
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newProtocolType = e.target.value as types.StaticProtocolType;
     if (newProtocolType === protocolType) {
       return;
     }
@@ -176,17 +164,52 @@ export const ProtocolTypeSelect = () => {
       setProtocolType(newProtocolType);
     }
   };
-
+  const isIpv4Selected = protocolType === 'ipv4';
   return (
     <>
-      <OcmSelectField
+      <FormGroup
+        fieldId={getFieldId(selectFieldName, 'radio')}
+        isInline
         label="Networking stack type"
-        options={protocolVersionOptions}
-        name={selectFieldName}
-        callFormikOnChange={false}
+        isRequired
         onChange={onChange}
-        data-testid="select-protocol-version"
-      />
+      >
+        <OcmRadioField
+          label={
+            <>
+              {getProtocolVersionLabel(ProtocolVersion.ipv4)}{' '}
+              <PopoverIcon
+                noVerticalAlign
+                bodyContent="Select this when your hosts are using only IPv4."
+              />
+            </>
+          }
+          name={selectFieldName}
+          data-testid="select-ipv4"
+          id="select-ipv4"
+          value="ipv4"
+          isChecked={isIpv4Selected}
+          callFormikOnChange={false}
+        />
+        <OcmRadioField
+          label={
+            <>
+              {'Dual-stack'}{' '}
+              <PopoverIcon
+                noVerticalAlign
+                bodyContent="Select dual-stack when your hosts are using IPV4 together with IPV6."
+              />
+            </>
+          }
+          name={selectFieldName}
+          data-testid="select-dual-stack"
+          id="select-dual-stack"
+          value="dualStack"
+          isChecked={!isIpv4Selected}
+          callFormikOnChange={false}
+        />
+      </FormGroup>
+
       {openConfirmModal && (
         <ConfirmationModal
           title={'Change networking stack type?'}
