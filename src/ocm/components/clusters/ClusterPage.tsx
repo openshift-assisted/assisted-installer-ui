@@ -134,10 +134,10 @@ const ClusterPage: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
     return (
       <PageSection variant={PageSectionVariants.light} isFilled>
         <ErrorState
-          title="Cluster not found"
+          title="Cluster details not found"
           actions={[<BackButton key={'cancel'} to={`${routeBasePath}/clusters`} />]}
           content={
-            'Check to make sure the cluster-ID is valid. Otherwise, the cluster may have been deleted.'
+            'Check to make sure the cluster-ID is valid. Otherwise, the cluster details may have been deleted.'
           }
         />
       </PageSection>

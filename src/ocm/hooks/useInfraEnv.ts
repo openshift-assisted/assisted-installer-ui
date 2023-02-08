@@ -3,6 +3,7 @@ import { useInfraEnvId } from '.';
 import { Cluster, CpuArchitecture, InfraEnv, InfraEnvUpdateParams } from '../../common';
 import { getErrorMessage } from '../../common/utils';
 import { InfraEnvsAPI } from '../services/apis';
+import InfraEnvIdsCacheService from '../services/InfraEnvIdsCacheService';
 
 export default function useInfraEnv(
   clusterId: Cluster['id'],
@@ -24,9 +25,11 @@ export default function useInfraEnv(
         setInfraEnv(infraEnv);
       }
     } catch (e) {
+      // Invalidate this cluster's cached data
+      InfraEnvIdsCacheService.removeInfraEnvId(clusterId, CpuArchitecture.USE_DAY1_ARCHITECTURE);
       setError(getErrorMessage(e));
     }
-  }, [infraEnvId]);
+  }, [clusterId, infraEnvId]);
 
   const updateInfraEnv = React.useCallback(
     async (infraEnvUpdateParams: InfraEnvUpdateParams) => {
