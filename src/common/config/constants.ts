@@ -319,3 +319,6 @@ export const AI_UI_TAG = 'ui_ocm';
 export const OCP_RELEASES_PAGE = 'openshift/releases';
 
 export const NUTANIX_CONFIG_LINK = 'https://access.redhat.com/solutions/6983944';
+
+export const CHANGE_ISO_PASSWORD_FILE_LINK =
+  'https://raw.githubusercontent.com/openshift/assisted-service/master/docs/change-iso-password.sh';
