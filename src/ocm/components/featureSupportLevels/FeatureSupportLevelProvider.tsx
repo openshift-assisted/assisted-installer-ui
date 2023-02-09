@@ -2,22 +2,24 @@ import useSWR from 'swr';
 import React, { PropsWithChildren } from 'react';
 import * as Sentry from '@sentry/browser';
 import {
-  FeatureSupportLevelsMap,
-  FeatureIdToSupportLevel,
-  FeatureId,
-  SupportLevel,
-  FeatureSupportLevels,
+  ActiveFeatureConfiguration,
   Cluster,
-} from '../../../common';
-import {
+  CpuArchitecture,
+  FeatureId,
+  FeatureIdToSupportLevel,
   FeatureSupportLevelContextProvider,
   FeatureSupportLevelData,
-} from '../../../common/components/featureSupportLevels';
+  FeatureSupportLevels,
+  FeatureSupportLevelsMap,
+  getDefaultCpuArchitecture,
+  SupportLevel,
+} from '../../../common';
 import { handleApiError } from '../../api';
 import { FeatureSupportLevelsAPI } from '../../services/apis';
 import { captureException } from '../../sentry';
 import { useOpenshiftVersions } from '../../hooks';
 import { getFeatureDisabledReason, isFeatureSupported } from './featureStateUtils';
+import useInfraEnv from '../../hooks/useInfraEnv';
 
 export type SupportLevelProviderProps = PropsWithChildren<{
   clusterFeatureUsage?: string;
@@ -85,20 +87,34 @@ export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = 
   loadingUi,
 }) => {
   const { loading: loadingOCPVersions, versions: versionOptions } = useOpenshiftVersions();
+  const { infraEnv, isLoading: isInfraEnvLoading } = useInfraEnv(
+    cluster?.id || '',
+    CpuArchitecture.USE_DAY1_ARCHITECTURE,
+  );
   const fetcher = () => FeatureSupportLevelsAPI.list().then((res) => res.data);
   const { data: featureSupportLevels, error } = useSWR<FeatureSupportLevels, unknown>(
     FeatureSupportLevelsAPI.makeBaseURI(),
     fetcher,
     { errorRetryCount: 0, revalidateOnFocus: false },
   );
-  const isLoading = (!featureSupportLevels && !error) || loadingOCPVersions;
+  const isLoading = (!featureSupportLevels && !error) || loadingOCPVersions || isInfraEnvLoading;
 
-  const supportLevelData: FeatureSupportLevelsMap = React.useMemo<FeatureSupportLevelsMap>(() => {
+  const supportLevelData = React.useMemo<FeatureSupportLevelsMap>(() => {
     if (!featureSupportLevels || error) {
       return {};
     }
     return getFeatureSupportLevelsMap(featureSupportLevels);
   }, [error, featureSupportLevels]);
+
+  const activeFeatureConfiguration = React.useMemo<ActiveFeatureConfiguration>(
+    () => ({
+      underlyingCpuArchitecture: (infraEnv?.cpuArchitecture ||
+        cluster?.cpuArchitecture ||
+        getDefaultCpuArchitecture()) as CpuArchitecture,
+      hasStaticIpNetworking: !!infraEnv?.staticNetworkConfig,
+    }),
+    [cluster?.cpuArchitecture, infraEnv?.cpuArchitecture, infraEnv?.staticNetworkConfig],
+  );
 
   const getVersionSupportLevelsMapCallback = React.useCallback(
     (versionName: string): FeatureIdToSupportLevel | undefined => {
@@ -128,9 +144,16 @@ export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = 
   const getDisabledReasonCallback = React.useCallback(
     (versionName: string, featureId: FeatureId) => {
       const isSupported = isFeatureSupportedCallback(versionName, featureId);
-      return getFeatureDisabledReason(featureId, cluster, versionName, versionOptions, isSupported);
+      return getFeatureDisabledReason(
+        featureId,
+        cluster,
+        activeFeatureConfiguration,
+        versionName,
+        versionOptions,
+        isSupported,
+      );
     },
-    [isFeatureSupportedCallback, versionOptions, cluster],
+    [isFeatureSupportedCallback, versionOptions, cluster, activeFeatureConfiguration],
   );
 
   const isFeatureDisabled = React.useCallback(
@@ -145,6 +168,7 @@ export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = 
       isFeatureDisabled: isFeatureDisabled,
       getFeatureDisabledReason: getDisabledReasonCallback,
       isFeatureSupported: isFeatureSupportedCallback,
+      activeFeatureConfiguration,
     };
   }, [
     getVersionSupportLevelsMapCallback,
@@ -152,6 +176,7 @@ export const FeatureSupportLevelProvider: React.FC<SupportLevelProviderProps> = 
     isFeatureDisabled,
     getDisabledReasonCallback,
     isFeatureSupportedCallback,
+    activeFeatureConfiguration,
   ]);
 
   React.useEffect(() => {

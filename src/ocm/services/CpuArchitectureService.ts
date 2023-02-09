@@ -1,12 +1,18 @@
-import { Cluster, CpuArchitecture, OcmCpuArchitecture } from '../../common';
+import {
+  Cluster,
+  CpuArchitecture,
+  OcmCpuArchitecture,
+  getDefaultCpuArchitecture,
+} from '../../common';
 
 const mapOcmArchToCpuArchitecture = (ocmArch: OcmCpuArchitecture | string): CpuArchitecture => {
   switch (ocmArch) {
     case OcmCpuArchitecture.x86:
-    case OcmCpuArchitecture.MULTI:
       return CpuArchitecture.x86;
     case OcmCpuArchitecture.ARM:
       return CpuArchitecture.ARM;
+    case OcmCpuArchitecture.MULTI:
+      return getDefaultCpuArchitecture();
     default:
       throw new Error(`Unknown OCM CPU architecture: ${ocmArch}`);
   }
@@ -30,14 +36,19 @@ const mapClusterCpuArchToInfraEnvCpuArch = (
     case OcmCpuArchitecture.ARM:
       return CpuArchitecture.ARM;
 
-    case CpuArchitecture.DAY1_CLUSTER_USES_MULTI:
-    case OcmCpuArchitecture.MULTI:
     case CpuArchitecture.x86:
     case OcmCpuArchitecture.x86:
-    default:
-      // For multi, set default selection to x86, although they can choose the other architectures too
       return CpuArchitecture.x86;
+    case CpuArchitecture.MULTI:
+    case OcmCpuArchitecture.MULTI:
+    default:
+      // For multi, use default selection, although they can choose the other architectures too
+      return getDefaultCpuArchitecture();
   }
 };
 
-export { mapOcmArchToCpuArchitecture, mapClusterCpuArchToInfraEnvCpuArch };
+export {
+  mapOcmArchToCpuArchitecture,
+  mapClusterCpuArchToInfraEnvCpuArch,
+  getDefaultCpuArchitecture,
+};

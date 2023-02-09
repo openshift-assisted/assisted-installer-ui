@@ -12,6 +12,7 @@ type PopoverIconProps = PopoverProps & {
   noVerticalAlign?: boolean;
   buttonClassName?: string;
   buttonOuiaId?: string;
+  buttonStyle?: React.CSSProperties;
 };
 
 const PopoverIcon: React.FC<PopoverIconProps> = ({
@@ -21,6 +22,7 @@ const PopoverIcon: React.FC<PopoverIconProps> = ({
   noVerticalAlign = false,
   buttonClassName,
   buttonOuiaId,
+  buttonStyle,
   ...props
 }) => (
   <Popover {...props}>
@@ -30,6 +32,7 @@ const PopoverIcon: React.FC<PopoverIconProps> = ({
       onClick={(e) => e.preventDefault()}
       className={classNames('pf-c-form__group-label-help', 'pf-u-p-0', buttonClassName)}
       ouiaId={buttonOuiaId}
+      style={buttonStyle}
     >
       <IconComponent noVerticalAlign={noVerticalAlign} />
     </Button>

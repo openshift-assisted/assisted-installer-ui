@@ -93,7 +93,7 @@ export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
     (version: OpenShiftVersion) => {
       // TODO (multi-arch) confirm this is correctly retrieving the associated version
       const matchingVersion = findVersionItemByVersion(version);
-      return matchingVersion?.cpuArchitectures ?? [];
+      return (matchingVersion?.cpuArchitectures ?? []) as CpuArchitecture[];
     },
     [findVersionItemByVersion],
   );

@@ -53,7 +53,7 @@ const CnvCheckbox = ({ clusterId, openshiftVersion }: ClusterOperatorProps) => {
       reason = featureSupportLevel.getFeatureDisabledReason(openshiftVersion, 'CNV');
       if (!reason) {
         const lvmSupport = featureSupportLevel.getFeatureSupportLevel(openshiftVersion, 'LVM');
-        reason = getCnvIncompatibleWithLvmReason(values, openshiftVersion, lvmSupport);
+        reason = getCnvIncompatibleWithLvmReason(values, lvmSupport);
       }
     }
     setDisabledReason(reason);

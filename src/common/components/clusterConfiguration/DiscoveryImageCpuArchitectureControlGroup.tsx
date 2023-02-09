@@ -2,11 +2,13 @@ import React from 'react';
 import { FormGroup, Flex, FlexItem, TextContent, Text, TextVariants } from '@patternfly/react-core';
 import { DetailItem, DetailList, getFieldId, RadioField } from '../ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
-import { CpuArchitecture, SupportedCpuArchitectures } from '../../types';
+import { CpuArchitecture, getSupportedCpuArchitectures } from '../../types';
 import { FeatureSupportLevelBadge } from '../featureSupportLevels';
 import { Cluster } from '../../api';
 
 const GROUP_NAME = 'cpuArchitecture';
+
+const supportedCpuArchitectures = getSupportedCpuArchitectures();
 
 const DiscoverImageCpuArchitectureControlGroup = ({
   canSelectCpuArchitecture,
@@ -48,7 +50,7 @@ const DiscoverImageCpuArchitectureControlGroup = ({
       }
     >
       <Flex>
-        {SupportedCpuArchitectures.map((cpuArch) => {
+        {supportedCpuArchitectures.map((cpuArch) => {
           return (
             <FlexItem key={cpuArch}>
               <RadioField

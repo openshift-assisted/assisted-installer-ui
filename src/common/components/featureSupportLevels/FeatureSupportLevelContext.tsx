@@ -1,7 +1,13 @@
 import React from 'react';
-import { FeatureId, FeatureIdToSupportLevel, SupportLevel } from '../../types';
-import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
+
+import { CpuArchitecture, FeatureId, FeatureIdToSupportLevel, SupportLevel } from '../../types';
+import { useTranslation } from '../../hooks/use-translation-wrapper';
+
+export type ActiveFeatureConfiguration = {
+  underlyingCpuArchitecture: CpuArchitecture;
+  hasStaticIpNetworking: boolean;
+};
 
 export type FeatureSupportLevelData = {
   getVersionSupportLevelsMap(version: string): FeatureIdToSupportLevel | undefined;
@@ -13,6 +19,7 @@ export type FeatureSupportLevelData = {
     t?: TFunction,
   ): string | undefined;
   isFeatureSupported(version: string, featureId: FeatureId): boolean;
+  activeFeatureConfiguration?: ActiveFeatureConfiguration;
 };
 
 const FeatureSupportLevelContext = React.createContext<FeatureSupportLevelData | null>(null);

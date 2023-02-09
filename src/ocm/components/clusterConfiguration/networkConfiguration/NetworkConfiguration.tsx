@@ -1,22 +1,24 @@
 import React from 'react';
 import { useFormikContext } from 'formik';
+import { TFunction } from 'i18next';
 import { useSelector } from 'react-redux';
 import { Alert, AlertVariant, Grid, Tooltip } from '@patternfly/react-core';
 import { VirtualIPControlGroup, VirtualIPControlGroupProps } from './VirtualIPControlGroup';
 import {
-  CpuArchitecture,
-  HostSubnets,
-  NetworkConfigurationValues,
-  Cluster,
-  ClusterDefaultConfig,
-  FeatureSupportLevelData,
-  useFeatureSupportLevel,
-  isSNO,
   canBeDualStack,
   canSelectNetworkTypeSDN,
+  Cluster,
+  ClusterDefaultConfig,
   clusterNetworksEqual,
+  CpuArchitecture,
   DUAL_STACK,
+  FeatureSupportLevelData,
+  getDefaultCpuArchitecture,
+  HostSubnets,
+  isSNO,
+  NetworkConfigurationValues,
   serviceNetworksEqual,
+  useFeatureSupportLevel,
 } from '../../../../common';
 import { getLimitedFeatureSupportLevels } from '../../../../common/components/featureSupportLevels/utils';
 import {
@@ -31,7 +33,6 @@ import { selectCurrentClusterPermissionsState } from '../../../selectors';
 import { OcmCheckbox } from '../../ui/OcmFormFields';
 import { NetworkTypeControlGroup } from '../../../../common/components/clusterWizard/networkingSteps/NetworkTypeControlGroup';
 import { useClusterSupportedPlatforms } from '../../../hooks';
-import { TFunction } from 'i18next';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   hostSubnets: HostSubnets;
@@ -75,7 +76,7 @@ const isAdvNetworkConf = (
 const isManagedNetworkingDisabled = (
   isDualStack: boolean,
   openshiftVersion: Cluster['openshiftVersion'],
-  cpuArchitecture: Cluster['cpuArchitecture'],
+  cpuArchitecture: CpuArchitecture,
   featureSupportLevelData: FeatureSupportLevelData,
 ) => {
   if (isDualStack) {
@@ -145,8 +146,17 @@ const NetworkConfiguration = ({
   const featureSupportLevelData = useFeatureSupportLevel();
   const { setFieldValue, values, validateField } = useFormikContext<NetworkConfigurationValues>();
 
-  const clusterFeatureSupportLevels = React.useMemo(() => {
-    return getLimitedFeatureSupportLevels(cluster, featureSupportLevelData, t);
+  const { clusterFeatureSupportLevels, underlyingCpuArchitecture } = React.useMemo(() => {
+    return {
+      clusterFeatureSupportLevels: getLimitedFeatureSupportLevels(
+        cluster,
+        featureSupportLevelData,
+        t,
+      ),
+      underlyingCpuArchitecture:
+        featureSupportLevelData.activeFeatureConfiguration?.underlyingCpuArchitecture ||
+        getDefaultCpuArchitecture(),
+    };
   }, [cluster, featureSupportLevelData, t]);
   const isSNOCluster = isSNO(cluster);
   const isMultiNodeCluster = !isSNOCluster;
@@ -227,10 +237,10 @@ const NetworkConfiguration = ({
       isManagedNetworkingDisabled(
         isDualStack,
         cluster.openshiftVersion,
-        cluster.cpuArchitecture,
+        underlyingCpuArchitecture,
         featureSupportLevelData,
       ),
-    [cluster.cpuArchitecture, cluster.openshiftVersion, featureSupportLevelData, isDualStack],
+    [underlyingCpuArchitecture, cluster.openshiftVersion, featureSupportLevelData, isDualStack],
   );
 
   const { isUserManagementDisabled, userManagementDisabledReason } = React.useMemo(

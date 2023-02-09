@@ -1,8 +1,8 @@
 import {
+  ActiveFeatureConfiguration,
   Cluster,
   CpuArchitecture,
   FeatureId,
-  isArmArchitecture,
   isSNO,
   OpenshiftVersionOptionType,
   OperatorsValues,
@@ -10,7 +10,8 @@ import {
 } from '../../../common';
 
 const CNV_OPERATOR_LABEL = 'Openshift Virtualization';
-const LVM_OPERATOR_LABEL = 'Logical Volume Manager Storage';
+const LVMS_OPERATOR_LABEL = 'Logical Volume Manager Storage';
+const LVM_OPERATOR_LABEL = 'Logical Volume Manager';
 const ODF_OPERATOR_LABEL = 'OpenShift Data Foundation';
 
 const isArmSupported = (versionName: string, versionOptions: OpenshiftVersionOptionType[]) => {
@@ -21,14 +22,13 @@ export const clusterExistsReason = 'This option is not editable after the draft 
 
 export const getCnvIncompatibleWithLvmReason = (
   operatorValues: OperatorsValues,
-  versionName: string | undefined,
   lvmSupport: SupportLevel | undefined,
 ) => {
   const mustDisableCnv =
     !operatorValues.useContainerNativeVirtualization &&
     operatorValues.useOdfLogicalVolumeManager &&
     lvmSupport !== 'supported';
-  // In versions with none or limited support for LVM (< 4.12), it's no possible to select CNV + LVM
+  // In versions with none or limited support for LVM (< 4.12), it's not possible to select CNV + LVM
   return mustDisableCnv
     ? `Currently, you can not install ${CNV_OPERATOR_LABEL} operator at the same time as ${LVM_OPERATOR_LABEL} operator.`
     : undefined;
@@ -36,13 +36,15 @@ export const getCnvIncompatibleWithLvmReason = (
 
 export const getLvmIncompatibleWithCnvReason = (
   operatorValues: OperatorsValues,
-  versionName: string | undefined,
   lvmSupport: SupportLevel | undefined,
 ) => {
   const hasSelectedCnv = operatorValues.useContainerNativeVirtualization;
-  if (hasSelectedCnv && operatorValues.useOdfLogicalVolumeManager) {
-    return `${LVM_OPERATOR_LABEL} must be installed when ${CNV_OPERATOR_LABEL} operator is also installed`;
+  const hasSelectedLVMS = operatorValues.useOdfLogicalVolumeManager;
+  // In versions which support for LVMS (4.12+), LVMS needs to be installed together with CNV
+  if (hasSelectedCnv && hasSelectedLVMS) {
+    return `${LVMS_OPERATOR_LABEL} must be installed when ${CNV_OPERATOR_LABEL} operator is also installed`;
   }
+  // In versions with none or limited support for LVM (< 4.12), it's not possible to select CNV + LVM
   if (hasSelectedCnv && lvmSupport !== 'supported') {
     return `Currently, you can not install ${LVM_OPERATOR_LABEL} operator at the same time as ${CNV_OPERATOR_LABEL} operator.`;
   }
@@ -73,14 +75,20 @@ const getArmDisabledReason = (
   return undefined;
 };
 
-const getOdfDisabledReason = (cluster: Cluster | undefined, isSupported: boolean) => {
+const getOdfDisabledReason = (
+  cluster: Cluster | undefined,
+  activeFeatureConfiguration: ActiveFeatureConfiguration | undefined,
+  isSupported: boolean,
+) => {
   if (!cluster) {
     return undefined;
   }
-  if (isArmArchitecture(cluster) && isSNO(cluster)) {
+
+  const isArm = activeFeatureConfiguration?.underlyingCpuArchitecture === CpuArchitecture.ARM;
+  if (isArm && isSNO(cluster)) {
     return `${ODF_OPERATOR_LABEL} is not available when using Single Node OpenShift or ARM CPU architecture.`;
   }
-  if (isArmArchitecture(cluster)) {
+  if (isArm) {
     return `${ODF_OPERATOR_LABEL} is not available when ARM CPU architecture is selected.`;
   }
   if (isSNO(cluster)) {
@@ -92,21 +100,11 @@ const getOdfDisabledReason = (cluster: Cluster | undefined, isSupported: boolean
   return undefined;
 };
 
-const getLvmDisabledReason = (cluster: Cluster | undefined, isSupported: boolean) => {
-  if (!cluster) {
+const getCnvDisabledReason = (activeFeatureConfiguration: ActiveFeatureConfiguration) => {
+  if (!activeFeatureConfiguration) {
     return undefined;
   }
-  if (!isSupported) {
-    return `${LVM_OPERATOR_LABEL} is enabled only for OpenShift 4.11 and above.`;
-  }
-  return undefined;
-};
-
-const getCnvDisabledReason = (cluster: Cluster | undefined) => {
-  if (!cluster) {
-    return undefined;
-  }
-  if (isArmArchitecture(cluster)) {
+  if (activeFeatureConfiguration.underlyingCpuArchitecture === CpuArchitecture.ARM) {
     return `${CNV_OPERATOR_LABEL} is not available when ARM CPU architecture is selected.`;
   }
   return undefined;
@@ -125,6 +123,7 @@ const getNetworkTypeSelectionDisabledReason = (cluster: Cluster | undefined) => 
 export const getFeatureDisabledReason = (
   featureId: FeatureId,
   cluster: Cluster | undefined,
+  activeFeatureConfiguration: ActiveFeatureConfiguration,
   versionName: string,
   versionOptions: OpenshiftVersionOptionType[],
   isSupported: boolean,
@@ -137,13 +136,10 @@ export const getFeatureDisabledReason = (
       return getArmDisabledReason(cluster, versionName, versionOptions);
     }
     case 'CNV': {
-      return getCnvDisabledReason(cluster);
+      return getCnvDisabledReason(activeFeatureConfiguration);
     }
     case 'ODF': {
-      return getOdfDisabledReason(cluster, isSupported);
-    }
-    case 'LVM': {
-      return getLvmDisabledReason(cluster, isSupported);
+      return getOdfDisabledReason(cluster, activeFeatureConfiguration, isSupported);
     }
     case 'NETWORK_TYPE_SELECTION': {
       return getNetworkTypeSelectionDisabledReason(cluster);

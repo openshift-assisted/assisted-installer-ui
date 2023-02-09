@@ -1,6 +1,7 @@
 import * as Yup from 'yup';
+import { TFunction } from 'i18next';
 import { Cluster, ManagedDomain } from '../../api';
-import { CpuArchitecture, OpenshiftVersionOptionType } from '../../types';
+import { getDefaultCpuArchitecture, OpenshiftVersionOptionType } from '../../types';
 import { TangServer } from '../clusterConfiguration/DiskEncryptionFields/DiskEncryptionValues';
 import { FeatureSupportLevelData } from '../featureSupportLevels';
 import {
@@ -10,7 +11,6 @@ import {
   pullSecretValidationSchema,
 } from '../ui';
 import { ClusterDetailsValues } from './types';
-import { TFunction } from 'i18next';
 
 const emptyTangServers = (): TangServer[] => {
   return [
@@ -26,14 +26,12 @@ export const parseTangServers = (tangServersString?: string): TangServer[] => {
     return emptyTangServers();
   }
 
-  let parsedTangServers = emptyTangServers();
   try {
-    parsedTangServers = JSON.parse(tangServersString);
+    return JSON.parse(tangServersString) as TangServer[];
   } catch (e) {
     console.warn('Tang Servers can not be parsed');
   }
-
-  return parsedTangServers;
+  return emptyTangServers();
 };
 
 export const getClusterDetailsInitialValues = ({
@@ -74,7 +72,7 @@ export const getClusterDetailsInitialValues = ({
     diskEncryptionMode: cluster?.diskEncryption?.mode ?? 'tpmv2',
     diskEncryptionTangServers: parseTangServers(cluster?.diskEncryption?.tangServers),
     diskEncryption: cluster?.diskEncryption ?? {},
-    cpuArchitecture: cluster?.cpuArchitecture || CpuArchitecture.x86,
+    cpuArchitecture: cluster?.cpuArchitecture || getDefaultCpuArchitecture(),
   };
 };
 

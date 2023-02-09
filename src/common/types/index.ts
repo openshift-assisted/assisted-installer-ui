@@ -14,6 +14,7 @@ export type WithTestID = {
 export * from './versions';
 export * from './events';
 export * from './clusters';
+export * from './cpuArchitecture';
 export * from './featureSupportLevel';
 export * from './typescriptExtensions';
 export * from './generateIsoFields';

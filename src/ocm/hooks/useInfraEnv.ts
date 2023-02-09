@@ -3,8 +3,17 @@ import { useInfraEnvId } from '.';
 import { Cluster, CpuArchitecture, InfraEnv, InfraEnvUpdateParams } from '../../common';
 import { getErrorMessage } from '../../common/utils';
 import { InfraEnvsAPI } from '../services/apis';
+import InfraEnvIdsCacheService from '../services/InfraEnvIdsCacheService';
 
-export default function useInfraEnv(clusterId: Cluster['id'], cpuArchitecture: CpuArchitecture) {
+export default function useInfraEnv(
+  clusterId: Cluster['id'],
+  cpuArchitecture: CpuArchitecture,
+): {
+  infraEnv?: InfraEnv;
+  error?: string;
+  isLoading: boolean;
+  updateInfraEnv: (infraEnvUpdateParams: InfraEnvUpdateParams) => Promise<InfraEnv>;
+} {
   const [infraEnv, setInfraEnv] = React.useState<InfraEnv>();
   const [error, setError] = React.useState('');
   const { infraEnvId, error: infraEnvIdError } = useInfraEnvId(clusterId, cpuArchitecture);
@@ -16,9 +25,11 @@ export default function useInfraEnv(clusterId: Cluster['id'], cpuArchitecture: C
         setInfraEnv(infraEnv);
       }
     } catch (e) {
+      // Invalidate this cluster's cached data
+      InfraEnvIdsCacheService.removeInfraEnvId(clusterId, CpuArchitecture.USE_DAY1_ARCHITECTURE);
       setError(getErrorMessage(e));
     }
-  }, [infraEnvId]);
+  }, [clusterId, infraEnvId]);
 
   const updateInfraEnv = React.useCallback(
     async (infraEnvUpdateParams: InfraEnvUpdateParams) => {
