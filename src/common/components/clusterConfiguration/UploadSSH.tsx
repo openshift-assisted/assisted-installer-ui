@@ -7,21 +7,21 @@ import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 type UploadSSHProps = {
   isRequired?: boolean;
-  labelText?: string;
 };
 
-const UploadSSH: React.FC<UploadSSHProps> = ({ isRequired, labelText }) => {
-  const [{ name, value }, , { setValue }] = useField<string>('sshPublicKey');
+const UploadSSH: React.FC<UploadSSHProps> = ({ isRequired }) => {
+  const [{ name, value }, , { setValue }] = useField('sshPublicKey');
   const { t } = useTranslation();
-  const defaultLabelText = t(
-    'ai:Provide an SSH key to be able to connect to the hosts for debugging purposes during the discovery process',
-  );
-
   return (
     <UploadField
       label={
         <>
-          {t('ai:SSH public key')} <PopoverIcon bodyContent={labelText || defaultLabelText} />
+          {t('ai:SSH public key')}{' '}
+          <PopoverIcon
+            bodyContent={t(
+              'ai:Provide an SSH key to be able to connect to the hosts for debugging purposes during the discovery process',
+            )}
+          />
         </>
       }
       name={name}
@@ -36,6 +36,7 @@ const UploadSSH: React.FC<UploadSSHProps> = ({ isRequired, labelText }) => {
           () =>
             setError(t('ai:File not supported.')),
       }}
+      transformValue={trimSshPublicKey}
       isRequired={isRequired}
     />
   );

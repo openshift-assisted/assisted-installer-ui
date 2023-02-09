@@ -16,7 +16,7 @@ import {
   AlertFormikError,
   httpProxyValidationSchema,
   noProxyValidationSchema,
-  sshPublicKeyListValidationSchema,
+  sshPublicKeyValidationSchema,
 } from '../../../common/components/ui';
 import {
   DiscoveryImageType,
@@ -48,7 +48,7 @@ export type OcmDiscoveryImageFormValues = OcmImageCreateParams &
 
 const validationSchema = Yup.lazy<OcmDiscoveryImageFormValues>((values) =>
   Yup.object<OcmDiscoveryImageFormValues>().shape({
-    sshPublicKey: sshPublicKeyListValidationSchema,
+    sshPublicKey: sshPublicKeyValidationSchema,
     httpProxy: httpProxyValidationSchema(values, 'httpProxy'),
     httpsProxy: httpProxyValidationSchema(values, 'httpsProxy'), // share the schema, httpS is currently not supported
     noProxy: noProxyValidationSchema,
@@ -145,11 +145,7 @@ export const OcmDiscoveryImageConfigForm = ({
                       }
                       onChange={updateDiscoveryButtonAndAlertText}
                     />
-                    <UploadSSH
-                      labelText={t(
-                        'ai:Provide SSH keys separated by newlines to be able to connect to the hosts for debugging purposes during the discovery process',
-                      )}
-                    />
+                    <UploadSSH />
                     <ProxyFields />
                     <CertificateFields />
                   </Form>
@@ -157,13 +153,7 @@ export const OcmDiscoveryImageConfigForm = ({
               </Stack>
             </ModalBoxBody>
             <ModalBoxFooter>
-              <Button
-                onClick={() => {
-                  void submitForm();
-                }}
-                isDisabled={isSubmitting}
-                isLoading={isSubmitting}
-              >
+              <Button onClick={submitForm} isDisabled={isSubmitting} isLoading={isSubmitting}>
                 {isSubmitting ? t('ai:Generating') : buttonText}
               </Button>
               <Button key="cancel" variant="link" onClick={onCancel}>
