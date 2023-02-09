@@ -1,6 +1,8 @@
 import filesize from 'filesize.js';
 import Fuse from 'fuse.js';
 import { TFunction } from 'i18next';
+import { AxiosResponseHeaders } from 'axios';
+
 import { Host, Cluster, Inventory, stringToJSON } from '../../api';
 import { hostRoles, TIME_ZERO } from '../../config';
 import { DASH } from '../constants';
@@ -85,6 +87,12 @@ export const canDownloadKubeconfig = (clusterStatus: Cluster['status']) =>
   ['installing', 'finalizing', 'error', 'cancelled', 'installed', 'adding-hosts'].includes(
     clusterStatus,
   );
+
+export const getKubeconfigFileName = (headers: AxiosResponseHeaders) => {
+  const fileNameMatch =
+    headers['content-disposition'] && headers['content-disposition'].match(/filename=".*"/);
+  return fileNameMatch ? fileNameMatch[0].slice(10, -1) : 'kubeconfig';
+};
 
 export const canInstallHost = (cluster: Cluster, hostStatus: Host['status']) =>
   cluster.kind === 'AddHostsCluster' && cluster.status === 'adding-hosts' && hostStatus === 'known';

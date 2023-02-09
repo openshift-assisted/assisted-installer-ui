@@ -1,10 +1,18 @@
+import omit from 'lodash/omit';
+import { saveAs } from 'file-saver';
+
 import { ClustersAPI } from '../services/apis';
 import HostsService from './HostsService';
 import InfraEnvsService from './InfraEnvsService';
-import { AI_UI_TAG, Cluster, Host, V2ClusterUpdateParams } from '../../common';
+import {
+  AI_UI_TAG,
+  Cluster,
+  getKubeconfigFileName,
+  Host,
+  V2ClusterUpdateParams,
+} from '../../common';
 import { ocmClient } from '../api';
 import { ClusterCreateParamsWithStaticNetworking } from './types';
-import omit from 'lodash/omit';
 
 const ClustersService = {
   findHost(hosts: Cluster['hosts'] = [], hostId: Host['id']) {
@@ -41,6 +49,23 @@ const ClustersService = {
     const contentHeader = headers['content-disposition'];
     const fileName = contentHeader?.match(/filename="(.+)"/)?.[1];
     return { data, fileName };
+  },
+
+  async downloadKubeconfigFile(clusterId: Cluster['id']) {
+    if (ocmClient) {
+      const { data } = await ClustersAPI.getPresignedForClusterCredentials({
+        clusterId,
+        fileName: 'kubeconfig',
+      });
+      saveAs(data.url);
+    } else {
+      const { data, headers } = await ClustersAPI.downloadClusterCredentials(
+        clusterId,
+        'kubeconfig',
+      );
+      const fileName = getKubeconfigFileName(headers);
+      saveAs(data, fileName);
+    }
   },
 
   update(clusterId: Cluster['id'], clusterTags: Cluster['tags'], params: V2ClusterUpdateParams) {

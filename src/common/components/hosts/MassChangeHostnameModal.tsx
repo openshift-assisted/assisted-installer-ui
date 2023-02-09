@@ -19,6 +19,7 @@ import { Formik, useFormikContext } from 'formik';
 import * as Yup from 'yup';
 import { global_palette_blue_300 as blueInfoColor } from '@patternfly/react-tokens/dist/js/global_palette_blue_300';
 import { InfoCircleIcon } from '@patternfly/react-icons';
+import { TFunction } from 'i18next';
 
 import {
   RichInputField,
@@ -30,12 +31,11 @@ import {
 } from '../ui';
 import { Host } from '../../api';
 import { getHostname as getHostnameUtils, getInventory } from './utils';
+import { getErrorMessage } from '../../utils';
 import { ActionCheck } from './types';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 import './MassChangeHostnameModal.css';
-import { TFunction } from 'i18next';
-import { getApiErrorMessage } from '../../../ocm/api'; // eslint-disable-line no-restricted-imports
 
 const getHostname = (host: Host) => {
   const inventory = getInventory(host);
@@ -320,7 +320,7 @@ const MassChangeHostnameModal = ({
             formikActions.setStatus({
               error: {
                 title: t('ai:Failed to update host'),
-                message: getApiErrorMessage(e),
+                message: getErrorMessage(e),
               },
             });
             onHostSaveError && onHostSaveError(e as Error);

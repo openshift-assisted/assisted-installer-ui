@@ -1,5 +1,7 @@
 import React from 'react';
 import { Alert, GridItem } from '@patternfly/react-core';
+import { ExternalLinkAltIcon } from '@patternfly/react-icons';
+
 import {
   RenderIf,
   KubeconfigDownload,
@@ -10,14 +12,16 @@ import {
   isClusterPlatformTypeVM,
   SupportedPlatformType,
   Cluster,
+  useAlerts,
 } from '../../../common';
 import { getClusterDetailId } from './utils';
 
 import { useDefaultConfiguration } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
-import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { calculateClusterDateDiff } from '../../../common/sevices/DateAndTime';
-import { ocmClient } from '../../api';
+import { getApiErrorMessage, handleApiError, ocmClient } from '../../api';
+import { ClustersService } from '../../services';
 import { integrationPlatformLinks } from '../clusterWizard/ClusterPlatformIntegrationHint';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type ClusterDetailStatusMessagesProps = {
   cluster: Cluster;
@@ -32,6 +36,8 @@ const ClusterDetailStatusMessages = ({
 }: ClusterDetailStatusMessagesProps) => {
   const featureSupportLevelContext = useFeatureSupportLevel();
   const { inactiveDeletionHours } = useDefaultConfiguration(['inactiveDeletionHours']);
+  const { addAlert } = useAlerts();
+  const { t } = useTranslation();
   const inactiveDeletionDays = Math.round((inactiveDeletionHours || 0) / 24);
   const dateDifference = calculateClusterDateDiff(inactiveDeletionDays, cluster.installCompletedAt);
   const showAddHostsAlert = Boolean(
@@ -53,13 +59,26 @@ const ClusterDetailStatusMessages = ({
     ? integrationPlatformLinks[cluster.platform?.type as SupportedPlatformType]
     : '';
 
+  const handleKubeconfigDownload = React.useCallback(() => {
+    try {
+      void ClustersService.downloadKubeconfigFile(cluster.id);
+    } catch (e) {
+      handleApiError(e, (e) => {
+        addAlert({
+          title: t('ai:Could not download kubeconfig'),
+          message: getApiErrorMessage(e),
+        });
+      });
+    }
+  }, [addAlert, cluster.id, t]);
+
   return (
     <>
       <RenderIf condition={showKubeConfigDownload}>
         <GridItem>
           <KubeconfigDownload
             status={cluster.status}
-            clusterId={cluster.id}
+            handleDownload={handleKubeconfigDownload}
             id={getClusterDetailId('button-download-kubeconfig')}
           />
         </GridItem>
