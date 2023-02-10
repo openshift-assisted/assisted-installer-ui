@@ -68,7 +68,10 @@ export const StaticIpForm = <StaticIpFormValues extends object>({
       });
     } catch (error) {
       captureException(error);
-      addAlert({ title: getApiErrorMessage(error) });
+      addAlert({
+        title: 'Failed to update the static network config',
+        message: getApiErrorMessage(error),
+      });
     }
   };
 
