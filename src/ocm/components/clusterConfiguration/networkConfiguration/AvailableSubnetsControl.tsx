@@ -13,7 +13,7 @@ import {
   NO_SUBNET_SET,
 } from '../../../../common';
 import { selectCurrentClusterPermissionsState } from '../../../selectors';
-import { OcmSelectField } from '../../ui/OcmFormFields';
+import { SubnetsDropdown } from './SubnetsDropdown';
 
 const subnetSort = (subA: HostSubnet, subB: HostSubnet) =>
   subA.humanized.localeCompare(subB.humanized);
@@ -37,6 +37,7 @@ const makeNoSubnetSelectedOption = (availableSubnets: number) => ({
 const noSubnetAvailableOption = {
   label: 'No subnets are currently available',
   value: NO_SUBNET_SET,
+  isDisabled: true,
   id: 'form-input-hostSubnet-field-option-no-subnet-available',
 };
 
@@ -92,12 +93,13 @@ export const AvailableSubnetsControl = ({
     },
     [],
   );
+  const itemsIpv4Subnets = buildOptions(IPv4Subnets);
   return (
     <FormGroup
       label="Machine network"
       labelInfo={isDualStack && 'Primary'}
       fieldId="machine-networks"
-      isRequired
+      isRequired={isRequired}
     >
       <FieldArray name="machineNetworks">
         {() => (
@@ -105,24 +107,31 @@ export const AvailableSubnetsControl = ({
             {isDualStack ? (
               values.machineNetworks?.map((_machineNetwork, index) => {
                 const machineSubnets = index === 1 ? IPv6Subnets : IPv4Subnets;
+                const itemsSubnets = buildOptions(machineSubnets);
                 return (
                   <StackItem key={index}>
-                    <OcmSelectField
+                    <SubnetsDropdown
                       name={`machineNetworks.${index}.cidr`}
-                      options={buildOptions(machineSubnets)}
-                      isRequired={isRequired}
+                      items={itemsSubnets}
                       isDisabled={isDisabled}
+                      defaultValue={
+                        itemsSubnets.length > 1 ? itemsSubnets[1].label : itemsSubnets[0].label
+                      }
                     />
                   </StackItem>
                 );
               })
             ) : (
               <StackItem>
-                <OcmSelectField
+                <SubnetsDropdown
                   name={`machineNetworks.0.cidr`}
-                  options={buildOptions(IPv4Subnets)}
-                  isRequired={isRequired}
+                  items={itemsIpv4Subnets}
                   isDisabled={isDisabled}
+                  defaultValue={
+                    itemsIpv4Subnets.length > 1
+                      ? itemsIpv4Subnets[1].label
+                      : itemsIpv4Subnets[0].label
+                  }
                 />
               </StackItem>
             )}
