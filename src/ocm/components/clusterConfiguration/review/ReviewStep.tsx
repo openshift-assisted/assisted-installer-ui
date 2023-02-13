@@ -1,7 +1,14 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ActionListItem, Button, ButtonVariant, Grid, GridItem } from '@patternfly/react-core';
-import { Cluster, ClusterWizardStepHeader, useAlerts, ClusterWizardStep } from '../../../../common';
+import {
+  Cluster,
+  ClusterWizardStepHeader,
+  useAlerts,
+  ClusterWizardStep,
+  ErrorState,
+  useFeatureSupportLevel,
+} from '../../../../common';
 import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContext';
 import { getApiErrorMessage, handleApiError } from '../../../api';
 import { updateCluster } from '../../../reducers/clusters';
@@ -12,6 +19,9 @@ import { useStateSafely } from '../../../../common/hooks';
 import { selectCurrentClusterPermissionsState } from '../../../selectors';
 import ReviewPreflightChecks from './ReviewPreflightChecks';
 import ReviewSummary from './ReviewSummary';
+import { getLimitedFeatureSupportLevels } from '../../../../common/components/featureSupportLevels/utils';
+import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
+
 import './ReviewCluster.css';
 
 const ReviewStep = ({ cluster }: { cluster: Cluster }) => {
@@ -19,7 +29,18 @@ const ReviewStep = ({ cluster }: { cluster: Cluster }) => {
   const clusterWizardContext = useClusterWizardContext();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
   const [isStartingInstallation, setIsStartingInstallation] = useStateSafely(false);
+  const featureSupportLevelData = useFeatureSupportLevel();
+  const { t } = useTranslation();
   const dispatch = useDispatch();
+
+  const hasSupportLevel = React.useMemo<boolean>(() => {
+    try {
+      getLimitedFeatureSupportLevels(cluster, featureSupportLevelData, t);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }, [cluster, featureSupportLevelData, t]);
 
   const handleClusterInstall = async () => {
     setIsStartingInstallation(true);
@@ -39,6 +60,17 @@ const ReviewStep = ({ cluster }: { cluster: Cluster }) => {
       setIsStartingInstallation(false);
     }
   };
+
+  if (!hasSupportLevel) {
+    return (
+      <ErrorState
+        title={'Feature support levels not available'}
+        content={`OpenShift version ${
+          cluster.openshiftVersion || ''
+        } does not currently include feature support levels.`}
+      />
+    );
+  }
 
   const footer = (
     <ClusterWizardFooter

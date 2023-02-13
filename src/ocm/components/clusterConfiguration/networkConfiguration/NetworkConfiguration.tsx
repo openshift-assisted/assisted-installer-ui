@@ -20,7 +20,6 @@ import {
   serviceNetworksEqual,
   useFeatureSupportLevel,
 } from '../../../../common';
-import { getLimitedFeatureSupportLevels } from '../../../../common/components/featureSupportLevels/utils';
 import {
   ManagedNetworkingControlGroup,
   UserManagedNetworkingTextContent,
@@ -146,18 +145,12 @@ const NetworkConfiguration = ({
   const featureSupportLevelData = useFeatureSupportLevel();
   const { setFieldValue, values, validateField } = useFormikContext<NetworkConfigurationValues>();
 
-  const { clusterFeatureSupportLevels, underlyingCpuArchitecture } = React.useMemo(() => {
-    return {
-      clusterFeatureSupportLevels: getLimitedFeatureSupportLevels(
-        cluster,
-        featureSupportLevelData,
-        t,
-      ),
-      underlyingCpuArchitecture:
-        featureSupportLevelData.activeFeatureConfiguration?.underlyingCpuArchitecture ||
-        getDefaultCpuArchitecture(),
-    };
-  }, [cluster, featureSupportLevelData, t]);
+  const underlyingCpuArchitecture = React.useMemo(
+    () =>
+      featureSupportLevelData.activeFeatureConfiguration?.underlyingCpuArchitecture ||
+      getDefaultCpuArchitecture(),
+    [featureSupportLevelData],
+  );
   const isSNOCluster = isSNO(cluster);
   const isMultiNodeCluster = !isSNOCluster;
   const isUserManagedNetworking = values.managedNetworkingType === 'userManaged';
@@ -263,8 +256,10 @@ const NetworkConfiguration = ({
       )}
 
       {!isUserManagedNetworking &&
-        !!clusterFeatureSupportLevels &&
-        clusterFeatureSupportLevels['CLUSTER_MANAGED_NETWORKING_WITH_VMS'] === 'unsupported' &&
+        featureSupportLevelData.getFeatureSupportLevel(
+          cluster.openshiftVersion || '',
+          'CLUSTER_MANAGED_NETWORKING_WITH_VMS',
+        ) === 'unsupported' &&
         vmsAlert}
 
       {(isSNOCluster || !isUserManagedNetworking) && (
