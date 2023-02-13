@@ -83,6 +83,10 @@ export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
 
   const isSupportedOpenShiftVersion = React.useCallback(
     (version: OpenShiftVersion) => {
+      if (versions.length === 0) {
+        // Till the data are loaded
+        return true;
+      }
       const selectedVersion = findVersionItemByVersion(version);
       return supportedVersionLevels.includes(selectedVersion?.supportLevel || '');
     },
