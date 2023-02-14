@@ -12,6 +12,8 @@ import { InfoCircleIcon } from '@patternfly/react-icons';
 import { PrismCode } from '../ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { Trans } from 'react-i18next';
+import { saveAs } from 'file-saver';
+import { CHANGE_ISO_PASSWORD_FILE_LINK } from '../../config/constants';
 
 export const DiscoveryTroubleshootingModalContent = () => {
   const { t } = useTranslation();
@@ -46,6 +48,25 @@ export const DiscoveryTroubleshootingModalContent = () => {
           'ai:NOTE: Authentication is provided by the discovery ISO, therefore when you access your host using SSH, a password is not required. Optional -i parameter can be used to specify the private key that matches the public key provided when generating Discovery ISO.',
         )}
       </Text>
+      <Text component={TextVariants.h2}>{t('ai:Unable to SSH into your hosts?')}</Text>
+      <Text component={TextVariants.p}>
+        {t(
+          'ai:If you have network issues, download the full image file and patch it locally with a login password using',
+        )}{' '}
+        <Button
+          variant={ButtonVariant.link}
+          onClick={() => saveAs(CHANGE_ISO_PASSWORD_FILE_LINK, 'change-iso-password.sh')}
+          data-testid="download-change-password-script"
+          isInline
+        >
+          {t('ai:this script.')}
+        </Button>
+      </Text>
+      <Text component={TextVariants.p}>{t('ai:Run these commands to use the script:')}</Text>
+      <PrismCode
+        code={`chmod +x ./change-iso-password.sh
+./change-iso-password.sh <path_to_your_iso_file>`}
+      />
       <Text component={TextVariants.h2}>
         {t('ai:Verify that the discovery agent is running with the correct parameters')}
       </Text>

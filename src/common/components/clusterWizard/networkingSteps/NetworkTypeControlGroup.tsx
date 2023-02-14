@@ -21,6 +21,25 @@ export const NetworkTypeControlGroup = ({
     <FormGroup isInline fieldId={GROUP_NAME} label="Network type">
       <Split>
         <SplitItem>
+          <RadioField
+            id={GROUP_NAME}
+            name={GROUP_NAME}
+            isDisabled={isDisabled}
+            value={NETWORK_TYPE_OVN}
+            label={<>{t('ai:Open Virtual Networking (OVN)')}&nbsp;</>}
+          />
+        </SplitItem>
+        <SplitItem>
+          <PopoverIcon
+            bodyContent={
+              "The next generation networking type, select this when you're using new features and telco features"
+            }
+            buttonStyle={{ top: '-4px' }}
+          />
+        </SplitItem>
+      </Split>
+      <Split>
+        <SplitItem>
           <Tooltip
             hidden={isSDNSelectable}
             content={t(
@@ -39,25 +58,6 @@ export const NetworkTypeControlGroup = ({
         <SplitItem>
           <PopoverIcon
             bodyContent={'The classic bullet-proof networking type'}
-            buttonStyle={{ top: '-4px' }}
-          />
-        </SplitItem>
-      </Split>
-      <Split>
-        <SplitItem>
-          <RadioField
-            id={GROUP_NAME}
-            name={GROUP_NAME}
-            isDisabled={isDisabled}
-            value={NETWORK_TYPE_OVN}
-            label={<>{t('ai:Open Virtual Networking (OVN)')}&nbsp;</>}
-          />
-        </SplitItem>
-        <SplitItem>
-          <PopoverIcon
-            bodyContent={
-              "The next generation networking type, select this when you're using new features and telco features"
-            }
             buttonStyle={{ top: '-4px' }}
           />
         </SplitItem>

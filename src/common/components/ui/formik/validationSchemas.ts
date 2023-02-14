@@ -121,6 +121,9 @@ export const sshPublicKeyListValidationSchema = Yup.string()
     },
   )
   .test('ssh-public-keys-unique', 'SSH public keys must be unique.', (value: string) => {
+    if (!value) {
+      return true;
+    }
     const keyList = trimSshPublicKey(value).split('\n');
     return new Set(keyList).size === keyList.length;
   });
