@@ -24,6 +24,9 @@ export const RebootNodeZeroModal: React.FC<{ cluster: Cluster }> = ({ cluster })
   //   consoleUrl: 'https://www.google.com/search?q=mock',
   // };
 
+  // TODO camador the callback needs to be implemented, see other examples
+  const handleKubeconfigDownload = () => null;
+
   return (
     <Modal
       title="Reboot node?"
@@ -43,10 +46,10 @@ export const RebootNodeZeroModal: React.FC<{ cluster: Cluster }> = ({ cluster })
         </Text>
       </TextContent>
       <KubeconfigDownload
+        id="button-download-kubeconfig"
+        handleDownload={handleKubeconfigDownload}
         status={cluster.status}
-        clusterId={cluster.id}
         className="ai-reboot-modal__item"
-        data-testid="button-download-kubeconfig"
       />
       <ClusterCredentials
         cluster={cluster}

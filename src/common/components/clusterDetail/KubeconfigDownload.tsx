@@ -11,7 +11,7 @@ type KubeconfigDownloadProps = {
   handleDownload: () => void;
 };
 
-const KubeconfigDownload = ({ status, id, handleDownload, className }: KubeconfigDownloadProps) => {
+const KubeconfigDownload = ({ id, status, handleDownload, className }: KubeconfigDownloadProps) => {
   const { t } = useTranslation();
   return (
     <Button
