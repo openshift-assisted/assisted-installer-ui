@@ -39,18 +39,13 @@ export const SubnetsDropdown = ({ name, machineSubnets, isDisabled }: SubnetsDro
   const [current, setCurrent] = React.useState('');
   const fieldId = getFieldId(name, 'input');
 
-  const buildOptions = React.useMemo(
-    () => (machineSubnets: HostSubnet[]) => {
-      return machineSubnets.length === 0
-        ? [noSubnetAvailableOption]
-        : [makeNoSubnetSelectedOption(machineSubnets.length)].concat(
-            toFormSelectOptions(machineSubnets),
-          );
-    },
-    [],
-  );
-
-  const itemsSubnets = buildOptions(machineSubnets);
+  const itemsSubnets = React.useMemo(() => {
+    return machineSubnets.length === 0
+      ? [noSubnetAvailableOption]
+      : [makeNoSubnetSelectedOption(machineSubnets.length)].concat(
+          toFormSelectOptions(machineSubnets),
+        );
+  }, [machineSubnets]);
 
   React.useEffect(() => {
     const defaultValue = itemsSubnets.length > 1 ? itemsSubnets[1].label : itemsSubnets[0].label;
