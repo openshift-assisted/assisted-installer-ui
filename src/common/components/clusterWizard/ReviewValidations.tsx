@@ -37,14 +37,14 @@ const AllValidationsPassed = () => {
   const { t } = useTranslation();
   return (
     <>
-      <CheckCircleIcon color={okColor.value} /> {t('ai:All validations passed')}
+      <CheckCircleIcon color={okColor.value} /> {t('ai:All checks passed')}
     </>
   );
 };
 
 const PendingValidations = ({ id, count }: { id: string; count: number }) => {
   const { t } = useTranslation();
-  return <div id={id}>{t('ai:There is still {{count}} pending validation', { count: count })}</div>;
+  return <div id={id}>{t('ai:There is still {{count}} pending check', { count: count })}</div>;
 };
 
 const ValidationActionLink = <S extends string>({
@@ -83,7 +83,7 @@ const FailingValidation = <S extends string>({
 
   if (step === 'review') {
     // no sooner step, so the user can not do anything about it ...
-    fix = t('ai:Please wait till all validations are finished.');
+    fix = t('ai:Please wait till all checks are finished.');
   } else if (step) {
     fix = (
       <>
