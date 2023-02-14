@@ -9,7 +9,6 @@ import {
   CpuArchitecture,
   ErrorState,
   LoadingState,
-  WizardFooter,
 } from '../../../../common';
 import DiscoverImageCpuArchitectureControlGroup from '../../../../common/components/clusterConfiguration/DiscoveryImageCpuArchitectureControlGroup';
 import { HostsNetworkConfigurationType, InfraEnvsService } from '../../../services';
@@ -18,6 +17,7 @@ import { handleApiError } from '../../../api';
 import { Day2ClusterDetailValues } from '../types';
 import { useDay2WizardContext } from './Day2WizardContext';
 import Day2WizardNav from './Day2WizardNav';
+import Day2WizardFooter from './Day2WizardFooter';
 import Day2HostStaticIpConfigurations from './Day2StaticIpHostConfigurations';
 import { mapClusterCpuArchToInfraEnvCpuArch } from '../../../services/CpuArchitectureService';
 
@@ -99,13 +99,10 @@ const Day2ClusterDetails = () => {
           <ClusterWizardStep
             navigation={<Day2WizardNav />}
             footer={
-              <WizardFooter
+              <Day2WizardFooter
                 onNext={() => {
                   void submitForm();
                 }}
-                onBack={() => wizardContext.moveBack()}
-                isBackDisabled={wizardContext.currentStepId === 'cluster-details'}
-                isNextDisabled={wizardContext.currentStepId === 'download-iso'}
                 onCancel={close}
                 isSubmitting={isSubmitting}
               />
