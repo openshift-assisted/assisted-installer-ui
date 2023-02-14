@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { PageSectionVariants, TextContent, Text, PageSection } from '@patternfly/react-core';
 import { AlertsContextProvider } from '../../../common';
 import ClusterBreadcrumbs from './ClusterBreadcrumbs';
@@ -10,7 +10,9 @@ import { SentryErrorMonitorContextProvider } from '../SentryErrorMonitorContextP
 import ClusterLoading from './ClusterLoading';
 import { ClusterUiError } from './ClusterPageErrors';
 
-const NewClusterPage = () => {
+const NewClusterPageGeneric: React.FC<{ pageTitleSection?: ReactNode }> = ({
+  pageTitleSection,
+}) => {
   return (
     <AlertsContextProvider>
       <SentryErrorMonitorContextProvider>
@@ -19,14 +21,7 @@ const NewClusterPage = () => {
           errorUI={<ClusterUiError />}
         >
           <FeatureSupportLevelProvider loadingUi={<ClusterLoading />}>
-            <ClusterBreadcrumbs clusterName="New cluster" />
-            <PageSection variant={PageSectionVariants.light}>
-              <TextContent>
-                <Text component="h1" className="pf-u-display-inline">
-                  Install OpenShift with the Assisted Installer
-                </Text>
-              </TextContent>
-            </PageSection>
+            {pageTitleSection}
             <PageSection variant={PageSectionVariants.light} isFilled>
               <ClusterWizardContextProvider>
                 <NewClusterWizard />
@@ -39,4 +34,20 @@ const NewClusterPage = () => {
   );
 };
 
-export default NewClusterPage;
+const NewClusterTitleSection: React.FC = () => (
+  <>
+    <ClusterBreadcrumbs clusterName="New cluster" />
+    <PageSection variant={PageSectionVariants.light}>
+      <TextContent>
+        <Text component="h1" className="pf-u-display-inline">
+          Install OpenShift with the Assisted Installer
+        </Text>
+      </TextContent>
+    </PageSection>
+  </>
+);
+
+export const NewSingleClusterPage: React.FC = () => <NewClusterPageGeneric />;
+export const NewClusterPage: React.FC = () => (
+  <NewClusterPageGeneric pageTitleSection={<NewClusterTitleSection />} />
+);

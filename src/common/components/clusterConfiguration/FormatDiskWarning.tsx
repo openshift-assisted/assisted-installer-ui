@@ -11,6 +11,7 @@ const FormatDiskWarning = ({ someDisksAreSkipFormatting }: FormatDiskWarningProp
   return (
     <Alert
       variant={AlertVariant.warning}
+      data-testid="alert-format-bootable-disks"
       isInline
       title={
         someDisksAreSkipFormatting

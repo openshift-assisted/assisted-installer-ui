@@ -14,6 +14,7 @@ const InformationAndAlerts = ({ cluster }: { cluster: Cluster }) => {
   return (
     <Alert
       title={'Information & Troubleshooting'}
+      data-testid="alert-information-troubleshooting"
       variant={AlertVariant.info}
       isInline
       actionLinks={
@@ -21,6 +22,8 @@ const InformationAndAlerts = ({ cluster }: { cluster: Cluster }) => {
           <InfoLinkWithModal
             linkText={'Minimum hardware requirements'}
             modalTitle={'Minimum hardware requirements'}
+            linkId="alert-information-troubleshooting__link-hwrequirements"
+            modalId="alert-information-troubleshooting__modal-hwrequirements"
             isInline
           >
             <HostRequirementsContent

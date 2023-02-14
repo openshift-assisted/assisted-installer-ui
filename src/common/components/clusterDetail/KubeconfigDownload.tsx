@@ -14,6 +14,7 @@ import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
 
 type KubeconfigDownloadProps = {
+  className?: string;
   clusterId: Cluster['id'];
   status: Cluster['status'];
   id?: string;
@@ -35,6 +36,7 @@ const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({
   status,
   id,
   handleDownload,
+  className,
 }) => {
   const { addAlert } = useAlerts();
 
@@ -68,6 +70,7 @@ const KubeconfigDownload: React.FC<KubeconfigDownloadProps> = ({
   return (
     <Button
       variant={ButtonVariant.secondary}
+      className={className}
       onClick={handleDownload || (() => download(clusterId, t))}
       isDisabled={!canDownloadKubeconfig(status)}
       id={id}

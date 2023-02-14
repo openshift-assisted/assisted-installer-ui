@@ -53,6 +53,7 @@ const ClusterWizardNavigation = ({ cluster }: { cluster?: Cluster }) => {
       <WizardNavItem
         step={idx}
         key={stepId}
+        id={`wizard-nv-${stepId}`}
         content={wizardStepNames[stepId]}
         onNavItemClick={() => clusterWizardContext.setCurrentStepId(stepId)}
         isCurrent={clusterWizardContext.currentStepId === stepId}
