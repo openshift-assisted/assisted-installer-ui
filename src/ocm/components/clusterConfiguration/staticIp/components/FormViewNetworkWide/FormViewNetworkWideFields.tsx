@@ -77,7 +77,7 @@ const MachineNetwork: React.FC<{ fieldName: string; protocolVersion: ProtocolVer
       labelIcon={
         <PopoverIcon noVerticalAlign bodyContent="The range of IP addresses of the hosts." />
       }
-      label="Machine Network"
+      label="Machine network"
       fieldId={getFieldId(`${fieldName}`, 'input')}
       isRequired
       helperTextInvalid={errorMessage}

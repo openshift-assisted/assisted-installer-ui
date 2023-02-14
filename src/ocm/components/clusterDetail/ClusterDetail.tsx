@@ -19,6 +19,7 @@ import {
   selectOlmOperators,
   isSNO,
   useFeatureSupportLevel,
+  useFeature,
 } from '../../../common';
 import { Cluster } from '../../../common/api/types';
 import ClusterHostsTable from '../hosts/ClusterHostsTable';
@@ -57,6 +58,8 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
       cluster.openshiftVersion,
       'SINGLE_NODE_EXPANSION',
     );
+  const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
+
   const canAddHosts =
     (!isSNO(cluster) || isSNOExpansionAllowed) && cluster.status === 'installed' && !ocmClient;
 
@@ -152,13 +155,15 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
               Add hosts
             </ToolbarButton>
           )}
-          <ToolbarButton
-            variant={ButtonVariant.link}
-            component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
-            id={getClusterDetailId('button-back-to-all-clusters')}
-          >
-            Back to all clusters
-          </ToolbarButton>
+          {!isSingleClusterFeatureEnabled && (
+            <ToolbarButton
+              variant={ButtonVariant.link}
+              component={(props) => <Link to={`${routeBasePath}/clusters`} {...props} />}
+              id={getClusterDetailId('button-back-to-all-clusters')}
+            >
+              Back to all clusters
+            </ToolbarButton>
+          )}
           <ToolbarSecondaryGroup>
             <ToolbarButton
               id="cluster-installation-logs-button"
