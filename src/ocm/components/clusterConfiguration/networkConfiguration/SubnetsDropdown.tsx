@@ -2,30 +2,62 @@ import React from 'react';
 import { DropdownItem, DropdownToggle, Dropdown } from '@patternfly/react-core';
 import { CaretDownIcon } from '@patternfly/react-icons';
 import { useField } from 'formik';
-import { getFieldId } from '../../../../common';
+import { getFieldId, HostSubnet, NO_SUBNET_SET } from '../../../../common';
 
 type SubnetsDropdownProps = {
   name: string;
-  items: {
-    label: string;
-    value: string;
-    isDisabled?: boolean;
-  }[];
+  machineSubnets: HostSubnet[];
   isDisabled: boolean;
-  defaultValue: string;
 };
 
-export const SubnetsDropdown = ({
-  name,
-  items,
-  isDisabled,
-  defaultValue,
-}: SubnetsDropdownProps) => {
+const toFormSelectOptions = (subnets: HostSubnet[]) => {
+  return subnets.map((hn, index) => ({
+    label: `${hn.humanized}${hn.isValid ? '' : ' (Invalid network)'}`,
+    value: hn.subnet,
+    isDisabled: false,
+    id: `form-input-hostSubnet-field-option-${index}`,
+  }));
+};
+
+const makeNoSubnetSelectedOption = (availableSubnets: number) => ({
+  label: `Please select a subnet. (${availableSubnets} available)`,
+  value: NO_SUBNET_SET,
+  isDisabled: true,
+  id: 'form-input-hostSubnet-field-option-no-subnet-selected',
+});
+
+const noSubnetAvailableOption = {
+  label: 'No subnets are currently available',
+  value: NO_SUBNET_SET,
+  isDisabled: true,
+  id: 'form-input-hostSubnet-field-option-no-subnet-available',
+};
+
+export const SubnetsDropdown = ({ name, machineSubnets, isDisabled }: SubnetsDropdownProps) => {
   const [field, , { setValue }] = useField(name);
   const [isOpen, setOpen] = React.useState(false);
-  const [current, setCurrent] = React.useState(defaultValue);
+  const [current, setCurrent] = React.useState('');
   const fieldId = getFieldId(name, 'input');
-  const dropdownItems = items.map(({ value, label, isDisabled }) => (
+
+  const buildOptions = React.useMemo(
+    () => (machineSubnets: HostSubnet[]) => {
+      return machineSubnets.length === 0
+        ? [noSubnetAvailableOption]
+        : [makeNoSubnetSelectedOption(machineSubnets.length)].concat(
+            toFormSelectOptions(machineSubnets),
+          );
+    },
+    [],
+  );
+
+  const itemsSubnets = buildOptions(machineSubnets);
+
+  React.useEffect(() => {
+    const defaultValue = itemsSubnets.length > 1 ? itemsSubnets[1].label : itemsSubnets[0].label;
+    setCurrent(defaultValue);
+  }, [setCurrent, itemsSubnets]);
+
+  const dropdownItems = itemsSubnets.map(({ value, label, isDisabled }) => (
     <DropdownItem key={value} id={value} isDisabled={isDisabled}>
       {label}
     </DropdownItem>
@@ -35,12 +67,12 @@ export const SubnetsDropdown = ({
     (event?: React.SyntheticEvent<HTMLDivElement>) => {
       const currentValue = event?.currentTarget.innerText
         ? event?.currentTarget.innerText
-        : defaultValue;
+        : current;
       setCurrent(currentValue ? currentValue : '');
       setValue(event?.currentTarget.id);
       setOpen(false);
     },
-    [setCurrent, setOpen, setValue],
+    [current, setValue],
   );
 
   const toggle = React.useMemo(

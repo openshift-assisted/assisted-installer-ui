@@ -18,29 +18,6 @@ import { SubnetsDropdown } from './SubnetsDropdown';
 const subnetSort = (subA: HostSubnet, subB: HostSubnet) =>
   subA.humanized.localeCompare(subB.humanized);
 
-const toFormSelectOptions = (subnets: HostSubnet[]) => {
-  return subnets.map((hn, index) => ({
-    label: `${hn.humanized}${hn.isValid ? '' : ' (Invalid network)'}`,
-    value: hn.subnet,
-    isDisabled: false,
-    id: `form-input-hostSubnet-field-option-${index}`,
-  }));
-};
-
-const makeNoSubnetSelectedOption = (availableSubnets: number) => ({
-  label: `Please select a subnet. (${availableSubnets} available)`,
-  value: NO_SUBNET_SET,
-  isDisabled: true,
-  id: 'form-input-hostSubnet-field-option-no-subnet-selected',
-});
-
-const noSubnetAvailableOption = {
-  label: 'No subnets are currently available',
-  value: NO_SUBNET_SET,
-  isDisabled: true,
-  id: 'form-input-hostSubnet-field-option-no-subnet-available',
-};
-
 const useAutoSelectSingleAvailableSubnet = (
   autoSelectNetwork: boolean,
   setFieldValue: FormikHelpers<NetworkConfigurationValues>['setFieldValue'],
@@ -83,17 +60,6 @@ export const AvailableSubnetsControl = ({
   const autoSelectNetwork = !isViewerMode && hasEmptySelection;
   useAutoSelectSingleAvailableSubnet(autoSelectNetwork, setFieldValue, cidr, clusterId);
 
-  const buildOptions = React.useMemo(
-    () => (machineSubnets: HostSubnet[]) => {
-      return machineSubnets.length === 0
-        ? [noSubnetAvailableOption]
-        : [makeNoSubnetSelectedOption(machineSubnets.length)].concat(
-            toFormSelectOptions(machineSubnets),
-          );
-    },
-    [],
-  );
-  const itemsIpv4Subnets = buildOptions(IPv4Subnets);
   return (
     <FormGroup
       label="Machine network"
@@ -107,16 +73,13 @@ export const AvailableSubnetsControl = ({
             {isDualStack ? (
               values.machineNetworks?.map((_machineNetwork, index) => {
                 const machineSubnets = index === 1 ? IPv6Subnets : IPv4Subnets;
-                const itemsSubnets = buildOptions(machineSubnets);
+
                 return (
                   <StackItem key={index}>
                     <SubnetsDropdown
                       name={`machineNetworks.${index}.cidr`}
-                      items={itemsSubnets}
+                      machineSubnets={machineSubnets}
                       isDisabled={isDisabled}
-                      defaultValue={
-                        itemsSubnets.length > 1 ? itemsSubnets[1].label : itemsSubnets[0].label
-                      }
                     />
                   </StackItem>
                 );
@@ -125,13 +88,8 @@ export const AvailableSubnetsControl = ({
               <StackItem>
                 <SubnetsDropdown
                   name={`machineNetworks.0.cidr`}
-                  items={itemsIpv4Subnets}
+                  machineSubnets={IPv4Subnets}
                   isDisabled={isDisabled}
-                  defaultValue={
-                    itemsIpv4Subnets.length > 1
-                      ? itemsIpv4Subnets[1].label
-                      : itemsIpv4Subnets[0].label
-                  }
                 />
               </StackItem>
             )}
