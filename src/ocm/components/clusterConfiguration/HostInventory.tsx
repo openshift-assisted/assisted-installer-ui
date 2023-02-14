@@ -33,6 +33,8 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
   const isPlatformIntegrationFeatureEnabled = useFeature(
     'ASSISTED_INSTALLER_PLATFORM_INTEGRATION_FEATURE',
   );
+  const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
+
   const mastersMustRunWorkloads = selectMastersMustRunWorkloads(cluster);
   const { setFieldValue } = useFormikContext<HostDiscoveryValues>();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
@@ -47,7 +49,7 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
         <ClusterWizardStepHeader>Host discovery</ClusterWizardStepHeader>
       </StackItem>
       <StackItem>
-        {!isViewerMode && (
+        {!isViewerMode && !isSingleClusterFeatureEnabled && (
           <TextContent>
             <Text component="p">
               <DiscoveryImageModalButton

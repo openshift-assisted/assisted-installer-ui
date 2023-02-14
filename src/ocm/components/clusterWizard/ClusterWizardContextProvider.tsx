@@ -12,16 +12,34 @@ import { HostsNetworkConfigurationType } from '../../services';
 import { defaultWizardSteps, staticIpFormViewSubSteps } from './constants';
 import { StaticIpView } from '../clusterConfiguration/staticIp/data/dataTypes';
 import { getStaticIpInfo } from '../clusterConfiguration/staticIp/data/fromInfraEnv';
-import { Cluster, InfraEnv, AssistedInstallerOCMPermissionTypesListType } from '../../../common';
+import {
+  Cluster,
+  InfraEnv,
+  AssistedInstallerOCMPermissionTypesListType,
+  useFeature,
+} from '../../../common';
 import useSetClusterPermissions from '../../hooks/useSetClusterPermissions';
 
-const getWizardStepIds = (staticIpView?: StaticIpView): ClusterWizardStepsType[] => {
-  const stepIds: ClusterWizardStepsType[] = [...defaultWizardSteps];
+const getWizardStepIds = ({
+  staticIpView,
+  isSingleClusterFeatureEnabled,
+}: {
+  staticIpView?: StaticIpView;
+  isSingleClusterFeatureEnabled: boolean;
+}): ClusterWizardStepsType[] => {
+  let stepIds: ClusterWizardStepsType[] = [...defaultWizardSteps];
+
   if (staticIpView === StaticIpView.YAML) {
     stepIds.splice(1, 0, 'static-ip-yaml-view');
   } else if (staticIpView === StaticIpView.FORM) {
     stepIds.splice(1, 0, ...staticIpFormViewSubSteps);
   }
+
+  if (isSingleClusterFeatureEnabled) {
+    // tentatively removed, proper waiting on support by backend
+    stepIds = stepIds.filter((id) => id !== 'operators');
+  }
+
   return stepIds;
 };
 
@@ -36,16 +54,21 @@ const ClusterWizardContextProvider: React.FC<
   const [wizardStepIds, setWizardStepIds] = React.useState<ClusterWizardStepsType[]>();
   const { state: locationState } = useLocation<ClusterWizardFlowStateType>();
   const setClusterPermissions = useSetClusterPermissions();
+  const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
 
   React.useEffect(() => {
     const staticIpInfo = infraEnv ? getStaticIpInfo(infraEnv) : undefined;
-    const firstStep = getClusterWizardFirstStep(
+    const firstStep = getClusterWizardFirstStep({
       locationState,
       staticIpInfo,
-      cluster?.status,
-      cluster?.hosts,
-    );
-    const firstStepIds = getWizardStepIds(staticIpInfo?.view);
+      state: cluster?.status,
+      hosts: cluster?.hosts,
+      isSingleClusterFeatureEnabled,
+    });
+    const firstStepIds = getWizardStepIds({
+      staticIpView: staticIpInfo?.view,
+      isSingleClusterFeatureEnabled,
+    });
     setCurrentStepId(firstStep);
     setWizardStepIds(firstStepIds);
     setClusterPermissions(cluster, permissions);
@@ -63,7 +86,10 @@ const ClusterWizardContextProvider: React.FC<
       if (!staticIpInfo) {
         throw `Wizard step is currently ${currentStepId}, but no static ip info is defined`;
       }
-      const newStepIds = getWizardStepIds(staticIpInfo.view);
+      const newStepIds = getWizardStepIds({
+        staticIpView: staticIpInfo.view,
+        isSingleClusterFeatureEnabled,
+      });
       if (!isEqual(newStepIds, wizardStepIds)) {
         setWizardStepIds(newStepIds);
       }
@@ -91,7 +117,7 @@ const ClusterWizardContextProvider: React.FC<
         onSetCurrentStepId(wizardStepIds[currentStepIdx + 1]);
       },
       onUpdateStaticIpView(view: StaticIpView): void {
-        setWizardStepIds(getWizardStepIds(view));
+        setWizardStepIds(getWizardStepIds({ staticIpView: view, isSingleClusterFeatureEnabled }));
         if (view === StaticIpView.YAML) {
           setCurrentStepId('static-ip-yaml-view');
         } else {
@@ -100,16 +126,20 @@ const ClusterWizardContextProvider: React.FC<
       },
       onUpdateHostNetworkConfigType(type: HostsNetworkConfigurationType): void {
         if (type === HostsNetworkConfigurationType.STATIC) {
-          setWizardStepIds(getWizardStepIds(StaticIpView.FORM));
+          setWizardStepIds(
+            getWizardStepIds({ staticIpView: StaticIpView.FORM, isSingleClusterFeatureEnabled }),
+          );
         } else {
-          setWizardStepIds(getWizardStepIds());
+          setWizardStepIds(
+            getWizardStepIds({ staticIpView: undefined, isSingleClusterFeatureEnabled }),
+          );
         }
       },
       wizardStepIds,
       currentStepId,
       setCurrentStepId: onSetCurrentStepId,
     };
-  }, [wizardStepIds, currentStepId, infraEnv]);
+  }, [wizardStepIds, currentStepId, infraEnv, isSingleClusterFeatureEnabled]);
   if (!contextValue) {
     return null;
   }

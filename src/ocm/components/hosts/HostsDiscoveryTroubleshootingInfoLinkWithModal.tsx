@@ -18,6 +18,8 @@ const HostsDiscoveryTroubleshootingInfoLinkWithModal = ({
       modalTitle={'Troubleshooting Host Discovery Issues'}
       modalVariant={'large'}
       isInline={isInline}
+      linkId="link-host-troubleshooting"
+      modalId="modal-host-troubleshooting"
     >
       <DiscoveryTroubleshootingModalContent />
     </InfoLinkWithModal>

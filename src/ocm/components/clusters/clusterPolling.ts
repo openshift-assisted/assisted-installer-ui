@@ -24,10 +24,11 @@ const shouldRefetch = (uiState: ResourceUIState, hasClusterData: boolean) => {
 
 export const useFetchCluster = (clusterId: string) => {
   const dispatch = useDispatch<ClusterDispatch>();
-  return React.useCallback(
-    () => void dispatch(fetchClusterAsync(clusterId)),
-    [clusterId, dispatch],
-  );
+  return React.useCallback(() => {
+    if (clusterId) {
+      void dispatch(fetchClusterAsync(clusterId));
+    }
+  }, [clusterId, dispatch]);
 };
 
 export const useClusterPolling = (

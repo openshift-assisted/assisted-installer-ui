@@ -195,6 +195,7 @@ const ReviewPreflightChecks = ({ cluster }: { cluster: Cluster }) => {
         isExpanded={isChecksExpanded}
         onToggle={() => setChecksExpanded(!isChecksExpanded)}
         className={'review-expandable'}
+        data-testid="review-preflight-checks-main"
       >
         <PreflightChecksDetailExpanded cluster={cluster} />
       </ExpandableSection>
