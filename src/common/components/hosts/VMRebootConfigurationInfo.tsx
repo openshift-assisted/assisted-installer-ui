@@ -8,10 +8,11 @@ import {
   TextVariants,
 } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons';
+import { Trans } from 'react-i18next';
 import { PrismCode } from '../../../common/components/ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
-const Hint = () => {
+export const VMRebootConfigurationContent = () => {
   const { t } = useTranslation();
   return (
     <TextContent>
@@ -27,9 +28,12 @@ const Hint = () => {
         {t('ai:If not, please start your VMs with the following configuration:')}
       </Text>
       <PrismCode code="--events on_reboot=restart" />
-      <Text component={TextVariants.p}>
-        {t('ai:When using <code>virt-install</code>, please run:')}
-      </Text>
+      <Trans
+        t={t}
+        components={{ code: <code /> }}
+        i18nKey="ai:When using <code>{{executionCommand}}</code>, please run:"
+        values={{ executionCommand: 'virt-install' }}
+      />
       <PrismCode code="virt-install --wait -1 <rest of the command>" />
       <Text component={TextVariants.p}>
         {t('ai:Otherwise, the VMs will not be able to reboot during the installation process.')}
@@ -38,24 +42,22 @@ const Hint = () => {
   );
 };
 
-const VMRebootConfigurationInfo = ({ isInline = false }: { isInline?: boolean }) => {
+const VMRebootConfigurationInfo = () => {
   const { t } = useTranslation();
 
-  const popover = (
-    <Popover bodyContent={<Hint />} minWidth="35rem">
-      <Button variant={ButtonVariant.link} isInline>
-        {!isInline && (
+  return (
+    <Text component="p">
+      <Popover bodyContent={<VMRebootConfigurationContent />} minWidth="35rem">
+        <Button variant={ButtonVariant.link} isInline>
           <>
             <InfoCircleIcon size="sm" />
             &nbsp;
           </>
-        )}
-        {t('ai:Check your VM reboot configuration')}
-      </Button>
-    </Popover>
+          {t('ai:Check your VM reboot configuration')}
+        </Button>
+      </Popover>
+    </Text>
   );
-
-  return isInline ? popover : <Text component="p">{popover}</Text>;
 };
 
 export default VMRebootConfigurationInfo;

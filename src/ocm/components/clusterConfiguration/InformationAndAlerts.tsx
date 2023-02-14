@@ -1,10 +1,11 @@
 import React from 'react';
 import { Alert, AlertVariant } from '@patternfly/react-core';
-import { Cluster, isSNO, VMRebootConfigurationInfo } from '../../../common';
+import { Cluster, isSNO } from '../../../common';
 import { isAHostVM } from '../hosts/utils';
-import HostsDiscoveryTroubleshootingInfoLinkWithModal from '../hosts/HostsDiscoveryTroubleshootingInfoLinkWithModal';
 import { isAddHostsCluster } from '../clusters/utils';
 import HostRequirementsContent from '../hosts/HostRequirementsContent';
+import HostsDiscoveryTroubleshootingInfoLinkWithModal from '../hosts/HostsDiscoveryTroubleshootingInfoLinkWithModal';
+import VMRebootConfigurationLinkWithModal from '../hosts/VMRebootConfigurationLinkWithModal';
 import InfoLinkWithModal from '../ui/InfoLinkWithModal';
 
 const InformationAndAlerts = ({ cluster }: { cluster: Cluster }) => {
@@ -33,7 +34,7 @@ const InformationAndAlerts = ({ cluster }: { cluster: Cluster }) => {
             />
           </InfoLinkWithModal>
           <HostsDiscoveryTroubleshootingInfoLinkWithModal isSingleNode={isSNOCluster} isInline />
-          {isVM && <VMRebootConfigurationInfo isInline />}
+          {isVM && <VMRebootConfigurationLinkWithModal />}
         </>
       }
     />
