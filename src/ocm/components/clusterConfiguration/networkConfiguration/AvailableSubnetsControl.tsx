@@ -13,32 +13,10 @@ import {
   NO_SUBNET_SET,
 } from '../../../../common';
 import { selectCurrentClusterPermissionsState } from '../../../selectors';
-import { OcmSelectField } from '../../ui/OcmFormFields';
+import { SubnetsDropdown } from './SubnetsDropdown';
 
 const subnetSort = (subA: HostSubnet, subB: HostSubnet) =>
   subA.humanized.localeCompare(subB.humanized);
-
-const toFormSelectOptions = (subnets: HostSubnet[]) => {
-  return subnets.map((hn, index) => ({
-    label: `${hn.humanized}${hn.isValid ? '' : ' (Invalid network)'}`,
-    value: hn.subnet,
-    isDisabled: false,
-    id: `form-input-hostSubnet-field-option-${index}`,
-  }));
-};
-
-const makeNoSubnetSelectedOption = (availableSubnets: number) => ({
-  label: `Please select a subnet. (${availableSubnets} available)`,
-  value: NO_SUBNET_SET,
-  isDisabled: true,
-  id: 'form-input-hostSubnet-field-option-no-subnet-selected',
-});
-
-const noSubnetAvailableOption = {
-  label: 'No subnets are currently available',
-  value: NO_SUBNET_SET,
-  id: 'form-input-hostSubnet-field-option-no-subnet-available',
-};
 
 const useAutoSelectSingleAvailableSubnet = (
   autoSelectNetwork: boolean,
@@ -82,22 +60,12 @@ export const AvailableSubnetsControl = ({
   const autoSelectNetwork = !isViewerMode && hasEmptySelection;
   useAutoSelectSingleAvailableSubnet(autoSelectNetwork, setFieldValue, cidr, clusterId);
 
-  const buildOptions = React.useMemo(
-    () => (machineSubnets: HostSubnet[]) => {
-      return machineSubnets.length === 0
-        ? [noSubnetAvailableOption]
-        : [makeNoSubnetSelectedOption(machineSubnets.length)].concat(
-            toFormSelectOptions(machineSubnets),
-          );
-    },
-    [],
-  );
   return (
     <FormGroup
       label="Machine network"
       labelInfo={isDualStack && 'Primary'}
       fieldId="machine-networks"
-      isRequired
+      isRequired={isRequired}
     >
       <FieldArray name="machineNetworks">
         {() => (
@@ -105,12 +73,12 @@ export const AvailableSubnetsControl = ({
             {isDualStack ? (
               values.machineNetworks?.map((_machineNetwork, index) => {
                 const machineSubnets = index === 1 ? IPv6Subnets : IPv4Subnets;
+
                 return (
                   <StackItem key={index}>
-                    <OcmSelectField
+                    <SubnetsDropdown
                       name={`machineNetworks.${index}.cidr`}
-                      options={buildOptions(machineSubnets)}
-                      isRequired={isRequired}
+                      machineSubnets={machineSubnets}
                       isDisabled={isDisabled}
                     />
                   </StackItem>
@@ -118,10 +86,9 @@ export const AvailableSubnetsControl = ({
               })
             ) : (
               <StackItem>
-                <OcmSelectField
+                <SubnetsDropdown
                   name={`machineNetworks.0.cidr`}
-                  options={buildOptions(IPv4Subnets)}
-                  isRequired={isRequired}
+                  machineSubnets={IPv4Subnets}
                   isDisabled={isDisabled}
                 />
               </StackItem>
