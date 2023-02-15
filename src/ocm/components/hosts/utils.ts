@@ -62,7 +62,7 @@ export const onAdditionalNtpSourceAction = async (
 };
 
 export const isAHostVM = (hosts: Host[]) =>
-  !!hosts.find((host) => {
+  hosts.some((host) => {
     const inventory = stringToJSON<Inventory>(host.inventory || '') || {};
     return inventory.systemVendor?.virtual;
   });
