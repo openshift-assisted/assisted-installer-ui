@@ -50,11 +50,10 @@ const HostRequirementsContent = ({
   let content: JSX.Element;
   if (isSingleNode) {
     content = (
-      <TextContent>
-        <Text component="p">
-          {`One host is required with at least ${contentForControlPlaneNodes}`}
-        </Text>
-      </TextContent>
+      <List>
+        <ListItem>{`One host is required with at least ${contentForControlPlaneNodes}`}</ListItem>
+        <ListItem>Operators might require additional resources.</ListItem>
+      </List>
     );
   } else {
     content = (
