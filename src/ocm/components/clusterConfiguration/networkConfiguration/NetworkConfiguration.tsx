@@ -285,6 +285,7 @@ const NetworkConfiguration = ({
             (cluster.vipDhcpAllocation &&
               cluster.apiVip === undefined &&
               cluster.ingressVip === undefined) ||
+            hostSubnets.length === 0 ||
             false
           }
         />
