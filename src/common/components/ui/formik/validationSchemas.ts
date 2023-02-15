@@ -29,7 +29,7 @@ const CLUSTER_NAME_START_END_REGEX = /^[a-z0-9](.*[a-z0-9])?$/;
 const CLUSTER_NAME_VALID_CHARS_REGEX = /^[a-z0-9-]*$/;
 const SSH_PUBLIC_KEY_REGEX =
   /^(ssh-rsa|ssh-ed25519|ecdsa-[-a-z0-9]*) AAAA[0-9A-Za-z+/]+[=]{0,3}( .+)?$/;
-const DNS_NAME_REGEX = /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/;
+const DNS_NAME_REGEX = /^([a-z0-9]+(-[a-z0-9]+)*.)+[a-z]{2,}$/;
 const PROXY_DNS_REGEX =
   /^([a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62}){1}(\.[a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62})*[._]?$/;
 const IP_V4_ZERO = '0.0.0.0';
