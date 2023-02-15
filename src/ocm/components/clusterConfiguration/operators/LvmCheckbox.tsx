@@ -8,11 +8,11 @@ import {
   operatorLabels,
   OperatorsValues,
   FeatureSupportLevelBadge,
+  OPERATOR_NAME_LVM,
 } from '../../../../common';
 import LvmHostRequirements from './LvmHostRequirements';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
-import { getActualLVMOperatorName } from './utils';
 import { useFormikContext } from 'formik';
 import { getLvmIncompatibleWithCnvReason } from '../../featureSupportLevels/featureStateUtils';
 
@@ -22,14 +22,10 @@ type LvmLabelProps = ClusterOperatorProps; // & { operator: ExposedOperatorName 
 
 const LvmLabel = ({ openshiftVersion, clusterId }: LvmLabelProps) => {
   const { t } = useTranslation();
-  const [operator, setOperator] = React.useState('');
 
   const featureSupportLevel = useFeatureSupportLevel();
-  React.useEffect(() => {
-    setOperator(getActualLVMOperatorName({ openshiftVersion, featureSupportLevel }));
-  }, [featureSupportLevel, openshiftVersion]);
 
-  const operatorLabel = operatorLabels(t)[operator];
+  const operatorLabel = operatorLabels(t, openshiftVersion, featureSupportLevel)[OPERATOR_NAME_LVM];
 
   return (
     <>
