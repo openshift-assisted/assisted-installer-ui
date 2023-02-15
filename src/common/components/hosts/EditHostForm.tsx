@@ -131,12 +131,18 @@ const EditHostForm = ({
           <ModalBoxFooter>
             <Button
               key="submit"
+              data-testid="change-hostname-form__button-change"
               type={ButtonType.submit}
               isDisabled={isSubmitting || !isValid || !dirty}
             >
               {t('ai:Change')}
             </Button>
-            <Button key="cancel" variant={ButtonVariant.link} onClick={onCancel}>
+            <Button
+              data-testid="change-hostname-form__button-cancel"
+              key="cancel"
+              variant={ButtonVariant.link}
+              onClick={onCancel}
+            >
               {t('ai:Cancel')}
             </Button>
           </ModalBoxFooter>

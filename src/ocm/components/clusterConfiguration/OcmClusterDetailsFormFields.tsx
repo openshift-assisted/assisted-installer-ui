@@ -14,6 +14,7 @@ import {
   uniqueOcmClusterNameValidationMessages,
   CLUSTER_NAME_MAX_LENGTH,
   StaticTextField,
+  useFeature,
 } from '../../../common';
 import DiskEncryptionControlGroup from '../../../common/components/clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
@@ -69,6 +70,7 @@ export const OcmClusterDetailsFormFields = ({
     nameInputRef.current?.focus();
   }, []);
 
+  const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
   const { t } = useTranslation();
 
   return (
@@ -115,6 +117,7 @@ export const OcmClusterDetailsFormFields = ({
           isRequired
         />
       )}
+      {/* TODO(mlibra): For single-cluster: We will probably change this to just a static text */}
       {forceOpenshiftVersion ? (
         <OcmOpenShiftVersion
           versions={versions}
@@ -138,7 +141,12 @@ export const OcmClusterDetailsFormFields = ({
 
       {!isPullSecretSet && <PullSecret isOcm={isOcm} defaultPullSecret={defaultPullSecret} />}
 
-      <HostsNetworkConfigurationControlGroup clusterExists={clusterExists} />
+      {
+        // Reason: In the single-cluster flow, the Host discovery phase is replaced by a single one-fits-all ISO download
+        !isSingleClusterFeatureEnabled && (
+          <HostsNetworkConfigurationControlGroup clusterExists={clusterExists} />
+        )
+      }
 
       <DiskEncryptionControlGroup
         values={values}

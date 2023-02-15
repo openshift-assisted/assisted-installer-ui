@@ -15,7 +15,6 @@ import {
   InfraEnv,
   InfraEnvUpdateParams,
   LoadingState,
-  WizardFooter,
 } from '../../../../common';
 import { HostsNetworkConfigurationType, InfraEnvsService } from '../../../services';
 import { FormViewHosts } from '../../clusterConfiguration/staticIp/components/FormViewHosts/FormViewHosts';
@@ -32,6 +31,7 @@ import { getDummyStaticIpInfo } from '../../clusterConfiguration/staticIp/data/d
 import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
 import { useDay2WizardContext } from './Day2WizardContext';
 import Day2WizardNav from './Day2WizardNav';
+import Day2WizardFooter from './Day2WizardFooter';
 
 const Day2StaticIP = () => {
   const { day2DiscoveryImageDialog } = useModalDialogsContext();
@@ -154,12 +154,10 @@ const Day2StaticIP = () => {
     <ClusterWizardStep
       navigation={<Day2WizardNav />}
       footer={
-        <WizardFooter
-          onNext={() => wizardContext.moveNext()}
-          onBack={() => wizardContext.moveBack()}
+        <Day2WizardFooter
+          isSubmitting={formState?.isSubmitting || false}
           isNextDisabled={!formState?.isValid || formState.isAutoSaveRunning}
           onCancel={day2DiscoveryImageDialog.close}
-          isSubmitting={formState?.isSubmitting}
         />
       }
     >

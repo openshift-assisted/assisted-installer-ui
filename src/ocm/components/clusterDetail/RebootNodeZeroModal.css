@@ -1,0 +1,7 @@
+.ai-reboot-modal .detail-list dt {
+  margin-top: var(--pf-global--spacer--lg);
+}
+
+.ai-reboot-modal__item {
+  margin-top: var(--pf-global--spacer--lg);
+}
