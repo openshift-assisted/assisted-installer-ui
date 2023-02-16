@@ -6,6 +6,7 @@ import { TangServer } from '../clusterConfiguration/DiskEncryptionFields/DiskEnc
 import { FeatureSupportLevelData } from '../featureSupportLevels';
 import {
   baseDomainValidationSchema,
+  dnsNameValidationSchema,
   getDefaultOpenShiftVersion,
   nameValidationSchema,
   pullSecretValidationSchema,
@@ -99,12 +100,16 @@ export const getClusterDetailsValidationSchema = ({
     if (pullSecretSet) {
       return Yup.object({
         name: validateName(),
-        baseDnsDomain: baseDomainValidationSchema.required('Required'),
+        baseDnsDomain: isOcm
+          ? baseDomainValidationSchema.required('Required')
+          : dnsNameValidationSchema.required('Required'),
       });
     }
     return Yup.object({
       name: validateName(),
-      baseDnsDomain: baseDomainValidationSchema.required('Required'),
+      baseDnsDomain: isOcm
+        ? baseDomainValidationSchema.required('Required')
+        : dnsNameValidationSchema.required('Required'),
       pullSecret: pullSecretValidationSchema.required('Required.'),
       SNODisclaimer: Yup.boolean().when(['highAvailabilityMode', 'openshiftVersion'], {
         // The disclaimer is required only if SNO is enabled and SNO feature is not fully supported in that version
