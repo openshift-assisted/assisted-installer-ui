@@ -78,11 +78,11 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
     dirty: boolean,
     submitForm: FormikHelpers<unknown>['submitForm'],
     cluster?: Cluster,
-  ): (() => Promise<void> | void) => {
+  ): (() => void) => {
     if (isViewerMode || (!dirty && !isUndefined(cluster) && canNextClusterDetails({ cluster }))) {
       return moveNext;
     }
-    return submitForm;
+    return () => void submitForm();
   };
 
   const initialValues = React.useMemo(
@@ -119,6 +119,7 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
         const toggleRedHatDnsService = (checked: boolean) =>
           setFieldValue('baseDnsDomain', checked ? managedDomains.map((d) => d.domain)[0] : '');
 
+        // TODO check
         const form = (
           <>
             <Grid hasGutter>

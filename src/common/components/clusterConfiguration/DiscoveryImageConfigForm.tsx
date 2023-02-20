@@ -92,6 +92,7 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
     imageType: imageType || 'minimal-iso',
   };
 
+  // TODO check
   const { t } = useTranslation();
   return (
     <Formik
@@ -128,7 +129,11 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
               </Stack>
             </ModalBoxBody>
             <ModalBoxFooter>
-              <Button onClick={submitForm} isDisabled={isSubmitting} isLoading={isSubmitting}>
+              <Button
+                onClick={() => void submitForm()}
+                isDisabled={isSubmitting}
+                isLoading={isSubmitting}
+              >
                 {isSubmitting ? t('ai:Generating') : t('ai:Generate Discovery ISO')}
               </Button>
               <Button key="cancel" variant="link" onClick={onCancel}>

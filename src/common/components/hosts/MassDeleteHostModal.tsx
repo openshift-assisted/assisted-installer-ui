@@ -55,6 +55,7 @@ const MassDeleteHostModal = ({
       setProgress(null);
     }
   };
+  // TODO check
   return (
     <Modal
       aria-label={t('ai:Delete hosts dialog')}
@@ -80,7 +81,11 @@ const MassDeleteHostModal = ({
         </Stack>
       </ModalBoxBody>
       <ModalBoxFooter>
-        <Button onClick={onClick} isDisabled={progress !== null} variant={ButtonVariant.danger}>
+        <Button
+          onClick={() => void onClick()}
+          isDisabled={progress !== null}
+          variant={ButtonVariant.danger}
+        >
           {t('ai:Delete hosts')}
         </Button>
         <Button onClick={onClose} variant={ButtonVariant.secondary} isDisabled={progress !== null}>

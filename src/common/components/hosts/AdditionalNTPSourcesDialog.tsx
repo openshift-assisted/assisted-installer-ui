@@ -62,6 +62,7 @@ const AdditionalNTPSourcesForm = ({
     onClose();
   };
 
+  // TODO check
   return (
     <Formik
       initialValues={initialValues}
@@ -93,7 +94,7 @@ const AdditionalNTPSourcesForm = ({
             <ModalBoxFooter>
               <Button
                 key="submit"
-                onClick={submitForm}
+                onClick={() => void submitForm()}
                 isDisabled={isSubmitting || !isValid || !dirty}
                 isLoading={isSubmitting}
               >
