@@ -36,7 +36,7 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
       formikActions.setStatus({
         error: {
           title: t('ai:Failed to download the discovery Image'),
-          message: error, // TODO(mlibra): parse it better!!
+          message: error as string, // TODO(mlibra): parse it better!!
         },
       });
     }

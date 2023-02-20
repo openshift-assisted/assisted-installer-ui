@@ -56,18 +56,18 @@ import {
 import { getErrorMessage } from '../../../common/utils';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
-const getFieldError = (errors: FormikErrors<unknown>, fieldName: string) => {
-  /* eslint-disable */
-  // @ts-ignore
-  return errors[fieldName]?.[0];
-  /* eslint-enable */
+type MacMappingFieldProps = { macAddress: string; name: string }[];
+
+const getFieldError = (errors: FormikErrors<MacMappingFieldProps>, fieldName: string): string => {
+  // eslint-disable-next-line
+  return errors[fieldName]?.[0] || '';
 };
 
 const MacMapping = () => {
-  const [field, { touched, error }] = useField<{ macAddress: string; name: string }[]>({
+  const [field, { touched, error }] = useField<MacMappingFieldProps>({
     name: 'macMapping',
   });
-  const { errors } = useFormikContext();
+  const { errors } = useFormikContext<MacMappingFieldProps>();
   const fieldId = getFieldId('macMapping', 'input');
   const isValid = !(touched && error);
   const { t } = useTranslation();
@@ -125,8 +125,7 @@ const MacMapping = () => {
 };
 
 const getNMState = (values: AddBmcValues, infraEnv: InfraEnvK8sResource): NMStateK8sResource => {
-  // eslint-disable-next-line
-  const config: any = yaml.load(values.nmState);
+  const config = yaml.load(values.nmState);
   const nmState = {
     apiVersion: 'agent-install.openshift.io/v1beta1',
     kind: 'NMStateConfig',
@@ -139,6 +138,7 @@ const getNMState = (values: AddBmcValues, infraEnv: InfraEnvK8sResource): NMStat
       },
     },
     spec: {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       config,
       interfaces: values.macMapping.filter((m) => m.macAddress.length && m.name.length),
     },
