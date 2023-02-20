@@ -119,9 +119,7 @@ const ClusterProperties = ({ cluster, externalMode = false }: ClusterPropertiesP
           <DetailItem title="Base domain" value={cluster.baseDnsDomain} testId="base-dns-domain" />
           <DetailItem
             title={<CpuArchTitle isMultiArchSupported={isMultiArchSupported} />}
-            value={
-              hasMultiCpuArchitecture ? 'Multiple CPU architectures' : underlyingCpuArchitecture
-            }
+            value={underlyingCpuArchitecture}
             testId="cpu-architecture"
           />
           <DetailItem
