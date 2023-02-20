@@ -85,6 +85,7 @@ const ClusterDeploymentReviewStep: React.FC<ClusterDeploymentReviewStepProps> = 
       isSubmitting={isSubmitting}
       isNextDisabled={isSubmitting || !canContinue}
       onBack={onBack}
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onNext={onNext}
       onCancel={onClose}
       nextButtonText={t('ai:Install cluster')}
