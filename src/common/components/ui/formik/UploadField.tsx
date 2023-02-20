@@ -19,14 +19,13 @@ const UploadField: React.FC<UploadFieldProps> = ({
   onBlur,
   allowEdittingUploadedText = true,
   dropzoneProps,
-  transformValue,
 }) => {
   const { t } = useTranslation();
 
   const [filename, setFilename] = React.useState<string>();
   const [isFileUploading, setIsFileUploading] = React.useState(false);
 
-  const [field, { touched, error }, helpers] = useField(name);
+  const [field, { touched, error }, helpers] = useField<string | File>(name);
   const fieldId = getFieldId(name, 'input', idPostfix);
   const isValid = !((touched || filename) && error);
 
@@ -78,9 +77,7 @@ const UploadField: React.FC<UploadFieldProps> = ({
         onChange={(value, filename) => {
           setFilename(filename);
           helpers.setTouched(true);
-          transformValue && typeof value === 'string'
-            ? helpers.setValue(transformValue(value))
-            : helpers.setValue(value);
+          helpers.setValue(value);
         }}
         onBlur={(e) => {
           field.onBlur(e);

@@ -101,7 +101,6 @@ export interface UploadFieldProps extends FieldProps {
   dropzoneProps?: Omit<DropzoneProps, 'onDropRejected'> & {
     onDropRejected?: (helpers: FieldHelperProps<string>) => DropFileEventHandler;
   };
-  transformValue?: (key: string) => void;
 }
 
 export interface TextAreaSecretProps extends TextAreaFieldProps {

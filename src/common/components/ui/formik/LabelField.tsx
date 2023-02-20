@@ -70,7 +70,11 @@ export const LabelField: React.FC<LabelFieldProps> = ({
           }}
           addKeys={[13, 32, 188]}
           renderTag={({ tag, key, onRemove, getTagDisplayValue }) => (
-            <LabelValue key={key} onClose={() => onRemove(key)} value={getTagDisplayValue(tag)} />
+            <LabelValue
+              key={key as number}
+              onClose={() => onRemove(key as number)}
+              value={getTagDisplayValue(tag)}
+            />
           )}
           addOnBlur
           inputProps={{
