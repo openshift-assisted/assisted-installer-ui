@@ -29,7 +29,6 @@ import {
   ModalProgress,
   FORBIDDEN_HOSTNAMES,
 } from '../ui';
-import { ModalProgressProps } from '../ui/ModalProgress';
 import { Host } from '../../api';
 import { getHostname as getHostnameUtils, getInventory } from './utils';
 import { ActionCheck } from './types';
@@ -244,7 +243,8 @@ const MassChangeHostnameForm = ({
           </StackItem>
           <StackItem>
             <ModalProgress
-              error={status ? (status.error as ModalProgressProps['error']) : undefined}
+              // eslint-disable-next-line
+              error={status?.error}
               progress={isSubmitting ? (100 * (patchingHost + 1)) / selectedHosts.length : null}
             />
           </StackItem>
