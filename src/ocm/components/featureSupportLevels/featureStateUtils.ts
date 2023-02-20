@@ -110,6 +110,23 @@ const getCnvDisabledReason = (activeFeatureConfiguration: ActiveFeatureConfigura
   return undefined;
 };
 
+const getLvmDisabledReason = (
+  activeFeatureConfiguration: ActiveFeatureConfiguration,
+  isSupported: boolean,
+) => {
+  if (!activeFeatureConfiguration) {
+    return undefined;
+  }
+  const operatorLabel = isSupported ? LVMS_OPERATOR_LABEL : LVM_OPERATOR_LABEL;
+  if (!isSupported) {
+    return `${operatorLabel} is not supported in this OpenShift version.`;
+  }
+  if (activeFeatureConfiguration.underlyingCpuArchitecture === CpuArchitecture.ARM) {
+    return `${operatorLabel} is not available when ARM CPU architecture is selected.`;
+  }
+  return undefined;
+};
+
 const getNetworkTypeSelectionDisabledReason = (cluster: Cluster | undefined) => {
   if (!cluster) {
     return undefined;
@@ -137,6 +154,9 @@ export const getFeatureDisabledReason = (
     }
     case 'CNV': {
       return getCnvDisabledReason(activeFeatureConfiguration);
+    }
+    case 'LVM': {
+      return getLvmDisabledReason(activeFeatureConfiguration, isSupported);
     }
     case 'ODF': {
       return getOdfDisabledReason(cluster, activeFeatureConfiguration, isSupported);
