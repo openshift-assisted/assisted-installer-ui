@@ -223,7 +223,9 @@ export const infraEnvColumn = (agents: AgentK8sResource[], t: TFunction): TableR
       const infraEnvName = getInfraEnvNameOfAgent(agent);
       const title = infraEnvName ? (
         <Link
-          to={`/multicloud/infrastructure/environments/details/${agent.metadata?.namespace}/${infraEnvName}/overview`}
+          to={`/multicloud/infrastructure/environments/details/${
+            agent.metadata?.namespace || ''
+          }/${infraEnvName}/overview`}
         >
           {infraEnvName}
         </Link>

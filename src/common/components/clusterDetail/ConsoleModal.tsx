@@ -55,7 +55,7 @@ export const WebConsoleHint: React.FC<WebConsoleHintProps> = ({ cluster, console
   const [isDNSExpanded, setIsDNSExpanded] = React.useState(true);
   const handleToggle = () => setIsDNSExpanded(!isDNSExpanded);
   const [apiVip = '', ingressVip = ''] = [cluster.apiVip, cluster.ingressVip];
-  const clusterUrl = `${cluster.name}.${cluster.baseDnsDomain}`;
+  const clusterUrl = `${cluster.name || ''}.${cluster.baseDnsDomain || ''}`;
   const appsUrl = `apps.${clusterUrl}`;
   const etcHosts = [
     `${apiVip}\tapi.${clusterUrl}`,
@@ -142,7 +142,7 @@ export const TroubleshootingOpenshiftConsoleButton: React.FC<WebConsoleHintProps
         iconPosition="left"
         isInline
         onClick={() => setOpen(true)}
-        data-testid={`${idPrefix}-troubleshooting-hint-open`}
+        data-testid={`${idPrefix || ''}-troubleshooting-hint-open`}
       >
         {t('ai:Not able to access the Web Console?')}
       </Button>

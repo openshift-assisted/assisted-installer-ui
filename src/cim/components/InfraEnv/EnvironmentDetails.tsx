@@ -134,7 +134,7 @@ const EnvironmentDetails: React.FC<EnvironmentDetailsProps> = ({
               <DescriptionListTerm>{t('ai:Labels')}</DescriptionListTerm>
               <DescriptionListDescription>
                 {Object.keys(infraEnv.metadata?.labels || {}).map((k) => (
-                  <LabelValue key={k} value={`${k}=${infraEnv.metadata?.labels?.[k]}`} />
+                  <LabelValue key={k} value={`${k}=${infraEnv.metadata?.labels?.[k] || ''}`} />
                 ))}
               </DescriptionListDescription>
             </DescriptionListGroup>

@@ -18,14 +18,14 @@ export type DetailListProps = {
   titleComponent?: TextProps['component'];
 };
 
+export type DetailItemList = {
+  title: string;
+  value?: string;
+}[];
+
 export type DetailItemProps = {
   title: string | ReactNode;
-  value?:
-    | {
-        title: string;
-        value?: string;
-      }[]
-    | React.ReactNode;
+  value?: DetailItemList | React.ReactNode;
   idPrefix?: string;
   isHidden?: boolean;
   classNameValue?: string;
@@ -43,6 +43,10 @@ export const DetailList: React.FC<DetailListProps> = ({
     </TextList>
   </TextContent>
 );
+
+const hasDetailItemList = (data: DetailItemProps['value']): data is DetailItemList => {
+  return Array.isArray(data);
+};
 
 export const DetailItem: React.FC<DetailItemProps & WithTestID> = ({
   title,
@@ -67,7 +71,7 @@ export const DetailItem: React.FC<DetailItemProps & WithTestID> = ({
         data-testid={testId ? `${testId}-value` : undefined}
         className={classNameValue}
       >
-        {Array.isArray(value) ? (
+        {hasDetailItemList(value) ? (
           <TextList component={TextListVariants.dl}>
             {value.map((item, idx) => [
               <TextListItem
