@@ -9,7 +9,7 @@ import {
 } from '@patternfly/react-core';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
-type ModalProgressProps = {
+export type ModalProgressProps = {
   error?: {
     title: string;
     message: string;

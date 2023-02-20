@@ -30,7 +30,7 @@ export const useFieldErrorMsg = ({ name, inputError, validate }: Props): string 
       setHadValue(!!field.value);
     }
   }, [field.value, setHadValue]);
-  const showError = field.value || (!field.value && hadValue);
+  const showError = !!field.value || (!field.value && hadValue);
   const errorMessage = adaptErrorInvalidFormat((showError ? error : '') || inputError);
   return errorMessage;
 };
