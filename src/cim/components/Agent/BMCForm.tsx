@@ -131,7 +131,7 @@ const getNMState = (values: AddBmcValues, infraEnv: InfraEnvK8sResource): NMStat
     apiVersion: 'agent-install.openshift.io/v1beta1',
     kind: 'NMStateConfig',
     metadata: {
-      generateName: `${infraEnv.metadata?.name}-`,
+      generateName: `${infraEnv.metadata?.name || ''}-`,
       namespace: infraEnv.metadata?.namespace,
       labels: {
         [AGENT_BMH_NAME_LABEL_KEY]: values.name,

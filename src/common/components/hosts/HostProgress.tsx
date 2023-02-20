@@ -28,7 +28,7 @@ const HostProgress = ({ host }: { host: Host }) => {
   const stages = getHostProgressStages(host);
   const { currentStage, progressInfo } = getHostProgress(host);
   const currentStageNumber = getHostProgressStageNumber(host);
-  const progressLabel = `${currentStage}${progressInfo ? `: ${progressInfo}` : ' '}`;
+  const progressLabel = `${currentStage || ''}${progressInfo ? `: ${progressInfo}` : ' '}`;
 
   return (
     <Progress

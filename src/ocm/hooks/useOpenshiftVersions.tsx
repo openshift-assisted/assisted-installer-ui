@@ -90,7 +90,7 @@ export default function useOpenshiftVersions(): UseOpenshiftVersionsType {
       const selectedVersion = findVersionItemByVersion(version);
       return supportedVersionLevels.includes(selectedVersion?.supportLevel || '');
     },
-    [findVersionItemByVersion],
+    [findVersionItemByVersion, versions.length],
   );
 
   const getCpuArchitectures = React.useCallback(
