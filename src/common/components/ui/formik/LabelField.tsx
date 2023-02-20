@@ -80,6 +80,7 @@ export const LabelField: React.FC<LabelFieldProps> = ({
           inputProps={{
             autoFocus: false,
             className: 'label-field__input',
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             placeholder: field.value?.length ? '' : 'app=frontend',
             spellCheck: 'false',
             id: 'tags-input',

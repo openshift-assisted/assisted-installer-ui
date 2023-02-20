@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import mapKeys from 'lodash/mapKeys';
 import camelCase from 'lodash/camelCase';
 import uniq from 'lodash/uniq';
@@ -91,8 +90,10 @@ export const shouldShowClusterInstallationError = (
   return ['error', 'cancelled'].includes(clusterStatus);
 };
 
+/* eslint-disable */
 export const formatEventsData = (rawData: any): EventList =>
   rawData.map((event: any) => mapKeys(event, (value, key) => camelCase(key)));
+/* eslint-enable */
 
 // events are downloaded using ACM's wrapped fetchGet(), so the backendUrl is missing here
 const getEventsURL = (
