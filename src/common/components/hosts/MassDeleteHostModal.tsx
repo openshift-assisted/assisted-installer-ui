@@ -55,7 +55,6 @@ const MassDeleteHostModal = ({
       setProgress(null);
     }
   };
-  // TODO check
   return (
     <Modal
       aria-label={t('ai:Delete hosts dialog')}

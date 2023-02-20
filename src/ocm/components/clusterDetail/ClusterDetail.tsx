@@ -75,7 +75,6 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
     void doItAsync();
   }, [cluster.id]);
 
-  // TODO check
   return (
     <Stack hasGutter>
       <StackItem>

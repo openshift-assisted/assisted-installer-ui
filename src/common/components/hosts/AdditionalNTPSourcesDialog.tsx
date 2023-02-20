@@ -62,7 +62,6 @@ const AdditionalNTPSourcesForm = ({
     onClose();
   };
 
-  // TODO check
   return (
     <Formik
       initialValues={initialValues}
@@ -94,7 +93,8 @@ const AdditionalNTPSourcesForm = ({
             <ModalBoxFooter>
               <Button
                 key="submit"
-                onClick={() => void submitForm()}
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                onClick={submitForm}
                 isDisabled={isSubmitting || !isValid || !dirty}
                 isLoading={isSubmitting}
               >

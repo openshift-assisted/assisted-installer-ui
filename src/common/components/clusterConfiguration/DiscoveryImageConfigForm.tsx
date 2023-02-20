@@ -92,7 +92,6 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
     imageType: imageType || 'minimal-iso',
   };
 
-  // TODO check
   const { t } = useTranslation();
   return (
     <Formik
@@ -130,7 +129,8 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
             </ModalBoxBody>
             <ModalBoxFooter>
               <Button
-                onClick={() => void submitForm()}
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                onClick={submitForm}
                 isDisabled={isSubmitting}
                 isLoading={isSubmitting}
               >

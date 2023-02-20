@@ -119,7 +119,6 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
         const toggleRedHatDnsService = (checked: boolean) =>
           setFieldValue('baseDnsDomain', checked ? managedDomains.map((d) => d.domain)[0] : '');
 
-        // TODO check
         const form = (
           <>
             <Grid hasGutter>

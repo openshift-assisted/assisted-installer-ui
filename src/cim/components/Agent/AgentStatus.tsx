@@ -77,7 +77,6 @@ const AgentStatus: React.FC<AgentStatusProps> = ({
             </Stack>
           }
           footerContent={
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             <Button variant="link" onClick={() => onApprove(agent)} isInline>
               {t('ai:Approve host')}
             </Button>
