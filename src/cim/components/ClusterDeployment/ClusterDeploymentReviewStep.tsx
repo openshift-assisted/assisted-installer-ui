@@ -108,7 +108,9 @@ const ClusterDeploymentReviewStep: React.FC<ClusterDeploymentReviewStepProps> = 
           <DetailList>
             <DetailItem
               title={t('ai:Cluster address')}
-              value={`${clusterDeployment.metadata?.name}.${clusterDeployment.spec?.baseDomain}`}
+              value={`${clusterDeployment.metadata?.name || ''}.${
+                clusterDeployment.spec?.baseDomain || ''
+              }`}
               testId="cluster-address"
             />
             <DetailItem

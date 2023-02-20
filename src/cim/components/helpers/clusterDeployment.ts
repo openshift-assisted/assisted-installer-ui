@@ -132,7 +132,9 @@ export const getConsoleUrl = (
 ) =>
   clusterDeployment?.status?.webConsoleURL ||
   (WORKAROUND_COMPUTEDURLS_CLUSTER_STATUS.includes(getClusterStatus(agentClusterInstall)[0])
-    ? `https://console-openshift-console.apps.${clusterDeployment?.spec?.clusterName}.${clusterDeployment?.spec?.baseDomain}`
+    ? `https://console-openshift-console.apps.${clusterDeployment?.spec?.clusterName || ''}.${
+        clusterDeployment?.spec?.baseDomain || ''
+      }`
     : undefined);
 
 export const getClusterApiUrl = (
@@ -141,7 +143,9 @@ export const getClusterApiUrl = (
 ) =>
   clusterDeployment?.status?.apiURL ||
   (WORKAROUND_COMPUTEDURLS_CLUSTER_STATUS.includes(getClusterStatus(agentClusterInstall)[0])
-    ? `https://api.${clusterDeployment?.spec?.clusterName}.${clusterDeployment?.spec?.baseDomain}`
+    ? `https://api.${clusterDeployment?.spec?.clusterName || ''}.${
+        clusterDeployment?.spec?.baseDomain || ''
+      }`
     : undefined);
 
 type ClusterPropertyKeys =

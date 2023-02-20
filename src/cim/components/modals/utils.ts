@@ -17,7 +17,7 @@ export const getBareMetalHostCredentialsSecret = (
     password: btoa(values.password),
   },
   metadata: {
-    generateName: `bmc-${values.hostname.split('.').shift()}-`,
+    generateName: `bmc-${values.hostname.split('.').shift() || ''}-`,
     namespace,
   },
   type: 'Opaque',
