@@ -27,7 +27,7 @@ export const useFieldErrorMsg = ({ name, inputError, validate }: Props): string 
   const [hadValue, setHadValue] = React.useState<boolean>(false);
   React.useEffect(() => {
     if (field.value) {
-      setHadValue(field.value);
+      setHadValue(!!field.value);
     }
   }, [field.value, setHadValue]);
   const showError = field.value || (!field.value && hadValue);

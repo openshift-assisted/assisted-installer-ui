@@ -18,7 +18,7 @@ const AdditionalNTPSourcesField: React.FC<AdditionalNTPSourcesFieldProps> = ({
   isDisabled,
   helperText,
 }) => {
-  const [field, , { setValue, setTouched }] = useField(name);
+  const [field, , { setValue, setTouched }] = useField<string>(name);
   const formatAdditionalNtpSources = () => {
     if (field.value) {
       setValue(trimCommaSeparatedList(field.value));

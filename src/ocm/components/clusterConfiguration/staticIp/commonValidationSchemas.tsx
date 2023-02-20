@@ -148,7 +148,7 @@ export const getIpAddressInSubnetValidationSchema = (
   return Yup.string().test(
     'is-in-subnet',
     `IP Address is outside of the machine network ${subnet}`,
-    function (value) {
+    function (value: string) {
       if (!value) {
         return true;
       }

@@ -20,7 +20,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
   callFormikOnChange = true,
   ...props
 }) => {
-  const [field, { touched, error }] = useField(props.name);
+  const [field, { touched, error }] = useField<string>(props.name);
   const fieldId = getFieldId(props.name, 'input', idPostfix);
   const isValid = !(touched && error);
   const errorMessage = !isValid ? error : '';
