@@ -23,7 +23,9 @@ const SNODisclaimer = ({
   const generalSNOFacts = (
     <>
       <ListItem>
-        {t('ai:Installing SNO will result in a non-highly available OpenShift deployment.')}
+        {t(
+          'ai:Installing SNO will result in an OpenShift deployment that is not highly available.',
+        )}
       </ListItem>
       {!snoExpansionSupported && (
         <ListItem>
