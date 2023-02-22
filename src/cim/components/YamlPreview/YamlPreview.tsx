@@ -39,11 +39,14 @@ type YamlPreviewProps = {
 
 const YamlPreview: React.FC<YamlPreviewProps> = ({ children, code, setPreviewOpen, loading }) => {
   const editorDidMount = React.useCallback((editor) => {
+    /* eslint-disable */
     editor.layout();
     editor.focus();
+    /* eslint-enable */
   }, []);
 
   const editorWillMount = React.useCallback((monaco) => {
+    // eslint-disable-next-line
     monaco.editor.defineTheme('acm-console', theme);
   }, []);
   const { t } = useTranslation();

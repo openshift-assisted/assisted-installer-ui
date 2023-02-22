@@ -25,7 +25,7 @@ import { WithTestID } from '../../types';
 import { usePagination } from './usePagination';
 import './HostsTable.css';
 
-const rowKey = ({ rowData }: ExtraParamsType) => rowData?.key;
+const rowKey = ({ rowData }: ExtraParamsType) => rowData?.key as string;
 
 type TableMemoProps = {
   rows: TableProps['rows'];
@@ -41,6 +41,7 @@ type TableMemoProps = {
 const TableMemo: React.FC<WithTestID & TableMemoProps> = React.memo(
   ({ rows, cells, onCollapse, className, sortBy, onSort, rowWrapper, testId, actionResolver }) => {
     const tableActionResolver = React.useCallback(
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       (rowData) => actionResolver?.(rowData.obj) as (IAction | ISeparator)[],
       [actionResolver],
     );
