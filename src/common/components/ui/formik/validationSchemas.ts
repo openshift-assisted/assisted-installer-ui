@@ -374,7 +374,7 @@ export const baseDomainValidationSchema = Yup.string()
   )
   .test(
     'dns-name-validation',
-    'Value "${value}" is not valid DNS name. Example: basedomain.example.com',
+    '"${value}" is not valid. DNS base domains must have two characters after the dot and must not end in a special character.',
     (value: string) => {
       if (value === '') return true;
       else return validateBaseDomainName(value);
