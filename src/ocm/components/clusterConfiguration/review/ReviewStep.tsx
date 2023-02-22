@@ -34,12 +34,13 @@ const ReviewStep = ({ cluster }: { cluster: Cluster }) => {
   const dispatch = useDispatch();
 
   const hasSupportLevel = React.useMemo<boolean>(() => {
+    let hasSupportLevels = false;
     try {
-      getLimitedFeatureSupportLevels(cluster, featureSupportLevelData, t);
-      return true;
+      hasSupportLevels = !!getLimitedFeatureSupportLevels(cluster, featureSupportLevelData, t);
     } catch (e) {
-      return false;
+      // Missing support levels
     }
+    return hasSupportLevels;
   }, [cluster, featureSupportLevelData, t]);
 
   const handleClusterInstall = async () => {

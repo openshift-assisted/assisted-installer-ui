@@ -14,7 +14,6 @@ export const getLimitedFeatureSupportLevels = (
   if (!cluster.featureUsage) {
     throw t("ai:cluster doesn't contain the feature_usage field");
   }
-  const ret: FeatureIdToSupportLevel = {};
   const featureUsage = stringToJSON<ClusterFeatureUsage>(cluster.featureUsage);
   if (featureUsage === undefined) {
     throw t('ai:Error parsing cluster feature_usage field');
@@ -28,6 +27,8 @@ export const getLimitedFeatureSupportLevels = (
       openshiftVersion: cluster.openshiftVersion,
     });
   }
+
+  const ret: FeatureIdToSupportLevel = {};
   for (const featureId of usedFeatureIds) {
     if (featureId in versionSupportLevelsMap) {
       const supportLevel = versionSupportLevelsMap[featureId];
