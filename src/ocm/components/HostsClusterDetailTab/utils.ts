@@ -29,9 +29,7 @@ const disabledTabResult = (tooltipMessage: string) => ({
 });
 
 export const getAddHostTabDetails = ({ cluster }: { cluster: OcmClusterType }) => {
-  // TODO MGMT-11768 Remove "cannot edit" and make the content read-only (assuming the other conditions are satisfied)
-  const isHiddenTab =
-    !cluster.canEdit || cluster.state !== 'ready' || cluster.product?.id !== 'OCP-AssistedInstall';
+  const isHiddenTab = cluster.state !== 'ready' || cluster.product?.id !== 'OCP-AssistedInstall';
   if (isHiddenTab) {
     return hiddenTabResult;
   }
