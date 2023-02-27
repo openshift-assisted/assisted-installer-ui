@@ -61,10 +61,11 @@ const nicsColumns = [
   // { title: 'Product' },
 ];
 
+// eslint-disable-next-line
 const nicsRowKey = ({ rowData }: ExtraParamsType) => rowData?.name?.title;
 
 const NICsTableRowWrapper = (props: RowWrapperProps) => (
-  <RowWrapper {...props} data-testid={`nic-row:${props.row?.key}`} />
+  <RowWrapper {...props} data-testid={`nic-row:${(props?.row?.key as string) || ''}`} />
 );
 
 const NicsTable: React.FC<NicsTableProps & WithTestID> = ({ interfaces, testId }) => {

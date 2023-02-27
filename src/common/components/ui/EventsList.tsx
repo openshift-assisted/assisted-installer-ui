@@ -15,7 +15,7 @@ import { fitContent, noPadding } from './table';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 const getEventRowKey = ({ rowData }: ExtraParamsType) =>
-  // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+  // eslint-disable-next-line
   rowData?.props?.event.sortableTime + rowData?.props?.event.message;
 
 const getLabelColor = (severity: Event['severity']) => {

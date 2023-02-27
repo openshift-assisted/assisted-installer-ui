@@ -70,12 +70,17 @@ export const LabelField: React.FC<LabelFieldProps> = ({
           }}
           addKeys={[13, 32, 188]}
           renderTag={({ tag, key, onRemove, getTagDisplayValue }) => (
-            <LabelValue key={key} onClose={() => onRemove(key)} value={getTagDisplayValue(tag)} />
+            <LabelValue
+              key={key as number}
+              onClose={() => onRemove(key as number)}
+              value={getTagDisplayValue(tag)}
+            />
           )}
           addOnBlur
           inputProps={{
             autoFocus: false,
             className: 'label-field__input',
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             placeholder: field.value?.length ? '' : 'app=frontend',
             spellCheck: 'false',
             id: 'tags-input',

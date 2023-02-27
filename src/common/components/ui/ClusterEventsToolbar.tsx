@@ -184,8 +184,7 @@ const ClusterEventsToolbar: React.FC<ClustersListToolbarProps> = ({
       const typeId = (typeof type === 'string' ? type : type.key) || '';
       setFilters({
         ...filters,
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
+        // eslint-disable-next-line
         [typeId]: filters[typeId].filter((v: string) => v !== id),
       });
     } else {

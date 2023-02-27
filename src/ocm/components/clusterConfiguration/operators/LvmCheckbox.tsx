@@ -52,11 +52,15 @@ const LvmCheckbox = ({ clusterId, openshiftVersion }: ClusterOperatorProps) => {
   const [disabledReason, setDisabledReason] = useState<string | undefined>();
 
   React.useEffect(() => {
+    let reason = undefined;
     if (openshiftVersion) {
-      const lvmSupport = featureSupportLevel.getFeatureSupportLevel(openshiftVersion, 'LVM');
-      const reason = getLvmIncompatibleWithCnvReason(values, lvmSupport);
-      setDisabledReason(reason);
+      reason = featureSupportLevel.getFeatureDisabledReason(openshiftVersion, 'LVM');
+      if (!reason) {
+        const lvmSupport = featureSupportLevel.getFeatureSupportLevel(openshiftVersion, 'LVM');
+        reason = getLvmIncompatibleWithCnvReason(values, lvmSupport);
+      }
     }
+    setDisabledReason(reason);
   }, [values, openshiftVersion, featureSupportLevel]);
 
   return (

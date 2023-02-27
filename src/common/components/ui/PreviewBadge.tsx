@@ -62,7 +62,7 @@ const PreviewBadge: React.FC<PreviewBadgeProps> = ({
         onClick={(e) => e.preventDefault()}
         icon={<InfoCircleIcon color="var(--pf-c-label__content--Color)" />}
         className={clsName}
-        data-testid={`${testId}`}
+        data-testid={testId}
       >
         {text}
       </Label>

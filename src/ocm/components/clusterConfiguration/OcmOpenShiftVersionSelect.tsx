@@ -37,7 +37,7 @@ const getOpenshiftVersionHelperText = (
     );
   }
 
-  const selectedVersion = versions.find((version) => version.label === selectedVersionValue);
+  const selectedVersion = versions.find((version) => version.value === selectedVersionValue);
   if (!selectedVersionValue || !selectedVersion) {
     return null;
   }
@@ -74,14 +74,11 @@ const OcmOpenShiftVersionSelect = ({ versions }: OcmOpenShiftVersionSelectProps)
         })),
     [versions, t],
   );
-  const defaultVersion = versions.find((v) => v.default)?.label || versions[0]?.label || '';
 
   return (
     <OpenShiftVersionDropdown
       name="openshiftVersion"
-      defaultValue={defaultVersion}
       items={selectOptions}
-      isDisabled={versions.length === 0}
       versions={versions}
       getHelperText={getOpenshiftVersionHelperText}
       showReleasesLink={ocmClient !== undefined}

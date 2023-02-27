@@ -24,12 +24,10 @@ export type HelperTextType = (
 
 type OpenShiftVersionDropdownProps = {
   name: string;
-  defaultValue: string | undefined;
   items: {
     label: string;
     value: string;
   }[];
-  isDisabled: boolean;
   versions: OpenshiftVersionOptionType[];
   getHelperText: HelperTextType;
   showReleasesLink: boolean;
@@ -37,19 +35,28 @@ type OpenShiftVersionDropdownProps = {
 
 export const OpenShiftVersionDropdown = ({
   name,
-  defaultValue,
   items,
-  isDisabled,
   versions,
   getHelperText,
   showReleasesLink,
 }: OpenShiftVersionDropdownProps) => {
   const [field, , { setValue }] = useField(name);
   const [isOpen, setOpen] = React.useState(false);
-  const [current, setCurrent] = React.useState(defaultValue);
   const { t } = useTranslation();
-  const [helperText, setHelperText] = React.useState(getHelperText(versions, defaultValue, t));
   const fieldId = getFieldId(name, 'input');
+  const isDisabled = versions.length === 0;
+
+  const { defaultLabel, defaultValue } = React.useMemo(() => {
+    const defaultVersion = versions.find((item) => item.default);
+    return {
+      defaultLabel: defaultVersion?.label || '',
+      defaultValue: defaultVersion?.value || '',
+    };
+  }, [versions]);
+
+  const [helperText, setHelperText] = React.useState(getHelperText(versions, defaultValue, t));
+  const [current, setCurrent] = React.useState<string>(defaultLabel);
+
   const dropdownItems = items.map(({ value, label }) => (
     <DropdownItem key={value} id={value}>
       {label}
@@ -58,15 +65,16 @@ export const OpenShiftVersionDropdown = ({
 
   const onSelect = React.useCallback(
     (event?: React.SyntheticEvent<HTMLDivElement>) => {
-      const currentValue = event?.currentTarget.innerText
-        ? event?.currentTarget.innerText
-        : defaultValue;
-      setCurrent(currentValue ? currentValue : '');
-      setValue(event?.currentTarget.id);
-      setHelperText(getHelperText(versions, currentValue, t));
-      setOpen(false);
+      const newLabel = event?.currentTarget.innerText;
+      const newValue = event?.currentTarget.id;
+      if (newLabel && newValue) {
+        setCurrent(newLabel);
+        setValue(newValue);
+        setHelperText(getHelperText(versions, newValue, t));
+        setOpen(false);
+      }
     },
-    [setCurrent, setHelperText, setOpen, defaultValue, getHelperText, t, versions, setValue],
+    [setCurrent, setHelperText, setOpen, getHelperText, t, versions, setValue],
   );
 
   const toggle = React.useMemo(
