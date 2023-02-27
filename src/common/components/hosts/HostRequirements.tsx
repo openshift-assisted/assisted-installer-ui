@@ -75,7 +75,6 @@ export const HostRequirementsList: React.FC<HostRequirementsListProps> = ({
         {t(
           "ai:Also note that each host's disk write speed should meet the minimum requirements to run OpenShift. ",
         )}
-        '
         <ExternalLink href={'https://access.redhat.com/solutions/4885641'}>
           {t('ai:Learn more')}
         </ExternalLink>
