@@ -16,10 +16,18 @@ import { OcmCheckboxField } from '../../ui/OcmFormFields';
 
 const CNV_FIELD_NAME = 'useContainerNativeVirtualization';
 
-const CnvLabel = ({ clusterId }: { clusterId: ClusterOperatorProps['clusterId'] }) => {
+const CnvLabel = ({
+  clusterId,
+  disabledReason,
+}: {
+  clusterId: ClusterOperatorProps['clusterId'];
+  disabledReason?: string;
+}) => {
   return (
     <>
-      Install OpenShift Virtualization{' '}
+      <Tooltip hidden={!disabledReason} content={disabledReason}>
+        <span>Install OpenShift Virtualization </span>
+      </Tooltip>
       <PopoverIcon
         component={'a'}
         headerContent="Additional Requirements"
@@ -61,14 +69,12 @@ const CnvCheckbox = ({ clusterId, openshiftVersion }: ClusterOperatorProps) => {
 
   return (
     <FormGroup isInline fieldId={fieldId}>
-      <Tooltip hidden={!disabledReason} content={disabledReason}>
-        <OcmCheckboxField
-          name={CNV_FIELD_NAME}
-          label={<CnvLabel clusterId={clusterId} />}
-          helperText={<CnvHelperText />}
-          isDisabled={!!disabledReason}
-        />
-      </Tooltip>
+      <OcmCheckboxField
+        name={CNV_FIELD_NAME}
+        label={<CnvLabel clusterId={clusterId} disabledReason={disabledReason} />}
+        helperText={<CnvHelperText />}
+        isDisabled={!!disabledReason}
+      />
     </FormGroup>
   );
 };
