@@ -52,7 +52,6 @@ import UpdateDay2ApiVipModal from './UpdateDay2ApiVipModal';
 import { UpdateDay2ApiVipFormProps } from './UpdateDay2ApiVipForm';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-import { getErrorMessage } from '../../../common/utils';
 import { selectCurrentClusterPermissionsState, selectCurrentClusterState } from '../../selectors';
 import { hardwareStatusColumn } from './HardwareStatus';
 
@@ -169,7 +168,7 @@ export const useHostsTable = (cluster: Cluster) => {
         resetCluster ? await resetCluster() : dispatch(updateHost(data));
       } catch (e) {
         handleApiError(e, () =>
-          addAlert({ title: 'Failed to update ODF status', message: getErrorMessage(e) }),
+          addAlert({ title: 'Failed to update ODF status', message: getApiErrorMessage(e) }),
         );
         if (isUnknownServerError(e as Error)) {
           dispatch(setServerUpdateError());
@@ -510,9 +509,8 @@ export const HostsTableModals = ({
             }
           }}
           getEditErrorMessage={(e: Error) => {
-            let message = '';
-            handleApiError(e, () => (message = getApiErrorMessage(e)));
-            return message;
+            handleApiError(e);
+            return getApiErrorMessage(e);
           }}
         />
       )}

@@ -30,6 +30,9 @@ const CLUSTER_NAME_VALID_CHARS_REGEX = /^[a-z0-9-]*$/;
 const SSH_PUBLIC_KEY_REGEX =
   /^(ssh-rsa|ssh-ed25519|ecdsa-[-a-z0-9]*) AAAA[0-9A-Za-z+/]+[=]{0,3}( .+)?$/;
 const DNS_NAME_REGEX = /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/;
+const BASE_DOMAIN_REGEX = /^([a-z0-9]+(-[a-z0-9]+)*)+$/;
+const DNS_NAME_REGEX_OCM = /^([a-z0-9]+(-[a-z0-9]+)*[.])+[a-z]{2,}$/;
+
 const PROXY_DNS_REGEX =
   /^([a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62}){1}(\.[a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62})*[._]?$/;
 const IP_V4_ZERO = '0.0.0.0';
@@ -355,6 +358,28 @@ export const dnsNameValidationSchema = Yup.string()
     message: 'Value "${value}" is not valid DNS name. Example: basedomain.example.com', // eslint-disable-line no-template-curly-in-string
     excludeEmptyString: true,
   });
+
+export const validateBaseDomainName = (baseDomainName: string) => {
+  return (
+    baseDomainName.match(BASE_DOMAIN_REGEX) !== null ||
+    baseDomainName.match(DNS_NAME_REGEX_OCM) !== null
+  );
+};
+
+export const baseDomainValidationSchema = Yup.string()
+  .test(
+    'dns-name-label-length',
+    'Single label of the DNS name can not be longer than 63 characters.',
+    (value: string) => (value || '').split('.').every((label: string) => label.length <= 63),
+  )
+  .test(
+    'dns-name-validation',
+    '"${value}" is not valid. DNS base domains must have two characters after the dot and must not end in a special character.',
+    (value: string) => {
+      if (value === '') return true;
+      else return validateBaseDomainName(value);
+    },
+  );
 
 export const hostPrefixValidationSchema = ({
   clusterNetworkCidr,
