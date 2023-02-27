@@ -259,6 +259,7 @@
   "ai:Enter cluster name": "Enter cluster name",
   "ai:Enter geographic location for the environment": "Enter geographic location for the environment",
   "ai:Enter infrastructure environment name": "Enter infrastructure environment name",
+  "ai:Enter key=value and then press 'enter' or 'space' or use a ',' to input the label.": "Enter key=value and then press 'enter' or 'space' or use a ',' to input the label.",
   "ai:Enter the hostname for the Host": "Enter the hostname for the Host",
   "ai:Enter the name for the Host": "Enter the name for the Host",
   "ai:Environment details": "Environment details",
