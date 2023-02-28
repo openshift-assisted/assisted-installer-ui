@@ -199,6 +199,7 @@ export const HostsClusterDetailTabContent = ({
       cluster={day2Cluster}
       resetCluster={resetCluster}
       ocpConsoleUrl={ocmCluster?.console?.url}
+      canEdit={ocmCluster.canEdit}
     >
       <FeatureSupportLevelProvider loadingUi={<LoadingState />} cluster={day2Cluster}>
         <AddHosts />
