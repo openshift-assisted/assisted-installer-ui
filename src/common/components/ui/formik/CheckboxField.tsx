@@ -37,7 +37,7 @@ const CheckboxField: React.FC<CheckboxFieldProps> = ({
           )
         }
         isValid={isValid}
-        isChecked={field.value}
+        isChecked={field.value as boolean}
         onChange={(value, event) => {
           field.onChange(event);
           onChange && onChange(value, event);
