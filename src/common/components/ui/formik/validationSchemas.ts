@@ -20,7 +20,7 @@ import {
   locationValidationMessages,
   nameValidationMessages,
 } from './constants';
-import { allSubnetsIPv4, trimCommaSeparatedList, trimSshPublicKey } from './utils';
+import { allSubnetsIPv4, getAddress, trimCommaSeparatedList, trimSshPublicKey } from './utils';
 
 const ALPHANUMERIC_REGEX = /^[a-zA-Z0-9]+$/;
 const NAME_START_END_REGEX = /^[a-z0-9](.*[a-z0-9])?$/;
@@ -153,12 +153,7 @@ export const pullSecretValidationSchema = Yup.string().test(
 );
 
 const isValidIpWithoutSuffix = (addr: string) => {
-  let address = undefined;
-  if (Address4.isValid(addr)) {
-    address = new Address4(addr);
-  } else if (Address6.isValid(addr)) {
-    address = new Address6(addr);
-  }
+  const address = getAddress(addr);
   return !!address && address.address === address.addressMinusSuffix;
 };
 
@@ -237,6 +232,20 @@ const vipUniqueValidationSchema = ({ ingressVip, apiVip }: NetworkConfigurationV
     },
   );
 
+const vipBroadcastValidationSchema = ({ machineNetworks }: NetworkConfigurationValues) =>
+  Yup.string().test(
+    'vip-no-broadcast',
+    'The IP address cannot be a broadcast address',
+    (value: string) => {
+      const vipAddress = getAddress(value);
+      const machineNetwork = getAddress(
+        (machineNetworks?.length && machineNetworks[0].cidr) || '',
+      )?.endAddress();
+
+      return machineNetwork?.address !== vipAddress?.address;
+    },
+  );
+
 // like .required() but passes for initially empty field
 const requiredOnceSet = (initialValue?: string, message?: string) =>
   Yup.string().test(
@@ -278,6 +287,7 @@ export const vipNoSuffixValidationSchema = (
     then: requiredOnceSet(initialValue, 'Required. Please provide an IP address')
       .concat(ipNoSuffixValidationSchema)
       .concat(vipRangeValidationSchema(hostSubnets, values, false))
+      .concat(vipBroadcastValidationSchema(values))
       .concat(vipUniqueValidationSchema(values))
       .when('hostSubnet', {
         is: (hostSubnet) => hostSubnet !== NO_SUBNET_SET,
