@@ -34,7 +34,7 @@ import ViewClusterEventsButton from '../../../common/components/ui/ViewClusterEv
 const { addAlert } = alertsSlice.actions;
 
 export const AddHosts = () => {
-  const { cluster, resetCluster } = React.useContext(AddHostsContext);
+  const { cluster, resetCluster, canEdit } = React.useContext(AddHostsContext);
   const [isSubmitting, setSubmitting] = React.useState(false);
   const clusterVarieties = useClusterStatusVarieties(cluster);
 
@@ -101,7 +101,7 @@ export const AddHosts = () => {
                 variant={ButtonVariant.primary}
                 name="install"
                 onClick={() => void handleHostsInstall()}
-                isDisabled={isSubmitting || getReadyHostCount(cluster) === 0}
+                isDisabled={!canEdit || isSubmitting || getReadyHostCount(cluster) === 0}
               >
                 Install ready hosts
               </ToolbarButton>

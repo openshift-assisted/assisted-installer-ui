@@ -18,9 +18,9 @@ import { getLvmIncompatibleWithCnvReason } from '../../featureSupportLevels/feat
 
 const LVM_FIELD_NAME = 'useOdfLogicalVolumeManager';
 
-type LvmLabelProps = ClusterOperatorProps; // & { operator: ExposedOperatorName };
+type LvmLabelProps = ClusterOperatorProps & { disabledReason?: string };
 
-const LvmLabel = ({ openshiftVersion, clusterId }: LvmLabelProps) => {
+const LvmLabel = ({ openshiftVersion, clusterId, disabledReason }: LvmLabelProps) => {
   const { t } = useTranslation();
   const [operator, setOperator] = React.useState('');
 
@@ -33,7 +33,9 @@ const LvmLabel = ({ openshiftVersion, clusterId }: LvmLabelProps) => {
 
   return (
     <>
-      Install {operatorLabel}{' '}
+      <Tooltip hidden={!disabledReason} content={disabledReason}>
+        <span>Install {operatorLabel} </span>
+      </Tooltip>
       <PopoverIcon
         component={'a'}
         headerContent="Additional Requirements"
@@ -65,16 +67,20 @@ const LvmCheckbox = ({ clusterId, openshiftVersion }: ClusterOperatorProps) => {
 
   return (
     <FormGroup isInline fieldId={fieldId}>
-      <Tooltip hidden={!disabledReason} content={disabledReason}>
-        <OcmCheckboxField
-          name={LVM_FIELD_NAME}
-          label={<LvmLabel clusterId={clusterId} openshiftVersion={openshiftVersion} />}
-          helperText={
-            'Storage virtualization that offers a more flexible approach for disk space management.'
-          }
-          isDisabled={!!disabledReason}
-        />
-      </Tooltip>
+      <OcmCheckboxField
+        name={LVM_FIELD_NAME}
+        label={
+          <LvmLabel
+            clusterId={clusterId}
+            openshiftVersion={openshiftVersion}
+            disabledReason={disabledReason}
+          />
+        }
+        helperText={
+          'Storage virtualization that offers a more flexible approach for disk space management.'
+        }
+        isDisabled={!!disabledReason}
+      />
     </FormGroup>
   );
 };
