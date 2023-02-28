@@ -7,6 +7,7 @@ import { getFieldId } from './utils';
 import HelperText from './HelperText';
 
 import './LabelField.css';
+import { useTranslation } from '../../../hooks/use-translation-wrapper';
 
 type LabelValueProps = {
   value: React.ReactText;
@@ -34,6 +35,7 @@ export const LabelField: React.FC<LabelFieldProps> = ({
   idPostfix,
   ...props
 }) => {
+  const { t } = useTranslation();
   const [input, setInput] = React.useState('');
   const [field, { touched, error }, { setValue, setTouched }] = useField({
     name: props.name,
@@ -58,7 +60,7 @@ export const LabelField: React.FC<LabelFieldProps> = ({
       isRequired={isRequired}
       labelIcon={labelIcon}
     >
-      Enter key=value and then press 'enter' or 'space' or use a ',' to input the label.
+      {t("ai:Enter key=value and then press 'enter' or 'space' or use a ',' to input the label.")}
       <div className="co-search-input pf-c-form-control">
         <TagsInput
           {...field}
