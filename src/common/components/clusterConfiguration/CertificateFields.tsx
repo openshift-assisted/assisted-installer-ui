@@ -6,7 +6,7 @@ import { TrustedCertificateFieldsType } from '../../types';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 import { InfraEnv } from '../../api';
-import UploadFieldCertificates from '../ui/formik/UploadFieldCertificates';
+import CertificatesUploadField from '../ui/formik/CertificatesUploadField';
 import './CertificateFields.css';
 const FIELD_NAME = 'trustBundle';
 
@@ -27,7 +27,7 @@ export const CertificateInputFields = () => {
 
   return (
     <Grid hasGutter>
-      <UploadFieldCertificates
+      <CertificatesUploadField
         label={
           <>
             {t('ai:Additional certificates')}{' '}
@@ -40,7 +40,7 @@ export const CertificateInputFields = () => {
         }
         name={name}
         helperText={<CertificateFieldsHelperText />}
-        idPostfix="discovery"
+        idPostfix="certificates"
         onBlur={() => value && setValue(value)}
       />
     </Grid>

@@ -6,7 +6,7 @@ import HelperText from './HelperText';
 import { useTranslation } from '../../../hooks/use-translation-wrapper';
 import { useField } from 'formik';
 
-const UploadField: React.FC<UploadFieldProps> = ({
+const CertificatesUploadField: React.FC<UploadFieldProps> = ({
   label,
   labelIcon,
   helperText,
@@ -19,6 +19,7 @@ const UploadField: React.FC<UploadFieldProps> = ({
   const { t } = useTranslation();
 
   const maxFileSize = 100000; //100 kb
+  const maxFileSizeKb = 100;
   const acceptedFiles =
     '.pem,.crt,.ca,.cert,application/x-pem-file,application/x-x509-ca-cert,text/plain';
 
@@ -40,7 +41,9 @@ const UploadField: React.FC<UploadFieldProps> = ({
     const contentFile = new Blob([value], { type: 'text/plain;charset=utf-8' });
     if (contentFile.size > maxFileSize) {
       setIsRejected(true);
-      setErrorMessage(t('ai:The file is too big. Upload a file up to 100 Kb.'));
+      setErrorMessage(
+        t('ai:The file is too big. Upload a file up to {{maxFileSizeKb}} Kb.', { maxFileSizeKb }),
+      );
       setValue(value);
     } else {
       setIsRejected(false);
@@ -57,9 +60,11 @@ const UploadField: React.FC<UploadFieldProps> = ({
   };
 
   const handleFileRejected = (_rejectedFiles: File[]) => {
-    if (_rejectedFiles[0].size > 65536) {
+    if (_rejectedFiles[0].size > maxFileSize) {
       setIsRejected(true);
-      setErrorMessage(t('ai:The file is too big. Upload a file up to 100 Kb.'));
+      setErrorMessage(
+        t('ai:The file is too big. Upload a file up to {{maxFileSizeKb}} Kb.', { maxFileSizeKb }),
+      );
     } else {
       setIsRejected(true);
       setErrorMessage(t('ai:File not supported.'));
@@ -130,4 +135,4 @@ const UploadField: React.FC<UploadFieldProps> = ({
   );
 };
 
-export default UploadField;
+export default CertificatesUploadField;
