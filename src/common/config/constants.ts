@@ -3,6 +3,7 @@ import * as packageJson from '../../../package.json';
 import { ValidationsInfo, HostRole } from '../types/hosts';
 import { Cluster, ClusterValidationId, DiskRole, Event, HostValidationId } from '../api';
 import { ValidationGroup as ClusterValidationGroup } from '../types/clusters';
+import { FeatureSupportLevelData } from '../components/featureSupportLevels/FeatureSupportLevelContext';
 
 export const OPENSHIFT_LIFE_CYCLE_DATES_LINK =
   'https://access.redhat.com/support/policy/updates/openshift#dates';
@@ -304,12 +305,22 @@ export const ExposedOperatorNames = [
 export type OperatorName = typeof OperatorNames[number];
 export type ExposedOperatorName = typeof ExposedOperatorNames[number];
 
-export const operatorLabels = (t: TFunction): { [key in ExposedOperatorName]: string } => ({
-  [OPERATOR_NAME_ODF]: t('ai:OpenShift Data Foundation'),
-  [OPERATOR_NAME_LVM]: t('ai:Logical Volume Manager'),
-  [OPERATOR_NAME_LVMS]: t('ai:Logical Volume Manager Storage'),
-  [OPERATOR_NAME_CNV]: t('ai:OpenShift Virtualization'),
-});
+export const operatorLabels = (
+  t: TFunction,
+  openshiftVersion: Cluster['openshiftVersion'],
+  featureSupportLevel: FeatureSupportLevelData,
+): { [key in ExposedOperatorName]: string } => {
+  const useLVMS =
+    featureSupportLevel.getFeatureSupportLevel(openshiftVersion || '', 'LVM') === 'supported';
+
+  return {
+    [OPERATOR_NAME_ODF]: t('ai:OpenShift Data Foundation'),
+    [OPERATOR_NAME_CNV]: t('ai:OpenShift Virtualization'),
+    [OPERATOR_NAME_LVM]: useLVMS
+      ? t('ai:Logical Volume Manager Storage')
+      : t('ai:Logical Volume Manager'),
+  };
+};
 
 export const OCP_STATIC_IP_DOC =
   'https://docs.openshift.com/container-platform/latest/scalability_and_performance/ztp-deploying-disconnected.html#ztp-configuring-a-static-ip_ztp-deploying-disconnected';
