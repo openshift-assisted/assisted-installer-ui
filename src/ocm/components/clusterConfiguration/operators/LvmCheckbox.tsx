@@ -7,7 +7,6 @@ import {
   PopoverIcon,
   useFeatureSupportLevel,
   operatorLabels,
-  ExternalLink,
   OperatorsValues,
   FeatureSupportLevelBadge,
   OPERATOR_NAME_LVM,
