@@ -42,7 +42,7 @@ const CertificatesUploadField: React.FC<UploadFieldProps> = ({
     if (contentFile.size > maxFileSize) {
       setIsRejected(true);
       setErrorMessage(
-        t('ai:The file is too big. Upload a file up to {{maxFileSizeKb}} Kb.', { maxFileSizeKb }),
+        t('ai:File size is too big. Upload a new {{maxFileSizeKb}} Kb or less.', { maxFileSizeKb }),
       );
       setValue(value);
     } else {
@@ -63,11 +63,13 @@ const CertificatesUploadField: React.FC<UploadFieldProps> = ({
     if (_rejectedFiles[0].size > maxFileSize) {
       setIsRejected(true);
       setErrorMessage(
-        t('ai:The file is too big. Upload a file up to {{maxFileSizeKb}} Kb.', { maxFileSizeKb }),
+        t('ai:File size is too big. Upload a new {{maxFileSizeKb}} Kb or less.', { maxFileSizeKb }),
       );
     } else {
       setIsRejected(true);
-      setErrorMessage(t('ai:File not supported.'));
+      setErrorMessage(
+        t('ai:File type is not supported. File type must be {{acceptedFiles}}.', { acceptedFiles }),
+      );
     }
   };
 
