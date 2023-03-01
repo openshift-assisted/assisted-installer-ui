@@ -48,19 +48,16 @@ export const DiscoveryTroubleshootingModalContent = () => {
           'ai:NOTE: Authentication is provided by the discovery ISO, therefore when you access your host using SSH, a password is not required. Optional -i parameter can be used to specify the private key that matches the public key provided when generating Discovery ISO.',
         )}
       </Text>
-      <Text component={TextVariants.h2}>{t('ai:Unable to SSH into your hosts?')}</Text>
+      <Text component={TextVariants.h2}>
+        {t('ai:Unable to SSH into your hosts through the network?')}
+      </Text>
       <Text component={TextVariants.p}>
         {t(
-          'ai:If you have network issues, download the full image file and patch it locally with a login password using',
+          'ai:Try logging into the machine directly through physical access, out-of-band management, or a virtual machine console. To generate a new bootable image file with password-based login enabled, download the full image file and patch it locally with a login password of your choice using',
         )}{' '}
-        <Button
-          variant={ButtonVariant.link}
-          onClick={() => saveAs(CHANGE_ISO_PASSWORD_FILE_LINK, 'change-iso-password.sh')}
-          data-testid="download-change-password-script"
-          isInline
-        >
+        <a href="#" onClick={() => saveAs(CHANGE_ISO_PASSWORD_FILE_LINK, 'change-iso-password.sh')}>
           {t('ai:this script.')}
-        </Button>
+        </a>
       </Text>
       <Text component={TextVariants.p}>{t('ai:Run these commands to use the script:')}</Text>
       <PrismCode
