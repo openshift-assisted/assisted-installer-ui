@@ -17,6 +17,25 @@ import { CHANGE_ISO_PASSWORD_FILE_LINK } from '../../config/constants';
 
 export const DiscoveryTroubleshootingModalContent = () => {
   const { t } = useTranslation();
+
+  const downloadIsoPasswordScript = () => {
+    fetch(CHANGE_ISO_PASSWORD_FILE_LINK)
+      .then((response) => {
+        response
+          .text()
+          .then((fileContent: string) => {
+            const blob = new Blob([fileContent], { type: 'text/plain;charset=utf-8' });
+            saveAs(blob, 'change-iso-password.sh');
+          })
+          .catch(() => {
+            console.error('Can not save file');
+          });
+      })
+      .catch(() => {
+        console.error('Can not download file');
+      });
+  };
+
   return (
     <TextContent>
       <Text component={TextVariants.p}>
@@ -55,9 +74,14 @@ export const DiscoveryTroubleshootingModalContent = () => {
         {t(
           'ai:Try logging into the machine directly through physical access, out-of-band management, or a virtual machine console. To generate a new bootable image file with password-based login enabled, download the full image file and patch it locally with a login password of your choice using',
         )}{' '}
-        <a href="#" onClick={() => saveAs(CHANGE_ISO_PASSWORD_FILE_LINK, 'change-iso-password.sh')}>
+        <Button
+          variant={ButtonVariant.link}
+          onClick={downloadIsoPasswordScript}
+          data-testid="download-script-btn"
+          isInline
+        >
           {t('ai:this script.')}
-        </a>
+        </Button>
       </Text>
       <Text component={TextVariants.p}>{t('ai:Run these commands to use the script:')}</Text>
       <PrismCode
