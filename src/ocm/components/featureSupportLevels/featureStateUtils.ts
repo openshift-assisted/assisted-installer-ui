@@ -121,9 +121,6 @@ const getLvmDisabledReason = (
   if (!isSupported) {
     return `${operatorLabel} is not supported in this OpenShift version.`;
   }
-  if (activeFeatureConfiguration.underlyingCpuArchitecture === CpuArchitecture.ARM) {
-    return `${operatorLabel} is not available when ARM CPU architecture is selected.`;
-  }
   return undefined;
 };
 
