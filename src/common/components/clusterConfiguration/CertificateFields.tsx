@@ -1,12 +1,13 @@
 import React from 'react';
 import { useField, useFormikContext } from 'formik';
 import { Grid } from '@patternfly/react-core';
-import { CheckboxField, HelperText, PopoverIcon, UploadField } from '../ui';
+import { CheckboxField, HelperText, PopoverIcon } from '../ui';
 import { TrustedCertificateFieldsType } from '../../types';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
 
 import { InfraEnv } from '../../api';
-
+import CertificatesUploadField from '../ui/formik/CertificatesUploadField';
+import './CertificateFields.css';
 const FIELD_NAME = 'trustBundle';
 
 export const CertificateFieldsHelperText = ({ fieldId = FIELD_NAME }) => {
@@ -19,15 +20,14 @@ export const CertificateFieldsHelperText = ({ fieldId = FIELD_NAME }) => {
     </HelperText>
   );
 };
-
 export const CertificateInputFields = () => {
-  const [{ name, value }, , { setValue }] =
-    useField<InfraEnv['additionalTrustBundle']>('trustBundle');
+  const [{ name, value }, , { setValue }] = useField<InfraEnv['additionalTrustBundle']>(FIELD_NAME);
 
   const { t } = useTranslation();
+
   return (
     <Grid hasGutter>
-      <UploadField
+      <CertificatesUploadField
         label={
           <>
             {t('ai:Additional certificates')}{' '}
@@ -40,16 +40,8 @@ export const CertificateInputFields = () => {
         }
         name={name}
         helperText={<CertificateFieldsHelperText />}
-        idPostfix="discovery"
+        idPostfix="certificates"
         onBlur={() => value && setValue(value)}
-        dropzoneProps={{
-          accept: '.pem',
-          maxSize: 2048,
-          onDropRejected:
-            ({ setError }) =>
-            () =>
-              setError(t('ai:File not supported.')),
-        }}
       />
     </Grid>
   );
@@ -79,6 +71,7 @@ const CertificateFields = () => {
         }
         onChange={(value: boolean) => resetCertificate(value)}
         body={values.enableCertificate && <CertificateInputFields />}
+        className="ai-certificate-fields"
       />
     </>
   );
