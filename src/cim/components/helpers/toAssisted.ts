@@ -21,14 +21,14 @@ export const getAIHosts = (
     const statusInfo = agent.status?.debugInfo?.stateInfo || '';
     // TODO(mlibra) Remove that workaround once https://issues.redhat.com/browse/MGMT-7052 is fixed
     const inventory: Inventory = cloneDeep(agent.status?.inventory || {});
+    /* eslint-disable */
     inventory.interfaces?.forEach((intf) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       intf.ipv4Addresses = cloneDeep(intf.ipV4Addresses);
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       intf.ipv6Addresses = cloneDeep(intf.ipV6Addresses);
     });
+    /* eslint-enable */
 
     if (agent.metadata?.labels?.[AGENT_BMH_NAME_LABEL_KEY]) {
       const bmhName = agent.metadata?.labels?.[AGENT_BMH_NAME_LABEL_KEY];

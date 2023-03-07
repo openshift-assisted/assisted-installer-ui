@@ -12,9 +12,11 @@ import { OcmCheckboxField } from '../../ui/OcmFormFields';
 
 const ODF_FIELD_NAME = 'useOpenShiftDataFoundation';
 
-const OdfLabel = () => (
+const OdfLabel = ({ disabledReason }: { disabledReason?: string }) => (
   <>
-    Install OpenShift Data Foundation{' '}
+    <Tooltip hidden={!disabledReason} content={disabledReason}>
+      <span>Install OpenShift Data Foundation </span>
+    </Tooltip>
     <PopoverIcon
       component={'a'}
       headerContent="Additional Requirements"
@@ -46,14 +48,12 @@ const OdfCheckbox = ({ openshiftVersion }: { openshiftVersion?: string }) => {
     : undefined;
   return (
     <FormGroup isInline fieldId={fieldId}>
-      <Tooltip hidden={!disabledReason} content={disabledReason}>
-        <OcmCheckboxField
-          name={ODF_FIELD_NAME}
-          label={<OdfLabel />}
-          isDisabled={!!disabledReason}
-          helperText={<OdfHelperText />}
-        />
-      </Tooltip>
+      <OcmCheckboxField
+        name={ODF_FIELD_NAME}
+        label={<OdfLabel disabledReason={disabledReason} />}
+        isDisabled={!!disabledReason}
+        helperText={<OdfHelperText />}
+      />
     </FormGroup>
   );
 };

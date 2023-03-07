@@ -94,7 +94,7 @@ const RichInputField: React.FC<RichInputFieldPropsProps> = React.forwardRef(
     ref: React.Ref<HTMLInputElement>,
   ) => {
     const [popoverOpen, setPopoverOpen] = React.useState(false);
-    const [field, { error, value, touched }, { setTouched }] = useField({
+    const [field, { error, value, touched }, { setTouched }] = useField<string>({
       name: props.name,
       validate,
     });

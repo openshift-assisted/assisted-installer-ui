@@ -74,7 +74,7 @@ const CodeField = ({
           </HelperText>
         )}
         <CodeEditor
-          code={field.value}
+          code={field.value as string}
           isUploadEnabled={!isDisabled}
           isDownloadEnabled
           isCopyEnabled

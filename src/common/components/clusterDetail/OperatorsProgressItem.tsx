@@ -12,10 +12,11 @@ import {
 } from '@patternfly/react-tokens';
 import { pluralize } from 'humanize-plus';
 import { TFunction } from 'i18next';
-import { MonitoredOperatorsList, OperatorStatus } from '../../api';
+import { Cluster, MonitoredOperator, MonitoredOperatorsList, OperatorStatus } from '../../api';
 import { operatorLabels, OperatorName } from '../../config';
 import ClusterProgressItem from './ClusterProgressItem';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { useFeatureSupportLevel } from '../featureSupportLevels';
 
 import './OperatorsProgressItem.css';
 
@@ -72,26 +73,31 @@ export function getOperatorsIcon(status: OperatorStatus | 'pending') {
 
 type OperatorListProps = {
   operators: MonitoredOperatorsList;
+  openshiftVersion: Cluster['openshiftVersion'];
 };
 
 type OperatorsPopoverProps = OperatorListProps & {
   children: React.ComponentProps<typeof Popover>['children'];
 };
 
-const OperatorsPopover = ({ operators, children }: OperatorsPopoverProps) => {
+const OperatorsPopover = ({ operators, openshiftVersion, children }: OperatorsPopoverProps) => {
   const { t } = useTranslation();
+  const featureSupportLevel = useFeatureSupportLevel();
+
   return (
     <Popover
       headerContent={<div>{t('ai:Operators')}</div>}
       bodyContent={
         <List className="operators-progress-item__operators-list">
-          {operators.map((operator) => {
+          {operators.map((operator: MonitoredOperator) => {
             let status = operator.status ?? 'pending';
             if (operator.status === 'available') {
               status = 'installed';
             }
-            const operatorName = operator.name as OperatorName;
-            const name = operatorLabels(t)[operatorName] || operator.name;
+            const name =
+              operatorLabels(t, openshiftVersion, featureSupportLevel)[
+                operator.name as OperatorName
+              ] || operator.name;
             return (
               <ListItem key={operator.name} title={operator.statusInfo}>
                 {name} {status}
@@ -108,14 +114,14 @@ const OperatorsPopover = ({ operators, children }: OperatorsPopoverProps) => {
   );
 };
 
-const OperatorsProgressItem = ({ operators }: OperatorListProps) => {
+const OperatorsProgressItem = ({ operators, openshiftVersion }: OperatorListProps) => {
   const { t } = useTranslation();
   const icon = getOperatorsIcon(getAggregatedStatus(operators));
   const label = getOperatorsLabel(operators, t);
   return (
     <ClusterProgressItem icon={icon}>
       <>
-        <OperatorsPopover operators={operators}>
+        <OperatorsPopover operators={operators} openshiftVersion={openshiftVersion}>
           <Button variant={ButtonVariant.link} isInline data-testid="operators-progress-item">
             {t('ai:Operators')}
           </Button>

@@ -53,20 +53,20 @@ const PreviewBadge: React.FC<PreviewBadgeProps> = ({
       )}
     </>
   );
-
   return (
-    <Popover bodyContent={bodyContent} position="top">
-      <Label
-        style={{ cursor: 'pointer' }}
-        color="orange"
-        onClick={(e) => e.preventDefault()}
-        icon={<InfoCircleIcon color="var(--pf-c-label__content--Color)" />}
-        className={clsName}
-        data-testid={testId}
-      >
-        {text}
-      </Label>
-    </Popover>
+    <span onClick={(e) => e.preventDefault()}>
+      <Popover bodyContent={bodyContent} position="top">
+        <Label
+          style={{ cursor: 'pointer' }}
+          color="orange"
+          icon={<InfoCircleIcon color="var(--pf-c-label__content--Color)" />}
+          className={clsName}
+          {...(testId ? { 'data-testid': testId } : {})}
+        >
+          {text}
+        </Label>
+      </Popover>
+    </span>
   );
 };
 
