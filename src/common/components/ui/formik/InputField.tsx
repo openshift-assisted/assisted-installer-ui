@@ -32,7 +32,7 @@ const InputField: React.FC<
       inputError,
       description,
       labelInfo,
-      // showErrorMessage = true,
+      showErrorMessage = true,
       ...props
     },
     ref: React.Ref<HTMLInputElement>,
@@ -89,7 +89,7 @@ const InputField: React.FC<
             </FormGroup>
           </StackItem>
           <StackItem>
-            {errorMessage && (
+            {showErrorMessage && errorMessage && (
               <HelperText fieldId={fieldId} isError>
                 {errorMessage}
               </HelperText>
