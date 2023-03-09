@@ -47,14 +47,24 @@ const ConditionsTable = ({ conditions, isDone }: ConditionsTableProps) => {
               ? { okStatus: 'False', nokStatus: 'True' }
               : { okStatus: 'True', nokStatus: 'False' };
 
-            if (c.status === okStatus) {
-              icon = <CheckCircleIcon color={okColor.value} />;
-            } else if (c.status === nokStatus) {
-              icon = isDone ? (
-                <ExclamationCircleIcon color={dangerColor.value} size="sm" />
-              ) : (
-                <InProgressIcon />
-              );
+            if (c.type.endsWith('Progressing')) {
+              // progressing conditions have no error status
+              icon =
+                c.status === okStatus ? (
+                  <InProgressIcon />
+                ) : (
+                  <CheckCircleIcon color={okColor.value} />
+                );
+            } else {
+              if (c.status === okStatus) {
+                icon = <CheckCircleIcon color={okColor.value} />;
+              } else if (c.status === nokStatus) {
+                icon = isDone ? (
+                  <ExclamationCircleIcon color={dangerColor.value} size="sm" />
+                ) : (
+                  <InProgressIcon />
+                );
+              }
             }
             return (
               <Tr key={c.type} className="ai-conditions-table__no-border">
