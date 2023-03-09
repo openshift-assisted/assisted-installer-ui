@@ -293,6 +293,8 @@
   "ai:Failing infrastructure environment": "Failing infrastructure environment",
   "ai:File is not structured correctly. Use the template to use the right file structure.": "File is not structured correctly. Use the template to use the right file structure.",
   "ai:File not supported.": "File not supported.",
+  "ai:File size is too big. Upload a new {{maxFileSizeKb}} Kb or less.": "File size is too big. Upload a new {{maxFileSizeKb}} Kb or less.",
+  "ai:File type is not supported. File type must be {{acceptedFiles}}.": "File type is not supported. File type must be {{acceptedFiles}}.",
   "ai:Filter by text": "Filter by text",
   "ai:Filter hosts by existing labels": "Filter hosts by existing labels",
   "ai:Finalizing": "Finalizing",

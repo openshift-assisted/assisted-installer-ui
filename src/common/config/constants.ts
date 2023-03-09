@@ -37,6 +37,9 @@ export const CNV_LINK = 'https://cloud.redhat.com/learn/topics/virtualization/';
 
 export const ODF_LINK = 'https://www.redhat.com/en/resources/openshift-data-foundation-datasheet';
 
+export const LVMS_LINK =
+  'https://docs.openshift.com/container-platform/4.12/storage/persistent_storage/persistent_storage_local/persistent-storage-using-lvms.html';
+
 export const NMSTATE_EXAMPLES_LINK = 'https://nmstate.io/examples.html';
 
 export const APPROVE_NODES_IN_CL_LINK =
