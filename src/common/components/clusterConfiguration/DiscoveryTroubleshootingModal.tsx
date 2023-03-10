@@ -14,12 +14,13 @@ import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { Trans } from 'react-i18next';
 import { saveAs } from 'file-saver';
 import { CHANGE_ISO_PASSWORD_FILE_LINK } from '../../config/constants';
+import * as Sentry from '@sentry/browser';
 
 export const DiscoveryTroubleshootingModalContent = () => {
   const { t } = useTranslation();
 
-  const downloadIsoPasswordScript = () => {
-    fetch(CHANGE_ISO_PASSWORD_FILE_LINK)
+  const downloadIsoPasswordScript = async () => {
+    await fetch(CHANGE_ISO_PASSWORD_FILE_LINK)
       .then((response) => {
         response
           .text()
@@ -27,12 +28,14 @@ export const DiscoveryTroubleshootingModalContent = () => {
             const blob = new Blob([fileContent], { type: 'text/plain;charset=utf-8' });
             saveAs(blob, 'change-iso-password.sh');
           })
-          .catch(() => {
-            console.error('Can not save file');
+          .catch((err) => {
+            Sentry.captureException(err);
+            return {};
           });
       })
-      .catch(() => {
-        console.error('Can not download file');
+      .catch((err) => {
+        Sentry.captureException(err);
+        return {};
       });
   };
 
@@ -76,7 +79,9 @@ export const DiscoveryTroubleshootingModalContent = () => {
         )}{' '}
         <Button
           variant={ButtonVariant.link}
-          onClick={downloadIsoPasswordScript}
+          onClick={() => {
+            void downloadIsoPasswordScript();
+          }}
           data-testid="download-script-btn"
           isInline
         >
@@ -179,7 +184,6 @@ export const DiscoveryTroubleshootingModal = ({
     () => setDiscoveryHintModalOpen(false),
     [setDiscoveryHintModalOpen],
   );
-
   const { t } = useTranslation();
   return (
     <Modal
