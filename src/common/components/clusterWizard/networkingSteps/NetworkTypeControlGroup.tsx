@@ -21,13 +21,20 @@ export const NetworkTypeControlGroup = ({
     <FormGroup isInline fieldId={GROUP_NAME} label="Network type">
       <Split>
         <SplitItem>
-          <RadioField
-            id={GROUP_NAME}
-            name={GROUP_NAME}
-            isDisabled={isDisabled}
-            value={NETWORK_TYPE_OVN}
-            label={<>{t('ai:Open Virtual Networking (OVN)')}&nbsp;</>}
-          />
+          <Tooltip
+            hidden={isSDNSelectable}
+            content={t(
+              'ai:Software-Defined Networking (SDN) cannot be selected for SNO clusters or when IPv6 is detected.',
+            )}
+          >
+            <RadioField
+              id={GROUP_NAME}
+              name={GROUP_NAME}
+              isDisabled={isDisabled || !isSDNSelectable}
+              value={NETWORK_TYPE_OVN}
+              label={<>{t('ai:Open Virtual Networking (OVN)')}&nbsp;</>}
+            />
+          </Tooltip>
         </SplitItem>
         <SplitItem>
           <PopoverIcon
