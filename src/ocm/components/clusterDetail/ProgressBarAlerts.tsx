@@ -12,6 +12,8 @@ import {
   operatorLabels,
   useAlerts,
   OperatorName,
+  FeatureSupportLevelData,
+  useFeatureSupportLevel,
 } from '../../../common';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { downloadClusterInstallationLogs } from './utils';
@@ -29,9 +31,14 @@ type InstallationProgressWarningProps = {
   isCriticalNumberOfWorkersFailed?: boolean;
 };
 
-const getFailedOperatorsNames = (failedOperators: MonitoredOperator[], t: TFunction): string => {
+const getFailedOperatorsNames = (
+  failedOperators: MonitoredOperator[],
+  openshiftVersion: Cluster['openshiftVersion'],
+  featureSupportLevel: FeatureSupportLevelData,
+  t: TFunction,
+): string => {
   let failedOperatorsNames = '';
-  const translatedOperatorLabels = operatorLabels(t);
+  const translatedOperatorLabels = operatorLabels(t, openshiftVersion, featureSupportLevel);
   for (let i = 0; i < failedOperators.length; i++) {
     const operatorName = (failedOperators[i].name as OperatorName) || '';
     const operatorLabel: string = (operatorName && translatedOperatorLabels[operatorName]) || '';
@@ -86,6 +93,8 @@ export const HostInstallationWarning = ({
 }: InstallationProgressWarningProps) => {
   const { addAlert } = useAlerts();
   const { t } = useTranslation();
+  const featureSupportLevel = useFeatureSupportLevel();
+
   return (
     <>
       <Alert
@@ -111,9 +120,15 @@ export const HostInstallationWarning = ({
         </RenderIf>
         <RenderIf condition={failedOperators?.length > 0}>
           <p>
-            {getFailedOperatorsNames(failedOperators, t)} failed to install. Due to this, the
-            cluster will be degraded, but you can try to install the operator from the Operator Hub.
-            Please check the installation log for more information.
+            {getFailedOperatorsNames(
+              failedOperators,
+              cluster.openshiftVersion,
+              featureSupportLevel,
+              t,
+            )}{' '}
+            failed to install. Due to this, the cluster will be degraded, but you can try to install
+            the operator from the Operator Hub. Please check the installation log for more
+            information.
           </p>
         </RenderIf>
       </Alert>
