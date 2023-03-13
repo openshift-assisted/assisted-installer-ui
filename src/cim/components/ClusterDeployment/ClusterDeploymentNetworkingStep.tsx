@@ -109,6 +109,7 @@ const NetworkingForm: React.FC<NetworkingFormProps> = ({
       }
       showClusterErrors={!errorFields.length && showClusterErrors}
       onBack={onBack}
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onNext={onNext}
       onCancel={onClose}
       nextButtonText="Next"

@@ -324,6 +324,7 @@ export const InfraEnvFormPage: React.FC<InfraEnvFormPageProps> = ({
                   variant="primary"
                   type="submit"
                   isDisabled={!isValid || isSubmitting}
+                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
                   onClick={submitForm}
                 >
                   {t('ai:Create')} {isSubmitting && <Spinner isSVG size="md" />}

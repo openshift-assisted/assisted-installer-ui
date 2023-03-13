@@ -118,6 +118,7 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
       isSubmitting={!!submittingText}
       submittingText={submittingText}
       isNextDisabled={nextRequested || (showFormErrors ? !!errors.length : false)}
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onNext={onNext}
       onBack={() => setCurrentStepId('cluster-details')}
       showClusterErrors={showClusterErrors}

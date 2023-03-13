@@ -113,6 +113,7 @@ const EditNtpSourcesModal: React.FC<EditNtpSourcesModalProps> = ({
                 </Form>
               </ModalBoxBody>
               <ModalBoxFooter>
+                {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
                 <Button onClick={submitForm} isDisabled={isSubmitting || !isValid}>
                   {t('ai:Save')}
                 </Button>

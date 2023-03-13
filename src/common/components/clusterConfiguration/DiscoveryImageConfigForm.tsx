@@ -128,7 +128,12 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
               </Stack>
             </ModalBoxBody>
             <ModalBoxFooter>
-              <Button onClick={submitForm} isDisabled={isSubmitting} isLoading={isSubmitting}>
+              <Button
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                onClick={submitForm}
+                isDisabled={isSubmitting}
+                isLoading={isSubmitting}
+              >
                 {isSubmitting ? t('ai:Generating') : t('ai:Generate Discovery ISO')}
               </Button>
               <Button key="cancel" variant="link" onClick={onCancel}>

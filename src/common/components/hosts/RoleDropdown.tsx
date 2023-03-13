@@ -30,6 +30,7 @@ const RoleDropdown: React.FC<RoleDropdownProps> = ({ host, onEditRole, current, 
       defaultValue={hostRoles(t)[0].value}
       current={current}
       items={hostRoles(t)}
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       setValue={setRole}
       isDisabled={isDisabled}
       idPrefix={`role-${host.requestedHostname || ''}`}

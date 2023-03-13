@@ -68,7 +68,7 @@ const YamlPreview: React.FC<YamlPreviewProps> = ({ children, code, setPreviewOpe
               variant="plain"
               id="copy"
               textId="copy"
-              onClick={() => navigator.clipboard.writeText(code)}
+              onClick={() => void navigator.clipboard.writeText(code)}
             >
               <div />
             </ClipboardCopyButton>
