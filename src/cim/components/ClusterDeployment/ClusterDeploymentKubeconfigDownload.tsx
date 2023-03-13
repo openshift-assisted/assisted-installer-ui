@@ -41,6 +41,7 @@ const ClusterDeploymentKubeconfigDownload = ({
 
   return (
     <KubeconfigDownload
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       handleDownload={handleKubeconfigDownload}
       clusterId={clusterDeployment.metadata?.uid || ''}
       status={clusterStatus}

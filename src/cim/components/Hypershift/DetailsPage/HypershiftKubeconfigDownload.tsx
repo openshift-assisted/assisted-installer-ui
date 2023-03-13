@@ -39,6 +39,7 @@ const HypershiftKubeconfigDownload = ({
   return (
     <Button
       variant={ButtonVariant.secondary}
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onClick={handleKubeconfigDownload}
       isDisabled={!hostedCluster.status?.kubeconfig?.name}
     >

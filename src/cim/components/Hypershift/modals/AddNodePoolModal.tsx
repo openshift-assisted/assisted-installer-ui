@@ -110,6 +110,7 @@ const AddNodePoolModal = ({
             </ModalBoxBody>
             <ModalBoxFooter>
               <Button
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises
                 onClick={submitForm}
                 isDisabled={!isValid || isSubmitting}
                 icon={isSubmitting ? <Spinner size="md" /> : undefined}
