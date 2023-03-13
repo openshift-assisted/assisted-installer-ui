@@ -14,7 +14,11 @@ import {
 import { MinusCircleIcon } from '@patternfly/react-icons';
 import { FieldArray, FieldArrayRenderProps, useField } from 'formik';
 import cloneDeep from 'lodash/cloneDeep';
-import { getFormikArrayItemFieldName, LoadingState } from '../../../../../common';
+import {
+  getFormikArrayItemFieldName,
+  HostStaticNetworkConfig,
+  LoadingState,
+} from '../../../../../common';
 import ConfirmationModal from '../../../../../common/components/ui/ConfirmationModal';
 import {
   selectIsCurrentClusterSNO,
@@ -160,7 +164,7 @@ const getExpandedHostsDefaultValue = (numHosts: number): ExpandedHosts => {
 const Hosts = <HostFieldType,>({
   push,
   remove,
-  enableCopyAboveConfiguration,
+  enableCopyAboveConfiguration = false,
   emptyHostData,
   ...props
 }: HostsProps<HostFieldType>) => {
@@ -172,7 +176,9 @@ const Hosts = <HostFieldType,>({
   const [expandedHosts, setExpandedHosts] = React.useState<ExpandedHosts>(
     getExpandedHostsDefaultValue(field.value.length),
   );
-  const [copyConfiguration, setCopyConfiguration] = React.useState<boolean>(false);
+  const [copyConfiguration, setCopyConfiguration] = React.useState<boolean>(
+    enableCopyAboveConfiguration,
+  );
   const [hostIdxToRemove, setHostIdxToRemove] = React.useState<number | null>(null);
 
   if (field.value === undefined) {
@@ -180,11 +186,11 @@ const Hosts = <HostFieldType,>({
   }
 
   const onAddHost = () => {
-    let newHostData: HostFieldType;
+    const newHostData = cloneDeep(emptyHostData);
     if (copyConfiguration) {
-      newHostData = cloneDeep(field.value[field.value.length - 1]);
-    } else {
-      newHostData = cloneDeep(emptyHostData);
+      (newHostData as HostStaticNetworkConfig).networkYaml = cloneDeep(
+        (field.value[field.value.length - 1] as HostStaticNetworkConfig).networkYaml,
+      );
     }
     const newExpandedHosts = getExpandedHostsInitialValue(field.value.length + 1);
     newExpandedHosts[field.value.length] = true;
@@ -234,7 +240,7 @@ const Hosts = <HostFieldType,>({
           {enableCopyAboveConfiguration && (
             <FlexItem alignSelf={{ default: 'alignSelfCenter' }}>
               <Checkbox
-                label="Copy the above configuration"
+                label="Copy the YAML content"
                 isChecked={copyConfiguration}
                 onChange={setCopyConfiguration}
                 aria-label="copy host configuration"
