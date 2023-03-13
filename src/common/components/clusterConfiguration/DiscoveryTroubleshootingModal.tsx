@@ -20,23 +20,14 @@ export const DiscoveryTroubleshootingModalContent = () => {
   const { t } = useTranslation();
 
   const downloadIsoPasswordScript = async () => {
-    await fetch(CHANGE_ISO_PASSWORD_FILE_LINK)
-      .then((response) => {
-        response
-          .text()
-          .then((fileContent: string) => {
-            const blob = new Blob([fileContent], { type: 'text/plain;charset=utf-8' });
-            saveAs(blob, 'change-iso-password.sh');
-          })
-          .catch((err) => {
-            Sentry.captureException(err);
-            return {};
-          });
-      })
-      .catch((err) => {
-        Sentry.captureException(err);
-        return {};
-      });
+    try {
+      const response = await fetch(CHANGE_ISO_PASSWORD_FILE_LINK);
+      const fileContent = await response.text();
+      const blob = new Blob([fileContent], { type: 'text/plain;charset=utf-8' });
+      saveAs(blob, 'change-iso-password.sh');
+    } catch (error) {
+      Sentry.captureException(error);
+    }
   };
 
   return (
