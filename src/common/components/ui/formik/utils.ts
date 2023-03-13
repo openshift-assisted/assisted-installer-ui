@@ -1,6 +1,6 @@
 import { FormikErrors, FormikTouched } from 'formik';
 import * as Yup from 'yup';
-import { Address4 } from 'ip-address';
+import { Address4, Address6 } from 'ip-address';
 import set from 'lodash/set';
 import groupBy from 'lodash/groupBy';
 import pickBy from 'lodash/pickBy';
@@ -128,4 +128,13 @@ export const labelsToArray = (labels: { [key in string]: string } = {}): string[
     result.push(`${key}=${labels[key]}`);
   }
   return result;
+};
+
+export const getAddress = (addr: string) => {
+  if (Address4.isValid(addr)) {
+    return new Address4(addr);
+  } else if (Address6.isValid(addr)) {
+    return new Address6(addr);
+  }
+  return undefined;
 };
