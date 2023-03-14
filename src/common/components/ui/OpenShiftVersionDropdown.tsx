@@ -67,16 +67,17 @@ export const OpenShiftVersionDropdown = ({
   }));
 
   const dropdownItems = parsedVersions.map(({ y, versions }) => {
-    return (
-      <>
-        {versions.map(({ value, label }) => (
-          <DropdownItem key={value} id={value}>
-            {label}
-          </DropdownItem>
-        ))}
-        {y !== lastVersion && <DropdownSeparator key={y} />}
-      </>
-    );
+    const items = versions.map(({ value, label }) => (
+      <DropdownItem key={value} id={value}>
+        {label}
+      </DropdownItem>
+    ));
+
+    if (y !== lastVersion) {
+      items.push(<DropdownSeparator key={`separator-${y || ''}`} />);
+    }
+
+    return items;
   });
 
   const onSelect = React.useCallback(
