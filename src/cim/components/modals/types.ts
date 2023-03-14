@@ -4,17 +4,25 @@ import {
   BareMetalHostK8sResource,
   NMStateK8sResource,
   AgentClusterInstallK8sResource,
+  InfraEnvK8sResource,
 } from '../../types/k8s';
 import { SecretK8sResource } from '../../types/fromOCP';
 
-export type AddHostModalProps = Pick<
-  BMCFormProps,
-  'onClose' | 'onCreateBMH' | 'infraEnv' | 'usedHostnames'
-> & {
+export type AddHostModalProps = {
+  onClose: VoidFunction;
+  infraEnv: InfraEnvK8sResource;
   isOpen: boolean;
-  isBMPlatform: boolean;
   onSaveISOParams: (values: DiscoveryImageFormValues) => Promise<void>;
   agentClusterInstall?: AgentClusterInstallK8sResource;
+  docVersion: string;
+};
+
+export type AddBmcHostModalProps = Pick<
+  BMCFormProps,
+  'onCreateBMH' | 'onClose' | 'infraEnv' | 'usedHostnames'
+> & {
+  isOpen: boolean;
+  docVersion: string;
 };
 
 export type EditBMHModalProps = Pick<
@@ -51,4 +59,6 @@ export type UploadActionModalProps = {
   // eslint-disable-next-line
   onCreateBmcByYaml: (yamlContent: unknown) => Promise<unknown>;
   isEdit?: boolean;
+  docVersion: string;
+  infraEnv: InfraEnvK8sResource;
 };

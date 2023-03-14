@@ -19,14 +19,8 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   onSaveHostsSelection,
   onClose,
   onFinish,
-  onSaveAgent,
-  onSaveBMH,
-  onSaveISOParams,
-  onSaveHostsDiscovery,
-  onCreateBMH,
   hostActions,
   usedClusterNames,
-  getClusterDeploymentLink,
   fetchSecret,
   clusterDeployment,
   agentClusterInstall,
@@ -34,15 +28,15 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
   clusterImages,
   aiConfigMap,
   infraEnv,
-  infraNMStates,
   fetchInfraEnv,
   initialStep,
-  onApproveAgent,
-  isBMPlatform,
   isPreviewOpen,
   setPreviewOpen,
   fetchManagedClusters,
   fetchKlusterletAddonConfig,
+  onSaveISOParams,
+  onCreateBMH,
+  ...rest
 }) => {
   const [currentStepId, setCurrentStepId] = React.useState<ClusterDeploymentWizardStepsType>(
     initialStep || 'cluster-details',
@@ -82,7 +76,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
         return <LoadingState />;
       case 'hosts-discovery':
         if (isAIFlow) {
-          return (
+          return onSaveISOParams && onCreateBMH ? (
             <ClusterDeploymentHostsDiscoveryStep
               clusterDeployment={clusterDeployment}
               agentClusterInstall={agentClusterInstall}
@@ -90,25 +84,21 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
               bareMetalHosts={[] /* TODO(mlibra) */}
               aiConfigMap={aiConfigMap}
               infraEnv={infraEnv}
-              infraNMStates={infraNMStates}
-              onSaveAgent={onSaveAgent}
-              onSaveBMH={onSaveBMH}
               fetchSecret={fetchSecret}
-              getClusterDeploymentLink={getClusterDeploymentLink}
               onClose={onClose}
-              onSaveISOParams={onSaveISOParams}
-              onSaveHostsDiscovery={onSaveHostsDiscovery}
-              onCreateBMH={onCreateBMH}
               onChangeBMHHostname={(bmh, hostname) => {
                 console.log('onChangeBMHHostname is not implemented: ', hostname);
                 return Promise.resolve(bmh);
               }}
               onEditRole={hostActions.onEditRole}
               onSetInstallationDiskId={hostActions.onSetInstallationDiskId}
-              onApproveAgent={onApproveAgent}
-              isBMPlatform={isBMPlatform}
               onDeleteHost={hostActions.onDeleteHost}
+              onSaveISOParams={onSaveISOParams}
+              onCreateBMH={onCreateBMH}
+              {...rest}
             />
+          ) : (
+            <LoadingState />
           );
         }
         return <LoadingState />;

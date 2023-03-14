@@ -1,15 +1,17 @@
 import * as React from 'react';
 import { Modal, ModalVariant } from '@patternfly/react-core';
 import BMCForm from '../Agent/BMCForm';
-import { AddHostModalProps } from './types';
+import { AddBmcHostModalProps } from './types';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import { EnvironmentErrors } from '../InfraEnv/EnvironmentErrors';
 
-const AddBmcHostModal: React.FC<AddHostModalProps> = ({
+const AddBmcHostModal: React.FC<AddBmcHostModalProps> = ({
   isOpen,
   onClose,
   infraEnv,
   onCreateBMH,
   usedHostnames,
+  docVersion,
 }) => {
   const hasDHCP = infraEnv.metadata?.labels?.networkType !== 'static';
   const { t } = useTranslation();
@@ -23,13 +25,15 @@ const AddBmcHostModal: React.FC<AddHostModalProps> = ({
       hasNoBodyWrapper
       id="add-host-modal"
     >
-      <BMCForm
-        onCreateBMH={onCreateBMH}
-        onClose={onClose}
-        hasDHCP={hasDHCP}
-        infraEnv={infraEnv}
-        usedHostnames={usedHostnames}
-      />
+      <EnvironmentErrors infraEnv={infraEnv} docVersion={docVersion} inModal>
+        <BMCForm
+          onCreateBMH={onCreateBMH}
+          onClose={onClose}
+          hasDHCP={hasDHCP}
+          infraEnv={infraEnv}
+          usedHostnames={usedHostnames}
+        />
+      </EnvironmentErrors>
     </Modal>
   );
 };

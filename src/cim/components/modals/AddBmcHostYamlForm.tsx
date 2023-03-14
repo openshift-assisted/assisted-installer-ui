@@ -28,7 +28,9 @@ import { UploadActionModalProps } from './types';
 
 import './AddBmcHostYamlForm.css';
 
-const AddBmcHostYamlForm: React.FC<UploadActionModalProps> = ({ onClose, onCreateBmcByYaml }) => {
+const AddBmcHostYamlForm: React.FC<
+  Pick<UploadActionModalProps, 'onClose' | 'onCreateBmcByYaml'>
+> = ({ onClose, onCreateBmcByYaml }) => {
   const [fileName, setFileName] = React.useState<string>();
   const [fileError, setFileError] = React.useState<string>();
   const [showOpenFileButton, setShowOpenFileButton] = React.useState(true);
