@@ -168,7 +168,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
             <ToolbarButton
               id="cluster-installation-logs-button"
               variant={ButtonVariant.link}
-              onClick={() => downloadClusterInstallationLogs(addAlert, cluster.id)}
+              onClick={() => void downloadClusterInstallationLogs(addAlert, cluster.id)}
               isDisabled={!canDownloadClusterLogs(cluster)}
             >
               Download Installation Logs

@@ -318,6 +318,7 @@ const BMCForm: React.FC<BMCFormProps> = ({
             )}
           </ModalBoxBody>
           <ModalBoxFooter>
+            {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
             <Button onClick={submitForm} isDisabled={isSubmitting || !isValid}>
               {isEdit ? t('ai:Submit') : t('ai:Create')}
             </Button>

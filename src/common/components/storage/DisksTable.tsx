@@ -29,11 +29,11 @@ interface DisksTableProps extends WithTestID {
   updateDiskSkipFormatting?: DiskFormattingType;
 }
 
-const diskColumns = [
+const diskColumns = (showFormat: boolean) => [
   { title: 'Name' },
   { title: 'Role' },
   { title: 'Limitations' },
-  { title: 'Format?' },
+  showFormat ? { title: 'Format?' } : '',
   { title: 'Drive type' },
   { title: 'Size' },
   { title: 'Serial' },
@@ -63,6 +63,7 @@ const DisksTable = ({
   updateDiskSkipFormatting,
 }: DisksTableProps) => {
   const isEditable = !!canEditDisks?.(host);
+  const diskColumnTitles = diskColumns(isEditable);
 
   const rows: IRow[] = [...disks]
     .sort((diskA, diskB) => diskA.name?.localeCompare(diskB.name || '') || 0)
@@ -95,7 +96,7 @@ const DisksTable = ({
           props: { 'data-testid': 'disk-role' },
         },
         { title: <DiskLimitations disk={disk} />, props: { 'data-testid': 'disk-limitations' } },
-        {
+        isEditable && {
           title: (
             <FormatDiskCheckbox
               host={host}
@@ -120,7 +121,7 @@ const DisksTable = ({
     <Table
       data-testid={testId}
       rows={rows}
-      cells={diskColumns}
+      cells={diskColumnTitles}
       variant={TableVariant.compact}
       aria-label="Host's disks table"
       borders={false}
