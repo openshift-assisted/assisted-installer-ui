@@ -31,7 +31,7 @@ const STORAGE_KEY_CLUSTERS_FILTER = 'assisted-installer-cluster-list-filters';
 
 interface ClustersTableProps {
   rows: ClusterTableRows;
-  deleteCluster: (id: string) => void;
+  deleteCluster: (id: string) => Promise<void>;
 }
 
 type TablePropsCellType = TableProps['cells'][0];
@@ -84,6 +84,8 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
     index: 0, // Name-column
     direction: SortByDirection.asc,
   });
+  const [isDeleteInProgress, setDeleteInProgress] = React.useState(false);
+  const [isDeleteModalOpen, setDeleteModalOpen] = React.useState(false);
 
   const [searchString, setSearchString] = React.useState('');
   const [filters, setFilters] = React.useState<ClusterFiltersType>({
@@ -124,6 +126,7 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
             getClusterTableStatusCell(rowData).sortableValue === clusterStatusLabels(t).installing,
           onClick: (/*event: React.MouseEvent, rowIndex: number, rowData: IRowData*/) => {
             setDeleteClusterID({ id: props.id, name: props.name });
+            setDeleteModalOpen(true);
           },
         },
       ];
@@ -175,6 +178,18 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
       );
   }, [rows, sortBy, rowFilter]);
 
+  const closeModal = () => {
+    setDeleteClusterID(undefined);
+    setDeleteModalOpen(false);
+  };
+
+  const handleDelete = async () => {
+    setDeleteInProgress(true);
+    await deleteCluster(deleteClusterID?.id || '');
+    setDeleteInProgress(false);
+    closeModal();
+  };
+
   return (
     <>
       <ClustersListToolbar
@@ -196,16 +211,13 @@ const ClustersTable: React.FC<ClustersTableProps> = ({ rows, deleteCluster }) =>
         <TableHeader />
         <TableBody rowKey={rowKey} />
       </Table>
-      {deleteClusterID && (
-        <DeleteClusterModal
-          name={deleteClusterID.name}
-          onClose={() => setDeleteClusterID(undefined)}
-          onDelete={() => {
-            deleteCluster(deleteClusterID.id);
-            setDeleteClusterID(undefined);
-          }}
-        />
-      )}
+      <DeleteClusterModal
+        name={deleteClusterID?.name || ''}
+        onClose={closeModal}
+        onDelete={() => void handleDelete()}
+        isDeleteInProgress={isDeleteInProgress}
+        isOpen={isDeleteModalOpen}
+      />
     </>
   );
 };
