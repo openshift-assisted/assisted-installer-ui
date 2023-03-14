@@ -12,7 +12,7 @@ const dummyCells = ['', '', ''];
 
 export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
   const rows = React.useMemo(() => {
-    return [
+    const networkRows = [
       {
         rowId: 'network-management',
         cells: [
@@ -49,7 +49,9 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
           isDualStack(cluster) && { title: 'Primary' },
         ],
       },
-      {
+    ];
+    cluster.apiVip &&
+      networkRows.push({
         rowId: 'api-ip',
         cells: [
           { title: 'API IP' },
@@ -58,8 +60,9 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
             props: { 'data-testid': 'api-vip', colSpan: 2 },
           },
         ],
-      },
-      {
+      });
+    cluster.ingressVip &&
+      networkRows.push({
         rowId: 'ingress-ip',
         cells: [
           { title: 'Ingress IP' },
@@ -68,8 +71,8 @@ export const ReviewNetworkingTable = ({ cluster }: { cluster: Cluster }) => {
             props: { 'data-testid': 'ingress-vip', colSpan: 2 },
           },
         ],
-      },
-    ];
+      });
+    return networkRows;
   }, [cluster]);
 
   const rowsAdvanced = React.useMemo(() => {
