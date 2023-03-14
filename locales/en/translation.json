@@ -314,6 +314,7 @@
   "ai:Host not showing up?": "Host not showing up?",
   "ai:Host not showing up?_plural": "Hosts not showing up?",
   "ai:Host port": "Host port",
+  "ai:Host specification sync error": "Host specification sync error",
   "ai:Host SSH Public Key for troubleshooting after installation": "Host SSH Public Key for troubleshooting after installation",
   "ai:Host update failed.": "Host update failed.",
   "ai:Host validations": "Host validations",
