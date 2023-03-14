@@ -17,21 +17,6 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
   agentClusterInstall,
   agents: allAgents,
   infraEnv,
-  infraNMStates,
-  clusterDeployment,
-  bareMetalHosts,
-  onCreateBMH,
-  onSaveAgent,
-  onEditRole,
-  onSetInstallationDiskId,
-  onSaveBMH,
-  onSaveISOParams,
-  fetchSecret,
-  onChangeBMHHostname,
-  onApproveAgent,
-  onDeleteHost,
-  getClusterDeploymentLink,
-  isBMPlatform,
   onSaveHostsDiscovery,
   onClose,
   ...rest
@@ -152,22 +137,7 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
             agentClusterInstall={agentClusterInstall}
             agents={infraEnvAgents}
             infraEnv={infraEnv}
-            infraNMStates={infraNMStates}
-            bareMetalHosts={bareMetalHosts}
             usedHostnames={usedHostnames}
-            clusterDeployment={clusterDeployment}
-            onCreateBMH={onCreateBMH}
-            onSaveAgent={onSaveAgent}
-            onEditRole={onEditRole}
-            onSetInstallationDiskId={onSetInstallationDiskId}
-            onSaveBMH={onSaveBMH}
-            onSaveISOParams={onSaveISOParams}
-            fetchSecret={fetchSecret}
-            onChangeBMHHostname={onChangeBMHHostname}
-            onApproveAgent={onApproveAgent}
-            onDeleteHost={onDeleteHost}
-            getClusterDeploymentLink={getClusterDeploymentLink}
-            isBMPlatform={isBMPlatform}
             {...rest}
           />
         </GridItem>
