@@ -12,7 +12,9 @@ import {
 } from '../../types';
 import { BareMetalHostK8sResource } from '../../types/k8s/bare-metal-host';
 import { ClusterImageSetK8sResource } from '../../types/k8s/cluster-image-set';
-import { AddHostModalProps, EditBMHModalProps } from '../modals/types';
+import { BMCFormProps } from '../Agent/types';
+import { AddHostDropdownProps } from '../InfraEnv/types';
+import { AddHostModalProps, EditBMHModalProps, UploadActionModalProps } from '../modals/types';
 
 export type EditAgentModalProps = {
   agent: AgentK8sResource | undefined;
@@ -154,9 +156,11 @@ export type ClusterDeploymentWizardProps = {
   onSaveBMH: EditBMHModalProps['onEdit'];
   onSaveISOParams?: AddHostModalProps['onSaveISOParams'];
   onSaveHostsDiscovery: ClusterDeploymentHostsDiscoveryStepProps['onSaveHostsDiscovery'];
-  onCreateBMH?: AddHostModalProps['onCreateBMH'];
   getClusterDeploymentLink: InfraEnvAgentTableProps['getClusterDeploymentLink'];
   fetchSecret: EditBMHModalProps['fetchSecret'];
+  onCreateBMH?: BMCFormProps['onCreateBMH'];
+  docVersion: string;
+  onCreateBmcByYaml: UploadActionModalProps['onCreateBmcByYaml'];
 };
 
 export type FetchSecret = (name: string, namespace: string) => Promise<SecretK8sResource>;
@@ -208,24 +212,17 @@ export type ClusterDeploymentHostDiscoveryTableProps = Pick<
   width: number | undefined;
 };
 
-export type ClusterDeploymentHostsDiscoveryProps = {
+export type ClusterDeploymentHostsDiscoveryProps = AddHostDropdownProps & {
   clusterDeployment: ClusterDeploymentK8sResource;
-  agentClusterInstall: AgentClusterInstallK8sResource;
   agents: AgentK8sResource[];
   bareMetalHosts: BareMetalHostK8sResource[];
   aiConfigMap?: ConfigMapK8sResource;
-  infraEnv: InfraEnvK8sResource;
   infraNMStates: NMStateK8sResource[];
-  isBMPlatform: boolean;
 
-  usedHostnames: EditAgentModalProps['usedHostnames'];
-  onCreateBMH?: AddHostModalProps['onCreateBMH'];
   onSaveAgent: EditAgentModalProps['onSave'];
   onEditRole: ClusterDeploymentHostDiscoveryTableProps['onEditRole'];
   onSetInstallationDiskId: AgentTableActions['onSetInstallationDiskId'];
   onSaveBMH: EditBMHModalProps['onEdit'];
-  onSaveISOParams?: AddHostModalProps['onSaveISOParams'];
-  onFormSaveError?: EditAgentModalProps['onFormSaveError'];
   fetchSecret: EditBMHModalProps['fetchSecret'];
   getClusterDeploymentLink: InfraEnvAgentTableProps['getClusterDeploymentLink'];
   onChangeBMHHostname: InfraEnvAgentTableProps['onChangeBMHHostname'];
