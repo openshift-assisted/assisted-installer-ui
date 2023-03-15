@@ -9,10 +9,11 @@ type HostInventoryProps = {
 };
 
 const HostInventory = ({ cluster }: HostInventoryProps) => {
-  const mostSevereHostStatus = getMostSevereHostStatus(cluster.hosts || []);
+  const hosts = cluster.hosts || [];
+  const mostSevereHostStatus = getMostSevereHostStatus(hosts);
   const title = (
     <span>
-      {`Host Inventory ${cluster.hosts?.length && `(${cluster.hosts.length})`}`}
+      {`Host Inventory ${hosts.length > 0 ? `(${hosts.length})` : ''}`}
       {mostSevereHostStatus !== null && (
         <span className="pf-u-ml-xs">{hostStatus[mostSevereHostStatus].icon}</span>
       )}

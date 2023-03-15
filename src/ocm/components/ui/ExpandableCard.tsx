@@ -12,7 +12,7 @@ type ExpandableCardProps = {
   title: ReactNode;
   children: ReactNode;
   defaultIsExpanded?: boolean;
-  [k: string]: any;
+  className?: string;
 };
 
 const ExpandableCard = ({
@@ -20,12 +20,12 @@ const ExpandableCard = ({
   title,
   children,
   defaultIsExpanded = true,
-  ...props
+  className = '',
 }: ExpandableCardProps) => {
   const [isExpanded, setIsExpanded] = useState(defaultIsExpanded);
   const cardId = `${id}-card`;
   return (
-    <Card id={cardId} isExpanded={isExpanded} isPlain {...props}>
+    <Card id={cardId} isExpanded={isExpanded} className={className} isPlain>
       <CardHeader
         onExpand={(_, id) => {
           if (id === cardId) {

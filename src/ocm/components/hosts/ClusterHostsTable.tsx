@@ -9,7 +9,6 @@ import {
   roleColumn,
   statusColumn,
   cpuCoresColumn,
-  countColumn,
 } from '../../../common/components/hosts/tableUtils';
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useHostsTable, HostsTableModals } from './use-hosts-table';
