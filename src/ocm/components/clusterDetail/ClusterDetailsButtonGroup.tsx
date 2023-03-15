@@ -46,7 +46,7 @@ const ClusterDetailsButtonGroup: React.FC<ClusterDetailsButtonGroupProps> = ({
         <RenderIf condition={cluster.status === 'error'}>
           <Button
             id={getID('button-reset-cluster')}
-            variant={ButtonVariant.danger}
+            variant={ButtonVariant.primary}
             onClick={() => resetClusterDialog.open({ cluster })}
           >
             Reset Cluster
