@@ -1,21 +1,39 @@
 import { Flex, FlexItem, Button, ButtonVariant } from '@patternfly/react-core';
 import React from 'react';
-import { Cluster, canDownloadClusterLogs, useAlerts, KubeconfigDownload } from '../../../common';
+import {
+  Cluster,
+  canDownloadClusterLogs,
+  useAlerts,
+  KubeconfigDownload,
+  RenderIf,
+  Credentials,
+  canOpenConsole,
+} from '../../../common';
 import { downloadClusterInstallationLogs } from './utils';
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
 import { canAbortInstallation } from '../clusters/utils';
 import { onFetchEvents } from '../fetching/fetchEvents';
 import ViewClusterEventsButton from '../../../common/components/ui/ViewClusterEventsButton';
+import { LaunchOpenshiftConsoleButton } from '../../../common/components/clusterDetail/ConsoleModal';
 
 type ClusterDetailsButtonGroupProps = {
   cluster: Cluster;
+  credentials?: Credentials;
+  credentialsError: string;
+  showKubeConfig?: boolean;
 };
 
 const getID = (suffix: string) => `cluster-detail-${suffix}`;
 
-const ClusterDetailsButtonGroup: React.FC<ClusterDetailsButtonGroupProps> = ({ cluster }) => {
+const ClusterDetailsButtonGroup: React.FC<ClusterDetailsButtonGroupProps> = ({
+  cluster,
+  credentials,
+  credentialsError,
+  showKubeConfig = true,
+}) => {
   const { addAlert } = useAlerts();
-  const { cancelInstallationDialog } = useModalDialogsContext();
+  const { cancelInstallationDialog, resetClusterDialog } = useModalDialogsContext();
+  const hasConsoleUrlAndNoError = credentials?.consoleUrl !== undefined && !credentialsError;
 
   return (
     <Flex
@@ -25,14 +43,35 @@ const ClusterDetailsButtonGroup: React.FC<ClusterDetailsButtonGroupProps> = ({ c
       justifyContent={{ default: 'justifyContentFlexStart' }}
     >
       <FlexItem>
-        <Button
-          data-testid="cluster-installation-abort-button"
-          variant={ButtonVariant.danger}
-          onClick={() => cancelInstallationDialog.open({ clusterId: cluster.id })}
-          isDisabled={!canAbortInstallation(cluster)}
+        <RenderIf condition={cluster.status === 'error'}>
+          <Button
+            id={getID('button-reset-cluster')}
+            variant={ButtonVariant.danger}
+            onClick={() => resetClusterDialog.open({ cluster })}
+          >
+            Reset Cluster
+          </Button>
+        </RenderIf>
+        <RenderIf
+          condition={showKubeConfig && hasConsoleUrlAndNoError && canOpenConsole(cluster.status)}
         >
-          Abort Installation
-        </Button>
+          <LaunchOpenshiftConsoleButton
+            isDisabled={false}
+            cluster={cluster}
+            consoleUrl={credentials?.consoleUrl}
+            id={getID('button-launch-console')}
+          />
+        </RenderIf>
+        <RenderIf condition={canAbortInstallation(cluster) && !canOpenConsole(cluster.status)}>
+          <Button
+            data-testid="cluster-installation-abort-button"
+            variant={ButtonVariant.danger}
+            onClick={() => cancelInstallationDialog.open({ clusterId: cluster.id })}
+            isDisabled={false}
+          >
+            Abort Installation
+          </Button>
+        </RenderIf>
       </FlexItem>
       <FlexItem>
         <KubeconfigDownload

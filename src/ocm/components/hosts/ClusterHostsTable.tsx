@@ -23,6 +23,7 @@ import {
   HostsTableDetailContextProvider,
   useHostsTableDetailContext,
 } from '../../../common/components/hosts/HostsTableDetailContext';
+import { TableVariant } from '@patternfly/react-table';
 
 export function ExpandComponent({ obj: host }: ExpandComponentProps<Host>) {
   const { onDiskRole, canEditDisks, updateDiskSkipFormatting } = useHostsTableDetailContext();
@@ -69,7 +70,6 @@ const ClusterHostsTable = ({ cluster, skipDisabled }: ClusterHostsTableProps) =>
       cpuCoresColumn,
       memoryColumn,
       disksColumn,
-      countColumn(cluster),
     ],
     [t, onEditHost, actionChecks, onEditRole, cluster],
   );
@@ -90,6 +90,7 @@ const ClusterHostsTable = ({ cluster, skipDisabled }: ClusterHostsTableProps) =>
           ExpandComponent={ExpandComponent}
           content={content}
           actionResolver={actionResolver}
+          variant={TableVariant.compact}
           {...paginationProps}
         >
           <HostsTableEmptyState isSingleNode={isSNO(cluster)} />
