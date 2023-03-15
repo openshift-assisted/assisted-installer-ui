@@ -88,7 +88,7 @@ export const getClusterDetailId = (suffix: string) => `cluster-detail-${suffix}`
 
 export const getMostSevereHostStatus = (hosts: Host[]) => {
   let status: Host['status'] | null = null;
-  let mostSevereStatusIndex = hosts.length;
+  let mostSevereStatusIndex = hostStatusOrder.length;
   for (let i = 0; i < hosts.length; i++) {
     const host = hosts[i];
     const hostStatusOrderIndex = hostStatusOrder.indexOf(host.status);
