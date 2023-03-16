@@ -5,8 +5,8 @@ export type NetworkFormValues = {
   machineCIDR: string;
   isAdvanced: boolean;
   sshPublicKey: string;
-  serviceCIDR: string;
-  podCIDR: string;
+  serviceNetworkCidr: string;
+  clusterNetworkCidr: string;
   enableProxy: boolean;
   httpProxy: string;
   httpsProxy: string;
@@ -14,6 +14,7 @@ export type NetworkFormValues = {
   apiPublishingStrategy: 'LoadBalancer' | 'NodePort';
   nodePortPort: number;
   nodePortAddress: string;
+  clusterNetworkHostPrefix: number;
 };
 
 export type NetworkFormProps = Pick<NetworkStepProps, 'agents' | 'onValuesChanged'>;
