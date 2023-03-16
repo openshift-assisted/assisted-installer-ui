@@ -300,9 +300,9 @@ export const dnsNameValidationSchema = Yup.string()
     excludeEmptyString: true,
   });
 
-export const hostPrefixValidationSchema = ({
-  clusterNetworkCidr,
-}: Partial<NetworkConfigurationValues>) => {
+export const hostPrefixValidationSchema = (
+  clusterNetworkCidr: NetworkConfigurationValues['clusterNetworkCidr'],
+) => {
   const requiredText = 'The host prefix is required.';
   const minMaxText =
     'The host prefix is a number between 1 and 32 for IPv4 and between 8 and 128 for IPv6.';
@@ -507,7 +507,7 @@ export const clusterNetworksValidationSchema = Yup.array().of(
       cidr: ipBlockValidationSchema(
         undefined /* So far used in OCM only and so validated by backend */,
       ),
-      hostPrefix: hostPrefixValidationSchema({ clusterNetworkCidr: values.cidr }),
+      hostPrefix: hostPrefixValidationSchema(values.cidr),
       clusterId: Yup.string(),
     }),
   ),
