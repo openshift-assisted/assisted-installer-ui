@@ -735,7 +735,7 @@
   "ai:Waiting for hosts...": "Waiting for hosts...",
   "ai:Warning": "Warning",
   "ai:Web Console URL": "Web Console URL",
-  "ai:When using <code>virt-install</code>, please run:": "When using <code>virt-install</code>, please run:",
+  "ai:When using <code>{{executionCommand}}</code>, please run:": "When using <code>{{executionCommand}}</code>, please run:",
   "ai:Worker": "Worker",
   "ai:Worker_plural": "Workers",
   "ai:Worker Hosts Labels": "Worker Hosts Labels",
