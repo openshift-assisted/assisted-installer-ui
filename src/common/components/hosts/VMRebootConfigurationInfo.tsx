@@ -10,6 +10,7 @@ import {
 import { InfoCircleIcon } from '@patternfly/react-icons';
 import { PrismCode } from '../../../common/components/ui';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { Trans } from 'react-i18next';
 
 const Hint = () => {
   const { t } = useTranslation();
@@ -28,7 +29,12 @@ const Hint = () => {
       </Text>
       <PrismCode code="--events on_reboot=restart" />
       <Text component={TextVariants.p}>
-        {t('ai:When using <code>virt-install</code>, please run:')}
+        <Trans
+          t={t}
+          components={{ code: <code /> }}
+          i18nKey="ai:When using <code>{{executionCommand}}</code>, please run:"
+          values={{ executionCommand: 'virt-install' }}
+        />
       </Text>
       <PrismCode code="virt-install --wait -1 <rest of the command>" />
       <Text component={TextVariants.p}>
