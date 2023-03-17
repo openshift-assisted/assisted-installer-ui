@@ -10,6 +10,8 @@ import '@patternfly/react-styles/css/utilities/Text/text.css';
 import { AdditionalNTPSourcesDialogToggle } from '../ClusterDeployment/AdditionalNTPSourcesDialogToggle';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import ValidationsRunningAlert from '../common/ValidationsRunningAlert';
+import { agentStatus } from '../helpers/agentStatus';
+import SpecSyncErrAlert from '../common/SpecSyncErrAlert';
 
 export type AgentStatusProps = {
   agent: AgentK8sResource;
@@ -52,7 +54,11 @@ const AgentStatus: React.FC<AgentStatusProps> = ({
       AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
       autoCSR
       additionalPopoverContent={
-        showValidationsRunning ? (
+        status.status === agentStatus.specSyncErr ? (
+          <StackItem>
+            <SpecSyncErrAlert agent={agent} />
+          </StackItem>
+        ) : showValidationsRunning ? (
           <StackItem>
             <ValidationsRunningAlert />
           </StackItem>

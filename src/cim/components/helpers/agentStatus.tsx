@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { ConnectedIcon } from '@patternfly/react-icons';
+import { ConnectedIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
+import { global_danger_color_100 as dangerColor } from '@patternfly/react-tokens';
 import { hostStatus } from '../../../common';
 import { HostStatus } from '../../../common/components/hosts/types';
 
@@ -52,4 +53,10 @@ export const agentStatus: HostStatus<string> = {
     details: 'The host has been discovered and needs to be approved to before further use.',
   },
   ...bmhStatus,
+  specSyncErr: {
+    key: 'spec-sync-err',
+    title: 'Sync error',
+    icon: <ExclamationCircleIcon color={dangerColor.value} />,
+    category: 'Discovery related',
+  },
 };
