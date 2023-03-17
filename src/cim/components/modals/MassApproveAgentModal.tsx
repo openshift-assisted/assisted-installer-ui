@@ -160,6 +160,7 @@ const MassApproveAgentModal: React.FC<MassApproveAgentModalProps> = ({
         </Stack>
       </ModalBoxBody>
       <ModalBoxFooter>
+        {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
         <Button onClick={onClick} isDisabled={progress !== null}>
           {t('ai:Approve all hosts')}
         </Button>

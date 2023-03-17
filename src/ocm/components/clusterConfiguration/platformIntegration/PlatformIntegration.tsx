@@ -6,7 +6,7 @@ import useClusterSupportedPlatforms, {
   SupportedPlatformIntegrationType,
 } from '../../../hooks/useClusterSupportedPlatforms';
 import PlatformIntegrationVsphere from './PlatformIntegrationVsphere';
-import { SplitItem } from '@patternfly/react-core';
+import { SplitItem, Text } from '@patternfly/react-core';
 
 type KeyType = Record<SupportedPlatformIntegrationType, string>;
 
@@ -62,9 +62,11 @@ const PlatformIntegration = ({
       </SplitItem>
       <SplitItem>
         <PopoverIcon
-          bodyContent={messages[supportedPlatformIntegration]}
-          footerContent={
-            supportedPlatformIntegration === 'vsphere' && <PlatformIntegrationVsphere />
+          bodyContent={
+            <>
+              <Text>{messages[supportedPlatformIntegration]}</Text>
+              {supportedPlatformIntegration === 'vsphere' && <PlatformIntegrationVsphere />}
+            </>
           }
           buttonOuiaId="platform-integration-vSphere-popover"
           buttonStyle={{ marginTop: '4px' }}
