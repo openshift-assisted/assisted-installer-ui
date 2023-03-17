@@ -113,10 +113,7 @@ const Clusters: React.FC<ClustersProps> = ({ history }) => {
           </PageSection>
           <PageSection variant={PageSectionVariants.light} isFilled>
             <Alerts />
-            <ClustersTable
-              rows={clusterRows}
-              deleteCluster={(clusterId) => void deleteClusterAsync(clusterId)}
-            />
+            <ClustersTable rows={clusterRows} deleteCluster={deleteClusterAsync} />
           </PageSection>
         </>
       );

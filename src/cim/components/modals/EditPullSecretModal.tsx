@@ -88,6 +88,7 @@ const EditPullSecretForm: React.FC<EditPullSecretFormProps> = ({
       </ModalBoxBody>
       <ModalBoxFooter>
         <Button
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClick={submitForm}
           isDisabled={pullSecretLoading || !!pullSecretError || isSubmitting || !isValid}
         >

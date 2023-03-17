@@ -5,6 +5,7 @@ import {
   Dropdown,
   HelperText,
   FormGroup,
+  DropdownSeparator,
 } from '@patternfly/react-core';
 import { CaretDownIcon } from '@patternfly/react-icons';
 
@@ -57,11 +58,27 @@ export const OpenShiftVersionDropdown = ({
   const [helperText, setHelperText] = React.useState(getHelperText(versions, defaultValue, t));
   const [current, setCurrent] = React.useState<string>(defaultLabel);
 
-  const dropdownItems = items.map(({ value, label }) => (
-    <DropdownItem key={value} id={value}>
-      {label}
-    </DropdownItem>
-  ));
+  const versionsY = Array.from(new Set(items.map((val) => val.value.match(/^\d+\.(\d+)/)?.[1])));
+  const lastVersion = versionsY.slice(-1)[0];
+
+  const parsedVersions = versionsY.map((y) => ({
+    y: y,
+    versions: items.filter((val) => val.value.match(/^\d+\.(\d+)/)?.[1] === y),
+  }));
+
+  const dropdownItems = parsedVersions.map(({ y, versions }) => {
+    const items = versions.map(({ value, label }) => (
+      <DropdownItem key={value} id={value}>
+        {label}
+      </DropdownItem>
+    ));
+
+    if (y !== lastVersion) {
+      items.push(<DropdownSeparator key={`separator-${y || ''}`} />);
+    }
+
+    return items;
+  });
 
   const onSelect = React.useCallback(
     (event?: React.SyntheticEvent<HTMLDivElement>) => {

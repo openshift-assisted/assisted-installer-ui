@@ -14,9 +14,22 @@ import { useTranslation } from '../../hooks/use-translation-wrapper';
 import { Trans } from 'react-i18next';
 import { saveAs } from 'file-saver';
 import { CHANGE_ISO_PASSWORD_FILE_LINK } from '../../config/constants';
+import * as Sentry from '@sentry/browser';
 
 export const DiscoveryTroubleshootingModalContent = () => {
   const { t } = useTranslation();
+
+  const downloadIsoPasswordScript = async () => {
+    try {
+      const response = await fetch(CHANGE_ISO_PASSWORD_FILE_LINK);
+      const fileContent = await response.text();
+      const blob = new Blob([fileContent], { type: 'text/plain;charset=utf-8' });
+      saveAs(blob, 'change-iso-password.sh');
+    } catch (error) {
+      Sentry.captureException(error);
+    }
+  };
+
   return (
     <TextContent>
       <Text component={TextVariants.p}>
@@ -48,15 +61,19 @@ export const DiscoveryTroubleshootingModalContent = () => {
           'ai:NOTE: Authentication is provided by the discovery ISO, therefore when you access your host using SSH, a password is not required. Optional -i parameter can be used to specify the private key that matches the public key provided when generating Discovery ISO.',
         )}
       </Text>
-      <Text component={TextVariants.h2}>{t('ai:Unable to SSH into your hosts?')}</Text>
+      <Text component={TextVariants.h2}>
+        {t('ai:Unable to SSH into your hosts through the network?')}
+      </Text>
       <Text component={TextVariants.p}>
         {t(
-          'ai:If you have network issues, download the full image file and patch it locally with a login password using',
+          'ai:Try logging into the machine directly through physical access, out-of-band management, or a virtual machine console. To generate a new bootable image file with password-based login enabled, download the full image file and patch it locally with a login password of your choice using',
         )}{' '}
         <Button
           variant={ButtonVariant.link}
-          onClick={() => saveAs(CHANGE_ISO_PASSWORD_FILE_LINK, 'change-iso-password.sh')}
-          data-testid="download-change-password-script"
+          onClick={() => {
+            void downloadIsoPasswordScript();
+          }}
+          data-testid="download-script-btn"
           isInline
         >
           {t('ai:this script.')}
@@ -158,7 +175,6 @@ export const DiscoveryTroubleshootingModal = ({
     () => setDiscoveryHintModalOpen(false),
     [setDiscoveryHintModalOpen],
   );
-
   const { t } = useTranslation();
   return (
     <Modal

@@ -255,6 +255,7 @@ const HostSelectionForm: React.FC<HostSelectionFormProps> = ({
       isNextDisabled={
         nextRequested || isSubmitting || (showFormErrors ? !isValid || isValidating : false)
       }
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onNext={onNext}
       onBack={() => setCurrentStepId('cluster-details')}
       onCancel={onClose}

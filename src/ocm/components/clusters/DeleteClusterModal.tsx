@@ -5,19 +5,35 @@ type DeleteClusterModalProps = {
   name: string;
   onClose: () => void;
   onDelete: () => void;
+  isOpen: boolean;
+  isDeleteInProgress?: boolean;
 };
 
-const DeleteClusterModal: React.FC<DeleteClusterModalProps> = ({ name, onClose, onDelete }) => (
+const DeleteClusterModal: React.FC<DeleteClusterModalProps> = ({
+  name,
+  onClose,
+  onDelete,
+  isDeleteInProgress,
+  isOpen,
+}) => (
   <Modal
     title="Delete cluster"
-    isOpen={true}
+    isOpen={isOpen}
     onClose={onClose}
     variant={ModalVariant.small}
+    showClose={!isDeleteInProgress}
     actions={[
-      <Button data-testid="delete-cluster-submit" key="confirm" variant="danger" onClick={onDelete}>
+      <Button
+        data-testid="delete-cluster-submit"
+        key="confirm"
+        variant="danger"
+        onClick={onDelete}
+        isDisabled={isDeleteInProgress}
+        isLoading={isDeleteInProgress}
+      >
         Delete
       </Button>,
-      <Button key="cancel" variant="link" onClick={onClose}>
+      <Button key="cancel" variant="link" onClick={onClose} isDisabled={isDeleteInProgress}>
         Cancel
       </Button>,
     ]}

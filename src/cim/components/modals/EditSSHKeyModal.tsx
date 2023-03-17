@@ -91,6 +91,7 @@ const EditSSHKeyModal: React.FC<EditSSHKeyModalProps> = ({
               </Stack>
             </ModalBoxBody>
             <ModalBoxFooter>
+              {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
               <Button onClick={submitForm} isDisabled={isSubmitting || !isValid}>
                 {t('ai:Save')}
               </Button>
