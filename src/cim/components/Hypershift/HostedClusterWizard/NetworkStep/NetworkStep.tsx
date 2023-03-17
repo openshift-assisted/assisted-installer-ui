@@ -7,6 +7,7 @@ import { TFunction } from 'i18next';
 import { NetworkStepProps, NetworkFormValues } from './types';
 import {
   day2ApiVipValidationSchema,
+  hostPrefixValidationSchema,
   httpProxyValidationSchema,
   ipBlockValidationSchema,
   noProxyValidationSchema,
@@ -20,8 +21,15 @@ const getValidationSchema = (t: TFunction) =>
     Yup.object<NetworkFormValues>().shape({
       machineCIDR: Yup.string().required(t('ai:Required field')),
       sshPublicKey: sshPublicKeyValidationSchema.required(t('ai:Required field')),
-      serviceCIDR: values.isAdvanced ? ipBlockValidationSchema(values.podCIDR) : Yup.string(),
-      podCIDR: values.isAdvanced ? ipBlockValidationSchema(values.serviceCIDR) : Yup.string(),
+      clusterNetworkCidr: values.isAdvanced
+        ? ipBlockValidationSchema(values.serviceNetworkCidr)
+        : Yup.string(),
+      serviceNetworkCidr: values.isAdvanced
+        ? ipBlockValidationSchema(values.clusterNetworkCidr)
+        : Yup.string(),
+      clusterNetworkHostPrefix: values.isAdvanced
+        ? hostPrefixValidationSchema(values.clusterNetworkCidr)
+        : Yup.number(),
       httpProxy: httpProxyValidationSchema(values, 'httpsProxy'),
       httpsProxy: httpProxyValidationSchema(values, 'httpProxy'), // share the schema, httpS is currently not supported
       noProxy: noProxyValidationSchema,
