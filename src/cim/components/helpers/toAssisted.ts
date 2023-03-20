@@ -144,7 +144,8 @@ export const getAICluster = ({
     monitoredOperators: [],
     vipDhcpAllocation: false,
     userManagedNetworking:
-      agentClusterInstall?.spec?.provisionRequirements?.controlPlaneAgents === 1,
+      agentClusterInstall?.spec?.provisionRequirements?.controlPlaneAgents === 1 ||
+      agentClusterInstall?.spec?.networking?.userManagedNetworking,
     hostNetworks: getHostNetworks(agents, agentClusterInstall),
     totalHostCount: agents?.length,
     hosts: getAIHosts(agents),
