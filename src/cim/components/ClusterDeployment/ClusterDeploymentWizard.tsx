@@ -124,6 +124,7 @@ const ClusterDeploymentWizard: React.FC<ClusterDeploymentWizardProps> = ({
             onEditRole={hostActions.onEditRole}
             fetchInfraEnv={fetchInfraEnv}
             isPreviewOpen={isPreviewOpen}
+            onSetInstallationDiskId={hostActions.onSetInstallationDiskId}
           />
         );
       case 'review':
