@@ -11,6 +11,10 @@ const mapOcmArchToCpuArchitecture = (ocmArch: OcmCpuArchitecture | string): CpuA
       return CpuArchitecture.x86;
     case OcmCpuArchitecture.ARM:
       return CpuArchitecture.ARM;
+    case OcmCpuArchitecture.ppc64le:
+      return CpuArchitecture.ppc64le;
+    case OcmCpuArchitecture.s390x:
+      return CpuArchitecture.s390x;
     case OcmCpuArchitecture.MULTI:
       return getDefaultCpuArchitecture();
     default:
@@ -20,11 +24,7 @@ const mapOcmArchToCpuArchitecture = (ocmArch: OcmCpuArchitecture | string): CpuA
 
 /**
  * Takes the cluster.cpuArchitecture value and maps it to
- * a valid infraEnv cpuArchitecture value (currently either x86 or AMD).
- *
- * As of 2022-10-27, cluster's cpuArchitecture can be:
- * - For an AI cluster: CpuArchitecture.x86, CpuArchitecture.ARM or the value "multi"
- * - For an OCM cluster: values as defined in OcmCpuArchitecture
+ * a valid infraEnv cpuArchitecture value .
  *
  * @param clusterCpuArchitecture the cluster's cpuArchitecture value
  */
@@ -35,10 +35,15 @@ const mapClusterCpuArchToInfraEnvCpuArch = (
     case CpuArchitecture.ARM:
     case OcmCpuArchitecture.ARM:
       return CpuArchitecture.ARM;
-
     case CpuArchitecture.x86:
     case OcmCpuArchitecture.x86:
       return CpuArchitecture.x86;
+    case CpuArchitecture.ppc64le:
+    case OcmCpuArchitecture.ppc64le:
+      return CpuArchitecture.ppc64le;
+    case CpuArchitecture.s390x:
+    case OcmCpuArchitecture.s390x:
+      return CpuArchitecture.s390x;
     case CpuArchitecture.MULTI:
     case OcmCpuArchitecture.MULTI:
     default:

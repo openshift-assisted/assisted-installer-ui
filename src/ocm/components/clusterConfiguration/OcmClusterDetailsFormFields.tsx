@@ -15,6 +15,7 @@ import {
   CLUSTER_NAME_MAX_LENGTH,
   StaticTextField,
   useFeature,
+  ClusterCreateParams,
 } from '../../../common';
 import DiskEncryptionControlGroup from '../../../common/components/clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
@@ -27,6 +28,7 @@ import {
 import OcmOpenShiftVersion from './OcmOpenShiftVersion';
 import OcmOpenShiftVersionSelect from './OcmOpenShiftVersionSelect';
 import CpuArchitectureDropdown from './CpuArchitectureDropdown';
+import useCpuArchitectures from '../../hooks/useCpuArchitectures';
 
 export type OcmClusterDetailsFormFieldsProps = {
   forceOpenshiftVersion?: string;
@@ -72,7 +74,10 @@ export const OcmClusterDetailsFormFields = ({
 
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
   const { t } = useTranslation();
-
+  const {
+    values: { openshiftVersion },
+  } = useFormikContext<ClusterCreateParams>();
+  const { cpuArchitectures } = useCpuArchitectures(openshiftVersion);
   return (
     <Form id="wizard-cluster-details__form">
       <OcmRichInputField
@@ -134,7 +139,10 @@ export const OcmClusterDetailsFormFields = ({
           {values.cpuArchitecture}
         </StaticTextField>
       ) : (
-        <CpuArchitectureDropdown />
+        <CpuArchitectureDropdown
+          openshiftVersion={openshiftVersion}
+          cpuArchitectures={cpuArchitectures}
+        />
       )}
 
       <SNOControlGroup versions={versions} highAvailabilityMode={highAvailabilityMode} />
