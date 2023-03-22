@@ -13,9 +13,9 @@ const HostInventory = ({ cluster }: HostInventoryProps) => {
   const mostSevereHostStatus = getMostSevereHostStatus(hosts);
   const title = (
     <span>
-      {`Host Inventory ${hosts.length > 0 ? `(${hosts.length})` : ''}`}
+      {`Host inventory ${hosts.length > 0 ? `(${hosts.length})` : ''}`}
       {mostSevereHostStatus !== null && (
-        <span className="pf-u-ml-xs">{hostStatus[mostSevereHostStatus].icon}</span>
+        <span className="pf-u-ml-sm">{hostStatus[mostSevereHostStatus].icon}</span>
       )}
     </span>
   );
