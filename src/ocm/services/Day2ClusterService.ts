@@ -105,15 +105,13 @@ const Day2ClusterService = {
 
     // Create the infraEnvs for each cpuArchitecture
     const infraEnvsToCreate = cpuArchitectures.map((cpuArchitecture) => {
-      if (cpuArchitecture !== undefined) {
-        return InfraEnvsService.create({
-          name: `${day2Cluster.name || ''}_infra-env-${cpuArchitecture}`,
-          pullSecret,
-          clusterId: day2Cluster.id,
-          openshiftVersion,
-          cpuArchitecture,
-        });
-      }
+      return InfraEnvsService.create({
+        name: `${day2Cluster.name || ''}_infra-env-${cpuArchitecture}`,
+        pullSecret,
+        clusterId: day2Cluster.id,
+        openshiftVersion,
+        cpuArchitecture,
+      });
     });
     await Promise.all(infraEnvsToCreate);
 

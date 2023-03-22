@@ -15,13 +15,13 @@ const axiosCaseConverterOptions = {
   },
 };
 
-const getDefaultClient = (withoutConverter?: boolean) => {
+const getDefaultClient = (withoutConverter = false) => {
   const client = axios.create();
   client.interceptors.request.use((cfg) => ({
     ...cfg,
     url: `${process.env.REACT_APP_API_ROOT || ''}${cfg.url || ''}`,
   }));
-  if (withoutConverter !== undefined && withoutConverter) {
+  if (withoutConverter) {
     return client;
   } else {
     return applyCaseMiddleware(client, axiosCaseConverterOptions);

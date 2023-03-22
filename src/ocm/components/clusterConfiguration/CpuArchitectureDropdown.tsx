@@ -76,7 +76,7 @@ const CpuArchitectureDropdown = ({
 
   const prevVersionRef = React.useRef(openshiftVersion);
   const featureSupportLevels = useFeatureSupportLevel();
-  const [current, setCurrent] = React.useState<string>(
+  const [currentCpuArch, setCurrentCpuArch] = React.useState<string>(
     day1CpuArchitecture
       ? (architectureData[day1CpuArchitecture] as CpuArchitectureItem).label
       : CpuArchitecture.x86,
@@ -104,7 +104,7 @@ const CpuArchitectureDropdown = ({
       const selectedCpuArch = event?.currentTarget.id as SupportedCpuArchitecture;
       setValue(selectedCpuArch);
       setOpen(false);
-      setCurrent(architectureData[selectedCpuArch].label);
+      setCurrentCpuArch(architectureData[selectedCpuArch].label);
     },
     [setOpen, setValue],
   );
@@ -118,7 +118,7 @@ const CpuArchitectureDropdown = ({
       );
       if (invalidCombinationReason) {
         setValue(getDefaultCpuArchitecture());
-        setCurrent(architectureData[getDefaultCpuArchitecture()].label);
+        setCurrentCpuArch(architectureData[getDefaultCpuArchitecture()].label);
         setOpen(false);
       }
     }
@@ -133,10 +133,10 @@ const CpuArchitectureDropdown = ({
         isText
         className="pf-u-w-100"
       >
-        {current}
+        {currentCpuArch}
       </DropdownToggle>
     ),
-    [setOpen, current],
+    [setOpen, currentCpuArch],
   );
 
   return (
