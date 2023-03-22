@@ -19,6 +19,7 @@ import Day2WizardFooter from './Day2WizardFooter';
 import Day2HostStaticIpConfigurations from './Day2StaticIpHostConfigurations';
 import { mapClusterCpuArchToInfraEnvCpuArch } from '../../../services/CpuArchitectureService';
 import CpuArchitectureDropdown from '../../clusterConfiguration/CpuArchitectureDropdown';
+import useCpuArchitectures from '../../../hooks/useCpuArchitectures';
 
 const getDay2ClusterDetailInitialValues = async (
   clusterId: Cluster['id'],
@@ -50,7 +51,7 @@ const Day2ClusterDetails = () => {
   const [isSubmitting, setSubmitting] = React.useState(false);
 
   const day1CpuArchitecture = mapClusterCpuArchToInfraEnvCpuArch(day2Cluster.cpuArchitecture);
-
+  const { cpuArchitectures } = useCpuArchitectures(day2Cluster.openshiftVersion);
   React.useEffect(() => {
     const fetchAndSetInitialValues = async () => {
       const initialValues = await getDay2ClusterDetailInitialValues(
@@ -112,10 +113,13 @@ const Day2ClusterDetails = () => {
                   <ClusterWizardStepHeader>Cluster details</ClusterWizardStepHeader>
                 </GridItem>
                 <GridItem span={12} lg={10} xl={9} xl2={7}>
-                  <CpuArchitectureDropdown
-                    openshiftVersion={day2Cluster.openshiftVersion}
-                    day1CpuArchitecture={day1CpuArchitecture}
-                  />
+                  {cpuArchitectures && (
+                    <CpuArchitectureDropdown
+                      openshiftVersion={day2Cluster.openshiftVersion}
+                      day1CpuArchitecture={day1CpuArchitecture}
+                      cpuArchitectures={cpuArchitectures}
+                    />
+                  )}
                 </GridItem>
                 <GridItem>
                   <Day2HostStaticIpConfigurations />

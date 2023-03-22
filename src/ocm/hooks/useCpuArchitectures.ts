@@ -14,6 +14,7 @@ export default function useCpuArchitectures(openshiftVersion?: string) {
           const { data: architectures } = await NewFeatureSupportLevelsAPI.listArchitectures(
             openshiftVersion,
           );
+          console.log(architectures);
           setCpuArchitectures(architectures);
         } else setCpuArchitectures({});
       } catch (e) {

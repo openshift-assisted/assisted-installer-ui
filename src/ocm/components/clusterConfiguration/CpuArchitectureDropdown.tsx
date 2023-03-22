@@ -61,7 +61,7 @@ const getInvalidCombinationReason = (
 type CpuArchitectureDropdownProps = {
   openshiftVersion: Cluster['openshiftVersion'];
   day1CpuArchitecture?: CpuArchitecture;
-  cpuArchitectures?: SupportLevels;
+  cpuArchitectures: SupportLevels;
 };
 
 const CpuArchitectureDropdown = ({

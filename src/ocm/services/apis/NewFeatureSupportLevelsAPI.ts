@@ -1,5 +1,5 @@
 import { SupportLevels } from '../../../common/api/types';
-import { clientWithoutConverter } from '../../api/axiosClient';
+import { client } from '../../api/axiosClient';
 
 const NewFeatureSupportLevelsAPI = {
   makeBaseURI() {
@@ -10,7 +10,7 @@ const NewFeatureSupportLevelsAPI = {
     let queryParams = '?';
     queryParams += openshiftVersion ? `openshift_version=${openshiftVersion}&` : '';
     queryParams += cpuArchitecture ? `cpu_architecture=${cpuArchitecture}` : '';
-    return clientWithoutConverter.get<SupportLevels>(
+    return client.get<SupportLevels>(
       `${NewFeatureSupportLevelsAPI.makeBaseURI()}/features${queryParams}`,
     );
   },
@@ -18,7 +18,7 @@ const NewFeatureSupportLevelsAPI = {
   listArchitectures(openshiftVersion: string) {
     let queryParams = '?';
     queryParams += openshiftVersion ? `openshift_version=${openshiftVersion}&` : '';
-    return clientWithoutConverter.get<SupportLevels>(
+    return client.get<SupportLevels>(
       `${NewFeatureSupportLevelsAPI.makeBaseURI()}/architectures${queryParams}`,
     );
   },

@@ -139,10 +139,12 @@ export const OcmClusterDetailsFormFields = ({
           {values.cpuArchitecture}
         </StaticTextField>
       ) : (
-        <CpuArchitectureDropdown
-          openshiftVersion={openshiftVersion}
-          cpuArchitectures={cpuArchitectures}
-        />
+        cpuArchitectures && (
+          <CpuArchitectureDropdown
+            openshiftVersion={openshiftVersion}
+            cpuArchitectures={cpuArchitectures}
+          />
+        )
       )}
 
       <SNOControlGroup versions={versions} highAvailabilityMode={highAvailabilityMode} />

@@ -18,18 +18,20 @@ export enum OcmCpuArchitecture {
   s390x = 's390x',
 }
 
-export enum CpuArchitectureByFeatureId {
-  ARM64_ARCHITECTURE = 'arm64',
-  PPC64LE_ARCHITECTURE = 'ppc64le',
-  S390X_ARCHITECTURE = 's390x',
-  X86_64_ARCHITECTURE = 'x86_64',
-}
+type CpuArchitectureFeatureIds =
+  | 'arm64Architecture'
+  | 'ppc64LeArchitecture'
+  | 's390XArchitecture'
+  | 'x86_64Architecture';
 
-const featureIdToCpuArchitecture: Record<CpuArchitectureByFeatureId, SupportedCpuArchitecture> = {
-  [CpuArchitectureByFeatureId.ARM64_ARCHITECTURE]: CpuArchitecture.ARM,
-  [CpuArchitectureByFeatureId.PPC64LE_ARCHITECTURE]: CpuArchitecture.ppc64le,
-  [CpuArchitectureByFeatureId.S390X_ARCHITECTURE]: CpuArchitecture.s390x,
-  [CpuArchitectureByFeatureId.X86_64_ARCHITECTURE]: CpuArchitecture.x86,
+export const featureIdToCpuArchitecture: Record<
+  CpuArchitectureFeatureIds,
+  SupportedCpuArchitecture
+> = {
+  arm64Architecture: CpuArchitecture.ARM,
+  ppc64LeArchitecture: CpuArchitecture.ppc64le,
+  s390XArchitecture: CpuArchitecture.s390x,
+  x86_64Architecture: CpuArchitecture.x86,
 };
 
 export type SupportedCpuArchitecture = Extract<
@@ -45,43 +47,23 @@ export const getSupportedCpuArchitectures = (): SupportedCpuArchitecture[] => [
 ];
 
 export const getNewSupportedCpuArchitectures = (
-  cpuArchitectures?: SupportLevels,
-  canSelectCpuArch?: boolean,
+  cpuArchitectures: SupportLevels,
+  canSelectCpuArch: boolean,
 ): SupportedCpuArchitecture[] => {
   const newSupportedCpuArchs: SupportedCpuArchitecture[] = [];
-  if (cpuArchitectures !== undefined && cpuArchitectures.architectures !== undefined) {
-    //TODO: How to know if OCP version is multi or not?
-    const isMultiImage =
-      cpuArchitectures.architectures['MULTIARCH_RELEASE_IMAGE'] !== 'unsupported';
-
-    const supportedCpuArchs: string[] = Object.keys(cpuArchitectures.architectures).filter(
-      (key: string) => cpuArchitectures.architectures[key] === 'supported',
+  if (canSelectCpuArch) {
+    const supportedFeatureIdCpuArchs = Object.keys(cpuArchitectures.architectures).filter(
+      (archFeatureId) =>
+        cpuArchitectures.architectures[archFeatureId] !== 'unsupported' &&
+        archFeatureId !== 'multiarchReleaseImage',
     );
-    if (isMultiImage) {
-      if (canSelectCpuArch) {
-        supportedCpuArchs.map((arch) => {
-          newSupportedCpuArchs.push(featureIdToCpuArchitecture[arch] as SupportedCpuArchitecture);
-        });
-      } else {
-        newSupportedCpuArchs.push(
-          featureIdToCpuArchitecture[CpuArchitectureByFeatureId.X86_64_ARCHITECTURE],
-        );
-      }
-    } else {
+    supportedFeatureIdCpuArchs.forEach((archFeatureId) => {
       newSupportedCpuArchs.push(
-        featureIdToCpuArchitecture[CpuArchitectureByFeatureId.X86_64_ARCHITECTURE],
+        featureIdToCpuArchitecture[archFeatureId] as SupportedCpuArchitecture,
       );
-      newSupportedCpuArchs.push(
-        featureIdToCpuArchitecture[CpuArchitectureByFeatureId.ARM64_ARCHITECTURE],
-      );
-    }
+    });
   } else {
-    newSupportedCpuArchs.push(
-      featureIdToCpuArchitecture[CpuArchitectureByFeatureId.X86_64_ARCHITECTURE],
-    );
-    newSupportedCpuArchs.push(
-      featureIdToCpuArchitecture[CpuArchitectureByFeatureId.ARM64_ARCHITECTURE],
-    );
+    newSupportedCpuArchs.push(CpuArchitecture.x86);
   }
   return newSupportedCpuArchs;
 };
