@@ -16,6 +16,7 @@ import {
   StaticTextField,
   useFeature,
   ClusterCreateParams,
+  getNewSupportedCpuArchitectures,
 } from '../../../common';
 import DiskEncryptionControlGroup from '../../../common/components/clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
@@ -78,6 +79,7 @@ export const OcmClusterDetailsFormFields = ({
     values: { openshiftVersion },
   } = useFormikContext<ClusterCreateParams>();
   const { cpuArchitectures } = useCpuArchitectures(openshiftVersion);
+  const isMultiArchSupported = useFeature('ASSISTED_INSTALLER_MULTIARCH_SUPPORTED');
   return (
     <Form id="wizard-cluster-details__form">
       <OcmRichInputField
@@ -139,14 +141,11 @@ export const OcmClusterDetailsFormFields = ({
           {values.cpuArchitecture}
         </StaticTextField>
       ) : (
-        cpuArchitectures && (
-          <CpuArchitectureDropdown
-            openshiftVersion={openshiftVersion}
-            cpuArchitectures={cpuArchitectures}
-          />
-        )
+        <CpuArchitectureDropdown
+          openshiftVersion={openshiftVersion}
+          cpuArchitectures={getNewSupportedCpuArchitectures(isMultiArchSupported, cpuArchitectures)}
+        />
       )}
-
       <SNOControlGroup versions={versions} highAvailabilityMode={highAvailabilityMode} />
 
       {!isPullSecretSet && <PullSecret isOcm={isOcm} defaultPullSecret={defaultPullSecret} />}

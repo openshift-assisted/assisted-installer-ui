@@ -2,7 +2,7 @@ import { InfraEnvsService } from '.';
 import { ClustersAPI } from './apis';
 import {
   Cluster,
-  getSupportedCpuArchitectures,
+  getAllCpuArchitectures,
   OcmCpuArchitecture,
   SupportedCpuArchitecture,
 } from '../../common';
@@ -61,7 +61,7 @@ const Day2ClusterService = {
       ocmCluster.cpu_architecture === OcmCpuArchitecture.MULTI ||
       extraInfo.canSelectCpuArchitecture;
     const cpuArchitectures = createMultipleInfraEnvs
-      ? getSupportedCpuArchitectures()
+      ? getAllCpuArchitectures()
       : ([mapOcmArchToCpuArchitecture(ocmCluster.cpu_architecture)] as SupportedCpuArchitecture[]);
 
     return Day2ClusterService.createCluster(

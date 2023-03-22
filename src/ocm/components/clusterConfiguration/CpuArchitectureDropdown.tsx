@@ -9,10 +9,7 @@ import {
   FeatureSupportLevelData,
   getDefaultCpuArchitecture,
   getFieldId,
-  getNewSupportedCpuArchitectures,
   SupportedCpuArchitecture,
-  SupportLevels,
-  useFeature,
   useFeatureSupportLevel,
 } from '../../../common';
 
@@ -61,7 +58,7 @@ const getInvalidCombinationReason = (
 type CpuArchitectureDropdownProps = {
   openshiftVersion: Cluster['openshiftVersion'];
   day1CpuArchitecture?: CpuArchitecture;
-  cpuArchitectures: SupportLevels;
+  cpuArchitectures: SupportedCpuArchitecture[];
 };
 
 const CpuArchitectureDropdown = ({
@@ -82,22 +79,19 @@ const CpuArchitectureDropdown = ({
       : CpuArchitecture.x86,
   );
 
-  const isMultiArchSupported = useFeature('ASSISTED_INSTALLER_MULTIARCH_SUPPORTED');
   const enabledItems = React.useMemo(() => {
-    return getNewSupportedCpuArchitectures(cpuArchitectures, isMultiArchSupported).map(
-      (cpuArch) => {
-        return (
-          <DropdownItem
-            key={cpuArch}
-            id={cpuArch}
-            description={architectureData[cpuArch].description}
-          >
-            {architectureData[cpuArch].label}
-          </DropdownItem>
-        );
-      },
-    );
-  }, [isMultiArchSupported, cpuArchitectures]);
+    return cpuArchitectures.map((cpuArch) => {
+      return (
+        <DropdownItem
+          key={cpuArch}
+          id={cpuArch}
+          description={architectureData[cpuArch].description}
+        >
+          {architectureData[cpuArch].label}
+        </DropdownItem>
+      );
+    });
+  }, [cpuArchitectures]);
 
   const onSelect = React.useCallback(
     (event?: React.SyntheticEvent<HTMLDivElement>) => {

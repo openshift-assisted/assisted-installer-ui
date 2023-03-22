@@ -1,4 +1,5 @@
-import { SupportLevels } from '../api';
+import { SupportLevel, SupportLevels } from '../api';
+import { getKeys } from '../utils';
 
 export enum CpuArchitecture {
   x86 = 'x86_64',
@@ -39,7 +40,7 @@ export type SupportedCpuArchitecture = Extract<
   CpuArchitecture.x86 | CpuArchitecture.ARM | CpuArchitecture.ppc64le | CpuArchitecture.s390x
 >;
 
-export const getSupportedCpuArchitectures = (): SupportedCpuArchitecture[] => [
+export const getAllCpuArchitectures = (): SupportedCpuArchitecture[] => [
   CpuArchitecture.x86,
   CpuArchitecture.ARM,
   CpuArchitecture.ppc64le,
@@ -47,20 +48,19 @@ export const getSupportedCpuArchitectures = (): SupportedCpuArchitecture[] => [
 ];
 
 export const getNewSupportedCpuArchitectures = (
-  cpuArchitectures: SupportLevels,
   canSelectCpuArch: boolean,
+  cpuArchitectures?: SupportLevels,
 ): SupportedCpuArchitecture[] => {
   const newSupportedCpuArchs: SupportedCpuArchitecture[] = [];
-  if (canSelectCpuArch) {
-    const supportedFeatureIdCpuArchs = Object.keys(cpuArchitectures.architectures).filter(
-      (archFeatureId) =>
-        cpuArchitectures.architectures[archFeatureId] !== 'unsupported' &&
-        archFeatureId !== 'multiarchReleaseImage',
+  if (canSelectCpuArch && cpuArchitectures !== undefined) {
+    const supportedFeatureIdCpuArchs = getKeys(featureIdToCpuArchitecture).filter(
+      (archFeatureId) => {
+        const supportLevel = cpuArchitectures.architectures[archFeatureId] as SupportLevel;
+        return supportLevel && supportLevel !== 'unsupported';
+      },
     );
     supportedFeatureIdCpuArchs.forEach((archFeatureId) => {
-      newSupportedCpuArchs.push(
-        featureIdToCpuArchitecture[archFeatureId] as SupportedCpuArchitecture,
-      );
+      newSupportedCpuArchs.push(featureIdToCpuArchitecture[archFeatureId]);
     });
   } else {
     newSupportedCpuArchs.push(CpuArchitecture.x86);
