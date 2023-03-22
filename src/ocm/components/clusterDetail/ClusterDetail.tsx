@@ -33,8 +33,8 @@ import { handleApiError, ocmClient } from '../../api';
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
 import OcmClusterProgressItems from '../clusterConfiguration/OcmClusterProgressItems';
 import ClusterDetailsButtonGroup from './ClusterDetailsButtonGroup';
-import ClusterSummary from './ClusterSummary';
-import HostInventory from './HostInventory';
+import ClusterSummaryExpandable from './ClusterSummaryExpandable';
+import HostInventoryExpandable from './HostInventoryExpandable';
 
 type ClusterDetailProps = {
   cluster: Cluster;
@@ -96,8 +96,8 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
             />
             <ClusterDetailStatusVarieties cluster={cluster} clusterVarieties={clusterVarieties} />
           </GridItem>
-          <HostInventory cluster={cluster} />
-          <ClusterSummary cluster={cluster} />
+          <HostInventoryExpandable cluster={cluster} />
+          <ClusterSummaryExpandable cluster={cluster} />
         </Grid>
       </StackItem>
       <StackItem>

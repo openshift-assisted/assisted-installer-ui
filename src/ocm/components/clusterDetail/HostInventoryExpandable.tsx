@@ -4,11 +4,11 @@ import ExpandableCard from '../ui/ExpandableCard';
 import ClusterHostsTable from '../hosts/ClusterHostsTable';
 import { getMostSevereHostStatus } from './utils';
 
-type HostInventoryProps = {
+type HostInventoryExpandableProps = {
   cluster: Cluster;
 };
 
-const HostInventory = ({ cluster }: HostInventoryProps) => {
+const HostInventoryExpandable = ({ cluster }: HostInventoryExpandableProps) => {
   const hosts = cluster.hosts || [];
   const mostSevereHostStatus = getMostSevereHostStatus(hosts);
   const title = (
@@ -25,4 +25,4 @@ const HostInventory = ({ cluster }: HostInventoryProps) => {
     </ExpandableCard>
   );
 };
-export default HostInventory;
+export default HostInventoryExpandable;

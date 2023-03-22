@@ -4,11 +4,11 @@ import ExpandableCard from '../ui/ExpandableCard';
 import { ReviewSummaryContent } from '../clusterConfiguration/review/ReviewSummary';
 import { ClusterFeatureSupportLevelsDetailItem } from '../featureSupportLevels';
 
-type ClusterSummaryProps = {
+type ClusterSummaryExpandableProps = {
   cluster: Cluster;
 };
 
-const ClusterSummary = ({ cluster }: ClusterSummaryProps) => {
+const ClusterSummaryExpandable = ({ cluster }: ClusterSummaryExpandableProps) => {
   return (
     <ExpandableCard id="cluster-summary" title="Cluster summary" defaultIsExpanded={false}>
       <div className="pf-u-pl-md pf-u-pt-md">
@@ -19,4 +19,4 @@ const ClusterSummary = ({ cluster }: ClusterSummaryProps) => {
   );
 };
 
-export default ClusterSummary;
+export default ClusterSummaryExpandable;
