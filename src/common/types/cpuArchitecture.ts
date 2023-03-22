@@ -69,3 +69,7 @@ export const getNewSupportedCpuArchitectures = (
 };
 
 export const getDefaultCpuArchitecture = (): SupportedCpuArchitecture => CpuArchitecture.x86;
+
+export const getDisabledReasonForCpuArch = (cpuArchLabel: string) => {
+  return `${cpuArchLabel} is not supported in this OpenShift version`;
+};

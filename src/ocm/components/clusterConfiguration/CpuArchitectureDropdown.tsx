@@ -7,7 +7,9 @@ import {
   CpuArchitecture,
   FeatureId,
   FeatureSupportLevelData,
+  getAllCpuArchitectures,
   getDefaultCpuArchitecture,
+  getDisabledReasonForCpuArch,
   getFieldId,
   SupportedCpuArchitecture,
   useFeatureSupportLevel,
@@ -80,12 +82,18 @@ const CpuArchitectureDropdown = ({
   );
 
   const enabledItems = React.useMemo(() => {
-    return cpuArchitectures.map((cpuArch) => {
+    return getAllCpuArchitectures().map((cpuArch) => {
+      const disabledReason = !cpuArchitectures.includes(cpuArch)
+        ? getDisabledReasonForCpuArch(architectureData[cpuArch].label)
+        : '';
       return (
         <DropdownItem
           key={cpuArch}
           id={cpuArch}
           description={architectureData[cpuArch].description}
+          tooltip={disabledReason ? <p>{disabledReason}</p> : undefined}
+          isAriaDisabled={!!disabledReason}
+          tooltipProps={{ position: 'top' }}
         >
           {architectureData[cpuArch].label}
         </DropdownItem>

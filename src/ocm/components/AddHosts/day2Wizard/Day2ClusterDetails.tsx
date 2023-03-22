@@ -2,11 +2,13 @@ import { Grid, GridItem } from '@patternfly/react-core';
 import { Form, Formik } from 'formik';
 import React from 'react';
 import {
+  canSelectCpuArchitecture,
   Cluster,
   ClusterWizardStep,
   ClusterWizardStepHeader,
   CpuArchitecture,
   ErrorState,
+  getNewSupportedCpuArchitectures,
   LoadingState,
 } from '../../../../common';
 import { HostsNetworkConfigurationType, InfraEnvsService } from '../../../services';
@@ -52,6 +54,7 @@ const Day2ClusterDetails = () => {
 
   const day1CpuArchitecture = mapClusterCpuArchToInfraEnvCpuArch(day2Cluster.cpuArchitecture);
   const { cpuArchitectures } = useCpuArchitectures(day2Cluster.openshiftVersion);
+  const canSelectCpuArch = canSelectCpuArchitecture(day2Cluster);
   React.useEffect(() => {
     const fetchAndSetInitialValues = async () => {
       const initialValues = await getDay2ClusterDetailInitialValues(
@@ -113,13 +116,14 @@ const Day2ClusterDetails = () => {
                   <ClusterWizardStepHeader>Cluster details</ClusterWizardStepHeader>
                 </GridItem>
                 <GridItem span={12} lg={10} xl={9} xl2={7}>
-                  {cpuArchitectures && (
-                    <CpuArchitectureDropdown
-                      openshiftVersion={day2Cluster.openshiftVersion}
-                      day1CpuArchitecture={day1CpuArchitecture}
-                      cpuArchitectures={cpuArchitectures}
-                    />
-                  )}
+                  <CpuArchitectureDropdown
+                    openshiftVersion={day2Cluster.openshiftVersion}
+                    day1CpuArchitecture={day1CpuArchitecture}
+                    cpuArchitectures={getNewSupportedCpuArchitectures(
+                      canSelectCpuArch,
+                      cpuArchitectures,
+                    )}
+                  />
                 </GridItem>
                 <GridItem>
                   <Day2HostStaticIpConfigurations />
