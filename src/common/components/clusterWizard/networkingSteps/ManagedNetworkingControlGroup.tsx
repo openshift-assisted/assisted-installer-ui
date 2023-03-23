@@ -5,7 +5,7 @@ import RadioFieldWithTooltip from '../../ui/formik/RadioFieldWithTooltip';
 import { useTranslation } from '../../../hooks/use-translation-wrapper';
 
 export interface ManagedNetworkingControlGroupProps {
-  disabled: boolean;
+  disabled?: boolean;
   tooltip?: string;
   tooltipUmnDisabled?: string;
 }

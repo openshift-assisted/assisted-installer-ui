@@ -24,7 +24,7 @@ import {
 } from '../../../common';
 import NetworkConfiguration from './NetworkConfiguration';
 import ClusterDeploymentHostsNetworkTable from './ClusterDeploymentHostsNetworkTable';
-import { getAICluster } from '../helpers';
+import { getAICluster, getIsSNOCluster } from '../helpers';
 import {
   AgentClusterInstallK8sResource,
   AgentK8sResource,
@@ -139,7 +139,7 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
                 hostSubnets={hostSubnets}
                 isVipDhcpAllocationDisabled
                 defaultNetworkSettings={defaultNetworkSettings}
-                hideManagedNetworking
+                hideManagedNetworking={getIsSNOCluster(agentClusterInstall)}
               />
             </GridItem>
           </Grid>
