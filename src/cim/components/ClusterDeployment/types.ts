@@ -87,7 +87,7 @@ export type ClusterDeploymentDetailsStepProps = ClusterDeploymentDetailsProps & 
 
 export type ClusterDeploymentDetailsNetworkingProps = Pick<
   AgentTableActions,
-  'onEditHost' | 'onEditRole'
+  'onEditHost' | 'onEditRole' | 'onSetInstallationDiskId'
 > & {
   clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall: AgentClusterInstallK8sResource;

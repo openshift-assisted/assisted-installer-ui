@@ -20,20 +20,46 @@ import {
 import { usePagination } from '../../../common/components/hosts/usePagination';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
+type ExpandComponentContextType = {
+  onSetInstallationDiskId?: ClusterDeploymentHostsNetworkTableProps['onSetInstallationDiskId'];
+  agents: AgentK8sResource[];
+};
+
+const ExpandComponentContext = React.createContext<ExpandComponentContextType>({
+  onSetInstallationDiskId: undefined,
+  agents: [],
+});
+
 type ExpandComponentProps = {
   obj: Host;
 };
 
-const ExpandComponent: React.FC<ExpandComponentProps> = ({ obj }) => (
-  <HostDetail
-    host={obj}
-    AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
-  />
-);
+const ExpandComponent: React.FC<ExpandComponentProps> = ({ obj }) => {
+  const { onSetInstallationDiskId, agents } =
+    React.useContext<ExpandComponentContextType>(ExpandComponentContext);
+
+  return (
+    <HostDetail
+      host={obj}
+      AdditionalNTPSourcesDialogToggleComponent={AdditionalNTPSourcesDialogToggle}
+      canEditDisks={() => true}
+      onDiskRole={
+        onSetInstallationDiskId
+          ? async (hostID, diskID, role) => {
+              const agent = agents.find((a) => a.metadata?.uid === obj.id);
+              if (agent && diskID && role === 'install') {
+                await onSetInstallationDiskId?.(agent, diskID);
+              }
+            }
+          : undefined
+      }
+    />
+  );
+};
 
 type ClusterDeploymentHostsNetworkTableProps = Pick<
   AgentTableActions,
-  'onEditHost' | 'onEditRole'
+  'onEditHost' | 'onEditRole' | 'onSetInstallationDiskId'
 > & {
   clusterDeployment: ClusterDeploymentK8sResource;
   agentClusterInstall: AgentClusterInstallK8sResource;
@@ -42,65 +68,77 @@ type ClusterDeploymentHostsNetworkTableProps = Pick<
 
 const ClusterDeploymentHostsNetworkTable: React.FC<ClusterDeploymentHostsNetworkTableProps> =
   // eslint-disable-next-line react/display-name
-  React.memo(({ clusterDeployment, agentClusterInstall, agents, onEditHost, onEditRole }) => {
-    const { t } = useTranslation();
-    const cluster = React.useMemo(
-      () => getAICluster({ clusterDeployment, agentClusterInstall, agents }),
-      [clusterDeployment, agentClusterInstall, agents],
-    );
-    const [hosts, hostActions, actionResolver] = useAgentsTable(
-      { agents },
-      {
-        onEditHost,
-        onEditRole,
-      },
-    );
+  React.memo(
+    ({
+      clusterDeployment,
+      agentClusterInstall,
+      agents,
+      onEditHost,
+      onEditRole,
+      onSetInstallationDiskId,
+    }) => {
+      const { t } = useTranslation();
+      const cluster = React.useMemo(
+        () => getAICluster({ clusterDeployment, agentClusterInstall, agents }),
+        [clusterDeployment, agentClusterInstall, agents],
+      );
+      const [hosts, hostActions, actionResolver] = useAgentsTable(
+        { agents },
+        {
+          onEditHost,
+          onEditRole,
+          onSetInstallationDiskId,
+        },
+      );
 
-    const isSNOCluster = getIsSNOCluster(agentClusterInstall);
-    const content = React.useMemo(
-      () =>
-        isSNOCluster
-          ? [
-              hostnameColumn(t, hostActions.onEditHost, hosts),
-              agentStatusColumn({
-                agents,
-                onEditHostname: onEditHost,
-                wizardStepId: 'networking',
-                t,
-              }),
-              activeNICColumn(cluster),
-            ]
-          : [
-              hostnameColumn(t, hostActions.onEditHost, hosts),
-              roleColumn(t, hostActions.canEditRole, hostActions.onEditRole),
-              agentStatusColumn({
-                agents,
-                onEditHostname: onEditHost,
-                wizardStepId: 'networking',
-                t,
-              }),
-              activeNICColumn(cluster),
-            ],
-      [isSNOCluster, onEditHost, hosts, agents, hostActions, cluster, t],
-    );
+      const isSNOCluster = getIsSNOCluster(agentClusterInstall);
+      const content = React.useMemo(
+        () =>
+          isSNOCluster
+            ? [
+                hostnameColumn(t, hostActions.onEditHost, hosts),
+                agentStatusColumn({
+                  agents,
+                  onEditHostname: onEditHost,
+                  wizardStepId: 'networking',
+                  t,
+                }),
+                activeNICColumn(cluster),
+              ]
+            : [
+                hostnameColumn(t, hostActions.onEditHost, hosts),
+                roleColumn(t, hostActions.canEditRole, hostActions.onEditRole),
+                agentStatusColumn({
+                  agents,
+                  onEditHostname: onEditHost,
+                  wizardStepId: 'networking',
+                  t,
+                }),
+                activeNICColumn(cluster),
+              ],
+        [isSNOCluster, onEditHost, hosts, agents, hostActions, cluster, t],
+      );
 
-    const paginationProps = usePagination(hosts.length);
-    return (
-      <HostsTable
-        testId="networking-host-table"
-        hosts={hosts}
-        ExpandComponent={ExpandComponent}
-        content={content}
-        actionResolver={actionResolver}
-        {...paginationProps}
-      >
-        <EmptyState
-          icon={ConnectedIcon}
-          title={t('ai:Waiting for hosts...')}
-          content={t('ai:Hosts may take a few minutes to appear here after booting.')}
-        />
-      </HostsTable>
-    );
-  });
+      const paginationProps = usePagination(hosts.length);
+      return (
+        <ExpandComponentContext.Provider value={{ onSetInstallationDiskId, agents }}>
+          <HostsTable
+            testId="networking-host-table"
+            hosts={hosts}
+            ExpandComponent={ExpandComponent}
+            content={content}
+            actionResolver={actionResolver}
+            {...paginationProps}
+          >
+            <EmptyState
+              icon={ConnectedIcon}
+              title={t('ai:Waiting for hosts...')}
+              content={t('ai:Hosts may take a few minutes to appear here after booting.')}
+            />
+          </HostsTable>
+        </ExpandComponentContext.Provider>
+      );
+    },
+  );
 
 export default ClusterDeploymentHostsNetworkTable;
