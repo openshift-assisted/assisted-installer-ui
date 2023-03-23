@@ -14,11 +14,11 @@ import {
   selectIpv4HostPrefix,
   selectIpv6Cidr,
   selectIpv6HostPrefix,
-  useFeatureSupportLevel,
 } from '../../../common';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { ClusterFeatureSupportLevelsDetailItem } from '../featureSupportLevels';
 import OpenShiftVersionDetail from './OpenShiftVersionDetail';
+import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
 
 const CpuArchTitle = ({ isMultiArchSupported }: { isMultiArchSupported: boolean }) => {
   let stringCpuArch: string;
@@ -83,7 +83,7 @@ export const getDiskEncryptionEnabledOnStatus = (diskEncryption: DiskEncryption[
 const ClusterProperties = ({ cluster, externalMode = false }: ClusterPropertiesProps) => {
   const { t } = useTranslation();
   const isDualStackType = isDualStack(cluster);
-  const featureSupportLevelContext = useFeatureSupportLevel();
+  const featureSupportLevelContext = useNewFeatureSupportLevel();
 
   const activeFeatureConfiguration = featureSupportLevelContext.activeFeatureConfiguration;
   const underlyingCpuArchitecture =
@@ -93,10 +93,8 @@ const ClusterProperties = ({ cluster, externalMode = false }: ClusterPropertiesP
   const isMultiArchSupported = Boolean(
     hasMultiCpuArchitecture ||
       (cluster.openshiftVersion &&
-        featureSupportLevelContext.getFeatureSupportLevel(
-          cluster.openshiftVersion,
-          'MULTIARCH_RELEASE_IMAGE',
-        ) === 'supported'),
+        featureSupportLevelContext.getFeatureSupportLevel('MULTIARCH_RELEASE_IMAGE') ===
+          'supported'),
   );
   return (
     <>

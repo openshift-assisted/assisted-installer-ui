@@ -1,14 +1,9 @@
 import React from 'react';
 import { FormGroup, Tooltip } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
-import {
-  getFieldId,
-  useFeatureSupportLevel,
-  PopoverIcon,
-  ODF_REQUIREMENTS_LINK,
-  ODF_LINK,
-} from '../../../../common';
+import { getFieldId, PopoverIcon, ODF_REQUIREMENTS_LINK, ODF_LINK } from '../../../../common';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
+import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 
 const ODF_FIELD_NAME = 'useOpenShiftDataFoundation';
 
@@ -41,10 +36,10 @@ const OdfHelperText = () => {
 };
 
 const OdfCheckbox = ({ openshiftVersion }: { openshiftVersion?: string }) => {
-  const featureSupportLevelContext = useFeatureSupportLevel();
+  const featureSupportLevelContext = useNewFeatureSupportLevel();
   const fieldId = getFieldId(ODF_FIELD_NAME, 'input');
   const disabledReason = openshiftVersion
-    ? featureSupportLevelContext.getFeatureDisabledReason(openshiftVersion, 'ODF')
+    ? featureSupportLevelContext.getFeatureDisabledReason('ODF')
     : undefined;
   return (
     <FormGroup isInline fieldId={fieldId}>

@@ -28,7 +28,6 @@ import {
   DetailList,
   HostsValidations,
   stringToJSON,
-  useFeatureSupportLevel,
 } from '../../../../common';
 import { useClusterWizardContext } from '../../clusterWizard/ClusterWizardContext';
 import { useOpenshiftVersions } from '../../../hooks';
@@ -47,6 +46,7 @@ import {
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { ValidationsInfo as ClusterValidationsInfo } from '../../../../common/types/clusters';
 import { ValidationsInfo as HostValidationsInfo } from '../../../../common/types/hosts';
+import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
 
 const PreflightChecksDetailExpanded = ({ cluster }: { cluster: Cluster }) => {
   const clusterWizardContext = useClusterWizardContext();
@@ -123,7 +123,7 @@ const getCheckIcon = (validationStatuses: string[]) => {
 
 const PreflightChecksDetailCollapsed = ({ cluster }: { cluster: Cluster }) => {
   const { t } = useTranslation();
-  const featureSupportLevelData = useFeatureSupportLevel();
+  const featureSupportLevelData = useNewFeatureSupportLevel();
   const { isSupportedOpenShiftVersion } = useOpenshiftVersions();
 
   const { isFullySupported } = React.useMemo<SupportLevelMemo>(

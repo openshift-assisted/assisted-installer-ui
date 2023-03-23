@@ -3,7 +3,6 @@ import { TFunction } from 'i18next';
 import { Cluster, ManagedDomain } from '../../api';
 import { getDefaultCpuArchitecture, OpenshiftVersionOptionType } from '../../types';
 import { TangServer } from '../clusterConfiguration/DiskEncryptionFields/DiskEncryptionValues';
-import { FeatureSupportLevelData } from '../featureSupportLevels';
 import {
   baseDomainValidationSchema,
   dnsNameValidationSchema,
@@ -12,6 +11,7 @@ import {
   pullSecretValidationSchema,
 } from '../ui';
 import { ClusterDetailsValues } from './types';
+import { NewFeatureSupportLevelData } from '../newFeatureSupportLevels';
 
 const emptyTangServers = (): TangServer[] => {
   return [
@@ -87,7 +87,7 @@ export const getClusterDetailsValidationSchema = ({
   t,
 }: {
   usedClusterNames: string[];
-  featureSupportLevels: FeatureSupportLevelData;
+  featureSupportLevels: NewFeatureSupportLevelData;
   pullSecretSet?: boolean;
   ocpVersions?: OpenshiftVersionOptionType[];
   validateUniqueName?: boolean;
@@ -118,8 +118,7 @@ export const getClusterDetailsValidationSchema = ({
           return (
             highAvailabilityMode === 'None' &&
             selectedVersion &&
-            featureSupportLevels.getFeatureSupportLevel(selectedVersion.value, 'SNO') ===
-              'dev-preview'
+            featureSupportLevels.getFeatureSupportLevel('SNO') === 'dev-preview'
           );
         },
         then: Yup.bool().oneOf(

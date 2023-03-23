@@ -13,7 +13,6 @@ import {
   getClusterDetailsValidationSchema,
   InfraEnv,
   getRichTextValidation,
-  useFeatureSupportLevel,
 } from '../../../common';
 import { canNextClusterDetails } from './wizardTransition';
 import { OpenshiftVersionOptionType, getFormikErrorFields } from '../../../common';
@@ -27,6 +26,7 @@ import {
 import { OcmClusterDetailsFormFields } from '../clusterConfiguration/OcmClusterDetailsFormFields';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { selectCurrentClusterPermissionsState } from '../../selectors';
+import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
 
 type ClusterDetailsFormProps = {
   cluster?: Cluster;
@@ -60,7 +60,7 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
 
   const { search } = useLocation();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
-  const featureSupportLevels = useFeatureSupportLevel();
+  const featureSupportLevels = useNewFeatureSupportLevel();
   const handleSubmit = React.useCallback(
     async (values: OcmClusterDetailsValues) => {
       if (cluster) {

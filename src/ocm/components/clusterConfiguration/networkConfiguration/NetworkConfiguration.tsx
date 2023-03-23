@@ -12,15 +12,13 @@ import {
   clusterNetworksEqual,
   CpuArchitecture,
   DUAL_STACK,
-  FeatureSupportLevelData,
   getDefaultCpuArchitecture,
   HostSubnets,
   isSNO,
   NetworkConfigurationValues,
   serviceNetworksEqual,
-  useFeatureSupportLevel,
 } from '../../../../common';
-import { getLimitedFeatureSupportLevels } from '../../../../common/components/featureSupportLevels/utils';
+import { getLimitedFeatureSupportLevels } from '../../../../common/components/newFeatureSupportLevels/utils';
 import {
   ManagedNetworkingControlGroup,
   UserManagedNetworkingTextContent,
@@ -33,6 +31,10 @@ import { selectCurrentClusterPermissionsState } from '../../../selectors';
 import { OcmCheckbox } from '../../ui/OcmFormFields';
 import { NetworkTypeControlGroup } from '../../../../common/components/clusterWizard/networkingSteps/NetworkTypeControlGroup';
 import { useClusterSupportedPlatforms } from '../../../hooks';
+import {
+  NewFeatureSupportLevelData,
+  useNewFeatureSupportLevel,
+} from '../../../../common/components/newFeatureSupportLevels';
 
 export type NetworkConfigurationProps = VirtualIPControlGroupProps & {
   hostSubnets: HostSubnets;
@@ -77,7 +79,7 @@ const isManagedNetworkingDisabled = (
   isDualStack: boolean,
   openshiftVersion: Cluster['openshiftVersion'],
   cpuArchitecture: CpuArchitecture,
-  featureSupportLevelData: FeatureSupportLevelData,
+  featureSupportLevelData: NewFeatureSupportLevelData,
 ) => {
   if (isDualStack) {
     return {
@@ -89,27 +91,23 @@ const isManagedNetworkingDisabled = (
     openshiftVersion &&
     cpuArchitecture === CpuArchitecture.ARM &&
     !featureSupportLevelData.isFeatureSupported(
-      openshiftVersion,
       'ARM64_ARCHITECTURE_WITH_CLUSTER_MANAGED_NETWORKING',
     )
   ) {
     return {
       isNetworkManagementDisabled: true,
       networkManagementDisabledReason: featureSupportLevelData.getFeatureDisabledReason(
-        openshiftVersion,
         'ARM64_ARCHITECTURE_WITH_CLUSTER_MANAGED_NETWORKING',
       ),
     };
   } else if (
     !!openshiftVersion &&
-    featureSupportLevelData.isFeatureDisabled(openshiftVersion, 'NETWORK_TYPE_SELECTION')
+    featureSupportLevelData.isFeatureDisabled('NETWORK_TYPE_SELECTION')
   ) {
     return {
       isNetworkManagementDisabled: true,
-      networkManagementDisabledReason: featureSupportLevelData.getFeatureDisabledReason(
-        openshiftVersion,
-        'NETWORK_TYPE_SELECTION',
-      ),
+      networkManagementDisabledReason:
+        featureSupportLevelData.getFeatureDisabledReason('NETWORK_TYPE_SELECTION'),
     };
   } else {
     return { isNetworkManagementDisabled: false, networkManagementDisabledReason: undefined };
@@ -143,7 +141,7 @@ const NetworkConfiguration = ({
   hideManagedNetworking,
 }: NetworkConfigurationProps) => {
   const { t } = useTranslation();
-  const featureSupportLevelData = useFeatureSupportLevel();
+  const featureSupportLevelData = useNewFeatureSupportLevel();
   const { setFieldValue, values, validateField } = useFormikContext<NetworkConfigurationValues>();
 
   const { clusterFeatureSupportLevels, underlyingCpuArchitecture } = React.useMemo(() => {

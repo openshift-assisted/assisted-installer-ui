@@ -5,10 +5,8 @@ import {
   ClusterOperatorProps,
   getFieldId,
   PopoverIcon,
-  useFeatureSupportLevel,
   operatorLabels,
   OperatorsValues,
-  FeatureSupportLevelBadge,
   OPERATOR_NAME_LVM,
   ExposedOperatorName,
   ExternalLink,
@@ -19,6 +17,8 @@ import LvmHostRequirements from './LvmHostRequirements';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { getLvmIncompatibleWithCnvReason } from '../../featureSupportLevels/featureStateUtils';
+import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
+import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 
 const LVM_FIELD_NAME = 'useOdfLogicalVolumeManager';
 
@@ -51,7 +51,7 @@ const LvmLabel = ({
         headerContent="Additional Requirements"
         bodyContent={<LvmHostRequirements clusterId={clusterId} />}
       />
-      <FeatureSupportLevelBadge featureId="LVM" openshiftVersion={openshiftVersion} />
+      <NewFeatureSupportLevelBadge featureId="LVM" openshiftVersion={openshiftVersion} />
     </>
   );
 };
@@ -59,28 +59,26 @@ const LvmLabel = ({
 const LvmCheckbox = ({ clusterId, openshiftVersion }: ClusterOperatorProps) => {
   const fieldId = getFieldId(LVM_FIELD_NAME, 'input');
 
-  const featureSupportLevel = useFeatureSupportLevel();
+  const featureSupportLevel = useNewFeatureSupportLevel();
   const { t } = useTranslation();
   const { values } = useFormikContext<OperatorsValues>();
   const [disabledReason, setDisabledReason] = useState<string | undefined>();
 
   const operatorInfo = React.useMemo(() => {
-    const lvmSupport = featureSupportLevel.getFeatureSupportLevel(openshiftVersion || '', 'LVM');
+    const lvmSupport = featureSupportLevel.getFeatureSupportLevel('LVM');
 
-    const operatorLabel = operatorLabels(t, openshiftVersion, featureSupportLevel)[
-      OPERATOR_NAME_LVM
-    ];
+    const operatorLabel = operatorLabels(t, featureSupportLevel)[OPERATOR_NAME_LVM];
     return {
       lvmSupport,
       operatorLabel,
       operatorName: lvmSupport === 'supported' ? OPERATOR_NAME_LVMS : OPERATOR_NAME_LVM,
     };
-  }, [t, featureSupportLevel, openshiftVersion]);
+  }, [t, featureSupportLevel]);
 
   React.useEffect(() => {
     let reason = undefined;
     if (openshiftVersion) {
-      reason = featureSupportLevel.getFeatureDisabledReason(openshiftVersion, 'LVM');
+      reason = featureSupportLevel.getFeatureDisabledReason('LVM');
       if (!reason) {
         reason = getLvmIncompatibleWithCnvReason(values, operatorInfo.lvmSupport);
       }

@@ -64,10 +64,7 @@ const HostInventory = ({ cluster }: { cluster: Cluster }) => {
       {isPlatformIntegrationFeatureEnabled && (
         <StackItem>
           <Split>
-            <PlatformIntegration
-              clusterId={cluster.id}
-              openshiftVersion={cluster.openshiftVersion}
-            />
+            <PlatformIntegration clusterId={cluster.id} />
           </Split>
         </StackItem>
       )}

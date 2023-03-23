@@ -9,7 +9,6 @@ import {
   ManagedDomain,
   OpenshiftVersionOptionType,
   PullSecret,
-  SNOControlGroup,
   ocmClusterNameValidationMessages,
   uniqueOcmClusterNameValidationMessages,
   CLUSTER_NAME_MAX_LENGTH,
@@ -30,6 +29,7 @@ import OcmOpenShiftVersion from './OcmOpenShiftVersion';
 import OcmOpenShiftVersionSelect from './OcmOpenShiftVersionSelect';
 import CpuArchitectureDropdown from './CpuArchitectureDropdown';
 import useCpuArchitectures from '../../hooks/useCpuArchitectures';
+import OcmSNOControlGroup from './OcmSNOControlGroup';
 
 export type OcmClusterDetailsFormFieldsProps = {
   forceOpenshiftVersion?: string;
@@ -146,7 +146,7 @@ export const OcmClusterDetailsFormFields = ({
           cpuArchitectures={getNewSupportedCpuArchitectures(isMultiArchSupported, cpuArchitectures)}
         />
       )}
-      <SNOControlGroup versions={versions} highAvailabilityMode={highAvailabilityMode} />
+      <OcmSNOControlGroup versions={versions} highAvailabilityMode={highAvailabilityMode} />
 
       {!isPullSecretSet && <PullSecret isOcm={isOcm} defaultPullSecret={defaultPullSecret} />}
 
