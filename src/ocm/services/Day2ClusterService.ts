@@ -2,9 +2,9 @@ import { InfraEnvsService } from '.';
 import { ClustersAPI } from './apis';
 import {
   Cluster,
-  CpuArchitecture,
-  getSupportedCpuArchitectures,
+  getAllCpuArchitectures,
   OcmCpuArchitecture,
+  SupportedCpuArchitecture,
 } from '../../common';
 import { OcmClusterExtraInfo, OcmClusterType } from '../components/AddHosts/types';
 import { mapOcmArchToCpuArchitecture } from './CpuArchitectureService';
@@ -61,8 +61,8 @@ const Day2ClusterService = {
       ocmCluster.cpu_architecture === OcmCpuArchitecture.MULTI ||
       extraInfo.canSelectCpuArchitecture;
     const cpuArchitectures = createMultipleInfraEnvs
-      ? getSupportedCpuArchitectures()
-      : [mapOcmArchToCpuArchitecture(ocmCluster.cpu_architecture)];
+      ? getAllCpuArchitectures()
+      : ([mapOcmArchToCpuArchitecture(ocmCluster.cpu_architecture)] as SupportedCpuArchitecture[]);
 
     return Day2ClusterService.createCluster(
       openshiftClusterId,
@@ -94,7 +94,7 @@ const Day2ClusterService = {
     apiVipDnsname: string,
     pullSecret: string,
     openshiftVersion: string,
-    cpuArchitectures: CpuArchitecture[],
+    cpuArchitectures: SupportedCpuArchitecture[],
   ) {
     const { data: day2Cluster } = await ClustersAPI.registerAddHosts({
       openshiftClusterId, // used to both match OpenShift Cluster and as an assisted-installer ID

@@ -52,6 +52,7 @@ type ClusterDeploymentNetworkingFormProps = {
   isPreviewOpen: boolean;
   onEditHost: AgentTableActions['onEditHost'];
   onEditRole: AgentTableActions['onEditRole'];
+  onSetInstallationDiskId: AgentTableActions['onSetInstallationDiskId'];
 };
 
 const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormProps> = ({
@@ -66,6 +67,7 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
   isPreviewOpen,
   onEditHost,
   onEditRole,
+  onSetInstallationDiskId,
 }) => {
   const { values, touched, setFieldValue, setFieldTouched } =
     useFormikContext<ClusterDeploymentNetworkingValues>();
@@ -169,6 +171,7 @@ const ClusterDeploymentNetworkingForm: React.FC<ClusterDeploymentNetworkingFormP
             agents={agents}
             onEditHost={onEditHost}
             onEditRole={onEditRole}
+            onSetInstallationDiskId={onSetInstallationDiskId}
           />
         </StackItem>
       </Stack>
