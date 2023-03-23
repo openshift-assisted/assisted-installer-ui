@@ -2,7 +2,6 @@ import { Grid, GridItem } from '@patternfly/react-core';
 import { Form, Formik } from 'formik';
 import React from 'react';
 import {
-  canSelectCpuArchitecture,
   Cluster,
   ClusterWizardStep,
   ClusterWizardStepHeader,
@@ -10,7 +9,6 @@ import {
   ErrorState,
   LoadingState,
 } from '../../../../common';
-import DiscoverImageCpuArchitectureControlGroup from '../../../../common/components/clusterConfiguration/DiscoveryImageCpuArchitectureControlGroup';
 import { HostsNetworkConfigurationType, InfraEnvsService } from '../../../services';
 import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
 import { handleApiError } from '../../../api';
@@ -20,6 +18,8 @@ import Day2WizardNav from './Day2WizardNav';
 import Day2WizardFooter from './Day2WizardFooter';
 import Day2HostStaticIpConfigurations from './Day2StaticIpHostConfigurations';
 import { mapClusterCpuArchToInfraEnvCpuArch } from '../../../services/CpuArchitectureService';
+import CpuArchitectureDropdown from '../../clusterConfiguration/CpuArchitectureDropdown';
+import useCpuArchitectures from '../../../hooks/useCpuArchitectures';
 
 const getDay2ClusterDetailInitialValues = async (
   clusterId: Cluster['id'],
@@ -49,10 +49,9 @@ const Day2ClusterDetails = () => {
   const wizardContext = useDay2WizardContext();
   const [initialValues, setInitialValues] = React.useState<Day2ClusterDetailValues | null>();
   const [isSubmitting, setSubmitting] = React.useState(false);
-  const canSelectCpuArch = canSelectCpuArchitecture(day2Cluster);
 
   const day1CpuArchitecture = mapClusterCpuArchToInfraEnvCpuArch(day2Cluster.cpuArchitecture);
-
+  const { cpuArchitectures } = useCpuArchitectures(day2Cluster.openshiftVersion);
   React.useEffect(() => {
     const fetchAndSetInitialValues = async () => {
       const initialValues = await getDay2ClusterDetailInitialValues(
@@ -114,11 +113,13 @@ const Day2ClusterDetails = () => {
                   <ClusterWizardStepHeader>Cluster details</ClusterWizardStepHeader>
                 </GridItem>
                 <GridItem span={12} lg={10} xl={9} xl2={7}>
-                  <DiscoverImageCpuArchitectureControlGroup
-                    canSelectCpuArchitecture={canSelectCpuArch}
-                    day1CpuArchitecture={day1CpuArchitecture}
-                    openshiftVersion={day2Cluster.openshiftVersion}
-                  />
+                  {cpuArchitectures && (
+                    <CpuArchitectureDropdown
+                      openshiftVersion={day2Cluster.openshiftVersion}
+                      day1CpuArchitecture={day1CpuArchitecture}
+                      cpuArchitectures={cpuArchitectures}
+                    />
+                  )}
                 </GridItem>
                 <GridItem>
                   <Day2HostStaticIpConfigurations />

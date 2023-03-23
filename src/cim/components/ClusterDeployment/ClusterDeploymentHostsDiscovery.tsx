@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, GridItem, TextContent, Text, Button, ButtonVariant } from '@patternfly/react-core';
+import { Grid, GridItem, TextContent, Text } from '@patternfly/react-core';
 import Measure from 'react-measure';
 import {
   DiscoveryInstructions,
@@ -11,13 +11,11 @@ import {
 import { getIsSNOCluster } from '../helpers';
 import MinimalHWRequirements from '../Agent/MinimalHWRequirements';
 import { ClusterDeploymentHostsDiscoveryProps } from './types';
-import { AddHostModal, EditBMHModal, EditAgentModal } from '../modals';
+import { EditBMHModal, EditAgentModal } from '../modals';
 import { AgentK8sResource, BareMetalHostK8sResource } from '../../types';
 import ClusterDeploymentHostDiscoveryTable from './ClusterDeploymentHostDiscoveryTable';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
-
-// TODO either make "onSaveISOParams" optional everywhere, or make it required and ensure it's set
-const dummyOnSaveISOParams = () => Promise.resolve();
+import AddHostDropdown from '../InfraEnv/AddHostDropdown';
 
 const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryProps> = ({
   agentClusterInstall,
@@ -27,20 +25,17 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
   infraEnv,
   infraNMStates,
   usedHostnames,
-  onCreateBMH,
   onSaveAgent,
   onEditRole,
   onSetInstallationDiskId,
   onSaveBMH,
-  onSaveISOParams,
   fetchSecret,
   onChangeBMHHostname,
   onApproveAgent,
   onDeleteHost,
-  isBMPlatform,
+  ...rest
 }) => {
   const [isDiscoveryHintModalOpen, setDiscoveryHintModalOpen] = React.useState(false);
-  const [isoModalOpen, setISOModalOpen] = React.useState(false);
   const [editBMH, setEditBMH] = React.useState<BareMetalHostK8sResource>();
   const [editAgent, setEditAgent] = React.useState<AgentK8sResource | undefined>();
 
@@ -55,21 +50,21 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
           <DiscoveryInstructions showAllInstructions />
         </TextContent>
       </GridItem>
-      {!!onCreateBMH && (
-        <GridItem>
-          <Button variant={ButtonVariant.primary} onClick={() => setISOModalOpen(true)}>
-            {t('ai:Add host')}
-          </Button>
-        </GridItem>
-      )}
-
+      <AddHostDropdown
+        infraEnv={infraEnv}
+        agentClusterInstall={agentClusterInstall}
+        usedHostnames={usedHostnames}
+        {...rest}
+      />
       <GridItem>
         <TextContent>
           <Text component="h3">{t('ai:Information and warnings')}</Text>
-          <Text component="p">
-            {aiConfigMap && (
+          {aiConfigMap && (
+            <Text component="p">
               <MinimalHWRequirements aiConfigMap={aiConfigMap} isSNOCluster={isSNOCluster} />
-            )}
+            </Text>
+          )}
+          <Text component="p">
             <HostsNotShowingLink setDiscoveryHintModalOpen={setDiscoveryHintModalOpen} />
           </Text>
           {isVM && <VMRebootConfigurationInfo />}
@@ -123,19 +118,6 @@ const ClusterDeploymentHostsDiscovery: React.FC<ClusterDeploymentHostsDiscoveryP
         isOpen={isDiscoveryHintModalOpen}
         setDiscoveryHintModalOpen={setDiscoveryHintModalOpen}
       />
-      {!!onCreateBMH &&
-        isoModalOpen /* Do not use isOpen props to re-initialize when re-opening */ && (
-          <AddHostModal
-            infraEnv={infraEnv}
-            agentClusterInstall={agentClusterInstall}
-            isOpen={isoModalOpen}
-            onClose={() => setISOModalOpen(false)}
-            onCreateBMH={onCreateBMH}
-            onSaveISOParams={onSaveISOParams || dummyOnSaveISOParams}
-            usedHostnames={usedHostnames || []}
-            isBMPlatform={isBMPlatform}
-          />
-        )}
     </Grid>
   );
 };

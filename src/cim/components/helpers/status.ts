@@ -129,16 +129,25 @@ export const getAgentStatus = (
   agent: AgentK8sResource,
   excludeDiscovered = false,
 ): { status: HostStatusDef; validationsInfo: ValidationsInfo; autoCSR?: boolean } => {
-  let status: HostStatusDef =
-    agentStatus[agent.status?.debugInfo?.state || getInsufficientState(agent)];
-  const validationsInfo = agent.status?.validationsInfo || {};
-  if (!excludeDiscovered && !agent.spec.approved) {
-    status = agentStatus.discovered;
+  const specSyncErr = agent.status?.conditions?.find(
+    (c) => c.type === 'SpecSynced' && c.status === 'False',
+  );
+
+  let status: HostStatusDef;
+  let validationsInfo: ValidationsInfo = {};
+  if (specSyncErr) {
+    status = agentStatus['specSyncErr'];
+  } else {
+    status = agentStatus[agent.status?.debugInfo?.state || getInsufficientState(agent)];
+    validationsInfo = agent.status?.validationsInfo || {};
+    if (!excludeDiscovered && !agent.spec.approved) {
+      status = agentStatus.discovered;
+    }
+    // TODO(jtomasek): Implement this
+    // const sublabel = areOnlyClusterSoftValidationsFailing(agentStatus.validationsInfo)
+    //   ? 'Some validations failed'
+    //   : undefined;
   }
-  // TODO(jtomasek): Implement this
-  // const sublabel = areOnlyClusterSoftValidationsFailing(agentStatus.validationsInfo)
-  //   ? 'Some validations failed'
-  //   : undefined;
   return { status, validationsInfo };
 };
 
@@ -149,7 +158,7 @@ export const getWizardStepAgentStatus = (
   excludeDiscovered = false,
 ): { status: HostStatusDef; validationsInfo: ValidationsInfo } => {
   const aStatus = getAgentStatus(agent, excludeDiscovered);
-  if (aStatus.status === agentStatus.discovered) {
+  if ([agentStatus.discovered, agentStatus.specSyncErr].includes(aStatus.status)) {
     return aStatus;
   }
 

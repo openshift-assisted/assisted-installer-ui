@@ -2,19 +2,31 @@ import * as React from 'react';
 import { getFailingResourceConditions } from '../helpers';
 import { InfraEnvK8sResource } from '../../types';
 import { SingleResourceAlerts } from '../common/ResourceAlerts';
-import { Alert, AlertVariant } from '@patternfly/react-core';
+import { Alert, AlertVariant, ModalBoxBody } from '@patternfly/react-core';
 import { getInfraEnvDocs } from '../common/constants';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 export type EnvironmentErrorsProps = {
   infraEnv: InfraEnvK8sResource;
   docVersion: string;
+  inModal?: boolean;
+  children?: React.ReactNode;
 };
 
-export const EnvironmentErrors: React.FC<EnvironmentErrorsProps> = ({ infraEnv, docVersion }) => {
+export const EnvironmentErrors: React.FC<EnvironmentErrorsProps> = ({
+  infraEnv,
+  docVersion,
+  children,
+  inModal,
+}) => {
   const infraEnvAlerts = getFailingResourceConditions(infraEnv, undefined /* For ALL */);
   const { t } = useTranslation();
-  return (
+
+  if (infraEnv.status && !infraEnvAlerts.length) {
+    return <>{children}</>;
+  }
+
+  const errors = (
     <>
       {!infraEnv.status && (
         <Alert
@@ -39,4 +51,6 @@ export const EnvironmentErrors: React.FC<EnvironmentErrorsProps> = ({ infraEnv, 
       />
     </>
   );
+
+  return inModal ? <ModalBoxBody>{errors}</ModalBoxBody> : errors;
 };

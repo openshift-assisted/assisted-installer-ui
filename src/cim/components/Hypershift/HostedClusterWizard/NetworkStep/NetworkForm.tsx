@@ -5,6 +5,7 @@ import flattenDeep from 'lodash/flattenDeep';
 import xor from 'lodash/xor';
 import { Form, FormGroup, Grid, GridItem } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
+import { Address6 } from 'ip-address';
 import {
   CheckboxField,
   getHumanizedSubnet,
@@ -23,6 +24,7 @@ import { useTranslation } from '../../../../../common/hooks/use-translation-wrap
 import { AgentK8sResource } from '../../../../types';
 
 import './NetworkForm.css';
+import AdvancedNetworkFields from '../../../../../common/components/clusterConfiguration/AdvancedNetworkFields';
 
 const NetworkForm: React.FC<NetworkFormProps> = ({ agents, onValuesChanged }) => {
   const { values, setFieldValue } = useFormikContext<NetworkFormValues>();
@@ -75,6 +77,9 @@ const NetworkForm: React.FC<NetworkFormProps> = ({ agents, onValuesChanged }) =>
       setFieldValue('machineCIDR', availableCIDRs[0]);
     }
   }, [setFieldValue, availableCIDRs, values.machineCIDR]);
+
+  const isClusterCIDRIPv6 = Address6.isValid(values.clusterNetworkCidr || '');
+
   const { t } = useTranslation();
   return (
     <Form>
@@ -146,14 +151,7 @@ const NetworkForm: React.FC<NetworkFormProps> = ({ agents, onValuesChanged }) =>
         className="ai-advanced-fields"
         body={
           values.isAdvanced && (
-            <Grid hasGutter>
-              <GridItem>
-                <InputField name="podCIDR" label={t('ai:Cluster CIDR')} />
-              </GridItem>
-              <GridItem>
-                <InputField name="serviceCIDR" label={t('ai:Service CIDR')} />
-              </GridItem>
-            </Grid>
+            <AdvancedNetworkFields isSDNSelectable={false} isClusterCIDRIPv6={isClusterCIDRIPv6} />
           )
         }
         helperText={t('ai:Configure advanced networking properties (e.g. CIDR ranges).')}
