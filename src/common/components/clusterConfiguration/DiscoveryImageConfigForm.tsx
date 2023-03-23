@@ -70,6 +70,7 @@ type DiscoveryImageConfigFormProps = Proxy & {
   hideDiscoveryImageType?: boolean;
   sshPublicKey?: string;
   imageType?: ImageType;
+  isIPXE?: boolean;
 };
 
 export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> = ({
@@ -82,6 +83,7 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
   imageType,
   hideDiscoveryImageType,
   hasDHCP,
+  isIPXE,
 }) => {
   const initialValues: DiscoveryImageFormValues = {
     sshPublicKey: sshPublicKey || '',
@@ -109,7 +111,11 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
                   <Alert
                     variant={AlertVariant.info}
                     isInline
-                    title={t('ai:Generate a Discovery ISO in order to add hosts to the cluster.')}
+                    title={
+                      isIPXE
+                        ? t('ai:To add hosts to the cluster, generate iPXE script.')
+                        : t('ai:To add hosts to the cluster, generate a Discovery ISO.')
+                    }
                   />
                 </StackItem>
                 {hasDHCP === false && (
@@ -134,7 +140,11 @@ export const DiscoveryImageConfigForm: React.FC<DiscoveryImageConfigFormProps> =
                 isDisabled={isSubmitting}
                 isLoading={isSubmitting}
               >
-                {isSubmitting ? t('ai:Generating') : t('ai:Generate Discovery ISO')}
+                {isSubmitting
+                  ? t('ai:Generating')
+                  : isIPXE
+                  ? t('ai:Generate script file')
+                  : t('ai:Generate Discovery ISO')}
               </Button>
               <Button key="cancel" variant="link" onClick={onCancel}>
                 {t('ai:Cancel')}

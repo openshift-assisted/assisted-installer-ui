@@ -33,5 +33,8 @@ export type InfraEnvK8sResource = K8sResourceCommon & {
     debugInfo?: {
       eventsURL?: string;
     };
+    bootArtifacts?: {
+      ipxeScript?: string;
+    };
   };
 };

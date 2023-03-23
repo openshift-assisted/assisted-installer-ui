@@ -15,6 +15,7 @@ export type AddHostModalProps = {
   onSaveISOParams: (values: DiscoveryImageFormValues) => Promise<void>;
   agentClusterInstall?: AgentClusterInstallK8sResource;
   docVersion: string;
+  isIPXE?: boolean;
 };
 
 export type AddBmcHostModalProps = Pick<
