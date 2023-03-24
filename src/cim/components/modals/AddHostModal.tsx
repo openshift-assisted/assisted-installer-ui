@@ -13,8 +13,9 @@ import { AddHostModalProps } from './types';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { EnvironmentErrors } from '../InfraEnv/EnvironmentErrors';
 import { InfraEnvK8sResource } from '../../types';
+import DownloadIpxeScript from '../../../common/components/clusterConfiguration/DownloadIpxeScript';
 
-type AddHostModalStepType = 'iso-config' | 'iso-download';
+type AddHostModalStepType = 'config' | 'download';
 
 const AddHostModal: React.FC<AddHostModalProps> = ({
   isOpen,
@@ -23,13 +24,14 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
   agentClusterInstall,
   onSaveISOParams,
   docVersion,
+  isIPXE,
 }) => {
   const hasDHCP = infraEnv.metadata?.labels?.networkType !== 'static';
   const sshPublicKey = infraEnv.spec?.sshAuthorizedKey || agentClusterInstall?.spec?.sshPublicKey;
   const { httpProxy, httpsProxy, noProxy } = infraEnv.spec?.proxy || {};
 
   const areIsoDataAvailable = !!sshPublicKey || !!httpProxy || !!httpsProxy || !!noProxy;
-  const isoDialog = areIsoDataAvailable ? 'iso-download' : 'iso-config';
+  const isoDialog = areIsoDataAvailable ? 'download' : 'config';
   const [dialogType, setDialogType] = React.useState<AddHostModalStepType>(isoDialog);
   const { t } = useTranslation();
   const handleIsoConfigSubmit = async (
@@ -38,7 +40,7 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
   ) => {
     try {
       await onSaveISOParams(values);
-      setDialogType('iso-download');
+      setDialogType('download');
     } catch (error) {
       formikActions.setStatus({
         error: {
@@ -60,7 +62,7 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
       id="add-host-modal"
     >
       <EnvironmentErrors infraEnv={infraEnv} docVersion={docVersion} inModal>
-        {dialogType === 'iso-config' && (
+        {dialogType === 'config' && (
           <DiscoveryImageConfigForm
             onCancel={onClose}
             handleSubmit={handleIsoConfigSubmit}
@@ -71,15 +73,26 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
             httpsProxy={httpsProxy}
             noProxy={noProxy}
             hasDHCP={hasDHCP}
+            isIPXE={isIPXE}
           />
         )}
-        {dialogType === 'iso-download' && (
-          <GeneratingIsoDownload
-            onClose={onClose}
-            infraEnv={infraEnv}
-            onReset={() => setDialogType('iso-config')}
-            hasDHCP={hasDHCP}
-          />
+        {dialogType === 'download' && (
+          <>
+            {isIPXE ? (
+              <GeneratingIPXEDownload
+                onClose={onClose}
+                infraEnv={infraEnv}
+                onReset={() => setDialogType('config')}
+              />
+            ) : (
+              <GeneratingIsoDownload
+                onClose={onClose}
+                infraEnv={infraEnv}
+                onReset={() => setDialogType('config')}
+                hasDHCP={hasDHCP}
+              />
+            )}
+          </>
         )}
       </EnvironmentErrors>
     </Modal>
@@ -109,6 +122,30 @@ const GeneratingIsoDownload = ({
     <EmptyState>
       <EmptyStateIcon icon={Spinner} />
       <EmptyStateBody>{t('ai:Generating discovery ISO')}</EmptyStateBody>
+    </EmptyState>
+  );
+};
+
+const GeneratingIPXEDownload = ({
+  infraEnv,
+  onClose,
+  onReset,
+}: {
+  infraEnv: InfraEnvK8sResource;
+  onClose: VoidFunction;
+  onReset: VoidFunction;
+}) => {
+  const { t } = useTranslation();
+  return infraEnv.status?.bootArtifacts?.ipxeScript ? (
+    <DownloadIpxeScript
+      onClose={onClose}
+      downloadUrl={infraEnv.status.bootArtifacts.ipxeScript}
+      onReset={onReset}
+    />
+  ) : (
+    <EmptyState>
+      <EmptyStateIcon icon={Spinner} />
+      <EmptyStateBody>{t('ai:Generating iPXE script')}</EmptyStateBody>
     </EmptyState>
   );
 };
