@@ -61,12 +61,14 @@ type CpuArchitectureDropdownProps = {
   openshiftVersion: Cluster['openshiftVersion'];
   day1CpuArchitecture?: CpuArchitecture;
   cpuArchitectures: SupportedCpuArchitecture[];
+  isMultiArchSupported: boolean;
 };
 
 const CpuArchitectureDropdown = ({
   openshiftVersion,
   day1CpuArchitecture,
   cpuArchitectures,
+  isMultiArchSupported,
 }: CpuArchitectureDropdownProps) => {
   const [field, { value: selectedCpuArchitecture }, { setValue }] =
     useField<SupportedCpuArchitecture>(INPUT_NAME);
@@ -84,7 +86,7 @@ const CpuArchitectureDropdown = ({
   const enabledItems = React.useMemo(() => {
     return getAllCpuArchitectures().map((cpuArch) => {
       const disabledReason = !cpuArchitectures.includes(cpuArch)
-        ? getDisabledReasonForCpuArch(architectureData[cpuArch].label)
+        ? getDisabledReasonForCpuArch(architectureData[cpuArch].label, isMultiArchSupported)
         : '';
       return (
         <DropdownItem
@@ -99,7 +101,7 @@ const CpuArchitectureDropdown = ({
         </DropdownItem>
       );
     });
-  }, [cpuArchitectures]);
+  }, [cpuArchitectures, isMultiArchSupported]);
 
   const onSelect = React.useCallback(
     (event?: React.SyntheticEvent<HTMLDivElement>) => {

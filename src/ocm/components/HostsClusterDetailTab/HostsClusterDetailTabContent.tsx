@@ -6,6 +6,7 @@ import {
   ErrorState,
   LoadingState,
   POLLING_INTERVAL,
+  useFeature,
 } from '../../../common';
 import { useOpenshiftVersions, usePullSecret } from '../../hooks';
 import { Button, EmptyStateVariant } from '@patternfly/react-core';
@@ -15,6 +16,7 @@ import { isApiError } from '../../api/types';
 import { FeatureSupportLevelProvider } from '../featureSupportLevels';
 import { AddHosts } from '../AddHosts';
 import { HostsClusterDetailTabProps } from './types';
+import useCpuArchitectures from '../../hooks/useCpuArchitectures';
 
 export const HostsClusterDetailTabContent = ({
   cluster: ocmCluster,
@@ -25,7 +27,8 @@ export const HostsClusterDetailTabContent = ({
   const [day2Cluster, setDay2Cluster] = useStateSafely<Cluster | null | undefined>(undefined);
   const pullSecret = usePullSecret();
   const { normalizeClusterVersion } = useOpenshiftVersions();
-
+  const { cpuArchitectures } = useCpuArchitectures(day2Cluster?.openshiftVersion);
+  const canSelectCpuArch = useFeature('ASSISTED_INSTALLER_MULTIARCH_SUPPORTED');
   const handleClickTryAgainLink = React.useCallback(() => {
     setError(undefined);
     setDay2Cluster(undefined);
@@ -101,7 +104,8 @@ export const HostsClusterDetailTabContent = ({
             ocmCluster,
             pullSecret,
             normalizedVersion,
-            extraInfo,
+            cpuArchitectures,
+            canSelectCpuArch,
           );
           setDay2Cluster(
             Day2ClusterService.completeAiClusterWithOcmCluster(day2Cluster, ocmCluster, extraInfo),
@@ -139,6 +143,8 @@ export const HostsClusterDetailTabContent = ({
     isVisible,
     normalizeClusterVersion,
     handleClickTryAgainLink,
+    cpuArchitectures,
+    canSelectCpuArch,
   ]);
 
   const resetCluster = React.useCallback(async () => {

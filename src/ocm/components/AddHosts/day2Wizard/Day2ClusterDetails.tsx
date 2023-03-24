@@ -2,7 +2,6 @@ import { Grid, GridItem } from '@patternfly/react-core';
 import { Form, Formik } from 'formik';
 import React from 'react';
 import {
-  canSelectCpuArchitecture,
   Cluster,
   ClusterWizardStep,
   ClusterWizardStepHeader,
@@ -10,6 +9,7 @@ import {
   ErrorState,
   getNewSupportedCpuArchitectures,
   LoadingState,
+  useFeature,
 } from '../../../../common';
 import { HostsNetworkConfigurationType, InfraEnvsService } from '../../../services';
 import { useModalDialogsContext } from '../../hosts/ModalDialogsContext';
@@ -54,7 +54,7 @@ const Day2ClusterDetails = () => {
 
   const day1CpuArchitecture = mapClusterCpuArchToInfraEnvCpuArch(day2Cluster.cpuArchitecture);
   const { cpuArchitectures } = useCpuArchitectures(day2Cluster.openshiftVersion);
-  const canSelectCpuArch = canSelectCpuArchitecture(day2Cluster);
+  const canSelectCpuArch = useFeature('ASSISTED_INSTALLER_MULTIARCH_SUPPORTED');
   React.useEffect(() => {
     const fetchAndSetInitialValues = async () => {
       const initialValues = await getDay2ClusterDetailInitialValues(
@@ -123,6 +123,7 @@ const Day2ClusterDetails = () => {
                       canSelectCpuArch,
                       cpuArchitectures,
                     )}
+                    isMultiArchSupported={canSelectCpuArch}
                   />
                 </GridItem>
                 <GridItem>

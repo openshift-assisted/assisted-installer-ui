@@ -144,6 +144,7 @@ export const OcmClusterDetailsFormFields = ({
         <CpuArchitectureDropdown
           openshiftVersion={openshiftVersion}
           cpuArchitectures={getNewSupportedCpuArchitectures(isMultiArchSupported, cpuArchitectures)}
+          isMultiArchSupported={isMultiArchSupported}
         />
       )}
       <SNOControlGroup versions={versions} highAvailabilityMode={highAvailabilityMode} />

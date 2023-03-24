@@ -70,6 +70,13 @@ export const getNewSupportedCpuArchitectures = (
 
 export const getDefaultCpuArchitecture = (): SupportedCpuArchitecture => CpuArchitecture.x86;
 
-export const getDisabledReasonForCpuArch = (cpuArchLabel: string) => {
-  return `${cpuArchLabel} is not supported in this OpenShift version`;
+export const getDisabledReasonForCpuArch = (
+  cpuArchLabel: string,
+  isMultiArchSupported: boolean,
+) => {
+  if (!isMultiArchSupported) {
+    return `You don't have permissions to use multiple CPU architectures`;
+  } else {
+    return `${cpuArchLabel} is not supported in this OpenShift version`;
+  }
 };

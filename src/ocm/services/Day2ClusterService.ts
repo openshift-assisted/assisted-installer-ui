@@ -2,11 +2,12 @@ import { InfraEnvsService } from '.';
 import { ClustersAPI } from './apis';
 import {
   Cluster,
-  getAllCpuArchitectures,
+  getNewSupportedCpuArchitectures,
   OcmCpuArchitecture,
   SupportedCpuArchitecture,
+  SupportLevels,
 } from '../../common';
-import { OcmClusterExtraInfo, OcmClusterType } from '../components/AddHosts/types';
+import { OcmClusterType } from '../components/AddHosts/types';
 import { mapOcmArchToCpuArchitecture } from './CpuArchitectureService';
 
 export const getApiVipDnsName = (ocmCluster: OcmClusterType) => {
@@ -43,7 +44,8 @@ const Day2ClusterService = {
     ocmCluster: OcmClusterType,
     pullSecret: string,
     openshiftVersion: string,
-    extraInfo: OcmClusterExtraInfo,
+    supportedCpuArchitectures?: SupportLevels,
+    canSelectCpuArch?: boolean,
   ) {
     const openshiftClusterId = Day2ClusterService.getOpenshiftClusterId(ocmCluster);
 
@@ -56,12 +58,12 @@ const Day2ClusterService = {
     if (day2ClusterId) {
       return Day2ClusterService.fetchClusterById(day2ClusterId);
     }
+
     // The first time the user accesses "Add hosts" tab, the infraEnv(s) need to be created
     const createMultipleInfraEnvs =
-      ocmCluster.cpu_architecture === OcmCpuArchitecture.MULTI ||
-      extraInfo.canSelectCpuArchitecture;
+      ocmCluster.cpu_architecture === OcmCpuArchitecture.MULTI || canSelectCpuArch;
     const cpuArchitectures = createMultipleInfraEnvs
-      ? getAllCpuArchitectures()
+      ? getNewSupportedCpuArchitectures(canSelectCpuArch, supportedCpuArchitectures)
       : ([mapOcmArchToCpuArchitecture(ocmCluster.cpu_architecture)] as SupportedCpuArchitecture[]);
 
     return Day2ClusterService.createCluster(
@@ -127,7 +129,6 @@ const Day2ClusterService = {
   completeAiClusterWithOcmCluster: (
     day2Cluster: Cluster | undefined,
     ocmCluster: OcmClusterType | undefined,
-    extraInfo: OcmClusterExtraInfo,
   ) => {
     if (!ocmCluster || !day2Cluster) {
       return day2Cluster;
@@ -138,9 +139,6 @@ const Day2ClusterService = {
       // The field "cpu_architecture" is calculated based on the existing hosts' architecture
       // It can be a specific architecture, or "multi" if hosts from several architectures have been discovered
       cpuArchitecture: ocmCluster.cpu_architecture,
-      // The field "can_select_cpu_arch" only tells us that the organization has this feature,
-      // but it's not applicable to individual clusters. They may actually not support multi-arch (eg OpenShift < 4.12)
-      canSelectCpuArch: extraInfo.canSelectCpuArchitecture,
     };
   },
 };
