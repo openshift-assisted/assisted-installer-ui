@@ -7,9 +7,7 @@ import {
   CpuArchitecture,
   FeatureId,
   FeatureSupportLevelData,
-  getAllCpuArchitectures,
   getDefaultCpuArchitecture,
-  getDisabledReasonForCpuArch,
   getFieldId,
   SupportedCpuArchitecture,
   useFeatureSupportLevel,
@@ -61,14 +59,12 @@ type CpuArchitectureDropdownProps = {
   openshiftVersion: Cluster['openshiftVersion'];
   day1CpuArchitecture?: CpuArchitecture;
   cpuArchitectures: SupportedCpuArchitecture[];
-  isMultiArchSupported: boolean;
 };
 
 const CpuArchitectureDropdown = ({
   openshiftVersion,
   day1CpuArchitecture,
   cpuArchitectures,
-  isMultiArchSupported,
 }: CpuArchitectureDropdownProps) => {
   const [field, { value: selectedCpuArchitecture }, { setValue }] =
     useField<SupportedCpuArchitecture>(INPUT_NAME);
@@ -84,24 +80,18 @@ const CpuArchitectureDropdown = ({
   );
 
   const enabledItems = React.useMemo(() => {
-    return getAllCpuArchitectures().map((cpuArch) => {
-      const disabledReason = !cpuArchitectures.includes(cpuArch)
-        ? getDisabledReasonForCpuArch(architectureData[cpuArch].label, isMultiArchSupported)
-        : '';
+    return cpuArchitectures.map((cpuArch) => {
       return (
         <DropdownItem
           key={cpuArch}
           id={cpuArch}
           description={architectureData[cpuArch].description}
-          tooltip={disabledReason ? <p>{disabledReason}</p> : undefined}
-          isAriaDisabled={!!disabledReason}
-          tooltipProps={{ position: 'top' }}
         >
           {architectureData[cpuArch].label}
         </DropdownItem>
       );
     });
-  }, [cpuArchitectures, isMultiArchSupported]);
+  }, [cpuArchitectures]);
 
   const onSelect = React.useCallback(
     (event?: React.SyntheticEvent<HTMLDivElement>) => {

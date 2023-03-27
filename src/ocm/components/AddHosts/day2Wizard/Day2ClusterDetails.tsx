@@ -123,7 +123,6 @@ const Day2ClusterDetails = () => {
                       canSelectCpuArch,
                       cpuArchitectures,
                     )}
-                    isMultiArchSupported={canSelectCpuArch}
                   />
                 </GridItem>
                 <GridItem>

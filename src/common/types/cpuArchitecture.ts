@@ -52,7 +52,7 @@ export const getNewSupportedCpuArchitectures = (
   cpuArchitectures?: SupportLevels,
 ): SupportedCpuArchitecture[] => {
   const newSupportedCpuArchs: SupportedCpuArchitecture[] = [];
-  if (canSelectCpuArch && cpuArchitectures !== undefined) {
+  if (canSelectCpuArch && cpuArchitectures) {
     const supportedFeatureIdCpuArchs = getKeys(featureIdToCpuArchitecture).filter(
       (archFeatureId) => {
         const supportLevel = cpuArchitectures.architectures[archFeatureId] as SupportLevel;
@@ -61,6 +61,18 @@ export const getNewSupportedCpuArchitectures = (
     );
     supportedFeatureIdCpuArchs.forEach((archFeatureId) => {
       newSupportedCpuArchs.push(featureIdToCpuArchitecture[archFeatureId]);
+    });
+  } else if (!canSelectCpuArch && cpuArchitectures) {
+    const supportedFeatureIdCpuArchs = getKeys(featureIdToCpuArchitecture).filter(
+      (archFeatureId) => {
+        const supportLevel = cpuArchitectures.architectures[archFeatureId] as SupportLevel;
+        return supportLevel && supportLevel !== 'unsupported';
+      },
+    );
+    supportedFeatureIdCpuArchs.forEach((archFeatureId) => {
+      if (archFeatureId !== 'ppc64LeArchitecture' && archFeatureId !== 's390XArchitecture') {
+        newSupportedCpuArchs.push(featureIdToCpuArchitecture[archFeatureId]);
+      }
     });
   } else {
     newSupportedCpuArchs.push(CpuArchitecture.x86);
