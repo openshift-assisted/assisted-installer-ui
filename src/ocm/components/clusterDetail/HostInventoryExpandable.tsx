@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Cluster, hostStatus } from '../../../common';
-import ExpandableCard from '../ui/ExpandableCard';
 import ClusterHostsTable from '../hosts/ClusterHostsTable';
 import { getMostSevereHostStatus } from './utils';
+import { ExpandableSection } from '@patternfly/react-core';
+import './HostInventoryExpandable.css';
 
 type HostInventoryExpandableProps = {
   cluster: Cluster;
 };
 
 const HostInventoryExpandable = ({ cluster }: HostInventoryExpandableProps) => {
+  const [isExpanded, setIsExpanded] = useState(false);
   const hosts = cluster.hosts || [];
   const mostSevereHostStatus = getMostSevereHostStatus(hosts);
   const title = (
@@ -20,9 +22,14 @@ const HostInventoryExpandable = ({ cluster }: HostInventoryExpandableProps) => {
     </span>
   );
   return (
-    <ExpandableCard id="cluster-host-table" title={title} defaultIsExpanded={false}>
+    <ExpandableSection
+      toggleContent={title}
+      onToggle={() => setIsExpanded(!isExpanded)}
+      isExpanded={isExpanded}
+      className="host-inventory-expandable"
+    >
       <ClusterHostsTable cluster={cluster} skipDisabled />
-    </ExpandableCard>
+    </ExpandableSection>
   );
 };
 export default HostInventoryExpandable;
