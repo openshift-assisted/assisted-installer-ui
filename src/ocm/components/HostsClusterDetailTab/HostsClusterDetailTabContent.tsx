@@ -23,20 +23,20 @@ export const HostsClusterDetailTabContent = ({
   isVisible,
 }: HostsClusterDetailTabProps) => {
   const [error, setError] = React.useState<ReactNode>();
-  const [day2Cluster, setDay2Cluster] = useStateSafely<Cluster | null | undefined>(undefined);
+  const [day2Cluster, setDay2Cluster] = useStateSafely<Cluster | null>(null);
   const pullSecret = usePullSecret();
   const { normalizeClusterVersion } = useOpenshiftVersions();
   const { cpuArchitectures } = useCpuArchitectures(ocmCluster.openshift_version);
   const canSelectCpuArch = useFeature('ASSISTED_INSTALLER_MULTIARCH_SUPPORTED');
   const handleClickTryAgainLink = React.useCallback(() => {
     setError(undefined);
-    setDay2Cluster(undefined);
+    setDay2Cluster(null);
   }, [setDay2Cluster]);
 
   React.useEffect(() => {
     if (!isVisible && day2Cluster) {
       // the tab is not visible, stop polling
-      setDay2Cluster(undefined);
+      setDay2Cluster(null);
     }
     const day1ClusterHostCount = ocmCluster?.metrics?.nodes?.total || 0;
     const openshiftClusterId = Day2ClusterService.getOpenshiftClusterId(ocmCluster);
@@ -54,7 +54,7 @@ export const HostsClusterDetailTabContent = ({
       );
     }
 
-    if (isVisible && day2Cluster === undefined && pullSecret) {
+    if (isVisible && !day2Cluster && pullSecret) {
       // ensure exclusive run
       setDay2Cluster(null);
 
@@ -106,9 +106,11 @@ export const HostsClusterDetailTabContent = ({
             cpuArchitectures,
             canSelectCpuArch,
           );
-          setDay2Cluster(
-            Day2ClusterService.completeAiClusterWithOcmCluster(day2Cluster, ocmCluster),
+          const aiCluster = Day2ClusterService.completeAiClusterWithOcmCluster(
+            day2Cluster,
+            ocmCluster,
           );
+          setDay2Cluster(aiCluster ?? null);
         } catch (e) {
           handleApiError(e);
           if (isApiError(e)) {
@@ -151,9 +153,11 @@ export const HostsClusterDetailTabContent = ({
     }
     try {
       const updatedDay2Cluster = await Day2ClusterService.fetchClusterById(day2Cluster.id);
-      setDay2Cluster(
-        Day2ClusterService.completeAiClusterWithOcmCluster(updatedDay2Cluster, ocmCluster),
+      const aiCluster = Day2ClusterService.completeAiClusterWithOcmCluster(
+        updatedDay2Cluster,
+        ocmCluster,
       );
+      setDay2Cluster(aiCluster ?? null);
     } catch (e) {
       handleApiError(e);
       setError(
