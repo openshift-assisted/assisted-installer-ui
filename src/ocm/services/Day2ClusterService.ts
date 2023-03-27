@@ -63,7 +63,10 @@ const Day2ClusterService = {
     const createMultipleInfraEnvs =
       ocmCluster.cpu_architecture === OcmCpuArchitecture.MULTI || canSelectCpuArch;
     const cpuArchitectures = createMultipleInfraEnvs
-      ? getNewSupportedCpuArchitectures(canSelectCpuArch, supportedCpuArchitectures)
+      ? getNewSupportedCpuArchitectures(
+          canSelectCpuArch ? canSelectCpuArch : false,
+          supportedCpuArchitectures,
+        )
       : ([mapOcmArchToCpuArchitecture(ocmCluster.cpu_architecture)] as SupportedCpuArchitecture[]);
 
     return Day2ClusterService.createCluster(
@@ -124,7 +127,6 @@ const Day2ClusterService = {
    * Complete the day2Cluster coming from AI polling with the data in the OCM cluster
    * @param day2Cluster Day2 cluster
    * @param ocmCluster OCM cluster
-   * @param extraInfo Extra information coming from OCM
    */
   completeAiClusterWithOcmCluster: (
     day2Cluster: Cluster | undefined,

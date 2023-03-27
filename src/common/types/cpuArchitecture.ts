@@ -12,7 +12,7 @@ export enum CpuArchitecture {
   s390x = 's390x',
 }
 export enum OcmCpuArchitecture {
-  x86 = 'amd64',
+  x86 = 'x86_64',
   ARM = 'arm64',
   MULTI = 'multi',
   ppc64le = 'ppc64le',

@@ -20,14 +20,13 @@ import useCpuArchitectures from '../../hooks/useCpuArchitectures';
 
 export const HostsClusterDetailTabContent = ({
   cluster: ocmCluster,
-  extraInfo,
   isVisible,
 }: HostsClusterDetailTabProps) => {
   const [error, setError] = React.useState<ReactNode>();
   const [day2Cluster, setDay2Cluster] = useStateSafely<Cluster | null | undefined>(undefined);
   const pullSecret = usePullSecret();
   const { normalizeClusterVersion } = useOpenshiftVersions();
-  const { cpuArchitectures } = useCpuArchitectures(day2Cluster?.openshiftVersion);
+  const { cpuArchitectures } = useCpuArchitectures(ocmCluster.openshift_version);
   const canSelectCpuArch = useFeature('ASSISTED_INSTALLER_MULTIARCH_SUPPORTED');
   const handleClickTryAgainLink = React.useCallback(() => {
     setError(undefined);
@@ -108,7 +107,7 @@ export const HostsClusterDetailTabContent = ({
             canSelectCpuArch,
           );
           setDay2Cluster(
-            Day2ClusterService.completeAiClusterWithOcmCluster(day2Cluster, ocmCluster, extraInfo),
+            Day2ClusterService.completeAiClusterWithOcmCluster(day2Cluster, ocmCluster),
           );
         } catch (e) {
           handleApiError(e);
@@ -136,7 +135,6 @@ export const HostsClusterDetailTabContent = ({
     }
   }, [
     ocmCluster,
-    extraInfo,
     pullSecret,
     day2Cluster,
     setDay2Cluster,
@@ -154,11 +152,7 @@ export const HostsClusterDetailTabContent = ({
     try {
       const updatedDay2Cluster = await Day2ClusterService.fetchClusterById(day2Cluster.id);
       setDay2Cluster(
-        Day2ClusterService.completeAiClusterWithOcmCluster(
-          updatedDay2Cluster,
-          ocmCluster,
-          extraInfo,
-        ),
+        Day2ClusterService.completeAiClusterWithOcmCluster(updatedDay2Cluster, ocmCluster),
       );
     } catch (e) {
       handleApiError(e);
@@ -174,7 +168,7 @@ export const HostsClusterDetailTabContent = ({
         </>,
       );
     }
-  }, [day2Cluster?.id, handleClickTryAgainLink, ocmCluster, extraInfo, setDay2Cluster]);
+  }, [day2Cluster?.id, handleClickTryAgainLink, ocmCluster, setDay2Cluster]);
 
   React.useEffect(() => {
     const id = setTimeout(() => {
