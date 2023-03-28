@@ -160,7 +160,7 @@ export const OcmClusterDetailsFormFields = ({
           cpuArchitectures={cpuArchitectures}
         />
       )}
-      <OcmSNOControlGroup versions={versions} highAvailabilityMode={highAvailabilityMode} />
+      <OcmSNOControlGroup highAvailabilityMode={highAvailabilityMode} />
 
       {!isPullSecretSet && <PullSecret isOcm={isOcm} defaultPullSecret={defaultPullSecret} />}
 

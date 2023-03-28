@@ -50,7 +50,7 @@ const getInvalidCombinationReason = (
   featureSupportLevels: NewFeatureSupportLevelData,
   cpuArchitecture: SupportedCpuArchitecture,
 ) => {
-  const featureSupportLevelId = architectureData[cpuArchitecture] as FeatureId;
+  const { featureSupportLevelId } = architectureData[cpuArchitecture];
   return featureSupportLevels && featureSupportLevelId
     ? featureSupportLevels.getFeatureDisabledReason(featureSupportLevelId)
     : undefined;
@@ -59,7 +59,7 @@ const getInvalidCombinationReason = (
 type CpuArchitectureDropdownProps = {
   openshiftVersion: Cluster['openshiftVersion'];
   day1CpuArchitecture?: CpuArchitecture;
-  cpuArchitectures: CpuArchitecture[];
+  cpuArchitectures: SupportedCpuArchitecture[];
 };
 
 const CpuArchitectureDropdown = ({
@@ -68,7 +68,7 @@ const CpuArchitectureDropdown = ({
   cpuArchitectures,
 }: CpuArchitectureDropdownProps) => {
   const [field, { value: selectedCpuArchitecture }, { setValue }] =
-    useField<CpuArchitecture>(INPUT_NAME);
+    useField<SupportedCpuArchitecture>(INPUT_NAME);
 
   const [isOpen, setOpen] = React.useState(false);
 
@@ -82,10 +82,13 @@ const CpuArchitectureDropdown = ({
 
   const enabledItems = React.useMemo(() => {
     return cpuArchitectures.map((cpuArch) => {
-      const archData: CpuArchitectureItem = architectureData[cpuArch] as CpuArchitectureItem;
       return (
-        <DropdownItem key={cpuArch} id={cpuArch} description={archData.description}>
-          {archData.label}
+        <DropdownItem
+          key={cpuArch}
+          id={cpuArch}
+          description={architectureData[cpuArch].description}
+        >
+          {architectureData[cpuArch].label}
         </DropdownItem>
       );
     });
@@ -116,20 +119,19 @@ const CpuArchitectureDropdown = ({
     prevVersionRef.current = openshiftVersion;
   }, [featureSupportLevels, openshiftVersion, selectedCpuArchitecture, setValue, setOpen]);
 
-  const toggle = React.useMemo(() => {
-    const isDisabled = enabledItems.length === 0;
-    return (
+  const toggle = React.useMemo(
+    () => (
       <DropdownToggle
-        isDisabled={isDisabled}
         onToggle={(val) => setOpen(val)}
         toggleIndicator={CaretDownIcon}
         isText
         className="pf-u-w-100"
       >
-        {isDisabled ? 'N/A' : currentCpuArch}
+        {currentCpuArch}
       </DropdownToggle>
-    );
-  }, [setOpen, currentCpuArch, enabledItems]);
+    ),
+    [setOpen, currentCpuArch],
+  );
 
   return (
     <FormGroup fieldId={fieldId} label={'CPU architecture'}>

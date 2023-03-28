@@ -11,7 +11,7 @@ export default function useSupportLevels(openshiftVersion?: string, cpuArchitect
     async (openshiftVersion?: string, cpuArchitecture?: string) => {
       try {
         if (openshiftVersion) {
-          const { data: features } = await NewFeatureSupportLevelsAPI.listFeatures(
+          const { data: features } = await NewFeatureSupportLevelsAPI.featuresSupportLevel(
             openshiftVersion,
             cpuArchitecture,
           );

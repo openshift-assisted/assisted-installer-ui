@@ -45,7 +45,7 @@ export const NewFeatureSupportLevelProvider: React.FC<NewSupportLevelProviderPro
   );
 
   const fetcher = () =>
-    NewFeatureSupportLevelsAPI.listFeatures('4.12', 'x86_64').then((res) => res.data);
+    NewFeatureSupportLevelsAPI.featuresSupportLevel('4.12', 'x86_64').then((res) => res.data);
   const { data: featureSupportLevels, error } = useSWR<SupportLevels, unknown>(
     NewFeatureSupportLevelsAPI.makeBaseURI(),
     fetcher,

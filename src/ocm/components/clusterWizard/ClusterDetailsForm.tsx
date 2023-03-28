@@ -13,7 +13,6 @@ import {
   getClusterDetailsValidationSchema,
   InfraEnv,
   getRichTextValidation,
-  useFeatureSupportLevel,
   CpuArchitecture,
 } from '../../../common';
 import { canNextClusterDetails } from './wizardTransition';
