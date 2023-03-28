@@ -7,7 +7,7 @@ import {
   ClusterWizardStepHeader,
   CpuArchitecture,
   ErrorState,
-  getNewSupportedCpuArchitectures,
+  getSupportLevelsForCpuArchitecture,
   LoadingState,
   useFeature,
 } from '../../../../common';
@@ -21,7 +21,7 @@ import Day2WizardFooter from './Day2WizardFooter';
 import Day2HostStaticIpConfigurations from './Day2StaticIpHostConfigurations';
 import { mapClusterCpuArchToInfraEnvCpuArch } from '../../../services/CpuArchitectureService';
 import CpuArchitectureDropdown from '../../clusterConfiguration/CpuArchitectureDropdown';
-import useCpuArchitectures from '../../../hooks/useCpuArchitectures';
+import useArchitectureSupportLevels from '../../../hooks/useArchitecturesSupportLevels';
 
 const getDay2ClusterDetailInitialValues = async (
   clusterId: Cluster['id'],
@@ -53,8 +53,19 @@ const Day2ClusterDetails = () => {
   const [isSubmitting, setSubmitting] = React.useState(false);
 
   const day1CpuArchitecture = mapClusterCpuArchToInfraEnvCpuArch(day2Cluster.cpuArchitecture);
-  const { cpuArchitectures } = useCpuArchitectures(day2Cluster.openshiftVersion);
+  const cpuArchitectureSupportLevelIdToSupportLevelMap = useArchitectureSupportLevels(
+    day2Cluster.openshiftVersion,
+  );
   const canSelectCpuArch = useFeature('ASSISTED_INSTALLER_MULTIARCH_SUPPORTED');
+  const cpuArchitectures = React.useMemo(
+    () =>
+      getSupportLevelsForCpuArchitecture(
+        canSelectCpuArch,
+        cpuArchitectureSupportLevelIdToSupportLevelMap,
+      ),
+    [canSelectCpuArch, cpuArchitectureSupportLevelIdToSupportLevelMap],
+  );
+
   React.useEffect(() => {
     const fetchAndSetInitialValues = async () => {
       const initialValues = await getDay2ClusterDetailInitialValues(
@@ -119,10 +130,7 @@ const Day2ClusterDetails = () => {
                   <CpuArchitectureDropdown
                     openshiftVersion={day2Cluster.openshiftVersion}
                     day1CpuArchitecture={day1CpuArchitecture}
-                    cpuArchitectures={getNewSupportedCpuArchitectures(
-                      canSelectCpuArch,
-                      cpuArchitectures,
-                    )}
+                    cpuArchitectures={cpuArchitectures}
                   />
                 </GridItem>
                 <GridItem>

@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  ClusterCpuArchitecture,
   getOpenshiftVersionText,
   OpenshiftVersionOptionType,
   StaticTextField,
@@ -25,7 +26,7 @@ const OcmOpenShiftVersion = ({
       Openshift{' '}
       {getOpenshiftVersionText({
         openshiftVersion,
-        cpuArchitecture: clusterCpuArchitecture,
+        cpuArchitecture: clusterCpuArchitecture as ClusterCpuArchitecture,
         versions,
         withPreviewText,
         withMultiText,

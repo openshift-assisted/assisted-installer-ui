@@ -16,7 +16,7 @@ import { isApiError } from '../../api/types';
 import { FeatureSupportLevelProvider } from '../featureSupportLevels';
 import { AddHosts } from '../AddHosts';
 import { HostsClusterDetailTabProps } from './types';
-import useCpuArchitectures from '../../hooks/useCpuArchitectures';
+import useCpuArchitectures from '../../hooks/useArchitecturesSupportLevels';
 
 export const HostsClusterDetailTabContent = ({
   cluster: ocmCluster,
@@ -26,7 +26,7 @@ export const HostsClusterDetailTabContent = ({
   const [day2Cluster, setDay2Cluster] = useStateSafely<Cluster | null>(null);
   const pullSecret = usePullSecret();
   const { normalizeClusterVersion } = useOpenshiftVersions();
-  const { cpuArchitectures } = useCpuArchitectures(ocmCluster.openshift_version);
+  const cpuArchitectures = useCpuArchitectures(ocmCluster.openshift_version);
   const canSelectCpuArch = useFeature('ASSISTED_INSTALLER_MULTIARCH_SUPPORTED');
   const handleClickTryAgainLink = React.useCallback(() => {
     setError(undefined);

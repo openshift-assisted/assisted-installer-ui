@@ -1,5 +1,6 @@
-import { SupportLevel, SupportLevels } from '../api';
-import { getKeys } from '../utils';
+import { ArchitectureSupportLevelId, SupportLevels } from '../api';
+
+export type ClusterCpuArchitecture = 'x86_64' | 'aarch64' | 'arm64' | 'ppc64le' | 's390x' | 'multi';
 
 export enum CpuArchitecture {
   x86 = 'x86_64',
@@ -19,20 +20,12 @@ export enum OcmCpuArchitecture {
   s390x = 's390x',
 }
 
-type CpuArchitectureFeatureIds =
-  | 'arm64Architecture'
-  | 'ppc64LeArchitecture'
-  | 's390XArchitecture'
-  | 'x86_64Architecture';
-
-export const featureIdToCpuArchitecture: Record<
-  CpuArchitectureFeatureIds,
-  SupportedCpuArchitecture
-> = {
-  arm64Architecture: CpuArchitecture.ARM,
-  ppc64LeArchitecture: CpuArchitecture.ppc64le,
-  s390XArchitecture: CpuArchitecture.s390x,
-  x86_64Architecture: CpuArchitecture.x86,
+export const featureIdToCpuArchitecture: Record<ArchitectureSupportLevelId, CpuArchitecture> = {
+  ARM64_ARCHITECTURE: CpuArchitecture.ARM,
+  PPC64LE_ARCHITECTURE: CpuArchitecture.ppc64le,
+  S390X_ARCHITECTURE: CpuArchitecture.s390x,
+  X86_64_ARCHITECTURE: CpuArchitecture.x86,
+  MULTIARCH_RELEASE_IMAGE: CpuArchitecture.MULTI,
 };
 
 export type SupportedCpuArchitecture = Extract<
@@ -47,35 +40,23 @@ export const getAllCpuArchitectures = (): SupportedCpuArchitecture[] => [
   CpuArchitecture.s390x,
 ];
 
-export const getNewSupportedCpuArchitectures = (
+export const getSupportLevelsForCpuArchitecture = (
   canSelectCpuArch: boolean,
-  cpuArchitectures?: SupportLevels,
-): SupportedCpuArchitecture[] => {
-  const newSupportedCpuArchs: SupportedCpuArchitecture[] = [];
-  if (canSelectCpuArch && cpuArchitectures) {
-    const supportedFeatureIdCpuArchs = getKeys(featureIdToCpuArchitecture).filter(
-      (archFeatureId) => {
-        const supportLevel = cpuArchitectures.architectures[archFeatureId] as SupportLevel;
-        return supportLevel && supportLevel !== 'unsupported';
-      },
-    );
-    supportedFeatureIdCpuArchs.forEach((archFeatureId) => {
-      newSupportedCpuArchs.push(featureIdToCpuArchitecture[archFeatureId]);
-    });
-  } else if (!canSelectCpuArch && cpuArchitectures) {
-    const supportedFeatureIdCpuArchs = getKeys(featureIdToCpuArchitecture).filter(
-      (archFeatureId) => {
-        const supportLevel = cpuArchitectures.architectures[archFeatureId] as SupportLevel;
-        return supportLevel && supportLevel !== 'unsupported';
-      },
-    );
-    supportedFeatureIdCpuArchs.forEach((archFeatureId) => {
-      if (archFeatureId !== 'ppc64LeArchitecture' && archFeatureId !== 's390XArchitecture') {
-        newSupportedCpuArchs.push(featureIdToCpuArchitecture[archFeatureId]);
+  cpuArchitectures: SupportLevels | null,
+): CpuArchitecture[] => {
+  const newSupportedCpuArchs: CpuArchitecture[] = [];
+  if (cpuArchitectures) {
+    for (const [architectureId, supportLevel] of Object.entries(cpuArchitectures.architectures)) {
+      if (supportLevel !== 'unsupported' && architectureId !== 'MULTIARCH_RELEASE_IMAGE') {
+        if (architectureId === 'S390X_ARCHITECTURE' || architectureId === 'PPC64LE_ARCHITECTURE') {
+          if (canSelectCpuArch) {
+            newSupportedCpuArchs.push(featureIdToCpuArchitecture[architectureId]);
+          }
+        } else {
+          newSupportedCpuArchs.push(featureIdToCpuArchitecture[architectureId] as CpuArchitecture);
+        }
       }
-    });
-  } else {
-    newSupportedCpuArchs.push(CpuArchitecture.x86);
+    }
   }
   return newSupportedCpuArchs;
 };

@@ -16,7 +16,8 @@ import {
   StaticTextField,
   useFeature,
   ClusterCreateParams,
-  getNewSupportedCpuArchitectures,
+  getSupportLevelsForCpuArchitecture,
+  CpuArchitecture,
 } from '../../../common';
 import DiskEncryptionControlGroup from '../../../common/components/clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
@@ -29,7 +30,7 @@ import {
 import OcmOpenShiftVersion from './OcmOpenShiftVersion';
 import OcmOpenShiftVersionSelect from './OcmOpenShiftVersionSelect';
 import CpuArchitectureDropdown from './CpuArchitectureDropdown';
-import useCpuArchitectures from '../../hooks/useCpuArchitectures';
+import useArchitectureSupportLevels from '../../hooks/useArchitecturesSupportLevels';
 
 export type OcmClusterDetailsFormFieldsProps = {
   forceOpenshiftVersion?: string;
@@ -41,7 +42,7 @@ export type OcmClusterDetailsFormFieldsProps = {
   toggleRedHatDnsService?: (checked: boolean) => void;
   isPullSecretSet: boolean;
   clusterExists: boolean;
-  clusterCpuArchitecture?: string;
+  clusterCpuArchitecture?: CpuArchitecture;
 };
 
 const BaseDnsHelperText = ({ name, baseDnsDomain }: { name?: string; baseDnsDomain?: string }) => (
@@ -78,8 +79,18 @@ export const OcmClusterDetailsFormFields = ({
   const {
     values: { openshiftVersion },
   } = useFormikContext<ClusterCreateParams>();
-  const { cpuArchitectures } = useCpuArchitectures(openshiftVersion);
   const isMultiArchSupported = useFeature('ASSISTED_INSTALLER_MULTIARCH_SUPPORTED');
+  const cpuArchitectureSupportLevelIdToSupportLevelMap =
+    useArchitectureSupportLevels(openshiftVersion);
+  const cpuArchitectures = React.useMemo(
+    () =>
+      getSupportLevelsForCpuArchitecture(
+        isMultiArchSupported,
+        cpuArchitectureSupportLevelIdToSupportLevelMap,
+      ),
+    [cpuArchitectureSupportLevelIdToSupportLevelMap, isMultiArchSupported],
+  );
+
   return (
     <Form id="wizard-cluster-details__form">
       <OcmRichInputField
@@ -143,7 +154,7 @@ export const OcmClusterDetailsFormFields = ({
       ) : (
         <CpuArchitectureDropdown
           openshiftVersion={openshiftVersion}
-          cpuArchitectures={getNewSupportedCpuArchitectures(isMultiArchSupported, cpuArchitectures)}
+          cpuArchitectures={cpuArchitectures}
         />
       )}
       <SNOControlGroup versions={versions} highAvailabilityMode={highAvailabilityMode} />
