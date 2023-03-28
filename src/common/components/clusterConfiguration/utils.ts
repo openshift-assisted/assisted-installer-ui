@@ -19,6 +19,7 @@ import {
   isClusterPlatformTypeVM,
 } from '../../selectors';
 import {
+  ClusterCpuArchitecture,
   CpuArchitecture,
   HostDiscoveryValues,
   HostSubnets,
@@ -32,7 +33,7 @@ import {
 import { getHostname } from '../hosts/utils';
 
 type VersionConfig = WithRequired<Pick<Cluster, 'openshiftVersion'>, 'openshiftVersion'> & {
-  cpuArchitecture?: Cluster['cpuArchitecture'];
+  cpuArchitecture?: ClusterCpuArchitecture;
   versions?: OpenshiftVersionOptionType[];
   withPreviewText?: boolean;
   withMultiText?: boolean;
@@ -48,7 +49,7 @@ const getBetaVersionText = (
 
 const getMultiVersionText = (
   openshiftVersion: string,
-  cpuArchitecture: Cluster['cpuArchitecture'],
+  cpuArchitecture?: ClusterCpuArchitecture,
 ) => {
   if (!cpuArchitecture || openshiftVersion.includes('multi')) {
     return '';

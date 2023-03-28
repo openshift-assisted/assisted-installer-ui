@@ -13,13 +13,13 @@ import {
   useFeatureSupportLevel,
 } from '../../../common';
 
-type CpuArchitectureItem = {
+export type CpuArchitectureItem = {
   description: string;
   featureSupportLevelId?: FeatureId;
   label: string;
 };
 
-const architectureData: Record<SupportedCpuArchitecture, CpuArchitectureItem> = {
+export const architectureData: Record<SupportedCpuArchitecture, CpuArchitectureItem> = {
   [CpuArchitecture.x86]: {
     description: '',
     label: 'x86_64',
@@ -46,10 +46,10 @@ const fieldId = getFieldId(INPUT_NAME, 'input');
 
 const getInvalidCombinationReason = (
   featureSupportLevels: FeatureSupportLevelData,
-  cpuArchitecture: SupportedCpuArchitecture,
+  cpuArchitecture: CpuArchitecture,
   openshiftVersion: string,
 ) => {
-  const { featureSupportLevelId } = architectureData[cpuArchitecture];
+  const featureSupportLevelId = architectureData[cpuArchitecture] as FeatureId;
   return featureSupportLevels && featureSupportLevelId
     ? featureSupportLevels.getFeatureDisabledReason(openshiftVersion, featureSupportLevelId)
     : undefined;
@@ -58,7 +58,7 @@ const getInvalidCombinationReason = (
 type CpuArchitectureDropdownProps = {
   openshiftVersion: Cluster['openshiftVersion'];
   day1CpuArchitecture?: CpuArchitecture;
-  cpuArchitectures: SupportedCpuArchitecture[];
+  cpuArchitectures: CpuArchitecture[];
 };
 
 const CpuArchitectureDropdown = ({
@@ -67,7 +67,7 @@ const CpuArchitectureDropdown = ({
   cpuArchitectures,
 }: CpuArchitectureDropdownProps) => {
   const [field, { value: selectedCpuArchitecture }, { setValue }] =
-    useField<SupportedCpuArchitecture>(INPUT_NAME);
+    useField<CpuArchitecture>(INPUT_NAME);
 
   const [isOpen, setOpen] = React.useState(false);
 
@@ -81,13 +81,10 @@ const CpuArchitectureDropdown = ({
 
   const enabledItems = React.useMemo(() => {
     return cpuArchitectures.map((cpuArch) => {
+      const archData: CpuArchitectureItem = architectureData[cpuArch] as CpuArchitectureItem;
       return (
-        <DropdownItem
-          key={cpuArch}
-          id={cpuArch}
-          description={architectureData[cpuArch].description}
-        >
-          {architectureData[cpuArch].label}
+        <DropdownItem key={cpuArch} id={cpuArch} description={archData.description}>
+          {archData.label}
         </DropdownItem>
       );
     });
@@ -119,19 +116,20 @@ const CpuArchitectureDropdown = ({
     prevVersionRef.current = openshiftVersion;
   }, [featureSupportLevels, openshiftVersion, selectedCpuArchitecture, setValue, setOpen]);
 
-  const toggle = React.useMemo(
-    () => (
+  const toggle = React.useMemo(() => {
+    const isDisabled = enabledItems.length === 0;
+    return (
       <DropdownToggle
+        isDisabled={isDisabled}
         onToggle={(val) => setOpen(val)}
         toggleIndicator={CaretDownIcon}
         isText
         className="pf-u-w-100"
       >
-        {currentCpuArch}
+        {isDisabled ? 'N/A' : currentCpuArch}
       </DropdownToggle>
-    ),
-    [setOpen, currentCpuArch],
-  );
+    );
+  }, [setOpen, currentCpuArch, enabledItems]);
 
   return (
     <FormGroup fieldId={fieldId} label={'CPU architecture'}>

@@ -56,10 +56,6 @@ export type OcmClusterType = {
   aiSupportLevels?: FeatureSupportLevels;
 };
 
-export type OcmClusterExtraInfo = {
-  canSelectCpuArchitecture: boolean;
-};
-
 export type Day2ClusterDetailValues = {
   cpuArchitecture: CpuArchitecture;
   hostsNetworkConfigurationType: HostsNetworkConfigurationType;
