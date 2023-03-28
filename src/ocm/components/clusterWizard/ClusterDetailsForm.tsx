@@ -13,6 +13,8 @@ import {
   getClusterDetailsValidationSchema,
   InfraEnv,
   getRichTextValidation,
+  useFeatureSupportLevel,
+  CpuArchitecture,
 } from '../../../common';
 import { canNextClusterDetails } from './wizardTransition';
 import { OpenshiftVersionOptionType, getFormikErrorFields } from '../../../common';
@@ -135,7 +137,7 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
                   isOcm={!!ocmClient}
                   managedDomains={managedDomains}
                   clusterExists={!!cluster}
-                  clusterCpuArchitecture={cluster?.cpuArchitecture}
+                  clusterCpuArchitecture={cluster?.cpuArchitecture as CpuArchitecture}
                 />
               </GridItem>
             </Grid>
