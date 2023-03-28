@@ -16,7 +16,7 @@ import {
   StaticTextField,
   useFeature,
   ClusterCreateParams,
-  getSupportLevelsForCpuArchitecture,
+  getSupportedCpuArchitectures,
   CpuArchitecture,
 } from '../../../common';
 import DiskEncryptionControlGroup from '../../../common/components/clusterConfiguration/DiskEncryptionFields/DiskEncryptionControlGroup';
@@ -87,7 +87,7 @@ export const OcmClusterDetailsFormFields = ({
     useArchitectureSupportLevels(openshiftVersion);
   const cpuArchitectures = React.useMemo(
     () =>
-      getSupportLevelsForCpuArchitecture(
+      getSupportedCpuArchitectures(
         isMultiArchSupported,
         cpuArchitectureSupportLevelIdToSupportLevelMap,
       ),

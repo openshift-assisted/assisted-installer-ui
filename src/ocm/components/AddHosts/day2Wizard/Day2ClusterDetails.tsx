@@ -7,7 +7,7 @@ import {
   ClusterWizardStepHeader,
   CpuArchitecture,
   ErrorState,
-  getSupportLevelsForCpuArchitecture,
+  getSupportedCpuArchitectures,
   LoadingState,
   useFeature,
 } from '../../../../common';
@@ -59,7 +59,7 @@ const Day2ClusterDetails = () => {
   const canSelectCpuArch = useFeature('ASSISTED_INSTALLER_MULTIARCH_SUPPORTED');
   const cpuArchitectures = React.useMemo(
     () =>
-      getSupportLevelsForCpuArchitecture(
+      getSupportedCpuArchitectures(
         canSelectCpuArch,
         cpuArchitectureSupportLevelIdToSupportLevelMap,
       ),

@@ -55,9 +55,6 @@ export const HostsClusterDetailTabContent = ({
     }
 
     if (isVisible && !day2Cluster && pullSecret) {
-      // ensure exclusive run
-      setDay2Cluster(null);
-
       const normalizedVersion = normalizeClusterVersion(ocmCluster.openshift_version);
       if (!normalizedVersion) {
         setError(
