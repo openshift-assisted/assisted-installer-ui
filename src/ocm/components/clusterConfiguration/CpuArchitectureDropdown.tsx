@@ -13,13 +13,13 @@ import {
   useFeatureSupportLevel,
 } from '../../../common';
 
-type CpuArchitectureItem = {
+export type CpuArchitectureItem = {
   description: string;
   featureSupportLevelId?: FeatureId;
   label: string;
 };
 
-const architectureData: Record<SupportedCpuArchitecture, CpuArchitectureItem> = {
+export const architectureData: Record<SupportedCpuArchitecture, CpuArchitectureItem> = {
   [CpuArchitecture.x86]: {
     description: '',
     label: 'x86_64',

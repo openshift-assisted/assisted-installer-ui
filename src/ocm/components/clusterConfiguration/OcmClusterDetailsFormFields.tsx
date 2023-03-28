@@ -29,7 +29,10 @@ import {
 } from '../ui/OcmFormFields';
 import OcmOpenShiftVersion from './OcmOpenShiftVersion';
 import OcmOpenShiftVersionSelect from './OcmOpenShiftVersionSelect';
-import CpuArchitectureDropdown from './CpuArchitectureDropdown';
+import CpuArchitectureDropdown, {
+  architectureData,
+  CpuArchitectureItem,
+} from './CpuArchitectureDropdown';
 import useArchitectureSupportLevels from '../../hooks/useArchitecturesSupportLevels';
 
 export type OcmClusterDetailsFormFieldsProps = {
@@ -149,7 +152,7 @@ export const OcmClusterDetailsFormFields = ({
       )}
       {clusterExists ? (
         <StaticTextField name="cpuArchitecture" label="CPU architecture" isRequired>
-          {values.cpuArchitecture}
+          {(architectureData[values.cpuArchitecture] as CpuArchitectureItem).label}
         </StaticTextField>
       ) : (
         <CpuArchitectureDropdown
