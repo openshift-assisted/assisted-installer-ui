@@ -2,18 +2,23 @@ import React from 'react';
 import { Text, TextContent, Alert, AlertVariant, Stack, StackItem } from '@patternfly/react-core';
 import ClusterHostsTable from '../hosts/ClusterHostsTable';
 import InformationAndAlerts from '../clusterConfiguration/InformationAndAlerts';
-import { canSelectCpuArchitecture, Cluster, CpuArchitecture } from '../../../common';
+import { Cluster, CpuArchitecture } from '../../../common';
 import Day2WizardContextProvider from './day2Wizard/Day2WizardContextProvider';
 import Day2DiscoveryImageModalButton from './day2Wizard/Day2DiscoveryImageModalButton';
 import Day2Wizard from './day2Wizard/Day2Wizard';
 
-const InventoryAddHosts = ({ cluster }: { cluster?: Cluster }) => {
+const InventoryAddHosts = ({
+  cluster,
+  canSelectCpuArch,
+}: {
+  cluster?: Cluster;
+  canSelectCpuArch?: boolean;
+}) => {
   if (!cluster) {
     return null;
   }
 
-  const showArmOnlyAlert =
-    !canSelectCpuArchitecture(cluster) && cluster.cpuArchitecture === CpuArchitecture.ARM;
+  const showArmOnlyAlert = !canSelectCpuArch && cluster.cpuArchitecture === CpuArchitecture.ARM;
   return (
     <Stack hasGutter>
       <StackItem>

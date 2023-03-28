@@ -1,5 +1,6 @@
-import { SupportLevel, SupportLevels } from '../api';
-import { getKeys } from '../utils';
+import { ArchitectureSupportLevelId, SupportLevels } from '../api';
+
+export type ClusterCpuArchitecture = 'x86_64' | 'aarch64' | 'arm64' | 'ppc64le' | 's390x' | 'multi';
 
 export enum CpuArchitecture {
   x86 = 'x86_64',
@@ -19,20 +20,15 @@ export enum OcmCpuArchitecture {
   s390x = 's390x',
 }
 
-type CpuArchitectureFeatureIds =
-  | 'arm64Architecture'
-  | 'ppc64LeArchitecture'
-  | 's390XArchitecture'
-  | 'x86_64Architecture';
-
 export const featureIdToCpuArchitecture: Record<
-  CpuArchitectureFeatureIds,
+  ArchitectureSupportLevelId,
   SupportedCpuArchitecture
 > = {
-  arm64Architecture: CpuArchitecture.ARM,
-  ppc64LeArchitecture: CpuArchitecture.ppc64le,
-  s390XArchitecture: CpuArchitecture.s390x,
-  x86_64Architecture: CpuArchitecture.x86,
+  ARM64_ARCHITECTURE: CpuArchitecture.ARM,
+  PPC64LE_ARCHITECTURE: CpuArchitecture.ppc64le,
+  S390X_ARCHITECTURE: CpuArchitecture.s390x,
+  X86_64_ARCHITECTURE: CpuArchitecture.x86,
+  MULTIARCH_RELEASE_IMAGE: CpuArchitecture.x86,
 };
 
 export type SupportedCpuArchitecture = Extract<
@@ -47,25 +43,39 @@ export const getAllCpuArchitectures = (): SupportedCpuArchitecture[] => [
   CpuArchitecture.s390x,
 ];
 
-export const getNewSupportedCpuArchitectures = (
+export const getSupportedCpuArchitectures = (
   canSelectCpuArch: boolean,
-  cpuArchitectures?: SupportLevels,
+  cpuArchitectures: SupportLevels | null,
 ): SupportedCpuArchitecture[] => {
   const newSupportedCpuArchs: SupportedCpuArchitecture[] = [];
-  if (canSelectCpuArch && cpuArchitectures !== undefined) {
-    const supportedFeatureIdCpuArchs = getKeys(featureIdToCpuArchitecture).filter(
-      (archFeatureId) => {
-        const supportLevel = cpuArchitectures.architectures[archFeatureId] as SupportLevel;
-        return supportLevel && supportLevel !== 'unsupported';
-      },
-    );
-    supportedFeatureIdCpuArchs.forEach((archFeatureId) => {
-      newSupportedCpuArchs.push(featureIdToCpuArchitecture[archFeatureId]);
-    });
-  } else {
-    newSupportedCpuArchs.push(CpuArchitecture.x86);
+  if (cpuArchitectures) {
+    for (const [architectureId, supportLevel] of Object.entries(cpuArchitectures.architectures)) {
+      if (supportLevel !== 'unsupported') {
+        if (
+          (architectureId === 'S390X_ARCHITECTURE' || architectureId === 'PPC64LE_ARCHITECTURE') &&
+          canSelectCpuArch
+        ) {
+          newSupportedCpuArchs.push(featureIdToCpuArchitecture[architectureId]);
+        } else if (architectureId !== 'MULTIARCH_RELEASE_IMAGE') {
+          newSupportedCpuArchs.push(
+            featureIdToCpuArchitecture[architectureId] as SupportedCpuArchitecture,
+          );
+        }
+      }
+    }
   }
   return newSupportedCpuArchs;
 };
 
 export const getDefaultCpuArchitecture = (): SupportedCpuArchitecture => CpuArchitecture.x86;
+
+export const getDisabledReasonForCpuArch = (
+  cpuArchLabel: string,
+  isMultiArchSupported: boolean,
+) => {
+  if (!isMultiArchSupported) {
+    return `You don't have permissions to use multiple CPU architectures`;
+  } else {
+    return `${cpuArchLabel} is not supported in this OpenShift version`;
+  }
+};
