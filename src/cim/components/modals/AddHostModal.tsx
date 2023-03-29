@@ -30,8 +30,7 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
   const sshPublicKey = infraEnv.spec?.sshAuthorizedKey || agentClusterInstall?.spec?.sshPublicKey;
   const { httpProxy, httpsProxy, noProxy } = infraEnv.spec?.proxy || {};
 
-  const areIsoDataAvailable = !!sshPublicKey || !!httpProxy || !!httpsProxy || !!noProxy;
-  const isoDialog = areIsoDataAvailable ? 'download' : 'config';
+  const isoDialog = agentClusterInstall ? 'config' : 'download';
   const [dialogType, setDialogType] = React.useState<AddHostModalStepType>(isoDialog);
   const { t } = useTranslation();
   const handleIsoConfigSubmit = async (
@@ -82,13 +81,13 @@ const AddHostModal: React.FC<AddHostModalProps> = ({
               <GeneratingIPXEDownload
                 onClose={onClose}
                 infraEnv={infraEnv}
-                onReset={() => setDialogType('config')}
+                onReset={agentClusterInstall ? () => setDialogType('config') : undefined}
               />
             ) : (
               <GeneratingIsoDownload
                 onClose={onClose}
                 infraEnv={infraEnv}
-                onReset={() => setDialogType('config')}
+                onReset={agentClusterInstall ? () => setDialogType('config') : undefined}
                 hasDHCP={hasDHCP}
               />
             )}
@@ -107,7 +106,7 @@ const GeneratingIsoDownload = ({
 }: {
   infraEnv: InfraEnvK8sResource;
   onClose: VoidFunction;
-  onReset: VoidFunction;
+  onReset?: VoidFunction;
   hasDHCP: boolean;
 }) => {
   const { t } = useTranslation();
@@ -133,7 +132,7 @@ const GeneratingIPXEDownload = ({
 }: {
   infraEnv: InfraEnvK8sResource;
   onClose: VoidFunction;
-  onReset: VoidFunction;
+  onReset?: VoidFunction;
 }) => {
   const { t } = useTranslation();
   return infraEnv.status?.bootArtifacts?.ipxeScript ? (
