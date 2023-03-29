@@ -1,5 +1,6 @@
 import React from 'react';
-import { FeatureId, SupportLevel, isPreviewSupportLevel } from '../../types';
+import { SupportLevel } from '../../api';
+import { FeatureId, isPreviewSupportLevel } from '../../types';
 import { TechnologyPreview, DeveloperPreview } from '../ui/PreviewBadge';
 import { useNewFeatureSupportLevel } from './NewFeatureSupportLevelContext';
 

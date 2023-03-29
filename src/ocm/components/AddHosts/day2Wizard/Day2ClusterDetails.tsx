@@ -7,7 +7,9 @@ import {
   ClusterWizardStepHeader,
   CpuArchitecture,
   ErrorState,
+  getDefaultCpuArchitecture,
   getSupportedCpuArchitectures,
+  InfraEnv,
   LoadingState,
   useFeature,
 } from '../../../../common';
@@ -21,24 +23,36 @@ import Day2WizardFooter from './Day2WizardFooter';
 import Day2HostStaticIpConfigurations from './Day2StaticIpHostConfigurations';
 import { mapClusterCpuArchToInfraEnvCpuArch } from '../../../services/CpuArchitectureService';
 import CpuArchitectureDropdown from '../../clusterConfiguration/CpuArchitectureDropdown';
-import useSupportLevelsAPI from '../../../hooks/useSupportLevelsAPI';
+import useArchitectureSupportLevels from '../../../hooks/useArchitecturesSupportLevels';
 
 const getDay2ClusterDetailInitialValues = async (
   clusterId: Cluster['id'],
-  day1CpuArchitecture: CpuArchitecture,
-) => {
+): Promise<Day2ClusterDetailValues | Error> => {
   try {
-    const infraEnv = await InfraEnvsService.getInfraEnv(clusterId, day1CpuArchitecture);
+    let initialValues: Day2ClusterDetailValues | Error;
+    let infraEnv: InfraEnv;
+    let cpuArchitecture: CpuArchitecture = getDefaultCpuArchitecture();
+    const allInfraEnvsAssociatedWithGivenCluster = await InfraEnvsService.getAllInfraEnvs(
+      clusterId,
+    );
 
-    return {
-      cpuArchitecture: day1CpuArchitecture,
-      hostsNetworkConfigurationType: infraEnv.staticNetworkConfig
-        ? HostsNetworkConfigurationType.STATIC
-        : HostsNetworkConfigurationType.DHCP,
-    };
+    if (allInfraEnvsAssociatedWithGivenCluster.length > 0) {
+      infraEnv = allInfraEnvsAssociatedWithGivenCluster[0];
+      cpuArchitecture = mapClusterCpuArchToInfraEnvCpuArch(infraEnv.cpuArchitecture);
+      initialValues = {
+        cpuArchitecture,
+        hostsNetworkConfigurationType: infraEnv.staticNetworkConfig
+          ? HostsNetworkConfigurationType.STATIC
+          : HostsNetworkConfigurationType.DHCP,
+      };
+    } else {
+      initialValues = new Error(`No infra-env found associated with cluster ${clusterId}`);
+    }
+
+    return initialValues;
   } catch (error) {
     handleApiError(error);
-    return null;
+    return new Error(error as string);
   }
 };
 
@@ -49,12 +63,10 @@ const Day2ClusterDetails = () => {
     data: { cluster: day2Cluster },
   } = day2DiscoveryImageDialog;
   const wizardContext = useDay2WizardContext();
-  const [initialValues, setInitialValues] = React.useState<Day2ClusterDetailValues | null>();
+  const [initialValues, setInitialValues] = React.useState<Day2ClusterDetailValues | Error>();
   const [isSubmitting, setSubmitting] = React.useState(false);
 
-  const day1CpuArchitecture = mapClusterCpuArchToInfraEnvCpuArch(day2Cluster.cpuArchitecture);
-  const cpuArchitectureSupportLevelIdToSupportLevelMap = useSupportLevelsAPI(
-    'architectures',
+  const cpuArchitectureSupportLevelIdToSupportLevelMap = useArchitectureSupportLevels(
     day2Cluster.openshiftVersion,
   );
   const canSelectCpuArch = useFeature('ASSISTED_INSTALLER_MULTIARCH_SUPPORTED');
@@ -69,14 +81,11 @@ const Day2ClusterDetails = () => {
 
   React.useEffect(() => {
     const fetchAndSetInitialValues = async () => {
-      const initialValues = await getDay2ClusterDetailInitialValues(
-        day2Cluster.id,
-        day1CpuArchitecture,
-      );
+      const initialValues = await getDay2ClusterDetailInitialValues(day2Cluster.id);
       setInitialValues(initialValues);
     };
     void fetchAndSetInitialValues();
-  }, [day2Cluster.id, day1CpuArchitecture]);
+  }, [day2Cluster.id]);
 
   const handleSubmit = React.useCallback(
     async (values: Day2ClusterDetailValues) => {
@@ -100,9 +109,9 @@ const Day2ClusterDetails = () => {
     [day2Cluster.id, wizardContext],
   );
 
-  if (initialValues === undefined) {
+  if (!initialValues) {
     return <LoadingState />;
-  } else if (initialValues === null) {
+  } else if (initialValues instanceof Error) {
     return <ErrorState content="Failed to load associated data for the Day2 cluster" />;
   }
 
@@ -130,7 +139,7 @@ const Day2ClusterDetails = () => {
                 <GridItem span={12} lg={10} xl={9} xl2={7}>
                   <CpuArchitectureDropdown
                     openshiftVersion={day2Cluster.openshiftVersion}
-                    day1CpuArchitecture={day1CpuArchitecture}
+                    day1CpuArchitecture={initialValues.cpuArchitecture}
                     cpuArchitectures={cpuArchitectures}
                   />
                 </GridItem>

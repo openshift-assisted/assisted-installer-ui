@@ -58,7 +58,7 @@ const getInvalidCombinationReason = (
 
 type CpuArchitectureDropdownProps = {
   openshiftVersion: Cluster['openshiftVersion'];
-  day1CpuArchitecture?: CpuArchitecture;
+  day1CpuArchitecture?: SupportedCpuArchitecture;
   cpuArchitectures: SupportedCpuArchitecture[];
 };
 
@@ -75,23 +75,23 @@ const CpuArchitectureDropdown = ({
   const prevVersionRef = React.useRef(openshiftVersion);
   const featureSupportLevels = useNewFeatureSupportLevel();
   const [currentCpuArch, setCurrentCpuArch] = React.useState<string>(
-    day1CpuArchitecture
-      ? (architectureData[day1CpuArchitecture] as CpuArchitectureItem).label
-      : CpuArchitecture.x86,
+    day1CpuArchitecture ? architectureData[day1CpuArchitecture].label : CpuArchitecture.x86,
   );
 
   const enabledItems = React.useMemo(() => {
-    return cpuArchitectures.map((cpuArch) => {
-      return (
-        <DropdownItem
-          key={cpuArch}
-          id={cpuArch}
-          description={architectureData[cpuArch].description}
-        >
-          {architectureData[cpuArch].label}
-        </DropdownItem>
-      );
-    });
+    if (cpuArchitectures !== undefined) {
+      return cpuArchitectures.map((cpuArch) => {
+        return (
+          <DropdownItem
+            key={cpuArch}
+            id={cpuArch}
+            description={architectureData[cpuArch].description}
+          >
+            {architectureData[cpuArch].label}
+          </DropdownItem>
+        );
+      });
+    }
   }, [cpuArchitectures]);
 
   const onSelect = React.useCallback(

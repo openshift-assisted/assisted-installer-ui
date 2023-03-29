@@ -1,8 +1,8 @@
 import {
   Cluster,
-  CpuArchitecture,
   FeatureSupportLevels,
   OcmCpuArchitecture,
+  SupportedCpuArchitecture,
 } from '../../../common';
 import { HostsNetworkConfigurationType } from '../../services';
 
@@ -57,6 +57,6 @@ export type OcmClusterType = {
 };
 
 export type Day2ClusterDetailValues = {
-  cpuArchitecture: CpuArchitecture;
+  cpuArchitecture: SupportedCpuArchitecture;
   hostsNetworkConfigurationType: HostsNetworkConfigurationType;
 };
