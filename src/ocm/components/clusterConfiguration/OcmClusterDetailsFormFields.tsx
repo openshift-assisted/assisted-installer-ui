@@ -9,7 +9,6 @@ import {
   ManagedDomain,
   OpenshiftVersionOptionType,
   PullSecret,
-  SNOControlGroup,
   ocmClusterNameValidationMessages,
   uniqueOcmClusterNameValidationMessages,
   CLUSTER_NAME_MAX_LENGTH,
@@ -33,7 +32,8 @@ import CpuArchitectureDropdown, {
   architectureData,
   CpuArchitectureItem,
 } from './CpuArchitectureDropdown';
-import useArchitectureSupportLevels from '../../hooks/useArchitecturesSupportLevels';
+import OcmSNOControlGroup from './OcmSNOControlGroup';
+import useSupportLevelsAPI from '../../hooks/useSupportLevelsAPI';
 
 export type OcmClusterDetailsFormFieldsProps = {
   forceOpenshiftVersion?: string;
@@ -83,8 +83,10 @@ export const OcmClusterDetailsFormFields = ({
     values: { openshiftVersion },
   } = useFormikContext<ClusterCreateParams>();
   const isMultiArchSupported = useFeature('ASSISTED_INSTALLER_MULTIARCH_SUPPORTED');
-  const cpuArchitectureSupportLevelIdToSupportLevelMap =
-    useArchitectureSupportLevels(openshiftVersion);
+  const cpuArchitectureSupportLevelIdToSupportLevelMap = useSupportLevelsAPI(
+    'architectures',
+    openshiftVersion,
+  );
   const cpuArchitectures = React.useMemo(
     () =>
       getSupportedCpuArchitectures(
@@ -164,7 +166,7 @@ export const OcmClusterDetailsFormFields = ({
           cpuArchitectures={cpuArchitectures}
         />
       )}
-      <SNOControlGroup versions={versions} highAvailabilityMode={highAvailabilityMode} />
+      <OcmSNOControlGroup highAvailabilityMode={highAvailabilityMode} />
 
       {!isPullSecretSet && <PullSecret isOcm={isOcm} defaultPullSecret={defaultPullSecret} />}
 

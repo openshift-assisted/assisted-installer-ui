@@ -75,9 +75,11 @@ export const NewFeatureSupportLevelProvider: React.FC<NewSupportLevelProviderPro
           ? (supportLevelDataNew.features[featureId] as SupportLevel)
           : undefined;
       } else {
-        return supportLevelData
-          ? (supportLevelData.features[featureId] as SupportLevel)
-          : undefined;
+        if (supportLevelData) {
+          return supportLevelData.features
+            ? (supportLevelData.features[featureId] as SupportLevel)
+            : undefined;
+        }
       }
     },
     [supportLevelData],

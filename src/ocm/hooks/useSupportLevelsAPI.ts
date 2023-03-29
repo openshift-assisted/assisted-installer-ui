@@ -36,7 +36,7 @@ export default function useSupportLevelsAPI<T extends SupportLevelAPIResources>(
         const { data: architectures } = await NewFeatureSupportLevelsAPI.architecturesSupportLevel(
           openshiftVersion,
         );
-        setCpuArchitectures(architectures);
+        setCpuArchitectures(architectures.architectures);
       } catch (e) {
         handleApiError(e, () =>
           addAlert({
@@ -57,7 +57,7 @@ export default function useSupportLevelsAPI<T extends SupportLevelAPIResources>(
           openshiftVersion,
           cpuArchitecture,
         );
-        setFeatures(features);
+        setFeatures(features.features);
       } catch (e) {
         handleApiError(e, () =>
           addAlert({

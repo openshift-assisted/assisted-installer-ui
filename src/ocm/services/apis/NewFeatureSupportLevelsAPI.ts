@@ -1,4 +1,3 @@
-import { CpuArchitecture } from '../../../common';
 import {
   ArchitectureSupportLevelId,
   FeatureSupportLevelId,
@@ -7,7 +6,11 @@ import {
 import { clientWithoutConverter } from '../../api/axiosClient';
 
 export interface ArchitecturesSupportsLevel {
-  architectures: Record<CpuArchitecture, SupportLevel>;
+  architectures: Record<ArchitectureSupportLevelId, SupportLevel>;
+}
+
+export interface FeaturesSupportsLevel {
+  features: Record<FeatureSupportLevelId, SupportLevel>;
 }
 
 const NewFeatureSupportLevelsAPI = {
@@ -19,7 +22,7 @@ const NewFeatureSupportLevelsAPI = {
     let queryParams = '?';
     queryParams += openshiftVersion ? `openshift_version=${openshiftVersion}&` : '';
     queryParams += cpuArchitecture ? `cpu_architecture=${cpuArchitecture}` : '';
-    return clientWithoutConverter.get<Record<FeatureSupportLevelId, SupportLevel>>(
+    return clientWithoutConverter.get<FeaturesSupportsLevel>(
       `${NewFeatureSupportLevelsAPI.makeBaseURI()}/features${queryParams}`,
     );
   },
@@ -27,7 +30,7 @@ const NewFeatureSupportLevelsAPI = {
   architecturesSupportLevel(openshiftVersion: string) {
     let queryParams = '?';
     queryParams += openshiftVersion ? `openshift_version=${openshiftVersion}&` : '';
-    return clientWithoutConverter.get<Record<ArchitectureSupportLevelId, SupportLevel>>(
+    return clientWithoutConverter.get<ArchitecturesSupportsLevel>(
       `${NewFeatureSupportLevelsAPI.makeBaseURI()}/architectures${queryParams}`,
     );
   },

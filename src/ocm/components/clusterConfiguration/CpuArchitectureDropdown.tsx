@@ -85,9 +85,9 @@ const CpuArchitectureDropdown = ({
           <DropdownItem
             key={cpuArch}
             id={cpuArch}
-            description={architectureData[cpuArch].description}
+            description={cpuArch ? architectureData[cpuArch].description : ''}
           >
-            {architectureData[cpuArch].label}
+            {cpuArch ? architectureData[cpuArch].label : ''}
           </DropdownItem>
         );
       });
