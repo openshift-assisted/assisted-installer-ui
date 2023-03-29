@@ -23,11 +23,11 @@ import { DiscoveryImageModal } from '../clusterConfiguration/DiscoveryImageModal
 import CancelInstallationModal from './CancelInstallationModal';
 import ResetClusterModal from './ResetClusterModal';
 import ClusterPollingErrorModal from './ClusterPollingErrorModal';
-import { FeatureSupportLevelProvider } from '../featureSupportLevels';
 import useInfraEnv from '../../hooks/useInfraEnv';
 import { SentryErrorMonitorContextProvider } from '../SentryErrorMonitorContextProvider';
 import ClusterWizardContextProvider from '../clusterWizard/ClusterWizardContextProvider';
 import { BackButton } from '../ui/Buttons/BackButton';
+import { NewFeatureSupportLevelProvider } from '../newFeatureSupportLevels';
 
 type AssistedInstallerDetailCardProps = {
   aiClusterId: string;
@@ -129,9 +129,14 @@ const AssistedInstallerDetailCard = ({
               loadingUI={<LoadingCard />}
               errorUI={<LoadingDefaultConfigFailedCard />}
             >
-              <FeatureSupportLevelProvider loadingUi={<LoadingCard />} cluster={cluster}>
+              <NewFeatureSupportLevelProvider
+                loadingUi={<LoadingCard />}
+                cluster={cluster}
+                cpuArchitecture={infraEnv.cpuArchitecture}
+                openshiftVersion={cluster.openshiftVersion}
+              >
                 {content}
-              </FeatureSupportLevelProvider>
+              </NewFeatureSupportLevelProvider>
               {isOutdatedClusterData && <ClusterPollingErrorModal />}
               <CancelInstallationModal />
               <ResetClusterModal />

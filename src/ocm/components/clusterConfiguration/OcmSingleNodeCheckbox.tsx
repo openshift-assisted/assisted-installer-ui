@@ -7,7 +7,18 @@ import { CheckboxFieldProps } from '../../../common/components/ui/formik/types';
 import NewFeatureSupportLevelBadge from '../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
-const OcmSingleNodeCheckbox: React.FC<CheckboxFieldProps> = ({ validate, idPostfix, ...props }) => {
+export interface OcmCheckboxProps extends CheckboxFieldProps {
+  disabledReason?: string;
+  isSupportedVersionAvailable?: boolean;
+}
+
+const OcmSingleNodeCheckbox: React.FC<OcmCheckboxProps> = ({
+  disabledReason,
+  isSupportedVersionAvailable,
+  validate,
+  idPostfix,
+  ...props
+}) => {
   const {
     values: { openshiftVersion },
   } = useFormikContext<ClusterCreateParams>();
@@ -19,14 +30,11 @@ const OcmSingleNodeCheckbox: React.FC<CheckboxFieldProps> = ({ validate, idPostf
   const { t } = useTranslation();
   const { value } = meta;
   const { setValue } = helpers;
-  const isSupportedVersionAvailable = featureSupportLevelContext.isFeatureSupported('SNO');
 
   const onChanged = React.useCallback(
     (checked: boolean) => setValue(checked ? 'None' : 'Full'),
     [setValue],
   );
-
-  const disabledReason = featureSupportLevelContext.getFeatureDisabledReason('SNO', t);
 
   React.useEffect(() => {
     if (

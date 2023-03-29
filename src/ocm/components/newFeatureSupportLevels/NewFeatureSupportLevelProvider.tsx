@@ -1,4 +1,3 @@
-import useSWR from 'swr';
 import React, { PropsWithChildren } from 'react';
 import {
   ActiveFeatureConfiguration,
@@ -9,7 +8,6 @@ import {
   SupportLevel,
   SupportLevels,
 } from '../../../common';
-import { handleApiError } from '../../api';
 import { useOpenshiftVersions } from '../../hooks';
 import { getNewFeatureDisabledReason, isFeatureSupported } from './newFeatureStateUtils';
 import useInfraEnv from '../../hooks/useInfraEnv';
@@ -17,13 +15,15 @@ import {
   NewFeatureSupportLevelContextProvider,
   NewFeatureSupportLevelData,
 } from '../../../common/components/newFeatureSupportLevels';
-import NewFeatureSupportLevelsAPI from '../../services/apis/NewFeatureSupportLevelsAPI';
+import useSupportLevelsAPI from '../../hooks/useSupportLevelsAPI';
+import { TFunction } from 'i18next';
 
 export type NewSupportLevelProviderProps = PropsWithChildren<{
   clusterFeatureUsage?: string;
   openshiftVersion?: string;
   loadingUi: React.ReactNode;
   cluster?: Cluster;
+  cpuArchitecture?: string;
 }>;
 
 export const getFeatureSupported = (featureSupportLevels: SupportLevels, featureId: FeatureId) => {
@@ -34,31 +34,24 @@ export const NewFeatureSupportLevelProvider: React.FC<NewSupportLevelProviderPro
   cluster,
   children,
   loadingUi,
+  cpuArchitecture,
+  openshiftVersion,
 }) => {
-  /*const {
-    values: { openshiftVersion, cpuArchitecture },
-  } = useFormikContext<ClusterCreateParams>();*/
   const { loading: loadingOCPVersions } = useOpenshiftVersions();
   const { infraEnv, isLoading: isInfraEnvLoading } = useInfraEnv(
     cluster?.id || '',
     CpuArchitecture.USE_DAY1_ARCHITECTURE,
   );
-
-  const fetcher = () =>
-    NewFeatureSupportLevelsAPI.featuresSupportLevel('4.12', 'x86_64').then((res) => res.data);
-  const { data: featureSupportLevels, error } = useSWR<SupportLevels, unknown>(
-    NewFeatureSupportLevelsAPI.makeBaseURI(),
-    fetcher,
-    { errorRetryCount: 0, revalidateOnFocus: false },
-  );
-  const isLoading = (!featureSupportLevels && !error) || loadingOCPVersions || isInfraEnvLoading;
+  const featureSupportLevels = useSupportLevelsAPI('features', openshiftVersion, cpuArchitecture);
 
   const supportLevelData = React.useMemo<SupportLevels>(() => {
-    if (!featureSupportLevels || error) {
+    if (!featureSupportLevels) {
       return {};
     }
     return featureSupportLevels;
-  }, [error, featureSupportLevels]);
+  }, [featureSupportLevels]);
+
+  const isLoading = !supportLevelData || loadingOCPVersions || isInfraEnvLoading;
 
   const activeFeatureConfiguration = React.useMemo<ActiveFeatureConfiguration>(
     () => ({
@@ -75,26 +68,32 @@ export const NewFeatureSupportLevelProvider: React.FC<NewSupportLevelProviderPro
   }, [supportLevelData]);
 
   const getFeatureSupportLevel = React.useCallback(
-    (featureId: FeatureId): SupportLevel | undefined => {
+    (featureId: FeatureId, supportLevelDataNew?: SupportLevels): SupportLevel | undefined => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      return supportLevelData
-        ? (supportLevelData.features[featureId.toLowerCase()] as SupportLevel)
-        : undefined;
+      if (supportLevelDataNew) {
+        return supportLevelDataNew
+          ? (supportLevelDataNew.features[featureId] as SupportLevel)
+          : undefined;
+      } else {
+        return supportLevelData
+          ? (supportLevelData.features[featureId] as SupportLevel)
+          : undefined;
+      }
     },
     [supportLevelData],
   );
 
   const isFeatureSupportedCallback = React.useCallback(
-    (featureId: FeatureId) => {
-      const supportLevel = getFeatureSupportLevel(featureId);
+    (featureId: FeatureId, supportLevelDataNew?: SupportLevels) => {
+      const supportLevel = getFeatureSupportLevel(featureId, supportLevelDataNew);
       return isFeatureSupported(supportLevel);
     },
     [getFeatureSupportLevel],
   );
 
   const getDisabledReasonCallback = React.useCallback(
-    (featureId: FeatureId) => {
-      const isSupported = isFeatureSupportedCallback(featureId);
+    (featureId: FeatureId, t?: TFunction, supportLevelDataNew?: SupportLevels) => {
+      const isSupported = isFeatureSupportedCallback(featureId, supportLevelDataNew);
       return getNewFeatureDisabledReason(
         featureId,
         cluster,
@@ -106,7 +105,8 @@ export const NewFeatureSupportLevelProvider: React.FC<NewSupportLevelProviderPro
   );
 
   const isFeatureDisabled = React.useCallback(
-    (featureId: FeatureId) => !!getDisabledReasonCallback(featureId),
+    (featureId: FeatureId, supportLevelDataNew?: SupportLevels) =>
+      !!getDisabledReasonCallback(featureId, undefined, supportLevelDataNew),
     [getDisabledReasonCallback],
   );
 
@@ -127,12 +127,6 @@ export const NewFeatureSupportLevelProvider: React.FC<NewSupportLevelProviderPro
     isFeatureSupportedCallback,
     activeFeatureConfiguration,
   ]);
-
-  React.useEffect(() => {
-    if (error) {
-      handleApiError(error);
-    }
-  }, [error]);
 
   return (
     <NewFeatureSupportLevelContextProvider value={providerValue}>

@@ -12,10 +12,17 @@ export type ActiveFeatureConfiguration = {
 
 export type NewFeatureSupportLevelData = {
   getFeatureSupportLevels(): SupportLevels;
-  getFeatureSupportLevel(featureId: FeatureId): SupportLevel | undefined;
-  isFeatureDisabled(featureId: FeatureId): boolean;
-  getFeatureDisabledReason(featureId: FeatureId, t?: TFunction): string | undefined;
-  isFeatureSupported(featureId: FeatureId): boolean;
+  getFeatureSupportLevel(
+    featureId: FeatureId,
+    supportLevelData?: SupportLevels,
+  ): SupportLevel | undefined;
+  isFeatureDisabled(featureId: FeatureId, supportLevelData?: SupportLevels): boolean;
+  getFeatureDisabledReason(
+    featureId: FeatureId,
+    t?: TFunction,
+    supportLevelData?: SupportLevels,
+  ): string | undefined;
+  isFeatureSupported(featureId: FeatureId, supportLevelData?: SupportLevels): boolean;
   activeFeatureConfiguration?: ActiveFeatureConfiguration;
 };
 

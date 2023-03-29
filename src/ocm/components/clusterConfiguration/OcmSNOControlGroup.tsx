@@ -1,31 +1,53 @@
 import React from 'react';
-import { useFormikContext } from 'formik';
 import { ClusterDetailsValues } from '../../../common/components/clusterWizard/types';
 import OcmSingleNodeCheckbox from './OcmSingleNodeCheckbox';
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
 import OcmSNODisclaimer from './OcmSNODisclaimer';
+import { SupportLevels } from '../../../common';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type OcmSNOControlGroupProps = {
   highAvailabilityMode: ClusterDetailsValues['highAvailabilityMode'];
-  openshiftVersion?: string;
-  cpuArchitecture?: string;
+  featureSupportLevelData?: SupportLevels;
 };
 
-const OcmSNOControlGroup = ({ highAvailabilityMode }: OcmSNOControlGroupProps) => {
-  const { values } = useFormikContext<ClusterDetailsValues>();
-  console.log(values.openshiftVersion);
-  console.log(values.cpuArchitecture);
-  //const featureSupportLevelContext = useFeatureSupportLevel();
+const OcmSNOControlGroup = ({
+  highAvailabilityMode,
+  featureSupportLevelData,
+}: OcmSNOControlGroupProps) => {
+  const { t } = useTranslation();
   const newFeatureSupportLevelContext = useNewFeatureSupportLevel();
-  const snoNewSupportLevel = newFeatureSupportLevelContext.getFeatureSupportLevel('SNO');
-  console.log(snoNewSupportLevel);
-  const snoSupportLevel = newFeatureSupportLevelContext.getFeatureSupportLevel('SNO');
-  const snoExpansion = newFeatureSupportLevelContext.isFeatureSupported('SINGLE_NODE_EXPANSION');
-  const isDisabled = newFeatureSupportLevelContext.isFeatureDisabled('SNO');
 
+  const snoSupportLevel = newFeatureSupportLevelContext.getFeatureSupportLevel(
+    'SNO',
+    featureSupportLevelData,
+  );
+  const snoExpansion = newFeatureSupportLevelContext.isFeatureSupported(
+    'SINGLE_NODE_EXPANSION',
+    featureSupportLevelData,
+  );
+  const isDisabled = newFeatureSupportLevelContext.isFeatureDisabled(
+    'SNO',
+    featureSupportLevelData,
+  );
+  const disabledReason = newFeatureSupportLevelContext.getFeatureDisabledReason(
+    'SNO',
+    t,
+    featureSupportLevelData,
+  );
+
+  const isSupportedVersionAvailable = newFeatureSupportLevelContext.isFeatureSupported(
+    'SNO',
+    featureSupportLevelData,
+  );
   return (
     <>
-      <OcmSingleNodeCheckbox name="highAvailabilityMode" isDisabled={isDisabled} />
+      <OcmSingleNodeCheckbox
+        name="highAvailabilityMode"
+        isDisabled={isDisabled}
+        disabledReason={disabledReason}
+        isSupportedVersionAvailable={isSupportedVersionAvailable}
+      />
       {highAvailabilityMode === 'None' && snoSupportLevel && (
         <OcmSNODisclaimer
           isDisabled={isDisabled}
