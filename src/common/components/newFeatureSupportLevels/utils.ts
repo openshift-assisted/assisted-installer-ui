@@ -1,6 +1,9 @@
-import { Cluster, stringToJSON } from '../../api';
+import { Cluster, stringToJSON, SupportLevel } from '../../api';
 import { ClusterFeatureUsage, FeatureId, FeatureIdToSupportLevel } from '../../types';
-import { NewFeatureSupportLevelData } from './NewFeatureSupportLevelContext';
+import {
+  NewFeatureSupportLevelData,
+  NewFeatureSupportLevelMap,
+} from './NewFeatureSupportLevelContext';
 import { TFunction } from 'i18next';
 
 export const getLimitedFeatureSupportLevels = (
@@ -26,7 +29,8 @@ export const getLimitedFeatureSupportLevels = (
       : 'Error parsing cluster feature_usage field';
   }
   const usedFeatureIds: FeatureId[] = Object.values(featureUsage).map((item) => item.id);
-  const versionSupportLevels = featureSupportLevelData.getFeatureSupportLevels();
+  const versionSupportLevels: NewFeatureSupportLevelMap =
+    featureSupportLevelData.getFeatureSupportLevels();
   if (!versionSupportLevels) {
     throw t
       ? t('ai:No support level data for version {{openshiftVersion}}', {
@@ -36,11 +40,11 @@ export const getLimitedFeatureSupportLevels = (
   }
   for (const featureId of usedFeatureIds) {
     if (featureId in versionSupportLevels) {
-      const supportLevel = versionSupportLevels[featureId];
+      const supportLevel: SupportLevel = versionSupportLevels[featureId] as SupportLevel;
       if (supportLevel === 'supported') {
         continue;
       }
-      ret[featureId] = versionSupportLevels[featureId];
+      ret[featureId] = supportLevel;
     }
   }
   return ret;

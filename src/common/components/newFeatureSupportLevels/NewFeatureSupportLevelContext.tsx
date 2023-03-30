@@ -3,7 +3,10 @@ import { TFunction } from 'i18next';
 
 import { CpuArchitecture, FeatureId } from '../../types';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
-import { SupportLevel, SupportLevels } from '../../api';
+import { ArchitectureSupportLevelId, FeatureSupportLevelId, SupportLevel } from '../../api';
+
+export type NewFeatureSupportLevelMap = Record<FeatureSupportLevelId, SupportLevel>;
+export type ArchitectureSupportLevelMap = Record<ArchitectureSupportLevelId, SupportLevel>;
 
 export type ActiveFeatureConfiguration = {
   underlyingCpuArchitecture: CpuArchitecture;
@@ -11,18 +14,18 @@ export type ActiveFeatureConfiguration = {
 };
 
 export type NewFeatureSupportLevelData = {
-  getFeatureSupportLevels(): SupportLevels;
+  getFeatureSupportLevels(): NewFeatureSupportLevelMap;
   getFeatureSupportLevel(
     featureId: FeatureId,
-    supportLevelData?: SupportLevels,
+    supportLevelData?: NewFeatureSupportLevelMap,
   ): SupportLevel | undefined;
-  isFeatureDisabled(featureId: FeatureId, supportLevelData?: SupportLevels): boolean;
+  isFeatureDisabled(featureId: FeatureId, supportLevelData?: NewFeatureSupportLevelMap): boolean;
   getFeatureDisabledReason(
     featureId: FeatureId,
     t?: TFunction,
-    supportLevelData?: SupportLevels,
+    supportLevelData?: NewFeatureSupportLevelMap,
   ): string | undefined;
-  isFeatureSupported(featureId: FeatureId, supportLevelData?: SupportLevels): boolean;
+  isFeatureSupported(featureId: FeatureId, supportLevelData?: NewFeatureSupportLevelMap): boolean;
   activeFeatureConfiguration?: ActiveFeatureConfiguration;
 };
 

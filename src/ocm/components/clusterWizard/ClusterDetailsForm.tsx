@@ -102,11 +102,12 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
   const { t } = useTranslation();
   const validationSchema = getClusterDetailsValidationSchema({
     usedClusterNames,
-    featureSupportLevels,
     pullSecretSet: cluster?.pullSecretSet,
+    featureSupportLevels: undefined,
     ocpVersions,
     isOcm: true,
     t,
+    newFeatureSupportLevels: featureSupportLevels,
   });
 
   return (

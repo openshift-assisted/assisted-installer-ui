@@ -293,6 +293,7 @@ const NetworkConfiguration = ({
         <VirtualIPControlGroup
           cluster={cluster}
           isVipDhcpAllocationDisabled={isVipDhcpAllocationDisabled}
+          supportLevel={featureSupportLevelData.getFeatureSupportLevel('VIP_AUTO_ALLOC')}
         />
       )}
 

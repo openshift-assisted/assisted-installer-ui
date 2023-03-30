@@ -1,14 +1,16 @@
 import React from 'react';
 import { ClusterDetailsValues } from '../../../common/components/clusterWizard/types';
 import OcmSingleNodeCheckbox from './OcmSingleNodeCheckbox';
-import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
+import {
+  NewFeatureSupportLevelMap,
+  useNewFeatureSupportLevel,
+} from '../../../common/components/newFeatureSupportLevels';
 import OcmSNODisclaimer from './OcmSNODisclaimer';
-import { SupportLevels } from '../../../common';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
 type OcmSNOControlGroupProps = {
   highAvailabilityMode: ClusterDetailsValues['highAvailabilityMode'];
-  featureSupportLevelData?: SupportLevels;
+  featureSupportLevelData?: NewFeatureSupportLevelMap;
 };
 
 const OcmSNOControlGroup = ({
@@ -47,6 +49,7 @@ const OcmSNOControlGroup = ({
         isDisabled={isDisabled}
         disabledReason={disabledReason}
         isSupportedVersionAvailable={isSupportedVersionAvailable}
+        supportLevel={snoSupportLevel}
       />
       {highAvailabilityMode === 'None' && snoSupportLevel && (
         <OcmSNODisclaimer

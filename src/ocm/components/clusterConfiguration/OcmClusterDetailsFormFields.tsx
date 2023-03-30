@@ -87,6 +87,11 @@ export const OcmClusterDetailsFormFields = ({
     'architectures',
     openshiftVersion,
   );
+  const featureSupportLevelData = useSupportLevelsAPI(
+    'features',
+    values.openshiftVersion,
+    values.cpuArchitecture,
+  );
   const cpuArchitectures = React.useMemo(
     () =>
       getSupportedCpuArchitectures(
@@ -166,7 +171,10 @@ export const OcmClusterDetailsFormFields = ({
           cpuArchitectures={cpuArchitectures}
         />
       )}
-      <OcmSNOControlGroup highAvailabilityMode={highAvailabilityMode} />
+      <OcmSNOControlGroup
+        highAvailabilityMode={highAvailabilityMode}
+        featureSupportLevelData={featureSupportLevelData ?? undefined}
+      />
 
       {!isPullSecretSet && <PullSecret isOcm={isOcm} defaultPullSecret={defaultPullSecret} />}
 

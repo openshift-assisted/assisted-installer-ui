@@ -1,7 +1,13 @@
 import * as React from 'react';
 import { useField, useFormikContext } from 'formik';
 import { Checkbox, FormGroup, Tooltip } from '@patternfly/react-core';
-import { ClusterCreateParams, getFieldId, HelperText, useFeature } from '../../../common';
+import {
+  ClusterCreateParams,
+  getFieldId,
+  HelperText,
+  SupportLevel,
+  useFeature,
+} from '../../../common';
 import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
 import { CheckboxFieldProps } from '../../../common/components/ui/formik/types';
 import NewFeatureSupportLevelBadge from '../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
@@ -10,6 +16,7 @@ import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 export interface OcmCheckboxProps extends CheckboxFieldProps {
   disabledReason?: string;
   isSupportedVersionAvailable?: boolean;
+  supportLevel?: SupportLevel;
 }
 
 const OcmSingleNodeCheckbox: React.FC<OcmCheckboxProps> = ({
@@ -17,6 +24,7 @@ const OcmSingleNodeCheckbox: React.FC<OcmCheckboxProps> = ({
   isSupportedVersionAvailable,
   validate,
   idPostfix,
+  supportLevel,
   ...props
 }) => {
   const {
@@ -58,7 +66,7 @@ const OcmSingleNodeCheckbox: React.FC<OcmCheckboxProps> = ({
             label={
               <>
                 {t('ai:Install single node OpenShift (SNO)')}&nbsp;
-                <NewFeatureSupportLevelBadge featureId="SNO" openshiftVersion={openshiftVersion} />
+                <NewFeatureSupportLevelBadge featureId="SNO" supportLevel={supportLevel} />
               </>
             }
             aria-describedby={`${fieldId}-helper`}

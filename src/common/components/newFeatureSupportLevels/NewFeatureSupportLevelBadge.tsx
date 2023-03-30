@@ -2,24 +2,16 @@ import React from 'react';
 import { SupportLevel } from '../../api';
 import { FeatureId, isPreviewSupportLevel } from '../../types';
 import { TechnologyPreview, DeveloperPreview } from '../ui/PreviewBadge';
-import { useNewFeatureSupportLevel } from './NewFeatureSupportLevelContext';
 
 export type NewSupportLevelBadgeProps = {
   featureId: FeatureId;
-  openshiftVersion: string | undefined;
+  supportLevel: SupportLevel | undefined;
 };
 
 const NewFeatureSupportLevelBadge: React.FC<NewSupportLevelBadgeProps> = ({
   featureId,
-  openshiftVersion,
+  supportLevel,
 }) => {
-  const featureSupportLevelData = useNewFeatureSupportLevel();
-  const supportLevel: SupportLevel | undefined = React.useMemo(() => {
-    if (!openshiftVersion) {
-      return undefined;
-    }
-    return featureSupportLevelData.getFeatureSupportLevel(featureId);
-  }, [openshiftVersion, featureId, featureSupportLevelData]);
   if (!isPreviewSupportLevel(supportLevel)) {
     return null;
   }

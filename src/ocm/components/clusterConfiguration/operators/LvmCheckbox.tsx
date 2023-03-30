@@ -12,6 +12,7 @@ import {
   ExternalLink,
   LVMS_LINK,
   OPERATOR_NAME_LVMS,
+  SupportLevel,
 } from '../../../../common';
 import LvmHostRequirements from './LvmHostRequirements';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
@@ -22,7 +23,11 @@ import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatur
 
 const LVM_FIELD_NAME = 'useOdfLogicalVolumeManager';
 
-type LvmLabelProps = ClusterOperatorProps & { disabledReason?: string; operatorLabel: string };
+type LvmLabelProps = ClusterOperatorProps & {
+  disabledReason?: string;
+  operatorLabel: string;
+  supportLevel?: SupportLevel;
+};
 
 const LvmHelperText = ({ operatorName }: { operatorName: ExposedOperatorName }) => {
   return (
@@ -35,12 +40,7 @@ const LvmHelperText = ({ operatorName }: { operatorName: ExposedOperatorName }) 
   );
 };
 
-const LvmLabel = ({
-  openshiftVersion,
-  clusterId,
-  operatorLabel,
-  disabledReason,
-}: LvmLabelProps) => {
+const LvmLabel = ({ clusterId, operatorLabel, disabledReason, supportLevel }: LvmLabelProps) => {
   return (
     <>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
@@ -51,7 +51,7 @@ const LvmLabel = ({
         headerContent="Additional Requirements"
         bodyContent={<LvmHostRequirements clusterId={clusterId} />}
       />
-      <NewFeatureSupportLevelBadge featureId="LVM" openshiftVersion={openshiftVersion} />
+      <NewFeatureSupportLevelBadge featureId="LVM" supportLevel={supportLevel} />
     </>
   );
 };
@@ -93,9 +93,9 @@ const LvmCheckbox = ({ clusterId, openshiftVersion }: ClusterOperatorProps) => {
         label={
           <LvmLabel
             clusterId={clusterId}
-            openshiftVersion={openshiftVersion}
             operatorLabel={operatorInfo.operatorLabel}
             disabledReason={disabledReason}
+            supportLevel={featureSupportLevel.getFeatureSupportLevel('LVM')}
           />
         }
         helperText={<LvmHelperText operatorName={operatorInfo.operatorName} />}

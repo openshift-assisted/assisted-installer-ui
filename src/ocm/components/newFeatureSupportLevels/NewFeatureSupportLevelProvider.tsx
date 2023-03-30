@@ -14,6 +14,7 @@ import useInfraEnv from '../../hooks/useInfraEnv';
 import {
   NewFeatureSupportLevelContextProvider,
   NewFeatureSupportLevelData,
+  NewFeatureSupportLevelMap,
 } from '../../../common/components/newFeatureSupportLevels';
 import useSupportLevelsAPI from '../../hooks/useSupportLevelsAPI';
 import { TFunction } from 'i18next';
@@ -44,9 +45,9 @@ export const NewFeatureSupportLevelProvider: React.FC<NewSupportLevelProviderPro
   );
   const featureSupportLevels = useSupportLevelsAPI('features', openshiftVersion, cpuArchitecture);
 
-  const supportLevelData = React.useMemo<SupportLevels>(() => {
+  const supportLevelData = React.useMemo<NewFeatureSupportLevelMap>(() => {
     if (!featureSupportLevels) {
-      return {};
+      return {} as NewFeatureSupportLevelMap;
     }
     return featureSupportLevels;
   }, [featureSupportLevels]);
@@ -63,22 +64,21 @@ export const NewFeatureSupportLevelProvider: React.FC<NewSupportLevelProviderPro
     [cluster?.cpuArchitecture, infraEnv?.cpuArchitecture, infraEnv?.staticNetworkConfig],
   );
 
-  const getFeatureSupportLevels = React.useCallback((): SupportLevels => {
+  const getFeatureSupportLevels = React.useCallback((): NewFeatureSupportLevelMap => {
     return supportLevelData;
   }, [supportLevelData]);
 
   const getFeatureSupportLevel = React.useCallback(
-    (featureId: FeatureId, supportLevelDataNew?: SupportLevels): SupportLevel | undefined => {
+    (
+      featureId: FeatureId,
+      supportLevelDataNew?: NewFeatureSupportLevelMap,
+    ): SupportLevel | undefined => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
       if (supportLevelDataNew) {
-        return supportLevelDataNew
-          ? (supportLevelDataNew.features[featureId] as SupportLevel)
-          : undefined;
+        return supportLevelDataNew ? (supportLevelDataNew[featureId] as SupportLevel) : undefined;
       } else {
         if (supportLevelData) {
-          return supportLevelData.features
-            ? (supportLevelData.features[featureId] as SupportLevel)
-            : undefined;
+          return supportLevelData ? (supportLevelData[featureId] as SupportLevel) : undefined;
         }
       }
     },
@@ -86,7 +86,7 @@ export const NewFeatureSupportLevelProvider: React.FC<NewSupportLevelProviderPro
   );
 
   const isFeatureSupportedCallback = React.useCallback(
-    (featureId: FeatureId, supportLevelDataNew?: SupportLevels) => {
+    (featureId: FeatureId, supportLevelDataNew?: NewFeatureSupportLevelMap) => {
       const supportLevel = getFeatureSupportLevel(featureId, supportLevelDataNew);
       return isFeatureSupported(supportLevel);
     },
@@ -94,7 +94,7 @@ export const NewFeatureSupportLevelProvider: React.FC<NewSupportLevelProviderPro
   );
 
   const getDisabledReasonCallback = React.useCallback(
-    (featureId: FeatureId, t?: TFunction, supportLevelDataNew?: SupportLevels) => {
+    (featureId: FeatureId, t?: TFunction, supportLevelDataNew?: NewFeatureSupportLevelMap) => {
       const isSupported = isFeatureSupportedCallback(featureId, supportLevelDataNew);
       return getNewFeatureDisabledReason(
         featureId,
@@ -107,7 +107,7 @@ export const NewFeatureSupportLevelProvider: React.FC<NewSupportLevelProviderPro
   );
 
   const isFeatureDisabled = React.useCallback(
-    (featureId: FeatureId, supportLevelDataNew?: SupportLevels) =>
+    (featureId: FeatureId, supportLevelDataNew?: NewFeatureSupportLevelMap) =>
       !!getDisabledReasonCallback(featureId, undefined, supportLevelDataNew),
     [getDisabledReasonCallback],
   );

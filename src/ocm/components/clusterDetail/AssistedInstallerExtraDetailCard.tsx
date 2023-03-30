@@ -3,7 +3,12 @@ import { Provider } from 'react-redux';
 import { store } from '../../store';
 import { useSelector } from 'react-redux';
 
-import { CpuArchitecture, FeatureGateContextProvider, FeatureListType } from '../../../common';
+import {
+  AlertsContextProvider,
+  CpuArchitecture,
+  FeatureGateContextProvider,
+  FeatureListType,
+} from '../../../common';
 import ClusterProperties from './ClusterProperties';
 import { selectCurrentClusterState } from '../../selectors';
 import { Grid } from '@patternfly/react-core';
@@ -29,16 +34,18 @@ const AssistedInstallerExtraDetailCard: React.FC<AssistedInstallerExtraDetailCar
 
   return (
     <FeatureGateContextProvider features={allEnabledFeatures}>
-      <NewFeatureSupportLevelProvider
-        loadingUi={<div />}
-        cluster={cluster}
-        cpuArchitecture={infraEnv?.cpuArchitecture}
-        openshiftVersion={cluster.openshiftVersion}
-      >
-        <Grid className="pf-u-mt-md">
-          <ClusterProperties cluster={cluster} externalMode />
-        </Grid>
-      </NewFeatureSupportLevelProvider>
+      <AlertsContextProvider>
+        <NewFeatureSupportLevelProvider
+          loadingUi={<div />}
+          cluster={cluster}
+          cpuArchitecture={infraEnv?.cpuArchitecture}
+          openshiftVersion={cluster.openshiftVersion}
+        >
+          <Grid className="pf-u-mt-md">
+            <ClusterProperties cluster={cluster} externalMode />
+          </Grid>
+        </NewFeatureSupportLevelProvider>
+      </AlertsContextProvider>
     </FeatureGateContextProvider>
   );
 };

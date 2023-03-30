@@ -1,16 +1,15 @@
 import {
-  ArchitectureSupportLevelId,
-  FeatureSupportLevelId,
-  SupportLevel,
-} from '../../../common/api/types';
+  ArchitectureSupportLevelMap,
+  NewFeatureSupportLevelMap,
+} from '../../../common/components/newFeatureSupportLevels';
 import { clientWithoutConverter } from '../../api/axiosClient';
 
 export interface ArchitecturesSupportsLevel {
-  architectures: Record<ArchitectureSupportLevelId, SupportLevel>;
+  architectures: ArchitectureSupportLevelMap;
 }
 
 export interface FeaturesSupportsLevel {
-  features: Record<FeatureSupportLevelId, SupportLevel>;
+  features: NewFeatureSupportLevelMap;
 }
 
 const NewFeatureSupportLevelsAPI = {

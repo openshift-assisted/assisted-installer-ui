@@ -1,18 +1,17 @@
 import React from 'react';
+import { useAlerts } from '../../common';
 import {
-  ArchitectureSupportLevelId,
-  FeatureSupportLevelId,
-  SupportLevel,
-  useAlerts,
-} from '../../common';
+  ArchitectureSupportLevelMap,
+  NewFeatureSupportLevelMap,
+} from '../../common/components/newFeatureSupportLevels';
 import { getApiErrorMessage, handleApiError } from '../api';
 import NewFeatureSupportLevelsAPI from '../services/apis/NewFeatureSupportLevelsAPI';
 
 type SupportLevelAPIResources = 'architectures' | 'features';
 type UseSupportLevelAPIResponse<T extends SupportLevelAPIResources> = T extends 'architectures'
-  ? Record<ArchitectureSupportLevelId, SupportLevel> | null
+  ? ArchitectureSupportLevelMap | null
   : T extends 'features'
-  ? Record<FeatureSupportLevelId, SupportLevel> | null
+  ? NewFeatureSupportLevelMap | null
   : null;
 
 export default function useSupportLevelsAPI<T extends SupportLevelAPIResources>(
@@ -20,14 +19,9 @@ export default function useSupportLevelsAPI<T extends SupportLevelAPIResources>(
   openshiftVersion?: string,
   cpuArchitecture?: string,
 ): UseSupportLevelAPIResponse<T> | null {
-  const [cpuArchitectures, setCpuArchitectures] = React.useState<Record<
-    ArchitectureSupportLevelId,
-    SupportLevel
-  > | null>(null);
-  const [features, setFeatures] = React.useState<Record<
-    FeatureSupportLevelId,
-    SupportLevel
-  > | null>(null);
+  const [cpuArchitectures, setCpuArchitectures] =
+    React.useState<ArchitectureSupportLevelMap | null>(null);
+  const [features, setFeatures] = React.useState<NewFeatureSupportLevelMap | null>(null);
   const { addAlert } = useAlerts();
 
   const fetchArchitecturesSupportLevels = React.useCallback(
