@@ -15,6 +15,7 @@ import { ClusterImageSetK8sResource } from '../../types/k8s/cluster-image-set';
 import { BMCFormProps } from '../Agent/types';
 import { AddHostDropdownProps } from '../InfraEnv/types';
 import { AddHostModalProps, EditBMHModalProps, UploadActionModalProps } from '../modals/types';
+import { AgentMachineK8sResource } from '../Hypershift/types';
 
 export type EditAgentModalProps = {
   agent: AgentK8sResource | undefined;
@@ -181,10 +182,11 @@ export type InfraEnvAgentTableProps = Pick<
   'onDeleteHost' | 'onApprove' | 'onEditBMH' | 'onEditHost' | 'onUnbindHost'
 > & {
   agents: AgentK8sResource[];
+  agentMachines: AgentMachineK8sResource[];
   bareMetalHosts: BareMetalHostK8sResource[];
   infraEnv: InfraEnvK8sResource;
   nmStates: NMStateK8sResource[];
-  getClusterDeploymentLink: (cd: { name: string; namespace: string }) => string | React.ReactNode;
+  getClusterDeploymentLink: (cd: { name: string; namespace: string }) => string;
   onChangeHostname: (agent: AgentK8sResource, hostname: string) => Promise<AgentK8sResource>;
   onChangeBMHHostname: (
     bmh: BareMetalHostK8sResource,
