@@ -26,6 +26,7 @@ import { agentStatus, bmhStatus } from '../helpers/agentStatus';
 import noop from 'lodash/noop';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import { TFunction } from 'i18next';
+import { AgentMachineK8sResource } from '../Hypershift/types';
 
 export const agentHostnameColumn = (
   hosts: Host[],
@@ -176,7 +177,8 @@ export const agentStatusColumn = ({
 
 export const clusterColumn = (
   agents: AgentK8sResource[],
-  getClusterDeploymentLink: (cd: { name: string; namespace: string }) => string | React.ReactNode,
+  agentMachines: AgentMachineK8sResource[],
+  getClusterDeploymentLink: (cd: { name: string; namespace: string }) => string,
   t: TFunction,
 ): TableRow<Host> => {
   return {
@@ -189,19 +191,28 @@ export const clusterColumn = (
     },
     cell: (host) => {
       const agent = agents.find((a) => a.metadata?.uid === host.id);
-      let title: React.ReactNode = '--';
-
+      let cdLink: string | undefined = undefined;
       if (agent?.spec?.clusterDeploymentName) {
-        const cdLink = getClusterDeploymentLink(agent.spec.clusterDeploymentName);
-        title =
-          typeof cdLink === 'string' ? (
-            <Link to={cdLink}>{agent.spec.clusterDeploymentName.name}</Link>
-          ) : (
-            cdLink
+        //hypershift
+        const amNamespace = agent.metadata?.annotations?.['agentMachineRefNamespace'];
+        if (amNamespace) {
+          const am = agentMachines.find(
+            (am) =>
+              am.status?.agentRef?.name === agent.metadata?.name &&
+              am.status?.agentRef?.namespace === agent.metadata?.namespace,
           );
+          const nodePool = am?.metadata?.annotations?.['hypershift.openshift.io/nodePool'];
+          if (nodePool) {
+            const hcNamespace = nodePool.split('/')[0];
+            const hcName = agent.spec.clusterDeploymentName.name;
+            cdLink = getClusterDeploymentLink({ name: hcName, namespace: hcNamespace });
+          }
+        } else {
+          cdLink = getClusterDeploymentLink(agent.spec.clusterDeploymentName);
+        }
       }
       return {
-        title,
+        title: cdLink ? <Link to={cdLink}>{agent?.spec?.clusterDeploymentName?.name}</Link> : '--',
         props: { 'data-testid': 'cluster' },
         sortableValue: agent?.spec?.clusterDeploymentName?.name ?? '--',
       };
