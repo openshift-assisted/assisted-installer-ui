@@ -13,13 +13,11 @@ import {
   noProxyValidationSchema,
   sshPublicKeyValidationSchema,
 } from '../../../../../common';
-import { getAgentsForSelection } from '../../../helpers';
 import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
 
 const getValidationSchema = (t: TFunction) =>
   Yup.lazy<NetworkFormValues>((values) =>
     Yup.object<NetworkFormValues>().shape({
-      machineCIDR: Yup.string().required(t('ai:Required field')),
       sshPublicKey: sshPublicKeyValidationSchema.required(t('ai:Required field')),
       clusterNetworkCidr: values.isAdvanced
         ? ipBlockValidationSchema(values.serviceNetworkCidr)
@@ -40,17 +38,8 @@ const getValidationSchema = (t: TFunction) =>
     }),
   );
 
-const NetworkStep: React.FC<NetworkStepProps> = ({
-  agents,
-  formRef,
-  onValuesChanged,
-  initialValues,
-}) => {
+const NetworkStep: React.FC<NetworkStepProps> = ({ formRef, onValuesChanged, initialValues }) => {
   const { t } = useTranslation();
-
-  const availableAgents = getAgentsForSelection(agents).filter(
-    (a) => !a.spec.clusterDeploymentName,
-  );
 
   return (
     <Formik<NetworkFormValues>
@@ -59,7 +48,7 @@ const NetworkStep: React.FC<NetworkStepProps> = ({
       innerRef={formRef}
       onSubmit={noop}
     >
-      <NetworkForm agents={availableAgents} onValuesChanged={onValuesChanged} />
+      <NetworkForm onValuesChanged={onValuesChanged} />
     </Formik>
   );
 };

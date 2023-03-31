@@ -1,8 +1,6 @@
 import { FormikProps } from 'formik';
-import { AgentK8sResource } from '../../../../types';
 
 export type NetworkFormValues = {
-  machineCIDR: string;
   isAdvanced: boolean;
   sshPublicKey: string;
   serviceNetworkCidr: string;
@@ -17,10 +15,9 @@ export type NetworkFormValues = {
   clusterNetworkHostPrefix: number;
 };
 
-export type NetworkFormProps = Pick<NetworkStepProps, 'agents' | 'onValuesChanged'>;
+export type NetworkFormProps = Pick<NetworkStepProps, 'onValuesChanged'>;
 
 export type NetworkStepProps = {
-  agents: AgentK8sResource[];
   formRef: React.Ref<FormikProps<NetworkFormValues>>;
   onValuesChanged: (values: NetworkFormValues, initRender: boolean) => void;
   initialValues: NetworkFormValues;
