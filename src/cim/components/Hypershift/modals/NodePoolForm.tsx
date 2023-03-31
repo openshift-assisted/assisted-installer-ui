@@ -92,6 +92,7 @@ const NodePoolForm = ({ agents, nodePool, hostedCluster, agentMachines }: NodePo
             countName="count"
             labelName="agentLabels"
             maxAgents={maxAgents}
+            isEdit={isEdit}
           />
         </GridItem>
         <GridItem>
