@@ -10,6 +10,7 @@ type NodePoolAgentsFormProps = {
   labelName: string;
   countName: string;
   maxAgents: number;
+  isEdit: boolean;
 };
 
 const NodePoolAgentsForm = ({
@@ -17,13 +18,16 @@ const NodePoolAgentsForm = ({
   labelName,
   countName,
   maxAgents,
+  isEdit,
 }: NodePoolAgentsFormProps) => {
   const { t } = useTranslation();
   return (
     <Grid hasGutter>
-      <GridItem>
-        <LabelSelectorGroup agents={agents} name={labelName} />
-      </GridItem>
+      {!isEdit && (
+        <GridItem>
+          <LabelSelectorGroup agents={agents} name={labelName} />
+        </GridItem>
+      )}
       <GridItem>
         <NumberInputField
           label={t('ai:Number of hosts')}
