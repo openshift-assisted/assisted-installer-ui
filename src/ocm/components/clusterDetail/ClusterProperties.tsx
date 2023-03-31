@@ -92,9 +92,7 @@ const ClusterProperties = ({ cluster, externalMode = false }: ClusterPropertiesP
 
   const isMultiArchSupported = Boolean(
     hasMultiCpuArchitecture ||
-      (cluster.openshiftVersion &&
-        featureSupportLevelContext.getFeatureSupportLevel('MULTIARCH_RELEASE_IMAGE') ===
-          'supported'),
+      featureSupportLevelContext.getFeatureSupportLevel('MULTIARCH_RELEASE_IMAGE') === 'supported',
   );
   return (
     <>

@@ -62,7 +62,7 @@ const OcmSNODisclaimer = ({
         {isDevPreview && (
           <StackItem>
             <CheckboxField
-              name="OcmSNODisclaimer"
+              name="SNODisclaimer"
               label={t(
                 'ai:I understand, accept, and agree to the limitations associated with using Single Node OpenShift.',
               )}

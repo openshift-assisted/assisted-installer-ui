@@ -88,7 +88,6 @@ const isManagedNetworkingDisabled = (
         'Network management selection is not supported with dual-stack',
     };
   } else if (
-    openshiftVersion &&
     cpuArchitecture === CpuArchitecture.ARM &&
     !featureSupportLevelData.isFeatureSupported(
       'ARM64_ARCHITECTURE_WITH_CLUSTER_MANAGED_NETWORKING',

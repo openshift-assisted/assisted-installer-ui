@@ -53,7 +53,6 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
   const { credentials, credentialsError } = clusterVarieties;
   const featureSupportLevelContext = useNewFeatureSupportLevel();
   const isSNOExpansionAllowed =
-    cluster.openshiftVersion &&
     featureSupportLevelContext.isFeatureSupported('SINGLE_NODE_EXPANSION');
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
 

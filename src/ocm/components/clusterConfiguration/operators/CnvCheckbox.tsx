@@ -48,7 +48,7 @@ const CnvHelperText = () => {
   );
 };
 
-const CnvCheckbox = ({ clusterId, openshiftVersion }: ClusterOperatorProps) => {
+const CnvCheckbox = ({ clusterId }: ClusterOperatorProps) => {
   const fieldId = getFieldId(CNV_FIELD_NAME, 'input');
 
   const featureSupportLevel = useNewFeatureSupportLevel();
@@ -56,16 +56,13 @@ const CnvCheckbox = ({ clusterId, openshiftVersion }: ClusterOperatorProps) => {
   const [disabledReason, setDisabledReason] = useState<string | undefined>();
 
   React.useEffect(() => {
-    let reason = undefined;
-    if (openshiftVersion) {
-      reason = featureSupportLevel.getFeatureDisabledReason('CNV');
-      if (!reason) {
-        const lvmSupport = featureSupportLevel.getFeatureSupportLevel('LVM');
-        reason = getCnvIncompatibleWithLvmReason(values, lvmSupport);
-      }
+    let reason = featureSupportLevel.getFeatureDisabledReason('CNV');
+    if (!reason) {
+      const lvmSupport = featureSupportLevel.getFeatureSupportLevel('LVM');
+      reason = getCnvIncompatibleWithLvmReason(values, lvmSupport);
     }
     setDisabledReason(reason);
-  }, [values, openshiftVersion, featureSupportLevel]);
+  }, [values, featureSupportLevel]);
 
   return (
     <FormGroup isInline fieldId={fieldId}>

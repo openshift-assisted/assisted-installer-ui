@@ -56,7 +56,7 @@ const LvmLabel = ({ clusterId, operatorLabel, disabledReason, supportLevel }: Lv
   );
 };
 
-const LvmCheckbox = ({ clusterId, openshiftVersion }: ClusterOperatorProps) => {
+const LvmCheckbox = ({ clusterId }: ClusterOperatorProps) => {
   const fieldId = getFieldId(LVM_FIELD_NAME, 'input');
 
   const featureSupportLevel = useNewFeatureSupportLevel();
@@ -76,15 +76,12 @@ const LvmCheckbox = ({ clusterId, openshiftVersion }: ClusterOperatorProps) => {
   }, [t, featureSupportLevel]);
 
   React.useEffect(() => {
-    let reason = undefined;
-    if (openshiftVersion) {
-      reason = featureSupportLevel.getFeatureDisabledReason('LVM');
-      if (!reason) {
-        reason = getLvmIncompatibleWithCnvReason(values, operatorInfo.lvmSupport);
-      }
+    let reason = featureSupportLevel.getFeatureDisabledReason('LVM');
+    if (!reason) {
+      reason = getLvmIncompatibleWithCnvReason(values, operatorInfo.lvmSupport);
     }
     setDisabledReason(reason);
-  }, [values, openshiftVersion, featureSupportLevel, operatorInfo.lvmSupport]);
+  }, [values, featureSupportLevel, operatorInfo.lvmSupport]);
 
   return (
     <FormGroup isInline fieldId={fieldId}>

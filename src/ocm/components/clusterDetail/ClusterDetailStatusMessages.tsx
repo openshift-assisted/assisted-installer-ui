@@ -38,9 +38,7 @@ const ClusterDetailStatusMessages = ({
     showAddHostsInfo &&
       ocmClient &&
       cluster.status === 'installed' &&
-      (!isSNO(cluster) ||
-        (cluster.openshiftVersion &&
-          featureSupportLevelContext.isFeatureSupported('SINGLE_NODE_EXPANSION'))),
+      (!isSNO(cluster) || featureSupportLevelContext.isFeatureSupported('SINGLE_NODE_EXPANSION')),
   );
 
   const showKubeConfigDownload =

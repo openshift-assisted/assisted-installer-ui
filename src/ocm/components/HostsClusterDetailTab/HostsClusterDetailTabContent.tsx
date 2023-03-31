@@ -36,7 +36,7 @@ export const HostsClusterDetailTabContent = ({
   }, [setDay2Cluster]);
 
   const { infraEnv } = useInfraEnv(
-    ocmCluster?.id ? ocmCluster?.id : '',
+    ocmCluster.id ? ocmCluster.id : '',
     CpuArchitecture.USE_DAY1_ARCHITECTURE,
   );
   React.useEffect(() => {

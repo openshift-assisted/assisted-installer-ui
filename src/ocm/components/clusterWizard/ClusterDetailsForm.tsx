@@ -103,7 +103,6 @@ const ClusterDetailsForm = (props: ClusterDetailsFormProps) => {
   const validationSchema = getClusterDetailsValidationSchema({
     usedClusterNames,
     pullSecretSet: cluster?.pullSecretSet,
-    featureSupportLevels: undefined,
     ocpVersions,
     isOcm: true,
     t,

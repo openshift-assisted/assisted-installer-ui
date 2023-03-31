@@ -24,7 +24,7 @@ export const OperatorsStep = (props: ClusterOperatorProps) => {
       )}
       {isOpenshiftDataFoundationEnabled && (
         <StackItem>
-          <OdfCheckbox openshiftVersion={props.openshiftVersion} />
+          <OdfCheckbox />
         </StackItem>
       )}
       {isSNO && (
