@@ -7,10 +7,9 @@ import {
   ClusterWizardStepHeader,
   CpuArchitecture,
   ErrorState,
-  getDefaultCpuArchitecture,
   getSupportedCpuArchitectures,
-  InfraEnv,
   LoadingState,
+  SupportedCpuArchitecture,
   useFeature,
 } from '../../../../common';
 import { HostsNetworkConfigurationType, InfraEnvsService } from '../../../services';
@@ -27,32 +26,20 @@ import useSupportLevelsAPI from '../../../hooks/useSupportLevelsAPI';
 
 const getDay2ClusterDetailInitialValues = async (
   clusterId: Cluster['id'],
-): Promise<Day2ClusterDetailValues | Error> => {
+  day1CpuArchitecture: CpuArchitecture,
+) => {
   try {
-    let initialValues: Day2ClusterDetailValues | Error;
-    let infraEnv: InfraEnv;
-    let cpuArchitecture: CpuArchitecture = getDefaultCpuArchitecture();
-    const allInfraEnvsAssociatedWithGivenCluster = await InfraEnvsService.getAllInfraEnvs(
-      clusterId,
-    );
+    const infraEnv = await InfraEnvsService.getInfraEnv(clusterId, day1CpuArchitecture);
 
-    if (allInfraEnvsAssociatedWithGivenCluster.length > 0) {
-      infraEnv = allInfraEnvsAssociatedWithGivenCluster[0];
-      cpuArchitecture = mapClusterCpuArchToInfraEnvCpuArch(infraEnv.cpuArchitecture);
-      initialValues = {
-        cpuArchitecture,
-        hostsNetworkConfigurationType: infraEnv.staticNetworkConfig
-          ? HostsNetworkConfigurationType.STATIC
-          : HostsNetworkConfigurationType.DHCP,
-      };
-    } else {
-      initialValues = new Error(`No infra-env found associated with cluster ${clusterId}`);
-    }
-
-    return initialValues;
+    return {
+      cpuArchitecture: day1CpuArchitecture,
+      hostsNetworkConfigurationType: infraEnv.staticNetworkConfig
+        ? HostsNetworkConfigurationType.STATIC
+        : HostsNetworkConfigurationType.DHCP,
+    };
   } catch (error) {
     handleApiError(error);
-    return new Error(error as string);
+    return null;
   }
 };
 
@@ -63,7 +50,9 @@ const Day2ClusterDetails = () => {
     data: { cluster: day2Cluster },
   } = day2DiscoveryImageDialog;
   const wizardContext = useDay2WizardContext();
-  const [initialValues, setInitialValues] = React.useState<Day2ClusterDetailValues | Error>();
+  const [initialValues, setInitialValues] = React.useState<
+    Day2ClusterDetailValues | Error | null
+  >();
   const [isSubmitting, setSubmitting] = React.useState(false);
   const cpuArchitectureSupportLevelIdToSupportLevelMap = useSupportLevelsAPI(
     'architectures',
@@ -78,14 +67,17 @@ const Day2ClusterDetails = () => {
       ),
     [canSelectCpuArch, cpuArchitectureSupportLevelIdToSupportLevelMap],
   );
-
+  const day1CpuArchitecture = mapClusterCpuArchToInfraEnvCpuArch(day2Cluster.cpuArchitecture);
   React.useEffect(() => {
     const fetchAndSetInitialValues = async () => {
-      const initialValues = await getDay2ClusterDetailInitialValues(day2Cluster.id);
+      const initialValues = await getDay2ClusterDetailInitialValues(
+        day2Cluster.id,
+        day1CpuArchitecture,
+      );
       setInitialValues(initialValues);
     };
     void fetchAndSetInitialValues();
-  }, [day2Cluster.id]);
+  }, [day2Cluster.id, day1CpuArchitecture]);
 
   const handleSubmit = React.useCallback(
     async (values: Day2ClusterDetailValues) => {
@@ -139,7 +131,7 @@ const Day2ClusterDetails = () => {
                 <GridItem span={12} lg={10} xl={9} xl2={7}>
                   <CpuArchitectureDropdown
                     openshiftVersion={day2Cluster.openshiftVersion}
-                    day1CpuArchitecture={initialValues.cpuArchitecture}
+                    day1CpuArchitecture={initialValues.cpuArchitecture as SupportedCpuArchitecture}
                     cpuArchitectures={cpuArchitectures}
                   />
                 </GridItem>
