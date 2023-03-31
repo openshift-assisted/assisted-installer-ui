@@ -1,82 +1,26 @@
 import * as React from 'react';
-import cidrTools from 'cidr-tools';
 import { NetworkFormProps, NetworkFormValues } from './types';
-import flattenDeep from 'lodash/flattenDeep';
-import xor from 'lodash/xor';
 import { Form, FormGroup, Grid, GridItem } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 import { Address6 } from 'ip-address';
 import {
   CheckboxField,
-  getHumanizedSubnet,
-  getSubnet,
   InputField,
-  Interface,
   NumberInputField,
   PopoverIcon,
   ProxyFields,
   RadioField,
-  SelectField,
   UploadSSH,
 } from '../../../../../common';
 import { useTemptiflySync } from '../../hooks/useTemptiflySync';
 import { useTranslation } from '../../../../../common/hooks/use-translation-wrapper';
-import { AgentK8sResource } from '../../../../types';
 
 import './NetworkForm.css';
 import AdvancedNetworkFields from '../../../../../common/components/clusterConfiguration/AdvancedNetworkFields';
 
-const NetworkForm: React.FC<NetworkFormProps> = ({ agents, onValuesChanged }) => {
-  const { values, setFieldValue } = useFormikContext<NetworkFormValues>();
+const NetworkForm: React.FC<NetworkFormProps> = ({ onValuesChanged }) => {
+  const { values } = useFormikContext<NetworkFormValues>();
   useTemptiflySync({ values, onValuesChanged });
-
-  const allAgents: AgentK8sResource[] = agents.filter((a) => !!a.status?.inventory.interfaces);
-  const allInterfacesDeep: (Interface[] | undefined)[] = allAgents.map(
-    (a) => a.status?.inventory?.interfaces,
-  );
-  const allInterfaces: Interface[] = flattenDeep(allInterfacesDeep).filter(Boolean) as Interface[];
-  const allIpsRaw: string[][] = allInterfaces.map((i: Interface): string[] => [
-    ...(i.ipv4Addresses || []),
-    ...(i.ipv6Addresses || []),
-  ]);
-  const allIps: string[] = flattenDeep<string>(allIpsRaw);
-
-  const agentCIDRs = allIps.map((ip) => cidrTools.merge([ip][0]));
-
-  const cidrToAgentsMapping = agentCIDRs.reduce((acc, curr) => {
-    acc[curr.toString()] = [];
-    return acc;
-  }, {} as { [key: string]: string[] });
-
-  agents.forEach((agent) => {
-    agentCIDRs.forEach((cidr) => {
-      if (allIps.some((ipAddr) => cidrTools.overlap(ipAddr, cidr))) {
-        cidrToAgentsMapping[cidr.toString()] = [
-          ...(cidrToAgentsMapping[cidr.toString()] || []),
-          agent.metadata?.uid || '',
-        ];
-      }
-    });
-  });
-
-  const uids = agents.map((a) => a.metadata?.uid);
-
-  const availableCIDRs = Object.keys(cidrToAgentsMapping).filter(
-    (key) => xor(cidrToAgentsMapping[key], uids).length === 0,
-  );
-
-  const cidrOptions = availableCIDRs.map((cidr) => {
-    return {
-      value: cidr,
-      label: getHumanizedSubnet(getSubnet(cidr)),
-    };
-  });
-
-  React.useEffect(() => {
-    if (values.machineCIDR === '' && availableCIDRs.length) {
-      setFieldValue('machineCIDR', availableCIDRs[0]);
-    }
-  }, [setFieldValue, availableCIDRs, values.machineCIDR]);
 
   const isClusterCIDRIPv6 = Address6.isValid(values.clusterNetworkCidr || '');
 
@@ -144,7 +88,6 @@ const NetworkForm: React.FC<NetworkFormProps> = ({ agents, onValuesChanged }) =>
           </GridItem>
         </Grid>
       </FormGroup>
-      <SelectField label={t('ai:Machine CIDR')} name="machineCIDR" options={cidrOptions} />
       <CheckboxField
         name="isAdvanced"
         label={t('ai:Use advanced networking')}
