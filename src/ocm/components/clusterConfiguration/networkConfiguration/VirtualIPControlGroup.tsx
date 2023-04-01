@@ -6,15 +6,16 @@ import {
   Cluster,
   NetworkConfigurationValues,
   FormikStaticField,
-  FeatureSupportLevelBadge,
   NETWORK_TYPE_SDN,
   selectMachineNetworkCIDR,
   getVipValidationsById,
   DUAL_STACK,
+  SupportLevel,
 } from '../../../../common';
 import { selectCurrentClusterPermissionsState } from '../../../selectors';
 import { OcmCheckboxField, OcmInputField } from '../../ui/OcmFormFields';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
+import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 
 interface VipStaticValueProps {
   id?: string;
@@ -75,11 +76,13 @@ const getVipHelperSuffix = (
 export type VirtualIPControlGroupProps = {
   cluster: Cluster;
   isVipDhcpAllocationDisabled?: boolean;
+  supportLevel?: SupportLevel;
 };
 
 export const VirtualIPControlGroup = ({
   cluster,
   isVipDhcpAllocationDisabled,
+  supportLevel,
 }: VirtualIPControlGroupProps) => {
   const { values, setFieldValue } = useFormikContext<NetworkConfigurationValues>();
   const { isViewerMode } = useSelector(selectCurrentClusterPermissionsState);
@@ -137,10 +140,7 @@ export const VirtualIPControlGroup = ({
               >
                 <span>Allocate IPs via DHCP server</span>
               </Tooltip>
-              <FeatureSupportLevelBadge
-                featureId="VIP_AUTO_ALLOC"
-                openshiftVersion={cluster.openshiftVersion}
-              />
+              <NewFeatureSupportLevelBadge featureId="VIP_AUTO_ALLOC" supportLevel={supportLevel} />
             </>
           }
           name="vipDhcpAllocation"

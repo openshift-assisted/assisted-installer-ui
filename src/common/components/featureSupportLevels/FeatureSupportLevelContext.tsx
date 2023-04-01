@@ -1,8 +1,9 @@
 import React from 'react';
 import { TFunction } from 'i18next';
 
-import { CpuArchitecture, FeatureId, FeatureIdToSupportLevel, SupportLevel } from '../../types';
+import { CpuArchitecture, FeatureId, FeatureIdToSupportLevel } from '../../types';
 import { useTranslation } from '../../hooks/use-translation-wrapper';
+import { SupportLevel } from '../../api/types';
 
 export type ActiveFeatureConfiguration = {
   underlyingCpuArchitecture: CpuArchitecture;

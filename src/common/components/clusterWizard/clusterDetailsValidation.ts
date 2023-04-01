@@ -3,7 +3,6 @@ import { TFunction } from 'i18next';
 import { Cluster, ManagedDomain } from '../../api';
 import { getDefaultCpuArchitecture, OpenshiftVersionOptionType } from '../../types';
 import { TangServer } from '../clusterConfiguration/DiskEncryptionFields/DiskEncryptionValues';
-import { FeatureSupportLevelData } from '../featureSupportLevels';
 import {
   baseDomainValidationSchema,
   dnsNameValidationSchema,
@@ -12,6 +11,8 @@ import {
   pullSecretValidationSchema,
 } from '../ui';
 import { ClusterDetailsValues } from './types';
+import { NewFeatureSupportLevelData } from '../newFeatureSupportLevels';
+import { FeatureSupportLevelData } from '../featureSupportLevels';
 
 const emptyTangServers = (): TangServer[] => {
   return [
@@ -85,14 +86,16 @@ export const getClusterDetailsValidationSchema = ({
   validateUniqueName,
   isOcm,
   t,
+  newFeatureSupportLevels,
 }: {
   usedClusterNames: string[];
-  featureSupportLevels: FeatureSupportLevelData;
+  featureSupportLevels?: FeatureSupportLevelData;
   pullSecretSet?: boolean;
   ocpVersions?: OpenshiftVersionOptionType[];
   validateUniqueName?: boolean;
   isOcm?: boolean;
   t: TFunction;
+  newFeatureSupportLevels?: NewFeatureSupportLevelData;
 }) =>
   Yup.lazy<{ baseDnsDomain: string }>((values) => {
     const validateName = () =>
@@ -115,12 +118,18 @@ export const getClusterDetailsValidationSchema = ({
         // The disclaimer is required only if SNO is enabled and SNO feature is not fully supported in that version
         is: (highAvailabilityMode, openshiftVersion) => {
           const selectedVersion = (ocpVersions || []).find((v) => v.value === openshiftVersion);
-          return (
-            highAvailabilityMode === 'None' &&
-            selectedVersion &&
-            featureSupportLevels.getFeatureSupportLevel(selectedVersion.value, 'SNO') ===
-              'dev-preview'
-          );
+          if (newFeatureSupportLevels) {
+            return (
+              highAvailabilityMode === 'None' &&
+              selectedVersion &&
+              newFeatureSupportLevels.getFeatureSupportLevel('SNO') === 'dev-preview'
+            );
+          } else {
+            return highAvailabilityMode === 'None' && selectedVersion && featureSupportLevels
+              ? featureSupportLevels.getFeatureSupportLevel(selectedVersion.value, 'SNO') ===
+                  'dev-preview'
+              : false;
+          }
         },
         then: Yup.bool().oneOf(
           [true],

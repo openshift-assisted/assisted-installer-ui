@@ -84,6 +84,8 @@ const ClusterDeploymentHostsDiscoveryStep: React.FC<ClusterDeploymentHostsDiscov
         setNextRequested(false);
       } else {
         setShowClusterErrors(true);
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         if (canNextFromHostDiscoveryStep(agentClusterInstall, infraEnvAgents)) {
           setCurrentStepId('networking');
         }

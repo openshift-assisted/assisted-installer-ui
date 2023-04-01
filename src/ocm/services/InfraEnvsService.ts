@@ -46,8 +46,13 @@ const InfraEnvsService = {
   },
 
   async getAllInfraEnvIds(clusterId: Cluster['id']): Promise<string[]> {
-    const { data: infraEnvs } = await InfraEnvsAPI.list(clusterId);
+    const infraEnvs = await InfraEnvsService.getAllInfraEnvs(clusterId);
     return infraEnvs.map((infraEnv) => infraEnv.id);
+  },
+
+  async getAllInfraEnvs(clusterId: Cluster['id']): Promise<InfraEnv[]> {
+    const { data: infraEnvs } = await InfraEnvsAPI.list(clusterId);
+    return infraEnvs;
   },
 
   async create(params: InfraEnvCreateParams) {

@@ -1,9 +1,8 @@
-import { FeatureSupportLevel } from '../api/types';
+import { FeatureSupportLevel, SupportLevel } from '../api/types';
 import { ArrayElementType } from './typescriptExtensions';
 
 type Features = Required<ArrayElementType<FeatureSupportLevel['features']>>;
 export type FeatureId = Features['featureId'] | 'ODF' | 'CNV' | 'NETWORK_TYPE_SELECTION';
-export type SupportLevel = Features['supportLevel'];
 
 export type FeatureIdToSupportLevel = {
   [id in FeatureId]?: SupportLevel;
