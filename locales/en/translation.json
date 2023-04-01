@@ -744,6 +744,7 @@
   "ai:useAlerts must be used within AlertsContextProvider": "useAlerts must be used within AlertsContextProvider",
   "ai:Used to describe hosts' physical location. Helps for quicker host selection during cluster creation.": "Used to describe hosts' physical location. Helps for quicker host selection during cluster creation.",
   "ai:useFeatureSupportLevel must be used within FeatureSupportLevelContextProvider.": "useFeatureSupportLevel must be used within FeatureSupportLevelContextProvider.",
+  "ai:useNewFeatureSupportLevel must be used within NewFeatureSupportLevelContextProvider.": "useNewFeatureSupportLevel must be used within NewFeatureSupportLevelContextProvider.",
   "ai:User-Managed Networking": "User-Managed Networking",
   "ai:User-Managed Networking is not supported when using Nutanix": "User-Managed Networking is not supported when using Nutanix",
   "ai:Username": "Username",

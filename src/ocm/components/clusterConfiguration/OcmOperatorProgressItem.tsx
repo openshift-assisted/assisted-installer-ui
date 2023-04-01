@@ -12,13 +12,19 @@ import {
 } from '@patternfly/react-tokens';
 import { pluralize } from 'humanize-plus';
 import { TFunction } from 'i18next';
-import { Cluster, MonitoredOperator, MonitoredOperatorsList, OperatorStatus } from '../../api';
-import { operatorLabelsCim, OperatorName } from '../../config';
-import ClusterProgressItem from './ClusterProgressItem';
-import { useTranslation } from '../../hooks/use-translation-wrapper';
-import { useFeatureSupportLevel } from '../featureSupportLevels';
 
-import './OperatorsProgressItem.css';
+import './OcmOperatorsProgressItem.css';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
+import ClusterProgressItem from '../../../common/components/clusterDetail/ClusterProgressItem';
+import {
+  Cluster,
+  MonitoredOperator,
+  MonitoredOperatorsList,
+  operatorLabels,
+  OperatorName,
+  OperatorStatus,
+} from '../../../common';
+import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
 
 export function getAggregatedStatus(operators: MonitoredOperatorsList) {
   const operatorStates: (OperatorStatus | 'pending')[] = operators.map(
@@ -80,9 +86,9 @@ type OperatorsPopoverProps = OperatorListProps & {
   children: React.ComponentProps<typeof Popover>['children'];
 };
 
-const OperatorsPopover = ({ operators, openshiftVersion, children }: OperatorsPopoverProps) => {
+const OperatorsPopover = ({ operators, children }: OperatorsPopoverProps) => {
   const { t } = useTranslation();
-  const featureSupportLevel = useFeatureSupportLevel();
+  const featureSupportLevel = useNewFeatureSupportLevel();
 
   return (
     <Popover
@@ -95,9 +101,8 @@ const OperatorsPopover = ({ operators, openshiftVersion, children }: OperatorsPo
               status = 'installed';
             }
             const name =
-              operatorLabelsCim(t, openshiftVersion, featureSupportLevel)[
-                operator.name as OperatorName
-              ] || operator.name;
+              operatorLabels(t, featureSupportLevel)[operator.name as OperatorName] ||
+              operator.name;
             return (
               <ListItem key={operator.name} title={operator.statusInfo}>
                 {name} {status}
@@ -114,7 +119,7 @@ const OperatorsPopover = ({ operators, openshiftVersion, children }: OperatorsPo
   );
 };
 
-const OperatorsProgressItem = ({ operators, openshiftVersion }: OperatorListProps) => {
+const OcmOperatorsProgressItem = ({ operators, openshiftVersion }: OperatorListProps) => {
   const { t } = useTranslation();
   const icon = getOperatorsIcon(getAggregatedStatus(operators));
   const label = getOperatorsLabel(operators, t);
@@ -132,4 +137,4 @@ const OperatorsProgressItem = ({ operators, openshiftVersion }: OperatorListProp
   );
 };
 
-export default OperatorsProgressItem;
+export default OcmOperatorsProgressItem;

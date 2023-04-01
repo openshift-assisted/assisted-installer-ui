@@ -1,5 +1,6 @@
-import { FeatureId, OpenshiftVersionOptionType, SupportLevel } from '../../../common/types';
+import { FeatureId, OpenshiftVersionOptionType } from '../../../common/types';
 import { TFunction } from 'i18next';
+import { SupportLevel } from '../../../common/api';
 
 const getClusterExistsReason = (t: TFunction) =>
   t('ai:This option is not editable after the draft cluster is created');

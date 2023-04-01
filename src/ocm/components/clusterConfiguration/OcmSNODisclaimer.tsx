@@ -1,19 +1,18 @@
 import React from 'react';
 import { Alert, AlertVariant, List, ListItem, Stack, StackItem } from '@patternfly/react-core';
-import { CheckboxField } from '../ui';
-import { useTranslation } from '../../hooks/use-translation-wrapper';
-import { SupportLevel } from '../../api/types';
+import { CheckboxField, SupportLevel } from '../../../common';
+import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 
-type SNODisclaimerProps = {
+type OcmSNODisclaimerProps = {
   snoSupportLevel: SupportLevel;
   isDisabled?: boolean;
   snoExpansionSupported?: boolean;
 };
-const SNODisclaimer = ({
+const OcmSNODisclaimer = ({
   snoSupportLevel,
   isDisabled = false,
   snoExpansionSupported = false,
-}: SNODisclaimerProps) => {
+}: OcmSNODisclaimerProps) => {
   const { t } = useTranslation();
   if (!['dev-preview', 'supported'].includes(snoSupportLevel)) {
     //if tech preview or unsupported there's no definition which warning to show
@@ -76,4 +75,4 @@ const SNODisclaimer = ({
   );
 };
 
-export default SNODisclaimer;
+export default OcmSNODisclaimer;
