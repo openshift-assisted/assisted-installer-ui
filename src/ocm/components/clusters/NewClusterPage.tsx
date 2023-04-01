@@ -4,11 +4,11 @@ import { AlertsContextProvider } from '../../../common';
 import ClusterBreadcrumbs from './ClusterBreadcrumbs';
 import { ClusterDefaultConfigurationProvider } from '../clusterConfiguration/ClusterDefaultConfigurationContext';
 import NewClusterWizard from '../clusterWizard/NewClusterWizard';
-import { FeatureSupportLevelProvider } from '../featureSupportLevels';
 import ClusterWizardContextProvider from '../clusterWizard/ClusterWizardContextProvider';
 import { SentryErrorMonitorContextProvider } from '../SentryErrorMonitorContextProvider';
 import ClusterLoading from './ClusterLoading';
 import { ClusterUiError } from './ClusterPageErrors';
+import { NewFeatureSupportLevelProvider } from '../newFeatureSupportLevels';
 
 const NewClusterPageGeneric: React.FC<{ pageTitleSection?: ReactNode }> = ({
   pageTitleSection,
@@ -20,14 +20,14 @@ const NewClusterPageGeneric: React.FC<{ pageTitleSection?: ReactNode }> = ({
           loadingUI={<ClusterLoading />}
           errorUI={<ClusterUiError />}
         >
-          <FeatureSupportLevelProvider loadingUi={<ClusterLoading />}>
+          <NewFeatureSupportLevelProvider loadingUi={<ClusterLoading />}>
             {pageTitleSection}
             <PageSection variant={PageSectionVariants.light} isFilled>
               <ClusterWizardContextProvider>
                 <NewClusterWizard />
               </ClusterWizardContextProvider>
             </PageSection>
-          </FeatureSupportLevelProvider>
+          </NewFeatureSupportLevelProvider>
         </ClusterDefaultConfigurationProvider>
       </SentryErrorMonitorContextProvider>
     </AlertsContextProvider>

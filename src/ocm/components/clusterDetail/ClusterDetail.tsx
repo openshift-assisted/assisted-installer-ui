@@ -18,7 +18,6 @@ import {
   getEnabledHosts,
   selectOlmOperators,
   isSNO,
-  useFeatureSupportLevel,
   useFeature,
 } from '../../../common';
 import { Cluster } from '../../../common/api/types';
@@ -34,13 +33,14 @@ import ClusterDetailStatusVarieties, {
 import { useModalDialogsContext } from '../hosts/ModalDialogsContext';
 import { canAbortInstallation } from '../clusters/utils';
 import ClusterProgress from '../../../common/components/clusterDetail/ClusterProgress';
-import ClusterProgressItems from '../../../common/components/clusterDetail/ClusterProgressItems';
 import { onFetchEvents } from '../fetching/fetchEvents';
 import { getClusterProgressAlerts } from './getProgressBarAlerts';
 import { ClustersAPI } from '../../services/apis';
 import { updateCluster } from '../../reducers/clusters';
 import { handleApiError, ocmClient } from '../../api';
 import ViewClusterEventsButton from '../../../common/components/ui/ViewClusterEventsButton';
+import { useNewFeatureSupportLevel } from '../../../common/components/newFeatureSupportLevels';
+import OcmClusterProgressItems from '../clusterConfiguration/OcmClusterProgressItems';
 
 type ClusterDetailProps = {
   cluster: Cluster;
@@ -51,13 +51,9 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
   const { resetClusterDialog, cancelInstallationDialog } = useModalDialogsContext();
   const clusterVarieties = useClusterStatusVarieties(cluster);
   const { credentials, credentialsError } = clusterVarieties;
-  const featureSupportLevelContext = useFeatureSupportLevel();
+  const featureSupportLevelContext = useNewFeatureSupportLevel();
   const isSNOExpansionAllowed =
-    cluster.openshiftVersion &&
-    featureSupportLevelContext.isFeatureSupported(
-      cluster.openshiftVersion,
-      'SINGLE_NODE_EXPANSION',
-    );
+    featureSupportLevelContext.isFeatureSupported('SINGLE_NODE_EXPANSION');
   const isSingleClusterFeatureEnabled = useFeature('ASSISTED_INSTALLER_SINGLE_CLUSTER_FEATURE');
 
   const canAddHosts =
@@ -92,7 +88,7 @@ const ClusterDetail: React.FC<ClusterDetailProps> = ({ cluster }) => {
           </GridItem>
           <GridItem span={6} rowSpan={4} />
           <GridItem span={6}>
-            <ClusterProgressItems cluster={cluster} onFetchEvents={onFetchEvents} />
+            <OcmClusterProgressItems cluster={cluster} onFetchEvents={onFetchEvents} />
           </GridItem>
           <GridItem span={6}>
             {getClusterProgressAlerts(

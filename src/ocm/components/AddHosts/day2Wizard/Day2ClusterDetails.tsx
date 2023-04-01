@@ -9,6 +9,7 @@ import {
   ErrorState,
   getSupportedCpuArchitectures,
   LoadingState,
+  SupportedCpuArchitecture,
   useFeature,
 } from '../../../../common';
 import { HostsNetworkConfigurationType, InfraEnvsService } from '../../../services';
@@ -21,7 +22,7 @@ import Day2WizardFooter from './Day2WizardFooter';
 import Day2HostStaticIpConfigurations from './Day2StaticIpHostConfigurations';
 import { mapClusterCpuArchToInfraEnvCpuArch } from '../../../services/CpuArchitectureService';
 import CpuArchitectureDropdown from '../../clusterConfiguration/CpuArchitectureDropdown';
-import useArchitectureSupportLevels from '../../../hooks/useArchitecturesSupportLevels';
+import useSupportLevelsAPI from '../../../hooks/useSupportLevelsAPI';
 
 const getDay2ClusterDetailInitialValues = async (
   clusterId: Cluster['id'],
@@ -49,11 +50,12 @@ const Day2ClusterDetails = () => {
     data: { cluster: day2Cluster },
   } = day2DiscoveryImageDialog;
   const wizardContext = useDay2WizardContext();
-  const [initialValues, setInitialValues] = React.useState<Day2ClusterDetailValues | null>();
+  const [initialValues, setInitialValues] = React.useState<
+    Day2ClusterDetailValues | Error | null
+  >();
   const [isSubmitting, setSubmitting] = React.useState(false);
-
-  const day1CpuArchitecture = mapClusterCpuArchToInfraEnvCpuArch(day2Cluster.cpuArchitecture);
-  const cpuArchitectureSupportLevelIdToSupportLevelMap = useArchitectureSupportLevels(
+  const cpuArchitectureSupportLevelIdToSupportLevelMap = useSupportLevelsAPI(
+    'architectures',
     day2Cluster.openshiftVersion,
   );
   const canSelectCpuArch = useFeature('ASSISTED_INSTALLER_MULTIARCH_SUPPORTED');
@@ -65,7 +67,7 @@ const Day2ClusterDetails = () => {
       ),
     [canSelectCpuArch, cpuArchitectureSupportLevelIdToSupportLevelMap],
   );
-
+  const day1CpuArchitecture = mapClusterCpuArchToInfraEnvCpuArch(day2Cluster.cpuArchitecture);
   React.useEffect(() => {
     const fetchAndSetInitialValues = async () => {
       const initialValues = await getDay2ClusterDetailInitialValues(
@@ -99,9 +101,9 @@ const Day2ClusterDetails = () => {
     [day2Cluster.id, wizardContext],
   );
 
-  if (initialValues === undefined) {
+  if (!initialValues) {
     return <LoadingState />;
-  } else if (initialValues === null) {
+  } else if (initialValues instanceof Error) {
     return <ErrorState content="Failed to load associated data for the Day2 cluster" />;
   }
 
@@ -129,7 +131,7 @@ const Day2ClusterDetails = () => {
                 <GridItem span={12} lg={10} xl={9} xl2={7}>
                   <CpuArchitectureDropdown
                     openshiftVersion={day2Cluster.openshiftVersion}
-                    day1CpuArchitecture={day1CpuArchitecture}
+                    day1CpuArchitecture={initialValues.cpuArchitecture as SupportedCpuArchitecture}
                     cpuArchitectures={cpuArchitectures}
                   />
                 </GridItem>

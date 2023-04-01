@@ -5,24 +5,29 @@ import {
   ClusterOperatorProps,
   getFieldId,
   PopoverIcon,
-  useFeatureSupportLevel,
   operatorLabels,
   OperatorsValues,
-  FeatureSupportLevelBadge,
   OPERATOR_NAME_LVM,
   ExposedOperatorName,
   ExternalLink,
   LVMS_LINK,
   OPERATOR_NAME_LVMS,
+  SupportLevel,
 } from '../../../../common';
 import LvmHostRequirements from './LvmHostRequirements';
 import { OcmCheckboxField } from '../../ui/OcmFormFields';
 import { useTranslation } from '../../../../common/hooks/use-translation-wrapper';
 import { getLvmIncompatibleWithCnvReason } from '../../featureSupportLevels/featureStateUtils';
+import { useNewFeatureSupportLevel } from '../../../../common/components/newFeatureSupportLevels';
+import NewFeatureSupportLevelBadge from '../../../../common/components/newFeatureSupportLevels/NewFeatureSupportLevelBadge';
 
 const LVM_FIELD_NAME = 'useOdfLogicalVolumeManager';
 
-type LvmLabelProps = ClusterOperatorProps & { disabledReason?: string; operatorLabel: string };
+type LvmLabelProps = ClusterOperatorProps & {
+  disabledReason?: string;
+  operatorLabel: string;
+  supportLevel?: SupportLevel;
+};
 
 const LvmHelperText = ({ operatorName }: { operatorName: ExposedOperatorName }) => {
   return (
@@ -35,12 +40,7 @@ const LvmHelperText = ({ operatorName }: { operatorName: ExposedOperatorName }) 
   );
 };
 
-const LvmLabel = ({
-  openshiftVersion,
-  clusterId,
-  operatorLabel,
-  disabledReason,
-}: LvmLabelProps) => {
+const LvmLabel = ({ clusterId, operatorLabel, disabledReason, supportLevel }: LvmLabelProps) => {
   return (
     <>
       <Tooltip hidden={!disabledReason} content={disabledReason}>
@@ -51,42 +51,37 @@ const LvmLabel = ({
         headerContent="Additional Requirements"
         bodyContent={<LvmHostRequirements clusterId={clusterId} />}
       />
-      <FeatureSupportLevelBadge featureId="LVM" openshiftVersion={openshiftVersion} />
+      <NewFeatureSupportLevelBadge featureId="LVM" supportLevel={supportLevel} />
     </>
   );
 };
 
-const LvmCheckbox = ({ clusterId, openshiftVersion }: ClusterOperatorProps) => {
+const LvmCheckbox = ({ clusterId }: ClusterOperatorProps) => {
   const fieldId = getFieldId(LVM_FIELD_NAME, 'input');
 
-  const featureSupportLevel = useFeatureSupportLevel();
+  const featureSupportLevel = useNewFeatureSupportLevel();
   const { t } = useTranslation();
   const { values } = useFormikContext<OperatorsValues>();
   const [disabledReason, setDisabledReason] = useState<string | undefined>();
 
   const operatorInfo = React.useMemo(() => {
-    const lvmSupport = featureSupportLevel.getFeatureSupportLevel(openshiftVersion || '', 'LVM');
+    const lvmSupport = featureSupportLevel.getFeatureSupportLevel('LVM');
 
-    const operatorLabel = operatorLabels(t, openshiftVersion, featureSupportLevel)[
-      OPERATOR_NAME_LVM
-    ];
+    const operatorLabel = operatorLabels(t, featureSupportLevel)[OPERATOR_NAME_LVM];
     return {
       lvmSupport,
       operatorLabel,
       operatorName: lvmSupport === 'supported' ? OPERATOR_NAME_LVMS : OPERATOR_NAME_LVM,
     };
-  }, [t, featureSupportLevel, openshiftVersion]);
+  }, [t, featureSupportLevel]);
 
   React.useEffect(() => {
-    let reason = undefined;
-    if (openshiftVersion) {
-      reason = featureSupportLevel.getFeatureDisabledReason(openshiftVersion, 'LVM');
-      if (!reason) {
-        reason = getLvmIncompatibleWithCnvReason(values, operatorInfo.lvmSupport);
-      }
+    let reason = featureSupportLevel.getFeatureDisabledReason('LVM');
+    if (!reason) {
+      reason = getLvmIncompatibleWithCnvReason(values, operatorInfo.lvmSupport);
     }
     setDisabledReason(reason);
-  }, [values, openshiftVersion, featureSupportLevel, operatorInfo.lvmSupport]);
+  }, [values, featureSupportLevel, operatorInfo.lvmSupport]);
 
   return (
     <FormGroup isInline fieldId={fieldId}>
@@ -95,9 +90,9 @@ const LvmCheckbox = ({ clusterId, openshiftVersion }: ClusterOperatorProps) => {
         label={
           <LvmLabel
             clusterId={clusterId}
-            openshiftVersion={openshiftVersion}
             operatorLabel={operatorInfo.operatorLabel}
             disabledReason={disabledReason}
+            supportLevel={featureSupportLevel.getFeatureSupportLevel('LVM')}
           />
         }
         helperText={<LvmHelperText operatorName={operatorInfo.operatorName} />}

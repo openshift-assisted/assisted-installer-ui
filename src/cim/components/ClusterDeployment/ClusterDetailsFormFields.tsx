@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Alert, AlertVariant, FlexItem, Form } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 
-import { SNOControlGroup } from '../../../common/components/clusterConfiguration';
 import { StaticTextField } from '../../../common/components/ui/StaticTextField';
 import OpenShiftVersionSelect from '../../../common/components/clusterConfiguration/OpenShiftVersionSelect';
 import { PullSecret } from '../../../common/components/clusters';
@@ -15,6 +14,7 @@ import {
 import { ClusterDetailsValues } from '../../../common/components/clusterWizard/types';
 import { useTranslation } from '../../../common/hooks/use-translation-wrapper';
 import ArmCheckbox from './ArmCheckbox';
+import { SNOControlGroup } from '../../../common';
 
 export type ClusterDetailsFormFieldsProps = {
   isEditFlow: boolean;

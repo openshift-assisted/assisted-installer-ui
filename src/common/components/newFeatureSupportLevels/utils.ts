@@ -1,11 +1,14 @@
-import { Cluster, stringToJSON } from '../../api';
+import { Cluster, stringToJSON, SupportLevel } from '../../api';
 import { ClusterFeatureUsage, FeatureId, FeatureIdToSupportLevel } from '../../types';
-import { FeatureSupportLevelData } from './FeatureSupportLevelContext';
+import {
+  NewFeatureSupportLevelData,
+  NewFeatureSupportLevelMap,
+} from './NewFeatureSupportLevelContext';
 import { TFunction } from 'i18next';
 
 export const getLimitedFeatureSupportLevels = (
   cluster: Cluster,
-  featureSupportLevelData: FeatureSupportLevelData,
+  featureSupportLevelData: NewFeatureSupportLevelData,
   t: TFunction,
 ): FeatureIdToSupportLevel => {
   if (!cluster.openshiftVersion) {
@@ -26,10 +29,9 @@ export const getLimitedFeatureSupportLevels = (
       : 'Error parsing cluster feature_usage field';
   }
   const usedFeatureIds: FeatureId[] = Object.values(featureUsage).map((item) => item.id);
-  const versionSupportLevelsMap = featureSupportLevelData.getVersionSupportLevelsMap(
-    cluster.openshiftVersion,
-  );
-  if (!versionSupportLevelsMap) {
+  const versionSupportLevels: NewFeatureSupportLevelMap =
+    featureSupportLevelData.getFeatureSupportLevels();
+  if (!versionSupportLevels) {
     throw t
       ? t('ai:No support level data for version {{openshiftVersion}}', {
           openshiftVersion: cluster.openshiftVersion,
@@ -37,16 +39,12 @@ export const getLimitedFeatureSupportLevels = (
       : `No support level data for version ${cluster.openshiftVersion}`;
   }
   for (const featureId of usedFeatureIds) {
-    if (featureId in versionSupportLevelsMap) {
-      const supportLevel = versionSupportLevelsMap[featureId];
+    if (featureId in versionSupportLevels) {
+      const supportLevel: SupportLevel = versionSupportLevels[featureId] as SupportLevel;
       if (supportLevel === 'supported') {
         continue;
       }
-      if (supportLevel === 'unsupported' && featureId !== 'CLUSTER_MANAGED_NETWORKING_WITH_VMS') {
-        //since the UI doesn't address unsupported features that aren't CLUSTER_MANAGED_NETWORKING_WITH_VMS they should be ignored
-        continue;
-      }
-      ret[featureId] = versionSupportLevelsMap[featureId];
+      ret[featureId] = supportLevel;
     }
   }
   return ret;
