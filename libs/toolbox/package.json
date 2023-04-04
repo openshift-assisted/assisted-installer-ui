@@ -28,9 +28,7 @@
   "scripts": {
     "build": "yarn run -T tsc --build --verbose",
     "check_types": "yarn run -T tsc --noEmit",
-    "clean": "yarn run -T rimraf build .cache node_modules",
-    "format": "yarn run -T toolbox changed 'yarn run -T prettier --check --'",
-    "lint": "yarn run -T toolbox changed --dir=lib 'yarn run -T eslint --max-warnings=0'"
+    "clean": "yarn run -T rimraf build node_modules"
   },
   "version": "1.0.0-beta"
 }

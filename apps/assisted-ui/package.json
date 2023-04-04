@@ -47,9 +47,7 @@
   "scripts": {
     "build": "vite build -c vite.config.ts",
     "check_types": "yarn run -T tsc --noEmit",
-    "clean": "yarn run -T rimraf build",
-    "format": "yarn run -T toolbox changed 'yarn run -T prettier --check --'",
-    "lint": "yarn run -T toolbox changed --dir=src --excludePattern='(css|yaml)$' 'yarn run -T eslint --max-warnings=0'",
+    "clean": "yarn run -T rimraf node_modules build",
     "preview": "vite preview -c vite.config.ts",
     "serve": "vite serve -c vite.config.ts"
   },

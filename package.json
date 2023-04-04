@@ -24,8 +24,8 @@
     "check_circular_deps:all": "yarn workspaces foreach -vp run check_circular_deps",
     "check_types:all": "yarn workspaces foreach -vp run check_types",
     "clean:all": "yarn workspaces foreach -vp run clean && yarn rimraf node_modules",
-    "format:all": "yarn workspaces foreach -vp run format",
-    "lint:all": "yarn workspaces foreach -vp run lint",
+    "format:all": "yarn prettier --cache --cache-strategy=content --check .",
+    "lint:all": "yarn eslint --cache --cache-strategy=content --cache-location=node_modules/.cache/eslint/.eslint-cache .",
     "test:all": "echo WIP"
   },
   "workspaces": [

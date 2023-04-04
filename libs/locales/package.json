@@ -26,7 +26,6 @@
   "scripts": {
     "watch": "yarn run -T toolbox watch --dir=lib 'yalc push --changed'",
     "process_new_strings": "scripts/process-new-strings.sh",
-    "format": "yarn run -T toolbox changed 'yarn run -T prettier --check --'",
     "validate_translation_files": "scripts/validate-translation-files.sh"
   },
   "type": "module",
