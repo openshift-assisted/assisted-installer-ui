@@ -1,4 +1,8 @@
+.yarnrc.yml
+.yarn
+.npm
+.vscode
+.idea
 apps/*/build
 libs/*/build
-libs/*/.cache
 libs/*/@types
